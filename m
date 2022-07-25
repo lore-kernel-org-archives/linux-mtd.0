@@ -4,99 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FA28C43334
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Jul 2022 05:57:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 621C9C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Jul 2022 09:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iAXoBVkWB5qLrjYuzP/hABIWF+kHHVwSfAGlexlo5H4=; b=EbJizz0uwSuWtUIBrRNgVsNiJP
-	iIukY3vAb/kG8v7BJDLuPMagelkH8izpSroNQyBWZ57ByHrjWz8NfzY5bHdyKBCseybhKTJ+4R5Yt
-	fOUTvnpNJKYljyGokQHl2b3szlTNithAiEG+MX+07kXVd2ZTbrX8oc3YAe1Uc5gVyfNuitI0ihvkz
-	npSM6t0MUwCgsJTQukzHoNsqSucorUq5SfqJYojIo5qbdLONcnW7g+/Lie7IaykmMe3iIyScwc+rd
-	Ixkos8tql1BGNJPNOUdto071zS6+gqf2E+UlqavA9uyqTQEFrABc2lQdZgX3fftRbMmvUoChlvDfE
-	l4x/2kyw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=C5HvvuG15tuB84kLx87NdH+cvGCiLZtVyYZ8b2yy+kM=; b=G880QP2k9f0ycG
+	1BgEFX1g/BY889kPrj7iN4OSZjBu0GpEl2RuXYXGr4eCkSytujij/7Sdlyj7Upg8Hkn0kO9lTlga3
+	EddQK8H38+lDdxnkz4qaWKHSb5J9xReW9zVdzGtFakr0lm61lhOmLwmBQpJ0XlLi6l/5On+a0q5fX
+	IiEytn5xof6Di7mnedCUBKlilJ55Dq8y4Wg2hSpUpmrobRvUyzH/BaAZ/FsjIAnabj0RhNGD3D7JI
+	KcF/svt2ods5HqNGSPi4zysWHwTG5eO+2fjkUx0uJhfGAdAjFO6fEXIPeADlxdfe4RGvaBLrNsO60
+	J+Ik25Mzuv9BzFzUh0Tg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oFr5L-004pTM-PT; Mon, 25 Jul 2022 05:56:55 +0000
-Received: from mail-pf1-x42b.google.com ([2607:f8b0:4864:20::42b])
+	id 1oFuLO-007X2V-6N; Mon, 25 Jul 2022 09:25:42 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oFr3e-004nEJ-86
-	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2022 05:55:12 +0000
-Received: by mail-pf1-x42b.google.com with SMTP id c3so9476896pfb.13
-        for <linux-mtd@lists.infradead.org>; Sun, 24 Jul 2022 22:55:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=5qVRraLfW/Em7HBgOD8wwMETtL8p4Mx6QG03LaAwfp4=;
-        b=ApQ9E16K+2wQ4GfUYyeXFSt4G5/VAxp+6thZnRtRttzViOxpLvf4b/yhzmEfBDriBI
-         VJxX+FxvLbwbaKg+g2iYHmMz13A+h5VSq4DCDiTusEo3IZLnh8Wfwhv8mkhHIVw9NOyp
-         zzHakgBJ7+bcll0nH6LTGEb5fzRLHPLag0sOc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=5qVRraLfW/Em7HBgOD8wwMETtL8p4Mx6QG03LaAwfp4=;
-        b=dCchZJqNuWGdju8nfmYj7O+QJ85t+fX1TvMHki9OfH03wHZ8qL/OP1GvVYi0V8TZNk
-         dBlHXH/fswX+z1r0xZWojQfG8ClW83zxfgFUyi421OZBaP2ndwHsMog12464RWY0msh7
-         aoxqLQVBDoyj7UMIA50DgrEt9vwwyGaI/dUDKWxU3H80UAGa0b4OxsMkyrxoa2Ewi6iW
-         QbUhfY7uAtl3VStlvXPUBlF+WPtc5w3WqUsaib2C/b6fkl49FVq1AcSrw+6Jplcsj8KW
-         wjrZis7Pc0+MMQaeJgcO+6CrsY08LaEwN7CWsg2HuynL85ZZacMvSdjii0d6aUuW4Rc5
-         KYNQ==
-X-Gm-Message-State: AJIora8f4bHCtFBrq/MGZIvArPoU37lya9tanmffAXmgUKZZPCNHH2hr
-	ypMk/aZ/L+QbJvR5HJ7dX6/ZSA==
-X-Google-Smtp-Source: AGRyM1ssVSBKb6lxdTkbgJiMeJLoT5QYr0eDb8NARuR+t+ea1xP3A5+irMn9DG8CLkQliTjzy7wy/w==
-X-Received: by 2002:aa7:9ae3:0:b0:528:d881:9ff with SMTP id y3-20020aa79ae3000000b00528d88109ffmr11394307pfp.66.1658728508289;
-        Sun, 24 Jul 2022 22:55:08 -0700 (PDT)
-Received: from ubuntu-22.localdomain ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id m5-20020a170902bb8500b0016c4331e61csm8198910pls.137.2022.07.24.22.55.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jul 2022 22:55:07 -0700 (PDT)
-From: William Zhang <william.zhang@broadcom.com>
-To: Linux ARM List <linux-arm-kernel@lists.infradead.org>
-Cc: joel.peshkin@broadcom.com,
-	f.fainelli@gmail.com,
-	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
-	dan.beygelman@broadcom.com,
-	anand.gore@broadcom.com,
-	kursad.oney@broadcom.com,
-	rafal@milecki.pl,
-	krzysztof.kozlowski@linaro.org,
-	William Zhang <william.zhang@broadcom.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Rob Herring <robh@kernel.org>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	linux-i2c@vger.kernel.org (open list:I2C SUBSYSTEM HOST DRIVERS),
-	linux-kernel@vger.kernel.org (open list),
-	linux-mtd@lists.infradead.org (open list:MEMORY TECHNOLOGY DEVICES (MTD)),
-	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-	linux-pci@vger.kernel.org (open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS),
-	linux-phy@lists.infradead.org (open list:GENERIC PHY FRAMEWORK),
-	linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
-	linux-mips@vger.kernel.org (open list:BROADCOM BMIPS MIPS ARCHITECTURE),
-	linux-serial@vger.kernel.org (open list:SERIAL DRIVERS),
-	linux-watchdog@vger.kernel.org (open list:WATCHDOG DEVICE DRIVERS)
-Subject: [PATCH v2 6/9] arm64: bcmbca: Make BCM4908 drivers depend on ARCH_BCMBCA
-Date: Sun, 24 Jul 2022 22:53:59 -0700
-Message-Id: <20220725055402.6013-7-william.zhang@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220725055402.6013-1-william.zhang@broadcom.com>
-References: <20220725055402.6013-1-william.zhang@broadcom.com>
+	id 1oFuLC-007WjU-KB
+	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2022 09:25:32 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1658741130; x=1690277130;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=TZ/xIdZ82TqTec4JUdPD3hp3jpFKNDQq2r9sb8vvBWQ=;
+  b=2JF3hsK1HhBgc2R9E+wjln5yC7x3NFHt4OBeYd/ildwWsDc40xLtufmn
+   x1ZDFedcPbxhNfArehTnjDTOMab7YN9UZqdMT9Lglft1m40W7ZojUbtE7
+   0YW6JVtlxDJjwDlKyLiLYfR1RECOrnAV3e1CY/McUzjW3J2nEG6bCxXUk
+   NlSTuj/Md84QPBBSdi9TbF/baaQNbzx4hScs347MOXkukEGvkgj9eLvyV
+   xHbSaeE7Wy3/v4VU0NyORh+mbYFTl5KVLsuoQVhUO6DB05ADFl/8loyxC
+   SXzoq5tjLmy/v8UEoIKyaecCUTkKue4pB69MLaU3eTE7PXkl2Jh+37e/+
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.93,192,1654585200"; 
+   d="scan'208";a="169328761"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Jul 2022 02:25:30 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Mon, 25 Jul 2022 02:25:29 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2375.28 via Frontend Transport; Mon, 25 Jul 2022 02:25:26 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <p.yadav@ti.com>, <michael@walle.cc>, <tkuw584924@gmail.com>,
+	<Takahiro.Kuwano@infineon.com>, <linux-mtd@lists.infradead.org>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<Bacem.Daassi@infineon.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH v17 3/7] mtd: spi-nor: Do not change nor->addr_nbytes at SFDP parsing time
+Date: Mon, 25 Jul 2022 12:25:01 +0300
+Message-ID: <20220725092505.446315-4-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220725092505.446315-1-tudor.ambarus@microchip.com>
+References: <20220725092505.446315-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220724_225510_362566_A80FF1C3 
-X-CRM114-Status: GOOD (  20.26  )
+X-CRM114-CacheID: sfid-20220725_022530_826683_0437943D 
+X-CRM114-Status: GOOD (  16.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,300 +75,123 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2826258837208344859=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============2826258837208344859==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000008a5e5705e49ad339"
+At the SFDP parsing time we should not change members of struct spi_nor,
+but instead fill members of struct spi_nor_flash_parameters which could
+later on be used by callers. The caller will then decide if SFDP params
+should be used and more importantly when they should be used. Clean the
+code flow and don't initialize nor->addr_nbytes at SFDP parsing time.
 
---0000000000008a5e5705e49ad339
-Content-Transfer-Encoding: 8bit
-
-With Broadcom Broadband arch ARCH_BCMBCA supported in the kernel, this
-patch series migrate the ARCH_BCM4908 symbol to ARCH_BCMBCA. Hence
-replace ARCH_BCM4908 with ARCH_BCMBCA in subsystem Kconfig files.
-
-Signed-off-by: William Zhang <william.zhang@broadcom.com>
-Acked-by: Guenter Roeck <linux@roeck-us.net> (for watchdog)
-Acked-by: Bjorn Helgaas <bhelgaas@google.com> (for drivers/pci)
-
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Tested-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Reviewed-by: Michael Walle <michael@walle.cc>
 ---
+ drivers/mtd/spi-nor/core.c | 5 ++---
+ drivers/mtd/spi-nor/core.h | 2 ++
+ drivers/mtd/spi-nor/issi.c | 2 +-
+ drivers/mtd/spi-nor/sfdp.c | 8 ++++----
+ 4 files changed, 9 insertions(+), 8 deletions(-)
 
-Changes in v2:
-- Add Acked-by tags
-- Update commit message with more details
-
- drivers/i2c/busses/Kconfig            | 4 ++--
- drivers/mtd/parsers/Kconfig           | 6 +++---
- drivers/net/ethernet/broadcom/Kconfig | 4 ++--
- drivers/pci/controller/Kconfig        | 2 +-
- drivers/phy/broadcom/Kconfig          | 4 ++--
- drivers/pinctrl/bcm/Kconfig           | 4 ++--
- drivers/reset/Kconfig                 | 2 +-
- drivers/soc/bcm/bcm63xx/Kconfig       | 4 ++--
- drivers/tty/serial/Kconfig            | 4 ++--
- drivers/watchdog/Kconfig              | 2 +-
- 10 files changed, 18 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index 45a4e9f1b639..fd9a4dd01997 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -487,8 +487,8 @@ config I2C_BCM_KONA
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 31604188ee59..9f07f1036151 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2251,8 +2251,8 @@ static int spi_nor_default_setup(struct spi_nor *nor,
  
- config I2C_BRCMSTB
- 	tristate "BRCM Settop/DSL I2C controller"
--	depends on ARCH_BCM2835 || ARCH_BCM4908 || ARCH_BCMBCA || \
--		   ARCH_BRCMSTB || BMIPS_GENERIC || COMPILE_TEST
-+	depends on ARCH_BCM2835 || ARCH_BCMBCA || ARCH_BRCMSTB || \
-+		   BMIPS_GENERIC || COMPILE_TEST
- 	default y
- 	help
- 	  If you say yes to this option, support will be included for the
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index b43df73927a0..d6db655a1d24 100644
---- a/drivers/mtd/parsers/Kconfig
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -69,8 +69,8 @@ config MTD_OF_PARTS
+ static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
+ {
+-	if (nor->addr_nbytes) {
+-		/* already configured from SFDP */
++	if (nor->params->addr_nbytes) {
++		nor->addr_nbytes = nor->params->addr_nbytes;
+ 	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
+ 		/*
+ 		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
+@@ -2492,7 +2492,6 @@ static void spi_nor_sfdp_init_params_deprecated(struct spi_nor *nor)
  
- config MTD_OF_PARTS_BCM4908
- 	bool "BCM4908 partitioning support"
--	depends on MTD_OF_PARTS && (ARCH_BCM4908 || COMPILE_TEST)
--	default ARCH_BCM4908
-+	depends on MTD_OF_PARTS && (ARCH_BCMBCA || COMPILE_TEST)
-+	default ARCH_BCMBCA
- 	help
- 	  This provides partitions parser for BCM4908 family devices
- 	  that can have multiple "firmware" partitions. It takes care of
-@@ -78,7 +78,7 @@ config MTD_OF_PARTS_BCM4908
+ 	if (spi_nor_parse_sfdp(nor)) {
+ 		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
+-		nor->addr_nbytes = 0;
+ 		nor->flags &= ~SNOR_F_4B_OPCODES;
+ 	}
+ }
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 19a692e27c92..7dc4cda41db3 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -340,6 +340,7 @@ struct spi_nor_otp {
+  * @writesize		Minimal writable flash unit size. Defaults to 1. Set to
+  *			ECC unit size for ECC-ed flashes.
+  * @page_size:		the page size of the SPI NOR flash memory.
++ * @addr_nbytes:	number of address bytes to send.
+  * @rdsr_dummy:		dummy cycles needed for Read Status Register command
+  *			in octal DTR mode.
+  * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
+@@ -372,6 +373,7 @@ struct spi_nor_flash_parameter {
+ 	u64				size;
+ 	u32				writesize;
+ 	u32				page_size;
++	u8				addr_nbytes;
+ 	u8				rdsr_dummy;
+ 	u8				rdsr_addr_nbytes;
  
- config MTD_OF_PARTS_LINKSYS_NS
- 	bool "Linksys Northstar partitioning support"
--	depends on MTD_OF_PARTS && (ARCH_BCM_5301X || ARCH_BCM4908 || COMPILE_TEST)
-+	depends on MTD_OF_PARTS && (ARCH_BCM_5301X || ARCH_BCMBCA || COMPILE_TEST)
- 	default ARCH_BCM_5301X
- 	help
- 	  This provides partitions parser for Linksys devices based on Broadcom
-diff --git a/drivers/net/ethernet/broadcom/Kconfig b/drivers/net/ethernet/broadcom/Kconfig
-index 56e0fb07aec7..f4e1ca68d831 100644
---- a/drivers/net/ethernet/broadcom/Kconfig
-+++ b/drivers/net/ethernet/broadcom/Kconfig
-@@ -53,8 +53,8 @@ config B44_PCI
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index 71687e5babdc..89a66a19d754 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -20,7 +20,7 @@ is25lp256_post_bfpt_fixups(struct spi_nor *nor,
+ 	 */
+ 	if ((bfpt->dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) ==
+ 		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
+-		nor->addr_nbytes = 4;
++		nor->params->addr_nbytes = 4;
  
- config BCM4908_ENET
- 	tristate "Broadcom BCM4908 internal mac support"
--	depends on ARCH_BCM4908 || COMPILE_TEST
--	default y if ARCH_BCM4908
-+	depends on ARCH_BCMBCA || COMPILE_TEST
-+	default y if ARCH_BCMBCA
- 	help
- 	  This driver supports Ethernet controller integrated into Broadcom
- 	  BCM4908 family SoCs.
-diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-index d1c5fcf00a8a..bfd9bac37e24 100644
---- a/drivers/pci/controller/Kconfig
-+++ b/drivers/pci/controller/Kconfig
-@@ -274,7 +274,7 @@ config VMD
+ 	return 0;
+ }
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 61ae8c8c5237..3a48173a2d78 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -462,11 +462,11 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
+ 	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
+ 	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
+-		nor->addr_nbytes = 3;
++		params->addr_nbytes = 3;
+ 		break;
  
- config PCIE_BRCMSTB
- 	tristate "Broadcom Brcmstb PCIe host controller"
--	depends on ARCH_BRCMSTB || ARCH_BCM2835 || ARCH_BCM4908 || \
-+	depends on ARCH_BRCMSTB || ARCH_BCM2835 || ARCH_BCMBCA || \
- 		   BMIPS_GENERIC || COMPILE_TEST
- 	depends on OF
- 	depends on PCI_MSI_IRQ_DOMAIN
-diff --git a/drivers/phy/broadcom/Kconfig b/drivers/phy/broadcom/Kconfig
-index 93a6a8ee4716..1d89a2fd9b79 100644
---- a/drivers/phy/broadcom/Kconfig
-+++ b/drivers/phy/broadcom/Kconfig
-@@ -93,11 +93,11 @@ config PHY_BRCM_SATA
+ 	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
+-		nor->addr_nbytes = 4;
++		params->addr_nbytes = 4;
+ 		break;
  
- config PHY_BRCM_USB
- 	tristate "Broadcom STB USB PHY driver"
--	depends on ARCH_BCM4908 || ARCH_BRCMSTB || COMPILE_TEST
-+	depends on ARCH_BCMBCA || ARCH_BRCMSTB || COMPILE_TEST
- 	depends on OF
- 	select GENERIC_PHY
- 	select SOC_BRCMSTB if ARCH_BRCMSTB
--	default ARCH_BCM4908 || ARCH_BRCMSTB
-+	default ARCH_BCMBCA || ARCH_BRCMSTB
- 	help
- 	  Enable this to support the Broadcom STB USB PHY.
- 	  This driver is required by the USB XHCI, EHCI and OHCI
-diff --git a/drivers/pinctrl/bcm/Kconfig b/drivers/pinctrl/bcm/Kconfig
-index 8f4d89806fcb..35b51ce4298e 100644
---- a/drivers/pinctrl/bcm/Kconfig
-+++ b/drivers/pinctrl/bcm/Kconfig
-@@ -31,13 +31,13 @@ config PINCTRL_BCM2835
+ 	default:
+@@ -653,7 +653,7 @@ static u8 spi_nor_smpt_addr_nbytes(const struct spi_nor *nor, const u32 settings
+ 		return 4;
+ 	case SMPT_CMD_ADDRESS_LEN_USE_CURRENT:
+ 	default:
+-		return nor->addr_nbytes;
++		return nor->params->addr_nbytes;
+ 	}
+ }
  
- config PINCTRL_BCM4908
- 	tristate "Broadcom BCM4908 pinmux driver"
--	depends on OF && (ARCH_BCM4908 || COMPILE_TEST)
-+	depends on OF && (ARCH_BCMBCA || COMPILE_TEST)
- 	select PINMUX
- 	select PINCONF
- 	select GENERIC_PINCONF
- 	select GENERIC_PINCTRL_GROUPS
- 	select GENERIC_PINMUX_FUNCTIONS
--	default ARCH_BCM4908
-+	default ARCH_BCMBCA
- 	help
- 	  Driver for BCM4908 family SoCs with integrated pin controller.
+@@ -1098,7 +1098,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 	 * Spansion memory. However this quirk is no longer needed with new
+ 	 * SFDP compliant memories.
+ 	 */
+-	nor->addr_nbytes = 4;
++	params->addr_nbytes = 4;
+ 	nor->flags |= SNOR_F_4B_OPCODES | SNOR_F_HAS_4BAIT;
  
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index f9a7cee01659..7ae71535fe2a 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -201,7 +201,7 @@ config RESET_SCMI
- 
- config RESET_SIMPLE
- 	bool "Simple Reset Controller Driver" if COMPILE_TEST || EXPERT
--	default ARCH_ASPEED || ARCH_BCM4908 || ARCH_BITMAIN || ARCH_REALTEK || ARCH_STM32 || (ARCH_INTEL_SOCFPGA && ARM64) || ARCH_SUNXI || ARC
-+	default ARCH_ASPEED || ARCH_BCMBCA || ARCH_BITMAIN || ARCH_REALTEK || ARCH_STM32 || (ARCH_INTEL_SOCFPGA && ARM64) || ARCH_SUNXI || ARC
- 	help
- 	  This enables a simple reset controller driver for reset lines that
- 	  that can be asserted and deasserted by toggling bits in a contiguous,
-diff --git a/drivers/soc/bcm/bcm63xx/Kconfig b/drivers/soc/bcm/bcm63xx/Kconfig
-index 9e501c8ac5ce..355c34482076 100644
---- a/drivers/soc/bcm/bcm63xx/Kconfig
-+++ b/drivers/soc/bcm/bcm63xx/Kconfig
-@@ -13,8 +13,8 @@ endif # SOC_BCM63XX
- 
- config BCM_PMB
- 	bool "Broadcom PMB (Power Management Bus) driver"
--	depends on ARCH_BCM4908 || (COMPILE_TEST && OF)
--	default ARCH_BCM4908
-+	depends on ARCH_BCMBCA || (COMPILE_TEST && OF)
-+	default ARCH_BCMBCA
- 	select PM_GENERIC_DOMAINS if PM
- 	help
- 	  This enables support for the Broadcom's PMB (Power Management Bus) that
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index e3279544b03c..f32bb01c3feb 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -1100,8 +1100,8 @@ config SERIAL_TIMBERDALE
- config SERIAL_BCM63XX
- 	tristate "Broadcom BCM63xx/BCM33xx UART support"
- 	select SERIAL_CORE
--	depends on ARCH_BCM4908 || ARCH_BCMBCA || BCM63XX || BMIPS_GENERIC || COMPILE_TEST
--	default ARCH_BCM4908 || ARCH_BCMBCA || BCM63XX || BMIPS_GENERIC
-+	depends on ARCH_BCMBCA || BCM63XX || BMIPS_GENERIC || COMPILE_TEST
-+	default ARCH_BCMBCA || BCM63XX || BMIPS_GENERIC
- 	help
- 	  This enables the driver for the onchip UART core found on
- 	  the following chipsets:
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 32fd37698932..1f85ec8a4b3b 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -1798,7 +1798,7 @@ config BCM7038_WDT
- 	tristate "BCM63xx/BCM7038 Watchdog"
- 	select WATCHDOG_CORE
- 	depends on HAS_IOMEM
--	depends on ARCH_BCM4908 || ARCH_BRCMSTB || BMIPS_GENERIC || BCM63XX || COMPILE_TEST
-+	depends on ARCH_BCMBCA || ARCH_BRCMSTB || BMIPS_GENERIC || BCM63XX || COMPILE_TEST
- 	help
- 	  Watchdog driver for the built-in hardware in Broadcom 7038 and
- 	  later SoCs used in set-top boxes.  BCM7038 was made public
+ 	/* fall through */
 -- 
-2.34.1
+2.25.1
 
-
---0000000000008a5e5705e49ad339
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-TltlrAeBKRJ1M9O/DY5v7L1Yrs//7XIRg/d2ZPAOSGBQzFYjYTFWwNBiR1s1zP0m2y56DPbS5gwj
-fqAN/I4PJHIvTh3zUgHXNKadYoYRiPHXfaTWO9UhzysOpQIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRp3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUohM5GmNlGWe5wpzDxzIy
-+EgzbRswDQYJKoZIhvcNAQELBQADggEBACKu9JSQAYTlmC+JTniO/C/UcXGonATI/muBjWTxtkHc
-abZtz0uwzzrRrpV+mbHLGVFFeRbXSLvcEzqHp8VomXifEZlfsE9LajSehzaqhd+np+tmUPz1RlI/
-ibZ7vW+1VF18lfoL+wHs2H0fsG6JfoqZldEWYXASXnUrs0iTLgXxvwaQj69cSMuzfFm1X5kWqWCP
-W0KkR8025J0L5L4yXfkSO6psD/k4VcTsMJHLN4RfMuaXIT6EM0cNO6h3GypyTuPf1N1X+F6WQPKb
-1u+rvdML63P9fX7e7mwwGt5klRnf8aK2VU7mIdYCcrFHaKDTW3fkG6kIgrE1wWSgiZYL400xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgw28eX6TfvsbNfu
-SIMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPnn0LC862ummW8VbJyCSghDwjKh
-DMLEG6A5rOkOdvNdMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIy
-MDcyNTA1NTUwOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCZCRtSNVRRjX1kn5j4WfARgvI155bBuFosXTG/LQUfwsk3
-4RayqTF7gVedACcrBTDHgSsp5aMKwqyPfVYLkkla0kICaoC14C43ogig0uirlv7o/mtkq/VKF8HH
-9KtmAMxVBZVhPYxIkAe5vNUhlStrLyi+dCbx/6K/kSxBleonB+10V3OX8ukIJNuq3uT4Uf4AZ99x
-e4b/yXk/cvaS0kBtLh6daQwMC4RzrimgeJSuUiaeFl4N4VympLi7GXmM/4Zxnagjzfl7aw3WBkSU
-4//NVoko3wqXt2kskYNrKY9NbG+qCZttUH7vJ4YsaWKIYGYBTw1KOmH//9nMXGko3XwC
---0000000000008a5e5705e49ad339--
-
-
---===============2826258837208344859==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2826258837208344859==--
-
