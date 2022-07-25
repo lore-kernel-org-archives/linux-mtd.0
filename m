@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00BE7C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Jul 2022 09:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33039C43334
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Jul 2022 09:26:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jI9wgWULg60h7ZGd0KNKVSmb0wgWnUXrbHzDpW7z+Ko=; b=iyBdJlIOl55Fyk
-	WiBqTz34kG0aDkTFlbOFs7vw3NNhh26lHgWqha3JNj/Pue1yCLEhKAzOnWK5LA3WkjoNJng179tFq
-	nFlvaE6l8vq53WsQAjUqkAoTD9RDQMOzBzk6zQdEwAici12GSVXIs+QQzmrBpeRE17MmoJNfAEjl0
-	N7HYBhumMIWevoVE8lf/HapXEOTpYpp4UkXZcWM+vVmOdMsRp98B1fSRE9UUHiskzBjw7u2UbRlSH
-	3GPt6tKf96m3EGAmeaTG0fppEvdgNwkKHoN53O/L7V8P4jcjiE+sjxe0K2ifuyrESUb/2og8QQ0Qp
-	sbRjU4dE9QsszTCGOvxg==;
+	List-Owner; bh=4o2K/VjQi9B0BlEPsRjMSwWtKmIyraFt5WVtbBkSk5M=; b=VCsx1B1Ib/ZG/A
+	Ks2Ae1pPL9LyRnIb0kkCTw0AIDDDe1RW/KK+L+lA94vI2U1Nd/Ghse1hyiPaB1LDvioKgFhDNaG3k
+	BiA7/rJxV9Y8rkjNoI3LZzMrm7OriA7WwvMCUmNv7WOxVF3ShhMw19LGw3w1aQ7r05lGxG940BXzk
+	5cc4q4a8hr+qwnZKoODPdhtZV4YUqRhNjvb4Gm6tkWHK5nRyqapmb+vyHkwA4fwdRCr/RR4mTu1bu
+	X+GpmpLzZ8J/Qvu5ipp6d+V179RuSAjqcthvzegJRfkm7hGbk4QAyMReityN9eeR0g5xH9PxYHv9g
+	AzPbiRNLxcXoKcfyruzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oFuLL-007WzS-Ts; Mon, 25 Jul 2022 09:25:39 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1oFuLr-007XXm-NS; Mon, 25 Jul 2022 09:26:11 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oFuL8-007Wlk-LR
-	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2022 09:25:29 +0000
+	id 1oFuLQ-007X4h-Mq
+	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2022 09:25:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1658741127; x=1690277127;
+  t=1658741144; x=1690277144;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=TEljOCT3GOBDl2IP0U796om9/8IwwiKJHjEb9nIerMI=;
-  b=GMyZGOFWSjVedrOSEaEnEEqQQcdtKbnxmyOKcpxTCLgsx/KfqezUjATJ
-   dZ3iC0DgDF4JUDGA5kkJGwNvt9Ld6Yea5gZZn6e+kqGHeEA+PpE2ptYtw
-   SqAmtadPTUkpRiADmOuRpab31ws1fu63qaLpjPnYabAZCv6DnnLKF24oc
-   85ZaEGjrtrVx4AUSTEnKpkqEPb8z/XOwJpVl1ANJrsBnUTQOS+QReF80p
-   KlfJ4vdyS3x1T5jIpnvNG4Cpy+ND3JwynHHWqVZgukb0qhJttd/gAbnPg
-   /B2v+CraDj7ps9F42KLHZ+z3Dh/0V1kOyZND1yIDVzJus/w8hTgU1STlD
-   A==;
+  bh=YHnFxjMgLpw9gYZP6YZ8CXt/r+OfZU4iqdOVIdNrSMM=;
+  b=TlrtT1dU5hhIx60MNp44w+BzYH63fpp/CVDSHWJtTtarqE0egabkf2zg
+   YPi9Qw1PHMQ4fPXb99LxMPyKQQBzqGBQpga5LzQMXlF9TLXQ71tdYF3XM
+   F4jKf9o7l6rMaZ7XRWGYGTPUBZILEer2VtZ00l/8DFWEDrue/IQB30Jy0
+   py7dsYh1956iZjmI6pynPflbNxuijG9rse3+sZGl3O8Dmo0JinJSEtBzU
+   sRpr70Vyiz7Z3HVruhH5rwrv1RKV3Mecv/1xm6j251RZF+K+eD811NVEo
+   QLnyxiPHj+QanVw2qOyotjfn3JYmFo2TH/ZBET0Dx7Pnlho4OhA+v2cAp
+   g==;
 X-IronPort-AV: E=Sophos;i="5.93,192,1654585200"; 
-   d="scan'208";a="173491207"
+   d="scan'208";a="169328835"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Jul 2022 02:25:24 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Jul 2022 02:25:43 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Mon, 25 Jul 2022 02:25:23 -0700
+ 15.1.2375.28; Mon, 25 Jul 2022 02:25:40 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2375.28 via Frontend Transport; Mon, 25 Jul 2022 02:25:20 -0700
+ 15.1.2375.28 via Frontend Transport; Mon, 25 Jul 2022 02:25:38 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <p.yadav@ti.com>, <michael@walle.cc>, <tkuw584924@gmail.com>,
 	<Takahiro.Kuwano@infineon.com>, <linux-mtd@lists.infradead.org>
 CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
 	<Bacem.Daassi@infineon.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v17 1/7] mtd: spi-nor: s/addr_width/addr_nbytes
-Date: Mon, 25 Jul 2022 12:24:59 +0300
-Message-ID: <20220725092505.446315-2-tudor.ambarus@microchip.com>
+Subject: [PATCH v17 7/7] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups
+Date: Mon, 25 Jul 2022 12:25:05 +0300
+Message-ID: <20220725092505.446315-8-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220725092505.446315-1-tudor.ambarus@microchip.com>
 References: <20220725092505.446315-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220725_022526_743041_F0262256 
-X-CRM114-Status: GOOD (  26.76  )
+X-CRM114-CacheID: sfid-20220725_022544_904840_08DD83FA 
+X-CRM114-Status: GOOD (  19.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,555 +80,192 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Address width was an unfortunate name, as it means the number of IO lines
-used for the address, whereas in the code it is used as the number of
-address bytes. s/addr_width/addr_nbytes throughout the entire SPI NOR
-framework.
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
+The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
+
+These Infineon chips support volatile version of configuration registers
+and it is recommended to update volatile registers in the field application
+due to a risk of the non-volatile registers corruption by power interrupt.
+Add support for volatile QE bit.
+
+For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
+uniform sector sizes are supported. This is due to missing or incorrect
+entries in SMPT. Fixup for other sector sizes configurations will be
+followed up as needed.
+
+Tested on Xilinx Zynq-7000 FPGA board.
+
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Reviewed-by: Michael Walle <michael@walle.cc>
-Acked-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/controllers/hisi-sfc.c  |  2 +-
- drivers/mtd/spi-nor/controllers/nxp-spifi.c |  8 +--
- drivers/mtd/spi-nor/core.c                  | 54 ++++++++++-----------
- drivers/mtd/spi-nor/core.h                  | 12 ++---
- drivers/mtd/spi-nor/debugfs.c               |  2 +-
- drivers/mtd/spi-nor/issi.c                  |  8 +--
- drivers/mtd/spi-nor/otp.c                   | 12 ++---
- drivers/mtd/spi-nor/sfdp.c                  | 32 ++++++------
- drivers/mtd/spi-nor/xilinx.c                |  2 +-
- include/linux/mtd/spi-nor.h                 |  4 +-
- 10 files changed, 68 insertions(+), 68 deletions(-)
+ drivers/mtd/spi-nor/spansion.c | 132 +++++++++++++++++++++++++++++++++
+ 1 file changed, 132 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/controllers/hisi-sfc.c b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-index 94a969185ceb..5070d72835ec 100644
---- a/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-+++ b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-@@ -237,7 +237,7 @@ static int hisi_spi_nor_dma_transfer(struct spi_nor *nor, loff_t start_off,
- 	reg = readl(host->regbase + FMC_CFG);
- 	reg &= ~(FMC_CFG_OP_MODE_MASK | SPI_NOR_ADDR_MODE_MASK);
- 	reg |= FMC_CFG_OP_MODE_NORMAL;
--	reg |= (nor->addr_width == 4) ? SPI_NOR_ADDR_MODE_4BYTES
-+	reg |= (nor->addr_nbytes == 4) ? SPI_NOR_ADDR_MODE_4BYTES
- 		: SPI_NOR_ADDR_MODE_3BYTES;
- 	writel(reg, host->regbase + FMC_CFG);
- 
-diff --git a/drivers/mtd/spi-nor/controllers/nxp-spifi.c b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-index 9032b9ab2eaf..ab3990e6ac25 100644
---- a/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-+++ b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-@@ -203,7 +203,7 @@ static ssize_t nxp_spifi_write(struct spi_nor *nor, loff_t to, size_t len,
- 	      SPIFI_CMD_DATALEN(len) |
- 	      SPIFI_CMD_FIELDFORM_ALL_SERIAL |
- 	      SPIFI_CMD_OPCODE(nor->program_opcode) |
--	      SPIFI_CMD_FRAMEFORM(spifi->nor.addr_width + 1);
-+	      SPIFI_CMD_FRAMEFORM(spifi->nor.addr_nbytes + 1);
- 	writel(cmd, spifi->io_base + SPIFI_CMD);
- 
- 	for (i = 0; i < len; i++)
-@@ -230,7 +230,7 @@ static int nxp_spifi_erase(struct spi_nor *nor, loff_t offs)
- 
- 	cmd = SPIFI_CMD_FIELDFORM_ALL_SERIAL |
- 	      SPIFI_CMD_OPCODE(nor->erase_opcode) |
--	      SPIFI_CMD_FRAMEFORM(spifi->nor.addr_width + 1);
-+	      SPIFI_CMD_FRAMEFORM(spifi->nor.addr_nbytes + 1);
- 	writel(cmd, spifi->io_base + SPIFI_CMD);
- 
- 	return nxp_spifi_wait_for_cmd(spifi);
-@@ -252,12 +252,12 @@ static int nxp_spifi_setup_memory_cmd(struct nxp_spifi *spifi)
- 	}
- 
- 	/* Memory mode supports address length between 1 and 4 */
--	if (spifi->nor.addr_width < 1 || spifi->nor.addr_width > 4)
-+	if (spifi->nor.addr_nbytes < 1 || spifi->nor.addr_nbytes > 4)
- 		return -EINVAL;
- 
- 	spifi->mcmd |= SPIFI_CMD_OPCODE(spifi->nor.read_opcode) |
- 		       SPIFI_CMD_INTLEN(spifi->nor.read_dummy / 8) |
--		       SPIFI_CMD_FRAMEFORM(spifi->nor.addr_width + 1);
-+		       SPIFI_CMD_FRAMEFORM(spifi->nor.addr_nbytes + 1);
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ce5d69317d46..31604188ee59 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -38,7 +38,7 @@
-  */
- #define CHIP_ERASE_2MB_READY_WAIT_JIFFIES	(40UL * HZ)
- 
--#define SPI_NOR_MAX_ADDR_WIDTH	4
-+#define SPI_NOR_MAX_ADDR_NBYTES	4
- 
- #define SPI_NOR_SRST_SLEEP_MIN 200
- #define SPI_NOR_SRST_SLEEP_MAX 400
-@@ -198,7 +198,7 @@ static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t from,
- {
- 	struct spi_mem_op op =
- 		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 0),
--			   SPI_MEM_OP_ADDR(nor->addr_width, from, 0),
-+			   SPI_MEM_OP_ADDR(nor->addr_nbytes, from, 0),
- 			   SPI_MEM_OP_DUMMY(nor->read_dummy, 0),
- 			   SPI_MEM_OP_DATA_IN(len, buf, 0));
- 	bool usebouncebuf;
-@@ -262,7 +262,7 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
- {
- 	struct spi_mem_op op =
- 		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 0),
--			   SPI_MEM_OP_ADDR(nor->addr_width, to, 0),
-+			   SPI_MEM_OP_ADDR(nor->addr_nbytes, to, 0),
- 			   SPI_MEM_OP_NO_DUMMY,
- 			   SPI_MEM_OP_DATA_OUT(len, buf, 0));
- 	ssize_t nbytes;
-@@ -1113,7 +1113,7 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 	if (nor->spimem) {
- 		struct spi_mem_op op =
- 			SPI_NOR_SECTOR_ERASE_OP(nor->erase_opcode,
--						nor->addr_width, addr);
-+						nor->addr_nbytes, addr);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
- 
-@@ -1126,13 +1126,13 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 	 * Default implementation, if driver doesn't have a specialized HW
- 	 * control
- 	 */
--	for (i = nor->addr_width - 1; i >= 0; i--) {
-+	for (i = nor->addr_nbytes - 1; i >= 0; i--) {
- 		nor->bouncebuf[i] = addr & 0xff;
- 		addr >>= 8;
- 	}
- 
- 	return spi_nor_controller_ops_write_reg(nor, nor->erase_opcode,
--						nor->bouncebuf, nor->addr_width);
-+						nor->bouncebuf, nor->addr_nbytes);
- }
- 
- /**
-@@ -2249,43 +2249,43 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 60e41e1a9a92..0f5b9e81719f 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -14,6 +14,8 @@
+ #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+ #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
+ #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
++#define SPINOR_REG_CYPRESS_CFR1V		0x00800002
++#define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN	BIT(1)	/* Quad Enable */
+ #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
+ #define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24	0xb
+ #define SPINOR_REG_CYPRESS_CFR3V		0x00800004
+@@ -113,6 +115,68 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
  	return 0;
  }
  
--static int spi_nor_set_addr_width(struct spi_nor *nor)
-+static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
- {
--	if (nor->addr_width) {
-+	if (nor->addr_nbytes) {
- 		/* already configured from SFDP */
- 	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
- 		/*
- 		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
--		 * in this protocol an odd address width cannot be used because
-+		 * in this protocol an odd addr_nbytes cannot be used because
- 		 * then the address phase would only span a cycle and a half.
- 		 * Half a cycle would be left over. We would then have to start
- 		 * the dummy phase in the middle of a cycle and so too the data
- 		 * phase, and we will end the transaction with half a cycle left
- 		 * over.
- 		 *
--		 * Force all 8D-8D-8D flashes to use an address width of 4 to
-+		 * Force all 8D-8D-8D flashes to use an addr_nbytes of 4 to
- 		 * avoid this situation.
- 		 */
--		nor->addr_width = 4;
--	} else if (nor->info->addr_width) {
--		nor->addr_width = nor->info->addr_width;
-+		nor->addr_nbytes = 4;
-+	} else if (nor->info->addr_nbytes) {
-+		nor->addr_nbytes = nor->info->addr_nbytes;
- 	} else {
--		nor->addr_width = 3;
-+		nor->addr_nbytes = 3;
- 	}
- 
--	if (nor->addr_width == 3 && nor->params->size > 0x1000000) {
-+	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
- 		/* enable 4-byte addressing if the device exceeds 16MiB */
--		nor->addr_width = 4;
-+		nor->addr_nbytes = 4;
- 	}
- 
--	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
--		dev_dbg(nor->dev, "address width is too large: %u\n",
--			nor->addr_width);
-+	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
-+		dev_dbg(nor->dev, "The number of address bytes is too large: %u\n",
-+			nor->addr_nbytes);
- 		return -EINVAL;
- 	}
- 
- 	/* Set 4byte opcodes when possible. */
--	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES &&
-+	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
- 	    !(nor->flags & SNOR_F_HAS_4BAIT))
- 		spi_nor_set_4byte_opcodes(nor);
- 
-@@ -2304,7 +2304,7 @@ static int spi_nor_setup(struct spi_nor *nor,
- 	if (ret)
- 		return ret;
- 
--	return spi_nor_set_addr_width(nor);
-+	return spi_nor_set_addr_nbytes(nor);
- }
- 
++/**
++ * cypress_nor_quad_enable_volatile() - enable Quad I/O mode in volatile
++ *                                      register.
++ * @nor:	pointer to a 'struct spi_nor'
++ *
++ * It is recommended to update volatile registers in the field application due
++ * to a risk of the non-volatile registers corruption by power interrupt. This
++ * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
++ * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
++ * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
++ * also set during Flash power-up.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
++{
++	struct spi_mem_op op;
++	u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
++	u8 cfr1v_written;
++	int ret;
++
++	op = (struct spi_mem_op)
++		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
++					  SPINOR_REG_CYPRESS_CFR1V,
++					  nor->bouncebuf);
++
++	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
++	if (ret)
++		return ret;
++
++	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR1V_QUAD_EN)
++		return 0;
++
++	/* Update the Quad Enable bit. */
++	nor->bouncebuf[0] |= SPINOR_REG_CYPRESS_CFR1V_QUAD_EN;
++	op = (struct spi_mem_op)
++		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
++					  SPINOR_REG_CYPRESS_CFR1V, 1,
++					  nor->bouncebuf);
++	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
++	if (ret)
++		return ret;
++
++	cfr1v_written = nor->bouncebuf[0];
++
++	/* Read back and check it. */
++	op = (struct spi_mem_op)
++		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
++					  SPINOR_REG_CYPRESS_CFR1V,
++					  nor->bouncebuf);
++	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
++	if (ret)
++		return ret;
++
++	if (nor->bouncebuf[0] != cfr1v_written) {
++		dev_err(nor->dev, "CFR1: Read back test failed\n");
++		return -EIO;
++	}
++
++	return 0;
++}
++
  /**
-@@ -2492,7 +2492,7 @@ static void spi_nor_sfdp_init_params_deprecated(struct spi_nor *nor)
- 
- 	if (spi_nor_parse_sfdp(nor)) {
- 		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
--		nor->addr_width = 0;
-+		nor->addr_nbytes = 0;
- 		nor->flags &= ~SNOR_F_4B_OPCODES;
- 	}
- }
-@@ -2713,7 +2713,7 @@ static int spi_nor_init(struct spi_nor *nor)
- 	     nor->flags & SNOR_F_SWP_IS_VOLATILE))
- 		spi_nor_try_unlock_all(nor);
- 
--	if (nor->addr_width == 4 &&
-+	if (nor->addr_nbytes == 4 &&
- 	    nor->read_proto != SNOR_PROTO_8_8_8_DTR &&
- 	    !(nor->flags & SNOR_F_4B_OPCODES)) {
- 		/*
-@@ -2840,7 +2840,7 @@ static void spi_nor_put_device(struct mtd_info *mtd)
- void spi_nor_restore(struct spi_nor *nor)
- {
- 	/* restore the addressing mode */
--	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
-+	if (nor->addr_nbytes == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
- 	    nor->flags & SNOR_F_BROKEN_RESET)
- 		nor->params->set_4byte_addr_mode(nor, false);
- 
-@@ -2984,7 +2984,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	 * - select op codes for (Fast) Read, Page Program and Sector Erase.
- 	 * - set the number of dummy cycles (mode cycles + wait states).
- 	 * - set the SPI protocols for register and memory accesses.
--	 * - set the address width.
-+	 * - set the number of address bytes.
- 	 */
- 	ret = spi_nor_setup(nor, hwcaps);
- 	if (ret)
-@@ -3025,7 +3025,7 @@ static int spi_nor_create_read_dirmap(struct spi_nor *nor)
- {
- 	struct spi_mem_dirmap_info info = {
- 		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 0),
--				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 0),
-+				      SPI_MEM_OP_ADDR(nor->addr_nbytes, 0, 0),
- 				      SPI_MEM_OP_DUMMY(nor->read_dummy, 0),
- 				      SPI_MEM_OP_DATA_IN(0, NULL, 0)),
- 		.offset = 0,
-@@ -3056,7 +3056,7 @@ static int spi_nor_create_write_dirmap(struct spi_nor *nor)
- {
- 	struct spi_mem_dirmap_info info = {
- 		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 0),
--				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 0),
-+				      SPI_MEM_OP_ADDR(nor->addr_nbytes, 0, 0),
- 				      SPI_MEM_OP_NO_DUMMY,
- 				      SPI_MEM_OP_DATA_OUT(0, NULL, 0)),
- 		.offset = 0,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 61886868cd02..14921a507b0f 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -84,9 +84,9 @@
- 		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_NO_DATA)
- 
--#define SPI_NOR_SECTOR_ERASE_OP(opcode, addr_width, addr)		\
-+#define SPI_NOR_SECTOR_ERASE_OP(opcode, addr_nbytes, addr)		\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
--		   SPI_MEM_OP_ADDR(addr_width, addr, 0),		\
-+		   SPI_MEM_OP_ADDR(addr_nbytes, addr, 0),		\
- 		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_NO_DATA)
- 
-@@ -429,7 +429,7 @@ struct spi_nor_fixups {
-  *                  isn't necessarily called a "sector" by the vendor.
-  * @n_sectors:      the number of sectors.
-  * @page_size:      the flash's page size.
-- * @addr_width:     the flash's address width.
-+ * @addr_nbytes:    number of address bytes to send.
-  *
-  * @parse_sfdp:     true when flash supports SFDP tables. The false value has no
-  *                  meaning. If one wants to skip the SFDP tables, one should
-@@ -487,7 +487,7 @@ struct flash_info {
- 	unsigned sector_size;
- 	u16 n_sectors;
- 	u16 page_size;
--	u16 addr_width;
-+	u16 addr_nbytes;
- 
- 	bool parse_sfdp;
- 	u16 flags;
-@@ -548,11 +548,11 @@ struct flash_info {
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = 256,					\
- 
--#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_width)	\
-+#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
- 		.sector_size = (_sector_size),				\
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = (_page_size),				\
--		.addr_width = (_addr_width),				\
-+		.addr_nbytes = (_addr_nbytes),				\
- 		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
- 
- #define OTP_INFO(_len, _n_regions, _base, _offset)			\
-diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index eaf84f7a0676..df76cb5de3f9 100644
---- a/drivers/mtd/spi-nor/debugfs.c
-+++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -86,7 +86,7 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
- 	seq_printf(s, "size\t\t%s\n", buf);
- 	seq_printf(s, "write size\t%u\n", params->writesize);
- 	seq_printf(s, "page size\t%u\n", params->page_size);
--	seq_printf(s, "address width\t%u\n", nor->addr_width);
-+	seq_printf(s, "address nbytes\t%u\n", nor->addr_nbytes);
- 
- 	seq_puts(s, "flags\t\t");
- 	spi_nor_print_flags(s, nor->flags, snor_f_names, sizeof(snor_f_names));
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index 3c7d51d2b050..71687e5babdc 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -14,13 +14,13 @@ is25lp256_post_bfpt_fixups(struct spi_nor *nor,
- 			   const struct sfdp_bfpt *bfpt)
- {
- 	/*
--	 * IS25LP256 supports 4B opcodes, but the BFPT advertises a
--	 * BFPT_DWORD1_ADDRESS_BYTES_3_ONLY address width.
--	 * Overwrite the address width advertised by the BFPT.
-+	 * IS25LP256 supports 4B opcodes, but the BFPT advertises
-+	 * BFPT_DWORD1_ADDRESS_BYTES_3_ONLY.
-+	 * Overwrite the number of address bytes advertised by the BFPT.
- 	 */
- 	if ((bfpt->dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) ==
- 		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
--		nor->addr_width = 4;
-+		nor->addr_nbytes = 4;
- 
+  * cypress_nor_set_page_size() - Set page size which corresponds to the flash
+  *                               configuration.
+@@ -143,6 +207,58 @@ static int cypress_nor_set_page_size(struct spi_nor *nor)
  	return 0;
  }
-diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index fa63d8571218..00ab0d2d6d2f 100644
---- a/drivers/mtd/spi-nor/otp.c
-+++ b/drivers/mtd/spi-nor/otp.c
-@@ -35,13 +35,13 @@
-  */
- int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
- {
--	u8 addr_width, read_opcode, read_dummy;
-+	u8 addr_nbytes, read_opcode, read_dummy;
- 	struct spi_mem_dirmap_desc *rdesc;
- 	enum spi_nor_protocol read_proto;
- 	int ret;
  
- 	read_opcode = nor->read_opcode;
--	addr_width = nor->addr_width;
-+	addr_nbytes = nor->addr_nbytes;
- 	read_dummy = nor->read_dummy;
- 	read_proto = nor->read_proto;
- 	rdesc = nor->dirmap.rdesc;
-@@ -54,7 +54,7 @@ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
- 	ret = spi_nor_read_data(nor, addr, len, buf);
- 
- 	nor->read_opcode = read_opcode;
--	nor->addr_width = addr_width;
-+	nor->addr_nbytes = addr_nbytes;
- 	nor->read_dummy = read_dummy;
- 	nor->read_proto = read_proto;
- 	nor->dirmap.rdesc = rdesc;
-@@ -85,11 +85,11 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
- {
- 	enum spi_nor_protocol write_proto;
- 	struct spi_mem_dirmap_desc *wdesc;
--	u8 addr_width, program_opcode;
-+	u8 addr_nbytes, program_opcode;
- 	int ret, written;
- 
- 	program_opcode = nor->program_opcode;
--	addr_width = nor->addr_width;
-+	addr_nbytes = nor->addr_nbytes;
- 	write_proto = nor->write_proto;
- 	wdesc = nor->dirmap.wdesc;
- 
-@@ -113,7 +113,7 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
- 
- out:
- 	nor->program_opcode = program_opcode;
--	nor->addr_width = addr_width;
-+	nor->addr_nbytes = addr_nbytes;
- 	nor->write_proto = write_proto;
- 	nor->dirmap.wdesc = wdesc;
- 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index a5211543d30d..61ae8c8c5237 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -134,7 +134,7 @@ struct sfdp_4bait {
- 
++static int
++s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
++			const struct sfdp_parameter_header *bfpt_header,
++			const struct sfdp_bfpt *bfpt)
++{
++	/* Replace Quad Enable with volatile version */
++	nor->params->quad_enable = cypress_nor_quad_enable_volatile;
++
++	return cypress_nor_set_page_size(nor);
++}
++
++static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
++{
++	struct spi_nor_erase_type *erase_type =
++					nor->params->erase_map.erase_type;
++	int i;
++
++	/*
++	 * In some parts, 3byte erase opcodes are advertised by 4BAIT.
++	 * Convert them to 4byte erase opcodes.
++	 */
++	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
++		switch (erase_type[i].opcode) {
++		case SPINOR_OP_SE:
++			erase_type[i].opcode = SPINOR_OP_SE_4B;
++			break;
++		case SPINOR_OP_BE_4K:
++			erase_type[i].opcode = SPINOR_OP_BE_4K_4B;
++			break;
++		default:
++			break;
++		}
++	}
++}
++
++static void s25hx_t_late_init(struct spi_nor *nor)
++{
++	struct spi_nor_flash_parameter *params = nor->params;
++
++	/* Fast Read 4B requires mode cycles */
++	params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
++
++	/* The writesize should be ECC data unit size */
++	params->writesize = 16;
++}
++
++static struct spi_nor_fixups s25hx_t_fixups = {
++	.post_bfpt = s25hx_t_post_bfpt_fixup,
++	.post_sfdp = s25hx_t_post_sfdp_fixup,
++	.late_init = s25hx_t_late_init,
++};
++
  /**
-  * spi_nor_read_raw() - raw read of serial flash memory. read_opcode,
-- *			addr_width and read_dummy members of the struct spi_nor
-+ *			addr_nbytes and read_dummy members of the struct spi_nor
-  *			should be previously
-  * set.
-  * @nor:	pointer to a 'struct spi_nor'
-@@ -178,21 +178,21 @@ static int spi_nor_read_raw(struct spi_nor *nor, u32 addr, size_t len, u8 *buf)
- static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
- 			     size_t len, void *buf)
- {
--	u8 addr_width, read_opcode, read_dummy;
-+	u8 addr_nbytes, read_opcode, read_dummy;
- 	int ret;
- 
- 	read_opcode = nor->read_opcode;
--	addr_width = nor->addr_width;
-+	addr_nbytes = nor->addr_nbytes;
- 	read_dummy = nor->read_dummy;
- 
- 	nor->read_opcode = SPINOR_OP_RDSFDP;
--	nor->addr_width = 3;
-+	nor->addr_nbytes = 3;
- 	nor->read_dummy = 8;
- 
- 	ret = spi_nor_read_raw(nor, addr, len, buf);
- 
- 	nor->read_opcode = read_opcode;
--	nor->addr_width = addr_width;
-+	nor->addr_nbytes = addr_nbytes;
- 	nor->read_dummy = read_dummy;
- 
- 	return ret;
-@@ -462,11 +462,11 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
- 	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
- 	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
--		nor->addr_width = 3;
-+		nor->addr_nbytes = 3;
- 		break;
- 
- 	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
--		nor->addr_width = 4;
-+		nor->addr_nbytes = 4;
- 		break;
- 
- 	default:
-@@ -637,12 +637,12 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- }
- 
- /**
-- * spi_nor_smpt_addr_width() - return the address width used in the
-+ * spi_nor_smpt_addr_nbytes() - return the number of address bytes used in the
-  *			       configuration detection command.
-  * @nor:	pointer to a 'struct spi_nor'
-  * @settings:	configuration detection command descriptor, dword1
-  */
--static u8 spi_nor_smpt_addr_width(const struct spi_nor *nor, const u32 settings)
-+static u8 spi_nor_smpt_addr_nbytes(const struct spi_nor *nor, const u32 settings)
- {
- 	switch (settings & SMPT_CMD_ADDRESS_LEN_MASK) {
- 	case SMPT_CMD_ADDRESS_LEN_0:
-@@ -653,7 +653,7 @@ static u8 spi_nor_smpt_addr_width(const struct spi_nor *nor, const u32 settings)
- 		return 4;
- 	case SMPT_CMD_ADDRESS_LEN_USE_CURRENT:
- 	default:
--		return nor->addr_width;
-+		return nor->addr_nbytes;
- 	}
- }
- 
-@@ -690,7 +690,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 	u32 addr;
- 	int err;
- 	u8 i;
--	u8 addr_width, read_opcode, read_dummy;
-+	u8 addr_nbytes, read_opcode, read_dummy;
- 	u8 read_data_mask, map_id;
- 
- 	/* Use a kmalloc'ed bounce buffer to guarantee it is DMA-able. */
-@@ -698,7 +698,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 	if (!buf)
- 		return ERR_PTR(-ENOMEM);
- 
--	addr_width = nor->addr_width;
-+	addr_nbytes = nor->addr_nbytes;
- 	read_dummy = nor->read_dummy;
- 	read_opcode = nor->read_opcode;
- 
-@@ -709,7 +709,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 			break;
- 
- 		read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
--		nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
-+		nor->addr_nbytes = spi_nor_smpt_addr_nbytes(nor, smpt[i]);
- 		nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
- 		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
- 		addr = smpt[i + 1];
-@@ -756,7 +756,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 	/* fall through */
- out:
- 	kfree(buf);
--	nor->addr_width = addr_width;
-+	nor->addr_nbytes = addr_nbytes;
- 	nor->read_dummy = read_dummy;
- 	nor->read_opcode = read_opcode;
- 	return ret;
-@@ -1044,7 +1044,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 	/*
- 	 * We need at least one 4-byte op code per read, program and erase
- 	 * operation; the .read(), .write() and .erase() hooks share the
--	 * nor->addr_width value.
-+	 * nor->addr_nbytes value.
- 	 */
- 	if (!read_hwcaps || !pp_hwcaps || !erase_mask)
- 		goto out;
-@@ -1098,7 +1098,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 	 * Spansion memory. However this quirk is no longer needed with new
- 	 * SFDP compliant memories.
- 	 */
--	nor->addr_width = 4;
-+	nor->addr_nbytes = 4;
- 	nor->flags |= SNOR_F_4B_OPCODES | SNOR_F_HAS_4BAIT;
- 
- 	/* fall through */
-diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
-index 1d2f5db047bd..5723157739fc 100644
---- a/drivers/mtd/spi-nor/xilinx.c
-+++ b/drivers/mtd/spi-nor/xilinx.c
-@@ -31,7 +31,7 @@
- 		.sector_size = (8 * (_page_size)),			\
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = (_page_size),				\
--		.addr_width = 3,					\
-+		.addr_nbytes = 3,					\
- 		.flags = SPI_NOR_NO_FR
- 
- /* Xilinx S3AN share MFR with Atmel SPI NOR */
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 1ede4c89805a..42218a1164f6 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -351,7 +351,7 @@ struct spi_nor_flash_parameter;
-  * @bouncebuf_size:	size of the bounce buffer
-  * @info:		SPI NOR part JEDEC MFR ID and other info
-  * @manufacturer:	SPI NOR manufacturer
-- * @addr_width:		number of address bytes
-+ * @addr_nbytes:	number of address bytes
-  * @erase_opcode:	the opcode for erasing a sector
-  * @read_opcode:	the read opcode
-  * @read_dummy:		the dummy needed by the read operation
-@@ -381,7 +381,7 @@ struct spi_nor {
- 	size_t			bouncebuf_size;
- 	const struct flash_info	*info;
- 	const struct spi_nor_manufacturer *manufacturer;
--	u8			addr_width;
-+	u8			addr_nbytes;
- 	u8			erase_opcode;
- 	u8			read_opcode;
- 	u8			read_dummy;
+  * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
+  * @nor:		pointer to a 'struct spi_nor'
+@@ -319,6 +435,22 @@ static const struct flash_info spansion_nor_parts[] = {
+ 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
++	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
++		PARSE_SFDP
++		MFR_FLAGS(USE_CLSR)
++		.fixups = &s25hx_t_fixups },
++	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512)
++		PARSE_SFDP
++		MFR_FLAGS(USE_CLSR)
++		.fixups = &s25hx_t_fixups },
++	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
++		PARSE_SFDP
++		MFR_FLAGS(USE_CLSR)
++		.fixups = &s25hx_t_fixups },
++	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512)
++		PARSE_SFDP
++		MFR_FLAGS(USE_CLSR)
++		.fixups = &s25hx_t_fixups },
+ 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
+ 		FLAGS(SPI_NOR_NO_ERASE) },
+ 	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
 -- 
 2.25.1
 
