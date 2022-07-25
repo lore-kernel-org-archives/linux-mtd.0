@@ -4,72 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B0F7C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Jul 2022 18:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E701BC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Jul 2022 21:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=94fmRm3pweQbG26wVBqIMmYDt6D6wiXqeZkEs1+omNw=; b=CyYaGyEMcWcvcm
-	phG6pX+z7rwMc+4AS8/N3Iz/sa9AuLptwxL18PCbe9jE4waTwKPsVAU6+BPdiLOoHi3YsZWEBKaTk
-	3vimy7Hg+zdrbvk9DID5kbcKeiuirlXJG+d493IAWHCccWYOMihVLQB2aUWOlP49hlVIFr6TWaCMW
-	DNg1JPDM89Er14za/XEYo6e4t3vC47NV5IN+b1k//XldkL9gBlzIR5ZSRr4LDRLQ2pTAwCYZes563
-	KHYhJqn+95oXMobg5ZnpIf+gzJRFpXum/8TfBWyRRkypYpx0k+qwDA8QrYGj2mDc4cpmCbDtSUyAf
-	4hWUAiRDwmRWRUF7ctuQ==;
+	List-Owner; bh=K2YhsYejiufnHGrMs5Mlfb8NmdakkD50ZO8jxH5O+bY=; b=lOcr66pNbtCD8o
+	JrBQ/KDQzej2Qfr2N3yiTR116sQLH1tJt4cbW38Z1vVhUudfcL1Gjnxjz2+YmomsXUOulb6zW64NM
+	c47ZYa3NyCJHa6dGC+Ppa3fUH6J8u7vX2w1xcI/Cl0fZ/DToArfI188WcZ/9gKalOIe+HSXU5Jq3j
+	BKuXqRtjcD0evUw765Me55iLoT/LkEfO3vUZXqRL4J+DOl/Tf4Ncrxm31AvwnSegvq5Ud3HCCNgWP
+	Rn1UbqvvKnxBfBbrOa0vzmWX0w0Ji2hxbh13eQRTV2H31BlFGPBfnAvM3qjHwh5hG04Uxv9GXzU/3
+	s02bhLx5iq4+0qAdEswA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oG2r7-00GbMX-DE; Mon, 25 Jul 2022 18:31:01 +0000
-Received: from mail-oa1-f45.google.com ([209.85.160.45])
+	id 1oG5h1-002lFH-L6; Mon, 25 Jul 2022 21:32:48 +0000
+Received: from mail-dm6nam12olkn2109.outbound.protection.outlook.com ([40.92.22.109] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oG2r4-00GbL4-Uj
-	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2022 18:31:00 +0000
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-10d845dcf92so15775811fac.12
-        for <linux-mtd@lists.infradead.org>; Mon, 25 Jul 2022 11:30:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FEooM2RT53g6tnmnQNbJRb91DOY7HMArXQf84dlNSkI=;
-        b=x1+jFGjXdhBdpTKm7x8B1cojE0gyOZEA/00oQ4E3iVxH8niI69rj24aMpOtbLjeoGY
-         ccYpXGd6DbRaxwEcwBWTLa4BbuSH2c1JzhsOgOaJWXXxjU9h4DPZGOUgfzYMbF+pnEQ3
-         A9NrLU6NZDFONbUt0cEDUm9G9N+tlK/ZXPMeJR6vuSey6OUPzfDsf1ZzsWmM62bBgOey
-         nZ57gboNl2dMkaDNXZdaZc5CjsUKH8+uwUpz/n/leXJDTRsuH+hePmlDDCkCYkTUZoqc
-         q76HK6ALi4YBwyOxwA4dTk0R7TDKVek2ECs0q2UDSp4Sfyy6NZPXEFm55EkEKUxQNGcx
-         zYdQ==
-X-Gm-Message-State: AJIora9H/I9ZfmrtIYu67Uq7ll8c9RhTIcfw1ZTu1rFKPPcHSdSixZ/0
-	OiEuhfpwbWifGJA6Ao/Fzw==
-X-Google-Smtp-Source: AGRyM1vRZ+8PMG1t9D17j7BFUwsAeYGwVsJCeWuLF64Xel9A8HWkj1FtmFh4QSPgjUumYoKZAhSJLA==
-X-Received: by 2002:a05:6870:b48c:b0:10d:f6a2:8d9e with SMTP id y12-20020a056870b48c00b0010df6a28d9emr5492256oap.227.1658773856060;
-        Mon, 25 Jul 2022 11:30:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id x52-20020a9d37b7000000b0061cc1ba78e5sm5255756otb.3.2022.07.25.11.30.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jul 2022 11:30:55 -0700 (PDT)
-Received: (nullmailer pid 2459631 invoked by uid 1000);
-	Mon, 25 Jul 2022 18:30:52 -0000
-Date: Mon, 25 Jul 2022 12:30:52 -0600
-From: Rob Herring <robh@kernel.org>
-To: Mike Yang <reimu@sudomaker.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Mark Brown <broonie@kernel.org>, Zhou Yanjie <zhouyanjie@wanyeetech.com>, tudor.ambarus@microchip.com, p.yadav@ti.com, michael@walle.cc, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, krzysztof.kozlowski+dt@linaro.org, linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, aidanmacdonald.0x0@gmail.com, tmn505@gmail.com, paul@crapouillou.net, dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com, rick.tyliu@ingenic.com, jinghui.liu@ingenic.com, sernia.zhou@foxmail.com
-Subject: Re: [PATCH 2/3] dt-bindings: SPI: Add Ingenic SFC bindings.
-Message-ID: <20220725183052.GA2392099-robh@kernel.org>
-References: <1658508510-15400-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1658508510-15400-3-git-send-email-zhouyanjie@wanyeetech.com>
- <487a93c4-3301-aefd-abba-aabf4cb8ec90@linaro.org>
- <37062a5d-9da3-fbaf-89bd-776f32be36d9@wanyeetech.com>
- <d1a0dd15-3621-14e9-b931-417cefaab017@linaro.org>
- <b5505a46-ce76-d0aa-009e-81d9ba16e1d5@sudomaker.com>
- <YtxLoPOykLDTzTn9@sirena.org.uk>
- <f05045fa-9ecd-d312-0eaa-5d19498453fc@linaro.org>
- <b52a8e97-3b8e-c67b-4440-2d7428edb4fa@sudomaker.com>
+	id 1oG5gx-002l8w-59
+	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2022 21:32:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NjASgTNOsZ/+1nwJ40dO3mNidIVJ0cCAFNt8gcdU3binbiCOgYmmnFMh0Hykr6PfKpdKiFkp3UrslW5/2P3Xafd05V5bjC2yLgkUYKAkLALzNpAZTaO9/KBdMM8rREKr4MSbug00iiUflJ8yLzvajog+gjFcBSpClkkwr2o7p8S01+qhWny/FInCLbiphzyxbvz3ey4u1DCwoJO7GJRSw+5CirPTz3jTtc6nZ8Mgo1KeHEEuu3E+JqY5i6CYFmtw11GahSyeWLOj1OSrAOJ3esid36rlurF3Test+DIzUuS9IHWihhlSRRAMZs+ZkBBroXoFlmFWRLveCVDDxOq9Bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mWvG++yO7Hw8F7wKvr8hSQVnPbJIkogJ6kNVpuaKTHE=;
+ b=eFiWwdiLOlclC86aD1LhgpMXqpe0YCY42BBxA6kF8lukG/zWUgBiPfzsDAtKY6vX+OJLr48k1KNw9+iyWQlFKTJLa88m2gwkmUmDUVDgioOOxCb2U2t4b9SPQxG8BPSrtQ9KUzT0/ZljDaoRm0YfKt+Afu/ReENZj2T+1DWZu5gs67UqLXaKc5vjC8p6x8jxvL76bMpOKnzOWMs4kw5065P5ujYINyeJhiTW7Ub+wYQAwQzY3dtgep5j+TRl6P0WxIw0JZuHFQLiWoVsMnW3yyA8rD2KZdpbt7unoW8OjMaa/SD2PneKKuZx4CszpwJfPb2N1VWyqGuKVQfUO8NimQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mWvG++yO7Hw8F7wKvr8hSQVnPbJIkogJ6kNVpuaKTHE=;
+ b=PEoNOvGYgoo8ISUBVngJ91TzWjAg0jmG/Iq/GCAYZrkrg/C93k4eCAYQgvmBUEew62TNRAoCX6XLBujnXZeGHtZ/0DgvJuAHXR66kILFfQSrt9n7Cw5AYwQpy2B51YTRdTGvrTePH+c0ovjLQFo15ufwEnIEjpoKNjGjftYX3M25uyBmAeOTo6CB9lPjiwazIesnaWHa/EnyBZXHYW+QNkp3h0ixHH1dxxRq35U8N9bhBnLuJH5rfBVzWJ+hr1+vNLoZ8AuODUb+11MEJcn1cJCugzUzIIAFmfdpKS59YYv/8VdihGOpAF7ANVsywNx+BqbwbcKS8aelfUVrz0jwPQ==
+Received: from MN2PR17MB3375.namprd17.prod.outlook.com (2603:10b6:208:13c::25)
+ by DM8PR17MB4918.namprd17.prod.outlook.com (2603:10b6:8:3c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.24; Mon, 25 Jul
+ 2022 21:32:33 +0000
+Received: from MN2PR17MB3375.namprd17.prod.outlook.com
+ ([fe80::3409:88f8:6069:ccba]) by MN2PR17MB3375.namprd17.prod.outlook.com
+ ([fe80::3409:88f8:6069:ccba%3]) with mapi id 15.20.5458.024; Mon, 25 Jul 2022
+ 21:32:33 +0000
+From: Vanessa Page <Vebpe@outlook.com>
+To: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Naga Sureshkumar Relli
+	<nagasure@xilinx.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Wang Weiyang <wangweiyang2@huawei.com>
+Subject: Re: [PATCH] mtd: rawnand: arasan: stop using 0 as NULL pointer
+Thread-Topic: [PATCH] mtd: rawnand: arasan: stop using 0 as NULL pointer
+Thread-Index: AQHYoBjwrgb3QDZZqk2l3gKc/X6vea2Pm+f5
+Date: Mon, 25 Jul 2022 21:32:33 +0000
+Message-ID:  <MN2PR17MB3375A61331BC4E0E5BA6F9C4B8959@MN2PR17MB3375.namprd17.prod.outlook.com>
+References: <20220725112108.686347-1-gongruiqi1@huawei.com>
+In-Reply-To: <20220725112108.686347-1-gongruiqi1@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn: [6y6mxmzx+MJlshDnzi5nh0YVavVm1mOrqo1Dx3LtlWaTAo/jmJvm07qpKozg5D7P]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bd807660-7c4a-45cc-6334-08da6e852f8f
+x-ms-traffictypediagnostic: DM8PR17MB4918:EE_
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:  82KJ7UQuJHvcxnSgyCY/Zon5lL1RZJkKkauZpXB/tvvBuu0pMUf+95wsX2lZsG6You7A966aBvp5zU69UxZiv9ErZbBuwoLv5ZaYB2NX0LWoQx+jstEHVHnbdhkcHeBroyHZ9hFsqG7nwrVqbISMedQoOIsBLYD3eBoPqVfT5rnQ5r6FVdwSrzQpPV8LmRpScLLvcKIMtkjpZKwvmK8Akc585YigiWgIWqTJmbKmLMOaynH/1SGQhJLklghocW+rcrGXsuFK0U2ncDflT/AeZiooNSv4QpeGkiNlTm0YJjQjnGr4uwmqsoAgLj0rwL501H6z+JsaVu40qmUv0k79xYFQQRN2vX8ADX2o00QLpwmgH0NLBUxCUKVL6rmtA6I2ReBdXa6ytd4uTTRdlbRiHwiOjgBb8+Xv3OkUbUZ/HviG6S+1pqlRGbnkF+LZ3JgP4AUa6kZpH+lqFU0zfCIvfd3n03LffMK95hMH+rhsoyscuYb+f/Tl6V6LSHrd+jbTUsa51I1VsWAFC1hCBJ7B5H9+HOhdz+NQ+rSUhPyPHfTTBPiUz6N0v+iE0bpUhluwC9GRQ4ZeRhDiH4EGKF41/rHwW2DuND4ZIqkcOyKyqEsIt4IynAEfTwzj5uwbkwnrvBkrBXZdWdRzPn2P5TS3AGKhttVtEK+D6hSrh+Bdx2uSKya8SbXfb0AmeX3mknuN
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:  =?utf-8?B?RG14WjZYYzIybFNPaUZIN29WTE54Vmtza3NDNTlSclNhbGpjZ1dWeUZvSm4w?=
+ =?utf-8?B?aXh2VVJiU0QxTDV6Z1VSTmtLMmNNQURuR0NBOXp6ek1vMVhvUGxsWFJuRzB0?=
+ =?utf-8?B?SzRyT2ZPd2NVTHFPazJORW9PVVplV21XQlVKSTdPejZmb2pYRXU5UkVYQXV5?=
+ =?utf-8?B?cXdkVXpzTU1oU25RbW9GZ0V2UzN6cjlmVzFVclVvSDJ5c3g5dmQzRTVhT2x4?=
+ =?utf-8?B?Z1dzMldGVG5Xc0ZKOUhKNkltdlVOUUc1T0lHcVJYMHlsSlhYZUJwT1NTZmlh?=
+ =?utf-8?B?NlZqQnNYaXZLUzlwaXNVMVh0RGlXWDlRQ0RaUUFJR3UvNlJMTzY4K2RFTWIy?=
+ =?utf-8?B?ZDNmamhvMmlPT3Q0OERRM0d1THVYT3VRajluZ1JXdi81SGtrS0FBZDhFQWpR?=
+ =?utf-8?B?N0dYVEx6NEhMQnlRbi9lNFFxY2xreGRNYUJHSStQeThLM3M4b0pRV2xYbU1V?=
+ =?utf-8?B?U3NKVytRR1Vybyt4dk9IWVMrV3BJdXU1RzlMVzdZdXdaUlhJVExidXVuTTdN?=
+ =?utf-8?B?dVIxOW5BTDhOd2ZtWTQrb3ZxS2hPdWQ1TlJlSExDWGhsKzRITWhNN214Vk9E?=
+ =?utf-8?B?eTBHMlp1UUJrbWo0YU15QkxhQUhuc2xxMWdvU1RrZml1WUlJRk8vcHNTNkVL?=
+ =?utf-8?B?UFBidzBScTlQMEJuKzE2K1hvQkFkTE5qL1A3TllGZVQweFhNZU5tZytDMkpI?=
+ =?utf-8?B?QU55eVFPRFgreFB6VjBSeGhBbmMxKzh2b0NkQ05NQVVvY3UvWHhOQSs0VTNi?=
+ =?utf-8?B?WVRyU2RkY2dMNFFGbWo2ZEFUeEw3UmdNMHVWaVNmUllpNElPVmUvN0U3MGZU?=
+ =?utf-8?B?eWVYMEl6VmYyV3Nyem1aQjVQak9JZXV6N2xVZTR1L09IWEtkTkl0NkxjcVhG?=
+ =?utf-8?B?NE9lQTY3TE4vYnZtVkQwTG9HaGgrbUkyZzhQbWFuUkpkQ0NxaHRUV0U1R0xu?=
+ =?utf-8?B?N3pxMmpvL1J5Z2VvY0d2Y0UvSlhUYmxXVy9TcThPMVNQN0ZvbmZLMVppRndy?=
+ =?utf-8?B?eXdFMXd6SHNxbGJORTFaQ3IwcWZqSVV1RitKWUwyR1picnY0bVh6RHNpdC9N?=
+ =?utf-8?B?OU5wMDdZUVd6UHU3RXlub2NMNkZ0a0U0b2pSRXMxSEJxZmVtTFpXUEVpRzJn?=
+ =?utf-8?B?NmNab0MzdFRnb3pNVnJYR2htaEt4MUs4eExKSlUrbWNIZElGb2d6aE9yU053?=
+ =?utf-8?B?TzRqd255dlRvWWlHdnVDQXZJSC9yV1UyeDZTWHpoM0RzaTdIeDM5dlE3dGNQ?=
+ =?utf-8?B?SGVCbnFvejdFNTlCcW1RWTNES3cvSXZCYnlIa09aQ1BOZVU5WUlUMVJKY1gv?=
+ =?utf-8?B?alhyeEVGWjVlVkRCZlpYQXQwbDcwZnVSNzhFVG9MYzFFMi9mSXViSGw1ZmZT?=
+ =?utf-8?B?dDFSNGdLMUovOUF2SXpLdFphdzBpVTVKeDcvd0tNUno4V1IyLzBtSkV6RjVv?=
+ =?utf-8?B?SDZ0akx3bElLa1cyU2hLS1AreTFwU0dsbWtxeWkrQytieGRVTTQ1RGhObWJU?=
+ =?utf-8?B?dkkzSU5aSXU5YjdUc0JUNHY4UmxBcDU3cVIyV29XRlMrbGphOHI2a1lhTnpS?=
+ =?utf-8?B?Z25lZDlTUi9oZFVKYjVBWThEM1hBNjNUNnVHSzFyMlFjNXJXVWdiRE52WEov?=
+ =?utf-8?B?dzRhZFdBTVJaMmNBV0Q3MHpubllxekNtSTh4U1F6Z2FyUkpDOUMwMjZxM1NW?=
+ =?utf-8?B?c1NCSW9QbzBheEN0Yk82WGVDUnAzazRyQmU5a2lBWUFkTTloeEpyaktCRUF5?=
+ =?utf-8?Q?AcjLn/SQ5jEaDyy042+LmViJ175JshUOhFCRwoN?=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <b52a8e97-3b8e-c67b-4440-2d7428edb4fa@sudomaker.com>
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR17MB3375.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd807660-7c4a-45cc-6334-08da6e852f8f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jul 2022 21:32:33.3665
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR17MB4918
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220725_113059_011962_BBA6F9AE 
-X-CRM114-Status: GOOD (  35.12  )
+X-CRM114-CacheID: sfid-20220725_143243_252800_1520AD56 
+X-CRM114-Status: GOOD (  16.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,120 +129,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Jul 24, 2022 at 04:49:25AM +0800, Mike Yang wrote:
-> On 7/24/22 04:07, Krzysztof Kozlowski wrote:
-> > On 23/07/2022 21:27, Mark Brown wrote:
-> >> On Sun, Jul 24, 2022 at 02:47:14AM +0800, Mike Yang wrote:
-> >>> On 7/24/22 01:43, Krzysztof Kozlowski wrote:
-> >>>> On 23/07/2022 18:50, Zhou Yanjie wrote:
-> >>
-> >>>>> No offense, does it really need to be named that way?
-> >>>>> I can't seem to find documentation with instructions on this :(
-> >>
-> >> ...
-> >>
-> >>>> All bindings are to follow this rule, so I don't understand why you
-> >>>> think it is an exception for you?
-> >>
-> >>> Zhou didn't ask you to make an exception. They have a valid
-> >>> point and they're asking why.
-> >>
-> >>> You may want to avoid further incidents of this kind by stop
-> >>> being bossy and actually writing a guideline of naming these
-> >>> .yaml files and publish it somewhere online.
-
-I don't like your tone. Patches are welcome to fix deficiencies in 
-documentation. Out of the hundreds of bindings a year, I see <5 
-documentation patches a year.
-
-The documentation clearly says to run 'make dt_binding_check' and that 
-was obviously not followed here. 
-
-> >> Yeah, I do have to say that I was also completely unaware that
-> >> there was any enforced convention here.
-> > 
-> > Indeed, it's not a enforced pattern. But there are many other
-> > insignificant ones which we also tend to forget during review, like
-> > using words "Device Tree bindings" in title or using unnecessary quotes
-> > around "refs" (also in ID of schema). It's not a big deal, but I ask
-> > when I notice it.
-> 
-> Good. Thanks for paying attention to these details.
-> 
-> 
-> >> Zhou already mentioned he was unable find the naming guidelines of these .yaml files.
-> >>
-> >> Apparently you think it's unacceptable for new contributors of a certain subsystem to use existing code as examples, and/or they're responsible for figuring out what's a good example and what's a bad one in the existing codebase.
-
-Please wrap your lines on replies.
-
-
-> > 
-> > It's everywhere in the kernel, what can I say? If you copy existing
-> > code, you might copy poor code...
-> 
-> Still, it shouldn't be a responsibility of new contributors to 
-> determine the quality of an existing piece of code, unless there are 
-> clear guidelines (i.e. one should use the new "cs-gpios" attribute in SPI controllers).
-
-Generally the guidance is to look at newer drivers for current best 
-practices.
-
-
-> >>> It might never grow to new devices (because they might be different), so
-> >>> that is not really an argument.
-> >>
-> >> It is an argument. A very valid one.
-> >>
-> >> "they *might* be different". You may want to get your hands on real hardware and try another word. Or at least read the datasheets instead of believing your imagination.
-> >>
-> >> I would enjoy duplicating the st,stm32-spi.yaml into st,stm32{f,h}{0..7}-spi.yaml if I'm bored at a Sunday afternoon.
-> >>
-> >>>
-> >>> All bindings are to follow this rule, so I don't understand why you
-> >>> think it is an exception for you?
-> >>
-> >> Zhou didn't ask you to make an exception. They have a valid point and they're asking why.
-> > 
-> > Hm, everyone has the same valid point and such recommendation is to
-> > everyone, although it is nothing serious.
-> > 
-> >> You may want to avoid further incidents of this kind by stop being bossy and actually writing a guideline of naming these .yaml files and publish it somewhere online.
-> > 
-> > I did not see any incident here... Process of review includes comments
-> > and there is nothing bad happening when you receive a comment. No
-> > incident...
-> 
-> 
-> Okay. After careful inspection of the Ingenic datasheets, now I have 
-> the conclusion: The Ingenic X1000, X1021, X1500, X1501, X1520, X1600, 
-> X1800, X1830, X2000, X2100, X2500 have the same SFC controller.
-
-So if they are all 'the same', then I expect they all have a fallback 
-compatible with x1000 and using that for the filename makes sense.
-
-
-> X1600 has a newer version (let's say v2) of the SFC, and X2000-2500 
-> have v3. Others have the original version (let's say v1). Each new 
-> version introduced new features such as arbitrary DMA sizes, and the 
-> rest features are the same.
-
-So backwards compatible? If so, then they should have x1000 for 
-fallback.
-
-> 
-> So IMO the name "ingenic,sfc.yaml" is perfectly logical.
-
-Covering all 3 versions? If so and not backwards compatible, then I 
-would agree.
-
-Rob
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+U3RvcCBmdWNraW5nIGVtYWlsaW5nIG1lIHlvdSBwYXRoZXRpYyBsb3Nlcg0KDQpTZW50IGZyb20g
+bXkgaVBob25lDQoNCj4gT24gSnVsIDI1LCAyMDIyLCBhdCA3OjIzIEFNLCBHT05HLCBSdWlxaSA8
+Z29uZ3J1aXFpMUBodWF3ZWkuY29tPiB3cm90ZToNCj4gDQo+IO+7v0ZpeCB0aGUgZm9sbG93aW5n
+IHNwYXJzZSB3YXJuaW5nczoNCj4gDQo+IGRyaXZlcnMvbXRkL25hbmQvcmF3L2FyYXNhbi1uYW5k
+LWNvbnRyb2xsZXIuYzo5MTg6NzA6IHdhcm5pbmc6IFVzaW5nIHBsYWluIGludGVnZXIgYXMgTlVM
+TCBwb2ludGVyDQo+IGRyaXZlcnMvbXRkL25hbmQvcmF3L2FyYXNhbi1uYW5kLWNvbnRyb2xsZXIu
+Yzo5MTg6NzM6IHdhcm5pbmc6IFVzaW5nIHBsYWluIGludGVnZXIgYXMgTlVMTCBwb2ludGVyDQo+
+IA0KPiBTaWduZWQtb2ZmLWJ5OiBHT05HLCBSdWlxaSA8Z29uZ3J1aXFpMUBodWF3ZWkuY29tPg0K
+PiAtLS0NCj4gZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jIHwg
+MiArLQ0KPiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4g
+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9s
+bGVyLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9sbGVyLmMNCj4g
+aW5kZXggMjk2ZmIxNmM4ZGMzLi5lYzdlNmVlYWM1NWYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
+bXRkL25hbmQvcmF3L2FyYXNhbi1uYW5kLWNvbnRyb2xsZXIuYw0KPiArKysgYi9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9sbGVyLmMNCj4gQEAgLTkxNSw3ICs5MTUsNyBA
+QCBzdGF0aWMgaW50IGFuZmNfY2hlY2tfb3Aoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwNCj4gICAg
+ICAgICAgICBpZiAoaW5zdHItPmN0eC5kYXRhLmxlbiA+IEFORkNfTUFYX0NIVU5LX1NJWkUpDQo+
+ICAgICAgICAgICAgICAgIHJldHVybiAtRU5PVFNVUFA7DQo+IA0KPiAtICAgICAgICAgICAgaWYg
+KGFuZmNfcGt0X2xlbl9jb25maWcoaW5zdHItPmN0eC5kYXRhLmxlbiwgMCwgMCkpDQo+ICsgICAg
+ICAgICAgICBpZiAoYW5mY19wa3RfbGVuX2NvbmZpZyhpbnN0ci0+Y3R4LmRhdGEubGVuLCBOVUxM
+LCBOVUxMKSkNCj4gICAgICAgICAgICAgICAgcmV0dXJuIC1FTk9UU1VQUDsNCj4gDQo+ICAgICAg
+ICAgICAgYnJlYWs7DQo+IC0tIA0KPiAyLjI1LjENCj4gDQo+IA0KPiBfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0DQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLw0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
