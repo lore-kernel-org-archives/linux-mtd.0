@@ -4,77 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E675C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Jul 2022 08:29:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEF8FC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Jul 2022 08:35:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=POiBRLzJr6/vlUN0Ai1HB7MT5c0d4fBKkoFCaQy/Nng=; b=UuR2B4SPGE1g1X
-	CTUztFhsi2Y1xFrH46vsGwNkfg0ts63Z26285BwkVKGV9WDZylhgCHkMzg1vZWNtEYVbFB8CaWd79
-	y0d3TYm6OqcFIxuGN5ZAccpj5CWQzpjNuIH05QH7g33NClG1VCh1VBKorC5PExF3B0wFXEvZXSLN5
-	viAgRMYc/V0mWkOhUd4J7soQY4YP6kLasiQ/tH/0S0cmBaoRQl5QeWmVT/sTBuk7I2fwUlF20la8Q
-	ezqpTWkJQzYFJjA1qud/O7qXrfN49YhrZK34Y+wsehTIs5/YMuQDVswpSTKC0F02sXZXSLL7EL4z+
-	V84bBC2wM19ZZSOznKbQ==;
+	List-Owner; bh=q5J8ueSGXFiFlnHpdttrGaL5DtTyNK+muBFj/LO60EA=; b=uwVOdg9UDsWs6n
+	Xcgqo2pCnG4pGaLG1ePw7gyrOH5WrWDwveCMwI/lYEKFFdXLO1Wo0NtLdxWku6EgfOi2Keep+rDkb
+	X5nKMeQ70i3V2YLdtvJ/Li9Mi18BiYeQWf2HhzjESa3er6Sh96uvcDnbb/r6e8RZkZgI2jh/04nj+
+	9CtI2AxAWJWjeFHSRhtOyCtlCoMKA7DB4XMscszwPVM6uW9t4SRKO2bZtzbB9OgciCsN8THYYXXAP
+	Z2pMX9kJ9EKy+lj+f6lJz8fjzqTsBw+B3WYf+UqWyY6CkbK5OcE/N8t1pZADwGI6lH/7R/54ZowBt
+	hSyTrZJj6cqp1OQqAPWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGFwV-00ACMi-Kl; Tue, 26 Jul 2022 08:29:27 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1oGG2X-00AJ54-Tf; Tue, 26 Jul 2022 08:35:42 +0000
+Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGFvv-00ABkQ-Dj
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2022 08:28:52 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1oGFvQ-0006c7-GN; Tue, 26 Jul 2022 10:28:20 +0200
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1oGFvJ-003HT4-4w; Tue, 26 Jul 2022 10:28:13 +0200
-Received: from pza by lupine with local (Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1oGFvI-0003CM-92; Tue, 26 Jul 2022 10:28:12 +0200
-Message-ID: <55668d62aad8feedb7fa78f410f4f71ecfce8c98.camel@pengutronix.de>
-Subject: Re: [PATCH v2 6/9] arm64: bcmbca: Make BCM4908 drivers depend on
- ARCH_BCMBCA
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: William Zhang <william.zhang@broadcom.com>, Linux ARM List
-	 <linux-arm-kernel@lists.infradead.org>
-Cc: joel.peshkin@broadcom.com, f.fainelli@gmail.com, Broadcom Kernel List
- <bcm-kernel-feedback-list@broadcom.com>, dan.beygelman@broadcom.com, 
- anand.gore@broadcom.com, kursad.oney@broadcom.com, rafal@milecki.pl, 
- krzysztof.kozlowski@linaro.org, Guenter Roeck <linux@roeck-us.net>, Bjorn
- Helgaas <bhelgaas@google.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
- Kishon Vijay Abraham I <kishon@ti.com>, Vinod Koul <vkoul@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>,  Wim Van Sebroeck <wim@linux-watchdog.org>,
- "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,  open
- list <linux-kernel@vger.kernel.org>, "open list:MEMORY TECHNOLOGY DEVICES
- (MTD)" <linux-mtd@lists.infradead.org>, "open list:NETWORKING DRIVERS"
- <netdev@vger.kernel.org>, "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT
- DRIVERS" <linux-pci@vger.kernel.org>, "open list:GENERIC PHY FRAMEWORK"
- <linux-phy@lists.infradead.org>, "open list:PIN CONTROL SUBSYSTEM"
- <linux-gpio@vger.kernel.org>, "open list:BROADCOM BMIPS MIPS ARCHITECTURE"
- <linux-mips@vger.kernel.org>, "open list:SERIAL DRIVERS"
- <linux-serial@vger.kernel.org>, "open list:WATCHDOG DEVICE DRIVERS"
- <linux-watchdog@vger.kernel.org>
-Date: Tue, 26 Jul 2022 10:28:12 +0200
-In-Reply-To: <20220725055402.6013-7-william.zhang@broadcom.com>
-References: <20220725055402.6013-1-william.zhang@broadcom.com>
-	 <20220725055402.6013-7-william.zhang@broadcom.com>
-User-Agent: Evolution 3.38.3-1 
+	id 1oGG2U-00AJ0L-OU
+	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2022 08:35:40 +0000
+Received: by mail-pj1-x102a.google.com with SMTP id e1so2229896pjl.1
+        for <linux-mtd@lists.infradead.org>; Tue, 26 Jul 2022 01:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=h1CvIyQAlgdGiw9kZ00bO0OiCkkJJ79gBK127vUNxhc=;
+        b=mYGWBo3HI5fRkSFOCot+P7hjGCAOC1dSOcQF9Vi946wEgWESr8X5X/QzpuNs6pmm/d
+         DfjTRzLK2nmYC4O8CmT3lVjeuAP9SZB9V8qzMHwVEYTCwkkL6jzBVpDcyKCJfHXhzelF
+         AzgA0yxpepPJym8dXcQkbEO9f0OZetbB/wt+w82lRhFmF/2EEeIADZoBYLzz//4/Gtd6
+         f9P0WRBzD247rI/CmzpRFIMeFLjjXhiNtsrW7Zvme/gap172cjQs8v0acSTpUPp163aO
+         oMKZdS83/MJGj+BeYpIHmGx/4L1UVvjG9QbbJsVESdpH8ITTdI/mb71Z2qZbi/IYXDc9
+         2tVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=h1CvIyQAlgdGiw9kZ00bO0OiCkkJJ79gBK127vUNxhc=;
+        b=taznntdh4g+7TOg/GGGEREJ+XN9s5siD4D0scrzM5Wp1oXQVV0406tbeyt1dnsdy3U
+         meJlUORhMDN3LtfFOQjmcxmRkKqeBnfo0SWxTHWorgcOvcHPBxOneKqsIV/HU02gSwPz
+         ilsR2rpYWzNbx/zsCLIPf/NJuG26c4H1u38hsA1JK0zUjphlObn8ZT+8et11ngF79zdb
+         WvIYx+ksv/MNFMea6GifX69fnmwunDu2JTcUi1f3UsJtHnQG0eC7odUF2npdlVQqqGCv
+         DZHiL0R6fB0GG0WwLLX92zDt4sZWhWwTwv9a78fbWp8cD8uO0SopECBnL91LRlGkfFbb
+         PZmw==
+X-Gm-Message-State: AJIora9qwuetBrHbwYyiybJklmVBzOWelvThs5TuP39JDAq3erfXA8+w
+	C3SwnaTtQ2zSzEDLk5e/M/j0nKkb6k0=
+X-Google-Smtp-Source: AGRyM1sEWWU8lvhHnSMcT1/qyua5k/f+P4iTgNDdoy0meRz+fn+1a7+T15VHLW/OS+tCjUQ8miUMpA==
+X-Received: by 2002:a17:902:7c0d:b0:16d:500b:1255 with SMTP id x13-20020a1709027c0d00b0016d500b1255mr14969737pll.98.1658824536482;
+        Tue, 26 Jul 2022 01:35:36 -0700 (PDT)
+Received: from [192.168.0.10] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id w2-20020a1709026f0200b0016cf714d029sm10733351plk.288.2022.07.26.01.35.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jul 2022 01:35:35 -0700 (PDT)
+Message-ID: <49520da3-69b0-c50c-0ca2-ba017d2012a7@gmail.com>
+Date: Tue, 26 Jul 2022 17:35:32 +0900
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v17 5/7] mtd: spi-nor: core: Track flash's internal
+ address mode
+Content-Language: en-US
+To: Tudor.Ambarus@microchip.com, p.yadav@ti.com, michael@walle.cc,
+ Takahiro.Kuwano@infineon.com, linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ Bacem.Daassi@infineon.com
+References: <20220725092505.446315-1-tudor.ambarus@microchip.com>
+ <20220725092505.446315-6-tudor.ambarus@microchip.com>
+ <8e8cff77-bb06-fdea-fb0e-60e1a2639026@microchip.com>
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+In-Reply-To: <8e8cff77-bb06-fdea-fb0e-60e1a2639026@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220726_012851_489776_AA31358A 
-X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-CacheID: sfid-20220726_013538_848029_BC66F4F7 
+X-CRM114-Status: UNSURE (   6.59  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -92,19 +96,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On So, 2022-07-24 at 22:53 -0700, William Zhang wrote:
-> With Broadcom Broadband arch ARCH_BCMBCA supported in the kernel, this
-> patch series migrate the ARCH_BCM4908 symbol to ARCH_BCMBCA. Hence
-> replace ARCH_BCM4908 with ARCH_BCMBCA in subsystem Kconfig files.
+On 7/26/2022 5:04 PM, Tudor.Ambarus@microchip.com wrote:
+> Hi, Takahiro,
 > 
-> Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> Acked-by: Guenter Roeck <linux@roeck-us.net> (for watchdog)
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com> (for drivers/pci)
+> Can I have your R-b tag on this patch, please?
+> 
+I confirmed this works on SEMPER S25 devices.
 
-Acked-by: Philipp Zabel <p.zabel@pengutronix.de> (for reset)
+Reviewed-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-regards
-Philipp
+Best Regards,
+Takahiro
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
