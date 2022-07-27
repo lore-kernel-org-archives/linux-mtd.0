@@ -4,75 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01B38C19F21
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jul 2022 06:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74CEAC04A68
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jul 2022 10:59:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=g4XkalAzUW9caPm/KRLlN04DYacb+Azelj2mSMjeEoQ=; b=e/owAUGC1hNLTp
-	lq5CtpU9zKyDKRuKXleXPGYqysQRDNQkZl12lKnOkJl5XSvvK4I40g1udgWGKmV2F/RzVY1VVmeJR
-	RXGkqBieISue32TZNKkxsZ9XLUJUYC3HpgWdrUKzVu2AZa/8KLFmAJFnvV3nDr4aPUi1m+dbABIgQ
-	oedcWSOrC3jv8hdFH34V7FEIciRSp618CVRQvyi05WxfD5qomFs6pYnhBlBrpaAXxhfXmR+Fdx4m4
-	pgSVF98ylThST0A3HXwroThD/69R4UsSjPlmGEFQTTZWhTQM2cPVUY1z8yevvv2VzF5tbONBU530U
-	TKKDBZwcocoyycLK3eQg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MFgW6lw0mt6bWBdbwI/7bRugh0rQPq6SmAC3Tvw4PsU=; b=KHr+0x/vPZo9suCkYyKSaDtJ+e
+	c+gzSRHYm5V2l0V5oV0FZ8+WOb74ROBuEYxiJ8cnE4EzV83zmfffBjGDFgCEkVNfOj6BPnaS8hwQO
+	8T7mNmGs+dlZAG2+AbKNyPM+RkU6nmqrpl+3sRhPVLUdtO/MkID36vs/SzDzMAOOrlrW5yxz2RECj
+	hxBmIyqh4bU7RCrwDSNXBH8xfXUQpkkRuSTgnJEKbweL+n+xQz93IPd8zH6J3KVKDpiiDA0+9/JqI
+	HGQyDUZLMJWgAlkfAbI6y+HsBYP3QbKIntNJJsnA5Ad6AYlxghT/hfJ8YLentdqrwOV5Yhy/i8eNg
+	a+6G+pjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGa8e-009jDO-D6; Wed, 27 Jul 2022 06:03:20 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+	id 1oGekF-00CfNZ-54; Wed, 27 Jul 2022 10:58:27 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGa8c-009jAo-AA
-	for linux-mtd@lists.infradead.org; Wed, 27 Jul 2022 06:03:19 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id x24-20020a17090ab01800b001f21556cf48so1118061pjq.4
-        for <linux-mtd@lists.infradead.org>; Tue, 26 Jul 2022 23:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=pHInnhZIapp9ygsJkxHnw8j0AydAm5/Szf/QJZReVwc=;
-        b=hOvYEhU98x/GDtGnYnmoR6BJRBXACIoTfxIQJjyK99pcrQKlqKNDGNPCCYvtelWyQZ
-         Y183bzy65rDmM1fHouJFY5e0lrHP2DA9cKq0IlsKAlZP4ykSykOuwcz45eXUJsECIkle
-         4QKLBROzWhdgL0/SYmLwbPvvfb4CZI6QgsS1oLhLUB1IiQ8o6Xu3pTgvADuCETctHgQd
-         3jXASagP1pGOOnh0jhs5ikPcA8d9CtYGSAujv/q62h9Q70hMpicy3GAHNw+nqitfpaG/
-         KuGd3q+ZwR1SrHcxOZAo5iWuejtHg7RvbLN2OnmlD5lrihO9XLpQ8t3iTyoV88opuaSb
-         hOuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=pHInnhZIapp9ygsJkxHnw8j0AydAm5/Szf/QJZReVwc=;
-        b=8EOT+WUQvoS5VKfdOz9Sssr7ZX5TA7S8Bs7+Nv0sfynmC6NyAOZUvkuw0eH0B32q9g
-         hUApQaqYspGpV8Hy3FlrwbD2tsm/OH/ezMfS/yjpcSN5uEIxPNKE1hK0iF6rVhEho1BG
-         xCQ0Tub5xUM0PLn1F/nCKeY8ieu9pnkKq9WqIByov9dB0DlzutJaTPTfi+2wBbQIOA7w
-         KjmNbF/N11ZxsSK86/0gC+b4IVhwnb0lwc9aJvdZB4o+PlMuApXHbbNAezWGrXLsVcUa
-         tMn48Rv0FM10Ojnz9dA/Ig9lppi/fNcrh4uen/z958f6HSCMOlruY4WPAMbx/s6ek+3a
-         CX+g==
-X-Gm-Message-State: AJIora+ji34S3LtHcc0KAfJZwCzeyj5vZdW/28nI0Iz3YAIq0k2fw938
-	fbRkTf6v7hteWmcwjgWhE+Y=
-X-Google-Smtp-Source: AGRyM1vMfbDk3zJiVxRQkUQY+kK8oss494ogdScYinwu4OCsDie7+BNXRUd0jGmYyMuCmXwyi8JrxQ==
-X-Received: by 2002:a17:902:d2d1:b0:16d:37b3:f8b3 with SMTP id n17-20020a170902d2d100b0016d37b3f8b3mr19612626plc.98.1658901794902;
-        Tue, 26 Jul 2022 23:03:14 -0700 (PDT)
-Received: from localhost.localdomain ([43.132.141.3])
-        by smtp.gmail.com with ESMTPSA id j1-20020a654d41000000b003fadd680908sm11252628pgt.83.2022.07.26.23.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jul 2022 23:03:14 -0700 (PDT)
-From: Zeng Jingxiang <zengjx95@gmail.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Zeng Jingxiang <linuszeng@tencent.com>
-Subject: [PATCH] mtd: physmap-core: Fix NULL pointer dereferencing in of_select_probe_type()
-Date: Wed, 27 Jul 2022 14:03:02 +0800
-Message-Id: <20220727060302.1560325-1-zengjx95@gmail.com>
-X-Mailer: git-send-email 2.27.0
+	id 1oGekB-00CfG4-L0
+	for linux-mtd@lists.infradead.org; Wed, 27 Jul 2022 10:58:25 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ssl.serverraum.org (Postfix) with ESMTPSA id AB58B22239;
+	Wed, 27 Jul 2022 12:58:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+	t=1658919490;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=97Ne4NuQWV66rA1x188eFte/Onr5qPT1fY/gB6Rr7Lk=;
+	b=gotYvz1DLrjnJwxHyCiWOJnKSTo6/AJmNttOj8+b7bNpgVvhddOq8PA8c9sSbDEIvEqMgZ
+	Dx/uloVNOhATlJ+xTgC4gdXn2HXgOAySEZq0bsaVZlmdjGMRxOZFaLNx877ZJrxFT5617E
+	msDiAswe9A+HxnNIixgkge2hdOXUpmk=
 MIME-Version: 1.0
+Date: Wed, 27 Jul 2022 12:58:06 +0200
+From: Michael Walle <michael@walle.cc>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: p.yadav@ti.com, tkuw584924@gmail.com, Takahiro.Kuwano@infineon.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, Bacem.Daassi@infineon.com
+Subject: Re: [PATCH v17 4/7] mtd: spi-nor: core: Return error code from
+ set_4byte_addr_mode()
+In-Reply-To: <20220725092505.446315-5-tudor.ambarus@microchip.com>
+References: <20220725092505.446315-1-tudor.ambarus@microchip.com>
+ <20220725092505.446315-5-tudor.ambarus@microchip.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <7d06bcf6c1f63d190afea1873830f5d7@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220726_230318_376644_D63CEF1F 
-X-CRM114-Status: GOOD (  10.43  )
+X-CRM114-CacheID: sfid-20220727_035823_947306_92443135 
+X-CRM114-Status: UNSURE (   5.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,45 +70,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Zeng Jingxiang <linuszeng@tencent.com>
+Am 2022-07-25 11:25, schrieb Tudor Ambarus:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> 
+> The prams->set_4byte_addr_mode returns error code but is not handled
+> in spi_nor_init(). Handle the return code from set_4byte_addr_mode().
+> 
+> Suggested-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Coverity complains of a possible NULL dereference:
-
-in of_select_probe_type():
-1. returned_null: of_match_device() returns NULL.
-2. var_assigned: match = NULL return value from of_match_device()
-309	match = of_match_device(of_flash_match, &dev->dev);
-
-3.dereference: Dereferencing the NULL pointer match.
-310	probe_type = match->data;
-
-Signed-off-by: Zeng Jingxiang <linuszeng@tencent.com>
----
- drivers/mtd/maps/physmap-core.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 4f63b8430c71..69d0ab1f6f94 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -307,6 +307,9 @@ static const char *of_select_probe_type(struct platform_device *dev)
- 	const char *probe_type;
- 
- 	match = of_match_device(of_flash_match, &dev->dev);
-+	if (!match)
-+		return NULL;
-+
- 	probe_type = match->data;
- 	if (probe_type)
- 		return probe_type;
--- 
-2.27.0
-
+Reviewed-by: Michael Walle <michael@walle.cc>
 
 ______________________________________________________
 Linux MTD discussion mailing list
