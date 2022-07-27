@@ -4,81 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7379C00144
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Jul 2022 23:42:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01B38C19F21
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jul 2022 06:03:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bbKI36PxczIUswDvSuBwgvV+wPKg6agrOxTONJO9E2s=; b=wL90MCzUIhqDTP
-	b52H/2soPgEECH9bp7Ga0OhTZ3IKhrljHpUIhG+lwWEh69XsafkAJd9RocoyRl28IEaR8MMcRWkrB
-	eIeST04t+uQJEhGCa1fR/f4XokmMvrWO3H4X6biO6bE9eD/pyExcyZpp7l1neuthJ1vlSI6eei/PP
-	MhQEViGHpIVZeAoMGyKvJxxe93O4CsxL5wNom939yGrn5ArlKyTdR9rBmphCGa4CuV4LTPjpq58Sc
-	F66E0U15mkTk6+rRYWKysHXJqJ3imWWOn91e2LjVU8BsO7wj2TlLlYBQg1NhfuKldAayT2DIgS2s2
-	+t6dyLA7rPE8bKWZbb5Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=g4XkalAzUW9caPm/KRLlN04DYacb+Azelj2mSMjeEoQ=; b=e/owAUGC1hNLTp
+	lq5CtpU9zKyDKRuKXleXPGYqysQRDNQkZl12lKnOkJl5XSvvK4I40g1udgWGKmV2F/RzVY1VVmeJR
+	RXGkqBieISue32TZNKkxsZ9XLUJUYC3HpgWdrUKzVu2AZa/8KLFmAJFnvV3nDr4aPUi1m+dbABIgQ
+	oedcWSOrC3jv8hdFH34V7FEIciRSp618CVRQvyi05WxfD5qomFs6pYnhBlBrpaAXxhfXmR+Fdx4m4
+	pgSVF98ylThST0A3HXwroThD/69R4UsSjPlmGEFQTTZWhTQM2cPVUY1z8yevvv2VzF5tbONBU530U
+	TKKDBZwcocoyycLK3eQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGUBk-005zBE-K9; Tue, 26 Jul 2022 23:42:08 +0000
-Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
+	id 1oGa8e-009jDO-D6; Wed, 27 Jul 2022 06:03:20 +0000
+Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGUBf-005z7C-34
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2022 23:42:05 +0000
-Received: by mail-pg1-x535.google.com with SMTP id s206so14473461pgs.3
-        for <linux-mtd@lists.infradead.org>; Tue, 26 Jul 2022 16:42:02 -0700 (PDT)
+	id 1oGa8c-009jAo-AA
+	for linux-mtd@lists.infradead.org; Wed, 27 Jul 2022 06:03:19 +0000
+Received: by mail-pj1-x1030.google.com with SMTP id x24-20020a17090ab01800b001f21556cf48so1118061pjq.4
+        for <linux-mtd@lists.infradead.org>; Tue, 26 Jul 2022 23:03:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=dGH3qFzh7142lQz4z3uuh5FEAq1YCKuXhD8gTq8Wv9o=;
-        b=jw77WZsx/pqONraLzY7S7Om30Dy23eEzwf3gwh67jG+4Bt8oewkXkZfewyUyDbSux/
-         78NMnQFG0g7o1IfO/GBs3yyFgojB6rMDFnxInnTLJN56ZvKbZFWHVAm1j5T1J0fJ5dnb
-         oZT25bEUTj08EwEg/9vk0CXnqbPoZGTIOjx3whGKvUiKiJEjCuQaL+gv9sCCa7WLLmyU
-         13Ggu4CXecU/6QwKB203FGwa7ZyIo9Pux72qickqTrv84jkgMe9SLr20quD6ts9anRss
-         uaHCeYcVZHlA5ZK8ICkQrCYr2Orw/F9YpMa2NXpNSPzAT8STPqs8fYYy/okcpop9bsge
-         Potg==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=pHInnhZIapp9ygsJkxHnw8j0AydAm5/Szf/QJZReVwc=;
+        b=hOvYEhU98x/GDtGnYnmoR6BJRBXACIoTfxIQJjyK99pcrQKlqKNDGNPCCYvtelWyQZ
+         Y183bzy65rDmM1fHouJFY5e0lrHP2DA9cKq0IlsKAlZP4ykSykOuwcz45eXUJsECIkle
+         4QKLBROzWhdgL0/SYmLwbPvvfb4CZI6QgsS1oLhLUB1IiQ8o6Xu3pTgvADuCETctHgQd
+         3jXASagP1pGOOnh0jhs5ikPcA8d9CtYGSAujv/q62h9Q70hMpicy3GAHNw+nqitfpaG/
+         KuGd3q+ZwR1SrHcxOZAo5iWuejtHg7RvbLN2OnmlD5lrihO9XLpQ8t3iTyoV88opuaSb
+         hOuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=dGH3qFzh7142lQz4z3uuh5FEAq1YCKuXhD8gTq8Wv9o=;
-        b=t0KyoCP/K+N7tCKkIKnQ+nQQC6w0Qx8gbVguB5p0NZFS6v2u/YnnIHSpNtn7hp3d8P
-         ANopBXYN8WPpY54lAxCdQYjD+PGP2+E45QFsPIlibvRjys4w3J2fCceVLtzRS14/0+Mi
-         jtAGIMyYIPYf78IhfrVY4gk4f1mKiJ/Ocjwp3aNkj1f2Dmz4HgujgukBG7yu2J/rypRA
-         aRdXjt6qT97M2U8+RAJOouE0CCpQmyDL8j+2J2RtK9oBFH+a8OFgK18tJALOnLXp4ruv
-         i7Gx5HzrT2UlPqyIpd0DNwJ4G6+yaEabrLRifxBH9CliQGBKKXPYD2xHo6w7pR7ssf6s
-         ov2w==
-X-Gm-Message-State: AJIora/vm4GKKaZeA41m+Ht4I1Pe69YfLFOZVdcJGC1ZeKeuUt0jGIwJ
-	l+g/mp9dsByFNE4SI3faHnY=
-X-Google-Smtp-Source: AGRyM1stuefJK9kAz9r4wv0P8V9jheLIWcFpwYHQv/iGNJjcOQrHNDFP9DPBxROXTQrW+z/8MMxYwA==
-X-Received: by 2002:a63:8bc8:0:b0:413:9952:6059 with SMTP id j191-20020a638bc8000000b0041399526059mr16255399pge.61.1658878922294;
-        Tue, 26 Jul 2022 16:42:02 -0700 (PDT)
-Received: from [192.168.0.10] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id gj13-20020a17090b108d00b001f2ef2f9c6fsm129676pjb.56.2022.07.26.16.41.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jul 2022 16:42:01 -0700 (PDT)
-Message-ID: <9380720a-a5b5-b2d9-757e-7b5b604310d0@gmail.com>
-Date: Wed, 27 Jul 2022 08:41:58 +0900
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=pHInnhZIapp9ygsJkxHnw8j0AydAm5/Szf/QJZReVwc=;
+        b=8EOT+WUQvoS5VKfdOz9Sssr7ZX5TA7S8Bs7+Nv0sfynmC6NyAOZUvkuw0eH0B32q9g
+         hUApQaqYspGpV8Hy3FlrwbD2tsm/OH/ezMfS/yjpcSN5uEIxPNKE1hK0iF6rVhEho1BG
+         xCQ0Tub5xUM0PLn1F/nCKeY8ieu9pnkKq9WqIByov9dB0DlzutJaTPTfi+2wBbQIOA7w
+         KjmNbF/N11ZxsSK86/0gC+b4IVhwnb0lwc9aJvdZB4o+PlMuApXHbbNAezWGrXLsVcUa
+         tMn48Rv0FM10Ojnz9dA/Ig9lppi/fNcrh4uen/z958f6HSCMOlruY4WPAMbx/s6ek+3a
+         CX+g==
+X-Gm-Message-State: AJIora+ji34S3LtHcc0KAfJZwCzeyj5vZdW/28nI0Iz3YAIq0k2fw938
+	fbRkTf6v7hteWmcwjgWhE+Y=
+X-Google-Smtp-Source: AGRyM1vMfbDk3zJiVxRQkUQY+kK8oss494ogdScYinwu4OCsDie7+BNXRUd0jGmYyMuCmXwyi8JrxQ==
+X-Received: by 2002:a17:902:d2d1:b0:16d:37b3:f8b3 with SMTP id n17-20020a170902d2d100b0016d37b3f8b3mr19612626plc.98.1658901794902;
+        Tue, 26 Jul 2022 23:03:14 -0700 (PDT)
+Received: from localhost.localdomain ([43.132.141.3])
+        by smtp.gmail.com with ESMTPSA id j1-20020a654d41000000b003fadd680908sm11252628pgt.83.2022.07.26.23.03.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jul 2022 23:03:14 -0700 (PDT)
+From: Zeng Jingxiang <zengjx95@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Zeng Jingxiang <linuszeng@tencent.com>
+Subject: [PATCH] mtd: physmap-core: Fix NULL pointer dereferencing in of_select_probe_type()
+Date: Wed, 27 Jul 2022 14:03:02 +0800
+Message-Id: <20220727060302.1560325-1-zengjx95@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 4/6] mtd: spi-nor: move function declaration out of sfdp.h
-Content-Language: en-US
-To: Michael Walle <michael@walle.cc>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20220513133520.3945820-1-michael@walle.cc>
- <20220513133520.3945820-5-michael@walle.cc>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <20220513133520.3945820-5-michael@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220726_164203_183636_1E5C6F59 
-X-CRM114-Status: UNSURE (   7.44  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220726_230318_376644_D63CEF1F 
+X-CRM114-Status: GOOD (  10.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,19 +89,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 5/13/2022 10:35 PM, Michael Walle wrote:
-> sfdp.h should only contain constants related to the JEDEC SFDP
-> specification(s).
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+From: Zeng Jingxiang <linuszeng@tencent.com>
 
-I think sfdp.h can contain declaration for a function implemented in sfdp.c,
-but not a strong preference.
+Coverity complains of a possible NULL dereference:
 
-Reviewed-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+in of_select_probe_type():
+1. returned_null: of_match_device() returns NULL.
+2. var_assigned: match = NULL return value from of_match_device()
+309	match = of_match_device(of_flash_match, &dev->dev);
 
-Thanks,
-Takahiro
+3.dereference: Dereferencing the NULL pointer match.
+310	probe_type = match->data;
+
+Signed-off-by: Zeng Jingxiang <linuszeng@tencent.com>
+---
+ drivers/mtd/maps/physmap-core.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index 4f63b8430c71..69d0ab1f6f94 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -307,6 +307,9 @@ static const char *of_select_probe_type(struct platform_device *dev)
+ 	const char *probe_type;
+ 
+ 	match = of_match_device(of_flash_match, &dev->dev);
++	if (!match)
++		return NULL;
++
+ 	probe_type = match->data;
+ 	if (probe_type)
+ 		return probe_type;
+-- 
+2.27.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
