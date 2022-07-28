@@ -4,79 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD086C19F2B
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Jul 2022 16:42:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD9DC04A68
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Jul 2022 02:24:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=c5rMLu/jd3Tw8ai4tf1NIFSRAwcT8X8ltqkRbWGfPXQ=; b=W/3qXJV9XaVOZN
-	souWejTXyDB/7QOF71WYGUXH390qXXVOrQpDqjwED5qA7k/Dp/8bj/03zMAeA7yGlTpuVctzgHx/Y
-	+kdl3AnzHI+E3mIhxLxq6LgBXXxlugphVMoPK/UvsrdonSXknTOjwdK1QT+ZsirG44Pul0Fg751DX
-	aPBqWtQ792k9a8KwlR1k2HnDpy7S4RaNSay/laZphSaKphc7vCpEd34J6rhneO+xU3bjtlkJufgpg
-	BxV4Z9YItPE9Q5NCDxF8dL4LzXfMd+2hO664NrQQDx9Rame9fVgwIBhpoqSEJZwxxOzcXUsrFXJfc
-	KAdvvo0fhqEnm/aXihZg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cg2QON2E7rA91Fv+sBFWzySszyfNnhxsV/L6SHxZdEo=; b=nvHsHD/yIpjX7g
+	CT0Ca+5uQjRzvJRYqwM0zBaS9UgYtU5Bc9G+TERweevwIo8xu1wGwarJaLhHf8eOIvOBAMvnLV7+v
+	RmwC5oSxnx+TwhSajDepcK+9Qc9e5wJtyh5orejuliUhmbPpQrFJnWS6JCP30+MPr4KBVENpw1rIE
+	ul96LlPeXlELuWlKVJzuPLcpaOmudO5Weh/KTQQVdO3EcdRadtTxIy+ZuzZj2s64QXZeVUpLvglzS
+	0s67XYTyVTAO/DodrmTU4kYha4rJ7sSsHksN/WR26G6B4R3dLMI1vSLSJVC7/Xi4wTzW5MtbqbUkc
+	/rzoN03yM8ut0Zi6wB+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGk6h-00Ffn5-2r; Wed, 27 Jul 2022 16:41:59 +0000
-Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
+	id 1oGtBp-002oax-Pe; Thu, 28 Jul 2022 02:23:53 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGk6e-00Ffjt-2f
-	for linux-mtd@lists.infradead.org; Wed, 27 Jul 2022 16:41:57 +0000
-Received: by mail-lf1-x129.google.com with SMTP id bf9so27823593lfb.13
-        for <linux-mtd@lists.infradead.org>; Wed, 27 Jul 2022 09:41:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HLLpAzhNV/l0ttpD0m4mlf6L5UXu2Cn5/3KpjyhDTBY=;
-        b=uPUaQqLTpWBsddAvwhB8kXR3XZqpK0bsfMJYxtl6vmn0LIxzSjWbEkXM+1GyWv4q3K
-         0lXRAxsqbWIDmTHN9W9otGvZnmtq6Gi31EciPJxgE8fjh2qUREoJtZEh1xQiYckDq06b
-         RsAcgGnVa7t22jloyDww1FlcS+NSMIoxuplRVXowLQCO7zd4UqWHIJTdos7ONZAPMoQO
-         X8GTSCn5qBzEmzNsHgudvTRUKqbh5UBpG8+/KsiBX1774UKZHSPq9SrIQvAY2SyBGYum
-         lrUgOkkjGsHBhfhQR0ZmWQvSkCw8rH2kUtWhMyPFl6EyINP0S5yN50siJJonzjzCBX5j
-         aA0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HLLpAzhNV/l0ttpD0m4mlf6L5UXu2Cn5/3KpjyhDTBY=;
-        b=JZn4eu+KVzkbkmjHrkK8LE1sK1YUNg5+8bCiXO7DcbF1YsgcrOlqPY9MRgBszVT0XN
-         z+FbnPvlEIMgsDD68qXjW+gKYYVJsKoTOu6clWc15rkIIy5/wT9v+65s0Eih/nREIcNE
-         BcbUvjqd0Kf8XKeGP6eNQVps7fksAOTyVetN5fOaPh3x3xWosducqQAk1lHJysOYFdRU
-         KsQ+S+02yt7W+8O24AnEI2yvxlJTTgGwuojp7HYS9xuhzAY3Z1AItdpYtxOpJUd4963B
-         tbTJvgmOBEwiqlZztRJAtfHQ0AQmyWaiBmxD2K+jWx1slKZa5It8UYDcvF0p0IOoQ1xR
-         If7g==
-X-Gm-Message-State: AJIora/6jqtQa6eiYBSUFxWVKGA5094fs1n/tatKJHeYhYG9w7cfrVko
-	RTRbsO/49TT+N8lmQJgZLbfi+g==
-X-Google-Smtp-Source: AGRyM1uF0dw37mu6pVrn0amas3Oc/3y1uf9T6DdFSISA35nOH4HUEzm1LE/4X3+zt0Kb9+FISznkdw==
-X-Received: by 2002:ac2:4f0a:0:b0:48a:839c:2fe with SMTP id k10-20020ac24f0a000000b0048a839c02femr6823774lfr.40.1658940111411;
-        Wed, 27 Jul 2022 09:41:51 -0700 (PDT)
-Received: from krzk-bin.lan (78-26-46-173.network.trollfjord.no. [78.26.46.173])
-        by smtp.gmail.com with ESMTPSA id z19-20020a056512371300b0048a73a75908sm784409lfr.302.2022.07.27.09.41.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jul 2022 09:41:50 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Heiko Schocher <hs@denx.de>,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] dt-bindings: mtd: microchip,mchp48l640: use spi-peripheral-props.yaml
-Date: Wed, 27 Jul 2022 18:41:48 +0200
-Message-Id: <20220727164148.385476-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	id 1oGtBj-002oS4-SV
+	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2022 02:23:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1658975027; x=1690511027;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=mo9mynxryvdXiiS4C5lXFJk9m2CyqVWDTeehwlCn96k=;
+  b=A21njeipZp61EEHu5jVKDn0cbSZYg3C5TirrwfkLmfnj/2kMC7Ru0Yfg
+   nqPz8S9YViv8Jky+AjBtmChLMtH+W6HuM2nmOmqzO/eXC8Rgz8LPTNqMD
+   K8FFJtsBJ/JCZAjxKeD92IuOiZmAA63M4vfz4E5xjr8YIkarNNAMzQk35
+   KIv7AM2hm/YJ9epjqVyl5yZuWXHkdhXxmMI7zHZOAlNIuP5XPn6TOK+s+
+   nGD5fR1oI56vdLbWAl1xpjuV8jb36gy5p3d6L4gvDpi+EcgXWyO3bgI4j
+   InnSg+XXfqTJVGMzs3SBbZ0K40mSyitQ1I3D2DCwgkJvwu3sXxZttT689
+   A==;
+X-IronPort-AV: E=Sophos;i="5.93,196,1654585200"; 
+   d="scan'208";a="169846675"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jul 2022 19:23:38 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Wed, 27 Jul 2022 19:23:37 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2375.28 via Frontend Transport; Wed, 27 Jul 2022 19:23:35 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <linux-mtd@lists.infradead.org>, <tkuw584924@gmail.com>,
+	<Takahiro.Kuwano@infineon.com>, <tudor.ambarus@microchip.com>,
+	<p.yadav@ti.com>, <michael@walle.cc>
+CC: <vigneshr@ti.com>, <Bacem.Daassi@infineon.com>, <richard@nod.at>,
+	<miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v17 0/7] mtd: spi-nor: Add support for Infineon s25hl-t/s25hs-t
+Date: Thu, 28 Jul 2022 05:23:30 +0300
+Message-ID: <165897487177.51423.13629273850895321628.b4-ty@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220725092505.446315-1-tudor.ambarus@microchip.com>
+References: <20220725092505.446315-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220727_094156_178384_48BC59F6 
-X-CRM114-Status: GOOD (  11.28  )
+X-CRM114-CacheID: sfid-20220727_192348_066959_20906388 
+X-CRM114-Status: GOOD (  15.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,61 +81,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Instead of listing directly properties typical for SPI peripherals,
-reference the spi-peripheral-props.yaml schema.  This allows using all
-properties typical for SPI-connected devices, even these which device
-bindings author did not tried yet.
+On Mon, 25 Jul 2022 12:24:58 +0300, Tudor Ambarus wrote:
+> v17 introduces nor->params->addr_mode_nbytes in order to track the number
+> of address bytes of current address mode. This is useful when the flash
+> operates with 4B opcodes but needs the internal address mode for opcodes
+> that don't have a 4B opcode correspondent. Such an example is the Infineon
+> Semper chips which provide 4B opcodes for read/program/erase but do not
+> provide 4B opcodes for Read/Write Any Register. These registers are indexed
+> by address and require the internal address mode of the flash before
+> Read/Write Any Register opcodes are issued.
+> 4B opcodes are preferred over changing the flash's address mode to 4byte,
+> as set_4byte_addr_mode could be done in a non-volatile way and could break
+> the boot sequence. Thus we need to track the flash's internal address mode
+> so that we can use the 4B opcodes together with the opcodes that don't
+> have a 4B opcode correspondent.
+> All other minor comments were addressed as well:
+> - s/address width/ address nbytes where needed
+> - "mtd: spi-nor: spansion: Add local function to discover page size" no
+> longer replaces the hardcoded value of 3 for the number of address bytes.
+> - few patches were dropped as they no longer made sense with the
+> introduction of nor->params->addr_mode_nbytes.
+> 
+> [...]
 
-Remove the spi-* properties which now come via spi-peripheral-props.yaml
-schema, except for the cases when device schema adds some constraints
-like maximum frequency.
+Moved params->addr_mode_nbytes initialization to dedicated line,
+s/int i;/unsigned int i; and applied to spi-nor/next, thanks!
 
-While changing additionalProperties->unevaluatedProperties, put it in
-typical place, just before example DTS.
+[1/7] mtd: spi-nor: s/addr_width/addr_nbytes
+      https://git.kernel.org/mtd/c/c452d49849d4
+[2/7] mtd: spi-nor: core: Shrink the storage size of the flash_info's addr_nbytes
+      https://git.kernel.org/mtd/c/aa5d980a144c
+[3/7] mtd: spi-nor: Do not change nor->addr_nbytes at SFDP parsing time
+      https://git.kernel.org/mtd/c/47c6f8a67f2c
+[4/7] mtd: spi-nor: core: Return error code from set_4byte_addr_mode()
+      https://git.kernel.org/mtd/c/08412e72afba
+[5/7] mtd: spi-nor: core: Track flash's internal address mode
+      https://git.kernel.org/mtd/c/d7931a215063
+[6/7] mtd: spi-nor: spansion: Add local function to discover page size
+      https://git.kernel.org/mtd/c/a6b50aa12796
+[7/7] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups
+      https://git.kernel.org/mtd/c/b6b23833fc42
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
----
-
-Technically, this depends on [1] merged to SPI tree, if we want to
-preserve existing behavior of not allowing SPI CPHA and CPOL in each of
-schemas in this patch.
-
-If this patch comes independently via different tree, the SPI CPHA and
-CPOL will be allowed for brief period of time, before [1] is merged.
-This will not have negative impact, just DT schema checks will be
-loosened for that period.
-
-[1] https://lore.kernel.org/all/20220722191539.90641-2-krzysztof.kozlowski@linaro.org/
----
- .../devicetree/bindings/mtd/microchip,mchp48l640.yaml      | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-index 2cdf6bf3dc4a..8cc2a7ceb5fb 100644
---- a/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-+++ b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-@@ -22,13 +22,14 @@ properties:
-   reg:
-     maxItems: 1
- 
--  spi-max-frequency: true
--
- required:
-   - compatible
-   - reg
- 
--additionalProperties: false
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+
-+unevaluatedProperties: false
- 
- examples:
-   - |
+Best regards,
 -- 
-2.34.1
-
+Tudor Ambarus <tudor.ambarus@microchip.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
