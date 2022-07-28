@@ -4,158 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2613C04A68
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Jul 2022 03:29:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1B12C19F28
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Jul 2022 03:38:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date
+	:Message-ID:From:References:To:Subject:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9+rLFCH1ZY7b4Smbkrzjuma+0rGfVg6ovFnOT/cbHwE=; b=Oa+ztUJiVALAgO
-	HEphSaLXPjSJ7pntfNieYgpXD1Hy7ceasAdMyWN6okbxy/gLr5Z8y64ZwOVxoMpKBN5+/4Cd45RoZ
-	SY25R/XyujFcG1qbqt1FplZX7rGGzkv5VH/LUmP8Q1kgnD4lU9uGw+YFCK494t5F+0fnROMJzUnEO
-	4uEP1efkBJr5iHjgh5s/2JxCqaPLkaeUe9vhHz4McrMp3SOByi5tpX+xpZWGf+EIWtaQsSFtB9iWE
-	YMRC8kXd81asZJjdPZHB4bzHp1czpxK/DyWwUqxCTVa93G8L85GrgZ3FTpoM/0uRtxtn67BzRAWRb
-	xcx+RiwdtTFy07XCLdsQ==;
+	List-Owner; bh=HXoujfRWwwWzaVNfZGDh7ztkQ0Mb1Icu8zl9TsntI5w=; b=2shJnnBjwkI32S
+	lLab0XwgaYfjDP3RaZsLmZG8RMb21NfWy6Muhj8iGZff4WuqYrSs+2BzowiKq7KipJ1QV4Wv0ZYRy
+	x4eORpMGWuQMUcHCUuVbnPYof4phLQ+hEoiynyXt8avxmAZX+OoIwgQ1Mf0mFtl3Od8holr6qsXIA
+	izgrYk6CEVaN0DD6IO20f1LOcmsgqWn9gaE4yFcLZZKGsdBi6uyw3zgrOqct5QLoNUu3WyfZXH+1o
+	aQuehpE4BOU/l8E75bS2TtxjjfJVYLZWR9ShnMlnD6u6j6Unq3nugvRAUYNJkCIToS3lEPp5noYEl
+	0YOBoJeukbGE0zsjXwdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGuCm-003YD9-DO; Thu, 28 Jul 2022 03:28:56 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1oGuLy-003gXw-V0; Thu, 28 Jul 2022 03:38:26 +0000
+Received: from phobos.denx.de ([85.214.62.61])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGuCj-003YAX-GA
-	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2022 03:28:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1658978933; x=1690514933;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=UXvU8QuIFEe2WwVQdMOnB0M9WeX6mfxKLAqP1sv8h+o=;
-  b=js/G0cT05YGRhvoteC4u2lBKD4k5Kqq40RvDjKthvVNCir0RdkHXmCUS
-   +V8nvw0rab0d/VQtdsfsSnPWnAIf1BzSZXAf82CCpVI9dKBGZoCFDQ+PC
-   j8k3f3PBW7XaaQxlt8T8EjffZWmA7uCoKBpygTVMrF5niLPENFYfUiJrC
-   ZUiBuea+9eRQqriuWyIOi17yWPbt3QZTCerR3MfXsH2UXvejydFl67LZy
-   QBP9cX8jUZ9DHFbtc3W6NX9wSCVMGB4SqBa1KvuelPb+NAMtOgqCopEbG
-   pUNVMsdQl2xV9mHliV5n9H/SVgwHpW2axHS158Z2tRh5+8EaGJ0D/0UqM
-   A==;
-X-IronPort-AV: E=Sophos;i="5.93,196,1654585200"; 
-   d="scan'208";a="184067207"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jul 2022 20:28:52 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Wed, 27 Jul 2022 20:28:52 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17 via Frontend
- Transport; Wed, 27 Jul 2022 20:28:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EQqAyK3DUOWhkdxUAfek0ayjpyrbj/IGHTSc8C2ZoNhkLFsR9VUvJMqvvhNq/xtl0wz9FJNcO9DtluCpjFx3q6BHx1LF4wLX4fY/5g2bcIYi1lrvpMnhCFPOvZGnMOo1VGA1UxmuTWvMg/EBR3sii4wTb9yk0LTQFlM0JU1pX+0gBAS7IiKOd1PXPl5+GHZIN9luu/6CP5lHLUhqILUNBxUP6ovj31lj9xkja/r7pwh7J5eSgR7FVONnA6M+eTSzvGZTjeJdm9FRBqoYM6SJv1iFy25TuGViEa+rNLFoqejeVnqf4A51CjdtdCbRhhwidBR8NYNtGzATxsc05ifdGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UXvU8QuIFEe2WwVQdMOnB0M9WeX6mfxKLAqP1sv8h+o=;
- b=kk5HZ/fspi6CsU3Khnx032P4clpggNztbXQwcunm5WH8xdlR7dznDaCqeOJGupVjGAiXtjfAG1BuJl6n+VzdLkZbFUE2LIvp1eP1pwVisdyXuRwSWFsCeHThrA1SvpKgQ1C9WMBIlRXgPdI1/hpYlpFBlEJvqtqmnczD/3CrB/9sj1t9ZY5jQ9Z4ky7pMR8HjzXM/BhwAvv/X/wq0H6ChiKMZZRY/bDoFXcvykLc+5QaAcS107SXYLlEIZog4SBZXdhFj2RHbA14X6BgHtdwUk8qbSZdzYwblpFjrvkiEirYYs2R008i/oiPeDQiFtSjI5LEPUGIKmoKH4M5s+mVQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UXvU8QuIFEe2WwVQdMOnB0M9WeX6mfxKLAqP1sv8h+o=;
- b=HBP7cSjXCUBZeD1jg5qcMviqwXN9/d1RTSM7USFVxR7bP3tcwGEFm8uLdtiWc6Qkau7ZWisE2RoGgL6/MTCj7XmfjnPwyol6OEx+g0YYtG8C/3y1gVTb9yoPn2Wxqqudg+18Gb+CyPMUYaZKcdbRqEfJAgw47PAQ37DZB7DoAqw=
-Received: from DM4PR11MB6479.namprd11.prod.outlook.com (2603:10b6:8:8c::19) by
- BN6PR11MB1841.namprd11.prod.outlook.com (2603:10b6:404:102::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.6; Thu, 28 Jul
- 2022 03:28:47 +0000
-Received: from DM4PR11MB6479.namprd11.prod.outlook.com
- ([fe80::7549:c58c:5e93:7c35]) by DM4PR11MB6479.namprd11.prod.outlook.com
- ([fe80::7549:c58c:5e93:7c35%5]) with mapi id 15.20.5458.023; Thu, 28 Jul 2022
- 03:28:46 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <michael@walle.cc>, <p.yadav@ti.com>, <miquel.raynal@bootlin.com>,
-	<richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 5/6] mtd: spi-nor: add generic flash driver
-Thread-Topic: [PATCH 5/6] mtd: spi-nor: add generic flash driver
-Thread-Index: AQHYojIlmUAzZx0qsk2fc1Qh0W6Kkw==
-Date: Thu, 28 Jul 2022 03:28:46 +0000
-Message-ID: <dec63921-be59-1845-78cf-2780cba8f7b5@microchip.com>
-References: <20220513133520.3945820-1-michael@walle.cc>
- <20220513133520.3945820-6-michael@walle.cc>
-In-Reply-To: <20220513133520.3945820-6-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: eb8dbc10-e0e0-483d-5ad3-08da704947bc
-x-ms-traffictypediagnostic: BN6PR11MB1841:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QdU5aexQW2PFyhULwTzrVNGyc7GcT1TCYwZMqnSgSoGttWoDnJTzQfjjzrAzpacNu+7Z7Biucq7UoahsHtCYp51PJOj5Asa8fR4Nmt8OZjyrplAqEH5bJ+0CoXcEZIdF2dJIccZFXmle/FmImsyUKgzXuP3zZULXvahQLMKrTovKaci50UT0CTSEYfIHbgmcEpLTfprj9bP6HYhQ5A7V7+sH7NxFKfom3eL+oZiGBafae+rlifKsrcPh8pewwa20XI+dC1Q/EaVJnuDR8C28zSi6wzXAFmYXiKIqwEk1fZ7eKRaLNSUIgUvzOfkcrikhSk0JYwjLth+evsfcEDdiuQpcxFR449MrKfDRf1HjzRVI/IjEYlbvp1DONe8Pv8gt+AFXUqUAzPy9yLAjqeuBGid7p+hZY82Ut5FVmeFqIkn5zdmV4OHg78QoRBcDwtAiO2pe6HXOPh2KL6yskXeTqYj9z8QGDochczQAElRW6RAThY+AOMWZhsqoPrtrXoS2MRkrGkLh9X9ZDuXkOPQOf1EH8EEFgpUnFIlz0v0x5YpG3DwovuiUqIHZLyqmfDDRrkzE7fAqt7axRLY+MtQ332wBeMIeZ5aCbHVPBhnMk/aiZfqwAVzSMQrAjPkUew7lTnhb66MlYGv5glel9mRSt4METdWycESM2MEsPeg9AwWWG26sCWzI0LThj/FhuB6iuz7cT3MIYcJCUBgAa30kWXNW0HcxqeJO/K7CyWjZPWfc9CzSn6RY/b+tOUeDNNSS60Msg5tKcEte3OsyYWc7GvjmlmqUegHFDpy4iB+5hvwugcG+gVrgHqP+HNG4Su0yvg+9ACIYprIPdUb2FZkWm8xD+IlQ1ItNp2WeOikBY7brR/pMtBiw+fdqiIcQRHMtf1JMay+1sxVVBaTb6xaNzA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6479.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(39860400002)(396003)(136003)(346002)(376002)(366004)(4326008)(316002)(6486002)(86362001)(31696002)(71200400001)(36756003)(122000001)(110136005)(478600001)(53546011)(31686004)(6506007)(54906003)(6512007)(26005)(2616005)(38100700002)(66946007)(64756008)(8676002)(186003)(66556008)(76116006)(8936002)(5660300002)(91956017)(66476007)(66446008)(4744005)(38070700005)(2906002)(41300700001)(41533002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WGhlUFE3V21HM2l2dTVLMkFuL1VidmtCWHRDaHA4aW9INmg5OWRCQUF5MVBs?=
- =?utf-8?B?NjFIdjVSS01VT3RpUHNpK1ZWWEhia0lNNzk1NVFURnJwaDZTSlBXZVVjNktw?=
- =?utf-8?B?LzVSUkNSaGt1eXg3Ymw2WmJHaEpobDVybmdoKzJhMDBhdU40M2JoN08rcUIv?=
- =?utf-8?B?SEYwT3h1dWVmTDVRbjFNblpmdSsxa050ekgzMUlqTVVMVEhYaHpKL3N5VTUz?=
- =?utf-8?B?bEZBTnMzSGw5ZWl1ZnFXamgxUWpFaXVxcnJuYTJyZG5DMW5mU2JabUNXMXd3?=
- =?utf-8?B?WlYyLzNRSmJ6cWhOMFNaMW9RQm13ZWhPUEhRbk1XU3BYSDcxV093OENnT1k0?=
- =?utf-8?B?bTJiZUVqZjFFaEdpT2VQdUJNMmFydGxXbHhKSHhEcjRsbjdaWXNwQzJiUDNy?=
- =?utf-8?B?eWR0LzZhT0VGSUhHOExFK2hzMFBtMTU5VEJpWmNsYnAwUzJmSHE2MmExaFBp?=
- =?utf-8?B?aXJXTW5RUS93emlVdXlibmVET1dJanNtaWlrZXc1OFhDWDI5OHI5UVpCaWR4?=
- =?utf-8?B?WHEzY0FkcmozbTdyTXphd0lSMFVqL0o2OFVveXhvWDl2MnY2SzFWRks4eDlt?=
- =?utf-8?B?YldTM2VvdUhDbERNdDk0dVFIMTAxOFdYaStVVEFPOCtvd1BPUTZHL05ZRFhF?=
- =?utf-8?B?TzFFNGZnU3pXeGxQUWdYeUNyakdDTU96U3AyUEFyMU1xQi8rNWc3OXZ5ZTBB?=
- =?utf-8?B?c0JZSFEzOWR5NVhKUmJpVzdYWGQrR1RqUzBUSlhuRThIOThlUnRRNTVsaXRC?=
- =?utf-8?B?NFdFWjdENkVZWXJQNHNpdU5PcGtCTnh3am9ialh1UmgrU2t4TmF0YzNwa1ZJ?=
- =?utf-8?B?M3RlR2NsRzNwRDgxSTlzR2Y5ZUdYZTB3OFYyb0huRWcrUWZWY1FjaU5UQ2Jm?=
- =?utf-8?B?a2ZxamlWSmEwSWpnd0lES3VNN2VXbEJmUzdzcW0zd0s1cXdSMmltUVdZazB1?=
- =?utf-8?B?Tk9aMlBDdHlkdEVHVXJnUWhseUJlN3daeDdqRTNKd3NTVXppNUxmWHcvWmZ5?=
- =?utf-8?B?MmUrN24zNlF4Y0swUjhQZEVPSWVSWHUxU1FiY2RMeDF2Y01UM25XdENleGs3?=
- =?utf-8?B?VGlWZ0Q1aDFUM0F4cTl3cHp0NFVUd3JpUVFuRURHZlZDWUtOVFY1RGNaS0dk?=
- =?utf-8?B?VmRnMGExWlQ3SEVXUVJQWWxuRmdQcnJKRWpVZ0RnUklNMkhCenhCVUVsTFF4?=
- =?utf-8?B?Qk00MWlqN0xtaEd3bTVXdUd6YTN6blNhV1BFZXEzSk44T0UvZjdvNmpHUE1I?=
- =?utf-8?B?aTdpOU5rK1lQbGlVQ3dSWlp1M251bGppZi8vY0NoTTY2YlBZQldVamtKaE52?=
- =?utf-8?B?bFRJQjZMZTE3Q09tYVlzTTlHK2grcFVGTTh5aklURFVocWVtRTVKYkp2a08z?=
- =?utf-8?B?K1E4aXFORzljZmdoVnNGV044amlTcU1jOW42bitWdi9zWFFqUGZVMURNNUNy?=
- =?utf-8?B?TlJaMzVKc0crOVY4M29iYVkyM2xWWlJTa3hkM3dSQTdBTzRxeDNRclRtR1Bs?=
- =?utf-8?B?M2FJcmR5WEE3TUVIbU85dElqNk84OFg1ZWZ6MDFublhpL3lBcGw3TDRKaW5P?=
- =?utf-8?B?ZU04cGFSSDVubVJYejhGR0VqSFIyU0NoQko1eFZTQ2JKcmp1c0VYZGZkSElt?=
- =?utf-8?B?TnZJOU10RU9xN3RReURlTzdreXBOeFRCNmp6OHl2ZmJKenE3OE5teDdLUVZM?=
- =?utf-8?B?OGxzWFIxY2JaR1llU2M2MTZTd3hVQTIwdm40TnVuMmpmNXM3OEkxeGxmNTFQ?=
- =?utf-8?B?YzhlS2JvSjM0a28wdFRkYnUraFgzKzY4VGJuRWFtZkRJckJjTDNFWVNCTUhV?=
- =?utf-8?B?NUo2OEhvMVZsQVMwOUFvYlRoQ3hmTjVPVy9URG9TYTFQM000Z1FZYXB2SGls?=
- =?utf-8?B?bFBlUWJKejEzZzNWdFdkMC9YNkt4UHltNUFWTnBBYmJmQXZiaGY0K0t3Vk82?=
- =?utf-8?B?TnhrSVhjRnFYZ2JLMVBmZG1BRDgzQUZNYjhMN28rRVAzOHNpZXRPS2F6ditz?=
- =?utf-8?B?ZXlPZzRnNWdMQ1FrdFlXUnFXbTJpcDhnWDMvMjBLaGlqdUNBWGlLNFlya0VG?=
- =?utf-8?B?RWVodkQxWTNITEVlY3A1WDk3V1o5NkpZS0JPZ1dRZktUbjJQaS9EYnA2cFVG?=
- =?utf-8?Q?SK6v6bCV/voClTqK6FGjF8d6M?=
-Content-ID: <70F17755097CD04EA06553FC335F4A34@namprd11.prod.outlook.com>
+	id 1oGuLv-003gQM-FZ
+	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2022 03:38:25 +0000
+Received: from [192.168.1.107] (87-97-28-73.pool.digikabel.hu [87.97.28.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: hs@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id E1C1B83010;
+	Thu, 28 Jul 2022 05:38:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1658979497;
+	bh=/cS9TPU5+rXkX+J5Jkln5vvjln8emRqorhd/BraAqbU=;
+	h=Reply-To:Subject:To:References:From:Date:In-Reply-To:From;
+	b=sAUx4q81Hb1k4UrxcPIM8ByjmJ9sKdXUtAhOl02E0bk/WDWrzNT+9zQx16jwS9mDT
+	 nX/d35ryiZbjkOuxs5CK5c/HlPS2m+CbdH3c+GGbDE9E6iNz4lo3wyMNdz/9Fd1lXx
+	 ceRBfwvgLGJsDBF8VIlEJmRYI2h4yevlzMk1H9oMojpatMQEAeYVTm/wgrLqp7piPI
+	 EPugZspBPyg1PdPre10qfT2LqbzXCuuJMbwa+EzueEpu3jmMv8izXtTem1ZtjBatj7
+	 14S9qXflcxlJQJvjAAGpF0p3cTknD2UrWiCxOdqtQ6xeJj2alY9PZaGwPtZlou5GZq
+	 uug7cBm6z32Fw==
+Subject: Re: [PATCH] dt-bindings: mtd: microchip,mchp48l640: use
+ spi-peripheral-props.yaml
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20220727164148.385476-1-krzysztof.kozlowski@linaro.org>
+From: Heiko Schocher <hs@denx.de>
+Message-ID: <316239d0-1661-0430-1adb-e7faeff66144@denx.de>
+Date: Thu, 28 Jul 2022 05:38:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6479.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb8dbc10-e0e0-483d-5ad3-08da704947bc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2022 03:28:46.4327
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kQhXOnGjAKSSme+ZTjzoGTdmJxugPqmScQbqiNJkkJmnP9vFgEKeMPTBTfd3Nn+N3SqJSWDmeMjDAVJBVkDOki8t2faNLqEgoLnuXIkMYbs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1841
+In-Reply-To: <20220727164148.385476-1-krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220727_202853_586899_CD3BE9FB 
-X-CRM114-Status: GOOD (  11.71  )
+X-CRM114-CacheID: sfid-20220727_203823_804379_E3CB0B09 
+X-CRM114-Status: GOOD (  19.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -167,27 +75,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: hs@denx.de
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 5/13/22 16:35, Michael Walle wrote:
-> It is still recommended to add the flash to the in-kernel database.
-> First, we get a proper partname and secondly, for all features not
+Hello Krzysztof,
 
-I wouldn't advertise to add an entry in the flash_info array just for
-the sake of a proper name. The name shouldn't matter. If all the flash
-caps can be discovered when parsing SFDP let's not add an entry at all.
+On 27.07.22 18:41, Krzysztof Kozlowski wrote:
+> Instead of listing directly properties typical for SPI peripherals,
+> reference the spi-peripheral-props.yaml schema.  This allows using all
+> properties typical for SPI-connected devices, even these which device
+> bindings author did not tried yet.
+> 
+> Remove the spi-* properties which now come via spi-peripheral-props.yaml
+> schema, except for the cases when device schema adds some constraints
+> like maximum frequency.
+> 
+> While changing additionalProperties->unevaluatedProperties, put it in
+> typical place, just before example DTS.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Technically, this depends on [1] merged to SPI tree, if we want to
+> preserve existing behavior of not allowing SPI CPHA and CPOL in each of
+> schemas in this patch.
+> 
+> If this patch comes independently via different tree, the SPI CPHA and
+> CPOL will be allowed for brief period of time, before [1] is merged.
+> This will not have negative impact, just DT schema checks will be
+> loosened for that period.
+> 
+> [1] https://lore.kernel.org/all/20220722191539.90641-2-krzysztof.kozlowski@linaro.org/
+> ---
+>  .../devicetree/bindings/mtd/microchip,mchp48l640.yaml      | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 
-> described by the SFDP like OTP we need the entry anyway.
+Reviewed-by: Heiko Schocher <hs@denx.de>
 
-Yeah, caps like OTP are not SFDP discoverable, we should add a flash_entry
-when things can not be discovered solely by parsing SFDP.
+Thanks!
 
+bye,
+Heiko
 -- 
-Cheers,
-ta
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
