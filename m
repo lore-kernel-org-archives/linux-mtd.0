@@ -4,63 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ABC4C04A68
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Jul 2022 14:04:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C78C7C04A68
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Jul 2022 19:23:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ojOJpZY0Dnkfoa9TkXWQ6GqHUSTDnXg0G91gnlwhhpI=; b=31IqYwoTgma6ngTSHONQWPkOvc
-	7McsMyaNrMIQWYsGwoKBdvr4lmNKiR5G02ZOYZE1f0NjZ7SnFWfY48TrOzKCbYVLtZ9UxDwaY+77w
-	hPVCNXpM/OumjMMrc3LjHM4aAwJbOWHBydeEynP0Vk1A7hQM5HU5dkaNtwS78KRHzLNCudapcIW8e
-	bcUgCo3ov8Ws+gE07ysDo84RbGpqiXJyQBr413qPOfkWJds1Y9cBgsvUrapFdWba7ysJdTFCXCNVj
-	ttvo9zH6HZEZG3pUv68sljOvGavVagZls8xgJNnszcQWpjH1v51cwRya1CRAAfVFgAalBG0VzrAOX
-	oW7VbWaA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=PePifSOHdpTrza29dxjXICH9wp6mnwhfzwHtX31HUtU=; b=zQZcxEqwt61ZXU
+	p/nfpyq3/1Ma6bQDJicAQSxkKV9/2WtDQaIT2Cit/CKHpXZBagGP/1PN7uDcpJL+o6BJOSumbSgOy
+	Tift8VNUSqPIurAqTHn+tEMIRPCEKm8Invb/qB737Wn1qMd1Ct7EyQjZFXlyUP+t1d1iCOCgLrhmm
+	7GY7+uYX4j4WGHTt+/DOpJV36IzArBXqHB3oCps0r1FRu5rdnifjqSgewuwbx53Vd9mkuhr5CS+PF
+	S30fsZJFxlz1kznOb83I33ZyskIkr94+q3OPLZXXHtLsthKbukeaJXAmS4UPAQMRl6k1xL0iVNfn9
+	noYDA/MmoED4m82jMrvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oH47j-009x53-GS; Thu, 28 Jul 2022 14:04:24 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1oH95c-00DUDB-RL; Thu, 28 Jul 2022 19:22:32 +0000
+Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oH40a-009tfR-6x
-	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2022 13:57:04 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ssl.serverraum.org (Postfix) with ESMTPSA id 8D0B822249;
-	Thu, 28 Jul 2022 15:56:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-	t=1659016613;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ey/90lOx4wMpw43TX64tvVeDePycWmEHff+P7HYmJcM=;
-	b=fR0dfNP64VUq13hcIS81FiKnIvkOI8R2MUuhOAjqOZuednKNaTu1XFcR05hj+M1rmqva3L
-	8jfKyi7GydRS5x4L7gQSYc3jBTpIwzZCAGs/LzA0k6ZafTWLOODdQfROsKipA5SFr94Ted
-	KOK1JNk46Tby+WxQlVCAqPeaJQpnPDU=
+	id 1oH95R-00DU83-DL; Thu, 28 Jul 2022 19:22:22 +0000
+Received: by mail-pg1-x52e.google.com with SMTP id bh13so2283260pgb.4;
+        Thu, 28 Jul 2022 12:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=EFOAo/QdtEPRv+rmfrGIwUMKLAu+6hzcQDL1f3TAQNM=;
+        b=lB+pWhhlv93nZ1uF9MlIOnX5O59BjNqfBlzyuwaJ9IcEqZIikDytWL8FxK9mRR7bGC
+         CP0N3vcVC4GRQyBqp/aXDsHM+Rp/kL+AcBtbGgawHiyB0n2SQ/S9YTLhVKYgLJzYvnfa
+         DRgHjFYGggf4djkLYGpyCKIAfFc4nCcIoEjsFfGVMZ1/sB2/Jgb8jz20AGsMwpQd4Rhb
+         5lHHgqgPkKGl66JAg/+e1Wkvj9UiHeRANwaOr3+bwehcQ5WJ52Rwi+bf7sjW1dQxqAEB
+         0wInCPsCu9FBE5kiqsjVn81pQZUQnEayOJ4Rp+zGMKxlzT+3V1MGecumxQBkOPnllvzK
+         p+iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=EFOAo/QdtEPRv+rmfrGIwUMKLAu+6hzcQDL1f3TAQNM=;
+        b=jyST+PBzcV4g9CI6o3VBFw9oRDrgddV9I6hzRu+QdSAivh/VrKayouX+VUIV3bqrUM
+         FJJhl4Ej+QqqhNG2RKTmwmSELiPVfnvj5D1Rv3AwhLT4BSjr9QV4XmeFKtYmm0aJHFkB
+         ViMBa7Ha9T5oGcXDSgCB/j9Kmnk8sCcdxLFCliNLBfZ9iPDtg4aIykQ6rK6hMnQttOiy
+         t3wiZfyfddVB2SBQiEGrv9MopLvDNNJam4Fp845/1weAEkHZl1YjStjPC0bcMVzwnHOx
+         czeRHKc/YgJK8RbRq9M5N8GPLrItJoWv8nPjDDLE0e1ht1PTmjCQIQAatvP9Df0Ej7eq
+         kIYA==
+X-Gm-Message-State: AJIora8VZTA5/gd/HrXZ6iloozFXnZyvFYC9iXpsDJUyXRNq7n4OM6/W
+	anxvjpA/zuy/whyyTR2KLMs=
+X-Google-Smtp-Source: AGRyM1tj9cuz/W4LAd9BMq4WIOZkxkrW2UJLCS/AeNw+AhegYlhfdsgfmykyQIPR9LbFViQAWRDZ3w==
+X-Received: by 2002:a63:ce0f:0:b0:41a:f0ee:c28e with SMTP id y15-20020a63ce0f000000b0041af0eec28emr190116pgf.43.1659036138925;
+        Thu, 28 Jul 2022 12:22:18 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id m8-20020a654c88000000b0040cfb5151fcsm1282985pgt.74.2022.07.28.12.22.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jul 2022 12:22:18 -0700 (PDT)
+Message-ID: <db9560c1-7fc7-405e-bee1-3827a943b712@gmail.com>
+Date: Thu, 28 Jul 2022 12:22:12 -0700
 MIME-Version: 1.0
-Date: Thu, 28 Jul 2022 15:56:53 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Cc: p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, quic_c_sbhanu@quicinc.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: spi-nor: introduce SNOR_ID3()
-In-Reply-To: <29f4cff4-edc5-3838-2495-253e794178ae@microchip.com>
-References: <20220510140232.3519184-1-michael@walle.cc>
- <20220510140232.3519184-2-michael@walle.cc>
- <160ddac1-6d0a-c922-1380-09e7823a285e@microchip.com>
- <41e6b74d-6973-60da-1556-82a1e879ffd4@microchip.com>
- <ff6ffb3f8e77b29b44883d30c9b4385e@walle.cc>
- <29f4cff4-edc5-3838-2495-253e794178ae@microchip.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <902917c39041fc9c0a2695de0f7382a0@walle.cc>
-X-Sender: michael@walle.cc
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v2 6/9] arm64: bcmbca: Make BCM4908 drivers depend on
+ ARCH_BCMBCA
+Content-Language: en-US
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ William Zhang <william.zhang@broadcom.com>
+Cc: Linux ARM List <linux-arm-kernel@lists.infradead.org>,
+ joel.peshkin@broadcom.com,
+ Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
+ dan.beygelman@broadcom.com, anand.gore@broadcom.com,
+ kursad.oney@broadcom.com, krzysztof.kozlowski@linaro.org,
+ Guenter Roeck <linux@roeck-us.net>, Bjorn Helgaas <bhelgaas@google.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>, Vinod Koul <vkoul@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, linux-i2c@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-watchdog@vger.kernel.org
+References: <20220725055402.6013-1-william.zhang@broadcom.com>
+ <20220725055402.6013-7-william.zhang@broadcom.com>
+ <63797827553783061a0ad5e897ed6538@milecki.pl>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <63797827553783061a0ad5e897ed6538@milecki.pl>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220728_065700_463877_8D5B4CD5 
-X-CRM114-Status: GOOD (  18.36  )
+X-CRM114-CacheID: sfid-20220728_122221_488001_7ED1B3EE 
+X-CRM114-Status: GOOD (  19.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,87 +106,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-07-28 15:31, schrieb Tudor.Ambarus@microchip.com:
-> On 7/28/22 16:12, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->>>>> +#define SNOR_ID3(_jedec_id)
->>> 
->>> How about SFDP_ID3 and SFDP_ID6 instead?
->> 
->> Yes, probably a better name. I was also thinking about splitting
->> the id in vendor, device and additional bytes. But I haven't
->> thought of the actual implementation that much. Such as:
->> 
->> #define SFDP_ID(<u8 vid>, <u16 did>, <variable aux bytes>)
->> #define SFDP_ID_FULL(<num_continuation_code>, <u8 vid>, <u16 did>,
->> <variable aux bytes>)
->> 
->> Couldn't make up a better name than that _FULL for now. Happy to hear
->> suggestions :)
->> 
-> 
-> You mean splitting the ID in manufacturer ID, flash ID and extended 
-> flash ID?
-> I'd like to understand the benefits of splitting this, can you give me 
-> an
-> example? In the past I though about introducing some flash info macros 
-> for
-> families of flashes of the same vendor, it will reduce the number of 
-> lines
-> on flash definition, but not really related.
-
-First, why would you combine the vendor and part id into one three byte
-field? Isn't it natural to have these as two fields? We know the did is
-8 bit and the vid is 16 bit. And there might be N continuation codes. So
-putting that all in one value is error prone. See also below for the
-is25cd512.
-Second, the extended (so maybe SFDP_ID_EXT?) bytes is variable. I've
-seen flashes with one additional byte.
-
-If you want to have per vendor convenience macros you could do
-
-#define WINBOND_SFDP_ID(did, ...) SFDP_ID(0xNN, did, __VA_ARGS__)
-
-I don't see much benefit here. OTHO "#define SFDP_VID_WINBOND 0xNN"
-might make sense. But then we'd need to come up with support for
-continuation codes. So mhhh.
-
-As for the examples:
-  SFDP_ID(SFDP_VID_WINBOND, 0x6019)
-  SFDP_ID(SFDP_VID_MICRON, 0xba19, 0x10, 0x44, 0x00)
-or maybe
-  SFDP_ID(SFDP_VID_MICRON, 0xba19, 0x10, 0x44)
-
-Currently we have the is25cd512 which (correctly) uses
-continuation codes. So, we'd need have something like
-#define SFDP_VID_ISSI_LEGACY 0x9d
-#define SFDP_VID_ISSI 1, 0x9d
-
-And preferrably we'd have something like:
-
-  SFDP_ID(SFDP_VID_ISSI_LEGACY, 0x4013)
-  SFDP_ID(SFDD_VID_ISSI, 0x20xx)
-
-(note that "xx" is unknown here.. we are lacking that because
-the entry is just using INFO() and I'm too lazy to look up the
-datasheet now.)
-
-Now I know that above probably won't compile, but maybe someone
-could come up with macros which actually work :)
-
-The following might work, but feels awful like a hack:
-#define SFDP_VID_ISSI_LEGACY 0, 0x9d
-#define SFDP_VID_ISSI 1, 0x9d
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gNy8yNy8yMiAwNTozMSwgUmFmYcWCIE1pxYJlY2tpIHdyb3RlOgo+IE9uIDIwMjItMDctMjUg
+MDc6NTMsIFdpbGxpYW0gWmhhbmcgd3JvdGU6Cj4+IFdpdGggQnJvYWRjb20gQnJvYWRiYW5kIGFy
+Y2ggQVJDSF9CQ01CQ0Egc3VwcG9ydGVkIGluIHRoZSBrZXJuZWwsIHRoaXMKPj4gcGF0Y2ggc2Vy
+aWVzIG1pZ3JhdGUgdGhlIEFSQ0hfQkNNNDkwOCBzeW1ib2wgdG8gQVJDSF9CQ01CQ0EuIEhlbmNl
+Cj4+IHJlcGxhY2UgQVJDSF9CQ000OTA4IHdpdGggQVJDSF9CQ01CQ0EgaW4gc3Vic3lzdGVtIEtj
+b25maWcgZmlsZXMuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IFdpbGxpYW0gWmhhbmcgPHdpbGxpYW0u
+emhhbmdAYnJvYWRjb20uY29tPgo+PiBBY2tlZC1ieTogR3VlbnRlciBSb2VjayA8bGludXhAcm9l
+Y2stdXMubmV0PiAoZm9yIHdhdGNoZG9nKQo+PiBBY2tlZC1ieTogQmpvcm4gSGVsZ2FhcyA8Ymhl
+bGdhYXNAZ29vZ2xlLmNvbT4gKGZvciBkcml2ZXJzL3BjaSkKPiAKPiBJIHN0aWxsIHRoaW5rIGl0
+IG1heSBiZSBhIGJhZCBpZGVhIGZvciBhbGwgYmVsb3cgZHJpdmVycy4gUGxlYXNlIHNlZSBteQo+
+IHByZXZpb3VzIGUtbWFpbDoKPiBSZTogW1JFU0VORCBQQVRDSCA2LzldIGFybTY0OiBiY21iY2E6
+IE1ha2UgQkNNNDkwOCBkcml2ZXJzIGRlcGVuZCBvbiBBUkNIX0JDTUJDQQo+IGh0dHBzOi8vbG9y
+ZS5rZXJuZWwub3JnL2xpbnV4LWFybS1rZXJuZWwvZWVlOGM4NTY1MmU2ZGFjNjk0MjBhODc2ZDAz
+ZjY3YzRAbWlsZWNraS5wbC8KPiAKPiBJIHRoaW5rIHdlIHNob3VsZDoKPiAxLiBLZWVwIEFSQ0hf
+QkNNNDkwOCBmb3IgNDkwOCBzcGVjaWZpYyBkcml2ZXJzIChlLmcuIG10ZCwgcGluY3RybCwgbmV0
+KQo+IDIuIFVzZSBBUkNIX0JDTUJDQSBmb3IgbW9yZSBnZW5lcmljIGRyaXZlcnMgKGUuZy4gSTJD
+LCBQQ0ksc2VyaWFsLCBXRCkKCklNSE8gaGVyZSBpcyBubyBwb2ludCBpbiBrZWVwaW5nIGFuIEFS
+Q0hfQkNNNDkwOCBhbnltb3JlIHdoZW4gdGhlIHdob2xlIHBvaW50IG9mIHRoZSBwYXRjaCBzZXJp
+ZXMgaXMgdG8gZG8gYSBicm9hZCBjb252ZXJzaW9uIG9mIEFSQ0hfQkNNNDkwOCBpbnRvIEFSQ0hf
+QkNNQkNBLiBFdmVuIGlmIHNvbWUgb2YgdGhlIGRyaXZlcnMgYXJlIGNvbnNpZGVyZWQgb3IgdGhv
+dWdodCB0byBiZSA0OTA4LXNwZWNpZmljLCB0aGlzIGlzIG5vdCBnb2luZyB0byBiZSBhbiBpc3N1
+ZSBpbiBwcmFjdGljZSBiZWNhdXNlIHRoZXJlIG91Z2h0IHRvIGJlIGFwcHJvcHJpYXRlIGNvbXBh
+dGlibGUgc3RyaW5ncyBzdWNoIHRoYXQgZXZlbiBpZiB5b3UgYnVpbHQgYSA0OTA4LXNwZWNpZmlj
+IGRyaXZlciBpbnRvIGEgZ2VuZXJpYyBBUkNIX0JDTUNBIGtlcm5lbCwgdGhlIGFjdHVhbCBwcm9i
+aW5nIHdvdWxkIG9ubHkgaGFwcGVuIG9uIDQ5MDguCgpOb3cgbGV0IHVzIGZsaXAgaXQgdGhlIG90
+aGVyIHdheSByb3VuZCwgbGV0J3Mgc2F5IHdlIGtlZXAgQVJDSF9CQ000OTA4IGFzIGEgc3ViLWFy
+Y2ggb2YgQVJDSF9CQ01CQ0EsIHRoZW4gdGhpcyBzZXRzIGEgcHJlY2VkZW50IGZvciBhZGRpbmcg
+bW9yZSBhbmQgbW9yZSBvZiB0aG9zZSBBUkNIX0JDTTQ5MDYsIEFSQ0hfQkNNNDkxMiBldGMuIGV0
+YyB0byBmdXR1cmUga2VybmVscyB1bmRlciB0aGUgc2FtZSByZWFzb25zIHRoYXQgd2UgbWlnaHQg
+d2FudCB0byBnYXRlIGNlcnRhaW4gZHJpdmVycyB0byBjZXJ0YWluIHN1Yi1hcmNoZXMuIEJ1dCB3
+aGF0IGdvb2QgZG9lcyB0aGF0IGRvPwoKQXQgc29tZSBwb2ludCB3ZSBnb3QgdG8gbWFrZSBpdCBz
+aW1wbGUgZm9yIHRoZSB1c2VycywgYW5kIHRoZSBzaW1wbGVzdCB3YXkgaXMgdG8gaGF2ZSBBUkNI
+X0JDTUJDQSBvbmx5IGFuZCBsZXQgRFQgZGljdGF0ZSB0aGUgZGV2aWNlIHNwZWNpZmljIHByb2Jp
+bmcuCi0tIApGbG9yaWFuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
