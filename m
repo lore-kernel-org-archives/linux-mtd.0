@@ -4,69 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D840C19F21
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Jul 2022 12:08:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E165EC04A68
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Jul 2022 12:15:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4/Ar9JGZQvn0wCgw4aPwoi9BkTVcSxqeYc6y61K3z7o=; b=3eLBSII3JuzEP1
-	beJHY1REvix29GoaySy+KjRA55ugCoIRhrO0i90VuDLL9VfEcy55YAKNuJx5yLNs9BhFIFP+Dijkj
-	99tlan3TM2RZQj4v4+Pj8o28p9SsE6KXiQSXZ0X3xPDeUlM8hEqv5tGopEkqeZ3fNYMI8EPCOdZb/
-	oKwj4k31zQYJ220FDuLwyM1Nel5mHnahuwM26vTh64U4/whoNTLH+OXDWj9MS1LbRTb1/qzonRuts
-	WyGhLOtZiTCqHNfzsgUY2J9BdHeYSS1AfeYfcVev+Ojd9WHgpAZ9D0cgNun5f3vMVsmUzLN0zulav
-	VeCttZzQZodMC9hci7Dg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=9gDteOD+GtEX9fRvLaFg60wy5wGzaFqNpGPvgcRRvJQ=; b=qTNnTaVyA+BDPEgQ1wpMyU3Sfe
+	AdLmwvQ53NxsRrErIqSB//F16DRzTgl8U7RMP17Wo2pHRMlRk/h6IgXm3xDSZmgPWqvZHbL4tQArq
+	kJbRfPEMWJZHhLlTGsc3fSP96v9B6Sa8RzjPTvQZxSIIfp9868ikWEkXeOdjyvkhdjSLffIv7KaiU
+	otezhfpNhEf33KeaI+qzLIZPug64d+IzkdB047uWvyOk4P8Sknqsir7TXq662MfxTRm4ceEc1hBiI
+	XURRDlwWj7gNfGwX0FD+MM4fmz6yUnPmCP0eZ6YA80BELYdAEHbT6tA9nv8C6fDln+NHR3KxbkDg7
+	D/F4g8pg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oH2Hf-009484-9J; Thu, 28 Jul 2022 12:06:31 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1oH2QD-00987q-TR; Thu, 28 Jul 2022 12:15:21 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oH2Hc-00944m-Ft
-	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2022 12:06:29 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 26SC6HOo078667;
-	Thu, 28 Jul 2022 07:06:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1659009977;
-	bh=Gwkp9YWs1+s9Izg/ikYhApxD2YMgNM47uy+a9g1A4gY=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=mC4KL/EoxXrM8uuXGtMRaQCCBseMuPJv24aw8qh1ynl0FT0UhQbUKjugthGAiwS7n
-	 Mih/H1/NwbxcAZpJ7BTZVTkvxmlUECK+jWDtwpj9Ez+TfnPDbtWrxtTdDs2DzVrzVu
-	 kHp6qPG6W7USSZfJH+zPk4YCG92fXTc20RTSI5Gw=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 26SC6G5g027812
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 28 Jul 2022 07:06:16 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 28
- Jul 2022 07:06:16 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 28 Jul 2022 07:06:16 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-	by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 26SC6FPJ016079;
-	Thu, 28 Jul 2022 07:06:16 -0500
-Date: Thu, 28 Jul 2022 17:36:15 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
+	id 1oH2QB-009814-27
+	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2022 12:15:20 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ssl.serverraum.org (Postfix) with ESMTPSA id 130482223A;
+	Thu, 28 Jul 2022 14:15:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+	t=1659010509;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+iB+y4UmlKWdeQTVxa4fIZkk162vSuzYY7Z6Mms0feo=;
+	b=eRYFdqz2fx5llgTDNvLBmUKDpRFg4BwptGeeBb26uAvHV/QilbqJXphE7otOcrQ82AQjxy
+	xaRsiheInsQF2bmrQfMCW7gBfdU6iwAJcjYMEG41hrMclA9veRA4L/LoTBT6sMeCzVryPu
+	YHUKvG/o5oxz8yDT7EtrFnI47U8L9go=
+MIME-Version: 1.0
+Date: Thu, 28 Jul 2022 14:15:05 +0200
+From: Michael Walle <michael@walle.cc>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
-CC: <pratyush@kernel.org>, <michael@walle.cc>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
+Cc: pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Pratyush Yadav <p.yadav@ti.com>
 Subject: Re: [PATCH] mtd: spi-nor: core: Add an error message when failing to
  exit the 4-byte address mode
-Message-ID: <20220728120615.3422ojtdsfgmwy5p@ti.com>
-References: <20220728030159.68680-1-tudor.ambarus@microchip.com>
-MIME-Version: 1.0
-Content-Disposition: inline
 In-Reply-To: <20220728030159.68680-1-tudor.ambarus@microchip.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20220728030159.68680-1-tudor.ambarus@microchip.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <27c95d5e17906f5e45c04cec7c1bda9d@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220728_050628_688472_58E87C5C 
-X-CRM114-Status: GOOD (  16.36  )
+X-CRM114-CacheID: sfid-20220728_051519_310492_5EF7B150 
+X-CRM114-Status: GOOD (  16.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,22 +68,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 28/07/22 06:01AM, Tudor Ambarus wrote:
-> Add an error message when failing to exit the 4-byte address mode. Do not
-> stop the execution and go through the spi_nor_soft_reset() method if used,
-> in the hope that the flash will default to 3-byte address mode after the
+Hi,
+
+Am 2022-07-28 05:01, schrieb Tudor Ambarus:
+> Add an error message when failing to exit the 4-byte address mode. Do 
+> not
+> stop the execution and go through the spi_nor_soft_reset() method if 
+> used,
+> in the hope that the flash will default to 3-byte address mode after 
+> the
 > reset.
 > 
 > Suggested-by: Pratyush Yadav <p.yadav@ti.com>
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-
 > ---
 >  drivers/mtd/spi-nor/core.c | 3 ++-
 >  1 file changed, 2 insertions(+), 1 deletion(-)
@@ -109,17 +101,18 @@ Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 > -		nor->params->set_4byte_addr_mode(nor, false);
 > +		if (nor->params->set_4byte_addr_mode(nor, false))
 > +			dev_err(nor->dev, "Failed to exit 4-byte address mode\n");
->  
->  	if (nor->flags & SNOR_F_SOFT_RESET)
->  		spi_nor_soft_reset(nor);
-> -- 
-> 2.25.1
-> 
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Could we stick to the ususal pattern:
+
+ret = func()
+if (ret)
+    err("blubb (%d)", ret);
+
+I know it is more lines but imho it makes the code much more readable.
+And that way you could also print the error code. You could also use
+dev_err("bla (%pe)\n", ERR_PTR(ret));
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
