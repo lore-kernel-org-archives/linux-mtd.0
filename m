@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBB3EC19F2A
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Jul 2022 01:41:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E589EC00140
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Jul 2022 01:52:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VIufqqLUl1BWvO1pe+ISHdPGZEytYqe40Jj1g7UgghM=; b=uaD/RFYiKUREdn
-	AHJuACsIpfFWvn5Ox8vguFgMTHXM8j5yqZxsfHU5yF36jESrO0teKba/86zt1Q/MJXI0AtC9EKtE0
-	hfyXJi8QOV9kPXyMSAKTDMp5Pe/PYu5UFJdP9VygoqT755u4VLUdEG7Xvij6MwcpCoExlaKSlEcZY
-	79xhKAF9AAmGUGEELuX/7iop9Ng+vYyvEVPxO5QK01J4l7502oCwtIdt98gXusbCvgrFSRkQFfy49
-	ZmFJmH7uTX/QAKnNqmAvycV2ArTx4yaFUFppspE0jeebzhFzjuD0VFmPhr1MscbC44nNjjtbKSx14
-	0sPW8RGUzmv25WLguENQ==;
+	List-Owner; bh=VRzNciIKaRFuZ6Y12fwfPMufl/7Z0GMKpt0V91qtQi8=; b=jSJl5ud5PqfPtR
+	3HILTfBK44JJbmzGbJLXhE2q5C3dOdcnlAM7cjHY5HDk8mAA8uTbghTRgICfsoD5N+9FBKN16TbOt
+	Ml8agULVT1rAoyCBFZr1rbNQKk1DQlBxRhBHvlgtQeltpkp1jRsmXg/I0fX2oX3G9PCgfphhBcedo
+	ylyxjflhYJ9pbHA6CC0B2slbeGan4a/qUGRbb6rojCMq8RPw79afYQ8V57RF7JKqrAh9Hm+f7gjne
+	DFujxYjzXZKZej4t/fhXZNbBLhxQwFLS6VOE9jJKQMD9GUxu+QaGLzLdbczkTPNkbWRrGqh6wnrWx
+	IffOCgRjeJWWAtQ/a36w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oHEzR-00Gl0q-A3; Fri, 29 Jul 2022 01:40:33 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1oHFAe-00GogP-SN; Fri, 29 Jul 2022 01:52:08 +0000
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oHEzO-00Gl09-Q9
-	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2022 01:40:32 +0000
-Received: by mail-pl1-x632.google.com with SMTP id w10so3343373plq.0
-        for <linux-mtd@lists.infradead.org>; Thu, 28 Jul 2022 18:40:28 -0700 (PDT)
+	id 1oHFAc-00GofA-15
+	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2022 01:52:07 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id b10so3375805pjq.5
+        for <linux-mtd@lists.infradead.org>; Thu, 28 Jul 2022 18:52:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc;
-        bh=Eo5jg5ayRXB4TdtAm0z0aMnd75D86Seh8rqM2BVtt0g=;
-        b=P3M3foQMfiWgTL/sHFJ7271NI6TvT4WVkvA+FGQWv7+tZqNkeTX2bWtnKB1RQrPUZa
-         4TRoSXuttiWVO4mEMG3u5QAJScRUvftwxqXptpBWLZHFA2rEKLRFt9BnURVKIfw4yRj9
-         9BujrM0AsW6sL2OaawPi/ywCTWl2ofk1t8uVgppjAJeKG75G9scTlXb8EhtTMfAIUFBx
-         K4lj3F4GQZV9t1U1/HYKP8ziWM0MT+93fgRPcycJgl/XFOkQFU8PCbpFGoG5E22H/5+T
-         E2grnHHVvgUyMCTyWxyq8x2UU5O9EV8TH3XxQ0g1qFSmdrE+9Up3ow//3xmcmMpQs/Ns
-         PCgg==
+        bh=TpL10iobcJaKvx1KQjSddiwYHJQrd7e+Q/eCN7lBKI0=;
+        b=HMcu00TB/JgK5RO+FWwKaWxm8bTqiUyFWVDVW19PRoBy88iRrFRTc3dCnad+lVGrUz
+         MlVp6ml+O+YRejzJR7cCzmzsOG/UyAJKuiGIkhM1D5OjJ3+wvWdoVBVOZYHUq/ELSZ7t
+         3MjcRk6ONFYiE2qyYttB2ZbpN1cfamwAAM9SwluL52agGpluZQSWKDUxI3vO6fvVApC+
+         lLnwuxosLQ5n2TYyzVRGRzRHDiuwSuhyvbk22aW0B/eugvtuvk70AQuwiVF/yW/pe8S2
+         EMWe8GkgVypj2p+gB9YF5JcrC13tdvxhV4NKeGV3wbjvz/XbrxdB4MMshQfmmgks3j4m
+         WJvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc;
-        bh=Eo5jg5ayRXB4TdtAm0z0aMnd75D86Seh8rqM2BVtt0g=;
-        b=fne+6qSzUw5P5BsWVGVbBQX2F/g4ussYwanmf/fmsL7XC/R9nMdfgy/o8DCaXvwqpz
-         l826FOmKZYKBX+mluFOJ1by9uOwLtz3NbGZVygVRX4CBgdOS6lFrWtfxbyv/fKrxw4aL
-         B7sPQKUcDKK21I1MwOU6EkFlL27qxqSHXG8gp1yB5i03LsBk/v3ZwnpSYRYUbxlxxLTe
-         EGYAus6H9/HCs5wSP0vIgnwPKsDzrQL9w5KPna6xPQUuE5Zp7NeDk+8qhneN0UfXf3Vd
-         5dklaD2MxiUpeaoQYazq0ilxAFt54rBKVANBefaU3IjSvymb5L3l/EDRsrO6B2ay6d6r
-         pNBg==
-X-Gm-Message-State: ACgBeo3p7LclVjrd+tkcse7c5vIQdqkr3Gy4iqpasejmKgkjXi+Gl0aP
-	aFd+w13g9g0GfHTdpEQKja0=
-X-Google-Smtp-Source: AA6agR4B1pqzCZhfkZmQ8SaJ8TZYx/l++yWdW3ONhv+xiQdW7xTKP9QU5dBiVN8oO9xGdyWFKBjNrg==
-X-Received: by 2002:a17:90b:388f:b0:1f2:c9fb:e58a with SMTP id mu15-20020a17090b388f00b001f2c9fbe58amr1504569pjb.162.1659058827729;
-        Thu, 28 Jul 2022 18:40:27 -0700 (PDT)
+        bh=TpL10iobcJaKvx1KQjSddiwYHJQrd7e+Q/eCN7lBKI0=;
+        b=aArDk1bAedKZhNEu1jzxfygi9oEZ5Ue0iYkzcXYXeaw8+Z+1Sziw45K7fKVJTGvE1l
+         x261VeCiZI/Ei7QpBf14VjSz0MYhuoGyCI/t56Pvkkl6JIeWMtCnCK3MI8EW+ypP6Fwb
+         K0Kw6Bwip5ABN2ALeDaRDzvRek2WAXlIxanl8PPJfKHEAA/sZj98+UoJoBw/K4Quc4h1
+         LjlLJNrqE9ijNLEQquzZP94/Hn16cK6CBgZl2ozm6PWbgm1zMmhuyyeSDexqQNiuvl1d
+         EFOqZd4zRi5won6RxhVrbARGMkljDj24rd3Zf4puTMUT5iNSS3i3sc60BQMxYD2twHrZ
+         JlBw==
+X-Gm-Message-State: ACgBeo2fqLibG8Ezyk0L0F7DaNNfLBG2aTkhhtuqB6FVz6i9uHwCkMTd
+	b2hRa5a5V66zgUYlYgFtEY0=
+X-Google-Smtp-Source: AA6agR5DXW5CkjCKR/fNok85329yJE8hsiSIaaQ2OLNZkV1o8FsRGCvPimG0fHICWFNu/gR+utYvyg==
+X-Received: by 2002:a17:90a:930b:b0:1ed:5441:1fff with SMTP id p11-20020a17090a930b00b001ed54411fffmr1545330pjo.238.1659059525490;
+        Thu, 28 Jul 2022 18:52:05 -0700 (PDT)
 Received: from [192.168.0.10] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id t1-20020a1709027fc100b0016db1b67fb9sm1965003plb.224.2022.07.28.18.40.25
+        by smtp.gmail.com with ESMTPSA id r12-20020aa79ecc000000b0052ab47dd0d5sm1495199pfq.63.2022.07.28.18.52.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jul 2022 18:40:27 -0700 (PDT)
-Message-ID: <67f1741d-343c-f704-b5a8-3bc84e1c0e7e@gmail.com>
-Date: Fri, 29 Jul 2022 10:40:24 +0900
+        Thu, 28 Jul 2022 18:52:05 -0700 (PDT)
+Message-ID: <f3f552cb-fa11-beaa-656a-9c9dd32291cd@gmail.com>
+Date: Fri, 29 Jul 2022 10:52:02 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH 5/6] mtd: spi-nor: add generic flash driver
+Subject: Re: [PATCH 0/6] mtd: spi-nor: generic flash driver
 Content-Language: en-US
-To: Michael Walle <michael@walle.cc>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+To: Tudor.Ambarus@microchip.com, michael@walle.cc, p.yadav@ti.com,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ Takahiro.Kuwano@infineon.com
 Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 References: <20220513133520.3945820-1-michael@walle.cc>
- <20220513133520.3945820-6-michael@walle.cc>
+ <b3d5ecf7-39e4-d6f1-93a8-9efc8e352c9d@microchip.com>
 From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <20220513133520.3945820-6-michael@walle.cc>
+In-Reply-To: <b3d5ecf7-39e4-d6f1-93a8-9efc8e352c9d@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220728_184030_881492_EB57DFB3 
-X-CRM114-Status: GOOD (  27.04  )
+X-CRM114-CacheID: sfid-20220728_185206_118618_B8F6DAC8 
+X-CRM114-Status: UNSURE (   8.70  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,108 +95,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 5/13/2022 10:35 PM, Michael Walle wrote:
-> Our SFDP is parsing is everything we need to support all basic
-redundant "is"?
+Hi Tudor and Michael,
 
-> operations of a flash device. If the flash isn't found in our in-kernel
-> flash database, gracefully fall back to a driver described solely by its
-> SFDP tables.
+On 7/26/2022 5:06 PM, Tudor.Ambarus@microchip.com wrote:
+> Hi, Takahiro,
 > 
-> It is still recommended to add the flash to the in-kernel database.
-> First, we get a proper partname and secondly, for all features not
-> described by the SFDP like OTP we need the entry anyway.
+> Would you please review this patch set?
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/mtd/spi-nor/core.c | 13 +++++++++++++
->  drivers/mtd/spi-nor/core.h |  1 +
->  drivers/mtd/spi-nor/sfdp.c | 27 +++++++++++++++++++++++++++
->  3 files changed, 41 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 65cd8e668579..ee193a61310a 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1632,6 +1632,11 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
->  	&spi_nor_xmc,
->  };
->  
-> +static const struct flash_info spi_nor_generic_flash = {
-> +	.name = "spi-nor-generic",
-> +	.parse_sfdp = true,
-> +};
-> +
->  static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
->  						 const u8 *id)
->  {
-> @@ -1670,6 +1675,14 @@ static const struct flash_info *spi_nor_detect(struct spi_nor *nor)
->  		return ERR_PTR(-ENOMEM);
->  
->  	info = spi_nor_match_id(nor, id);
-> +
-> +	/* Fallback to a generic flash described only by its SFDP data. */
-> +	if (!info) {
-> +		ret = spi_nor_check_sfdp_signature(nor);
-> +		if (!ret)
-> +			info = &spi_nor_generic_flash;
-> +	}
-> +
->  	if (!info) {
->  		dev_err(nor->dev, "unrecognized JEDEC id bytes: %*ph\n",
->  			SPI_NOR_MAX_ID_LEN, id);
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 3a19b8092ab8..aa9f218245a5 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -694,6 +694,7 @@ int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
->  int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
->  				     const u8 *buf, size_t len);
->  
-> +int spi_nor_check_sfdp_signature(struct spi_nor *nor);
->  int spi_nor_parse_sfdp(struct spi_nor *nor);
->  
->  static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
-> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> index a5211543d30d..9bdb3d5dc7e8 100644
-> --- a/drivers/mtd/spi-nor/sfdp.c
-> +++ b/drivers/mtd/spi-nor/sfdp.c
-> @@ -1247,6 +1247,33 @@ static void spi_nor_post_sfdp_fixups(struct spi_nor *nor)
->  		nor->info->fixups->post_sfdp(nor);
->  }
->  
-> +/**
-> + * spi_nor_check_sfdp_header() - check for a valid SFDP header
-> + * @nor:		pointer to a 'struct spi_nor'
-> + *
-> + * Used to detect if the flash supports the RDSFDP command as well as the
-> + * presence of a valid SFDP table.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +int spi_nor_check_sfdp_signature(struct spi_nor *nor)
-> +{
-> +	u32 signature;
-> +	int err;
-> +
-> +	/* Get the SFDP header. */
-> +	err = spi_nor_read_sfdp_dma_unsafe(nor, 0, sizeof(signature),
-> +					   &signature);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* Check the SFDP signature. */
-> +	if (le32_to_cpu(signature) != SFDP_SIGNATURE)
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
+I tested a Flash device that is not yet in the database.
+https://www.infineon.com/dgdl/Infineon-S25FS256T_256Mb_SEMPER_Nano_Flash_Quad_SPI_1.8V-DataSheet-v01_00-EN.pdf?fileId=8ac78c8c80027ecd0180740c5a46707a&da=t
 
-Nice to use this function from spi_nor_parse_sfdp() as well, but I found it's
-not straightforward...
+And it works fine.
 
-Reviewed-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+spi-nor-generic
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342b190f0890
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080101ff00000114000100ff84000102500100ffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe7ffe2ffffffff0f48eb086bffff
+ffffeeffffffffff00ffffff00ff11d810d800ff00ff321cfeff71e9ffe1
+ec031c607a757a75f766805c00d65dfff938c0a100000000000000000000
+0000ffffffff710600fedcdcffff
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+13ecce2f195c4c71648e90d4a7e4a0df  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.231887 seconds, 25.9MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+20b1c32188a5e337ef7575ffb5e4fa424f6bf5a9  qspi_test
+20b1c32188a5e337ef7575ffb5e4fa424f6bf5a9  qspi_read
+
 
 Thanks,
 Takahiro
