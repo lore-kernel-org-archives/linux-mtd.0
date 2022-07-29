@@ -4,86 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3DA2C00144
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Jul 2022 08:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0006CC00144
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Jul 2022 09:18:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xuHyhqjXt3c22J95/IhisV9vke0iL0igtxP297mxWC4=; b=4ExAOec/Am77Dg
-	vWcYVpZK+SdX4Qp8F/RayMrOr3TGBpl80mW1C055JPXhMauWhMio2ee6WyUibfNWMDhlS5akpJnQN
-	QuCX+34BxLY29y3hygn/LyFYYgtMgLD6jGQEkAz8cPp8UrxE6PX8Rd0qjWBEj8aF6PsxX+Ljjmrbe
-	QocXdviru25zCIoZKnPMgENl4OJGNbbjb9FvgBXGk6yZeL31Eo30t3hASr74NaVxaK+DxSos57E+6
-	yBVfzJ1YvqtlTJtS53HdTRds28mcUgPJgOOEIRQskdyXRu1PiywOrLb4bVgE3XhHBYhQncjaudt3W
-	XO3+ipPiwpXfiEkarvXQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=CQNe5OjXvATpd9XgpFMJezzMMR1UUBh/M+0gU8WHvbk=; b=NDEcSN8n09D0Wz
+	rGJCj5PcbkJY77mbkV3r8VOvRhWzSNjOPCHEuDXruVQHWfqAbQ7Z9h+FPN7/ainxyW6+7fPK9p16s
+	HTTD6FFgsFh2nqlpjdjF7vOYuB+wNJtygyC0z+KtIJv/TPo5Dp0ajQdh3meNs8X6dPDsI5yNOmz8B
+	a4vmOxIPC6b/fgqi+9iSo3KmVJAkJqDsjAYEahZRLd2SGjJxXqLLH168CIMkdlG10W407Pt5UFBWw
+	u80oe9U1W+fTCK1pv7OH8vgqrABGYXXaLg2TDslO8xyRomBFHeEQhMoslGtWryMrZP6nfTklzjk7d
+	k2CRHKlFUuqeOB2dU8Jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oHLNs-003GlX-JG; Fri, 29 Jul 2022 08:30:12 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1oHM8t-003jXc-2T; Fri, 29 Jul 2022 09:18:47 +0000
+Received: from vps.slashdirt.org ([144.91.108.218])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oHL4Y-002yq1-QP
-	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2022 08:10:16 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id k8so2888089wrd.5
-        for <linux-mtd@lists.infradead.org>; Fri, 29 Jul 2022 01:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Sm9qXIp8zk3KteEmbM0OHiY+JEPNUrWfWi6v+8LAnMA=;
-        b=QkGSON/Sf+wdffx9Kxw/bOPGCtJsGDpgSki/75kLj1ioaCa8m61urDI60V3Yw5OlQC
-         h24yjTrumk4ILaTSvK67T5yw/XiFuou+sw7fSrlzyIR94xVgkxiRG+loPzRLJfozPEU2
-         hjiPltPvjc/0dknTv942KlfyWsH7Dr/AQbAPT5wrmxxbdjpwHEUx49fxfliySySChdVn
-         4CSMH0L/nMQQt0nciE5HrTF5iu5Iuej4TcBHxNrLI+6+mi87XFaRdzjf2VMPSuICes2b
-         2pVen9Gck/clZfW8vBHrTDDMfH4VsGNlwZLBWUiZ2kTzJL9Dcuf11MDrLwy6gWKpZnmQ
-         oQAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Sm9qXIp8zk3KteEmbM0OHiY+JEPNUrWfWi6v+8LAnMA=;
-        b=Jm9cmkKGp65V3Yf4n4u1tMnShrwf/U27MMcfeVIsFWZp81w9amx1iqhhX0yDnjflmz
-         jLf1Usv7LLHP2VnRCD+tskwhmqoy0ryEB/bYNkrlRgb6TRQp1m4Qk1bi+I3ZeuXwQDeB
-         EKI7oVmFEY+NiXlclwlLq+mlyX8DEZSy2bBw/5//hQSjUT2OLMywpOFq5iUkJ3q8/QlR
-         knpDVhX+fk5YNYlq8kmxerzzUpbB/W0G/9Gpy9Xh7SKkj7D2I1EyFmkdrHxjaaQTBD3m
-         pVJvrbtWCbXLOHwM905SmIK/uwyV+2iD9cNVlUNHovyzOoObsVFVmbVibroo1UjspZT8
-         +9MQ==
-X-Gm-Message-State: ACgBeo1kbgAqF0F+GQyPPL1eTNo11X+355IuiKcz4julgQ7Lfv/1mIo7
-	CC1Qum4pnw0WizvgyEuGZOCPpw==
-X-Google-Smtp-Source: AA6agR6niZOH+y7eRa2ahPkFQ1bxuAO4+m0GEItqjk2SC/XH6z9EcZdt61VgvRGQgTk9SYmvW7+Guw==
-X-Received: by 2002:a5d:6484:0:b0:21e:8ab7:fbc9 with SMTP id o4-20020a5d6484000000b0021e8ab7fbc9mr1607199wri.316.1659082210224;
-        Fri, 29 Jul 2022 01:10:10 -0700 (PDT)
-Received: from [10.35.5.25] ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id z14-20020a05600c0a0e00b003a31ca9dfb6sm4213883wmp.32.2022.07.29.01.10.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Jul 2022 01:10:09 -0700 (PDT)
-Message-ID: <bee82951-47c9-20bc-3cb2-3a52f67a4728@sifive.com>
-Date: Fri, 29 Jul 2022 09:10:07 +0100
+	id 1oHM7v-003ixJ-BY
+	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2022 09:17:50 +0000
+Received: from supercopter.milliways.lan (unknown [IPv6:2a01:e0a:4ca:1080:42a8:f0ff:fe28:2844])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vps.slashdirt.org (Postfix) with ESMTPSA id 26CC560020;
+	Fri, 29 Jul 2022 11:17:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 vps.slashdirt.org 26CC560020
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=slashdirt.org; s=mail;
+	t=1659086257; bh=6LkMXTP7jkDykP1YakGzntZ8zk864lDuA628WTJ3UDI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=vNU30evBYnUwt3UHSNVaS0X4e0kCrT3wXId4dXr0L39FlwvkpmbhbVxjRSwBy+M2O
+	 XkVtkOlN6KyxYyxLauUviHozHLyZLPxdELAPcAaCFLlobq/SfGtaeBwsm/rsAzibz2
+	 0S9rq2nL+L25hJqrRrAEoBWf+lEj4AMOuYY/HJDM=
+From: =?UTF-8?q?Thibaut=20VAR=C3=88NE?= <hacks+kernel@slashdirt.org>
+To: linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	tudor.ambarus@microchip.com,
+	p.yadav@ti.com,
+	michael@walle.cc,
+	git@johnthomson.fastmail.com.au,
+	=?UTF-8?q?Thibaut=20VAR=C3=88NE?= <hacks+kernel@slashdirt.org>
+Subject: [PATCH v3 0/3] mtd: write support for minor-aligned partitions
+Date: Fri, 29 Jul 2022 11:16:33 +0200
+Message-Id: <20220729091636.59287-1-hacks+kernel@slashdirt.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH 2/3] mtd: spi-nor: add support for Quad Page Program to
- no_sfdp_flags
-Content-Language: en-GB
-To: Tudor.Ambarus@microchip.com, sudip.mukherjee@sifive.com
-Cc: p.yadav@ti.com, michael@walle.cc, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, greentime.hu@sifive.com,
- jude.onyenegecha@sifive.com, william.salmon@sifive.com,
- adnan.chowdhury@sifive.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20220712163823.428126-1-sudip.mukherjee@sifive.com>
- <20220712163823.428126-3-sudip.mukherjee@sifive.com>
- <3a9877d0-3cc5-6452-764b-d07b38c72b00@microchip.com>
- <CAHyZL-fK-d+dPWG63dcFUz17uP-sG4bnSFVW_gt16snnOVTzpQ@mail.gmail.com>
- <CAHyZL-c9iSd8=CaQ00Nptea4cqp9f7oqS5VefT3vfcr2J3hmSQ@mail.gmail.com>
- <d5662307-200e-171d-58fd-8f26dc02c771@microchip.com>
-From: Ben Dooks <ben.dooks@sifive.com>
-In-Reply-To: <d5662307-200e-171d-58fd-8f26dc02c771@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220729_011014_971052_7BFC9FBD 
-X-CRM114-Status: GOOD (  31.74  )
+X-CRM114-CacheID: sfid-20220729_021747_945654_13D70976 
+X-CRM114-Status: UNSURE (   9.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,93 +68,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 29/07/2022 08:48, Tudor.Ambarus@microchip.com wrote:
-> On 7/22/22 13:24, Sudip Mukherjee wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Hi Tudor,
->>
-> 
-> Hi!
-> 
->> On Mon, Jul 18, 2022 at 7:49 PM Sudip Mukherjee
->> <sudip.mukherjee@sifive.com> wrote:
->>>
->>> On Mon, Jul 18, 2022 at 6:02 PM <Tudor.Ambarus@microchip.com> wrote:
->>>>
->>>> On 7/12/22 19:38, Sudip Mukherjee wrote:
->>>>> [You don't often get email from sudip.mukherjee@sifive.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->>>>>
->>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>>
->>>>> Some flash chips which does not have a SFDP table can support Quad
->>>>> Input Page Program. Enable it in hwcaps if defined.
->>>>>
->>>
->>> <snip>
->>>
->>>>> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
->>>>> index 58fbedc94080f..dde636bdb1a7c 100644
->>>>> --- a/drivers/mtd/spi-nor/core.h
->>>>> +++ b/drivers/mtd/spi-nor/core.h
->>>>> @@ -462,6 +462,7 @@ struct spi_nor_fixups {
->>>>>    *   SPI_NOR_OCTAL_READ:      flash supports Octal Read.
->>>>>    *   SPI_NOR_OCTAL_DTR_READ:  flash supports octal DTR Read.
->>>>>    *   SPI_NOR_OCTAL_DTR_PP:    flash supports Octal DTR Page Program.
->>>>> + *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
->>>>
->>>> You don't need this flag if your flash supports the 4-byte Address
->>>> Instruction Table. Does you flash support it? Can you dump all the
->>>> SFDP tables, please?
->>>
->>> Not sure what the correct way to dump sfdp is. I did this from sysfs.
->>
->> I tried decoding this SFDP table and I think the parameters table says
->> it has "3-Byte only addressing".
->> So, I guess that means it does not support 4-byte Address Instruction
->> Table. And the datasheet
->> says it supports "Quad Input Page Program (3-byte Address)".
->> My existing patchset works for Quad Input Page Program, and I can send
->> a v2 with the previous
->> patch and this merged together (as you suggested) or I can try
->> enabling sfdp for this chip and then use
-> 
-> You should definitely enable SFDP and get rid of the NO_SFDP_FLAGS flags,
-> regardless of the 1-1-4 PP outcome.
-> 
->> a fixup_flags to enable "Quad Input Page Program" which I think will
->> be more complicated.
->> Which one will you suggest?
->>
-> 
-> First I'd like to understand what "much better performance" means. Would
-> you run some speed tests please? mtd-utils should have a speedtest, otherwise
-> you can use the in kernel mtd_speedtest module. Page programs are slow anyway,
-> using 4 lines may not make any difference. But let's see.
-> 
-> About your question, it depends on how common is 1-1-4 pp. If it's common and
-> desirable we can introduce a flash info flag.
-
-We have an issue with the SPI controller where if it isn't in the above 
-1 bit modes it has to block the CPU as the feature to hold the clock is
-not enabled in the 1bit "old" modes. In the old modes, if the FIFO gets
-to the empty stage then the CS gets de-selected. If we can enable the
-4bit mode, we can also set the clock-suspend flag which means the code
-does not have to block the core it is running on to ensure it gets the
-data out in time.
-
-At the moment speed tests are not easy as we are on entirely emulated
-hardware, we could try some but the results may not represent what the
-real chip can perform.
-
--- 
-Ben
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhpcyBwYXRjaCBzZXJpZXMgZW5hYmxlIHdyaXRlIHN1cHBvcnQgZm9yIG1pbm9yLWFsaWduZWQg
+bXRkIHBhcnRpdGlvbnMKb24gZGV2aWNlcyB0aGF0IHN1cHBvcnQgbXVsdGlwbGUgZXJhc2VzaXpl
+cy4KCk9uIHN1cHBvcnRpbmcgaGFyZHdhcmUsIHRoZXkgZW5hYmxlIFJXIG9wZXJhdGlvbnMgb24g
+bXRkIHBhcnRpdGlvbnMgdGhhdApicmVhayAibWFqb3IiIChsYXJnZXN0KSBlcmFzZXNpemUgYm91
+bmRhcnkgKGUuZy4gdG9vIHNtYWxsIG9yIG5vdApjb3JyZWN0bHkgYWxpZ25lZCkgd2l0aG91dCBz
+YWNyaWZpY2luZyBwZXJmb3JtYW5jZSAoaS5lLiBmb3JjaW5nCmV2ZXJ5dGhpbmcgdG8gdXNlIDRL
+IHNlY3RvcnMpLiBGaW5hbGx5LCB0aGV5IGFkZHJlc3MgYW4gaGlzdG9yaWNhbCBGSVhNRQppbiBt
+dGRwYXJ0LmMuCgpUaGUgZm9sbG93aW5nIHBlcmZvcm1hbmNlIG51bWJlcnMgd2VyZSBtZWFzdXJl
+ZCB3aXRoIHY1LjEwIGtlcm5lbCBvbiBPcGVuV3J0OgooQ09ORklHX01URF9TUElfTk9SX1VTRV9W
+QVJJQUJMRV9FUkFTRT15IGZvcmNlcyB0aGUgdXNlIG9mIHRoZSBuZXcgY29kZSBwYXRoKQoKT3Bl
+bldydCA1LjEwIHJhbWlwcyBNVDc2MjEgdzI1cTEyOGp2IDB4ZmMwMDAwIGZpcm13YXJlIHBhcnRp
+dGlvbiBsZW5ndGgKdGltZSBtdGQgZXJhc2UgZmlybXdhcmUKCldpdGhvdXQgdGhpcyBwYXRjaDoK
+TVREX1NQSV9OT1JfVVNFXzRLX1NFQ1RPUlM9bgl8eQpyZWFsICAgIDBtIDUwLjg2cwkJfDJtIDEx
+LjY2cwp1c2VyICAgIDBtIDAuMDBzCQl8MG0gMC4wMHMKc3lzICAgICAwbSA1MC44MHMJCXwxbSA1
+Ni4yMHMKY2FuIHdyaXRlIG1pbm9yLWFsaWduZWQgcGFydHM/IE58WQoKV2l0aCB0aGlzIHBhdGNo
+OgpNVERfU1BJX05PUl9VU0VfVkFSSUFCTEVfRVJBU0U9bnx5CQl8NEtfU0VDVE9SUz15CnJlYWwg
+ICAgMG0gNTEuNjhzCQl8MG0gNTAuODVzCXwybSAxMi44OXMKdXNlciAgICAwbSAwLjAwcwkJfDBt
+IDAuMDBzCXwwbSAwLjAxcwpzeXMgICAgIDBtIDQ2Ljk0cwkJfDBtIDUwLjM4cwl8Mm0gMTIuNDZz
+CmNhbiB3cml0ZSBtaW5vci1hbGlnbmVkIHBhcnRzPyBOfFkJCXxZCgoKTkI6IFRoaXMgcGF0Y2hz
+ZXQgd2FzIHByZXZpb3VzbHkgc3VibWl0dGVkIGFzIGEgbW9ub2xpdGhpYyBwYXRjaCAoUkZDWzBd
+LAp2MVsxXSkuIFdoaWxlIG5vdCBzdWJtaXR0ZWQgdXBzdHJlYW0gdjIgd2FzIGhvd2V2ZXIgcmV2
+aWV3ZWQsIHRlc3RlZCBhbmQKYWNjZXB0ZWQgaW4gT3BlbldydCwgYW5kIGJhY2twb3J0ZWQgaW50
+byB0aGUgdXBjb21pbmcgMjIuMDMgc3RhYmxlIGJyYW5jaDoKaHR0cHM6Ly9naXRodWIuY29tL29w
+ZW53cnQvb3BlbndydC9wdWxsLzMyNzEKClswXSAyMDIxMDEwNDEyMjg1My4xODQyOC0xLWdpdEBq
+b2hudGhvbXNvbi5mYXN0bWFpbC5jb20uYXUKWzFdIDIwMjEwNjA4MDQwNzE5LjE0NDMxLTEtZ2l0
+QGpvaG50aG9tc29uLmZhc3RtYWlsLmNvbS5hdQoKQ2hhbmdlcyB2MiAtPiB2MzoKICAtIFNwbGl0
+IHBhdGNoIGludG8gaW5jcmVtZW50YWwsIGZ1bmN0aW9uYWxseS1zZXBhcmF0ZSBjaGFuZ2VzLgog
+IC0gQWRqdXN0ZWQgZXJhc2VzaXplX21pbm9yIGFzc2lnbm1lbnQgY2hlY2sgaW4gc3BpLW5vci9j
+b3JlLmMKICAtIEFkZHJlc3NlZCBjaGVja3BhdGNoIHdhcm5pbmcgb24gInByaW50ayhLRVJOX1dB
+Uk5JTkcuLi4iCiAgLSBEb2N1bWVudGVkIG5ldyBzeXNmcyBhdHRyaWJ1dGUKCkNoYW5nZXMgdjEg
+LT4gdjI6CiAgLSBBZGRlZCBtdGRjb3JlIHN5c2ZzIGF0dHJpYnV0ZSBmb3IgZXJhc2VzaXplX21p
+bm9yCiAgLSBSZW1vdmVkIGZpbmRpbmcgbWlub3IgZXJhc2VzaXplIGZvciB2YXJpYWJsZSBlcmFz
+ZSByZWdpb25zIGRldmljZSwKICAgICh1bnRlc3RlZCBhbmQgbm8gcmVzcG9uc2UgdG8gUkZDKS4K
+ICAtIE1vdmVkIElGX0VOQUJMRUQoKSB0byBndWFyZCBzZXR0aW5nIGVyYXNlc2l6ZV9taW5vciBp
+biBzcGktbm9yL2NvcmUuYwogIC0gUmVtb3ZlZCBzZXR0aW5nIG1ham9yIGVyYXNlc2l6ZSB0byBt
+aW5vciB3aGVyZSBwYXJ0aXRpb24gYm91bmRhcmllcwogICAgcmVxdWlyZSBtaW5vciBlcmFzZSB0
+byBiZSB3cml0YWJsZQogIC0gU2ltcGxpZmllZCBtaW5vciBib3VuZGFyeSBjaGVjayBieSByZWx5
+aW5nIG9uIG1pbm9yIGJlaW5nIGEgZmFjdG9yCiAgICBvZiBtYWpvcgoKQ2hhbmdlcyBSRkMgLT4g
+djE6CiAgLSBGaXhlZCB1bmluaXRpYWxpemVkIHZhcmlhYmxlIHNtYXRjaCB3YXJuaW5nCgpUaGli
+YXV0IFZBUsOITkUgKDMpOgogIG10ZDogbXRkcGFydDogd3JpdGUgc3VwcG9ydCBmb3IgbWlub3It
+YWxpZ25lZCBwYXJ0aXRpb25zCiAgbXRkOiBzcGktbm9yOiBzZXQgZXJhc2VzaXplX21pbm9yIGlu
+IHNwaV9ub3Jfc2VsZWN0X2VyYXNlKCkKICBtdGQ6IHNwaS1ub3I6IGFsbG93IG92ZXJyaWRpbmcg
+dW5pZm9ybSBlcmFzZQoKIERvY3VtZW50YXRpb24vQUJJL3Rlc3Rpbmcvc3lzZnMtY2xhc3MtbXRk
+IHwgIDggKysrKysrCiBkcml2ZXJzL210ZC9tdGRjb3JlLmMgICAgICAgICAgICAgICAgICAgICB8
+IDEwICsrKysrKysKIGRyaXZlcnMvbXRkL210ZHBhcnQuYyAgICAgICAgICAgICAgICAgICAgIHwg
+MzUgKysrKysrKysrKysrKysrKy0tLS0tLS0KIGRyaXZlcnMvbXRkL3NwaS1ub3IvS2NvbmZpZyAg
+ICAgICAgICAgICAgIHwgMTAgKysrKysrKwogZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMgICAg
+ICAgICAgICAgICAgfCAxMyArKysrKysrLS0KIGluY2x1ZGUvbGludXgvbXRkL210ZC5oICAgICAg
+ICAgICAgICAgICAgIHwgIDIgKysKIDYgZmlsZXMgY2hhbmdlZCwgNjUgaW5zZXJ0aW9ucygrKSwg
+MTMgZGVsZXRpb25zKC0pCgoKYmFzZS1jb21taXQ6IGUwZGNjYzNiNzZmYjM1YmIyNTdiNDExODM2
+N2E4ODMwNzNkNzM5MGUKLS0gCjIuMzAuMgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
