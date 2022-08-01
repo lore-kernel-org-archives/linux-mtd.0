@@ -4,54 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC41AC04A68
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Jul 2022 11:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54384C00140
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Aug 2022 02:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=4ICvmj0uyszTKBj1Xy5jlwJlpY4X/gpwdEqc5Gpm3us=; b=DU7X5I/wXrLbXG
-	FcjRObmig+zsq55/F6SLLfGtqcOrEvx9KDJ4PnVEtpoaIeD1aT4iXJkb4QGHB0mEIALqMNxnOyVdZ
-	kmCHmTPmEg17qaRgduQIm9tEkMQYIk356u0tutMXJYFCfMyUBncnmpLfjKIIipFC8aF9pFTnsKgjb
-	ajXJEwcnk/DtagqMSpbziFxGgtl19cWCmZqdxLp1Tgh7yHSlfLZke9s9Op/H7YJe+z3QKdh6C1Vjh
-	RYOiSZ6BhFFFA/ttZEQFW4w0wnxu0WB7teCT6uPLY7MlQx0Oh95djFtaytd9A53Ux/Hv1zcoOHErE
-	t09YkFwtMhIsDfUeUpXg==;
+	List-Owner; bh=aGB9vj7RjxwFePXLJla/FuymQFbHaw1gAqlyCmUCNgo=; b=a9Qi6JjQpHrADI
+	csrP3A0rDA+H49MKfGJo3yxU5QDKtNh+9IWvwaJr9y3yNpcUwZnc7BxuLoTsD+Kv7rj+/9O+9CHf3
+	Xsf5jNEKVcwPn48TIfFKXS787gUjfDgw+TFC9pVQXhsIFJzG8AiDM2qQG42cjg0yXAeNiQOzz3tE/
+	Bl9OnomIcybSCyiZvCfOcD3Z0JaPAR17JQuhJEkTxs1CAlu6dWEiqPLs8ds+ze9/sAjdWIkFz4ouJ
+	WC2SNGmyQ7KSggkFTWq8akuJqUsZhz9yOdhV3jvDzySLFY5AfRPa+X7Q6w08aWAy7Wd2swXxu9GMK
+	ohtARRZjbmdx1tV+PJNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oHkSm-0000Jt-F1; Sat, 30 Jul 2022 11:16:56 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1oILJW-000p3D-AP; Mon, 01 Aug 2022 02:37:50 +0000
+Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oHkSj-0000Dx-8a
-	for linux-mtd@lists.infradead.org; Sat, 30 Jul 2022 11:16:55 +0000
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Lw1yN4yqkz9svc;
-	Sat, 30 Jul 2022 19:15:24 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 30 Jul 2022 19:16:38 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 30 Jul
- 2022 19:16:37 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-	<zach.brown@ni.com>, <ben.shelton@ni.com>, <s.hauer@pengutronix.de>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH] ubi: Fix UAF wear-leveling entry in eraseblk_count_seq_show()
-Date: Sat, 30 Jul 2022 19:28:37 +0800
-Message-ID: <20220730112837.51184-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	id 1oILJR-000p0N-Ao
+	for linux-mtd@lists.infradead.org; Mon, 01 Aug 2022 02:37:46 +0000
+Received: by mail-pg1-x52b.google.com with SMTP id f65so8515132pgc.12
+        for <linux-mtd@lists.infradead.org>; Sun, 31 Jul 2022 19:37:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=lXB0daiEp1IPszXD6lgU6e6WPPivz7kdrh5SiPt8e4w=;
+        b=YPhNY15H5CaQQ/HwGPI1gF8eVX5EYfKwSwYqO74WPIVnF47YgVCKq3Ix7MQ0Y+s510
+         +hn2Qv7HdutmdW2LNgHBDHzUqefm5CE2zE2AQuyDosrtf+RIYaGCqieFiubPyDTg9wZr
+         nhYyZLZjFNhvpR+yCnjE3FixYjDog+mKJDa2p36UpYYOZUkJzFpIK8v6Sf4vmjI+loYf
+         VuZZOLHqeZLeYy7GDLPNy9X5hS7dJVIqkbQJEUVe6DkiWfAuf9BZ50sbmVpQcFYYsqe5
+         96dEdPbG4t5XbtCTsh7BXi3842ZZj8rlSZ+oiKDR0lvzTQZ0nuGQBJgc83EykzeRFymy
+         Uibw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=lXB0daiEp1IPszXD6lgU6e6WPPivz7kdrh5SiPt8e4w=;
+        b=lNzlrdtiX+bkDmGvQ1mN13CmfvLoZceL1JiNSPvAkOpc3ImdWNQWK57iMzu209J2kD
+         RGgcR9ifuXDgT9zExu/jx/qZPMg+8REEQtyewj6nMhH4+zMGkCQ0CbAmqoF1ustO+0iq
+         LgJfYV9eDCIAGKROBxaqXQboJ4oox6GFmacga1oIJwUttGrBnUVTyeaNZxRT7yZBn01H
+         ncEX1EXCn+0JxVbFcS8ytPGBtA2JOzFSlv2onODZ9MpFiTGXODzwzdjp5019w222HPd0
+         JZzpax9KFpd7LtUWC6iuQtz4wdHH6y7flDVayD8ahePg6OFSbSoDz+cCFcMyeRFgqzfG
+         f87w==
+X-Gm-Message-State: AJIora/JmbjR3hBnii34KaQSUo1RyUnAA64egIXamNE1sPujlkcZL7sv
+	S+3i2Q0enFfGJa+4c1FW1NI=
+X-Google-Smtp-Source: AGRyM1vkrnlUyBdeQSpJcGixcW0bP+dpn4G3gZyhx+d3gdoXpoeA9fV+ccVQOE/3hje7tjQGSCWiRQ==
+X-Received: by 2002:a05:6a00:240e:b0:52c:81cf:8df8 with SMTP id z14-20020a056a00240e00b0052c81cf8df8mr14283962pfh.60.1659321463167;
+        Sun, 31 Jul 2022 19:37:43 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id k32-20020a17090a3ea300b001f317767790sm8594894pjc.23.2022.07.31.19.37.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Jul 2022 19:37:42 -0700 (PDT)
+From: cgel.zte@gmail.com
+X-Google-Original-From: ye.xingchen@zte.com.cn
+To: linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org,
+	ye xingchen <ye.xingchen@zte.com.cn>,
+	Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] mtd: rawnand: gpmi: using the pm_runtime_resume_and_get  to  simplify the code
+Date: Mon,  1 Aug 2022 02:37:38 +0000
+Message-Id: <20220801023738.1595203-1-ye.xingchen@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220730_041653_495892_93A29E09 
+X-CRM114-CacheID: sfid-20220731_193745_459023_916121FF 
 X-CRM114-Status: GOOD (  12.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -69,71 +88,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Wear-leveling entry could be freed in error path, which may be accessed
-again in eraseblk_count_seq_show(), for example:
+From: ye xingchen <ye.xingchen@zte.com.cn>
 
-__erase_worker                eraseblk_count_seq_show
-                                wl = ubi->lookuptbl[*block_number]
-				if (wl)
-  wl_entry_destroy
-    ubi->lookuptbl[e->pnum] = NULL
-    kmem_cache_free(ubi_wl_entry_slab, e)
-		                   erase_count = wl->ec  // UAF!
+Using pm_runtime_resume_and_get() to instade of  pm_runtime_get_sync
+and pm_runtime_put_noidle.
 
-Wear-leveling entry updating/accessing in ubi->lookuptbl should be
-protected by ubi->wl_lock, fix it by adding ubi->wl_lock to serialize
-wl entry accessing between wl_entry_destroy() and
-eraseblk_count_seq_show().
-
-Fetch a reproducer in [Link].
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216305
-Fixes: 7bccd12d27b7e3 ("ubi: Add debugfs file for tracking PEB state")
-Fixes: 801c135ce73d5d ("UBI: Unsorted Block Images")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
 ---
- drivers/mtd/ubi/wl.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index ee0100740869..5218e6edde58 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -890,8 +890,11 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 93da23682d86..0e7da90d6559 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -2504,9 +2504,8 @@ static int gpmi_nfc_exec_op(struct nand_chip *chip,
+ 	for (i = 0; i < GPMI_MAX_TRANSFERS; i++)
+ 		this->transfers[i].direction = DMA_NONE;
  
- 	err = do_sync_erase(ubi, e1, vol_id, lnum, 0);
- 	if (err) {
--		if (e2)
-+		if (e2) {
-+			spin_lock(&ubi->wl_lock);
- 			wl_entry_destroy(ubi, e2);
-+			spin_unlock(&ubi->wl_lock);
-+		}
- 		goto out_ro;
+-	ret = pm_runtime_get_sync(this->dev);
++	ret = pm_runtime_resume_and_get(this->dev);
+ 	if (ret < 0) {
+-		pm_runtime_put_noidle(this->dev);
+ 		return ret;
  	}
  
-@@ -1130,14 +1133,18 @@ static int __erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk)
- 		/* Re-schedule the LEB for erasure */
- 		err1 = schedule_erase(ubi, e, vol_id, lnum, 0, false);
- 		if (err1) {
-+			spin_lock(&ubi->wl_lock);
- 			wl_entry_destroy(ubi, e);
-+			spin_unlock(&ubi->wl_lock);
- 			err = err1;
- 			goto out_ro;
- 		}
- 		return err;
- 	}
- 
-+	spin_lock(&ubi->wl_lock);
- 	wl_entry_destroy(ubi, e);
-+	spin_unlock(&ubi->wl_lock);
- 	if (err != -EIO)
- 		/*
- 		 * If this is not %-EIO, we have no idea what to do. Scheduling
 -- 
-2.31.1
-
+2.25.1
 
 ______________________________________________________
 Linux MTD discussion mailing list
