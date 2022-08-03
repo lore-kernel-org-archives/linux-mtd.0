@@ -4,65 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FFB3C00140
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Aug 2022 17:03:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AD64C19F28
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Aug 2022 11:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BlQQv83iln9qgeJkKuGLrKHtQiiqDZ3keNLE+XxlbhU=; b=GCgYEdyUlJACbM
-	62Dc2xLNd0i9oWoQvmQAHBJ283ryZBdt8wFcNJfVBS1kCKO5V6N6nh9e/m+QhnsZFbOeXcV11oDum
-	7bsLNJwR9sEWDuUqmM0bNyXEI6So2fPLUa659CrZk+5OJo4GDtJM/P0fpJ0NhaSILnYvqAn969frQ
-	7FYIfk1RYghgP8Pt0xsFqTzHOFcjVA5GweVMcZXs0ZaY+nnS6Gh7Ltx0Dx4zElQSHmg5ielb+eSdF
-	bjc1n8tdbVBJt141dwaawlobVP1CT9NmrDC6moeWKY7r6IDLK4Iku4zpWYtuJHMTsCwzq6J4aLAK4
-	FW/5FElnaBdogriiadVw==;
+	List-Owner; bh=dtnCYQJ5XSLpV9lWdujDU0CUmn2C3ThOJw69InbX3qM=; b=HMeYZrb1pvFDch
+	T58zmVJxnxNKPdTiR8hj6GcmYD/957Y5NoJPOiJw9cM3Pq20bCk5XhkSKEGuCIGwBiEIl1mrVxz0c
+	uRVK/g+3OxbOc6H822WXTYqBCr1c5L/sNsy8f5AHF+fYClz7oBOI5xFVFVDhhYbFk1UEtce9xhU4m
+	SQfGmyMe+3Rj7wco+nPx/YgR/YnVoIZHjfJS/eF4vxXkjGh7DTxyuL0Dmn8jAeMmo++Y9JrYyVEFJ
+	cOGtPn2ZEJx6w5xzLmju3e9uKHDeiyrvk7jtPnFGDewgOMW8dPK5f6ESoWqmQeBgdeBuIv+2rHM2V
+	34s1iFruT54SpR5yr30w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIvIW-00G0Nm-L2; Tue, 02 Aug 2022 17:03:12 +0000
-Received: from mail-io1-f52.google.com ([209.85.166.52])
+	id 1oJCJu-005E4J-U0; Wed, 03 Aug 2022 11:13:46 +0000
+Received: from mail-sz.amlogic.com ([211.162.65.117])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIvIO-00G0HY-W3
-	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2022 17:03:06 +0000
-Received: by mail-io1-f52.google.com with SMTP id 125so11099189iou.6
-        for <linux-mtd@lists.infradead.org>; Tue, 02 Aug 2022 10:03:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=2FklMCvsf+IFL6IdQs89s38JLwJsvCdwCA9uElrwbhs=;
-        b=PyDscrXfOHylh360L9hfsw2zqLquAtbKLaTeTlObZ4OJPvWuaySYBNsV0u0zFJHeVm
-         HL221hB89VauWlI4aqZD1sjP8tzYDJjQYLjOIUlf1tXj6qHqdr3CKnevh2No7SGCH022
-         i81o+lQNB0qRUMlBC/VV69z68gVPHUZa4PMit5501RmsMH5c7YUCt5YBrJpnkc/6SnZ6
-         69Looyb1PGCXN5loTSikPr5Z7x+sohH1LaeXqniwT1usSzNPgbK4xHFq55ohfDEU+usG
-         WnEA1ihZN4kzC5Ol05UjKVMms0IGN8QWcj8m0HyJN6mBQ7Q1qTvnmWtwopByA249/kOT
-         odWw==
-X-Gm-Message-State: AJIora+P2LsUxXYIX0jlDSk4FmBEGF+muLmkPQFDM3GRMKs5rIk8477e
-	Cy4nZ0CPDrBPguWJrDgTFhNYU/UH6g==
-X-Google-Smtp-Source: AGRyM1tbaN1sLhdrNh2TVrQLtic1f6Uc7wVbQREu84ol+jGbAI7KqCctkaE8hw2JA3Air2u+MzttgA==
-X-Received: by 2002:a05:6638:d54:b0:33f:8e41:a3b3 with SMTP id d20-20020a0566380d5400b0033f8e41a3b3mr8841580jak.251.1659459783371;
-        Tue, 02 Aug 2022 10:03:03 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id z7-20020a926507000000b002de08fef8c5sm5721525ilb.43.2022.08.02.10.03.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Aug 2022 10:03:02 -0700 (PDT)
-Received: (nullmailer pid 297736 invoked by uid 1000);
-	Tue, 02 Aug 2022 17:03:01 -0000
-Date: Tue, 2 Aug 2022 11:03:01 -0600
-From: Rob Herring <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Heiko Schocher <hs@denx.de>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: microchip,mchp48l640: use
- spi-peripheral-props.yaml
-Message-ID: <20220802170301.GA297672-robh@kernel.org>
-References: <20220727164148.385476-1-krzysztof.kozlowski@linaro.org>
+	id 1oJCJq-005Dva-U4; Wed, 03 Aug 2022 11:13:44 +0000
+Received: from [10.28.39.72] (10.28.39.72) by mail-sz.amlogic.com (10.28.11.5)
+ with Microsoft SMTP Server id 15.1.2507.6; Wed, 3 Aug 2022 19:13:26 +0800
+Message-ID: <e954f248-614b-5f59-b6c3-13d67575c416@amlogic.com>
+Date: Wed, 3 Aug 2022 19:13:25 +0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220727164148.385476-1-krzysztof.kozlowski@linaro.org>
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] mtd: rawnand: meson: fix bit map use in
+ meson_nfc_ecc_correct()
+Content-Language: en-US
+To: Dan Carpenter <dan.carpenter@oracle.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Neil Armstrong
+	<narmstrong@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, Jerome Brunet
+	<jbrunet@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
+	Yixun Lan <yixun.lan@amlogic.com>, <linux-mtd@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <kernel-janitors@vger.kernel.org>
+References: <YuI2zF1hP65+LE7r@kili>
+From: Liang Yang <liang.yang@amlogic.com>
+In-Reply-To: <YuI2zF1hP65+LE7r@kili>
+X-Originating-IP: [10.28.39.72]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220802_100305_058309_C663E95D 
-X-CRM114-Status: GOOD (  17.29  )
+X-CRM114-CacheID: sfid-20220803_041343_034762_59C452E9 
+X-CRM114-Status: GOOD (  12.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,44 +60,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 27 Jul 2022 18:41:48 +0200, Krzysztof Kozlowski wrote:
-> Instead of listing directly properties typical for SPI peripherals,
-> reference the spi-peripheral-props.yaml schema.  This allows using all
-> properties typical for SPI-connected devices, even these which device
-> bindings author did not tried yet.
-> 
-> Remove the spi-* properties which now come via spi-peripheral-props.yaml
-> schema, except for the cases when device schema adds some constraints
-> like maximum frequency.
-> 
-> While changing additionalProperties->unevaluatedProperties, put it in
-> typical place, just before example DTS.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-> 
-> Technically, this depends on [1] merged to SPI tree, if we want to
-> preserve existing behavior of not allowing SPI CPHA and CPOL in each of
-> schemas in this patch.
-> 
-> If this patch comes independently via different tree, the SPI CPHA and
-> CPOL will be allowed for brief period of time, before [1] is merged.
-> This will not have negative impact, just DT schema checks will be
-> loosened for that period.
-> 
-> [1] https://lore.kernel.org/all/20220722191539.90641-2-krzysztof.kozlowski@linaro.org/
-> ---
->  .../devicetree/bindings/mtd/microchip,mchp48l640.yaml      | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
+Hi Dan,
 
-Applied, thanks!
+Thanks.
+
+On 2022/7/28 15:12, Dan Carpenter wrote:
+> [ EXTERNAL EMAIL ]
+> 
+> The meson_nfc_ecc_correct() function accidentally does a right shift
+> instead of a left shift so it only works for BIT(0).  Also use
+> BIT_ULL() because "correct_bitmap" is a u64 and we want to avoid
+> shift wrapping bugs.
+> 
+> Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>>From review.  Untested.
+> 
+>   drivers/mtd/nand/raw/meson_nand.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+> index 829b76b303aa..ad2ffd0ca800 100644
+> --- a/drivers/mtd/nand/raw/meson_nand.c
+> +++ b/drivers/mtd/nand/raw/meson_nand.c
+> @@ -454,7 +454,7 @@ static int meson_nfc_ecc_correct(struct nand_chip *nand, u32 *bitflips,
+>   		if (ECC_ERR_CNT(*info) != ECC_UNCORRECTABLE) {
+>   			mtd->ecc_stats.corrected += ECC_ERR_CNT(*info);
+>   			*bitflips = max_t(u32, *bitflips, ECC_ERR_CNT(*info));
+> -			*correct_bitmap |= 1 >> i;
+> +			*correct_bitmap |= BIT_ULL(i);
+>   			continue;
+>   		}
+>   		if ((nand->options & NAND_NEED_SCRAMBLING) &&
+> @@ -800,7 +800,7 @@ static int meson_nfc_read_page_hwecc(struct nand_chip *nand, u8 *buf,
+>   			u8 *data = buf + i * ecc->size;
+>   			u8 *oob = nand->oob_poi + i * (ecc->bytes + 2);
+>   
+> -			if (correct_bitmap & (1 << i))
+> +			if (correct_bitmap & BIT_ULL(i))
+>   				continue;
+>   			ret = nand_check_erased_ecc_chunk(data,	ecc->size,
+>   							  oob, ecc->bytes + 2,
+
+Acked-by: Liang Yang <liang.yang@amlogic.com>
+
+Thanks,
+Liang
 
 ______________________________________________________
 Linux MTD discussion mailing list
