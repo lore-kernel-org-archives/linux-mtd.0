@@ -4,82 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAEB6C19F29
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Aug 2022 06:36:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DBFEC19F2D
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Aug 2022 15:22:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:Cc:To:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SmK0zGdmYPGtdfwYku2OF98HaRhwJC8y7Fm1IkgotEI=; b=DptoCAh0FUBwZk
-	MfZt/26stxws79Yfil9NCAeYMdxPtwnsgWAwUHUxkgK8f4NKrT2ETYw7ATcpynx7i1UfVI9DMOMK8
-	txcr2BuCSEosdPQ4X4+kBfiVqXdQCCTD0Nu59Pvv//6aoH2WWTX9Buw33NCU6N8Z3L9B/AWGqod//
-	yG6UX/f1amv4hH8Vi5iLe3o17ZuYCFBaqoSl8K2jFYFcjvuYFZ0iFM8DgbsfTpICT++pRBOk4CiG5
-	n6p/fQ+u2mr2oyLaGcAOaSYQUOCoZeHzhb6qhPLrBJG+hcyQJ/qgwI+Wqm3ZEjBABG4zusNZJegbl
-	rkqRqLSF12W2kJGSyGkQ==;
+	List-Owner; bh=EjThXGvUB72MWcBCxyIxv0UCIwHcxr9nc7EW4ECA/b4=; b=pA9azBfwl7REOv
+	wrh3JuvzlgXJEImHteUiJKQcljjOXMWVyVySmX6eAXpTQJtjoeRx6y5eG3YFixL4suhhbYbTrnydi
+	c3a+eesUcKMZ/vjU+e9L8cQFSs8Qpk7xQeZKoX4NvStUn0Ep2GTIEQf5f6SKyK2wcrb8AaA5at+Be
+	OdvRP+jNPlUqGWAQBIHgGX/x4Hmi9GOqwxZl5qtu36YBvclmW9nnNMlDTAFto7EHZN2y4SQy465Cr
+	glTwwFSbZOG0RuwaYWa8aPqw15oXWdQNeVB7S2+ZpPl+sOJzIhBo73bLVeVK2W3+5UmlnEsyZaj1i
+	Cl9iT2RRvA32jr50WHeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oKDPj-004nyX-1c; Sat, 06 Aug 2022 06:35:59 +0000
-Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
+	id 1oKLdO-00DzjQ-Mf; Sat, 06 Aug 2022 15:22:38 +0000
+Received: from out3-smtp.messagingengine.com ([66.111.4.27])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oKDPS-004nXV-Am
-	for linux-mtd@lists.infradead.org; Sat, 06 Aug 2022 06:35:43 +0000
-Received: by mail-pj1-x102b.google.com with SMTP id 15-20020a17090a098f00b001f305b453feso10067978pjo.1
-        for <linux-mtd@lists.infradead.org>; Fri, 05 Aug 2022 23:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=g5jLftlnBAcQ5XkK8r4pDhyezZZLH+TDOIRS4nWRnGA=;
-        b=oAfYfGK3VhavDNY7r5sqdE4sBuhC/JoCubeQG+IWwf8qvpYR3N4M7AjjVOWtl8G8Zn
-         cgpt2R0S9TpKFxZMnEDZ5OeLl7BnrcEnJgO0WuskpkwM4uk8sWWBeTuKR0FmCPGzfjOo
-         wzPGjv4jS6nC6EUg/vositj29wRVQ5xuVx3kNpI7VaK84YGj4KGHFRG8Bw2HrZd+pGqG
-         6UVMuksJXxCBxsJoGbVZJxOeizLRso/s53azpnnDAcRcAS5xLNQFI1eaPzoHcD/7RtTC
-         J4TyiHAdPCUiC2oFWyO7O0jdVgYvYPlmUgZq1JZ7eqtFYluYGnqWyoHHWoPgbBzLrHZl
-         fAMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=g5jLftlnBAcQ5XkK8r4pDhyezZZLH+TDOIRS4nWRnGA=;
-        b=QUljTGmfjqt33ny4l+F32iQjEMBQ8YiUyKMh2v9yBYPzXbFKLTrujDiAU/65r14gSl
-         3G8guJf/nGBPFNoFNmajWoiJ1qQjPTwvIf+WZbctbfGzQioTD3AiuEsQ+UwMkbdhPrhI
-         /VPw/JAnlGVh+dN9vd1m5DgdYbv1WCSIXLpY1D1pWnVLcoLhiMXYk/TL+ZDojVZj8X99
-         COVDr5K82bmKjndg7UlLYVe6Hv7F/EMgOW245Xo4lhyJDj4rnNLqomG18up2dx/VloMY
-         lSux2GBdTGqnBIx43eqrMaBlzac8mOCmYTWiQjFJu3pc1eYxCcRZEQKus0JYKhTbQk6z
-         blbA==
-X-Gm-Message-State: ACgBeo2iQsiI98MCADa0VwauMFDrEBwItoFlgy3u5qQ5ALZ19DZ+h0ud
-	RUquE2PSdV4bB8WurprI08Wb/ATku1gU7A==
-X-Google-Smtp-Source: AA6agR7dp0scGMo7zAiMeOFbnBTgPku50MtNm+3/DSQOcGr98oXmqec+rhAcAVH86WRn0kJcRvAwwg==
-X-Received: by 2002:a17:90a:ead3:b0:1f3:366d:5005 with SMTP id ev19-20020a17090aead300b001f3366d5005mr19837778pjb.1.1659767740836;
-        Fri, 05 Aug 2022 23:35:40 -0700 (PDT)
-Received: from ISCNPF1JZGWX.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id a18-20020a63e852000000b0041b67615584sm2418452pgk.68.2022.08.05.23.35.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Aug 2022 23:35:40 -0700 (PDT)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@microchip.com,
-	pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH 8/8] mtd: spi-nor: spansion: Add support for Infineon
-Date: Sat,  6 Aug 2022 15:34:26 +0900
-Message-Id: <e47ed0aa3e1a6fdca7689434ce7dea99ff4826e7.1659764848.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1659764848.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1659764848.git.Takahiro.Kuwano@infineon.com>
+	id 1oKLdL-00Dzcp-DS
+	for linux-mtd@lists.infradead.org; Sat, 06 Aug 2022 15:22:37 +0000
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.nyi.internal (Postfix) with ESMTP id B9FDC5C00C6;
+	Sat,  6 Aug 2022 11:22:31 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Sat, 06 Aug 2022 11:22:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	tom-fitzhenry.me.uk; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to; s=fm1; t=1659799351; x=1659885751; bh=XPxqbORER+
+	pf5AS5qXf2rHLCpeovhwPPoo5hE46MpnM=; b=SEc6iCjHYRcnbdJqr1ydWT+eDl
+	KuExI256Lu/DeZQ3fveCyuDlEmCeLg1aISDGO90U1hC3xgRMoik9zKzkkYW3vTZ5
+	j/QTtUlFIOaZFsBDtzj7nHGRTawfViZ/+zsfP7IS+NjTWqOX1Alr5zb5Jz9/PAzb
+	jWzRYZIaigHpjcVOulLrLCjiaAOV/FcG8ilR4KY6ZNV6h0UE5vLAbD56s8cYMjW6
+	mWzaFsDetH1arWaVW6zR78z54ewAL4CdSqMzpiDbDC8tLL9smZtd96qHBVCin24G
+	37Yp+OuAy/x/AuR5IKbVGlsqlaBg0GUx5rF3GFSWpwjKtHGYEU+lXdxk0Vng==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1659799351; x=
+	1659885751; bh=XPxqbORER+pf5AS5qXf2rHLCpeovhwPPoo5hE46MpnM=; b=t
+	fmgFpQ+H8P+42rxnfLVpfZjJxRc4T0pzLddRt1RxZQNtORxr91ves4hkuIyOthEI
+	MfbBd6GI2beqgS193r8+TO0Nxki+f8vlOQbMure6rknD18A/806KheFE+R+rQf10
+	Womvg+sb+qj5Z5t0afnJjG+ZhmvV0qLg9hc4bmY4ef7RDkcSazlGeGk31tQ7d4jm
+	c4vNGIdj3c+bZnZzbc0YdHC9jz2Qj3y+H+aBKca9MRymWq3wVNEiV4nV2VHkPKys
+	+L8CGwgfSPhLcvDLGJ5UnuagfzJ0r5xc12EVAtSwBRlpD07in3x5mWUspvXldGm1
+	v0iX7BbWFhZpshvsj++Yg==
+X-ME-Sender: <xms:NofuYs-f7mkHz28doihk4T0V_WiDIPAVcSHmcJ87j6ZfSCJnJsA39Q>
+    <xme:NofuYksh-JoPHvwVkzO-0oNXJJKwxpEN3hg3UiHH0Hd1GNAvaNQfeud2U2GNY_PNQ
+    KEcpRnb7AGeHrdLMQ>
+X-ME-Received: <xmr:NofuYiDnE5wzfwn6owBeDBJ8e9ZoeATVB07DhJj5BIeKhZm8TpF823BA74lx5xqHO37cE0aY5X-EzigZh1JmhQhg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdeffedgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefkffggfgfvvehfhffujggtgfesth
+    ejredttdefjeenucfhrhhomhepvfhomhcuhfhithiihhgvnhhrhicuoehtohhmsehtohhm
+    qdhfihhtiihhvghnrhihrdhmvgdruhhkqeenucggtffrrghtthgvrhhnpeetudelveejvd
+    ffjeevvdelvdffhefgueefgedtffevgeevudfgieegleeikeetudenucevlhhushhtvghr
+    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehtohhmsehtohhmqdhfihhtii
+    hhvghnrhihrdhmvgdruhhk
+X-ME-Proxy: <xmx:NofuYseUg2wPa__MYBoVwy8d39TDQBQI0I093hDQTLd4zI9g6VHWcg>
+    <xmx:NofuYhPnaGF4U1AKpudN0WcjqsfMceaQe_c-UFpYRoq-rKVoViMM5g>
+    <xmx:NofuYmkRsLlDBFfkXha6Cp77pEKKuAEAhKX3HIgrQTJ6YKSTG3vD1g>
+    <xmx:N4fuYiFkc_LHQ9l0OeYJJSpGvJyQZuXBILMhy2y3NwE4YWH0RoAbtQ>
+Feedback-ID: iefc945ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 6 Aug 2022 11:22:28 -0400 (EDT)
+Message-ID: <8757e6d6-666b-433f-3089-621e7c80cf9e@tom-fitzhenry.me.uk>
+Date: Sun, 7 Aug 2022 01:22:25 +1000
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.3
+Content-Language: en-US
+To: Tudor.Ambarus@microchip.com, p.yadav@ti.com, michael@walle.cc,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20220603141603.145777-1-tom@tom-fitzhenry.me.uk>
+ <dd516981-4d1b-acdc-c468-cbb14d34f68c@microchip.com>
+From: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
+Subject: Re: [PATCH v2] mtd: spi-nor: siliconkaiser: add support for sk25lp128
+In-Reply-To: <dd516981-4d1b-acdc-c468-cbb14d34f68c@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220805_233542_414683_AFB83A1A 
-X-CRM114-Status: GOOD (  11.78  )
+X-CRM114-CacheID: sfid-20220806_082235_943718_A078360E 
+X-CRM114-Status: UNSURE (   9.82  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,69 +102,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+On 21/7/22 18:08, Tudor.Ambarus@microchip.com wrote:
+> Does this flash implement the manufacturer ID continuation codes?
+> Can you read more bytes of manufacturer ID and dump them?
 
-s25hl02gt and s25hs02gt
+I'm not sure how to do this, but from what I can gather, flash chips 
+that implement manufacturer ID continuation codes return >3 bytes in 
+response to RDID. Is this correct?
 
-Add ID, flags, and fixup for s25hl02gt and s25hs02gt.
-These parts are
-  - Dual-die package parts
-  - Not support chip erase
-  - 4-byte addressing mode by default
-  - Wrong param in SCCR map that needs to be fixed
+To do this, in tools/spi/spidex_fdx.c I set buf[0] = 0x9F, and then 
+executed this with a large recvbuf:
 
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
----
- drivers/mtd/spi-nor/spansion.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+$ sudo ./a.out -m 6 /dev/spidev0.0
+/dev/spidev0.0: spi mode 0x0, 8 bits per word, 10000000 Hz max
+response( 6,  7):  25 70 18 25 70 18
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 22b0be5d312b..11f0bb509900 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -325,6 +325,10 @@ static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
- 		}
- 	}
- 
-+	/* Fix the number of dice that is wrongly advertised in 2Gb parts. */
-+	if (nor->params->size == SZ_256M)
-+		nor->params->num_of_dice = 2;
-+
- 	cypress_nor_set_page_size(nor);
- }
- 
-@@ -526,6 +530,11 @@ static const struct flash_info spansion_nor_parts[] = {
- 		PARSE_SFDP
- 		MFR_FLAGS(USE_CLSR)
- 		.fixups = &s25hx_t_fixups },
-+	{ "s25hl02gt",  INFO6(0x342a1c, 0x0f0090, 256 * 1024, 1024)
-+		PARSE_SFDP
-+		FLAGS(NO_CHIP_ERASE)
-+		MFR_FLAGS(DEF_4BAM)
-+		.fixups = &s25hx_t_fixups },
- 	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
- 		PARSE_SFDP
- 		MFR_FLAGS(USE_CLSR)
-@@ -534,6 +543,11 @@ static const struct flash_info spansion_nor_parts[] = {
- 		PARSE_SFDP
- 		MFR_FLAGS(USE_CLSR)
- 		.fixups = &s25hx_t_fixups },
-+	{ "s25hs02gt",  INFO6(0x342b1c, 0x0f0090, 256 * 1024, 1024)
-+		PARSE_SFDP
-+		FLAGS(NO_CHIP_ERASE)
-+		MFR_FLAGS(DEF_4BAM)
-+		.fixups = &s25hx_t_fixups },
- 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
- 		FLAGS(SPI_NOR_NO_ERASE) },
- 	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
--- 
-2.25.1
+It looks like the 3-byte response has cycled, suggesting this flash chip 
+does not implement continuation codes.
 
+> If the flash does not define the continuation codes, we'll need to
+> add this flash in a ID collisions driver.
+
+I will do this in v3.
 
 ______________________________________________________
 Linux MTD discussion mailing list
