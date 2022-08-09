@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD25BC25B06
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA4DCC19F2D
 	for <linux-mtd@archiver.kernel.org>; Tue,  9 Aug 2022 20:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hyyJ5hNhEw1nA7vC6m7P5JWmv9EmjMTchdd7K8kcwU4=; b=CtzDgggDH3u/PF
-	q/uPWV/OAPUpBFPauGuevzKepIeik6q9BoyTZ0Q4s7+ezxM9y1AmRVVjKcb94AY3NrpZLFUFDOYrc
-	6jjTvwL3ryH3J9KOeuzOZ5uTdXV6jlKRDvJ76uGFXcgbQSV/M8Jf12jUFOCk04BIE7+caQ4w9Cb6H
-	To1Z1XPZHS2APWCSkdXTphOFVMzsbokXAPcGnYoamWJG4eXB5nvGgfmQMegfvUYUgIF088AE8mKrk
-	tNrEwuu2+TzytkUEpdbuJKsoWPx5Y/p2c/uxTOyR0+yTu5hUX3bxosgxDf/Tgji2WgdK/mmGZvDdn
-	Wf/6zY5jMZytuTHq90IA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=AWkv1BmOxhyelgWTQ3tUm+s1x15RqXkQI8myG6OLXA0=; b=3/mkVLscuhHdOM
+	wIgUU4yzHYFnle6KVvOuyy6akGIDE2PSkF2sX5u9n3AsGua09vEWfy4zIlfQPLGWAndx0zf/+aquC
+	trWyoXdmDX4fvOI+dO32mT8W3+rLL0G4jVp9F2pRSWQJmKDzKcZNwSAh0P5FrX+WV0/ZIbpwALmla
+	pUZNkaU40OEgIncv/cjGjJpMsf/xMf+tObiVgJHFkleNUH+il734Rc3JI7+jXMe9DwpevG5h9zBJe
+	wfVZVKc9LQcRlVFxGEInomLtsl6u3EQNS930/iZ8iuVyM0+QA78FFfyUQh8rwG75xhy11X8J22ADa
+	dlitHD4ENYy7VvSOrp8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oLVco-006B23-FT; Tue, 09 Aug 2022 20:14:50 +0000
-Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
+	id 1oLVcs-006B3t-OB; Tue, 09 Aug 2022 20:14:54 +0000
+Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oLVck-006AzA-A7
-	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2022 20:14:48 +0000
-Received: by mail-wr1-x429.google.com with SMTP id h13so15515596wrf.6
-        for <linux-mtd@lists.infradead.org>; Tue, 09 Aug 2022 13:14:44 -0700 (PDT)
+	id 1oLVcq-006B29-JO
+	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2022 20:14:53 +0000
+Received: by mail-wr1-x42e.google.com with SMTP id l22so15518439wrz.7
+        for <linux-mtd@lists.infradead.org>; Tue, 09 Aug 2022 13:14:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=6Qonm6iaHiCG37E9Vy+iyvt+Lcl9E0+zQmTyp2y5GN8=;
-        b=MA/SLCzGbcsdtjX0pFpdjQSE9cMe4j2H3ERl3C2t4PacMtVR90dl1kamzZQEmUtS8d
-         nYLjkj669ey764cGjq7aU2h7vm27uhO/cQmglBcIsFmyitGXIidZkhM77jScmlThXvpp
-         ELCQDGOfzPnf5Vs3Cymmg7kq1H/eAr+K3X/zzGKw7WDejZ/vkUeJizniuGRwfMzk+RR6
-         zEGXVkV6ZbZOKmLlgsfa5Nj+GElHb+uk3SIxu/kQSPCxqwcxuCwJOKvCXs16yppGn1Vj
-         OSVk4YiNEkMjcFUpicon95mSOJIzgMXNjdeknuTslak7AHEzrlvmwKDpmR7E+fSg5ufP
-         g+QA==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc;
+        bh=n+sIRfD+RQiRGeYS26jphMxCdbHEnhlhpCnFs913kcs=;
+        b=jejZm+LsOkP/sKHcTEjTV6a/YYsp2p6PJWvV5Wq5e8AsJrGoqYxITRS6VyHhbYmoJM
+         hz3dmUTvecCc+8BvqDnixZPoalS7dbYY5PMNY+/s85jL232ek1hkXHYI1OD5gzRwOV6k
+         nlBEF2Gs8w1ocpv5PHneyEd6jUo47n/RFaR13fe5PGUkP23vB2QHFlpqLcpMtJqxujMF
+         vfvY2a5JjxDykh1Wn/uI3hDCqNVys2WFTCDMTyXDTQLYOe4LiP+SYg/7YPfwdBLfYmXG
+         giw3vBtwH9PmT61uF1ns7I+qhVCoRDczkpafU2m9cP6VaRONGMV3TLZI1ltQQGFyojJz
+         UVTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=6Qonm6iaHiCG37E9Vy+iyvt+Lcl9E0+zQmTyp2y5GN8=;
-        b=hsdtV0MrZgqWjZg6R7FhufE64wx692AjL/uDiSyJ31/+qS6rJIEpg8LInyZM7uNGFv
-         bQzUH2/ahOw3SkesNMLmQzua4q0G/noazB03tE+mlVvFpUoByscPRzRpMTchrsIx5Kft
-         cNbpz/ta58eige4SCiRVi0FkQhqaphD4eVKBPeGCpDpD5vBjA7HfHtdQMlDQD5PNzpxG
-         Dh+wvuX3qysq16XYGsUmaeE6kLQSRZvVb726tjxIUlYCDSZgNMa5wg1j9/sNgoVvbLPl
-         iq2Wzgj3z1aMI0RqUoDwhzSjOMIICDRsE/s32UTTdOmFj8/Yxmg/k7ZJgII4qCzpQ40T
-         5DTA==
-X-Gm-Message-State: ACgBeo0xaaRz/rdQdjXX7Yd/xxhvyFsCHLZnbd0OIbMZZFHI0g/OLSpz
-	UuR4TnzT0a5UnFovB7MjzD7QTQ==
-X-Google-Smtp-Source: AA6agR6S8ASd/btWcHQaYoP+no/BZLMyuwD9cCluX0U4Jf6RkxELiN64K4xWSUPO04XqbcZj4GNelw==
-X-Received: by 2002:adf:f30e:0:b0:21f:afbb:db23 with SMTP id i14-20020adff30e000000b0021fafbbdb23mr15241313wro.490.1660076082904;
-        Tue, 09 Aug 2022 13:14:42 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=n+sIRfD+RQiRGeYS26jphMxCdbHEnhlhpCnFs913kcs=;
+        b=wVxRsnkZjPpnhPlZvQ13pmd3MajEtTeXABt+Y5OsUll4EQxRZ6xBxXhIywyj41omQu
+         JyX+LmSyDCm3z2E4Sdilc1aXKAWcXUw7poTGuA3oRJgI7sx1zJWwWqtnuDY665m1IAsU
+         mOYc6KafyxbFBGdoIVWmHJ0iJ3/iKi5QCshOrC0wqQXt7Wl8EkIIq4cXjMJV7wcYGros
+         5CY9qP/SMqHTZR8RkXSBYKNgJPaKvNKXM/0h38RGGhHI6LI+qD4OSeG8o8stE+RHBuIM
+         q7QpWAVELy2H4rqo3CqRt0LsKETEB60GyDYONk3SEFu2rILTVfcYXzW0arX+IakeDGHl
+         NY5Q==
+X-Gm-Message-State: ACgBeo3WN16T7/UNVUTyhzGlSUACwUSerCPjkTkSoop2n7yPEYIfXvnj
+	sQAQQzVt1opGom+3nT/S9weWAg==
+X-Google-Smtp-Source: AA6agR6Q0kQEIw5VavO/Vm78ynSFGIF8hJpL/Byv5pZN1uWpXtoptmzd9VDOfD5ycVuA3Pjge+IeXQ==
+X-Received: by 2002:a5d:6608:0:b0:220:625e:f4e1 with SMTP id n8-20020a5d6608000000b00220625ef4e1mr16069047wru.252.1660076090308;
+        Tue, 09 Aug 2022 13:14:50 -0700 (PDT)
 Received: from debian.office.codethink.co.uk ([2405:201:8005:8149:e5c9:c0ac:4d82:e94b])
-        by smtp.gmail.com with ESMTPSA id q15-20020a7bce8f000000b003a53e6c5425sm24041wmj.8.2022.08.09.13.14.35
+        by smtp.gmail.com with ESMTPSA id q15-20020a7bce8f000000b003a53e6c5425sm24041wmj.8.2022.08.09.13.14.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Aug 2022 13:14:42 -0700 (PDT)
+        Tue, 09 Aug 2022 13:14:49 -0700 (PDT)
 From: Sudip Mukherjee <sudip.mukherjee@sifive.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
 	Pratyush Yadav <pratyush@kernel.org>,
@@ -73,15 +73,16 @@ Cc: greentime.hu@sifive.com,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Sudip Mukherjee <sudip.mukherjee@sifive.com>
-Subject: [PATCH v2 0/3] Add support for Quad Input Page Program to is25wp256
-Date: Tue,  9 Aug 2022 21:14:25 +0100
-Message-Id: <20220809201428.118523-1-sudip.mukherjee@sifive.com>
+Subject: [PATCH v2 1/3] mtd: spi-nor: issi: is25wp256: Init flash based on SFDP
+Date: Tue,  9 Aug 2022 21:14:26 +0100
+Message-Id: <20220809201428.118523-2-sudip.mukherjee@sifive.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220809201428.118523-1-sudip.mukherjee@sifive.com>
+References: <20220809201428.118523-1-sudip.mukherjee@sifive.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220809_131446_396522_64A7C14D 
-X-CRM114-Status: UNSURE (   8.48  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220809_131452_656711_663A6065 
+X-CRM114-Status: GOOD (  14.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,22 +99,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch series enables SFDP support for is25wp256. And also adds
-Quad Input Page Program capability as its not discoverable from SFDP.
+The datasheet of is25wp256 says it supports SFDP. Get rid of the static
+initialization of the flash parameters and init them when parsing SFDP.
 
-Changes in v2:
-Enable SFDP instead of using no-sfdp-flags.
+Testing showed the flash using SPINOR_OP_READ_1_1_4_4B 0x6c,
+SPINOR_OP_PP_4B 0x12 and SPINOR_OP_BE_4K_4B 0x21 before enabling SFDP.
+After this patch, it parses the SFDP information and still uses the
+same opcodes.
 
-Sudip Mukherjee (3):
-  mtd: spi-nor: issi: is25wp256: Init flash based on SFDP
-  mtd: spi-nor: add SFDP fixups for Quad Page Program
-  mtd: spi-nor: issi: is25wp256: Enable Quad Input Page Program
+Signed-off-by: Sudip Mukherjee <sudip.mukherjee@sifive.com>
+---
+ drivers/mtd/spi-nor/issi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/mtd/spi-nor/core.c | 9 +++++++++
- drivers/mtd/spi-nor/core.h | 2 ++
- drivers/mtd/spi-nor/issi.c | 4 ++--
- 3 files changed, 13 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index 89a66a19d754..8b48459b5054 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -71,7 +71,7 @@ static const struct flash_info issi_nor_parts[] = {
+ 	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25wp256", INFO(0x9d7019, 0, 64 * 1024, 512)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
++		PARSE_SFDP
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+ 		.fixups = &is25lp256_fixups },
+ 
 -- 
 2.30.2
 
