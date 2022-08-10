@@ -4,56 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DFC1C00140
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Aug 2022 13:28:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6752EC25B07
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Aug 2022 13:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=odrBljsbMQC2pbmJdNG7RrzQ+8DaqSqd+Bzc2yQzNYc=; b=xXoamC0ZFIrRfn
-	XrmsNGRe9eKLwkQjK8qLiKWpAeyWTwtD+6oI4+HSYDxFYh1Cg+GACqFhlEH19prMCacgOygHkRZBr
-	EJsDblNUDDD8/i0RLbDo+Dw1t4VZn/+rB0bLaZxqTbfWPCZBgBIP7fVWpqCQWDQsmnd1qwSazN2Sq
-	Bkk4IjDSP/sNmywpDUyLFPQKcB9uTyTajeVjaLq/tcBwOXqmSZiwEGcrjUNpY0idauJHVNE8DrKKy
-	mzP3PVOIpm/dQBNNuc84g8o4plWdRqKWtJxgQtuclb6/RbLvyYWiC8y1hrPiyGm4WYH8bCszDMYcD
-	vel7/veqWHRBRNBskZDA==;
+	List-Owner; bh=Cv46ELDSKmnO353yVy9op/dYUspli4vc4OV5jHSShGw=; b=QQH25BpfpzQhx7
+	n/Yr6bcmvkg8IwggD47NFmm7SiMWvKCKciYJ51AZEwUnR8P5qWHJ5sAMMlqehhvaWtst46A8gBm9w
+	mMoJEBpjuQLgBURzZExTfvw5TSlGJOf+ygDGtIMhcMdY8aimBhjq5KQRdf9K+TpIhIvP5cR/uBqZp
+	mRzkP4dHhEi2KUQjZ4RCNvMaP59AcBDwp/NXK0tGkVVSix4ubAMVGY5t1Yn+hLmNdlYYHU3g9EEiZ
+	OF9kw6SzU1MDjGbOwnrPvwTCszFW9hiNMOUqqt0XmDe6ixixrGgLy5BK9MGJzyEqqAAzICoysDMEU
+	L8imvCRssbx5zRxbPcvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oLlkf-00C0P5-Ha; Wed, 10 Aug 2022 13:28:01 +0000
+	id 1oLlki-00C0Qp-Nh; Wed, 10 Aug 2022 13:28:04 +0000
 Received: from bg4.exmail.qq.com ([43.154.221.58] helo=bg5.exmail.qq.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oLlkY-00C0N0-UU
-	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2022 13:27:59 +0000
-X-QQ-mid: bizesmtp82t1660137620tvqpxd73
+	id 1oLlkf-00C0Op-No
+	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2022 13:28:03 +0000
+X-QQ-mid: bizesmtp88t1660138071tm7fbmh1
 Received: from localhost.localdomain ( [182.148.14.53])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 10 Aug 2022 21:20:19 +0800 (CST)
+	id ; Wed, 10 Aug 2022 21:27:50 +0800 (CST)
 X-QQ-SSF: 01000000002000B0D000B00A0000000
-X-QQ-FEAT: uGhnJwy6xZK3/a4RZGPHChyYxZyQ91n+aQkD5cRY+ai5ylW5xYcDUzJOD4ag6
-	UT+isujEYjcMdxFWz61a6UcvPhdLs3ds0tSLae7msJWbfm1NAk2XQpurmB8hHcsSZneUl07
-	elWLQWUOKyeIdLwGt+3bSiLUzb3DfS/nOphfpqdekAapLR3IBRBrSDnO8gmDzZpgP01b5bl
-	jik0taODm1e+3rAfeQj0rVkK4L0e/HjqZntXd/y3wGOldU6aPVbukNPuQdrGXhlD57XsObg
-	aJ03JRsCH5jnLytcPSr4cFaYdLzgb5gNg7w1hQkmqDATgCjJWIkglhRI6gjybOvd2wiQcJa
-	jVKx7hkbjAk3RXmOpA7+eoWuu0QaJQf9+gUwH2z9gXQNtOXLteIJd3dMWQWWw==
+X-QQ-FEAT: YHTLUubWl26igChFXzRkm64UDKpjaoOCHUIjXC277Z+iI0dvZuzPe9dE5tUrX
+	N3kqbzrnzvJKRKdJRbeDjz24k0gJZ37cLkU0jZ2PbeAjSRHHu72HT5wGDSpdAEZf5tUFCmh
+	bVbPV+3Gu/zZxwSq05ns4+i165ggmIRlSAC+epOGmnShx3Hg67BUOkkJ3jgvVe0ck0Bz7/t
+	6AwrhQ+WJwuRajvoINmr4oYOiE/VcyRMSLaz7OeP16mp5aXo3PaBTAFcrmuaU2urAQxgbty
+	9Sq02EE7/W4T+LQgl5H55ktOpCBXY7/bb+0P2jCrb9v054jol1YxEmFb36Oz9ZCdQKM9NlW
+	OlvZz7HNMSPLsPY4rSyjRCLS8mq+CQ3h+6VqUQQt0n4HjbHniGQbGgxaK6PjA==
 X-QQ-GoodBg: 0
 From: Jilin Yuan <yuanjilin@cdjrlc.com>
 To: miquel.raynal@bootlin.com,
-	richard@nod.at,
 	vigneshr@ti.com
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Jilin Yuan <yuanjilin@cdjrlc.com>
-Subject: [PATCH] drivers/mtd: fix repeated words in comments
-Date: Wed, 10 Aug 2022 21:20:09 +0800
-Message-Id: <20220810132009.59842-1-yuanjilin@cdjrlc.com>
+Subject: [PATCH] nand/raw: fix repeated words in comments
+Date: Wed, 10 Aug 2022 21:27:33 +0800
+Message-Id: <20220810132733.63767-1-yuanjilin@cdjrlc.com>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:cdjrlc.com:qybglogicsvr:qybglogicsvr4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220810_062757_716303_4D14ECC2 
-X-CRM114-Status: GOOD (  10.53  )
+X-CRM114-CacheID: sfid-20220810_062802_138142_3CE523B7 
+X-CRM114-Status: GOOD (  11.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,26 +69,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
- Delete the redundant word 'in'.
+ Delete the redundant word 'and'.
+ Delete the redundant word 'is'.
 
 Signed-off-by: Jilin Yuan <yuanjilin@cdjrlc.com>
 ---
- drivers/mtd/mtdconcat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/davinci_nand.c | 2 +-
+ drivers/mtd/nand/raw/sm_common.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index f685a581df48..193428de6a4b 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -836,7 +836,7 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index 3e98e3c255bf..b9377d6c3c89 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -375,7 +375,7 @@ static int nand_davinci_correct_4bit(struct nand_chip *chip, u_char *data,
  
- 		/*
- 		 * walk the map of the new device once more and fill in
--		 * in erase region info:
-+		 * erase region info:
- 		 */
- 		curr_erasesize = subdev[0]->erasesize;
- 		begin = position = 0;
+ /* An ECC layout for using 4-bit ECC with small-page flash, storing
+  * ten ECC bytes plus the manufacturer's bad block marker byte, and
+- * and not overlapping the default BBT markers.
++ * not overlapping the default BBT markers.
+  */
+ static int hwecc4_ooblayout_small_ecc(struct mtd_info *mtd, int section,
+ 				      struct mtd_oob_region *oobregion)
+diff --git a/drivers/mtd/nand/raw/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
+index ba24cb36d0b9..b2b42dd1a2de 100644
+--- a/drivers/mtd/nand/raw/sm_common.c
++++ b/drivers/mtd/nand/raw/sm_common.c
+@@ -52,7 +52,7 @@ static const struct mtd_ooblayout_ops oob_sm_ops = {
+ 	.free = oob_sm_ooblayout_free,
+ };
+ 
+-/* NOTE: This layout is is not compatabable with SmartMedia, */
++/* NOTE: This layout is not compatabable with SmartMedia, */
+ /* because the 256 byte devices have page depenent oob layout */
+ /* However it does preserve the bad block markers */
+ /* If you use smftl, it will bypass this and work correctly */
 -- 
 2.36.1
 
