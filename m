@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F310EC00140
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Aug 2022 08:07:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35205C25B0F
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Aug 2022 08:07:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AjVYSooqm2EktpdVx6SLJUt6+9WdAcZwd8sXPKJhPhk=; b=g+ElvPa8C4CHLZ
-	zu0hOxAGfP1/Rx4RRExvwQp7PqkAptXUvt3jcsuburrQQxkWRAsexxXYb5DahxNXOMZ1HH8/+MJL5
-	sM5rPXVKvcXgK2Su1LmnzJEnA1xY+f9mBU9DaamGuKz6Mzi9D4FjRLQBHqrX5lVUalz8Yh/i0hvvE
-	jSkLyaHcRTC+9pc6/j+5TFb2YvlVwNqbTIt2Ea5Q4eQC+KHySLt6oAFfaklMG4IpJaEglYspPOoSe
-	GFm5nGt1uJKL3SOnb2aCvF0YFYuOJvulUlEqgP3CqrtZEsSZa2RiXD2wO77mJjuQ4CgwqC+G/QBe7
-	hptGfgPC5I79nbIJEnow==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qFE0jILWAyoBCvmjEjuLnwxaonKqDu6BvFK7MXOBwWE=; b=TBK6uhRhBstUc7
+	Gqd5nS7mopWdq1xG26rYPptLhQQrC9iShviUfUx+uFqBHWDJW6bWGYLOa/EwC+Kb/S7PaolQQnH6I
+	4RyTfbgtscnZwA9yZyo5LubFCHW37Vvx1J9HJwtvzzCBrDY9jGHF8Ryoiyk8rcSXklauQLKtJbwW2
+	Exo++bJLaDDEGJVKnbWNV+m6pyDmDrKeVz5IJXT1RfR0a1ZsDUq3q5FLZYrB1cyT1CRJiijkDDen5
+	9KvXGEUP3i9xwSfhSzdX1wnfeuu97cl27qG8ThTb+U+03qbc/8Xv7RmZbVZllvK+e+DCb0aOc2lWt
+	/S5tecsEvk7cPNMKgGcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMPhM-002UXO-Ps; Fri, 12 Aug 2022 08:07:16 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1oMPhT-002UnR-RX; Fri, 12 Aug 2022 08:07:24 +0000
+Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oMPhG-002UIZ-Vn
-	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2022 08:07:12 +0000
-Received: by mail-pl1-x632.google.com with SMTP id 17so175777pli.0
-        for <linux-mtd@lists.infradead.org>; Fri, 12 Aug 2022 01:07:08 -0700 (PDT)
+	id 1oMPhI-002UOV-O6
+	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2022 08:07:15 +0000
+Received: by mail-pf1-x42c.google.com with SMTP id f30so319257pfq.4
+        for <linux-mtd@lists.infradead.org>; Fri, 12 Aug 2022 01:07:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=WHTHCfaC2d1v9CID+6MBM7Icqgmxze/59YKkgnv977k=;
-        b=ZlMi0M9q3qLQVFnQC0buLL6wi5aKfZfa49Y3ENhGPkgnMdVfUEDFaLIQQQY4ffFSZm
-         rSf0CnoFS8M5K3y01bS2J/o6yHd1j7FHYVDPrIx0Xc/4DlffiNet4Tzl6U+N8m5t0lN+
-         zlHV5V4QwLeJedHL5l/NK18jVvlbI4m5c/GJeEzvy73LSCObtcgYkcT2p8ohxj9h4gr0
-         Wds9YuXhoNkIGnSxdlKhmwcIezsEFRLJUtxIIlKryUNIdRxHJpBqFNcHBImdPQfSqJu0
-         ukLDic//ht5eh99CFCd+5eY3EJUbjqwCe6Z86fd41N81HXTNuwTlZvVUHuLN4x7BobzV
-         u2tw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc;
+        bh=zuHWbJBc/sLNoIZnACDP0TFKgedOgbrSIRavKxG9kQk=;
+        b=ExEImUukaK9ab+AgKQbWrpEVw9hn3KU2y3G0P7ZsmHMllyTNFw3NIKXAXFcVVQ95cO
+         Lx/ogmzNgIwqrDteyl/eRoQHBPSfxmIcRC1ITEbVBR1LRbm+RLvw1/DvJFMKVEeUruQh
+         IOmEVGjcWRUSb5/Ms7yOkPc60tAhEAJ2cux1G62MmskAMlq7dRqaxSDKMfxc5xig9zts
+         44cQhaPby7wJG8/SRRJpP3JM616mavH7ffoUkLfibCg9PoYfnACMWZeq5Jy5bzUmzZxY
+         2v97hPnYhOFY5T2LshnhHM5XmU5cf7MxGFGbV/Ej1V/oLRQFjJpp4TRvmTG0Y3mL5wFw
+         bnPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=WHTHCfaC2d1v9CID+6MBM7Icqgmxze/59YKkgnv977k=;
-        b=UKT35GXbuaJOpSoKPHCfZX81O/ZMnA3A3NsAHVKju8Afhaq1dHIl3PrcckkQyqsmOZ
-         V8j+HIZftd1Q0V26DS5q4aM1n+yH3eZeb75X7ZzP25JfmaNN9ZHyn8vUq0jLC/h7/0CJ
-         JJJds1EaXtykRmFZV/dVret3WQ8edURC9eXbF8vY8RKT6zFL3mZna2zFuLTB5t7NXhKl
-         nMf/2hkil099wgaJGCk5+71+7X9v48dWt9VIazbGUq/8luzCY6npK74UNKjKY1Ra9/Nv
-         dUSosJSKAUnpxrThEmm8uGGLB6FhM7i7g5jaaPwoxGvy6/pvUKzqLD3+sDqUqaEJs14r
-         tdOQ==
-X-Gm-Message-State: ACgBeo0CCp62d+mKF17VvNffPv7R+DL8ACvbUKntUlOZXPxv6M9ESXBH
-	nsAWBzPmtnK0bKXsql68GiLv1FVVrjk=
-X-Google-Smtp-Source: AA6agR4ze8uoGWQvgKwyW+xn3GFEzydfzf/sX9siATOy+vJ91OKArYNcE2fZD9w3ABXMCcqDAaFU6A==
-X-Received: by 2002:a17:90a:1b6e:b0:1f5:1902:af92 with SMTP id q101-20020a17090a1b6e00b001f51902af92mr12774699pjq.238.1660291627560;
-        Fri, 12 Aug 2022 01:07:07 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=zuHWbJBc/sLNoIZnACDP0TFKgedOgbrSIRavKxG9kQk=;
+        b=KvNdQyJnaJZJv0UHHikWp8iBjIuNZs1ptuXeEVtNgiO3Fx3mSf61y/33/Padjny4GR
+         sYFnsTnRCR/4lsQa+V4hWV8GCDHg15T5b28Wy+WtMaiYKLjqP3vpumRJUUxLG6a6n2Ps
+         Te6j7Bb1MjjH51bw/oTM0bWu/1b3NFqTSw49z6uo5I9HfBgTJ+CJKIPNkbCxJx0/aLGB
+         JtSl2MVzP1bLmmNeIfKpo5li4c1WrOszLxoKoh1f4F4AyOSdADLHu94YlTbjyfgeSe+b
+         PY+nmC5K3TrgkuZUeJM3riCvP1yIKh5oBKeKAWM/mQbU+J3kYGkK8CZI+dCEzH2T7NCn
+         4j3A==
+X-Gm-Message-State: ACgBeo04bLCqyZHkD9upMyUsBxRVEjWorsOBhnhEtOxY5i5n8hxjCSKw
+	TQVU9to1PvU/+5ho/Yytf9GCjmsYL+Q=
+X-Google-Smtp-Source: AA6agR6FJ4Jg+LzeD3ZtuX3PySU+Tyt7CHGIyCpfuhWef5Lb3pB3rm56hA9XSj8GNlAfDEdSktkCZA==
+X-Received: by 2002:aa7:88cb:0:b0:52f:76bd:7a65 with SMTP id k11-20020aa788cb000000b0052f76bd7a65mr2913202pff.72.1660291629946;
+        Fri, 12 Aug 2022 01:07:09 -0700 (PDT)
 Received: from ISCNPF1JZGWX.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id y192-20020a6264c9000000b0052dce4edceesm960013pfb.169.2022.08.12.01.07.04
+        by smtp.gmail.com with ESMTPSA id y192-20020a6264c9000000b0052dce4edceesm960013pfb.169.2022.08.12.01.07.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Aug 2022 01:07:07 -0700 (PDT)
+        Fri, 12 Aug 2022 01:07:09 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -70,15 +70,16 @@ Cc: tudor.ambarus@microchip.com,
 	tkuw584924@gmail.com,
 	Bacem.Daassi@infineon.com,
 	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH 0/2] Discover current address mode by CRC
-Date: Fri, 12 Aug 2022 17:06:31 +0900
-Message-Id: <cover.1660291281.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH 1/2] mtd: spi-nor: core: Add a helper to read with alternative method
+Date: Fri, 12 Aug 2022 17:06:32 +0900
+Message-Id: <fb71ab7a03e98456fdb9cb65f46521d77c37cb73.1660291281.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1660291281.git.Takahiro.Kuwano@infineon.com>
+References: <cover.1660291281.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220812_010711_057690_136B5493 
-X-CRM114-Status: UNSURE (   7.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220812_010712_842132_41D8AA95 
+X-CRM114-Status: GOOD (  11.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,33 +98,90 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Hello,
+The existing spi_nor_read_data() uses preset opcode, number of address
+bytes, and dummy cycles. During SFDP parse and corresponding fixups we
+need to perform read op with different opcode, number of address, and/or
+dummy cycles from preset ones. The spi_nor_alt_read() helps that by
+backup - read op - restore the preset opcode, etc.
 
-I introduced this series based on the discussion [0].
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+---
+ drivers/mtd/spi-nor/core.c | 48 ++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/core.h |  2 ++
+ 2 files changed, 50 insertions(+)
 
-Patch#1 is needed to use READ_4B(13h) for offline CRC calculation. This
-can replace spi_nor_read_raw() in SFDP, if it is OK.
-
-Path#2 implements address mode discovery by:
-  - determine factory default from BFPT DWORD16
-  - read 4 bytes from address 0 by 13h opcode
-  - calculate CRC from 4 byte data by offline
-  - perform data integrity CRC op
-  - read data integrity CRC register by Read Any Reg with 3- and/or 4-byte
-    address bytes to determine the current address mode
-
-[0] https://patchwork.ozlabs.org/project/linux-mtd/patch/e47ed0aa3e1a6fdca7689434ce7dea99ff4826e7.1659764848.git.Takahiro.Kuwano@infineon.com/
-
-Takahiro Kuwano (2):
-  mtd: spi-nor: core: Add a helper to read with alternative method
-  mtd: spi-nor: spansion: Discover current address mode by CRC
-
- drivers/mtd/spi-nor/core.c     |  48 ++++++++++++
- drivers/mtd/spi-nor/core.h     |   2 +
- drivers/mtd/spi-nor/sfdp.h     |   1 +
- drivers/mtd/spi-nor/spansion.c | 130 +++++++++++++++++++++++++++++++++
- 4 files changed, 181 insertions(+)
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index f2c64006f8d7..ae98b4ad9b19 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -247,6 +247,54 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len, u8 *buf)
+ 	return nor->controller_ops->read(nor, from, len, buf);
+ }
+ 
++/**
++ * spi_nor_alt_read() - read data from flash memory with alternative opcode,
++ *                      number of address bytes, and dummy cycles.
++ * @nor:		pointer to 'struct spi_nor'
++ * @from:		offset to read from
++ * @len:		number of bytes to read
++ * @buf:		pointer to dst buffer
++ * @read_opcode:	read opcode to issue
++ * @addr_nbytes:	number of address bytes to send
++ * @read_dummy:		number of dummy cycles needed to read
++ *
++ * Return: 0 on success, -errno otherwise
++ */
++int spi_nor_alt_read(struct spi_nor *nor, u32 addr, size_t len, u8 *buf,
++		     u8 read_opcode, u8 addr_nbytes, u8 read_dummy)
++{
++	u8 bak_read_opcode = nor->read_opcode;
++	u8 bak_addr_nbytes = nor->addr_nbytes;
++	u8 bak_read_dummy = nor->read_dummy;
++	ssize_t ret;
++
++	nor->read_opcode = read_opcode;
++	nor->addr_nbytes = addr_nbytes;
++	nor->read_dummy = read_dummy;
++
++	while (len) {
++		ret = spi_nor_read_data(nor, addr, len, buf);
++		if (ret < 0)
++			goto out;
++		if (!ret || ret > len) {
++			ret = -EIO;
++			goto out;
++		}
++
++		buf += ret;
++		addr += ret;
++		len -= ret;
++	}
++	ret = 0;
++
++out:
++	nor->read_opcode = bak_read_opcode;
++	nor->addr_nbytes = bak_addr_nbytes;
++	nor->read_dummy = bak_read_dummy;
++
++	return ret;
++}
++
+ /**
+  * spi_nor_spimem_write_data() - write data to flash memory via
+  *                               spi-mem
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 85b0cf254e97..4f1e636f9362 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -656,6 +656,8 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
+ 			  u8 *buf);
+ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
+ 			   const u8 *buf);
++int spi_nor_alt_read(struct spi_nor *nor, u32 addr, size_t len, u8 *buf,
++		     u8 read_opcode, u8 addr_nbytes, u8 read_dummy);
+ int spi_nor_read_any_reg(struct spi_nor *nor, struct spi_mem_op *op,
+ 			 enum spi_nor_protocol proto);
+ int spi_nor_write_any_volatile_reg(struct spi_nor *nor, struct spi_mem_op *op,
 -- 
 2.25.1
 
