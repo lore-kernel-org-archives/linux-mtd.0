@@ -4,101 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4EBDC25B0E
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Aug 2022 17:42:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DAD4C32771
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Aug 2022 09:11:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nQcyC5e/7J2JEfSgVGb+d9g5Ejwdh8PZgxFnNyarkeA=; b=ATnTbqyUDs6pfs
-	FLiLCTGyqPKgsWAklzo+/32xA9/bVfqI4+65WM/wJoXAGBh0zf454BseZ98H1JPPvcvH5faFTpbez
-	Swl5c3kTjezH00cjqEPwTOklIy2GqAWBz6xKYyYuma3gi/GR7pN3Fxuha9a602KiOX2vaooBnbUz1
-	BBab3n/5elthR2uuim9Y4uaOJyWetYiy+Y2AkfKL73n1v0fqE00NgSY3HQ0x9wkX8vvyj99jZ1Qf4
-	dmiuCRZjIqW1ckiFLJZhta2Y/Ourtc9S47Ww63XVh0ORJSQZd3kbDlIIlpcms2KdSj1A1LomIPdB7
-	J0He0o8WuvCExmmpfy6A==;
+	List-Owner; bh=aCp3MQG0m94x2/HvwGVtXBh7weJvP+q6M3AXFRJCpYI=; b=P66Lquc+EoOhZL
+	+GltC9c7ahlQ6Q6d4YnYnJHnrmNddQsydsOilCDc3k+rIeZffhYRKWBIx97ripbVHdv/F56b3kS8j
+	FoNZiE+2YiY0MsmYZjU0cDpYopgDwrrt1+vOMTXlTbJPZmE+aR5J4h/jAbn7BRDvP+nQCCOpam62R
+	yXZht3DoUeimNYWxuTniX/DOHS0Q3YyrmwtVUnmw5O9j5SU0x633aBbxTQofQFjqCe1mKV4XS5LOG
+	z2F5SbquPC9Y/dpk37iBCLbwbr5LIcx+A0NqrpZsvNwmbABjjvhz2zbkUdhGADY6TiizuYXf9gYkj
+	8rx9a/Jj6YwGAxQ07rUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNe58-002SSB-2K; Mon, 15 Aug 2022 17:40:54 +0000
-Received: from mail-qv1-xf2d.google.com ([2607:f8b0:4864:20::f2d])
+	id 1oNsai-00HV1J-Qj; Tue, 16 Aug 2022 09:10:28 +0000
+Received: from madras.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e5ab])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNdPK-001xZn-Gz; Mon, 15 Aug 2022 16:57:44 +0000
-Received: by mail-qv1-xf2d.google.com with SMTP id j1so991224qvv.8;
-        Mon, 15 Aug 2022 09:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=dT9Pg0cgomgnI0kkqHjm6eb1hxEl1p1LNNw04+pYAiw=;
-        b=UAbnyBq77vyYNRVvJhwDaocodBZTdW/rY26aTPJ3tUoVcG8kLbkvDeuHoCDVazGTqp
-         U3sWT1HisJNc/seNXOnderJHWURJq9o4MgfiwPF0JBbdfW64WPTclAeuu4L0OJZbxuLR
-         TcysGwk8ohcgr0uCvm6OGzo6qR8haErFewbD2I0+n3DaZN4NDE5GhwIJaJ5iAKsS7YjB
-         J67OCySu8M6iaLP6QU0K9qUMuaaQNz53rc7Mc+kihyUpk4ZXKxciQTtZMWWmzwdTR1iK
-         ylcJ2kUbrNKv0MWTDSbr31gytziDJYbVssAOt0Ez9SBA8elvqQr5y6onp0bOpYZVWs0k
-         Af3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=dT9Pg0cgomgnI0kkqHjm6eb1hxEl1p1LNNw04+pYAiw=;
-        b=CBbcWTs5phAqQapkE+9JQmzNg+IxCl+ybPkVmbjk0n7mun/Am02P2OjVgwILLjXcMS
-         K5iTSmIWPzFnUZVRCwuOoir4wkBxZCezlDBNUqho+G8efhe5RuhODPTy9+GkB7VyjeGp
-         1BEwT4FarNcA/zTZYH9Fg7el669UNP61HJfUr8QaZ2R29VMR3xY/aR09YpPbSVBzyah9
-         Pg7ifuRmc6Udrg7Z7Qnvd2OzkJT7BVOQq9Cv5WzmOEOkiMjMeHhUncCjyyGfUJgPbP37
-         m7tFOdHGqeOVWopbu1jE1yRP76TJPBMIG7AFbY6gC6bzwSHG7tQK1m/6cq5e//b/UtWV
-         TBXw==
-X-Gm-Message-State: ACgBeo0C1sb2NdSjwuIhMEIbaa3HRN1KSzu36tthoQB7ckA3/EoLR1Bj
-	7hBajCAgcso2VIrqrUmgsHE=
-X-Google-Smtp-Source: AA6agR5+e4ITrllG9Zdjcav/qnQ/K77ki/+NPhNuFZ+FfibDMeCZLlBPNoSOkBpDKq1B9dRdFkv1qQ==
-X-Received: by 2002:a05:6214:62a:b0:476:858d:b2c8 with SMTP id a10-20020a056214062a00b00476858db2c8mr13917327qvx.65.1660582660417;
-        Mon, 15 Aug 2022 09:57:40 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id f8-20020ac84648000000b0033e51aea00esm8459756qto.25.2022.08.15.09.57.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Aug 2022 09:57:39 -0700 (PDT)
-Message-ID: <584ebb0e-2d55-348f-18f7-a555c3a359b9@gmail.com>
-Date: Mon, 15 Aug 2022 09:57:30 -0700
+	id 1oNsaH-00HU3n-Fz; Tue, 16 Aug 2022 09:10:13 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 9CDC96600363;
+	Tue, 16 Aug 2022 10:09:55 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1660640996;
+	bh=UwVGjoVej6+DPEt5C/pkEjitJeLt0M/cBydSA/bfdQQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=AosFn7pt+1QLjDkVNSdhDB41d34g7CimXuprljhvI4FPZzI/laLs4D7OYOoDW36HS
+	 dOu6VsOLip5jf3+BQYcKxmFeS00kV++m/EStvYtkOpLTaM7BYTaVP5WknUdN6m9VAs
+	 65C0t5G+EYsLoqJhAHp38iC5F/L5ypYw4cFpL4NMifsE8ffzL+P+xNE9AU85EI2Fyu
+	 th6t3OcJIFVpGOyBfjYDss2KPSrGNjB7gqMERN7M8eqTqd9QIdRuL7VXjVwnkX2XNd
+	 chHsM/k9URQXyEceZkksJXFEm4wbSUA5eG7TGAlnSe6/gKFI54MqHzQcrhBkU94HU/
+	 IB/mHt905bmsA==
+Date: Tue, 16 Aug 2022 11:09:52 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <peda@axentia.se>, <nicolas.ferre@microchip.com>,
+ <alexandre.belloni@bootlin.com>, <claudiu.beznea@microchip.com>,
+ <bbrezillon@kernel.org>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <stable@vger.kernel.org>
+Subject: Re: [PATCH] mtd: rawnand: atmel: Unmap streaming DMA mappings
+Message-ID: <20220816110952.31cf212b@collabora.com>
+In-Reply-To: <20220728074014.145406-1-tudor.ambarus@microchip.com>
+References: <20220728074014.145406-1-tudor.ambarus@microchip.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v3 6/9] arm64: bcmbca: Make BCM4908 drivers depend on
- ARCH_BCMBCA
-Content-Language: en-US
-To: William Zhang <william.zhang@broadcom.com>,
- Linux ARM List <linux-arm-kernel@lists.infradead.org>
-Cc: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
- joel.peshkin@broadcom.com, dan.beygelman@broadcom.com, f.fainelli@gmail.com,
- krzysztof.kozlowski@linaro.org, rafal@milecki.pl,
- Guenter Roeck <linux@roeck-us.net>, Bjorn Helgaas <bhelgaas@google.com>,
- Wolfram Sang <wsa@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
- Kishon Vijay Abraham I <kishon@ti.com>, Vinod Koul <vkoul@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Wim Van Sebroeck <wim@linux-watchdog.org>,
- "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
- "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS"
- <linux-pci@vger.kernel.org>,
- "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
- "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- "open list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@vger.kernel.org>,
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>
-References: <20220803175455.47638-1-william.zhang@broadcom.com>
- <20220803175455.47638-7-william.zhang@broadcom.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20220803175455.47638-7-william.zhang@broadcom.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220815_095742_802499_FE61FEA3 
-X-CRM114-Status: UNSURE (   9.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220816_021001_818313_EED3AE97 
+X-CRM114-Status: GOOD (  12.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,26 +71,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 8/3/22 10:54, William Zhang wrote:
-> With Broadcom Broadband arch ARCH_BCMBCA supported in the kernel, this
-> patch series migrate the ARCH_BCM4908 symbol to ARCH_BCMBCA. Hence
-> replace ARCH_BCM4908 with ARCH_BCMBCA in subsystem Kconfig files.
-> 
-> Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> Acked-by: Guenter Roeck <linux@roeck-us.net> (for watchdog)
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com> (for drivers/pci)
-> Acked-by: Wolfram Sang <wsa@kernel.org> (for i2c)
-> Acked-by: Philipp Zabel <p.zabel@pengutronix.de> (for reset)
+On Thu, 28 Jul 2022 10:40:14 +0300
+Tudor Ambarus <tudor.ambarus@microchip.com> wrote:
 
-Applied to https://github.com/Broadcom/stblinux/commits/drivers/next, 
-thanks!
--- 
-Florian
+> Every dma_map_single() call should have its dma_unmap_single() counterpart,
+> because the DMA address space is a shared resource and one could render the
+> machine unusable by consuming all DMA addresses.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+> ---
+>  drivers/mtd/nand/raw/atmel/nand-controller.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> index 6ef14442c71a..330d2dafdd2d 100644
+> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> @@ -405,6 +405,7 @@ static int atmel_nand_dma_transfer(struct atmel_nand_controller *nc,
+>  
+>  	dma_async_issue_pending(nc->dmac);
+>  	wait_for_completion(&finished);
+> +	dma_unmap_single(nc->dev, buf_dma, len, dir);
+>  
+>  	return 0;
+>  
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
