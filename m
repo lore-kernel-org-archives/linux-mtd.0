@@ -4,57 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C82EFC00140
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Aug 2022 02:38:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 525D1C32771
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Aug 2022 06:08:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=S5SA/8ETeyNks4yT7gBY687CagmZ4w9PQeOJbqCVczU=; b=zr56F3E0qGCRWdmtgcf3g4Gh8i
-	iHs8YksIPVCrQFGhVu0R85gYdXG2Nb0XJ102nab/ve2D2FKJShCuPRcyE0v2uvFt4FfpmMgh6aZmM
-	G7w+fkteIoVEgdgiKUrgDKvfRCy9vA9ElkRLakY+nCeFnXPY6V05lxlnoLXPF74Ia4jyzpK5sPqTA
-	yP+uG93jU7lVuP7x5Kp7etkKqTidyL2Adc1L3S004dp1phnKtpWAOhjvUwhEAducInZA8AxA/cfaA
-	bfzpvH/iFlLXuHuO+GUkxYP5WaY8imy7vMKqEYC6N57hJitG3aI2DyqoMw7oy5U2LedUaNJhf9qJq
-	n11AsJSQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=FgwKtUJKAKnFwVpZxhOli5Hmd98Q6KnKQEXBFKDeIEE=; b=Ku6h8vbss2gPYt
+	G/VboN88HXEncMYfi+BTS4nbdirqiw7F8zy9ZWnVtkNZspl8gN25o9Jpy7GMMk/yJrATOjTKCvy+W
+	LOm5mCymwmZuxNYsfehGef+wnxsAsu7BXoIwWQl94FFntPIb3ZyOoW8Z7423I5sdQK8uASO/RIBA+
+	OJ9+hXfHrUuF3PgnixH9cPR6MRMEKKEunl1ok5NOOWI7MHPwxfbJODuu7yfclYbFxgNWSkx97r3sb
+	NKJTFE5Qki0l3j6z1FzKksx2OYyUVnWtYz/v2JiLqJzSfDxT/StaFcoE16/4qVT1y1uQYz9uANoj7
+	VeU++ZOTqr4z4JL8hOKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oOrtG-00Efwc-IK; Fri, 19 Aug 2022 02:37:42 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1oOvB0-0029ZV-6n; Fri, 19 Aug 2022 06:08:14 +0000
+Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oOrtA-00Efkq-UV
-	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2022 02:37:39 +0000
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.53])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4M85Td3QV7zGpg4;
-	Fri, 19 Aug 2022 10:35:49 +0800 (CST)
-Received: from [10.67.110.176] (10.67.110.176) by
- kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 19 Aug 2022 10:37:23 +0800
-Subject: Re: [PATCH -next] mtd/ftl: Fix memleak in ftl_add_mtd()
-To: Richard Weinberger <richard@nod.at>, <cuigaosheng1@huawei.com>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
-	<vigneshr@ti.com>, linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel
-	<linux-kernel@vger.kernel.org>, <gongruiqi1@huawei.com>,
-	<wangweiyang2@huawei.com>
-References: <20220715071105.2321311-1-cuigaosheng1@huawei.com>
- <6733eee6-bfb6-7ee9-1331-2a739520fcd5@huawei.com>
- <1160016027.119085.1660805967979.JavaMail.zimbra@nod.at>
-From: cuigaosheng <cuigaosheng1@huawei.com>
-Message-ID: <df18397e-bcbe-7d3b-d316-5f22dd4cff9b@huawei.com>
-Date: Fri, 19 Aug 2022 10:37:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+	id 1oOvAx-0029Pe-Od
+	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2022 06:08:13 +0000
+Received: by mail-ed1-x52a.google.com with SMTP id z2so4457001edc.1
+        for <linux-mtd@lists.infradead.org>; Thu, 18 Aug 2022 23:08:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc;
+        bh=OzHUmQwcd+nCjF20f8h6cgiTVwPuicRa6w7QZAA1SIg=;
+        b=YvXzy4ZZy1mdY4EMhepxkx1ON9GYFpmRW9Ft40fg5ySPmER4WpPEAyH3L2RPcRsDzn
+         E3fbrhOX1RZ6y3tlBQK1gEOw3s81guyqOtbmH27tahaoKKVBaXeNpEHk6YF11vQlUI4y
+         GJnFXYkXFW6nvVO8SaIE+GRZ1PupQN3KqmS/i5opp1YE2pZzKO8Fiilwqy6WRK0ij+M1
+         pu2ShCoE+5XhledK85vKM0BQXjbtLuuesDCNfsvvfiMVj+UfZ6ghPG8gzgGa0P/3cHAe
+         lapqf0KVRt2y3d06Mam60j47THi3xFU81mHpIEcUU33+bd+tpRGo+dBzZLdB1iqy/wxF
+         4fwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=OzHUmQwcd+nCjF20f8h6cgiTVwPuicRa6w7QZAA1SIg=;
+        b=G9frUqdigzUHoKld1r/vusEGhzB6vrYnoFzv+MaRb5ljQ2BAdm0MAmClb0UNXXHVdu
+         GUojqBNJ3c1t7KHmmbXXID4SgoucAfVsHnYfQPCacjOvLP5hFHvGoH+MM05q/1zrRS3Y
+         UAcHGL2DnzPy5AFpCSshg4BFZsaaLIUrRxKBXruoGRu7B3SYkw16+A/N2RJOt2p0DCuc
+         P56IIrsiIlsANhYbriog4uVC+Zu/xognL7MeFz0Y9r/fpHjTSPoSGDVtSUpHQAFT5SBZ
+         0sMOIpTgOthRsPD7hHaEknXfXza4Wz14kLAr+OXk0/R8JAHZggRTKXm9bV79HIQ/+Jys
+         FOpw==
+X-Gm-Message-State: ACgBeo1eGmBp6Ax1IVr3oplt5UYxUjw1SC7+zyFUNOaOOoi2cVkeIRGD
+	NigAsgAtun1saRHA99Bw4icmssRxTceXAA==
+X-Google-Smtp-Source: AA6agR5DmMBvK+oUIDsQEG+pVfZgLO3Ld7GCkKqrInhA0LiEoWlC+RNyND2neXiQETWHpQprWlyS9g==
+X-Received: by 2002:a05:6402:42c3:b0:43d:682f:c0ca with SMTP id i3-20020a05640242c300b0043d682fc0camr4885929edc.334.1660889288038;
+        Thu, 18 Aug 2022 23:08:08 -0700 (PDT)
+Received: from lb02065.fritz.box ([2001:9e8:143b:fd00:5207:8c7f:747a:b80d])
+        by smtp.gmail.com with ESMTPSA id y14-20020a1709063a8e00b0073a644ef803sm1809660ejd.101.2022.08.18.23.08.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Aug 2022 23:08:07 -0700 (PDT)
+From: Jack Wang <jinpu.wang@ionos.com>
+To: linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Christophe Kerello <christophe.kerello@foss.st.com>,
+	Cai Huoqing <cai.huoqing@linux.dev>,
+	linux-mtd@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v1 04/19] mtd: rawnand: stm32_fmc2: Fix dma_map_sg error check
+Date: Fri, 19 Aug 2022 08:07:46 +0200
+Message-Id: <20220819060801.10443-5-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220819060801.10443-1-jinpu.wang@ionos.com>
+References: <20220819060801.10443-1-jinpu.wang@ionos.com>
 MIME-Version: 1.0
-In-Reply-To: <1160016027.119085.1660805967979.JavaMail.zimbra@nod.at>
-X-Originating-IP: [10.67.110.176]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220818_193737_192001_E5CA1DCE 
-X-CRM114-Status: GOOD (  10.83  )
+X-CRM114-CacheID: sfid-20220818_230811_943456_9F8AC414 
+X-CRM114-Status: GOOD (  13.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,43 +92,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-PiBUaGVyZSBzZWVtcyB0byBiZSBhIHByb2JsZW0gd2l0aCB5b3VyIGNhcHMgbG9jayBrZXkuIDst
-KQoKSSB3aWwgYWRqdXN0IG15IGNhcHMgbG9jayBrZXksIFRoYW5rcyBmb3IgcmVtaW5kaW5nLgoK
-PiBJcyB0aGlzIGxlYWsgb2JzZXJ2YWJsZSB2aWEga21lbWxlYWsgb3Igc3VjaD8KPiBJIGFsd2F5
-cyB0aG91Z2h0IC0+cmVtb3ZlX2RldigpIHVuY29uZGl0aW9uYWxseSBkbyBhIGNsZWFudXAgbGF0
-ZXIuCgpXaGVuIEknbSB3b3JraW5nIG9uIG90aGVyIGlzc3VlcyB3aXRoIG10ZCxJIG5lZWRlZCB0
-byBhbmFseXplIHRoZSBtdGQgZHJpdmVyCmluaXRpYWxpemF0aW9uIHByb2Nlc3MsZHVyaW5nIHJl
-YWRpbmcgdGhlIGNvZGUsIHJlZmVyIHRvIG90aGVyIGRyaXZlcgppbXBsZW1lbnRhdGlvbu+8jEkg
-Zm91bmQgdGhpcyBwcm9ibGVtLCBub3Qga21lbWxlYWsuIFRoYW5rcy4KCuWcqCAyMDIyLzgvMTgg
-MTQ6NTksIFJpY2hhcmQgV2VpbmJlcmdlciDlhpnpgZM6Cj4gLS0tLS0gVXJzcHLDvG5nbGljaGUg
-TWFpbCAtLS0tLQo+PiBWb246ICJjdWlnYW9zaGVuZyIgPGN1aWdhb3NoZW5nMUBodWF3ZWkuY29t
-Pgo+Pgo+PiBQSU5HCj4gVGhlcmUgc2VlbXMgdG8gYmUgYSBwcm9ibGVtIHdpdGggeW91ciBjYXBz
-IGxvY2sga2V5LiA7LSkKPiAgIAo+PiDlnKggMjAyMi83LzE1IDE1OjExLCBHYW9zaGVuZyBDdWkg
-5YaZ6YGTOgo+Pj4gV2hlbiBhZGRfbXRkX2Jsa3RyYW5zX2RldiBmYWlsZWQsIHBhcnRpdGlvbidz
-IG1lbW9yeSB3aWxsIGJlIGZyZWVkCj4+PiBieSBrZnJlZSwgYnV0IHRoZXJlIGFyZSBzb21lIHN0
-cnVjdHVyZSBtZW1iZXJzIHRoYXQgYXJlIGFsbG9jYXRlZAo+Pj4gZm9yIG1lbW9yeSBpbmRlcGVu
-ZGVudGx5LCBzdWNoIGFzIHBhcnRpdGlvbi0+VmlydHVhbEJsb2NrTWFwLAo+Pj4gcGFydGl0aW9u
-LT5FVU5JbmZvLCBwYXJ0aXRpb24tPlpmZXJJbmZvLCBhbmQgcGFydGl0aW9uLT5iYW1fY2FjaGUs
-Cj4+PiBzbyBrZnJlZShwYXJ0aXRpb24pIG1heSBjYXVzZSBtZW1vcnkgbGVha3MsIHVzaW5nIGZ0
-bF9mcmVlcGFydChwYXJ0aXRpb24pCj4+PiB3aWxsIGZpeCBpdC4KPiBJcyB0aGlzIGxlYWsgb2Jz
-ZXJ2YWJsZSB2aWEga21lbWxlYWsgb3Igc3VjaD8KPiBJIGFsd2F5cyB0aG91Z2h0IC0+cmVtb3Zl
-X2RldigpIHVuY29uZGl0aW9uYWxseSBkbyBhIGNsZWFudXAgbGF0ZXIuCj4KPj4+IEZpeGVzOiAx
-ZGExNzdlNGMzZjQgKCJMaW51eC0yLjYuMTItcmMyIikKPj4+IFNpZ25lZC1vZmYtYnk6IEdhb3No
-ZW5nIEN1aSA8Y3VpZ2Fvc2hlbmcxQGh1YXdlaS5jb20+Cj4+PiAtLS0KPj4+ICAgIGRyaXZlcnMv
-bXRkL2Z0bC5jIHwgMSArCj4+PiAgICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPj4+
-Cj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvZnRsLmMgYi9kcml2ZXJzL210ZC9mdGwuYwo+
-Pj4gaW5kZXggZjY1NWQyOTA1MjcwLi4yMDAyNzFiZGM3YWEgMTAwNjQ0Cj4+PiAtLS0gYS9kcml2
-ZXJzL210ZC9mdGwuYwo+Pj4gKysrIGIvZHJpdmVycy9tdGQvZnRsLmMKPj4+IEBAIC0xMDMxLDYg
-KzEwMzEsNyBAQCBzdGF0aWMgdm9pZCBmdGxfYWRkX210ZChzdHJ1Y3QgbXRkX2Jsa3RyYW5zX29w
-cyAqdHIsCj4+PiBzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKPj4+ICAgIAkJcGFydGl0aW9uLT5tYmQu
-ZGV2bnVtID0gLTE7Cj4+PiAgICAJCWlmICghYWRkX210ZF9ibGt0cmFuc19kZXYoJnBhcnRpdGlv
-bi0+bWJkKSkKPj4+ICAgIAkJCXJldHVybjsKPj4+ICsJCWZ0bF9mcmVlcGFydChwYXJ0aXRpb24p
-Owo+Pj4gICAgCX0KPj4+ICAgIAo+Pj4gICAgCWtmcmVlKHBhcnRpdGlvbik7Cj4gLgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
-RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+dma_map_sg return 0 on error, in case of error return -EIO.
+
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Christophe Kerello <christophe.kerello@foss.st.com>
+Cc: Cai Huoqing <cai.huoqing@linux.dev>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+---
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+index 87c1c7dd97eb..a0c825af19fa 100644
+--- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
++++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+@@ -862,8 +862,8 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+ 
+ 	ret = dma_map_sg(nfc->dev, nfc->dma_data_sg.sgl,
+ 			 eccsteps, dma_data_dir);
+-	if (ret < 0)
+-		return ret;
++	if (!ret)
++		return -EIO;
+ 
+ 	desc_data = dmaengine_prep_slave_sg(dma_ch, nfc->dma_data_sg.sgl,
+ 					    eccsteps, dma_transfer_dir,
+@@ -893,8 +893,10 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+ 
+ 		ret = dma_map_sg(nfc->dev, nfc->dma_ecc_sg.sgl,
+ 				 eccsteps, dma_data_dir);
+-		if (ret < 0)
++		if (!ret) {
++			ret = -EIO;
+ 			goto err_unmap_data;
++		}
+ 
+ 		desc_ecc = dmaengine_prep_slave_sg(nfc->dma_ecc_ch,
+ 						   nfc->dma_ecc_sg.sgl,
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
