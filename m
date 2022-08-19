@@ -4,70 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C74DEC32773
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DE0AC32771
 	for <linux-mtd@archiver.kernel.org>; Fri, 19 Aug 2022 12:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jkRvHqAHEbIBULK09osS3X+kaRTd3l03BsuE6P0BedU=; b=g2ZFzd8IuEyx37
-	5Mp/JG5VRWIrpquwANkQn72f7PTqwA4Tgn7+btZI5csug/utlAwNhexmmOcm1fb+8mlChju4m/yxG
-	1x69wzlYJpzHrlfwT8QuIqkBp/zqOJciIwgGlyhn16iWP2szWdJUNzbAV6eBNjGial4Puwj2NSUwg
-	8+IAK3SO/I46/oztud9GKo1450UFAbESxcTjhoxwdjo9CsFbtsDxhoQjc4Cvb7YjXJbXVtyVBQvp4
-	S/wiK/aZBT8nYrKih/aE3bBh5HgjdDneWHG265fA9jAdJgInMW/LvpKKIWdFKoj3ssBxT0Wx1Lv/t
-	RcR1J2buynAO9QzHxWxQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=r280MZUD9/xI/ax+FIm9MnVfz28KkYP77K8MXNNBP2E=; b=nv+x4Tm5jW9fJe
+	NeRcJGVW5KdUg/5zlrUs1e5nYrQdINziegNyYgswQq5OqHNjCJ4Nzfw0UOq53iKV2rUeTXTZFAWCE
+	5/DIvh1YbpHVdZcbEOZ2M+GOvQPeI7HTc0XtlzBylPVnyN2CA25s580gAuPhWDfJHLbrG+ub1e3O1
+	nddxgSm3kySgO+k6IZPTxP03Lyu+e41DpfXsqxGYH+92W0Ac8EcCKHmt5pftP4sRTS6BL4kS3LB3l
+	2s/kuwEC8GTLm/x1ADzjBKKQKsWq51arQL3hCskRFqUhXp6y2fS14/+nHAmpnWSzyOPwG0oz52zJh
+	Q4AgaldLNhjDvfqftFRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oP1B1-007wA8-UB; Fri, 19 Aug 2022 12:32:39 +0000
-Received: from mail-oi1-x233.google.com ([2607:f8b0:4864:20::233])
+	id 1oP1Ar-007w2p-IM; Fri, 19 Aug 2022 12:32:29 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oP1Az-007w4J-Fp
-	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2022 12:32:38 +0000
-Received: by mail-oi1-x233.google.com with SMTP id s199so4615659oie.3
-        for <linux-mtd@lists.infradead.org>; Fri, 19 Aug 2022 05:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=miHosOGvMyDWceTJwnfCfeYwLeOJw/Q3DaavWcy4qPA=;
-        b=grwKnEmWVxw2gxBsz//wD/TWNqWsv1I1KXDpVd3+3Aks2e/GKb1jFXXn44LJgTZ/Z4
-         1yYDBbbHkBQc9T7ZFj8A3dV8wQxyMRA6/S4asVaL2GIxfUD93FvYZ7YFWwmno32T/hRr
-         qS0jrW15RFSeUWz+TTnw6L1jzNyS7dlZ41+qQ5BkSm6QDkLRcT1IbixJPp+ZMSfWAZQa
-         z0ySlso5ZeKun6PZurzpqWxwnauKSOLlTFcfGeEuR15iOr6hf4ehGChbA8iCFgqsLjiu
-         oc3Kykz8Btar3mqpXhsuEUFHNVmtrAsJUmS6WIUICTImC7M8YHxpCYHpbH1EOKFuNGOs
-         EuNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=miHosOGvMyDWceTJwnfCfeYwLeOJw/Q3DaavWcy4qPA=;
-        b=O0YHxnqsG25Eu2qoO2N0rHRlyqUX950plOOkV7ZoHGsA68nwDck7JbuFyMseyyXDqK
-         b5dkzGa67bXbhKwERgx0q2OkvyID2jmbHQws0MwN9AN5OqDiBfKnxg7j9hoJRm48Cp87
-         o9is8JnlotRUnMGyqS71o/MkDYR0uvA+Jj+BloR7tqoWsEURrvwBwSxzruexfKfTrI7W
-         yunsSh5eX/oNLzv7eQTfU1shH8xGCD7X0QDEkOoIJvQymR8gOIVSoWoQwVRXDicKCVU2
-         wFfiR8Ka96IQw5NNEiA2x4muojFNMgXhMOg8t93Cg730NbRJquuZJF1n9OnDJDtvswCV
-         n9Nw==
-X-Gm-Message-State: ACgBeo0sPYLUjKAIWDeGuuU8j+1ZnSpQWRM6X+eDj/JuQW83hwTtbi3Q
-	71FKUvFHlsSVKULFaOanoDuhhDDNpxdk0jUYtOETCS5VTXj0Gg==
-X-Google-Smtp-Source: AA6agR5wb+jBpQ3eYJkvZstWrBSONkjMuQ4ReuWz3TSFdo7YP0SDhUrTYDfklRTx4byhGs4s6IT3OQg49bkdTNaoMZg=
-X-Received: by 2002:a05:6808:2026:b0:343:616f:94ba with SMTP id
- q38-20020a056808202600b00343616f94bamr5488787oiw.212.1660912354055; Fri, 19
- Aug 2022 05:32:34 -0700 (PDT)
+	id 1oP1Ao-007vvT-37
+	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2022 12:32:27 +0000
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=aspire.fritz.box)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <ejo@pengutronix.de>)
+	id 1oP1Ag-0003wI-3G; Fri, 19 Aug 2022 14:32:18 +0200
+From: Enrico Jorns <ejo@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: ejo@pengutronix.de,
+	jlu@pengutronix.de
+Subject: [PATCH mtd-utils] libmtd: do not ignore non-zero eraseblock size when MTD_NO_ERASE is set
+Date: Fri, 19 Aug 2022 14:32:13 +0200
+Message-Id: <20220819123213.211840-1-ejo@pengutronix.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20220818093548.1932952-1-michael@walle.cc>
-In-Reply-To: <20220818093548.1932952-1-michael@walle.cc>
-From: Sergei Antonov <saproj@gmail.com>
-Date: Fri, 19 Aug 2022 15:32:22 +0300
-Message-ID: <CABikg9y3YP=XU4h09PsoWpTSvMnrOrKO7j0DUKH+3Zdg+jz=-g@mail.gmail.com>
-Subject: Re: [PATCH] mtd-utils: flash_otp_dump make offset optional
-To: Michael Walle <michael@walle.cc>
-Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>, linux-mtd@lists.infradead.org
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: ejo@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220819_053237_561790_3C096A71 
-X-CRM114-Status: UNSURE (   8.00  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220819_053226_228131_8F3B79EA 
+X-CRM114-Status: GOOD (  13.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,17 +61,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 18 Aug 2022 at 12:36, Michael Walle <michael@walle.cc> wrote:
->
-> Commit 0a5e2fa5c1e4 ("mtd-utils: add optional offset parameter to
-> flash_otp_dump") introduced an offset parameter. This should have
-> been optional, but there was a typo. Fix it.
->
-> Reported-by: Sergei Antonov <saproj@gmail.com>
-> Fixes: 0a5e2fa5c1e4 ("mtd-utils: add optional offset parameter to flash_otp_dump")
-> Signed-off-by: Michael Walle <michael@walle.cc>
+In 54d68799, mtd->eb_cnt was enforced to be '1' if MTD_NO_ERASE is set.
+This was done with the aim of preventing divisions by zero.
 
-Reviewed-by: Sergei Antonov <saproj@gmail.com>
+However, even if MTD_NO_ERASE is set, mtd->eb_size (eraseblock size) can
+still be set to a non-zero value which would not cause a division by
+zero.
+
+Instead, enforcing an eraseblock count of '1' here even leads to
+inconsistent eraseblock counting in mtd-utils and lets for example a
+'flash_erase' on an mtdnand device fail:
+
+| # flash_erase /dev/mtd0 0 0
+| Erasing 32768 Kibyte @ 0 --  0 % complete libmtd: error!: bad eraseblock number 255, mtd0 has 1 eraseblocks
+| flash_erase: error!: /dev/mtd0: MTD Erase entire chip failureTrying one by one each sector.
+|              error 22 (Invalid argument)
+| Erasing 128 Kibyte @ 0 --  0 % complete libmtd: error!: bad eraseblock number 1, mtd0 has 1 eraseblocks
+| flash_erase: error!: /dev/mtd0: MTD get bad block failed
+|              error 22 (Invalid argument)
+
+Also mtdinfo would look inconsistent (eraseblock size vs amount):
+
+| # mtdinfo /dev/mtd0
+| mtd0
+| Name:                           mtdram test device
+| Type:                           ram
+| Eraseblock size:                131072 bytes, 128.0 KiB
+| Amount of eraseblocks:          1 (33554432 bytes, 32.0 MiB)
+| Minimum input/output unit size: 1 byte
+| Sub-page size:                  1 byte
+| Character device major/minor:   90:0
+| Bad blocks are allowed:         false
+| Device is writable:             true
+
+Fix this by enforcing mtd->eb_cnt to be '1' only when mtd->eb_size is
+actually zero and would lead to a division by zero otherwise.
+
+Fixes: 54d68799 ("libmtd: avoid divide by zero")
+
+Signed-off-by: Enrico Jorns <ejo@pengutronix.de>
+---
+ lib/libmtd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index a363e56..4aee947 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -792,7 +792,7 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd)
+ 		return -1;
+ 	mtd->writable = !!(ret & MTD_WRITEABLE);
+ 
+-	if (ret & MTD_NO_ERASE)
++	if ((ret & MTD_NO_ERASE) && (mtd->eb_size == 0))
+ 		mtd->eb_cnt = 1;
+ 	else
+ 		mtd->eb_cnt = mtd->size / mtd->eb_size;
+-- 
+2.35.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
