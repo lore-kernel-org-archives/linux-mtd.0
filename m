@@ -4,68 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7000C28D13
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Aug 2022 20:28:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12F44C32774
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Aug 2022 07:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=lsjMHG9I9ijcpONpk3uSWTXEBz0/PHLRA5dSc3fll9s=; b=qC4wbuiTRiYZv4
-	VCg2z6GmXxBMkQ+RIYb9GSdjKFnGnZ4luFdBM1d+yTFGmvKMt8vwh6+GmAaANI2PcGsJgY0/EWXfG
-	QkDlKKWltSZ+Dd9vEIFF9Hum0pVAyHoBHEByYfGYS8C0bH+QSfybLeUYu4doESxTm69qNnnUqTQ8X
-	E2yYTxrz8Gl3I4ZVg+0KTrKEpn36uAuPG6iBdnN5Uzwy0ZTDnHMyfiEYw8OMk8XpPo0iJjdVmMVRR
-	CHSFOvKw8Pqkby3kEYF82nm5p1A1LPqQudZY3mgfzH5+3t3pgXmRf0WNAjIH6AEIWiDv1mL1ZI9/P
-	ZoNzK968LICLpQKmG3qQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=uGDscGmwUNz6TY9Qc1XYBuo/S8iQpiqOwFgSFiUeWCg=; b=jN5CltV38CFMRL
+	FATPDAUAyfeZ8mPAMOPwGk7ifC9Hs3sbQ18YwzY1Q7gR6PBGwxQCp/8zw8wkhszbBdn5gbTh5UJ1I
+	ow7zcTGV7dGzEaH5SAMUGFGBjNW2gSpnaExxBCNs5gNtMNzFsk9vGm7QNR2hiSTP7NecbzgAm5bFK
+	ipmyLnt7fdk2MZA4zm4HjVeYh06y2MIKSvKIM2+CWNyuUABvX38d06EsQCwgkaZFRxI39m8hLvXB0
+	r7i7RUzbR2iS6fl1gcvMqfdiY9dahvLBqGJVwT99pha/NFPrdntdZhYgFjLJXe8hX11sSP97Cr/hM
+	f+0fe9vurEXK6IqiWRVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oQE1S-00EaI0-Jk; Mon, 22 Aug 2022 20:27:46 +0000
-Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
+	id 1oQOgS-003cfU-5H; Tue, 23 Aug 2022 07:50:48 +0000
+Received: from mx07-00178001.pphosted.com ([185.132.182.106])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oQDeA-00ELjQ-KT
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2022 20:03:46 +0000
-Received: by mail-pj1-x1034.google.com with SMTP id m10-20020a17090a730a00b001fa986fd8eeso15091929pjk.0
-        for <linux-mtd@lists.infradead.org>; Mon, 22 Aug 2022 13:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc;
-        bh=tgSw3wJhs3JlL6iZVDZiRmBXgKDn7wQxak83vuMJDvs=;
-        b=Nd/YxqpiswK28/HE8BctQpJU/tjxDJbTe6RmWlbuOmAIYMTWGuChuyCpL53p95UKtu
-         whriA1VM8bpR2IAviUsmmJkGmMfa2J8DgFEroIoF+LafosuVn/q4U6q8KQjZT98Xn7dp
-         /LPIgMZRsclmjjl2dqpfEHVeMQ5D/Y0kuEsshBdtPBJmJtSh0MyTBMy718rLxrc2Be+k
-         pYQXToeFpf5mOa4mH5El8xdkVdbCcSoGJAoziE1n9x/eGHZhFCW+XBjsIyxWhhEMCjXq
-         HzYkhdT6TCAzmaidz5EFZqgiRmznTbu43KHJIvt5tVO/KMwKT2oeylrnxzqBBt5JBVup
-         lXGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc;
-        bh=tgSw3wJhs3JlL6iZVDZiRmBXgKDn7wQxak83vuMJDvs=;
-        b=aNmJkJzJgKcMuMMrglOGv+GOiQBujlJdp1wiZfIRDp78UgxDJ5bDO+qFK/bomvrsJv
-         N9VAoJ/TbaOXw8tTBKsdsjJmlHCA7ilLStMuKT9Ji0dYDadgJzn8Wl77ddgyHynRl9EX
-         OhNF7iVEwDYVCK5KdIOnazPbvFxGjXKJd9MRSg0FT0/IOO4CdJFeeT31NpWawccInAF+
-         bvJsl5SRkfgCA7MsU8t1B4U3WeGCrcZFZAXp4aPGQBG2xc9WY7yFfm52ZycAhtJ2/LMV
-         INaW8NP+oTGjwxbSvyTavftxBl37jHIcsHdmuwZTy1BUITmffCnkw/PG1GQEM8P8EvIP
-         iyRg==
-X-Gm-Message-State: ACgBeo15an7tDiB2ZMIrWgmGBLrv769Z+3NEUn/gnKUCYDda0J6dkzUZ
-	+sjjqLEIzYeUiegCuhB8bxsdKuauFEEqD5MJJtk=
-X-Google-Smtp-Source: AA6agR5QaJYpCmEYuWqVw/qkI3SKW44eotlmByoEutHHPkuyiWtOvYqSe6soJnopn3NelB/gsgVvJGyrHwUg5qtx/LI=
-X-Received: by 2002:a17:90b:17ce:b0:1fb:3b43:f6f8 with SMTP id
- me14-20020a17090b17ce00b001fb3b43f6f8mr38819pjb.76.1661198619913; Mon, 22 Aug
- 2022 13:03:39 -0700 (PDT)
+	id 1oQOfX-003byi-72; Tue, 23 Aug 2022 07:49:54 +0000
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27N7I4IW032328;
+	Tue, 23 Aug 2022 09:49:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=dr9XcxuypM8CL3EgCI4gKBX4+hvBoN2grFdSFcg0Hc8=;
+ b=PP2RvDxXg1E7cuT/as4rWMupNinszVZTq1+A5sqWRPPm+AOPbpFWySEbvbMdIL2MEGuL
+ J8XLBM8IdjEOvcETVvEBfq9xSg7ShhcK3DubnkeQYm4jxJJT/I2UNtw6s0UN5zNpc3Mn
+ Ad9UTeXzXa7xLTpeXONcQYOrsi4cHgJwzO767JiYvbQS0AfCXKOCMbNxd7X1te7Jhc3E
+ JR10PxchjM/HeC5vPtgQ1Bqoaxn948wrzFwPLFE9pWEc0Yybr0f7UvkUZhkUSgTcqciD
+ Dpkm0jFgRAyUVuxhI8H/F/o5u7yU2Qg44/aVfd0PbPB2JckAtXxmUPdsNFraSSycWb2y 7Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3j2w2pvm9h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Aug 2022 09:49:41 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 65B2C100034;
+	Tue, 23 Aug 2022 09:49:39 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5729C216ED1;
+	Tue, 23 Aug 2022 09:49:39 +0200 (CEST)
+Received: from [10.48.0.175] (10.75.127.45) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.20; Tue, 23 Aug
+ 2022 09:49:38 +0200
+Message-ID: <3efb5636-1f20-fbc9-8f0f-0047d0165a96@foss.st.com>
+Date: Tue, 23 Aug 2022 09:49:37 +0200
 MIME-Version: 1.0
-From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 22 Aug 2022 17:03:27 -0300
-Message-ID: <CAOMZO5Audo1TRsmTG6WWMwRW2egq_VrZpeztHqLUHvG1DWyFgQ@mail.gmail.com>
-Subject: gpmi-nand: Kernel hang on i.MX6SX
-To: Han Xu <han.xu@nxp.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd <linux-mtd@lists.infradead.org>, 
-	NXP Linux Team <linux-imx@nxp.com>, Abel Vesa <abelvesa@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v1 04/19] mtd: rawnand: stm32_fmc2: Fix dma_map_sg error
+ check
+Content-Language: en-US
+To: Jack Wang <jinpu.wang@ionos.com>, <linux-kernel@vger.kernel.org>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger
+	<richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Maxime Coquelin
+	<mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Cai Huoqing <cai.huoqing@linux.dev>, <linux-mtd@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20220819060801.10443-1-jinpu.wang@ionos.com>
+ <20220819060801.10443-5-jinpu.wang@ionos.com>
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+In-Reply-To: <20220819060801.10443-5-jinpu.wang@ionos.com>
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-23_03,2022-08-22_02,2022-06-22_01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220822_130342_719206_1FF2D3C8 
-X-CRM114-Status: UNSURE (   5.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220823_004951_807364_7D8FA241 
+X-CRM114-Status: GOOD (  17.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,25 +94,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Han Xu,
+Hi Jack,
 
-I was working on a custom i.MX6SX-based board running mainline kernel,
-and I faced a kernel hang while probing the GPMI NAND driver.
+On 8/19/22 08:07, Jack Wang wrote:
+> dma_map_sg return 0 on error, in case of error return -EIO.
+> 
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Christophe Kerello <christophe.kerello@foss.st.com>
+> Cc: Cai Huoqing <cai.huoqing@linux.dev>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> ---
+>   drivers/mtd/nand/raw/stm32_fmc2_nand.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> index 87c1c7dd97eb..a0c825af19fa 100644
+> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> @@ -862,8 +862,8 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+>   
+>   	ret = dma_map_sg(nfc->dev, nfc->dma_data_sg.sgl,
+>   			 eccsteps, dma_data_dir);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (!ret)
+> +		return -EIO;
+>   
+>   	desc_data = dmaengine_prep_slave_sg(dma_ch, nfc->dma_data_sg.sgl,
+>   					    eccsteps, dma_transfer_dir,
+> @@ -893,8 +893,10 @@ static int stm32_fmc2_nfc_xfer(struct nand_chip *chip, const u8 *buf,
+>   
+>   		ret = dma_map_sg(nfc->dev, nfc->dma_ecc_sg.sgl,
+>   				 eccsteps, dma_data_dir);
+> -		if (ret < 0)
+> +		if (!ret) {
+> +			ret = -EIO;
+>   			goto err_unmap_data;
+> +		}
+>   
+>   		desc_ecc = dmaengine_prep_slave_sg(nfc->dma_ecc_ch,
+>   						   nfc->dma_ecc_sg.sgl,
 
-Applying your workaround from the NXP kernel avoids the hang:
+Reviewed-by: Christophe Kerello <christophe.kerello@foss.st.com>
 
-https://source.codeaurora.org/external/imx/linux-imx/commit/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c?h=lf-5.15.y&id=d03eb99c393f8732f70a1d7d29a3b9c42cccbe48
-
-What would be the correct fix for this that could be upstreamed?
-
-Thanks,
-
-Fabio Estevam
+Regards,
+Christophe Kerello.
 
 ______________________________________________________
 Linux MTD discussion mailing list
