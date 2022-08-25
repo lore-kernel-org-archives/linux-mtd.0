@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9EFFECAAA2
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Aug 2022 21:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7D99ECAAA3
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Aug 2022 21:50:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1gRjcYR2dxxKmpH+DEJeeCMuvcd+hYxNK32A/+oWQms=; b=TjeMi7mWiBobeN
-	R0+uFDOlz4nvHAfYrZlnr0GQQEQ98I3stCDCtqCQ5pYNcpvYWnz1RU7x4qreu6Yh8dpcr23ETMhkV
-	e9mKdZhpU8kFoa8md3+SxL8nW/nh4X0INeL/oFBkZRm9JlXEASZIHm575tUYKAy+1yyYjtttyzMYv
-	orWmly0U2p2Zjvxf1PeZg6ON8//OhvOUEpXskNZa8JE8h5V+ysk58bFz8biwqJxvzFjZzBpv5eHnm
-	hX8QXLwidpoU/H7h/bg8tOy6Cnu1/bCmCov1KHdDzEEtG2JqMQwp+XjmYbCfTXHx55Dzqy0TADWF1
-	iam2bK9koYla0KLXQ7Yw==;
+	List-Owner; bh=NBxTvQu/GtGHEEdW/3Q43Ul/a1Q3k8oZEav4+DilD/Y=; b=sC2Gvl2n/uwvp+
+	g8hTiUeXzb09fnuDcgGSSZfT5stQXv31g6OlFTPB924vILs4AFbJcsuDVvgfoohoxdimQb676pGkZ
+	04p/ueQj+umwQ2xwOQyMlAtxmrLXiizXTlv0cPmblT6HXgpIi71QoufKrWgEhsRyRO9s9drr9AOmU
+	CXfCWafWzx10U94b8AJWG7Cn47o1ROHZ8JAeBAoSaOtP2B0sdTfC1aCYL6yWs8yLz+Krg92CuhzzF
+	Gxsfi8P27R4ZNfJ+DmRUW1Yf7W0m7Ba3jEIwsBKL6+NIRmu76LrO0xaxFbV8Nal1HfeWMBV0zaa+c
+	J39so3WfAbnY9Vf+nqxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oRKjZ-003aLa-Nz; Thu, 25 Aug 2022 21:49:53 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1oRKkL-003anL-Qx; Thu, 25 Aug 2022 21:50:41 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oRKeZ-003XUG-Ke; Thu, 25 Aug 2022 21:44:46 +0000
+	id 1oRKeZ-003XU0-Ae; Thu, 25 Aug 2022 21:44:46 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 2E90D8380;
-	Thu, 25 Aug 2022 23:44:40 +0200 (CEST)
+	by mail.3ffe.de (Postfix) with ESMTPSA id BB5DD7F32;
+	Thu, 25 Aug 2022 23:44:38 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1661463880;
+	t=1661463879;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GAM37BxS13kK4u2MMjWFwsceZiZL1wT4cZsMXON3sb8=;
-	b=leMTQDqnoNGOgXXV2/te+FNiHl8b9pBP58cmm5tVEbZUvMJFN+AB99JDeWdZ2rjMc+AOHN
-	IgnOPJoqtU0O+JZ1mud3zrKfP3vY6ndAfYRKRzSBpqoqB6HJgjWk7goqFrhEpZRvn0XmTS
-	BjAJEAQ/CrhyKv8zl4Sh8Wdx3dHp8jmxR4LLEXW+k0Bl1h8HYJVj/MUBqnbei0/76USxVt
-	U/o0En51VYdftv+zbKeycqII0QrX9IohtyhGeTj6rOJsKHZqZb2zUZyswMusS34vDbsaMh
-	9H4Zh2wIyb42dlz6OUdm38td8bLfh0eZJhtOem70RPfvtNRRp3zr4Rb99cAmPQ==
+	bh=jY0emPBT4127OBFcH8ITuFxvYnQvmd4PIUnzlT5RAgU=;
+	b=dnt/7z9E1egCRFkcjvLveYq3F/v3s9AVVV2A4i8MWA4kJKWtWOP1G1C1qeQs5mwLopjEyN
+	RWXPYRhEb3gx1qz0zByKEtttXf5TMfRsQVoAqGGHjc0aSXsr+ZD3QtwskWWrrl80Sej2OP
+	O2s+M/zm/OPyHifOJwtuqrqW4ZxQb8Du0hEf+6WUYb5RaG2GvM+coYmk71dSb/c+DajxYS
+	CASbw2FCRraHbxzF7Ie3T+lEHesRQEjw70Tncwq9BdnFSrA8fZ8Htd/3E572Oi38BD8Dw3
+	zwUqz7QQcCfv7iWqE/uNeXvJXJpaPRLT20tvDu678oeeDAe5aDDQ8f0J9lwzMw==
 From: Michael Walle <michael@walle.cc>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -64,18 +64,17 @@ Cc: linux-mtd@lists.infradead.org,
 	netdev@vger.kernel.org,
 	Ahmad Fatoum <a.fatoum@pengutronix.de>,
 	Michael Walle <michael@walle.cc>
-Subject: [PATCH v1 08/14] dt-bindings: mtd: relax the nvmem compatible string
-Date: Thu, 25 Aug 2022 23:44:17 +0200
-Message-Id: <20220825214423.903672-9-michael@walle.cc>
+Subject: [PATCH v1 05/14] nvmem: core: add nvmem_add_one_cell()
+Date: Thu, 25 Aug 2022 23:44:14 +0200
+Message-Id: <20220825214423.903672-6-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220825214423.903672-1-michael@walle.cc>
 References: <20220825214423.903672-1-michael@walle.cc>
 MIME-Version: 1.0
 X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220825_144443_881094_D5F38F38 
-X-CRM114-Status: UNSURE (   8.83  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220825_144443_586752_3B692FFF 
+X-CRM114-Status: GOOD (  18.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,35 +91,120 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The "user-otp" and "factory-otp" compatible string just depicts a
-generic NVMEM device. But an actual device tree node might as well
-contain a more specific compatible string. Make it possible to add
-more specific binding elsewere and just match part of the compatibles
-here.
+Add a new function to add exactly one cell. This will be used by the
+nvmem layout drivers to add custom cells. In contrast to the
+nvmem_add_cells(), this has the advantage that we don't have to assemble
+a list of cells on runtime.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- Documentation/devicetree/bindings/mtd/mtd.yaml | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/nvmem/core.c           | 58 ++++++++++++++++++++--------------
+ include/linux/nvmem-provider.h |  5 +++
+ 2 files changed, 39 insertions(+), 24 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-index 376b679cfc70..0291e439b6a6 100644
---- a/Documentation/devicetree/bindings/mtd/mtd.yaml
-+++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-@@ -33,9 +33,10 @@ patternProperties:
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index be38e62fd190..3dfd149374a8 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -501,6 +501,35 @@ static int nvmem_cell_info_to_nvmem_cell_entry(struct nvmem_device *nvmem,
+ 	return 0;
+ }
  
-     properties:
-       compatible:
--        enum:
--          - user-otp
--          - factory-otp
-+        contains:
-+          enum:
-+            - user-otp
-+            - factory-otp
++/**
++ * nvmem_add_one_cell() - Add one cell information to an nvmem device
++ *
++ * @nvmem: nvmem device to add cells to.
++ * @info: nvmem cell info to add to the device
++ *
++ * Return: 0 or negative error code on failure.
++ */
++int nvmem_add_one_cell(struct nvmem_device *nvmem,
++		       const struct nvmem_cell_info *info)
++{
++	struct nvmem_cell_entry *cell;
++	int rval;
++
++	cell = kzalloc(sizeof(*cell), GFP_KERNEL);
++	if (!cell)
++		return -ENOMEM;
++
++	rval = nvmem_cell_info_to_nvmem_cell_entry(nvmem, info, cell);
++	if (rval) {
++		kfree(cell);
++		return rval;
++	}
++
++	nvmem_cell_entry_add(cell);
++
++	return 0;
++}
++
+ /**
+  * nvmem_add_cells() - Add cell information to an nvmem device
+  *
+@@ -514,34 +543,15 @@ static int nvmem_add_cells(struct nvmem_device *nvmem,
+ 		    const struct nvmem_cell_info *info,
+ 		    int ncells)
+ {
+-	struct nvmem_cell_entry **cells;
+-	int i, rval = 0;
+-
+-	cells = kcalloc(ncells, sizeof(*cells), GFP_KERNEL);
+-	if (!cells)
+-		return -ENOMEM;
++	int i, rval;
  
-     required:
-       - compatible
+ 	for (i = 0; i < ncells; i++) {
+-		cells[i] = kzalloc(sizeof(**cells), GFP_KERNEL);
+-		if (!cells[i]) {
+-			rval = -ENOMEM;
+-			goto out;
+-		}
+-
+-		rval = nvmem_cell_info_to_nvmem_cell_entry(nvmem, &info[i], cells[i]);
+-		if (rval) {
+-			kfree(cells[i]);
+-			goto out;
+-		}
+-
+-		nvmem_cell_entry_add(cells[i]);
++		rval = nvmem_add_one_cell(nvmem, &info[i]);
++		if (rval)
++			return rval;
+ 	}
+ 
+-out:
+-	/* remove tmp array */
+-	kfree(cells);
+-
+-	return rval;
++	return 0;
+ }
+ 
+ /**
+diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
+index 8f964b394292..e710404959e7 100644
+--- a/include/linux/nvmem-provider.h
++++ b/include/linux/nvmem-provider.h
+@@ -138,6 +138,9 @@ struct nvmem_device *devm_nvmem_register(struct device *dev,
+ void nvmem_add_cell_table(struct nvmem_cell_table *table);
+ void nvmem_del_cell_table(struct nvmem_cell_table *table);
+ 
++int nvmem_add_one_cell(struct nvmem_device *nvmem,
++		       const struct nvmem_cell_info *info);
++
+ #else
+ 
+ static inline struct nvmem_device *nvmem_register(const struct nvmem_config *c)
+@@ -155,6 +158,8 @@ devm_nvmem_register(struct device *dev, const struct nvmem_config *c)
+ 
+ static inline void nvmem_add_cell_table(struct nvmem_cell_table *table) {}
+ static inline void nvmem_del_cell_table(struct nvmem_cell_table *table) {}
++static inline int nvmem_add_one_cell(struct nvmem_device *nvmem,
++				     const struct nvmem_cell_info *info) {}
+ 
+ #endif /* CONFIG_NVMEM */
+ #endif  /* ifndef _LINUX_NVMEM_PROVIDER_H */
 -- 
 2.30.2
 
