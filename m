@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68A80ECAAA2
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Aug 2022 21:49:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9EFFECAAA2
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Aug 2022 21:50:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4dJE/g/X3kKfRVGbo/YvItInjhnWp9lmPJrISpNM8Ds=; b=GuUX7atqpoYmE7
-	w8S2DAclB0BFs0dHh+qH5kobbv8dneFlbF5/o0dZYTQCsspY9wcy+XOfUk7XdywGk08O7EJLoTqLO
-	mDGwaFf9p1Blvs8As0Ko8+UkpdeBaT63ghf8gDe+CvIhorHD16p8MbfBlRraA2iTMUYKrC6mZC01Z
-	abR9RK+pV/08J4xsMZvh5S2WP6nK8bahzNQbilpeCy9eLGRDSa/rVWkgPHICueX45mMJIWT0zuHGO
-	kzK52+wCUNvH73sZI65+Ouu7LVHv+IwSgv1gL/yLBfVwnru+CZgqwV/ydkOl8WYGINWED/hoiVnKY
-	U/ljxyn8UYPtx6cwSxnQ==;
+	List-Owner; bh=1gRjcYR2dxxKmpH+DEJeeCMuvcd+hYxNK32A/+oWQms=; b=TjeMi7mWiBobeN
+	R0+uFDOlz4nvHAfYrZlnr0GQQEQ98I3stCDCtqCQ5pYNcpvYWnz1RU7x4qreu6Yh8dpcr23ETMhkV
+	e9mKdZhpU8kFoa8md3+SxL8nW/nh4X0INeL/oFBkZRm9JlXEASZIHm575tUYKAy+1yyYjtttyzMYv
+	orWmly0U2p2Zjvxf1PeZg6ON8//OhvOUEpXskNZa8JE8h5V+ysk58bFz8biwqJxvzFjZzBpv5eHnm
+	hX8QXLwidpoU/H7h/bg8tOy6Cnu1/bCmCov1KHdDzEEtG2JqMQwp+XjmYbCfTXHx55Dzqy0TADWF1
+	iam2bK9koYla0KLXQ7Yw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oRKjS-003aHf-MB; Thu, 25 Aug 2022 21:49:46 +0000
+	id 1oRKjZ-003aLa-Nz; Thu, 25 Aug 2022 21:49:53 +0000
 Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oRKeZ-003XTx-6f; Thu, 25 Aug 2022 21:44:46 +0000
+	id 1oRKeZ-003XUG-Ke; Thu, 25 Aug 2022 21:44:46 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 6040D7F33;
-	Thu, 25 Aug 2022 23:44:39 +0200 (CEST)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 2E90D8380;
+	Thu, 25 Aug 2022 23:44:40 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1661463879;
+	t=1661463880;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1sp5/kkEDpWTbOg3Ndn4ZClXb29lF1uZP1Ae5XU6TA4=;
-	b=dXLkeSe1HwYbBEAOtiRi9JnilfPJocBO5wlRfw2xtkMEt/34KjdMxxpRTeezpBMIXnPcVY
-	YId8mvjkj5FqGxhmN5dmROp3ilJNNR/+5cdzpIK5SKWdujGe0lOKCnBB+qZH45lKuxL0HA
-	UvTBgDpdtpVes7qhOgsClgyxAg+4kVJ0rry5f+O/31dXTAZOaH1Tv2OOBJHPv2Ah53jbWE
-	GGFZS5GrBRomJ+VlUbo1SHHXayjJQC8HgQdnQNwx/la6r/I7UIfoC7BbwJ9Vnfhs7DIzM2
-	B1pJTt4F7jTCNvWA7Zhhur9H+wsO3AEjVuHlco7T3GCnpLJJoBVS8ELYca67ng==
+	bh=GAM37BxS13kK4u2MMjWFwsceZiZL1wT4cZsMXON3sb8=;
+	b=leMTQDqnoNGOgXXV2/te+FNiHl8b9pBP58cmm5tVEbZUvMJFN+AB99JDeWdZ2rjMc+AOHN
+	IgnOPJoqtU0O+JZ1mud3zrKfP3vY6ndAfYRKRzSBpqoqB6HJgjWk7goqFrhEpZRvn0XmTS
+	BjAJEAQ/CrhyKv8zl4Sh8Wdx3dHp8jmxR4LLEXW+k0Bl1h8HYJVj/MUBqnbei0/76USxVt
+	U/o0En51VYdftv+zbKeycqII0QrX9IohtyhGeTj6rOJsKHZqZb2zUZyswMusS34vDbsaMh
+	9H4Zh2wIyb42dlz6OUdm38td8bLfh0eZJhtOem70RPfvtNRRp3zr4Rb99cAmPQ==
 From: Michael Walle <michael@walle.cc>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -64,17 +64,18 @@ Cc: linux-mtd@lists.infradead.org,
 	netdev@vger.kernel.org,
 	Ahmad Fatoum <a.fatoum@pengutronix.de>,
 	Michael Walle <michael@walle.cc>
-Subject: [PATCH v1 06/14] nvmem: core: introduce NVMEM layouts
-Date: Thu, 25 Aug 2022 23:44:15 +0200
-Message-Id: <20220825214423.903672-7-michael@walle.cc>
+Subject: [PATCH v1 08/14] dt-bindings: mtd: relax the nvmem compatible string
+Date: Thu, 25 Aug 2022 23:44:17 +0200
+Message-Id: <20220825214423.903672-9-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220825214423.903672-1-michael@walle.cc>
 References: <20220825214423.903672-1-michael@walle.cc>
 MIME-Version: 1.0
 X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220825_144443_454554_BA53B866 
-X-CRM114-Status: GOOD (  26.87  )
+X-CRM114-CacheID: sfid-20220825_144443_881094_D5F38F38 
+X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,223 +92,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-NVMEM layouts are used to generate NVMEM cells during runtime. Think of
-an EEPROM with a well-defined conent. For now, the content can be
-described by a device tree or a board file. But this only works if the
-offsets and lengths are static and don't change. One could also argue
-that putting the layout of the EEPROM in the device tree is the wrong
-place. Instead, the device tree should just have a specific compatible
-string.
-
-Right now there are two use cases:
- (1) The NVMEM cell needs special processing. E.g. if it only specifies
-     a base MAC address offset and you need to add an offset, or it
-     needs to parse a MAC from ASCII format or some proprietary format.
-     (Post processing of cells is added in a later commit).
- (2) u-boot environment parsing. The cells don't have a particular
-     offset but it needs parsing the content to determine the offsets
-     and length.
+The "user-otp" and "factory-otp" compatible string just depicts a
+generic NVMEM device. But an actual device tree node might as well
+contain a more specific compatible string. Make it possible to add
+more specific binding elsewere and just match part of the compatibles
+here.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/nvmem/Kconfig          |  2 ++
- drivers/nvmem/Makefile         |  1 +
- drivers/nvmem/core.c           | 57 ++++++++++++++++++++++++++++++++++
- drivers/nvmem/layouts/Kconfig  |  5 +++
- drivers/nvmem/layouts/Makefile |  4 +++
- include/linux/nvmem-provider.h | 38 +++++++++++++++++++++++
- 6 files changed, 107 insertions(+)
- create mode 100644 drivers/nvmem/layouts/Kconfig
- create mode 100644 drivers/nvmem/layouts/Makefile
+ Documentation/devicetree/bindings/mtd/mtd.yaml | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index bab8a29c9861..1416837b107b 100644
---- a/drivers/nvmem/Kconfig
-+++ b/drivers/nvmem/Kconfig
-@@ -357,4 +357,6 @@ config NVMEM_U_BOOT_ENV
+diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
+index 376b679cfc70..0291e439b6a6 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd.yaml
++++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
+@@ -33,9 +33,10 @@ patternProperties:
  
- 	  If compiled as module it will be called nvmem_u-boot-env.
+     properties:
+       compatible:
+-        enum:
+-          - user-otp
+-          - factory-otp
++        contains:
++          enum:
++            - user-otp
++            - factory-otp
  
-+source "drivers/nvmem/layouts/Kconfig"
-+
- endif
-diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
-index 399f9972d45b..cd5a5baa2f3a 100644
---- a/drivers/nvmem/Makefile
-+++ b/drivers/nvmem/Makefile
-@@ -5,6 +5,7 @@
- 
- obj-$(CONFIG_NVMEM)		+= nvmem_core.o
- nvmem_core-y			:= core.o
-+obj-y				+= layouts/
- 
- # Devices
- obj-$(CONFIG_NVMEM_BCM_OCOTP)	+= nvmem-bcm-ocotp.o
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 3dfd149374a8..5357fc378700 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -74,6 +74,9 @@ static LIST_HEAD(nvmem_lookup_list);
- 
- static BLOCKING_NOTIFIER_HEAD(nvmem_notifier);
- 
-+static DEFINE_SPINLOCK(nvmem_layout_lock);
-+static LIST_HEAD(nvmem_layouts);
-+
- static int __nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
- 			    void *val, size_t bytes)
- {
-@@ -744,6 +747,56 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
- 	return 0;
- }
- 
-+int nvmem_register_layout(struct nvmem_layout *layout)
-+{
-+	spin_lock(&nvmem_layout_lock);
-+	list_add(&layout->node, &nvmem_layouts);
-+	spin_unlock(&nvmem_layout_lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(nvmem_register_layout);
-+
-+static struct nvmem_layout *nvmem_get_compatible_layout(struct device_node *np)
-+{
-+	struct nvmem_layout *p, *ret = NULL;
-+
-+	spin_lock(&nvmem_layout_lock);
-+
-+	list_for_each_entry(p, &nvmem_layouts, node) {
-+		if (of_match_node(p->of_match_table, np)) {
-+			ret = p;
-+			break;
-+		}
-+	}
-+
-+	spin_unlock(&nvmem_layout_lock);
-+
-+	return ret;
-+}
-+
-+static int nvmem_add_cells_from_layout(struct nvmem_device *nvmem)
-+{
-+	struct nvmem_layout *layout;
-+
-+	layout = nvmem_get_compatible_layout(nvmem->dev.of_node);
-+	if (layout)
-+		layout->add_cells(&nvmem->dev, nvmem, layout);
-+
-+	return 0;
-+}
-+
-+const void *nvmem_layout_get_match_data(struct nvmem_device *nvmem,
-+					struct nvmem_layout *layout)
-+{
-+	const struct of_device_id *match;
-+
-+	match = of_match_node(layout->of_match_table, nvmem->dev.of_node);
-+
-+	return match ? match->data : NULL;
-+}
-+EXPORT_SYMBOL_GPL(nvmem_layout_get_match_data);
-+
- /**
-  * nvmem_register() - Register a nvmem device for given nvmem_config.
-  * Also creates a binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
-@@ -872,6 +925,10 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	if (rval)
- 		goto err_remove_cells;
- 
-+	rval = nvmem_add_cells_from_layout(nvmem);
-+	if (rval)
-+		goto err_remove_cells;
-+
- 	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
- 
- 	return nvmem;
-diff --git a/drivers/nvmem/layouts/Kconfig b/drivers/nvmem/layouts/Kconfig
-new file mode 100644
-index 000000000000..9ad3911d1605
---- /dev/null
-+++ b/drivers/nvmem/layouts/Kconfig
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+menu "Layout Types"
-+
-+endmenu
-diff --git a/drivers/nvmem/layouts/Makefile b/drivers/nvmem/layouts/Makefile
-new file mode 100644
-index 000000000000..6fdb3c60a4fa
---- /dev/null
-+++ b/drivers/nvmem/layouts/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Makefile for nvmem layouts.
-+#
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index e710404959e7..323685841e9f 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -127,6 +127,28 @@ struct nvmem_cell_table {
- 	struct list_head	node;
- };
- 
-+/**
-+ * struct nvmem_layout - NVMEM layout definitions
-+ *
-+ * @name:		Layout name.
-+ * @of_match_table:	Open firmware match table.
-+ * @add_cells:		Will be called if a nvmem device is found which
-+ *			has this layout. The function will add layout
-+ *			specific cells with nvmem_add_one_cell().
-+ * @node:		List node.
-+ *
-+ * A nvmem device can hold a well defined structure which can just be
-+ * evaluated during runtime. For example a TLV list, or a list of "name=val"
-+ * pairs. A nvmem layout can parse the nvmem device and add appropriate
-+ * cells.
-+ */
-+struct nvmem_layout {
-+	const char *name;
-+	const struct of_device_id *of_match_table;
-+	int (*add_cells)(struct nvmem_device *nvmem, struct nvmem_layout *layout);
-+	struct list_head node;
-+};
-+
- #if IS_ENABLED(CONFIG_NVMEM)
- 
- struct nvmem_device *nvmem_register(const struct nvmem_config *cfg);
-@@ -141,6 +163,10 @@ void nvmem_del_cell_table(struct nvmem_cell_table *table);
- int nvmem_add_one_cell(struct nvmem_device *nvmem,
- 		       const struct nvmem_cell_info *info);
- 
-+int nvmem_register_layout(struct nvmem_layout *layout);
-+const void *nvmem_layout_get_match_data(struct nvmem_device *nvmem,
-+					struct nvmem_layout *layout);
-+
- #else
- 
- static inline struct nvmem_device *nvmem_register(const struct nvmem_config *c)
-@@ -161,5 +187,17 @@ static inline void nvmem_del_cell_table(struct nvmem_cell_table *table) {}
- static inline int nvmem_add_one_cell(struct nvmem_device *nvmem,
- 				     const struct nvmem_cell_info *info) {}
- 
-+static inline int nvmem_register_layout(struct nvmem_layout *layout)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline const void *
-+nvmem_layout_get_match_data(struct nvmem_device *nvmem,
-+			    struct nvmem_layout *layout)
-+{
-+	return NULL;
-+}
-+
- #endif /* CONFIG_NVMEM */
- #endif  /* ifndef _LINUX_NVMEM_PROVIDER_H */
+     required:
+       - compatible
 -- 
 2.30.2
 
