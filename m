@@ -4,73 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77D1CC28D13
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Aug 2022 06:05:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A9E6C28D13
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Aug 2022 07:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=VKBkffmK0Ctxd2cfTZhHEHpjwscyYw4Tfisopp1qogY=; b=emHwvYckesH8Ht
-	kT0gz0x4nD8xK5li1yBU2fA/yf2XwFVYhHTjclDV43wrWls+B9/zwq1U4hTa6vtWMMw9ZuMXCTTOc
-	JkJN6RgoQFxnThRdgANg8ogcAs42OyF5dnKnYTDhYJCdKS3xPHzvxrGHFy5D/4cZdpxS/3iZHrv44
-	j90tfGrn+RLsiB94KVNmm5XS7wfjoreygCEMtDz7BaONifkgLHW2+O5XaEI7YGXf0FWQGjqSCfL43
-	2O7B8UHYFauk7xGWi0w9EPnMaiLBL5Gp8dngLomjxY03ePxij1hkhX9X9nN9FPvFOb6t2fmVIQS/b
-	NTCFvETa2nkEULmlHd8w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6tGt/wNP+FEyx8O+nCbKHS1dpfJ/CSrm5clCWSUz0sI=; b=05YXnIcn3egvF7
+	PINClEVHtVoxeZbu/9lDnBuQ1yvZlvRQWGZ1Ebwj/X9HAI0fjoNmKlTY0rwEYYgGrRuAqJoJw2Wop
+	WayozZBcCmKTswjiaw0g5UArYnFO/KrBxPPPMhvAZywskzsfJKGR79C7WfsU4mc8JDOnBVNXIpkwm
+	yiHsDP3bI6HDDH0KvhobcoU4Vs8WWRgqnnqGr4aVi6uAsOSPwendNWc7dRf6jO6+hIOTZKn2QVfHN
+	MiE67N2xLi5C+h1Ad6iu8lJv6EF2z5uiC+UrZihDMubMsLxgVNen+rSSDGZxcpWo7cdnHhUdX/HDj
+	kJx8avir2KQZoIydHgRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oR5yb-007jFO-3G; Thu, 25 Aug 2022 06:04:25 +0000
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238])
+	id 1oR7gU-009hJR-5S; Thu, 25 Aug 2022 07:53:50 +0000
+Received: from mail-ed1-x52f.google.com ([2a00:1450:4864:20::52f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oR5yV-007jA1-Iu
-	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2022 06:04:21 +0000
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27P5vOCC004173;
-	Wed, 24 Aug 2022 23:04:11 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PPS06212021;
- bh=faTEiM2JXFLbZRmgbMJeeabYaB8qDwx444+BAMfW2UI=;
- b=VdGhr0kEfk1QLU455brEhATO6uISCYAVTmeKypcNjG/e/MqYo6PEyXW4jzp/Sqpr5NlZ
- jkzrHTgVCjFQiXodJIgjB3xItr1iVOnxH5Wu40XubWhJjZWHPfKKpeQ6L8f5A5LeT2B0
- 4F9wQNhPi41qW5tV006mRH2A5dGL7c9Z8FkKA/IznJnOUsYhIsa7XqChEEnDTdwp0qBR
- yKu6PXYIoHigKt/ueO8eyxQIMSlPq+Z7eI3DKwuIUyafcihnKRa/YFn0paXyD089M//G
- 0t7+ZsP177ZLW9SexdlrklFpjKs0C943NdUmGRMEJ7qXOGrHhW5HGhwrLCN10cnCpNj0 4g== 
-Received: from ala-exchng01.corp.ad.wrs.com (unknown-82-252.windriver.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3j53rvhf0c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Wed, 24 Aug 2022 23:04:11 -0700
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 24 Aug 2022 23:04:10 -0700
-Received: from otp-azaharia-l2.corp.ad.wrs.com (128.224.78.230) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2242.12 via Frontend Transport; Wed, 24 Aug 2022 23:04:08 -0700
-From: Adrian Zaharia <Adrian.Zaharia@windriver.com>
-To: <linux-mtd@lists.infradead.org>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <jani.nurminen@windriver.com>, <adrian.zaharia@windriver.com>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: [PATCH 0/1] mtd: mtdpart: Fix cosmetic print
-Date: Thu, 25 Aug 2022 09:04:06 +0300
-Message-ID: <20220825060407.335475-1-Adrian.Zaharia@windriver.com>
+	id 1oR7gO-009h0y-JG
+	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2022 07:53:48 +0000
+Received: by mail-ed1-x52f.google.com with SMTP id b16so25031831edd.4
+        for <linux-mtd@lists.infradead.org>; Thu, 25 Aug 2022 00:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc;
+        bh=Lc3v8hBHsCf49bYVex16KFSKbVG0hlFgO3dkVBUtLng=;
+        b=e6L6q0BJUH+0W1pJctd5mNfbN9fET2DENNXVuhELy/kF0phr1KgPmbFrEL6S4XysGM
+         ENOkFXDnlTf0HOOXyds250s4+e1nZ2S5t+l5rV5GknHKbwpwF6O1m1hlgSlTqwKshIfX
+         qN5WrWKcNdQUeCq47fNrJljeHZ8YDMoqz900JcLJAUW0RDTMCs7DXcu6ob3YpWHQN5pj
+         MxgcRgZFdqYKrj/le87dmCMrQZsXfgZvKns67C1hqEKSmcZ6LvTmBnZvphVn7aebsrBe
+         XwkKOEgJUO8H/YDCOF7FaMrBMN/aSMBZ/ZivCIvOjBrywuiGm3PrCtSNjj6DwGlKw0cU
+         MW7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=Lc3v8hBHsCf49bYVex16KFSKbVG0hlFgO3dkVBUtLng=;
+        b=VONtk6vMpizg+IeS90uTZzB1SQWI/RNOtMheTIx99tv8HF2N+BA0UVzcGTLtdum3H6
+         +P4ohGAH5H6pEPdreTlbUryHgbIeMByTPlD67/5NRzZTcsz6HPZUugPIRKioNX6uC05I
+         jhN3tqlxbPROUhHXk0OfbEn1ylIvptUCxrl+2b/W+1MZ5H5qMePkNcLKfnqSstjOfTU+
+         bUb6ModG3jtxoUXixU5UL5kyLlpSM+nBocesM6hi8RmS88O4L3bt+MOQqmqNU6MPy6hu
+         5AdjLYUXExUwio/TfNrUQvsc/SiiGRCuE/ENJA9DhKu39itt9Jv9PThuMJqn3caNnYxS
+         eBuQ==
+X-Gm-Message-State: ACgBeo1KCsOrr2/ozxEr1D3jmVNQCD6Pwlzalq11yWmLvfSK/DC9lskh
+	EMjcLiLAYde272LJCoYVbliqtQ==
+X-Google-Smtp-Source: AA6agR6Wb3bI3r2PWMumq/hRNZ1lgycNJckeEnHdbCXKdsWIg069biDuqP8AkDqmL9yidwsSFdF9nQ==
+X-Received: by 2002:aa7:cc97:0:b0:445:afab:2634 with SMTP id p23-20020aa7cc97000000b00445afab2634mr2190277edt.54.1661414022265;
+        Thu, 25 Aug 2022 00:53:42 -0700 (PDT)
+Received: from lb02065.fritz.box ([2001:9e8:142d:a900:eab:b5b1:a064:1d0d])
+        by smtp.gmail.com with ESMTPSA id x22-20020a170906b09600b0073dbfd33a8dsm1491736ejy.21.2022.08.25.00.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Aug 2022 00:53:41 -0700 (PDT)
+From: Jack Wang <jinpu.wang@ionos.com>
+To: miquel.raynal@bootlin.com,
+	linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Christophe Kerello <christophe.kerello@foss.st.com>,
+	Cai Huoqing <cai.huoqing@linux.dev>,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] mtd: rawnand: marvell: Fix error handle regarding dma_map_sg
+Date: Thu, 25 Aug 2022 09:53:38 +0200
+Message-Id: <20220825075338.35338-3-jinpu.wang@ionos.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220825075338.35338-1-jinpu.wang@ionos.com>
+References: <20220825075338.35338-1-jinpu.wang@ionos.com>
 MIME-Version: 1.0
-X-Proofpoint-GUID: yXX5wKaTX_POmSS2U_h6-5Z60LOu4GHN
-X-Proofpoint-ORIG-GUID: yXX5wKaTX_POmSS2U_h6-5Z60LOu4GHN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-25_03,2022-08-22_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- spamscore=0 phishscore=0 adultscore=0 mlxlogscore=579 mlxscore=0
- suspectscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2207270000 definitions=main-2208250020
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220824_230419_728295_590A7E73 
-X-CRM114-Status: GOOD (  12.80  )
+X-CRM114-CacheID: sfid-20220825_005344_695000_42DE1EF0 
+X-CRM114-Status: GOOD (  12.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,19 +97,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The print of the MTD partitions during boot are off-by-one for the size.
-This patch fixes this issue and shows the real last offset.
+dma_map_sg return 0 on error, in case of error return -ENXIO,
+also add the dma_unmap_sg as rollback on the following error.
 
-Jani Nurminen (1):
-  mtd: mtdpart: Fix cosmetic print
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Christophe Kerello <christophe.kerello@foss.st.com>
+Cc: Cai Huoqing <cai.huoqing@linux.dev>
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Fixes: 02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller driver")
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+---
+ drivers/mtd/nand/raw/marvell_nand.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
- drivers/mtd/mtdpart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-
-base-commit: 072e51356cd5a4a1c12c1020bc054c99b98333df
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 2455a581fd70..d9f2f1d0b5ef 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -865,13 +865,19 @@ static int marvell_nfc_xfer_data_dma(struct marvell_nfc *nfc,
+ 	marvell_nfc_enable_dma(nfc);
+ 	/* Prepare the DMA transfer */
+ 	sg_init_one(&sg, nfc->dma_buf, dma_len);
+-	dma_map_sg(nfc->dma_chan->device->dev, &sg, 1, direction);
++	ret = dma_map_sg(nfc->dma_chan->device->dev, &sg, 1, direction);
++	if (!ret) {
++		dev_err(nfc->dev, "Could not map DMA S/G list\n");
++		return -ENXIO;
++	}
++
+ 	tx = dmaengine_prep_slave_sg(nfc->dma_chan, &sg, 1,
+ 				     direction == DMA_FROM_DEVICE ?
+ 				     DMA_DEV_TO_MEM : DMA_MEM_TO_DEV,
+ 				     DMA_PREP_INTERRUPT);
+ 	if (!tx) {
+ 		dev_err(nfc->dev, "Could not prepare DMA S/G list\n");
++		dma_unmap_sg(nfc->dma_chan->device->dev, &sg, 1, direction);
+ 		return -ENXIO;
+ 	}
+ 
 -- 
-2.37.2
+2.34.1
 
 
 ______________________________________________________
