@@ -4,82 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17EBCC3F6B0
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 Aug 2022 02:22:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6219C28D13
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 Aug 2022 06:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=udtz8uNwDQ/Vk3UZDro6BChI59+3g65H9+9jFQ9/nQM=; b=OYcRd6qI03ELSy
-	sATo/h4bbC5v58TUdF2ygUf+x0clk7/xem5zFjTtEhvV4Ec9xUl7HQolynabm5lMvNsxugudUVhTG
-	3ycq9y1LDBxN4Hc6S2NHvFaOxWBJ5nRWxk5lm3L1ExqaNZQN49lZ2gEU46H3soktyHAQ5bTpfwfl3
-	XHpHC5px+V60/k00Jo7ZOjohpoUZMtqQiYElgJP/E7nhnl4yk+1pByHhIFbQL6VMMsEamnin5/7YJ
-	mQKwcN4U03lsK8DSkOJfLCNeeZv3CYG7nVMLXEVlAKzgtknxBTgziDcLquqw2gOcQRLbG5KlBJIbV
-	L3lRZ0Nq8/mI9GmCJArA==;
+	List-Owner; bh=KtX/OpF79tPIvRBK9oT9vTOi2wTfYcl0Co3zAKMGPrA=; b=l4LJCdwQdfgvds
+	xphiyb4BQkM/VQ5+LNKeGmRZ5xLbxTtLloM/5uH5LRSvikUfzLpWcIOBqzJsqkrGuo6meSFRIf68e
+	BmpVhgIpEXwKhzwxOi/Uq1fFNLAeVBKfxy+uc7bNb/8L7QNjN41ii/GuQ+PX9BFoDsH7yb6KEFn3V
+	VIFIZgCsNzk/mAmBxWcGCffw4neHmBnlsSPQujYMOSMcWKyWblp3rQGmW9gZ1ifkItOEZaOuOcbil
+	b0lUdha80Zobwy6g7np7yQQ+TW3WTH2TrB5BMvdxG6CWFyMSBsOKAF0SQ82kM3P/jZzZQFaRyy8rg
+	dZgTzER3ZFQPnKC0b4jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oR2Uj-004MXG-V3; Thu, 25 Aug 2022 02:21:22 +0000
-Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
+	id 1oR5yq-007jKg-68; Thu, 25 Aug 2022 06:04:40 +0000
+Received: from mx0a-0064b401.pphosted.com ([205.220.166.238])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oR2Ua-004MPW-1N
-	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2022 02:21:13 +0000
-Received: by mail-pj1-x102d.google.com with SMTP id m10-20020a17090a730a00b001fa986fd8eeso3505343pjk.0
-        for <linux-mtd@lists.infradead.org>; Wed, 24 Aug 2022 19:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=uFU+6xGq7vMV4NCj8NMJBnu9+wM2o967cIfl0K+SJBU=;
-        b=DRBs1qnfDRkJQ3gQcM3oJ2wDHMUxnSfpkV64lqevoPyxfN0C8FwO/V3g+F11Zcc7dg
-         fLI6/DlnMrWKKo8AJ5c6IcMRw8KeJbuo+FPRAD85gzfrQOtEmJK5eprHLOJjrORl+nf7
-         NXRBEVmBoWG8NWCvsldZ5xZEcb9AODWI2n8YWNj3RvPbTthbfG4pmElPE36b5ioWnka9
-         icXJ0cKcdP+nm5hH8GYEjGZAOlXp7LVz4OI6hTRo4XuN0PpWykLz6BsQoswg3nQ56fyI
-         AVyiy+pgWQ0stpJQo+uIN827MUCUd22z0Jezzn6lq1raUNDN6ikM4qLCcp8WXs70eFZF
-         GqQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=uFU+6xGq7vMV4NCj8NMJBnu9+wM2o967cIfl0K+SJBU=;
-        b=n5CycDF8RFFdmcY4HcLapWRz5S9QZ5dKv23EgGwi/I724ZABnNSG9c5fMbYPYyQtM3
-         deUAE5Qt3iqvtNbil3dBcQlJWCMKLgp/udiLWWZK0TyJ2ehCqY2eW18FY63QlIwKYP7q
-         /Td2sLfUzS/LB6N1ZsCfmaj1i/1atVCfI1op5ckxz7jmZJ3cY/CddiMVLum0ljZe41aw
-         8Y9V7qxy9TMYs1AEDg9pMZi1iJB8XzqIy/zsLQAG/3s97G7DO7u1Y3D9nGctzAwOa6we
-         TRX5nNxQnRVqMcvge73u8Jz8WoNYcWxPaR4wcBJ2cmSvT8Yscy5Liy7VTiA6g0aQ4C6B
-         yicA==
-X-Gm-Message-State: ACgBeo3EN05So9x8HRAp9T4YAEYsZnAvXujjUTyHURGttCyW1zWnIfgi
-	G+tsLUgvFBmQVw1bE7t3IYie3tcdrJ0=
-X-Google-Smtp-Source: AA6agR4oyldLT3Dl3GQQ7teW1n4IuB5/HuAJMcXUe37dUF2n5aGMmbZg3jr0zQRN3oLcjwSi1sMvIA==
-X-Received: by 2002:a17:902:db12:b0:16e:eaf9:e98d with SMTP id m18-20020a170902db1200b0016eeaf9e98dmr1809145plx.172.1661394068424;
-        Wed, 24 Aug 2022 19:21:08 -0700 (PDT)
-Received: from ISCNPF1JZGWX.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id g15-20020aa796af000000b00536c7a1012csm6447917pfk.184.2022.08.24.19.21.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Aug 2022 19:21:07 -0700 (PDT)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@microchip.com,
-	pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH 2/2] mtd: spi-nor: spansion: Add s28hl512t, s28hl01gt, and s28hs01gt info
-Date: Thu, 25 Aug 2022 11:20:18 +0900
-Message-Id: <475bdde1b012af8b36f266bca3230c3262f78700.1661392740.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1661392740.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1661392740.git.Takahiro.Kuwano@infineon.com>
+	id 1oR5yV-007jA0-JA
+	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2022 06:04:21 +0000
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27P60AUR011000;
+	Wed, 24 Aug 2022 23:04:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PPS06212021;
+ bh=X9RNAuRl48yKaT3FZoepRQ1FjmBaxmqyZCz8sO6VjWs=;
+ b=CQ/qfPU+0h5ddUlGDmeqyHjQ/quRKmF9eO4mnzYTdMSGBe0VDGMAgApI/EOzGAT269H2
+ IbrUU29uQhNsJBNfTuat0VQjydR18zLLVVlVVgxtEls1/sWy1GcRieAj/VJJHxLoL2Pc
+ S2dJsyxDRgH2FAQ7xfugBIXZiIURo5hxjb0aDw1vGfHIBDlD7/lMOtheofRTbtXIzbxG
+ 6/dY91glVBekz9it01iJKBykUBW1LK3ZfOmXofNYXjCNYliRCL+OyWvCLdSKJM+FZEg3
+ 4nzjoN1VBIz/N31vXjpdZ9s+ycuh5uf60MsI87XekvNpE4Hux9V65eXjxqU97yoSy4FT sA== 
+Received: from ala-exchng01.corp.ad.wrs.com (unknown-82-252.windriver.com [147.11.82.252])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3j53rvhf0d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Wed, 24 Aug 2022 23:04:13 -0700
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 24 Aug 2022 23:04:13 -0700
+Received: from otp-azaharia-l2.corp.ad.wrs.com (128.224.78.230) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2242.12 via Frontend Transport; Wed, 24 Aug 2022 23:04:11 -0700
+From: Adrian Zaharia <Adrian.Zaharia@windriver.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <jani.nurminen@windriver.com>, <adrian.zaharia@windriver.com>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: [PATCH 1/1] mtd: mtdpart: Fix cosmetic print
+Date: Thu, 25 Aug 2022 09:04:07 +0300
+Message-ID: <20220825060407.335475-2-Adrian.Zaharia@windriver.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220825060407.335475-1-Adrian.Zaharia@windriver.com>
+References: <20220825060407.335475-1-Adrian.Zaharia@windriver.com>
 MIME-Version: 1.0
+X-Proofpoint-GUID: 8ZGl-Ddu7gZ63T_cH1hE1rLUZ2vFDtif
+X-Proofpoint-ORIG-GUID: 8ZGl-Ddu7gZ63T_cH1hE1rLUZ2vFDtif
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-25_03,2022-08-22_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ spamscore=0 phishscore=0 adultscore=0 mlxlogscore=824 mlxscore=0
+ suspectscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2207270000 definitions=main-2208250020
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220824_192112_096410_E71875B2 
-X-CRM114-Status: GOOD (  10.77  )
+X-CRM114-CacheID: sfid-20220824_230419_735940_E9FB7442 
+X-CRM114-Status: GOOD (  16.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,49 +89,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+From: Jani Nurminen <jani.nurminen@windriver.com>
 
-Add flash info table entries for s28hl512gt, s28hl01gt, and s28hs01gt.
-These devices have the same functionality as s28hs512t.
+The print of the MTD partitions during boot are off-by-one for the size.
+Fix this and show the real last offset.
 
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Fixes: 3d6f657ced2b ("mtd: mtdpart: Fix cosmetic print")
+Signed-off-by: Jani Nurminen <jani.nurminen@windriver.com>
+Signed-off-by: Adrian Zaharia <Adrian.Zaharia@windriver.com>
 ---
- drivers/mtd/spi-nor/spansion.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/mtd/mtdpart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 03f361089a05..76a0e31c8323 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -459,11 +459,26 @@ static const struct flash_info spansion_nor_parts[] = {
- 		.fixups = &s25hx_t_fixups },
- 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
- 		FLAGS(SPI_NOR_NO_ERASE) },
-+	{ "s28hl512t",   INFO(0x345a1a,      0, 256 * 1024, 256)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ |
-+			      SPI_NOR_OCTAL_DTR_PP)
-+		.fixups = &s28hx_t_fixups,
-+	},
-+	{ "s28hl01gt",   INFO(0x345a1b,      0, 256 * 1024, 512)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ |
-+			      SPI_NOR_OCTAL_DTR_PP)
-+		.fixups = &s28hx_t_fixups,
-+	},
- 	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ |
- 			      SPI_NOR_OCTAL_DTR_PP)
- 		.fixups = &s28hx_t_fixups,
- 	},
-+	{ "s28hs01gt",   INFO(0x345b1b,      0, 256 * 1024, 512)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ |
-+			      SPI_NOR_OCTAL_DTR_PP)
-+		.fixups = &s28hx_t_fixups,
-+	},
- };
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index d442fa94c872..fab10e6d4171 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -118,7 +118,7 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
+ 		child->part.size = parent_size - child->part.offset;
  
- /**
+ 	printk(KERN_NOTICE "0x%012llx-0x%012llx : \"%s\"\n",
+-	       child->part.offset, child->part.offset + child->part.size,
++	       child->part.offset, child->part.offset + child->part.size - 1,
+ 	       child->name);
+ 
+ 	/* let's do some sanity checks */
 -- 
-2.25.1
+2.37.2
 
 
 ______________________________________________________
