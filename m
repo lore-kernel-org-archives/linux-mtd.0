@@ -4,69 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EBDDECAAD4
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Aug 2022 08:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39C79ECAAD4
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Aug 2022 09:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mcjsaMzE1a2ldOeZ7m2yINLBUrHvrAzPD3CqF+7xeOA=; b=XEDsFjyFLWnv/Wm32uxJMa9LFM
-	vfivSzOdrgSDD7FlmvTfyWPZDsSX/CiMFSkIdEAEzdl0bVovDADSaqnUYIi/gPC+nDLi3CFUrHhem
-	kfuAH9IrWQYaJWDWhx27Mg687rSDpFH0/X3H0iezThlJAqU1kBTkDAbXdflva93tnjyN/70UQjJsV
-	7LDbFBCIfB36gxKnng12RO070I+PA+cUtEC0/g5gGi/H6bYM8BZpTkyYNEG93WgyStWfZV1gspsrG
-	t4wjyqWWVUvW8U2UwvVoM4p6TEVjO2AcgvWTfUHs2p1snv61LXnTupWVd0mAqL4hP/xo5u4j6L4ug
-	6BoXhB2A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=OKU69zLujFOB08nOl1mmKqTd2TPwMbXH2MI0RRY+eTg=; b=y8Zk35BoCqs1o0
+	AHZlCXhspxZcG6uQdH028SquQmu7eKTXMG7OU5Q8/bInRYiHKtpJJxj/ov3AzYdJWwrpN/9an7kRu
+	6VTfzeoLYEg4eoMqORvukEUyZiK4oLldf7iOPhJBOEs5VyjzI0DIVLLNEsKoQb0o6pqseaCLFUjRq
+	VlC0ZFvQ8J88dvDC7/U74qb56lPC4Vs/KtAHqsrHCU6ezriLo0nhWSJGsF0e/1Kc+0rIjwSoHs7hH
+	zPn/qOz+wD2uf7XPpU5PKkH66kN25Cp1/jEzo43mvKzPkCqtZphSY9UuwWKRHmOtUXQ9Y5ZcD1zYw
+	dT1bRFP9ndWoqDqPAlGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oSa2s-0068ej-L5; Mon, 29 Aug 2022 08:22:58 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1oSakN-006XMw-1E; Mon, 29 Aug 2022 09:07:55 +0000
+Received: from mail-mw2nam12on2073.outbound.protection.outlook.com ([40.107.244.73] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oSa28-0068F7-78; Mon, 29 Aug 2022 08:22:15 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id C076F38F;
-	Mon, 29 Aug 2022 10:22:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1661761327;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aWdMO7HBaULAwUHXrb+Mf/kwJlQruPZflZyMNyYcZy4=;
-	b=CD3VkiRpKq0rQSPmmXnVXYP8HnHoxnx+bT+s2OvBKmt9f+8sFGH65IjJMd7coGj0rRqGo/
-	NvdsJOR8IGTHkWeA2w8ZOaNVa6f8f2gBt+641QwWTeUbpb90BJnWTmhimh6YTBOmILZte4
-	2FoGkGQKq9xDiH2ByQu2PMODzhtYG7EuE70HO/DLaJcBHDrk0b2/QHfjAQkn7msTBCI7e/
-	FUbwj6tQ3/INVlIkQeWiWNbwsaJp/xji6fE4QeCcbRF7TtTItcfSBbd+yDz0W7cKwdQ4IQ
-	Ez27rLoMsce/IEQ2PPZlAwXzYnEQuq8b8BakidZVHJQACEKlpI+tmYC7I3se5Q==
+	id 1oSakI-006XFK-ML
+	for linux-mtd@lists.infradead.org; Mon, 29 Aug 2022 09:07:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pdlge78N6kJLaPg1BkduSl+O662qTopfuOyQiDFrih8fPUynVwS1gxhvYLbV35CXDPA7ExNcHfkky7Qh+S31m8TSWxVNp1Xu54t6MqkDwTQq0b/ZWjwfHWZfodlcNXe/ivusKDx1jwNyv/+jy6Ev0h8A25svK5PKiSKVyRB7NJjSQTVOho6WRekRVJ9snblBe2C8j7aXFwfTQnvVb1mGQ98hJmp8US6G0hKmNnR+GfoQS32rvjp3tEAmzpLsR2PrH7gRqAHyJKBdQL4h+2O2ogl+RMZ5FLoehzeGZ9Yi/coJdW3tToL7yrVPwPXIh0s1Emv665CB+xhUC5yrNSC6LQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uw+0Nn2VGw3BeggEgeupW1NyCVVLROEGuHfbR43+4yA=;
+ b=Ua4ljIMx0sdnGak3JwEX07z80YjJ7E9hCNLAym/biVgCOqIH8eackFYpd6dWOdB6WNserBvcireyoHJHig1FqWepZ5xMlSy3yfRVIZdSHWhtSiYPqUJFNc7ul0zz53ZDGfp+UDzbihzFre6cKh6zvUyRAA1LSzkn+6JcaWWBU8npjIN8lnu6T1C5QUU0yz4ctJdcCn5LugUMIEy9sJq2C0o7TpK97xU8D6tlPCmmeobdV+ueVCWQhPX2kiTQRaowf/WlocS7LaJaM8hBkUIV8F7VkHrXL434d1QMvXspQxf7HmXH0KgXXmU+6RSfD3E52TG9YrKzNaiUm+OtbgB7lA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=microchip.com smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uw+0Nn2VGw3BeggEgeupW1NyCVVLROEGuHfbR43+4yA=;
+ b=yQrxZCtEGVilPEQEaqbbRHi89f6hT81Txg7fTPhPfYwUntNudTmxYXXumk7rAy9SbbkJsm1sGC7FkVvXbeiNQ8VVW0U/l0vRYSe3sw/miPeVb5SzVlY5agCOX2N+FAgDfA6sJ54wz74Y/joi4hFdmWgTWYCVrnrFxzMFuLRISjk=
+Received: from DM6PR21CA0001.namprd21.prod.outlook.com (2603:10b6:5:174::11)
+ by SA1PR12MB6821.namprd12.prod.outlook.com (2603:10b6:806:25c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.14; Mon, 29 Aug
+ 2022 09:07:40 +0000
+Received: from DM6NAM11FT104.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:174:cafe::4b) by DM6PR21CA0001.outlook.office365.com
+ (2603:10b6:5:174::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.2 via Frontend
+ Transport; Mon, 29 Aug 2022 09:07:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT104.mail.protection.outlook.com (10.13.173.232) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5566.15 via Frontend Transport; Mon, 29 Aug 2022 09:07:39 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Mon, 29 Aug
+ 2022 04:07:38 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Mon, 29 Aug
+ 2022 02:07:38 -0700
+Received: from xhdlakshmis40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.28 via Frontend
+ Transport; Mon, 29 Aug 2022 04:07:34 -0500
+From: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+	<pratyush@kernel.org>, Michael Walle <michael@walle.cc>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
+ Raghavendra" <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>
+CC: <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <saikrishna12468@gmail.com>, <git@amd.com>,
+	Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+Subject: [PATCH 0/2] mtd: spi-nor: Add flash device reset support
+Date: Mon, 29 Aug 2022 14:35:26 +0530
+Message-ID: <20220829090528.21613-1-sai.krishna.potthuri@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Date: Mon, 29 Aug 2022 10:22:07 +0200
-From: Michael Walle <michael@walle.cc>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang
- <leoyang.li@nxp.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Frank Rowand <frowand.list@gmail.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- netdev@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Re: [PATCH v1 00/14] nvmem: core: introduce NVMEM layouts
-In-Reply-To: <768ff63a-54f5-9cde-e888-206cdf018df3@milecki.pl>
-References: <20220825214423.903672-1-michael@walle.cc>
- <768ff63a-54f5-9cde-e888-206cdf018df3@milecki.pl>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <267821eee5dcab79fd0ecebe0d9f8b0c@walle.cc>
-X-Sender: michael@walle.cc
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 15643229-f56c-46e0-ba38-08da899dec74
+X-MS-TrafficTypeDiagnostic: SA1PR12MB6821:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	f420Ea2F7hWQbH4lXRIiVxcBEsUmAEhAK6/9cIKo0bubjljmgES9B4U24zQJ0l/CHNjiN/L9Blod/RWFJSpzl5ZmAc78W70DJ0vQ6Qi0LrHuYC7IyCWlF+BRGWvxcSWRSreQZf6ymgQbFfy4soDQ1kN4YKlKW5ejQClgldssanD1lsFfgaD2CmepVKLAyHu3KDAwe8l4NpB3rXyulf3T9JF2s6jQlNzChCHThO7RFhKqO3riKb8POsyr6WfOoRAAaUsaDPu/EzG1xRuuKs0xIGni9pvA4/js/8oQAdaPLlTF0JZiTIBWU/afmzEvJWBRLEEvZ/7jAsnRsyUFVLGRTB/v3Z4CRGK/lnJZ5oixffkwnfx3qbpkroAPMgF+K1lO8w3pg69Me9FBFRKRFFE5bju+tunLMECe+Xe1jM/9T2HdWOSHHou7s2UtMBlQoPzu9zXTGqjT6J2sgHjUmMXUncokUD/tkkAgszB5hcZOJF9pBpDtdhmZ4o4x2p/CUTla/gdXrCaXa5DpQWspw+LDdDv3YKQwxdfdS7hjKwOOYCkIm8Om6oCwXAOPAMEOXCCH5PPPFPacxImO7KOEOb1wq6F6z9TdZlcbqQVH9uY9oMeXzWqZjg61M1QGgM1hYtos9DT2+CRu+by1YHWOzIYjuKxuCsa1trpBH5BJhBYsRf1YgeJw1oVBYGiy6KzS8N6Pj3TKgLjmqZrMT1Hj8byHOq3oFB8fRs5yTSe0PYJP/V166vzcBlQVW+1RdxBZI1BMifpY0mz18iLlq7unrvhIszgvyuJx7upWFPSgSzasnAg=
+X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(396003)(136003)(346002)(376002)(46966006)(40470700004)(36840700001)(81166007)(186003)(82310400005)(86362001)(356005)(110136005)(47076005)(2616005)(82740400003)(316002)(40460700003)(54906003)(36756003)(1076003)(426003)(70206006)(5660300002)(26005)(36860700001)(70586007)(4744005)(478600001)(8936002)(4326008)(40480700001)(41300700001)(8676002)(336012)(7416002)(6666004)(103116003)(83380400001)(2906002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2022 09:07:39.5196
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 15643229-f56c-46e0-ba38-08da899dec74
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 	DM6NAM11FT104.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6821
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220829_012212_458535_E4BA1F67 
-X-CRM114-Status: GOOD (  37.17  )
+X-CRM114-CacheID: sfid-20220829_020750_779483_D934CFEF 
+X-CRM114-Status: UNSURE (   8.42  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,95 +119,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpBbSAyMDIyLTA4LTI4IDE3OjA1LCBzY2hyaWViIFJhZmHFgiBNacWCZWNraToKPiBPbiAy
-NS4wOC4yMDIyIDIzOjQ0LCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+PiBUaGlzIGlzIG5vdyB0aGUg
-dGhpcmQgYXR0ZW1wdCB0byBmZXRjaCB0aGUgTUFDIGFkZHJlc3NlcyBmcm9tIHRoZSBWUEQKPj4g
-Zm9yIHRoZSBLb250cm9uIHNsMjggYm9hcmRzLiBQcmV2aW91cyBkaXNjdXNzaW9ucyBjYW4gYmUg
-Zm91bmQgaGVyZToKPj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIxMTIyODE0MjU0
-OS4xMjc1NDEyLTEtbWljaGFlbEB3YWxsZS5jYy8KPj4gCj4+IAo+PiBOVk1FTSBjZWxscyBhcmUg
-dHlwaWNhbGx5IGFkZGVkIGJ5IGJvYXJkIGNvZGUgb3IgYnkgdGhlIGRldmljZXRyZWUuIAo+PiBC
-dXQKPj4gYXMgdGhlIGNlbGxzIGdldCBtb3JlIGNvbXBsZXgsIHRoZXJlIGlzICh2YWxpZCkgcHVz
-aCBiYWNrIGZyb20gdGhlCj4+IGRldmljZXRyZWUgbWFpbnRhaW5lcnMgdG8gbm90IHB1dCB0aGF0
-IGhhbmRsaW5nIGluIHRoZSBkZXZpY2V0cmVlLgo+IAo+IEkgZHJvcHBlZCB0aGUgYmFsbCB3YWl0
-aW5nIGZvciBSb2IncyByZXBvbnNlIGluIHRoZQo+IFtQQVRDSCAwLzJdIGR0LWJpbmRpbmdzOiBu
-dm1lbTogc3VwcG9ydCBkZXNjcmliaW5nIGNlbGxzCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
-bGludXgtYXJtLWtlcm5lbC8wYjdiOGY3ZWE2NTY5Zjc5NTI0YWVhMWEzZDc4MzY2NUB3YWxsZS5j
-Yy9ULwo+IAo+IEJlZm9yZSB3ZSBnbyBhbnkgZnVydGhlciBjYW4gd2UgaGF2ZSBhIGNsZWFyIGFu
-c3dlciBmcm9tIFJvYiAob3IKPiBLcnp5c3p0b2Ygbm93IHRvbz8pOgo+IAo+IAo+IElzIHRoZXJl
-IGFueSBwb2ludCBpbiBoYXZpbmcgYmluZGluZ3MgbGlrZToKPiAKPiBjb21wYXRpYmxlID0gIm1h
-Yy1hZGRyZXNzIjsKPiAKPiBmb3IgTlZNRU0gY2VsbHMgbm9kZXM/IFNvIHN5c3RlbXMgKExpbnV4
-LCBVLUJvb3QpIGNhbiBoYW5kbGUgdGhlbSBpbiBhCj4gbW9yZSBnZW5lcmljIHdheT8KPiAKPiAK
-PiBPciBkbyB3ZSBwcmVmZXIgbW9yZSBjb25kaXRpb25hbCBkcml2ZXJzIGNvZGUgKG9yIGxheW91
-dHMgY29kZSBhcyBpbgo+IHRoaXMgTWljaGFlbCdzIHByb3Bvc2FsKSB0aGF0IHdpbGwgaGFuZGxl
-IGNlbGxzIHByb3Blcmx5IGJhc2VkIG9uIHRoZWlyCj4gbmFtZXM/CgpXaGF0IGRvIHlvdSBtZWFu
-IGJ5ICJiYXNlZCBvbiB0aGVpciBuYW1lcz8iLgoKPiBJJ20gbm90IGFyZ3VpbmcgZm9yIGFueSBz
-b2x1dGlvbi4gSSBqdXN0IHdhbnQgdG8gbWFrZSBzdXJlIHdlIGNob29zZSAKPiB0aGUKPiByaWdo
-dCB3YXkgdG8gcHJvY2VlZC4KCldpdGggdGhlICdjb21wYXRpYmxlID0gIm1hYy1hZGRyZXNzIics
-IGhvdyB3b3VsZCB5b3UgZGV0ZWN0IHdoYXQga2luZApvZiB0cmFuc2Zvcm1hdGlvbiB5b3UgbmVl
-ZCB0byBhcHBseT8gWW91IGNvdWxkIGd1ZXNzIGFzY2lpLCB5ZXMuIEJ1dApzd2FwcGluZyBieXRl
-cz8gWW91IGNhbm5vdCBndWVzcyB0aGF0LiBTbyB5b3UnZCBuZWVkIGFkZGl0aW9uYWwgCmluZm9y
-bWF0aW9uCmNvbWluZyBmcm9tIHRoZSBkZXZpY2UgdHJlZS4gQnV0IFJvYiB3YXMgcXVpdGUgY2xl
-YXIgdGhhdCB0aGlzIHNob3VsZG4ndApiZSBpbiB0aGUgZGV2aWNlIHRyZWU6Cgp8IEkgc3RpbGwg
-ZG9uJ3QgdGhpbmsgdHJ5aW5nIHRvIGVuY29kZSB0cmFuc2Zvcm1hdGlvbnMgb2YgZGF0YSBpbnRv
-IHRoZSAKRFQKfCBpcyByaWdodCBhcHByb2FjaC4KCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xp
-bnV4LWRldmljZXRyZWUvWWFaNUpOQ0ZlS2NkSWZ1OEByb2JoLmF0Lmtlcm5lbC5vcmcvCgpIZSBh
-bHNvIG1lbnRpb24gdGhhdCB0aGUgY29tcGF0aWJsZSBzaG91bGQgYmUgb24gdGhlIG52bWVtIGRl
-dmljZSBsZXZlbAphbmQgc2hvdWxkIHVzZSBzcGVjaWZpYyBjb21wYXRpYmxlIHN0cmluZ3M6Cmh0
-dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWRldmljZXRyZWUvQ0FMX0pzcUw1NW1aSjZqVXlR
-QUNlcjJwS01ORFYwOC1GZ3dCUkVzSlZnaXRudUYxOENnQG1haWwuZ21haWwuY29tLwoKQW5kIElN
-SE8gdGhhdCBtYWtlcyBzZW5zZSwgYmVjYXVzZSBpdCBtYXRjaGVzIHRoZSBoYXJkd2FyZSBhbmQg
-bm90IGFueQpOVk1FTSBjZWxscyB3aGljaCBpcyB0aGUgKmNvbnRlbnQqIG9mIGEgbWVtb3J5IGRl
-dmljZS4KCkFuZCBhcyB5b3Ugc2VlIGluIHRoZSBzbDI4dnBkIGxheW91dCwgaXQgYWxsb3dzIHlv
-dSB0byBkbyBtdWNoIG1vcmUsIApsaWtlCmNoZWNraW5nIGZvciBpbnRlZ3JpdHksIGFuZCBtYWtl
-IGl0IGZ1dHVyZSBwcm9vZiBieSBzdXBwb3J0aW5nIGRpZmZlcmVudAp2ZXJzaW9ucyBvZiB0aGlz
-IHNsMjh2cGQgbGF5b3V0LgoKV2hhdCBpZiB5b3UgdXNlIGl0IHdpdGggdGhlIHUtYm9vdCxlbnY/
-IFlvdSB3b3VsZG4ndCBuZWVkIGl0IGJlY2F1c2UKdS1ib290LGVudiB3aWxsIGFscmVhZHkga25v
-dyBob3cgdG8gaW50ZXJwcmV0IGl0IGFzIGFuIGFzY2lpIHN0cmluZwooYW5kIGl0IGFsc28ga25v
-dyB0aGUgb2Zmc2V0KS4gSW4gdGhpcyBzZW5zZSwgdS1ib290LGVudiBpcyBhbHJlYWR5IGEKY29t
-cGF0aWJsZSBzdHJpbmcgZGVzY3JpYmluZyB0aGUgY29udGVudCBvZiBhIE5WTUVNIGRldmljZSAo
-YW5kIHRoZQpjb21wYXRpYmxlIHN0cmluZyBpcyBhdCB0aGUgZGV2aWNlIGxldmVsKS4KCj4+IFRo
-ZXJlZm9yZSwgaW50cm9kdWNlIE5WTUVNIGxheW91dHMuIFRoZXkgb3BlcmF0ZSBvbiB0aGUgTlZN
-RU0gZGV2aWNlIAo+PiBhbmQKPj4gY2FuIGFkZCBjZWxscyBkdXJpbmcgcnVudGltZS4gVGhhdCB3
-YXkgaXQgaXMgcG9zc2libGUgdG8gYWRkIGNvbXBsZXgKPj4gY2VsbHMgdGhhbiBpdCBpcyBwb3Nz
-aWJsZSByaWdodCBub3cgd2l0aCB0aGUgb2Zmc2V0L2xlbmd0aC9iaXRzCj4+IGRlc2NyaXB0aW9u
-IGluIHRoZSBkZXZpY2UgdHJlZS4gRm9yIGV4YW1wbGUsIHlvdSBjYW4gaGF2ZSBwb3N0IAo+PiBw
-cm9jZXNzaW5nCj4+IGZvciBpbmRpdmlkdWFsIGNlbGxzICh0aGluayBvZiBlbmRpYW4gc3dhcHBp
-bmcsIG9yIGV0aGVybmV0IG9mZnNldAo+PiBoYW5kbGluZykuIFlvdSBjYW4gYWxzbyBoYXZlIGNl
-bGxzIHdoaWNoIGhhdmUgbm8gc3RhdGljIG9mZnNldCwgbGlrZSAKPj4gdGhlCj4+IG9uZXMgaW4g
-YW4gdS1ib290IGVudmlyb25tZW50LiBUaGUgbGFzdCBwYXRjaGVzIHdpbGwgY29udmVydCB0aGUg
-Cj4+IGN1cnJlbnQKPj4gdS1ib290IGVudmlyb25tZW50IGRyaXZlciB0byBhIE5WTUVNIGxheW91
-dCBhbmQgbGlmdGluZyB0aGUgCj4+IHJlc3RyaWN0aW9uCj4+IHRoYXQgaXQgb25seSB3b3JrcyB3
-aXRoIG10ZCBkZXZpY2VzLiBCdXQgYXMgaXQgd2lsbCBjaGFuZ2UgdGhlIAo+PiByZXF1aXJlZAo+
-PiBjb21wYXRpYmxlIHN0cmluZ3MsIGl0IGlzIG1hcmtlZCBhcyBSRkMgZm9yIG5vdy4gSXQgYWxz
-byBuZWVkcyB0byBoYXZlCj4+IGl0cyBkZXZpY2UgdHJlZSBzY2hlbWEgdXBkYXRlIHdoaWNoIGlz
-IGxlZnQgb3V0IGhlcmUuCj4gCj4gU28gZG8gSSBnZXQgaXQgcmlnaHQgdGhhdCB3ZSB3YW50IHRv
-IGhhdmU6Cj4gCj4gMS4gTlZNRU0gZHJpdmVycyBmb3IgcHJvdmlkaW5nIEkvTyBhY2Nlc3MgdG8g
-TlZNRU0gZGV2aWNlcwo+IDIuIE5WTUVNIGxheW91dHMgZm9yIHBhcnNpbmcgJiBOVk1FTSBjZWxs
-cyBhbmQgdHJhbnNsYXRpbmcgdGhlaXIgCj4gY29udGVudAo+ID8KCkNvcnJlY3QuCgo+IEkgZ3Vl
-c3MgaXQgc291bmRzIGdvb2QgYW5kIHNlZW1zIHRvIGJlIGEgY2xlYW4gc29sdXRpb24uCgpHb29k
-IHRvIGhlYXIgOikKCj4gT25lIHRoaW5nIEkgYmVsaWV2ZSB5b3UgbmVlZCB0byBoYW5kbGUgaXMg
-cmVwbGFjaW5nICJjZWxsX3Bvc3RfcHJvY2VzcyIKPiBjYWxsYmFjayB3aXRoIHlvdXIgbGF5b3V0
-IHRoaW5nLgo+IAo+IEkgZmluZCBpdCBjb25mdXNpbmcgdG8gaGF2ZQo+IDEuIGNlbGxfcG9zdF9w
-cm9jZXNzKCkgQ0IgYXQgTlZNRU0gZGV2aWNlIGxldmVsCj4gMi4gcG9zdF9wcm9jZXNzKCkgQ0Ig
-YXQgTlZNRU0gY2VsbCBsZXZlbAoKV2hhdCBpcyB3cm9uZyB3aXRoIGhhdmluZyBhIGNhbGxiYWNr
-IGF0IGJvdGggbGV2ZWxzPwoKR3JhbnRlZCwgaW4gdGhpcyBwYXJ0aWN1bGFyIGNhc2UgKGl0IGlz
-IGp1c3QgdXNlZCBhdCBvbmUgcGxhY2UpLCBJIHN0aWxsCnRoaW5rIHRoYXQgaXQgaXMgdGhlIHdy
-b25nIGFwcHJvYWNoIHRvIGFkZCB0aGlzIHRyYW5zZm9ybWF0aW9uIGluIHRoZQpkcml2ZXIgKGlu
-IHRoaXMgcGFydGljdWxhciBjYXNlKS4gVGhlIGRyaXZlciBpcyBzdXBwb3NlZCB0byBnaXZlIHlv
-dQphY2Nlc3MgdG8gdGhlIFNvQydzIGZ1c2UgYm94LCBidXQgaXQgd2lsbCBtYWdpY2FsbHkgY2hh
-bmdlIHRoZSBjb250ZW50Cm9mIGEgY2VsbCBpZiB0aGUgbnZtZW0gY29uc3VtZXIgbmFtZWQgdGhp
-cyBjZWxsICJtYWMtYWRkcmVzcyIgKHdoaWNoCnlvdSBhbHNvIGZvdW5kIGNvbmZ1c2luZyB0aGUg
-bGFzdCB0aW1lIGFuZCBJIGRvIHRvbyEpLgoKVGhlIGRyaXZlciBpdHNlbGYgZG9lc24ndCBhZGQg
-YW55IGNlbGxzIG9uIGl0cyBvd24sIHNvIEkgY2Fubm90IHJlZ2lzdGVyCmEgLnBvc3RfcHJvY2Vz
-cyBob29rIHRoZXJlLiBUaGVyZWZvcmUsIHlvdSdkIG5lZWQgdGhhdCBwb3N0X3Byb2Nlc3MgaG9v
-awpvbiBldmVyeSBjZWxsLCB3aGljaCBpcyBlcXVpdmFsZW50IHRvIGhhdmUgYSBwb3N0X3Byb2Nl
-c3MgaG9vayBhdApkZXZpY2UgbGV2ZWwuCgpVbmxlc3MgeW91IGhhdmUgYSBiZXR0ZXIgaWRlYS4g
-SSdsbCBsZWF2ZSB0aGF0IHVwIHRvIE5YUCB0byBmaXggdGhhdCAob3IKbGVhdmUgaXQgbGlrZSB0
-aGF0KS4KCi1taWNoYWVsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+This patch series update spi-nor dt-binding and spi-nor core to support
+flash device reset using reset-gpios property.
+
+Sai Krishna Potthuri (2):
+  dt-bindings: mtd: spi-nor: Add reset-gpios property
+  mtd: spi-nor: Add support for flash reset
+
+ .../bindings/mtd/jedec,spi-nor.yaml           |  6 +++
+ drivers/mtd/spi-nor/core.c                    | 50 +++++++++++++++++--
+ 2 files changed, 52 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
