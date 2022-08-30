@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B309ECAAD1
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Aug 2022 14:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 745C5ECAAD1
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Aug 2022 14:25:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iuEs5t9BRDjFmyfSZYgcjKYtDP7XoICJ0yqqqfxc0G4=; b=Kq3N7yuUI81t7zQBYzd0tjled1
-	dynU7t5dY+HcYVgXSFcyCG+aYhMKNz2zJBdV0UNCufx+jj9N41ltFgGbGlJHja4hZPNpDv41zUORb
-	OzuJKZQN3SsKpyu4nZimpMkCVmJZ2NiWxPBEi+N9zT/lqFZNJmjAd6reZUae0sNkwNNi1sO2igpEn
-	/AYl2Vbl4nKfqFVB7GADrK52Mjh7C0TPoBfYdVK6mSH7CPQfIDWzoX8KQnhpfg04NDTFUMyju5+Sg
-	RiWOLFY7LzoCYAjWjVL6WvmKuFiT5J5omZg5X7Ss8wqgN4/le367JFYWUvF0kWg9yj9gP9BXvGuT4
-	QbD1O23A==;
+	bh=EcKkclDotICL85VSjlC6TEirsEIiUgF8Z6Hol0wDyA0=; b=NHJiNfdcUdnQu1nY+fnBl+vF+V
+	G2Y1IYff0WCV7bNr/ph/xkhlo7gfu1ubKqqJ26pzyubR+QPWqY4ZydJhy9aM+SKBIU6oTtyrwIDHY
+	zVOIfJ/SYiiXAff3uYeZMhaBPUnvbG64LrLI8Ymxy/nKvQDjQMy2ux0klmwSYlm+e+Cyr1TsbEAwn
+	YiMgrbyNdWkj1rZkTgVDKcs4JgIy1vrR7eQAdao8D6jN8fW1bsiFpgdZenJNenfPSvYbQ+eUD1Gy3
+	QBLMJLQsw9t3Wv2TESmkY7de2+F95N6FbnsEAqEZW7STFGMci4id6KBZt3amxlH/1qdUVcXxO0UOf
+	jtBlVY5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oT278-00HYlO-7V; Tue, 30 Aug 2022 14:21:14 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1oT2Ao-00HaIl-4m; Tue, 30 Aug 2022 14:25:02 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oT26t-00HYeH-OF; Tue, 30 Aug 2022 14:21:01 +0000
+	id 1oT2AZ-00HaCD-V3; Tue, 30 Aug 2022 14:24:49 +0000
 Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id F400B121;
-	Tue, 30 Aug 2022 16:20:54 +0200 (CEST)
+	by mail.3ffe.de (Postfix) with ESMTPSA id A3381121;
+	Tue, 30 Aug 2022 16:24:42 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1661869255;
+	t=1661869482;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ufgo92+9MD8lMZnJHj9JynwICztvJiv6z2nBDKJvsyU=;
-	b=2yILkXih+cAfHWb8i3cp/6iRnfOrNCytTMCkSciINo9wWDbNKv1Fn9jWenJYKua0/vjE04
-	aoxqLXbBcB2/Oe+kW78QNsAXD1pkHlJTv3M1V/5vjJ0/eJmyi29tWbDb4VMT4DgIDX7eta
-	KdP7m8cj1Yh0ELjMnqleaTCEeMFKRunCmPsdLK8Otxp31CgWKGxF/W4EaZgv/zi4roTt6E
-	1NvmXNqWYyzwysYs4OMlGxbQvDH0Dj950OCe1aikpPAv3gOh13SlHizqbeoPoP/Pcd5lMs
-	3oB+zX+iWMm0Q+RgQM64NoGQFLpTP2We4OEIkQchlA3alLQ+/Sowy7OkqYM9GQ==
+	bh=ksexceGYLzmlYsHeH0rjdnvsXlkUmLS38Dmp/YO60oQ=;
+	b=vgKzVwKoXHDPNbBLh16JW5TCnOV8a8HQ798Pb8eyYspmZ3tboetf7xkqhdVTNV75NEbsgC
+	DyPK+R0ZHfA3nvuUi1OfNu9br6i6h/1t6Th07icjgTwEPluILSZAOCrVzxdNsq7vr8lRp6
+	zW1CjEOzHYX8mMVQaW5EgQayN4ZjLAxPeIwdf1jIRqhLZtdvTcyLfHLik39GTXW+xH0LAR
+	ASXeiz99Oul80NtAzgjRaRMeoUEPC3Hqynqbv9BbgyDbRnSqz4tYgdyjrOVhdOBfPBnZoz
+	VSZqUQ/03BO1K5PMYhx1KZ23RiNLReB/pIpePCho7cRjjvNXU0H6Dz4Ep29DXQ==
 MIME-Version: 1.0
-Date: Tue, 30 Aug 2022 16:20:54 +0200
+Date: Tue, 30 Aug 2022 16:24:42 +0200
 From: Michael Walle <michael@walle.cc>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
@@ -57,17 +57,17 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  netdev@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Re: [PATCH v1 07/14] nvmem: core: add per-cell post processing
-In-Reply-To: <ddae21bf-a51b-7266-60ba-8a10c293888a@linaro.org>
+Subject: Re: [PATCH v1 06/14] nvmem: core: introduce NVMEM layouts
+In-Reply-To: <e2d91011-583e-a88d-94f9-beb194416326@linaro.org>
 References: <20220825214423.903672-1-michael@walle.cc>
- <20220825214423.903672-8-michael@walle.cc>
- <ddae21bf-a51b-7266-60ba-8a10c293888a@linaro.org>
+ <20220825214423.903672-7-michael@walle.cc>
+ <e2d91011-583e-a88d-94f9-beb194416326@linaro.org>
 User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <9592f45176ae77799836391df92bb29e@walle.cc>
+Message-ID: <ae27e9d300a9c9eca4e9ec0c702b5e0a@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220830_072100_016590_DCB445DD 
-X-CRM114-Status: GOOD (  25.80  )
+X-CRM114-CacheID: sfid-20220830_072448_195221_82AAEF4B 
+X-CRM114-Status: GOOD (  30.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,129 +84,224 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-Am 2022-08-30 15:37, schrieb Srinivas Kandagatla:
+Am 2022-08-30 15:36, schrieb Srinivas Kandagatla:
 > On 25/08/2022 22:44, Michael Walle wrote:
->> Instead of relying on the name the consumer is using for the cell, 
->> like
->> it is done for the nvmem .cell_post_process configuration parameter,
->> provide a per-cell post processing hook. This can then be populated by
->> the NVMEM provider (or the NVMEM layout) when adding the cell.
+>> NVMEM layouts are used to generate NVMEM cells during runtime. Think 
+>> of
+>> an EEPROM with a well-defined conent. For now, the content can be
+>> described by a device tree or a board file. But this only works if the
+>> offsets and lengths are static and don't change. One could also argue
+>> that putting the layout of the EEPROM in the device tree is the wrong
+>> place. Instead, the device tree should just have a specific compatible
+>> string.
+>> 
+>> Right now there are two use cases:
+>>   (1) The NVMEM cell needs special processing. E.g. if it only 
+>> specifies
+>>       a base MAC address offset and you need to add an offset, or it
+>>       needs to parse a MAC from ASCII format or some proprietary 
+>> format.
+>>       (Post processing of cells is added in a later commit).
+>>   (2) u-boot environment parsing. The cells don't have a particular
+>>       offset but it needs parsing the content to determine the offsets
+>>       and length.
 >> 
 >> Signed-off-by: Michael Walle <michael@walle.cc>
 >> ---
->>   drivers/nvmem/core.c           | 16 ++++++++++++++++
->>   include/linux/nvmem-consumer.h |  5 +++++
->>   2 files changed, 21 insertions(+)
->> 
+>>   drivers/nvmem/Kconfig          |  2 ++
+>>   drivers/nvmem/Makefile         |  1 +
+>>   drivers/nvmem/core.c           | 57 
+>> ++++++++++++++++++++++++++++++++++
+>>   drivers/nvmem/layouts/Kconfig  |  5 +++
+>>   drivers/nvmem/layouts/Makefile |  4 +++
+>>   include/linux/nvmem-provider.h | 38 +++++++++++++++++++++++
+>>   6 files changed, 107 insertions(+)
+>>   create mode 100644 drivers/nvmem/layouts/Kconfig
+>>   create mode 100644 drivers/nvmem/layouts/Makefile
+> 
+> update to ./Documentation/driver-api/nvmem.rst would help others.
+
+Sure. Didn't know about that one.
+
+>> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+>> index bab8a29c9861..1416837b107b 100644
+>> --- a/drivers/nvmem/Kconfig
+>> +++ b/drivers/nvmem/Kconfig
+>> @@ -357,4 +357,6 @@ config NVMEM_U_BOOT_ENV
+>>     	  If compiled as module it will be called nvmem_u-boot-env.
+>>   +source "drivers/nvmem/layouts/Kconfig"
+>> +
+>>   endif
+>> diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
+>> index 399f9972d45b..cd5a5baa2f3a 100644
+>> --- a/drivers/nvmem/Makefile
+>> +++ b/drivers/nvmem/Makefile
+>> @@ -5,6 +5,7 @@
+>>     obj-$(CONFIG_NVMEM)		+= nvmem_core.o
+>>   nvmem_core-y			:= core.o
+>> +obj-y				+= layouts/
+>>     # Devices
+>>   obj-$(CONFIG_NVMEM_BCM_OCOTP)	+= nvmem-bcm-ocotp.o
 >> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
->> index 5357fc378700..cbfbe6264e6c 100644
+>> index 3dfd149374a8..5357fc378700 100644
 >> --- a/drivers/nvmem/core.c
 >> +++ b/drivers/nvmem/core.c
->> @@ -52,6 +52,7 @@ struct nvmem_cell_entry {
->>   	int			bytes;
->>   	int			bit_offset;
->>   	int			nbits;
->> +	nvmem_cell_post_process_t post_process;
+>> @@ -74,6 +74,9 @@ static LIST_HEAD(nvmem_lookup_list);
+>>     static BLOCKING_NOTIFIER_HEAD(nvmem_notifier);
+>>   +static DEFINE_SPINLOCK(nvmem_layout_lock);
+>> +static LIST_HEAD(nvmem_layouts);
+>> +
+>>   static int __nvmem_reg_read(struct nvmem_device *nvmem, unsigned int 
+>> offset,
+>>   			    void *val, size_t bytes)
+>>   {
+>> @@ -744,6 +747,56 @@ static int nvmem_add_cells_from_of(struct 
+>> nvmem_device *nvmem)
+>>   	return 0;
+>>   }
+>>   +int nvmem_register_layout(struct nvmem_layout *layout)
+>> +{
+>> +	spin_lock(&nvmem_layout_lock);
+>> +	list_add(&layout->node, &nvmem_layouts);
+>> +	spin_unlock(&nvmem_layout_lock);
+>> +
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(nvmem_register_layout);
 > 
-> 
-> two post_processing callbacks for cells is confusing tbh, we could
-> totally move to use of cell->post_process.
-> 
-> one idea is to point cell->post_process to nvmem->cell_post_process
-> during cell creation time which should clean this up a bit.
+> we should provide nvmem_unregister_layout too, so that providers can
+> add them if they can in there respective drivers.
 
-You'll then trigger the read-only check below for all the cells
-if nvmem->cell_post_process is set.
+Actually, that was the idea; that you can have layouts outside of 
+layouts/.
+I also had a nvmem_unregister_layout() but removed it because it was 
+dead
+code. Will re-add it again.
 
-> Other option is to move to using layouts for every thing.
-
-As mentioned in a previous reply, I can't see how it could be
-achieved. The problem here is that:
-  (1) the layout isn't creating the cells, the OF parser is
-  (2) even if we would create the cells, we wouldn't know
-      which cell needs the post_process. So we are back to
-      the situation above, were we have to add it to all
-      the cells, making them read-only. [We depend on the
-      name of the nvmem-consumer to apply the hook.
-
-> prefixing post_process with read should also make it explicit that
-> this callback is very specific to reads only.
-
-good idea.
-
--michael
-
->>   	struct device_node	*np;
->>   	struct nvmem_device	*nvmem;
->>   	struct list_head	node;
->> @@ -468,6 +469,7 @@ static int 
->> nvmem_cell_info_to_nvmem_cell_entry_nodup(struct nvmem_device *nvmem,
->>   	cell->offset = info->offset;
->>   	cell->bytes = info->bytes;
->>   	cell->name = info->name;
->> +	cell->post_process = info->post_process;
->>     	cell->bit_offset = info->bit_offset;
->>   	cell->nbits = info->nbits;
->> @@ -1500,6 +1502,13 @@ static int __nvmem_cell_read(struct 
->> nvmem_device *nvmem,
->>   	if (cell->bit_offset || cell->nbits)
->>   		nvmem_shift_read_buffer_in_place(cell, buf);
->>   +	if (cell->post_process) {
->> +		rc = cell->post_process(nvmem->priv, id, index,
->> +					cell->offset, buf, cell->bytes);
->> +		if (rc)
->> +			return rc;
+>> +
+>> +static struct nvmem_layout *nvmem_get_compatible_layout(struct 
+>> device_node *np)
+>> +{
+>> +	struct nvmem_layout *p, *ret = NULL;
+>> +
+>> +	spin_lock(&nvmem_layout_lock);
+>> +
+>> +	list_for_each_entry(p, &nvmem_layouts, node) {
+>> +		if (of_match_node(p->of_match_table, np)) {
+>> +			ret = p;
+>> +			break;
+>> +		}
 >> +	}
 >> +
->>   	if (nvmem->cell_post_process) {
->>   		rc = nvmem->cell_post_process(nvmem->priv, id, index,
->>   					      cell->offset, buf, cell->bytes);
->> @@ -1608,6 +1617,13 @@ static int __nvmem_cell_entry_write(struct 
->> nvmem_cell_entry *cell, void *buf, si
->>   	    (cell->bit_offset == 0 && len != cell->bytes))
->>   		return -EINVAL;
->>   +	/*
->> +	 * Any cells which have a post_process hook are read-only because we
->> +	 * cannot reverse the operation and it might affect other cells, 
->> too.
->> +	 */
->> +	if (cell->post_process)
->> +		return -EINVAL;
-> 
-> Post process was always implicitly for reads only, this check should
-> also tie the loose ends of cell_post_processing callback.
-> 
-> 
-> --srini
+>> +	spin_unlock(&nvmem_layout_lock);
 >> +
->>   	if (cell->bit_offset || cell->nbits) {
->>   		buf = nvmem_cell_prepare_write_buffer(cell, buf, len);
->>   		if (IS_ERR(buf))
->> diff --git a/include/linux/nvmem-consumer.h 
->> b/include/linux/nvmem-consumer.h
->> index 980f9c9ac0bc..761b8ef78adc 100644
->> --- a/include/linux/nvmem-consumer.h
->> +++ b/include/linux/nvmem-consumer.h
->> @@ -19,6 +19,10 @@ struct device_node;
->>   struct nvmem_cell;
->>   struct nvmem_device;
->>   +/* duplicated from nvmem-provider.h */
->> +typedef int (*nvmem_cell_post_process_t)(void *priv, const char *id, 
->> int index,
->> +					 unsigned int offset, void *buf, size_t bytes);
+>> +	return ret;
+>> +}
 >> +
->>   struct nvmem_cell_info {
->>   	const char		*name;
->>   	unsigned int		offset;
->> @@ -26,6 +30,7 @@ struct nvmem_cell_info {
->>   	unsigned int		bit_offset;
->>   	unsigned int		nbits;
->>   	struct device_node	*np;
->> +	nvmem_cell_post_process_t post_process;
+>> +static int nvmem_add_cells_from_layout(struct nvmem_device *nvmem)
+>> +{
+>> +	struct nvmem_layout *layout;
+>> +
+>> +	layout = nvmem_get_compatible_layout(nvmem->dev.of_node);
+>> +	if (layout)
+>> +		layout->add_cells(&nvmem->dev, nvmem, layout);
+> 
+> access to add_cells can crash hear as we did not check it before
+> adding in to list.
+> Or
+> we could relax add_cells callback for usecases like imx-octop.
+
+good catch, will use layout && layout->add_cells.
+
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +const void *nvmem_layout_get_match_data(struct nvmem_device *nvmem,
+>> +					struct nvmem_layout *layout)
+>> +{
+>> +	const struct of_device_id *match;
+>> +
+>> +	match = of_match_node(layout->of_match_table, nvmem->dev.of_node);
+>> +
+>> +	return match ? match->data : NULL;
+>> +}
+>> +EXPORT_SYMBOL_GPL(nvmem_layout_get_match_data);
+>> +
+>>   /**
+>>    * nvmem_register() - Register a nvmem device for given 
+>> nvmem_config.
+>>    * Also creates a binary entry in 
+>> /sys/bus/nvmem/devices/dev-name/nvmem
+>> @@ -872,6 +925,10 @@ struct nvmem_device *nvmem_register(const struct 
+>> nvmem_config *config)
+>>   	if (rval)
+>>   		goto err_remove_cells;
+>>   +	rval = nvmem_add_cells_from_layout(nvmem);
+>> +	if (rval)
+>> +		goto err_remove_cells;
+>> +
+>>   	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
+>>     	return nvmem;
+>> diff --git a/drivers/nvmem/layouts/Kconfig 
+>> b/drivers/nvmem/layouts/Kconfig
+>> new file mode 100644
+>> index 000000000000..9ad3911d1605
+>> --- /dev/null
+>> +++ b/drivers/nvmem/layouts/Kconfig
+>> @@ -0,0 +1,5 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +
+>> +menu "Layout Types"
+>> +
+>> +endmenu
+>> diff --git a/drivers/nvmem/layouts/Makefile 
+>> b/drivers/nvmem/layouts/Makefile
+>> new file mode 100644
+>> index 000000000000..6fdb3c60a4fa
+>> --- /dev/null
+>> +++ b/drivers/nvmem/layouts/Makefile
+>> @@ -0,0 +1,4 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +#
+>> +# Makefile for nvmem layouts.
+>> +#
+>> diff --git a/include/linux/nvmem-provider.h 
+>> b/include/linux/nvmem-provider.h
+>> index e710404959e7..323685841e9f 100644
+>> --- a/include/linux/nvmem-provider.h
+>> +++ b/include/linux/nvmem-provider.h
+>> @@ -127,6 +127,28 @@ struct nvmem_cell_table {
+>>   	struct list_head	node;
 >>   };
->>     /**
+>>   +/**
+>> + * struct nvmem_layout - NVMEM layout definitions
+>> + *
+>> + * @name:		Layout name.
+>> + * @of_match_table:	Open firmware match table.
+>> + * @add_cells:		Will be called if a nvmem device is found which
+>> + *			has this layout. The function will add layout
+>> + *			specific cells with nvmem_add_one_cell().
+>> + * @node:		List node.
+>> + *
+>> + * A nvmem device can hold a well defined structure which can just be
+>> + * evaluated during runtime. For example a TLV list, or a list of 
+>> "name=val"
+>> + * pairs. A nvmem layout can parse the nvmem device and add 
+>> appropriate
+>> + * cells.
+>> + */
+>> +struct nvmem_layout {
+>> +	const char *name;
+>> +	const struct of_device_id *of_match_table;
+> 
+> looking at this, I think its doable to convert the existing
+> cell_post_process callback to layouts by adding a layout specific
+> callback here.
+
+can you elaborate on that?
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
