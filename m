@@ -4,70 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 745C5ECAAD1
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Aug 2022 14:25:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDA96ECAAA1
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Aug 2022 14:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EcKkclDotICL85VSjlC6TEirsEIiUgF8Z6Hol0wDyA0=; b=NHJiNfdcUdnQu1nY+fnBl+vF+V
-	G2Y1IYff0WCV7bNr/ph/xkhlo7gfu1ubKqqJ26pzyubR+QPWqY4ZydJhy9aM+SKBIU6oTtyrwIDHY
-	zVOIfJ/SYiiXAff3uYeZMhaBPUnvbG64LrLI8Ymxy/nKvQDjQMy2ux0klmwSYlm+e+Cyr1TsbEAwn
-	YiMgrbyNdWkj1rZkTgVDKcs4JgIy1vrR7eQAdao8D6jN8fW1bsiFpgdZenJNenfPSvYbQ+eUD1Gy3
-	QBLMJLQsw9t3Wv2TESmkY7de2+F95N6FbnsEAqEZW7STFGMci4id6KBZt3amxlH/1qdUVcXxO0UOf
-	jtBlVY5w==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qdiXO2A5L/OMdLWoJm7KC8y4wUcZUuWr6UQQedF3Uis=; b=FFNe2LP7CQCBT+
+	9KE7T9jYsqxJVkp+iYd5slrCLhbpjUj+MMe9y52TeLmT1SMo/o3RGkrGAAj+hwCldI5DggJp0/2h+
+	zGTTqkzGVSjWbPhjjwnIcwTs8B8JZLOlUv7GchMLGPt+hqXi3cXBxN5t9KPhmH6NnV5fhJbN3V2qF
+	Wzy1AKZmiXeRkCvg11UKp9V2dkOPvv+oz4R/5R5m6yZQ5k+rYPrCMS4tHnPHY4kZh3ktdvtXkdaWj
+	Y4V8EN7YH9h8px22wjxeigXJNeXopzDqNqaq2qNsR43dcBX8jLRX1bz+57KAkGWarXpMJzfwQ4+Zc
+	czu4OKAdS/7UhsOlbsDg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oT2Ao-00HaIl-4m; Tue, 30 Aug 2022 14:25:02 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1oT2SJ-00044b-Vb; Tue, 30 Aug 2022 14:43:08 +0000
+Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oT2AZ-00HaCD-V3; Tue, 30 Aug 2022 14:24:49 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id A3381121;
-	Tue, 30 Aug 2022 16:24:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1661869482;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ksexceGYLzmlYsHeH0rjdnvsXlkUmLS38Dmp/YO60oQ=;
-	b=vgKzVwKoXHDPNbBLh16JW5TCnOV8a8HQ798Pb8eyYspmZ3tboetf7xkqhdVTNV75NEbsgC
-	DyPK+R0ZHfA3nvuUi1OfNu9br6i6h/1t6Th07icjgTwEPluILSZAOCrVzxdNsq7vr8lRp6
-	zW1CjEOzHYX8mMVQaW5EgQayN4ZjLAxPeIwdf1jIRqhLZtdvTcyLfHLik39GTXW+xH0LAR
-	ASXeiz99Oul80NtAzgjRaRMeoUEPC3Hqynqbv9BbgyDbRnSqz4tYgdyjrOVhdOBfPBnZoz
-	VSZqUQ/03BO1K5PMYhx1KZ23RiNLReB/pIpePCho7cRjjvNXU0H6Dz4Ep29DXQ==
+	id 1oT2SG-000439-9v
+	for linux-mtd@lists.infradead.org; Tue, 30 Aug 2022 14:43:06 +0000
+Received: by mail-wm1-x32e.google.com with SMTP id k17so5911507wmr.2
+        for <linux-mtd@lists.infradead.org>; Tue, 30 Aug 2022 07:43:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=Zex3UDcuXi6on9TVwM9aa8TlelCGRWq6XcPdeEq0Btc=;
+        b=AMX+w5tS+SI7L6d39SCRygk3KPxJxH6BBJXRVl/gqrEFC7ivS/r5KP1jpHPBvKjH7T
+         7ahUimipG2N+l16nzOe8oRFqMFHhrcnGTJ3WdX/dxvyzr88HZsJ/jXXfyGPWE2p8L3Je
+         YJ91tE1bbbyICoy1qqWHuiJoYdxyncXmQdf7wCOWwGobh39l0/ySfaoWUY9Zn8D/aDjo
+         ruRm0PR5E2uIKDWlwBu46BWP7kcbz+vqSKVJFLFRpGJEMRKXebT19ht9G4870f5lp4vI
+         AAs7d0UyZB4XR7iRMI0dSJ9o5HhxcsB7WhzshdgBVCbAExwgvk1ySEy/7zeWDeZKf9Jl
+         dPJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=Zex3UDcuXi6on9TVwM9aa8TlelCGRWq6XcPdeEq0Btc=;
+        b=vbfK3rJ1Gd4tSoarwUw83402u0v2eflNmR4cUNLZlb5HXMI5wYxaYXjyf5HfBZhy3E
+         x1mpUy7CHQGvBvgVuXqBaW9xZKZgHiJhCehfQs2lt3pnSuC6jHahOa/0FIjsKg1QXQkl
+         s8GluHFK6T4NMG5PwlKH+Djdh4lcVl/BmuNSoVA1s17ZD+t2/5DTZ8DkiC9vDZG46ux5
+         DodV6k+stbC9uyaaNcIo+2/YkfC0uOJufCL7okWH/w5Aru01JUqJ3Y3hopg6X0RuVm/+
+         Zonk1vepEDwQefQFS1mvb8hVFBeFiGfQmkYUdfZjh2WmkYtRWg1l7zlLdeZmXGcinJgc
+         aLHQ==
+X-Gm-Message-State: ACgBeo3PsfqY+yFZq+2IUNEFOHaRa117WgFw2Bf+k1KPnMza8uTVKhb0
+	Pid114xJQaBe27agkmYKvqhyVw==
+X-Google-Smtp-Source: AA6agR5Y5A1ghrND9UqxFtMV7ZK1rK+7C2ngQUMOERQtPwqV/s69rzzdclyo4heOVBJyhPFsqicIAg==
+X-Received: by 2002:a05:600c:3844:b0:3a6:19a:d980 with SMTP id s4-20020a05600c384400b003a6019ad980mr9964395wmr.65.1661870582325;
+        Tue, 30 Aug 2022 07:43:02 -0700 (PDT)
+Received: from [192.168.86.238] (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+        by smtp.googlemail.com with ESMTPSA id a22-20020a05600c225600b003a3442f1229sm12891999wmm.29.2022.08.30.07.43.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Aug 2022 07:43:01 -0700 (PDT)
+Message-ID: <815f8e22-3a23-ebdb-7476-14682d0b3287@linaro.org>
+Date: Tue, 30 Aug 2022 15:43:00 +0100
 MIME-Version: 1.0
-Date: Tue, 30 Aug 2022 16:24:42 +0200
-From: Michael Walle <michael@walle.cc>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li
- Yang <leoyang.li@nxp.com>, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Frank Rowand <frowand.list@gmail.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v1 06/14] nvmem: core: introduce NVMEM layouts
+Content-Language: en-US
+To: Michael Walle <michael@walle.cc>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Frank Rowand <frowand.list@gmail.com>,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  netdev@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Re: [PATCH v1 06/14] nvmem: core: introduce NVMEM layouts
-In-Reply-To: <e2d91011-583e-a88d-94f9-beb194416326@linaro.org>
 References: <20220825214423.903672-1-michael@walle.cc>
  <20220825214423.903672-7-michael@walle.cc>
  <e2d91011-583e-a88d-94f9-beb194416326@linaro.org>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <ae27e9d300a9c9eca4e9ec0c702b5e0a@walle.cc>
-X-Sender: michael@walle.cc
+ <ae27e9d300a9c9eca4e9ec0c702b5e0a@walle.cc>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <ae27e9d300a9c9eca4e9ec0c702b5e0a@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220830_072448_195221_82AAEF4B 
-X-CRM114-Status: GOOD (  30.31  )
+X-CRM114-CacheID: sfid-20220830_074304_423294_F4A05FE1 
+X-CRM114-Status: GOOD (  34.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,230 +100,165 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-08-30 15:36, schrieb Srinivas Kandagatla:
-> On 25/08/2022 22:44, Michael Walle wrote:
->> NVMEM layouts are used to generate NVMEM cells during runtime. Think 
->> of
->> an EEPROM with a well-defined conent. For now, the content can be
->> described by a device tree or a board file. But this only works if the
->> offsets and lengths are static and don't change. One could also argue
->> that putting the layout of the EEPROM in the device tree is the wrong
->> place. Instead, the device tree should just have a specific compatible
->> string.
->> 
->> Right now there are two use cases:
->>   (1) The NVMEM cell needs special processing. E.g. if it only 
->> specifies
->>       a base MAC address offset and you need to add an offset, or it
->>       needs to parse a MAC from ASCII format or some proprietary 
->> format.
->>       (Post processing of cells is added in a later commit).
->>   (2) u-boot environment parsing. The cells don't have a particular
->>       offset but it needs parsing the content to determine the offsets
->>       and length.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>   drivers/nvmem/Kconfig          |  2 ++
->>   drivers/nvmem/Makefile         |  1 +
->>   drivers/nvmem/core.c           | 57 
->> ++++++++++++++++++++++++++++++++++
->>   drivers/nvmem/layouts/Kconfig  |  5 +++
->>   drivers/nvmem/layouts/Makefile |  4 +++
->>   include/linux/nvmem-provider.h | 38 +++++++++++++++++++++++
->>   6 files changed, 107 insertions(+)
->>   create mode 100644 drivers/nvmem/layouts/Kconfig
->>   create mode 100644 drivers/nvmem/layouts/Makefile
-> 
-> update to ./Documentation/driver-api/nvmem.rst would help others.
-
-Sure. Didn't know about that one.
-
->> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
->> index bab8a29c9861..1416837b107b 100644
->> --- a/drivers/nvmem/Kconfig
->> +++ b/drivers/nvmem/Kconfig
->> @@ -357,4 +357,6 @@ config NVMEM_U_BOOT_ENV
->>     	  If compiled as module it will be called nvmem_u-boot-env.
->>   +source "drivers/nvmem/layouts/Kconfig"
->> +
->>   endif
->> diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
->> index 399f9972d45b..cd5a5baa2f3a 100644
->> --- a/drivers/nvmem/Makefile
->> +++ b/drivers/nvmem/Makefile
->> @@ -5,6 +5,7 @@
->>     obj-$(CONFIG_NVMEM)		+= nvmem_core.o
->>   nvmem_core-y			:= core.o
->> +obj-y				+= layouts/
->>     # Devices
->>   obj-$(CONFIG_NVMEM_BCM_OCOTP)	+= nvmem-bcm-ocotp.o
->> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
->> index 3dfd149374a8..5357fc378700 100644
->> --- a/drivers/nvmem/core.c
->> +++ b/drivers/nvmem/core.c
->> @@ -74,6 +74,9 @@ static LIST_HEAD(nvmem_lookup_list);
->>     static BLOCKING_NOTIFIER_HEAD(nvmem_notifier);
->>   +static DEFINE_SPINLOCK(nvmem_layout_lock);
->> +static LIST_HEAD(nvmem_layouts);
->> +
->>   static int __nvmem_reg_read(struct nvmem_device *nvmem, unsigned int 
->> offset,
->>   			    void *val, size_t bytes)
->>   {
->> @@ -744,6 +747,56 @@ static int nvmem_add_cells_from_of(struct 
->> nvmem_device *nvmem)
->>   	return 0;
->>   }
->>   +int nvmem_register_layout(struct nvmem_layout *layout)
->> +{
->> +	spin_lock(&nvmem_layout_lock);
->> +	list_add(&layout->node, &nvmem_layouts);
->> +	spin_unlock(&nvmem_layout_lock);
->> +
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(nvmem_register_layout);
-> 
-> we should provide nvmem_unregister_layout too, so that providers can
-> add them if they can in there respective drivers.
-
-Actually, that was the idea; that you can have layouts outside of 
-layouts/.
-I also had a nvmem_unregister_layout() but removed it because it was 
-dead
-code. Will re-add it again.
-
->> +
->> +static struct nvmem_layout *nvmem_get_compatible_layout(struct 
->> device_node *np)
->> +{
->> +	struct nvmem_layout *p, *ret = NULL;
->> +
->> +	spin_lock(&nvmem_layout_lock);
->> +
->> +	list_for_each_entry(p, &nvmem_layouts, node) {
->> +		if (of_match_node(p->of_match_table, np)) {
->> +			ret = p;
->> +			break;
->> +		}
->> +	}
->> +
->> +	spin_unlock(&nvmem_layout_lock);
->> +
->> +	return ret;
->> +}
->> +
->> +static int nvmem_add_cells_from_layout(struct nvmem_device *nvmem)
->> +{
->> +	struct nvmem_layout *layout;
->> +
->> +	layout = nvmem_get_compatible_layout(nvmem->dev.of_node);
->> +	if (layout)
->> +		layout->add_cells(&nvmem->dev, nvmem, layout);
-> 
-> access to add_cells can crash hear as we did not check it before
-> adding in to list.
-> Or
-> we could relax add_cells callback for usecases like imx-octop.
-
-good catch, will use layout && layout->add_cells.
-
->> +
->> +	return 0;
->> +}
->> +
->> +const void *nvmem_layout_get_match_data(struct nvmem_device *nvmem,
->> +					struct nvmem_layout *layout)
->> +{
->> +	const struct of_device_id *match;
->> +
->> +	match = of_match_node(layout->of_match_table, nvmem->dev.of_node);
->> +
->> +	return match ? match->data : NULL;
->> +}
->> +EXPORT_SYMBOL_GPL(nvmem_layout_get_match_data);
->> +
->>   /**
->>    * nvmem_register() - Register a nvmem device for given 
->> nvmem_config.
->>    * Also creates a binary entry in 
->> /sys/bus/nvmem/devices/dev-name/nvmem
->> @@ -872,6 +925,10 @@ struct nvmem_device *nvmem_register(const struct 
->> nvmem_config *config)
->>   	if (rval)
->>   		goto err_remove_cells;
->>   +	rval = nvmem_add_cells_from_layout(nvmem);
->> +	if (rval)
->> +		goto err_remove_cells;
->> +
->>   	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
->>     	return nvmem;
->> diff --git a/drivers/nvmem/layouts/Kconfig 
->> b/drivers/nvmem/layouts/Kconfig
->> new file mode 100644
->> index 000000000000..9ad3911d1605
->> --- /dev/null
->> +++ b/drivers/nvmem/layouts/Kconfig
->> @@ -0,0 +1,5 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +
->> +menu "Layout Types"
->> +
->> +endmenu
->> diff --git a/drivers/nvmem/layouts/Makefile 
->> b/drivers/nvmem/layouts/Makefile
->> new file mode 100644
->> index 000000000000..6fdb3c60a4fa
->> --- /dev/null
->> +++ b/drivers/nvmem/layouts/Makefile
->> @@ -0,0 +1,4 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +#
->> +# Makefile for nvmem layouts.
->> +#
->> diff --git a/include/linux/nvmem-provider.h 
->> b/include/linux/nvmem-provider.h
->> index e710404959e7..323685841e9f 100644
->> --- a/include/linux/nvmem-provider.h
->> +++ b/include/linux/nvmem-provider.h
->> @@ -127,6 +127,28 @@ struct nvmem_cell_table {
->>   	struct list_head	node;
->>   };
->>   +/**
->> + * struct nvmem_layout - NVMEM layout definitions
->> + *
->> + * @name:		Layout name.
->> + * @of_match_table:	Open firmware match table.
->> + * @add_cells:		Will be called if a nvmem device is found which
->> + *			has this layout. The function will add layout
->> + *			specific cells with nvmem_add_one_cell().
->> + * @node:		List node.
->> + *
->> + * A nvmem device can hold a well defined structure which can just be
->> + * evaluated during runtime. For example a TLV list, or a list of 
->> "name=val"
->> + * pairs. A nvmem layout can parse the nvmem device and add 
->> appropriate
->> + * cells.
->> + */
->> +struct nvmem_layout {
->> +	const char *name;
->> +	const struct of_device_id *of_match_table;
-> 
-> looking at this, I think its doable to convert the existing
-> cell_post_process callback to layouts by adding a layout specific
-> callback here.
-
-can you elaborate on that?
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAzMC8wOC8yMDIyIDE1OjI0LCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+IEFtIDIwMjItMDgt
+MzAgMTU6MzYsIHNjaHJpZWIgU3Jpbml2YXMgS2FuZGFnYXRsYToKPj4gT24gMjUvMDgvMjAyMiAy
+Mjo0NCwgTWljaGFlbCBXYWxsZSB3cm90ZToKPj4+IE5WTUVNIGxheW91dHMgYXJlIHVzZWQgdG8g
+Z2VuZXJhdGUgTlZNRU0gY2VsbHMgZHVyaW5nIHJ1bnRpbWUuIFRoaW5rIG9mCj4+PiBhbiBFRVBS
+T00gd2l0aCBhIHdlbGwtZGVmaW5lZCBjb25lbnQuIEZvciBub3csIHRoZSBjb250ZW50IGNhbiBi
+ZQo+Pj4gZGVzY3JpYmVkIGJ5IGEgZGV2aWNlIHRyZWUgb3IgYSBib2FyZCBmaWxlLiBCdXQgdGhp
+cyBvbmx5IHdvcmtzIGlmIHRoZQo+Pj4gb2Zmc2V0cyBhbmQgbGVuZ3RocyBhcmUgc3RhdGljIGFu
+ZCBkb24ndCBjaGFuZ2UuIE9uZSBjb3VsZCBhbHNvIGFyZ3VlCj4+PiB0aGF0IHB1dHRpbmcgdGhl
+IGxheW91dCBvZiB0aGUgRUVQUk9NIGluIHRoZSBkZXZpY2UgdHJlZSBpcyB0aGUgd3JvbmcKPj4+
+IHBsYWNlLiBJbnN0ZWFkLCB0aGUgZGV2aWNlIHRyZWUgc2hvdWxkIGp1c3QgaGF2ZSBhIHNwZWNp
+ZmljIGNvbXBhdGlibGUKPj4+IHN0cmluZy4KPj4+Cj4+PiBSaWdodCBub3cgdGhlcmUgYXJlIHR3
+byB1c2UgY2FzZXM6Cj4+PiDCoCAoMSkgVGhlIE5WTUVNIGNlbGwgbmVlZHMgc3BlY2lhbCBwcm9j
+ZXNzaW5nLiBFLmcuIGlmIGl0IG9ubHkgc3BlY2lmaWVzCj4+PiDCoMKgwqDCoMKgIGEgYmFzZSBN
+QUMgYWRkcmVzcyBvZmZzZXQgYW5kIHlvdSBuZWVkIHRvIGFkZCBhbiBvZmZzZXQsIG9yIGl0Cj4+
+PiDCoMKgwqDCoMKgIG5lZWRzIHRvIHBhcnNlIGEgTUFDIGZyb20gQVNDSUkgZm9ybWF0IG9yIHNv
+bWUgcHJvcHJpZXRhcnkgZm9ybWF0Lgo+Pj4gwqDCoMKgwqDCoCAoUG9zdCBwcm9jZXNzaW5nIG9m
+IGNlbGxzIGlzIGFkZGVkIGluIGEgbGF0ZXIgY29tbWl0KS4KPj4+IMKgICgyKSB1LWJvb3QgZW52
+aXJvbm1lbnQgcGFyc2luZy4gVGhlIGNlbGxzIGRvbid0IGhhdmUgYSBwYXJ0aWN1bGFyCj4+PiDC
+oMKgwqDCoMKgIG9mZnNldCBidXQgaXQgbmVlZHMgcGFyc2luZyB0aGUgY29udGVudCB0byBkZXRl
+cm1pbmUgdGhlIG9mZnNldHMKPj4+IMKgwqDCoMKgwqAgYW5kIGxlbmd0aC4KPj4+Cj4+PiBTaWdu
+ZWQtb2ZmLWJ5OiBNaWNoYWVsIFdhbGxlIDxtaWNoYWVsQHdhbGxlLmNjPgo+Pj4gLS0tCj4+PiDC
+oCBkcml2ZXJzL252bWVtL0tjb25maWfCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDIgKysKPj4+IMKg
+IGRyaXZlcnMvbnZtZW0vTWFrZWZpbGXCoMKgwqDCoMKgwqDCoMKgIHzCoCAxICsKPj4+IMKgIGRy
+aXZlcnMvbnZtZW0vY29yZS5jwqDCoMKgwqDCoMKgwqDCoMKgwqAgfCA1NyArKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrCj4+PiDCoCBkcml2ZXJzL252bWVtL2xheW91dHMvS2NvbmZp
+Z8KgIHzCoCA1ICsrKwo+Pj4gwqAgZHJpdmVycy9udm1lbS9sYXlvdXRzL01ha2VmaWxlIHzCoCA0
+ICsrKwo+Pj4gwqAgaW5jbHVkZS9saW51eC9udm1lbS1wcm92aWRlci5oIHwgMzggKysrKysrKysr
+KysrKysrKysrKysrKysKPj4+IMKgIDYgZmlsZXMgY2hhbmdlZCwgMTA3IGluc2VydGlvbnMoKykK
+Pj4+IMKgIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL252bWVtL2xheW91dHMvS2NvbmZpZwo+
+Pj4gwqAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbnZtZW0vbGF5b3V0cy9NYWtlZmlsZQo+
+Pgo+PiB1cGRhdGUgdG8gLi9Eb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvbnZtZW0ucnN0IHdvdWxk
+IGhlbHAgb3RoZXJzLgo+IAo+IFN1cmUuIERpZG4ndCBrbm93IGFib3V0IHRoYXQgb25lLgo+IAo+
+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbnZtZW0vS2NvbmZpZyBiL2RyaXZlcnMvbnZtZW0vS2Nv
+bmZpZwo+Pj4gaW5kZXggYmFiOGEyOWM5ODYxLi4xNDE2ODM3YjEwN2IgMTAwNjQ0Cj4+PiAtLS0g
+YS9kcml2ZXJzL252bWVtL0tjb25maWcKPj4+ICsrKyBiL2RyaXZlcnMvbnZtZW0vS2NvbmZpZwo+
+Pj4gQEAgLTM1Nyw0ICszNTcsNiBAQCBjb25maWcgTlZNRU1fVV9CT09UX0VOVgo+Pj4gwqDCoMKg
+wqDCoMKgwqDCoMKgIElmIGNvbXBpbGVkIGFzIG1vZHVsZSBpdCB3aWxsIGJlIGNhbGxlZCBudm1l
+bV91LWJvb3QtZW52Lgo+Pj4gwqAgK3NvdXJjZSAiZHJpdmVycy9udm1lbS9sYXlvdXRzL0tjb25m
+aWciCj4+PiArCj4+PiDCoCBlbmRpZgo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbnZtZW0vTWFr
+ZWZpbGUgYi9kcml2ZXJzL252bWVtL01ha2VmaWxlCj4+PiBpbmRleCAzOTlmOTk3MmQ0NWIuLmNk
+NWE1YmFhMmYzYSAxMDA2NDQKPj4+IC0tLSBhL2RyaXZlcnMvbnZtZW0vTWFrZWZpbGUKPj4+ICsr
+KyBiL2RyaXZlcnMvbnZtZW0vTWFrZWZpbGUKPj4+IEBAIC01LDYgKzUsNyBAQAo+Pj4gwqDCoMKg
+IG9iai0kKENPTkZJR19OVk1FTSnCoMKgwqDCoMKgwqDCoCArPSBudm1lbV9jb3JlLm8KPj4+IMKg
+IG52bWVtX2NvcmUtecKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgOj0gY29yZS5vCj4+PiArb2JqLXnC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKz0gbGF5b3V0cy8KPj4+IMKgwqDCoCAjIERl
+dmljZXMKPj4+IMKgIG9iai0kKENPTkZJR19OVk1FTV9CQ01fT0NPVFApwqDCoMKgICs9IG52bWVt
+LWJjbS1vY290cC5vCj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9udm1lbS9jb3JlLmMgYi9kcml2
+ZXJzL252bWVtL2NvcmUuYwo+Pj4gaW5kZXggM2RmZDE0OTM3NGE4Li41MzU3ZmMzNzg3MDAgMTAw
+NjQ0Cj4+PiAtLS0gYS9kcml2ZXJzL252bWVtL2NvcmUuYwo+Pj4gKysrIGIvZHJpdmVycy9udm1l
+bS9jb3JlLmMKPj4+IEBAIC03NCw2ICs3NCw5IEBAIHN0YXRpYyBMSVNUX0hFQUQobnZtZW1fbG9v
+a3VwX2xpc3QpOwo+Pj4gwqDCoMKgIHN0YXRpYyBCTE9DS0lOR19OT1RJRklFUl9IRUFEKG52bWVt
+X25vdGlmaWVyKTsKPj4+IMKgICtzdGF0aWMgREVGSU5FX1NQSU5MT0NLKG52bWVtX2xheW91dF9s
+b2NrKTsKPj4+ICtzdGF0aWMgTElTVF9IRUFEKG52bWVtX2xheW91dHMpOwo+Pj4gKwo+Pj4gwqAg
+c3RhdGljIGludCBfX252bWVtX3JlZ19yZWFkKHN0cnVjdCBudm1lbV9kZXZpY2UgKm52bWVtLCB1
+bnNpZ25lZCAKPj4+IGludCBvZmZzZXQsCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIHZvaWQgKnZhbCwgc2l6ZV90IGJ5dGVzKQo+Pj4gwqAgewo+Pj4gQEAgLTc0NCw2ICs3
+NDcsNTYgQEAgc3RhdGljIGludCBudm1lbV9hZGRfY2VsbHNfZnJvbV9vZihzdHJ1Y3QgCj4+PiBu
+dm1lbV9kZXZpY2UgKm52bWVtKQo+Pj4gwqDCoMKgwqDCoCByZXR1cm4gMDsKPj4+IMKgIH0KPj4+
+IMKgICtpbnQgbnZtZW1fcmVnaXN0ZXJfbGF5b3V0KHN0cnVjdCBudm1lbV9sYXlvdXQgKmxheW91
+dCkKPj4+ICt7Cj4+PiArwqDCoMKgIHNwaW5fbG9jaygmbnZtZW1fbGF5b3V0X2xvY2spOwo+Pj4g
+K8KgwqDCoCBsaXN0X2FkZCgmbGF5b3V0LT5ub2RlLCAmbnZtZW1fbGF5b3V0cyk7Cj4+PiArwqDC
+oMKgIHNwaW5fdW5sb2NrKCZudm1lbV9sYXlvdXRfbG9jayk7Cj4+PiArCj4+PiArwqDCoMKgIHJl
+dHVybiAwOwo+Pj4gK30KPj4+ICtFWFBPUlRfU1lNQk9MX0dQTChudm1lbV9yZWdpc3Rlcl9sYXlv
+dXQpOwo+Pgo+PiB3ZSBzaG91bGQgcHJvdmlkZSBudm1lbV91bnJlZ2lzdGVyX2xheW91dCB0b28s
+IHNvIHRoYXQgcHJvdmlkZXJzIGNhbgo+PiBhZGQgdGhlbSBpZiB0aGV5IGNhbiBpbiB0aGVyZSBy
+ZXNwZWN0aXZlIGRyaXZlcnMuCj4gCj4gQWN0dWFsbHksIHRoYXQgd2FzIHRoZSBpZGVhOyB0aGF0
+IHlvdSBjYW4gaGF2ZSBsYXlvdXRzIG91dHNpZGUgb2YgbGF5b3V0cy8uCj4gSSBhbHNvIGhhZCBh
+IG52bWVtX3VucmVnaXN0ZXJfbGF5b3V0KCkgYnV0IHJlbW92ZWQgaXQgYmVjYXVzZSBpdCB3YXMg
+ZGVhZAo+IGNvZGUuIFdpbGwgcmUtYWRkIGl0IGFnYWluLgo+IAo+Pj4gKwo+Pj4gK3N0YXRpYyBz
+dHJ1Y3QgbnZtZW1fbGF5b3V0ICpudm1lbV9nZXRfY29tcGF0aWJsZV9sYXlvdXQoc3RydWN0IAo+
+Pj4gZGV2aWNlX25vZGUgKm5wKQo+Pj4gK3sKPj4+ICvCoMKgwqAgc3RydWN0IG52bWVtX2xheW91
+dCAqcCwgKnJldCA9IE5VTEw7Cj4+PiArCj4+PiArwqDCoMKgIHNwaW5fbG9jaygmbnZtZW1fbGF5
+b3V0X2xvY2spOwo+Pj4gKwo+Pj4gK8KgwqDCoCBsaXN0X2Zvcl9lYWNoX2VudHJ5KHAsICZudm1l
+bV9sYXlvdXRzLCBub2RlKSB7Cj4+PiArwqDCoMKgwqDCoMKgwqAgaWYgKG9mX21hdGNoX25vZGUo
+cC0+b2ZfbWF0Y2hfdGFibGUsIG5wKSkgewo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0
+ID0gcDsKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+Pj4gK8KgwqDCoMKgwqDC
+oMKgIH0KPj4+ICvCoMKgwqAgfQo+Pj4gKwo+Pj4gK8KgwqDCoCBzcGluX3VubG9jaygmbnZtZW1f
+bGF5b3V0X2xvY2spOwo+Pj4gKwo+Pj4gK8KgwqDCoCByZXR1cm4gcmV0Owo+Pj4gK30KPj4+ICsK
+Pj4+ICtzdGF0aWMgaW50IG52bWVtX2FkZF9jZWxsc19mcm9tX2xheW91dChzdHJ1Y3QgbnZtZW1f
+ZGV2aWNlICpudm1lbSkKPj4+ICt7Cj4+PiArwqDCoMKgIHN0cnVjdCBudm1lbV9sYXlvdXQgKmxh
+eW91dDsKPj4+ICsKPj4+ICvCoMKgwqAgbGF5b3V0ID0gbnZtZW1fZ2V0X2NvbXBhdGlibGVfbGF5
+b3V0KG52bWVtLT5kZXYub2Zfbm9kZSk7Cj4+PiArwqDCoMKgIGlmIChsYXlvdXQpCj4+PiArwqDC
+oMKgwqDCoMKgwqAgbGF5b3V0LT5hZGRfY2VsbHMoJm52bWVtLT5kZXYsIG52bWVtLCBsYXlvdXQp
+Owo+Pgo+PiBhY2Nlc3MgdG8gYWRkX2NlbGxzIGNhbiBjcmFzaCBoZWFyIGFzIHdlIGRpZCBub3Qg
+Y2hlY2sgaXQgYmVmb3JlCj4+IGFkZGluZyBpbiB0byBsaXN0Lgo+PiBPcgo+PiB3ZSBjb3VsZCBy
+ZWxheCBhZGRfY2VsbHMgY2FsbGJhY2sgZm9yIHVzZWNhc2VzIGxpa2UgaW14LW9jdG9wLgo+IAo+
+IGdvb2QgY2F0Y2gsIHdpbGwgdXNlIGxheW91dCAmJiBsYXlvdXQtPmFkZF9jZWxscy4KPiAKPj4+
+ICsKPj4+ICvCoMKgwqAgcmV0dXJuIDA7Cj4+PiArfQo+Pj4gKwo+Pj4gK2NvbnN0IHZvaWQgKm52
+bWVtX2xheW91dF9nZXRfbWF0Y2hfZGF0YShzdHJ1Y3QgbnZtZW1fZGV2aWNlICpudm1lbSwKPj4+
+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgbnZtZW1fbGF5
+b3V0ICpsYXlvdXQpCj4+PiArewo+Pj4gK8KgwqDCoCBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lk
+ICptYXRjaDsKPj4+ICsKPj4+ICvCoMKgwqAgbWF0Y2ggPSBvZl9tYXRjaF9ub2RlKGxheW91dC0+
+b2ZfbWF0Y2hfdGFibGUsIG52bWVtLT5kZXYub2Zfbm9kZSk7Cj4+PiArCj4+PiArwqDCoMKgIHJl
+dHVybiBtYXRjaCA/IG1hdGNoLT5kYXRhIDogTlVMTDsKPj4+ICt9Cj4+PiArRVhQT1JUX1NZTUJP
+TF9HUEwobnZtZW1fbGF5b3V0X2dldF9tYXRjaF9kYXRhKTsKPj4+ICsKPj4+IMKgIC8qKgo+Pj4g
+wqDCoCAqIG52bWVtX3JlZ2lzdGVyKCkgLSBSZWdpc3RlciBhIG52bWVtIGRldmljZSBmb3IgZ2l2
+ZW4gbnZtZW1fY29uZmlnLgo+Pj4gwqDCoCAqIEFsc28gY3JlYXRlcyBhIGJpbmFyeSBlbnRyeSBp
+biAKPj4+IC9zeXMvYnVzL252bWVtL2RldmljZXMvZGV2LW5hbWUvbnZtZW0KPj4+IEBAIC04NzIs
+NiArOTI1LDEwIEBAIHN0cnVjdCBudm1lbV9kZXZpY2UgKm52bWVtX3JlZ2lzdGVyKGNvbnN0IHN0
+cnVjdCAKPj4+IG52bWVtX2NvbmZpZyAqY29uZmlnKQo+Pj4gwqDCoMKgwqDCoCBpZiAocnZhbCkK
+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBnb3RvIGVycl9yZW1vdmVfY2VsbHM7Cj4+PiDCoCArwqDC
+oMKgIHJ2YWwgPSBudm1lbV9hZGRfY2VsbHNfZnJvbV9sYXlvdXQobnZtZW0pOwo+Pj4gK8KgwqDC
+oCBpZiAocnZhbCkKPj4+ICvCoMKgwqDCoMKgwqDCoCBnb3RvIGVycl9yZW1vdmVfY2VsbHM7Cj4+
+PiArCj4+PiDCoMKgwqDCoMKgIGJsb2NraW5nX25vdGlmaWVyX2NhbGxfY2hhaW4oJm52bWVtX25v
+dGlmaWVyLCBOVk1FTV9BREQsIG52bWVtKTsKPj4+IMKgwqDCoMKgwqDCoMKgIHJldHVybiBudm1l
+bTsKPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL252bWVtL2xheW91dHMvS2NvbmZpZyAKPj4+IGIv
+ZHJpdmVycy9udm1lbS9sYXlvdXRzL0tjb25maWcKPj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+
+PiBpbmRleCAwMDAwMDAwMDAwMDAuLjlhZDM5MTFkMTYwNQo+Pj4gLS0tIC9kZXYvbnVsbAo+Pj4g
+KysrIGIvZHJpdmVycy9udm1lbS9sYXlvdXRzL0tjb25maWcKPj4+IEBAIC0wLDAgKzEsNSBAQAo+
+Pj4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKPj4+ICsKPj4+ICttZW51ICJM
+YXlvdXQgVHlwZXMiCj4+PiArCj4+PiArZW5kbWVudQo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bnZtZW0vbGF5b3V0cy9NYWtlZmlsZSAKPj4+IGIvZHJpdmVycy9udm1lbS9sYXlvdXRzL01ha2Vm
+aWxlCj4+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+Pj4gaW5kZXggMDAwMDAwMDAwMDAwLi42ZmRi
+M2M2MGE0ZmEKPj4+IC0tLSAvZGV2L251bGwKPj4+ICsrKyBiL2RyaXZlcnMvbnZtZW0vbGF5b3V0
+cy9NYWtlZmlsZQo+Pj4gQEAgLTAsMCArMSw0IEBACj4+PiArIyBTUERYLUxpY2Vuc2UtSWRlbnRp
+ZmllcjogR1BMLTIuMAo+Pj4gKyMKPj4+ICsjIE1ha2VmaWxlIGZvciBudm1lbSBsYXlvdXRzLgo+
+Pj4gKyMKPj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L252bWVtLXByb3ZpZGVyLmggCj4+
+PiBiL2luY2x1ZGUvbGludXgvbnZtZW0tcHJvdmlkZXIuaAo+Pj4gaW5kZXggZTcxMDQwNDk1OWU3
+Li4zMjM2ODU4NDFlOWYgMTAwNjQ0Cj4+PiAtLS0gYS9pbmNsdWRlL2xpbnV4L252bWVtLXByb3Zp
+ZGVyLmgKPj4+ICsrKyBiL2luY2x1ZGUvbGludXgvbnZtZW0tcHJvdmlkZXIuaAo+Pj4gQEAgLTEy
+Nyw2ICsxMjcsMjggQEAgc3RydWN0IG52bWVtX2NlbGxfdGFibGUgewo+Pj4gwqDCoMKgwqDCoCBz
+dHJ1Y3QgbGlzdF9oZWFkwqDCoMKgIG5vZGU7Cj4+PiDCoCB9Owo+Pj4gwqAgKy8qKgo+Pj4gKyAq
+IHN0cnVjdCBudm1lbV9sYXlvdXQgLSBOVk1FTSBsYXlvdXQgZGVmaW5pdGlvbnMKPj4+ICsgKgo+
+Pj4gKyAqIEBuYW1lOsKgwqDCoMKgwqDCoMKgIExheW91dCBuYW1lLgo+Pj4gKyAqIEBvZl9tYXRj
+aF90YWJsZTrCoMKgwqAgT3BlbiBmaXJtd2FyZSBtYXRjaCB0YWJsZS4KPj4+ICsgKiBAYWRkX2Nl
+bGxzOsKgwqDCoMKgwqDCoMKgIFdpbGwgYmUgY2FsbGVkIGlmIGEgbnZtZW0gZGV2aWNlIGlzIGZv
+dW5kIHdoaWNoCj4+PiArICrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGhhcyB0aGlzIGxheW91dC4g
+VGhlIGZ1bmN0aW9uIHdpbGwgYWRkIGxheW91dAo+Pj4gKyAqwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBzcGVjaWZpYyBjZWxscyB3aXRoIG52bWVtX2FkZF9vbmVfY2VsbCgpLgo+Pj4gKyAqIEBub2Rl
+OsKgwqDCoMKgwqDCoMKgIExpc3Qgbm9kZS4KPj4+ICsgKgo+Pj4gKyAqIEEgbnZtZW0gZGV2aWNl
+IGNhbiBob2xkIGEgd2VsbCBkZWZpbmVkIHN0cnVjdHVyZSB3aGljaCBjYW4ganVzdCBiZQo+Pj4g
+KyAqIGV2YWx1YXRlZCBkdXJpbmcgcnVudGltZS4gRm9yIGV4YW1wbGUgYSBUTFYgbGlzdCwgb3Ig
+YSBsaXN0IG9mIAo+Pj4gIm5hbWU9dmFsIgo+Pj4gKyAqIHBhaXJzLiBBIG52bWVtIGxheW91dCBj
+YW4gcGFyc2UgdGhlIG52bWVtIGRldmljZSBhbmQgYWRkIGFwcHJvcHJpYXRlCj4+PiArICogY2Vs
+bHMuCj4+PiArICovCj4+PiArc3RydWN0IG52bWVtX2xheW91dCB7Cj4+PiArwqDCoMKgIGNvbnN0
+IGNoYXIgKm5hbWU7Cj4+PiArwqDCoMKgIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgKm9mX21h
+dGNoX3RhYmxlOwo+Pgo+PiBsb29raW5nIGF0IHRoaXMsIEkgdGhpbmsgaXRzIGRvYWJsZSB0byBj
+b252ZXJ0IHRoZSBleGlzdGluZwo+PiBjZWxsX3Bvc3RfcHJvY2VzcyBjYWxsYmFjayB0byBsYXlv
+dXRzIGJ5IGFkZGluZyBhIGxheW91dCBzcGVjaWZpYwo+PiBjYWxsYmFjayBoZXJlLgo+IAo+IGNh
+biB5b3UgZWxhYm9yYXRlIG9uIHRoYXQ/CgpJZiB3ZSByZWxheCBhZGRfY2VsbHMgKyBhZGQgbnZt
+ZW1fdW5yZWdpc3Rlcl9sYXlvdXQoKSBhbmQgdXBkYXRlIHN0cnVjdCAKbnZtZW1fbGF5b3V0IHRv
+IGluY2x1ZGUgcG9zdF9wcm9jZXNzIGNhbGxiYWNrIGxpa2UKCnN0cnVjdCBudm1lbV9sYXlvdXQg
+ewoJY29uc3QgY2hhciAqbmFtZTsKCWNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgKm9mX21hdGNo
+X3RhYmxlOwoJaW50ICgqYWRkX2NlbGxzKShzdHJ1Y3QgbnZtZW1fZGV2aWNlICpudm1lbSwgc3Ry
+dWN0IG52bWVtX2xheW91dCAqbGF5b3V0KTsKCXN0cnVjdCBsaXN0X2hlYWQgbm9kZTsKCS8qIGRl
+ZmF1bHQgY2FsbGJhY2sgZm9yIGV2ZXJ5IGNlbGwgKi8KCW52bWVtX2NlbGxfcG9zdF9wcm9jZXNz
+X3QgcG9zdF9wcm9jZXNzOwp9OwoKdGhlbiB3ZSBjYW4gbW92ZSBpbXgtb2NvdHAgdG8gdGhpcyBs
+YXlvdXQgc3R5bGUgd2l0aG91dCBhZGRfY2VsbCAKY2FsbGJhY2ssIGFuZCBmaW5hbGx5IGdldCBy
+aWQgb2YgY2VsbF9wcm9jZXNzX2NhbGxiYWNrIGZyb20gYm90aCAKbnZtZW1fY29uZmlnIGFuZCBu
+dm1lbV9kZXZpY2UuCgpJZiBsYXlvdXQgc3BlY2lmaWMgcG9zdF9wcm9jZXNzIGNhbGxiYWNrIGlz
+IGF2YWlsYWJsZSBhbmQgY2VsbCBkb2VzIG5vdCAKaGF2ZSBhIGNhbGxiYWNrIHNldCB0aGVuIHdl
+IGNhbiBjYW4gYmUgZWl0aGVyIHVwZGF0ZWQgY2VsbCBwb3N0X3Byb2Nlc3MgCmNhbGxiYWNrIHdp
+dGggdGhpcyBvbmUgb3IgaW52b2tlIGxheW91dCBzcGVjaWZpYyBjYWxsYmFjayBkaXJlY3RseS4K
+CmRvZXMgdGhhdCBtYWtlIHNlbnNlPwoKCi0tc3JpbmkKCgo+IAo+IC1taWNoYWVsCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
+IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
