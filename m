@@ -4,85 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07675ECAAA1
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Aug 2022 09:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6824BECAAA1
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Aug 2022 09:38:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tNb0V9LuYhaGjbBwoOJfooP6YsyeENwAvIlMlqBC2Ow=; b=GMIkmVtzK9474W
-	Q4ai/u6aNln/tFkdDOr3wsmUroeElRjqlwj0jlzRVRgXhMU2Y9sxtqDjFAzfNq/PID9CuYVzwOu2j
-	XLmFh82GF9bXKqABslX8E/RmV3NFnQ2Srbv6QXholmEYBWufdlFewk9EjQJuyxeZAJ47yMytR27ff
-	gbOCRAnmAB3Xspqlzp2LvWG3K1wRmfC2GuWg736+fUDEYeTNen30TQAMpz4uUGi33rwUSLWEsKxFl
-	igNHilBqp8jvq+W1r79poh4CZva306aq8ZdTAaYg5v6RSUx1pCIYf/bhJpeGvx7QyIKs+bCEk5NJp
-	JC4G/Y/cEBzHrYIbCK6A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=1/8uoV2qGy3zYYqDwCQ5uN+3Qq+Is50MZmUF2EzBccU=; b=ijN0lORKXrTjSFzV89UOaehNU6
+	Oi1jMTLFK+q05WNUu2Ef5VnJzxiY/81bPfiKJnckztj5p9AHFkZy8LwTF48ozlN0cP9WSqfGLBXwi
+	0W1NZqd2KbD353kNjxO+GAwMfm+vNdjtRxCnm6BbcNAYKSiP9z8k6USlf2108jXJ3JZe9WUDohIdZ
+	q83HYyUdEJzSU4WTY1kkjGA0yqA36150LwOka4LjO7ZKQ8M7uQsKZkaAq+63YQja/j44LTt9kOmbU
+	p7hCSVmOJkxzvPnrk/+Xxg6tr9qYfGG7rn6gKNTA/AQxFiSFGLABgccKCgstzLKo4tPdxqzNFc+hh
+	pz0g/Qmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oSxRL-00Fa2o-5c; Tue, 30 Aug 2022 09:21:47 +0000
-Received: from mail-lj1-x230.google.com ([2a00:1450:4864:20::230])
+	id 1oSxg6-00FitL-Gr; Tue, 30 Aug 2022 09:37:02 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oSxRI-00Fa0V-JN
-	for linux-mtd@lists.infradead.org; Tue, 30 Aug 2022 09:21:46 +0000
-Received: by mail-lj1-x230.google.com with SMTP id x10so10674279ljq.4
-        for <linux-mtd@lists.infradead.org>; Tue, 30 Aug 2022 02:21:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=t2+Vzdbmp1Zj1Ubn+bhI2XCo+Y34oD2vP1kC7goh3Bw=;
-        b=X6FnQQTX10HojjPRr3B1zGRv1y5UZb7bIMt1siV1lv3+CH5P/DZcWxPMxp3IsdC6r9
-         Of0mU8sRK/7nvVLEgEVukOLGijmUWq5Da4p7o7+3HLFtdQdjabb+/nHaMQ+lGLhLXcT3
-         YnBVCRxnn+IhV6KPozHi3MO0S2nSSK/I6mEhc9QLI8Ct5NDUwSTqRzoqtXr0JOVFwhxP
-         ybvsHs9QlUZIbtI2yU2gt5c7ihP1EI5dhuKr+lYwFNJVP88PyBR7KzZMROckPDjookf2
-         N0UIcnIPbrmOGeCPdkML+QYXmSAT3s0/KT93n+bM2X+FirQmni8h6wAtX/n1QKvu3XXU
-         8wuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=t2+Vzdbmp1Zj1Ubn+bhI2XCo+Y34oD2vP1kC7goh3Bw=;
-        b=Cg5330MyLOi+qYE0VlIEzwffwmqaj+drAMJBhr5u2DmO2UeRC8Knqocs5HJszmQQXb
-         em4no6Ocyc+JEIIcjN7IlNs3T9VP70Yw7kYhtxxJd8WGl0D1m9pWMN/yA3duuXTJYwnQ
-         DOFZTJDjraeoccDouTYUK91WH4MoSCjJNhoduCz0BeYQ9x2U0jJKbuofPDCv8c7pmTQL
-         csQVDPQ4n9Q/iQztE2uluZvD5VtIiEXVws/sE7sdJmASvsqIl14PG1BM4YzRNBl4m/8t
-         /2vu92AbgeS1nkXmTJgDLctptBi2pDTVh48J+IocVP01U37L3W4NmbFZzvd9ZsDvBTWo
-         apMA==
-X-Gm-Message-State: ACgBeo2dE85eWRxvAZHP9jYdtpAc6FXaKWrN4zpDGoUVxKQgJQF1nefc
-	JjL0+UD+Q1OQP00Tx02ppUfqyA==
-X-Google-Smtp-Source: AA6agR5zv64xIKhp5mngmPjgak7Swpb4ZKHAk+rW+baGQB1oMx+uhC/VI6E/0/k/pe8ZVO//UspI1Q==
-X-Received: by 2002:a05:651c:2d0:b0:25e:6c94:59d5 with SMTP id f16-20020a05651c02d000b0025e6c9459d5mr7057524ljo.488.1661851302780;
-        Tue, 30 Aug 2022 02:21:42 -0700 (PDT)
-Received: from [192.168.28.124] (balticom-73-99-134.balticom.lv. [109.73.99.134])
-        by smtp.gmail.com with ESMTPSA id o14-20020ac25e2e000000b004946da0f075sm577821lfg.135.2022.08.30.02.21.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Aug 2022 02:21:42 -0700 (PDT)
-Message-ID: <9a63271b-48c0-1b31-c450-5abc9eedbced@linaro.org>
-Date: Tue, 30 Aug 2022 12:21:41 +0300
+	id 1oSxfo-00Fia6-ID
+	for linux-mtd@lists.infradead.org; Tue, 30 Aug 2022 09:36:46 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 2E68922CF;
+	Tue, 30 Aug 2022 11:36:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1661852199;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MVoTxfXy8cDqrSIhz4HpBP22qZhpepvVK6F1WYi9tQc=;
+	b=ekkB0CUy37+MNjEXna5X662xWN2c19XCvS+Tz/efZLb2PBH5oMPE0q0bSDqKrFodNksUau
+	1PqOnYx7crQ2Ev8h1/LqM5nu5Aqy/M1w5PTT5wpwToKtqpnw15G1H9TYOP9aK+xM5fzGjp
+	a5kcIEADlvSHDqggxoevpOyGZj7mSqT59K/UxFKyhWl+FFeZgPoGlO62swPVncIHDiCpPC
+	2Wmy3Q9q741BAiOnAFq1D5/ESvShjcPcSc1Fnmx3kWmCHqeAHYoWTt4oZJcFPxIbcDt6d4
+	7FsyIQ7dhGSisEuEl0fdBxZUzn/QKTzxMrZHd0gawVCsBz6c6NsZ9kbU5l91UQ==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: spi-nor: Add reset-gpios property
-Content-Language: en-US
-To: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+Date: Tue, 30 Aug 2022 11:36:38 +0200
+From: Michael Walle <michael@walle.cc>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, saikrishna12468@gmail.com, git@amd.com
+Subject: Re: [PATCH 1/2] dt-bindings: mtd: spi-nor: Add reset-gpios property
+In-Reply-To: <9a63271b-48c0-1b31-c450-5abc9eedbced@linaro.org>
 References: <20220829090528.21613-1-sai.krishna.potthuri@amd.com>
  <20220829090528.21613-2-sai.krishna.potthuri@amd.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220829090528.21613-2-sai.krishna.potthuri@amd.com>
+ <9a63271b-48c0-1b31-c450-5abc9eedbced@linaro.org>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <6619ebc290f12fbb7613f32087aa9200@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220830_022144_689104_CCC5F688 
-X-CRM114-Status: GOOD (  17.90  )
+X-CRM114-CacheID: sfid-20220830_023644_891246_833517DD 
+X-CRM114-Status: GOOD (  16.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,44 +76,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 29/08/2022 12:05, Sai Krishna Potthuri wrote:
-> SPI-NOR flashes have RESET pin which can be toggled using GPIO
-> controller, for those platforms reset-gpios property can be used to
-> reset the flash device.
+Am 2022-08-30 11:21, schrieb Krzysztof Kozlowski:
+> On 29/08/2022 12:05, Sai Krishna Potthuri wrote:
+>> SPI-NOR flashes have RESET pin which can be toggled using GPIO
+>> controller, for those platforms reset-gpios property can be used to
+>> reset the flash device.
+>> 
+>> Signed-off-by: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+>> ---
+>>  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml 
+>> b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+>> index 7149784a36ac..d2fc8e9c787f 100644
+>> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+>> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+>> @@ -70,6 +70,12 @@ properties:
+>>        be used on such systems, to denote the absence of a reliable 
+>> reset
+>>        mechanism.
+>> 
+>> +  reset-gpios:
+>> +    description:
+>> +      contains a GPIO specifier.
 > 
-> Signed-off-by: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
-> ---
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Skip this part - obvious.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 7149784a36ac..d2fc8e9c787f 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -70,6 +70,12 @@ properties:
->        be used on such systems, to denote the absence of a reliable reset
->        mechanism.
->  
-> +  reset-gpios:
-> +    description:
-> +      contains a GPIO specifier. 
+>> The reset GPIO is asserted and then deasserted
+>> +      to perform device reset. If "broken-flash-reset" is present 
+>> then having
+>> +      this property does not make any difference.
+> 
+> Isn't then broken-flash-reset conflicting with this one (e.g.
+> disallowing it)?
 
-Skip this part - obvious.
+Sometimes the spi-nor driver needs to switch modes, which are persistent
+until you either switch em back or do a hardware reset (or software
+reset IIRC) of the flash. If broken-flash-reset is set, we try hard
+to leave the flash in the mode which it is normally in after reset or
+don't switch modes at all.
+Of course we cannot make sure, our shutdown gets called in each case,
+thus there is may be warning during startup.
 
-> The reset GPIO is asserted and then deasserted
-> +      to perform device reset. If "broken-flash-reset" is present then having
-> +      this property does not make any difference.
+So, even if you have a reset-gpio it might be broken I guess. Think
+of it being high active, but someone forgot the pull-up. So, if you
+do an unexpected reset, the flash chip might not be reset
+automatically. So yes, I think, even if there is a dedicated reset
+gpio, it could still be messed up. How likely is it? I don't know,
+probably not very.
 
-Isn't then broken-flash-reset conflicting with this one (e.g.
-disallowing it)?
-
-Best regards,
-Krzysztof
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
