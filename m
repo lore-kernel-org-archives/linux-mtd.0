@@ -4,76 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F226C0502A
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Aug 2022 15:30:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2866ECAAD4
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Aug 2022 21:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=u0iDUarnejWXtCo5NW0fZQPDzeaIlK6mISRjds/nGE8=; b=zfffiYEhI9kMkDrBr3NRLWP5rh
-	Nwrzxq/DgtSBuRy/UbOEdipJJJAiJ4Nz1aU8HAuF0PQ/D2Jqqh6m9GVYM3eXF0sUPHJnhqSgY8uTX
-	230wqJmn2qIlr2PoKTR/8qT1ZUWIifD4aOEVB7356pxF+ujcL9U5H8CyoQLV9eY3HccmD3HBbaE1g
-	LKgwp5preMQ/yMqF+DvkyB43fFzTXLM2m4aaB6ZTHMwkTmD+/VeyfkWvfJUhMni0qzz/vwIfq43OT
-	5mLqNUEOIrOiKHagh0gUJkpxV1MD2fIkWGNeeQnjbQjyPJQZWxf1ZgL9hnS+MsHMylw35lBPSZESz
-	ZAfGcUTg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nIURr2RQt1lDgpaxDv2/jnkqCKrqoYjpGSrCRZq5FaU=; b=MOPEMYVCUr9U8c
+	dFsAl2LTN+0fugGI4Lx2yp4V9ITDhFmOaLZu2HN14493/TSQ+v7T9gzGe6e6tvsgUICoDjapO0xZL
+	FKt8W5vnNoHJDPv/zQ+Xw8eNDyyMeimNhYfwlu3IzXGdzoZ+zwv52RsoCc9tUDxt0+S847Uu9i7yo
+	AB6XJwaCh5NtwYhEds5H47rAuXv1ZJ06Gi13kthvD6MoX7fLIFBGzudniyVOm1yG50hZlMTdSVFlq
+	PxbJitLbPp4p3NMZj97WH/evMMJLj7yUYN6gsZyS7eZQi4kaJC4AG1SZAMnEbOnNsb8WjkhnrCiEw
+	Ed0JIx9xz1zwJ9pTM5rA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTPes-0070Kq-Kd; Wed, 31 Aug 2022 15:29:38 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1oTVZI-008Kmf-03; Wed, 31 Aug 2022 21:48:16 +0000
+Received: from mail-oa1-f52.google.com ([209.85.160.52])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTPeg-0070II-EK; Wed, 31 Aug 2022 15:29:28 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 0468D380;
-	Wed, 31 Aug 2022 17:29:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1661959762;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gSbky8Lam7huFBL5HxqWMBd+/fwVdIExZD6UKAZ75EU=;
-	b=rjN/z49Rv8Kd5VtxGT13sCMwk1VJRviaTSI7hu33m88PzUxo/Q2A8KzExUXhrUVHGhA0C1
-	8z9Jc7GWtf3I6tNenf99UVdYYT6SVCyaieJ46RjxQx7rCSsGToUtv+5BHG3r6utGme+DCl
-	dNm0eoP092aq1KC36Ubln4XMBufObhuDaj6srJVTIyKuOmSZ1lCmJwg5VRHFSzdLM1Hao5
-	SMXBdZiOwx48BxI5Rk0GSBn/C309h3RA9ZIP/Scuc0M2t3IdJCYi0GWaCesy8U8wuT7cFn
-	1Vr7Gs4JWo7/nJtL+pLDYJFqZtsJVrB5di9J2zcDQwQZKnpaOPSESunBcAyh3w==
-MIME-Version: 1.0
-Date: Wed, 31 Aug 2022 17:29:21 +0200
-From: Michael Walle <michael@walle.cc>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang
- <leoyang.li@nxp.com>, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Frank Rowand <frowand.list@gmail.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- netdev@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Re: [PATCH v1 09/14] dt-bindings: nvmem: add YAML schema for the sl28
- vpd layout
-In-Reply-To: <66076594-6745-e2d9-afff-03b9266f31bd@linaro.org>
+	id 1oTVZF-008Klz-0D; Wed, 31 Aug 2022 21:48:14 +0000
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-11ee4649dfcso20915886fac.1;
+        Wed, 31 Aug 2022 14:48:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=JD82AHGx84kMfXbfehKRODVwT5PdMYhij9FNOZzBHYc=;
+        b=5q50iAjU9xZDjSDBGS4DJF3IO9VIJjs+88KJbj4PeZCJZyG0dem9P8Xd1JMlBwTuXR
+         RN8hLqLRsiNAU/DlHvTu10jD0Syl0ptWH8QI+2WGRufCpRJ+75NhPBbYQIUGrS6jm6do
+         CXjpFZGgfePpqdp55oTQuK4OK/x7qd3iY5S7VjWTkD3Ft9lLUhzwivKajYuhGzHhM44Y
+         8bKLiaciU0NwSqz3tgsKNiHyXbLhCa677JE4GhrZyM2XH+/ORSN0meucIa+Au4qiHwse
+         1BSusIJlxlUyvdsLDfuZvEbYqrbW1MJpSugW/4yXkrnKnKYpaToUXATJ5J5CC/yz0svF
+         f21Q==
+X-Gm-Message-State: ACgBeo2vXeJtq0QpW2zxCzRtuL1KKozt+WPhzn/jfdMzCts/dPdo7t95
+	adN4D0u0cw7AGooMrSY1OQ==
+X-Google-Smtp-Source: AA6agR42CMQBtttjZ/zkx4w8wd0niU7A9WHNAhfgLAJFh/npgcOzrKIbttMD5OzwceY42pFmKqe7lw==
+X-Received: by 2002:a05:6808:1491:b0:343:7543:1a37 with SMTP id e17-20020a056808149100b0034375431a37mr2191781oiw.106.1661982491138;
+        Wed, 31 Aug 2022 14:48:11 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id p81-20020acad854000000b00342ded07a75sm7875032oig.18.2022.08.31.14.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Aug 2022 14:48:10 -0700 (PDT)
+Received: (nullmailer pid 310004 invoked by uid 1000);
+	Wed, 31 Aug 2022 21:48:09 -0000
+Date: Wed, 31 Aug 2022 16:48:09 -0500
+From: Rob Herring <robh@kernel.org>
+To: Michael Walle <michael@walle.cc>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Frank Rowand <frowand.list@gmail.com>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: Re: [PATCH v1 08/14] dt-bindings: mtd: relax the nvmem compatible
+ string
+Message-ID: <20220831214809.GA282739-robh@kernel.org>
 References: <20220825214423.903672-1-michael@walle.cc>
- <20220825214423.903672-10-michael@walle.cc>
- <b85276ee-3e19-3adb-8077-c1e564e02eb3@linaro.org>
- <ddaf3328bc7d88c47517285a3773470f@walle.cc>
- <4bf16e18-1591-8bc9-7c46-649391de3761@linaro.org>
- <1b06716690b0070c0c2b0985577763e3@walle.cc>
- <66076594-6745-e2d9-afff-03b9266f31bd@linaro.org>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <aeb3e08be6f134d3e42256d59bc56110@walle.cc>
-X-Sender: michael@walle.cc
+ <20220825214423.903672-9-michael@walle.cc>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220825214423.903672-9-michael@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220831_082926_677653_01E5288D 
-X-CRM114-Status: GOOD (  44.07  )
+X-CRM114-CacheID: sfid-20220831_144813_062007_560E1575 
+X-CRM114-Status: GOOD (  14.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,206 +74,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-08-31 15:07, schrieb Krzysztof Kozlowski:
-> On 31/08/2022 12:51, Michael Walle wrote:
->> Am 2022-08-31 11:24, schrieb Krzysztof Kozlowski:
->>> On 31/08/2022 11:17, Michael Walle wrote:
->> 
->>>> First thing, this binding isn't like the usual ones, so it might be
->>>> totally wrong.
->>>> 
->>>> What I'd like to achieve here is the following:
->>>> 
->>>> We have the nvmem-consumer dt binding where you can reference a
->>>> nvmem cell in a consumer node. Example:
->>>>    nvmem-cells = <&base_mac_address 5>;
->>>>    nvmem-cell-names = "mac-address";
->>>> 
->>>> On the other end of the link we have the nvmem-provider. The dt
->>>> bindings works well if that one has individual cell nodes, like
->>>> it is described in the nvmem.yaml binding. I.e. you can give the
->>>> cell a label and make a reference to it in the consumer just like
->>>> in the example above.
->>> 
->>> You can also achieve it with phandle argument to the nvmwm 
->>> controller,
->>> right? Just like most of providers are doing (clocks, resets). Having
->>> fake (empty) nodes just for that seems like overkill.
->> 
->> You mean like
->>   nvmem-cells = <&nvmem_device SERIAL_NUMBER>;
+On Thu, Aug 25, 2022 at 11:44:17PM +0200, Michael Walle wrote:
+> The "user-otp" and "factory-otp" compatible string just depicts a
+> generic NVMEM device. But an actual device tree node might as well
+> contain a more specific compatible string. Make it possible to add
+> more specific binding elsewere and just match part of the compatibles
+> here.
 > 
-> Yes.
-> 
->> 
->> I'm not sure about the implications for now, because one is
->> referencing the device and not individal cells. Putting that
->> aside for now, there seems to be a problem with the index for
->> the base mac address: You will have different number of arguments
->> for the phandle. That doesn't work, right?
->> 
->> nvmem-cells = <&nvmem_device SERIAL_NUMBER>;
->> nvmem-cells = <&nvmem_device BASE_MAC_ADDRESS 1>;
-> 
-> It could work, but looks poor, however it could be still nicely 
-> extended
-> with new defines and renames later:
-> 
-> Once:
-> nvmem-cells = <&nvmem_device BASE_MAC_ADDRESS>;
-> 
-> Later renamed to (with some ABI impact, but in theory names are not 
-> part
-> of ABI, but numbers are):
-> nvmem-cells = <&nvmem_device BASE_MAC_ADDRESS_1>;
-> nvmem-cells = <&nvmem_device BASE_MAC_ADDRESS_2>;
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+>  Documentation/devicetree/bindings/mtd/mtd.yaml | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 
-Ah I think I didn't express correctly what I want to achieve:
+In hindsight it looks like we are mixing 2 different purposes of 'which 
+instance is this' and 'what is this'. 'compatible' is supposed to be the 
+latter.
 
-nvmem-cells = <&nvmem_device BASE_MAC_ADDRESS 1>;
+Maybe there's a better way to handle user/factory? There's a similar 
+need with partitions for A/B or factory/update.
 
-means "take base mac address and add one to it". the first
-argument is treated as the offset. i.e.
-   nvmem-cells = <&nvmem_device BASE_MAC_ADDRESS 5>;
-would be "base_mac + 5". It is not another base mac address.
-
-whereas, the serial number doesn't take an argument.
-
-I think it could be achieved with some preprocessor magic
-like:
-#define SL28VPD_SERIAL_NUMBER   (0 << 8)
-#define SL28VPD_MAC_ADDRESS(x)  (1 << 8) + (x & 0xff)
-#define SL28VPD_ANOTHER_THING   (2 << 8)
-
-I'm not sure if that is any better.
-
-Also the whole binding around nvmem is that it references the cells,
-not the device. So if you insist on using the phandle to the
-nvmem device, I'll really have to check if that is something which
-could be done. I.e. have a look at
-   
-https://elixir.bootlin.com/linux/latest/source/drivers/nvmem/core.c#L1242
-
-It assumes the reference phandle points to a cell and fetches
-the parent to get the nvmem device. We could try to get a device
-by the current handle and if that succeeds use that one. But I
-*think* it doesn't work with the EPROBE_DEFERRED. I.e. the device
-might not be there, because it wasn't probed yet.
-
-> (or even skip renaming and just add suffix _2)
-> 
-> You cannot rename device nodes, without deprecating them.
-> 
->> 
->>>> Now comes the catch: what if there is no actual description of the
->>>> cell in the device tree, but is is generated during runtime. How
->>>> can I get a label to it.
->>> 
->>> Same as clocks, resets, power-domains and everyone else.
->> 
->> See
->> https://git.kernel.org/torvalds/c/084973e944bec21804f8afb0515b25434438699a
->> 
->> And I guess this discussion is relevant here:
->> https://lore.kernel.org/linux-devicetree/20220124160300.25131-1-zajec5@gmail.com/
-> 
-> Eh, ok, I jumped in the middle of something and seems Rob was fine with
-> these empty nodes. Looks weird and overkill too me (imagine defining 
-> 500
-> clocks in clock-controller like that), but I am here still learning. :)
-> 
-> I guess it makes sense for the cases when OTP/nvmem cells are not
-> controller specific, not fixed for given OTP controller but rather 
-> board
-> specific and having defined them in header would not make sense.
-> 
-> But then if they are strictly/statically defined as children of a
-> device, means they are fixed for given OTP and effort is the same as
-> having them in header...
-> 
->>>> Therefore, in this case, there is just
->>>> an empty node and the driver will associate it with the cell
->>>> created during runtime (see patch 10). It is not expected, that
->>>> is has any properties.
->>> 
->>> It cannot be even referenced as it does not have #cells property...
->> 
->> You mean "#nvmem-cell-cells"? See patch #2. None of the nvmem
->> cells had such a property for now.
-> 
-> Oh, so so how do you reference them? Users of this seems to be missing,
-> so I am guessing that directly via phandle to label and nvmem maps them
->  with nvmem_find_cell_of_node()?
-
-Mh? there are plenty of users which references a nvmem cell. E.g.
-https://elixir.bootlin.com/linux/v5.19.5/source/arch/arm64/boot/dts/freescale/imx8mm.dtsi#L76
-https://elixir.bootlin.com/linux/v5.19.5/source/arch/arm64/boot/dts/freescale/imx8mm.dtsi#L1080
-
-The entry point for the "fetch mac address" is here:
-https://elixir.bootlin.com/linux/v5.19.5/source/net/ethernet/eth.c#L550
-
-And the relevant functions is:
-https://elixir.bootlin.com/linux/v5.19.5/source/drivers/nvmem/core.c#L1226
-which uses of_parse_phandle(), which don't need the "#-cells" property, 
-but
-is limited to no arguments. Thus the new function in patch #2.
-
->>>>>> +
->>>>>> +  base-mac-address:
->>>>> 
->>>>> Fields should be rather described here, not in top-level 
->>>>> description.
->>>>> 
->>>>>> +    type: object
->>>>> 
->>>>> On this level:
->>>>>     additionalProperties: false
->>>>> 
->>>>>> +
->>>>>> +    properties:
->>>>>> +      "#nvmem-cell-cells":
->>>>>> +        const: 1
->>>>>> +
->>>>> 
->>>>> I also wonder why you do not have unit addresses. What if you want 
->>>>> to
->>>>> have two base MAC addresses?
->>>> 
->>>> That would describe an offset within the nvmem device. But the 
->>>> offset
->>>> might not be constant, depending on the content. My understanding
->>>> so far was that in that case, you use the "-N" suffix.
->>>> 
->>>> base-mac-address-1
->>>> base-mac-address-2
->>>> 
->>>> (or maybe completely different names).
->>> 
->>> You do not allow "base-mac-address-1". Your binding explicitly 
->>> accepts
->>> only "base-mac-address".
->> 
->> Because the binding matches the driver, which matches the driver
->> which matches the VPD data and there is only one base mac address.
->> Thus, no need for different ones.
-> 
-> True, but it is also not extensible, so you have to be sure you covered
-> 100% of this device. And then if you have a new, slightly different
-> device, you need entirely new schema, because this one is not reusable
-> at all.
-> 
-> It's ok, it just has some drawbacks/limitations.
-
-But isn't that the whole thing around the specific compatible?
-And you can still add subnodes if there is a new version of
-the vpd. The driver will figure that out and add the cells.
-
--michael
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
