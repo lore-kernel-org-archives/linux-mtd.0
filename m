@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 475F7ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Aug 2022 07:46:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D06F5ECAAD3
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Aug 2022 07:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lb8T0xb2djQGCTOD1ut4PF+dFSHZTN6zKBNGKuJhSfo=; b=LAdrVMpikj+HIK
-	8yBytOIu47l+UioZ6EQWapdknxi/jUfCvn1w4C23ZdPe7DA+HhzLQ1pXPVy5hEkf4hRiB61A4KSBP
-	pipWPjdEbQCsn9nHLaPTm+mg/EqPcu5vnm8KszEDkFOWvneY1BZDWhgOKq/cknH8ESTNRZz89Ijrx
-	7otXmzwgxfkR3WY4ZR4AXZlsyHFN3TW2tvZvK3o/GzutvroiARZUwk4mIco5UMteQ2qs8gvtyNM7i
-	1YuE4ZY6EWcIyvjgmq0vj8LhNZkhmMhV14Ju8+Izy1RiHdVymNtrYpbL+k4P6tyPqmtPJ3ANdxBGv
-	YmLpn93/1OlKioQiQtUg==;
+	List-Owner; bh=VWlgvyBanJx+ivxujMvzBb6aCIlbFCoNymg0w122Bec=; b=ShPGCWBzTrUYWp
+	+2q2g/okZr6H621fmYkr+yZyJ1GimlLJNWa9jId16QSWbfg2rqu9TBMiPhwokYZd+4RbZXWDfq737
+	EVNsuwpf+cHe0ANUUAC06VfBLKdVq1ZfcrVYV9EllUzDK0j3hty95bmRRkYhwrBdMcUl8gPrHt4FO
+	6uReTdCS0QtZq9opIQMTVWQI+BGN/GMnmJ3lmY7b5cHW47FUd3C9qBJX2X/qkJZeQJ4lLguYJqTuz
+	eCNohxnWpqJ/UVfZYgNUBbr7e+9pWnQXdaNtmqi8FTHJoN1BMaw1P9dQBYgGKvh99SV1DI2lmbdZh
+	+ecW6l1csiVOlgQJ5xwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTIQ5-004ffv-MT; Wed, 31 Aug 2022 07:45:53 +0000
-Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
+	id 1oTIU5-004hHO-2d; Wed, 31 Aug 2022 07:50:01 +0000
+Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTIPc-004fWS-Iw
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2022 07:45:30 +0000
-Received: by mail-lf1-x133.google.com with SMTP id q7so18755910lfu.5
-        for <linux-mtd@lists.infradead.org>; Wed, 31 Aug 2022 00:45:21 -0700 (PDT)
+	id 1oTISG-004gc0-QX
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2022 07:48:10 +0000
+Received: by mail-lf1-x12a.google.com with SMTP id p7so7646856lfu.3
+        for <linux-mtd@lists.infradead.org>; Wed, 31 Aug 2022 00:48:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc;
-        bh=ouTFxY93nE4Z9QkhFZSLBKekqYyiBXQP19HgDhyZHSU=;
-        b=KaH7MCXXGQGzFH3dRW0/Fv7P3w2fHAmtPvJFEJm8HRZTM7oPKNxSNuqnLws54cFdz2
-         JJbSZe8FWP7wO+KfbvOdXyFVA4wSNxKYi27qCwXtuG1rVbEyDnnYT5SVwk+nVNo81PFm
-         CJ7NBXtdCA5607gVeIVUC/chvc/oEX1EQ7Vl+1Lk3nd1xAglRlrqwBsW37MmJgqCps1B
-         sewjrGFON/2R+WugFtQksVIEnAt5MCSCAsKLJuMEhEbW8gtpiUqnNcwzdHe5SE5WPJli
-         dV7mrnvhlOfRfQIF50u9qmQm5Jp83VE4LhdQT2XLVJoCCS8p0fQV9fNsG/+vel5iApuB
-         TALA==
+        bh=dKwUKqyzx080nN57Qu5BhT7GLES0nR5U2OgHxHW4Ezc=;
+        b=hl+Q4cmXAGv7OYDv7Qj4tlRkQxNyddYi7q/ngGx6bFSaSmRkwN8dzwSW4eHO1bmuMz
+         rWZy0ESlGPkMAq5eBjIM0vStrCffAA+R8fglShdYfdQOHeLNKGYTGWc7Tn0lx8Io6P7X
+         xh9WAQENzFmSOsHgXxLrbbuCdch4X+kgvlOsnuBrCgIxI7F+mZVDF8tNXshH72d9Bb8y
+         ya7lHgqxS2tp6N/5Xs1JL3m43Kx+yN+7KzEt3F0/3vVshghTe8Zd3UioB47XVNHbDRwL
+         9zIcTkhtBNqxbnhw9FnKggmt3vkfG1DjhWyOpwRHJ5I1Z4hs8kNgVH5i+lTVX+0pPP9y
+         rzWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc;
-        bh=ouTFxY93nE4Z9QkhFZSLBKekqYyiBXQP19HgDhyZHSU=;
-        b=1gjHlE/1z9szGmU712yAdp20FUtOlIxUftrePTym5V3vSpeEDxpI3Wvq+0msuYbIo2
-         IvqYZNefpYKo7pPtyT+B6U2Sn1kU587Hws9DxA2H+Oxest/Q9BgH3K1ZTY5QB2lXjHh6
-         3kCh/A3ptGaWZRrw0kbCPhqXeVahhvB4yDsG+XlaAutlbFvy5lTDib0gg7eHWk1R659t
-         mNDSrD5O+qiOBjVSZhuXhJZ0KzNC4iEjwgsbJxlNWsUWemcb/h0X3i9m/WNBHxhEzN5q
-         V+1FUmeWD8M4l1K3/X42DjR+ZQx5gv/ou14u/Zq39tBjqYx/87ZWZVK9gzNpIetE5psS
-         +Gtw==
-X-Gm-Message-State: ACgBeo1hJdPta20ycDpWES+uflkMJmcs0SKP4AnAet7vcz6M3qVmYbUi
-	gvPzjACNjYthXcUG6MVnc2ITLg==
-X-Google-Smtp-Source: AA6agR7DzXu8IZaFW+OBdsWSDmCTnpWerpKoskVDkUfL/4niQUo3xpWIrSAl2jDIzTuo0en6kWFeyw==
-X-Received: by 2002:a05:6512:2354:b0:48a:e29b:2bb4 with SMTP id p20-20020a056512235400b0048ae29b2bb4mr9582773lfu.435.1661931920194;
-        Wed, 31 Aug 2022 00:45:20 -0700 (PDT)
+        bh=dKwUKqyzx080nN57Qu5BhT7GLES0nR5U2OgHxHW4Ezc=;
+        b=IuqLh7JE7Wxq9cYH94Vy6vx82aUSGojpikWKMPbamLXIoWuwyFkq1OVP0wA9p4LgZN
+         hNlMURFosN2q3if11ydi5TBYGF18QL5AL7uuIARGvmibpXEatamVMbft6qlle4gKS9os
+         k8+ZWADRayc9m3nB6RB2waG8i2HPpcZ234S9AXltS7l20FGlh1X91wU8FuozTg/UO8xz
+         qnFda/u5n7f3kZWCupyycJbBHB4C4MjmN/GpUcPB9XYwnJTDOG5WKzGkFoW06B/5ZGLT
+         vrZenMH4qA9MgELtPK8LrJdHTJmpMiLApOd+om2wARK9pJgunR4UmIWPy9JJdeuGSIM3
+         lkZQ==
+X-Gm-Message-State: ACgBeo0AEMCZJ0f0l5gFdv9fnF2EqufWc3CeBAEUDAqtdr000RZAw+C9
+	+OY7kUz/1/bHlPBKgBp7q52S7MEVn5eTHBAF
+X-Google-Smtp-Source: AA6agR4W/w1pRyESLXYMtdHVCoA4b3PCovSoib0WzKVz2vuHkr+YlwYeMrToBxLCSTYKQ/8NWcUGKA==
+X-Received: by 2002:a05:6512:33d3:b0:494:6e1c:f870 with SMTP id d19-20020a05651233d300b004946e1cf870mr3854026lfg.196.1661932087047;
+        Wed, 31 Aug 2022 00:48:07 -0700 (PDT)
 Received: from [192.168.28.124] (balticom-73-99-134.balticom.lv. [109.73.99.134])
-        by smtp.gmail.com with ESMTPSA id f12-20020a05651c02cc00b00261800f0e02sm53144ljo.26.2022.08.31.00.45.18
+        by smtp.gmail.com with ESMTPSA id l19-20020a2e9093000000b0025d5eb5dde7sm1937279ljg.104.2022.08.31.00.48.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Aug 2022 00:45:19 -0700 (PDT)
-Message-ID: <b85276ee-3e19-3adb-8077-c1e564e02eb3@linaro.org>
-Date: Wed, 31 Aug 2022 10:45:18 +0300
+        Wed, 31 Aug 2022 00:48:06 -0700 (PDT)
+Message-ID: <8995b1ce-e236-1272-39d6-2dd498aafb38@linaro.org>
+Date: Wed, 31 Aug 2022 10:48:05 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.13.0
-Subject: Re: [PATCH v1 09/14] dt-bindings: nvmem: add YAML schema for the sl28
- vpd layout
+Subject: Re: [PATCH v1 00/14] nvmem: core: introduce NVMEM layouts
 Content-Language: en-US
-To: Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Michael Walle <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
  "David S . Miller" <davem@davemloft.net>, Eric Dumazet
  <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
  Paolo Abeni <pabeni@redhat.com>, Frank Rowand <frowand.list@gmail.com>
@@ -83,12 +81,12 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  netdev@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>
 References: <20220825214423.903672-1-michael@walle.cc>
- <20220825214423.903672-10-michael@walle.cc>
+ <768ff63a-54f5-9cde-e888-206cdf018df3@milecki.pl>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220825214423.903672-10-michael@walle.cc>
+In-Reply-To: <768ff63a-54f5-9cde-e888-206cdf018df3@milecki.pl>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220831_004524_711030_01A9A728 
-X-CRM114-Status: GOOD (  22.33  )
+X-CRM114-CacheID: sfid-20220831_004808_933686_A4EABDDC 
+X-CRM114-Status: GOOD (  16.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,108 +98,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 26/08/2022 00:44, Michael Walle wrote:
-> Add a schema for the NVMEM layout on Kontron's sl28 boards.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  .../nvmem/layouts/kontron,sl28-vpd.yaml       | 52 +++++++++++++++++++
->  1 file changed, 52 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml b/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
-> new file mode 100644
-> index 000000000000..e4bc2d9182db
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
-> @@ -0,0 +1,52 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/nvmem/layouts/kontron,sl28-vpd.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NVMEM layout of the Kontron SMARC-sAL28 vital product data
-> +
-> +maintainers:
-> +  - Michael Walle <michael@walle.cc>
-> +
-> +description:
-> +  The vital product data (VPD) of the sl28 boards contains a serial
-> +  number and a base MAC address. The actual MAC addresses for the
-> +  on-board ethernet devices are derived from this base MAC address by
-> +  adding an offset.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: kontron,sl28-vpd
-> +      - const: user-otp
-> +
-> +  serial-number:
-> +    type: object
-
-You should define the contents of this object. I would expect this to be
-uint32 or string. I think you also need description, as this is not
-really standard field.
-
-> +
-> +  base-mac-address:
-
-Fields should be rather described here, not in top-level description.
-
-> +    type: object
-
-On this level:
-    additionalProperties: false
-
-> +
-> +    properties:
-> +      "#nvmem-cell-cells":
-> +        const: 1
-> +
-
-I also wonder why you do not have unit addresses. What if you want to
-have two base MAC addresses?
-
-> +required:
-> +  - compatible
-
-Other fields are I guess required? At least serial-number should be always?
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +      otp-1 {
-
-Messed up indentation (use 4 spaces). Generic node name "otp".
-
-> +          compatible = "kontron,sl28-vpd", "user-otp";
-> +
-> +          serial_number: serial-number {
-
-What's the point of the empty node?
-
-> +          };
-> +
-> +          base_mac_address: base-mac-address {
-> +              #nvmem-cell-cells = <1>;
-> +          };
-> +      };
-> +
-> +...
-
-
-Best regards,
-Krzysztof
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjgvMDgvMjAyMiAxODowNSwgUmFmYcWCIE1pxYJlY2tpIHdyb3RlOgo+IE9uIDI1LjA4LjIw
+MjIgMjM6NDQsIE1pY2hhZWwgV2FsbGUgd3JvdGU6Cj4+IFRoaXMgaXMgbm93IHRoZSB0aGlyZCBh
+dHRlbXB0IHRvIGZldGNoIHRoZSBNQUMgYWRkcmVzc2VzIGZyb20gdGhlIFZQRAo+PiBmb3IgdGhl
+IEtvbnRyb24gc2wyOCBib2FyZHMuIFByZXZpb3VzIGRpc2N1c3Npb25zIGNhbiBiZSBmb3VuZCBo
+ZXJlOgo+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzIwMjExMjI4MTQyNTQ5LjEyNzU0
+MTItMS1taWNoYWVsQHdhbGxlLmNjLwo+Pgo+Pgo+PiBOVk1FTSBjZWxscyBhcmUgdHlwaWNhbGx5
+IGFkZGVkIGJ5IGJvYXJkIGNvZGUgb3IgYnkgdGhlIGRldmljZXRyZWUuIEJ1dAo+PiBhcyB0aGUg
+Y2VsbHMgZ2V0IG1vcmUgY29tcGxleCwgdGhlcmUgaXMgKHZhbGlkKSBwdXNoIGJhY2sgZnJvbSB0
+aGUKPj4gZGV2aWNldHJlZSBtYWludGFpbmVycyB0byBub3QgcHV0IHRoYXQgaGFuZGxpbmcgaW4g
+dGhlIGRldmljZXRyZWUuCj4gCj4gSSBkcm9wcGVkIHRoZSBiYWxsIHdhaXRpbmcgZm9yIFJvYidz
+IHJlcG9uc2UgaW4gdGhlCj4gW1BBVENIIDAvMl0gZHQtYmluZGluZ3M6IG52bWVtOiBzdXBwb3J0
+IGRlc2NyaWJpbmcgY2VsbHMKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1hcm0ta2Vy
+bmVsLzBiN2I4ZjdlYTY1NjlmNzk1MjRhZWExYTNkNzgzNjY1QHdhbGxlLmNjL1QvCj4gCj4gQmVm
+b3JlIHdlIGdvIGFueSBmdXJ0aGVyIGNhbiB3ZSBoYXZlIGEgY2xlYXIgYW5zd2VyIGZyb20gUm9i
+IChvcgo+IEtyenlzenRvZiBub3cgdG9vPyk6Cj4gCj4gCj4gSXMgdGhlcmUgYW55IHBvaW50IGlu
+IGhhdmluZyBiaW5kaW5ncyBsaWtlOgo+IAo+IGNvbXBhdGlibGUgPSAibWFjLWFkZHJlc3MiOwo+
+IAo+IGZvciBOVk1FTSBjZWxscyBub2Rlcz8gU28gc3lzdGVtcyAoTGludXgsIFUtQm9vdCkgY2Fu
+IGhhbmRsZSB0aGVtIGluIGEKPiBtb3JlIGdlbmVyaWMgd2F5PwoKSSB0aGluayBSb2IgaXMgYWxy
+ZWFkeSBpbiB0aGUgc3ViamVjdCwgYnV0IEkgd29uZGVyIGhvdyB3b3VsZCB0aGF0IHdvcmsKZm9y
+IFUtQm9vdD8gWW91IG1pZ2h0IGhhdmUgbXVsdGlwbGUgY2FyZHMsIHNvIGhvdyBkb2VzIHRoaXMg
+bWF0Y2hpbmcKd291bGQgd29yaz8gSU9XLCB3aGF0IHByb2JsZW0gd291bGQgaXQgc29sdmUgY29t
+cGFyaW5nIHRvIGV4aXN0aW5nCnNvbHV0aW9uIChhbGlhcyB0byBldGhlcm5ldCBkZXZpY2Ugd2l0
+aCBtYWMtYWRkcmVzcyBmaWVsZCk/CgpCZXN0IHJlZ2FyZHMsCktyenlzenRvZgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
