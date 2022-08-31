@@ -4,93 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06664ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Aug 2022 08:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32D04ECAAD3
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Aug 2022 08:25:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/GiROiXTXPSLBJuK2bJvs22mvcVpt3Jm9c1diqG9zho=; b=r8eEFgmQIoAS+H
-	p1vAZK7HRWC3gpMcZZfNlONemGZyhOHIiyxaPD+97KZs1XKnVcOrR0u0d4E9KiAehdkCTkOGlD1O4
-	B6kp8OdgO0lifJY9MPnkpxEig+WEYkGVDAWIKVRFn1hENIlcpCCiufz1F4FigCYX6jnqC27W/U89s
-	OoD4umQTDCtkMQJO3d64Rtl77eGrbEVeVgb4tESoY4c/+t+NuzgGF5L4ULYvuxvggVpG4H0VcTFds
-	QY0rH4kMrTiF8pLvWKqOfrZZXUvp31o1/wfIlpdSKOmTFMyXjv7fmhUqNPOWXe29jX6ogV5G7nLAr
-	q/HBy5p+DZDwTNMgky7w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=6GYCVVDsGgKtZdZv9bLlKcwj/mIjyU929HSiQV0KKK4=; b=tRJaLvfqvWLSvANVRNgh7ZXRCQ
+	p2yYDaGk4eL3tj42P16roPqqOaS/2wDd1rjVqyM2oBxtj5+HtHntruM08VIUD1EEekrd9EsijgA6r
+	8Rz/lKj4Lr+1kfzLJ8/muP7psy3Vl7H5pIiYYv6gjbFgat5C6o3QNTF8I42Fz6aHcGe6iJaPYbVTl
+	BvjcGKsp2WzBFPeOTGwp1Z7xiBMliBsS/lVxdANOeCGyMufLdnf2JspC6hpnZuplL7OXsiJkk71RB
+	SZR2W4+nMREQa87cSsySwXLwbK/7GUv5Lk//XH0yX8T9Xy062/Ti11KuQ9tJ58o6HaovoWuzssSMA
+	La/MwpRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTIgp-004mfR-Nc; Wed, 31 Aug 2022 08:03:12 +0000
-Received: from mail-lj1-x22d.google.com ([2a00:1450:4864:20::22d])
+	id 1oTJ2h-004vck-Hj; Wed, 31 Aug 2022 08:25:47 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTIYy-004jNg-9Z
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2022 07:55:05 +0000
-Received: by mail-lj1-x22d.google.com with SMTP id bx38so13732450ljb.10
-        for <linux-mtd@lists.infradead.org>; Wed, 31 Aug 2022 00:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=EjNp+7haJJSgy95sPk2VW8hRKYlROSxGZaohd5CN+EI=;
-        b=CwqpdxtS9UCgIfqRkt6+aIZ0njmYiIrSHVdD82RbExYkj+ULE08yVapfltsyJ9hvSW
-         Rb6AyDPrPUcT6w7doSdjava+dERXsqEeqkJ/OdD9iIWnhGyYr2pbtl8OVMc5f2KR9nKS
-         Qejeur1bzAP74t/mQ82tyWDbqmUDC9AhxRI4X9KatAxvosA3H+xbR59V13PI2JEk8yY4
-         qWl8JtRsZaoZqu2Oosv2IdDv4tHuE5U72Xa7zFNCUlFfBxSJzmT7ZvD/IY2EURuy74eP
-         vqquwYSd+wYFYdE4xfwCK7GOhmxagKAy3tb2bHzXyZ0n2wc2lCB65CjuZc7jHCba/tZX
-         bOqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=EjNp+7haJJSgy95sPk2VW8hRKYlROSxGZaohd5CN+EI=;
-        b=vcJcuj2nB+yG5tg+jVfEJtSfoBS9claitZxfrhxYArcj3VQEgDU0GXeZgoGMIyKuvP
-         K7Idg03MbnF+zqHYbEI7W1ImbpxAKL6HKE0Ew12gFP494nGj6jK/n6hZPXSgrk0HUeQo
-         nDwZR063q2Ga+QrY08OulgbRgklzVZHhFJXslrH0qkd3wjoqvZTPdk6xXrfgcfRpWOeR
-         lknhiHNVk82IHJtTSLQsoBynKUEWTTBuNmhy14vv4jWjHEoExhCaSjetz9YII3plLkax
-         et4bjDGimEW0PzWbK2HmWFQ3sKdm/HkKaJrcfBw2XWhhWucsJ24ceZmNe4l12KLdRoD6
-         Vu8A==
-X-Gm-Message-State: ACgBeo3RGqfetIszuyhCUhm7z8pUPGk5n6tGdyvre/8Rjt9ccQg7uJmx
-	06Cf4BQVQwykGj+X55kpFtEuMw==
-X-Google-Smtp-Source: AA6agR5TonQq2egwGvsmAbtSJj7KC2P5OqTK7X6niXiRLekmSFrg4NY6LC2zIVdsJmcKXe2E6Q9IwA==
-X-Received: by 2002:a2e:9d8b:0:b0:265:b87d:b43b with SMTP id c11-20020a2e9d8b000000b00265b87db43bmr3660954ljj.531.1661932501985;
-        Wed, 31 Aug 2022 00:55:01 -0700 (PDT)
-Received: from [192.168.28.124] (balticom-73-99-134.balticom.lv. [109.73.99.134])
-        by smtp.gmail.com with ESMTPSA id bn38-20020a05651c17a600b0025e778f6f13sm2030296ljb.4.2022.08.31.00.55.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Aug 2022 00:55:01 -0700 (PDT)
-Message-ID: <ffe0e6a8-96ba-e5ed-70c9-f7c6cd9c9ade@linaro.org>
-Date: Wed, 31 Aug 2022 10:55:00 +0300
+	id 1oTIuN-004ryO-6D; Wed, 31 Aug 2022 08:17:13 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 4D172126D;
+	Wed, 31 Aug 2022 10:17:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1661933824;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e3iSpyQN09evFGUwpbcqnJSarhmjMiSyteJCLVWGduA=;
+	b=QAQljtSCAZAC3wYiQG4rjFZPhdZ2aNOc0QjDAFzywpAhteTA6SXzvE0y8WPLsONYQyCcOR
+	9GRj8C9xSA1HQY1YH7W4ZF82mtAk/aiNFyRup8l/T/+bZTDPejrSYLoedouuOFu88lvQxn
+	BRR4Stwm8QeCOLpbDmNyH3/vSK7PjZOSBMYvaPyw1+PH5ESRWtmOKwDc8BW/Ji5FbAwq3Q
+	BJQdUZ6Y3llTQfNGKuFdg+DC3rMrQ0NvCMZHGOWeJVAOwGSHlggWCYv5hBn2p8DIG0Yfdo
+	KmizTcWjRPUAv2rqUClWVGn3CxaCXkhyJiwPPR+Sgxs5TVm9Z7FtL92zaAyGmw==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH v1 08/14] dt-bindings: mtd: relax the nvmem compatible
- string
-Content-Language: en-US
-To: Michael Walle <michael@walle.cc>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Frank Rowand <frowand.list@gmail.com>,
+Date: Wed, 31 Aug 2022 10:17:04 +0200
+From: Michael Walle <michael@walle.cc>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang
+ <leoyang.li@nxp.com>, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
+ <rafal@milecki.pl>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Frank Rowand <frowand.list@gmail.com>,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  netdev@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: Re: [PATCH v1 09/14] dt-bindings: nvmem: add YAML schema for the sl28
+ vpd layout
+In-Reply-To: <b85276ee-3e19-3adb-8077-c1e564e02eb3@linaro.org>
 References: <20220825214423.903672-1-michael@walle.cc>
- <20220825214423.903672-9-michael@walle.cc>
- <e0afa0fc-4718-2aa1-2555-4ebb2274850b@linaro.org>
- <c8aea3ecb0fcf08c42852f99a4f265b6@walle.cc>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <c8aea3ecb0fcf08c42852f99a4f265b6@walle.cc>
+ <20220825214423.903672-10-michael@walle.cc>
+ <b85276ee-3e19-3adb-8077-c1e564e02eb3@linaro.org>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <ddaf3328bc7d88c47517285a3773470f@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220831_005504_397287_E17921AA 
-X-CRM114-Status: GOOD (  21.55  )
+X-CRM114-CacheID: sfid-20220831_011711_443908_F0B25A1C 
+X-CRM114-Status: GOOD (  28.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,67 +81,156 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 31/08/2022 10:48, Michael Walle wrote:
-> Am 2022-08-31 09:37, schrieb Krzysztof Kozlowski:
->> On 26/08/2022 00:44, Michael Walle wrote:
->>> The "user-otp" and "factory-otp" compatible string just depicts a
->>> generic NVMEM device. But an actual device tree node might as well
->>> contain a more specific compatible string. Make it possible to add
->>> more specific binding elsewere and just match part of the compatibles
->>
->> typo: elsewhere
->>
->>> here.
->>>
->>> Signed-off-by: Michael Walle <michael@walle.cc>
->>> ---
->>>  Documentation/devicetree/bindings/mtd/mtd.yaml | 7 ++++---
->>>  1 file changed, 4 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml 
->>> b/Documentation/devicetree/bindings/mtd/mtd.yaml
->>> index 376b679cfc70..0291e439b6a6 100644
->>> --- a/Documentation/devicetree/bindings/mtd/mtd.yaml
->>> +++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
->>> @@ -33,9 +33,10 @@ patternProperties:
->>>
->>>      properties:
->>>        compatible:
->>> -        enum:
->>> -          - user-otp
->>> -          - factory-otp
->>> +        contains:
->>> +          enum:
->>> +            - user-otp
->>> +            - factory-otp
->>
->> This does not work in the "elsewhere" place. You need to use similar
->> approach as we do for syscon or primecell.
+Am 2022-08-31 09:45, schrieb Krzysztof Kozlowski:
+> On 26/08/2022 00:44, Michael Walle wrote:
+>> Add a schema for the NVMEM layout on Kontron's sl28 boards.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>>  .../nvmem/layouts/kontron,sl28-vpd.yaml       | 52 
+>> +++++++++++++++++++
+>>  1 file changed, 52 insertions(+)
+>>  create mode 100644 
+>> Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
+>> 
+>> diff --git 
+>> a/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml 
+>> b/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
+>> new file mode 100644
+>> index 000000000000..e4bc2d9182db
+>> --- /dev/null
+>> +++ 
+>> b/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
+>> @@ -0,0 +1,52 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: 
+>> http://devicetree.org/schemas/nvmem/layouts/kontron,sl28-vpd.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: NVMEM layout of the Kontron SMARC-sAL28 vital product data
+>> +
+>> +maintainers:
+>> +  - Michael Walle <michael@walle.cc>
+>> +
+>> +description:
+>> +  The vital product data (VPD) of the sl28 boards contains a serial
+>> +  number and a base MAC address. The actual MAC addresses for the
+>> +  on-board ethernet devices are derived from this base MAC address by
+>> +  adding an offset.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - const: kontron,sl28-vpd
+>> +      - const: user-otp
+>> +
+>> +  serial-number:
+>> +    type: object
 > 
-> I'm a bit confused. Looking at
->    Documentation/devicetree/bindings/arm/primecell.yaml
-> it is done in the same way as this binding.
+> You should define the contents of this object. I would expect this to 
+> be
+> uint32 or string. I think you also need description, as this is not
+> really standard field.
 
-Yes. primecell is like your mtd here. And how are other places with
-primcell (like other places with user-otp) done?
+First thing, this binding isn't like the usual ones, so it might be
+totally wrong.
 
+What I'd like to achieve here is the following:
+
+We have the nvmem-consumer dt binding where you can reference a
+nvmem cell in a consumer node. Example:
+   nvmem-cells = <&base_mac_address 5>;
+   nvmem-cell-names = "mac-address";
+
+On the other end of the link we have the nvmem-provider. The dt
+bindings works well if that one has individual cell nodes, like
+it is described in the nvmem.yaml binding. I.e. you can give the
+cell a label and make a reference to it in the consumer just like
+in the example above.
+
+Now comes the catch: what if there is no actual description of the
+cell in the device tree, but is is generated during runtime. How
+can I get a label to it. Therefore, in this case, there is just
+an empty node and the driver will associate it with the cell
+created during runtime (see patch 10). It is not expected, that
+is has any properties.
+
+>> +
+>> +  base-mac-address:
 > 
-> Whereas, the syscon use a "select:" on top of it. I'm
-> pretty sure, I've tested it without the select and the
-> validator picked up the constraints.
+> Fields should be rather described here, not in top-level description.
 > 
-> Could you elaborate on what is wrong here? Select missing?
+>> +    type: object
+> 
+> On this level:
+>     additionalProperties: false
+> 
+>> +
+>> +    properties:
+>> +      "#nvmem-cell-cells":
+>> +        const: 1
+>> +
+> 
+> I also wonder why you do not have unit addresses. What if you want to
+> have two base MAC addresses?
 
-You got warning from Rob, so run tests. I think you will see the errors,
-just like bot reported them.
+That would describe an offset within the nvmem device. But the offset
+might not be constant, depending on the content. My understanding
+so far was that in that case, you use the "-N" suffix.
 
-Best regards,
-Krzysztof
+base-mac-address-1
+base-mac-address-2
+
+(or maybe completely different names).
+
+>> +required:
+>> +  - compatible
+> 
+> Other fields are I guess required? At least serial-number should be 
+> always?
+
+Yes I could add them to the required list, but they are only
+"required" if you need to reference them within the device tree, in 
+which
+case there have to be there anyway. IOW, the driver doesn't care if
+there is a node. If there is none, it doesn't set the "struct 
+device_node*"
+in the nvmem cell.
+
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +      otp-1 {
+> 
+> Messed up indentation (use 4 spaces). Generic node name "otp".
+> 
+>> +          compatible = "kontron,sl28-vpd", "user-otp";
+>> +
+>> +          serial_number: serial-number {
+> 
+> What's the point of the empty node?
+
+See above.
+
+-michael
+
+>> +          };
+>> +
+>> +          base_mac_address: base-mac-address {
+>> +              #nvmem-cell-cells = <1>;
+>> +          };
+>> +      };
+>> +
+>> +...
 
 ______________________________________________________
 Linux MTD discussion mailing list
