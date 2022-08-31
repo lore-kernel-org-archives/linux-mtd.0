@@ -4,67 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 133AAECAAD5
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Aug 2022 18:33:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A00BBC0502A
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 Aug 2022 05:00:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=PCcZtrScTJ/cCLPzZAfCm/YTDnpY2k6Ittp93b/Gdl8=; b=UEaDg1UcdF+GuG
-	lJZFM6xiiVNtQ3oBUc+fa3x0zrqft2rwAuIHur4WGzIW0glOE14hv47ENqs1vfEywoqGwkkeE3CgI
-	5GAxBnpl87+fc6UmnJ5IQDajIGaS65mwm4hB3bGJLyk2BgRZ8Z9RqDIRze7zGzLi0NIj4BVX8n1lz
-	zL87A5oPYmafcZyh/tECC3VgY9FJrQEIlFiKHr0WafW/ZjXXJvXJ0srYMhkxlusauMF3W6JZwYIp6
-	sWL/jkykpxYt7nlO3cSG57MC4AVksdJm4xNKRBYvc1gcrqrJRLL0SY2Yg3APOyZPKTG6eIdOB5PpO
-	rmJiWwYxpOh+YxdaT3VA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=HWPfo5fVeRD5K/Q3g12rfQVkEwxE0+hSjOQyycbqGR0=; b=hgN31IF0Tgb97k
+	NbKZLtjromba4Y11oeWRPN0b5TnkNyvzLS9Kc2B5TsboH00z+axjPSKzkRsObbGf3z4lxxKc4eVxp
+	PvR00a/AjBEyXpmhcWNqMcUd+UjtynFW9NAvPSuIrz2rwryPfXdVTFogKRKaC7gXbiOV/PnqR0VEs
+	YsOKxDOFY3/K7dvJY1lNVB79bCDesky/AjVgMUzTBEbSaw5BInB9Z+Uz1T6flyGWJcWNU0VcCq2df
+	Dh8jS8V9s10GP4Pz8oBZLMY1yTntRies+yxlF1425Zrdgj6h1cQDojutof1N6nW8FpKMR8YuX7Lsx
+	IhAK1ewI3+YSxawY+5Dg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oT63L-001Dqx-Up; Tue, 30 Aug 2022 18:33:36 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1oTFpD-003oSF-Fu; Wed, 31 Aug 2022 04:59:39 +0000
+Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oT63I-001DoQ-U9
-	for linux-mtd@lists.infradead.org; Tue, 30 Aug 2022 18:33:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661884412; x=1693420412;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=h1BxaOOoiltf/jjn9jarqjcp6JmDX52ctebixNc5/GI=;
-  b=FaEJ5VRnxchQti4Bz+Yg5QVdyNAyeksswkBEuAaowKncX9yPQA1/xhsO
-   UfLS3g2E/BpWNmw8chP1b24KUokzc46Ux144gGAnF16aa4kVmK/b7Z5SK
-   P2sl9KPBe4/Qb1Y8fISs9tz8WT1E51U8FKRbrfzUctDwDV41FdUiGOlsk
-   SeTrLgcYOLwIRIdACzFGXgRhC4nY5O/BArPpNOuB/koiNYUs3prhcM7Qh
-   73jZi/0splORQlEJOkhXJ5F1dK3zSRf/yK3PB5rpxzeI5Mxte9tbr9sdW
-   WUwf0feaR75JzC8NjNfT4W8i/CHbUSqIaad3bsOOEZiDj5geUD/xZ8ahD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10455"; a="381567826"
-X-IronPort-AV: E=Sophos;i="5.93,275,1654585200"; 
-   d="scan'208";a="381567826"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2022 11:33:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,275,1654585200"; 
-   d="scan'208";a="754149113"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Aug 2022 11:33:24 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 31461AD; Tue, 30 Aug 2022 21:33:39 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] mtd: rawnand: Replace of_gpio_named_count() by gpiod_count()
-Date: Tue, 30 Aug 2022 21:33:36 +0300
-Message-Id: <20220830183336.49966-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
+	id 1oTFpA-003oNj-Q4
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2022 04:59:38 +0000
+Received: by mail-pj1-x1036.google.com with SMTP id w88-20020a17090a6be100b001fbb0f0b013so13890639pjj.5
+        for <linux-mtd@lists.infradead.org>; Tue, 30 Aug 2022 21:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=wfS7hwzSU0sf8meonpN9iroxszozhmh22GHztDWWImo=;
+        b=NfRyXQAZIwIYRSHBK8crWBP0da2pDZp7JQu05dGOQ9wm+CHKKEwWHkLnuyiAn/wv7e
+         HyFtKDMAlTPO8ngljZuJ7WSuqt2QWWDdRehV3IwBiBy50tYQcC0u3f/oyxKXRe3TtjnS
+         OyGHTscuRVOn9JfWvOXitWOMnzqULCEO6ga5j5DgbeQLj9bz1YUEntNPpxYZ3mjtZYN9
+         XHZtmf996lW1MlQzeCRjLkQlT7yCLpuBqWjwm8l55tSQC8pICxthYYNGdPcW8ZllUGh8
+         rxn68Xjbr4NQUa8MSrtDBLzze0bjFzib5lES1ynaEomLByy4h7UW22QG5y9Ebgicbe97
+         z2yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=wfS7hwzSU0sf8meonpN9iroxszozhmh22GHztDWWImo=;
+        b=JEn+firQOuvuxa3JLroXv0HKTDU3tYGqXzEL8OVnKNhUSTgmI1T/NaNfhRJTX5c6sw
+         pF39j2rlaz5G3CVk0QvjRf34L/atm/CQtoRGxZAP8vxZ4mufVkoSfRS2ktK6rfsQKtmF
+         JV2kmGkIq/LJje05MwkbnpSM4kXgFi5EiGyNZqWs55FNlVdGV09taJxjwDktw1CWM74M
+         tajQIcZb1Krvoamd4/wz1E3daSDkRkXGebdvkGf+g/vfkgY0+ILqMg0duEON/zNMVh0p
+         fy79sLZx8tMmOFNeJ2k9FN/ymVOlordNDO2hijdyyC6UldYtqA0hjgTwQseq98geHIFp
+         1NwA==
+X-Gm-Message-State: ACgBeo3gbB/rLD91JuHlpX/84G42pv5GUV94sLauje982n5r0L5l7ZHL
+	JU3d0XXaSm6w0NxgUvJZIgKs65irF9I=
+X-Google-Smtp-Source: AA6agR6Su27aDyNQzmoLeYKfrhXuf+SgIpNMM3gwxSbpNitS9TsJ8YoiUFfx7ATeDJLGaVj/wJ7DAg==
+X-Received: by 2002:a17:90b:4f81:b0:1fe:1716:fe20 with SMTP id qe1-20020a17090b4f8100b001fe1716fe20mr1446507pjb.63.1661921971664;
+        Tue, 30 Aug 2022 21:59:31 -0700 (PDT)
+Received: from ISCNPF1JZGWX.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id w13-20020aa7954d000000b005367ef405e0sm10178519pfq.85.2022.08.30.21.59.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Aug 2022 21:59:31 -0700 (PDT)
+From: tkuw584924@gmail.com
+X-Google-Original-From: Takahiro.Kuwano@infineon.com
+To: linux-mtd@lists.infradead.org
+Cc: tudor.ambarus@microchip.com,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	tkuw584924@gmail.com,
+	Bacem.Daassi@infineon.com,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v2 1/4] mtd: spi-nor: sfdp: Update params->hwcaps.mask at xSPI profile 1.0 table parse
+Date: Wed, 31 Aug 2022 13:59:03 +0900
+Message-Id: <1b449bae6978f11f7636f2b5acb6435723963f59.1661915569.git.Takahiro.Kuwano@infineon.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1661915569.git.Takahiro.Kuwano@infineon.com>
+References: <cover.1661915569.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220830_113333_008323_554AD9CF 
-X-CRM114-Status: GOOD (  12.44  )
+X-CRM114-CacheID: sfid-20220830_215936_868937_42E89BAE 
+X-CRM114-Status: UNSURE (   9.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,33 +98,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As a preparation to unexport of_gpio_named_count(), convert the
-driver to use gpiod_count() instead.
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Existece of xSPI profile 1.0 table implies that the flash supports read
+and program in 8D-8D-8D mode. Update the params->hwcaps.mask in
+spi_nor_parase_profile1().
+
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/spi-nor/sfdp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 6b67b7dfe7ce..2200276c7f25 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5331,11 +5331,10 @@ static int of_get_nand_secure_regions(struct nand_chip *chip)
- int rawnand_dt_parse_gpio_cs(struct device *dev, struct gpio_desc ***cs_array,
- 			     unsigned int *ncs_array)
- {
--	struct device_node *np = dev->of_node;
- 	struct gpio_desc **descs;
- 	int ndescs, i;
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 2257f1b4c2e2..15fb7f661ae9 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -1183,10 +1183,17 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+ 	dummy = round_up(dummy, 2);
  
--	ndescs = of_gpio_named_count(np, "cs-gpios");
-+	ndescs = gpiod_count(dev, "cs");
- 	if (ndescs < 0) {
- 		dev_dbg(dev, "No valid cs-gpios property\n");
- 		return 0;
+ 	/* Update the fast read settings. */
++	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
+ 	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
+ 				  0, dummy, opcode,
+ 				  SNOR_PROTO_8_8_8_DTR);
+ 
++	/*
++	 * Page Program is "Required Command" in the xSPI Profile 1.0. Update
++	 * the params->hwcaps.mask here.
++	 */
++	nor->params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
++
+ out:
+ 	kfree(dwords);
+ 	return ret;
 -- 
-2.35.1
+2.25.1
 
 
 ______________________________________________________
