@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E35EAECAAD3
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51243ECAAD2
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:32:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gtPg/JMxUXrFb9D8zGrtbXEqh82mMFVAXN+ILmZb/ic=; b=kwE8JVnxRiA4rz
-	IMrryL0huKrz8rx+Lo5LwW31w+XUZfMuk6UkfGyDhzSu3mmJZ84Ja4MfdXKgCojqKuqsm7YleTGOw
-	f2kmWYIsjAFvoSl8AJD9wNLfM/aOf4t1zimDZabzEB8H2DawclQ+66MvX445vysP9Ib2c54QllVcq
-	7c5w9qDPXg9Z8miue0VVR8kIJeoi7CjvIH608JtpgnH/y5v1NhAwTXboAnZCzas+vjB2ZcLaivoRV
-	ZGaUbHKKpWGKwUrPwojNhc+I6YctRO00n7G45TGsMzF9WGUdjd2niqeb2L8e5eJrBzT9KRPJkc2q0
-	isIMAwFpbznldfDOvIcA==;
+	List-Owner; bh=wW41SUdrtpl2GHsnUgYvVSAt1UyfgPPI04n+1oo9yoo=; b=4rKaEabmW6Fx2b
+	DYrhfFsgTY/Flxjj7qpi4M0IEstRsjNwADFvTKxhxt493sBpf5JEY9K0m8kCoxdkSydlyhwjcAD3Z
+	Zc2wE1YKdtL0ibPMSwSAVqZZZdoMGzqTzG1EjVQlb5t2oYxuSG9koZB6Y26ChNyrGX+eUcYbsYEmZ
+	01ZelIsRxg3bjvaj+goWCnOEmZBaJ0zYdQgv2/DDsL6F4LSo4Dmhh9EKubcdRIIqxNiC3Zy0Yir5h
+	JgOUpQ4Bx3LhRMDaWLe/pwxA5TUy4lCnL8CjBt+jx9ms/6sSqd/dmd4pTb6KiOOiWF9H+MYiLelgD
+	DmoEg3TK+OfhwHulPdJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsiD-00FMsW-DX; Thu, 01 Sep 2022 22:31:01 +0000
+	id 1oTsk0-00FNoj-T1; Thu, 01 Sep 2022 22:32:53 +0000
 Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsWx-00FEh4-Ej; Thu, 01 Sep 2022 22:19:27 +0000
+	id 1oTsWy-00FEi4-6W; Thu, 01 Sep 2022 22:19:27 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id F2BBE220D;
-	Fri,  2 Sep 2022 00:19:13 +0200 (CEST)
+	by mail.3ffe.de (Postfix) with ESMTPSA id B428E2215;
+	Fri,  2 Sep 2022 00:19:14 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
 	t=1662070754;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EFD+0mrv3jpvtYWREXPyq1wWMmEP8gipYWNhSEthauI=;
-	b=oNNfzaxeanq1HoAf+vPwChOwaGCEVCu3KYV1OE/511BdJsIt/utKnfzGoKyx44xEkUW8bg
-	pRYRGg5vyAb7NLJnjHIE49UFaBBpczMHCCWihArQ6L2FMSxpaXGSOfHm1gvaahW1moew13
-	AurmHTvzWtkQMV3hmjRp2Zcz4oy9eWLASnuPCJVSFirZh1OAIPqVHF8ZuJGnrelUjFCudz
-	EU8Aa/nqFSxUvRMnWSAtHoRMPfP0sl6IQzds/Ony9ZkCEhkjdttsBpYQVuMdLxjBJ47Dj5
-	li6F/WYGVYmqzXB4Qw7s3GtfEozvYCW7HAEAmDCPmUA0BGk1cILpeSBZ7gtY1A==
+	bh=N9wQTn8dC8bPriyX4SQQmb5oAnnt3YF+DVu2omjw3q0=;
+	b=c0/5bLSF9fHzm+ZVLZ0QjPdba/j5vXimofHWypL1EtuVd62/K6bVwF+Bd5owz+nwBI9E+a
+	KyF0GQt+nxmSExwWxbRFCr9wL9UFPNhrJGI4pKJOXwjlo2kFCBN3GgzBxQxpuzhj8wYbXF
+	OZ+fCpBgiPLzG58nDeq8saEEO1EjgKfnMmyv4gx/PHx3H8mTpZ31FrXRll2ddtu2SuxAW1
+	pRj9porzJqzbIFjHSjQF/1qJ8LSI8UXV6YF4OyZZRdJzeqagtTmdsYRaVudWpSovulOaNo
+	Wr6s/bObnSQ8oCyS9cxOIkaUdRGV9Sfd7+kC2v5Dyphd51D1W1ZQLlX4EkZ5KA==
 From: Michael Walle <michael@walle.cc>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -60,17 +60,17 @@ Cc: linux-mtd@lists.infradead.org,
 	Ahmad Fatoum <a.fatoum@pengutronix.de>,
 	Philipp Zabel <p.zabel@pengutronix.de>,
 	Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 15/20] dt-bindings: nvmem: add YAML schema for the sl28 vpd layout
-Date: Fri,  2 Sep 2022 00:18:52 +0200
-Message-Id: <20220901221857.2600340-16-michael@walle.cc>
+Subject: [PATCH v2 17/20] nvmem: core: export nvmem device size
+Date: Fri,  2 Sep 2022 00:18:54 +0200
+Message-Id: <20220901221857.2600340-18-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220901221857.2600340-1-michael@walle.cc>
 References: <20220901221857.2600340-1-michael@walle.cc>
 MIME-Version: 1.0
 X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220901_151923_739973_3A134E0B 
-X-CRM114-Status: GOOD (  15.23  )
+X-CRM114-CacheID: sfid-20220901_151924_454088_96A1A880 
+X-CRM114-Status: GOOD (  10.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,94 +87,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a schema for the NVMEM layout on Kontron's sl28 boards.
+Export the size of the nvmem device. NVMEM layout drivers might need it
+and might not have access to the device which is registering the NVMEM
+device.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
 changes since v1:
- - add custom select
- - add description
- - add "additionalProperties: false", I wasn't sure if all the
-   subnodes needs it. I'd say yes, but the brcm,nvram binding
-   doesn't have them neither.
+ - none
 
- .../nvmem/layouts/kontron,sl28-vpd.yaml       | 67 +++++++++++++++++++
- 1 file changed, 67 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
+ drivers/nvmem/core.c           | 13 +++++++++++++
+ include/linux/nvmem-consumer.h |  6 ++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml b/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
-new file mode 100644
-index 000000000000..0c180f29e880
---- /dev/null
-+++ b/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
-@@ -0,0 +1,67 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/nvmem/layouts/kontron,sl28-vpd.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 6910796937f9..81fca32a7418 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -2045,6 +2045,19 @@ const char *nvmem_dev_name(struct nvmem_device *nvmem)
+ }
+ EXPORT_SYMBOL_GPL(nvmem_dev_name);
+ 
++/**
++ * nvmem_device_size() - Get the size of a given nvmem device.
++ *
++ * @nvmem: nvmem device.
++ *
++ * Return: size of the nvmem device.
++ */
++size_t nvmem_device_size(struct nvmem_device *nvmem)
++{
++	return nvmem->size;
++}
++EXPORT_SYMBOL_GPL(nvmem_device_size);
 +
-+title: NVMEM layout of the Kontron SMARC-sAL28 vital product data
+ static int __init nvmem_init(void)
+ {
+ 	return bus_register(&nvmem_bus_type);
+diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
+index 1f62f7ba71ca..6607f9a1d6dc 100644
+--- a/include/linux/nvmem-consumer.h
++++ b/include/linux/nvmem-consumer.h
+@@ -77,6 +77,7 @@ ssize_t nvmem_device_cell_read(struct nvmem_device *nvmem,
+ 			   struct nvmem_cell_info *info, void *buf);
+ int nvmem_device_cell_write(struct nvmem_device *nvmem,
+ 			    struct nvmem_cell_info *info, void *buf);
++size_t nvmem_device_size(struct nvmem_device *nvmem);
+ 
+ const char *nvmem_dev_name(struct nvmem_device *nvmem);
+ 
+@@ -206,6 +207,11 @@ static inline int nvmem_device_write(struct nvmem_device *nvmem,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline size_t nvmem_device_size(struct nvmem_device *nvmem)
++{
++	return 0;
++}
 +
-+maintainers:
-+  - Michael Walle <michael@walle.cc>
-+
-+description:
-+  The vital product data (VPD) of the sl28 boards contains a serial
-+  number and a base MAC address. The actual MAC addresses for the
-+  on-board ethernet devices are derived from this base MAC address by
-+  adding an offset.
-+
-+# We need a select here so we don't match all nodes with 'user-otp'
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        const: kontron,sl28-vpd
-+  required:
-+    - compatible
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: kontron,sl28-vpd
-+      - const: user-otp
-+
-+  serial-number:
-+    type: object
-+    description: The board's serial number
-+
-+  base-mac-address:
-+    type: object
-+    description:
-+      Base MAC address for all on-module network interfaces. The first
-+      argument of the phandle will be treated as an offset.
-+
-+    properties:
-+      "#nvmem-cell-cells":
-+        const: 1
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+      otp-1 {
-+          compatible = "kontron,sl28-vpd", "user-otp";
-+
-+          serial_number: serial-number {
-+          };
-+
-+          base_mac_address: base-mac-address {
-+              #nvmem-cell-cells = <1>;
-+          };
-+      };
-+
-+...
+ static inline const char *nvmem_dev_name(struct nvmem_device *nvmem)
+ {
+ 	return NULL;
 -- 
 2.30.2
 
