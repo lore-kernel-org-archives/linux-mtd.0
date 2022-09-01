@@ -4,31 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EFE0ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:26:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E37ECAAD3
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:27:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eZ4e/2+LdkEwK86zCipN/IIyHR3/yKyKL9x4bw27e5A=; b=tcD/aDcLXFJwCl
-	fsFQSwyXcrHKOve9yKcRaM/aycB4/SohRSATpkIOx95MdyQypKoNfvsOD85LuZw7Rq5LMObEhdYd2
-	QwjbRMwRBnoYKMKapvGxjKg1LFAcgvapMrN8qrRgW2pdjBG2LfBr4x/82VoQv3OpShtV6RCwPSwDq
-	RvW/QBxb+gLP96nD3w9ud3Fx6pV3zQv6CYIhpTyYkUEfvyv32kLc0USpxbAjdIo1Oc4J68/sElFGM
-	lnxvNk5O5H5eP8sykTN32Jt49R9qDb3Arqz1/00R8/W9kQO+nvziOUAly4VwN1nvj3plkk5VHv9AF
-	ZSuU4Itehyxu8MT8ni2w==;
+	List-Owner; bh=/x1EvqeBQRKnF+vsnRjmpoosbHOJHDG97GrpCHg8mQo=; b=oxBP6XAQ2vFvwO
+	pZoIw3yh5eSopLoYz0do8mDepL2tABoMysINCIEeidNeUh73SgqHweLKsrG0IWM1CpLavJcL/ADGr
+	DkZBv6us2eF7b/YkvhrdHLXfNOMCmMNWhbRSpKnCfdvlgxIsValthrXOFswJZOsuY04bD7KgfjYvr
+	rm+Z5fdU/Ki27pxSTY/MeEcgRQLoIVs0LveZ9MmK+1QofPV/XX8nj7o/kRss+P7f5Nf4DMdBnRJDz
+	JLOfPN7a8YxwagZ1O6BWuCx0TWBrjqbGqdVCvdTtFVhoWtLxUCqKduV80QJa8sunoc+/FHRSSFJgH
+	aaV3DR0qK6LtxGuyVjOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsdm-00FKFr-RX; Thu, 01 Sep 2022 22:26:28 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1oTseY-00FKbx-0s; Thu, 01 Sep 2022 22:27:14 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsWw-00FEfY-2K; Thu, 01 Sep 2022 22:19:24 +0000
+	id 1oTsWw-00FEfT-28; Thu, 01 Sep 2022 22:19:25 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id B7C822209;
+	by mail.3ffe.de (Postfix) with ESMTPSA id 78B6E2205;
 	Fri,  2 Sep 2022 00:19:13 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
 	t=1662070753;
@@ -36,12 +36,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail20220821
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vFjv7dJFpQ+L/+5iWkUoVgYZNozNXbOSg5BVzbMzGGc=;
-	b=Qt0kiq7il6F978sDpy2pchihqLpiRtEiQsZa2FbKzPwS08bYhlaAqpgpHT+HgW75YU1guf
-	DJrBaW2KsEc5IJxE+UJGOj6Ac9vwwmrblO6+pF+Y6XhwfdgvNSRe/rXFkByF3JQ3NZyenG
-	iPmU+fJGn9pNVf/X78l7EtSnAT4z++OreoaNo7fjYmZmk1vAZA93tpCmz4zvQl1MhJVnzu
-	ouphqV0VwQSjpA2AwPnwi60vEl63jTXA/gliwSGn95wzSiSMooE1fZFGc+HwBb0ZXliXug
-	Sz225qm9PxNvKvMC4Ku+i2tqYAWe8mun/8MOr+OCY9Sk6qJ4aBFcA1QFTjMmmA==
+	bh=ZGryqp6PN2Xl4uE1Cl8ul5MHURkXagR6tqozK7Gh86g=;
+	b=NHxHG204Y9W9I0zSVh0EVs8SFiwhe9ccuNqrQNRb6USXzgjoncd/2WxYqubX0TaRuCtBJn
+	C+dK2S002mU8Ra8ZAMChbkkwIadhH+9P5DERw2aCazNBy2TBDP4Q+nzB4GeLsMa0RnOyx4
+	gL/m43Nzb117yWQPXfCuApkTtcwx1/wyt4SBKrpz5uv7YOT8DUWd5XgaTJjdn65aAbqCAL
+	PuoGIN4XWUg0zUaWoHTGPhl192nLkdOSMFHCunchKktSaEI3SYfQURf9lbNmyizNJQRdmW
+	TKalRIq1T7LBbQouNAvlGCvVrMzs5S6We3v7crBY9yuZBeO0UcFQxo/Futg5YA==
 From: Michael Walle <michael@walle.cc>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -60,18 +60,17 @@ Cc: linux-mtd@lists.infradead.org,
 	Ahmad Fatoum <a.fatoum@pengutronix.de>,
 	Philipp Zabel <p.zabel@pengutronix.de>,
 	Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 14/20] dt-bindings: mtd: relax the nvmem compatible string
-Date: Fri,  2 Sep 2022 00:18:51 +0200
-Message-Id: <20220901221857.2600340-15-michael@walle.cc>
+Subject: [PATCH v2 13/20] nvmem: core: drop priv pointer in post process callback
+Date: Fri,  2 Sep 2022 00:18:50 +0200
+Message-Id: <20220901221857.2600340-14-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220901221857.2600340-1-michael@walle.cc>
 References: <20220901221857.2600340-1-michael@walle.cc>
 MIME-Version: 1.0
 X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220901_151922_339968_A1E20428 
-X-CRM114-Status: UNSURE (   9.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220901_151922_338276_EF163947 
+X-CRM114-Status: GOOD (  13.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,38 +87,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The "user-otp" and "factory-otp" compatible string just depicts a
-generic NVMEM device. But an actual device tree node might as well
-contain a more specific compatible string. Make it possible to add
-more specific binding elsewhere and just match part of the compatibles
-here.
+It doesn't make any more sense to have a opaque pointer set up by the
+nvmem device. Usually, the layout isn't associated with a particular
+nvmem device.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
 changes since v1:
- - fix typo in commit message
+ - new patch
 
- Documentation/devicetree/bindings/mtd/mtd.yaml | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/nvmem/core.c           | 4 ++--
+ drivers/nvmem/imx-ocotp.c      | 4 ++--
+ include/linux/nvmem-provider.h | 5 +++--
+ 3 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-index 3498e485679b..25b91f25fcf4 100644
---- a/Documentation/devicetree/bindings/mtd/mtd.yaml
-+++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-@@ -33,9 +33,10 @@ patternProperties:
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index d31d3f0ab517..6910796937f9 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -1523,8 +1523,8 @@ static int __nvmem_cell_read(struct nvmem_device *nvmem,
+ 		nvmem_shift_read_buffer_in_place(cell, buf);
  
-     properties:
-       compatible:
--        enum:
--          - user-otp
--          - factory-otp
-+        contains:
-+          enum:
-+            - user-otp
-+            - factory-otp
+ 	if (cell->read_post_process) {
+-		rc = cell->read_post_process(nvmem->priv, id, index,
+-					     cell->offset, buf, cell->bytes);
++		rc = cell->read_post_process(id, index, cell->offset, buf,
++					     cell->bytes);
+ 		if (rc)
+ 			return rc;
+ 	}
+diff --git a/drivers/nvmem/imx-ocotp.c b/drivers/nvmem/imx-ocotp.c
+index ac0edb6398f1..5e869d4a81c5 100644
+--- a/drivers/nvmem/imx-ocotp.c
++++ b/drivers/nvmem/imx-ocotp.c
+@@ -222,8 +222,8 @@ static int imx_ocotp_read(void *context, unsigned int offset,
+ 	return ret;
+ }
  
-     required:
-       - compatible
+-static int imx_ocotp_cell_pp(void *context, const char *id, int index,
+-			     unsigned int offset, void *data, size_t bytes)
++static int imx_ocotp_cell_pp(const char *id, int index, unsigned int offset,
++			     void *data, size_t bytes)
+ {
+ 	u8 *buf = data;
+ 	int i;
+diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
+index 9d22dc5a3fa5..46067a6a0395 100644
+--- a/include/linux/nvmem-provider.h
++++ b/include/linux/nvmem-provider.h
+@@ -19,8 +19,9 @@ typedef int (*nvmem_reg_read_t)(void *priv, unsigned int offset,
+ typedef int (*nvmem_reg_write_t)(void *priv, unsigned int offset,
+ 				 void *val, size_t bytes);
+ /* used for vendor specific post processing of cell data */
+-typedef int (*nvmem_cell_post_process_t)(void *priv, const char *id, int index,
+-					 unsigned int offset, void *buf, size_t bytes);
++typedef int (*nvmem_cell_post_process_t)(const char *id, int index,
++					 unsigned int offset, void *buf,
++					 size_t bytes);
+ 
+ enum nvmem_type {
+ 	NVMEM_TYPE_UNKNOWN = 0,
 -- 
 2.30.2
 
