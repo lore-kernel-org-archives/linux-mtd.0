@@ -4,66 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2E6BECAAD1
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 07:39:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95C12ECAAD3
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 07:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=jvGeime94AcCwP/J+Gyll7Bwr0AeCi2i9+Ul0CgrR+s=; b=0ls2oPuWcY6vn9U2nfmbZiQbaa
-	r37/rLr1pWs5Zp9qXsNHGa3lxK6U86FQXGu3g9MT3P8Nj9AvWFN9iV51277yPZVAWCoKTI/ZfHpXZ
-	yRY8czd1YWRy17PyQSpQu30OtF3XK1uRemx3/yhfgWTg9aAYDBRIFUtHno0M70FtMQ1UZs5Ij86e5
-	dyoz9yNSaMCAgVYe1FLdwetPV3yu+HRvCHKLq+weF9Bc2w7rVCU+cR5jwhuSxcfMO7+GkpYbP9SKP
-	ypzpvrCSppR0Ew8eLJY7UVsPOeqXWn/vPt/wp8JYddYaaGWwi0N10nxdWy3/ez/igvfQ5NfngCFQP
-	p9Yo/i9g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HG2meus1gFhGrdROTteFch3MoLwZdOStdQbCt/kjE+Q=; b=EInrpa3y9IoNgP
+	Jc4yQ/7aR6XLkLN4gAMd/5qO34SJbbSkhpDbGvXX3Z04m+ymuYk6c4KF/zxm1S7RIZBya57rc5hLU
+	LvqItswPhZwbSEA4FkR78wgGXXVSCy1SwHteymN/nnFoV+hiprFiPpJa/TTvlTRvdY9X1zmM6LptH
+	/mRZ3LAtj3wX+wgCunfjYU4Us6soWnIYxSdr5P0EFEwJSpFj2AsA5zYWsK80fdCvip3tTc7i7dJ63
+	XWd9m85gLN7Fas6qvFRrAoiKvXfMvFZ3l8bS0V5gb2GJwNNkNTc26mUmC1h1zDBejxKjB/KYTtarx
+	STTXVCHHzCs0azzok2Hw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTenM-00AMvA-Ek; Thu, 01 Sep 2022 07:39:24 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1oTetn-00AOBR-QS; Thu, 01 Sep 2022 07:46:03 +0000
+Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTenH-00AMuU-SI
-	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2022 07:39:21 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 88D582164;
-	Thu,  1 Sep 2022 09:39:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1662017957;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wMEtvcM6R7qWErDv+zpeNYOr9cq3oBFA1JIMh558M60=;
-	b=q/4wttpnf+Y01ithL9dlOUO6BYasi28m48j1xCoNp07VlkSa97v73f10YMFoHq7xzFswcr
-	qkm+MbJzo2pDtQggEl3g5Z9LH1vpDMs6WJjB2RR+B0ZY/Xn/mzw64tR+2xsuuCDAS30k0n
-	FOuyS/+YJmLPPaQv/ABYPJhBZzH6mcwp95F3bNiZzZKIKjHZdN1K/SdsJPQ6Uk9MAbNoGx
-	qk0jPJvGtv8ZwBUuaxy8cIyZa5RBhfv8Vxo8W0d+Tir5G+YrB49sULfv7bJQ79fV45CVR6
-	06ePGrJKsXZIrl8LUQhfflZc5Vvo3ux7tlDbYgdJ4tWOYY2TvquD8tIkXkUdUg==
+	id 1oTetl-00AOAy-IL
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2022 07:46:02 +0000
+Received: by mail-pf1-x429.google.com with SMTP id 72so16738985pfx.9
+        for <linux-mtd@lists.infradead.org>; Thu, 01 Sep 2022 00:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=f+g0o24Bq1QlHnqPog3te537VQPNq8LRPIdLIL8D32c=;
+        b=nY561n9IGkHiCzHKGAUM2mXfNlQWuYMO05ssj+N+DSCenlXulDVP+VsorkhF5Hz6h8
+         qnAtVUyiN7nd121VLlD7CUfYtwZYVihi3SNPuujGwvT/hXw3bBo4Jvha01CTg4JGWjsk
+         WY1V549X2mEdEkUf8Mlr0Jgrr7u88D9LgUrE7vw/vICs4XuGghubmDjDxHw61zRl/kZ4
+         O8OAPDFPyjIMHlpt42z6WTya3gD8ykvCW/sJOUabJF5Sp7Q8knz7FKJ6deiqCi/I0DJe
+         hpoNVYlwQpAL9D+fARw/OzP2kp4WcPLzrtFsJQ931n/qJW3mTfFP5YbvT8BcT2dj2I7+
+         lUag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=f+g0o24Bq1QlHnqPog3te537VQPNq8LRPIdLIL8D32c=;
+        b=dSBUBj8HW3x4rS/3aO/RX4nBIeAFUgb9OpO9fH/bqoHIc7TuLQb/IZML27RbW4XJmD
+         Ks3H4tJ0XqwEwW72dib2kGuJcatzHTYkEeeMW5U5WgpuheS58ivOgq84xD7eCF99csEg
+         omDO53hGu6XT7HANGxG330hCeWNZV6tR3fq0OtKBLkESleDaOjFC7E/56X3AyWchbPEV
+         oqGtcQEGHL0zNWiZO5CAwej5Er/x0Bd76rA8eojOUUjsl9Bc+IvBJ7cMG0cRcnI6+Ru6
+         5wp6i/SLevPtylD5R9ULo7mrNCrXOqI3EommvX/IIA5A+6GUhP6Pc1AWhzG20iB6bZgp
+         bQAg==
+X-Gm-Message-State: ACgBeo0PnmpjTMgDECEI6VgBiGPrK7rzTok7TmOL2fLbOpZ2cKRiJY23
+	R05c4wIChgLHFHS07aTsPFo=
+X-Google-Smtp-Source: AA6agR7NpALDnpCh8C2wzv0TW03iLpnJ89JOsqm+XbmyxgKvt/RHfDnexfF0ne36o5Pxxy1cWD7Aqg==
+X-Received: by 2002:a05:6a00:21c2:b0:52b:ff44:666a with SMTP id t2-20020a056a0021c200b0052bff44666amr30324333pfj.83.1662018359753;
+        Thu, 01 Sep 2022 00:45:59 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id z15-20020aa7990f000000b00536b2483aedsm12653099pff.199.2022.09.01.00.45.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Sep 2022 00:45:59 -0700 (PDT)
+From: cgel.zte@gmail.com
+X-Google-Original-From: ye.xingchen@zte.com.cn
+To: miquel.raynal@bootlin.com
+Cc: richard@nod.at,
+	vigneshr@ti.com,
+	yangyingliang@huawei.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	ye xingchen <ye.xingchen@zte.com.cn>,
+	Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] mtd: rawnand: Remove the unneeded result variable
+Date: Thu,  1 Sep 2022 07:45:54 +0000
+Message-Id: <20220901074555.313266-1-ye.xingchen@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Date: Thu, 01 Sep 2022 09:39:17 +0200
-From: Michael Walle <michael@walle.cc>
-To: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- saikrishna12468@gmail.com, git@amd.com
-Subject: Re: [PATCH v2 2/2] mtd: spi-nor: Add support for flash reset
-In-Reply-To: <20220901072914.30205-3-sai.krishna.potthuri@amd.com>
-References: <20220901072914.30205-1-sai.krishna.potthuri@amd.com>
- <20220901072914.30205-3-sai.krishna.potthuri@amd.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <f4c6e60a22a4252bcecdfb3a2c957b2a@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220901_003920_121434_6AB54184 
-X-CRM114-Status: GOOD (  19.54  )
+X-CRM114-CacheID: sfid-20220901_004601_647205_D821C4AC 
+X-CRM114-Status: GOOD (  11.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,79 +87,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-09-01 09:29, schrieb Sai Krishna Potthuri:
-> Add support for spi-nor flash reset via GPIO controller by reading the
-> reset-gpio property. If there is a valid GPIO specifier then reset will
-> be performed by asserting and deasserting the GPIO using gpiod APIs
-> otherwise it will not perform any operation.
-> 
-> Signed-off-by: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+From: ye xingchen <ye.xingchen@zte.com.cn>
 
-Reviewed-by: Michael Walle <michael@walle.cc>
+Return the value cadence_nand_set_access_width16() directly instead of
+storing it in another redundant variable.
 
-Just one comment, see below
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
+---
+ drivers/mtd/nand/raw/cadence-nand-controller.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> ---
->  drivers/mtd/spi-nor/core.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index f2c64006f8d7..a78ab9bae2be 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2933,6 +2933,27 @@ static void spi_nor_set_mtd_info(struct spi_nor 
-> *nor)
->  	mtd->_put_device = spi_nor_put_device;
->  }
-> 
-> +static int spi_nor_hw_reset(struct spi_nor *nor)
-> +{
-> +	struct gpio_desc *reset;
-> +
-> +	reset = devm_gpiod_get_optional(nor->dev, "reset", GPIOD_OUT_LOW);
-> +	if (IS_ERR_OR_NULL(reset))
-> +		return PTR_ERR_OR_ZERO(reset);
-> +
-> +	/*
-> +	 * Experimental delay values by looking at different flash device
-> +	 * vendors datasheets.
-> +	 */
-> +	usleep_range(1, 5);
-
-I think this is superfluous, because parts of the kernel
-will boot which should take longer than 1us. But I'm
-fine with leaving it here.
-
--michael
-
-> +	gpiod_set_value_cansleep(reset, 1);
-> +	usleep_range(100, 150);
-> +	gpiod_set_value_cansleep(reset, 0);
-> +	usleep_range(1000, 1200);
-> +
-> +	return 0;
-> +}
-> +
->  int spi_nor_scan(struct spi_nor *nor, const char *name,
->  		 const struct spi_nor_hwcaps *hwcaps)
->  {
-> @@ -2965,6 +2986,10 @@ int spi_nor_scan(struct spi_nor *nor, const char 
-> *name,
->  	if (!nor->bouncebuf)
->  		return -ENOMEM;
-> 
-> +	ret = spi_nor_hw_reset(nor);
-> +	if (ret)
-> +		return ret;
-> +
->  	info = spi_nor_get_flash_info(nor, name);
->  	if (IS_ERR(info))
->  		return PTR_ERR(info);
+diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
+index 0d72672f8b64..9dac3ca69d57 100644
+--- a/drivers/mtd/nand/raw/cadence-nand-controller.c
++++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
+@@ -1979,7 +1979,6 @@ static int cadence_nand_force_byte_access(struct nand_chip *chip,
+ 					  bool force_8bit)
+ {
+ 	struct cdns_nand_ctrl *cdns_ctrl = to_cdns_nand_ctrl(chip->controller);
+-	int status;
+ 
+ 	/*
+ 	 * Callers of this function do not verify if the NAND is using a 16-bit
+@@ -1990,9 +1989,7 @@ static int cadence_nand_force_byte_access(struct nand_chip *chip,
+ 	if (!(chip->options & NAND_BUSWIDTH_16))
+ 		return 0;
+ 
+-	status = cadence_nand_set_access_width16(cdns_ctrl, !force_8bit);
+-
+-	return status;
++	return cadence_nand_set_access_width16(cdns_ctrl, !force_8bit);
+ }
+ 
+ static int cadence_nand_cmd_opcode(struct nand_chip *chip,
+-- 
+2.25.1
 
 ______________________________________________________
 Linux MTD discussion mailing list
