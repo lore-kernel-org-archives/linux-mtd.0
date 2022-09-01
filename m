@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2FFAC54EE9
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:30:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DD2CECAAD3
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+Y1pBUacgKZkL19apA5zunGhVlmYWHq4uJHGnIEyIbs=; b=VAYOONLtX0Jv5f
-	iMGtiqQO2RTHvBS4sC5ESh5IVGw4r/qLM+gJ5C99EZ02nUim38Tsm0WAPhDhANzKO6rXk9wvY8AyC
-	5zp+4CWVceH4RwAtLQwD6No0LvamPYhK1jcU4tc8TD/bTSjvM51CSAwJwVskyEhInlMaVAapmXczS
-	WcMlekqA+4r5oex9tBksxeZDOdfZwZ0YOmxDLmBO7h4J7QjOEtgP2vQit2JbHlBQ9yszfxldd1ZwO
-	bGxIk3mbcQrN+EjCSRNpAJYtLo0KmjeNsjjns1OGGemNEF3D6p25XqQuBN0VF6h9NwuKtE707WH/y
-	8TnxOJZrAvVcPnMdvAQw==;
+	List-Owner; bh=+pRDD74Fh3VGjg8LGd/ACFdfpU/y4deaFGvRZLf6wG8=; b=P0q7rhxvAxHMg9
+	alXlOnmNuok3etEm4MFdQnU7/9gsbAfMRX65exI+ooJS1tOU4R/47/QSbFBMw2DyEYpb2rl+9ztGG
+	sh07SfNiAni6QUfYZWhUv1Gin1QTkWi+ZupKV7NJ1AnakRmTRcMA2R6HY6jfOdDA2HLuvu+t3oK5g
+	m9QG7jKSs4boLn8h/s8lAKONQB0AbXZerMAxNSu0RHnbmz0WORhdm8SN5ZscjIDV9iJLavKL4ssen
+	KP2eJuA3H0ylxSvl+bVZfkPCKsGKSFMnA3HzMs5MzHQ2NwWYp4G+g67/UfrF5Gn0b5ZMyu0KHN+XG
+	aSjvR8XGZsPvkHvMwP9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTshB-00FMEH-KD; Thu, 01 Sep 2022 22:29:57 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1oTsh2-00FM96-16; Thu, 01 Sep 2022 22:29:48 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsWv-00FEfA-Q6; Thu, 01 Sep 2022 22:19:25 +0000
+	id 1oTsWw-00FEfW-5V; Thu, 01 Sep 2022 22:19:25 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 866DC21EE;
+	by mail.3ffe.de (Postfix) with ESMTPSA id EC95421F3;
 	Fri,  2 Sep 2022 00:19:12 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1662070752;
+	t=1662070753;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=c5Tm5NgUjgsDKZgk1Ba857CClebez+/VRvwjllvM7EA=;
-	b=QNDnFCwPPEMrDdiAIZjnc2qr2trT/+wfriMAeCUHW8mtz+WDlqDTeANWBO5gS1DNDamyve
-	Tp5PzhSInvwBAkzYfDxM5PFGHVSl/bf/5TkQpiy6w2YZsI1qflDNntb8pCRFNw1IE6A8yE
-	sPHs7j77+ii7LMYbjX8bs2sSA/W98qdJ8o2gDqoQlglj2kdIsZnPDYICFeyXo98Yy0zR31
-	cNGc4SChoh1TGv8urKq891kNEjdcQ4ToUHFXbNkv+4O1vIVPOrSOfj3cE1uPFBO28p+f0f
-	y02dgjpM1Qc74ll54vCguJEHlx0Htq1ryuPWzebjdyjTY1hHwUZEn1bh9Eeuow==
+	bh=LIX4yxuF0DGmjyYqcq9SoUgQqK7P8vqfhJMPdhCjIuY=;
+	b=1pWbuAxWdMwT5D8wMxbQzVDKrwv53ygywBxxhmfilg0XfGxJYOy068oczfGF5yk0ax3Cte
+	3mH8erEbjQjmTQniaLsRuSogHTGuqvdhAE4QHrosV84qP8rmfiL9QAAGWNpLZcZpuJJF5F
+	Oq4LWyO9BtAWXi+5b6iqmPjNCDioaZgcCzJ1W7aFiYZgyxNU5scoEA53MmYEPcngT8BQ9t
+	YjBCs1V1tz6fX2UQZ63i6/s5T5DhOlFCu89JDDeKfhtxsZgjPp1fq7Eqb/uh9xz+KsZeHq
+	f3hlIGoQxMxvySycN+g1aeMbCS9XGFomw5COSImxeQM5r/vJStVD4OGW3zp4hQ==
 From: Michael Walle <michael@walle.cc>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -60,17 +60,17 @@ Cc: linux-mtd@lists.infradead.org,
 	Ahmad Fatoum <a.fatoum@pengutronix.de>,
 	Philipp Zabel <p.zabel@pengutronix.de>,
 	Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 10/20] nvmem: core: allow to modify a cell before adding it
-Date: Fri,  2 Sep 2022 00:18:47 +0200
-Message-Id: <20220901221857.2600340-11-michael@walle.cc>
+Subject: [PATCH v2 11/20] nvmem: imx-ocotp: replace global post processing with layouts
+Date: Fri,  2 Sep 2022 00:18:48 +0200
+Message-Id: <20220901221857.2600340-12-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220901221857.2600340-1-michael@walle.cc>
 References: <20220901221857.2600340-1-michael@walle.cc>
 MIME-Version: 1.0
 X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220901_151922_088204_D5F23594 
-X-CRM114-Status: GOOD (  13.97  )
+X-CRM114-CacheID: sfid-20220901_151922_440554_3EBF67DE 
+X-CRM114-Status: GOOD (  16.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,63 +87,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Provide a way to modify a cell before it will get added. This is useful
-to attach a custom post processing hook via a layout.
+In preparation of retiring the global post processing hook change this
+driver to use layouts. The layout will be supplied during registration
+and will be used to add the post processing hook to all added cells.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
+Complile-time tested only! Please test.
+
 changes since v1:
  - new patch
 
- drivers/nvmem/core.c           | 4 ++++
- include/linux/nvmem-provider.h | 5 +++++
- 2 files changed, 9 insertions(+)
+ drivers/nvmem/imx-ocotp.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 02d0a7099d9a..3b65512762b9 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -693,6 +693,7 @@ static int nvmem_validate_keepouts(struct nvmem_device *nvmem)
- 
- static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+diff --git a/drivers/nvmem/imx-ocotp.c b/drivers/nvmem/imx-ocotp.c
+index e9b52ecb3f72..ac0edb6398f1 100644
+--- a/drivers/nvmem/imx-ocotp.c
++++ b/drivers/nvmem/imx-ocotp.c
+@@ -225,18 +225,13 @@ static int imx_ocotp_read(void *context, unsigned int offset,
+ static int imx_ocotp_cell_pp(void *context, const char *id, int index,
+ 			     unsigned int offset, void *data, size_t bytes)
  {
-+	struct nvmem_layout *layout = nvmem->layout;
- 	struct device *dev = &nvmem->dev;
- 	struct nvmem_cell_entry *cell;
- 	struct device_node *child;
-@@ -729,6 +730,9 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+-	struct ocotp_priv *priv = context;
++	u8 *buf = data;
++	int i;
  
- 		info.np = of_node_get(child);
+ 	/* Deal with some post processing of nvmem cell data */
+-	if (id && !strcmp(id, "mac-address")) {
+-		if (priv->params->reverse_mac_address) {
+-			u8 *buf = data;
+-			int i;
+-
+-			for (i = 0; i < bytes/2; i++)
+-				swap(buf[i], buf[bytes - i - 1]);
+-		}
+-	}
++	if (id && !strcmp(id, "mac-address"))
++		for (i = 0; i < bytes / 2; i++)
++			swap(buf[i], buf[bytes - i - 1]);
  
-+		if (layout && layout->fixup_cell_info)
-+			layout->fixup_cell_info(nvmem, layout, &info);
+ 	return 0;
+ }
+@@ -488,7 +483,6 @@ static struct nvmem_config imx_ocotp_nvmem_config = {
+ 	.stride = 1,
+ 	.reg_read = imx_ocotp_read,
+ 	.reg_write = imx_ocotp_write,
+-	.cell_post_process = imx_ocotp_cell_pp,
+ };
+ 
+ static const struct ocotp_params imx6q_params = {
+@@ -595,6 +589,17 @@ static const struct of_device_id imx_ocotp_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, imx_ocotp_dt_ids);
+ 
++static void imx_ocotp_fixup_cell_info(struct nvmem_device *nvmem,
++				      struct nvmem_layout *layout,
++				      struct nvmem_cell_info *cell)
++{
++	cell->read_post_process = imx_ocotp_cell_pp;
++}
 +
- 		ret = nvmem_add_one_cell(nvmem, &info);
- 		kfree(info.name);
- 		if (ret) {
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index cb488b338d6f..9cb340764b89 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -157,6 +157,8 @@ struct nvmem_cell_table {
-  * @add_cells:		Will be called if a nvmem device is found which
-  *			has this layout. The function will add layout
-  *			specific cells with nvmem_add_one_cell().
-+ * @fixup_cell_info:	Will be called before a cell is added. Can be
-+ *			used to modify the nvmem_cell_info.
-  * @owner:		Pointer to struct module.
-  * @node:		List node.
-  *
-@@ -170,6 +172,9 @@ struct nvmem_layout {
- 	const struct of_device_id *of_match_table;
- 	int (*add_cells)(struct device *dev, struct nvmem_device *nvmem,
- 			 struct nvmem_layout *layout);
-+	void (*fixup_cell_info)(struct nvmem_device *nvmem,
-+				struct nvmem_layout *layout,
-+				struct nvmem_cell_info *cell);
++struct nvmem_layout imx_ocotp_layout = {
++	.fixup_cell_info = imx_ocotp_fixup_cell_info,
++};
++
+ static int imx_ocotp_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -619,6 +624,9 @@ static int imx_ocotp_probe(struct platform_device *pdev)
+ 	imx_ocotp_nvmem_config.size = 4 * priv->params->nregs;
+ 	imx_ocotp_nvmem_config.dev = dev;
+ 	imx_ocotp_nvmem_config.priv = priv;
++	if (priv->params->reverse_mac_address)
++		imx_ocotp_nvmem_config.layout = &imx_ocotp_layout;
++
+ 	priv->config = &imx_ocotp_nvmem_config;
  
- 	/* private */
- 	struct module *owner;
+ 	clk_prepare_enable(priv->clk);
 -- 
 2.30.2
 
