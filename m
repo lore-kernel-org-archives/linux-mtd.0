@@ -4,71 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1FDAECAAD1
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 Aug 2022 22:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6628ECAAD1
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 01:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iTvxIUozFR9jkeorjncH8u5OkNAQPno8ME8z6Lspzy4=; b=T3jIACdIY7p6Y3yseG+tmc6YCO
-	+3WsZifJqlyZ01nOJHVY+iz6Q907GPQ1Mg4kGz21dgIsNvviOVjBfkOFt5aWXsl+JcTPstA2Hgwt4
-	cD2eIY/1tf0zdoMJVCyLapXukTImvui6O716fVJ6I31vc4TSS5LSNNAfMm9qFXmlEEGEjAs/WhIV2
-	AQBLXoyvni28xA/ltsb3IyNBHmMZhMdjTMzy0bNIiONGIXzWdqgmXuIkejnw62cc6ClQ+mSp1MHz+
-	kR5tFoS6YEzBPq28JqN3xRI9Kk314Lkd9NC7/x1uPfcyVy4mWYo6wTAn1+DtuaYNGbXxYOMyf/wYN
-	6TmnuqRw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=eu1R2upWFkJyAxwBgv7AKdaXeKHphb35GmN77DrZWpI=; b=lbZASDzBzyndAD
+	273QHxkwv2CFcgRwsaSkyw/GIGlKzTsNb/2t47RbnE6lqOaLLOCWNrn7SfqgRqau2KSgxa1HWeZ4O
+	dYuN9VVmVDh7eBV0VWh5kK1l/W08K2lY6ZRXdpc+75ZPKPlEt2j/BAzFd64Yk0ycXeCEwWAj6gWQP
+	gq3ybsITK2B57JJDcvUeJsa8P64i4GJHpp08p0yat/uqtu4DN+2bg4xNIVbK8DR8CjCik15nmhfsH
+	9nuDG+agmTLusiFRzsrr3tlEsaLOZ/+stOeQwPjEDo0milCO+VzzC+vNx8RehlrWzrw53Ng/4dn6Y
+	VQ9fDNHqzLwAbEnO0opA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTWDz-008Una-O6; Wed, 31 Aug 2022 22:30:19 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1oTZSo-0094Ho-OD; Thu, 01 Sep 2022 01:57:50 +0000
+Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTWDo-008Umc-KX; Wed, 31 Aug 2022 22:30:10 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id E54E22126;
-	Thu,  1 Sep 2022 00:30:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1661985003;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5A2fJzkWuA9bifn4MudMipTvJqlngyg+cza0sDoxRl0=;
-	b=1WhjYa1SzJ9k71JE6p5vX6/cBxrlqc3zVmEflXmNFqmEOewjxP7vYZ5kejmmfbdUuFffva
-	G5MGC5GocP7DeNNm2jloqcbS3K8jEK7+APKukF/on/RZyvWTWlzQ+O2GbnISR6g5HgbBe2
-	v/7Gw8TZ/BWs1cK1ugiVP11fu0GG3CYQEiRxSWXQTKD6dcUF2+etuwGRuPN4RQEku0pQi8
-	lDK/gKjJ3rrFMpBgFFjiFOCqCIy8HjTEcfHgUX+McVPwmCBkD9mullNKk9yc+pzsVKNa5K
-	xhoVWUhDcO/Tc+9roHAPCHg2y8YiwqAJLfdfLAbhY8wXtCijfOrq1muQmyISxw==
+	id 1oTZSi-0094El-SU
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2022 01:57:48 +0000
+Received: by mail-pj1-x1031.google.com with SMTP id o4so15796773pjp.4
+        for <linux-mtd@lists.infradead.org>; Wed, 31 Aug 2022 18:57:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=6mfyiPwc22bEhXPHxCTjwhtmTBJgN0EskNQJLK9ocf4=;
+        b=np6HoEXPlccCcEBkEwpVM5Adn/NikjRSwAdoYnm5GrfkAnplsltFKUhefPSOdBRLmw
+         XzsownVhC9R2OgvHMJaqYjOjisnB76Nh8yGbsIiEtvjMqK/N+n+GfuSt8DTv+y+Ho4i0
+         WnFAsdwiHD/lvRcdXxCEUjjefyH6pw0MUburBKeHJetSioBYhlEP5nKnDc0FdvCeSZjE
+         KjOninB0VySAySpjmgWrWcnWVT4N/oxSpMYUqJLQ4J8S4W8om9lBXofhZa7Vu07fNN0q
+         Z2ZRKjVZWiEFGmb6xvsGKWA3CgPTAhhg+VeAhn6SRhur3qc+sXR5RqjXknaMF/odR8Lc
+         AMBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=6mfyiPwc22bEhXPHxCTjwhtmTBJgN0EskNQJLK9ocf4=;
+        b=g46wq3YuCRRNgxqaLbnpysacw9dMTTETa4Fk6cpkPaKeNaLUwEieoFBC+l8rKbe37S
+         sdNQ4fBNN5I419U2993d0kKXQhrff84Wc3NyRNBBTT+9q7xjl2ZMJ+MevzP22WOGhaf0
+         0vSh44n3qnjF+zx76AnATfngjGFAeG1DghTwSa5oC8aXF13n/alM3qg53lA32lTyEpZt
+         fgLfLBXcoQsDos6BXVGJWn8brYF6NYdcjBN4qHo1/pk4wpoKd3NJhJz/Ku+pMwcqnBIT
+         kHYjGClZdYoforYP/PjUVzBbHZQTdpjJRq6bom9JhBwNqAnqDSyDtKjukPIXBT8+kN8N
+         tXOg==
+X-Gm-Message-State: ACgBeo16dcyS1tb5ZgaJTsYxu06Eq2m1id2GuyDBwoxNwRAy+oZj3AOG
+	AVuiTLLzTNL7O7m5YpPEylU=
+X-Google-Smtp-Source: AA6agR6OozjYna21kOAlB6A2VXRScEvdY16r4UBayrh+1JNxlRY7yw/4+EOWyepGNJDNARUEeL21fw==
+X-Received: by 2002:a17:90a:d150:b0:1fd:9336:5db3 with SMTP id t16-20020a17090ad15000b001fd93365db3mr6107263pjw.242.1661997461490;
+        Wed, 31 Aug 2022 18:57:41 -0700 (PDT)
+Received: from [192.168.0.10] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id z15-20020a170902cccf00b0016c0eb202a5sm12367728ple.225.2022.08.31.18.57.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Aug 2022 18:57:40 -0700 (PDT)
+Message-ID: <11077b0e-0a79-401e-5232-1dc1d1a04d83@gmail.com>
+Date: Thu, 1 Sep 2022 10:57:36 +0900
 MIME-Version: 1.0
-Date: Thu, 01 Sep 2022 00:30:02 +0200
-From: Michael Walle <michael@walle.cc>
-To: Rob Herring <robh@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang
- <leoyang.li@nxp.com>, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Frank Rowand <frowand.list@gmail.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- netdev@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: Re: [PATCH v1 08/14] dt-bindings: mtd: relax the nvmem compatible
- string
-In-Reply-To: <20220831214809.GA282739-robh@kernel.org>
-References: <20220825214423.903672-1-michael@walle.cc>
- <20220825214423.903672-9-michael@walle.cc>
- <20220831214809.GA282739-robh@kernel.org>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <60308ba420cdd072ea19e11e2e5e7d4b@walle.cc>
-X-Sender: michael@walle.cc
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH 2/2] mtd: spi-nor: Add support for flash reset
+Content-Language: en-US
+To: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, saikrishna12468@gmail.com, git@amd.com,
+ takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <20220829090528.21613-1-sai.krishna.potthuri@amd.com>
+ <20220829090528.21613-3-sai.krishna.potthuri@amd.com>
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+In-Reply-To: <20220829090528.21613-3-sai.krishna.potthuri@amd.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220831_153008_884590_94AD6D55 
-X-CRM114-Status: GOOD (  15.95  )
+X-CRM114-CacheID: sfid-20220831_185744_952396_7A92A1F1 
+X-CRM114-Status: GOOD (  21.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,43 +95,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-08-31 23:48, schrieb Rob Herring:
-> On Thu, Aug 25, 2022 at 11:44:17PM +0200, Michael Walle wrote:
->> The "user-otp" and "factory-otp" compatible string just depicts a
->> generic NVMEM device. But an actual device tree node might as well
->> contain a more specific compatible string. Make it possible to add
->> more specific binding elsewere and just match part of the compatibles
->> here.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  Documentation/devicetree/bindings/mtd/mtd.yaml | 7 ++++---
->>  1 file changed, 4 insertions(+), 3 deletions(-)
+Hello,
+
+On 8/29/2022 6:05 PM, Sai Krishna Potthuri wrote:
+> Add support for spi-nor flash reset via GPIO controller by reading the
+> reset-gpio property. If there is a valid GPIO specifier then reset will
+> be performed by asserting and deasserting the GPIO using gpiod APIs
+> otherwise it will not perform any operation.
 > 
-> In hindsight it looks like we are mixing 2 different purposes of 'which
-> instance is this' and 'what is this'. 'compatible' is supposed to be 
-> the
-> latter.
+> Signed-off-by: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+> ---
+>  drivers/mtd/spi-nor/core.c | 50 +++++++++++++++++++++++++++++++++++---
+>  1 file changed, 46 insertions(+), 4 deletions(-)
 > 
-> Maybe there's a better way to handle user/factory? There's a similar
-> need with partitions for A/B or factory/update.
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index f2c64006f8d7..d4703ff69ad0 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2401,12 +2401,8 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
+>   */
+>  static void spi_nor_init_flags(struct spi_nor *nor)
+>  {
+> -	struct device_node *np = spi_nor_get_flash_node(nor);
+>  	const u16 flags = nor->info->flags;
+>  
+> -	if (of_property_read_bool(np, "broken-flash-reset"))
+> -		nor->flags |= SNOR_F_BROKEN_RESET;
+> -
+>  	if (flags & SPI_NOR_SWP_IS_VOLATILE)
+>  		nor->flags |= SNOR_F_SWP_IS_VOLATILE;
+>  
+> @@ -2933,9 +2929,47 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
+>  	mtd->_put_device = spi_nor_put_device;
+>  }
+>  
+> +static int spi_nor_hw_reset(struct spi_nor *nor)
+> +{
+> +	struct gpio_desc *reset;
+> +	int ret;
+> +
+> +	reset = devm_gpiod_get_optional(nor->dev, "reset", GPIOD_ASIS);
+> +	if (IS_ERR_OR_NULL(reset))
+> +		return PTR_ERR_OR_ZERO(reset);
+> +
+> +	/* Set the direction as output and enable the output */
+> +	ret = gpiod_direction_output(reset, 1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/*
+> +	 * Experimental Minimum Chip select high to Reset delay value
+> +	 * based on the flash device spec.
+> +	 */
+> +	usleep_range(1, 5);
+> +	gpiod_set_value(reset, 0);
+> +
+> +	/*
+> +	 * Experimental Minimum Reset pulse width value based on the
+> +	 * flash device spec.
+> +	 */
+> +	usleep_range(10, 15);
+> +	gpiod_set_value(reset, 1);
+> +
+> +	/*
+> +	 * Experimental Minimum Reset recovery delay value based on the
+> +	 * flash device spec.
+> +	 */
+> +	usleep_range(35, 40);
+Infineon (Spansion/Cypress) SEMPER flash (S25HL/HS, S28HL/HS) family
+specifies minimum tRH (Reset Pulse Hold - RESET# Low to CS# Low) as
+450~600us. Please take care for this.
 
-I'm not sure I understand what you mean. It has nothing to with
-user and factory provisionings.
+Please find datasheets at the following links.
 
-SPI flashes have a user programmable and a factory programmable
-area, some have just one of them. Whereas with A/B you (as in the
-user or the board manufacturer) defines an area within a memory device
-to be either slot A or slot B. But here the flash dictates what's
-factory and what's user storage. It's in the datasheet.
+https://www.infineon.com/dgdl/Infineon-S25HS256T_S25HS512T_S25HS01GT_S25HL256T_S25HL512T_S25HL01GT_256-Mb_(32-MB)_512-Mb_(64-MB)_1-Gb_(128-MB)_HS-T_(1.8-V)_HL-T_(3.0-V)_Semper_Flash_with_Quad_SPI-DataSheet-v02_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ee674b86ee3&da=t
 
-HTH
--michael
+https://www.infineon.com/dgdl/Infineon-S28HS256T_S28HS512T_S28HS01GT_S28HL256T_S28HL512T_S28HL01GT_256-Mb_(32-MB)_512-Mb_(64-MB)_1-Gb_(128-MB)_HS-T_(1.8-V)_HL-T_(3.0-V)_Semper_Flash_with_Octal_Interface-DataSheet-v03_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ee6bca96f97&da=t
+
+Thanks,
+Takahiro Kuwano
 
 ______________________________________________________
 Linux MTD discussion mailing list
