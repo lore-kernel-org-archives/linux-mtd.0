@@ -4,68 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1A6BECAAD2
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 19:55:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7719FECAAD2
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:19:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2GIl8prklcUuhKQlb+/vh5H1+WM00ISajv2i7kvFOkc=; b=XjkWT/QIo4pkvC
-	cIH+wfJIqMy2DTPmmmf6UupuRHkZRc9lG78cq7INRtyI34tThINHA0vEzfmg11TiTFnoqiQGXYgqE
-	xV/pUYzJcgR1UppTz3HP6i925pFPvFOaayMfC+35ECDb/a+OniNRp8I+DeVh9sDbYL9Ro9MoUtIt/
-	DaoDPt+xaZwVephxw+03hy4EJzBvk1WqiKrSScn/oVGS6KY4bb4BwH1Fzuz833m7tb9mJotJP3gxy
-	qU0E+XZCU5sNd0mPzhKIVNTxoi6OA6+BnnDXOoMlf3G0Q4BWAHocx8KRpYbf0xSsaqiq0of9LuGw8
-	PiSZRByR2Hb0MCfwIyzA==;
+	List-Owner; bh=MV8/avA5Lqc4iis6Y1nGC0heF6bYIXJgJJLf1PL+alE=; b=dVy+yc1505utoO
+	SDs2HLS0VHT3rNpXA0EG37xCbhxQZrW+VG6T4oOoNLJSUbpyCASgTDyzw44Spp/4djG2tsUrZVCQn
+	MaxbpRyLFyIz9MHu4vzsPpszr97UGThs/WodDSqVClDpYInfSdV1Jr6hx25sA359wWXw2PJzRoT86
+	7/lxpz1w/4liZE0FNQMJKgzaJVpe0obDsfdrwfNONu9EvN0Wl/SGMX5ieR8RQLPoaxcIxnIf28djZ
+	puINySHtl5JMLYnrG10OqqENUqcKb79B2kzWEMQDQqFWwVruBbQpvWTHA+Cl1lYC89rDCAJnMfPmn
+	fK0zrQMBD/3cvO36CeOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTqGy-00EN7h-H7; Thu, 01 Sep 2022 19:54:44 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1oTsXI-00FEva-5k; Thu, 01 Sep 2022 22:19:44 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTqGn-00EN1A-M6; Thu, 01 Sep 2022 19:54:34 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1oTsWq-00FEXt-V2; Thu, 01 Sep 2022 22:19:18 +0000
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3076061C2F;
-	Thu,  1 Sep 2022 19:54:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5AE0C433D6;
-	Thu,  1 Sep 2022 19:54:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1662062071;
-	bh=YH1Y50y+aIWGJPESEAGpE11vQpdK/FiX3f4PxACu/lI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=e190hmZgGNV2kzXNTjhOh2R6yto1hDszS2MYqhvM6ISoM0OPu9sbZ/iuGKKqgyNya
-	 MQcWNnE74qWqj5l3/Pi2imRO4m7CZwKvlxpXfhITNrBKwLhMW7JWqnU/188cyR8NHY
-	 /JM/oj6AKmbanv/4zUjhtU3ArZoeyjN8ddZ1T7rQrWq+83wlHMnD1FCQT+IDssDR7N
-	 vGyp3L0v2aKmeeiu1iV8lKCw3VMcKLceBJYxNU5Sh5+kmhkcM7tIhDelv6TlOGRJSz
-	 b9E1wcKKQbl1OJbrMcEUQxxxlf47tNK/0CziKvOeLe1DCfFJ4PvlqxGtVJoZ7kL6j1
-	 Gx2rxo97L+EOg==
-Date: Thu, 1 Sep 2022 12:54:30 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Michael Walle <michael@walle.cc>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang
- <leoyang.li@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Frank Rowand
- <frowand.list@gmail.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org, Ahmad Fatoum
- <a.fatoum@pengutronix.de>
-Subject: Re: [PATCH v1 01/14] net: add helper eth_addr_add()
-Message-ID: <20220901125430.5dd9e586@kernel.org>
-In-Reply-To: <1682967feab905d06402d0f8402799a8@walle.cc>
-References: <20220825214423.903672-1-michael@walle.cc>
-	<20220825214423.903672-2-michael@walle.cc>
-	<1682967feab905d06402d0f8402799a8@walle.cc>
+	by mail.3ffe.de (Postfix) with ESMTPSA id B53E82174;
+	Fri,  2 Sep 2022 00:19:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1662070748;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KPTSNnKuOZ7slK5iP2y/D4YlHgeHTfE+RpZ3l5g5oDE=;
+	b=xVw9apIIeycfaSw4xC5V+V9aqeQ+Yhu7JgXVUqFEgGpHNt0DbYiOqB8hQx+rwVIBbseS4d
+	Xv3TdS7ReFq+ZB1fdj+y2qCBF0DQM83gQ+8gZ8kmRZQ/l9ICbqBTm8XCEr0vIl/w24trl/
+	2vfBccFYhuNqgWqEOmOVCiXsN9zNWyey4vjN/ju14C4YANPzHhk05uJMSRh+uxLgFTdfXY
+	mQzyWJY61bzFrBiiEMNwiARl0UJs+GMQXNhYX9oLlNqSxxv93+HmO7pP1wlga2VCGiemE8
+	JBARPRLsKjn5pSrAG1/4uHSrt/86WceOjMa8wmu5BrkTSlcYo3EU2VHv2qu4wA==
+From: Michael Walle <michael@walle.cc>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Li Yang <leoyang.li@nxp.com>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Frank Rowand <frowand.list@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Ahmad Fatoum <a.fatoum@pengutronix.de>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Michael Walle <michael@walle.cc>,
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 02/20] of: base: add of_parse_phandle_with_optional_args()
+Date: Fri,  2 Sep 2022 00:18:39 +0200
+Message-Id: <20220901221857.2600340-3-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220901221857.2600340-1-michael@walle.cc>
+References: <20220901221857.2600340-1-michael@walle.cc>
 MIME-Version: 1.0
+X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220901_125433_810310_4CEC1320 
-X-CRM114-Status: GOOD (  15.83  )
+X-CRM114-CacheID: sfid-20220901_151917_186248_49B6D291 
+X-CRM114-Status: GOOD (  14.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,22 +88,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 01 Sep 2022 18:26:39 +0200 Michael Walle wrote:
-> Am 2022-08-25 23:44, schrieb Michael Walle:
-> > Add a helper to add an offset to a ethernet address. This comes in 
-> > handy
-> > if you have a base ethernet address for multiple interfaces.
-> > 
-> > Signed-off-by: Michael Walle <michael@walle.cc>  
-> 
-> Would it be possible to get an Ack for this patch, so I don't have
-> to repost this large (and still growing) series to netdev every time?
-> 
-> I guess it would be ok to have this go through another tree?
+Add a new variant of the of_parse_phandle_with_args() which treats the
+cells name as optional. If it's missing, it is assumed that the phandle
+has no arguments.
 
-Andrew's ack is strong enough, but in case there's any doubt:
+Up until now, a nvmem node didn't have any arguments, so all the device
+trees haven't any '#*-cells' property. But there is a need for an
+additional argument for the phandle, for which we need a '#*-cells'
+property. Therefore, we need to support nvmem nodes with and without
+this property.
 
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+changes since v1:
+ - none
+
+ include/linux/of.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 766d002bddb9..a0fe1a017452 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -1008,6 +1008,31 @@ static inline int of_parse_phandle_with_fixed_args(const struct device_node *np,
+ 					    index, out_args);
+ }
+ 
++/**
++ * of_parse_phandle_with_optional_args() - Find a node pointed by phandle in a list
++ * @np:		pointer to a device tree node containing a list
++ * @list_name:	property name that contains a list
++ * @cells_name:	property name that specifies phandles' arguments count
++ * @index:	index of a phandle to parse out
++ * @out_args:	optional pointer to output arguments structure (will be filled)
++ *
++ * Same as of_parse_phandle_with_args() except that if the cells_name property
++ * is not found, cell_count of 0 is assumed.
++ *
++ * This is used to useful, if you have a phandle which didn't have arguments
++ * before and thus doesn't have a '#*-cells' property but is now migrated to
++ * having arguments while retaining backwards compatibility.
++ */
++static inline int of_parse_phandle_with_optional_args(const struct device_node *np,
++						      const char *list_name,
++						      const char *cells_name,
++						      int index,
++						      struct of_phandle_args *out_args)
++{
++	return __of_parse_phandle_with_args(np, list_name, cells_name,
++					    0, index, out_args);
++}
++
+ /**
+  * of_property_count_u8_elems - Count the number of u8 elements in a property
+  *
+-- 
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
