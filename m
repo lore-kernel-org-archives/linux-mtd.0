@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7719FECAAD2
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:19:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B698CECAAD2
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MV8/avA5Lqc4iis6Y1nGC0heF6bYIXJgJJLf1PL+alE=; b=dVy+yc1505utoO
-	SDs2HLS0VHT3rNpXA0EG37xCbhxQZrW+VG6T4oOoNLJSUbpyCASgTDyzw44Spp/4djG2tsUrZVCQn
-	MaxbpRyLFyIz9MHu4vzsPpszr97UGThs/WodDSqVClDpYInfSdV1Jr6hx25sA359wWXw2PJzRoT86
-	7/lxpz1w/4liZE0FNQMJKgzaJVpe0obDsfdrwfNONu9EvN0Wl/SGMX5ieR8RQLPoaxcIxnIf28djZ
-	puINySHtl5JMLYnrG10OqqENUqcKb79B2kzWEMQDQqFWwVruBbQpvWTHA+Cl1lYC89rDCAJnMfPmn
-	fK0zrQMBD/3cvO36CeOA==;
+	List-Owner; bh=DyrvRaBshYUrqydCHAiJ8n08P3/7FX8jI5Ri57p5jX4=; b=rB1OVJnXwsvKod
+	fzg9J1JoM3lJm5I7m8h4q6Xj3YqMs6XK5F/YJQ4eR33BmmOyDELsBhUo4iTvhXsLphnA9nXVxWaeN
+	Bg+btH+IgFad2NjLsQW4eDyq5E5f3IN2JbzdKjZ78qs7ejZWj9rNMWb6AIuMMM/A7MZ50EqxZasTR
+	F+XylptYgZLGVptsb3TipQGDyz/W/T3zeL7TIML+4NYeX9tcEIKt6EG31jTiz8ExGrsK36SCgf5n8
+	TidEfkdX+Y3s/P3fNa1LIfk5/CcOCFwpAd3/9QDnC2J1kwj6uaxrw8prPR/syNuIsIrIDklkuCI3z
+	VTDDI233f4KcRuHtM6GA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsXI-00FEva-5k; Thu, 01 Sep 2022 22:19:44 +0000
+	id 1oTsXF-00FEuy-Of; Thu, 01 Sep 2022 22:19:41 +0000
 Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsWq-00FEXt-V2; Thu, 01 Sep 2022 22:19:18 +0000
+	id 1oTsWq-00FEXQ-V4; Thu, 01 Sep 2022 22:19:18 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id B53E82174;
-	Fri,  2 Sep 2022 00:19:08 +0200 (CEST)
+	by mail.3ffe.de (Postfix) with ESMTPSA id DCC132010;
+	Fri,  2 Sep 2022 00:19:07 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
 	t=1662070748;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KPTSNnKuOZ7slK5iP2y/D4YlHgeHTfE+RpZ3l5g5oDE=;
-	b=xVw9apIIeycfaSw4xC5V+V9aqeQ+Yhu7JgXVUqFEgGpHNt0DbYiOqB8hQx+rwVIBbseS4d
-	Xv3TdS7ReFq+ZB1fdj+y2qCBF0DQM83gQ+8gZ8kmRZQ/l9ICbqBTm8XCEr0vIl/w24trl/
-	2vfBccFYhuNqgWqEOmOVCiXsN9zNWyey4vjN/ju14C4YANPzHhk05uJMSRh+uxLgFTdfXY
-	mQzyWJY61bzFrBiiEMNwiARl0UJs+GMQXNhYX9oLlNqSxxv93+HmO7pP1wlga2VCGiemE8
-	JBARPRLsKjn5pSrAG1/4uHSrt/86WceOjMa8wmu5BrkTSlcYo3EU2VHv2qu4wA==
+	bh=wdjSL3TiHg3qFpviZsE8DP2S5RzCHH4DKzPfG+JMhKc=;
+	b=MD31gvVbYo7tM0nTjHtSpj+l08HOGGoGiWF6xKQiUjq68ekoSRL++w3Q4T1lJIaMTgX8hF
+	Dn5laG5VT2yoyNqpvBuuHnH9UOkfphV5B+jn0SWPSEQtuzaNQTUyx3LpNFWg6BdLDALDWL
+	A35GGTTMPmhrr+ZwOnXXjVOnOkOGIPwDvNC8lubbocR1C/eu341/xSUSvXzs9SI37y9Icj
+	LdLR/xMA+hRltry8fFAP7sKWHQhGLw1QJFAlpuMEyC9B7I5guVEGlhF+7zdY9BWGl04QW8
+	QVlnsB1qZcsPx+iuszGFE1ezn0hgNlyShJPek5X4+3wRG6nVgHKYv+2Kp27+cw==
 From: Michael Walle <michael@walle.cc>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -60,18 +60,19 @@ Cc: linux-mtd@lists.infradead.org,
 	Ahmad Fatoum <a.fatoum@pengutronix.de>,
 	Philipp Zabel <p.zabel@pengutronix.de>,
 	Michael Walle <michael@walle.cc>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 02/20] of: base: add of_parse_phandle_with_optional_args()
-Date: Fri,  2 Sep 2022 00:18:39 +0200
-Message-Id: <20220901221857.2600340-3-michael@walle.cc>
+	Andrew Lunn <andrew@lunn.ch>,
+	Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH v2 01/20] net: add helper eth_addr_add()
+Date: Fri,  2 Sep 2022 00:18:38 +0200
+Message-Id: <20220901221857.2600340-2-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220901221857.2600340-1-michael@walle.cc>
 References: <20220901221857.2600340-1-michael@walle.cc>
 MIME-Version: 1.0
 X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220901_151917_186248_49B6D291 
-X-CRM114-Status: GOOD (  14.78  )
+X-CRM114-CacheID: sfid-20220901_151917_191740_24BEA674 
+X-CRM114-Status: GOOD (  10.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,61 +89,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a new variant of the of_parse_phandle_with_args() which treats the
-cells name as optional. If it's missing, it is assumed that the phandle
-has no arguments.
-
-Up until now, a nvmem node didn't have any arguments, so all the device
-trees haven't any '#*-cells' property. But there is a need for an
-additional argument for the phandle, for which we need a '#*-cells'
-property. Therefore, we need to support nvmem nodes with and without
-this property.
+Add a helper to add an offset to a ethernet address. This comes in handy
+if you have a base ethernet address for multiple interfaces.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
 ---
 changes since v1:
  - none
 
- include/linux/of.h | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ include/linux/etherdevice.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 766d002bddb9..a0fe1a017452 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -1008,6 +1008,31 @@ static inline int of_parse_phandle_with_fixed_args(const struct device_node *np,
- 					    index, out_args);
+diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
+index a541f0c4f146..f144cadbe99d 100644
+--- a/include/linux/etherdevice.h
++++ b/include/linux/etherdevice.h
+@@ -507,6 +507,20 @@ static inline void eth_addr_inc(u8 *addr)
+ 	u64_to_ether_addr(u, addr);
  }
  
 +/**
-+ * of_parse_phandle_with_optional_args() - Find a node pointed by phandle in a list
-+ * @np:		pointer to a device tree node containing a list
-+ * @list_name:	property name that contains a list
-+ * @cells_name:	property name that specifies phandles' arguments count
-+ * @index:	index of a phandle to parse out
-+ * @out_args:	optional pointer to output arguments structure (will be filled)
++ * eth_addr_add() - Add (or subtract) and offset to/from the given MAC address.
 + *
-+ * Same as of_parse_phandle_with_args() except that if the cells_name property
-+ * is not found, cell_count of 0 is assumed.
-+ *
-+ * This is used to useful, if you have a phandle which didn't have arguments
-+ * before and thus doesn't have a '#*-cells' property but is now migrated to
-+ * having arguments while retaining backwards compatibility.
++ * @offset: Offset to add.
++ * @addr: Pointer to a six-byte array containing Ethernet address to increment.
 + */
-+static inline int of_parse_phandle_with_optional_args(const struct device_node *np,
-+						      const char *list_name,
-+						      const char *cells_name,
-+						      int index,
-+						      struct of_phandle_args *out_args)
++static inline void eth_addr_add(u8 *addr, long offset)
 +{
-+	return __of_parse_phandle_with_args(np, list_name, cells_name,
-+					    0, index, out_args);
++	u64 u = ether_addr_to_u64(addr);
++
++	u += offset;
++	u64_to_ether_addr(u, addr);
 +}
 +
  /**
-  * of_property_count_u8_elems - Count the number of u8 elements in a property
-  *
+  * is_etherdev_addr - Tell if given Ethernet address belongs to the device.
+  * @dev: Pointer to a device structure
 -- 
 2.30.2
 
