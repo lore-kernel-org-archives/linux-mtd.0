@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C3F8ECAAD2
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E846C6FA83
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=foveWIf3JrtCq2LG5XpMUi2OTyIF4nLH/fqTSp4NYgQ=; b=qTxIobeyomtda9
-	rvjYdfBRNXhzo6BPHuv6/b1nDek4SRx/L3Elgg3EOYzFQRPRkUwgfS7XidjLxpGX+1KEMsilk7P/Y
-	PX4+fA5atRjsZcsH6yF1ZfRjWhQfm4Z4r7vaLLq260bx0fRfO6QNh3jrJQw8viGwArflkpioaXQBZ
-	6O6QVxswTEdw+HRyZKuU345TLbH1sfJIURk6zyUrpFTK1XMlIbCMCqdGSvvv+jdPno83+vLzi2YdJ
-	K5OiPTUViWGVXa9EWRTyk3aFSJ66bOxLwALnP0vmdONmoRyxYm94Kh9mAtpBMEPX4z41wE6VCwavg
-	JfK4s3Kjo9AogedGPbjQ==;
+	List-Owner; bh=p3686LB7tGnHFmRQo/91lkhAL5caQaZIVA7GTHytt7k=; b=WF+gAEpCHd085e
+	0vqNZYXT4tuJktUmOQYz2YV+YZPhcxjVZUktilWVMNSSKPBn462PwVi/udCQcKCBN4IiIZXYbkxBw
+	KYI45Oa2LNPKLtjNG9RPVL+FGwP02Otgz5sDtJUEJ75xOG5mluIXCsGG9xBjRL+r0Wq7+bgo3lB+n
+	UFl19wfk5tsdRodhVbWk6NmQUqHXjfsG1EPtT2AAAqb997sbVJgUbIH/hnUsEnj0QtAhAKRNFFhFq
+	8/0rYiYSrULZJCXxa5kCSrDQBqB95uTGLZzBm7wd+dZZK+ca1ULglQOSjXqfFYjXEWfZ0D+izIEIK
+	ZzjE9b9VUdTmPWDfFvaA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTskA-00FNtu-MC; Thu, 01 Sep 2022 22:33:03 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1oTslA-00FOU5-91; Thu, 01 Sep 2022 22:34:04 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsWy-00FEhz-1b; Thu, 01 Sep 2022 22:19:27 +0000
+	id 1oTsWx-00FEgw-9J; Thu, 01 Sep 2022 22:19:28 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 0556E2219;
-	Fri,  2 Sep 2022 00:19:15 +0200 (CEST)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 566EB2211;
+	Fri,  2 Sep 2022 00:19:14 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1662070755;
+	t=1662070754;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zRsiRxIvVLTYwaf26x4VwnBi3EbjID5udnHi2XzBIfw=;
-	b=WL0WEDtus7dVCPBs0Q71ZwdW+UExMlJyJl4ZfbX/kA+9MlEj7oekaHIkH9kyEqF7SNE0Oh
-	HBAUi44gC+4EwUSfXunnLbKg+XKR11sLeHCoBiJolDZVYQGC4DlfwQhi4q4un7DpBm2ws0
-	eXF8BAbaQmewoJ6ZvONwKQawcV5aLzA0vYrZRkpdjzqqRT0hJaCHRxxKOaSzI/k/5RxXGI
-	yntnktGWFWUXS7vX3d6H5/HShVyjtLwYuKEKeO1Qs5rQKIlIVD/YhgOVhkFmj/W2OCwHgg
-	apQp7KkBrbpGHwxTAw1BoYlo9fQ7NTHz+Eftps+q4WFodCAf8PbIZonJOnR+3w==
+	bh=8r9e+6V1nQNFKR3i2dJ4bG2R6mZBtVL5bazbX9Ccc+Q=;
+	b=y1p0tb6bNbtesJ3/AG1/st3FHtfm2aY+Upnii+w30N5d+iKWcGAUZhCvQWVF+qnMxKnFTK
+	fG8G9NFdW7fRJIdN7G5T46msPCs3MyIaMxF/+8w7/wrT3gsNF3PU8cwYXMB8PPgrFUGYi4
+	XefQG237GCp1K0qQzVL/AoZVqTv4Ta+avDzS37hYt15WV4WkBjqiB+g0p7E4YDSmaHl3cR
+	6y7FN0rHe2t/WPgVNqqMWYNEGtpNvDTKyvXzlwBrXX5LgYTePX/22Pwgh8p46FftrzcsWC
+	Bxh8TUK8kkJAPU11utpw9fRfGb98t1QCLPWwrHfENKOONP4c/7eWLMXWq5dP1Q==
 From: Michael Walle <michael@walle.cc>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -60,17 +60,17 @@ Cc: linux-mtd@lists.infradead.org,
 	Ahmad Fatoum <a.fatoum@pengutronix.de>,
 	Philipp Zabel <p.zabel@pengutronix.de>,
 	Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 18/20] arm64: dts: ls1028a: sl28: get MAC addresses from VPD
-Date: Fri,  2 Sep 2022 00:18:55 +0200
-Message-Id: <20220901221857.2600340-19-michael@walle.cc>
+Subject: [PATCH v2 16/20] nvmem: layouts: add sl28vpd layout
+Date: Fri,  2 Sep 2022 00:18:53 +0200
+Message-Id: <20220901221857.2600340-17-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220901221857.2600340-1-michael@walle.cc>
 References: <20220901221857.2600340-1-michael@walle.cc>
 MIME-Version: 1.0
 X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220901_151924_317025_94FC8726 
-X-CRM114-Status: GOOD (  11.59  )
+X-CRM114-CacheID: sfid-20220901_151923_510596_F54CC42B 
+X-CRM114-Status: GOOD (  21.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,156 +87,201 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that it is finally possible to get the MAC addresses from the OTP
-memory, use it to set the addresses of the network devices.
-
-There are 8 reserved MAC addresses in total per board. Distribute them
-as follows:
-
-+----------+------+------+------+------+------+
-|          | var1 | var2 | var3 | var4 | kbox |
-+----------+------+------+------+------+------+
-| enetc #0 |   +0 |      |      |   +0 |   +0 |
-| enetc #1 |      |      |   +0 |   +1 |   +1 |
-| enetc #2 | rand | rand | rand | rand | rand |
-| enetc #3 |      |      |      |      |      |
-| felix p0 |      |   +0 |      |      |   +4 |
-| felix p1 |      |   +1 |      |      |   +5 |
-| felix p2 |      |      |      |      |   +6 |
-| felix p3 |      |      |      |      |   +7 |
-| felix p4 |      |      |      |      |      |
-| felix p5 |      |      |      |      |      |
-+----------+------+------+------+------+------+
-
-An empty cell means, the port is not available and thus doesn't need an
-ethernet address.
+This layout applies to the VPD of the Kontron sl28 boards. The VPD only
+contains a base MAC address. Therefore, we have to add an individual
+offset to it. This is done by taking the second argument of the nvmem
+phandle into account. Also this let us checking the VPD version and the
+checksum.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- .../freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts |  8 ++++++++
- .../dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts |  2 ++
- .../dts/freescale/fsl-ls1028a-kontron-sl28-var2.dts |  4 ++++
- .../dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts |  2 ++
- .../boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts | 13 +++++++++++++
- 5 files changed, 29 insertions(+)
+changes since v1:
+ - none
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-index 6b575efd84a7..b5c874c145d3 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-@@ -76,6 +76,8 @@ &mscc_felix_port0 {
- 	managed = "in-band-status";
- 	phy-handle = <&qsgmii_phy0>;
- 	phy-mode = "qsgmii";
-+	nvmem-cells = <&base_mac_address 4>;
-+	nvmem-cell-names = "mac-address";
- 	status = "okay";
- };
+ drivers/nvmem/layouts/Kconfig   |   9 ++
+ drivers/nvmem/layouts/Makefile  |   2 +
+ drivers/nvmem/layouts/sl28vpd.c | 144 ++++++++++++++++++++++++++++++++
+ 3 files changed, 155 insertions(+)
+ create mode 100644 drivers/nvmem/layouts/sl28vpd.c
+
+diff --git a/drivers/nvmem/layouts/Kconfig b/drivers/nvmem/layouts/Kconfig
+index 9ad3911d1605..75082f6b471d 100644
+--- a/drivers/nvmem/layouts/Kconfig
++++ b/drivers/nvmem/layouts/Kconfig
+@@ -2,4 +2,13 @@
  
-@@ -84,6 +86,8 @@ &mscc_felix_port1 {
- 	managed = "in-band-status";
- 	phy-handle = <&qsgmii_phy1>;
- 	phy-mode = "qsgmii";
-+	nvmem-cells = <&base_mac_address 5>;
-+	nvmem-cell-names = "mac-address";
- 	status = "okay";
- };
+ menu "Layout Types"
  
-@@ -92,6 +96,8 @@ &mscc_felix_port2 {
- 	managed = "in-band-status";
- 	phy-handle = <&qsgmii_phy2>;
- 	phy-mode = "qsgmii";
-+	nvmem-cells = <&base_mac_address 6>;
-+	nvmem-cell-names = "mac-address";
- 	status = "okay";
- };
- 
-@@ -100,6 +106,8 @@ &mscc_felix_port3 {
- 	managed = "in-band-status";
- 	phy-handle = <&qsgmii_phy3>;
- 	phy-mode = "qsgmii";
-+	nvmem-cells = <&base_mac_address 7>;
-+	nvmem-cell-names = "mac-address";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
-index 7cd29ab970d9..1f34c7553459 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
-@@ -55,5 +55,7 @@ &enetc_port0 {
- &enetc_port1 {
- 	phy-handle = <&phy0>;
- 	phy-mode = "rgmii-id";
-+	nvmem-cells = <&base_mac_address 0>;
-+	nvmem-cell-names = "mac-address";
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dts
-index 330e34f933a3..0ed0d2545922 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dts
-@@ -48,6 +48,8 @@ &mscc_felix_port0 {
- 	managed = "in-band-status";
- 	phy-handle = <&phy0>;
- 	phy-mode = "sgmii";
-+	nvmem-cells = <&base_mac_address 0>;
-+	nvmem-cell-names = "mac-address";
- 	status = "okay";
- };
- 
-@@ -56,6 +58,8 @@ &mscc_felix_port1 {
- 	managed = "in-band-status";
- 	phy-handle = <&phy1>;
- 	phy-mode = "sgmii";
-+	nvmem-cells = <&base_mac_address 1>;
-+	nvmem-cell-names = "mac-address";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts
-index 9b5e92fb753e..a4421db3784e 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts
-@@ -43,5 +43,7 @@ vddh: vddh-regulator {
- &enetc_port1 {
- 	phy-handle = <&phy1>;
- 	phy-mode = "rgmii-id";
-+	nvmem-cells = <&base_mac_address 1>;
-+	nvmem-cell-names = "mac-address";
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-index 4ab17b984b03..72429b37a8b4 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
-@@ -92,6 +92,8 @@ &enetc_port0 {
- 	phy-handle = <&phy0>;
- 	phy-mode = "sgmii";
- 	managed = "in-band-status";
-+	nvmem-cells = <&base_mac_address 0>;
-+	nvmem-cell-names = "mac-address";
- 	status = "okay";
- };
- 
-@@ -154,6 +156,17 @@ partition@3e0000 {
- 				label = "bootloader environment";
- 			};
- 		};
++config NVMEM_LAYOUT_SL28_VPD
++	bool "Kontron sl28 VPD layout support"
++	select CRC8
++	help
++	  Say Y here if you want to support the VPD layout of the Kontron
++	  SMARC-sAL28 boards.
 +
-+		otp-1 {
-+			compatible = "kontron,sl28-vpd", "user-otp";
++	  If unsure, say N.
 +
-+			serial_number: serial-number {
-+			};
+ endmenu
+diff --git a/drivers/nvmem/layouts/Makefile b/drivers/nvmem/layouts/Makefile
+index 6fdb3c60a4fa..fc617b9e87d0 100644
+--- a/drivers/nvmem/layouts/Makefile
++++ b/drivers/nvmem/layouts/Makefile
+@@ -2,3 +2,5 @@
+ #
+ # Makefile for nvmem layouts.
+ #
 +
-+			base_mac_address: base-mac-address {
-+				#nvmem-cell-cells = <1>;
-+			};
-+		};
- 	};
- };
- 
++obj-$(CONFIG_NVMEM_LAYOUT_SL28_VPD) += sl28vpd.o
+diff --git a/drivers/nvmem/layouts/sl28vpd.c b/drivers/nvmem/layouts/sl28vpd.c
+new file mode 100644
+index 000000000000..8cef2633de26
+--- /dev/null
++++ b/drivers/nvmem/layouts/sl28vpd.c
+@@ -0,0 +1,144 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/crc8.h>
++#include <linux/etherdevice.h>
++#include <linux/nvmem-consumer.h>
++#include <linux/nvmem-provider.h>
++#include <linux/of.h>
++#include <uapi/linux/if_ether.h>
++
++#define SL28VPD_MAGIC 'V'
++
++struct sl28vpd_header {
++	u8 magic;
++	u8 version;
++} __packed;
++
++struct sl28vpd_v1 {
++	struct sl28vpd_header header;
++	char serial_number[15];
++	u8 base_mac_address[ETH_ALEN];
++	u8 crc8;
++} __packed;
++
++static int sl28vpd_mac_address_pp(const char *id, int index,
++				  unsigned int offset, void *buf,
++				  size_t bytes)
++{
++	if (bytes != ETH_ALEN)
++		return -EINVAL;
++
++	if (index < 0)
++		return -EINVAL;
++
++	if (!is_valid_ether_addr(buf))
++		return -EINVAL;
++
++	eth_addr_add(buf, index);
++
++	return 0;
++}
++
++static const struct nvmem_cell_info sl28vpd_v1_entries[] = {
++	{
++		.name = "serial-number",
++		.offset = offsetof(struct sl28vpd_v1, serial_number),
++		.bytes = sizeof_field(struct sl28vpd_v1, serial_number),
++	},
++	{
++		.name = "base-mac-address",
++		.offset = offsetof(struct sl28vpd_v1, base_mac_address),
++		.bytes = sizeof_field(struct sl28vpd_v1, base_mac_address),
++		.read_post_process = sl28vpd_mac_address_pp,
++	},
++};
++
++static int sl28vpd_v1_check_crc(struct device *dev, struct nvmem_device *nvmem)
++{
++	struct sl28vpd_v1 data_v1;
++	u8 table[CRC8_TABLE_SIZE];
++	int ret;
++	u8 crc;
++
++	crc8_populate_msb(table, 0x07);
++
++	ret = nvmem_device_read(nvmem, 0, sizeof(data_v1), &data_v1);
++	if (ret < 0)
++		return ret;
++	else if (ret != sizeof(data_v1))
++		return -EIO;
++
++	crc = crc8(table, (void *)&data_v1, sizeof(data_v1) - 1, 0);
++
++	if (crc != data_v1.crc8) {
++		dev_err(dev,
++			"Checksum is invalid (got %02x, expected %02x).\n",
++			crc, data_v1.crc8);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int sl28vpd_add_cells(struct device *dev, struct nvmem_device *nvmem,
++			     struct nvmem_layout *layout)
++{
++	const struct nvmem_cell_info *pinfo;
++	struct nvmem_cell_info info = {0};
++	struct sl28vpd_header hdr;
++	int ret, i;
++
++	/* check header */
++	ret = nvmem_device_read(nvmem, 0, sizeof(hdr), &hdr);
++	if (ret < 0)
++		return ret;
++	else if (ret != sizeof(hdr))
++		return -EIO;
++
++	if (hdr.magic != SL28VPD_MAGIC) {
++		dev_err(dev, "Invalid magic value (%02x)\n", hdr.magic);
++		return -EINVAL;
++	}
++
++	if (hdr.version != 1) {
++		dev_err(dev, "Version %d is unsupported.\n", hdr.version);
++		return -EINVAL;
++	}
++
++	ret = sl28vpd_v1_check_crc(dev, nvmem);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < ARRAY_SIZE(sl28vpd_v1_entries); i++) {
++		pinfo = &sl28vpd_v1_entries[i];
++
++		info.name = pinfo->name;
++		info.offset = pinfo->offset;
++		info.bytes = pinfo->bytes;
++		info.read_post_process = pinfo->read_post_process;
++		info.np = of_get_child_by_name(dev->of_node, pinfo->name);
++
++		ret = nvmem_add_one_cell(nvmem, &info);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++static const struct of_device_id sl28vpd_of_match_table[] = {
++	{ .compatible = "kontron,sl28-vpd" },
++	{},
++};
++
++struct nvmem_layout sl28vpd_layout = {
++	.name = "sl28-vpd",
++	.of_match_table = sl28vpd_of_match_table,
++	.add_cells = sl28vpd_add_cells,
++};
++
++static int __init sl28vpd_init(void)
++{
++	return nvmem_layout_register(&sl28vpd_layout);
++}
++subsys_initcall(sl28vpd_init);
 -- 
 2.30.2
 
