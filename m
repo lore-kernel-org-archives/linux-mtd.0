@@ -4,31 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12CCAECAAD3
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:25:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EFE0ECAAD3
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:26:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZpUBn6hYZd4+4L7vG0MRIqtA03kcpgFl0yMqfZ63vX0=; b=Sgf5UtwJ8xtZFg
-	sUDQCO2FAkMsCheK2UmdV9YCKcSaTFeIBPZnqp0+BL7G1sWpwB9Vy5+ogMPdkUF/b/S2lVd6lz8zh
-	VaecLKHTXZjzcaXefj+unTBXWJhWez/GHrQEb0A17+7cbDYpt3YNpkQ5AQh7gAEVkhcENEpTlyKGY
-	hMbOaWPl8bpKIp+FqCrwnif2zV+20qsaYb7Bk98S0Fmgp5pZwyOhXKOOacIzYtZOT2yi9cjtDLhOv
-	vU89HwQqau3f6xFfdQj3qTsDOdcna4OpLSBdJtKKvJrKLMaZE4nWkBSGqsrGFw1CoBw0VVAFYJGSn
-	YiH05+EihctUWpSpS+Iw==;
+	List-Owner; bh=eZ4e/2+LdkEwK86zCipN/IIyHR3/yKyKL9x4bw27e5A=; b=tcD/aDcLXFJwCl
+	fsFQSwyXcrHKOve9yKcRaM/aycB4/SohRSATpkIOx95MdyQypKoNfvsOD85LuZw7Rq5LMObEhdYd2
+	QwjbRMwRBnoYKMKapvGxjKg1LFAcgvapMrN8qrRgW2pdjBG2LfBr4x/82VoQv3OpShtV6RCwPSwDq
+	RvW/QBxb+gLP96nD3w9ud3Fx6pV3zQv6CYIhpTyYkUEfvyv32kLc0USpxbAjdIo1Oc4J68/sElFGM
+	lnxvNk5O5H5eP8sykTN32Jt49R9qDb3Arqz1/00R8/W9kQO+nvziOUAly4VwN1nvj3plkk5VHv9AF
+	ZSuU4Itehyxu8MT8ni2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTscr-00FJcd-Gi; Thu, 01 Sep 2022 22:25:29 +0000
+	id 1oTsdm-00FKFr-RX; Thu, 01 Sep 2022 22:26:28 +0000
 Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsWv-00FEfR-V4; Thu, 01 Sep 2022 22:19:24 +0000
+	id 1oTsWw-00FEfY-2K; Thu, 01 Sep 2022 22:19:24 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 3D4C42203;
+	by mail.3ffe.de (Postfix) with ESMTPSA id B7C822209;
 	Fri,  2 Sep 2022 00:19:13 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
 	t=1662070753;
@@ -36,12 +36,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail20220821
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CbvWTun9+QuBUdvSViNHq/GAkH5sJyJindexihmzO3w=;
-	b=KIif7isPnk0Dc76Qomin19zwClkFsLjLT/yPPZHVtqxUGc3dV7yFcoZwcd7mn4RisqCe28
-	hgw7jicL8B76Fp/WDnYtV7HCXGgR2VosHPsttCXTPaY5TopNLjLBRl3dBAGrYDPPaRurV+
-	/x1FCuJVktduFKHORuQWIAn+omsRW0W/tj94otZXgJqFkeOwx4gRSpc3wLQ1mh/lLesiUI
-	Q5hv2gQE/ottx83VXZTh2HdoUuwBAjN1/JNm1hb6boaDoA93NimyPF10JQti73LXGTuDCm
-	egEltn9AxpqY59kVzxf66b5qfnk3l0EObfEnvA1SOJE2iFc7elyvRZb36vIg4w==
+	bh=vFjv7dJFpQ+L/+5iWkUoVgYZNozNXbOSg5BVzbMzGGc=;
+	b=Qt0kiq7il6F978sDpy2pchihqLpiRtEiQsZa2FbKzPwS08bYhlaAqpgpHT+HgW75YU1guf
+	DJrBaW2KsEc5IJxE+UJGOj6Ac9vwwmrblO6+pF+Y6XhwfdgvNSRe/rXFkByF3JQ3NZyenG
+	iPmU+fJGn9pNVf/X78l7EtSnAT4z++OreoaNo7fjYmZmk1vAZA93tpCmz4zvQl1MhJVnzu
+	ouphqV0VwQSjpA2AwPnwi60vEl63jTXA/gliwSGn95wzSiSMooE1fZFGc+HwBb0ZXliXug
+	Sz225qm9PxNvKvMC4Ku+i2tqYAWe8mun/8MOr+OCY9Sk6qJ4aBFcA1QFTjMmmA==
 From: Michael Walle <michael@walle.cc>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -60,17 +60,18 @@ Cc: linux-mtd@lists.infradead.org,
 	Ahmad Fatoum <a.fatoum@pengutronix.de>,
 	Philipp Zabel <p.zabel@pengutronix.de>,
 	Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 12/20] nvmem: cell: drop global cell_post_process
-Date: Fri,  2 Sep 2022 00:18:49 +0200
-Message-Id: <20220901221857.2600340-13-michael@walle.cc>
+Subject: [PATCH v2 14/20] dt-bindings: mtd: relax the nvmem compatible string
+Date: Fri,  2 Sep 2022 00:18:51 +0200
+Message-Id: <20220901221857.2600340-15-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220901221857.2600340-1-michael@walle.cc>
 References: <20220901221857.2600340-1-michael@walle.cc>
 MIME-Version: 1.0
 X-Spam: Yes
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220901_151922_219205_BAD95E7F 
-X-CRM114-Status: GOOD (  11.20  )
+X-CRM114-CacheID: sfid-20220901_151922_339968_A1E20428 
+X-CRM114-Status: UNSURE (   9.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,72 +88,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are no users anymore for the global cell_post_process callback
-anymore. New users should use proper nvmem layouts.
+The "user-otp" and "factory-otp" compatible string just depicts a
+generic NVMEM device. But an actual device tree node might as well
+contain a more specific compatible string. Make it possible to add
+more specific binding elsewhere and just match part of the compatibles
+here.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
 changes since v1:
- - new patch
+ - fix typo in commit message
 
- drivers/nvmem/core.c           | 9 ---------
- include/linux/nvmem-provider.h | 2 --
- 2 files changed, 11 deletions(-)
+ Documentation/devicetree/bindings/mtd/mtd.yaml | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 3b65512762b9..d31d3f0ab517 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -38,7 +38,6 @@ struct nvmem_device {
- 	unsigned int		nkeepout;
- 	nvmem_reg_read_t	reg_read;
- 	nvmem_reg_write_t	reg_write;
--	nvmem_cell_post_process_t cell_post_process;
- 	struct gpio_desc	*wp_gpio;
- 	struct nvmem_layout	*layout;
- 	void *priv;
-@@ -874,7 +873,6 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	nvmem->type = config->type;
- 	nvmem->reg_read = config->reg_read;
- 	nvmem->reg_write = config->reg_write;
--	nvmem->cell_post_process = config->cell_post_process;
- 	nvmem->keepout = config->keepout;
- 	nvmem->nkeepout = config->nkeepout;
- 	if (config->of_node)
-@@ -1531,13 +1529,6 @@ static int __nvmem_cell_read(struct nvmem_device *nvmem,
- 			return rc;
- 	}
+diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
+index 3498e485679b..25b91f25fcf4 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd.yaml
++++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
+@@ -33,9 +33,10 @@ patternProperties:
  
--	if (nvmem->cell_post_process) {
--		rc = nvmem->cell_post_process(nvmem->priv, id, index,
--					      cell->offset, buf, cell->bytes);
--		if (rc)
--			return rc;
--	}
--
- 	if (len)
- 		*len = cell->bytes;
+     properties:
+       compatible:
+-        enum:
+-          - user-otp
+-          - factory-otp
++        contains:
++          enum:
++            - user-otp
++            - factory-otp
  
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index 9cb340764b89..9d22dc5a3fa5 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -85,7 +85,6 @@ struct nvmem_cell_info {
-  * @no_of_node:	Device should not use the parent's of_node even if it's !NULL.
-  * @reg_read:	Callback to read data.
-  * @reg_write:	Callback to write data.
-- * @cell_post_process:	Callback for vendor specific post processing of cell data
-  * @size:	Device size.
-  * @word_size:	Minimum read/write access granularity.
-  * @stride:	Minimum read/write access stride.
-@@ -120,7 +119,6 @@ struct nvmem_config {
- 	bool			no_of_node;
- 	nvmem_reg_read_t	reg_read;
- 	nvmem_reg_write_t	reg_write;
--	nvmem_cell_post_process_t cell_post_process;
- 	int	size;
- 	int	word_size;
- 	int	stride;
+     required:
+       - compatible
 -- 
 2.30.2
 
