@@ -4,73 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23FE4ECAAD2
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 22:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DD1BECAAD3
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 23:23:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TyLGQxxwPA5mas4uJIyFREFsGRNd8OOxsPaqL9RumXk=; b=B9wXIXmv+MW2D2
-	9getDdrYzkfQWxpsxTy/nRtQV6vFPmMPKq2eug5WGigljTX37jUt9Kz+BpdKctfnKC0fKqJsV1OD8
-	w4BqkGzyHfGrgnPJKFgOFTOgLM+oI7YNUdFsN+mVe6519YItwacrKkz3aH4LvLHWjk5zMiLEB2oEU
-	KmKcQO3SaSEx9viUGxEeNh93okLC1SRY8DiubiDSNIZIEB8x+FU4vuRieClteYWD4X9ka7PJ1LX/e
-	K2NRnsvCieNDmx1bKwFpPLvo9isGbcMjSpv/y1sGSrCqAvKQhfk63pu7dXzVJo6xEWxDOZAKA2wJb
-	0lQlfjHYW/o1vvXZXhYg==;
+	List-Owner; bh=VAkz8PpBc4YtK9uoVi/tyw6qyYrhabv86NiOljI5p6s=; b=YZc09ljXxqwwOl
+	MBZW8sje3FkNSU1OwROM0VjY7pOcmwkczmHPAwPZZoDJHHlIhYExZoBrLT8EWnCqNS97I0R7ORwkq
+	f+dNtUSSt1nEy9RyFNApyzXTHMNkPydYvlcdsnvQMjjwvpnzF0e1Y+0ztB5SWQABTvGLeYn7WKkm/
+	o39c3DHSdCxUw3NguEp6UYCkgucAJEe+Pc3Q1jj1lqWoemNsiV7nX3XKHXegZVYY3dG3Ho6fMkpBP
+	byOJ2eaxbjpZEZ2/WXc/VkT0zThttWg4PxqtD/dP8Cqnmrj1U4gZugtip3zirEBCC7uwqzA7TyRI8
+	8A9ooW8S+FfNMCVsZG7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsnE-00FPja-2e; Thu, 01 Sep 2022 22:36:12 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTsWz-00FEj6-2y; Thu, 01 Sep 2022 22:19:29 +0000
-Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id EF3D62221;
-	Fri,  2 Sep 2022 00:19:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1662070756;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KKvaxDezpVglQbvUlzzvJIhuhv9lpFlXJWy0f0xohsQ=;
-	b=hSJiAoEqoFLiXl618NYj5ODCGWBKsRSBRjJyZajQCq7YvEFL7TUa2cRG0rF0YAxW3ml3S/
-	kYWFF/sQeJvRRn0RC1oJALu4df2WuE3VFELUQnzMrOYG2cJzE4LMOL9VVILuduncXO+Pxz
-	cCBvFy+vBwKEeKaSkAxyKbmuEX8H7PE6pRXJ9fbIRbwEG0jFZqOGjXlKqaw6Ix4Ria98Zc
-	TXdV4OVehj8MT25E3CPtFPX0oyfokMnHje+BuQCyHbzHTCF0uB1QGvqagVu/3+xSy4PrH6
-	eQNhkvXMJ01RqVJAYFYBhBIhl7gdB8E10UYdrz/Ex6JNy2QkgvTxiMjV1Fk9jA==
-From: Michael Walle <michael@walle.cc>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Li Yang <leoyang.li@nxp.com>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	Frank Rowand <frowand.list@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Ahmad Fatoum <a.fatoum@pengutronix.de>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Michael Walle <michael@walle.cc>
-Subject: [RFC PATCH v2 20/20] nvmem: layouts: u-boot-env: add device node
-Date: Fri,  2 Sep 2022 00:18:57 +0200
-Message-Id: <20220901221857.2600340-21-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220901221857.2600340-1-michael@walle.cc>
-References: <20220901221857.2600340-1-michael@walle.cc>
+	id 1oTtWP-00FlKB-BK; Thu, 01 Sep 2022 23:22:53 +0000
+Received: from [2601:1c0:6280:3f0::a6b3]
+	by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oTtWL-00FlIA-4F; Thu, 01 Sep 2022 23:22:49 +0000
+Message-ID: <3b86cb68-2b30-76dd-baf5-90af0b0a60a4@infradead.org>
+Date: Thu, 1 Sep 2022 16:22:47 -0700
 MIME-Version: 1.0
-X-Spam: Yes
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220901_151925_343136_2696B995 
-X-CRM114-Status: GOOD (  11.42  )
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH v2 01/20] net: add helper eth_addr_add()
+Content-Language: en-US
+To: Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Frank Rowand <frowand.list@gmail.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Ahmad Fatoum <a.fatoum@pengutronix.de>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Andrew Lunn <andrew@lunn.ch>,
+ Jakub Kicinski <kuba@kernel.org>
+References: <20220901221857.2600340-1-michael@walle.cc>
+ <20220901221857.2600340-2-michael@walle.cc>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220901221857.2600340-2-michael@walle.cc>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,44 +65,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Register the device node so we can actually make use of the cells from
-within the device tree.
 
-This obviously only works if the environment variable name can be mapped
-to the device node, which isn't always the case. Think of "_" vs "-".
-But for simple things like ethaddr, this will work.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-changes since v1:
- - none
+On 9/1/22 15:18, Michael Walle wrote:
+> Add a helper to add an offset to a ethernet address. This comes in handy
+> if you have a base ethernet address for multiple interfaces.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Acked-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> changes since v1:
+>  - none
+> 
+>  include/linux/etherdevice.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
+> index a541f0c4f146..f144cadbe99d 100644
+> --- a/include/linux/etherdevice.h
+> +++ b/include/linux/etherdevice.h
+> @@ -507,6 +507,20 @@ static inline void eth_addr_inc(u8 *addr)
+>  	u64_to_ether_addr(u, addr);
+>  }
+>  
+> +/**
+> + * eth_addr_add() - Add (or subtract) and offset to/from the given MAC address.
 
- drivers/nvmem/layouts/u-boot-env.c | 2 ++
- 1 file changed, 2 insertions(+)
+                                         an offset
+?
 
-diff --git a/drivers/nvmem/layouts/u-boot-env.c b/drivers/nvmem/layouts/u-boot-env.c
-index f184d1424b1e..d2adc246c93a 100644
---- a/drivers/nvmem/layouts/u-boot-env.c
-+++ b/drivers/nvmem/layouts/u-boot-env.c
-@@ -8,6 +8,7 @@
- #include <linux/device.h>
- #include <linux/nvmem-consumer.h>
- #include <linux/nvmem-provider.h>
-+#include <linux/of.h>
- #include <linux/slab.h>
- 
- enum u_boot_env_format {
-@@ -47,6 +48,7 @@ static int u_boot_env_add_cells(struct device *dev,
- 		info.name = var;
- 		info.offset = data_offset + value - data;
- 		info.bytes = strlen(value);
-+		info.np = of_get_child_by_name(dev->of_node, var);
- 
- 		err = nvmem_add_one_cell(nvmem, &info);
- 		if (err)
+> + *
+> + * @offset: Offset to add.
+> + * @addr: Pointer to a six-byte array containing Ethernet address to increment.
+> + */
+> +static inline void eth_addr_add(u8 *addr, long offset)
+> +{
+> +	u64 u = ether_addr_to_u64(addr);
+> +
+> +	u += offset;
+> +	u64_to_ether_addr(u, addr);
+> +}
+> +
+>  /**
+>   * is_etherdev_addr - Tell if given Ethernet address belongs to the device.
+>   * @dev: Pointer to a device structure
+
 -- 
-2.30.2
-
+~Randy
 
 ______________________________________________________
 Linux MTD discussion mailing list
