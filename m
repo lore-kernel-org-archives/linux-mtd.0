@@ -4,51 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DD1BECAAD3
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Sep 2022 23:23:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D279C54EE9
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Sep 2022 07:03:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VAkz8PpBc4YtK9uoVi/tyw6qyYrhabv86NiOljI5p6s=; b=YZc09ljXxqwwOl
-	MBZW8sje3FkNSU1OwROM0VjY7pOcmwkczmHPAwPZZoDJHHlIhYExZoBrLT8EWnCqNS97I0R7ORwkq
-	f+dNtUSSt1nEy9RyFNApyzXTHMNkPydYvlcdsnvQMjjwvpnzF0e1Y+0ztB5SWQABTvGLeYn7WKkm/
-	o39c3DHSdCxUw3NguEp6UYCkgucAJEe+Pc3Q1jj1lqWoemNsiV7nX3XKHXegZVYY3dG3Ho6fMkpBP
-	byOJ2eaxbjpZEZ2/WXc/VkT0zThttWg4PxqtD/dP8Cqnmrj1U4gZugtip3zirEBCC7uwqzA7TyRI8
-	8A9ooW8S+FfNMCVsZG7w==;
+	List-Owner; bh=Jccy08muiaivwETiU3dlbe6UYr2EG4AO4PqePoEcE1s=; b=D0z5Ev3Y2e7uEh
+	CsOaeXWIj+3KENhL7Iu21ZWjaoikgzxpW5Uvb4LY+J9vWrfOuGrQriWRv0GqrQi2T0slcgEPPzFhK
+	vZFPs1OixLFIS5J06fA2ZxgRuTSiU7BJXQXlQyWaJ51weoY53azg2uadckANd+AqiaOIzLXcdQkB8
+	xYhte10jEnC5vPjeUf3CHzHTkNIFtpNmH81Lp9P9wdA2K1EQAVBIf3yq9vNPEbSISkdkhthut7MYI
+	9pvZzEG3/SRW6/6xT2cvfpIzndME9ML3v++V1ld6BRDDp4lnZmWu3hwDLg2Wnve0cxPiTXXfFhmgL
+	S6vQKT+goVbzeecjKSNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTtWP-00FlKB-BK; Thu, 01 Sep 2022 23:22:53 +0000
-Received: from [2601:1c0:6280:3f0::a6b3]
-	by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oTtWL-00FlIA-4F; Thu, 01 Sep 2022 23:22:49 +0000
-Message-ID: <3b86cb68-2b30-76dd-baf5-90af0b0a60a4@infradead.org>
-Date: Thu, 1 Sep 2022 16:22:47 -0700
+	id 1oU0hl-0016ep-Lr; Fri, 02 Sep 2022 07:03:05 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oU0hi-0016Yr-RP
+	for linux-mtd@lists.infradead.org; Fri, 02 Sep 2022 07:03:04 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 8155FFF809;
+	Fri,  2 Sep 2022 07:02:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1662102176;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kUEi3qE9VsWHjdX8pelP/Njt/+TRnCAycHuxXrGFqsM=;
+	b=Hph2yMdjFg6+8neCCiNoZc5rRX6pnFD61fs7s86ZWlXK3hV5+yezKmaloLEFyBucCQqNBF
+	Ivh4VNLKUOOHPrEjGcDeo9NV8RyKvzi7NwP/3/o0WQtnwc2JDVeBO0ME8+j4HQ63l6Xk8/
+	hhtJM8DcJHlcwEHMewja9rvFCy+73FaZnlXmzHbWFiZ7p9cQKCs6fP369XxHtOc5MBXmGl
+	FmwvxirY4CgUrSVo22SjiO7dNP2pg/U/yNXj9sPkyyi9Gw8yJsh5Ym4jnlJlvJNjODGYlv
+	7QX/Xo0ZCptEwemyE+a8kZTjSwFgPLJPoAFLGEbDcW0DaG7NzZoLaeOWphQA7Q==
+Date: Fri, 2 Sep 2022 09:02:52 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Tomasz =?UTF-8?B?TW/FhA==?=
+ <tomasz.mon@camlingroup.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Sasha Levin <sashal@kernel.org>, torvalds <torvalds@linux-foundation.org>,
+ Han Xu <han.xu@nxp.com>, kernel <kernel@pengutronix.de>, stable
+ <stable@vger.kernel.org>, k drobinski <k.drobinski@camlintechnologies.com>
+Subject: Re: [PATCH] mtd: rawnand: gpmi: Set WAIT_FOR_READY timeout based on
+ program/erase times
+Message-ID: <20220902090252.75285234@xps-13>
+In-Reply-To: <770744970.283550.1657871950910.JavaMail.zimbra@nod.at>
+References: <20220701110341.3094023-1-s.hauer@pengutronix.de>
+	<c2d545d1f5478e66c0dac47f4bc4c04256ff44aa.camel@camlingroup.com>
+	<fd830c7e94de6b4a0b532dfcf46cf1edd22b42fb.camel@camlingroup.com>
+	<YtD/9KJZwlVj+6hS@kroah.com>
+	<20220715074631.GA7333@pengutronix.de>
+	<YtEdIujszEKSprbF@kroah.com>
+	<770744970.283550.1657871950910.JavaMail.zimbra@nod.at>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH v2 01/20] net: add helper eth_addr_add()
-Content-Language: en-US
-To: Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- Frank Rowand <frowand.list@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Ahmad Fatoum <a.fatoum@pengutronix.de>,
- Philipp Zabel <p.zabel@pengutronix.de>, Andrew Lunn <andrew@lunn.ch>,
- Jakub Kicinski <kuba@kernel.org>
-References: <20220901221857.2600340-1-michael@walle.cc>
- <20220901221857.2600340-2-michael@walle.cc>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20220901221857.2600340-2-michael@walle.cc>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20220902_000303_067356_23950D2D 
+X-CRM114-Status: GOOD (  11.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,60 +77,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 9/1/22 15:18, Michael Walle wrote:
-> Add a helper to add an offset to a ethernet address. This comes in handy
-> if you have a base ethernet address for multiple interfaces.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
-> ---
-> changes since v1:
->  - none
-> 
->  include/linux/etherdevice.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
-> index a541f0c4f146..f144cadbe99d 100644
-> --- a/include/linux/etherdevice.h
-> +++ b/include/linux/etherdevice.h
-> @@ -507,6 +507,20 @@ static inline void eth_addr_inc(u8 *addr)
->  	u64_to_ether_addr(u, addr);
->  }
->  
-> +/**
-> + * eth_addr_add() - Add (or subtract) and offset to/from the given MAC address.
-
-                                         an offset
-?
-
-> + *
-> + * @offset: Offset to add.
-> + * @addr: Pointer to a six-byte array containing Ethernet address to increment.
-> + */
-> +static inline void eth_addr_add(u8 *addr, long offset)
-> +{
-> +	u64 u = ether_addr_to_u64(addr);
-> +
-> +	u += offset;
-> +	u64_to_ether_addr(u, addr);
-> +}
-> +
->  /**
->   * is_etherdev_addr - Tell if given Ethernet address belongs to the device.
->   * @dev: Pointer to a device structure
-
--- 
-~Randy
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGV5IGZvbGtzLAoKcmljaGFyZEBub2QuYXQgd3JvdGUgb24gRnJpLCAxNSBKdWwgMjAyMiAwOTo1
+OToxMCArMDIwMCAoQ0VTVCk6Cgo+IC0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPiA+
+PiBNeSBJUkMgaGlzdG9yeSBkb2Vzbid0IGdvIGJhY2sgZmFyIGVub3VnaCwgYnV0IGlmIEkgcmVj
+YWxsIGNvcnJlY3RseQo+ID4+IE1pcXVlbCBpcyBvbiB2YWNhdGlvbiwgaGUgd291bGQgaGF2ZSBw
+aWNrZWQgdXAgdGhpcyBwYXRjaCBmb3IgbGludXgtbmV4dAo+ID4+IG90aGVyd2lzZS4gIAo+IAo+
+IEV4YWN0bHkuCgpJbmRlZWQsIEkgd2FzIG9mZiBmb3IgYW4gZXh0ZW5kZWQgcGVyaW9kIG9mIHRp
+bWUsIEknbSAodmVyeSkgc2xvd2x5CmNhdGNoaW5nIHVwIG5vdy4KCj4gIAo+ID4gT2ssIGxldCBt
+ZSBkbyBhIHJvdW5kIG9mIHN0YWJsZSByZWxlYXNlcyBzbyB0aGF0IHBlb3BsZSBkb24ndCBnZXQg
+aGl0IGJ5Cj4gPiB0aGlzIG5vdy4uLiAgCj4gCj4gVGhhbmtzIGEgbG90IGZvciBkb2luZyBzby4K
+PiAgCj4gPiBIb3BlZnVsbHkgdGhpcyBnZXRzIGZpeGVkIHVwIGJ5IDUuMTktZmluYWwuICAKPiAK
+PiBTdXJlLCBJJ2xsIHBpY2t1cCB0aGlzIHBhdGNoLgoKVGhhbmtzIEdyZWcgJiBSaWNoYXJkIGZv
+ciB0aGUgaGFuZGxpbmcgb2YgdGhpcyBpc3N1ZS4KCkNoZWVycywKTWlxdcOobAoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
