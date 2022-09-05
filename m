@@ -4,84 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58F36ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 18:21:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A697ECAAD3
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 19:04:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:Cc:To:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SxgdxW8ITCCNX9WLkgmcTmznJjQ2Xqb1Vft/W+rbrqk=; b=3tnnDWHxUqntNK
-	2s2pByLcE/kszgslCsZDmXKMUA2C5fk+QJGkVrz72STwFz0HeKHZ9CzbWKDxDxuWUd9oFRyG1P9AF
-	X2TnTDZ2e6lHyhc3ke4Dys0EU5qvUb/mI38JQpnK4x9Z83Yh8Ruf7KPPzgP71NowRtYZM/nmhLMij
-	oN1eYyxnnt+VOgI0RrUkaLdT0Giz07XYQ+YOS0uvl4WlymsHuA75FWTwMLqmhE7TjE3tbfhwUUmfy
-	ORyZcj6zQuzSZr76bPPMwC5WfWb4SPDuDB7b7RE3qemhsO0MuD5ztvcgsZYSaMY+Vo/XGdC4dmYTD
-	w1p59p3TWNcTKwwHOXdg==;
+	List-Owner; bh=Gfn2XZ3Mj45ZqCRVvLKGlQLMBYqD1dTiy9lD1P33bvY=; b=WTLw1nSXZI8P4a
+	H+Vbe81GGVzg0m4Bw9o49nijAXGHr2iY2s4MI2awNEb3KZmiMPoYvYwnAe0ETgZHwSUMVF5E0yZ+X
+	9d8sV4iipEA6F66P01QS4v1gk86Wd5r1zi0NL5st3azPaJx5eqFsd9GD32CTjtVbI5NHLwvEYT43s
+	DVLnJsGhOu29IUYoCkOdvNlUsGoAAcalsJMh7gTSBAmXlh/RaRNAkJX6dV5ttoAbp3luLZ2ztLzhr
+	YraCk6F3ruw7GgE418fnEBVCjWOTmQzwHhtSrqMqXXJRhJbO4BP4waY0av1qadp16HbatS2LrYSzk
+	oy2728OQNbz0beu1NqRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVGiw-008JxH-NB; Mon, 05 Sep 2022 18:21:30 +0000
-Received: from desiato.infradead.org ([90.155.92.199])
+	id 1oVHNe-008utp-8u; Mon, 05 Sep 2022 19:03:35 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVET6-006MNw-Tm; Mon, 05 Sep 2022 15:57:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:Subject:From:References:Cc:To:MIME-Version:Date:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=3XrVUU9T8R4LO8OA1f5h+alUXAX2S0TQoRT3c9Li0zE=; b=Rksyen1E831TZtaFVF6dd5U5rf
-	zMwH+zULdvtyA+mHMnELJcjN5Eq92W8Crg2SIVzqkWOhRGTrN3RYbrCHjmfrGRzaBxcF7wR3RmDlF
-	k9v6Cq5+Y8WAvsHpi8tl6KWAepQqeovkVYbHJ+inYvOXkSi7FPoiIQt0VISCBsM9UckLOXcZmzErr
-	We9XExJwfTRxd5RXlounnNf8+tFRyp+RW2pJCpS/DXqLnNBZfi3zEhr8o2NKVjxzscsWnsabAbi5E
-	HP0vodKhhNFGabPH7CDfUHf6MFQiaC7E5rVxB2oFd5Yg+TXRz1Tr6UgOVyUKKKXIXnOW81rf86m/A
-	ZoFJ0S4Q==;
-Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
-	by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVEMQ-009mm1-9B; Mon, 05 Sep 2022 15:50:08 +0000
-Received: by mail-pj1-x1034.google.com with SMTP id u9-20020a17090a1f0900b001fde6477464so12512774pja.4;
-        Mon, 05 Sep 2022 08:50:04 -0700 (PDT)
+	id 1oVDnV-005jlP-9E; Mon, 05 Sep 2022 15:14:03 +0000
+Received: by mail-pl1-x633.google.com with SMTP id 9so5552287plj.11;
+        Mon, 05 Sep 2022 08:13:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date;
-        bh=3XrVUU9T8R4LO8OA1f5h+alUXAX2S0TQoRT3c9Li0zE=;
-        b=fb+biuem+7b7djICmUqeW/BHTeNp/mSIkZ0RvN2SXnaFs/5YyeMU+evecpiT94v82W
-         Wxfn0CSNmSmyFNdPp1gzvwV0fM9AjmN0MOmTdZboebJPVCoX17sG9lmzebM9ao53ceUW
-         yVd7msO4mdC3TWp+151flO1HCijMCEaMLiYb6sFX8Glvs7ZTTgoL3lCtGTKQ7fyXm+Gg
-         pHh/glh3NMkFwNQZT6QZHQG62OtYie95f/rnYvvh4Y8aPOmfyT9Ar+2EHwInZ1j+1+j+
-         Oy+Ig/euXQdz3oHAXN56OD5BQH1j8orR8xHQaKEnUQLjJ5W8lICDNDnwnI3x7eyp41JE
-         4G+Q==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date;
+        bh=BaV7TSh2pF8riJo3FYVJlB4Fd0IV89ZBF58eyTHpzCY=;
+        b=hkkpU5LscmWAGSEo3MfEtadx9VW4xDHJEup50A1r2cVLlq4cuETMEDvzQMWJ+25cub
+         uKJeKBqoA/7oOn5M03KfF2SrWzMp8y/6jxlU6IOGtXhf5NBV25gS8epBm0aJ0S2QGuaI
+         RjUYEWJv07AS8q77FSCkemAnzO0cF5SSPIB8vUM+JQ9+01vDbgKIvCwDLFJ0pxGW/o9D
+         wfMCMCN77OXaTjmH8xcwvQmxfsPP25DPJzASvB1sg54cKUVgwF0SrI+mVebrCUQXQcEH
+         UD6AosLEX29RH6M8jzXceVG7LBfIA3BiQKPCSDkkI0IwATFYFoPoughaGzGm0KCEERIH
+         sz6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=3XrVUU9T8R4LO8OA1f5h+alUXAX2S0TQoRT3c9Li0zE=;
-        b=gQXurMqUeekc0jcq0Ov8qeqvcvsggxG57u7Bct5T9wGVkpkknUsv7KHmYWmJS1iQuO
-         bq6T8HFd2fGu3wFEU4g7QY8x5HC7BuvERYt7RJJJ0R7H9qosaQwt6vHgfWGZInUZfwP/
-         x0uO0L/McVpJO73ZdAAYt5BWbi62JPZemAgQMix/pLoTRSGKMyUuR03DKq5TSNaYnqeS
-         pSurF+M0awbIl1TbLhlOPmt0IwBCClwVNRB5KVUOExrngf8NfyVSwqZ32pzdKjE/67X5
-         CxyMpC41S1capmVWnFDfE2HkxJEWbItKC0HuKbRn9m6l6Wv02kYQfVGVw7gC9P25yHmn
-         51fQ==
-X-Gm-Message-State: ACgBeo0YwSuy4xd1O4Mkch/jMuDvcBlfvaHK2qmKXEDGoqVmOYkz9K7p
-	64VpTW9csxm4LGU1yQ0rOrw=
-X-Google-Smtp-Source: AA6agR5VS25L+Z4dRUGvyFsOt5wkYCTLrQ7nt81wIVLfBBuODfZGLGcvsv14A7LgAxNP1Gl1OohTXw==
-X-Received: by 2002:a17:90a:c706:b0:1fd:e21e:7cb1 with SMTP id o6-20020a17090ac70600b001fde21e7cb1mr20626775pjt.234.1662393003052;
-        Mon, 05 Sep 2022 08:50:03 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date;
+        bh=BaV7TSh2pF8riJo3FYVJlB4Fd0IV89ZBF58eyTHpzCY=;
+        b=6jQcMaXjSA1QAelYr+o2/sP9iCyj0PRUIBdmNfOr/KFG0HmUaLEfajKRqxEdO82dk8
+         +5vxw5ey/hgTmiyrzaDM8M/kyI1a2NEYbTdvYybDAe5q8qbvTAFLALnUaBZGPFHuG0/M
+         JqHeL84bR3XIml1C5yEethFOSEbAbjiddAFLjq7HrRwQUQE/8JdHT7bwlRJygtPDnlSB
+         GNyyXauzjucwKazX/pgeM53gOC0tls11TJJrp1vWY3rchnRWd7dkyg+haRJIZUbIfy0i
+         toWqQqIfW/Xydb5YG67De3LR0JE3Pbk0Zv4nl0Z+nXC+04GbdQN90dr0IHzQe84p3eiP
+         5DFw==
+X-Gm-Message-State: ACgBeo0kEdp2dJ43M3x9BX9tHRAipxvgHZk7Hb3X2PpLkcnbGamRGpY5
+	QD9AWpv8Vs3+kIIgw30AUMw=
+X-Google-Smtp-Source: AA6agR759HBK1+PQYcZT7IJSAKYI4KNMvzd+GSuzCkEXpLGsOPIUySqoQ8VGjyqne3MH/nAfFroOyA==
+X-Received: by 2002:a17:90b:164f:b0:1f5:4ced:ed81 with SMTP id il15-20020a17090b164f00b001f54ceded81mr19722762pjb.122.1662390835165;
+        Mon, 05 Sep 2022 08:13:55 -0700 (PDT)
 Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p1-20020a17090a348100b001faa4a6691asm10512410pjb.30.2022.09.05.08.49.59
+        by smtp.gmail.com with ESMTPSA id u15-20020a170903124f00b00176ba091cd3sm1684281plh.196.2022.09.05.08.13.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Sep 2022 08:50:01 -0700 (PDT)
-Message-ID: <c696b9bf-d0ce-1c6a-0ee3-939b180891be@roeck-us.net>
-Date: Mon, 5 Sep 2022 08:49:58 -0700
+        Mon, 05 Sep 2022 08:13:48 -0700 (PDT)
+Message-ID: <75e60144-9fa2-d6ba-bc92-edd23f7e7189@roeck-us.net>
+Date: Mon, 5 Sep 2022 08:13:39 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
+Subject: Re: [PATCH v1 10/11] watchdog: bd9576_wdt: switch to using
+ devm_fwnode_gpiod_get()
 Content-Language: en-US
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>,
- Matti Vaittinen <mazziesaccount@gmail.com>,
+To: Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Matti Vaittinen <mazziesaccount@gmail.com>,
  Lorenzo Pieralisi <lpieralisi@kernel.org>,
  Claudiu Beznea <claudiu.beznea@microchip.com>,
  Liam Girdwood <lgirdwood@gmail.com>,
@@ -113,15 +102,11 @@ Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
  <20220903-gpiod_get_from_of_node-remove-v1-10-b29adfb27a6c@gmail.com>
  <CAHp75Vd35EOy=mP25=9fmYfqQnbafgotHw1fxk-TdGk6Oc8g8Q@mail.gmail.com>
- <75e60144-9fa2-d6ba-bc92-edd23f7e7189@roeck-us.net>
- <CAHp75VcisCTYoRp-=713YKtwi7BQyPKGiUhF4DkpfAFtvDXCiQ@mail.gmail.com>
 From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v1 10/11] watchdog: bd9576_wdt: switch to using
- devm_fwnode_gpiod_get()
-In-Reply-To: <CAHp75VcisCTYoRp-=713YKtwi7BQyPKGiUhF4DkpfAFtvDXCiQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vd35EOy=mP25=9fmYfqQnbafgotHw1fxk-TdGk6Oc8g8Q@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220905_165006_415589_1D06A532 
-X-CRM114-Status: GOOD (  25.26  )
+X-CRM114-CacheID: sfid-20220905_081401_599216_71ED62B0 
+X-CRM114-Status: GOOD (  24.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -138,91 +123,73 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 9/5/22 08:21, Andy Shevchenko wrote:
-> On Mon, Sep 5, 2022 at 6:13 PM Guenter Roeck <linux@roeck-us.net> wrote:
->> On 9/5/22 04:09, Andy Shevchenko wrote:
->>> On Mon, Sep 5, 2022 at 9:33 AM Dmitry Torokhov
->>> <dmitry.torokhov@gmail.com> wrote:
+On 9/5/22 04:09, Andy Shevchenko wrote:
+> On Mon, Sep 5, 2022 at 9:33 AM Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
+>>
+>> I would like to stop exporting OF-specific devm_gpiod_get_from_of_node()
+>> so that gpiolib can be cleaned a bit, so let's switch to the generic
+>> fwnode property API.
+>>
+>> While at it switch the rest of the calls to read properties in
+> 
+> it, switch
+> 
+>> bd9576_wdt_probe() to the generic device property API as well.
 > 
 > ...
 > 
->>>> +       count = device_property_count_u32(dev->parent, "rohm,hw-timeout-ms");
->>>> +       if (count < 0 && count != -EINVAL)
->>>> +               return count;
->>>> +
->>>> +       if (count > 0) {
->>>
->>>> +               if (count > ARRAY_SIZE(hw_margin))
->>>> +                       return -EINVAL;
->>>
->>> Why double check? You may move it out of the (count > 0).
->>
->> Two checks will always be needed, so I don't entirely see
->> how that would be better.
+>>          struct device *dev = &pdev->dev;
 > 
-> But not nested. That's my point:
+> struct device *parent = dev->parent;
 > 
-> if (count > ARRAY_SIZE())
->    return ...
-> if (count > 0)
->    ...
+> can make your code slightly neater.
+> 
+> ...
+> 
+>> +       count = device_property_count_u32(dev->parent, "rohm,hw-timeout-ms");
+>> +       if (count < 0 && count != -EINVAL)
+>> +               return count;
+>> +
+>> +       if (count > 0) {
+> 
+>> +               if (count > ARRAY_SIZE(hw_margin))
+>> +                       return -EINVAL;
+> 
+> Why double check? You may move it out of the (count > 0).
 > 
 
-The old code has either 1 or two checks if there is no error.
-Your suggested code has always two checks. I don't see how that
-is an improvement.
+Two checks will always be needed, so I don't entirely see
+how that would be better.
 
->>>> -       if (ret == 1)
->>>> -               hw_margin_max = hw_margin[0];
->>>
->>>> +               ret = device_property_read_u32_array(dev->parent,
->>>> +                                                    "rohm,hw-timeout-ms",
->>>> +                                                    hw_margin, count);
->>>> +               if (ret < 0)
->>>> +                       return ret;
->>>
->>> So, only this needs the count > 0 check since below already has it implicitly.
->>>
->> Sorry, I don't understand this comment.
+> ...
 > 
-> if (count > 0) {
->    ret = device_property_read_u32_array(...);
->    ...
-> }
-> if (count == 1)
->   ...
-> if (count == 2)
->   ...
+>> -       if (ret == 1)
+>> -               hw_margin_max = hw_margin[0];
 > 
-> But here it might be better to have the nested conditionals.
+>> +               ret = device_property_read_u32_array(dev->parent,
+>> +                                                    "rohm,hw-timeout-ms",
+>> +                                                    hw_margin, count);
+>> +               if (ret < 0)
+>> +                       return ret;
 > 
+> So, only this needs the count > 0 check since below already has it implicitly.
+> 
+Sorry, I don't understand this comment.
 
-We know that count is either 1 or 2 here, so strictly speaking
-	if (count == 1) {
-	} else {
-	}
-would be sufficient. On the other side, that depends on ARRAY_SIZE() being
-exactly 2, so
-	if (count == 1) {
-	} else if (count == 2) {
-	}
-would also make sense. Either way is fine with me. I'll leave it up
-to Dmitry to decide what he wants to do.
-
-Thanks,
 Guenter
 
->>>> -       if (ret == 2) {
->>>> -               hw_margin_max = hw_margin[1];
->>>> -               hw_margin_min = hw_margin[0];
->>>> +               if (count == 1)
->>>> +                       hw_margin_max = hw_margin[0];
->>>> +
->>>> +               if (count == 2) {
->>>> +                       hw_margin_max = hw_margin[1];
->>>> +                       hw_margin_min = hw_margin[0];
->>>> +               }
->>>>           }
+>> -       if (ret == 2) {
+>> -               hw_margin_max = hw_margin[1];
+>> -               hw_margin_min = hw_margin[0];
+>> +               if (count == 1)
+>> +                       hw_margin_max = hw_margin[0];
+>> +
+>> +               if (count == 2) {
+>> +                       hw_margin_max = hw_margin[1];
+>> +                       hw_margin_min = hw_margin[0];
+>> +               }
+>>          }
 > 
 
 
