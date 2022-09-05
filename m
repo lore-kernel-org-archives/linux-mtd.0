@@ -4,111 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DD24ECAAD5
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 06:41:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A0F0ECAAA1
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 06:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SmKY+9R5+0kOCeV/bG32l0z1ePI71/bN20DE7TOFuv8=; b=mIIfWfrQN+0M/9
-	NhbC0RFAeyMNTVfPvkGgSGE1W+xBaxLwQ4yI/z0xV5UXj+FP1u4y6ilbVPd1DqVdpEjGs6o8gjE8B
-	Dpx6Mwd7unFb2FD+zUnk0DBz5V/6Q333Vsf4iOG8CC4Jz2VYo50/bFrgDM+sR4kdf2mcZixW/NAAb
-	Skuw6y5yCgLqTcmd+60E7K+SUuIaPrONzBc3kVXiC5Ye34mrf+ATpiupjZhYmNqHK+lU3t4DyQGKD
-	5eClzPztm/msWRqgcsvGhjhpeJdZlQIRdr07ef9wQ9eEXv5SSN2ICidx+eaLV623w9yvHO3S3MPON
-	hL0sRrdLupwfq52n64TA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=bdIZeena8PCDwACo9gR+PBwoamgZncvNRWH5o3N8HxE=; b=ZOjrMHNPt0+nOg
+	FDThKxoSBEZaSCy1SiZN8/vmNpoItXjmd3Ih1Rb26eAOzhVgAg+BuOSa9WjKLEw6lyXUfc5IPBRy5
+	Oc3u81pY6CXqpID2/45vCBR7Gx1xHX66MIQktXdUatGXIfv7gc2FXb5Ywk9tSGmiZVsrqbdORY8aZ
+	IBRVEoVzu0pH4qNvYcC4+j3INhTqP0HO/KvHKTvikpgaGznUXfzsm205P0v21Tga/fVMHjhqq3U3A
+	fwV1RgNbOEO9QehHf930aBC0EWv4wXU/Jpk9uEN1grm3ayjG7G4jqZ7872jqIQFzwqBe2YH3YLby7
+	/ptlXqALiuP43491JeyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oV5mX-00CQjT-UH; Mon, 05 Sep 2022 06:40:30 +0000
-Received: from mail-pj1-f52.google.com ([209.85.216.52])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oV5dt-00CGEm-FM; Mon, 05 Sep 2022 06:31:36 +0000
-Received: by mail-pj1-f52.google.com with SMTP id fs14so2717793pjb.5;
-        Sun, 04 Sep 2022 23:31:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=zVe7w76eC6bgTDoVT05JO9xbEs/H8FGbqX7haQWgZL4=;
-        b=kACI45UuEBwpfjjyassFNG0U98Hr0eJu20A/vSxogzN+vfXjugJ8KzkYn5wwKX5gbB
-         uJeLI0QAz/+xelvX3OGbdcJTSgu2dNpdrSGSQg4famb7eeB/AbL7WHoZEDiXHjg2hnUR
-         4PSFIifn7lLM+A5nAaRKBTzgdAw7qg0BfzTpJ86cTaNvjX02vYPt0RebiXWe/iwHmm8q
-         zGwFv8Qb/Nc0B3WMsCOQ/E4dqsgR2yN3yxu1FOcDO2Kb6oKm+SyvVHxf73Na21XGjNsa
-         qHG58A2uebJOTkVIVHXCa9lAAMCpYNCKRv84xKCdiCS3bEdL5OBKRFVk2atPS95mlJqb
-         +oMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=zVe7w76eC6bgTDoVT05JO9xbEs/H8FGbqX7haQWgZL4=;
-        b=7XMUqw6LD/GHzcc6yHDPPJ20xpq/GDfSWJx8CsDybrErVkJCwUZLZZJxmAAX3SWOhd
-         vsPfrDlDqRauWzyIS8EMIETKKTRKWsp4bDcsevObGaZFXTOTMk/nsixjS8PrOtpa4Fmy
-         0VksxV+LkLnyT28SkqSrTlklUwYFuY13GmkrXhiSCHe6Lcabc7QevlNS9R6yC0GzozgZ
-         uhZGQdKzTIZer0TfNWgoWKfXB/xSNBt3Di9gag6+U2Eq6Mpq2tV6BT1sYEBtoB2RfpMB
-         PJa/stRqJ1c6CRk9UEInPTVI7JQflAucbRTvSuwNQGC0N9Zu/gtR142voNmdWn/lsQ9y
-         Oogw==
-X-Gm-Message-State: ACgBeo1bIRkBTDWTummgrheYL63kbIQdcQUj1yd7UIvA6GrmtaBQPXQs
-	2lEwKvrn88e2y7VTLUNXfGQ=
-X-Google-Smtp-Source: AA6agR41wNIiOLemySzBG0aXdzuGwcXJzGb1vIFW9PWKwOZh9QVyUeHaIw4+NjnqDzJgWjv579LMTw==
-X-Received: by 2002:a17:902:b581:b0:172:a34e:18fd with SMTP id a1-20020a170902b58100b00172a34e18fdmr46918225pls.163.1662359491466;
-        Sun, 04 Sep 2022 23:31:31 -0700 (PDT)
-Received: from dtor-ws.mtv.corp.google.com ([2620:15c:202:201:7332:f188:2984:5930])
-        by smtp.gmail.com with ESMTPSA id d197-20020a6336ce000000b0042254fce5e7sm5710653pga.50.2022.09.04.23.31.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Sep 2022 23:31:31 -0700 (PDT)
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Thierry Reding <thierry.reding@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Matti Vaittinen <mazziesaccount@gmail.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Claudiu Beznea <claudiu.beznea@microchip.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Felipe Balbi <balbi@kernel.org>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	David Airlie <airlied@linux.ie>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Rob Herring <robh@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	=?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Cc: linux-watchdog@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
+	id 1oV5sc-00CXuo-0I; Mon, 05 Sep 2022 06:46:46 +0000
+Received: from mail-m973.mail.163.com ([123.126.97.3])
+	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oV5fU-00CICM-L7
+	for linux-mtd@lists.infradead.org; Mon, 05 Sep 2022 06:33:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=56QwR
+	QkLZn5ZFYd4Q2aRadVIzGx++uGfkoHnHFr0I70=; b=XWNXelXe3Of2F7afarMP9
+	fafQ9z07T/7qTwyRqm9yAOKP5dxvPQ9pp1fNC0PT42+vdQJ2hWBhY9dMRtyICSl+
+	x7iWofPRq7WkhdsgJf4y2xHL6jd+fDVmzvtq42NWlymDFzEt5UMrwbb2Cy35yVnL
+	yUWUTofnjWv+m+9V3B2CJA=
+Received: from localhost.localdomain (unknown [116.128.244.169])
+	by smtp3 (Coremail) with SMTP id G9xpCgDnL1QJmBVjG_YAbA--.31732S2;
+	Mon, 05 Sep 2022 14:32:43 +0800 (CST)
+From: Jiangshan Yi <13667453960@163.com>
+To: miquel.raynal@bootlin.com,
+	vigneshr@ti.com
+Cc: richard@nod.at,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v1 09/11] regulator: bd9576: switch to using devm_fwnode_gpiod_get()
-Date: Sun,  4 Sep 2022 23:31:01 -0700
-Message-Id: <20220903-gpiod_get_from_of_node-remove-v1-9-b29adfb27a6c@gmail.com>
-X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
-In-Reply-To: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
-References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
+	Jiangshan Yi <yijiangshan@kylinos.cn>,
+	k2ci <kernel-bot@kylinos.cn>
+Subject: [PATCH] mtd: rawnand: fix spelling typo in comment
+Date: Mon,  5 Sep 2022 14:32:32 +0800
+Message-Id: <20220905063232.1830197-1-13667453960@163.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Mailer: b4 0.10.0-dev-fc921
+X-CM-TRANSID: G9xpCgDnL1QJmBVjG_YAbA--.31732S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrury7Jr47ZFy5GFWfCrWDCFg_yoWftrb_W3
+	W7AryvkrWqyF109rn3Crs3A3y5ta1Ygr1kXrn8Zr43Jw43uw4UX3yDJr1ftw1jkr48tF15
+	Wa43t3s3Xw1ktjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1GNtDUUUUU==
+X-Originating-IP: [116.128.244.169]
+X-CM-SenderInfo: bprtllyxuvjmiwq6il2tof0z/1tbiyAtz+1p7HmmGDQAAsW
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220904_233133_594984_9E12FD4E 
-X-CRM114-Status: GOOD (  13.91  )
+X-CRM114-CacheID: sfid-20220904_233314_138524_DDD7BC30 
+X-CRM114-Status: UNSURE (   9.30  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,67 +74,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I would like to stop exporting OF-specific devm_gpiod_get_from_of_node()
-so that gpiolib can be cleaned a bit, so let's switch to the generic
-fwnode property API.
+From: Jiangshan Yi <yijiangshan@kylinos.cn>
 
-While at it switch the rest of the calls to read properties in
-bd957x_probe() to the generic device property API as well.
+Fix spelling typo in comment.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: Jiangshan Yi <yijiangshan@kylinos.cn>
+---
+ drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd9576-regulator.c
-index aa42da4d141e..393c8693b327 100644
---- a/drivers/regulator/bd9576-regulator.c
-+++ b/drivers/regulator/bd9576-regulator.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- #include <linux/regulator/of_regulator.h>
-@@ -939,8 +940,8 @@ static int bd957x_probe(struct platform_device *pdev)
- 	}
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+index 8bb17c5a66c3..6487dfc64258 100644
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+@@ -14,7 +14,7 @@
+ #include <linux/bcma/bcma.h>
  
- 	ic_data->regmap = regmap;
--	vout_mode = of_property_read_bool(pdev->dev.parent->of_node,
--					 "rohm,vout1-en-low");
-+	vout_mode = device_property_read_bool(pdev->dev.parent,
-+					      "rohm,vout1-en-low");
- 	if (vout_mode) {
- 		struct gpio_desc *en;
+ /* Broadcom uses 1'000'000 but it seems to be too many. Tests on WNDR4500 has
+- * shown ~1000 retries as maxiumum. */
++ * shown ~1000 retries as maximum. */
+ #define NFLASH_READY_RETRIES		10000
  
-@@ -948,10 +949,10 @@ static int bd957x_probe(struct platform_device *pdev)
- 
- 		/* VOUT1 enable state judged by VOUT1_EN pin */
- 		/* See if we have GPIO defined */
--		en = devm_gpiod_get_from_of_node(&pdev->dev,
--						 pdev->dev.parent->of_node,
--						 "rohm,vout1-en-gpios", 0,
--						 GPIOD_OUT_LOW, "vout1-en");
-+		en = devm_fwnode_gpiod_get(&pdev->dev,
-+					   dev_fwnode(pdev->dev.parent),
-+					   "rohm,vout1-en", GPIOD_OUT_LOW,
-+					   "vout1-en");
- 		if (!IS_ERR(en)) {
- 			/* VOUT1_OPS gpio ctrl */
- 			/*
-@@ -986,8 +987,8 @@ static int bd957x_probe(struct platform_device *pdev)
- 	 * like DDR voltage selection.
- 	 */
- 	platform_set_drvdata(pdev, ic_data);
--	ddr_sel =  of_property_read_bool(pdev->dev.parent->of_node,
--					 "rohm,ddr-sel-low");
-+	ddr_sel = device_property_read_bool(pdev->dev.parent,
-+					    "rohm,ddr-sel-low");
- 	if (ddr_sel)
- 		ic_data->regulator_data[2].desc.fixed_uV = 1350000;
- 	else
-
+ #define NFLASH_SECTOR_SIZE		512
 -- 
-b4 0.10.0-dev-fc921
+2.27.0
+
+
+No virus found
+		Checked by Hillstone Network AntiVirus
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
