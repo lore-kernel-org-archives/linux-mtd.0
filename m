@@ -4,91 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58566ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 16:28:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F33FECAAD5
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 17:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z3fedLuZC7rTceL1LncrThOXWeoL9P46T49az9ahJ6k=; b=vkisnfmnhrGVha
-	WJ457Yc8W14cAKvbxWUx3c2RH/dablE9A1G03uQBVHjrEWIajDj1upWgLd8jzWgDJ8PT5FdcRK3Ox
-	4GjuelFVj9OoGvTUfVo+YTGPM/plGhZ+HWLgq9hQlKTssbfX71UVAtHBqAZSDRIC8eKMLquPSh2Al
-	W5+7OxITh6wwgtBDRgTGXBdk0zlcNhUj9I5AXJAgpoBw6uh8sXuZE+61FIta7vQBvJl42I7+xMgvm
-	Gn8ld6JHxSB2M2pX7iLIb4WUP1Is+HilhHFCJj+WiVJjioh5oVZkTjB5p4ZsCdQLM3WLbyjUmSYoN
-	K/48m9aqB9vLFn5AXgUA==;
+	List-Owner; bh=Il3OD23DopKhvw+vu4TIpLLxCqmIklJ3t+5f6fCOwT0=; b=tjubuVBh935hpW
+	WpH/8dq+R4U955dhP1V2OYeVIrJ61QByu9qpHDKECjAPzea5htASEZDM4z6j3SxLAa1qJxndTEasB
+	KMXd7YQKqLrjVpYuRuOGbqfsWvwXGXPUM0nuFTyPr5N8MwHEQCBxSom53JvrRZsZEgdvoTOsJAuEF
+	kP56817oGvbuk5JOqptnP+LOIc7YTKZLo/d99u171odOM1eF8/C+nByEafFhQc86si/d+4Xw0k32V
+	kRiKGqUTBE4asrk1lWAdXfjw8QNB5qq1rxzJE92QC9ljWrYZ1aqKCh/AwzpVNh2wTZceQ9kB68bW2
+	853HzAzfcgBY20utuE6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVEwv-006qR6-Pz; Mon, 05 Sep 2022 16:27:50 +0000
-Received: from mail-qk1-x735.google.com ([2607:f8b0:4864:20::735])
+	id 1oVFiO-007OO4-UE; Mon, 05 Sep 2022 17:16:53 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVC4k-0037uu-Kf; Mon, 05 Sep 2022 13:23:52 +0000
-Received: by mail-qk1-x735.google.com with SMTP id h27so6271659qkk.9;
-        Mon, 05 Sep 2022 06:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=xqnaWRmSxWCHIXi5Qlq2gni2AdAVZeps2ahh12VkulY=;
-        b=nOletpYDW/GRPvkaWSlAC0rzt34URfVHbiUKwVMsxFl09VUwy8XOqhWqRsptamq/Dg
-         II+253/l3T6DgJP066py1bWTdICT2vRCXvzy2Ur+pO4VC493+7Sqn84yvDmlJFGAVdYl
-         5PZSVDMi1QDxBMQa2pV/FSXYTAwvX/lFVcFPmgHoO3U8MnbkwA9h7jonAO1nFwBsGmoW
-         q5f2ZglIOVt/xEgJLA6EBKdc3gOuFnoMDDVILIKTeoTg7qTOPypEYwVwaO1cq1N6YfbI
-         me+dt6lOnpM5B3FzI09ooPbgjOvgXIow30OcLwUv/NaL/eE7AkZh0zMQ2HIMHBfa4q7S
-         WwgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=xqnaWRmSxWCHIXi5Qlq2gni2AdAVZeps2ahh12VkulY=;
-        b=qu1H0y+/gZNC03MgWYujUrRqnCZrFB+jKKHstbC6nSZ3MaT3zJB0V+fGKBALN1L6Fr
-         vk3GO+XReShjkOkrjuQTJSFO84J3/d2akow3ZS9haWZ5YDP+rMUmTNqtT+RBRiWNrf0d
-         11jjYTRqVuuU/bhTxFSBqcBwLO+Uus0ck9rPk5fGyzIP5CblUysRnRB/sr0j1uZqOkqA
-         j/hXiYILpfdoEuvlQlUfGzms1VnXhCmKwqgWA13vXeV6h2k7w3SZyHNZGsux74A4738X
-         jQ6tP2rX7nmlmBxMwjkphrlYNKSLLyZVOQE9zBWpm7+HXdOyaOy/+4dLHy3SlaXDtdnQ
-         1b9g==
-X-Gm-Message-State: ACgBeo27Q/FK8KDzVPTZHdY0z/Mhr8T18Pvwlp05JZLl/dRebZjX5HfX
-	Osuj8/qy7WEQ9uRJ+QnHtZ6D0x4ekYGmQ1PyXjo=
-X-Google-Smtp-Source: AA6agR5sttgUX/02ygd4oRH8E7CwuO10nDnWttnl6PSpdnCic7gOwb1KDafibQkxIBgdBbgVXC2AwvPX08spe4Hyycw=
-X-Received: by 2002:a05:620a:288a:b0:6b8:fcfe:db02 with SMTP id
- j10-20020a05620a288a00b006b8fcfedb02mr33223900qkp.504.1662384221554; Mon, 05
- Sep 2022 06:23:41 -0700 (PDT)
-MIME-Version: 1.0
+	id 1oVDVE-0059e9-Ht; Mon, 05 Sep 2022 14:55:23 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id DDF49B8119E;
+	Mon,  5 Sep 2022 14:55:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55311C433D6;
+	Mon,  5 Sep 2022 14:54:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1662389702;
+	bh=KP3EocuoUIX0AopCG1aLZXX8OYIQkU7XDQRdtjESgfQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=FdxBqiI3p6ZeO4T+XjgQ9CZ/qt69KGDmMaAKKfHX9rJZ8Jk2TFPVgg1SqnsdqhkRa
+	 WdDaWxcTHblfVGvoG78rdGhCY73SymRtwQ5E/O1+kJIRSFwSWC0iH+WVUYcuf4J/9I
+	 kQ4DrYany8AlhFZ13jcgU8XtxHsAoxcrTSwCZVrc48ljSqB9o/UKBtoojYJQze+tiV
+	 fvGYoDbk0jy7TuqUrjjHekuf1hzLJkMS/QgninQfO1rY7Se8Wee7G0k3IhatOzVCte
+	 WkV36G3IYztJIvQ66OoflpORRaQbBmetX5gw4GgXfwKRTNy74S54TTBmoN34wl7/kT
+	 uSzb6UrdEavlg==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, David Airlie <airlied@linux.ie>, Thierry Reding <thierry.reding@gmail.com>,
+ Alyssa Rosenzweig <alyssa@rosenzweig.io>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Guenter Roeck <linux@roeck-us.net>, Jonathan Hunter <jonathanh@nvidia.com>, Rob Herring <robh@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Daniel Vetter <daniel@ffwll.ch>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Matti Vaittinen <mazziesaccount@gmail.com>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, Marc Zyngier <maz@kernel.org>, Krzysztof Wilczyński <kw@linux.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Felipe Balbi <balbi@kernel.org>, Pali Rohár <pali@kernel.org>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-mtd@lists.infradead.org, linux-gpio@vger.kernel.org
+In-Reply-To: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
 References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
- <20220903-gpiod_get_from_of_node-remove-v1-9-b29adfb27a6c@gmail.com>
- <CAHp75VeA+oVPmsEOg+y0cvRcTU5qA+Y+9=Byp0C982EB7SAArQ@mail.gmail.com> <0fa0c09f-c801-a0c7-1f6e-b6cc8b45d961@gmail.com>
-In-Reply-To: <0fa0c09f-c801-a0c7-1f6e-b6cc8b45d961@gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 5 Sep 2022 16:23:05 +0300
-Message-ID: <CAHp75Vek1WOyEdkfCgrcH2FL6GA5gTtxXaV5Qy9aJMCQ3qGxyg@mail.gmail.com>
-Subject: Re: [PATCH v1 09/11] regulator: bd9576: switch to using devm_fwnode_gpiod_get()
-To: Matti Vaittinen <mazziesaccount@gmail.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	Claudiu Beznea <claudiu.beznea@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Wim Van Sebroeck <wim@linux-watchdog.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Guenter Roeck <linux@roeck-us.net>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Felipe Balbi <balbi@kernel.org>, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Marc Zyngier <maz@kernel.org>, 
-	Richard Weinberger <richard@nod.at>, David Airlie <airlied@linux.ie>, 
-	Nicolas Ferre <nicolas.ferre@microchip.com>, Alyssa Rosenzweig <alyssa@rosenzweig.io>, 
-	Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Hunter <jonathanh@nvidia.com>, Rob Herring <robh@kernel.org>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	=?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
-	LINUXWATCHDOG <linux-watchdog@vger.kernel.org>, USB <linux-usb@vger.kernel.org>, 
-	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, linux-pci <linux-pci@vger.kernel.org>, 
-	linux-tegra <linux-tegra@vger.kernel.org>, 
-	"open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, 
-	linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Subject: Re: (subset) [PATCH v1 00/11] Get rid of [devm_]gpiod_get_from_of_node() public APIs
+Message-Id: <166238969501.661295.8416403465203041511.b4-ty@kernel.org>
+Date: Mon, 05 Sep 2022 15:54:55 +0100
+MIME-Version: 1.0
+X-Mailer: b4 0.10.0-dev-fc921
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220905_062348_104621_D44FC6D2 
-X-CRM114-Status: GOOD (  19.71  )
+X-CRM114-CacheID: sfid-20220905_075520_509405_948EEC04 
+X-CRM114-Status: GOOD (  18.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,34 +83,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 5, 2022 at 4:19 PM Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> On 9/5/22 13:40, Andy Shevchenko wrote:
-> > On Mon, Sep 5, 2022 at 9:33 AM Dmitry Torokhov
-> > <dmitry.torokhov@gmail.com> wrote:
+On Sun, 4 Sep 2022 23:30:52 -0700, Dmitry Torokhov wrote:
+> I would like to stop exporting OF-specific [devm_]gpiod_get_from_of_node()
+> so that gpiolib can be cleaned a bit. We can do that by switching drivers
+> to use generic fwnode API ([devm_]fwnode_gpiod_get()). By doing so we open
+> the door to augmenting device tree and ACPI information through secondary
+> software properties (once we teach gpiolib how to handle those).
+> 
+> I hope that relevant maintainers will take patches through their trees and
+> then we could merge the last one some time after -rc1.
+> 
+> [...]
 
-...
+Applied to
 
-> >> +       vout_mode = device_property_read_bool(pdev->dev.parent,
-> >> +                                             "rohm,vout1-en-low");
-> >
-> > They all using parent device and you may make code neater by adding
-> >
-> >    struct device *parent = pdev->dev.parent;
->
-> This is a matter of personal preference. I prefer seeing
-> pdev->dev.parent - as it is more obvious (to me) what the 'pdev' is than
-> what 'parent' would be.
->
-> I'd use the local variable only when it shortens at least one of the
-> lines so that we avoid splitting it. After that being said - I'm not
-> going to argue over this change either if one who is improving the
-> driver wants to use the "helper" variable here.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-And I believe the quoted one is exactly the case of what you are saying above.
+Thanks!
 
--- 
-With Best Regards,
-Andy Shevchenko
+[08/11] regulator: bd71815: switch to using devm_fwnode_gpiod_get()
+        commit: 97c9278ec624a0d5d7c56aa20e16afc8aaa96557
+[09/11] regulator: bd9576: switch to using devm_fwnode_gpiod_get()
+        commit: 587bfe3f7a270f0a4076e624d318292324bdead8
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 ______________________________________________________
 Linux MTD discussion mailing list
