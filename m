@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5A48ECAAD5
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 13:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90143ECAAD3
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 14:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dO3Y4vMUvrhfI6El/vgOUBuQvfqH/zEn9ugi23uXebc=; b=lg1lKkuI2ITnMg
-	MF1D/Sa5MNnK6+Iz+MioHVxDW966yfsuFfq/pMQrMftpBrKiEwnIGqNtQGT7ga9/0ti9MO7U2SOPF
-	3UKcuqtqIxDxxwLNlHM33URLm07y+XiRnf/E+WpeiYjrgIvqHubxgJdVuH98f5Zxg7cHqADdakeYy
-	rjdkyJZvfl/8GS8UbhsARKfXmtFE8QakH0QSoZDFE1EEX6+gQTdLu7T/BXzhieuR67UJM1sc3CU9b
-	G0nKTJkXJ036W2y49mmTqtjp5YH4nWJQDyqEP2tV2ZRyGRjbhF/lECa0xvF2f03O3HY9cOs+g/OXS
-	iRInZuJhMye/4qTqEeww==;
+	List-Owner; bh=EEY6/m4gczhBfjuBUoLQP4r3Na/KvvmJpI4GDnh+6Tw=; b=vsU6GL6rleqgCW
+	I0o27FAsrXWwbV05RWn+rYO1F22vinGA6lOjnVz++VY6w0L4AYhV3GvLvFiMKvr70b9BOruFKXUuz
+	f889Pv9en9iBfGmPs5gNvG/zDf0DQD4DlqxAL1xPrSuq2Htes7JcCAQTCn/60oy7r61uU867OD7CA
+	/HLDq/mHebgi4DgpVAYyl2PB+NmLduD26J/h8WTdvKMVFVAoAv3wva4HTUWyiEFY5XaTZ8xvw38d+
+	g6OoISJ2nVfZcwtk5IYNfA+00dv8hVrYWnRkQAaVEhWKixy4MvZjP7m06n5KLcngBqhVVcFWnpTMw
+	rKLqh9100NpS/Mfp+gAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVCXj-003cpN-A7; Mon, 05 Sep 2022 13:53:39 +0000
+	id 1oVCer-0040R6-0u; Mon, 05 Sep 2022 14:01:04 +0000
 Received: from mail-qk1-x72f.google.com ([2607:f8b0:4864:20::72f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oV9l6-000ifM-CG; Mon, 05 Sep 2022 10:55:17 +0000
-Received: by mail-qk1-x72f.google.com with SMTP id b2so6044110qkh.12;
-        Mon, 05 Sep 2022 03:55:13 -0700 (PDT)
+	id 1oV9q1-000md1-Ak; Mon, 05 Sep 2022 11:00:23 +0000
+Received: by mail-qk1-x72f.google.com with SMTP id h27so6063781qkk.9;
+        Mon, 05 Sep 2022 04:00:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=u5wXdybY4V4FdQrWKDhVN8YtAVKPzLButJ1sTRP8l1Y=;
-        b=fN9ls9YPkyuUBAxr4wBmegmBCd5C9P/xaFPwXqy2FgkVzhIWNFNVR0bIehn1eXCf3d
-         zobAQyMxj0Z6zjuSqQChSLqXx/lGBZnOoXZuh0swZ9USSGOks25+oXU6FAesXBD3v2DQ
-         L68l4C/DyY0LtBFJIREWTz0QAYiKWOW4FJBp9fKNmjWxzb09XWs8F+aM06q4SUWIESBO
-         xHTM6IpS/sM1qQMre3AApRlHWbfBdhbDuAOnnGrdzMosW5f0QYLusQvgZq38fCbtCj8+
-         st+OCZ16eP1EI4yU9tRWvtbyzF+xtAD5mGA4eMQrLw3MtKQV7zXu1TtVJ7pKICr8G27y
-         D+Cg==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=ZeMo2PWVWCCE4kicxMFOEAyAOyDB4gnn7oyqH8IifhU=;
+        b=CTOoiLvwwBkvtH32c6w60zEVvHcTnoXO3ACu0Ys4kWjZ2v5rcWsBDH+vdDx4TQZ9hd
+         zoXITcV3yQclTjF5bSmp+qDBSGLQc9kK7p/Q6MVruLaf+yQ2ieawJUD0vtr6jFmlqqb5
+         VM0HxdCbbCyt9e3B0tD+nb2kHG9B39a4RXdVZ+gBaJ13JI/Bhg4cILs9FZoegyTQ+F+6
+         8fPJkAuVnPubU2LSPwAtno5IP1SguIVrVU1uTopFif2u8b6jICrnPWEduG2jMRNf+dw3
+         TOSVD6xw70ivt4BkffpLzGj1KiFTvRTD6M32zkdDHIex4lTV6wIEhedGMFPH+v+dK0yQ
+         6+JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=u5wXdybY4V4FdQrWKDhVN8YtAVKPzLButJ1sTRP8l1Y=;
-        b=0Eh8GF1vig+zb7jes/qdVALCr+Rsylai8646rs7WGlDzEB0ra2Ov5gli6lu9W5xdQc
-         A+GjOvVHKWPdmdXWIrqo784urcJ6zPtfSH6MnOzMMnCaUHODUOGVEovGW3Ne5l83J0d3
-         B810869LYEp5zDlp8GDdX7emtBUJd3AhbX3miSH/ftMQEIXcciaxYDAjP1U3Q4LJt86F
-         rl3zNYRWxYkdSwWm1Idc2AOgMXI8hyTvWPJcXdEinbbhWONh1V3BEWKtDjZMzw/gktQh
-         HvEhPqw+VmtQX5/Ttx9xhdhlsAgkAJfae/F6O4CSa9TXtoNQpsV2yq6p/QFpH2C44L+3
-         qH1g==
-X-Gm-Message-State: ACgBeo1mMjA2cTBJnN16yWa2HGQrD+ZOiLR2Ic/yS6ABD5CYQqd+x5ck
-	haxRmnOwlXxYIErQPHkSj3o37M0VvMTp5ji/xAg=
-X-Google-Smtp-Source: AA6agR4kYjGXWf3gIvqIWbBUJGizexBviWISl//lL9gbx6ZDHQvEVsxtbzoy40VfO0zOsVmlCvX9hRiizwzJ1xcnYOU=
-X-Received: by 2002:a05:620a:2987:b0:6ba:dc04:11ae with SMTP id
- r7-20020a05620a298700b006badc0411aemr31582222qkp.748.1662375311598; Mon, 05
- Sep 2022 03:55:11 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=ZeMo2PWVWCCE4kicxMFOEAyAOyDB4gnn7oyqH8IifhU=;
+        b=gk7X5uHjDmSOMor0jWRsQYMb5UG+iv7I4AYluQqdKxUH7Wgaidr1YsC/24DoJ+eoPF
+         iW/uSt/ri6XrV+nTRf85zRVg0hqyI0/lBCpndfC6IkYzym+Ixv1Mu/TsciKo5mkvxBhc
+         7pfnEaphS8q8KtCTpDeyMQ7v0N5pzsEtx3WaacmfR8HjgWw9GmO0N9ABqmur+IvEzref
+         I/sgkYDBrnW2/8TMu+Hm4tfWYhIPdMBxnke/oTbV82jp25/U62tKz7JIqE8b+QYvvqqg
+         2eJDtF58166MvO5uaY5MjweebjPC2DYyf7OkJSNIOSvXovwAE/ffo7Uh1LbNA3GME0WW
+         jVnw==
+X-Gm-Message-State: ACgBeo2MdS6IAyZXFEr46LeYPEQmBghuweE1SlZONdYQQg7CANiHCjHO
+	3Uf1bTj4vcpm3y/kbitRBcFC4darbjZCXWTh3L0=
+X-Google-Smtp-Source: AA6agR5QfYlB3faOXg1Xo9fT2kr66lBEoMt1tUwQEmf4Hjj69mFUh3WyFYB6EU5cllnnLi+qXnfCb/Dp4e9d3zghof0=
+X-Received: by 2002:a05:620a:288a:b0:6b8:fcfe:db02 with SMTP id
+ j10-20020a05620a288a00b006b8fcfedb02mr32736370qkp.504.1662375620030; Mon, 05
+ Sep 2022 04:00:20 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
- <20220903-gpiod_get_from_of_node-remove-v1-1-b29adfb27a6c@gmail.com>
- <20220905071902.fv4uozrsttk3mosu@pali> <CAHp75Vf5R03nq6JmpVcVNX9L5CwM-uOmF39oHSZFP3QJe+GExQ@mail.gmail.com>
- <20220905105341.z2pjlpljitws3j6l@pali>
-In-Reply-To: <20220905105341.z2pjlpljitws3j6l@pali>
+ <20220903-gpiod_get_from_of_node-remove-v1-4-b29adfb27a6c@gmail.com>
+In-Reply-To: <20220903-gpiod_get_from_of_node-remove-v1-4-b29adfb27a6c@gmail.com>
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 5 Sep 2022 13:54:35 +0300
-Message-ID: <CAHp75VedhWXbEG6kpObbpnyPE3M3dCM7nEyupJr+rwKj0kVC8w@mail.gmail.com>
-Subject: Re: [PATCH v1 01/11] PCI: tegra: switch to using devm_fwnode_gpiod_get
-To: =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Matti Vaittinen <mazziesaccount@gmail.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Claudiu Beznea <claudiu.beznea@microchip.com>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	Felipe Balbi <balbi@kernel.org>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+Date: Mon, 5 Sep 2022 13:59:44 +0300
+Message-ID: <CAHp75VdMr7wru-2hD1HH3OS5JTNdzt6VRqB6OFoCp2JkiuiTjw@mail.gmail.com>
+Subject: Re: [PATCH v1 04/11] usb: phy: tegra: switch to using devm_gpiod_get()
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Matti Vaittinen <mazziesaccount@gmail.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	Claudiu Beznea <claudiu.beznea@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Wim Van Sebroeck <wim@linux-watchdog.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Guenter Roeck <linux@roeck-us.net>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Felipe Balbi <balbi@kernel.org>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
 	Vignesh Raghavendra <vigneshr@ti.com>, Daniel Vetter <daniel@ffwll.ch>, 
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
 	Alexandre Torgue <alexandre.torgue@foss.st.com>, Marc Zyngier <maz@kernel.org>, 
@@ -81,6 +77,7 @@ Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Thierry Reding <thierry.reding@
 	Nicolas Ferre <nicolas.ferre@microchip.com>, Alyssa Rosenzweig <alyssa@rosenzweig.io>, 
 	Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Hunter <jonathanh@nvidia.com>, Rob Herring <robh@kernel.org>, 
 	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	=?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
 	LINUXWATCHDOG <linux-watchdog@vger.kernel.org>, USB <linux-usb@vger.kernel.org>, 
 	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, linux-pci <linux-pci@vger.kernel.org>, 
 	linux-tegra <linux-tegra@vger.kernel.org>, 
@@ -89,8 +86,8 @@ Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Thierry Reding <thierry.reding@
 	linux-stm32@st-md-mailman.stormreply.com, 
 	linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220905_035516_611244_86C8D697 
-X-CRM114-Status: GOOD (  12.90  )
+X-CRM114-CacheID: sfid-20220905_040021_438756_0B27895C 
+X-CRM114-Status: GOOD (  16.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,18 +99,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCBTZXAgNSwgMjAyMiBhdCAxOjUzIFBNIFBhbGkgUm9ow6FyIDxwYWxpQGtlcm5lbC5v
-cmc+IHdyb3RlOgo+IE9uIE1vbmRheSAwNSBTZXB0ZW1iZXIgMjAyMiAxMzo0OToyMSBBbmR5IFNo
-ZXZjaGVua28gd3JvdGU6CgouLi4KCj4gPiBJdCdzIG5vdCB0aGUgc2FtZSBkZXYgYW5kIGl0cyBu
-b2RlIGluIHRoaXMgY2FzZS4gVGhlcmUgaXMgb25lIHJlc2V0Cj4gPiBmb3IgX2FsbF8gcG9ydHMs
-IGhlcmUgaXMgdGhlIHJlc2V0IG9uIF9wZXIgcG9ydF8gYmFzaXMuCj4KPiBhYXJkdmFyayBpcyBz
-aW5nbGUgcG9ydCBjb250cm9sbGVyLiBTbyBpdCBpcyBiYXNpY2FsbHkgc2FtZS4KClllcCwganVz
-dCByZXBsaWVkIHRvIG15IG1lc3NhZ2UuCgotLSAKV2l0aCBCZXN0IFJlZ2FyZHMsCkFuZHkgU2hl
-dmNoZW5rbwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Mon, Sep 5, 2022 at 9:32 AM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> I would like to stop exporting OF-specific devm_gpiod_get_from_of_node()
+> so that gpiolib can be cleaned a bit, so let's switch to the generic
+> device property API.
+>
+> I believe that the only reason the driver, instead of the standard
+> devm_gpiod_get(), used devm_gpiod_get_from_of_node() is because it
+> wanted to set up a pretty consumer name for the GPIO, and we now have
+> a special API for that.
+
+...
+
+> -               gpiod = devm_gpiod_get_from_of_node(&pdev->dev, np,
+> -                                                   "nvidia,phy-reset-gpio",
+> -                                                   0, GPIOD_OUT_HIGH,
+> -                                                   "ulpi_phy_reset_b");
+> +               gpiod = devm_gpiod_get(&pdev->dev, "nvidia,phy-reset",
+> +                                      GPIOD_OUT_HIGH);
+>                 err = PTR_ERR_OR_ZERO(gpiod);
+
+What does _OR_ZERO mean now?
+
+>                 if (err) {
+>                         dev_err(&pdev->dev,
+>                                 "Request failed for reset GPIO: %d\n", err);
+>                         return err;
+>                 }
+
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
