@@ -4,48 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5764ECAAA1
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 23:10:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69B4BECAAD3
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 23:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8jLjUb1XiJ8URnY2e5iO4IbpNdJ3l2xsdF+lL4XCRPM=; b=Rth/G7Lk+IXUkD
-	D634Nmlw49A4K8wHz6PvpBWLExykEYJq0bJhQbWeVV/srIa0U5O6Zxe+yHFwE9Y2OLIvz0Z+2g0Oz
-	4sbBoNEmScV/FtZ5qmcoyHuAwH2cygqc6th+v/ZP3/GUHWg5UFLfhrzO27rWC0xndYBKxKUcyu1Ho
-	wmthtByDB8dAUWH5dkjhQ8+IXAgBFwVHU1M2WhGex7dKmtZO2pXustbO41TydhBOFObzpzeorbj9C
-	BTGjjHWPwLUUueFgothbsXMI00gtvhqrK0ZZ7oyklx6rJHG2N4gJBEizOrhNQgdo3jpk/giCf2SKz
-	9rwZU+iEkIrDIMe3xLpA==;
+	List-Owner; bh=UBiIYpmciPEDTNDPK4QCAN2KNLI2rywHI4CfAWcIBnw=; b=s7q4PlT3huDfgZ
+	6lL5s8A0gVpobjGXNZz54goEM374fRXkr9fMPgYcNkAzYECLmYiDHG5nlFq7UfbcVBIChMYbN9iOa
+	Ylntv+N1aUUO+6xeu0ztIwoSimQ/bUXYhmQd6LFkukyv3Hm6PlmlvVUKVwwEQL2AKKY3imyv62d4x
+	UaxKbg5bf5RUQ2sap9DMtYKmyeiCijozlqetOBKc4EAPBppoiOgSc6WhEnnFGzBSW1J+JetVLmJM+
+	zkZlKtdyk69Rz4w4c9tZgmLz47cLRyn7K7siTk1/Vhfyb3SeOBQvZMluts7byNMOnemSE1qwnIa7J
+	n1QxM9cqAzEdEf8k9Tqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVLEh-0006Zb-SG; Mon, 05 Sep 2022 23:10:35 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1oVLMk-000EX7-6v; Mon, 05 Sep 2022 23:18:54 +0000
+Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVLEP-0006Ph-Ca; Mon, 05 Sep 2022 23:10:19 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id C60E3B81598;
-	Mon,  5 Sep 2022 23:10:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 323CBC433D7;
-	Mon,  5 Sep 2022 23:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1662419413;
-	bh=QhxqwrmKqk3hcDpE+kAWZJMWXWXiMx7OLmYa5+ea15I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cRSoeEfIVpvF6cCwlub3pnSJQf8zKCY4aEUPtHMtOkNaxfZe1+RUfK+stOROQ5pnl
-	 7FbU956qU800+Jb6U6hwdOBoxO4x2FzlbVVVUaZEp0hQquPlSpxbMl7gPJHmGlip/q
-	 WXeDk2lh/TK49oBj/AAQP6Dst1Z5bl84IrLyRgMJAafIN0kMLxsIsEAjQNvYyihGG9
-	 h4xRjXdkiTaHf2hIJ2Yatpca7TxPs6KBGxO+xPjerqLTUmJvu4k28lZ30772rihPEH
-	 I7n720bv3M7ihVFZNddbLANnIMiG1BrKlgvb+eKgjpWzR8KT6CpP2IYFa+iRtTPNF6
-	 YocV+oaaQMIFA==
-Received: by pali.im (Postfix)
-	id 400A37D7; Tue,  6 Sep 2022 01:10:10 +0200 (CEST)
-Date: Tue, 6 Sep 2022 01:10:10 +0200
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+	id 1oVLMh-000EVj-9F; Mon, 05 Sep 2022 23:18:52 +0000
+Received: by mail-pj1-x1034.google.com with SMTP id o2-20020a17090a9f8200b0020025a22208so6031516pjp.2;
+        Mon, 05 Sep 2022 16:18:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date;
+        bh=/jqGrlOkEmBNjfkgs8nQW3ROS8ZrNR4/ALxdUn5IrPk=;
+        b=ilcjNtA9e+sPl0lsYgQkDwLCllTb2CiNUB5lHZ6JeNqUXFPhLppke4bm+tXK6piFK1
+         OXX3EAUgJSmDrfpfXWx/gxfIHEm2Ll5i3Co8kZmFkD+xJ+3h2g4/t3iiwcCHTb2nJzBQ
+         lbOD/k+fLbzcC8HBgysilDjSnQ1ZbXkHWL+70V9Wt9ed7HVcmNaLtsVWn3S7QudoyNrm
+         Tq2TeNuUosg71GwV6fxG+rz0aEcyELSi2RShJByRv/vyFIdszNuT6j8i8+cZEV+vX59E
+         NXtPK9gzYwxXVVePAldhDwWgJuboRZn5lOgdBc1/dRtrt2Cv4uHi9z8kuWuYzv1zT79p
+         tLxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=/jqGrlOkEmBNjfkgs8nQW3ROS8ZrNR4/ALxdUn5IrPk=;
+        b=JkKvZsBHgLzk3T7IJE6ij2ZOx/BIiwEXp9OH8hc3wTwGCiRF51M84ggBu0G3G9sPAC
+         CiCxyM8uJMlKU78GbuQAFPbszMVBUMO5Ch1hH9F3/hqlbatdRgMWjQqU1EDCSuKRrDlv
+         hNxCWEUWYuY6UK3Z5RgdHn3xp9LpMXCW7wPmVHoxw2eiLSzSo7JCZ8CTW9yHMsDU9WE0
+         9kF/7OvtVJ8CScb2IpADph+NSVAAtaLJ97k/HpNIrd091zV3ilTBdxXrH3uLteFQf8bJ
+         vj0X2SZiU9hn58ShJt9Z1HLem+oUBvwipq9SZsBo9SZDcncJpcuw/RxH+r7IKGT6uz06
+         WLGg==
+X-Gm-Message-State: ACgBeo2OYxM1984P2XYC6Vo43peDeq1yG3bQ5D7X9D9Msmn9uoFSg4YM
+	xteJbN1bfqK2V81Kashk3L0=
+X-Google-Smtp-Source: AA6agR7SONkgr8pjyY4NZ8VXkSKoPY330/BgoAO00Ts+AQQkwdonx5V0WIHgyPBEPyBYuNfJLCJm0Q==
+X-Received: by 2002:a17:903:186:b0:176:6615:cb8d with SMTP id z6-20020a170903018600b001766615cb8dmr19721305plg.135.1662419929430;
+        Mon, 05 Sep 2022 16:18:49 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:1190:fbfa:ae95:111c])
+        by smtp.gmail.com with ESMTPSA id 5-20020a17090a190500b001fe444b2245sm7375447pjg.25.2022.09.05.16.18.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Sep 2022 16:18:48 -0700 (PDT)
+Date: Mon, 5 Sep 2022 16:18:44 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
 Cc: Thierry Reding <thierry.reding@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Matti Vaittinen <mazziesaccount@gmail.com>,
@@ -81,18 +97,18 @@ Cc: Thierry Reding <thierry.reding@gmail.com>,
 	linux-arm-kernel@lists.infradead.org
 Subject: Re: [PATCH v1 06/11] PCI: aardvark: switch to using
  devm_gpiod_get_optional()
-Message-ID: <20220905231010.ojl4i4ph27qtebiy@pali>
+Message-ID: <YxaD1Luja4T/osP5@google.com>
 References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
  <20220903-gpiod_get_from_of_node-remove-v1-6-b29adfb27a6c@gmail.com>
  <20220905070046.46nlhczkck2ufr4x@pali>
  <YxZ+PSDRYZnVKfFO@google.com>
+ <20220905231010.ojl4i4ph27qtebiy@pali>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <YxZ+PSDRYZnVKfFO@google.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20220905231010.ojl4i4ph27qtebiy@pali>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220905_161017_773425_2E50D2E6 
-X-CRM114-Status: GOOD (  35.04  )
+X-CRM114-CacheID: sfid-20220905_161851_359615_1887FD1C 
+X-CRM114-Status: GOOD (  26.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,62 +120,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uZGF5IDA1IFNlcHRlbWJlciAyMDIyIDE1OjU0OjUzIERtaXRyeSBUb3Jva2hvdiB3cm90
-ZToKPiBPbiBNb24sIFNlcCAwNSwgMjAyMiBhdCAwOTowMDo0NkFNICswMjAwLCBQYWxpIFJvaMOh
-ciB3cm90ZToKPiA+IE9uIFN1bmRheSAwNCBTZXB0ZW1iZXIgMjAyMiAyMzozMDo1OCBEbWl0cnkg
-VG9yb2tob3Ygd3JvdGU6Cj4gPiA+IEkgd291bGQgbGlrZSB0byBzdG9wIGV4cG9ydGluZyBPRi1z
-cGVjaWZpYyBkZXZtX2dwaW9kX2dldF9mcm9tX29mX25vZGUoKQo+ID4gPiBzbyB0aGF0IGdwaW9s
-aWIgY2FuIGJlIGNsZWFuZWQgYSBiaXQsIHNvIGxldCdzIHN3aXRjaCB0byB0aGUgZ2VuZXJpYwo+
-ID4gPiBkZXZpY2UgcHJvcGVydHkgQVBJLgo+ID4gPiAKPiA+ID4gSSBiZWxpZXZlIHRoYXQgdGhl
-IG9ubHkgcmVhc29uIHRoZSBkcml2ZXIsIGluc3RlYWQgb2YgdGhlIHN0YW5kYXJkCj4gPiA+IGRl
-dm1fZ3Bpb2RfZ2V0X29wdGlvbmFsKCksIHVzZWQgZGV2bV9ncGlvZF9nZXRfZnJvbV9vZl9ub2Rl
-KCkgaXMKPiA+ID4gYmVjYXVzZSBpdCB3YW50ZWQgdG8gc2V0IHVwIGEgcHJldHR5IGNvbnN1bWVy
-IG5hbWUgZm9yIHRoZSBHUElPLAo+ID4gCj4gPiBJSVJDIGNvbnN1bWVyIG5hbWUgaXMgbm90IHVz
-ZWQgYXQgYWxsLgo+ID4gCj4gPiBUaGUgcmVhc29uIHdhcyB0byBzcGVjaWZ5IGZ1bGwgbmFtZSBv
-ZiBEVFMgcHJvcGVydHksIGZvciBlYXNpZXIKPiA+IGlkZW50aWZpY2F0aW9uIG9mIHRoZSBjb2Rl
-LiBEVFMgcHJvcGVydHkgaXMgInJlc2V0LWdwaW9zIiBidXQgQVBJCj4gPiBzcGVjaWZ5IG9ubHkg
-InJlc2V0Ii4KPiAKPiBJIHNlZS4gRG8geW91IHdhbnQgbWUgdG8gcmVzZXQgdGhlIHBhdGNoIHdp
-dGggdXBkYXRlZCBkZXNjdGlwdGlvbiBhcyB0bwo+IHRoZSByZWFzb24gZGV2bV9ncGlvZF9nZXRf
-ZnJvbV9vZl9ub2RlKCkgd2FzIHVzZWQ/CgpJIHRoaW5rIGl0IGlzIGZpbmUuIFNvIGFkZCBteToK
-CkFja2VkLWJ5OiBQYWxpIFJvaMOhciA8cGFsaUBrZXJuZWwub3JnPgoKQW55d2F5IGFzIGFub3Ro
-ZXIgaW1wcm92ZW1lbnQgZm9yIGZ1dHVyZSBJIHdvdWxkIHN1Z2dlc3Qgc29tZSBBUEkKZnVuY3Rp
-b24gd2l0aCBfb3B0aW9uYWxfIGxvZ2ljLCBzbyBpdCBjb3VsZCBiZSB1c2VkIGZvciBtb3JlIFBD
-SWUKY29udHJvbGxlciBkcml2ZXJzIChlLmcuIGFsc28gdGVncmEpIHdpdGhvdXQgbmVlZCB0byBy
-ZWltcGxlbWVudAotRU5PRU5UIGhhbmRsaW5nLiBJdCBpcyByZWFsbHkgc3RyYW5nZSBpZiBmb3Ig
-YWNxdWlyaW5nIHNhbWUgUEVSU1QjCmxpbmUgdmlhIEdQSU8gKCJyZXNldC1ncGlvcyIgRFQgcHJv
-cGVydHkpIGFyZSB1c2VkIG1vcmUgQVBJIGZ1bmN0aW9ucwppbiBkaWZmZXJlbnQgUENJZSBkcml2
-ZXJzLgoKPiA+IAo+ID4gPiBhbmQgd2Ugbm93IGhhdmUgYSBzcGVjaWFsIEFQSSBmb3IgdGhhdC4K
-PiA+ID4gCj4gPiA+IFNpZ25lZC1vZmYtYnk6IERtaXRyeSBUb3Jva2hvdiA8ZG1pdHJ5LnRvcm9r
-aG92QGdtYWlsLmNvbT4KPiA+ID4gCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9jb250
-cm9sbGVyL3BjaS1hYXJkdmFyay5jIGIvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2ktYWFyZHZh
-cmsuYwo+ID4gPiBpbmRleCA0ODM0MTk4Y2M4NmIuLjRhOGE0YTg1MjJjYiAxMDA2NDQKPiA+ID4g
-LS0tIGEvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2ktYWFyZHZhcmsuYwo+ID4gPiArKysgYi9k
-cml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaS1hYXJkdmFyay5jCj4gPiA+IEBAIC0xODU2LDIwICsx
-ODU2LDE5IEBAIHN0YXRpYyBpbnQgYWR2a19wY2llX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
-Y2UgKnBkZXYpCj4gPiA+ICAJCXJldHVybiByZXQ7Cj4gPiA+ICAJfQo+ID4gPiAgCj4gPiA+IC0J
-cGNpZS0+cmVzZXRfZ3BpbyA9IGRldm1fZ3Bpb2RfZ2V0X2Zyb21fb2Zfbm9kZShkZXYsIGRldi0+
-b2Zfbm9kZSwKPiA+ID4gLQkJCQkJCSAgICAgICAicmVzZXQtZ3Bpb3MiLCAwLAo+ID4gPiAtCQkJ
-CQkJICAgICAgIEdQSU9EX09VVF9MT1csCj4gPiA+IC0JCQkJCQkgICAgICAgInBjaWUxLXJlc2V0
-Iik7Cj4gPiA+ICsJcGNpZS0+cmVzZXRfZ3BpbyA9IGRldm1fZ3Bpb2RfZ2V0X29wdGlvbmFsKGRl
-diwgInJlc2V0IiwgR1BJT0RfT1VUX0xPVyk7Cj4gPiA+ICAJcmV0ID0gUFRSX0VSUl9PUl9aRVJP
-KHBjaWUtPnJlc2V0X2dwaW8pOwo+ID4gPiAgCWlmIChyZXQpIHsKPiA+ID4gLQkJaWYgKHJldCA9
-PSAtRU5PRU5UKSB7Cj4gPiA+IC0JCQlwY2llLT5yZXNldF9ncGlvID0gTlVMTDsKPiA+ID4gLQkJ
-fSBlbHNlIHsKPiA+ID4gLQkJCWlmIChyZXQgIT0gLUVQUk9CRV9ERUZFUikKPiA+ID4gLQkJCQlk
-ZXZfZXJyKGRldiwgIkZhaWxlZCB0byBnZXQgcmVzZXQtZ3BpbzogJWlcbiIsCj4gPiA+IC0JCQkJ
-CXJldCk7Cj4gPiA+IC0JCQlyZXR1cm4gcmV0Owo+ID4gPiAtCQl9Cj4gPiA+ICsJCWlmIChyZXQg
-IT0gLUVQUk9CRV9ERUZFUikKPiA+ID4gKwkJCWRldl9lcnIoZGV2LCAiRmFpbGVkIHRvIGdldCBy
-ZXNldC1ncGlvOiAlaVxuIiwKPiA+ID4gKwkJCQlyZXQpOwo+ID4gPiArCQlyZXR1cm4gcmV0Owo+
-ID4gPiArCX0KPiA+ID4gKwo+ID4gPiArCXJldCA9IGdwaW9kX3NldF9jb25zdW1lcl9uYW1lKHBj
-aWUtPnJlc2V0X2dwaW8sICJwY2llMS1yZXNldCIpOwo+ID4gPiArCWlmIChyZXQpIHsKPiA+ID4g
-KwkJZGV2X2VycihkZXYsICJGYWlsZWQgdG8gc2V0IHJlc2V0IGdwaW8gbmFtZTogJWRcbiIsIHJl
-dCk7Cj4gPiA+ICsJCXJldHVybiByZXQ7Cj4gPiA+ICAJfQo+ID4gPiAgCj4gPiA+ICAJcmV0ID0g
-b2ZfcGNpX2dldF9tYXhfbGlua19zcGVlZChkZXYtPm9mX25vZGUpOwo+ID4gPiAKPiA+ID4gLS0g
-Cj4gPiA+IGI0IDAuMTAuMC1kZXYtZmM5MjEKPiAKPiBUaGFua3MuCj4gCj4gLS0gCj4gRG1pdHJ5
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Tue, Sep 06, 2022 at 01:10:10AM +0200, Pali Roh=E1r wrote:
+> On Monday 05 September 2022 15:54:53 Dmitry Torokhov wrote:
+> > On Mon, Sep 05, 2022 at 09:00:46AM +0200, Pali Roh=E1r wrote:
+> > > On Sunday 04 September 2022 23:30:58 Dmitry Torokhov wrote:
+> > > > I would like to stop exporting OF-specific devm_gpiod_get_from_of_n=
+ode()
+> > > > so that gpiolib can be cleaned a bit, so let's switch to the generic
+> > > > device property API.
+> > > > =
+
+> > > > I believe that the only reason the driver, instead of the standard
+> > > > devm_gpiod_get_optional(), used devm_gpiod_get_from_of_node() is
+> > > > because it wanted to set up a pretty consumer name for the GPIO,
+> > > =
+
+> > > IIRC consumer name is not used at all.
+> > > =
+
+> > > The reason was to specify full name of DTS property, for easier
+> > > identification of the code. DTS property is "reset-gpios" but API
+> > > specify only "reset".
+> > =
+
+> > I see. Do you want me to reset the patch with updated desctiption as to
+> > the reason devm_gpiod_get_from_of_node() was used?
+> =
+
+> I think it is fine. So add my:
+> =
+
+> Acked-by: Pali Roh=E1r <pali@kernel.org>
+> =
+
+> Anyway as another improvement for future I would suggest some API
+> function with _optional_ logic, so it could be used for more PCIe
+
+I think we need to see how many are attaching reset lines to subnodes.
+If there are multiple then I agree we could add _optional. So far I see:
+
+dtor@dtor-ws:~/kernel/linux-next (gpiod_get_from_of_node-remove)$ git grep =
+'"reset"' -- drivers/pci/controller/
+drivers/pci/controller/cadence/pci-j721e.c:             gpiod =3D devm_gpio=
+d_get_optional(dev, "reset", GPIOD_OUT_LOW);
+drivers/pci/controller/dwc/pci-keystone.c:      gpiod =3D devm_gpiod_get_op=
+tional(dev, "reset",
+drivers/pci/controller/dwc/pci-meson.c: mp->reset_gpio =3D devm_gpiod_get(d=
+ev, "reset", GPIOD_OUT_LOW);
+drivers/pci/controller/dwc/pcie-dw-rockchip.c:  rockchip->rst_gpio =3D devm=
+_gpiod_get_optional(&pdev->dev, "reset",
+drivers/pci/controller/dwc/pcie-fu740.c:        afp->reset =3D devm_gpiod_g=
+et_optional(dev, "reset", GPIOD_OUT_LOW);
+drivers/pci/controller/dwc/pcie-intel-gw.c:     pcie->reset_gpio =3D devm_g=
+piod_get(dev, "reset", GPIOD_OUT_LOW);
+drivers/pci/controller/dwc/pcie-keembay.c:      pcie->reset =3D devm_gpiod_=
+get(dev, "reset", GPIOD_OUT_HIGH);
+drivers/pci/controller/dwc/pcie-qcom-ep.c:      pcie_ep->reset =3D devm_gpi=
+od_get(dev, "reset", GPIOD_IN);
+drivers/pci/controller/dwc/pcie-tegra194.c:     pcie->pex_rst_gpiod =3D dev=
+m_gpiod_get(pcie->dev, "reset", GPIOD_IN);
+drivers/pci/controller/pci-aardvark.c:  pcie->reset_gpio =3D devm_gpiod_get=
+_optional(dev, "reset", GPIOD_OUT_LOW);
+drivers/pci/controller/pci-tegra.c:                                        =
+            "reset",
+drivers/pci/controller/pcie-apple.c:                                   "res=
+et", 0, GPIOD_OUT_LOW, "PERST#");
+drivers/pci/controller/pcie-mt7621.c:   port->gpio_rst =3D devm_gpiod_get_i=
+ndex_optional(dev, "reset", slot,
+
+So majority have reset lines attached to the "main" node and thus can use
+devm_gpiod_get_optional().
+
+Thanks.
+
+-- =
+
+Dmitry
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
