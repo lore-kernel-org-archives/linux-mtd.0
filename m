@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69B2DECAAA1
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 06:37:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31D24C6FA86
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 06:41:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QuOJXwedMT30QgTRFCUNdrjhWVKwiNbsj1QPFfxcRzk=; b=gQ6U9LKjRhs9hP
-	H9p/NaahbrrTDa+avlSqS9y6zjR35hcbQ3cW8ll/Rff0sT4zEH3BguNKfJhUBUPh1K+nbFZG7W1jA
-	hpHEW83KmFa2ITDNnJ0Qx8l6xZnNmcL1acyQqE1H7kH971CRGpPA9FjqBUZHIciuFRz43HVIXCFxh
-	gvMBVfBbS/MlQpnZndp9w73qNNguBFC2L4Ltx0rfmh/abBY/jjXSWVmhrgw1zvCHpodlZ4c8BAZU+
-	qSmX51DL6MPxDQ8dIl7fVS+v3R68c5UkIuvPSh4oy7iquhgXXUm/Iv2bkAgeuEk3XZEKYoRHvqb2+
-	Z7NojUTmafwe4CP8Jzgw==;
+	List-Owner; bh=q/N8ssU5TR9rTeWszOBciq4bQ37HW2rcaHwb5PieS70=; b=A/0mMoUsw5XKeV
+	yDLLqgVJznOT870mRYetpXoXPaiMYZjuZE/y5ScBFagYz1f5ZYxCkJKJjKWku3XSendIlAkhvSkgP
+	Blnz0yWI6ufF4VTD/iSYVHzioqL1Rk4nJ51hEKZvyd+bPwVQ7i0m+qOPTgyzhzM81LUUhX6HoLk0I
+	lK0iH6zseNycO7Qk4SIRefaEC+gFZbka81XRpbj9p00gg0MmBdjBj2mJD8xg6ycrIGDMW2qfRULSB
+	LcI12R48NTj12t3/BOCZWvyTXt5Tiex34H4jfFGL+DRLFpM43BqYexrmq+rC3adKxETtNSff9wQqa
+	XZ7e2gthsSH47z7ba1og==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oV5jD-00CMRm-Th; Mon, 05 Sep 2022 06:37:04 +0000
-Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+	id 1oV5mn-00CR9N-GY; Mon, 05 Sep 2022 06:40:46 +0000
+Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oV5dn-00CG8T-W8; Mon, 05 Sep 2022 06:31:32 +0000
-Received: by mail-pg1-x532.google.com with SMTP id t70so1478779pgc.5;
-        Sun, 04 Sep 2022 23:31:27 -0700 (PDT)
+	id 1oV5du-00CG0c-I7; Mon, 05 Sep 2022 06:31:38 +0000
+Received: by mail-pf1-x42c.google.com with SMTP id y127so7745618pfy.5;
+        Sun, 04 Sep 2022 23:31:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=ynLt5at1fPNx8OKjwAxE9TZqe0qSgR0LfMKd2/ukQyE=;
-        b=o0c6aYKNJPicMxZzE1PkKtIkQSLJsOwJFh3bcl+LYHEmHr5TaY61x79o0SD+ivoxZk
-         DPf8vEmv/G+sAfYEywkQmzYS8TqIgrCK6wSXSLFwKEAK7Cbw08AkpqBT96rMRzPEVa0T
-         aMMtmW+0f9glO6/cQ8keV15iEPs13h8fVonila+4g/ocL46xIqfFx7rDdBBE/MrAjqtO
-         5sl8bIgqi3+F/6v0vHcDrNJ1k/oQaqO7VkvMD/DoMztr6Me8/am6pi66ZHOCMZneRwid
-         Zb3n7NhsZprL3d7KX03DatOFU7DvGf4H7pflgVDpxL0aWedJ+FcdT7hgq54vmCH9Sgv5
-         7z2Q==
+        bh=pAKqmxhI+oYn9rP6tb2/SpDfiCBIbZJKyeH2Ncx9Utw=;
+        b=CHUpPUJQaZbtMHqPTyL16aZuu5dGfpUKyuTqpooxvmLk7vBdmb+3IZJQADg9TyuoAE
+         0cG8hAWaahDZkANpgUlWjfY5/vdmfKu1XvftcF1vV0Zw4fcd3kAN8/tSHuaMoO0zpNBm
+         YXE0wZKHC9zPU4U9Xl7Yhd25Z9ZuxlTB5qduXGsQAWvctKwUZPCTxgudnP1CsA9Z4aVZ
+         +tauvc8nl8DqsSgMpx3Neo+dDGPXdFjpkpvztqgpLzbV9vhTRQcq+q2v4AIEPo0McvJX
+         Ku8OCbM6x0lGXNoU5zr7539SBCdoAztESfRlg7+222oUU+VMgGHfb3EsA6bKMFDi8B5B
+         6xJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=ynLt5at1fPNx8OKjwAxE9TZqe0qSgR0LfMKd2/ukQyE=;
-        b=acq8Xr8XLHapZo7NDWBXL6UPIAz/eVZvN3qhxdbbzRlAIQGmLppeo+lwEotAmqgXbK
-         KIVyVVd2/6V/xZ280BrUAoySwuWTASiXKSvkjcikn9N+YRg+f1p9sYknkw4o/Q7070yE
-         EFDG+ydF2WUohIDGYUQX4PiHVPN/TL+yh3pWiR2tV1o/NiGQxUgYyDIq16ySYzD15PH7
-         yeJiC79dPmTc1wTVI5eApt+FSY6J9ZbZ8z3GI7cW4wrXYP+5uccBVnxXmL3fXRITSXrb
-         2lGZV/raB2PDXEXjUdZT6uNSMu6OEDWvtZXSU0E2iYUPbcAOqIyOhu0djmzy7FrI/1V7
-         bjfA==
-X-Gm-Message-State: ACgBeo19Fp/vnt7QBqYyj4kSlTV3lf6+p/5bEfL5QtgVr6rZHsZQ8wv/
-	ijii2Ow4SqCCoI11t/pucGTqwC2J54A=
-X-Google-Smtp-Source: AA6agR6nqqurcOlRTW5MwumdR49aUTj5edmtMHpG5pntto/Ic3d6LDisTkJ/i3KAH13zMjWGur9aVA==
-X-Received: by 2002:a63:62c3:0:b0:434:2b09:6f62 with SMTP id w186-20020a6362c3000000b004342b096f62mr6851828pgb.374.1662359486505;
-        Sun, 04 Sep 2022 23:31:26 -0700 (PDT)
+        bh=pAKqmxhI+oYn9rP6tb2/SpDfiCBIbZJKyeH2Ncx9Utw=;
+        b=gRNVJgIQJkgV6V6ngF/88ganoVkOWd0rV7Jgx94pbfXIdtl+khk2n1rA9Ch1L2AqJ9
+         cheDs7Vh/yM3rk09W9Cf1qH105YW0GukzbFgP5P+dQZ/CPfD+XGLyd/0cgMSkXahH47x
+         IBaMjnip8ZVby39KhtmMK0F1GcnvmgH22+vsqrL91UHE8sIbO2UGxfER6HudMPHHptcT
+         /SAAYbdt4HBL+5SR/OR9jdh5qoYEFFfVZ8cWZ5Ty0IztgHIN5azk9F83dBQZ+x/+QFW7
+         j3Y1a+9e0R4bAu+DNB95G2aXiU9NAMzXveUPjQtyoQBnnfeqhtihGZGrP1NeIOVTeWJc
+         pc5w==
+X-Gm-Message-State: ACgBeo3uOFMzAOw2O5Zyh56nK3/4mQ5WElz+mU0Jig+8sMlCyQEa73x3
+	UghZT9HFVrG/3QnbcRHwClY=
+X-Google-Smtp-Source: AA6agR5nG0upukGr31j35s6QedIco+3RyHqtesjnmbs5inKKkFPhSexvscm/vPmPhr8DelSSovnwog==
+X-Received: by 2002:a63:4c4f:0:b0:430:41b4:bfc3 with SMTP id m15-20020a634c4f000000b0043041b4bfc3mr19959819pgl.457.1662359493913;
+        Sun, 04 Sep 2022 23:31:33 -0700 (PDT)
 Received: from dtor-ws.mtv.corp.google.com ([2620:15c:202:201:7332:f188:2984:5930])
-        by smtp.gmail.com with ESMTPSA id d197-20020a6336ce000000b0042254fce5e7sm5710653pga.50.2022.09.04.23.31.24
+        by smtp.gmail.com with ESMTPSA id d197-20020a6336ce000000b0042254fce5e7sm5710653pga.50.2022.09.04.23.31.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Sep 2022 23:31:26 -0700 (PDT)
+        Sun, 04 Sep 2022 23:31:33 -0700 (PDT)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -98,17 +98,17 @@ Cc: linux-watchdog@vger.kernel.org,
 	dri-devel@lists.freedesktop.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v1 07/11] PCI: apple: switch to using fwnode_gpiod_get_index()
-Date: Sun,  4 Sep 2022 23:30:59 -0700
-Message-Id: <20220903-gpiod_get_from_of_node-remove-v1-7-b29adfb27a6c@gmail.com>
+Subject: [PATCH v1 10/11] watchdog: bd9576_wdt: switch to using devm_fwnode_gpiod_get()
+Date: Sun,  4 Sep 2022 23:31:02 -0700
+Message-Id: <20220903-gpiod_get_from_of_node-remove-v1-10-b29adfb27a6c@gmail.com>
 X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
 In-Reply-To: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
 References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
 MIME-Version: 1.0
 X-Mailer: b4 0.10.0-dev-fc921
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220904_233128_142525_4BD20B4E 
-X-CRM114-Status: GOOD (  10.25  )
+X-CRM114-CacheID: sfid-20220904_233134_694167_276B53DC 
+X-CRM114-Status: GOOD (  18.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,26 +125,110 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I would like to stop exporting OF-specific gpiod_get_from_of_node()
+I would like to stop exporting OF-specific devm_gpiod_get_from_of_node()
 so that gpiolib can be cleaned a bit, so let's switch to the generic
 fwnode property API.
 
+While at it switch the rest of the calls to read properties in
+bd9576_wdt_probe() to the generic device property API as well.
+
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
-index a2c3c207a04b..d83817d3ff86 100644
---- a/drivers/pci/controller/pcie-apple.c
-+++ b/drivers/pci/controller/pcie-apple.c
-@@ -516,8 +516,8 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
- 	u32 stat, idx;
- 	int ret, i;
+diff --git a/drivers/watchdog/bd9576_wdt.c b/drivers/watchdog/bd9576_wdt.c
+index 0b6999f3b6e8..4a20e07fbb69 100644
+--- a/drivers/watchdog/bd9576_wdt.c
++++ b/drivers/watchdog/bd9576_wdt.c
+@@ -9,8 +9,8 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/mfd/rohm-bd957x.h>
+ #include <linux/module.h>
+-#include <linux/of.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
+ #include <linux/watchdog.h>
  
--	reset = gpiod_get_from_of_node(np, "reset-gpios", 0,
--				       GPIOD_OUT_LOW, "PERST#");
-+	reset = fwnode_gpiod_get_index(of_fwnode_handle(np),
-+				       "reset", 0, GPIOD_OUT_LOW, "PERST#");
- 	if (IS_ERR(reset))
- 		return PTR_ERR(reset);
+@@ -202,10 +202,10 @@ static int bd957x_set_wdt_mode(struct bd9576_wdt_priv *priv, int hw_margin,
+ static int bd9576_wdt_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct device_node *np = dev->parent->of_node;
+ 	struct bd9576_wdt_priv *priv;
+ 	u32 hw_margin[2];
+ 	u32 hw_margin_max = BD957X_WDT_DEFAULT_MARGIN, hw_margin_min = 0;
++	int count;
+ 	int ret;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+@@ -221,40 +221,51 @@ static int bd9576_wdt_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	priv->gpiod_en = devm_gpiod_get_from_of_node(dev, dev->parent->of_node,
+-						     "rohm,watchdog-enable-gpios",
+-						     0, GPIOD_OUT_LOW,
+-						     "watchdog-enable");
++	priv->gpiod_en = devm_fwnode_gpiod_get(dev, dev_fwnode(dev->parent),
++					       "rohm,watchdog-enable",
++					       GPIOD_OUT_LOW,
++					       "watchdog-enable");
+ 	if (IS_ERR(priv->gpiod_en))
+ 		return dev_err_probe(dev, PTR_ERR(priv->gpiod_en),
+ 			      "getting watchdog-enable GPIO failed\n");
+ 
+-	priv->gpiod_ping = devm_gpiod_get_from_of_node(dev, dev->parent->of_node,
+-						     "rohm,watchdog-ping-gpios",
+-						     0, GPIOD_OUT_LOW,
+-						     "watchdog-ping");
++	priv->gpiod_ping = devm_fwnode_gpiod_get(dev, dev_fwnode(dev->parent),
++						 "rohm,watchdog-ping",
++						 GPIOD_OUT_LOW,
++						 "watchdog-ping");
+ 	if (IS_ERR(priv->gpiod_ping))
+ 		return dev_err_probe(dev, PTR_ERR(priv->gpiod_ping),
+ 				     "getting watchdog-ping GPIO failed\n");
+ 
+-	ret = of_property_read_variable_u32_array(np, "rohm,hw-timeout-ms",
+-						  &hw_margin[0], 1, 2);
+-	if (ret < 0 && ret != -EINVAL)
+-		return ret;
++	count = device_property_count_u32(dev->parent, "rohm,hw-timeout-ms");
++	if (count < 0 && count != -EINVAL)
++		return count;
++
++	if (count > 0) {
++		if (count > ARRAY_SIZE(hw_margin))
++			return -EINVAL;
+ 
+-	if (ret == 1)
+-		hw_margin_max = hw_margin[0];
++		ret = device_property_read_u32_array(dev->parent,
++						     "rohm,hw-timeout-ms",
++						     hw_margin, count);
++		if (ret < 0)
++			return ret;
+ 
+-	if (ret == 2) {
+-		hw_margin_max = hw_margin[1];
+-		hw_margin_min = hw_margin[0];
++		if (count == 1)
++			hw_margin_max = hw_margin[0];
++
++		if (count == 2) {
++			hw_margin_max = hw_margin[1];
++			hw_margin_min = hw_margin[0];
++		}
+ 	}
+ 
+ 	ret = bd957x_set_wdt_mode(priv, hw_margin_max, hw_margin_min);
+ 	if (ret)
+ 		return ret;
+ 
+-	priv->always_running = of_property_read_bool(np, "always-running");
++	priv->always_running = device_property_read_bool(dev->parent,
++							 "always-running");
+ 
+ 	watchdog_set_drvdata(&priv->wdd, priv);
  
 
 -- 
