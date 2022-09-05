@@ -4,89 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3DF9ECAAA1
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 08:11:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AF7CECAAD5
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 09:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WadBbSzo6ZJKAonJi7lzwOI6nfj8ZhqHgtnyOPvFveg=; b=QPvy2AQYchAdsi
-	S0npfjB4VyKBdMuFpTCZ1gjpyh75wJ5PPFsJFtVLwJ4DcN2oRyjYFEVs49m1fU1KZynoAZDxidEtm
-	2ql0IRlSsi0YiqxKZRuKMkPr9aYBjgHmOoAW85ssaxlNHBXA7Ad35DHTf6xSJ8Ev3nABu+BxgAY3i
-	+UaYC0lohVMSpe5d39RqcsgbidIuRFBfWwGT+N0DPzi2DMmMc4xM1sEyewCrpQLfxuRZ+r6V+9zy6
-	8WopmZv7pLbGDXzWRTTxn20QdtEul/gDBNWQi6nsQkhd9QNVAMsabcIhnzQjjw3vNMun55efM6MaF
-	s65j4A3R1pBC22BnW4mw==;
+	List-Owner; bh=oOxNFZPNW0CXZoEmKox1kbBPC9sov81BCbNRHaG1Dcg=; b=FQFdslraxCcxoz
+	IHiWJj38EGa5IySdcGTjUiDuBz6emtiVNbnB+Zwezz+kBbzng8G1ndj1DM88BkD2vmLS+DaNR23AI
+	SKLHTeNtfZ4Vn+wvyPpLwO1tbmcRgXOoBSWI9RiPazkmh6r67h0PkGqohdFqlP/viQ4S2hCFFUve1
+	NrRQoLztRJrYxDdktKKwB04DDa98dnQL1CWHG+HhbGizsaat9/O6Hx1uFJ2NWyikK4ntMI0097Dr3
+	kCmUEIu6N/2Ol0lD28snHQc/i45C/xBLsTuBHb4cXvNZ4GpjpG1h6ES18NRXz1JK7w/3SYjJNRIrW
+	NjBUa8/KSH42d6KmClTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oV7BX-00EBdD-7q; Mon, 05 Sep 2022 08:10:23 +0000
-Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
+	id 1oV8L7-00G0dW-53; Mon, 05 Sep 2022 09:24:21 +0000
+Received: from mail-sz.amlogic.com ([211.162.65.117])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oV6Qr-00DCIR-PP
-	for linux-mtd@lists.infradead.org; Mon, 05 Sep 2022 07:22:12 +0000
-Received: by mail-wr1-x42d.google.com with SMTP id e20so10033668wri.13
-        for <linux-mtd@lists.infradead.org>; Mon, 05 Sep 2022 00:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date;
-        bh=0Zlv2noXrggmLQ5O5f0vmSBw3PaAlyCeKLqu2TrFOSI=;
-        b=gbjY3IwFu+AGJ8HI6f3xIw+YnlYzWWjlNzSJ2xpCv3g1YWG03AC3D0FrZib6OKWJll
-         ylTGHZwR7RIU0BomwiviKRNNqwmjGFwO5CQKD+AmPnsUQHPe6jUYC4oWlcNS9yDh3RRA
-         luxlXRbMCb1JDMWFEWD8lTZ7CROpBDFuCot/rNnBEpZkYiIiev3sZEbp8WLUWLSx0yhA
-         SoB+y87LW0OmFCY2JH3q/bhzlR898s2BKQQvo1/efzIVQUJvj1WK9RsBFEF54rWHsV7g
-         xq1EGCw03kG2DlugfYgKOCOxIusttwVKoj/EQGK3sek5Y2EY3izF0A8aDN7nnmkyeW14
-         tg3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date;
-        bh=0Zlv2noXrggmLQ5O5f0vmSBw3PaAlyCeKLqu2TrFOSI=;
-        b=uQQgTJfcSJBvgyKZntpZ+ExxFovQUina0gt7BVGm/2BR8dsxn8FG02rJXbzACYxgBW
-         zAKM3RYN0QLC2O5JQ4ojp7iEPumkejxfr5JqZX7xn8C8I8i7cR/SdV3cZbkfW8hXGPcn
-         Hh86MOjeOTpszcsQC6nsol0MXqi9c3NVqMfoK7HdHZr3y+6tjhyV41ybCw0CH+V59U7d
-         SXB0AAZrdezVNNqdy+bnDLhwOpLU5OlWfRAzFz0iNdsuXx4wvUc0JUezX7SN+ryL8nXl
-         koU4Oqf+HVmq4H/5VruIriVQg6XRXaeFVfWLqRq5xV9ymzp6jq3UosmYtg/LbD8p4DHg
-         +SrA==
-X-Gm-Message-State: ACgBeo0hSX9mTZtfJjgf32svQEl51WUMEO29mafuGqntttvk5hf2EhEd
-	Pf+ekHjO0az4ArgpP//+YmqiMw==
-X-Google-Smtp-Source: AA6agR4To6jQmPD+FVrLSDWzA4HTSJc+DW9e5B3mD20LG4LnNacMcgXLafLQtWGZ/qRMNWiVa5DpOw==
-X-Received: by 2002:a5d:6daa:0:b0:228:6323:3bca with SMTP id u10-20020a5d6daa000000b0022863233bcamr3778885wrs.544.1662362528052;
-        Mon, 05 Sep 2022 00:22:08 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:f365:27e9:453c:4c15? ([2a01:e0a:982:cbb0:f365:27e9:453c:4c15])
-        by smtp.gmail.com with ESMTPSA id co4-20020a0560000a0400b0021eed2414c9sm8224965wrb.40.2022.09.05.00.22.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Sep 2022 00:22:07 -0700 (PDT)
-Message-ID: <0ad6a792-74c2-9957-ee56-f183dcd75c58@baylibre.com>
-Date: Mon, 5 Sep 2022 09:22:05 +0200
+	id 1oV6fT-00DRRb-0g; Mon, 05 Sep 2022 07:37:18 +0000
+Received: from [10.28.39.72] (10.28.39.72) by mail-sz.amlogic.com (10.28.11.5)
+ with Microsoft SMTP Server id 15.1.2507.6; Mon, 5 Sep 2022 15:37:06 +0800
+Message-ID: <9119f4d6-f9d4-e5e0-3536-95d5a6405cbe@amlogic.com>
+Date: Mon, 5 Sep 2022 15:37:05 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
 Subject: Re: [PATCH RESEND v8 4/5] dt-bindings: nand: meson: convert txt to
  yaml
 Content-Language: en-US
-To: Liang Yang <liang.yang@amlogic.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Kevin Hilman <khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
- Victor Wan <victor.wan@amlogic.com>, XianWei Zhao
- <xianwei.zhao@amlogic.com>, Kelvin Zhang <kelvin.zhang@amlogic.com>,
- BiChao Zheng <bichao.zheng@amlogic.com>, YongHui Yu
- <yonghui.yu@amlogic.com>, linux-arm-kernel@lists.infradead.org,
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Neil Armstrong <narmstrong@baylibre.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
+CC: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Kevin Hilman
+	<khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan
+	<victor.wan@amlogic.com>, XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin
+ Zhang <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>,
+	YongHui Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 References: <20220822091838.18528-1-liang.yang@amlogic.com>
  <20220822091838.18528-5-liang.yang@amlogic.com>
-From: Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-In-Reply-To: <20220822091838.18528-5-liang.yang@amlogic.com>
+ <0ad6a792-74c2-9957-ee56-f183dcd75c58@baylibre.com>
+From: Liang Yang <liang.yang@amlogic.com>
+In-Reply-To: <0ad6a792-74c2-9957-ee56-f183dcd75c58@baylibre.com>
+X-Originating-IP: [10.28.39.72]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220905_002209_882062_FD30889C 
-X-CRM114-Status: GOOD (  22.74  )
+X-CRM114-CacheID: sfid-20220905_003715_312136_96E3F4F5 
+X-CRM114-Status: GOOD (  16.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,185 +64,113 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+CC [devicetree@vger.kernel.org]
-
-Please Add this ML to CC if you resend, it's the last patch of the serie that haven't got a proper review.
-
-On 22/08/2022 11:18, Liang Yang wrote:
-> convert the amlogic,meson-name.txt to amlogic,meson-nand.yaml
-> 
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-> ---
->   .../bindings/mtd/amlogic,meson-nand.txt       | 55 ------------
->   .../bindings/mtd/amlogic,meson-nand.yaml      | 88 +++++++++++++++++++
->   2 files changed, 88 insertions(+), 55 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->   create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> deleted file mode 100644
-> index 5d5cdfef417f..000000000000
-> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> +++ /dev/null
-> @@ -1,55 +0,0 @@
-> -Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
-> -
-> -This file documents the properties in addition to those available in
-> -the MTD NAND bindings.
-> -
-> -Required properties:
-> -- compatible : contains one of:
-> -  - "amlogic,meson-gxl-nfc"
-> -  - "amlogic,meson-axg-nfc"
-> -
-> -- reg        : Offset and length of the register set
-> -
-> -- reg-names  : "nfc" is the register set for NFC controller and "emmc"
-> -		is the register set for MCI controller.
-> -
-> -- clocks     :
-> -	A list of phandle + clock-specifier pairs for the clocks listed
-> -	in clock-names.
-> -
-> -- clock-names: Should contain the following:
-> -	"core" - NFC module gate clock
-> -	"device" - parent clock for internal NFC
-> -
-> -Optional children nodes:
-> -Children nodes represent the available nand chips.
-> -
-> -Other properties:
-> -see Documentation/devicetree/bindings/mtd/nand-controller.yaml for generic bindings.
-> -
-> -Example demonstrate on AXG SoC:
-> -
-> -	nand-controller@7800 {
-> -		compatible = "amlogic,meson-axg-nfc";
-> -		reg = <0x0 0x7800 0x0 0x100>,
-> -		      <0x0 0x7000 0x0 0x800>;
-> -		reg-names = "nfc", "emmc";
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-> -
-> -		clocks = <&clkc CLKID_SD_EMMC_C>,
-> -			 <&clkc CLKID_FCLK_DIV2>;
-> -		clock-names = "core", "device";
-> -
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&nand_pins>;
-> -
-> -		nand@0 {
-> -			reg = <0>;
-> -			#address-cells = <1>;
-> -			#size-cells = <1>;
-> -
-> -			nand-on-flash-bbt;
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> new file mode 100644
-> index 000000000000..42634e9c0d3c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/amlogic,meson-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
-> +
-> +allOf:
-> +  - $ref: "nand-controller.yaml"
-> +
-> +maintainers:
-> +  - liang.yang@amlogic.com
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - "amlogic,meson-gxl-nfc"
-> +      - "amlogic,meson-axg-nfc"
-> +
-> +  reg:
-> +    maxItems: 2
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 2
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core
-> +      - const: device
-> +
-> +patternProperties:
-> +  "^nand@[0-7]$":
-> +    type: object
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 1
-> +
-> +      nand-ecc-mode:
-> +        const: hw
-> +
-> +      nand-ecc-step-size:
-> +        const: 1024
-> +
-> +      nand-ecc-strength:
-> +        enum: [8, 16, 24, 30, 40, 50, 60]
-> +        description: |
-> +          The ECC configurations that can be supported are as follows.
-> +            meson-gxl-nfc 8, 16, 24, 30, 40, 50, 60
-> +            meson-axg-nfc 8
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/axg-clkc.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    nand-controller@ffe07800 {
-> +      compatible = "amlogic,meson-axg-nfc";
-> +      reg = <0xffe07800 0x100>, <0xffe07000 0x800>;
-> +      reg-names = "nfc", "emmc";
-> +      interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-> +      clocks = <&clkc CLKID_SD_EMMC_C>,  <&clkc CLKID_FCLK_DIV2>;
-> +      clock-names = "core", "device";
-> +
-> +      pinctrl-0 = <&nand_pins>;
-> +      pinctrl-names = "default";
-> +
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      nand@0 {
-> +        reg = <0>;
-> +      };
-> +    };
-> +
-> +...
-
-Thanks,
-Neil
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTmVpbCwKClRoYW5rcyBmb3IgeW91ciByZW1pbmQuCkkgd2lsbCBhZGQgdGhlIE1MIGluIG5l
+eHQgcmVzZW5kIHZlcnNpb24gcXVpY2tseS4KCk9uIDIwMjIvOS81IDE1OjIyLCBOZWlsIEFybXN0
+cm9uZyB3cm90ZToKPiBbIEVYVEVSTkFMIEVNQUlMIF0KPiAKPiArQ0MgW2RldmljZXRyZWVAdmdl
+ci5rZXJuZWwub3JnXQo+IAo+IFBsZWFzZSBBZGQgdGhpcyBNTCB0byBDQyBpZiB5b3UgcmVzZW5k
+LCBpdCdzIHRoZSBsYXN0IHBhdGNoIG9mIHRoZSBzZXJpZSAKPiB0aGF0IGhhdmVuJ3QgZ290IGEg
+cHJvcGVyIHJldmlldy4KPiAKPiBPbiAyMi8wOC8yMDIyIDExOjE4LCBMaWFuZyBZYW5nIHdyb3Rl
+Ogo+PiBjb252ZXJ0IHRoZSBhbWxvZ2ljLG1lc29uLW5hbWUudHh0IHRvIGFtbG9naWMsbWVzb24t
+bmFuZC55YW1sCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IExpYW5nIFlhbmcgPGxpYW5nLnlhbmdAYW1s
+b2dpYy5jb20+Cj4+IC0tLQo+PiDCoCAuLi4vYmluZGluZ3MvbXRkL2FtbG9naWMsbWVzb24tbmFu
+ZC50eHTCoMKgwqDCoMKgwqAgfCA1NSAtLS0tLS0tLS0tLS0KPj4gwqAgLi4uL2JpbmRpbmdzL210
+ZC9hbWxvZ2ljLG1lc29uLW5hbmQueWFtbMKgwqDCoMKgwqAgfCA4OCArKysrKysrKysrKysrKysr
+KysrCj4+IMKgIDIgZmlsZXMgY2hhbmdlZCwgODggaW5zZXJ0aW9ucygrKSwgNTUgZGVsZXRpb25z
+KC0pCj4+IMKgIGRlbGV0ZSBtb2RlIDEwMDY0NCAKPj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL210ZC9hbWxvZ2ljLG1lc29uLW5hbmQudHh0Cj4+IMKgIGNyZWF0ZSBtb2RlIDEw
+MDY0NCAKPj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hbWxvZ2ljLG1l
+c29uLW5hbmQueWFtbAo+Pgo+PiBkaWZmIC0tZ2l0IAo+PiBhL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxtZXNvbi1uYW5kLnR4dCAKPj4gYi9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2FtbG9naWMsbWVzb24tbmFuZC50eHQKPj4gZGVs
+ZXRlZCBmaWxlIG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDVkNWNkZmVmNDE3Zi4uMDAwMDAwMDAwMDAw
+Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxt
+ZXNvbi1uYW5kLnR4dAo+PiArKysgL2Rldi9udWxsCj4+IEBAIC0xLDU1ICswLDAgQEAKPj4gLUFt
+bG9naWMgTkFORCBGbGFzaCBDb250cm9sbGVyIChORkMpIGZvciBHWEJCL0dYTC9BWEcgZmFtaWx5
+IFNvQ3MKPj4gLQo+PiAtVGhpcyBmaWxlIGRvY3VtZW50cyB0aGUgcHJvcGVydGllcyBpbiBhZGRp
+dGlvbiB0byB0aG9zZSBhdmFpbGFibGUgaW4KPj4gLXRoZSBNVEQgTkFORCBiaW5kaW5ncy4KPj4g
+LQo+PiAtUmVxdWlyZWQgcHJvcGVydGllczoKPj4gLS0gY29tcGF0aWJsZSA6IGNvbnRhaW5zIG9u
+ZSBvZjoKPj4gLcKgIC0gImFtbG9naWMsbWVzb24tZ3hsLW5mYyIKPj4gLcKgIC0gImFtbG9naWMs
+bWVzb24tYXhnLW5mYyIKPj4gLQo+PiAtLSByZWfCoMKgwqDCoMKgwqDCoCA6IE9mZnNldCBhbmQg
+bGVuZ3RoIG9mIHRoZSByZWdpc3RlciBzZXQKPj4gLQo+PiAtLSByZWctbmFtZXPCoCA6ICJuZmMi
+IGlzIHRoZSByZWdpc3RlciBzZXQgZm9yIE5GQyBjb250cm9sbGVyIGFuZCAiZW1tYyIKPj4gLcKg
+wqDCoMKgwqDCoMKgIGlzIHRoZSByZWdpc3RlciBzZXQgZm9yIE1DSSBjb250cm9sbGVyLgo+PiAt
+Cj4+IC0tIGNsb2Nrc8KgwqDCoMKgIDoKPj4gLcKgwqDCoCBBIGxpc3Qgb2YgcGhhbmRsZSArIGNs
+b2NrLXNwZWNpZmllciBwYWlycyBmb3IgdGhlIGNsb2NrcyBsaXN0ZWQKPj4gLcKgwqDCoCBpbiBj
+bG9jay1uYW1lcy4KPj4gLQo+PiAtLSBjbG9jay1uYW1lczogU2hvdWxkIGNvbnRhaW4gdGhlIGZv
+bGxvd2luZzoKPj4gLcKgwqDCoCAiY29yZSIgLSBORkMgbW9kdWxlIGdhdGUgY2xvY2sKPj4gLcKg
+wqDCoCAiZGV2aWNlIiAtIHBhcmVudCBjbG9jayBmb3IgaW50ZXJuYWwgTkZDCj4+IC0KPj4gLU9w
+dGlvbmFsIGNoaWxkcmVuIG5vZGVzOgo+PiAtQ2hpbGRyZW4gbm9kZXMgcmVwcmVzZW50IHRoZSBh
+dmFpbGFibGUgbmFuZCBjaGlwcy4KPj4gLQo+PiAtT3RoZXIgcHJvcGVydGllczoKPj4gLXNlZSBE
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL25hbmQtY29udHJvbGxlci55YW1s
+IGZvciAKPj4gZ2VuZXJpYyBiaW5kaW5ncy4KPj4gLQo+PiAtRXhhbXBsZSBkZW1vbnN0cmF0ZSBv
+biBBWEcgU29DOgo+PiAtCj4+IC3CoMKgwqAgbmFuZC1jb250cm9sbGVyQDc4MDAgewo+PiAtwqDC
+oMKgwqDCoMKgwqAgY29tcGF0aWJsZSA9ICJhbWxvZ2ljLG1lc29uLWF4Zy1uZmMiOwo+PiAtwqDC
+oMKgwqDCoMKgwqAgcmVnID0gPDB4MCAweDc4MDAgMHgwIDB4MTAwPiwKPj4gLcKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIDwweDAgMHg3MDAwIDB4MCAweDgwMD47Cj4+IC3CoMKgwqDCoMKgwqDC
+oCByZWctbmFtZXMgPSAibmZjIiwgImVtbWMiOwo+PiAtwqDCoMKgwqDCoMKgwqAgI2FkZHJlc3Mt
+Y2VsbHMgPSA8MT47Cj4+IC3CoMKgwqDCoMKgwqDCoCAjc2l6ZS1jZWxscyA9IDwwPjsKPj4gLcKg
+wqDCoMKgwqDCoMKgIGludGVycnVwdHMgPSA8R0lDX1NQSSAzNCBJUlFfVFlQRV9FREdFX1JJU0lO
+Rz47Cj4+IC0KPj4gLcKgwqDCoMKgwqDCoMKgIGNsb2NrcyA9IDwmY2xrYyBDTEtJRF9TRF9FTU1D
+X0M+LAo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDwmY2xrYyBDTEtJRF9GQ0xLX0RJVjI+
+Owo+PiAtwqDCoMKgwqDCoMKgwqAgY2xvY2stbmFtZXMgPSAiY29yZSIsICJkZXZpY2UiOwo+PiAt
+Cj4+IC3CoMKgwqDCoMKgwqDCoCBwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOwo+PiAtwqDCoMKg
+wqDCoMKgwqAgcGluY3RybC0wID0gPCZuYW5kX3BpbnM+Owo+PiAtCj4+IC3CoMKgwqDCoMKgwqDC
+oCBuYW5kQDAgewo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MD47Cj4+IC3CoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgICNhZGRyZXNzLWNlbGxzID0gPDE+Owo+PiAtwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAjc2l6ZS1jZWxscyA9IDwxPjsKPj4gLQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBuYW5kLW9uLWZsYXNoLWJidDsKPj4gLcKgwqDCoMKgwqDCoMKgIH07Cj4+IC3CoMKgwqAg
+fTsKPj4gZGlmZiAtLWdpdCAKPj4gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bXRkL2FtbG9naWMsbWVzb24tbmFuZC55YW1sIAo+PiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxtZXNvbi1uYW5kLnlhbWwKPj4gbmV3IGZpbGUgbW9kZSAx
+MDA2NDQKPj4gaW5kZXggMDAwMDAwMDAwMDAwLi40MjYzNGU5YzBkM2MKPj4gLS0tIC9kZXYvbnVs
+bAo+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2FtbG9naWMs
+bWVzb24tbmFuZC55YW1sCj4+IEBAIC0wLDAgKzEsODggQEAKPj4gKyMgU1BEWC1MaWNlbnNlLUlk
+ZW50aWZpZXI6IChHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlKQo+PiArJVlBTUwgMS4yCj4+
+ICstLS0KPj4gKyRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvbXRkL2FtbG9naWMs
+bWVzb24tbmFuZC55YW1sIwo+PiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEt
+c2NoZW1hcy9jb3JlLnlhbWwjCj4+ICsKPj4gK3RpdGxlOiBBbWxvZ2ljIE5BTkQgRmxhc2ggQ29u
+dHJvbGxlciAoTkZDKSBmb3IgR1hCQi9HWEwvQVhHIGZhbWlseSBTb0NzCj4+ICsKPj4gK2FsbE9m
+Ogo+PiArwqAgLSAkcmVmOiAibmFuZC1jb250cm9sbGVyLnlhbWwiCj4+ICsKPj4gK21haW50YWlu
+ZXJzOgo+PiArwqAgLSBsaWFuZy55YW5nQGFtbG9naWMuY29tCj4+ICsKPj4gK3Byb3BlcnRpZXM6
+Cj4+ICvCoCBjb21wYXRpYmxlOgo+PiArwqDCoMKgIGVudW06Cj4+ICvCoMKgwqDCoMKgIC0gImFt
+bG9naWMsbWVzb24tZ3hsLW5mYyIKPj4gK8KgwqDCoMKgwqAgLSAiYW1sb2dpYyxtZXNvbi1heGct
+bmZjIgo+PiArCj4+ICvCoCByZWc6Cj4+ICvCoMKgwqAgbWF4SXRlbXM6IDIKPj4gKwo+PiArwqAg
+aW50ZXJydXB0czoKPj4gK8KgwqDCoCBtYXhJdGVtczogMQo+PiArCj4+ICvCoCBjbG9ja3M6Cj4+
+ICvCoMKgwqAgbWluSXRlbXM6IDIKPj4gKwo+PiArwqAgY2xvY2stbmFtZXM6Cj4+ICvCoMKgwqAg
+aXRlbXM6Cj4+ICvCoMKgwqDCoMKgIC0gY29uc3Q6IGNvcmUKPj4gK8KgwqDCoMKgwqAgLSBjb25z
+dDogZGV2aWNlCj4+ICsKPj4gK3BhdHRlcm5Qcm9wZXJ0aWVzOgo+PiArwqAgIl5uYW5kQFswLTdd
+JCI6Cj4+ICvCoMKgwqAgdHlwZTogb2JqZWN0Cj4+ICvCoMKgwqAgcHJvcGVydGllczoKPj4gK8Kg
+wqDCoMKgwqAgcmVnOgo+PiArwqDCoMKgwqDCoMKgwqAgbWluaW11bTogMAo+PiArwqDCoMKgwqDC
+oMKgwqAgbWF4aW11bTogMQo+PiArCj4+ICvCoMKgwqDCoMKgIG5hbmQtZWNjLW1vZGU6Cj4+ICvC
+oMKgwqDCoMKgwqDCoCBjb25zdDogaHcKPj4gKwo+PiArwqDCoMKgwqDCoCBuYW5kLWVjYy1zdGVw
+LXNpemU6Cj4+ICvCoMKgwqDCoMKgwqDCoCBjb25zdDogMTAyNAo+PiArCj4+ICvCoMKgwqDCoMKg
+IG5hbmQtZWNjLXN0cmVuZ3RoOgo+PiArwqDCoMKgwqDCoMKgwqAgZW51bTogWzgsIDE2LCAyNCwg
+MzAsIDQwLCA1MCwgNjBdCj4+ICvCoMKgwqDCoMKgwqDCoCBkZXNjcmlwdGlvbjogfAo+PiArwqDC
+oMKgwqDCoMKgwqDCoMKgIFRoZSBFQ0MgY29uZmlndXJhdGlvbnMgdGhhdCBjYW4gYmUgc3VwcG9y
+dGVkIGFyZSBhcyBmb2xsb3dzLgo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtZXNvbi1neGwt
+bmZjIDgsIDE2LCAyNCwgMzAsIDQwLCA1MCwgNjAKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+bWVzb24tYXhnLW5mYyA4Cj4+ICsKPj4gK3JlcXVpcmVkOgo+PiArwqAgLSBjb21wYXRpYmxlCj4+
+ICvCoCAtIHJlZwo+PiArwqAgLSBpbnRlcnJ1cHRzCj4+ICvCoCAtIGNsb2Nrcwo+PiArwqAgLSBj
+bG9jay1uYW1lcwo+PiArCj4+ICt1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlCj4+ICsKPj4g
+K2V4YW1wbGVzOgo+PiArwqAgLSB8Cj4+ICvCoMKgwqAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2Ns
+b2NrL2F4Zy1jbGtjLmg+Cj4+ICvCoMKgwqAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVw
+dC1jb250cm9sbGVyL2FybS1naWMuaD4KPj4gK8KgwqDCoCBuYW5kLWNvbnRyb2xsZXJAZmZlMDc4
+MDAgewo+PiArwqDCoMKgwqDCoCBjb21wYXRpYmxlID0gImFtbG9naWMsbWVzb24tYXhnLW5mYyI7
+Cj4+ICvCoMKgwqDCoMKgIHJlZyA9IDwweGZmZTA3ODAwIDB4MTAwPiwgPDB4ZmZlMDcwMDAgMHg4
+MDA+Owo+PiArwqDCoMKgwqDCoCByZWctbmFtZXMgPSAibmZjIiwgImVtbWMiOwo+PiArwqDCoMKg
+wqDCoCBpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMzQgSVJRX1RZUEVfRURHRV9SSVNJTkc+Owo+PiAr
+wqDCoMKgwqDCoCBjbG9ja3MgPSA8JmNsa2MgQ0xLSURfU0RfRU1NQ19DPizCoCA8JmNsa2MgQ0xL
+SURfRkNMS19ESVYyPjsKPj4gK8KgwqDCoMKgwqAgY2xvY2stbmFtZXMgPSAiY29yZSIsICJkZXZp
+Y2UiOwo+PiArCj4+ICvCoMKgwqDCoMKgIHBpbmN0cmwtMCA9IDwmbmFuZF9waW5zPjsKPj4gK8Kg
+wqDCoMKgwqAgcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0IjsKPj4gKwo+PiArwqDCoMKgwqDCoCAj
+YWRkcmVzcy1jZWxscyA9IDwxPjsKPj4gK8KgwqDCoMKgwqAgI3NpemUtY2VsbHMgPSA8MD47Cj4+
+ICsKPj4gK8KgwqDCoMKgwqAgbmFuZEAwIHsKPj4gK8KgwqDCoMKgwqDCoMKgIHJlZyA9IDwwPjsK
+Pj4gK8KgwqDCoMKgwqAgfTsKPj4gK8KgwqDCoCB9Owo+PiArCj4+ICsuLi4KPiAKPiBUaGFua3Ms
+Cj4gTmVpbAo+IAo+IC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
