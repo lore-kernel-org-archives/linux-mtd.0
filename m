@@ -4,127 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 711C7ECAAD3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0FF0ECAAD5
 	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 21:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2ZH0HoMfZteitefpN+63Y69sivUAjBgLaA5lNcfwCVU=; b=GuCIj7b+oV1Yuy
-	ttlofxSM7tAdp1Vj85cH3bvTFvD/AXf7eeWkLCjHFkLJ7RhTI/SdV5+mXYNGXWdu4ZmERqTaOtyLV
-	+2F63gjeLJlPpgh4WFCNAQIbYqGulfLkc5qZpEztiK7/kW+lI0zDDisRBdAknu5iJpHPzln53K0WU
-	jaHeQ5NT0vMTUIXMbL45ARZ0o+UgweuBs/f0oSRKqgueA/6MqH+0oLNVKhjxkpWkq9D4hOtkV383y
-	At+W1ElKHhBD4ZfGRzZBr2Ui9/gLnR8BiNTIa/pyOYPoqViQGbCYFT22/6J2wTcMhrxl17QnktsbP
-	0dP7t8WhNgqQCfbMnbBw==;
+	List-Owner; bh=IHjqcnD5piuaQVjb/XdpmlPn0jrgx1YeNecWRBNqTSA=; b=zAoHgeZlTsY9pZ
+	Fx9sznmMSyRWi3CsA6fk2Z125/HBBG8Kl2lK0k9oWI8uTKqbovwistqXhzUeNpdpni+tg4+enROAU
+	6gcyYJ64/ek5jnPj1OuTv8VMPAv9rhhA4aJvIbQW4JdEfZXSpWdTUqgqdKgOXP4Z2E7HkQI8zdIVp
+	qkr/J4MJ0sZ7Vr9JIzj/GUiYLlSsk7709bwVAa7uE3vWqSHc0Uwnu1Utlhyj9RxXpop2dL+5TxpsM
+	+07Oene/POLPzOigUP+8DNJEFbkdSqGpFMQKassps35n8JNesPdKnmhT3Khu4OazcltCqp1rCoPCL
+	J20NT0Mhn+7BhHhomfAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVJFt-00D7RT-VZ; Mon, 05 Sep 2022 21:03:42 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1oVJG8-00D8pu-FT; Mon, 05 Sep 2022 21:03:56 +0000
+Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVJFs-00D5VW-56; Mon, 05 Sep 2022 21:03:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=y3Qjjf92TYynwevE3H2ZfJzfWM4V6u0gYdLfjE+80ak=; b=ReuT+x99g+Hm6oZ/E8FctIv/3O
-	i5ipKU5BozC0yaaAZIQOW2oGBBHjRDtI3IURxy/XypvjNCXS7ZMfS3c9YZ6Kl+MwC+DcftwNf1MYv
-	99ziejGrYRr21ExwYk3nMZbBZs3iiQpQGK6eiMrnVxzJoqLaDIgjsxsUtgW5ZixGkapYoMzyrQ4+/
-	quujFpeEmDpswpiSTQwe+3SLBJ58CVjU7FiHvMYmSRhb5HoPAas8I6t7k8t6/aGG+hhnJBBTxR4Cc
-	VnrSHuPj42Yi1KSxYqQsMT07YEcsTJmFWLWWHh5ACk0J3ksH8hGPZAkfXqXu9JtiR4nGRu6t1jnpQ
-	om5lhmvg==;
-Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
-	by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVI8J-009xDF-Tb; Mon, 05 Sep 2022 19:51:54 +0000
-Received: by mail-pj1-x1034.google.com with SMTP id fv3so3073719pjb.0;
-        Mon, 05 Sep 2022 12:51:45 -0700 (PDT)
+	id 1oVJG4-00D8Go-Ry
+	for linux-mtd@lists.infradead.org; Mon, 05 Sep 2022 21:03:54 +0000
+Received: by mail-ej1-x62f.google.com with SMTP id fy31so19174995ejc.6
+        for <linux-mtd@lists.infradead.org>; Mon, 05 Sep 2022 14:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=y3Qjjf92TYynwevE3H2ZfJzfWM4V6u0gYdLfjE+80ak=;
-        b=p8fQjE0a0ZYjZfKRTjHpT3euYQsGr97PlI4J+3Etag+6i4rW86Bv40nzZOUk7I+O74
-         6AB3V55fbqVv7uRxcLJ9p+i6cEGfvUhY3Kul9eRBDmP4APZA6HSJroq5lt4nanlf+S4D
-         WzL8qbprYpzsZPbHTw91TVqhBBtGkTVEuU+NWJvf9meD6jRYOhrvpxBh2bEHlWS2vOzN
-         /mMdK+1vtePGkD0+o2tcKMw1L7TbtR/LY2u3VdsMAB8lgT9qdQtRVvzA9MzGS4jTHM2e
-         Y8DXi1ZE+gjUnF3/4YvRqKEtHb92EDRaHq/IKZmP1TBDcFx5o+n/mIkQoIp34EalsnaQ
-         zoGw==
+        d=linaro.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=hoFfvxrcWLiLIIghJLr7YqFR/bl7ppCzpkpzcFf25Ks=;
+        b=RJtkdpcWwDCjdU//f+NiUTQJO5kz/J/LQ4Oeb8FsER0ooLc9TUWAVJHwh16h0rFR6k
+         jDNxcAT6fUKAWlYXkDzi9PRVLGCFhao6TAvvqUzCLnc6J1JgrkOg//ZWPBTqZXz06MLe
+         g/E79BtcrSCZXcou4vgp2IFBghrcFJpfeHS130JLJDTFGdRTjjJVv3m8lMFyySNYfbdn
+         zyHSJi+z2sGr74Gs8Ferhg3qHw1Rm2Rd7LpNg2QiPU+rsqNYeELsa2ObuGU9YVxZktXI
+         +EIJDXEMJp+8DP7PW/zCtw+WHI1pL0md9UYJvdO9U0CdYO9jo7gVaKjIjDEh/+/hHVoD
+         fvlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=y3Qjjf92TYynwevE3H2ZfJzfWM4V6u0gYdLfjE+80ak=;
-        b=anpV15ARjjSVXFWqoXRxLERlb6JjawGNKyIu2ooQXNErAk4Vyv0raI9xW+UyBDaDH/
-         VM0FH0bMx0OMozd0JrA+OuxMknUfRdMTF8zGUEQZtvKHqTiRd2VAzqvU2xWzveqJjJH8
-         h6RmMQWJwmjQnYgl/0jf4x+2URdJKkYGAdZJkrkMAJeSwW0onwol46GXV1xcRBNSbSsC
-         OoMBQfkJ1KceTRyVXt4hqUWei388aJeEULEBh4cKJLJB+SeNa/QeGz0m7VydK9V6Vbk8
-         BVPwH7ctFojKx3P7xMHgFc2Rd7QTVc1taOz8fVLa5mFolrhYKzbXJmtu1b0A42luOC3r
-         zpqg==
-X-Gm-Message-State: ACgBeo2npEDV3lDgPmRDHSighEhVrqaibwmSOo+pB8b6LJUdxicGSTmM
-	blsgllah6vQ/H0fiB9U1nYI=
-X-Google-Smtp-Source: AA6agR6jLyMlXDr8IPeAvG3W5MKsqN0u+BmkWQrSPGBis9zvMHZVJmB1Wm8c2BJ+cKCgBoks41PKTg==
-X-Received: by 2002:a17:902:f68d:b0:16f:2314:7484 with SMTP id l13-20020a170902f68d00b0016f23147484mr49230641plg.136.1662407504235;
-        Mon, 05 Sep 2022 12:51:44 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:7332:f188:2984:5930])
-        by smtp.gmail.com with ESMTPSA id g5-20020a17090adac500b001fd8316db51sm7191722pjx.7.2022.09.05.12.51.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Sep 2022 12:51:43 -0700 (PDT)
-Date: Mon, 5 Sep 2022 12:51:39 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Matti Vaittinen <mazziesaccount@gmail.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Claudiu Beznea <claudiu.beznea@microchip.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Felipe Balbi <balbi@kernel.org>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Marc Zyngier <maz@kernel.org>, Richard Weinberger <richard@nod.at>,
-	David Airlie <airlied@linux.ie>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Rob Herring <robh@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-	LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
-	USB <linux-usb@vger.kernel.org>,
-	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-	linux-pci <linux-pci@vger.kernel.org>,
-	linux-tegra <linux-tegra@vger.kernel.org>,
-	"open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	dri-devel <dri-devel@lists.freedesktop.org>,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1 04/11] usb: phy: tegra: switch to using
- devm_gpiod_get()
-Message-ID: <YxZTS3Nl1YaMGoBC@google.com>
-References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
- <20220903-gpiod_get_from_of_node-remove-v1-4-b29adfb27a6c@gmail.com>
- <CAHp75VdMr7wru-2hD1HH3OS5JTNdzt6VRqB6OFoCp2JkiuiTjw@mail.gmail.com>
- <YxZQj8bwJCx5rqDv@google.com>
- <CAHp75VdHJS4YgrTK15OuY5sxodxKObUtzturL+YPXFQ3_wpxig@mail.gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=hoFfvxrcWLiLIIghJLr7YqFR/bl7ppCzpkpzcFf25Ks=;
+        b=U0y3XR560cvD4lXmCZECJ9G10YpSl2IQKKHRsrUAarx4PLXxR8sWmvCjbZN9VCFnkg
+         z2Lpva7jwdgHy3W0UJ8ESfUTtE8XQKA5F8XBeaHdGYYQN07K/vMvDpXxt5RR2lVRi8r7
+         YGdRJCdZc9UysKdbrQhM4/7I6r8D2Acj0aklq2FR/+Tl/vzuYyOmyjXkytlU+77Agztb
+         Sc4SZyHGfvr61WdgdJCRPPPIOougZvI04HFMKMS4QYFtHNXbp6QEcxliV19lmOdhYWh1
+         ++FPZldMTaoAHBUzQapU5csL+aBmS1CoEJtKWBrplNhhIoJRRn+DSMFggaI60VymFb+t
+         werw==
+X-Gm-Message-State: ACgBeo2K485fNJp7phZFpIqTociF82isrEJhu6ItGHWnit/P72cbUwLL
+	G7T3mkLmo8l7s2COCEiSnTYk5f8j/7aR3p/HdUa3gA==
+X-Google-Smtp-Source: AA6agR4GWSThcRe2jCNjPhluqCCYiE882sQv//p+YmHWCdk54XKDzjUOkiYoAS2W+owpznoWxs2VPch3w1ZAdKXk+5E=
+X-Received: by 2002:a17:907:7242:b0:741:770b:dfc6 with SMTP id
+ ds2-20020a170907724200b00741770bdfc6mr28207413ejc.203.1662411830025; Mon, 05
+ Sep 2022 14:03:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdHJS4YgrTK15OuY5sxodxKObUtzturL+YPXFQ3_wpxig@mail.gmail.com>
+References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
+ <20220903-gpiod_get_from_of_node-remove-v1-2-b29adfb27a6c@gmail.com>
+ <CAHp75Vc4yfh0JcY0B-vNawHTay5QNuhd7GAm86QZZZvUnQaMzQ@mail.gmail.com> <YxZP/exeVD7DQ5Hx@google.com>
+In-Reply-To: <YxZP/exeVD7DQ5Hx@google.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 5 Sep 2022 23:03:38 +0200
+Message-ID: <CACRpkda0iUTV=71eQf5_FdKWLe3Bu=U+Zny9_uJJL=5xXtnrnQ@mail.gmail.com>
+Subject: Re: [PATCH v1 02/11] drm/tegra: switch to using devm_fwnode_gpiod_get
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Mathias Nyman <mathias.nyman@intel.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, Matti Vaittinen <mazziesaccount@gmail.com>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Claudiu Beznea <claudiu.beznea@microchip.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Felipe Balbi <balbi@kernel.org>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Marc Zyngier <maz@kernel.org>, 
+	Richard Weinberger <richard@nod.at>, David Airlie <airlied@linux.ie>, 
+	Nicolas Ferre <nicolas.ferre@microchip.com>, Alyssa Rosenzweig <alyssa@rosenzweig.io>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Hunter <jonathanh@nvidia.com>, Rob Herring <robh@kernel.org>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+	=?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
+	LINUXWATCHDOG <linux-watchdog@vger.kernel.org>, USB <linux-usb@vger.kernel.org>, 
+	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, linux-pci <linux-pci@vger.kernel.org>, 
+	linux-tegra <linux-tegra@vger.kernel.org>, 
+	"open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, 
+	linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220905_205150_006634_293A9B4F 
-X-CRM114-Status: GOOD (  18.68  )
+X-CRM114-CacheID: sfid-20220905_140352_993779_0420E3F5 
+X-CRM114-Status: GOOD (  22.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,41 +106,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 05, 2022 at 10:41:40PM +0300, Andy Shevchenko wrote:
-> On Mon, Sep 5, 2022 at 10:40 PM Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
-> > On Mon, Sep 05, 2022 at 01:59:44PM +0300, Andy Shevchenko wrote:
-> > > On Mon, Sep 5, 2022 at 9:32 AM Dmitry Torokhov
-> > > <dmitry.torokhov@gmail.com> wrote:
-> 
-> ...
-> 
-> > > > -               gpiod = devm_gpiod_get_from_of_node(&pdev->dev, np,
-> > > > -                                                   "nvidia,phy-reset-gpio",
-> > > > -                                                   0, GPIOD_OUT_HIGH,
-> > > > -                                                   "ulpi_phy_reset_b");
-> > > > +               gpiod = devm_gpiod_get(&pdev->dev, "nvidia,phy-reset",
-> > > > +                                      GPIOD_OUT_HIGH);
-> > > >                 err = PTR_ERR_OR_ZERO(gpiod);
+On Mon, Sep 5, 2022 at 9:37 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+> On Mon, Sep 05, 2022 at 01:57:01PM +0300, Andy Shevchenko wrote:
+> > On Mon, Sep 5, 2022 at 9:32 AM Dmitry Torokhov
+> > <dmitry.torokhov@gmail.com> wrote:
 > > >
-> > > What does _OR_ZERO mean now?
+> > > I would like to limit (or maybe even remove) use of
+> > > [devm_]gpiod_get_from_of_node in drivers so that gpiolib can be cleaned
+> > > a bit, so let's switch to the generic device property API.
 > >
-> > This converts a pointer to an error code if a pointer represents
-> > ERR_PTR() encoded error, or 0 to indicate success.
-> 
-> Yes, I know that. My point is, how is it useful now (or even before)?
-> I mean that devm_gpio_get() never returns NULL, right?
+> > > It may even
+> > > help with handling secondary fwnodes when gpiolib is taught to handle
+> > > gpios described by swnodes.
+> >
+> > I would remove this sentence from all commit messages since it's a
+> > debatable thing and might even not happen, so the above is a pure
+> > speculation.
+>
+> I have the patches. Granted, I had them since '19 ;) but I'm rebasing
+> them and going to push them. I need them to convert bunch of input
+> drivers away from platform data.
 
-What does returning NULL have to do with anything. It converts a pointer
-to a "classic" return code, with negative errors and 0 on success.
+That's good news!
 
-It allows to not use multiple IS_ERR/PTR_ERR in the code (I'd need 1
-IS_ERR and 2 PTR_ERR, one in dev_err() and another to return).
+Are you referring to this patch set mentioned in a discussion
+from 2017 thru 2020?
+https://lore.kernel.org/linux-input/20200826161222.GA1665100@dtor-ws/
 
-Thanks.
+I put aside GPIO descriptor conversion for input devices (keys, buttons)
+in board files anticipating a swnode mechanism.
 
--- 
-Dmitry
+Yours,
+Linus Walleij
 
 ______________________________________________________
 Linux MTD discussion mailing list
