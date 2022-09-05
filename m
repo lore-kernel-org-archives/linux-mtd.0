@@ -4,55 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AF7CECAAD5
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 09:24:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74131ECAAD3
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Sep 2022 09:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oOxNFZPNW0CXZoEmKox1kbBPC9sov81BCbNRHaG1Dcg=; b=FQFdslraxCcxoz
-	IHiWJj38EGa5IySdcGTjUiDuBz6emtiVNbnB+Zwezz+kBbzng8G1ndj1DM88BkD2vmLS+DaNR23AI
-	SKLHTeNtfZ4Vn+wvyPpLwO1tbmcRgXOoBSWI9RiPazkmh6r67h0PkGqohdFqlP/viQ4S2hCFFUve1
-	NrRQoLztRJrYxDdktKKwB04DDa98dnQL1CWHG+HhbGizsaat9/O6Hx1uFJ2NWyikK4ntMI0097Dr3
-	kCmUEIu6N/2Ol0lD28snHQc/i45C/xBLsTuBHb4cXvNZ4GpjpG1h6ES18NRXz1JK7w/3SYjJNRIrW
-	NjBUa8/KSH42d6KmClTA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=MADYCSXmzC9F5EQbTnVw0FOeGITJyeG5tG89E0t99eI=; b=GIzT9cs/i+x+Ou
+	SsQqTATiJvd3GTtCUCKMqhVKpQAT1rWEt4VZ3/NL2fJemjfYGfB8lGG2CzjPPLkSBELYA1bXFrDG3
+	cQsmRbUE9g6HVwqjB0yOoVR8plBV4wLVz6MoMe0DxCVIBIGCXjVmBcmv6wEzLxze4IFhU8c8lXHys
+	2pMqmI63aj4hvd11twi/d5ndYNNK9nL/USjUENKDqcpd+3agOsgLaEWcjjaMbLYZ+/w9qRUIR9sC8
+	kIOtSz3hFH2AHMyHvvIQBg7ib2dh8XS9uS2foRNQ/LRs4q3prjdOmeuGRDyCG9LXs0NIwASfH5Rp7
+	vifCrglG6cDNecbg74wA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oV8L7-00G0dW-53; Mon, 05 Sep 2022 09:24:21 +0000
+	id 1oV8c7-00Gbtr-N0; Mon, 05 Sep 2022 09:41:55 +0000
 Received: from mail-sz.amlogic.com ([211.162.65.117])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oV6fT-00DRRb-0g; Mon, 05 Sep 2022 07:37:18 +0000
-Received: from [10.28.39.72] (10.28.39.72) by mail-sz.amlogic.com (10.28.11.5)
- with Microsoft SMTP Server id 15.1.2507.6; Mon, 5 Sep 2022 15:37:06 +0800
-Message-ID: <9119f4d6-f9d4-e5e0-3536-95d5a6405cbe@amlogic.com>
-Date: Mon, 5 Sep 2022 15:37:05 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH RESEND v8 4/5] dt-bindings: nand: meson: convert txt to
- yaml
-Content-Language: en-US
-To: Neil Armstrong <narmstrong@baylibre.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
-CC: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Kevin Hilman
-	<khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan
-	<victor.wan@amlogic.com>, XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin
- Zhang <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>,
-	YongHui Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20220822091838.18528-1-liang.yang@amlogic.com>
- <20220822091838.18528-5-liang.yang@amlogic.com>
- <0ad6a792-74c2-9957-ee56-f183dcd75c58@baylibre.com>
+	id 1oV6se-00DfgJ-Lm; Mon, 05 Sep 2022 07:51:07 +0000
+Received: from droid11-sz.amlogic.com (10.28.8.21) by mail-sz.amlogic.com
+ (10.28.11.5) with Microsoft SMTP Server id 15.1.2507.6; Mon, 5 Sep 2022
+ 15:50:48 +0800
 From: Liang Yang <liang.yang@amlogic.com>
-In-Reply-To: <0ad6a792-74c2-9957-ee56-f183dcd75c58@baylibre.com>
-X-Originating-IP: [10.28.39.72]
+To: Miquel Raynal <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
+CC: Liang Yang <liang.yang@amlogic.com>, Rob Herring <robh+dt@kernel.org>,
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+	Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
+	<narmstrong@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>,
+	Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+	XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang
+	<kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, YongHui
+ Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>
+Subject: [PATCH RESEND v8 0/5] fix the meson NFC clock
+Date: Mon, 5 Sep 2022 15:50:26 +0800
+Message-ID: <20220905075027.19114-1-liang.yang@amlogic.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+X-Originating-IP: [10.28.8.21]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220905_003715_312136_96E3F4F5 
-X-CRM114-Status: GOOD (  16.73  )
+X-CRM114-CacheID: sfid-20220905_005053_019543_A1254984 
+X-CRM114-Status: GOOD (  11.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,113 +60,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTmVpbCwKClRoYW5rcyBmb3IgeW91ciByZW1pbmQuCkkgd2lsbCBhZGQgdGhlIE1MIGluIG5l
-eHQgcmVzZW5kIHZlcnNpb24gcXVpY2tseS4KCk9uIDIwMjIvOS81IDE1OjIyLCBOZWlsIEFybXN0
-cm9uZyB3cm90ZToKPiBbIEVYVEVSTkFMIEVNQUlMIF0KPiAKPiArQ0MgW2RldmljZXRyZWVAdmdl
-ci5rZXJuZWwub3JnXQo+IAo+IFBsZWFzZSBBZGQgdGhpcyBNTCB0byBDQyBpZiB5b3UgcmVzZW5k
-LCBpdCdzIHRoZSBsYXN0IHBhdGNoIG9mIHRoZSBzZXJpZSAKPiB0aGF0IGhhdmVuJ3QgZ290IGEg
-cHJvcGVyIHJldmlldy4KPiAKPiBPbiAyMi8wOC8yMDIyIDExOjE4LCBMaWFuZyBZYW5nIHdyb3Rl
-Ogo+PiBjb252ZXJ0IHRoZSBhbWxvZ2ljLG1lc29uLW5hbWUudHh0IHRvIGFtbG9naWMsbWVzb24t
-bmFuZC55YW1sCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IExpYW5nIFlhbmcgPGxpYW5nLnlhbmdAYW1s
-b2dpYy5jb20+Cj4+IC0tLQo+PiDCoCAuLi4vYmluZGluZ3MvbXRkL2FtbG9naWMsbWVzb24tbmFu
-ZC50eHTCoMKgwqDCoMKgwqAgfCA1NSAtLS0tLS0tLS0tLS0KPj4gwqAgLi4uL2JpbmRpbmdzL210
-ZC9hbWxvZ2ljLG1lc29uLW5hbmQueWFtbMKgwqDCoMKgwqAgfCA4OCArKysrKysrKysrKysrKysr
-KysrCj4+IMKgIDIgZmlsZXMgY2hhbmdlZCwgODggaW5zZXJ0aW9ucygrKSwgNTUgZGVsZXRpb25z
-KC0pCj4+IMKgIGRlbGV0ZSBtb2RlIDEwMDY0NCAKPj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL210ZC9hbWxvZ2ljLG1lc29uLW5hbmQudHh0Cj4+IMKgIGNyZWF0ZSBtb2RlIDEw
-MDY0NCAKPj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hbWxvZ2ljLG1l
-c29uLW5hbmQueWFtbAo+Pgo+PiBkaWZmIC0tZ2l0IAo+PiBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxtZXNvbi1uYW5kLnR4dCAKPj4gYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2FtbG9naWMsbWVzb24tbmFuZC50eHQKPj4gZGVs
-ZXRlZCBmaWxlIG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDVkNWNkZmVmNDE3Zi4uMDAwMDAwMDAwMDAw
-Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxt
-ZXNvbi1uYW5kLnR4dAo+PiArKysgL2Rldi9udWxsCj4+IEBAIC0xLDU1ICswLDAgQEAKPj4gLUFt
-bG9naWMgTkFORCBGbGFzaCBDb250cm9sbGVyIChORkMpIGZvciBHWEJCL0dYTC9BWEcgZmFtaWx5
-IFNvQ3MKPj4gLQo+PiAtVGhpcyBmaWxlIGRvY3VtZW50cyB0aGUgcHJvcGVydGllcyBpbiBhZGRp
-dGlvbiB0byB0aG9zZSBhdmFpbGFibGUgaW4KPj4gLXRoZSBNVEQgTkFORCBiaW5kaW5ncy4KPj4g
-LQo+PiAtUmVxdWlyZWQgcHJvcGVydGllczoKPj4gLS0gY29tcGF0aWJsZSA6IGNvbnRhaW5zIG9u
-ZSBvZjoKPj4gLcKgIC0gImFtbG9naWMsbWVzb24tZ3hsLW5mYyIKPj4gLcKgIC0gImFtbG9naWMs
-bWVzb24tYXhnLW5mYyIKPj4gLQo+PiAtLSByZWfCoMKgwqDCoMKgwqDCoCA6IE9mZnNldCBhbmQg
-bGVuZ3RoIG9mIHRoZSByZWdpc3RlciBzZXQKPj4gLQo+PiAtLSByZWctbmFtZXPCoCA6ICJuZmMi
-IGlzIHRoZSByZWdpc3RlciBzZXQgZm9yIE5GQyBjb250cm9sbGVyIGFuZCAiZW1tYyIKPj4gLcKg
-wqDCoMKgwqDCoMKgIGlzIHRoZSByZWdpc3RlciBzZXQgZm9yIE1DSSBjb250cm9sbGVyLgo+PiAt
-Cj4+IC0tIGNsb2Nrc8KgwqDCoMKgIDoKPj4gLcKgwqDCoCBBIGxpc3Qgb2YgcGhhbmRsZSArIGNs
-b2NrLXNwZWNpZmllciBwYWlycyBmb3IgdGhlIGNsb2NrcyBsaXN0ZWQKPj4gLcKgwqDCoCBpbiBj
-bG9jay1uYW1lcy4KPj4gLQo+PiAtLSBjbG9jay1uYW1lczogU2hvdWxkIGNvbnRhaW4gdGhlIGZv
-bGxvd2luZzoKPj4gLcKgwqDCoCAiY29yZSIgLSBORkMgbW9kdWxlIGdhdGUgY2xvY2sKPj4gLcKg
-wqDCoCAiZGV2aWNlIiAtIHBhcmVudCBjbG9jayBmb3IgaW50ZXJuYWwgTkZDCj4+IC0KPj4gLU9w
-dGlvbmFsIGNoaWxkcmVuIG5vZGVzOgo+PiAtQ2hpbGRyZW4gbm9kZXMgcmVwcmVzZW50IHRoZSBh
-dmFpbGFibGUgbmFuZCBjaGlwcy4KPj4gLQo+PiAtT3RoZXIgcHJvcGVydGllczoKPj4gLXNlZSBE
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL25hbmQtY29udHJvbGxlci55YW1s
-IGZvciAKPj4gZ2VuZXJpYyBiaW5kaW5ncy4KPj4gLQo+PiAtRXhhbXBsZSBkZW1vbnN0cmF0ZSBv
-biBBWEcgU29DOgo+PiAtCj4+IC3CoMKgwqAgbmFuZC1jb250cm9sbGVyQDc4MDAgewo+PiAtwqDC
-oMKgwqDCoMKgwqAgY29tcGF0aWJsZSA9ICJhbWxvZ2ljLG1lc29uLWF4Zy1uZmMiOwo+PiAtwqDC
-oMKgwqDCoMKgwqAgcmVnID0gPDB4MCAweDc4MDAgMHgwIDB4MTAwPiwKPj4gLcKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIDwweDAgMHg3MDAwIDB4MCAweDgwMD47Cj4+IC3CoMKgwqDCoMKgwqDC
-oCByZWctbmFtZXMgPSAibmZjIiwgImVtbWMiOwo+PiAtwqDCoMKgwqDCoMKgwqAgI2FkZHJlc3Mt
-Y2VsbHMgPSA8MT47Cj4+IC3CoMKgwqDCoMKgwqDCoCAjc2l6ZS1jZWxscyA9IDwwPjsKPj4gLcKg
-wqDCoMKgwqDCoMKgIGludGVycnVwdHMgPSA8R0lDX1NQSSAzNCBJUlFfVFlQRV9FREdFX1JJU0lO
-Rz47Cj4+IC0KPj4gLcKgwqDCoMKgwqDCoMKgIGNsb2NrcyA9IDwmY2xrYyBDTEtJRF9TRF9FTU1D
-X0M+LAo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDwmY2xrYyBDTEtJRF9GQ0xLX0RJVjI+
-Owo+PiAtwqDCoMKgwqDCoMKgwqAgY2xvY2stbmFtZXMgPSAiY29yZSIsICJkZXZpY2UiOwo+PiAt
-Cj4+IC3CoMKgwqDCoMKgwqDCoCBwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOwo+PiAtwqDCoMKg
-wqDCoMKgwqAgcGluY3RybC0wID0gPCZuYW5kX3BpbnM+Owo+PiAtCj4+IC3CoMKgwqDCoMKgwqDC
-oCBuYW5kQDAgewo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MD47Cj4+IC3CoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgICNhZGRyZXNzLWNlbGxzID0gPDE+Owo+PiAtwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCAjc2l6ZS1jZWxscyA9IDwxPjsKPj4gLQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBuYW5kLW9uLWZsYXNoLWJidDsKPj4gLcKgwqDCoMKgwqDCoMKgIH07Cj4+IC3CoMKgwqAg
-fTsKPj4gZGlmZiAtLWdpdCAKPj4gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-bXRkL2FtbG9naWMsbWVzb24tbmFuZC55YW1sIAo+PiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxtZXNvbi1uYW5kLnlhbWwKPj4gbmV3IGZpbGUgbW9kZSAx
-MDA2NDQKPj4gaW5kZXggMDAwMDAwMDAwMDAwLi40MjYzNGU5YzBkM2MKPj4gLS0tIC9kZXYvbnVs
-bAo+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2FtbG9naWMs
-bWVzb24tbmFuZC55YW1sCj4+IEBAIC0wLDAgKzEsODggQEAKPj4gKyMgU1BEWC1MaWNlbnNlLUlk
-ZW50aWZpZXI6IChHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlKQo+PiArJVlBTUwgMS4yCj4+
-ICstLS0KPj4gKyRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvbXRkL2FtbG9naWMs
-bWVzb24tbmFuZC55YW1sIwo+PiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEt
-c2NoZW1hcy9jb3JlLnlhbWwjCj4+ICsKPj4gK3RpdGxlOiBBbWxvZ2ljIE5BTkQgRmxhc2ggQ29u
-dHJvbGxlciAoTkZDKSBmb3IgR1hCQi9HWEwvQVhHIGZhbWlseSBTb0NzCj4+ICsKPj4gK2FsbE9m
-Ogo+PiArwqAgLSAkcmVmOiAibmFuZC1jb250cm9sbGVyLnlhbWwiCj4+ICsKPj4gK21haW50YWlu
-ZXJzOgo+PiArwqAgLSBsaWFuZy55YW5nQGFtbG9naWMuY29tCj4+ICsKPj4gK3Byb3BlcnRpZXM6
-Cj4+ICvCoCBjb21wYXRpYmxlOgo+PiArwqDCoMKgIGVudW06Cj4+ICvCoMKgwqDCoMKgIC0gImFt
-bG9naWMsbWVzb24tZ3hsLW5mYyIKPj4gK8KgwqDCoMKgwqAgLSAiYW1sb2dpYyxtZXNvbi1heGct
-bmZjIgo+PiArCj4+ICvCoCByZWc6Cj4+ICvCoMKgwqAgbWF4SXRlbXM6IDIKPj4gKwo+PiArwqAg
-aW50ZXJydXB0czoKPj4gK8KgwqDCoCBtYXhJdGVtczogMQo+PiArCj4+ICvCoCBjbG9ja3M6Cj4+
-ICvCoMKgwqAgbWluSXRlbXM6IDIKPj4gKwo+PiArwqAgY2xvY2stbmFtZXM6Cj4+ICvCoMKgwqAg
-aXRlbXM6Cj4+ICvCoMKgwqDCoMKgIC0gY29uc3Q6IGNvcmUKPj4gK8KgwqDCoMKgwqAgLSBjb25z
-dDogZGV2aWNlCj4+ICsKPj4gK3BhdHRlcm5Qcm9wZXJ0aWVzOgo+PiArwqAgIl5uYW5kQFswLTdd
-JCI6Cj4+ICvCoMKgwqAgdHlwZTogb2JqZWN0Cj4+ICvCoMKgwqAgcHJvcGVydGllczoKPj4gK8Kg
-wqDCoMKgwqAgcmVnOgo+PiArwqDCoMKgwqDCoMKgwqAgbWluaW11bTogMAo+PiArwqDCoMKgwqDC
-oMKgwqAgbWF4aW11bTogMQo+PiArCj4+ICvCoMKgwqDCoMKgIG5hbmQtZWNjLW1vZGU6Cj4+ICvC
-oMKgwqDCoMKgwqDCoCBjb25zdDogaHcKPj4gKwo+PiArwqDCoMKgwqDCoCBuYW5kLWVjYy1zdGVw
-LXNpemU6Cj4+ICvCoMKgwqDCoMKgwqDCoCBjb25zdDogMTAyNAo+PiArCj4+ICvCoMKgwqDCoMKg
-IG5hbmQtZWNjLXN0cmVuZ3RoOgo+PiArwqDCoMKgwqDCoMKgwqAgZW51bTogWzgsIDE2LCAyNCwg
-MzAsIDQwLCA1MCwgNjBdCj4+ICvCoMKgwqDCoMKgwqDCoCBkZXNjcmlwdGlvbjogfAo+PiArwqDC
-oMKgwqDCoMKgwqDCoMKgIFRoZSBFQ0MgY29uZmlndXJhdGlvbnMgdGhhdCBjYW4gYmUgc3VwcG9y
-dGVkIGFyZSBhcyBmb2xsb3dzLgo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtZXNvbi1neGwt
-bmZjIDgsIDE2LCAyNCwgMzAsIDQwLCA1MCwgNjAKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-bWVzb24tYXhnLW5mYyA4Cj4+ICsKPj4gK3JlcXVpcmVkOgo+PiArwqAgLSBjb21wYXRpYmxlCj4+
-ICvCoCAtIHJlZwo+PiArwqAgLSBpbnRlcnJ1cHRzCj4+ICvCoCAtIGNsb2Nrcwo+PiArwqAgLSBj
-bG9jay1uYW1lcwo+PiArCj4+ICt1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlCj4+ICsKPj4g
-K2V4YW1wbGVzOgo+PiArwqAgLSB8Cj4+ICvCoMKgwqAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2Ns
-b2NrL2F4Zy1jbGtjLmg+Cj4+ICvCoMKgwqAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVw
-dC1jb250cm9sbGVyL2FybS1naWMuaD4KPj4gK8KgwqDCoCBuYW5kLWNvbnRyb2xsZXJAZmZlMDc4
-MDAgewo+PiArwqDCoMKgwqDCoCBjb21wYXRpYmxlID0gImFtbG9naWMsbWVzb24tYXhnLW5mYyI7
-Cj4+ICvCoMKgwqDCoMKgIHJlZyA9IDwweGZmZTA3ODAwIDB4MTAwPiwgPDB4ZmZlMDcwMDAgMHg4
-MDA+Owo+PiArwqDCoMKgwqDCoCByZWctbmFtZXMgPSAibmZjIiwgImVtbWMiOwo+PiArwqDCoMKg
-wqDCoCBpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMzQgSVJRX1RZUEVfRURHRV9SSVNJTkc+Owo+PiAr
-wqDCoMKgwqDCoCBjbG9ja3MgPSA8JmNsa2MgQ0xLSURfU0RfRU1NQ19DPizCoCA8JmNsa2MgQ0xL
-SURfRkNMS19ESVYyPjsKPj4gK8KgwqDCoMKgwqAgY2xvY2stbmFtZXMgPSAiY29yZSIsICJkZXZp
-Y2UiOwo+PiArCj4+ICvCoMKgwqDCoMKgIHBpbmN0cmwtMCA9IDwmbmFuZF9waW5zPjsKPj4gK8Kg
-wqDCoMKgwqAgcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0IjsKPj4gKwo+PiArwqDCoMKgwqDCoCAj
-YWRkcmVzcy1jZWxscyA9IDwxPjsKPj4gK8KgwqDCoMKgwqAgI3NpemUtY2VsbHMgPSA8MD47Cj4+
-ICsKPj4gK8KgwqDCoMKgwqAgbmFuZEAwIHsKPj4gK8KgwqDCoMKgwqDCoMKgIHJlZyA9IDwwPjsK
-Pj4gK8KgwqDCoMKgwqAgfTsKPj4gK8KgwqDCoCB9Owo+PiArCj4+ICsuLi4KPiAKPiBUaGFua3Ms
-Cj4gTmVpbAo+IAo+IC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+EMMC and NAND have the same clock control register named 'SD_EMMC_CLOCK'
+which is defined in EMMC port internally. bit0~5 of 'SD_EMMC_CLOCK' is
+the divider and bit6~7 is the mux for fix pll and xtal. At the beginning,
+a common MMC and NAND sub-clock was discussed and planed to be implemented
+as NFC clock provider, but now this series of patches of a common MMC and
+NAND sub-clock are never being accepted and the current binding was never
+valid. the reasons are:
+1. EMMC and NAND, which are mutually exclusive anyway
+2. coupling the EMMC and NAND.
+3. it seems that a common MMC and NAND sub-clock is over engineered.
+and let us see the link for more information:
+https://lore.kernel.org/all/20220121074508.42168-5-liang.yang@amlogic.com
+so The meson nfc can't work now, let us rework the clock.
+
+Changes since v7 [8]
+ - use COMMON_CLK && (ARCH_MESON || COMPILE_TEST) instead of
+   ARCH_MESON || COMPILE_TEST || COMMON_CLK.
+ - collect the review and ack
+
+Changes since v6 [7]
+ - use COMMON_CLK instead of !HAVE_LEGACY_CLK
+
+Changes since v5 [6]
+ - add change log for patch 3/5
+ - add patch 5/5 to fix the reporting error of test robot
+
+Changes since v4 [5]
+ - split the dt binding patch into two patches, one for fixing, 
+   clock, the other for coverting to yaml
+ - split the nfc driver patch into two patches, one for fixing 
+   clock, the other for refining the get nfc resource.
+
+Changes since v3 [4]
+ - use devm_platform_ioremap_resource_byname
+ - dt_binding_check for mtd/amlogic,meson-nand.yaml
+
+Changes since v2 [3]
+ - use fw_name from dts, instead the wrong way using __clk_get_name
+ - reg resource size change to 0x800
+ - use reg-names
+
+Changes since v1 [2]
+ - use clk_parent_data instead of parent_names
+ - define a reg resource instead of sd_emmc_c_clkc 
+
+[1] https://lore.kernel.org/r/20220106033130.37623-1-liang.yang@amlogic.com
+    https://lore.kernel.org/r/20220106032504.23310-1-liang.yang@amlogic.com
+[2] https://lore.kernel.org/all/20220217063346.21691-1-liang.yang@amlogic.com
+[3] https://lore.kernel.org/all/20220318124121.26117-1-liang.yang@amlogic.com
+[4] https://lore.kernel.org/all/20220402074921.13316-1-liang.yang@amlogic.com/
+[5] https://lore.kernel.org/all/20220513123404.48513-1-liang.yang@amlogic.com/
+[6] https://lore.kernel.org/all/20220607064731.13367-1-liang.yang@amlogic.com/
+[7] https://lore.kernel.org/all/20220624131257.29906-1-liang.yang@amlogic.com/
+
+Liang Yang (5):
+  dt-bindings: nand: meson: fix meson nfc clock
+  mtd: rawnand: meson: fix the clock
+  mtd: rawnand: meson: refine resource getting in probe
+  dt-bindings: nand: meson: convert txt to yaml
+  mtd: rawnand: meson: not support legacy clock
+
+ .../bindings/mtd/amlogic,meson-nand.txt       | 60 -------------
+ .../bindings/mtd/amlogic,meson-nand.yaml      | 88 +++++++++++++++++++
+ drivers/mtd/nand/raw/Kconfig                  |  2 +-
+ drivers/mtd/nand/raw/meson_nand.c             | 86 +++++++++---------
+ 4 files changed, 131 insertions(+), 105 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
