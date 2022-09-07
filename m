@@ -4,65 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0C92ECAAD5
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Sep 2022 15:21:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC1F7ECAAD5
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Sep 2022 02:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=km7+lMpfCYOGEG6EbPq7ZlbrCEJBF90GnTAn1Ap1Res=; b=UB0NJlnMtSrEvs
-	Vh2h2Y6kXGdcl2WlswCE8EZ1C5gzIuKBVrH7c6qvgtjhSBVogzPXJmegt2ecl1f0l3mPSeMQVOm+2
-	FrskocgK0Bw0Iy4m9smZf7G7MakuBMl2a1SYmxfsKoLt+uL010B1cEhqokx+15ARb4PYkWDaokj5W
-	tKITAkVWHuBNvGkprv8FuUeXEGN9dTQO5QprP1cpL1rLkPxflLQvps+PHB4h/Av52tKPidyCM93Wa
-	AWIn1KlFJ4sJofop3AKlvX2HLwJoDMsBQfElwdtnqWA4D3xHvLyUQhCRi3D2VIK71nGzee0WeiBdO
-	OcEWPwvsYuuqhlr2Lsnw==;
+	List-Owner; bh=ifQfcJnhZPNL+ohYvhPV2tNsZrFCTCmK6M6fSPFatsw=; b=I0yER443+LLJGy
+	+bpEk1RyBRbyUaJLu04SIpoc38dwGXCKRea0yfPbvjWJp2ZGQeKOPj1zwoKFlcz0smOWz+g5p7lF6
+	ybgCeEshIvMzgwD3w8/BBJU9Z3dySeDp8NC9wKkjH/61aWR3XY3svS1vAeeapAZ97jWzU13WzEgIo
+	evy5kEzvqtZcu4FUzFccXboKVkIksQ15CfszbpHVZNUP6EP0oTsVcqitohOJxKyxPeViIT6KIAnju
+	mfUHG7KwgEt1Kg7T/cq/hreTJkG20jWTRaZYcH2MFjcZm48dm/Ey+ULWQw7KD8KhwqwekYvUGkxy3
+	OTbIIcj8bxvuy9xLf56A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVaO7-00EikY-CT; Tue, 06 Sep 2022 15:21:19 +0000
-Received: from mail-oa1-f54.google.com ([209.85.160.54])
+	id 1oVkNM-001THW-Ny; Wed, 07 Sep 2022 02:01:12 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oVZas-00EJt1-Pv; Tue, 06 Sep 2022 14:30:28 +0000
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1274ec87ad5so13681940fac.0;
-        Tue, 06 Sep 2022 07:30:24 -0700 (PDT)
+	id 1oVkNG-001TE9-Uw; Wed, 07 Sep 2022 02:01:10 +0000
+Received: by mail-pl1-x634.google.com with SMTP id t3so7993458ply.2;
+        Tue, 06 Sep 2022 19:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=YaCijregOqOjgcZeIED7JVmldRewR4dEphbJlxDQblY=;
+        b=S9pRunUxPC7r0e1w9yj0o8783wojVpjNhKP8jsT71wWMuWPsfUFzdJz0TJMPpqTsPB
+         M+Ae8ANyYrV4Sep3x0VbDc+EnMue4OoEN8RpFTpOjPkluJnGT2cqlVh1JYNiO5h/tDGK
+         RGVJLwVuP7GISwNRAdT5OiqdenVIGFNKEJzKBNq2q1BXIKHlp8tWKx0fxbOK8GA6DZwQ
+         TZfa9JbPfMPcxWCYQlbaTpn5opve5VlejEuuBRLWTpxblG8WQDMhb5np+dyWJJ6kAEEW
+         rXWcB3V4lQHvMssIFHI0kdZjP9pomfXdXnH1i/sJC8kJC91PlHbGOcBl6u1/CPq1k3ff
+         5tAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=Kvz3JZaluvKrbLtBoEI5XWsSUd5pzncK9jiRn5usyvY=;
-        b=YST9NxmyayMngJJ33e9cXG7zXNHfLQ9lfTt7B1cEe9Cl6KeDIp4p81W2eKxDRs/lC3
-         GtzaYMM/kTIeNlzUnzw5IdzjUZH3rKel3/qe1ZMud8176RkN1Oqwlb3W0CjzYw4YLCqP
-         hpagLGj2LgJgTXdOJUSvAXR6IdRGaWklsNGOoyphzfAXYhgJIHOGYrDTHtXoOUXePsN7
-         AZsrC7HSavxfos54o5u3gHpu/YUZ1o8TPrLrbWXWF/AQI6JMg1zFhFnttcKyQYS/5qaC
-         62FENb/UkqV77bQuEpEZm1hhqPVXh9XHEDxeabYbg6nZPvNuD8ZNDCSzDuW43VoEzJ5z
-         2tFw==
-X-Gm-Message-State: ACgBeo1u3rdg6azD82yLAnrJFYd1jcxXEQmYsiSUzF/W47XFvOkniIAf
-	bifRdHzpggaTFp41A158dQ==
-X-Google-Smtp-Source: AA6agR43AUBcRTnH2EnVkNSTDxBoJmwXP6jICsOo+4xmljoEm6BkouioCzUZ8nvJiOcT3vVuNYoAzQ==
-X-Received: by 2002:a05:6870:c386:b0:102:fcb:86cd with SMTP id g6-20020a056870c38600b001020fcb86cdmr11886020oao.296.1662474623287;
-        Tue, 06 Sep 2022 07:30:23 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id f7-20020a9d5e87000000b00638cea5947esm6011078otl.25.2022.09.06.07.30.22
+        bh=YaCijregOqOjgcZeIED7JVmldRewR4dEphbJlxDQblY=;
+        b=ZnDk8J427tY0/kpBtD778Mf2X5bjSBaVASUuEx7bP0ZVF9XoqspScEgJLSh3A5ZZeM
+         3qLY2O1oGMm2zJCMPRp7BbFAnbQ0wuHWVxNemxKccwBmCvGH/fIX5b8o9djaqW5KvyHo
+         I7rm0YcMPGC58d+TweNhGF/grjWlAFNS1QxxZVFSxFYr0L4VJZ3gPKcuP/DKueNFKZ6c
+         fy7YTNHYPbA/jjZ3kOzV9c+hZog8KNBxtPmgbzYZ52YWOeWQfggSbOxgKhPDD+XcJEzZ
+         3ecSrTTDZUO0MCAIHjRXrYh4/4YuRkXQ9eI1ar3xSP3eb9MW0zYo+GFe8pXVUMR8fvjO
+         ZnDw==
+X-Gm-Message-State: ACgBeo3qWtcIOSL+dfgxByW9D50cfrrlSMjLENIA2n7CiIkei3bISHXy
+	N9HzTM7RCONMRrHgTn6EdzA=
+X-Google-Smtp-Source: AA6agR4W7OfcLFzEOrvTrf5AWbvTtcvq1nW6dbnnaSOnulUmzjwEL9HxLO3xrl5g0PyDmCwuPzMlMg==
+X-Received: by 2002:a17:90b:3ec7:b0:1fa:cdc1:f66 with SMTP id rm7-20020a17090b3ec700b001facdc10f66mr28531683pjb.167.1662516062292;
+        Tue, 06 Sep 2022 19:01:02 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:abc4:5d24:5a73:a96b])
+        by smtp.gmail.com with ESMTPSA id a206-20020a621ad7000000b00537d74f58cbsm2322985pfa.69.2022.09.06.19.00.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Sep 2022 07:30:22 -0700 (PDT)
-Received: (nullmailer pid 444558 invoked by uid 1000);
-	Tue, 06 Sep 2022 14:30:21 -0000
-Date: Tue, 6 Sep 2022 09:30:21 -0500
-From: Rob Herring <robh@kernel.org>
-To: Liang Yang <liang.yang@amlogic.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>, XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, YongHui Yu <yonghui.yu@amlogic.com>, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH RESEND v8 4/5] dt-bindings: nand: meson: convert txt to
- yaml
-Message-ID: <20220906143021.GA439874-robh@kernel.org>
-References: <20220906060034.2528-1-liang.yang@amlogic.com>
- <20220906060034.2528-5-liang.yang@amlogic.com>
+        Tue, 06 Sep 2022 19:01:01 -0700 (PDT)
+Date: Tue, 6 Sep 2022 19:00:57 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Felipe Balbi <balbi@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Marc Zyngier <maz@kernel.org>, Richard Weinberger <richard@nod.at>,
+	David Airlie <airlied@linux.ie>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Rob Herring <robh@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+	LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+	USB <linux-usb@vger.kernel.org>,
+	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+	linux-pci <linux-pci@vger.kernel.org>,
+	linux-tegra <linux-tegra@vger.kernel.org>,
+	"open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	dri-devel <dri-devel@lists.freedesktop.org>,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v1 10/11] watchdog: bd9576_wdt: switch to using
+ devm_fwnode_gpiod_get()
+Message-ID: <Yxf7WTFG7xEh2Gv6@google.com>
+References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
+ <20220903-gpiod_get_from_of_node-remove-v1-10-b29adfb27a6c@gmail.com>
+ <CAHp75Vd35EOy=mP25=9fmYfqQnbafgotHw1fxk-TdGk6Oc8g8Q@mail.gmail.com>
+ <75e60144-9fa2-d6ba-bc92-edd23f7e7189@roeck-us.net>
+ <CAHp75VcisCTYoRp-=713YKtwi7BQyPKGiUhF4DkpfAFtvDXCiQ@mail.gmail.com>
+ <c696b9bf-d0ce-1c6a-0ee3-939b180891be@roeck-us.net>
+ <YxZSUlCPEE9o/s4G@google.com>
+ <73749107-35aa-0720-1a30-02a90c0540fa@roeck-us.net>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220906060034.2528-5-liang.yang@amlogic.com>
+In-Reply-To: <73749107-35aa-0720-1a30-02a90c0540fa@roeck-us.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220906_073027_000681_242896C5 
-X-CRM114-Status: GOOD (  21.92  )
+X-CRM114-CacheID: sfid-20220906_190107_345465_8417E217 
+X-CRM114-Status: GOOD (  22.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,182 +131,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 06, 2022 at 02:00:32PM +0800, Liang Yang wrote:
-> convert the amlogic,meson-name.txt to amlogic,meson-nand.yaml
+On Mon, Sep 05, 2022 at 03:09:05PM -0700, Guenter Roeck wrote:
+> On 9/5/22 12:47, Dmitry Torokhov wrote:
+> [ ... ]
+> > > We know that count is either 1 or 2 here, so strictly speaking
+> > > 	if (count == 1) {
+> > > 	} else {
+> > > 	}
+> > > would be sufficient. On the other side, that depends on ARRAY_SIZE() being
+> > > exactly 2, so
+> > > 	if (count == 1) {
+> > > 	} else if (count == 2) {
+> > > 	}
+> > > would also make sense. Either way is fine with me. I'll leave it up
+> > > to Dmitry to decide what he wants to do.
+> > 
+> > My goal is to drop usage of devm_gpiod_get_from_of_node(), beyond that I
+> > do not have strong preferences either way really. It is probing code, so
+> > performance is not critical, but I'm obviously satisfied with how the
+> > code looks now, or I would not have sent it.
+> > 
 > 
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-> ---
->  .../bindings/mtd/amlogic,meson-nand.txt       | 55 ------------
->  .../bindings/mtd/amlogic,meson-nand.yaml      | 88 +++++++++++++++++++
->  2 files changed, 88 insertions(+), 55 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> Good point.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> deleted file mode 100644
-> index 5d5cdfef417f..000000000000
-> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> +++ /dev/null
-> @@ -1,55 +0,0 @@
-> -Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
-> -
-> -This file documents the properties in addition to those available in
-> -the MTD NAND bindings.
-> -
-> -Required properties:
-> -- compatible : contains one of:
-> -  - "amlogic,meson-gxl-nfc"
-> -  - "amlogic,meson-axg-nfc"
-> -
-> -- reg        : Offset and length of the register set
-> -
-> -- reg-names  : "nfc" is the register set for NFC controller and "emmc"
-> -		is the register set for MCI controller.
-> -
-> -- clocks     :
-> -	A list of phandle + clock-specifier pairs for the clocks listed
-> -	in clock-names.
-> -
-> -- clock-names: Should contain the following:
-> -	"core" - NFC module gate clock
-> -	"device" - parent clock for internal NFC
-> -
-> -Optional children nodes:
-> -Children nodes represent the available nand chips.
-> -
-> -Other properties:
-> -see Documentation/devicetree/bindings/mtd/nand-controller.yaml for generic bindings.
-> -
-> -Example demonstrate on AXG SoC:
-> -
-> -	nand-controller@7800 {
-> -		compatible = "amlogic,meson-axg-nfc";
-> -		reg = <0x0 0x7800 0x0 0x100>,
-> -		      <0x0 0x7000 0x0 0x800>;
-> -		reg-names = "nfc", "emmc";
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-> -
-> -		clocks = <&clkc CLKID_SD_EMMC_C>,
-> -			 <&clkc CLKID_FCLK_DIV2>;
-> -		clock-names = "core", "device";
-> -
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&nand_pins>;
-> -
-> -		nand@0 {
-> -			reg = <0>;
-> -			#address-cells = <1>;
-> -			#size-cells = <1>;
-> -
-> -			nand-on-flash-bbt;
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> new file mode 100644
-> index 000000000000..42634e9c0d3c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/amlogic,meson-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
-> +
-> +allOf:
-> +  - $ref: "nand-controller.yaml"
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Don't need quotes
+Guenter, individual patches are going through maintainer's trees, will
+you take this one?
 
-> +
-> +maintainers:
-> +  - liang.yang@amlogic.com
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - "amlogic,meson-gxl-nfc"
-> +      - "amlogic,meson-axg-nfc"
+Thanks.
 
-Don't need quotes
-
-> +
-> +  reg:
-> +    maxItems: 2
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 2
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core
-> +      - const: device
-> +
-> +patternProperties:
-> +  "^nand@[0-7]$":
-> +    type: object
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 1
-> +
-> +      nand-ecc-mode:
-> +        const: hw
-> +
-> +      nand-ecc-step-size:
-> +        const: 1024
-> +
-> +      nand-ecc-strength:
-> +        enum: [8, 16, 24, 30, 40, 50, 60]
-> +        description: |
-> +          The ECC configurations that can be supported are as follows.
-> +            meson-gxl-nfc 8, 16, 24, 30, 40, 50, 60
-> +            meson-axg-nfc 8
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/axg-clkc.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    nand-controller@ffe07800 {
-> +      compatible = "amlogic,meson-axg-nfc";
-> +      reg = <0xffe07800 0x100>, <0xffe07000 0x800>;
-> +      reg-names = "nfc", "emmc";
-> +      interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-> +      clocks = <&clkc CLKID_SD_EMMC_C>,  <&clkc CLKID_FCLK_DIV2>;
-> +      clock-names = "core", "device";
-> +
-> +      pinctrl-0 = <&nand_pins>;
-> +      pinctrl-names = "default";
-> +
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      nand@0 {
-> +        reg = <0>;
-> +      };
-> +    };
-> +
-> +...
-> -- 
-> 2.34.1
-> 
-> 
+-- 
+Dmitry
 
 ______________________________________________________
 Linux MTD discussion mailing list
