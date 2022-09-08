@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60BF8C38145
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Sep 2022 08:11:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C27CC38145
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Sep 2022 08:13:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=p9tI9HKfHR/Ri0AeaAR4un6C2DFbFjyxqzSw3SSjdUQ=; b=ZNyaorOe+qZggR
-	OsLB2Q05FZZxmfFglxfYfss9u33ZY7xnDO1SAZDcl/X8eibEjP2u/9teyvkvl7Bawc4Zeh545Op1Q
-	zb5dgyRPgiqrW7x0Y1BVxnfS9uouYQmuJwiOgLmkoaCDqCNWyGaVNVna9eD5QygR4UKbNqhyoMmuK
-	l8Sw5L+WfRKaDoXDNPd82QGrPQfGGHuIkEpQNjuC35XF+KHC9t9WZAZGSJIygIrskHIdWsLqFZnPe
-	hF6C5XuOKW8jtUvG2aiCMzX5RZQVh092998Q862A1WH8IrLsBDJZLXEhdCIvdJ6nb+mMU2eF8+ykT
-	Qko4lj89dw0RrT0LBSdg==;
+	List-Owner; bh=CtvFusz6o0FOGZJ0Fskgk25kat7I5HYfwaxg495r79w=; b=KkXKWPLGT6P5yJ
+	VCB8KOzSB7ImELmeZ023nBZ2/0LejdHiOQZblUwu9xC6key/IJRyl+58/LNBn+PmQVb6P2LWb6Bwl
+	8wkKCM4CKvGBj49Wsibe6yDyf0pqKdxOc2QxSPsBX5Blx2xf+vFTR8Z5qMbZh0Fm+d9/P8LCCVBpT
+	wXKKAE9/M82c6h9FtmzhqKXYkCECDmgIhGBub9ejHgnor1S7HobMcI+446YLj2V6c8ClBN58m2fJ+
+	+vPhs9pEsgDA4Qh6Zp9e6VeOyFL9gNyBvjYfbBa31sGlliS1inmVNYMcTzxuTaK70T5En0DD6Orp1
+	HMLFxXsj8yenykuJ0EqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWCcq-000xHf-8a; Thu, 08 Sep 2022 08:11:04 +0000
-Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
+	id 1oWCfB-000yBT-W5; Thu, 08 Sep 2022 08:13:30 +0000
+Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWCcV-000xAE-L8
-	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2022 08:10:45 +0000
-Received: by mail-ej1-x62e.google.com with SMTP id u9so36261743ejy.5
-        for <linux-mtd@lists.infradead.org>; Thu, 08 Sep 2022 01:10:41 -0700 (PDT)
+	id 1oWCf9-000y9U-Kh
+	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2022 08:13:28 +0000
+Received: by mail-ed1-x532.google.com with SMTP id a70so7026538edf.10
+        for <linux-mtd@lists.infradead.org>; Thu, 08 Sep 2022 01:13:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=j4bs3PwCf8LAGt65QBrJwkN23+x5pcdlnIufUSNJIIQ=;
-        b=XlFrs6f1Ru6mfmrDHSloR2yePiVJ+BuOhZJkeSnSJ/SOiEPgkH7fc5Qh53N1oKwQvH
-         +OoAiOMDe47PpbvHsnBhm6aYdjqjrlxYnSo7yiZbqsAzABr7z6IbsSFiYRJdU8C2FmM8
-         5DH3vl93eI862Lj3YGNPcem5IKwqOFLfYUBV/2qlp66cAcJz+GK/kSoE2Nn6RNzXIdZ9
-         oJUIG5tDSXTW/MSaMC7qK7mdrhaTxlGrLwOPowZ4WpaBUKmm7LiCFjVvj0ZXOF9c8KIJ
-         SNp39mJEoQxBFUzec2wJzhGoK5rRNZ4WQVIZ8FGwGa0dLMi1y1WJKYonoLdQWd7mN1KK
-         y6wg==
+        bh=XWkSveJnRzdKknQVJvingAQ78zNNLel+FWq5VV07OlE=;
+        b=jRLi85+fXwo43KQrU4myTG9XTPSquksWe/XvRX7TYb7GraJKW8IJtYfovgGkczWfO1
+         bYwJMLLFG6PNudKjBUQzz73STtBFd6V4x5FD4C8WkgDYNMvtc+1Bl0Kja840zmydb7Dk
+         R1f+8EAh9SdZYshHDAY4euPG9fH7mHOJQvVccAuIrdg0ZDbUqPHo8WyX9mHuYCGimM24
+         YP3WQ6HmoChixUzx1paI/lXVpo3wZrRWlGGVbaMD9oe607cEm80TQq9udOFb7fMoKVdH
+         qENdLT4lSWItLbHHuJ2dWiNS4MMdyM1rMc/BVCp3BIYXfVem88Ot/yq4n9Crmzb5y308
+         lUmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=j4bs3PwCf8LAGt65QBrJwkN23+x5pcdlnIufUSNJIIQ=;
-        b=lD0jhsPWfGTtjgQiToZPC3cTCNo3I962VvJNKoNhQk1OZJBklbfZ6Y59R2VitetGc0
-         nqBoF2Eg3Pmc1AmUlT5of1A4iQNcLF+yXIvjmIVu37BEC2HHydstcug9sckbo9sLnHbC
-         oV0E5qCCBN+qk0Db/i4htAm80pgEYoLtKq1Pw3KH7GGOqvwUyx/1z7lsTpMwUftVaaiL
-         1HXlEUghajEzgvENjFXD+4dWd0Vo1KaZ3L0vOA3YJeRsgD0mWCUtUyG1tL4Dd6zrR0GE
-         pAIECInYxR1+izfzG25Dwgrsmq5elFgvzBWMDd4HrRMCNme3kLyFpOizdklBOwTRPelH
-         McKQ==
-X-Gm-Message-State: ACgBeo1mmQoXVmCm6MPFpxP9o+M/k9fNlj45W0jXaGe3bwLu4S5zon8/
-	wqPbokrVlkQLjxcmRj+uRY6B/w3fCrEjT3RSJfSVcg==
-X-Google-Smtp-Source: AA6agR5SiTp1RzXd7QfGvIaagW9XneozTUfgGg71dHg/7zkzwgHHmEoyMH3isqJfBMUwPz7K/i/VjO5b2+tszIQ2lUg=
-X-Received: by 2002:a17:907:1c89:b0:741:4453:75be with SMTP id
- nb9-20020a1709071c8900b00741445375bemr5269882ejc.208.1662624640469; Thu, 08
- Sep 2022 01:10:40 -0700 (PDT)
+        bh=XWkSveJnRzdKknQVJvingAQ78zNNLel+FWq5VV07OlE=;
+        b=FUxhPwJDLJJ8glt1enXjBt/gYiOfECK2QbKgSj84c0114ejG5WbxfB5zxMqOtol2lp
+         kNKpEhJiyutht/qwKTwV7ZWPIJeL8sU4covMPN5p2pF19aeXWCg90VrjI74RZzCyW7mg
+         pXz8c4/OhzgZVU2896Kj3xwOgs+LilqGrpLcZ65SzYRUC3qa8vCvdQBfO/hq6kVMI2dP
+         q32T/6XF3aPOBvAIBNtGpfqpmUo+aJ0Oq9FagY04iieOhFGcSDYk9UU1W8W7wzsMBlym
+         lJrROA6dCfoNZGtNVqYltzOxK/AG5FAXs/GkBdxZcE6Iq3d7GhW9OTZP7E576WTYYhLH
+         V0SA==
+X-Gm-Message-State: ACgBeo28JJKhoDVx9yjYNkijTMof3BuEC9HyxH5YyF128eLwAUnXp9jc
+	Lkli8crRH8Xgb/qy0jFwAoT5VAwvEDKBAB+2xR5kmA==
+X-Google-Smtp-Source: AA6agR61mT7tkyrz3ia2WmI9qL8rb9Hia3J00WfiGHtjyrq5l+uSjyAmKJyQgQF5xs6AGHNJPzuPDon8GNuoQIkZGu4=
+X-Received: by 2002:a05:6402:51d1:b0:448:bed1:269c with SMTP id
+ r17-20020a05640251d100b00448bed1269cmr6168449edd.205.1662624804730; Thu, 08
+ Sep 2022 01:13:24 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220903-gpiod_get_from_of_node-remove-v1-0-b29adfb27a6c@gmail.com>
- <20220903-gpiod_get_from_of_node-remove-v1-8-b29adfb27a6c@gmail.com>
-In-Reply-To: <20220903-gpiod_get_from_of_node-remove-v1-8-b29adfb27a6c@gmail.com>
+ <20220903-gpiod_get_from_of_node-remove-v1-1-b29adfb27a6c@gmail.com>
+In-Reply-To: <20220903-gpiod_get_from_of_node-remove-v1-1-b29adfb27a6c@gmail.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 8 Sep 2022 10:10:29 +0200
-Message-ID: <CACRpkdakswdcFTgEGX-+2fgOHZ+VsDsRe+yj8hnExKuugnO9xQ@mail.gmail.com>
-Subject: Re: [PATCH v1 08/11] regulator: bd71815: switch to using devm_fwnode_gpiod_get()
+Date: Thu, 8 Sep 2022 10:13:13 +0200
+Message-ID: <CACRpkdasPuDGzGLbeHo5oE-9aakVzhSmtbOUHpfu+KTEAHMCOA@mail.gmail.com>
+Subject: Re: [PATCH v1 01/11] PCI: tegra: switch to using devm_fwnode_gpiod_get
 To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc: Thierry Reding <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>, 
 	Matti Vaittinen <mazziesaccount@gmail.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
@@ -85,8 +85,8 @@ Cc: Thierry Reding <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>,
 	dri-devel@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com, 
 	linux-arm-kernel@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220908_011043_699733_D6BF4E79 
-X-CRM114-Status: GOOD (  12.00  )
+X-CRM114-CacheID: sfid-20220908_011327_697121_851387C7 
+X-CRM114-Status: GOOD (  12.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,9 +106,11 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On Mon, Sep 5, 2022 at 8:31 AM Dmitry Torokhov
 <dmitry.torokhov@gmail.com> wrote:
 
-> I would like to stop exporting OF-specific devm_gpiod_get_from_of_node()
-> so that gpiolib can be cleaned a bit, so let's switch to the generic
-> fwnode property API.
+> I would like to limit (or maybe even remove) use of
+> [devm_]gpiod_get_from_of_node in drivers so that gpiolib can be cleaned
+> a bit, so let's switch to the generic device property API. It may even
+> help with handling secondary fwnodes when gpiolib is taught to handle
+> gpios described by swnodes.
 >
 > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
