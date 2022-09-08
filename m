@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F0A1ECAAD5
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Sep 2022 06:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2013C38145
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Sep 2022 06:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=1WYsUFsOuPpOe3/54AzH6D0DwyD0NYptrQOtIyaNMNg=; b=dqYFShc5JhMGv2
-	m1DNJPvfeT0wK0jkz4B0BXdMIJhb9tG6vFqRzmeCWp60R+Aadtw9hQ8YJS4UI+bULdnQAE/6YIVqJ
-	oOJ8C0EiWIZ9MM4Q7o6Tf/1KkaJvVWlljZqel1mK87wM0ZRyr/LmZDqeBky4Gt3kycOK3fuxFbdFw
-	DMgDMebzFC/KO9Kd8Gw+z/p5ECoRqvLin5qZQfsT8TnOeIT4TYVM7S6OC8ssDJ0gN1su026CCEMjf
-	gYIZc2yjZeaukVPKuOqa4U1DazY+/FOc8wB/jZeqAME8U7yIeCzyyv7oXIKowov07dE/bTZecSkri
-	50VzWu+Vni8ugrK00UzQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=isYIi9Os4G0uCMeR411+SZFmCTt0CLicZpevT5A9P5U=; b=0cWD1gxKHwhKqj
+	5f+2eMT51DAQE1padC5zB52K/5UoPcHR9n/oVw5rT5VSKtAr8GqoBySePNBEMkKmINEkvzy/CxsFA
+	Y6IB3RV/S21aJ2keRhu+c4/Ih2/et0eubPxH2+MWqUvqA/4ylzFJYO/1zKh4lOKHXnhEVjfh6u7sF
+	Xeir/SKwgUMRDepsAqFsN0fSHEazgRBGbuRfY6MNLEyg5w3vN9rljyKfa1AeDjc9KGOkqQURH5Re7
+	sL6eGuKs9dvv/PpUZeZbCGc/bdvqtloTZPzuh94IPuaGRZa3zbCkpQpHF+E/WTuSfAB6HqYODPBxx
+	QZyxbQsBuyNJyB9gj1RA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWBKF-00HXe9-PI; Thu, 08 Sep 2022 06:47:47 +0000
-Received: from mail-co1nam11on2075.outbound.protection.outlook.com ([40.107.220.75] helo=NAM11-CO1-obe.outbound.protection.outlook.com)
+	id 1oWBKK-00HXgj-Ax; Thu, 08 Sep 2022 06:47:52 +0000
+Received: from mail-dm6nam10on2073.outbound.protection.outlook.com ([40.107.93.73] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWBK6-00HXXp-Bd
-	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2022 06:47:40 +0000
+	id 1oWBK7-00HXYA-4F
+	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2022 06:47:41 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fTaDcPigMdhbj0YicKMMgEiGDVw5djFAJH487EB2A4/Cv5M0eXu5jA4kVL68aQoVnkpFeyjTX5KHnhXAg/IjoJqAD/FZPm4pCqx+cVvUw63Y5mzWh5y4+npxFR1Ww9wsXyDruNho1esKt8hQv7QgcZqKiJHo0U/kx25aVClRDbnGuDPZ+FLnbscF8IznSy+pEbpcRMY/zJRo/s0TqrUq3dzZvZPHGSr9v20kx5xUV5PypaZAfXLq+rsqWa+31O9qQqLrQ7D4P04681VYU9pT7+Y/STrf+p+54i7VQfuPShLNjS1kEq/CNtc442dICNHgGxDW6mfoSutjKVu6V7RY5Q==
+ b=jcQkK+rSq4c9JLVjMoeapd4DJuFOA8r3py1xRLDOdsl04TCgjhU9f/ZKeCdt+b/2mUfXNr4Adf7xbVqrPZBkcUGgfdZmOZZD+QorDCmo3jn9dvkVJpjal00dTX8rZMFkgVxFc/dHnrtLVJBtjPNaJAnz2vB0r4UHB7cKSX3jH7rBQLZ1MS+vWyQClIuzqhzWKTF7LHOuEklVUFRvJH+PPSZE0x/ogAryi47tPrXQ1he8+oSPR/oUIg1ZMdnY3rNmEqazBgGjFO9USQJYeGMFTrLnApjjcaJuuBZnoYn00YA31AV3vjHTVKrUpW5kWs+FSQpd2bagVctfNKa7sd2ysg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mHK5EvK9TnBnZEFaZTF0Yo8cucx2lBYdOBK9n8Qfluc=;
- b=PmRm0HqVfS9/wqVGZXLNslk+x00VttW1mgFpv1dQxuR8//2fsPY2RJ0wQRyfFnbAArMqtT1hfLvuwE2TVX+hM0aYhAfdZznfz1tE7DLoAtKSWIgVg9NNHmWylITRqabIKfLYRNkulJY0HrkItleu6FEc4PHq7Ok8khSCmGG+0NiLqW+8tvrUMGntlS2tAmuUWcbPMRyHMQRrGb0BlwLI1x8ksjNPEngafziQlsm2uEbIbuQKIPTUJNB0zqGy0P7E1vjn7DXzy3NckBy/0Wdt1YxPnDTLX0BQM9EMcZWxx5IA5pQFWiH+zsFyTE1wQ3DL/EY3mkCU1W2bY+SFjPuF5w==
+ bh=G6LzYBVLiB4OLIdbI0hVyP5dTRLQswQ0mmo9DUHu9KA=;
+ b=hQBTVSBzJRiAC0WNh7Ws3AspJ23wSDrVXRUPAIu+yu0VYcB9m0SNo8JJl1kWojeOoW351bvId0QbSwpRqpDsb2OanfYQSLUAQZ8imZM2pBFXW3WuYv4qKuflV/4YW180efNqGcA91ZKL6n94h/RKyoWgEZMXQKbLTKlDMZJi73pGjwiVJ3QceyI4+PSFWMrWu0Bka0m4O32hTJtKDvnYqxPC7oujLBHMKL4fTMpSMLZyM0Xbf1sM8A9RTfDlx5FVC+zM27Zs+SGAastRALYsR6iHISBJqm0AWJWejYU8XPjyRdFY+KauqrR8yH3NIMwn2mqOSBjmo+CtT70+Imk97Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=microchip.com smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mHK5EvK9TnBnZEFaZTF0Yo8cucx2lBYdOBK9n8Qfluc=;
- b=AlLd5XjagGzO3RTDuN8dPod5htDfHK6pl05COqVxlXWHM9f+yyNz5mG2z1qLNf2qtWvK/kKpw8nIP+iYvL8ijMSkYuVzYleD+GZvpbS1Z6fEAxKtsIXGGWeNYcz80yLkTOUTGlDI2SS8rw9ViBPFWDjPifxo2Cgo7nao8KGjoMc=
-Received: from BN9PR03CA0803.namprd03.prod.outlook.com (2603:10b6:408:13f::28)
- by IA1PR12MB6305.namprd12.prod.outlook.com (2603:10b6:208:3e7::16) with
+ bh=G6LzYBVLiB4OLIdbI0hVyP5dTRLQswQ0mmo9DUHu9KA=;
+ b=Ial6UFznPe4oPNGS95V9YZq1hwRe68My5U6KmWFBEkZ2Zkzc+5A4LNSnWxHAbMrK9ndlTT9uDF1gQ46goyVCmhyRuGYyRqpnyxzTJrmUiwocQVjWMoxKsFDeHesh76pPXiSnZi79+HmUelzJeDUFFdZCq6+mudWjFQ1dwE7CysA=
+Received: from BN9PR03CA0427.namprd03.prod.outlook.com (2603:10b6:408:113::12)
+ by MN2PR12MB4406.namprd12.prod.outlook.com (2603:10b6:208:268::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.18; Thu, 8 Sep
- 2022 06:47:32 +0000
-Received: from BL02EPF0000C407.namprd05.prod.outlook.com
- (2603:10b6:408:13f:cafe::f5) by BN9PR03CA0803.outlook.office365.com
- (2603:10b6:408:13f::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.12; Thu, 8 Sep
+ 2022 06:47:33 +0000
+Received: from BL02EPF0000C402.namprd05.prod.outlook.com
+ (2603:10b6:408:113:cafe::e6) by BN9PR03CA0427.outlook.office365.com
+ (2603:10b6:408:113::12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.12 via Frontend
  Transport; Thu, 8 Sep 2022 06:47:32 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
@@ -57,9 +57,9 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF0000C407.mail.protection.outlook.com (10.167.241.9) with Microsoft
+ BL02EPF0000C402.mail.protection.outlook.com (10.167.241.4) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5612.9 via Frontend Transport; Thu, 8 Sep 2022 06:47:32 +0000
+ 15.20.5612.10 via Frontend Transport; Thu, 8 Sep 2022 06:47:32 +0000
 Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 8 Sep
@@ -67,10 +67,10 @@ Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
 Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
  (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Wed, 7 Sep
- 2022 23:47:11 -0700
+ 2022 23:47:15 -0700
 Received: from xhdlakshmis40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.28 via Frontend
- Transport; Thu, 8 Sep 2022 01:47:07 -0500
+ Transport; Thu, 8 Sep 2022 01:47:11 -0500
 From: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
 	<pratyush@kernel.org>, Michael Walle <michael@walle.cc>, Miquel Raynal
@@ -80,33 +80,35 @@ To: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
 CC: <devicetree@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <saikrishna12468@gmail.com>, <git@amd.com>,
 	Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
-Subject: [PATCH v3 0/2] mtd: spi-nor: Add flash device reset support
-Date: Thu, 8 Sep 2022 12:14:26 +0530
-Message-ID: <20220908064428.2962-1-sai.krishna.potthuri@amd.com>
+Subject: [PATCH v3 1/2] dt-bindings: mtd: spi-nor: Add reset-gpios property
+Date: Thu, 8 Sep 2022 12:14:27 +0530
+Message-ID: <20220908064428.2962-2-sai.krishna.potthuri@amd.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20220908064428.2962-1-sai.krishna.potthuri@amd.com>
+References: <20220908064428.2962-1-sai.krishna.potthuri@amd.com>
 MIME-Version: 1.0
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0000C407:EE_|IA1PR12MB6305:EE_
-X-MS-Office365-Filtering-Correlation-Id: d0973cf0-3d4c-45ca-ab76-08da91660188
+X-MS-TrafficTypeDiagnostic: BL02EPF0000C402:EE_|MN2PR12MB4406:EE_
+X-MS-Office365-Filtering-Correlation-Id: fdf75e7b-f7bc-42d1-9d55-08da916601c9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	8HOBtMoafTg7z0dPwB4KS36nXzgvs+tKG4Ro1vdKktq3oilVS2q5YbBQt3ScOiUtKXJNVAjdk8I4/GBWlygfd1T88u2x8NxaFb957fU+Mduw/+LV592YY/a6lmyr1ZP0Z3Wpxvdogam4J/9NpQd9FtKAVpegLEAgehSPxiiD46JBLyesG6xfRpHeiaO7MCQRFWTmyvwK1II1mH881JSXs+CJ1DfxkbevIvHbHK4YY49bENMAbsK9HNYJJ3YakXQ9Ji2Ds9h6QpXETwctmsD74Gqr1dLBVHxeOg2a/pdmnSl5uuOTomZFJQLdBbQYKxKpDsyw32hdHAyyz2rpireQvZfi3zCRckDMNbRT0PBsiC+qL8hiXf4JlygraDafPYhDG1NKiTxv5EO3W6hvNfy8yDF5vIkbqCxlv32hSkXXReRFgqynHbsn5qTb8hILi3F7yCfAFG8gWyjBTx7En7umHMnXwSx9FQD7NtDO8uhwE1cm+3fnvs5Mfoo58CJhUVq9Y7TW0b+zbsYjsFCXq6QM205/plc1mmHIm/C6CjpDHlA8l/BRXHGudWAnMGalPBzqmuXTq+SegG1PAY40EsBlu2ew/5xA1ipzswnOmRJNG35qxK/FO1RF3v5le7AvxVsn7KKqyxg8Fw00WyNnCPEFxl/LG0dtnTYrNXR8XKLP31bK23mrw8Li5BSx/291aZgFHLHRR65Zzr6ZzCj0eMFMEcKMTE8X2vBIsMi6b7ple45lWShElwMDYn4Q2/3yVhpnty7E6fIZCy4jFk8+nILKiKb9qeA9bGMMaKPNpHvJWGz3vfry3VizylDqdue89MuB
-X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230016)(4636009)(136003)(346002)(39860400002)(376002)(396003)(46966006)(40470700004)(36840700001)(110136005)(316002)(5660300002)(103116003)(83380400001)(36756003)(54906003)(4326008)(7416002)(4744005)(8676002)(70206006)(2906002)(8936002)(70586007)(36860700001)(47076005)(82310400005)(426003)(26005)(41300700001)(478600001)(40480700001)(86362001)(82740400003)(2616005)(186003)(1076003)(336012)(6666004)(356005)(81166007)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 	VTNmRv8GZakscBsTtjNkUgmBuMHYsDmoVLjLrU0nAwmxLZfNLG2NJG7mR9d7v/YRtN6v/fkKJT39uPBZvr7TZImnsbDl6iJ80lQKgwYqwi8la4+ioHKslRvQxPFGdLdbTI/EF/OtM+e+S8TLYJyE3TrqoCw0HHcDwAgjUY4i9lgx/dUF750E27vXhMWg5BNYPIXTUMrwnoszb7I3HqhlcBk9NOhMok/PEcosyxkNhkITUrZEdjDumBOlmBbiyTcOadtjxqw7SsbbE2jaUgtN/veVRgqI6/ufWiYXqCAY49yJ/9S/DJMm1Et6mbgHWY9g8o5p+r3FdHTYlXIWCve9efTU9akemfHRkg4v/KPeXximPDHKvjT3bC67LSj4pCPqkZORtC+fDd11z7QR6Lyw2/rmScOiYL5Y+UkHCPlTN69mzuSxbeMeM8+mhxnUA1LYX3/mkBNsTsR86B3QB3hQceRF4Ba8AFf1odcXz5PWIPehTFfbzsCWe9IANKgPcGH6AP+pUYQ8xphFZ8X6JcwQV4xVG6NVbnkanpTbs0bNtxsQUYOuJIm6LQH0q0RBPGTx0C4ODNj+yDWRvLBtZpv/oiKYGsJTxVJhZCh0Yv08+1k1bqv3tat+/VCY/3riWvg1gSX6O7KrReCCrEKNo4gyxx2Hi8KryoFtRkZy0j/DCly2XTZZ3+TdwJmZbbM/qYUm94ejmr5fxU2dERyaCPoUGh3PS5qUGaYHmXPphjEwu5H3yXCSd9Nwafdmyg4OaibJ0ErnZuqSxFxcDudeWjSQhgMUsgA956WEHGlw6cJhdk05iSG6VKbL8aZSv7NpYDxy
+X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(346002)(136003)(396003)(376002)(46966006)(40470700004)(36840700001)(426003)(41300700001)(478600001)(26005)(6666004)(2616005)(8936002)(2906002)(7416002)(5660300002)(82310400005)(40480700001)(1076003)(40460700003)(110136005)(186003)(54906003)(316002)(4326008)(70206006)(8676002)(336012)(356005)(47076005)(36756003)(81166007)(70586007)(103116003)(82740400003)(36860700001)(86362001)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2022 06:47:32.4147
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2022 06:47:32.8247
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d0973cf0-3d4c-45ca-ab76-08da91660188
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdf75e7b-f7bc-42d1-9d55-08da916601c9
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	BL02EPF0000C407.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: 	BL02EPF0000C402.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6305
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4406
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220907_234738_427519_3C8FE5F8 
-X-CRM114-Status: GOOD (  10.26  )
+X-CRM114-CacheID: sfid-20220907_234739_229105_C8A11801 
+X-CRM114-Status: GOOD (  13.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,28 +125,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Update spi-nor dt-binding and spi-nor core to support flash device reset
-using reset-gpios property.
+SPI-NOR flashes have RESET pin which can be toggled using GPIO
+controller, for those platforms reset-gpios property can be used to
+reset the flash device.
 
-changes in v3:
--> 1/2 - Add reset-gpios property in the example dts.
+Signed-off-by: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+---
+ Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-changes in v2:
--> 1/2 - Updated the description of the 'reset-gpios' property.
--> 2/2 - Updated the reset sequence to match with "active low" flag in
-device-tree, also removed unwanted comments.
--> 2/2 - Updated the logic to perform the flash reset unconditionally.
--> 2/2 - Updated the delay values to support more number of flash devices.
-
-
-Sai Krishna Potthuri (2):
-  dt-bindings: mtd: spi-nor: Add reset-gpios property
-  mtd: spi-nor: Add support for flash reset
-
- .../bindings/mtd/jedec,spi-nor.yaml           |  8 ++++++
- drivers/mtd/spi-nor/core.c                    | 25 +++++++++++++++++++
- 2 files changed, 33 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+index 7149784a36ac..8a843b9b8673 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+@@ -70,6 +70,12 @@ properties:
+       be used on such systems, to denote the absence of a reliable reset
+       mechanism.
+ 
++  reset-gpios:
++    description:
++      A GPIO line connected to the RESET (active low) signal of the device.
++      If "broken-flash-reset" is present then having this property does not
++      make any difference.
++
+   partitions:
+     type: object
+ 
+@@ -88,6 +94,7 @@ unevaluatedProperties: false
+ 
+ examples:
+   - |
++    #include <dt-bindings/gpio/gpio.h>
+     spi {
+         #address-cells = <1>;
+         #size-cells = <0>;
+@@ -97,6 +104,7 @@ examples:
+             reg = <0>;
+             spi-max-frequency = <40000000>;
+             m25p,fast-read;
++            reset-gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
+         };
+     };
+ ...
 -- 
 2.17.1
 
