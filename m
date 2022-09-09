@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 600E2ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Sep 2022 22:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA530ECAAA1
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Sep 2022 22:05:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:
 	From:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tQ8TREVuubpU80AzZaICALkAwOazKrREZb1gxVa15l4=; b=1683mmR4ilhV4x
-	mXsqD84B6o2OiByG5LQ6ZDqwVoGrYgiSDTJq6mDKannihusMuh4CbxYGmlcIlaQsvAoEye0x75PGd
-	9uD5XZEXHrGxthXHVUIOzIDsSsYJ4voHEXE1vG+T6GV6pJKDp2Pwv5s8ZMUH3CDD9UyXryBz2qrXw
-	PAPE3ksyrN6kf00r9el976kwGfadPioahYFtwNHwfdQ6hZs/hNtH7H0KhxcOVVV1MRqNJ1CZculNm
-	JFFXqOpTdLaYv5EQUt9jCq7E6PsNKfVV1TCx6adSnDFjsa/U3fGHZ/LwkAcHR23KRfmDzd1hFhoTv
-	sOFH8wSd/Qw1TgV5bjOA==;
+	List-Owner; bh=akYLUVwPm8QhNe7vEIKkO2j7SbGLO1P5+gc/Nh75HmI=; b=vlRlDmDbyuHQIU
+	zTTLzSyLzAqzwpU62RLh5Q2nH+rWn4cm2llne969FzS4Uvnhf/4GXZBrAHMCKrOyI27QSF8jkYv2q
+	WZe0Mm6cpsmU9mzDFcPELHNJsJs+fH5GLO0PMBAvQjtqTxoyb3ht718gjrgUKcggFEWTxMA1Q6m4w
+	6wzMtUSqlAVgaDI06aM6aCbdTKwgF16H11u3baqPD5qzatXo2UFbrL0lXZ1LvLgqqPUmlJlV1FlLi
+	u3CruZYCc5PN5D3qW1V+lrXzQhLrCFMX9MueojMjsGRBz7e4EqH0Im6verBwAwsmELHIE61tZTU0F
+	7510Z7gvGolHs3XadMBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWm6Z-003JL1-Dz; Fri, 09 Sep 2022 22:04:07 +0000
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
+	id 1oWm7M-003JzG-B6; Fri, 09 Sep 2022 22:04:57 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWm4R-003Hrc-9h; Fri, 09 Sep 2022 22:01:56 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id lz22so7158014ejb.3;
-        Fri, 09 Sep 2022 15:01:55 -0700 (PDT)
+	id 1oWm4V-003HuI-Qv; Fri, 09 Sep 2022 22:02:05 +0000
+Received: by mail-ej1-x636.google.com with SMTP id l14so7121239eja.7;
+        Fri, 09 Sep 2022 15:01:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
          :cc:subject:date;
-        bh=aCUkhjCPKv8heAlooNOpe4JIMarq0xiaCBe6KjrLZV4=;
-        b=EHsa2gWl9rcNc3s7TTLzOhBv3nPPoCv1uAixUF+0ckqk88oxO2j2fM/kJtiuEzy9gP
-         jGp/iPSdx4taMq42TH1sXqG6aOhprmoXL6KHXZtv6kcA507RXwKqA6XK4QTMyPMm6XBb
-         Y0da22uIw5aJfiPs8h8NKkjMkyjGu/QMMZ8PYP09nRXFBDkdeWce+PbnuffrR0r/lj/r
-         LhsHfsieXaEorDiO1XaZvNOf6TRn+Wo4c9RuR//Ng1TI1hJ9xKuurokeyEaKSF0yXGca
-         W3C0QttL050fmkF6kyFA8anosoYPv63P7pen1YadLoUpCtP2hJykKIIE/rCl7rUbqPmd
-         o8Dg==
+        bh=dJgP6ROM7fy18qXnDj4sYxfn6j3cBSDbu87Uzoh/mPs=;
+        b=kzsAPKknk5rN0rZqP+/kkZT9XwPez/aS/y5XL0nwcYk+/BI211OTBLPuemprjBz6qp
+         V2BIkYbqgTAQKjlW2yqwtaLrzr0K+JvWHOD5vfT25lgDqBxHZnoMmLc+IMg20UwMgmHB
+         nzxPUY43D4VDSFlSIhufRNZ2edGGboiSrqKyYJLROoXNcctNcL4ycSb57S57/dXrJF5j
+         aOL9hFb0VPuVn3EQ8LayVCDxFhtR9LNi6NlUOIQ6t/IpJk1+iM0m61pYtGpgrwenGvPX
+         E30QG30rPWpxoBdCymkQMWKy2AMI3+UdbKuKEmt223Xv+01zv25LJmdvXqm18+QuILh7
+         Lp5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:from:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date;
-        bh=aCUkhjCPKv8heAlooNOpe4JIMarq0xiaCBe6KjrLZV4=;
-        b=VjKgAppZrM1nDhfyx36sSyQAiDbq5MpdVV+dDWcgvgpAINihgeTAkxR8ImPPK7J2Gw
-         czrMIah6em2VFQT+MR12qKYqLFw1iEhzj2wHJ6WZEaceJrtvFFV/cSb462abVna4UHrY
-         +w005VGmBN2WCkkiXnhU+qmnVyXdWqTSBx0axh6jZIR7zXqYk1hendPG/P3YJW3RfzsQ
-         B1L7Ex1x2aPkaMudpwmIijFyNyQofthNokAB5O0MliGgGBmuFnl67o88e87dm/r5+Hs5
-         B/ZHwmy/7yXbEptlDbYjeeVW31Xfl/0ojlvWVMyJ3ccxoEVVhZSLtI6WzRecRKcXVQTa
-         gp5A==
-X-Gm-Message-State: ACgBeo3wHcqUHDLOTGQ/saspnEijFpOZMKEh6l6uUWntFO732vXNE67N
-	5Wwa9lk/jr8/d/PdeXNB6FM=
-X-Google-Smtp-Source: AA6agR4VJJ7NX/xzm7/ibx9Z/C+sYphKP2BcAfKYeR+D2A3OuXvIF9VUtkzELLARQ4rFQj9hPmyAWA==
-X-Received: by 2002:a17:906:591:b0:73d:c3ef:84ae with SMTP id 17-20020a170906059100b0073dc3ef84aemr11261317ejn.155.1662760914101;
-        Fri, 09 Sep 2022 15:01:54 -0700 (PDT)
+        bh=dJgP6ROM7fy18qXnDj4sYxfn6j3cBSDbu87Uzoh/mPs=;
+        b=cdlnbnMjNqFAXmrvDUkxBdwBBZ2dcFZ+K19iTa+qQLkJBIv0VkSNBjhoj7DIWx3gIG
+         lVcU7agDQfJw38wSkk6pTygiK1JCNtYOFHp8EHXqTPzx4uZoZl5Zdxr8vsW1mzZOM3mT
+         MxHU8/V7Ns8PG+UpKdM1CfLXg2H3NdYoqQn9WxVUVTLucCOw34VpLiRbidsD1jOHEHNq
+         AQcVxi8fB+/31YaTZCFLvZENnGtYDdNgsDrfMHynDgK/8hvVS8Q47Ys7OiCsoYHAzGzk
+         NIWadmu/EE1oRx5Xm+/fMrT3TwjyE7y6J2CUad3UUR+gHMJ18SIyUyymoDWe4HjBX2u8
+         +7lQ==
+X-Gm-Message-State: ACgBeo2J2PGcI4yEgBU8jQ/oPoP0izX5w8Po/YHA0J8AeocWAr1jpn1q
+	inOk6DWnT5C/S6CIK0XLa30=
+X-Google-Smtp-Source: AA6agR7uYAXXWiQFLUOqvuZJBRDWcRoJN/vf/0M+mARnp2SlRABjXV8skeF25VKomorxrgW9DhSQ0Q==
+X-Received: by 2002:a17:907:c08:b0:77a:9b71:222f with SMTP id ga8-20020a1709070c0800b0077a9b71222fmr1545881ejc.739.1662760918453;
+        Fri, 09 Sep 2022 15:01:58 -0700 (PDT)
 Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id k16-20020a170906681000b0072b13ac9ca3sm777833ejr.183.2022.09.09.15.01.52
+        by smtp.gmail.com with ESMTPSA id ka5-20020a170907920500b0073c5192cba6sm787243ejb.114.2022.09.09.15.01.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Sep 2022 15:01:53 -0700 (PDT)
-Message-ID: <faf2b30e-1a1a-0dc1-04ce-f40e5d758718@gmail.com>
-Date: Sat, 10 Sep 2022 00:01:52 +0200
+        Fri, 09 Sep 2022 15:01:58 -0700 (PDT)
+Message-ID: <a4da79fe-3449-6538-742f-790835ffe43a@gmail.com>
+Date: Sat, 10 Sep 2022 00:01:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.13.0
 From: Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v1 08/11] dt-bindings: arm: rockchip: pmu: add
- rockchip,rk3128-pmu
+Subject: [PATCH v1 07/11] dt-bindings: watchdog: rockchip: add
+ rockchip,rk3128-wdt
 To: kever.yang@rock-chips.com
 Cc: sjg@chromium.org, philipp.tomsich@vrull.eu, robh+dt@kernel.org,
  krzysztof.kozlowski+dt@linaro.org, heiko@sntech.de, ulf.hansson@linaro.org,
@@ -85,8 +85,8 @@ References: <20220909212543.17428-1-jbx6244@gmail.com>
 Content-Language: en-US
 In-Reply-To: <20220909212543.17428-1-jbx6244@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220909_150155_414068_F27A6422 
-X-CRM114-Status: UNSURE (   7.46  )
+X-CRM114-CacheID: sfid-20220909_150159_936896_3C8B6719 
+X-CRM114-Status: UNSURE (   7.01  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -104,33 +104,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add rockchip,rk3128-pmu compatible string.
+Add rockchip,rk3128-wdt compatible string.
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- Documentation/devicetree/bindings/arm/rockchip/pmu.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/rockchip/pmu.yaml b/Documentation/devicetree/bindings/arm/rockchip/pmu.yaml
-index 5ece38065..f5800f7cc 100644
---- a/Documentation/devicetree/bindings/arm/rockchip/pmu.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip/pmu.yaml
-@@ -21,6 +21,7 @@ select:
-         enum:
-           - rockchip,px30-pmu
-           - rockchip,rk3066-pmu
-+          - rockchip,rk3128-pmu
-           - rockchip,rk3288-pmu
-           - rockchip,rk3368-pmu
-           - rockchip,rk3399-pmu
-@@ -35,6 +36,7 @@ properties:
-       - enum:
-           - rockchip,px30-pmu
-           - rockchip,rk3066-pmu
-+          - rockchip,rk3128-pmu
-           - rockchip,rk3288-pmu
-           - rockchip,rk3368-pmu
-           - rockchip,rk3399-pmu
+diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+index 6461eb4f4..92df6e453 100644
+--- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
++++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+@@ -20,6 +20,7 @@ properties:
+           - enum:
+               - rockchip,px30-wdt
+               - rockchip,rk3066-wdt
++              - rockchip,rk3128-wdt
+               - rockchip,rk3188-wdt
+               - rockchip,rk3228-wdt
+               - rockchip,rk3288-wdt
 -- 
 2.20.1
 
