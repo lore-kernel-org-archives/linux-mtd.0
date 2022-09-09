@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B545BC6FA82
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Sep 2022 22:02:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72C1BC6FA82
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Sep 2022 22:02:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:
 	From:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0TEJ41glD62YGYT+08mCS4kDB4uqyn0bpJ7aqkCLmt4=; b=uObpX5HvO8kzfV
-	XQ7J/G8EdCTT+4/8ovnStFEWgaH9Z3cITsUcHEL4bQaEYH5c3nmVClrUEiyjjaOgiUCcITatMFHbG
-	jfGXM49XMTbrTgFzBKf/Vn+fIU/yweRGAf3vSuiDJBut2FzHQuD5tj6UyMf2DiVlKCvN8vAOPCXTU
-	XrGO68TGsmumcu1FI2YvrrPUAEBS/2Q+rupPWTqkFSGRdDixhxboJ+X8AnCmyzD1pECc4Inb21R+Z
-	DR7Cp+mcRCbBt3PIeyR3q0aS27qvfbrDSkn93Y8oxTNx+zdIHkSnjar4WQfOo5l2FlmIE8mkwAzfr
-	9UPrhy7pQOv26YM3psUA==;
+	List-Owner; bh=1Mp2msBnyH6Px9baiJsV0WHgJvovI44mYU3hLrwTPoI=; b=TOlLjpl5gc0i+Y
+	oJF7fADZ/Rn3C538d9lV0J4rVccgOYOTtCfCDoodgnyVZuiZpNVxhFEcjMEia7PrWY7I5nWgl8RX6
+	LiV3FmiWLvkBctitYDcnQPv2FPoiCK7/7sgWVy9+brnkTg/wPg+K2OgEqDQaIQEnyC7IxfHVw+8bP
+	X4uNnijuZstPGoZ5CUuH+SUvUZL02jQNiJTYBIbSQjt+spPCcEoUbJCMUpu3WlhFzHWS6qGLWGRR4
+	3K6MshhAwmKo0cUJNG50S60AHGkImRUu6mbdkZE0WoQzg2UzKNLBn1kbXl0MRJgb6Xqj62FvVZ/LM
+	uJVEy94hDchNT4p4oG0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWm42-003HYG-IS; Fri, 09 Sep 2022 22:01:30 +0000
-Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
+	id 1oWm4a-003HxE-Oj; Fri, 09 Sep 2022 22:02:04 +0000
+Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWm3m-003HT0-3O; Fri, 09 Sep 2022 22:01:15 +0000
-Received: by mail-ej1-x636.google.com with SMTP id r17so7103905ejy.9;
-        Fri, 09 Sep 2022 15:01:13 -0700 (PDT)
+	id 1oWm45-003HYq-3H; Fri, 09 Sep 2022 22:01:34 +0000
+Received: by mail-ed1-x531.google.com with SMTP id f20so32853edf.6;
+        Fri, 09 Sep 2022 15:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
          :cc:subject:date;
-        bh=sz6llQ+1OH71vS4laq85P7K98uLH6vUckiEJ0IbDFPs=;
-        b=CmCgdvOgrLT0HmFV0R2flfbz2SUxQH8A18sREaOQ46ko1gPfmTtXZgMqNuf33whZhw
-         alDTKt3SSIknPM5/THAcxzKa2H60MFuJoWWIgTjM4SXV9QGhISbWzRtBmakTe+NTgVFO
-         4Ju4OYim9nNNH9Hfn85qtQbMPug79hPeMEM5yDQMduIoWN8YwMRD9Ek0q3TDB/m1hHi5
-         7pv71T8nuAIlrJZ5PjJwHf87irhEFbQ2J9CNn2uujXBaO1sUdieSQyt4cuzRGOaV+n8w
-         SSaSMdDe4WJt/WiQbzAYLHxdjRObOSXjvQ41vMlbkWzYpaxViQ4DQF84MFVgY+Sv+AU8
-         g52w==
+        bh=NmRnkF/b4urbMwNGs+O/IXW2teRNRXDeqTuXV1ih1+E=;
+        b=T913G/OwVTc6zJHTucTLdGC3/1L6OaWQQgTlxwoLmdOWRj+HhCfMwgTVNdXXMjeQ99
+         3bbHk2ooY+VF8lYwPmn/40Nnpz66YekmDkprhbv9+s81ol8lziIHWgVCUPMuRw32KVDF
+         EdNcdgFMuOLVne5hmxU10uHbTtDjnxZ1mQ270druo+8KBMZRGvQ8T3f9Yz+EU/deG8uP
+         ZJ1j+UZg2VsDMDP1DreWF0aCxBSefgK9lpeYIgJePdnv03fufzR5bHG8kMW0hM+W6OBh
+         6+hu+kI1jlITROO5mwRYXtWc38GxgtXNmK7jggQbBThXkOK9mqtEgB6pEzByudNtTuzc
+         eBeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:from:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date;
-        bh=sz6llQ+1OH71vS4laq85P7K98uLH6vUckiEJ0IbDFPs=;
-        b=sKE/LoU8nEVjZFXMgyhkVnA75e3TFr6QJ1ZUOrEDzLRC35E3ClDFUFXvtiGYOydygy
-         TQU+T/atYVzZhBnxwRYv1qmcg57pPDc7Mv6F0mHWkGYiHm3gwK4FmfjsAm/pw1ILABGh
-         r6M7Y5Gg0XEuuIIZKvierhWiZM35Mas4cKo6V3hRfeq/XNDP2qQzxh4Ox0P2kl9RHyg7
-         2ULOjRWchXwLd+QFJqFZAvND8ZHmweVIRqg6djjc+JEzn0IbQm/1nEjN1jnwoc4B2Vr3
-         kdM90805ClqdwdDqTEwWtN9lKJHugvrsdsNRBy1BM4JGD+U6U1jc5W0b610U+oCmlldc
-         l4+g==
-X-Gm-Message-State: ACgBeo33hk07vEY5wguZF3knk3w1SycCKFMIUqJJpXlGelY5IVGSztk7
-	nvQBC6CrItDhsFFQAtAzyLU=
-X-Google-Smtp-Source: AA6agR6FhMuUV5Px9YnLiiO32C6NOYgIOAi16Mb/VEiVwwYtUbx9Mv8cA8oi3K787maWCpui9D74yQ==
-X-Received: by 2002:a17:907:b1b:b0:772:1dcc:a512 with SMTP id h27-20020a1709070b1b00b007721dcca512mr8747177ejl.247.1662760872352;
-        Fri, 09 Sep 2022 15:01:12 -0700 (PDT)
+        bh=NmRnkF/b4urbMwNGs+O/IXW2teRNRXDeqTuXV1ih1+E=;
+        b=ll4BLTjJm6S+xMQzsaingzr2DCfVotA5hL7muGDatdZ/DyivUIEEWhznjewzyOUlR4
+         BhIDI0agRg99wJJhJof1i+uKOFxLt5j/SfQPJ/3nbmy0WTj2beqOYsUq0UeOxAswLsDV
+         ywAIGm3gUveQX+NJII6dOBgWnXUAoMYHkIxtjnRNwTrFOkGVv0iPFNeWDLm3Jyr3oEcg
+         BialWcmTM5509simRQsYmWv3ZoiBGd3Cv9+BlT8b+CjxbhpEL3pV0xAOs8F2RVGnhp9Q
+         Ju+45WqP+h5wBFyVGXsWPlVz/JIjsEJIIbENuxkHx7L7WvvJz9mvkzXnyIssUP56+l1x
+         yIDQ==
+X-Gm-Message-State: ACgBeo1vnEdEcwgQut4HscmMZwztiHanqgIKDCpoHVF162objRd8SxWF
+	KZlfHLv0ndGHAbHOJ3sK1Zg=
+X-Google-Smtp-Source: AA6agR74AD/MIEsTUlaY2NmRHF+g7QaChAq+nYds+c0GE5UUrhGZiF/SHGbNr3Ib4ayILOCg5oaFxQ==
+X-Received: by 2002:a05:6402:5409:b0:44f:1e05:1e8 with SMTP id ev9-20020a056402540900b0044f1e0501e8mr11804087edb.373.1662760890827;
+        Fri, 09 Sep 2022 15:01:30 -0700 (PDT)
 Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id q16-20020a170906541000b0073d7b876621sm781733ejo.205.2022.09.09.15.01.10
+        by smtp.gmail.com with ESMTPSA id f10-20020a170906048a00b0073d83f80b05sm804688eja.94.2022.09.09.15.01.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Sep 2022 15:01:12 -0700 (PDT)
-Message-ID: <f09665c1-9938-38c1-9a31-f196a3ef9cf0@gmail.com>
-Date: Sat, 10 Sep 2022 00:01:10 +0200
+        Fri, 09 Sep 2022 15:01:30 -0700 (PDT)
+Message-ID: <4f283231-2ed4-202b-0c23-157bce0841ee@gmail.com>
+Date: Sat, 10 Sep 2022 00:01:28 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.13.0
 From: Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v1 11/11] dt-bindings: mtd: rockchip: add rockchip,rk3128-nfc
+Subject: [PATCH v1 01/11] dt-bindings: serial: rockchip: add
+ rockchip,rk3128-uart
 To: kever.yang@rock-chips.com
 Cc: sjg@chromium.org, philipp.tomsich@vrull.eu, robh+dt@kernel.org,
  krzysztof.kozlowski+dt@linaro.org, heiko@sntech.de, ulf.hansson@linaro.org,
@@ -84,8 +85,8 @@ References: <20220909212543.17428-1-jbx6244@gmail.com>
 Content-Language: en-US
 In-Reply-To: <20220909212543.17428-1-jbx6244@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220909_150114_180324_25F2BEA3 
-X-CRM114-Status: UNSURE (   8.43  )
+X-CRM114-CacheID: sfid-20220909_150133_196696_620F7198 
+X-CRM114-Status: UNSURE (   7.32  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -103,28 +104,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add rockchip,rk3128-nfc compatible string.
+Add rockchip,rk3128-uart compatible string.
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- .../devicetree/bindings/mtd/rockchip,nand-controller.yaml     | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
-index d681a4676..566f33085 100644
---- a/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
-+++ b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
-@@ -19,7 +19,9 @@ properties:
-       - const: rockchip,rk2928-nfc
-       - const: rockchip,rv1108-nfc
-       - items:
--          - const: rockchip,rk3036-nfc
-+          - enum:
-+              - rockchip,rk3036-nfc
-+              - rockchip,rk3128-nfc
-           - const: rockchip,rk2928-nfc
-       - items:
-           - const: rockchip,rk3308-nfc
+diff --git a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
+index dc74643ae..b9c2287c5 100644
+--- a/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/snps-dw-apb-uart.yaml
+@@ -26,6 +26,7 @@ properties:
+               - rockchip,rk1808-uart
+               - rockchip,rk3036-uart
+               - rockchip,rk3066-uart
++              - rockchip,rk3128-uart
+               - rockchip,rk3188-uart
+               - rockchip,rk3288-uart
+               - rockchip,rk3308-uart
 -- 
 2.20.1
 
