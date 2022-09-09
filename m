@@ -4,47 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EF82ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Sep 2022 14:37:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66895ECAAD3
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Sep 2022 22:02:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ls8/eamLaXWgXoJFGMOLSjnbHLeWC5+B+8qr5nnslro=; b=CMZqVSKkBwTzRQ
-	pKFjYbo5Idyoc4Uo6ljTIPILw1j2xLF9VsNZEqluaSFOod0xa+wfaXKqCrT0Au5RKW67Vvc6nfB4H
-	Y3r2GqQwrgYu3JK7t6zON7Qo49uJCZVQvkGogl2RzAr7pOgoR23KxwzrqN77A6vflUBIHnkshtJW3
-	jtc7NQlsL1cvYa63S0H/D+FKX8mLQkY1AwxtOYQEVIdTtZkYZAuv6KCG7kLcLoJb58FCLax240A5H
-	vnUZIwAP7ckkjcUTJp3gOGAsn1pDxXvKnW4c1epW1h+NHyCuWFOGdcIQBpt1VusWGRWfeqZXL09ow
-	Mb3Rcdp1KBQeUYRxkoLQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JzPA4rIt44UiNUBidO9HGw4wmBWjwLZzv5AVI3mXGJ8=; b=zAmFups//MYRrG
+	W07H0beRi6tBo9du1NTxuVz09rvhhoRo4P8fNFM0a71s+HKdDnoHNBQG6MHMjtEMb9p3oivNcy3Ed
+	2sfyGrX3yfJ/0dt29WR34I6x/j4FI4X1RTz6chvmEBVyYwkrH6myxKknd6xzi5hTN4z7A925ICId4
+	jnbMw2pZSeVLWTP4o0158vtnMPT4IPpflwGSLZ1y3dBKASfkJga7wOLfnym/FQMwlq3Q5kCILlInP
+	uuM7kM2cv6z2RQXXUTeU1+YVQ4GAo48rVJx/y4hzg2k7zA8x38KkAjpqjiDWlpN7zMqmxKhbeCOSf
+	0/8ORlTUp9513ifqZ97g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWf7W-00Gm8o-1l; Fri, 09 Sep 2022 14:36:38 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1oWm3q-003HU7-TX; Fri, 09 Sep 2022 22:01:18 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oWf7S-00Glwd-LG
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2022 14:36:36 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 1CAB068AA6; Fri,  9 Sep 2022 16:36:22 +0200 (CEST)
-Date: Fri, 9 Sep 2022 16:36:20 +0200
-From: ChristophHellwig <hch@lst.de>
-To: Liwei Song <liwei.song@windriver.com>
-Cc: ChristophHellwig <hch@lst.de>, MiquelRaynal <miquel.raynal@bootlin.com>,
-	RichardWeinberger <richard@nod.at>,
-	VigneshRaghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd_blkdevs: add mtd_table_mutex lock back to
- blktrans_{open, release} to avoid race condition
-Message-ID: <20220909143620.GA9978@lst.de>
-References: <20220809075753.21950-1-liwei.song@windriver.com> <20220809080809.GB14727@lst.de> <7f925359-69b0-49b1-cdbb-337912da4f9c@windriver.com> <4910c707-ad97-362f-911a-79e438e6e8ff@windriver.com> <cf66e306-f216-5247-7cff-36ce08eb4512@windriver.com>
+	id 1oWm3b-003HQU-TD; Fri, 09 Sep 2022 22:01:08 +0000
+Received: by mail-ej1-x629.google.com with SMTP id bj12so7056321ejb.13;
+        Fri, 09 Sep 2022 15:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date;
+        bh=BKCyjdc9y8jyZoNI0vZvSlCBXggxKRCrFRR6O6ctF+w=;
+        b=iOMkKAyZEmwtbu4LUS927kV1V1ohVFL8tTMhjnHGf51srGxC3EyXBFcD6yL09+ncjj
+         qID+niTIpLJob8iV0ZpTosx/Lzal4h1bYKDwO5KuaKeho+EF6hhtb9T1o8JcysOCc/uI
+         nFN01b3iKP6X8eLEWsg4jBzVF8ksHYEOmxX+ochFPe02jgedQZLnjUrssAEBbG6ADase
+         SuUohINaiD96DNsEpr05A4i9zSR6E9An+kHuRgE5TuWS7MSJc57ZgscY7ZrwVbqiEpNY
+         4U9dgQY/8ywa7hMaLhHTpdQ3OhewmIJG/lrcR2gDWZZ0NM/ASt1mJJOTrAvrIIsHjUHE
+         WZzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date;
+        bh=BKCyjdc9y8jyZoNI0vZvSlCBXggxKRCrFRR6O6ctF+w=;
+        b=Z9qEHFRbPUFop2qfVPcIlVhkxqa1/V1UzYIoEmPB+1m6ahNfxE4xCiTVhnNftgF3OQ
+         musRXN/0QAcQ2GSKIYU1r5AO1ft9TSTROgOd2+abxUnUHc1Ko2lQkruLfiRNlCDwrdho
+         kqDHP22/CTj7rhZuLPhUFf57d6aEhrm8saUlNoKeMWEUDDAdtCgReBGCoOMToyaQRwVi
+         9zGeWNzzQKW9+ZisbD6BpdttjxAKQSpY0o4OIzahbBRRG28g8mUOhJU5TR01v1f1YxWd
+         jUzc/hmY4dxC+RZA/wyY3+uP/OJPJbF9+ZS7MLemJAbjSdzxB94LC9HYYlE3MTagr0FV
+         Gb2w==
+X-Gm-Message-State: ACgBeo1l2mgozhp70nbQeQuCN0881rFrsI7bKMoq1QI4uiAiPKmS74bA
+	10eITKF7j/aP/ugfItzSNrE=
+X-Google-Smtp-Source: AA6agR503tkKhQAd5Imgm4BPLKzov2ax/W4FLtg+tbq9EVWiAyuvxJRq+pRJaeUnfeqG3X9/MdTZ8Q==
+X-Received: by 2002:a17:907:6d05:b0:73d:8092:91ea with SMTP id sa5-20020a1709076d0500b0073d809291eamr11258913ejc.280.1662760862538;
+        Fri, 09 Sep 2022 15:01:02 -0700 (PDT)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id kx25-20020a170907775900b0073d70df6e56sm797592ejc.138.2022.09.09.15.01.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Sep 2022 15:01:02 -0700 (PDT)
+Message-ID: <3ed145c6-f400-ee75-ccac-894b0a0d15d2@gmail.com>
+Date: Sat, 10 Sep 2022 00:01:00 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <cf66e306-f216-5247-7cff-36ce08eb4512@windriver.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+From: Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v1 00/11] Add more Rockchip rk3128 compatible strings
+To: kever.yang@rock-chips.com
+Cc: sjg@chromium.org, philipp.tomsich@vrull.eu, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, heiko@sntech.de, ulf.hansson@linaro.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, kishon@ti.com,
+ vkoul@kernel.org, thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+ gregkh@linuxfoundation.org, broonie@kernel.org, wim@linux-watchdog.org,
+ linux@roeck-us.net, zhangqing@rock-chips.com, jamie@jamieiles.com,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-phy@lists.infradead.org,
+ linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-watchdog@vger.kernel.org
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220909_073635_031140_909D9EAB 
-X-CRM114-Status: GOOD (  17.52  )
+X-CRM114-CacheID: sfid-20220909_150104_342507_4E79CD91 
+X-CRM114-Status: UNSURE (   8.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,194 +100,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Can you try this patch (it'll need to be split up into a few if it
-works):
+Mainline U-boot has some support for legacy Rockchip SoC rk3128.
+The rk3128.dtsi file is in need for some upgrading.
+To verify the nodes more Rockchip rk3128 compatible strings are needed.
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 60b222799871e..9eda1dd98a406 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -24,24 +24,16 @@
- 
- static LIST_HEAD(blktrans_majors);
- 
--static void blktrans_dev_release(struct kref *kref)
-+static void blktrans_free_disk(struct gendisk *disk)
- {
--	struct mtd_blktrans_dev *dev =
--		container_of(kref, struct mtd_blktrans_dev, ref);
-+	struct mtd_blktrans_dev *dev = disk->private_data;
- 
--	put_disk(dev->disk);
- 	blk_mq_free_tag_set(dev->tag_set);
- 	kfree(dev->tag_set);
- 	list_del(&dev->list);
- 	kfree(dev);
- }
- 
--static void blktrans_dev_put(struct mtd_blktrans_dev *dev)
--{
--	kref_put(&dev->ref, blktrans_dev_release);
--}
--
--
- static blk_status_t do_blktrans_request(struct mtd_blktrans_ops *tr,
- 			       struct mtd_blktrans_dev *dev,
- 			       struct request *req)
-@@ -187,63 +179,58 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
- 	struct mtd_blktrans_dev *dev = bdev->bd_disk->private_data;
- 	int ret = 0;
- 
--	kref_get(&dev->ref);
-+	if (disk_openers(bdev->bd_disk) > 0)
-+		return 0;
- 
--	mutex_lock(&dev->lock);
--
--	if (dev->open)
--		goto unlock;
-+	mutex_lock(&mtd_table_mutex);
-+	if (!dev->mtd) {
-+		mutex_lock(&mtd_table_mutex);
-+		return -EINVAL;
-+	}
-+	ret = __get_mtd_device(dev->mtd);
-+	mutex_unlock(&mtd_table_mutex);
-+	if (ret)
-+		return ret;
- 
-+	mutex_lock(&dev->lock);
- 	__module_get(dev->tr->owner);
--
--	if (!dev->mtd)
--		goto unlock;
--
- 	if (dev->tr->open) {
- 		ret = dev->tr->open(dev);
- 		if (ret)
- 			goto error_put;
- 	}
--
--	ret = __get_mtd_device(dev->mtd);
--	if (ret)
--		goto error_release;
- 	dev->file_mode = mode;
--
--unlock:
- 	dev->open++;
- 	mutex_unlock(&dev->lock);
--	return ret;
- 
--error_release:
--	if (dev->tr->release)
--		dev->tr->release(dev);
-+	return 0;
-+
- error_put:
- 	module_put(dev->tr->owner);
- 	mutex_unlock(&dev->lock);
--	blktrans_dev_put(dev);
-+
-+	put_mtd_device(dev->mtd);
- 	return ret;
- }
- 
- static void blktrans_release(struct gendisk *disk, fmode_t mode)
- {
- 	struct mtd_blktrans_dev *dev = disk->private_data;
-+	struct mtd_info *mtd = NULL;
- 
--	mutex_lock(&dev->lock);
--
--	if (--dev->open)
--		goto unlock;
-+	if (disk_openers(disk) > 0)
-+		return;
- 
-+	mutex_lock(&dev->lock);
-+	dev->open--;
- 	module_put(dev->tr->owner);
--
--	if (dev->mtd) {
--		if (dev->tr->release)
--			dev->tr->release(dev);
--		__put_mtd_device(dev->mtd);
--	}
--unlock:
-+	mtd = dev->mtd;
-+	if (mtd && dev->tr->release)
-+		dev->tr->release(dev);
- 	mutex_unlock(&dev->lock);
--	blktrans_dev_put(dev);
-+
-+	if (mtd)
-+		put_mtd_device(dev->mtd);
- }
- 
- static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
-@@ -266,6 +253,7 @@ static const struct block_device_operations mtd_block_ops = {
- 	.owner		= THIS_MODULE,
- 	.open		= blktrans_open,
- 	.release	= blktrans_release,
-+	.free_disk	= blktrans_free_disk,
- 	.getgeo		= blktrans_getgeo,
- };
- 
-@@ -318,7 +306,6 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
-  added:
- 
- 	mutex_init(&new->lock);
--	kref_init(&new->ref);
- 	if (!tr->writesect)
- 		new->readonly = 1;
- 
-@@ -410,6 +397,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 
- int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- {
-+	struct mtd_info *old_mtd = NULL;
- 	unsigned long flags;
- 
- 	lockdep_assert_held(&mtd_table_mutex);
-@@ -438,13 +426,14 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- 	if (old->open) {
- 		if (old->tr->release)
- 			old->tr->release(old);
--		__put_mtd_device(old->mtd);
-+		old_mtd = old->mtd;
- 	}
--
- 	old->mtd = NULL;
--
- 	mutex_unlock(&old->lock);
--	blktrans_dev_put(old);
-+	put_disk(old->disk);
-+
-+	if (old->mtd)
-+		put_mtd_device(old_mtd);
- 	return 0;
- }
- 
-diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
-index 15cc9b95e32b5..41a81fc9f0462 100644
---- a/include/linux/mtd/blktrans.h
-+++ b/include/linux/mtd/blktrans.h
-@@ -7,7 +7,6 @@
- #define __MTD_TRANS_H__
- 
- #include <linux/mutex.h>
--#include <linux/kref.h>
- #include <linux/sysfs.h>
- 
- struct hd_geometry;
-@@ -26,7 +25,6 @@ struct mtd_blktrans_dev {
- 	unsigned long size;
- 	int readonly;
- 	int open;
--	struct kref ref;
- 	struct gendisk *disk;
- 	struct attribute_group *disk_attributes;
- 	struct request_queue *rq;
+Not tested with hardware.
+No intent to port drivers or dts files to Linux for now without physical board.
+So pure for the bindings. 
+
+https://lore.kernel.org/u-boot/421195e1-472c-f337-e87a-b0b6d520b808@gmail.com/T/#u
+
+Johan Jonker (11):
+  dt-bindings: serial: rockchip: add rockchip,rk3128-uart
+  dt-bindings: i2c: rockchip: add rockchip,rk3128-i2c
+  dt-bindings: pwm: rockchip: add rockchip,rk3128-pwm
+  dt-bindings: mmc: rockchip: add rockchip,rk3128-dw-mshc
+  dt-bindings: spi: rockchip: add rockchip,rk3128-spi
+  dt-bindings: usb: dwc2: rockchip: add rockchip,rk3128-usb
+  dt-bindings: watchdog: rockchip: add rockchip,rk3128-wdt
+  dt-bindings: arm: rockchip: pmu: add rockchip,rk3128-pmu
+  dt-bindings: phy: phy-rockchip-inno-usb2: add rockchip,rk3128-usb2phy
+  dt-bindings: soc: rockchip: grf: add rockchip,rk3128-grf
+  dt-bindings: mtd: rockchip: add rockchip,rk3128-nfc
+
+ Documentation/devicetree/bindings/arm/rockchip/pmu.yaml       | 2 ++
+ Documentation/devicetree/bindings/i2c/i2c-rk3x.yaml           | 1 +
+ Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml   | 1 +
+ .../devicetree/bindings/mtd/rockchip,nand-controller.yaml     | 4 +++-
+ .../devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml       | 1 +
+ Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml       | 1 +
+ .../devicetree/bindings/serial/snps-dw-apb-uart.yaml          | 1 +
+ Documentation/devicetree/bindings/soc/rockchip/grf.yaml       | 2 ++
+ Documentation/devicetree/bindings/spi/spi-rockchip.yaml       | 1 +
+ Documentation/devicetree/bindings/usb/dwc2.yaml               | 1 +
+ Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml   | 1 +
+ 11 files changed, 15 insertions(+), 1 deletion(-)
+
+-- 
+2.20.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
