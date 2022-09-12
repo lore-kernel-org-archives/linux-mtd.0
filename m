@@ -4,65 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F6BCC6FA83
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Sep 2022 20:31:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A394C6FA83
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Sep 2022 23:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fJfjY3p4BTfWsQEiXfVhpWanhpIMhd29WG0NRnqEYN8=; b=vuawSjfyQa9GrL
-	YJHD4WB86k8yCHLj0TcEs92BdsXLSVXaDIL+uxXMhi/VjQAYpV9RV8ZFQGFIK0kMOGJpv/kpf7LUf
-	OssQo5Sm+wv6+kOiDX25eUagZWBGwOvDJB/YZXtxBTwYcqwpexW9B1DlrtUtpydTni4eMo7Brojrn
-	De/uq8zsdxaVe3Bt7T6qaUIl5t5I2rzfRPEDkoBoMwACwgNNEeOFY+P4zJx35dnqkZVThGjdeAzeb
-	/prV4mfTrXBMxXflf0MpOS1tuiNVRj9N6DS6QAsQwatVcehjklhFgQ6pyeUs/cwYwVyklyBCgv0Ba
-	LiEviauZlq6T1/X976/w==;
+	List-Owner; bh=GlBgXxe/msrwXgMJ/lUnzcgyj763IgG6URf2VDwoTdE=; b=MoNPpsE07s3A92
+	EyoXG5DCjHsAdn/7VULbiS/9/jOlvEw9V/tLPbQ/s+fnykTN7R740mBtU/riQVKSuxj76no4uyLTE
+	L6USQlToAz605Cd+uGslQqNnpOgBwhxhcqYdMPhXGnCGg1nU+TqcSQv7JM6IS3NFvAVdganiIYoGk
+	ep8BZctc3Mv+UPZQdCdbU2ob6JXG0nYSfvR1eJ/VoJplfH916aiesM3g7N5wYh+L6fB2JMWYAT+R6
+	1mPd4YiC7dHc3GBaUJu0Q4Wr6kg9kO1++2QfUggaigWCsIn14/f+ETYp6SRkyE3GVL0RgRiW77WOK
+	leoX30RV8f/PoHpuWKWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oXq5F-00DbUI-Lg; Mon, 12 Sep 2022 20:31:09 +0000
-Received: from mail-oa1-f46.google.com ([209.85.160.46])
+	id 1oXsiL-00FQU0-2I; Mon, 12 Sep 2022 23:19:41 +0000
+Received: from mga14.intel.com ([192.55.52.115])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oXq58-00DbQY-Vb; Mon, 12 Sep 2022 20:31:07 +0000
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1280590722dso26584512fac.1;
-        Mon, 12 Sep 2022 13:31:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=g/UDc025mrWtsVvlPcb6aYSfww62RRfTqVjKHmF+7ik=;
-        b=4xmhRAPg9ljfOJiH8Fd0+R0vyatwWfCw/TOPqRqSbYNrEWyr0NPwTuLgPZnbzGcbvx
-         Q62Z1kGgTlfc38rPDCBE7vB6DqJbyGo8M1HY3EVBdIscm+Yf7ckq9AP4ARlOBu8ox7eS
-         B/p6j7k8e7GwusDcR68inwqePebKxNXEFCBkZPlaqqgbymHdcH3nM8t50ZKTfgD6Vgqd
-         gqC9CrkG4gIchUlqajDbcNNupFvWwka87XeewDpkon2wmHK/Btf7KvQ/uUAwQnUitXqO
-         xH8oQosReipjEWg7EQuvIw4WZd9wXiYkLMabBWGh9ug9JsOwjeLvyZVHOJUjZsofkmwY
-         hlOA==
-X-Gm-Message-State: ACgBeo0E97M6xEHWQqqD5krnBy4XuDwuM6CcG08n4gkUfhkS1W5iUVMb
-	4ZtqXLK7BI0vS0hytRWIBA==
-X-Google-Smtp-Source: AA6agR6XF9RQcPY40kpUXoOfzj6E6g1w/ffzTwA+bpiGExL1d5D2Wgl6YDwnA5faBNqCRi9W1we/Pg==
-X-Received: by 2002:a05:6870:e413:b0:127:2f43:af44 with SMTP id n19-20020a056870e41300b001272f43af44mr66328oag.175.1663014661704;
-        Mon, 12 Sep 2022 13:31:01 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id el40-20020a056870f6a800b0012b19b888bfsm6316443oab.47.2022.09.12.13.31.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Sep 2022 13:31:01 -0700 (PDT)
-Received: (nullmailer pid 1782577 invoked by uid 1000);
-	Mon, 12 Sep 2022 20:31:00 -0000
-Date: Mon, 12 Sep 2022 15:31:00 -0500
-From: Rob Herring <robh@kernel.org>
-To: Liang Yang <liang.yang@amlogic.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Victor Wan <victor.wan@amlogic.com>, linux-amlogic@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, XianWei Zhao <xianwei.zhao@amlogic.com>, Jerome Brunet <jbrunet@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>, linux-arm-kernel@lists.infradead.org, Neil Armstrong <narmstrong@baylibre.com>, Kelvin Zhang <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org, YongHui Yu <yonghui.yu@amlogic.com>, Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org, Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: Re: [PATCH v9 4/5] dt-bindings: nand: meson: convert txt to yaml
-Message-ID: <20220912203100.GA1782522-robh@kernel.org>
-References: <20220907080405.28240-1-liang.yang@amlogic.com>
- <20220907080405.28240-5-liang.yang@amlogic.com>
+	id 1oXsiH-00FQSD-Eu
+	for linux-mtd@lists.infradead.org; Mon, 12 Sep 2022 23:19:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663024777; x=1694560777;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=q93oBTx3u5LUtVhSCEgNEkmMyo9rEmqCpu5xieHetws=;
+  b=A0fRLrnaPbaLtgh8LbNFMzxFnJTBQtoQIwEe3NFGF5Mzx2x3O2AkGojS
+   VZXmcAa3DQTfjHeKxnuGEFsEC3vOWcVn2VK4GVqhsL993iuuDe4ODoXt+
+   UDRvWhPuiytoxZNc+qIRY6zETPn+4gPzBq0KVUvkYcaAUhGyhjH839Bnh
+   WbtA4xT/5E9+i48xcHRzbX8stJK3vHOzXB6t3TJHYAgxvUTbHuRa8daMK
+   ZTCd/3L0+zECXiL+JLcRY7rdjnfm2Ee1hGquDe7HuTnOdhTQvJ9JrNSB8
+   tP3VHU+8qXNou1EoBWvLqMPsDO2ew6Ju2Z/hEfneGVl9nfCuwYVy799h0
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10468"; a="297995396"
+X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; 
+   d="scan'208";a="297995396"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2022 16:19:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; 
+   d="scan'208";a="705329009"
+Received: from lkp-server02.sh.intel.com (HELO 4011df4f4fd3) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 12 Sep 2022 16:19:34 -0700
+Received: from kbuild by 4011df4f4fd3 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1oXsiD-0002xx-30;
+	Mon, 12 Sep 2022 23:19:33 +0000
+Date: Tue, 13 Sep 2022 07:18:44 +0800
+From: kernel test robot <lkp@intel.com>
+To: yaliang.wang@windriver.com, tudor.ambarus@microchip.com,
+	pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
+	richard@nod.at, vigneshr@ti.com
+Cc: llvm@lists.linux.dev, kbuild-all@lists.01.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: gigadevice: gd25q256: replace
+ gd25q256_default_init with gd25q256_post_bfpt
+Message-ID: <202209130732.cQpPG34i-lkp@intel.com>
+References: <20220912142833.1739547-1-yaliang.wang@windriver.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220907080405.28240-5-liang.yang@amlogic.com>
+In-Reply-To: <20220912142833.1739547-1-yaliang.wang@windriver.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220912_133103_035777_85AAD099 
-X-CRM114-Status: UNSURE (   9.24  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220912_161937_578886_EBD4507C 
+X-CRM114-Status: GOOD (  14.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,19 +85,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 07 Sep 2022 16:04:04 +0800, Liang Yang wrote:
-> convert the amlogic,meson-name.txt to amlogic,meson-nand.yaml
-> 
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-> ---
->  .../bindings/mtd/amlogic,meson-nand.txt       | 55 -----------
->  .../bindings/mtd/amlogic,meson-nand.yaml      | 93 +++++++++++++++++++
->  2 files changed, 93 insertions(+), 55 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> 
+Hi,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.0-rc5 next-20220912]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/yaliang-wang-windriver-com/mtd-spi-nor-gigadevice-gd25q256-replace-gd25q256_default_init-with-gd25q256_post_bfpt/20220912-223028
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 80e78fcce86de0288793a0ef0f6acf37656ee4cf
+config: i386-randconfig-a016-20220912 (https://download.01.org/0day-ci/archive/20220913/202209130732.cQpPG34i-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/0238f8172a76ee5a84dda79b45911a2b63d59721
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review yaliang-wang-windriver-com/mtd-spi-nor-gigadevice-gd25q256-replace-gd25q256_default_init-with-gd25q256_post_bfpt/20220912-223028
+        git checkout 0238f8172a76ee5a84dda79b45911a2b63d59721
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash drivers/mtd/spi-nor/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> drivers/mtd/spi-nor/gigadevice.c:23:1: error: non-void function does not return a value [-Werror,-Wreturn-type]
+   }
+   ^
+   1 error generated.
+
+
+vim +23 drivers/mtd/spi-nor/gigadevice.c
+
+acb96ecd59f7fd Boris Brezillon 2020-03-13  10  
+0238f8172a76ee Yaliang Wang    2022-09-12  11  static int
+0238f8172a76ee Yaliang Wang    2022-09-12  12  gd25q256_post_bfpt(struct spi_nor *nor,
+0238f8172a76ee Yaliang Wang    2022-09-12  13  			    const struct sfdp_parameter_header *bfpt_header,
+0238f8172a76ee Yaliang Wang    2022-09-12  14  			    const struct sfdp_bfpt *bfpt)
+acb96ecd59f7fd Boris Brezillon 2020-03-13  15  {
+acb96ecd59f7fd Boris Brezillon 2020-03-13  16  	/*
+acb96ecd59f7fd Boris Brezillon 2020-03-13  17  	 * Some manufacturer like GigaDevice may use different
+acb96ecd59f7fd Boris Brezillon 2020-03-13  18  	 * bit to set QE on different memories, so the MFR can't
+acb96ecd59f7fd Boris Brezillon 2020-03-13  19  	 * indicate the quad_enable method for this case, we need
+0238f8172a76ee Yaliang Wang    2022-09-12  20  	 * to set it in the post_bfpt fixup hook.
+acb96ecd59f7fd Boris Brezillon 2020-03-13  21  	 */
+829ec6408dc58d Tudor Ambarus   2020-03-13  22  	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+acb96ecd59f7fd Boris Brezillon 2020-03-13 @23  }
+acb96ecd59f7fd Boris Brezillon 2020-03-13  24  
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 ______________________________________________________
 Linux MTD discussion mailing list
