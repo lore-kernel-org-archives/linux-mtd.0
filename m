@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C39E8C6FA82
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Sep 2022 19:21:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F6BCC6FA83
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Sep 2022 20:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dGLLAFhHfhFOCIuCZhxuG4d/eS5NB7vjHz5FgU8lM3Y=; b=DH4Q/GA3lwMPrO
-	jXkJGTQu/CIe1b90q9y1WbwnOQFf+RlpHp5DrtxNIrqp6JMNXwYAo9hd7h95V/ndrYc+r/KRaiQUL
-	Zl89UDSLCkBidfr/hhXyfPfXJXUVc1JjccgTrdcVHxQNUuyfiXn3i01sc6FBI4/T9V11GIwtFhO8s
-	BWZbDeu50gbRtfX2aBWWkcShPa1hasF84aMBkcZfcejLSYF2bIyr5c58WtEAMbiYlVN9V3lLtz739
-	zq1qdL9PhYztXLVltxkUEdrrStwMKVOKgqKd7hik1MeERfSIrjF6v9f22zCGV2It+6dE1ysuBO4lc
-	BU9Vj+8w4pJ4qBxHUNmQ==;
+	List-Owner; bh=fJfjY3p4BTfWsQEiXfVhpWanhpIMhd29WG0NRnqEYN8=; b=vuawSjfyQa9GrL
+	YJHD4WB86k8yCHLj0TcEs92BdsXLSVXaDIL+uxXMhi/VjQAYpV9RV8ZFQGFIK0kMOGJpv/kpf7LUf
+	OssQo5Sm+wv6+kOiDX25eUagZWBGwOvDJB/YZXtxBTwYcqwpexW9B1DlrtUtpydTni4eMo7Brojrn
+	De/uq8zsdxaVe3Bt7T6qaUIl5t5I2rzfRPEDkoBoMwACwgNNEeOFY+P4zJx35dnqkZVThGjdeAzeb
+	/prV4mfTrXBMxXflf0MpOS1tuiNVRj9N6DS6QAsQwatVcehjklhFgQ6pyeUs/cwYwVyklyBCgv0Ba
+	LiEviauZlq6T1/X976/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oXoz8-00CuDR-9E; Mon, 12 Sep 2022 19:20:46 +0000
-Received: from mail-ot1-f45.google.com ([209.85.210.45])
+	id 1oXq5F-00DbUI-Lg; Mon, 12 Sep 2022 20:31:09 +0000
+Received: from mail-oa1-f46.google.com ([209.85.160.46])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oXoz3-00CuAH-Lx; Mon, 12 Sep 2022 19:20:43 +0000
-Received: by mail-ot1-f45.google.com with SMTP id l7-20020a056830154700b0065563d564dfso6516574otp.0;
-        Mon, 12 Sep 2022 12:20:41 -0700 (PDT)
+	id 1oXq58-00DbQY-Vb; Mon, 12 Sep 2022 20:31:07 +0000
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1280590722dso26584512fac.1;
+        Mon, 12 Sep 2022 13:31:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=3AP/8H6lNUJxt0e4xcmzSjTGN2LrpryaMTGu/8MaPTE=;
-        b=OJhP4AXjDLNoegKjM8x+zjAIBEOlu4DiHcyvShwJeD+jZO9ujrUmw7ojQ1DFUEEggh
-         cruri92399ow8K+J9hZXVzTElCJ9yRCkD4u59InTfU/HxsyAqJXlj+MFYgzgfkggGx3l
-         muUTyqnhRzodrAp0AMGxZyNqPKHgMJ5DOBAi62zjgS5fY+jgOATIkQKLnOol8N1Mj5mk
-         c5Ee8HcpBz0n7Kb0SbXkX5I+aaPa6Xt6dSRVJkz1ZDxATAyhPjS9GZdPk1kWHleXb0ne
-         NkKnJCd6uhyZ8BPjpWnL1AQtuvY06iGfeJARLLOPGy5KUNqVu3sg8V52+Ubx//Btku/2
-         AzEw==
-X-Gm-Message-State: ACgBeo29ELO3oBwxFxHPZ/ha+MpkeKXQSQtyndKtZuAcDB5w/Dkl7dQw
-	suyrWhc9aCYKa3lIeP39EQ==
-X-Google-Smtp-Source: AA6agR7xawQGM5WeoMEXiFMiRQalX4BDsabwBsBRE57tKwigga13hjnnPHVUevtOi6lJDbcfUCqFBA==
-X-Received: by 2002:a05:6830:1d89:b0:655:d851:365f with SMTP id y9-20020a0568301d8900b00655d851365fmr3412786oti.293.1663010440379;
-        Mon, 12 Sep 2022 12:20:40 -0700 (PDT)
+        bh=g/UDc025mrWtsVvlPcb6aYSfww62RRfTqVjKHmF+7ik=;
+        b=4xmhRAPg9ljfOJiH8Fd0+R0vyatwWfCw/TOPqRqSbYNrEWyr0NPwTuLgPZnbzGcbvx
+         Q62Z1kGgTlfc38rPDCBE7vB6DqJbyGo8M1HY3EVBdIscm+Yf7ckq9AP4ARlOBu8ox7eS
+         B/p6j7k8e7GwusDcR68inwqePebKxNXEFCBkZPlaqqgbymHdcH3nM8t50ZKTfgD6Vgqd
+         gqC9CrkG4gIchUlqajDbcNNupFvWwka87XeewDpkon2wmHK/Btf7KvQ/uUAwQnUitXqO
+         xH8oQosReipjEWg7EQuvIw4WZd9wXiYkLMabBWGh9ug9JsOwjeLvyZVHOJUjZsofkmwY
+         hlOA==
+X-Gm-Message-State: ACgBeo0E97M6xEHWQqqD5krnBy4XuDwuM6CcG08n4gkUfhkS1W5iUVMb
+	4ZtqXLK7BI0vS0hytRWIBA==
+X-Google-Smtp-Source: AA6agR6XF9RQcPY40kpUXoOfzj6E6g1w/ffzTwA+bpiGExL1d5D2Wgl6YDwnA5faBNqCRi9W1we/Pg==
+X-Received: by 2002:a05:6870:e413:b0:127:2f43:af44 with SMTP id n19-20020a056870e41300b001272f43af44mr66328oag.175.1663014661704;
+        Mon, 12 Sep 2022 13:31:01 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id s22-20020a4ac816000000b0044b47bb023fsm4449106ooq.37.2022.09.12.12.20.39
+        by smtp.gmail.com with ESMTPSA id el40-20020a056870f6a800b0012b19b888bfsm6316443oab.47.2022.09.12.13.31.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Sep 2022 12:20:39 -0700 (PDT)
-Received: (nullmailer pid 1680895 invoked by uid 1000);
-	Mon, 12 Sep 2022 19:20:38 -0000
-Date: Mon, 12 Sep 2022 14:20:38 -0500
+        Mon, 12 Sep 2022 13:31:01 -0700 (PDT)
+Received: (nullmailer pid 1782577 invoked by uid 1000);
+	Mon, 12 Sep 2022 20:31:00 -0000
+Date: Mon, 12 Sep 2022 15:31:00 -0500
 From: Rob Herring <robh@kernel.org>
-To: Michael Walle <michael@walle.cc>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Frank Rowand <frowand.list@gmail.com>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Ahmad Fatoum <a.fatoum@pengutronix.de>, Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH v2 15/20] dt-bindings: nvmem: add YAML schema for the
- sl28 vpd layout
-Message-ID: <20220912192038.GA1661550-robh@kernel.org>
-References: <20220901221857.2600340-1-michael@walle.cc>
- <20220901221857.2600340-16-michael@walle.cc>
+To: Liang Yang <liang.yang@amlogic.com>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>, Kevin Hilman <khilman@baylibre.com>, Victor Wan <victor.wan@amlogic.com>, linux-amlogic@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, XianWei Zhao <xianwei.zhao@amlogic.com>, Jerome Brunet <jbrunet@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>, linux-arm-kernel@lists.infradead.org, Neil Armstrong <narmstrong@baylibre.com>, Kelvin Zhang <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org, YongHui Yu <yonghui.yu@amlogic.com>, Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org, Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCH v9 4/5] dt-bindings: nand: meson: convert txt to yaml
+Message-ID: <20220912203100.GA1782522-robh@kernel.org>
+References: <20220907080405.28240-1-liang.yang@amlogic.com>
+ <20220907080405.28240-5-liang.yang@amlogic.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220901221857.2600340-16-michael@walle.cc>
+In-Reply-To: <20220907080405.28240-5-liang.yang@amlogic.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220912_122041_748132_97B0A75D 
-X-CRM114-Status: GOOD (  23.39  )
+X-CRM114-CacheID: sfid-20220912_133103_035777_85AAD099 
+X-CRM114-Status: UNSURE (   9.24  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,83 +79,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Sep 02, 2022 at 12:18:52AM +0200, Michael Walle wrote:
-> Add a schema for the NVMEM layout on Kontron's sl28 boards.
+On Wed, 07 Sep 2022 16:04:04 +0800, Liang Yang wrote:
+> convert the amlogic,meson-name.txt to amlogic,meson-nand.yaml
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
 > ---
-> changes since v1:
->  - add custom select
->  - add description
->  - add "additionalProperties: false", I wasn't sure if all the
->    subnodes needs it. I'd say yes, but the brcm,nvram binding
->    doesn't have them neither.
+>  .../bindings/mtd/amlogic,meson-nand.txt       | 55 -----------
+>  .../bindings/mtd/amlogic,meson-nand.yaml      | 93 +++++++++++++++++++
+>  2 files changed, 93 insertions(+), 55 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
 > 
->  .../nvmem/layouts/kontron,sl28-vpd.yaml       | 67 +++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml b/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
-> new file mode 100644
-> index 000000000000..0c180f29e880
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/nvmem/layouts/kontron,sl28-vpd.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/nvmem/layouts/kontron,sl28-vpd.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NVMEM layout of the Kontron SMARC-sAL28 vital product data
-> +
-> +maintainers:
-> +  - Michael Walle <michael@walle.cc>
-> +
-> +description:
-> +  The vital product data (VPD) of the sl28 boards contains a serial
-> +  number and a base MAC address. The actual MAC addresses for the
-> +  on-board ethernet devices are derived from this base MAC address by
-> +  adding an offset.
-> +
-> +# We need a select here so we don't match all nodes with 'user-otp'
-> +select:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: kontron,sl28-vpd
-> +  required:
-> +    - compatible
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: kontron,sl28-vpd
-> +      - const: user-otp
-> +
-> +  serial-number:
-> +    type: object
-> +    description: The board's serial number
-> +
-> +  base-mac-address:
-> +    type: object
-> +    description:
-> +      Base MAC address for all on-module network interfaces. The first
-> +      argument of the phandle will be treated as an offset.
-> +
-> +    properties:
-> +      "#nvmem-cell-cells":
 
-You can't just add a new #.*-cells buried in a device binding. I'm fine 
-with the concept though having more than 1 user would be nice.
-
-Any case that doesn't match foos->#foo-cells or has a default # of 
-cells if missing (as this does) has to be added to dtschema to decode it 
-properly. It won't really matter until there's a user with 2 or more 
-entries. I'm happy to do update the dtschema part, but I'd prefer to see 
-the schema in dtschema rather than the kernel.
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
