@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53A08C54EE9
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Sep 2022 14:23:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40950C54EE9
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Sep 2022 14:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fsHmKXfYPT/Qh03Y1HIUCwFpPTLp/XhmPU2mbJTdPl4=; b=wan5jSMeiTxNgC
-	xvogNw4JBWVN+gg/iHyqAqOKftspCUGP7qFps7n2SHD8BoL8YYLmGlIpkK2OHiXVX6606HJX0EPRG
-	tjA1/8zAp7VgkXq696F2AnB+xoqrHAQclGcWEwO9tAzOC91qLdWjKwxOCjzU1UIK/z7DA9FvRjHgH
-	O2qU0pWa30JXaN5I3dtrOCboFfVVmTVob2b9gUOZhzDqfZ4DraHB3tSy4lD5a+yV2rPF2sJlptd8h
-	oGsyz9T+Zew2eKHIFRCMqCEBnyy1dNGkpToa6LdhqNzOs8xzRmAnhvSNOftmXF5QDLEHefFkGHV4e
-	lWQBW1OUMfbruHnFnNKw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=5TQJBWGg/+ohjadFnATb/jnhw8HPsik5chBhJrK4zgU=; b=JimgRpLqJY3h+bBQ1Yv3KWPA6X
+	9m02XgXhsuQJbMRiS5qjkRPyThejIgY84N/UZk113rfY+RaQ0CNSJPW6Ee3FUQ73AawmPuQl0UncC
+	VfkOxtzw/dWJZNf0A8frXtqWjizfh8QWOo2hcu1LaN+/s8jyudAC4dJd0es48FRk9KKO4GfddkZ6i
+	dgjp6Y4IfMRRr7ygHsd5RbWc7obOcA4qvH8cyoF8mhi5W4DnKVobUM668XqytrBn7iMMe4w5Rc2fg
+	LSkdl2pHC9zYYIzIn6xFdvvMlKB/kxPMVDC2Uk95Wh0aROE3rBm9DnQJ/v4Rw+sR7PS/FVr0CEsKH
+	lmG4DM8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oY6oE-00BWYB-Qe; Tue, 13 Sep 2022 14:22:43 +0000
-Received: from mail-oa1-f50.google.com ([209.85.160.50])
+	id 1oY6ue-00BcXm-6q; Tue, 13 Sep 2022 14:29:20 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oY6hm-00BQLT-PI; Tue, 13 Sep 2022 14:16:06 +0000
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-127ba06d03fso32493419fac.3;
-        Tue, 13 Sep 2022 07:16:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=zYRS5/+Q00Jt+sqvHB1fjEMsS/sAzxnNY3oApp6VsX4=;
-        b=yP4ylM+zGNeBn5ll1r1TLZjj+h+0ugh4hkIMfPprhT6CcY8pxJRw/YTAyTl4QmNwfk
-         wqIApECjqWnpoyVzDbN8+XBd5sqOsZaG7vgxcu3lzlm1xVInEVa3Cu9XvT193PppSywD
-         yWx4SJ/ViHeMGsXOYVamJhuXHH77pqNFG8UqCsy5V8nxcnCIptxQqSe6huXMDKOCVKv6
-         uRe4q/E0k+WOhKlPouiqkjbDJzbOGmaeGewo7BauUOav3v7rxfpD/5HjPYp8qDDljzIO
-         Ci9zbfYqEVXXGrwBjxhCh9M6ir9Mfy1bdhKz13Lnvfo6RjBmmX7xfzNbqdfSRu57xybA
-         +ntw==
-X-Gm-Message-State: ACgBeo1mVmGVH1I4Rx89X4kJnjoDQFMBtGO2Jaue9UC5DHn4LQimt1xz
-	2UCwOhlovzqCK93op4piAg==
-X-Google-Smtp-Source: AA6agR6hOpZPvoPt2Eb14Hvai4q1Lk4rE7+yyu9TNmztp+7DqLeOhYDLvEKfa24JcgVwwqI0QlyFNw==
-X-Received: by 2002:a05:6808:15aa:b0:34f:b7e3:26f5 with SMTP id t42-20020a05680815aa00b0034fb7e326f5mr1747211oiw.22.1663078560574;
-        Tue, 13 Sep 2022 07:16:00 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id i34-20020a056870892200b0012644cc4feasm6980943oao.55.2022.09.13.07.15.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Sep 2022 07:15:59 -0700 (PDT)
-Received: (nullmailer pid 3606168 invoked by uid 1000);
-	Tue, 13 Sep 2022 14:15:58 -0000
-Date: Tue, 13 Sep 2022 09:15:58 -0500
-From: Rob Herring <robh@kernel.org>
-To: Johan Jonker <jbx6244@gmail.com>
-Cc: kishon@ti.com, wim@linux-watchdog.org, linux@roeck-us.net, sjg@chromium.org, heiko@sntech.de, linux-watchdog@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org, linux-serial@vger.kernel.org, linux-i2c@vger.kernel.org, broonie@kernel.org, miquel.raynal@bootlin.com, linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-usb@vger.kernel.org, richard@nod.at, ulf.hansson@linaro.org, linux-arm-kernel@lists.infradead.org, zhangqing@rock-chips.com, jamie@jamieiles.com, thierry.reding@gmail.com, linux-mmc@vger.kernel.org, robh+dt@kernel.org, kever.yang@rock-chips.com, linux-spi@vger.kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, philipp.tomsich@vrull.eu, linux-phy@lists.infradead.org, linux-pwm@vger.kernel.org, u.kleine-koenig@pengutronix.de, vigneshr@ti.com
-Subject: Re: [PATCH v1 04/11] dt-bindings: mmc: rockchip: add
- rockchip,rk3128-dw-mshc
-Message-ID: <20220913141558.GA3606130-robh@kernel.org>
-References: <20220909212543.17428-1-jbx6244@gmail.com>
- <f2cb42c8-3664-a2d5-074d-5c9a10c693e8@gmail.com>
+	id 1oY6n4-00BV9S-SQ; Tue, 13 Sep 2022 14:21:32 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 6F18422D1;
+	Tue, 13 Sep 2022 16:21:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1663078884;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g0cz2RuwebJaTXH0eI4H1to3O9WXEkI2yKThc7wO9xs=;
+	b=puA9H+i874EBUSaakIlALbTcIJMrhgUsmPKYhLqpOWbQ20JTJ5fVFwUB/0xL7PdtjoZNkn
+	/LWHDZkmGolvwMHG6otGJgppi6NYVWn1e5Ux4UEQyg2OKcHnC8BjRHgY4iRIDnUIA0VNxN
+	vg3s0PSonX5qKSLbx8UH7z7jRGR0Ho6oGhpbNamn+d0EvSIIe8CAUJz8rb1sIHY2YcBAQa
+	FHTIxbnc7cadTKVIabma6BXzUJvc6zdu3MqM6ROQLiPvX7ninN5VJayFW6Cm5xOIThjlkf
+	QjyP+ll1YRpedOOB89zlAk8nwDlU11gfigOL3zR2wAExzfa+yweYJabWn+5d6Q==
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <f2cb42c8-3664-a2d5-074d-5c9a10c693e8@gmail.com>
+Date: Tue, 13 Sep 2022 16:21:24 +0200
+From: Michael Walle <michael@walle.cc>
+To: Rob Herring <robh@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang
+ <leoyang.li@nxp.com>, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
+ <rafal@milecki.pl>, Frank Rowand <frowand.list@gmail.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Ahmad
+ Fatoum <a.fatoum@pengutronix.de>, Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v2 15/20] dt-bindings: nvmem: add YAML schema for the sl28
+ vpd layout
+In-Reply-To: <20220912192038.GA1661550-robh@kernel.org>
+References: <20220901221857.2600340-1-michael@walle.cc>
+ <20220901221857.2600340-16-michael@walle.cc>
+ <20220912192038.GA1661550-robh@kernel.org>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <aa53a858e362ae747a2cbd28caa3fa78@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220913_071603_983206_9BFB68E7 
-X-CRM114-Status: UNSURE (   7.46  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220913_072131_171738_C1B5382D 
+X-CRM114-Status: GOOD (  14.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,21 +78,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 10 Sep 2022 00:02:14 +0200, Johan Jonker wrote:
-> Add rockchip,rk3128-dw-mshc compatible string.
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->  Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+Am 2022-09-12 21:20, schrieb Rob Herring:
 
-Acked-by: Rob Herring <robh@kernel.org>
+>> +  base-mac-address:
+>> +    type: object
+>> +    description:
+>> +      Base MAC address for all on-module network interfaces. The 
+>> first
+>> +      argument of the phandle will be treated as an offset.
+>> +
+>> +    properties:
+>> +      "#nvmem-cell-cells":
+> 
+> You can't just add a new #.*-cells buried in a device binding. I'm fine
+> with the concept though having more than 1 user would be nice.
+
+I was under the impression the tooling will handle it, but as you
+pointed out below, this isn't the case for a missing default. The
+statement above should only be to validate that there is one
+additional argument if the base-mac-address node is used in a
+phandle.
+
+> Any case that doesn't match foos->#foo-cells or has a default # of
+> cells if missing (as this does) has to be added to dtschema to decode 
+> it
+> properly. It won't really matter until there's a user with 2 or more
+> entries. I'm happy to do update the dtschema part, but I'd prefer to 
+> see
+> the schema in dtschema rather than the kernel.
+
+Ok, but I'm not sure I understand you correctly here. You will
+update the dtschema tooling (I guess it's about fixup_phandles() in
+dtb.py) and which schema should be in dtschema? nvmem.yaml
+and/or nvmem-consumer.yaml? The entire schema or only a
+subset of it?
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
