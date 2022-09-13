@@ -4,79 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4258FC6FA82
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Sep 2022 07:37:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82456C6FA82
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Sep 2022 08:41:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9bORTDlQ8rpMlLvzlBAD5mHVPv3eMfUsWHKUH9/XXqg=; b=SU3+mUdqA6mzF9
-	KujPKD9CIihliP5DAR/ig+GnhVeVZrmMs6EzzcZ7sRmPKXoofxjYC3Pyvbv6t22jVjNdkdr4REp60
-	dAECF5gwCN4ax4pas5xFto9zObelffF8ypYAiiCkd7D0ziPihKTQE9zkArooeDZs8hxBpuXq1GMTZ
-	NA8eaxZ6y/K7oGpK9phRB5/87VcJMrlkk3t5TTvZI5o4cNvHwuRQY8jmTg31agVq0pOaxdr7fWXo8
-	oz/79hybXypAA7tVrCZmZUJXHZ/EdR7Kx7MSfLx9sVHfPggOTc0c2A0alcJhkpLRDn7AE8Aqf02ai
-	9Hy46/O7bsv6dVA7vA/g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HJQuhnxdVpd0BUDT7f1pzhGdu3z9/jiiB/DvZ2L9q5A=; b=JMmcxG2rhyKsDx
+	RMth05MMUnJOrO+lO/D1BqJoKLHJNO8zxe5RgaiZVkwKb/82NMwY1TICBCm+2sbDQ5fVMfyER9t91
+	aW5wVMuMZ8PI+KY54qPfgEqAeVPUbYYEX6k4H+9k9s/8boAAWbPXOzu0JGbUojzM97QZVeY/CbmWe
+	yrRdI3zCvKDE3la12mIx82Ya6/c5stR3fkATIufAXGJO9BfYpVw4/PTWEOSY9yxapgzSLnSzrTYOI
+	BzSgyHNsH0ONGfID+ck96TE7DtCBzaW333j8OuCNTaEbMzV9XXst13FbBKwnKhoM8TnL1rui3aY1j
+	Gr31DmSCqIVigVM//2eA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oY0UE-003eRP-08; Tue, 13 Sep 2022 07:37:38 +0000
-Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
+	id 1oY1Ti-004WVQ-SA; Tue, 13 Sep 2022 08:41:11 +0000
+Received: from mx0a-0064b401.pphosted.com ([205.220.166.238])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oY0U2-003eI4-4K
-	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2022 07:37:36 +0000
-Received: by mail-ej1-x62f.google.com with SMTP id dv25so25403685ejb.12
-        for <linux-mtd@lists.infradead.org>; Tue, 13 Sep 2022 00:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date;
-        bh=lzCjj4e1n9t9IQqzlLuW7nZyRLt7gzrz/oqLfcOYBJo=;
-        b=QAyx8P59UPICELew93zou/RH2Ml+kd2I7MRmcDtbbz5eEhudPk6ezVT+I4rqcvHjzh
-         EOALXHwNQ9hS9s0FcwvkO5KKVQX89qNB6JvTFWH6sR1LvndNJdnAIpk3gI0JW5ULodRN
-         PSPMEytd8qxx7RNmAAjZFKClYbIMnMg2qEEyjzbofj9QZG1NVKF5rJAT4KqMKjUSqytu
-         0t4boLURlDeJeGGqhqx/gvDmt1hUvuIPqYzpimRO3WhY1p4P1RGWWdq+LT9svwh7sSm5
-         PlHEcx5TEHIZPx/Vpl9iSWWla9mpXgvV3hqn56VBIcwI7ptul60KYlG4cfLqj3toTz2Q
-         51Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date;
-        bh=lzCjj4e1n9t9IQqzlLuW7nZyRLt7gzrz/oqLfcOYBJo=;
-        b=qAJ5lfICk2hLCnN33fpz6hPvrztwg48GXxgh25bOtf8u24arHe0Ic9QNJ3US6Epeci
-         OmH2WVsvrt4bgQeylXKT0517N3tsD5nqM/zNyg864QOVI4UzJpyFplMNGlhYDail50Jy
-         8J1TRWeJdrzBcTL6qi9PHHOVZTkL3dY2OHyxBYBksFYHYekKjlmztsZi3dgVdcKwtF9T
-         hJmGU0bykGusQCUxNHBBZgbJY/O6Q5h2dbZk3TDEWQLM/le36KpC3n/NxsXQN1YtzEHL
-         1BFeIQ/JmmjONTnr+huq8hxf7H9a5D8yQtvUGMxIZkZ4nJoDbZtMdda7Z297b9uVi1yO
-         SIgA==
-X-Gm-Message-State: ACgBeo36YYp8866DOE3pi/GC/f9gqYCOU5YTjxKdWkzk0sZMAxHCnldR
-	+uv579g+nGC+C93XfmTfL8c=
-X-Google-Smtp-Source: AA6agR5F+AIP1OradTbq3GgwPQDWo1ENqpICuNDTzLf0vNAx5BDUiZAweHJLerxTyQ+7k7Lsc/IvXg==
-X-Received: by 2002:a17:907:6e0b:b0:73d:5850:ca15 with SMTP id sd11-20020a1709076e0b00b0073d5850ca15mr21398115ejc.344.1663054642389;
-        Tue, 13 Sep 2022 00:37:22 -0700 (PDT)
-Received: from [192.168.26.149] (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id e17-20020a170906249100b00778e3e2830esm191067ejb.9.2022.09.13.00.37.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Sep 2022 00:37:21 -0700 (PDT)
-Message-ID: <43059215-aa56-e8c5-53a4-143643058797@gmail.com>
-Date: Tue, 13 Sep 2022 09:37:21 +0200
+	id 1oY1TH-004W50-Fs
+	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2022 08:40:51 +0000
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28D88iXB007635;
+	Tue, 13 Sep 2022 01:40:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PPS06212021;
+ bh=UDsHn+9Q4/Sb44o7PGK24bSEg208rNW403NXgpY8lDE=;
+ b=bG8XvUx2kRU1NezMtCDLmeiDknljQmkek+28NZ+9QUlOc59/TVphcTUhrEWRqy7WXhuY
+ ALjqBhIt1d/IaemuryxqQLS6ZwX6SoW8piAEkRZ37oNY8fhFT0zZ7CEKZxj+PAUOP08f
+ NwcDYo/EmWd2CBqSlaVLz7KZMvW2A+Df4qzmw0oO638+gsY3FWy89JMIvgcFciaZBXoo
+ BpHIGYdnQ00JnfD79lD6rci0QzjgWB+D0pS6MLkhRCOT26WYZrGP6mPEn/7x2mMH2hVY
+ cWwa6AUftwLV6BAov90puZSJRnXyNj183hCH9d0IpyDKW/5M2yCqLgTznpK/iC2SbuPA ew== 
+Received: from ala-exchng01.corp.ad.wrs.com (unknown-82-252.windriver.com [147.11.82.252])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3jgnv6at2s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Tue, 13 Sep 2022 01:40:26 -0700
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 13 Sep 2022 01:40:25 -0700
+Received: from pek-ywang12-d1.wrs.com (128.224.32.146) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2242.12 via Frontend Transport; Tue, 13 Sep 2022 01:40:24 -0700
+From: <yaliang.wang@windriver.com>
+To: <tudor.ambarus@microchip.com>, <pratyush@kernel.org>, <michael@walle.cc>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd: spi-nor: gigadevice: gd25q256: replace gd25q256_default_init with gd25q256_post_bfpt
+Date: Tue, 13 Sep 2022 16:40:23 +0800
+Message-ID: <20220913084023.2451929-1-yaliang.wang@windriver.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
- Thunderbird/96.0
-Subject: Re: [PATCH 1/1] mtd: mtdpart: Fix cosmetic print
-To: Adrian Zaharia <Adrian.Zaharia@windriver.com>,
- linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- jani.nurminen@windriver.com, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20220825060407.335475-1-Adrian.Zaharia@windriver.com>
- <20220825060407.335475-2-Adrian.Zaharia@windriver.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <20220825060407.335475-2-Adrian.Zaharia@windriver.com>
+X-Proofpoint-GUID: uQ_sJLHkaE_jWWPTxhnn7fO7D111R8Mt
+X-Proofpoint-ORIG-GUID: uQ_sJLHkaE_jWWPTxhnn7fO7D111R8Mt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-13_03,2022-09-12_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=919 mlxscore=0 spamscore=0 adultscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 phishscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2207270000 definitions=main-2209130038
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220913_003726_275097_661C60AF 
-X-CRM114-Status: GOOD (  20.06  )
+X-CRM114-CacheID: sfid-20220913_014044_542788_08E0754F 
+X-CRM114-Status: GOOD (  18.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,47 +81,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 25.08.2022 08:04, Adrian Zaharia wrote:
-> From: Jani Nurminen <jani.nurminen@windriver.com>
-> 
-> The print of the MTD partitions during boot are off-by-one for the size.
-> Fix this and show the real last offset.
+From: Yaliang Wang <Yaliang.Wang@windriver.com>
 
-I see that PCI subsystem and printk() + %pR do that. Probably more. I
-guess it makes sense but I'm also wondering if/how confusing is that
-change going to be for users. We did printing like that for probably
-dozens of years.
+When utilizing PARSE_SFDP to initialize the flash parameter, the
+deprecated initializing method spi_nor_init_params_deprecated() and the
+function spi_nor_manufacturer_init_params() within it will never be
+executed, which results in the default_init hook function will also never
+be executed. As we do have quad enable function defined in BFPT, the
+post_bfpt hook will be the right place to tweak the function.
 
+Cc: stable@vger.kernel.org
+Fixes: 047275f7de18 ("mtd: spi-nor: gigadevice: gd25q256: Init flash based on SFDP")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Yaliang Wang <Yaliang.Wang@windriver.com>
+---
+ drivers/mtd/spi-nor/gigadevice.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-> Fixes: 3d6f657ced2b ("mtd: mtdpart: Fix cosmetic print")
-
-I can't find that hash / commit anywhere. Are you sure it exists?
-
-
-> Signed-off-by: Jani Nurminen <jani.nurminen@windriver.com>
-> Signed-off-by: Adrian Zaharia <Adrian.Zaharia@windriver.com>
-> ---
->   drivers/mtd/mtdpart.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index d442fa94c872..fab10e6d4171 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -118,7 +118,7 @@ static struct mtd_info *allocate_partition(struct mtd_info *parent,
->   		child->part.size = parent_size - child->part.offset;
->   
->   	printk(KERN_NOTICE "0x%012llx-0x%012llx : \"%s\"\n",
-> -	       child->part.offset, child->part.offset + child->part.size,
-> +	       child->part.offset, child->part.offset + child->part.size - 1,
->   	       child->name);
->   
->   	/* let's do some sanity checks */
+diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+index 119b38e6fc2a..bdc4d73424af 100644
+--- a/drivers/mtd/spi-nor/gigadevice.c
++++ b/drivers/mtd/spi-nor/gigadevice.c
+@@ -8,19 +8,24 @@
+ 
+ #include "core.h"
+ 
+-static void gd25q256_default_init(struct spi_nor *nor)
++static int
++gd25q256_post_bfpt(struct spi_nor *nor,
++		   const struct sfdp_parameter_header *bfpt_header,
++		   const struct sfdp_bfpt *bfpt)
+ {
+ 	/*
+ 	 * Some manufacturer like GigaDevice may use different
+ 	 * bit to set QE on different memories, so the MFR can't
+ 	 * indicate the quad_enable method for this case, we need
+-	 * to set it in the default_init fixup hook.
++	 * to set it in the post_bfpt fixup hook.
+ 	 */
+ 	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
++
++	return 0;
+ }
+ 
+ static const struct spi_nor_fixups gd25q256_fixups = {
+-	.default_init = gd25q256_default_init,
++	.post_bfpt = gd25q256_post_bfpt,
+ };
+ 
+ static const struct flash_info gigadevice_nor_parts[] = {
+-- 
+2.34.1
 
 
 ______________________________________________________
