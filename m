@@ -4,87 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 891F6C433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Oct 2022 23:14:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 369F0C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Oct 2022 23:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kPW1o4viJc391O82PPftYCqj40xWZv0cgvVzVdkWWoo=; b=E5WK+ALyVDuCab
-	9uywZG6v+q6DMw753uao1s8rCqZtw8Bhz6+fYRz3+mypRNswBZP5kKqPrnyytFRhibDHi7g6iwJ++
-	IEqfcZ92ggtA2RyhdJrpuKaiMkp4u77kWLe1aEv+BRcsXflieXjKmxHFmxqYJZO0fkm6q2giys8ic
-	mhiArp9h6pXli3jltpCc8tjSKLSrBXdyiEPxDOYq/RVKqCgm7Je/wI83Szo67B7zyo0p8hTXTSlof
-	hHarM1BKTEJCf+jR81208I2YkT/aoIhZsb4fQlCujUCjZjMww1+YOzTAVfSuPwCqkfF7E+DyrkzYg
-	xRNZl+nsMsCtR5//zSXw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Message-ID:Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Subject:Date:To:
+	From:Resent-To:Resent-Message-ID:Resent-Date:Resent-From:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Sender:Resent-Cc:References:List-Owner;
+	bh=ia9hoZzE8j/8QsgwKt23GmbpZw2q/IXWH3MMKnT0jok=; b=RzD4/MGgLz8heg/i7h9boHV2gV
+	ycvv4i/ZbiPYIrCpJEP1VX1ztSV9yYyrYf14Wz/4jGGgi9PapGT0tQQeV08xnhixed9aUU3CEMWQh
+	MX5+kkqzDWD2Gd1bOU1P6tqcJbBBkrwqaUYShZDvHmi+L2BEnXGeErsnEvI9O4ugbb05i5jOeT9wI
+	MMtzr8MkSvZWyMLWWPEJ2sQOK6JgdT/3T4B/p/4KkfjyWm8XKeCRx+kAgBaheJ2XLTyVSCHylSzGO
+	+VBEOEQiS6dfYmcfLa2girReovMsj6kzN9bznMAMx6UXYvjnoQc7FFpuY21MMOB5RAi0D6rt7AXVS
+	9dtWkgjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olejp-002ZI7-R7; Thu, 20 Oct 2022 23:14:09 +0000
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	id 1olenT-002axd-90; Thu, 20 Oct 2022 23:17:55 +0000
+Received: from tartarus.angband.pl ([51.83.246.204])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olejm-002ZAY-GD
-	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2022 23:14:08 +0000
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D9D8E2C00E8;
-	Fri, 21 Oct 2022 12:13:50 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1666307630;
-	bh=fgJ7uD7kfNF0O9FMoUEaassWIRXGLCe8NVSu130vzYo=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=1tskjm5ljMlMykF+QD5hQ2Pbg3TRTrKXDKW/VeVerWy3UJWaH0VvaRYzPfGS5osbG
-	 /IK2Q8rBizvgysWc/0Rq+gsHhjMUw92AW04EbHRjgqHyQsXZYOS7bka1wq2X/JVbIB
-	 nOsHfbXC/oh6RXpgl4My+JCWnGRcj/3PgiL9kf+T07gJ+UQedyD8LnYWiUSh0v/Qn0
-	 UhpTIct5FMVUPO1+LTUNH1rQN+vxeB9XZ5QvSbypOB1l9gdluVVsONbXakMPl95kMg
-	 d94AVb7fR+8CN+4CvB71cBA9oQkhV6H1fgZF37fyxjrmN9osiCwdbqBpqNb0Tpzt0u
-	 AAp8kCedzPa0Q==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B6351d62e0000>; Fri, 21 Oct 2022 12:13:50 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 21 Oct 2022 12:13:50 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.042; Fri, 21 Oct 2022 12:13:50 +1300
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Vadym Kochan
-	<vadym.kochan@plvision.eu>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
-	<vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Roger Quadros <rogerq@kernel.org>,
-	Florian Fainelli <f.fainelli@gmail.com>, Liang Yang <liang.yang@amlogic.com>,
-	Chuanhong Guo <gch981213@gmail.com>, Thomas Bogendoerfer
-	<tsbogend@alpha.franken.de>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Elad Nachman <enachman@marvell.com>, "Aviram
- Dali" <aviramd@marvell.com>
-Subject: Re: [PATCH 2/3] dt-bindings: mtd: Add AC5 specific binding
-Thread-Topic: [PATCH 2/3] dt-bindings: mtd: Add AC5 specific binding
-Thread-Index: AQHY45PZG1Eksg8lkEuM7xSMI1VNl64UjZcAgAKEjQA=
-Date: Thu, 20 Oct 2022 23:13:50 +0000
-Message-ID: <e13c3b91-c092-7756-3969-f1822e04cfdf@alliedtelesis.co.nz>
-References: <20221019082046.30160-1-vadym.kochan@plvision.eu>
- <20221019082046.30160-3-vadym.kochan@plvision.eu>
- <20221019104654.7ee35744@xps-13>
-In-Reply-To: <20221019104654.7ee35744@xps-13>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-ID: <DE745B3BA81DA041852ACC5DF8D4D834@atlnz.lc>
-MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=YrxxuLQX c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=Qawa6l4ZSaYA:10 a=g8kJ_gb0AAAA:8 a=M5GUcnROAAAA:8 a=2f4N3uraW7I7RusRnqYA:9 a=QEXdDO2ut3YA:10 a=ecSNLfPMzbq-p5zXJZOg:22 a=OBjm3rFKGHvpk9ecZwUJ:22
-X-SEG-SpamProfiler-Score: 0
+	id 1olenP-002auJ-EJ
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2022 23:17:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=angband.pl;
+	s=tartarus; h=In-Reply-To:Subject:Date:To:From:Resent-To:Resent-Message-ID:
+	Resent-Date:Resent-From:Sender:Reply-To:Message-ID:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	Resent-Sender:Resent-Cc:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Nm1iJXuUdZU2uB9PpQSX83/wN9IfcihizUePEGEMhZE=; b=Ls48i0jeumE8G9rGzpu/zgItj/
+	EaMT057HE3YesF+z7+yW4TyCy84/7Gl6uQjF+BDPbeW6a8q0PLglUn7p39PLdMOc4L4b3zKOVgqjy
+	EcuLIQQGE/Ww46xi2sKUtvMmh6cDBNEB9ONcUBoXVakd61O6JOuiL6FsGJMcsfZALpsY=;
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.94.2)
+	(envelope-from <kilobyte@angband.pl>)
+	id 1oleII-009OaO-Sl; Fri, 21 Oct 2022 00:45:42 +0200
+Resent-From: Adam Borowski <kilobyte@angband.pl>
+Resent-Date: Fri, 21 Oct 2022 00:45:42 +0200
+Resent-Message-ID: <Y1HPlofU76eeJi3n@angband.pl>
+Resent-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Adam Borowski <kilobyte@angband.pl>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org,
+ Mark Brown <broonie@kernel.org>,
+ linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Date: Wed, 14 Sep 2022 23:29:09 +0200
+Subject: [PATCH 3/6] mtd: eject cfi_interleave code to its own header
+In-Reply-To: <S229853AbiJTWkg/20221020224036Z+12888@vger.kernel.org>
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221020_161406_739058_33D88E78 
-X-CRM114-Status: GOOD (  17.64  )
+X-CRM114-CacheID: sfid-20221020_161751_659355_1B160012 
+X-CRM114-Status: GOOD (  16.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,35 +73,291 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Message-ID: <E1olenT-002axd-90@bombadil.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVmFkeW0sDQoNCk9uIDE5LzEwLzIyIDIxOjQ2LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOg0KPiBI
-aSBWYWR5bSwNCj4NCj4gdmFkeW0ua29jaGFuQHBsdmlzaW9uLmV1IHdyb3RlIG9uIFdlZCwgMTkg
-T2N0IDIwMjIgMTE6MjA6MzkgKzAzMDA6DQo+DQo+PiBGcm9tOiBBdmlyYW0gRGFsaSA8YXZpcmFt
-ZEBtYXJ2ZWxsLmNvbT4NCj4+DQo+PiBBZGQgYmluZGluZyBmb3IgQUM1IFNvQyB3aGljaCBoYXZl
-IGl0cyBzcGVjaWFsIHdheSBvZiBoYW5kaW5nDQo+PiBOQU5EIGxheW91dC4NCj4+DQo+PiBTaWdu
-ZWQtb2ZmLWJ5OiBBdmlyYW0gRGFsaSA8YXZpcmFtZEBtYXJ2ZWxsLmNvbT4NCj4+IFNpZ25lZC1v
-ZmYtYnk6IFZhZHltIEtvY2hhbiA8dmFkeW0ua29jaGFuQHBsdmlzaW9uLmV1Pg0KPj4gLS0tDQo+
-PiAgIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbWFydmVsbC1uYW5kLnR4
-dCB8IDEgKw0KPj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4+DQo+PiBkaWZm
-IC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tYXJ2ZWxsLW5h
-bmQudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tYXJ2ZWxsLW5h
-bmQudHh0DQo+PiBpbmRleCBhMmQ5YTBmMmI2ODMuLjI5MzU1MWVjNzM1MCAxMDA2NDQNCj4+IC0t
-LSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbWFydmVsbC1uYW5kLnR4
-dA0KPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tYXJ2ZWxs
-LW5hbmQudHh0DQo+PiBAQCAtMiw2ICsyLDcgQEAgTWFydmVsbCBOQU5EIEZsYXNoIENvbnRyb2xs
-ZXIgKE5GQykNCj4+ICAgDQo+PiAgIFJlcXVpcmVkIHByb3BlcnRpZXM6DQo+PiAgIC0gY29tcGF0
-aWJsZTogY2FuIGJlIG9uZSBvZiB0aGUgZm9sbG93aW5nOg0KPj4gKyAgICAqICJtYXJ2ZWxsLGFj
-NS1uYW5kLWNvbnRyb2xsZXIiDQo+PiAgICAgICAqICJtYXJ2ZWxsLGFybWFkYS04ay1uYW5kLWNv
-bnRyb2xsZXIiDQo+PiAgICAgICAqICJtYXJ2ZWxsLGFybWFkYTM3MC1uYW5kLWNvbnRyb2xsZXIi
-DQo+PiAgICAgICAqICJtYXJ2ZWxsLHB4YTN4eC1uYW5kLWNvbnRyb2xsZXIiDQo+IENvdWxkIHlv
-dSBwbGVhc2UgZG8gdGhlIHlhbWwgY29udmVyc2lvbiBmaXJzdD8NCklmIGl0IGhlbHBzIEkndmUg
-ZG9uZSBhIGZldyBvZiB0aGVzZSBjb252ZXJzaW9ucyBpbiB0aGUgcGFzdC4gSSdkIGJlIA0KaGFw
-cHkgdG8gaGVscCB5b3Ugb3V0IHdpdGggZG9pbmcgdGhlIGNvbnZlcnNpb24gaWYgaXQgaGVscHMg
-eW91IG1vdmUgdGhlIA0KcmVzdCBvZiB0aGUgc2VyaWVzIGZvcndhcmQuDQo+DQo+IFRoYW5rcywN
-Cj4gTWlxdcOobApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+This fixes build failures for stuff that doesn't care about that, such as:
+
+In file included from ./include/linux/mtd/spi-nor.h:10,
+                 from drivers/spi/spi-intel.c:13:
+./include/linux/mtd/cfi.h:62:2: error: #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support
+   62 | #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work.
+      |  ^~~~~~~
+
+Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c |  1 +
+ drivers/mtd/chips/cfi_cmdset_0002.c |  1 +
+ drivers/mtd/chips/cfi_cmdset_0020.c |  1 +
+ drivers/mtd/chips/cfi_util.c        |  1 +
+ drivers/mtd/chips/gen_probe.c       |  1 +
+ drivers/mtd/chips/jedec_probe.c     |  1 +
+ include/linux/mtd/cfi.h             | 75 --------------------------
+ include/linux/mtd/cfi_interleave.h  | 83 +++++++++++++++++++++++++++++
+ 8 files changed, 89 insertions(+), 75 deletions(-)
+ create mode 100644 include/linux/mtd/cfi_interleave.h
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 54f92d09d9cf..efbf06fce95b 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -34,6 +34,7 @@
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/cfi.h>
++#include <linux/mtd/cfi_interleave.h>
+ 
+ /* #define CMDSET0001_DISABLE_ERASE_SUSPEND_ON_WRITE */
+ /* #define CMDSET0001_DISABLE_WRITE_SUSPEND */
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 67453f59c69c..70d00c3641d8 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -37,6 +37,7 @@
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/cfi.h>
++#include <linux/mtd/cfi_interleave.h>
+ #include <linux/mtd/xip.h>
+ 
+ #define AMD_BOOTLOC_BUG
+diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
+index d35df526e0a6..007e37faff56 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0020.c
++++ b/drivers/mtd/chips/cfi_cmdset_0020.c
+@@ -31,6 +31,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/cfi.h>
++#include <linux/mtd/cfi_interleave.h>
+ #include <linux/mtd/mtd.h>
+ 
+ 
+diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
+index 6a6a2a21d2ed..608315032f9e 100644
+--- a/drivers/mtd/chips/cfi_util.c
++++ b/drivers/mtd/chips/cfi_util.c
+@@ -22,6 +22,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/cfi.h>
++#include <linux/mtd/cfi_interleave.h>
+ 
+ void cfi_udelay(int us)
+ {
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index 4d4f97841016..8703890ff20e 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -10,6 +10,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/cfi.h>
++#include <linux/mtd/cfi_interleave.h>
+ #include <linux/mtd/gen_probe.h>
+ 
+ static struct mtd_info *check_cmd_set(struct map_info *, int);
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index 6f7e7e1b3fe5..88a979bb59bb 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -20,6 +20,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/cfi.h>
++#include <linux/mtd/cfi_interleave.h>
+ #include <linux/mtd/gen_probe.h>
+ 
+ /* AMD */
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index d88bb56c18e2..4a8ddb51afee 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -8,87 +8,12 @@
+ 
+ #include <linux/delay.h>
+ #include <linux/types.h>
+-#include <linux/bug.h>
+ #include <linux/interrupt.h>
+ #include <linux/mtd/flashchip.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/cfi_endian.h>
+ #include <linux/mtd/xip.h>
+ 
+-#ifdef CONFIG_MTD_CFI_I1
+-#define cfi_interleave(cfi) 1
+-#define cfi_interleave_is_1(cfi) (cfi_interleave(cfi) == 1)
+-#else
+-#define cfi_interleave_is_1(cfi) (0)
+-#endif
+-
+-#ifdef CONFIG_MTD_CFI_I2
+-# ifdef cfi_interleave
+-#  undef cfi_interleave
+-#  define cfi_interleave(cfi) ((cfi)->interleave)
+-# else
+-#  define cfi_interleave(cfi) 2
+-# endif
+-#define cfi_interleave_is_2(cfi) (cfi_interleave(cfi) == 2)
+-#else
+-#define cfi_interleave_is_2(cfi) (0)
+-#endif
+-
+-#ifdef CONFIG_MTD_CFI_I4
+-# ifdef cfi_interleave
+-#  undef cfi_interleave
+-#  define cfi_interleave(cfi) ((cfi)->interleave)
+-# else
+-#  define cfi_interleave(cfi) 4
+-# endif
+-#define cfi_interleave_is_4(cfi) (cfi_interleave(cfi) == 4)
+-#else
+-#define cfi_interleave_is_4(cfi) (0)
+-#endif
+-
+-#ifdef CONFIG_MTD_CFI_I8
+-# ifdef cfi_interleave
+-#  undef cfi_interleave
+-#  define cfi_interleave(cfi) ((cfi)->interleave)
+-# else
+-#  define cfi_interleave(cfi) 8
+-# endif
+-#define cfi_interleave_is_8(cfi) (cfi_interleave(cfi) == 8)
+-#else
+-#define cfi_interleave_is_8(cfi) (0)
+-#endif
+-
+-#ifndef cfi_interleave
+-#warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work.
+-static inline int cfi_interleave(void *cfi)
+-{
+-	BUG();
+-	return 0;
+-}
+-#endif
+-
+-static inline int cfi_interleave_supported(int i)
+-{
+-	switch (i) {
+-#ifdef CONFIG_MTD_CFI_I1
+-	case 1:
+-#endif
+-#ifdef CONFIG_MTD_CFI_I2
+-	case 2:
+-#endif
+-#ifdef CONFIG_MTD_CFI_I4
+-	case 4:
+-#endif
+-#ifdef CONFIG_MTD_CFI_I8
+-	case 8:
+-#endif
+-		return 1;
+-
+-	default:
+-		return 0;
+-	}
+-}
+-
+ 
+ /* NB: these values must represents the number of bytes needed to meet the
+  *     device type (x8, x16, x32).  Eg. a 32 bit device is 4 x 8 bytes.
+diff --git a/include/linux/mtd/cfi_interleave.h b/include/linux/mtd/cfi_interleave.h
+new file mode 100644
+index 000000000000..03d94a6d11fc
+--- /dev/null
++++ b/include/linux/mtd/cfi_interleave.h
+@@ -0,0 +1,83 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++
++#ifndef __MTD_CFI_INTERLEAVE_H__
++#define __MTD_CFI_INTERLEAVE_H__
++
++#include <linux/bug.h>
++
++#ifdef CONFIG_MTD_CFI_I1
++#define cfi_interleave(cfi) 1
++#define cfi_interleave_is_1(cfi) (cfi_interleave(cfi) == 1)
++#else
++#define cfi_interleave_is_1(cfi) (0)
++#endif
++
++#ifdef CONFIG_MTD_CFI_I2
++# ifdef cfi_interleave
++#  undef cfi_interleave
++#  define cfi_interleave(cfi) ((cfi)->interleave)
++# else
++#  define cfi_interleave(cfi) 2
++# endif
++#define cfi_interleave_is_2(cfi) (cfi_interleave(cfi) == 2)
++#else
++#define cfi_interleave_is_2(cfi) (0)
++#endif
++
++#ifdef CONFIG_MTD_CFI_I4
++# ifdef cfi_interleave
++#  undef cfi_interleave
++#  define cfi_interleave(cfi) ((cfi)->interleave)
++# else
++#  define cfi_interleave(cfi) 4
++# endif
++#define cfi_interleave_is_4(cfi) (cfi_interleave(cfi) == 4)
++#else
++#define cfi_interleave_is_4(cfi) (0)
++#endif
++
++#ifdef CONFIG_MTD_CFI_I8
++# ifdef cfi_interleave
++#  undef cfi_interleave
++#  define cfi_interleave(cfi) ((cfi)->interleave)
++# else
++#  define cfi_interleave(cfi) 8
++# endif
++#define cfi_interleave_is_8(cfi) (cfi_interleave(cfi) == 8)
++#else
++#define cfi_interleave_is_8(cfi) (0)
++#endif
++
++#ifndef cfi_interleave
++#warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work.
++static inline int cfi_interleave(void *cfi)
++{
++	BUG();
++	return 0;
++}
++#endif
++
++static inline int cfi_interleave_supported(int i)
++{
++	switch (i) {
++#ifdef CONFIG_MTD_CFI_I1
++	case 1:
++#endif
++#ifdef CONFIG_MTD_CFI_I2
++	case 2:
++#endif
++#ifdef CONFIG_MTD_CFI_I4
++	case 4:
++#endif
++#ifdef CONFIG_MTD_CFI_I8
++	case 8:
++#endif
++		return 1;
++
++	default:
++		return 0;
++	}
++}
++
++
++#endif /* __MTD_CFI_INTERLEAVE_H__ */
+-- 
+2.37.2.609.g9ff673ca1a
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
