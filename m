@@ -4,77 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3164ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Sep 2022 09:08:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CD1CC6FA82
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Sep 2022 14:02:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RbvHUpyWNaHbHhfHGQaRre5K1+ky7+BhOLJ7jCyaIRo=; b=PkVMXqI6m5us9P
-	sccGqhukxHLYofvOLHwq9sCIFsQqNdGNCiK3doGLzyNsQD+/0cjlcYW3KSAV3wh4+GAFlFgUXOlj9
-	G+hnSCbrqU07/X9y6d7kXZhOKHzBCnR7d14FgY2tzKi21OB72dJtobZP1ojXn3zxDcWUS3V+V/vsS
-	qRy7mQBK5xmpXA8zNXHPpP7IjOtwO6ohJ3nMO6RXcoxY4fQALNxGx0+JcvAqm/m9GocaUS9YyxEVQ
-	fSrPd8hav+bDNlFQILnD4KCHEQZYepMXV+DqOGKtGZd5C6or+vsUm5XF1LQec4RfVf5XYsSlfFu4J
-	G8BpJHrwvYFqEVQwnHuA==;
+	List-Owner; bh=FnEk4xCI8tVS5Ys5mbmjAKdI/0pDRkN59U71QfhjgAs=; b=dTdLsuq+bwbUXb
+	sZu16UGhO2YP5aaw1dmETTgdy5Ug9mopU2DrLIaEUvb2+/6WEZBKf/VJkZYtnB0h94rhxDLsi3zzO
+	1JJGAs7dkoPLe6nU3c1Dzzdc/cF0F6Nq9lCPiI3b4aBFOFftKBTi3NxUSbPobTNh/v+y4AIfewA1Z
+	8BF6bZLHPSZdz+sXzvRICSP5+heMim8A8LMQpi8Pzt1LpwtP2vO1B9gjrV0NfT6g6g2M1CGASEeq+
+	ZCCA3/kRE7CVWCTb1hMWtBdHPopjatpRxVRofaD131fcznGZdbcMR+lbWpb864ywiq+s51RArmLc2
+	3nd0lultw/fONPlDFedQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oYOND-00Dudd-8c; Wed, 14 Sep 2022 09:07:59 +0000
-Received: from gloria.sntech.de ([185.11.138.130])
+	id 1oYSxY-001WFm-56; Wed, 14 Sep 2022 14:01:48 +0000
+Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oYO8V-00Dj3k-2B; Wed, 14 Sep 2022 08:52:50 +0000
-Received: from [89.101.193.68] (helo=phil.sntech)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1oYO8L-0004ae-5u; Wed, 14 Sep 2022 10:52:37 +0200
-From: Heiko Stuebner <heiko@sntech.de>
-To: Johan Jonker <jbx6244@gmail.com>,
-	kever.yang@rock-chips.com
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	linux-rockchip@lists.infradead.org,
-	vkoul@kernel.org,
-	vigneshr@ti.com,
-	linux@roeck-us.net,
-	ulf.hansson@linaro.org,
-	devicetree@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	linux-watchdog@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	u.kleine-koenig@pengutronix.de,
-	linux-mtd@lists.infradead.org,
-	zhangqing@rock-chips.com,
-	linux-pwm@vger.kernel.org,
-	jamie@jamieiles.com,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-spi@vger.kernel.org,
-	gregkh@linuxfoundation.org,
-	thierry.reding@gmail.com,
-	sjg@chromium.org,
-	philipp.tomsich@vrull.eu,
-	kishon@ti.com,
-	richard@nod.at,
-	linux-kernel@vger.kernel.org,
-	linux-i2c@vger.kernel.org,
-	robh+dt@kernel.org,
-	linux-mmc@vger.kernel.org,
-	broonie@kernel.org,
-	wim@linux-watchdog.org,
-	linux-serial@vger.kernel.org,
-	miquel.raynal@bootlin.com
-Subject: Re: (subset) [PATCH v1 01/11] dt-bindings: serial: rockchip: add rockchip,rk3128-uart
-Date: Wed, 14 Sep 2022 10:52:33 +0200
-Message-Id: <166314554237.197444.11513118217413767473.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <4f283231-2ed4-202b-0c23-157bce0841ee@gmail.com>
-References: <20220909212543.17428-1-jbx6244@gmail.com> <4f283231-2ed4-202b-0c23-157bce0841ee@gmail.com>
+	id 1oYSx5-001Vce-0Y
+	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2022 14:01:22 +0000
+Received: by mail-lj1-x22a.google.com with SMTP id s10so17751148ljp.5
+        for <linux-mtd@lists.infradead.org>; Wed, 14 Sep 2022 07:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=4I1nWuKw3OANLT7/DYo/zylVSp6G+u/GpJfP6xzHR3E=;
+        b=brLbhteVZvljyIvgq/BZuRLdaBrU3dauTxDoV0afpm3D8G8eC+PzDhihujize4u5bY
+         xgox21O6n2RkerLtHPJSxFlI9Ypd4EaaCMtXQ7yq5LZNyMV3rxWn43mV+DL93secxJ35
+         4Mo/5OnJiR6EUaDKMTG+vYej6lxDoTN17UAF7qfMYvtkuVe2JYPn54zshCzOug6c4hnm
+         0PMtdZptGI+KTwKQPmr17gsklS46PN+JxnAiFa0Kz1YXmHRDDEHnUiBiga5Vbxp6gH4i
+         w0hl0XbK0nFJOe2yMuLg3FVQgvh34lleAXvP2oQC+kW2m8mmi10ye76Qq7J6zmCtULXy
+         wI1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=4I1nWuKw3OANLT7/DYo/zylVSp6G+u/GpJfP6xzHR3E=;
+        b=ysWnMhEMazjvUO9xx4MpIIUe04F4pEaJlGlk9ySvMmlVXqQCZ8BFKhgYA1WPL6v3hf
+         NIAamG3zI9PWo1/c+TFkPGaeBGDnGZkJ0piVftjNplJZi71ONW5S7qcZFiFpKwRWsnKN
+         fBGUJP1LqA9ufj3Re/wBWAWfVOQbruAHDYIIMdZtYU/JeFFA26vT/w8I4qFq5iY3gBVK
+         OA4+ksBSPOVpejeHdTjb5uvBYD1OhPMldmLGp6NnAarwO3WVPU7LPpK9aLxGG+FuS7Dj
+         8qrXkePpGgprYaPpYjfENv1osRRpL7sqylCnHtLubRg7zCkqTN9qIbvJK7tZxyD6OPzo
+         Eurg==
+X-Gm-Message-State: ACgBeo3Wlc6/5SZGHXUUfnA8bv6L8FljiwMThnn1YqABMkZdl3DX4P5N
+	Kuz0pL4izzQMbP3/NP39dul+3qSr5ATmqQYHurR13g==
+X-Google-Smtp-Source: AA6agR6JkJbCqyE2gTrtp6CclhDjtY75sWE4XsKvRX/lZhn/DSwVZZASJB/yTmhXGA6tUkOdrnfrqI0qNyYf9XVzF8k=
+X-Received: by 2002:a05:651c:214:b0:26a:b03b:9e0c with SMTP id
+ y20-20020a05651c021400b0026ab03b9e0cmr10198201ljn.463.1663164075540; Wed, 14
+ Sep 2022 07:01:15 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220909212543.17428-1-jbx6244@gmail.com> <f2cb42c8-3664-a2d5-074d-5c9a10c693e8@gmail.com>
+In-Reply-To: <f2cb42c8-3664-a2d5-074d-5c9a10c693e8@gmail.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Wed, 14 Sep 2022 16:00:38 +0200
+Message-ID: <CAPDyKFrF5Tn9a_hqp7mrp14YCrcX4LV6Y5qNxOz2ZSRJJuMmCA@mail.gmail.com>
+Subject: Re: [PATCH v1 04/11] dt-bindings: mmc: rockchip: add rockchip,rk3128-dw-mshc
+To: Johan Jonker <jbx6244@gmail.com>
+Cc: kever.yang@rock-chips.com, sjg@chromium.org, philipp.tomsich@vrull.eu, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, heiko@sntech.de, 
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, kishon@ti.com, 
+	vkoul@kernel.org, thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de, 
+	gregkh@linuxfoundation.org, broonie@kernel.org, wim@linux-watchdog.org, 
+	linux@roeck-us.net, zhangqing@rock-chips.com, jamie@jamieiles.com, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-phy@lists.infradead.org, 
+	linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org, 
+	linux-spi@vger.kernel.org, linux-usb@vger.kernel.org, 
+	linux-watchdog@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220914_015247_162593_3905D6D3 
-X-CRM114-Status: UNSURE (   5.55  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220914_070119_105973_C31CC570 
+X-CRM114-Status: GOOD (  11.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,19 +95,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 10 Sep 2022 00:01:28 +0200, Johan Jonker wrote:
-> Add rockchip,rk3128-uart compatible string.
+On Sat, 10 Sept 2022 at 00:02, Johan Jonker <jbx6244@gmail.com> wrote:
+>
+> Add rockchip,rk3128-dw-mshc compatible string.
+>
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 
-Applied, thanks!
+Applied for next, thanks!
 
-[08/11] dt-bindings: arm: rockchip: pmu: add rockchip,rk3128-pmu
-        commit: 9c2f4521344f3b14fa0be050100ef726edc36cbc
-[10/11] dt-bindings: soc: rockchip: grf: add rockchip,rk3128-grf
-        commit: adc4f190260a6c004f950992d8c9ee3aec8da38b
+Kind regards
+Uffe
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+
+> ---
+>  Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+> index bad28bc74..95f59a5e3 100644
+> --- a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
+> @@ -32,6 +32,7 @@ properties:
+>                - rockchip,px30-dw-mshc
+>                - rockchip,rk1808-dw-mshc
+>                - rockchip,rk3036-dw-mshc
+> +              - rockchip,rk3128-dw-mshc
+>                - rockchip,rk3228-dw-mshc
+>                - rockchip,rk3308-dw-mshc
+>                - rockchip,rk3328-dw-mshc
+> --
+> 2.20.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
