@@ -4,76 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC770ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Sep 2022 20:51:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3116DECAAD3
+	for <linux-mtd@archiver.kernel.org>; Wed, 14 Sep 2022 22:11:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lOM2oNn5tUUJSQlMnd+Mgx26UQbOawWObw/0hwafWcE=; b=0fMs0c/x5AeQAm
-	lyHPiKNMr8uRbwORHUZzOWSuQhIuOJMgeGne+2okZSGAOuE5s16SJvgTHA/pL5t8bafPjKTsjCoc9
-	X/4K8I5GdX3i6Hvy8DqhWiwIfACEbMBXDxUp5wqEbacwG+es4CsvQxPduIy2SClmxBh5l8C5ggOKA
-	cR1cmHCQlCZT+kiBRiIfOK1JTVSFtfiT7WzR3U9NXEfZJGiJaZj22slV8SfPtWZPeS3eh9xPaPZx7
-	wtyB6UDuCpi4cSbWwMrkrQvVAshDmrvML9qx9OKTtctogdPA09grsiX3gybrl/PHVDaKozrHPanQ6
-	xY4xeGygJx2N4W3dSRUA==;
+	List-Owner; bh=i/+Rng8nN3GSUA/NlEPkrrRHGvQp7Rch9QpqhW5wBPo=; b=A53zLgCYjnvM5H
+	5DiJ2mPe3cxkars/U6hf6lDZgyOGgrRRErmY4h93R76ByOGlxfOIBVGUBIeUDHKnP2zJ6R6phjMNF
+	mvyYVTxc45WQLiKvmXCljWk6P+UFzujhGIiP+xmN78O4IBxGwwIAO3lQI31aJ6lSnY359raYBJxoe
+	PpxGWDTNY2v9Qy83BZMKFcBKlXU7S7phAcsKG/zf86yFWJETu+lTsmhmrpd/AgXdvN7b5HM6w7S+e
+	s+NEu9SJyu+cLmh/zuKHBxYi3MpvKlmPHkBviSvduGZZ1RFhVdsYRyUbt+uMT7yRhotWFOye1AFYL
+	KQiK/0glGsVrx41jd+aQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oYZMF-009X1s-1n; Wed, 14 Sep 2022 20:51:43 +0000
-Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	id 1oYab8-00B6hD-Rz; Wed, 14 Sep 2022 22:11:10 +0000
+Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oYZM1-009WrO-St; Wed, 14 Sep 2022 20:51:32 +0000
-Received: by mail-pj1-x102e.google.com with SMTP id go6so11539054pjb.2;
-        Wed, 14 Sep 2022 13:51:28 -0700 (PDT)
+	id 1oYab5-00B6d2-38
+	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2022 22:11:08 +0000
+Received: by mail-wm1-x332.google.com with SMTP id bd26-20020a05600c1f1a00b003a5e82a6474so12496045wmb.4
+        for <linux-mtd@lists.infradead.org>; Wed, 14 Sep 2022 15:11:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=dlyCVmQYKvV9dtFJPrSziTcD5W40HZ0uDRKK1oXcTjY=;
-        b=nQ2uU+3R3PULyzrTap/XMmm6mJFph0hl/rwnZDVw4fHif64LfKbHO5rnhHo7ZBGOhY
-         Y+K6cgM4AMO5ADpYIlPnp0jr65QZdHHyYjxW3ZqMKO0iLcGO0nCwAHDEI3uBPvfrcl2j
-         49PHNjtCegfj1qk5vtGsD9x6EtUsobJDjYldgWkP8TeMOTJuNuXjCl3smhpkRV8//W9n
-         JZycJBfXGmUQJvbuV7hICwvCZYZNe39ycv/ITCW0Vu9F0iL+aJ5R386WELsGIzJjwDDp
-         81xNJ26VgXtES9YHUSfP0fRtEDxe2rjAbaQJ0oFLWXGODCW0tM2h8ClQBwclicg1Uuba
-         I+gA==
+        d=linaro.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=NtHUpnkTzZLClNVo69m+97iJj6YVMUW1mrBbO6+GYx4=;
+        b=k2pheIKKkU+v+L7T78yXrfbXdox99kc/Tr45O+C7PY7veqxy0014cMCxQVXON4s2s5
+         bjH2835AjYfVooRAqAaLXN46FFfFKz+yTuex+r2f7lCxZurHDc4UdYiF8eLRo0KAplWR
+         howoQOCotQNuEVzUXqcqGIoxmMAnxUpg1Nfe9d0Jxelq/67lT0FWysxG1WSfq+tllrjF
+         MJGftTJiPRdKNtaMK8f6XZUTaNntZtfd/XstIgXIWzhi4UbcNZACk5afdo4Gcg15URcE
+         POfHX75eaFbmiVIcvYCWJEfT2RE09oo6kgsX5SeMsEEBrOhKyU0oNum9hOQ4q8nVbdPe
+         lGkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=dlyCVmQYKvV9dtFJPrSziTcD5W40HZ0uDRKK1oXcTjY=;
-        b=6gDRK/X+jLMlaPaLPiPAOkojtekXZ1H+MAartmXSoUGzL4Weo9xWBEqJcupreZ7vdp
-         2zRtxO5OS4wzat2cGCa9dkVmiNiTrLdtP/I+dNirlV5B9c9GI9fbTYgHKBR2CTXjII1c
-         gsYD5bI/AFlZ7jTT/9lbwycm7IxSQeISFY4ysCA875KXrC8nMBzqQADtA6+/j9pszKk4
-         Cp2gCJT68g2hGABHNakbWZgt7G62iRLvinrnHXvUhIwzO5Qv1v9twAZdokrjAp5Ah9en
-         qca7b2KzWL4aa5eokPBGlKQaI/CGLzt5LDHWFqw8fAD6kFUCpsws5b5jbUMEqSqk3Kxr
-         7HrQ==
-X-Gm-Message-State: ACrzQf00rVIvzm5MXq2homLdPx0LWrAOl9z0WQTv1vuTp/SwiJTnMmI4
-	w2G+zWlgBToZeRj4L5+ARI5WjJ6im0F0KphXqP0nA9h+XHfuBA==
-X-Google-Smtp-Source: AMsMyM4KjrM0IM3832iUKTWtgifnk8PV7Aeeje1iXgE7szIfUB5EJlsMpXz2Wp+mJmuo+laDp3uhoy2nfimJMACoQmc=
-X-Received: by 2002:a17:90b:17cf:b0:202:95a2:e310 with SMTP id
- me15-20020a17090b17cf00b0020295a2e310mr7000218pjb.76.1663188687895; Wed, 14
- Sep 2022 13:51:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220914201049.3508104-1-han.xu@nxp.com>
-In-Reply-To: <20220914201049.3508104-1-han.xu@nxp.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Wed, 14 Sep 2022 17:51:16 -0300
-Message-ID: <CAOMZO5AGxXqF8Q6jhfr7vbZmQd6MU4SzFpj5XQG7cPtmdFrFVQ@mail.gmail.com>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=NtHUpnkTzZLClNVo69m+97iJj6YVMUW1mrBbO6+GYx4=;
+        b=i0o878wBwE9JK6Fru+S1tD6Jc4qdcIU2OffACpDgUuOTM2TdgzGET2pdIezHOtt1T0
+         pbjQPthJjqN5OE7+1a0O4SnKZHJWhcVW192Fk71Psyq4jgsSRVNeuDqamzhC5oIJb4oO
+         5wFWoc540Fapv3OWvnk7l9V/GGnj2l75Wv61IXXjnBxgmiQ5GCbJQbscWHdl9G4a7ZS5
+         gGQ3BeucAe0xA9hF/i7U9FYzIqKmXhGG5Uf+go4b4gQ/5K0SJqN69nh1xHUxECNYpUqw
+         OgVDJx56QnteOY8w+XWgLzVLioYqWq4IKmgoDwzwlxu8L3WJWheJG2TXS6w1TrKEugcg
+         vpyw==
+X-Gm-Message-State: ACgBeo3ecYqWqo36DS5uvRvYazKQDWM5F4fS8vqmYHenGZQI5oidN2Gn
+	lmbn0pfyBciU+80eDNHtPtgyXg==
+X-Google-Smtp-Source: AA6agR6NcwwbUlfaV8V54oY0YHXnyEWnJv3scoxu+jgnhyd/kEyHVKwb+mdfdcFhsX6xndenkvt7mg==
+X-Received: by 2002:a1c:4b0d:0:b0:3b4:76ae:f7a5 with SMTP id y13-20020a1c4b0d000000b003b476aef7a5mr4848503wma.23.1663193464311;
+        Wed, 14 Sep 2022 15:11:04 -0700 (PDT)
+Received: from linaro.org ([94.52.112.99])
+        by smtp.gmail.com with ESMTPSA id q16-20020adff950000000b0022a9246c853sm396428wrr.41.2022.09.14.15.11.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Sep 2022 15:11:03 -0700 (PDT)
+Date: Thu, 15 Sep 2022 01:11:02 +0300
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Han Xu <han.xu@nxp.com>, Stephen Boyd <sboyd@kernel.org>
+Cc: Abel Vesa <abelvesa@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	"open list:NXP i.MX CLOCK DRIVERS" <linux-clk@vger.kernel.org>,
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>, miquel.raynal@bootlin.com,
+	linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] clk: imx: imx6sx: remove the SET_RATE_PARENT flag for
  QSPI clocks
-To: Han Xu <han.xu@nxp.com>
-Cc: Abel Vesa <abelvesa@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	NXP Linux Team <linux-imx@nxp.com>, 
-	"open list:NXP i.MX CLOCK DRIVERS" <linux-clk@vger.kernel.org>, 
-	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
-	open list <linux-kernel@vger.kernel.org>, miquel.raynal@bootlin.com, 
-	linux-mtd@lists.infradead.org
+Message-ID: <YyJRdnTpoM7kw/Bt@linaro.org>
+References: <20220914201049.3508104-1-han.xu@nxp.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220914201049.3508104-1-han.xu@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220914_135129_966848_EBEABFF3 
-X-CRM114-Status: GOOD (  10.26  )
+X-CRM114-CacheID: sfid-20220914_151107_207372_1B2D300A 
+X-CRM114-Status: GOOD (  17.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,24 +98,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Han Xu,
-
-On Wed, Sep 14, 2022 at 5:11 PM Han Xu <han.xu@nxp.com> wrote:
->
+On 22-09-14 15:10:48, Han Xu wrote:
 > There is no dedicate parent clock for QSPI so SET_RATE_PARENT flag
 > should not be used. For instance, the default parent clock for QSPI is
 > pll2_bus, which is also the parent clock for quite a few modules, such
 > as MMDC, once GPMI NAND set clock rate for EDO5 mode can cause system
 > hang due to pll2_bus rate changed.
+> 
+> Fixes: f1541e15e38e ("clk: imx6sx: Switch to clk_hw based API")
+> Signed-off-by: Han Xu <han.xu@nxp.com>
 
-Thanks a lot for your patch.
+Acked-by: Abel Vesa <abel.vesa@linaro.org>
 
-This fixes the kernel hang issue on a custom imx6sx board with NAND without the
-need of using the workaround found in the NXP kernel:
+Stephen, will you be picking this?
 
-https://source.codeaurora.org/external/imx/linux-imx/commit/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c?h=lf-5.15.y&id=d03eb99c393f8732f70a1d7d29a3b9c42cccbe48
-
-Tested-by: Fabio Estevam <festevam@denx.de>
+> ---
+>  drivers/clk/imx/clk-imx6sx.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/imx/clk-imx6sx.c b/drivers/clk/imx/clk-imx6sx.c
+> index 2301d8fb8c76..1e53e366cde7 100644
+> --- a/drivers/clk/imx/clk-imx6sx.c
+> +++ b/drivers/clk/imx/clk-imx6sx.c
+> @@ -324,13 +324,13 @@ static void __init imx6sx_clocks_init(struct device_node *ccm_node)
+>  	hws[IMX6SX_CLK_SSI3_SEL]           = imx_clk_hw_mux("ssi3_sel",         base + 0x1c,  14,     2,      ssi_sels,          ARRAY_SIZE(ssi_sels));
+>  	hws[IMX6SX_CLK_SSI2_SEL]           = imx_clk_hw_mux("ssi2_sel",         base + 0x1c,  12,     2,      ssi_sels,          ARRAY_SIZE(ssi_sels));
+>  	hws[IMX6SX_CLK_SSI1_SEL]           = imx_clk_hw_mux("ssi1_sel",         base + 0x1c,  10,     2,      ssi_sels,          ARRAY_SIZE(ssi_sels));
+> -	hws[IMX6SX_CLK_QSPI1_SEL]          = imx_clk_hw_mux_flags("qspi1_sel", base + 0x1c,  7, 3, qspi1_sels, ARRAY_SIZE(qspi1_sels), CLK_SET_RATE_PARENT);
+> +	hws[IMX6SX_CLK_QSPI1_SEL]          = imx_clk_hw_mux("qspi1_sel",        base + 0x1c,  7,      3,      qspi1_sels,        ARRAY_SIZE(qspi1_sels);
+>  	hws[IMX6SX_CLK_PERCLK_SEL]         = imx_clk_hw_mux("perclk_sel",       base + 0x1c,  6,      1,      perclk_sels,       ARRAY_SIZE(perclk_sels));
+>  	hws[IMX6SX_CLK_VID_SEL]            = imx_clk_hw_mux("vid_sel",          base + 0x20,  21,     3,      vid_sels,          ARRAY_SIZE(vid_sels));
+>  	hws[IMX6SX_CLK_ESAI_SEL]           = imx_clk_hw_mux("esai_sel",         base + 0x20,  19,     2,      audio_sels,        ARRAY_SIZE(audio_sels));
+>  	hws[IMX6SX_CLK_CAN_SEL]            = imx_clk_hw_mux("can_sel",          base + 0x20,  8,      2,      can_sels,          ARRAY_SIZE(can_sels));
+>  	hws[IMX6SX_CLK_UART_SEL]           = imx_clk_hw_mux("uart_sel",         base + 0x24,  6,      1,      uart_sels,         ARRAY_SIZE(uart_sels));
+> -	hws[IMX6SX_CLK_QSPI2_SEL]          = imx_clk_hw_mux_flags("qspi2_sel", base + 0x2c, 15, 3, qspi2_sels, ARRAY_SIZE(qspi2_sels), CLK_SET_RATE_PARENT);
+> +	hws[IMX6SX_CLK_QSPI2_SEL]          = imx_clk_hw_mux("qspi2_sel",        base + 0x2c,  15,     3,      qspi2_sels,        ARRAY_SIZE(qspi2_sels);
+>  	hws[IMX6SX_CLK_SPDIF_SEL]          = imx_clk_hw_mux("spdif_sel",        base + 0x30,  20,     2,      audio_sels,        ARRAY_SIZE(audio_sels));
+>  	hws[IMX6SX_CLK_AUDIO_SEL]          = imx_clk_hw_mux("audio_sel",        base + 0x30,  7,      2,      audio_sels,        ARRAY_SIZE(audio_sels));
+>  	hws[IMX6SX_CLK_ENET_PRE_SEL]       = imx_clk_hw_mux("enet_pre_sel",     base + 0x34,  15,     3,      enet_pre_sels,     ARRAY_SIZE(enet_pre_sels));
+> -- 
+> 2.25.1
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
