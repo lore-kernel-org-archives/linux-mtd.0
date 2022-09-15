@@ -4,60 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F35E5C6FA89
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Sep 2022 13:44:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16D1AC6FA89
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Sep 2022 14:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ge2UgXOGMqWQES1DFoalTvRacSgFR6XxySv5RyXkFUY=; b=TMSar/LjpK1gcg
-	lhjbXReqoh3Rf+gVtKDeilC3tDaWluPEWEd6JQnwnbuj/WXCaNK1uOgzeQshdT/BUEy0Kg3/rySkK
-	Z1gBR4x0yXsxc3DWn8NtG5/6N803qnG3cWgtNVb+PgCXH37d2zieYD6KBlKX2ApiKpf3y5GdfxouA
-	cz9EQokHuwiLpGtARVRRM3YsFCsV0E4pbPjNAGSiyWBi4+nhmfcx08OhjtehoEmNIjA6ImJ86Ke0T
-	833hSSDk2SRFQpy1OLUjhHYbV1cs6Mb8DnAWc6brC9MvzCVrBQAppdXE2aodpvSZGXOGy3pilQV8L
-	GcmpLx6maFB3VrWKsIEA==;
+	List-Owner; bh=GBM6eYHKv+D6Xu5KjBwLX9dKMw6epgJ6yXjqD6To8Vc=; b=Do6ElgfHh6e/6Q
+	qzo4TvBsQzwOSZQy8NbVOUN7ob7dtN3QTcdJA2JDvGzTRoBvPFLbpSYgh/Hj3q30qxqG27LsqyqTy
+	fn34wQzGJmmKs1Lh+RHZTNh4h2WE9cv/sQm5az5v40l1LmXVAM9n2zMf673cKd1HJuKtkJ5JGfFgH
+	y0uVybPdw6uGQQCpNAxsiE5boFHNf4/b9KoO07p2fcnmvxOd/rZoeQrMqPZsP+ZlyDOwI4l4W0r31
+	v0+qhm1wfYkD3NWDpok3HrwK1LohnhSBPd+yeb0ik/h36SWArSrndtcmtN2WEpXSIi4flYjYYcoDj
+	/0sCDdqfmrL5DKb23Gvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oYp9k-009cej-PJ; Thu, 15 Sep 2022 13:43:52 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1oYpU4-00A67z-Nh; Thu, 15 Sep 2022 14:04:52 +0000
+Received: from mga12.intel.com ([192.55.52.136])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oYp9h-009cYo-FQ
-	for linux-mtd@lists.infradead.org; Thu, 15 Sep 2022 13:43:51 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 3A11EB82050;
-	Thu, 15 Sep 2022 13:43:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDF00C433D6;
-	Thu, 15 Sep 2022 13:43:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1663249424;
-	bh=/aDcY35t5QlMhKY3xwreZi7wvdza9qhN6fQ3O2aIAHc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h3sQVpBbw/053c0YwMiA2QIeF/gFxM7yLbNAr0jSDOuEJxBkmg0LO0PxcHTKLLtcy
-	 TIfdwMwXTD2nVV8Sm6hh0wyhs3JqTOzJsOLD+KfAA5XB5wmYhb+D7AZyTkti0/9o68
-	 frIQZKXUCotMOD69N6UITpzd8OvK68fIjZP83lLBeqELvEazhbX6cIV7cVazv2DE8q
-	 Hd8+ZG0/KlehKgzanEExqE6sZ0AqauiJWDY1mmtu6g4+F7vJ9HeFqc6sfqMr8zGbDO
-	 15L3QEZO9c8IroWy4sgo5fgw8tHDyQlnYU+AUa09CmWi4tqsUxzHydvm0UiLYtvz22
-	 Q4Cu1xjJR1KVw==
-Date: Thu, 15 Sep 2022 19:13:28 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, quic_srichara@quicinc.com
-Subject: Re: [PATCH] mtd: rawnand: qcom: Implement exec_op()
-Message-ID: <20220915134328.GD4550@workstation>
-References: <1654273498-31998-1-git-send-email-quic_mdalam@quicinc.com>
+	id 1oYpTp-00A4t9-7K; Thu, 15 Sep 2022 14:04:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663250677; x=1694786677;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LT8k6IODhbyvj0PRs1smEf9taZdf3dNxMQJebj7nVkY=;
+  b=TbjGALcSuRKxV0t4J/eoH1BNVKl/E9oNZVTBZ1s+gJeXxZZBplBwY3V/
+   PUbwiJSR2iAItfS+edm/utGELz+6F4SBjKijh7RmbUfNAO29vNiuSq3d3
+   1H5yeqvkBjHEEdMaGMDH/A2wUDl7t/lxMZb3vOpzTh8YdWrqBVRYJqnLD
+   vq9vKL3XLqlL7q16v5MLQHj0dPSmxYkEinYLiX2KjVV1SlIrPpGKWKIZA
+   K+ZGf6w2kNStLC/sGwum4xMrKKx/9+mxH7huYZn9T4mDCx2v0W/MabiqV
+   H6PSpV2ysRH4I1jiSLb2l7Elet2p5cY2o3HljbVdiijInvsoDKCmc6y6b
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10470"; a="278448212"
+X-IronPort-AV: E=Sophos;i="5.93,318,1654585200"; 
+   d="scan'208";a="278448212"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2022 07:03:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,318,1654585200"; 
+   d="scan'208";a="650482801"
+Received: from lkp-server02.sh.intel.com (HELO 41300c7200ea) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 15 Sep 2022 07:03:14 -0700
+Received: from kbuild by 41300c7200ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1oYpST-0000dp-17;
+	Thu, 15 Sep 2022 14:03:13 +0000
+Date: Thu, 15 Sep 2022 22:02:53 +0800
+From: kernel test robot <lkp@intel.com>
+To: Han Xu <han.xu@nxp.com>, Abel Vesa <abelvesa@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	"open list:NXP i.MX CLOCK DRIVERS" <linux-clk@vger.kernel.org>,
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>
+Cc: llvm@lists.linux.dev, kbuild-all@lists.01.org,
+	miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+	han.xu@nxp.com
+Subject: Re: [PATCH] clk: imx: imx6sx: remove the SET_RATE_PARENT flag for
+ QSPI clocks
+Message-ID: <202209152102.e3II8r5e-lkp@intel.com>
+References: <20220914201049.3508104-2-han.xu@nxp.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1654273498-31998-1-git-send-email-quic_mdalam@quicinc.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20220914201049.3508104-2-han.xu@nxp.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220915_064349_873657_792FF361 
-X-CRM114-Status: GOOD (  35.36  )
+X-CRM114-CacheID: sfid-20220915_070437_359854_D48F5D1F 
+X-CRM114-Status: GOOD (  14.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,481 +92,225 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 03, 2022 at 09:54:58PM +0530, Md Sadre Alam wrote:
-> Implement exec_op() so we can later get rid of the legacy interface
-> implementation.
-> 
-> Co-developed-by: Sricharan R <quic_srichara@quicinc.com>
-> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+Hi Han,
 
-Sadre, Sri, any update on this patch?
+I love your patch! Yet something to improve:
 
-Thanks,
-Mani
+[auto build test ERROR on abelvesa/clk/imx]
+[also build test ERROR on clk/clk-next shawnguo/for-next linus/master v6.0-rc5 next-20220915]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 368 +++++++++++++++++++++-----------------
->  1 file changed, 204 insertions(+), 164 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 048b255..507921b 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -14,6 +14,7 @@
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  #include <linux/delay.h>
-> +#include <linux/iopoll.h>
->  #include <linux/dma/qcom_bam_dma.h>
->  
->  /* NANDc reg offsets */
-> @@ -1305,15 +1306,13 @@ static int nandc_param(struct qcom_nand_host *host)
->  }
->  
->  /* sets up descriptors for NAND_CMD_ERASE1 */
-> -static int erase_block(struct qcom_nand_host *host, int page_addr)
-> +static int erase_block(struct qcom_nand_host *host)
->  {
->  	struct nand_chip *chip = &host->chip;
->  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->  
->  	nandc_set_reg(chip, NAND_FLASH_CMD,
->  		      OP_BLOCK_ERASE | PAGE_ACC | LAST_PAGE);
-> -	nandc_set_reg(chip, NAND_ADDR0, page_addr);
-> -	nandc_set_reg(chip, NAND_ADDR1, 0);
->  	nandc_set_reg(chip, NAND_DEV0_CFG0,
->  		      host->cfg0_raw & ~(7 << CW_PER_PAGE));
->  	nandc_set_reg(chip, NAND_DEV0_CFG1, host->cfg1_raw);
-> @@ -1321,14 +1320,8 @@ static int erase_block(struct qcom_nand_host *host, int page_addr)
->  	nandc_set_reg(chip, NAND_FLASH_STATUS, host->clrflashstatus);
->  	nandc_set_reg(chip, NAND_READ_STATUS, host->clrreadstatus);
->  
-> -	write_reg_dma(nandc, NAND_FLASH_CMD, 3, NAND_BAM_NEXT_SGL);
-> +	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
->  	write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
-> -	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-> -
-> -	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
-> -
-> -	write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
-> -	write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
->  
->  	return 0;
->  }
-> @@ -1343,16 +1336,12 @@ static int read_id(struct qcom_nand_host *host, int column)
->  		return 0;
->  
->  	nandc_set_reg(chip, NAND_FLASH_CMD, OP_FETCH_ID);
-> -	nandc_set_reg(chip, NAND_ADDR0, column);
-> -	nandc_set_reg(chip, NAND_ADDR1, 0);
->  	nandc_set_reg(chip, NAND_FLASH_CHIP_SELECT,
->  		      nandc->props->is_bam ? 0 : DM_EN);
->  	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
->  
-> -	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
-> -	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-> -
-> -	read_reg_dma(nandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
-> +	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
-> +	write_reg_dma(nandc, NAND_FLASH_CHIP_SELECT, 1, NAND_BAM_NEXT_SGL);
->  
->  	return 0;
->  }
-> @@ -1491,7 +1480,6 @@ static void parse_erase_write_errors(struct qcom_nand_host *host, int command)
->  
->  	for (i = 0; i < num_cw; i++) {
->  		u32 flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
-> -
->  		if (flash_status & FS_MPU_ERR)
->  			host->status &= ~NAND_STATUS_WP;
->  
-> @@ -1523,86 +1511,6 @@ static void post_command(struct qcom_nand_host *host, int command)
->  }
->  
->  /*
-> - * Implements chip->legacy.cmdfunc. It's  only used for a limited set of
-> - * commands. The rest of the commands wouldn't be called by upper layers.
-> - * For example, NAND_CMD_READOOB would never be called because we have our own
-> - * versions of read_oob ops for nand_ecc_ctrl.
-> - */
-> -static void qcom_nandc_command(struct nand_chip *chip, unsigned int command,
-> -			       int column, int page_addr)
-> -{
-> -	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-> -	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> -	bool wait = false;
-> -	int ret = 0;
-> -
-> -	pre_command(host, command);
-> -
-> -	switch (command) {
-> -	case NAND_CMD_RESET:
-> -		ret = reset(host);
-> -		wait = true;
-> -		break;
-> -
-> -	case NAND_CMD_READID:
-> -		nandc->buf_count = 4;
-> -		ret = read_id(host, column);
-> -		wait = true;
-> -		break;
-> -
-> -	case NAND_CMD_PARAM:
-> -		ret = nandc_param(host);
-> -		wait = true;
-> -		break;
-> -
-> -	case NAND_CMD_ERASE1:
-> -		ret = erase_block(host, page_addr);
-> -		wait = true;
-> -		break;
-> -
-> -	case NAND_CMD_READ0:
-> -		/* we read the entire page for now */
-> -		WARN_ON(column != 0);
-> -
-> -		host->use_ecc = true;
-> -		set_address(host, 0, page_addr);
-> -		update_rw_regs(host, ecc->steps, true, 0);
-> -		break;
-> -
-> -	case NAND_CMD_SEQIN:
-> -		WARN_ON(column != 0);
-> -		set_address(host, 0, page_addr);
-> -		break;
-> -
-> -	case NAND_CMD_PAGEPROG:
-> -	case NAND_CMD_STATUS:
-> -	case NAND_CMD_NONE:
-> -	default:
-> -		break;
-> -	}
-> -
-> -	if (ret) {
-> -		dev_err(nandc->dev, "failure executing command %d\n",
-> -			command);
-> -		free_descs(nandc);
-> -		return;
-> -	}
-> -
-> -	if (wait) {
-> -		ret = submit_descs(nandc);
-> -		if (ret)
-> -			dev_err(nandc->dev,
-> -				"failure submitting descs for command %d\n",
-> -				command);
-> -	}
-> -
-> -	free_descs(nandc);
-> -
-> -	post_command(host, command);
-> -}
-> -
-> -/*
->   * when using BCH ECC, the HW flags an error in NAND_FLASH_STATUS if it read
->   * an erased CW, and reports an erased CW in NAND_ERASED_CW_DETECT_STATUS.
->   *
-> @@ -2044,7 +1952,6 @@ static int qcom_nandc_read_page(struct nand_chip *chip, uint8_t *buf,
->  	struct qcom_nand_host *host = to_qcom_nand_host(chip);
->  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->  	u8 *data_buf, *oob_buf = NULL;
-> -
->  	nand_read_page_op(chip, page, 0, NULL, 0);
->  	data_buf = buf;
->  	oob_buf = oob_required ? chip->oob_poi : NULL;
-> @@ -2366,64 +2273,6 @@ static int qcom_nandc_block_markbad(struct nand_chip *chip, loff_t ofs)
->  }
->  
->  /*
-> - * the three functions below implement chip->legacy.read_byte(),
-> - * chip->legacy.read_buf() and chip->legacy.write_buf() respectively. these
-> - * aren't used for reading/writing page data, they are used for smaller data
-> - * like reading	id, status etc
-> - */
-> -static uint8_t qcom_nandc_read_byte(struct nand_chip *chip)
-> -{
-> -	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-> -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> -	u8 *buf = nandc->data_buffer;
-> -	u8 ret = 0x0;
-> -
-> -	if (host->last_command == NAND_CMD_STATUS) {
-> -		ret = host->status;
-> -
-> -		host->status = NAND_STATUS_READY | NAND_STATUS_WP;
-> -
-> -		return ret;
-> -	}
-> -
-> -	if (nandc->buf_start < nandc->buf_count)
-> -		ret = buf[nandc->buf_start++];
-> -
-> -	return ret;
-> -}
-> -
-> -static void qcom_nandc_read_buf(struct nand_chip *chip, uint8_t *buf, int len)
-> -{
-> -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> -	int real_len = min_t(size_t, len, nandc->buf_count - nandc->buf_start);
-> -
-> -	memcpy(buf, nandc->data_buffer + nandc->buf_start, real_len);
-> -	nandc->buf_start += real_len;
-> -}
-> -
-> -static void qcom_nandc_write_buf(struct nand_chip *chip, const uint8_t *buf,
-> -				 int len)
-> -{
-> -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> -	int real_len = min_t(size_t, len, nandc->buf_count - nandc->buf_start);
-> -
-> -	memcpy(nandc->data_buffer + nandc->buf_start, buf, real_len);
-> -
-> -	nandc->buf_start += real_len;
-> -}
-> -
-> -/* we support only one external chip for now */
-> -static void qcom_nandc_select_chip(struct nand_chip *chip, int chipnr)
-> -{
-> -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> -
-> -	if (chipnr <= 0)
-> -		return;
-> -
-> -	dev_warn(nandc->dev, "invalid chip select\n");
-> -}
-> -
-> -/*
->   * NAND controller page layout info
->   *
->   * Layout with ECC enabled:
-> @@ -2738,8 +2587,207 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
->  	return 0;
->  }
->  
-> +static int nandc_status(struct nand_chip *chip)
-> +{
-> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> +	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-> +
-> +	memcpy(nandc->data_buffer, &host->status, 1);
-> +
-> +	return 0;
-> +}
-> +
-> +static int qcom_nand_send_command(struct nand_chip *chip, u8 command)
-> +{
-> +	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> +
-> +	int ret = 0;
-> +
-> +	pre_command(host, command);
-> +
-> +	switch (command) {
-> +	case NAND_CMD_RESET:
-> +		ret = reset(host);
-> +		break;
-> +	case NAND_CMD_READID:
-> +		nandc->buf_count = 4;
-> +		ret = read_id(host, 0);
-> +		break;
-> +	case NAND_CMD_PARAM:
-> +		ret = nandc_param(host);
-> +		break;
-> +	case NAND_CMD_ERASE1:
-> +		ret = erase_block(host);
-> +		break;
-> +	case NAND_CMD_STATUS:
-> +		ret = nandc_status(chip);
-> +		break;
-> +	case NAND_CMD_READ0:
-> +		host->use_ecc = true;
-> +		update_rw_regs(host, ecc->steps, true, 0);
-> +		break;
-> +	case NAND_CMD_ERASE2:
-> +		break;
-> +	case NAND_CMD_SEQIN:
-> +		break;
-> +	case NAND_CMD_PAGEPROG:
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int qcom_nand_send_address(struct nand_chip *chip,
-> +				  const struct nand_op_instr *instr, int cmd)
-> +{
-> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> +	u32 page_addr = 0x0, page_mask = 0x0;
-> +
-> +	page_addr = instr->ctx.addr.addrs[0];
-> +
-> +	/*
-> +	 *Form page address for erase, read, write to using existing api
-> +	 */
-> +
-> +	switch (cmd) {
-> +	case NAND_CMD_ERASE1:
-> +		page_addr = instr->ctx.addr.addrs[0];
-> +		page_mask = instr->ctx.addr.addrs[1];
-> +		page_mask <<= 8;
-> +		page_addr = (page_addr | page_mask);
-> +		page_mask = instr->ctx.addr.addrs[2];
-> +		page_mask <<= 16;
-> +		page_addr = (page_addr | page_mask);
-> +		page_mask = instr->ctx.addr.addrs[3];
-> +		page_mask <<= 24;
-> +		page_addr = (page_addr | page_mask);
-> +		break;
-> +	case NAND_CMD_READ0:
-> +	case NAND_CMD_SEQIN:
-> +		page_addr = instr->ctx.addr.addrs[3];
-> +		page_addr <<= 24;
-> +		page_mask = instr->ctx.addr.addrs[2];
-> +		page_mask <<= 16;
-> +		page_addr |= page_mask;
-> +		page_mask = instr->ctx.addr.addrs[1];
-> +		page_mask <<= 8;
-> +		page_addr |= page_mask;
-> +		page_mask = instr->ctx.addr.addrs[0];
-> +		page_addr |= page_mask;
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	if (cmd == NAND_CMD_PARAM)
-> +		return 0;
-> +
-> +	nandc_set_reg(chip, NAND_ADDR0, page_addr);
-> +	nandc_set_reg(chip, NAND_ADDR1, 0);
-> +
-> +	if (cmd != NAND_CMD_SEQIN)
-> +		write_reg_dma(nandc, NAND_ADDR0, 2, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static void qcom_nand_read_buf(struct nand_chip *chip, u8 *buf, int len)
-> +{
-> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> +
-> +	memcpy(buf, nandc->data_buffer, len);
-> +}
-> +
-> +static int qcom_nand_exec_instr(struct nand_chip *chip,
-> +				const struct nand_op_instr *instr)
-> +{
-> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> +	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-> +	u32 status;
-> +	int ret = 0;
-> +	bool wait = false;
-> +	static int opcode;
-> +
-> +	switch (instr->type) {
-> +	case NAND_OP_CMD_INSTR:
-> +		ret = qcom_nand_send_command(chip, instr->ctx.cmd.opcode);
-> +		if (instr->ctx.cmd.opcode == NAND_CMD_RESET)
-> +			wait = true;
-> +		opcode = instr->ctx.cmd.opcode;
-> +		break;
-> +	case NAND_OP_ADDR_INSTR:
-> +		qcom_nand_send_address(chip, instr, opcode);
-> +		if (opcode != NAND_CMD_READ0 && opcode != NAND_CMD_READSTART &&
-> +		    opcode != NAND_CMD_PARAM && opcode != NAND_CMD_SEQIN)
-> +			wait = true;
-> +		break;
-> +	case NAND_OP_DATA_IN_INSTR:
-> +		qcom_nand_read_buf(chip, instr->ctx.data.buf.in, instr->ctx.data.len);
-> +		break;
-> +	case NAND_OP_DATA_OUT_INSTR:
-> +		wait = false;
-> +		break;
-> +	case NAND_OP_WAITRDY_INSTR:
-> +		ret = readl_poll_timeout(nandc->base + NAND_FLASH_STATUS, status,
-> +					 (status & FS_READY_BSY_N), 20,
-> +					 instr->ctx.waitrdy.timeout_ms * 1000);
-> +		if (opcode == NAND_CMD_PARAM)
-> +			wait = true;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	if (wait) {
-> +		if (opcode != NAND_CMD_PARAM)
-> +			write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-> +
-> +		if (opcode == NAND_CMD_READID)
-> +			read_reg_dma(nandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
-> +
-> +		if (opcode == NAND_CMD_ERASE1) {
-> +			read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
-> +			write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
-> +			write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
-> +		}
-> +
-> +		ret = submit_descs(nandc);
-> +		if (ret)
-> +			dev_err(nandc->dev, "failure submitting descs for command 0x%02x\n",
-> +				opcode);
-> +
-> +		free_descs(nandc);
-> +		post_command(host, opcode);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int qcom_nand_exec_op(struct nand_chip *chip,
-> +			     const struct nand_operation *op,
-> +				bool check_only)
-> +{
-> +	unsigned int i;
-> +	int ret = 0;
-> +
-> +	if (check_only)
-> +		return 0;
-> +
-> +	for (i = 0; i < op->ninstrs; i++) {
-> +		ret = qcom_nand_exec_instr(chip, &op->instrs[i]);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  static const struct nand_controller_ops qcom_nandc_ops = {
->  	.attach_chip = qcom_nand_attach_chip,
-> +	.exec_op = qcom_nand_exec_op,
->  };
->  
->  static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
-> @@ -2938,14 +2986,6 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
->  	mtd->owner = THIS_MODULE;
->  	mtd->dev.parent = dev;
->  
-> -	chip->legacy.cmdfunc	= qcom_nandc_command;
-> -	chip->legacy.select_chip	= qcom_nandc_select_chip;
-> -	chip->legacy.read_byte	= qcom_nandc_read_byte;
-> -	chip->legacy.read_buf	= qcom_nandc_read_buf;
-> -	chip->legacy.write_buf	= qcom_nandc_write_buf;
-> -	chip->legacy.set_features	= nand_get_set_features_notsupp;
-> -	chip->legacy.get_features	= nand_get_set_features_notsupp;
-> -
->  	/*
->  	 * the bad block marker is readable only when we read the last codeword
->  	 * of a page with ECC disabled. currently, the nand_base and nand_bbt
-> -- 
-> 2.7.4
-> 
+url:    https://github.com/intel-lab-lkp/linux/commits/Han-Xu/clk-imx-imx6sx-remove-the-SET_RATE_PARENT-flag-for-QSPI-clocks/20220915-041341
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git clk/imx
+config: arm-randconfig-r035-20220914 (https://download.01.org/0day-ci/archive/20220915/202209152102.e3II8r5e-lkp@intel.com/config)
+compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project 1546df49f5a6d09df78f569e4137ddb365a3e827)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm cross compiling tool for clang build
+        # apt-get install binutils-arm-linux-gnueabi
+        # https://github.com/intel-lab-lkp/linux/commit/d246f7033318f9fc1ef41666c450034ad8de6916
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Han-Xu/clk-imx-imx6sx-remove-the-SET_RATE_PARENT-flag-for-QSPI-clocks/20220915-041341
+        git checkout d246f7033318f9fc1ef41666c450034ad8de6916
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash drivers/clk/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> drivers/clk/imx/clk-imx6sx.c:283:39: error: unterminated function-like macro invocation
+           hws[IMX6SX_CLK_QSPI1_SEL]          = imx_clk_hw_mux("qspi1_sel",        base + 0x1c,  7,      3,      qspi1_sels,        ARRAY_SIZE(qspi1_sels);
+                                                ^
+   drivers/clk/imx/clk.h:198:9: note: macro 'imx_clk_hw_mux' defined here
+   #define imx_clk_hw_mux(name, reg, shift, width, parents, num_parents) \
+           ^
+>> drivers/clk/imx/clk-imx6sx.c:553:62: error: expected expression
+   CLK_OF_DECLARE(imx6sx, "fsl,imx6sx-ccm", imx6sx_clocks_init);
+                                                                ^
+>> drivers/clk/imx/clk-imx6sx.c:553:62: error: expected '}'
+   drivers/clk/imx/clk-imx6sx.c:121:1: note: to match this '{'
+   {
+   ^
+   3 errors generated.
+
+
+vim +283 drivers/clk/imx/clk-imx6sx.c
+
+   119	
+   120	static void __init imx6sx_clocks_init(struct device_node *ccm_node)
+   121	{
+   122		struct device_node *np;
+   123		void __iomem *base;
+   124	
+   125		clk_hw_data = kzalloc(struct_size(clk_hw_data, hws,
+   126						  IMX6SX_CLK_CLK_END), GFP_KERNEL);
+   127		if (WARN_ON(!clk_hw_data))
+   128			return;
+   129	
+   130		clk_hw_data->num = IMX6SX_CLK_CLK_END;
+   131		hws = clk_hw_data->hws;
+   132	
+   133		hws[IMX6SX_CLK_DUMMY] = imx_clk_hw_fixed("dummy", 0);
+   134	
+   135		hws[IMX6SX_CLK_CKIL] = imx_obtain_fixed_clk_hw(ccm_node, "ckil");
+   136		hws[IMX6SX_CLK_OSC] = imx_obtain_fixed_clk_hw(ccm_node, "osc");
+   137	
+   138		/* ipp_di clock is external input */
+   139		hws[IMX6SX_CLK_IPP_DI0] = imx_obtain_fixed_clk_hw(ccm_node, "ipp_di0");
+   140		hws[IMX6SX_CLK_IPP_DI1] = imx_obtain_fixed_clk_hw(ccm_node, "ipp_di1");
+   141	
+   142		/* Clock source from external clock via CLK1/2 PAD */
+   143		hws[IMX6SX_CLK_ANACLK1] = imx_obtain_fixed_clk_hw(ccm_node, "anaclk1");
+   144		hws[IMX6SX_CLK_ANACLK2] = imx_obtain_fixed_clk_hw(ccm_node, "anaclk2");
+   145	
+   146		np = of_find_compatible_node(NULL, NULL, "fsl,imx6sx-anatop");
+   147		base = of_iomap(np, 0);
+   148		WARN_ON(!base);
+   149		of_node_put(np);
+   150	
+   151		hws[IMX6SX_PLL1_BYPASS_SRC] = imx_clk_hw_mux("pll1_bypass_src", base + 0x00, 14, 1, pll_bypass_src_sels, ARRAY_SIZE(pll_bypass_src_sels));
+   152		hws[IMX6SX_PLL2_BYPASS_SRC] = imx_clk_hw_mux("pll2_bypass_src", base + 0x30, 14, 1, pll_bypass_src_sels, ARRAY_SIZE(pll_bypass_src_sels));
+   153		hws[IMX6SX_PLL3_BYPASS_SRC] = imx_clk_hw_mux("pll3_bypass_src", base + 0x10, 14, 1, pll_bypass_src_sels, ARRAY_SIZE(pll_bypass_src_sels));
+   154		hws[IMX6SX_PLL4_BYPASS_SRC] = imx_clk_hw_mux("pll4_bypass_src", base + 0x70, 14, 1, pll_bypass_src_sels, ARRAY_SIZE(pll_bypass_src_sels));
+   155		hws[IMX6SX_PLL5_BYPASS_SRC] = imx_clk_hw_mux("pll5_bypass_src", base + 0xa0, 14, 1, pll_bypass_src_sels, ARRAY_SIZE(pll_bypass_src_sels));
+   156		hws[IMX6SX_PLL6_BYPASS_SRC] = imx_clk_hw_mux("pll6_bypass_src", base + 0xe0, 14, 1, pll_bypass_src_sels, ARRAY_SIZE(pll_bypass_src_sels));
+   157		hws[IMX6SX_PLL7_BYPASS_SRC] = imx_clk_hw_mux("pll7_bypass_src", base + 0x20, 14, 1, pll_bypass_src_sels, ARRAY_SIZE(pll_bypass_src_sels));
+   158	
+   159		/*                                    type               name    parent_name        base         div_mask */
+   160		hws[IMX6SX_CLK_PLL1] = imx_clk_hw_pllv3(IMX_PLLV3_SYS,     "pll1", "osc", base + 0x00, 0x7f);
+   161		hws[IMX6SX_CLK_PLL2] = imx_clk_hw_pllv3(IMX_PLLV3_GENERIC, "pll2", "osc", base + 0x30, 0x1);
+   162		hws[IMX6SX_CLK_PLL3] = imx_clk_hw_pllv3(IMX_PLLV3_USB,     "pll3", "osc", base + 0x10, 0x3);
+   163		hws[IMX6SX_CLK_PLL4] = imx_clk_hw_pllv3(IMX_PLLV3_AV,      "pll4", "osc", base + 0x70, 0x7f);
+   164		hws[IMX6SX_CLK_PLL5] = imx_clk_hw_pllv3(IMX_PLLV3_AV,      "pll5", "osc", base + 0xa0, 0x7f);
+   165		hws[IMX6SX_CLK_PLL6] = imx_clk_hw_pllv3(IMX_PLLV3_ENET,    "pll6", "osc", base + 0xe0, 0x3);
+   166		hws[IMX6SX_CLK_PLL7] = imx_clk_hw_pllv3(IMX_PLLV3_USB,     "pll7", "osc", base + 0x20, 0x3);
+   167	
+   168		hws[IMX6SX_PLL1_BYPASS] = imx_clk_hw_mux_flags("pll1_bypass", base + 0x00, 16, 1, pll1_bypass_sels, ARRAY_SIZE(pll1_bypass_sels), CLK_SET_RATE_PARENT);
+   169		hws[IMX6SX_PLL2_BYPASS] = imx_clk_hw_mux_flags("pll2_bypass", base + 0x30, 16, 1, pll2_bypass_sels, ARRAY_SIZE(pll2_bypass_sels), CLK_SET_RATE_PARENT);
+   170		hws[IMX6SX_PLL3_BYPASS] = imx_clk_hw_mux_flags("pll3_bypass", base + 0x10, 16, 1, pll3_bypass_sels, ARRAY_SIZE(pll3_bypass_sels), CLK_SET_RATE_PARENT);
+   171		hws[IMX6SX_PLL4_BYPASS] = imx_clk_hw_mux_flags("pll4_bypass", base + 0x70, 16, 1, pll4_bypass_sels, ARRAY_SIZE(pll4_bypass_sels), CLK_SET_RATE_PARENT);
+   172		hws[IMX6SX_PLL5_BYPASS] = imx_clk_hw_mux_flags("pll5_bypass", base + 0xa0, 16, 1, pll5_bypass_sels, ARRAY_SIZE(pll5_bypass_sels), CLK_SET_RATE_PARENT);
+   173		hws[IMX6SX_PLL6_BYPASS] = imx_clk_hw_mux_flags("pll6_bypass", base + 0xe0, 16, 1, pll6_bypass_sels, ARRAY_SIZE(pll6_bypass_sels), CLK_SET_RATE_PARENT);
+   174		hws[IMX6SX_PLL7_BYPASS] = imx_clk_hw_mux_flags("pll7_bypass", base + 0x20, 16, 1, pll7_bypass_sels, ARRAY_SIZE(pll7_bypass_sels), CLK_SET_RATE_PARENT);
+   175	
+   176		/* Do not bypass PLLs initially */
+   177		clk_set_parent(hws[IMX6SX_PLL1_BYPASS]->clk, hws[IMX6SX_CLK_PLL1]->clk);
+   178		clk_set_parent(hws[IMX6SX_PLL2_BYPASS]->clk, hws[IMX6SX_CLK_PLL2]->clk);
+   179		clk_set_parent(hws[IMX6SX_PLL3_BYPASS]->clk, hws[IMX6SX_CLK_PLL3]->clk);
+   180		clk_set_parent(hws[IMX6SX_PLL4_BYPASS]->clk, hws[IMX6SX_CLK_PLL4]->clk);
+   181		clk_set_parent(hws[IMX6SX_PLL5_BYPASS]->clk, hws[IMX6SX_CLK_PLL5]->clk);
+   182		clk_set_parent(hws[IMX6SX_PLL6_BYPASS]->clk, hws[IMX6SX_CLK_PLL6]->clk);
+   183		clk_set_parent(hws[IMX6SX_PLL7_BYPASS]->clk, hws[IMX6SX_CLK_PLL7]->clk);
+   184	
+   185		hws[IMX6SX_CLK_PLL1_SYS]      = imx_clk_hw_gate("pll1_sys",      "pll1_bypass", base + 0x00, 13);
+   186		hws[IMX6SX_CLK_PLL2_BUS]      = imx_clk_hw_gate("pll2_bus",      "pll2_bypass", base + 0x30, 13);
+   187		hws[IMX6SX_CLK_PLL3_USB_OTG]  = imx_clk_hw_gate("pll3_usb_otg",  "pll3_bypass", base + 0x10, 13);
+   188		hws[IMX6SX_CLK_PLL4_AUDIO]    = imx_clk_hw_gate("pll4_audio",    "pll4_bypass", base + 0x70, 13);
+   189		hws[IMX6SX_CLK_PLL5_VIDEO]    = imx_clk_hw_gate("pll5_video",    "pll5_bypass", base + 0xa0, 13);
+   190		hws[IMX6SX_CLK_PLL6_ENET]     = imx_clk_hw_gate("pll6_enet",     "pll6_bypass", base + 0xe0, 13);
+   191		hws[IMX6SX_CLK_PLL7_USB_HOST] = imx_clk_hw_gate("pll7_usb_host", "pll7_bypass", base + 0x20, 13);
+   192	
+   193		/*
+   194		 * Bit 20 is the reserved and read-only bit, we do this only for:
+   195		 * - Do nothing for usbphy clk_enable/disable
+   196		 * - Keep refcount when do usbphy clk_enable/disable, in that case,
+   197		 * the clk framework may need to enable/disable usbphy's parent
+   198		 */
+   199		hws[IMX6SX_CLK_USBPHY1] = imx_clk_hw_gate("usbphy1", "pll3_usb_otg",  base + 0x10, 20);
+   200		hws[IMX6SX_CLK_USBPHY2] = imx_clk_hw_gate("usbphy2", "pll7_usb_host", base + 0x20, 20);
+   201	
+   202		/*
+   203		 * usbphy*_gate needs to be on after system boots up, and software
+   204		 * never needs to control it anymore.
+   205		 */
+   206		hws[IMX6SX_CLK_USBPHY1_GATE] = imx_clk_hw_gate("usbphy1_gate", "dummy", base + 0x10, 6);
+   207		hws[IMX6SX_CLK_USBPHY2_GATE] = imx_clk_hw_gate("usbphy2_gate", "dummy", base + 0x20, 6);
+   208	
+   209		/* FIXME 100MHz is used for pcie ref for all imx6 pcie, excepted imx6q */
+   210		hws[IMX6SX_CLK_PCIE_REF] = imx_clk_hw_fixed_factor("pcie_ref", "pll6_enet", 1, 5);
+   211		hws[IMX6SX_CLK_PCIE_REF_125M] = imx_clk_hw_gate("pcie_ref_125m", "pcie_ref", base + 0xe0, 19);
+   212	
+   213		hws[IMX6SX_CLK_LVDS1_OUT] = imx_clk_hw_gate_exclusive("lvds1_out", "lvds1_sel", base + 0x160, 10, BIT(12));
+   214		hws[IMX6SX_CLK_LVDS2_OUT] = imx_clk_hw_gate_exclusive("lvds2_out", "lvds2_sel", base + 0x160, 11, BIT(13));
+   215		hws[IMX6SX_CLK_LVDS1_IN]  = imx_clk_hw_gate_exclusive("lvds1_in",  "anaclk1",   base + 0x160, 12, BIT(10));
+   216		hws[IMX6SX_CLK_LVDS2_IN]  = imx_clk_hw_gate_exclusive("lvds2_in",  "anaclk2",   base + 0x160, 13, BIT(11));
+   217	
+   218		hws[IMX6SX_CLK_ENET_REF] = clk_hw_register_divider_table(NULL, "enet_ref", "pll6_enet", 0,
+   219				base + 0xe0, 0, 2, 0, clk_enet_ref_table,
+   220				&imx_ccm_lock);
+   221		hws[IMX6SX_CLK_ENET2_REF] = clk_hw_register_divider_table(NULL, "enet2_ref", "pll6_enet", 0,
+   222				base + 0xe0, 2, 2, 0, clk_enet_ref_table,
+   223				&imx_ccm_lock);
+   224		hws[IMX6SX_CLK_ENET2_REF_125M] = imx_clk_hw_gate("enet2_ref_125m", "enet2_ref", base + 0xe0, 20);
+   225	
+   226		hws[IMX6SX_CLK_ENET_PTP_REF] = imx_clk_hw_fixed_factor("enet_ptp_ref", "pll6_enet", 1, 20);
+   227		hws[IMX6SX_CLK_ENET_PTP] = imx_clk_hw_gate("enet_ptp_25m", "enet_ptp_ref", base + 0xe0, 21);
+   228	
+   229		/*                                       name              parent_name     reg           idx */
+   230		hws[IMX6SX_CLK_PLL2_PFD0] = imx_clk_hw_pfd("pll2_pfd0_352m", "pll2_bus",     base + 0x100, 0);
+   231		hws[IMX6SX_CLK_PLL2_PFD1] = imx_clk_hw_pfd("pll2_pfd1_594m", "pll2_bus",     base + 0x100, 1);
+   232		hws[IMX6SX_CLK_PLL2_PFD2] = imx_clk_hw_pfd("pll2_pfd2_396m", "pll2_bus",     base + 0x100, 2);
+   233		hws[IMX6SX_CLK_PLL2_PFD3] = imx_clk_hw_pfd("pll2_pfd3_594m", "pll2_bus",     base + 0x100, 3);
+   234		hws[IMX6SX_CLK_PLL3_PFD0] = imx_clk_hw_pfd("pll3_pfd0_720m", "pll3_usb_otg", base + 0xf0,  0);
+   235		hws[IMX6SX_CLK_PLL3_PFD1] = imx_clk_hw_pfd("pll3_pfd1_540m", "pll3_usb_otg", base + 0xf0,  1);
+   236		hws[IMX6SX_CLK_PLL3_PFD2] = imx_clk_hw_pfd("pll3_pfd2_508m", "pll3_usb_otg", base + 0xf0,  2);
+   237		hws[IMX6SX_CLK_PLL3_PFD3] = imx_clk_hw_pfd("pll3_pfd3_454m", "pll3_usb_otg", base + 0xf0,  3);
+   238	
+   239		/*                                                name         parent_name       mult div */
+   240		hws[IMX6SX_CLK_PLL2_198M] = imx_clk_hw_fixed_factor("pll2_198m", "pll2_pfd2_396m", 1,   2);
+   241		hws[IMX6SX_CLK_PLL3_120M] = imx_clk_hw_fixed_factor("pll3_120m", "pll3_usb_otg",   1,   4);
+   242		hws[IMX6SX_CLK_PLL3_80M]  = imx_clk_hw_fixed_factor("pll3_80m",  "pll3_usb_otg",   1,   6);
+   243		hws[IMX6SX_CLK_PLL3_60M]  = imx_clk_hw_fixed_factor("pll3_60m",  "pll3_usb_otg",   1,   8);
+   244		hws[IMX6SX_CLK_TWD]       = imx_clk_hw_fixed_factor("twd",       "arm",            1,   2);
+   245		hws[IMX6SX_CLK_GPT_3M]    = imx_clk_hw_fixed_factor("gpt_3m",    "osc",            1,   8);
+   246	
+   247		hws[IMX6SX_CLK_PLL4_POST_DIV]  = clk_hw_register_divider_table(NULL, "pll4_post_div", "pll4_audio",
+   248					CLK_SET_RATE_PARENT, base + 0x70, 19, 2, 0, post_div_table, &imx_ccm_lock);
+   249		hws[IMX6SX_CLK_PLL4_AUDIO_DIV] = clk_hw_register_divider(NULL, "pll4_audio_div", "pll4_post_div",
+   250					CLK_SET_RATE_PARENT, base + 0x170, 15, 1, 0, &imx_ccm_lock);
+   251		hws[IMX6SX_CLK_PLL5_POST_DIV]  = clk_hw_register_divider_table(NULL, "pll5_post_div", "pll5_video",
+   252					CLK_SET_RATE_PARENT, base + 0xa0, 19, 2, 0, post_div_table, &imx_ccm_lock);
+   253		hws[IMX6SX_CLK_PLL5_VIDEO_DIV] = clk_hw_register_divider_table(NULL, "pll5_video_div", "pll5_post_div",
+   254					CLK_SET_RATE_PARENT, base + 0x170, 30, 2, 0, video_div_table, &imx_ccm_lock);
+   255	
+   256		/*                                                name                reg           shift   width   parent_names       num_parents */
+   257		hws[IMX6SX_CLK_LVDS1_SEL]          = imx_clk_hw_mux("lvds1_sel",        base + 0x160, 0,      5,      lvds_sels,         ARRAY_SIZE(lvds_sels));
+   258		hws[IMX6SX_CLK_LVDS2_SEL]          = imx_clk_hw_mux("lvds2_sel",        base + 0x160, 5,      5,      lvds_sels,         ARRAY_SIZE(lvds_sels));
+   259	
+   260		np = ccm_node;
+   261		base = of_iomap(np, 0);
+   262		WARN_ON(!base);
+   263	
+   264		/*                                                name                reg           shift   width   parent_names       num_parents */
+   265		hws[IMX6SX_CLK_STEP]               = imx_clk_hw_mux("step",             base + 0xc,   8,      1,      step_sels,         ARRAY_SIZE(step_sels));
+   266		hws[IMX6SX_CLK_PLL1_SW]            = imx_clk_hw_mux("pll1_sw",          base + 0xc,   2,      1,      pll1_sw_sels,      ARRAY_SIZE(pll1_sw_sels));
+   267		hws[IMX6SX_CLK_OCRAM_SEL]          = imx_clk_hw_mux("ocram_sel",        base + 0x14,  6,      2,      ocram_sels,        ARRAY_SIZE(ocram_sels));
+   268		hws[IMX6SX_CLK_PERIPH_PRE]         = imx_clk_hw_mux("periph_pre",       base + 0x18,  18,     2,      periph_pre_sels,   ARRAY_SIZE(periph_pre_sels));
+   269		hws[IMX6SX_CLK_PERIPH2_PRE]        = imx_clk_hw_mux("periph2_pre",      base + 0x18,  21,     2,      periph2_pre_sels,   ARRAY_SIZE(periph2_pre_sels));
+   270		hws[IMX6SX_CLK_PERIPH_CLK2_SEL]    = imx_clk_hw_mux("periph_clk2_sel",  base + 0x18,  12,     2,      periph_clk2_sels,  ARRAY_SIZE(periph_clk2_sels));
+   271		hws[IMX6SX_CLK_PERIPH2_CLK2_SEL]   = imx_clk_hw_mux("periph2_clk2_sel", base + 0x18,  20,     1,      periph2_clk2_sels, ARRAY_SIZE(periph2_clk2_sels));
+   272		hws[IMX6SX_CLK_PCIE_AXI_SEL]       = imx_clk_hw_mux("pcie_axi_sel",     base + 0x18,  10,     1,      pcie_axi_sels,     ARRAY_SIZE(pcie_axi_sels));
+   273		hws[IMX6SX_CLK_GPU_AXI_SEL]        = imx_clk_hw_mux("gpu_axi_sel",      base + 0x18,  8,      2,      gpu_axi_sels,      ARRAY_SIZE(gpu_axi_sels));
+   274		hws[IMX6SX_CLK_GPU_CORE_SEL]       = imx_clk_hw_mux("gpu_core_sel",     base + 0x18,  4,      2,      gpu_core_sels,     ARRAY_SIZE(gpu_core_sels));
+   275		hws[IMX6SX_CLK_EIM_SLOW_SEL]       = imx_clk_hw_mux("eim_slow_sel",     base + 0x1c,  29,     2,      eim_slow_sels,     ARRAY_SIZE(eim_slow_sels));
+   276		hws[IMX6SX_CLK_USDHC1_SEL]         = imx_clk_hw_mux("usdhc1_sel",       base + 0x1c,  16,     1,      usdhc_sels,        ARRAY_SIZE(usdhc_sels));
+   277		hws[IMX6SX_CLK_USDHC2_SEL]         = imx_clk_hw_mux("usdhc2_sel",       base + 0x1c,  17,     1,      usdhc_sels,        ARRAY_SIZE(usdhc_sels));
+   278		hws[IMX6SX_CLK_USDHC3_SEL]         = imx_clk_hw_mux("usdhc3_sel",       base + 0x1c,  18,     1,      usdhc_sels,        ARRAY_SIZE(usdhc_sels));
+   279		hws[IMX6SX_CLK_USDHC4_SEL]         = imx_clk_hw_mux("usdhc4_sel",       base + 0x1c,  19,     1,      usdhc_sels,        ARRAY_SIZE(usdhc_sels));
+   280		hws[IMX6SX_CLK_SSI3_SEL]           = imx_clk_hw_mux("ssi3_sel",         base + 0x1c,  14,     2,      ssi_sels,          ARRAY_SIZE(ssi_sels));
+   281		hws[IMX6SX_CLK_SSI2_SEL]           = imx_clk_hw_mux("ssi2_sel",         base + 0x1c,  12,     2,      ssi_sels,          ARRAY_SIZE(ssi_sels));
+   282		hws[IMX6SX_CLK_SSI1_SEL]           = imx_clk_hw_mux("ssi1_sel",         base + 0x1c,  10,     2,      ssi_sels,          ARRAY_SIZE(ssi_sels));
+ > 283		hws[IMX6SX_CLK_QSPI1_SEL]          = imx_clk_hw_mux("qspi1_sel",        base + 0x1c,  7,      3,      qspi1_sels,        ARRAY_SIZE(qspi1_sels);
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 ______________________________________________________
 Linux MTD discussion mailing list
