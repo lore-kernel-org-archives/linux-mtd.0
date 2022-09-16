@@ -4,68 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 072B6C54EE9
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Sep 2022 08:23:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C7C1C6FA90
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Sep 2022 09:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=rfJSrDU2aSVSNgAvPLEn8MJuZA4MJ2EgDOaaYdTGr94=; b=4LA53duM1OW2kr
-	1EPEyHKhlCmarO7FU+iSY7aXq0qsPYRcb0N7WTIV2is1Hs9efTeBoeAMmtkBayLGvvxubZe2uNwOP
-	IU5Zp7rhpWqnpn/V3lWpJrsDmKNK1K8Qxm32Pip/lYpDO/aO0HaMYISzQ454rCGOl7rpZUtXDo+OC
-	3gxK4NYdjIMP0uqLlU28gfn/mUgVEXKsVpRzaVlOGBvBJaX3/Ec/5/+Ov5KK93WnRFfJ/d703jHWo
-	g5Cf/bOpxzxMatqyYLq+1Vr9LLCknqGMB5aBZoziHEnxwTCg5OyRoFjOoDKF7J0z/Y+0VTA5iY1Y0
-	vUW2OHbcYwiQqC1Jyeng==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
+	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=woKcXGOnR57cxmXL8iPQD9H8uxqcOzzw60NOEsZShn4=; b=psYpfMbBHRkAzE
+	qOhRNDQwFrP0EyVqecQF5cOYmFqsd+IFvIvsLSgi6ygi5+dGPdhoA8NShOW0sxZlfzvjiTZRTXvHG
+	8N2BHBOBDzNh01QFVMhE6L/sIOHQGc8f+toAWj+as4jcQxqiZJU4IaLknFOP4IZvYFXqrU7clz9y7
+	oJ1V79sDgIuuA6unZYifkGBMes64nl8T3V0xp06pObMa4BlYmso7Jq43MKm9yEWLfpWzY4JKtJlpK
+	fqy/RO0mJcoGAcuy2YTSO41X/wZmHAtkvxo+XRUYdeVkEqCEChEI0e47CVhvYgNPTvTiTPYKAW+0o
+	ticfQZ+R7uo5jk74VC7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oZ6cZ-00AzX7-GK; Fri, 16 Sep 2022 08:22:47 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1oZ7Fa-00BTwy-Im; Fri, 16 Sep 2022 09:03:06 +0000
+Received: from new3-smtp.messagingengine.com ([66.111.4.229])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oZ6cK-00AzNx-1I
-	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2022 08:22:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663316551; x=1694852551;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=D/i/1Al2xe3YtNErK1BStvXExvCKvkVYhTtFeQyc+g8=;
-  b=Zpz3W5+6M2HWqcrhNzRvTEoelMYCIxy5figl+6ixcVvzcoRAeGM0cNPG
-   k/q206VLhI40JHePHKje8W3uNcd5sgzKyOQXz4i4tB4aYbpE1dLq1QwS3
-   Qc7lIETkEIrbgo6WtPbNVIa9tVQFY6eU8BLMt/HqBY1xQXq/5asanrZAi
-   N1+3IX5TC4+1bN1NBNN3HC4jMV+zuRdsxFXKKsAhP2Dn0PohmvzKBAOPl
-   umfecGtWGR0qNHMAb8Kv74SuhZmsqcScyVdFslmmcRB3pqmIb0GFRRm5y
-   EXhDRNdKSk1VHRUYUwjaKC1bDA/X6rs/x/uRDUUdFb3G0o1BjbX6ZaggW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10471"; a="385233188"
-X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; 
-   d="scan'208";a="385233188"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2022 01:22:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; 
-   d="scan'208";a="617592748"
-Received: from unknown (HELO localhost.localdomain) ([10.226.216.116])
-  by orsmga002.jf.intel.com with ESMTP; 16 Sep 2022 01:22:26 -0700
-From: niravkumar.l.rabara@intel.com
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	niravkumar.l.rabara@intel.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: spi-nor: macronix: Add support for mx66u1g45g
-Date: Fri, 16 Sep 2022 16:22:15 +0800
-Message-Id: <20220916082215.883184-1-niravkumar.l.rabara@intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+	id 1oZ7EA-00BT1k-Gd
+	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2022 09:01:44 +0000
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailnew.nyi.internal (Postfix) with ESMTP id 916DE580E9B;
+	Fri, 16 Sep 2022 05:01:32 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute3.internal (MEProxy); Fri, 16 Sep 2022 05:01:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to; s=fm1; t=1663318892; x=1663322492; bh=eSy6TVmDPq
+	cwPJ8Iryb7Xwdk6oM2vvcqIdcjswH4P9E=; b=rHo2dTf9SE9S0gj2sOVe8pVO0W
+	Td7NhKdEevcRMSDxrlt5f6VZe80+19QkGriim8Fmm6LnbygI6ZZlbqmXF562LBK/
+	0RlGKgsVwYBRMFQfSYn6mu/yXAv7+PGopEYhS0kdjBDCR6koWscqVFJbqhfJaFD9
+	eTr1x7iI2tcXcAvVVYKlHK3BOfCeurroaxfrSFGsKecX6j6L+kNKbzF4E/9kYNcc
+	EtBzTcyPTiieH3falT3odzwFJflCJRGX+1WkFUE0eMWiaIWYOYssobHpWxbhHzMi
+	IuIDW39V4eJmcivJzq8bZ+ij/N+mVSTk8IWTYIkq1Z+Kz8hPWpy/Pq+VTCXw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:sender:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1663318892; x=1663322492; bh=eSy6TVmDPqcwPJ8Iryb7Xwdk6oM2
+	vvcqIdcjswH4P9E=; b=rYMcLawC1WVkZQ5ZsW2j7sIZ7s2vguyxJM6ld7kKlR1o
+	O3igcFxjFQ9aQ+XQH5sV3A7mw1uTWU6slKTdbBmXIGBs725N/yVP5DMR/vXS4Psp
+	kG8iNsh0q2wqBe6FX83eGCCLZdZxn0jddAgIGuOuxTljuz5XMLbJR65jlGtnf7yD
+	y22IS59O3cvlQVxXJ0s8TDNMhE+TDJBVtZ/aJHVzt/7BI5FkEcqbsfBzn9reOtFz
+	r8/w4irSp0HGH5jban+7wZauToQ3uRRt/WeXKg8Gxz/X32L33nsSrHxT3FVfJdof
+	Tc+VK5S51J43zho/10TtaTLW/fYTnf+51hICEdiEFA==
+X-ME-Sender: <xms:bDskYzJ8ujs6qb8cpws1p2sQdxdIUNBVebt7AGW8awR-x1TPHGMwaA>
+    <xme:bDskY3LpCRzh8rHB-CiHP6350nPWwIqjnZqjbL5rVMLqf_z_LRVU4L_dmpc77rMpL
+    N1bB1bu0us_ErcE71I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedvtddguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:bDskY7spbeCsSuJuDUkb7m3M8dfKgweKqqDMsV4lMlElBnxGZxTY9g>
+    <xmx:bDskY8YyQImQsG7U0ohA7BcYMs6KtM05Ap7DIzCnvrcc30Htx7JtJA>
+    <xmx:bDskY6ZGv9z8vadTzXkJtkoIExr5VRBYMZ6rhHNCBUaMlUbLGOIAxg>
+    <xmx:bDskYwP3dRa-ntBz4APv2sLSWGgP6GwdMsyCVym_q3hR00_zoQxASw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 274D0B60086; Fri, 16 Sep 2022 05:01:32 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-935-ge4ccd4c47b-fm-20220914.001-ge4ccd4c4
+Mime-Version: 1.0
+Message-Id: <4dcb0e76-b965-42da-b637-751d2f8e1c51@www.fastmail.com>
+In-Reply-To: <20220916001038.11147-1-ansuelsmth@gmail.com>
+References: <20220916001038.11147-1-ansuelsmth@gmail.com>
+Date: Fri, 16 Sep 2022 11:01:11 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Christian Marangi" <ansuelsmth@gmail.com>,
+ "Manivannan Sadhasivam" <mani@kernel.org>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Vinod Koul" <vkoul@kernel.org>,
+ "Mark Brown" <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: raw: qcom_nandc: handle error pointer from adm
+ prep_slave_sg
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220916_012232_159473_1ED66EFE 
-X-CRM114-Status: GOOD (  12.03  )
+X-CRM114-CacheID: sfid-20220916_020138_684520_AD97DAAF 
+X-CRM114-Status: GOOD (  12.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,85 +107,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+On Fri, Sep 16, 2022, at 2:10 AM, Christian Marangi wrote:
+> ADM dma engine has changed to also provide error pointer instaed of
+> plain NULL pointer on invalid configuration of prep_slave_sg function.
+> Currently this is not handled and an error pointer is detected as a
+> valid dma_desc. This cause kernel panic as the driver doesn't fail
+> with an invalid dma engine configuration.
+>
+> Correctly handle this case by checking if dma_desc is NULL or IS_ERR.
 
-The MX66U1G45G is the smaller sibling (128MB) of the MX66U2G45G (256MB)
-that is already supported.
+Using IS_ERR_OR_NULL() is almost never a correct solution. I think
+in this case the problem is the adm_prep_slave_sg() function
+that returns an invalid error code.
 
-Tested on Intel N5X socdk board,
-- random data write, erase, read   - verified erase operations
-- random data write, read and compare  - verified write/read operations
+While error pointers are often better than NULL pointers for
+passing information to the caller, a driver can't just change
+the calling conventions on its own. If we want to change
+the dmaengine_prep_slave_sg() API, I would suggest coming
+up with a new name for a replacement interface that uses
+error pointers instead of NULL first, and then changing
+all callers to the new interface.
 
-Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
----
-root@n5x:~# find / -iname spi-nor
-/sys/kernel/debug/spi-nor
-/sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor
-/sys/bus/spi/drivers/spi-nor
-root@n5x:~# ls -al /sys/devices/platform/soc/
-driver/                      ffd00200.watchdog/
-driver_override              ffd10000.clock-controller/
-f8011100.sdr/                ffd11000.rstmgr/
-f87f8000.memory-controller/  ffd12000.sysmgr/
-ff800000.ethernet/           ffda0000.dma-controller/
-ff808000.mmc/                ffe00000.sram/
-ff8d2000.spi/                modalias
-ffb00000.usb/                of_node/
-ffc02000.serial/             power/
-ffc03000.timer0/             soc:base_fpga_region/
-ffc03100.timer1/             soc:eccmgr/
-ffd00000.timer2/             subsystem/
-ffd00100.timer3/             uevent
-root@n5x:~# ls -al /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/
-drwxr-xr-x    2 root     root             0 Dec 16 17:27 .
-drwxr-xr-x    6 root     root             0 Dec 16 17:25 ..
--r--r--r--    1 root     root          4096 Dec 16 17:27 jedec_id
--r--r--r--    1 root     root          4096 Dec 16 17:27 manufacturer
--r--r--r--    1 root     root          4096 Dec 16 17:27 partname
--r--r--r--    1 root     root             0 Dec 16 17:27 sfdp
-root@n5x:~# cat  /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/jedec_id
-c2253b
-root@n5x:~# cat  /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/manufacturer
-macronix
-root@n5x:~# cat  /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/partname
-mx66u1g45g
-root@n5x:~# cat  /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp > mx66u1g45g-sfdp
-root@n5x:~# hexdump mx66u1g45g-sfdp
-0000000 4653 5044 0106 ff02 0600 1001 0030 ff00
-0000010 00c2 0401 0110 ff00 0084 0201 00c0 ff00
-0000020 ffff ffff ffff ffff ffff ffff ffff ffff
-0000030 20e5 fffb ffff 3fff eb44 6b08 3b08 bb04
-0000040 fffe ffff ffff ff00 ffff eb44 200c 520f
-0000050 d810 ff00 4987 00b5 d282 e204 0344 3867
-0000060 b030 b030 bdf7 5cd5 9e4a ff29 50f0 85f9
-0000070 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-00000c0 8f7f ffff 5c21 ffdc ffff ffff ffff ffff
-00000d0 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0000110 2000 1600 f99d 64c0 cb85 ffff ffff ffff
-0000120
----
- drivers/mtd/spi-nor/macronix.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index d81a4cb2812b..723efe4ca57e 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -97,6 +97,9 @@ static const struct flash_info macronix_nor_parts[] = {
- 			      SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048)
- 		NO_SFDP_FLAGS(SPI_NOR_QUAD_READ) },
-+	{ "mx66u1g45g",  INFO(0xc2253b, 0, 64 * 1024, 2048)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
- 	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
--- 
-2.25.1
-
+       Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
