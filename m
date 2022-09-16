@@ -4,82 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CAECC6FA8B
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Sep 2022 10:54:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1DD4C54EE9
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Sep 2022 11:46:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
+	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=t6kOFywR8ZIUkkOFvG0uYxcgM1qyUzl006Ae5bgZtCE=; b=Nxt7QvgvEFhrkn
-	E/WMltGlG2Uff/7G0CMinwyl/vDK3j4Rv7Kc56st2n7okHZBOz3Bwl4iYDwdzkdFdhouMxHkPNSqu
-	CjMTlRa+SqiRDRwon+6uF6Jyw6a0WbY76CbVUMdImCIHV84/Qq4QryLQLMZuD/vsf5Fxa7Rc9bcbg
-	2xQIHPwh39kQZPh6IaM8Rcg9UK7MMOCoPSnttQ47YrPjGUQbtZTIRPlIPlhh75mhwRVo2a2y2cD3G
-	wR9rn8v82qijONCWwDTRKQ/aKjgClt1C4G1ozj/VkbEPhqgkpmn1A38Jv6Yhh7jSX044V/7roIQlp
-	5fFZmXT106ZaUHT21EtQ==;
+	List-Owner; bh=VKdlLlz/O4j5Hz/grsaXnTmafWAfhYtmcpBGcher1N8=; b=GHJvaZSoLFWvIN
+	sGmWyq+JET8x7fCEugqfDtdXzJuxIdbcPMa5rnp7OnG+Tw7C5VHe91eSCV98SVPnLqnT0dm2X4d8F
+	UwwHr9tVc5jiBM5fHIWfKF8jrvIgodw1oWeW5JvmgVMQtY60CvSGoUgp0t25/iz1osM4jOnY51ITT
+	c9ljYsr7eC+RrbqRh3cZQCwUQbjGxJFVBP1nGo3o6L9NanE/pGGFC5XXfhlHqnQOc5Nq6/abxcVYg
+	DRqdSdLRrfl3fjMhffqTLC5ys77VV1sC9TCfJ1+58ud0mZvvvTD0NQzGLQY8oBwsFo6smdOIIigHJ
+	qexFbOpav1WWogcO3azQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oZ8zT-00COtM-TF; Fri, 16 Sep 2022 10:54:36 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1oZ9n1-00CplL-37; Fri, 16 Sep 2022 11:45:47 +0000
+Received: from new2-smtp.messagingengine.com ([66.111.4.224])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oZ8zI-00COlc-Vr
-	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2022 10:54:31 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id n8so8315030wmr.5
-        for <linux-mtd@lists.infradead.org>; Fri, 16 Sep 2022 03:54:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date;
-        bh=as5qbV1zgeHsUS0PT6BJlWeyoNQRvlWywcs7yIo6KkE=;
-        b=IjAoTYpUj4L7seU/elTdtGkV+58urlsKmEb28xUwlAFOGP+QYdURtsS2r1nMwu6TKh
-         LIAxp+nV6UxWcM7vsnFFx1LAUoi4AmHZ+sUhzkKUG74jnklrvIjdtiBQ0q+pb/x2Dpdo
-         +5F0J17P+84g6XF+r34NK4xEm5l14BGWJcuK65Qdqd7n9fS/GpbEPWqYeBaAUQcuIcx6
-         Zh2tgHJ3HmWGb2ru3nCMQ06GJMgJYhEZ1d3I2/B3eMTNSoQyq913W2zxt5czXwrCOFqy
-         mfF8qA1RFE0+EPx3prR5axg4gpeMSRzGIVCaAjHorFvwaFBUFy9VybBlaDXhicwuMANk
-         BFHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date;
-        bh=as5qbV1zgeHsUS0PT6BJlWeyoNQRvlWywcs7yIo6KkE=;
-        b=J9M1aW+T0PN6rJSYsUPW0YugDYbn3p14mZiyuuk0eui9GzQmW2dqh8o2XB+j/QpObs
-         GkTd1hwdHe+hmL7jCOQPB0jMwlccyGEUT22o9hMCwEZf1HPK8klZY30zhPFiZx5eAlwd
-         WaMfQq8pvhweLIlfTCfNRLMMM27FguOfvkvAPWDFM+pz+59Oo02AOidXfW94U/5E9Mf7
-         tv0nAAV4lA2TmpF7SqmHujgOZHdlRbZBbrrhdowVoTyVFMUJUP+nJwZy15h/d6pJnC2Q
-         QOzbKJ/IwoPaHir/zBFVA0S1Bu5JHleUe3c3HgxKs1n1k9Qc10l6BRS3P8UUrkJ99Emr
-         6HMg==
-X-Gm-Message-State: ACrzQf1tl98t8zHp5jE/zqfNUukW97VE6wyLkoahyVYw6PBcdsVlxWNx
-	fVIn9PdbC9iqRjZ/nnTPVsY=
-X-Google-Smtp-Source: AMsMyM4/vz3bTIqD782eceBcv3WxXpbx7kU8s77sCUA728nVphdNUakbhnIE7OfoHmX/BrbAa1yZSg==
-X-Received: by 2002:a1c:f709:0:b0:3a6:3452:fcbe with SMTP id v9-20020a1cf709000000b003a63452fcbemr2958300wmh.164.1663325660161;
-        Fri, 16 Sep 2022 03:54:20 -0700 (PDT)
-Received: from Ansuel-xps. (93-42-70-134.ip85.fastwebnet.it. [93.42.70.134])
-        by smtp.gmail.com with ESMTPSA id d4-20020adffd84000000b00228daaa84aesm4646533wrr.25.2022.09.16.03.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Sep 2022 03:54:19 -0700 (PDT)
-Message-ID: <632455db.df0a0220.9684.aafc@mx.google.com>
-X-Google-Original-Message-ID: <YyPpZS9Cdteeiv4o@Ansuel-xps.>
-Date: Fri, 16 Sep 2022 05:11:33 +0200
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Manivannan Sadhasivam <mani@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: raw: qcom_nandc: handle error pointer from
- adm prep_slave_sg
+	id 1oZ9mx-00Cpgp-Nm
+	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2022 11:45:45 +0000
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailnew.nyi.internal (Postfix) with ESMTP id A086A580A5C;
+	Fri, 16 Sep 2022 07:45:39 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute3.internal (MEProxy); Fri, 16 Sep 2022 07:45:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to; s=fm1; t=1663328739; x=1663332339; bh=eM0zkrYKkb
+	R1hHKUibwuksFexdGqU5ZZzCGObF1lj10=; b=aRC0gB+jlHnZIwJHvjm4H8il/A
+	gXfQ7KHQTRCm52vJyltXqZYxZYeYdPKbby5RerDJ0Ox/lB+4hs6NIse59JY9WCvP
+	/3peHYH8Uw1dMerZoJABUIbDYK4EJ2ylcydd109ofUXH90ncF6k1EqhZR5hrI3Xd
+	0z5g3jIEGTSKAOjHlCGn00kUg3EQ7M5X3DShg9Q2MKMYjibk3+yeOunpR3LpQY2d
+	rsDSjqt8Ge1AYvivgckhDRTMH/bfOLa/GrfHyhprKTctqfIyN8YkliDRcetqbP63
+	R5lbQ0usBF8lCF+Ow+uKBzvQFYCvoKZyNnq4/KQ/jUtdUoGB8tpOpLtTGGJg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:sender:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1663328739; x=1663332339; bh=eM0zkrYKkbR1hHKUibwuksFexdGq
+	U5ZZzCGObF1lj10=; b=CWVkr1e0IseTqGS4lGkkC4NJjvyK6Hz35gN9o1vvIThM
+	z7cMxLTIQMl3fqFyieZHHtnQ2hhifyzAsts+OBE3MGWRbTJZk4I0K/5g9sj7cQIo
+	iFThSIXeVRmqXP8QAoSP96+OaTzAEVaZ5TGVfAnIztSuMaD5cMvXuDo25Mr7x9ro
+	hlI3iG3UgRgInMh+OnoKJI/C9ShWhvgVtT1WB6ihrVSOUC3bKgdsBUzhzx2Nofan
+	agTudrwcnw3m7dLeD9sthMwwWUo6Qf5xTOvCwpqBJRkhA8zOnQoUVdf+QhUuafLU
+	qpvcnGb/ATs8FNOSmJKfNAAbuPMp9EwbDEqQrgawsw==
+X-ME-Sender: <xms:42EkYy4BoFbsuqGxgexhyDOd8zPHx1pF9aL4VVxi5aH443HTmpnnnA>
+    <xme:42EkY77wjeXNDFm0ZaZrteGP0LrB7X2exmSC2_L2ynSnP6WIQJXLOb4nalNk7wcH6
+    MQz9fLQLFCuE8qTBac>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedvtddggeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:42EkYxeNQu5wtCN-yTKSohy42A2Q7ZTnCtzjLODiDkQceW4cT7UfrA>
+    <xmx:42EkY_IoMIWXfhzVi3LUl2Za_sVqfJreBElPWnwKZpHFip4BIzhFGw>
+    <xmx:42EkY2KfptFlhY08pbiyzM12U0JquQRMmDb79jmaO-nhX_dg4jLInA>
+    <xmx:42EkY1_pGspje9SQ6daHcyZbVpK1E6VzQgLzC30aJmUk0EWq5d66Ng>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 183F5B60086; Fri, 16 Sep 2022 07:45:39 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-935-ge4ccd4c47b-fm-20220914.001-ge4ccd4c4
+Mime-Version: 1.0
+Message-Id: <c243fd70-782c-4663-b08d-99f44ae55fc3@www.fastmail.com>
+In-Reply-To: <632455db.df0a0220.9684.aafc@mx.google.com>
 References: <20220916001038.11147-1-ansuelsmth@gmail.com>
  <4dcb0e76-b965-42da-b637-751d2f8e1c51@www.fastmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4dcb0e76-b965-42da-b637-751d2f8e1c51@www.fastmail.com>
+ <632455db.df0a0220.9684.aafc@mx.google.com>
+Date: Fri, 16 Sep 2022 13:45:17 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Christian Marangi" <ansuelsmth@gmail.com>
+Cc: "Manivannan Sadhasivam" <mani@kernel.org>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Vinod Koul" <vkoul@kernel.org>,
+ "Mark Brown" <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: raw: qcom_nandc: handle error pointer from adm
+ prep_slave_sg
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220916_035425_104692_229D4FB3 
-X-CRM114-Status: GOOD (  25.67  )
+X-CRM114-CacheID: sfid-20220916_044544_113685_173B70DC 
+X-CRM114-Status: UNSURE (   8.17  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,49 +110,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Sep 16, 2022 at 11:01:11AM +0200, Arnd Bergmann wrote:
-> On Fri, Sep 16, 2022, at 2:10 AM, Christian Marangi wrote:
-> > ADM dma engine has changed to also provide error pointer instaed of
-> > plain NULL pointer on invalid configuration of prep_slave_sg function.
-> > Currently this is not handled and an error pointer is detected as a
-> > valid dma_desc. This cause kernel panic as the driver doesn't fail
-> > with an invalid dma engine configuration.
-> >
-> > Correctly handle this case by checking if dma_desc is NULL or IS_ERR.
-> 
-> Using IS_ERR_OR_NULL() is almost never a correct solution. I think
-> in this case the problem is the adm_prep_slave_sg() function
-> that returns an invalid error code.
+On Fri, Sep 16, 2022, at 5:11 AM, Christian Marangi wrote:
+> On Fri, Sep 16, 2022 at 11:01:11AM +0200, Arnd Bergmann wrote:
 >
+> Thanks for the review and the clarification!
+> (Also extra point the fixes tag will match the driver)
 
-Yes I was honestly not certain on what to fix... The adm driver or the
-nand driver. Dediced to fix the nand driver since it was the one that
-was causing the panic and to me it seemd bad to remove error code from
-the adm driver. (But we have debug log anyway so...)
+Regarding the fixes tag, how did you actually get to my patch?
+While it's possible that it caused the regression, it did not
+introduce the ERR_PTR() usage that was already there in
+5c9f8c2dbdbe ("dmaengine: qcom: Add ADM driver").
 
-> While error pointers are often better than NULL pointers for
-> passing information to the caller, a driver can't just change
-> the calling conventions on its own. If we want to change
-> the dmaengine_prep_slave_sg() API, I would suggest coming
-> up with a new name for a replacement interface that uses
-> error pointers instead of NULL first, and then changing
-> all callers to the new interface.
-> 
->        Arnd
+Maybe there is another bug that needs to be addressed in this
+driver?
 
-I also notice this that dmaengine_prep_slave_sg always return NULL in
-case of error so you are right and the real problem here is the changed
-calling concention. Seems overkill to introduce a new API just for a
-commit that changed the naming convention...
-
-So I think we should just ignore this and I will send a better fix that
-will just return NULL and fix the adm driver. 
-
-Thanks for the review and the clarification!
-(Also extra point the fixes tag will match the driver)
-
--- 
-	Ansuel
+      Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
