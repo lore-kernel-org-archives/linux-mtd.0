@@ -4,89 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99575ECAAA1
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Sep 2022 19:57:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31D24C54EE9
+	for <linux-mtd@archiver.kernel.org>; Sat, 17 Sep 2022 11:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=A0PAbZXHiM2Zm5r3V7b1s0ISXYR3crr3GiaWpz/W8i4=; b=FkH4VnaCGzfGgId2Z8isXpDgut
-	qpHTuEIFJ6UJduL89CDhzL4Fp4mREcEblGBhIjdLKKXqcgg3c3aZ1PDevZ8pmvtUim97FY+7VThut
-	TEBN66YgQDj0JN0X9cne6uIfm3CS3AC0qjlY1CVDUefL9BXwohvCjvMPw44UQBqoMHj+mJnF0HmQ3
-	t+kVrYTRHcGF0a0CeR45cZYqYidQfipYqARcjwu0WPKNKzLILndw4vMQck1W6+L07AWwNsKsuZKSB
-	eutwDE9Tn1XcBE4pXpTWzj/X5zMwb7/jSIKJi8BTZmvQ6TOW3fy4PITfR1x4mtMkErR5kBOwBxVfr
-	F/Eeirhg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Vhgsiz4C/mDX6sIl5i1VR9ZQoOlpFuoa/CwnMaOg5Fs=; b=JfLb8dfzRbcYuN
+	1/tTwayRvY9RKsdESu8VGbALcm84w8kEI0MOIF6CI+/+VWZq/cDe10Az08EolOvK2VDt9UHG2l7x3
+	EoySliM5UKTA755ZPInNixnxgVmokhdM6f01pyghVBl7Kj4wA1ljZBaYdqZIRFubEMQQCYDh3cKVM
+	R2b8d/Jo5y+eGAC2O9i5ObqSG79qglkZ+Nr0DqqCP07sB2aBFCnOJt97fjK8ETklbnDecQkJDOWz8
+	fqjAUCK+Xn6JlidvKhYX6QOBOiCeij5I36pn/go3hxQe9SabboEcbbgzBsG/egVaX/VdgjwZJfXtJ
+	etafToTaZIN+zSGJ5P9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oZHSy-00GU7D-KC; Fri, 16 Sep 2022 19:57:36 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1oZVop-005PYt-Pu; Sat, 17 Sep 2022 11:17:07 +0000
+Received: from mga02.intel.com ([134.134.136.20])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oZHSk-00GU0f-Ea; Fri, 16 Sep 2022 19:57:23 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 590A5620F0;
-	Fri, 16 Sep 2022 19:57:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2545C433D7;
-	Fri, 16 Sep 2022 19:57:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1663358240;
-	bh=vCLtuY1TpVMliumE5DbT2WWZvJ7/teLjaPmFO/zeNJs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IOX0u1Ga5jI3fyqBR9wRY7ly+OLINlk+lX+/BsGejMs60jVRDL8sIKqdSt3XILF3S
-	 3K8SPRau6FUTQjVtbE6TEJNBmBOBPcPVQXi8OX57u4C0HVoKJPkMEEJ00ksU2lEwGs
-	 eneNMJ1+ZnjxnQkCh/cvuyCe2+sDYCEoDJMO2dCn8QTVKtHj5HclYZhNhoQ3rUjl8F
-	 tLS/O8FsgwubYS4qOpznp7bdKsC95dfNfY+vQCoCjDHNxc5H6XhL91QFFlfKlKIRzu
-	 6tQdmHN/uGcOz3u/YXt0EebKPWSOF1vo6zXrc1qJQEZh8QfmRKs6RTMPWgVqS4lGYT
-	 5hmw0V5iFK+MA==
-Date: Fri, 16 Sep 2022 20:57:18 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: Johan Jonker <jbx6244@gmail.com>
-Cc: kever.yang@rock-chips.com, sjg@chromium.org, philipp.tomsich@vrull.eu,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	heiko@sntech.de, ulf.hansson@linaro.org, miquel.raynal@bootlin.com,
-	richard@nod.at, vigneshr@ti.com, kishon@ti.com, vkoul@kernel.org,
-	thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-	gregkh@linuxfoundation.org, broonie@kernel.org,
-	wim@linux-watchdog.org, linux@roeck-us.net,
-	zhangqing@rock-chips.com, jamie@jamieiles.com,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-i2c@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-phy@lists.infradead.org,
-	linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v1 02/11] dt-bindings: i2c: rockchip: add
- rockchip,rk3128-i2c
-Message-ID: <YyTVHph1bCF/gfjL@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Johan Jonker <jbx6244@gmail.com>, kever.yang@rock-chips.com,
-	sjg@chromium.org, philipp.tomsich@vrull.eu, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, heiko@sntech.de,
-	ulf.hansson@linaro.org, miquel.raynal@bootlin.com, richard@nod.at,
-	vigneshr@ti.com, kishon@ti.com, vkoul@kernel.org,
-	thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-	gregkh@linuxfoundation.org, broonie@kernel.org,
-	wim@linux-watchdog.org, linux@roeck-us.net,
-	zhangqing@rock-chips.com, jamie@jamieiles.com,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-i2c@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-phy@lists.infradead.org,
-	linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-watchdog@vger.kernel.org
-References: <20220909212543.17428-1-jbx6244@gmail.com>
- <405db21d-154e-fed0-7524-ace1cef0203c@gmail.com>
+	id 1oZVom-005PWx-IY
+	for linux-mtd@lists.infradead.org; Sat, 17 Sep 2022 11:17:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663413424; x=1694949424;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=r5R83j4pOSZlr5q6a2Hps+vq4FBEXptw1GqH09jMVRM=;
+  b=XbglassJqY3+XbawYVNXS/wEXorINuLU4qsI9sluuEByNO0hlxFe4Iyv
+   xHjTfR9KnZR7omC0MesLgLuBIdaFsks7NzEtB4MdA16sTVgB/5uEEsMQh
+   kNTgyyXXCUCdzqTUvT6mI5f1lf+uUiXE9Tox7calJ0TB0egT3pbdN7hmH
+   bRGhoF5oN7ovWbsdB5EwJEsE1xQ4Pyzz6Kh9arqmYznTSEPEhUpM8i1oU
+   Sd3bURW+tBrwbn99ZMSRFyNAq0+5At7ckYVJ1/AnRgx8jVCAPAbDHU0LU
+   Arpo14gA3CxQIOpSuAS+z/S+dG86MsxIg1IzeaU7+D4JqWC9Kzu62QnqE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10472"; a="286188077"
+X-IronPort-AV: E=Sophos;i="5.93,323,1654585200"; 
+   d="scan'208";a="286188077"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2022 04:17:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,323,1654585200"; 
+   d="scan'208";a="743609171"
+Received: from unknown (HELO localhost.localdomain) ([10.226.216.116])
+  by orsmga004.jf.intel.com with ESMTP; 17 Sep 2022 04:16:59 -0700
+From: niravkumar.l.rabara@intel.com
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: spi-nor: macronix: Add support for mx66u1g45g
+Date: Sat, 17 Sep 2022 19:16:40 +0800
+Message-Id: <20220917111640.977243-1-niravkumar.l.rabara@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220916082215.883184-1-niravkumar.l.rabara@intel.com>
+References: <20220916082215.883184-1-niravkumar.l.rabara@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <405db21d-154e-fed0-7524-ace1cef0203c@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220916_125722_585949_47D19B78 
-X-CRM114-Status: UNSURE (   8.80  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220917_041704_760771_9194D1A7 
+X-CRM114-Status: GOOD (  12.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,62 +79,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4504787011886048747=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
 
---===============4504787011886048747==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Vbp8ZsxZHEPG+tBR"
-Content-Disposition: inline
+The MX66U1G45G is the smaller sibling (128MB) of the MX66U2G45G (256MB)
+that is already supported.
 
+Tested on Intel N5X socdk board,
+- random data write, erase, read   - verified erase operations
+- random data write, read and compare  - verified write/read operations
 
---Vbp8ZsxZHEPG+tBR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+---
+root@n5x:~# find / -iname spi-nor
+/sys/kernel/debug/spi-nor
+/sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor
+/sys/bus/spi/drivers/spi-nor
+root@n5x:~# ls -al /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/
+drwxr-xr-x    2 root     root             0 Dec 16 17:26 .
+drwxr-xr-x    6 root     root             0 Dec 16 17:25 ..
+-r--r--r--    1 root     root          4096 Dec 16 17:26 jedec_id
+-r--r--r--    1 root     root          4096 Dec 16 17:26 manufacturer
+-r--r--r--    1 root     root          4096 Dec 16 17:26 partname
+-r--r--r--    1 root     root             0 Dec 16 17:26 sfdp
+root@n5x:~#  cat  /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/jedec_id
+c2253b
+root@n5x:~# cat  /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/manufacturer
+macronix
+root@n5x:~# cat  /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/partname
+mx66u1g45g
+root@n5x:~# cat  /sys/devices/platform/soc/ff8d2000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp > mx66u1g45g-sfdp
+root@n5x:~# hexdump mx66u1g45g-sfdp
+0000000 4653 5044 0106 ff02 0600 1001 0030 ff00
+0000010 00c2 0401 0110 ff00 0084 0201 00c0 ff00
+0000020 ffff ffff ffff ffff ffff ffff ffff ffff
+0000030 20e5 fffb ffff 3fff eb44 6b08 3b08 bb04
+0000040 fffe ffff ffff ff00 ffff eb44 200c 520f
+0000050 d810 ff00 4987 00b5 d282 e204 0344 3867
+0000060 b030 b030 bdf7 5cd5 9e4a ff29 50f0 85f9
+0000070 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+00000c0 8f7f ffff 5c21 ffdc ffff ffff ffff ffff
+00000d0 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0000110 2000 1600 f99d 64c0 cb85 ffff ffff ffff
+0000120
+---
+ drivers/mtd/spi-nor/macronix.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-On Sat, Sep 10, 2022 at 12:02:30AM +0200, Johan Jonker wrote:
-> Add rockchip,rk3128-i2c compatible string.
->=20
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index d81a4cb2812b..07ace9da74b7 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -97,6 +97,10 @@ static const struct flash_info macronix_nor_parts[] = {
+ 			      SPI_NOR_QUAD_READ) },
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048)
+ 		NO_SFDP_FLAGS(SPI_NOR_QUAD_READ) },
++	{ "mx66u1g45g",  INFO(0xc2253b, 0, 64 * 1024, 2048)
++		PARSE_SFDP
++		FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
++		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+ 	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+-- 
+2.25.1
 
-Applied to for-next, thanks!
-
-
---Vbp8ZsxZHEPG+tBR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmMk1R4ACgkQFA3kzBSg
-KbY8YxAAqkmITIjJchmw2BH4eehoxFiSAW8VYh6gojn2S2RgQjSwZsHnR8E8FMIu
-eUeROZH0Wd/Mihi8hLz9Fm3/aTSxUss5Zj2hzFr2RGOHqsicHtx622HwdTakfM08
-6NFWuuBya9tGX4iujN+oQsnI1NA8mDPNEIE8tMEh1wBzOY5m/ijAJLIALJ/cB/qj
-4MGIK9aKg9PfU3nSd0b+9Dn7iZDClo6CnBeKCAHhUeF+DoKzdLsl3FQzNtcIxS1+
-+NL48AB8Kst01hfZHKpuUriTDT2lXfBeQi5NEKNRyc+1fEWBshPat1tYRlEfs9BA
-WAHNZkh3q8qsSDPh2lufGmmOhuX3pUumWAwHfHgbZksNtPj5ldSTXhUciPPHeufb
-Rf+Ne4WaMMX4JOJJ70wMKn+ycaJYRulfiOacroqTqTH7rSX+NuioTEtITA2KMa3q
-4WfMmHrJe3qLPhEkLXabhrYwMcAWkHaPDJ6dJJbHfxRtR0F8y0DMpyJrCRsF9TcS
-+8Hqcq+y5bxc9n/eDxSrSQXXoEQLBFjGeJfCz4D+n6oOWv/6dxMe8dZyU7vq/Ea8
-0DApwW0esWTGZuuV5r2xmncP/4+spn2C2FCOI1ZqCPs2T3Kd7DPBEMPnp7UQRZFO
-cVkNoe0c0N9yQjMEVi9+aqqDWefE6imYt3d3PXqcHEYoHYqHON4=
-=t7C7
------END PGP SIGNATURE-----
-
---Vbp8ZsxZHEPG+tBR--
-
-
---===============4504787011886048747==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============4504787011886048747==--
-
