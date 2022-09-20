@@ -4,80 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F41EECAAD8
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Sep 2022 05:27:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63AA8C54EE9
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Sep 2022 06:22:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NvtcNghJLDuNDj77JPPCt8z064mJ2DQS6RAhEneQfWo=; b=eRAQlsEvAUnFh4
-	27sufCT6HP3GKzuagb8zVwxvbEXVn8sMPtbLSeOLTyJT72i+6z8xte3vAEwSL7diC+XLLB4QhCb3n
-	uZKTxobincVkefvz8hTOHJGO+W8nNCcfUenaz/hXZZ2RAzy8cffoAmxzKshQ5gWDB54yC+baolywY
-	aoC4chPzM3x9bVwK8cNkKQg/XC8b2ly7waklpETS+aCbPQ1jRsy4dXRMgIcHV3x5rgxrJibsmIBwq
-	KJmph0qXF3ORH3T9YEge5/68fPvqdoYKaH6oq1N9q7c3ymqk0v2j0CPkN5V62wmCt2I4MGctRTEMS
-	R/gKKE3x1lP/YEYh8izQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+OmjqLZiCBAxvcTqxoGlFdDC+BetXy/MARYJLBZz3Gs=; b=TVwPG44rbAWNV+EgyP9falK9W0
+	vreRtKKYAlLGLwghjdhjeKW5ZHwjX9yuqB8Ekxeu0DrSC7fu5QI+DMs4FzAhfaFSKcegQJu1uWVSP
+	c2REXgd8tONMczxpTcmZJhrcRjir6t4m7+QOUJScEfnlQS43myfldZDXLQ4VfZfMo5jI7VzsHE9Yu
+	udqs1uqoS8PBQAI+S5bPMV/El+2JD4fHYtIFUxthsjpesXMDyBy/Lp6KyZgzE0byETVz2pbm1pDT2
+	UReSeH+UPEajt1ehUWMRs8q0tN9AnyiY77YU4WYNfRUX++QMxtr31dVdtuv8oN05BpQFobS5LQZoi
+	p5d584nQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaVkt-000fiG-Kg; Tue, 20 Sep 2022 05:25:11 +0000
-Received: from mga14.intel.com ([192.55.52.115])
+	id 1oaWeT-000x49-4U; Tue, 20 Sep 2022 06:22:37 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaVko-000fee-Ro
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2022 05:25:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663651506; x=1695187506;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xuDq04V3ERIqON4UuLH1RmjGkFR75KWm8lnYzEvFeDI=;
-  b=PEB4v+TMmYb90qPSc1SynTym9s+3N2RBZxanbVMkdkyT7wseQgAC6JLC
-   Te/AMpkIcXeKn97Y2KX2tTVBr8MBXKC9XAJQ6SyzCDoHAhr9PpzZmx1xF
-   knzYtdZ2eFYLz71WumxAp/CTbaWiX41v71lJJJHmGkrQ4/kwHuXvWgtI6
-   ZA9vBDxtBJgPISpF9FAZS2IGM4nHxs075X61990pxoh0/+k0TWGzSMMJP
-   +HZQgGLX/SC168tcRQtzinRlD+i3xNPsAWm4ChPltXZuqNTOMTINvIX+j
-   2qpPurq6t6i1Tw+LdyzCCue9iKyo4dq41sQSNJbvFpArFkk2TZOWfeY1b
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10475"; a="299590086"
-X-IronPort-AV: E=Sophos;i="5.93,329,1654585200"; 
-   d="scan'208";a="299590086"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2022 22:25:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,329,1654585200"; 
-   d="scan'208";a="794124954"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 19 Sep 2022 22:25:01 -0700
-Received: from maurocar-mobl2 (maurocar-mobl2.ger.corp.intel.com [10.252.59.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id C58B4580713;
-	Mon, 19 Sep 2022 22:24:56 -0700 (PDT)
-Date: Tue, 20 Sep 2022 07:24:54 +0200
-From: Mauro Carvalho Chehab <mauro.chehab@linux.intel.com>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Greg KH
- <gregkh@linuxfoundation.org>, intel-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, Lucas De Marchi
- <lucas.demarchi@intel.com>, Kai Vehmanen <kai.vehmanen@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-modules@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>, David
- Airlie <airlied@linux.ie>, Christophe JAILLET
- <christophe.jaillet@wanadoo.fr>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, Janusz Krzysztofik
- <janusz.krzysztofik@linux.intel.com>
-Subject: Re: [PATCH v6 0/4] Let userspace know when snd-hda-intel needs i915
-Message-ID: <20220920072454.4cf91f24@maurocar-mobl2>
-In-Reply-To: <Ynl7xGy+a9MYjXi1@bombadil.infradead.org>
-References: <cover.1652113087.git.mchehab@kernel.org>
-	<Ynl7xGy+a9MYjXi1@bombadil.infradead.org>
+	id 1oaWeL-000x18-8n
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2022 06:22:30 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1oaWds-0002p0-9V; Tue, 20 Sep 2022 08:22:00 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1oaWdm-001o8d-IJ; Tue, 20 Sep 2022 08:21:53 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1oaWdk-0028nS-97; Tue, 20 Sep 2022 08:21:52 +0200
+Date: Tue, 20 Sep 2022 08:21:49 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Johan Jonker <jbx6244@gmail.com>
+Cc: kever.yang@rock-chips.com, sjg@chromium.org, philipp.tomsich@vrull.eu,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	heiko@sntech.de, ulf.hansson@linaro.org, miquel.raynal@bootlin.com,
+	richard@nod.at, vigneshr@ti.com, kishon@ti.com, vkoul@kernel.org,
+	thierry.reding@gmail.com, gregkh@linuxfoundation.org,
+	broonie@kernel.org, wim@linux-watchdog.org, linux@roeck-us.net,
+	zhangqing@rock-chips.com, jamie@jamieiles.com,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-phy@lists.infradead.org,
+	linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-spi@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v1 03/11] dt-bindings: pwm: rockchip: add
+ rockchip,rk3128-pwm
+Message-ID: <20220920062149.o6gdhsh7bk5rl4ah@pengutronix.de>
+References: <20220909212543.17428-1-jbx6244@gmail.com>
+ <f5dd0ee4-d97e-d878-ffde-c06e9b233e38@gmail.com>
 MIME-Version: 1.0
+In-Reply-To: <f5dd0ee4-d97e-d878-ffde-c06e9b233e38@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220919_222506_932541_3ECBF53F 
-X-CRM114-Status: GOOD (  20.13  )
+X-CRM114-CacheID: sfid-20220919_232229_318403_A929556C 
+X-CRM114-Status: GOOD (  10.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,33 +79,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5273051038175887646=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Luis,
 
-On Mon, 9 May 2022 13:38:28 -0700
-Luis Chamberlain <mcgrof@kernel.org> wrote:
+--===============5273051038175887646==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kd7xret2mae2a4ju"
+Content-Disposition: inline
 
-> On Mon, May 09, 2022 at 06:23:35PM +0200, Mauro Carvalho Chehab wrote:
-> > Currently, kernel/module annotates module dependencies when
-> > request_symbol is used, but it doesn't cover more complex inter-driver
-> > dependencies that are subsystem and/or driver-specific.
-> >   
-> 
-> At this pount v5.18-rc7 is out and so it is too late to soak this
-> in for the proper level of testing I'd like to see for modules-next.
-> So I can review this after the next merge window. I'd want to beat
-> the hell out of this and if possible I'd like to see if we can have
-> some test coverage for the intended goal and how to break it.
 
-Any news with regards to this patch series?
+--kd7xret2mae2a4ju
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Mauro
+Hello,
+
+On Sat, Sep 10, 2022 at 12:02:22AM +0200, Johan Jonker wrote:
+> Add rockchip,rk3128-pwm compatible string.
+>=20
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Is the expectation that this goes in via PWM, or together with the other
+patches via the rockchip maintainers?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--kd7xret2mae2a4ju
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmMpW/oACgkQwfwUeK3K
+7Ak6lQf+JJwJnr0ZyiY3Or6brzs797WF7GXUAFlXmkUFkhGzHm5kW2EBe5r0eYXK
+6JDJ9MIUXRJvfRMXB0q1REypyJTbfcS78DyhtcyYM89rpXqxBp76jgDUf9Rs2H+z
+fwUffgfMkkQk6ojMNmH6zeOALRizKrYFAmvWQAWndiOJLNeOAtcDF5PnfM+i2xer
+mPTOt7VjkfcG8CKYIp12F7V/aizP9olhrAvGVZKk+bkLNUfSGmkqQcYCaHr7xDaj
+aXtjRhrJzjBtQrq55OSMM5moBXnlWsTQGRxSeNpQO3wHAIbLadUooB4E717L9fut
+q4vUk4zN179x3cEVOMDAV6ZtGl0BIQ==
+=pI/x
+-----END PGP SIGNATURE-----
+
+--kd7xret2mae2a4ju--
+
+
+--===============5273051038175887646==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============5273051038175887646==--
+
