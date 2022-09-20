@@ -4,74 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDCAFC54EE9
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Sep 2022 08:35:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82DECECAAD8
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Sep 2022 08:35:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AwUAh3pRypRxDNHNYPP4QENCS0MD7RKnUXVPB5Hrd34=; b=Lu0Viz6iMp07jv
-	QRgzx5sX9dX703G71Mis25hovcYOhnO0ruKpnNZ6N3wFY8B1FMaZxFgi2hExJQI3aPoxQR0Af9zcs
-	J4I/OjrC+8ugN7foF/5pS+hBqQc+g7IDwrXh7qlLmjLtHTtfJ2kVj/uLJUvqJG7MCkHotL/AQHDWF
-	x0S3LCEj642AGvm5k++SC5cEWrhpNxXqFYGzv1u+MofRN2+OfEujFQzqIlCt6lQnkGsQpJwsOjS+7
-	doCzEtS4ASTgWefEXNE9xiO7ZwJ1lsybTQ2eh1p95Hibr85ICWRyHDFNiGHjea9QubEBc7DufzXJS
-	fAyxLoBfFVpyZ7FQGarA==;
+	List-Owner; bh=bwvQvzgOZ7KXOX2iWmXgz3Rok3IizVHoHZGIyPPfNdM=; b=QQmEK7seThqDQv
+	IpUMH8FbjHEv3FqY2tJS8wLWFbiRZvG5Tmew0DTj35nReMF99Sbslh+gQRlc/4gZXWJGD6h0H3j4U
+	fWzmDnQd/+36UPIHXmT/5O+trXCb4xLmHMETZ/NsoaGl0nyj61NUz7UQbvQks3x231r4JRC4IjGFW
+	A83N/+6ZQ6TaB/Tb3wIExpM/HW3J7Mxy2RO5vYuOAIPQBPOBjwfCBBfHtQTPqbPwBKM9CgpyyfYG4
+	bKSNv3dqKzyApDbK+kEa4r/Po8+3RGz7mwqWt4hfSTHDR79l9dHmbJkxENHkV7JOyQCaKIKatYn+I
+	NpXN2fx/AydSTkFlQGrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaYi6-001rit-Kr; Tue, 20 Sep 2022 08:34:30 +0000
-Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
+	id 1oaYj6-001sfb-90; Tue, 20 Sep 2022 08:35:32 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaYh5-001qoY-B3; Tue, 20 Sep 2022 08:33:29 +0000
+	id 1oaYhK-001r7Y-FR
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2022 08:33:51 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id ABABA2000D;
-	Tue, 20 Sep 2022 08:33:21 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id A7CFB200008;
+	Tue, 20 Sep 2022 08:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1663662804;
+	t=1663662820;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CV8RRbNvkUpFnsCo59JCiSq0IUT9sDhM+Ha7hqQT4Cw=;
-	b=A8j5LZyLw1iRMxlgBWdc/Mb92p7NEELS3QYTgYX2i4MvquxEuINMCDOLdTs7rZItXi+j6B
-	UDwe9KiMbQTPqcTHaGnYBVAxRW6U81E7rLhLuHl0kZfldjKMMTYYTCbejGWj/bSDBiTIUb
-	qCTTdPxH9VA/qB4bz0N8npkRF6O1PSSgQHJUR50fZzFYSj+bo4UM56OJR6w9u63yZF/3oT
-	ASE6BU2jrEYN4nR1B9lHRajAvy4y9SNtPcdectpLHos5FRYybSbRikgaS8U7qyrdubvWfI
-	pxUfwVTJf18JIQwOSjhJ2HSztc2LqSPeuKRzLUYMbDUPTrV6i25EZZ9rB+5hFQ==
+	bh=esexip1yFJnRestUe93rAsRCI36okFNMJSeo5XdMS5s=;
+	b=TOQ+glxV1YFdbvNxUx57JoLB+6WXo2fJDnvrsnjBbx+btOt6FQi5sd8UqmT3/10+fNUnsK
+	JfoGmmEtj4PtkmcU7kpTcDdmCe4l2xFz+A/+0yzEYXYXxOFP/PVHm96lfi8UQ3ha6HQcPD
+	pq+OWNjoKTRtr7INOi6un+FZ8FBxpV11LC2v6KwPUs+Z+i4KZPOIAphCP+KEM0jU/KONOR
+	OSx/NGO2A+W9ipkt6sVUXUCOmj1UWLyMJlbrYfN/hV9IwLeAgk/rH1SUBxLHFFp758d5oA
+	PPlBmFA8BXcgtxG9SJIdnRY5wB51vRQcm3RBpHw65pDDbAFeHHuoN94/bFXiqw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Liang Yang <liang.yang@amlogic.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-mtd@lists.infradead.org
-Cc: Kevin Hilman <khilman@baylibre.com>,
-	Neil Armstrong <narmstrong@baylibre.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Jianxin Pan <jianxin.pan@amlogic.com>,
-	Victor Wan <victor.wan@amlogic.com>,
-	XianWei Zhao <xianwei.zhao@amlogic.com>,
-	Kelvin Zhang <kelvin.zhang@amlogic.com>,
-	BiChao Zheng <bichao.zheng@amlogic.com>,
-	YongHui Yu <yonghui.yu@amlogic.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
+To: Jiangshan Yi <13667453960@163.com>,
+	miquel.raynal@bootlin.com,
+	vigneshr@ti.com
+Cc: richard@nod.at,
+	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v9 3/5] mtd: rawnand: meson: refine resource getting in probe
-Date: Tue, 20 Sep 2022 10:33:21 +0200
-Message-Id: <20220920083321.600926-1-miquel.raynal@bootlin.com>
+	Jiangshan Yi <yijiangshan@kylinos.cn>,
+	k2ci <kernel-bot@kylinos.cn>
+Subject: Re: [PATCH] mtd: rawnand: fix spelling typo in comment
+Date: Tue, 20 Sep 2022 10:33:38 +0200
+Message-Id: <20220920083338.601010-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220907080405.28240-4-liang.yang@amlogic.com>
+In-Reply-To: <20220905063232.1830197-1-13667453960@163.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'cca5eedd2a5747bc626e4ab8e560a657cd559e8d'
+X-linux-mtd-patch-commit: b'9146e732a2dee289d0988f6ad23a74f2ae8181a1'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220920_013327_580941_E04712D5 
-X-CRM114-Status: UNSURE (   5.23  )
+X-CRM114-CacheID: sfid-20220920_013350_201520_99E66A7B 
+X-CRM114-Status: UNSURE (   5.38  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -89,14 +78,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2022-09-07 at 08:04:03 UTC, Liang Yang wrote:
-> simply use devm_platform_ioremap_resource_byname() instead of two steps:
-> res = platform_get_resource(pdev, IORESOURCE_MEM, 0) and
-> reg_base = devm_ioremap_resource(dev, res)
+On Mon, 2022-09-05 at 06:32:32 UTC, Jiangshan Yi wrote:
+> From: Jiangshan Yi <yijiangshan@kylinos.cn>
 > 
-> Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+> Fix spelling typo in comment.
+> 
+> Reported-by: k2ci <kernel-bot@kylinos.cn>
+> Signed-off-by: Jiangshan Yi <yijiangshan@kylinos.cn>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
