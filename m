@@ -4,95 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AD8DC54EE9
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Sep 2022 08:36:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02872ECAAD8
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Sep 2022 08:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KgCJE28VzhEZO0RDsM5Bei6H53o/AutP0KFTg6H6llY=; b=ckkVCCB1fbLp7T
-	07YezgghgOhBx8755bHUxbHgw0cW40oo+bfoouVk2Toe2quNGdjdu+5rwBny173Y6wt6UOzLkFV66
-	me2jBBygDVKpiQkU6BRf9pQm4AluAph7EB6QqZmPBs0tBzH7YL7oSKr+85+tZiGGDZZy6Go2xbRVk
-	uVdeMybTWfjG/kw8rznsWgc4YCvBeMcNwQUb894Ru9aRWipZQTJ0cNpLUHjcQBMEuL1CZgTSgCzfL
-	XWfh2b9Ij0awhdVIPqbwz56cY99b2UaaPxdTGxA8yHhEL3CQI/x/SIvJGZJewYRR8q1+U8OuMmwLw
-	OEyoG3G5PC5gBdMD4/BA==;
+	List-Owner; bh=VU+81wBibvwMTBAo9FNpFKXgORxKxNpO/jaoE0D9cZg=; b=GsfIp3Y5PTohwH
+	8zshuPqT1ZBhjfGfJ7eiJPMburkg9CDgeWzOLsYW26lhNZPk1uAm6YQqC37zxeA44cHLTmjDIjG8p
+	zJm77BO1Ee4Vpq792me9PHy0oLWIw51NuIZjcfgKsv2dA8ZkDCS70VxgBWGeqhbKdEL+pzMk0CWvK
+	idrKTu/tsGPwMB8KFMeoYg/Ssi65kpjweLA6TY7cdBVLdKisp86mWByM94ybuCbiVA2dGKvJCFA42
+	GWMCrIQvURqHEz+KleLI/oca2HxpZegi7GVVeeXNKV+j0hHyPuhO31nSid0Jj6TUSjoLxBuo3urmM
+	mMsWc/YM8sfzCZ3+1Gng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaYjh-001t5Z-KZ; Tue, 20 Sep 2022 08:36:09 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1oaYiv-001sYn-W3; Tue, 20 Sep 2022 08:35:22 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaYhS-001r7g-Uf; Tue, 20 Sep 2022 08:33:55 +0000
+	id 1oaYhA-001qvM-TN; Tue, 20 Sep 2022 08:33:34 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 93B0A40008;
-	Tue, 20 Sep 2022 08:33:42 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 7B9A8E000B;
+	Tue, 20 Sep 2022 08:33:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1663662828;
+	t=1663662810;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WdCBW02Fmd3bjrCh+OZZwzQ5M+jFgiJ3BIAxKxcGchY=;
-	b=Fkc2Mq4Ojmk6fA3bxJPKaJn0WLqyjQT/npMoIhSfZX76aXLoThMbC516XCfnOeiiBamxGC
-	ef/U8lKG8CzN7Q96xUd4LtMIeVblPti2tyyEKtMf32UNp7AfXZFnOGAg+k1ZQGwJQykmDA
-	fPkMuJPLuC8phFSfGeS17s7hENly3KI6ctjaChfKwb4CKjQrsUOoc0MDXBqqdVTbOhXDoh
-	3wV2R5IcM/BB7UthrsqKmOzknjS7VAp0uOkeJv2MDKwd/JfIjmk/eBV1Xgz128d0vrXrJ+
-	HCs5k8j2cnkQ3Ho73v081g4gSg/IgirZsYsb+6cipakSlYrU6szR8RzXypbq3Q==
+	bh=At3bC5+pVfdvaT0AovumlKw8hGS8xgb8H2TE9acIJg8=;
+	b=DA2ssijRNL7b7qE3KSaDOVq067nId70uuDbs7tpzrsvypqf7VBA9KvjBMel6Bg7PcIyWcP
+	Z8jsuA9a2SDso9jcyrs42nkSw9lypAMMzP8rhSBAiYBDWxw8f6pP83TiMxRbbTCzKi9Zyb
+	HA9KqimTXV8IwazBIUFVkzKBgavW4W5npWjHM+vbE3QarhqZs6btw4MA2BF9j5B/b/aDDh
+	eKQJmYlHG7uRIxqPoerTGgoSrdQcLgsxveRq09DELmnUXClQ5PF9Ig0gsgZneKaNWsXDfV
+	D7ZpmJJHdUyWt/9prQyVPfmzY/RZ4TvNejvaTyNUMk7MN7jMd+BiECSFNauSpA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Matti Vaittinen <mazziesaccount@gmail.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Claudiu Beznea <claudiu.beznea@microchip.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
+To: Liang Yang <liang.yang@amlogic.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Felipe Balbi <balbi@kernel.org>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	=?utf-8?q?Krzysztof_Wilc?= =?utf-8?q?zy=C5=84ski?= <kw@linux.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Marc Zyngier <maz@kernel.org>,
+	linux-mtd@lists.infradead.org
+Cc: Kevin Hilman <khilman@baylibre.com>,
+	Rob Herring <robh+dt@kernel.org>,
 	Richard Weinberger <richard@nod.at>,
-	David Airlie <airlied@linux.ie>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Rob Herring <robh@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	=?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc: linux-watchdog@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Neil Armstrong <narmstrong@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Jianxin Pan <jianxin.pan@amlogic.com>,
+	Victor Wan <victor.wan@amlogic.com>,
+	XianWei Zhao <xianwei.zhao@amlogic.com>,
+	Kelvin Zhang <kelvin.zhang@amlogic.com>,
+	BiChao Zheng <bichao.zheng@amlogic.com>,
+	YongHui Yu <yonghui.yu@amlogic.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-amlogic@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 03/11] mtd: rawnand: stm32_fmc2: switch to using devm_fwnode_gpiod_get()
-Date: Tue, 20 Sep 2022 10:33:42 +0200
-Message-Id: <20220920083342.601039-1-miquel.raynal@bootlin.com>
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v9 2/5] mtd: rawnand: meson: fix the clock
+Date: Tue, 20 Sep 2022 10:33:26 +0200
+Message-Id: <20220920083327.600954-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220903-gpiod_get_from_of_node-remove-v1-3-b29adfb27a6c@gmail.com>
+In-Reply-To: <20220907080405.28240-3-liang.yang@amlogic.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'130bd3cdb880c444005e173485124a7bbf3df9b2'
+X-linux-mtd-patch-commit: b'c55ea7bd8849ca7ef2ef7142c0bcfb2d853d7620'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220920_013351_208971_00480EF8 
-X-CRM114-Status: UNSURE (   9.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220920_013333_187893_A3619A6E 
+X-CRM114-Status: GOOD (  10.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,12 +88,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2022-09-05 at 06:30:55 UTC, Dmitry Torokhov wrote:
-> I would like to stop exporting OF-specific devm_gpiod_get_from_of_node()
-> so that gpiolib can be cleaned a bit, so let's switch to the generic
-> fwnode property API.
+On Wed, 2022-09-07 at 08:04:02 UTC, Liang Yang wrote:
+> EMMC and NAND have the same clock control register named 'SD_EMMC_CLOCK'
+> which is defined in EMMC port internally. bit0~5 of 'SD_EMMC_CLOCK' is
+> the divider and bit6~7 is the mux for fix pll and xtal. At the beginning,
+> a common MMC and NAND sub-clock was discussed and planed to be implemented
+> as NFC clock provider, but now this series of patches of a common MMC and
+> NAND sub-clock are never being accepted.  the reasons for giving up are:
+> 1. EMMC and NAND, which are mutually exclusive anyway
+> 2. coupling the EMMC and NAND.
+> 3. it seems that a common MMC and NAND sub-clock is over engineered.
+> and let us see the link fot more information:
+> https://lore.kernel.org/all/20220121074508.42168-5-liang.yang@amlogic.com
+> so The meson nfc can't work now, let us rework the clock.
 > 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
