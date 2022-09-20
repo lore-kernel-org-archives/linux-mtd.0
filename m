@@ -4,68 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 186E8ECAAD3
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Sep 2022 16:21:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F41EECAAD8
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Sep 2022 05:27:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lnySZYUcszWE5pVQ/8OMnaOwLxmC9ooe/SGtEnlvc8c=; b=mcTf+jK0XYDbbg
-	eeXGFQeXr+2M9QMGcfDEjNaHCh7UhOOmsprvZ5+5G2uLISQ69r1boZySJCHZTfD+Ni55U6CVHLo0t
-	fTU/TJ36z/aoEPJVBJTVYlf/HMCPB6kBOCqxEX0TfL0EdLXY6fwJKCzIuaQ3GccIFI6StUkfr0EWF
-	9aZ8g3I1Hw3oH7VbU3WWvPrXpGxAmCqg8suAybTSoqqNSru/cJz7b2PRekYHR6snKghSu6831Itk+
-	QWPkKC2jhIbQrZQAlYtZS/JR/nkjfXAdXn8AsOB0MrxTA0MevVXCIHOoL5IwVUAzYeHdHErLV9/R5
-	+GI+CQUlZtDB52h9+7RQ==;
+	List-Owner; bh=NvtcNghJLDuNDj77JPPCt8z064mJ2DQS6RAhEneQfWo=; b=eRAQlsEvAUnFh4
+	27sufCT6HP3GKzuagb8zVwxvbEXVn8sMPtbLSeOLTyJT72i+6z8xte3vAEwSL7diC+XLLB4QhCb3n
+	uZKTxobincVkefvz8hTOHJGO+W8nNCcfUenaz/hXZZ2RAzy8cffoAmxzKshQ5gWDB54yC+baolywY
+	aoC4chPzM3x9bVwK8cNkKQg/XC8b2ly7waklpETS+aCbPQ1jRsy4dXRMgIcHV3x5rgxrJibsmIBwq
+	KJmph0qXF3ORH3T9YEge5/68fPvqdoYKaH6oq1N9q7c3ymqk0v2j0CPkN5V62wmCt2I4MGctRTEMS
+	R/gKKE3x1lP/YEYh8izQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaJVi-00CqVD-IK; Mon, 19 Sep 2022 16:20:42 +0000
-Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
+	id 1oaVkt-000fiG-Kg; Tue, 20 Sep 2022 05:25:11 +0000
+Received: from mga14.intel.com ([192.55.52.115])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaJVf-00CqSY-8U
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2022 16:20:40 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id DDB72240007;
-	Mon, 19 Sep 2022 16:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1663604437;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5IUMqLbULQGbkIxRFBE/MsSYr16nbj1/byQGJmLuwso=;
-	b=WVABEvgJBcNLslhplq1oL+SjAr23CTx3KssJggxY2hm/Y7i0I9yIBEblZPt2ig14/tvwG2
-	uskvuK9GwOEs8xzwXsGANn+dKpPs6ads6KlPo0ZCeZcUvhm9RbDrcLq/k6jfxprFUWMEDK
-	dqRjgIDmRE9VR8yh9RvAhBzjnUdAF2wXlXuUHYh6M4X+oC++2fsUS3mDWgH6XJLkvMTIqm
-	h8xJj5ACiPAAf3QLhavm3qF6NK1GlAg4E39oipAr0rIVzsmZJfqMvYFtWU5VYm/Z15tVSv
-	srhDiuzqcBWZt0kYn7n6W4n86hiyiJQjPFnn3jlnkECstMMX5SIOX7r39GIpUQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	u-boot@lists.denx.de,
-	bcm-kernel-feedback-list@broadcom.com,
-	=?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: partitions: add binding for U-Boot bootloader
-Date: Mon, 19 Sep 2022 18:20:34 +0200
-Message-Id: <20220919162034.226938-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220711153041.6036-1-zajec5@gmail.com>
-References: 
+	id 1oaVko-000fee-Ro
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2022 05:25:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663651506; x=1695187506;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=xuDq04V3ERIqON4UuLH1RmjGkFR75KWm8lnYzEvFeDI=;
+  b=PEB4v+TMmYb90qPSc1SynTym9s+3N2RBZxanbVMkdkyT7wseQgAC6JLC
+   Te/AMpkIcXeKn97Y2KX2tTVBr8MBXKC9XAJQ6SyzCDoHAhr9PpzZmx1xF
+   knzYtdZ2eFYLz71WumxAp/CTbaWiX41v71lJJJHmGkrQ4/kwHuXvWgtI6
+   ZA9vBDxtBJgPISpF9FAZS2IGM4nHxs075X61990pxoh0/+k0TWGzSMMJP
+   +HZQgGLX/SC168tcRQtzinRlD+i3xNPsAWm4ChPltXZuqNTOMTINvIX+j
+   2qpPurq6t6i1Tw+LdyzCCue9iKyo4dq41sQSNJbvFpArFkk2TZOWfeY1b
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10475"; a="299590086"
+X-IronPort-AV: E=Sophos;i="5.93,329,1654585200"; 
+   d="scan'208";a="299590086"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2022 22:25:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,329,1654585200"; 
+   d="scan'208";a="794124954"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 19 Sep 2022 22:25:01 -0700
+Received: from maurocar-mobl2 (maurocar-mobl2.ger.corp.intel.com [10.252.59.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id C58B4580713;
+	Mon, 19 Sep 2022 22:24:56 -0700 (PDT)
+Date: Tue, 20 Sep 2022 07:24:54 +0200
+From: Mauro Carvalho Chehab <mauro.chehab@linux.intel.com>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, Greg KH
+ <gregkh@linuxfoundation.org>, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, Lucas De Marchi
+ <lucas.demarchi@intel.com>, Kai Vehmanen <kai.vehmanen@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-modules@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>, David
+ Airlie <airlied@linux.ie>, Christophe JAILLET
+ <christophe.jaillet@wanadoo.fr>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, Janusz Krzysztofik
+ <janusz.krzysztofik@linux.intel.com>
+Subject: Re: [PATCH v6 0/4] Let userspace know when snd-hda-intel needs i915
+Message-ID: <20220920072454.4cf91f24@maurocar-mobl2>
+In-Reply-To: <Ynl7xGy+a9MYjXi1@bombadil.infradead.org>
+References: <cover.1652113087.git.mchehab@kernel.org>
+	<Ynl7xGy+a9MYjXi1@bombadil.infradead.org>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'27bfb201b2c03c8a033b60e5ad80cbf3aaa52b94'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220919_092039_466061_F090A5E2 
-X-CRM114-Status: UNSURE (   8.84  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220919_222506_932541_3ECBF53F 
+X-CRM114-Status: GOOD (  20.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,21 +89,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCAyMDIyLTA3LTExIGF0IDE1OjMwOjQwIFVUQywgPT91dGYtOD9iP1VtRm1ZY1dDSUUx
-cHhZSmxZMnRwPz0gd3JvdGU6Cj4gRnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tp
-LnBsPgo+IAo+IFJpZ2h0IG5vdyB0aGVyZSBpcyBubyAoa25vd24pIHJlYWwgcmVhc29uIGZvciBh
-IGN1c3RvbSBiaW5kaW5nIGZvcgo+IHN0YW5kYXJkIFUtQm9vdCBwYXJ0aXRpb25zLiBCcm9hZGNv
-bSdzIFUtQm9vdCBob3dldmVyIHJlcXVpcmVzIGV4dHJhCj4gaGFuZGxpbmcgLSBsb29raW5nIGZv
-ciBlbnZpcm9ubWVudCB2YXJpYWJsZXMgc3ViYmxvY2tzLiBUaGlzIGNvbW1pdCBhZGRzCj4gQnJv
-YWRjb20gc3BlY2lmaWMgYmluZGluZy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBSYWZhxYIgTWnFgmVj
-a2kgPHJhZmFsQG1pbGVja2kucGw+Cj4gUmV2aWV3ZWQtYnk6IFJvYiBIZXJyaW5nIDxyb2JoQGtl
-cm5lbC5vcmc+CgpBcHBsaWVkIHRvIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51
-eC9rZXJuZWwvZ2l0L210ZC9saW51eC5naXQgbXRkL25leHQsIHRoYW5rcy4KCk1pcXVlbAoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Luis,
+
+On Mon, 9 May 2022 13:38:28 -0700
+Luis Chamberlain <mcgrof@kernel.org> wrote:
+
+> On Mon, May 09, 2022 at 06:23:35PM +0200, Mauro Carvalho Chehab wrote:
+> > Currently, kernel/module annotates module dependencies when
+> > request_symbol is used, but it doesn't cover more complex inter-driver
+> > dependencies that are subsystem and/or driver-specific.
+> >   
+> 
+> At this pount v5.18-rc7 is out and so it is too late to soak this
+> in for the proper level of testing I'd like to see for modules-next.
+> So I can review this after the next merge window. I'd want to beat
+> the hell out of this and if possible I'd like to see if we can have
+> some test coverage for the intended goal and how to break it.
+
+Any news with regards to this patch series?
+
+Regards,
+Mauro
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
