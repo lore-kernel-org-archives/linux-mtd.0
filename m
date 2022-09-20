@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 460B3C6FA82
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Sep 2022 18:48:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1637AC6FA90
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Sep 2022 18:48:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=BG+BTRecTGPJAK4Xd3+QR7tY3jznKY1XwFZAFJ6Sb6U=; b=gV19TNX6tLfz0s
-	NIibbS24wFY9tZOGr4aBsNp9J0NftXpP+TadshJ3606VGXhAOJi31vmfPngMLGnYc4jiOuwABb50e
-	yR7PxuiMinNne6k8r/dK/+DhAren1suuWNaxXntmwC6NWG0XKckjTB2fiUxsyd92IQBamJZ+kkHCK
-	rPq2Vh6UNwyCg0ZsISJlMCoT4w7dLBtUTmQ5bVVvRf5MP7z1fCojYfbzjCjsb3kF+1fyt7IsyVf0+
-	yE4yiCgfJpSMQRf/OlH8aZb52vn4NcAdVyU6Gqsl1vmoegCPK3sOe3b897VrrLc4Xc7oBzvs0P56n
-	eUq4mPKbtM7/I5LuldEQ==;
+	List-Owner; bh=BG+BTRecTGPJAK4Xd3+QR7tY3jznKY1XwFZAFJ6Sb6U=; b=is8DBL033DOogX
+	jw6vxM4C7gK9h57D3Gqeiyq2bIZy5kM7mBjRGYdMjV2TpYs5pjo+3tyFRTz5od91YSsZecpS79MXo
+	JlGNqiyP5EXi9SndiJsQWbWrADGI0FQP/kiCv06r1ht3cnZN8J4akM1mSKUI7FaDQiTA75wSUf9Lq
+	jf8fdShLQ5SQETkQqxTJgxbDtWDpUykYYdhnR7a93XxDMp5UVyBuu+yN+JTbUDFF9I5s/PpMfpqH/
+	dAlA7LmbpdcmciFpRLSubO43NaAxGJTLRX2hxMNvJc52K3Qx1hg5YkNfQtPlHZyE6wXtdRTgH+Z6f
+	AnjAuQxybfhWl2RygrWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaiHv-005oYO-RT; Tue, 20 Sep 2022 18:48:07 +0000
-Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
+	id 1oaiI9-005oct-L3; Tue, 20 Sep 2022 18:48:21 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oaiHp-005oWB-Lc
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2022 18:48:03 +0000
-Received: by mail-wm1-x32b.google.com with SMTP id r133-20020a1c448b000000b003b494ffc00bso6968986wma.0
-        for <linux-mtd@lists.infradead.org>; Tue, 20 Sep 2022 11:47:57 -0700 (PDT)
+	id 1oaiI1-005oZ6-Iq
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2022 18:48:14 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id az6so2731615wmb.4
+        for <linux-mtd@lists.infradead.org>; Tue, 20 Sep 2022 11:48:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date;
         bh=e1rax8zHktkJE4NlsAmrfBmfy6JQLwKUdVTmbuE0Kvk=;
-        b=a/n6KLKyuuFnUM9vPXO3YclSzmLnz5UmmI77Eu3qAaW7GkwFECSgfrEM4d7ThRkn+b
-         ZTMsEBSKTuD7zZiQVnWgjr07lcGlSZ9GvvEgMm0rhzp6C0aGUGevKgOvhoTx7JxtonZC
-         cRH+h/UsrueXTDj97dWDJ+LJl89I4BlMeysqwnhpKoX3kUbWiKuuMaXAF8Zpx1L8spQA
-         Hk/fmXNFF5Mygf7rmhKqwumIZA0iLEqpSsNbVh8OcqU9iYKYY9QYErbSUiNfkFYXOFPR
-         LAi4v5NqDj/zYgN5BQZ8iCvyfyDZ/LxZM9kQpWnHtWqeAGSezF8VPy4ng6kbwnRmQpE9
-         Sp7Q==
+        b=hF571VujJCMDxHcL33xXykpja1h21tI7IF5yEPnBBYncPApGh+8n57VgyUlTu+m3yX
+         wns7sSyA3Oug+os9C3c7qMqW79l4cj5reKYE2Ouc/wFN8PAQQcjeJZB2zME9NyX4GMY+
+         TnUNugxpJMyKaX08YJLgZrChhBULnCHcIu9v6OSOffTu7aGJndgpEi8Z0xAU6ZDPHqlV
+         JLlu2ajyA1yroEGrX1aIdMInErCeqvTSxr44265WFwqp0tN2HRpsl04/yFuQQA1jMJLT
+         VFyej89biFNpTlhvnGzlJx0so2Rb3j1fGr+vyBD4YpjgYpPde+fVVxbcsnacpADRRE2M
+         LJGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date;
         bh=e1rax8zHktkJE4NlsAmrfBmfy6JQLwKUdVTmbuE0Kvk=;
-        b=K2UdEQ+i4efstQb6eyGfeRbTCjuvqmWrP9qTYcFJIcOEj4DsNykcNSHbtIU+je8TMS
-         g8DbxmnRTbnxxSV/Tg1F4Z8C4B2FaHM6Q0DNSUfAtpeSs6RiEJD1eMtqH74t5lsbkyfn
-         FHQf+31UN7j2WN3mqf8fEHiM+eHM2Dd/DIRdSEmZSCeI2WvbEEF2FEW9hrNToazUg8Id
-         s8djPWDZylAJwgX9a6cW2fc38TZVO3mahZK/zG7jRVgYcJQ64ucfhhtD9XjKbW5vwfMs
-         EyMg03YpdZcR4Gt/KotnB1m69kl4ACADGLGA5+VIw+vlZVLiLSvloBA0SbcB3RsRznEm
-         26XA==
-X-Gm-Message-State: ACrzQf2oMFySp6Rsojmhx4w7NbbWBGMySkPfWNk7qJAaN/hmfaFaQnq8
-	ucbbML4Sf5EutIaEczmChhYYXHEXNsmqrg==
-X-Google-Smtp-Source: AMsMyM4R92uxH1TZaMut6DsSvvNnopmxhOhsLA3A+9DuCP3Acj5edYh4JdyiyzPrQqGkRn4eb4NHpQ==
-X-Received: by 2002:a05:600c:310b:b0:3b4:c709:4322 with SMTP id g11-20020a05600c310b00b003b4c7094322mr3342558wmo.141.1663699676003;
-        Tue, 20 Sep 2022 11:47:56 -0700 (PDT)
+        b=fdiyQRWozBo+MkumZeySsNJvsnmx2xu3/etwKxLwjMqnw8Hup8ixezurcphqC2k3pL
+         MPkOtHAYmmZ6q4DBBbhaL/+dY8/tB+NLTfPGuqtkxa+bMmlMQvcEgX+S1jfWTJGe2Owe
+         mUIu0lk6XUUKBFdYphEykkZu/uKkP3HayLAeJBCgTKBd5afbMWxmouqMsnXjag4W6CNy
+         zFhffxeNuoblkNEdfx0Q81jsLuE8d59sotXxvIfielXoA/Z3wXK9DcErjw7gGDLbVmMz
+         1j9WHiVYLSRxOU2cyb74ZLo6xh2EEpryPBZMRnaR/ip1UcIAe1SjU2r+1/KQslofegqs
+         mjbQ==
+X-Gm-Message-State: ACrzQf33M9GECL6j0EvXWedJsR78pUHJP444GDxZ+aOoe73hyMSnSq+u
+	dBXi2kK17nEI0yiAh70QY/c67w==
+X-Google-Smtp-Source: AMsMyM4Tw/NhBtw2kzdJcNMS4tkb4L/Hz8kHuIiUNdJMWTGNUCY8P/Fe189L7qnKquwt04na0P0VEw==
+X-Received: by 2002:a05:600c:1f15:b0:3b4:8600:fd7e with SMTP id bd21-20020a05600c1f1500b003b48600fd7emr3570480wmb.40.1663699689952;
+        Tue, 20 Sep 2022 11:48:09 -0700 (PDT)
 Received: from localhost.localdomain (host-78-150-37-98.as13285.net. [78.150.37.98])
-        by smtp.gmail.com with ESMTPSA id id21-20020a05600ca19500b003b27f644488sm507061wmb.29.2022.09.20.11.47.54
+        by smtp.gmail.com with ESMTPSA id l16-20020a7bc350000000b003b4c40378casm469974wmj.39.2022.09.20.11.48.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Sep 2022 11:47:55 -0700 (PDT)
+        Tue, 20 Sep 2022 11:48:09 -0700 (PDT)
 From: Sudip Mukherjee <sudip.mukherjee@sifive.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
 	Pratyush Yadav <pratyush@kernel.org>,
@@ -74,12 +74,12 @@ Cc: greentime.hu@sifive.com,
 	linux-kernel@vger.kernel.org,
 	Sudip Mukherjee <sudip.mukherjee@sifive.com>
 Subject: [PATCH v3 1/2] mtd: spi-nor: issi: is25wp256: Init flash based on SFDP
-Date: Tue, 20 Sep 2022 19:47:48 +0100
-Message-Id: <20220920184748.44812-1-sudip.mukherjee@sifive.com>
+Date: Tue, 20 Sep 2022 19:48:07 +0100
+Message-Id: <20220920184808.44876-1-sudip.mukherjee@sifive.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220920_114801_778373_100C572B 
+X-CRM114-CacheID: sfid-20220920_114813_644790_8E90B56E 
 X-CRM114-Status: GOOD (  14.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
