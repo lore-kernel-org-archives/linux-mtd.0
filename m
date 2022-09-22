@@ -4,65 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A9A8C6FA82
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Sep 2022 14:19:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE953C54EE9
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Sep 2022 15:03:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=F9TG6Ytsgf76MXjBHtKhFHSx/0robHsZmOqBSI2CT1s=; b=f4MeofIXoFfHRdfURHTRtufBye
-	xLc2rgm5B5t1oYjCD0NtrYywXkmgtu/3Z64itOD6SE2JolSbEwh6+3coZ/AphHg5vjBAX7ykP5gbx
-	b7tqrzC/U2HDP6tjpTbD8Uw2+Naexvxz2NrLLpHAxuo9rr8OMpn0EhYEIACnUPNBekOLBW4x9fB0/
-	IW4XOYraxKuT1QbebKx+K1N6s372a5Ww1Idnb1o8SdEeakvlPHeZhmgQIfjcxo/zz35VDedqimJgX
-	AKG15ukPSnCzGQ2czsZ5VAUF8MmAgNoqyeY+Rm29yhtiTczWBO6UvGt0p8vQqiKSKkQ9MguIUdrEm
-	q64MEvFw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=2hwJrmk1xN2NxRkB/Bvlwj4//yGd2EdCd1eB8jhgS8c=; b=fVYkr+zHquI3uk
+	J5UvoVUURukZQP/fYNxOWz+6PV/VDL2NmioSd1iDTS6Rdt5d/RTJZfmXGEFnffLbk7q+ChI2EjZ5L
+	CPkKBbmO2TDbrn/9YkzGIomsrF5MAk1JOLQfb3ObqGa9U1QDjvIJ4NXlC/gNBB7TReD4BA2ARXeoT
+	ODSu2tJ42Hkbp5MvsjBFCgiSVOzb7M+FZ1odRFaGewhHEvhoIeZ5ZaLiBIfwcQ6/0a+rgXZrkiPed
+	z+xr9bYvN1GgDqvUZ9cpGfgmcopF7vSPc+dIAZy3RMmCnqiDBR/k8+t2B2bgkzIj+DBRiz+8GwP1I
+	kobicd5ft+z51zkouz+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obN2y-00FxAY-Je; Thu, 22 Sep 2022 14:19:24 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1obNj1-00GFxZ-3L; Thu, 22 Sep 2022 15:02:51 +0000
+Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obN2v-00Fx8l-N0
-	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2022 14:19:23 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 9F2711D4A;
-	Thu, 22 Sep 2022 16:19:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1663856359;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AauVWltcSpfrIG4GiR/ILpgSYrrVzj7d64kjUXfFDp0=;
-	b=0KcVU38HiTtBViW2cgpNdonzzwPAsMjeKN2HGf++0HHEPjtquMr5PwCSDR1muiRNiIegFV
-	LagLGb10JN2a4BoOgA4dgTf0jPceHX9zM2Km/vaSmwmj9Cp6s5n5tlQitqk/ZqtSJOkPjc
-	bCj3L3NgdgnOqL1VOnb3gLIDYxlKHWQA4OXzU2d1o6tD3mS8FELjwFi/EIfDm3wjIrf71j
-	6oun+jjlnN5061w3XRcERDTq4/eN/4HADUJnlSO7GpV7Zpj+tIKj0tezV1lUQtEbJfBFIT
-	rJew8M5eLnznPubdm4J5NHE3fKsfp6s+wdOFWqWWrFPjM2mbVS+PPR0mGO38ow==
+	id 1obNCt-00G22a-Ee
+	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2022 14:29:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663856979; x=1695392979;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F+VlwN1zov2/iN1IrUItCJyZSiR6sHADhvMpfIXIEwY=;
+  b=azjCbIoInq8W0IbGz/1x1Qb+An792NFLdw97zZgBxiYIzNvSjCokmQmF
+   UuIVIBPNL7jgMMnreeuj2EQcbSuSAHLBF9+NgRNgpKGmrz/pLW1uklUFt
+   hYAs12Bi9CBb8UFFxRx+TFrPEwinAsObenSjYQWsehmHaQncA8iPdkN2U
+   AshW9H0hZANGAzIk5gZyUeDxJs9ndeWa3U4CcEel6GfUyMd1CAsJVWdjg
+   vvkUzo5tmsXThocyayO73ydf7SG6bQMyaexS84+KuSlUfmdfHxpBR6pBD
+   JMxhW15iDP3AkfrCAEWtI/n1E1BADjCfJ8tulnvigE5fS/tZCKgbIJXTg
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="362078779"
+X-IronPort-AV: E=Sophos;i="5.93,335,1654585200"; 
+   d="scan'208";a="362078779"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 07:29:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,335,1654585200"; 
+   d="scan'208";a="723684098"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Sep 2022 07:29:33 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id 36147F7; Thu, 22 Sep 2022 17:29:50 +0300 (EEST)
+Date: Thu, 22 Sep 2022 17:29:50 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+	Hongyu Ning <hongyu.ning@intel.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Revert "mtd: spi-nor: core: Return error code from
+ set_4byte_addr_mode()"
+Message-ID: <YyxxXlAAa7R47uYI@black.fi.intel.com>
+References: <20220922134824.46758-1-mika.westerberg@linux.intel.com>
+ <a383698ae4a8e400f4961da5cc42663c@walle.cc>
+ <YyxuLAsc7XXo7yOC@black.fi.intel.com>
+ <1d7659f23b48acee3117ebabd0c7a5cc@walle.cc>
 MIME-Version: 1.0
-Date: Thu, 22 Sep 2022 16:19:19 +0200
-From: Michael Walle <michael@walle.cc>
-To: Sudip Mukherjee <sudip.mukherjee@sifive.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- greentime.hu@sifive.com, jude.onyenegecha@sifive.com,
- william.salmon@sifive.com, adnan.chowdhury@sifive.com, ben.dooks@sifive.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: issi: is25wp256: Init flash based on
- SFDP
-In-Reply-To: <20220920184808.44876-1-sudip.mukherjee@sifive.com>
-References: <20220920184808.44876-1-sudip.mukherjee@sifive.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <1b62d0d80d3680e94172149946c936a0@walle.cc>
-X-Sender: michael@walle.cc
+Content-Disposition: inline
+In-Reply-To: <1d7659f23b48acee3117ebabd0c7a5cc@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220922_071921_935111_DDC38F9D 
-X-CRM114-Status: GOOD (  17.33  )
+X-CRM114-CacheID: sfid-20220922_072939_646799_DA838E19 
+X-CRM114-Status: GOOD (  18.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,48 +84,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-09-20 20:48, schrieb Sudip Mukherjee:
-> The datasheet of is25wp256 says it supports SFDP. Get rid of the static
-> initialization of the flash parameters and init them when parsing SFDP.
+On Thu, Sep 22, 2022 at 04:17:10PM +0200, Michael Walle wrote:
+> Am 2022-09-22 16:16, schrieb Mika Westerberg:
+> > On Thu, Sep 22, 2022 at 04:12:17PM +0200, Michael Walle wrote:
+> > > Am 2022-09-22 15:48, schrieb Mika Westerberg:
+> > > > This reverts commit 08412e72afba3a2daef3e7f3378c3753255a0017.
+> > > >
+> > > > The Intel SPI-NOR controller does not support this opcode so the driver
+> > > > ends up returning -EOPNOTSUPP and that makes the SPI flash chip probe
+> > > > fail like this:
+> > > >
+> > > >   [ 12.291082] spi-nor: probe of spi0.0 failed with error -524
+> > > >
+> > > > Whereas previously it worked just fine (and hence the return value
+> > > > probably was ignored in the first place).
+> > > 
+> > > Can't we just ignore that return code then?
+> > 
+> > Isn't this revert just doing that? ;-)
 > 
-> Testing showed the flash using SPINOR_OP_READ_1_1_4_4B 0x6c,
-> SPINOR_OP_PP_4B 0x12 and SPINOR_OP_BE_4K_4B 0x21 before enabling SFDP.
-> After this patch, it parses the SFDP information and still uses the
-> same opcodes.
-> 
-> Signed-off-by: Sudip Mukherjee <sudip.mukherjee@sifive.com>
-> ---
-> 
-> No change from v2, just resending again with the next patch.
-> Results from the tests given by Tudor in the following mail.
-> 
-> 
->  drivers/mtd/spi-nor/issi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-> index 89a66a19d754f..8b48459b5054c 100644
-> --- a/drivers/mtd/spi-nor/issi.c
-> +++ b/drivers/mtd/spi-nor/issi.c
-> @@ -71,7 +71,7 @@ static const struct flash_info issi_nor_parts[] = {
->  	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "is25wp256", INFO(0x9d7019, 0, 64 * 1024, 512)
+> No? It also ignores other (valid) errors.
 
-I'm curious, does it also work with:
-   	{ "is25wp256", INFO(0x9d7019, 0, 0, 0)
-		PARSE_SFDP
--michael
+Okay, I will do that and ignore just -ENOTSUPP in v2.
 
-> -		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> +		PARSE_SFDP
->  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
->  		.fixups = &is25lp256_fixups },
+However, there is also similar call in spi_nor_restore() where the error
+also gets ignored so I wonder if it was originally intentional.
 
 ______________________________________________________
 Linux MTD discussion mailing list
