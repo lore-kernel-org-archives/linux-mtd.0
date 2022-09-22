@@ -4,68 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42ED4C6FA82
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Sep 2022 15:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7846C6FA82
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Sep 2022 15:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=E51zVok+I/tDuRlyD2RDWkCHrdJEn7Jkw/N+ud65C+c=; b=1ScdfvLfqWIbgrtRINtHc6Yg9/
-	P7JhK63ZiqXsjnx3a7nttvx0aW0CibvlbQaHMtRQp9UB40/jOSH/ogAMayn/ZWAdvat+qN87ngEyb
-	IfjkvCIX5ZQlVwrdjywJrYrlOlAQ89NLozMsTwDTRenMoel9bPWykLdS6R+6s+0ROCgefOcbh/cYn
-	iSC9J1qc5HE2HudGtdbTReEqtYdAIyD3MERMs9uoQj2k1GRtJc+jczhHqbWKT58Tz2cQYO5rjaTqS
-	JLkFRUzLvoa8t/oQ43hbbkTu3wHJy3AzPcKP2Fm1jkk6sJ0hrkMO2kiKpw8IZLAOzC2lHjvdDXaeM
-	+9semlUw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HvEbRNdHF4U2gIO3H0MWS6AtqeYz5NswI40V3opMr0k=; b=Ho3go5YzO1zX15
+	ZgY+PmW9DGY4lVOZJKKCGF4jeyqJkwYBR/hfxyZFI4mVKtQ4q0iAXQ9IDU3VAxEI+xktclOMu3DVq
+	O0DBlAFxV4PM39slFrbqqG7W4lTVkSFl5h9EWcfR0Uf9eTie2TQt6wYQmBci6IDZDLjXdHh6cRxf8
+	jHY/LIkIgiLbjz7Me1QoeJrREiC2nZ3dPfaL5A+t2bEH6G2PntfbtNFY9Mz75dt7Exbho+6FAScno
+	ixIN6JpJZjHGR7TE66+oeFcYnYvrZUvWgvT+yb9SkuZ7LNw1OWqP+4jWlYHaNhFeuOJm1iKpXxg2m
+	YxlrXU3MnwbiVhc+1E2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obNrb-00GKEm-UV; Thu, 22 Sep 2022 15:11:44 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1obNsv-00GL0c-DE; Thu, 22 Sep 2022 15:13:05 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obNf8-00GELU-I6
-	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2022 14:58:52 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id D07271250;
-	Thu, 22 Sep 2022 16:58:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1663858728;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4xWcgHu2sn26NJUCzsvCmM8BimqbYeFbH9tRbM367Kg=;
-	b=0GAlqfhe0eMvCw6A9Kq8HVzsCHwbNt6xBL+7+U0SEk9wpIoPPMjCPAGNRuvSYRPT6b7cH6
-	JR6qxBz/RH5WVb8AqW/BMg5mY69v4b3LOYzVS1gOhHubhoZcOCLlASdO841swtVT1d8okn
-	QRetJ8+P0xdRk0nC9Nv5whgziYMqyiQLt96INKCfX2XKSjT8YarnP+sqIK1D+DBRmvw0XM
-	Rcrn4lwFfszotvK2bKBq9+8qL4an6kJfu8XhCQm+r9oZJ9X5+hhNDUCQ/Dfi5HUMdomUvh
-	R+Nty2I1UunQU3mnTt8zjj0fLqyxXu3r9IV8TgIWOrVi87Sc/YYplrBdwA9zPA==
+	id 1obNjb-00GGGA-CE
+	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2022 15:03:29 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MYJQ13gYtzHq0J;
+	Thu, 22 Sep 2022 23:01:13 +0800 (CST)
+Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 22 Sep 2022 23:03:24 +0800
+Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
+ (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Thu, 22 Sep
+ 2022 23:03:23 +0800
+From: Zhang Qilong <zhangqilong3@huawei.com>
+To: <han.xu@nxp.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: [PATCH -next] mtd: rawnand: gpmi: using pm_runtime_resume_and_get instead of pm_runtime_get_sync
+Date: Thu, 22 Sep 2022 23:06:54 +0800
+Message-ID: <20220922150654.117568-1-zhangqilong3@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
 MIME-Version: 1.0
-Date: Thu, 22 Sep 2022 16:58:48 +0200
-From: Michael Walle <michael@walle.cc>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Takahiro
- Kuwano <Takahiro.Kuwano@infineon.com>, Hongyu Ning <hongyu.ning@intel.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Revert "mtd: spi-nor: core: Return error code from
- set_4byte_addr_mode()"
-In-Reply-To: <YyxxXlAAa7R47uYI@black.fi.intel.com>
-References: <20220922134824.46758-1-mika.westerberg@linux.intel.com>
- <a383698ae4a8e400f4961da5cc42663c@walle.cc>
- <YyxuLAsc7XXo7yOC@black.fi.intel.com>
- <1d7659f23b48acee3117ebabd0c7a5cc@walle.cc>
- <YyxxXlAAa7R47uYI@black.fi.intel.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <82a13281537db111e74c6a84ab964e85@walle.cc>
-X-Sender: michael@walle.cc
+X-Originating-IP: [10.90.53.225]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600014.china.huawei.com (7.193.23.54)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220922_075850_810338_25656915 
-X-CRM114-Status: GOOD (  16.11  )
+X-CRM114-CacheID: sfid-20220922_080327_674198_F8127309 
+X-CRM114-Status: GOOD (  10.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,42 +63,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-09-22 16:29, schrieb Mika Westerberg:
-> On Thu, Sep 22, 2022 at 04:17:10PM +0200, Michael Walle wrote:
->> Am 2022-09-22 16:16, schrieb Mika Westerberg:
->> > On Thu, Sep 22, 2022 at 04:12:17PM +0200, Michael Walle wrote:
->> > > Am 2022-09-22 15:48, schrieb Mika Westerberg:
->> > > > This reverts commit 08412e72afba3a2daef3e7f3378c3753255a0017.
->> > > >
->> > > > The Intel SPI-NOR controller does not support this opcode so the driver
->> > > > ends up returning -EOPNOTSUPP and that makes the SPI flash chip probe
->> > > > fail like this:
->> > > >
->> > > >   [ 12.291082] spi-nor: probe of spi0.0 failed with error -524
->> > > >
->> > > > Whereas previously it worked just fine (and hence the return value
->> > > > probably was ignored in the first place).
->> > >
->> > > Can't we just ignore that return code then?
->> >
->> > Isn't this revert just doing that? ;-)
->> 
->> No? It also ignores other (valid) errors.
-> 
-> Okay, I will do that and ignore just -ENOTSUPP in v2.
-> 
-> However, there is also similar call in spi_nor_restore() where the 
-> error
-> also gets ignored so I wonder if it was originally intentional.
+Using the newest pm_runtime_resume_and_get is more appropriate
+for simplifing code here.
 
-Yes that was intentional, because spi_nor_restore() returns void.
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+---
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
--michael
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 93da23682d86..72cdf2623339 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -148,11 +148,9 @@ static int gpmi_init(struct gpmi_nand_data *this)
+ 	struct resources *r = &this->resources;
+ 	int ret;
+ 
+-	ret = pm_runtime_get_sync(this->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(this->dev);
++	ret = pm_runtime_resume_and_get(this->dev);
++	if (ret < 0)
+ 		return ret;
+-	}
+ 
+ 	ret = gpmi_reset_block(r->gpmi_regs, false);
+ 	if (ret)
+@@ -2504,11 +2502,9 @@ static int gpmi_nfc_exec_op(struct nand_chip *chip,
+ 	for (i = 0; i < GPMI_MAX_TRANSFERS; i++)
+ 		this->transfers[i].direction = DMA_NONE;
+ 
+-	ret = pm_runtime_get_sync(this->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(this->dev);
++	ret = pm_runtime_resume_and_get(this->dev);
++	if (ret < 0)
+ 		return ret;
+-	}
+ 
+ 	/*
+ 	 * This driver currently supports only one NAND chip. Plus, dies share
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
