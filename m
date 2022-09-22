@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E978C6FA82
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Sep 2022 13:48:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD740C6FA91
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Sep 2022 13:56:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8ZyTk0xmd4HjYayRximypQKY+EhfL0rBdDA1+jKj5T4=; b=fsfJAAnxZ/kby5
-	IAPlqlJff2+LHU/MEXUsPO4KbNYU42qbFavXNv9GO16kYG1t1IpLO2miPYc7OSRoTPOtyo0IHoRJm
-	TmjOCjGGGM793mkZuMgvRu617eXSgco+x+BW9xuhepecFEOt98idyI0ba3OfD9m7aPMXzEedWwPOv
-	WfRRArU9HJbmU1rFG9Ed+IFCqHZhklxI4FpVYmsZqRBGigtW5yWRp6JSMoUOI5nid+0cUPLuxREQF
-	2K/btCFBizXmRKDs4N1iLX6tw8BAUuQiiA9GBsxO8XZSasok3PUNRcbG2whBHyPoNMmFub0wTG8Z3
-	xJoVkz8hDsc0JdHNJ1DA==;
+	List-Owner; bh=Qsx3uE3QMHcGb32QmHl3eguvz1p493VplZvyYH/6okE=; b=n0oWUJEKXsp9QX
+	IWIYlUYMsFZ/oM+WrqKyybrKzye0C/6h1cmpst3bizrZHqPkjrPNncYscU+kTDXUfkmhf/lHfSJbI
+	kSqMv1p7o6bptpvrDHT46zi3646Y8KW2YczERX2prLOZFwy378jyO1X6n1suaeW/+HDZPTcFi8kin
+	taCEubsN4WhK2RiUkaDKI9a1nTvuweG3vnd4lOm0NehUtXoix/BH6scqTGzFOmKfpY7lHTbWBJxZw
+	hW+Zimj0vzEPKMPua8IYm3+u771MykrVvSldmQHCOA5jQC1YqrFFfzChVyLSlPx7ln8WJujYyTkS2
+	9tVh1fZHulHE+1eHbd0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obMYq-00Fm7Z-VA; Thu, 22 Sep 2022 13:48:16 +0000
-Received: from mga18.intel.com ([134.134.136.126])
+	id 1obMh4-00FpUE-6o; Thu, 22 Sep 2022 13:56:46 +0000
+Received: from mga11.intel.com ([192.55.52.93])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obMYo-00Fm47-PY
-	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2022 13:48:16 +0000
+	id 1obMh1-00FpRc-EG
+	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2022 13:56:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663854494; x=1695390494;
+  t=1663855003; x=1695391003;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=3WuF4vzp3qNZOgBQ8C/kFf37GbZlIrz9jjfI+DqubA8=;
-  b=JL9hth2Gmz01yu5FQ50LYeVJlAyFQfT1SyWRs8JDunBYcv22pXzUAU8b
-   mQBKP5f/NiTvfwSmlIIL0iYOjwHWQ3bN1nlntrOh4Xv49mkV/ReIAOPAA
-   KZq5OJ4qoNxw0K1NohvyR1QkuC99eTBCW7flH+o91UyXXLq8qjhCHzzx+
-   NriXhhylQWzUSeHN0HgYmYXMfAWL5OJjoZGbpAHjzXuLHk66Dv0hQk44n
-   pHNVF6AgSt/gDhKlwH+yjDr/U1YYnpGPXLR5TPmJ+mfWa9almGp4XQjda
-   +abxjgz/fIiF3NvBjrW2fe5GxBFd0HjLu7K2A1ursZgtBdMruKNfERMWf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="283352158"
+  bh=uH6fLxepvYoxrV0OTOeCmCtbOLoVPZEQdEhJ2Ak8uvA=;
+  b=iTWCJiFOT5NipUxa2/fTq3a2SvmyRcr5IUW6bLcIoy4zeFiKuNx5+FBP
+   re/moeew1wfC191qjZcXeOdD0x2TklJNebmT+ko+rs0xI0pO0DmkaUMmR
+   18UlZuLVtViL9E4HdLvg+BYWiGUXG2SAvLtnEwjUqT9jmWWxm+TyFW4U5
+   6/Ha/lpyAXmgLNLJTIK/UO4gFM46a8Qbd+wgTk2siQEjgeRHCD0CVD535
+   qYW3iAz8TiY6haH2NSsu+81Vinp+ib6OAu5bJkorPFG12nsVtTmOStN3P
+   1Nasn/YjvEBe4+Sk/bGvIAGpO2603I6lHnve7V0XK2VRV8eMPyUfQCNbS
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="297898438"
 X-IronPort-AV: E=Sophos;i="5.93,335,1654585200"; 
-   d="scan'208";a="283352158"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 06:48:10 -0700
+   d="scan'208";a="297898438"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 06:56:31 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.93,335,1654585200"; 
-   d="scan'208";a="622098593"
+   d="scan'208";a="795098210"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Sep 2022 06:48:07 -0700
+  by orsmga005.jf.intel.com with ESMTP; 22 Sep 2022 06:56:29 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id D8CA9238; Thu, 22 Sep 2022 16:48:24 +0300 (EEST)
+	id AD61D238; Thu, 22 Sep 2022 16:56:46 +0300 (EEST)
 From: Mika Westerberg <mika.westerberg@linux.intel.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
 	Pratyush Yadav <pratyush@kernel.org>
@@ -57,18 +57,16 @@ Cc: Michael Walle <michael@walle.cc>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
-	Hongyu Ning <hongyu.ning@intel.com>,
 	Mika Westerberg <mika.westerberg@linux.intel.com>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH] Revert "mtd: spi-nor: core: Return error code from set_4byte_addr_mode()"
-Date: Thu, 22 Sep 2022 16:48:24 +0300
-Message-Id: <20220922134824.46758-1-mika.westerberg@linux.intel.com>
+Subject: [PATCH] mtd: spi-nor: gigadevice: Add support for gd25lr256e
+Date: Thu, 22 Sep 2022 16:56:46 +0300
+Message-Id: <20220922135646.49906-1-mika.westerberg@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220922_064814_927096_139CA837 
-X-CRM114-Status: GOOD (  13.29  )
+X-CRM114-CacheID: sfid-20220922_065643_520017_15990A06 
+X-CRM114-Status: GOOD (  12.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,37 +83,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This reverts commit 08412e72afba3a2daef3e7f3378c3753255a0017.
+Add support for this 32MB serial flash.
 
-The Intel SPI-NOR controller does not support this opcode so the driver
-ends up returning -EOPNOTSUPP and that makes the SPI flash chip probe
-fail like this:
-
-  [ 12.291082] spi-nor: probe of spi0.0 failed with error -524
-
-Whereas previously it worked just fine (and hence the return value
-probably was ignored in the first place).
-
-Reported-by: Hongyu Ning <hongyu.ning@intel.com>
 Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: stable@vger.kernel.org
 ---
- drivers/mtd/spi-nor/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/spi-nor/gigadevice.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index f2c64006f8d7..3af2fcf1f683 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2724,7 +2724,7 @@ static int spi_nor_init(struct spi_nor *nor)
- 		 */
- 		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
- 			  "enabling reset hack; may not recover from unexpected reboots\n");
--		return nor->params->set_4byte_addr_mode(nor, true);
-+		nor->params->set_4byte_addr_mode(nor, true);
- 	}
+diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+index 119b38e6fc2a..7a7f5cb67a9e 100644
+--- a/drivers/mtd/spi-nor/gigadevice.c
++++ b/drivers/mtd/spi-nor/gigadevice.c
+@@ -57,6 +57,10 @@ static const struct flash_info gigadevice_nor_parts[] = {
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+ 		.fixups = &gd25q256_fixups },
++	{ "gd25lr256e", INFO(0xc86719, 0, 64 * 1024, 512)
++		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ) },
+ };
  
- 	return 0;
+ const struct spi_nor_manufacturer spi_nor_gigadevice = {
 -- 
 2.35.1
 
