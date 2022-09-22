@@ -4,85 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5808DC6FA82
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Sep 2022 16:48:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C2B4ECAAD8
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Sep 2022 21:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NM/X51+0LT5Anx5tu3c6fAvjgUx+WkHDRyRojGzlsM4=; b=hM1OrBB7jgfYqM
-	1OmZipdD2FFCc04FVGQN/Mf5xzxEw2o3PIv+pFHeTU03c43qgdhU+UJRiT6hJUqA0t36/e0PS/Dxu
-	n4cHYF6ZgDIh2rEvn4n6gYfX0xuQZzlc8jdAM0CLmF1GTYCzGalnAVxE1xVwp2OfmJWxn9rT/ibdw
-	V8QWG+WCSOAb3CYL41wjCq6SwXn8qPcfTzXLDBWysgIf/kk7zhF221+vSl3luy+hFX8lEPh7KTr2U
-	XT0FdPDO1dySOBl3gN/9Rf/cKLkbshbV6bex1CurBu8yIw+LGUb/vX7GyLdRB/tHOQzLN5AWlzqbi
-	fmsbDG3iqCXX9l7NbxmQ==;
+	List-Owner; bh=4eQHQ1097IDawySTtPqedKZwWvZDkXhH0Vz9xxnr1wk=; b=n7+Xjq+iU05K+/
+	lERdaFmx1suzSEf2WkRP3m0ABbjiSdOk64J6/+kl7qDX8RYJ+ri9PGe/IUgisKiJdc204HJy9nFjn
+	ivsnXQBiB5Tq4S3xKzquPjDwlJQQeT3GDAx0SO/gi1/RgEAvu3+p/IGR2w1hm/ZOjGB6typzyggc4
+	KYjYKcEcNQlWNslfSMrUwBmjsFpuUCAzfkSjxF0LmbIb7wSIZH55p7/ScO8nmNKPHI8zuVVfkkI/m
+	BAWSD6pxaD29YHEBPXfeoW387D6xKsJiqoKn5QerOXbujj8w9EpE/jzhJ2JqpPTZJD/Lpy+mVjiln
+	BBrm70sJU92laAljQT7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obPMG-00Gt2J-86; Thu, 22 Sep 2022 16:47:28 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1obTeP-000IcN-Cm; Thu, 22 Sep 2022 21:22:29 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obPLx-00GssW-0T
-	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2022 16:47:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1663865226;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/KVF8wlMIYYYkXZAgHKxBCJz3kD4oYad/vUQV6+HZU4=;
-	b=YbiAQbfrwOsyDmJU/BcTBYdPS0msxu3dRTCK8LTJi1/yUoyfq9/xeLpyCMwonmeyEF5ZeY
-	WwQaapZOrydj2RmXk0apCg/ANRhgY96ZAR2c4A8C0b9mXJ09+wCezIwhC1s23LSb0j01vG
-	tokbiKDb1DYDviMC06P0Md/pHDa9kew=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-253-v6nWV1R-O9ep9CECageTXA-1; Thu, 22 Sep 2022 12:45:19 -0400
-X-MC-Unique: v6nWV1R-O9ep9CECageTXA-1
-Received: by mail-io1-f70.google.com with SMTP id l84-20020a6b3e57000000b006a3fe90910cso1014603ioa.16
-        for <linux-mtd@lists.infradead.org>; Thu, 22 Sep 2022 09:45:18 -0700 (PDT)
+	id 1obTeL-000Iaw-Rl
+	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2022 21:22:27 +0000
+Received: by mail-wr1-x436.google.com with SMTP id c11so17456947wrp.11
+        for <linux-mtd@lists.infradead.org>; Thu, 22 Sep 2022 14:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=js/5oTRugoQUYKiAkaMc0Wr4v083F951SM+zFeysBRc=;
+        b=kOmpyQR0sC0aLPXqU/SaAlZvRiczPLKEvueA69by3IY5Iq3flK830ktzUfIgf4JQTE
+         e9DziPS/vdUnv9DtWtr6PROybAMNwm+GP639aoDgYLNMEUpqIke+2n5J6sPXEghstq4E
+         VGxzZCDn9V8W8zABUZ+Zm5PAu6AO3oBhXfQ/zjAueeR3MpN5W/TuDexdjNBR7jB3ohKi
+         ysvcQy7IHRFS3ZKWztHLJ3RumbkqsL072exPD2C3ZrjlZGXkUjMeIrUlK4IUdqt/2elO
+         /+ubFvnkyLhWNCQiy5aRuylFG4FiAwxs4HVzyT20DbJUwurfG1dougBZjdgaS4dwY6JB
+         AnSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=/KVF8wlMIYYYkXZAgHKxBCJz3kD4oYad/vUQV6+HZU4=;
-        b=yXWFMmYpGkNM+fdLe09TeZi/CvAUye4UkflkdUXygAhSPru4OljtwlzHufXNSrghla
-         2PZDhNV/ueLysHi4v5BWby7qAF2llmBYgvGFvUmH06S+ISCrk3wdWRS6/t3n7Y9qZVvs
-         NEo3ZSI4pgkcYabBhRKA1iOj1Jgy9014+hDKK+6eGhYnnhnniULE4xD/f/yIZcRG2ZBZ
-         4uQhRxYRLCmmBi8hJKi+RC8LbVvo28TEJ2D+M+GbEp+4A1GKwf41CueFqVArybMFunC3
-         QJDWcanCNEE9angntf/YippGSdk50EIdZY9/BN/UhYI+aHCkgwmjt+eUJLB5xSffd9Jk
-         6xQQ==
-X-Gm-Message-State: ACrzQf12mrZ7YehsXYGDwnX+hTyTd973hVtovx6ogFah2mLQhtvnwYQp
-	2fX0ked1T2SYjh1Oo7ZlPKtpGCpqvDG2pyQs9/4HsY7NV9+0HBBgjSvxTJwUJG+Hhwo+sZpi44K
-	abHVBuY+bOVYd3V9FkW4aVJUaEg==
-X-Received: by 2002:a05:6638:3586:b0:35a:92b3:c0fa with SMTP id v6-20020a056638358600b0035a92b3c0famr2542160jal.229.1663865118483;
-        Thu, 22 Sep 2022 09:45:18 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM7fMJGOpdEzGJe0UAsf1lKQrOriH9U23fP8LlL9MxhYnH0f3BvMy2NnMsWwB+KVRRMOlLisgg==
-X-Received: by 2002:a05:6638:3586:b0:35a:92b3:c0fa with SMTP id v6-20020a056638358600b0035a92b3c0famr2542149jal.229.1663865118144;
-        Thu, 22 Sep 2022 09:45:18 -0700 (PDT)
-Received: from x1 (c-98-239-145-235.hsd1.wv.comcast.net. [98.239.145.235])
-        by smtp.gmail.com with ESMTPSA id c43-20020a023f6b000000b0034a036a9a1fsm2419534jaf.48.2022.09.22.09.45.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Sep 2022 09:45:17 -0700 (PDT)
-Date: Thu, 22 Sep 2022 12:45:16 -0400
-From: Brian Masney <bmasney@redhat.com>
-To: Luca Weiss <luca@z3ntu.xyz>
-Cc: linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Richard Weinberger <richard@nod.at>,
-	Alexey Minnekhanov <alexeymin@postmarketos.org>
-Subject: Re: Boot fail with UBIFS_FS=y on Qualcomm msm8974/msm8226
-Message-ID: <YyyRHPNhGzknCPAY@x1>
-References: <2845511.e9J7NaK4W3@g550jk>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=js/5oTRugoQUYKiAkaMc0Wr4v083F951SM+zFeysBRc=;
+        b=BcF0l28cgc8JycIXF28/AQ6iNSN5kqOOddAKNz4JMM9N8d/l5+rFF75SdhPbTcCAYx
+         GOCnJj2Tc3q2GHROobRGmxmEIwbwdYBcMNBE/L1yHPL0sul705YQxDNRu7qvwcRNpRXw
+         lco7Aw2WypXReClXU79lmAi16Jl2XT3sQIhjFjoL6ggrAIwGwHUNjXo38LHN4QOnb2/n
+         FUyyc/m4ROW2KGQKI7QrOMX+uNtAiGAtN45qSQQNNy6oouqyGqL0v4uS/ykqNnFTDlD/
+         242zSjmiqPlE9YP3IXdc/KVt+F6aBOSqk4Fb6Z79xD94Wz7oHshNZceVfbaK5PLU+Flz
+         +oDQ==
+X-Gm-Message-State: ACrzQf1YBNvh/SPt9sdnhBHYjO6D1RnVDExGwfJF4X8dQ6athDXRhjPV
+	1JaWOTFWUveeZ95onD0Ea0aIYg==
+X-Google-Smtp-Source: AMsMyM7WdWinUK+JlpX9DEv0QsSlne/dIOCkLeNnQqueMPqOPMiLhB+SfIDWl6uCJmTendCxS37cdg==
+X-Received: by 2002:adf:e4cc:0:b0:22a:d755:aaf7 with SMTP id v12-20020adfe4cc000000b0022ad755aaf7mr3231150wrm.692.1663881740992;
+        Thu, 22 Sep 2022 14:22:20 -0700 (PDT)
+Received: from [192.168.86.238] (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+        by smtp.googlemail.com with ESMTPSA id r14-20020a0560001b8e00b0022afcc11f65sm5813935wru.47.2022.09.22.14.22.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Sep 2022 14:22:20 -0700 (PDT)
+Message-ID: <1dca4a7f-f4d7-9fd7-69f0-5b0aec51bdef@linaro.org>
+Date: Thu, 22 Sep 2022 22:22:17 +0100
 MIME-Version: 1.0
-In-Reply-To: <2845511.e9J7NaK4W3@g550jk>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v2 00/20] nvmem: core: introduce NVMEM layouts
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Michael Walle <michael@walle.cc>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Frank Rowand <frowand.list@gmail.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Ahmad Fatoum
+ <a.fatoum@pengutronix.de>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Robert Marko <robert.marko@sartura.hr>
+References: <20220901221857.2600340-1-michael@walle.cc>
+ <20220921115813.208ff789@xps-13>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20220921115813.208ff789@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220922_094709_163168_FEC0210F 
-X-CRM114-Status: GOOD (  21.79  )
+X-CRM114-CacheID: sfid-20220922_142226_013724_89BF165D 
+X-CRM114-Status: GOOD (  13.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,53 +98,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Sep 22, 2022 at 05:55:51PM +0200, Luca Weiss wrote:
-> sometime last year (June 2021?) I first noticed that with arm32 qcom_defconfig 
-> under some circumstances I get weird boot failures on msm8974-fairphone-fp2, 
-> and lately also seeing similar with apq8026-lg-lenok.
-> 
-> In short, with CONFIG_UBIFS_FS=y there's nothing from serial console, nothing 
-> from earlycon, just nothing on serial at all. As soon as I disable this config 
-> option and rebuild it boots up fine again.
-> 
-> At some point I also got this from fp2 logs, after I changed something in the 
-> boot procedure (maybe fastboot boot instead of fastboot flash? I don't recall)
-> 
-> > Error: invalid dtb and unrecognized/unsupported machine ID
-> >   r1=0x00000000, r2=0x00000000
-> > Available machine support:
-> > 
-> > ID (hex)        NAME
-> > ffffffff        Generic DT based system
-> > 
-> > Please check your kernel config and/or bootloader.
-> 
-> With CONFIG_UBIFS_FS=m and loading the module at runtime seems to work fine (at 
-> least nothing visibly broke) although I didn't try mounting anything with that 
-> file system.
-> 
-> Does anyone maybe have an idea what might cause this and/or how to debug this? 
-> While just disabling UBIFS_FS in my config solves the issue I feel like this 
-> should be resolved, because I also sometimes forget that I have to disable 
-> this from qcom_defconfig and then wonder why my boards aren't booting.
 
-Hey Luca,
 
-I encountered a similar type of issue when I worked on the Nexus 5
-phone. It's been awhile but from what I recall the issue was that the
-generated Android boot image was too big, and it could cause the
-"invalid dtb" error since the DTB is appended to the end of the kernel.
-I have in my notes that I worked around the issue by enabling
-CONFIG_MEDIA_SUPPORT_FILTER. Or you could just trying disabling
-CONFIG_MEDIA_SUPPORT.
+On 21/09/2022 10:58, Miquel Raynal wrote:
+> 
+> Srinivas, can you give us an update on what you think about this
+> series (not a commitment, just how you feel it overall)?
+> 
+Overall this is going in right direction, there are few bindings related 
+comments once those are sorted out it should be good to go.
 
-Brian
+ From NVMEM side am happy with this feature, which has been a long 
+pending one.
 
+We have few discussions on ONIE standard before, layouts would fit in 
+nicely.
+
+
+--srini
+
+> Michael, is there a v3 in preparation? I'll try to write something on
+> top of your v2 otherwise.
 
 ______________________________________________________
 Linux MTD discussion mailing list
