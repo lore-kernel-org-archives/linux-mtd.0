@@ -4,63 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1016EECAAD8
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Sep 2022 08:17:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3C1CC6FA82
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Sep 2022 08:31:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=h/Ik14yZJ7j2hDTjSYg0k0b3IaGg3WcDnoLQq6LnpeM=; b=GrCFBilt2VkfNVhZ3U+7KzwbrP
-	9T1/0rYc994IgUvVGOr5meNZZJeMtsQTygaZf3m2kwYJXQ8kuGX+PyqhG0l7+ZRxJwTDF8Lxb1eoU
-	StxVzWDU3DnfiO72+XS6Ua2/5zY3alVrpmRnunXCKZaeZ8ORh+Hb2cn3QNjN8iSgDYiXqQwRR3pd+
-	2DdZ2QSGbrpATGenGAodxIKMJleO2Nu0PaFXptdNm0L9pQ46rwGGDb0u7pY6VvkGkTSSadQB+6q7i
-	a4u3Jn6U9hnrkwyFOsLSp6jzB9e8h6KAU7AOOPDhxCeOen7ZAo9xc7wC7GbAQCw0INlQGdkEf/c6Z
-	rnF/Ml6w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nOEp13682I5lgm9eeAKPmoZKyg19ZACxOa55YbPrUzQ=; b=SP5BOH1Pw0eglJ
+	4AEjOp5plKPUWo08q2hCYEebvFx3gLzucX3D+W6H6wk0haeZ2CIoj8BomEfJQHu01Ml4tqK41bGWo
+	9EhRBZXTKdVnjeW/xqho/3sou8I4JO4wwY76oVByjgjuZ4hHv/x1swAwNMiQapuKkShd7y283kvwE
+	ETkAMaATbRNc524cKwvuiTqvVWbITaRqGPbWaGOgGlNQbSV7+UUXDzk3Sq7MHmYVBsXEM5YAzAI99
+	8+MRStjmJzHOzWepCQNLAhc3NqzFrN0yHfHr27LQn8mOoR4cuw7pr+Lb86rObHnhImuVGZCmq/h35
+	gFlaJ+MupNZpQDLvKaPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obdrl-002tBk-Ec; Fri, 23 Sep 2022 08:16:57 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1obe5y-002xq5-3D; Fri, 23 Sep 2022 08:31:38 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obdri-002t8y-Nu
-	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2022 08:16:56 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 0C06827;
-	Fri, 23 Sep 2022 10:16:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1663921010;
+	id 1obe5c-002xgs-AI; Fri, 23 Sep 2022 08:31:18 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 15A1EE0011;
+	Fri, 23 Sep 2022 08:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1663921870;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5PjZ/6L+S2gx/jYMZ+D8vSWuJamksb8qfX4fHXz4pmE=;
-	b=1ofnhHLjO7zAHtivVEcWCc7MLVSy3saUNbBVPBCQx1r7Ivm3jM2AXA7AtAlI3GW3KOa5yG
-	Xl2NgDIrNlU8C+UfqHsVo7P4JLsVVTz6s3n+sWzahNHchIyMEcmsZvgY9BODeaWUh6X71E
-	CVIf/O71KjfdXXscQ7xDc0mgsakXqr+xZPgK63cOBwHGRvmJ634JcCqeo2tC38Q3R7mdDm
-	oPSeRSVWShooaJROeloNOUvj3GB/w5wYkyDjgxE1kuT681cggd+Gen8x+BQlWDrQgoGc4i
-	nYzn4IdK0v4RAHhzsiKHEJU/vxIa81cgabyQFPicwdRH6en/mcdqAo/tYKyAZQ==
+	bh=yCcH0TixQ9AUWLDzLnm1YNaw3iaLd6rBcDmfk2S9O1Q=;
+	b=ccwuXM8qEnNRTU7tHhh2kONd9JpPaqplAY5/o3NPVgrkS/pK6/6ryrURcYkKmlpJ0YOxG0
+	PoSg6/hDeR621Mx7cuZjZYpm2VtMac8e2daSHtamZ/lBAiUL9j+YsMgBVmDRsBUIQu/21B
+	16CgxDBqWH4hkx+iMIu3GVCr1c+yccwG8EVtVdtPGoLYHF8eGL/lm2keWshBDJZZk3AkCd
+	86zBp5MJJu9fWaRbqPjobBL45SYQVLaJt8pnHcO0Zj7vVWQ0yU4dJsJx8WDoeF1jyD2snT
+	q3iP8BVeaDPBaA1KVuIh+fV8ezNL+d2MzInpp9JYXgvafngwwZPuM1v1lhVUiw==
+Date: Fri, 23 Sep 2022 10:31:05 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Michael Walle <michael@walle.cc>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Shawn Guo
+ <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>, =?UTF-8?B?UmFmYcWC?=
+ =?UTF-8?B?IE1pxYJlY2tp?= <rafal@milecki.pl>, Frank Rowand
+ <frowand.list@gmail.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Ahmad Fatoum
+ <a.fatoum@pengutronix.de>, Philipp Zabel <p.zabel@pengutronix.de>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, Robert Marko
+ <robert.marko@sartura.hr>
+Subject: Re: [PATCH v2 00/20] nvmem: core: introduce NVMEM layouts
+Message-ID: <20220923103105.0894845c@xps-13>
+In-Reply-To: <1dca4a7f-f4d7-9fd7-69f0-5b0aec51bdef@linaro.org>
+References: <20220901221857.2600340-1-michael@walle.cc>
+	<20220921115813.208ff789@xps-13>
+	<1dca4a7f-f4d7-9fd7-69f0-5b0aec51bdef@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Date: Fri, 23 Sep 2022 10:16:49 +0200
-From: Michael Walle <michael@walle.cc>
-To: Zeng Heng <zengheng4@huawei.com>
-Cc: tudor.ambarus@microchip.com, pratyush@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- boris.brezillon@collabora.com, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, liwei391@huawei.com
-Subject: Re: [PATCH -next] mtd: spi-nor: fix artificial warning when
- CONFIG_MTD_CFI_Ix disable
-In-Reply-To: <20220923015151.3302417-1-zengheng4@huawei.com>
-References: <20220923015151.3302417-1-zengheng4@huawei.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <9ff321c05419f382206d38df09650937@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220923_011654_984125_5EC9FDBA 
-X-CRM114-Status: GOOD (  10.46  )
+X-CRM114-CacheID: sfid-20220923_013116_709014_FE2BD5DC 
+X-CRM114-Status: GOOD (  12.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,48 +76,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-09-23 03:51, schrieb Zeng Heng:
-> When CONFIG_SPI_INTEL is selected without
-> CONFIG_MTD_CFI_I[1,2,4,8] enabled, it would raise
-> compile warning as below:
-> 
-> In file included from ./include/linux/mtd/spi-nor.h:10,
->                  from drivers/spi/spi-intel.c:13:
-> ./include/linux/mtd/cfi.h:62:2:
-> error: #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can
-> work. [-Werror=cpp]
->    62 | #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can 
-> work.
->       |  ^~~~~~~
-> 
-> "mtd/cfi.h" is introduced into "mtd/spi-nor.h" by
-> commit db4745edb282 ("mtd: spi-nor: add SPI NOR manufacturer IDs"),
-> which was already removed out since from the commit
-> d3c4bb31bf62 ("mtd: spi-nor: Drop the MFR definitions").
-> 
-> After above, mtd/cfi.h is not more needed by mtd/spi-nor.h,
-> so detach the dependence.
-> 
-> Fixes: d3c4bb31bf62 ("mtd: spi-nor: Drop the MFR definitions")
-> Fixes: db4745edb282 ("mtd: spi-nor: add SPI NOR manufacturer IDs")
-
-Why are there two fixes tags? If this patch is applied to
-trees which only contain the second commit, there will be a
-compile error.
-
-So it should only be
-Fixes: d3c4bb31bf62 ("mtd: spi-nor: Drop the MFR definitions")
-
-with that fixed:
-Reviewed-by: Michael Walle <michael@walle.cc>
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgU3Jpbml2YXMsCgpUaGFua3MgZm9yIHRoZSBxdWljayBmZWVkYmFjay4KCnNyaW5pdmFzLmth
+bmRhZ2F0bGFAbGluYXJvLm9yZyB3cm90ZSBvbiBUaHUsIDIyIFNlcCAyMDIyIDIyOjIyOjE3ICsw
+MTAwOgoKPiBPbiAyMS8wOS8yMDIyIDEwOjU4LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gCj4g
+PiBTcmluaXZhcywgY2FuIHlvdSBnaXZlIHVzIGFuIHVwZGF0ZSBvbiB3aGF0IHlvdSB0aGluayBh
+Ym91dCB0aGlzCj4gPiBzZXJpZXMgKG5vdCBhIGNvbW1pdG1lbnQsIGp1c3QgaG93IHlvdSBmZWVs
+IGl0IG92ZXJhbGwpPwo+ID4gICAKPiBPdmVyYWxsIHRoaXMgaXMgZ29pbmcgaW4gcmlnaHQgZGly
+ZWN0aW9uLCB0aGVyZSBhcmUgZmV3IGJpbmRpbmdzIHJlbGF0ZWQgY29tbWVudHMgb25jZSB0aG9z
+ZSBhcmUgc29ydGVkIG91dCBpdCBzaG91bGQgYmUgZ29vZCB0byBnby4KCk9rLCBsZXQncyB0YWNr
+bGUgdGhvc2UuCgo+ICBGcm9tIE5WTUVNIHNpZGUgYW0gaGFwcHkgd2l0aCB0aGlzIGZlYXR1cmUs
+IHdoaWNoIGhhcyBiZWVuIGEgbG9uZyBwZW5kaW5nIG9uZS4KPiAKPiBXZSBoYXZlIGZldyBkaXNj
+dXNzaW9ucyBvbiBPTklFIHN0YW5kYXJkIGJlZm9yZSwgbGF5b3V0cyB3b3VsZCBmaXQgaW4gbmlj
+ZWx5LgoKSSBhZ3JlZSB0aGV5IHdvdWxkLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
