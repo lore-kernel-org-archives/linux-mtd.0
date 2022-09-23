@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8696FECAAD8
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Sep 2022 09:34:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF47BC6FA82
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Sep 2022 09:34:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wyzrF6QttnRGi2Qf9OxQQDSuRlBSweetAJhEATqL5tw=; b=lVH1g95A0DK1S+
-	6WP66gZPi4DVjFIfFpwvCE++chHKiF2v2KBv9BUrgMHOvjVpQLdndWv9rv9S+LXSknjGqckRhL2F3
-	78D5jqELZdtr0LQCdn/u4QypSFfZRDHyUu8pUcE0UUkNoyWkBOPB6tEcF7zKeM2hOSXtTXonWd6QN
-	NhGTuyRnxaJl3BOby1YCzbaGkospmbawPfasQRH59jX8Z5GX9VmtEAM1ymr6WqpfQ/B5z+ZLnW+dR
-	nEV0y8+NxMdHrcvJq83J7d1MjwjIlYqeZKNg8hCzUi3dXFevEelCXQ3ZvnkEyPEDbv5C02fBYfEdv
-	1LGmftEM/KXe6xC0eFIw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=11hNNFmhV2PHCNue63OJhWJ+8B/XfPm7vd7FOPASPrw=; b=BCYmOo/k4LONxG
+	YwpSrWtgaEytuiVOLiMZMHZs/pysmAyVtYLC3u4v1og2T5a6fhmTInnPx7ldT/aInR9LB5xMnqmJZ
+	BRrIc6IHl7Bke8vH6eeZoADq7aviBiLwcUp4BzTbmBx/1UbtMLcEicDyxIS4zYKAkiSM6agqTfGz1
+	equE38iEEcZ6GgGjn4B0SJrDHMH8oRupcb/PtSh3MphsokSMJs+W6OuDRLqKQMDZdqT/t8Sd8ji+7
+	1ugVmO7U83wpey7Q4Dec5Ned0lBDea5RJhNZG5zslg09/o3yFF99D74l81+wqs9lmFSk2wPIQBJKQ
+	mEQQnPver3KwW0SLy8DA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obf4E-003Mrm-8a; Fri, 23 Sep 2022 09:33:54 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1obf4q-003NDf-Kz; Fri, 23 Sep 2022 09:34:32 +0000
+Received: from mga02.intel.com ([134.134.136.20])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1obf44-003Mmp-Lg
-	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2022 09:33:48 +0000
+	id 1obf4n-003N9w-FC
+	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2022 09:34:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663925624; x=1695461624;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CCoBEdNkGNhPb/PvucbMPaUKNyZYPp0447nV4oywSLc=;
-  b=jNDazI7cNN2vljJ3dbhvWSoAzST7Nm6x04q8c7EFMgRi+ZYWH9xgOO3h
-   vH0Akg4oR24vQWQ5/tSV3H2Ek6exbH7fTxSLynp2q2ilOzBg93OhDXh/d
-   VkmY9eQvZ2S11DkD31cehQkTVcGTm84cACekRWUhItXR401m2NS2xhJG7
-   cg0/5S4i6TGJKLYjjRKSXjs+DvBtbZLPD6QZCPORfSToiTl0A6UvRVkrW
-   YrTyoimuzVfMmuR3sPk/5+Iq/bhgYVkJm6DUPvpulXF6s7hmp2laLkaEb
-   GhRVepGMLrtRMhem2M+79DqlSdXfBFd4ypHnLSh2i3lnRn9N2zvMYI1Lj
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="301436899"
+  t=1663925669; x=1695461669;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=S9yL+jLzvFwmFb6yqp1Bq5rdE5gEoWqhE52tGLJKRnQ=;
+  b=hoK0kL4A1YiMd09BREaClHkucIEBaU+1dy9qH42w4OMPZ/GQW9fIawYU
+   ra3leQJGGwLu/LV6o3XiFfOg4Axwp6Kn28jhNs+pFy3Np1W+0iY5f6v18
+   K+tZlkgRdyQzgFyIQTWTHeGW2icCuvHnYQglJQWBOYBiYaw7lQZqFwiaV
+   MHT8ETDAlglBSPXWCqudjmLwIsyfxN7rE3cAbOH0XFlwc71LrcOdl8PNQ
+   ENjvrycXJqVPLmsE33efvcj4aveue+dmxKoYWHFhRT5Zh0ZemeN/tWcK9
+   EqijBT82TUKNv/6rFS6mC4FSIRRlJeUUAs6DnI7DkM8lUPt1Exy8u6Dwz
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="287670091"
 X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="301436899"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2022 02:33:43 -0700
+   d="scan'208";a="287670091"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2022 02:34:26 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="615557557"
+   d="scan'208";a="865235151"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 23 Sep 2022 02:33:41 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 23 Sep 2022 02:34:23 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id E1A38F7; Fri, 23 Sep 2022 12:33:58 +0300 (EEST)
-Date: Fri, 23 Sep 2022 12:33:58 +0300
+	id CC7F5F7; Fri, 23 Sep 2022 12:34:41 +0300 (EEST)
 From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Michael Walle <michael@walle.cc>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <pratyush@kernel.org>
+Cc: Michael Walle <michael@walle.cc>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+	Hongyu Ning <hongyu.ning@intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
 	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: gigadevice: Add support for gd25lr256e
-Message-ID: <Yy19hofyadnz0JvO@black.fi.intel.com>
-References: <20220922135646.49906-1-mika.westerberg@linux.intel.com>
- <88d096d0c5efe43bc50f3c547634eb8b@walle.cc>
- <YyxxlSscwnWSyfy3@black.fi.intel.com>
- <Yyx7FwIPM19UPK+H@black.fi.intel.com>
- <2971d64c8719811c27b653bc5293d975@walle.cc>
+Subject: [PATCH v2] mtd: spi-nor: core: Ignore -ENOTSUPP in spi_nor_init()
+Date: Fri, 23 Sep 2022 12:34:41 +0300
+Message-Id: <20220923093441.3178-1-mika.westerberg@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2971d64c8719811c27b653bc5293d975@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220923_023345_015728_60615792 
-X-CRM114-Status: GOOD (  26.60  )
+X-CRM114-CacheID: sfid-20220923_023429_576912_8E424F09 
+X-CRM114-Status: GOOD (  14.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,54 +85,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Sep 22, 2022 at 05:38:17PM +0200, Michael Walle wrote:
-> Hi,
-> 
-> Am 2022-09-22 17:11, schrieb Mika Westerberg:
-> > On Thu, Sep 22, 2022 at 05:30:45PM +0300, Mika Westerberg wrote:
-> > > On Thu, Sep 22, 2022 at 04:15:37PM +0200, Michael Walle wrote:
-> > > > Am 2022-09-22 15:56, schrieb Mika Westerberg:
-> > > > > Add support for this 32MB serial flash.
-> > > > >
-> > > > > Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > > > > ---
-> > > > >  drivers/mtd/spi-nor/gigadevice.c | 4 ++++
-> > > > >  1 file changed, 4 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/mtd/spi-nor/gigadevice.c
-> > > > > b/drivers/mtd/spi-nor/gigadevice.c
-> > > > > index 119b38e6fc2a..7a7f5cb67a9e 100644
-> > > > > --- a/drivers/mtd/spi-nor/gigadevice.c
-> > > > > +++ b/drivers/mtd/spi-nor/gigadevice.c
-> > > > > @@ -57,6 +57,10 @@ static const struct flash_info gigadevice_nor_parts[]
-> > > > > = {
-> > > > >  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
-> > > > >  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
-> > > > >  		.fixups = &gd25q256_fixups },
-> > > > > +	{ "gd25lr256e", INFO(0xc86719, 0, 64 * 1024, 512)
-> > > >
-> > > > There doesn't seem to be a public datasheet. Does this flash support SFDP?
-> > > >
-> > > > In that case, please just use
-> > > > 	{ "gd25lr256e", INFO(0xc86719, 0, 0, 0),
-> > > > 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-> > > > 		PARSE_SFDP
-> > > > 	}
-> > > >
-> > > 
-> > > Sure, let me check this one works and update the patch accordinglly.
-> > 
-> > Tried this now (I did not find the datasheet either anymore) but I get:
-> > 
-> >   spi-nor spi0.0: BFPT parsing failed. Please consider using
-> > SPI_NOR_SKIP_SFDP when declaring the flash
-> > 
-> > So I suspect SFDP is not supported by this chip?
-> 
-> According to https://www.gigadevice.com/flash-memory/gd25lr256e/
-> it has SFDP. Could you debug what is going wrong here?
+The Intel SPI-NOR controller does not support the 4-byte address opcode
+so ->set_4byte_addr_mode() ends up returning -ENOTSUPP and the SPI flash
+chip probe fail like this:
 
-Sure, I'll see if I can figure out why it fails.
+  [ 12.291082] spi-nor: probe of spi0.0 failed with error -524
+
+Whereas previously before commit 08412e72afba ("mtd: spi-nor: core:
+Return error code from set_4byte_addr_mode()") it worked just fine.
+
+Fix this by ignoring -ENOTSUPP in spi_nor_init().
+
+Fixes: 08412e72afba ("mtd: spi-nor: core: Return error code from set_4byte_addr_mode()")
+Cc: stable@vger.kernel.org
+Reported-by: Hongyu Ning <hongyu.ning@intel.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
+The previous version of the patch (the revert) can be found here:
+
+  https://lore.kernel.org/linux-mtd/20220922134824.46758-1-mika.westerberg@linux.intel.com/
+
+In this version we ignore -ENOTSUPP but the other error codes will be
+passed to the caller.
+
+ drivers/mtd/spi-nor/core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index f2c64006f8d7..bee8fc4c9f07 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2724,7 +2724,9 @@ static int spi_nor_init(struct spi_nor *nor)
+ 		 */
+ 		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
+ 			  "enabling reset hack; may not recover from unexpected reboots\n");
+-		return nor->params->set_4byte_addr_mode(nor, true);
++		err = nor->params->set_4byte_addr_mode(nor, true);
++		if (err && err != -ENOTSUPP)
++			return err;
+ 	}
+ 
+ 	return 0;
+-- 
+2.35.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
