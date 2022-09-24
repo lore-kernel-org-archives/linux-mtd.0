@@ -4,60 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0370C07E9D
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Sep 2022 08:47:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C682AC32771
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Sep 2022 13:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nVGczUNwYm1EsZTTRaG3sFRZLIzNWKrHPIO38CsAVno=; b=TTGHkp6RdGVneC
-	SVOsSUft8G2hXdd79tFi8hJalh26GObDpHcQZTtxjzvtweJ1FhT/xNUswGVZKf5U6ioXpSl5xNmN+
-	Ppu76f+8Yf9xoBM0+0jW1yo32ctzoZ9201qUkI9c64qh38nomSrXs4oTuiEDIRNunQYpPSvI2G57H
-	Bbi/DU7BEsRsl/NfN8vShUIMw3kaAQdCvxYVcIHsz969wiqi01rilss8giPaIC+W+t3IiX3apXlUY
-	L3n3LkQXg4eRvQpRHakKIXXHFCwqZ95GkyVE5fEMidWBoMBBbPnNUt4OJS4eMOiT5tXlMATQmDJiB
-	I3F60Mc2fVeEPU6YQFjA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=YUzCySPsnct8H4n+iAniYNJhsBYDvsNsTqpF90zS+5g=; b=f7TwALPRtfdt6f
+	3K3dKBZq8HJLlXdCxJIukY06aSmIrTnTd3DN7twMcKsfLyCe4pJRHQq0IoB3x+mOo43gT1TH+Ihl8
+	i13a80R2p4sepY5b7IfGmbD6DjSXIzn3i8ruUdIEg96uKeIgegOr4TjIYaqCowbcIaIcXDNlUg//s
+	Qy3s53lV3/0Z1YUsO/XSfexBZiezXh5oI2kRiLaHC2XpkFNvdd8Y1XfDmX/hRSRZ3ZuKzVNbZEkT+
+	VoOyKbMnmWaoKeiKbtk8rqD441IPXUgqAjvznfhROqaR6XlDp337IHynpF2nvCDM+ZXXTfGHA37Ia
+	W+lKFMH6g0Qm72+t2iew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oc0nv-006irp-68; Sat, 24 Sep 2022 08:46:31 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1oc4oy-007Cwn-Sy; Sat, 24 Sep 2022 13:03:52 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oc0nr-006ir8-Tw
-	for linux-mtd@lists.infradead.org; Sat, 24 Sep 2022 08:46:29 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 1F69AB80AD0;
-	Sat, 24 Sep 2022 08:46:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B163C433C1;
-	Sat, 24 Sep 2022 08:46:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1664009184;
-	bh=CcEEfEzmwgcNfVrRYjABgYWLl6nWS4p/VMRs14C4hro=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UcHsy0doGginUWgjwPxrp/H3kbhKcR4wIR9uNQQ/y2NSfOaAbIxgWKy3EwT603iED
-	 XY9RVIObc13AtgwD7/bwikbPyhbB/B7t20TyA76f+9S1iEq09XNdt0HD2auwzdUQWI
-	 lNXIAUeSSq5oAi55bY0bEi9xg75LB4+61I0PW+uU=
-Date: Sat, 24 Sep 2022 10:46:22 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Michael Walle <michael@walle.cc>
-Cc: tudor.ambarus@microchip.com, pratyush@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, stable <stable@kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: fix memory leak when using debugfs_lookup()
-Message-ID: <Yy7D3hmH9dYDUsdR@kroah.com>
-References: <20220902133724.278133-1-gregkh@linuxfoundation.org>
- <bcd0cc5153457fb52566519a76e7b5b4@walle.cc>
+	id 1oc4ou-007Cu3-61
+	for linux-mtd@lists.infradead.org; Sat, 24 Sep 2022 13:03:50 +0000
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.57])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MZTch6MwvzWgvl;
+	Sat, 24 Sep 2022 20:59:32 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 24 Sep 2022 21:03:33 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
+ (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sat, 24 Sep
+ 2022 21:03:32 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <miquel.raynal@bootlin.com>, <martin.blumenstingl@googlemail.com>,
+	<yangyingliang@huawei.com>
+Subject: [PATCH -next] mtd: rawnand: intel: Add missing of_node_put() in ebu_nand_probe()
+Date: Sat, 24 Sep 2022 21:10:10 +0800
+Message-ID: <20220924131010.957117-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <bcd0cc5153457fb52566519a76e7b5b4@walle.cc>
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220924_014628_135446_B3DDF7B8 
-X-CRM114-Status: GOOD (  25.81  )
+X-CRM114-CacheID: sfid-20220924_060348_417260_3EDCFFE7 
+X-CRM114-Status: UNSURE (   8.98  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,54 +69,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Sep 02, 2022 at 04:01:36PM +0200, Michael Walle wrote:
-> Hi,
-> 
-> Am 2022-09-02 15:37, schrieb Greg Kroah-Hartman:
-> > When calling debugfs_lookup() the result must have dput() called on it,
-> > otherwise the memory will leak over time.  Fix this up to be much
-> > simpler logic and only create the root debugfs directory once when the
-> > driver is first accessed.  That resolves the memory leak and makes
-> > things more obvious as to what the intent is.
-> > 
-> > Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
-> > Cc: Pratyush Yadav <pratyush@kernel.org>
-> > Cc: Michael Walle <michael@walle.cc>
-> > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Cc: Richard Weinberger <richard@nod.at>
-> > Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> > Cc: linux-mtd@lists.infradead.org
-> > Cc: stable <stable@kernel.org>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  drivers/mtd/spi-nor/debugfs.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/debugfs.c
-> > b/drivers/mtd/spi-nor/debugfs.c
-> > index df76cb5de3f9..3aab595e82d1 100644
-> > --- a/drivers/mtd/spi-nor/debugfs.c
-> > +++ b/drivers/mtd/spi-nor/debugfs.c
-> > @@ -228,11 +228,11 @@ static void spi_nor_debugfs_unregister(void *data)
-> > 
-> >  void spi_nor_debugfs_register(struct spi_nor *nor)
-> >  {
-> > -	struct dentry *rootdir, *d;
-> > +	static struct dentry *rootdir;
-> > +	struct dentry *d;
-> >  	int ret;
-> > 
-> >  	/* Create rootdir once. Will never be deleted again. */
-> > -	rootdir = debugfs_lookup(SPI_NOR_DEBUGFS_ROOT, NULL);
-> 
-> IIRC I had that one and it didn't work with spi-nor as a module.
-> Wouldn't it try to create the root dir twice if you remove the module
-> and load it again?
+The 'chip_np' returned by of_get_next_child() with refcount decremented,
+of_node_put() need be called in error path to decrease the refcount.
 
-Yes it would, that is a use-model I did not consider at all, thanks.
-I'll rework this.
+Fixes: bfc618fcc3f1 ("mtd: rawnand: intel: Read the chip-select line from the correct OF node")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/mtd/nand/raw/intel-nand-controller.c | 23 +++++++++++++-------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
-greg k-h
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index d4a0987e93ac..6f4cea81f97c 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -608,11 +608,12 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	ret = of_property_read_u32(chip_np, "reg", &cs);
+ 	if (ret) {
+ 		dev_err(dev, "failed to get chip select: %d\n", ret);
+-		return ret;
++		goto err_of_node_put;
+ 	}
+ 	if (cs >= MAX_CS) {
+ 		dev_err(dev, "got invalid chip select: %d\n", cs);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_of_node_put;
+ 	}
+ 
+ 	ebu_host->cs_num = cs;
+@@ -620,18 +621,22 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", cs);
+ 	ebu_host->cs[cs].chipaddr = devm_platform_ioremap_resource_byname(pdev,
+ 									  resname);
+-	if (IS_ERR(ebu_host->cs[cs].chipaddr))
+-		return PTR_ERR(ebu_host->cs[cs].chipaddr);
++	if (IS_ERR(ebu_host->cs[cs].chipaddr)) {
++		ret = PTR_ERR(ebu_host->cs[cs].chipaddr);
++		goto err_of_node_put;
++	}
+ 
+ 	ebu_host->clk = devm_clk_get(dev, NULL);
+-	if (IS_ERR(ebu_host->clk))
+-		return dev_err_probe(dev, PTR_ERR(ebu_host->clk),
+-				     "failed to get clock\n");
++	if (IS_ERR(ebu_host->clk)) {
++		ret = dev_err_probe(dev, PTR_ERR(ebu_host->clk),
++				    "failed to get clock\n");
++		goto err_of_node_put;
++	}
+ 
+ 	ret = clk_prepare_enable(ebu_host->clk);
+ 	if (ret) {
+ 		dev_err(dev, "failed to enable clock: %d\n", ret);
+-		return ret;
++		goto err_of_node_put;
+ 	}
+ 
+ 	ebu_host->dma_tx = dma_request_chan(dev, "tx");
+@@ -695,6 +700,8 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	ebu_dma_cleanup(ebu_host);
+ err_disable_unprepare_clk:
+ 	clk_disable_unprepare(ebu_host->clk);
++err_of_node_put:
++	of_node_put(chip_np);
+ 
+ 	return ret;
+ }
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
