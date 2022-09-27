@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBF5AC54EE9
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Sep 2022 16:18:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7002AC07E9D
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Sep 2022 17:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hGiw3NJLxoC0JyCeJz3lp6Qi58BEW8j7tcgqhgmJSUI=; b=gGO5C3+qhQaCb+
-	SjjS0DrElF4pftZxW51t0EqvSG9vOnD2asdkcHlGP2Voam62V9UJEjAQivte+mIS/0XOnHMLQ9a4O
-	a/iImtjcENvsRry5cIasJqgVYkq2HvJNdN66I6qjxQ/rR6A8hM3mGox4ly3J5rIkMVR9BPpi5eZCJ
-	ckTOJOtbpMB2EZVDVZy5+frXDEot9jy7e8MCoSQK0mnLkjb02T+xJurTwR2VHInMLW5pOCNYOTOLM
-	nAhdjMZAovXa+0fH/uT6nv+uMekyz5CoDloLttzjCXV4yvk4nKGsN3oKNAPlLYLHQmYEfqS5wbCUY
-	/paTiZEE4gV3oPiS4Opg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
+	Mime-Version:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=+lVhegHdbJcuCc/3TBH0ZXUnYLdr6PlC5XquWR6FPYQ=; b=TEP
+	dBhJkjqaRSpTFGR9rRVlCIYba6Y6Efd4DchbPfcl/MnkI6kRr/GwlQxtvggqpECLJn3IzUCJIREg+
+	BXSYh+RmIBCB05Xy9n4OlMcu3OwgTmZGMvSzNVHytPniXIe3YCU/2Vh0WBJEXpvY1XUQFphmZmZ2X
+	u3bO9NTKnJ/3VKAZ66dJE0gG4s9rZX5698qigGJhMMK7LktDPrhjgLIxKlivQsVj4Q6DfLfwu3F7O
+	siyLsg0+6+OwlOuLQHjIynTQoPAF3hMVBCeZ5rUBrWwXJXalg102KAN/Lfddj7NmXrUvEqGFWu6kE
+	aVbgTzSTJUsdfy3SwUNpvUzv6yNHVyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1odDHj-00BjtK-OD; Tue, 27 Sep 2022 16:18:15 +0000
-Received: from mail-lj1-x233.google.com ([2a00:1450:4864:20::233])
+	id 1odEYB-00BzO5-5H; Tue, 27 Sep 2022 17:39:19 +0000
+Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1odDHh-00Bjsj-FP
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2022 16:18:14 +0000
-Received: by mail-lj1-x233.google.com with SMTP id h3so11534058lja.1
-        for <linux-mtd@lists.infradead.org>; Tue, 27 Sep 2022 09:18:12 -0700 (PDT)
+	id 1odEY8-00BzMk-AW
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2022 17:39:17 +0000
+Received: by mail-pf1-x44a.google.com with SMTP id y17-20020a056a00181100b0053e8868496bso6172439pfa.21
+        for <linux-mtd@lists.infradead.org>; Tue, 27 Sep 2022 10:39:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=9d0P3gSou96GnwmKkR4zetGWNGL+trTBFAEOC3X3dLE=;
-        b=XQeTKfUMrTykouMOeIljMSULDrf/SRn866zz1RlHOb3dTopO0B74PvKyKyoLRrHAiy
-         bNfabG8XVe60Zc3I1iJLHroPNN4Wg7idVC2cKJvF43rV6gaIT3ysycDIxT35COlHp2gB
-         6STxYXIRDaO0LIGPQ6fC3DSeaD1WjZp5ZdspRhiMn1Gj1sHIAqTm5rNoE1TnL18WHYB1
-         jszNSerB0v1orqfEJyKEe60mggtur5MAYwj68E8u0PHq4EHw4HtkzbtWOwOqbfBnAdvb
-         8RodFBwqqs3GGo/cyMi/L5l0eo3nu1T1BI1SCCfKF+xbNfxCg3qWNI6oUIncvmfOVmrn
-         uxug==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date;
+        bh=cfW6P4xnGiNxspv7lrrMAvh03t//Xe+bE5jk10e/JJM=;
+        b=MSoTgMILPkGBRU07gf8JBEFKIFDLnaXWXtCN3H+WjQmKsYag5ts5hPQ2M0enqj/yQ2
+         8I7vvUSntSs9+XWQrzOl8CsjQrN67E5HUd8ML+4SGsEZv/9xZDtGT4yXiEzWkDHDnRDM
+         D3t7J9w3fIcnHnjeUyHEq4ajjzvFkaKzMR9Cc+eQFaxWXii05201jAuJvb6pvuStYRv8
+         HFXJ/IqU4iue+ohAJgzdxqMc6/4hVqXXEK6ym3ZAVDk89I+PMhBOY6QEngjLe1GQHJ9t
+         oq0reFdcRQAbjJUILrpHFQuWibGCFjyitjzaokBDcEZM5DZrn1+rH3JDFEVXUhHNCBNb
+         m8Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=9d0P3gSou96GnwmKkR4zetGWNGL+trTBFAEOC3X3dLE=;
-        b=OecvcbVi+5sCVSZhGnp7agWxc+qUkyNDocTzJu/VLqeohk5kp81UwqzpS3GE7AkfGh
-         Rit8vRVrcbMcfMn6UQIxIAzeqev2XDNM1e8URwB9iPpgtguUnz6Vl3jqB5wFwwKq1osD
-         4dNafeMDlc0yqJyd2um9djpzPu4sD9YvvMwg8uFzCtQeIz2q3LW8DRzojHcsT4M2JN38
-         OF/gQoqMfTOxSk+z6FF4O03XRefPkx6Jdgfveqom1pME3AUJB/1KbPFpIX2VMrkgkKve
-         6WgTQUXb693F5MRi7mJAt8HXKUhwFPMIlR2k4KDVXi8kJo1qjuddqImaiVO35p32ALDF
-         6IHA==
-X-Gm-Message-State: ACrzQf2oRhXIHB15JaXbDZMAd2OyVko+kNpTLqcUxAHGrBnq5eQNm88u
-	VpC6Oi0mNzYjcTZX09M0CUndaU+hNhU2/L3aTMrTXu76
-X-Google-Smtp-Source: AMsMyM7CuCxaKrX7PGbovGaBfLxBtDTlfWKAfyPRS3sxxyvuyhSapFFv5WFgIKvQtrUaW7+M/zeY8MRBln2EnEOP1Bw=
-X-Received: by 2002:a05:651c:555:b0:26c:6a30:770 with SMTP id
- q21-20020a05651c055500b0026c6a300770mr10407332ljp.376.1664295490543; Tue, 27
- Sep 2022 09:18:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220922031440.422193-1-alexhenrie24@gmail.com> <5e85eafb-bc6b-a005-fb12-db6940118481@sigma-star.at>
-In-Reply-To: <5e85eafb-bc6b-a005-fb12-db6940118481@sigma-star.at>
-From: Alex Henrie <alexhenrie24@gmail.com>
-Date: Tue, 27 Sep 2022 10:17:59 -0600
-Message-ID: <CAMMLpeQnmicqAi+3ZSp+Ep9Tiqm2dD_AdKYJFhi8iTdicTmr4A@mail.gmail.com>
-Subject: Re: [PATCH] mkfs.jffs2: fix spelling of --compression-mode parameter
- in help text
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=cfW6P4xnGiNxspv7lrrMAvh03t//Xe+bE5jk10e/JJM=;
+        b=WlKazqDPoOjPXJvbzWLcu5hRDw8O+j/UiDyZWigH6TGwAuAyv6bEyMtf+vh5+rS43D
+         DFJ4mKq4EleU5qYpKk5FQ5RyWaR1IRSO9qu1Lqw6CAZCjIXQl/iHmrhZQ39SeUDeqYzM
+         Nv229MLwu5QyIKc84cdFluCePbyu8ZkhPeUnky0WESBztVs2fbx/bf76UF3p/5iM6m3F
+         OVvqOMbKmAPpT/G/1+3DAIziR1bwTYNnSeT5p8STSgIMlGPliaF2krbZoAXn5MbOeryi
+         LX3o9IGjlPTwIZVr4LDuq51Z3O9fRsWrlt43whEs8UhYCYlb+X3RcSbSRygWKEml7pRk
+         q99Q==
+X-Gm-Message-State: ACrzQf3d9LD8OoFaVixqRtfvB2i2EeV3aehXk7fj+w0TtiOk/vc3C9EK
+	xTAqNW6LGm4tW185G3vA+pN01KW39ViI
+X-Google-Smtp-Source: AMsMyM5bTykP2riCIcy3AsjQ/14S0fAIi5hNV20tr64VRsRWujSKABbvICdiroXEzyOi0TUtcvRAU2+y3BFL
+X-Received: from sgzhang.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3d89])
+ (user=sgzhang job=sendgmr) by 2002:aa7:8d05:0:b0:557:f0c1:6413 with SMTP id
+ j5-20020aa78d05000000b00557f0c16413mr15214598pfe.19.1664300352650; Tue, 27
+ Sep 2022 10:39:12 -0700 (PDT)
+Date: Tue, 27 Sep 2022 17:38:43 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.3.998.g577e59143f-goog
+Message-ID: <20220927173845.2293378-1-sgzhang@google.com>
+Subject: [PATCH v1 0/2] mtd: mtdoops: change log and erase functions
+From: Ray Zhang <sgzhang@google.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Ray Zhang <sgzhang@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220927_091813_569214_363EDF01 
-X-CRM114-Status: UNSURE (   7.61  )
+X-CRM114-CacheID: sfid-20220927_103916_381072_3C287055 
+X-CRM114-Status: UNSURE (   7.50  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -85,14 +86,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 27, 2022 at 12:34 AM David Oberhollenzer
-<david.oberhollenzer@sigma-star.at> wrote:
->
-> Applied to mtd-utils.git master.
+In mtdoops driver, to comply with latest kernel code requirement, change
+printk() to counterpart pr_ functions. When panic function invokes mtdoops,
+call mtd erase function immediately when needed.
 
-Thank you!
+Ray Zhang (2):
+  mtd: mtdoops: change printk() to counterpart pr_ functions
+  mtd: mtdoops: panic caused mtdoops to call mtd erase function
+    immediately
 
--Alex
+ drivers/mtd/mtdoops.c | 108 ++++++++++++++++++++++++------------------
+ 1 file changed, 61 insertions(+), 47 deletions(-)
+
+-- 
+2.37.3.998.g577e59143f-goog
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
