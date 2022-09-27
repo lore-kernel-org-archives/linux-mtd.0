@@ -4,51 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4D05C54EE9
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Sep 2022 18:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A26DC54EE9
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Sep 2022 19:26:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:
-	Subject:To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MBEM87yhuppj4AFcQcF2a/sh/emrUJWf2++Rikp8v3A=; b=Tk4CJA7nBMTbsD
-	81Y2QXbvTSpU6JLyiAk6pPT+fs05L7OYWjElSnkyg8BCY9FF/4EQ8uSatkv2MKCtGJV29cKvq0zfw
-	9MZju/vAd6lyNRtqqpO3i7sMZ66cSKYPBwhsCmr/xcp10pn4UOTBT76jBV3HdRwXA1Kr+unuCgcBm
-	pg+UTO1emOqWnUigfDYB6ZwpVo/MMQHERhYsRyVwBkzZJDaQNpzaXWsxkgWKGA8UiMILSPC/mgfbU
-	eI+m1zGkd9ewul39+RqY1otQi83DUfsBlKNvdlmM2yKeo8nVCyCXjhsFmIcOr2bbLPE2K/XiQJYkQ
-	wC4b8Gy1ogEpRN7cfihA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=vK0CIhaRz4DIHp1cDhDSIsSycdhueYgwIiZYeMXyrDw=; b=3VD+WsSUOSHo0+
+	9jUPYEk2jlH4o728OUYNWCW8xtnsgG4v9qV/oWK0OyasX+g4HRQBVz8OCNsqJL1XlupYg9QJ9VwMO
+	u7Nbhzk1xKb45dkfJ4dt+lsIS1VlZ4zfP4N5Nib8v87ZT/5uhedpalZzOnocPB+ogrT/Ee5SeIvhy
+	ATxXtEQFPMCLwLzgDX/lcb5kQdJIX5N8rXKglUPr88+nNko4GfpmKj9jUJxtcdkSysVg2E3rV7t1L
+	ZHPfyq/9L//7raeykZGq1h3v+z/bfNRPl7LND9eNmAJxW8b8MU1pq/JsToYI2A9CGLh6qHCEjPbHz
+	VI3R6R/3VF+KwgeA74cg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1odFlL-00CIke-Q7; Tue, 27 Sep 2022 18:56:59 +0000
-Received: from fsfvdiej.episotheque.com ([81.161.229.202])
+	id 1odGDn-00CQ3d-0x; Tue, 27 Sep 2022 19:26:23 +0000
+Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1odFlJ-00CIk4-CM
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2022 18:56:58 +0000
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=episotheque.com;
- h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; i=san.con@episotheque.com;
- bh=OiGiu6Ah1/fotYvxUCVyqvf+5hs=;
- b=skH8VPrVyYp2vx+4P9yAvhsE08xntm69Vm02TPHqlFn92DjDluApVbNjYBkwx/suZDR765gqUi9l
-   OoH71XZetKOR6PTMGguq/1uDo7eTb32Zp6f5LO6W57HGFzIX6OEtKefNZh0uqhLJeAGfnxQfdaNs
-   SXysJBhHsfRTchiwDa57IrIyFpvlIQ2KoDsD/xBmO1JFQhWjPRgz/dwPW37Q3OvFP0yMtGOURu4e
-   SovlrVPdWHjUHiAQgY/6NI+h1tu2ZQXtOM5jdYSLz6frl75FjDxpZthcaSWZwvOQw4N+9ka5qOyj
-   fmup9NF7eTHOhj1iTZFrMjnUnoGlzE3f5W+5nQ==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=episotheque.com;
- b=J4jN5/m8a06QisigZ3KgInspRFz8mAF+6iHzSxB9LjEIeOccWoh+GhHyWvshgnCvMmX7g+cjNzb3
-   0zrNPYtyb92lanCAjJvL8d7xEmwIwqkA059phmfLvdouTlICH4TrS16+L5mkDYNQxU5Ku1R7hYna
-   WP2nFrsgkVuRiXua4xlZUMs/r+z7xanIFMaFwCCR0llxeUXzzAX62SZ+67UC4Mz1qHnvid+dVrMz
-   3yyYvXM3ZqAJP2Mnh6G5bTtoh8k0CK/SQOw2+PoxOa/oQ2V8LPN3384+chImbbWPmzW1ALzFh9bO
-   BQOmngrumO52h/DZohbuYFWpkVoiSwLxpBROPw==;
-From: Donald Kolman<san.con@episotheque.com>
-To: linux-mtd@lists.infradead.org
-Subject: IMPORTANT
-Date: 27 Sep 2022 21:56:53 +0300
-Message-ID: <20220927215653.13B23DB4E60BFE7F@episotheque.com>
+	id 1odGDk-00CQ2g-AW
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2022 19:26:21 +0000
+Received: by mail-ed1-x532.google.com with SMTP id c30so13370399edn.2
+        for <linux-mtd@lists.infradead.org>; Tue, 27 Sep 2022 12:26:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=5au5+3PbElHSXVdPLVjWvdG37svmAe3WhQcNrik3Eeo=;
+        b=oNN2HAKsxJv404M7NtuxHckdxY0zzeDG1pNMLqcK4w0sghJDCq+RtWa73h6jMU6ukU
+         Hi/SbS0eZJOUpynkO3iLKHgpmXkNT4pFtFPGuzaMLk3VS0rsDXuM6k2fSHV2jiJlHaZk
+         9zpvJl1hvdLJR+HQitn2K1to5VX9pfhkQfvKoLyECXRkI7tVTFKTKrW8Ji5CwyIn+rPM
+         knHVxJM8JPnoLFlw9bX1hme6GVSGCKEC2by8TZplwOmhIsqq3a424vFgyNvfS8h8W7ak
+         dLOdSqqGq0Omlb3lyV+bdgaZ1l6YjhhW9b5COTfLZD+rL5WqFs4Kcj/WkTul5zy0Er2G
+         BO3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=5au5+3PbElHSXVdPLVjWvdG37svmAe3WhQcNrik3Eeo=;
+        b=COLiSoR4twJBxeH5ZLVnchmLdRjBT3ZMJsaG7AzujSgH+Cy843ZTHsdhfidBsu0Adg
+         83gStlC9LbCpfUKDDhHVHG8e9hV+BXQPtAUar1d/0s4W4FdisI59VDxlGNS0YY8+OMNP
+         T+oyTsilCTwb3BLeC0c2wxIoI04NfC7mAcifC4YX4k2YLzeTTaaFEk55CJmZE2Zx8flP
+         6kBBXx6WKCDzOqAzXo0w6/8Fd1wkeKIAPrQn3z2yD/aGucYkFreXZ6B9m6P/Q7FjWB9i
+         qaj+WyaFJUO7HMkq/mXPr14vn0cxW5cD+prMlPzbS8Dqn3UuS36TG5RN3O+CNdH/0Zcw
+         gy3Q==
+X-Gm-Message-State: ACrzQf3km0XE0WYV9Evd2nmsA6RBOK3qz7Pyv71ekV4YPeHx3pM8rf5U
+	YzeOxwS0ZXOnst6aI72Up/gvpGjRYXcHgOUXxoc=
+X-Google-Smtp-Source: AMsMyM7LBV2jOqEb/+HwaxfdocVmYIfy3ArIVEMNEqdaM1y56sYfVXYyQAck6igJjZMp/XNs2blyMRNKhftHGDWrIo0=
+X-Received: by 2002:aa7:c04d:0:b0:454:2f81:b966 with SMTP id
+ k13-20020aa7c04d000000b004542f81b966mr29698687edo.269.1664306778431; Tue, 27
+ Sep 2022 12:26:18 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220924131010.957117-1-yangyingliang@huawei.com>
+ <CAFBinCCFSrYv-JZrda27Ein=YrEik=yvOjHtiz-=aR0q-+FFFA@mail.gmail.com> <e640b2b7-edf7-54dd-c207-a0906858d98c@huawei.com>
+In-Reply-To: <e640b2b7-edf7-54dd-c207-a0906858d98c@huawei.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Tue, 27 Sep 2022 21:26:07 +0200
+Message-ID: <CAFBinCAUGQXjevOcpD0X2XR7+1MKWuLPJcGShtHSJMjSGfCU6A@mail.gmail.com>
+Subject: Re: [PATCH -next] mtd: rawnand: intel: Add missing of_node_put() in ebu_nand_probe()
+To: Yang Yingliang <yangyingliang@huawei.com>
+Cc: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220927_115657_644054_9A60E10D 
-X-CRM114-Status: UNSURE (  -0.67  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220927_122620_458490_160990C0 
+X-CRM114-Status: GOOD (  16.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,30 +79,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: kolmandonald3@protonmail.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcgLAoKSSBrbm93IGl0J3MgYW4gdW5j
-b252ZW50aW9uYWwgd2F5IG9mIHJlYWNoaW5nIG91dCB0byB5b3UgYnV0IGl0J3MKZm9yIGEgZ29v
-ZCBjYXVzZS4KCgpJ4oCZbSBEb25hbGQsIGEgUmVzZWFyY2ggQXNzaXN0YW50IG9mIHRoZSBSZXNl
-YXJjaCBhbmQgRGV2ZWxvcG1lbnQKRGVwYXJ0bWVudCB3b3JraW5nIGF0IG9uZSBvZiB0aGUgbGVh
-ZGluZyBCaW8gUGhhcm1hY2V1dGljYWwKQ29tcGFuaWVzIGhlcmUgaW4gRW5nbGFuZC4gSSdtIGxv
-b2tpbmcgZm9yIGEgcmVsaWFibGUgYnVzaW5lc3MKcGVyc29uIGluIHlvdXIgcmVnaW9uIHRvIHJl
-cHJlc2VudCBteSBjb21wYW55IGluIHNvdXJjaW5nIHNvbWUgb2YKb3VyIGJhc2ljIHJhdyBtYXRl
-cmlhbCB1c2VkIGluIHRoZSBtYW51ZmFjdHVyaW5nIG9mIGhpZ2ggcXVhbGl0eQpBbnRpLVZpcmFs
-IFZhY2NpbmVzLCBDYW5jZXIgdHJlYXRtZW50IGFuZCBvdGhlciBsaWZlc2F2aW5nClBoYXJtYWNl
-dXRpY2FsIFByb2R1Y3RzLgoKVGhpcyBtYXkgbm90IGJlIHlvdXIgYXJlYSBvZiBzcGVjaWFsaXph
-dGlvbiBidXQgaXQgd2lsbCBiZQphbm90aGVyIGluY29tZSBnZW5lcmF0aW5nIGJ1c2luZXNzIG91
-dCBvZiB5b3VyIHNwZWNpYWx0eS4gVGhpcyBpcwpiZWNhdXNlIE91ciBjb21wYW55IGlzIHlldCB0
-byBsb2NhdGUgYW55IHNlbGxlciB0byBidXkgZnJvbSwKaG93ZXZlciwgSSBoYXZlIGJlZW4gYWJs
-ZSB0byBkaXNjb3ZlciBhIGxvY2FsIGRlYWxlciB3aG8gY2FuCnN1cHBseSB1cyB3aXRoIHRoaXMg
-cHJvZHVjdC4gSGUgaXMgc2VsbGluZyBhdCBhIGNoZWFwIHJhdGUgLAp3aGljaCBpcyBmYXIgY2hl
-YXBlciB0aGFuIG91ciBwcmV2aW91cyBwdXJjaGFzZXMuCgpJIHdpbGwgZ2l2ZSB5b3UgbW9yZSBz
-cGVjaWZpYyBwcm9maXQgZGV0YWlscyB3aGVuIEkgcmVjZWl2ZQpmZWVkYmFjayBmcm9tIHlvdSBp
-ZiB5b3UgYXJlIGludGVyZXN0ZWQuCgoKQmVzdCByZWdhcmRzCgpEb25hbGQgS29sbWFuCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi,
+
+On Mon, Sep 26, 2022 at 3:58 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
+[...]
+> >> +err_of_node_put:
+> >> +       of_node_put(chip_np);
+> > Here I have one question:
+> > My understanding is that with this patch we now use
+> > of_node_put(chip_np); in case any error occurs during probe.
+> > But what about the case where there's no error and someone later
+> > unloads the driver (using rmmod)? Or in other words: do we need
+> > another of_node_put() call in ebu_nand_remove()?
+> In normal case, when the module is removing, the of_node_put() is
+> called in del_mtd_device() which is called by mtd_device_unregister().
+Thank you so much for the explanation! With this your patch gets my:
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+
+
+Best regards,
+Martin
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
