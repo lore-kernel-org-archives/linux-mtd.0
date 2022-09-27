@@ -4,70 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A26DC54EE9
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Sep 2022 19:26:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C095DC54EE9
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Sep 2022 23:32:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vK0CIhaRz4DIHp1cDhDSIsSycdhueYgwIiZYeMXyrDw=; b=3VD+WsSUOSHo0+
-	9jUPYEk2jlH4o728OUYNWCW8xtnsgG4v9qV/oWK0OyasX+g4HRQBVz8OCNsqJL1XlupYg9QJ9VwMO
-	u7Nbhzk1xKb45dkfJ4dt+lsIS1VlZ4zfP4N5Nib8v87ZT/5uhedpalZzOnocPB+ogrT/Ee5SeIvhy
-	ATxXtEQFPMCLwLzgDX/lcb5kQdJIX5N8rXKglUPr88+nNko4GfpmKj9jUJxtcdkSysVg2E3rV7t1L
-	ZHPfyq/9L//7raeykZGq1h3v+z/bfNRPl7LND9eNmAJxW8b8MU1pq/JsToYI2A9CGLh6qHCEjPbHz
-	VI3R6R/3VF+KwgeA74cg==;
+	List-Owner; bh=9rMFSi5UR6aoRYq3N8VD47fHkDmD2bP9ZN925ntt2cg=; b=LuuO90uIRxJ/Gj
+	KCLqdJqm3Fu6vd8/Wxbwb7OKbzrUIEDXSMBG9fBfjHxaZ5KMo7KgxHctywNBiV0qQbPr1ehStzQnP
+	9CGjfd231DMVB75HmJVU0MsRg+FccjX7Ug/1DjGpzMRRlb987PGD6yxkV8hGkzUOrUDm/Y3g6Rk95
+	cSR6YR0FZwFOwU6jxUCEt0do5d25Bc+x8jK2MNSdO/oN6cxw81uykd5yNn1yKLk4OFL+EReBTo+a2
+	+OOrlEjQ4hTV0vMbRz7vbidi5lAMhsipMpDJFIluDKbWONdEnmO76B/oYXlz5jEe/EgcV2co29kxJ
+	MX2pvNmHFYvwRPwFC5MQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1odGDn-00CQ3d-0x; Tue, 27 Sep 2022 19:26:23 +0000
-Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1odGDk-00CQ2g-AW
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2022 19:26:21 +0000
-Received: by mail-ed1-x532.google.com with SMTP id c30so13370399edn.2
-        for <linux-mtd@lists.infradead.org>; Tue, 27 Sep 2022 12:26:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=5au5+3PbElHSXVdPLVjWvdG37svmAe3WhQcNrik3Eeo=;
-        b=oNN2HAKsxJv404M7NtuxHckdxY0zzeDG1pNMLqcK4w0sghJDCq+RtWa73h6jMU6ukU
-         Hi/SbS0eZJOUpynkO3iLKHgpmXkNT4pFtFPGuzaMLk3VS0rsDXuM6k2fSHV2jiJlHaZk
-         9zpvJl1hvdLJR+HQitn2K1to5VX9pfhkQfvKoLyECXRkI7tVTFKTKrW8Ji5CwyIn+rPM
-         knHVxJM8JPnoLFlw9bX1hme6GVSGCKEC2by8TZplwOmhIsqq3a424vFgyNvfS8h8W7ak
-         dLOdSqqGq0Omlb3lyV+bdgaZ1l6YjhhW9b5COTfLZD+rL5WqFs4Kcj/WkTul5zy0Er2G
-         BO3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=5au5+3PbElHSXVdPLVjWvdG37svmAe3WhQcNrik3Eeo=;
-        b=COLiSoR4twJBxeH5ZLVnchmLdRjBT3ZMJsaG7AzujSgH+Cy843ZTHsdhfidBsu0Adg
-         83gStlC9LbCpfUKDDhHVHG8e9hV+BXQPtAUar1d/0s4W4FdisI59VDxlGNS0YY8+OMNP
-         T+oyTsilCTwb3BLeC0c2wxIoI04NfC7mAcifC4YX4k2YLzeTTaaFEk55CJmZE2Zx8flP
-         6kBBXx6WKCDzOqAzXo0w6/8Fd1wkeKIAPrQn3z2yD/aGucYkFreXZ6B9m6P/Q7FjWB9i
-         qaj+WyaFJUO7HMkq/mXPr14vn0cxW5cD+prMlPzbS8Dqn3UuS36TG5RN3O+CNdH/0Zcw
-         gy3Q==
-X-Gm-Message-State: ACrzQf3km0XE0WYV9Evd2nmsA6RBOK3qz7Pyv71ekV4YPeHx3pM8rf5U
-	YzeOxwS0ZXOnst6aI72Up/gvpGjRYXcHgOUXxoc=
-X-Google-Smtp-Source: AMsMyM7LBV2jOqEb/+HwaxfdocVmYIfy3ArIVEMNEqdaM1y56sYfVXYyQAck6igJjZMp/XNs2blyMRNKhftHGDWrIo0=
-X-Received: by 2002:aa7:c04d:0:b0:454:2f81:b966 with SMTP id
- k13-20020aa7c04d000000b004542f81b966mr29698687edo.269.1664306778431; Tue, 27
- Sep 2022 12:26:18 -0700 (PDT)
+	id 1odK3W-00D9Q2-Hh; Tue, 27 Sep 2022 23:32:02 +0000
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1odK3O-00D9Po-9y; Tue, 27 Sep 2022 23:31:54 +0000
+Date: Tue, 27 Sep 2022 16:31:54 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Mauro Carvalho Chehab <mauro.chehab@linux.intel.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Greg KH <gregkh@linuxfoundation.org>,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	Kai Vehmanen <kai.vehmanen@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	linux-modules@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@linux.ie>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>,
+	Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH v6 0/4] Let userspace know when snd-hda-intel needs i915
+Message-ID: <YzOH6oV6B6UKb7DF@bombadil.infradead.org>
+References: <cover.1652113087.git.mchehab@kernel.org>
+ <Ynl7xGy+a9MYjXi1@bombadil.infradead.org>
+ <20220920072454.4cf91f24@maurocar-mobl2>
 MIME-Version: 1.0
-References: <20220924131010.957117-1-yangyingliang@huawei.com>
- <CAFBinCCFSrYv-JZrda27Ein=YrEik=yvOjHtiz-=aR0q-+FFFA@mail.gmail.com> <e640b2b7-edf7-54dd-c207-a0906858d98c@huawei.com>
-In-Reply-To: <e640b2b7-edf7-54dd-c207-a0906858d98c@huawei.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Tue, 27 Sep 2022 21:26:07 +0200
-Message-ID: <CAFBinCAUGQXjevOcpD0X2XR7+1MKWuLPJcGShtHSJMjSGfCU6A@mail.gmail.com>
-Subject: Re: [PATCH -next] mtd: rawnand: intel: Add missing of_node_put() in ebu_nand_probe()
-To: Yang Yingliang <yangyingliang@huawei.com>
-Cc: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220927_122620_458490_160990C0 
-X-CRM114-Status: GOOD (  16.87  )
+Content-Disposition: inline
+In-Reply-To: <20220920072454.4cf91f24@maurocar-mobl2>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,26 +67,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Tue, Sep 20, 2022 at 07:24:54AM +0200, Mauro Carvalho Chehab wrote:
+> Hi Luis,
+> 
+> On Mon, 9 May 2022 13:38:28 -0700
+> Luis Chamberlain <mcgrof@kernel.org> wrote:
+> 
+> > On Mon, May 09, 2022 at 06:23:35PM +0200, Mauro Carvalho Chehab wrote:
+> > > Currently, kernel/module annotates module dependencies when
+> > > request_symbol is used, but it doesn't cover more complex inter-driver
+> > > dependencies that are subsystem and/or driver-specific.
+> > >   
+> > 
+> > At this pount v5.18-rc7 is out and so it is too late to soak this
+> > in for the proper level of testing I'd like to see for modules-next.
+> > So I can review this after the next merge window. I'd want to beat
+> > the hell out of this and if possible I'd like to see if we can have
+> > some test coverage for the intended goal and how to break it.
+> 
+> Any news with regards to this patch series?
 
-On Mon, Sep 26, 2022 at 3:58 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
-[...]
-> >> +err_of_node_put:
-> >> +       of_node_put(chip_np);
-> > Here I have one question:
-> > My understanding is that with this patch we now use
-> > of_node_put(chip_np); in case any error occurs during probe.
-> > But what about the case where there's no error and someone later
-> > unloads the driver (using rmmod)? Or in other words: do we need
-> > another of_node_put() call in ebu_nand_remove()?
-> In normal case, when the module is removing, the of_node_put() is
-> called in del_mtd_device() which is called by mtd_device_unregister().
-Thank you so much for the explanation! With this your patch gets my:
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+0-day had a rant about a bug with it, it would be wonderful if you can
+fix that bug and rebase. Yet again we're now on v6.0-rc7 but it doesn't
+mean we can't start testing all this on linux-next. I can just get this
+merged to linux-next as soon as this is ready for a new spin, but we
+certainly will have to wait until 6.2 as we haven't yet gotten proper
+coverage for this on v6.1.
 
+Is there any testing situations you can think of using which can demo
+this a bit more separately from existing drivers, perhaps a new
+selftests or something?
 
-Best regards,
-Martin
+  Luis
 
 ______________________________________________________
 Linux MTD discussion mailing list
