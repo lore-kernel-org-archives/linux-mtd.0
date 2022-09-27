@@ -4,81 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17DCFC07E9D
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Sep 2022 02:55:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B81AC54EE9
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Sep 2022 03:59:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ptnSqehMHQUca0g4eiX+/TxGBDH+dkytJ+8BxyyAexE=; b=dnzeFAixcOiLEU
-	d3csMcGdWcmnlvvuDiWz89/U4rg4GFfnTbg7pvw9aFQTenVRdlicPB9PrPitD/UQ05QZkgAF229id
-	KRloZSmze2ItCWCGGY2pjDkHGfNtA8agrUB033DGmukg+nqzzIRGZbg6NlYywQ3OQMO/Tu04rkFUV
-	cgXNogVkyzDsLnmMUe8g7A70Pcpf1JCumc8LPLHtzO1HanczaJc31ySw6bWEsa/1lJ+zIlnWMBXaJ
-	wRLQGH5DJV6w5JxIsxjpqsNVBC1BenLqUUTjOGuqOLwjWa0Va8ODgbtVVA5dtSMmoujTEfzxycRZk
-	lg779w/Z7qvOpftJ79nQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=rj0AdVp1PJwRcLhC4sZkEWE5cxUSN2Jb/zF+tTOHXhQ=; b=tvXZva5verksll
+	wiupvjtee6hu8D1XkZipY4pDXR01VGwNa48U4jFtpZeRYoYAPTLk1zL8pz8qgLVH+aAtGV2QZfNVl
+	GU6X/kr9NDo6BqP506tNXa2vzgLjb/2xBVZEBVY39v3MvU2bT5KC+tTbr53YNaQakptJWM7io08l4
+	JO+wvP1n8F3/Gew/vUe4KX08IA1sT668o71SaBr4gxqstpWEio6YnMWwb57WJZ529ce1+Z/RYo/jb
+	mLESOZBdlBCADTDuiKUrfMH6KB47vJgeHCgXeptg+B2OGZ9X4AMHFmny7Zo1CAalJUvtxS7qkJ/8L
+	e8/gkzs/z2B4HKYIKolg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1od0kD-007zKa-TL; Tue, 27 Sep 2022 02:54:49 +0000
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	id 1od1jo-008Cx3-Ts; Tue, 27 Sep 2022 03:58:28 +0000
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1od0kA-007zJg-Gg
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2022 02:54:48 +0000
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 356D12C055E;
-	Tue, 27 Sep 2022 02:54:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1664247281;
-	bh=x6rLsjU8n4jK+ehuEmcUEt5EsONMMCmZGKiq+TmClpc=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=rwpgkgMT+RTSYx9ibufWkrqd1ME2wnPUWLq17Kz9o1TiAkRPbG2ueUHMliNa/zcrg
-	 FR55iaLR3e17e1PZoD/AgNa4CsH+Ld/CzwmrByMjkwx7iqar2n6wUcQOxu2Q7cWL4a
-	 kTxEWXM74coRqXNdmZ7ev2MkRVEBOtW8n+coMD9DxB6ceHCUOfTJVlfM7d+679CpnE
-	 1kswTYRB344oiIZWDldp1uUWRtmybvYHwMn08LCjnqX12pdxdOFqZb/BYyQXhXxYt0
-	 YlLirxJgYu1lE4YhvAWPZg0Ub5PoQoz1AXfeXSTA1PfMYHaaKg8TFGWbQwiCpnYkLU
-	 VNNB+WzyZgT8w==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B633265f10000>; Tue, 27 Sep 2022 15:54:41 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.38; Tue, 27 Sep 2022 15:54:40 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.040; Tue, 27 Sep 2022 15:54:40 +1300
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
-	<richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
-	"bbrezillon@kernel.org" <bbrezillon@kernel.org>
-CC: Tony O'Brien <Tony.OBrien@alliedtelesis.co.nz>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: rawnand: marvell: Use correct logic for
- nand-keep-config
-Thread-Topic: [PATCH] mtd: rawnand: marvell: Use correct logic for
- nand-keep-config
-Thread-Index: AQHY0huGvn+cu0p4h0STUiMnaqi9wa3xutQA
-Date: Tue, 27 Sep 2022 02:54:40 +0000
-Message-ID: <e234270c-4169-bddb-5c2d-9c6ac48467b6@alliedtelesis.co.nz>
-References: <20220927024728.28447-1-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20220927024728.28447-1-chris.packham@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-ID: <9665FE8B14A88C4891D7CFA1E0C7CA91@atlnz.lc>
+	id 1od1jb-008CvU-4C; Tue, 27 Sep 2022 03:58:19 +0000
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VQq8mOj_1664251084;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VQq8mOj_1664251084)
+          by smtp.aliyun-inc.com;
+          Tue, 27 Sep 2022 11:58:07 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: richard@nod.at
+Cc: miquel.raynal@bootlin.com,
+	vigneshr@ti.com,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com,
+	linux-mtd@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] UBI: Fastmap: Fix kernel-doc
+Date: Tue, 27 Sep 2022 11:57:58 +0800
+Message-Id: <20220927035758.46804-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=UoQdyN4B c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=xOM3xZuef0cA:10 a=nZ5tDJ4FkKnVFCT0SwEA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220926_195447_072407_23D3EB4E 
-X-CRM114-Status: GOOD (  25.54  )
+X-CRM114-CacheID: sfid-20220926_205817_124699_803FB219 
+X-CRM114-Status: UNSURE (   6.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,51 +65,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+drivers/mtd/ubi/fastmap.c:104: warning: expecting prototype for new_fm_vhdr(). Prototype was for new_fm_vbuf() instead.
 
-On 27/09/22 15:47, Chris Packham wrote:
-> From: Tony O'Brien <tony.obrien@alliedtelesis.co.nz>
->
-> Originally the absence of the marvell,nand-keep-config property caused
-> the setup_data_interface function to be provided. However when
-> setup_data_interface was moved into nand_controller_ops the logic was
-> unintentionally inverted. Update the logic so that only if the
-> marvell,nand-keep-config property is present the bootloader NAND config
-> kept.
->
-> Fixes: 7a08dbaedd36 ("mtd: rawnand: Move ->setup_data_interface() to nand_controller_ops")
-> Signed-off-by: Tony O'Brien <tony.obrien@alliedtelesis.co.nz>
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
->
-> Notes:
->      I think this is a bug that's been lurking for 4 years or so. I'm not
->      sure that's particularly long in the life of an embedded device but it
->      does make me wonder if there have been other bug reports about it.
->      
->      We noticed this because we had a bootloader that used maxed out NAND
->      timings which made the time it took the kernel to do anything on the
->      file system longer than we expected.
+Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=2289
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/mtd/ubi/fastmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I think there might be a similar logic inversion bug in 
-drivers/mtd/nand/raw/denali.c but I lack the ability to test for that 
-platform.
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index ca2d9efe62c3..28c8151a0725 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -93,7 +93,7 @@ size_t ubi_calc_fm_size(struct ubi_device *ubi)
+ 
+ 
+ /**
+- * new_fm_vhdr - allocate a new volume header for fastmap usage.
++ * new_fm_vbuf() - allocate a new volume header for fastmap usage.
+  * @ubi: UBI device description object
+  * @vol_id: the VID of the new header
+  *
+-- 
+2.20.1.7.g153144c
 
->   drivers/mtd/nand/raw/marvell_nand.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> index 2455a581fd70..b248c5f657d5 100644
-> --- a/drivers/mtd/nand/raw/marvell_nand.c
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> @@ -2672,7 +2672,7 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
->   	chip->controller = &nfc->controller;
->   	nand_set_flash_node(chip, np);
->   
-> -	if (!of_property_read_bool(np, "marvell,nand-keep-config"))
-> +	if (of_property_read_bool(np, "marvell,nand-keep-config"))
->   		chip->options |= NAND_KEEP_TIMINGS;
->   
->   	mtd = nand_to_mtd(chip);
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
