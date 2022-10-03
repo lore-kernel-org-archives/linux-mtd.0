@@ -4,75 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5DAFC433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Sep 2022 12:37:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6CB6C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Oct 2022 03:01:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5Rp8RHalV1TyruCoHGCefpTn3e8TA1lgxZ/c8t6DnFw=; b=qLNcGPNSTqkcpV
-	sGjf/Rsv8xsCRMxwp9mRCR5vqw/f+1u6PfJQjKQuBHGgsUWzreTnHRO2tZiRy8UT2UdIktOOuRK2U
-	LtPblz8sAp+ISe8E80jnUmNw0f1MuMrMD8fEAUmghtUDSlH+SP1AtCUysx70fwIP5YH8viNbA3fJD
-	SiK1iUbq+g2Sq1I89vuFuiX+h1nUNEKdONqjDRylGtwmuFGzWqxGts41pKArMSd0DZ3dp4LB5mP46
-	nFjrY8Krycr5r2NWVuETB8uhAUuGRjMSMNuplVTc1wYYJs2gFDSw8rLLSy3arod/D4wsH0vM/LUlO
-	pw9+SCTZqAKBP1+4N5BQ==;
+	List-Owner; bh=k90PI5PYxUedWvqfH7+BQe4v9xM+f/j9qw+F+N35GnY=; b=ef/CdNfIvyHel7
+	63b7G5Q656MwtmP6Z4erwteMRB26pRGjAMJnFWEQIwp9iFS0TaNg6gW/sL5Kx49ImPyAog4Spi/y/
+	x9tbgzblf+F6r+jwHfXYssQy6OKZG5aBHPEN6Hzb5C6Nz7Mrwgi63zMXL6JMQeyIcV89giqK+N6TS
+	aMdjvEHzwiyIgMrE1g9xDIt3fTj1g/JLk/UyX5mvy/3VdforOImTYQvscpquPnUFXNb3g4jZUVJaq
+	RwK5irf5ti14/URVxtBoKTX91NtRH/9k9NvgWKcFLbz3TBiEPboCHdMfio7Na0EzV+AdCzJDIJbL8
+	2Vj8Sr1GVLRlZJS5HzvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1odsmd-0031Jt-65; Thu, 29 Sep 2022 12:36:55 +0000
-Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
+	id 1ofBh2-003a7h-Ar; Mon, 03 Oct 2022 03:00:32 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1odskl-0030Oc-Gr
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2022 12:35:04 +0000
-Received: by mail-ed1-x52c.google.com with SMTP id m3so1741751eda.12
-        for <linux-mtd@lists.infradead.org>; Thu, 29 Sep 2022 05:34:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=G1eJs3Mljaulp10lM3s9KZwUJhSiD5Z54QoCFft9nj0=;
-        b=QjlvRE6HJ+8CONd62XKDkJ/YO+eolaQgiqltwxHKFo55/Sn56h5/VJVJsVTfyNXPo/
-         VpHg5bIlPfbFcPbx7tiVYP4w/SxBbyP8/L+TBnn28aD/wkwxId9Ndxz4lbSIqivrz1wG
-         KeBXVklYXhyTTHZCjMIghKCDJISc0R4H2dP/Q/d4CJIWgUzDhrXJehlxPCJiNB9nKPUy
-         00z0h7tJ3Bs93OlpkQ6PsiMZfrSTJxYtwfPGwDGawvgIOkp+VOLilccvdAB0SCM6RGD5
-         ESBqJjqzMPPiPmuHj5FTt/9vPN2FW70qWJRQD+/PshqhyJEh15thqc59WBK3d7atlBm9
-         +Fcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=G1eJs3Mljaulp10lM3s9KZwUJhSiD5Z54QoCFft9nj0=;
-        b=emOgZ6w/ehuSE+vD9ULbZI3XFXAYNPHajTkXXqRMu6vxQ8+DkjuV4qMcaxXOtp3mXG
-         JBU8LMAazd/zHcH2lZ6PFrrUuMzNndb7/ryeKfwWHmWrvyyjW4NiifACib8Ngq893iNs
-         2OVAVCx8zl2RuleF/+ZxrqIgRBeMmzcOvmFReGIbuS6viXom4Gi+QHfuFTxdlXsTYpze
-         EmEcwxL4BCFEkFvowrpRXN75dAGLJ+MHOI5VyHEhawtotl++9EPrJbF7ESA5VW16GQJ8
-         Moo2cNnHqVFkzZ5j6fwZb9f5NCUfQvtCw4b9G5R2lXlH+bZAcr+p/gaG5rGR5hgg4C4z
-         5Ytw==
-X-Gm-Message-State: ACrzQf16caHpcbHCwYQxKeFj2iicbLIPTFow40VJgk9i9j3GSOIOnJIg
-	TZXagSV7qJkXSth2g0BPhWE=
-X-Google-Smtp-Source: AMsMyM7ML/RyoD8oE90RBpNhAwROpSdGmW5R4R5Fdokjsu3StGo9bExGOLdoXvYBGAVhLFTZ6A9SAQ==
-X-Received: by 2002:a05:6402:2549:b0:452:8292:b610 with SMTP id l9-20020a056402254900b004528292b610mr3142739edb.199.1664454898120;
-        Thu, 29 Sep 2022 05:34:58 -0700 (PDT)
-Received: from felia.fritz.box (200116b826e11200b190ebfd45660ea6.dip.versatel-1u1.de. [2001:16b8:26e1:1200:b190:ebfd:4566:ea6])
-        by smtp.gmail.com with ESMTPSA id g1-20020a17090604c100b00787cb1de743sm763435eja.38.2022.09.29.05.34.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Sep 2022 05:34:57 -0700 (PDT)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Liang Yang <liang.yang@amlogic.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: rectify entry for MESON NAND CONTROLLER DRIVER FOR AMLOGIC SOCS
-Date: Thu, 29 Sep 2022 14:34:31 +0200
-Message-Id: <20220929123431.23180-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	id 1ofBgx-003a3G-Fj
+	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2022 03:00:29 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 01C22CE0A4C;
+	Mon,  3 Oct 2022 03:00:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D313FC433C1;
+	Mon,  3 Oct 2022 03:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1664766005;
+	bh=JYBkVcaOXXe8vI72bVILJ80jmdMXI/PWcJhDdaOi1eo=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Jf7WrTz0W2FFkAao26q5gpx54IiqqroOtfgzWpihbzU7Sq4Ta6O1quMFAwmrRyIJj
+	 7cjy6UwRwYaU/s4xNs06a8Bgoy0YgBC7oRpvR57AtYAhifsSmOisRXC/WDND8ahLCD
+	 DgF/CImCdGe0u7BATfHZ44SZOzj6V/J+Ot165m1K9dLdeIvWC2++wm8Vx+KkmP67UH
+	 Pchqhs/MIGYE6Uxe8C0KWfeXi5O/rQ7KUVYW4G5/kdo0ZI/SkDKNQVEoGdHb5D7eYt
+	 krVNBQc5Q5o6BNX9gOvyQzJUrQpps65LW/A1kUXqnk+Fo4wtwPN0u+aJFkjDXv2B2j
+	 Ccx4+R6MJsswA==
+Date: Sun, 2 Oct 2022 20:00:03 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: [GIT PULL] fscrypt updates for 6.1
+Message-ID: <YzpQMx1FiZp/PsM3@quark>
+MIME-Version: 1.0
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220929_053459_617247_F6026DCA 
-X-CRM114-Status: GOOD (  11.57  )
+X-CRM114-CacheID: sfid-20221002_200027_752082_C5EFFAA4 
+X-CRM114-Status: GOOD (  11.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,43 +68,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit fbc00b5e746f ("dt-bindings: nand: meson: convert txt to yaml")
-converts amlogic,meson-nand.txt to yaml, but misses to adjust its reference
-in MAINTAINERS.
+The following changes since commit 1c23f9e627a7b412978b4e852793c5e3c3efc555:
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-broken reference.
+  Linux 6.0-rc2 (2022-08-21 17:32:54 -0700)
 
-Repair this file reference in MESON NAND CONTROLLER DRIVER FOR AMLOGIC
-SOCS.
+are available in the Git repository at:
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e14e37c7c734..95caae5c2bb9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13360,7 +13360,7 @@ MESON NAND CONTROLLER DRIVER FOR AMLOGIC SOCS
- M:	Liang Yang <liang.yang@amlogic.com>
- L:	linux-mtd@lists.infradead.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-+F:	Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
- F:	drivers/mtd/nand/raw/meson_*
- 
- MESON VIDEO DECODER DRIVER FOR AMLOGIC SOCS
--- 
-2.17.1
+for you to fetch changes up to 0e91fc1e0f5c70ce575451103ec66c2ec21f1a6e:
 
+  fscrypt: work on block_devices instead of request_queues (2022-09-21 20:33:06 -0700)
+
+----------------------------------------------------------------
+
+This release contains some implementation changes, but no new features:
+
+- Rework the implementation of the fscrypt filesystem-level keyring to
+  not be as tightly coupled to the keyrings subsystem.  This resolves
+  several issues.
+
+- Eliminate most direct uses of struct request_queue from fs/crypto/,
+  since struct request_queue is considered to be a block layer
+  implementation detail.
+
+- Stop using the PG_error flag to track decryption failures.  This is a
+  prerequisite for freeing up PG_error for other uses.
+
+----------------------------------------------------------------
+Christoph Hellwig (1):
+      fscrypt: work on block_devices instead of request_queues
+
+Eric Biggers (4):
+      fscrypt: remove fscrypt_set_test_dummy_encryption()
+      fscrypt: stop using PG_error to track error status
+      fscrypt: stop using keyrings subsystem for fscrypt_master_key
+      fscrypt: stop holding extra request_queue references
+
+ fs/crypto/bio.c             |  16 +-
+ fs/crypto/fscrypt_private.h |  82 +++++---
+ fs/crypto/hooks.c           |  10 +-
+ fs/crypto/inline_crypt.c    | 147 +++++++------
+ fs/crypto/keyring.c         | 495 ++++++++++++++++++++++++--------------------
+ fs/crypto/keysetup.c        |  89 ++++----
+ fs/crypto/keysetup_v1.c     |   4 +-
+ fs/crypto/policy.c          |  21 +-
+ fs/ext4/readpage.c          |  10 +-
+ fs/f2fs/data.c              |  18 +-
+ fs/f2fs/super.c             |  24 +--
+ fs/super.c                  |   2 +-
+ include/linux/fs.h          |   2 +-
+ include/linux/fscrypt.h     |  32 ++-
+ 14 files changed, 495 insertions(+), 457 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
