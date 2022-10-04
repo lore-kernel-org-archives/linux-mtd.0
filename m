@@ -4,65 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C5D0C433FE
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Oct 2022 06:26:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A3D8C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Oct 2022 08:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NvGKUv3fSAs71Hx6khFk6kDmXnv3AvhV3ww0bdPCTt8=; b=VnTzcXRej/0DIp
-	XdMq2jbHrIrnwxXDQRZj1kCx537mS4Qw4alSLHbFvKTAFSBeblNB/tTZ73Ama7w8TJKOrdbjR1jbE
-	iHA3WIFjF9JhnPvYwecqr6q1nFrjY8IVSmkeW/Tso7s12ynmdKPD7lOtHGhcEViRZriQ+5GMbxojX
-	JiS487xb4P4dhYVH1gzbU5fMeU6Smp2aIjnBiTtry5Tk7VjkbeH+gwZO4zz1sVx3pF0cO/peSih3P
-	tInxjkjxEvOYT8NidUfYSwX8scfuJTlM7+cJJstaiYQ1oXKmQBsBxqq1P+b4sH7kYs4J61UrIh1IX
-	GmzzecBFDn0gSR2rXfrQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zd9j8QiK9rBISICjMhUmGgrBdD4BcI7l9fiQpDHxq0k=; b=49suF6XyvAbM4e
+	wOFHUyFUBOfYICJrVuPMzqVMOByqy3DRxRYdc7mELxAUntLUqMFLrgGY4u6nWunqsMXyQJrUo4m7h
+	aUVOyk0gz1hn60ImVh1LBgf9M/u7f9gZe+xIqfhJURy45pRqXEL+bGEhN/kFR0Hc5WQsWnjCrQ7Q+
+	5j5gNNYrDLWoohBCkM7zWxLE2w+Ew0Wlfp5DP4ZcxtlT4269SmwfVmHFAzocxVtkSZF0+zQniGXbF
+	6+ZTjg3/43MbIEHGZtQZJK2MFusdKNHdEksSDtHnhte+mx/DUdCfirazREfxTBTfAMFVEafQ1OhYY
+	K0qEMH3Xmrj3q22fiFgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ofbNT-008e84-4j; Tue, 04 Oct 2022 06:26:03 +0000
-Received: from madras.collabora.co.uk ([46.235.227.172])
+	id 1ofdQa-008yQm-FI; Tue, 04 Oct 2022 08:37:24 +0000
+Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ofbNP-008e70-JU
-	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2022 06:26:01 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 7F1BD6602295;
-	Tue,  4 Oct 2022 07:25:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1664864753;
-	bh=SKezE7CWPgfXm3/Tax16ki0ozvuZApf+OIft4DuG+TM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=d5A3QyxXIONb9g6i9SwSEDngbB3UVE68WGCDh6Eqf1TvYBaE4WPlbOPZDrBZsdbal
-	 e76ze1NblpyWg3cdAk2YWNkjWt6Fg7/h1KEg/YKTB55AzC0K9zA9gejwc5tC2+SFPx
-	 BBe71DW3+g/e7Z7/dxB+HUuFta6LX8qNSI7im0JdaYeA48A3ufeH732YysQSIYwpyc
-	 PtKmb5jWiCtCCX8y+r35dzMDgayFKIPkQaDrZ0Gi2wx/MQFZKzkV9KkAN5xF8VjGgC
-	 SVMgr/ZQuoY7LfH1NYJK0zm6nliJ/f6itWWK/lqKDEeEOxZPs6andwiYeOVE6w1bxu
-	 RHI+hWP6DKM0A==
-Date: Tue, 4 Oct 2022 08:25:50 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>, Tony O'Brien
- <Tony.OBrien@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: rawnand: marvell: Use correct logic for
- nand-keep-config
-Message-ID: <20221004082550.1c819fc8@collabora.com>
-In-Reply-To: <482a4114-eeb1-2303-2896-8e480abda876@alliedtelesis.co.nz>
-References: <20220927024728.28447-1-chris.packham@alliedtelesis.co.nz>
-	<482a4114-eeb1-2303-2896-8e480abda876@alliedtelesis.co.nz>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-redhat-linux-gnu)
+	id 1ofdQX-008yPX-3v
+	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2022 08:37:22 +0000
+Received: by mail-ed1-x529.google.com with SMTP id s2so7261666edd.2
+        for <linux-mtd@lists.infradead.org>; Tue, 04 Oct 2022 01:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=kShu3JiHXeOC6qlCggCXPdZVbnNPqXavY4BcrnK5Xm4=;
+        b=IB39GjvKSpw8yqo7YB/mEkBVWTY3fslQk1Pr3I9rSGi3MTuep5N992Nuo/RDn8cQhw
+         kOFr+GMG7/tOszPtpOvRF7TZvul0ACRc20XmqAqhp8a100tZ+Am9zvuVs7XholdFvMDB
+         YAqYbghk+ZcAkIWWJvZ5ksCCJ4KnRYSPwP3cJFjLXkm+iEkjZWjxkb4qknzBZjByflpv
+         m4OwglJgaocdKWdr9SmnDVxJTFI5j9+Y8ngyM4NvGuJDXaD5w09eou3VUUXQ7QYVBTLt
+         GjxY6XWX4OMf3p4GEU+X2ZO1QLULkXCjID8MmyDBsgMA36tb/2ly5Ga3EYmXGQ2m+ZOs
+         X6Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=kShu3JiHXeOC6qlCggCXPdZVbnNPqXavY4BcrnK5Xm4=;
+        b=G1hDQ/WRrS6KrOlRgiLUfg5Xi+ABM/P0WTPrLhBnumGSQTNwJu8UXutE1eq45CApwg
+         yFiHVgwc13YNsy6gVqju6035tX2ZJuVj47nProexbnbGwjPIGHhPsrYf/Dcbs3L+DSgE
+         oew3Sn5/eIv7maeX7xaInj/VvhzXY/DUKjSmlEgi9G2yUvNYNO1BdLk0nOsCrv3YryiX
+         nAt1x1ge88f5q0kXh1Fw5AysOa9gpz0e0yVi52cio7goleXXS3TyC7tQBkMqiwLsYWJX
+         q3Hu3rIpHD5ipqp9aduUed2GneXaSwCjWXziITO+AZXOqLwQYD9Srq9gFCdXVMvVxLn+
+         CnRw==
+X-Gm-Message-State: ACrzQf0MMp2WxYNjkU8fc7uyGdtkZpDCLUrhs9x77uFQh+Sg2bJHBWJV
+	RH4zeff46WZ8A4s2JjDrEF4=
+X-Google-Smtp-Source: AMsMyM6YLvR1ANtP1eIM53wbtO7p9Dy69ONkLPyiAfdkULPu9rbPRWjvRaO++DfvlF2nnUicUF6C7w==
+X-Received: by 2002:a05:6402:33c5:b0:447:e4a3:c930 with SMTP id a5-20020a05640233c500b00447e4a3c930mr22278878edc.401.1664872638877;
+        Tue, 04 Oct 2022 01:37:18 -0700 (PDT)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id kv20-20020a17090778d400b00787a6adabe9sm6598376ejc.75.2022.10.04.01.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Oct 2022 01:37:18 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: ansuelsmth@gmail.com,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V2 1/2] mtd: core: simplify (a bit) code find partition-matching dynamic OF node
+Date: Tue,  4 Oct 2022 10:37:09 +0200
+Message-Id: <20221004083710.27704-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221003_232559_837673_03133C28 
-X-CRM114-Status: GOOD (  28.23  )
+X-CRM114-CacheID: sfid-20221004_013721_182607_29F4F4EC 
+X-CRM114-Status: GOOD (  14.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,65 +86,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 3 Oct 2022 21:46:31 +0000
-Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
-
-> Hi All,
-> 
-> On 27/09/22 15:47, Chris Packham wrote:
-> > From: Tony O'Brien <tony.obrien@alliedtelesis.co.nz>
-> >
-> > Originally the absence of the marvell,nand-keep-config property caused
-> > the setup_data_interface function to be provided. However when
-> > setup_data_interface was moved into nand_controller_ops the logic was
-> > unintentionally inverted. Update the logic so that only if the
-> > marvell,nand-keep-config property is present the bootloader NAND config
-> > kept.
-> >
-> > Fixes: 7a08dbaedd36 ("mtd: rawnand: Move ->setup_data_interface() to nand_controller_ops")
-> > Signed-off-by: Tony O'Brien <tony.obrien@alliedtelesis.co.nz>
-> > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>  
-> 
-> Just following up on this. I know things have probably been busy with 
-> the 6.0 release but it's been a week so I figured I'd give this a bump.
-
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-> 
-> > ---
-> >
-> > Notes:
-> >      I think this is a bug that's been lurking for 4 years or so. I'm not
-> >      sure that's particularly long in the life of an embedded device but it
-> >      does make me wonder if there have been other bug reports about it.
-> >      
-> >      We noticed this because we had a bootloader that used maxed out NAND
-> >      timings which made the time it took the kernel to do anything on the
-> >      file system longer than we expected.
-> >
-> >   drivers/mtd/nand/raw/marvell_nand.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> > index 2455a581fd70..b248c5f657d5 100644
-> > --- a/drivers/mtd/nand/raw/marvell_nand.c
-> > +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> > @@ -2672,7 +2672,7 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
-> >   	chip->controller = &nfc->controller;
-> >   	nand_set_flash_node(chip, np);
-> >   
-> > -	if (!of_property_read_bool(np, "marvell,nand-keep-config"))
-> > +	if (of_property_read_bool(np, "marvell,nand-keep-config"))
-> >   		chip->options |= NAND_KEEP_TIMINGS;
-> >   
-> >   	mtd = nand_to_mtd(chip)  
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKMS4gRG9uJ3QgaGFyZGNv
+ZGUgInBhcnRpdGlvbi0iIHN0cmluZyB0d2ljZQoyLiBVc2Ugc2ltcGxlciBsb2dpYyAmIHVzZSAt
+Pm5hbWUgdG8gYXZvaWQgb2ZfcHJvcGVydHlfcmVhZF9zdHJpbmcoKQozLiBVc2UgbXRkX2dldF9v
+Zl9ub2RlKCkgaGVscGVyCgpDYzogQ2hyaXN0aWFuIE1hcmFuZ2kgPGFuc3VlbHNtdGhAZ21haWwu
+Y29tPgpTaWduZWQtb2ZmLWJ5OiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+Ci0t
+LQogZHJpdmVycy9tdGQvbXRkY29yZS5jIHwgMTYgKysrKysrKy0tLS0tLS0tLQogMSBmaWxlIGNo
+YW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2
+ZXJzL210ZC9tdGRjb3JlLmMgYi9kcml2ZXJzL210ZC9tdGRjb3JlLmMKaW5kZXggMThhYTU0NDYw
+ZDM2Li4yMjExZTBlZDZjYzkgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL210ZGNvcmUuYworKysg
+Yi9kcml2ZXJzL210ZC9tdGRjb3JlLmMKQEAgLTU1MSwxOCArNTUxLDE2IEBAIHN0YXRpYyB2b2lk
+IG10ZF9jaGVja19vZl9ub2RlKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQogCXN0cnVjdCBkZXZpY2Vf
+bm9kZSAqcGFydGl0aW9ucywgKnBhcmVudF9kbiwgKm10ZF9kbiA9IE5VTEw7CiAJY29uc3QgY2hh
+ciAqcG5hbWUsICpwcmVmaXggPSAicGFydGl0aW9uLSI7CiAJaW50IHBsZW4sIG10ZF9uYW1lX2xl
+biwgb2Zmc2V0LCBwcmVmaXhfbGVuOwotCXN0cnVjdCBtdGRfaW5mbyAqcGFyZW50OwogCWJvb2wg
+Zm91bmQgPSBmYWxzZTsKIAogCS8qIENoZWNrIGlmIE1URCBhbHJlYWR5IGhhcyBhIGRldmljZSBu
+b2RlICovCi0JaWYgKGRldl9vZl9ub2RlKCZtdGQtPmRldikpCisJaWYgKG10ZF9nZXRfb2Zfbm9k
+ZShtdGQpKQogCQlyZXR1cm47CiAKIAkvKiBDaGVjayBpZiBhIHBhcnRpdGlvbnMgbm9kZSBleGlz
+dCAqLwogCWlmICghbXRkX2lzX3BhcnRpdGlvbihtdGQpKQogCQlyZXR1cm47Ci0JcGFyZW50ID0g
+bXRkLT5wYXJlbnQ7Ci0JcGFyZW50X2RuID0gZGV2X29mX25vZGUoJnBhcmVudC0+ZGV2KTsKKwlw
+YXJlbnRfZG4gPSBtdGRfZ2V0X29mX25vZGUobXRkLT5wYXJlbnQpOwogCWlmICghcGFyZW50X2Ru
+KQogCQlyZXR1cm47CiAKQEAgLTU3NSwxNSArNTczLDE1IEBAIHN0YXRpYyB2b2lkIG10ZF9jaGVj
+a19vZl9ub2RlKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQogCiAJLyogU2VhcmNoIGlmIGEgcGFydGl0
+aW9uIGlzIGRlZmluZWQgd2l0aCB0aGUgc2FtZSBuYW1lICovCiAJZm9yX2VhY2hfY2hpbGRfb2Zf
+bm9kZShwYXJ0aXRpb25zLCBtdGRfZG4pIHsKLQkJb2Zmc2V0ID0gMDsKLQogCQkvKiBTa2lwIHBh
+cnRpdGlvbiB3aXRoIG5vL3dyb25nIHByZWZpeCAqLwotCQlpZiAoIW9mX25vZGVfbmFtZV9wcmVm
+aXgobXRkX2RuLCAicGFydGl0aW9uLSIpKQorCQlpZiAoIW9mX25vZGVfbmFtZV9wcmVmaXgobXRk
+X2RuLCBwcmVmaXgpKQogCQkJY29udGludWU7CiAKIAkJLyogTGFiZWwgaGF2ZSBwcmlvcml0eS4g
+Q2hlY2sgdGhhdCBmaXJzdCAqLwotCQlpZiAob2ZfcHJvcGVydHlfcmVhZF9zdHJpbmcobXRkX2Ru
+LCAibGFiZWwiLCAmcG5hbWUpKSB7Ci0JCQlvZl9wcm9wZXJ0eV9yZWFkX3N0cmluZyhtdGRfZG4s
+ICJuYW1lIiwgJnBuYW1lKTsKKwkJaWYgKCFvZl9wcm9wZXJ0eV9yZWFkX3N0cmluZyhtdGRfZG4s
+ICJsYWJlbCIsICZwbmFtZSkpIHsKKwkJCW9mZnNldCA9IDA7CisJCX0gZWxzZSB7CisJCQlwbmFt
+ZSA9IG10ZF9kbi0+bmFtZTsKIAkJCW9mZnNldCA9IHByZWZpeF9sZW47CiAJCX0KIAotLSAKMi4z
+NC4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
