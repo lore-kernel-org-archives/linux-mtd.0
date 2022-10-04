@@ -4,77 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F14F4C433FE
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Oct 2022 21:15:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DFE6C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Oct 2022 21:22:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9NMl2ZEU+0NtUBGqMw4YTgeKROXyPrfACCRotJSUH/I=; b=wyr99U1dcEzUoz
-	lTeKa35JLpAyXoVt9MWZFhHzs2EHc6rsXeLxoA9McIJMGL4AZZRUrRhWx4WUgSPGyB0i3Kmuzq4TP
-	k9PkVRWiMR0D42lxOOAtWvNGuiLLQiu4uKprYRSjyGOTCB6rfQL4KgdBVn+f+VFhOWo9o66EL+lM3
-	EDsKl46QTLpRjMNUW+e9zs1HQqh4SxhS25rFiccbMJr381qlSPI0k1Jtm+QEWpCSN3TiheqSMR6/h
-	SJxGi7ymtohcbcSEW6nHd0lxFJWvAcTwsGvC9w4yzZpHj5ViO+wFNnXAJUtpxwyYeectFc9KtZ1FR
-	ZQgYwgY6xFjPGVrYpq2g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=90I/D5l2YK5YW9Lxw+XxiCJskXI2IyrEQnQNPAeBJT8=; b=sasVKAUmSVNDhI
+	FXN2X9cK/kbC1S9glP//xlpCb/u4heCV8Cd1m1qM7Nklud4eQkUqR3qcGe2av//zomHTKPTmtOj7I
+	DLdrutpUyViHcX5e4pnntPDUpU6q2f7VM6ARvA2xv5AhM8FnU4KcQHaKhP4IOr1zQIF+vDZcHojAg
+	nyewAiUECg511s3JqGPlfFky57ZpIuZ/qj3jPqd8ZVB3+UoFlJy4S+DG0MmVK5884kYukFcoabdWP
+	ko2W67PKPwTjNAv4rbApNZwIZJ9+jnztxcuWpwutwsXkycAX6LmX/d/ldl9C/hFKIyLx6l24qnjn/
+	GrCIYvzWk8cf3plWaauQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ofpF9-00BEhh-Vr; Tue, 04 Oct 2022 21:14:24 +0000
-Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
+	id 1ofpML-00BFUW-0x; Tue, 04 Oct 2022 21:21:49 +0000
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ofpF7-00BEgs-7A
-	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2022 21:14:22 +0000
-Received: by mail-wm1-x329.google.com with SMTP id 130-20020a1c0288000000b003b494ffc00bso41465wmc.0
-        for <linux-mtd@lists.infradead.org>; Tue, 04 Oct 2022 14:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=XkXIwov4m/9qgzTg66a2/P6fWI2LfTY8JgQsDcsVYWE=;
-        b=ZrP1PLy53pP/rc8G4TvGBmXpTqmFZ/SY6Htzo8NibSOmVtY5adRrD3vJwME8Sp7BnS
-         F4Z5apezARFi0/vJJ5HHOJte9xist+cmEFPDr142wi9FepLdkpOAhkfEfM5p7q1rIL9d
-         YUvhs6I7tQ6tVqy9xKEv/QjdLMn/ipVXXfAdhGfa//n0Lgd46YRpu3fouTmDDIIvE20e
-         amWGkIgnZIF28BO7z7AzI+AdVxiql25wkoxJytUn1+x4tVX5EkVWZuqUj1lDxkwRIjlB
-         ow/Q82t9+K55SO0V1yeidCMeaIT832YiHAH6jnULNSGlFhDBmDfM+7NLxROOKXaBt0aD
-         j2UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=XkXIwov4m/9qgzTg66a2/P6fWI2LfTY8JgQsDcsVYWE=;
-        b=1HSVlIssCRnnpJN0B1k0DTKG67je6/j+zqd150u/FA4EqDa92C0nqpiuTKsG4zPg1U
-         7JAE5EcGwHomWRQzmGUAbuFv9ixT/JdpjErnBbwxNrjplp1Zt2ZjjisCJI7iRZEU4IR/
-         jVBMG1erSUMdF3IvdKwSRVwCwV2quO0Tm6f/vrZUZoetD6uwovlYzw+6ewecWax3MJ8n
-         ZxBFjEIKobyNhEoPBh0hLYdNM2gj9n7yiwHF7C2OQ551iWuQIaTeS8jjaR2i+j7Marsy
-         Zr0Fl5JktPCd+XIBpDoUs6pd3g1aiuzUWQpE7YAvHPhbvn/E/AfQCBXZQWCeismT6nSl
-         j4Rg==
-X-Gm-Message-State: ACrzQf3VsMwm0bBET3W1UU8vrmb3WGL1ITlWy1SU4RTJsLE7ZCI+cF9O
-	9RIrCu8fV1QPH7YPuGa6sNM=
-X-Google-Smtp-Source: AMsMyM59l9ZC8Yl3Ao249Cc2WZqR71AVFD0jEz1pnEuVgMeRYp98p2nDFBIkgSgSwOvRdu9IOf0ppA==
-X-Received: by 2002:a05:600c:6003:b0:3b5:aef:d8d7 with SMTP id az3-20020a05600c600300b003b50aefd8d7mr1141722wmb.50.1664918053464;
-        Tue, 04 Oct 2022 14:14:13 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id j2-20020adfd202000000b002285f73f11dsm16887940wrh.81.2022.10.04.14.14.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Oct 2022 14:14:13 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	u.kleine-koenig@pengutronix.de,
-	Mark Brown <broonie@kernel.org>,
-	linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: dataflash: Remove duplicated id table
-Date: Tue,  4 Oct 2022 22:14:12 +0100
-Message-Id: <20221004211412.182940-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.37.1
+	id 1ofpMH-00BFTy-HI
+	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2022 21:21:47 +0000
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id BFFF52C01FC;
+	Tue,  4 Oct 2022 21:21:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1664918498;
+	bh=cF+SiZNF5YflofZHlizubshEdYlI8nuUEdGGUdT0vCo=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=g+/LsIv5ZjCl67ficXE8dqACB7yBrOIrdn6ypCr75BuKI5i0pS2YEA4syO0iOXKw3
+	 SGGQPFn2GgWC7xn23ntvFOePTnowgZp7/TERSICRPUuqwRvfduhWq+25BU55KRCwM5
+	 W1COB7phKC5Ib8NTMf7BhKARNz22kGWvrPFa18cU3Z3a8LySB6haeD4Bz3oQU/mFxz
+	 25p44mJ+H84qw3KfCGmraS2l86VHPS1TChG/9tafK9VMa4bsIfSXQE71M4JmotyOSj
+	 NtcdUV9pzPEr+TecARqamgP8m1Kme8PxuNUVM7uBD2khl/8xSLqJnc3faaZQv1uiLA
+	 Ru49/v9n5luBw==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B633ca3e20000>; Wed, 05 Oct 2022 10:21:38 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.38; Wed, 5 Oct 2022 10:21:38 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.040; Wed, 5 Oct 2022 10:21:38 +1300
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+	"bbrezillon@kernel.org" <bbrezillon@kernel.org>, Tony O'Brien
+	<Tony.OBrien@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: rawnand: marvell: Use correct logic for
+ nand-keep-config
+Thread-Topic: [PATCH] mtd: rawnand: marvell: Use correct logic for
+ nand-keep-config
+Thread-Index: AQHY0huGvn+cu0p4h0STUiMnaqi9wa3xutQAgAt3xQCAAKHogIAAG+yA
+Date: Tue, 4 Oct 2022 21:21:37 +0000
+Message-ID: <55e5672f-b3e5-4c14-b5e9-01cdde2f4472@alliedtelesis.co.nz>
+References: <20220927024728.28447-1-chris.packham@alliedtelesis.co.nz>
+ <e234270c-4169-bddb-5c2d-9c6ac48467b6@alliedtelesis.co.nz>
+ <20221004120212.6389b96a@xps-13>
+ <953cbfc0-1ac0-9bc8-155f-57e1cd37dc70@alliedtelesis.co.nz>
+In-Reply-To: <953cbfc0-1ac0-9bc8-155f-57e1cd37dc70@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-ID: <BC1FF87CD584A041A313B040495802F9@atlnz.lc>
 MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=UKij4xXy c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=Qawa6l4ZSaYA:10 a=T4fsLpPXdGlGkUi-FR8A:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221004_141421_277175_F69BD967 
-X-CRM114-Status: GOOD (  13.31  )
+X-CRM114-CacheID: sfid-20221004_142146_092321_4E5643A2 
+X-CRM114-Status: GOOD (  20.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,40 +93,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-A previous change added a new id table but failed to remove
-the original assignment to .id_table. Remove the original
-to clean up a clang scan build warning:
-
-warning: initializer overrides prior initialization of this
-subobject [-Winitializer-overrides]
-
-Fixes: ac4f83482afb ("mtd: dataflash: Add SPI ID table")
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/mtd/devices/mtd_dataflash.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 25bad4318305..c6d25331e00c 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -939,7 +939,6 @@ static struct spi_driver dataflash_driver = {
- 		.name		= "mtd_dataflash",
- 		.of_match_table = of_match_ptr(dataflash_dt_ids),
- 	},
--	.id_table = dataflash_dev_ids,
- 
- 	.probe		= dataflash_probe,
- 	.remove		= dataflash_remove,
--- 
-2.37.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+DQpPbiA1LzEwLzIyIDA4OjQxLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPg0KPiBPbiA0LzEwLzIy
+IDIzOjAyLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOg0KPj4gSGkgQ2hyaXMsDQo+Pg0KPj4gQ2hyaXMu
+UGFja2hhbUBhbGxpZWR0ZWxlc2lzLmNvLm56IHdyb3RlIG9uIFR1ZSwgMjcgU2VwIDIwMjIgMDI6
+NTQ6NDANCj4+ICswMDAwOg0KPj4NCj4+PiBPbiAyNy8wOS8yMiAxNTo0NywgQ2hyaXMgUGFja2hh
+bSB3cm90ZToNCj4+Pj4gRnJvbTogVG9ueSBPJ0JyaWVuIDx0b255Lm9icmllbkBhbGxpZWR0ZWxl
+c2lzLmNvLm56Pg0KPj4+Pg0KPj4+PiBPcmlnaW5hbGx5IHRoZSBhYnNlbmNlIG9mIHRoZSBtYXJ2
+ZWxsLG5hbmQta2VlcC1jb25maWcgcHJvcGVydHkgY2F1c2VkDQo+Pj4+IHRoZSBzZXR1cF9kYXRh
+X2ludGVyZmFjZSBmdW5jdGlvbiB0byBiZSBwcm92aWRlZC4gSG93ZXZlciB3aGVuDQo+Pj4+IHNl
+dHVwX2RhdGFfaW50ZXJmYWNlIHdhcyBtb3ZlZCBpbnRvIG5hbmRfY29udHJvbGxlcl9vcHMgdGhl
+IGxvZ2ljIHdhcw0KPj4+PiB1bmludGVudGlvbmFsbHkgaW52ZXJ0ZWQuIFVwZGF0ZSB0aGUgbG9n
+aWMgc28gdGhhdCBvbmx5IGlmIHRoZQ0KPj4+PiBtYXJ2ZWxsLG5hbmQta2VlcC1jb25maWcgcHJv
+cGVydHkgaXMgcHJlc2VudCB0aGUgYm9vdGxvYWRlciBOQU5EIA0KPj4+PiBjb25maWcNCj4+Pj4g
+a2VwdC4NCj4+Pj4NCj4+Pj4gRml4ZXM6IDdhMDhkYmFlZGQzNiAoIm10ZDogcmF3bmFuZDogTW92
+ZSAtPnNldHVwX2RhdGFfaW50ZXJmYWNlKCkgDQo+Pj4+IHRvIG5hbmRfY29udHJvbGxlcl9vcHMi
+KQ0KPj4+PiBTaWduZWQtb2ZmLWJ5OiBUb255IE8nQnJpZW4gPHRvbnkub2JyaWVuQGFsbGllZHRl
+bGVzaXMuY28ubno+DQo+Pj4+IFNpZ25lZC1vZmYtYnk6IENocmlzIFBhY2toYW0gPGNocmlzLnBh
+Y2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4+Pj4gLS0tDQo+Pj4+DQo+Pj4+IE5vdGVzOg0K
+Pj4+PiDCoMKgwqDCoMKgIEkgdGhpbmsgdGhpcyBpcyBhIGJ1ZyB0aGF0J3MgYmVlbiBsdXJraW5n
+IGZvciA0IHllYXJzIG9yIHNvLiANCj4+Pj4gSSdtIG5vdA0KPj4+PiDCoMKgwqDCoMKgIHN1cmUg
+dGhhdCdzIHBhcnRpY3VsYXJseSBsb25nIGluIHRoZSBsaWZlIG9mIGFuIGVtYmVkZGVkIA0KPj4+
+PiBkZXZpY2UgYnV0IGl0DQo+Pj4+IMKgwqDCoMKgwqAgZG9lcyBtYWtlIG1lIHdvbmRlciBpZiB0
+aGVyZSBoYXZlIGJlZW4gb3RoZXIgYnVnIHJlcG9ydHMgDQo+Pj4+IGFib3V0IGl0Lg0KPj4+PiDC
+oMKgwqDCoMKgIMKgwqDCoMKgwqAgV2Ugbm90aWNlZCB0aGlzIGJlY2F1c2Ugd2UgaGFkIGEgYm9v
+dGxvYWRlciB0aGF0IHVzZWQgDQo+Pj4+IG1heGVkIG91dCBOQU5EDQo+Pj4+IMKgwqDCoMKgwqAg
+dGltaW5ncyB3aGljaCBtYWRlIHRoZSB0aW1lIGl0IHRvb2sgdGhlIGtlcm5lbCB0byBkbyBhbnl0
+aGluZyANCj4+Pj4gb24gdGhlDQo+Pj4+IMKgwqDCoMKgwqAgZmlsZSBzeXN0ZW0gbG9uZ2VyIHRo
+YW4gd2UgZXhwZWN0ZWQuDQo+Pj4gSSB0aGluayB0aGVyZSBtaWdodCBiZSBhIHNpbWlsYXIgbG9n
+aWMgaW52ZXJzaW9uIGJ1ZyBpbg0KPj4+IGRyaXZlcnMvbXRkL25hbmQvcmF3L2RlbmFsaS5jIGJ1
+dCBJIGxhY2sgdGhlIGFiaWxpdHkgdG8gdGVzdCBmb3IgdGhhdA0KPj4+IHBsYXRmb3JtLg0KPj4g
+QWdyZWVkLCB0aGUgZGVuYWxpIGRyaXZlciBoYXMgdGhlIHNhbWUgaXNzdWUuIENvdWxkIHlvdSBw
+bGVhc2Ugc2VuZCBhDQo+PiBwYXRjaD8NCj4gU3VyZSBhbHRob3VnaCBpdCdsbCBiZSBjb21waWxl
+IHRlc3RlZCBvbmx5Lg0KQWN0dWFsbHkgbG9va3MgbGlrZSBpdCB3YXMgYWxyZWFkeSBmaXhlZCBp
+biBjb21taXQgZDMxMWUwYzI3YjhmICgibXRkOiANCnJhd25hbmQ6IGRlbmFsaTogZ2V0IC0+c2V0
+dXBfZGF0YV9pbnRlcmZhY2UoKSB3b3JraW5nIGFnYWluIikuDQo+Pj4+IMKgwqAgZHJpdmVycy9t
+dGQvbmFuZC9yYXcvbWFydmVsbF9uYW5kLmMgfCAyICstDQo+Pj4+IMKgwqAgMSBmaWxlIGNoYW5n
+ZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+Pj4+DQo+Pj4+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tYXJ2ZWxsX25hbmQuYyANCj4+Pj4gYi9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9tYXJ2ZWxsX25hbmQuYw0KPj4+PiBpbmRleCAyNDU1YTU4MWZkNzAuLmIyNDhj
+NWY2NTdkNSAxMDA2NDQNCj4+Pj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWFydmVsbF9u
+YW5kLmMNCj4+Pj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWFydmVsbF9uYW5kLmMNCj4+
+Pj4gQEAgLTI2NzIsNyArMjY3Miw3IEBAIHN0YXRpYyBpbnQgbWFydmVsbF9uYW5kX2NoaXBfaW5p
+dChzdHJ1Y3QgDQo+Pj4+IGRldmljZSAqZGV2LCBzdHJ1Y3QgbWFydmVsbF9uZmMgKm5mYywNCj4+
+Pj4gwqDCoMKgwqDCoMKgIGNoaXAtPmNvbnRyb2xsZXIgPSAmbmZjLT5jb250cm9sbGVyOw0KPj4+
+PiDCoMKgwqDCoMKgwqAgbmFuZF9zZXRfZmxhc2hfbm9kZShjaGlwLCBucCk7DQo+Pj4+IMKgwqAg
+LcKgwqDCoCBpZiAoIW9mX3Byb3BlcnR5X3JlYWRfYm9vbChucCwgIm1hcnZlbGwsbmFuZC1rZWVw
+LWNvbmZpZyIpKQ0KPj4+PiArwqDCoMKgIGlmIChvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wobnAsICJt
+YXJ2ZWxsLG5hbmQta2VlcC1jb25maWciKSkNCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2hp
+cC0+b3B0aW9ucyB8PSBOQU5EX0tFRVBfVElNSU5HUzsNCj4+Pj4gwqDCoCDCoMKgwqDCoMKgwqAg
+bXRkID0gbmFuZF90b19tdGQoY2hpcCkNCj4+DQo+PiBUaGFua3MsDQo+PiBNaXF1w6hsCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
