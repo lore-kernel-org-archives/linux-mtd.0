@@ -4,91 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D2E5C433FE
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Oct 2022 09:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4650CC433FE
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Oct 2022 10:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KFNd7/0i6XGqKNIsz23YliRdkYHXZeKUHNlHHbwGxPs=; b=wRk5mXFwFfFtsy
-	LLryYp1QHkguGfQdlC40YJr1Q1lWN+6bunB+KdNdWm33rgHzqWCWKatJvSwWgWwUqcs00UwctrsnO
-	wFzl7DDZ7Fy0H4hr5FLLVpDrJ5nKFeDyFL8KwyrEauZX7MFvNZiaayW7cpWWUKuE/tjqvMOZ+zP4t
-	qKzRO1MzY7kPIbBIxKyWFBwF40m5zo3hsYLH+ILKbqZkNWTXCVmlO7u4PlbO0NPSgbzxn4LvsuLFs
-	0jnOsHu8RFicXP8K2Z5NUhB5ELmsmbeM5Hvbh2mb7FaxdHY2PEiABXLda8RXZMEONJxzAXh2E+saj
-	qJaEQNdoT7L/oWVOHqWA==;
+	List-Owner; bh=oiEVeQ9g4s1ycZdddCLHaPR3jmFIWMVRQDCfXcbVAh4=; b=uaR3uLZxFrTamH
+	i1iCtkzq3xuPfZoeWQ2vr18N2mL5KVjOIh5ab33htb8LiORbuPg9ghAK6XK3lOzkJiZ64XbyiYKxz
+	QRWK1xek/kLwyaFf1X3O41+W24Dt6kITkLDmALpdJCezOqLjTuqrTPu9CMqkpROKG0Rgd5Ec/4QAG
+	OoyPPyUMeyz2n+37tpUdalK1vm9OMko//p/zeYRm9e7iHk2Ext4qdojSS9kJFUnWvLS24wC4rT7fr
+	byzn8RKm7G6B/QGx45wM8qdovq0bZHSIBvDCGLU67mUHCADJAhvzTcCkevvLn6Se7Bh7BH1Zsdt4O
+	Wcd3vb3kVTX/DE/Y+kWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1og10i-00DQuU-FU; Wed, 05 Oct 2022 09:48:16 +0000
-Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
+	id 1og1LH-00DYJD-T6; Wed, 05 Oct 2022 10:09:31 +0000
+Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1og10f-00DQq0-27
-	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2022 09:48:14 +0000
-Received: by mail-pl1-x635.google.com with SMTP id x6so9680705pll.11
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2022 02:48:11 -0700 (PDT)
+	id 1og1LF-00DYGy-8r
+	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2022 10:09:30 +0000
+Received: by mail-ej1-x62b.google.com with SMTP id k2so4434775ejr.2
+        for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2022 03:09:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=uAiOjs73GnPtRWDKlCBYpOmHeG3ElDSPTXYVbLmJn3Y=;
-        b=dh/s9gbrJ1NP2il6j7m7392rb5m/0olUhLw6ywfYrwbm+b05mgthbXGVeHCne6faSe
-         nEB8FWIww9/Mh3TPJYBTwQxHk9YQhBfOYEWSgISGS3x2V+1PSzpPW0fGwHCNvRUrDmsC
-         V4LPjNBP1ZNWd2lWycmQ+cVlk2hOYpk0wbD3BQW90ktRdTfHVQoOGdzFfsVLA+UV8P0L
-         yaYjHeb70WMgWdHpn0iX5L8LgNN78O1ThcYXr+GHqSaFRNBAWLFYqLr8IpSUK6wbVOaM
-         BO7XUtm7Hdl6sqI52mxM7YweUuOKwjFV07IZc9k6gah2y9PsEzpdZlxqQ3TbFVT9xR+n
-         gOow==
+        d=linbit-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=oM5lINkSOhqEPn7T1LnWzFRQ0r/zY9T13e9BP04fEyI=;
+        b=14U7AJwniruZFzbiY4kC6nsZlRvuSqb1QwTnO87x+fRvRhg52kqE3PLwic1cv6UI+b
+         wxtaRyO+WZozOGf88hqNDIS0d8kGRHu94b0rcdjOrBTtNpMPKnxQUp9fyDFQVv1p4lwT
+         9oAVJcqYseFceKxqgBWeZoSLo0DTN9Gz10LmFz2RpAA6luRa1gTkoumLHyuNtsjb23R3
+         66037Fgcf54ctnyPbt6chWKdOLNMSKtWOPcxoIwbnX5WXyAom4hZa4oyF9nXf24bWT0P
+         K9lw1zG3qgaRtbZiESDdnst2UoGyEh+WJg9WXPuCoOF4o8xgJN6xITBbcoTm7hcV1syU
+         KUJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=uAiOjs73GnPtRWDKlCBYpOmHeG3ElDSPTXYVbLmJn3Y=;
-        b=0wVa5L2Iglp/SKte2W6Be9D+hFPXghU5o9UsU362zTBfo/YeiVQG6TXtZrFCxOGo4T
-         WLyrkylJyQhLQe0+7U1+noATKgQZdZ4LGcmgS+ZiTrj9k04duh3KvptA4spvXiOdwoPJ
-         BKiArN171Z05K5eKqKEpPnlHXB4/hrJsX5gAdWIyJyRKq5VjA91niA4eJlV8GZs3dABa
-         9WPxsk1jY3Yvxj9bJakqjFp0i38Z4Ak6eejsDMs9L7KhIkDZ/vSd0fWaKzGDSnF1/OYh
-         OpQuevSN+Z+GCnb0KX1Zeb8ED/037aEGVvvM0UR02k17Y5dfJf3Y9IUPj90CzRzKqTvX
-         DTrg==
-X-Gm-Message-State: ACrzQf2zFtnO986EK3vI0DS292Sly/e/1kKjJCRnAaoK04QXMA7ZYr/b
-	Ym2OmVhpCeHuj8VX/cCvPCI4nDNWc98rWKj0pkBanw==
-X-Google-Smtp-Source: AMsMyM6eqXlNc1atZOkkKgiG1yV3Y78Coz+AbzCXphLyt0GPdUFcokJxxEDnXeFGnrVe0bHv3fHf9rWqZFSPgK8TTJI=
-X-Received: by 2002:a17:90b:4d07:b0:1ef:521c:f051 with SMTP id
- mw7-20020a17090b4d0700b001ef521cf051mr4350723pjb.164.1664963290949; Wed, 05
- Oct 2022 02:48:10 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=oM5lINkSOhqEPn7T1LnWzFRQ0r/zY9T13e9BP04fEyI=;
+        b=Q6agufZBhWDLoPKDCYRzW+wL1tGH6VU5emDUAY2EvVD8p3Tai2U++6m09X9shPuSs6
+         PvCqMzUX301dUXtwv26muQSogXl+2rnTxUx/n7EdIOtKSchs1QQThiEHMwgOripJuDcs
+         KdP6iNt1qT9VOr9YD4M2FC6t0cRqgNhsxv71id9IGCw0r8GaanfbVmGAOdtluGJLpBr5
+         hFhBq5mY8MTM8VheV7uQzNMlp82Xj7sWptCVGLObwV8S4gno3criWNvuw4rKNd05R7SC
+         XXHr+E1wY5ltCZ+Kn8MPdTWDMjhg37p+Er8Gi0zLF8rwF45oRxm5TSyjEOUBNHcRawv4
+         5n2w==
+X-Gm-Message-State: ACrzQf2PwPBqbHxrAhv/BR1BDjDqxHq9MyhfWEynFMtA/U76izwBm1l4
+	25PSgyGpHw36bffKdNCWVuyF/Q==
+X-Google-Smtp-Source: AMsMyM6XbFaI9HeMTnZcx9bHunTFZSA7fhJuT5NL+agaUKW54kA1JC5km35OuPCP5GklKV/YoQTu8A==
+X-Received: by 2002:a17:907:1c08:b0:782:a340:56d7 with SMTP id nc8-20020a1709071c0800b00782a34056d7mr22357872ejc.98.1664964563179;
+        Wed, 05 Oct 2022 03:09:23 -0700 (PDT)
+Received: from [192.168.178.55] (h082218028181.host.wavenet.at. [82.218.28.181])
+        by smtp.gmail.com with ESMTPSA id r10-20020a1709061baa00b00782539a02absm8398012ejg.194.2022.10.05.03.09.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Oct 2022 03:09:22 -0700 (PDT)
+Message-ID: <e23e94f8-13ad-4a10-62de-33e63a62831f@linbit.com>
+Date: Wed, 5 Oct 2022 12:09:21 +0200
 MIME-Version: 1.0
-References: <20221005032257.80681-1-kch@nvidia.com> <20221005032257.80681-2-kch@nvidia.com>
- <6fee2d7a-7fd1-73ee-2911-87a4ed3e8769@opensource.wdc.com>
-In-Reply-To: <6fee2d7a-7fd1-73ee-2911-87a4ed3e8769@opensource.wdc.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Wed, 5 Oct 2022 11:47:34 +0200
-Message-ID: <CAPDyKFpBpiydQn+=24CqtaH_qa3tQfN2gQSiUrHCjnLSuy4=Kg@mail.gmail.com>
-Subject: Re: [RFC PATCH 01/21] block: add and use init tagset helper
-To: Chaitanya Kulkarni <kch@nvidia.com>, Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-omap@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-nvme@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, axboe@kernel.dk, 
-	efremov@linux.com, josef@toxicpanda.com, idryomov@gmail.com, 
-	dongsheng.yang@easystack.cn, haris.iqbal@ionos.com, jinpu.wang@ionos.com, 
-	mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com, stefanha@redhat.com, 
-	ohad@wizery.com, andersson@kernel.org, baolin.wang@linux.alibaba.com, 
-	richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com, marcan@marcan.st, 
-	sven@svenpeter.dev, alyssa@rosenzweig.io, kbusch@kernel.org, hch@lst.de, 
-	sagi@grimberg.me, sth@linux.ibm.com, hoeppner@linux.ibm.com, 
-	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, 
-	borntraeger@linux.ibm.com, svens@linux.ibm.com, jejb@linux.ibm.com, 
-	martin.petersen@oracle.com, hare@suse.de, bhelgaas@google.com, 
-	john.garry@huawei.com, mcgrof@kernel.org, christophe.jaillet@wanadoo.fr, 
-	vaibhavgupta40@gmail.com, wsa+renesas@sang-engineering.com, 
-	johannes.thumshirn@wdc.com, bvanassche@acm.org, ming.lei@redhat.com, 
-	shinichiro.kawasaki@wdc.com, vincent.fu@samsung.com, 
-	christoph.boehmwalder@linbit.com, joel@jms.id.au, vincent.whitchurch@axis.com, 
-	nbd@other.debian.org, ceph-devel@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org, asahi@lists.linux.dev
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [RFC PATCH 05/18] drbd: use init disk helper
+Content-Language: en-US
+To: Chaitanya Kulkarni <kch@nvidia.com>
+Cc: ogeert@linux-m68k.org, linux-block@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com,
+ nbd@other.debian.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, axboe@kernel.dk, philipp.reisner@linbit.com,
+ lars.ellenberg@linbit.com, efremov@linux.com, josef@toxicpanda.com,
+ tim@cyberelk.net, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+ richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
+ mcgrof@kernel.org, hare@suse.de, damien.lemoal@opensource.wdc.com,
+ johannes.thumshirn@wdc.com, bvanassche@acm.org, ming.lei@redhat.com,
+ vincent.fu@samsung.com, shinichiro.kawasaki@wdc.com
+References: <20221005050027.39591-1-kch@nvidia.com>
+ <20221005050027.39591-6-kch@nvidia.com>
+From: =?UTF-8?Q?Christoph_B=c3=b6hmwalder?= <christoph.boehmwalder@linbit.com>
+In-Reply-To: <20221005050027.39591-6-kch@nvidia.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221005_024813_162681_8083DA3F 
-X-CRM114-Status: GOOD (  23.07  )
+X-CRM114-CacheID: sfid-20221005_030929_319524_AF92BBB5 
+X-CRM114-Status: GOOD (  15.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,80 +96,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 5 Oct 2022 at 07:11, Damien Le Moal
-<damien.lemoal@opensource.wdc.com> wrote:
->
-> On 10/5/22 12:22, Chaitanya Kulkarni wrote:
-> > Add and use the helper to initialize the common fields of the tag_set
-> > such as blk_mq_ops, number of h/w queues, queue depth, command size,
-> > numa_node, timeout, BLK_MQ_F_XXX flags, driver data. This initialization
-> > is spread all over the block drivers. This avoids the code repetation of
-> > the inialization code of the tag set in current block drivers and any
->
-> s/inialization/initialization
-> s/repetation/repetition
->
-> > future ones.
-> >
-> > Signed-off-by: Chaitanya Kulkarni <kch@nvidia.com>
-> > ---
-> >  block/blk-mq.c                | 20 ++++++++++++++++++++
-> >  drivers/block/null_blk/main.c | 10 +++-------
-> >  include/linux/blk-mq.h        |  5 +++++
-> >  3 files changed, 28 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/block/blk-mq.c b/block/blk-mq.c
-> > index 8070b6c10e8d..e3a8dd81bbe2 100644
-> > --- a/block/blk-mq.c
-> > +++ b/block/blk-mq.c
-> > @@ -4341,6 +4341,26 @@ static int blk_mq_alloc_tag_set_tags(struct blk_mq_tag_set *set,
-> >       return blk_mq_realloc_tag_set_tags(set, 0, new_nr_hw_queues);
-> >  }
-> >
-> > +void blk_mq_init_tag_set(struct blk_mq_tag_set *set,
-> > +             const struct blk_mq_ops *ops, unsigned int nr_hw_queues,
-> > +             unsigned int queue_depth, unsigned int cmd_size, int numa_node,
-> > +             unsigned int timeout, unsigned int flags, void *driver_data)
->
-> That is an awful lot of arguments... I would be tempted to say pack all
-> these into a struct but then that would kind of negate this patchset goal.
-> Using a function with that many arguments will be error prone, and hard to
-> review... Not a fan.
-
-I completely agree.
-
-But there is also another problem going down this route. If/when we
-realize that there is another parameter needed in the blk_mq_tag_set.
-Today that's quite easy to add (assuming the parameter can be
-optional), without changing the blk_mq_init_tag_set() interface.
-
->
-> > +{
-> > +     if (!set)
-> > +             return;
-> > +
-> > +     set->ops = ops;
-> > +     set->nr_hw_queues = nr_hw_queues;
-> > +     set->queue_depth = queue_depth;
-> > +     set->cmd_size = cmd_size;
-> > +     set->numa_node = numa_node;
-> > +     set->timeout = timeout;
-> > +     set->flags = flags;
-> > +     set->driver_data = driver_data;
-> > +}
-> > +
->
-
-[...]
-
-Kind regards
-Uffe
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QW0gMDUuMTAuMjIgdW0gMDc6MDAgc2NocmllYiBDaGFpdGFueWEgS3Vsa2Fybmk6Cj4gQWRkIGFu
+ZCB1c2UgdGhlIGhlbHBlciB0byBpbml0aWFsaXplIHRoZSBjb21tb24gZmllbGRzIG9mIHN0cnVj
+dCBnZW5kaXNrCj4gc3VjaCBhcyBtYWpvciwgZmlyc3RfbWlub3IsIG1pbm9ycywgZGlza19uYW1l
+LCBwcml2YXRlX2RhdGEsIGFuZCBvcHMuCj4gVGhpcyBpbml0aWFsaXphdGlvbiBpcyBzcHJlYWQg
+YWxsIG92ZXIgdGhlIGJsb2NrIGRyaXZlcnMuIFRoaXMgYXZvaWRzCj4gY29kZSByZXBldGF0aW9u
+IG9mIGluaWFsaXphdGlvbiBjb2RlIG9mIGdlbmRpc2sgaW4gY3VycmVudCBibG9jayBkcml2ZXJz
+Cj4gYW5kIGFueSBmdXR1cmUgb25lcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaGFpdGFueWEgS3Vs
+a2FybmkgPGtjaEBudmlkaWEuY29tPgo+IC0tLQo+ICBkcml2ZXJzL2Jsb2NrL2RyYmQvZHJiZF9t
+YWluLmMgfCA2ICstLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDUgZGVs
+ZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX21haW4u
+YyBiL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX21haW4uYwo+IGluZGV4IGYzZTRkYjE2ZmQwNy4u
+NThmYWUxMjJkZTE2IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX21haW4u
+Ywo+ICsrKyBiL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX21haW4uYwo+IEBAIC0yNzA2LDEzICsy
+NzA2LDkgQEAgZW51bSBkcmJkX3JldF9jb2RlIGRyYmRfY3JlYXRlX2RldmljZShzdHJ1Y3QgZHJi
+ZF9jb25maWdfY29udGV4dCAqYWRtX2N0eCwgdW5zaWcKPiAgCj4gIAlzZXRfZGlza19ybyhkaXNr
+LCB0cnVlKTsKPiAgCj4gLQlkaXNrLT5tYWpvciA9IERSQkRfTUFKT1I7Cj4gLQlkaXNrLT5maXJz
+dF9taW5vciA9IG1pbm9yOwo+IC0JZGlzay0+bWlub3JzID0gMTsKPiAtCWRpc2stPmZvcHMgPSAm
+ZHJiZF9vcHM7Cj4gIAlkaXNrLT5mbGFncyB8PSBHRU5IRF9GTF9OT19QQVJUOwo+ICAJc3ByaW50
+ZihkaXNrLT5kaXNrX25hbWUsICJkcmJkJWQiLCBtaW5vcik7Cj4gLQlkaXNrLT5wcml2YXRlX2Rh
+dGEgPSBkZXZpY2U7Cj4gKwlpbml0X2Rpc2soZGlzaywgRFJCRF9NQUpPUiwgbWlub3IsIDEsIDAs
+IGRldmljZSwgJmRyYmRfb3BzKTsKPiAgCj4gIAlibGtfcXVldWVfZmxhZ19zZXQoUVVFVUVfRkxB
+R19TVEFCTEVfV1JJVEVTLCBkaXNrLT5xdWV1ZSk7Cj4gIAlibGtfcXVldWVfd3JpdGVfY2FjaGUo
+ZGlzay0+cXVldWUsIHRydWUsIHRydWUpOwoKVGhpcyBub3cgZG9lcyBhIHNldF9jYXBhY2l0eSgu
+Li4sIDApLCB3aGljaCBpdCBkaWQgbm90IGRvIGJlZm9yZS4KSSdtIGd1ZXNzaW5nIHRoaXMgZG9l
+cyBub3QgaGF2ZSBhbnkgc2lkZSBlZmZlY3RzIGFzIHRoZSBjYXBhY2l0eSBzaG91bGQKYWxyZWFk
+eSBiZSBpbml0aWFsaXplZCB0byAwPyBEbyB5b3Uga25vdyB0aGlzIGZvciBzdXJlPwoKLS0gCkNo
+cmlzdG9waCBCw7ZobXdhbGRlcgpMSU5CSVQgfCBLZWVwaW5nIHRoZSBEaWdpdGFsIFdvcmxkIFJ1
+bm5pbmcKRFJCRCBIQSDigJQgIERpc2FzdGVyIFJlY292ZXJ5IOKAlCBTb2Z0d2FyZSBkZWZpbmVk
+IFN0b3JhZ2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
