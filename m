@@ -4,87 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4650CC433FE
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Oct 2022 10:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60D08C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Oct 2022 16:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oiEVeQ9g4s1ycZdddCLHaPR3jmFIWMVRQDCfXcbVAh4=; b=uaR3uLZxFrTamH
-	i1iCtkzq3xuPfZoeWQ2vr18N2mL5KVjOIh5ab33htb8LiORbuPg9ghAK6XK3lOzkJiZ64XbyiYKxz
-	QRWK1xek/kLwyaFf1X3O41+W24Dt6kITkLDmALpdJCezOqLjTuqrTPu9CMqkpROKG0Rgd5Ec/4QAG
-	OoyPPyUMeyz2n+37tpUdalK1vm9OMko//p/zeYRm9e7iHk2Ext4qdojSS9kJFUnWvLS24wC4rT7fr
-	byzn8RKm7G6B/QGx45wM8qdovq0bZHSIBvDCGLU67mUHCADJAhvzTcCkevvLn6Se7Bh7BH1Zsdt4O
-	Wcd3vb3kVTX/DE/Y+kWA==;
+	List-Owner; bh=OcX7ojCnrQf0ogSfVY8TBhPk2c+vKp+CYMpYkuQpYxM=; b=sd//hYodY3jBQ8
+	qq8HB00zxc5Y/7N1KPIhYGDUC02uDKz2JRLsYsSoEgOWwL0mtvgN96wLDy0TSg3fAkFq//RU5Irbp
+	7dpuy1ob589KCitiXYgBQevw1dgPoinDwb8Ob6iwZpBpb8auSuumyHsI2ORu7SSeNhr85sLbuf2el
+	E9A8/wkc7phNxGheMd5LN/NWQZOPiFo/9Ux+7l//9qE7ZR+vxJ6OKxJYXAAdCFFi/FKs1eWU6LEam
+	x/XpFNJAqDrBdVr196SWlr2sN/FGLISwXNiOcYs4ASGl8E+TTDcdtCMkwS4ZwTGrH/0B7UtC1Kmbf
+	gasKBVOjm0eUHPsjTS4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1og1LH-00DYJD-T6; Wed, 05 Oct 2022 10:09:31 +0000
-Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
+	id 1og7f6-00FLBQ-LP; Wed, 05 Oct 2022 16:54:24 +0000
+Received: from mail-pg1-f169.google.com ([209.85.215.169])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1og1LF-00DYGy-8r
-	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2022 10:09:30 +0000
-Received: by mail-ej1-x62b.google.com with SMTP id k2so4434775ejr.2
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2022 03:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linbit-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=oM5lINkSOhqEPn7T1LnWzFRQ0r/zY9T13e9BP04fEyI=;
-        b=14U7AJwniruZFzbiY4kC6nsZlRvuSqb1QwTnO87x+fRvRhg52kqE3PLwic1cv6UI+b
-         wxtaRyO+WZozOGf88hqNDIS0d8kGRHu94b0rcdjOrBTtNpMPKnxQUp9fyDFQVv1p4lwT
-         9oAVJcqYseFceKxqgBWeZoSLo0DTN9Gz10LmFz2RpAA6luRa1gTkoumLHyuNtsjb23R3
-         66037Fgcf54ctnyPbt6chWKdOLNMSKtWOPcxoIwbnX5WXyAom4hZa4oyF9nXf24bWT0P
-         K9lw1zG3qgaRtbZiESDdnst2UoGyEh+WJg9WXPuCoOF4o8xgJN6xITBbcoTm7hcV1syU
-         KUJg==
+	id 1og7f3-00FL9w-Ec; Wed, 05 Oct 2022 16:54:22 +0000
+Received: by mail-pg1-f169.google.com with SMTP id a23so8027631pgi.10;
+        Wed, 05 Oct 2022 09:54:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date;
-        bh=oM5lINkSOhqEPn7T1LnWzFRQ0r/zY9T13e9BP04fEyI=;
-        b=Q6agufZBhWDLoPKDCYRzW+wL1tGH6VU5emDUAY2EvVD8p3Tai2U++6m09X9shPuSs6
-         PvCqMzUX301dUXtwv26muQSogXl+2rnTxUx/n7EdIOtKSchs1QQThiEHMwgOripJuDcs
-         KdP6iNt1qT9VOr9YD4M2FC6t0cRqgNhsxv71id9IGCw0r8GaanfbVmGAOdtluGJLpBr5
-         hFhBq5mY8MTM8VheV7uQzNMlp82Xj7sWptCVGLObwV8S4gno3criWNvuw4rKNd05R7SC
-         XXHr+E1wY5ltCZ+Kn8MPdTWDMjhg37p+Er8Gi0zLF8rwF45oRxm5TSyjEOUBNHcRawv4
-         5n2w==
-X-Gm-Message-State: ACrzQf2PwPBqbHxrAhv/BR1BDjDqxHq9MyhfWEynFMtA/U76izwBm1l4
-	25PSgyGpHw36bffKdNCWVuyF/Q==
-X-Google-Smtp-Source: AMsMyM6XbFaI9HeMTnZcx9bHunTFZSA7fhJuT5NL+agaUKW54kA1JC5km35OuPCP5GklKV/YoQTu8A==
-X-Received: by 2002:a17:907:1c08:b0:782:a340:56d7 with SMTP id nc8-20020a1709071c0800b00782a34056d7mr22357872ejc.98.1664964563179;
-        Wed, 05 Oct 2022 03:09:23 -0700 (PDT)
-Received: from [192.168.178.55] (h082218028181.host.wavenet.at. [82.218.28.181])
-        by smtp.gmail.com with ESMTPSA id r10-20020a1709061baa00b00782539a02absm8398012ejg.194.2022.10.05.03.09.21
+        bh=GFGmeXwzImdz1h+PmMN1s24FBEmejNYEC+q1xWfXEck=;
+        b=tf7IjhkoZWeUhGUdrkuy7LpzTDnpCmThu2vU/01YH7kaXYenAc45A7LZm6LfxnmVI7
+         rV1E+nLDr6XmApbOpA5UkZ6K2HfLMPOMIoBCI9gRdLbWCjhbNSXdT+YoLW6lxXRLbkww
+         mtR1pJnu8yOGeYp4nPy0MhzRcT5xQptOcKib5QWPYB6G+Mx+D5iN9PAhYY/UH6vnl3x9
+         cmlxLEMkY7g8YmGnsss2GfEuaz+mDMw3ukBR+qh58psA9DdD5wzNKMlga7W5mIxGcyx7
+         5yW4tAQ3UfhSPtFMSKyNNkiYpFiUt/kxKbJuSwfxqlBXlofzhEU5kDTQN4JcCDM85Yd0
+         ArNQ==
+X-Gm-Message-State: ACrzQf1LPPpnrdvKLYIU3Jp7CRNLh/2at7+QXVB/H3JHdpCbVZlc95Do
+	MgTxoR+FNTOTAFwpJmsAA6s=
+X-Google-Smtp-Source: AMsMyM5oX6qSPQ4HG3bu8E8hjU3lPQSUd8WrMcNcjR4MljBf6naYCl5wsAAwQMON9m5RMKfn4/SRMQ==
+X-Received: by 2002:a62:2985:0:b0:544:77d4:f43b with SMTP id p127-20020a622985000000b0054477d4f43bmr726456pfp.9.1664988858370;
+        Wed, 05 Oct 2022 09:54:18 -0700 (PDT)
+Received: from [192.168.3.219] ([98.51.102.78])
+        by smtp.gmail.com with ESMTPSA id j16-20020a170902da9000b00176c6738d13sm10795484plx.169.2022.10.05.09.54.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Oct 2022 03:09:22 -0700 (PDT)
-Message-ID: <e23e94f8-13ad-4a10-62de-33e63a62831f@linbit.com>
-Date: Wed, 5 Oct 2022 12:09:21 +0200
+        Wed, 05 Oct 2022 09:54:17 -0700 (PDT)
+Message-ID: <e0ea0b0a-5077-de37-046f-62902aca93b6@acm.org>
+Date: Wed, 5 Oct 2022 09:54:11 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.3.0
-Subject: Re: [RFC PATCH 05/18] drbd: use init disk helper
+Subject: Re: [RFC PATCH 01/21] block: add and use init tagset helper
 Content-Language: en-US
-To: Chaitanya Kulkarni <kch@nvidia.com>
-Cc: ogeert@linux-m68k.org, linux-block@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, drbd-dev@lists.linbit.com,
- nbd@other.debian.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, axboe@kernel.dk, philipp.reisner@linbit.com,
- lars.ellenberg@linbit.com, efremov@linux.com, josef@toxicpanda.com,
- tim@cyberelk.net, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
- richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
- mcgrof@kernel.org, hare@suse.de, damien.lemoal@opensource.wdc.com,
- johannes.thumshirn@wdc.com, bvanassche@acm.org, ming.lei@redhat.com,
- vincent.fu@samsung.com, shinichiro.kawasaki@wdc.com
-References: <20221005050027.39591-1-kch@nvidia.com>
- <20221005050027.39591-6-kch@nvidia.com>
-From: =?UTF-8?Q?Christoph_B=c3=b6hmwalder?= <christoph.boehmwalder@linbit.com>
-In-Reply-To: <20221005050027.39591-6-kch@nvidia.com>
+To: Chaitanya Kulkarni <kch@nvidia.com>,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-nvme@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, axboe@kernel.dk,
+ efremov@linux.com, josef@toxicpanda.com, idryomov@gmail.com,
+ dongsheng.yang@easystack.cn, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+ mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com,
+ stefanha@redhat.com, ohad@wizery.com, andersson@kernel.org,
+ baolin.wang@linux.alibaba.com, richard@nod.at, miquel.raynal@bootlin.com,
+ vigneshr@ti.com, marcan@marcan.st, sven@svenpeter.dev, alyssa@rosenzweig.io,
+ kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, sth@linux.ibm.com,
+ hoeppner@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+ agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com,
+ jejb@linux.ibm.com, martin.petersen@oracle.com, hare@suse.de,
+ bhelgaas@google.com, john.garry@huawei.com, mcgrof@kernel.org,
+ christophe.jaillet@wanadoo.fr, vaibhavgupta40@gmail.com,
+ wsa+renesas@sang-engineering.com, johannes.thumshirn@wdc.com,
+ ming.lei@redhat.com, shinichiro.kawasaki@wdc.com, vincent.fu@samsung.com,
+ christoph.boehmwalder@linbit.com, joel@jms.id.au,
+ vincent.whitchurch@axis.com, nbd@other.debian.org,
+ ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ asahi@lists.linux.dev
+References: <20221005032257.80681-1-kch@nvidia.com>
+ <20221005032257.80681-2-kch@nvidia.com>
+ <6fee2d7a-7fd1-73ee-2911-87a4ed3e8769@opensource.wdc.com>
+ <CAPDyKFpBpiydQn+=24CqtaH_qa3tQfN2gQSiUrHCjnLSuy4=Kg@mail.gmail.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <CAPDyKFpBpiydQn+=24CqtaH_qa3tQfN2gQSiUrHCjnLSuy4=Kg@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221005_030929_319524_AF92BBB5 
-X-CRM114-Status: GOOD (  15.78  )
+X-CRM114-CacheID: sfid-20221005_095421_520481_47E2F615 
+X-CRM114-Status: GOOD (  15.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,39 +100,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QW0gMDUuMTAuMjIgdW0gMDc6MDAgc2NocmllYiBDaGFpdGFueWEgS3Vsa2Fybmk6Cj4gQWRkIGFu
-ZCB1c2UgdGhlIGhlbHBlciB0byBpbml0aWFsaXplIHRoZSBjb21tb24gZmllbGRzIG9mIHN0cnVj
-dCBnZW5kaXNrCj4gc3VjaCBhcyBtYWpvciwgZmlyc3RfbWlub3IsIG1pbm9ycywgZGlza19uYW1l
-LCBwcml2YXRlX2RhdGEsIGFuZCBvcHMuCj4gVGhpcyBpbml0aWFsaXphdGlvbiBpcyBzcHJlYWQg
-YWxsIG92ZXIgdGhlIGJsb2NrIGRyaXZlcnMuIFRoaXMgYXZvaWRzCj4gY29kZSByZXBldGF0aW9u
-IG9mIGluaWFsaXphdGlvbiBjb2RlIG9mIGdlbmRpc2sgaW4gY3VycmVudCBibG9jayBkcml2ZXJz
-Cj4gYW5kIGFueSBmdXR1cmUgb25lcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaGFpdGFueWEgS3Vs
-a2FybmkgPGtjaEBudmlkaWEuY29tPgo+IC0tLQo+ICBkcml2ZXJzL2Jsb2NrL2RyYmQvZHJiZF9t
-YWluLmMgfCA2ICstLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDUgZGVs
-ZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX21haW4u
-YyBiL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX21haW4uYwo+IGluZGV4IGYzZTRkYjE2ZmQwNy4u
-NThmYWUxMjJkZTE2IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX21haW4u
-Ywo+ICsrKyBiL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX21haW4uYwo+IEBAIC0yNzA2LDEzICsy
-NzA2LDkgQEAgZW51bSBkcmJkX3JldF9jb2RlIGRyYmRfY3JlYXRlX2RldmljZShzdHJ1Y3QgZHJi
-ZF9jb25maWdfY29udGV4dCAqYWRtX2N0eCwgdW5zaWcKPiAgCj4gIAlzZXRfZGlza19ybyhkaXNr
-LCB0cnVlKTsKPiAgCj4gLQlkaXNrLT5tYWpvciA9IERSQkRfTUFKT1I7Cj4gLQlkaXNrLT5maXJz
-dF9taW5vciA9IG1pbm9yOwo+IC0JZGlzay0+bWlub3JzID0gMTsKPiAtCWRpc2stPmZvcHMgPSAm
-ZHJiZF9vcHM7Cj4gIAlkaXNrLT5mbGFncyB8PSBHRU5IRF9GTF9OT19QQVJUOwo+ICAJc3ByaW50
-ZihkaXNrLT5kaXNrX25hbWUsICJkcmJkJWQiLCBtaW5vcik7Cj4gLQlkaXNrLT5wcml2YXRlX2Rh
-dGEgPSBkZXZpY2U7Cj4gKwlpbml0X2Rpc2soZGlzaywgRFJCRF9NQUpPUiwgbWlub3IsIDEsIDAs
-IGRldmljZSwgJmRyYmRfb3BzKTsKPiAgCj4gIAlibGtfcXVldWVfZmxhZ19zZXQoUVVFVUVfRkxB
-R19TVEFCTEVfV1JJVEVTLCBkaXNrLT5xdWV1ZSk7Cj4gIAlibGtfcXVldWVfd3JpdGVfY2FjaGUo
-ZGlzay0+cXVldWUsIHRydWUsIHRydWUpOwoKVGhpcyBub3cgZG9lcyBhIHNldF9jYXBhY2l0eSgu
-Li4sIDApLCB3aGljaCBpdCBkaWQgbm90IGRvIGJlZm9yZS4KSSdtIGd1ZXNzaW5nIHRoaXMgZG9l
-cyBub3QgaGF2ZSBhbnkgc2lkZSBlZmZlY3RzIGFzIHRoZSBjYXBhY2l0eSBzaG91bGQKYWxyZWFk
-eSBiZSBpbml0aWFsaXplZCB0byAwPyBEbyB5b3Uga25vdyB0aGlzIGZvciBzdXJlPwoKLS0gCkNo
-cmlzdG9waCBCw7ZobXdhbGRlcgpMSU5CSVQgfCBLZWVwaW5nIHRoZSBEaWdpdGFsIFdvcmxkIFJ1
-bm5pbmcKRFJCRCBIQSDigJQgIERpc2FzdGVyIFJlY292ZXJ5IOKAlCBTb2Z0d2FyZSBkZWZpbmVk
-IFN0b3JhZ2UKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 10/5/22 02:47, Ulf Hansson wrote:
+> On Wed, 5 Oct 2022 at 07:11, Damien Le Moal <damien.lemoal@opensource.wdc.com> wrote:
+>> On 10/5/22 12:22, Chaitanya Kulkarni wrote:
+>>> +void blk_mq_init_tag_set(struct blk_mq_tag_set *set,
+>>> +             const struct blk_mq_ops *ops, unsigned int nr_hw_queues,
+>>> +             unsigned int queue_depth, unsigned int cmd_size, int numa_node,
+>>> +             unsigned int timeout, unsigned int flags, void *driver_data)
+>>
+>> That is an awful lot of arguments... I would be tempted to say pack all
+>> these into a struct but then that would kind of negate this patchset goal.
+>> Using a function with that many arguments will be error prone, and hard to
+>> review... Not a fan.
+> 
+> I completely agree.
+> 
+> But there is also another problem going down this route. If/when we
+> realize that there is another parameter needed in the blk_mq_tag_set.
+> Today that's quite easy to add (assuming the parameter can be
+> optional), without changing the blk_mq_init_tag_set() interface.
+
+Hi Chaitanya,
+
+Please consider to drop the entire patch series. In addition to the 
+disadvantages mentioned above I'd like to mention the following 
+disadvantages:
+* Replacing named member assignments with positional arguments in a
+   function call makes code harder to read and harder to verify.
+* This patch series makes tree-wide changes without improving the code
+   in a substantial way.
+
+Thanks,
+
+Bart.
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
