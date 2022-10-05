@@ -4,91 +4,155 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60D08C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Oct 2022 16:55:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAD27C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Oct 2022 17:24:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OcX7ojCnrQf0ogSfVY8TBhPk2c+vKp+CYMpYkuQpYxM=; b=sd//hYodY3jBQ8
-	qq8HB00zxc5Y/7N1KPIhYGDUC02uDKz2JRLsYsSoEgOWwL0mtvgN96wLDy0TSg3fAkFq//RU5Irbp
-	7dpuy1ob589KCitiXYgBQevw1dgPoinDwb8Ob6iwZpBpb8auSuumyHsI2ORu7SSeNhr85sLbuf2el
-	E9A8/wkc7phNxGheMd5LN/NWQZOPiFo/9Ux+7l//9qE7ZR+vxJ6OKxJYXAAdCFFi/FKs1eWU6LEam
-	x/XpFNJAqDrBdVr196SWlr2sN/FGLISwXNiOcYs4ASGl8E+TTDcdtCMkwS4ZwTGrH/0B7UtC1Kmbf
-	gasKBVOjm0eUHPsjTS4w==;
+	List-Owner; bh=ARimQrkdfzh9ZNXF1iVPjEadvylyxCVaCDswIdHhOu4=; b=ObVdifytebRziI
+	hEfLXDghQtpMk6JzdwOpCyc/Y3ErSxKl4p0fVutmsx8q9xQlZ7MNtAjjHqxxc36Jy+nKzz4/XLKTv
+	A1TxSsPBMf1ZvN/7YqnXFY5XMeA8IYQO/Qgp2+Qi5hf3ZIvPe03IkZDzxXEgY/k7bSgUS7mSNn+5X
+	+VVxsyUrTt/72PviUxMpGGhKM228hUAOZCWFEm+V3jJX8eZdybDFsdaVAOJ3u0rx33yxM3T9JIfKS
+	PjM/qTj1cLDU77uS61VBZgLoIyuYVvrUZDGj4Byt95xK14QEvO5+H/U/0ZGowJXKH581fK8ktyN77
+	qmgjLqeBil5a4m3v2DEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1og7f6-00FLBQ-LP; Wed, 05 Oct 2022 16:54:24 +0000
-Received: from mail-pg1-f169.google.com ([209.85.215.169])
+	id 1og88E-00FPaL-Hi; Wed, 05 Oct 2022 17:24:30 +0000
+Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47] helo=NAM11-CO1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1og7f3-00FL9w-Ec; Wed, 05 Oct 2022 16:54:22 +0000
-Received: by mail-pg1-f169.google.com with SMTP id a23so8027631pgi.10;
-        Wed, 05 Oct 2022 09:54:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=GFGmeXwzImdz1h+PmMN1s24FBEmejNYEC+q1xWfXEck=;
-        b=tf7IjhkoZWeUhGUdrkuy7LpzTDnpCmThu2vU/01YH7kaXYenAc45A7LZm6LfxnmVI7
-         rV1E+nLDr6XmApbOpA5UkZ6K2HfLMPOMIoBCI9gRdLbWCjhbNSXdT+YoLW6lxXRLbkww
-         mtR1pJnu8yOGeYp4nPy0MhzRcT5xQptOcKib5QWPYB6G+Mx+D5iN9PAhYY/UH6vnl3x9
-         cmlxLEMkY7g8YmGnsss2GfEuaz+mDMw3ukBR+qh58psA9DdD5wzNKMlga7W5mIxGcyx7
-         5yW4tAQ3UfhSPtFMSKyNNkiYpFiUt/kxKbJuSwfxqlBXlofzhEU5kDTQN4JcCDM85Yd0
-         ArNQ==
-X-Gm-Message-State: ACrzQf1LPPpnrdvKLYIU3Jp7CRNLh/2at7+QXVB/H3JHdpCbVZlc95Do
-	MgTxoR+FNTOTAFwpJmsAA6s=
-X-Google-Smtp-Source: AMsMyM5oX6qSPQ4HG3bu8E8hjU3lPQSUd8WrMcNcjR4MljBf6naYCl5wsAAwQMON9m5RMKfn4/SRMQ==
-X-Received: by 2002:a62:2985:0:b0:544:77d4:f43b with SMTP id p127-20020a622985000000b0054477d4f43bmr726456pfp.9.1664988858370;
-        Wed, 05 Oct 2022 09:54:18 -0700 (PDT)
-Received: from [192.168.3.219] ([98.51.102.78])
-        by smtp.gmail.com with ESMTPSA id j16-20020a170902da9000b00176c6738d13sm10795484plx.169.2022.10.05.09.54.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Oct 2022 09:54:17 -0700 (PDT)
-Message-ID: <e0ea0b0a-5077-de37-046f-62902aca93b6@acm.org>
-Date: Wed, 5 Oct 2022 09:54:11 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [RFC PATCH 01/21] block: add and use init tagset helper
+	id 1og88C-00FPZf-8q
+	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2022 17:24:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F6BjE1eOubhSUK9Sc/0jmQZA1Tuaria6c4kdux8eBRyvVg7xKyjxAkWknX4LqRqybYsoQrMakl3J9k1KMrdQW0+L3titcB49aPTxthC/+XTzu3/HaLL9W4Dy5USXNYb2mUUuz3i90qI33bNAF0JDONpFtaEffdfsJRlIgGCCcsTt/6dfXhkJIyhFR0wRoLMD+gsOIABEXzUQxljsCVChOUkmdGTwVK/MOhT0+3Zt7JUq5Dm34TQkunCPXzBMG2AsgqZdDa07N/r+a6RDHzT+qE1rgELS2uirMRQGbtcNzH3GU0zQ5f9AyMS/sSPMmg7qcR1Jo4IyNzUQu/8b58jYDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zzcgaJirpEkuBcxGm2rUhD5N/PV5cICTvdp996ZPewg=;
+ b=VT3cnr69EM3wGbxOllfZ0Z2wY30udir7oBqTpxSNK+6ik05+4Vqz+zi7I7eR1ioLEXadP/cvAGxNptLu8+ag17xNiqMlLhQ7vUQ+acVigWZJTVHJAR+Mb+O7ZEwOcb94/iVH+v3uM/T/EojH0ABzuoA1+jGZG8d2I9+m4U9xoEkw2v3nMqmGY8OU8kuxiISCQN2IK2k0XlvRUXlTLmxRokfHWFpFj7L4qPNwLy4lE4w9vitG9xrsVJ2nHMe46xiui0DqRm1vqYETyvM8TxI9AbQ7WpWXd3Px/D8NJHnEGMeq77wJlDqmNo/86jbfkKdhlmXH4PDpfaB1+2kx9SMBzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zzcgaJirpEkuBcxGm2rUhD5N/PV5cICTvdp996ZPewg=;
+ b=OGF5OidVGqsiHcH5OLWxnGdqYu5qxJKRWTyTBMijLamibUVLDtRKjRdqMt6u8he1eBacJmWsJ8Vi17wExf05v4tI1B4ra1ZfZgjrWXwk5k8XZ6zp+A5X79OPeJppMG8c50Nxa/w4cqc36UmTR8QsyEL/FFiKAt6rrHoyTAam9pe2B+VNHjs/70mKEZm17jG1VcjACtUUtstBduTfh+39G4cat5MLaz5IM9NBVTUEGpgjV75ifCR1nuSHgJ2kJET4Uhuqf1xi/bSujY9H/l2LFvuZREHGPga0ZPBPNrayQHAZCj1713KNluJsZ40hhtsT+5/z7HIot8KkPeqrIM7Z1w==
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com (2603:10b6:302:12::28)
+ by IA1PR12MB7543.namprd12.prod.outlook.com (2603:10b6:208:42d::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.20; Wed, 5 Oct
+ 2022 17:24:22 +0000
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::3d10:f869:d83:c266]) by MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::3d10:f869:d83:c266%4]) with mapi id 15.20.5676.032; Wed, 5 Oct 2022
+ 17:24:22 +0000
+From: Chaitanya Kulkarni <chaitanyak@nvidia.com>
+To: =?utf-8?B?Q2hyaXN0b3BoIELDtmhtd2FsZGVy?=
+	<christoph.boehmwalder@linbit.com>, Chaitanya Kulkarni
+	<chaitanyak@nvidia.com>
+CC: "ogeert@linux-m68k.org" <ogeert@linux-m68k.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+	"drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+	"nbd@other.debian.org" <nbd@other.debian.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"axboe@kernel.dk" <axboe@kernel.dk>, "philipp.reisner@linbit.com"
+	<philipp.reisner@linbit.com>, "lars.ellenberg@linbit.com"
+	<lars.ellenberg@linbit.com>, "efremov@linux.com" <efremov@linux.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>, "tim@cyberelk.net"
+	<tim@cyberelk.net>, "haris.iqbal@ionos.com" <haris.iqbal@ionos.com>,
+	"jinpu.wang@ionos.com" <jinpu.wang@ionos.com>, "richard@nod.at"
+	<richard@nod.at>, "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+	"vigneshr@ti.com" <vigneshr@ti.com>, "mcgrof@kernel.org" <mcgrof@kernel.org>,
+	"hare@suse.de" <hare@suse.de>, "damien.lemoal@opensource.wdc.com"
+	<damien.lemoal@opensource.wdc.com>, "johannes.thumshirn@wdc.com"
+	<johannes.thumshirn@wdc.com>, "bvanassche@acm.org" <bvanassche@acm.org>,
+	"ming.lei@redhat.com" <ming.lei@redhat.com>, "vincent.fu@samsung.com"
+	<vincent.fu@samsung.com>, "shinichiro.kawasaki@wdc.com"
+	<shinichiro.kawasaki@wdc.com>
+Subject: Re: [RFC PATCH 05/18] drbd: use init disk helper
+Thread-Topic: [RFC PATCH 05/18] drbd: use init disk helper
+Thread-Index: AQHY2HeQezp2ej+qC02v2lxKPd/Sr63/lCOAgAB5ioA=
+Date: Wed, 5 Oct 2022 17:24:22 +0000
+Message-ID: <1e2cbfd0-6136-df9e-58fb-60f1375b2e79@nvidia.com>
+References: <20221005050027.39591-1-kch@nvidia.com>
+ <20221005050027.39591-6-kch@nvidia.com>
+ <e23e94f8-13ad-4a10-62de-33e63a62831f@linbit.com>
+In-Reply-To: <e23e94f8-13ad-4a10-62de-33e63a62831f@linbit.com>
+Accept-Language: en-US
 Content-Language: en-US
-To: Chaitanya Kulkarni <kch@nvidia.com>,
- Damien Le Moal <damien.lemoal@opensource.wdc.com>,
- Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-nvme@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, axboe@kernel.dk,
- efremov@linux.com, josef@toxicpanda.com, idryomov@gmail.com,
- dongsheng.yang@easystack.cn, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
- mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com,
- stefanha@redhat.com, ohad@wizery.com, andersson@kernel.org,
- baolin.wang@linux.alibaba.com, richard@nod.at, miquel.raynal@bootlin.com,
- vigneshr@ti.com, marcan@marcan.st, sven@svenpeter.dev, alyssa@rosenzweig.io,
- kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, sth@linux.ibm.com,
- hoeppner@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com,
- jejb@linux.ibm.com, martin.petersen@oracle.com, hare@suse.de,
- bhelgaas@google.com, john.garry@huawei.com, mcgrof@kernel.org,
- christophe.jaillet@wanadoo.fr, vaibhavgupta40@gmail.com,
- wsa+renesas@sang-engineering.com, johannes.thumshirn@wdc.com,
- ming.lei@redhat.com, shinichiro.kawasaki@wdc.com, vincent.fu@samsung.com,
- christoph.boehmwalder@linbit.com, joel@jms.id.au,
- vincent.whitchurch@axis.com, nbd@other.debian.org,
- ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org,
- asahi@lists.linux.dev
-References: <20221005032257.80681-1-kch@nvidia.com>
- <20221005032257.80681-2-kch@nvidia.com>
- <6fee2d7a-7fd1-73ee-2911-87a4ed3e8769@opensource.wdc.com>
- <CAPDyKFpBpiydQn+=24CqtaH_qa3tQfN2gQSiUrHCjnLSuy4=Kg@mail.gmail.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <CAPDyKFpBpiydQn+=24CqtaH_qa3tQfN2gQSiUrHCjnLSuy4=Kg@mail.gmail.com>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW2PR12MB4667:EE_|IA1PR12MB7543:EE_
+x-ms-office365-filtering-correlation-id: 2e103ab3-0995-41ef-f45a-08daa6f67171
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:  fNsgKS1KrAK4rDKnODQmw4lT8LX1x64ANj7qz4N7d8l46tKAdYOBOip6oR2oG9MhbwD+nFQYSePCdem/TdJXYDqazIV5ihMp1ISGU/U/Tqf4dCIePjXEgQPS0ZOkLjl15+5CDO+2ZSYNoQoY4OpjudDsVJt2upcSw+VDjBs1bYr6YIPDkqgSIqXtmhDwf9Uxd6ao6KiAblZLO74amvxaxmFe5mbuorwlhSK3n4W35dCAIL9ZIpCRyWoRZNjB7TXBfV0WSBOQlUUYKLzais+jv1cG44yS1ot4NBGCVLygsZxEeHryJeillXT9tsjkxB4m0F+DHmZehnnOaReBLawDjaqPhVDCWTk3vS+pD3AY2jvRpJgTAkE5LtuP17Byu7kd+M48dUuLcqnaFN+9P9zBnzF+4DNh4yaZwjZtwcC3DXjHPIskQO/6GR/Z8HdSygogYCtbIXABXuHnC8cG52hBb+7swWnLY0663lku1okxhXjL8cInBOCAB5SR7hvBTaqDc/4XxDZVvXf48xSEIz7ryGZ4Ry4319MAYqfo9SdaRjDL4ImjoCA3GoTJ4YnJUJfDg1VdldI5S1H+sU9Wc+kWBBNM+XDn58G74fjiA9QFmCuVKCJz+t6O8uyRlwQ0tMjsj/CZxXl141BGTqe9/7tf3ImyCb+HfSb9zxDe1AzPUAJFGRRlCvwKq3L8eN+sIYSSvLQrspj6wXeRygOi9CKb1BBZjs3Yp6qxY2r6JVCwKcQw+KbhwINvu7CVycQiOSFYdDk1onjBpjzEzVGv3Hv9vdk3acXUTNjam2rG06ZgFmfIY5UYKqSzI9S40N/bn67q52JKua6En25JofgMnz9u/Q==
+x-forefront-antispam-report:  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB4667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(366004)(376002)(346002)(396003)(136003)(451199015)(31686004)(66476007)(66946007)(64756008)(8676002)(4326008)(66556008)(66446008)(54906003)(6486002)(86362001)(38070700005)(31696002)(7416002)(2906002)(38100700002)(110136005)(5660300002)(71200400001)(122000001)(6506007)(186003)(91956017)(2616005)(316002)(8936002)(76116006)(6512007)(36756003)(41300700001)(83380400001)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:  =?utf-8?B?cW50NEcrbHR3UXNCQ2RyY0Z6N2FMZGlmakRwV3JGQzgvR051NThWY1NsUFJy?=
+ =?utf-8?B?RC94c0FNdVkyRDhGWVQwUmR6YWNkT3VQcHF0UXJsSWlxNkRFdk44eEIyU2pG?=
+ =?utf-8?B?VnVDVS9EdThUek00YTdtemNnOUpzNGJjbVVlV1dlODBXc2Z6cm83eTRzcnNt?=
+ =?utf-8?B?TVFXd1UwUklpU25Jem9KZzdkekNUVVZDZHVKNjJYY0VORmhrYWo1QVBSMHhF?=
+ =?utf-8?B?Q251Ky9UcGdQTmZ2L2NUNGxjZVhKRlNubWJ4NGNJYUN5VEc1VVdLbmRXMmR6?=
+ =?utf-8?B?ZzlXRVVPMGEvTS9pT24wbzZHalVCa05iR3lSVVZ3Y0F2Q2VENkpKNVhUSFN2?=
+ =?utf-8?B?L3hMZVRxYlJ1UjRRN0ptRklxWWQ2dnJjVUdTL2RNOTd3K3ZSQmwweUJWY29t?=
+ =?utf-8?B?bVZuQ3hGdWY5UzFWZGEzbXVWTHBwK3hNSStpNkphaHU3YWpLeVFZbk4yQ1BV?=
+ =?utf-8?B?aG82SVFvaVEyQXg3cllPY1RpTjlubHFLNW9MYWlIY2xoZlExWWw4ZDVFQ2pT?=
+ =?utf-8?B?Zmt3SXdqRFFHWjhETnRYUEVPZzlpT2NCclZ0UVI3dXZ0c1pYV2srNGd4UTVr?=
+ =?utf-8?B?NzR1S1FITDdKU3VFQnk2NWR1VGNZUHpGSHk1NGFEWXYzVjNTYnBSL05OYy9W?=
+ =?utf-8?B?bGJNdjRMczNOUmZ5NWhkeGJzTFljMUN4ejlXZXZEb09UbnUyaVhjWUFUOFJh?=
+ =?utf-8?B?ZmpUOTNhamxTNjlzSWR4SStQeHp2RjBMd0FVMmtZbnRaTUY0UHB3MWNJclhC?=
+ =?utf-8?B?bE5DTTc5aCtWMVpyTzZIYks4SGwyUUdLclVFVEo2VXVubGM0cSt4dHhjM3BL?=
+ =?utf-8?B?NGRlVGJaZWNSQ2hQUDRReG42V09QQ0R5OWRVNlU4Z2RYZGNCSmxxS1pMTjV0?=
+ =?utf-8?B?dVJpQUVGbEVxMWx0QlFMdWU3YUxrZDZoTDYvWmFneXFxR1pFYVR0UXgrTFJ2?=
+ =?utf-8?B?eDE0TzBYeWkvODB6eFdFcXhUYU5EVCtGN0RWMUNzQW1YN3dSVDl5bE1oVi9G?=
+ =?utf-8?B?RFFMZVNSTXArbk5mMjFMeEgxQjhYTnc1SG5oeExBVTB5NVFjRjlITTlxWTZT?=
+ =?utf-8?B?L1VacTQzTWNkb1o2K3J0eitjQ1R3Y3BPWmZOd3ROakRCYVhUOGxmMnFCSEJN?=
+ =?utf-8?B?ajBFd1BhZTY2MWdqN0RXeldOUUJ3MVcxMk9yZE5ta0oyTkVGY3pUSDdiZFh2?=
+ =?utf-8?B?US96MVc1UzRNanFXZHhwcWlmYVp3UURGakt3VkNlcjIwZC9XaTMrdGtjVEQ0?=
+ =?utf-8?B?c3lwNFdrRXZvemYyRHNJR3lzZkZEUENXcmJBdGpPc016d1hBcGIwd1BmTzlK?=
+ =?utf-8?B?bWhXL2ZabTlXNkp2bUF5czNKOStWNjZLOGMwMkQzQjN4emZpZlZOSUJQSHVk?=
+ =?utf-8?B?VUFlaldiWE5sR3dVZHBMcXFlaVZvM014bmxxUGtUVmw5N2lDNC9OVE4wU3ZP?=
+ =?utf-8?B?a2R0eU9LWk1VdStkcFBtSjlBZ2FUUXRzYnlOQTVMaWY0SFpMMFlGVGRXTjZl?=
+ =?utf-8?B?UytwTW8vNXVFUkdIeWJTQ08rTERnd25nSytTZEp4K3dLc1FHT01ncG5LY3NJ?=
+ =?utf-8?B?dDlkdUtYYldXKzBvcklwSGVCOE91MVNGaWduQU8vOVpyWTkzdjBueU51Z2hs?=
+ =?utf-8?B?cDMvb2F1VXRhU3RYM0hzejFwWGtlY0NLQjEwa0RDWEhzRGpPaWRaT3kvY0xr?=
+ =?utf-8?B?cUlBYldmaHJzdG1oamU0TFdRQjVHZVl5T0JxMW1SdG81YXZ0bzVBMTQ3RVBK?=
+ =?utf-8?B?ODg0ckJKNVNpaVoxdUMyK2JWUVBTaHdZTVBqdFQ2RHJvdExyNXZzd2NsTFRH?=
+ =?utf-8?B?YVVxSzRsNUNsaEZGMTE3V0dYQnRVeFdsRSt3UHh1d0VyK21rZnJ0MHMzQzhH?=
+ =?utf-8?B?MU01OS9zS2RyNVJnQks5UzN2NmQzSDJXU2ZsQUJEQzhWMjVMazZMa2p1Y28v?=
+ =?utf-8?B?dlVzS05heTFXSUoyMUttdTVWdXZKN0JDOVBnblo2NnlncFJPazVLRUdkWDh2?=
+ =?utf-8?B?c0E4TGt6ZTc5YWxOeXEyRWQ0TDg0eFdJcTFKeGhhUERVekVGM25scnczR3R5?=
+ =?utf-8?B?a2FoYmxuVStMb0hGWk9jZFE3OEs3S2dwMkpZNDI4WEFQY25Xa0RaeTJwY2Yz?=
+ =?utf-8?B?aWQyU0lFWjdWV2VlWFVvRFRNZjNyTTRyUVVrYlV0ZkZDNGltT3p1UEtuUHlE?=
+ =?utf-8?Q?02FkTo/MXZW32y5k5qlVV42s7EeFWGwizzHwHiuwlUIi?=
+Content-ID: <6FBCCCB66932BD4F8A146135657B57AC@namprd12.prod.outlook.com>
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB4667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e103ab3-0995-41ef-f45a-08daa6f67171
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2022 17:24:22.1493
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: c/PFNki8YtMyBByxfRyE4R2EXbUvoH51Je6G4lvlPqx9oufb7MhOUX8yPbPSYaP0zhtvnyz1BmTLifFh7sqfwg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7543
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221005_095421_520481_47E2F615 
-X-CRM114-Status: GOOD (  15.66  )
+X-CRM114-CacheID: sfid-20221005_102428_330668_5717D23E 
+X-CRM114-Status: GOOD (  11.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,45 +164,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 10/5/22 02:47, Ulf Hansson wrote:
-> On Wed, 5 Oct 2022 at 07:11, Damien Le Moal <damien.lemoal@opensource.wdc.com> wrote:
->> On 10/5/22 12:22, Chaitanya Kulkarni wrote:
->>> +void blk_mq_init_tag_set(struct blk_mq_tag_set *set,
->>> +             const struct blk_mq_ops *ops, unsigned int nr_hw_queues,
->>> +             unsigned int queue_depth, unsigned int cmd_size, int numa_node,
->>> +             unsigned int timeout, unsigned int flags, void *driver_data)
->>
->> That is an awful lot of arguments... I would be tempted to say pack all
->> these into a struct but then that would kind of negate this patchset goal.
->> Using a function with that many arguments will be error prone, and hard to
->> review... Not a fan.
+
+>> diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
+>> index f3e4db16fd07..58fae122de16 100644
+>> --- a/drivers/block/drbd/drbd_main.c
+>> +++ b/drivers/block/drbd/drbd_main.c
+>> @@ -2706,13 +2706,9 @@ enum drbd_ret_code drbd_create_device(struct drbd_config_context *adm_ctx, unsig
+>>   
+>>   	set_disk_ro(disk, true);
+>>   
+>> -	disk->major = DRBD_MAJOR;
+>> -	disk->first_minor = minor;
+>> -	disk->minors = 1;
+>> -	disk->fops = &drbd_ops;
+>>   	disk->flags |= GENHD_FL_NO_PART;
+>>   	sprintf(disk->disk_name, "drbd%d", minor);
+>> -	disk->private_data = device;
+>> +	init_disk(disk, DRBD_MAJOR, minor, 1, 0, device, &drbd_ops);
+>>   
+>>   	blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, disk->queue);
+>>   	blk_queue_write_cache(disk->queue, true, true);
 > 
-> I completely agree.
+> This now does a set_capacity(..., 0), which it did not do before.
+> I'm guessing this does not have any side effects as the capacity should
+> already be initialized to 0? Do you know this for sure?
 > 
-> But there is also another problem going down this route. If/when we
-> realize that there is another parameter needed in the blk_mq_tag_set.
-> Today that's quite easy to add (assuming the parameter can be
-> optional), without changing the blk_mq_init_tag_set() interface.
 
-Hi Chaitanya,
+I think I'll move  the call to set_capcity out of the caller,
+Will resend the series shortly.
 
-Please consider to drop the entire patch series. In addition to the 
-disadvantages mentioned above I'd like to mention the following 
-disadvantages:
-* Replacing named member assignments with positional arguments in a
-   function call makes code harder to read and harder to verify.
-* This patch series makes tree-wide changes without improving the code
-   in a substantial way.
-
-Thanks,
-
-Bart.
-
+-ck
 
 ______________________________________________________
 Linux MTD discussion mailing list
