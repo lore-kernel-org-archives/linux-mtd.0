@@ -4,34 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDD33C433FE
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Oct 2022 05:01:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95B31C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Oct 2022 05:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bfywo8MWP4WO0qmUagZ3yr9Vq0A0UpRqHv4NAcDvkIQ=; b=x6ayI1QCRGBixR
-	0ElqoHE9NDfSaJ0gLGF5QAK6dN6vL71Zv7v1pXS0kaKHHMCv2VsYoDxoOUN4RI/TpakFrCwJayT/d
-	I/iDM1vguSqT1y+sglfk9o1K+dTr0ymcNJ8a5T1kR/GEUzjWp/gtYZwuNY4pditDN3sIcS+bbLLut
-	PdGG3n1thP7hCwsvBlBDqOzKkJtd2bOUnr2CTkkjmRSmk4Xs7jPGbX1UokK/aDdnc0dv569LYLSdK
-	AURta216hhNEqjDiMnwnrqfYbMiQYfmW1K2ljhawK+P/vreAjObFjON9ueN1Dc00pLrkHRdAlSCYP
-	yJbBc1xldsfsfqHGDElg==;
+	List-Owner; bh=4zCTZvlOf2ZAPvvRx+Hak19DbYhNv1pDn9mxRPsXy/A=; b=iW3bK0Fgs/ipwC
+	RFjv9/qfAOoONLq80SPbKjijdQaGlZw1jhvwjdHzmwItIPRamt/ulX0Pih3mo9pdE7E0rggJewodF
+	U9QFlAn2PU9NbUYndHMYI/Q/7Bc1ue5mXPb3JIDbB6C4bhiUBL2Zb5TioAkyujYirmLmOM+IRqpJl
+	0weKu1rOET5gE4lXeXFkjD70/nPsxEaXhRF1So487ZuX9TflOA02nImn1sfiqTxca8UDbnKzR899c
+	Bu/XsTJzqXQZdeBKTKovZkCL+z1R9Aa9ErCDDUSf+S6twldc1ObJHYMJ9JXjZ83s/1oC9Ax1WhOUW
+	LFQkk07FBGLFYQnEh4pQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ofwWq-00CSkX-CU; Wed, 05 Oct 2022 05:01:08 +0000
-Received: from mail-mw2nam10on2078.outbound.protection.outlook.com ([40.107.94.78] helo=NAM10-MW2-obe.outbound.protection.outlook.com)
+	id 1ofwXM-00CSwR-Md; Wed, 05 Oct 2022 05:01:40 +0000
+Received: from mail-dm6nam11on2082.outbound.protection.outlook.com ([40.107.223.82] helo=NAM11-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ofwWn-00CSjT-0X
-	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2022 05:01:07 +0000
+	id 1ofwXJ-00CSuV-Ay
+	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2022 05:01:39 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dFLQLYfurYo3DxshNkpVRZLnN3G0PPT/t5fQij1gXlwAPAw2L8x5yAw4wdoQ4hNgxvGZWu1RYTh0TdJA2MunyjztJBjNQO2MdKBt5gy5UNmfQEDlAtHicy1Y9XgQ7AuCE8PzMdujXrwasd5BPmkqZKNVH3WPYuqJgmhNWb+vnjuoYEjteB5wTf6AXz1N6lDuLUPQ5521eBBykSxylRDCQZzVOz1MzpxlJDGlPG0mFN4jxKje3mjmqg7mEqwQ3URfQ716qLCOFro1Am6EWH1mJ9d8CaWCQFdjnstRtjN7PBTuesPVg2waIDy/kutKO0bBIoTnClePr3ovoHAMp/zeGQ==
+ b=magKLvnrfH01xG5i/5zBxn+ueDau8LLCHXv2JcG4b4I6v4waghdqVWjSW/socP6POStDylPRGM+6mNxPKs8JJ9gcL6CDqWBAvvDRNddLc9+8AkJqd5zzYB6lEO4HswzEQhpQj1kUSbQUOh3YTjMMhD5+1uCrDRMKu8Chr1w2zl5uXyzx2QDILOovWuPyCa3ZzvgLJSRJvCzXZ6Yq36bEiHEG2nBT+ZaiYoniRyizSCdjH/Ys1o1+kE+jGLOJQPzoejUK+tN7Asuwu48lXYqj4gr712ehaHr8I1QehMrzpxKMjcAKJaHCjZeKzkal06BBhWI4pUCt7G68HfED48dGag==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=scnW2Xsya/kBm3v46oGlai56SM3aaT0CZqakUx7jxug=;
- b=TM+OYENpvbptB6MfzTxSYPzBcbPijqN5NZTdxKyTZehreyF7ql0Ird/kfPMFWaNAEd8iPgVvfZOy5VZfLeI8SlizGASg6gkQn+JGz5dR3lk7Pb6fPM3qB7k1SlyBRmtTvaSpH7E7BQAjb8GzRztwIKiNJoJhvFszMj7JvDf3YTtqoa9twySDB9Yf+PnPeklPiPPbFlmvY4cQ6VFsEvHie8tUE/zdZs4cYLDn+3stBwVH1BcZvm/yUgev3e/NTK/CI4UZUKYj628rNeshmaU52iRRHXlnAiDWZDDVHLjQCzaTkLQ3qR3TmIyVhmItooaCI91WpqlgYulfTdzKPvFE9A==
+ bh=sJP0HjxKqbqm2cPL0D23Vy8DyY+XnISaSuaPl2ELDEk=;
+ b=c2moDgH/LQeZV80cZwlCUJJPYixrpyUkV2MalnjYjHhctNlTbLnLl1cHvusZ7Gud66AL7CUjpvIweNoxYK1UutDjEif0kzZhN0tOgpdtQmxjerL5vNzgUR8yliXsyYRsqtvDnAdCahygLiMtUgrr8ov4DVPPI2Jagof70c0sjyVb2InrLPQvKvfQhQEcYTSN29PFSGhI68Pg/UgTHndsBb/gKkbqB10DQBMHNsi3TVPRAdRuRGBHYsqtrDY/gqtBtVjBiqhpw5PlEYs4J19huAKK+3fvGPFtz1XbpOklwjkQ5Z+XyuwUMZhZgWd8znlePleScsOlluDfXYfAIeGcvg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=linux-m68k.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -39,18 +39,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=scnW2Xsya/kBm3v46oGlai56SM3aaT0CZqakUx7jxug=;
- b=SrU5ZOdoC+LFehnJGhvPgKNqP8Hfi4/mMqKnHlZ/FI4JVWhXMW2+SVTuAV+BbZvPBqVbqMS5lH5vDyLvuxzyXxEgGkjLVk4AbQOTsVd5eatDMv9ng4WAATWlLuFlAiHeJQS5QQ/rjPuWsIGzO/ockd6JWzdQfaUdUIyisJBpN546VsoyzyYKfWqvKeX96duU/81/lXCNp5HDZHXLPjXPnSvGrkpXcuGStzeJMEo6rVzM1spKhccl7P+/l3oFhByQp6Ra6KnpPlICNKa/Qt7fxaZtY7o+snZy6PJEpdIcRZkIytBS+bNOhfV7vAxBC17ZlmJJsdeKzt5fRFiFeQkkKw==
-Received: from DS7PR05CA0047.namprd05.prod.outlook.com (2603:10b6:8:2f::26) by
- SJ0PR12MB5405.namprd12.prod.outlook.com (2603:10b6:a03:3af::11) with
+ bh=sJP0HjxKqbqm2cPL0D23Vy8DyY+XnISaSuaPl2ELDEk=;
+ b=lLbaXg1CToKwn0fJQnesE8m9T4zeWar/lzL7WD3lDc7KgX9mCdZGnByUPAi0fnyrVU8GYfzXpYgNODUA4BNS2IXdxyRtZVy3cFUy8/UnTrRra5fubjCGguv46Eq7z7QxemGXMbzDjkD0Z+QKcz2j74DxgkrwPyoHJ2KAbiVeGoFhJlTYSg+1tzsUsotfY08jgMUWGsNvfphyejNjbVlj/dbblmMSluvNKPyzWARtpVt6CGCfV1OKkvId6A1H0uqU3oR/1+2+DnAllwc2Pdh9MxJMaQjYG6KvM0Z6IHtjLV5+exMYxKdbgRhMXPrpmOBsoM5QA9bDwZyXH6FcO/BNbQ==
+Received: from DM6PR21CA0022.namprd21.prod.outlook.com (2603:10b6:5:174::32)
+ by DM4PR12MB6637.namprd12.prod.outlook.com (2603:10b6:8:bb::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.20; Wed, 5 Oct
- 2022 05:01:00 +0000
-Received: from DM6NAM11FT100.eop-nam11.prod.protection.outlook.com
- (2603:10b6:8:2f:cafe::91) by DS7PR05CA0047.outlook.office365.com
- (2603:10b6:8:2f::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.11 via Frontend
- Transport; Wed, 5 Oct 2022 05:01:00 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.31; Wed, 5 Oct
+ 2022 05:01:32 +0000
+Received: from DM6NAM11FT112.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:174:cafe::af) by DM6PR21CA0022.outlook.office365.com
+ (2603:10b6:5:174::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5709.8 via Frontend
+ Transport; Wed, 5 Oct 2022 05:01:32 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -58,17 +58,17 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.161 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.161) by
- DM6NAM11FT100.mail.protection.outlook.com (10.13.172.247) with Microsoft SMTP
+ DM6NAM11FT112.mail.protection.outlook.com (10.13.173.77) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5709.10 via Frontend Transport; Wed, 5 Oct 2022 05:00:59 +0000
+ 15.20.5709.10 via Frontend Transport; Wed, 5 Oct 2022 05:01:32 +0000
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.26; Tue, 4 Oct 2022
- 22:00:49 -0700
+ 22:01:12 -0700
 Received: from dev.nvidia.com (10.126.230.35) by rnnvmail201.nvidia.com
  (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Tue, 4 Oct 2022
- 22:00:47 -0700
+ 22:01:11 -0700
 From: Chaitanya Kulkarni <kch@nvidia.com>
 To: <ogeert@linux-m68k.org>, <linux-block@vger.kernel.org>,
 	<linux-m68k@lists.linux-m68k.org>, <linux-kernel@vger.kernel.org>,
@@ -82,9 +82,9 @@ CC: <axboe@kernel.dk>, <philipp.reisner@linbit.com>,
 	<mcgrof@kernel.org>, <hare@suse.de>, <damien.lemoal@opensource.wdc.com>,
 	<johannes.thumshirn@wdc.com>, <bvanassche@acm.org>, <ming.lei@redhat.com>,
 	<vincent.fu@samsung.com>, <shinichiro.kawasaki@wdc.com>
-Subject: [RFC PATCH 01/18] block: add and use init disk helper
-Date: Tue, 4 Oct 2022 22:00:10 -0700
-Message-ID: <20221005050027.39591-2-kch@nvidia.com>
+Subject: [RFC PATCH 03/18] amiflop: use init disk helper
+Date: Tue, 4 Oct 2022 22:00:12 -0700
+Message-ID: <20221005050027.39591-4-kch@nvidia.com>
 X-Mailer: git-send-email 2.29.0
 In-Reply-To: <20221005050027.39591-1-kch@nvidia.com>
 References: <20221005050027.39591-1-kch@nvidia.com>
@@ -94,26 +94,26 @@ X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
  rnnvmail201.nvidia.com (10.129.68.8)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT100:EE_|SJ0PR12MB5405:EE_
-X-MS-Office365-Filtering-Correlation-Id: 47961f58-4358-45fe-167a-08daa68e9853
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT112:EE_|DM4PR12MB6637:EE_
+X-MS-Office365-Filtering-Correlation-Id: 015a58a7-467c-41b8-86b2-08daa68eabaa
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	QbIrNtqlfhAbf/gf03oLsqVoqKo753H703gSw1lUPUiXt7oaSI6ree+VIpCOMvdAqE94vQyoxnuUyXSC0s/FqYjkWuToCT19jSTxar1Qvr8Ek6Ij6QFOcqE/Y+u7iQZB1Pu6p+f4ruhKo8EYd5GBEroFyi4KCFQU682x3r3SaEa97yBYXaXnJrEUnJIG5/G+EDd6BSdtN65TDdPoJ8oEvOQ8VnLLFTptkgDm5FUAjEuYlXEpLu2QA23LK6ojILRQNly3zBZdU503+gI7uitx+1519lMJGyebhyvdOKxfVGJjILaEdcHDCCxllTImovuynxaDw68qgz+3rb557CbBNUSnVHFBjPlB9AgmKcLxWFwHJR4d2bmf/FlBRSsBsDptwk5BfV9mCswCiJXGFDwV1GN+hNcdwb2ioi2NxXvTCUl52wRPfMWxZo+yw6BOICSewAm0K3PMo+QZrvvB7MH8900dXeOTeHXs140ngBW4fDu3xh5p0QJnquL8Deb9yv4kOZs6cDEW1deIQ7WzwOb2oxImzqStP+3gX1EJoxE0ARWlT5NiV58Ixmb98I2M1saoWNNNdD1FxBCGfYbb9hf9YcTwA57DT3Rde4zzOYO+OtlGXe918REc1Y/jlB4i29txIz7MlstcYoGc2lwh+PY74BawL9q9QFzk/CtPy/RcIaAeSYqDABSFD2nKSPcNd869j+Z8AJam+RN1LbEfqUa+659mKaPD5S/ixOV88/uUo4UrD+DDl2QUXNblb6VejE+N/WHZg0eao3jBRXRa95asVS+zYITuTknQDXsAvneR3kQ=
-X-Forefront-Antispam-Report: 	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(136003)(396003)(376002)(346002)(451199015)(46966006)(40470700004)(36840700001)(82310400005)(6666004)(36756003)(426003)(7696005)(478600001)(26005)(7636003)(4326008)(8676002)(47076005)(36860700001)(83380400001)(2616005)(40460700003)(2906002)(356005)(336012)(16526019)(316002)(110136005)(186003)(1076003)(41300700001)(40480700001)(70206006)(82740400003)(8936002)(70586007)(7416002)(5660300002)(54906003)(2101003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 	PzprjFkKHROONXcQ/BAh9OJW7TC9NuBrrwffpsNsEvOZWdDtb2drAF/9pqEq0Yz+i6iFjvSYkJDZIT/FNWgECniZ70oNDk6zjhdLsDKCZZ3inLx4dXR+m1C+2qFzSm0IB54Jk39NnF4Vprp8C8BEF7ihDjfR1KbS2hRa4iMP2oFTy0Vdxb9CzKSz5YiyeoJYDTdYGcrI+jXCElnRfcJCFebVBe3ea5zrLLHbqQVnsPPXMaUln+gcyLsc2+Wy0rifJAYRbjMTM+lxyypS9ZqYt8jXEriAQYQuApF7P3LkzuZUxYtoxNrCdD1AlqwzZqyJDGfWaCpOLiBo6ARDz6P453ssLshFn/Mkc2/Qq4L+ruIlZ8isikEULUPbfQTOy0qyEpTRgNsIEXg6QV8y+iVONSFZAJaalj9KmfYoAVPkSnRXzLVk/eesMfzDYdtMisltdw7+Kc9DA2rXEpxUW3xRGFz6YXTdBg2Sf08y/jQCQNUKQqIiW6kQiifKXJals7Jk0mbOPIVic3lY8Qw5Q0eKPPJM8nhUfg9lBX91cb1IbxEANAQ7nCkvkEtH/2LcfvtcbP1dMdqrTDhQ5g20otdGwnf59DhBJUVtPHps+ADVlXEI7rGne690hoAD0M9TaL7MykD2AMroThGT271amts89c0LoXr2FK3vbHwMmEIPvDJm9PxuaXqppd6BlwOxOFPzjRDDI9MQCTr4euapzn2u/JbqMP97aGMst8zmNNbxmTK1u9v6STrnhkN0h8PLfYbch9amgsIlYCgEGH+WJ9h1K7CdKTu9JCV0HIHPHWqycSQ=
+X-Forefront-Antispam-Report: 	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(376002)(396003)(136003)(451199015)(46966006)(40470700004)(36840700001)(40480700001)(36860700001)(82310400005)(16526019)(41300700001)(2906002)(7696005)(2616005)(110136005)(54906003)(36756003)(40460700003)(26005)(336012)(356005)(316002)(8936002)(8676002)(4326008)(478600001)(83380400001)(7416002)(426003)(47076005)(7636003)(186003)(5660300002)(70586007)(1076003)(82740400003)(70206006)(2101003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2022 05:00:59.5620
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2022 05:01:32.0118
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47961f58-4358-45fe-167a-08daa68e9853
+X-MS-Exchange-CrossTenant-Network-Message-Id: 015a58a7-467c-41b8-86b2-08daa68eabaa
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	DM6NAM11FT100.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: 	DM6NAM11FT112.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5405
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6637
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221004_220105_929591_B0AC1B56 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20221004_220137_415260_04DF851F 
+X-CRM114-Status: GOOD (  10.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -138,75 +138,34 @@ and any future ones.
 
 Signed-off-by: Chaitanya Kulkarni <kch@nvidia.com>
 ---
- block/genhd.c                 | 13 +++++++++++++
- drivers/block/null_blk/main.c | 12 ++++--------
- include/linux/blkdev.h        |  5 +++++
- 3 files changed, 22 insertions(+), 8 deletions(-)
+ drivers/block/amiflop.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 514395361d7c..701309a7388e 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1470,3 +1470,16 @@ void inc_diskseq(struct gendisk *disk)
- {
- 	disk->diskseq = atomic64_inc_return(&diskseq);
- }
-+
-+void init_disk(struct gendisk *disk, int major, int first_minor,
-+		int minors, sector_t sectors, void *private_data,
-+		const struct block_device_operations *fops)
-+{
-+	disk->major = major;
-+	disk->first_minor = first_minor;
-+	disk->minors = minors;
-+	set_capacity(disk, sectors);
-+	disk->private_data = private_data;
-+	disk->fops = fops;
-+}
-+EXPORT_SYMBOL_GPL(init_disk);
-diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-index 1f154f92f4c2..d31085c94fd3 100644
---- a/drivers/block/null_blk/main.c
-+++ b/drivers/block/null_blk/main.c
-@@ -1871,18 +1871,14 @@ static int init_driver_queues(struct nullb *nullb)
- static int null_gendisk_register(struct nullb *nullb)
- {
- 	sector_t size = ((sector_t)nullb->dev->size * SZ_1M) >> SECTOR_SHIFT;
-+	const struct block_device_operations *fops;
- 	struct gendisk *disk = nullb->disk;
+diff --git a/drivers/block/amiflop.c b/drivers/block/amiflop.c
+index 4c8b2ba579ee..40f220fd61a7 100644
+--- a/drivers/block/amiflop.c
++++ b/drivers/block/amiflop.c
+@@ -1786,18 +1786,14 @@ static int fd_alloc_disk(int drive, int system)
+ 	if (IS_ERR(disk))
+ 		return PTR_ERR(disk);
  
--	set_capacity(disk, size);
--
--	disk->major		= null_major;
--	disk->first_minor	= nullb->index;
--	disk->minors		= 1;
- 	if (queue_is_mq(nullb->q))
--		disk->fops		= &null_rq_ops;
-+		fops		= &null_rq_ops;
+-	disk->major = FLOPPY_MAJOR;
+-	disk->first_minor = drive + system;
+-	disk->minors = 1;
+-	disk->fops = &floppy_fops;
+ 	disk->flags |= GENHD_FL_NO_PART;
+ 	disk->events = DISK_EVENT_MEDIA_CHANGE;
+ 	if (system)
+ 		sprintf(disk->disk_name, "fd%d_msdos", drive);
  	else
--		disk->fops		= &null_bio_ops;
--	disk->private_data	= nullb;
-+		fops		= &null_bio_ops;
-+	init_disk(disk, null_major, nullb->index, 1, size, nullb, fops);
- 	strncpy(disk->disk_name, nullb->disk_name, DISK_NAME_LEN);
+ 		sprintf(disk->disk_name, "fd%d", drive);
+-	disk->private_data = &unit[drive];
+-	set_capacity(disk, 880 * 2);
++	init_disk(disk, FLOPPY_MAJOR, drive + system, 1, 880 * 2, &unit[drive],
++			&floppy_fops);
  
- 	if (nullb->dev->zoned) {
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 49373d002631..cb9db857f890 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -757,6 +757,11 @@ static inline int __must_check add_disk(struct gendisk *disk)
- {
- 	return device_add_disk(NULL, disk, NULL);
- }
-+
-+void init_disk(struct gendisk *disk, int major, int first_minor,
-+		int minors, sector_t sectors, void *private_data,
-+		const struct block_device_operations *fops);
-+
- void del_gendisk(struct gendisk *gp);
- void invalidate_disk(struct gendisk *disk);
- void set_disk_ro(struct gendisk *disk, bool read_only);
+ 	unit[drive].gendisk[system] = disk;
+ 	err = add_disk(disk);
 -- 
 2.29.0
 
