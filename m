@@ -4,63 +4,209 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF7FC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 11:53:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26983C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 12:30:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Zp9JN/oIUxv8ggM2jKFnQZEUF9tRtOsK+eNMzvP+Jfs=; b=1xqyV91qHgxKGbrT/A49QxQL5o
-	PApTKT6OS0k0uhHJZ7g/uou0EJS7F7F+T1vBKmris3h77oNanHqT0SDl7JqXgoGTGu0PGm1ykGCYE
-	f3IzgGmh4w9naqF+bSJUFnujPg6+er/Witm1sX0t4FynQ8p+fNH2m464cr1iQBb0IJDixT+JwFMiO
-	hATsAO24aNt6ErxJg6z8qKDW9+WZgHcjvSnPTlsG5B4NxFlVF2pfVsBGQjD2staKD3UWQ4kwQW31G
-	DzbEwOMf2DH9d6fPaEEx8RU/cpe/9QTyludDBvUOTWUnEUm5dv+R+CXP1efDueSJbUnNEMieu3sMg
-	PS1Q3GWw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=S4cj5DTyz71N6Lia7DB/KbROCHxtxXfik5XjckNrk+A=; b=Ef/P1jJy/Akynd
+	uWsSo0AHSeca6Acjk2A3l1TDz/O+Nsf7dGeoisJgiFMMoeD7VB8A0p4PiU9BBV/wWQYxDj4GBCRj/
+	ZQQ2DNMs/iVkzrjY4yDpWGjWGuYL+t5x/IVFdrWO7GbiufML6yrOyD4rJNMnPHzY7feMlKtEMd222
+	6RbOn/QuZuOyVNuo+hL65qYLRRI/VkL9WRBuRO2RIEhuejqUH1biM1wCtNn3tebCxXeLGpTIu/C97
+	aS9sTqpzaCp9XPuzRYP4AxrWk0Dew0MNJrV8TNYR1pjC6LqNEL8IUNiEYbAACxS1YWbcha8S0wRjC
+	pvIIGTJrmbrYBg7AHbXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogPQg-0023tP-KN; Thu, 06 Oct 2022 11:52:42 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1ogQ0w-002HiI-Hr; Thu, 06 Oct 2022 12:30:10 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogPQd-0023rQ-Tf
-	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 11:52:41 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	id 1ogPzl-002Gxd-Rq; Thu, 06 Oct 2022 12:28:59 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id E56FA1244;
-	Thu,  6 Oct 2022 13:52:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1665057154;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9D56561943;
+	Thu,  6 Oct 2022 12:28:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C9BAC433C1;
+	Thu,  6 Oct 2022 12:28:40 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="OS8t32IG"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1665059318;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FZe/U/2fgPatLd94i7eLXrAEz+0HGRCtOhliaKB6zJ0=;
-	b=GRfAMRSc2WqOBy6QcR0DJ4tjLdZYTTLVq0XZ7XTWKS5mhxx4NRPlI9PEGJKxPbF3BnsLHm
-	4zpBICbXGn+X+vA6acySvyeKCEe/U+ZOzFo4UikoqKe50L8Z65JVKO1B85qiWrOAMIyelL
-	QKrnkCMlEiyt08jLsRVLgVm2nPv/YSbixbOFViuwKfeVt8DgM5bG8UL/qUm+0afQDX8o4b
-	bH3SWxt0dot+2i7QjUWTDjJywc5Oi/jaVTfaDsd4NvpWcBLT0EL1G+gchJ87H68KEWEy4p
-	f1J0d9Ymw8Vqgk8/+CxIQ83sshm3sVaBd3+sfEbfyuzriQqZzl70GIyc1txX8A==
+	bh=5CT4nH/m4137cke6a9HxB/7vcArAWSQRa4usYkfKNrg=;
+	b=OS8t32IGu3oCxKhFrKsoTlJdA0ilidFXzfDav1WbEMtetkdGq8zG44OTpAoolbKblRE28x
+	JavSPZ213Zn0QlCC7qiV7HVuoj014/Af3MYIJXK6V6JzJ66H365IrRZBlUnLH9HyqJISSh
+	i7WOLg4+btGeRh3RwCHT+vvVoWgXHqc=
+Received: 	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 5a4d154b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Thu, 6 Oct 2022 12:28:38 +0000 (UTC)
+Date: Thu, 6 Oct 2022 06:28:26 -0600
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Amitkumar Karwar <amitkarwar@gmail.com>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+	Andreas Noever <andreas.noever@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	Andy Lutomirski <luto@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Arend van Spriel <aspriel@gmail.com>,
+	Ayush Sawal <ayush.sawal@chelsio.com>,
+	Borislav Petkov <bp@alien8.de>, Chao Yu <chao@kernel.org>,
+	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Ahern <dsahern@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Dick Kennedy <dick.kennedy@broadcom.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
+	Franky Lin <franky.lin@broadcom.com>,
+	Ganapathi Bhat <ganapathi017@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Hannes Reinecke <hare@suse.de>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hante Meuleman <hante.meuleman@broadcom.com>,
+	Hao Luo <haoluo@google.com>, Haoyue Xu <xuhaoyue1@hisilicon.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Helge Deller <deller@gmx.de>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+	Hugh Dickins <hughd@google.com>,
+	Igor Mitsyanko <imitsyanko@quantenna.com>,
+	Ilya Dryomov <idryomov@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+	Jack Wang <jinpu.wang@ionos.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	"James E . J . Bottomley" <jejb@linux.ibm.com>,
+	James Smart <james.smart@broadcom.com>, Jan Kara <jack@suse.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jay Vosburgh <j.vosburgh@gmail.com>,
+	Jean-Paul Roubelat <jpr@f6fbb.org>,
+	Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Jiri Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	John Stultz <jstultz@google.com>, Jon Maloy <jmaloy@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Julian Anastasov <ja@ssi.bg>, KP Singh <kpsingh@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>, Keith Busch <kbusch@kernel.org>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Manish Rangankar <mrangankar@marvell.com>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Marco Elver <elver@google.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	"Md . Haris Iqbal" <haris.iqbal@ionos.com>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michael Jamet <michael.jamet@intel.com>,
+	Michal Januszewski <spock@gentoo.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+	Neil Horman <nhorman@tuxdriver.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Nilesh Javali <njavali@marvell.com>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Pravin B Shelar <pshelar@ovn.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Richard Weinberger <richard@nod.at>,
+	Rohit Maheshwari <rohitm@chelsio.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+	Sergey Matyukevich <geomatsi@gmail.com>,
+	Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+	Simon Horman <horms@verge.net.au>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>,
+	Thomas Graf <tgraf@suug.ch>,
+	Thomas Sailer <t.sailer@alumni.ethz.ch>,
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Varun Prakash <varun@chelsio.com>,
+	Veaceslav Falico <vfalico@gmail.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+	Vinod Koul <vkoul@kernel.org>, Vlad Yasevich <vyasevich@gmail.com>,
+	Wenpeng Liang <liangwenpeng@huawei.com>,
+	Xinming Hu <huxinming820@gmail.com>, Xiubo Li <xiubli@redhat.com>,
+	Yehezkel Bernat <YehezkelShB@gmail.com>,
+	Ying Xue <ying.xue@windriver.com>,
+	Yishai Hadas <yishaih@nvidia.com>, Yonghong Song <yhs@fb.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	brcm80211-dev-list.pdl@broadcom.com, cake@lists.bufferbloat.net,
+	ceph-devel@vger.kernel.org, coreteam@netfilter.org,
+	dccp@vger.kernel.org, dev@openvswitch.org,
+	dmaengine@vger.kernel.org, drbd-dev@lists.linbit.com,
+	dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
+	linux-actions@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-hams@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-mm@kvack.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-nvme@lists.infradead.org, linux-raid@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-sctp@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com, linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, lvs-devel@vger.kernel.org,
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	rds-devel@oss.oracle.com, SHA-cyfmac-dev-list@infineon.com,
+	target-devel@vger.kernel.org, tipc-discussion@lists.sourceforge.net
+Subject: Re: [PATCH v1 2/5] treewide: use get_random_{u8,u16}() when possible
+Message-ID: <Yz7J6j3cXDLK7O6A@zx2c4.com>
+References: <20221005214844.2699-1-Jason@zx2c4.com>
+ <20221005214844.2699-3-Jason@zx2c4.com>
+ <202210052126.B34A2C62@keescook>
 MIME-Version: 1.0
-Date: Thu, 06 Oct 2022 13:52:33 +0200
-From: Michael Walle <michael@walle.cc>
-To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-Cc: ~sircmpwn/email-test-drive@lists.sr.ht, patrick@stwcx.xyz,
- garnermic@fb.com, Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush
- Yadav <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: winbond: add support for w25q01jv-im
-In-Reply-To: <20221006070841.2106194-1-Delphine_CC_Chiu@Wiwynn.com>
-References: <20221006070841.2106194-1-Delphine_CC_Chiu@Wiwynn.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <0dde4fa6ddeefa23314dbdcd1dd1b28b@walle.cc>
-X-Sender: michael@walle.cc
+Content-Disposition: inline
+In-Reply-To: <202210052126.B34A2C62@keescook>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221006_045240_159993_D5251981 
-X-CRM114-Status: GOOD (  12.29  )
+X-CRM114-CacheID: sfid-20221006_052858_053228_9A19D752 
+X-CRM114-Status: GOOD (  21.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,47 +218,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-Am 2022-10-06 09:08, schrieb Delphine CC Chiu:
-> Add support for winbond w25q01jv-im chip.
+On Wed, Oct 05, 2022 at 09:38:02PM -0700, Kees Cook wrote:
+> > diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+> > index 56ffaa8dd3f6..0131ed2cd1bd 100644
+> > --- a/lib/test_vmalloc.c
+> > +++ b/lib/test_vmalloc.c
+> > @@ -80,7 +80,7 @@ static int random_size_align_alloc_test(void)
+> >  	int i;
+> >  
+> >  	for (i = 0; i < test_loop_count; i++) {
+> > -		rnd = prandom_u32();
+> > +		rnd = get_random_u8();
+> >  
+> >  		/*
+> >  		 * Maximum 1024 pages, if PAGE_SIZE is 4096.
 > 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
-> ---
->  drivers/mtd/spi-nor/winbond.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/winbond.c 
-> b/drivers/mtd/spi-nor/winbond.c
-> index ffaa24055259..2b02b05ceb0a 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -139,6 +139,9 @@ static const struct flash_info winbond_nor_parts[] 
-> = {
->  	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
-> +	{ "w25q01jv-im", INFO(0xef7021, 0, 64 * 1024, 2048)
+> This wasn't obvious either, but it looks like it's because it never
+> consumes more than u8?
 
-The name should be w25q01jvm.
+Right. The only uses of that are %23 and %10 later on down.
 
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ) },
-
-That flash should support SFDP, so please try the following:
-+	{ "w25q01jvm", INFO(0xef7021, 0, 0, 0) PARSE_SFDP },
-
-Also, we require an SFDP dump for new flash submissions, see [1].
-
--michael
-
-[1] 
-https://lore.kernel.org/linux-mtd/4304e19f3399a0a6e856119d01ccabe0@walle.cc/
+Jason
 
 ______________________________________________________
 Linux MTD discussion mailing list
