@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 933A6C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 04:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01E64C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 04:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dZy5QrwSpj033MJLo9JlICRjUn6tqq2WTqvyWTPvNV0=; b=D95rK2PQpj7TeF
-	uPUDL4kdPjsbQjgeEghgA8rKissVhLp36abDQodbVmVfACx5wXRjrMqpppw+NSXhHPWWP9vCsbKEi
-	QSLwVk0v4YqhGRNHIRPN2QN5C8pWHNkoa/TwnV/1M9q3E0iEqR+JiH5nYDzdxzzgZwQH5pFO5ENV4
-	L0VLPTXKbmNo6S903WJuCiupwfO+rTzqAaKpUsRSHeBKyBo7XUakfWREzuDGNz4SGmqn9lepX5E1A
-	v53zJVEHJnzaB+Jim22pmvVaX5hEY1zs3AFgreRzCSFSLfQv6O7S0dCFvwl1emoFlVMCkfrR61hQw
-	fAvVHE4YtyDyDklWh93w==;
+	List-Owner; bh=0QdPAlEjfsHqr0v3i1azQLL2+UDZHVAXpJHUfCxQzQ8=; b=AEIUhvb8Ov1ujt
+	q8aQPMzeyuzBF1eBbZMKXT0Y9oVbNfIPwxeMIjH38A4cF1Fh1GdK4cioxvr+cv9bt7aELdEqOTLsO
+	3xT4WxMrL+6feWWGH1x3EYnGTbDvpR2tli7uzwkgyMlNWKm48jmsg3MVd1Yi4ECMqHxl2kMZYiYzh
+	cX0DSmJUVnXc0x8YwCzkLKzIHfY+KwufHHqk2jI5w/9QdJKVFZz1pmjYOdvXNpVk48w/4Nysp1xdP
+	bWLFnqaKGOi50zJAPnOK647/6+CYL237OK/QU4uR78LRRuCG81nbgI8c4cEq9Z+CxvUxl/vG5HIho
+	SYS8zRb1ZBup4NZQB1xQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogIlG-00HRtn-L4; Thu, 06 Oct 2022 04:45:30 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1ogInx-00HSok-5X; Thu, 06 Oct 2022 04:48:17 +0000
+Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogIlD-00HRrs-NC
-	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 04:45:29 +0000
-Received: by mail-pl1-x630.google.com with SMTP id f23so677075plr.6
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2022 21:45:27 -0700 (PDT)
+	id 1ogInt-00HSl7-5K
+	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 04:48:16 +0000
+Received: by mail-pj1-x102f.google.com with SMTP id x1-20020a17090ab00100b001fda21bbc90so3281347pjq.3
+        for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2022 21:48:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=BXKZz/gOYpFYEK/kvAD1ks5ZMqdWWvWPR9euDTlMinY=;
-        b=Pa5J7iVIfOPPpc5FnD+VCPFKYUv3DdEsBgX8F3veGLnr0MqCAKKnFqdt9Zn7I1vA4a
-         hp/m/n+zFRiftLounW3GI1Yh9t5CRw9Qy1PoS1A+KhEfND0rtCnNn/VAYMO7oSLOURb7
-         x/xHspG9KrvXOaDvidgpTqZEY9MLlutH21Sdk=
+        bh=Zga/kwguXOa9tZGzF2X+ZLpnzxGRszRa7j7kheBbr2g=;
+        b=VDYXzBjTmlsVIl+Y4iF0uyvrgTLR7zDCDitOOtRhnnkCI+cj7BOAV+jXORmkdJC8NR
+         kLVeoGGmNjWIzbs7ngaNL2av6vzDETZ5xNshsjkA6+Ddrv+XZy7wZSPrRI2h/WYQMveo
+         FOjR6IXNtLQ2MzWVWNTzoDYr9QH87X51UPqiU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=BXKZz/gOYpFYEK/kvAD1ks5ZMqdWWvWPR9euDTlMinY=;
-        b=ldcq1o3sN4sNWVjc2+Wd2O2pmLXjzo0r34vZOxF09UqO9Ezzm+FglOrAgURaCAofoZ
-         u8u6Kqe6zlW6dKa3paHYDYuKheYdTOUY828xoGuJNT7zsagGF5+QNnwSXRJl/ouwNrui
-         66avzICHgxhrRUWrJoP2vnJLSM8QE4Do5XFu1zMvAhSrkA1trMnje3cM3/kgfLouA6h4
-         TuOLpO6ye/VYCVE+SA+UtYekdjp3sWFGHFmz1y3ck+WasEaJQZiNHocrlKsoV1zS7RdK
-         mM7pvhA4eMk70JAMnxQakHNVzwAe6gkhqtskkVkLK772LLtu+k8N0a76YZndLFP9NQQn
-         b25Q==
-X-Gm-Message-State: ACrzQf3B0pcaHuXCk+0VtmoO7g5u5VKdN8kzigaPmjzSI087NoAMCd2p
-	IWIh6MlRrgE3G0fsRaBD4FJ0UA==
-X-Google-Smtp-Source: AMsMyM7BFOiJDjGZF65COEMp2Clzr5vtXi0588PB1vqUCkCeq9oCGZAqcRbRAS5gmL3ROlmwc9XhOA==
-X-Received: by 2002:a17:90b:384a:b0:203:7388:64bf with SMTP id nl10-20020a17090b384a00b00203738864bfmr8697904pjb.115.1665031527009;
-        Wed, 05 Oct 2022 21:45:27 -0700 (PDT)
+        bh=Zga/kwguXOa9tZGzF2X+ZLpnzxGRszRa7j7kheBbr2g=;
+        b=1spDHq+Ge8St/b/ZoyJ2eavg0DqGV5flIXkKKHElCMQU6L3WrcweLEwDtylffWzoLP
+         JljRvly8ecfVlmB9xaYZ93vJ2TouBjZSzCePjsva18D/G+9NwdryvKdnTW42m72Eu4p0
+         7wILxC73OcV/B+EnzUl64GItSju2kKEcZ6O25mjpOgqnizXx2J1G/hMj1rpJ8Lg/k6bu
+         1Bxw38pJ7ETh5x+n2MOXHqVNXfIPIwLSo6gqEAMmAyJz/BpbHMj7a6sxv1oXuellfKMN
+         btk6x3NQ+r2m44+khFMJ6yqolWr8CAu12KauFnpnTKLw5g+BwM4DtqxIm2yvkCC/2uL+
+         7z1A==
+X-Gm-Message-State: ACrzQf1omaFCKgn2YHSRnc50HSy9KRKhKbippN9I1sfQJd5vkrQE1EfU
+	4z+zEgus4Vg+xj2W+ITdcBjhhw==
+X-Google-Smtp-Source: AMsMyM5noNd8dF5/8fuBkrlB/HNbt95GlgliJJ8jYtlN4mBVQXEji+jNlD1vk9tphNCBxko7f/llIA==
+X-Received: by 2002:a17:90b:254b:b0:200:a860:5bf9 with SMTP id nw11-20020a17090b254b00b00200a8605bf9mr8436942pjb.176.1665031691628;
+        Wed, 05 Oct 2022 21:48:11 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d5-20020a62f805000000b0054124008c14sm11733797pfh.154.2022.10.05.21.45.23
+        by smtp.gmail.com with ESMTPSA id t20-20020a170902dcd400b00178a8f4d4f2sm11197475pll.74.2022.10.05.21.48.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Oct 2022 21:45:24 -0700 (PDT)
-Date: Wed, 5 Oct 2022 21:45:22 -0700
+        Wed, 05 Oct 2022 21:48:10 -0700 (PDT)
+Date: Wed, 5 Oct 2022 21:48:09 -0700
 From: Kees Cook <keescook@chromium.org>
 To: "Jason A. Donenfeld" <Jason@zx2c4.com>
 Cc: linux-kernel@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
@@ -208,15 +208,15 @@ Cc: linux-kernel@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
 	rds-devel@oss.oracle.com, SHA-cyfmac-dev-list@infineon.com,
 	target-devel@vger.kernel.org, tipc-discussion@lists.sourceforge.net
 Subject: Re: [PATCH v1 4/5] treewide: use get_random_bytes when possible
-Message-ID: <202210052144.5DA3690D@keescook>
+Message-ID: <202210052148.AA3C7BB@keescook>
 References: <20221005214844.2699-1-Jason@zx2c4.com>
  <20221005214844.2699-5-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20221005214844.2699-5-Jason@zx2c4.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221005_214527_802128_FAADEF44 
-X-CRM114-Status: GOOD (  15.83  )
+X-CRM114-CacheID: sfid-20221005_214813_232611_6F0F89C1 
+X-CRM114-Status: GOOD (  16.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -238,6 +238,8 @@ On Wed, Oct 05, 2022 at 11:48:43PM +0200, Jason A. Donenfeld wrote:
 > get_random_bytes() for several releases now, and compiles down to the
 > exact same code. Replace the deprecated wrapper with a direct call to
 > the real function.
+> 
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
 Global search/replace matches. :)
 
