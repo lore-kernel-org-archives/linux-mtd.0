@@ -4,60 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4112C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 09:33:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF7FC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 11:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g46BsXSs4J6fWWTBC9/rydioRYNMl5lnfNU8udD2AxQ=; b=4uuHahzh4/J9D9
-	wl5moqR8PchfpJ87Tv++OZJ59sjO3YsNgzfV8OamEgbN14/6EtQSphvf0Pf7lDKnh12uAgA98kAjp
-	sIUoOBeMB/1UqTlYae/37XIzlso2aGtB4o4BrUiANfaY3u9RfWzzaVbuS7WhWoNACtjepaBUBk8JR
-	lpuSsEUEdtHJQ43D43MgLzfo3OIcmPUBLJ7ogGK03o0rkmUQoqwukcW2xSk+WYLaV6Pymb0ENY/N+
-	kCTcndfzWItHW5RXzPbqROVOsPC9ZXYtU1WqcZ4e4kkkFDFAR/IfUDrQ+3HEdef+o6AZ9pQUL1btX
-	YTWDS1LbgYjjpeCKdswQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Zp9JN/oIUxv8ggM2jKFnQZEUF9tRtOsK+eNMzvP+Jfs=; b=1xqyV91qHgxKGbrT/A49QxQL5o
+	PApTKT6OS0k0uhHJZ7g/uou0EJS7F7F+T1vBKmris3h77oNanHqT0SDl7JqXgoGTGu0PGm1ykGCYE
+	f3IzgGmh4w9naqF+bSJUFnujPg6+er/Witm1sX0t4FynQ8p+fNH2m464cr1iQBb0IJDixT+JwFMiO
+	hATsAO24aNt6ErxJg6z8qKDW9+WZgHcjvSnPTlsG5B4NxFlVF2pfVsBGQjD2staKD3UWQ4kwQW31G
+	DzbEwOMf2DH9d6fPaEEx8RU/cpe/9QTyludDBvUOTWUnEUm5dv+R+CXP1efDueSJbUnNEMieu3sMg
+	PS1Q3GWw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogNFV-001A0W-2d; Thu, 06 Oct 2022 09:33:01 +0000
-Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
+	id 1ogPQg-0023tP-KN; Thu, 06 Oct 2022 11:52:42 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogNEj-0019YN-Po
-	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 09:32:16 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id A2A80C000F;
-	Thu,  6 Oct 2022 09:32:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1665048729;
+	id 1ogPQd-0023rQ-Tf
+	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 11:52:41 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id E56FA1244;
+	Thu,  6 Oct 2022 13:52:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1665057154;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FjHVL/38CXAeYxrAeQ9axWybfLmZxCn1wRHKQgSsmsk=;
-	b=nByDzAF7vFUEJOyiTSNV4fyHY8MRgDpGnmYUwpsKCMxpcQza7EuAE7OSZ5qTskkdl6gwJC
-	Ku5ljEg1RbOHaPIZUuiKd2FMYe29TBXh1WEH9cgmRTQ8i8HjPGIjSPk+tZXXcYiwCuptWF
-	Vk/ndBRgAVJBbKIfOd2wzeXtOYL6dNi/WeOMPtSgcw+NdIC9ZOhwDcVkJazCH9835dFOgx
-	ffCycH+eGS76IlI12KAuPkZqNDm8Wga5Vjqhd5KsDerBY1C04hWW9BUfhc6vgyRKY4YCh7
-	XlCvG4Vb2WS/ZaAOhjaDixnsxl/pv5zUq0tEL+8pik/YkqmeLIRuQEXUQ2fBeQ==
-Date: Thu, 6 Oct 2022 11:32:07 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc: mikhail.kshevetskiy@iopsys.eu, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] spi-nand: add Winbond W25N02KV flash support, fix
- Winbond flashes identifications
-Message-ID: <20221006113207.7b81d45b@xps-13>
-In-Reply-To: <d55465ac-fe0b-130c-31ae-0ce62af3eb5f@kontron.de>
-References: <20221006033256.111664-1-mikhail.kshevetskiy@iopsys.eu>
-	<d55465ac-fe0b-130c-31ae-0ce62af3eb5f@kontron.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	bh=FZe/U/2fgPatLd94i7eLXrAEz+0HGRCtOhliaKB6zJ0=;
+	b=GRfAMRSc2WqOBy6QcR0DJ4tjLdZYTTLVq0XZ7XTWKS5mhxx4NRPlI9PEGJKxPbF3BnsLHm
+	4zpBICbXGn+X+vA6acySvyeKCEe/U+ZOzFo4UikoqKe50L8Z65JVKO1B85qiWrOAMIyelL
+	QKrnkCMlEiyt08jLsRVLgVm2nPv/YSbixbOFViuwKfeVt8DgM5bG8UL/qUm+0afQDX8o4b
+	bH3SWxt0dot+2i7QjUWTDjJywc5Oi/jaVTfaDsd4NvpWcBLT0EL1G+gchJ87H68KEWEy4p
+	f1J0d9Ymw8Vqgk8/+CxIQ83sshm3sVaBd3+sfEbfyuzriQqZzl70GIyc1txX8A==
 MIME-Version: 1.0
+Date: Thu, 06 Oct 2022 13:52:33 +0200
+From: Michael Walle <michael@walle.cc>
+To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+Cc: ~sircmpwn/email-test-drive@lists.sr.ht, patrick@stwcx.xyz,
+ garnermic@fb.com, Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush
+ Yadav <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: winbond: add support for w25q01jv-im
+In-Reply-To: <20221006070841.2106194-1-Delphine_CC_Chiu@Wiwynn.com>
+References: <20221006070841.2106194-1-Delphine_CC_Chiu@Wiwynn.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <0dde4fa6ddeefa23314dbdcd1dd1b28b@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221006_023214_050997_7FAB2CB1 
-X-CRM114-Status: GOOD (  15.81  )
+X-CRM114-CacheID: sfid-20221006_045240_159993_D5251981 
+X-CRM114-Status: GOOD (  12.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,32 +72,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRnJpZWRlciwKCmZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5kZSB3cm90ZSBvbiBUaHUsIDYg
-T2N0IDIwMjIgMTE6MjY6NDUgKzAyMDA6Cgo+IEFtIDA2LjEwLjIyIHVtIDA1OjMyIHNjaHJpZWIg
-bWlraGFpbC5rc2hldmV0c2tpeUBpb3BzeXMuZXU6Cj4gPiAKPiA+IEZyb206IE1pa2hhaWwgS3No
-ZXZldHNraXkgPG1pa2hhaWwua3NoZXZldHNraXlAaW9wc3lzLmV1Pgo+ID4gCj4gPiBXaW5ib25k
-IHVzZXMgMyBieXRlcyB0byBpZGVudGlmeSBmbGFzaDogdmVuZG9yX2lkLCBkZXZfaWRfMCwgZGV2
-X2lkXzEsCj4gPiBidXQgY3VycmVudCBkcml2ZXIgdXNlcyBvbmx5IGZpcnN0IDIgYnl0ZXMgb2Yg
-aXQgZm9yIGRldmljZXMKPiA+IGlkZW5maWZpY2F0aW9uLiBBcyByZXN1bHQgV2luYm9uZCBXMjVO
-MDJLViBmbGFzaCAoaWRfYnl0ZXM6IEVGLCBBQSwgMjIpCj4gPiBpcyBpZGVudGlmaWVkIGFzIFcy
-NU4wMUdWIChpZF9ieXRlczogRUYsIEFBLCAyMSkuCj4gPiAKPiA+IEZpeCB0aGlzIGFuZCBhZGQg
-VzI1TjAyS1YgZmxhc2ggc3VwcG9ydC4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogTWlraGFpbCBL
-c2hldmV0c2tpeSA8bWlraGFpbC5rc2hldmV0c2tpeUBpb3BzeXMuZXU+ICAKPiAKPiBUaGFua3Mg
-Zm9yIHRoZSBwYXRjaC4gV2UgaGF2ZSBhIHNpbWlsYXIgY2hhbmdlIGluIG91ciBkb3duc3RyZWFt
-IGtlcm5lbCwKPiB0aGF0IEkgZmFpbGVkIHRvIHB1c2ggdXBzdHJlYW0gc28gZmFyLiBCdXQgeW91
-ciB2ZXJzaW9uIGxvb2tzIGV2ZW4gYmV0dGVyLgo+IAo+IENhbiB5b3UgY2hhbmdlIHRoZSBzdWJq
-ZWN0IHByZWZpeCB0byAibXRkOiBzcGluYW5kOiB3aW5ib25kOiIsIHBsZWFzZT8KPiAKPiBBbmQg
-SSBhbHNvIHdvdWxkIGxpa2UgdG8gYXNrIHlvdSB0byBzcGxpdCB0aGlzIGludG8gdHdvIHBhdGNo
-ZXMuIFRoZQo+IGZpcnN0IG9uZSB0byBhZGQgdGhlIHRoaXJkIGJ5dGUgaW4gdGhlIGlkcyBvZiB0
-aGUgZXhpc3RpbmcgZGV2aWNlcyBhbmQKPiB0aGUgc2Vjb25kIG9uZSB0byBhZGQgc3VwcG9ydCBm
-b3IgdGhlIG5ldyBkZXZpY2UuCgpBZ3JlZWQgb24gYm90aCBjb21tZW50cywgdGhhbmtzIEZyaWVk
-ZXIhCgo+IFdpdGggdGhlc2UgdHdvIGNoYW5nZXMgeW91IGNhbiBhZGQ6Cj4gCj4gUmV2aWV3ZWQt
-Ynk6IEZyaWVkZXIgU2NocmVtcGYgPGZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5kZT4KCkNoZWVy
-cywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi,
+
+Am 2022-10-06 09:08, schrieb Delphine CC Chiu:
+> Add support for winbond w25q01jv-im chip.
+> 
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> ---
+>  drivers/mtd/spi-nor/winbond.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/winbond.c 
+> b/drivers/mtd/spi-nor/winbond.c
+> index ffaa24055259..2b02b05ceb0a 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -139,6 +139,9 @@ static const struct flash_info winbond_nor_parts[] 
+> = {
+>  	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+>  			      SPI_NOR_QUAD_READ) },
+> +	{ "w25q01jv-im", INFO(0xef7021, 0, 64 * 1024, 2048)
+
+The name should be w25q01jvm.
+
+> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+> +			      SPI_NOR_QUAD_READ) },
+
+That flash should support SFDP, so please try the following:
++	{ "w25q01jvm", INFO(0xef7021, 0, 0, 0) PARSE_SFDP },
+
+Also, we require an SFDP dump for new flash submissions, see [1].
+
+-michael
+
+[1] 
+https://lore.kernel.org/linux-mtd/4304e19f3399a0a6e856119d01ccabe0@walle.cc/
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
