@@ -4,135 +4,223 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5520DC43219
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 08:19:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2EE7C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 08:44:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mqow2qrrfwo2IU68bZf6NxqM/g8A034DXLOj8hKYDoU=; b=D/VPI3JrqVo19F
-	C4LMSs1fc+bsbUCpziR6IJFnvdmC7Dd3iXsMPttuHvaEK9RDEcx78Le7oRaWHVtyt8yO2Sf6pcJUf
-	9v9fpmpERF0UWPVig/cKm86uDc+w+gtpbfjk4A0uUSjuwZgECOTbgiurgFkXm6ZHqgKAMl6ZdBRWz
-	tLZVx4m5GoxwK+0TPhV5cZGo9ywO1ssi6bwxm/s166Pg90hQW4WekLuuTJhfgCoaCoElvo9kRUyhm
-	NBIqU9ggPj8Q0FHKMKYCk4MLP1etTq5hkHwKm+Ehpwg3r7bFGQMw4glV0B6O7tsFs6Srzcw3TPLPs
-	+hYZRfRBRAdKUmZ9cYAg==;
+	List-Owner; bh=PgWSlV8HOMzo9CoYrHPx4OYlBHsSFh6UYKV82QE5FJE=; b=fL4VHIQA1jLqH0
+	FgoGFmUKYXJElm0bDG8s4SJpMBxrgW7PFNyBh5KthetiWCM6ciWVBipPNh3AAb2b+7dc/5WfQA/mC
+	yRegybPopLmIkg9GA2XBvk52+GTABlzPDp9uUp27lc8EIOIA5fjtgzz22kueJ7sKbtZNNYii2Gx1Q
+	4A6HCC+6dMhJi+5BENFSIMyuSPw4pAUTU+YNebvQNsmQdGf4vJm1xyID9rd69v96zWTBGqhppzfD+
+	RAUam/y02bfCRDQQXlXB9+pT5OWbN59XVp52O7GTjgOSQCKtgs0xn3G8KBJXrFaTJEQGss8rQbrKn
+	OftcMqH3mjYKcJdZCDuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogM5j-000eH9-5P; Thu, 06 Oct 2022 08:18:51 +0000
-Received: from mail-eopbgr90041.outbound.protection.outlook.com ([40.107.9.41] helo=FRA01-MR2-obe.outbound.protection.outlook.com)
+	id 1ogMTn-000nGp-7R; Thu, 06 Oct 2022 08:43:43 +0000
+Received: from smtp-out2.suse.de ([2001:67c:2178:6::1d])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogM5f-000eE9-Kh
-	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 08:18:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XM4ZuC/bUez6szw0HjFbZ86EVqiwlMzsaF+rzj4GegQYc0amcLmQ/NjgOijOA9kYqXNWUIUBE2PvoqW7diO952tCEGnEn2b2/G/bPP878KimvJ0heSrA1vjuacwRY3Qo70BtIzplwikP/EwKz/9deL8EIEIPZOg0Z04X0FzMQAA3zd/JWCzdB0ebIRsMbhIvQuxVtu71psFswUUf/2kKUf2UTtuEY1ukhvhT8e55V2qYFlVTF+0VCo2HChi55QWmJSJDjipw6Nq4ui+NAXKKHUL3tKHnCTqWnoIh1H9VSmaLL32qTcSPHg3iB/+HXz2wmuRGe3M/w4kAgc1qZ89LSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YjJgZ5bGs5mTJ9jrYt4mLk4r7ZHGBHFvMp8GoYukdOI=;
- b=lrOyrsTMUAYGSAfsId/X3IXtkpbKB2dcrJ1BzWGHa0E7eX2i3glJle031E3qj6p27uzMsHXZHGFZc+thkLtIyP1VkTK+lBLjagijotZCYof1fKrB/wBVi3avkfp5DG05B2iAWLZ4/Qgv2MzPzc1merwYZMinynpAAqKuhi5BLMo103LllAgzbfFyqGtI7COIlhspM5zLVm2+xPtfSW894k8CR2fzGRXg7yMJdkhXbtL6UruPs+4Ji3e/TdaDHzJ2uyDf53NNeJmrNZbTwvRigbQtR7Cc6/4NEaIlQSP6Dxk1AC+VSlaoiWba5wR+Z1r+7cXyoi2F4MMYQrWhAdfk8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YjJgZ5bGs5mTJ9jrYt4mLk4r7ZHGBHFvMp8GoYukdOI=;
- b=yNGUZ1dskbJfvuL6b0BWm7KAkilQ9KaV/ZI7H8YLayzI5WRpLxVONjUpnNUK57zIb4DA0QsfLlJ7tkbe3WqtXjSZctNpwabwwJ3r3ZEaAan0PZQyx5W2z4DwTJhbPgy98hD++EyMdi8qmoaYRKH9BMbaTXIQnF4axN1+7iCVwxb5Y2mKhLkXEbq249nl6uGaCfD3QsDQrmC1sljgRuRdiR7J4dAZNyKdE08AY+rj2q0/uLhJu82gtvethcWTigTJgzPrJD75s0cHEF9OU6ayrxeeHnXzL7+RrWViDnocdVYp7vCtjzQgY30ox8jwYv3ubbDpPRiC0VgNmt5B/HvqQg==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR0P264MB1962.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:168::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.34; Thu, 6 Oct
- 2022 08:18:42 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c854:380d:c901:45af]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c854:380d:c901:45af%5]) with mapi id 15.20.5676.036; Thu, 6 Oct 2022
- 08:18:42 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
-	<vigneshr@ti.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: rawnand: mpc5121: Replace NO_IRQ by 0
-Thread-Topic: [PATCH] mtd: rawnand: mpc5121: Replace NO_IRQ by 0
-Thread-Index: AQHY2USqNNFgEuSoTkSY6babunhwha4A/TuAgAAIt4A=
-Date: Thu, 6 Oct 2022 08:18:42 +0000
-Message-ID: <1c62aa44-c282-0d8c-7f4d-530b5e6db3e8@csgroup.eu>
-References:  <4e3ca3e0077ea124ea210c312e6e620f0f9e8bca.1665034065.git.christophe.leroy@csgroup.eu>
- <20221006094729.61ff9b24@xps-13>
-In-Reply-To: <20221006094729.61ff9b24@xps-13>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB1962:EE_
-x-ms-office365-filtering-correlation-id: f1446adc-8984-4c6e-2f70-08daa7736178
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:  c6xfgUgHEbCz908a9MnwGQPrjIwKRYc+GzRO4ABU3gncj45QBimcMA5jQhbc0QNdXLUKdSqkJdxIjdVG4zNzfyu9IaNYiVbVSZ+E0s6aOSSux6fDzZrGJq+N4jke+jA+FC71jutScw3fsETo0igElS4q3jRQOeb2REimVjGNA8HUlhW+uikqsNqLiB1huS/G9HhmjQyCS0AZauOmWGZFd7qxw6Bl1x2KaPjDDvdiBhzjLovJHyim5YhoxYR8WrWzypksmMsB15TRZ1JD1Zk7diaWbSJxfs2LE1+4YypuM+2Z6AiV8/nL8WNZnBOiTAGQhFhlQEef0Pbz1E7Qv/7z05cFOhC8O5m1oz5JNu0EYmuOSCCna9gVOM0UUHp7i50j+64/OsjUkovbP8zp9Q7GySjn/2wegIFAQ3zzV5xlsGmL7d6WdcA6c2+D4O6ekETuwLjBU+sdEYSlw//fbOcrDwudlsiWMfMik22VV1e3R3whiyPS55aNDPN3uB+v1p869f6c0mgeZHS2n9xeDG1nidUwsxjaEYATiX30dWJUg/WFxulMJRlsQ9pW5+QTNcYkGY66hR9qxdEUUIFtWVwwusEByORtfO04Bjrx92kwuXfJ6Wn0FwTquU2xPn4dHIZJlIZW3AB/qoe0ZBEH6l9MBFwk6TJfuT+hPGFjzEOBjf/cDfdwMwuRs2HP6+URMF0rdhPXtQjXxpZJZhvvOYlWg7LmUPnlDOzv5aR7GWujYeUHvDtUFDWnuYTY1fHE5kTwpyChnBQpkpz0yjULFIlPtZfNxldUy8ZRwPrXJ7579mUXNblVkLpQ9i0dhz1nKnubiUgM4JkZbibfPsXvRFFaLA==
-x-forefront-antispam-report:  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(136003)(376002)(39850400004)(346002)(396003)(451199015)(2616005)(186003)(66574015)(83380400001)(8676002)(76116006)(66446008)(5660300002)(44832011)(41300700001)(91956017)(4326008)(66946007)(64756008)(8936002)(36756003)(66556008)(2906002)(66476007)(6512007)(26005)(6506007)(31696002)(122000001)(71200400001)(54906003)(478600001)(86362001)(6486002)(6916009)(316002)(38100700002)(31686004)(38070700005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:  =?utf-8?B?N0JuM0RVR0wvMHJid2NBeEQ5ZUU0M2ZFM1RGNHU0MVR6ZERjZDdlNFZBQTNq?=
- =?utf-8?B?Zjd2T3NLWGsrRHg0Qjdjd3ZtV2JJMjlwb1dRdUZhNVlnWkxJY3pwSCt2djN0?=
- =?utf-8?B?L3JrczVTQnpyNENad1NsRnB2eWNnTnc2ZVBwVy9NaUdPWmJLdWJlS2JBczhL?=
- =?utf-8?B?KzgvZ1FteWZSOXhFNkU1K1gza2VUSUZrKzRYT0JRelhHdEJvcVBuZ0ZyODVn?=
- =?utf-8?B?eGlsSU9qbDA1dVRjYzdWT3F0RmdBcElWcXF5UFhuaUpoYW5xMzl6aUM0Z0pE?=
- =?utf-8?B?MzdFOU1kUXBnVyszU3JGbjlBNEkvdUZHcXphSzNFcHhxTDMvMm5YOW80RWx4?=
- =?utf-8?B?ZEZjMEtSZElZOTV1YkNHaG9FTEZpT29wTWxpR09MWDBmMnN4VTluWHQrcjJ4?=
- =?utf-8?B?RjFFN2hGMkYvZlNkZGltWkMyUnZ0Z1pZWWZWOVhnS2M4NSszeWhxTm43dUtj?=
- =?utf-8?B?bUNmNnpXMk4ycTl1VnVvWmh5bDA1L2Zib0RRampqbW1MVXJPVmFHeWcya0Zo?=
- =?utf-8?B?QUFndytqWG5laWx3MDBBMzd5K2hNb1YwOXBsU29sVmpUREM5bithR0J4QmdJ?=
- =?utf-8?B?T0lpTVNXMTVZMmY5NFJyVDN2V3lLNm1Ia1VmZDlUeGszMWV0RjdLVXh1MmtV?=
- =?utf-8?B?M2Y1Tk0xU2duNHBiemhSYzJEa2owbjUvd3VwRXcvT1kwMmlqY0hzQ0FaZTI3?=
- =?utf-8?B?bGJ5Yy85SU5FOTRVa1hIalZGazRTK3BUNlgxSDB0N1VBb0JITmpLb1N0UTZj?=
- =?utf-8?B?VWxyS1pOS3ZYKytiMVh5T2VxTkc4bzMrVStLWDFOR3lBRzBHUFo2UTF1YWVk?=
- =?utf-8?B?Y2NRb2FqQmRiaUprdmNSVE5kUHA1YTd0eGdSRTlUNVk4dkxhalRvaG13Qnpm?=
- =?utf-8?B?QnpyUDRrdWpPcTZoZkE5WThDV21XMzRsVCswSExGenZJUG8zWkdXWDRBSDk5?=
- =?utf-8?B?dGgyRnZLbWdKTGFHM2p0RmFkUDBNWDBhZHhnRGFRSDlkcEVKbHVCS0tUcGpY?=
- =?utf-8?B?OE9vRDdBdm5sdmFXL2hUY2I0aVYreWFJVmRMb0lyNWh6SFdUVmpoR0VzM0Fa?=
- =?utf-8?B?UVBtcmd4cVBJNWFrUjhjNmNGdHIwYkw1ekN1Tm5zek9yaDVGNjF3cmxyZnBh?=
- =?utf-8?B?cGhtczBKVks4VC9yaHRPMjM2eWpveDd3MEdTRHFTdW14UlpsMW4vaCtZWVVR?=
- =?utf-8?B?R1hVeUJnZ0VXVGZIdWxONE96WVhIZTRkNTVKMVVvMXBsck1MR25mb1B4a0t4?=
- =?utf-8?B?MFVVUDUyczVzWldoeWtQVFZtS0tRQjhEYlloeU8xaGtLQmFWZUtEVisrNS9X?=
- =?utf-8?B?c2d3RUVIMG5lZDNrbHAvUCtxNkVLeEExOXNWMHQ4Rk8wNGlDY3c1dkl2QnFo?=
- =?utf-8?B?eHVHSjhBQi9GcERCYTZlYkFEZWJiMWZrL09OVS9rajRtajZBVzVGaFZleGxY?=
- =?utf-8?B?QktMUWNjcWttMXVXYUFUWW0zZHZKRjVyRTR2OHZQZVBveEtFOFlOekYvd3Bj?=
- =?utf-8?B?ZS9DRXFoVkVGM3NKeFBnN3paZnd5RDRYL3Q1T2R2NC9FUVNpeFgrdlJrbzhX?=
- =?utf-8?B?anVnM09rd0VyaVJRYkdMeW1lT1JBN2tBMFl2bWY5Mmk3SXVQTysreEV2Qksv?=
- =?utf-8?B?cUVVZWs1Y01aWWdUSHh2Nk9jSHZ2UXR5Q2NhemhtZU1sV3NDQ3crQWI1dnFG?=
- =?utf-8?B?eWZiNHRUSnNEVmFZK05SaE9ZcjBNTG9rSVpaUUVpWUYycjE4Q2VMNW9xMnVz?=
- =?utf-8?B?NEVuQzlVT3NIZVNXYTIzdjNTQjJ1ZWhoNFFXRkV2MVhyM1dZYzVsSWRYaWJG?=
- =?utf-8?B?TkYwNllZamdQS1Vlc1FsRHdIdzltcXNsOFdla25ST2RXUEI0bGFDbEoyeThu?=
- =?utf-8?B?V2ZUdGtaMkR3NDkxWUVFbGhBTzVvcG5ZdGJQdGRIblVBY2NGT2JrNmNWNllD?=
- =?utf-8?B?SEFsSjEvUCtCcTh2eVRhaW1kazRUZHhqL3haaTZDNmJCRUhPSmZhZ0pwRlM2?=
- =?utf-8?B?NENaQ2owWHlFZEh4bDdwRkx1UlNNNjJISGMvYU5NZDg2WVdYTnByMGw5SVY1?=
- =?utf-8?B?b2ZUR1Q1YnlMelhtMUVQdWhrVWdEblBkV3JKWktZNUZ6OUFCSEdYZmorTmw4?=
- =?utf-8?B?TjFueWVlSncvUzZpT3NwbGpVQzl6QjEwWklnUXlPcXZoYXZ5OTIvT293TDBh?=
- =?utf-8?Q?b+yKrip5xCfm46v+nxv7rrA=3D?=
-Content-ID: <923BCF6419B16B44B121C6B60E5F7EF9@FRAP264.PROD.OUTLOOK.COM>
+	id 1ogMTj-000nBk-DS; Thu, 06 Oct 2022 08:43:41 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1DBFC1F8EE;
+	Thu,  6 Oct 2022 08:43:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1665045812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T7S6oIxhAYkW+alnUKWtP6uIux66B8EsW4GqVBZ8bto=;
+	b=C+mCUjvr8q1OQndsJbfZXZJ3gLAGbiYxpXR3vx++9btLnUp9kZq0CQX7tRJDJnNrgG7sg5
+	VElWf3eFRacsDUxORP+nZNrrB49Kgh2Bx5MZY0rmM5+1STk9bN9MDPldTLpppqJY9Iu6qN
+	Bmlx+AbYfSwFuf+/9j41GSaP+BDPvUk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1665045812;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T7S6oIxhAYkW+alnUKWtP6uIux66B8EsW4GqVBZ8bto=;
+	b=MznRw6bCrjyprmYZ/SVmvDwryyMeZenJtnn+Y1RkYEyFbKl4QJ6J7BM2yyxsWNj6DwaBEV
+	ub8/BpYJGHJ7woDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E938D13AE0;
+	Thu,  6 Oct 2022 08:43:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 7/JaODOVPmPPPAAAMHmgww
+	(envelope-from <jack@suse.cz>); Thu, 06 Oct 2022 08:43:31 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 56F62A0668; Thu,  6 Oct 2022 10:43:31 +0200 (CEST)
+Date: Thu, 6 Oct 2022 10:43:31 +0200
+From: Jan Kara <jack@suse.cz>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: linux-kernel@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Amitkumar Karwar <amitkarwar@gmail.com>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Andreas =?utf-8?Q?F=C3=A4rber?= <afaerber@suse.de>,
+	Andreas Noever <andreas.noever@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	Andy Lutomirski <luto@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Arend van Spriel <aspriel@gmail.com>,
+	Ayush Sawal <ayush.sawal@chelsio.com>,
+	Borislav Petkov <bp@alien8.de>, Chao Yu <chao@kernel.org>,
+	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Ahern <dsahern@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Dick Kennedy <dick.kennedy@broadcom.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
+	Franky Lin <franky.lin@broadcom.com>,
+	Ganapathi Bhat <ganapathi017@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Hannes Reinecke <hare@suse.de>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hante Meuleman <hante.meuleman@broadcom.com>,
+	Hao Luo <haoluo@google.com>, Haoyue Xu <xuhaoyue1@hisilicon.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Helge Deller <deller@gmx.de>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+	Hugh Dickins <hughd@google.com>,
+	Igor Mitsyanko <imitsyanko@quantenna.com>,
+	Ilya Dryomov <idryomov@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+	Jack Wang <jinpu.wang@ionos.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	"James E . J . Bottomley" <jejb@linux.ibm.com>,
+	James Smart <james.smart@broadcom.com>, Jan Kara <jack@suse.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jay Vosburgh <j.vosburgh@gmail.com>,
+	Jean-Paul Roubelat <jpr@f6fbb.org>,
+	Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Jiri Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	John Stultz <jstultz@google.com>, Jon Maloy <jmaloy@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Julian Anastasov <ja@ssi.bg>, KP Singh <kpsingh@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>, Kees Cook <keescook@chromium.org>,
+	Keith Busch <kbusch@kernel.org>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Manish Rangankar <mrangankar@marvell.com>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Marco Elver <elver@google.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	"Md . Haris Iqbal" <haris.iqbal@ionos.com>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michael Jamet <michael.jamet@intel.com>,
+	Michal Januszewski <spock@gentoo.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+	Neil Horman <nhorman@tuxdriver.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Nilesh Javali <njavali@marvell.com>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Pravin B Shelar <pshelar@ovn.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Richard Weinberger <richard@nod.at>,
+	Rohit Maheshwari <rohitm@chelsio.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+	Sergey Matyukevich <geomatsi@gmail.com>,
+	Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+	Simon Horman <horms@verge.net.au>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>,
+	Thomas Graf <tgraf@suug.ch>,
+	Thomas Sailer <t.sailer@alumni.ethz.ch>,
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Varun Prakash <varun@chelsio.com>,
+	Veaceslav Falico <vfalico@gmail.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+	Vinod Koul <vkoul@kernel.org>, Vlad Yasevich <vyasevich@gmail.com>,
+	Wenpeng Liang <liangwenpeng@huawei.com>,
+	Xinming Hu <huxinming820@gmail.com>, Xiubo Li <xiubli@redhat.com>,
+	Yehezkel Bernat <YehezkelShB@gmail.com>,
+	Ying Xue <ying.xue@windriver.com>,
+	Yishai Hadas <yishaih@nvidia.com>, Yonghong Song <yhs@fb.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	brcm80211-dev-list.pdl@broadcom.com, cake@lists.bufferbloat.net,
+	ceph-devel@vger.kernel.org, coreteam@netfilter.org,
+	dccp@vger.kernel.org, dev@openvswitch.org,
+	dmaengine@vger.kernel.org, drbd-dev@lists.linbit.com,
+	dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
+	linux-actions@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-hams@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-mm@kvack.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-nvme@lists.infradead.org, linux-raid@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-sctp@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com, linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, lvs-devel@vger.kernel.org,
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	rds-devel@oss.oracle.com, SHA-cyfmac-dev-list@infineon.com,
+	target-devel@vger.kernel.org, tipc-discussion@lists.sourceforge.net
+Subject: Re: [PATCH v1 3/5] treewide: use get_random_u32() when possible
+Message-ID: <20221006084331.4bdktc2zlvbaszym@quack3>
+References: <20221005214844.2699-1-Jason@zx2c4.com>
+ <20221005214844.2699-4-Jason@zx2c4.com>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1446adc-8984-4c6e-2f70-08daa7736178
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2022 08:18:42.4534
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zCiBpsGJ17E3cZ6+zhEjg9JVUTtat4GMrir0oHzWuvov83n5QrW66g4FRg3dixC6/HvXalTDPeNGWceZqnCu+TFA92pwYrDWRrysoocd06M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB1962
+Content-Disposition: inline
+In-Reply-To: <20221005214844.2699-4-Jason@zx2c4.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221006_011848_101606_08E89E05 
-X-CRM114-Status: GOOD (  19.39  )
+X-CRM114-CacheID: sfid-20221006_014339_667009_9EDBD8D7 
+X-CRM114-Status: GOOD (  23.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -144,36 +232,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsDQoNCkxlIDA2LzEwLzIwMjIgw6AgMDk6NDcsIE1pcXVlbCBSYXluYWwgYSDDqWNy
-aXTCoDoNCj4gSGkgQ2hyaXN0b3BoZSwNCj4gDQo+IGNocmlzdG9waGUubGVyb3lAY3Nncm91cC5l
-dSB3cm90ZSBvbiBUaHUsICA2IE9jdCAyMDIyIDA3OjI5OjEyICswMjAwOg0KPiANCj4+IE5PX0lS
-USBpcyB1c2VkIHRvIGNoZWNrIHRoZSByZXR1cm4gb2YgaXJxX29mX3BhcnNlX2FuZF9tYXAoKS4N
-Cj4+DQo+PiBPbiBzb21lIGFyY2hpdGVjdHVyZSBOT19JUlEgaXMgMCwgb24gb3RoZXIgYXJjaGl0
-ZWN0dXJlcyBpdCBpcyAtMS4NCj4+DQo+PiBpcnFfb2ZfcGFyc2VfYW5kX21hcCgpIHJldHVybnMg
-MCBvbiBlcnJvciwgaW5kZXBlbmRlbnQgb2YgTk9fSVJRLg0KPj4NCj4+IFNvIHVzZSAwIGluc3Rl
-YWQgb2YgdXNpbmcgTk9fSVJRLg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waGUgTGVy
-b3kgPGNocmlzdG9waGUubGVyb3lAY3Nncm91cC5ldT4NCj4gDQo+IERlc2VydmVzIEZpeGVzIGFu
-ZCBDYzpzdGFibGUgdGFncywgaXNuJ3QgaXQ/DQoNCkkgZG9uJ3QgdGhpbmsgc28sIGJlY2F1c2Ug
-dGhlIG9ubHkgdXNlciB0b2RheSBpcyBwb3dlcnBjIHdoaWNoIGRlZmluZXMgDQpOT19JUlEgYXMg
-MC4NCg0KSW4gdGhlIHN0YWJsZS1rZXJuZWwtcnVsZXMucnN0IGl0IGlzIHNhaWQ6DQoNCiAgLSBJ
-dCBtdXN0IGZpeCBhIHJlYWwgYnVnIHRoYXQgYm90aGVycyBwZW9wbGUgKG5vdCBhLCAiVGhpcyBj
-b3VsZCBiZSBhDQogICAgcHJvYmxlbS4uLiIgdHlwZSB0aGluZykuDQoNCg0KPiANCj4+IC0tLQ0K
-Pj4gICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tcGM1MTIxX25mYy5jIHwgMiArLQ0KPj4gICAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4+DQo+PiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXBjNTEyMV9uZmMuYyBiL2RyaXZlcnMvbXRkL25h
-bmQvcmF3L21wYzUxMjFfbmZjLmMNCj4+IGluZGV4IDgwMGQ3NzRhZWQ4ZS4uZjY4MzQ5Y2I3ODI0
-IDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXBjNTEyMV9uZmMuYw0KPj4g
-KysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXBjNTEyMV9uZmMuYw0KPj4gQEAgLTY2Myw3ICs2
-NjMsNyBAQCBzdGF0aWMgaW50IG1wYzUxMjFfbmZjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
-Y2UgKm9wKQ0KPj4gICAJfQ0KPj4gICANCj4+ICAgCXBydi0+aXJxID0gaXJxX29mX3BhcnNlX2Fu
-ZF9tYXAoZG4sIDApOw0KPj4gLQlpZiAocHJ2LT5pcnEgPT0gTk9fSVJRKSB7DQo+PiArCWlmICgh
-cHJ2LT5pcnEpIHsNCj4+ICAgCQlkZXZfZXJyKGRldiwgIkVycm9yIG1hcHBpbmcgSVJRIVxuIik7
-DQo+PiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+PiAgIAl9DQo+IA0KPiANCj4gVGhhbmtzLA0KPiBN
-aXF1w6hsCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Wed 05-10-22 23:48:42, Jason A. Donenfeld wrote:
+> The prandom_u32() function has been a deprecated inline wrapper around
+> get_random_u32() for several releases now, and compiles down to the
+> exact same code. Replace the deprecated wrapper with a direct call to
+> the real function.
+> 
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+
+...
+
+> diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
+> index 998dd2ac8008..e439a872c398 100644
+> --- a/fs/ext2/ialloc.c
+> +++ b/fs/ext2/ialloc.c
+> @@ -277,7 +277,7 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
+>  		int best_ndir = inodes_per_group;
+>  		int best_group = -1;
+>  
+> -		group = prandom_u32();
+> +		group = get_random_u32();
+>  		parent_group = (unsigned)group % ngroups;
+>  		for (i = 0; i < ngroups; i++) {
+>  			group = (parent_group + i) % ngroups;
+
+The code here is effectively doing the
+
+	parent_group = prandom_u32_max(ngroups);
+
+> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+> index f73e5eb43eae..954ec9736a8d 100644
+> --- a/fs/ext4/ialloc.c
+> +++ b/fs/ext4/ialloc.c
+> @@ -465,7 +465,7 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
+>  			ext4fs_dirhash(parent, qstr->name, qstr->len, &hinfo);
+>  			grp = hinfo.hash;
+>  		} else
+> -			grp = prandom_u32();
+> +			grp = get_random_u32();
+
+Similarly here we can use prandom_u32_max(ngroups) like:
+
+		if (qstr) {
+			...
+			parent_group = hinfo.hash % ngroups;
+		} else
+			parent_group = prandom_u32_max(ngroups);
+
+> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+> index 9af68a7ecdcf..588cb09c5291 100644
+> --- a/fs/ext4/mmp.c
+> +++ b/fs/ext4/mmp.c
+> @@ -265,7 +265,7 @@ static unsigned int mmp_new_seq(void)
+>  	u32 new_seq;
+>  
+>  	do {
+> -		new_seq = prandom_u32();
+> +		new_seq = get_random_u32();
+>  	} while (new_seq > EXT4_MMP_SEQ_MAX);
+
+OK, here we again effectively implement prandom_u32_max(EXT4_MMP_SEQ_MAX + 1).
+Just presumably we didn't want to use modulo here because EXT4_MMP_SEQ_MAX
+is rather big and so the resulting 'new_seq' would be seriously
+non-uniform.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
