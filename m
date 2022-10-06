@@ -4,123 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 545E5C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 17:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD392C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 20:27:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aoHIrIAtN79UIX7g1LeyJIBiop5j9c5R72BYFGM+J/0=; b=e39wv66NsVIjip
-	Kr9Yt4MyK0bQlZndM3oTTt5f9kQ2WJ7y1Dvl0jxlXlaSf2ED2fXpqUwO2CYC2kEYsMVePMQWp+GVm
-	A7D6ijcknYNAH2PAjtHFjrfMuchdadrwECfG/PTsucT3Yl1N/VWytWuTuhBE7G7Mgi4OcEK7VDEgs
-	dbWxXAeAu487zoF1/lM3I2tm2tSgtwKKf8dywczEvydJa3JuiXaE9PyMyZFcC0CMDFxYtVfOwia6o
-	xdBEtUTN4hogb8YvC2PcOp2RITDLOyoyUPE7hfPhNBa64N3r4xYJwGPtK8lv4GxXU2zKPhgkFkexw
-	RNiLFJHVHckTOszBDUjQ==;
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bRfNlATyIzcraoikYvuimZjB9yYmk5IUMrsKqezvZ/w=; b=MaxaCTcxYIoTBbaL3Bv4qbpeI4
+	iWzeB4pcmgTu/FHA3OCeyE3Z1Lvl9PVeS9fQ4tNNfwKJk3W+3a2IV6Cb1chQMPV5AnwK8A5VML+1p
+	QuqyH4dzKgftAIwNzVZV9cZ+79WUoMBfYyNp6uSxDxDIyRbT8ypunXOGcbH9j5CfUDvETHaGyCmzJ
+	qSjqD0s9SGy2CxfAuYAv0QY4KwMXezdVwK94uJ8pI8/WsF4SuVG66pW1Eu+AFrU5rc7SH/zueNf0Q
+	6ALNQHh6YZn6XyamfHCYXffwndxjCRsgurpOK3B6OnrKsgsX3i99eCzltW1Dq0XH+2McX/jKjjHzq
+	Nn1Hc/sw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogUts-004F5S-N3; Thu, 06 Oct 2022 17:43:12 +0000
-Received: from pegase2.c-s.fr ([93.17.235.10])
+	id 1ogXSX-0052z7-T3; Thu, 06 Oct 2022 20:27:09 +0000
+Received: from out1-smtp.messagingengine.com ([66.111.4.25])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogUtp-004EzK-J7; Thu, 06 Oct 2022 17:43:11 +0000
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4MjzLC11Gzz9syB;
-	Thu,  6 Oct 2022 19:42:59 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id LsXJRIhoNC1h; Thu,  6 Oct 2022 19:42:59 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4MjzLB5Dvqz9syS;
-	Thu,  6 Oct 2022 19:42:58 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 8738A8B78C;
-	Thu,  6 Oct 2022 19:42:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id z2OiiiTjoE_O; Thu,  6 Oct 2022 19:42:58 +0200 (CEST)
-Received: from [192.168.233.27] (po19210.idsi0.si.c-s.fr [192.168.233.27])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 4E53E8B77D;
-	Thu,  6 Oct 2022 19:42:56 +0200 (CEST)
-Message-ID: <6396875c-146a-acf5-dd9e-7f93ba1b4bc3@csgroup.eu>
-Date: Thu, 6 Oct 2022 19:42:55 +0200
+	id 1ogXST-0052vR-Uq
+	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 20:27:08 +0000
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id 339CF5C00C8;
+	Thu,  6 Oct 2022 16:26:59 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 06 Oct 2022 16:26:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=cc
+	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to; s=fm1; t=1665088019; x=1665174419; bh=2Vt43tPiKB
+	fkhja3fpNj7tuMYpusFW0Gr3lyy/nnqpE=; b=isN/OcZ30egd/brU/i9wevQDZE
+	NFortLRxoILVYQucVp2l30Iu5/6e9cuJf+/C1bF8xtUafAzZTJHOwhdJ1BcQaT32
+	tXe3uXSXK5ztiad9OG4dVwvcPguOHRgA3e/NHqhxLmqO47OeW7pXVWlXKLHWFKqD
+	3YHVqorYpnmVYPz7hS0cyeJ6VhQjKg6xT2ql3FhVKDXuYhN0TsQNHsdzgXDKBnkE
+	Ue5dy+JZplVhgaWDiF+t29ZqAdaXu9JXRtjMIEWUMIiZB5qqRvqKgL9nCULrTaCM
+	yuIYxUkMUfqfqnAkNrgwRz9WM/kTYTYy33JbMj7Z513jxgyttWulIdfNsYKw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:sender:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1665088019; x=1665174419; bh=2Vt43tPiKBfkhja3fpNj7tuMYpus
+	FW0Gr3lyy/nnqpE=; b=UeNEiJMc8szVAqSurCfeC9sTM37agieoILOYR4BBEwfI
+	iKO0MXTgi2PTWVVk9gJTibVOq5U19AVcFW/4L7fqBBCb0jw1OZ424GpZ7ACi0oF/
+	9eAW0Sl/oicqhgp57de1OfjSfOnunVY+MBu7yIkLCSi0rebq0Sx/i7L4XjlwndCa
+	2GgPR8ULfc820z04T7RGsCQJuj/B9YyDTz/dnMS/L4U20xTdvwlqVmdxgb3RvCn2
+	AvxcBuDLhFeybCf2twM5X6thNrc+JQe3qz/QS0Xu/Lb/GSb9/LBw5XlLArxun9If
+	8f3WRxImyYXRw4LXfbTEzMiEx2Snei67YV8I08ZByA==
+X-ME-Sender: <xms:Ejo_YzV2K8Iq3ulira5uw_Dn0pbWhhR5Ie6MLdPQpQJ5hAwj_W9Icw>
+    <xme:Ejo_Y7kOh-9ofkwx0V67A6WCYWSYsI7qiUDwVDelhurI2fAX88R6f78t-52Y_O_hE
+    ydiB1G3mGF7_8gPSlQ>
+X-ME-Received: <xmr:Ejo_Y_bSp0sP07Bz6rxidPcphMOHqD_pwjHE7Psit7KiwNXd-sFsXqUcJO8qLm46W0YrlAVStdZNL5ICXe8mbaqWsksiFYVk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeeihedgudeglecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculddvfedmnecujfgurhepfffhvfevuffkfhggtggujgesghdtreer
+    tddtvdenucfhrhhomheprfgrthhrihgtkhcuhghilhhlihgrmhhsuceophgrthhrihgtkh
+    esshhtfigtgidrgiihiieqnecuggftrfgrthhtvghrnhepjefgtdelledvfedtgeegffef
+    ueefveegjeekleegueejveevueefiefgiedvjeejnecuffhomhgrihhnpehkvghrnhgvlh
+    drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehprghtrhhitghksehsthiftgigrdighiii
+X-ME-Proxy: <xmx:Ejo_Y-VCqRH_XbtXF0nac3-HjasYWzqftYdB5aIZCrPFA959_10yCA>
+    <xmx:Ejo_Y9n9ihQ7zKZCFBkoK0cq4HjNzKzuIuBDeqcHSixMwmrfOA6Ekw>
+    <xmx:Ejo_Y7enMVJ4Ak8R7YGz253_W9IoaWhuGxeiUWXDKNO4vRy-NhhCPQ>
+    <xmx:Ezo_Y2e4AESa5trSxo_rWMGQTwVMcGfayHiSp2tCTTnRIbCQCP1tng>
+Feedback-ID: i68a1478a:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 6 Oct 2022 16:26:57 -0400 (EDT)
+Date: Thu, 6 Oct 2022 15:26:56 -0500
+From: Patrick Williams <patrick@stwcx.xyz>
+To: Michael Walle <michael@walle.cc>, Potin Lai <potin.lai@quantatw.com>
+Cc: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+	~sircmpwn/email-test-drive@lists.sr.ht, garnermic@fb.com,
+	Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: winbond: add support for w25q01jv-im
+Message-ID: <Yz86ECK3pRyJjAo5@heinlein>
+References: <20221006070841.2106194-1-Delphine_CC_Chiu@Wiwynn.com>
+ <0dde4fa6ddeefa23314dbdcd1dd1b28b@walle.cc>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.1
-Subject: Re: [PATCH v3 3/5] treewide: use get_random_u32() when possible
-Content-Language: fr-FR
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "patches@lists.linux.dev" <patches@lists.linux.dev>,
- Andreas Noever <andreas.noever@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>,
- =?UTF-8?Q?Christoph_B=c3=b6hmwalder?= <christoph.boehmwalder@linbit.com>,
- Christoph Hellwig <hch@lst.de>, Daniel Borkmann <daniel@iogearbox.net>,
- Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "H . Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>,
- Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>,
- Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
- Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>,
- Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>,
- Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
- Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
- Yury Norov <yury.norov@gmail.com>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
- "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
- "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
- "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
- "x86@kernel.org" <x86@kernel.org>, =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgens?=
- =?UTF-8?Q?en?= <toke@toke.dk>, Chuck Lever <chuck.lever@oracle.com>,
- Jan Kara <jack@suse.cz>
-References: <20221006165346.73159-1-Jason@zx2c4.com>
- <20221006165346.73159-4-Jason@zx2c4.com>
- <848ed24c-13ef-6c38-fd13-639b33809194@csgroup.eu>
- <CAHmME9raQ4E00r9r8NyWJ17iSXE_KniTG0onCNAfMmfcGar1eg@mail.gmail.com>
- <f10fcfbf-2da6-cf2d-6027-fbf8b52803e9@csgroup.eu>
-In-Reply-To: <f10fcfbf-2da6-cf2d-6027-fbf8b52803e9@csgroup.eu>
+In-Reply-To: <0dde4fa6ddeefa23314dbdcd1dd1b28b@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221006_104309_801623_4813D6F4 
-X-CRM114-Status: GOOD (  21.72  )
+X-CRM114-CacheID: sfid-20221006_132706_633976_5C9DEEC2 
+X-CRM114-Status: GOOD (  19.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,58 +103,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============5335539940033378200=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpMZSAwNi8xMC8yMDIyIMOgIDE5OjMxLCBDaHJpc3RvcGhlIExlcm95IGEgw6ljcml0wqA6Cj4g
-Cj4gCj4gTGUgMDYvMTAvMjAyMiDDoCAxOToyNCwgSmFzb24gQS4gRG9uZW5mZWxkIGEgw6ljcml0
-wqA6Cj4+IEhpIENocmlzdG9waGUsCj4+Cj4+IE9uIFRodSwgT2N0IDYsIDIwMjIgYXQgMTE6MjEg
-QU0gQ2hyaXN0b3BoZSBMZXJveQo+PiA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1PiB3cm90
-ZToKPj4+IExlIDA2LzEwLzIwMjIgw6AgMTg6NTMsIEphc29uIEEuIERvbmVuZmVsZCBhIMOpY3Jp
-dCA6Cj4+Pj4gVGhlIHByYW5kb21fdTMyKCkgZnVuY3Rpb24gaGFzIGJlZW4gYSBkZXByZWNhdGVk
-IGlubGluZSB3cmFwcGVyIGFyb3VuZAo+Pj4+IGdldF9yYW5kb21fdTMyKCkgZm9yIHNldmVyYWwg
-cmVsZWFzZXMgbm93LCBhbmQgY29tcGlsZXMgZG93biB0byB0aGUKPj4+PiBleGFjdCBzYW1lIGNv
-ZGUuIFJlcGxhY2UgdGhlIGRlcHJlY2F0ZWQgd3JhcHBlciB3aXRoIGEgZGlyZWN0IGNhbGwgdG8K
-Pj4+PiB0aGUgcmVhbCBmdW5jdGlvbi4gVGhlIHNhbWUgYWxzbyBhcHBsaWVzIHRvIGdldF9yYW5k
-b21faW50KCksIHdoaWNoIGlzCj4+Pj4ganVzdCBhIHdyYXBwZXIgYXJvdW5kIGdldF9yYW5kb21f
-dTMyKCkuCj4+Pj4KPj4+PiBSZXZpZXdlZC1ieTogS2VlcyBDb29rIDxrZWVzY29va0BjaHJvbWl1
-bS5vcmc+Cj4+Pj4gQWNrZWQtYnk6IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUB0b2tl
-LmRrPiAjIGZvciBzY2hfY2FrZQo+Pj4+IEFja2VkLWJ5OiBDaHVjayBMZXZlciA8Y2h1Y2subGV2
-ZXJAb3JhY2xlLmNvbT4gIyBmb3IgbmZzZAo+Pj4+IFJldmlld2VkLWJ5OiBKYW4gS2FyYSA8amFj
-a0BzdXNlLmN6PiAjIGZvciBleHQ0Cj4+Pj4gU2lnbmVkLW9mZi1ieTogSmFzb24gQS4gRG9uZW5m
-ZWxkIDxKYXNvbkB6eDJjNC5jb20+Cj4+Pj4gLS0tCj4+Pgo+Pj4+IGRpZmYgLS1naXQgYS9hcmNo
-L3Bvd2VycGMva2VybmVsL3Byb2Nlc3MuYyAKPj4+PiBiL2FyY2gvcG93ZXJwYy9rZXJuZWwvcHJv
-Y2Vzcy5jCj4+Pj4gaW5kZXggMGZiZGE4OWNkMWJiLi45YzRjMTVhZmJiZTggMTAwNjQ0Cj4+Pj4g
-LS0tIGEvYXJjaC9wb3dlcnBjL2tlcm5lbC9wcm9jZXNzLmMKPj4+PiArKysgYi9hcmNoL3Bvd2Vy
-cGMva2VybmVsL3Byb2Nlc3MuYwo+Pj4+IEBAIC0yMzA4LDYgKzIzMDgsNiBAQCB2b2lkIG5vdHJh
-Y2UgX19wcGM2NF9ydW5sYXRjaF9vZmYodm9pZCkKPj4+PiDCoMKgIHVuc2lnbmVkIGxvbmcgYXJj
-aF9hbGlnbl9zdGFjayh1bnNpZ25lZCBsb25nIHNwKQo+Pj4+IMKgwqAgewo+Pj4+IMKgwqDCoMKg
-wqDCoCBpZiAoIShjdXJyZW50LT5wZXJzb25hbGl0eSAmIEFERFJfTk9fUkFORE9NSVpFKSAmJiAK
-Pj4+PiByYW5kb21pemVfdmFfc3BhY2UpCj4+Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBz
-cCAtPSBnZXRfcmFuZG9tX2ludCgpICYgflBBR0VfTUFTSzsKPj4+PiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHNwIC09IGdldF9yYW5kb21fdTMyKCkgJiB+UEFHRV9NQVNLOwo+Pj4+IMKgwqDC
-oMKgwqDCoCByZXR1cm4gc3AgJiB+MHhmOwo+Pj4KPj4+IElzbid0IHRoYXQgYSBjYW5kaWRhdGUg
-Zm9yIHByYW5kb21fdTMyX21heCgpID8KPj4+Cj4+PiBOb3RlIHRoYXQgc3AgaXMgZGVlbWVkIHRv
-IGJlIDE2IGJ5dGVzIGFsaWduZWQgYXQgYWxsIHRpbWUuCj4+Cj4+IFllcywgcHJvYmFibHkuIEl0
-IHNlZW1lZCBub24tdHJpdmlhbCB0byB0aGluayBhYm91dCwgc28gSSBkaWRuJ3QuIEJ1dAo+PiBs
-ZXQncyBzZWUgaGVyZS4uLiBtYXliZSBpdCdzIG5vdCB0b28gYmFkOgo+Pgo+PiBJZiBQQUdFX01B
-U0sgaXMgYWx3YXlzIH4oUEFHRV9TSVpFLTEpLCB0aGVuIH5QQUdFX01BU0sgaXMKPj4gKFBBR0Vf
-U0laRS0xKSwgc28gcHJhbmRvbV91MzJfbWF4KFBBR0VfU0laRSkgc2hvdWxkIHlpZWxkIHRoZSBz
-YW1lCj4+IHRoaW5nPyBJcyB0aGF0IGFjY3VyYXRlPyBBbmQgaG9sZHMgYWNyb3NzIHBsYXRmb3Jt
-cyAodGhpcyBjb21lcyB1cCBhCj4+IGZldyBwbGFjZXMpPyBJZiBzbywgSSdsbCBkbyB0aGF0IGZv
-ciBhIHY0Lgo+Pgo+IAo+IE9uIHBvd2VycGMgaXQgaXMgYWx3YXlzIChmcm9tIGFyY2gvcG93ZXJw
-Yy9pbmNsdWRlL2FzbS9wYWdlLmgpIDoKPiAKPiAvKgo+ICDCoCogU3VidGxlOiAoMSA8PCBQQUdF
-X1NISUZUKSBpcyBhbiBpbnQsIG5vdCBhbiB1bnNpZ25lZCBsb25nLiBTbyBpZiB3ZQo+ICDCoCog
-YXNzaWduIFBBR0VfTUFTSyB0byBhIGxhcmdlciB0eXBlIGl0IGdldHMgZXh0ZW5kZWQgdGhlIHdh
-eSB3ZSB3YW50Cj4gIMKgKiAoaS5lLiB3aXRoIDFzIGluIHRoZSBoaWdoIGJpdHMpCj4gIMKgKi8K
-PiAjZGVmaW5lIFBBR0VfTUFTS8KgwqDCoMKgwqAgKH4oKDEgPDwgUEFHRV9TSElGVCkgLSAxKSkK
-PiAKPiAjZGVmaW5lIFBBR0VfU0laRcKgwqDCoMKgwqDCoMKgICgxVUwgPDwgUEFHRV9TSElGVCkK
-PiAKPiAKPiBTbyBpdCB3b3VsZCB3b3JrIEkgZ3Vlc3MuCgpCdXQgdGFraW5nIGludG8gYWNjb3Vu
-dCB0aGF0IHNwIG11c3QgcmVtYWluIDE2IGJ5dGVzIGFsaWduZWQsIHdvdWxkIGl0IApiZSBiZXR0
-ZXIgdG8gZG8gc29tZXRoaW5nIGxpa2UgPwoKCXNwIC09IHByYW5kb21fdTMyX21heChQQUdFX1NJ
-WkUgPj4gNCkgPDwgNDsKCglyZXR1cm4gc3A7CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+
+--===============5335539940033378200==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="L+AQa5HFPPMOr8/v"
+Content-Disposition: inline
+
+
+--L+AQa5HFPPMOr8/v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Oct 06, 2022 at 01:52:33PM +0200, Michael Walle wrote:
+> Hi,
+>=20
+> Am 2022-10-06 09:08, schrieb Delphine CC Chiu:
+> > Add support for winbond w25q01jv-im chip.
+> >=20
+> > Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> > ---
+> >  drivers/mtd/spi-nor/winbond.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >=20
+> > diff --git a/drivers/mtd/spi-nor/winbond.c=20
+> > b/drivers/mtd/spi-nor/winbond.c
+> > index ffaa24055259..2b02b05ceb0a 100644
+> > --- a/drivers/mtd/spi-nor/winbond.c
+> > +++ b/drivers/mtd/spi-nor/winbond.c
+> > @@ -139,6 +139,9 @@ static const struct flash_info winbond_nor_parts[]=
+=20
+> > =3D {
+> >  	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
+> >  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+> >  			      SPI_NOR_QUAD_READ) },
+> > +	{ "w25q01jv-im", INFO(0xef7021, 0, 64 * 1024, 2048)
+>=20
+> The name should be w25q01jvm.
+>=20
+> > +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+> > +			      SPI_NOR_QUAD_READ) },
+>=20
+> That flash should support SFDP, so please try the following:
+> +	{ "w25q01jvm", INFO(0xef7021, 0, 0, 0) PARSE_SFDP },
+>=20
+> Also, we require an SFDP dump for new flash submissions, see [1].
+>=20
+> -michael
+>=20
+> [1]=20
+> https://lore.kernel.org/linux-mtd/4304e19f3399a0a6e856119d01ccabe0@walle.=
+cc/
+
+It looks like this was already attempted to be added:
+
+https://lore.kernel.org/all/20220222085148.21594-1-potin.lai@quantatw.com/
+
+Potin, do you have an update?
+
+--=20
+Patrick Williams
+
+--L+AQa5HFPPMOr8/v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmM/Og4ACgkQqwNHzC0A
+wRnafA/+NMv98UWc9p5+yhEAkMiT7KoYEODS+j/IJFnkAO/mhqQXRKpOi+lu9y/m
+qVWP0wKzFxlTlCuDpx3GqRgR8u2q5XrWw8FODEd1GjjCm31GQO+6Dk5/GB39rpWW
+KKfGBoXTl613No3K0oB93ZlA9mPL16ZRli7pulrCugND62VfAqqhRBfuPkRG6zhj
+o92osIFJg8uTa7uUs0SfqRoW/YGDfhj4zLzPabrnWEiYeJ6InVl0KCWzIHrYSgYa
+3cK0n+zLRkZ445OW50LsCuoqTQ4VbmKP5sKHvBETZLiSuWGA8cZt9GeZXZXN67Jb
+7TjRPvzY51l4I7VAWDFIvo+TifETbZ9TGcoxvYqdX3hLqcxJuPHoFiwJq556jYWp
+GJiROykvfOC/Vny/vhkPv/CcAFtbBOFYO3T3zgMWjlhVcjl5AHEKHJZJtB44qy2V
+vR4e+kK/RM3ONrEKE/sOpAVgj7gReBWIHoW6GIRXU0TdljsRzJOFeVb45bTgAM4T
+ap4lqiJQ6VZwtJ/XrgjvRojKOv/NBvqSH7bgBr5hxfaL3mZrN7/cvKswrSNFPjsG
+EJK6rg9mu7UgbpiuN6n12/LhXQq4Iash1uZHX8nngvXRgQmJOiMX8FcIRxmPcn6I
+aOMClErigDGCILguFGDWqCb7yfT5hlf7k5TwF6CvFgX4OgMR6cE=
+=OlUA
+-----END PGP SIGNATURE-----
+
+--L+AQa5HFPPMOr8/v--
+
+
+--===============5335539940033378200==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============5335539940033378200==--
+
