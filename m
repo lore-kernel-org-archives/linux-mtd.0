@@ -4,63 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21BC1C433FE
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 16:25:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 693F5C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 16:26:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OE3fap25m7wBZkwLuWR7+VCcExuqKvNJj7mkR5piXcI=; b=GOOnql7jLFWqJc
-	f0kOm8JOr1XnGkZXJNxIaY1OCXuzyL1QVj6h4PqLpriTaVyKoLhmopOVjdZGdBX2ile0xXCm1ReYQ
-	5IBJ1Ktb38gAh7wVIFsc0RcYcFZ1/eUH+Z6mpdGtIJ5ibyQldB+Ss6PJWttdBo8LSMBqXZMxVnlQA
-	975+Cj/vgaPJ9NMghYW2wYaa1ASQYOxxs3Z89/c/y5E/+kV2FLpdXpw6UKpJU/QoP6AkP4GBp3jwI
-	ds+1jpXk8XNvcKNAh/L/r95Sk/Ace4glzMg5lRy3//2KM2kZ4Ac2EwtMmsShgodAt1gLQsDIfJbGC
-	6PJPrf1AUmVFvR1Hn2Cw==;
+	List-Owner; bh=VgTQOxdvN/MXzCIgbB4m3giFjf2vxptAoJvgKcKHHu4=; b=mp1Ip+AaMOG8pl
+	I28Gn6O+hRvwT45kMyejWWLcd7Pot4kuNI5TShaknoDioUKB23QTaceUpQan3SneL72vmACwRf7R1
+	qC+60m/bnXLB+cVIK5imWTvYeBwvBZyCljl6pa31DjQl7iIPsklltggyLi2jhrs6z3/n6FD0i8uh+
+	cp0Hrlykeu8k5O9sKgc0mn8jQgB23fQCW7EZvjN2QSI2lPNpuga3jGR7U8Lv2yX1qIRyz+l8tFW6L
+	0SV5L8+yISAA5HvhxJDQZjgxk0buyy/cZD3LgEaKlVkO/XZX5ga9UWF6l+gLq4eTzBVuLWU0Mmy1z
+	FMXhbLOgoqwLysUVTRHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogTg3-003oSV-25; Thu, 06 Oct 2022 16:24:51 +0000
-Received: from smtp-out2.suse.de ([195.135.220.29])
+	id 1ogTh1-003p2z-MW; Thu, 06 Oct 2022 16:25:51 +0000
+Received: from smtp-out1.suse.de ([195.135.220.28])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogTg0-003oI1-JX; Thu, 06 Oct 2022 16:24:49 +0000
+	id 1ogTgz-003p1U-Bw; Thu, 06 Oct 2022 16:25:50 +0000
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 449B31F8C8;
-	Thu,  6 Oct 2022 16:24:44 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2FBBB218E0;
+	Thu,  6 Oct 2022 16:25:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1665073484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1665073547; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mV/oM0ZFOSmZTr1tEI8al4WRLOksCnyDL+Y/DEXpI5s=;
-	b=UpMGEnz8udfBQaYQea0RFWIGZLHq8VrOBgj52x/KJxgkfQbo9PUL5p/nyS4etrbrvNMKPh
-	fN+XR3CloFKxtP83fRcyxMOWd16CNTY3lAy3rTchPXbCFCZFdCtXDbZGLw+MfNvd/rijOp
-	IR8XPzPF4ITG5zf8YYhr11pLUpwah5A=
+	bh=XCQ01W/Zak7b1/Z15iSFiNNO+LnDKjRUCwgq9owN358=;
+	b=BuCJHwpPWmPIMX1bCVa8JvF5Z7d74n/yJTO58u9Flcub7+SsSH8xi8XlpREVi0km3sCU9I
+	n49kVMdngxh5xHUcQ7JaAcHnUNwcTFTbcX666mAdObWVWWOiQa+NDqw9MObg2XVpG17TSv
+	v1FutPp1yNGHL7WKXiiXO6EFByUMvOk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1665073484;
+	s=susede2_ed25519; t=1665073547;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mV/oM0ZFOSmZTr1tEI8al4WRLOksCnyDL+Y/DEXpI5s=;
-	b=otxfHmXsbtMwOZmz0I8Sc9DZTAJO3Yvah3UhZWsIjZrjcfaHEUVz0PTrY55kP5B1vaKkmm
-	X6r81foYz4EqG0Dw==
+	bh=XCQ01W/Zak7b1/Z15iSFiNNO+LnDKjRUCwgq9owN358=;
+	b=SBbeuIQGR7WWo1BYruUMTbe52g3YJZXPJmGbNwSK0jCwlB3l1oeiG8qTbAyyKKzsNlfKnK
+	YUPXB99RMPIak5BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0561F13AC8;
-	Thu,  6 Oct 2022 16:24:44 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0B0413AC8;
+	Thu,  6 Oct 2022 16:25:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id dJZHAUwBP2MOIwAAMHmgww
-	(envelope-from <jack@suse.cz>); Thu, 06 Oct 2022 16:24:44 +0000
+	id UOdXNooBP2OJIwAAMHmgww
+	(envelope-from <jack@suse.cz>); Thu, 06 Oct 2022 16:25:46 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7D4DEA06E9; Thu,  6 Oct 2022 18:24:43 +0200 (CEST)
-Date: Thu, 6 Oct 2022 18:24:43 +0200
+	id 30DD3A06E9; Thu,  6 Oct 2022 18:25:46 +0200 (CEST)
+Date: Thu, 6 Oct 2022 18:25:46 +0200
 From: Jan Kara <jack@suse.cz>
 To: "Jason A. Donenfeld" <Jason@zx2c4.com>
 Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
@@ -103,16 +101,16 @@ Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
 	linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
 	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] treewide: use prandom_u32_max() when possible
-Message-ID: <20221006162443.b66waqsxlntfeoek@quack3>
+Subject: Re: [PATCH v2 3/5] treewide: use get_random_u32() when possible
+Message-ID: <20221006162546.hgkrftnsk5p3sug7@quack3>
 References: <20221006132510.23374-1-Jason@zx2c4.com>
- <20221006132510.23374-2-Jason@zx2c4.com>
+ <20221006132510.23374-4-Jason@zx2c4.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221006132510.23374-2-Jason@zx2c4.com>
+In-Reply-To: <20221006132510.23374-4-Jason@zx2c4.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221006_092448_805045_C032FF5F 
-X-CRM114-Status: GOOD (  11.92  )
+X-CRM114-CacheID: sfid-20221006_092549_575987_532E877F 
+X-CRM114-Status: GOOD (  12.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,31 +122,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu 06-10-22 07:25:06, Jason A. Donenfeld wrote:
-> Rather than incurring a division or requesting too many random bytes for
-> the given range, use the prandom_u32_max() function, which only takes
-> the minimum required bytes from the RNG and avoids divisions.
-> =
-
+On Thu 06-10-22 07:25:08, Jason A. Donenfeld wrote:
+> The prandom_u32() function has been a deprecated inline wrapper around
+> get_random_u32() for several releases now, and compiles down to the
+> exact same code. Replace the deprecated wrapper with a direct call to
+> the real function.
+> 
 > Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: KP Singh <kpsingh@kernel.org>
-> Reviewed-by: Christoph B=F6hmwalder <christoph.boehmwalder@linbit.com>
 > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
-Feel free to add:
+Looks good. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
-for the ext2, ext4, and lib/sbitmap.c bits.
+for the ext4 bits.
 
 								Honza
--- =
-
+-- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
 
