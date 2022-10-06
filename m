@@ -4,52 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 592D0C433FE
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 09:05:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BFA7C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 09:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=KturWT4jK7rHaT1/EeLZcFBE3kEkn0OdD9X9cr4t1ac=; b=X++itg4vGCGXS8
-	pmfsa7Nu6A4NhO7UgSX+Pga2eB+6jo63p8npa1B4T8jmoqLAEWK8Y6L0L0fwhJh2e+wN1Y8ykPrQ/
-	SEbZBPpg9AwPSxF9gWUwhkunQgEbecLv06KIczMiiDdSCjLEt+LSHDhgJ/7ikgrGUCwJBU3t9EliA
-	GP23A7vq6BwesPLZCI1LrZ1WU9/aVm6nkxysqcgNPK4Ee4u3d0fHxNEST2trqhhaubdwH2cKg2S7s
-	mV2TVeilPezxlurXlyXw576ge4enFwWmPxu8zZXJwHVhIOH0crUpJQLWKBJPC4Qb1m2AlxO87qRph
-	g7+DMJZoETGx8kqkACNQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=b5MvVS/xintYV+Kql+Y9Ge6d7O7KDe0sj7tC4u2th8Y=; b=BilEzgLOb8bCse
+	6+NmoF4A7Z8rerP1QvsVAkvZkYzsXLGxIBwMFEFIUHVgH/xwV2r1eqtU0oBoOAKmAX6x9zE78xS2F
+	24CkmrchRenQiMw8xOJXRCAbs6b7+E4qvJ3W/soqKbfs4zi9/5mwwVoYT6FY36ncwJn+LvQFpPw1p
+	klM98bohlt9OAn0IjZ9MMWUta7vd5Dd2lESSxxEC9VvJ9B6SGtyKd0rQheB7ItU5Yu8NlWYIX7lRd
+	SAzCWSGhhiqvCmTxjmUy7WqFDlzZV7fW4WuO5jYBT7D59l+cyJWUa1ni/vQWm0hhQvSQYt3eEKzn7
+	rh8OFyiFJRxmFk68kuBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogMoL-000wSF-P5; Thu, 06 Oct 2022 09:04:57 +0000
-Received: from unicom145.biz-email.net ([210.51.26.145])
+	id 1ogMyp-0011FD-DW; Thu, 06 Oct 2022 09:15:47 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogMoF-000w9l-I7
-	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 09:04:54 +0000
-Received: from ([60.208.111.195])
-        by unicom145.biz-email.net ((D)) with ASMTP (SSL) id BLL00125;
-        Thu, 06 Oct 2022 17:04:25 +0800
-Received: from localhost.localdomain (10.200.104.82) by
- jtjnmail201603.home.langchao.com (10.100.2.3) with Microsoft SMTP Server id
- 15.1.2507.12; Thu, 6 Oct 2022 17:04:25 +0800
-From: Deming Wang <wangdeming@inspur.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Deming
- Wang <wangdeming@inspur.com>
-Subject: [PATCH] mtd: Delete commented printk and add some space for required
-Date: Thu, 6 Oct 2022 05:04:19 -0400
-Message-ID: <20221006090419.1635-1-wangdeming@inspur.com>
-X-Mailer: git-send-email 2.31.1
+	id 1ogMyl-0011C9-1e
+	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 09:15:46 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 346BB240002;
+	Thu,  6 Oct 2022 09:15:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1665047737;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=APsvoPiMqcgjCyLTp/wGIQOIyM81IZBQevZbMqq+Di8=;
+	b=IQIM17DyCVjN4QeDnWr1ZxFxkJhFQggIouff0aDO/EKaVmhpD0ELpPj1L/dRkNSEOJtrzJ
+	A1U1zEXCTv9nQkQj65UmYWrRj/IxOX1aNGsondJ+NW79i8ItHiqBh/3uEn77zJwrphIms7
+	Xf+yK1jVNA+BQztZI56f7fmqUJFKdkgKRY7yQnpDcsJRNrPM7Hvcwf3pE8yrTkDrwYkC1Q
+	k+lALc+pTtYYjrPsNFDFRkoYy57YVLXMBQaOJ28pxPJlD2KKKQRmhQF+mo7qP7bubh7K/V
+	WttSbm4vEzwCO6iFyVEexQdEZwUixv+hCBL4SjKFIMYnA1FFKm/RK9/wKAfLZw==
+Date: Thu, 6 Oct 2022 11:15:36 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Deming Wang <wangdeming@inspur.com>
+Cc: <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: Delete commented printk and add some space for
+ required
+Message-ID: <20221006111536.2c285116@xps-13>
+In-Reply-To: <20221006090419.1635-1-wangdeming@inspur.com>
+References: <20221006090419.1635-1-wangdeming@inspur.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [10.200.104.82]
-tUid: 202210061704258abef967f8c5459d926e3c657d2d60e7
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221006_020451_970009_28A1B8CC 
-X-CRM114-Status: UNSURE (   9.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221006_021543_522688_B5191CA3 
+X-CRM114-Status: GOOD (  17.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,72 +67,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Delete commented printk for NFTL_findwriteunit and
-
-NFTL_makefreeblock. Add required space for the variable blockofs
-
-Signed-off-by: Deming Wang <wangdeming@inspur.com>
----
- drivers/mtd/nftlcore.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
-index 64d319e959b2..e3c17ed4c219 100644
---- a/drivers/mtd/nftlcore.c
-+++ b/drivers/mtd/nftlcore.c
-@@ -486,7 +486,6 @@ static u16 NFTL_makefreeblock( struct NFTLrecord *nftl , unsigned pendingblock)
- 
- 		while (EUN <= nftl->lastEUN) {
- 			thislen++;
--			//printk("VUC %d reaches len %d with EUN %d\n", chain, thislen, EUN);
- 			EUN = nftl->ReplUnitTable[EUN] & 0x7fff;
- 			if (thislen > 0xff00) {
- 				printk("Endless loop in Virtual Chain %d: Unit %x\n",
-@@ -501,7 +500,6 @@ static u16 NFTL_makefreeblock( struct NFTLrecord *nftl , unsigned pendingblock)
- 		}
- 
- 		if (thislen > ChainLength) {
--			//printk("New longest chain is %d with length %d\n", chain, thislen);
- 			ChainLength = thislen;
- 			LongestChain = chain;
- 		}
-@@ -525,7 +523,7 @@ static inline u16 NFTL_findwriteunit(struct NFTLrecord *nftl, unsigned block)
- 	u16 thisVUC = block / (nftl->EraseSize / 512);
- 	struct mtd_info *mtd = nftl->mbd.mtd;
- 	unsigned int writeEUN;
--	unsigned long blockofs = (block * 512) & (nftl->EraseSize -1);
-+	unsigned long blockofs = (block * 512) & (nftl->EraseSize - 1);
- 	size_t retlen;
- 	int silly, silly2 = 3;
- 	struct nftl_oob oob;
-@@ -592,10 +590,6 @@ static inline u16 NFTL_findwriteunit(struct NFTLrecord *nftl, unsigned block)
- 			   a chain to make room.
- 			*/
- 
--			/* First remember the start of this chain */
--			//u16 startEUN = nftl->EUNtable[thisVUC];
--
--			//printk("Write to VirtualUnitChain %d, calling makefreeblock()\n", thisVUC);
- 			writeEUN = NFTL_makefreeblock(nftl, BLOCK_NIL);
- 
- 			if (writeEUN == BLOCK_NIL) {
-@@ -618,7 +612,6 @@ static inline u16 NFTL_findwriteunit(struct NFTLrecord *nftl, unsigned block)
- 				printk(KERN_WARNING "Cannot make free space.\n");
- 				return BLOCK_NIL;
- 			}
--			//printk("Restarting scan\n");
- 			continue;
- 		}
- 
--- 
-2.27.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRGVtaW5nLAoKd2FuZ2RlbWluZ0BpbnNwdXIuY29tIHdyb3RlIG9uIFRodSwgNiBPY3QgMjAy
+MiAwNTowNDoxOSAtMDQwMDoKCj4gRGVsZXRlIGNvbW1lbnRlZCBwcmludGsgZm9yIE5GVExfZmlu
+ZHdyaXRldW5pdCBhbmQKPiAKPiBORlRMX21ha2VmcmVlYmxvY2suIEFkZCByZXF1aXJlZCBzcGFj
+ZSBmb3IgdGhlIHZhcmlhYmxlIGJsb2Nrb2ZzCgpJIHdvdWxkIHJhdGhlciBub3QgZGVsZXRlIHRo
+ZXNlIGNvbW1lbnRzIGJlY2F1c2UgdGhleSBhcmUgdmVyeSBvbGQgYW5kCkkgYmVsaWV2ZSB3ZXJl
+IGRlYnVnZ2luZyBsaW5lcyBpbiB0aGUgcGFzdC4gSSBob3BlIHdlIHdpbGwgbmV2ZXIgaGF2ZQp0
+byBkaWcgaW50byB0aGlzIGRyaXZlciBhbnltb3JlIGJ1dCBpZiB3ZSBoYXZlIHRvLCBJIHdvdWxk
+IHN1Z2dlc3QgdG8KdXNlIGRlYnVnIHByaW50aydzIGluc3RlYWQuCgpBbHNvLCBpZiB5b3Ugd2Fu
+dCB0byBjbGVhbiB1cCBhIGJpdCB0aGUgZHJpdmVyLCB5b3UgY2FuIGdvIGEgbGl0dGxlIGJpdApm
+dXJ0aGVyIGFuZCBhZGRyZXNzIGVnLiBhbGwgd2hpdGVzcGFjZSBpc3N1ZXMuCgo+IFNpZ25lZC1v
+ZmYtYnk6IERlbWluZyBXYW5nIDx3YW5nZGVtaW5nQGluc3B1ci5jb20+Cj4gLS0tCj4gIGRyaXZl
+cnMvbXRkL25mdGxjb3JlLmMgfCA5ICstLS0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
+cnRpb24oKyksIDggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25m
+dGxjb3JlLmMgYi9kcml2ZXJzL210ZC9uZnRsY29yZS5jCj4gaW5kZXggNjRkMzE5ZTk1OWIyLi5l
+M2MxN2VkNGMyMTkgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmZ0bGNvcmUuYwo+ICsrKyBi
+L2RyaXZlcnMvbXRkL25mdGxjb3JlLmMKPiBAQCAtNDg2LDcgKzQ4Niw2IEBAIHN0YXRpYyB1MTYg
+TkZUTF9tYWtlZnJlZWJsb2NrKCBzdHJ1Y3QgTkZUTHJlY29yZCAqbmZ0bCAsIHVuc2lnbmVkIHBl
+bmRpbmdibG9jaykKPiAgCj4gIAkJd2hpbGUgKEVVTiA8PSBuZnRsLT5sYXN0RVVOKSB7Cj4gIAkJ
+CXRoaXNsZW4rKzsKPiAtCQkJLy9wcmludGsoIlZVQyAlZCByZWFjaGVzIGxlbiAlZCB3aXRoIEVV
+TiAlZFxuIiwgY2hhaW4sIHRoaXNsZW4sIEVVTik7Cj4gIAkJCUVVTiA9IG5mdGwtPlJlcGxVbml0
+VGFibGVbRVVOXSAmIDB4N2ZmZjsKPiAgCQkJaWYgKHRoaXNsZW4gPiAweGZmMDApIHsKPiAgCQkJ
+CXByaW50aygiRW5kbGVzcyBsb29wIGluIFZpcnR1YWwgQ2hhaW4gJWQ6IFVuaXQgJXhcbiIsCj4g
+QEAgLTUwMSw3ICs1MDAsNiBAQCBzdGF0aWMgdTE2IE5GVExfbWFrZWZyZWVibG9jayggc3RydWN0
+IE5GVExyZWNvcmQgKm5mdGwgLCB1bnNpZ25lZCBwZW5kaW5nYmxvY2spCj4gIAkJfQo+ICAKPiAg
+CQlpZiAodGhpc2xlbiA+IENoYWluTGVuZ3RoKSB7Cj4gLQkJCS8vcHJpbnRrKCJOZXcgbG9uZ2Vz
+dCBjaGFpbiBpcyAlZCB3aXRoIGxlbmd0aCAlZFxuIiwgY2hhaW4sIHRoaXNsZW4pOwo+ICAJCQlD
+aGFpbkxlbmd0aCA9IHRoaXNsZW47Cj4gIAkJCUxvbmdlc3RDaGFpbiA9IGNoYWluOwo+ICAJCX0K
+PiBAQCAtNTI1LDcgKzUyMyw3IEBAIHN0YXRpYyBpbmxpbmUgdTE2IE5GVExfZmluZHdyaXRldW5p
+dChzdHJ1Y3QgTkZUTHJlY29yZCAqbmZ0bCwgdW5zaWduZWQgYmxvY2spCj4gIAl1MTYgdGhpc1ZV
+QyA9IGJsb2NrIC8gKG5mdGwtPkVyYXNlU2l6ZSAvIDUxMik7Cj4gIAlzdHJ1Y3QgbXRkX2luZm8g
+Km10ZCA9IG5mdGwtPm1iZC5tdGQ7Cj4gIAl1bnNpZ25lZCBpbnQgd3JpdGVFVU47Cj4gLQl1bnNp
+Z25lZCBsb25nIGJsb2Nrb2ZzID0gKGJsb2NrICogNTEyKSAmIChuZnRsLT5FcmFzZVNpemUgLTEp
+Owo+ICsJdW5zaWduZWQgbG9uZyBibG9ja29mcyA9IChibG9jayAqIDUxMikgJiAobmZ0bC0+RXJh
+c2VTaXplIC0gMSk7Cj4gIAlzaXplX3QgcmV0bGVuOwo+ICAJaW50IHNpbGx5LCBzaWxseTIgPSAz
+Owo+ICAJc3RydWN0IG5mdGxfb29iIG9vYjsKPiBAQCAtNTkyLDEwICs1OTAsNiBAQCBzdGF0aWMg
+aW5saW5lIHUxNiBORlRMX2ZpbmR3cml0ZXVuaXQoc3RydWN0IE5GVExyZWNvcmQgKm5mdGwsIHVu
+c2lnbmVkIGJsb2NrKQo+ICAJCQkgICBhIGNoYWluIHRvIG1ha2Ugcm9vbS4KPiAgCQkJKi8KPiAg
+Cj4gLQkJCS8qIEZpcnN0IHJlbWVtYmVyIHRoZSBzdGFydCBvZiB0aGlzIGNoYWluICovCj4gLQkJ
+CS8vdTE2IHN0YXJ0RVVOID0gbmZ0bC0+RVVOdGFibGVbdGhpc1ZVQ107Cj4gLQo+IC0JCQkvL3By
+aW50aygiV3JpdGUgdG8gVmlydHVhbFVuaXRDaGFpbiAlZCwgY2FsbGluZyBtYWtlZnJlZWJsb2Nr
+KClcbiIsIHRoaXNWVUMpOwo+ICAJCQl3cml0ZUVVTiA9IE5GVExfbWFrZWZyZWVibG9jayhuZnRs
+LCBCTE9DS19OSUwpOwo+ICAKPiAgCQkJaWYgKHdyaXRlRVVOID09IEJMT0NLX05JTCkgewo+IEBA
+IC02MTgsNyArNjEyLDYgQEAgc3RhdGljIGlubGluZSB1MTYgTkZUTF9maW5kd3JpdGV1bml0KHN0
+cnVjdCBORlRMcmVjb3JkICpuZnRsLCB1bnNpZ25lZCBibG9jaykKPiAgCQkJCXByaW50ayhLRVJO
+X1dBUk5JTkcgIkNhbm5vdCBtYWtlIGZyZWUgc3BhY2UuXG4iKTsKPiAgCQkJCXJldHVybiBCTE9D
+S19OSUw7Cj4gIAkJCX0KPiAtCQkJLy9wcmludGsoIlJlc3RhcnRpbmcgc2NhblxuIik7Cj4gIAkJ
+CWNvbnRpbnVlOwo+ICAJCX0KPiAgCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
+b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbXRkLwo=
