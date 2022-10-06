@@ -4,46 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82F07C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 13:26:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11B76C43217
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 13:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Fxl8ExRjWvKJ7phLUZ+dN8hmrlAbhN52u6+wKBpk1a0=; b=OkHKCSgsDTUWjW
-	VUggzjIoDnmuIsrOYKGtud/MWZHzSBMu7O8LIRjUT2QFv7aX2+UmKbd/nHXzMB9AUnO1Dx/NVZK57
-	H2kQV7RAwDexQh7AAxSVr1xpcEY/KhaNClDwPtFC/AjayYS9eLYS+SOuUIoTKyMA5fg64XFN+XZEc
-	fdnArFHm63TgHIcI3kCtN7+ZbVHiZSu8xXuVSzJ5dmGcAA9AbZvyC2y0RmGScoE5nOLQTdTMIZq0E
-	Vjo9lNoNzzxBfDgrRDDk+fUbhTpVBL+mTjifmNfUZiXTdcDDHZEhxO4jS67Nc1sRt1S5c52H9SLsA
-	TVyqpfTyOCFDgHUqYnuw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/SrOf8xHjKj+KCwCtrQBuqpDMjE1rhzPLqeOXoVKCy4=; b=UTr/Z7U26ZrEL9
+	yuX9qkYQFUu+JjVRUwVGr43lKGYD1VgIBMa1R24IoFRyeRnVNEGrOSKMdHpsxB5i7d+NaA5F/kylj
+	AJ8jpBKvBXJuacR9Jz+ixjcySROQZomXgfjLbPLoaxhZoe5JGnMxROoQ0A6GQt9qsv2rva3kt4nwi
+	4tLEKMYZ//Pjtu6JJNvEYmm0eKHZKKFj24SqUPSdKca/mqBHKEcuXHHESEaOlP5mphwmAV6iybUPR
+	995XmcSq3d+HHeFY3cXKh632ggFEaxwjdcaESh8UDpJSzQfwk3o9waQuW8VDSTvvJkld7wl6YcKYi
+	yiXAYlk5r6zEyjCCkFxw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogQsw-002ePJ-BP; Thu, 06 Oct 2022 13:25:58 +0000
+	id 1ogQtZ-002emQ-8P; Thu, 06 Oct 2022 13:26:37 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogQss-002eM9-Kh; Thu, 06 Oct 2022 13:25:56 +0000
+	id 1ogQt1-002eT7-0i; Thu, 06 Oct 2022 13:26:08 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C2CCF6199D;
-	Thu,  6 Oct 2022 13:25:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6A38C433D6;
-	Thu,  6 Oct 2022 13:25:46 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3E5AC619A9;
+	Thu,  6 Oct 2022 13:26:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 233C3C43147;
+	Thu,  6 Oct 2022 13:25:57 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="U19BJ3bB"
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="pwC9cMHz"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1665062745;
+	t=1665062756;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=7dFj46iv6B3wpMLAkzxu2+UZUtW66eQt4bdRtLsdjWc=;
-	b=U19BJ3bBONmCvTPAh8uyTTfbJMDEIORNPRa/gw0p0oqINVUGtieIgpXVc1s6oQT1xpTUGu
-	EKtfsElTXyRWuUz+KDHImGkvljaIMeDpXlV/PnfxnGCQYNTmUia1TE+L96QKJjYd8/6F35
-	8Pc27xLTY3BvRaGlSceTp3zdkfZHO+0=
-Received: 	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id b30e7dab (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Thu, 6 Oct 2022 13:25:44 +0000 (UTC)
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RNYWpm9q3FealxpvsZD8zZkjod1MIfG1X8OEo9MwlyM=;
+	b=pwC9cMHzLyk+dj7008fR/ind61uVxSjoIGURU1q3vh2bmEs3LMcg+WI4sJQilc353gyFEJ
+	6+5GOGfrp5DubkvWh7SmDIqyITlo61jX4kEQOE4tSl6lc5hWhuT2TKL4nF2imEMovH/Ry9
+	z0MTMVAl9hEg7BFeJ1ELed46Mw9aQtI=
+Received: 	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 5395c60d (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Thu, 6 Oct 2022 13:25:55 +0000 (UTC)
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
 To: linux-kernel@vger.kernel.org,
 	patches@lists.linux.dev
@@ -101,13 +102,15 @@ Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
 	linux-usb@vger.kernel.org,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH v2 0/5] treewide cleanup of random integer usage
-Date: Thu,  6 Oct 2022 07:25:05 -0600
-Message-Id: <20221006132510.23374-1-Jason@zx2c4.com>
+Subject: [PATCH v2 2/5] treewide: use get_random_{u8,u16}() when possible
+Date: Thu,  6 Oct 2022 07:25:07 -0600
+Message-Id: <20221006132510.23374-3-Jason@zx2c4.com>
+In-Reply-To: <20221006132510.23374-1-Jason@zx2c4.com>
+References: <20221006132510.23374-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221006_062554_768653_B38AA895 
-X-CRM114-Status: GOOD (  23.38  )
+X-CRM114-CacheID: sfid-20221006_062603_246431_39973E8F 
+X-CRM114-Status: GOOD (  28.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,238 +122,365 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-W1Bvc3RpbmcgdjIgcmlnaHQgYXdheSwgYmVjYXVzZSBJIENDJ2QgdG9vIG1hbnkgcGVvcGxlIGZv
-ciB2MSwgYW5kIGVtYWlsCiBzeXN0ZW1zIHdvcmxkd2lkZSBleHBsb2RlZC5dCgpIaSBmb2xrcywK
-ClRoaXMgaXMgYSBmaXZlIHBhcnQgdHJlZXdpZGUgY2xlYW51cCBvZiByYW5kb20gaW50ZWdlciBo
-YW5kbGluZy4gVGhlCnJ1bGVzIGZvciByYW5kb20gaW50ZWdlcnMgYXJlOgoKLSBJZiB5b3Ugd2Fu
-dCBhIHNlY3VyZSBvciBhbiBpbnNlY3VyZSByYW5kb20gdTY0LCB1c2UgZ2V0X3JhbmRvbV91NjQo
-KS4KLSBJZiB5b3Ugd2FudCBhIHNlY3VyZSBvciBhbiBpbnNlY3VyZSByYW5kb20gdTMyLCB1c2Ug
-Z2V0X3JhbmRvbV91MzIoKS4KICAqIFRoZSBvbGQgZnVuY3Rpb24gcHJhbmRvbV91MzIoKSBoYXMg
-YmVlbiBkZXByZWNhdGVkIGZvciBhIHdoaWxlIG5vdwogICAgYW5kIGlzIGp1c3QgYSB3cmFwcGVy
-IGFyb3VuZCBnZXRfcmFuZG9tX3UzMigpLgotIElmIHlvdSB3YW50IGEgc2VjdXJlIG9yIGFuIGlu
-c2VjdXJlIHJhbmRvbSB1MTYsIHVzZSBnZXRfcmFuZG9tX3UxNigpLgotIElmIHlvdSB3YW50IGEg
-c2VjdXJlIG9yIGFuIGluc2VjdXJlIHJhbmRvbSB1OCwgdXNlIGdldF9yYW5kb21fdTgoKS4KLSBJ
-ZiB5b3Ugd2FudCBzZWN1cmUgb3IgaW5zZWN1cmUgcmFuZG9tIGJ5dGVzLCB1c2UgZ2V0X3JhbmRv
-bV9ieXRlcygpLgogICogVGhlIG9sZCBmdW5jdGlvbiBwcmFuZG9tX2J5dGVzKCkgaGFzIGJlZW4g
-ZGVwcmVjYXRlZCBmb3IgYSB3aGlsZSBub3cKICAgIGFuZCBoYXMgbG9uZyBiZWVuIGEgd3JhcHBl
-ciBhcm91bmQgZ2V0X3JhbmRvbV9ieXRlcygpLgotIElmIHlvdSB3YW50IGEgbm9uLXVuaWZvcm0g
-cmFuZG9tIHUzMiwgdTE2LCBvciB1OCBib3VuZGVkIGJ5IGEgY2VydGFpbgogIG9wZW4gaW50ZXJ2
-YWwgbWF4aW11bSwgdXNlIHByYW5kb21fdTMyX21heCgpLgogICogSSBzYXkgIm5vbi11bmlmb3Jt
-IiwgYmVjYXVzZSBpdCBkb2Vzbid0IGRvIGFueSByZWplY3Rpb24gc2FtcGxpbmcgb3IKICAgIGRp
-dmlzaW9ucy4gSGVuY2UsIGl0IHN0YXlzIHdpdGhpbiB0aGUgcHJhbmRvbV8qIG5hbWVzcGFjZS4K
-ClRoZXNlIHJ1bGVzIG91Z2h0IHRvIGJlIGFwcGxpZWQgdW5pZm9ybWx5LCBzbyB0aGF0IHdlIGNh
-biBjbGVhbiB1cCB0aGUKZGVwcmVjYXRlZCBmdW5jdGlvbnMsIGFuZCBlYXJuIHRoZSBiZW5lZml0
-cyBvZiB1c2luZyB0aGUgbW9kZXJuCmZ1bmN0aW9ucy4gSW4gcGFydGljdWxhciwgaW4gYWRkaXRp
-b24gdG8gdGhlIGJvcmluZyBzdWJzdGl0dXRpb25zLCB0aGlzCnBhdGNoc2V0IGFjY29tcGxpc2hl
-cyBhIGZldyBuaWNlIGVmZmVjdHM6CgotIEJ5IHVzaW5nIHByYW5kb21fdTMyX21heCgpIHdpdGgg
-YW4gdXBwZXItYm91bmQgdGhhdCB0aGUgY29tcGlsZXIgY2FuCiAgcHJvdmUgYXQgY29tcGlsZS10
-aW1lIGlzIOKJpDY1NTM2IG9yIOKJpDI1NiwgaW50ZXJuYWxseSBnZXRfcmFuZG9tX3UxNigpCiAg
-b3IgZ2V0X3JhbmRvbV91OCgpIGlzIHVzZWQsIHdoaWNoIHdhc3RlcyBmZXdlciBiYXRjaGVkIHJh
-bmRvbSBieXRlcywKICBhbmQgaGVuY2UgaGFzIGhpZ2hlciB0aHJvdWdocHV0LgoKLSBCeSB1c2lu
-ZyBwcmFuZG9tX3UzMl9tYXgoKSBpbnN0ZWFkIG9mICUsIHdoZW4gdGhlIHVwcGVyLWJvdW5kIGlz
-IG5vdCBhCiAgY29uc3RhbnQsIGRpdmlzaW9uIGlzIHN0aWxsIGF2b2lkZWQsIGJlY2F1c2UgcHJh
-bmRvbV91MzJfbWF4KCkgdXNlcwogIGEgZmFzdGVyIG11bHRpcGxpY2F0aW9uLWJhc2VkIHRyaWNr
-IGluc3RlYWQuCgotIEJ5IHVzaW5nIGdldF9yYW5kb21fdTE2KCkgb3IgZ2V0X3JhbmRvbV91OCgp
-IGluIGNhc2VzIHdoZXJlIHRoZSByZXR1cm4KICB2YWx1ZSBpcyBpbnRlbmRlZCB0byBpbmRlZWQg
-YmUgYSB1MTYgb3IgYSB1OCwgd2Ugd2FzdGUgZmV3ZXIgYmF0Y2hlZAogIHJhbmRvbSBieXRlcywg
-YW5kIGhlbmNlIGhhdmUgaGlnaGVyIHRocm91Z2hwdXQuCgpTbywgYmFzZWQgb24gdGhvc2UgcnVs
-ZXMgYW5kIGJlbmVmaXRzIGZyb20gZm9sbG93aW5nIHRoZW0sIHRoaXMgcGF0Y2hzZXQKYnJlYWtz
-IGRvd24gaW50byB0aGUgZm9sbG93aW5nIGZpdmUgc3RlcHMsIHdoaWNoIHdlcmUgZG9uZSBtb3N0
-bHkKbWFudWFsbHk6CgoxKSBSZXBsYWNlIGBwcmFuZG9tX3UzMigpICUgbWF4YCBhbmQgdmFyaWFu
-dHMgdGhlcmVvZiB3aXRoCiAgIHByYW5kb21fdTMyX21heChtYXgpLgoKMikgUmVwbGFjZSBgKHR5
-cGUpZ2V0X3JhbmRvbV91MzIoKWAgYW5kIHZhcmlhbnRzIHRoZXJlb2Ygd2l0aAogICBnZXRfcmFu
-ZG9tX3UxNigpIG9yIGdldF9yYW5kb21fdTgoKS4gSSB0b29rIHRoZSBwYWlucyB0byBhY3R1YWxs
-eQogICBsb29rIGFuZCBzZWUgd2hhdCBldmVyeSBsdmFsdWUgdHlwZSB3YXMgYWNyb3NzIHRoZSBl
-bnRpcmUgdHJlZS4KCjMpIFJlcGxhY2UgcmVtYWluaW5nIGRlcHJlY2F0ZWQgdXNlcyBvZiBwcmFu
-ZG9tX3UzMigpIHdpdGgKICAgZ2V0X3JhbmRvbV91MzIoKS4gCgo0KSBSZXBsYWNlIHJlbWFpbmlu
-ZyBkZXByZWNhdGVkIHVzZXMgb2YgcHJhbmRvbV9ieXRlcygpIHdpdGgKICAgZ2V0X3JhbmRvbV9i
-eXRlcygpLgoKNSkgUmVtb3ZlIHRoZSBkZXByZWNhdGVkIGFuZCBub3ctdW51c2VkIHByYW5kb21f
-dTMyKCkgYW5kCiAgIHByYW5kb21fYnl0ZXMoKSBpbmxpbmUgd3JhcHBlciBmdW5jdGlvbnMuCgpJ
-IHdhcyB0aGlua2luZyBvZiB0YWtpbmcgdGhpcyB0aHJvdWdoIG15IHJhbmRvbS5naXQgdHJlZSAo
-b24gd2hpY2ggdGhpcwpzZXJpZXMgaXMgY3VycmVudGx5IGJhc2VkKSBhbmQgc3VibWl0dGluZyBp
-dCBuZWFyIHRoZSBlbmQgb2YgdGhlIG1lcmdlCndpbmRvdywgb3Igd2FpdGluZyBmb3IgdGhlIHZl
-cnkgZW5kIG9mIHRoZSA2LjEgY3ljbGUgd2hlbiB0aGVyZSB3aWxsIGJlCnRoZSBmZXdlc3QgbmV3
-IHBhdGNoZXMgYnJld2luZy4gSWYgc29tZWJvZHkgd2l0aCBzb21lIHRyZWV3aWRlLWNsZWFudXAK
-ZXhwZXJpZW5jZSBtaWdodCBzaGFyZSBzb21lIHdpc2RvbSBhYm91dCB3aGF0IHRoZSBiZXN0IHRp
-bWluZyB1c3VhbGx5CndpbmRzIHVwIGJlaW5nLCBJJ20gYWxsIGVhcnMuCgpQbGVhc2UgdGFrZSBh
-IGxvb2shCgpUaGFua3MsCkphc29uCgpDYzogQW5kcmVhcyBOb2V2ZXIgPGFuZHJlYXMubm9ldmVy
-QGdtYWlsLmNvbT4KQ2M6IEFuZHJldyBNb3J0b24gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+
-CkNjOiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4K
-Q2M6IEJvcmlzbGF2IFBldGtvdiA8YnBAYWxpZW44LmRlPgpDYzogQ2hyaXN0b3BoIELDtmhtd2Fs
-ZGVyIDxjaHJpc3RvcGguYm9laG13YWxkZXJAbGluYml0LmNvbT4KQ2M6IENocmlzdG9waCBIZWxs
-d2lnIDxoY2hAbHN0LmRlPgpDYzogRGFuaWVsIEJvcmttYW5uIDxkYW5pZWxAaW9nZWFyYm94Lm5l
-dD4KQ2M6IERhdmUgQWlybGllIDxhaXJsaWVkQHJlZGhhdC5jb20+CkNjOiBEYXZlIEhhbnNlbiA8
-ZGF2ZS5oYW5zZW5AbGludXguaW50ZWwuY29tPgpDYzogRGF2aWQgUy4gTWlsbGVyIDxkYXZlbUBk
-YXZlbWxvZnQubmV0PgpDYzogRXJpYyBEdW1hemV0IDxlZHVtYXpldEBnb29nbGUuY29tPgpDYzog
-RmxvcmlhbiBXZXN0cGhhbCA8ZndAc3RybGVuLmRlPgpDYzogR3JlZyBLcm9haC1IYXJ0bWFuIDxn
-cmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4sCkNjOiBILiBQZXRlciBBbnZpbiA8aHBhQHp5dG9y
-LmNvbT4KQ2M6IEhlcmJlcnQgWHUgPGhlcmJlcnRAZ29uZG9yLmFwYW5hLm9yZy5hdT4KQ2M6IEh1
-Z2ggRGlja2lucyA8aHVnaGRAZ29vZ2xlLmNvbT4KQ2M6IEpha3ViIEtpY2luc2tpIDxrdWJhQGtl
-cm5lbC5vcmc+CkNjOiBKYW1lcyBFLkouIEJvdHRvbWxleSA8amVqYkBsaW51eC5pYm0uY29tPgpD
-YzogSmFuIEthcmEgPGphY2tAc3VzZS5jb20+CkNjOiBKYXNvbiBHdW50aG9ycGUgPGpnZ0B6aWVw
-ZS5jYT4KQ2M6IEplbnMgQXhib2UgPGF4Ym9lQGtlcm5lbC5kaz4KQ2M6IEpvaGFubmVzIEJlcmcg
-PGpvaGFubmVzQHNpcHNvbHV0aW9ucy5uZXQ+CkNjOiBKb25hdGhhbiBDb3JiZXQgPGNvcmJldEBs
-d24ubmV0PgpDYzogSm96c2VmIEthZGxlY3NpayA8a2FkbGVjQG5ldGZpbHRlci5vcmc+CkNjOiBL
-UCBTaW5naCA8a3BzaW5naEBrZXJuZWwub3JnPgpDYzogS2VlcyBDb29rIDxrZWVzY29va0BjaHJv
-bWl1bS5vcmc+CkNjOiBNYXJjbyBFbHZlciA8ZWx2ZXJAZ29vZ2xlLmNvbT4KQ2M6IE1hdXJvIENh
-cnZhbGhvIENoZWhhYiA8bWNoZWhhYkBrZXJuZWwub3JnPgpDYzogTWljaGFlbCBFbGxlcm1hbiA8
-bXBlQGVsbGVybWFuLmlkLmF1PgpDYzogUGFibG8gTmVpcmEgQXl1c28gPHBhYmxvQG5ldGZpbHRl
-ci5vcmc+CkNjOiBQYW9sbyBBYmVuaSA8cGFiZW5pQHJlZGhhdC5jb20+CkNjOiBUaGVvZG9yZSBU
-cydvIDx0eXRzb0BtaXQuZWR1PgpDYzogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXgu
-ZGU+CkNjOiBUaG9tYXMgR3JhZiA8dGdyYWZAc3V1Zy5jaD4KQ2M6IFVsZiBIYW5zc29uIDx1bGYu
-aGFuc3NvbkBsaW5hcm8ub3JnPgpDYzogVmlnbmVzaCBSYWdoYXZlbmRyYSA8dmlnbmVzaHJAdGku
-Y29tPgpDYzogWXVyeSBOb3JvdiA8eXVyeS5ub3JvdkBnbWFpbC5jb20+CkNjOiBkcmktZGV2ZWxA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCkNjOiBrYXNhbi1kZXZAZ29vZ2xlZ3JvdXBzLmNvbQpDYzog
-a2VybmVsLWphbml0b3JzQHZnZXIua2VybmVsLm9yZwpDYzogbGludXgtYmxvY2tAdmdlci5rZXJu
-ZWwub3JnCkNjOiBsaW51eC1jcnlwdG9Admdlci5rZXJuZWwub3JnCkNjOiBsaW51eC1kb2NAdmdl
-ci5rZXJuZWwub3JnCkNjOiBsaW51eC1mc2RldmVsQHZnZXIua2VybmVsLm9yZwpDYzogbGludXgt
-bWVkaWFAdmdlci5rZXJuZWwub3JnCkNjOiBsaW51eC1tbUBrdmFjay5vcmcKQ2M6IGxpbnV4LW1t
-Y0B2Z2VyLmtlcm5lbC5vcmcKQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBs
-aW51eC1udm1lQGxpc3RzLmluZnJhZGVhZC5vcmcKQ2M6IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwu
-b3JnCkNjOiBsaW51eC11c2JAdmdlci5rZXJuZWwub3JnCkNjOiBsaW51eC13aXJlbGVzc0B2Z2Vy
-Lmtlcm5lbC5vcmcKQ2M6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcKCkphc29uIEEuIERvbmVuZmVs
-ZCAoNSk6CiAgdHJlZXdpZGU6IHVzZSBwcmFuZG9tX3UzMl9tYXgoKSB3aGVuIHBvc3NpYmxlCiAg
-dHJlZXdpZGU6IHVzZSBnZXRfcmFuZG9tX3t1OCx1MTZ9KCkgd2hlbiBwb3NzaWJsZQogIHRyZWV3
-aWRlOiB1c2UgZ2V0X3JhbmRvbV91MzIoKSB3aGVuIHBvc3NpYmxlCiAgdHJlZXdpZGU6IHVzZSBn
-ZXRfcmFuZG9tX2J5dGVzIHdoZW4gcG9zc2libGUKICBwcmFuZG9tOiByZW1vdmUgdW51c2VkIGZ1
-bmN0aW9ucwoKIERvY3VtZW50YXRpb24vbmV0d29ya2luZy9maWx0ZXIucnN0ICAgICAgICAgICB8
-ICAyICstCiBhcmNoL3Bvd2VycGMvY3J5cHRvL2NyYy12cG1zdW1fdGVzdC5jICAgICAgICAgfCAg
-MiArLQogYXJjaC94ODYvbW0vcGF0L2NwYS10ZXN0LmMgICAgICAgICAgICAgICAgICAgIHwgIDQg
-Ky0KIGJsb2NrL2Jsay1jcnlwdG8tZmFsbGJhY2suYyAgICAgICAgICAgICAgICAgICB8ICAyICst
-CiBjcnlwdG8vYXN5bmNfdHgvcmFpZDZ0ZXN0LmMgICAgICAgICAgICAgICAgICAgfCAgMiArLQog
-Y3J5cHRvL3Rlc3RtZ3IuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgOTQgKysrKysr
-KysrLS0tLS0tLS0tLQogZHJpdmVycy9ibG9jay9kcmJkL2RyYmRfcmVjZWl2ZXIuYyAgICAgICAg
-ICAgIHwgIDQgKy0KIGRyaXZlcnMvZG1hL2RtYXRlc3QuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAyICstCiBkcml2ZXJzL2luZmluaWJhbmQvY29yZS9jbWEuYyAgICAgICAgICAgICAgICAg
-fCAgMiArLQogZHJpdmVycy9pbmZpbmliYW5kL2h3L2N4Z2I0L2NtLmMgICAgICAgICAgICAgIHwg
-IDQgKy0KIGRyaXZlcnMvaW5maW5pYmFuZC9ody9jeGdiNC9pZF90YWJsZS5jICAgICAgICB8ICA0
-ICstCiBkcml2ZXJzL2luZmluaWJhbmQvaHcvaGZpMS90aWRfcmRtYS5jICAgICAgICAgfCAgMiAr
-LQogZHJpdmVycy9pbmZpbmliYW5kL2h3L2hucy9obnNfcm9jZV9haC5jICAgICAgIHwgIDUgKy0K
-IGRyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg0L21hZC5jICAgICAgICAgICAgICB8ICAyICstCiBk
-cml2ZXJzL2luZmluaWJhbmQvdWxwL2lwb2liL2lwb2liX2NtLmMgICAgICAgfCAgMiArLQogZHJp
-dmVycy9pbmZpbmliYW5kL3VscC9ydHJzL3J0cnMtY2x0LmMgICAgICAgIHwgIDMgKy0KIGRyaXZl
-cnMvbWQvcmFpZDUtY2FjaGUuYyAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCiBkcml2ZXJz
-L21lZGlhL2NvbW1vbi92NGwyLXRwZy92NGwyLXRwZy1jb3JlLmMgfCAgMiArLQogLi4uL21lZGlh
-L3Rlc3QtZHJpdmVycy92aXZpZC92aXZpZC1yYWRpby1yeC5jIHwgIDQgKy0KIGRyaXZlcnMvbW1j
-L2NvcmUvY29yZS5jICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICstCiBkcml2ZXJzL21tYy9o
-b3N0L2R3X21tYy5jICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvbmFuZHNpbS5jICAgICAgICAgICAgICAgIHwgIDggKy0KIGRyaXZlcnMvbXRkL3Rlc3Rz
-L210ZF9uYW5kZWNjdGVzdC5jICAgICAgICAgICB8IDEyICstLQogZHJpdmVycy9tdGQvdGVzdHMv
-c3BlZWR0ZXN0LmMgICAgICAgICAgICAgICAgIHwgIDIgKy0KIGRyaXZlcnMvbXRkL3Rlc3RzL3N0
-cmVzc3Rlc3QuYyAgICAgICAgICAgICAgICB8IDE5ICstLS0KIGRyaXZlcnMvbXRkL3ViaS9kZWJ1
-Zy5jICAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCiBkcml2ZXJzL210ZC91YmkvZGVidWcu
-aCAgICAgICAgICAgICAgICAgICAgICAgfCAgNiArLQogZHJpdmVycy9uZXQvYm9uZGluZy9ib25k
-X21haW4uYyAgICAgICAgICAgICAgIHwgIDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2Jyb2Fk
-Y29tL2JueHQvYm54dC5jICAgICB8ICAyICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9icm9hZGNv
-bS9jbmljLmMgICAgICAgICAgfCAgNSArLQogLi4uL2NoZWxzaW8vaW5saW5lX2NyeXB0by9jaHRs
-cy9jaHRsc19jbS5jICAgIHwgIDQgKy0KIC4uLi9jaGVsc2lvL2lubGluZV9jcnlwdG8vY2h0bHMv
-Y2h0bHNfaW8uYyAgICB8ICA0ICstCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9yb2NrZXIvcm9ja2Vy
-X21haW4uYyAgICAgfCAgOCArLQogZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jICAg
-ICAgICAgICAgIHwgIDIgKy0KIGRyaXZlcnMvbmV0L2hhbXJhZGlvL2hkbGNkcnYuYyAgICAgICAg
-ICAgICAgICB8ICAyICstCiBkcml2ZXJzL25ldC9oYW1yYWRpby95YW0uYyAgICAgICAgICAgICAg
-ICAgICAgfCAgMiArLQogZHJpdmVycy9uZXQvcGh5L2F0ODAzeC5jICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KIGRyaXZlcnMvbmV0L3dpcmVndWFyZC9zZWxmdGVzdC9hbGxvd2VkaXBzLmMg
-ICB8IDE2ICsrLS0KIC4uLi9icm9hZGNvbS9icmNtODAyMTEvYnJjbWZtYWMvcDJwLmMgICAgICAg
-ICB8ICAyICstCiAuLi4vbmV0L3dpcmVsZXNzL2ludGVsL2l3bHdpZmkvbXZtL21hYy1jdHh0LmMg
-fCAgMiArLQogLi4uL25ldC93aXJlbGVzcy9tYXJ2ZWxsL213aWZpZXgvY2ZnODAyMTEuYyAgIHwg
-IDQgKy0KIC4uLi93aXJlbGVzcy9taWNyb2NoaXAvd2lsYzEwMDAvY2ZnODAyMTEuYyAgICB8ICAy
-ICstCiAuLi4vbmV0L3dpcmVsZXNzL3F1YW50ZW5uYS9xdG5mbWFjL2NmZzgwMjExLmMgfCAgMiAr
-LQogZHJpdmVycy9udm1lL2NvbW1vbi9hdXRoLmMgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0K
-IGRyaXZlcnMvc2NzaS9jeGdiaS9jeGdiNGkvY3hnYjRpLmMgICAgICAgICAgICB8ICA0ICstCiBk
-cml2ZXJzL3Njc2kvZmNvZS9mY29lX2N0bHIuYyAgICAgICAgICAgICAgICAgfCAgNCArLQogZHJp
-dmVycy9zY3NpL2xwZmMvbHBmY19oYmFkaXNjLmMgICAgICAgICAgICAgIHwgIDYgKy0KIGRyaXZl
-cnMvc2NzaS9xZWRpL3FlZGlfbWFpbi5jICAgICAgICAgICAgICAgICB8ICAyICstCiBkcml2ZXJz
-L3RhcmdldC9pc2NzaS9jeGdiaXQvY3hnYml0X2NtLmMgICAgICAgfCAgMiArLQogZHJpdmVycy90
-aHVuZGVyYm9sdC94ZG9tYWluLmMgICAgICAgICAgICAgICAgIHwgIDIgKy0KIGRyaXZlcnMvdmlk
-ZW8vZmJkZXYvdXZlc2FmYi5jICAgICAgICAgICAgICAgICB8ICAyICstCiBmcy9jZXBoL2lub2Rl
-LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogZnMvY2VwaC9tZHNtYXAu
-YyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KIGZzL2V4ZmF0L2lub2RlLmMg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCiBmcy9leHQyL2lhbGxvYy5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMyArLQogZnMvZXh0NC9pYWxsb2MuYyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDcgKy0KIGZzL2V4dDQvaW9jdGwuYyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICstCiBmcy9leHQ0L21tcC5jICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogZnMvZXh0NC9zdXBlci5jICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgIDcgKy0KIGZzL2YyZnMvZ2MuYyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8ICAyICstCiBmcy9mMmZzL25hbWVpLmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQogZnMvZjJmcy9zZWdtZW50LmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgIDggKy0KIGZzL2ZhdC9pbm9kZS5jICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8ICAyICstCiBmcy9uZnNkL25mczRzdGF0ZS5jICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgNCArLQogZnMvdWJpZnMvZGVidWcuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgMTAgKy0KIGZzL3ViaWZzL2pvdXJuYWwuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAyICstCiBmcy91Ymlmcy9scHRfY29tbWl0LmMgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAxNCArLS0KIGZzL3ViaWZzL3RuY19jb21taXQuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAyICstCiBmcy94ZnMvbGlieGZzL3hmc19hbGxvYy5jICAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQogZnMveGZzL2xpYnhmcy94ZnNfaWFsbG9jLmMgICAgICAgICAgICAgICAgICAgIHwg
-IDQgKy0KIGZzL3hmcy94ZnNfZXJyb3IuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAy
-ICstCiBmcy94ZnMveGZzX2ljYWNoZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiAr
-LQogZnMveGZzL3hmc19sb2cuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0K
-IGluY2x1ZGUvbGludXgvcHJhbmRvbS5oICAgICAgICAgICAgICAgICAgICAgICB8IDEyIC0tLQog
-aW5jbHVkZS9uZXQvbmV0ZmlsdGVyL25mX3F1ZXVlLmggICAgICAgICAgICAgIHwgIDIgKy0KIGlu
-Y2x1ZGUvbmV0L3JlZC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCiBpbmNs
-dWRlL25ldC9zb2NrLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQoga2VybmVs
-L2tjc2FuL3NlbGZ0ZXN0LmMgICAgICAgICAgICAgICAgICAgICAgIHwgIDQgKy0KIGtlcm5lbC90
-aW1lL2Nsb2Nrc291cmNlLmMgICAgICAgICAgICAgICAgICAgICB8ICAyICstCiBsaWIvZmF1bHQt
-aW5qZWN0LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogbGliL2ZpbmRfYml0
-X2JlbmNobWFyay5jICAgICAgICAgICAgICAgICAgICAgIHwgIDQgKy0KIGxpYi9yYW5kb20zMi5j
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICstCiBsaWIvcmVlZF9zb2xvbW9u
-L3Rlc3RfcnNsaWIuYyAgICAgICAgICAgICAgICAgfCAxMiArLS0KIGxpYi9zYml0bWFwLmMgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICstCiBsaWIvdGVzdF9mcHJvYmUuYyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogbGliL3Rlc3Rfa3Byb2Jlcy5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KIGxpYi90ZXN0X2xpc3Rfc29ydC5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCiBsaWIvdGVzdF9vYmphZ2cuYyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogbGliL3Rlc3Rfcmhhc2h0YWJsZS5jICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgIDYgKy0KIGxpYi90ZXN0X3ZtYWxsb2MuYyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8IDE5ICstLS0KIGxpYi91dWlkLmMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8ICAyICstCiBtbS9zaG1lbS5jICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQogbmV0LzgwMi9nYXJwLmMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgIDIgKy0KIG5ldC84MDIvbXJwLmMgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8ICAyICstCiBuZXQvY2VwaC9tb25fY2xpZW50LmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgMiArLQogbmV0L2NlcGgvb3NkX2NsaWVudC5jICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgIDIgKy0KIG5ldC9jb3JlL25laWdoYm91ci5jICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAyICstCiBuZXQvY29yZS9wa3RnZW4uYyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCA0NyArKysrKy0tLS0tCiBuZXQvY29yZS9zdHJlYW0uYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgMiArLQogbmV0L2RjY3AvaXB2NC5jICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgIDQgKy0KIG5ldC9pcHY0L2RhdGFncmFtLmMgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAyICstCiBuZXQvaXB2NC9pZ21wLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAgNiArLQogbmV0L2lwdjQvaW5ldF9jb25uZWN0aW9uX3NvY2suYyAgICAgICAgICAgICAg
-IHwgIDIgKy0KIG5ldC9pcHY0L2luZXRfaGFzaHRhYmxlcy5jICAgICAgICAgICAgICAgICAgICB8
-ICAyICstCiBuZXQvaXB2NC9pcF9vdXRwdXQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
-MiArLQogbmV0L2lwdjQvcm91dGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIg
-Ky0KIG5ldC9pcHY0L3RjcF9jZGcuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICst
-CiBuZXQvaXB2NC90Y3BfaXB2NC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArLQog
-bmV0L2lwdjQvdWRwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KIG5l
-dC9pcHY2L2FkZHJjb25mLmMgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA4ICstCiBuZXQv
-aXB2Ni9pcDZfZmxvd2xhYmVsLmMgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogbmV0L2lw
-djYvbWNhc3QuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTAgKy0KIG5ldC9pcHY2
-L291dHB1dF9jb3JlLmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCiBuZXQvbWFjODAy
-MTEvcmM4MDIxMV9taW5zdHJlbF9odC5jICAgICAgICAgICAgfCAgMiArLQogbmV0L21hYzgwMjEx
-L3NjYW4uYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KIG5ldC9uZXRmaWx0ZXIv
-aXB2cy9pcF92c19jb25uLmMgICAgICAgICAgICAgICB8ICAyICstCiBuZXQvbmV0ZmlsdGVyL2lw
-dnMvaXBfdnNfdHdvcy5jICAgICAgICAgICAgICAgfCAgNCArLQogbmV0L25ldGZpbHRlci9uZl9u
-YXRfY29yZS5jICAgICAgICAgICAgICAgICAgIHwgIDQgKy0KIG5ldC9uZXRmaWx0ZXIveHRfc3Rh
-dGlzdGljLmMgICAgICAgICAgICAgICAgICB8ICAyICstCiBuZXQvb3BlbnZzd2l0Y2gvYWN0aW9u
-cy5jICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogbmV0L3BhY2tldC9hZl9wYWNrZXQuYyAg
-ICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KIG5ldC9yZHMvYmluZC5jICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICB8ICAyICstCiBuZXQvc2NoZWQvYWN0X2dhY3QuYyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgfCAgMiArLQogbmV0L3NjaGVkL2FjdF9zYW1wbGUuYyAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgIDIgKy0KIG5ldC9zY2hlZC9zY2hfY2FrZS5jICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICA4ICstCiBuZXQvc2NoZWQvc2NoX25ldGVtLmMgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAyMiArKy0tLQogbmV0L3NjaGVkL3NjaF9waWUuYyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgIDIgKy0KIG5ldC9zY2hlZC9zY2hfc2ZiLmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8ICAyICstCiBuZXQvc2N0cC9zb2NrZXQuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgNCArLQogbmV0L3N1bnJwYy9hdXRoX2dzcy9nc3Nfa3JiNV93cmFwLmMgICAg
-ICAgICAgIHwgIDQgKy0KIG5ldC9zdW5ycGMvY2FjaGUuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAyICstCiBuZXQvc3VucnBjL3hwcnQuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAgMiArLQogbmV0L3N1bnJwYy94cHJ0c29jay5jICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KIG5ldC90aXBjL3NvY2tldC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
-ICAyICstCiBuZXQvdW5peC9hZl91bml4LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
-MiArLQogbmV0L3hmcm0veGZybV9zdGF0ZS5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIg
-Ky0KIDEzNiBmaWxlcyBjaGFuZ2VkLCAzMDUgaW5zZXJ0aW9ucygrKSwgMzQyIGRlbGV0aW9ucygt
-KQoKLS0gCjIuMzcuMwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Rather than truncate a 32-bit value to a 16-bit value or an 8-bit value,
+simply use the get_random_{u8,u16}() functions, which are faster than
+wasting the additional bytes from a 32-bit value.
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ crypto/testmgr.c                                          | 8 ++++----
+ drivers/media/common/v4l2-tpg/v4l2-tpg-core.c             | 2 +-
+ drivers/media/test-drivers/vivid/vivid-radio-rx.c         | 4 ++--
+ .../net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c   | 2 +-
+ drivers/net/hamradio/baycom_epp.c                         | 2 +-
+ drivers/net/hamradio/hdlcdrv.c                            | 2 +-
+ drivers/net/hamradio/yam.c                                | 2 +-
+ drivers/net/wireguard/selftest/allowedips.c               | 4 ++--
+ drivers/scsi/lpfc/lpfc_hbadisc.c                          | 6 +++---
+ lib/test_vmalloc.c                                        | 2 +-
+ net/dccp/ipv4.c                                           | 4 ++--
+ net/ipv4/datagram.c                                       | 2 +-
+ net/ipv4/ip_output.c                                      | 2 +-
+ net/ipv4/tcp_ipv4.c                                       | 4 ++--
+ net/mac80211/scan.c                                       | 2 +-
+ net/netfilter/nf_nat_core.c                               | 4 ++--
+ net/sched/sch_cake.c                                      | 6 +++---
+ net/sched/sch_sfb.c                                       | 2 +-
+ net/sctp/socket.c                                         | 2 +-
+ 19 files changed, 31 insertions(+), 31 deletions(-)
+
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index be45217acde4..981c637fa2ed 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -927,7 +927,7 @@ static void generate_random_bytes(u8 *buf, size_t count)
+ 			b = 0xff;
+ 			break;
+ 		default:
+-			b = (u8)prandom_u32();
++			b = get_random_u8();
+ 			break;
+ 		}
+ 		memset(buf, b, count);
+@@ -935,8 +935,8 @@ static void generate_random_bytes(u8 *buf, size_t count)
+ 		break;
+ 	case 2:
+ 		/* Ascending or descending bytes, plus optional mutations */
+-		increment = (u8)prandom_u32();
+-		b = (u8)prandom_u32();
++		increment = get_random_u8();
++		b = get_random_u8();
+ 		for (i = 0; i < count; i++, b += increment)
+ 			buf[i] = b;
+ 		mutate_buffer(buf, count);
+@@ -944,7 +944,7 @@ static void generate_random_bytes(u8 *buf, size_t count)
+ 	default:
+ 		/* Fully random bytes */
+ 		for (i = 0; i < count; i++)
+-			buf[i] = (u8)prandom_u32();
++			buf[i] = get_random_u8();
+ 	}
+ }
+ 
+diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
+index 9b7bcdce6e44..303d02b1d71c 100644
+--- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
++++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
+@@ -870,7 +870,7 @@ static void precalculate_color(struct tpg_data *tpg, int k)
+ 		g = tpg_colors[col].g;
+ 		b = tpg_colors[col].b;
+ 	} else if (tpg->pattern == TPG_PAT_NOISE) {
+-		r = g = b = prandom_u32_max(256);
++		r = g = b = get_random_u8();
+ 	} else if (k == TPG_COLOR_RANDOM) {
+ 		r = g = b = tpg->qual_offset + prandom_u32_max(196);
+ 	} else if (k >= TPG_COLOR_RAMP) {
+diff --git a/drivers/media/test-drivers/vivid/vivid-radio-rx.c b/drivers/media/test-drivers/vivid/vivid-radio-rx.c
+index 232cab508f48..8bd09589fb15 100644
+--- a/drivers/media/test-drivers/vivid/vivid-radio-rx.c
++++ b/drivers/media/test-drivers/vivid/vivid-radio-rx.c
+@@ -104,8 +104,8 @@ ssize_t vivid_radio_rx_read(struct file *file, char __user *buf,
+ 				break;
+ 			case 2:
+ 				rds.block |= V4L2_RDS_BLOCK_ERROR;
+-				rds.lsb = prandom_u32_max(256);
+-				rds.msb = prandom_u32_max(256);
++				rds.lsb = get_random_u8();
++				rds.msb = get_random_u8();
+ 				break;
+ 			case 3: /* Skip block altogether */
+ 				if (i)
+diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
+index ddfe9208529a..ac452a0111a9 100644
+--- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
++++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c
+@@ -1467,7 +1467,7 @@ static void make_established(struct sock *sk, u32 snd_isn, unsigned int opt)
+ 	tp->write_seq = snd_isn;
+ 	tp->snd_nxt = snd_isn;
+ 	tp->snd_una = snd_isn;
+-	inet_sk(sk)->inet_id = prandom_u32();
++	inet_sk(sk)->inet_id = get_random_u16();
+ 	assign_rxopt(sk, opt);
+ 
+ 	if (tp->rcv_wnd > (RCV_BUFSIZ_M << 10))
+diff --git a/drivers/net/hamradio/baycom_epp.c b/drivers/net/hamradio/baycom_epp.c
+index 7df78a721b04..791b4a53d69f 100644
+--- a/drivers/net/hamradio/baycom_epp.c
++++ b/drivers/net/hamradio/baycom_epp.c
+@@ -438,7 +438,7 @@ static int transmit(struct baycom_state *bc, int cnt, unsigned char stat)
+ 			if ((--bc->hdlctx.slotcnt) > 0)
+ 				return 0;
+ 			bc->hdlctx.slotcnt = bc->ch_params.slottime;
+-			if (prandom_u32_max(256) > bc->ch_params.ppersist)
++			if (get_random_u8() > bc->ch_params.ppersist)
+ 				return 0;
+ 		}
+ 	}
+diff --git a/drivers/net/hamradio/hdlcdrv.c b/drivers/net/hamradio/hdlcdrv.c
+index 360d041a62c4..6c6f11d3d0aa 100644
+--- a/drivers/net/hamradio/hdlcdrv.c
++++ b/drivers/net/hamradio/hdlcdrv.c
+@@ -377,7 +377,7 @@ void hdlcdrv_arbitrate(struct net_device *dev, struct hdlcdrv_state *s)
+ 	if ((--s->hdlctx.slotcnt) > 0)
+ 		return;
+ 	s->hdlctx.slotcnt = s->ch_params.slottime;
+-	if (prandom_u32_max(256) > s->ch_params.ppersist)
++	if (get_random_u8() > s->ch_params.ppersist)
+ 		return;
+ 	start_tx(dev, s);
+ }
+diff --git a/drivers/net/hamradio/yam.c b/drivers/net/hamradio/yam.c
+index 97a6cc5c7ae8..2ed2f836f09a 100644
+--- a/drivers/net/hamradio/yam.c
++++ b/drivers/net/hamradio/yam.c
+@@ -626,7 +626,7 @@ static void yam_arbitrate(struct net_device *dev)
+ 	yp->slotcnt = yp->slot / 10;
+ 
+ 	/* is random > persist ? */
+-	if (prandom_u32_max(256) > yp->pers)
++	if (get_random_u8() > yp->pers)
+ 		return;
+ 
+ 	yam_start_tx(dev, yp);
+diff --git a/drivers/net/wireguard/selftest/allowedips.c b/drivers/net/wireguard/selftest/allowedips.c
+index 41db10f9be49..dd897c0740a2 100644
+--- a/drivers/net/wireguard/selftest/allowedips.c
++++ b/drivers/net/wireguard/selftest/allowedips.c
+@@ -310,7 +310,7 @@ static __init bool randomized_test(void)
+ 			for (k = 0; k < 4; ++k)
+ 				mutated[k] = (mutated[k] & mutate_mask[k]) |
+ 					     (~mutate_mask[k] &
+-					      prandom_u32_max(256));
++					      get_random_u8());
+ 			cidr = prandom_u32_max(32) + 1;
+ 			peer = peers[prandom_u32_max(NUM_PEERS)];
+ 			if (wg_allowedips_insert_v4(&t,
+@@ -354,7 +354,7 @@ static __init bool randomized_test(void)
+ 			for (k = 0; k < 4; ++k)
+ 				mutated[k] = (mutated[k] & mutate_mask[k]) |
+ 					     (~mutate_mask[k] &
+-					      prandom_u32_max(256));
++					      get_random_u8());
+ 			cidr = prandom_u32_max(128) + 1;
+ 			peer = peers[prandom_u32_max(NUM_PEERS)];
+ 			if (wg_allowedips_insert_v6(&t,
+diff --git a/drivers/scsi/lpfc/lpfc_hbadisc.c b/drivers/scsi/lpfc/lpfc_hbadisc.c
+index 2645def612e6..26d1779cb570 100644
+--- a/drivers/scsi/lpfc/lpfc_hbadisc.c
++++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
+@@ -2150,8 +2150,8 @@ lpfc_check_pending_fcoe_event(struct lpfc_hba *phba, uint8_t unreg_fcf)
+  * This function makes an running random selection decision on FCF record to
+  * use through a sequence of @fcf_cnt eligible FCF records with equal
+  * probability. To perform integer manunipulation of random numbers with
+- * size unit32_t, the lower 16 bits of the 32-bit random number returned
+- * from prandom_u32() are taken as the random random number generated.
++ * size unit32_t, a 16-bit random number returned from get_random_u16() is
++ * taken as the random random number generated.
+  *
+  * Returns true when outcome is for the newly read FCF record should be
+  * chosen; otherwise, return false when outcome is for keeping the previously
+@@ -2163,7 +2163,7 @@ lpfc_sli4_new_fcf_random_select(struct lpfc_hba *phba, uint32_t fcf_cnt)
+ 	uint32_t rand_num;
+ 
+ 	/* Get 16-bit uniform random number */
+-	rand_num = 0xFFFF & prandom_u32();
++	rand_num = get_random_u16();
+ 
+ 	/* Decision with probability 1/fcf_cnt */
+ 	if ((fcf_cnt * rand_num) < 0xFFFF)
+diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+index 56ffaa8dd3f6..0131ed2cd1bd 100644
+--- a/lib/test_vmalloc.c
++++ b/lib/test_vmalloc.c
+@@ -80,7 +80,7 @@ static int random_size_align_alloc_test(void)
+ 	int i;
+ 
+ 	for (i = 0; i < test_loop_count; i++) {
+-		rnd = prandom_u32();
++		rnd = get_random_u8();
+ 
+ 		/*
+ 		 * Maximum 1024 pages, if PAGE_SIZE is 4096.
+diff --git a/net/dccp/ipv4.c b/net/dccp/ipv4.c
+index da6e3b20cd75..301799e7fa56 100644
+--- a/net/dccp/ipv4.c
++++ b/net/dccp/ipv4.c
+@@ -123,7 +123,7 @@ int dccp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+ 						    inet->inet_daddr,
+ 						    inet->inet_sport,
+ 						    inet->inet_dport);
+-	inet->inet_id = prandom_u32();
++	inet->inet_id = get_random_u16();
+ 
+ 	err = dccp_connect(sk);
+ 	rt = NULL;
+@@ -422,7 +422,7 @@ struct sock *dccp_v4_request_recv_sock(const struct sock *sk,
+ 	RCU_INIT_POINTER(newinet->inet_opt, rcu_dereference(ireq->ireq_opt));
+ 	newinet->mc_index  = inet_iif(skb);
+ 	newinet->mc_ttl	   = ip_hdr(skb)->ttl;
+-	newinet->inet_id   = prandom_u32();
++	newinet->inet_id   = get_random_u16();
+ 
+ 	if (dst == NULL && (dst = inet_csk_route_child_sock(sk, newsk, req)) == NULL)
+ 		goto put_and_exit;
+diff --git a/net/ipv4/datagram.c b/net/ipv4/datagram.c
+index ffd57523331f..fefc5d855a66 100644
+--- a/net/ipv4/datagram.c
++++ b/net/ipv4/datagram.c
+@@ -71,7 +71,7 @@ int __ip4_datagram_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len
+ 	reuseport_has_conns(sk, true);
+ 	sk->sk_state = TCP_ESTABLISHED;
+ 	sk_set_txhash(sk);
+-	inet->inet_id = prandom_u32();
++	inet->inet_id = get_random_u16();
+ 
+ 	sk_dst_set(sk, &rt->dst);
+ 	err = 0;
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 04e2034f2f8e..a4fbdbff14b3 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -172,7 +172,7 @@ int ip_build_and_send_pkt(struct sk_buff *skb, const struct sock *sk,
+ 		 * Avoid using the hashed IP ident generator.
+ 		 */
+ 		if (sk->sk_protocol == IPPROTO_TCP)
+-			iph->id = (__force __be16)prandom_u32();
++			iph->id = (__force __be16)get_random_u16();
+ 		else
+ 			__ip_select_ident(net, iph, 1);
+ 	}
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 5b019ba2b9d2..747752980983 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -303,7 +303,7 @@ int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
+ 						 inet->inet_daddr);
+ 	}
+ 
+-	inet->inet_id = prandom_u32();
++	inet->inet_id = get_random_u16();
+ 
+ 	if (tcp_fastopen_defer_connect(sk, &err))
+ 		return err;
+@@ -1523,7 +1523,7 @@ struct sock *tcp_v4_syn_recv_sock(const struct sock *sk, struct sk_buff *skb,
+ 	inet_csk(newsk)->icsk_ext_hdr_len = 0;
+ 	if (inet_opt)
+ 		inet_csk(newsk)->icsk_ext_hdr_len = inet_opt->opt.optlen;
+-	newinet->inet_id = prandom_u32();
++	newinet->inet_id = get_random_u16();
+ 
+ 	/* Set ToS of the new socket based upon the value of incoming SYN.
+ 	 * ECT bits are set later in tcp_init_transfer().
+diff --git a/net/mac80211/scan.c b/net/mac80211/scan.c
+index c4f2aeb31da3..6cab549cc421 100644
+--- a/net/mac80211/scan.c
++++ b/net/mac80211/scan.c
+@@ -641,7 +641,7 @@ static void ieee80211_send_scan_probe_req(struct ieee80211_sub_if_data *sdata,
+ 		if (flags & IEEE80211_PROBE_FLAG_RANDOM_SN) {
+ 			struct ieee80211_hdr *hdr = (void *)skb->data;
+ 			struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+-			u16 sn = get_random_u32();
++			u16 sn = get_random_u16();
+ 
+ 			info->control.flags |= IEEE80211_TX_CTRL_NO_SEQNO;
+ 			hdr->seq_ctrl =
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index 7981be526f26..57c7686ac485 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -468,7 +468,7 @@ static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
+ 	if (range->flags & NF_NAT_RANGE_PROTO_OFFSET)
+ 		off = (ntohs(*keyptr) - ntohs(range->base_proto.all));
+ 	else
+-		off = prandom_u32();
++		off = get_random_u16();
+ 
+ 	attempts = range_size;
+ 	if (attempts > max_attempts)
+@@ -490,7 +490,7 @@ static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
+ 	if (attempts >= range_size || attempts < 16)
+ 		return;
+ 	attempts /= 2;
+-	off = prandom_u32();
++	off = get_random_u16();
+ 	goto another_round;
+ }
+ 
+diff --git a/net/sched/sch_cake.c b/net/sched/sch_cake.c
+index a43a58a73d09..637ef1757931 100644
+--- a/net/sched/sch_cake.c
++++ b/net/sched/sch_cake.c
+@@ -2092,11 +2092,11 @@ static struct sk_buff *cake_dequeue(struct Qdisc *sch)
+ 
+ 		WARN_ON(host_load > CAKE_QUEUES);
+ 
+-		/* The shifted prandom_u32() is a way to apply dithering to
+-		 * avoid accumulating roundoff errors
++		/* The get_random_u16() is a way to apply dithering to avoid
++		 * accumulating roundoff errors
+ 		 */
+ 		flow->deficit += (b->flow_quantum * quantum_div[host_load] +
+-				  (prandom_u32() >> 16)) >> 16;
++				  get_random_u16()) >> 16;
+ 		list_move_tail(&flow->flowchain, &b->old_flows);
+ 
+ 		goto retry;
+diff --git a/net/sched/sch_sfb.c b/net/sched/sch_sfb.c
+index 2829455211f8..7eb70acb4d58 100644
+--- a/net/sched/sch_sfb.c
++++ b/net/sched/sch_sfb.c
+@@ -379,7 +379,7 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ 		goto enqueue;
+ 	}
+ 
+-	r = prandom_u32() & SFB_MAX_PROB;
++	r = get_random_u16() & SFB_MAX_PROB;
+ 
+ 	if (unlikely(r < p_min)) {
+ 		if (unlikely(p_min > SFB_MAX_PROB / 2)) {
+diff --git a/net/sctp/socket.c b/net/sctp/socket.c
+index 1e354ba44960..83628c347744 100644
+--- a/net/sctp/socket.c
++++ b/net/sctp/socket.c
+@@ -9448,7 +9448,7 @@ void sctp_copy_sock(struct sock *newsk, struct sock *sk,
+ 	newinet->inet_rcv_saddr = inet->inet_rcv_saddr;
+ 	newinet->inet_dport = htons(asoc->peer.port);
+ 	newinet->pmtudisc = inet->pmtudisc;
+-	newinet->inet_id = prandom_u32();
++	newinet->inet_id = get_random_u16();
+ 
+ 	newinet->uc_ttl = inet->uc_ttl;
+ 	newinet->mc_loop = 1;
+-- 
+2.37.3
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
