@@ -4,119 +4,219 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C78EDC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 03:34:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2369C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 04:17:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Sqnq6MnccZGJcVHmj2qAzVfxvvoK1hDg/yIIXqQueF0=; b=yhocr1EEAW+y8M
-	6HLH/zzf+X1MDnzwxZ9UcIh8UE2hxColEPajuqitQh0u79oAMlGkvd1i9oKev5isgl2B3ZfDitxfx
-	iqNIQk7BXTPnbvWOOnvHE5VeJv5LYiw/yFLIpd9iviOu4M8VlRLgIs0iK47LXo2hQWKFysEXKrUrw
-	91959l3ZfjvRJySlrao/AqV4568N5pCaJmTkpusevYJHBTJbH9Epy9OmoVEn0TvTd0uLA7hj5ygYy
-	5M7NBwYKuOPHdk46gpI9aKgynSinrK4el0Nvhu1YOCb7UQgtkJwgEpXxCPmaPQ02lOVvioz9CWP32
-	+67FAcwHIAfPirDZbn2g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=KHodUpJv6O5FqvKR21JOBhdBROv/48tBc+i5dnhtV/I=; b=qi1PIVOuzUtCzV
+	+ROu/RHNHo7L9RQo70FXNNLI1OjJwclH7k3UYDWo8iwC36T97ZkbTQ64eA8OyviKiniZt9PanMmC+
+	dTgQrDpqi0Z/Fr0ZMprmxZ1hxsMRbkDSO6Y+0GUdHAtwHpjwpLKFJ+sdjSrbli3fhtCuWeLgmq5zS
+	SI/FPDZol7B2acCcn/KdgL/cw951T3f9DCC8SmI5TxbCC/c6W+sFhwSHqCYHWAkXFMgdv4iYgwpDt
+	fvW0gZO/gKWBaplyO1g1ORnschUup6dZTxUYg4zVW82YzT1pzmKgaR29WFra1LT15MhddXZuGt45z
+	m2iR3c0IERyul1vjleTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogHdL-00HA9n-8u; Thu, 06 Oct 2022 03:33:15 +0000
-Received: from mail-vi1eur05on2080.outbound.protection.outlook.com ([40.107.21.80] helo=EUR05-VI1-obe.outbound.protection.outlook.com)
+	id 1ogIJx-00HL3e-BF; Thu, 06 Oct 2022 04:17:17 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogHdH-00HA80-7j
-	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 03:33:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mb+srROlQXeMuWKvFBFXDjxDbsVHVY75uznQe2MkabEvHIVEGXVbIKWB0XU4OaJXr0uQ8znCCxu6Vml3Y9sspzafQqo8mOTa0HvfuogE1a1/bKWaqArNMHHfd9MV/naQPT4bmFqKTjWRUqHqLI7yOErI/XAKhCf1glEKmdFzVVZid799s/aQjtkX+6sSBzbDCekVyQ9/pHoo5lUimAOsvCJDDJEWMqed6TrrKA0b5mM+NP820fuzvH93bb1yZC+0jJM89Ec/1cho1lnETSM2FuBhK4D2ky+Y3p4Nw+amcLO0lwKFSHFVVnJqmiJkfaCFejp/EaOBBMo3R5G08FqKBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UPymUdVftnwO5/OoZP+Yrg7xoB4nvJ7Sbzl3GpXndv0=;
- b=mRA25xBqZMKp1UMd+GT4VbC49kkMBqrifj6por8LE35qcICcHWz6ylZ3v6ys162Kxp1rNxdKPJpSOUDL3NQmfko31POHZd1inD1AEpzqKUcNnXAWTBXlAc5EOoexerAmhb6K/ygFWoe+efsa6XL4lZC0ZwdW5PLLDLDPb7MUTYYiNqlC3y1GvLL3U1aYttbzq+EpDilLHRZ6ra1L7BP5tb5lo1zu9kCgV8sLt3VLWpYZiiLpc90Gb2JSqawBsEUjJZmMrvADtiO+i1B/qeoaIJTEo0BwTx8SACWY50jXCbmXPEz+zmRyJ5ZChoeDMUarf5RDd7SmTouuDXE6BE2g9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=iopsys.eu; dmarc=pass action=none header.from=iopsys.eu;
- dkim=pass header.d=iopsys.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iopsys.eu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UPymUdVftnwO5/OoZP+Yrg7xoB4nvJ7Sbzl3GpXndv0=;
- b=UY8ejV7vYht37L5nqVWzjLM6tkzfGnwh8CDXM8kUFmlT2RJmhbNFUBCkpZBeXTfyN/XLNAmdO0Fq2RAqTni0m1K8E1GHzUqdvp5LNHGPCnk9K1n4Ob48+erXMOzBsY55zbgxe9hfWUm4UOqa5U5d91R2LsNdcToDKZ1noF9EOdg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=iopsys.eu;
-Received: from PAXPR08MB6494.eurprd08.prod.outlook.com (2603:10a6:102:154::16)
- by AM9PR08MB6740.eurprd08.prod.outlook.com (2603:10a6:20b:305::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.26; Thu, 6 Oct
- 2022 03:33:04 +0000
-Received: from PAXPR08MB6494.eurprd08.prod.outlook.com
- ([fe80::3c25:b934:e13d:d6bd]) by PAXPR08MB6494.eurprd08.prod.outlook.com
- ([fe80::3c25:b934:e13d:d6bd%5]) with mapi id 15.20.5676.032; Thu, 6 Oct 2022
- 03:33:04 +0000
-From: mikhail.kshevetskiy@iopsys.eu
-To: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
+	id 1ogIJt-00HKwk-66
+	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 04:17:14 +0000
+Received: by mail-pl1-x629.google.com with SMTP id x1so637372plv.5
+        for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2022 21:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=WbAjddv7dJAWgX74vxMdFtfHq8KnIvmUd6IHydPVZWw=;
+        b=WgCBVOxTCY3r6hnjb6DkPXMWKhTpJd2tJ8grQVy4FqddmqNDeeFgajag3lajOwT2v4
+         a87IfTIAA5TCPftGBNiy4cY7xnOoxUEfMiQjvrPT/rt/xjKxauu3MOYhjJEXssFW35Ee
+         /z+9ItQjm7QhlvSxza54MmNIb/ZuYs/f028rM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=WbAjddv7dJAWgX74vxMdFtfHq8KnIvmUd6IHydPVZWw=;
+        b=vyBek+OTaUqrrqPyKsoFWRmsw776ai3i5kadxONBmtbXAm/aGhQBxP0xfBa9BKf2kS
+         TQgGd+9v1O1P6jjcmwh6eB/xBWf6yV6l5+XkGLCbg2AJRY3qkAqymBKv3rC5DFipCCC0
+         T3TjQ3+nlOUOwbbXj+axrsNiGpx4P7xS8BGaoQB/rv1yjII5KkI5bCMaDYrqa0ECJSTx
+         1zPWQmFCKND1fWtJ3mSYmALWuoUyK7rG2T+WGoCRx6zPJIQhZY3qQyZ9kM6nAgB1M/pK
+         B4fM5Gw0NBrAvZGUIG5ZbmKxkr52tJBNECqRS+YlB3wTJ57CQ0kGxXlVuipeEJWNw9TF
+         7S2Q==
+X-Gm-Message-State: ACrzQf2ZKfz03xdlqYz4bggnc7Ttj+t7UrTPlNZqbw64tx4AVRHlvTj5
+	U/myXIlnrU/NzcjO2R7W4vOSxA==
+X-Google-Smtp-Source: AMsMyM4cCCHH4sm8YdThV49cVWVDAgPzqhkhh6i7+17PaqDM+DNwRTUS7Um0Z/zO228Kkrjqlqz/Cg==
+X-Received: by 2002:a17:90a:ea95:b0:20a:f65b:143b with SMTP id h21-20020a17090aea9500b0020af65b143bmr3218311pjz.230.1665029812504;
+        Wed, 05 Oct 2022 21:16:52 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id je12-20020a170903264c00b00176d347e9a7sm11219825plb.233.2022.10.05.21.16.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Oct 2022 21:16:51 -0700 (PDT)
+Date: Wed, 5 Oct 2022 21:16:50 -0700
+From: Kees Cook <keescook@chromium.org>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: linux-kernel@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Amitkumar Karwar <amitkarwar@gmail.com>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+	Andreas Noever <andreas.noever@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	Andy Lutomirski <luto@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Arend van Spriel <aspriel@gmail.com>,
+	Ayush Sawal <ayush.sawal@chelsio.com>,
+	Borislav Petkov <bp@alien8.de>, Chao Yu <chao@kernel.org>,
+	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Ahern <dsahern@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Dick Kennedy <dick.kennedy@broadcom.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
+	Franky Lin <franky.lin@broadcom.com>,
+	Ganapathi Bhat <ganapathi017@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Hannes Reinecke <hare@suse.de>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hante Meuleman <hante.meuleman@broadcom.com>,
+	Hao Luo <haoluo@google.com>, Haoyue Xu <xuhaoyue1@hisilicon.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Helge Deller <deller@gmx.de>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+	Hugh Dickins <hughd@google.com>,
+	Igor Mitsyanko <imitsyanko@quantenna.com>,
+	Ilya Dryomov <idryomov@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+	Jack Wang <jinpu.wang@ionos.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	"James E . J . Bottomley" <jejb@linux.ibm.com>,
+	James Smart <james.smart@broadcom.com>, Jan Kara <jack@suse.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jay Vosburgh <j.vosburgh@gmail.com>,
+	Jean-Paul Roubelat <jpr@f6fbb.org>,
+	Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Jiri Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	John Stultz <jstultz@google.com>, Jon Maloy <jmaloy@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Julian Anastasov <ja@ssi.bg>, KP Singh <kpsingh@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>, Keith Busch <kbusch@kernel.org>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Manish Rangankar <mrangankar@marvell.com>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Marco Elver <elver@google.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	"Md . Haris Iqbal" <haris.iqbal@ionos.com>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michael Jamet <michael.jamet@intel.com>,
+	Michal Januszewski <spock@gentoo.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+	Neil Horman <nhorman@tuxdriver.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Nilesh Javali <njavali@marvell.com>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Pravin B Shelar <pshelar@ovn.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
 	Richard Weinberger <richard@nod.at>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] spi-nand: add Winbond W25N02KV flash support, fix Winbond flashes identifications
-Date: Thu,  6 Oct 2022 06:32:56 +0300
-Message-Id: <20221006033256.111664-1-mikhail.kshevetskiy@iopsys.eu>
-X-Mailer: git-send-email 2.35.1
-X-ClientProxiedBy: GV3P280CA0073.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:150:a::12) To PAXPR08MB6494.eurprd08.prod.outlook.com
- (2603:10a6:102:154::16)
+	Rohit Maheshwari <rohitm@chelsio.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+	Sergey Matyukevich <geomatsi@gmail.com>,
+	Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+	Simon Horman <horms@verge.net.au>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>,
+	Thomas Graf <tgraf@suug.ch>,
+	Thomas Sailer <t.sailer@alumni.ethz.ch>,
+	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Varun Prakash <varun@chelsio.com>,
+	Veaceslav Falico <vfalico@gmail.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+	Vinod Koul <vkoul@kernel.org>, Vlad Yasevich <vyasevich@gmail.com>,
+	Wenpeng Liang <liangwenpeng@huawei.com>,
+	Xinming Hu <huxinming820@gmail.com>, Xiubo Li <xiubli@redhat.com>,
+	Yehezkel Bernat <YehezkelShB@gmail.com>,
+	Ying Xue <ying.xue@windriver.com>,
+	Yishai Hadas <yishaih@nvidia.com>, Yonghong Song <yhs@fb.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	brcm80211-dev-list.pdl@broadcom.com, cake@lists.bufferbloat.net,
+	ceph-devel@vger.kernel.org, coreteam@netfilter.org,
+	dccp@vger.kernel.org, dev@openvswitch.org,
+	dmaengine@vger.kernel.org, drbd-dev@lists.linbit.com,
+	dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
+	linux-actions@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-hams@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-mm@kvack.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-nvme@lists.infradead.org, linux-raid@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-sctp@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com, linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, lvs-devel@vger.kernel.org,
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	rds-devel@oss.oracle.com, SHA-cyfmac-dev-list@infineon.com,
+	target-devel@vger.kernel.org, tipc-discussion@lists.sourceforge.net
+Subject: Re: [PATCH v1 1/5] treewide: use prandom_u32_max() when possible
+Message-ID: <202210052035.A1020E3@keescook>
+References: <20221005214844.2699-1-Jason@zx2c4.com>
+ <20221005214844.2699-2-Jason@zx2c4.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR08MB6494:EE_|AM9PR08MB6740:EE_
-X-MS-Office365-Filtering-Correlation-Id: d44a923d-53cc-4bfe-2398-08daa74b7a07
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	AP7Ur/j0ZNiBHUU3NRQEeq1eG67hvTqKpgy5MjFZlzWGOOZUgaGYpI4iTczjZE5j5EftBvgLqKNQkLnKRvomECi+Wkx4veMhkYCDchmLgUeufmm1uEz0VcDl/Hl7HlkLIsixfmE49qrcrztvPmMwOYugE7gw3LtRa3Q555DnaVabiwaBVdT5juWF7e46hu4Z5W1wviJ21K+tCMZBNDtSlUAZsmPA2WafVAWrZWLEQxNzvKrB4Oaly2B4mi1kVzd587TDPYH89Mv3azEJnQhYk5LTZ8p6wFukjoWjh1LfCoKhihhoxCXdeQUmhCEiw4qinYACscxZZvpkRbGnS0rS3P/nHP2c9sxF4X+RCtfeGqKswJ4no0U6WZ+Vxmpb/2J2LUvkMVobabj9I7SjCzWtciF9CCdOTNdU9qG3viqfyNt9LfFnq3a2Muqsk9cAxLyssmlgO4aeNAT6B20x8ZsPjx4yAkJGBljXplZSSs9o2cpQjrqvn0ItWQo9dr7Aa1c6QEdCwzDZpMtv5opasLZqColsisOVtvpbIjfyCYgiSPhv1COL1H5Rwtmk7BbjM9j6IPXZWGxTtLyxF+SJmzCAZ0uSDfZFpExNMrgse3Xh7wMh5lYXpp2eliMIdXpUnZENUqRg3SQEFt/nfMxjshyfoRdVl/eu5+KNgeGLM3wup0DC7znOpD/VUqy2Bs0CJ0V9SVKVnSN/ru4UDK1L9F/uC3LE1SsJa26arLuY2mYpu40hcpZU9j6Qfv81FFHSeTYjp40xXqj2/rT3dgVFJkv+8A==
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR08MB6494.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(39840400004)(346002)(376002)(366004)(396003)(451199015)(36756003)(6666004)(6486002)(478600001)(8676002)(6506007)(26005)(4326008)(83380400001)(2616005)(54906003)(2906002)(52116002)(1076003)(316002)(186003)(9686003)(66556008)(6512007)(41300700001)(38350700002)(66476007)(66946007)(86362001)(38100700002)(8936002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?rPtqC3LwR094z+iGS4MlARCSh87jtAgxhU+pml1VqyHTIIxEWHV+x1i6zezU?=
- =?us-ascii?Q?fbZxJcfwX/M53sDWf5/r6wwjn48IEJFKt/ZcS27qvJc2SWaAWh5lz4lGQy6y?=
- =?us-ascii?Q?yyEzx4LO9klxhSAkbYinQEbQeULA1caGXDrkcjcaCyQ3cgzNUM30CGtuNYzy?=
- =?us-ascii?Q?mtgT9jtCbG9ZVGlJDtQoPtmr5E+iKeHCJDo0l+BzxKxZaSMSBD5GQDSQOha0?=
- =?us-ascii?Q?R9DmeqAoil90cOwzZcDvD2DwIvG+q/UzxWys1QaRIgj+Qw0bJTyBkxjA03Ih?=
- =?us-ascii?Q?wKtYEM7/P0mTAwSqOtv0442xqVj1O09BfcT0mKyzPWnAeOaaLOfxCFztA7zq?=
- =?us-ascii?Q?gCV5PUSUc/+e16FmsOGnGxaSMG0qD+zo0Q4/f6vXoQhL7ZsrD1ue0g3Q1CWD?=
- =?us-ascii?Q?EOYqwldjWp0FSDV/VP9JUCGBM4U8CA0LvFlSYgK23R2U0F3Zi8pt/Ddad/sb?=
- =?us-ascii?Q?N9t68FNI2ayoVGvEAjMtIZQTTxSEDqbWi7cXgqDAw8Q+OypF3qIE7CbKO8GY?=
- =?us-ascii?Q?sLuGn4hhRKHhj8lUH5bq6MDsEOUFrFK2plYe+jEumUfaz0ZphVn1aO9uh6U4?=
- =?us-ascii?Q?dUBMJz1jATJxfOo0LbljsD1tNihLyVClTBZuRWjJ81KfsskoKrqKpK046qez?=
- =?us-ascii?Q?UAut1XvN2AIU5Ns94p40CyRwRvAZE57FPeUFgcUOReYPapLwcsGtr5B/9V28?=
- =?us-ascii?Q?Q4vbMfTyXcANbh1Ng/+MQpVTbsZwl8uZ//s+39G7umf1BQH1yRVEAp/u83sk?=
- =?us-ascii?Q?uYdhv84480waE0odGBclIl+qzUSEJP9bge2kcV3q2EsYnzAd4MG3UYzxhzUN?=
- =?us-ascii?Q?0s604Awl5hewFslrz/e3dyBpjxTbIYHBYVgG43tjc6a5F/zJtE09v7hlBOYo?=
- =?us-ascii?Q?bvo4IUjbZx83Az+wW4dBGvlFpu9XOynlapc67GSdb8QvDFdJqya4ks9FXlMe?=
- =?us-ascii?Q?Q8MOaumwYLbWZ7X9oBHizXc3iWdjxdh+KsU2boBl5DATqxQLnAJIb3s9gaf0?=
- =?us-ascii?Q?jtmMVjsSBw2Qdo1sRNdrO6oXs+ipBGocq2ZmkrCETlDlwaLUdPMXB4FVNdGe?=
- =?us-ascii?Q?jvv8+9o+Z9UJefB7453TtQrSurHn9J535dNHZiV1GOiWDck9RO5fAcz8YZ3u?=
- =?us-ascii?Q?AD70duVjEwmTPVSgOYEXCcMymObUIkru0pV/mAORtiSr3Hb8mO8mJM6EfUvk?=
- =?us-ascii?Q?/QYrinE46dsqU1jlB/omn9mZ24JwzbnGgvGGsF6i7VHIS+Tm7YJqz1fsFdjo?=
- =?us-ascii?Q?igM/Udp2MkmyEatU8JcNsbWOVdcFK2uO4NX2VyQ8SsBoStTTrkNVYNJfJxQu?=
- =?us-ascii?Q?p+j8zfHcLvd3k1931AKF8N92tC2712ovRr4xqZpi9UhMWFN5ZTWaeYY89xRQ?=
- =?us-ascii?Q?RFEM8hsdmO8pIwbZ5oEHBnb59+PVPhcqPStybQXj6N0nYwF4YfwKfcZiOS7j?=
- =?us-ascii?Q?UcjPxQKZxVsVJtJ4Z0xYbR2lGrHEIsw2Ie9DrcZ1PGC9BmtsFHTwF1q1biS3?=
- =?us-ascii?Q?+jmYllAchOKKDjU7ACzF1IzPFsNiMJsCJ2gpcq9rq9ATPhXWkdFdp7Wj7VLz?=
- =?us-ascii?Q?tyUyDNg4KOtYnVHA/dF1KlsFoJPgAxTaxNJfHughmE+rDz3AlzFHUEX6OdQp?=
- =?us-ascii?Q?Ew=3D=3D?=
-X-OriginatorOrg: iopsys.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: d44a923d-53cc-4bfe-2398-08daa74b7a07
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR08MB6494.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2022 03:33:03.9583
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 7ff78d65-2de4-40f5-8675-0569e5c7a65d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e2y0pFA0L53Ca3f4i0HIWImmR2RK0a02ubtGw+zxaJfxI0dnw3+m4uj1LQlr2aj0hptn4kyB+OSLFhO/7nEz0AyQftkTa9g8aZlXeUv8ELk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR08MB6740
+Content-Disposition: inline
+In-Reply-To: <20221005214844.2699-2-Jason@zx2c4.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221005_203311_828165_2196B3B6 
-X-CRM114-Status: GOOD (  14.85  )
+X-CRM114-CacheID: sfid-20221005_211713_238792_6D83FD40 
+X-CRM114-Status: GOOD (  25.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,129 +233,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
+On Wed, Oct 05, 2022 at 11:48:40PM +0200, Jason A. Donenfeld wrote:
+> Rather than incurring a division or requesting too many random bytes for
+> the given range, use the prandom_u32_max() function, which only takes
+> the minimum required bytes from the RNG and avoids divisions.
 
-Winbond uses 3 bytes to identify flash: vendor_id, dev_id_0, dev_id_1,
-but current driver uses only first 2 bytes of it for devices
-idenfification. As result Winbond W25N02KV flash (id_bytes: EF, AA, 22)
-is identified as W25N01GV (id_bytes: EF, AA, 21).
+Yes please!
 
-Fix this and add W25N02KV flash support.
+Since this is a treewide patch, it's helpful for (me at least) doing
+reviews to detail the mechanism of the transformation.
 
-Signed-off-by: Mikhail Kshevetskiy <mikhail.kshevetskiy@iopsys.eu>
----
- drivers/mtd/nand/spi/winbond.c | 79 +++++++++++++++++++++++++++++++++-
- 1 file changed, 77 insertions(+), 2 deletions(-)
+e.g. I imagine this could be done with something like Coccinelle and
 
-diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-index 76684428354e..3ad58cd284d8 100644
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -74,9 +74,75 @@ static int w25m02gv_select_target(struct spinand_device *spinand,
- 	return spi_mem_exec_op(spinand->spimem, &op);
- }
- 
-+static int w25n02kv_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				  struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	region->offset = 64 + (16 * section);
-+	region->length = 13;
-+
-+	return 0;
-+}
-+
-+static int w25n02kv_ooblayout_free(struct mtd_info *mtd, int section,
-+				   struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	region->offset = (16 * section) + 2;
-+	region->length = 14;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops w25n02kv_ooblayout = {
-+	.ecc = w25n02kv_ooblayout_ecc,
-+	.free = w25n02kv_ooblayout_free,
-+};
-+
-+static int w25n02kv_ecc_get_status(struct spinand_device *spinand,
-+				   u8 status)
-+{
-+	struct nand_device *nand = spinand_to_nand(spinand);
-+	u8 mbf = 0;
-+	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(0x30, &mbf);
-+
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case STATUS_ECC_HAS_BITFLIPS:
-+		/*
-+		 * Let's try to retrieve the real maximum number of bitflips
-+		 * in order to avoid forcing the wear-leveling layer to move
-+		 * data around if it's not necessary.
-+		 */
-+		if (spi_mem_exec_op(spinand->spimem, &op))
-+			return nanddev_get_ecc_conf(nand)->strength;
-+
-+		mbf >>= 4;
-+
-+		if (WARN_ON(mbf > nanddev_get_ecc_conf(nand)->strength || !mbf))
-+			return nanddev_get_ecc_conf(nand)->strength;
-+
-+		return mbf;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static const struct spinand_info winbond_spinand_table[] = {
- 	SPINAND_INFO("W25M02GV",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xab),
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xab, 0x21),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 2),
- 		     NAND_ECCREQ(1, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -86,7 +152,7 @@ static const struct spinand_info winbond_spinand_table[] = {
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL),
- 		     SPINAND_SELECT_TARGET(w25m02gv_select_target)),
- 	SPINAND_INFO("W25N01GV",
--		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa),
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa, 0x21),
- 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(1, 512),
- 		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-@@ -94,6 +160,15 @@ static const struct spinand_info winbond_spinand_table[] = {
- 					      &update_cache_variants),
- 		     0,
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
-+	SPINAND_INFO("W25N02KV",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa, 0x22),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25n02kv_ooblayout, w25n02kv_ecc_get_status)),
- };
- 
- static int winbond_spinand_init(struct spinand_device *spinand)
+@no_modulo@
+expression E;
+@@
+
+-	(prandom_u32() % (E))
++	prandom_u32_max(E)
+
+> diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+> index 118248a5d7d4..4236c799a47c 100644
+> --- a/drivers/mtd/ubi/debug.h
+> +++ b/drivers/mtd/ubi/debug.h
+> @@ -73,7 +73,7 @@ static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
+>  static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi)
+>  {
+>  	if (ubi->dbg.emulate_bitflips)
+> -		return !(prandom_u32() % 200);
+> +		return !(prandom_u32_max(200));
+>  	return 0;
+>  }
+>  
+
+Because some looks automated (why the parens?)
+
+> @@ -393,14 +387,11 @@ static struct test_driver {
+>  
+>  static void shuffle_array(int *arr, int n)
+>  {
+> -	unsigned int rnd;
+>  	int i, j;
+>  
+>  	for (i = n - 1; i > 0; i--)  {
+> -		rnd = prandom_u32();
+> -
+>  		/* Cut the range. */
+> -		j = rnd % i;
+> +		j = prandom_u32_max(i);
+>  
+>  		/* Swap indexes. */
+>  		swap(arr[i], arr[j]);
+
+And some by hand. :)
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 -- 
-2.35.1
-
+Kees Cook
 
 ______________________________________________________
 Linux MTD discussion mailing list
