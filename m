@@ -4,219 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3DC7C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 05:40:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44C0FC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Oct 2022 07:09:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WAzz0tNl6YcKDlN+sDiTmTzlpaVT72qxDeWK8a45eVs=; b=28k2o6KqzrVgxZ
-	iwKubxt20Ca+UrkIm6kA3y5eeOwZQSavlxSfxPlkiwUxKtlbKNTuWU+NADk9XyhqpddcVUZE6LSKR
-	V2Lhfz/ChicBhc9WDbz1Bqt4lvtArgIUN+T8bKAKWTk13cK5Rmbxuek2FVdFeJHju4FgMzYlZ0cLR
-	YeH4Z/hHq0HIQPo95/SzRCEUx34ModRwF0t1IsjfofSszBCzVZTdHgEo2Q5oh/miXceU/zD0r1Hp3
-	dfga8o9UMA2AG9c2P9CkdJUn0cJKv4wZiuFLFMBkHYU+B83mydhPkGHSwEDSMUQhtQFtJEXkBvOHR
-	Jj7QF90PWei+UcD8KOeQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ZWB5pQw3+EVwYsbhnb/caqMv/vT98Y7bnCi6e6L4oZY=; b=vl+aH1eqXpY6WG
+	Epgt5KWeUOlSiVq8PJA0jQBD12Xg8r2ZDNG0lqpC84Gaf17O1YT1vZ399UhIUaUxbhtrZoOEIR98m
+	pW18BLZhadOFkdvc5L8OssKRQgiRFZGV5lRBF0wH11HiKnjZMc6BTwy72AzGhoO9irSIuPdLUAOlC
+	cxj5gAd8K5LlZ/cTNVNsQFsnGlsiowbxUYJrimgxhT/wjaISXapr8bUoTiQcBJYtPGbQQlxPL9E15
+	szQ/xkUKCFiiRH+Y//F1Rt4lInIdeOpQiuhdlUoqe0ljAfR0+k7LLE1EqEAY76yo0tJVN0SaSOKkI
+	oIcdePbE67KiVzwvGwPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogJcg-0000WX-ER; Thu, 06 Oct 2022 05:40:42 +0000
-Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
+	id 1ogL07-000KYG-Iy; Thu, 06 Oct 2022 07:08:59 +0000
+Received: from mail-psaapc01on2074.outbound.protection.outlook.com ([40.107.255.74] helo=APC01-PSA-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogJcd-0000Ul-N2
-	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 05:40:41 +0000
-Received: by mail-pj1-x1029.google.com with SMTP id e11-20020a17090a77cb00b00205edbfd646so3392547pjs.1
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2022 22:40:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=7rD76ImKhWSr9uLkAh+d+zcZYfUm0ip9Vo7hna38oSs=;
-        b=HIlnByPTia/JV2Hio0Z3vTGHRO3pP+g3PDOdFVRfXo+4JMSWemnyOHulYs1b2f7JO3
-         4B68mkEwVVg8IQ3IkOWlhCZu1DHmNpOVf5BI7g3+ztCRosIDaXqnmyXn8NbvhlX0kAlJ
-         1+EIMZBflEmYzO5Z7VvIiaOCr5rSQzs8/emFI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=7rD76ImKhWSr9uLkAh+d+zcZYfUm0ip9Vo7hna38oSs=;
-        b=a4XOMa3IcpXPaeT/t3WnWKh8eUY1QmBMR0WElZlvnWn+EyTYIuzb8N+Xtf3eyaiLDF
-         BHNwziIfEtJiQDQoRIg5PKkadyRW/7gIve9o8UZaVIgIVAeJpvu3aAhtgLpNCyfARlTG
-         x8aohQvZV3tgsqvc8hXXT1vKy2G8Z+potUxfiLO0yE7A5N2uGSFVO+dpiRAjOQ8j4zcj
-         meY68DiEZmkBl/ZYA+PE1gqWUH1lTb5Z3NuqHFSO47plCQAEvCBM2aljQeiCjwjPvbio
-         VrycfBZNHhdpT7O+4oJgVop9ZJ+JwI/LutM9WkQ669rTh9KKRIGb4XSgdKNU5UJBm34I
-         uqDg==
-X-Gm-Message-State: ACrzQf2uUHTpWXa8fAEoJC6Kb+PAiaePCpJzIdYnZTY9yMJ9Im+AOvAx
-	i7+/FSTFaYwIpZjmDMqjXJdLrg==
-X-Google-Smtp-Source: AMsMyM5d8kq/QLGWHL1lT7d4vvr6wiHcKPw02UiifePzthTJzj01ofprelzHftcv9opKc24+zWNWRw==
-X-Received: by 2002:a17:90b:1943:b0:20a:85e9:f089 with SMTP id nk3-20020a17090b194300b0020a85e9f089mr3484011pjb.47.1665034838827;
-        Wed, 05 Oct 2022 22:40:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s9-20020a63ff49000000b0043be31d490dsm776833pgk.67.2022.10.05.22.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Oct 2022 22:40:38 -0700 (PDT)
-Date: Wed, 5 Oct 2022 22:40:36 -0700
-From: Kees Cook <keescook@chromium.org>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: linux-kernel@vger.kernel.org, Ajay Singh <ajay.kathat@microchip.com>,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Amitkumar Karwar <amitkarwar@gmail.com>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-	Andreas Noever <andreas.noever@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Andy Gospodarek <andy@greyhouse.net>,
-	Andy Lutomirski <luto@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-	Anna Schumaker <anna@kernel.org>,
-	Arend van Spriel <aspriel@gmail.com>,
-	Ayush Sawal <ayush.sawal@chelsio.com>,
-	Borislav Petkov <bp@alien8.de>, Chao Yu <chao@kernel.org>,
-	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Claudiu Beznea <claudiu.beznea@microchip.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Ahern <dsahern@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Dick Kennedy <dick.kennedy@broadcom.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
-	Franky Lin <franky.lin@broadcom.com>,
-	Ganapathi Bhat <ganapathi017@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>, Hannes Reinecke <hare@suse.de>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Hante Meuleman <hante.meuleman@broadcom.com>,
-	Hao Luo <haoluo@google.com>, Haoyue Xu <xuhaoyue1@hisilicon.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Helge Deller <deller@gmx.de>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-	Hugh Dickins <hughd@google.com>,
-	Igor Mitsyanko <imitsyanko@quantenna.com>,
-	Ilya Dryomov <idryomov@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Jack Wang <jinpu.wang@ionos.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-	Jaehoon Chung <jh80.chung@samsung.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	"James E . J . Bottomley" <jejb@linux.ibm.com>,
-	James Smart <james.smart@broadcom.com>, Jan Kara <jack@suse.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Jay Vosburgh <j.vosburgh@gmail.com>,
-	Jean-Paul Roubelat <jpr@f6fbb.org>,
-	Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Jiri Olsa <jolsa@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	John Stultz <jstultz@google.com>, Jon Maloy <jmaloy@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Julian Anastasov <ja@ssi.bg>, KP Singh <kpsingh@kernel.org>,
-	Kalle Valo <kvalo@kernel.org>, Keith Busch <kbusch@kernel.org>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Manish Rangankar <mrangankar@marvell.com>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Marco Elver <elver@google.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	"Md . Haris Iqbal" <haris.iqbal@ionos.com>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michael Jamet <michael.jamet@intel.com>,
-	Michal Januszewski <spock@gentoo.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	id 1ogL04-000KWr-BQ
+	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2022 07:08:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ecczGMTio7CZQKk9fQVPyFsjhaWrNlKJe7Eug7vxFTGhMptOdSzeuVj5ID+ATfH2GDVC6GWZlE5BMmEW723OkFuYRxrveyAuzrouy9q5iLiAF6t0x34Ca6AWSGI3ufFiUgt6TAN9J7r3oiW5Fc90sWIQmVmtGWCIaJvmrVrMtIxe13QMdZrYZOKmKoMpuCrRKdG74Vs6j7sWDtg7peMtrE2YbrMxB6cVDHsCNpnIOKK44C2GlYWcD1JSGe2KDvQpXEjcJl5s9is8Ur+QtBvwA3k7EeF2eJS9ootDm5Otv9zgBVoItNfM8UEFYwirRzkEtMyQtqw5g2el0xxGh/4a+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oEhfys8WyLik2IG5wuweP4+UICMjWC7PBzvNuxx5xsU=;
+ b=Z3aQD3JwQcNRzzA1SqsxdHMjr3xn9Dry6KPdLEa83uRC7l+c+EpmWnnj/duOXwZSLXIYrgLarLAvvoJzo9aJ1EVmukSj/x6Bko42F48fNnAEXvAtlRSfQ+qnbGbhz4ia5UHnStiruQPAdMnsaoSujzj6xml1a+aScvsWpg3OeVNfKeS3dGEhIVStoJG8ipiPxXxnMcuA87MrB0dpT/inSP7bO3xVXMQuFLfYUvnUc6mLydUYGTt1TVrvGRhRneJMOSV1j6pVviENWjsmXTh1ij3szarwrUlsaOIV++yT1LGyIrdhCYwc+GIEjxfv7j44ymXEojy8YOSqGiAfg/Sp9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=lists.sr.ht smtp.mailfrom=wiwynn.com;
+ dmarc=fail (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oEhfys8WyLik2IG5wuweP4+UICMjWC7PBzvNuxx5xsU=;
+ b=nhdMcRTA8s7HmsBm/u1j5jeo7vxUAVcuRlTK5emtMR/81BhGLwcwkIn7ijriVXWBcWMHzE/L4FcW6VL29qdStOvqfIPxNav2/wxyj12QroO28CTQkUZz8Gcj9P3WKAI1pbDdr+ahECXmPG5um7Z2VYIg9Es9XibtB4Qe2zhtlM/QFfmtp7furLfoA9+oDHYQ/6KuYS9Y7g9qsByv+Z3cZTUxtLiTCK5oNC78aR1v0lERwf4XS1Q+GJkenUKlX6I2SQjzkd/g6UYu/mh9bBEEy0aWtlwp8GchTaN0m1AT0OiPCghscP6k5RMDitY4U+PM6T4losj73NbdNScHLgIgbQ==
+Received: from TYAPR01CA0219.jpnprd01.prod.outlook.com (2603:1096:404:11e::15)
+ by SEZPR04MB6825.apcprd04.prod.outlook.com (2603:1096:101:eb::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.34; Thu, 6 Oct
+ 2022 07:08:50 +0000
+Received: from TYZAPC01FT030.eop-APC01.prod.protection.outlook.com
+ (2603:1096:404:11e:cafe::5e) by TYAPR01CA0219.outlook.office365.com
+ (2603:1096:404:11e::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.32 via Frontend
+ Transport; Thu, 6 Oct 2022 07:08:49 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=Wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=Wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of Wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ TYZAPC01FT030.mail.protection.outlook.com (10.118.152.138) with Microsoft
+ SMTP Server id 15.20.5709.10 via Frontend Transport; Thu, 6 Oct 2022 07:08:48
+ +0000
+From: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+To: ~sircmpwn/email-test-drive@lists.sr.ht
+Cc: patrick@stwcx.xyz,
+	garnermic@fb.com,
+	Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
+	Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-	Neil Horman <nhorman@tuxdriver.com>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Nilesh Javali <njavali@marvell.com>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Pravin B Shelar <pshelar@ovn.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
 	Richard Weinberger <richard@nod.at>,
-	Rohit Maheshwari <rohitm@chelsio.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-	Sergey Matyukevich <geomatsi@gmail.com>,
-	Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-	Simon Horman <horms@verge.net.au>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>,
-	Thomas Graf <tgraf@suug.ch>,
-	Thomas Sailer <t.sailer@alumni.ethz.ch>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Varun Prakash <varun@chelsio.com>,
-	Veaceslav Falico <vfalico@gmail.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-	Vinod Koul <vkoul@kernel.org>, Vlad Yasevich <vyasevich@gmail.com>,
-	Wenpeng Liang <liangwenpeng@huawei.com>,
-	Xinming Hu <huxinming820@gmail.com>, Xiubo Li <xiubli@redhat.com>,
-	Yehezkel Bernat <YehezkelShB@gmail.com>,
-	Ying Xue <ying.xue@windriver.com>,
-	Yishai Hadas <yishaih@nvidia.com>, Yonghong Song <yhs@fb.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	brcm80211-dev-list.pdl@broadcom.com, cake@lists.bufferbloat.net,
-	ceph-devel@vger.kernel.org, coreteam@netfilter.org,
-	dccp@vger.kernel.org, dev@openvswitch.org,
-	dmaengine@vger.kernel.org, drbd-dev@lists.linbit.com,
-	dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
-	linux-actions@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	linux-fbdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-hams@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-mm@kvack.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-	linux-nvme@lists.infradead.org, linux-raid@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-sctp@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com, linux-usb@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, lvs-devel@vger.kernel.org,
-	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	rds-devel@oss.oracle.com, SHA-cyfmac-dev-list@infineon.com,
-	target-devel@vger.kernel.org, tipc-discussion@lists.sourceforge.net
-Subject: Re: [PATCH v1 0/5] treewide cleanup of random integer usage
-Message-ID: <202210052240.23F1699@keescook>
-References: <20221005214844.2699-1-Jason@zx2c4.com>
- <202210052148.B11CBC60@keescook>
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: winbond: add support for w25q01jv-im
+Date: Thu,  6 Oct 2022 15:08:40 +0800
+Message-Id: <20221006070841.2106194-1-Delphine_CC_Chiu@Wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202210052148.B11CBC60@keescook>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZAPC01FT030:EE_|SEZPR04MB6825:EE_
+X-MS-Office365-Filtering-Correlation-Id: 81783988-8a25-44a8-bc2a-08daa7699e0e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	jQ2CJggutL6XXj0NglqU+m+a1wKjJI0MR1e7TWm3f9gp8y1YmFgmU7t7FbGJaiNV8vNM/NEsYQIwwWez7A11DmWmZ+YXC4lTytz4Kx/21BxKZ+LWT8Er3n7vPHieNbtQyUzbHeeMYLzJCM0p7WMP+H1p260vGXgx2ag8s2N/10m605aMcBQqy3XOgGSOBKvG1UERo/0fnC1xan+CzQN44EYF3U1BqE68x3jrEcXmKO2RYLKOF/ACmvJhJ7m2f8LO1w2ukQodtK6XrKQqhmSW25+OJw3DQSjm/G85huQ8mEUtc/VJRxzFxWAQY4Xa4JNfZJjKBzy9xW/cXWDamCf5c4pXxBk2g0Amr+tlATO8cyHDedsAAm1HAv/8MY7ly46hNK9gjwyy6KOqkZ3esB8Byd7fyCRVPwsnT4jqRbZMuomndZPcZ+vZ2XUhheIuTO2Eok3ATfWvI9zCBC/qiA0+YyDnSFp+3KjBTYcTucqqiqbDLWc2o187ZTsw8iGcCp2x6hMIw++3LVcWcqUCJWwQ/hnOUsOHDdL+nl0Dbcrx84rP3wSfOtZZ6xX1Yr+W/o18OjVc9zZR0p7Baf001nAc0FakauEFQ/4Nn89XwZlWmdr4bRXCjCX45shyP1sOsyD2rOQawABRn5gxnrBoeGgXx5WSl+8GFyzSiCTDDIxlMe4ULDu0QSPAWn6fgSSDfc4GmVXZn06uvkOGut5T+/a8snw7ig5740iuN185QF/LmyY=
+X-Forefront-Antispam-Report: 	CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230022)(6069001)(4636009)(136003)(346002)(396003)(39860400002)(376002)(451199015)(46966006)(36840700001)(956004)(2616005)(336012)(1076003)(186003)(47076005)(8676002)(4744005)(5660300002)(41300700001)(7416002)(8936002)(70206006)(4326008)(70586007)(6512007)(82310400005)(6666004)(2906002)(9316004)(26005)(36756003)(6506007)(40480700001)(316002)(54906003)(36736006)(478600001)(6486002)(36906005)(86362001)(82740400003)(356005)(81166007)(36860700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Oct 2022 07:08:48.6830
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81783988-8a25-44a8-bc2a-08daa7699e0e
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: 	TYZAPC01FT030.eop-APC01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR04MB6825
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221005_224039_806640_AC082DE2 
-X-CRM114-Status: GOOD (  15.73  )
+X-CRM114-CacheID: sfid-20221006_000856_410333_8BB7F86C 
+X-CRM114-Status: UNSURE (   8.19  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -233,15 +118,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 05, 2022 at 09:55:43PM -0700, Kees Cook wrote:
-> If any of the subsystems ask you to break this up (I hope not), I've got
-> this[1], which does a reasonable job of splitting a commit up into
-> separate commits for each matching subsystem.
+Add support for winbond w25q01jv-im chip.
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/split-on-maintainer
+Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+---
+ drivers/mtd/spi-nor/winbond.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index ffaa24055259..2b02b05ceb0a 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -139,6 +139,9 @@ static const struct flash_info winbond_nor_parts[] = {
+ 	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ) },
++	{ "w25q01jv-im", INFO(0xef7021, 0, 64 * 1024, 2048)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ) },
+ };
+ 
+ /**
 -- 
-Kees Cook
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
