@@ -4,62 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CED5C433FE
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Oct 2022 17:13:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0AD3C433FE
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Oct 2022 17:57:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AV6BPyX2EO/vRfKl5f9IzJvKkU/12db0N76fUJSE6Ss=; b=ha6PV6FkgQHhic
-	u4OVeyGRHkOND6f1uYqYS31c5ygHDqI6IaKR5vKJU4cCKzQySdTiLmkFbGb6AXx+ke09ef2yns9QC
-	yAKhpkjQuEPRTyev27JQ3paagNON2hM4tk0bk7OikrgkzA+llG0VBlLTcgWmSHgBwH+Rc1WxurxXV
-	3iOwa7zbVv3FcLlqAB5zXhaQnQyQVjt4X3RFBMcYBwQAr4Q8ki1PRj7RyUXfsRSGSyRSSHkexJ+zd
-	xqCKKjwXSiuWb7NcBElbYcBEBddJS8aA80ZytDAON6T2LK65GcYY0amqWALZmfdzrrCmJ4I9Y3M7p
-	Iu10uST63EQfEh0Ys2aA==;
+	List-Owner; bh=XAkN0J6PqgxzjEPqUQ8UxqqlPOhj5RykJjSbvPwv+sU=; b=d0ipLshOdLWF0/
+	CzDTB1dMZBGkz2BYk9uP4UJc6MVmGiAPHoGdIeUhzJ3CvyNOSXnXCOZq4c3eShiPN7+74ttzNY1qQ
+	n3GELP1LwpGgCWip/WfeD+Y41HfruH1OXZnZADIaP8werf28XXfkpQgJVQSNl2/k3KSWtoPgQHVkO
+	SI+r7w+ojHFruMHIcwxaQoHEzDMaOILDgtyx+GsKA+7xBAaq0dGVKwva8faPlWAQW9sMfKyyrRkSe
+	IrZsQbHvytTOJOSqxHweabau7ZsGwtKhe4rv2WgOCp3di4C16YM2NAz7x2vwXyQNomtfCyFIjd2hG
+	i9fcURR7Bm/QL33mxqtA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogqu4-009ryF-1W; Fri, 07 Oct 2022 17:12:52 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1ograZ-009z5f-PL; Fri, 07 Oct 2022 17:56:47 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogqty-009rvp-ST
-	for linux-mtd@lists.infradead.org; Fri, 07 Oct 2022 17:12:49 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id p14so1110670pfq.5
-        for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2022 10:12:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=r+ar3rF5Nifj4ZH0w5BLPJvorwhCPz9FpYPvkQg1fFY=;
-        b=lnyLGuYmjS75CgXIYPygwDolRfcdA6yOcav2EBBasADUNmB+X4q/LGyG3GplPLKF4D
-         kbVVCg/8bBMxcfD9rLKmUEYYLhbyeB5zPm6ZDbYMckDnSVVJGqQeX6zA9l/IbMFC0x6e
-         tEj8qeloPyDPz0HyArmtPjFAzjrVIlk8ES+6Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r+ar3rF5Nifj4ZH0w5BLPJvorwhCPz9FpYPvkQg1fFY=;
-        b=DqzFS3t2asq2OC34HdQmNtJPS7HTXK+ys4KhI05GuugYL9L1dxyj8BOV9+NdCNBd6O
-         HXTOVNFZDvV6qm3OUtqh6HUw0CRqqeWJL3ir2fKn3j+unwN4WwUIr3DW3perB+mjCkaG
-         kacDaTyn+kuENc2aJmay/beY7cQCiDL5gWA1BTX/goxbXOZwP82t3dgnMzBKuma9X6Yf
-         wtdJby6ieRaI4yIxNmyG3t0iUSs2BwdbJOde1+PDPjnGZdDIh0IMtMFb3KvBxJIJ85vX
-         HImdk90yA7BlDgF24Me+8Dbyz0ibGzxnoX2vqCvWWctI1/f9rFYR9OQlgvksGBA3fOMF
-         RbJw==
-X-Gm-Message-State: ACrzQf1JH9Uya0v6YCTMyHqct5UknMF6M+LUAj4tiWZeZ7WS9CGAW1un
-	Cz06TDleqEsx2Aq4LPs9ZSM46w==
-X-Google-Smtp-Source: AMsMyM6NgkBv0EiGuqEVmoxPIoEcqTWg64Tia/kXPXFAx+JliGbPe67OXQDl8cE35IpUxu9mDvbMUg==
-X-Received: by 2002:a63:8149:0:b0:459:4e80:56bc with SMTP id t70-20020a638149000000b004594e8056bcmr5537842pgd.538.1665162764512;
-        Fri, 07 Oct 2022 10:12:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o68-20020a62cd47000000b00540a8074c9dsm1849097pfg.166.2022.10.07.10.12.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Oct 2022 10:12:43 -0700 (PDT)
-Date: Fri, 7 Oct 2022 10:12:42 -0700
-From: Kees Cook <keescook@chromium.org>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+	id 1ograV-009z2q-5E; Fri, 07 Oct 2022 17:56:45 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 5F174B818F6;
+	Fri,  7 Oct 2022 17:56:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B63F0C433D7;
+	Fri,  7 Oct 2022 17:56:33 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="f8gITOWu"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1665165391;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nK/H0hVDBIBg7GodmLmaWI9qS4fvsGkmZJoRHEB4Sqs=;
+	b=f8gITOWuIwqHaHfAd2Ip5iMe8yRrocgJ4MTv+syk8BIYaorE//Q+fvXw/I7Wb9QIt67mY7
+	sXmAQixgC0HtGsR77BaUpuASQ/P2J6ViTMRZs6w1NXyDA3Tn8jOyTwjjjCV8bnJYFxdwV5
+	RGF0qzBCT4wpILO3WXYw3dx9t9cPRE4=
+Received: 	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 1a87e0a2 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Fri, 7 Oct 2022 17:56:31 +0000 (UTC)
+Date: Fri, 7 Oct 2022 11:56:18 -0600
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Kees Cook <keescook@chromium.org>
 Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	"patches@lists.linux.dev" <patches@lists.linux.dev>,
@@ -68,7 +56,7 @@ Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Borislav Petkov <bp@alien8.de>,
 	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
 	Christoph Hellwig <hch@lst.de>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Dave Airlie <airlied@redhat.com>,
@@ -126,10 +114,10 @@ Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
 	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
 	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
 	"x86@kernel.org" <x86@kernel.org>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>,
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
 	Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>
 Subject: Re: [PATCH v3 3/5] treewide: use get_random_u32() when possible
-Message-ID: <202210071010.52C672FA9@keescook>
+Message-ID: <Y0BoQmVauPLC2uW5@zx2c4.com>
 References: <20221006165346.73159-1-Jason@zx2c4.com>
  <20221006165346.73159-4-Jason@zx2c4.com>
  <848ed24c-13ef-6c38-fd13-639b33809194@csgroup.eu>
@@ -139,12 +127,13 @@ References: <20221006165346.73159-1-Jason@zx2c4.com>
  <CAHmME9pE4saqnwxhsAwt-xegYGjsavPOGnHCbZhUXD7kaJ+GAA@mail.gmail.com>
  <501b0fc3-6c67-657f-781e-25ee0283bc2e@csgroup.eu>
  <Y0Ayvov/KQmrIwTS@zx2c4.com>
+ <202210071010.52C672FA9@keescook>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Y0Ayvov/KQmrIwTS@zx2c4.com>
+In-Reply-To: <202210071010.52C672FA9@keescook>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221007_101246_955247_2A376B4E 
-X-CRM114-Status: GOOD (  38.62  )
+X-CRM114-CacheID: sfid-20221007_105643_499058_DF29F535 
+X-CRM114-Status: GOOD (  43.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,125 +145,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 07, 2022 at 08:07:58AM -0600, Jason A. Donenfeld wrote:
-> On Fri, Oct 07, 2022 at 04:57:24AM +0000, Christophe Leroy wrote:
-> > =
-
-> > =
-
-> > Le 07/10/2022 =E0 01:36, Jason A. Donenfeld a =E9crit=A0:
-> > > On 10/6/22, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
-> > >>
-> > >>
-> > >> Le 06/10/2022 =E0 19:31, Christophe Leroy a =E9crit :
-> > >>>
-> > >>>
-> > >>> Le 06/10/2022 =E0 19:24, Jason A. Donenfeld a =E9crit :
-> > >>>> Hi Christophe,
-> > >>>>
-> > >>>> On Thu, Oct 6, 2022 at 11:21 AM Christophe Leroy
-> > >>>> <christophe.leroy@csgroup.eu> wrote:
-> > >>>>> Le 06/10/2022 =E0 18:53, Jason A. Donenfeld a =E9crit :
-> > >>>>>> The prandom_u32() function has been a deprecated inline wrapper =
-around
-> > >>>>>> get_random_u32() for several releases now, and compiles down to =
-the
-> > >>>>>> exact same code. Replace the deprecated wrapper with a direct ca=
-ll to
-> > >>>>>> the real function. The same also applies to get_random_int(), wh=
-ich is
-> > >>>>>> just a wrapper around get_random_u32().
-> > >>>>>>
-> > >>>>>> Reviewed-by: Kees Cook <keescook@chromium.org>
-> > >>>>>> Acked-by: Toke H=F8iland-J=F8rgensen <toke@toke.dk> # for sch_ca=
-ke
-> > >>>>>> Acked-by: Chuck Lever <chuck.lever@oracle.com> # for nfsd
-> > >>>>>> Reviewed-by: Jan Kara <jack@suse.cz> # for ext4
-> > >>>>>> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> > >>>>>> ---
-> > >>>>>
-> > >>>>>> diff --git a/arch/powerpc/kernel/process.c
-> > >>>>>> b/arch/powerpc/kernel/process.c
-> > >>>>>> index 0fbda89cd1bb..9c4c15afbbe8 100644
-> > >>>>>> --- a/arch/powerpc/kernel/process.c
-> > >>>>>> +++ b/arch/powerpc/kernel/process.c
-> > >>>>>> @@ -2308,6 +2308,6 @@ void notrace __ppc64_runlatch_off(void)
-> > >>>>>>     unsigned long arch_align_stack(unsigned long sp)
-> > >>>>>>     {
-> > >>>>>>         if (!(current->personality & ADDR_NO_RANDOMIZE) &&
-> > >>>>>> randomize_va_space)
-> > >>>>>> -             sp -=3D get_random_int() & ~PAGE_MASK;
-> > >>>>>> +             sp -=3D get_random_u32() & ~PAGE_MASK;
-> > >>>>>>         return sp & ~0xf;
-> > >>>>>
-> > >>>>> Isn't that a candidate for prandom_u32_max() ?
-> > >>>>>
-> > >>>>> Note that sp is deemed to be 16 bytes aligned at all time.
-> > >>>>
-> > >>>> Yes, probably. It seemed non-trivial to think about, so I didn't. =
-But
-> > >>>> let's see here... maybe it's not too bad:
-> > >>>>
-> > >>>> If PAGE_MASK is always ~(PAGE_SIZE-1), then ~PAGE_MASK is
-> > >>>> (PAGE_SIZE-1), so prandom_u32_max(PAGE_SIZE) should yield the same
-> > >>>> thing? Is that accurate? And holds across platforms (this comes up=
- a
-> > >>>> few places)? If so, I'll do that for a v4.
-> > >>>>
-> > >>>
-> > >>> On powerpc it is always (from arch/powerpc/include/asm/page.h) :
-> > >>>
-> > >>> /*
-> > >>>    * Subtle: (1 << PAGE_SHIFT) is an int, not an unsigned long. So =
-if we
-> > >>>    * assign PAGE_MASK to a larger type it gets extended the way we =
-want
-> > >>>    * (i.e. with 1s in the high bits)
-> > >>>    */
-> > >>> #define PAGE_MASK      (~((1 << PAGE_SHIFT) - 1))
-> > >>>
-> > >>> #define PAGE_SIZE        (1UL << PAGE_SHIFT)
-> > >>>
-> > >>>
-> > >>> So it would work I guess.
-> > >>
-> > >> But taking into account that sp must remain 16 bytes aligned, would =
-it
-> > >> be better to do something like ?
-> > >>
-> > >> 	sp -=3D prandom_u32_max(PAGE_SIZE >> 4) << 4;
-> > >>
-> > >> 	return sp;
-> > > =
-
-> > > Does this assume that sp is already aligned at the beginning of the
-> > > function? I'd assume from the function's name that this isn't the
-> > > case?
-> > =
-
-> > Ah you are right, I overlooked it.
-> =
-
-> So I think to stay on the safe side, I'm going to go with
-> `prandom_u32_max(PAGE_SIZE)`. Sound good?
-
-Given these kinds of less mechanical changes, it may make sense to split
-these from the "trivial" conversions in a treewide patch. The chance of
-needing a revert from the simple 1:1 conversions is much lower than the
-need to revert by-hand changes.
-
-The Cocci script I suggested in my v1 review gets 80% of the first
-patch, for example.
-
--- =
-
-Kees Cook
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gRnJpLCBPY3QgMDcsIDIwMjIgYXQgMTA6MTI6NDJBTSAtMDcwMCwgS2VlcyBDb29rIHdyb3Rl
+Ogo+IE9uIEZyaSwgT2N0IDA3LCAyMDIyIGF0IDA4OjA3OjU4QU0gLTA2MDAsIEphc29uIEEuIERv
+bmVuZmVsZCB3cm90ZToKPiA+IE9uIEZyaSwgT2N0IDA3LCAyMDIyIGF0IDA0OjU3OjI0QU0gKzAw
+MDAsIENocmlzdG9waGUgTGVyb3kgd3JvdGU6Cj4gPiA+IAo+ID4gPiAKPiA+ID4gTGUgMDcvMTAv
+MjAyMiDDoCAwMTozNiwgSmFzb24gQS4gRG9uZW5mZWxkIGEgw6ljcml0wqA6Cj4gPiA+ID4gT24g
+MTAvNi8yMiwgQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1PiB3
+cm90ZToKPiA+ID4gPj4KPiA+ID4gPj4KPiA+ID4gPj4gTGUgMDYvMTAvMjAyMiDDoCAxOTozMSwg
+Q2hyaXN0b3BoZSBMZXJveSBhIMOpY3JpdCA6Cj4gPiA+ID4+Pgo+ID4gPiA+Pj4KPiA+ID4gPj4+
+IExlIDA2LzEwLzIwMjIgw6AgMTk6MjQsIEphc29uIEEuIERvbmVuZmVsZCBhIMOpY3JpdCA6Cj4g
+PiA+ID4+Pj4gSGkgQ2hyaXN0b3BoZSwKPiA+ID4gPj4+Pgo+ID4gPiA+Pj4+IE9uIFRodSwgT2N0
+IDYsIDIwMjIgYXQgMTE6MjEgQU0gQ2hyaXN0b3BoZSBMZXJveQo+ID4gPiA+Pj4+IDxjaHJpc3Rv
+cGhlLmxlcm95QGNzZ3JvdXAuZXU+IHdyb3RlOgo+ID4gPiA+Pj4+PiBMZSAwNi8xMC8yMDIyIMOg
+IDE4OjUzLCBKYXNvbiBBLiBEb25lbmZlbGQgYSDDqWNyaXQgOgo+ID4gPiA+Pj4+Pj4gVGhlIHBy
+YW5kb21fdTMyKCkgZnVuY3Rpb24gaGFzIGJlZW4gYSBkZXByZWNhdGVkIGlubGluZSB3cmFwcGVy
+IGFyb3VuZAo+ID4gPiA+Pj4+Pj4gZ2V0X3JhbmRvbV91MzIoKSBmb3Igc2V2ZXJhbCByZWxlYXNl
+cyBub3csIGFuZCBjb21waWxlcyBkb3duIHRvIHRoZQo+ID4gPiA+Pj4+Pj4gZXhhY3Qgc2FtZSBj
+b2RlLiBSZXBsYWNlIHRoZSBkZXByZWNhdGVkIHdyYXBwZXIgd2l0aCBhIGRpcmVjdCBjYWxsIHRv
+Cj4gPiA+ID4+Pj4+PiB0aGUgcmVhbCBmdW5jdGlvbi4gVGhlIHNhbWUgYWxzbyBhcHBsaWVzIHRv
+IGdldF9yYW5kb21faW50KCksIHdoaWNoIGlzCj4gPiA+ID4+Pj4+PiBqdXN0IGEgd3JhcHBlciBh
+cm91bmQgZ2V0X3JhbmRvbV91MzIoKS4KPiA+ID4gPj4+Pj4+Cj4gPiA+ID4+Pj4+PiBSZXZpZXdl
+ZC1ieTogS2VlcyBDb29rIDxrZWVzY29va0BjaHJvbWl1bS5vcmc+Cj4gPiA+ID4+Pj4+PiBBY2tl
+ZC1ieTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHRva2UuZGs+ICMgZm9yIHNjaF9j
+YWtlCj4gPiA+ID4+Pj4+PiBBY2tlZC1ieTogQ2h1Y2sgTGV2ZXIgPGNodWNrLmxldmVyQG9yYWNs
+ZS5jb20+ICMgZm9yIG5mc2QKPiA+ID4gPj4+Pj4+IFJldmlld2VkLWJ5OiBKYW4gS2FyYSA8amFj
+a0BzdXNlLmN6PiAjIGZvciBleHQ0Cj4gPiA+ID4+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBKYXNvbiBB
+LiBEb25lbmZlbGQgPEphc29uQHp4MmM0LmNvbT4KPiA+ID4gPj4+Pj4+IC0tLQo+ID4gPiA+Pj4+
+Pgo+ID4gPiA+Pj4+Pj4gZGlmZiAtLWdpdCBhL2FyY2gvcG93ZXJwYy9rZXJuZWwvcHJvY2Vzcy5j
+Cj4gPiA+ID4+Pj4+PiBiL2FyY2gvcG93ZXJwYy9rZXJuZWwvcHJvY2Vzcy5jCj4gPiA+ID4+Pj4+
+PiBpbmRleCAwZmJkYTg5Y2QxYmIuLjljNGMxNWFmYmJlOCAxMDA2NDQKPiA+ID4gPj4+Pj4+IC0t
+LSBhL2FyY2gvcG93ZXJwYy9rZXJuZWwvcHJvY2Vzcy5jCj4gPiA+ID4+Pj4+PiArKysgYi9hcmNo
+L3Bvd2VycGMva2VybmVsL3Byb2Nlc3MuYwo+ID4gPiA+Pj4+Pj4gQEAgLTIzMDgsNiArMjMwOCw2
+IEBAIHZvaWQgbm90cmFjZSBfX3BwYzY0X3J1bmxhdGNoX29mZih2b2lkKQo+ID4gPiA+Pj4+Pj4g
+ICAgIHVuc2lnbmVkIGxvbmcgYXJjaF9hbGlnbl9zdGFjayh1bnNpZ25lZCBsb25nIHNwKQo+ID4g
+PiA+Pj4+Pj4gICAgIHsKPiA+ID4gPj4+Pj4+ICAgICAgICAgaWYgKCEoY3VycmVudC0+cGVyc29u
+YWxpdHkgJiBBRERSX05PX1JBTkRPTUlaRSkgJiYKPiA+ID4gPj4+Pj4+IHJhbmRvbWl6ZV92YV9z
+cGFjZSkKPiA+ID4gPj4+Pj4+IC0gICAgICAgICAgICAgc3AgLT0gZ2V0X3JhbmRvbV9pbnQoKSAm
+IH5QQUdFX01BU0s7Cj4gPiA+ID4+Pj4+PiArICAgICAgICAgICAgIHNwIC09IGdldF9yYW5kb21f
+dTMyKCkgJiB+UEFHRV9NQVNLOwo+ID4gPiA+Pj4+Pj4gICAgICAgICByZXR1cm4gc3AgJiB+MHhm
+Owo+ID4gPiA+Pj4+Pgo+ID4gPiA+Pj4+PiBJc24ndCB0aGF0IGEgY2FuZGlkYXRlIGZvciBwcmFu
+ZG9tX3UzMl9tYXgoKSA/Cj4gPiA+ID4+Pj4+Cj4gPiA+ID4+Pj4+IE5vdGUgdGhhdCBzcCBpcyBk
+ZWVtZWQgdG8gYmUgMTYgYnl0ZXMgYWxpZ25lZCBhdCBhbGwgdGltZS4KPiA+ID4gPj4+Pgo+ID4g
+PiA+Pj4+IFllcywgcHJvYmFibHkuIEl0IHNlZW1lZCBub24tdHJpdmlhbCB0byB0aGluayBhYm91
+dCwgc28gSSBkaWRuJ3QuIEJ1dAo+ID4gPiA+Pj4+IGxldCdzIHNlZSBoZXJlLi4uIG1heWJlIGl0
+J3Mgbm90IHRvbyBiYWQ6Cj4gPiA+ID4+Pj4KPiA+ID4gPj4+PiBJZiBQQUdFX01BU0sgaXMgYWx3
+YXlzIH4oUEFHRV9TSVpFLTEpLCB0aGVuIH5QQUdFX01BU0sgaXMKPiA+ID4gPj4+PiAoUEFHRV9T
+SVpFLTEpLCBzbyBwcmFuZG9tX3UzMl9tYXgoUEFHRV9TSVpFKSBzaG91bGQgeWllbGQgdGhlIHNh
+bWUKPiA+ID4gPj4+PiB0aGluZz8gSXMgdGhhdCBhY2N1cmF0ZT8gQW5kIGhvbGRzIGFjcm9zcyBw
+bGF0Zm9ybXMgKHRoaXMgY29tZXMgdXAgYQo+ID4gPiA+Pj4+IGZldyBwbGFjZXMpPyBJZiBzbywg
+SSdsbCBkbyB0aGF0IGZvciBhIHY0Lgo+ID4gPiA+Pj4+Cj4gPiA+ID4+Pgo+ID4gPiA+Pj4gT24g
+cG93ZXJwYyBpdCBpcyBhbHdheXMgKGZyb20gYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL3BhZ2Uu
+aCkgOgo+ID4gPiA+Pj4KPiA+ID4gPj4+IC8qCj4gPiA+ID4+PiAgICAqIFN1YnRsZTogKDEgPDwg
+UEFHRV9TSElGVCkgaXMgYW4gaW50LCBub3QgYW4gdW5zaWduZWQgbG9uZy4gU28gaWYgd2UKPiA+
+ID4gPj4+ICAgICogYXNzaWduIFBBR0VfTUFTSyB0byBhIGxhcmdlciB0eXBlIGl0IGdldHMgZXh0
+ZW5kZWQgdGhlIHdheSB3ZSB3YW50Cj4gPiA+ID4+PiAgICAqIChpLmUuIHdpdGggMXMgaW4gdGhl
+IGhpZ2ggYml0cykKPiA+ID4gPj4+ICAgICovCj4gPiA+ID4+PiAjZGVmaW5lIFBBR0VfTUFTSyAg
+ICAgICh+KCgxIDw8IFBBR0VfU0hJRlQpIC0gMSkpCj4gPiA+ID4+Pgo+ID4gPiA+Pj4gI2RlZmlu
+ZSBQQUdFX1NJWkUgICAgICAgICgxVUwgPDwgUEFHRV9TSElGVCkKPiA+ID4gPj4+Cj4gPiA+ID4+
+Pgo+ID4gPiA+Pj4gU28gaXQgd291bGQgd29yayBJIGd1ZXNzLgo+ID4gPiA+Pgo+ID4gPiA+PiBC
+dXQgdGFraW5nIGludG8gYWNjb3VudCB0aGF0IHNwIG11c3QgcmVtYWluIDE2IGJ5dGVzIGFsaWdu
+ZWQsIHdvdWxkIGl0Cj4gPiA+ID4+IGJlIGJldHRlciB0byBkbyBzb21ldGhpbmcgbGlrZSA/Cj4g
+PiA+ID4+Cj4gPiA+ID4+IAlzcCAtPSBwcmFuZG9tX3UzMl9tYXgoUEFHRV9TSVpFID4+IDQpIDw8
+IDQ7Cj4gPiA+ID4+Cj4gPiA+ID4+IAlyZXR1cm4gc3A7Cj4gPiA+ID4gCj4gPiA+ID4gRG9lcyB0
+aGlzIGFzc3VtZSB0aGF0IHNwIGlzIGFscmVhZHkgYWxpZ25lZCBhdCB0aGUgYmVnaW5uaW5nIG9m
+IHRoZQo+ID4gPiA+IGZ1bmN0aW9uPyBJJ2QgYXNzdW1lIGZyb20gdGhlIGZ1bmN0aW9uJ3MgbmFt
+ZSB0aGF0IHRoaXMgaXNuJ3QgdGhlCj4gPiA+ID4gY2FzZT8KPiA+ID4gCj4gPiA+IEFoIHlvdSBh
+cmUgcmlnaHQsIEkgb3Zlcmxvb2tlZCBpdC4KPiA+IAo+ID4gU28gSSB0aGluayB0byBzdGF5IG9u
+IHRoZSBzYWZlIHNpZGUsIEknbSBnb2luZyB0byBnbyB3aXRoCj4gPiBgcHJhbmRvbV91MzJfbWF4
+KFBBR0VfU0laRSlgLiBTb3VuZCBnb29kPwo+IAo+IEdpdmVuIHRoZXNlIGtpbmRzIG9mIGxlc3Mg
+bWVjaGFuaWNhbCBjaGFuZ2VzLCBpdCBtYXkgbWFrZSBzZW5zZSB0byBzcGxpdAo+IHRoZXNlIGZy
+b20gdGhlICJ0cml2aWFsIiBjb252ZXJzaW9ucyBpbiBhIHRyZWV3aWRlIHBhdGNoLiBUaGUgY2hh
+bmNlIG9mCj4gbmVlZGluZyBhIHJldmVydCBmcm9tIHRoZSBzaW1wbGUgMToxIGNvbnZlcnNpb25z
+IGlzIG11Y2ggbG93ZXIgdGhhbiB0aGUKPiBuZWVkIHRvIHJldmVydCBieS1oYW5kIGNoYW5nZXMu
+Cj4gCj4gVGhlIENvY2NpIHNjcmlwdCBJIHN1Z2dlc3RlZCBpbiBteSB2MSByZXZpZXcgZ2V0cyA4
+MCUgb2YgdGhlIGZpcnN0Cj4gcGF0Y2gsIGZvciBleGFtcGxlLgoKSSdsbCBzcGxpdCB0aGluZ3Mg
+dXAgaW50byBhIG1lY2hhbmljYWwgc3RlcCBhbmQgYSBub24tbWVjaGFuaWNhbCBzdGVwLgpHb29k
+IGlkZWEuCgpKYXNvbgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
