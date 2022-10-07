@@ -4,75 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04DA3C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Oct 2022 21:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CEBFC4332F
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Oct 2022 22:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
-	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=i+owa+RLMoVjEyt1mXdzEZ8rJW/gaeitl+75AxwAKrA=; b=rvl9ZKlNGgLFe1NbhHfffMq1JM
-	RhEFRqEAvfj4wcn5yxvWDsjCLLuOtTSaptO5TCNanbPnCOvCGJidUfrG4neZyRq1aIgajbc8EcrOK
-	bqwoG+DEyGKhGkox5t+Q3cukQAa6akK820+DGx21E9q2yZsON2e73YZCrSMw4SmyyEWdC9Yt9Nhmz
-	foh3A6s2R5d6+9OWfYuo1DfA9WVRGIuQIFoe+/Y1gCWmZQlqhytDNJXHqcxTgK6JW/kqQhOydY02d
-	5w4H6BGtuaJLyUy2bjPhkl7Czrcpq+c2sTKl4B7AWIjGUzVR37ZENpcpJ2+L0NfDrpeqJlTC9uSxm
-	gMu8Kjxw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZEGoVyQRgSYhR9hlWl/WvSJckXn7Q19rRlZZtn2jDAQ=; b=MrvfTz4M+iNONI
+	QOJgXsV0XHdmgwpYGSHPADYRx15iNYcZDl8wX+zz5yee0iTpo181H/letcM69yF/JVaktm7otQwPu
+	XJ217DirLvq8alyYmvb+oUZu4ozqAR0L+Smo7W9aTfwvfOObSoDpBKKIEuUo6xc/y+DMKqvxwLMMJ
+	PGuUs4ZdF+P/FqpKgqmzlV6uwe+CLmH1NEcyHSzQls/cmM6Ogi3fX0y/HSJ4psXDTTDOhXU3AUFHH
+	x7YZV4QiLJeRizYYgQ81rjNqj6obyzsG5uwIZJI9RivbBzCp9UFdJz/jp8NQdekK9f83M0LkgSSTW
+	i+jI7hY2lRNZZJpEEOcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogvEy-00Ahnd-LM; Fri, 07 Oct 2022 21:50:44 +0000
-Received: from mail-pg1-x549.google.com ([2607:f8b0:4864:20::549])
+	id 1ogw8G-00Anmm-Hq; Fri, 07 Oct 2022 22:47:52 +0000
+Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogvEt-00Ahm8-8c
-	for linux-mtd@lists.infradead.org; Fri, 07 Oct 2022 21:50:40 +0000
-Received: by mail-pg1-x549.google.com with SMTP id h2-20020a656382000000b0044b0f6c572fso3522100pgv.20
-        for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2022 14:50:38 -0700 (PDT)
+	id 1ogw8C-00AniN-68
+	for linux-mtd@lists.infradead.org; Fri, 07 Oct 2022 22:47:50 +0000
+Received: by mail-pg1-x52c.google.com with SMTP id 129so5827026pgc.5
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Oct 2022 15:47:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YShywGeqIZDpcBEaSHQ5rYoxj4sM6AIZww6UQ+coyfI=;
-        b=VufppTi/zTzcgJl8M5k3Qo0rrMpdXQ7MaXZNshLoY/sbxKgJxiBSNUo53okQsrIMQ8
-         K8WepTsrKar3kAQdWZ8H2+JHQ6LSm6saglhTpf59oEbnR51yl4CoZtwJL4bT1YFQU5/I
-         7Gp/hE5vdM1mU74x7fszg1vduNPvfFqOmEHSuA1cN78ZcZ/M+dF+XGCysrFPjz0aVSUZ
-         37eJ6a8HPdiqPL/P7jlNDmQscPz+xtLja+RY3lwMCxmDxLGEtlHMM4E0FBgtJ3CbR0rO
-         Ez5q7Q4qdYVxRmI2viYkYAceH2+d84IrHcTzknjj1SwnD/W74ZrfDPM0MmRslc5adzFo
-         t92A==
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yZqaicka3IU4vV1MYdOWb5w3mOcfwDVNwAUulPcr27Y=;
+        b=iXQ9UvdzaG3zByw2GBNLz3/YVU1qnMbHWTkFhauTR657sXRQGAG+NlE+Q9rJd5luVx
+         INuHridXF4858oAPsKtGfjtbkx2VdjBSQCDETBbwUrSMqp7tkUzuQxOHz4Iev7dLesfK
+         vpnuiiKohn9Hx+Mnal9EiATSUtY0yZ8+mCOj4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YShywGeqIZDpcBEaSHQ5rYoxj4sM6AIZww6UQ+coyfI=;
-        b=Prk1f9QEg1lJiPMZHVYxfVwnCy2JcvBxrPE2G5Q3V6LCbGrDQ4VJr5xJJg4D4ME8bI
-         OtC+5f6uABJarx6GIKjVUJ+9kRvPciws7nT9itA9bMBXQDF+fjqcJjcAiuEbp4ARnmL+
-         OiEpWRUt4ReGNN8vsSdnpbyZZYnf/WQAkA1KeELABShif4vJ4gICthfZ0gAQEOrvV8aE
-         pn9BXfBfA3+JRJ2vQSgFD4aH4tO4byQeRWu2BaotXk33cRBSqwilO/HXJYrUuvRFUC3s
-         rX1ltuB1MC5tzwiRpQcF/94vXrV8hq31yn14svzfPzg39atTsCrfLX+wrpTiOU8djSQZ
-         vZVQ==
-X-Gm-Message-State: ACrzQf0k7VyFTGwk84ke58rt0sqMZvZtIDt5U9TRcWCc+2tg/X3K1Xqt
-	70J67545whzyGdPBnZWWO/raABnXqUC+
-X-Google-Smtp-Source: AMsMyM610GlblJ5qz7nDt6pqrmJNd6MKkeco80561o7UBTOIC1K0FzFCcI8o7gb1qY1Vo5SrBLpr/FNI7KUo
-X-Received: from sgzhang.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3d89])
- (user=sgzhang job=sendgmr) by 2002:a05:6a00:8cc:b0:52c:7ab5:2ce7 with SMTP id
- s12-20020a056a0008cc00b0052c7ab52ce7mr7201971pfu.28.1665179437858; Fri, 07
- Oct 2022 14:50:37 -0700 (PDT)
-Date: Fri,  7 Oct 2022 21:50:26 +0000
-In-Reply-To: <20221007215027.918507-1-sgzhang@google.com>
-Mime-Version: 1.0
-References: <20221007215027.918507-1-sgzhang@google.com>
-X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
-Message-ID: <20221007215027.918507-3-sgzhang@google.com>
-Subject: [PATCH v3 2/3] mtd: mtdoops: add mtdoops_erase function and move
- mtdoops_inc_counter to after it
-From: Ray Zhang <sgzhang@google.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Ray Zhang <sgzhang@google.com>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yZqaicka3IU4vV1MYdOWb5w3mOcfwDVNwAUulPcr27Y=;
+        b=CHZ+8/B7k/tEStLD6SupPi/a2V8mLwj0IUKitDoRhZIFJd6EL0cyuJYz9jiAsoZ9SD
+         O1rUNBeQ+wDKYVT0m4WXUnfj2eKKTeW8t7zNZRQ7gPgBK/tqAaWu4pomwiKLM7IjgbpM
+         uJAzWMND2zkRBRCGvipqZtfpXPV9NZhJCou0AaxNHW6tsBuP/AOnEyDzkZFgChQyHJcy
+         iGJAAhHFfrZ+4Qv3UPgCoUXVgSaFCQQbOzOO7AoOVHi3V4Kkb4vIqsoD7dYoZ0PLISWH
+         21DFK3EEIlp5ca6dU5xQRy+huBtQf7uDzxtrYoR9XaxzhcJ0I5m2cN6JPx3/bqDYAF+W
+         F7yQ==
+X-Gm-Message-State: ACrzQf2CfwMlXkMeo84kHypLC2m6WM8QzVubZLEbJ77oU75n6czLsRoZ
+	SThk9vkrdVq1Ubo1uWKzYVqETA==
+X-Google-Smtp-Source: AMsMyM6iCBWc/uxIx6z9Rtqnu5DJFDtYNmNoozJCUMl1bWP400YM3aAZ5nfN+Rih1bQNvESsCMLxdQ==
+X-Received: by 2002:a63:5a61:0:b0:41b:b021:f916 with SMTP id k33-20020a635a61000000b0041bb021f916mr6209429pgm.387.1665182866043;
+        Fri, 07 Oct 2022 15:47:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z12-20020a1709027e8c00b0016dbaf3ff2esm2038893pla.22.2022.10.07.15.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Oct 2022 15:47:45 -0700 (PDT)
+Date: Fri, 7 Oct 2022 15:47:44 -0700
+From: Kees Cook <keescook@chromium.org>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+	Andreas Noever <andreas.noever@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Dave Airlie <airlied@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	"James E . J . Bottomley" <jejb@linux.ibm.com>,
+	Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jens Axboe <axboe@kernel.dk>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	KP Singh <kpsingh@kernel.org>, Marco Elver <elver@google.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
+	Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org,
+	kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev, netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org, x86@kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH v4 2/6] treewide: use prandom_u32_max() when possible
+Message-ID: <202210071241.445289C5@keescook>
+References: <20221007180107.216067-1-Jason@zx2c4.com>
+ <20221007180107.216067-3-Jason@zx2c4.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221007180107.216067-3-Jason@zx2c4.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221007_145039_339782_654BB876 
-X-CRM114-Status: GOOD (  13.05  )
+X-CRM114-CacheID: sfid-20221007_154748_332119_77589653 
+X-CRM114-Status: GOOD (  30.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,86 +137,283 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Preparing for next patch with minimal code difference, add mtdoops_erase
-function and move mtdoops_inc_counter to after it, with no functional
-change.
+On Fri, Oct 07, 2022 at 12:01:03PM -0600, Jason A. Donenfeld wrote:
+> Rather than incurring a division or requesting too many random bytes for
+> the given range, use the prandom_u32_max() function, which only takes
+> the minimum required bytes from the RNG and avoids divisions.
 
-Signed-off-by: Ray Zhang <sgzhang@google.com>
----
- drivers/mtd/mtdoops.c | 49 ++++++++++++++++++++++++-------------------
- 1 file changed, 27 insertions(+), 22 deletions(-)
+I actually meant splitting the by-hand stuff by subsystem, but nearly
+all of these can be done mechanically too, so it shouldn't be bad. Notes
+below...
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 84b21be347f6..eca48dff9b53 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -106,29 +106,8 @@ static int mtdoops_erase_block(struct mtdoops_context *cxt, int offset)
- 	return 0;
- }
- 
--static void mtdoops_inc_counter(struct mtdoops_context *cxt)
--{
--	cxt->nextpage++;
--	if (cxt->nextpage >= cxt->oops_pages)
--		cxt->nextpage = 0;
--	cxt->nextcount++;
--	if (cxt->nextcount == 0xffffffff)
--		cxt->nextcount = 0;
--
--	if (page_is_used(cxt, cxt->nextpage)) {
--		schedule_work(&cxt->work_erase);
--		return;
--	}
--
--	pr_debug("mtdoops: ready %d, %d (no erase)\n",
--		 cxt->nextpage, cxt->nextcount);
--}
--
--/* Scheduled work - when we can't proceed without erasing a block */
--static void mtdoops_workfunc_erase(struct work_struct *work)
-+static void mtdoops_erase(struct mtdoops_context *cxt)
+> 
+> [...]
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 92bcc1768f0b..87203429f802 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -595,7 +595,7 @@ unsigned long __get_wchan(struct task_struct *p)
+>  unsigned long arch_align_stack(unsigned long sp)
+>  {
+>  	if (!(current->personality & ADDR_NO_RANDOMIZE) && randomize_va_space)
+> -		sp -= get_random_int() & ~PAGE_MASK;
+> +		sp -= prandom_u32_max(PAGE_SIZE);
+>  	return sp & ~0xf;
+>  }
+>  
+
+@mask@
+expression MASK;
+@@
+
+- (get_random_int() & ~(MASK))
++ prandom_u32_max(MASK)
+
+> diff --git a/arch/loongarch/kernel/vdso.c b/arch/loongarch/kernel/vdso.c
+> index f32c38abd791..8c9826062652 100644
+> --- a/arch/loongarch/kernel/vdso.c
+> +++ b/arch/loongarch/kernel/vdso.c
+> @@ -78,7 +78,7 @@ static unsigned long vdso_base(void)
+>  	unsigned long base = STACK_TOP;
+>  
+>  	if (current->flags & PF_RANDOMIZE) {
+> -		base += get_random_int() & (VDSO_RANDOMIZE_SIZE - 1);
+> +		base += prandom_u32_max(VDSO_RANDOMIZE_SIZE);
+>  		base = PAGE_ALIGN(base);
+>  	}
+>  
+
+@minus_one@
+expression FULL;
+@@
+
+- (get_random_int() & ((FULL) - 1)
++ prandom_u32_max(FULL)
+
+> diff --git a/arch/parisc/kernel/vdso.c b/arch/parisc/kernel/vdso.c
+> index 63dc44c4c246..47e5960a2f96 100644
+> --- a/arch/parisc/kernel/vdso.c
+> +++ b/arch/parisc/kernel/vdso.c
+> @@ -75,7 +75,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
+>  
+>  	map_base = mm->mmap_base;
+>  	if (current->flags & PF_RANDOMIZE)
+> -		map_base -= (get_random_int() & 0x1f) * PAGE_SIZE;
+> +		map_base -= prandom_u32_max(0x20) * PAGE_SIZE;
+>  
+>  	vdso_text_start = get_unmapped_area(NULL, map_base, vdso_text_len, 0, 0);
+>  
+
+These are more fun, but Coccinelle can still do them with a little
+Pythonic help:
+
+// Find a potential literal
+@literal_mask@
+expression LITERAL;
+identifier randfunc =~ "get_random_int|prandom_u32|get_random_u32";
+position p;
+@@
+
+        (randfunc()@p & (LITERAL))
+
+// Add one to the literal.
+@script:python add_one@
+literal << literal_mask.LITERAL;
+RESULT;
+@@
+
+if literal.startswith('0x'):
+        value = int(literal, 16) + 1
+        coccinelle.RESULT = cocci.make_expr("0x%x" % (value))
+elif literal[0] in '123456789':
+        value = int(literal, 10) + 1
+        coccinelle.RESULT = cocci.make_expr("%d" % (value))
+else:
+        print("I don't know how to handle: %s" % (literal))
+
+// Replace the literal mask with the calculated result.
+@plus_one@
+expression literal_mask.LITERAL;
+position literal_mask.p;
+expression add_one.RESULT;
+identifier FUNC;
+@@
+
+-       (FUNC()@p & (LITERAL))
++       prandom_u32_max(RESULT)
+
+> diff --git a/drivers/mtd/tests/stresstest.c b/drivers/mtd/tests/stresstest.c
+> index cb29c8c1b370..d2faaca7f19d 100644
+> --- a/drivers/mtd/tests/stresstest.c
+> +++ b/drivers/mtd/tests/stresstest.c
+> @@ -45,9 +45,8 @@ static int rand_eb(void)
+>  	unsigned int eb;
+>  
+>  again:
+> -	eb = prandom_u32();
+>  	/* Read or write up 2 eraseblocks at a time - hence 'ebcnt - 1' */
+> -	eb %= (ebcnt - 1);
+> +	eb = prandom_u32_max(ebcnt - 1);
+>  	if (bbt[eb])
+>  		goto again;
+>  	return eb;
+
+This can also be done mechanically:
+
+@multi_line@
+identifier randfunc =~ "get_random_int|prandom_u32|get_random_u32";
+identifier RAND;
+expression E;
+@@
+
+-       RAND = randfunc();
+        ... when != RAND
+-       RAND %= (E);
++       RAND = prandom_u32_max(E);
+
+@collapse_ret@
+type TYPE;
+identifier VAR;
+expression E;
+@@
+
  {
--	struct mtdoops_context *cxt =
--			container_of(work, struct mtdoops_context, work_erase);
- 	struct mtd_info *mtd = cxt->mtd;
- 	int i = 0, j, ret, mod;
- 
-@@ -181,6 +160,32 @@ static void mtdoops_workfunc_erase(struct work_struct *work)
- 	goto badblock;
+-       TYPE VAR;
+-       VAR = (E);
+-       return VAR;
++       return E;
  }
- 
-+/* Scheduled work - when we can't proceed without erasing a block */
-+static void mtdoops_workfunc_erase(struct work_struct *work)
-+{
-+	struct mtdoops_context *cxt =
-+			container_of(work, struct mtdoops_context, work_erase);
-+	mtdoops_erase(cxt);
-+}
-+
-+static void mtdoops_inc_counter(struct mtdoops_context *cxt)
-+{
-+	cxt->nextpage++;
-+	if (cxt->nextpage >= cxt->oops_pages)
-+		cxt->nextpage = 0;
-+	cxt->nextcount++;
-+	if (cxt->nextcount == 0xffffffff)
-+		cxt->nextcount = 0;
-+
-+	if (page_is_used(cxt, cxt->nextpage)) {
-+		schedule_work(&cxt->work_erase);
-+		return;
-+	}
-+
-+	pr_debug("mtdoops: ready %d, %d (no erase)\n",
-+		 cxt->nextpage, cxt->nextcount);
-+}
-+
- static void mtdoops_write(struct mtdoops_context *cxt, int panic)
+
+@drop_var@
+type TYPE;
+identifier VAR;
+@@
+
  {
- 	struct mtd_info *mtd = cxt->mtd;
+-       TYPE VAR;
+        ... when != VAR
+ }
+
+> diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
+> index 998dd2ac8008..f4944c4dee60 100644
+> --- a/fs/ext2/ialloc.c
+> +++ b/fs/ext2/ialloc.c
+> @@ -277,8 +277,7 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
+>  		int best_ndir = inodes_per_group;
+>  		int best_group = -1;
+>  
+> -		group = prandom_u32();
+> -		parent_group = (unsigned)group % ngroups;
+> +		parent_group = prandom_u32_max(ngroups);
+>  		for (i = 0; i < ngroups; i++) {
+>  			group = (parent_group + i) % ngroups;
+>  			desc = ext2_get_group_desc (sb, group, NULL);
+
+Okay, that one is too much for me -- checking that group is never used
+after the assignment removal is likely possible, but beyond my cocci
+know-how. :)
+
+> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+> index f73e5eb43eae..36d5bc595cc2 100644
+> --- a/fs/ext4/ialloc.c
+> +++ b/fs/ext4/ialloc.c
+> @@ -463,10 +463,9 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
+>  			hinfo.hash_version = DX_HASH_HALF_MD4;
+>  			hinfo.seed = sbi->s_hash_seed;
+>  			ext4fs_dirhash(parent, qstr->name, qstr->len, &hinfo);
+> -			grp = hinfo.hash;
+> +			parent_group = hinfo.hash % ngroups;
+>  		} else
+> -			grp = prandom_u32();
+> -		parent_group = (unsigned)grp % ngroups;
+> +			parent_group = prandom_u32_max(ngroups);
+>  		for (i = 0; i < ngroups; i++) {
+>  			g = (parent_group + i) % ngroups;
+>  			get_orlov_stats(sb, g, flex_size, &stats);
+
+Much less easy mechanically. :)
+
+> diff --git a/lib/test_hexdump.c b/lib/test_hexdump.c
+> index 0927f44cd478..41a0321f641a 100644
+> --- a/lib/test_hexdump.c
+> +++ b/lib/test_hexdump.c
+> @@ -208,7 +208,7 @@ static void __init test_hexdump_overflow(size_t buflen, size_t len,
+>  static void __init test_hexdump_overflow_set(size_t buflen, bool ascii)
+>  {
+>  	unsigned int i = 0;
+> -	int rs = (prandom_u32_max(2) + 1) * 16;
+> +	int rs = prandom_u32_max(2) + 1 * 16;
+>  
+>  	do {
+>  		int gs = 1 << i;
+
+This looks wrong. Cocci says:
+
+-       int rs = (get_random_int() % 2 + 1) * 16;
++       int rs = (prandom_u32_max(2) + 1) * 16;
+
+> diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+> index 4f2f2d1bac56..56ffaa8dd3f6 100644
+> --- a/lib/test_vmalloc.c
+> +++ b/lib/test_vmalloc.c
+> @@ -151,9 +151,7 @@ static int random_size_alloc_test(void)
+>  	int i;
+>  
+>  	for (i = 0; i < test_loop_count; i++) {
+> -		n = prandom_u32();
+> -		n = (n % 100) + 1;
+> -
+> +		n = prandom_u32_max(n % 100) + 1;
+>  		p = vmalloc(n * PAGE_SIZE);
+>  
+>  		if (!p)
+
+This looks wrong. Cocci says:
+
+-               n = prandom_u32();
+-               n = (n % 100) + 1;
++               n = prandom_u32_max(100) + 1;
+
+> @@ -293,16 +291,12 @@ pcpu_alloc_test(void)
+>  		return -1;
+>  
+>  	for (i = 0; i < 35000; i++) {
+> -		unsigned int r;
+> -
+> -		r = prandom_u32();
+> -		size = (r % (PAGE_SIZE / 4)) + 1;
+> +		size = prandom_u32_max(PAGE_SIZE / 4) + 1;
+>  
+>  		/*
+>  		 * Maximum PAGE_SIZE
+>  		 */
+> -		r = prandom_u32();
+> -		align = 1 << ((r % 11) + 1);
+> +		align = 1 << (prandom_u32_max(11) + 1);
+>  
+>  		pcpu[i] = __alloc_percpu(size, align);
+>  		if (!pcpu[i])
+> @@ -393,14 +387,11 @@ static struct test_driver {
+>  
+>  static void shuffle_array(int *arr, int n)
+>  {
+> -	unsigned int rnd;
+>  	int i, j;
+>  
+>  	for (i = n - 1; i > 0; i--)  {
+> -		rnd = prandom_u32();
+> -
+>  		/* Cut the range. */
+> -		j = rnd % i;
+> +		j = prandom_u32_max(i);
+>  
+>  		/* Swap indexes. */
+>  		swap(arr[i], arr[j]);
+
+Yup, agrees with Cocci on these.
+
 -- 
-2.38.0.rc1.362.ged0d419d3c-goog
-
+Kees Cook
 
 ______________________________________________________
 Linux MTD discussion mailing list
