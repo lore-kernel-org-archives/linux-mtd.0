@@ -4,91 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70DEEC433FE
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Oct 2022 01:29:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B042C433FE
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Oct 2022 01:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q8u6LFoM+YL2drLVZnqugXSYOvkv0fuq8aMfr60DLPM=; b=sX6c5nQi+F9CQv
-	FCB9JPyFVT7W1+0ZKKbiiTPRghG2tdLT940ghSjRVHWZOwKxQ1WZhfHVHNnEp9uTTVaUzagzLgsBf
-	CAnsbjGev0qxGMLz6duBurl1BlXlecO/+Laf8xff75E9mTYsZsqgQIc8Y35laW5peMPEtnVyjOfuB
-	uJUSpTsGZVWxWGVCN9QWERz/KIMoNq5KrDF8jRQIpFJsbjJS70ufWL2QXC2pvIlBLayVXxFCPSdPw
-	TFgucfoNqmUiNLLHZ8/Jle1y65OAYQG8qhz4VYR09aNNXxPrP9Kwx4DE/HeCigNHY/wiUtX5I8cBv
-	dn9Zrf4+lRB2V+6Hhe+Q==;
+	List-Owner; bh=3bCRq5Wiuijw6BNnaI8KVQ5ylWdUOJy0UEC06lauYOA=; b=Z948fxco1TnGm7
+	giRRbpwwXqar95QLy++rD7H2i4VcfmAHwx3FHAM7PQk9mmhYuS5c3kIA0OxbvpDk4HCgeX56gefWE
+	BwnH2yE1rVDEWaar2rmP2GwONZTxO3TucqB+BbiyW+D5gM73hxqu8B7zy2SjzjBDZdaRpNpE1w4XZ
+	Hd5Pfxqz29/QdkqBg1ObmwBJ4LcH3bN6iMZ7MQH2fG6wU76cU2hyJHayKQAm7LOOPN2CiLBy0Jlev
+	38gDMoUpTlcb3PhVwRYfmJG31m1kx3JZzd4pdfPQdfatg1JGP2Mklm4f8i8yI6pNodPc07vMxAyCt
+	MghSwvmUN/B5iL64dpRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogyef-00BHvM-CY; Sat, 08 Oct 2022 01:29:29 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1ogypN-00BO5o-W3; Sat, 08 Oct 2022 01:40:34 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ogyeb-00BHtR-HJ; Sat, 08 Oct 2022 01:29:27 +0000
+	id 1ogypK-00BNwM-Tf; Sat, 08 Oct 2022 01:40:32 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 880ACCE1926;
-	Sat,  8 Oct 2022 01:29:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6C01C433C1;
-	Sat,  8 Oct 2022 01:29:12 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3B32061DF3;
+	Sat,  8 Oct 2022 01:40:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F81CC433D6;
+	Sat,  8 Oct 2022 01:40:20 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="F0WFV840"
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="m7dkF4Qq"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1665192550;
+	t=1665193218;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2a2X1YlfkZ0pGgKe1BT3qPauqYJUuDonzfwdbODwUj0=;
-	b=F0WFV8408bfDyb840yWHYb2sS5Uszq0PMkkmtmrVRBUNL2FY49DLuZ3A8VZX01cjH92PRw
-	963/yLDTfSbPjK9v/cSx6ClQtvwOaP31xlyhs5+LtAOzyMXtRqv5atZ8HOk8wnFIOFKYJl
-	weXSG5WPTsM48QIVGdJf4b19sbZPAzo=
-Received: 	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 08b122db (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Sat, 8 Oct 2022 01:29:09 +0000 (UTC)
-Date: Fri, 7 Oct 2022 19:28:59 -0600
+	bh=vNH2mnpIcj00WUdnQLlhiavniZvHilK6oGwgWIcL7uw=;
+	b=m7dkF4QqvbJypdgEAbc35NBJnnqvQzB21sgNt0EURJQOR1FGkUsyi73yIMXgdPHVIIUlOg
+	5CTO5f2vbWzw/vm/odmtp7dHuxfMwfhY9ZkhyfcncvX8HsEngEbDzs4FmPwfNkPExdyoZz
+	X0uIWOW2Vu+MHRe3zl9le1EOdBfLqFs=
+Received: 	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id f0b17dc7 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Sat, 8 Oct 2022 01:40:18 +0000 (UTC)
+Date: Fri, 7 Oct 2022 19:40:07 -0600
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
 Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-	Andreas Noever <andreas.noever@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Dave Airlie <airlied@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	"James E . J . Bottomley" <jejb@linux.ibm.com>,
-	Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Jens Axboe <axboe@kernel.dk>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>,
-	Marco Elver <elver@google.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
-	Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org,
+	andreas.noever@gmail.com, akpm@linux-foundation.org,
+	andriy.shevchenko@linux.intel.com, bp@alien8.de,
+	catalin.marinas@arm.com, christoph.boehmwalder@linbit.com,
+	hch@lst.de, christophe.leroy@csgroup.eu, daniel@iogearbox.net,
+	airlied@redhat.com, dave.hansen@linux.intel.com,
+	davem@davemloft.net, edumazet@google.com, fw@strlen.de,
+	gregkh@linuxfoundation.org, hpa@zytor.com, hca@linux.ibm.com,
+	deller@gmx.de, herbert@gondor.apana.org.au, chenhuacai@kernel.org,
+	hughd@google.com, kuba@kernel.org, jejb@linux.ibm.com,
+	jack@suse.com, jgg@ziepe.ca, axboe@kernel.dk,
+	johannes@sipsolutions.net, corbet@lwn.net, kadlec@netfilter.org,
+	kpsingh@kernel.org, keescook@chromium.org, elver@google.com,
+	mchehab@kernel.org, mpe@ellerman.id.au, pablo@netfilter.org,
+	pabeni@redhat.com, peterz@infradead.org, richard@nod.at,
+	linux@armlinux.org.uk, tytso@mit.edu, tsbogend@alpha.franken.de,
+	tglx@linutronix.de, tgraf@suug.ch, ulf.hansson@linaro.org,
+	vigneshr@ti.com, kernel@xen0n.name, will@kernel.org,
+	yury.norov@gmail.com, dri-devel@lists.freedesktop.org,
 	kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
 	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
@@ -100,18 +77,20 @@ Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
 	linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
 	linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v4 2/6] treewide: use prandom_u32_max() when possible
-Message-ID: <Y0DSW4AAX/yA3CdI@zx2c4.com>
+	sparclinux@vger.kernel.org, x86@kernel.org, toke@toke.dk,
+	chuck.lever@oracle.com, jack@suse.cz,
+	mika.westerberg@linux.intel.com
+Subject: Re: [PATCH v4 4/6] treewide: use get_random_u32() when possible
+Message-ID: <Y0DU93wMsDwlLmMP@zx2c4.com>
 References: <20221007180107.216067-1-Jason@zx2c4.com>
- <20221007180107.216067-3-Jason@zx2c4.com>
- <Y0CXYjV8qMpJxxBa@magnolia>
+ <20221007180107.216067-5-Jason@zx2c4.com>
+ <3216619.44csPzL39Z@daneel.sf-tec.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Y0CXYjV8qMpJxxBa@magnolia>
+In-Reply-To: <3216619.44csPzL39Z@daneel.sf-tec.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221007_182925_941137_D0C9E976 
-X-CRM114-Status: GOOD (  29.64  )
+X-CRM114-CacheID: sfid-20221007_184031_041093_76669140 
+X-CRM114-Status: GOOD (  23.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,58 +102,124 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCBPY3QgMDcsIDIwMjIgYXQgMDI6MTc6MjJQTSAtMDcwMCwgRGFycmljayBKLiBXb25n
-IHdyb3RlOgo+IE9uIEZyaSwgT2N0IDA3LCAyMDIyIGF0IDEyOjAxOjAzUE0gLTA2MDAsIEphc29u
-IEEuIERvbmVuZmVsZCB3cm90ZToKPiA+IFJhdGhlciB0aGFuIGluY3VycmluZyBhIGRpdmlzaW9u
-IG9yIHJlcXVlc3RpbmcgdG9vIG1hbnkgcmFuZG9tIGJ5dGVzIGZvcgo+ID4gdGhlIGdpdmVuIHJh
-bmdlLCB1c2UgdGhlIHByYW5kb21fdTMyX21heCgpIGZ1bmN0aW9uLCB3aGljaCBvbmx5IHRha2Vz
-Cj4gPiB0aGUgbWluaW11bSByZXF1aXJlZCBieXRlcyBmcm9tIHRoZSBSTkcgYW5kIGF2b2lkcyBk
-aXZpc2lvbnMuCj4gPiAKPiA+IFJldmlld2VkLWJ5OiBLZWVzIENvb2sgPGtlZXNjb29rQGNocm9t
-aXVtLm9yZz4KPiA+IFJldmlld2VkLWJ5OiBLUCBTaW5naCA8a3BzaW5naEBrZXJuZWwub3JnPgo+
-ID4gUmV2aWV3ZWQtYnk6IENocmlzdG9waCBCw7ZobXdhbGRlciA8Y2hyaXN0b3BoLmJvZWhtd2Fs
-ZGVyQGxpbmJpdC5jb20+ICMgZm9yIGRyYmQKPiA+IFJldmlld2VkLWJ5OiBKYW4gS2FyYSA8amFj
-a0BzdXNlLmN6PiAjIGZvciBleHQyLCBleHQ0LCBhbmQgc2JpdG1hcAo+ID4gU2lnbmVkLW9mZi1i
-eTogSmFzb24gQS4gRG9uZW5mZWxkIDxKYXNvbkB6eDJjNC5jb20+Cj4gPiAtLS0KPiAKPiA8c25p
-cCwgc2tpcCB0byB0aGUgeGZzIHBhcnQ+Cj4gCj4gPiBkaWZmIC0tZ2l0IGEvZnMveGZzL2xpYnhm
-cy94ZnNfYWxsb2MuYyBiL2ZzL3hmcy9saWJ4ZnMveGZzX2FsbG9jLmMKPiA+IGluZGV4IGUyYmRm
-MDg5YzBhMy4uNjI2MTU5OWJiMzg5IDEwMDY0NAo+ID4gLS0tIGEvZnMveGZzL2xpYnhmcy94ZnNf
-YWxsb2MuYwo+ID4gKysrIGIvZnMveGZzL2xpYnhmcy94ZnNfYWxsb2MuYwo+ID4gQEAgLTE1MjAs
-NyArMTUyMCw3IEBAIHhmc19hbGxvY19hZ192ZXh0ZW50X2xhc3RibG9jaygKPiA+ICAKPiA+ICAj
-aWZkZWYgREVCVUcKPiA+ICAJLyogUmFuZG9tbHkgZG9uJ3QgZXhlY3V0ZSB0aGUgZmlyc3QgYWxn
-b3JpdGhtLiAqLwo+ID4gLQlpZiAocHJhbmRvbV91MzIoKSAmIDEpCj4gPiArCWlmIChwcmFuZG9t
-X3UzMl9tYXgoMikpCj4gCj4gSSB3b25kZXIgaWYgdGhlc2UgdXNlY2FzZXMgKHBpY2tpbmcgMCBv
-ciAxIHJhbmRvbWx5KSBvdWdodCB0byBoYXZlIGEKPiB0cml2aWFsIHdyYXBwZXIgdG8gbWFrZSBp
-dCBtb3JlIG9idmlvdXMgdGhhdCB3ZSB3YW50IGJvb2xlYW4gc2VtYW50aWNzOgo+IAo+IHN0YXRp
-YyBpbmxpbmUgYm9vbCBwcmFuZG9tX2Jvb2wodm9pZCkKPiB7Cj4gCXJldHVybiBwcmFuZG9tX3Uz
-Ml9tYXgoMik7Cj4gfQo+IAo+IAlpZiAocHJhbmRvbV9ib29sKCkpCj4gCQl1c2VfY3JhenlfYWxn
-b3JpdGhtKC4uLik7Cj4gCgpZZWEsIEkndmUgaGFkIGEgbG90IG9mIHNpbWlsYXIgaWRlYXMgdGhl
-cmUuIFBhcnQgb2YgZG9pbmcgdGhpcyAoaW5pdGlhbCkKcGF0Y2hzZXQgaXMgdG8gZ2V0IGFuIGlu
-dHVpdGl2ZSBzZW5zZSBvZiB3aGF0J3MgYWN0dWFsbHkgdXNlZCBhbmQgaG93Cm9mdGVuLiBPbiBt
-eSBsaXN0IGZvciBpbnZlc3RpZ2F0aW9uIGFyZSBhIGdldF9yYW5kb21fdTMyX21heCgpIHRvIHJl
-dHVybgp1bmlmb3JtIG51bWJlcnMgYnkgcmVqZWN0aW9uIHNhbXBsaW5nIChwcmFuZG9tX3UzMl9t
-YXgoKSBkb2Vzbid0IGRvCnRoYXQgdW5pZm9ybWx5KSBhbmQgYWRkaW5nIGEgZnVuY3Rpb24gZm9y
-IGJvb2xlYW5zIG9yIGJpdHMgPCA4LiBQb3NzaWJsZQppZGVhcyBmb3IgdGhlIGxhdHRlciBpbmNs
-dWRlOgoKICAgYm9vbCBnZXRfcmFuZG9tX2Jvb2wodm9pZCk7CiAgIGJvb2wgZ2V0X3JhbmRvbV9i
-b29sKHVuc2lnbmVkIGludCBwcm9iYWJpbGl0eSk7CiAgIGJvb2wgZ2V0X3JhbmRvbV9iaXRzKHU4
-IGJpdHNfbGVzc190aGFuX2VpZ2h0KTsKCldpdGggdGhlIGNvcmUgb2YgYWxsIG9mIHRob3NlIGlu
-dm9sdmluZyB0aGUgc2FtZSBiYXRjaGluZyBhcyB0aGUgY3VycmVudApnZXRfcmFuZG9tX3V7OCwx
-NiwzMiw2NH0oKSBmdW5jdGlvbnMsIGJ1dCBhbHNvIGJ1ZmZlcmluZyB0aGUgbGF0ZXN0IGJ5dGUK
-YW5kIG1hbmFnaW5nIGhvdyBtYW55IGJpdHMgYXJlIGxlZnQgaW4gaXQgdGhhdCBoYXZlbid0IGJl
-ZW4gc2hpZnRlZCBvdXQKeWV0LgoKU28gQVBJLXdpc2UsIHRoZXJlIGFyZSBhIGZldyB3YXlzIHRv
-IGdvLCBzbyBob3BlZnVsbHkgdGhpcyBzZXJpZXMgd2lsbApzdGFydCB0byBnaXZlIGEgZ29vZCBw
-aWN0dXJlIG9mIHdoYXQncyBuZWVkZWQuCgpPbmUgdGhpbmcgSSd2ZSBub3RpY2VkIGlzIHRoYXQg
-bW9zdCBvZiB0aGUgcHJhbmRvbV91MzJfbWF4KDIpCmludm9jYXRpb25zIGFyZSBpbiBkZWJ1ZyBv
-ciB0ZXN0IGNvZGUsIHNvIHRoYXQgZG9lc24ndCBuZWVkIHRvIGJlCm9wdGltaXplZC4gQnV0IGtm
-ZW5jZSBkb2VzIHRoYXQgdG9vIGluIGl0cyBob3QgcGF0aCwgc28gYQpnZXRfcmFuZG9tX2Jvb2wo
-KSBmdW5jdGlvbiB0aGVyZSB3b3VsZCBpbiB0aGVvcnkgbGVhZCB0byBhbiA4eCBzcGVlZC11cC4K
-QnV0IEkgZ3Vlc3MgSSBqdXN0IGhhdmUgdG8gdHJ5IHNvbWUgdGhpbmdzIGFuZCBzZWUuCgpBbnl3
-YXksIHRoYXQgaXMgYSBsb25nIHdheSB0byBzYXksIEkgc2hhcmUgeW91IGN1cmlvc2l0eSBvbiB0
-aGUgbWF0dGVyCmFuZCBJJ20gbG9va2luZyBpbnRvIGl0LgoKSmFzb24KCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+On Fri, Oct 07, 2022 at 10:34:47PM +0200, Rolf Eike Beer wrote:
+> > diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+> > index 7c37e09c92da..18c4f0e3e906 100644
+> > --- a/arch/parisc/kernel/process.c
+> > +++ b/arch/parisc/kernel/process.c
+> > @@ -288,7 +288,7 @@ __get_wchan(struct task_struct *p)
+> > 
+> >  static inline unsigned long brk_rnd(void)
+> >  {
+> > -	return (get_random_int() & BRK_RND_MASK) << PAGE_SHIFT;
+> > +	return (get_random_u32() & BRK_RND_MASK) << PAGE_SHIFT;
+> >  }
+> 
+> Can't this be
+> 
+>   prandom_u32_max(BRK_RND_MASK + 1) << PAGE_SHIFT
+> 
+> ? More similar code with other masks follows below.
+
+I guess it can, because BRK_RND_MASK happens to have all its lower bits
+set. But as a "_MASK" maybe this isn't a given, and I don't want to
+change intended semantics in this patchset. It's also not more
+efficient, because BRK_RND_MASK is actually an expression:
+
+    #define BRK_RND_MASK        (is_32bit_task() ? 0x07ffUL : 0x3ffffUL)
+
+So at compile-time, the compiler can't prove that it's <= U16_MAX, since
+it isn't always the case, so it'll use get_random_u32() anyway.
+
+[Side note: maybe that compile-time check should become a runtime check,
+ but I'll need to do some benchmarking before changing that and
+ introducing two added branches to every non-constant invocation, so for
+ now it's a compile-time check. Fortunately the vast majority of uses
+ are done on inputs the compiler can prove something about.]
+
+> 
+> > diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > b/drivers/gpu/drm/i915/i915_gem_gtt.c index 329ff75b80b9..7bd1861ddbdf
+> > 100644
+> > --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > @@ -137,12 +137,12 @@ static u64 random_offset(u64 start, u64 end, u64 len,
+> > u64 align) range = round_down(end - len, align) - round_up(start, align);
+> >  	if (range) {
+> >  		if (sizeof(unsigned long) == sizeof(u64)) {
+> > -			addr = get_random_long();
+> > +			addr = get_random_u64();
+> >  		} else {
+> > -			addr = get_random_int();
+> > +			addr = get_random_u32();
+> >  			if (range > U32_MAX) {
+> >  				addr <<= 32;
+> > -				addr |= get_random_int();
+> > +				addr |= get_random_u32();
+> >  			}
+> >  		}
+> >  		div64_u64_rem(addr, range, &addr);
+> 
+> How about 
+> 
+>  		if (sizeof(unsigned long) == sizeof(u64) || range > 
+> U32_MAX)
+> 			addr = get_random_u64();
+>  		else
+> 			addr = get_random_u32();
+> 
+
+Yes, maybe, probably, indeed... But I don't want to go wild and start
+fixing all the weird algorithms everywhere. My goal is to only make
+changes that are "obviously right". But maybe after this lands this is
+something that you or I can submit to the i915 people as an
+optimization.
+
+> > diff --git a/drivers/infiniband/hw/cxgb4/cm.c
+> > b/drivers/infiniband/hw/cxgb4/cm.c index 14392c942f49..499a425a3379 100644
+> > --- a/drivers/infiniband/hw/cxgb4/cm.c
+> > +++ b/drivers/infiniband/hw/cxgb4/cm.c
+> > @@ -734,7 +734,7 @@ static int send_connect(struct c4iw_ep *ep)
+> >  				   &ep->com.remote_addr;
+> >  	int ret;
+> >  	enum chip_type adapter_type = ep->com.dev->rdev.lldi.adapter_type;
+> > -	u32 isn = (prandom_u32() & ~7UL) - 1;
+> > +	u32 isn = (get_random_u32() & ~7UL) - 1;
+> >  	struct net_device *netdev;
+> >  	u64 params;
+> > 
+> > @@ -2469,7 +2469,7 @@ static int accept_cr(struct c4iw_ep *ep, struct
+> > sk_buff *skb, }
+> > 
+> >  	if (!is_t4(adapter_type)) {
+> > -		u32 isn = (prandom_u32() & ~7UL) - 1;
+> > +		u32 isn = (get_random_u32() & ~7UL) - 1;
+> 
+> u32 isn = get_random_u32() | 0x7;
+
+Again, maybe so, but same rationale as above.
+
+> >  static void ns_do_bit_flips(struct nandsim *ns, int num)
+> >  {
+> > -	if (bitflips && prandom_u32() < (1 << 22)) {
+> > +	if (bitflips && get_random_u32() < (1 << 22)) {
+> 
+> Doing "get_random_u16() < (1 << 6)" should have the same probability with only 
+> 2 bytes of random, no?
+
+That's very clever. (1<<22)/(1<<32) == (1<<6)/(1<<16). But also, same
+rationale as above for not doing that.
+
+Anyway, I realize this is probably disappointing to read. But also, we
+can come back to those optimization cases later pretty easily.
+
+Jason
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
