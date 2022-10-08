@@ -4,98 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21369C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat,  8 Oct 2022 07:33:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40B81C433F5
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Oct 2022 07:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
-	In-Reply-To:Subject:cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DQl/iy4DRdjMhWnBjcdxqw+qawNJM1CAfxydtB5AA9M=; b=s8PPGeuUfFnCac
-	h7aMIgqHCqpDtKSUX9Crk93fCIYCFDtelHR+F29Edg3aUj+LfHDTjhc6Gq4mE2Rxn7qLALi0dwY4x
-	Dvksh53xBNY2t+GgmWjPaWdleqSJgfepDqLV/mAKfPbYHSC0WfDV53EBA/PLROLshpAfioak2WvBl
-	Z9AX2k8/Agkwru8SlqfC+gxwQhlikksRgbRqb4APQc2e7Yo4nGA8XCXQyF86+XWAmr757UElAWf4d
-	7fqbtPBw8qjLMh/3r2DKSRNGx0B5mW/HtZjJN4c/XNS4KL4niVy2ZdlbrQdQK1RJO+Q1w/6JaTEuX
-	EqdydA7fZ3VnjVZnEduQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=IYh9vIrwq1dZzJJgazHQFgpqQAwjGdtx9sr9KcW1+/A=; b=va2P/vOTBgBHn3
+	8UxnXPa1ZJagOEYHZtyXOcr/ObHknluH4g6fYmohxK2I6VFEVF+M0S8fCxR+wfWw5T9t6x9VuBWhi
+	R204kMx10gmxmLvhHW28l9Io71UVJLk5TY3JOoXaaUTFn+mxecq2VNU0K5alnggXl1JdBC5VVYz+C
+	pRAYai7irFxME09SoSTXXQN7yz75zmziUTaH3Mo4q05ymjIc9n8C9SpRRP78Uii5INC2fruhuBf7Q
+	Q7ONnTNygSZ0qhHlU2EqKlW5n/lT4dvBJGSEWRCQGl0NSGBvnsmfuTf+Lw+Kn7sGk2C2+zgn4m+1I
+	30eb+ozKLSP1u+MBzmyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oh4Kp-00CHEh-V9; Sat, 08 Oct 2022 07:33:24 +0000
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83])
+	id 1oh4Xu-00CKqv-DI; Sat, 08 Oct 2022 07:46:54 +0000
+Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oh4Kl-00CHCf-GV; Sat, 08 Oct 2022 07:33:21 +0000
+	id 1oh4Xs-00CKqA-1e
+	for linux-mtd@lists.infradead.org; Sat, 08 Oct 2022 07:46:53 +0000
+Received: by mail-pf1-x431.google.com with SMTP id f140so6762407pfa.1
+        for <linux-mtd@lists.infradead.org>; Sat, 08 Oct 2022 00:46:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=zZQ88pPgtouR86lBpg+x1aw/csf1v9uxp8peXKk1cb0=;
-  b=j3ST7SGnTYT/Y5wi6lWHZVyoTN6fTohW3n4oD0o9maLZmdhUccDAwXNB
-   CrIK4oBY5dqegOsWJRE3rrwkzrofbuFPsdX2RZ0LPGmouitc76P+QhHmS
-   HaFrH+aHq9cCtdo04t374NKt8+gA8QS7/hDJOozImMV5dxKm1CxmPsJ2W
-   U=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="5.95,169,1661810400"; 
-   d="scan'208";a="56593050"
-Received: from 51.123.68.85.rev.sfr.net (HELO hadrien) ([85.68.123.51])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2022 09:33:09 +0200
-Date: Sat, 8 Oct 2022 09:33:08 +0200 (CEST)
-From: Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To: Kees Cook <keescook@chromium.org>
-cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-kernel@vger.kernel.org, 
-    patches@lists.linux.dev, Andreas Noever <andreas.noever@gmail.com>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-    Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, 
-    =?ISO-8859-15?Q?Christoph_B=F6hmwalder?= <christoph.boehmwalder@linbit.com>, 
-    Christoph Hellwig <hch@lst.de>, 
-    Christophe Leroy <christophe.leroy@csgroup.eu>, 
-    Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, 
-    Dave Hansen <dave.hansen@linux.intel.com>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, 
-    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    "H. Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, 
-    Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, 
-    Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, 
-    Jakub Kicinski <kuba@kernel.org>, 
-    "James E. J. Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, 
-    Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, 
-    Johannes Berg <johannes@sipsolutions.net>, 
-    Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, 
-    KP Singh <kpsingh@kernel.org>, Marco Elver <elver@google.com>, 
-    Mauro Carvalho Chehab <mchehab@kernel.org>, 
-    Michael Ellerman <mpe@ellerman.id.au>, 
-    Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, 
-    Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, 
-    Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, 
-    Ulf Hansson <ulf.hansson@linaro.org>, 
-    Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, 
-    Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, 
-    dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com, 
-    kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-    linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, 
-    linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-    linux-media@vger.kernel.org, linux-mips@vger.kernel.org, 
-    linux-mm@kvack.org, linux-mmc@vger.kernel.org, 
-    linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, 
-    linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, 
-    linux-s390@vger.kernel.org, linux-um@lists.infradead.org, 
-    linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, 
-    linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
-    netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, 
-    Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v4 2/6] treewide: use prandom_u32_max() when possible
-In-Reply-To: <53DD0148-ED15-4294-8496-9E4B4C7AD061@chromium.org>
-Message-ID: <alpine.DEB.2.22.394.2210080925390.2928@hadrien>
-References: <53DD0148-ED15-4294-8496-9E4B4C7AD061@chromium.org>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yy1hrG2GpPBkvn2HfQINffR+3hxzGXt2IgtYJPN1P7E=;
+        b=auD42bYp121ROiFoAixlBntsidbY1hawD9jksLlHUfCGs+g1S33boZlc8IG52tq3LN
+         DX3zkFHJMskR9WbEfqaIU3wWP2PYec++sWTNaxJ+jm/6Sc/mlQCL57/xC3g6z8bdDGzp
+         EqRUliodvHvnOoW98Z6z+P8C9u0UOxm965lxZO0jk3o0DBucSnhvgc/Noh0foIWdCPo1
+         IpDQTDjQ1Xb46qq47hdQJsExw1k6iJAlOma49I3UhOIkTQqVIW3vnwh2GfMB+HZKRAC9
+         YNZ+9lFYEDDf82yOzWn7uDWc+lc0U/2O7VNLesgUBHl+ixcvrRL2tAfsnNKxAG71wtVg
+         J12Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yy1hrG2GpPBkvn2HfQINffR+3hxzGXt2IgtYJPN1P7E=;
+        b=Oa3+921QmIwoTAVKtPOUJPFoS3rDLzuqBVAsa3FIpDE736xKHy14sDWdGFLpoY35Xa
+         R3HN24B4KUsT1cH3BmwxYzkuGfO2PzVXYfH8RTnyUQBFwGnHpADiIsezS61i1YhrS1g4
+         3iNV/PrbKrqvi6AMhBoUa6N3vpVSUW5MuhLIhZ6cC4GXqA9FftD3jUZ/zhmygfvDuh3c
+         0YRem568ZL/wG5d2aDtRMm5rU0Sp6Gk60wqtT6BoQtUbQ04uwZzg2WmQ2SIEhbBE38jr
+         ziAZehYLwqggVTQcqn4ZMf4ku6Ft0waxvSGH/QISc9MfTyJ4gZSHwMpwxC/kDMbiLaU0
+         yttg==
+X-Gm-Message-State: ACrzQf2OdkohjTW0xaDYSz2DQvvoSPnLlH0M9g8fz5vDp/+IoAlNbIkz
+	z36QwArrJKG/jZ3U+tFRijY=
+X-Google-Smtp-Source: AMsMyM5rC5UzbfGyUKVwo477N415VnISLNMlKqnEO7xakBGPSl2Z3+N74oa8uaYCPuiv4SH83PF1mw==
+X-Received: by 2002:a63:581e:0:b0:43c:29a0:6390 with SMTP id m30-20020a63581e000000b0043c29a06390mr8029983pgb.552.1665215209070;
+        Sat, 08 Oct 2022 00:46:49 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id x16-20020aa79a50000000b005365aee486bsm2852880pfj.192.2022.10.08.00.46.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 Oct 2022 00:46:48 -0700 (PDT)
+From: yexingchen116@gmail.com
+X-Google-Original-From: ye.xingchen@zte.com.cn
+To: miquel.raynal@bootlin.com
+Cc: richard@nod.at,
+	vigneshr@ti.com,
+	wsa+renesas@sang-engineering.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	ye xingchen <ye.xingchen@zte.com.cn>
+Subject: [PATCH linux-next] mtd: replace strcmp with sysfs_streq
+Date: Sat,  8 Oct 2022 07:46:43 +0000
+Message-Id: <20221008074643.308969-1-ye.xingchen@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221008_003319_853216_04489235 
-X-CRM114-Status: GOOD (  17.68  )
+X-CRM114-CacheID: sfid-20221008_004652_107452_1AAAF0F2 
+X-CRM114-Status: GOOD (  11.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,28 +92,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> >> @minus_one@
-> >> expression FULL;
-> >> @@
-> >>
-> >> - (get_random_int() & ((FULL) - 1)
-> >> + prandom_u32_max(FULL)
-> >
-> >Ahh, well, okay, this is the example I mentioned above. Only works if
-> >FULL is saturated. Any clever way to get coccinelle to prove that? Can
-> >it look at the value of constants?
->
-> I'm not sure if Cocci will do that without a lot of work. The literals trick I used below would need a lot of fanciness. :)
+From: ye xingchen <ye.xingchen@zte.com.cn>
 
-If FULL is an arbitrary expression, it would not be easy to automate.  If
-it is a constant then you can use python/ocaml to analyze its value.  But
-if it's a #define constant then you would need a previous rule to match the
-#define and find that value.
+Replace the open-code with sysfs_streq().
 
-For LITERAL, I think you could just do constant int LITERAL; for the
-metavariable declaration.
+Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
+---
+ drivers/mtd/parsers/cmdlinepart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-julia
+diff --git a/drivers/mtd/parsers/cmdlinepart.c
+b/drivers/mtd/parsers/cmdlinepart.c
+index b34856def816..6a401e0b1b95 100644
+--- a/drivers/mtd/parsers/cmdlinepart.c
++++ b/drivers/mtd/parsers/cmdlinepart.c
+@@ -154,7 +154,7 @@ static struct mtd_partition * newpart(char *s,
+ 	}
+ 
+ 	/* if slc is found use emulated SLC mode on this partition*/
+-	if (!strncmp(s, "slc", 3)) {
++	if (sysfs_streq(s, "slc")) {
+ 		add_flags |= MTD_SLC_ON_MLC_EMULATION;
+ 		s += 3;
+ 	}
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
