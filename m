@@ -4,111 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64E05C433F5
-	for <linux-mtd@archiver.kernel.org>; Sun,  9 Oct 2022 14:18:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECF4BC4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Oct 2022 04:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Dp1sQxfQ+GFMj/8TWGzpARNQPHxvZRTRTYPlCowDHPc=; b=RrTJMlUZ67wa8D
-	hSDvic2TfACI41Jice4/Onz4pO8AY4hmotJX0yHzE1xQMymdt22AGP2h0/crzYbYzXdKSyDjdpDke
-	fVz6Zj9nIi5seuv47KUVlUPdCVuaKowcOGWcQ4TcBCGBYWIUxiVT6w78rhZWZAQTtTmYundi0Ouam
-	4NCwINlEMlkIZiES/1JlL+14u8lQWerhU5bQOP8b79/Losd8hQ7nKQWswQIDu6Z50q5M9I+ZLxLwY
-	H4uV84UoRmwE6/gGw742P/6MpQc83/iBzrVmn6dzmVMwlQhu4RLBK3v3jfVUVyREen0mTgxPFbI44
-	emY2az6x+0MBRIGtKqww==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
+	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=AdgdOTg2m78PYyVdYFdlBSvpsEFzi1IL6FZcA424iPc=; b=Ot/ciimUlEYCz4Pz5BUykPqQTO
+	obVQYpa6GxvL5mEdg/RNH7rDTOfoiMFxGn3Gcigy6nqRMRtiWcJGGS4DdtXH0HMptYHGebSORpaKk
+	FtVzbWm+Ty+FqYygZ8LXMFcwEOT9RK/Rsbs+aY2TnqZAINaO1WTmuVfUzQOGz9IH6HmC3/YbbF4lN
+	AFhCaDUFoWLAGe5E/yVs48aKPC3X24NBgrkg5Qco1M6JbEnqteGSIPDVMq7MUPrWPBRel8v6z2fA8
+	Zi5OHjhcCTZgsTtSdTLPXqU4Qjo5ccggLJDf3uFYSpQuoAerZ/rRbTCFb/SntTMUrCVBCvcjByfow
+	mNi0W5fQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ohX89-00Fh80-LH; Sun, 09 Oct 2022 14:18:13 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1ohkpk-00H1n9-2C; Mon, 10 Oct 2022 04:56:08 +0000
+Received: from mail-pg1-x54a.google.com ([2607:f8b0:4864:20::54a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ohX85-00Fh5T-B0; Sun, 09 Oct 2022 14:18:11 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 9F728B80C91;
-	Sun,  9 Oct 2022 14:18:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 659D2C433D6;
-	Sun,  9 Oct 2022 14:17:59 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="YgHbN0I0"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1665325077;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oirLAgHKzqbm2tDuRRRruxvBPFu6OuA1m1Bdo0JewVo=;
-	b=YgHbN0I0lUsk61F/tkacjTtELz9m0jTOee92icnhvNyHJrs9iBf1nxk5rIk4LCzkioh8sG
-	190YFxxX+8obr4IDytSpJV/y+LGJPtZT2kSp6+N5MRfHp0a/WJLUeHRU53NaAsEmu2d/gM
-	WcwjBCYWAwT/EnbHfbZZP/9zFIVJmUM=
-Received: 	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 76b4077f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Sun, 9 Oct 2022 14:17:57 +0000 (UTC)
-Date: Sun, 9 Oct 2022 08:17:41 -0600
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-	Andreas Noever <andreas.noever@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Dave Airlie <airlied@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	"James E . J . Bottomley" <jejb@linux.ibm.com>,
-	Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Jens Axboe <axboe@kernel.dk>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	KP Singh <kpsingh@kernel.org>, Marco Elver <elver@google.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
-	Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org,
-	kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-usb@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 0/7] treewide cleanup of random integer usage
-Message-ID: <Y0LYBaooZKDbL93G@zx2c4.com>
-References: <20221008055359.286426-1-Jason@zx2c4.com>
- <202210082028.692DFA21@keescook>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202210082028.692DFA21@keescook>
+	id 1ohkpg-00H1lM-MT
+	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2022 04:56:06 +0000
+Received: by mail-pg1-x54a.google.com with SMTP id p24-20020a63f458000000b0043cd718c49dso5887827pgk.15
+        for <linux-mtd@lists.infradead.org>; Sun, 09 Oct 2022 21:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RxsdOmr/5R6O83izb+Qz14RQm/ox4oRe3Ga9GwIcpbE=;
+        b=FkFgzyPbZsQ7hNEXjbL2xdIOWZkuMKYfOCsz8o7Aqg0eNxiBSOaNoOrR3Qf9uL60wM
+         VTj6P7p0CFzx5wLDB3obZQ+zs+nrxxyBmcvR4DRDn00o63HqdvGDddgCThc2ABO6jHpw
+         cm9uUOYCeB4KowxD+kNC8NY9xxoq25Ui7uTvS4Age3Yh6hkvwWal5xlAgOLCxDVcI4Id
+         h9ltXeJuibrk4rUk6alMBIUx5VxBnrZ6OKB0LXzOyCqqd4IusJvjjf93Z8l+66nNTSjz
+         PHYdAhYsKdcSUKvRSJx0N22y0DlAlXUJT/57ISO/kCHshWkQIpcznUevOsUJJS4GJR+9
+         I6dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RxsdOmr/5R6O83izb+Qz14RQm/ox4oRe3Ga9GwIcpbE=;
+        b=0z6vXf7tHZi158DsJ2UoBucmDooCV173PM/4i5n/cdbwcG+ICO6RxXafXbtLVPReuD
+         hqHBjkfQSLD8jyFATJ5Qx81M+ZanPQuXcjbN51f9JpTc0fWrBhWf7ky4dyhdt+ckNjnw
+         MrRU8vTxVTFlIQBoddpAFmoJUmgCKyBT7y1s7dMiIA5xmCi2UNXhHS22WcF3tPj17KMx
+         jbEGnNdqxc1YfDPrqCqQTf1k4JnuislR+zQqXwXkK8L4VNnudGfp2lwVqR7kbFwETP7s
+         3zFn9gF+FYVlccCm64cv/m0S1gGMaNoAeDY46wO/HCXpI2JNVdm6qv7hr8VslfldtZDY
+         UKjg==
+X-Gm-Message-State: ACrzQf3q3JCG3ZJlCmGa6TOY/Iwh4RLEbBijLDoV5yTFrpWeSuZ/Aa3k
+	iSvyznyy0RuzU3VgAfIOL5AeykBO/MMR
+X-Google-Smtp-Source: AMsMyM7IS1QJd/ZymReZAITcO7D6DJHSctw2xXHR0bqcwB2i2Av+jyamUKWzh6rkAS6jB/SEyZwKBlS8xhj8
+X-Received: from sgzhang.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3d89])
+ (user=sgzhang job=sendgmr) by 2002:a17:90a:cd06:b0:203:ae0e:6a21 with SMTP id
+ d6-20020a17090acd0600b00203ae0e6a21mr1584146pju.0.1665377762552; Sun, 09 Oct
+ 2022 21:56:02 -0700 (PDT)
+Date: Mon, 10 Oct 2022 04:55:49 +0000
+In-Reply-To: <20221010045549.2221965-1-sgzhang@google.com>
+Mime-Version: 1.0
+References: <20221010045549.2221965-1-sgzhang@google.com>
+X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
+Message-ID: <20221010045549.2221965-4-sgzhang@google.com>
+Subject: [PATCH v4 3/3] mtd: mtdoops: panic caused mtdoops to call
+ mtdoops_erase function immediately
+From: Ray Zhang <sgzhang@google.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Ray Zhang <sgzhang@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221009_071809_676931_23FD7966 
-X-CRM114-Status: GOOD (  19.85  )
+X-CRM114-CacheID: sfid-20221009_215604_762215_D6139286 
+X-CRM114-Status: GOOD (  11.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,24 +89,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Oct 08, 2022 at 08:41:14PM -0700, Kees Cook wrote:
-> On Fri, Oct 07, 2022 at 11:53:52PM -0600, Jason A. Donenfeld wrote:
-> > This is a five part treewide cleanup of random integer handling. The
-> > rules for random integers are:
-> 
-> Reviewing the delta between of my .cocci rules and your v5, everything
-> matches, except for get_random_int() conversions for files not in
-> your tree:
-> [...]
-> So, I guess I mean to say that "prandom: remove unused functions" is
-> going to cause some pain. :) Perhaps don't push that to -next, and do a
-> final pass next merge window to catch any new stuff, and then send those
-> updates and the removal before -rc1 closes?
+The panic function disables the local interrupts, preemption, and all
+other processors. When the invoked mtdoops needs to erase a used page,
+calling schedule_work() to do it will not work. Instead, just call
+mtdoops_erase function immediately.
 
-Ooof. Actually I think what I'll do is include a suggested diff for the
-merge commit that fixes up the remaining two thankfully trivial cases.
+Tested:
+~# echo c > /proc/sysrq-trigger
+[  171.654759] sysrq: Trigger a crash
+[  171.658325] Kernel panic - not syncing: sysrq triggered crash
+......
+[  172.406423] mtdoops: not ready 34, 35 (erase immediately)
+[  172.432285] mtdoops: ready 34, 35
+[  172.435633] Rebooting in 10 seconds..
 
-Jason
+Signed-off-by: Ray Zhang <sgzhang@google.com>
+---
+ drivers/mtd/mtdoops.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 0226b9e9ea8f..2f11585b5613 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -170,7 +170,7 @@ static void mtdoops_workfunc_erase(struct work_struct *work)
+ 	mtdoops_erase(cxt);
+ }
+ 
+-static void mtdoops_inc_counter(struct mtdoops_context *cxt)
++static void mtdoops_inc_counter(struct mtdoops_context *cxt, int panic)
+ {
+ 	cxt->nextpage++;
+ 	if (cxt->nextpage >= cxt->oops_pages)
+@@ -180,12 +180,20 @@ static void mtdoops_inc_counter(struct mtdoops_context *cxt)
+ 		cxt->nextcount = 0;
+ 
+ 	if (page_is_used(cxt, cxt->nextpage)) {
+-		schedule_work(&cxt->work_erase);
+-		return;
++		pr_debug("not ready %d, %d (erase %s)\n",
++			 cxt->nextpage, cxt->nextcount,
++			 panic ? "immediately" : "scheduled");
++		if (panic) {
++			/* In case of panic, erase immediately */
++			mtdoops_erase(cxt);
++		} else {
++			/* Otherwise, schedule work to erase it "nicely" */
++			schedule_work(&cxt->work_erase);
++		}
++	} else {
++		pr_debug("ready %d, %d (no erase)\n",
++			 cxt->nextpage, cxt->nextcount);
+ 	}
+-
+-	pr_debug("ready %d, %d (no erase)\n",
+-		 cxt->nextpage, cxt->nextcount);
+ }
+ 
+ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
+@@ -221,7 +229,7 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
+ 	mark_page_used(cxt, cxt->nextpage);
+ 	memset(cxt->oops_buf, 0xff, record_size);
+ 
+-	mtdoops_inc_counter(cxt);
++	mtdoops_inc_counter(cxt, panic);
+ out:
+ 	clear_bit(0, &cxt->oops_buf_busy);
+ }
+@@ -286,7 +294,7 @@ static void find_next_position(struct mtdoops_context *cxt)
+ 		cxt->nextcount = maxcount;
+ 	}
+ 
+-	mtdoops_inc_counter(cxt);
++	mtdoops_inc_counter(cxt, 0);
+ }
+ 
+ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
+-- 
+2.38.0.rc1.362.ged0d419d3c-goog
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
