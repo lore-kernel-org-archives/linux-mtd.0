@@ -4,146 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1735FC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Oct 2022 10:00:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB334C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Oct 2022 10:04:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=llYnuOE9VxhzPZhh6Q6QcGGXs8SmE21vGnF6Nru5SbA=; b=a1Zo9yKC6vXcvw
-	E8J376h9yVNvSNpIm3ygVsFsvB9h1X6r2P157Wf4Gc2Uo4jtxMFisLDWoDurVlSt+EYl+sew7M0s8
-	QmLKdsoT0EB92qWAfgUe3YWik0KTDA8JYkuOaQJDDU0mqGs+/wxL93PRX2WS+wpL5DGgdLbhuARSr
-	wq4TYuPx+o3h3XM4ab1spazd4kOh37ScLPM9D9t1WvNOYf1wM6PHnnLci2aEGVJbS6SsSg/Vx9o8+
-	XbEj4FF/50QkBwVA1Nu8QD9A4nfNnR74GeOeQtvaHUpXad/G0cM/UA7bublAjEixg5rXiXNBJw9HO
-	bPrCSKkjMrhiYQyniZlA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+pmw9Z5mcSk3FTExD2JR2WtSUsls1SbCV+EVeSn7AbE=; b=NlQWkT42Ye/+uk
+	f/TjwgMqJP0MlUCg1A9Aztl8rJFxBiNJ7ZzFC8mUKh2Og9jCiPI8pkFTmHxmvr856w/TVXEwQQfzi
+	5+xPX1S7YRqw4J8CAW/iPd24gOrM7jfHrmx5yUNle6LeUTk5AyzDkx22eBmP1TqDtp39HergV2Mi0
+	v6M5paEfl49V4LqRIvtWY6gGsXaUPp4E5hJhRpVMoIWQ6brrSugAiY/lSPPVFmmWF/dy+MBYMvGBF
+	ok51rxorhjKTTjmpKpzmzubOq7ZCgQrB8g+bowTzalY3Uje2Ral/++GI1FgluCXznlGsPJTdBi+f+
+	CvHbbLsKu2sPUvA+RNQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oiC4A-003vFl-2T; Tue, 11 Oct 2022 10:00:50 +0000
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
+	id 1oiC79-003wAa-AM; Tue, 11 Oct 2022 10:03:55 +0000
+Received: from mail-ed1-x535.google.com ([2a00:1450:4864:20::535])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oiC45-003vCA-Bw; Tue, 11 Oct 2022 10:00:47 +0000
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29B9iM3q008462;
-	Tue, 11 Oct 2022 10:00:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=cDUY+1vkbBQhdXB58PoxjcuGNo/DQDfRq3ZaWdWqAzc=;
- b=OOL8Hxcl0CKggxHmxcmT0PdgQBUgq70AseSjBOxMElBjpC3YsyKSp0LsFe55kHAJxmP/
- P3Jz3ag1O2AUkeUOaghVX6JDJ5kM0YJ7sL5PwnHUI6Ma39FfAvDjkjUnaxQ+dIXxKdyD
- 0UJEGZXrJzQKMLnVPW2vlNCgGVAfoSIsQ+WhotQC4kiRmGWKHnjea50FzdBUAJ71FJc+
- ha+oihFj3Y0sg1dbtCOh0rA793pGDPp0NNreqW6HwCNbBoPf1UwfbXpi/ZMgEAcXPr4L
- jGojWsVXNUI21pC2RMzUsTcR7A1Cv0qDFAHlZVwNEMYKhUUdOCyqynChy69sy9YVbhbH 4g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k54d0kknr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Oct 2022 10:00:28 +0000
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 29B7spN5026272;
-	Tue, 11 Oct 2022 10:00:27 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k54d0kkk0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Oct 2022 10:00:26 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-	by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29B9ok2w003853;
-	Tue, 11 Oct 2022 10:00:23 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-	by ppma04ams.nl.ibm.com with ESMTP id 3k30u9c3m9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Oct 2022 10:00:23 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-	by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 29BA0LdC58196252
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 11 Oct 2022 10:00:21 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 32F1DAE051;
-	Tue, 11 Oct 2022 10:00:21 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 26CF8AE053;
-	Tue, 11 Oct 2022 10:00:19 +0000 (GMT)
-Received: from osiris (unknown [9.152.212.239])
-	by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-	Tue, 11 Oct 2022 10:00:19 +0000 (GMT)
-Date: Tue, 11 Oct 2022 12:00:18 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Airlie <airlied@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Helge Deller <deller@gmx.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>, "Theodore Ts'o" <tytso@mit.edu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>,
-        Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>,
-        dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-        netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@toke.dk>,
-        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v6 5/7] treewide: use get_random_u32() when possible
-Message-ID: <Y0U+sluE4MidMk8M@osiris>
-References: <20221010230613.1076905-1-Jason@zx2c4.com>
- <20221010230613.1076905-6-Jason@zx2c4.com>
+	id 1oiC74-003w93-Bw; Tue, 11 Oct 2022 10:03:52 +0000
+Received: by mail-ed1-x535.google.com with SMTP id v12so1086924edc.6;
+        Tue, 11 Oct 2022 03:03:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lBTq8juooIuTyFEgcmEOyFqiiRaMLuXlIjzIJ8KmLsg=;
+        b=aO0GB03LHXSuLYJGS55fnpkD2vkTt9JCLtPGOIoCVfhsLwESgpJ8TF392ivbhl1UN+
+         ThHtE59bPTEM1CF8WTIjdMG/59+hWeoFpJlftp40fpQhKZc84ix5kiWAWLNY3UyXOKsW
+         CHwh2C6PlDWk3xTLRQd+A0WIUwxiiVMoh4Ojg9qNMkxfYbBxdvWyFNNKYE6JtB+SGQKf
+         35091AOyYmVzYX2i3F/OIlYt30uLedwCbEKgZSHHVefZC7GF0WQ8omDb1YnqfUICED4y
+         IHXfqnjhf+Dnbikgl2la4mqKdpiV/1yCpz5RVqiw707zZIIbk3swbMJEbSo9sVGHI+Vv
+         pTng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lBTq8juooIuTyFEgcmEOyFqiiRaMLuXlIjzIJ8KmLsg=;
+        b=nhvRB+grCkTxBKzrDyOlwHBm/Hu4dZGLKXS2uDQ+FCZS1wVx0kIevmAoPR/5XypQtI
+         339ITVD2jE17aRsDrO1tKaMnBnUOEwzL+vfMXNzgEZ+oO8Z9hbZsy3ZZdGRxxI5IBw1U
+         4Nf+GA6tOO+O2/MSA4BgHVpaJ5wUl5FnGK3Y/mbi4zrG6iMiZYxMIud2fNfi1Y2NQuln
+         MiXat9eR+1tMgQZhrz3f3SQW0zn3XK7NScBhCfEqbltjmcULB7QSmHznoHj7xnbRsBkW
+         qql4Xlj3vHz06py61RvQgB+tHJuEQhlE9enXFUrke9g99CL/j2pk0j7mfH9a+L4v/7rF
+         mbBQ==
+X-Gm-Message-State: ACrzQf1GDsBpJWceQiSXXOVoYvI0RSSfWsi7TQSbbPUGZ0NI5qoAipd4
+	rnHna0pQfb5ogUmSTcnCrPY=
+X-Google-Smtp-Source: AMsMyM55d8xMOD3wN0672qkNZ4P9Yy7UfT7+bZky+xgDImbk2OZtM06DaBFO+uQYWYEX6NMLgQakVQ==
+X-Received: by 2002:a05:6402:2146:b0:458:15d7:b99a with SMTP id bq6-20020a056402214600b0045815d7b99amr22290831edb.24.1665482626964;
+        Tue, 11 Oct 2022 03:03:46 -0700 (PDT)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id o8-20020a170906768800b00780ab5a9116sm4597749ejm.211.2022.10.11.03.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Oct 2022 03:03:46 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Hauke Mehrtens <hauke@hauke-m.de>,
+	bcm-kernel-feedback-list@broadcom.com,
+	John Crispin <john@phrozen.org>,
+	=?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 1/2] dt-bindings: mtd: partitions: add TP-Link SafeLoader layout
+Date: Tue, 11 Oct 2022 12:03:32 +0200
+Message-Id: <20221011100333.32536-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221010230613.1076905-6-Jason@zx2c4.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3pMFFvEysNa_wNbSt0Vlrry7CHQANLe-
-X-Proofpoint-ORIG-GUID: 9Pz4WXqTZkXGRUv-u8RjmFHok1WNz2gs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-10-11_03,2022-10-10_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- spamscore=0 mlxlogscore=530 phishscore=0 priorityscore=1501
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210110053
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221011_030045_577393_FBECD0ED 
-X-CRM114-Status: GOOD (  20.19  )
+X-CRM114-CacheID: sfid-20221011_030350_433179_922A6CF3 
+X-CRM114-Status: GOOD (  14.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,36 +94,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Oct 10, 2022 at 05:06:11PM -0600, Jason A. Donenfeld wrote:
-> The prandom_u32() function has been a deprecated inline wrapper around
-> get_random_u32() for several releases now, and compiles down to the
-> exact same code. Replace the deprecated wrapper with a direct call to
-> the real function. The same also applies to get_random_int(), which is
-> just a wrapper around get_random_u32(). This was done as a basic find
-> and replace.
-> =
-
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Yury Norov <yury.norov@gmail.com>
-> Acked-by: Toke H=F8iland-J=F8rgensen <toke@toke.dk> # for sch_cake
-> Acked-by: Chuck Lever <chuck.lever@oracle.com> # for nfsd
-> Reviewed-by: Jan Kara <jack@suse.cz> # for ext4
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com> # for thunder=
-bolt
-> Acked-by: Darrick J. Wong <djwong@kernel.org> # for xfs
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> ---
->  arch/s390/mm/mmap.c                            |  2 +-
-
-For s390:
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKTW9zdCBUUC1MaW5rIGhv
+bWUgcm91dGVycyB1c2UgdGhlIHNhbWUgcGFydGl0aW9uaW5nIHN5c3RlbSBiYXNlZCBvbiBhCmN1
+c3RvbSBBU0NJSSB0YWJsZS4KCkl0IGRvZXNuJ3Qgc2VlbSB0byBoYXZlIGFueSBvZmZpY2lhbCBu
+YW1lLiBHUEwgc291cmNlcyBjb250YWluIHRvb2wKbmFtZWQgc2ltcGx5ICJtYWtlX2ZsYXNoIiBh
+bmQgTWFrZWZpbGUgdGFyZ2V0ICJGbGFzaE1ha2VyIi4KClRoaXMgcGFydGl0aW9ucyB0YWJsZSBm
+b3JtYXQgd2FzIGZpcnN0IGZvdW5kIGluIGRldmljZXMgd2l0aCBhIGN1c3RvbQpTYWZlTG9hZGVy
+IGJvb3Rsb2FkZXIgc28gaXQgd2FzIGNhbGxlZCBTYWZlTG9hZGVyIGJ5IGEgY29tbXVuaXR5LiBM
+YXRlcgppdCB3YXMgcG9ydGVkIHRvIG90aGVyIGJvb3Rsb2FkZXJzIGJ1dCBpdCBzZWVtcyB0aGUg
+c2FtZSBzdGlja2VkLgoKQWRkIGJpbmRpbmcgZm9yIGRlc2NyaWJpbmcgZmxhc2hlcyB3aXRoIFNh
+ZmVMb2FkZXIgcGFydGl0aW9ucyB0YWJsZS4gSXQKYWxsb3dzIG9wZXJhdGluZyBzeXN0ZW1zIHRv
+IHBhcnNlIGl0IHByb3Blcmx5IGFuZCByZWdpc3RlciBwcm9wZXIgZmxhc2gKbGF5b3V0LgoKU2ln
+bmVkLW9mZi1ieTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgotLS0KIC4uLi90
+cGxpbmssc2FmZWxvYWRlci1wYXJ0aXRpb25zLnlhbWwgICAgICAgICB8IDQ0ICsrKysrKysrKysr
+KysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA0NCBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAx
+MDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL3Rw
+bGluayxzYWZlbG9hZGVyLXBhcnRpdGlvbnMueWFtbAoKZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy90cGxpbmssc2FmZWxvYWRlci1w
+YXJ0aXRpb25zLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Bh
+cnRpdGlvbnMvdHBsaW5rLHNhZmVsb2FkZXItcGFydGl0aW9ucy55YW1sCm5ldyBmaWxlIG1vZGUg
+MTAwNjQ0CmluZGV4IDAwMDAwMDAwMDAwMC4uZTM4YWFlYTVhYTExCi0tLSAvZGV2L251bGwKKysr
+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL3RwbGlu
+ayxzYWZlbG9hZGVyLXBhcnRpdGlvbnMueWFtbApAQCAtMCwwICsxLDQ0IEBACisjIFNQRFgtTGlj
+ZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlCislWUFNTCAxLjIK
+Ky0tLQorJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tdGQvcGFydGl0aW9ucy90
+cGxpbmssc2FmZWxvYWRlci1wYXJ0aXRpb25zLnlhbWwjCiskc2NoZW1hOiBodHRwOi8vZGV2aWNl
+dHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMKKwordGl0bGU6IFRQLUxpbmsgU2FmZUxv
+YWRlciBwYXJ0aXRpb25zCisKK2Rlc2NyaXB0aW9uOiB8CisgIFRQLUxpbmsgaG9tZSByb3V0ZXJz
+IHN0b3JlIHZhcmlvdXMgZGF0YSBvbiBmbGFzaCAoZS5nLiBib290bG9hZGVyLAorICBmbGFzaCBs
+YXlvdXQsIGZpcm13YXJlLCBwcm9kdWN0IGluZm8sIGNvbmZpZ3VyYXRpb24sIGNhbGlicmF0aW9u
+CisgIGRhdGEpLiBUaGF0IHJlcXVpcmVzIGZsYXNoIHBhcnRpdGlvbmluZy4KKworICBGbGFzaCBz
+cGFjZSBsYXlvdXQgb2YgVFAtTGluayBkZXZpY2VzIGlzIHN0b3JlZCBvbiBmbGFzaCBpdHNlbGYg
+dXNpbmcKKyAgYSBjdXN0b20gQVNDSUktYmFzZWQgZm9ybWF0LiBUaGF0IGZvcm1hdCB3YXMgZmly
+c3QgZm91bmQgaW4gVFAtTGluaworICBkZXZpY2VzIHdpdGggYSBjdXN0b20gU2FmZUxvYWRlciBi
+b290bG9hZGVyLiBMYXRlciBpdCB3YXMgYWRhcHRlZCB0bworICBDRkUgYW5kIFUtQm9vdCBib290
+bG9hZGVycy4KKworICBUaGlzIGJpbmRpbmcgZGVzY3JpYmVzIHBhcnRpdGlvbmluZyBtZXRob2Qg
+YW5kIGRlZmluZXMgb2Zmc2V0IG9mIEFTQ0lJCisgIGJhc2VkIHBhcnRpdGlvbnMgdGFibGUuIFRo
+YXQgb2Zmc2V0IGlzIHBpY2tlZCBhdCBtYW51ZmFjdHVyaW5nIHByb2Nlc3MKKyAgYW5kIGRvZXNu
+J3QgY2hhbmdlLgorCittYWludGFpbmVyczoKKyAgLSBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1p
+bGVja2kucGw+CisKK3Byb3BlcnRpZXM6CisgIGNvbXBhdGlibGU6CisgICAgY29uc3Q6IHRwbGlu
+ayxzYWZlbG9hZGVyLXBhcnRpdGlvbnMKKworICBwYXJ0aXRpb25zLXRhYmxlLW9mZnNldDoKKyAg
+ICBkZXNjcmlwdGlvbjogRmxhc2ggb2Zmc2V0IG9mIHBhcnRpdGlvbnMgdGFibGUKKyAgICAkcmVm
+OiAiL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyIgorCityZXF1aXJlZDoK
+KyAgLSBwYXJ0aXRpb25zLXRhYmxlLW9mZnNldAorCithZGRpdGlvbmFsUHJvcGVydGllczogZmFs
+c2UKKworZXhhbXBsZXM6CisgIC0gfAorICAgIHBhcnRpdGlvbnMgeworICAgICAgICBjb21wYXRp
+YmxlID0gInRwbGluayxzYWZlbG9hZGVyLXBhcnRpdGlvbnMiOworICAgICAgICBwYXJ0aXRpb25z
+LXRhYmxlLW9mZnNldCA9IDwweDEwMDAwMD47CisgICAgfTsKLS0gCjIuMzQuMQoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
