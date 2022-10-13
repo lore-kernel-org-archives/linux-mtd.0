@@ -4,43 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 727D0C433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Oct 2022 11:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B8D8C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Oct 2022 12:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NiAUkYV9qIJTwfYiva4Pplt+TEsJOW8896igQySf7Is=; b=2N9wMPDYbz0YKflcyLzxAD3uAl
-	2/nllU7HvJZGqmjkOSNUZMHEby5Ou7yPalQq06Yh056wQ26Z5iAuVOL55Zjeyiwkd3o8AHeFoOvz+
-	7kqXJwyMpUIelCuchlaogX+kLaqb3s4gU/PT4o0Cg0Uk7oz3qrsJpUA75tLQ55BnE51Vb/kxY8jCK
-	MMiE1BimVN4+maCx+oNb3WRfhCAZQHfK4+pO6BAUhNm+X1qL6CM8e3QObyM8sNknAzbMcf2PSSZer
-	6I+Jz5AjGwuWNpX9WagJjIkDuFUsSAxZ+EIC+CfjHfITaPbyrJJekXLpWcf32eZ7vc+8gnmftwvVZ
-	djGoKSsg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=WZ8XM9NLQQb4UVJBTHocMozTY4QGc3gJbAvGNea/IY0=; b=EMZxlyAfDmIaJg
+	i6bvBCSA/f3VU0wFwQUydj5vwltdDBYSYyyljvdFyvOO6dr4Vjfvb7LVE1DO7H7UNZ10WMp39mXuo
+	0Z4BR5xhWllKPQ5rF77qObtRWYl01CEEGgL3ura0JCo2se2hfKEJEOR4UoBA6qsuEY1LZ9BxGrNZc
+	jW7AqHlGH3wR2WGVAlfGxPj3XxxBq7KpGVTQpJNROH5tBXvfeLGXEpVI4HIKQhKdCyGNe4MCYe5WW
+	49q6bBGbR9WacufzMhod3ENGj6H97FkYHgx++bY57xgWk1LTv/JPno7IMly2J57McGAzTdXF8rvLP
+	7eLZFcDAkOPfzeYUEuhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oiwaH-00BZmF-QK; Thu, 13 Oct 2022 11:41:05 +0000
-Received: from mail.sf-mail.de ([2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
+	id 1oiwvj-00BctK-Dv; Thu, 13 Oct 2022 12:03:15 +0000
+Received: from smtp2.axis.com ([195.60.68.18])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oiwa6-00BZeT-Mq
-	for linux-mtd@lists.infradead.org; Thu, 13 Oct 2022 11:40:56 +0000
-Received: (qmail 12515 invoked from network); 13 Oct 2022 11:40:25 -0000
-Received: from p200300cf070ada0076d435fffeb7be92.dip0.t-ipconnect.de ([2003:cf:70a:da00:76d4:35ff:feb7:be92]:49034 HELO eto.sf-tec.de) (auth=eike@sf-mail.de)
-	by mail.sf-mail.de (Qsmtpd 0.38dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
-	for <fw@strlen.de>; Thu, 13 Oct 2022 13:40:25 +0200
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-To: Florian Westphal <fw@strlen.de>
-Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev, "Jason A. Donenfeld" <Jason@zx2c4.com>, Andrew Morton <akpm@linux-foundation.org>, Florian Westphal <fw@strlen.de>, Herbert Xu <herbert@gondor.apana.org.au>, Thomas Graf <tgraf@suug.ch>, kasan-dev@googlegroups.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v6 5/7] treewide: use get_random_u32() when possible
-Date: Thu, 13 Oct 2022 13:40:40 +0200
-Message-ID: <11986571.xaOnivgMc4@eto.sf-tec.de>
-In-Reply-To: <20221013101635.GB11818@breakpoint.cc>
-References: <20221010230613.1076905-1-Jason@zx2c4.com> <3026360.ZldQQBzMgz@eto.sf-tec.de> <20221013101635.GB11818@breakpoint.cc>
+	id 1oiwvg-00Bcrv-CX
+	for linux-mtd@lists.infradead.org; Thu, 13 Oct 2022 12:03:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1665662593;
+  x=1697198593;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1MGxMelD5CFcZq+j5DA3eIwTyqIy+c7LP8tUQGlyWSY=;
+  b=haFEDWz2M0PyV/6bgh1ZuHWawtrW90XvFZCrpwy01UTTUbdqWxJ7jgS2
+   4O0/lfnHUzX/AOIrWF8agJ3N2SRbSVNzAFBF0hzjMdndA4Is7PGYoheUN
+   Bc58ICvOOSJ4QpLdSRkE1WUvVsnr2CrXhzzMtM/m0G8HgSiIaT6cIMLlZ
+   Gc8Uwz1kP9A+c86SWS4m3mmApUhHr2hSy4mzEgGeUkizVHSCVwmJf4Qek
+   wUpjHdAJLGPIvlEuVWpTDa+VIJRAX62/CxecpEF3UJKFfigi1/9rZWH+d
+   Qec+VXbGthR2U2Ya9ipGKZ7hIsrXvQsgxNXO6cq8OEis7CbqpoN1H0zm9
+   Q==;
+From: =?UTF-8?q?M=C3=A5rten=20Lindahl?= <marten.lindahl@axis.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
+	<vigneshr@ti.com>
+CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+	<kernel@axis.com>, =?UTF-8?q?M=C3=A5rten=20Lindahl?=
+	<marten.lindahl@axis.com>
+Subject: [PATCH] ubi: block: Reduce warning print to info for static volumes
+Date: Thu, 13 Oct 2022 14:02:49 +0200
+Message-ID: <20221013120249.738375-1-marten.lindahl@axis.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221013_044055_082806_6B41BA0D 
-X-CRM114-Status: GOOD (  11.23  )
+X-CRM114-CacheID: sfid-20221013_050312_915899_57E414C8 
+X-CRM114-Status: UNSURE (   9.82  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -52,67 +64,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6744168608569437141=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============6744168608569437141==
-Content-Type: multipart/signed; boundary="nextPart22512332.f9tG50R4rC"; micalg="pgp-sha1"; protocol="application/pgp-signature"
-
---nextPart22512332.f9tG50R4rC
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-To: Florian Westphal <fw@strlen.de>
-Date: Thu, 13 Oct 2022 13:40:40 +0200
-Message-ID: <11986571.xaOnivgMc4@eto.sf-tec.de>
-In-Reply-To: <20221013101635.GB11818@breakpoint.cc>
-MIME-Version: 1.0
-
-Am Donnerstag, 13. Oktober 2022, 12:16:35 CEST schrieb Florian Westphal:
-> Rolf Eike Beer <eike-kernel@sf-tec.de> wrote:
-> > Florian, can you comment and maybe fix it?
-> 
-> Can't comment, do not remember -- this was 5 years ago.
-> 
-> > Or you wanted to move the variable before the loop and keep the random
-> > state between the loops and only reseed when all '1' bits have been
-> > consumed.
-> Probably.  No clue, best to NOT change it to not block Jasons series and
-> then just simplify this and remove all the useless shifts.
-
-Sure. Jason, just in case you are going to do a v7 this could move to u8 then.
-
---nextPart22512332.f9tG50R4rC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCY0f5OAAKCRBcpIk+abn8
-TncNAKCia3h4AG/9IzqybWbLcwE6uVgTqACfRr3dPUK8JMrKIqGzYOiL96isZhg=
-=zppL
------END PGP SIGNATURE-----
-
---nextPart22512332.f9tG50R4rC--
-
-
-
-
-
---===============6744168608569437141==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6744168608569437141==--
-
-
-
-
+SWYgdm9sdW1lIHNpemUgaXMgbm90IG11bHRpcGxlIG9mIHRoZSBzZWN0b3Igc2l6ZSA1MTIgYSB3
+YXJuaW5nIGlzCnByaW50ZWQgc2F5aW5nIHRoYXQgdGhlIGxhc3Qgbm9uLXNlY3RvciBhbGlnbmVk
+IGJ5dGVzIHdpbGwgYmUgaWdub3JlZC4KClRoaXMgc2hvdWxkIGJlIHZhbGlkIGZvciByZXNpemFi
+bGUgdm9sdW1lcywgYnV0IHdoZW4gY3JlYXRpbmcgc3RhdGljCnZvbHVtZXMgd2hpY2ggYXJlIHJl
+YWQgb25seSB0aGlzIHdpbGwgYWx3YXlzIGJlIHByaW50ZWQgZXZlbiBpZiB0aGUKdW5hbGlnbmVk
+IGRhdGEgaXMgZGVsaWJlcmF0ZS4KClRoZSBtZXNzYWdlIGlzIHN0aWxsIHZhbGlkIGJ1dCB0aGUg
+c2V2ZXJpdHkgc2hvdWxkIGJlIGxvd2VyZWQgZm9yIHN0YXRpYwp2b2x1bWVzLgoKU2lnbmVkLW9m
+Zi1ieTogTcOlcnRlbiBMaW5kYWhsIDxtYXJ0ZW4ubGluZGFobEBheGlzLmNvbT4KLS0tCiBkcml2
+ZXJzL210ZC91YmkvYmxvY2suYyB8IDkgKysrKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgNiBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9i
+bG9jay5jIGIvZHJpdmVycy9tdGQvdWJpL2Jsb2NrLmMKaW5kZXggNGNmNjdhMmEwZDA0Li5kZmNi
+OTQ3ZmJmYzYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3ViaS9ibG9jay5jCisrKyBiL2RyaXZl
+cnMvbXRkL3ViaS9ibG9jay5jCkBAIC0zNTQsOSArMzU0LDEyIEBAIHN0YXRpYyBpbnQgY2FsY19k
+aXNrX2NhcGFjaXR5KHN0cnVjdCB1Ymlfdm9sdW1lX2luZm8gKnZpLCB1NjQgKmRpc2tfY2FwYWNp
+dHkpCiAJdTY0IHNpemUgPSB2aS0+dXNlZF9ieXRlcyA+PiA5OwogCiAJaWYgKHZpLT51c2VkX2J5
+dGVzICUgNTEyKSB7Ci0JCXByX3dhcm4oIlVCSTogYmxvY2s6IHZvbHVtZSBzaXplIGlzIG5vdCBh
+IG11bHRpcGxlIG9mIDUxMiwgIgotCQkJImxhc3QgJWxsdSBieXRlcyBhcmUgaWdub3JlZCFcbiIs
+Ci0JCQl2aS0+dXNlZF9ieXRlcyAtIChzaXplIDw8IDkpKTsKKwkJaWYgKHZpLT52b2xfdHlwZSA9
+PSBVQklfRFlOQU1JQ19WT0xVTUUpCisJCQlwcl93YXJuKCJVQkk6IGJsb2NrOiB2b2x1bWUgc2l6
+ZSBpcyBub3QgYSBtdWx0aXBsZSBvZiA1MTIsIGxhc3QgJWxsdSBieXRlcyBhcmUgaWdub3JlZCFc
+biIsCisJCQkJdmktPnVzZWRfYnl0ZXMgLSAoc2l6ZSA8PCA5KSk7CisJCWVsc2UKKwkJCXByX2lu
+Zm8oIlVCSTogYmxvY2s6IHZvbHVtZSBzaXplIGlzIG5vdCBhIG11bHRpcGxlIG9mIDUxMiwgbGFz
+dCAlbGx1IGJ5dGVzIGFyZSBpZ25vcmVkIVxuIiwKKwkJCQl2aS0+dXNlZF9ieXRlcyAtIChzaXpl
+IDw8IDkpKTsKIAl9CiAKIAlpZiAoKHNlY3Rvcl90KXNpemUgIT0gc2l6ZSkKLS0gCjIuMzAuMgoK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
