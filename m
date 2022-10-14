@@ -4,49 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 868EBC4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Oct 2022 08:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A445C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Oct 2022 21:17:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qFJpZNQ97QU21oJMLjD30LFWJS9izGqG1ZPAkdYzSYc=; b=UK7beySV4C+hk2
-	VMra0o8nAobz2AXMxLCbYti9Dc7sFqS3XEzHYze92ZV4Zhf7z7tc2LvMldgh2EjR8sZ0aI/NSSLCA
-	IltDDxWvOPNrVXDxmm3MEUPneUmMq57xp1SvaoZC3p0Cfcqhu0PewsLgndATTZSHYFzJhbNDrVDba
-	i05tEJcH5jPsWlmQejK3AcQL9X1fQuVxUbSuQy6ioRHzQc0R1YWJii7Gah5tQWErkC9azMBKR4XXH
-	tKa5l1ypJnrJmxFD0xChXBNnx8BmE9hTK0BB4PKDX62m9fFTF76giUTO5E+9sgZOgl2tPpZpoAHAe
-	VGtu7e8n0DSUkUc8aPvA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=t0GJLD+bVbQf5eBmoGy7FOGMSW5khAlBRGmVCoU8Yd8=; b=gPkBbotWbGl3+r
+	qDx1YWWEscCv0l00aAqWvbEdC9hg1aq3HiUaFJzFra8ow7t6Gsyat1caISLfgG/KCahpoHpd9ovsw
+	q4EpJPkZhTD6eTXVBvIwHCUqP0rK2G3llNmQiaZ7CgSFQ07Tf7gIBwN0AWXbS6KtZyD3YS8++T1IO
+	25X+R3Z869S22QFaXwPZ40LA+MEpGe6qUPd9PrkzrVR3NpYNSES6TRsblZ3O9jTg66XSgV8vDUcCE
+	ksaIOAIAdCuHCsIkRBVydSfG7uCFaT6bU28jHm6bV//44sVX0y7iEIr2Gre/sxRZPMsWmLUuUfU63
+	XYcsIVEVgKlCELfPFu3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ojFeF-00Dzbz-0s; Fri, 14 Oct 2022 08:02:27 +0000
-Received: from mail.fadrush.pl ([54.37.225.211])
+	id 1ojS3f-00FySl-CX; Fri, 14 Oct 2022 21:17:31 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ojFeB-00Dzb0-V3
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2022 08:02:25 +0000
-Received: by mail.fadrush.pl (Postfix, from userid 1002)
-	id AF42B23502; Fri, 14 Oct 2022 08:01:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fadrush.pl; s=mail;
-	t=1665734537; bh=bD6j9gIFU6CLTaCGl0Ow9oeIxtirvTfMeNZSfLEZQ+I=;
-	h=Date:From:To:Subject:From;
-	b=TuJ/PKausY/+FnsCmfXl+zIiC7R1uFnAq35yy87likGx7Kt2OFDJ0u3hQgfNG0RTJ
-	 0gqpE45IHwTGmPPp2Fo499ijf0M45eea0eOKsZCPUGcukh5eLVNw7k1RhMarfVIG5R
-	 WJFreCaXmq4pgRorKR/5gfAwsAu2UUWdaO9wJRN7qcWCCAGH2IrUc3PeVRQ7dbT9UL
-	 CnGSYKByYWHZqf1wrj3RKObPG4eJpkhS8AfQ1KGqkXLoZ5aKpOLk/AqVG2TxW0Zwa2
-	 o5etlWnBgcMl8BuiTTV4uJk+2yJdt5uaQ5Ug2E0+974qKQLGWvLz1CWXUfOlX/yXtx
-	 yBNN8trepcJdw==
-Received: by mail.fadrush.pl for <linux-mtd@lists.infradead.org>; Fri, 14 Oct 2022 08:00:54 GMT
-Message-ID: <20221014064500-0.1.28.m88h.0.i5iwpkli09@fadrush.pl>
-Date: Fri, 14 Oct 2022 08:00:54 GMT
-From: "Jakub Olejniczak" <jakub.olejniczak@fadrush.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?Q?Zwi=C4=99kszenie_p=C5=82ynno=C5=9Bci_finansowej?=
-X-Mailer: mail.fadrush.pl
+	id 1ojS3a-00FyOY-2L
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2022 21:17:28 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id AA050642172D;
+	Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id 8P4rzkYpvGek; Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 55CDA642172E;
+	Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 3J7kKppmRros; Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 37D7B642172D;
+	Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
+Date: Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1135185122.30714.1665782233107.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UBI and UBIFS updates for 6.1-rc1
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Index: FAGGPxqkkN+sUwYBp4ISK0M1p6fJaQ==
+Thread-Topic: UBI and UBIFS updates for 6.1-rc1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221014_010224_149612_7DF2F5FF 
-X-CRM114-Status: UNSURE (   1.42  )
+X-CRM114-CacheID: sfid-20221014_141726_437580_D7B7EAC8 
+X-CRM114-Status: UNSURE (   6.71  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -59,23 +67,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKa29udGFrdHVqxJkgc2nEmSB6IFBhxYRzdHdlbSwgcG9uaWV3YcW8IGNo
-Y2lhxYJieW0gemFwcm9wb25vd2HEhyB3eWdvZG5lIHJvendpxIV6YW5pZSwga3TDs3JlIHVtb8W8
-bGl3aSBQYcWEc3R3YSBmaXJtaWUgc3RhYmlsbnkgcm96d8Ozai4gCgpLb25rdXJlbmN5am5lIG90
-b2N6ZW5pZSB3eW1hZ2EgY2nEhWfFgmVnbyB1bGVwc3phbmlhIGkgcG9zemVyemVuaWEgb2ZlcnR5
-LCBjbyB6IGtvbGVpIHdpxIXFvGUgc2nEmSB6IGtvbmllY3pub8WbY2nEhSBpbndlc3Rvd2FuaWEu
-IEJyYWsgb2Rwb3dpZWRuaWVnbyBrYXBpdGHFgnUgcG93YcW8bmllIG9ncmFuaWN6YSB0ZW1wbyBy
-b3p3b2p1IGZpcm15LgoKT2Qgd2llbHUgbGF0IHogcG93b2R6ZW5pZW0gcG9tYWdhbSBmaXJtb20g
-dyB1enlza2FuaXUgbmFqbGVwc3plaiBmb3JteSBmaW5hbnNvd2FuaWEgeiBiYW5rdSBvcmF6IFVF
-LiBNYW0gc3RhxYJ5Y2ggS2xpZW50w7N3LCBrdMOzcnp5IG5hZGFsIGNoxJl0bmllIGtvcnp5c3Rh
-asSFIHogbW9pY2ggdXPFgnVnLCBhIHRha8W8ZSBwb2xlY2FqxIUgamUgaW5ueW0uCgpDenkgY2hj
-aWVsaWJ5IFBhxYRzdHdvIHNrb3J6eXN0YcSHIHogcG9tb2N5IHd5a3dhbGlmaWtvd2FuZWdvIGkg
-ZG/Fm3dpYWRjem9uZWdvIGRvcmFkY3kgZmluYW5zb3dlZ28/CgoKUG96ZHJhd2lhbQpKYWt1YiBP
-bGVqbmljemFrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Linus,
+
+The following changes since commit 521a547ced6477c54b4b0cc206000406c221b4d6:
+
+  Linux 6.0-rc6 (2022-09-18 13:44:14 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-6.1-rc1
+
+for you to fetch changes up to 669d204469c46e91d99da24914130f78277a71d3:
+
+  ubi: fastmap: Add fastmap control support for 'UBI_IOCATT' ioctl (2022-09-21 18:29:18 +0200)
+
+----------------------------------------------------------------
+This pull request contains updates for UBI and UBIFS
+
+UBI:
+	- Use bitmap API to allocate bitmaps
+	- New attach mode, disable_fm, to attach without fastmap
+        - Fixes for various typos in comments
+
+UBIFS:
+	- Fix for a deadlock when setting xattrs for encrypted file
+	- Fix for an assertion failures when truncating encrypted files
+        - Fixes for various typos in comments
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      ubi: fastmap: Use the bitmap API to allocate bitmaps
+
+Jason Wang (1):
+      ubi: ubi-media.h: Fix comment typo
+
+Jiang Jian (1):
+      mtd: ubi: drop unexpected word 'a' in comments
+
+Jilin Yuan (1):
+      ubi: Fix repeated words in comments
+
+Julia Lawall (1):
+      ubi: block: Fix typos in comments
+
+Li zeming (1):
+      ubi: block: Remove in vain semicolon
+
+Yang Li (1):
+      ubifs: Fix ubifs_check_dir_empty() kernel-doc comment
+
+Zhang Jiaming (1):
+      ubi: fastmap: Fix typo in comments
+
+ZhaoLong Wang (1):
+      ubifs: Fix UBIFS ro fail due to truncate in the encrypted directory
+
+Zhihao Cheng (2):
+      ubifs: Fix AA deadlock when setting xattr for encrypted file
+      ubi: fastmap: Add fastmap control support for 'UBI_IOCATT' ioctl
+
+ drivers/mtd/ubi/block.c     |  4 ++--
+ drivers/mtd/ubi/build.c     | 14 ++++++++++----
+ drivers/mtd/ubi/cdev.c      |  4 ++--
+ drivers/mtd/ubi/eba.c       |  2 +-
+ drivers/mtd/ubi/fastmap.c   | 10 ++++------
+ drivers/mtd/ubi/io.c        |  2 +-
+ drivers/mtd/ubi/ubi-media.h |  2 +-
+ drivers/mtd/ubi/ubi.h       |  9 +++++----
+ drivers/mtd/ubi/vmt.c       |  4 ++--
+ drivers/mtd/ubi/wl.c        |  8 ++++----
+ fs/ubifs/crypto.c           | 11 +++++++++++
+ fs/ubifs/dir.c              | 27 +++++++++++++++------------
+ fs/ubifs/journal.c          | 28 +++++++++++++++++-----------
+ fs/ubifs/ubifs.h            |  2 +-
+ fs/ubifs/xattr.c            |  2 +-
+ include/uapi/mtd/ubi-user.h |  8 +++++++-
+ 16 files changed, 84 insertions(+), 53 deletions(-)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
