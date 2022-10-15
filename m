@@ -4,57 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A445C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Oct 2022 21:17:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96915C4332F
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Oct 2022 01:28:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=t0GJLD+bVbQf5eBmoGy7FOGMSW5khAlBRGmVCoU8Yd8=; b=gPkBbotWbGl3+r
-	qDx1YWWEscCv0l00aAqWvbEdC9hg1aq3HiUaFJzFra8ow7t6Gsyat1caISLfgG/KCahpoHpd9ovsw
-	q4EpJPkZhTD6eTXVBvIwHCUqP0rK2G3llNmQiaZ7CgSFQ07Tf7gIBwN0AWXbS6KtZyD3YS8++T1IO
-	25X+R3Z869S22QFaXwPZ40LA+MEpGe6qUPd9PrkzrVR3NpYNSES6TRsblZ3O9jTg66XSgV8vDUcCE
-	ksaIOAIAdCuHCsIkRBVydSfG7uCFaT6bU28jHm6bV//44sVX0y7iEIr2Gre/sxRZPMsWmLUuUfU63
-	XYcsIVEVgKlCELfPFu3Q==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=BK56z3umpiyQQaQdmNUBGDsV8mdExyigzK0Cv3HSxAU=; b=Ux7KaKoP1irrfy
+	CWiHdLPhKAxuV3Ya3vK+fOkpOMFs+69/pOu8r3tL+iItSpYc/Z+xfGgxydaBc1ON0s81IZp+wmh5g
+	Z8iT+3hgtEL5Lyi09BCaNe3PBg25RWQigh4SzAH4/w+bhUohPyS2AZrZs51je6aHMDYo0e4RDV+vN
+	aJNQScRpY5i6eWIOQf8jXz6ulFTh1JNKjj5rljcYDDDe0JK5b5OmJ2qZNi9U1+4G/mNKQiM4pUSDj
+	S4YU7XlFGFTCSKRgn9ralxIccukhos0kYhdY3BZ+a9zQOwfNiVIbSipCwybjQ8UnlbO2pcW+hn2xK
+	qh8kDe7xnwjLjGOb0LXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ojS3f-00FySl-CX; Fri, 14 Oct 2022 21:17:31 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1ojVx1-00GGVh-W9; Sat, 15 Oct 2022 01:26:56 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ojS3a-00FyOY-2L
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2022 21:17:28 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id AA050642172D;
-	Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id 8P4rzkYpvGek; Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 55CDA642172E;
-	Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 3J7kKppmRros; Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 37D7B642172D;
-	Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
-Date: Fri, 14 Oct 2022 23:17:13 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1135185122.30714.1665782233107.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UBI and UBIFS updates for 6.1-rc1
-MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Index: FAGGPxqkkN+sUwYBp4ISK0M1p6fJaQ==
-Thread-Topic: UBI and UBIFS updates for 6.1-rc1
+	id 1ojVwz-00GGTr-0O
+	for linux-mtd@lists.infradead.org; Sat, 15 Oct 2022 01:26:54 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 7D04ACE26A5;
+	Sat, 15 Oct 2022 01:26:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E7CF2C433C1;
+	Sat, 15 Oct 2022 01:26:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1665797202;
+	bh=GVMP4r2Hfa9BV2HDkorX+mxl6yljcepM4oHHjUdD28c=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=DucsxmIhZg9fiS7EdA7CqieRsUfncznrtMaNJmYCGLun58+0O5vqTu3A3hut7d6j+
+	 OaAqrX+lq5PjGyNlIiq+2Aty3PzENdKFTGDu59uZtS6mYAQ6agj8QiQadiGtpf2R0B
+	 Ud+nkP0125uyZyVPjM8fwIsEhzW29yqZ/FM7Vl87MVS/kr/GLF5tE+UsO95M9Wi65t
+	 bck4gvH9vWAJ/DP/b4akYMfmiV3IA4Zznz18WRBGib+nsHqZgrTdFgutqyaDHONnKL
+	 IAf4H6BbkqSCdj5AOwRQDj3s/5mkFKKncGSyFf3QDxvvSydBHu/S5+BqsUxxii0NNU
+	 UeATtdOJ7YApw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D477EE4D00A;
+	Sat, 15 Oct 2022 01:26:42 +0000 (UTC)
+Subject: Re: [GIT PULL] UBI and UBIFS updates for 6.1-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1135185122.30714.1665782233107.JavaMail.zimbra@nod.at>
+References: <1135185122.30714.1665782233107.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <1135185122.30714.1665782233107.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-6.1-rc1
+X-PR-Tracked-Commit-Id: 669d204469c46e91d99da24914130f78277a71d3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b7cef0d21c379669c9f620c9692b5c7c885a6311
+Message-Id: <166579720286.30479.2326196270255262901.pr-tracker-bot@kernel.org>
+Date: Sat, 15 Oct 2022 01:26:42 +0000
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>, linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221014_141726_437580_D7B7EAC8 
-X-CRM114-Status: UNSURE (   6.71  )
+X-CRM114-CacheID: sfid-20221014_182653_242697_98ED16CA 
+X-CRM114-Status: UNSURE (   4.89  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -67,87 +75,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Linus,
+The pull request you sent on Fri, 14 Oct 2022 23:17:13 +0200 (CEST):
 
-The following changes since commit 521a547ced6477c54b4b0cc206000406c221b4d6:
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-6.1-rc1
 
-  Linux 6.0-rc6 (2022-09-18 13:44:14 -0700)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b7cef0d21c379669c9f620c9692b5c7c885a6311
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-6.1-rc1
-
-for you to fetch changes up to 669d204469c46e91d99da24914130f78277a71d3:
-
-  ubi: fastmap: Add fastmap control support for 'UBI_IOCATT' ioctl (2022-09-21 18:29:18 +0200)
-
-----------------------------------------------------------------
-This pull request contains updates for UBI and UBIFS
-
-UBI:
-	- Use bitmap API to allocate bitmaps
-	- New attach mode, disable_fm, to attach without fastmap
-        - Fixes for various typos in comments
-
-UBIFS:
-	- Fix for a deadlock when setting xattrs for encrypted file
-	- Fix for an assertion failures when truncating encrypted files
-        - Fixes for various typos in comments
-
-----------------------------------------------------------------
-Christophe JAILLET (1):
-      ubi: fastmap: Use the bitmap API to allocate bitmaps
-
-Jason Wang (1):
-      ubi: ubi-media.h: Fix comment typo
-
-Jiang Jian (1):
-      mtd: ubi: drop unexpected word 'a' in comments
-
-Jilin Yuan (1):
-      ubi: Fix repeated words in comments
-
-Julia Lawall (1):
-      ubi: block: Fix typos in comments
-
-Li zeming (1):
-      ubi: block: Remove in vain semicolon
-
-Yang Li (1):
-      ubifs: Fix ubifs_check_dir_empty() kernel-doc comment
-
-Zhang Jiaming (1):
-      ubi: fastmap: Fix typo in comments
-
-ZhaoLong Wang (1):
-      ubifs: Fix UBIFS ro fail due to truncate in the encrypted directory
-
-Zhihao Cheng (2):
-      ubifs: Fix AA deadlock when setting xattr for encrypted file
-      ubi: fastmap: Add fastmap control support for 'UBI_IOCATT' ioctl
-
- drivers/mtd/ubi/block.c     |  4 ++--
- drivers/mtd/ubi/build.c     | 14 ++++++++++----
- drivers/mtd/ubi/cdev.c      |  4 ++--
- drivers/mtd/ubi/eba.c       |  2 +-
- drivers/mtd/ubi/fastmap.c   | 10 ++++------
- drivers/mtd/ubi/io.c        |  2 +-
- drivers/mtd/ubi/ubi-media.h |  2 +-
- drivers/mtd/ubi/ubi.h       |  9 +++++----
- drivers/mtd/ubi/vmt.c       |  4 ++--
- drivers/mtd/ubi/wl.c        |  8 ++++----
- fs/ubifs/crypto.c           | 11 +++++++++++
- fs/ubifs/dir.c              | 27 +++++++++++++++------------
- fs/ubifs/journal.c          | 28 +++++++++++++++++-----------
- fs/ubifs/ubifs.h            |  2 +-
- fs/ubifs/xattr.c            |  2 +-
- include/uapi/mtd/ubi-user.h |  8 +++++++-
- 16 files changed, 84 insertions(+), 53 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
