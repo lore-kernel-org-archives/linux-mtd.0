@@ -4,63 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8C14C433FE
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Oct 2022 09:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB04BC433FE
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Oct 2022 09:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
+	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1RLfBazvwUTQnt/2Wn0P/aBaBThAmtRCNt243tTtqho=; b=whaQO4DSmpcquK
-	yx4787VtGYFZtjw3SwHez1H2TcoPoLRTeGT5Cm584FIpndCi9DeAE9SN4dgjzTgT11+AM9+QOs9AT
-	O2NeCnYWKpbMGwULYq5W3oLpnIqAvLYpvg7IGYRYJyPSfBo2qC/AYf10qjXC02WdNHRIvoA/Tpvhj
-	F9HORGvC2hKwVEGxUnuf3vLy/dlw5x4gMbODVCCFz6W2b0k+RBVftBNRfaJgdwFNlAjoWXWTERDLT
-	/3zH1zqiRUPliIUc1YfV37beassSRoE8ZyPtr5kpe6yV5zzCb6Tw7gsDVx+uWRBz2zlqOOLS3oFVh
-	JMNg8bRQMwtfAr3a6tIg==;
+	List-Owner; bh=jESTHwgR7otku1xgPdFPSBdYT0hd49ldS1Rp7jal4Eg=; b=jMNu5O1mbRNbw+
+	FPGZncS78h2gmBRt3EvXAC+yIq01Y+tn2VQ5lZgQfXK0l3KjJqvJk/57ADOPMHjeOwoG/EY9VxYNl
+	pXuEKJaLwQIrRFhbBKl9kn851G9jNrZS5ZeRRFGetAye+5yM8UqzD5s4ZelAO57GD+bgFWkKFNQOW
+	k8+3L9Kn9buNyHw9ua6bwGUSHuM9HTCW5ZAH5j3Y+DCjVOl1FgForz5a0FNmbax4WNH5x98Id97KM
+	zgfI2mk8l74iE1P2h/4r1j02HpmIH40/HRO5KJojM4XJgX2+w9x/URq3CymwanZvmrnSukoAlkoTs
+	FP134NWQF8s/MbhpOK3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1okiX6-004goz-90; Tue, 18 Oct 2022 09:05:08 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1okicz-004lKd-Vq; Tue, 18 Oct 2022 09:11:14 +0000
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1okiWW-004gJk-DK
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2022 09:04:34 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 0DA6660004;
-	Tue, 18 Oct 2022 09:04:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1666083868;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RL6Pm1PtqnVst262VMQ9ziU0/oxy9Za+p2F3nlrAD18=;
-	b=STdvyZIjCcaUjwvKJjxQS/ON3ZGJa05Wco8/7zUFV8AbdhWUDDLBh3VZJCOeNrVSTnHPF7
-	iTiQrLlEsNN62pcD2oiRd9HPZXN9k/B6LfSRRFJ3Ov102WDXSAlF2agjan0Q7ZLLZhWsns
-	paM6bxGLTKtLP7Rah7Edt0KEfsytxyv+9MmdyNIRIXB+DOy0IEMJ8rMuZWudNWdsZ9gM1Z
-	dyTTedX2AJW5ZaVVoCyQJobKCsIXUTPMz5In/taKHI1S/gcJfUlnsvYiAVbx4/lECRRTc2
-	X2+34cB5bMoI+ibMWGkwi3QjJQRPu7ScJbjwm2KPpRQ0suRfOgQTZCOwPZr6PA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Liang Yang <liang.yang@amlogic.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: rectify entry for MESON NAND CONTROLLER DRIVER FOR AMLOGIC SOCS
-Date: Tue, 18 Oct 2022 11:04:26 +0200
-Message-Id: <20221018090426.466380-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220929123431.23180-1-lukas.bulwahn@gmail.com>
-References: 
-MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'd4353decd4fdec71b9f9d1ba8fa85b7e595e8924'
+	id 1okicw-004lIU-Rk
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2022 09:11:12 +0000
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id F32743200684;
+	Tue, 18 Oct 2022 05:11:05 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute3.internal (MEProxy); Tue, 18 Oct 2022 05:11:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to; s=fm2; t=1666084265; x=1666170665; bh=zEHChB0LmL
+	MBPn9S9m0u8nEOfYBoIQc5093f5offAtU=; b=LxshcGnGzz8JMETOIsDyMJHJyy
+	k0uAz4qi+TZNo1ZnCl4EvTN5M38Cj+uQYD2sjcQ1OFxE6hiAQw7zNAxL1UXQxH9R
+	Uj4nfMV+RYs6ktbugsHd77DMwLAH1BG7G6Wt34FZ3tHWvg5aZYPtIZWxJRM+lUwR
+	dt+Rm3v6NJU/dgqorSVhH92Wl9z+3zYWZFZOtp9vRQ1ZM+uBIvAx0Xf/39tH0cCM
+	vNxpjLG97U7y7euhIQS9+RjeVUPSt/74/fch6q3tMQnpwMahsE2935fBIV5AliYd
+	bBFYcCujwBwVQVOI77SN5nLpAfEFKlUe/abDZl7zaQpXL6qCyJMNVLzjPUpg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:sender:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1666084265; x=1666170665; bh=zEHChB0LmLMBPn9S9m0u8nEOfYBo
+	IQc5093f5offAtU=; b=TWXjbifFcKUpRIUcgUekeVUWtAY1W8Jrxu9LrEKv5JCr
+	H9yIILLVIesSj2u/vrN79F61aS6pRfQuuF+H+0CO35EMFNw1rUWEtGTZae8J3y+M
+	bXXEUjt2BP6vKuXtTXd+oxF2DOWSKrm/ZXuERVVOmbOPbbdo3BN/VGlS82VFp3ir
+	jh7F7+wJqt3p6J92Ma1BwpgFkKpQMCaneCxr0zOmNcGKEaE4Wy8FoZ3sqtUXouq9
+	nu9WruBr07Bszw4J0jWhwSWerlBmM1qG2EerzMWmI/9N/tawUeTW70+dHG6bmhP1
+	1SfwQL7ToPBS33kZS6mm2+u8jhlayuvOmXp/Yd07GA==
+X-ME-Sender: <xms:qW1OYxq_R03eesfng05qOfUMfHEoqM_UmpIvcb7ClJp_5lr8Ly6HRQ>
+    <xme:qW1OYzrWK1252kkEl5Bp3lGZCdqzAOEhi3z8g84-_isdrt8iZXhaKrfJeOU68ay4U
+    TAht9gL7W6riaLfJyM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeeluddgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepfefhtdegvdfhudetgedvkefgfeeftedvgfelgfeugeeluddvheeiveeiieeh
+    udejnecuffhomhgrihhnpedtuddrohhrghenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:qW1OY-Oq-s6-WGoYFE2X1704Mr-AHIxrM3FKAIRsnHgiSXIETlPIzQ>
+    <xmx:qW1OY84gav5new15YKUf1h2pCv4KEPWltYJlugJLRXcJdFm_IfIvPg>
+    <xmx:qW1OYw7Q1Mo4QjWYQ2AFpjqfxN1j2szcEh6zCu1bUohw8FucsrrZaQ>
+    <xmx:qW1OY-Q3K4GkmliNo7I3khyynRXEA7x9KPaSFBGYiT5iM9hvhJIctA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5358FB60086; Tue, 18 Oct 2022 05:11:05 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-1047-g9e4af4ada4-fm-20221005.001-g9e4af4ad
+Mime-Version: 1.0
+Message-Id: <8e87cd6d-fc3c-4edf-ae6e-3edc50dbd6cb@app.fastmail.com>
+In-Reply-To: <20221018090045.10268-1-vkorenblit@sequans.com>
+References: <20221018090045.10268-1-vkorenblit@sequans.com>
+Date: Tue, 18 Oct 2022 11:10:44 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Valentin Korenblit" <vkorenblit@sequans.com>,
+ linux-mtd@lists.infradead.org
+Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>, ye.xingchen@zte.com.cn
+Subject: Re: [PATCH v3] mtd: rawnand: cadence: support 64-bit slave dma interface
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221018_020432_639671_7F5C06A0 
-X-CRM114-Status: UNSURE (   6.54  )
+X-CRM114-CacheID: sfid-20221018_021111_408993_B52E70C2 
+X-CRM114-Status: UNSURE (   6.77  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,22 +102,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2022-09-29 at 12:34:31 UTC, Lukas Bulwahn wrote:
-> Commit fbc00b5e746f ("dt-bindings: nand: meson: convert txt to yaml")
-> converts amlogic,meson-nand.txt to yaml, but misses to adjust its reference
-> in MAINTAINERS.
-> 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-> broken reference.
-> 
-> Repair this file reference in MESON NAND CONTROLLER DRIVER FOR AMLOGIC
-> SOCS.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+On Tue, Oct 18, 2022, at 11:00 AM, Valentin Korenblit wrote:
+> 32-bit accesses on 64-bit sdma trigger sdma_err in intr_status register.
+>
+> Check dma capabilities before reading/writing from/to sdma interface.
+>
+> Link to discussion:
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/3NMACGIM5NDUBPXRT5RTBZON6LQE5A3B/
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Maybe make this
 
-Miquel
+Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/3NMACGIM5NDUBPXRT5RTBZON6LQE5A3B/
+
+> Signed-off-by: Valentin Korenblit <vkorenblit@sequans.com>
+
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
 ______________________________________________________
 Linux MTD discussion mailing list
