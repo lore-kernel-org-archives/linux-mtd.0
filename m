@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E44CC4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Oct 2022 09:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 752DBC4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Oct 2022 09:57:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1/NupInewrR8siMVLgRJH/FzxsFpVichJluFkK8LBz0=; b=VepEMK5kXuX2ap
-	+llqPFTKghW2tPFNfGIGYGSKRHqC6TXTpsR89T69/yOnWiAYG95GkN2nCKz6FTWrVH+ey5MH4tR3q
-	L9bm8EzfONWcNrkog9u2SQ/wUqc1/iQUawjoibRHCUQwnWfQRygMzTpAnNbpcYQsVgKLBR8zikffc
-	+OuKQE+CCjcsVFUI8HywTgyU9WTUxJpTU5AkVlLh6UEc21uBwyYpgfdjkhF2mAM0orTladqqMikgg
-	toexdLZQPBjG+ZG5q+DDni9FGYySAE//DfcfAwZpZdXrQFTZH7CCrsZU5iMYeqq1oDVnClhaPCsb9
-	dibREQcqTJzKVXfdhuBw==;
+	List-Owner; bh=hkYjFCb6PrxNxGUzg1RNDezdbU4BMjuO874XGiO+THg=; b=3W5WK1q1jRw6Hw
+	bAGtBt3axBbmovci0OKFVHsgQD5snqNWWtaI4sJS6FJtZd23Ht3bJUK4NUXORQ0nUeNdw+H9NAe6Q
+	7Vm8f5xpP5iK1LNLs1gZF9ZYUOx0g24ZKUvhrlMt/xr4OP5/Il/sxe46PmhyhEAucp+/XYCbt+5kl
+	mf5cZf1FPH2Vr1VI6y9NfvJWNbYK9vpiCl1mlVulayMruDJcqqvaIwXB4Yj0lLm8jctC5toR4RbRo
+	WZnMgVHu3L61bnB/0H8eCUsHhQ94m/0dOaHLimH72aHh0BLUukWWbcQ/wE1fOnlWjWuCjkHrr/7+X
+	Ft/gNCKFwtRs6+rBpdCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1okjLI-005PI6-1N; Tue, 18 Oct 2022 09:57:00 +0000
-Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
+	id 1okjLR-005PPK-2C; Tue, 18 Oct 2022 09:57:09 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1okjKd-005OXr-4H
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2022 09:56:20 +0000
+	id 1okjKj-005OiW-Pi
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2022 09:56:27 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 9564824000A;
-	Tue, 18 Oct 2022 09:56:13 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 9411510000E;
+	Tue, 18 Oct 2022 09:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1666086975;
+	t=1666086981;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bDvagrwwNd40Q5o2uBnuXvgnDyFVN7WFGLk79IsNyow=;
-	b=eZIaR+c78n6KsifSckfRH4rwD4d0b+KCLHb/yfY8+PksaYWiUcILVTgx9XTor5nUpAuXHl
-	VRXbyhvLNVRGoZQXx420PSUTdseIYg4Oeo45BPSae9eP2+EjjjcvGrWU86iID/fXiZULOo
-	I8Tye6YNbh6cAIduUStxSQzIXfpwyQrOaib1Ug2UaSBxr6E4YBC8HIHQ7RyZrTq5AOiTOY
-	unV4QnsByGK59ImWw3Vkto9YfYbrfI368DCas2mQhoN+T4x30e0dgFP5KXDbAitftr08sJ
-	+NeRjn52vEg97z66BL4jW27TRRZM0/0EGif9oHDQr2IBX4JbXcj1yRnT4b5g9A==
+	bh=SU/eFAg8+KBTIRwD4dYWBBPE3YjTp5i/6+7PETgyslE=;
+	b=HW2acJ8p39bUFqqRVZTj6RQpIC4AhxwqpQVzjIEbA4s/KkvvL64e1kPzOW63O7dL1pCpyR
+	qQsjmHQxgNg7kH5jm6Mf1AuvJcTx8CElFAhIHVKLxDBHYMtwd6qVLR+RAkw8mWGfseGBqW
+	Pguw612VqlqMclp26aqNyfSpI7NRqxxsAAB4mWYd8W+En/u/3IX3TJ3jyj2SFs+6C1wSJr
+	vHUJs7IRL4n7J2w0jB8mrqw3IY59stGAYB00LXm91Ukp24uaaQ578h4Wd1lyAfVfx0jAXj
+	Vg+pAeRpm4vEe2bFJcnUouuXt3NMnAGXzD2CGf/I2U/3nqx3Pb4XDypy/qraAA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Ray Zhang <sgzhang@google.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -47,18 +47,18 @@ To: Ray Zhang <sgzhang@google.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] mtd: mtdoops: panic caused mtdoops to call mtdoops_erase function immediately
-Date: Tue, 18 Oct 2022 11:56:13 +0200
-Message-Id: <20221018095613.543231-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v4 2/3] mtd: mtdoops: add mtdoops_erase function and move mtdoops_inc_counter to after it
+Date: Tue, 18 Oct 2022 11:56:18 +0200
+Message-Id: <20221018095618.543259-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221010045549.2221965-4-sgzhang@google.com>
+In-Reply-To: <20221010045549.2221965-3-sgzhang@google.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'ade5011442eb7a9fa16e548341230b326cf11a86'
+X-linux-mtd-patch-commit: b'76306951cf7314e3176099756453b055dc34a298'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221018_025619_375601_DC019132 
-X-CRM114-Status: UNSURE (   7.66  )
+X-CRM114-CacheID: sfid-20221018_025625_996773_425E7EFE 
+X-CRM114-Status: UNSURE (   6.35  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,20 +76,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2022-10-10 at 04:55:49 UTC, Ray Zhang wrote:
-> The panic function disables the local interrupts, preemption, and all
-> other processors. When the invoked mtdoops needs to erase a used page,
-> calling schedule_work() to do it will not work. Instead, just call
-> mtdoops_erase function immediately.
-> 
-> Tested:
-> ~# echo c > /proc/sysrq-trigger
-> [  171.654759] sysrq: Trigger a crash
-> [  171.658325] Kernel panic - not syncing: sysrq triggered crash
-> ......
-> [  172.406423] mtdoops: not ready 34, 35 (erase immediately)
-> [  172.432285] mtdoops: ready 34, 35
-> [  172.435633] Rebooting in 10 seconds..
+On Mon, 2022-10-10 at 04:55:48 UTC, Ray Zhang wrote:
+> Preparing for next patch with minimal code difference, add mtdoops_erase
+> function and move mtdoops_inc_counter to after it, with no functional
+> change.
 > 
 > Signed-off-by: Ray Zhang <sgzhang@google.com>
 
