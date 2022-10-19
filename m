@@ -4,75 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41C15C433FE
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Oct 2022 17:03:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A8D2C4332F
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Oct 2022 06:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zOVh08mKCY+jPSUV9TwozvB+mhppUY50x0p3HzrmDt8=; b=i74aJ0t+lWMIB5
-	f/RzT7C1D/6yknhmFQCyLwo14IDUcjdexaqmdZt/tbFU1xIZAD3fuETKX6up3DOiDQZhz9cSqmHEH
-	IGVqeoqrazKKk0ORNJkz8axCQA1N8HvCQqXdnhFm9qqTWYdmCSZabVQWfP9yHI0wc64/VaMk9uLAr
-	qf2CX9/qx72iUg0cxwHzhcSYHtD/3cOyUUSYVc/Hkz2yz4WWezI/+oDBF4wqoCTcHzCwOxt9jy6rM
-	xcCaIIvQ8N2p4CHuKAn7tuaXbK5/Ssi2pkrAGqLUkOdksTZDJYIrtfMH/vlqwNEA4rjdi6ccabU5f
-	PBgNuizTB/0yJqjSHxhw==;
+	List-Owner; bh=Kt3IqCW25wZOolZ5gFP62a7FWf9Cs63Wa7wykE2vWaM=; b=bEtJisYXBLm2Nc
+	1A0TV+634lOamO3GiiScQfVwXQ5oa9zaYifS836O9lPLpQzuY8FJtk0kvf6yZLwapaZzOfgbwwJk6
+	EGRiUxEnZz5MAf7adklgUqWPkl+2uvkHE8VZ/3j1Okphg3FIU9hvsd6HdXPboPXGJTDs58GGRV09E
+	OAHB7gj/dAvvh6Uqgpzaia88l6BIH21Le8yCw8oUBCfBJAay5wXYwbojjY/EREf79k/Dqrb0Lh7d+
+	yF0gpJpanFQ5uaie8X9wqOUYbE3UeCdVaN7pOLJrg+UOmd1QZGaRQBX/y29mVcWFfftddEJHcZgH2
+	GPN6gvNXYmYWfYIamnyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1okpz1-009EKm-8B; Tue, 18 Oct 2022 17:02:27 +0000
-Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
+	id 1ol2wa-00FrET-Vd; Wed, 19 Oct 2022 06:52:49 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1okpyx-009EHS-NR
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2022 17:02:25 +0000
-Received: by mail-ej1-x633.google.com with SMTP id d26so33809687ejc.8
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Oct 2022 10:02:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EvNFUcsg6CZf4Twcacgk4/TpKqaK+NR+PSADwLx1Qqk=;
-        b=NO9Rpc7gw8DAzJvh3gLWr8+d5iG6WcxapUthrhBuntkU2o5NzO/8iuTamVLA9MXUef
-         51252nvKL7xcVLOqjbS2w9Bb5VeQL9KTFGmb91bdUa2ErDtAZA9HN2935cd3DrnCuS8n
-         8AWDbR2NL5Uz1HOBQnVoP5KJ3aVbsnfFKLVWk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EvNFUcsg6CZf4Twcacgk4/TpKqaK+NR+PSADwLx1Qqk=;
-        b=KG+JnG4KdsyFMQny+J+q6xlv1mBRYtSwymWeWplp0uZunzAOwj8ICKv3y5UNZ+QUoX
-         6LkVsMzPkg8LMItEzKGQu3oEpi01EPy+X0sR+DjqIY/CC1p6OY9RWLuEM5U8jZ7khQgc
-         4ftpz6rgUqAoKxjaqKDW6+XmLu0tIsrUFdbl5uTNGgixXZQFVyRgxpxcM5x/xFZHQeZu
-         AmyToQQadqf48XL6fErtponjJqNTZ7JZYaI/H4vyUlIhBAPnWra0uk9oQ3Zd571YVy7c
-         pxCYaW9Ap9nxrf2+t+zbrCOuO5+DVNjsdm10Kv/ITCNcbt61vCq8uuCvenT5I2HmplFY
-         AZXw==
-X-Gm-Message-State: ACrzQf0Bm2rJEjo2k3ysQtSjJYf8buRMRKLUfFmzNW8k/2PdxHSB9wKL
-	pL4l2WCB+b+Li7JqyTo7SYj0nlETlC0OIw==
-X-Google-Smtp-Source: AMsMyM4q3YBmgS6KrU83dbcB1kBOFrQFy9UtekLB/JjiyoNbuFAncc1vBQQxAPX+fG/ip0Bf8WJ9eQ==
-X-Received: by 2002:a17:907:3ea4:b0:78e:25e2:c33b with SMTP id hs36-20020a1709073ea400b0078e25e2c33bmr3113366ejc.603.1666112538617;
-        Tue, 18 Oct 2022 10:02:18 -0700 (PDT)
-Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-95-244-101-110.retail.telecomitalia.it. [95.244.101.110])
-        by smtp.gmail.com with ESMTPSA id d7-20020aa7d687000000b004580296bb0bsm9172616edr.83.2022.10.18.10.02.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Oct 2022 10:02:17 -0700 (PDT)
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To: linux-kernel@vger.kernel.org
-Cc: michael@amarulasolutions.com,
-	Amarula patchwork <linux-amarula@amarulasolutions.com>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: drop EXPORT_SYMBOL_GPL for nanddev_erase()
-Date: Tue, 18 Oct 2022 19:02:05 +0200
-Message-Id: <20221018170205.1733958-1-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.32.0
+	id 1ol2wC-00FqH7-HC
+	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2022 06:52:26 +0000
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.54])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MshDF1WqMzJn1m;
+	Wed, 19 Oct 2022 14:49:33 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by kwepemi500012.china.huawei.com
+ (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 19 Oct
+ 2022 14:51:37 +0800
+From: Li Zetao <lizetao1@huawei.com>
+To: <dwmw2@infradead.org>, <richard@nod.at>
+CC: <lizetao1@huawei.com>, <miquel.raynal@bootlin.com>, <kernel@kempniu.pl>,
+	<tglx@cruncher.tec.linutronix.de>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH] jffs2: fix lock not released on error handling path in jffs2_flash_writev()
+Date: Wed, 19 Oct 2022 15:54:58 +0800
+Message-ID: <20221019075458.2072174-1-lizetao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500012.china.huawei.com (7.221.188.12)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221018_100223_784517_DCA00139 
-X-CRM114-Status: GOOD (  10.41  )
+X-CRM114-CacheID: sfid-20221018_235224_775545_0E95A409 
+X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,51 +66,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This function is only used within this module, so it is no longer
-necessary to use EXPORT_SYMBOL_GPL().
+When jffs2_sum_add_kvec() returns an error in jffs2_flash_writev(), the
+write lock will not be released, resulting in a deadlock.
 
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Fix it by releasing the write lock on error handling path.
+
+Fixes: dcb0932884b8 ("[JFFS2] Simplify writebuffer handling")
+Signed-off-by: Li Zetao <lizetao1@huawei.com>
 ---
+ fs/jffs2/wbuf.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
- drivers/mtd/nand/core.c  | 3 +--
- include/linux/mtd/nand.h | 1 -
- 2 files changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
-index dbd7b06524b3..7737b1a4a177 100644
---- a/drivers/mtd/nand/core.c
-+++ b/drivers/mtd/nand/core.c
-@@ -126,7 +126,7 @@ EXPORT_SYMBOL_GPL(nanddev_isreserved);
-  *
-  * Return: 0 in case of success, a negative error code otherwise.
-  */
--int nanddev_erase(struct nand_device *nand, const struct nand_pos *pos)
-+static int nanddev_erase(struct nand_device *nand, const struct nand_pos *pos)
- {
- 	if (nanddev_isbad(nand, pos) || nanddev_isreserved(nand, pos)) {
- 		pr_warn("attempt to erase a bad/reserved block @%llx\n",
-@@ -136,7 +136,6 @@ int nanddev_erase(struct nand_device *nand, const struct nand_pos *pos)
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index 4061e0ba7010..ba3e9f4ba1d8 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -903,9 +903,9 @@ int jffs2_flash_writev(struct jffs2_sb_info *c, const struct kvec *invecs,
+ 	*retlen = donelen;
  
- 	return nand->ops->erase(nand, pos);
+ 	if (jffs2_sum_active()) {
+-		int res = jffs2_sum_add_kvec(c, invecs, count, (uint32_t) to);
+-		if (res)
+-			return res;
++		ret = jffs2_sum_add_kvec(c, invecs, count, (uint32_t) to);
++		if (ret)
++			goto outsum;
+ 	}
+ 
+ 	if (c->wbuf_len && ino)
+@@ -930,6 +930,8 @@ int jffs2_flash_writev(struct jffs2_sb_info *c, const struct kvec *invecs,
+ 
+ outerr:
+ 	*retlen = 0;
++
++outsum:
+ 	up_write(&c->wbuf_sem);
+ 	return ret;
  }
--EXPORT_SYMBOL_GPL(nanddev_erase);
- 
- /**
-  * nanddev_mtd_erase() - Generic mtd->_erase() implementation for NAND devices
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index c3693bb87b4c..b2996dc987ff 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -999,7 +999,6 @@ static inline bool nanddev_io_iter_end(struct nand_device *nand,
- 
- bool nanddev_isbad(struct nand_device *nand, const struct nand_pos *pos);
- bool nanddev_isreserved(struct nand_device *nand, const struct nand_pos *pos);
--int nanddev_erase(struct nand_device *nand, const struct nand_pos *pos);
- int nanddev_markbad(struct nand_device *nand, const struct nand_pos *pos);
- 
- /* ECC related functions */
 -- 
-2.32.0
+2.31.1
 
 
 ______________________________________________________
