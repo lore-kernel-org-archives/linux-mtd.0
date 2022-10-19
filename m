@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82EB7C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85E71C43217
 	for <linux-mtd@archiver.kernel.org>; Wed, 19 Oct 2022 21:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HyQs15SdTp4XTwqqX+B1tirAEeR/rzo33LgIfMfNMM8=; b=tDE1qXkmxfnWpu
-	u1ACSM6sIbZWCPfWv2h/EsG1P9F5RQv0uiHmSBY9jCmCH9GQmZhCyOlYQz1mghXUF9Qax8dD+unqw
-	nwjAFTE+997U3iJeXcmx6KHmKVtPahsuNwFqM/6A5gi3ASTCumit1Kmn7gtdyxKZivOngBLRcu2Hd
-	UJnDQBVVEy9t/sOF2ucR8N2/WITlRonWRwInn35nqu1ByCXwTyvsjIfR316nRvtuAbf1nEe7WKMdF
-	TmU0/9W6lQq968BmxlE5KIOIR1mGwfIZDOIBkJD/BiEiZV6Zotv3jtK/f38Z2pCYMvx2Pxtp+s1cC
-	wpM08Knn3gsC7FrPdNnw==;
+	List-Owner; bh=HyQs15SdTp4XTwqqX+B1tirAEeR/rzo33LgIfMfNMM8=; b=R5e/L5w9h6s5pG
+	cDUMP1jNigRjX/wFNaJmqOQx1SBjPA1lBBvJPGFa+zWdJQi3iUCv3coLBO25vtm5hGZRqlMUSOkap
+	8BzrX902xP69K/F7O2iLLvAzJPvTWKjVuETURbUBaVSGBb30uVcnRx5DV13s25r5rWQcsUAcj+cy7
+	ybTJh3/6xQSIMUrK0/bKEJNmY+N2GGC9z+2XIqD29y+WAgrZtgXPwZbCevcGRL7YqRdOEaSBPSO4n
+	X9zwng8aYjdA92ze9DQBzwSlOTPiTmB+XGfL0HBTiU8W5BasNa/FT8tgYyzxZ9CJ77rRrDftldIls
+	dhOadNMTghRFnJZA8JcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olGNw-005DV6-2V; Wed, 19 Oct 2022 21:13:56 +0000
-Received: from smtp-25.smtpout.orange.fr ([80.12.242.25] helo=smtp.smtpout.orange.fr)
+	id 1olGNp-005DTC-Vz; Wed, 19 Oct 2022 21:13:50 +0000
+Received: from smtp-26.smtpout.orange.fr ([80.12.242.26] helo=smtp.smtpout.orange.fr)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olGNs-005DTQ-6c
-	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2022 21:13:53 +0000
+	id 1olGNk-005DQr-4q
+	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2022 21:13:46 +0000
 Received: from sopl295.home ([109.220.248.156])
 	by smtp.orange.fr with ESMTPA
-	id lGNoo1NB2g7y2lGNpocFOd; Wed, 19 Oct 2022 23:13:51 +0200
+	id lGNMo1N0Kg7y2lGNMocFLS; Wed, 19 Oct 2022 23:13:31 +0200
 X-ME-Helo: sopl295.home
 X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
-X-ME-Date: Wed, 19 Oct 2022 23:13:51 +0200
+X-ME-Date: Wed, 19 Oct 2022 23:13:31 +0200
 X-ME-IP: 109.220.248.156
 From: Robert Jarzmik <jarzmik.robert@orange.fr>
 To: Arnd Bergmann <arnd@kernel.org>
@@ -57,17 +57,17 @@ Cc: linux-arm-kernel@lists.infradead.org,  Daniel Mack <daniel@zonque.org>,
   linux-usb@vger.kernel.org,  dri-devel@lists.freedesktop.org,
   linux-fbdev@vger.kernel.org,  alsa-devel@alsa-project.org
 Subject: Re: [PATCH 00/30] ARM: pxa: remove all unused boards&drivers
+References: <20221019161831.3864786-1-arnd@kernel.org>
+X-URL: http://belgarath.falguerolles.org/
+Date: Wed, 19 Oct 2022 23:13:20 +0200
 In-Reply-To: <20221019161831.3864786-1-arnd@kernel.org> (Arnd Bergmann's
 	message of "Wed, 19 Oct 2022 18:17:53 +0200")
-References: <20221019161831.3864786-1-arnd@kernel.org>
+Message-ID: <m2sfjjh5zj.fsf@sopl295.home>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
-X-URL: http://belgarath.falguerolles.org/
-Date: Wed, 19 Oct 2022 23:13:48 +0200
-Message-ID: <m2r0z3h5yr.fsf@sopl295.home>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221019_141352_410825_579FDA6F 
-X-CRM114-Status: GOOD (  16.20  )
+X-CRM114-CacheID: sfid-20221019_141344_331022_598D354E 
+X-CRM114-Status: GOOD (  16.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
