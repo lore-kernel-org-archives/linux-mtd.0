@@ -4,60 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0904C4332F
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Oct 2022 19:35:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82EB7C4332F
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Oct 2022 21:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=L32jPqccFzbpg/ozOgGlTV4cGCM3exXhDSUHEVoCddQ=; b=u95Auisc2TiDpk
-	94iA0OVvdFZbJNEGVgd3Ldx5BKn4xIMSKDxfpMOQa+KLrEjx4QHY/bO+VcI3Scbj+YcsQxb3hl7WO
-	PRmfF1RzFP4dHGoRkmBUoByI7c7m8mN/nk7SXAmRdMxsCAQP9lkFEUiWvEqT2dulkgX1OuDqw0sTv
-	yhnPUTktPT8l5RGLeODs66VZJNNJcI9aenJQyMmo8xPimfWJiIHm9Vl/jBtUOdjiLaUVQTJ300cPL
-	s81qG/u32R4Mz4mjuDLL0+YJEjZrGm7Bha23lwP3KwKC3OKmLjAQV8yoarg2atosasNIqMed1wAmq
-	l1pMOsD5LwGSpUMqBCGg==;
+	List-Owner; bh=HyQs15SdTp4XTwqqX+B1tirAEeR/rzo33LgIfMfNMM8=; b=tDE1qXkmxfnWpu
+	u1ACSM6sIbZWCPfWv2h/EsG1P9F5RQv0uiHmSBY9jCmCH9GQmZhCyOlYQz1mghXUF9Qax8dD+unqw
+	nwjAFTE+997U3iJeXcmx6KHmKVtPahsuNwFqM/6A5gi3ASTCumit1Kmn7gtdyxKZivOngBLRcu2Hd
+	UJnDQBVVEy9t/sOF2ucR8N2/WITlRonWRwInn35nqu1ByCXwTyvsjIfR316nRvtuAbf1nEe7WKMdF
+	TmU0/9W6lQq968BmxlE5KIOIR1mGwfIZDOIBkJD/BiEiZV6Zotv3jtK/f38Z2pCYMvx2Pxtp+s1cC
+	wpM08Knn3gsC7FrPdNnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olEqI-004sPl-Q5; Wed, 19 Oct 2022 19:35:06 +0000
-Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
+	id 1olGNw-005DV6-2V; Wed, 19 Oct 2022 21:13:56 +0000
+Received: from smtp-25.smtpout.orange.fr ([80.12.242.25] helo=smtp.smtpout.orange.fr)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olEqD-004sNM-Qp
-	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2022 19:35:03 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 0F6CC1BF209;
-	Wed, 19 Oct 2022 19:34:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1666208097;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mmf9CPdiclhIqMk6wheZIjWzJZtx7O+oRbJTWrn1Yu0=;
-	b=iFHpd8DAVGjUmdfEig2L/bGp/ZyJl1nwNne6LdHMLxEhcu34cprUT40KoVB2tr5djye6En
-	YHTR1UGpi32NGycLF0RJVaHkDcLGOyqBQI8JyGwnYKRp4jO/5dYSy86MlvOj7GMU3fBx1n
-	yRtBHvmCkSyhGc5ng4eFW1q2XSjM4chevFDCEj5sRijkbMe936ZaBDprsfnzxrKUXPRsHx
-	Qh9fRvhqlli7rIJdL48mF4YyhMJ7WCLU4oQSp0M41mFh4cveIKlZS+zR8NFXhhlzH9gZyA
-	HHgU+QsGqYwkh0StsEpUbEqAy0WL82jrCPo/xFYqT8Y3nC6SOFNTiHlc0FeWYw==
-Date: Wed, 19 Oct 2022 21:34:52 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Andreas Oetken <ennoerlangen@gmail.com>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org, Richard Weinberger
- <richard@nod.at>, Tokunori Ikegami <ikegami.t@gmail.com>, Andreas Oetken
- <andreas.oetken@siemens-energy.com>
-Subject: Re: [PATCH] mtd: cfi: add fixups to support MT28FW02GBBA1HPC
-Message-ID: <20221019213452.18fc681e@xps-13>
-In-Reply-To: <Y1Aeq5Jzj7+RdCSd@kroah.com>
-References: <20221019154924.15088-1-ennoerlangen@gmail.com>
-	<Y1Aeq5Jzj7+RdCSd@kroah.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1olGNs-005DTQ-6c
+	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2022 21:13:53 +0000
+Received: from sopl295.home ([109.220.248.156])
+	by smtp.orange.fr with ESMTPA
+	id lGNoo1NB2g7y2lGNpocFOd; Wed, 19 Oct 2022 23:13:51 +0200
+X-ME-Helo: sopl295.home
+X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
+X-ME-Date: Wed, 19 Oct 2022 23:13:51 +0200
+X-ME-IP: 109.220.248.156
+From: Robert Jarzmik <jarzmik.robert@orange.fr>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,  Daniel Mack <daniel@zonque.org>,
+  Haojian Zhuang <haojian.zhuang@gmail.com>,  linux-kernel@vger.kernel.org,
+  Arnd Bergmann <arnd@arndb.de>,  stern@rowland.harvard.edu,
+  alexandre.belloni@bootlin.com,  brgl@bgdev.pl,
+  damien.lemoal@opensource.wdc.com,  dmitry.torokhov@gmail.com,
+  linux@dominikbrodowski.net,  balbi@kernel.org,
+  gregkh@linuxfoundation.org,  deller@gmx.de,  perex@perex.cz,
+  jingoohan1@gmail.com,  lee@kernel.org,  kernel@wantstofly.org,
+  lgirdwood@gmail.com,  linus.walleij@linaro.org,  marek.vasut@gmail.com,
+  broonie@kernel.org,  mkpetch@internode.on.net,
+  miquel.raynal@bootlin.com,  lost.distance@yahoo.com,
+  philipp.zabel@gmail.com,  linux@armlinux.org.uk,  sre@kernel.org,
+  slapin@ossfans.org,  s.shtylyov@omp.ru,  sudipm.mukherjee@gmail.com,
+  tiwai@suse.com,  ulf.hansson@linaro.org,  vigneshr@ti.com,
+  viresh.kumar@linaro.org,  wsa+renesas@sang-engineering.com,
+  linux-pm@vger.kernel.org,  linux-ide@vger.kernel.org,
+  linux-gpio@vger.kernel.org,  linux-input@vger.kernel.org,
+  patches@opensource.cirrus.com,  linux-leds@vger.kernel.org,
+  linux-mmc@vger.kernel.org,  linux-renesas-soc@vger.kernel.org,
+  linux-mtd@lists.infradead.org,  linux-rtc@vger.kernel.org,
+  linux-usb@vger.kernel.org,  dri-devel@lists.freedesktop.org,
+  linux-fbdev@vger.kernel.org,  alsa-devel@alsa-project.org
+Subject: Re: [PATCH 00/30] ARM: pxa: remove all unused boards&drivers
+In-Reply-To: <20221019161831.3864786-1-arnd@kernel.org> (Arnd Bergmann's
+	message of "Wed, 19 Oct 2022 18:17:53 +0200")
+References: <20221019161831.3864786-1-arnd@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
+X-URL: http://belgarath.falguerolles.org/
+Date: Wed, 19 Oct 2022 23:13:48 +0200
+Message-ID: <m2r0z3h5yr.fsf@sopl295.home>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221019_123502_046438_26089FEA 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20221019_141352_410825_579FDA6F 
+X-CRM114-Status: GOOD (  16.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,26 +79,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQW5kcmVhcywKCmdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnIHdyb3RlIG9uIFdlZCwgMTkg
-T2N0IDIwMjIgMTc6NTg6MzUgKzAyMDA6Cgo+IE9uIFdlZCwgT2N0IDE5LCAyMDIyIGF0IDA1OjQ5
-OjI0UE0gKzAyMDAsIEFuZHJlYXMgT2V0a2VuIHdyb3RlOgo+ID4gQXBwbHkgZXhpc3RpbmcgZml4
-dXBzIHRvIE1UMjhGVzAyR0JCQTFIUEMgZnJvbToKPiA+IENvbW1pdCAwYThlOTgzMDVmNjNkZWFm
-MGE3OTlkNWNmNTUzMmNjODNhZjAzNWQxICgibXRkOiBjZmlfY21kc2V0XzAwMDI6Cj4gPiBVc2Ug
-Y2hpcF9yZWFkeSgpIGZvciB3cml0ZSBvbiBTMjlHTDA2NE4iKQo+ID4gQ29tbWl0IDBmZTNlZGU3
-OTQxZGZjZDZmZDU0MGZjMmIwODY0NTNkM2VlOGYyMzYgKCJtdGQ6IGNmaTogQWRkIGVhcmx5Cj4g
-PiBmaXh1cCBmb3IgUzcwR0wwMkdTIikgIAo+IAo+IFRoYXQncyBub3QgdGhlIHByb3BlciB3YXkg
-dG8gcmVmZXJlbmNlIGNvbW1pdHMgaW4gY2hhbmdlbG9nIHRleHRzLiAgTm8KPiBuZWVkIHRvIHVz
-ZSB0aGUgZnVsbCBzaGExLiAgU2VlIHRoZSBkb2N1bWVudGF0aW9uIGZvciBtb3JlIGRldGFpbHMu
-Cj4gCj4gQWxzbywgdGhpcyB0ZXh0IG1lYW5zIG5vdGhpbmcuICBQbGVhc2Ugc3BlbGwgb3V0IHdo
-YXQgeW91IGFyZSBkb2luZyBhbmQKPiB3aHkgeW91IGFyZSBkb2luZyBpdC4gIGFzLWlzIGl0IGRv
-ZXNuJ3QgcmVhbGx5IG1ha2UgYW55IHNlbnNlLgoKSW5kZWVkLiBBbmQgdGhlIHRpdGxlIHByZWZp
-eCBpcyBzdGlsbCB3cm9uZyA6KQpnaXQgbG9nIC0tb25lbGluZSAtLSBkcml2ZXJzL210ZC9jaGlw
-cy9jZmlfY21kc2V0KiBzaG91bGQgaGVscC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+Arnd Bergmann <arnd@kernel.org> writes:
+
+> From: Arnd Bergmann <arnd@arndb.de>
+...zip...
+
+> A good number of drivers become impossible to select after this, so
+> each of these also get dropped. I'm including the driver patches in the
+> series here and can either merge them through the soc tree, or they
+> can get picked up by the individual subsystem maintainers. Since both
+> the platform and the drivers get removed, the order should not matter.
+This part is a bit ... bothering.
+I at least identified these :
+>  delete mode 100644 drivers/input/touchscreen/wm9705.c
+>  delete mode 100644 drivers/input/touchscreen/wm9712.c
+>  delete mode 100644 drivers/input/touchscreen/wm9713.c
+>  delete mode 100644 drivers/input/touchscreen/wm97xx-core.c
+>  delete mode 100644 drivers/mfd/wm97xx-core.c
+>  delete mode 100644 sound/ac97/bus.c
+>  delete mode 100644 sound/ac97/codec.c
+>  delete mode 100644 sound/ac97/snd_ac97_compat.c
+
+For the existing platforms working with devicetree support (mioa701 for
+example), the wm9713 was properly used, providing both sound support and input
+touchscreen.
+So was the a97 part, providing a framework to make the wm9713 work.
+
+So I'm wondering how the choice to chop these drivers was done, and it is
+necessary to remove them. If so, maybe pxa support in the kernel should be
+removed all together, as people playing with it loose part of the working DT
+platforms they had.
+
+As for the removal of defconfigs and arch-pxa, sure, this was PXA's destiny.
+
+Cheers.
+
+--
+Robert
+
+PS: If this mail is sent twice, sorry in advance, my mailer is a bad mood
+lately.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
