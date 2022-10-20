@@ -4,119 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B67D4C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Oct 2022 07:33:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C479FC4332F
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Oct 2022 09:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fbA1LPzMIGtWnXjbuYfSrFk7ulyrlY2HwCDREqxyH9Q=; b=YcUFVlU7Py+M3U
-	+0Eh0W1oAMvE4lm3uQp/VMQ09ROaB8xSoF6xJAqxdxS5vH5WzhM292FgGryszqZ658wMg2CsWKlos
-	HJ5IgyVP0op5c8QxHRnyPBNZlkRkO1cINGCQXnXA2wDxz0zanPwpuSbJ76/Wy8ERFvBq0e+QQF9gG
-	v3+n1y5kQ2ZJDj8DjukhcqRoXv0M+ozzzGpItr9VKZ03vt/4RHuAdBlKTS/3LC3T8XyBjHdbqt260
-	HjmKhYehvFVKSUbj1H2+62doJotck4etM2CdinQ3ORyWb9lNlWDgrVbBDdqBJqlUzCqcxiPI1ZPXb
-	8oFszruLnCSXsFEEBNsw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:MIME-Version:Date:
+	Message-ID:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=BRP1l55SKZ764Nw5FyTyzBto9p2+CA4VyuhZ7F9i29U=; b=unATDIiZsWTBVB2t78+v/7Fp1a
+	HRlR/HalDfIgl75yi4W8xff/O6uv3cmGdOF+vz7OIE5RLz/XdesMriAVNyfRXrllI8R/dTEH8AgW0
+	uBgvGOYIupZWmv4rYhIRXygrcPoc7rakvMaSbryjf6Pqm4BBadCtO7nQmcrTwBHLx4LpxZurauQQL
+	VY/ph00rQtgak/Ku9dV2rjc0jxrBnSC/p7hsaQcEXV7GMpPU11UMeZhmCvp/SQvMjr1Sldb2yiDyq
+	d0ot/5l1CVhMe+rgT3QM/DkOGL5CAMtnu61smwLfPLsgV2SXBhxCzraWF6hwnFMM+XdZ/4gGeEWns
+	epJzKdjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olQ2f-00BluU-JI; Thu, 20 Oct 2022 07:32:37 +0000
-Received: from new3-smtp.messagingengine.com ([66.111.4.229])
+	id 1olRle-00CtUn-OO; Thu, 20 Oct 2022 09:23:10 +0000
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olQ2b-00BlsU-PT; Thu, 20 Oct 2022 07:32:35 +0000
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 0537D5808D2;
-	Thu, 20 Oct 2022 03:32:33 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute3.internal (MEProxy); Thu, 20 Oct 2022 03:32:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to; s=fm2; t=1666251153; x=1666258353; bh=AV6tDFUKMO
-	pEg3MRX4qWR5oX2aLW/thhAYpb2YqHogo=; b=LwBqYSaIPzEagD5t3VSAH3u8bC
-	GOMlXQATN5NPYHGJFRyMCdNJ3bJrRoKDlIzXqSLAARVo0XAiVZTrHleEnER1/EDH
-	OInqpIPnbivBMmUN75vwdEn9cJboi5Z1O0GhbXJY/ZQ/AgfgtfeH98a9YCaXXDYz
-	k0SlfSZwM7sIY1aSnSr9dZPZh2dyWqatx9j5fwh45959VUD1CCocyiAi5SXGLGn6
-	QBmIQDxJx+1LTanOxN+487ZkZiX0gzMPK41B611svX/zdsgtyx8zryp+roi8z+Y6
-	kAQoRkW+9j6/JT1CxWRbc0eHDwYnWe6Fa3huhOGTL3J91VnneBSZorDOHVfQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1666251153; x=1666258353; bh=AV6tDFUKMOpEg3MRX4qWR5oX2aLW
-	/thhAYpb2YqHogo=; b=VL3hwyWdbYa9ajHTB8LAad0OFgZoCydHOUKD/q/nRXJM
-	La7526Kuk9mhD81n+xvH2WUzAZfB2SNlsZKeLEPdLFJs3TLYaqAMOT1uKOoVfH8K
-	L/HAgMaXz62AxNzj/wJ1JD4ITtXCJqDUEoYhL3kqSK1x4fNPxL47VxhKZdBO1nbz
-	t4qEhqH/42Yltf+1hlvgrpsM1De+bD6uXlxU+we4F2UAjUqesFo+HZEM9ATayU/a
-	TJc30PBOmgy5fwrN/CIwfsx6z6tOnT57f6IEqy+m4Bc5fq6OEnpF4RLUw1Q84JKd
-	1C1+a4x0f0dPk+sQn6oRcfGiFlKGMYMpk9Zn2xW02Q==
-X-ME-Sender: <xms:kPlQY0COucP_JBuc3VO6ui00Aeod_vY6KX2eD5gQI9Yr1DkWG3a5mA>
-    <xme:kPlQY2gtxfaxEF8E0nupOggf72VxqawQyxSR0L9pyZ_JV7qHtQn9M6vY36KXi61ZM
-    KbMyjKA1pB-2a_oUQE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeelhedguddvudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:kPlQY3kdADxAHh0mg9ZEyeDNoL9T7Br6cBC9Vw3B4UkHhpWz-Qje1w>
-    <xmx:kPlQY6yu9gT9-n3kSmZ9BE9kk2TNEm3ealNf0llEEScW5_OS2XXJJg>
-    <xmx:kPlQY5SryijVrEYyekFDxeVLDfbY5orH6ssBHORZUU5jX_BrZwLJSg>
-    <xmx:kflQY6413sE1AInazuTgiKzob_WzdVkTnkNVvnojS32tD5OKxwgvSQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 6001BB60086; Thu, 20 Oct 2022 03:32:32 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1047-g9e4af4ada4-fm-20221005.001-g9e4af4ad
-Mime-Version: 1.0
-Message-Id: <c7366f60-aef0-463f-9bba-f14680d820ac@app.fastmail.com>
-In-Reply-To: <Y1D08tpbdE52x7hN@google.com>
-References: <20221019161831.3864786-1-arnd@kernel.org>
- <Y1D08tpbdE52x7hN@google.com>
-Date: Thu, 20 Oct 2022 09:32:12 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Lee Jones" <lee@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, "Daniel Mack" <daniel@zonque.org>,
- "Haojian Zhuang" <haojian.zhuang@gmail.com>,
- "Robert Jarzmik" <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org,
- "Alan Stern" <stern@rowland.harvard.edu>,
- "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
- "Bartosz Golaszewski" <brgl@bgdev.pl>,
- "Damien Le Moal" <damien.lemoal@opensource.wdc.com>,
- "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
- "Dominik Brodowski" <linux@dominikbrodowski.net>,
- "Felipe Balbi" <balbi@kernel.org>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Helge Deller" <deller@gmx.de>, perex@perex.cz, jingoohan1@gmail.com,
- kernel@wantstofly.org, lgirdwood@gmail.com,
- "Linus Walleij" <linus.walleij@linaro.org>, marek.vasut@gmail.com,
- "Mark Brown" <broonie@kernel.org>, mkpetch@internode.on.net,
- "Miquel Raynal" <miquel.raynal@bootlin.com>, lost.distance@yahoo.com,
- philipp.zabel@gmail.com, "Russell King" <linux@armlinux.org.uk>,
- sre@kernel.org, slapin@ossfans.org,
- "Sergey Shtylyov" <s.shtylyov@omp.ru>,
- "Sudip Mukherjee" <sudipm.mukherjee@gmail.com>, tiwai@suse.com,
- "Ulf Hansson" <ulf.hansson@linaro.org>,
- "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Viresh Kumar" <viresh.kumar@linaro.org>,
- "Wolfram Sang" <wsa+renesas@sang-engineering.com>,
- linux-pm@vger.kernel.org, linux-ide@vger.kernel.org,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- linux-input@vger.kernel.org, patches@opensource.cirrus.com,
- linux-leds@vger.kernel.org,
- "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
- linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 00/30] ARM: pxa: remove all unused boards&drivers
+	id 1olRej-00CogC-Ct
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2022 09:16:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1666257361; x=1697793361;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=50K2fOMXsk+lwezuCkWwD6hRARUwosKvthRX0IylFyg=;
+  b=eJR4fVqWljudjZc8yYBe9TsGF5sY4TH4qM8rw4KiEHaMgv29FsgsFXkq
+   jjjiMuDcEV9lZvLuAHHqFIuGIkK9D9QO/rh1Ls2D7Yw7mVWoRjcYBlhCq
+   5XrDexJttWjeHdajiPG0LorxdR0Tey0Ae01jTwggLPWrGwMbaf46QfiNz
+   E=;
+X-IronPort-AV: E=Sophos;i="5.95,198,1661817600"; 
+   d="scan'208";a="142228806"
+Subject: Re: [PATCH v2 1/1] mtd: spi-nor: micron-st: Enable locking for
+ n25q256ax1/mt25qu256a
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-b48bc93b.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2022 09:15:50 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+	by email-inbound-relay-iad-1d-b48bc93b.us-east-1.amazon.com (Postfix) with ESMTPS id 36EC7C0932;
+	Thu, 20 Oct 2022 09:15:46 +0000 (UTC)
+Received: from EX19D013UWA004.ant.amazon.com (10.13.138.207) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.42; Thu, 20 Oct 2022 09:15:46 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX19D013UWA004.ant.amazon.com (10.13.138.207) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.15;
+ Thu, 20 Oct 2022 09:15:46 +0000
+Received: from [192.168.104.103] (10.85.143.175) by mail-relay.amazon.com
+ (10.43.61.243) with Microsoft SMTP Server id 15.0.1497.42 via Frontend
+ Transport; Thu, 20 Oct 2022 09:15:42 +0000
+Message-ID: <a1411e79-d0ec-31e7-a190-ec2622928070@amazon.com>
+Date: Thu, 20 Oct 2022 12:15:41 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+To: Michael Walle <michael@walle.cc>
+CC: <tudor.ambarus@microchip.com>, <pratyush@kernel.org>,
+	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<talel@amazon.com>, <jonnyc@amazon.com>, <hhhawa@amazon.com>,
+	<hanochu@amazon.com>, <itamark@amazon.com>, <shellykz@amazon.com>,
+	<amitlavi@amazon.com>, <dkl@amazon.com>, "Farber, Eliav" <farbere@amazon.com>
+References: <20221019071631.15191-1-farbere@amazon.com>
+ <73bfa5ae90e2269387540019806c2839@walle.cc>
+ <1ba2e7ff-cf6c-1292-72e0-14b5b5b9282c@amazon.com>
+ <f489048bd1fa65db1a050f1321c640de@walle.cc>
+ <01dfdbec-1a1f-6118-23fb-8b8f7b827c82@amazon.com>
+ <41a05a89cd30b21dce866bc3209fe836@walle.cc>
+Content-Language: en-US
+From: "Farber, Eliav" <farbere@amazon.com>
+In-Reply-To: <41a05a89cd30b21dce866bc3209fe836@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221020_003233_929035_C654D8D4 
-X-CRM114-Status: UNSURE (   8.43  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221020_021601_526029_37B336D5 
+X-CRM114-Status: GOOD (  16.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,28 +89,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Oct 20, 2022, at 09:12, Lee Jones wrote:
-> On Wed, 19 Oct 2022, Arnd Bergmann wrote:
->
-> Are you sure these went out?
->
-> They do not appear to be in my inbox, nor lore.
-
-You are right, I was interrupted after sending out the
-cover letter and didn't manage to finish sending the rest.
-
-Since Robert Jarzmik already found a problem with the
-series overall, I'll continue sending the other (mmp, sa1100,
-s3c, omap2) patch sets for now and get back to PXA after
-we've worked out the issue with the ac97 infrastructure.
-
-    Arnd
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMTAvMTkvMjAyMiAxOjIzIFBNLCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+IEFtIDIwMjItMTAt
+MTkgMTE6NTIsIHNjaHJpZWIgRmFyYmVyLCBFbGlhdjoKPj4gT24gMTAvMTkvMjAyMiAxMjozOCBQ
+TSwgTWljaGFlbCBXYWxsZSB3cm90ZToKPj4+IEFtIDIwMjItMTAtMTkgMTE6MjUsIHNjaHJpZWIg
+RmFyYmVyLCBFbGlhdjoKPj4+PiBPbiAxMC8xOS8yMDIyIDExOjIxIEFNLCBNaWNoYWVsIFdhbGxl
+IHdyb3RlOgo+Pj4+PiBIaSwKPj4+Pj4KPj4+Pj4gQW0gMjAyMi0xMC0xOSAwOToxNiwgc2Nocmll
+YiBFbGlhdiBGYXJiZXI6Cj4+Pj4+PiBuMjVxMjU2YXgxIFsxXSBhbmQgbXQyNXF1MjU2YSBbMl0g
+KGJvdGggaGF2ZSBzYW1lIGplZGVjX2lkIC0KPj4+Pj4+IDB4MjBiYjE5KQo+Pj4+Pj4gdXNlIHRo
+ZSA0IGJpdCBCbG9jayBQcm90ZWN0aW9uIHNjaGVtZSBhbmQgc3VwcG9ydCBUb3AvQm90dG9tCj4+
+Pj4+PiBwcm90ZWN0aW9uCj4+Pj4+PiB2aWEgdGhlIEJQIGFuZCBUQiBiaXRzIG9mIHRoZSBTdGF0
+dXMgUmVnaXN0ZXIuCj4+Pj4+PiBCUDMgaXMgbG9jYXRlZCBpbiBiaXQgNiBvZiB0aGUgU3RhdHVz
+IFJlZ2lzdGVyLgo+Pj4+Pj4gVGVzdGVkIG9uIGJvdGggbjI1cTI1NmF4MSBhbmQgbXQyNXF1MjU2
+YS4KPj4+Pj4+Cj4+Pj4+PiBbMV0KPj4+Pj4+IGh0dHBzOi8vd3d3Lm1pY3Jvbi5jb20vLS9tZWRp
+YS9jbGllbnQvZ2xvYmFsL2RvY3VtZW50cy9wcm9kdWN0cy9kYXRhLXNoZWV0L25vci1mbGFzaC9z
+ZXJpYWwtbm9yL24yNXEvbjI1cV8yNTZtYl8zdi5wZGYgCj4+Pj4+Pgo+Pj4+Pj4gWzJdCj4+Pj4+
+PiBodHRwczovL3d3dy5taWNyb24uY29tLy0vbWVkaWEvY2xpZW50L2dsb2JhbC9kb2N1bWVudHMv
+cHJvZHVjdHMvZGF0YS1zaGVldC9ub3ItZmxhc2gvc2VyaWFsLW5vci9tdDI1cS9kaWUtcmV2LWEv
+bXQyNXFfcWxqc191XzI1Nl9hYmFfMC5wZGYgCj4+Pj4+Pgo+Pj4+Pgo+Pj4+PiBJZiB5b3UgcmVz
+cGluLCB5b3UgY2FuIHVzZSBhICJMaW5rOiIgdGFnIGZvciB0aGUgVVJMIGFib3ZlLgo+Pj4+Cj4+
+Pj4gQWNrLgo+Pj4+Cj4+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBFbGlhdiBGYXJiZXIgPGZhcmJlcmVA
+YW1hem9uLmNvbT4KPj4+Pj4+IC0tLQo+Pj4+Pj4geHhkIC1wCj4+Pj4+PiAvc3lzL2RldmljZXMv
+cGxhdGZvcm0vc29jL2ZkODgyMDAwLnNwaS9zcGlfbWFzdGVyL3NwaTAvc3BpMC4wL3NwaS1ub3Iv
+c2ZkcCAKPj4+Pj4+Cj4+Pj4+PiA1MzQ2NDQ1MDA2MDEwMWZmMDAwNjAxMTAzMDAwMDBmZjg0MDAw
+MTAyODAwMDAwZmZmZmZmZmZmZmZmZmYKPj4+Pj4+IGZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
+ZmZmZmZmZmZmZmU1MjBmYmZmZmZmZmZmMGYyOWViMjc2Ygo+Pj4+Pj4gMjczYjI3YmJmZmZmZmZm
+ZmZmZmYyN2JiZmZmZjI5ZWIwYzIwMTBkODBmNTIwMDAwMjQ0YTk5MDA4YjhlCj4+Pj4+PiAwM2Q0
+YWMwMTI3Mzg3YTc1N2E3NWZiYmRkNTVjNGEwZjgyZmY4MWJkM2QzNmZmZmZmZmZmZmZmZmZmZmYK
+Pj4+Pj4+IGZmZmZmZmZmZmZmZmZmZmZmZmU3ZmZmZjIxZGNmZmZmCj4+Pj4+Pgo+Pj4+Pj4gbWQ1
+c3VtCj4+Pj4+PiAvc3lzL2RldmljZXMvcGxhdGZvcm0vc29jL2ZkODgyMDAwLnNwaS9zcGlfbWFz
+dGVyL3NwaTAvc3BpMC4wL3NwaS1ub3Ivc2ZkcCAKPj4+Pj4+Cj4+Pj4+PiA1ZWE3MzgyMTZmNjhj
+OWY5ODk4N2JiMzcyNTY5OWEzMgo+Pj4+Pj4gL3N5cy9kZXZpY2VzL3BsYXRmb3JtL3NvYy9mZDg4
+MjAwMC5zcGkvc3BpX21hc3Rlci9zcGkwL3NwaTAuMC9zcGktbm9yL3NmZHAgCj4+Pj4+Pgo+Pj4+
+Pj4gY2F0Cj4+Pj4+PiAvc3lzL2RldmljZXMvcGxhdGZvcm0vc29jL2ZkODgyMDAwLnNwaS9zcGlf
+bWFzdGVyL3NwaTAvc3BpMC4wL3NwaS1ub3IvamVkZWNfaWQgCj4+Pj4+Pgo+Pj4+Pj4gMjBiYjE5
+MTA0NDAwCj4+Pj4+Pgo+Pj4+Pj4gY2F0Cj4+Pj4+PiAvc3lzL2RldmljZXMvcGxhdGZvcm0vc29j
+L2ZkODgyMDAwLnNwaS9zcGlfbWFzdGVyL3NwaTAvc3BpMC4wL3NwaS1ub3IvcGFydG5hbWUgCj4+
+Pj4+Pgo+Pj4+Pj4gbXQyNXF1MjU2YQo+Pj4+Pj4KPj4+Pj4+IGNhdAo+Pj4+Pj4gL3N5cy9kZXZp
+Y2VzL3BsYXRmb3JtL3NvYy9mZDg4MjAwMC5zcGkvc3BpX21hc3Rlci9zcGkwL3NwaTAuMC9zcGkt
+bm9yL21hbnVmYWN0dXJlciAKPj4+Pj4+Cj4+Pj4+PiBzdAo+Pj4+Pgo+Pj4+PiBUaGF0J3MgdGhl
+IG10MjVxdTI1NmEgU0ZEUC4gV2hhdCBhYm91dCB0aGUgbjI1cTI1NmF4MT8KPj4+Pgo+Pj4+IE9u
+IHRoZSBzYW1lIGNhcmQsIHdpdGggc2FtZSBOT1IgZmxhc2ggbWVtb3J5IEknbSBydW5uaW5nIHR3
+bwo+Pj4+IGRpZmZlcmVudAo+Pj4+IGtlcm5lbCB2ZXJzaW9ucy4KPj4+PiBGaXJzdCB2ZXJzaW9u
+IGlzIHF1aXRlIG9sZCAtIDQuMTkuMjM5IHdoaWNoIGRvZXMgbm90IHN1cHBvcnQKPj4+PiBtdDI1
+cXUyNTZhCj4+Pj4gYW5kIHRoZXJlZm9yZSBkZXZpY2UgaXMgZGV0ZWN0ZWQgYXMgbjI1cTI1NmF4
+MS4KPj4+PiBTZWNvbmQgdmVyc2lvbiBpcyA2LjEuMC1yYzEgYW5kIGl0IGRldGVjdHMgdGhlIHNh
+bWUgZGV2aWNlIGFzCj4+Pj4gbXQyNXF1MjU2YS4KPj4+PiBTbyBJIHdhcyBhYmxlIHRvIGR1bXAg
+U0ZEUCB3aGVuIHJ1bm5pbmcgdmVyc2lvbiA2LjEuMC1yYzEsIGJ1dCBub3QKPj4+PiB3aGVuCj4+
+Pj4gcnVubmluZyA0LjE5LjIzOSB3aGljaCBkb2VzIG5vdCBzdXBwb3J0IHRoZSBzeXNmcyB0byBk
+dW1wIHRoZSBTRlBECj4+Pj4gaW5mb3JtYXRpb24uCj4+Pj4gSSBjaGVja2VkIHRoYXQgbG9ja2lu
+ZyB3b3JrcyB3aXRoIG15IGNoYW5nZXMgd2hlbiBydW5uaW5nIG9uIGJvdGgKPj4+PiBrZXJuZWwK
+Pj4+PiB2ZXJzaW9ucy4KPj4+Cj4+PiBTbyB5b3UndmUgb25seSB0ZXN0ZWQgb24gYW4gbXQyNXF1
+MjU2YSwgY29ycmVjdD8gVGhlbiB5b3Ugc2hvdWxkIG9ubHkKPj4+IGFkZCB0aGUgbG9ja2luZyB0
+byB0aGlzIGZsYXNoIGRldmljZS4gKGFuZCBtYXliZSBiYWNrcG9ydCB0aGUKPj4+IG10MjVxdTI1
+NmEKPj4+IHRvIHlvdXIgb2xkZXIga2VybmVsKS4KPj4KPj4gSSBkdW1wZWQgU0ZEUCB0YWJsZXMg
+b25seSBmb3IgbXQyNXF1MjU2YSwgYnV0IGFzIEkgbWVudGlvbmVkIEkgdGVzdGVkCj4+IGxvY2tp
+bmcgZnVuY3Rpb25hbGl0eSBmb3IgYm90aCAob24gNC4xOS4yMzkgd2hpY2ggZGV0ZWN0cyB0aGUg
+ZGV2aWNlIGFzCj4+IG4yNXEyNTZheDEgYW5kIG9uIDYuMS4wLXJjMcKgIHdoaWNoIGRldGVjdHMg
+dGhlIGRldmljZSBhcyBtdDI1cXUyNTZhKS4KPj4gVGhpcyBpcyB0aGUgZmxvdyBJIHVzZWQgZm9y
+IHRlc3RpbmcgdGhlIGNoYW5nZSBvbiBib3RoIHZlcnNpb25zOgo+Cj4gWW91IHNhaWQgeW91J3Zl
+IHRlc3RlZCBvbiB0aGUgc2FtZSBib2FyZCwgdGh1cyBpdCBoYXMgdGhlIHNhbWUgZmxhc2gKPiBk
+ZXZpY2UuIEJ1dCB3aXRoIHRoZSBvbGRlciBrZXJuZWwgaXQgd2FzIGRldGVjdGVkIGFzIGEgZGlm
+ZmVyZW50IHBhcnQuCj4KPiBTbyB0aGUgcXVlc3Rpb24gaXMsIHdoYXQgaXMgdGhlIGNvcnJlY3Qg
+cGFydCBudW1iZXI/IEkuZS4gd2hhdCBpcyB0aGUKPiBfYWN0dWFsXyBmbGFzaCBkZXZpY2Ugc29s
+ZGVyZWQgb24geW91ciBib2FyZD8KCkkgaGF2ZSBmb3VuZCBvdXQgdGhhdCB3ZSB1c2UgTVQyNVFV
+MjU2QUJBOEVTRi0wU0lUIHNvIEknbGwgcmVsZWFzZSBhCnBhdGNoIGZvciBtdDI1cXUyNTZhIG9u
+bHkuCgotLQpUaGFua3MsIEVsaWF2CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
