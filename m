@@ -4,65 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A5F4C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Oct 2022 11:57:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 165CDC433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Oct 2022 12:06:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Q6340bVkp5pk/JKZfQcQLRowDququsFoO/gQJjiDKZ4=; b=hl7sh89sl0jnBcbyIzF/6VDfDi
-	FiWKnH/rfhqLcL+6jmpC7rvJX/u/6RUHKOIQfcTyl1Mtk5OrG+pI3OrwaaepJQq8fbzmfK4kqWeRc
-	SJz+GrTEpA64nxgh5FNPPb0Mm5bbiRHMueb5GXTtB2pxps8J9Ygf+DlZIgd2mJoaL+xTldKmsf2fO
-	agIVXdezNUYdkPmga3x5Yjvz9Lc639KZ1iUO7Y/Uftrn/EYKroqg/FRMowHMj1FqrzLG0swGfCs+h
-	uXy7+Ko16faCF7mV3ICPSwfA83SxvSfO5dmBzoWV2bgURVrfEWsbPh5SZJwLlM3WRFkpIQqBUCzk+
-	uFQd63fw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=yF+7KVnR6O4WisX79qphAp3GNeNkOikPPZIhz1eQKw8=; b=A55e+vJR4O2tXB
+	PJsZSmeQxmkwRKJ8sh2o3FMeH5v/d1UOSOuLC3uksR2Prq+LJKNXTkIEgg1QTi0WRGZuLQKQurIDC
+	YjBj4wI4xjFYOWx11nb00TiKFva1u1cCPxTtQXzLaWZUI4pGrn02m0bkhgYMYeKU10yBtSqZiYiZ0
+	a7kVwZkyYlW10nxOzfe11RVfSuQZCQnsOk8n1WjQtwN733Vnd/yrvsx4ncuneKWeG3KstGJi+yb0P
+	WOjT1YTxCNvyxaXTd+QsjtjG+OCzzQ1lO0zEj70RCWK3RLUeaN+PpWqRWcYrJ1lrFwsuDqxx3ujR8
+	PLyKCaNWBxB4FPaio2ag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olUAG-00EMku-VE; Thu, 20 Oct 2022 11:56:45 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1olUJV-00EUHV-CN; Thu, 20 Oct 2022 12:06:17 +0000
+Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olT4R-00Djyh-Ro
-	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2022 10:46:41 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 1D88E1285;
-	Thu, 20 Oct 2022 12:46:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1666262794;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qyfpMJ7wvOKQzKJbA8gxhqaiUcCTequz7kYwWgzsxo4=;
-	b=S8juV9ehFY1QtzfsNES16OBDCJDt6D8JuIVPz/Los2OyZjJ6w3Vjia8HTvNhkenO54ppQ3
-	unFA6yGNnUmRezw+llCgvp6smheHSUdl+nLDaH/sj86RcbiqSsEZMzD2eIy8tN7mbXeIk/
-	rEWjea8uO3QWs23LC7Oxzl3f9pzXOV512GMQEH8dcbHm6NY4EV7MmMCrEr3pbu3X1tRbg9
-	zyPNP/obX07WdBHsRY4cKH4ZJpxA9GVSIXWnwqmoYx6tk/JL+2H54ovBwMfEH+I55genyJ
-	Q2YoIew+XpV+wQ38hPNvT32jFOsu9aTsY6KekRcOm4EUF9UMJ+FWfU4cKphlkA==
+	id 1olTLY-00DtE5-0X
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2022 11:04:21 +0000
+Received: by mail-ej1-x62a.google.com with SMTP id y14so46442935ejd.9
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2022 04:04:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x6qV1aCaOqyH9zNYxeqx1WUBGtUePLGq2jJvaNsp2pg=;
+        b=PAWT0JFyLcobroXQ/XDxb24/eTq+G4I/xpc1vK6IvXCduh8WDhzsZuXUAfVkaA8JMK
+         oyG+UeRzLRdavzwXlFGSl+4gHz5YKiSD67fvUAzIDuwR45XyH7VP8dbzTvwn5Df9GwWH
+         VVGJErlzQM7ABLIl4B7nnK3b7uKxIIgC6YxzuGmtjpQVo33zw34xD06gjqniPo63pFHO
+         EjNKDgTfM2a77wWFZ2llVvXLBrKlvRcxSPCjAQN43V2kBGhvpPV68Fi5C38OZvQ0lG06
+         TM/tYjtYRheO0mxvFpBrj9OfjGiFhN7SgvM6KwvEdlFH+50UfrlYRfLgQ5OYCQ6UDGLd
+         yALw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x6qV1aCaOqyH9zNYxeqx1WUBGtUePLGq2jJvaNsp2pg=;
+        b=nMqRMCfbuN84irQz3xw1xCQJY4800U1BLCiu2vN8zYpUmdNyaMHNA8ovlNzVz3toWV
+         dGWaAC4GMNOVCXJn0gudHPwDhXTXYMTVzcRjkwoqxmoUmcxLLuFZrTj4UlyN2b7qjp62
+         GvjBGBo7EqMvxjkxmXkbvr17vJHuWzjfnd5IfAWqHulkNsFDbnl32a7VIHr4c+sSLDjQ
+         rkToi+mpDMxx7tTPLfDmyLL3BE923IA4VHdUXuKGUKHlg9IATySq0uwa76aRf8moPrAg
+         1YK5+N0k6nhJlCSDH7zAJMT/VHpgHPClB8DVpam47UaPMEpSGTCn3Xc/mabW00ZcX2Px
+         kQIA==
+X-Gm-Message-State: ACrzQf1RiaL3sukVmvR0STSEtQRqeiTCaXzbj7eOOFnrZgor/7vObUek
+	QVOZ6Rap4tOPDhT9a2tz+KfoDXfmD8Alrw==
+X-Google-Smtp-Source: AMsMyM7PvMEtjzhXECl9LeBti2nkl04jFe7c95ugVbhsfDxKlGW4icHsTfVM24BkIRw6qKV2qqfakQ==
+X-Received: by 2002:a17:907:7b86:b0:78d:cb21:da0c with SMTP id ne6-20020a1709077b8600b0078dcb21da0cmr10819181ejc.24.1666263856488;
+        Thu, 20 Oct 2022 04:04:16 -0700 (PDT)
+Received: from penguin.lxd (ipbcc2d39a.dynamic.kabel-deutschland.de. [188.194.211.154])
+        by smtp.gmail.com with ESMTPSA id kw8-20020a170907770800b007821f4bc328sm10352748ejc.178.2022.10.20.04.04.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Oct 2022 04:04:16 -0700 (PDT)
+From: Andreas Oetken <ennoerlangen@gmail.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tokunori Ikegami <ikegami.t@gmail.com>,
+	Andreas Oetken <andreas.oetken@siemens-energy.com>,
+	Andreas Oetken <ennoerlangen@gmail.com>
+Subject: [PATCH v2] mtd: cfi: add fixup to support MT28FW02GBBA1HPC
+Date: Thu, 20 Oct 2022 13:03:44 +0200
+Message-Id: <20221020110344.16607-1-ennoerlangen@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Date: Thu, 20 Oct 2022 12:46:33 +0200
-From: Michael Walle <michael@walle.cc>
-To: Eliav Farber <farbere@amazon.com>
-Cc: tudor.ambarus@microchip.com, pratyush@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- talel@amazon.com, jonnyc@amazon.com, hhhawa@amazon.com, hanochu@amazon.com,
- itamark@amazon.com, shellykz@amazon.com, amitlavi@amazon.com, dkl@amazon.com
-Subject: Re: [PATCH v3 1/1] mtd: spi-nor: micron-st: Enable locking for
- mt25qu256a
-In-Reply-To: <20221020092058.33844-1-farbere@amazon.com>
-References: <20221020092058.33844-1-farbere@amazon.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <d91e3d91f085390d5dbe0c4415c9e37f@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221020_034640_143413_DB8FA93F 
-X-CRM114-Status: UNSURE (   5.76  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221020_040420_123567_717F21DC 
+X-CRM114-Status: GOOD (  14.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,28 +87,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-10-20 11:20, schrieb Eliav Farber:
-> mt25qu256a [1] uses the 4 bit Block Protection scheme and supports
-> Top/Bottom protection via the BP and TB bits of the Status Register.
-> BP3 is located in bit 6 of the Status Register.
-> Tested on MT25QU256ABA8ESF-0SIT.
-> 
-> [1] 
-> https://www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25q/die-rev-a/mt25q_qljs_u_256_aba_0.pdf
-> 
-> Signed-off-by: Eliav Farber <farbere@amazon.com>
-> Link: 
-> https://lore.kernel.org/lkml/20221019071631.15191-1-farbere@amazon.com
+The cfi flash device MT28FW02GBBA1HPC is a stacked device with two 1Gb
+dies. Yet it is recognized as one device. Added early fixup to adjust
+devsize and erase region info appropriately. The same issue was addressed
+for the S70GL02GS in
+Commit 0fe3ede7941d ("mtd: cfi: Add early fixup for S70GL02GS").
 
-Reviewed-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Andreas Oetken <ennoerlangen@gmail.com>
+---
+ drivers/mtd/chips/cfi_probe.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-Thanks,
--michael
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index cf426956454c..102c1ffb9aad 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -186,9 +186,22 @@ static void fixup_s70gl02gs_chips(struct cfi_private *cfi)
+ 	pr_warn("Bad S70GL02GS CFI data; adjust to detect 2 chips\n");
+ }
+ 
++
++static void fixup_mt28fw02gbba1hpc_chips(struct cfi_private *cfi)
++{
++	/*
++	 * MT28FW02GBBA1HPC flash reports a single 256 MiB chip, but is really made up
++	 * of two 128 MiB chips with 1024 sectors each.
++	 */
++	cfi->cfiq->DevSize = 27;
++	cfi->cfiq->EraseRegionInfo[0] = 0x20003ff;
++	pr_warn("Bad MT28FW02GBBA1HPC CFI data; adjust to detect 2 chips\n");
++}
++
+ static const struct cfi_early_fixup cfi_early_fixup_table[] = {
+ 	{ CFI_MFR_AMD, 0x4801, fixup_s70gl02gs_chips },
+-	{ },
++	{ CFI_MFR_INTEL, 0x227e, fixup_mt28fw02gbba1hpc_chips},
++	{ }
+ };
+ 
+ static int __xipram cfi_chip_setup(struct map_info *map,
+-- 
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
