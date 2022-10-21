@@ -4,75 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 627E1C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 10:53:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C64EC43219
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 13:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ERhEn5a5LPKOVQYe8wcFB03k9rmJrVWg3R1H24FDAIM=; b=VTpQbIcbxg8GUoGW5xHfPp04y+
-	LLqQ1nxBXbvUOIlXe86W8AssRsA7xZhmxOtvwUss9qzAY1eWPWVbG5EPXdTNT0VdQmSxnxHxpMhyA
-	s70gcJn5ZL5Gfy7WhGeWVzdX3KkeuPXRPJBvNg3ikBqgEXImGC5l+VPA4tyV7hRXhIN703uRhLM6d
-	vUJMkeUUgfG+bxfjC5SjYI9DGYzhZSo71GVXij/Nm/KAE4EJ7E+Vf58mjffztQuKi5TCxblI5Fl7J
-	WiF6jf2wpVsmNZViR6iKJuDvkIguqo4wVlxA4Ch4oLW7qrjBtvznZTrfy2hJn0e/iz0Qzdc4jR286
-	BjIw/MOw==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:To:Subject:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=3uq04wPD3UOR2YuLMzS6X+VRSJXbY1XEHe3x01JgBq4=; b=xFAyKLxH61HUzKuCh9rPyLqpk0
+	eX1ef5zeb1uMtyxFnSAqCRYipsXsDcjTMnw9fbV9mw/eld/O40p6X5bcu/UkQnuTHL5r4Y7gE/79V
+	n5lzMzuaW4CIIKE8qTw6GJS//sSj9B02SCTaUtlRD7Pf2r24Hvc4JaYt/P6yxhRRBpF9I8KRLoSBn
+	Fois7XNpHOAkbvZ5jgLBuEXfo7ENahhu9go6EymRATFYmR1auQeEc6grAyaYvUevBYC6hYL0JnL4m
+	gl+pMsz+YBPBUM280lNjW9teNTZG1yw/6zGsCjjbtag5A8WOBl4FEqjFQbiL1bDKe08WcMpA2nQdN
+	ULyUYh4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olpe6-007DRQ-46; Fri, 21 Oct 2022 10:52:58 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1olrjc-007nrT-5T; Fri, 21 Oct 2022 13:06:48 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olpdt-007DG5-8z; Fri, 21 Oct 2022 10:52:46 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id BA6BEB82B96;
-	Fri, 21 Oct 2022 10:52:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AC6DC433D6;
-	Fri, 21 Oct 2022 10:52:33 +0000 (UTC)
-Date: Fri, 21 Oct 2022 11:52:30 +0100
-From: Mark Brown <broonie@debian.org>
-To: Adam Borowski <kilobyte@angband.pl>
-Cc: linux-kernel@lists.debian.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jiaxin Yu <jiaxin.yu@mediatek.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
-	David Howells <dhowells@redhat.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-	Yong Zhi <yong.zhi@intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Bingbu Cao <bingbu.cao@intel.com>, Dan Scally <djrscally@gmail.com>,
-	Tianshu Qiu <tian.shu.qiu@intel.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, Khalil Blaiech <kblaiech@nvidia.com>,
-	Asmaa Mnebhi <asmaa@nvidia.com>, linux-i2c@vger.kernel.org,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Brent Lu <brent.lu@intel.com>
-Subject: Re: [PATCH 0/6] a pile of randconfig fixes
-Message-ID: <Y1J57jJ1+FTG7U9O@sirena.org.uk>
-References: <20221020221749.33746-1-kilobyte@angband.pl>
+	id 1olrjY-007nnC-RQ
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 13:06:46 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mv4QW6n6rzpVgw
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Oct 2022 21:03:15 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 21 Oct 2022 21:06:36 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 21 Oct 2022 21:06:35 +0800
+Subject: Re: [PATCH] ubi: block: KASAN null-ptr-deref in ubiblock_create()
+To: <linux-mtd@lists.infradead.org>
+References: <20221021075728.1209184-1-lizetao1@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <d85d6833-14bc-ab65-7d0b-7adcef412442@huawei.com>
+Date: Fri, 21 Oct 2022 21:06:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20221020221749.33746-1-kilobyte@angband.pl>
-X-Cookie: On the eighth day, God created FORTRAN.
+In-Reply-To: <20221021075728.1209184-1-lizetao1@huawei.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221021_035245_507287_765C9A3C 
-X-CRM114-Status: GOOD (  16.64  )
+X-CRM114-CacheID: sfid-20221021_060645_079638_C8CA4D4F 
+X-CRM114-Status: GOOD (  16.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,58 +64,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8459926636521360862=="
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============8459926636521360862==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wWcrkmaG6Bl+vyW8"
-Content-Disposition: inline
-
-
---wWcrkmaG6Bl+vyW8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Oct 21, 2022 at 12:17:49AM +0200, Adam Borowski wrote:
-
-> I've been doing randconfig build tests for quite a while, here's a pile of
-> fixes.  I'm not sure what's the best way to submit these: do you folks
-> prefer a series like this, or a number of individual submissions?
-
-Individual submissions would cut down on the noise from the enormous CC
-list.  If you were going to send as a patch series it should be a single
-message per patch as covered in sumbitting-patches.rst.
-
---wWcrkmaG6Bl+vyW8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNSee4ACgkQJNaLcl1U
-h9BDwgf+IkbiCFyXzVrO3F8yBx883iUJM3R8A5LPsrxScBUzS3Nu7PgzWmko3Bfa
-wm/rXizNrMQPDqUakrtR8duh+w/eL6Lz3YrZEQEaM2fd8+MayJt9tXB4o/qfcrBc
-B3o7lbqL9Hp0yqRKKG8orcvyiJDpOh2Z+zLAYqy+LuFLuiv6kSKu8h7c2vm7DKCw
-+wGkRN5blfrYPHGOoU/r6oqjT2qx6BFUsXpnILPw2XRtXlkYv37BLu4rRgZ7qc+D
-Afo+DwE5y6d9t9ebOL0UjvgveEysSY3VksxCcjtWru+wN/bjPbET1VFJUrfbMyGf
-y+JN6EsaYWeKmGsk5T5pZ5XczMBC+A==
-=kG7z
------END PGP SIGNATURE-----
-
---wWcrkmaG6Bl+vyW8--
-
-
---===============8459926636521360862==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8459926636521360862==--
-
+1NogMjAyMi8xMC8yMSAxNTo1NywgTGkgWmV0YW8g0LS1wDoKSGksCj4gVGhlcmUgaXMgYSBudWxs
+LXB0ci1kZXJlZiB3aGVuIHRlc3RpbmcgdGhlIHViaWJsb2NrIHRvb2xzOgo+Cj4gICAgS0FTQU46
+IG51bGwtcHRyLWRlcmVmIGluIHJhbmdlIFsweDAwMDAwMDAwMDAwMDAwNDAtMHgwMDAwMDAwMDAw
+MDAwMDQ3XQo+ICAgIENQVTogMSBQSUQ6IDIyOTkgQ29tbTogdWJpYmxvY2sgTm90IHRhaW50ZWQK
+PiAgICA2LjEuMC1yYzEtMDAwMDItZ2ViYjI0YWY4Yzg3Mi1kaXJ0eSAjMTIKPiAgICBIYXJkd2Fy
+ZSBuYW1lOiBRRU1VIFN0YW5kYXJkIFBDIChpNDQwRlggKyBQSUlYLCAxOTk2KSwKPiAgICBCSU9T
+IDEuMTQuMC0xLmZjMzMgMDQvMDEvMjAxNAo+ICAgIFJJUDogMDAxMDp1YmlibG9ja19jcmVhdGUu
+Y29sZCsweDE3NS8weDFiNSBbdWJpXQo+ICAgIC4uLgo+ICAgIENhbGwgVHJhY2U6Cj4gICAgIHZv
+bF9jZGV2X2lvY3RsKzB4NmNlLzB4ODcwIFt1YmldCj4gICAgIF9feDY0X3N5c19pb2N0bCsweDEx
+ZC8weDE3MAo+ICAgICBkb19zeXNjYWxsXzY0KzB4MzUvMHg4MAo+ICAgICBlbnRyeV9TWVNDQUxM
+XzY0X2FmdGVyX2h3ZnJhbWUrMHg0Ni8weGIwCj4gICAgUklQOiAwMDMzOjB4N2ZkOTE0MTIzMGFi
+Cj4KPiB3aGVuIGJsa19tcV9hbGxvY190YWdfc2V0KCkgcmV0dXJucyBhbiBlcnJvciwgdGhlIGRl
+di0+Z2QgaXMKPiB1bmluaXRpYWxpemVkLCB0aGF0IGNhdXNpbmcgbnVsbC1wdHItZGVyZWYgZmF1
+bHQuCj4KPiBGaXggaXQgYnkgcmVwbGFjaW5nIHRoZSBkaXNrX3RvX2RldihkZXYtPmdkKSB3aXRo
+IE5VTEwsIHRoYXQKPiB3aWxsIHByaW50ayAiKE5VTEwgZGV2aWNlICopOiAuLi4iIG1lc3NhZ2Ug
+aWYgYmxrX21xX2FsbG9jX3RhZ19zZXQoKQo+IHJldHVybnMgYW4gZXJyb3IuCj4KPiBGaXhlczog
+Nzc1NjdiMjVhYjlmICgidWJpOiB1c2UgYmxrX21xX2FsbG9jX2Rpc2sgYW5kIGJsa19jbGVhbnVw
+X2Rpc2siKQo+IFNpZ25lZC1vZmYtYnk6IExpIFpldGFvIDxsaXpldGFvMUBodWF3ZWkuY29tPgo+
+IC0tLQo+ICAgZHJpdmVycy9tdGQvdWJpL2Jsb2NrLmMgfCAyICstCj4gICAxIGZpbGUgY2hhbmdl
+ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L210ZC91YmkvYmxvY2suYyBiL2RyaXZlcnMvbXRkL3ViaS9ibG9jay5jCj4gaW5kZXggNzVlYWVj
+Yzg2MzlmLi45NjI1ZGMyZjQ1ZTIgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvdWJpL2Jsb2Nr
+LmMKPiArKysgYi9kcml2ZXJzL210ZC91YmkvYmxvY2suYwo+IEBAIC00MDgsNyArNDA4LDcgQEAg
+aW50IHViaWJsb2NrX2NyZWF0ZShzdHJ1Y3QgdWJpX3ZvbHVtZV9pbmZvICp2aSkKPiAgIAo+ICAg
+CXJldCA9IGJsa19tcV9hbGxvY190YWdfc2V0KCZkZXYtPnRhZ19zZXQpOwo+ICAgCWlmIChyZXQp
+IHsKPiAtCQlkZXZfZXJyKGRpc2tfdG9fZGV2KGRldi0+Z2QpLCAiYmxrX21xX2FsbG9jX3RhZ19z
+ZXQgZmFpbGVkIik7Cj4gKwkJZGV2X2VycihOVUxMLCAiYmxrX21xX2FsbG9jX3RhZ19zZXQgZmFp
+bGVkIik7CgonZGV2X2VycihOVUxMLCAuLi4nIGxvb2tzIHdpZXJkLiBTaW5jZSBkZXYgaXMgTlVM
+TCwgdGhlcmUgaXMgbm8gdXNlZnVsIAppbmZvcm1hdGlvbiBmcm9tIHRoZSBkZXZpY2UsIEkgcHJl
+ZmVyIHRvIHJlcGxhY2UgJ2Rldl9lcnInIHdpdGggJ3ByX2VycicuCgoKPiAgIAkJZ290byBvdXRf
+ZnJlZV9kZXY7Cj4gICAJfQo+ICAgCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
