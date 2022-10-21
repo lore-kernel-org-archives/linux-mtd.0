@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 665BFC43217
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 02:24:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62A0DC4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 02:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9Dr8dxG+06+jM+MBXylQw31WBCqrs9WfzU0WQ3pSZuk=; b=XAsZlNqEqrRX7a
-	vvSvn/XSbtOQs5oJHIvxs+9YdKV+Lu0itPB/coVEKSZZaAP9Jhs1M6OCKGQbrSDEDzwkGrObJbEuh
-	jZWHy4Vj0/k1G6Xi1cx/QZyGEggG9SRAyr2ykPTcIqEBPGWxJyb98amUocaEfzmodCOQtb7AEUuzV
-	IUc5hCnDNoBStjBSmO41IBcHFRkp1vaEtEm3rFCr/pU8ALMUfOSkHyFBzS4v3+1ztm1DW06kXK8ad
-	jtL1WHn/lFFPymjZ+tPSvnemP/CibHGUpwXdOKFdf3nE08U4IyiPpD4Guds4tEeaIJdtT3pQaelOi
-	RMb2WgaADMeQ96SKxz4w==;
+	List-Owner; bh=Q5f1ndbSS3NGqQjLOCLlvL1RTVTloI0YTEdnj1nxReI=; b=Iz3TELIvJiDTSy
+	JAlBUuUvIjY4OJgduzzwDIzg7qt5iPqIdlQxRmz/9W8ANb2+fZ3IW9t2fAbBV89JoLcizpieRnuf+
+	e9dh26NJX2PY8bif78M/7tshLVbzKSxTp4Ar2EmnoWg3r3VNP81TUhISwP+3wc0IVvYpR75Zcf1JX
+	1i1QX9i/dSAbkSXk+15KHc03FUum5ZjrWsbEQu3TiB5lUxAuduG9xgz6NJZcaHfIRhUCwRiK7DUeG
+	oSALjOGXDtD2B3Pdd2zQs0QSymfLgqXPyzqSlPJmYGjJ7VnTsDrdjGjd0QacenFNj0LYhpLi8ydZ8
+	4iRhBky57J0VV76OE9LQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olhhL-004Pxj-Sn; Fri, 21 Oct 2022 02:23:47 +0000
+	id 1olhhc-004QBz-2d; Fri, 21 Oct 2022 02:24:04 +0000
 Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olhgQ-004PJa-Ow
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 02:22:53 +0000
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.57])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MtpCN18FmzHvCF;
-	Fri, 21 Oct 2022 10:22:40 +0800 (CST)
+	id 1olhgs-004Pd4-2g
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 02:23:19 +0000
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mtp6h5RF0zVhyp;
+	Fri, 21 Oct 2022 10:18:36 +0800 (CST)
 Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 21 Oct 2022 10:22:44 +0800
+ 15.1.2375.31; Fri, 21 Oct 2022 10:22:41 +0800
 Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
  (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 21 Oct
- 2022 10:22:43 +0800
+ 2022 10:22:40 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <linux-kernel@vger.kernel.org>, <qemu-devel@nongnu.org>,
 	<linux-f2fs-devel@lists.sourceforge.net>, <linux-erofs@lists.ozlabs.org>,
@@ -47,9 +47,9 @@ CC: <gregkh@linuxfoundation.org>, <rafael@kernel.org>, <somlo@cmu.edu>,
 	<jlbec@evilplan.org>, <joseph.qi@linux.alibaba.com>,
 	<akpm@linux-foundation.org>, <alexander.deucher@amd.com>,
 	<luben.tuikov@amd.com>, <richard@nod.at>, <liushixin2@huawei.com>
-Subject: [PATCH 08/11] erofs: fix possible memory leak in erofs_init_sysfs()
-Date: Fri, 21 Oct 2022 10:20:59 +0800
-Message-ID: <20221021022102.2231464-9-yangyingliang@huawei.com>
+Subject: [PATCH 05/11] class: fix possible memory leak in __class_register()
+Date: Fri, 21 Oct 2022 10:20:56 +0800
+Message-ID: <20221021022102.2231464-6-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221021022102.2231464-1-yangyingliang@huawei.com>
 References: <20221021022102.2231464-1-yangyingliang@huawei.com>
@@ -59,8 +59,8 @@ X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpemm500007.china.huawei.com (7.185.36.183)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221020_192251_042244_6D3D10D6 
-X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-CacheID: sfid-20221020_192318_498703_FB1647FF 
+X-CRM114-Status: UNSURE (   9.22  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,46 +78,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Inject fault while loading module, kset_register() may fail,
-if it fails, but the refcount of kobject is not decreased to
-0, the name allocated in kobject_set_name() is leaked. Fix
-this by calling kset_put(), so that name can be freed in
-callback function kobject_cleanup().
+Inject fault while loading module (e.g. pktcdvd.ko), kset_register() may
+fail in __class_register(), if it fails, but the refcount of kobject is
+not decreased to 0, the name allocated in kobject_set_name() is leaked.
+To fix this by calling kfree_const().
 
-unreferenced object 0xffff888101d228c0 (size 8):
-  comm "modprobe", pid 276, jiffies 4294722700 (age 13.151s)
+unreferenced object 0xffff888102fa8190 (size 8):
+  comm "modprobe", pid 502, jiffies 4294906074 (age 49.296s)
   hex dump (first 8 bytes):
-    65 72 6f 66 73 00 ff ff                          erofs...
+    70 6b 74 63 64 76 64 00                          pktcdvd.
   backtrace:
-    [<00000000e2a9a4a6>] __kmalloc_node_track_caller+0x44/0x1b0
-    [<00000000b8ce02de>] kstrdup+0x3a/0x70
-    [<000000004a0e01d2>] kstrdup_const+0x63/0x80
-    [<00000000051b6cda>] kvasprintf_const+0x149/0x180
-    [<000000004dc51dad>] kobject_set_name_vargs+0x56/0x150
-    [<00000000b30f0bad>] kobject_set_name+0xab/0xe0
+    [<00000000e7c7703d>] __kmalloc_track_caller+0x1ae/0x320
+    [<000000005e4d70bc>] kstrdup+0x3a/0x70
+    [<00000000c2e5e85a>] kstrdup_const+0x68/0x80
+    [<000000000049a8c7>] kvasprintf_const+0x10b/0x190
+    [<0000000029123163>] kobject_set_name_vargs+0x56/0x150
+    [<00000000747219c9>] kobject_set_name+0xab/0xe0
+    [<0000000005f1ea4e>] __class_register+0x15c/0x49a
 
-Fixes: 168e9a76200c ("erofs: add sysfs interface")
+If class_add_groups() fails, it need delete kobject and free its name,
+besides, subsys_private also need be freed.
+
+unreferenced object 0xffff888037274000 (size 1024):
+  comm "modprobe", pid 502, jiffies 4294906074 (age 49.296s)
+  hex dump (first 32 bytes):
+    00 40 27 37 80 88 ff ff 00 40 27 37 80 88 ff ff  .@'7.....@'7....
+    00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00  .....N..........
+  backtrace:
+    [<00000000151f9600>] kmem_cache_alloc_trace+0x17c/0x2f0
+    [<00000000ecf3dd95>] __class_register+0x86/0x49a
+
+It can not call kset_put() or kset_unregister() in error path, because
+the 'cls' will be freed in callback function class_release() and it also
+freed in error path, it will cause double free.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- fs/erofs/sysfs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/base/class.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/fs/erofs/sysfs.c b/fs/erofs/sysfs.c
-index 783bb7b21b51..653b35001bc5 100644
---- a/fs/erofs/sysfs.c
-+++ b/fs/erofs/sysfs.c
-@@ -254,8 +254,10 @@ int __init erofs_init_sysfs(void)
- 	kobject_set_name(&erofs_root.kobj, "erofs");
- 	erofs_root.kobj.parent = fs_kobj;
- 	ret = kset_register(&erofs_root);
--	if (ret)
-+	if (ret) {
-+		kset_put(&erofs_root);
- 		goto root_err;
-+	}
+diff --git a/drivers/base/class.c b/drivers/base/class.c
+index 64f7b9a0970f..87de0a04ee9b 100644
+--- a/drivers/base/class.c
++++ b/drivers/base/class.c
+@@ -187,11 +187,17 @@ int __class_register(struct class *cls, struct lock_class_key *key)
  
- 	ret = kobject_init_and_add(&erofs_feat, &erofs_feat_ktype,
- 				   NULL, "features");
+ 	error = kset_register(&cp->subsys);
+ 	if (error) {
++		kfree_const(cp->subsys.kobj.name);
+ 		kfree(cp);
+ 		return error;
+ 	}
+ 	error = class_add_groups(class_get(cls), cls->class_groups);
+ 	class_put(cls);
++	if (error) {
++		kobject_del(&cp->subsys.kobj);
++		kfree_const(cp->subsys.kobj.name);
++		kfree(cp);
++	}
+ 	return error;
+ }
+ EXPORT_SYMBOL_GPL(__class_register);
 -- 
 2.25.1
 
