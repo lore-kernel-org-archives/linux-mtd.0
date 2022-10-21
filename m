@@ -4,89 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5092C43217
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 06:01:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72335C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 06:45:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1DY8wdPiOLj5svuuObWvfFB2GG1JDiK4afz50q5xMIo=; b=11uRKmqyJqi3x0
-	nckPD2KCD1ZvTotyB4V2RoJIVy0jvEDyn+G9rNf4hBxzomu3qyIBISOKMi/VkLpDUaPVigtblM8cY
-	EyWP0nOG+UVUF/kPOgxQ39xbgmblDa9vKiVW+sBDcl05ZbkMh0Gkwhwi3vT5D2KRdxRaImispHieE
-	pHZSDGk0Txi5j3dsg7YJdv7T9YRxmopc5FiSSmOn7ShFOX1CmDmA4Sa/iatW8YdqrUPXtQBowY2vb
-	rEYEXCgNV1jmarlrwF1kDSZEVyNemVEcVwFcbTzW219tkP8cP2GhuFpTokffZASXFVWnCf4vwm//L
-	1M2hDU7lhHuluFNs4yQg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LCOxP4+iaEJM51JymGUS86CAY6y+ClP8xy75QSjE7Po=; b=Iao3LK3aJov5YXkOEoZ2AUX2LC
+	nH0kgr5sYkfChXZcoPrRWqjdqWFedox+SSPWAMu70ghPGTTCm1YPK5uT2j1hVlERIAV75utlnY+ge
+	nmT+/AB/mi58HGgV1JFaWnA5fPztR/FHlhdc+DLHcndyZk0ESEEOYeku8gzWjme09hI+Vpcu+tgYr
+	GfDQcAybTFcyIXXQwc8o9Q49cdvxEhDHwWf/O1/rbsQHssiImXIH4o4b3PvYQELtHnsh6QfKwoySU
+	gIbkTf7ZCF7M5KmEj6h/inosSdVa1oMbTtnF2Rg6gXjOyD4GecAn84F3UZSgN/Pg7Red69VHKbecx
+	cdw4wgNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oll5f-005YeF-L7; Fri, 21 Oct 2022 06:01:07 +0000
-Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
+	id 1ollm1-005kC9-LD; Fri, 21 Oct 2022 06:44:53 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oll5Z-005Yap-MT
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 06:01:05 +0000
-Received: by mail-lf1-x133.google.com with SMTP id d6so3287031lfs.10
-        for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2022 23:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RJ9xIMP9KJSnyP3kmEcAZFEOTKsj48z0+6bhrdbyYmQ=;
-        b=d1Ic9JTyYswqZsEL5SydOKhL435NQPu3xf45ckQx+lh0zbljdQXq32zSHLZSdZhfGK
-         0NTAOfVvX/A9wGkQREP8rf4nIZ2eIZ5dknqfY6MXMR5wSF0tSbL4i443zXJDCpCu3dM9
-         LLnBbM0HkC7bE2lEC8Iy4RpSsR3VM4UbZ+Zpsx8RVHF/cPNO94o8MVbVdBkF3vhnNQwW
-         mlkB2aOzr2RpA5I+GZX0sodWgJkknZuegcQYzVXIU+R998qS1zhMaoGJPt1ym+bJXFnj
-         Rx7DyriZhROpSd0A7uzEvPKl8bRHVk8I3Jy7cM6KPFBLtnciJLQ99aHoQQTYutgufa8r
-         Qpzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RJ9xIMP9KJSnyP3kmEcAZFEOTKsj48z0+6bhrdbyYmQ=;
-        b=vh4Mw10jRVLnA5CSWMO3th/RMczPwbZljBL9sV8xJAaYKEjtoIG3YS8j+Saeo24BT1
-         dKREOeEl/pZoZgXH8+lFUBPQ1mfMEtNNVK8EXVbxTWvzGfoXCcR053FRHQ28d6Tj/oWN
-         f9AAZnVGreId0n6HK7g74HnuK9ASRjoodLm9xM8y/o0QbgtYaGfSQn15OekwN/cp3P/3
-         kbC2Vz225q6oT+OmC5gW7GHgXKOtHHZP+apRdnb9JKf2YGbXBS0q9A7hRo1RFqD5ItBk
-         kFo2iHcwZ6FxzY6ANnEpJjHum+2ikV21P1KUCLDiPfvRAxms5QiM4i/cnD3k3VauIuE5
-         pozw==
-X-Gm-Message-State: ACrzQf0jbTXKd3V4gB+FdlrJ2XDM/x8brazHkjmF4u0FrcHkzPN5bKsw
-	o+rTM/Q985eHbjkTNIjob9k=
-X-Google-Smtp-Source: AMsMyM6B1qDtmd+KvrXozhnnD4v6SqdWdIOD/IrSleQ9kdprEflFZM9GH+ldehIYgYyV0Ptm4xo4Qg==
-X-Received: by 2002:a05:6512:11e9:b0:49f:d530:9f25 with SMTP id p9-20020a05651211e900b0049fd5309f25mr6513590lfs.533.1666332058608;
-        Thu, 20 Oct 2022 23:00:58 -0700 (PDT)
-Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.gmail.com with ESMTPSA id p6-20020ac246c6000000b0049e9122bd0esm3021950lfo.114.2022.10.20.23.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Oct 2022 23:00:58 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	id 1olllx-005kAq-JA; Fri, 21 Oct 2022 06:44:50 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3C70F61DD2;
+	Fri, 21 Oct 2022 06:44:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBC4FC433D7;
+	Fri, 21 Oct 2022 06:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1666334687;
+	bh=dg+igT/kH5vNLile/55ugMghQ6bHOl5tdBoCQSBXYac=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AGeMyJeg87UlxSe5k2XIw2g27XDq3ZEoGhJylOgn/Pc+deCE0ymZDPF3pyhTXbf62
+	 BkfHG3/Jo3vHInZD0+8lFJ/J32KahCu6OAm/wJgPFxd9F/HemwazCjH13UA8hJ60mM
+	 b7/YE//cHLp3hSWuNDGNIrsZr73GEPOrbsw5jMJf/PXtSzJrG6IggCpuVSgIjAuv7T
+	 mkRnUX2cWBckGEDpW/KQuEh4jbsZI+7HVNHZJlkU6jCmsTyk4td814k6t0S+O3WWSh
+	 8xaaW5CBclarLFx8oWJMBlgIHD63a03DVy9s1ojqs8YIrBNztmRJ02YHmW3QFs0F8Q
+	 AkwK4fKzudFJw==
+Date: Fri, 21 Oct 2022 08:44:44 +0200
+From: Wolfram Sang <wsa@kernel.org>
+To: Adam Borowski <kilobyte@angband.pl>
+Cc: linux-kernel@lists.debian.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
+	David Howells <dhowells@redhat.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Mikhail Zhilkin <csharper2005@gmail.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2 2/2] mtd: core: set ROOT_DEV for partitions marked as rootfs in DT
-Date: Fri, 21 Oct 2022 08:00:51 +0200
-Message-Id: <20221021060051.2508-2-zajec5@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221021060051.2508-1-zajec5@gmail.com>
-References: <20221021060051.2508-1-zajec5@gmail.com>
+	linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+	Yong Zhi <yong.zhi@intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Bingbu Cao <bingbu.cao@intel.com>, Dan Scally <djrscally@gmail.com>,
+	Tianshu Qiu <tian.shu.qiu@intel.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, Khalil Blaiech <kblaiech@nvidia.com>,
+	Asmaa Mnebhi <asmaa@nvidia.com>, linux-i2c@vger.kernel.org,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Brent Lu <brent.lu@intel.com>
+Subject: Re: [PATCH 0/6] a pile of randconfig fixes
+Message-ID: <Y1I/3KPxSI1voRHh@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Adam Borowski <kilobyte@angband.pl>, linux-kernel@lists.debian.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
+	David Howells <dhowells@redhat.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+	Yong Zhi <yong.zhi@intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Bingbu Cao <bingbu.cao@intel.com>, Dan Scally <djrscally@gmail.com>,
+	Tianshu Qiu <tian.shu.qiu@intel.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, Khalil Blaiech <kblaiech@nvidia.com>,
+	Asmaa Mnebhi <asmaa@nvidia.com>, linux-i2c@vger.kernel.org,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Brent Lu <brent.lu@intel.com>
+References: <20221020221749.33746-1-kilobyte@angband.pl>
 MIME-Version: 1.0
+In-Reply-To: <20221020221749.33746-1-kilobyte@angband.pl>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221020_230104_125325_E39846E3 
-X-CRM114-Status: GOOD (  14.30  )
+X-CRM114-CacheID: sfid-20221020_234449_748224_045604BF 
+X-CRM114-Status: GOOD (  12.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,33 +124,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5332062168819409145=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKVGhpcyBhZGRzIHN1cHBv
-cnQgZm9yICJsaW51eCxyb290ZnMiIGJpbmRpbmcgdGhhdCBpcyB1c2VkIHRvIG1hcmsgZmxhc2gK
-cGFydGl0aW9uIGNvbnRhaW5pbmcgcm9vdGZzLiBJdCdzIHVzZWZ1bCBmb3IgZGV2aWNlcyB1c2lu
-ZyBkZXZpY2UgdHJlZQp0aGF0IGRvbid0IGhhdmUgYm9vdGxvYWRlciBwYXNzaW5nIHJvb3QgaW5m
-byBpbiBjbWRsaW5lLgoKU2lnbmVkLW9mZi1ieTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxl
-Y2tpLnBsPgotLS0KVjI6IFVzZSAibGludXgscm9vdGZzIiBhcyBtb3JlIGFjY3VyYXRlLiBUaGFu
-a3MgUm9iLgotLS0KIGRyaXZlcnMvbXRkL210ZGNvcmUuYyB8IDcgKysrKysrKwogMSBmaWxlIGNo
-YW5nZWQsIDcgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZGNvcmUu
-YyBiL2RyaXZlcnMvbXRkL210ZGNvcmUuYwppbmRleCAwNzI0OWFmNGY4OTAuLjAzNGIwNmFmZjY2
-MCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbXRkY29yZS5jCisrKyBiL2RyaXZlcnMvbXRkL210
-ZGNvcmUuYwpAQCAtMjgsNiArMjgsNyBAQAogI2luY2x1ZGUgPGxpbnV4L2xlZHMuaD4KICNpbmNs
-dWRlIDxsaW51eC9kZWJ1Z2ZzLmg+CiAjaW5jbHVkZSA8bGludXgvbnZtZW0tcHJvdmlkZXIuaD4K
-KyNpbmNsdWRlIDxsaW51eC9yb290X2Rldi5oPgogCiAjaW5jbHVkZSA8bGludXgvbXRkL210ZC5o
-PgogI2luY2x1ZGUgPGxpbnV4L210ZC9wYXJ0aXRpb25zLmg+CkBAIC03MzUsNiArNzM2LDEyIEBA
-IGludCBhZGRfbXRkX2RldmljZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKIAkJbm90LT5hZGQobXRk
-KTsKIAogCW11dGV4X3VubG9jaygmbXRkX3RhYmxlX211dGV4KTsKKworCWlmIChvZl9maW5kX3By
-b3BlcnR5KG10ZF9nZXRfb2Zfbm9kZShtdGQpLCAibGludXgscm9vdGZzIiwgTlVMTCkpIHsKKwkJ
-cHJfaW5mbygibXRkOiBzZXR0aW5nIG10ZCVkICglcykgYXMgcm9vdCBkZXZpY2VcbiIsIG10ZC0+
-aW5kZXgsIG10ZC0+bmFtZSk7CisJCVJPT1RfREVWID0gTUtERVYoTVREX0JMT0NLX01BSk9SLCBt
-dGQtPmluZGV4KTsKKwl9CisKIAkvKiBXZSBfa25vd18gd2UgYXJlbid0IGJlaW5nIHJlbW92ZWQs
-IGJlY2F1c2UKIAkgICBvdXIgY2FsbGVyIGlzIHN0aWxsIGhvbGRpbmcgdXMgaGVyZS4gU28gbm9u
-ZQogCSAgIG9mIHRoaXMgdHJ5XyBub25zZW5zZSwgYW5kIG5vIGJpdGNoaW5nIGFib3V0IGl0Ci0t
-IAoyLjM0LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+--===============5332062168819409145==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ASNnxeSggHlth0r3"
+Content-Disposition: inline
+
+
+--ASNnxeSggHlth0r3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+
+> I've been doing randconfig build tests for quite a while, here's a pile of
+> fixes.  I'm not sure what's the best way to submit these: do you folks
+> prefer a series like this, or a number of individual submissions?
+
+You sent the one for i2c-mlxbf seperately, which I applied now.
+
+
+--ASNnxeSggHlth0r3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmNSP9wACgkQFA3kzBSg
+KbbjSg//Qpjk7lLoKdOzvsdmL0Mq2o5hT22qP9eF8TiQ3pE1B3B9C9AsdWQ7FjOB
+ClXU5SlQmHPj//fgEfmr9Vj2bKBssiA4QkjiF/fcjthcBqG2j3tLeQPRmFr6qcd7
+a873ogKipCuWcb7wHngTM9a7820xTtzm6AUCGCfWQHKiXjdCWsSdBoSEyHDocLiz
+CVpTOsOeH+pC5Sa1WwXdONrrOMoA1Cttpxu8Y/ZCLzyqQ4M+WL5j17g/jMihywZ3
+hg4uduAbJ9Oq2gWXAi8JvnNLPYE5RdYjk3d0j4jFxyxSD8DeIOjp1tw/UT6VSoWK
+n+ygnkytK+33BTuEoIKKEfl3O5XTYtERfroHf3trO+xaIMKqa06p3+qPM5+2Rnqx
+cZ9cfqYqw+vCs/zkbtzWArA81N4O/QBDhNe4ktHyFkChCAN8dJSf0Yx5QM1oY50f
+Vkj0kWe6nA34LURe2MazhrLSQP7ht/8WkC1l1efH+2gHOdNBmxsr3fqOvYznCziB
+BWT40k8BRRdByRFICeSeS001FW+AUlbpE8q637iYCR8sGyqxJmCCb541W35o2gdT
+5ciiIlzkqA3NudtWem09SR8UuBv9wXaiLx8qQXd72b/Na86U8dT3Bc8DKthJFWn6
+59ubRiZuumctWs6sE7kZ9aPXpPpci4isfJAhNOCtgJ7+pC+g65E=
+=s3Uy
+-----END PGP SIGNATURE-----
+
+--ASNnxeSggHlth0r3--
+
+
+--===============5332062168819409145==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============5332062168819409145==--
+
