@@ -4,61 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24E7BC433FE
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 22:12:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9904C38A2D
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 22:34:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PNw+is5Gj334wt4WAyal2IQRR5HwsVo0PkiQSy6y96w=; b=vsGOeARRzAhRBW
-	kXORIsLN4I6dyP8lACHEWQlo1KGqMjRRKO44MwTqmw9J6TObzOp+MxpApz+a6o98s8dKmB/n/rsXc
-	tyQpwLj6FZCINTmMKdeOEkVt5Qn14DeTf2IPSHfriO0d8YOZJPaaO/j0plwuyVp/0wn7Z6h3LGm55
-	7ki+uBHHPRgrwRAz+3GcGsTlxBdSKEnyHlJ5ScAjWcihSZnAvw6PCUPGCZ18J7OQGXPYwe3zNp4pf
-	NVKKGLef05dhAGWIhsMffnk3ecazsDJdWeDKca1XddFpt3WLE5fkazw1p5m8Q5qdoeBTc68g3L0S7
-	OuuQAcMUKXRlVQB7Qimg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=dGnm/njn2bmj5D1SBYDdw+jkEceyLZYTfuOYBtOIhh8=; b=jj8xVN/cutU96XbeU3y9eZhEqx
+	HB6jEXlxSrXMWoRcwBUPv99DU6kAVfBHoSeXWwTKPrWICXWsU4GeovQrpF3xBbAkLkpmPMtkPDJPq
+	WTkQ0WWDD3l+VjpREO1POpfcnILkMnUFg6XmYXbWfOaJwHBQVXndjYAwKdZqzvOL8rtsO2i+4yuSl
+	Rkr2jyZ7ScsaCKiOpBFyd7q8X0sGmVubd8mZwxBRdCe6opZUNJT9+6sfHrt75GbFnu1RvXnzPjW+7
+	VNK111z4sFbvmhQXO1r+GhTUyxuPDv9tL3FbVoX1WmWklibUbJOFaP+TtFTGz8pkwEpwfiRzy7koj
+	k3xOju6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1om0FP-00A8sz-Tc; Fri, 21 Oct 2022 22:12:11 +0000
-Received: from mail-oo1-f42.google.com ([209.85.161.42])
+	id 1om0aC-00ADrA-Lb; Fri, 21 Oct 2022 22:33:40 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1om0FN-00A8sV-95; Fri, 21 Oct 2022 22:12:10 +0000
-Received: by mail-oo1-f42.google.com with SMTP id g15-20020a4a894f000000b0047f8e899623so629221ooi.5;
-        Fri, 21 Oct 2022 15:12:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+7kJ8nWws4CdYxlh1B9Atp5y9g2i8sKYiDiGJZXRmEI=;
-        b=SgdaT67lpXD6JOyCi415kR4lh7AXTSQb8ZCSOf/oVnGcGFNjpm+szlszQSu2S71u4j
-         JNSUgCdL0Tk9//sk+npYAtN3DYeRkWgoUu9/F7ZDvPcjvDap4qGp6qEiwL3xJwWU11Ad
-         KQN4dutVTEY9WKhzsEDYlVsr03sBjrfCKe4wC9TmhnjDgpZHnUH4CImuvLzNUken7Hkl
-         dZN9TsJHOS9siHpHOzThiK1MQo8kDUPPNnKnsyDotOC4TsDTMfSaJitsrzxezq1RwuLg
-         QEKTKGjxlqkerBD3SBpCZuS1WLg1WhXUsBF9DrKVeniuNASmG2rI02rWzV8cTD6yfUD/
-         FeqQ==
-X-Gm-Message-State: ACrzQf0DvMmPKFmFEda6knzpxlwjchwJGhEKACa9IgbkWTWjRZJdDGCO
-	udmRmGA7uGwFeCXP1qveZg==
-X-Google-Smtp-Source: AMsMyM44mYEduOCve2TkVYfwaNjYyUW48/ORzqaTp28KfbVGQNZ7AEpDcq9TzSF6OK3JoocFYxlbxw==
-X-Received: by 2002:a05:6820:168b:b0:476:2e4c:6cf1 with SMTP id bc11-20020a056820168b00b004762e4c6cf1mr10032684oob.69.1666390327919;
-        Fri, 21 Oct 2022 15:12:07 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id j3-20020acab903000000b0035179b87ba5sm1595444oif.20.2022.10.21.15.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Oct 2022 15:12:07 -0700 (PDT)
-Received: (nullmailer pid 516244 invoked by uid 1000);
-	Fri, 21 Oct 2022 22:12:08 -0000
-From: Rob Herring <robh@kernel.org>
-To: Vadym Kochan <vadym.kochan@plvision.eu>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Andrew Lunn <andrew@lunn.ch>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Elad Nachman <enachman@marvell.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Gregory Clement <gregory.clement@bootlin.com>
-In-Reply-To: <20221021194552.683-2-vadym.kochan@plvision.eu>
-References: <20221021194552.683-1-vadym.kochan@plvision.eu> <20221021194552.683-2-vadym.kochan@plvision.eu>
-Message-Id: <166639031801.513906.6752849188940196302.robh@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
-Date: Fri, 21 Oct 2022 17:12:08 -0500
+	id 1om0a0-00ADog-5q; Fri, 21 Oct 2022 22:33:29 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id BA0DF61F94;
+	Fri, 21 Oct 2022 22:33:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4070CC433C1;
+	Fri, 21 Oct 2022 22:33:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1666391607;
+	bh=g5SUbc3dxCone79caS0M2AEu5MpWd5JFL171Tn/U2d4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YtT4bLoLT3AdAlNhZAuWY10vexMQTJrTFgGjHybRvOmmgqCsx8pKtm0zVkueeQbLC
+	 K1m/sojgD3EMuFX/rcQI58EnKk68AVJNtO9JiMKs/6ZwTgDRov4jmgc2ydvStn23ag
+	 GvR7y/2LAlBe2M1nuLAhW5vkosztclzcGnUgYIgwqC81NmFmc1up42azXQpER9T20A
+	 CLWBmZzb96celcpPnCzalJVcG3hOZMKp8B00T3IhYbMWjwpGhvoTMm1M/b4lZzePg3
+	 YQlPgGhd1URgg6MqJfR9Yeai00VsTcYaYL1I9dJTOVXHN4hE0/5hMAK8/MoHnqxz4X
+	 OUGBYYU9we38Q==
+Date: Sat, 22 Oct 2022 00:33:18 +0200
+From: Wolfram Sang <wsa@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
+	Simtec Linux Team <linux@simtec.co.uk>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Sylwester Nawrocki <sylvester.nawrocki@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tomasz Figa <tomasz.figa@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-samsung-soc@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-gpio@vger.kernel.org,
+	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+	linux-clk@vger.kernel.org
+Subject: Re: [PATCH 02/21] ARM: s3c: remove s3c24xx specific hacks
+Message-ID: <Y1MeLqsE2fggyhzU@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Arnd Bergmann <arnd@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
+	Simtec Linux Team <linux@simtec.co.uk>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Sylwester Nawrocki <sylvester.nawrocki@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tomasz Figa <tomasz.figa@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-samsung-soc@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-gpio@vger.kernel.org,
+	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+	linux-clk@vger.kernel.org
+References: <20221021202254.4142411-1-arnd@kernel.org>
+ <20221021203329.4143397-2-arnd@kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <20221021203329.4143397-2-arnd@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221021_151209_340290_5A3442AB 
-X-CRM114-Status: GOOD (  11.48  )
+X-CRM114-CacheID: sfid-20221021_153328_312517_3B75131A 
+X-CRM114-Status: GOOD (  15.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,51 +128,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4139468407283362831=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 21 Oct 2022 22:45:49 +0300, Vadym Kochan wrote:
-> Switch the DT binding to a YAML schema to enable the DT validation.
-> 
-> Dropped deprecated compatibles and properties described in txt file.
-> 
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> ---
->  .../bindings/mtd/marvell,nand-controller.yaml | 199 ++++++++++++++++++
->  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 -----------
->  2 files changed, 199 insertions(+), 126 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
->  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+--===============4139468407283362831==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="q4IaRr9rlP9eixcE"
+Content-Disposition: inline
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml:17:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 
-dtschema/dtc warnings/errors:
+--q4IaRr9rlP9eixcE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-doc reference errors (make refcheckdocs):
-MAINTAINERS: Documentation/devicetree/bindings/mtd/marvell-nand.txt
+On Fri, Oct 21, 2022 at 10:27:35PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> A number of device drivers reference CONFIG_ARM_S3C24XX_CPUFREQ or
+> similar symbols that are no longer available with the platform gone,
+> though the drivers themselves are still used on newer platforms,
+> so remove these hacks.
+>=20
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-See https://patchwork.ozlabs.org/patch/
+Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+--q4IaRr9rlP9eixcE
+Content-Type: application/pgp-signature; name="signature.asc"
 
-pip3 install dtschema --upgrade
+-----BEGIN PGP SIGNATURE-----
 
-Please check and re-submit.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmNTHioACgkQFA3kzBSg
+KbYeNA/9HlDxIncjyh8NS2x57Q58pKmrahP7tNy2sriAnglRPdeXjkmitx/PDnHg
+bIozZCPd20DhLP05iEjhC03Z+mkJJjnjo+rhRpAKX8NlI1+pvJXTmfxiAvwkIU3b
+Ra+7NbDwBKiltZo/jJ7QNRjr6bWyZCLx3/0VIEx/ILC+ukZen1jdsJhdPD1/X1b3
+RiA8N9L3oPIcLmesbdb1HDiF5iD5C+2baALIuBeZ9xXwF8uFSsFpq4Qn1/HgpJFu
+AP6+2ksTWEj7H6ARmXOA/u6frOxsWH1kahCSTBB0dtX0gSarueTzo0FxEQsyhkAx
+dgtZB9qGsy7A92ya7u69s+VLgXQyEH3C+JOBW8Ww+faoCz2nk3VFqWjwKy8kqCil
+wgbEHv9oPuQDtlP2lw9ApUxfTkWIWp3v1EfZ7dALMcfSyMjh+kGcYntEhMlD1u3V
+lZrp9wbt5yJoIZ18mFHHbaiVCdcEjwn5fvLHSQ2znhLiyBT6pbWcC7Is5xb2hiF7
+Rl6+VuLynCXX36g/7J8hFkwcKZIa7x95++ksHb908o4tjNKX+6oYSKdbYW1gUhxJ
+yUNJs6W+HsoC0DFOWt71wex8PgRwG3HGkxBKDkd5dmLDcUYlLA9xENa6fH5MVdHI
+37v4yvkdM8L5yq07lG/mJkHC7C/7+kdZ/ahDQsSuIdcAoV1dIPc=
+=za7Y
+-----END PGP SIGNATURE-----
 
+--q4IaRr9rlP9eixcE--
+
+
+--===============4139468407283362831==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4139468407283362831==--
+
