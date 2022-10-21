@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDDF6C433FE
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 08:25:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2389BC4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 08:36:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=m8Rqt1HkhNzGl0jjPCEdGypztORiyKzKOkK9ac1kQg4=; b=vdes12DgS5dR22Qr5ein1Rm66A
-	xoYRA4As+Nnh2FdWHeC/UyXqrShWx5flcmBp4Jzi90PXzfe79SIcJc13oqTZnGWhedkOxHEwUZDA2
-	WAgq3rIZRGSCL4q0NSRKa0L9H7+pc1VLqZVoGcCTuzYejjHa5NNlRiqXh2oSuGNWletccVUsgS7hh
-	iF61r4vsPyiMNA6vSjxXNlB+ogH4mRlhhpoXLrUgqbj0BB7GW2+U9b4j+jjW+gs1XCLUSDFBaVbD4
-	whrNaeJFiElLm9klb4tdQaExFSnijM61MItdQ5piq8lf61dmW2gJsb8u5rLHCWG/L9IpA/7gDty0r
-	QMqffefw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TWF68sSmoMq8qVRq+Vv/0oXvpBd7W265eRj/LU09jCA=; b=BOVxep3CaUsr0P
+	RmFIFaYadPOt4jlxIPEWgoTfpirhGgtoyQR5eSfoeHrDUNIfOkbJauP6VrYlkpBatTUkM4otNV3OO
+	dtN/J3wSlNwscX+Kyo7nsebbbWQbzxs2x7HAnOcglvWsLzHWS2XqOv4s20ZIiapklE5AW+JIx7Gdi
+	HPw81NORqnII8wjFByXOzXM0oLydjkrJNGo0krziLJRMh0Ije6hzbzntQLM3xSF6jRXC1AZDThuew
+	tVY/9ftr/dNH8ncBQ0wVhShpzmoxn0BUnr/z7XcFfXjeQQlxuXDNshKZi+dZXIuh3iOmRodIvC5Sx
+	JDvit3LIgxi3sVjhEiBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olnKv-006KR7-5V; Fri, 21 Oct 2022 08:25:01 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1olnVl-006PSk-VM; Fri, 21 Oct 2022 08:36:14 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olnKr-006KOi-BB
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 08:24:59 +0000
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.55])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mty7v25HnzVj06;
-	Fri, 21 Oct 2022 16:20:11 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 21 Oct 2022 16:24:25 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 21 Oct 2022 16:24:24 +0800
+	id 1olnVi-006PQW-0z
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 08:36:11 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 95B30B82B63;
+	Fri, 21 Oct 2022 08:36:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C57E2C433D6;
+	Fri, 21 Oct 2022 08:36:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1666341367;
+	bh=VYkxOdyqZTRP94uFOMrKlhrYPkv6+oVeaJOCigiokeE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=0LHArjuO/emmogeedg4sidpH81EIC1oFajIQk20rr9Km/Y0ewObOQB0i43jXid6V8
+	 MEWVl4mxIE2auEWLdOFh5S0zN7a5cdswL8kZv1F5sHrcBCX+9z8wc+kpjX8Czr8S07
+	 DVGuTf4yxBxOxcpimxvN26SCCFuV+ZffgRv7I1WQ=
+Date: Fri, 21 Oct 2022 10:36:04 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Yang Yingliang <yangyingliang@huawei.com>
+Cc: Luben Tuikov <luben.tuikov@amd.com>, linux-kernel@vger.kernel.org,
+	qemu-devel@nongnu.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-erofs@lists.ozlabs.org, ocfs2-devel@oss.oracle.com,
+	linux-mtd@lists.infradead.org, amd-gfx@lists.freedesktop.org,
+	rafael@kernel.org, somlo@cmu.edu, mst@redhat.com,
+	jaegeuk@kernel.org, chao@kernel.org, hsiangkao@linux.alibaba.com,
+	huangjianan@oppo.com, mark@fasheh.com, jlbec@evilplan.org,
+	joseph.qi@linux.alibaba.com, akpm@linux-foundation.org,
+	alexander.deucher@amd.com, richard@nod.at, liushixin2@huawei.com
 Subject: Re: [PATCH 00/11] fix memory leak while kset_register() fails
-To: Greg KH <gregkh@linuxfoundation.org>, Luben Tuikov <luben.tuikov@amd.com>
-CC: <linux-kernel@vger.kernel.org>, <qemu-devel@nongnu.org>,
-	<linux-f2fs-devel@lists.sourceforge.net>, <linux-erofs@lists.ozlabs.org>,
-	<ocfs2-devel@oss.oracle.com>, <linux-mtd@lists.infradead.org>,
-	<amd-gfx@lists.freedesktop.org>, <rafael@kernel.org>, <somlo@cmu.edu>,
-	<mst@redhat.com>, <jaegeuk@kernel.org>, <chao@kernel.org>,
-	<hsiangkao@linux.alibaba.com>, <huangjianan@oppo.com>, <mark@fasheh.com>,
-	<jlbec@evilplan.org>, <joseph.qi@linux.alibaba.com>,
-	<akpm@linux-foundation.org>, <alexander.deucher@amd.com>, <richard@nod.at>,
-	<liushixin2@huawei.com>
+Message-ID: <Y1JZ9IUPL6jZIQ8E@kroah.com>
 References: <20221021022102.2231464-1-yangyingliang@huawei.com>
- <d559793a-0ce4-3384-e74e-19855aa31f31@amd.com> <Y1IwLOUGayjT9p6d@kroah.com>
-From: Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <0591e66f-731a-5f81-fc9d-3a6d80516c65@huawei.com>
-Date: Fri, 21 Oct 2022 16:24:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ <d559793a-0ce4-3384-e74e-19855aa31f31@amd.com>
+ <Y1IwLOUGayjT9p6d@kroah.com>
+ <0591e66f-731a-5f81-fc9d-3a6d80516c65@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <Y1IwLOUGayjT9p6d@kroah.com>
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <0591e66f-731a-5f81-fc9d-3a6d80516c65@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221021_012457_749229_B8F0BDD3 
-X-CRM114-Status: GOOD (  17.27  )
+X-CRM114-CacheID: sfid-20221021_013610_394442_1CE91EC9 
+X-CRM114-Status: GOOD (  32.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,50 +74,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ck9uIDIwMjIvMTAvMjEgMTM6MzcsIEdyZWcgS0ggd3JvdGU6Cj4gT24gRnJpLCBPY3QgMjEsIDIw
-MjIgYXQgMDE6Mjk6MzFBTSAtMDQwMCwgTHViZW4gVHVpa292IHdyb3RlOgo+PiBPbiAyMDIyLTEw
-LTIwIDIyOjIwLCBZYW5nIFlpbmdsaWFuZyB3cm90ZToKPj4+IFRoZSBwcmV2aW91cyBkaXNjdXNz
-aW9uIGxpbms6Cj4+PiBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzBkYjQ4NmViLTY5Mjct
-OTI3ZS0zNjI5LTk1OGY4ZjIxMTE5NEBodWF3ZWkuY29tL1QvCj4+IFRoZSB2ZXJ5IGZpcnN0IGRp
-c2N1c3Npb24gb24gdGhpcyB3YXMgaGVyZToKPj4KPj4gaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQv
-bGlzdHMvZHJpLWRldmVsL21zZzM2ODA3Ny5odG1sCj4+Cj4+IFBsZWFzZSB1c2UgdGhpcyBsaW5r
-LCBhbmQgbm90IHRoZSB0aGF0IG9uZSB1cCB0aGVyZSB5b3Ugd2hpY2ggcXVvdGVkIGFib3ZlLAo+
-PiBhbmQgd2hvc2UgY29tbWl0IGRlc2NyaXB0aW9uIGlzIHRha2VuIHZlcmJhdGltIGZyb20gdGhl
-IHRoaXMgbGluay4KPj4KPj4+IGtzZXRfcmVnaXN0ZXIoKSBpcyBjdXJyZW50bHkgdXNlZCBpbiBz
-b21lIHBsYWNlcyB3aXRob3V0IGNhbGxpbmcKPj4+IGtzZXRfcHV0KCkgaW4gZXJyb3IgcGF0aCwg
-YmVjYXVzZSB0aGUgY2FsbGVycyB0aGluayBpdCBzaG91bGQgYmUKPj4+IGtzZXQgaW50ZXJuYWwg
-dGhpbmcgdG8gZG8sIGJ1dCB0aGUgZHJpdmVyIGNvcmUgY2FuIG5vdCBrbm93IHdoYXQKPj4+IGNh
-bGxlciBkb2luZyB3aXRoIHRoYXQgbWVtb3J5IGF0IHRpbWVzLiBUaGUgbWVtb3J5IGNvdWxkIGJl
-IGZyZWVkCj4+PiBib3RoIGluIGtzZXRfcHV0KCkgYW5kIGVycm9yIHBhdGggb2YgY2FsbGVyLCBp
-ZiBpdCBpcyBjYWxsZWQgaW4KPj4+IGtzZXRfcmVnaXN0ZXIoKS4KPj4gQXMgSSBleHBsYWluZWQg
-aW4gdGhlIGxpbmsgYWJvdmUsIHRoZSByZWFzb24gdGhlcmUncwo+PiBhIG1lbW9yeSBsZWFrIGlz
-IHRoYXQgb25lIGNhbm5vdCBjYWxsIGtzZXRfcmVnaXN0ZXIoKSB3aXRob3V0Cj4+IHRoZSBrc2V0
-LT5rb2JqLm5hbWUgYmVpbmcgc2V0LS1rb2JqX2FkZF9pbnRlcm5hbCgpIHJldHVybnMgLUVJTlZB
-TCwKPj4gaW4gdGhpcyBjYXNlLCBpLmUuIGtzZXRfcmVnaXN0ZXIoKSBmYWlscyB3aXRoIC1FSU5W
-QUwuCj4+Cj4+IFRodXMsIHRoZSBtb3N0IGNvbW1vbiB1c2FnZSBpcyBzb21ldGhpbmcgbGlrZSB0
-aGlzOgo+Pgo+PiAJa29ial9zZXRfbmFtZSgma3NldC0+a29iaiwgZm9ybWF0LCAuLi4pOwo+PiAJ
-a3NldC0+a29iai5rc2V0ID0gcGFyZW50X2tzZXQ7Cj4+IAlrc2V0LT5rb2JqLmt0eXBlID0ga3R5
-cGU7Cj4+IAlyZXMgPSBrc2V0X3JlZ2lzdGVyKGtzZXQpOwo+Pgo+PiBTbywgd2hhdCBpcyBiZWlu
-ZyBsZWFrZWQsIGlzIHRoZSBtZW1vcnkgYWxsb2NhdGVkIGluIGtvYmpfc2V0X25hbWUoKSwKPj4g
-YnkgdGhlIGNvbW1vbiBpZGlvbSBzaG93biBhYm92ZS4gVGhpcyBuZWVkcyB0byBiZSBtZW50aW9u
-ZWQgaW4KPj4gdGhlIGRvY3VtZW50YXRpb24sIGF0IGxlYXN0LCBpbiBjYXNlLCBpbiB0aGUgZnV0
-dXJlIHRoaXMgaXMgYWJzb2x2ZWQKPj4gaW4ga3NldF9yZWdpc3RlcigpIHJlZGVzaWduLCBldGMu
-Cj4gQmFzZWQgb24gdGhpcywgY2FuIGtzZXRfcmVnaXN0ZXIoKSBqdXN0IGNsZWFuIHVwIGZyb20g
-aXRzZWxmIHdoZW4gYW4KPiBlcnJvciBoYXBwZW5zPyAgSWRlYWxseSB0aGF0IHdvdWxkIGJlIHRo
-ZSBjYXNlLCBhcyB0aGUgb2RkcyBvZiBhIGtzZXQKPiBiZWluZyBlbWJlZGRlZCBpbiBhIGxhcmdl
-ciBzdHJ1Y3R1cmUgaXMgcHJvYmFibHkgc2xpbSwgYnV0IHdlIHdvdWxkIGhhdmUKPiB0byBzZWFy
-Y2ggdGhlIHRyZWUgdG8gbWFrZSBzdXJlLgpJIGhhdmUgc2VhcmNoIHRoZSB3aG9sZSB0cmVlLCB0
-aGUga3NldCB1c2VkIGluIGJ1c19yZWdpc3RlcigpIC0gcGF0Y2ggCiMzLCBrc2V0X2NyZWF0ZV9h
-bmRfYWRkKCkgLSBwYXRjaCAjNApfX2NsYXNzX3JlZ2lzdGVyKCkgLSBwYXRjaCAjNSzCoCBmd19j
-ZmdfYnVpbGRfc3ltbGluaygpIC0gcGF0Y2ggIzYgYW5kIAphbWRncHVfZGlzY292ZXJ5LmMgLSBw
-YXRjaCAjMTAKaXMgZW1iZWRkZWQgaW4gYSBsYXJnZXIgc3RydWN0dXJlLiBJbiB0aGVzZSBjYXNl
-cywgd2UgY2FuIG5vdCBjYWxsIAprc2V0X3B1dCgpIGluIGVycm9yIHBhdGggaW4ga3NldF9yZWdp
-c3RlcigpCml0c2VsZi4KClRoYW5rcywKWWFuZwo+Cj4gdGhhbmtzLAo+Cj4gZ3JlZyBrLWgKPiAu
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Fri, Oct 21, 2022 at 04:24:23PM +0800, Yang Yingliang wrote:
+> =
+
+> On 2022/10/21 13:37, Greg KH wrote:
+> > On Fri, Oct 21, 2022 at 01:29:31AM -0400, Luben Tuikov wrote:
+> > > On 2022-10-20 22:20, Yang Yingliang wrote:
+> > > > The previous discussion link:
+> > > > https://lore.kernel.org/lkml/0db486eb-6927-927e-3629-958f8f211194@h=
+uawei.com/T/
+> > > The very first discussion on this was here:
+> > > =
+
+> > > https://www.spinics.net/lists/dri-devel/msg368077.html
+> > > =
+
+> > > Please use this link, and not the that one up there you which quoted =
+above,
+> > > and whose commit description is taken verbatim from the this link.
+> > > =
+
+> > > > kset_register() is currently used in some places without calling
+> > > > kset_put() in error path, because the callers think it should be
+> > > > kset internal thing to do, but the driver core can not know what
+> > > > caller doing with that memory at times. The memory could be freed
+> > > > both in kset_put() and error path of caller, if it is called in
+> > > > kset_register().
+> > > As I explained in the link above, the reason there's
+> > > a memory leak is that one cannot call kset_register() without
+> > > the kset->kobj.name being set--kobj_add_internal() returns -EINVAL,
+> > > in this case, i.e. kset_register() fails with -EINVAL.
+> > > =
+
+> > > Thus, the most common usage is something like this:
+> > > =
+
+> > > 	kobj_set_name(&kset->kobj, format, ...);
+> > > 	kset->kobj.kset =3D parent_kset;
+> > > 	kset->kobj.ktype =3D ktype;
+> > > 	res =3D kset_register(kset);
+> > > =
+
+> > > So, what is being leaked, is the memory allocated in kobj_set_name(),
+> > > by the common idiom shown above. This needs to be mentioned in
+> > > the documentation, at least, in case, in the future this is absolved
+> > > in kset_register() redesign, etc.
+> > Based on this, can kset_register() just clean up from itself when an
+> > error happens?  Ideally that would be the case, as the odds of a kset
+> > being embedded in a larger structure is probably slim, but we would have
+> > to search the tree to make sure.
+> I have search the whole tree, the kset used in bus_register() - patch #3,
+> kset_create_and_add() - patch #4
+> __class_register() - patch #5,=A0 fw_cfg_build_symlink() - patch #6 and
+> amdgpu_discovery.c - patch #10
+> is embedded in a larger structure. In these cases, we can not call
+> kset_put() in error path in kset_register()
+
+Yes you can as the kobject in the kset should NOT be controling the
+lifespan of those larger objects.
+
+If it is, please point out the call chain here as I don't think that
+should be possible.
+
+Note all of this is a mess because the kobject name stuff was added much
+later, after the driver model had been created and running for a while.
+We missed this error path when adding the dynamic kobject name logic,
+thank for looking into this.
+
+If you could test the patch posted with your error injection systems,
+that could make this all much simpler to solve.
+
+thanks,
+
+greg k-h
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
