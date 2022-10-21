@@ -4,63 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9429AC4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 02:24:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86357C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 05:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g/AejBC9QEFZQmUrBUN8zARBlUTprmeNkEap/AcWjZM=; b=ik1uHgxm6IGjOT
-	div9jZh/gCm2vWomxirWx4aO4myBFfCjOVkfnjuwa0Bgp66oHNTXGYVLw74SlWvvYx02g2f8S4rxn
-	KOzxUEL1ZKdi0yedriL53ZB0riyPy1KzN83n7xgwk7MRGhlP1G8G5a5/N7wpBO2UIM/7nQRiWHn0X
-	nb6iGJuYv2kbpgDwhnTQmYuQSa1ETMxW5UOnl1lAlhnnrUZmG5UX35ReaN2EqkBGdwOcZBwthRyAA
-	9q3gCrUy87Aa77D5IqekP8PH2omLxsJfAE6TOHWGqCusDEs5WHlPDw0l5hDumqZRxpoNVNL5/iXA7
-	MkNyePQb936jF7gpY7pA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
+	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=YKrSNlukxihzUFNqdJ2aHmWhDBwPACGJH5SUtTiCDZc=; b=aSgIPlqvHzYVmEm4XOQJ5VVkaJ
+	zAHPejb7v6gGKnQAHT+n3EazaEkCiGWIBsBonYgTg1dUtzQArCUnIgUkXpE6WgNPWyobnIzwXFwXk
+	tIUx/rIGXdTHS/CwMbWg/eG26ElFIgi1pPxmb9JEBBeW8Xq3vaE7eaDvQUxztqfC4L4dJSMEEz8zE
+	nwIuBFNuYM6Aj56Fwbft1NuEZU53HDK9VocaE76xrI2qY9CSVe9B4jeMA8a+LFVSl1IqIxvqq5Inr
+	X1DJmBhNsOuZvZu60m308l6Q3g1gg2geWW99Y7pygUrQS8rr8ODPQQ+1AQmhJuFzbxCoPmplQFT+l
+	VhXZLibA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olhhU-004Q4m-Ct; Fri, 21 Oct 2022 02:23:56 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1olkbI-005QfW-Kx; Fri, 21 Oct 2022 05:29:44 +0000
+Received: from mail-co1nam11on2064.outbound.protection.outlook.com ([40.107.220.64] helo=NAM11-CO1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olhgs-004Pd7-9J
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 02:23:19 +0000
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mtp6h64dWzVj27;
-	Fri, 21 Oct 2022 10:18:36 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 21 Oct 2022 10:22:45 +0800
-Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
- (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 21 Oct
- 2022 10:22:44 +0800
-From: Yang Yingliang <yangyingliang@huawei.com>
-To: <linux-kernel@vger.kernel.org>, <qemu-devel@nongnu.org>,
-	<linux-f2fs-devel@lists.sourceforge.net>, <linux-erofs@lists.ozlabs.org>,
-	<ocfs2-devel@oss.oracle.com>, <linux-mtd@lists.infradead.org>,
-	<amd-gfx@lists.freedesktop.org>
-CC: <gregkh@linuxfoundation.org>, <rafael@kernel.org>, <somlo@cmu.edu>,
-	<mst@redhat.com>, <jaegeuk@kernel.org>, <chao@kernel.org>,
-	<hsiangkao@linux.alibaba.com>, <huangjianan@oppo.com>, <mark@fasheh.com>,
-	<jlbec@evilplan.org>, <joseph.qi@linux.alibaba.com>,
-	<akpm@linux-foundation.org>, <alexander.deucher@amd.com>,
-	<luben.tuikov@amd.com>, <richard@nod.at>, <liushixin2@huawei.com>
-Subject: [PATCH 09/11] ocfs2: possible memory leak in mlog_sys_init()
-Date: Fri, 21 Oct 2022 10:21:00 +0800
-Message-ID: <20221021022102.2231464-10-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221021022102.2231464-1-yangyingliang@huawei.com>
+	id 1olkbF-005QeG-4E
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 05:29:43 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cvqp3P3B8BLfAmpNZxHvh7i9DBRLxrF0L/Puf+VClskgfrGn6tLUXXdLD+sHtspD2l57WBbG2sjZXzUG6eiPg0fU4jRvyKPxdOw6GkssGXnsjsRrL9aZ4M6qGsrWDrN1J4VAE6nd64uj3ZIumGRMhdXMHTT8uIvxSkcOO6Hac8nLvgmtOx/DEf2WEwHPE4xZEhCUfM3uvaVO0tPrVnmu3szQEJAv0N6hVRs38BgnAA30Xd1hhOrzqwbj2MD4CZ06cYwpIMSiJRVJouM1O2UVPuLKefpkM8lBbJMVqnzgbK2k+ke7+RkXiWWZD0mY1Y291mXuICqnfv9gfQIbujqbeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c1p/x8XJ+Q362Wu9z4oBoXAVVel641qCZMxeygRMU98=;
+ b=mbQtjLOiAVIvijp3wfz9SNisohTWlTmCr+CaK2KbmRjNdggP7RN6VTe5KnTkk3Q9Na6J5WGrNntWGz4iFlAdTMFNvzSqkcdP9ZPwkWnjTj1xTOFM6DZFwrmpDiciNvlWtEe5G2CrwXG/CXWKYfQvvbSCnquY2VQwKNElLbwaxWx7z9QCaZJ9u2TgxZjwmijEoVfBoHs/zURaraT/erHU4XTzMVCZmpGB99rKRz46qwgCjnPjBcOX6xJ9yjY/Lqy1aa1bKS/Lw55thpRJ+fwE7RCFoyPVRWpJ/+S9+ijFYIAGBptPbVSpVkEzPGOqPBmpdfrPU7CX0x/BOhpPyfKppQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c1p/x8XJ+Q362Wu9z4oBoXAVVel641qCZMxeygRMU98=;
+ b=5qc34ng+gRAm2isjW+n5AB+xpET61TNj1PNivsUyi2YfAKrHCEgoG+RV8GyZQoU/FRd7wl6/rY4hsKNJwqHP57KHUYGubRVhZ3HsoLDhdS3PP4UUDKAa95v5p7TK7lt3Qn4bWxlRHnbuzAVjoiqoky2DIOvPde++XR2UCUef75o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3370.namprd12.prod.outlook.com (2603:10b6:5:38::25) by
+ DM4PR12MB5796.namprd12.prod.outlook.com (2603:10b6:8:63::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5723.26; Fri, 21 Oct 2022 05:29:35 +0000
+Received: from DM6PR12MB3370.namprd12.prod.outlook.com
+ ([fe80::d309:77d2:93d8:2425]) by DM6PR12MB3370.namprd12.prod.outlook.com
+ ([fe80::d309:77d2:93d8:2425%7]) with mapi id 15.20.5723.035; Fri, 21 Oct 2022
+ 05:29:34 +0000
+Message-ID: <d559793a-0ce4-3384-e74e-19855aa31f31@amd.com>
+Date: Fri, 21 Oct 2022 01:29:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+Subject: Re: [PATCH 00/11] fix memory leak while kset_register() fails
+Content-Language: en-CA
+To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
+ qemu-devel@nongnu.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-erofs@lists.ozlabs.org, ocfs2-devel@oss.oracle.com,
+ linux-mtd@lists.infradead.org, amd-gfx@lists.freedesktop.org
+Cc: gregkh@linuxfoundation.org, rafael@kernel.org, somlo@cmu.edu,
+ mst@redhat.com, jaegeuk@kernel.org, chao@kernel.org,
+ hsiangkao@linux.alibaba.com, huangjianan@oppo.com, mark@fasheh.com,
+ jlbec@evilplan.org, joseph.qi@linux.alibaba.com, akpm@linux-foundation.org,
+ alexander.deucher@amd.com, richard@nod.at, liushixin2@huawei.com
 References: <20221021022102.2231464-1-yangyingliang@huawei.com>
+From: Luben Tuikov <luben.tuikov@amd.com>
+In-Reply-To: <20221021022102.2231464-1-yangyingliang@huawei.com>
+X-ClientProxiedBy: YT3PR01CA0006.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:86::11) To DM6PR12MB3370.namprd12.prod.outlook.com
+ (2603:10b6:5:38::25)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3370:EE_|DM4PR12MB5796:EE_
+X-MS-Office365-Filtering-Correlation-Id: c28566e1-cfbf-4438-67ea-08dab3253d04
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	mjWTlJ3Cv2/NULzy2Tc/vPlmV1pquOu9JJpHuBRHadPSWO9WG7mI5LRewAMLLM8Fwbt1IwxsJ7d63QBVd5/QMJ3xzdznICvg0MENoiuIBR3+FzawRsnpGezkk4+BDlVtwb6DSxRHE/QpV50QTyd2hHXLtU1Csld2td4wd+GPY1okb4Xj9sPSOc2hcU8WfdSxMG0blhkkjv4xMMnQZhT3pd04DroIdsH6NEQ51ibKfXcoDQbTQPfB6D/y7ZcI2oAiCjM5RIWLL2F1O8ouOBUvcHO5tb1FmYOx9osZXajXC9YtuVC3l/t9RJR9q/KhdXhMtzovyBRvvENKYIakR/j4pbZ2RdCZ9HWAmX8M/AS7VT1kVK2RAjVgOuhkQvbSWj8Qk69i0yXXZCTtTvgllUCwsVDK9+nSjtH9QUCeCuOf6aBMInSjslizYFzHulVZTBkQ0sE3uYM6utUh7+n0aNFpJs2STvSt2DCzBuxmr8ZzWCUzrK6UKK6hs3x1umkdWfFWf1EZXe2o7/jqKD7QbfZAqiTPPnqjC7Iq/HihwxIIl7UNTDXa+5ABMBvvYF6bW2pHRJG9xh48T02IyyZxcDZhlHhQA9J8/yuyNMauyQujmbyy8wgkeZP45quE09aJFQ05NkRWHDCsGkCuj+/2h0ZZEClofr5LSPMAtmWB9Zmyvm9e4uLF89Rr/Y8++k+fZ6AAxKJZBu/oL5AxjrG5kwMwU+3hiI2dAkPx2iwpnjrFEF71UrWU6F9cyzMY82azhObAQR8/BVRhj3wuICFWEWTQRhmGT7zJh/Iu0btVUHwtzyBzklJg9/atoyu9ZsWBhTfiHBZAC/IQVEtqF5f5NfajGw==
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3370.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(376002)(346002)(396003)(39860400002)(366004)(451199015)(36756003)(31686004)(31696002)(86362001)(5660300002)(7416002)(38100700002)(4001150100001)(44832011)(26005)(41300700001)(2906002)(2616005)(83380400001)(186003)(316002)(6512007)(4326008)(6506007)(53546011)(478600001)(6666004)(66556008)(66946007)(66476007)(8936002)(966005)(8676002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?utf-8?B?Wmw5T0xrR2xpTTQ4ZjNDOWYzeWgrNkovb3dEdlNNNXFOeXhLejVqc3duRkdU?=
+ =?utf-8?B?blFLY1VEa21IMEhlOHdTNGFJeHo1bzZQT3cvYW8waHJyUmFBS21NVGVNT0F4?=
+ =?utf-8?B?WVZRUjU3UXBUaTZ1MUlJQ3pSekhkTVVhR1hRUTJqQmJkM2VYWVVQWGYwMzhS?=
+ =?utf-8?B?VEc4SVJxcTg4aWZ3UGdrN2J3T3YwWUdacThiUW1kbjlXd3hEZEh4T3ZqU1Js?=
+ =?utf-8?B?a21QOWNkZXNFVk9JQklVRXJ1TDhPVGJ3NzE1UUhXaGE1MnlBYVpubERPUDdh?=
+ =?utf-8?B?K3J2eUl1WWNjc2NyK1RvdWI0NDRCM3M0eVVkWHhLODFnMFE5NUh6SUI5Tzl4?=
+ =?utf-8?B?cG5tVXZHbmpqQnU0dVp3L2RMRWpWL0NHOHcrRHV5Q21HWmFsQkFzYlExaGJp?=
+ =?utf-8?B?dlowS1Z2ZktlOUMyMzEwdGR5bDJ6ak9IR1JQRTQ4M0F1em95a25lRHZSUGwy?=
+ =?utf-8?B?Z3MzcHIzbFd2WUlqcm00WGFVOURDYUNjQWFlVGxUd2x4ZDNjdE9LSUpTVGtX?=
+ =?utf-8?B?VDFNK1hCYlQydGd0c2grYVUzVHFiWHBxdmpEQ2xSKzE5YjI5aHd2aE90ZjNF?=
+ =?utf-8?B?cnVxcGFLb21weGY0MmtyRVBWZmJYM05JaERTektIaHE0MmVqbklpbDVjdk04?=
+ =?utf-8?B?Zkw1bXJWeWdTdEgzMVJRNU5NKzlpMlBsTlZURkQxME5lcVUvRkUxYS9MVDZ1?=
+ =?utf-8?B?ZDBYNDBYQ1VuV0NuOThOZ0hzL0Y1dFltUG1PYitXbkZ2Q0hqM09ydktpd1lm?=
+ =?utf-8?B?cG00SzVTeDJTWWk5MVZnUTVoaC80cCtUMFQxUjJWWFdwRjdsdHhlVlFCT2JH?=
+ =?utf-8?B?YzBYTXJzSXozNitJck1IQkZqeFdWQjBvajNLYUFjditESDcya3hwd2MzUkE3?=
+ =?utf-8?B?WGVmLzkxNnNZNFFPVkRYS2RZYmxEN0NKcC82ZmhUdGNSVnc1TDFtQnJvZ1RI?=
+ =?utf-8?B?OEJ0M3Q1bTNlenBxSm1NRHhKQmdKNjFkYXp2eU5GeVI3VDJIYVB0SGZOODYv?=
+ =?utf-8?B?aTlnSURSVmp4YW9pRkh6RlkxZG9Fb2FKM254NkJjK1F3SnNHaU9Ibi9HTTYx?=
+ =?utf-8?B?TDlKY1Zvb1dESnJ6ZXliR1hLSTQ5NHo1RUNZOGFpZk9OQitWNFF1K2JhcHhv?=
+ =?utf-8?B?MVBwNE9lRmdsMHB6VlJ2b0xaR3VQK0owZzF4WWJkQ05zaEF2L1V0ZVpKSWN6?=
+ =?utf-8?B?bzFQOXh2MUFQZDBGNHBKVXRyZm42WnR5a3RaVHZCL1pabzVIb2I0OFhBTlVs?=
+ =?utf-8?B?UmY3RmdDcjN5SnFyU3BwRmJhcFUrNFppbDduL01RZFZRVDZFV2JPRXdic1Bl?=
+ =?utf-8?B?aU54c0huUDJrMWxkRmhUdVcwT1h3V0ZaMGJQS0pyb2FyWlBFMXZlVWc4SWNN?=
+ =?utf-8?B?ek9TYmJjZ0srZUZvOTF5MUdzeGk3eEZCaWp1aXBIaGJPMzJMcmU5K2Qrb2I5?=
+ =?utf-8?B?RThpNjdEZCtHQ2pDTUxQOGgvSGZOamMxWU1LNFJrQVo2TzZ2cWJqQlhmUnRj?=
+ =?utf-8?B?Si9vVTkwdzU0dnFzUld5RHdLS25yMEJ4ZWN3T2wzeVQ1Y1MrRWVER1BrOWJM?=
+ =?utf-8?B?cjdGdHBVcGpVdzlLZmptQUZSZ05WS3FwdERVckNVQWxHRDZudjYrK0NwcHRp?=
+ =?utf-8?B?c0ZpTVM4eTIyOHUzbmV4M1g1Zlo1QjFvb1ZPVjZCNmNqaXhSdVJzMVhZMTJ2?=
+ =?utf-8?B?b0xRdXpKOGVBcGlJelA5Y3UzQ3hNcWJ5SnkyRUUxa3RPUlZQQ0hkb0c4M05T?=
+ =?utf-8?B?NHJiQVF6bnhBbmpKSkZDaUZSSFhCdk5XR3orVFphVlhVZHdNZ2F3Q1dZNDBo?=
+ =?utf-8?B?c3pFMEVtaldJbGZmakFLSGUxWHFmV01XWUpBSklPWC9XUklVUVpGcXI5ZzBT?=
+ =?utf-8?B?VE1tdzlzLyttQllkRVB0aFBIbWFOMnZ4QkJaaVltajdMdW56Z1o0MDhBQjNh?=
+ =?utf-8?B?ZWFQWXdmL3RrVkpYeThFYzgxb2FBQmJqbFRUbXRoQlAyN3pqNmxUMUcvcTFZ?=
+ =?utf-8?B?YTZvQkQ1alFaUnRBOEJJWmh0VTlWRndCVVM5eDIrUXc5aHhRbjdrVWhDUlhB?=
+ =?utf-8?B?Tjh5NWJ3M3krOXRIWGhmM24ybzZWZjFLdGt4RkxsK3VsSHFOMXlHZUZqZktp?=
+ =?utf-8?Q?3UzzgtirfBpiDA4Ptxkl45avu?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c28566e1-cfbf-4438-67ea-08dab3253d04
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3370.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2022 05:29:34.7082
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hbu/u6glgoW0HucQLPGQd6k/0y2eEgO7DiDM7flyTq6Wd4We8kaohSkQXEa+eJKK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5796
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221020_192318_528992_E294110A 
-X-CRM114-Status: GOOD (  10.75  )
+X-CRM114-CacheID: sfid-20221020_222941_220275_DFE6D045 
+X-CRM114-Status: GOOD (  21.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,58 +147,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Inject fault while loading module, kset_register() may fail,
-if it fails, but the refcount of kobject is not decreased to
-0, the name allocated in kobject_set_name() is leaked. Fix
-this by calling kset_put(), so that name can be freed in
-callback function kobject_cleanup().
+On 2022-10-20 22:20, Yang Yingliang wrote:
+> The previous discussion link:
+> https://lore.kernel.org/lkml/0db486eb-6927-927e-3629-958f8f211194@huawei.com/T/
 
-unreferenced object 0xffff888100da9348 (size 8):
-  comm "modprobe", pid 257, jiffies 4294701096 (age 33.334s)
-  hex dump (first 8 bytes):
-    6c 6f 67 6d 61 73 6b 00                          logmask.
-  backtrace:
-    [<00000000306e441c>] __kmalloc_node_track_caller+0x44/0x1b0
-    [<000000007c491a9e>] kstrdup+0x3a/0x70
-    [<0000000015719a3b>] kstrdup_const+0x63/0x80
-    [<0000000084e458ea>] kvasprintf_const+0x149/0x180
-    [<0000000091302b42>] kobject_set_name_vargs+0x56/0x150
-    [<000000005f48eeac>] kobject_set_name+0xab/0xe0
+The very first discussion on this was here:
 
-Fixes: 34980ca8faeb ("Drivers: clean up direct setting of the name of a kset")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- fs/ocfs2/cluster/masklog.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+https://www.spinics.net/lists/dri-devel/msg368077.html
 
-diff --git a/fs/ocfs2/cluster/masklog.c b/fs/ocfs2/cluster/masklog.c
-index 563881ddbf00..7f9ba816d955 100644
---- a/fs/ocfs2/cluster/masklog.c
-+++ b/fs/ocfs2/cluster/masklog.c
-@@ -156,6 +156,7 @@ static struct kset mlog_kset = {
- int mlog_sys_init(struct kset *o2cb_kset)
- {
- 	int i = 0;
-+	int ret;
- 
- 	while (mlog_attrs[i].attr.mode) {
- 		mlog_default_attrs[i] = &mlog_attrs[i].attr;
-@@ -165,7 +166,11 @@ int mlog_sys_init(struct kset *o2cb_kset)
- 
- 	kobject_set_name(&mlog_kset.kobj, "logmask");
- 	mlog_kset.kobj.kset = o2cb_kset;
--	return kset_register(&mlog_kset);
-+	ret = kset_register(&mlog_kset);
-+	if (ret)
-+		kset_put(&mlog_kset);
-+
-+	return ret;
- }
- 
- void mlog_sys_shutdown(void)
--- 
-2.25.1
+Please use this link, and not the that one up there you which quoted above,
+and whose commit description is taken verbatim from the this link.
 
+> 
+> kset_register() is currently used in some places without calling
+> kset_put() in error path, because the callers think it should be
+> kset internal thing to do, but the driver core can not know what
+> caller doing with that memory at times. The memory could be freed
+> both in kset_put() and error path of caller, if it is called in
+> kset_register().
+
+As I explained in the link above, the reason there's
+a memory leak is that one cannot call kset_register() without
+the kset->kobj.name being set--kobj_add_internal() returns -EINVAL,
+in this case, i.e. kset_register() fails with -EINVAL.
+
+Thus, the most common usage is something like this:
+
+	kobj_set_name(&kset->kobj, format, ...);
+	kset->kobj.kset = parent_kset;
+	kset->kobj.ktype = ktype;
+	res = kset_register(kset);
+
+So, what is being leaked, is the memory allocated in kobj_set_name(),
+by the common idiom shown above. This needs to be mentioned in
+the documentation, at least, in case, in the future this is absolved
+in kset_register() redesign, etc.
+
+Regards,
+Luben
+
+> 
+> So make the function documentation more explicit about calling
+> kset_put() in the error path of caller first, so that people
+> have a chance to know what to do here, then fixes this leaks
+> by calling kset_put() from callers.
+> 
+> Liu Shixin (1):
+>   ubifs: Fix memory leak in ubifs_sysfs_init()
+> 
+> Yang Yingliang (10):
+>   kset: fix documentation for kset_register()
+>   kset: add null pointer check in kset_put()
+>   bus: fix possible memory leak in bus_register()
+>   kobject: fix possible memory leak in kset_create_and_add()
+>   class: fix possible memory leak in __class_register()
+>   firmware: qemu_fw_cfg: fix possible memory leak in
+>     fw_cfg_build_symlink()
+>   f2fs: fix possible memory leak in f2fs_init_sysfs()
+>   erofs: fix possible memory leak in erofs_init_sysfs()
+>   ocfs2: possible memory leak in mlog_sys_init()
+>   drm/amdgpu/discovery: fix possible memory leak
+> 
+>  drivers/base/bus.c                            | 4 +++-
+>  drivers/base/class.c                          | 6 ++++++
+>  drivers/firmware/qemu_fw_cfg.c                | 2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c | 5 +++--
+>  fs/erofs/sysfs.c                              | 4 +++-
+>  fs/f2fs/sysfs.c                               | 4 +++-
+>  fs/ocfs2/cluster/masklog.c                    | 7 ++++++-
+>  fs/ubifs/sysfs.c                              | 2 ++
+>  include/linux/kobject.h                       | 3 ++-
+>  lib/kobject.c                                 | 5 ++++-
+>  10 files changed, 33 insertions(+), 9 deletions(-)
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
