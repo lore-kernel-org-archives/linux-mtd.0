@@ -4,53 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28B53C43217
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 09:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C247C433FE
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Oct 2022 09:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=u/BOhcgx1qGbY3UfFt/CIoI5weVtGZKfphlsOMO9oGs=; b=g5tMZg6crwOQb6
-	tcYHBLO15QOLHl2PfOoexpJRcd09GbBD8YUZ3XZlMPLdqS02nMpJN7v4fiTgoVYkLjmLT94r5is5t
-	oPSrGA7dLLDiak6JRKoZKeFgC4XVSMDSk+A3EclTZC7Tvta7kcnhb2bC3fFcVYDqZffJJuwHfMTj3
-	3qV43Xkbt4qttxy+ls3/0mTYvcN0YSAGWTZepnNxOi+4b6Och8r6+Lu3OjnAVudqLeKbHBhpvxh84
-	Y1ClgxJYI+0rChjpFktTGKmaJIwGm9r0YPPzBVYWCEZI+okNs4xIOvNz+yWfibX8ECjwye7aPnh4z
-	Ts0BIwDIE8/X3kxzh0Ew==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=fD2cxYqdPcKegsIl7JV+5kx6VnT+ju59v72NovUd0kM=; b=Fi19ZNZrHgy4wiTqIaVPYfVGTw
+	24XohyMkXQe2ZLoVRGShHrnM1ZklVrL8lfoWtQSMGingAO2hx6hvzJVP+vdYjuPYg2Fb7Kz1SF3Mk
+	OhaMcATIEpbuhER8eNSBbTmkh8PTMd3UgjHoM9saYAn8cBgbxot8MG426P2FVUnKLtApZIIAKUZph
+	BFQ+SAdYEirBsFVJ9uJbqbd7jAXRfLDI8ojSClb5kRJwYQkg60p1e/C3pgYbtKWuXTFaHz5Giv+xY
+	Gc6lbxkVs2FJiasNyvz+gaFVHpK7tofI81dC4Ii5BNnXYQ2TSaiWT9bbWhnlhkDr6+R6e+CFMs0Kz
+	eFWAPo7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oloBj-006kI8-Fl; Fri, 21 Oct 2022 09:19:35 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1oloFF-006luu-0E; Fri, 21 Oct 2022 09:23:13 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oloBd-006kCJ-HM
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 09:19:31 +0000
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.56])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MtzP725z7zJn2B;
-	Fri, 21 Oct 2022 17:16:43 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by kwepemi500012.china.huawei.com
- (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 21 Oct
- 2022 17:19:23 +0800
-From: Li Zetao <lizetao1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-	<dedekind@linutronix.de>, <haver@vnet.ibm.com>, <bbrezillon@kernel.org>
-CC: <lizetao1@huawei.com>, <boris.brezillon@free-electrons.com>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/2] ubi: Fix use-after-free when volume resizing failed
-Date: Fri, 21 Oct 2022 18:21:56 +0800
-Message-ID: <20221021102157.1341807-2-lizetao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20221021102157.1341807-1-lizetao1@huawei.com>
-References: <20221021102157.1341807-1-lizetao1@huawei.com>
+	id 1oloFB-006lsT-64
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2022 09:23:11 +0000
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MtzR01jchz15Lws;
+	Fri, 21 Oct 2022 17:18:20 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 21 Oct 2022 17:23:06 +0800
+Received: from [10.174.178.174] (10.174.178.174) by
+ dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 21 Oct 2022 17:23:05 +0800
+Subject: Re: [PATCH 00/11] fix memory leak while kset_register() fails
+To: Luben Tuikov <luben.tuikov@amd.com>, Greg KH <gregkh@linuxfoundation.org>
+CC: <linux-kernel@vger.kernel.org>, <qemu-devel@nongnu.org>,
+	<linux-f2fs-devel@lists.sourceforge.net>, <linux-erofs@lists.ozlabs.org>,
+	<ocfs2-devel@oss.oracle.com>, <linux-mtd@lists.infradead.org>,
+	<amd-gfx@lists.freedesktop.org>, <rafael@kernel.org>, <somlo@cmu.edu>,
+	<mst@redhat.com>, <jaegeuk@kernel.org>, <chao@kernel.org>,
+	<hsiangkao@linux.alibaba.com>, <huangjianan@oppo.com>, <mark@fasheh.com>,
+	<jlbec@evilplan.org>, <joseph.qi@linux.alibaba.com>,
+	<akpm@linux-foundation.org>, <alexander.deucher@amd.com>, <richard@nod.at>,
+	<liushixin2@huawei.com>
+References: <20221021022102.2231464-1-yangyingliang@huawei.com>
+ <d559793a-0ce4-3384-e74e-19855aa31f31@amd.com> <Y1IwLOUGayjT9p6d@kroah.com>
+ <5efd73b0-d634-d34f-3d7a-13d674e40d04@amd.com> <Y1JV1wxf/7ERAMhl@kroah.com>
+ <35e66c7c-ff25-efd3-cfbc-d06130687aa7@amd.com>
+ <19689b9e-16d1-c6c5-4ee8-58885fbf8fb0@amd.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <e8e21756-c5b8-9098-8fb6-8e381bbf3dd1@huawei.com>
+Date: Fri, 21 Oct 2022 17:23:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500012.china.huawei.com (7.221.188.12)
+In-Reply-To: <19689b9e-16d1-c6c5-4ee8-58885fbf8fb0@amd.com>
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221021_021929_792437_0A79C3CB 
-X-CRM114-Status: GOOD (  10.09  )
+X-CRM114-CacheID: sfid-20221021_022309_585284_76348199 
+X-CRM114-Status: GOOD (  24.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,73 +78,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is an use-after-free problem reported by KASAN:
-  ==================================================================
-  BUG: KASAN: use-after-free in ubi_eba_copy_table+0x11f/0x1c0 [ubi]
-  Read of size 8 at addr ffff888101eec008 by task ubirsvol/4735
 
-  CPU: 2 PID: 4735 Comm: ubirsvol
-  Not tainted 6.1.0-rc1-00003-g84fa3304a7fc-dirty #14
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-  BIOS 1.14.0-1.fc33 04/01/2014
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x34/0x44
-   print_report+0x171/0x472
-   kasan_report+0xad/0x130
-   ubi_eba_copy_table+0x11f/0x1c0 [ubi]
-   ubi_resize_volume+0x4f9/0xbc0 [ubi]
-   ubi_cdev_ioctl+0x701/0x1850 [ubi]
-   __x64_sys_ioctl+0x11d/0x170
-   do_syscall_64+0x35/0x80
-   entry_SYSCALL_64_after_hwframe+0x46/0xb0
-   </TASK>
+On 2022/10/21 16:41, Luben Tuikov wrote:
+> On 2022-10-21 04:24, Luben Tuikov wrote:
+>> On 2022-10-21 04:18, Greg KH wrote:
+>>> On Fri, Oct 21, 2022 at 03:55:18AM -0400, Luben Tuikov wrote:
+>>>> On 2022-10-21 01:37, Greg KH wrote:
+>>>>> On Fri, Oct 21, 2022 at 01:29:31AM -0400, Luben Tuikov wrote:
+>>>>>> On 2022-10-20 22:20, Yang Yingliang wrote:
+>>>>>>> The previous discussion link:
+>>>>>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flkml%2F0db486eb-6927-927e-3629-958f8f211194%40huawei.com%2FT%2F&amp;data=05%7C01%7Cluben.tuikov%40amd.com%7Cd41da3fd6449492d01f808dab33cdb75%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C638019371236833115%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=C%2Bj1THkHpzVGks5eqB%2Fm%2FPAkMRohR7CYvRnOCqUqdcM%3D&amp;reserved=0
+>>>>>> The very first discussion on this was here:
+>>>>>>
+>>>>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.spinics.net%2Flists%2Fdri-devel%2Fmsg368077.html&amp;data=05%7C01%7Cluben.tuikov%40amd.com%7Cd41da3fd6449492d01f808dab33cdb75%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C638019371236833115%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=pSR10abmK8nAMvKSezqWC0SPUBL4qEwtCCizyIKW7Dc%3D&amp;reserved=0
+>>>>>>
+>>>>>> Please use this link, and not the that one up there you which quoted above,
+>>>>>> and whose commit description is taken verbatim from the this link.
+>>>>>>
+>>>>>>> kset_register() is currently used in some places without calling
+>>>>>>> kset_put() in error path, because the callers think it should be
+>>>>>>> kset internal thing to do, but the driver core can not know what
+>>>>>>> caller doing with that memory at times. The memory could be freed
+>>>>>>> both in kset_put() and error path of caller, if it is called in
+>>>>>>> kset_register().
+>>>>>> As I explained in the link above, the reason there's
+>>>>>> a memory leak is that one cannot call kset_register() without
+>>>>>> the kset->kobj.name being set--kobj_add_internal() returns -EINVAL,
+>>>>>> in this case, i.e. kset_register() fails with -EINVAL.
+>>>>>>
+>>>>>> Thus, the most common usage is something like this:
+>>>>>>
+>>>>>> 	kobj_set_name(&kset->kobj, format, ...);
+>>>>>> 	kset->kobj.kset = parent_kset;
+>>>>>> 	kset->kobj.ktype = ktype;
+>>>>>> 	res = kset_register(kset);
+>>>>>>
+>>>>>> So, what is being leaked, is the memory allocated in kobj_set_name(),
+>>>>>> by the common idiom shown above. This needs to be mentioned in
+>>>>>> the documentation, at least, in case, in the future this is absolved
+>>>>>> in kset_register() redesign, etc.
+>>>>> Based on this, can kset_register() just clean up from itself when an
+>>>>> error happens?  Ideally that would be the case, as the odds of a kset
+>>>>> being embedded in a larger structure is probably slim, but we would have
+>>>>> to search the tree to make sure.
+>>>> Looking at kset_register(), we can add kset_put() in the error path,
+>>>> when kobject_add_internal(&kset->kobj) fails.
+>>>>
+>>>> See the attached patch. It needs to be tested with the same error injection
+>>>> as Yang has been doing.
+>>>>
+>>>> Now, struct kset is being embedded in larger structs--see amdgpu_discovery.c
+>>>> starting at line 575. If you're on an AMD system, it gets you the tree
+>>>> structure you'll see when you run "tree /sys/class/drm/card0/device/ip_discovery/".
+>>>> That shouldn't be a problem though.
+>>> Yes, that shouldn't be an issue as the kobject embedded in a kset is
+>>> ONLY for that kset itself, the kset structure should not be controling
+>>> the lifespan of the object it is embedded in, right?
+>> Yes, and it doesn't. It only does a kobject_get(parent) and kobject_put(parent).
+>> So that's fine and natural.
+>>
+>> Yang, do you want to try the patch in my previous email in this thread, since you've
+>> got the error injection set up already?
+> I spoke too soon. I believe you're onto something, because looking at the idiom:
+>
+> 	kobj_set_name(&kset->kobj, format, ...);
+> 	kset->kobj.kset = parent_kset;
+> 	kset->kobj.ktype = ktype;
+> 	res = kset_register(kset);
+>
+> The ktype defines a release method, which frees the larger struct the kset is embedded in.
+> And this would result in double free, for instance in the amdgpu_discovery.c code, if
+> kset_put() is called after kset_register() fails, since we kzalloc the larger object
+> just before and kfree it on error just after. Ideally, we'd only "revert" the actions
+> done by kobj_set_name(), as there's some error recovery on create_dir() in kobject_add_internal().
+>
+> So, we cannot do this business with the kset_put() on error from kset_register(), after all.
+> Not sure how this wasn't caught in Yang's testing--the kernel should've complained.
+I have already tried the change that in your posted patch when I was 
+debugging this issue
+before sent these fixes, because it may lead double free in some cases, 
+and I had mentioned
+it in this mail:
 
-When ubi_change_vtbl_record() returns an error in ubi_resize_volume(),
-"new_eba_tbl" will be freed on error handing path, but it is holded
-by "vol->eba_tbl" in ubi_eba_replace_table(). It means that the liftcycle
-of "vol->eba_tbl" and "vol" are different, so when resizing volume in
-next time, it causing an use-after-free fault.
+https://lore.kernel.org/lkml/0db486eb-6927-927e-3629-958f8f211194@huawei.com/T/#m68eade1993859dfc6c3d14d35f988d35a32ef837
 
-Fix it by not freeing "new_eba_tbl" after it replaced in
-ubi_eba_replace_table(), while will be freed in next volume resizing.
-
-Fixes: 801c135ce73d ("UBI: Unsorted Block Images")
-Signed-off-by: Li Zetao <lizetao1@huawei.com>
----
- drivers/mtd/ubi/vmt.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 8fcc0bdf0635..74637575346e 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -464,7 +464,7 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
- 		for (i = 0; i < -pebs; i++) {
- 			err = ubi_eba_unmap_leb(ubi, vol, reserved_pebs + i);
- 			if (err)
--				goto out_acc;
-+				goto out_free;
- 		}
- 		spin_lock(&ubi->volumes_lock);
- 		ubi->rsvd_pebs += pebs;
-@@ -512,6 +512,8 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
- 		ubi->avail_pebs += pebs;
- 		spin_unlock(&ubi->volumes_lock);
- 	}
-+	return err;
-+
- out_free:
- 	kfree(new_eba_tbl);
- 	return err;
--- 
-2.31.1
-
+Thanks,
+Yang
+>
+> Regards,
+> Luben
+>
+> .
 
 ______________________________________________________
 Linux MTD discussion mailing list
