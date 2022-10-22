@@ -4,51 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 556CAC04A95
-	for <linux-mtd@archiver.kernel.org>; Sat, 22 Oct 2022 11:11:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0114EC433FE
+	for <linux-mtd@archiver.kernel.org>; Sat, 22 Oct 2022 11:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NEZOHCxvTNf+fkh993695aYAe22g2uS7q+Q9dbCiMMs=; b=lMTBICB3nEZW/4
-	OMlPlSFckMbOnOcb6O8Th7cNRWlScCFshNocC0SQR5+361bA0J2Vbc8y41h5d8fXxBeMem8w4V4Im
-	PWEmyu64k6cnqwcwTf4uQ0QLRnS8/bIzk8P8ZTSGwmR5kJ0cBD4JMs+s+HapCi01iFlh/yCgw8nMM
-	ozRtr1/F/Yv3fsi3W4uiJ12zM0ZqVW5PXPxw8/f3iIPXcWpxUhHDPi6PEdHeMgIi3oDfYfSy4UDhB
-	0Y+4eEa3ozDZ7Fa9nL8BYWILX5okIPW5WFBkkrErT5mUs4f3stTfJyipE6emOg62xuc/wMRJqEOss
-	636rDAG8nbhwDVMBp19g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Hov0Fv/LNtl+ITAluar9U7cferVd+lETPlECoJibaNE=; b=yKEscu7ccYViJ3
+	NlSlewPRqN0NoZK0Mo9Aapg2dkF6r12gXw5TBzNYksxCk0u//8RluIZk/IoMGxhIis4s6CjtkqNiO
+	QPpcUi3V4fwoDuGLAXqLYtpvY5EOAeDGSO6Gdjk9gc94MNswkyqJWWjc5t80Zf8Er5nWC3td14AxQ
+	985bTQKaV+F5XPrweR1OVhUHUEJ+w4IzKK/+FcEHmmwxPxyzvpCzskDF9DdNiWlJew7iYwbzApiys
+	tQPZh0jBaXb5UpaX4gdDCtqk9tqosGTN1CEUpslhpg5FCcdXRIxsHYKlRaMpvKRhgRgraHrkcU/MK
+	rtkMV0muv3TtcRgijF+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omCOw-00CLJ0-1m; Sat, 22 Oct 2022 11:10:50 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1omCcB-00CNvH-Kl; Sat, 22 Oct 2022 11:24:31 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omCOt-00CLHZ-6q
-	for linux-mtd@lists.infradead.org; Sat, 22 Oct 2022 11:10:49 +0000
-Received: from dggpeml500023.china.huawei.com (unknown [172.30.72.56])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mvdp92qkYzpVjv;
-	Sat, 22 Oct 2022 19:07:13 +0800 (CST)
-Received: from localhost.localdomain (10.175.101.6) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 22 Oct 2022 19:10:34 +0800
-From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-To: <zhangxiaoxu5@huawei.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-	<vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-	<dbrownell@users.sourceforge.net>
-Subject: [PATCH] mtd: Fix device name leak when register device failed in add_mtd_device()
-Date: Sat, 22 Oct 2022 20:13:52 +0800
-Message-ID: <20221022121352.2534682-1-zhangxiaoxu5@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	id 1omCby-00CNr3-QQ; Sat, 22 Oct 2022 11:24:20 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2820F60AFF;
+	Sat, 22 Oct 2022 11:24:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED202C433C1;
+	Sat, 22 Oct 2022 11:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1666437854;
+	bh=QlHVwvQAZAIgvjk8abE10EkrdDUL7r/AigVC5ALYQK4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=un1PldCoLSJ88cWZRYnjm5Oi1KiCHJHB0LueFTTYXn8D7fIAxS0vK6V48SeMy9VdW
+	 ZuWEiHtsrYztxbCEB+Ntyz+QhjY7UYniFteggfYw/ntXKMozNoEsqsq66wk3rOhU3K
+	 hzsEaBZQY3uGlKbG/0kkX3FnGtw/tJtrFvWLyT24=
+Date: Sat, 22 Oct 2022 13:24:12 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
+	Simtec Linux Team <linux@simtec.co.uk>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Sylwester Nawrocki <sylvester.nawrocki@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tomasz Figa <tomasz.figa@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-samsung-soc@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-gpio@vger.kernel.org,
+	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+	linux-clk@vger.kernel.org
+Subject: Re: [PATCH 02/21] ARM: s3c: remove s3c24xx specific hacks
+Message-ID: <Y1PS3A75mXIEb+MA@kroah.com>
+References: <20221021202254.4142411-1-arnd@kernel.org>
+ <20221021203329.4143397-2-arnd@kernel.org>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500023.china.huawei.com (7.185.36.114)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <20221021203329.4143397-2-arnd@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221022_041047_467220_D47FD61B 
-X-CRM114-Status: UNSURE (   8.66  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221022_042418_922415_E782E736 
+X-CRM114-Status: GOOD (  13.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,55 +97,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is a kmemleak when register device failed:
-  unreferenced object 0xffff888101aab550 (size 8):
-    comm "insmod", pid 3922, jiffies 4295277753 (age 925.408s)
-    hex dump (first 8 bytes):
-      6d 74 64 30 00 88 ff ff                          mtd0....
-    backtrace:
-      [<00000000bde26724>] __kmalloc_node_track_caller+0x4e/0x150
-      [<000000003c32b416>] kvasprintf+0xb0/0x130
-      [<000000001f7a8f15>] kobject_set_name_vargs+0x2f/0xb0
-      [<000000006e781163>] dev_set_name+0xab/0xe0
-      [<00000000e30d0c78>] add_mtd_device+0x4bb/0x700
-      [<00000000f3d34de7>] mtd_device_parse_register+0x2ac/0x3f0
-      [<00000000c0d88488>] 0xffffffffa0238457
-      [<00000000b40d0922>] 0xffffffffa02a008f
-      [<0000000023d17b9d>] do_one_initcall+0x87/0x2a0
-      [<00000000770f6ca6>] do_init_module+0xdf/0x320
-      [<000000007b6768fe>] load_module+0x2f98/0x3330
-      [<00000000346bed5a>] __do_sys_finit_module+0x113/0x1b0
-      [<00000000674c2290>] do_syscall_64+0x35/0x80
-      [<000000004c6a8d97>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+On Fri, Oct 21, 2022 at 10:27:35PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> A number of device drivers reference CONFIG_ARM_S3C24XX_CPUFREQ or
+> similar symbols that are no longer available with the platform gone,
+> though the drivers themselves are still used on newer platforms,
+> so remove these hacks.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-If register device failed, should call put_device() to give up the
-reference.
-
-Fixes: 1f24b5a8ecbb ("[MTD] driver model updates")
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
----
- drivers/mtd/mtdcore.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 18aa54460d36..f4858310331c 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -723,8 +723,10 @@ int add_mtd_device(struct mtd_info *mtd)
- 	mtd_check_of_node(mtd);
- 	of_node_get(mtd_get_of_node(mtd));
- 	error = device_register(&mtd->dev);
--	if (error)
-+	if (error) {
-+		put_device(&mtd->dev);
- 		goto fail_added;
-+	}
- 
- 	/* Add the nvmem provider */
- 	error = mtd_nvmem_add(mtd);
--- 
-2.31.1
-
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
