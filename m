@@ -4,88 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77041C433FE
-	for <linux-mtd@archiver.kernel.org>; Sat, 22 Oct 2022 16:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 324B8C04A95
+	for <linux-mtd@archiver.kernel.org>; Sat, 22 Oct 2022 19:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
+	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bJxnogPr5P27vbKURYfU2NWRc4CzUkA1+YGkxqy4sto=; b=hgc088nBbZ1aNZ
-	venYxI1eTkgyTEVcXwVKdfuXa9mhdtJ0jtWb1UGUVawT1ciMx9zaiZtO8gdpZrElweTPV5oURkWD4
-	61PkNjpd5yBTN0O08RuvBuex3gVnuIMZ9Ul4WXlpeZXqylsANwpeMogOdfl3DvrNtbjJJK8Wb0fJU
-	ZEmkjaMkSIYlp3Rnlo2M2RSFxw965pGSHUPOU3Rck9NxEZI6WupmIQMBPfUYdvX1HdiNyeoxIJ1ok
-	6sqYMUv0Cy37JQeuIoYoAQextodovPBhJY4liJvgP3F8qNHplOKpZhBxVWgKFtDDZOHObgs9kjXAO
-	Gw+gHzzlGuE04XrUcscQ==;
+	List-Owner; bh=W4fLgOzLT82cvHMyXsJBRf0Bs5TwcAFOzOAJ4/vmtmA=; b=VygUy6ZGt9hQ5c
+	7ZdRpoUYJohyLVZdIB26R5kwztLlgPwb0a5pMpnMzmq+7t5Eh2VTjmGzPOdm+SIVPyJApdWSj5S85
+	ZEeGwX5kGTOjqNJ9XU1MK2aH3iz5Nyvolpv9akbKF+OkftedHGFGvX7Pt258R2s7ZxzGyepJDZL1J
+	vE15yfNWtAOMx0xJBqreiI5XZGm000fYbF6RCRT7bbwbmGDI+AFNbSbS+3E0egUoWIa7FmYGf7i0M
+	80c1Q8fNITmPQ1v03MlIJ5Nt0EV8Jau+tHcm7V6hV6QLUw7Qw76CsRAMK0yLu99B52qqVFJn0BNGs
+	eOe8pcuGCf1oylhjKlag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omHFJ-00DDfI-Te; Sat, 22 Oct 2022 16:21:13 +0000
-Received: from mail-oa1-x2c.google.com ([2001:4860:4864:20::2c])
+	id 1omKUL-00Dfv1-Uu; Sat, 22 Oct 2022 19:48:58 +0000
+Received: from new1-smtp.messagingengine.com ([66.111.4.221])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omHFI-00DDdz-15
-	for linux-mtd@lists.infradead.org; Sat, 22 Oct 2022 16:21:13 +0000
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1321a1e94b3so7258162fac.1
-        for <linux-mtd@lists.infradead.org>; Sat, 22 Oct 2022 09:21:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C1Al63W076jDkj8WpNZMYUiAhbLhcbuotAcSf3D7lGU=;
-        b=rgbYmT2lH5OXpRmQ600zOpmN9g+NFdGkFM4zfjDPUetAWOyp3yZSBClOCbdCfQZzOw
-         lNFsUBEoK6dU75k6JDg46PJpt/QRSk/iehjy06p4V4TejWFH9xxETNIZ/lPz6tfAwTXZ
-         06T1H+FltsnKpb/tf5h+hMsTEhfeLDn0PrnqWgK5uw0wQKnYg3fCnAQfuInozJ9+/E8Z
-         4lYmcWGm9arwyV3uzCOURc+9/g694PT6OMz9YhZRglFx//GaN+R2Rbjj+w4QMGAv4JXj
-         Of6eGbeizkkFFIEMQCHR9nI11Q1ExQbChrXlgzmz4MO69aOfuW8DD1Yg7p88Bj3Sb5TN
-         abOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C1Al63W076jDkj8WpNZMYUiAhbLhcbuotAcSf3D7lGU=;
-        b=fW0OxEWqNUnY0jBd34qzql7yt2MztNxzqnwYnhLQyymwzGNk2QUg/Bj62Fe4kqJpy5
-         6Wett37hOkV97uAG3yZ5i7e86nxJhDZCZ9Q/P9lZxExwWfkVojxh9GBN3k3GOXjQTtqv
-         WiDJXgyGTnA6MVneVzTrPz234Pe8zQuwjtiwlzbBPJJ9IZTaeDtQLqA2XXzVZEuYBZja
-         ZspwJc1gU7+KIqwgJ240dDR6FPoJyhCrHHlWMNRfQF6TokB7LNVRBVHz5T2jYsqBGi5c
-         8PrBe1IZEUmm+8lM9AvuEHCY3ZE7y86NiVO74QbTNfn01iv2ay8lYOTbPQnPai4sRSnn
-         Lm2g==
-X-Gm-Message-State: ACrzQf34/VWdZO6aBhuXVKqSHYp2n4vcZVTvXGfW3Ft1v2Gdigvlk4Vt
-	jv55hLSoE075FjH5Zlm2/6cyVg==
-X-Google-Smtp-Source: AMsMyM4lgxN81Bdg9UtMMFBkEJear9Fq+lfJJh3mNnqRnROYYU9eTzko7OsU+RY+0fHJK/So8NyAHg==
-X-Received: by 2002:a05:6870:14c4:b0:132:c614:b0e3 with SMTP id l4-20020a05687014c400b00132c614b0e3mr33106688oab.204.1666455671097;
-        Sat, 22 Oct 2022 09:21:11 -0700 (PDT)
-Received: from [10.203.8.70] ([205.153.95.177])
-        by smtp.gmail.com with ESMTPSA id v5-20020a056870310500b00136c20b1c59sm11595627oaa.43.2022.10.22.09.21.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Oct 2022 09:21:10 -0700 (PDT)
-Message-ID: <5ef70149-5079-173f-ab6a-a9f0cc01f281@linaro.org>
-Date: Sat, 22 Oct 2022 12:21:07 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
- scheme
-Content-Language: en-US
-To: Vadym Kochan <vadym.kochan@plvision.eu>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Elad Nachman <enachman@marvell.com>
-References: <20221022082628.23876-1-vadym.kochan@plvision.eu>
- <20221022082628.23876-2-vadym.kochan@plvision.eu>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221022082628.23876-2-vadym.kochan@plvision.eu>
+	id 1omKU8-00Dfr5-QR; Sat, 22 Oct 2022 19:48:47 +0000
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailnew.nyi.internal (Postfix) with ESMTP id 6AD1458012A;
+	Sat, 22 Oct 2022 15:48:41 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute3.internal (MEProxy); Sat, 22 Oct 2022 15:48:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to; s=fm2; t=1666468121; x=1666475321; bh=UGS1Mg1RbR
+	rjg7l/C4uODk6tRvKSFxQmBze4CDiRUok=; b=R769R20cvAUvCJzdLxBnDkwPBp
+	EbTpyCnh90ePwkW/W271GgnujcaxKPNlKUZTD1QiMzbOX6UUmX5GBGQy5YnoG3Hz
+	7bIbm4GGSebbV6RK2kBgjxCEhVjRMxNaLgKsw+7i5e4f4W2C2HsQFTmKv8S+gZdE
+	jcEJHfdX99rjFuuQuzOPTEkJYLvC3gJ1f7jx+9U6cwktdP6NSfqNvxTgarEWxD1c
+	GFRrikCndHmtZnFVFspin0GH0nBuno9DFl/vX1YEuWJJ1DmabcJBI+QgW+pFl13L
+	PUlTUh21czWS+IFSiTNJyGJ4p7ipLzCb7UJepNPQ1EVgfsLevgq5To41FFEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:sender:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1666468121; x=1666475321; bh=UGS1Mg1RbRrjg7l/C4uODk6tRvKS
+	FxQmBze4CDiRUok=; b=DZdlxJQ1/OPf/Y6KDYWPfdC+mu56NzIOlbXghWxjCj9D
+	9CPMuzFO6wSIpYXaVVKO5ogBmtK5zrRUpai6gPg5qF7aq51p1Tf8zgVV+aEGQIpg
+	Le7lvLJR+05feR3Q+7owk4RsmE3rzpsqGg/UOGa7xGgp5BzvreC3G8OxhZ0WzoTZ
+	kHVkLu1P+KTSJm4dYCrODRLVTVeSHwuFqAuyI9eyO0UD5B3tL3/NipBn2AFumQvr
+	+xjvFjLrJEOmbNOFedB+o0knlGPPR7li0EwNxPvDXhDL0DJhj4plmQqEZJg8uEWZ
+	ljUtVQj8llXCVqwnpTmY8Mpk0y+FjFMyLlNEuZEfiA==
+X-ME-Sender: <xms:GElUY9vt3ItviEp5AJXQjYcX0YyV47YTITTgtkGjjNw0aSie0vzYkg>
+    <xme:GElUY2cknoJTeDpYvjbC4RFS-FtPGbyfFDbbyjNFIChdDqrc0xYFVavFYI99vu8kl
+    0KtHqNspAg1e6vBhwY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrgedttddgudegtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:GElUYwxiXoqPMILm1SZ_32__qu1Q5l_zrlV4KYN9jBrAlex9SwSKIg>
+    <xmx:GElUY0PzOcbbrTlSQkCZ5j1lrS1Cnv1p6FZXhLQlA1lHQyiDXRQGng>
+    <xmx:GElUY9-JQg9pRkXJG00aarf_3pC2T4jG_plPdMl-YxzKsRcEtsxZ9g>
+    <xmx:GUlUYyKFp-5FR5wwM3xl6nutJeKlKU0pfMGHX_pxDvaIG8i-amMB_w>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 90C24B60086; Sat, 22 Oct 2022 15:48:40 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-1047-g9e4af4ada4-fm-20221005.001-g9e4af4ad
+Mime-Version: 1.0
+Message-Id: <7c4531b8-a296-4ea3-9564-b094704d10b2@app.fastmail.com>
+In-Reply-To: <e7ace68a-98e5-63c8-7dd7-a35d0eba1c6e@linaro.org>
+References: <20221021202254.4142411-1-arnd@kernel.org>
+ <e7ace68a-98e5-63c8-7dd7-a35d0eba1c6e@linaro.org>
+Date: Sat, 22 Oct 2022 21:48:19 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+ "Arnd Bergmann" <arnd@kernel.org>, linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, "Ben Dooks" <ben-linux@fluff.org>,
+ "Simtec Linux Team" <linux@simtec.co.uk>, linux-doc@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-stm32@st-md-mailman.stormreply.com,
+ linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-pm@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
+ "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 00/21] ARM: s3c: clean out obsolete platforms
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221022_092112_095229_C010265F 
-X-CRM114-Status: UNSURE (   8.48  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221022_124845_333562_BC908C78 
+X-CRM114-Status: GOOD (  12.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,23 +117,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 22/10/2022 04:26, Vadym Kochan wrote:
-> Switch the DT binding to a YAML schema to enable the DT validation.
-> 
-> Dropped deprecated compatibles and properties described in txt file.
-> 
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> ---
-> v2:
->   1) Fixed warning by yamllint with incorrect indentation for compatible list
+On Sat, Oct 22, 2022, at 17:18, Krzysztof Kozlowski wrote:
+> On 21/10/2022 16:22, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> The s3c24xx platform was marked as deprecated a while ago,
+>> and for the s3c64xx platform, we marked all except one legacy
+>> board file as unused.
+>> 
+>> This series removes all of those, leaving only s3c64xx support
+>> for DT based boots as well as the cragg6410 board file.
+>> 
+>> About half of the s3c specific drivers were only used on
+>> the now removed machines, so these drivers can be retired
+>> as well. I can either merge the driver removal patches through
+>> the soc tree along with the board file patches, or subsystem
+>> maintainers can pick them up into their own trees, whichever
+>> they prefer.
+>
+> Just to be sure - do you expect me to ack the series, or rather as usual
+> pick them up?
 
-I guess all my comments from v1 apply.
+I think in this case it is easier if I pick them up with your
+Ack along with the other platforms I posted, as there are
+some minor conflicts between Makefile/Kconfig changes where
+I remove adjacent lines.
 
-Did you test the bindings?
-
-Best regards,
-Krzysztof
-
+       Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
