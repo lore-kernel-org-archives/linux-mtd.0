@@ -4,103 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 324B8C04A95
-	for <linux-mtd@archiver.kernel.org>; Sat, 22 Oct 2022 19:49:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53B9CFA373E
+	for <linux-mtd@archiver.kernel.org>; Sat, 22 Oct 2022 21:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W4fLgOzLT82cvHMyXsJBRf0Bs5TwcAFOzOAJ4/vmtmA=; b=VygUy6ZGt9hQ5c
-	7ZdRpoUYJohyLVZdIB26R5kwztLlgPwb0a5pMpnMzmq+7t5Eh2VTjmGzPOdm+SIVPyJApdWSj5S85
-	ZEeGwX5kGTOjqNJ9XU1MK2aH3iz5Nyvolpv9akbKF+OkftedHGFGvX7Pt258R2s7ZxzGyepJDZL1J
-	vE15yfNWtAOMx0xJBqreiI5XZGm000fYbF6RCRT7bbwbmGDI+AFNbSbS+3E0egUoWIa7FmYGf7i0M
-	80c1Q8fNITmPQ1v03MlIJ5Nt0EV8Jau+tHcm7V6hV6QLUw7Qw76CsRAMK0yLu99B52qqVFJn0BNGs
-	eOe8pcuGCf1oylhjKlag==;
+	List-Owner; bh=C1Byv6SBYacrGEqH3w09Xl75jmupTSnYo2LEljCWAC4=; b=Tjn4MmB3ABQMZS
+	x6uanZjfXTwMlnQITRKKvTxkZdGi6/jL/PfLl9iFyaU0oOmcG+nUAq+UsrZvUh0U30Xa+eqIdKelF
+	hXntzKlc3icMCtms1H47EBfdM1jbqkvYGjQtB0sW+wxXWHqGog9mLrP7IQ9GLO3pmtN1VPODcubM0
+	o9SVzn7SADX+4CXlXDZPlJ7h07MbeMUCXW3vEQBE6KE6W8TdDb0oVKNnJQb8YK3W+HumylHZ8nfBx
+	/9p3ZYcUGHb0b45yQzqbUhIclVHS1WOZy6RgnPjcyly9FkoYEoRxskcV3oO42hjm3bZeoaPdk7mRu
+	p++YHRz2Ac7g+uexD4HA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omKUL-00Dfv1-Uu; Sat, 22 Oct 2022 19:48:58 +0000
-Received: from new1-smtp.messagingengine.com ([66.111.4.221])
+	id 1omLoC-00DpBi-0R; Sat, 22 Oct 2022 21:13:32 +0000
+Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omKU8-00Dfr5-QR; Sat, 22 Oct 2022 19:48:47 +0000
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 6AD1458012A;
-	Sat, 22 Oct 2022 15:48:41 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute3.internal (MEProxy); Sat, 22 Oct 2022 15:48:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to; s=fm2; t=1666468121; x=1666475321; bh=UGS1Mg1RbR
-	rjg7l/C4uODk6tRvKSFxQmBze4CDiRUok=; b=R769R20cvAUvCJzdLxBnDkwPBp
-	EbTpyCnh90ePwkW/W271GgnujcaxKPNlKUZTD1QiMzbOX6UUmX5GBGQy5YnoG3Hz
-	7bIbm4GGSebbV6RK2kBgjxCEhVjRMxNaLgKsw+7i5e4f4W2C2HsQFTmKv8S+gZdE
-	jcEJHfdX99rjFuuQuzOPTEkJYLvC3gJ1f7jx+9U6cwktdP6NSfqNvxTgarEWxD1c
-	GFRrikCndHmtZnFVFspin0GH0nBuno9DFl/vX1YEuWJJ1DmabcJBI+QgW+pFl13L
-	PUlTUh21czWS+IFSiTNJyGJ4p7ipLzCb7UJepNPQ1EVgfsLevgq5To41FFEw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1666468121; x=1666475321; bh=UGS1Mg1RbRrjg7l/C4uODk6tRvKS
-	FxQmBze4CDiRUok=; b=DZdlxJQ1/OPf/Y6KDYWPfdC+mu56NzIOlbXghWxjCj9D
-	9CPMuzFO6wSIpYXaVVKO5ogBmtK5zrRUpai6gPg5qF7aq51p1Tf8zgVV+aEGQIpg
-	Le7lvLJR+05feR3Q+7owk4RsmE3rzpsqGg/UOGa7xGgp5BzvreC3G8OxhZ0WzoTZ
-	kHVkLu1P+KTSJm4dYCrODRLVTVeSHwuFqAuyI9eyO0UD5B3tL3/NipBn2AFumQvr
-	+xjvFjLrJEOmbNOFedB+o0knlGPPR7li0EwNxPvDXhDL0DJhj4plmQqEZJg8uEWZ
-	ljUtVQj8llXCVqwnpTmY8Mpk0y+FjFMyLlNEuZEfiA==
-X-ME-Sender: <xms:GElUY9vt3ItviEp5AJXQjYcX0YyV47YTITTgtkGjjNw0aSie0vzYkg>
-    <xme:GElUY2cknoJTeDpYvjbC4RFS-FtPGbyfFDbbyjNFIChdDqrc0xYFVavFYI99vu8kl
-    0KtHqNspAg1e6vBhwY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrgedttddgudegtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:GElUYwxiXoqPMILm1SZ_32__qu1Q5l_zrlV4KYN9jBrAlex9SwSKIg>
-    <xmx:GElUY0PzOcbbrTlSQkCZ5j1lrS1Cnv1p6FZXhLQlA1lHQyiDXRQGng>
-    <xmx:GElUY9-JQg9pRkXJG00aarf_3pC2T4jG_plPdMl-YxzKsRcEtsxZ9g>
-    <xmx:GUlUYyKFp-5FR5wwM3xl6nutJeKlKU0pfMGHX_pxDvaIG8i-amMB_w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 90C24B60086; Sat, 22 Oct 2022 15:48:40 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1047-g9e4af4ada4-fm-20221005.001-g9e4af4ad
-Mime-Version: 1.0
-Message-Id: <7c4531b8-a296-4ea3-9564-b094704d10b2@app.fastmail.com>
-In-Reply-To: <e7ace68a-98e5-63c8-7dd7-a35d0eba1c6e@linaro.org>
-References: <20221021202254.4142411-1-arnd@kernel.org>
- <e7ace68a-98e5-63c8-7dd7-a35d0eba1c6e@linaro.org>
-Date: Sat, 22 Oct 2022 21:48:19 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
- "Arnd Bergmann" <arnd@kernel.org>, linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, "Ben Dooks" <ben-linux@fluff.org>,
- "Simtec Linux Team" <linux@simtec.co.uk>, linux-doc@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com, linux-stm32@st-md-mailman.stormreply.com,
- linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-pm@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
- "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 00/21] ARM: s3c: clean out obsolete platforms
+	id 1omLo8-00DpAU-LH
+	for linux-mtd@lists.infradead.org; Sat, 22 Oct 2022 21:13:29 +0000
+Received: by mail-ed1-x52c.google.com with SMTP id z97so18087684ede.8
+        for <linux-mtd@lists.infradead.org>; Sat, 22 Oct 2022 14:13:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sMcPWSUmJnWN6Xepe9O23Js1qxdW09hzjNuw8smzgps=;
+        b=Juwv+t1RTD/CMonD6c03dxDghAH5fYtIui194P1sOuPDqUipKVcMtYq5xsIHFnFu/S
+         9PuKQH+IEKm9pjZCdY5rKHFMux6oZ6jGSl/kLkoOPzGiCObsf8o8V/BIs4ImZJ24157x
+         vCJ4/stysEk6t20lEO+Guu/3orvGzmm07igbOeQdiKL4A/gMqz8qTwo/gO00Xc+5hgnY
+         D+/QqytyJcYHxhBW/nZccJUnnNV3z2H4Zzo2XIG5Z0M9/WfLUgZfnTa6297r6BzOL5J0
+         75kjjA5hJtnpm2S/eHxSYDOqznebiuBAghHKBcvY38HOpjFsUNzasVI9q7LASA5P552b
+         gExg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sMcPWSUmJnWN6Xepe9O23Js1qxdW09hzjNuw8smzgps=;
+        b=zKcAMHTTOSHkwKLJYvfafjnAZmDVqa+G8AZwHabHkvzD7A7iDNorAEjTAJNcEW79ko
+         IFcupKu8W0qIoFMQalZGVGp0Yamgb7n/+gFu/yQsaPhrhx9bnVm+YCjyc6RJo3lcAfuR
+         vw1CrToGeFzhGRu8QOUMwPiQsNEqlx7GeYani0CGPdnp1zTe+O9pYAWx7buVIxndd1aY
+         Hla+u+ANxpxA8lNUHK0Pi2oId+OlWQeOoGE8Ev8Qr8VMvKtUtIHb8azKOxrLfUfB8XA2
+         T7hE/kF+AA1r9+d7zc24uaiexT8Sa6RbM2kLhvCrt0zkR1tRLCL2mnSQhEDWNXmUcXJT
+         sn3g==
+X-Gm-Message-State: ACrzQf0yCO80Ir+L+wocT4F/wbV3U78tvH6LE1Z8cdw9bu6BBgcPJZop
+	j//zXju2g9tXM8foRR54+/c=
+X-Google-Smtp-Source: AMsMyM5Qf2ADuVBQDHAFHzbyHZ+OeqC55sfOOOezRBA6Gp3Wz7C2lnCHShhxvyaoPqr5xTnfUEk34w==
+X-Received: by 2002:a50:ed03:0:b0:461:9f73:b8d9 with SMTP id j3-20020a50ed03000000b004619f73b8d9mr857808eds.140.1666473205425;
+        Sat, 22 Oct 2022 14:13:25 -0700 (PDT)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id la5-20020a170907780500b0077f20a722dfsm13382584ejc.165.2022.10.22.14.13.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 Oct 2022 14:13:25 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Mikhail Zhilkin <csharper2005@gmail.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V3 2/2] mtd: core: set ROOT_DEV for partitions marked as rootfs in DT
+Date: Sat, 22 Oct 2022 23:13:18 +0200
+Message-Id: <20221022211318.32009-2-zajec5@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221022211318.32009-1-zajec5@gmail.com>
+References: <20221022211318.32009-1-zajec5@gmail.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221022_124845_333562_BC908C78 
-X-CRM114-Status: GOOD (  12.76  )
+X-CRM114-CacheID: sfid-20221022_141328_720753_7CAEA5F7 
+X-CRM114-Status: GOOD (  14.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,39 +98,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Oct 22, 2022, at 17:18, Krzysztof Kozlowski wrote:
-> On 21/10/2022 16:22, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> The s3c24xx platform was marked as deprecated a while ago,
->> and for the s3c64xx platform, we marked all except one legacy
->> board file as unused.
->> 
->> This series removes all of those, leaving only s3c64xx support
->> for DT based boots as well as the cragg6410 board file.
->> 
->> About half of the s3c specific drivers were only used on
->> the now removed machines, so these drivers can be retired
->> as well. I can either merge the driver removal patches through
->> the soc tree along with the board file patches, or subsystem
->> maintainers can pick them up into their own trees, whichever
->> they prefer.
->
-> Just to be sure - do you expect me to ack the series, or rather as usual
-> pick them up?
-
-I think in this case it is easier if I pick them up with your
-Ack along with the other platforms I posted, as there are
-some minor conflicts between Makefile/Kconfig changes where
-I remove adjacent lines.
-
-       Arnd
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKVGhpcyBhZGRzIHN1cHBv
+cnQgZm9yICJsaW51eCxyb290ZnMiIGJpbmRpbmcgdGhhdCBpcyB1c2VkIHRvIG1hcmsgZmxhc2gK
+cGFydGl0aW9uIGNvbnRhaW5pbmcgcm9vdGZzLiBJdCdzIHVzZWZ1bCBmb3IgZGV2aWNlcyB1c2lu
+ZyBkZXZpY2UgdHJlZQp0aGF0IGRvbid0IGhhdmUgYm9vdGxvYWRlciBwYXNzaW5nIHJvb3QgaW5m
+byBpbiBjbWRsaW5lLgoKU2lnbmVkLW9mZi1ieTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxl
+Y2tpLnBsPgotLS0KVjI6IFVzZSAibGludXgscm9vdGZzIiBhcyBtb3JlIGFjY3VyYXRlLiBUaGFu
+a3MgUm9iLgpWMzogQWRkIElTX0JVSUxUSU4oQ09ORklHX01URCkgY2hlY2sgdG8gYXZvaWQKICAg
+IEVSUk9SOiBtb2Rwb3N0OiAiUk9PVF9ERVYiIFtkcml2ZXJzL210ZC9tdGQua29dIHVuZGVmaW5l
+ZCEKLS0tCiBkcml2ZXJzL210ZC9tdGRjb3JlLmMgfCAxMiArKysrKysrKysrKysKIDEgZmlsZSBj
+aGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbXRkY29y
+ZS5jIGIvZHJpdmVycy9tdGQvbXRkY29yZS5jCmluZGV4IDIwZmNlZGMzMDIxZS4uZjcwYTVlNjY4
+NDNiIDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9tdGRjb3JlLmMKKysrIGIvZHJpdmVycy9tdGQv
+bXRkY29yZS5jCkBAIC0yOCw2ICsyOCw3IEBACiAjaW5jbHVkZSA8bGludXgvbGVkcy5oPgogI2lu
+Y2x1ZGUgPGxpbnV4L2RlYnVnZnMuaD4KICNpbmNsdWRlIDxsaW51eC9udm1lbS1wcm92aWRlci5o
+PgorI2luY2x1ZGUgPGxpbnV4L3Jvb3RfZGV2Lmg+CiAKICNpbmNsdWRlIDxsaW51eC9tdGQvbXRk
+Lmg+CiAjaW5jbHVkZSA8bGludXgvbXRkL3BhcnRpdGlvbnMuaD4KQEAgLTczNSw2ICs3MzYsMTcg
+QEAgaW50IGFkZF9tdGRfZGV2aWNlKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQogCQlub3QtPmFkZCht
+dGQpOwogCiAJbXV0ZXhfdW5sb2NrKCZtdGRfdGFibGVfbXV0ZXgpOworCisJaWYgKG9mX2ZpbmRf
+cHJvcGVydHkobXRkX2dldF9vZl9ub2RlKG10ZCksICJsaW51eCxyb290ZnMiLCBOVUxMKSkgewor
+CQlpZiAoSVNfQlVJTFRJTihDT05GSUdfTVREKSkgeworCQkJcHJfaW5mbygibXRkOiBzZXR0aW5n
+IG10ZCVkICglcykgYXMgcm9vdCBkZXZpY2VcbiIsIG10ZC0+aW5kZXgsIG10ZC0+bmFtZSk7CisJ
+CQlST09UX0RFViA9IE1LREVWKE1URF9CTE9DS19NQUpPUiwgbXRkLT5pbmRleCk7CisJCX0gZWxz
+ZSB7CisJCQlwcl93YXJuKCJtdGQ6IGNhbid0IHNldCBtdGQlZCAoJXMpIGFzIHJvb3QgZGV2aWNl
+IC0gbXRkIG11c3QgYmUgYnVpbHRpblxuIiwKKwkJCQltdGQtPmluZGV4LCBtdGQtPm5hbWUpOwor
+CQl9CisJfQorCiAJLyogV2UgX2tub3dfIHdlIGFyZW4ndCBiZWluZyByZW1vdmVkLCBiZWNhdXNl
+CiAJICAgb3VyIGNhbGxlciBpcyBzdGlsbCBob2xkaW5nIHVzIGhlcmUuIFNvIG5vbmUKIAkgICBv
+ZiB0aGlzIHRyeV8gbm9uc2Vuc2UsIGFuZCBubyBiaXRjaGluZyBhYm91dCBpdAotLSAKMi4zNC4x
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
