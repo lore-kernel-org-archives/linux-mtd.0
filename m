@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47E90C3A59D
-	for <linux-mtd@archiver.kernel.org>; Sat, 22 Oct 2022 10:49:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 556CAC04A95
+	for <linux-mtd@archiver.kernel.org>; Sat, 22 Oct 2022 11:11:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=02U6tvSEye3Hwrvc10oDAGyMJEwqYVzVksxbmtx4Oqs=; b=KHQLhMfoCeY8G+
-	n5P+urQJ5RK+KUVvxxAoPFLJpcZHW1GzUdO2q5EBcmF/Wfh+Sk8/LwibtA2Ul6EL9FlfNPL60RukM
-	Nw30k9R8Gd3kycY4eYAcduFTMPlCULbgKH4YHiM8c/YUSRV39jcx0tVqNwmN/rnc+CKzSMFH4UgVr
-	ej7msN5ZzGCYgLTuQnVCgZh05S494NxWIRyCbQsc2r6v4tdwWBvEQ9fvk8A7kLMNMnK2ZpQhV2YgI
-	fdng/9oLr3plwic4WhVUwBkvO2GCRse2CPpwo42atvgv//6seXLEMReBHd+5++h2WWzUjjUudzFbG
-	QXM49CDuEAuNQrZYBT4w==;
+	List-Owner; bh=NEZOHCxvTNf+fkh993695aYAe22g2uS7q+Q9dbCiMMs=; b=lMTBICB3nEZW/4
+	OMlPlSFckMbOnOcb6O8Th7cNRWlScCFshNocC0SQR5+361bA0J2Vbc8y41h5d8fXxBeMem8w4V4Im
+	PWEmyu64k6cnqwcwTf4uQ0QLRnS8/bIzk8P8ZTSGwmR5kJ0cBD4JMs+s+HapCi01iFlh/yCgw8nMM
+	ozRtr1/F/Yv3fsi3W4uiJ12zM0ZqVW5PXPxw8/f3iIPXcWpxUhHDPi6PEdHeMgIi3oDfYfSy4UDhB
+	0Y+4eEa3ozDZ7Fa9nL8BYWILX5okIPW5WFBkkrErT5mUs4f3stTfJyipE6emOg62xuc/wMRJqEOss
+	636rDAG8nbhwDVMBp19g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omC41-00CHq6-Tr; Sat, 22 Oct 2022 10:49:13 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1omCOw-00CLJ0-1m; Sat, 22 Oct 2022 11:10:50 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omC3y-00CHnN-Ah
-	for linux-mtd@lists.infradead.org; Sat, 22 Oct 2022 10:49:12 +0000
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.55])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MvdKz0PMgzJn3b;
-	Sat, 22 Oct 2022 18:46:15 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by kwepemi500012.china.huawei.com
- (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sat, 22 Oct
- 2022 18:48:56 +0800
-From: Li Zetao <lizetao1@huawei.com>
-To: <richard@nod.at>, <Artem.Bityutskiy@nokia.com>,
-	<ext-adrian.hunter@nokia.com>
-CC: <lizetao1@huawei.com>, <yi.zhang@huawei.com>, <chengzhihao1@huawei.com>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ubifs: Fix memory leak in alloc_wbufs()
-Date: Sat, 22 Oct 2022 19:52:11 +0800
-Message-ID: <20221022115211.1969429-1-lizetao1@huawei.com>
+	id 1omCOt-00CLHZ-6q
+	for linux-mtd@lists.infradead.org; Sat, 22 Oct 2022 11:10:49 +0000
+Received: from dggpeml500023.china.huawei.com (unknown [172.30.72.56])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mvdp92qkYzpVjv;
+	Sat, 22 Oct 2022 19:07:13 +0800 (CST)
+Received: from localhost.localdomain (10.175.101.6) by
+ dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 22 Oct 2022 19:10:34 +0800
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+To: <zhangxiaoxu5@huawei.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+	<dbrownell@users.sourceforge.net>
+Subject: [PATCH] mtd: Fix device name leak when register device failed in add_mtd_device()
+Date: Sat, 22 Oct 2022 20:13:52 +0800
+Message-ID: <20221022121352.2534682-1-zhangxiaoxu5@huawei.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500012.china.huawei.com (7.221.188.12)
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221022_034910_734436_118E903E 
-X-CRM114-Status: GOOD (  10.12  )
+X-CRM114-CacheID: sfid-20221022_041047_467220_D47FD61B 
+X-CRM114-Status: UNSURE (   8.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,95 +65,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-kmemleak reported a sequence of memory leaks, and show them as following:
-
-  unreferenced object 0xffff8881575f8400 (size 1024):
-    comm "mount", pid 19625, jiffies 4297119604 (age 20.383s)
-    hex dump (first 32 bytes):
-      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+There is a kmemleak when register device failed:
+  unreferenced object 0xffff888101aab550 (size 8):
+    comm "insmod", pid 3922, jiffies 4295277753 (age 925.408s)
+    hex dump (first 8 bytes):
+      6d 74 64 30 00 88 ff ff                          mtd0....
     backtrace:
-      [<ffffffff8176cecd>] __kmalloc+0x4d/0x150
-      [<ffffffffa0406b2b>] ubifs_mount+0x307b/0x7170 [ubifs]
-      [<ffffffff819fa8fd>] legacy_get_tree+0xed/0x1d0
-      [<ffffffff81936f2d>] vfs_get_tree+0x7d/0x230
-      [<ffffffff819b2bd4>] path_mount+0xdd4/0x17b0
-      [<ffffffff819b37aa>] __x64_sys_mount+0x1fa/0x270
-      [<ffffffff83c14295>] do_syscall_64+0x35/0x80
-      [<ffffffff83e0006a>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+      [<00000000bde26724>] __kmalloc_node_track_caller+0x4e/0x150
+      [<000000003c32b416>] kvasprintf+0xb0/0x130
+      [<000000001f7a8f15>] kobject_set_name_vargs+0x2f/0xb0
+      [<000000006e781163>] dev_set_name+0xab/0xe0
+      [<00000000e30d0c78>] add_mtd_device+0x4bb/0x700
+      [<00000000f3d34de7>] mtd_device_parse_register+0x2ac/0x3f0
+      [<00000000c0d88488>] 0xffffffffa0238457
+      [<00000000b40d0922>] 0xffffffffa02a008f
+      [<0000000023d17b9d>] do_one_initcall+0x87/0x2a0
+      [<00000000770f6ca6>] do_init_module+0xdf/0x320
+      [<000000007b6768fe>] load_module+0x2f98/0x3330
+      [<00000000346bed5a>] __do_sys_finit_module+0x113/0x1b0
+      [<00000000674c2290>] do_syscall_64+0x35/0x80
+      [<000000004c6a8d97>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
 
-  unreferenced object 0xffff8881798a6e00 (size 512):
-    comm "mount", pid 19677, jiffies 4297121912 (age 37.816s)
-    hex dump (first 32 bytes):
-      6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
-      6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
-    backtrace:
-      [<ffffffff8176cecd>] __kmalloc+0x4d/0x150
-      [<ffffffffa0418342>] ubifs_wbuf_init+0x52/0x480 [ubifs]
-      [<ffffffffa0406ca5>] ubifs_mount+0x31f5/0x7170 [ubifs]
-      [<ffffffff819fa8fd>] legacy_get_tree+0xed/0x1d0
-      [<ffffffff81936f2d>] vfs_get_tree+0x7d/0x230
-      [<ffffffff819b2bd4>] path_mount+0xdd4/0x17b0
-      [<ffffffff819b37aa>] __x64_sys_mount+0x1fa/0x270
-      [<ffffffff83c14295>] do_syscall_64+0x35/0x80
-      [<ffffffff83e0006a>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+If register device failed, should call put_device() to give up the
+reference.
 
-The problem is that the ubifs_wbuf_init() returns an error in the
-loop which in the alloc_wbufs(), then the wbuf->buf and wbuf->inodes
-that were successfully alloced before are not freed.
-
-Fix it by adding error hanging path in alloc_wbufs() which frees
-the memory alloced before when ubifs_wbuf_init() returns an error.
-
-Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
-Signed-off-by: Li Zetao <lizetao1@huawei.com>
+Fixes: 1f24b5a8ecbb ("[MTD] driver model updates")
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 ---
- fs/ubifs/super.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/mtd/mtdcore.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index d0c9a09988bc..32cb14759796 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -833,7 +833,7 @@ static int alloc_wbufs(struct ubifs_info *c)
- 		INIT_LIST_HEAD(&c->jheads[i].buds_list);
- 		err = ubifs_wbuf_init(c, &c->jheads[i].wbuf);
- 		if (err)
--			return err;
-+			goto out_wbuf;
- 
- 		c->jheads[i].wbuf.sync_callback = &bud_wbuf_callback;
- 		c->jheads[i].wbuf.jhead = i;
-@@ -841,7 +841,7 @@ static int alloc_wbufs(struct ubifs_info *c)
- 		c->jheads[i].log_hash = ubifs_hash_get_desc(c);
- 		if (IS_ERR(c->jheads[i].log_hash)) {
- 			err = PTR_ERR(c->jheads[i].log_hash);
--			goto out;
-+			goto out_log_hash;
- 		}
- 	}
- 
-@@ -854,9 +854,18 @@ static int alloc_wbufs(struct ubifs_info *c)
- 
- 	return 0;
- 
--out:
--	while (i--)
-+out_log_hash:
-+	kfree(c->jheads[i].wbuf.buf);
-+	kfree(c->jheads[i].wbuf.inodes);
-+
-+out_wbuf:
-+	while (i--) {
-+		kfree(c->jheads[i].wbuf.buf);
-+		kfree(c->jheads[i].wbuf.inodes);
- 		kfree(c->jheads[i].log_hash);
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 18aa54460d36..f4858310331c 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -723,8 +723,10 @@ int add_mtd_device(struct mtd_info *mtd)
+ 	mtd_check_of_node(mtd);
+ 	of_node_get(mtd_get_of_node(mtd));
+ 	error = device_register(&mtd->dev);
+-	if (error)
++	if (error) {
++		put_device(&mtd->dev);
+ 		goto fail_added;
 +	}
-+	kfree(c->jheads);
-+	c->jheads = NULL;
  
- 	return err;
- }
+ 	/* Add the nvmem provider */
+ 	error = mtd_nvmem_add(mtd);
 -- 
 2.31.1
 
