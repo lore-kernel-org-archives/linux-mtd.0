@@ -4,104 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C3C1ECAAA1
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 13:20:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00A13FA3740
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 13:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OSuIjqQveWJx9WjmNlr16ohNP5Bq3jcpHRNDaPeLOLs=; b=bEE6mVXsk/kDBw
-	x6H5naivi6C4leisczyacmd6Ow/FBqOGqq9ezMShmDxVOTMtjQ2VWmTpQ1VK+PeWuo3RQAwyajiym
-	iKf2tbW/1KlLiJJmxI8bMn53l03VYEXaaXReEQWCW+ICWsT0c5Hj4ivxo9dgovfEelmKdphC6cTal
-	d5Xq71zRGOAJzTQtJl4HZlqi5/dlYSzY2FHzYQ01n4WfH8/v5TrrtO3bZdUMUoJklmecMJ2tM8KyQ
-	3H7VDpWQ6DVrnMdVawC/mlzlrAJ7o2GQIi85hiSqzwzSwUMDMbDsokCKS326dMSre4YDhKWoWWsUY
-	BuxsimW8sXQihoXRcWKQ==;
+	List-Owner; bh=9j09rZHtERXY9RWv/CBjJ3pxq5ihZZSuniw6csVn8D4=; b=PVRjJKVbtaGlZU
+	CqulssCnF9v2DOBa7QQSTmqScYb2k3KTMbiFKrXkvhsxyQstCsTTQcpVjc5RFBLgIk5P+xJW4RECl
+	K9aYkiUr7KEmosMl/ksBvzzGrH+kcw7jNsZSO9zCgwhpvAFFRJnfl2HShjmgMs0Jym9vERzzRhVuc
+	nm6kHJ/zvevSg7sVwXFw5xomz/YM9AbYTB9dLaO1SDGqOzaEkP+O/tC2hoUnXsv1cXH1am64nuSy0
+	fL0Jl4taieW5NFj2J644oZ/uqSpcHOefjakUe1bZYm3FWFRR7h+K+Ra5CitW7nW/fid9wsqxPpOl9
+	2cHqAO3ZybyBx9K9i+NQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omxMV-001fTP-52; Mon, 24 Oct 2022 13:19:27 +0000
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27])
+	id 1omxsA-001mML-JV; Mon, 24 Oct 2022 13:52:10 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omxMJ-001fQM-2I; Mon, 24 Oct 2022 13:19:16 +0000
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.west.internal (Postfix) with ESMTP id 011D42B066F0;
-	Mon, 24 Oct 2022 09:19:09 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute3.internal (MEProxy); Mon, 24 Oct 2022 09:19:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to; s=fm2; t=1666617549; x=1666624749; bh=dNk4I7ELz1
-	Q72dRob/8j+4seSTYFKAZT/RUPASjRJ5c=; b=q+NqZuUcR73y8BnZPPG5dx1Zsk
-	6km9xLqa6tEkJrornmVIrbgVsoTaG0EQRj//U3P/qs5FFUR0kQj3xsDpIMDiHNAP
-	KHymuWr00P67rJl6tNZNMaSvfwBvDXs8mjOeO+DtIb91LFvy9u7IqPZlLBHzDqVY
-	OqQ+UV/5sGJOiUEzmGUI9NOmwTaSDzu4RgOGbpc9QTg1ReluTq9aBn60FamJs6vN
-	DKIJe0X1BrhoAYInvyHnNd5GZdOejs+w4Suvb5ImKHNqRwAYBvpipR0/HvaVLckd
-	CHTLMlrLH5H5bEpdNq1ZJ2ZVvg8gjN0DzzHIiqNjzW420ViiiKKJHNZdB8zg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1666617549; x=1666624749; bh=dNk4I7ELz1Q72dRob/8j+4seSTYF
-	KAZT/RUPASjRJ5c=; b=uYEImk9/JaoBLZkHmS4JMUN51UUW3Adz4NZ33zTXfhfn
-	X2zc+bMCIXUEr4nNHo354GqKRASijikTpJx4FFU+epgcfr8J1IPlgZPNpNiYVB9M
-	w8ihE4tr46Zh/a1sL2xOLJxavoW+rkvJ5mUtViAoLX1JGrLBO17yVcJcaCCL+4DZ
-	U79zEm+ybsbN3XMbJe7XZH2qegoAJbChw5mNkbbe1D33ukaTT9FYQuJEpTpQ+3Cm
-	dcgc9DJADBfxr4sonBlprzuNuFtddjyQxgp5OFhdXtZwXkncp0R9eBa1XvUUpv5H
-	Fai3j/IlJ8ZfnHiUrjBdKzUP8vcWG93GWsi2JgpEew==
-X-ME-Sender: <xms:zZBWY4d6hZdrWDWBmQnXOunjtmGBLNtVOGtYlcpUAkqGnIq3nQ_ULg>
-    <xme:zZBWY6ORVL4inZtEZ347UGYnYKlOyas-DedRgWZhgJSTlHghoiUBMTH5Vdl7j2SlB
-    orGRM2A45E3sznwkiE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrgedtgedgheelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:zZBWY5jMfpgYOekZ5Xiy1zZWPWGF2N1SaGbKcsqvIIsAoksVTelYew>
-    <xmx:zZBWY98Y0Yr03VdtjC58Vfn64oQoe8znN7FH4bLecym0d8-7ie150w>
-    <xmx:zZBWY0u1N4N4cR6ZhhO6MwuQK8N3p7TbkgEiIMvu0C2hnaFTg0G-QA>
-    <xmx:zZBWY2px7fOBs4XObZs9jNKaCaM5g4TthCLLA4wr0bUEo7pzc_VBCiqJhiU>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 3DDB5B60086; Mon, 24 Oct 2022 09:19:09 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1047-g9e4af4ada4-fm-20221005.001-g9e4af4ad
-Mime-Version: 1.0
-Message-Id: <e5aa233d-526b-45ab-9acb-ab792b8686bc@app.fastmail.com>
-In-Reply-To: <20221024130035.GA1645003-robh@kernel.org>
-References: <20221021202254.4142411-1-arnd@kernel.org>
- <20221024130035.GA1645003-robh@kernel.org>
-Date: Mon, 24 Oct 2022 15:18:41 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Rob Herring" <robh@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org,
- "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
- linux-kernel@vger.kernel.org, "Ben Dooks" <ben-linux@fluff.org>,
- "Simtec Linux Team" <linux@simtec.co.uk>, linux-doc@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com, linux-stm32@st-md-mailman.stormreply.com,
- linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-pm@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
- "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 00/21] ARM: s3c: clean out obsolete platforms
+	id 1omxs7-001mLv-F4
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 13:52:08 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 9A36CB81B73;
+	Mon, 24 Oct 2022 13:52:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1728C433C1;
+	Mon, 24 Oct 2022 13:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1666619524;
+	bh=QIHnXVxCIGETsd0dywR9WOXQe2R85leBxjgt9psJDlE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=a2H9OWmUuPXe1nsvDHzMz7pk28v9U01aePXWCqE/PYv8mU+b3XDQLri0CqGVaRsJz
+	 jDX3YxQNP/rC/SyUqCZ86yUqxIXbKkp05GDQaItPKZLX+Z/tQqtvt0HtDKDldCwU2Z
+	 RC0760eEL3DTVNddcLXXtAu1W45/R1VDk/n+VsGo=
+Date: Mon, 24 Oct 2022 15:52:56 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Yang Yingliang <yangyingliang@huawei.com>
+Cc: linux-kernel@vger.kernel.org, qemu-devel@nongnu.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-erofs@lists.ozlabs.org, ocfs2-devel@oss.oracle.com,
+	linux-mtd@lists.infradead.org, amd-gfx@lists.freedesktop.org,
+	rafael@kernel.org, somlo@cmu.edu, mst@redhat.com,
+	jaegeuk@kernel.org, chao@kernel.org, hsiangkao@linux.alibaba.com,
+	huangjianan@oppo.com, mark@fasheh.com, jlbec@evilplan.org,
+	joseph.qi@linux.alibaba.com, akpm@linux-foundation.org,
+	alexander.deucher@amd.com, luben.tuikov@amd.com, richard@nod.at,
+	liushixin2@huawei.com
+Subject: Re: [PATCH v2] kset: fix memory leak when kset_register() returns
+ error
+Message-ID: <Y1aYuLmlXBRvMP1Z@kroah.com>
+References: <20221024121910.1169801-1-yangyingliang@huawei.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221024121910.1169801-1-yangyingliang@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221024_061915_159670_FBD251D9 
-X-CRM114-Status: GOOD (  20.95  )
+X-CRM114-CacheID: sfid-20221024_065207_677400_A3BBAE9A 
+X-CRM114-Status: GOOD (  23.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,75 +78,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Oct 24, 2022, at 15:00, Rob Herring wrote:
-> On Fri, Oct 21, 2022 at 10:22:28PM +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> The s3c24xx platform was marked as deprecated a while ago,
->> and for the s3c64xx platform, we marked all except one legacy
->> board file as unused.
->> 
->> This series removes all of those, leaving only s3c64xx support
->> for DT based boots as well as the cragg6410 board file.
->> 
->> About half of the s3c specific drivers were only used on
->> the now removed machines, so these drivers can be retired
->> as well. I can either merge the driver removal patches through
->> the soc tree along with the board file patches, or subsystem
->> maintainers can pick them up into their own trees, whichever
->> they prefer.
->
-> [...]
->
->>  Documentation/arm/index.rst                   |    1 -
->>  Documentation/arm/samsung-s3c24xx/cpufreq.rst |   77 -
->>  .../arm/samsung-s3c24xx/eb2410itx.rst         |   59 -
->>  Documentation/arm/samsung-s3c24xx/gpio.rst    |  172 --
->>  Documentation/arm/samsung-s3c24xx/h1940.rst   |   41 -
->>  Documentation/arm/samsung-s3c24xx/index.rst   |   20 -
->>  Documentation/arm/samsung-s3c24xx/nand.rst    |   30 -
->>  .../arm/samsung-s3c24xx/overview.rst          |  311 ---
->>  Documentation/arm/samsung-s3c24xx/s3c2412.rst |  121 -
->>  Documentation/arm/samsung-s3c24xx/s3c2413.rst |   22 -
->>  .../arm/samsung-s3c24xx/smdk2440.rst          |   57 -
->>  Documentation/arm/samsung-s3c24xx/suspend.rst |  137 --
->>  .../arm/samsung-s3c24xx/usb-host.rst          |   91 -
->>  Documentation/arm/samsung/overview.rst        |   13 -
->
-> What about?:
->
-> Documentation/devicetree/bindings/clock/samsung,s3c2410-clock.txt
-> Documentation/devicetree/bindings/interrupt-controller/samsung,s3c24xx-irq.txt
-> Documentation/devicetree/bindings/mmc/samsung,s3cmci.txt
+On Mon, Oct 24, 2022 at 08:19:10PM +0800, Yang Yingliang wrote:
+> Inject fault while loading module, kset_register() may fail.
+> If it fails, the name allocated by kobject_set_name() which
+> is called before kset_register() is leaked, because refcount
+> of kobject is hold in kset_init().
+> 
+> As a kset may be embedded in a larger structure which needs
+> be freed in release() function or error path in callers, we
+> can not call kset_put() in kset_register(), or it will cause
+> double free, so just call kfree_const() to free the name and
+> set it to NULL.
+> 
+> With this fix, the callers don't need to care about the name
+> freeing and call an extra kset_put() if kset_register() fails.
+> 
+> Suggested-by: Luben Tuikov <luben.tuikov@amd.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+> v1 -> v2:
+>   Free name inside of kset_register() instead of calling kset_put()
+>   in drivers.
+> ---
+>  lib/kobject.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/kobject.c b/lib/kobject.c
+> index a0b2dbfcfa23..3409a89c81e5 100644
+> --- a/lib/kobject.c
+> +++ b/lib/kobject.c
+> @@ -834,6 +834,9 @@ EXPORT_SYMBOL_GPL(kobj_sysfs_ops);
+>  /**
+>   * kset_register() - Initialize and add a kset.
+>   * @k: kset.
+> + *
+> + * NOTE: On error, the kset.kobj.name allocated by() kobj_set_name()
+> + * which is called before kset_register() in caller need be freed.
 
-Good catch!
+This comment doesn't make any sense anymore.  No caller needs to worry
+about this, right?
 
-I've removed these three now and and will add the removal to
-the same patch, also the related
-samsung,s3c2412-clock.txt and samsung,s3c2443-clock.txt
-files.
+>   */
+>  int kset_register(struct kset *k)
+>  {
+> @@ -844,8 +847,11 @@ int kset_register(struct kset *k)
+>  
+>  	kset_init(k);
+>  	err = kobject_add_internal(&k->kobj);
+> -	if (err)
+> +	if (err) {
+> +		kfree_const(k->kobj.name);
+> +		k->kobj.name = NULL;
 
-> Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
+Why are you setting the name here to NULL?
 
-samsung,s3c2412-nand is apparently still used on s3c6400,
-and the driver is selectable on that platform, so I think
-that should remain in there until we remove s3c64xx in 2024,
-even if it is not referenced by the dts files in the kernel.
+thanks,
 
-> Documentation/devicetree/bindings/usb/s3c2410-usb.txt
-
-Similarly, the driver is used on the crag6410 board
-(without DT), and probably just works with the DT based
-boards if one adds a node to s3c64xx.dtsi.
-
-I've also checked if any of the other removed drivers
-matches of_device_id[] strings to see if there are more
-bindings to kill off, but I don't see any that have
-now become obsolete. It did point me to pxa2xx_ac97_dt_ids,
-which Robert already complained about, this apparently
-is still used with dts files outside of mainline.
-
-      Arnd
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
