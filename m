@@ -4,53 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9113C38A2D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 06:52:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ECDAC3A59D
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 07:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=RP8K1uOx1nzyXOv4HEyiDEFkK/49zWqpRx56hQQrU74=; b=uRAlv9dd4f0sgC
-	gGFJASZ6Ms/zJX/aE9t50jHHl2bJOPj0Adl6tab2WMyaWne0Mnulis7u9KduEoE8xOmBk/PqGaLCa
-	DLyKUNSGMkzfxrBX2qGBxrkC7maGwwNepnGSRah0inqs4ZTkuQPn5RtQm8peLZ3YNdpUJl5WvE53C
-	gZsj9lDvuaIcdOuVu1LaYkRPhgjjOv6ZFneN3BZwBMcOR5MvIL7RR+mkP3s+It/AaP5A1NUyqRfYq
-	us0xnvMk0T9TlVXQOzbdnxoCLHzFfnopK0nxmuRUgr8R1X+au7WWx0AEHNhAgf8xQKSFa7Gxq1f1p
-	KAqNAlzBfdfriF4Y3xvQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=C/qOGT49xPR0Kf4E/zHvNJUida8lmKH4UYBt1nnrwiQ=; b=UczZgOvVuoNiBZ
+	6sVfbYF7+fN4MRP9c7HVGp9OcYLkK3q1rvHDGllcIlab3LAajEztmwI+tDP2UdKEsZYLmC1XC92Ew
+	6t10o83if7X0CtThUz7M74UBz8tJXCT39wISNjcgp6ZcVT2w1VrgV4/lkht2evVy/dgNiwN/ALcUO
+	7dWRBoM+4CE9WHY3VexWgbZcqiHTFx4QeWhWDsXpmli1KffYIXkAAJ/lwB/YMb0u2TJVmVs1TAjhD
+	PakYSKGaaa2853g98pRhAMLJajzsvKfohoSQo7qZLiR5bIK6FK0w6rMM833l9pun9INKv8xQob9cm
+	9fuwfXL1uP9T0NpG2QKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omrJ0-00HLgv-HI; Mon, 24 Oct 2022 06:51:26 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1omsJ1-00HZPK-0v; Mon, 24 Oct 2022 07:55:31 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omrIv-00HLe5-2X
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 06:51:23 +0000
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.55])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Mwlyf2tpbzJn2H;
-	Mon, 24 Oct 2022 14:48:26 +0800 (CST)
-Received: from cgs.huawei.com (10.244.148.83) by
- kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 24 Oct 2022 14:51:10 +0800
-From: Gaosheng Cui <cuigaosheng1@huawei.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<marek.vasut@gmail.com>, <jim_baxter@mentor.com>,
-	<computersforpeace@gmail.com>, <Sandeep_Jain@mentor.com>,
-	<cuigaosheng1@huawei.com>
-CC: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: core: fix possible resource leak in init_mtd()
-Date: Mon, 24 Oct 2022 14:51:09 +0800
-Message-ID: <20221024065109.2050705-1-cuigaosheng1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	id 1omsIp-00HZLv-Eq; Mon, 24 Oct 2022 07:55:21 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id BC1EF1C000E;
+	Mon, 24 Oct 2022 07:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1666598113;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=v+DtEIbWCTrMoEhxqNZp5xO+0p2o8LDxYvX/bSafQhA=;
+	b=EKvNS6u8jnjegmr7GDNhG+HxpDM+Wj8+KWSwkrOzg4G/WtiE/ROOrbblmt3pAjrvfgueMZ
+	jNTxNy9LBLmzrpAyINZWgaV33dHQsxd2oSo/1LGCIw3PJwc8S4Gp1tPDIZwDQizaBcpvvY
+	S3ztUWTpqBY/bKIMXiZzkz2tMvCnNm3MdwXcvuQA9cOxsDUOftYKyK5T8gE5BZQRipHKSD
+	MEoTEyocU8KUQ2bKMtZt6sK6di8sKvOZGKxCEN0+nn2aWJyMv0pJI2PBN9TXXCi3sZ5UiY
+	Jci8bOiL/oSTvMdSx5T2vTxAVT3MDnq5GdNYYMuKfU1RrQ0HaA8QlN4H7V8uHw==
+Date: Mon, 24 Oct 2022 09:55:07 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, Krzysztof Kozlowski
+ <krzysztof.kozlowski@linaro.org>, linux-kernel@vger.kernel.org, Ben Dooks
+ <ben-linux@fluff.org>, Simtec Linux Team <linux@simtec.co.uk>, Arnd
+ Bergmann <arnd@arndb.de>, Alim Akhtar <alim.akhtar@samsung.com>, Daniel
+ Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Sylwester Nawrocki <sylvester.nawrocki@gmail.com>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tomasz
+ Figa <tomasz.figa@gmail.com>, Linus Walleij <linus.walleij@linaro.org>,
+ Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Guenter
+ Roeck <linux@roeck-us.net>, Chanwoo Choi <cw00.choi@samsung.com>, Stephen
+ Boyd <sboyd@kernel.org>, linux-samsung-soc@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-gpio@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ linux-clk@vger.kernel.org
+Subject: Re: [PATCH 02/21] ARM: s3c: remove s3c24xx specific hacks
+Message-ID: <20221024095507.302687f8@xps-13>
+In-Reply-To: <20221021203329.4143397-2-arnd@kernel.org>
+References: <20221021202254.4142411-1-arnd@kernel.org>
+	<20221021203329.4143397-2-arnd@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [10.244.148.83]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221023_235121_320275_48AAF363 
-X-CRM114-Status: UNSURE (   8.43  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221024_005519_816885_3B70EFD6 
+X-CRM114-Status: GOOD (  10.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,64 +85,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I got the error report while inject fault in init_mtd():
-
-sysfs: cannot create duplicate filename '/devices/virtual/bdi/mtd-0'
-Call Trace:
- <TASK>
- dump_stack_lvl+0x67/0x83
- sysfs_warn_dup+0x60/0x70
- sysfs_create_dir_ns+0x109/0x120
- kobject_add_internal+0xce/0x2f0
- kobject_add+0x98/0x110
- device_add+0x179/0xc00
- device_create_groups_vargs+0xf4/0x100
- device_create+0x7b/0xb0
- bdi_register_va.part.13+0x58/0x2d0
- bdi_register+0x9b/0xb0
- init_mtd+0x62/0x171 [mtd]
- do_one_initcall+0x6c/0x3c0
- do_init_module+0x58/0x222
- load_module+0x268e/0x27d0
- __do_sys_finit_module+0xd5/0x140
- do_syscall_64+0x37/0x90
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
- </TASK>
-kobject_add_internal failed for mtd-0 with -EEXIST, don't try to register
-	things with the same name in the same directory.
-Error registering mtd class or bdi: -17
-
-If init_mtdchar() fails in init_mtd(), mtd_bdi will not be unregistered,
-as a result, we can't load the mtd module again, to fix this by calling
-bdi_unregister(mtd_bdi) after out_procfs label.
-
-Fixes: 445caaa20c4d ("mtd: Allocate bdi objects dynamically")
-Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
----
- drivers/mtd/mtdcore.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 20fcedc3021e..d856892cb9b7 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2475,6 +2475,7 @@ static int __init init_mtd(void)
- out_procfs:
- 	if (proc_mtd)
- 		remove_proc_entry("mtd", NULL);
-+	bdi_unregister(mtd_bdi);
- 	bdi_put(mtd_bdi);
- err_bdi:
- 	class_unregister(&mtd_class);
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQXJuZCwKCmFybmRAa2VybmVsLm9yZyB3cm90ZSBvbiBGcmksIDIxIE9jdCAyMDIyIDIyOjI3
+OjM1ICswMjAwOgoKPiBGcm9tOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPgo+IAo+IEEg
+bnVtYmVyIG9mIGRldmljZSBkcml2ZXJzIHJlZmVyZW5jZSBDT05GSUdfQVJNX1MzQzI0WFhfQ1BV
+RlJFUSBvcgo+IHNpbWlsYXIgc3ltYm9scyB0aGF0IGFyZSBubyBsb25nZXIgYXZhaWxhYmxlIHdp
+dGggdGhlIHBsYXRmb3JtIGdvbmUsCj4gdGhvdWdoIHRoZSBkcml2ZXJzIHRoZW1zZWx2ZXMgYXJl
+IHN0aWxsIHVzZWQgb24gbmV3ZXIgcGxhdGZvcm1zLAo+IHNvIHJlbW92ZSB0aGVzZSBoYWNrcy4K
+PiAKPiBTaWduZWQtb2ZmLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPgoKQWNrZWQt
+Ynk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+CgpUaGFua3MsCk1p
+cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
