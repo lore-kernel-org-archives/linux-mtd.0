@@ -4,61 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DE93FA373E
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 12:21:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32F93ECAAA1
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 12:27:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=lsvur6m3H5KumAoQ+LeWSoh0+LUYi92sW7wrXCNtKL8=; b=PXf88m3E1+Gpxe
-	hj7heGFKJILXQ/onUJPA7x7RQ7+Bh5l3kWDC1bbwYPFHOTE78Z0Xv+iyZvuQfMK0V+03DKGoTmnLJ
-	6UYBm9vFN/JYXbZD51oe6r3IHlkLJyE37HiXzXS3qcGDwVewqat4aAcyq18in5Wpb3Bjg+yM69MH1
-	iJlSBKRxlJzKJLc6Z3Vg6bcmQRl0eEK/rOQEXRH/CUje0PNxkcn/l0rjSA3n90yA2cQGTfbcrSz4m
-	OPUf+i5pBes0nPmcFCeBeguT2wANN/tF5cPjT08vCXC155nFWGex4qDId9VGYFQ16M742iahc5Q7m
-	9qYtNXcs48x7rF7TFnXA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=y8Zrf89+9FOZrLw1sw2FfgbW/fcgHMvffH1sc2+OVHI=; b=gvrKr78vny7Qiu
+	QF0Bn4KDyD0kqeMYflrM6iahLnLkIOnCWiTLxhtx0QiArG9y3BhnqmtAJyK4samRod67qFoACwEKz
+	eDbnNU0dhfPnVWfEI38QvGQLlanzGvE770gUm7xBK7FQ0/JqFcHuWRvvovKzwVRCcXawVN7WrwIQF
+	sLu9p8FegkhcpZc0J3iRqnVnjdbt02Q06+dpvYHcTFXs0x+FUtaRAEoALNmiG0IygoylT1ybayEKn
+	QxcRNdiOIOR9Afz4DrZh3BWG0p4lImfbJthbMXRZ2luXqVmlcTWTQUui2RbVavjMMIxfc75jyM4MG
+	9kBBIXMPflJioKKrMZBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omwRU-001L2g-7A; Mon, 24 Oct 2022 12:20:32 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1omwXB-001Nvn-IY; Mon, 24 Oct 2022 12:26:25 +0000
+Received: from mail-qv1-xf36.google.com ([2607:f8b0:4864:20::f36])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omwRQ-001Kxi-N3
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 12:20:30 +0000
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MwvD90QZGzVhmf;
-	Mon, 24 Oct 2022 20:15:37 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 24 Oct 2022 20:20:21 +0800
-Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
- (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 24 Oct
- 2022 20:20:20 +0800
-From: Yang Yingliang <yangyingliang@huawei.com>
-To: <linux-kernel@vger.kernel.org>, <qemu-devel@nongnu.org>,
-	<linux-f2fs-devel@lists.sourceforge.net>, <linux-erofs@lists.ozlabs.org>,
-	<ocfs2-devel@oss.oracle.com>, <linux-mtd@lists.infradead.org>,
-	<amd-gfx@lists.freedesktop.org>
-CC: <gregkh@linuxfoundation.org>, <rafael@kernel.org>, <somlo@cmu.edu>,
-	<mst@redhat.com>, <jaegeuk@kernel.org>, <chao@kernel.org>,
-	<hsiangkao@linux.alibaba.com>, <huangjianan@oppo.com>, <mark@fasheh.com>,
-	<jlbec@evilplan.org>, <joseph.qi@linux.alibaba.com>,
-	<akpm@linux-foundation.org>, <alexander.deucher@amd.com>,
-	<luben.tuikov@amd.com>, <richard@nod.at>, <liushixin2@huawei.com>
-Subject: [PATCH v2] kset: fix memory leak when kset_register() returns error
-Date: Mon, 24 Oct 2022 20:19:10 +0800
-Message-ID: <20221024121910.1169801-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	id 1omwWw-001Nmb-Pr
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 12:26:12 +0000
+Received: by mail-qv1-xf36.google.com with SMTP id ml12so5349044qvb.0
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Oct 2022 05:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Jh8UQ4JmTZN9hL0/8CXAkNYRnuwMy/n4/v6mITjc4KY=;
+        b=y0W+zUyiBftSd0JgAGoPOqPtmV13guRpqzbMHskUNvLCEuQ6pihIc7oGP6TuC3oQt5
+         NjC6zT2GBgFpwt3TaO3sCktoTg2zHU1fTtWzfcwSmh6ykgmIp95Eot8a0sqsecpFyW7x
+         1HT6dR9s6lU9w8AQMYPhYLXd1Gu3x1edoP1WhBwFF/jIaERMSCG6bAABteTZbOS+Taz8
+         m7SCCh9de8RQXNTOTCxekuN5wUYGpUE+af/pdLsiLsH9H7ozUi1IJplIrGjD7sC4Tf7t
+         s+A+OHtLvPIWSHgE+4xzSs5FzW53+pzJ7Liv/i1SA0R2VvOs5lkPyZK2zhrwcwhQeqwz
+         cUfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jh8UQ4JmTZN9hL0/8CXAkNYRnuwMy/n4/v6mITjc4KY=;
+        b=hGzRV5eCMX7tZtMwac3+TX6FbQ6iz6L/BcNMlYY1NMsgL5srrGOF7DgTMGJ5a/rie2
+         4WNYVM7zp4gTC7M3QM9MpP8qzG5aayjLxGCgoNKm8bCYnA2yvjCMO2YCdmh37JJZijlB
+         19i5iHM79PwaDlp77XOUzYm4t78E6r6FP0wdlljZTzn8n2MuBcJDrGSHiLU+vEfLkV9b
+         s6rS7ZWovX9Na9kjfj+aaKB6QQF0U4XnK7oHCuXzELSHvvl+XLIeYcqp9oz8sFKPdPk4
+         2DoDHwzTy4RVrPRCepsYi/J+ZWbLv1vtBX3SAPtOkX41ILLDLgorpzYt6s+vi5JNxqeX
+         3P8Q==
+X-Gm-Message-State: ACrzQf2K4kFVfakdM70dG1P7mFvFMQiYs3baVuTwE/eSJARJLxVhiGBT
+	0qgr3sR3lIW58fikuVvBf4jPHQ==
+X-Google-Smtp-Source: AMsMyM64HS96JA+t5NegWTBhGoXrPmUTvN8S9j1oIuC6j5JnhVzd28Edhbio8VxlddWIvdR7T0/thQ==
+X-Received: by 2002:a0c:8ccc:0:b0:4b2:382e:ddaa with SMTP id q12-20020a0c8ccc000000b004b2382eddaamr27200510qvb.33.1666614368794;
+        Mon, 24 Oct 2022 05:26:08 -0700 (PDT)
+Received: from [192.168.1.8] ([64.57.193.93])
+        by smtp.gmail.com with ESMTPSA id u30-20020a37ab1e000000b006ef0350db8asm9109052qke.128.2022.10.24.05.26.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Oct 2022 05:26:08 -0700 (PDT)
+Message-ID: <a354c24d-0355-7c9d-ad05-4c21561af4dc@linaro.org>
+Date: Mon, 24 Oct 2022 08:26:05 -0400
 MIME-Version: 1.0
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH 02/21] ARM: s3c: remove s3c24xx specific hacks
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
+ Simtec Linux Team <linux@simtec.co.uk>, Arnd Bergmann <arnd@arndb.de>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Jonathan Cameron <jic23@kernel.org>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Sylwester Nawrocki <sylvester.nawrocki@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tomasz Figa <tomasz.figa@gmail.com>, Linus Walleij
+ <linus.walleij@linaro.org>, Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+ Chanwoo Choi <cw00.choi@samsung.com>, Stephen Boyd <sboyd@kernel.org>,
+ linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, linux-clk@vger.kernel.org
+References: <20221021202254.4142411-1-arnd@kernel.org>
+ <20221021203329.4143397-2-arnd@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221021203329.4143397-2-arnd@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221024_052028_990632_F68234CD 
-X-CRM114-Status: GOOD (  10.42  )
+X-CRM114-CacheID: sfid-20221024_052610_925454_18BE5E97 
+X-CRM114-Status: GOOD (  13.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,59 +114,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Inject fault while loading module, kset_register() may fail.
-If it fails, the name allocated by kobject_set_name() which
-is called before kset_register() is leaked, because refcount
-of kobject is hold in kset_init().
+On 21/10/2022 16:27, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> A number of device drivers reference CONFIG_ARM_S3C24XX_CPUFREQ or
+> similar symbols that are no longer available with the platform gone,
+> though the drivers themselves are still used on newer platforms,
+> so remove these hacks.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-As a kset may be embedded in a larger structure which needs
-be freed in release() function or error path in callers, we
-can not call kset_put() in kset_register(), or it will cause
-double free, so just call kfree_const() to free the name and
-set it to NULL.
 
-With this fix, the callers don't need to care about the name
-freeing and call an extra kset_put() if kset_register() fails.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Suggested-by: Luben Tuikov <luben.tuikov@amd.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
-v1 -> v2:
-  Free name inside of kset_register() instead of calling kset_put()
-  in drivers.
----
- lib/kobject.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/lib/kobject.c b/lib/kobject.c
-index a0b2dbfcfa23..3409a89c81e5 100644
---- a/lib/kobject.c
-+++ b/lib/kobject.c
-@@ -834,6 +834,9 @@ EXPORT_SYMBOL_GPL(kobj_sysfs_ops);
- /**
-  * kset_register() - Initialize and add a kset.
-  * @k: kset.
-+ *
-+ * NOTE: On error, the kset.kobj.name allocated by() kobj_set_name()
-+ * which is called before kset_register() in caller need be freed.
-  */
- int kset_register(struct kset *k)
- {
-@@ -844,8 +847,11 @@ int kset_register(struct kset *k)
- 
- 	kset_init(k);
- 	err = kobject_add_internal(&k->kobj);
--	if (err)
-+	if (err) {
-+		kfree_const(k->kobj.name);
-+		k->kobj.name = NULL;
- 		return err;
-+	}
- 	kobject_uevent(&k->kobj, KOBJ_ADD);
- 	return 0;
- }
--- 
-2.25.1
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
