@@ -4,65 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08E5DC3A59D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 08:20:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7673DECAAA1
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 09:21:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=N4KqQBOCTUid9eDRBWRQdRkgxHXQG0B5lsnboF23X3o=; b=CJLiaildQM07+2
-	K2h9xTqacg2ylGIOHEF94lpnRTVWZs8afqiyFIjzwjafyKoXyIY9cMPzkQkibMw05jSLpA4ITjqtp
-	R3n/AxlzggS4d1rghtWxcuhVqtTvxgzq68vl48AVppWF7QttMj+ad3p60WIK7kF1B5FAVFLjtRHWf
-	UQeHqH9Md5GuvXLgTmUqM0vErmB/92KEKZGjAbKIVvRoDlnfMVpHZ+fJl9XBsKdxhiGx8OWZZcaR/
-	3aA/7UHZcIhrL1UuMuPAIKix+jDx0mntccN5WZWnOiOIbdD7ChxF+E3MXHU5uzd7j/e2p5Yl206b7
-	RKFY3Fgn2hdJFxblB9sw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Txc86njfXoO5McqM0ui+/W/t/AGLroV7Ni4rg0CN9Jw=; b=TfiLq2A2TXZ+yA
+	R2Xa8p9ZFj5MpNfiEtbbBquRF0xBLL96m5PT6agVfYa+q0sutMXuVTbb1pj+3PgWJzP65r7ijMz/c
+	K1TJpfiW2xd1eYqTxy7I+lHFyx29+BA9bvMiJmovqmC4u6lvpdQAGMt1/VeIr8uozIUWoygOeCGNV
+	OTR1l/Ywrtj6UOPY4H8AA/oznZdHqsccdfq/pH8+v8PWksqJeGBIYEvut1u2EbKe2twOk200xgmL0
+	5o396WiRImgv6+xBSNdGmpTbPWFEphGdvYuwuvTl/tbP+4tWNmHwiaItNUHBgC+2rSIZN2VyOAnje
+	3GiBbNOGOWegF03J3UzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omsgY-0003Zn-Fs; Mon, 24 Oct 2022 08:19:50 +0000
-Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
+	id 1omtdw-000NIK-KP; Mon, 24 Oct 2022 09:21:12 +0000
+Received: from tartarus.angband.pl ([51.83.246.204])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omsgL-0003Um-39; Mon, 24 Oct 2022 08:19:38 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id B0A1CC0015;
-	Mon, 24 Oct 2022 08:19:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1666599572;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RsqEFobdfsJRtGDvtqy+4TRi3reZeX3cMLi8uvmdLcY=;
-	b=d0h7bSc2nXVRxjESjkDhnIoofW1xbyU1vXmWSVCrL/QG1B337LcN4oi1FQjU+V6RayoOW/
-	GKwTh6RXECnaUN+1WqnYuTNXCXG7xKYe0OPL+ZiCyzig3uXoPbIr+yddHR+VsOgr4IwfPp
-	BT+BdBqh3sq1dxhsb3om3KmrzpgR3W4uPEoRvDLFTHqsM81GID55zsIyNyYgm5gc3Dmxs8
-	krZHxZsVtH5i4ODKchcu2PDTQiDNraysieaDDlSQz8Xg80RIxCw0b+CwN5if3j/M8coJmg
-	KYM+TtKooSH80iHhlCz+jnLYAMFVtEp4mfjfHARe3u2c87f71ZnhYDpqXM9jZQ==
-Date: Mon, 24 Oct 2022 10:19:28 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Vadym Kochan <vadym.kochan@plvision.eu>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Andrew Lunn <andrew@lunn.ch>, Gregory
- Clement <gregory.clement@bootlin.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Elad Nachman <enachman@marvell.com>
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
- scheme
-Message-ID: <20221024101928.351ae15f@xps-13>
-In-Reply-To: <a46c6a18-903d-2120-4876-509ce8ad19d5@linaro.org>
-References: <20221021194552.683-1-vadym.kochan@plvision.eu>
-	<20221021194552.683-2-vadym.kochan@plvision.eu>
-	<a46c6a18-903d-2120-4876-509ce8ad19d5@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1omtdt-000NFM-Ak
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 09:21:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=angband.pl;
+	s=tartarus; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=Wq8J078WnKbzaZr7d4VxEHJxGv/MIkll160szlpG16c=; b=vypeQ/u7l4vOQDhNyHVxOgcMzC
+	naX4z99oN/t8N6d3nwaqQlnJHsBStEnCg7YV0Vqrs2Ht+zFP62cerp8y7TmhsX08ga50gx9CZnwCb
+	O7V1su10J1V83mJsqYWzbkaoGlLUuvBbYzHaLy/U6Tc/jQA3HLjBrTogwW/5n3xNVSsM=;
+Received: from localhost ([127.0.0.1] helo=valinor.angband.pl)
+	by tartarus.angband.pl with smtp (Exim 4.94.2)
+	(envelope-from <kilobyte@valinor.angband.pl>)
+	id 1omtdM-00AMIC-KG; Mon, 24 Oct 2022 11:20:36 +0200
+Received: (nullmailer pid 47403 invoked by uid 1000);
+	Mon, 24 Oct 2022 09:20:34 -0000
+From: Adam Borowski <kilobyte@angband.pl>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
+Cc: Adam Borowski <kilobyte@angband.pl>
+Subject: [PATCH] mtd: rawnand: placate "$VARIABLE is used uninitialized" warnings
+Date: Mon, 24 Oct 2022 11:20:26 +0200
+Message-Id: <20221024092026.42123-1-kilobyte@angband.pl>
+X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a
 MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 127.0.0.1
+X-SA-Exim-Mail-From: kilobyte@valinor.angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221024_011937_299907_54942062 
-X-CRM114-Status: GOOD (  14.09  )
+X-CRM114-CacheID: sfid-20221024_022109_660828_041EDCCE 
+X-CRM114-Status: GOOD (  12.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,43 +65,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgprcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmcgd3JvdGUgb24gU2F0LCAyMiBP
-Y3QgMjAyMiAxMjoxODo0OSAtMDQwMDoKCj4gT24gMjEvMTAvMjAyMiAxNTo0NSwgVmFkeW0gS29j
-aGFuIHdyb3RlOgo+ID4gU3dpdGNoIHRoZSBEVCBiaW5kaW5nIHRvIGEgWUFNTCBzY2hlbWEgdG8g
-ZW5hYmxlIHRoZSBEVCB2YWxpZGF0aW9uLgo+ID4gCj4gPiBEcm9wcGVkIGRlcHJlY2F0ZWQgY29t
-cGF0aWJsZXMgYW5kIHByb3BlcnRpZXMgZGVzY3JpYmVkIGluIHR4dCBmaWxlLgo+ID4gCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBWYWR5bSBLb2NoYW4gPHZhZHltLmtvY2hhbkBwbHZpc2lvbi5ldT4KPiA+
-IC0tLQo+ID4gIC4uLi9iaW5kaW5ncy9tdGQvbWFydmVsbCxuYW5kLWNvbnRyb2xsZXIueWFtbCB8
-IDE5OSArKysrKysrKysrKysrKysrKysKPiA+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQv
-bWFydmVsbC1uYW5kLnR4dCAgfCAxMjYgLS0tLS0tLS0tLS0KPiA+ICAyIGZpbGVzIGNoYW5nZWQs
-IDE5OSBpbnNlcnRpb25zKCspLCAxMjYgZGVsZXRpb25zKC0pCj4gPiAgY3JlYXRlIG1vZGUgMTAw
-NjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbWFydmVsbCxuYW5kLWNv
-bnRyb2xsZXIueWFtbAo+ID4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvbXRkL21hcnZlbGwtbmFuZC50eHQKPiA+IAo+ID4gZGlmZiAtLWdpdCBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbWFydmVsbCxuYW5kLWNvbnRy
-b2xsZXIueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbWFydmVs
-bCxuYW5kLWNvbnRyb2xsZXIueWFtbAo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiA+IGluZGV4
-IDAwMDAwMDAwMDAwMC4uNTM1YjdmODkwM2M4Cj4gPiAtLS0gL2Rldi9udWxsCj4gPiArKysgYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL21hcnZlbGwsbmFuZC1jb250cm9s
-bGVyLnlhbWwKPiA+IEBAIC0wLDAgKzEsMTk5IEBACj4gPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRp
-ZmllcjogKEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UpCj4gPiArJVlBTUwgMS4yCj4gPiAr
-LS0tCj4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tdGQvbWFydmVsbCxu
-YW5kLWNvbnRyb2xsZXIueWFtbCMKPiA+ICskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcv
-bWV0YS1zY2hlbWFzL2NvcmUueWFtbCMKPiA+ICsKPiA+ICt0aXRsZTogTWFydmVsbCBOQU5EIEZs
-YXNoIENvbnRyb2xsZXIgKE5GQykKPiA+ICsKPiA+ICttYWludGFpbmVyczoKPiA+ICsgIC0gTWlx
-dWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gIAo+IAo+IFRoaXMgc2hvdWxk
-IGJlIHNvbWVvbmUgcmVzcG9uc2libGUgZm9yIGhhcmR3YXJlLCBub3Qgc3Vic3lzdGVtCj4gbWFp
-bnRhaW5lci4gVW5sZXNzIGJ5IGNvaW5jaWRlbmNlIE1pcXVlbCBtYXRjaGVzIGJvdGguIDopCgpI
-YWhhLCBhY3R1YWxseSBJIGRvIGJlY2F1c2UgSSByZXdyb3RlIHRoaXMgZHJpdmVyIGVudGlyZWx5
-IGZldyB5ZWFycwphZ28uIEkgZG9uJ3QgYWN0aXZlbHkgbWFpbnRhaW4gdGhlc2UgcGxhdGZvcm1z
-IGFueW1vcmUgYnV0IEkgZG9uJ3QgbWluZApiZWluZyBhc3NpZ25lZCBoZXJlIGlmIG5vYm9keSBl
-bHNlIGNhcmVzLiBPdGhlcndpc2UgaW5kZWVkLCBWYWR5bQpvciBzb21lb25lIGVsc2UgZnJvbSBN
-YXJ2ZWxsIGNhbiB0YWtlIG92ZXIsIEkgZG9uJ3QgbWluZC4KClRoYW5rcywKTWlxdcOobAoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+The compiler is not smart enough to notice that it's impossible for
+them to be actually used uninitialized.  Which exact variables trip
+here varies depending on random surrounding code; none triggered in
+6.1-rc1 but 6.1-rc2 fails on three of these five, despite variables
+declared in the very same line having identical flow.
+
+Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+---
+ drivers/mtd/nand/raw/nand_base.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 33f2c98a030e..c3cc66039925 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5834,7 +5834,7 @@ nand_match_ecc_req(struct nand_chip *chip,
+ 	int req_step = requirements->step_size;
+ 	int req_strength = requirements->strength;
+ 	int req_corr, step_size, strength, nsteps, ecc_bytes, ecc_bytes_total;
+-	int best_step, best_strength, best_ecc_bytes;
++	int best_step = 0, best_strength = 0, best_ecc_bytes = 0;
+ 	int best_ecc_bytes_total = INT_MAX;
+ 	int i, j;
+ 
+@@ -5915,7 +5915,7 @@ nand_maximize_ecc(struct nand_chip *chip,
+ 	int step_size, strength, nsteps, ecc_bytes, corr;
+ 	int best_corr = 0;
+ 	int best_step = 0;
+-	int best_strength, best_ecc_bytes;
++	int best_strength = 0, best_ecc_bytes = 0;
+ 	int i, j;
+ 
+ 	for (i = 0; i < caps->nstepinfos; i++) {
+-- 
+2.37.2.609.g9ff673ca1a
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
