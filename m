@@ -4,100 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32F93ECAAA1
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 12:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E0E6ECAAA1
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 13:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=y8Zrf89+9FOZrLw1sw2FfgbW/fcgHMvffH1sc2+OVHI=; b=gvrKr78vny7Qiu
-	QF0Bn4KDyD0kqeMYflrM6iahLnLkIOnCWiTLxhtx0QiArG9y3BhnqmtAJyK4samRod67qFoACwEKz
-	eDbnNU0dhfPnVWfEI38QvGQLlanzGvE770gUm7xBK7FQ0/JqFcHuWRvvovKzwVRCcXawVN7WrwIQF
-	sLu9p8FegkhcpZc0J3iRqnVnjdbt02Q06+dpvYHcTFXs0x+FUtaRAEoALNmiG0IygoylT1ybayEKn
-	QxcRNdiOIOR9Afz4DrZh3BWG0p4lImfbJthbMXRZ2luXqVmlcTWTQUui2RbVavjMMIxfc75jyM4MG
-	9kBBIXMPflJioKKrMZBA==;
+	List-Owner; bh=H/BzbVcyeC/B9tZixvdX7KWkhO6ee64El8ZpG2naGBA=; b=ZdFujBHhcvm/id
+	CikDI9+CVskcIM5N2+hE+SwftH4u+9wMmFvddftkoTs+ln32ev9IjwRW0u0dYGzL+XMpIy78jmGhO
+	pU79SKIi300mOf5Pha6AYawZkfW0hLzehSf/3T+dAIxxMopcJLv20eQsFlhFR9UfXk2Qw/z4Kh39x
+	F0cwuD4Js9rQOwpAGZm+3JNddEmsjH0hfPgcx+sklzq3xQK54xgeeGEmx84sxtMHF1bz54xYrbYb5
+	nShCRNwRcmZnkzHi1nBnK+vEWfGrkn8+fFWonYPHDNkV/Emx0sTjtwzg+ihl9N48gWrHbPaCAKj39
+	UsxXHKP3XGZB7QIIni9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omwXB-001Nvn-IY; Mon, 24 Oct 2022 12:26:25 +0000
-Received: from mail-qv1-xf36.google.com ([2607:f8b0:4864:20::f36])
+	id 1omx4W-001bGe-De; Mon, 24 Oct 2022 13:00:52 +0000
+Received: from mail-oa1-f43.google.com ([209.85.160.43])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omwWw-001Nmb-Pr
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 12:26:12 +0000
-Received: by mail-qv1-xf36.google.com with SMTP id ml12so5349044qvb.0
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Oct 2022 05:26:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Jh8UQ4JmTZN9hL0/8CXAkNYRnuwMy/n4/v6mITjc4KY=;
-        b=y0W+zUyiBftSd0JgAGoPOqPtmV13guRpqzbMHskUNvLCEuQ6pihIc7oGP6TuC3oQt5
-         NjC6zT2GBgFpwt3TaO3sCktoTg2zHU1fTtWzfcwSmh6ykgmIp95Eot8a0sqsecpFyW7x
-         1HT6dR9s6lU9w8AQMYPhYLXd1Gu3x1edoP1WhBwFF/jIaERMSCG6bAABteTZbOS+Taz8
-         m7SCCh9de8RQXNTOTCxekuN5wUYGpUE+af/pdLsiLsH9H7ozUi1IJplIrGjD7sC4Tf7t
-         s+A+OHtLvPIWSHgE+4xzSs5FzW53+pzJ7Liv/i1SA0R2VvOs5lkPyZK2zhrwcwhQeqwz
-         cUfg==
+	id 1omx4J-001bA7-HK; Mon, 24 Oct 2022 13:00:40 +0000
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-132fb4fd495so11672655fac.12;
+        Mon, 24 Oct 2022 06:00:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jh8UQ4JmTZN9hL0/8CXAkNYRnuwMy/n4/v6mITjc4KY=;
-        b=hGzRV5eCMX7tZtMwac3+TX6FbQ6iz6L/BcNMlYY1NMsgL5srrGOF7DgTMGJ5a/rie2
-         4WNYVM7zp4gTC7M3QM9MpP8qzG5aayjLxGCgoNKm8bCYnA2yvjCMO2YCdmh37JJZijlB
-         19i5iHM79PwaDlp77XOUzYm4t78E6r6FP0wdlljZTzn8n2MuBcJDrGSHiLU+vEfLkV9b
-         s6rS7ZWovX9Na9kjfj+aaKB6QQF0U4XnK7oHCuXzELSHvvl+XLIeYcqp9oz8sFKPdPk4
-         2DoDHwzTy4RVrPRCepsYi/J+ZWbLv1vtBX3SAPtOkX41ILLDLgorpzYt6s+vi5JNxqeX
-         3P8Q==
-X-Gm-Message-State: ACrzQf2K4kFVfakdM70dG1P7mFvFMQiYs3baVuTwE/eSJARJLxVhiGBT
-	0qgr3sR3lIW58fikuVvBf4jPHQ==
-X-Google-Smtp-Source: AMsMyM64HS96JA+t5NegWTBhGoXrPmUTvN8S9j1oIuC6j5JnhVzd28Edhbio8VxlddWIvdR7T0/thQ==
-X-Received: by 2002:a0c:8ccc:0:b0:4b2:382e:ddaa with SMTP id q12-20020a0c8ccc000000b004b2382eddaamr27200510qvb.33.1666614368794;
-        Mon, 24 Oct 2022 05:26:08 -0700 (PDT)
-Received: from [192.168.1.8] ([64.57.193.93])
-        by smtp.gmail.com with ESMTPSA id u30-20020a37ab1e000000b006ef0350db8asm9109052qke.128.2022.10.24.05.26.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Oct 2022 05:26:08 -0700 (PDT)
-Message-ID: <a354c24d-0355-7c9d-ad05-4c21561af4dc@linaro.org>
-Date: Mon, 24 Oct 2022 08:26:05 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH 02/21] ARM: s3c: remove s3c24xx specific hacks
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>, linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Ben Dooks <ben-linux@fluff.org>,
- Simtec Linux Team <linux@simtec.co.uk>, Arnd Bergmann <arnd@arndb.de>,
- Alim Akhtar <alim.akhtar@samsung.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>, Jonathan Cameron <jic23@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Sylwester Nawrocki <sylvester.nawrocki@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tomasz Figa <tomasz.figa@gmail.com>, Linus Walleij
- <linus.walleij@linaro.org>, Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
- Chanwoo Choi <cw00.choi@samsung.com>, Stephen Boyd <sboyd@kernel.org>,
- linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-clk@vger.kernel.org
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p+x9joGdXdBFLPPxN1p6d7/jrm+b1E7zu0ZikUl9XbM=;
+        b=3HTrlZYW7zD74R4539XWrN4uU4BSRTYLyNpUDiACChhwSdEsTR/AdgJ7BnzO2o9POG
+         UKep/B9g5E1f/cwGCA16JxAJLPEuohzMy9n6EjPGbyi1kND/h7XrfQyMnRCqvJpphVYo
+         TVaN5HfltCU92Fv6PMZoSnHyJtdFjp3LHOxtsubAe8D6SQENQwVo1CrtTY+J0sPzGtbv
+         mzxuHRmqjNFi4/oPIM6qVYepoFheAL5faLXFLlRV2J6ue4K0Zh2icxdoicDEv55UeKZm
+         SOQCddmONszeYC5roDiaewWYaRQG3ZTP9t+iXnyt/cKpne+1IBK9Ttse9p5TRF1nl6Ms
+         UAPw==
+X-Gm-Message-State: ACrzQf1e8VyAF4pe3vvlKMDCChampYsD6qLvVWYVp/5h5yqPkZ2TfSzz
+	avW2BcClhPh6ewe6z5ke/g==
+X-Google-Smtp-Source: AMsMyM4RB1x55W7tWXLqKMCfn9+yNGKoyP28eeDXqoWuK46CSg7FurAIxSSG6961lNUtLuCZU2W88g==
+X-Received: by 2002:a05:6870:e9a8:b0:133:223f:49a1 with SMTP id r40-20020a056870e9a800b00133223f49a1mr38235091oao.114.1666616434841;
+        Mon, 24 Oct 2022 06:00:34 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id g20-20020a056870c15400b0012796e8033dsm2716705oad.57.2022.10.24.06.00.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Oct 2022 06:00:34 -0700 (PDT)
+Received: (nullmailer pid 1652638 invoked by uid 1000);
+	Mon, 24 Oct 2022 13:00:35 -0000
+Date: Mon, 24 Oct 2022 08:00:35 -0500
+From: Rob Herring <robh@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linux-kernel@vger.kernel.org, 
+	Ben Dooks <ben-linux@fluff.org>, Simtec Linux Team <linux@simtec.co.uk>, Arnd Bergmann <arnd@arndb.de>, 
+	linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org, 
+	devicetree@vger.kernel.org, patches@opensource.cirrus.com, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-ide@vger.kernel.org, 
+	linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, 
+	dmaengine@vger.kernel.org, linux-hwmon@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-leds@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-gpio@vger.kernel.org, 
+	linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org, 
+	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org, 
+	linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 00/21] ARM: s3c: clean out obsolete platforms
+Message-ID: <20221024130035.GA1645003-robh@kernel.org>
 References: <20221021202254.4142411-1-arnd@kernel.org>
- <20221021203329.4143397-2-arnd@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221021203329.4143397-2-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221021202254.4142411-1-arnd@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221024_052610_925454_18BE5E97 
-X-CRM114-Status: GOOD (  13.06  )
+X-CRM114-CacheID: sfid-20221024_060039_594144_3ED6E929 
+X-CRM114-Status: GOOD (  15.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,22 +94,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21/10/2022 16:27, Arnd Bergmann wrote:
+On Fri, Oct 21, 2022 at 10:22:28PM +0200, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> A number of device drivers reference CONFIG_ARM_S3C24XX_CPUFREQ or
-> similar symbols that are no longer available with the platform gone,
-> though the drivers themselves are still used on newer platforms,
-> so remove these hacks.
+> The s3c24xx platform was marked as deprecated a while ago,
+> and for the s3c64xx platform, we marked all except one legacy
+> board file as unused.
 > 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> This series removes all of those, leaving only s3c64xx support
+> for DT based boots as well as the cragg6410 board file.
+> 
+> About half of the s3c specific drivers were only used on
+> the now removed machines, so these drivers can be retired
+> as well. I can either merge the driver removal patches through
+> the soc tree along with the board file patches, or subsystem
+> maintainers can pick them up into their own trees, whichever
+> they prefer.
 
+[...]
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>  Documentation/arm/index.rst                   |    1 -
+>  Documentation/arm/samsung-s3c24xx/cpufreq.rst |   77 -
+>  .../arm/samsung-s3c24xx/eb2410itx.rst         |   59 -
+>  Documentation/arm/samsung-s3c24xx/gpio.rst    |  172 --
+>  Documentation/arm/samsung-s3c24xx/h1940.rst   |   41 -
+>  Documentation/arm/samsung-s3c24xx/index.rst   |   20 -
+>  Documentation/arm/samsung-s3c24xx/nand.rst    |   30 -
+>  .../arm/samsung-s3c24xx/overview.rst          |  311 ---
+>  Documentation/arm/samsung-s3c24xx/s3c2412.rst |  121 -
+>  Documentation/arm/samsung-s3c24xx/s3c2413.rst |   22 -
+>  .../arm/samsung-s3c24xx/smdk2440.rst          |   57 -
+>  Documentation/arm/samsung-s3c24xx/suspend.rst |  137 --
+>  .../arm/samsung-s3c24xx/usb-host.rst          |   91 -
+>  Documentation/arm/samsung/overview.rst        |   13 -
 
-Best regards,
-Krzysztof
+What about?:
 
+Documentation/devicetree/bindings/clock/samsung,s3c2410-clock.txt
+Documentation/devicetree/bindings/interrupt-controller/samsung,s3c24xx-irq.txt
+Documentation/devicetree/bindings/mmc/samsung,s3cmci.txt
+Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
+Documentation/devicetree/bindings/usb/s3c2410-usb.txt
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
