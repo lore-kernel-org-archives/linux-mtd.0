@@ -4,125 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19B7AC67871
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 19:49:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BB39C67871
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 20:51:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Cc:To:Subject:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=adZSiNMj+V5UX4MMprkdIishzrHqKmu2TnrW62RmYro=; b=gFHYmlJGTmdrKE
-	eKZdoEbNjKtgQX5UJdhohlzNUPsFFS1UrOIG7XefV1wz8I3dP/eybH8CMPXMgXdrlHvBYsR33FyJ4
-	HEUHdhigalavY2TQBNuPmMPAR4HFVOORQd3u7nTQEH3vZdu5AworZCOUo4gXR+IZwVnO5585AEFJG
-	4STnTBXEzgRcS4I7+0wnkvKcBf1xXEg5N8NonAN3jCXpdH2ecmxJkAc9szrCPD5HrnCfWroVSlfU6
-	SCxrWSrW88Jof6cN89Y7Mpymg5IVSliB+O6BIbdeiHoEMa8AGAoRbxbhuMZN/H3d1rOnLDxkq8LKO
-	RDKsF4nVn0ZLasunhmiQ==;
+	List-Owner; bh=YBKB84PLXAOkJVxS9hq10XZ3kWrWVjIxQDku0g2WIaM=; b=hLP3++4iXzOvMZ
+	XPXfAjMMns/7YYmDgsrG3BgOVUWam+DcL7fwsYNRv/vCX1tBrTrTh35R/0aXZ0XQTJMDbQQGSTeEX
+	UKwcBTf3u914hKTjxQSMjjj6YyMJnvDRbZFQ6NF+9AGFCVI80ybckBZ8OxiCBjJGgOqOXg0U3G+CJ
+	N7e4ajKe7YwKHBzHL2i4lfhWb/LY2sB9ugvHBju9gC3Wl5EODpG4H8nx2gXtChBgZG+87Xo5Tbi7W
+	l0tOmEf6Ai8H0hFpuFqvFqfqcdQqdrCnxCV57AvnUhtY1eSXSi4HM16ooLj7qvLRhSr4rGVwS5+ZD
+	or7dUaMPo2rHJ7QqXg0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1on3RZ-002p7w-TR; Mon, 24 Oct 2022 19:49:05 +0000
-Received: from mail-vi1eur05on2126.outbound.protection.outlook.com ([40.107.21.126] helo=EUR05-VI1-obe.outbound.protection.outlook.com)
+	id 1on4Pq-0030vB-5t; Mon, 24 Oct 2022 20:51:22 +0000
+Received: from mail-qv1-xf31.google.com ([2607:f8b0:4864:20::f31])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1on3RV-002p6Y-He; Mon, 24 Oct 2022 19:49:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oNO7kuAuTr73O3I38OJEy3BX63yxmGWJt/6q5U2acplv7iQhkxOgIjaagMg2JP5EeqoBt0dVwbJ032MJRWbVdtqYq8IiGqvqsCI6Uj2UkBMtyG9P1KzLZZvF7ro6Qp9dv0mYrSyWCWZRw/LaYEglokHGh2aZGACU1UstYoE6U/fCH6pvq/HjeNk3QKbBl/s53IWdodGBei9d8QetP81Je00qhRX+VQSYndbPvCs2ca/4LAj4xvArrOZzHstFviEXV/BBuwPl9mRsFX0Y1HFyVElq0Mgv6RPmKAspPdBNWTabp34ZA/W97jWZF6xgSXH5b5VjOz+yFFp1pF3Q2faNdw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=01HtayiXVIPLrgRMdJ2YaZlOiyAYH7R7InsDUxd4ujM=;
- b=BMOkirGtJQCjKU830FswQbgPeDvPI385QNUkGci860HM6cCEutF5T2H9RrSW4pyLkTlLS4nZ0XVo7FKdp7KGACPuGfSzufvfXAgpwJxpmYGxABUSH1VXXC5Cpky9i2sproI97HUgOI8FSQZNu2/OnmUrVxkYU63Pnyws2UQcs7V1uh6uFhVmBaeSlkdqnQ6dmfyqeMXv8CB45TxkIgi9RNZHX7Dc1OE6d5mr8h5GFuh5aT/D/tGfBObXqFScV2NSmkKu1y8mrRzOkYe7I+UDFY/uX2fR3klGVGu4j8wwdT9F7k8FAJBZ45tNblU4m2TE9RSIGceH060YDu7IXeoWjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=01HtayiXVIPLrgRMdJ2YaZlOiyAYH7R7InsDUxd4ujM=;
- b=wW0iQ/Bhfo8HbEZmrhGUdjqff8LI+5U3tVPLjei1Ok6PT9mjbwBdssH8l28erpHiskBPBHzGXcVArY9WxUzBsOIL/jkhs9dtzNeMiC5KUM93+01dIVj2FGjM6JcQl2UW5AXwtSCGCnIRPTu9pw/Pq7EsYSX3MOKF69VEvbxaWz4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=plvision.eu;
-Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:38::26)
- by PAXP190MB1742.EURP190.PROD.OUTLOOK.COM (2603:10a6:102:281::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.33; Mon, 24 Oct
- 2022 19:48:56 +0000
-Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- ([fe80::2b03:a6ec:3529:b969]) by VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- ([fe80::2b03:a6ec:3529:b969%5]) with mapi id 15.20.5746.023; Mon, 24 Oct 2022
- 19:48:56 +0000
-Date: Mon, 24 Oct 2022 22:48:54 +0300
-From: Vadym Kochan <vadym.kochan@plvision.eu>
+	id 1on4Pn-0030uF-EX
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 20:51:21 +0000
+Received: by mail-qv1-xf31.google.com with SMTP id j6so2822319qvn.12
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Oct 2022 13:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tqFLMg6uRhRQRmXJ9QneA5/Qult4cQee1Mbf8jF2WyE=;
+        b=AdkZFHvuiAP4xkerquOcpqZB3+k+FtH0/4XwqqQpZmxk6GgrLYTmb8gzshooljZSE6
+         jdakcuD8Alctrf4B+M4qnhgUAmiADrcwssfH9wNCEX70M2rzC1PUY7a5dVzkdK05jPGn
+         WgFiZsHIuvVuH4NXBSxghwPD5G9/lUsqL08n6/5t+tDTFdOICOi5Ri+B/aDy1f2kfqRl
+         q5iDubrjWedxmj6aMtR7hhuABT5Cr9oCqwbguV+mDbs1fsBlBIdDWDSx1p5Gon6qWv+F
+         qzRw2bzab9nF8uGnUqezDODBMBl8chfdELzmvA5uPBYJ0RJ62Ps/eIe13CO5ufgQG1nK
+         p1/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tqFLMg6uRhRQRmXJ9QneA5/Qult4cQee1Mbf8jF2WyE=;
+        b=wQ5j+QPkRYogKlzkcRCHJKjo5LkfhL3I444gW6bO4utbPhLQhhSOZtM0AA6CIqVPCz
+         jca3616Em6qqK/DWJguknwCYePm0wPGirqQVXWBbUzrZgk1u97qx6ivHKGIwgkoA78KS
+         osDXGCKjKfxn3fIMExuq4aaAbfFL206khHg5EXtol7+iqMfxr19a04/YzXfb3Ol1T89d
+         AiaVOx8HifBAPok72/q+eUkYTwRxkFLx7RMRz44pMj8hnTfQYgc7rce+uRClq3Va+Z05
+         F7I0UJdF5czOssq/gX2hXgrwzwvUd17/Ku4Q/kXqtHXGycBFs55+1cMBIEbs2YSpJiKF
+         nL8Q==
+X-Gm-Message-State: ACrzQf3F4QhSv6rZViRgeteUm0ddiTbGiFYvGQW4n3QnhqdzjTjESbCW
+	IKn65muqSxQsNvwduUqnZAe11g==
+X-Google-Smtp-Source: AMsMyM51AifgSKGMphjiFZJRB5CThD2CylgJtsOaKsmO5Ikm7TvSu2+4uhdwYMMfpDLmjyFWp8prVw==
+X-Received: by 2002:a05:6214:e62:b0:4b3:ff39:7aef with SMTP id jz2-20020a0562140e6200b004b3ff397aefmr29749239qvb.31.1666644677366;
+        Mon, 24 Oct 2022 13:51:17 -0700 (PDT)
+Received: from [192.168.1.8] ([64.57.193.93])
+        by smtp.gmail.com with ESMTPSA id l11-20020a37f90b000000b006ee79bb1f8asm622386qkj.68.2022.10.24.13.51.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Oct 2022 13:51:16 -0700 (PDT)
+Message-ID: <8cc7a8b6-0ca9-bc61-77e3-abf24cfbc909@linaro.org>
+Date: Mon, 24 Oct 2022 16:51:15 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
 Subject: Re: [PATCH 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
  scheme
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Andrew Lunn
-	<andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Language: en-US
+To: Vadym Kochan <vadym.kochan@plvision.eu>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc: Elad Nachman <enachman@marvell.com>
-In-Reply-To: <a46c6a18-903d-2120-4876-509ce8ad19d5@linaro.org>
 References: <20221021194552.683-1-vadym.kochan@plvision.eu>
-	<20221021194552.683-2-vadym.kochan@plvision.eu>
-	<a46c6a18-903d-2120-4876-509ce8ad19d5@linaro.org>
-X-ClientProxiedBy: FR3P281CA0057.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4b::8) To VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:802:38::26)
-Message-ID:  <VI1P190MB03170416FB2C521103B8EE1A952E9@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P190MB0317:EE_|PAXP190MB1742:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4fbdf6dd-0349-402f-6a97-08dab5f8c93f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	cEJHvnxeXLgZkJNS6lYEE5O7IKLQBf9GciQtDRznUVcIpCVNx9zqVjcEg962RkoYnARo7kJO/eKFdeQlKpWshvombPfhrYFY0GsBQS85Q/9LnIY9Rpu1z7XnAAhASLLHLBOBx1n04hSxbrLbME/ObwzmJtvDFOOGAjhh+LfXAKSCjkk44FxT9DJoxh+xsRqK985uFDvtkqM0nG3BdWLJi6/fpiIvYlw473pE8NDTsES08T+/BX3HJ2fm2ZzcquyzIGJVGuWNjY+dIlg4l1Js5DU/zt8ylXcwM4NmH/8sP01hkS3eGzawbkpYnCqvUolpa19ebi+6BDsanpyIb/82YSws++6FhLb3TzVssHRw0ng4M6AmebSj4J/c3lE11jVo5Yn/lGZNty921PnGMfZ3KxHZatMbad9FAhCD7iv3g1yyJttgDIEbRutehRBqwt8WC1ik7mQfW46ACq8iKDeslQvAF6QnQ5Oip1R+nxOnBCHYjsjZC0CuwdPuh6+lLpQ3+7ByPmaLAIv/NsTE9ZDfZTfaFR80L0P4LFiwcsUxo+z4v2mkvBm4q3/741pJFNQgyFFfrVkSD8xC0rrlbQxdjlE2FW5HKWFgdwVkr0526ANLZBWdnad0tGYn/EpyA9swQkvM/SutdxvmV8eojanhWNU7eMZLDMvDbYeJaBsb1Xambke389QV/a59N8zZitLBCsPXRebkmYm8d6TknNdLxfuaZmViKbCSYgwsMcG/R/x6E6ot+5Ga1MxqPZ2lchvZXtAEEgKV829vdKIBjEngTeBo2qHN7YauEwjY+mLurvW2Cb9ylILNFjmQEiBXJyf3
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0317.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(34036004)(39840400004)(376002)(366004)(136003)(346002)(451199015)(7416002)(921005)(5660300002)(38100700002)(38350700002)(4326008)(66946007)(316002)(86362001)(110136005)(8676002)(66556008)(44832011)(66476007)(8936002)(83380400001)(186003)(53546011)(41300700001)(52536014)(966005)(52116002)(2906002)(6506007)(26005)(508600001)(7696005)(9686003)(41320700001)(33656002)(55016003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?0dmT+9NQfrtUvY0a9mxf+EL6TwanhErYoROaO2eagnSkQax6HrDB9+ZWKZo4?=
- =?us-ascii?Q?wsqQPNWPB4Ni8yUm0/9IiXg2exW5UhsMoVC+Sd0q4zWq/LtaZhF47q69+66a?=
- =?us-ascii?Q?K46NIHIw7XLC7ZpPH2TIf6kmfBfTmdugSkgEmmb54XL6zFRIpUncWrWCu8KW?=
- =?us-ascii?Q?62mOdpX4jReSQczY8glPjL/ahfLhZM1wRi1PX2eBRiUJRFnzpJjV8PXZvmtX?=
- =?us-ascii?Q?2/IHABWWk4Gv8YwURMITEIOxwkFWKuNrQ8l3KOwizXnUcoKOoIAb6b7UCPcm?=
- =?us-ascii?Q?3/Fb3Sn0GgkGhW+nq5ongvV6akC0dtht3E/bSfYd5G1dsYJWEqPiJaMrLhd1?=
- =?us-ascii?Q?XthFyRsGuXFmx3WzZxXbOBASaiH2mpx+MQSPHqTpfsPDIcda0pPtgD25XQmd?=
- =?us-ascii?Q?W3aBfdpyCn64+1yulu6vRcxNPcKrUqw4Z/Zxh2c4jzbdzA7VubMqsyd+8wsH?=
- =?us-ascii?Q?z93qAdwUkm/8EQqKrLuTx4uVQ5YyD67ReSAmqRPcG/7oK3p2ZWdCoQ8ymP6P?=
- =?us-ascii?Q?5sRpClKUFq+h4ka7Z2brSB8xPGlM2crewEfZ5wgWf6YYuA8+rg+VJxzXaD5T?=
- =?us-ascii?Q?0JVtTaVi6njU2+efnR81MmOAF2SolC6bh86CIZqyFi5WIISyoekqK0uW5dWK?=
- =?us-ascii?Q?5pxY4g14VS1yFVTXrJCAZyfPpW9hu7++SiX2SpiTWSA3frYjnTUDaplI6AXb?=
- =?us-ascii?Q?81K4EFTKM1BnFF9Nkk4LBvUvhMYbrtktsmuUrn6z8KL6vjnzIkJJHbvQRPIw?=
- =?us-ascii?Q?+AxD5WFWh8/v4JFlT30atWmFJVt3Smn+6T+C9QR9HdQ7Wof/CWM8pGgyrZsQ?=
- =?us-ascii?Q?cN5HTZJlMCoK9LIvFfMeSDvbga6P/5rmCuhmTsbME7IkqsgccY4WNKkBgxfz?=
- =?us-ascii?Q?yzU977jfMtrub+BCm//M8VsUhP5/O+LDBBOh+ihC8+5+ulxngJa5AidT44w6?=
- =?us-ascii?Q?MP9XgaylnmXlVkeF7bRczfLXU7+yV4qtiu4hLn471QBOQolonPVOEzaockQ2?=
- =?us-ascii?Q?IVmNMwUdUrJdgTB+DG3yYVQRAtWSxCIBHG9o9sZbrt9Wvl/c/pVSVsVIhPis?=
- =?us-ascii?Q?ghHJ7+vctayrHTSBAGjqHYRagQ4ph5uOR5tjcuHXAAA1rwNrnMwvYu3wB2Eo?=
- =?us-ascii?Q?dIX1H1czHbVHVwc388qxpJDXLPRreB/pjII+jh1YA+rZQAVt+wa0fGJd0wrm?=
- =?us-ascii?Q?00saECUbKURt9ZlSQvTYtCSS4rSJNXgCIlm5eood+kgymMdOm282ac+V842O?=
- =?us-ascii?Q?9YpdPZYEXxyW3PH145O4yewxhfq5DIF6FyofCeNJua7AZ6VeLqi6S5/0lAd2?=
- =?us-ascii?Q?BR9bQCR01o38pjm6jmU9E3kdlbRvhdPRzVZKlJ7uS5C1RwPS0M1nYKHKpZuX?=
- =?us-ascii?Q?J6UUj70j+nuoC7lMRgP3R9n9P0VFM53M+LzNcUetz2WValiXOWXIlrzHeKn+?=
- =?us-ascii?Q?UqYGNgRvFHRTJvUfuIIhjhRXnr1JbZBss37S+cBaIUdgZh9Oy/tWKdKXYdoj?=
- =?us-ascii?Q?dv96fMKVzn77SapiXTmaydch98wzI9Sbx5JdocPewXKsWrzeAO3WgUGUNT4L?=
- =?us-ascii?Q?muIuNl1wxOEBgGCOoi+E+S/XKEQoBjwPkVmEdhQQS07BQ5oB4FhFXQll9tdL?=
- =?us-ascii?Q?+Q=3D=3D?=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4fbdf6dd-0349-402f-6a97-08dab5f8c93f
-X-MS-Exchange-CrossTenant-AuthSource: VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2022 19:48:56.1739
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jhw8Wid4TF8/e6GRBDyrUVGwh4322j+G20V8eLGzAqRBq0sEwXewwJ1tgwlvcDSTxkRTj55A6XZI5XUKywwBuwGY5Ac7Su1qqQzWl+MeLVA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP190MB1742
+ <20221021194552.683-2-vadym.kochan@plvision.eu>
+ <a46c6a18-903d-2120-4876-509ce8ad19d5@linaro.org>
+ <VI1P190MB03170416FB2C521103B8EE1A952E9@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <VI1P190MB03170416FB2C521103B8EE1A952E9@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221024_124901_994082_8863D1D3 
-X-CRM114-Status: GOOD (  35.54  )
+X-CRM114-CacheID: sfid-20221024_135119_549018_A4778F61 
+X-CRM114-Status: GOOD (  26.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -139,315 +103,226 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Krzysztof,
+On 24/10/2022 15:48, Vadym Kochan wrote:
+> Hi Krzysztof,
+> 
+> On Sat, 22 Oct 2022 12:18:49 -0400, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+>> On 21/10/2022 15:45, Vadym Kochan wrote:
+>>> Switch the DT binding to a YAML schema to enable the DT validation.
+>>>
+>>> Dropped deprecated compatibles and properties described in txt file.
+>>>
+>>> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+>>> ---
+>>>  .../bindings/mtd/marvell,nand-controller.yaml | 199 ++++++++++++++++++
+>>>  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 -----------
+>>>  2 files changed, 199 insertions(+), 126 deletions(-)
+>>>  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+>>>  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+>>> new file mode 100644
+>>> index 000000000000..535b7f8903c8
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+>>> @@ -0,0 +1,199 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/mtd/marvell,nand-controller.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Marvell NAND Flash Controller (NFC)
+>>> +
+>>> +maintainers:
+>>> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+>>
+>> This should be someone responsible for hardware, not subsystem
+>> maintainer. Unless by coincidence Miquel matches both. :)
+>>
+>>> +
+>>> +properties:
+>>> +
+>>> +  compatible:
+>>> +    oneOf:
+>>> +      - items:
+>>> +        - const: marvell,armada-8k-nand-controller
+>>> +        - const: marvell,armada370-nand-controller
+>>
+>> Does not look like you tested the bindings. Please run `make
+>> dt_binding_check` (see
+>> Documentation/devicetree/bindings/writing-schema.rst for instructions).
+> 
+> Yes, on v1 I did not use yamllint, but installed after Rob pointed
+> on some lint warnings.
 
-On Sat, 22 Oct 2022 12:18:49 -0400, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> On 21/10/2022 15:45, Vadym Kochan wrote:
-> > Switch the DT binding to a YAML schema to enable the DT validation.
-> > 
-> > Dropped deprecated compatibles and properties described in txt file.
-> > 
-> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> > ---
-> >  .../bindings/mtd/marvell,nand-controller.yaml | 199 ++++++++++++++++++
-> >  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 -----------
-> >  2 files changed, 199 insertions(+), 126 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> > new file mode 100644
-> > index 000000000000..535b7f8903c8
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> > @@ -0,0 +1,199 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mtd/marvell,nand-controller.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Marvell NAND Flash Controller (NFC)
-> > +
-> > +maintainers:
-> > +  - Miquel Raynal <miquel.raynal@bootlin.com>
-> 
-> This should be someone responsible for hardware, not subsystem
-> maintainer. Unless by coincidence Miquel matches both. :)
-> 
-> > +
-> > +properties:
-> > +
-> > +  compatible:
-> > +    oneOf:
-> > +      - items:
-> > +        - const: marvell,armada-8k-nand-controller
-> > +        - const: marvell,armada370-nand-controller
-> 
-> Does not look like you tested the bindings. Please run `make
-> dt_binding_check` (see
-> Documentation/devicetree/bindings/writing-schema.rst for instructions).
-
-Yes, on v1 I did not use yamllint, but installed after Rob pointed
-on some lint warnings.
-
-> 
-> > +      - const: marvell,armada370-nand-controller
-> > +      - const: marvell,pxa3xx-nand-controller
-> 
-> These two are just enum.
-> 
-
-OK.
-
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  "#address-cells":
-> > +    const: 1
-> 
-> Drop, comes with nand-controller.yaml
-> 
-
-OK.
-
-> > +
-> > +  "#size-cells":
-> > +    const: 0
-> 
-> Ditto
-> 
-
-OK.
-
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +    description: |
-> 
-> No need for |
-> 
-> > +     Shall reference the NAND controller clocks, the second one is
-> > +     is only needed for the Armada 7K/8K SoCs
-> 
-> You need allOf:if:then restricting it further per variant.
-> 
-
-OK, added.
-
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: core
-> > +      - const: reg
-> > +    description: |
-> > +      Mandatory if there is a second clock, in this case there
-> > +      should be one clock named "core" and another one named "reg"
-> 
-> The message is confusing. What is mandatory if there is a second clock?
-> Plus, the binding requires two clocks.
-> 
-> Drop entire description.
-> 
-> minItems: 1
-> 
-
-OK, droped (I used from the txt version).
-Added minItems.
+I did not say about yamllint.
 
 > 
-> > +
-> > +  dmas:
-> > +    maxItems: 1
-> > +    description: rxtx DMA channel
+>>
+>>> +      - const: marvell,armada370-nand-controller
+>>> +      - const: marvell,pxa3xx-nand-controller
+>>
+>> These two are just enum.
+>>
 > 
-> Drop description.
+> OK.
 > 
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +  "#address-cells":
+>>> +    const: 1
+>>
+>> Drop, comes with nand-controller.yaml
+>>
+> 
+> OK.
+> 
+>>> +
+>>> +  "#size-cells":
+>>> +    const: 0
+>>
+>> Ditto
+>>
+> 
+> OK.
+> 
+>>> +
+>>> +  interrupts:
+>>> +    maxItems: 1
+>>> +
+>>> +  clocks:
+>>> +    minItems: 1
+>>> +    maxItems: 2
+>>> +    description: |
+>>
+>> No need for |
+>>
+>>> +     Shall reference the NAND controller clocks, the second one is
+>>> +     is only needed for the Armada 7K/8K SoCs
+>>
+>> You need allOf:if:then restricting it further per variant.
+>>
+> 
+> OK, added.
+> 
+>>> +
+>>> +  clock-names:
+>>> +    items:
+>>> +      - const: core
+>>> +      - const: reg
+>>> +    description: |
+>>> +      Mandatory if there is a second clock, in this case there
+>>> +      should be one clock named "core" and another one named "reg"
+>>
+>> The message is confusing. What is mandatory if there is a second clock?
+>> Plus, the binding requires two clocks.
+>>
+>> Drop entire description.
+>>
+>> minItems: 1
+>>
+> 
+> OK, droped (I used from the txt version).
+> Added minItems.
+> 
+>>
+>>> +
+>>> +  dmas:
+>>> +    maxItems: 1
+>>> +    description: rxtx DMA channel
+>>
+>> Drop description.
+>>
+> 
+> OK.
+> 
+>>> +
+>>> +  dma-names:
+>>> +    items:
+>>> +      - const: rxtx
+>>> +
+>>> +  marvell,system-controller:
+>>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>>> +    description: Syscon node that handles NAND controller related registers
+>>> +
+>>> +patternProperties:
+>>> +  "^nand@[0-3]$":
+>>> +    type: object
+>>> +    properties:
+>>> +
+>>
+>> Drop blank line.
+>>
+> 
+> OK.
+> 
+>>> +      reg:
+>>> +        minimum: 0
+>>> +        maximum: 3
+>>> +
+>>> +      nand-rb:
+>>> +        minimum: 0
+>>> +        maximum: 1
+>>> +
+>>> +      nand-ecc-strength:
+>>> +        enum: [1, 4, 8]
+>>> +
+>>> +      nand-on-flash-bbt: true
+>>> +
+>>> +      nand-ecc-mode: true
+>>> +
+>>> +      nand-ecc-algo:
+>>> +        description: |
+>>> +          This property is essentially useful when not using hardware ECC.
+>>> +          Howerver, it may be added when using hardware ECC for clarification
+>>> +          but will be ignored by the driver because ECC mode is chosen depending
+>>> +          on the page size and the strength required by the NAND chip.
+>>> +          This value may be overwritten with nand-ecc-strength property.
+>>> +
+>>> +      nand-ecc-step-size:
+>>> +        const: 512
+>>
+>> Why this is const?
+>>
+> 
+> Removed const.
+> 
+>>> +        description: |
+>>> +          Marvell's NAND flash controller does use fixed strength
+>>> +          (1-bit for Hamming, 16-bit for BCH), so the actual step size
+>>> +          will shrink or grow in order to fit the required strength.
+>>> +          Step sizes are not completely random for all and follow certain
+>>> +          patterns described in AN-379, "Marvell SoC NFC ECC".
+>>> +
+>>> +      label:
+>>> +        $ref: /schemas/types.yaml#/definitions/string
+>>> +
+>>> +      partitions:
+>>> +        type: object
+>>> +        $ref: "/schemas/mtd/partitions/partition.yaml"
+>>
+>> Drop quotes
+>>
+> 
+> OK.
+> 
+>>         unevalautedProperties: false
+>>
+>> and then you will see errors, because you referenced schema for one
+>> partition.
+>>
+> 
+> Hm, I did not see errors with partitions with- or without "unevaluatedProperties".
 
-OK.
+As pointed before and here - I am not sure if you tested the bindings,
+so of course then will be no warnings...
 
-> > +
-> > +  dma-names:
-> > +    items:
-> > +      - const: rxtx
-> > +
-> > +  marvell,system-controller:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description: Syscon node that handles NAND controller related registers
-> > +
-> > +patternProperties:
-> > +  "^nand@[0-3]$":
-> > +    type: object
-> > +    properties:
-> > +
-> 
-> Drop blank line.
-> 
+Best regards,
+Krzysztof
 
-OK.
-
-> > +      reg:
-> > +        minimum: 0
-> > +        maximum: 3
-> > +
-> > +      nand-rb:
-> > +        minimum: 0
-> > +        maximum: 1
-> > +
-> > +      nand-ecc-strength:
-> > +        enum: [1, 4, 8]
-> > +
-> > +      nand-on-flash-bbt: true
-> > +
-> > +      nand-ecc-mode: true
-> > +
-> > +      nand-ecc-algo:
-> > +        description: |
-> > +          This property is essentially useful when not using hardware ECC.
-> > +          Howerver, it may be added when using hardware ECC for clarification
-> > +          but will be ignored by the driver because ECC mode is chosen depending
-> > +          on the page size and the strength required by the NAND chip.
-> > +          This value may be overwritten with nand-ecc-strength property.
-> > +
-> > +      nand-ecc-step-size:
-> > +        const: 512
-> 
-> Why this is const?
-> 
-
-Removed const.
-
-> > +        description: |
-> > +          Marvell's NAND flash controller does use fixed strength
-> > +          (1-bit for Hamming, 16-bit for BCH), so the actual step size
-> > +          will shrink or grow in order to fit the required strength.
-> > +          Step sizes are not completely random for all and follow certain
-> > +          patterns described in AN-379, "Marvell SoC NFC ECC".
-> > +
-> > +      label:
-> > +        $ref: /schemas/types.yaml#/definitions/string
-> > +
-> > +      partitions:
-> > +        type: object
-> > +        $ref: "/schemas/mtd/partitions/partition.yaml"
-> 
-> Drop quotes
-> 
-
-OK.
-
->         unevalautedProperties: false
-> 
-> and then you will see errors, because you referenced schema for one
-> partition.
-> 
-
-Hm, I did not see errors with partitions with- or without "unevaluatedProperties".
-
-> 
-> > +
-> > +      marvell,nand-keep-config:
-> > +        description: |
-> > +          Orders the driver not to take the timings from the core and
-> > +          leaving them completely untouched. Bootloader timings will then
-> > +          be used.
-> > +        $ref: /schemas/types.yaml#/definitions/flag
-> > +
-> > +      marvell,nand-enable-arbiter:
-> > +        description: |
-> > +          To enable the arbiter, all boards blindly used it,
-> > +          this bit was set by the bootloader for many boards and even if
-> > +          it is marked reserved in several datasheets, it might be needed to set
-> > +          it (otherwise it is harmless) so whether or not this property is set,
-> > +          the bit is selected by the driver.
-> > +        $ref: /schemas/types.yaml#/definitions/flag
-> > +        deprecated: true
-> > +
-> > +    additionalProperties: false
-> > +
-> > +    required:
-> > +      - reg
-> > +      - nand-rb
-> > +
-> > +additionalProperties: false
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - "#address-cells"
-> > +  - "#size-cells"
-> 
-> Drop these two - required by nand-controller.
-
-OK.
-
-> 
-> > +  - interrupts
-> > +  - clocks
-> > +
-> > +allOf:
-> > +  - $ref: "nand-controller.yaml#"
-> 
-> Drop quotes.
-> 
-
-OK.
-
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: marvell,pxa3xx-nand-controller
-> > +    then:
-> > +      required:
-> > +        - dmas
-> > +        - dma-names
-> > +    else:
-> > +      properties:
-> > +        dmas: false
-> > +        dma-names: false
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: marvell,armada-8k-nand-controller
-> > +    then:
-> > +      required:
-> > +        - marvell,system-controller
-> > +    else:
-> > +      properties:
-> > +        marvell,system-controller: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +    nand_controller: nand-controller@d0000 {
-> > +            compatible = "marvell,armada370-nand-controller";
-> > +            reg = <0xd0000 0x54>;
-> 
-> Use 4 spaces for example indentation.
-> 
-
-OK.
-
-> > +            #address-cells = <1>;
-> > +            #size-cells = <0>;
-> > +            interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
-> > +            clocks = <&coredivclk 0>;
-> > +
-> 
-> Best regards,
-> Krzysztof
-> 
-
-Thanks for the comments.
 
 ______________________________________________________
 Linux MTD discussion mailing list
