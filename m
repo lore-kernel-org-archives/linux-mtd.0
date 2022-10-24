@@ -4,56 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7673DECAAA1
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 09:21:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DE93FA373E
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 12:21:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Txc86njfXoO5McqM0ui+/W/t/AGLroV7Ni4rg0CN9Jw=; b=TfiLq2A2TXZ+yA
-	R2Xa8p9ZFj5MpNfiEtbbBquRF0xBLL96m5PT6agVfYa+q0sutMXuVTbb1pj+3PgWJzP65r7ijMz/c
-	K1TJpfiW2xd1eYqTxy7I+lHFyx29+BA9bvMiJmovqmC4u6lvpdQAGMt1/VeIr8uozIUWoygOeCGNV
-	OTR1l/Ywrtj6UOPY4H8AA/oznZdHqsccdfq/pH8+v8PWksqJeGBIYEvut1u2EbKe2twOk200xgmL0
-	5o396WiRImgv6+xBSNdGmpTbPWFEphGdvYuwuvTl/tbP+4tWNmHwiaItNUHBgC+2rSIZN2VyOAnje
-	3GiBbNOGOWegF03J3UzA==;
+	List-Owner; bh=lsvur6m3H5KumAoQ+LeWSoh0+LUYi92sW7wrXCNtKL8=; b=PXf88m3E1+Gpxe
+	hj7heGFKJILXQ/onUJPA7x7RQ7+Bh5l3kWDC1bbwYPFHOTE78Z0Xv+iyZvuQfMK0V+03DKGoTmnLJ
+	6UYBm9vFN/JYXbZD51oe6r3IHlkLJyE37HiXzXS3qcGDwVewqat4aAcyq18in5Wpb3Bjg+yM69MH1
+	iJlSBKRxlJzKJLc6Z3Vg6bcmQRl0eEK/rOQEXRH/CUje0PNxkcn/l0rjSA3n90yA2cQGTfbcrSz4m
+	OPUf+i5pBes0nPmcFCeBeguT2wANN/tF5cPjT08vCXC155nFWGex4qDId9VGYFQ16M742iahc5Q7m
+	9qYtNXcs48x7rF7TFnXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omtdw-000NIK-KP; Mon, 24 Oct 2022 09:21:12 +0000
-Received: from tartarus.angband.pl ([51.83.246.204])
+	id 1omwRU-001L2g-7A; Mon, 24 Oct 2022 12:20:32 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1omtdt-000NFM-Ak
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 09:21:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=angband.pl;
-	s=tartarus; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=Wq8J078WnKbzaZr7d4VxEHJxGv/MIkll160szlpG16c=; b=vypeQ/u7l4vOQDhNyHVxOgcMzC
-	naX4z99oN/t8N6d3nwaqQlnJHsBStEnCg7YV0Vqrs2Ht+zFP62cerp8y7TmhsX08ga50gx9CZnwCb
-	O7V1su10J1V83mJsqYWzbkaoGlLUuvBbYzHaLy/U6Tc/jQA3HLjBrTogwW/5n3xNVSsM=;
-Received: from localhost ([127.0.0.1] helo=valinor.angband.pl)
-	by tartarus.angband.pl with smtp (Exim 4.94.2)
-	(envelope-from <kilobyte@valinor.angband.pl>)
-	id 1omtdM-00AMIC-KG; Mon, 24 Oct 2022 11:20:36 +0200
-Received: (nullmailer pid 47403 invoked by uid 1000);
-	Mon, 24 Oct 2022 09:20:34 -0000
-From: Adam Borowski <kilobyte@angband.pl>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
-Cc: Adam Borowski <kilobyte@angband.pl>
-Subject: [PATCH] mtd: rawnand: placate "$VARIABLE is used uninitialized" warnings
-Date: Mon, 24 Oct 2022 11:20:26 +0200
-Message-Id: <20221024092026.42123-1-kilobyte@angband.pl>
-X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a
+	id 1omwRQ-001Kxi-N3
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 12:20:30 +0000
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MwvD90QZGzVhmf;
+	Mon, 24 Oct 2022 20:15:37 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 24 Oct 2022 20:20:21 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
+ (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 24 Oct
+ 2022 20:20:20 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <qemu-devel@nongnu.org>,
+	<linux-f2fs-devel@lists.sourceforge.net>, <linux-erofs@lists.ozlabs.org>,
+	<ocfs2-devel@oss.oracle.com>, <linux-mtd@lists.infradead.org>,
+	<amd-gfx@lists.freedesktop.org>
+CC: <gregkh@linuxfoundation.org>, <rafael@kernel.org>, <somlo@cmu.edu>,
+	<mst@redhat.com>, <jaegeuk@kernel.org>, <chao@kernel.org>,
+	<hsiangkao@linux.alibaba.com>, <huangjianan@oppo.com>, <mark@fasheh.com>,
+	<jlbec@evilplan.org>, <joseph.qi@linux.alibaba.com>,
+	<akpm@linux-foundation.org>, <alexander.deucher@amd.com>,
+	<luben.tuikov@amd.com>, <richard@nod.at>, <liushixin2@huawei.com>
+Subject: [PATCH v2] kset: fix memory leak when kset_register() returns error
+Date: Mon, 24 Oct 2022 20:19:10 +0800
+Message-ID: <20221024121910.1169801-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 127.0.0.1
-X-SA-Exim-Mail-From: kilobyte@valinor.angband.pl
-X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221024_022109_660828_041EDCCE 
-X-CRM114-Status: GOOD (  12.09  )
+X-CRM114-CacheID: sfid-20221024_052028_990632_F68234CD 
+X-CRM114-Status: GOOD (  10.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,41 +75,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The compiler is not smart enough to notice that it's impossible for
-them to be actually used uninitialized.  Which exact variables trip
-here varies depending on random surrounding code; none triggered in
-6.1-rc1 but 6.1-rc2 fails on three of these five, despite variables
-declared in the very same line having identical flow.
+Inject fault while loading module, kset_register() may fail.
+If it fails, the name allocated by kobject_set_name() which
+is called before kset_register() is leaked, because refcount
+of kobject is hold in kset_init().
 
-Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+As a kset may be embedded in a larger structure which needs
+be freed in release() function or error path in callers, we
+can not call kset_put() in kset_register(), or it will cause
+double free, so just call kfree_const() to free the name and
+set it to NULL.
+
+With this fix, the callers don't need to care about the name
+freeing and call an extra kset_put() if kset_register() fails.
+
+Suggested-by: Luben Tuikov <luben.tuikov@amd.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v1 -> v2:
+  Free name inside of kset_register() instead of calling kset_put()
+  in drivers.
+---
+ lib/kobject.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 33f2c98a030e..c3cc66039925 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5834,7 +5834,7 @@ nand_match_ecc_req(struct nand_chip *chip,
- 	int req_step = requirements->step_size;
- 	int req_strength = requirements->strength;
- 	int req_corr, step_size, strength, nsteps, ecc_bytes, ecc_bytes_total;
--	int best_step, best_strength, best_ecc_bytes;
-+	int best_step = 0, best_strength = 0, best_ecc_bytes = 0;
- 	int best_ecc_bytes_total = INT_MAX;
- 	int i, j;
+diff --git a/lib/kobject.c b/lib/kobject.c
+index a0b2dbfcfa23..3409a89c81e5 100644
+--- a/lib/kobject.c
++++ b/lib/kobject.c
+@@ -834,6 +834,9 @@ EXPORT_SYMBOL_GPL(kobj_sysfs_ops);
+ /**
+  * kset_register() - Initialize and add a kset.
+  * @k: kset.
++ *
++ * NOTE: On error, the kset.kobj.name allocated by() kobj_set_name()
++ * which is called before kset_register() in caller need be freed.
+  */
+ int kset_register(struct kset *k)
+ {
+@@ -844,8 +847,11 @@ int kset_register(struct kset *k)
  
-@@ -5915,7 +5915,7 @@ nand_maximize_ecc(struct nand_chip *chip,
- 	int step_size, strength, nsteps, ecc_bytes, corr;
- 	int best_corr = 0;
- 	int best_step = 0;
--	int best_strength, best_ecc_bytes;
-+	int best_strength = 0, best_ecc_bytes = 0;
- 	int i, j;
- 
- 	for (i = 0; i < caps->nstepinfos; i++) {
+ 	kset_init(k);
+ 	err = kobject_add_internal(&k->kobj);
+-	if (err)
++	if (err) {
++		kfree_const(k->kobj.name);
++		k->kobj.name = NULL;
+ 		return err;
++	}
+ 	kobject_uevent(&k->kobj, KOBJ_ADD);
+ 	return 0;
+ }
 -- 
-2.37.2.609.g9ff673ca1a
+2.25.1
 
 
 ______________________________________________________
