@@ -4,88 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 089AEC67871
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 21:32:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3D8DC38A2D
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 21:56:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=of+dVenJhIUEBvo/tolfsLFnMXMg7DDFmhA30wyPwQA=; b=y8j9me5oKJbMbr
-	hWbqsSLGPk6R7P8S5tb1Wju2uH0aHeOvPz7kkeoNCpppAeyLtygmMvW4rN4xVm6wAlc02RyWG0C+d
-	sy1PAn4UQ91KIQDHB0ow2iLc9YuN8EmTcpW3KdSzIK0k+t3XW0z8ztLy8AoRS560sic0lL8pCXPBp
-	SMUaE/LJBf9Uxl0VmXSgPquRdIcsUO+jI+3GQWeaHioh8eIh7IVStfHjknmIUTVLCpE4fGDe2GnaR
-	GeyB2JnXfKJxFL3uNv2oXVhKktzRsn1/upN+sFq7IbuWj4hDyv5yOyqXVJ4+XNcCFw824q60XV663
-	7bSlbmSUsW/GZUQ/Pxrg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Jwzdz7l1b9LsFZg6EkK6GpyxtEmI6sfUZ2W19X578C0=; b=BlIV3DZcuWMk5K
+	9vJ/hxTt4zQmWAeB7elWjDH1NHB/4/B33d9JU0rfa9IEdXrdBX2ErdaCbZJPf/RuStIF3EJGTOIFv
+	8h7VO3NB7Zm0DfuWsNxQkW+GwjYo9HXn03S+hkaYNubAWdUJXxkvXH2kOzqxziso9U7mLKN/GOK49
+	7PoKByboWGFqc4zLNSjpyiozVtMPb59MkcYAYNqx+y37uJBr0ULx0DFSP7LvbXUU1bu9lUr2Un8sC
+	lW1cdMV17FTs4vuNIfNdIeDkhOHSH0IQG9dNYeXIGdOe7JPPXUZsCE87ve0LAyeRfNQ8+dC96oQ3G
+	YpXVf1ySUcw2gwtqr1Sg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1on53E-0034qg-O9; Mon, 24 Oct 2022 21:32:04 +0000
-Received: from mail-qk1-x732.google.com ([2607:f8b0:4864:20::732])
+	id 1on5QH-003AG2-RP; Mon, 24 Oct 2022 21:55:53 +0000
+Received: from mail-vi1eur03on2118.outbound.protection.outlook.com ([40.107.103.118] helo=EUR03-VI1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1on53A-0034pj-Rh
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 21:32:02 +0000
-Received: by mail-qk1-x732.google.com with SMTP id o2so6899658qkk.10
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Oct 2022 14:31:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HqdAlNyWzpxEkU/MFO8G8dv0LNUlhwviuS7EnguHLSg=;
-        b=DV83/4RnyXOVWlrN68XexIY4HJUJsx1VFHmnrSIXpzkwAoNgxFZc/9r9OfOw9BB2py
-         2CjVIxNBrWWH3qPaszABQ+IlPxg2PKtfcBeZ0uQqnyckndHV8F9NmiGchqb/h3VVTVW7
-         8USKDCjsbwz5Oyk4XYlSnDiLwQmtRdAzEumeDCkjbMg2fOph5tHQAkBAaTSlUU7z5Hm0
-         iuRGFveOXHssNeg332k32nsiGGCjCurvBqqM3LYWy86iy/VXHghi2xsJVSpAXNKHC3Qt
-         8hQ11yI6Q8OW6D25RxIs/svV6XxQQSOLuDO+AC9zeEIgVYkNK64iyGsI4O9UMyvObGkb
-         KCCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HqdAlNyWzpxEkU/MFO8G8dv0LNUlhwviuS7EnguHLSg=;
-        b=0ORqq5Q0GIa8TQEmYpIxhAgBUR3UTEOyXPfw+RNNZBhWOaHrD6R2oxOhar2S2bGkCo
-         VQJcAsmelr+X7TdB9HeFjm7lWzz4tTnx6tyZ/7lHAyEPNPNwAGJ5SIhAjH2idL/svGN+
-         EkhWHZMRSNnRp0I14pHVhsGIPO3fq0YlsWHcDI4m4YUq2jtxLenJpcP2ht9d/XZefyxA
-         wq9iVKTAYunvQ4h+W/4CwJ3Up87+6aqisnLztMNC0mE0nzXIs66/Pi2zkWIJ8pSnHoGY
-         YWxRALVMFsmzH6GZyXtc0LKsXF4t4C6MU6Ib+8M00zPuONePKY1OBYjr9AigFSY729u2
-         HXgA==
-X-Gm-Message-State: ACrzQf05ajmcKhX2THJkSlr/o7GYTUxtb/tvK1xNPxUcCuHa7HBKJEs0
-	YLV3GmtAh4c0L3NvS0JVP7KaIQ==
-X-Google-Smtp-Source: AMsMyM5wlxnsR49L7btHoocprCyOk/ulL2WAi00lcwgUckP7xMzBPmdYJSTAFZizSbGUi/0SFuvUtg==
-X-Received: by 2002:a05:620a:19a0:b0:6f6:cb1d:a5e1 with SMTP id bm32-20020a05620a19a000b006f6cb1da5e1mr2163722qkb.382.1666647111074;
-        Mon, 24 Oct 2022 14:31:51 -0700 (PDT)
-Received: from [192.168.1.8] ([64.57.193.93])
-        by smtp.gmail.com with ESMTPSA id c6-20020ae9e206000000b006bb29d932e1sm649360qkc.105.2022.10.24.14.31.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Oct 2022 14:31:50 -0700 (PDT)
-Message-ID: <ae7c86fd-5bc9-4cdb-857c-e686225f5966@linaro.org>
-Date: Mon, 24 Oct 2022 17:31:48 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
- scheme
-Content-Language: en-US
-To: Vadym Kochan <vadym.kochan@plvision.eu>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+	id 1on5QE-003AEd-Vi
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 21:55:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jNcdxiFOIt0Povaoaak7zyxcELlXfhCw9/LpZFCMzWVkTAPNJQmk0h5UGrr9iiXtMPPmzqWN4dIcFwzopPx7j9of16gLs/Du6dnsBqd2YSrG/JsczJvFGh6odUJEJNAsNDT6fIVv7o7vtAFUfTaypVP/UGzK1HQLFEZQ4Hdi7RuTMI+XIx6LcooPhhmowusAn63XX66A+NVboMsj+AZfYcq1BQMNfyOwMl4cIE65Z0rbOWsWsKHCaBj2rBCnSVEjaAyq0tUsXX8A2SGPkbUJu36kiCzBW65Dapi3sUDkh58ky1ojIcGRBE4CSgWogrULhEL72vkqmVzKvc32i/b6nA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wM6TaTFx7ZXn9Les15qFXMYvL7lBgoT6avopwy0UsQM=;
+ b=SNaE0ykWU8F053MvYZ/Tn3fejU+If318QHhk9A3s5J6rhYRrAnj1R07M9t0BFbDvB+Z3S652qrNV3abHEnPNafB278k6DHz+fu/WrbfgDMfz+pteCUXHUzF7W2RdeYPAmakN2EKOyCTdMUAdGsbeCEFMU6USqS3Z45MZttcl5yNUudOFJ4CDX/K8nIyRvLj7SjomcxYKKtDcghBe7yebmMpP5rl9piRcbMeVDZ4lwMsgdn+SuJwIKS6q662UT5pYg5VQQHX2YlP6AhERoY+AXXiCXmdDBr7ZVTt7fLYW6+O2dODz97d9NimnhGCOBXpSOWg6rEWa8gj8e7gOdPRwvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wM6TaTFx7ZXn9Les15qFXMYvL7lBgoT6avopwy0UsQM=;
+ b=B9+9BMwKOFXCgCIuDwyoUl4I3U6fiMdJ7SuPyxIHqOO5wK4OONV6yl+SkgelCmRBwUWWRGC94U3Rrr0euY+WhnpKYi1/g3dVm59g4GJl4HFlHZj2SCU7tLBOQdlnfpYihRmTTqaPhXNlK5OFIPTQgM3XfEclPActkZZ9KLRN0cA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=plvision.eu;
+Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:38::26)
+ by DB8P190MB0652.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:123::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.28; Mon, 24 Oct
+ 2022 21:55:46 +0000
+Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+ ([fe80::2b03:a6ec:3529:b969]) by VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+ ([fe80::2b03:a6ec:3529:b969%5]) with mapi id 15.20.5746.023; Mon, 24 Oct 2022
+ 21:55:45 +0000
+From: Vadym Kochan <vadym.kochan@plvision.eu>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 Cc: Elad Nachman <enachman@marvell.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>
-References: <20221024210153.28852-1-vadym.kochan@plvision.eu>
- <20221024210153.28852-2-vadym.kochan@plvision.eu>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221024210153.28852-2-vadym.kochan@plvision.eu>
+	Vadym Kochan <vadym.kochan@plvision.eu>,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	Aviram Dali <aviramd@marvell.com>
+Subject: [PATCH] mtd: rawnand: marvell: add missing layouts
+Date: Tue, 25 Oct 2022 00:55:31 +0300
+Message-Id: <20221024215531.32033-1-vadym.kochan@plvision.eu>
+X-Mailer: git-send-email 2.17.1
+X-ClientProxiedBy: FR3P281CA0132.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:94::12) To VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:802:38::26)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P190MB0317:EE_|DB8P190MB0652:EE_
+X-MS-Office365-Filtering-Correlation-Id: 35ae1d81-112a-413f-01d7-08dab60a80f6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	s8yL//YlI3r9jKrnOFvhNTBcpAxbb58AWgCbkCh7Xv2wzY7/97oiI167HmsYWW0HWDRHn7XdDL64cGWwo4q842yy5sMqgbGVok6akU9zVAawKfWPTp5prazES0E7nH8LSmmnGtenkMwzmnm40gtRaMeDZZ2UvJbXrYA4+G7Sg1fwetAwie16qTqwJ9HHfoQ/3n+jHrLMlvLlmLyM3BbgwcC1kDThUsABChg2cHJBuaxQkkzXfszMLiEBHd9MuvUC4WqBlwMtYgDXl+jD15O7De5JLcByfnBtaGHDiQy9eOBAwpJcLmTN/hIVUQK4zp3SSAi5QminoLCEoH/cSondF56GfsXTETM9XX9MJyVdLjNfzEVje9kjj+rALnDxKeyUf6/6CIjY3UYDJ0cHDsWHs7VUmvMUVN8Lu6LRcFYU4OX0TnN56T2myu9GtMOFLtktlD6pDiwbCmnFFSbP0xI6DroYsE+8ZDHQowmNDXb3h+/iUCvaiXG/Du//oY4CRuiaZyOwdrK1h+1kfvKsfP9fYD7r4zmV6QSyuF8dh88PkO+l6oNGq9yvGJfzgIttZ31wwCxTNUzWOU+QV/oSgprKppQ/NHUB2C5tXb/h/+VrX135edtMwvt2MgAcSjvmcWd/Y3iqSE7P8WTxwkbjae1pnppXFWQmqzq0fGVwnaPbY8PRZVkI+OCHqQzb14OW7HOFoJYDtGDAvIWv9VaaolcpXj2aOPNQp3CpOC7Kyhs6BWwUFoe7VrRIQEOEUAUI93to
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0317.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(34036004)(366004)(396003)(39840400004)(136003)(346002)(376002)(451199015)(36756003)(2906002)(44832011)(316002)(19627235002)(41300700001)(4326008)(66946007)(66556008)(66476007)(8676002)(5660300002)(508600001)(8936002)(54906003)(6486002)(110136005)(83380400001)(38100700002)(38350700002)(6666004)(52116002)(6506007)(86362001)(26005)(6512007)(186003)(1076003)(2616005)(41320700001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?u2AEvoIzT98NNVySl9sT0zWOp0qYBeJK957YWU9oKhKUMSF54y13C8+HuS76?=
+ =?us-ascii?Q?1JiPuDrf/I2xUajXmoE62vyf7lQ/iuEu/2PconRYIqwREJT0nQehBCJIdZwt?=
+ =?us-ascii?Q?ROJW8TIrhyJcFrNTc/2w4qYgBcCsVS3w9N5EC8cTkup+nx52uf7u6cDS9zfm?=
+ =?us-ascii?Q?AogIUTsstd7EDa6IGeZihsi7Lvi1U74QyNZJox2QxnBgIvG5GCCc3L+GayJW?=
+ =?us-ascii?Q?ki5XkEfWZXabmlakw9GExeTpuy+ETiYK887ncfcvs4Ni2aa0fEcJcfPly8/f?=
+ =?us-ascii?Q?FfEVH2HNfdun4wbUV1tQpzLzXE9qspAnun9Pwb2JuPMC/3Q8I7o2P+ICoCU9?=
+ =?us-ascii?Q?TrjE6q3HbOIvMZpyfW6gVePPuZ0zwHfZ6kqzdv6bzRnGcwOxhYcjM6GmSKEN?=
+ =?us-ascii?Q?l8KeRGybUQoEjYc5BfxjHh9bYgA7WhKzs4mhet8QY2YfcBPw5hduH4Vh/ZEg?=
+ =?us-ascii?Q?Wsdazm07Pd1Czuyy6zCME8EfGCZap7DxY44STNOSkLpoGoct68vxrdFvTCeP?=
+ =?us-ascii?Q?m4TEYZa1HJzJ7W6mc9BcfwS73axEmJEY5Ecl2KILu0T+3InYVbX89Zj4YZGG?=
+ =?us-ascii?Q?Rb80uQc6cZdBdvTm9hxel8huKirwjZvLjMC+PlVpHsUajZxPVK4F66VVWFi2?=
+ =?us-ascii?Q?87cbbG/ubibKnuHkmPQVW7B+PUYAvSY5E4QchQt7SN88HCitsAOkiHAzP9xm?=
+ =?us-ascii?Q?huznm+bFUfhWc9FQ+5174nUFoCbgupEfokyTPHatOVKwdWtGGLZx2Rb7ofmH?=
+ =?us-ascii?Q?4ItB6XJguZB+dCSTgOZGn10rw3K0iByBdFwgMoBYy37thbh36Hpv14wMcni6?=
+ =?us-ascii?Q?H3mGW6fYoQJi0md6/Lbz2qePsbqZqtiaZnJHSWsmCjD8Fb+4RxIhdydrDRGu?=
+ =?us-ascii?Q?0b8DL0FAOqOc5Cnk0C8qwjfXdo3KiXGdr2qmMV2D8t3hnKYJZWFiSKNzpffx?=
+ =?us-ascii?Q?pwrj9MLuNpkXTgX+FBDmqgd70mpiCD2SJx4vuWgC8xIV1bwiWs+lI7IS4u9s?=
+ =?us-ascii?Q?DEuORlQNxkai6XEp5LnHzeMm2XhHBA42nGbzKktGGs+bA4VCPYunEE/DJUUD?=
+ =?us-ascii?Q?Tlz5e9fl5fbCJl8V9xCgbI11e95xaWbSE8JJtxWmS3TK6q3gB1RK/uFxboey?=
+ =?us-ascii?Q?meNakwX5JJP2mn1woUllvD/sg9JWLAggqlHnM3hQWZ4IESB/tnQ0pTeFvo8f?=
+ =?us-ascii?Q?NVS2fTiPPFCHphkUqeahrbWGEgYlxfb3BM+OyW8W8f71gv/tF2G5BpBS/4b1?=
+ =?us-ascii?Q?MRKB1qUeJ8njv6wsuCIkC1UrnvuazrjBZC6e6Ti77yOcjq1j+1o+4246GEFY?=
+ =?us-ascii?Q?B2Q6K/V973h6GPfdOdmMt6f1+fZQp9UUUp69lCtUvYl2+Qii9/TNRm2doRVP?=
+ =?us-ascii?Q?cg3EXLLwW6L5tAOOouJXQ56fQRuHKQxyZjd/6B8oTdtr4f2WNp3BOUvkOmNY?=
+ =?us-ascii?Q?qOf51hL/grRD10VxzonBmahFD8MBp4Vi6qx1pUISZpHkIbWPshwey7YnuXcH?=
+ =?us-ascii?Q?S0fwJxgOszqxI8kIlqJpfAtLqHLWvcaPY8lKSVXu5FwnVukiFvfnVt6jqjxl?=
+ =?us-ascii?Q?2194Z5HubTqCRuOVwYxv225xKBs0bgiSMOpajNyqmFqfP7fiOJ0RxbJcmTEK?=
+ =?us-ascii?Q?Xw=3D=3D?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35ae1d81-112a-413f-01d7-08dab60a80f6
+X-MS-Exchange-CrossTenant-AuthSource: VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2022 21:55:45.7286
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GfLSd/bz1DTr91OU6ekkyWuFtwGbiVLN8ixwF4E2bEFripKNhuaxjQuaGtge9KqsyHqL8j6dlLGM/NDDI8rI0KbNFMlDgzMCiV8ZGPVqBHM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8P190MB0652
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221024_143200_912983_1E03D165 
-X-CRM114-Status: GOOD (  34.50  )
+X-CRM114-CacheID: sfid-20221024_145551_052949_01B753DA 
+X-CRM114-Status: UNSURE (   9.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,241 +137,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 24/10/2022 17:01, Vadym Kochan wrote:
-> Switch the DT binding to a YAML schema to enable the DT validation.
-> 
-> Dropped deprecated compatibles and properties described in txt file.
-> 
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> ---
-> 
-> v3:
->   1) Remove txt version from the MAINTAINERS list
-> 
->   2) Use enum for some of compatible strings
-> 
->   3) Drop:
->         #address-cells
->         #size-cells:
-> 
->      as they are inherited from the nand-controller.yaml
-> 
->   4) Add restriction to use 2 clocks for A8K SoC
-> 
->   5) Dropped description for clock-names and extend it with 
->      minItems: 1
-> 
->   6) Drop description for "dmas"
-> 
->   7) Use "unevalautedProperties: false"
+From: Aviram Dali <aviramd@marvell.com>
 
-Hmm... In one place it makes sense. In "nand@" not really.
+A missing layouts were added to the driver to support NAND flashes
+with ECC layouts of 12 or 16 with page sized of 2048, 4096 or 8192.
 
-> 
->   8) Drop quites from yaml refs.
-> 
->   9) Use 4-space indentation for the example section
-> 
-> v2:
->   1) Fixed warning by yamllint with incorrect indentation for compatible list
-> 
->  .../bindings/mtd/marvell,nand-controller.yaml | 189 ++++++++++++++++++
->  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ------------
->  MAINTAINERS                                   |   1 -
->  3 files changed, 189 insertions(+), 127 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
->  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> new file mode 100644
-> index 000000000000..cb20f14d4aea
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> @@ -0,0 +1,189 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/marvell,nand-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Marvell NAND Flash Controller (NFC)
-> +
-> +maintainers:
-> +  - Miquel Raynal <miquel.raynal@bootlin.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: marvell,armada-8k-nand-controller
-> +          - const: marvell,armada370-nand-controller
-> +      - enum:
-> +          - marvell,armada370-nand-controller
-> +          - marvell,pxa3xx-nand-controller
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 2
-> +    description:
-> +      Shall reference the NAND controller clocks, the second one is
-> +      is only needed for the Armada 7K/8K SoCs
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    items:
-> +      - const: core
-> +      - const: reg
-> +
-> +  dmas:
-> +    maxItems: 1
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rxtx
-> +
-> +  marvell,system-controller:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: Syscon node that handles NAND controller related registers
-> +
-> +patternProperties:
-> +  "^nand@[0-3]$":
-> +    type: object
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 3
-> +
-> +      nand-rb:
-> +        minimum: 0
-> +        maximum: 1
-> +
-> +      nand-ecc-strength:
-> +        enum: [1, 4, 8]
-> +
-> +      nand-on-flash-bbt: true
-> +
-> +      nand-ecc-mode: true
-> +
-> +      nand-ecc-algo:
-> +        description: |
-> +          This property is essentially useful when not using hardware ECC.
-> +          Howerver, it may be added when using hardware ECC for clarification
-> +          but will be ignored by the driver because ECC mode is chosen depending
-> +          on the page size and the strength required by the NAND chip.
-> +          This value may be overwritten with nand-ecc-strength property.
-> +
-> +      nand-ecc-step-size:
-> +        description: |
-> +          Marvell's NAND flash controller does use fixed strength
-> +          (1-bit for Hamming, 16-bit for BCH), so the actual step size
-> +          will shrink or grow in order to fit the required strength.
-> +          Step sizes are not completely random for all and follow certain
-> +          patterns described in AN-379, "Marvell SoC NFC ECC".
-> +
-> +      label:
-> +        $ref: /schemas/types.yaml#/definitions/string
-> +
-> +      partitions:
-> +        type: object
-> +        $ref: /schemas/mtd/partitions/partition.yaml
+Usually theses are rare layouts, but in Marvell AC5 driver, the ECC
+level is set according to the spare area, so we may use these layouts
+more frequently.
 
-This is a friendly reminder during the review process.
+Signed-off-by: Aviram Dali <aviramd@marvell.com>
+Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+---
+ drivers/mtd/nand/raw/marvell_nand.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
-It seems my previous comments were not fully addressed. Maybe my
-feedback got lost between the quotes, maybe you just forgot to apply it.
-Please go back to the previous discussion and either implement all
-requested changes or keep discussing them.
-
-Thank you.
-
-> +
-> +      marvell,nand-keep-config:
-> +        description: |
-> +          Orders the driver not to take the timings from the core and
-> +          leaving them completely untouched. Bootloader timings will then
-> +          be used.
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +
-> +      marvell,nand-enable-arbiter:
-> +        description: |
-> +          To enable the arbiter, all boards blindly used it,
-> +          this bit was set by the bootloader for many boards and even if
-> +          it is marked reserved in several datasheets, it might be needed to set
-> +          it (otherwise it is harmless) so whether or not this property is set,
-> +          the bit is selected by the driver.
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        deprecated: true
-> +
-> +    unevaluatedProperties: false
-
-This looks wrong. I do not see referencing schema here and I did not ask
-to change it.
-
-> +
-> +    required:
-> +      - reg
-> +      - nand-rb
-> +
-> +unevaluatedProperties: false
-
-This one is ok.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +
-> +allOf:
-> +  - $ref: nand-controller.yaml#
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: marvell,pxa3xx-nand-controller
-> +    then:
-> +      required:
-> +        - dmas
-> +        - dma-names
-> +    else:
-> +      properties:
-> +        dmas: false
-> +        dma-names: false
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: marvell,armada-8k-nand-controller
-> +    then:
-> +      required:
-> +        - marvell,system-controller
-> +      properties:
-> +        clocks:
-> +          minItems: 2
-
-Also for clock-names "minItems: 2"
-
-> +    else:
-> +      properties:
-> +        marvell,system-controller: false
-
-    clocks:
-      maxItems: 1
-
-and the same for clock-names... unless these variants also have two clocks?
-
-
-Best regards,
-Krzysztof
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index b9d1e96e3334..7944787f7b9f 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -283,14 +283,21 @@ struct marvell_hw_ecc_layout {
+ 
+ /* Layouts explained in AN-379_Marvell_SoC_NFC_ECC */
+ static const struct marvell_hw_ecc_layout marvell_nfc_layouts[] = {
+-	MARVELL_LAYOUT(  512,   512,  1,  1,  1,  512,  8,  8,  0,  0,  0),
+-	MARVELL_LAYOUT( 2048,   512,  1,  1,  1, 2048, 40, 24,  0,  0,  0),
+-	MARVELL_LAYOUT( 2048,   512,  4,  1,  1, 2048, 32, 30,  0,  0,  0),
+-	MARVELL_LAYOUT( 2048,   512,  8,  2,  1, 1024,  0, 30,1024,32, 30),
+-	MARVELL_LAYOUT( 4096,   512,  4,  2,  2, 2048, 32, 30,  0,  0,  0),
+-	MARVELL_LAYOUT( 4096,   512,  8,  5,  4, 1024,  0, 30,  0, 64, 30),
+-	MARVELL_LAYOUT( 8192,   512,  4,  4,  4, 2048,  0, 30,  0,  0,  0),
+-	MARVELL_LAYOUT( 8192,   512,  8,  9,  8, 1024,  0, 30,  0, 160, 30),
++	MARVELL_LAYOUT(512,   512,  1,  1,  1,  512,  8,  8,  0,   0,  0),
++	MARVELL_LAYOUT(2048,   512,  1,  1,  1, 2048, 40, 24,  0,   0,  0),
++	MARVELL_LAYOUT(2048,   512,  4,  1,  1, 2048, 32, 30,  0,   0,  0),
++	MARVELL_LAYOUT(2048,   512,  8,  2,  1, 1024,  0, 30,  1024, 32, 30),
++	MARVELL_LAYOUT(2048,   512,  8,  2,  1, 1024,  0, 30,  1024, 64, 30),
++	MARVELL_LAYOUT(2048,   512,  12, 3,  2, 704,   0, 30,  640, 0,  30),
++	MARVELL_LAYOUT(2048,   512,  16, 5,  4, 512,   0, 30,  0,   32, 30),
++	MARVELL_LAYOUT(4096,   512,  4,  2,  2, 2048, 32, 30,  0,   0,  0),
++	MARVELL_LAYOUT(4096,   512,  8,  5,  4, 1024,  0, 30,  0,   64, 30),
++	MARVELL_LAYOUT(4096,   512,  12, 6,  5, 704,   0, 30,  576, 32, 30),
++	MARVELL_LAYOUT(4096,   512,  16, 9,  8, 512,   0, 30,  0,   32, 30),
++	MARVELL_LAYOUT(8192,   512,  4,  4,  4, 2048,  0, 30,  0,   0,  0),
++	MARVELL_LAYOUT(8192,   512,  8,  9,  8, 1024,  0, 30,  0,  160, 30),
++	MARVELL_LAYOUT(8192,   512,  12, 12, 11, 704,  0, 30,  448, 64, 30),
++	MARVELL_LAYOUT(8192,   512,  16, 17, 16, 512,  0, 30,  0,   32, 30),
+ };
+ 
+ /**
+-- 
+2.17.1
 
 
 ______________________________________________________
