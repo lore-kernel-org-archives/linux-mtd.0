@@ -4,58 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B79ABC3A59D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 01:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9113C38A2D
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 06:52:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9GftcsIHlD7UYnZ0T19RqPn97xjF0SMNkt7x88+CJlo=; b=GwGxB80a8V8dyzwadull/xmvuE
-	/UhmNxF+mpO8Do1fk1hfOF19UQ6N1mKlZOpw+3Y6D+7zfYfWwgZ95ctCjCiI+CRs8Kv4Cr+1igLOO
-	lMIOKX4OqvzmyjKuhOGx3aAFn2QRYL/41xkXlXCPlwuJE7UEZW8nWT0eaYqhX16SZX3Q01n7FmqA5
-	tRrFM6anzSqT+iv9ZV5zNmM/OvhDBilVVyFJdXaemM09h34hsTnvDT/PZEjgevXhl+M4P947Z7/Cp
-	xvb1PEYiU88ABMpiy5vMwkWQJVsDlS42Os10gbZmGq4R7Cv0wkh4aIHjHB/wCOxoPOlXwzW780KsF
-	9mM9uj7w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=RP8K1uOx1nzyXOv4HEyiDEFkK/49zWqpRx56hQQrU74=; b=uRAlv9dd4f0sgC
+	gGFJASZ6Ms/zJX/aE9t50jHHl2bJOPj0Adl6tab2WMyaWne0Mnulis7u9KduEoE8xOmBk/PqGaLCa
+	DLyKUNSGMkzfxrBX2qGBxrkC7maGwwNepnGSRah0inqs4ZTkuQPn5RtQm8peLZ3YNdpUJl5WvE53C
+	gZsj9lDvuaIcdOuVu1LaYkRPhgjjOv6ZFneN3BZwBMcOR5MvIL7RR+mkP3s+It/AaP5A1NUyqRfYq
+	us0xnvMk0T9TlVXQOzbdnxoCLHzFfnopK0nxmuRUgr8R1X+au7WWx0AEHNhAgf8xQKSFa7Gxq1f1p
+	KAqNAlzBfdfriF4Y3xvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ommJt-00GgRk-CJ; Mon, 24 Oct 2022 01:32:01 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1omrJ0-00HLgv-HI; Mon, 24 Oct 2022 06:51:26 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ommJp-00GgPR-EG
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 01:31:59 +0000
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Mwcqk2vXkz15M1S;
-	Mon, 24 Oct 2022 09:26:58 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+	id 1omrIv-00HLe5-2X
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 06:51:23 +0000
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.55])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Mwlyf2tpbzJn2H;
+	Mon, 24 Oct 2022 14:48:26 +0800 (CST)
+Received: from cgs.huawei.com (10.244.148.83) by
+ kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 24 Oct 2022 09:31:48 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 24 Oct 2022 09:31:47 +0800
-Subject: Re: [PATCH] ubifs: Fix memory leak in alloc_wbufs()
-To: Li Zetao <lizetao1@huawei.com>, <richard@nod.at>,
-	<Artem.Bityutskiy@nokia.com>, <ext-adrian.hunter@nokia.com>
-CC: <yi.zhang@huawei.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20221022115211.1969429-1-lizetao1@huawei.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <f4a4e992-9efd-b4ca-1788-efe99e4b7d87@huawei.com>
-Date: Mon, 24 Oct 2022 09:31:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ 15.1.2375.31; Mon, 24 Oct 2022 14:51:10 +0800
+From: Gaosheng Cui <cuigaosheng1@huawei.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<marek.vasut@gmail.com>, <jim_baxter@mentor.com>,
+	<computersforpeace@gmail.com>, <Sandeep_Jain@mentor.com>,
+	<cuigaosheng1@huawei.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: core: fix possible resource leak in init_mtd()
+Date: Mon, 24 Oct 2022 14:51:09 +0800
+Message-ID: <20221024065109.2050705-1-cuigaosheng1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20221022115211.1969429-1-lizetao1@huawei.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+X-Originating-IP: [10.244.148.83]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500012.china.huawei.com (7.221.188.12)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221023_183157_666257_54658F48 
-X-CRM114-Status: GOOD (  11.33  )
+X-CRM114-CacheID: sfid-20221023_235121_320275_48AAF363 
+X-CRM114-Status: UNSURE (   8.43  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,52 +62,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyMi8xMC8yMiAxOTo1MiwgTGkgWmV0YW8g0LS1wDoKPiBrbWVtbGVhayByZXBvcnRlZCBh
-IHNlcXVlbmNlIG9mIG1lbW9yeSBsZWFrcywgYW5kIHNob3cgdGhlbSBhcyBmb2xsb3dpbmc6Cj4g
-Cj4gICAgdW5yZWZlcmVuY2VkIG9iamVjdCAweGZmZmY4ODgxNTc1Zjg0MDAgKHNpemUgMTAyNCk6
-Cj4gICAgICBjb21tICJtb3VudCIsIHBpZCAxOTYyNSwgamlmZmllcyA0Mjk3MTE5NjA0IChhZ2Ug
-MjAuMzgzcykKPiAgICAgIGhleCBkdW1wIChmaXJzdCAzMiBieXRlcyk6Cj4gICAgICAgIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAuLi4uLi4uLi4uLi4u
-Li4uCj4gICAgICAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwICAuLi4uLi4uLi4uLi4uLi4uCj4gICAgICBiYWNrdHJhY2U6Cj4gICAgICAgIFs8ZmZmZmZm
-ZmY4MTc2Y2VjZD5dIF9fa21hbGxvYysweDRkLzB4MTUwCj4gICAgICAgIFs8ZmZmZmZmZmZhMDQw
-NmIyYj5dIHViaWZzX21vdW50KzB4MzA3Yi8weDcxNzAgW3ViaWZzXQo+ICAgICAgICBbPGZmZmZm
-ZmZmODE5ZmE4ZmQ+XSBsZWdhY3lfZ2V0X3RyZWUrMHhlZC8weDFkMAo+ICAgICAgICBbPGZmZmZm
-ZmZmODE5MzZmMmQ+XSB2ZnNfZ2V0X3RyZWUrMHg3ZC8weDIzMAo+ICAgICAgICBbPGZmZmZmZmZm
-ODE5YjJiZDQ+XSBwYXRoX21vdW50KzB4ZGQ0LzB4MTdiMAo+ICAgICAgICBbPGZmZmZmZmZmODE5
-YjM3YWE+XSBfX3g2NF9zeXNfbW91bnQrMHgxZmEvMHgyNzAKPiAgICAgICAgWzxmZmZmZmZmZjgz
-YzE0Mjk1Pl0gZG9fc3lzY2FsbF82NCsweDM1LzB4ODAKPiAgICAgICAgWzxmZmZmZmZmZjgzZTAw
-MDZhPl0gZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NDYvMHhiMAo+IAo+ICAgIHVu
-cmVmZXJlbmNlZCBvYmplY3QgMHhmZmZmODg4MTc5OGE2ZTAwIChzaXplIDUxMik6Cj4gICAgICBj
-b21tICJtb3VudCIsIHBpZCAxOTY3NywgamlmZmllcyA0Mjk3MTIxOTEyIChhZ2UgMzcuODE2cykK
-PiAgICAgIGhleCBkdW1wIChmaXJzdCAzMiBieXRlcyk6Cj4gICAgICAgIDZiIDZiIDZiIDZiIDZi
-IDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiICBra2tra2tra2tra2tra2trCj4gICAg
-ICAgIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiIDZiICBra2tr
-a2tra2tra2tra2trCj4gICAgICBiYWNrdHJhY2U6Cj4gICAgICAgIFs8ZmZmZmZmZmY4MTc2Y2Vj
-ZD5dIF9fa21hbGxvYysweDRkLzB4MTUwCj4gICAgICAgIFs8ZmZmZmZmZmZhMDQxODM0Mj5dIHVi
-aWZzX3didWZfaW5pdCsweDUyLzB4NDgwIFt1Ymlmc10KPiAgICAgICAgWzxmZmZmZmZmZmEwNDA2
-Y2E1Pl0gdWJpZnNfbW91bnQrMHgzMWY1LzB4NzE3MCBbdWJpZnNdCj4gICAgICAgIFs8ZmZmZmZm
-ZmY4MTlmYThmZD5dIGxlZ2FjeV9nZXRfdHJlZSsweGVkLzB4MWQwCj4gICAgICAgIFs8ZmZmZmZm
-ZmY4MTkzNmYyZD5dIHZmc19nZXRfdHJlZSsweDdkLzB4MjMwCj4gICAgICAgIFs8ZmZmZmZmZmY4
-MTliMmJkND5dIHBhdGhfbW91bnQrMHhkZDQvMHgxN2IwCj4gICAgICAgIFs8ZmZmZmZmZmY4MTli
-MzdhYT5dIF9feDY0X3N5c19tb3VudCsweDFmYS8weDI3MAo+ICAgICAgICBbPGZmZmZmZmZmODNj
-MTQyOTU+XSBkb19zeXNjYWxsXzY0KzB4MzUvMHg4MAo+ICAgICAgICBbPGZmZmZmZmZmODNlMDAw
-NmE+XSBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg0Ni8weGIwCj4gCj4gVGhlIHBy
-b2JsZW0gaXMgdGhhdCB0aGUgdWJpZnNfd2J1Zl9pbml0KCkgcmV0dXJucyBhbiBlcnJvciBpbiB0
-aGUKPiBsb29wIHdoaWNoIGluIHRoZSBhbGxvY193YnVmcygpLCB0aGVuIHRoZSB3YnVmLT5idWYg
-YW5kIHdidWYtPmlub2Rlcwo+IHRoYXQgd2VyZSBzdWNjZXNzZnVsbHkgYWxsb2NlZCBiZWZvcmUg
-YXJlIG5vdCBmcmVlZC4KPiAKPiBGaXggaXQgYnkgYWRkaW5nIGVycm9yIGhhbmdpbmcgcGF0aCBp
-biBhbGxvY193YnVmcygpIHdoaWNoIGZyZWVzCj4gdGhlIG1lbW9yeSBhbGxvY2VkIGJlZm9yZSB3
-aGVuIHViaWZzX3didWZfaW5pdCgpIHJldHVybnMgYW4gZXJyb3IuCj4gCj4gRml4ZXM6IDFlNTE3
-NjRhM2MyYSAoIlVCSUZTOiBhZGQgbmV3IGZsYXNoIGZpbGUgc3lzdGVtIikKPiBTaWduZWQtb2Zm
-LWJ5OiBMaSBaZXRhbyA8bGl6ZXRhbzFAaHVhd2VpLmNvbT4KPiAtLS0KPiAgIGZzL3ViaWZzL3N1
-cGVyLmMgfCAxNyArKysrKysrKysrKysrLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEzIGluc2Vy
-dGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCgpSZXZpZXdlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVu
-Z3poaWhhbzFAaHVhd2VpLmNvbT4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+I got the error report while inject fault in init_mtd():
+
+sysfs: cannot create duplicate filename '/devices/virtual/bdi/mtd-0'
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x67/0x83
+ sysfs_warn_dup+0x60/0x70
+ sysfs_create_dir_ns+0x109/0x120
+ kobject_add_internal+0xce/0x2f0
+ kobject_add+0x98/0x110
+ device_add+0x179/0xc00
+ device_create_groups_vargs+0xf4/0x100
+ device_create+0x7b/0xb0
+ bdi_register_va.part.13+0x58/0x2d0
+ bdi_register+0x9b/0xb0
+ init_mtd+0x62/0x171 [mtd]
+ do_one_initcall+0x6c/0x3c0
+ do_init_module+0x58/0x222
+ load_module+0x268e/0x27d0
+ __do_sys_finit_module+0xd5/0x140
+ do_syscall_64+0x37/0x90
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+ </TASK>
+kobject_add_internal failed for mtd-0 with -EEXIST, don't try to register
+	things with the same name in the same directory.
+Error registering mtd class or bdi: -17
+
+If init_mtdchar() fails in init_mtd(), mtd_bdi will not be unregistered,
+as a result, we can't load the mtd module again, to fix this by calling
+bdi_unregister(mtd_bdi) after out_procfs label.
+
+Fixes: 445caaa20c4d ("mtd: Allocate bdi objects dynamically")
+Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+---
+ drivers/mtd/mtdcore.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 20fcedc3021e..d856892cb9b7 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -2475,6 +2475,7 @@ static int __init init_mtd(void)
+ out_procfs:
+ 	if (proc_mtd)
+ 		remove_proc_entry("mtd", NULL);
++	bdi_unregister(mtd_bdi);
+ 	bdi_put(mtd_bdi);
+ err_bdi:
+ 	class_unregister(&mtd_class);
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
