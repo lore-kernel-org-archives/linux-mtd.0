@@ -4,123 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3D8DC38A2D
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Oct 2022 21:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69BF1C67871
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Oct 2022 00:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Jwzdz7l1b9LsFZg6EkK6GpyxtEmI6sfUZ2W19X578C0=; b=BlIV3DZcuWMk5K
-	9vJ/hxTt4zQmWAeB7elWjDH1NHB/4/B33d9JU0rfa9IEdXrdBX2ErdaCbZJPf/RuStIF3EJGTOIFv
-	8h7VO3NB7Zm0DfuWsNxQkW+GwjYo9HXn03S+hkaYNubAWdUJXxkvXH2kOzqxziso9U7mLKN/GOK49
-	7PoKByboWGFqc4zLNSjpyiozVtMPb59MkcYAYNqx+y37uJBr0ULx0DFSP7LvbXUU1bu9lUr2Un8sC
-	lW1cdMV17FTs4vuNIfNdIeDkhOHSH0IQG9dNYeXIGdOe7JPPXUZsCE87ve0LAyeRfNQ8+dC96oQ3G
-	YpXVf1ySUcw2gwtqr1Sg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
+	In-Reply-To:Cc:To:Subject:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=g6XtCdvPNpSkPoRRxb9769W/JPBARcPvSmpLTxxpC6A=; b=rJgQXSyXVMk+NC
+	5CsVGhw0VxWznAktB4Hu+kW49dCpEeSzmIxCKgyKah3h15QHBCfRORBLjAtxt3wCtwxPSQy7bYus6
+	vvr03bUPUdacld7GmZ3zw2EJziA515W4NcmR53W0KWCQVFrcXp5XiUVyFSd85EveVU2j3fSgqX3f/
+	8xUnWI43vf/umrDCtGO+BwjWJYnSqYoiulgCQBFa9gYZUi6CqKL9T4t5MatKjgCDUCHCVfFnoq7z6
+	QWxPVVBXoTERgQwpbpWJ+vGNekvZwEcAXxlExZFfXYsYQ9Oum3sKt5UxeM8JoFhI2yKv21MQ60AXW
+	WBiBFAufv5Pa/ohyPbCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1on5QH-003AG2-RP; Mon, 24 Oct 2022 21:55:53 +0000
-Received: from mail-vi1eur03on2118.outbound.protection.outlook.com ([40.107.103.118] helo=EUR03-VI1-obe.outbound.protection.outlook.com)
+	id 1on7p2-003RAi-0N; Tue, 25 Oct 2022 00:29:36 +0000
+Received: from mail-eopbgr60120.outbound.protection.outlook.com ([40.107.6.120] helo=EUR04-DB3-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1on5QE-003AEd-Vi
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2022 21:55:52 +0000
+	id 1on7oy-003R9x-6N; Tue, 25 Oct 2022 00:29:34 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jNcdxiFOIt0Povaoaak7zyxcELlXfhCw9/LpZFCMzWVkTAPNJQmk0h5UGrr9iiXtMPPmzqWN4dIcFwzopPx7j9of16gLs/Du6dnsBqd2YSrG/JsczJvFGh6odUJEJNAsNDT6fIVv7o7vtAFUfTaypVP/UGzK1HQLFEZQ4Hdi7RuTMI+XIx6LcooPhhmowusAn63XX66A+NVboMsj+AZfYcq1BQMNfyOwMl4cIE65Z0rbOWsWsKHCaBj2rBCnSVEjaAyq0tUsXX8A2SGPkbUJu36kiCzBW65Dapi3sUDkh58ky1ojIcGRBE4CSgWogrULhEL72vkqmVzKvc32i/b6nA==
+ b=IkshdRpZYjJ2M8Cl+3TB3vS/TFy2otQUTsYjo5iQPq8rL9CHajgteIpHahOl78OOqnKooZitJyrlr//VZN5DBG20vW6sZ6EuU4n9J8uDQ8Coeh/OQsUcfNTsX4AwNQoWwWYZCPqxK7fjRA7XU8dK7e4p5yOS29bOXimcmgfPDPea4TZrjzKjprBw6tsSTYGQe5zzUYmJmmZy4CHHDZgdnGFJZYKw3n7ISW5uAh/0YcxrqsKFFY6XzMwr3sty+OhzD361zHx8Rlpe3ujJPm3I4kmA3dlEDOPZbYcAr3vEeEDi8r1pu2FBfhK/gL9iksh0J1GxhwrLZkV3Z4X9JCMcSw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wM6TaTFx7ZXn9Les15qFXMYvL7lBgoT6avopwy0UsQM=;
- b=SNaE0ykWU8F053MvYZ/Tn3fejU+If318QHhk9A3s5J6rhYRrAnj1R07M9t0BFbDvB+Z3S652qrNV3abHEnPNafB278k6DHz+fu/WrbfgDMfz+pteCUXHUzF7W2RdeYPAmakN2EKOyCTdMUAdGsbeCEFMU6USqS3Z45MZttcl5yNUudOFJ4CDX/K8nIyRvLj7SjomcxYKKtDcghBe7yebmMpP5rl9piRcbMeVDZ4lwMsgdn+SuJwIKS6q662UT5pYg5VQQHX2YlP6AhERoY+AXXiCXmdDBr7ZVTt7fLYW6+O2dODz97d9NimnhGCOBXpSOWg6rEWa8gj8e7gOdPRwvA==
+ bh=8IOTa1ei1QS0V2/+xi/yXGVv97VIou+W2yjeELCkTws=;
+ b=O1vjQ5En3t9QMRZsn8lnLhsZ5H24FHh99F6d3+MdjF6ibeJmgqkGtHcOZxQ4hR/pmc+Nutr5JydVlADrUNXSbV6OPdcrNKWlwbttFwJUiEP1V+tNS8TPm1GwP9i1gHNXq8o28yGoBCIxbSal0YXpF21GiDfgcMi54JLhcH+g/zzi+O+AupZptSxJOWwaBmn0vK6c1VLg4B1TSTnBQDNk80ciAEuFbdUUcKFX7nx/BGBV8OpUH2TcUkWNvdmzBLs3/VJg9YGcUuNbMuPya5HAmsLNoJhq6zDY+ez2gfORius1Dgr/rAapcFToQ2Iq1tOnT4rlEXuQgDfC7G6uZU9lfQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
  dkim=pass header.d=plvision.eu; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wM6TaTFx7ZXn9Les15qFXMYvL7lBgoT6avopwy0UsQM=;
- b=B9+9BMwKOFXCgCIuDwyoUl4I3U6fiMdJ7SuPyxIHqOO5wK4OONV6yl+SkgelCmRBwUWWRGC94U3Rrr0euY+WhnpKYi1/g3dVm59g4GJl4HFlHZj2SCU7tLBOQdlnfpYihRmTTqaPhXNlK5OFIPTQgM3XfEclPActkZZ9KLRN0cA=
+ bh=8IOTa1ei1QS0V2/+xi/yXGVv97VIou+W2yjeELCkTws=;
+ b=lMwUEmIA9K4u7aGxZz0ioLEhBbtAjMAheF72j5e22X3IIWvYHWYGNDJsaMNYXlU5GfD9z+GCEZdIShwkj9QqRujAsmvGKhF87Jc5HvSW4iawD04tWpe8XnKkIWdLmivLZUxeZDd8rdB6uq2SKsnaQ0kmrxG9SWWcLE7Y/TF5xcE=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=plvision.eu;
 Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:38::26)
- by DB8P190MB0652.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:123::15) with
+ by PAXP190MB1765.EURP190.PROD.OUTLOOK.COM (2603:10a6:102:276::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.28; Mon, 24 Oct
- 2022 21:55:46 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.28; Tue, 25 Oct
+ 2022 00:29:25 +0000
 Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
  ([fe80::2b03:a6ec:3529:b969]) by VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- ([fe80::2b03:a6ec:3529:b969%5]) with mapi id 15.20.5746.023; Mon, 24 Oct 2022
- 21:55:45 +0000
+ ([fe80::2b03:a6ec:3529:b969%5]) with mapi id 15.20.5746.023; Tue, 25 Oct 2022
+ 00:29:25 +0000
+Date: Tue, 25 Oct 2022 03:29:24 +0300
 From: Vadym Kochan <vadym.kochan@plvision.eu>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Elad Nachman <enachman@marvell.com>,
-	Vadym Kochan <vadym.kochan@plvision.eu>,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>,
-	Aviram Dali <aviramd@marvell.com>
-Subject: [PATCH] mtd: rawnand: marvell: add missing layouts
-Date: Tue, 25 Oct 2022 00:55:31 +0300
-Message-Id: <20221024215531.32033-1-vadym.kochan@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-X-ClientProxiedBy: FR3P281CA0132.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:94::12) To VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
+ scheme
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Andrew Lunn
+	<andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Elad Nachman <enachman@marvell.com>, Chris Packham
+	<chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <ae7c86fd-5bc9-4cdb-857c-e686225f5966@linaro.org>
+References: <20221024210153.28852-1-vadym.kochan@plvision.eu>
+	<20221024210153.28852-2-vadym.kochan@plvision.eu>
+	<ae7c86fd-5bc9-4cdb-857c-e686225f5966@linaro.org>
+X-ClientProxiedBy: FR3P281CA0122.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:94::6) To VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
  (2603:10a6:802:38::26)
+Message-ID:  <VI1P190MB03170C4FC92ED25F78EF57FC95319@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P190MB0317:EE_|DB8P190MB0652:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35ae1d81-112a-413f-01d7-08dab60a80f6
+X-MS-TrafficTypeDiagnostic: VI1P190MB0317:EE_|PAXP190MB1765:EE_
+X-MS-Office365-Filtering-Correlation-Id: 85dec9b5-77d0-4581-fc2a-08dab61ff827
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	s8yL//YlI3r9jKrnOFvhNTBcpAxbb58AWgCbkCh7Xv2wzY7/97oiI167HmsYWW0HWDRHn7XdDL64cGWwo4q842yy5sMqgbGVok6akU9zVAawKfWPTp5prazES0E7nH8LSmmnGtenkMwzmnm40gtRaMeDZZ2UvJbXrYA4+G7Sg1fwetAwie16qTqwJ9HHfoQ/3n+jHrLMlvLlmLyM3BbgwcC1kDThUsABChg2cHJBuaxQkkzXfszMLiEBHd9MuvUC4WqBlwMtYgDXl+jD15O7De5JLcByfnBtaGHDiQy9eOBAwpJcLmTN/hIVUQK4zp3SSAi5QminoLCEoH/cSondF56GfsXTETM9XX9MJyVdLjNfzEVje9kjj+rALnDxKeyUf6/6CIjY3UYDJ0cHDsWHs7VUmvMUVN8Lu6LRcFYU4OX0TnN56T2myu9GtMOFLtktlD6pDiwbCmnFFSbP0xI6DroYsE+8ZDHQowmNDXb3h+/iUCvaiXG/Du//oY4CRuiaZyOwdrK1h+1kfvKsfP9fYD7r4zmV6QSyuF8dh88PkO+l6oNGq9yvGJfzgIttZ31wwCxTNUzWOU+QV/oSgprKppQ/NHUB2C5tXb/h/+VrX135edtMwvt2MgAcSjvmcWd/Y3iqSE7P8WTxwkbjae1pnppXFWQmqzq0fGVwnaPbY8PRZVkI+OCHqQzb14OW7HOFoJYDtGDAvIWv9VaaolcpXj2aOPNQp3CpOC7Kyhs6BWwUFoe7VrRIQEOEUAUI93to
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0317.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(34036004)(366004)(396003)(39840400004)(136003)(346002)(376002)(451199015)(36756003)(2906002)(44832011)(316002)(19627235002)(41300700001)(4326008)(66946007)(66556008)(66476007)(8676002)(5660300002)(508600001)(8936002)(54906003)(6486002)(110136005)(83380400001)(38100700002)(38350700002)(6666004)(52116002)(6506007)(86362001)(26005)(6512007)(186003)(1076003)(2616005)(41320700001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 	Rc1dwM7q35ymkeJv1bcYslzzVrd9m27xiViRbYgXjZwKVQDTYsKaByF+Oyr05lFPREQhUTxNA29QAIX93cTGLOH6HZt7kVk7BVz5Qd7ImDCUdc7PuwEeJ691mUao2RgIsk3tke+9JcjDRyH9C8ZKi1+wR+5LxEaOiFx6bWc/Qo1b8Tei5dUpClVuhvTO1u1Eq6yfTRlmaT9fe8qR8iIUDO+bng5RxVp9FfdhMkc4eavzsYA/PORXcoZasICYppitkS+Kyu/Dc7aa0WccwdDMPx/3ldmiFplZiW2uLKnr6837i/3rgikChxp9j2VoJ+NVDTUSbXsfkcw51IrltH8m+ySTKjo0oYTlCniK05oufH4L3GFttSybuU0fP2SvWYe6nxvyC5Ct6lJ2EActkmAZaH0fdVp9mjWmiMgOfTR24JwMqcImFlBkskMlqRRl8yFr30V54N7IcOPwNdCj0d6Q6vtA92ymT8xS7Ra4Gl0w1gTbsRrJ3CWcXL5sm8l8h3GJcD1XrDESlx+bDfII/bH1Ht8s5n3rG0+3mHcni2Q319GD22QMeovT/HN/6sJkhlNZ6yWqXWcY5GcY62U1bIiWnlYMS5rqIJES7Ti3ibsVZ/ArScZ+2WpuAHthnlFv1E6xtNsHFFFKYxZlTkisD6f/gAq1OUhsAJJFGZgQOteNb0d04aUQPBD6ZeyF8C93P0cn8KY6D7He6knapXCt/GpaGe1rH08yuQ1embWIOnOPSSIpvHUxggtJvjQBbfwLmTE9EtrKiIDMAQh/KpiV3z15igQ0MWTpIEUabx7sHZJw0EW0TBN694NkjyDuPJoMu7sBIisATfelR59lAilvuD22iKaNYk6xBkGQ6CTulhY0K5E=
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0317.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(39840400004)(376002)(366004)(396003)(346002)(34036004)(451199015)(41300700001)(6506007)(110136005)(7696005)(52116002)(53546011)(38350700002)(38100700002)(52536014)(7416002)(5660300002)(54906003)(8936002)(316002)(55016003)(921005)(8676002)(508600001)(966005)(44832011)(4326008)(66476007)(66946007)(86362001)(66556008)(33656002)(41320700001)(83380400001)(9686003)(26005)(2906002)(186003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?u2AEvoIzT98NNVySl9sT0zWOp0qYBeJK957YWU9oKhKUMSF54y13C8+HuS76?=
- =?us-ascii?Q?1JiPuDrf/I2xUajXmoE62vyf7lQ/iuEu/2PconRYIqwREJT0nQehBCJIdZwt?=
- =?us-ascii?Q?ROJW8TIrhyJcFrNTc/2w4qYgBcCsVS3w9N5EC8cTkup+nx52uf7u6cDS9zfm?=
- =?us-ascii?Q?AogIUTsstd7EDa6IGeZihsi7Lvi1U74QyNZJox2QxnBgIvG5GCCc3L+GayJW?=
- =?us-ascii?Q?ki5XkEfWZXabmlakw9GExeTpuy+ETiYK887ncfcvs4Ni2aa0fEcJcfPly8/f?=
- =?us-ascii?Q?FfEVH2HNfdun4wbUV1tQpzLzXE9qspAnun9Pwb2JuPMC/3Q8I7o2P+ICoCU9?=
- =?us-ascii?Q?TrjE6q3HbOIvMZpyfW6gVePPuZ0zwHfZ6kqzdv6bzRnGcwOxhYcjM6GmSKEN?=
- =?us-ascii?Q?l8KeRGybUQoEjYc5BfxjHh9bYgA7WhKzs4mhet8QY2YfcBPw5hduH4Vh/ZEg?=
- =?us-ascii?Q?Wsdazm07Pd1Czuyy6zCME8EfGCZap7DxY44STNOSkLpoGoct68vxrdFvTCeP?=
- =?us-ascii?Q?m4TEYZa1HJzJ7W6mc9BcfwS73axEmJEY5Ecl2KILu0T+3InYVbX89Zj4YZGG?=
- =?us-ascii?Q?Rb80uQc6cZdBdvTm9hxel8huKirwjZvLjMC+PlVpHsUajZxPVK4F66VVWFi2?=
- =?us-ascii?Q?87cbbG/ubibKnuHkmPQVW7B+PUYAvSY5E4QchQt7SN88HCitsAOkiHAzP9xm?=
- =?us-ascii?Q?huznm+bFUfhWc9FQ+5174nUFoCbgupEfokyTPHatOVKwdWtGGLZx2Rb7ofmH?=
- =?us-ascii?Q?4ItB6XJguZB+dCSTgOZGn10rw3K0iByBdFwgMoBYy37thbh36Hpv14wMcni6?=
- =?us-ascii?Q?H3mGW6fYoQJi0md6/Lbz2qePsbqZqtiaZnJHSWsmCjD8Fb+4RxIhdydrDRGu?=
- =?us-ascii?Q?0b8DL0FAOqOc5Cnk0C8qwjfXdo3KiXGdr2qmMV2D8t3hnKYJZWFiSKNzpffx?=
- =?us-ascii?Q?pwrj9MLuNpkXTgX+FBDmqgd70mpiCD2SJx4vuWgC8xIV1bwiWs+lI7IS4u9s?=
- =?us-ascii?Q?DEuORlQNxkai6XEp5LnHzeMm2XhHBA42nGbzKktGGs+bA4VCPYunEE/DJUUD?=
- =?us-ascii?Q?Tlz5e9fl5fbCJl8V9xCgbI11e95xaWbSE8JJtxWmS3TK6q3gB1RK/uFxboey?=
- =?us-ascii?Q?meNakwX5JJP2mn1woUllvD/sg9JWLAggqlHnM3hQWZ4IESB/tnQ0pTeFvo8f?=
- =?us-ascii?Q?NVS2fTiPPFCHphkUqeahrbWGEgYlxfb3BM+OyW8W8f71gv/tF2G5BpBS/4b1?=
- =?us-ascii?Q?MRKB1qUeJ8njv6wsuCIkC1UrnvuazrjBZC6e6Ti77yOcjq1j+1o+4246GEFY?=
- =?us-ascii?Q?B2Q6K/V973h6GPfdOdmMt6f1+fZQp9UUUp69lCtUvYl2+Qii9/TNRm2doRVP?=
- =?us-ascii?Q?cg3EXLLwW6L5tAOOouJXQ56fQRuHKQxyZjd/6B8oTdtr4f2WNp3BOUvkOmNY?=
- =?us-ascii?Q?qOf51hL/grRD10VxzonBmahFD8MBp4Vi6qx1pUISZpHkIbWPshwey7YnuXcH?=
- =?us-ascii?Q?S0fwJxgOszqxI8kIlqJpfAtLqHLWvcaPY8lKSVXu5FwnVukiFvfnVt6jqjxl?=
- =?us-ascii?Q?2194Z5HubTqCRuOVwYxv225xKBs0bgiSMOpajNyqmFqfP7fiOJ0RxbJcmTEK?=
- =?us-ascii?Q?Xw=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?nJN0LVYnhpbBtAmqW+eALDOkUX0QvEVq7E++cmyKKfIWXuPtWdtYAPZ4TDV1?=
+ =?us-ascii?Q?IobpFOeW5R/FxmjTCWzoue3PhBfMU7bthV4AE4W+CLPZiNnkhIkEVnPsavPy?=
+ =?us-ascii?Q?8YRnNEFx1IHZjJQgTgDf68EmhU+6nxHWZpAeS1LR1Lb9o2JBddVp0yJC8Unz?=
+ =?us-ascii?Q?c1punLIFXsMfF6fdbqWCSbDAvocMsZevox4P6MKPiKgux4Wmf1bFOAVXz4QK?=
+ =?us-ascii?Q?9GWblt96V4f7h1JNJkp2yJKiGXjbpdR1b9i2VJ1llkk2AMNNHKTpw80ds0c/?=
+ =?us-ascii?Q?0ZRuppdPfMv53A0m0KmvSTU3RmnN3gErlv4BBQRNSHcwzs8zA0FW2D9i0BD0?=
+ =?us-ascii?Q?5UEHkinLRFbfz54ObH0LmZR8x9R0j64dEmS1qVKscHyNRMN/CtOLr3FU2g32?=
+ =?us-ascii?Q?tDumxXEKa1PE31n0Bhmw9VzYboWKhFpE+QKMb4vG2NSK45jr3uSIaW/sF3q8?=
+ =?us-ascii?Q?zuhqLrDssXT5svy76UpJ/AjwC8TwR+Oo8VspcPzfjIMOwyu5ScwYPBpjFDfU?=
+ =?us-ascii?Q?p6/+JY626Bho5NL+1MGMobueY8W0F/Abcz7cmDoD6E9pJbvnsdCqBOvVVdfz?=
+ =?us-ascii?Q?XthXFQEQhCHcXFWpvlvl5iaXsC9Sh6Mnnh0xvmZv9xv/IxrCXUp4lhOAUJFr?=
+ =?us-ascii?Q?QnJRInVda3O1g8V7bU7NernpptfpPUYyhZ3+/zgqLCfoPFxHRLipNjAG63rx?=
+ =?us-ascii?Q?4J7M8RGpZ3KZZ0KbHcYbG3mbRdYuE9t85Re6R/0bZHgUSvAWuHqygVmKF7Kl?=
+ =?us-ascii?Q?cda1/lBJxSdcJiWF/L5g79HePzQu77w8MugMA9X3Cmxy1DYyazxvtwr1ib6F?=
+ =?us-ascii?Q?FUhtuLyPcv9SEKfy6qt+ujHFKIKyJcX0OgTv4MG3C74lAZ08f4ANzMCRQWI1?=
+ =?us-ascii?Q?0DMw+ihlPqBWoOx6w+XRVVUTnjtiYZ9hiULCVF9+A/9nM708WqskmQ33Oe/M?=
+ =?us-ascii?Q?iJThOpy8L0QGtQUsgTSkjss063c7No44QynKmcdGPR8aP1R343aEvcQwUyqJ?=
+ =?us-ascii?Q?/NoHRLBhU15jDJnS9itEgThBN8fe2HkkQWo7JQSYxNezVDzKRDcQivOocmb+?=
+ =?us-ascii?Q?mdqe9b1P+N+tFg2iDUC0ypNVIfqOZikcSJpPI9J9EJcCf2pV/8anTgbFfmYu?=
+ =?us-ascii?Q?riuJIuB+enKpP2TJdlxcMhp+5x80Y8BRP77bT+tHIrnBqJCBS/V+ApgNHn3z?=
+ =?us-ascii?Q?4llObNehH3eGucNOtB6/Aws26mS2RfaVkBECKH/ylChiCyir3b/rwdTW4uYL?=
+ =?us-ascii?Q?bPg+rKlwxUtEczPYKfv7cyEafbPos3b01ejU+NFDOlSwDOAgq7aF13tH+cVS?=
+ =?us-ascii?Q?hcPLfUkpIHXHwwRBMzzHXsUrYzSf4XQ0dvCK/6Cywvz6N7yyPk8nYkazne4t?=
+ =?us-ascii?Q?AadklAFKwxgSRhKTjLjHPgrJggNC+zFVxzE9WpCNMs/EBdHyxubvIqTohjiJ?=
+ =?us-ascii?Q?xWOXCnLyYyPYr22OPL/SYJunPvpoWUt+C2FIo5YajlpkyiMhljMAoGju6PwC?=
+ =?us-ascii?Q?MITi80TfjcGC0zgEXzeUbH5zhSWcpBstCFwAc47JMChUYLMnXQSGspeXxuwL?=
+ =?us-ascii?Q?P8Fg0rHdILHWzufAGTSu1M8gFpRb9IU2W+xyKigLkUcoNTg4Y6jnkv7WgWl2?=
+ =?us-ascii?Q?ag=3D=3D?=
 X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35ae1d81-112a-413f-01d7-08dab60a80f6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85dec9b5-77d0-4581-fc2a-08dab61ff827
 X-MS-Exchange-CrossTenant-AuthSource: VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2022 21:55:45.7286
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2022 00:29:25.1676
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GfLSd/bz1DTr91OU6ekkyWuFtwGbiVLN8ixwF4E2bEFripKNhuaxjQuaGtge9KqsyHqL8j6dlLGM/NDDI8rI0KbNFMlDgzMCiV8ZGPVqBHM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8P190MB0652
+X-MS-Exchange-CrossTenant-UserPrincipalName: gnV4+L2gZzkCRH4SvZu6I8/pzl3N5I0BJwZIJ90pP1RFZWoNNYASX328SIfb9LQaotPcY1tThg2MFXC4zmmsM5Rux7UPNYOVCnNMvM2/Hsk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP190MB1765
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221024_145551_052949_01B753DA 
-X-CRM114-Status: UNSURE (   9.72  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221024_172932_487014_75E3F23C 
+X-CRM114-Status: GOOD (  34.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,58 +140,194 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Aviram Dali <aviramd@marvell.com>
+Hi Krzysztof,
 
-A missing layouts were added to the driver to support NAND flashes
-with ECC layouts of 12 or 16 with page sized of 2048, 4096 or 8192.
+On Mon, 24 Oct 2022 17:31:48 -0400, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+> On 24/10/2022 17:01, Vadym Kochan wrote:
+> > Switch the DT binding to a YAML schema to enable the DT validation.
+> > 
+> > Dropped deprecated compatibles and properties described in txt file.
+> > 
+> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> > ---
+> > 
+> > v3:
+> >   1) Remove txt version from the MAINTAINERS list
+> > 
+> >   2) Use enum for some of compatible strings
+> > 
+> >   3) Drop:
+> >         #address-cells
+> >         #size-cells:
+> > 
+> >      as they are inherited from the nand-controller.yaml
+> > 
+> >   4) Add restriction to use 2 clocks for A8K SoC
+> > 
+> >   5) Dropped description for clock-names and extend it with 
+> >      minItems: 1
+> > 
+> >   6) Drop description for "dmas"
+> > 
+> >   7) Use "unevalautedProperties: false"
+> 
+> Hmm... In one place it makes sense. In "nand@" not really.
+> 
+> > 
+> >   8) Drop quites from yaml refs.
+> > 
+> >   9) Use 4-space indentation for the example section
+> > 
+> > v2:
+> >   1) Fixed warning by yamllint with incorrect indentation for compatible list
+> > 
+> >  .../bindings/mtd/marvell,nand-controller.yaml | 189 ++++++++++++++++++
+> >  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ------------
+> >  MAINTAINERS                                   |   1 -
+> >  3 files changed, 189 insertions(+), 127 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+> > new file mode 100644
+> > index 000000000000..cb20f14d4aea
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+> > @@ -0,0 +1,189 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mtd/marvell,nand-controller.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Marvell NAND Flash Controller (NFC)
+> > +
+> > +maintainers:
+> > +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> > +
+> > +
 
-Usually theses are rare layouts, but in Marvell AC5 driver, the ECC
-level is set according to the spare area, so we may use these layouts
-more frequently.
+[...]
 
-Signed-off-by: Aviram Dali <aviramd@marvell.com>
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
----
- drivers/mtd/nand/raw/marvell_nand.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+> > +      nand-ecc-step-size:
+> > +        description: |
+> > +          Marvell's NAND flash controller does use fixed strength
+> > +          (1-bit for Hamming, 16-bit for BCH), so the actual step size
+> > +          will shrink or grow in order to fit the required strength.
+> > +          Step sizes are not completely random for all and follow certain
+> > +          patterns described in AN-379, "Marvell SoC NFC ECC".
+> > +
+> > +      label:
+> > +        $ref: /schemas/types.yaml#/definitions/string
+> > +
+> > +      partitions:
+> > +        type: object
+> > +        $ref: /schemas/mtd/partitions/partition.yaml
+> 
+> This is a friendly reminder during the review process.
+> 
+> It seems my previous comments were not fully addressed. Maybe my
+> feedback got lost between the quotes, maybe you just forgot to apply it.
+> Please go back to the previous discussion and either implement all
+> requested changes or keep discussing them.
+> 
+> Thank you.
+> 
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index b9d1e96e3334..7944787f7b9f 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -283,14 +283,21 @@ struct marvell_hw_ecc_layout {
- 
- /* Layouts explained in AN-379_Marvell_SoC_NFC_ECC */
- static const struct marvell_hw_ecc_layout marvell_nfc_layouts[] = {
--	MARVELL_LAYOUT(  512,   512,  1,  1,  1,  512,  8,  8,  0,  0,  0),
--	MARVELL_LAYOUT( 2048,   512,  1,  1,  1, 2048, 40, 24,  0,  0,  0),
--	MARVELL_LAYOUT( 2048,   512,  4,  1,  1, 2048, 32, 30,  0,  0,  0),
--	MARVELL_LAYOUT( 2048,   512,  8,  2,  1, 1024,  0, 30,1024,32, 30),
--	MARVELL_LAYOUT( 4096,   512,  4,  2,  2, 2048, 32, 30,  0,  0,  0),
--	MARVELL_LAYOUT( 4096,   512,  8,  5,  4, 1024,  0, 30,  0, 64, 30),
--	MARVELL_LAYOUT( 8192,   512,  4,  4,  4, 2048,  0, 30,  0,  0,  0),
--	MARVELL_LAYOUT( 8192,   512,  8,  9,  8, 1024,  0, 30,  0, 160, 30),
-+	MARVELL_LAYOUT(512,   512,  1,  1,  1,  512,  8,  8,  0,   0,  0),
-+	MARVELL_LAYOUT(2048,   512,  1,  1,  1, 2048, 40, 24,  0,   0,  0),
-+	MARVELL_LAYOUT(2048,   512,  4,  1,  1, 2048, 32, 30,  0,   0,  0),
-+	MARVELL_LAYOUT(2048,   512,  8,  2,  1, 1024,  0, 30,  1024, 32, 30),
-+	MARVELL_LAYOUT(2048,   512,  8,  2,  1, 1024,  0, 30,  1024, 64, 30),
-+	MARVELL_LAYOUT(2048,   512,  12, 3,  2, 704,   0, 30,  640, 0,  30),
-+	MARVELL_LAYOUT(2048,   512,  16, 5,  4, 512,   0, 30,  0,   32, 30),
-+	MARVELL_LAYOUT(4096,   512,  4,  2,  2, 2048, 32, 30,  0,   0,  0),
-+	MARVELL_LAYOUT(4096,   512,  8,  5,  4, 1024,  0, 30,  0,   64, 30),
-+	MARVELL_LAYOUT(4096,   512,  12, 6,  5, 704,   0, 30,  576, 32, 30),
-+	MARVELL_LAYOUT(4096,   512,  16, 9,  8, 512,   0, 30,  0,   32, 30),
-+	MARVELL_LAYOUT(8192,   512,  4,  4,  4, 2048,  0, 30,  0,   0,  0),
-+	MARVELL_LAYOUT(8192,   512,  8,  9,  8, 1024,  0, 30,  0,  160, 30),
-+	MARVELL_LAYOUT(8192,   512,  12, 12, 11, 704,  0, 30,  448, 64, 30),
-+	MARVELL_LAYOUT(8192,   512,  16, 17, 16, 512,  0, 30,  0,   32, 30),
- };
- 
- /**
--- 
-2.17.1
+I see that I have to drop "label" and "partitions" properties.
 
+> > +
+> > +      marvell,nand-keep-config:
+> > +        description: |
+> > +          Orders the driver not to take the timings from the core and
+> > +          leaving them completely untouched. Bootloader timings will then
+> > +          be used.
+> > +        $ref: /schemas/types.yaml#/definitions/flag
+> > +
+> > +      marvell,nand-enable-arbiter:
+> > +        description: |
+> > +          To enable the arbiter, all boards blindly used it,
+> > +          this bit was set by the bootloader for many boards and even if
+> > +          it is marked reserved in several datasheets, it might be needed to set
+> > +          it (otherwise it is harmless) so whether or not this property is set,
+> > +          the bit is selected by the driver.
+> > +        $ref: /schemas/types.yaml#/definitions/flag
+> > +        deprecated: true
+> > +
+> > +    unevaluatedProperties: false
+> 
+> This looks wrong. I do not see referencing schema here and I did not ask
+> to change it.
+
+Yes, I will drop it.
+
+> 
+> > +
+> > +    required:
+> > +      - reg
+> > +      - nand-rb
+> > +
+> > +unevaluatedProperties: false
+> 
+> This one is ok.
+> 
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - clocks
+> > +
+> > +allOf:
+> > +  - $ref: nand-controller.yaml#
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: marvell,pxa3xx-nand-controller
+> > +    then:
+> > +      required:
+> > +        - dmas
+> > +        - dma-names
+> > +    else:
+> > +      properties:
+> > +        dmas: false
+> > +        dma-names: false
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: marvell,armada-8k-nand-controller
+> > +    then:
+> > +      required:
+> > +        - marvell,system-controller
+> > +      properties:
+> > +        clocks:
+> > +          minItems: 2
+> 
+> Also for clock-names "minItems: 2"
+> 
+> > +    else:
+> > +      properties:
+> > +        marvell,system-controller: false
+> 
+>     clocks:
+>       maxItems: 1
+> 
+
+OK, so it goes under the "else".
+
+> and the same for clock-names... unless these variants also have two clocks?
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
+
+Thank you,
+Vadym
 
 ______________________________________________________
 Linux MTD discussion mailing list
