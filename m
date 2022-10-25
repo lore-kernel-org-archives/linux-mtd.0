@@ -4,57 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0DCAC38A2D
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Oct 2022 08:31:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4277C38A2D
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Oct 2022 10:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=m4Zxbuygb5EOtc7G9+icmwVeZ7IpZbGoNoQOmPeyRPI=; b=jSOG8cWtSqgGRU
-	OOrpHY1eFxBplrf2TRHVUd0kFTFs/d9aA+Y7shGQ7M8IJ/xExDtojfaK31jZixOhX43MWwin+su0h
-	c5r7tISXNIL2/S5h5AJL2IvnHW+2pZVwd273Z63buL/ptthSMr5IT9ws0+4QiFD/Gpuhm7s98uZpX
-	AYOfw7i+qRZGXk2UoJcTxielGfOZ5Eoo3ZxYchoGTEcR6bxKHPyMxbY4wKw1MtQdJnfOoRUzkdfwK
-	BvOZAeWNMgR6S1Svd08siPyYOm3uOWnLama4WIfyrrXSOD3dXASkzEwlG6JhzDmYRMeFzcVtZssZ5
-	C0czJ18d/4XNWi3yPKjw==;
+	List-Owner; bh=4gNeHl6se2HoQJGPdmRom1naNyHd7eb8cSti0I7aMVc=; b=OWEi+JlU7ixHQl
+	VVAUdHIUZwMLAH4KRIQWhACYSIf+u7oS4MIt/9QstxoziRWXN0arlCFNcOY4i1+Ya3e+iJpGuJ+P6
+	ZXy8kq9SPoS+EeV36XzLJCy2Zlnd/ankajCjUUujwUTzUy+2xYq9D5WkwtaGk0B2/+MKUb174zeLW
+	RhtDDO7nti0jP2uKmh/arXsicLx8Ia+Y83sB13RueCtGeOCNqVIantWVupoD+8LXEwLVx538q2lnT
+	TpHI7YeellbdlAKL/BMOwEHN5gR1P42H8ESdLZdJ74z1Ykxziim/jqiW5bkW0w7Ht01hO+dhjRLxl
+	08cueVYNkcYBa8RLcNLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1onFL8-004L26-8u; Tue, 25 Oct 2022 08:31:14 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1onH0e-004iwh-OT; Tue, 25 Oct 2022 10:18:12 +0000
+Received: from mail-db5eur02on2112.outbound.protection.outlook.com ([40.107.249.112] helo=EUR02-DB5-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1onFL4-004KyO-CB
-	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2022 08:31:13 +0000
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MxQ6Y2WT5zpVtM;
-	Tue, 25 Oct 2022 16:27:33 +0800 (CST)
-Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 25 Oct 2022 16:30:57 +0800
-Received: from huawei.com (10.175.127.227) by dggpemm100009.china.huawei.com
- (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 25 Oct
- 2022 16:30:57 +0800
-From: ZhaoLong Wang <wangzhaolong1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
-	<patchwork@huawei.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>,
-	<miaoxie@huawei.com>, <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
-	<yuehaibing@huawei.com>, <johnny.chenyi@huawei.com>, <weiyongjun1@huawei.com>
-Subject: [PATCH -next] ubi: fastmap: Add fastmap control support for module parameter
-Date: Tue, 25 Oct 2022 16:52:49 +0800
-Message-ID: <20221025085249.256285-1-wangzhaolong1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	id 1onH0b-004iuZ-Iq; Tue, 25 Oct 2022 10:18:11 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JuVnKH3I6qRj5g5eAoLwADH+/fheWowZWVhn8QNWBmp4gU6b7ujQ9ICauOEbfnhzyMpYkmyph0DF8OBXM8rAVRfJa73YyTWKphurRafrSOYNSzfn4owZYjjeNDU4L/BHtRjWMJIr5ADyIbx90oeEOIasoQQCs4DC5lWVDSIBg+7dT6nApJI2Gr1BYkzsEfo3Nrancv95griISwO5Dlo1BS5bYRg3JSlvQiLc1v/OPbW+eVp+cmyvKWUDUapxZ97j6oSRUyx/+NxpeNSZ2aPndwyJ1+Zk1MATodmmnnSfgJjisOSzhxnLh1OLwOXXOcKEB2XF3wt16Ze+dmg9k8EQDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=70vnxq1xQuAnjc6aYpSdHRgehWWGttkxloyG0WgUWXs=;
+ b=iFnXM++ZKUgPkuTXBcZpBxftcMM+gU0YRjfnaO8rabavpOIykef3sWXUV5GTJ4jpimd0WxXj82ljImXDsxA/ihlzXYVpQ2S6GdcMmQ8/iH2TG95tv0sr3d534BnHOud122Td4Vnw7AudfyRkoHQVPN7ij5aYfNWhFBVVD+N4v92VwLVPtidD4wOcI0odzTq0xi0PBqy/D827qbz9Mtn1qFQceJDQgkRcYTTIE9z9a/GhuO5sgWRB8Vwz7Dux/z3iWASdAHaefdL/xTYAS9yD+29MRuws1v66+GpShxuj72xD9nnHZW5JUgppHD9/j8+h74p/vzBUylXao+5hVfJtdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=70vnxq1xQuAnjc6aYpSdHRgehWWGttkxloyG0WgUWXs=;
+ b=nyGdJOnzfC1kV8eD2NwQeIZ8W/xBV3Fnw7sRyW+u79M0CiMrcuZXOWOIccEKQMz5M3nhykm00L6+4GzDf7dimtqZymMOPdVZfXjjPKCz1Ju3TUOOPq1It1LIEr4GGNt391Ie0GAoCWa5VrWS7kh/yClxNa36yCSnehksDWp3ciE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=plvision.eu;
+Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:38::26)
+ by VI1P190MB0733.EURP190.PROD.OUTLOOK.COM (2603:10a6:800:121::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.28; Tue, 25 Oct
+ 2022 10:18:04 +0000
+Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+ ([fe80::2b03:a6ec:3529:b969]) by VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+ ([fe80::2b03:a6ec:3529:b969%5]) with mapi id 15.20.5746.028; Tue, 25 Oct 2022
+ 10:18:04 +0000
+From: Vadym Kochan <vadym.kochan@plvision.eu>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: Elad Nachman <enachman@marvell.com>,
+	Vadym Kochan <vadym.kochan@plvision.eu>,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v4 0/2] dt-bindings: mtd: marvell-nand: Add YAML scheme
+Date: Tue, 25 Oct 2022 13:17:09 +0300
+Message-Id: <20221025101713.11893-1-vadym.kochan@plvision.eu>
+X-Mailer: git-send-email 2.17.1
+X-ClientProxiedBy: FR3P281CA0146.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:95::18) To VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:802:38::26)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm100009.china.huawei.com (7.185.36.113)
-X-CFilter-Loop: Reflected
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P190MB0317:EE_|VI1P190MB0733:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3b4fffbe-f267-4a6a-14b6-08dab6723381
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	e6O8Xlcpgf29uzCr8u3Va50Gd87hQWPS1kNa4O+KLxGBkmZWRBWVw4Y2xd6PmqNFRN7NHlCRELwy1b8srzgctFwmYgw2r8pzIxT8mZrBAYre27ZC7nKmMQoiOyMvsdTBJoLw6OwFcf8k4C6RmiQ/iOM1x20nz+2gLR36Dk76Ch2eGFXr6xARunm9AOgMxfbs06VOGDDR4u+ZehcDdg3wr4/ZFFVsonKN73Tze1l3FEpZD+9uA1zmGTX5sCKlVIs1xfKcnF2/d9G/ZAzlREK3BrVMZWJstbIQmFnjY5oO0vsRuF9eF0Q2Alenz/3swex2miMZ2njIUMnTMHq/3YpHMnxpkC5qwjnnruzSStCGyvE4viA75krBIm/hrFeB/QLlTpxYKYXYE3eb3tPdD/Se8RZfVZlxkmeI04eG04G7bBubWYLv9Ttxl5kZBKUAfnm4ULQ12ujQAz3MLhczo3YMJpsQAjTFTGN1+0P1rA95gLt9nqx+Wdi4ZrZ8l9SlufiuPS20qVuvv6jwQHQ18Gp40Bni7Zs0VQPyG9i7Wr0Zgtdn+O98WyHr/Y/FGq/V03GRST28JU+aKXCyX6KqdcHR7DBZyXwPAZ65apm8VeaMvyywSng2UmGokVwqsElEFvFgrGSofpaUdFjKeeqSrBBP/rcXvyi/r0LefYWAvelKg89q0udysmCBQoYUyFYaBKqxy2EPFaOAips6uw6Ba8JWx7fRjeaioXq2eqGQlpA50tRf23NMgl9pYD/mhdagmvFOK0bwILlqLLmpi+Z5y/4ImKnrnJrDorlLmGfYPU67xpk=
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0317.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(366004)(34036004)(396003)(39830400003)(346002)(136003)(451199015)(86362001)(36756003)(38100700002)(38350700002)(921005)(2906002)(5660300002)(7416002)(83380400001)(44832011)(8936002)(41320700001)(52116002)(6506007)(186003)(2616005)(1076003)(26005)(6512007)(66946007)(110136005)(54906003)(8676002)(508600001)(316002)(66556008)(66476007)(6486002)(41300700001)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?7CD75MRpryd2mr+D7shX9E4+j3yGLekAheoXUMRRCQNZwzL9oBLrX9I3OoMi?=
+ =?us-ascii?Q?PxYY/+lqzpCnGo+BqSvsL4eUM0kM8yzCewDiB5JeFwUR1QJGz5OxTvlb5hgO?=
+ =?us-ascii?Q?HLgcZbaOaKGrVlvTs8ChRWNJfE1vSn9OzRw+L9WqY0dvnvRUaTj+WyIq+g3K?=
+ =?us-ascii?Q?1A+qBTXl0FAd79i84t55Pc2jPTXPVPB1MMdTeaN9zvTDZzNJcxx6jAtVsYqK?=
+ =?us-ascii?Q?FzaYGfWb1poGWQg+xcl8cZG1NA57/dfOGdLl4vYs56qW0tFlc+2nOQh/GGz3?=
+ =?us-ascii?Q?nPJZBhBNY6OwcKQ2k9eDRdX9GOa/dt5Fqvpy72bM61MYe1ajkkk8jNAO7CmG?=
+ =?us-ascii?Q?nMTBoxEJLC8nIipjP6+u253w5Xy4X6RNynk+uOWXIjL7LfPLAXNQi0cTCSga?=
+ =?us-ascii?Q?6hnfL0MJgDQn9B4fr46NlYjlTRBQVc+RBzNz2jvT+HzmOQvHQYUwocy4LCnE?=
+ =?us-ascii?Q?ccx56TQhniuk0IJFhYoYeAYPqiu2lqQE87yciafbOCeBuc65m7yx4OUtVQ1R?=
+ =?us-ascii?Q?fBv/C+8TMLuWrfxbl26qPEbPB+bb37PdSA77kQt4ymfdXAy7/bqDtksV1GP9?=
+ =?us-ascii?Q?JdA4cEI0UG5jv2OIVhMUlijaq6MPaDOJ28xxaZhLugDdCWChiz9JGBRl5tTq?=
+ =?us-ascii?Q?iIfv0PJ/Xy/g/2FivXArAvy+7nDnasPj5CLDVI2q5ti525lqLY31oAZiEZvJ?=
+ =?us-ascii?Q?aTG76UxhPLW1s9Zr8exobPRdhuo/vf7PLaKssz7hl+WPuFH5BOG7IkZEZA4g?=
+ =?us-ascii?Q?2oc/8VJ6inZ3zjpvI3n3rX9ByRPRkft5lSVpbDfD7irRRBUie6D9t9fdA90w?=
+ =?us-ascii?Q?RZJWiIQZNcPFVhItwQD6+iF+f2OxizfI9eM4z2EXaj0e+JPsuN5bx49+nJNB?=
+ =?us-ascii?Q?j1dHLlsqOAq3Ag2zAoZwqASjV7fXdBzmnXaFkcasWkaI7fFzm0hYCgXejgUp?=
+ =?us-ascii?Q?Ttzu1n/7dmWiwR4TJsj5BpgARhykVuU2jWHfLSBSpKKoxutmrW1Ri2E967l3?=
+ =?us-ascii?Q?xn4w+2nMFt3ay5i+Dj/KiPTnv1Jkj/GKgPTG6AHWdAADGM74prPmLd5NoHEm?=
+ =?us-ascii?Q?vxo8MDilTURBKQaDh8g+bhtDhsfKFhgi++cEIUYGKbUVlrtAGrQDGoyZrVf7?=
+ =?us-ascii?Q?AOuyMegvtH4POJJgHIflcuau5pv/Qo8t6HI5AD1lkyoMKZ/ZQnAEqs7+Zgmd?=
+ =?us-ascii?Q?9So60LgRkdOyAO4KGvu/JkuI5pB6oWn9XD+uSmrtIKrc6XC1u4L+4gp9UwZ1?=
+ =?us-ascii?Q?R/8jb3SvWoyMjR/d6O6mbr0P1wZ/Su2LfsFdGpHTECNA3cZvLXUZjfT9Bk/h?=
+ =?us-ascii?Q?4uWBXB3wV3EhOlMgg+EpU2xbD/GbOe+CsUtBg2m3NZK8i7FMAJCcuspInLGC?=
+ =?us-ascii?Q?ltO2YrDoVS+wudsqyggaqRJ7PafLBNDVujixSkFlJNPYGBdDuuTOJ6pEgSRv?=
+ =?us-ascii?Q?NULXWnNwlmI1BDDg0jJkRiT5z+juKehoZhgVcY0vOoEXtqUxn+rs/3sV3FHQ?=
+ =?us-ascii?Q?nijgKlw5BgvnlPZeC6T3RAUAaQ+p6CCLl53C5LftVSM8XD8/8BWVZFdNs3HW?=
+ =?us-ascii?Q?VZ5sgE3tohAwVYXyWSbOtimjYzLiz+ET8MAj9DCEaUqnX+ZICR3i5hq4LB54?=
+ =?us-ascii?Q?yA=3D=3D?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b4fffbe-f267-4a6a-14b6-08dab6723381
+X-MS-Exchange-CrossTenant-AuthSource: VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2022 10:18:04.2970
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q4NzygpnHpHi0nX8zCOzlUTmC9kQR6S0arRO5uHznC8hj56/1Dx8SKc3V9+ixP2FfTrywGiO8VN1ePlNSV6Bb7Zl4+98uyCR1AoqwxPi4JU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1P190MB0733
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221025_013110_805531_D78CAB9C 
-X-CRM114-Status: GOOD (  21.61  )
+X-CRM114-CacheID: sfid-20221025_031809_875501_6DFDF417 
+X-CRM114-Status: GOOD (  10.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,137 +141,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The UBI driver can use the IOCTL to disable the fastmap after the
-mainline 669d204469c4 ("ubi: fastmap: Add fastmap control support
-for 'UBI_IOCATT' ioctl"). To destroy the fastmap on a old image,
-we need to reattach the device in user space.
+Add YAML scheme for the Marvell's NAND controller
+to validate it's DT bindings. Old txt file is deleted,
+not included the compatibles and properties which were marked as
+deprecated.
 
-However, if the UBI driver build in kernel and the UBI volume is
-the root partition, the UBI device cannot be reattached in user
-space. To disable fastmap in this case, the UBI must provide the
-kernel cmdline parameters to disable fastmap during attach.
+Also fix node name in cp11x DTSI acording to nand-controller.yaml
 
-This patch add 'enable_fm' as 5th module init parameter of mtd=xx to
-control fastmap enable or not. When the value is 0, fastmap will not
-create and existed fastmap will destroyed for the given ubi device.
-Default value is 0.
+v4:
+   1) Remove "label" and "partitions" properties
 
-To enable or disable fastmap during module loading, fm_autoconvert
-must be set to non-zero.
+   2) Use 2 clocks for A7K/8K platform which is a requirement
 
-+-----------------+---------------+---------------------------+
-|        \        |  enable_fm=0  |  enable_fm=1              |
-+-----------------+---------------+---------------------------+
-|fm_autoconvert=Y |  disable fm   |  enable fm                |
-+---------------------------------+---------------------------+
-|fm_autoconvert=N |  disable fm   | Enable fastmap if fastmap |
-|                 |               | exists on the old image   |
-+-------------------------------------------------------------+
+v3:
+  1) Remove txt version from the MAINTAINERS list
 
-Example:
-  # - Attach mtd1 to ubi1, disable fastmap, mtd2 to ubi2, enable
-      fastmap.
-  # modprobe ubi mtd=1,0,0,1,0 mtd=2,0,0,2,1 fm_autoconvert=1
+  2) Use enum for some of compatible strings
 
-  # - If 5th parameter is not specified, the value is 0, fastmap is
-      disable
-  # modprobe ubi mtd=1 fm_autoconvert=1
+  3) Drop:
+        #address-cells
+        #size-cells:
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216623
-Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
----
- drivers/mtd/ubi/build.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+     as they are inherited from the nand-controller.yaml
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index a901f8edfa41..0393cb794a9a 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -35,7 +35,7 @@
- #define MTD_PARAM_LEN_MAX 64
- 
- /* Maximum number of comma-separated items in the 'mtd=' parameter */
--#define MTD_PARAM_MAX_COUNT 4
-+#define MTD_PARAM_MAX_COUNT 5
- 
- /* Maximum value for the number of bad PEBs per 1024 PEBs */
- #define MAX_MTD_UBI_BEB_LIMIT 768
-@@ -53,12 +53,14 @@
-  * @ubi_num: UBI number
-  * @vid_hdr_offs: VID header offset
-  * @max_beb_per1024: maximum expected number of bad PEBs per 1024 PEBs
-+ * @enable_fm: enable fastmap when value is non-zero
-  */
- struct mtd_dev_param {
- 	char name[MTD_PARAM_LEN_MAX];
- 	int ubi_num;
- 	int vid_hdr_offs;
- 	int max_beb_per1024;
-+	int enable_fm;
- };
- 
- /* Numbers of elements set in the @mtd_dev_param array */
-@@ -1248,7 +1250,7 @@ static int __init ubi_init(void)
- 		mutex_lock(&ubi_devices_mutex);
- 		err = ubi_attach_mtd_dev(mtd, p->ubi_num,
- 					 p->vid_hdr_offs, p->max_beb_per1024,
--					 false);
-+					 p->enable_fm == 0 ? true : false);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0) {
- 			pr_err("UBI error: cannot attach mtd%d\n",
-@@ -1427,7 +1429,7 @@ static int ubi_mtd_param_parse(const char *val, const struct kernel_param *kp)
- 		int err = kstrtoint(token, 10, &p->max_beb_per1024);
- 
- 		if (err) {
--			pr_err("UBI error: bad value for max_beb_per1024 parameter: %s",
-+			pr_err("UBI error: bad value for max_beb_per1024 parameter: %s\n",
- 			       token);
- 			return -EINVAL;
- 		}
-@@ -1438,13 +1440,25 @@ static int ubi_mtd_param_parse(const char *val, const struct kernel_param *kp)
- 		int err = kstrtoint(token, 10, &p->ubi_num);
- 
- 		if (err) {
--			pr_err("UBI error: bad value for ubi_num parameter: %s",
-+			pr_err("UBI error: bad value for ubi_num parameter: %s\n",
- 			       token);
- 			return -EINVAL;
- 		}
- 	} else
- 		p->ubi_num = UBI_DEV_NUM_AUTO;
- 
-+	token = tokens[4];
-+	if (token) {
-+		int err = kstrtoint(token, 10, &p->enable_fm);
-+
-+		if (err) {
-+			pr_err("UBI error: bad value for enable_fm parameter: %s\n",
-+				token);
-+			return -EINVAL;
-+		}
-+	} else
-+		p->enable_fm = 0;
-+
- 	mtd_devs += 1;
- 	return 0;
- }
-@@ -1457,11 +1471,13 @@ MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: mtd=<name|num|pa
- 		      "Optional \"max_beb_per1024\" parameter specifies the maximum expected bad eraseblock per 1024 eraseblocks. (default value ("
- 		      __stringify(CONFIG_MTD_UBI_BEB_LIMIT) ") if 0)\n"
- 		      "Optional \"ubi_num\" parameter specifies UBI device number which have to be assigned to the newly created UBI device (assigned automatically by default)\n"
-+		      "Optional \"enable_fm\" parameter determines whether to enable fastmap during attach. If the value is non-zero, fastmap is enabled. Default value is 0.\n"
- 		      "\n"
- 		      "Example 1: mtd=/dev/mtd0 - attach MTD device /dev/mtd0.\n"
- 		      "Example 2: mtd=content,1984 mtd=4 - attach MTD device with name \"content\" using VID header offset 1984, and MTD device number 4 with default VID header offset.\n"
- 		      "Example 3: mtd=/dev/mtd1,0,25 - attach MTD device /dev/mtd1 using default VID header offset and reserve 25*nand_size_in_blocks/1024 erase blocks for bad block handling.\n"
- 		      "Example 4: mtd=/dev/mtd1,0,0,5 - attach MTD device /dev/mtd1 to UBI 5 and using default values for the other fields.\n"
-+		      "example 5: mtd=1,0,0,5 mtd=2,0,0,6,1 - attach MTD device /dev/mtd1 to UBI 5 and disable fastmap; attach MTD device /dev/mtd2 to UBI 6 and enable fastmap.(only works when fastmap is enabled and fm_autoconvert=Y).\n"
- 		      "\t(e.g. if the NAND *chipset* has 4096 PEB, 100 will be reserved for this UBI device).");
- #ifdef CONFIG_MTD_UBI_FASTMAP
- module_param(fm_autoconvert, bool, 0644);
+  4) Add restriction to use 2 clocks for A8K SoC
+
+  5) Dropped description for clock-names and extend it with 
+     minItems: 1
+
+  6) Drop description for "dmas"
+
+  7) Use "unevalautedProperties: false"
+
+  8) Drop quites from yaml refs.
+
+  9) Use 4-space indentation for the example section
+
+v2:
+  1) Fixed warning by yamllint with incorrect indentation for compatible list
+
+Vadym Kochan (2):
+  dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
+  arm64: dts: marvell: cp11x: Fix nand_controller node name according to
+    YAML
+
+ .../bindings/mtd/marvell,nand-controller.yaml | 187 ++++++++++++++++++
+ .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ------------
+ MAINTAINERS                                   |   1 -
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |   2 +-
+ 4 files changed, 188 insertions(+), 128 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+
 -- 
-2.31.1
+2.17.1
 
 
 ______________________________________________________
