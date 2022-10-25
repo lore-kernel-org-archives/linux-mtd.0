@@ -4,128 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8837FC04A95
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Oct 2022 16:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7607AC04A95
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Oct 2022 16:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Cc:To:Subject:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EgEIboNyV8IuQ/SizSmOJhnAmREKMckpJy1jzplV4yk=; b=VBlraTThOicLov
-	RCClERK7cwah1RrSMwTbidm1U/YlGX7uLDohvIQYC5lAXfrzEDfd6n2Zr1ccOcWx5kYgAFGRx0HEK
-	bjn1boG/3JQ7vGUkGI/AFsKnSISi/trvhn6YQSa5PWlV28nxPD6e6/XdrUPnyX+9O0f2Xkxba+L6x
-	qsMJ/1Ka0mbeBdKN0Siw27k33ZbhUWAuoWCUvlu7W49tvA8cmcg3u49zP6rytGfvYxQWMj5FMXpPk
-	EGf2PY4aTKiQCd7/PZyrVJ/e5Y8dwSUsAODzpH9w0/RwLfE/Cq/N84uepZaNhAapqdAJiYVrak8f3
-	XM4V7R01/SehiYlSY8fw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
+	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=jMtAmCiZwcwFwW9ke0FZCRrqJ1fkwrnUkOiBL5FKVl4=; b=0bL2pX/wCALiq7AUFF4oSOQd1n
+	egmpnPBTs5L9Ztlh0KFcNiUxmX/iSNZle2JKexpDE+QQtjcRopQbZZf2N1E+gLNKAVnQBv7lr1xgO
+	aGN+Q09BQ5XDrmgUyilOJDhxUy5Pua0orRCQU4AdaLZ2VeRFby1zApiBlcBpI8IU+CgwwoujRj2Ec
+	cyJl7RqbJ3MVp+5vIrwWNp/xmDBEJbv53rveH96HUVCpRFzf1qIFiZcO6hEjw1FgNUNQzCcpBz9d3
+	utAEjI2JixkAp4MqDuX/6+tzk+9aQKoQjaTKSGrrNAPf3Lyw/iIbRGroUx8ZyArBidbAOdNf4pMYN
+	fKFfxEYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1onMbe-006GXL-7v; Tue, 25 Oct 2022 16:16:46 +0000
-Received: from mail-am6eur05on2102.outbound.protection.outlook.com ([40.107.22.102] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
+	id 1onN8x-006LTi-UH; Tue, 25 Oct 2022 16:51:12 +0000
+Received: from mail-bn8nam12on2051.outbound.protection.outlook.com ([40.107.237.51] helo=NAM12-BN8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1onMba-006GUF-PO; Tue, 25 Oct 2022 16:16:44 +0000
+	id 1onN8u-006LSo-F2
+	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2022 16:51:10 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=krc4KfSdPLOWOT4D8hlkR4jqruGD6rk4Jv9aAEU3c7ci9Q8GIGs3Cya98SCDWvW47X2eAh+tKvy4MzxUmA4bHxSXWPi5CClSyAi7THgGzEKqCg0VecyfbvvA/kICZ2hpj5xtyUrAmeConbJ45auyPJoV6rrkQVcnURVp5SLnYoX5l292CLeXA3VTg5yVqk5toUmfuZkcGeH4XQsGcsMFp/h/a3sA4F1yM9gO1JlOT9pROZICrTBqWVlV1OIIoz1Rc0LLnYw2Oi+NXt0UyzJPRexmMc+9J/ZxtBw+/oXyqLNTPJsM6QAv9MSndr2EAZ3rp9VJ0yD1zBqwQM2p6qwvFg==
+ b=QB5kPXrAjcR30MjRRqNQ1AjQPQCjH5NvTewO0ZDp3eaBKM+NwTJcBVcLYlApm0azZanhFnkXx5/tnLhs/CskT0wJo+jomx6nrzhv5f42Qakhw/9cuCYKD3Yuf+/+x1Nv4R/G3S6l1/G865tyE9tPUd66E/kPrZDAmAu9d83IM14wITISPKPcJPI6SJ0jOF3XEEIhXcwDV7P0J88hrbdww/R90Ycnv8sPSk/3+9CGInRaUIXhvnvPI0GS3/+Bg71PpV+yLbS/o5q//C4GuHh0qErjnXjyu4KvogJOn7+yrE8evXC72yKdnRJdZ+wy25indt+/tn1zoGaGnmG807VU4A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bDJbxl6g3szXidNd2MDeRBOe2EHJWi0bR4CtmTYEmvY=;
- b=XpR/M3sf+dFgHfoaJuWFtaY9h94PVfD3eRMF+PPMn7J+DwIPUFwafKyaWcLzWL/W0JFUxyE5J0ZrBrt/vnOW3QjyqQ4fyBIQY2mPl7pYPGCmkt6lD0IRxIPWKy7D7eIKkqR5c8L/t2O5r8SppXIKeIvAB3c4o6txzDdNYigLPoETbKbi0ClinIyl6scmzIrDm68ROHmLhe2ytUVV/F8ly2TxwFG6kmHgwZPSBbNENOOtRsRnI/44KCC8SYAew0IbbG8qd1NY9HvsOOT9LFEtqGyrDslHdtLcyhw/XS9Kx35htg6pTwt69Bub9DfPz8F+A44WNo/xUhDcjjeOWov2Ug==
+ bh=h+denAMsoKo6cMjFs33HsexYWFmNPzlMLlgXWB51f1g=;
+ b=TJ3FMdIZrFIPcfITR7QKc0kB9v8sAESj3QFGXP8ftbzdy/e3EhBw6sOlbwSga/l9xmhCvEDfmI0Ks+x8mxObd8OZB0GDOf6cgzNCJO82kyERIMIW0OYVfKZ6+EMSqrGOKrbSjqEwtCVjtyY4S4tE6SOO80Qn9gpYbaqNDFwfopsIFAM2AJl95QxC/GiJG2n6LPRfmd9SRWCwplHbiMzUhHnTQIZcFdA/hV/HUOPhV7mq3rtYDrhSv7W/OOScUcEGGFFltpjfFkIQOSeqbYhy+qASxvygC/kTOSAmzUSCavyH46yRRbJCUXUaNe5xFOhMZk4jsHbpisID2Ab89F3E3A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bDJbxl6g3szXidNd2MDeRBOe2EHJWi0bR4CtmTYEmvY=;
- b=Yi6CBoUV0gZyhoT0z/TUrVoZLCbQgukT15w0q4D8itafQgHQFqAfDgpQorDUfyy6/FNJ+4BUd4ckpzl7LbKIVvbnjJ5BDU/88SMs3dlpty9EiOOPnyPk4NrWkt4ytF7vEUERdt2XApYmU7lcAHPjk/mZrYt3TQih5+fk1glSe3Q=
+ bh=h+denAMsoKo6cMjFs33HsexYWFmNPzlMLlgXWB51f1g=;
+ b=olfhGBo29AFp/+SfpzZR9SQOMIJNDxtdZBnzW779qL5e2SzFJ71bM8pU3AFewYjrznurnhG3JXrS6HPHpxFBS0TUPg6AMku6He2iyuL33jqdIMUvmXONAhDnBTpGlf1kc0ftuFGIIWbnFix+KsstBlukjJtc/hdKXc5jxho6FB0=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=plvision.eu;
-Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:38::26)
- by PAXP190MB1838.EURP190.PROD.OUTLOOK.COM (2603:10a6:102:274::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.26; Tue, 25 Oct
- 2022 16:16:37 +0000
-Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- ([fe80::2b03:a6ec:3529:b969]) by VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- ([fe80::2b03:a6ec:3529:b969%5]) with mapi id 15.20.5746.028; Tue, 25 Oct 2022
- 16:16:36 +0000
-Date: Tue, 25 Oct 2022 19:16:35 +0300
-From: Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: Re: [PATCH v4 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
- scheme
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Andrew Lunn
-	<andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Elad Nachman <enachman@marvell.com>, Chris Packham
-	<chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <0950c52f-4b53-a823-a30b-c68bc73671e1@linaro.org>
-References: <20221025101713.11893-1-vadym.kochan@plvision.eu>
-	<20221025101713.11893-2-vadym.kochan@plvision.eu>
-	<a980821f-9177-8eb7-ee36-1b1e614d30fc@linaro.org>
-	<VI1P190MB0317E39BD8D5531F94EB185C95319@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
-	<0950c52f-4b53-a823-a30b-c68bc73671e1@linaro.org>
-X-ClientProxiedBy: AM5PR04CA0001.eurprd04.prod.outlook.com
- (2603:10a6:206:1::14) To VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:802:38::26)
-Message-ID:  <VI1P190MB031793A72ABE5A792EE9754195319@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3370.namprd12.prod.outlook.com (2603:10b6:5:38::25) by
+ MN2PR12MB4504.namprd12.prod.outlook.com (2603:10b6:208:24f::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5746.23; Tue, 25 Oct 2022 16:51:04 +0000
+Received: from DM6PR12MB3370.namprd12.prod.outlook.com
+ ([fe80::d309:77d2:93d8:2425]) by DM6PR12MB3370.namprd12.prod.outlook.com
+ ([fe80::d309:77d2:93d8:2425%7]) with mapi id 15.20.5746.028; Tue, 25 Oct 2022
+ 16:51:03 +0000
+Message-ID: <3d7ced9c-b87b-cf4b-4d67-5d497f0f1066@amd.com>
+Date: Tue, 25 Oct 2022 12:51:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH v3] kset: fix memory leak when kset_register() returns
+ error
+Content-Language: en-CA
+To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
+ qemu-devel@nongnu.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-erofs@lists.ozlabs.org, ocfs2-devel@oss.oracle.com,
+ linux-mtd@lists.infradead.org, amd-gfx@lists.freedesktop.org
+Cc: gregkh@linuxfoundation.org, rafael@kernel.org, somlo@cmu.edu,
+ mst@redhat.com, jaegeuk@kernel.org, chao@kernel.org,
+ hsiangkao@linux.alibaba.com, huangjianan@oppo.com, mark@fasheh.com,
+ jlbec@evilplan.org, joseph.qi@linux.alibaba.com, akpm@linux-foundation.org,
+ alexander.deucher@amd.com, richard@nod.at, liushixin2@huawei.com
+References: <20221025071549.1280528-1-yangyingliang@huawei.com>
+From: Luben Tuikov <luben.tuikov@amd.com>
+In-Reply-To: <20221025071549.1280528-1-yangyingliang@huawei.com>
+X-ClientProxiedBy: YT3PR01CA0122.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:83::12) To DM6PR12MB3370.namprd12.prod.outlook.com
+ (2603:10b6:5:38::25)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P190MB0317:EE_|PAXP190MB1838:EE_
-X-MS-Office365-Filtering-Correlation-Id: c3685192-c3ce-4da1-2dc7-08dab6a44a61
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3370:EE_|MN2PR12MB4504:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6d9e830f-9d6a-4df9-f6db-08dab6a91a7d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	j1Qiuug9WJYpLe+c64FSdoVoQuZSTLuH2osVFFOMDEl015tlRXBDR2ep5jmCGefpy1jp1RrdLgkb5RJZtTLqnd5b7tlF+5t6yBFN3tSAo/MWZri09Coojs4NE0GOxErqDDZAOGJniJbcR1UDOr3vzt5lHIs2TaWu/EAXniFLGvvU2oHNFAGCsA6pplLS7k3SP2fmBEcVfiY7jVS0SA1QIn6SqL3Frwntzry8uLM+OfpJKcdpwkaXLkd/HWrc56503saoEyHLMLiPfrgBeDp8ULdhHhbbj19ulW+pj4PPQqLPPk651cRZ/mrfzudVI+IpoNVG1Nst0Zhin6RUNdLJEibxjQsxhXyRiRNddacfjvLysqKkXrM2TZKYGR/bSqnYwV8T20HV8KddrQuecPfQUpkEGuPK88mhJ+JXya2kPEgEsUFqNyHaK6B8q4frKrwPITMhUCd7aZkLGtS4TFL9TMwsuasGsCdChF5wPmeURZ3RZK7KQYYIx+dvxxguhh3Ds+6nk9Auh4lzOIUF9ShlFe1Xx3VplunoM/KdfIuM/njZ+KIkR3a3ewdSSJ96LJL0A8Bs02n0eH9Cys0flOnyVc7N+uTVuX23kv5bVMxaDua3cYgqFWGrUxFG7dxz36owL5LW0d9Xn6Ur6SWdBTXAY41tI+W2X/UjpM3FTxrjDG3MkV8hWp3YafduQvkpm9FvrAwbMSMrF8bwNmJsEJ7PWfBV7WnMIOMI/BS37QZH9hYCn+/j39yLsuEeP+qiUb+8TVTDlTZkXeuVrRoY0ODk4Q==
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0317.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(136003)(376002)(39840400004)(34036004)(396003)(366004)(451199015)(52116002)(53546011)(9686003)(7696005)(83380400001)(6506007)(26005)(186003)(7416002)(44832011)(41320700001)(55016003)(2906002)(110136005)(508600001)(54906003)(316002)(66946007)(66476007)(52536014)(5660300002)(8936002)(8676002)(41300700001)(4326008)(66556008)(86362001)(33656002)(38350700002)(921005)(38100700002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 	dqC8sMthq1baX6iM6uwLpub3mBj8jaDGXm88TYiiu4c9lKxsNGrpKANAYV5+2KSRSdImnE/lARYat5vR7FY2+Yi2IKXlObD7u0igXAtXIfI87s4Hgmm5rPanILjCQox+QG0k4ePARnA19vRyyksL4J4SS8m6KdzSp7QHloX6IhqInJMeZf35yBdQCJ/aW//P3jq3BlSSK8WLE3eSJ1cBCccsnlFmTatUT5ge7vv+4JyzGo2XHHKbJIrwSFK9MDXabD4xxVpVyk/IvG0HgC7EEJQ19HWbrO2qi+BDXl89YOqZ4cObB8G4ebwm0rYCb4uyqPkdR5d2S+xmKcfC1JJf/JZfqhxi1y7VJ1fNIc4DKOIqlkOy52kpD1203eEpoDY4G88eA7dbVkB3+Zrgfw4u4nVtMVxPaezmpYqZsVyY2i/Hia8MlsEZz/xcoTdTATylCsTSvMCaXD1ikUF0mjQ6khG2LTlvpNStsxt1xT1wTOecKBvwrc4rmB6YZ+7wf1JicYUBcDAzskW68a63KL+ppCoISftb1RlS0ZqDiYAMbflXfiOEJMYGU0amfiIRBza+v0ufpIalau9hMkl0NX6VQf65a2gDECIxwWHgen96bAafZQ4qpqGAmvOpKh+bG+QHyg04DG2Kp80DV6LWr+XQutRI61cVCmPcp2uH8KeR79xi86DGXzx159IRqXaQFp4anFWGuzSuc58mKMKXAEgc9dbWwXimHkr34NK3shWjWlliwJVrpSxcCzP1sxi6ThXfO124LAUejsOZXQoEE5vGiqDloy6jo2oVvMO/Ibi4gVI=
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3370.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(396003)(346002)(136003)(39860400002)(376002)(451199015)(31696002)(86362001)(38100700002)(36756003)(4001150100001)(2906002)(6486002)(7416002)(44832011)(478600001)(316002)(8676002)(4326008)(66556008)(66946007)(8936002)(5660300002)(66476007)(41300700001)(83380400001)(6512007)(2616005)(6506007)(53546011)(26005)(186003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?WdC8cNDPFBM7bpdFKJUqaH4conkGZB3HVVjIdl4VLk5YCHdOotgAuyONIc3x?=
- =?us-ascii?Q?EqcTikF2xY6l96zeAPP9YF0CuOmcrrQRuYys/BdEHaU1jJnI/x34RpfzsN/q?=
- =?us-ascii?Q?qr8OocI1O6xeqBJLFUjxfoAzmo5gMP5svKW+ad0Zyaqf4idql5hQSHenlcE2?=
- =?us-ascii?Q?EBVSEHu9/oon7Qa0V+qNRsIiQOnCPIDY/2HBEpKKm35ATnuvlrOqGTGvRYRA?=
- =?us-ascii?Q?+W4JW24VgOkW0NNqnG1LMuOuxOxn/LHJ3+He8ko0RLP59n7YQ3I/falG5ZJp?=
- =?us-ascii?Q?RQ40C7TJNN2lHyfepcWGxvhsqI8rftT2sjKUVbhKrUFcTeCSBqixFnjYQ/gk?=
- =?us-ascii?Q?ieXhlQZ/GTbFx8kSATj+UOcDNONrPQI2/NVwJrZk1xiWjjhwvGq63AUXuAxv?=
- =?us-ascii?Q?Ru+Pe29Hoe3IfobfsnA6OYfcN6p2X0N5rUVBQu00XHGK5Mvzk8xRtp1+V1su?=
- =?us-ascii?Q?c8la0h28J/xjeiUs5YyxuYalQe4gcE9OTPEHWp28AdycrLUfBIaeqClrd3+z?=
- =?us-ascii?Q?/r0dfZq3uB4VeJtIXQzquuDuNKhlM7+m2bJoNyZIx1GHbnUOrNWh/Aiag/jG?=
- =?us-ascii?Q?nNtDHgYXrVp7dCopHsrrJFtzJVK+96Dm6OW+wI+1PQq/hPymBKMpheBkzPxr?=
- =?us-ascii?Q?PNpVLVmO2vAAvcyhE0QQNJ3clxoQKWa6WTrrFQ/5Ts12ZQZCP81guocv0jpO?=
- =?us-ascii?Q?tqJkJYwtsu/3//ELCkcr/Q8n4Oc3UhdWjQbTlqv9AljzIfo7VG8iSpiV8IHK?=
- =?us-ascii?Q?sbDubOIsnEZrzenaCn/0dqMct4DqIGGgHA0qKlIkYkCvcTAzPcAxwTj2BjCT?=
- =?us-ascii?Q?v29UFhomQ6gIBX2OFBXJNtknpiGs24Os2u9kMy9whk8+Qn3ePTT4sPbBgYcH?=
- =?us-ascii?Q?D5nSjmYr4Us0DurKRTZKPRa0X/0+yZq7jOlbX7D0rcoG/7Nt+kt2eu2U2230?=
- =?us-ascii?Q?VdAGPOdt5ucnmeBAPHNhdxVFlQAmmOXeQFK4/33CDdTCOL/vFndsgItldoy6?=
- =?us-ascii?Q?r7lnq2qNzvzBvRFdNNl2v9qkmdKL84CWLpOfzqcDYirJ2Bk1TrP8vpr4LU6/?=
- =?us-ascii?Q?QeMQLMMweh97V+UzTNMsxVl4zqNQH9zGXTIkTvn+PVe6zRstQMgzQ5Rf9ili?=
- =?us-ascii?Q?msxbmx/6nb24dJ7B44L0Iv+BevIUggBX/WIGabOO+LHcU8M2+9ntIc7yYmVC?=
- =?us-ascii?Q?cGBhbqPwsUyW6bRtl+8xfUp8syFrTHwXCzIFgzWz2frBbe7Drj+6m/jb45Pl?=
- =?us-ascii?Q?9zZaMQOcpaUAwLoBg8Wx1Y/6hlYZfryzyB0jJ6FbloZqqZjHKaDDWCJaHJXi?=
- =?us-ascii?Q?N08HM8meXaaBe1IYAl649kx7t+o+tN+DoMwB9zNcqBbxzdJev39v+2zZnT9c?=
- =?us-ascii?Q?5LamLbpD7kWLb65Lsib8qk3vAwzV92PSIMiZNWWjpnzZSbvfVRBy6xqREaHp?=
- =?us-ascii?Q?M09NM3OnFScE8W9FHYvEA2sMM45LY5/p4akoFNlQfTIju8TA2vz+hU6T9IrU?=
- =?us-ascii?Q?vImpFcHPagNHyWGfzoyUJe7f0ijLRcWaYo0hpUyw8+Db0OJbUYaO+LdcLvJ/?=
- =?us-ascii?Q?2ygIy6PJFVvyFYXFYNn1J/VMlGLLiIFt3C1lGViJrZdvfz393i9SJyJG8UoQ?=
- =?us-ascii?Q?bw=3D=3D?=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3685192-c3ce-4da1-2dc7-08dab6a44a61
-X-MS-Exchange-CrossTenant-AuthSource: VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?utf-8?B?NTZJbk5YQXhnYnJlOFMvN2E4Zll2NjYyanozVGZTNkx6aWNIRW9rREFZTnZy?=
+ =?utf-8?B?YkdlMm15d25sZWQxdjBFSFgxYjhGV0U2cXk4aW5VL2hNbUwyUm9TblB0Vk9w?=
+ =?utf-8?B?VjBnVG81YlVCTkRvcVlGQVJaaVBHWm9kNmVxWXFBUms4VmNkdVVCR1Z2akox?=
+ =?utf-8?B?bUhSWC9NUWlLS3lVU2IvblcrdlZScFF0TUUvdnNvaUNUa3FpQWxtaUtaQTdP?=
+ =?utf-8?B?SUMwcjJmbWphMVZUK2FRZllhNlhFSHdJNHVKTzkzVFV6cGlrbFc2NFJzZ3lr?=
+ =?utf-8?B?aTBERVB6VnpDRDJzK3dIUldKWnBHcVo1TnBqQitGWGJZOVJMdlVOUVl0N0w3?=
+ =?utf-8?B?M041WHZMVlZ3UjVTY3RHZEJlMUU2UjM0dDQxZlRCYUpkd3U1MTdnTnNuMUZh?=
+ =?utf-8?B?M0ovRFlxNmhNREZhVzRXYjhiN3F4SDJNcEZoM2U5eDFyNzk2dzZWNFczVVZl?=
+ =?utf-8?B?VzgxNFhjaVVXeWdqenpyZ0NKdGluL1JmUEx5N3JFeDhxWElHRUYzNmpwdzFt?=
+ =?utf-8?B?dkJ2MFVVYzkwVitEU1JIQ0hmUkxWdnl6M2dOYzBQYkdhM2dyVDVJdzAvaEI2?=
+ =?utf-8?B?cXNJelgzNy9kaE1rYnBTUjRETUdkN21BNURSRlR5VWxPNEJSYmJoekJCdVRz?=
+ =?utf-8?B?VThXcUZuUi9TNkdDb2F6WUlkNkZRZXdpeHd2L2hPS3VxUUd5bFI4RG5vaHM4?=
+ =?utf-8?B?STY0NzVCdUp5SWRzY1ZUcWJQM1hmSjhKNDNtYnJtTnd4V1NaQ2ZFMTVZbnFI?=
+ =?utf-8?B?RGJ0NmcrWmNqMy9SU1NaeXFxNUZ4RTh6REZYaXQrR0s2SlJOc1RJd3hzNVoy?=
+ =?utf-8?B?cVcwNHRnQzRTc0JiSzBaV0NiQS9SbStzOFk0VVFMblJBMDVlbDIzWDRpeG52?=
+ =?utf-8?B?Q1FWMmRLd3Y5dUx4L1kyNlU2M0Y1UHBGU0lkK2cwdm5lSkFFb1djWk82b1R2?=
+ =?utf-8?B?MEFXQkV5SC9IUnYxSUcrclE0eVFkTzBpQlN0cmlGci9STWlhby9XOW15d01T?=
+ =?utf-8?B?T1lEaml4SXF4eTliS3I5a1NBUWROelE5YXVMZ0RqclNncFA1a3oxMDdkV2dU?=
+ =?utf-8?B?TUt0elEvdHlZUUpxMGR5KzlJbVRZTHU2dnVFRDhPRTNUNEVLcCtVdDBNcThz?=
+ =?utf-8?B?dEZmbGM4SjRKVDBVV2dlTjA3Qk5wYjViVnFnam1vNEFQeUszSGNaUlFKai9U?=
+ =?utf-8?B?V1YvMTlDSE5pUTFyZzVYTkVaYW9ybjJUcDk0MWtBRjByM1JubmZjMnZMamEr?=
+ =?utf-8?B?RFU3WDdZVCtnZTkyS01FNEE3VkY3Rk1FZVF4OHdabFlCY2syMUtkdDloRDB3?=
+ =?utf-8?B?dnNIVENYSXdGcWN4YTg4eEVBNFJmRU56QW9OMEpRT3VGdXZsU3gvbmRIOWtS?=
+ =?utf-8?B?bHpCRUpmQ2t2aWxoQkJLYit4NHNCZW0vaDRqNmdIVzFBOC93UkNPOWlQNy9m?=
+ =?utf-8?B?QU5FSzBaZ09PL2R5cWZYbldqRTllU3FYeTM2S2U1VzZvalpoeER3aUF1TXRO?=
+ =?utf-8?B?QUFqTmV0TTFzSEFPbEp5YXJzVEhxNG5ibkhRM09zZ0ZwbCtKcHBwTGYxRTRK?=
+ =?utf-8?B?Sm1icWJ3UCtocndremlnYVpDSEZOWHdCcm50OGpHQmtTOTI4UHYrdWQyeFFQ?=
+ =?utf-8?B?c1gzeFlwRUxEK1ZjcDJwZytrcmFkV3lGbmNoK3JnZzVzdTQwVm42ZXJObDlj?=
+ =?utf-8?B?b0ZWcTEzQXkzRmN1VGRteVc0RW54dEYxVUdYVjdBdko5M1dwUXZOeWgwVnc5?=
+ =?utf-8?B?cHBHQTh4YytsVnp6dkdDK2VFMEltVXI2SE1HYmc1a1UxUWtVN1dMaGFGVVJU?=
+ =?utf-8?B?b3Rvam1nZEVrUGNrRUwydnRiM2p0cG5OTjhmL3R1OXhnemJFTnBqMzA1Y1ZW?=
+ =?utf-8?B?K3duQ0c1RkN5anhXWjNzZm5WZFBFcGR0N3pPK0V0cUtZQXdnODd5alAycWlx?=
+ =?utf-8?B?U2UyOXpXUlQ5M2twb0xGbGVib0pLT01yU1NYTnpWWDdYZ3ZRcHVjOGt6NDd3?=
+ =?utf-8?B?WkM3SlZUVEFZSkFhL0FwdW9EYnNlcnpCY2JTRm1rYWtnaUpaV3VJRm1NeGFu?=
+ =?utf-8?B?K3RORkRBVnQ0aXhtemhaZlpTRVp2QkxoZDcrYnA5ZnRDcExSbXZvMmlzcjVo?=
+ =?utf-8?Q?83O6HNvFLk0rS7xIb6/JW9hcX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d9e830f-9d6a-4df9-f6db-08dab6a91a7d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3370.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2022 16:16:36.6839
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2022 16:51:03.8568
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jme/K18zmju6XXFR/YfT35d5BxmxV5YJZc+7ISbXe95SGdFx71LPHrpBcJhvlBRM/1wIg0fUrVI2dTUIsLg+UfZzpVKiJaEKEpbJuCIdJ7Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXP190MB1838
+X-MS-Exchange-CrossTenant-UserPrincipalName: bW1C+h29M2xCgYzzH/x/2IoWiXtkrcQYB1hIs2doWMjVhtNVRbQI9GCvX08jhmR5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4504
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221025_091643_113534_CCF49664 
-X-CRM114-Status: GOOD (  29.55  )
+X-CRM114-CacheID: sfid-20221025_095108_536008_13FF9E51 
+X-CRM114-Status: GOOD (  27.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -142,132 +148,99 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 25 Oct 2022 09:51:14 -0400, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> On 25/10/2022 08:52, Vadym Kochan wrote:
-> > On Tue, 25 Oct 2022 08:25:01 -0400, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> >> On 25/10/2022 06:17, Vadym Kochan wrote:
-> >>> Switch the DT binding to a YAML schema to enable the DT validation.
-> >>>
-> >>> Dropped deprecated compatibles and properties described in txt file.
-> >>>
-> >>> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> >>> ---
-> >>>
-> >>> v4:
-> >>>    1) Remove "label" and "partitions" properties
-> >>
-> >> I think you did not read the feedback.
-> >>
-> >>
-> >> (...)
-> >>
-> >>> +
-> >>> +  marvell,system-controller:
-> >>> +    $ref: /schemas/types.yaml#/definitions/phandle
-> >>> +    description: Syscon node that handles NAND controller related registers
-> >>> +
-> >>> +patternProperties:
-> >>> +  "^nand@[0-3]$":
-> >>> +    type: object
-> >>> +    properties:
-> >>> +      reg:
-> >>> +        minimum: 0
-> >>> +        maximum: 3
-> >>> +
-> >>> +      nand-rb:
-> >>> +        minimum: 0
-> >>> +        maximum: 1
-> >>> +
-> >>> +      nand-ecc-strength:
-> >>> +        enum: [1, 4, 8]
-> >>> +
-> >>> +      nand-on-flash-bbt: true
-> >>> +
-> >>> +      nand-ecc-mode: true
-> >>> +
-> >>> +      nand-ecc-algo:
-> >>> +        description: |
-> >>> +          This property is essentially useful when not using hardware ECC.
-> >>> +          Howerver, it may be added when using hardware ECC for clarification
-> >>> +          but will be ignored by the driver because ECC mode is chosen depending
-> >>> +          on the page size and the strength required by the NAND chip.
-> >>> +          This value may be overwritten with nand-ecc-strength property.
-> >>> +
-> >>> +      nand-ecc-step-size:
-> >>> +        description: |
-> >>> +          Marvell's NAND flash controller does use fixed strength
-> >>> +          (1-bit for Hamming, 16-bit for BCH), so the actual step size
-> >>> +          will shrink or grow in order to fit the required strength.
-> >>> +          Step sizes are not completely random for all and follow certain
-> >>> +          patterns described in AN-379, "Marvell SoC NFC ECC".
-> >>> +
-> >>> +      marvell,nand-keep-config:
-> >>> +        description: |
-> >>> +          Orders the driver not to take the timings from the core and
-> >>> +          leaving them completely untouched. Bootloader timings will then
-> >>> +          be used.
-> >>> +        $ref: /schemas/types.yaml#/definitions/flag
-> >>> +
-> >>> +      marvell,nand-enable-arbiter:
-> >>> +        description: |
-> >>> +          To enable the arbiter, all boards blindly used it,
-> >>> +          this bit was set by the bootloader for many boards and even if
-> >>> +          it is marked reserved in several datasheets, it might be needed to set
-> >>> +          it (otherwise it is harmless) so whether or not this property is set,
-> >>> +          the bit is selected by the driver.
-> >>> +        $ref: /schemas/types.yaml#/definitions/flag
-> >>> +        deprecated: true
-> >>> +
-> >>> +    required:
-> >>> +      - reg
-> >>> +      - nand-rb
-> >>
-> >> I have no clue why you are doing some random changes. Now you dropped
-> >> additionalProperties for nand@ about which no one asked you to drop.
-> >>
-> >> No. It *must* be here.
-> > 
-> > Sorry for this mess, I was confused with the "label" and "partitions"
-> > because I got errors about these properties when I used only
-> > "additionalProperties: false", so I tried to put reference to partition.yaml.
-> > 
-> > Then I looked at other nand-controllers schemas and I did not find inclusion of partition.yaml
-> > for them so I decided to just drop it at all. My understanding is that "additionalProperties:false"
-> > is needed for nand@ if to have "label" and "partitions" properties, otherwise it is not needed.
+On 2022-10-25 03:15, Yang Yingliang wrote:
+> Inject fault while loading module, kset_register() may fail.
+> If it fails, the kset.kobj.name allocated by kobject_set_name()
+> which must be called before a call to kset_register() may be
+> leaked, since refcount of kobj was set in kset_init().
+
+Technically, this is saying "If it fails, the kset.kobj.name may be leaked."
+We want then to clarify that this is "allocated by kobj_set_name() which
+must be called before a call to kset_register", so that needs to
+be surrounded by commas (like a literary segue):
+
+"If kset_register() fails, the kset.kobj.name allocated by kobject_set_name(),
+ which must be called before a call to kset_register(), may be
+ leaked."
+
+I don't feel that the reason for the leak is "refcount of kobj was set in kset_init()".
+It's a true statement, but not the reason for the leak--the reason for the leak is that
+no one frees it on the error path.
+ 
+> To mitigate this, we free the name in kset_register() when an
+> error is encountered, i.e. when kset_register() returns an error.
 > 
-> A final schema (not used by other schemas) must always finish with
-> additional/unevaluatedProperties false. You have errors since beginning
-> - I wrote about it in your first patchset (v1). You had error visible
-> after adding proper unevaluatedProperties in proper place.
+> A kset may be embedded in a larger structure which may be dynamically
+> allocated in callers, it needs to be freed in ktype.release() or error
+
+"_by_ callers", since it's something they _do_: allocate.
+
+> path in callers, in this case, we can not call kset_put() in kset_register(),
+> or it will cause double free, so just call kfree_const() to free the
+> name and set it to NULL to avoid accessing bad pointer in callers.
+
+That's good.
+
+> With this fix, the callers don't need care about freeing the name
+> and may call kset_put() if kset_register() fails.
+
+"don't need to care about freeing the name" --> "don't need to free the name"
+
+> Suggested-by: Luben Tuikov <luben.tuikov@amd.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+> v2 -> v3:
+>   Update commit message and comment of kset_register().
 > 
-> You have partitions node, for partitions. But you reference only *one*
-> partition.
-
-Yes, sorry for that.
-
-OK, I think I need to do this in nand@:
-
-      ...
-            
-      label:
-        $ref: /schemas/types.yaml#/definitions/string
-
-      partitions:
-        type: object
-
-      ...
-      
-    additionalProperties: false
-
-So the "partitions" will be validated for example by fixed-partitions.yaml.
-And additionalProperties:false in the nand@ protects from adding other
-non-valid properties on it's hierarchy level since all possible
-properties in nand@ are covered.
-
+> v1 -> v2:
+>   Free name inside of kset_register() instead of calling kset_put()
+>   in drivers.
+> ---
+>  lib/kobject.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> Best regards,
-> Krzysztof
-> 
+> diff --git a/lib/kobject.c b/lib/kobject.c
+> index a0b2dbfcfa23..3cd19b9ca5ab 100644
+> --- a/lib/kobject.c
+> +++ b/lib/kobject.c
+> @@ -834,6 +834,9 @@ EXPORT_SYMBOL_GPL(kobj_sysfs_ops);
+>  /**
+>   * kset_register() - Initialize and add a kset.
+>   * @k: kset.
+> + *
+> + * NOTE: On error, the kset.kobj.name allocated by() kobj_set_name()
+> + * is freed, it can not be used any more.
+
+There's no need for "NOTE:"--it's just natural explanation of
+what's happening, and what's expected in the doc comment to a function.
+Drop it.
+
+"is freed" is correct--that's a good change.
+
+With these fixed, this patch is
+Reviewed-by: <luben.tuikov@amd.com>
+
+Regards,
+Luben
+
+>   */
+>  int kset_register(struct kset *k)
+>  {
+> @@ -844,8 +847,12 @@ int kset_register(struct kset *k)
+>  
+>  	kset_init(k);
+>  	err = kobject_add_internal(&k->kobj);
+> -	if (err)
+> +	if (err) {
+> +		kfree_const(k->kobj.name);
+> +		/* Set it to NULL to avoid accessing bad pointer in callers. */
+> +		k->kobj.name = NULL;
+>  		return err;
+> +	}
+>  	kobject_uevent(&k->kobj, KOBJ_ADD);
+>  	return 0;
+>  }
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
