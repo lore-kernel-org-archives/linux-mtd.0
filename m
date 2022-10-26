@@ -4,72 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E79D5C38A2D
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Oct 2022 10:51:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB0A1C38A2D
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Oct 2022 13:46:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ihqijT6wUx+bWrZEXJKJfpOyvH8TMKYBiZz4wMWkgzo=; b=ub1hJsoDiDikT9
-	aKTZRiYbXnuHIYxRtUsbtzOnWx1i1QWyhYFrnYZo/gEKnC985eKEQ+fjAKRBmjTVOqTm8F1XtSY55
-	Ub7qqN7AnvNRn0RD/RcI++EFNSrFlPQ0HR+m7Dg8/wQjEaMK6UaJrf82zUanzApCFYMt7EZoRkfW3
-	a2hb10dCX76MqJ86BBiJuY4Uxpj+xQbGlsg/Rzyg+XuUatR/LmGbPZzWQ1mouj6mugIc0TRsWIgmx
-	YW+rM/UJsc2lHMR39ENygtrreuGaBqyeQicLpra0hmVv5e9NT5tZPP7Gp2Eq868oizZihb9qu7Ypr
-	4l0dTdz3EhYfzTXze48w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=rXj1dC43MqbOk7KA7HOMsM+i4laJaED73C2kSEWl9Hk=; b=OellTOSac75UHJ
+	yLoZCiDtdkthedb8ZPHxUyJHXIfT9ok5xiUJR+PaEUZ/MW5H+ryI7PghjOL1mj9hEqCzXzWfmS6O9
+	XewizYRjJffWcV1HNynJR0EZVMhQsj8Qk+0v4xiUaQuDBuQbNfNc3mDbBXajdUy6uI3l5W2ekCK4w
+	VPWzhnyHeTyAiu/4DqYexSh3hk2ERuMyWvw22HIP2l2TlrmMkLovm2gEol9JaVhTA6Jxh/qKA4Hzh
+	GWYOYarc45QweAG3fYnNfm3dgE8LIkjcH1nXHVxfGtJfjc0yztEgNEfKKba2y8X++Fqojnj5L/1Rl
+	kh5jInFTfyARpHm4uVVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ondzG-008xtG-KI; Wed, 26 Oct 2022 10:50:18 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1ongjT-009WVb-Oo; Wed, 26 Oct 2022 13:46:11 +0000
+Received: from mail-am6eur05on2105.outbound.protection.outlook.com ([40.107.22.105] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ondzD-008xrf-5F
-	for linux-mtd@lists.infradead.org; Wed, 26 Oct 2022 10:50:17 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 42519CE21AE;
-	Wed, 26 Oct 2022 10:50:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39F93C433C1;
-	Wed, 26 Oct 2022 10:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1666781405;
-	bh=boEsi/InFJxTy/pvk2Wx3Sg5dSCvTStHGPubud3/XZ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E73gpQqoj2SSQ8SlybIg4TAqhPtJrfUKkInUvbQTdh1srRaGsu/kjcrt2eThGY0F/
-	 mXAeSAuf/j1LFvdJtMFlMjk6IAJNFfg0zprcchkbzWyXM9jmy1I/2s3RaSnbhAkztM
-	 aBDy0oBZAWI+KjxC4irldbB6YHV1ZY+uOzuWtlro=
-Date: Wed, 26 Oct 2022 12:50:03 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Tomasz =?utf-8?Q?Mo=C5=84?= <tomasz.mon@camlingroup.com>,
+	id 1ongjP-009WUD-A5; Wed, 26 Oct 2022 13:46:10 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cf6jmaKXXi1xLGaY27atJy9f+0zMezWC7qcPG8KFSDoRqJh4IYPoFgjIPW2aNxS6Md/JOLwck9Jdf2h2mD/8Ob9MQWZcCv1/OAKGs28tOglDOQBA5lQGdzPsihyFs0X4hehY/xXzJmgwrMDq8liuBbVrCISp0EyvWoevfCXzXn33bG/ETG7aiMx4/p1RYuLTps8E5hqtmrjfQ/dtfYTJP9DVlfl4Kdkg7Chbk7DvHcEk+rljqXKEQH5WI6RZKz0WXApOSr6DceFnpviL4CbLqFMIKNl74TfyCXjh6Lesro9h9CCYJ6Y2r2g+JyfNb8fyXdiNBeywqOvh5WRxWuNxzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cehBbaLsgKTVT3bH7JgyY3iuHVHuBK24delBQuBwn2o=;
+ b=cAVsyQ/RtfGoKvf5fOsLK0T/h2sgGqIEC/rSqUUKfA8hFR4bxNsUyON/M7swyNWUlwk8YZNhLE5WUTb5NRH294Rg9qLptQmwmKQUm2hRMK+h7/Cjlsi8tS0b7x+QMUeB1L4MIHIwyIr4iZJ5TA0nSl14+PlKK5UFOMkKg8pVJNtta5WC4hv2mI8op6buoSEzryiwZDwFSQmrKc758KprqFpifK6GdyRdITMCGqstLNmRbA+ofWyTfZ7x3DOTpnBHldmaxdRDVFcyzRoo6qwbWi/IOzQFusOLenmrwI+ngVWDEPZhax9E4ERb5b0kcmaXXNzkIq1ZN0FX53K1NJIW9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cehBbaLsgKTVT3bH7JgyY3iuHVHuBK24delBQuBwn2o=;
+ b=KLfpu49tN6EFYh+Q0UoN69V92upGw60NWjjluw1QpQqlvAMdHnHQfVjpCXN4qntodghS65Ln2Eb8907nepnz3V6PsjKxUJr+MB0V1E1kab+J0QoaQxI/glBFc28KHtIAbp2iNsY/yhyG+DhhqCWVbqsTGcc856/sB5zUuFRaIbE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=plvision.eu;
+Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:38::26)
+ by VE1P190MB0941.EURP190.PROD.OUTLOOK.COM (2603:10a6:800:1a4::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.23; Wed, 26 Oct
+ 2022 13:45:59 +0000
+Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+ ([fe80::2b03:a6ec:3529:b969]) by VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+ ([fe80::2b03:a6ec:3529:b969%5]) with mapi id 15.20.5746.028; Wed, 26 Oct 2022
+ 13:45:59 +0000
+From: Vadym Kochan <vadym.kochan@plvision.eu>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Sasha Levin <sashal@kernel.org>,
-	torvalds <torvalds@linux-foundation.org>, Han Xu <han.xu@nxp.com>,
-	kernel <kernel@pengutronix.de>, stable <stable@vger.kernel.org>,
-	k drobinski <k.drobinski@camlintechnologies.com>
-Subject: Re: [PATCH] mtd: rawnand: gpmi: Set WAIT_FOR_READY timeout based on
- program/erase times
-Message-ID: <Y1kQ2/u1YLSGEmLK@kroah.com>
-References: <c2d545d1f5478e66c0dac47f4bc4c04256ff44aa.camel@camlingroup.com>
- <fd830c7e94de6b4a0b532dfcf46cf1edd22b42fb.camel@camlingroup.com>
- <YtD/9KJZwlVj+6hS@kroah.com>
- <20220715074631.GA7333@pengutronix.de>
- <YtEdIujszEKSprbF@kroah.com>
- <770744970.283550.1657871950910.JavaMail.zimbra@nod.at>
- <20220902090252.75285234@xps-13>
- <CAJ+vNU0r3Enkwn+WzvEJYc_O4NurRyCssx2S-_ZS_cYCpk2-cA@mail.gmail.com>
- <20221024100114.627f87bd@xps-13>
- <CAJ+vNU2R=FVSpRVWh8RBJ7XZmRRjkqHce1WTGXDKrjeHRbuzSw@mail.gmail.com>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: Elad Nachman <enachman@marvell.com>,
+	Vadym Kochan <vadym.kochan@plvision.eu>,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v5 0/2] dt-bindings: mtd: marvell-nand: Add YAML scheme
+Date: Wed, 26 Oct 2022 16:45:41 +0300
+Message-Id: <20221026134545.7146-1-vadym.kochan@plvision.eu>
+X-Mailer: git-send-email 2.17.1
+X-ClientProxiedBy: FR0P281CA0150.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:96::8) To VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:802:38::26)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAJ+vNU2R=FVSpRVWh8RBJ7XZmRRjkqHce1WTGXDKrjeHRbuzSw@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P190MB0317:EE_|VE1P190MB0941:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7211871d-b0e8-418c-f14e-08dab7586a1f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	FPk1qQhDG9HZe7lILR4OM5zOZVY7a+XOvqjAwzmKVTJFFGX7yoynu/zoUZNy58bzNAOlrhDbesR31vk1bQt4MT6Av/YekGOKzc7ha+Xh3r3OofJaj2Myb2yUl0x1pmMKuHv3W9NxdQrobl53ukX59GI6o9crHmCN8ScNpaj6NTDSzBg3pl7ERQCeZ2gXqzqXqtHDaxeH2oDuOVdPLHR/bPG0JB8N4pNSP2ZdnOmkIqPUnaG0X7jMTe0kOqnxm58Av/79dSN2H/wYO1xrMruB+GGZH98mXMCySsLgrfC87C6M+GYel9yZSU1YRdchyT4lkpbtQQ8RZkNODK6tYJIotZYV3CGo9JB1U82rAAzsTbo+4DJwtVwx5q8etHodk0BWjk/iGKkeNgE3SSY+YAw9DefJOgyfRiZWHE4IxK5RzdO2gk04/yOexEjjWLu6i8Js5Mve4LGXrkcgB9NK9bkRXkOFvNGZwcqf/eowjyUTxXJY6ex875G2vy8fq1X83O2bNLhB7G+Y5W4Lzo15QIaMnhHDg5VF0RAz5mp2Y63wd4fuznl/rzVInL8P+zrTTeg5lnSAZzv3J3jkADwkczgFUv9kWxzXk90oAL89oqvALuTIQEymQbngdlv8HGmoNZq/umr6nHwKX6LT9qJRo4XweA7vM+ltv7qNFlS0sSG1s2VMRV2sJcTcPmmQxPL+bFd4t2WoEXMAJg65TfFAsy0thoCltES5/hKlV52l45V1n2MDwcr0Ulm0Soo9GKyg26q0+28qFIZ6idw1Z+CEtZzFWg==
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0317.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(39830400003)(346002)(376002)(34036004)(396003)(366004)(451199015)(8936002)(66946007)(4326008)(66556008)(8676002)(1076003)(41320700001)(66476007)(921005)(6666004)(38350700002)(110136005)(44832011)(508600001)(86362001)(38100700002)(6486002)(36756003)(41300700001)(52116002)(2616005)(5660300002)(7416002)(26005)(2906002)(6506007)(186003)(6512007)(316002)(54906003)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?2xMYPKkgxpXyUYg/AwrtzC5GdamtfI1/2UPmQ6Fgv8exwiwqkbMUpiL+QyuZ?=
+ =?us-ascii?Q?6mFZpAQeG2byp7bnPSecPV8bGDiysDcivhcJKWbjSCEzauVeYu0A4mlpLde0?=
+ =?us-ascii?Q?kDCwjsAhkOx4LJNIrnkkfwabOVmUrRGqpjSNKh5uJognCP7Y4BDO58NWpm9g?=
+ =?us-ascii?Q?AJ3mnidla0KTD2i1t5Zlhynhh0kstaCbnFMXWMEiow2aYzaB1+q1jNCzsLI8?=
+ =?us-ascii?Q?NWWoPRzHOcNGRmXSUnt362+RdwCglxioTxQms1XY+MXWKFoecC9Rc1Gmy3yH?=
+ =?us-ascii?Q?bMRNBK/eZdBfzFxUB/agTqNL4tdQi+7ViDKZdmU1IlCD2y1kW5e+9T0/7a8a?=
+ =?us-ascii?Q?EXF5YuAH4zGHio7Xf2bUJwhIpPuSTyrxupLKvxueKfY7DxNHfkupgyo3IdOl?=
+ =?us-ascii?Q?kIeUiYG5O/yjtMmD9rTd8gJqcemfRFIPsAwFnSI+SjlSJW2llLhnWVtfS72G?=
+ =?us-ascii?Q?ksJ3YDNOO8MWHUMhos42g97AlKX3bYepuhUZkli7cUV4S/u3AILlHxqLfYqP?=
+ =?us-ascii?Q?9j7LX/U53bIRTaWN6xinQCUnpIpi3pg3LXili+gP7UaakDkP3BmATDzc00mJ?=
+ =?us-ascii?Q?xVPbBJDKaUr0cr18dju25EtD54ZopGgkKW+1fdJX08QIQ3dHc0vRtK/3tFmj?=
+ =?us-ascii?Q?soCvprMJMVFttyArk+UmL4PLfTR3LbOOO0j/mVWI/gJDWXPYkkeqvnybwGNz?=
+ =?us-ascii?Q?3iEfVTAcpCaxjbS19FxfKTSkHfk+Oent0EY3qk5kLR1RysEDgPBJnDfTJqbM?=
+ =?us-ascii?Q?Qbtx1qTRgD+v5Q7uaFHnvNE384BTkZT8dAQhI2ohrY4Xy+jvk2UNkqvZ68Lp?=
+ =?us-ascii?Q?Lx6iykMeXrbVACGXtDUNl0U4gQbOuIrbnvFiZ+7Y/icaQL78/1tQJP7zu03P?=
+ =?us-ascii?Q?U9U5e1eDmG4bE3pD47TtgYiys4H1JWxoSg9+FemBeUoe0xHLoehPdEPX7DfT?=
+ =?us-ascii?Q?JUaEke9LTQ4mU1cnOvlEu57lad+USFetUJuzd/Ejl7MpctLB6OXzLq3Do4d6?=
+ =?us-ascii?Q?uK7nkFqtvnEZkZYiZUcnvmGCCIqqffPTd8dUpuGPVAXIQDV4Cm+NBVp4wys4?=
+ =?us-ascii?Q?m3OaaRIH9q8lRuCKEDIKqWAQId1ceT3oLwyF49xfLNzPyx9wxfxmKQkUIhso?=
+ =?us-ascii?Q?i9T3XzLRyknJ8jB0Vd/B9eKuDKm20ndFYDAULFqbrhCAGVzD3tpfbm59T1DE?=
+ =?us-ascii?Q?V8rQnvAn3kxW+ip1L2AgjUJg96kXBu6cGlI82VrmsPQN31ESd+12RsbrE3uV?=
+ =?us-ascii?Q?+QALYNGOVijaxp2oHcD35u9ZNXkvCNiI+NjH1nortwlcQHZo4L2Bu3GIi/Ln?=
+ =?us-ascii?Q?5BDhAgy2H9ZEv2vGr16ug4KVqHo8qzxhfB77Vjl1ujrMOmLJ5A2hjVJlEpCO?=
+ =?us-ascii?Q?k5NrDUfmIL8GwLA2SCU7v5aF8E94ofiSika9i0LHmBThRQv7f4S2hApvk6LY?=
+ =?us-ascii?Q?ysHamb+D7DPbOmK0m+jMN9ECXvRfEVW33PuAatx2YPyfmi20K59QawfO34bW?=
+ =?us-ascii?Q?wHjLRReDCZCCn08BuNEYQerKlTm5j+LEbZtnaORl3WeEV4nQsvtasMCRdZni?=
+ =?us-ascii?Q?iw+8WTJe6Ip0m/pwmshtnehLGcZfqEtGENJbu48LQ0Ram3A+NIINlKBDaHSv?=
+ =?us-ascii?Q?hA=3D=3D?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7211871d-b0e8-418c-f14e-08dab7586a1f
+X-MS-Exchange-CrossTenant-AuthSource: VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2022 13:45:59.3235
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PGlqrNkTBTxEB0FBIM170a4K/mEa8ZlUVk+bBGVfJVy668IeBTtzM0U8u5ply/9/IEatvp6KL7vKg386IIbGLsEcxQBZha0EM/yn3pGmrp4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1P190MB0941
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221026_035016_235317_506E6241 
-X-CRM114-Status: GOOD (  35.52  )
+X-CRM114-CacheID: sfid-20221026_064607_596208_CDB286BC 
+X-CRM114-Status: GOOD (  10.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,99 +136,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Oct 25, 2022 at 03:02:27PM -0700, Tim Harvey wrote:
-> On Mon, Oct 24, 2022 at 1:01 AM Miquel Raynal <miquel.raynal@bootlin.com>=
- wrote:
-> >
-> > Hi Tim,
-> >
-> > tharvey@gateworks.com wrote on Fri, 21 Oct 2022 14:55:15 -0700:
-> >
-> > > On Fri, Sep 2, 2022 at 12:03 AM Miquel Raynal <miquel.raynal@bootlin.=
-com> wrote:
-> > > >
-> > > > Hey folks,
-> > > >
-> > > > richard@nod.at wrote on Fri, 15 Jul 2022 09:59:10 +0200 (CEST):
-> > > >
-> > > > > ----- Urspr=FCngliche Mail -----
-> > > > > >> My IRC history doesn't go back far enough, but if I recall cor=
-rectly
-> > > > > >> Miquel is on vacation, he would have picked up this patch for =
-linux-next
-> > > > > >> otherwise.
-> > > > >
-> > > > > Exactly.
-> > > >
-> > > > Indeed, I was off for an extended period of time, I'm (very) slowly
-> > > > catching up now.
-> > > >
-> > > > >
-> > > > > > Ok, let me do a round of stable releases so that people don't g=
-et hit by
-> > > > > > this now...
-> > > > >
-> > > > > Thanks a lot for doing so.
-> > > > >
-> > > > > > Hopefully this gets fixed up by 5.19-final.
-> > > > >
-> > > > > Sure, I'll pickup this patch.
-> > > >
-> > > > Thanks Greg & Richard for the handling of this issue.
-> > > >
-> > > > Cheers,
-> > > > Miqu=E8l
-> > > >
-> > >
-> > > Hello All,
-> > >
-> > > As Tomasz stated previously 06781a5026350 was merged in v5.19-rc4 and
-> > > then was picked up by several stable kernels. While this made it into
-> > > the 5.15 and 5.18 stable branches it did not make it into the
-> > > following which are thus the are currently broken:
-> > > 5.10.y
-> > > 5.17.y
-> > >
-> > > How do we get this patch applied to those stable branches as well to
-> > > resolve this?
-> >
-> > It is likely that the original patch (targeting a mainline kernel) did
-> > not apply to those branches. In this case you can adapt the fix to the
-> > concerned kernels and send it to stable@ (following the Documentation
-> > guidelines for backports).
-> >
-> > Thanks,
-> > Miqu=E8l
-> =
+Add YAML scheme for the Marvell's NAND controller
+to validate it's DT bindings. Old txt file is deleted,
+not included the compatibles and properties which were marked as
+deprecated.
 
-> Miqu=E8l,
-> =
+Also fix node name in cp11x DTSI acording to nand-controller.yaml
 
-> Thanks for the pointer. You are correct that this patch which resolves
-> the regression does not apply directly to 5.4/5.10/5.17 stable trees.
-> I'm looking over
-> https://www.kernel.org/doc/html/v4.10/process/stable-kernel-rules.html
-> and I'm not clear what I need to put in the commit to make it clear
-> that it only applies to those specific trees. Do I simply adjust the
-> 'Fixes' tag to address the commit from that specific stable branch and
-> send one for each stable branch (thus each would have a different sha
-> in the Fixes tag) while also adding the 'commit <sha> upstream' to the
-> top?
+v5:
+   1) Get back "label" and "partitions" properties but without
+      ref to the "partition.yaml" which was wrongly used.
 
-Please send multiple patches and say below the --- line which stable
-tree it should be applied to.
+   2) Add "additionalProperties: false" for nand@ because all possible
+      properties are described.
 
-Note that 5.17 is long end-of-life, always check the front page of
-kernel.org for the active kernel versions.
+v4:
+   1) Remove "label" and "partitions" properties
 
-thanks,
+   2) Use 2 clocks for A7K/8K platform which is a requirement
 
-greg k-h
+v3:
+  1) Remove txt version from the MAINTAINERS list
+
+  2) Use enum for some of compatible strings
+
+  3) Drop:
+        #address-cells
+        #size-cells:
+
+     as they are inherited from the nand-controller.yaml
+
+  4) Add restriction to use 2 clocks for A8K SoC
+
+  5) Dropped description for clock-names and extend it with 
+     minItems: 1
+
+  6) Drop description for "dmas"
+
+  7) Use "unevalautedProperties: false"
+
+  8) Drop quites from yaml refs.
+
+  9) Use 4-space indentation for the example section
+
+v2:
+  1) Fixed warning by yamllint with incorrect indentation for compatible list
+
+Vadym Kochan (2):
+  dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
+  arm64: dts: marvell: cp11x: Fix nand_controller node name according to
+    YAML
+
+ .../bindings/mtd/marvell,nand-controller.yaml | 195 ++++++++++++++++++
+ .../devicetree/bindings/mtd/marvell-nand.txt  | 126 -----------
+ MAINTAINERS                                   |   1 -
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |   2 +-
+ 4 files changed, 196 insertions(+), 128 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+
+-- 
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
