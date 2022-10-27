@@ -4,126 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CC85C38A2D
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Oct 2022 21:58:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03AA9ECAAA1
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Oct 2022 11:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Cc:To:Subject:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iiD1zkVxT4CG5RU3dWH3ucJxkePWXkuYA1u19TWUa6I=; b=VU38sErXpkg23T
-	jg4JnwOFkY+VJUKBqjrJI7wu2s7dMbmokghJVmHPc881BvKLhVpqHOY6KEdIUqlCiUdmFY1QASSHL
-	tm1FOXjfks48FFJF5idGJB7sziajTOWKVZlHNo2Ff+7eUS2q6XBhf7+xMOTh/TYWNYRLJG7OhuEie
-	U6lwu/g1U4cTmzOq7A8PmCGlTX3a9aMkPZGg1B/sARWyEzamkUmB8LpKz6spMsIIW/vOKZPHC35mI
-	PWIUZpaM1qnZ/fv/SXViwtKbruuR31DuPUxGLBFfnV1XXio7OYIU4pTxxRgDunYRukQVLzerylorn
-	NJso/BxuXWCWJdzADVFg==;
+	List-Owner; bh=GWko/tsFGBL3I7jFbRxxofW0SP44s2C7Tni4IDNXH38=; b=yH7LcR0Uct7tA5
+	1YJb5Vunk4sXf6IDmdAWuy7iNtgegc3oOw3pb08wUbCOmVHk4j5338MHjlXL0i8ELBA9prLU2dTot
+	n5ufMbh9e3sZLHKDr7qSjN5AGfoYJC231DDWoaI7+odXA/6w41PB4trFRQm6xJ9k51vwftXbtkWeF
+	101L1V3rGPL0jNkyu1Hbu8vfTWePCySIXOF0lk7s6UmvuedwtsCzb3oaOy0mbmI7Es8X8am4ymsid
+	5HR1VVNXT1D98KIAtnsKSZMOImjc64etrs6mfrFn4VWuC5q0UTnAKoQgtzQw0/kDoVx0s/Bq5GXCt
+	u39XNE2eTK88BloZMXPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1onoPE-00B652-KX; Wed, 26 Oct 2022 21:57:48 +0000
-Received: from mail-am0eur02on2121.outbound.protection.outlook.com ([40.107.247.121] helo=EUR02-AM0-obe.outbound.protection.outlook.com)
+	id 1oo1Jj-00D50O-I0; Thu, 27 Oct 2022 11:44:59 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1onoPA-00B63r-4G; Wed, 26 Oct 2022 21:57:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TMGVF1s+IvznZfzBx2xbSKg6bCg8vauNnCswFmkUj+VDDeOqCxnmwjY1bjPOmXeWsr470gl8jJha7wqjYVTdTuvrcVJ4RiXA80tdkTnn4sY/HYOtP0loJaJdpdUdNd9R3jXZOlMhw2Mr8sFW37FAjIDfKixm+ytiQt23Dktu9ESl0GaDJoQNY5ODf2L02bvWf30G4IL0z3t32gPxy/aNhnjHsmM0xM/nIgM5DqYf1q5Fi49akhWBNPW53iwDKmA1+BnqjF5/lTYJzjMBYjIt793aOY/2RIO4aGQ/y1sx1JyIxXf8YaA1sEjnRwgPtvXcuMlSA/vEBQg+q718AIKOxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MVTpKpJ5aSQsXLfuLBcGt2L9XOl29rRIsDL0OJJST5k=;
- b=QMP4qV7u4OxYgxZ5JxOJksmiZ30bsravVkq8OIiXUPiYxGa3iz6vp8NYvvgItyUJeX2El75OYitISb6VheBWy52at9QJcM1e1Fzfx8kY1eQrVSWDbZi79miRggtSFbQQWhDQrHoKZGB+W6+thkGhaDfgDn3EeZ3uR/5OVXzVhkRRw5tYz7oEn8fveXsxF240i5FqXYw2xnEZWlEH0IqmM3iFxEOUJXiaJXlzWgSlc+5blySrAbjchB/0hQ8mE3QjbX8lUoOjlzNpxD9ZLGZfDXuPEiaXNJgrfbm4wwZZQDl7mcHG9Xi6mdWQi7dF98zGndVCti0kodhoTbItDIIgnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MVTpKpJ5aSQsXLfuLBcGt2L9XOl29rRIsDL0OJJST5k=;
- b=dTaeQz5DUpivklaHZPp0iMMui6Y0hKq8WN/WyuXvmgsGRvnyIjXPYuMVQ7K5kqse2FDg9c+ZtYEIvOxfmx2wp34HHBVg18oKd/2rd0+ZKlG3eJiywVEwrswe6n3D1lSMQJf0CC5Led+4ZJkwJka5ITmWSPIH2engLYn/XHHBWCw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=plvision.eu;
-Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM (2603:10a6:802:38::26)
- by DU0P190MB1828.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:34c::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.28; Wed, 26 Oct
- 2022 21:57:31 +0000
-Received: from VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- ([fe80::2b03:a6ec:3529:b969]) by VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- ([fe80::2b03:a6ec:3529:b969%5]) with mapi id 15.20.5746.028; Wed, 26 Oct 2022
- 21:57:30 +0000
-Date: Thu, 27 Oct 2022 00:57:28 +0300
-From: Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: Re: [PATCH v5 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
- scheme
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Andrew Lunn
-	<andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Elad Nachman <enachman@marvell.com>, Chris Packham
-	<chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <33f04b06-dc00-b7ce-6a24-2282608b40dc@linaro.org>
-References: <20221026134545.7146-1-vadym.kochan@plvision.eu>
-	<20221026134545.7146-2-vadym.kochan@plvision.eu>
-	<33f04b06-dc00-b7ce-6a24-2282608b40dc@linaro.org>
-X-ClientProxiedBy: FR3P281CA0077.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1f::10) To VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:802:38::26)
-Message-ID:  <VI1P190MB0317C739E2D39427CD2A771D95309@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
+	id 1oo1Je-00D4xD-FA
+	for linux-mtd@lists.infradead.org; Thu, 27 Oct 2022 11:44:56 +0000
+Received: from dggpeml500023.china.huawei.com (unknown [172.30.72.55])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MykK24MnJzpW4d;
+	Thu, 27 Oct 2022 19:41:10 +0800 (CST)
+Received: from localhost.localdomain (10.175.101.6) by
+ dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 27 Oct 2022 19:44:37 +0800
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+To: <zhangxiaoxu5@huawei.com>, <linux-mtd@lists.infradead.org>,
+	<richard@nod.at>, <dwmw2@infradead.org>
+Subject: [PATCH 2/2] jffs2: Fix list_del corruption if compressors initialized failed
+Date: Thu, 27 Oct 2022 20:49:06 +0800
+Message-ID: <20221027124906.143940-3-zhangxiaoxu5@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20221027124906.143940-1-zhangxiaoxu5@huawei.com>
+References: <20221027124906.143940-1-zhangxiaoxu5@huawei.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P190MB0317:EE_|DU0P190MB1828:EE_
-X-MS-Office365-Filtering-Correlation-Id: 272f621a-0678-4fa1-da36-08dab79d1452
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	mATtxBbCeTOvjkuaw7eqaAAUHXm6n6uB9O5A1AOwRpQ0zaRfGwoyd2AK14/WNjUDzWZnbyvD7gSVFV5X2s7pET1ckYp44GhMRgfBNZ/VgcLakBwofseshfnl2zhCtqSRx0NCQQlzxe+pX8pLZZjO5KaS1zS3L1kV57MPEurQQCm4i7Vh5f3LtdtSj5FkqhrqzjigjVZyty3OozfqZFv+w1XGEkPY6q8kcMoK7O63lEgJ0kBXEJz6jIUex34uZnnbcfwhiCbOAMBbNqxKp2g9Ooq3nvFwbhvZP0ZZCrLy3H1pwWW1oXqTLH6fuVdWBYbWFD+6Y8O10BURbe7vtnsqcpGKdDYl+KPHehc3uZ9BFoOIwrT2rEZQYAIe05t+NQ1aTxwM8FdUX2+q+AlIpxalJSYS/iRLFqXBRyEaM5yWEu2WInuA8ZOuV52WpGkxjbu92FNUBJ7v8t3yv0hmUIbQK+9PHruKhlyeFGdDClrsvP5lnD01lVmLvubgUTAi2zfCX+AZiLZA421iUahuua4pl8blUcOIW0tbzPtiEIG5xW3sstdIT+FN5KpnFjRxKbXmvAIDdCjWUh3cGYbobF5qG7CegDKGAqs38ivB8dvfV/QIEtJdjPlJB1aF7ucgu1sbi7PqnyhI0OGViqFkqapq7QfFyXnquxm1wdd1GApBtNKOd4B4/BQNZL3ZAhKS6ngzDK9hmoLA2Y5+0lPh2Kag3cDqK4u8ZKwHLa4692zllIyPmwSxJQGjODbCwzl4biXCmwT282or6SUg0OzyXilI4ai5VJXN5twHUW61yFdzRbb210onPsxYOB+Nqp9wJBf/
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P190MB0317.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(34036004)(376002)(39830400003)(366004)(346002)(396003)(451199015)(8936002)(5660300002)(186003)(41320700001)(7696005)(66946007)(4326008)(54906003)(66556008)(2906002)(86362001)(66476007)(316002)(52536014)(44832011)(33656002)(7416002)(110136005)(8676002)(41300700001)(966005)(508600001)(38350700002)(921005)(26005)(38100700002)(9686003)(53546011)(6506007)(83380400001)(55016003)(52116002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?ho5QAJoomSQziz+8aYpU+fOrxBh/Lsc8xxW8/ev0Qsi8STnb5yQ9r1+TUtaa?=
- =?us-ascii?Q?ZvWJrxT3Mm0qK026G7NbL08VIapErWsQBzXgQsiU8N5J+T6CuyToeJodX31W?=
- =?us-ascii?Q?Rnyo1qi1kurw82CCA1Kpn2eNVpEiUWB0sP69uS3tg9O+bdNj48rc+eNpR77A?=
- =?us-ascii?Q?SVrWybL8vQuiAQuKPAeUAXNCTZVCp79N99k9654RThmiwQvVLB1iOO8tnWQ8?=
- =?us-ascii?Q?W1qJRkA7zKJJrDhTpqbTQoDP5kXRvnzjIsnMb7hF3IxONXaegYUTljNhwMap?=
- =?us-ascii?Q?sBplDpQJhivIyasnd09AuugculidpRMvUoGXbzHqr7F55Cp0Bdf9ztmsvACx?=
- =?us-ascii?Q?DFXOsehS7yJGWZw0ZEamSNVx8rP1cSwJxzGZSpkv876mCpOeXYn0wOE94y8V?=
- =?us-ascii?Q?7UC+Ijx3VTqU36/Za4iB4zaHRaP/VKT+gnf9TW0fiogU/YYbHUuHmsUr/+Yw?=
- =?us-ascii?Q?7JJDIgjIrpk37hIBjju8z4UZLtgzJP3iFp9123vT5C7dasMyfunaSTUFAwHt?=
- =?us-ascii?Q?8RMA3YfdPtLAgh4CBkSgHIulL+xv+gPIRUoR0r3+kkDeqS0tpBwp5Ebdx7xx?=
- =?us-ascii?Q?K9ypGn9/yAWzrS9b5CMHdZrn+EDw+lEffQOuSH9ct489jeXw64vxX/z9y25C?=
- =?us-ascii?Q?hRWYUtr4Tojyfvd1tAt1aD7ArlCFRWb/EEt0gfSSselXBhUFa3XDyooE+QOR?=
- =?us-ascii?Q?hb67RxulEInY+AroU3st8QOrm4XYBxhEccAmhpbA9XAesoqeS+uBCfz5tcyQ?=
- =?us-ascii?Q?T/8QfUP1bUGTFLWxoT1wjTLNeTomehB2O4pe07bD1wUZ/CkK9K8veTPXqAcF?=
- =?us-ascii?Q?pzT6nc1DcVw/KvVUN6EoNGO8aYGwNd1AflSdcHc6UmrJLADGXknM97eg8xcy?=
- =?us-ascii?Q?b6EVN3Y65IcVznZnnUDK48E6CuLKD1SDDG/7HATdUchbhaE/9QJk/jdqaEYH?=
- =?us-ascii?Q?ThTDMlY/kiOGD4kqRlAtN6XnQS81P/SjyMlIRJHKwEZUP3Q9RaSIgJPxJVj4?=
- =?us-ascii?Q?Tw/H8zWtelaeiOqQiMVN5B/aiZl1WnfRV9ScJGTc8Q5/YAm8IuQODiKf+DVy?=
- =?us-ascii?Q?IZ3y4mxMd5tmnxRNytcROWrobYxLMj82jHvmy6I9AJgwCAiisrfqEOG5GNQQ?=
- =?us-ascii?Q?eULp5XDdLQgQhTUMJYIZ+xp2GyMBdI8Zah9Bi8JstMmF8xxYvomqT0cvm0aw?=
- =?us-ascii?Q?D/6J1EQwpCXpRhC+yUETLz2lsF1+heoH+p9ntlZvpDnLHju7nQsYNtnlQnbM?=
- =?us-ascii?Q?DwUwJgll9Rf9+cEF7fCcu1axXecwvhXNmyq+ytv6239kiV2HFbjMkQtoap+m?=
- =?us-ascii?Q?gsE1qn/QfV+QmEs9TUphNRqV29PDmrrz3qZwBH9F0yvU9UJtNypuAYgEOUA2?=
- =?us-ascii?Q?G6UsKXxjwG1HLugwVtvJ6vT2eWCFba6bXPAitgDVJaEbAJiwzjjO1XzSzmA/?=
- =?us-ascii?Q?3Y1Lz+ysAua7wvqccBbUInGfpmvPz8rrvkXEeZteRkHJfgnfM8eppzwEqDH/?=
- =?us-ascii?Q?Zc/ibvAEl8i6ILFtzYB5Mm3UEdUSe48W7MchtSK4+M1cg4NEP3MtQldVv7U8?=
- =?us-ascii?Q?mLQEt7zyxyMMTfO/Zyf4lAjQtOWFRYILeI65VdDg/6mYxisfEDx9JmqVxvyu?=
- =?us-ascii?Q?Qg=3D=3D?=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 272f621a-0678-4fa1-da36-08dab79d1452
-X-MS-Exchange-CrossTenant-AuthSource: VI1P190MB0317.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2022 21:57:30.6787
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tO5LhbK7HCSkaKGmVRY95BeZZERSzH7s3T4K2Cdt6/AhXx3RlBYqllFlZVGa4sySxmGrZtcCVM5up3uTiakhJ72vcDrkx48oj5SpDy2sT6g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0P190MB1828
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221026_145744_591030_7BACF1DA 
-X-CRM114-Status: GOOD (  37.98  )
+X-CRM114-CacheID: sfid-20221027_044454_889688_3B698ACF 
+X-CRM114-Status: GOOD (  12.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,251 +65,90 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Krzysztof,
+There is a list_del corruption when remove the jffs2 module:
 
-On Wed, 26 Oct 2022 10:03:51 -0400, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> On 26/10/2022 09:45, Vadym Kochan wrote:
-> > Switch the DT binding to a YAML schema to enable the DT validation.
-> > 
-> > Dropped deprecated compatibles and properties described in txt file.
-> > 
-> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> > ---
-> > 
-> > v5:
-> >    1) Get back "label" and "partitions" properties but without
-> >       ref to the "partition.yaml" which was wrongly used.
-> > 
-> >    2) Add "additionalProperties: false" for nand@ because all possible
-> >       properties are described.
-> > 
-> > v4:
-> >    1) Remove "label" and "partitions" properties
-> > 
-> >    2) Use 2 clocks for A7K/8K platform which is a requirement
-> > 
-> > v3:
-> >   1) Remove txt version from the MAINTAINERS list
-> > 
-> >   2) Use enum for some of compatible strings
-> > 
-> >   3) Drop:
-> >         #address-cells
-> >         #size-cells:
-> > 
-> >      as they are inherited from the nand-controller.yaml
-> > 
-> >   4) Add restriction to use 2 clocks for A8K SoC
-> > 
-> >   5) Dropped description for clock-names and extend it with 
-> >      minItems: 1
-> > 
-> >   6) Drop description for "dmas"
-> > 
-> >   7) Use "unevalautedProperties: false"
-> > 
-> >   8) Drop quites from yaml refs.
-> > 
-> >   9) Use 4-space indentation for the example section
-> > 
-> > v2:
-> >   1) Fixed warning by yamllint with incorrect indentation for compatible list
-> > 
-> >  .../bindings/mtd/marvell,nand-controller.yaml | 195 ++++++++++++++++++
-> >  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 -----------
-> >  MAINTAINERS                                   |   1 -
-> >  3 files changed, 195 insertions(+), 127 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> > new file mode 100644
-> > index 000000000000..544e98ed12bb
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> > @@ -0,0 +1,195 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mtd/marvell,nand-controller.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Marvell NAND Flash Controller (NFC)
-> > +
-> > +maintainers:
-> > +  - Miquel Raynal <miquel.raynal@bootlin.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - items:
-> > +          - const: marvell,armada-8k-nand-controller
-> > +          - const: marvell,armada370-nand-controller
-> > +      - enum:
-> > +          - marvell,armada370-nand-controller
-> > +          - marvell,pxa3xx-nand-controller
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> 
-> What happened to maxItems here? This is wrong. You keep changing random
-> things, again. V3 was correct.
-> 
+  list_del corruption, ffffffffa0623e60->next is NULL
+  WARNING: CPU: 6 PID: 6332 at lib/list_debug.c:49 __list_del_entry_valid+0x98/0x130
+  Modules linked in: jffs2(-) ]
+  CPU: 6 PID: 6332 Comm: rmmod Tainted: G        W          6.1.0-rc2+ #5
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc33 04/01/2014
+  RIP: 0010:__list_del_entry_valid+0x98/0x130
+  ...
+  Call Trace:
+   <TASK>
+   jffs2_unregister_compressor+0x3e/0xe0 [jffs2]
+   jffs2_zlib_exit+0x11/0x30 [jffs2]
+   jffs2_compressors_exit+0x1e/0x30 [jffs2]
+   exit_jffs2_fs+0x16/0x44f [jffs2]
+   __do_sys_delete_module.constprop.0+0x244/0x370
+   do_syscall_64+0x35/0x80
+   entry_SYSCALL_64_after_hwframe+0x46/0xb0
 
-It is not random, I tried to enforce to use 2 clocks for A7k/8K case.
+If one of the compressor initialize failed, the module always insert
+success since jffs2_compressors_init() always return success, then
+something bad may happen during remove the module.
 
-> 
-> > +    description:
-> > +      Shall reference the NAND controller clocks, the second one is
-> > +      is only needed for the Armada 7K/8K SoCs
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: core
-> > +      - const: reg
-> > +
-> > +  dmas:
-> > +    maxItems: 1
-> > +
-> > +  dma-names:
-> > +    items:
-> > +      - const: rxtx
-> > +
-> > +  marvell,system-controller:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description: Syscon node that handles NAND controller related registers
-> > +
-> > +patternProperties:
-> > +  "^nand@[0-3]$":
-> > +    type: object
-> > +    properties:
-> > +      reg:
-> > +        minimum: 0
-> > +        maximum: 3
-> > +
-> > +      nand-rb:
-> > +        minimum: 0
-> > +        maximum: 1
-> > +
-> > +      nand-ecc-strength:
-> > +        enum: [1, 4, 8]
-> > +
-> > +      nand-on-flash-bbt: true
-> > +
-> > +      nand-ecc-mode: true
-> > +
-> > +      nand-ecc-algo:
-> > +        description: |
-> > +          This property is essentially useful when not using hardware ECC.
-> > +          Howerver, it may be added when using hardware ECC for clarification
-> > +          but will be ignored by the driver because ECC mode is chosen depending
-> > +          on the page size and the strength required by the NAND chip.
-> > +          This value may be overwritten with nand-ecc-strength property.
-> > +
-> > +      nand-ecc-step-size:
-> > +        description: |
-> > +          Marvell's NAND flash controller does use fixed strength
-> > +          (1-bit for Hamming, 16-bit for BCH), so the actual step size
-> > +          will shrink or grow in order to fit the required strength.
-> > +          Step sizes are not completely random for all and follow certain
-> > +          patterns described in AN-379, "Marvell SoC NFC ECC".
-> > +
-> > +      label:
-> > +        $ref: /schemas/types.yaml#/definitions/string
-> > +
-> > +      partitions:
-> > +        type: object
-> 
-> That's not what I asked for. Like four times I asked you to add here
-> unevaluatedProperties: false and I never said that ref to partition.yaml
-> should be removed and you... instead remove that ref.
-> 
-> You need to define here children and specify their ref.
-> 
-> You must use unevaluatedProperties: false here. So this is fifth time I
-> am writing this feedback.
-> 
-> 
+For this scenario, let's insmod failed.
 
-It is a bit confusing that it is needed to define "partitions" and "label" rules particulary
-in this nand controller instead of some common place like nand-chip.yaml, these properties
-are common also for the other nand controllers.
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+---
+ fs/jffs2/compr.c | 33 ++++++++++++++++++++++++++++-----
+ 1 file changed, 28 insertions(+), 5 deletions(-)
 
-> 
-> > +
-> > +      marvell,nand-keep-config:
-> > +        description: |
-> > +          Orders the driver not to take the timings from the core and
-> > +          leaving them completely untouched. Bootloader timings will then
-> > +          be used.
-> > +        $ref: /schemas/types.yaml#/definitions/flag
-> > +
-> > +      marvell,nand-enable-arbiter:
-> > +        description: |
-> > +          To enable the arbiter, all boards blindly used it,
-> > +          this bit was set by the bootloader for many boards and even if
-> > +          it is marked reserved in several datasheets, it might be needed to set
-> > +          it (otherwise it is harmless) so whether or not this property is set,
-> > +          the bit is selected by the driver.
-> > +        $ref: /schemas/types.yaml#/definitions/flag
-> > +        deprecated: true
-> > +
-> > +    additionalProperties: false
-> > +
-> > +    required:
-> > +      - reg
-> > +      - nand-rb
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - clocks
-> > +
-> > +allOf:
-> > +  - $ref: nand-controller.yaml#
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: marvell,pxa3xx-nand-controller
-> > +    then:
-> > +      required:
-> > +        - dmas
-> > +        - dma-names
-> > +    else:
-> > +      properties:
-> > +        dmas: false
-> > +        dma-names: false
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: marvell,armada-8k-nand-controller
-> > +    then:
-> > +      required:
-> > +        - marvell,system-controller
-> > +      properties:
-> > +        clocks:
-> > +          minItems: 2
-> > +          maxItems: 2
-> 
-> This does not make sense now...
-> 
-> Best regards,
-> Krzysztof
-> 
-
-Thank you,
+diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
+index afe74c65f1e4..764f19dec3f0 100644
+--- a/fs/jffs2/compr.c
++++ b/fs/jffs2/compr.c
+@@ -364,12 +364,24 @@ void jffs2_free_comprbuf(unsigned char *comprbuf, unsigned char *orig)
+ 
+ int __init jffs2_compressors_init(void)
+ {
++	int ret = 0;
+ /* Registering compressors */
+-	jffs2_zlib_init();
+-	jffs2_rtime_init();
+-	jffs2_rubinmips_init();
+-	jffs2_dynrubin_init();
+-	jffs2_lzo_init();
++	ret = jffs2_zlib_init();
++	if (ret)
++		goto exit;
++	ret = jffs2_rtime_init();
++	if (ret)
++		goto exit_zlib;
++	ret = jffs2_rubinmips_init();
++	if (ret)
++		goto exit_rtime;
++	ret = jffs2_dynrubin_init();
++	if (ret)
++		goto exit_runinmips;
++	ret = jffs2_lzo_init();
++	if (ret)
++		goto exit_dynrubin;
++
+ 
+ /* Setting default compression mode */
+ #ifdef CONFIG_JFFS2_CMODE_NONE
+@@ -389,6 +401,17 @@ int __init jffs2_compressors_init(void)
+ #endif
+ #endif
+ 	return 0;
++
++exit_dynrubin:
++	jffs2_dynrubin_exit();
++exit_runinmips:
++	jffs2_rubinmips_exit();
++exit_rtime:
++	jffs2_rtime_exit();
++exit_zlib:
++	jffs2_zlib_exit();
++exit:
++	return ret;
+ }
+ 
+ int jffs2_compressors_exit(void)
+-- 
+2.31.1
 
 
 ______________________________________________________
