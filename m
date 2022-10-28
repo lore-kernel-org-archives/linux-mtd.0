@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3479CFA3741
-	for <linux-mtd@archiver.kernel.org>; Sat, 29 Oct 2022 00:05:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3129DFA3741
+	for <linux-mtd@archiver.kernel.org>; Sat, 29 Oct 2022 00:06:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=V5UWdWsEeHLH5ISzdBfyZjP10xxRgLwyTIrcnX00Mcw=; b=tRHjfh6r3N2J8q
-	o7iypshTSiM2Sohaj9AWMnHPedaB2VRw3pQ7sWzuEX7zt7+5pLK8gqqSUnJKzfCkDIxLBSoU+E08c
-	GkmscYopaV66ms1h5cbIpP9ZRrFWGuWLU3CwgdqLS1T+TAahkvPyGc9BjgqqEWqWUCOBWoPqarp4i
-	O1/Wu5Z8/QqW5WfRAlCzJfhta6Zl55cKqgwf3gnNy7Sq8JXseR0q1Al17W05u+oq1C57mCGXe5Rce
-	M8U6TUnMCV54EdiV+FMk9vdMM2pdFTC8Th6JapXCcK4dur/sal6LaCmar7nkwnIBi10R6HPcTTL3y
-	HGOCCjstv8vFECwnMKXw==;
+	List-Owner; bh=Rzbs3KP2wmt6TsvGU4d0ILuZGgum+SZMREYHC7WTchw=; b=PkD3ycBgS2K4L1
+	axSP0Ef7qs40a86nAzM9tK6sIp0+wI9rpxtEk2nBHh+tEa8gm4J9F8x2lxIzxcxWdluhJgUxwJgcR
+	4WiAXvpPN6F1hCLoVxvva5JAsd6+3Msr+OQutcnnpOGPpYz4isYxc1vvVMP+xJGfD6oQvD/+Ld4T9
+	dm74EWltFeBPPgPvQxf4PzRGqyNTHlU4Ch4jgU2GlAy0okVwB8yB2WhSQUi0BuFoCtRtNoDHJpWyR
+	xpe/92y0UQFz/ySX8XbbdaOenwNb9lpnMyALcdwDBSXpmhlJ2PvWk/8iuwAPkCS0KkswUSUFgRPSW
+	gj+TQm6H1cxeQin3CVnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ooZLo-003Moj-ER; Sat, 29 Oct 2022 00:05:24 +0000
+	id 1ooZMf-003NFh-MI; Sat, 29 Oct 2022 00:06:17 +0000
 Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ooZGW-003Jm8-My; Fri, 28 Oct 2022 23:59:58 +0000
+	id 1ooZGY-003Jml-Ec; Fri, 28 Oct 2022 23:59:59 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 8DB9DFF805;
-	Fri, 28 Oct 2022 23:59:53 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 5F1A3FF80D;
+	Fri, 28 Oct 2022 23:59:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1667001595;
+	t=1667001596;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KpStTXdcGcnaU4hB/viIKrO6+1KaRilXzfSuhGy+2cA=;
-	b=VBjU+wVidPlrjqLZQdwiodK53fUS7K3whpmeKn/tfVtBUrkSbVsjCRdkzVwe/3DyWs0TCE
-	mTW515S1DusSM7cKmsvAkDbIeEqS5YU2j0wllWyA/euVn+is+CwdT28RYoEAzWj93WkZCr
-	Qcs+TckXRj6RIzqb0FltZ/nTwB9gQqZFMUi6k73vttmeKZoNt+9IfwgWCknA9uZec5ge3n
-	IulfPqL/39odF/wR2gufdE/vkxESFf8CCd5c2rcpngeq/6QtNyh+h4hDFU6TWB3HdCDtUN
-	RAhG10YoaSBVO5bOT7jZ43D3bjyjNiUTOecNlNsbEXK6DE4EFa/kIqSyfI7wtA==
+	bh=GhGJmrY4S5pbiS6htFjWyxWRV0tdapQgnC4CUqJRsQo=;
+	b=PNMSPnI4t/ryFKEpCNgXTzVy7OIt9eNS0evQ1YaVNmJ8o0Y3c3L5S4+A9PJwuRIFefelQH
+	4Faz2YOqKHGSKuffbs7W0GwrLT19pHDnMbXhru01g002LGbkuXUgNjZSuzth+QmTl/x+A8
+	dOF1kJ5FN5QejwiSxScbrfPt0wv/wpP7/OC4+1qUm7aLQiUUOpsH9K6wtWAkotS4RdJUpl
+	BNRl3LiefgYbWdquq7ClV5LCTUdOGmBFjWqhHjESLWp78k6OCSkVhEz0EKbJQLTJNDiZTs
+	uWB3+srf9ilFns8Y+Dz4FIw7WOtz7Qo8AbyFmL3FTY+1chToopWLKgJNDN3Yvw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -60,17 +60,16 @@ Cc: Chen-Yu Tsai <wens@csie.org>,
 	linux-arm-msm@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 10/12] dt-bindings: mtd: Drop object types when referencing other files
-Date: Sat, 29 Oct 2022 01:59:31 +0200
-Message-Id: <20221028235933.934850-11-miquel.raynal@bootlin.com>
+Subject: [PATCH 11/12] dt-bindings: mtd: Argue in favor of keeping additionalProperties set to true
+Date: Sat, 29 Oct 2022 01:59:32 +0200
+Message-Id: <20221028235933.934850-12-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221028235933.934850-1-miquel.raynal@bootlin.com>
 References: <20221028235933.934850-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221028_165956_917795_D04176A4 
-X-CRM114-Status: UNSURE (   8.52  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221028_165958_640756_8912F53F 
+X-CRM114-Status: GOOD (  10.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,39 +86,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Setting an object type is redundant when a reference is made, so drop
-these useless lines.
+In most cases we try to avoidit but in some cases this is
+needed. Clarify why by adding a small comment.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- Documentation/devicetree/bindings/mtd/mtd.yaml             | 1 -
- Documentation/devicetree/bindings/mtd/nand-controller.yaml | 1 -
- 2 files changed, 2 deletions(-)
+ Documentation/devicetree/bindings/mtd/mtd.yaml                  | 1 +
+ Documentation/devicetree/bindings/mtd/nand-chip.yaml            | 1 +
+ Documentation/devicetree/bindings/mtd/partitions/partition.yaml | 1 +
+ 3 files changed, 3 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-index 4fdce7211b55..64714fc8c852 100644
+index 64714fc8c852..bddb7bdf441b 100644
 --- a/Documentation/devicetree/bindings/mtd/mtd.yaml
 +++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-@@ -44,7 +44,6 @@ patternProperties:
-     deprecated: true
+@@ -61,6 +61,7 @@ patternProperties:
+     required:
+       - compatible
  
-   "^otp(-[0-9]+)?$":
--    type: object
-     $ref: ../nvmem/nvmem.yaml#
++# This is a generic file other binding inherit from
+ additionalProperties: true
  
-     description: |
-diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-index 359a015d4e5a..3f2a1480e1eb 100644
---- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-+++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-@@ -51,7 +51,6 @@ properties:
+ examples:
+diff --git a/Documentation/devicetree/bindings/mtd/nand-chip.yaml b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+index 8d5d2d3ef56b..6e2dc025d694 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-chip.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+@@ -70,4 +70,5 @@ properties:
+ required:
+   - reg
  
- patternProperties:
-   "^nand@[a-f0-9]$":
--    type: object
-     $ref: "nand-chip.yaml#"
++# This file can be referenced by more specific devices (like spi-nands)
+ additionalProperties: true
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+index f1a02d840b12..1c97ca0f7f62 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+@@ -60,4 +60,5 @@ then:
+     $nodename:
+       pattern: '^partition-.*$'
  
-     properties:
++# This is a generic file other binding inherit from
+ additionalProperties: true
 -- 
 2.34.1
 
