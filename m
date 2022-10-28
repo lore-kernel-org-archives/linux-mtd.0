@@ -4,58 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23E0EECAAA1
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Oct 2022 09:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 032AFECAAA1
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Oct 2022 11:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=L/Y3i+5i1DKW83Ow9zAcn15Cuy8TKSjc/QNgnP3fUx4=; b=o7bFLhlJgwhdB/
-	QBDzv5C3wsMSLQmQt1xXKrA1Yp4Sujr7fLpQm76A9fds7JG0CVV8JK7JPny8jlyuPKWcFJ3ZV1pJ3
-	zuk7kX7lMv7fziPwIHrTn5DAFS3Qwa5qNZ/cm0ZckHpfzT1pM3wAhvz8PYlhcsCAaj7q8RPu1ObaY
-	H8kw/DWFnXW2cR+22hLVFpC/P5Jwcem6zlNOIABoRlxyEuqpUGZw8xs/aC08UMsc+xE70cnmJltqj
-	yxpFnQF1RiEzg3nvzOlB8eWpOep1rgyfuSYzCnVGnfH1QpJJnn/etUh5WGOoywl10GqdGFqzR36eK
-	yJ3jFjXge+jvqYtgJgVA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=xvvLBEYJdds2L0p5w6vbzeWobB3DK3janl2332CxSKI=; b=4LsG2vh91Vqc9b
+	PXQG1tJwlp6jjcz+bzXJcqMpMs7nrQ+5eXh4qMx+hrcmsh6F357J6uv8pz4smPZewSF0rr+Kwn4N9
+	tDhYI2KZT1pvwWhQZKpH4iJI0x6gkcO3teHUdI2fRj/Sc/mwMTy2i5fP44QY0DxAb5OVkPfSS3zv+
+	D6InHrKl7rNSkmxoNUMSt2A8XKYHN7VS1bRdP/F4CgUz66QDvAMN3KgIyzco6JZHL2Rx4B8ATTC33
+	Ir5eMRr0lO8cJvnekIpG9JTXg0i1Bbg0GuDxXaxXaje/SKBhxUtjA6ru81KpnMOOkzpsxlBMZPMpg
+	JsMl5cJEd99TFXbXEyhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ooLhy-00GLK8-G1; Fri, 28 Oct 2022 09:31:22 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1ooNae-00GxAw-7U; Fri, 28 Oct 2022 11:31:56 +0000
+Received: from mail-qk1-x732.google.com ([2607:f8b0:4864:20::732])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ooLhu-00GLHN-Pr
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2022 09:31:20 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 916DE24000E;
-	Fri, 28 Oct 2022 09:31:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1666949474;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=LqqeKR8+utpjuZxM0EHaE9N4OZLTd3lH1Adt1NpIXF8=;
-	b=GAzA8O3h0KhXqF33H5+uc0+cxbB4hXn9Q0jnW6whhGEmVSeGytzqQaGChh5kyR1XZi7EJ+
-	gygpk7DvnycYc7UdJgPtJEfubCn/4a114m5wJvmqpPNPmM7k+McI8/a4T97+pXRuBnQPYc
-	lfmNjL9ZFuGtL7U+kg/eUGMXBVTQN/OkQqomzJ/N3DYCKbMRzoiioNf4DslQQmE8cWiOm7
-	xwQwjuJvAJhadRjC6v6NcAX85nn2VWOE+BDoXIqE34L55sqYmYdP4j4JZcb3MBNaWH6JSA
-	Hwucosdcs2yr8vev6SgzLzmGLVjq1GRIveWLESU8I3sDWItb5UE07OZAV0LoJQ==
-Date: Fri, 28 Oct 2022 11:31:11 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Vignesh Raghavendra
- <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael
- Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] mtd: Fixes for v6.1-rc3
-Message-ID: <20221028113111.20508656@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1ooNaT-00Gx8g-EK
+	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2022 11:31:47 +0000
+Received: by mail-qk1-x732.google.com with SMTP id o28so532020qkl.4
+        for <linux-mtd@lists.infradead.org>; Fri, 28 Oct 2022 04:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hFGNTlzJVbGzTlwRhj/VBfk+5tnAHbXEChzttEBCShs=;
+        b=KMEUfSaF+5qB5N+7CiySj7HfV/xpdPV1X5P+ow/+vpnjM76CwEF6PtndJUOBYg9WmQ
+         pd1rzNjUx/IVQsI9oxWVJoepR7QKcFNdH0Kvk9UJfdvM6GvbciXdpr7SKXL5EiH0LI9g
+         G4fk3cDvb7StnlZAng2V+F27NpopjNG6Y0qOtFFp29eEmL7XzvQUw46PxLbnQgSSywUB
+         BAfzTVUGWDz4/b2W60OeRk8ALhz2nuje8d8n4E6xxatg4DHIAwyuExvW9SKB/X6Iccid
+         R64Vo+9K/CU8Ny7WN3H/GF9Esmf5UC+P5bEd7rOBOGIRuIdXDyEn3hPyOKuom5BaLY+Q
+         lvbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hFGNTlzJVbGzTlwRhj/VBfk+5tnAHbXEChzttEBCShs=;
+        b=LKrHQYWoSdG7WJFwzU+Np9K1Ui0jKabJ7VylbO8XhVrfckz0CVRjwH58VIeuuvpBNx
+         2SABiRzLjj/kw63XHcFXAhSbsj3MN8Nw7N86LM2PiIvctCmOic0P5V720VB4KzYfhsta
+         CoiYRkYEnwwA83+vskOSgsdnxZqrHCnSzmnLKAgtMkpUYZ2+AaHvgxQsbjeKRgXNFOrV
+         xdsMzE2zqPEB/QguyGHHaUHCtVsoiZMrNdFBABVffowU+eh2RFyxe5wOrlXaOc5WcDw2
+         b87Rn6Bc4oaC41YlfzsW5n9J7GmSSq17ggS1ju++x1f7j1CQfRl5g5Z1shzCqCVK1ioS
+         lMeg==
+X-Gm-Message-State: ACrzQf0XUEUZmN2ybiUek0xAx47yyIh3d29GxRx0NO5GAI1GfTAOB3Sd
+	LPqV81Wi7u1Hl4CZZCMKxcTDOA==
+X-Google-Smtp-Source: AMsMyM4P66qNsfOwoP5BdK92GEQsLgzJXa9UvzrxElfIHKx925179DcUnLkD8QGNgb1uuVE5Fb6KLQ==
+X-Received: by 2002:a05:620a:17ab:b0:6fa:d45:a749 with SMTP id ay43-20020a05620a17ab00b006fa0d45a749mr600992qkb.194.1666956702331;
+        Fri, 28 Oct 2022 04:31:42 -0700 (PDT)
+Received: from [192.168.1.11] ([64.57.193.93])
+        by smtp.gmail.com with ESMTPSA id q21-20020a05620a0d9500b006eec09eed39sm2773393qkl.40.2022.10.28.04.31.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Oct 2022 04:31:41 -0700 (PDT)
+Message-ID: <a98f00bd-013a-a1ce-0054-bbceeaefcefa@linaro.org>
+Date: Fri, 28 Oct 2022 07:31:39 -0400
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH v5 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
+ scheme
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Vadym Kochan <vadym.kochan@plvision.eu>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Elad Nachman <enachman@marvell.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>
+References: <20221026134545.7146-1-vadym.kochan@plvision.eu>
+ <20221026134545.7146-2-vadym.kochan@plvision.eu>
+ <33f04b06-dc00-b7ce-6a24-2282608b40dc@linaro.org>
+ <VI1P190MB0317C739E2D39427CD2A771D95309@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
+ <10581088-e4ff-76db-3c9b-42a7a9c118ee@linaro.org>
+ <20221027151825.166a9255@xps-13>
+ <e937b059-4168-3bd4-b294-cbfff0519d1f@linaro.org>
+ <20221027155025.7c04774a@xps-13>
+ <683dffbc-744f-80cd-2262-b6deb4200ccc@linaro.org>
+ <20221028094740.3c11f52b@xps-13>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221028094740.3c11f52b@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221028_023119_003951_37D33B30 
-X-CRM114-Status: UNSURE (   7.26  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221028_043145_522341_9716CC24 
+X-CRM114-Status: GOOD (  31.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,44 +105,156 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTGludXMsCgpUaGlzIGlzIGFuIE1URCBmaXhlcyBQUiBmb3IgdGhlIG5leHQgLXJjLgoK
-VGhhbmtzLApNaXF1w6hsCgpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDlhYmYy
-MzEzYWRjMWNhMWI2MTgwYzUwOGMyNWYyMmY5Mzk1Y2M3ODA6CgogIExpbnV4IDYuMS1yYzEgKDIw
-MjItMTAtMTYgMTU6MzY6MjQgLTA3MDApCgphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3Np
-dG9yeSBhdDoKCiAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
-L210ZC9saW51eC5naXQgdGFncy9tdGQvZml4ZXMtZm9yLTYuMS1yYzMKCmZvciB5b3UgdG8gZmV0
-Y2ggY2hhbmdlcyB1cCB0byAwNWUyNThjNmVjNjY5ZDZkMThjNDk0ZWEwM2QzNTk2MmQ2ZjViNTQ1
-OgoKICBtdGQ6IHBhcnNlcnM6IGJjbTQ3eHhwYXJ0OiBGaXggaGFsZmJsb2NrIHJlYWRzICgyMDIy
-LTEwLTE4IDExOjIwOjEyICswMjAwKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpNVEQgY29yZToKKiBwYXJ0aXRpb25zOiBB
-ZGQgbWlzc2luZyBvZl9ub2RlX2dldCgpIGluIGR5bmFtaWMgcGFydGl0aW9ucyBjb2RlCgpQYXJz
-ZXIgZHJpdmVyczoKKiBiY200N3h4cGFydDogRml4IGhhbGZibG9jayByZWFkcwoKUmF3IE5BTkQg
-Y29udHJvbGxlciBkcml2ZXJzOgoqIG1hcnZlbGw6IFVzZSBjb3JyZWN0IGxvZ2ljIGZvciBuYW5k
-LWtlZXAtY29uZmlnCiogdGVncmE6IEZpeCBQTSBkaXNhYmxlIGRlcHRoIGltYmFsYW5jZSBpbiBw
-cm9iZQoqIGludGVsOiBBZGQgbWlzc2luZyBvZl9ub2RlX3B1dCgpIGluIGVidV9uYW5kX3Byb2Jl
-KCkKClNQSS1OT1IgY29yZSBjaGFuZ2VzOgoqIElnbm9yZSAtRU5PVFNVUFAgaW4gc3BpX25vcl9p
-bml0KCkKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KTGludXMgV2FsbGVpaiAoMSk6CiAgICAgIG10ZDogcGFyc2VyczogYmNt
-NDd4eHBhcnQ6IEZpeCBoYWxmYmxvY2sgcmVhZHMKCk1pa2EgV2VzdGVyYmVyZyAoMSk6CiAgICAg
-IG10ZDogc3BpLW5vcjogY29yZTogSWdub3JlIC1FTk9UU1VQUCBpbiBzcGlfbm9yX2luaXQoKQoK
-UmFmYcWCIE1pxYJlY2tpICgxKToKICAgICAgbXRkOiBjb3JlOiBhZGQgbWlzc2luZyBvZl9ub2Rl
-X2dldCgpIGluIGR5bmFtaWMgcGFydGl0aW9ucyBjb2RlCgpUb255IE8nQnJpZW4gKDEpOgogICAg
-ICBtdGQ6IHJhd25hbmQ6IG1hcnZlbGw6IFVzZSBjb3JyZWN0IGxvZ2ljIGZvciBuYW5kLWtlZXAt
-Y29uZmlnCgpZYW5nIFlpbmdsaWFuZyAoMSk6CiAgICAgIG10ZDogcmF3bmFuZDogaW50ZWw6IEFk
-ZCBtaXNzaW5nIG9mX25vZGVfcHV0KCkgaW4gZWJ1X25hbmRfcHJvYmUoKQoKWmhhbmcgUWlsb25n
-ICgxKToKICAgICAgbXRkOiByYXduYW5kOiB0ZWdyYTogRml4IFBNIGRpc2FibGUgZGVwdGggaW1i
-YWxhbmNlIGluIHByb2JlCgogZHJpdmVycy9tdGQvbXRkY29yZS5jICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvaW50ZWwtbmFuZC1jb250cm9sbGVy
-LmMgfCAyMyArKysrKysrKysrKysrKystLS0tLS0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbWFy
-dmVsbF9uYW5kLmMgICAgICAgICAgfCAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvdGVncmFf
-bmFuZC5jICAgICAgICAgICAgfCAgNCArKystCiBkcml2ZXJzL210ZC9wYXJzZXJzL2JjbTQ3eHhw
-YXJ0LmMgICAgICAgICAgICB8ICA0ICsrLS0KIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jICAg
-ICAgICAgICAgICAgICAgIHwgIDQgKysrLQogNiBmaWxlcyBjaGFuZ2VkLCAyNSBpbnNlcnRpb25z
-KCspLCAxNCBkZWxldGlvbnMoLSkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 28/10/2022 03:47, Miquel Raynal wrote:
+> Hi Krzysztof,
+> 
+> krzysztof.kozlowski@linaro.org wrote on Thu, 27 Oct 2022 10:51:29 -0400:
+> 
+>> On 27/10/2022 09:50, Miquel Raynal wrote:
+>>> Hi Krzysztof,
+>>>
+>>> krzysztof.kozlowski@linaro.org wrote on Thu, 27 Oct 2022 09:24:24 -0400:
+>>>   
+>>>> On 27/10/2022 09:18, Miquel Raynal wrote:  
+>>>>> Hi Vadym,
+>>>>>     
+>>>>>>>>> +patternProperties:
+>>>>>>>>> +  "^nand@[0-3]$":
+>>>>>>>>> +    type: object
+>>>>>>>>> +    properties:
+>>>>>>>>> +      reg:
+>>>>>>>>> +        minimum: 0
+>>>>>>>>> +        maximum: 3
+>>>>>>>>> +
+>>>>>>>>> +      nand-rb:
+>>>>>>>>> +        minimum: 0
+>>>>>>>>> +        maximum: 1
+>>>>>>>>> +
+>>>>>>>>> +      nand-ecc-strength:
+>>>>>>>>> +        enum: [1, 4, 8]
+>>>>>>>>> +
+>>>>>>>>> +      nand-on-flash-bbt: true
+>>>>>>>>> +
+>>>>>>>>> +      nand-ecc-mode: true
+>>>>>>>>> +
+>>>>>>>>> +      nand-ecc-algo:
+>>>>>>>>> +        description: |
+>>>>>>>>> +          This property is essentially useful when not using hardware ECC.
+>>>>>>>>> +          Howerver, it may be added when using hardware ECC for clarification
+>>>>>>>>> +          but will be ignored by the driver because ECC mode is chosen depending
+>>>>>>>>> +          on the page size and the strength required by the NAND chip.
+>>>>>>>>> +          This value may be overwritten with nand-ecc-strength property.
+>>>>>>>>> +
+>>>>>>>>> +      nand-ecc-step-size:
+>>>>>>>>> +        description: |
+>>>>>>>>> +          Marvell's NAND flash controller does use fixed strength
+>>>>>>>>> +          (1-bit for Hamming, 16-bit for BCH), so the actual step size
+>>>>>>>>> +          will shrink or grow in order to fit the required strength.
+>>>>>>>>> +          Step sizes are not completely random for all and follow certain
+>>>>>>>>> +          patterns described in AN-379, "Marvell SoC NFC ECC".
+>>>>>>>>> +
+>>>>>>>>> +      label:
+>>>>>>>>> +        $ref: /schemas/types.yaml#/definitions/string
+>>>>>>>>> +
+>>>>>>>>> +      partitions:
+>>>>>>>>> +        type: object      
+>>>>>>>>
+>>>>>>>> That's not what I asked for. Like four times I asked you to add here
+>>>>>>>> unevaluatedProperties: false and I never said that ref to partition.yaml
+>>>>>>>> should be removed and you... instead remove that ref.
+>>>>>>>>
+>>>>>>>> You need to define here children and specify their ref.
+>>>>>>>>
+>>>>>>>> You must use unevaluatedProperties: false here. So this is fifth time I
+>>>>>>>> am writing this feedback.
+>>>>>>>>
+>>>>>>>>      
+>>>>>>>
+>>>>>>> It is a bit confusing that it is needed to define "partitions" and "label" rules particulary
+>>>>>>> in this nand controller instead of some common place like nand-chip.yaml, these properties
+>>>>>>> are common also for the other nand controllers.      
+>>>>>>
+>>>>>> No one speaks about label, I never commented about label, I think...
+>>>>>>
+>>>>>> If you think the property is really generic and every NAND controller
+>>>>>> bindings implement it, then feel free to include them there, in a
+>>>>>> separate patch. It sounds sensible, but I did not check other bindings.    
+>>>>>
+>>>>> FYI, label is already defined in mtd/mtd.yaml.    
+>>>>
+>>>> Which is not included here and in nand-controller.yaml  
+>>>
+>>> Maybe nand-chip.yaml should?  
+>>
+>> mtd.yaml looks a bit more than that - also allows nvmem nodes. Maybe
+>> let's just add label to nand-chip?
+> 
+> I don't get the reason behind this proposal, mtd.yaml really is
+> kind of a definition of generic properties any mtd device might
+> have, so duplicating label (or whatever else inside) does not seem
+> legitimate to me. The jedec,spi-nor.yaml file already references it for
+> instance.
+
+spi-nor is not a NAND chip... By including mtd.yaml in nand-chip you
+also allow the NVMEM properties which are not applicable.
+
+> 
+>>>>> Partitions do not need to be defined in your binding, just don't put
+>>>>> any in your example and you'll be fine. These partitions are either
+>>>>> static and may be described in the DT (see
+>>>>> mtd/partition/partition.yaml) or there is some dynamic discovery
+>>>>> involved and a proper parser shall be referenced (parsers have their
+>>>>> own binding).    
+>>>>
+>>>> I don't think this is correct. Basically you allow any node to be under
+>>>> partitions as there is no schema validating them (without compatibles).  
+>>>
+>>> Sorry if that was unclear, what I meant is: partitions should not be
+>>> defined in the bindings for Marvell NAND controller because they should
+>>> be defined somewhere else already.  
+>>
+>> Ah, right. Then it seems reasonable.
+>>
+>>>
+>>> NAND controller subnodes should define the storage devices (the
+>>> flashes themselves) connected to the controller. "nand-chip.yaml"
+>>> describes generic properties for these. Additional subnodes are allowed
+>>> and expected to be partitions (this is not enforced anywhere I think),
+>>> they should use one of the existing compatibles to define the parser.
+>>> The most common parser is named fixed-partitions and has its own
+>>> compatible. Every parser references partitions.yaml.
+>>>
+>>> There are a few controller bindings however which reference
+>>> partition.yaml anyway, probably to make the examples validation work,
+>>> I'm not sure it should be done like that though:
+>>> https://elixir.bootlin.com/linux/v6.0/source/Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+>>> https://elixir.bootlin.com/linux/v6.0/source/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml  
+>>
+>>
+>> Yes, so the nand-chip implementation (like Marvell NAND) could reference
+>> the parser and we would be done. If it doesn't, then we must have
+>> generic partitions in the nand-chip.
+> 
+> In this case, I am not aware of any parser that would be relevant.
+> 
+> In the generic case, should we really reference a parser in particular?
+> If yes then maybe we should make a yaml file that just gathers all the
+> parsers and include it within mtd.yaml (and have it referenced in
+> nand-chip.yaml). What do you think?
+> 
+
+Not all MTD devices have partitions so putting this into mtd.yaml does
+not look correct. Adding it into nand-chip seems fine.
+
+Best regards,
+Krzysztof
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
