@@ -4,64 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C3B8FA3743
-	for <linux-mtd@archiver.kernel.org>; Sun, 30 Oct 2022 13:51:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77A8BFA3740
+	for <linux-mtd@archiver.kernel.org>; Mon, 31 Oct 2022 07:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
-	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5NNfbZB+bf4K821u+R/t45s+2Nyde1v4Vf1YFZUWOaQ=; b=iiPkCP6vew+Gym
-	aDcUFXLbZJxbWEhy8hzEAlKkUL/iv7qyl/K0q594mv5QnuEXbgdDL/UO6risOPaJelffzCzdIGaqt
-	R/K/Cvj2FQW3YAgcac520/R1vi7OP0VjekOXXm81dhkEUBTnU+2pr6BRL+Ei8AhzOu/6E5WAnjoLE
-	K9bGRj19FhqoRFwYpD66xcLBEVwjfzTfAFWE/yx0AbCmxCzMzwHm+oTzrA3l+YH1urP+ANA4hivVh
-	ix+cpWPlf2GysucRCO7p+YznKKUbetZPHp7pY3J7JyAa4sDYcBCfgxyfdUXteWMbsG2AhSieORIhu
-	zx+djDFtjizibacfXveA==;
+	List-Owner; bh=F9v0SKgMWEPL4PHr+y6c/cHA8yM4QT3LX/LwTL5wxyw=; b=I0+URX/VAkoZ81
+	DHFUFFKc9Swdsf4vIin/PnvTrCJngZ2vRVyc1h0uVsvELYS3Tzl+QNscP5aubvha2HLhuTpkvBtDB
+	b4Fj1/ChC440BUsNODZdIcyD/G1oq4VK1A+szV8qHOK8GgGMZ4w8qtIEYCQQjdpakL7DEZ9Oh6/KX
+	P8zh/VJ22BVdMlrC/nnJQfougMlHQQkJTGesHjclbcQQn7QkzDH6m5x1C2bdIjsiRYQy3dr1mRyJd
+	dpOJitOXzIlvXz7kTWKXOxL7u++fDoeCKjnmhoRW9pMeIOqiQA+g64ckEws7PFFI2nojahlxdh6nK
+	f8AB8trevFCVWSu+O2ig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1op8i1-00Gb2V-8t; Sun, 30 Oct 2022 13:50:41 +0000
-Received: from mail-oa1-f42.google.com ([209.85.160.42])
+	id 1opPRK-009Fke-O8; Mon, 31 Oct 2022 07:42:34 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1op8hn-00GavU-14; Sun, 30 Oct 2022 13:50:28 +0000
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-13c569e5ff5so10774046fac.6;
-        Sun, 30 Oct 2022 06:50:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QM+uLtn35cNBB8WShoztahWkyNeyqqGV8AL7ZS4noIw=;
-        b=anXukLP9QRJbkivrn/i5WdjuLyw9Xs6TgBo+B3kG27ODH3+ji42c5Y3AbSZYB6UapO
-         UlLw9Bl3r9aNJUNpUtePgY/XOcHl4qU0X5lPQWTsPGBvxYZgGUAfJqQU9sMTU8Y8Kinl
-         GUB7AZiqUS/m/qUflk43gm8+loj7co+J/bs91nOIIawr7p/Kf4SZf0XoDk3c8Ubc/xcs
-         BWR9yISCAHNFLwNJX35Pkn3DVuY4i/BdrgIZY1HhSaL/L56CKIJqhEO0d43Ty7G25ahX
-         dLYmkAMuNY+AtjeOFIN1/9HbDqusa4XfrBW/C5l2LYsYsCChTFIOMR7Ywp7ot+0ML2Pr
-         jfww==
-X-Gm-Message-State: ACrzQf3oCKihYhuKc/1dDbAb4AKQIca6vKdw3NOG/ws5cLlyS6Cm43Hd
-	4GHIDO0R3YnfEMU4XEJk6g==
-X-Google-Smtp-Source: AMsMyM4ekD+KyJWMr4GSGQ0Ji2kUPt3lAnlfD1u4S/wAA6L9dkzw4WsHzE7oFxxtxteJsfH9/11fzg==
-X-Received: by 2002:a05:6870:5b9d:b0:12b:5871:22f4 with SMTP id em29-20020a0568705b9d00b0012b587122f4mr4949428oab.211.1667137825562;
-        Sun, 30 Oct 2022 06:50:25 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id 11-20020aca280b000000b00353fe4fb4casm1394805oix.48.2022.10.30.06.50.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Oct 2022 06:50:25 -0700 (PDT)
-Received: (nullmailer pid 992220 invoked by uid 1000);
-	Sun, 30 Oct 2022 13:50:23 -0000
+	id 1opPRI-009FiS-J0
+	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2022 07:42:33 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2A92861000;
+	Mon, 31 Oct 2022 07:42:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3523EC433C1;
+	Mon, 31 Oct 2022 07:42:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1667202150;
+	bh=1+riR0KFIgYReetD4Za293COMQ2UlNbOhkT/yMgNgrg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cV4nE08TCakSA1OgDXwm6hyCe3V7/HbEDl28hHM6GR9xYxDS3FNm5Zxo0vh+Fx5z/
+	 atk8g6dns3OdHsBpgvJzpMrS9r0K7m9N/NTngohH21G/svQUFM70LM1QCeRJY/A6Xz
+	 xe2bcqWcVkKjXGSHUxc0yW5w8okxnHQ9y6nMtcpY=
+Date: Mon, 31 Oct 2022 08:43:26 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Tim Harvey <tharvey@gateworks.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Tomasz =?utf-8?Q?Mo=C5=84?= <tomasz.mon@camlingroup.com>,
+	Richard Weinberger <richard@nod.at>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Sasha Levin <sashal@kernel.org>, Han Xu <han.xu@nxp.com>,
+	kernel <kernel@pengutronix.de>, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH RESEND stable 5.10] mtd: rawnand: gpmi: Set
+ WAIT_FOR_READY timeout based on program/erase times
+Message-ID: <Y198nomOpDZ9SUq/@kroah.com>
+References: <20221028213315.4171685-1-tharvey@gateworks.com>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Maxime Ripard <mripard@kernel.org>, Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>, linux-sunxi@lists.linux.dev, linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-arm-kernel@lists.infradead.org, Krzysztof Kozlowski <krzk+dt@kernel.org>, Michael Walle <michael@walle.cc>, Manivannan Sadhasivam <mani@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>, Chen-Yu Tsai <wens@csie.org>, Naga Sureshkumar Relli <nagasure@xilinx.com>, linux-arm-msm@vger.kernel.org, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-In-Reply-To: <20221028235933.934850-10-miquel.raynal@bootlin.com>
-References: <20221028235933.934850-1-miquel.raynal@bootlin.com>
- <20221028235933.934850-10-miquel.raynal@bootlin.com>
-Message-Id: <166713668466.965796.13624922237162086174.robh@kernel.org>
-Subject:  Re: [PATCH 09/12] dt-bindings: mtd: phymap: Reuse the generic definitions
-Date: Sun, 30 Oct 2022 08:50:23 -0500
+Content-Disposition: inline
+In-Reply-To: <20221028213315.4171685-1-tharvey@gateworks.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221030_065027_097471_BD302FB6 
-X-CRM114-Status: GOOD (  13.06  )
+X-CRM114-CacheID: sfid-20221031_004232_682245_73515D33 
+X-CRM114-Status: GOOD (  20.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,52 +70,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Sat, 29 Oct 2022 01:59:30 +0200, Miquel Raynal wrote:
-> The memory mapped MTD devices also share a lot with all the other MTD
-> devices, so let's share the properties by referencing mtd.yaml. We can
-> then drop mentioning the properties, to the cost of mentioning the
-> possible "sram" node name prefix.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/mtd/mtd-physmap.yaml | 7 +++----
->  Documentation/devicetree/bindings/mtd/mtd.yaml         | 2 +-
->  2 files changed, 4 insertions(+), 5 deletions(-)
-> 
-
-
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.example.dtb: psram@0,0: $nodename:0: 'psram@0,0' does not match '^(flash|sram)(@.*)?$'
-	From schema: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gRnJpLCBPY3QgMjgsIDIwMjIgYXQgMDI6MzM6MTVQTSAtMDcwMCwgVGltIEhhcnZleSB3cm90
+ZToKPiBGcm9tOiBTYXNjaGEgSGF1ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+Cj4gCj4gMDY3
+ODFhNTAyNjM1MCBGaXhlcyB0aGUgY2FsY3VsYXRpb24gb2YgdGhlIERFVklDRV9CVVNZX1RJTUVP
+VVQgcmVnaXN0ZXIKPiB2YWx1ZSBmcm9tIGJ1c3lfdGltZW91dF9jeWNsZXMuIGJ1c3lfdGltZW91
+dF9jeWNsZXMgaXMgY2FsY3VsYXRlZCB3cm9uZwo+IHRob3VnaDogSXQgaXMgY2FsY3VsYXRlZCBi
+YXNlZCBvbiB0aGUgbWF4aW11bSBwYWdlIHJlYWQgdGltZSwgYnV0IHRoZQo+IHRpbWVvdXQgaXMg
+YWxzbyB1c2VkIGZvciBwYWdlIHdyaXRlIGFuZCBibG9jayBlcmFzZSBvcGVyYXRpb25zIHdoaWNo
+Cj4gcmVxdWlyZSBvcmRlcnMgb2YgbWFnbml0dWRlIGJpZ2dlciB0aW1lb3V0cy4KPiAKPiBGaXgg
+dGhpcyBieSBjYWxjdWxhdGluZyBidXN5X3RpbWVvdXRfY3ljbGVzIGZyb20gdGhlIG1heGltdW0g
+b2YKPiB0QkVSU19tYXggYW5kIHRQUk9HX21heC4KPiAKPiBUaGlzIGlzIGZvciBub3cgdGhlIGVh
+c2llc3QgYW5kIG1vc3Qgb2J2aW91cyB3YXkgdG8gZml4IHRoZSBkcml2ZXIuCj4gVGhlcmUncyBy
+b29tIGZvciBpbXByb3ZlbWVudHMgdGhvdWdoOiBUaGUgTkFORF9PUF9XQUlUUkRZX0lOU1RSIHRl
+bGxzIHVzCj4gdGhlIGRlc2lyZWQgdGltZW91dCBmb3IgdGhlIGN1cnJlbnQgb3BlcmF0aW9uLCBz
+byB3ZSBjb3VsZCBwcm9ncmFtIHRoZQo+IHRpbWVvdXQgZHluYW1pY2FsbHkgZm9yIGVhY2ggb3Bl
+cmF0aW9uIGluc3RlYWQgb2Ygc2V0dGluZyBhIGZpeGVkCj4gdGltZW91dC4gQWxzbyB3ZSBjb3Vs
+ZCB3aXJlIHVwIHRoZSBpbnRlcnJ1cHQgaGFuZGxlciB0byBhY3R1YWxseSBkZXRlY3QKPiBhbmQg
+Zm9yd2FyZCB0aW1lb3V0cyBvY2N1cnJlZCB3aGVuIHdhaXRpbmcgZm9yIHRoZSBjaGlwIGJlaW5n
+IHJlYWR5Lgo+IAo+IEFzIGEgc2lkZW5vdGUgSSB2ZXJpZmllZCB0aGF0IHRoZSBjaGFuZ2UgaW4g
+MDY3ODFhNTAyNjM1MCBpcyByZWFsbHkKPiBjb3JyZWN0LiBJIHdpcmVkIHVwIHRoZSBpbnRlcnJ1
+cHQgaGFuZGxlciBpbiBteSB0cmVlIGFuZCBtZWFzdXJlZCB0aGUKPiB0aW1lIGJldHdlZW4gc3Rh
+cnRpbmcgdGhlIG9wZXJhdGlvbiBhbmQgdGhlIHRpbWVvdXQgaW50ZXJydXB0IGhhbmRsZXIKPiBj
+b21pbmcgaW4uIFRoZSB0aW1lIGluY3JlYXNlcyA0MXVzIHdpdGggZWFjaCBzdGVwIGluIHRoZSB0
+aW1lb3V0Cj4gcmVnaXN0ZXIgd2hpY2ggY29ycmVzcG9uZHMgdG8gNDA5NiBjbG9jayBjeWNsZXMg
+d2l0aCB0aGUgOTlNSHogY2xvY2sKPiB0aGF0IEkgaGF2ZS4KPiAKPiBGaXhlczogMDY3ODFhNTAy
+NjM1MCAoIm10ZDogcmF3bmFuZDogZ3BtaTogRml4IHNldHRpbmcgYnVzeSB0aW1lb3V0IHNldHRp
+bmciKQo+IEZpeGVzOiBiMTIwNjEyMjA2OWFhICgibXRkOiByYXduaWFuZDogZ3BtaTogdXNlIGNv
+cmUgdGltaW5ncyBpbnN0ZWFkIG9mIGFuIGVtcGlyaWNhbCBkZXJpdmF0aW9uIikKPiBDYzogc3Rh
+YmxlQHZnZXIua2VybmVsLm9yZwo+IFNpZ25lZC1vZmYtYnk6IFNhc2NoYSBIYXVlciA8cy5oYXVl
+ckBwZW5ndXRyb25peC5kZT4KPiBBY2tlZC1ieTogSGFuIFh1IDxoYW4ueHVAbnhwLmNvbT4KPiBU
+ZXN0ZWQtYnk6IFRvbWFzeiBNb8WEIDx0b21hc3oubW9uQGNhbWxpbmdyb3VwLmNvbT4KPiBTaWdu
+ZWQtb2ZmLWJ5OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0Pgo+IC0tLQo+IHN0
+YWJsZS01LjEwCgpZb3UgZGlkIG5vdCBzaWduLW9mZiBvbiB0aGlzIGJhY2twb3J0LiAgUGxlYXNl
+IGZpeCB0aGF0IHVwIGFuZCByZXNlbmQKYW5kIGFsc28gZ2l2ZSB1cyBhIGhpbnQgYXMgdG8gd2hh
+dCB0aGUgdXBzdHJlYW0gY29tbWl0IGlkIGlzIGhlcmUuCgp0aGFua3MsCgpncmVnIGstaAoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
