@@ -4,84 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86E10FA3741
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 Oct 2022 14:44:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BDA1ECAAA1
+	for <linux-mtd@archiver.kernel.org>; Mon, 31 Oct 2022 14:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3eaJUBQQ0aB6NpDmt3JgRE+/o6uLnypyWXliqchtQFM=; b=tRuUfPDOYwxxJN
-	41gmH7KkgaCThZ5b/Vu+Q5AqxLcHe2CJJGlEv5FMGz6/SeKhpyJ5wdudtjP6FdJxcY0y4s3yHcmoG
-	/vqluAdfftq7zzrY5rfTxt6FLY/Z5WXywdk7sYCm/Rel5ooKQ/lLnEF/gYycd6C8lvJJOg5TH0DKD
-	QpnLdNrRcFh8TVOWj7NQeXBROdyhGSzKtO6iA0PVW5antIr7j9Y0pBAGwLZgnpRyt9eCT8sg/VojK
-	9Ot4JCWKhZvS16UwSnEZ9D9Km8JT42Hvtp4DuJ1HrPpRaL8/BkM9so/eqspVW2XPSIb5fQ1voGMez
-	HM7nOWfw009eUGzvZ58A==;
+	List-Owner; bh=XWD5yxg2iPH6ja8HyWL8INbibXOGA02ZGNEH2bp1g7o=; b=UUHdmexIgwOuXK
+	CMK3uw74Fy0YCDzOKxxUBx6lU7pqnHmD7SBuClfyrWRy5o4UjibVygpp5tdh4Uw9rGkUGSb31shZu
+	IBz8+3nIcHZPtUUsudYN9z3bqtB4qB6nJJajbZ/zW+i7wxwTCVhotxBfXdpDFCwshUESknjQw1tMf
+	Lm+vi1ImedONuraUb9oamz+uPqdv9lzw+S2LTHum2E3V+4cgs9wYse5PjohVZA9QidZdejoA3qqEJ
+	7ghfzKbsglAYUYwWpzjObzrfg3TkqziagzshDFTzNKJaokiTc6F/ufYjZlBRSipSFE4vojXQOQRpE
+	zgbBk06PqfTOuUkfd9HA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1opW0d-00CKra-7t; Mon, 31 Oct 2022 14:43:27 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1opW2d-00CLXv-G5; Mon, 31 Oct 2022 14:45:31 +0000
+Received: from mail-oi1-f175.google.com ([209.85.167.175])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1opW0Q-00CKnE-9P; Mon, 31 Oct 2022 14:43:15 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 29VEh2LZ002087;
-	Mon, 31 Oct 2022 09:43:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1667227382;
-	bh=xKMheBe6+tALckGCgXRgq0Nenx9e5EqobLOp//FbZXY=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=EEEOmiorUFfhlYJP4Kmp+Tqf3wLsmqWR8VoUSQQuL9bG3CnyXcDGVfEXzItcJDkYw
-	 /zH1whRx6xA+3ul9TnsKgSdght7iimEz4LkD5hcW9igiQVVPxru4JLh1ECQzz3/diM
-	 sOjEbNeTiSRneF9jkWzMR23AZX2EESkSBVTSKoUY=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 29VEh299006573
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 31 Oct 2022 09:43:02 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.6; Mon, 31
- Oct 2022 09:43:02 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.6 via
- Frontend Transport; Mon, 31 Oct 2022 09:43:02 -0500
-Received: from [10.250.234.171] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-	by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 29VEgu2P021939;
-	Mon, 31 Oct 2022 09:42:57 -0500
-Message-ID: <ceaf4036-12f8-0cfe-9cdc-37d2ef96bd76@ti.com>
-Date: Mon, 31 Oct 2022 20:12:55 +0530
+	id 1opW2b-00CLW3-2K; Mon, 31 Oct 2022 14:45:30 +0000
+Received: by mail-oi1-f175.google.com with SMTP id t62so2180028oib.12;
+        Mon, 31 Oct 2022 07:45:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xn4+1msnko+9e0m7siIGlOveOVoLkD2d39pnfpxZtnk=;
+        b=vvF3C55G2teEdkO3wfN5vsXv3IQjtFf+A9cpLctjf3z041Sfy+XKpS+MAlGQ29w0OA
+         Nr0sqgN4q/jeiQslQPfL5DeGYNatOmmRKa7T5GzM+shU7c3t9Z7wIPmhC75OxFCVC3hd
+         3PMJLP/g4Ryjeo/IxZglfgEeM8YPlrGpoHlsXeEpNbzZsRkM1i0G0vuniMJAkzoA7Hxh
+         +p0SUQI3EpOWWTjjqaxbUnk1DL97OdGCShiEIYTkRNYlxyFwNxdabi+4Ob0sWYuggmJ0
+         z/0cK90N9AG78FhbhZJ4J9lo9BBPUtt1FUyKaxRgD3NW3qExAtZkis0EYj2sUX99kN0H
+         FBzQ==
+X-Gm-Message-State: ACrzQf3OYi49rv1WbG/ku30IHuG8XsAiBQdQbPUcSLrd4c5n27f5eWKs
+	xFizDrj2i+BrM3Orp7l7J0CUIQdFnQ==
+X-Google-Smtp-Source: AMsMyM4H8uQmmu7Jy4YGGytjMaM+JUYHpTj+D7MDv3fs/PXmunvqTxXEzKVvGNE6N6YKT+YNFglZ8Q==
+X-Received: by 2002:a05:6808:1a27:b0:354:55e5:9777 with SMTP id bk39-20020a0568081a2700b0035455e59777mr14919019oib.267.1667227526966;
+        Mon, 31 Oct 2022 07:45:26 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id p5-20020a056870830500b0013b92b3ac64sm3124401oae.3.2022.10.31.07.45.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Oct 2022 07:45:26 -0700 (PDT)
+Received: (nullmailer pid 2860621 invoked by uid 1000);
+	Mon, 31 Oct 2022 14:45:28 -0000
+Date: Mon, 31 Oct 2022 09:45:28 -0500
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, William Zhang <william.zhang@broadcom.com>, Vignesh Raghavendra <vigneshr@ti.com>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Joel Peshkin <joel.peshkin@broadcom.com>, u-boot@lists.denx.de, Tom Rini <trini@konsulko.com>, Conor Dooley <conor.dooley@microchip.com>, Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH V3 1/2] dt-bindings: mtd: partitions: u-boot: allow
+ dynamic subpartitions
+Message-ID: <166722752391.2860511.4769510396769806358.robh@kernel.org>
+References: <20221018154202.4634-1-zajec5@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [EXTERNAL] [PATCH] mtd: spi-nor: Fix the number of bytes for the
- dummy cycles
-To: Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
-        Tudor Ambarus
-	<tudor.ambarus@microchip.com>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Michael
- Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard
- Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Matthias
- Brugger <matthias.bgg@gmail.com>,
-        <linux-mtd@lists.infradead.org>
-CC: <linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Bayi Cheng
-	<bayi.cheng@mediatek.com>
-References: <20221031124633.13189-1-allen-kh.cheng@mediatek.com>
-Content-Language: en-US
-From: Dhruva Gole <d-gole@ti.com>
-In-Reply-To: <20221031124633.13189-1-allen-kh.cheng@mediatek.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Disposition: inline
+In-Reply-To: <20221018154202.4634-1-zajec5@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221031_074314_488448_0E769563 
-X-CRM114-Status: GOOD (  17.36  )
+X-CRM114-CacheID: sfid-20221031_074529_127546_2B9B9266 
+X-CRM114-Status: GOOD (  11.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,52 +74,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 31/10/22 18:16, Allen-KH Cheng wrote:
-> The number of bytes used by spi_nor_spimem_check_readop() may be
-> incorrect for the dummy cycles. Since nor->read_dummy is not initialized
-> before spi_nor_spimem_adjust_hwcaps().
->
-> We use both mode and wait state clock cycles instead of nor->read_dummy.
->
-> Fixes: 0e30f47232ab ("mtd: spi-nor: add support for DTR protocol")
-> Co-developed-by: Bayi Cheng <bayi.cheng@mediatek.com>
-> Signed-off-by: Bayi Cheng <bayi.cheng@mediatek.com>
-> Signed-off-by: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-> ---
-
-Tested-by: Dhruva Gole <d-gole@ti.com>
-
->   drivers/mtd/spi-nor/core.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 6c921eb3fadb..8b9c318a0ad4 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1914,7 +1914,8 @@ static int spi_nor_spimem_check_readop(struct spi_nor *nor,
->   	spi_nor_spimem_setup_op(nor, &op, read->proto);
->   
->   	/* convert the dummy cycles to the number of bytes */
-> -	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
-> +	op.dummy.nbytes = (read->num_mode_clocks + read->num_wait_states) *
-> +			  op.dummy.buswidth / 8;
->   	if (spi_nor_protocol_is_dtr(nor->read_proto))
->   		op.dummy.nbytes *= 2;
->   
-Tested on my AM625 SK EVM having spi nor flash and no obvious 
-regressions observed :)
-
--- 
-Best regards,
-Dhruva Gole
-Texas Instruments Incorporated
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Ck9uIFR1ZSwgMTggT2N0IDIwMjIgMTc6NDI6MDEgKzAyMDAsIFJhZmHFgiBNacWCZWNraSB3cm90
+ZToKPiBGcm9tOiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+Cj4gCj4gVS1Cb290
+IHBhcnRpdGlvbiBtYXkgY29udGFpbiBzdWJwYXJ0aXRpb25zLiBGb3IgZXhhbXBsZSBCcm9hZGNv
+bQo+IGluY2x1ZGVzIGVudmlyb25tZW50IGRhdGEgYmxvY2sgaW4gdGhlIG1pZGRsZSBvZiBpdHMg
+VS1Cb290IHBhcnRpdGlvbi4KPiAKPiBUaGlzIGFsbG93cyBkZXNjcmliaW5nIEJyb2FkY29tJ3Mg
+VS1Cb290IGVudiBkYXRhIGFuZCB3aWxsIGFsbG93Cj4gcmVmZXJlbmNpbmcgaXRzIE5WTUVNIGNl
+bGwgaW4gdGhlIGZ1dHVyZS4KPiAKPiBSZWc6IDExOGYzZmJlNTE3ZjQgKCJkdC1iaW5kaW5nczog
+bXRkOiBwYXJ0aXRpb25zOiBzdXBwb3J0IGxhYmVsL25hbWUgb25seSBwYXJ0aXRpb24iKQo+IFJl
+ZjogZGQ2MzgyMDJkZmI2NSAoImR0LWJpbmRpbmdzOiBtdGQ6IHBhcnRpdGlvbnM6IGFkZCBhZGRp
+dGlvbmFsIGV4YW1wbGUgZm9yIHFjb20sc21lbS1wYXJ0IikKPiBTaWduZWQtb2ZmLWJ5OiBSYWZh
+xYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+Cj4gLS0tCj4gVjM6IEFkZCB0aGlzIHBhdGNo
+IGFzIHByZS1yZXF1aXJlbWVudCBmb3IgdS1ib290LGVudi55YW1sICYgYnJjbSxlbnYKPiAtLS0K
+PiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbnMvdS1ib290LnlhbWwgICAg
+ICAgICB8IDcgKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspCj4gCgpB
+cHBsaWVkLCB0aGFua3MhCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
