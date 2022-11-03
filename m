@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C23DC4332F
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Nov 2022 22:50:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 012D0C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Nov 2022 14:13:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xu4LmkwnU5CjPDLBSoQTaMADOLMp92TaicZTjriOOOQ=; b=QL4ATCgZGDu4Ir
-	AIPMcHoshAiM2k7GCGdJX1QefGDnjKhzssC2D3ETjW68CYoZVqWEu32NvJgQUOzUv3ilg1CmXEEB1
-	OOs36zvbXOZaDAY7+A9ARZha0e9vTZELShe7ix9Mp7a5mIfStyGqT/wDjYWOV5gb2l7GwjOJYC2P3
-	bXVMvnnwvku992dIemZ1fl5gPVuwNPPa0C8bh82Pytzz1WTWKOa1eMq1K7qMyl1p3PCJnmMcqA3v0
-	D6mxKReSJU7F7kuGu2s/kX+QS+F6eXNMMGiNpYs5lj8JHv3RgZMgQ7zG92cuTg9/q7kMP7tf/HgHU
-	NVii6JFc5wdDm1P79afA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=dcte6N2RW7lzlkWBfpx+N/pBf2Wb0P2hsZyS335LycA=; b=FzoGp5NwtLAzdC
+	DJaqgeJK+PDddeSZaTKUfHsxpE9MAza1gvXm8ol0RWCmu8j9OV2GUzm0eaZtKJVtPT/hhylSy0Jvz
+	4NvM3eFzm9x7dEoYYyFYbu9+Q4J7k0f/iNvrHP+BWPS6CO5Mp884K8ux7v4f9yn/JofQPKwsC5aob
+	fwnPWJwL7L9hDXybcUKfXsyiEZQN0lu7k7XljsRDXaJ0jCbTi3eM7Q2VPIsK0jI6UGqrYnHaUyN0f
+	ZEI9JO00o2+MaeGdd2rcsNUYraXOpEylvqgdEdZdNsx/5zrRcUJZBAuGb7EL+bIusMBK7gTYEKnHt
+	deSXnqPy87ffpcBEzbPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqMYC-00EmHP-UV; Wed, 02 Nov 2022 22:49:36 +0000
-Received: from mx0a-00105401.pphosted.com ([67.231.144.184])
+	id 1oqaxX-0002jS-Mc; Thu, 03 Nov 2022 14:12:43 +0000
+Received: from mx0b-00105401.pphosted.com ([67.231.152.184])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqMXv-00Em5g-2U
-	for linux-mtd@lists.infradead.org; Wed, 02 Nov 2022 22:49:22 +0000
-Received: from pps.filterd (m0078137.ppops.net [127.0.0.1])
-	by mx0a-00105401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 2A2MefUV031717;
-	Wed, 2 Nov 2022 22:49:15 GMT
+	id 1oqaxS-0002e1-Qe
+	for linux-mtd@lists.infradead.org; Thu, 03 Nov 2022 14:12:42 +0000
+Received: from pps.filterd (m0074334.ppops.net [127.0.0.1])
+	by mx0b-00105401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 2A3E9hcq022110;
+	Thu, 3 Nov 2022 14:12:25 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=collins.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=POD051818;
- bh=1Xxw/yfLAKAKJHO5y2yT947zc0sXaYnkKFXNVb9ZJBk=;
- b=DEtzF8/+gTUtO+2DRgVJZ+UfrT5yPfNidD9PqTRRr3/r/GiT2bub3NCM7NVPaUEZ6ueN
- W2IdEV6pDFo3nAuI5yBn4PcHXfFaD0JSyH5WWupa7Vzvcp0hDWNLAxYMgtVvffvpVreb
- Sdsx7UeXO6Cx/Z6aE52Ei7p914Hpsdpe19lQ8l4yzv7Hw9TSoJ4RS1rQCDqExtOE4Gpy
- +7roQDol+2kzd7rrWg1yxZ1UNn0izC5/dGEvCmv1VvL2vqgy/T/gQqRp91ITR596EKhs
- yz8ALbj5QHFwXpBLP3YBViJDe9MUsi7kvqMGwSboxvYWJRt7Qk/apLzNjUEDvwPtng04 AQ== 
-Received: from xnwpv37.utc.com ([167.17.239.17])
-	by mx0a-00105401.pphosted.com with ESMTP id 3kksese6at-1
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=POD051818; bh=ShNH+c1jpFuSqUCy6kalHE7BkDip9aTmBnd6SbmxonI=;
+ b=YnPMlTwbSuRV+hbA6TProOSK7WqwCwZ0VnyYk04lAse07gH1RsGiWlVaolEK35KvYFcU
+ GA2sNQn5VWXLI4ztHAcAyH4qi7wkkpD++Y2TaLt8iUTZaLKeMI48QSS9CTw8eeX1GDj8
+ 3gVoyS42654WYDZF+SzT/cLoyiY86rFH7X6Z8I/Dl8PRSp7gNi73yM/HfN+cV/exBmDC
+ qpdM7lkQFsyGnF596IUpioS/VsLFzAqci59Fbk//a9vTYFlFtgwM/efMlrgQyq3z5yIt
+ h3NdtuJoern1w1IRW5MvRBgKl2bjlXM8fl5xf2YWnx5XwOH4+MEJk8Pf6TnmU0FYIM/R 9w== 
+Received: from xnwpv38.utc.com ([167.17.239.18])
+	by mx0b-00105401.pphosted.com with ESMTP id 3km2tfdv9p-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 02 Nov 2022 22:49:15 +0000
-Received: from qusnwafg.utcapp.com (qusnwafg.utcapp.com [10.161.48.103])
-	by xnwpv37.utc.com (8.16.1.2/8.16.1.2) with ESMTPS id 2A2MnD1I181925
+	Thu, 03 Nov 2022 14:12:25 +0000
+Received: from qusnwafe.utcapp.com (qusnwafe.utcapp.com [10.161.48.101])
+	by xnwpv38.utc.com (8.16.1.2/8.16.1.2) with ESMTPS id 2A3ECOC4069935
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 2 Nov 2022 22:49:14 GMT
-Received: from ciulimr02.rockwellcollins.com ([10.172.224.19])
-	by qusnwafg.utcapp.com (8.16.1.2/8.16.1.2) with ESMTPS id 2A2MnDpU006489
+	Thu, 3 Nov 2022 14:12:24 GMT
+Received: from dtulimr01.rockwellcollins.com ([10.172.224.19])
+	by qusnwafe.utcapp.com (8.16.1.2/8.16.1.2) with ESMTPS id 2A3ECO0P022191
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 2 Nov 2022 22:49:13 GMT
+	Thu, 3 Nov 2022 14:12:24 GMT
 X-Received: from kirk.rockwellcollins.lab (kirk.rockwellcollins.lab [10.148.204.208])
-	by ciulimr02.rockwellcollins.com (Postfix) with ESMTP id 68B4B20096;
-	Wed,  2 Nov 2022 17:49:13 -0500 (CDT)
+	by dtulimr01.rockwellcollins.com (Postfix) with ESMTP id E6126604EE;
+	Thu,  3 Nov 2022 09:12:23 -0500 (CDT)
 From: Brandon Maier <brandon.maier@collins.com>
 To: MTD Mailing List <linux-mtd@lists.infradead.org>
 Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
         Brandon Maier <brandon.maier@collins.com>
-Subject: [PATCH mtd-utils 1/7] misc-utils: flashcp: add safe_write
-Date: Wed,  2 Nov 2022 17:47:51 -0500
-Message-Id: <20221102224757.58012-2-brandon.maier@collins.com>
+Subject: [PATCH mtd-utils 1/1] misc-utils: mtdpart: document partition of size 0
+Date: Thu,  3 Nov 2022 09:12:17 -0500
+Message-Id: <20221103141217.22119-1-brandon.maier@collins.com>
 X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221102224757.58012-1-brandon.maier@collins.com>
-References: <20221102224757.58012-1-brandon.maier@collins.com>
 MIME-Version: 1.0
-X-Proofpoint-ORIG-GUID: fQ9RLL6fviW-UPUTMzuPPg6LkucT4pRv
-X-Proofpoint-GUID: fQ9RLL6fviW-UPUTMzuPPg6LkucT4pRv
-X-Proofpoint-Spam-Details: rule=outbound_default_notspam policy=outbound_default score=0
- mlxlogscore=999 malwarescore=0 clxscore=1015 suspectscore=0 adultscore=0
- impostorscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2210170000
- definitions=main-2211020151
+X-Proofpoint-GUID: 1xo5FFqYtr5jrVQBFKxPbQ1N_00swbaZ
+X-Proofpoint-ORIG-GUID: 1xo5FFqYtr5jrVQBFKxPbQ1N_00swbaZ
+X-Proofpoint-Spam-Details: rule=outbound_default_notspam policy=outbound_default score=0 clxscore=1015
+ malwarescore=0 adultscore=0 mlxscore=0 impostorscore=0 phishscore=0
+ priorityscore=1501 mlxlogscore=999 spamscore=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211030097
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221102_154919_146936_0EF6952C 
-X-CRM114-Status: GOOD (  18.72  )
+X-CRM114-CacheID: sfid-20221103_071239_025791_F6101071 
+X-CRM114-Status: GOOD (  16.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,103 +86,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Share the writing code between the two write implementations.
+If the partition size passed in to the BLKPG_ADD_PARTITION ioctl is 0,
+Linux will make the partition fill to the end of the device[1]. Document
+this feature in the help.
+
+[1] https://elixir.bootlin.com/linux/v6.0.6/source/drivers/mtd/mtdpart.c#L254
 
 Signed-off-by: Brandon Maier <brandon.maier@collins.com>
 ---
- misc-utils/flashcp.c | 58 +++++++++++++++++++-------------------------
- 1 file changed, 25 insertions(+), 33 deletions(-)
+ misc-utils/mtdpart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/misc-utils/flashcp.c b/misc-utils/flashcp.c
-index 9e78831..59389db 100644
---- a/misc-utils/flashcp.c
-+++ b/misc-utils/flashcp.c
-@@ -147,6 +147,29 @@ static void safe_read (int fd,const char *filename,void *buf,size_t count,bool v
- 	}
- }
- 
-+static void safe_write (int fd,const void *buf,size_t count,size_t written,unsigned long long to_write,const char *device,bool verbose)
-+{
-+	ssize_t result;
-+
-+	/* write to device */
-+	result = write (fd,buf,count);
-+	if (count != result)
-+	{
-+		if (verbose) log_printf (LOG_NORMAL,"\n");
-+		if (result < 0)
-+		{
-+			log_printf (LOG_ERROR,
-+					"While writing data to 0x%.8lx-0x%.8lx on %s: %m\n",
-+					written,written + count,device);
-+			exit (EXIT_FAILURE);
-+		}
-+		log_printf (LOG_ERROR,
-+				"Short write count returned while writing to x%.8zx-0x%.8zx on %s: %zu/%llu bytes written to flash\n",
-+				written,written + count,device,written + result,to_write);
-+		exit (EXIT_FAILURE);
-+	}
-+}
-+
- static void safe_rewind (int fd,const char *filename)
- {
- 	if (lseek (fd,0L,SEEK_SET) < 0)
-@@ -170,7 +193,6 @@ int main (int argc,char *argv[])
- {
- 	const char *filename = NULL,*device = NULL;
- 	int i,flags = FLAG_NONE;
--	ssize_t result;
- 	size_t size,written;
- 	struct mtd_info_user mtd;
- 	struct erase_info_user erase;
-@@ -344,22 +366,7 @@ int main (int argc,char *argv[])
- 		safe_read (fil_fd,filename,src,i,flags & FLAG_VERBOSE);
- 
- 		/* write to device */
--		result = write (dev_fd,src,i);
--		if (i != result)
--		{
--			if (flags & FLAG_VERBOSE) log_printf (LOG_NORMAL,"\n");
--			if (result < 0)
--			{
--				log_printf (LOG_ERROR,
--						"While writing data to 0x%.8lx-0x%.8lx on %s: %m\n",
--						written,written + i,device);
--				exit (EXIT_FAILURE);
--			}
--			log_printf (LOG_ERROR,
--					"Short write count returned while writing to x%.8zx-0x%.8zx on %s: %zu/%llu bytes written to flash\n",
--					written,written + i,device,written + result,(unsigned long long)filestat.st_size);
--			exit (EXIT_FAILURE);
--		}
-+		safe_write(dev_fd,src,i,written,(unsigned long long)filestat.st_size,device,flags & FLAG_VERBOSE);
- 
- 		written += i;
- 		size -= i;
-@@ -469,22 +476,7 @@ DIFF_BLOCKS:
- 
- 			/* write to device */
- 			lseek(dev_fd, current_dev_block, SEEK_SET);
--			result = write (dev_fd,src,i);
--			if (i != result)
--			{
--				if (flags & FLAG_VERBOSE) log_printf (LOG_NORMAL,"\n");
--				if (result < 0)
--				{
--					log_printf (LOG_ERROR,
--							"While writing data to 0x%.8lx-0x%.8lx on %s: %m\n",
--							written,written + i,device);
--					exit (EXIT_FAILURE);
--				}
--				log_printf (LOG_ERROR,
--						"Short write count returned while writing to x%.8zx-0x%.8zx on %s: %zu/%llu bytes written to flash\n",
--						written,written + i,device,written + result,(unsigned long long)filestat.st_size);
--				exit (EXIT_FAILURE);
--			}
-+			safe_write(dev_fd,src,i,written,(unsigned long long)filestat.st_size,device,flags & FLAG_VERBOSE);
- 		}
- 
- 		erase.start += i;
+diff --git a/misc-utils/mtdpart.c b/misc-utils/mtdpart.c
+index ba35d87..c8cd79b 100644
+--- a/misc-utils/mtdpart.c
++++ b/misc-utils/mtdpart.c
+@@ -37,7 +37,7 @@ static void display_help(int status)
+ "  -V, --version Output version information and exit\n"
+ "\n"
+ "START location and SIZE of the partition are in bytes. They should align on\n"
+-"eraseblock size.\n",
++"eraseblock size. If SIZE is 0 the partition will go to end of MTD device.\n",
+ 	PROGRAM_NAME
+ 	);
+ 	exit(status);
 -- 
 2.38.1
 
