@@ -4,72 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 012D0C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Nov 2022 14:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9C93C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Nov 2022 15:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=dcte6N2RW7lzlkWBfpx+N/pBf2Wb0P2hsZyS335LycA=; b=FzoGp5NwtLAzdC
-	DJaqgeJK+PDddeSZaTKUfHsxpE9MAza1gvXm8ol0RWCmu8j9OV2GUzm0eaZtKJVtPT/hhylSy0Jvz
-	4NvM3eFzm9x7dEoYYyFYbu9+Q4J7k0f/iNvrHP+BWPS6CO5Mp884K8ux7v4f9yn/JofQPKwsC5aob
-	fwnPWJwL7L9hDXybcUKfXsyiEZQN0lu7k7XljsRDXaJ0jCbTi3eM7Q2VPIsK0jI6UGqrYnHaUyN0f
-	ZEI9JO00o2+MaeGdd2rcsNUYraXOpEylvqgdEdZdNsx/5zrRcUJZBAuGb7EL+bIusMBK7gTYEKnHt
-	deSXnqPy87ffpcBEzbPA==;
+	List-Owner; bh=qssiH8sVO0eWrBD86D2P0/2pMzG5NGq52nk/Da5hvP8=; b=BCR+s7/keK8t17
+	r2Ztv8xi3Iyyj+8sPdGOOyyMKGNSWnVcHSCqCJ5WKxxK6EexioxRjsi19Z7QnKAa161e/ojhEU8wh
+	rXrckPaWcfMVCV4rF6kqfOFg/1VEnGpg8+3bM2A/Fhna9RZeROITRZjvA1mgKazaSy0UCIiQFC8+E
+	ku9cAUXlErMOTLxFY/UuV/EaWHwiTMCEIS+VL50Twp48KQmHUAtqWrqu7+9N6NDmJZZEJ6hcPx/Om
+	W22k9UnRohL42kyUROguafJGE36Le707A+8nB2LZAAjVgI/ocuKkDToZusP+oBWSjbB9JAFe0lFdo
+	pDgCR5hF3KJdfhHOTAJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqaxX-0002jS-Mc; Thu, 03 Nov 2022 14:12:43 +0000
-Received: from mx0b-00105401.pphosted.com ([67.231.152.184])
+	id 1oqcPy-000Ufp-SZ; Thu, 03 Nov 2022 15:46:11 +0000
+Received: from finn.gateworks.com ([108.161.129.64] helo=finn.localdomain)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqaxS-0002e1-Qe
-	for linux-mtd@lists.infradead.org; Thu, 03 Nov 2022 14:12:42 +0000
-Received: from pps.filterd (m0074334.ppops.net [127.0.0.1])
-	by mx0b-00105401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 2A3E9hcq022110;
-	Thu, 3 Nov 2022 14:12:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=collins.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=POD051818; bh=ShNH+c1jpFuSqUCy6kalHE7BkDip9aTmBnd6SbmxonI=;
- b=YnPMlTwbSuRV+hbA6TProOSK7WqwCwZ0VnyYk04lAse07gH1RsGiWlVaolEK35KvYFcU
- GA2sNQn5VWXLI4ztHAcAyH4qi7wkkpD++Y2TaLt8iUTZaLKeMI48QSS9CTw8eeX1GDj8
- 3gVoyS42654WYDZF+SzT/cLoyiY86rFH7X6Z8I/Dl8PRSp7gNi73yM/HfN+cV/exBmDC
- qpdM7lkQFsyGnF596IUpioS/VsLFzAqci59Fbk//a9vTYFlFtgwM/efMlrgQyq3z5yIt
- h3NdtuJoern1w1IRW5MvRBgKl2bjlXM8fl5xf2YWnx5XwOH4+MEJk8Pf6TnmU0FYIM/R 9w== 
-Received: from xnwpv38.utc.com ([167.17.239.18])
-	by mx0b-00105401.pphosted.com with ESMTP id 3km2tfdv9p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 03 Nov 2022 14:12:25 +0000
-Received: from qusnwafe.utcapp.com (qusnwafe.utcapp.com [10.161.48.101])
-	by xnwpv38.utc.com (8.16.1.2/8.16.1.2) with ESMTPS id 2A3ECOC4069935
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 3 Nov 2022 14:12:24 GMT
-Received: from dtulimr01.rockwellcollins.com ([10.172.224.19])
-	by qusnwafe.utcapp.com (8.16.1.2/8.16.1.2) with ESMTPS id 2A3ECO0P022191
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Thu, 3 Nov 2022 14:12:24 GMT
-X-Received: from kirk.rockwellcollins.lab (kirk.rockwellcollins.lab [10.148.204.208])
-	by dtulimr01.rockwellcollins.com (Postfix) with ESMTP id E6126604EE;
-	Thu,  3 Nov 2022 09:12:23 -0500 (CDT)
-From: Brandon Maier <brandon.maier@collins.com>
-To: MTD Mailing List <linux-mtd@lists.infradead.org>
-Cc: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
-        Brandon Maier <brandon.maier@collins.com>
-Subject: [PATCH mtd-utils 1/1] misc-utils: mtdpart: document partition of size 0
-Date: Thu,  3 Nov 2022 09:12:17 -0500
-Message-Id: <20221103141217.22119-1-brandon.maier@collins.com>
-X-Mailer: git-send-email 2.38.1
+	id 1oqcEG-000PTJ-91
+	for linux-mtd@lists.infradead.org; Thu, 03 Nov 2022 15:34:05 +0000
+Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
+	by finn.localdomain with esmtp (Exim 4.93)
+	(envelope-from <tharvey@gateworks.com>)
+	id 1oqcDw-000Nj3-8T; Thu, 03 Nov 2022 15:33:44 +0000
+From: Tim Harvey <tharvey@gateworks.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	=?UTF-8?q?Tomasz=20Mo=C5=84?= <tomasz.mon@camlingroup.com>,
+	Richard Weinberger <richard@nod.at>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Sasha Levin <sashal@kernel.org>,
+	Han Xu <han.xu@nxp.com>,
+	kernel <kernel@pengutronix.de>,
+	stable <stable@vger.kernel.org>
+Cc: Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH v2 stable 5.10] mtd: rawnand: gpmi: Set WAIT_FOR_READY timeout based on program/erase times
+Date: Thu,  3 Nov 2022 08:33:41 -0700
+Message-Id: <20221103153341.2600899-1-tharvey@gateworks.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-GUID: 1xo5FFqYtr5jrVQBFKxPbQ1N_00swbaZ
-X-Proofpoint-ORIG-GUID: 1xo5FFqYtr5jrVQBFKxPbQ1N_00swbaZ
-X-Proofpoint-Spam-Details: rule=outbound_default_notspam policy=outbound_default score=0 clxscore=1015
- malwarescore=0 adultscore=0 mlxscore=0 impostorscore=0 phishscore=0
- priorityscore=1501 mlxlogscore=999 spamscore=0 bulkscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211030097
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221103_071239_025791_F6101071 
-X-CRM114-Status: GOOD (  16.18  )
+X-CRM114-CacheID: sfid-20221103_083404_362380_D30BDE1F 
+X-CRM114-Status: GOOD (  14.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,39 +59,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If the partition size passed in to the BLKPG_ADD_PARTITION ioctl is 0,
-Linux will make the partition fill to the end of the device[1]. Document
-this feature in the help.
-
-[1] https://elixir.bootlin.com/linux/v6.0.6/source/drivers/mtd/mtdpart.c#L254
-
-Signed-off-by: Brandon Maier <brandon.maier@collins.com>
----
- misc-utils/mtdpart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/misc-utils/mtdpart.c b/misc-utils/mtdpart.c
-index ba35d87..c8cd79b 100644
---- a/misc-utils/mtdpart.c
-+++ b/misc-utils/mtdpart.c
-@@ -37,7 +37,7 @@ static void display_help(int status)
- "  -V, --version Output version information and exit\n"
- "\n"
- "START location and SIZE of the partition are in bytes. They should align on\n"
--"eraseblock size.\n",
-+"eraseblock size. If SIZE is 0 the partition will go to end of MTD device.\n",
- 	PROGRAM_NAME
- 	);
- 	exit(status);
--- 
-2.38.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogU2FzY2hhIEhhdWVyIDxzLmhhdWVyQHBlbmd1dHJvbml4LmRlPgoKY29tbWl0IDBmZGRm
+OWFkMDZmZDlmNDM5ZjEzNzEzOTg2MTU1NjY3MTY3M2UzMWMgdXBzdHJlYW0uCgowNjc4MWE1MDI2
+MzUwIEZpeGVzIHRoZSBjYWxjdWxhdGlvbiBvZiB0aGUgREVWSUNFX0JVU1lfVElNRU9VVCByZWdp
+c3Rlcgp2YWx1ZSBmcm9tIGJ1c3lfdGltZW91dF9jeWNsZXMuIGJ1c3lfdGltZW91dF9jeWNsZXMg
+aXMgY2FsY3VsYXRlZCB3cm9uZwp0aG91Z2g6IEl0IGlzIGNhbGN1bGF0ZWQgYmFzZWQgb24gdGhl
+IG1heGltdW0gcGFnZSByZWFkIHRpbWUsIGJ1dCB0aGUKdGltZW91dCBpcyBhbHNvIHVzZWQgZm9y
+IHBhZ2Ugd3JpdGUgYW5kIGJsb2NrIGVyYXNlIG9wZXJhdGlvbnMgd2hpY2gKcmVxdWlyZSBvcmRl
+cnMgb2YgbWFnbml0dWRlIGJpZ2dlciB0aW1lb3V0cy4KCkZpeCB0aGlzIGJ5IGNhbGN1bGF0aW5n
+IGJ1c3lfdGltZW91dF9jeWNsZXMgZnJvbSB0aGUgbWF4aW11bSBvZgp0QkVSU19tYXggYW5kIHRQ
+Uk9HX21heC4KClRoaXMgaXMgZm9yIG5vdyB0aGUgZWFzaWVzdCBhbmQgbW9zdCBvYnZpb3VzIHdh
+eSB0byBmaXggdGhlIGRyaXZlci4KVGhlcmUncyByb29tIGZvciBpbXByb3ZlbWVudHMgdGhvdWdo
+OiBUaGUgTkFORF9PUF9XQUlUUkRZX0lOU1RSIHRlbGxzIHVzCnRoZSBkZXNpcmVkIHRpbWVvdXQg
+Zm9yIHRoZSBjdXJyZW50IG9wZXJhdGlvbiwgc28gd2UgY291bGQgcHJvZ3JhbSB0aGUKdGltZW91
+dCBkeW5hbWljYWxseSBmb3IgZWFjaCBvcGVyYXRpb24gaW5zdGVhZCBvZiBzZXR0aW5nIGEgZml4
+ZWQKdGltZW91dC4gQWxzbyB3ZSBjb3VsZCB3aXJlIHVwIHRoZSBpbnRlcnJ1cHQgaGFuZGxlciB0
+byBhY3R1YWxseSBkZXRlY3QKYW5kIGZvcndhcmQgdGltZW91dHMgb2NjdXJyZWQgd2hlbiB3YWl0
+aW5nIGZvciB0aGUgY2hpcCBiZWluZyByZWFkeS4KCkFzIGEgc2lkZW5vdGUgSSB2ZXJpZmllZCB0
+aGF0IHRoZSBjaGFuZ2UgaW4gMDY3ODFhNTAyNjM1MCBpcyByZWFsbHkKY29ycmVjdC4gSSB3aXJl
+ZCB1cCB0aGUgaW50ZXJydXB0IGhhbmRsZXIgaW4gbXkgdHJlZSBhbmQgbWVhc3VyZWQgdGhlCnRp
+bWUgYmV0d2VlbiBzdGFydGluZyB0aGUgb3BlcmF0aW9uIGFuZCB0aGUgdGltZW91dCBpbnRlcnJ1
+cHQgaGFuZGxlcgpjb21pbmcgaW4uIFRoZSB0aW1lIGluY3JlYXNlcyA0MXVzIHdpdGggZWFjaCBz
+dGVwIGluIHRoZSB0aW1lb3V0CnJlZ2lzdGVyIHdoaWNoIGNvcnJlc3BvbmRzIHRvIDQwOTYgY2xv
+Y2sgY3ljbGVzIHdpdGggdGhlIDk5TUh6IGNsb2NrCnRoYXQgSSBoYXZlLgoKRml4ZXM6IDA2Nzgx
+YTUwMjYzNTAgKCJtdGQ6IHJhd25hbmQ6IGdwbWk6IEZpeCBzZXR0aW5nIGJ1c3kgdGltZW91dCBz
+ZXR0aW5nIikKRml4ZXM6IGIxMjA2MTIyMDY5YWEgKCJtdGQ6IHJhd25pYW5kOiBncG1pOiB1c2Ug
+Y29yZSB0aW1pbmdzIGluc3RlYWQgb2YgYW4gZW1waXJpY2FsIGRlcml2YXRpb24iKQpDYzogc3Rh
+YmxlQHZnZXIua2VybmVsLm9yZwpTaWduZWQtb2ZmLWJ5OiBTYXNjaGEgSGF1ZXIgPHMuaGF1ZXJA
+cGVuZ3V0cm9uaXguZGU+CkFja2VkLWJ5OiBIYW4gWHUgPGhhbi54dUBueHAuY29tPgpUZXN0ZWQt
+Ynk6IFRvbWFzeiBNb8WEIDx0b21hc3oubW9uQGNhbWxpbmdyb3VwLmNvbT4KU2lnbmVkLW9mZi1i
+eTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KU2lnbmVkLW9mZi1ieTogVGlt
+IEhhcnZleSA8dGhhcnZleUBnYXRld29ya3MuY29tPgotLS0KdjI6IGFkZCBzYiB0YWcgYW5kIGFk
+ZCB1cHN0cmVhbSBjb21taXQgaWQKLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQv
+Z3BtaS1uYW5kLmMgfCA2ICsrKystLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwg
+MiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5h
+bmQvZ3BtaS1uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5k
+LmMKaW5kZXggOTJlOGNhNTZmNTY2Li4yMDBkM2FiMzQzYjAgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMv
+bXRkL25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLW5hbmQuYworKysgYi9kcml2ZXJzL210ZC9uYW5k
+L3Jhdy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmMKQEAgLTY1Myw4ICs2NTMsOSBAQCBzdGF0aWMgdm9p
+ZCBncG1pX25mY19jb21wdXRlX3RpbWluZ3Moc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzLAog
+CXVuc2lnbmVkIGludCB0UlBfcHM7CiAJYm9vbCB1c2VfaGFsZl9wZXJpb2Q7CiAJaW50IHNhbXBs
+ZV9kZWxheV9wcywgc2FtcGxlX2RlbGF5X2ZhY3RvcjsKLQl1MTYgYnVzeV90aW1lb3V0X2N5Y2xl
+czsKKwl1bnNpZ25lZCBpbnQgYnVzeV90aW1lb3V0X2N5Y2xlczsKIAl1OCB3cm5fZGx5X3NlbDsK
+Kwl1NjQgYnVzeV90aW1lb3V0X3BzOwogCiAJaWYgKHNkci0+dFJDX21pbiA+PSAzMDAwMCkgewog
+CQkvKiBPTkZJIG5vbi1FRE8gbW9kZXMgWzAtM10gKi8KQEAgLTY3OCw3ICs2NzksOCBAQCBzdGF0
+aWMgdm9pZCBncG1pX25mY19jb21wdXRlX3RpbWluZ3Moc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0
+aGlzLAogCWFkZHJfc2V0dXBfY3ljbGVzID0gVE9fQ1lDTEVTKHNkci0+dEFMU19taW4sIHBlcmlv
+ZF9wcyk7CiAJZGF0YV9zZXR1cF9jeWNsZXMgPSBUT19DWUNMRVMoc2RyLT50RFNfbWluLCBwZXJp
+b2RfcHMpOwogCWRhdGFfaG9sZF9jeWNsZXMgPSBUT19DWUNMRVMoc2RyLT50REhfbWluLCBwZXJp
+b2RfcHMpOwotCWJ1c3lfdGltZW91dF9jeWNsZXMgPSBUT19DWUNMRVMoc2RyLT50V0JfbWF4ICsg
+c2RyLT50Ul9tYXgsIHBlcmlvZF9wcyk7CisJYnVzeV90aW1lb3V0X3BzID0gbWF4KHNkci0+dEJF
+UlNfbWF4LCBzZHItPnRQUk9HX21heCk7CisJYnVzeV90aW1lb3V0X2N5Y2xlcyA9IFRPX0NZQ0xF
+UyhidXN5X3RpbWVvdXRfcHMsIHBlcmlvZF9wcyk7CiAKIAlody0+dGltaW5nMCA9IEJGX0dQTUlf
+VElNSU5HMF9BRERSRVNTX1NFVFVQKGFkZHJfc2V0dXBfY3ljbGVzKSB8CiAJCSAgICAgIEJGX0dQ
+TUlfVElNSU5HMF9EQVRBX0hPTEQoZGF0YV9ob2xkX2N5Y2xlcykgfAotLSAKMi4yNS4xCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
