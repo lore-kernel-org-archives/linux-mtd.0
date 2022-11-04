@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7823C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Nov 2022 16:47:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CA9CC43217
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Nov 2022 16:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZzGYR0rtRhChJpz4FEvk3YXo0gx3QsuFQRfzdqgZixc=; b=TFWgb08W9ufQK7
-	eP6m6mJ74Qb3hpZiWcoj/MJOoIomkSBXBoijQUnNnGvsNBLndRJMqafTTdxvPmseFdnp2/8c0Dsc9
-	GNEmazvlfY3EqAfaBAU3HML0NUmZ9lNMkqB8trkZY6AgcqY2GLmhxF4gzBj5nSK3ocwGR+DH+hF7d
-	ed55GEimWieabhEHuOZ1y4XQsaMoulad74ZIg3kthrvSCi2ow3B1fWFdS3slWuXZEY6hQS2/02R5W
-	KMBUW/p4Fac/1qR0pKSYJMj81wVOZf3kfPXlko7viZ4fDNBTfN7xX8j+mGFO2Fz8QGMnoUUGUh4rE
-	5Oux7B3JNAeyNImM8v3g==;
+	List-Owner; bh=bG4dWooN/W2EKjM2FsonmXjNeTEdWBI9zo/JYd9FRXk=; b=ub30BaCWi7FGSR
+	3m1lh6K2OhwE4pkDsxmXldyoGwAUNuNCn7ZQDch8WiiquQRCXd6LQoENzlkRD6ADFIQ9RSDY7P4uc
+	L70FJBtY3MnLjiYjKLse34246H3EFxgVeLjomUNC6AfE5ZLA+2ZDBsUIq6/54o+awXmGKV0lysMmU
+	Heng1aYQsCXapA2EaZ0r6jffj+QKhFi5HT+cVtAy3jWB+a8fyIRiHugzkX1m26dW6ENjdnwqXi32v
+	/NymE3iGTZ1CzjcBha3GANUr3+ydZZdUgxpQal2TEekiB6DzBq2OVngTvFnoFEK9/p3d1Py71olbn
+	w17BxStOJx5ygNbMfNwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqzqy-004Vxb-Lv; Fri, 04 Nov 2022 16:47:36 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1oqzrD-004W5T-DS; Fri, 04 Nov 2022 16:47:51 +0000
+Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqzqn-004Vq7-1r
-	for linux-mtd@lists.infradead.org; Fri, 04 Nov 2022 16:47:27 +0000
+	id 1oqzqp-004Vry-7b
+	for linux-mtd@lists.infradead.org; Fri, 04 Nov 2022 16:47:29 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 68F2C4000C;
-	Fri,  4 Nov 2022 16:47:21 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 8B9744000E;
+	Fri,  4 Nov 2022 16:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1667580442;
+	t=1667580445;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9GgQ6Sk6Ebll+26wyuvSyP9c28FQcBgUw85oCY9S6Ho=;
-	b=nqyaBQwsiE7Sara4ljYb3o7J9WZa6MxhGJrJxr7kUuIPcEjxa/dk6zUl1CBXVXHZnt1iJH
-	z+/t4yTAcYINIjiHpInQl+7ThCcVR7/NaKb844OOxVY+2Qs8rxOx41Owfzf+kkBXKSoNm/
-	23jL7n1epPMq+jHN0rh0BbLe+g3FPd6UOCP3NG7kDaoZmVTlGX15uGCj6LC2CDLnFoMb8Z
-	cQxzUfb1ZDe9STsASlvNF2NTlhoiVsWTtmG37XpUOm2YkFlHWNhEN9ntxeF0n6vx8zRJP+
-	tgqimVejd9KoveCtNdB3rNEvfEDEwNX1/p1V5vbdLaD6CbXwhl5kEn+46Y8oQw==
+	bh=1BVXfpUDpuO14vpkhrGj4WhajxKP64/OBHEAjC1gJJU=;
+	b=YDzbuVof2BvQCL5+tC0MmGS8rNod+85O+cSBK1eT7Ru8ktT/MCZQp4ix2sFrRCUezRZWdA
+	G2QIlNNJoydsR8NferXcXIdgYGuDeAWg9c7FVm+GVH/H5oBqoNKEUtthuyZNqw0MCz01q7
+	YQ5SLlsrUG3eI8GNSEdt4CuPaG9EaJCZ9cOrvYrEo2Er72D9s5JmPxP8Ok8u7B+7Zh2brS
+	SqatFHtjnOm5ZzP2VdlTXZ3pRAXO6zKeXsUhO7vJ4j6JwXVjLtV/+z6Pknn/+6kx46cAZF
+	Hewwv/KkOrWTbhDdtxcOytvFtUC1LazYonxqx79RZNotMDU3RB0bYl+6xoo3gg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
@@ -54,16 +54,16 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	<linux-kernel@vger.kernel.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 02/17] dt-bindings: mtd: Remove useless file about partitions
-Date: Fri,  4 Nov 2022 17:47:03 +0100
-Message-Id: <20221104164718.1290859-3-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 05/17] dt-bindings: mtd: nand: Standardize the child node name
+Date: Fri,  4 Nov 2022 17:47:06 +0100
+Message-Id: <20221104164718.1290859-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221104164718.1290859-1-miquel.raynal@bootlin.com>
 References: <20221104164718.1290859-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221104_094725_393311_B49967F9 
-X-CRM114-Status: GOOD (  20.95  )
+X-CRM114-CacheID: sfid-20221104_094727_485044_52586C88 
+X-CRM114-Status: GOOD (  11.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,145 +80,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is already a real partitions.yaml file, so assuming everybody
-knows hot to read yaml schema now, this text file is no longer needed,
-so drop it.
+In almost all the schema mentioning a NAND chip child node, the name of
+the subnode contains a single index number.
 
-Depending on the situation, the lines referring to this file are either
-dropped or edited to point to mtd.yaml which includes partition{,s}.yaml.
+In practice there are currently no controller supporting more than 8 cs
+so even the [a-f] numbers are not needed. But let's be safe and limit
+the number of touched files by just allow a single number everywhere, so
+in practice up to 16 CS at most. This value can anyway be limited in
+each schema.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- .../devicetree/bindings/mtd/atmel-nand.txt    |  6 ++--
- .../devicetree/bindings/mtd/ingenic,nand.yaml |  1 -
- .../devicetree/bindings/mtd/lpc32xx-mlc.txt   |  2 +-
- .../devicetree/bindings/mtd/lpc32xx-slc.txt   |  2 +-
- .../devicetree/bindings/mtd/mtk-nand.txt      |  2 +-
- .../devicetree/bindings/mtd/partition.txt     | 33 -------------------
- drivers/mtd/parsers/Kconfig                   |  2 +-
- 7 files changed, 6 insertions(+), 42 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/partition.txt
+ .../devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml       | 2 +-
+ Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-index 3aa297c97ab6..50645828ac20 100644
---- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-@@ -45,10 +45,8 @@ Optional properties:
- - atmel,rb: an integer identifying the native Ready/Busy pin. Only meaningful
- 	    on sama5 SoCs.
- 
--All generic properties described in
--Documentation/devicetree/bindings/mtd/{common,nand}.txt also apply to the NAND
--device node, and NAND partitions should be defined under the NAND node as
--described in Documentation/devicetree/bindings/mtd/partition.txt.
-+All generic properties are described in the generic yaml files under
-+Documentation/devicetree/bindings/mtd/.
- 
- * ECC engine (PMECC) bindings:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-index 8c272c842bfd..87b2944d0d1b 100644
---- a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-@@ -34,7 +34,6 @@ properties:
-     type: object
-     description:
-       Node containing description of fixed partitions.
--      See Documentation/devicetree/bindings/mtd/partition.txt
+diff --git a/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
+index 65521924ee1c..465aa69f0f10 100644
+--- a/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
+@@ -47,7 +47,7 @@ properties:
+     const: rxtx
  
  patternProperties:
-   "^nand@[a-f0-9]$":
-diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
-index 6d60bc3063f5..64c06aa05ac7 100644
---- a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
-+++ b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
-@@ -19,7 +19,7 @@ accuracy:)
- - nxp,wr_low: WR_LOW
+-  "^nand@[a-f0-9]+$":
++  "^nand@[a-f0-9]$":
+     type: object
+     properties:
+       reg:
+diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml
+index 7c83a328845e..d455b75a0b0b 100644
+--- a/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml
++++ b/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml
+@@ -40,7 +40,7 @@ properties:
+       - const: rx
  
- Optional subnodes:
--- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
-+- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
- 
- Example:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
-index d94edc0fc554..39f17630a301 100644
---- a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
-+++ b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
-@@ -20,7 +20,7 @@ clock speed:)
- - nxp,rsetup: Read setup time (R_SETUP)
- 
- Optional subnodes:
--- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
-+- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
- 
- Example:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-index 4d3ec5e4ff8a..839ea2f93d04 100644
---- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-@@ -131,7 +131,7 @@ Example:
- 	};
- 
- NAND chip optional subnodes:
--- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
-+- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
- 
- Example:
- 	nand@0 {
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-deleted file mode 100644
-index ead90e8274d6..000000000000
---- a/Documentation/devicetree/bindings/mtd/partition.txt
-+++ /dev/null
-@@ -1,33 +0,0 @@
--Flash partitions in device tree
--===============================
--
--Flash devices can be partitioned into one or more functional ranges (e.g. "boot
--code", "nvram", "kernel").
--
--Different devices may be partitioned in a different ways. Some may use a fixed
--flash layout set at production time. Some may use on-flash table that describes
--the geometry and naming/purpose of each functional region. It is also possible
--to see these methods mixed.
--
--To assist system software in locating partitions, we allow describing which
--method is used for a given flash device. To describe the method there should be
--a subnode of the flash device that is named 'partitions'. It must have a
--'compatible' property, which is used to identify the method to use.
--
--When a single partition is represented with a DT node (it depends on a used
--format) it may also be described using above rules ('compatible' and optionally
--some extra properties / subnodes). It allows describing more complex,
--hierarchical (multi-level) layouts and should be used if there is some
--significant relation between partitions or some partition internally uses
--another partitioning method.
--
--Available bindings are listed in the "partitions" subdirectory.
--
--
--Deprecated: partitions defined in flash node
--============================================
--
--For backwards compatibility partitions as direct subnodes of the flash device are
--supported. This use is discouraged.
--NOTE: also for backwards compatibility, direct subnodes that have a compatible
--string are not considered partitions, as they may be used for other bindings.
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index aaa06050c9bc..b53b8bc7c9e6 100644
---- a/drivers/mtd/parsers/Kconfig
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -75,7 +75,7 @@ config MTD_OF_PARTS
- 	  This provides a open firmware device tree partition parser
- 	  which derives the partition map from the children of the
- 	  flash memory node, as described in
--	  Documentation/devicetree/bindings/mtd/partition.txt.
-+	  Documentation/devicetree/bindings/mtd/mtd.yaml.
- 
- config MTD_OF_PARTS_BCM4908
- 	bool "BCM4908 partitioning support"
+ patternProperties:
+-  "^nand@[a-f0-9]+$":
++  "^nand@[a-f0-9]$":
+     type: object
+     properties:
+       reg:
 -- 
 2.34.1
 
