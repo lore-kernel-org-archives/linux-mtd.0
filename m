@@ -4,66 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 947DAC4332F
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Nov 2022 16:50:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4264C433FE
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Nov 2022 16:52:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Pa/xuVyWAERRFmw+YsgPyxncgKaqVUyb4cPGGlv94TA=; b=HKUIRvBZXYp0fj
-	0PxDBanLBDBdeiDtAs33OdtWWy3By+vFx9wOCUouZpaf3PxQFj55lq4WA809TUPZCN6pgpQs5Y1Kf
-	RJx6pBTQ0TysYSBMzKgYEhCN3x3B/ZOejVFtyeAiY9SKHOAwDA68hxr2T/HDIBB3166UbU4x+k3Tj
-	De7An1W3vIRJoU5WZ8UjVzkw0I+PeImlr0teXLKzyyI5tkDm0U0fgU2fnCfairZ1MQA23MOf54cPR
-	uZJGzXGXqKuYlYIgCtSWYYPoQFq/7I8F1HMTDXay+eNUJV3Ul7tbcYYC9lLvyEfmrDlyrVj2y/syT
-	ncYnLFbeDrEg7CF7Jg5Q==;
+	List-Owner; bh=N0/dPLWVxLBv64zEnFdp+yRb5SRaoEt3zFxZu+zZrpc=; b=myqXTy4V+MnPbv
+	TyBqcaXKmDVXB/Opft+0kTeSJ/qmUwhZTx0ugzUF9xQMuRtAMYHt0ie3UyD+nKTN3gLisYwQ+oBMW
+	pTndh/E1k1HmxIw/JckoQgQkqauYviWp265xgOJkNstKWW19V7vd4WazaptgbMcf5HvGLtRsEw2qf
+	yMSIdBY/6leZqPLQ7rUbBSiHnzS9K9dPcvdr3t/kzgWFUweQTB1D/MJAhvEsh604enfBIPRlsVS0M
+	e2rNqemhqHwF6NtPPdA0XJcrk89byAty7uLBs94HCVZih7b668Ma7UVAtL1BFqpeUpS76zttc9Svw
+	a4ecA09IaqVm7XeOJ9Ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqzt7-004XZo-1c; Fri, 04 Nov 2022 16:49:49 +0000
-Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
+	id 1oqzvW-004ZCS-EP; Fri, 04 Nov 2022 16:52:19 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqzr3-004Vzo-Gm
-	for linux-mtd@lists.infradead.org; Fri, 04 Nov 2022 16:47:45 +0000
+	id 1oqzv2-004Yse-1G; Fri, 04 Nov 2022 16:51:51 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 34C0C40012;
-	Fri,  4 Nov 2022 16:47:38 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 2389EE0006;
+	Fri,  4 Nov 2022 16:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1667580459;
+	t=1667580705;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=18t/7qSaRnk2gS9dcNFVNFqLhCWEty8oMGunULJHDD4=;
-	b=XTi+tbo+jHaN75MxBIfHEQmVt8fYho5DQToDolW2Qa5bdHDjQOZg/KBPXkeuQiFePkC88l
-	GbZozM56F3Mcw2HxQ+2N96mM8aJ9r2bQJ7uUYSMMs0aO3GVsp8WSlAf87RpK4UpGHeb8fh
-	GRYKeg1VLi7GgqebJaI6pi2/V9g6oSMtx2Mh2hZIT36zULStpcZe5CHFRjGA1waXwE5zal
-	/CPjxPlfstWdYoPjjTOLcF4e7uQfgSAkkGVZD8Ji1QNp/8QtEs+EIn898lyXYcE5ESqqA0
-	F3RG19CuQ67LOhc/UIkTfTpTCNSUb6x9GbkGyo9ymOpt++3g8auK6aWCG0G6dg==
+	bh=2TpV1GkI8zGQR6JKfyw/HdeFrbBiylvnAQB2Uw3mqNs=;
+	b=WMLsC7SmXuJmoX0RIhZMa9MCjLX40bblUGF4D7yA8RKM5cAoPU9S7JuH8Ell4gOlE+BIOC
+	POakrWGAPj5Jz5EW77NkUuBT8fVp8CWifEqC5ye9D69d4BD22xvUx4dSM9p+2FIMu18VJY
+	749sh98b0COmXUKQQ79jZ30UhX6lbui4nWkglF+VdSw9gro8qygHy1ldlJfANPgsfe2V6p
+	vFL+GMadFXsFB08z1OpXFyyWnj5VVUvFav8jz+cn3CX86ae+NihEQOzo5kjSUlNeARW+J1
+	LW021OsOeZWQxZipUUCtsMWGaQ1GvmOkd2Nz8bK9vOLTKHfwwUDztmPyxK+yiQ==
+Date: Fri, 4 Nov 2022 17:51:42 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	devicetree@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-	Pratyush Yadav <p.yadav@ti.com>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	<linux-kernel@vger.kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 17/17] dt-bindings: mtd: Standardize the style in the examples
-Date: Fri,  4 Nov 2022 17:47:18 +0100
-Message-Id: <20221104164718.1290859-18-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221104164718.1290859-1-miquel.raynal@bootlin.com>
-References: <20221104164718.1290859-1-miquel.raynal@bootlin.com>
+To: Vadym Kochan <vadym.kochan@plvision.eu>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Andrew Lunn <andrew@lunn.ch>, Gregory
+  Clement <gregory.clement@bootlin.com>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Elad Nachman <enachman@marvell.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v5 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML
+ DT scheme
+Message-ID: <20221104175142.5ca2f132@xps-13>
+In-Reply-To: <VI1P190MB0317E5C8AD323A8D1A4B5D8195379@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
+References: <20221026134545.7146-1-vadym.kochan@plvision.eu>
+	<20221026134545.7146-2-vadym.kochan@plvision.eu>
+	<33f04b06-dc00-b7ce-6a24-2282608b40dc@linaro.org>
+	<VI1P190MB0317C739E2D39427CD2A771D95309@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
+	<10581088-e4ff-76db-3c9b-42a7a9c118ee@linaro.org>
+	<20221027151825.166a9255@xps-13>
+	<e937b059-4168-3bd4-b294-cbfff0519d1f@linaro.org>
+	<20221027155025.7c04774a@xps-13>
+	<683dffbc-744f-80cd-2262-b6deb4200ccc@linaro.org>
+	<20221028094740.3c11f52b@xps-13>
+	<a98f00bd-013a-a1ce-0054-bbceeaefcefa@linaro.org>
+	<20221028145049.76db792f@xps-13>
+	<VI1P190MB0317E5C8AD323A8D1A4B5D8195379@VI1P190MB0317.EURP190.PROD.OUTLOOK.COM>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221104_094742_554279_CB5D10F2 
-X-CRM114-Status: GOOD (  11.58  )
+X-CRM114-CacheID: sfid-20221104_095148_290517_33CC9A94 
+X-CRM114-Status: GOOD (  10.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,690 +85,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As recently requested by the binding maintaines, let's use 4 spaces in
-the examples.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- .../bindings/mtd/arm,pl353-nand-r2p1.yaml     |  30 ++---
- .../bindings/mtd/brcm,brcmnand.yaml           |  80 ++++++------
- .../devicetree/bindings/mtd/denali,nand.yaml  |   2 +-
- .../devicetree/bindings/mtd/ingenic,nand.yaml | 114 +++++++++---------
- .../bindings/mtd/intel,lgm-ebunand.yaml       |  36 +++---
- .../bindings/mtd/microchip,mchp48l640.yaml    |  14 +--
- .../mtd/partitions/qcom,smem-part.yaml        |  28 ++---
- .../devicetree/bindings/mtd/qcom,nandc.yaml   | 114 +++++++++---------
- .../bindings/mtd/st,stm32-fmc2-nand.yaml      |  47 ++++----
- .../bindings/mtd/ti,am654-hbmc.yaml           |  36 +++---
- 10 files changed, 251 insertions(+), 250 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-index 023f3ef0fa13..e552875040e2 100644
---- a/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-+++ b/Documentation/devicetree/bindings/mtd/arm,pl353-nand-r2p1.yaml
-@@ -34,20 +34,20 @@ unevaluatedProperties: false
- examples:
-   - |
-     smcc: memory-controller@e000e000 {
--      compatible = "arm,pl353-smc-r2p1", "arm,primecell";
--      reg = <0xe000e000 0x0001000>;
--      clock-names = "memclk", "apb_pclk";
--      clocks = <&clkc 11>, <&clkc 44>;
--      ranges = <0x0 0x0 0xe1000000 0x1000000 /* Nand CS region */
--                0x1 0x0 0xe2000000 0x2000000 /* SRAM/NOR CS0 region */
--                0x2 0x0 0xe4000000 0x2000000>; /* SRAM/NOR CS1 region */
--      #address-cells = <2>;
--      #size-cells = <1>;
-+        compatible = "arm,pl353-smc-r2p1", "arm,primecell";
-+        reg = <0xe000e000 0x0001000>;
-+        clock-names = "memclk", "apb_pclk";
-+        clocks = <&clkc 11>, <&clkc 44>;
-+        ranges = <0x0 0x0 0xe1000000 0x1000000 /* Nand CS region */
-+                  0x1 0x0 0xe2000000 0x2000000 /* SRAM/NOR CS0 region */
-+                  0x2 0x0 0xe4000000 0x2000000>; /* SRAM/NOR CS1 region */
-+        #address-cells = <2>;
-+        #size-cells = <1>;
- 
--      nfc0: nand-controller@0,0 {
--        compatible = "arm,pl353-nand-r2p1";
--        reg = <0 0 0x1000000>;
--        #address-cells = <1>;
--        #size-cells = <0>;
--      };
-+        nfc0: nand-controller@0,0 {
-+            compatible = "arm,pl353-nand-r2p1";
-+            reg = <0 0 0x1000000>;
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+        };
-     };
-diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-index dd5a64969e37..f9518d39fbbd 100644
---- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-@@ -184,51 +184,51 @@ required:
- examples:
-   - |
-     nand-controller@f0442800 {
--            compatible = "brcm,brcmnand-v7.0", "brcm,brcmnand";
--            reg = <0xf0442800 0x600>,
--                  <0xf0443000 0x100>;
--            reg-names = "nand", "flash-dma";
--            interrupt-parent = <&hif_intr2_intc>;
--            interrupts = <24>, <4>;
-+        compatible = "brcm,brcmnand-v7.0", "brcm,brcmnand";
-+        reg = <0xf0442800 0x600>,
-+              <0xf0443000 0x100>;
-+        reg-names = "nand", "flash-dma";
-+        interrupt-parent = <&hif_intr2_intc>;
-+        interrupts = <24>, <4>;
-+
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        nand@1 {
-+            compatible = "brcm,nandcs";
-+            reg = <1>; // Chip select 1
-+            nand-on-flash-bbt;
-+            nand-ecc-strength = <12>;
-+            nand-ecc-step-size = <512>;
- 
-             #address-cells = <1>;
--            #size-cells = <0>;
--
--            nand@1 {
--                    compatible = "brcm,nandcs";
--                    reg = <1>; // Chip select 1
--                    nand-on-flash-bbt;
--                    nand-ecc-strength = <12>;
--                    nand-ecc-step-size = <512>;
--
--                    #address-cells = <1>;
--                    #size-cells = <1>;
--            };
-+            #size-cells = <1>;
-+        };
-     };
-   - |
-     nand-controller@10000200 {
--            compatible = "brcm,nand-bcm63168", "brcm,nand-bcm6368",
--                         "brcm,brcmnand-v4.0", "brcm,brcmnand";
--            reg = <0x10000200 0x180>,
--                  <0x100000b0 0x10>,
--                  <0x10000600 0x200>;
--            reg-names = "nand", "nand-int-base", "nand-cache";
--            interrupt-parent = <&periph_intc>;
--            interrupts = <50>;
--            clocks = <&periph_clk 20>;
--            clock-names = "nand";
-+        compatible = "brcm,nand-bcm63168", "brcm,nand-bcm6368",
-+                     "brcm,brcmnand-v4.0", "brcm,brcmnand";
-+        reg = <0x10000200 0x180>,
-+              <0x100000b0 0x10>,
-+              <0x10000600 0x200>;
-+        reg-names = "nand", "nand-int-base", "nand-cache";
-+        interrupt-parent = <&periph_intc>;
-+        interrupts = <50>;
-+        clocks = <&periph_clk 20>;
-+        clock-names = "nand";
-+
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        nand@0 {
-+            compatible = "brcm,nandcs";
-+            reg = <0>;
-+            nand-on-flash-bbt;
-+            nand-ecc-strength = <1>;
-+            nand-ecc-step-size = <512>;
- 
-             #address-cells = <1>;
--            #size-cells = <0>;
--
--            nand@0 {
--                    compatible = "brcm,nandcs";
--                    reg = <0>;
--                    nand-on-flash-bbt;
--                    nand-ecc-strength = <1>;
--                    nand-ecc-step-size = <512>;
--
--                    #address-cells = <1>;
--                    #size-cells = <1>;
--            };
-+            #size-cells = <1>;
-+        };
-     };
-diff --git a/Documentation/devicetree/bindings/mtd/denali,nand.yaml b/Documentation/devicetree/bindings/mtd/denali,nand.yaml
-index 1307ed7e7fc6..0be83ad42970 100644
---- a/Documentation/devicetree/bindings/mtd/denali,nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/denali,nand.yaml
-@@ -145,6 +145,6 @@ examples:
-         #size-cells = <0>;
- 
-         nand@0 {
--                reg = <0>;
-+            reg = <0>;
-         };
-     };
-diff --git a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-index 90dbc5eba1e7..a811a512ecc5 100644
---- a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-@@ -58,78 +58,78 @@ examples:
-   - |
-     #include <dt-bindings/clock/ingenic,jz4780-cgu.h>
-     memory-controller@13410000 {
--      compatible = "ingenic,jz4780-nemc";
--      reg = <0x13410000 0x10000>;
--      #address-cells = <2>;
--      #size-cells = <1>;
--      ranges = <1 0 0x1b000000 0x1000000>,
--         <2 0 0x1a000000 0x1000000>,
--         <3 0 0x19000000 0x1000000>,
--         <4 0 0x18000000 0x1000000>,
--         <5 0 0x17000000 0x1000000>,
--         <6 0 0x16000000 0x1000000>;
-+        compatible = "ingenic,jz4780-nemc";
-+        reg = <0x13410000 0x10000>;
-+        #address-cells = <2>;
-+        #size-cells = <1>;
-+        ranges = <1 0 0x1b000000 0x1000000>,
-+                 <2 0 0x1a000000 0x1000000>,
-+                 <3 0 0x19000000 0x1000000>,
-+                 <4 0 0x18000000 0x1000000>,
-+                 <5 0 0x17000000 0x1000000>,
-+                 <6 0 0x16000000 0x1000000>;
- 
--      clocks = <&cgu JZ4780_CLK_NEMC>;
-+        clocks = <&cgu JZ4780_CLK_NEMC>;
- 
--      nand-controller@1 {
--        compatible = "ingenic,jz4780-nand";
--        reg = <1 0 0x1000000>;
-+        nand-controller@1 {
-+            compatible = "ingenic,jz4780-nand";
-+            reg = <1 0 0x1000000>;
- 
--        #address-cells = <1>;
--        #size-cells = <0>;
-+            #address-cells = <1>;
-+            #size-cells = <0>;
- 
--        ecc-engine = <&bch>;
-+            ecc-engine = <&bch>;
- 
--        ingenic,nemc-tAS = <10>;
--        ingenic,nemc-tAH = <5>;
--        ingenic,nemc-tBP = <10>;
--        ingenic,nemc-tAW = <15>;
--        ingenic,nemc-tSTRV = <100>;
-+            ingenic,nemc-tAS = <10>;
-+            ingenic,nemc-tAH = <5>;
-+            ingenic,nemc-tBP = <10>;
-+            ingenic,nemc-tAW = <15>;
-+            ingenic,nemc-tSTRV = <100>;
- 
--        pinctrl-names = "default";
--        pinctrl-0 = <&pins_nemc>;
-+            pinctrl-names = "default";
-+            pinctrl-0 = <&pins_nemc>;
- 
--        nand@1 {
--          reg = <1>;
-+            nand@1 {
-+                reg = <1>;
- 
--          nand-ecc-step-size = <1024>;
--          nand-ecc-strength = <24>;
--          nand-ecc-mode = "hw";
--          nand-on-flash-bbt;
-+                nand-ecc-step-size = <1024>;
-+                nand-ecc-strength = <24>;
-+                nand-ecc-mode = "hw";
-+                nand-on-flash-bbt;
- 
--          pinctrl-names = "default";
--          pinctrl-0 = <&pins_nemc_cs1>;
-+                pinctrl-names = "default";
-+                pinctrl-0 = <&pins_nemc_cs1>;
- 
--          partitions {
--            compatible = "fixed-partitions";
--            #address-cells = <2>;
--            #size-cells = <2>;
-+                partitions {
-+                    compatible = "fixed-partitions";
-+                    #address-cells = <2>;
-+                    #size-cells = <2>;
- 
--            partition@0 {
--              label = "u-boot-spl";
--              reg = <0x0 0x0 0x0 0x800000>;
--            };
-+                    partition@0 {
-+                        label = "u-boot-spl";
-+                        reg = <0x0 0x0 0x0 0x800000>;
-+                    };
- 
--            partition@800000 {
--              label = "u-boot";
--              reg = <0x0 0x800000 0x0 0x200000>;
--            };
-+                    partition@800000 {
-+                        label = "u-boot";
-+                        reg = <0x0 0x800000 0x0 0x200000>;
-+                    };
- 
--            partition@a00000 {
--              label = "u-boot-env";
--              reg = <0x0 0xa00000 0x0 0x200000>;
--            };
-+                    partition@a00000 {
-+                        label = "u-boot-env";
-+                        reg = <0x0 0xa00000 0x0 0x200000>;
-+                    };
- 
--            partition@c00000 {
--              label = "boot";
--              reg = <0x0 0xc00000 0x0 0x4000000>;
--            };
-+                    partition@c00000 {
-+                        label = "boot";
-+                        reg = <0x0 0xc00000 0x0 0x4000000>;
-+                    };
- 
--            partition@4c00000 {
--              label = "system";
--              reg = <0x0 0x4c00000 0x1 0xfb400000>;
-+                    partition@4c00000 {
-+                        label = "system";
-+                        reg = <0x0 0x4c00000 0x1 0xfb400000>;
-+                    };
-+                };
-             };
--          };
-         };
--      };
-     };
-diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml
-index d455b75a0b0b..8c62c7d3d0cd 100644
---- a/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml
-@@ -67,25 +67,25 @@ unevaluatedProperties: false
- examples:
-   - |
-     nand-controller@e0f00000 {
--      compatible = "intel,lgm-ebunand";
--      reg = <0xe0f00000 0x100>,
--            <0xe1000000 0x300>,
--            <0xe1400000 0x8000>,
--            <0xe1c00000 0x1000>,
--            <0x17400000 0x4>,
--            <0x17c00000 0x4>;
--      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
--        "addr_sel0", "addr_sel1";
--      clocks = <&cgu0 125>;
--      dmas = <&dma0 8>, <&dma0 9>;
--      dma-names = "tx", "rx";
--      #address-cells = <1>;
--      #size-cells = <0>;
-+        compatible = "intel,lgm-ebunand";
-+        reg = <0xe0f00000 0x100>,
-+              <0xe1000000 0x300>,
-+              <0xe1400000 0x8000>,
-+              <0xe1c00000 0x1000>,
-+              <0x17400000 0x4>,
-+              <0x17c00000 0x4>;
-+        reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
-+                    "addr_sel0", "addr_sel1";
-+        clocks = <&cgu0 125>;
-+        dmas = <&dma0 8>, <&dma0 9>;
-+        dma-names = "tx", "rx";
-+        #address-cells = <1>;
-+        #size-cells = <0>;
- 
--      nand@0 {
--        reg = <0>;
--        nand-ecc-mode = "hw";
--      };
-+        nand@0 {
-+            reg = <0>;
-+            nand-ecc-mode = "hw";
-+        };
-     };
- 
- ...
-diff --git a/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-index 8cc2a7ceb5fb..ea9450fe7c9f 100644
---- a/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-+++ b/Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
-@@ -34,13 +34,13 @@ unevaluatedProperties: false
- examples:
-   - |
-     spi {
--      #address-cells = <1>;
--      #size-cells = <0>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
- 
--      eeram@0 {
--        compatible = "microchip,48l640";
--        reg = <0>;
--        spi-max-frequency = <20000000>;
--      };
-+        eeram@0 {
-+            compatible = "microchip,48l640";
-+            reg = <0>;
-+            spi-max-frequency = <20000000>;
-+        };
-     };
- ...
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-index 681a51f5257c..61d12bda356e 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-@@ -41,22 +41,22 @@ examples:
-   - |
-     /* Example declaring dynamic partition */
-     flash {
--      partitions {
--        compatible = "qcom,smem-part";
-+        partitions {
-+            compatible = "qcom,smem-part";
- 
--        partition-art {
--          compatible = "nvmem-cells";
--          #address-cells = <1>;
--          #size-cells = <1>;
--          label = "0:art";
-+            partition-art {
-+                compatible = "nvmem-cells";
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+                label = "0:art";
- 
--          macaddr_art_0: macaddr@0 {
--            reg = <0x0 0x6>;
--          };
-+                macaddr_art_0: macaddr@0 {
-+                    reg = <0x0 0x6>;
-+                };
- 
--          macaddr_art_6: macaddr@6 {
--            reg = <0x6 0x6>;
--          };
-+                macaddr_art_6: macaddr@6 {
-+                    reg = <0x6 0x6>;
-+                };
-+            };
-         };
--      };
-     };
-diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-index 3cc90c64e974..07024ee45951 100644
---- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-+++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-@@ -136,85 +136,85 @@ examples:
-   - |
-     #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-     nand-controller@1ac00000 {
--      compatible = "qcom,ipq806x-nand";
--      reg = <0x1ac00000 0x800>;
-+        compatible = "qcom,ipq806x-nand";
-+        reg = <0x1ac00000 0x800>;
- 
--      clocks = <&gcc EBI2_CLK>,
--               <&gcc EBI2_AON_CLK>;
--      clock-names = "core", "aon";
-+        clocks = <&gcc EBI2_CLK>,
-+                 <&gcc EBI2_AON_CLK>;
-+        clock-names = "core", "aon";
- 
--      dmas = <&adm_dma 3>;
--      dma-names = "rxtx";
--      qcom,cmd-crci = <15>;
--      qcom,data-crci = <3>;
-+        dmas = <&adm_dma 3>;
-+        dma-names = "rxtx";
-+        qcom,cmd-crci = <15>;
-+        qcom,data-crci = <3>;
- 
--      #address-cells = <1>;
--      #size-cells = <0>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
- 
--      nand@0 {
--        reg = <0>;
-+        nand@0 {
-+            reg = <0>;
- 
--        nand-ecc-strength = <4>;
--        nand-bus-width = <8>;
-+            nand-ecc-strength = <4>;
-+            nand-bus-width = <8>;
- 
--        qcom,boot-partitions = <0x0 0x58a0000>;
-+            qcom,boot-partitions = <0x0 0x58a0000>;
- 
--        partitions {
--          compatible = "fixed-partitions";
--          #address-cells = <1>;
--          #size-cells = <1>;
-+            partitions {
-+                compatible = "fixed-partitions";
-+                #address-cells = <1>;
-+                #size-cells = <1>;
- 
--          partition@0 {
--            label = "boot-nand";
--            reg = <0 0x58a0000>;
--          };
-+                partition@0 {
-+                    label = "boot-nand";
-+                    reg = <0 0x58a0000>;
-+                };
- 
--          partition@58a0000 {
--            label = "fs-nand";
--            reg = <0x58a0000 0x4000000>;
--          };
-+                partition@58a0000 {
-+                    label = "fs-nand";
-+                    reg = <0x58a0000 0x4000000>;
-+                };
-+            };
-         };
--      };
-     };
- 
-     #include <dt-bindings/clock/qcom,gcc-ipq4019.h>
-     nand-controller@79b0000 {
--      compatible = "qcom,ipq4019-nand";
--      reg = <0x79b0000 0x1000>;
-+        compatible = "qcom,ipq4019-nand";
-+        reg = <0x79b0000 0x1000>;
- 
--      clocks = <&gcc GCC_QPIC_CLK>,
--               <&gcc GCC_QPIC_AHB_CLK>;
--      clock-names = "core", "aon";
-+        clocks = <&gcc GCC_QPIC_CLK>,
-+                 <&gcc GCC_QPIC_AHB_CLK>;
-+        clock-names = "core", "aon";
- 
--      dmas = <&qpicbam 0>,
--             <&qpicbam 1>,
--             <&qpicbam 2>;
--      dma-names = "tx", "rx", "cmd";
-+        dmas = <&qpicbam 0>,
-+               <&qpicbam 1>,
-+               <&qpicbam 2>;
-+        dma-names = "tx", "rx", "cmd";
- 
--      #address-cells = <1>;
--      #size-cells = <0>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
- 
--      nand@0 {
--        reg = <0>;
--        nand-ecc-strength = <4>;
--        nand-bus-width = <8>;
-+        nand@0 {
-+            reg = <0>;
-+            nand-ecc-strength = <4>;
-+            nand-bus-width = <8>;
- 
--        partitions {
--          compatible = "fixed-partitions";
--          #address-cells = <1>;
--          #size-cells = <1>;
-+            partitions {
-+                compatible = "fixed-partitions";
-+                #address-cells = <1>;
-+                #size-cells = <1>;
- 
--          partition@0 {
--            label = "boot-nand";
--            reg = <0 0x58a0000>;
--          };
-+                partition@0 {
-+                    label = "boot-nand";
-+                    reg = <0 0x58a0000>;
-+                };
- 
--          partition@58a0000 {
--            label = "fs-nand";
--            reg = <0x58a0000 0x4000000>;
--          };
-+                partition@58a0000 {
-+                    label = "fs-nand";
-+                    reg = <0x58a0000 0x4000000>;
-+                };
-+            };
-         };
--      };
-     };
- 
- ...
-diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-index eab8ea3da1fa..8cbfa1504a0f 100644
---- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
-@@ -101,31 +101,32 @@ examples:
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-     #include <dt-bindings/clock/stm32mp1-clks.h>
-     #include <dt-bindings/reset/stm32mp1-resets.h>
-+
-     nand-controller@58002000 {
--      compatible = "st,stm32mp15-fmc2";
--      reg = <0x58002000 0x1000>,
--            <0x80000000 0x1000>,
--            <0x88010000 0x1000>,
--            <0x88020000 0x1000>,
--            <0x81000000 0x1000>,
--            <0x89010000 0x1000>,
--            <0x89020000 0x1000>;
--      interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
--      dmas = <&mdma1 20 0x2 0x12000a02 0x0 0x0>,
--             <&mdma1 20 0x2 0x12000a08 0x0 0x0>,
--             <&mdma1 21 0x2 0x12000a0a 0x0 0x0>;
--      dma-names = "tx", "rx", "ecc";
--      clocks = <&rcc FMC_K>;
--      resets = <&rcc FMC_R>;
--      #address-cells = <1>;
--      #size-cells = <0>;
--
--      nand@0 {
--        reg = <0>;
--        nand-on-flash-bbt;
-+        compatible = "st,stm32mp15-fmc2";
-+        reg = <0x58002000 0x1000>,
-+              <0x80000000 0x1000>,
-+              <0x88010000 0x1000>,
-+              <0x88020000 0x1000>,
-+              <0x81000000 0x1000>,
-+              <0x89010000 0x1000>,
-+              <0x89020000 0x1000>;
-+        interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
-+        dmas = <&mdma1 20 0x2 0x12000a02 0x0 0x0>,
-+               <&mdma1 20 0x2 0x12000a08 0x0 0x0>,
-+               <&mdma1 21 0x2 0x12000a0a 0x0 0x0>;
-+        dma-names = "tx", "rx", "ecc";
-+        clocks = <&rcc FMC_K>;
-+        resets = <&rcc FMC_R>;
-         #address-cells = <1>;
--        #size-cells = <1>;
--      };
-+        #size-cells = <0>;
-+
-+        nand@0 {
-+            reg = <0>;
-+            nand-on-flash-bbt;
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+        };
-     };
- 
- ...
-diff --git a/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml
-index 30b458c41cac..4774c92e7fc4 100644
---- a/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml
-+++ b/Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml
-@@ -44,26 +44,26 @@ additionalProperties: false
- examples:
-   - |
-     bus {
--      #address-cells = <2>;
--      #size-cells = <2>;
--
--      hbmc: memory-controller@47034000 {
--        compatible = "ti,am654-hbmc";
--        reg = <0x0 0x47034000 0x0 0x100>,
--              <0x5 0x00000000 0x1 0x0000000>;
--        ranges = <0x0 0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
--                 <0x1 0x0 0x5 0x04000000 0x4000000>; /* CS1 - 64MB */
--        clocks = <&k3_clks 102 0>;
-         #address-cells = <2>;
--        #size-cells = <1>;
--        power-domains = <&k3_pds 55>;
--        mux-controls = <&hbmc_mux 0>;
-+        #size-cells = <2>;
- 
--        flash@0,0 {
--            compatible = "cypress,hyperflash", "cfi-flash";
--            reg = <0x0 0x0 0x4000000>;
--            #address-cells = <1>;
-+        hbmc: memory-controller@47034000 {
-+            compatible = "ti,am654-hbmc";
-+            reg = <0x0 0x47034000 0x0 0x100>,
-+                  <0x5 0x00000000 0x1 0x0000000>;
-+            ranges = <0x0 0x0 0x5 0x00000000 0x4000000>, /* CS0 - 64MB */
-+                     <0x1 0x0 0x5 0x04000000 0x4000000>; /* CS1 - 64MB */
-+            clocks = <&k3_clks 102 0>;
-+            #address-cells = <2>;
-             #size-cells = <1>;
-+            power-domains = <&k3_pds 55>;
-+            mux-controls = <&hbmc_mux 0>;
-+
-+            flash@0,0 {
-+                compatible = "cypress,hyperflash", "cfi-flash";
-+                reg = <0x0 0x0 0x4000000>;
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+            };
-         };
--      };
-     };
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVmFkeW0sCgp2YWR5bS5rb2NoYW5AcGx2aXNpb24uZXUgd3JvdGUgb24gTW9uLCAzMSBPY3Qg
+MjAyMiAxNDoyOToyMiArMDIwMDoKCj4gSGkgS3J6eXN6dG9mLCBNaXF1ZWwsCj4gCj4gT24gRnJp
+LCAyOCBPY3QgMjAyMiAxNDo1MDo0OSArMDIwMCwgTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5h
+bEBib290bGluLmNvbT4gd3JvdGU6Cj4gPiBIaSBLcnp5c3p0b2YsCj4gPiAgIAo+IAo+IFtzbmlw
+XQo+IAo+IEZvciBtZSBpdCBsb29rcyBsaWtlIHRoZSAibGFiZWwiIGFuZCAicGFydGl0aW9ucyIg
+Y2FuIGJlIGRyb3BwZWQgZnJvbSB0aGlzIHNlcmllcywKPiBzbyBpbiB0aGUgZnV0dXJlIHRoZXkg
+Y2FuIGJlIGhhbmRsZWQgYnkgdGhlIGNvbW1vbiBtdGQtcmVsYXRlZCB5YW1sID8KCkkgYW0gY3Vy
+cmVudGx5IHdvcmtpbmcgb24gdGhpcywgc2VlIGJlbG93LiBUaGlzIHNlcmllcyBoYXMgbm90IHll
+dCBiZWVuCmFjY2VwdGVkIGJ1dCBJIGJlbGlldmUgeW91IGNhbiByZWJhc2UgeW91ciB3b3JrIG9u
+IHRvcCBvZiBpdC4gUGxlYXNlIGJlCnN1cmUgeW91ciByZWZlcmVuY2UgdGhlIHJpZ2h0IHlhbWwg
+ZmlsZXMgYW5kIGRvIG5vdCByZWRlZmluZSBnZW5lcmljCnByb3BlcnRpZXMgKGZyb20gbXRkLnlh
+bWwsIG5hbmQtY29udHJvbGxlci55YW1sIG9yIG5hbmQtY2hpcC55YW1sKS4KCkxpbms6IGh0dHBz
+Oi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW10ZC8yMDIyMTEwNDE2NDcxOC4xMjkwODU5LTEtbWlx
+dWVsLnJheW5hbEBib290bGluLmNvbS9ULyNtZjJhOTRmYTM2YjQ3NjBiMjkyNjljNWI5NGE3ZGZj
+YjUzM2M4Y2FmZQoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
+aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
+Lwo=
