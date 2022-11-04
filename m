@@ -4,118 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD8E5C433FE
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Nov 2022 09:21:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7823C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Nov 2022 16:47:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Tm/KhjYdNjpSB1IddjTMeLV/Ec38sskHodD98WH8Vzg=; b=QAyYgqDR2Hdtpv
-	2BxqYU3vhrI7IHOUy66u9u+k4HGqr1ISlMK4Sy8cUDpHGXgBfhI5EyNDdhz46r9WGtjnOtCtKnovA
-	aR4i1nbvV9lJ8yMQPUV+Hg2tyygxYdO0Op31OfJOAyMptWE6GfYR72RYypKq+Ae2eXHooOQ3AIj5H
-	fH7hsfHuYumrZnjmr2Wta/sQ1LaFcKczdfC5MFd84k79xHrsNvC5NymEKs5OWyIMnGb7ZXKbA4C0Q
-	xS9iTHtmg5z7tOyPuIFpuDZDtdmAApvJBBL8r0FsgnBRjMycsYvXheUT8vub3oxOQg4XYYIZ+WA0T
-	yj8SbkuzTQiac4E5HvzA==;
+	List-Owner; bh=ZzGYR0rtRhChJpz4FEvk3YXo0gx3QsuFQRfzdqgZixc=; b=TFWgb08W9ufQK7
+	eP6m6mJ74Qb3hpZiWcoj/MJOoIomkSBXBoijQUnNnGvsNBLndRJMqafTTdxvPmseFdnp2/8c0Dsc9
+	GNEmazvlfY3EqAfaBAU3HML0NUmZ9lNMkqB8trkZY6AgcqY2GLmhxF4gzBj5nSK3ocwGR+DH+hF7d
+	ed55GEimWieabhEHuOZ1y4XQsaMoulad74ZIg3kthrvSCi2ow3B1fWFdS3slWuXZEY6hQS2/02R5W
+	KMBUW/p4Fac/1qR0pKSYJMj81wVOZf3kfPXlko7viZ4fDNBTfN7xX8j+mGFO2Fz8QGMnoUUGUh4rE
+	5Oux7B3JNAeyNImM8v3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqssc-0034au-Q5; Fri, 04 Nov 2022 09:20:50 +0000
-Received: from new2-smtp.messagingengine.com ([66.111.4.224])
+	id 1oqzqy-004Vxb-Lv; Fri, 04 Nov 2022 16:47:36 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oqssY-0034Yi-4W; Fri, 04 Nov 2022 09:20:48 +0000
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 8B17F580511;
-	Fri,  4 Nov 2022 05:20:41 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute3.internal (MEProxy); Fri, 04 Nov 2022 05:20:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to; s=fm3; t=1667553641; x=1667560841; bh=SJoBz4HEVE
-	RiFUnQzb3ZIub9dT0AONhBbUZgzTI8xuQ=; b=jOAioEcqTCQaB6i99azVot5cAk
-	gre11Ve+vBmc+Fs/vkDIrNjCSzfHPOUS4wzGCXwfIKJy9biOGQnW4iqxv75LAqbt
-	RdYq92O8WI8weSFAZzxtnrW2XuUukmSBN8KcaYYLkhR8/jLD6oh6MJQ9cwWd7yl8
-	mH21fZUTzBP3gaoYiV4qH0o52fq8RuYFTCOdHa7Soal92hUHyLnB5uIHP9R7ZXTY
-	yrk8ucJVboxa6GlUfb8qItPWrs5N4B3xbNfDaXknJzA5ZsbLT0XMXiOZj0LDZKk8
-	6WHRFTqWjdbWEHnXA5Wxg4OS34kfyJ+czE32JS893SSJ8vebcjylW97lvLOw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1667553641; x=1667560841; bh=SJoBz4HEVERiFUnQzb3ZIub9dT0A
-	ONhBbUZgzTI8xuQ=; b=BmHXv8dWgMDB3A30MW7r0ER+x2KPnCs67D5Tm4znOHms
-	KOvE21G5Qhp1IrhrNpstSMDDbjbRSKKI+wikCsrQUA1D/bc3nhsP6Pfph0Q2sq/L
-	w5xrS9CVegwYB6hNxnfcyAYSDOlMngVd/4QaY9exxV3aeJMS+7bUlXh8ZFR6fpSK
-	gPa2Xr8LydLZo5vJzfOV1L/TUvE6+ISJhz2GoZweOm3SeuEKaa51K7Ium5W5K020
-	eA1TNoxWdJRVK08gDXfqjSbR39bjBE0aJEu+l1hoD12ykpSVSlQ8ZDa9eXuaf1Sv
-	VIUPNFOv24w/xRDpe00prXWHte2pkStlJDT70gy7rw==
-X-ME-Sender: <xms:Z9lkYzSrjU71xNBk6_zqZw7_YH6JI0yUseZ9KPinXiiMwa2ms5wZNA>
-    <xme:Z9lkY0y5CO55EwHV9Y6MI53sDiK8VD6-UVJ3Kx8hhf4HE2ApNz1-y8IkyXw6-f9C2
-    r627sGDwec4-VUhbl4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugddtudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:Z9lkY42FoeE9AWZWaTBjKK0WgCtTsBwtE9dvMmUqE911tjOLuc_EpQ>
-    <xmx:Z9lkYzD3odg97j_NLZJAinYScUOubW4GrxI_Sg6mxaH40a00usXu3A>
-    <xmx:Z9lkY8gjj31U7LlNshlCvQUZGUTi1_xePFBMFsKDj6YaX8-3AvZpfA>
-    <xmx:adlkYxI9rlur3V1K3bRsxhvV5OL9Go-r-JYQNksdhAr5r8wa1PdT3g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 17FD1B603ED; Fri,  4 Nov 2022 05:20:38 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1087-g968661d8e1-fm-20221021.001-g968661d8
-Mime-Version: 1.0
-Message-Id: <6b35d496-2313-4fd9-851b-2ba469bc9261@app.fastmail.com>
-In-Reply-To:  <803778517.2279639.1667493436959.JavaMail.open-xchange@opme11oxm02aub.pom.fr.intraorange>
-References: <20221019161831.3864786-1-arnd@kernel.org>
- <m2r0z3h5yr.fsf@sopl295.home>
- <7d9eebc8-39b6-4dc1-9ffc-f17ec584bee2@app.fastmail.com>
- <803778517.2279639.1667493436959.JavaMail.open-xchange@opme11oxm02aub.pom.fr.intraorange>
-Date: Fri, 04 Nov 2022 10:20:20 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Robert Jarzmik" <jarzmik.robert@orange.fr>,
- "Arnd Bergmann" <arnd@kernel.org>, "Robert Jarzmik" <robert.jarzmik@free.fr>
-Cc: jingoohan1@gmail.com, "Linus Walleij" <linus.walleij@linaro.org>,
- "Sudip Mukherjee" <sudipm.mukherjee@gmail.com>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>, marek.vasut@gmail.com,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- "Ulf Hansson" <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
- "Sergey Shtylyov" <s.shtylyov@omp.ru>, alsa-devel@alsa-project.org,
- philipp.zabel@gmail.com, linux-usb@vger.kernel.org,
- linux-leds@vger.kernel.org, slapin@ossfans.org,
- "Bartosz Golaszewski" <brgl@bgdev.pl>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Mark Brown" <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- "Lee Jones" <lee@kernel.org>, "Russell King" <linux@armlinux.org.uk>,
- "Damien Le Moal" <damien.lemoal@opensource.wdc.com>,
- linux-input@vger.kernel.org, mkpetch@internode.on.net,
- lgirdwood@gmail.com, "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Daniel Mack" <daniel@zonque.org>, kernel@wantstofly.org,
- "Dmitry Torokhov" <dmitry.torokhov@gmail.com>, sre@kernel.org,
- linux-arm-kernel@lists.infradead.org, patches@opensource.cirrus.com,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- "Felipe Balbi" <balbi@kernel.org>, "Helge Deller" <deller@gmx.de>,
- "Alan Stern" <stern@rowland.harvard.edu>,
- "Wolfram Sang" <wsa+renesas@sang-engineering.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, perex@perex.cz,
- linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-rtc@vger.kernel.org,
- "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
- lost.distance@yahoo.com, "Haojian Zhuang" <haojian.zhuang@gmail.com>,
- "Viresh Kumar" <viresh.kumar@linaro.org>, tiwai@suse.com,
- "Dominik Brodowski" <linux@dominikbrodowski.net>,
- "Alexandre Belloni" <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH 00/30] ARM: pxa: remove all unused boards&drivers
+	id 1oqzqn-004Vq7-1r
+	for linux-mtd@lists.infradead.org; Fri, 04 Nov 2022 16:47:27 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 68F2C4000C;
+	Fri,  4 Nov 2022 16:47:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1667580442;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9GgQ6Sk6Ebll+26wyuvSyP9c28FQcBgUw85oCY9S6Ho=;
+	b=nqyaBQwsiE7Sara4ljYb3o7J9WZa6MxhGJrJxr7kUuIPcEjxa/dk6zUl1CBXVXHZnt1iJH
+	z+/t4yTAcYINIjiHpInQl+7ThCcVR7/NaKb844OOxVY+2Qs8rxOx41Owfzf+kkBXKSoNm/
+	23jL7n1epPMq+jHN0rh0BbLe+g3FPd6UOCP3NG7kDaoZmVTlGX15uGCj6LC2CDLnFoMb8Z
+	cQxzUfb1ZDe9STsASlvNF2NTlhoiVsWTtmG37XpUOm2YkFlHWNhEN9ntxeF0n6vx8zRJP+
+	tgqimVejd9KoveCtNdB3rNEvfEDEwNX1/p1V5vbdLaD6CbXwhl5kEn+46Y8oQw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	devicetree@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+	Pratyush Yadav <p.yadav@ti.com>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	<linux-kernel@vger.kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 02/17] dt-bindings: mtd: Remove useless file about partitions
+Date: Fri,  4 Nov 2022 17:47:03 +0100
+Message-Id: <20221104164718.1290859-3-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221104164718.1290859-1-miquel.raynal@bootlin.com>
+References: <20221104164718.1290859-1-miquel.raynal@bootlin.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221104_022046_652879_5C6CCF4E 
-X-CRM114-Status: GOOD (  36.37  )
+X-CRM114-CacheID: sfid-20221104_094725_393311_B49967F9 
+X-CRM114-Status: GOOD (  20.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,84 +80,148 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Nov 3, 2022, at 17:37, Jarzmik Robert wrote:
-> I'm sorry Arnd, my mailer messed up again, and instead of using my 
-> normal robert.jarzmik@free.fr, it used my ISP mail ...
->>
->
-> The reason you're not seeing the AC97_BUS_NEW used is because this 
-> becomes visible only in device-tree files, which were posted (for 
-> mioa701 for example) but never properly reviewed nor merged.
->
-> As from memory, at least mioa701, zylonite, em_x270 are DT ported, ie. 
-> there is a DT file which makes them boot. For the mioa701, the DT file 
-> offers the same functionnality, ie. all drivers in mioa701.c legacy 
-> file are working as well in a DT variant (not using mioa701.c 
-> obviously).
+There is already a real partitions.yaml file, so assuming everybody
+knows hot to read yaml schema now, this text file is no longer needed,
+so drop it.
 
-Ok, I see. I need a little clarification here, so I can adapt
-my patch series to keep the necessary files in place:
+Depending on the situation, the lines referring to this file are either
+dropped or edited to point to mtd.yaml which includes partition{,s}.yaml.
 
-- Zylonite has both PXA300 and PXA320 variants. I removed the PXA320
-  code because nothing selected it any more and it is not hooked
-  up to the MACH_PXA3XX_DT Kconfig symbol. Should I undo this and
-  keep all three PXA3xx variant, removing only PXA930 but selecting
-  CPU_PXA310/320 from MACH_PXA3XX_DT?
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ .../devicetree/bindings/mtd/atmel-nand.txt    |  6 ++--
+ .../devicetree/bindings/mtd/ingenic,nand.yaml |  1 -
+ .../devicetree/bindings/mtd/lpc32xx-mlc.txt   |  2 +-
+ .../devicetree/bindings/mtd/lpc32xx-slc.txt   |  2 +-
+ .../devicetree/bindings/mtd/mtk-nand.txt      |  2 +-
+ .../devicetree/bindings/mtd/partition.txt     | 33 -------------------
+ drivers/mtd/parsers/Kconfig                   |  2 +-
+ 7 files changed, 6 insertions(+), 42 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/partition.txt
 
-- The em_x270 board file was already removed as part of 9d3239147d6d
-  ("ARM: pxa: remove Compulab pxa2xx boards"), which already removed
-  the associated drivers. Is it correct to assume that the DT support
-  for it has also become unusable at that point, or would you expect
-  it to still have some use? I now remove the related CM-X300 machine
-  as well, but it sounds like you did not have DT support for that,
-  right?
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+index 3aa297c97ab6..50645828ac20 100644
+--- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+@@ -45,10 +45,8 @@ Optional properties:
+ - atmel,rb: an integer identifying the native Ready/Busy pin. Only meaningful
+ 	    on sama5 SoCs.
+ 
+-All generic properties described in
+-Documentation/devicetree/bindings/mtd/{common,nand}.txt also apply to the NAND
+-device node, and NAND partitions should be defined under the NAND node as
+-described in Documentation/devicetree/bindings/mtd/partition.txt.
++All generic properties are described in the generic yaml files under
++Documentation/devicetree/bindings/mtd/.
+ 
+ * ECC engine (PMECC) bindings:
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
+index 8c272c842bfd..87b2944d0d1b 100644
+--- a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
+@@ -34,7 +34,6 @@ properties:
+     type: object
+     description:
+       Node containing description of fixed partitions.
+-      See Documentation/devicetree/bindings/mtd/partition.txt
+ 
+ patternProperties:
+   "^nand@[a-f0-9]$":
+diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
+index 6d60bc3063f5..64c06aa05ac7 100644
+--- a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
++++ b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
+@@ -19,7 +19,7 @@ accuracy:)
+ - nxp,wr_low: WR_LOW
+ 
+ Optional subnodes:
+-- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
++- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
+ 
+ Example:
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
+index d94edc0fc554..39f17630a301 100644
+--- a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
++++ b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
+@@ -20,7 +20,7 @@ clock speed:)
+ - nxp,rsetup: Read setup time (R_SETUP)
+ 
+ Optional subnodes:
+-- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
++- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
+ 
+ Example:
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+index 4d3ec5e4ff8a..839ea2f93d04 100644
+--- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+@@ -131,7 +131,7 @@ Example:
+ 	};
+ 
+ NAND chip optional subnodes:
+-- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
++- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
+ 
+ Example:
+ 	nand@0 {
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+deleted file mode 100644
+index ead90e8274d6..000000000000
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ /dev/null
+@@ -1,33 +0,0 @@
+-Flash partitions in device tree
+-===============================
+-
+-Flash devices can be partitioned into one or more functional ranges (e.g. "boot
+-code", "nvram", "kernel").
+-
+-Different devices may be partitioned in a different ways. Some may use a fixed
+-flash layout set at production time. Some may use on-flash table that describes
+-the geometry and naming/purpose of each functional region. It is also possible
+-to see these methods mixed.
+-
+-To assist system software in locating partitions, we allow describing which
+-method is used for a given flash device. To describe the method there should be
+-a subnode of the flash device that is named 'partitions'. It must have a
+-'compatible' property, which is used to identify the method to use.
+-
+-When a single partition is represented with a DT node (it depends on a used
+-format) it may also be described using above rules ('compatible' and optionally
+-some extra properties / subnodes). It allows describing more complex,
+-hierarchical (multi-level) layouts and should be used if there is some
+-significant relation between partitions or some partition internally uses
+-another partitioning method.
+-
+-Available bindings are listed in the "partitions" subdirectory.
+-
+-
+-Deprecated: partitions defined in flash node
+-============================================
+-
+-For backwards compatibility partitions as direct subnodes of the flash device are
+-supported. This use is discouraged.
+-NOTE: also for backwards compatibility, direct subnodes that have a compatible
+-string are not considered partitions, as they may be used for other bindings.
+diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
+index aaa06050c9bc..b53b8bc7c9e6 100644
+--- a/drivers/mtd/parsers/Kconfig
++++ b/drivers/mtd/parsers/Kconfig
+@@ -75,7 +75,7 @@ config MTD_OF_PARTS
+ 	  This provides a open firmware device tree partition parser
+ 	  which derives the partition map from the children of the
+ 	  flash memory node, as described in
+-	  Documentation/devicetree/bindings/mtd/partition.txt.
++	  Documentation/devicetree/bindings/mtd/mtd.yaml.
+ 
+ config MTD_OF_PARTS_BCM4908
+ 	bool "BCM4908 partitioning support"
+-- 
+2.34.1
 
-- I'm not sure how the probing of the ASoC drivers works in the
-  DT case. Do I only need to make SND_PXA2XX_SOC_AC97 user-visible
-  to let everything get probed automatically from DT, or do we
-  need to also keep SND_PXA2XX_SOC_MIOA701 and SND_SOC_ZYLONITE?
-
->> Any idea where I went wrong here? Did I make a mistake in following the Kconfig dependencies, or are some parts of this
-> incorrectly annotated?
->
-> I don't think you did a mistake, I think I did. When I saw the patch of 
-> "deprecation" of mioa701 and all the other pxa files, I took it that 
-> the platform-device was deprecated, and was to be removed. This is the 
-> right thing to do in my opinion. I wouldn't mind if all board file go 
-> actually (expect the QEMU one), as this would leave only the boards 
-> with proper DT support, and would remove some clutter from the kernel.
-
-Right, this is the plan: the only board files I left in place are
-'gumstix' family that is supported by qemu and has the largest amount
-of RAM in there, and the 'spitz' family that is also supported by
-qemu and apparently had at least one user that was interested in
-working on DT (I can't find a record of who that was now). 
-
-> I also thought the drivers won't get touched by the purge, exception 
-> made of "platform similar ones", such as in the sound tree 
-> (sound/soc/pxa) where we have some of them, and maybe mfd tree.
-
-I made two lists of drivers here: the first list is for those that
-become invisible in Kconfig and can no longer even be compile tested.
-My reasoning here was that these are likely already dead and will
-only get worse without compile testing. If anyone ends up doing
-a new DT conversion of a removed board later on, these can obviously
-get resurrected. The current state of the patches is in [1],
-I'll go through them again based on your feedback, but let me know
-if you see anything else that I'm removing that you think should be
-kept.
-
-The second list of drivers is for those that have no DT support and
-are impossible to get used without anyone declaring a (platform, spi,
-i2c, ...) device in source code somewhere. The list is still
-incomplete because this is hard to check automatically. I have
-included a few patches to remove drivers that have been obviously
-unused for a long time, or never had an in-tree user at all, but
-I left the majority of these drivers for a later series.
-
-       Arnd
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git/log/?h=boardfile-remove&id=73c4b7cfbc2b2ef0
 
 ______________________________________________________
 Linux MTD discussion mailing list
