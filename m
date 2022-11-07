@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0534EC4332F
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Nov 2022 16:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 938E2C43217
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Nov 2022 16:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=t6XAdEC8rJLcg+K4XZ0sQDmNMgQF9kb+wR0Umu8NACA=; b=CVz9Z9VRpiq1A3
-	Ckz0hwJaA3Yd3GnLDPkYQMYIosbjDKSCDcQyMrazD+Pe0FzRADVo3nq7IqHjYSVoqKEA7LWKiotYA
-	oKWjrFYy4zveA+MjfILiwoR239gJMURInzp/h6c0bdlwZ1Kz4FT9Qm6InZihFOJ6yJV4asDlCS92p
-	pAHv3pAiL8AJkbyAYrqTSlT/AoXiLBiSvjI196CMN0XH616m4FarNzOMrPX7vVtbbiWxeshxnhkeC
-	eBXlZUQ+0aiCBWBZMS7L71OSGkJ/lEGQ69DPWHs1M5QuN2CtQ2QasAF19o3m21cZillgnIeoaJnzq
-	1oNNrutbDkt/jz5NDnHg==;
+	List-Owner; bh=mJzKaQKgQQdvsE6Neit90JbMzzY7uk3zlBRWeN8Pous=; b=OYs86BpNilSy7N
+	EvSMrHC6Kw+xVKCY4SMm6IIuqzG6Yep5b44GH4C+RlMW4ja8BZORbFN2kUH4QJ/HkdbdET1BH6TZj
+	KxKe1o4uiAhhl7XHZ6rwTn6agN9I1pGRl6dybuN0gpK/OtySl9FVEqxlw6MsjyIkXp8Z+IZ/QzCVW
+	R/6/XxndVTqHbqZHwKW85Ga/yAhBrga98eRZX0/bDoG2DWJJcgrwusH46QgQ9C5CrSp/FjhyHVqN6
+	I7XaDbm8W1SSy3a0BtCA9wA192yBNySMd06oXmedT951ZwwbeTHzI9yvu12R1TZd9j11EUQ+YRWNh
+	rKs/JqHCfFJzog1pJiPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1os51c-00GCP3-Fy; Mon, 07 Nov 2022 16:31:04 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1os51t-00GCYY-8X; Mon, 07 Nov 2022 16:31:21 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1os4r7-00G7S2-07
-	for linux-mtd@lists.infradead.org; Mon, 07 Nov 2022 16:20:16 +0000
+	id 1os4rG-00G7cM-P4
+	for linux-mtd@lists.infradead.org; Mon, 07 Nov 2022 16:20:24 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 0B3101C0006;
-	Mon,  7 Nov 2022 16:20:04 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 249D440004;
+	Mon,  7 Nov 2022 16:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1667838006;
+	t=1667838018;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4HZcrPE6YQ36i+RHO0I27OJqXRqj7t+yHzsjK56F3Mc=;
-	b=BOzr55Gf3B+7N0+9U+hzANiQG+Hr0HsSx6M5xlCz0zPHkEhJYYSEhVA2E3YGNCL3x+Urhl
-	31epY/lZG2JMU4xs7dlljepFDVOOFU0I/yqFUUbYDd5qgVqg38ofEWZpGe5E+TKge7Nw8u
-	/0Zj7DhO2nW/24PC71n7bfV0El3hfdW/EAew1nIZHaeQCS4T0ZszWS7vy7eZDprtTLK8Kq
-	GHbD7m2g9J8f47uN70e9/P0yY+oMTydFirY9Ns1/biuA6tyR2pvGu8RMa4v9WvwBRaiA47
-	Cp+a97rtKaNkJn8jBK6CtYS/PQNZmWU0uxGQCV9wuL3d8QtND2rDfRtCRCmgvQ==
+	bh=s7aszBHSBcyAAcN1a1kUyOs2oLb5S8ndGC4JnlHsv6s=;
+	b=LN5GHOM6hCsnQF5f0WpLlSr8Q/NAsCzFHUFIWhkz3XhV2Sb8gfMQcMl3Nuxwb182idYH1H
+	ilzNcX1WmdMjYorN4g+3NLbAdXELBAWhVCiWp/uC/p2xrd5xKEdsCtXv1m10HCdTwa1w0q
+	fYkIRmkYaTcRX1oE2/jDpDq03wZZktEQjJZcBiC8JhpZkrUTCg+uSZMOLfkBLEXUFlFg3I
+	1I9Wxwp6oWMK873joZVvpdnmujq5BId5MctWeBXW17u4Ha+RtqOj9a3TfW5oH6AJEL35kZ
+	wqgeXIIoPTugVW9pHER02B43B9kXOQxbVHCfFMP8gCh26AfbAMdwgs4qvnXgeA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Adam Borowski <kilobyte@angband.pl>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: placate "$VARIABLE is used uninitialized" warnings
-Date: Mon,  7 Nov 2022 17:20:04 +0100
-Message-Id: <20221107162004.44084-1-miquel.raynal@bootlin.com>
+To: Jilin Yuan <yuanjilin@cdjrlc.com>,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: inftlcore: fix repeated words in comments
+Date: Mon,  7 Nov 2022 17:20:16 +0100
+Message-Id: <20221107162016.48949-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221024092026.42123-1-kilobyte@angband.pl>
+In-Reply-To: <20221028134036.63000-1-yuanjilin@cdjrlc.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'83f0869e9bf3333d778d62f055b0f8e1de1cc812'
+X-linux-mtd-patch-commit: b'077dc37db1e1da1f0e6a745328e4caa6d414e501'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221107_082013_309411_1A4B260E 
-X-CRM114-Status: UNSURE (   6.97  )
+X-CRM114-CacheID: sfid-20221107_082022_974911_0EEB4118 
+X-CRM114-Status: UNSURE (   4.97  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,16 +76,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2022-10-24 at 09:20:26 UTC, Adam Borowski wrote:
-> The compiler is not smart enough to notice that it's impossible for
-> them to be actually used uninitialized.  Which exact variables trip
-> here varies depending on random surrounding code; none triggered in
-> 6.1-rc1 but 6.1-rc2 fails on three of these five, despite variables
-> declared in the very same line having identical flow.
+On Fri, 2022-10-28 at 13:40:36 UTC, Jilin Yuan wrote:
+> Delete the redundant word 'it'.
 > 
-> Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+> Signed-off-by: Jilin Yuan <yuanjilin@cdjrlc.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
 Miquel
 
