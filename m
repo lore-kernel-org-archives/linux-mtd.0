@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E067C433FE
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Nov 2022 15:53:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43E2CC433FE
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Nov 2022 16:01:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dJi12mwh6mE/3/fyJyk/K+wpASR+UwNucrL06Ad2L4c=; b=KRf1WK18q4nR1Z
-	k8PWGGngEapHK76+BDiLX8KqERWvuiji1yTkDhsL2zHcj//Di65g3O3gr+bsPLsVyKl5RrSG5Pbwo
-	Td45jROt48bhtZSaANcMzVOtn8+m3cdRQvIJZanEcS47E7UZy917a8B+kW3LHXQuWn64axE9FKJeY
-	3i/J7bMo5X5TcD9SHDrVILbALQwFEtFHeMGtIJzYSYJ+drGJvk3gB1oncnXZtlwSAsMhBaDA19aY5
-	gkPAtKsyJKQ3ZjrhbuFYOtM6BiGnTxwMEROsJfkuFw94rMR1V88Mh2EHe8fjf0YAbtLQGAM7iIqGB
-	+3MJe+KdbOrgDlcnnUKQ==;
+	List-Owner; bh=VabkuAT1wva4Ta6S2KMcDtUXyK8xNIEatgIoy6qweHI=; b=3jOb4iBq10dPYg
+	UpzcLU+gXeqxRBMxBhJPD1HcX6vG6zHf8xnLqK6f505bBrzy5gqLvCh7F9TSZ36KZgvb9FaeXPCoY
+	4E0aMOFTBqSH0E8EfAMV4yQ4bcXrYIWKo4trjEI5u/gI0eq8FPosgmg3NByq3LlgV33DYS6PbmnsI
+	uBIfraSYzgz97hCDmCpbfc0oQ5PQvLhlkRrfEbs17QVL2FxIbXLwNFocgzk7G5514/g8hcfQzSbOm
+	KlCnesKbUhQV2TClpsfjP5FIBZcYETngUhIpRxeWJpy/xszzjheUoFDB3ZUmKx9Zg5FcwRnmtmni7
+	Fmzfi+eaMLQNlvvgquOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1os4Qf-00Fwqz-0I; Mon, 07 Nov 2022 15:52:53 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1os4Yu-00Fyw7-Lg; Mon, 07 Nov 2022 16:01:24 +0000
+Received: from 18.mo582.mail-out.ovh.net ([46.105.73.110])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1os4Qb-00FwlL-1i
-	for linux-mtd@lists.infradead.org; Mon, 07 Nov 2022 15:52:50 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 47712E0007;
-	Mon,  7 Nov 2022 15:52:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1667836363;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ChW92xrvfRGeQ1TQkOkts3EAp2uw56WxTOyQ2yBOYxU=;
-	b=pfCSH7XmgV9GCgrC4qdc60s+hCDk/gIhQ6SovYcI+dvzqPXlEo1mTZjOr0iN3uyLIqRo/m
-	7rynvPpvzXQ5Zu3CL3Yo/qhkP2SkDIDGHf67dBOqIEVTOdeMsj5Yeg/Au31w0e53n0W8JS
-	etyg6irZTWU5flPcnxQwSJqvdt0o358Fh2ArPybYHkYZuJLBUYN3RF92878XTD1ww+lZwd
-	RjgcM1YtpKlhNboNc+Vriq6oWv0bCghW9V3fF4OkTYPw3HWPM2/kEbseb9llMQbhmwddgi
-	I6CCmfFpU5TxW6qGXhwbLeAaoLS7NX7s6hf1VZjcxXl+259rmIkAifqVC7UhCw==
-Date: Mon, 7 Nov 2022 16:52:38 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
+	id 1os4Yq-00Fyuq-1o
+	for linux-mtd@lists.infradead.org; Mon, 07 Nov 2022 16:01:22 +0000
+Received: from player693.ha.ovh.net (unknown [10.110.171.173])
+	by mo582.mail-out.ovh.net (Postfix) with ESMTP id C2BEA2493F
+	for <linux-mtd@lists.infradead.org>; Mon,  7 Nov 2022 16:01:11 +0000 (UTC)
+Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
+	(Authenticated sender: rafal@milecki.pl)
+	by player693.ha.ovh.net (Postfix) with ESMTPSA id D813A3071665A;
+	Mon,  7 Nov 2022 16:01:04 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-97G002277d2aac-3570-423b-9565-975ba2f56ae4,
+                    25B4C09D18989E316CCFFAFCA2B6B1B761CAC7E4) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp: 194.187.74.233
+Message-ID: <4a9cbb40-e83f-b117-3ea4-38ff582e2db8@milecki.pl>
+Date: Mon, 7 Nov 2022 17:01:04 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
+ Thunderbird/96.0
 Subject: Re: [PATCH] mtd: parsers: tplink_safeloader: fix uninitialized
  variable bug
-Message-ID: <20221107165238.17bbc8fe@xps-13>
-In-Reply-To: <Y1gCALFWXYYwqV1P@kili>
-References: <Y1gCALFWXYYwqV1P@kili>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org
+References: <Y1gCALFWXYYwqV1P@kili> <20221107165238.17bbc8fe@xps-13>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+In-Reply-To: <20221107165238.17bbc8fe@xps-13>
+X-Ovh-Tracer-Id: 3154208593138264955
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvgedrvdekgdekudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepheekvedtiedufeeffeejveffvdetuefhgeffgfevfeffjeekueeiteeuvedtuedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpudelgedrudekjedrjeegrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorhgrfhgrlhesmhhilhgvtghkihdrphhlqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhmthgusehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdfovfetjfhoshhtpehmohehkedvpdhmohguvgepshhmthhpohhuth
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221107_075249_241784_C93FCE8D 
-X-CRM114-Status: GOOD (  18.08  )
+X-CRM114-CacheID: sfid-20221107_080120_427162_3977C9A7 
+X-CRM114-Status: GOOD (  17.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,43 +68,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRGFuLAoKZGFuLmNhcnBlbnRlckBvcmFjbGUuY29tIHdyb3RlIG9uIFR1ZSwgMjUgT2N0IDIw
-MjIgMTg6MzQ6MjQgKzAzMDA6Cgo+IE9uIDY0IGJpdCBzeXN0ZW1zLCB0aGUgaGlnaGVzdCAzMiBi
-aXRzIG9mIHRoZSAib2Zmc2V0IiB2YXJpYWJsZSBhcmUKPiBub3QgaW5pdGlhbGl6ZWQuICBBbHNv
-IHRoZSBleGlzdGluZyBjb2RlIGlzIG5vdCBlbmRpYW4gc2FmZSAoaXQgd2lsbAo+IGZhaWwgb24g
-YmlnIGVuZGlhbiBzeXN0ZW1zKS4gIENoYW5nZSB0aGUgdHlwZSBvZiAib2Zmc2V0IiB0byBhIHUz
-Mi4KPiAKPiBGaXhlczogYWVjNGQ1ZjVmZmQwICgibXRkOiBwYXJzZXJzOiBhZGQgVFAtTGluayBT
-YWZlTG9hZGVyIHBhcnRpdGlvbnMgdGFibGUgcGFyc2VyIikKPiBTaWduZWQtb2ZmLWJ5OiBEYW4g
-Q2FycGVudGVyIDxkYW4uY2FycGVudGVyQG9yYWNsZS5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbXRk
-L3BhcnNlcnMvdHBsaW5rX3NhZmVsb2FkZXIuYyB8IDYgKysrLS0tCj4gIDEgZmlsZSBjaGFuZ2Vk
-LCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL3BhcnNlcnMvdHBsaW5rX3NhZmVsb2FkZXIuYyBiL2RyaXZlcnMvbXRkL3BhcnNlcnMv
-dHBsaW5rX3NhZmVsb2FkZXIuYwo+IGluZGV4IDIzNTg0YTQ3NzM5MS4uZjYwMWU3YmQ4NjI3IDEw
-MDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3BhcnNlcnMvdHBsaW5rX3NhZmVsb2FkZXIuYwo+ICsr
-KyBiL2RyaXZlcnMvbXRkL3BhcnNlcnMvdHBsaW5rX3NhZmVsb2FkZXIuYwoKSSBhbSBzb3JyeSBi
-dXQgSSBkb24ndCBoYXZlIHRoaXMgZmlsZSBpbiBteSB0cmVlLCB3aGF0IGtlcm5lbCBhcmUgeW91
-CnVzaW5nPwoKPiBAQCAtMjMsOCArMjMsOCBAQCBzdGF0aWMgdm9pZCAqbXRkX3BhcnNlcl90cGxp
-bmtfc2FmZWxvYWRlcl9yZWFkX3RhYmxlKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+ICAJc3RydWN0
-IHNhZmVsb2FkZXJfY21uX2hlYWRlciBoZHI7Cj4gIAlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5wOwo+
-ICAJc2l6ZV90IGJ5dGVzX3JlYWQ7Cj4gLQlzaXplX3Qgb2Zmc2V0Owo+ICAJc2l6ZV90IHNpemU7
-Cj4gKwl1MzIgb2Zmc2V0Owo+ICAJY2hhciAqYnVmOwo+ICAJaW50IGVycjsKPiAgCj4gQEAgLTM0
-LDE0ICszNCwxNCBAQCBzdGF0aWMgdm9pZCAqbXRkX3BhcnNlcl90cGxpbmtfc2FmZWxvYWRlcl9y
-ZWFkX3RhYmxlKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+ICAJZWxzZQo+ICAJCW5wID0gb2ZfZ2V0
-X2NoaWxkX2J5X25hbWUobnAsICJwYXJ0aXRpb25zIik7Cj4gIAo+IC0JaWYgKG9mX3Byb3BlcnR5
-X3JlYWRfdTMyKG5wLCAicGFydGl0aW9ucy10YWJsZS1vZmZzZXQiLCAodTMyICopJm9mZnNldCkp
-IHsKPiArCWlmIChvZl9wcm9wZXJ0eV9yZWFkX3UzMihucCwgInBhcnRpdGlvbnMtdGFibGUtb2Zm
-c2V0IiwgJm9mZnNldCkpIHsKPiAgCQlwcl9lcnIoIkZhaWxlZCB0byBnZXQgcGFydGl0aW9ucyB0
-YWJsZSBvZmZzZXRcbiIpOwo+ICAJCWdvdG8gZXJyX3B1dDsKPiAgCX0KPiAgCj4gIAllcnIgPSBt
-dGRfcmVhZChtdGQsIG9mZnNldCwgc2l6ZW9mKGhkciksICZieXRlc19yZWFkLCAodWludDhfdCAq
-KSZoZHIpOwo+ICAJaWYgKGVyciAmJiAhbXRkX2lzX2JpdGZsaXAoZXJyKSkgewo+IC0JCXByX2Vy
-cigiRmFpbGVkIHRvIHJlYWQgZnJvbSAlcyBhdCAweCV6eFxuIiwgbXRkLT5uYW1lLCBvZmZzZXQp
-Owo+ICsJCXByX2VycigiRmFpbGVkIHRvIHJlYWQgZnJvbSAlcyBhdCAweCV4XG4iLCBtdGQtPm5h
-bWUsIG9mZnNldCk7Cj4gIAkJZ290byBlcnJfcHV0Owo+ICAJfQo+ICAKCgpUaGFua3MsCk1pcXXD
-qGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 7.11.2022 16:52, Miquel Raynal wrote:
+> Hi Dan,
+> 
+> dan.carpenter@oracle.com wrote on Tue, 25 Oct 2022 18:34:24 +0300:
+> 
+>> On 64 bit systems, the highest 32 bits of the "offset" variable are
+>> not initialized.  Also the existing code is not endian safe (it will
+>> fail on big endian systems).  Change the type of "offset" to a u32.
+>>
+>> Fixes: aec4d5f5ffd0 ("mtd: parsers: add TP-Link SafeLoader partitions table parser")
+>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>> ---
+>>   drivers/mtd/parsers/tplink_safeloader.c | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mtd/parsers/tplink_safeloader.c b/drivers/mtd/parsers/tplink_safeloader.c
+>> index 23584a477391..f601e7bd8627 100644
+>> --- a/drivers/mtd/parsers/tplink_safeloader.c
+>> +++ b/drivers/mtd/parsers/tplink_safeloader.c
+> 
+> I am sorry but I don't have this file in my tree, what kernel are you
+> using?
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/log/?h=mtd/next
+https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=mtd/next&id=aec4d5f5ffd0f0092bd9dc21ea90e0bc237d4b74
+
+(committer Miquel Raynal ;) )
+
+
+>> @@ -23,8 +23,8 @@ static void *mtd_parser_tplink_safeloader_read_table(struct mtd_info *mtd)
+>>   	struct safeloader_cmn_header hdr;
+>>   	struct device_node *np;
+>>   	size_t bytes_read;
+>> -	size_t offset;
+>>   	size_t size;
+>> +	u32 offset;
+>>   	char *buf;
+>>   	int err;
+>>   
+>> @@ -34,14 +34,14 @@ static void *mtd_parser_tplink_safeloader_read_table(struct mtd_info *mtd)
+>>   	else
+>>   		np = of_get_child_by_name(np, "partitions");
+>>   
+>> -	if (of_property_read_u32(np, "partitions-table-offset", (u32 *)&offset)) {
+>> +	if (of_property_read_u32(np, "partitions-table-offset", &offset)) {
+>>   		pr_err("Failed to get partitions table offset\n");
+>>   		goto err_put;
+>>   	}
+>>   
+>>   	err = mtd_read(mtd, offset, sizeof(hdr), &bytes_read, (uint8_t *)&hdr);
+>>   	if (err && !mtd_is_bitflip(err)) {
+>> -		pr_err("Failed to read from %s at 0x%zx\n", mtd->name, offset);
+>> +		pr_err("Failed to read from %s at 0x%x\n", mtd->name, offset);
+>>   		goto err_put;
+>>   	}
+>>   
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
