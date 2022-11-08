@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 768DDC433FE
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Nov 2022 23:04:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A5B8C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Nov 2022 23:04:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
 	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=h15mPjfygAGGEO+Ck71YNJC7F5oNyERDm9gCKVVCLS0=; b=rMaB05632y/jRE
-	N15Xj7yxKuZ+ia0wfvxFjFcrYMo7WZwHPigF40FZh8eFM9UaqvCS0IJZep3xauDtKLeEaJ2zPkwL5
-	fhEFfFhzE5mJdlyuIS7Zu98QtIDDO7p5ybG3yoaYqZa/D9Wv3C7ZvZ9GAOcvAHQhRYZYr9e/QidxV
-	Ovw1YZn4WZmtsybhOZy6J2yL/6rAf/PvGikYaZ67Uu6wxqio9IlaT5QWh0Hlk7z6DOauGilGnyIxR
-	2A1eTVGyZaQ5eXVHEcrywU/VNuFpHNrplm5ZFbwZrU53xgcbmipvLqQvo71yqN00NS5MvSNKvYFQa
-	Nl5hA7F0SpEhlD1l4/Tg==;
+	List-Owner; bh=v9eg2Yy20M325iE8QYVqeI5buxoU5cAujeo3wthpkMM=; b=PTzUd8O/i3uv63
+	aDnHKQCRO4IGpP0M8Xx23XxI80qYv6byefVMt9gx6ilVPmV7xSu9/Y/huWoWWhlmlLUYqYOoSOT2b
+	65biqIk6TSt+Ttgc4mXrMJWGgOcLmwqPnUELN9q17wVcQdKhL3cbOMWUgULx/zYeRwrx4hyIvPcqK
+	TtH8OHCQE/JnFMpy9xSRuvxDfFUcrudU9oiW3/9YOsVfvlOqZ0kRst7xx8bksq1nk9vgMdV2cmYYs
+	SZrVBIo00RbJAVKS5N9o40B/gkfnHSF5MEmqb4F4yNBDfHUCia5TMczUBnm83B8FaH95EESL+LVyD
+	gz9dAfvhPjHpapz8JUmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1osXdu-0091wD-Ns; Tue, 08 Nov 2022 23:04:30 +0000
+	id 1osXdh-0091uB-1a; Tue, 08 Nov 2022 23:04:17 +0000
 Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1osXds-0091ve-Mm
-	for linux-mtd@lists.infradead.org; Tue, 08 Nov 2022 23:04:29 +0000
+	id 1osXdd-0091t1-Fr
+	for linux-mtd@lists.infradead.org; Tue, 08 Nov 2022 23:04:15 +0000
 Received: from local
 	by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.94.2)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1osXde-0005td-94; Wed, 09 Nov 2022 00:04:14 +0100
-Date: Tue, 8 Nov 2022 23:02:49 +0000
+	id 1osXdA-0005tB-0x; Wed, 09 Nov 2022 00:03:44 +0100
+Date: Tue, 8 Nov 2022 23:02:17 +0000
 From: Daniel Golle <daniel@makrotopia.org>
 To: Jens Axboe <axboe@kernel.dk>, Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
@@ -43,13 +43,13 @@ To: Jens Axboe <axboe@kernel.dk>, Miquel Raynal <miquel.raynal@bootlin.com>,
 	Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
 	linux-efi@vger.kernel.org
-Subject: [PATCH v4 1/5] block: add new flag to add partitions read-only
-Message-ID: <Y2rgGbInlwwnPt9q@makrotopia.org>
+Subject: [PATCH v4 0/5] partition parser for U-Boot's uImage.FIT
+Message-ID: <Y2rf+WvQf15sbcw2@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221108_150428_749391_916879DC 
-X-CRM114-Status: GOOD (  13.23  )
+X-CRM114-CacheID: sfid-20221108_150413_537277_D0E5A5AC 
+X-CRM114-Status: GOOD (  18.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,48 +66,91 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add flag ADDPART_FLAG_READONLY to allow partition parsers marking a
-partition to be set read-only.
-This is needed for the uImage.FIT partition parser added by a follow-up
-commit: we need to be sure the contents of uImage.FIT sub-images
-remain unaltered they are validated using a hash within the uImage.FIT
-structure which also serves as partition table.
+Add uImage.FIT partition parser and wire it up to allow mounting
+filesystem sub-images from uImage.FIT in GPT partitions as well as
+mtdblock and ubiblock devices within Linux (e.g. as root filesystem).
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- block/blk.h             | 1 +
- block/partitions/core.c | 3 +++
- 2 files changed, 4 insertions(+)
+Using uImage.FIT to store the root filesystem besides kernel and dtb has
+several obvious advantages which are hard to obtain in any other way:
+ * single image accross different storage types
+ * dynamically sized partitions for kernel and rootfs
+ * hash also for rootfs checked by U-Boot before launching kernel
+ * images may include additional filesystems e.g. for localization or
+   branding
 
-diff --git a/block/blk.h b/block/blk.h
-index e85703ae81dd..05ac426350b2 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -414,6 +414,7 @@ void blk_free_ext_minor(unsigned int minor);
- #define ADDPART_FLAG_NONE	0
- #define ADDPART_FLAG_RAID	1
- #define ADDPART_FLAG_WHOLEDISK	2
-+#define ADDPART_FLAG_READONLY	4
- int bdev_add_partition(struct gendisk *disk, int partno, sector_t start,
- 		sector_t length);
- int bdev_del_partition(struct gendisk *disk, int partno);
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index b8112f52d388..355646b0707d 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -398,6 +398,9 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
- 			goto out_del;
- 	}
- 
-+	if (flags & ADDPART_FLAG_READONLY)
-+		bdev->bd_read_only = true;
-+
- 	/* everything is up and running, commence */
- 	err = xa_insert(&disk->part_tbl, partno, bdev, GFP_KERNEL);
- 	if (err)
+For this to work, the image has to be created with external data and
+sub-images aligned to the system's memory page boundaries, ie.
+ mkimage -E -B 0x1000 -p 0x1000 ...
+
+Booting such images has been supported by U-Boot since v2018.01.
+
+A previous version of this partition parser is in production use on some
+OpenWrt devices, eg. the BananaPi R64 where using the FIT parser allows
+booting the very same image from eMMC, SD Card or SPI-NAND/UBI and also
+using it as a firmware-upgrade image at the same time.
+The Ubiquiti UniFi 6 LR access point served as a reference board with
+SPI-NOR flash and use of the partition parser on top of a mtdblock
+device.
+
+As U-Boot by now also passes down the selected configuration node name
+via device tree this allows the partition parser (or userspace process
+via sysfs) to identify the selected image configuration.
+
+Device Tree schema for that:
+https://github.com/devicetree-org/dt-schema/commit/a24d97d43491e55d4def006213213a6c4045b646
+
+In most cases this partition parser can be used without relying on the
+bootloader to pass-down the configuration node name. The default
+configuration node is used then.
+
+Changes since v3:
+ * use min_t(size_t, ...) when comparing sizes
+ * start enumerating uImage.FIT sub-images inside EFI/GPT partition
+   from p65
+
+Changes since v2:
+ * use returned length to limit all strings read from fit/dt
+ * use __be32 type for 32-bit values read from fit/dt
+Reported-by: kernel test robot <lkp@intel.com>
+ * Kconfig: select LIBFDT for FIT_PARTITION
+Reported-by: kernel test robot <lkp@intel.com>
+
+Changes since v1:
+ * Use again #ifdef's in partitions/efi to only build against FIT
+   parser symbols if it is actually selected. Otherwise the efi/gpt
+   would unconditionally depend on the FTT parser to be present.
+
+Changes since RFC:
+ * fixed wrong variable used in error path
+ * introduced dedicated Kconfig options to enable partition
+   parsers on mtdblock and ubiblock
+ * drop #ifdef'ery, use IS_ENABLED(...) where needed
+
+Daniel Golle (5):
+  block: add new flag to add partitions read-only
+  block: add partition parser for U-Boot uImage.FIT
+  partitions/efi: add support for uImage.FIT sub-partitions
+  mtd_blkdevs: add option to enable scanning for partitions
+  mtd: ubi: block: add option to enable scanning for partitions
+
+ MAINTAINERS               |   6 +
+ block/blk.h               |   1 +
+ block/partitions/Kconfig  |  15 ++
+ block/partitions/Makefile |   1 +
+ block/partitions/check.h  |   4 +
+ block/partitions/core.c   |   6 +
+ block/partitions/efi.c    |   9 +
+ block/partitions/efi.h    |   3 +
+ block/partitions/fit.c    | 353 ++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/Kconfig       |  11 ++
+ drivers/mtd/mtd_blkdevs.c |   4 +-
+ drivers/mtd/ubi/Kconfig   |  10 ++
+ drivers/mtd/ubi/block.c   |   5 +-
+ 13 files changed, 426 insertions(+), 2 deletions(-)
+ create mode 100644 block/partitions/fit.c
+
 -- 
 2.38.1
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
