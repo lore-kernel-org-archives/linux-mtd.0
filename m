@@ -4,53 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1D8BC433FE
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Nov 2022 23:06:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 432FCC433FE
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Nov 2022 09:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=IGQWPjaVu6YujectVVrCsrQrtQEpFEKX4hmY06N9lk0=; b=CFaJq3VAE36IyV
-	HspE+du5qRI5jf+gWRSMHxfaYBbmohP0rhIBNuZurFzpgFkT5fjRgAgQ3AOl7r/9eCl/1bBhEgiSv
-	E69/F+bUw8urjn+fBGDiGu0CdjDaQL08Kud99rI9IIE3Lx/almgqt0+4PfmPoi06RclMz/8CzGtev
-	SCfdJwZn8PR3rTnM9HByN4tDevqC3BBWn2eDyp7e8u1F19sDKpOo1lLHXUm+1uqAXWQu07/ZqTSYk
-	eJ1mt7/ZodNFaAsgsWz/Ay2LM8wI/GWLycAhRrPfOK0eIJ/Gffyt4VQJuhEt/F9WDsBT9yHbc1pDG
-	tdgiksm6Bh9rkdvXQMgw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TMeKpOSgAC/4bhmfGb8a7l320Fi4k3gIINp96CwvpH8=; b=lgG+kOO/y5xpdL
+	/aak+Lnt35mmQ+j+47v1qjE2sbzi66EcNHwL4AUbrv00QtaDMU1rGgxR9V/CVpCvRFyEWntKRwGRd
+	2FyVNo0MHM5NgQGiwf+gY+rtAUiJF3jZs5Z+k1HVX95U5ja4q6X4CNk4HzmXdsq00xnFpRqTwwVPi
+	Mws1bAnj2eQ8uYae32VHclDyC5hRMa6oXKH0H2PG94sWQuyiqFedDosJoDJ8Sz0lBre6szdR56Xvk
+	xYX7IXOHa899V0YHD4XCEk9yG7fITJOWTcOFXU0Ko88yceYyKn3zbiTMj6A1oXOzsB1hn7/1dNbGl
+	kWOq0Z15gCzy/QSQeOvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1osXfZ-0092Sg-Mp; Tue, 08 Nov 2022 23:06:13 +0000
-Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
+	id 1osh9v-00CC2L-9Z; Wed, 09 Nov 2022 09:14:11 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1osXfV-0092Qf-U9
-	for linux-mtd@lists.infradead.org; Tue, 08 Nov 2022 23:06:12 +0000
-Received: from local
-	by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.94.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1osXfK-0005wb-6u; Wed, 09 Nov 2022 00:05:58 +0100
-Date: Tue, 8 Nov 2022 23:04:35 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Jens Axboe <axboe@kernel.dk>, Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Matthew Wilcox <willy@infradead.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-efi@vger.kernel.org
-Subject: [PATCH v4 5/5] mtd: ubi: block: add option to enable scanning for
- partitions
-Message-ID: <Y2rgg6h22N6PfKNM@makrotopia.org>
+	id 1osh9p-00CBz3-0B
+	for linux-mtd@lists.infradead.org; Wed, 09 Nov 2022 09:14:09 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 6AB0EB81D58
+	for <linux-mtd@lists.infradead.org>; Wed,  9 Nov 2022 09:14:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D797C4347C
+	for <linux-mtd@lists.infradead.org>; Wed,  9 Nov 2022 09:14:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1667985241;
+	bh=1W7y9ZW1Hi3m7nzUlgOvpMez/79lPrfWcH4WKvc4GYc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=IoVQ87wHgCKhe7NJPYn1Q9n4firiWtp84exzCcBDRRMAcpZzefPsvJF282Un+alQ2
+	 wgJExUecSE++y1Bh/7v7UfJiuSdWSMDZ8JUn3aEHMA8RBZN5D9O8aRrsJPxun09f1H
+	 gpqyGB4UW5g3hH+QtGrpyDeNefrWH01ZY3cqMwets+JkHeolP8eKxiKBquy0u4oLi6
+	 pRC+9A4zqnX2bQkC6HP1GwmcW4h4GULjmQJjTzm4TjIJXnGojZR1ZDCn+lWDeqjZhH
+	 3PEzXX3d6hpRRuZt+pGOGFpvH0k5+rwP9JQdRrUM2V4MgzDrPxY7K4qyxF+iEQeylZ
+	 f0BOir1l93BgQ==
+Received: by mail-lf1-f42.google.com with SMTP id g12so24734358lfh.3
+        for <linux-mtd@lists.infradead.org>; Wed, 09 Nov 2022 01:14:01 -0800 (PST)
+X-Gm-Message-State: ACrzQf0uE/SgALu1vRzq0JU4e4lQlQ5N8GHGHGfSnbNGqzz028Phmwge
+	O257OkClHDUMcJNzfMfi+RVcBIYV1oSH0SeQfz0=
+X-Google-Smtp-Source: AMsMyM6nqNV8lABCm89TT5c/zWYEWvJqOcSZ+FOSDLV6ElwxEHIAXpfQWy3RsxJUbhi/BY42rofI3671iASHp2Xf1Vk=
+X-Received: by 2002:a05:6512:151b:b0:4af:e7d3:4a46 with SMTP id
+ bq27-20020a056512151b00b004afe7d34a46mr19965857lfb.583.1667985239507; Wed, 09
+ Nov 2022 01:13:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
+References: <Y2rgVIbtuDsySzBr@makrotopia.org>
+In-Reply-To: <Y2rgVIbtuDsySzBr@makrotopia.org>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Wed, 9 Nov 2022 10:13:48 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG3UWUP-inYHNibJyuJfQwGzfQH8QvJqBNHZgyLc1a+6A@mail.gmail.com>
+Message-ID: <CAMj1kXG3UWUP-inYHNibJyuJfQwGzfQH8QvJqBNHZgyLc1a+6A@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] partitions/efi: add support for uImage.FIT sub-partitions
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Davidlohr Bueso <dave@stgolabs.net>, 
+	Matthew Wilcox <willy@infradead.org>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	Chaitanya Kulkarni <kch@nvidia.com>, Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-efi@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221108_150610_015050_95134B6A 
-X-CRM114-Status: GOOD (  11.38  )
+X-CRM114-CacheID: sfid-20221109_011405_344095_B3BE4D36 
+X-CRM114-Status: GOOD (  23.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,53 +84,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add Kconfig option CONFIG_MTD_UBI_BLOCK_PARTITIONS and enable block
-partition parsers on ubiblock devices in case it is selected.
+On Wed, 9 Nov 2022 at 00:05, Daniel Golle <daniel@makrotopia.org> wrote:
+>
+> Add new GUID allowing to parse uImage.FIT stored in a GPT partition
+> and map filesystem sub-image as sub-partitions.
+>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/Kconfig | 10 ++++++++++
- drivers/mtd/ubi/block.c |  5 ++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+I'm not sure I follow the logic here.
 
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 2ed77b7b3fcb..491330e42ab2 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -104,4 +104,14 @@ config MTD_UBI_BLOCK
- 
- 	   If in doubt, say "N".
- 
-+config MTD_UBI_BLOCK_PARTITIONS
-+	bool "Scan UBI block devices for partitions"
-+	default y if FIT_PARTITION
-+	depends on MTD_UBI_BLOCK
-+	help
-+	  Scan UBI block devices for partitions (ie. MBR, GPT, uImage.FIT, ...).
-+
-+	  Unless your UBI volumes contain sub-partitions mapped using a partition
-+	  table, say no.
-+
- endif # MTD_UBI
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 75eaecc8639f..d9baa99ca093 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -430,7 +430,10 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 		ret = -ENODEV;
- 		goto out_cleanup_disk;
- 	}
--	gd->flags |= GENHD_FL_NO_PART;
-+
-+	if (!IS_ENABLED(CONFIG_MTD_UBI_BLOCK_PARTITIONS))
-+		gd->flags |= GENHD_FL_NO_PART;
-+
- 	gd->private_data = dev;
- 	sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
- 	set_capacity(gd, disk_capacity);
--- 
-2.38.1
+You are adding uImage.FIT support as a pseudo-partition type right?
+And the only partition driver that supports it is GPT?
 
+Does that mean that all the other types would need a similar change to
+be able to detect these subvolumes?
+
+> ---
+>  block/partitions/efi.c | 9 +++++++++
+>  block/partitions/efi.h | 3 +++
+>  2 files changed, 12 insertions(+)
+>
+> diff --git a/block/partitions/efi.c b/block/partitions/efi.c
+> index 5e9be13a56a8..bf87893eabe4 100644
+> --- a/block/partitions/efi.c
+> +++ b/block/partitions/efi.c
+> @@ -716,6 +716,9 @@ int efi_partition(struct parsed_partitions *state)
+>         gpt_entry *ptes = NULL;
+>         u32 i;
+>         unsigned ssz = queue_logical_block_size(state->disk->queue) / 512;
+> +#ifdef CONFIG_FIT_PARTITION
+> +       u32 extra_slot = 65;
+> +#endif
+>
+>         if (!find_valid_gpt(state, &gpt, &ptes) || !gpt || !ptes) {
+>                 kfree(gpt);
+> @@ -749,6 +752,12 @@ int efi_partition(struct parsed_partitions *state)
+>                                 ARRAY_SIZE(ptes[i].partition_name));
+>                 utf16_le_to_7bit(ptes[i].partition_name, label_max, info->volname);
+>                 state->parts[i + 1].has_info = true;
+> +               /* If this is a U-Boot FIT volume it may have subpartitions */
+> +#ifdef CONFIG_FIT_PARTITION
+> +               if (!efi_guidcmp(ptes[i].partition_type_guid, PARTITION_LINUX_FIT_GUID))
+> +                       (void) parse_fit_partitions(state, start * ssz, size * ssz,
+> +                                                   &extra_slot, 127, 1);
+> +#endif
+>         }
+>         kfree(ptes);
+>         kfree(gpt);
+> diff --git a/block/partitions/efi.h b/block/partitions/efi.h
+> index 84b9f36b9e47..06c11f6ae398 100644
+> --- a/block/partitions/efi.h
+> +++ b/block/partitions/efi.h
+> @@ -51,6 +51,9 @@
+>  #define PARTITION_LINUX_LVM_GUID \
+>      EFI_GUID( 0xe6d6d379, 0xf507, 0x44c2, \
+>                0xa2, 0x3c, 0x23, 0x8f, 0x2a, 0x3d, 0xf9, 0x28)
+> +#define PARTITION_LINUX_FIT_GUID \
+> +    EFI_GUID( 0xcae9be83, 0xb15f, 0x49cc, \
+> +              0x86, 0x3f, 0x08, 0x1b, 0x74, 0x4a, 0x2d, 0x93)
+>
+>  typedef struct _gpt_header {
+>         __le64 signature;
+> --
+> 2.38.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
