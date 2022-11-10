@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BE78C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Nov 2022 16:00:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72FFAC433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Nov 2022 17:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gnilhV8oj9gG/Hk2ywXGiNzywfc+p6CadQNopE2w7Qk=; b=t6vH86MVk2jzxj
-	hc7TbYMSi0A4D4CZA7PCoCT0Imb37yUCkhKiMWZk/VEwg8gCm+bmog0K6otN+r1TaFK8cdngIBcQU
-	YuXrJayDdhWC4/rbk6hMnlGv9mxaFkPsJ1y5pVoBoUyNMl/wHw/BW9rZpzTA/kmWqItY7+MCkTyw3
-	AU8mY0mrhKa59y0pRlzFVcxY/+xYdfT9898rrOfEUU7h88mMX49lj7wU6rpUKvyPbe4h6+IxdDjpR
-	RcfCfIgwLLghD8H5VX/eajJMuIhp+ia0FfyqXJb/FaKTdHxE+dE8VA7Jc2xGYQwdxB2vO5KNiEK9T
-	imH3PTRewea1oQk1ij/g==;
+	List-Owner; bh=jDuGo5SVyFDOrRrZm6cZ3S5I7CYFF6I4jsftLpkHD+M=; b=EbPC1DanIbCSzZ
+	Z6hQKz8gFWPRieVCsxUGAuQD5WgHYLuiHVH1fcE5v54mk38+fBAI1fIihhKlYb4uGw6bXgPdkAZ49
+	eaBcSSVFNf2S/AW3HjOIzh2KYuQwDdOeKpfoRx+0AHgbMAIP8ZZpPqNDdTRSMHZUnMMyDhDcjtwBC
+	JJRdGgZXUDQN9djxUll77V75u2nKEwAFsE4wi8WXetjbTPm7+mX4+uw45bhKJT9H15N0qzwYrIlN8
+	e6FGc1smuvuMINSAUIG1MZRQV6l4CUCGJsfJeEWfwb+PyuiqR5fFkj346lg/fq2MiOelCJgg9LMFu
+	3ZWgU9ZUIOk/4oQmDmgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ot9y3-006zuZ-Uy; Thu, 10 Nov 2022 15:59:52 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1otAtc-007PSK-P3; Thu, 10 Nov 2022 16:59:20 +0000
+Received: from mail-ot1-f49.google.com ([209.85.210.49])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ot9xy-006zpJ-GW
-	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2022 15:59:48 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 82D80FF811;
-	Thu, 10 Nov 2022 15:59:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1668095982;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qq1LmrJ2tOv0YKPCs3wdF6R5tnMRlOy1zft1xCqRC1g=;
-	b=XiXuxMFQk+O7axigEuTr/dO8YT3VohtU+Bv6qo+GLf354PJZvIN+9X1U4s4QntOFbwpkAO
-	0cencTJd8ae6tB1urfcSf1u5P/vSQsTn+8eQ/oJ7Ue3V+xRIOCjYBiYelxaxpW/5R1WEHr
-	KUjsscHBQQyEJRej0cfZnWAhZUdUJ4dDlwjYNdNEDdFV4/r0yGLAnbp4FYkrRceZxAcsbz
-	PMLK15KQvzhhUELGDt8dEf3FllBidPdHEplmxHs8YGIVQP/R3OnJie4/CTsNr3x5geIt74
-	7K2cJfYMOFWi4Ikv2mBLfY/HlmoavQWP8lTZevYmwPADsOLYeS4Yh+p3hcqEeg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>,
-	Julien Su <juliensu@mxic.com.tw>,
-	Jaime Liao <jaimeliao@mxic.com.tw>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 1/2] mtd-utils: flash_speed: Rework the time counting helpers
-Date: Thu, 10 Nov 2022 16:59:37 +0100
-Message-Id: <20221110155938.820334-2-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221110155938.820334-1-miquel.raynal@bootlin.com>
-References: <20221110155938.820334-1-miquel.raynal@bootlin.com>
+	id 1otAtO-007PJk-7c
+	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2022 16:59:07 +0000
+Received: by mail-ot1-f49.google.com with SMTP id db10-20020a0568306b0a00b0066d43e80118so1284340otb.1
+        for <linux-mtd@lists.infradead.org>; Thu, 10 Nov 2022 08:59:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Uu9VOZ0bBSO5GSl6uftNhEUB8IXfetD8C5a9NRdg/mo=;
+        b=e7Q5oPwXIswKqhwsE7D5az4GedrOKtk3qS5bxQsyLJRg4VCMBzItJg8RiQw6aawxHz
+         FAkmWxL/hmiOLhk/kUFUm6OX0OqGyGbvRtVXDEuSMD7mNelyCg4gTkFxw7Fkg3CPI0iS
+         JYff7zk909TRejbApUP1wq9lHHNg916pO/bpajbec/dHWbJe98oVDlgDHd/Qr191DfEV
+         NEKLMvfaKjXwBeJ+UrOgXtKlJ0tq9EDgE4xHYjfTyGkO3RQCo0YeodqtY1Nmoj3iF+Ke
+         743sM03QBEL9PQXldm5qxyVZsoiIIRyQ4w9m60fRarP9crpVpPCpVjy9K7L9KPDILnGL
+         8Iwg==
+X-Gm-Message-State: ACrzQf0PEe+6gftqdzNAUwIzEVo8ZNjUx16Y6Q0GDGs8xRdf+jfLCXuo
+	a+bnN1euCc0UhhdrQ91/lQ==
+X-Google-Smtp-Source: AMsMyM78mWWnsWMVZD6WZragXacIiaUrC3claHPaA6YiV9+7ZSj7JKhpC9nH+jPz0uH4KpyFF+QyPA==
+X-Received: by 2002:a9d:7047:0:b0:66c:6bc1:158e with SMTP id x7-20020a9d7047000000b0066c6bc1158emr22811550otj.350.1668099544935;
+        Thu, 10 Nov 2022 08:59:04 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id u19-20020a056808001300b0035418324b78sm5895937oic.11.2022.11.10.08.59.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Nov 2022 08:59:04 -0800 (PST)
+Received: (nullmailer pid 526147 invoked by uid 1000);
+	Thu, 10 Nov 2022 16:59:06 -0000
+Date: Thu, 10 Nov 2022 10:59:06 -0600
+From: Rob Herring <robh@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>, devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 13/17] dt-bindings: mtd: nvmem-cells: Fix example
+Message-ID: <20221110165906.GA241353-robh@kernel.org>
+References: <20221104164718.1290859-1-miquel.raynal@bootlin.com>
+ <20221104164718.1290859-14-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221104164718.1290859-14-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221110_075946_881760_2298A8F1 
-X-CRM114-Status: GOOD (  11.86  )
+X-CRM114-CacheID: sfid-20221110_085906_297725_64BEA600 
+X-CRM114-Status: GOOD (  13.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,116 +80,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In order to be able to have interleaved measures, let's not use the
-start and finish global variables from the time helpers directly,
-provide parameters for these variables so that we can provide either the
-global entries, or more specific ones when relevant.
+On Fri, Nov 04, 2022 at 05:47:14PM +0100, Miquel Raynal wrote:
+> There is no such thing as a "ranges" property within an nvmem-cells
+> node. There is no use of it, it is anyway not pictured anywhere that
+> this is valid, so drop it from the example.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- tests/mtd-tests/flash_speed.c | 39 +++++++++++++++++++++--------------
- 1 file changed, 23 insertions(+), 16 deletions(-)
+For a memory mapped device such as parallel NOR flash. It would be 
+perfectly fine to translate a nvmem cell 'reg' address to a CPU address. 
+If the partitions are not memory mapped, then it's a gray area. Whether 
+it makes sense to translate just to just the absolute offset of the 
+flash device, maybe or maybe not. At a minimum, 'ranges' just means 
+can translate to the parent address space. The Linux DT translate code 
+only supports the full translation to CPU addresses, but then it mainly 
+just supports creating resources.
 
-diff --git a/tests/mtd-tests/flash_speed.c b/tests/mtd-tests/flash_speed.c
-index 2fc70a1..035768b 100644
---- a/tests/mtd-tests/flash_speed.c
-+++ b/tests/mtd-tests/flash_speed.c
-@@ -258,22 +258,29 @@ static int read_eraseblock_by_2pages(int ebnum)
- 	return err;
- }
- 
--static void start_timing(void)
-+static void start_timing(struct timespec *start)
- {
--	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-+	clock_gettime(CLOCK_MONOTONIC_RAW, start);
- }
- 
--static void stop_timing(void)
-+static void stop_timing(struct timespec *finish)
- {
--	clock_gettime(CLOCK_MONOTONIC_RAW, &finish);
-+	clock_gettime(CLOCK_MONOTONIC_RAW, finish);
- }
- 
--static long calc_speed(void)
-+static long calc_duration(struct timespec *start, struct timespec *finish)
- {
- 	long ms;
- 
--	ms = (finish.tv_sec - start.tv_sec) * 1000L;
--	ms += (finish.tv_nsec - start.tv_nsec) / 1000000L;
-+	ms = (finish->tv_sec - start->tv_sec) * 1000L;
-+	ms += (finish->tv_nsec - start->tv_nsec) / 1000000L;
-+
-+	return ms;
-+}
-+
-+static long calc_speed(struct timespec *start, struct timespec *finish)
-+{
-+	long ms = calc_duration(start, finish);
- 
- 	if (ms <= 0)
- 		return 0;
-@@ -314,7 +321,7 @@ static int erase_good_eraseblocks(unsigned int eb, int ebcnt, int ebskip)
- }
- 
- #define TIME_OP_PER_PEB( op )\
--		start_timing();\
-+		start_timing(&start);\
- 		for (i = 0; i < count; ++i) {\
- 			if (bbt[i])\
- 				continue;\
-@@ -322,8 +329,8 @@ static int erase_good_eraseblocks(unsigned int eb, int ebcnt, int ebskip)
- 			if (err)\
- 				goto out;\
- 		}\
--		stop_timing();\
--		speed = calc_speed()
-+		stop_timing(&finish);\
-+		speed = calc_speed(&start, &finish)
- 
- int main(int argc, char **argv)
- {
-@@ -428,12 +435,12 @@ int main(int argc, char **argv)
- 	/* Erase all eraseblocks */
- 	if (flags & DESTRUCTIVE) {
- 		puts("Testing erase speed");
--		start_timing();
-+		start_timing(&start);
- 		err = erase_good_eraseblocks(peb, count, skip);
- 		if (err)
- 			goto out;
--		stop_timing();
--		speed = calc_speed();
-+		stop_timing(&finish);
-+		speed = calc_speed(&start, &finish);
- 		printf("erase speed is %ld KiB/s\n", speed);
- 	}
- 
-@@ -442,7 +449,7 @@ int main(int argc, char **argv)
- 		for (k = 1; k < 7; ++k) {
- 			blocks = 1 << k;
- 			printf("Testing %dx multi-block erase speed\n", blocks);
--			start_timing();
-+			start_timing(&start);
- 			for (i = 0; i < count; ) {
- 				for (j = 0; j < blocks && (i + j) < count; ++j)
- 					if (bbt[i + j])
-@@ -456,8 +463,8 @@ int main(int argc, char **argv)
- 					goto out;
- 				i += j;
- 			}
--			stop_timing();
--			speed = calc_speed();
-+			stop_timing(&finish);
-+			speed = calc_speed(&start, &finish);
- 			printf("%dx multi-block erase speed is %ld KiB/s\n",
- 					blocks, speed);
- 		}
--- 
-2.34.1
-
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
