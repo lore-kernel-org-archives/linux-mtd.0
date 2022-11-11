@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDC18C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E17ABC4332F
 	for <linux-mtd@archiver.kernel.org>; Fri, 11 Nov 2022 16:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HSLkDPFY7XszqccfvyWYzchO6A/Op/I60N7AyeWDyA4=; b=gMroveH4l0l71D
-	8fO6IsTeFMf1nKC9LQv7vQPzH5HkY/3a4pFCfB2pz2sX+tIfCj5Gv1AulVObW8JRUFkzaVKiip3V5
-	yVS4ldBfGdclJds08kq0DJGYx/1DyfXtKSTzn0Cmi7FVDLgICIO9ENJPoW4UGVK4rKDQDNhv1rE5N
-	Db/L+2igxde7fa7YHzPBvKAXOA1Jdz5K2FD73fnwrNOVygHnEs3ukR4ksABdzCV8CfKLEOxVfkgCk
-	GdCq33J5+4sT1aQdDbicAsiI2f8dIzo4TrfWhf6d0CKTsCSH6azL2+bVsfs3y1fnCBiPKFHWjZ/eS
-	3g9Sbi6NHIrqgN88s5QQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HSLkDPFY7XszqccfvyWYzchO6A/Op/I60N7AyeWDyA4=; b=4AQZe7SOQpQB/V
+	oKi5OLIIRdgGueiw06+eAjmPFACKoRC0BdFHIwRIkoPUp4WlUvB2622EY6daPx9QRJRLDNhoG4tUo
+	cexomI5F3oaMxuQMazHV+4hkDnZ8BlhLP9LWUMIFn93ZAqBUMh1iQ39iS6XpCdzk9QEZHgKl8NAR6
+	1h44U15cB0o8LJoNfaVbwQ8Yft7RP7ac3wYqaF7HHKyPKFAq9fMamrPqxfFceDs93QhbVUT0tQVJP
+	VORZ82TjwW8QhIbC9gu9W8NG28x9K5Jqz3ad9cSNSrwGBr9PHP0KcJpTpantlHcUTr4syrs3QF5HL
+	dKujNydI/ovPa0jw9ntg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1otX50-00GwiB-EZ; Fri, 11 Nov 2022 16:40:34 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1otX4x-00GwgU-7A; Fri, 11 Nov 2022 16:40:31 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1otX4x-00GwgM-5I
-	for linux-mtd@lists.infradead.org; Fri, 11 Nov 2022 16:40:32 +0000
+	id 1otX4u-00GwfE-55
+	for linux-mtd@lists.infradead.org; Fri, 11 Nov 2022 16:40:29 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 365A8CE283F;
-	Fri, 11 Nov 2022 16:40:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A07EDC4347C;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D408F62021;
 	Fri, 11 Nov 2022 16:40:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D15BC433D6;
+	Fri, 11 Nov 2022 16:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1668184827;
+	s=k20201202; t=1668184826;
 	bh=T+/dE65GaUmXRopapuVAGdXHeGWYexFvnU1S9HJYdgU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T8uu2XBuI+JCfADUb0zYonmDF0juv9PNq590lCkGXQ5rItYD+qXuNM3Vrz5p9OVh2
-	 7nv+1xUj66rjFUFg5zUHEWBtUK2KkW6k04roEWZTd/yR/5VmFUeH5iAnkUCoiyUP7n
-	 vbzBSKpzWO5RaRNoIF08v85IlZEodhvJW4+JgM5aufp/7zxKxmx0Zunc3fP/DpZTA6
-	 0qG9cGuq3ZHxTZsc6zTXCmybtUYre4egsDlaktUcK9pZhLVpYqERvBglKuG4UFHf1b
-	 /b/SZ/0NK0+DpXk1ovKFxQDt9FdLGxS3yTvj4IwlUHLYK3MNFNKiMB8lBAuoy7Do6o
-	 80hhY8U7wO0KQ==
+	h=From:To:Cc:Subject:Date:From;
+	b=q5VD19RBLIE0Dl4VZ5MJt/arDRok1DPp/7l+obdroYnEh96Zd4QzWuixEvDWq1CtU
+	 ipPwopyOGquhC/3iDqCmypNa06VNC3bkovZRI9s5+UxyM9x5hPEL2nJZcN8qnwtRR5
+	 gFp84Ng2Z0tQaXFAWxmgtqb7WEiR1oS9q0JaNgo/OoSBdIaxrJpJDS+X7STnbV8hwI
+	 6SHk3uiH6qV4eC9l7k5mwOkJUKNTVsf1MCaE8rsvwOWJWdTOnBeloBiH5UyNKEZ9rz
+	 grtfmAmsumg2bG72G8uaABzDigHL3EhKMoVGh4AjlMn9AtGT9ZPTMXhQyT1qpDJPZD
+	 op70qqFjhZieA==
 From: Dinh Nguyen <dinguyen@kernel.org>
 To: linux-mtd@lists.infradead.org
 Cc: dinguyen@kernel.org,
@@ -51,15 +51,13 @@ Cc: dinguyen@kernel.org,
 	linux-kernel@vger.kernel.org,
 	Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
 Subject: [PATCHv2] mtd: spi-nor: macronix: Add support for mx66u1g45g
-Date: Fri, 11 Nov 2022 10:40:15 -0600
-Message-Id: <20221111164015.165581-2-dinguyen@kernel.org>
+Date: Fri, 11 Nov 2022 10:40:14 -0600
+Message-Id: <20221111164015.165581-1-dinguyen@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221111164015.165581-1-dinguyen@kernel.org>
-References: <20221111164015.165581-1-dinguyen@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221111_084031_433923_9BC2E69D 
-X-CRM114-Status: GOOD (  11.44  )
+X-CRM114-CacheID: sfid-20221111_084028_248256_D0CE2047 
+X-CRM114-Status: GOOD (  10.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
