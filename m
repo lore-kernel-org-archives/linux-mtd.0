@@ -4,57 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81289C433FE
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Nov 2022 09:31:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4D88C4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Nov 2022 10:28:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pcar3X/YixjGXwTDa+4OKriyRp3HvZ7dPpV7nbQrI1A=; b=ICQnEBMa3HGhUo3CkH4iZdm1Fn
-	VKfr3nXz11BEsfo06Sqrvxt2KDiae/qVvzPQ0T/+fKj1uRmQqd9a+v2vrprmQbbggmE3lonfNIpri
-	H6YpcslQgMhNjWitq3sySRhiOicGRIevoKDG1tkwCT/AUVcT3Lw0eQ3dzcHdplDcByOznW2nY2cwQ
-	xDcWB1RGiec42NWWYD5LxQXON526J34O/UptYi/Gfeo0CyeRAPNJ4nPsUWa8IURTF8nIjzzUjBk4I
-	AybaUPc+wVfxiAGNoXtkV5+wmOFbcZE/+7d5p4U65bcfAa54zWxy2J6GaaTVkZSOqznU9ynCzVQSK
-	Om7zHs4w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Z+lcPCmeqMWOoO19vJWnHxHFmmqzGbQKkd1ycgR/j7A=; b=tlOrLDZR92YI5c
+	zoBhiRc8LWhiXfwRM2tGwUeGkxfEuKJh7LQloBX3L6Q4PYOFlcsP/GUSvky2yyzAcC8PEZ0mTEDpL
+	DPwPxb9nEENcew1Ot0r+29y8Q/sh1ORzvOarpQfnmAZ5hLk1YnpQvw0FIWRp6aDF8Kg5wLKSOSuuA
+	j683KSzKZm4j5gb9UOTyeLLHgQpbpObpn3G0Kpa4t+Pz43ROkkUuyspOO4Yi7ojyfcKRXOAM38jvj
+	oF6sdINlYDxkyqHlVTh4bmW5QNaY/5/eS560tCnk/dMbf0DEQ6vF3JbLmRzMNqGignQi707JiLQBm
+	4JygT4gBJyNg6MaYP9wQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ouVo8-00HCHi-4G; Mon, 14 Nov 2022 09:31:12 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1ouWhH-00HXd9-E6; Mon, 14 Nov 2022 10:28:11 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ouVo5-00HCGZ-CX
-	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2022 09:31:10 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1ouVny-0006Sz-7y; Mon, 14 Nov 2022 10:31:02 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1ouVnv-004D8f-IL; Mon, 14 Nov 2022 10:31:00 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1ouVnv-00GVUS-P7; Mon, 14 Nov 2022 10:30:59 +0100
-Date: Mon, 14 Nov 2022 10:30:59 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Hui Tang <tanghui20@huawei.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	weiyongjun1@huawei.com, yusongping@huawei.com
-Subject: Re: [PATCH v2] mtd: lpddr2_nvm: Fix possible null-ptr-deref
-Message-ID: <20221114093059.bbmefffkkcmygvye@pengutronix.de>
-References: <20221114090240.244172-1-tanghui20@huawei.com>
+	id 1ouWhE-00HXYd-6z
+	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2022 10:28:10 +0000
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4N9lqt557Tz15MX5;
+	Mon, 14 Nov 2022 18:27:38 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 14 Nov 2022 18:27:57 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
+ (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 14 Nov
+ 2022 18:27:57 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-mtd@lists.infradead.org>
+CC: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+	<yangyingliang@huawei.com>, <chengzhihao1@huawei.com>
+Subject: [PATCH v3] mtd: ubi: fix possible null-ptr-deref in ubi_free_volume()
+Date: Mon, 14 Nov 2022 18:26:24 +0800
+Message-ID: <20221114102624.2131033-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20221114090240.244172-1-tanghui20@huawei.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221114_013109_438977_58A14E01 
-X-CRM114-Status: GOOD (  11.25  )
+X-CRM114-CacheID: sfid-20221114_022808_446213_5D6F4304 
+X-CRM114-Status: GOOD (  12.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,65 +63,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2666012191412290496=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+It willl cause null-ptr-deref in the following case:
 
---===============2666012191412290496==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="m7dizcf5p7ztwwln"
-Content-Disposition: inline
+uif_init()
+  ubi_add_volume()
+    cdev_add() -> if it fails, call kill_volumes()
+    device_register()
 
+kill_volumes() -> if ubi_add_volume() fails call this function
+  ubi_free_volume()
+    cdev_del()
+    device_unregister() -> trying to delete a not added device,
+			   it causes null-ptr-deref
 
---m7dizcf5p7ztwwln
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So in ubi_free_volume(), it delete devices whether they are added
+or not, it will causes null-ptr-deref.
 
-On Mon, Nov 14, 2022 at 05:02:40PM +0800, Hui Tang wrote:
-> It will cause null-ptr-deref when resource_size(add_range) invoked,
-> if platform_get_resource() returns NULL.
->=20
-> Fixes: 96ba9dd65788 ("mtd: lpddr: add driver for LPDDR2-NVM PCM memories")
-> Signed-off-by: Hui Tang <tanghui20@huawei.com>
+Handle the error case whlie calling ubi_add_volume() to fix this
+problem. If add volume fails, set the corresponding vol to null,
+so it can not be accessed in kill_volumes() and release the
+resource in ubi_add_volume() error path.
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+Fixes: 801c135ce73d ("UBI: Unsorted Block Images")
+Suggested-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+v2 -> v3:
+  Handle the error case whlie calling ubi_add_volume().
 
-Thanks
-Uwe
+v1 -> v2:
+  Replace kfree() with vol_release() to avoid memory leak, if device is not initalized.
+---
+ drivers/mtd/ubi/build.c |  1 +
+ drivers/mtd/ubi/vmt.c   | 12 ++++++------
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index a901f8edfa41..4990c99eeb56 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -468,6 +468,7 @@ static int uif_init(struct ubi_device *ubi)
+ 			err = ubi_add_volume(ubi, ubi->volumes[i]);
+ 			if (err) {
+ 				ubi_err(ubi, "cannot add volume %d", i);
++				ubi->volumes[i] = NULL;
+ 				goto out_volumes;
+ 			}
+ 		}
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 8fcc0bdf0635..c663ad14c503 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -580,6 +580,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
+ 	if (err) {
+ 		ubi_err(ubi, "cannot add character device for volume %d, error %d",
+ 			vol_id, err);
++		vol_release(&vol->dev);
+ 		return err;
+ 	}
+ 
+@@ -590,15 +591,14 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
+ 	vol->dev.groups = volume_dev_groups;
+ 	dev_set_name(&vol->dev, "%s_%d", ubi->ubi_name, vol->vol_id);
+ 	err = device_register(&vol->dev);
+-	if (err)
+-		goto out_cdev;
++	if (err) {
++		cdev_del(&vol->cdev);
++		put_device(&vol->dev);
++		return err;
++	}
+ 
+ 	self_check_volumes(ubi);
+ 	return err;
+-
+-out_cdev:
+-	cdev_del(&vol->cdev);
+-	return err;
+ }
+ 
+ /**
+-- 
+2.25.1
 
---m7dizcf5p7ztwwln
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmNyCtAACgkQwfwUeK3K
-7AnL0Qf9GGiXuVY0Pw3AI7AtmvG6E34XsI28qAbN4u+PGF57LIrJKUoFBP1tneJZ
-uKFAlm1j1d6BBlXMXknz1K/kBw7ojoYA2N8Tv9A3ja6jQ8RmI8AkgM+NtssvG6K8
-l1mJdpjhP/xWiVBSbH6lb9VZDDvVlH7cglE6HHuLIOX4TpXBUSMgEobSwJgHBNpE
-EUh23sbP22orwrIW9LWmptVT3JJ/sOsR2qyaGS1skqOaU+jpshNNWw4fVuXfORte
-KtySmHYpCDB3JxjQaNYHdhCaU0Wyjf/eR/HlAWfEimj560BP2gDrsDVIyh0cwGS1
-MZ8AOvLzDMoAQ05Mf7Frp4JWJ9svKQ==
-=MAEr
------END PGP SIGNATURE-----
-
---m7dizcf5p7ztwwln--
-
-
---===============2666012191412290496==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2666012191412290496==--
-
