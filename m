@@ -4,42 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94A6EC4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Nov 2022 09:04:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABDBAC4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Nov 2022 09:04:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IFJ+J+wssxkLeg5heeQHscOYEZ3ZzaXiIyD8wxSyCI4=; b=qcH6O9oTvhd2/7
-	7bAsnzNXkGK44HmZD0z9joXdIV5RDYawE1eqVgtrukmT3NRzzuog+mzo6uqFz1ezRENhMXFWxWsGg
-	z6hOqQGIyV7mTKBXaqN6439npXVPDzYvy+1OEEqWqOh8Ed1QOxDiDgwu0gTcwFE6qma2WY57Edh92
-	dMSfXQ6hUchK92c+A+LXWLJ1MQhxbDP3auwW6Vq8oiNawMspc0CMUH2+fdLZbhQhLqqjkCIbVqF/Y
-	SW5n48WsYcWa5M3SiKd815qF4XAGE27A/3ClepN3ljBYolN7cZsn50qvTdlO2VJVPAJRn401D2SCj
-	LBN5m5iP++Bo1PkTvm3A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=jusTTXv6DA2qWghiOinNlu2kPTdMX/j6w/RwZrHSLH0=; b=skbylpigB722km
+	utIc/8q/++67sxgou7YZL80cz1bihpm2+Uu1a565H4Xho4oWYFV1OJu/Lj0mLY9n/kgvGJIshLoJ+
+	2JIDblm0bWrjlbt5Zm8Qt71PZMRzKZppT+XvlZiuypkr9spzLH4u3dJcHc2GwPEO9RxhXkGMy/Unr
+	5JhEKiZw1lJ2+FA4N1EipcJtiUdFG7MxPxZIni5eourzmW4mkwidScGanzh3hCbTTn0xIvo7t+e4k
+	lvADEKg0xV/4OpsmmSLYeSBv+047DThQ9OF+effeea2i3nwQj2sknwSztcNx3cNPGGKQr4799IUUD
+	VOrHR+ss1ugGO1G2O+gg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ouVOE-00H2OW-VI; Mon, 14 Nov 2022 09:04:27 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1ouVO7-00H2KL-KE; Mon, 14 Nov 2022 09:04:19 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ouVNF-00H1oY-2Q
-	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2022 09:03:27 +0000
+	id 1ouVNB-00H1mO-8m
+	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2022 09:03:25 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id D8394FF813;
-	Mon, 14 Nov 2022 09:03:20 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id CFD85FF811;
+	Mon, 14 Nov 2022 09:03:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1668416603;
+	t=1668416598;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lncVZ4FVnBfjP1TrSlO1IJnUMYB8dLEhvsq2pKAQf7Y=;
-	b=XdjK81IMXZi4RiFjjs4GuPr7KAfQWTBCNWmVyPUAYfIcRDHP5kEG9ckIuLkAijk4jWqLDd
-	M9yJdlCS6y7eeypIMvCM2mkynTBWgQu1EGL70guw0SCBnbrjRlwVG7M+I8VNBdzDKZ9r6r
-	JE9VChVgpFk/dW94e7L1aOSQOEXi7eH5Dbob6I4d/SrU21UXa+eKjog3fZDKeF8lOm4GJ/
-	y2Sw4ulstPnDZje4m6Z38F3CLAf3IgPwGTyT+Z67Q48w034qanOoiNKWWoRoOVPwsJdDJD
-	Yi2kYm2wIEsmHn3I9LVpR2MI3P+gnUwA2u7UFy90rI7zTBmQaG06/bWSPk00hw==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=m1B6Mnm8XzXPNHtjMpbkW+lAQQ7J9tuEFW6OZfbcDe8=;
+	b=cGj9Pm2oK64KKCV9hrbhd66Urst+VNXwdu9gKbIJhVOvTs4z2Etfqa8/bW6W+E1mi5xQiY
+	JXucPMqWVqh+mWW0bTC0RW7zeLWkOTGnTv6g1j7ntX+pwu4LCjp0Sf7TherxP1z8iF912G
+	UDHoQAIlXMgcKreYop/uD5goUrWy7X0/a8vq3S72qHNKtxveZEINIFMby7OfTJ8RLecYEt
+	trURNMgFuenuBDEgbQB1oO80zv5vbi0sUq0KI0SJE0ffCNRmF7Ol2CLNUOHCU+dAwKQOsp
+	Rz5ZskUaTInrkhm1nrfeOx9KVYav3RHNK3H8yTXTXKQqyyPBGL68Vkrv3FtC0Q==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
@@ -52,18 +51,15 @@ Cc: Richard Weinberger <richard@nod.at>,
 	<linux-mtd@lists.infradead.org>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	<linux-kernel@vger.kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 02/17] dt-bindings: mtd: Remove useless file about partitions
-Date: Mon, 14 Nov 2022 10:03:00 +0100
-Message-Id: <20221114090315.848208-3-miquel.raynal@bootlin.com>
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v3 00/17]  Improve MTD bindings
+Date: Mon, 14 Nov 2022 10:02:58 +0100
+Message-Id: <20221114090315.848208-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221114090315.848208-1-miquel.raynal@bootlin.com>
-References: <20221114090315.848208-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221114_010325_416896_F2568869 
-X-CRM114-Status: GOOD (  20.35  )
+X-CRM114-CacheID: sfid-20221114_010321_678589_FD61EAA5 
+X-CRM114-Status: GOOD (  17.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,155 +71,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is already a real partitions.yaml file, so assuming everybody
-knows hot to read yaml schema now, this text file is no longer needed,
-so drop it.
-
-Depending on the situation, the lines referring to this file are either
-dropped or edited to point to mtd.yaml which includes partition{,s}.yaml.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/mtd/atmel-nand.txt    |  6 ++--
- .../devicetree/bindings/mtd/ingenic,nand.yaml |  1 -
- .../devicetree/bindings/mtd/lpc32xx-mlc.txt   |  2 +-
- .../devicetree/bindings/mtd/lpc32xx-slc.txt   |  2 +-
- .../devicetree/bindings/mtd/mtk-nand.txt      |  2 +-
- .../devicetree/bindings/mtd/partition.txt     | 33 -------------------
- drivers/mtd/parsers/Kconfig                   |  2 +-
- 7 files changed, 6 insertions(+), 42 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/partition.txt
-
-diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-index 3aa297c97ab6..50645828ac20 100644
---- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-@@ -45,10 +45,8 @@ Optional properties:
- - atmel,rb: an integer identifying the native Ready/Busy pin. Only meaningful
- 	    on sama5 SoCs.
- 
--All generic properties described in
--Documentation/devicetree/bindings/mtd/{common,nand}.txt also apply to the NAND
--device node, and NAND partitions should be defined under the NAND node as
--described in Documentation/devicetree/bindings/mtd/partition.txt.
-+All generic properties are described in the generic yaml files under
-+Documentation/devicetree/bindings/mtd/.
- 
- * ECC engine (PMECC) bindings:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-index 8c272c842bfd..87b2944d0d1b 100644
---- a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-@@ -34,7 +34,6 @@ properties:
-     type: object
-     description:
-       Node containing description of fixed partitions.
--      See Documentation/devicetree/bindings/mtd/partition.txt
- 
- patternProperties:
-   "^nand@[a-f0-9]$":
-diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
-index 6d60bc3063f5..64c06aa05ac7 100644
---- a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
-+++ b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
-@@ -19,7 +19,7 @@ accuracy:)
- - nxp,wr_low: WR_LOW
- 
- Optional subnodes:
--- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
-+- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
- 
- Example:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
-index d94edc0fc554..39f17630a301 100644
---- a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
-+++ b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
-@@ -20,7 +20,7 @@ clock speed:)
- - nxp,rsetup: Read setup time (R_SETUP)
- 
- Optional subnodes:
--- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
-+- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
- 
- Example:
- 
-diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-index 4d3ec5e4ff8a..839ea2f93d04 100644
---- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-@@ -131,7 +131,7 @@ Example:
- 	};
- 
- NAND chip optional subnodes:
--- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
-+- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
- 
- Example:
- 	nand@0 {
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-deleted file mode 100644
-index ead90e8274d6..000000000000
---- a/Documentation/devicetree/bindings/mtd/partition.txt
-+++ /dev/null
-@@ -1,33 +0,0 @@
--Flash partitions in device tree
--===============================
--
--Flash devices can be partitioned into one or more functional ranges (e.g. "boot
--code", "nvram", "kernel").
--
--Different devices may be partitioned in a different ways. Some may use a fixed
--flash layout set at production time. Some may use on-flash table that describes
--the geometry and naming/purpose of each functional region. It is also possible
--to see these methods mixed.
--
--To assist system software in locating partitions, we allow describing which
--method is used for a given flash device. To describe the method there should be
--a subnode of the flash device that is named 'partitions'. It must have a
--'compatible' property, which is used to identify the method to use.
--
--When a single partition is represented with a DT node (it depends on a used
--format) it may also be described using above rules ('compatible' and optionally
--some extra properties / subnodes). It allows describing more complex,
--hierarchical (multi-level) layouts and should be used if there is some
--significant relation between partitions or some partition internally uses
--another partitioning method.
--
--Available bindings are listed in the "partitions" subdirectory.
--
--
--Deprecated: partitions defined in flash node
--============================================
--
--For backwards compatibility partitions as direct subnodes of the flash device are
--supported. This use is discouraged.
--NOTE: also for backwards compatibility, direct subnodes that have a compatible
--string are not considered partitions, as they may be used for other bindings.
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index aaa06050c9bc..b53b8bc7c9e6 100644
---- a/drivers/mtd/parsers/Kconfig
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -75,7 +75,7 @@ config MTD_OF_PARTS
- 	  This provides a open firmware device tree partition parser
- 	  which derives the partition map from the children of the
- 	  flash memory node, as described in
--	  Documentation/devicetree/bindings/mtd/partition.txt.
-+	  Documentation/devicetree/bindings/mtd/mtd.yaml.
- 
- config MTD_OF_PARTS_BCM4908
- 	bool "BCM4908 partitioning support"
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpEdXJpbmcgYSB5YW1sIGNvbnZlcnNpb24gcmV2aWV3LCBLcnp5c3p0b2Ygb3BlbmVk
+IHRoZSBkaXNjdXNzaW9uIGFib3V0CnRoZSBsaW5rcyBhbmQgcmVmZXJlbmNlcyBtYWRlIGJldHdl
+ZW4gdGhlIGRpZmZlcmVudCBmaWxlcyBpbiB0aGUgbXRkCmJpbmRpbmdzLiBJIGZpZ3VyZWQgb3V0
+IHNvbWUgbWluaW1hbCBjaGFuZ2VzIG1pZ2h0IGJlIG5lZWRlZCB0byBwcm9wZXJseQpyZWZlcmVu
+Y2UgZXZlcnl0aGluZyBjb3JyZWN0bHkgYW5kIGVuc3VyZSB3ZSBjb25zdHJhaW4gYXMgbXVjaCBh
+cwpwb3NzaWJsZSB0aGUgZXhpc3RpbmcgYmluZGluZ3MuIFRoYXQgaXMgd2hhdCBJIHRyaWVkIHRv
+IGRvIGhlcmUuCgpUaGUgaWRlYSBpczoKKiBwYXJ0aXRpb24ueWFtbCBkZWZpbmVzIG9uZSBNVEQg
+cGFydGl0aW9uCiogcGFyc2Vycy8qLnlhbWwgZGVmaW5lIHBhcnRpdGlvbiBwYXJzZXJzIChtYWlu
+bHkgY29tcGF0aWJsZXMpCiogbXRkLnlhbWwgY29udGFpbnMgdGhlIGdlbmVyaWMgZGVmaW5pdGlv
+biBvZiBhbnkgbXRkIGRldmljZSAobmFuZCwKICBzcGktbmFuZCwgc3BpLW5vciwgbm9yLCBzcmFt
+LCBldGMpLCBpbiBwYXJ0aWN1bGFyLCBpdCBkZWZpbmVzIHRoZQogIHZhcmlvdXMgcGFydGl0aW9u
+IGZvcm1hdHMgKGxlZ2FjeSBhbmQgY3VycmVudCkgYW5kIHJlZmVyZW5jZXMKICBwYXJ0aXRpb24u
+eWFtbCBhcyB3ZWxsIGFzIGEgbGlzdCBvZiBhbGwgdGhlIHBvc3NpYmxlIHBhcnNlcnMgd2l0aGlu
+IGEKICAicGFydGl0aW9ucyIgbm9kZS4KKiBuYW5kLWNoaXAueWFtbCwgamVkZWMsc3BpLW5vciwg
+bXRkLXBoeXNtYXAueWFtbCBhbGwgZGVzY3JpYmUgcmVhbAogIGluc3RhbmNlcyBvZiBtdGQgZGV2
+aWNlLCBlYWNoIG9mIHRoZW0gd2l0aCBhIGRpZmZlcmVudCB1bmRlcmx5aW5nCiAgdGVjaG5vbG9n
+eSwgdGhleSByZWZlcmVuY2UgbXRkLnlhbWwgCiogbmFuZC1jb250cm9sbGVyLnlhbWwgaGFzIHN1
+Ym5vZGVzIHdoaWNoIHJlZmVyZW5jZSBuYW5kLWNoaXAueWFtbC4KKiBTcGVjaWZpYyBOQU5EIGNv
+bnRyb2xsZXIgYmluZGluZ3MgcmVmZXJlbmNlIG5hbmQtY29udHJvbGxlci55YW1sLgoKSSd2ZSB0
+ZXN0ZWQgZWFjaCBhbmQgZXZlcnkgcGF0Y2ggd2l0aCB0aGUgZm9sbG93aW5nIGNvbW1hbmQgYW5k
+IGl0CndvcmtlZCBmaW5lOgokIG1ha2UgZHRfYmluZGluZ19jaGVjayAtajEwIERUX0NIRUNLRVJf
+RkxBRz0tbSBEVF9TQ0hFTUFfRklMRVM9bXRkLwoKQ2hlZXJzLApNaXF1w6hsCgpDaGFuZ2VzIHNp
+bmNlIHYyOgoqIEFkZGVkIFJvYidzIFItYnkgb24gYWxtb3N0IGFsbCB0aGUgcGF0Y2hlcyBidXQK
+ICAiZHQtYmluZGluZ3M6IG10ZDogbnZtZW0tY2VsbHM6IEZpeCBleGFtcGxlIgoqIENoYW5nZWQg
+dGhlIGNvbW1pdCBtZXNzYWdlIG9mIHRoZSBwYXRjaCBtZW50aW9uZWQgYWJvdmUgdG8gbWVudGlv
+bgogIHRoYXQgJ3JhbmdlcycgaXMgbm90IGRlY2xhcmVkIGFueXdoZXJlIGJlc2lkZXMgYmVpbmcg
+YSBwb3RlbnRpYWxseQogIHZhbGlkIHByb3BlcnR5LCBoZW5jZSBkcm9wcGluZyBpdCBmcm9tIHRo
+ZSBleGFtcGxlIGp1c3QgdG8gYXZvaWQKICBmYWlsaW5nIHRoZSB0ZXN0LCBrbm93aW5nIHRoYXQg
+YXQgc29tZSBwb2ludCBzb21lb25lIGNvdWxkIHJlaW50cm9kdWNlCiAgaXQgYnkgZGVmaW5pbmcg
+aXQgaW4gb25lIG9mIHRoZSBjb3JlIHlhbWwgZmlsZXMuIAoKTWlxdWVsIFJheW5hbCAoMTcpOgog
+IGR0LWJpbmRpbmdzOiBtdGQ6IENsYXJpZnkgYWxsIHBhcnRpdGlvbiBzdWJub2RlcwogIGR0LWJp
+bmRpbmdzOiBtdGQ6IFJlbW92ZSB1c2VsZXNzIGZpbGUgYWJvdXQgcGFydGl0aW9ucwogIGR0LWJp
+bmRpbmdzOiBtdGQ6IG5hbmQtY2hpcDogUmVmZXJlbmNlIG10ZC55YW1sCiAgZHQtYmluZGluZ3M6
+IG10ZDogbmFuZDogRHJvcCBjb21tb24gcHJvcGVydGllcyBhbHJlYWR5IGRlZmluZWQgaW4KICAg
+IGdlbmVyaWMgZmlsZXMKICBkdC1iaW5kaW5nczogbXRkOiBuYW5kOiBTdGFuZGFyZGl6ZSB0aGUg
+Y2hpbGQgbm9kZSBuYW1lCiAgZHQtYmluZGluZ3M6IG10ZDogaW5nZW5pYzogTWFyayBwYXJ0aXRp
+b25zIGluIHRoZSBjb250cm9sbGVyIG5vZGUgYXMKICAgIGRlcHJlY2F0ZWQKICBkdC1iaW5kaW5n
+czogbXRkOiBvbmVuYW5kOiBNZW50aW9uIHRoZSBleHBlY3RlZCBub2RlIG5hbWUKICBkdC1iaW5k
+aW5nczogbXRkOiBzdW54aS1uYW5kOiBBZGQgYW4gZXhhbXBsZSB0byB2YWxpZGF0ZSB0aGUgYmlu
+ZGluZ3MKICBkdC1iaW5kaW5nczogbXRkOiBzcGktbm9yOiBEcm9wIGNvbW1vbiBwcm9wZXJ0aWVz
+CiAgZHQtYmluZGluZ3M6IG10ZDogcGh5c21hcDogUmV1c2UgdGhlIGdlbmVyaWMgZGVmaW5pdGlv
+bnMKICBkdC1iaW5kaW5nczogbXRkOiBwYXJ0aXRpb25zOiBDb25zdHJhaW4gdGhlIGxpc3Qgb2Yg
+cGFyc2VycwogIGR0LWJpbmRpbmdzOiBtdGQ6IHBhcnRpdGlvbnM6IENoYW5nZSBxY29tLHNtZW0t
+cGFydCBwYXJ0aXRpb24gdHlwZQogIGR0LWJpbmRpbmdzOiBtdGQ6IG52bWVtLWNlbGxzOiBEcm9w
+IHJhbmdlIHByb3BlcnR5IGZyb20gZXhhbXBsZQogIGR0LWJpbmRpbmdzOiBtdGQ6IG52bWVtLWNl
+bGxzOiBJbmhlcml0IGZyb20gTVREIHBhcnRpdGlvbnMKICBkdC1iaW5kaW5nczogbXRkOiBBcmd1
+ZSBpbiBmYXZvciBvZiBrZWVwaW5nIGFkZGl0aW9uYWxQcm9wZXJ0aWVzIHNldAogICAgdG8gdHJ1
+ZQogIGR0LWJpbmRpbmdzOiBtdGQ6IERyb3Agb2JqZWN0IHR5cGVzIHdoZW4gcmVmZXJlbmNpbmcg
+b3RoZXIgZmlsZXMKICBkdC1iaW5kaW5nczogbXRkOiBTdGFuZGFyZGl6ZSB0aGUgc3R5bGUgaW4g
+dGhlIGV4YW1wbGVzCgogLi4uL210ZC9hbGx3aW5uZXIsc3VuNGktYTEwLW5hbmQueWFtbCAgICAg
+ICAgIHwgIDM0ICsrKy0tCiAuLi4vYmluZGluZ3MvbXRkL2FyYXNhbixuYW5kLWNvbnRyb2xsZXIu
+eWFtbCAgfCAgIDUgKy0KIC4uLi9iaW5kaW5ncy9tdGQvYXJtLHBsMzUzLW5hbmQtcjJwMS55YW1s
+ICAgICB8ICAzMCArKy0tLQogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2F0bWVsLW5hbmQu
+dHh0ICAgIHwgICA2ICstCiAuLi4vYmluZGluZ3MvbXRkL2JyY20sYnJjbW5hbmQueWFtbCAgICAg
+ICAgICAgfCAgODAgKysrKysrLS0tLS0tCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvZGVu
+YWxpLG5hbmQueWFtbCAgfCAgIDIgKy0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9pbmdl
+bmljLG5hbmQueWFtbCB8IDExNiArKysrKysrKy0tLS0tLS0tLQogLi4uL2JpbmRpbmdzL210ZC9p
+bnRlbCxsZ20tZWJ1bmFuZC55YW1sICAgICAgIHwgIDQ4ICsrKy0tLS0KIC4uLi9iaW5kaW5ncy9t
+dGQvamVkZWMsc3BpLW5vci55YW1sICAgICAgICAgICB8ICAxNCAtLS0KIC4uLi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL210ZC9scGMzMnh4LW1sYy50eHQgICB8ICAgMiArLQogLi4uL2RldmljZXRyZWUv
+YmluZGluZ3MvbXRkL2xwYzMyeHgtc2xjLnR4dCAgIHwgICAyICstCiAuLi4vYmluZGluZ3MvbXRk
+L21pY3JvY2hpcCxtY2hwNDhsNjQwLnlhbWwgICAgfCAgMTQgKy0tCiAuLi4vZGV2aWNldHJlZS9i
+aW5kaW5ncy9tdGQvbXRkLXBoeXNtYXAueWFtbCAgfCAgIDcgKy0KIC4uLi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL210ZC9tdGQueWFtbCAgICAgICAgICB8ICAyNCArKystCiAuLi4vZGV2aWNldHJlZS9i
+aW5kaW5ncy9tdGQvbXRrLW5hbmQudHh0ICAgICAgfCAgIDIgKy0KIC4uLi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL210ZC9uYW5kLWNoaXAueWFtbCAgICB8ICAgNCArCiAuLi4vYmluZGluZ3MvbXRkL25h
+bmQtY29udHJvbGxlci55YW1sICAgICAgICAgfCAgIDIgKy0KIC4uLi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL210ZC9wYXJ0aXRpb24udHh0ICAgICB8ICAzMyAtLS0tLQogLi4uL3BhcnRpdGlvbnMvYXJt
+LGFybS1maXJtd2FyZS1zdWl0ZS55YW1sICAgIHwgICAyICsKIC4uLi9wYXJ0aXRpb25zL2JyY20s
+YmNtNDkwOC1wYXJ0aXRpb25zLnlhbWwgICB8ICAgMiArCiAuLi4vYnJjbSxiY205NDd4eC1jZmUt
+cGFydGl0aW9ucy55YW1sICAgICAgICAgfCAgIDIgKwogLi4uL210ZC9wYXJ0aXRpb25zL2xpbmtz
+eXMsbnMtcGFydGl0aW9ucy55YW1sIHwgICAyICsKIC4uLi9iaW5kaW5ncy9tdGQvcGFydGl0aW9u
+cy9udm1lbS1jZWxscy55YW1sICB8ICAgNCArLQogLi4uL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25z
+L3BhcnRpdGlvbi55YW1sICAgIHwgICAxICsKIC4uLi9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9w
+YXJ0aXRpb25zLnlhbWwgICB8ICA0MSArKysrKysKIC4uLi9tdGQvcGFydGl0aW9ucy9xY29tLHNt
+ZW0tcGFydC55YW1sICAgICAgICB8ICAzMiArKy0tLQogLi4uL2JpbmRpbmdzL210ZC9wYXJ0aXRp
+b25zL3JlZGJvb3QtZmlzLnlhbWwgIHwgICA2ICsKIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210
+ZC9xY29tLG5hbmRjLnlhbWwgICB8IDExNyArKysrKysrKystLS0tLS0tLS0KIC4uLi9iaW5kaW5n
+cy9tdGQvc3Qsc3RtMzItZm1jMi1uYW5kLnlhbWwgICAgICB8ICA0NyArKystLS0tCiAuLi4vYmlu
+ZGluZ3MvbXRkL3RpLGFtNjU0LWhibWMueWFtbCAgICAgICAgICAgfCAgMzYgKysrLS0tCiAuLi4v
+YmluZGluZ3MvbXRkL3RpLGdwbWMtb25lbmFuZC55YW1sICAgICAgICAgfCAgIDMgKwogZHJpdmVy
+cy9tdGQvcGFyc2Vycy9LY29uZmlnICAgICAgICAgICAgICAgICAgIHwgICAyICstCiAzMiBmaWxl
+cyBjaGFuZ2VkLCAzODAgaW5zZXJ0aW9ucygrKSwgMzQyIGRlbGV0aW9ucygtKQogZGVsZXRlIG1v
+ZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9u
+LnR4dAogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9tdGQvcGFydGl0aW9ucy9wYXJ0aXRpb25zLnlhbWwKCi0tIAoyLjM0LjEKCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
