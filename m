@@ -4,66 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9A47C4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Nov 2022 09:08:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D472C433FE
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Nov 2022 09:10:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=D2erqX3UjvBYElEeg/io/Q0wPvLdQ0vc4K/dfpfGT6E=; b=b9QUlYZ3kq0kTI
-	eyn8Ga9dDcKD23K9tbd3YggYOg0rvEMeK5OAYgegSspJNijSgHckNlq/1TGXhZLJ0JW81bwp995vP
-	ftavDuuJXK3tvqyaR5/OlZbV1QR0opHngNYoIi88Ne51B6+zdJT9HrSIl4Xjs5IPMH2RGKemZ0gvU
-	SaciAkUTvARMN5FVhy4shRTJuYIzpJET1r9DGDX1H4sipU8MkUQ4116Zsxo7TVXOO2N8AGGhH1GoT
-	K+Ei7+kBbu3OxryxVO6JYTxfOyLwXvZpW4hXzjKQmzmRAsHul6YOedHPKW3dcyNnXt73FX2Vk/+3X
-	See2e4tlbQyq8usPzkUw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=iycWCEpp0TQDzRmN2+wKPGHUx4ULU7kperVda5u4Itc=; b=mCbxVZpnKJo7rf
+	PAG0dfJsxdUi0+pL+sArGfHx4a3o/g1yJXMHnVExpJ56TQSE6+xmD64GhCzVqTG2xuwxxBZ2KTtfH
+	8ImcFbHTYBqPogQtEGy+mfrEhBCff1nsMkMDPYj4zywvz8JV3bJvF5F6JioQo1pZ3MyyFIMcjTS4e
+	wFJXoBBMNgknIVMOJDSZ7UEKX7v3DornfdUdhQWwZu2qZ0kIXg6qUIi+O6SsQQb+dCvqdon1j+Ung
+	xGTiflmMG5DotUV7W0PW0Y/nMl3RiK8raVuPv6wdgxPQGL+Gu7h4xWVzqvNlPw9IjLjCCeGgsTYhs
+	16+HrfqAU2pwKNFngO0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ouVRm-00H51X-MA; Mon, 14 Nov 2022 09:08:07 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1ouVUS-00H6hn-Kg; Mon, 14 Nov 2022 09:10:52 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ouVNo-00H29S-Nm
-	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2022 09:04:02 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id E3ABAFF815;
-	Mon, 14 Nov 2022 09:03:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1668416639;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p+yDyoG2qKYEY8YhhZqOq33UNeQMIcC6DN9z91vnmHU=;
-	b=LQh96YYntByQyxcKe0JCkWkS0OBc9b4DSahCT3qaQVd4HHXBCF5JEigiffOB1NdU7CKNQE
-	B2KsJZGfIfN64kE6pRicJdFc80adinWRe8rA9qOvcgb5BIN5zpmzCln1CPOPwlHTfx8ftN
-	lhpTbjbNfTD/FbbIzjM5I7IFnFfEyfKpcpFhqeB6acxVAoZVpkKnUV8hvWchYdk/XPrTzV
-	+Lz1vNcZN64sRFDknCQwl6u/L465ERep2a4NU4RHTffkMh7JSb6bPX9tf4rDy9gm9Uqm9L
-	YdAlmnMpSSS8PINpLmw31Kuv22Pi7+4qVpHsfVdiK/m0MUDRkoMwPvefKiY9QA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	devicetree@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	<linux-kernel@vger.kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 16/17] dt-bindings: mtd: Drop object types when referencing other files
-Date: Mon, 14 Nov 2022 10:03:14 +0100
-Message-Id: <20221114090315.848208-17-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221114090315.848208-1-miquel.raynal@bootlin.com>
-References: <20221114090315.848208-1-miquel.raynal@bootlin.com>
+	id 1ouVPj-00H3Vy-7F
+	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2022 09:06:00 +0000
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N9k123C7PzHw2t;
+	Mon, 14 Nov 2022 17:05:26 +0800 (CST)
+Received: from kwepemm600005.china.huawei.com (7.193.23.191) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 14 Nov 2022 17:05:52 +0800
+Received: from ubuntu1804.huawei.com (10.67.175.30) by
+ kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 14 Nov 2022 17:05:51 +0800
+From: Hui Tang <tanghui20@huawei.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<u.kleine-koenig@pengutronix.de>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<weiyongjun1@huawei.com>, <yusongping@huawei.com>
+Subject: [PATCH v2] mtd: lpddr2_nvm: Fix possible null-ptr-deref
+Date: Mon, 14 Nov 2022 17:02:40 +0800
+Message-ID: <20221114090240.244172-1-tanghui20@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+X-Originating-IP: [10.67.175.30]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221114_010400_969179_40E61216 
-X-CRM114-Status: UNSURE (   8.00  )
+X-CRM114-CacheID: sfid-20221114_010559_459381_3734E889 
+X-CRM114-Status: UNSURE (   8.30  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,29 +70,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Setting an object type is redundant when a reference is made, so drop
-these useless lines.
+It will cause null-ptr-deref when resource_size(add_range) invoked,
+if platform_get_resource() returns NULL.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: 96ba9dd65788 ("mtd: lpddr: add driver for LPDDR2-NVM PCM memories")
+Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- Documentation/devicetree/bindings/mtd/mtd.yaml | 1 -
- 1 file changed, 1 deletion(-)
+v1 -> v2:
+ - replace IS_ERR(add_range) with !add_range
+ - fix commit subject format
+---
+ drivers/mtd/lpddr/lpddr2_nvm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-index 9ee285b7d162..78da129e9985 100644
---- a/Documentation/devicetree/bindings/mtd/mtd.yaml
-+++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-@@ -43,7 +43,6 @@ patternProperties:
-     deprecated: true
+diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
+index 367e2d906de0..e71af4c49096 100644
+--- a/drivers/mtd/lpddr/lpddr2_nvm.c
++++ b/drivers/mtd/lpddr/lpddr2_nvm.c
+@@ -433,6 +433,8 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
  
-   "^otp(-[0-9]+)?$":
--    type: object
-     $ref: ../nvmem/nvmem.yaml#
+ 	/* lpddr2_nvm address range */
+ 	add_range = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!add_range)
++		return -ENODEV;
  
-     description: |
+ 	/* Populate map_info data structure */
+ 	*map = (struct map_info) {
 -- 
-2.34.1
+2.17.1
 
 
 ______________________________________________________
