@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCB02C4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Nov 2022 12:19:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCA25C433FE
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Nov 2022 14:32:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=P4ygy2X6c7OF7NF2INPqlgUKiL+DBPl+Lg6Swb/fRtE=; b=qTkW7Lvx2k8JXYPoWglNfhnbff
-	bPfL1Bhvzyy5sQLmYL+hX87m5PiHshkN0MDQir3cyoRiGl44TqwpBRW6HMcRfLXYO6PStzOydLVtt
-	8/Jrobnqeq6iIeHVN3Tb/cDEspGvtJauLoca++PurSybSJSxCiWfJPCVyxCckYX92dbI9gtQN4xhU
-	N+qN5QsTU3PufdhSigtNjgMZR6jNmV8RuSmVExIoCd1rd67DyRUJgFEOZy1jbyyT+voqsA0STLonK
-	Ik6GCFXvmyjJxjr3ekqzbwmdr1hD2gxzBP71U5j1VhTci1UlTPiQIn0warsdp1oEm9UDWNY6xeLqM
-	Dl/2YHqg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VsVvleffVHL5P9t3SrA0BbuPW8O6nV9uXJ1PfIBdyjE=; b=aykgrDRFsBVNZd
+	LxcP7UoysCtCza/HkRHXeIz5+dNGvR9wO3hwA6ZIr9dL58G6WQMW3OHs3Iem72/Peci72usOBi9sX
+	5qL84LdWYTiflxG0ndPu9pwzp9I+rz7q8OObe8chFmGPFDVdR9n7jTBjmCDf+LIwbtzEn0jAy4fXj
+	HPbL07zEN/4i9B7DLvW9YGoDoy4q5AZ8uH6gxfyDpXBwM89COooQsgUKlxUq5NWo/OO8eCkQ0lQVh
+	57kAPftvea6h16qOi4HEtgNbNkm3JsXyEm6Blpk1yYy5s9X7Ov2szz5y97Cv/HSCE00OhsO/eFkP5
+	c3bZKPyu7uKCFh8Bk8+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ouYRC-000lfa-Eh; Mon, 14 Nov 2022 12:19:42 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1ouaVj-001knJ-Lp; Mon, 14 Nov 2022 14:32:31 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ouYR9-000lbU-3b
-	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2022 12:19:41 +0000
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N9pJP0kw5zHw0j;
-	Mon, 14 Nov 2022 20:19:01 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+	id 1ouaVf-001kfu-6s
+	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2022 14:32:29 +0000
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.57])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4N9sFk6yHsz15M0R;
+	Mon, 14 Nov 2022 22:31:54 +0800 (CST)
+Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 14 Nov 2022 20:19:30 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 14 Nov 2022 20:19:29 +0800
-Subject: Re: [PATCH v3] mtd: ubi: fix possible null-ptr-deref in
- ubi_free_volume()
-To: Yang Yingliang <yangyingliang@huawei.com>, <linux-mtd@lists.infradead.org>
-CC: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-References: <20221114102624.2131033-1-yangyingliang@huawei.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <c7a8ee29-ae27-7426-1084-5adc38aa005d@huawei.com>
-Date: Mon, 14 Nov 2022 20:19:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ 15.1.2375.31; Mon, 14 Nov 2022 22:32:14 +0800
+Received: from huawei.com (10.175.101.6) by dggpemm100009.china.huawei.com
+ (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 14 Nov
+ 2022 22:32:13 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+	<patchwork@huawei.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>,
+	<miaoxie@huawei.com>, <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
+	<yuehaibing@huawei.com>, <johnny.chenyi@huawei.com>, <weiyongjun1@huawei.com>
+Subject: [PATCH -next] ubi: Fix permission display of the debugfs files
+Date: Mon, 14 Nov 2022 22:46:46 +0800
+Message-ID: <20221114144646.3828749-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20221114102624.2131033-1-yangyingliang@huawei.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100009.china.huawei.com (7.185.36.113)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221114_041939_513892_7B304E45 
-X-CRM114-Status: GOOD (  19.80  )
+X-CRM114-CacheID: sfid-20221114_063227_630839_1636CB39 
+X-CRM114-Status: GOOD (  11.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,58 +66,131 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyMi8xMS8xNCAxODoyNiwgWWFuZyBZaW5nbGlhbmcg0LS1wDoKClJldmlld2VkLWJ5OiBa
-aGloYW8gQ2hlbmcgPGNoZW5nemhpaGFvMUBodWF3ZWkuY29tPgoKPiBJdCB3aWxsbCBjYXVzZSBu
-dWxsLXB0ci1kZXJlZiBpbiB0aGUgZm9sbG93aW5nIGNhc2U6Cj4gCj4gdWlmX2luaXQoKQo+ICAg
-IHViaV9hZGRfdm9sdW1lKCkKPiAgICAgIGNkZXZfYWRkKCkgLT4gaWYgaXQgZmFpbHMsIGNhbGwg
-a2lsbF92b2x1bWVzKCkKPiAgICAgIGRldmljZV9yZWdpc3RlcigpCj4gCj4ga2lsbF92b2x1bWVz
-KCkgLT4gaWYgdWJpX2FkZF92b2x1bWUoKSBmYWlscyBjYWxsIHRoaXMgZnVuY3Rpb24KPiAgICB1
-YmlfZnJlZV92b2x1bWUoKQo+ICAgICAgY2Rldl9kZWwoKQo+ICAgICAgZGV2aWNlX3VucmVnaXN0
-ZXIoKSAtPiB0cnlpbmcgdG8gZGVsZXRlIGEgbm90IGFkZGVkIGRldmljZSwKPiAJCQkgICBpdCBj
-YXVzZXMgbnVsbC1wdHItZGVyZWYKPiAKPiBTbyBpbiB1YmlfZnJlZV92b2x1bWUoKSwgaXQgZGVs
-ZXRlIGRldmljZXMgd2hldGhlciB0aGV5IGFyZSBhZGRlZAo+IG9yIG5vdCwgaXQgd2lsbCBjYXVz
-ZXMgbnVsbC1wdHItZGVyZWYuCj4gCj4gSGFuZGxlIHRoZSBlcnJvciBjYXNlIHdobGllIGNhbGxp
-bmcgdWJpX2FkZF92b2x1bWUoKSB0byBmaXggdGhpcwo+IHByb2JsZW0uIElmIGFkZCB2b2x1bWUg
-ZmFpbHMsIHNldCB0aGUgY29ycmVzcG9uZGluZyB2b2wgdG8gbnVsbCwKPiBzbyBpdCBjYW4gbm90
-IGJlIGFjY2Vzc2VkIGluIGtpbGxfdm9sdW1lcygpIGFuZCByZWxlYXNlIHRoZQo+IHJlc291cmNl
-IGluIHViaV9hZGRfdm9sdW1lKCkgZXJyb3IgcGF0aC4KPiAKPiBGaXhlczogODAxYzEzNWNlNzNk
-ICgiVUJJOiBVbnNvcnRlZCBCbG9jayBJbWFnZXMiKQo+IFN1Z2dlc3RlZC1ieTogWmhpaGFvIENo
-ZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBZYW5nIFlpbmds
-aWFuZyA8eWFuZ3lpbmdsaWFuZ0BodWF3ZWkuY29tPgo+IC0tLQo+IHYyIC0+IHYzOgo+ICAgIEhh
-bmRsZSB0aGUgZXJyb3IgY2FzZSB3aGxpZSBjYWxsaW5nIHViaV9hZGRfdm9sdW1lKCkuCj4gCj4g
-djEgLT4gdjI6Cj4gICAgUmVwbGFjZSBrZnJlZSgpIHdpdGggdm9sX3JlbGVhc2UoKSB0byBhdm9p
-ZCBtZW1vcnkgbGVhaywgaWYgZGV2aWNlIGlzIG5vdCBpbml0YWxpemVkLgo+IC0tLQo+ICAgZHJp
-dmVycy9tdGQvdWJpL2J1aWxkLmMgfCAgMSArCj4gICBkcml2ZXJzL210ZC91Ymkvdm10LmMgICB8
-IDEyICsrKysrKy0tLS0tLQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDYg
-ZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jIGIv
-ZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPiBpbmRleCBhOTAxZjhlZGZhNDEuLjQ5OTBjOTllZWI1
-NiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC91YmkvYnVpbGQuYwo+ICsrKyBiL2RyaXZlcnMv
-bXRkL3ViaS9idWlsZC5jCj4gQEAgLTQ2OCw2ICs0NjgsNyBAQCBzdGF0aWMgaW50IHVpZl9pbml0
-KHN0cnVjdCB1YmlfZGV2aWNlICp1YmkpCj4gICAJCQllcnIgPSB1YmlfYWRkX3ZvbHVtZSh1Ymks
-IHViaS0+dm9sdW1lc1tpXSk7Cj4gICAJCQlpZiAoZXJyKSB7Cj4gICAJCQkJdWJpX2Vycih1Ymks
-ICJjYW5ub3QgYWRkIHZvbHVtZSAlZCIsIGkpOwo+ICsJCQkJdWJpLT52b2x1bWVzW2ldID0gTlVM
-TDsKPiAgIAkJCQlnb3RvIG91dF92b2x1bWVzOwo+ICAgCQkJfQo+ICAgCQl9Cj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbXRkL3ViaS92bXQuYyBiL2RyaXZlcnMvbXRkL3ViaS92bXQuYwo+IGluZGV4
-IDhmY2MwYmRmMDYzNS4uYzY2M2FkMTRjNTAzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3Vi
-aS92bXQuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL3ViaS92bXQuYwo+IEBAIC01ODAsNiArNTgwLDcg
-QEAgaW50IHViaV9hZGRfdm9sdW1lKHN0cnVjdCB1YmlfZGV2aWNlICp1YmksIHN0cnVjdCB1Ymlf
-dm9sdW1lICp2b2wpCj4gICAJaWYgKGVycikgewo+ICAgCQl1YmlfZXJyKHViaSwgImNhbm5vdCBh
-ZGQgY2hhcmFjdGVyIGRldmljZSBmb3Igdm9sdW1lICVkLCBlcnJvciAlZCIsCj4gICAJCQl2b2xf
-aWQsIGVycik7Cj4gKwkJdm9sX3JlbGVhc2UoJnZvbC0+ZGV2KTsKPiAgIAkJcmV0dXJuIGVycjsK
-PiAgIAl9Cj4gICAKPiBAQCAtNTkwLDE1ICs1OTEsMTQgQEAgaW50IHViaV9hZGRfdm9sdW1lKHN0
-cnVjdCB1YmlfZGV2aWNlICp1YmksIHN0cnVjdCB1Ymlfdm9sdW1lICp2b2wpCj4gICAJdm9sLT5k
-ZXYuZ3JvdXBzID0gdm9sdW1lX2Rldl9ncm91cHM7Cj4gICAJZGV2X3NldF9uYW1lKCZ2b2wtPmRl
-diwgIiVzXyVkIiwgdWJpLT51YmlfbmFtZSwgdm9sLT52b2xfaWQpOwo+ICAgCWVyciA9IGRldmlj
-ZV9yZWdpc3Rlcigmdm9sLT5kZXYpOwo+IC0JaWYgKGVycikKPiAtCQlnb3RvIG91dF9jZGV2Owo+
-ICsJaWYgKGVycikgewo+ICsJCWNkZXZfZGVsKCZ2b2wtPmNkZXYpOwo+ICsJCXB1dF9kZXZpY2Uo
-JnZvbC0+ZGV2KTsKPiArCQlyZXR1cm4gZXJyOwo+ICsJfQo+ICAgCj4gICAJc2VsZl9jaGVja192
-b2x1bWVzKHViaSk7Cj4gICAJcmV0dXJuIGVycjsKPiAtCj4gLW91dF9jZGV2Ogo+IC0JY2Rldl9k
-ZWwoJnZvbC0+Y2Rldik7Cj4gLQlyZXR1cm4gZXJyOwo+ICAgfQo+ICAgCj4gICAvKioKPiAKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Some interface files in debugfs support the read method
+dfs_file_read(), but their rwx permissions is shown as
+unreadable.
+
+In the user mode, the following problem can be clearly seen:
+
+ # ls -l /sys/kernel/debug/ubi/ubi0/
+ total 0
+ --w------- 1 root root 0 Oct 22 16:26 chk_fastmap
+ --w------- 1 root root 0 Oct 22 16:26 chk_gen
+ --w------- 1 root root 0 Oct 22 16:26 chk_io
+ -r-------- 1 root root 0 Oct 22 16:26 detailed_erase_block_info
+ --w------- 1 root root 0 Oct 22 16:26 tst_disable_bgt
+ --w------- 1 root root 0 Oct 22 16:26 tst_emulate_bitflips
+ --w------- 1 root root 0 Oct 22 16:26 tst_emulate_io_failures
+ --w------- 1 root root 0 Oct 22 16:26 tst_emulate_power_cut
+ --w------- 1 root root 0 Oct 22 16:26 tst_emulate_power_cut_max
+ --w------- 1 root root 0 Oct 22 16:26 tst_emulate_power_cut_min
+
+It shows that these files do not have read permission 'r',
+but we can actually read their contents.
+
+ # echo 1 > /sys/kernel/debug/ubi/ubi0/chk_io
+ # cat /sys/kernel/debug/ubi/ubi0/chk_io
+ 1
+
+User's permission access is determined by capabilities.
+Of course, the root user is not restricted from reading
+these files.
+
+When reading a debugfs file, the process is as follows:
+
+ ksys_read()
+   vfs_read()
+     if (file->f_op->read)
+       file->f_op->read()
+         full_proxy_open()
+           real_fops->read()
+             dfs_file_read() -- Read method of debugfs file.
+     else if (file->f_op->read_iter)
+       new_sync_read()
+     else
+       ret = -EINVAL -- Return -EINVAL if no read method.
+
+This indicates that the debugfs file can be read as long as the read
+method of the debugfs file is registered. This patch adds the read
+permission display for file that support the read method.
+
+Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+---
+ drivers/mtd/ubi/debug.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 908d0e088557..552b765af810 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -504,6 +504,7 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ {
+ 	unsigned long ubi_num = ubi->ubi_num;
+ 	struct ubi_debug_info *d = &ubi->dbg;
++	umode_t mode = S_IRUSR | S_IWUSR;
+ 	int n;
+ 
+ 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
+@@ -518,41 +519,41 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 
+ 	d->dfs_dir = debugfs_create_dir(d->dfs_dir_name, dfs_rootdir);
+ 
+-	d->dfs_chk_gen = debugfs_create_file("chk_gen", S_IWUSR, d->dfs_dir,
++	d->dfs_chk_gen = debugfs_create_file("chk_gen", mode, d->dfs_dir,
+ 					     (void *)ubi_num, &dfs_fops);
+ 
+-	d->dfs_chk_io = debugfs_create_file("chk_io", S_IWUSR, d->dfs_dir,
++	d->dfs_chk_io = debugfs_create_file("chk_io", mode, d->dfs_dir,
+ 					    (void *)ubi_num, &dfs_fops);
+ 
+-	d->dfs_chk_fastmap = debugfs_create_file("chk_fastmap", S_IWUSR,
++	d->dfs_chk_fastmap = debugfs_create_file("chk_fastmap", mode,
+ 						 d->dfs_dir, (void *)ubi_num,
+ 						 &dfs_fops);
+ 
+-	d->dfs_disable_bgt = debugfs_create_file("tst_disable_bgt", S_IWUSR,
++	d->dfs_disable_bgt = debugfs_create_file("tst_disable_bgt", mode,
+ 						 d->dfs_dir, (void *)ubi_num,
+ 						 &dfs_fops);
+ 
+ 	d->dfs_emulate_bitflips = debugfs_create_file("tst_emulate_bitflips",
+-						      S_IWUSR, d->dfs_dir,
++						      mode, d->dfs_dir,
+ 						      (void *)ubi_num,
+ 						      &dfs_fops);
+ 
+ 	d->dfs_emulate_io_failures = debugfs_create_file("tst_emulate_io_failures",
+-							 S_IWUSR, d->dfs_dir,
++							 mode, d->dfs_dir,
+ 							 (void *)ubi_num,
+ 							 &dfs_fops);
+ 
+ 	d->dfs_emulate_power_cut = debugfs_create_file("tst_emulate_power_cut",
+-						       S_IWUSR, d->dfs_dir,
++						       mode, d->dfs_dir,
+ 						       (void *)ubi_num,
+ 						       &dfs_fops);
+ 
+ 	d->dfs_power_cut_min = debugfs_create_file("tst_emulate_power_cut_min",
+-						   S_IWUSR, d->dfs_dir,
++						   mode, d->dfs_dir,
+ 						   (void *)ubi_num, &dfs_fops);
+ 
+ 	d->dfs_power_cut_max = debugfs_create_file("tst_emulate_power_cut_max",
+-						   S_IWUSR, d->dfs_dir,
++						   mode, d->dfs_dir,
+ 						   (void *)ubi_num, &dfs_fops);
+ 
+ 	debugfs_create_file("detailed_erase_block_info", S_IRUSR, d->dfs_dir,
+-- 
+2.31.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
