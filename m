@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BC0DC433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Nov 2022 21:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D93E4C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Nov 2022 21:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=R8OOfWwJ4HB76+DdpjgEwQTXWqugF3LKV6fFj/1jWIU=; b=vZjOC+mCcRnJ6f
-	b/k8fO0rlsinTBemQcRR01E28nf0++7kph/11+XZy8TeePE7f3Sq0DVrBtbgo96SnbipQ4Npt1lyN
-	8VvNNSUQZSdnhV51Bl5K/1rwgv+volRifZkZ5AUTqpgeBk96qbsF8UmcNbuqcQTANlL2wpAH3Giro
-	LXJf48SLh/d2D7KgcpKkOltA2IZG2JQAWc12yEnMzgFcY4utM0zKC7zkY+eArWfebh+6kxN4SyN+V
-	PFt459YG0tTqQ1bX2IrXjyuaumCHwaktFDZ4EvBxCG13OnvYqtV5kZIa/2drUzPB1uCchjWo2GAOp
-	ZsYlvhEvRMWlbqtvHp9Q==;
+	List-Owner; bh=dFWaf/Zj+kR0mxsnh3k2B9LdLOJW9dVyG/f3llg4nuY=; b=3QzUDdaMShbbps
+	cNH52TDLtn1UI7c7utmfdWjyH8Z/BIBN7QVJc4VtCRozKARWV4Z7MJcod8ogO8XFwgYJH7elzO0W8
+	CZpZzaVdiG/QYkJdNIUWGMQtkS8vvejUJNfXEPALuRBCq3c9aLYuKurnI1cyAM8u+kSkB+QEmmTHP
+	AS3S9uoF2v/KP3P51wrxpr2FYrFHAGKuXn19eDBAKfHoXvlanPYvcqgQ2w5mwClunv6k2fpuGr45W
+	tBPYbdejoGMMis9ger0NiYqAlRKShia6jJp36Ggiuuxd6h2ISW9hq1PIaC4E+nGZ+IyaD8HxE1s/Z
+	dWv5x5KD3R4SKbiU2Z2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovmEQ-00HYGU-EL; Thu, 17 Nov 2022 21:15:34 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1ovmEA-00HY3c-Ua; Thu, 17 Nov 2022 21:15:19 +0000
+Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovmEJ-00HY9y-Sv
-	for linux-mtd@lists.infradead.org; Thu, 17 Nov 2022 21:15:30 +0000
+	id 1ovmE5-00HXuf-6i
+	for linux-mtd@lists.infradead.org; Thu, 17 Nov 2022 21:15:16 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 0EC73FF806;
-	Thu, 17 Nov 2022 21:15:23 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id F31B840007;
+	Thu, 17 Nov 2022 21:15:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1668719726;
+	t=1668719709;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VPHr+qDv2jvZw7yfWQ6ulK/MdmRbx+t8bsjqHho0yiI=;
-	b=nAqlDnzrdHSTZf2HpQHlucabZ2Db2wD4jHANBXRfgnWXSBvnESeXgKR7CmU5laZgOkb2Zn
-	x2PXiUTX5gWJHyHncuSAIsHG2E+KWx52GGAPeyhGPThHVChcF5YJsCTnZyxkqlrAKKeU1A
-	f0KeVHrbfevi692vyE+VQeJY1AHc6omkO36/dliNuZjxXP/3agfSqJsOySg8iAJZucjwfq
-	mzLoTUVZiV/fXeQiq+IjdxyfFagZa8mWBpSVrL0zRPfiFj8dH9gYaWDEShSW6QqHrook21
-	cDKKh9ys7KSGG4li5LwQ96E9Hou7g8HRkOei8RY7DGITGBSSnOGvTh1SbM58Gw==
+	bh=W8cq3DkVGaboUoIGESwnySAxmU9rfWYlAv1bVx+OaeY=;
+	b=BcR231/g5unTO8iKs2TCURhiln8lh/8Sz8JVMzAv4BFMOBw1/JTCu4na5P9eYiIVo6+uAA
+	ZU7bnR89jebjmEidskXD1H9VYGzp7+PgEYIlS5mmvJBfbBwm5jJU6bMGrYpBkEvUrLVI5j
+	1CCTyPFPOgI/Dk1p6HqohWoObO0j8l+x7qLtNdTgiI972L4qmVviKCgvgLk+wP1izZls0+
+	yeNxGPGyJJ+hdRxs8AFOUPlsFSYuR67E0u8SOuFwSTSnwXaffarIGpG7gLdXl0GEnLX9mb
+	fVbpvMrcyOrR4kxXYkjtsTFmeBk+MO2Mb+fxuF/ehmNc9USLDbxhq66h1sZ6bQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -52,19 +52,21 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Michael Walle <michael@walle.cc>,
 	linux-mtd@lists.infradead.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 13/17] dt-bindings: mtd: nvmem-cells: Drop range property from example
-Date: Thu, 17 Nov 2022 22:15:23 +0100
-Message-Id: <20221117211523.1273320-1-miquel.raynal@bootlin.com>
+	linux-kernel@vger.kernel.org,
+	Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 16/17] dt-bindings: mtd: Drop object types when referencing other files
+Date: Thu, 17 Nov 2022 22:15:05 +0100
+Message-Id: <20221117211506.1273231-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221114090315.848208-14-miquel.raynal@bootlin.com>
+In-Reply-To: <20221114090315.848208-17-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'c0fc45f7d305688f727fb44a66554233b1624ab9'
+X-linux-mtd-patch-commit: b'd963af0b23ca4a72d913b0ce56ce5e270dcfa00f'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221117_131528_127070_4229D91E 
-X-CRM114-Status: GOOD (  10.40  )
+X-CRM114-CacheID: sfid-20221117_131513_440577_F1A5CC26 
+X-CRM114-Status: UNSURE (   6.03  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,18 +83,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2022-11-14 at 09:03:11 UTC, Miquel Raynal wrote:
-> Memory mapped devices such as parallel NOR flash could make use of the
-> 'ranges' property to translate a nvmem 'reg' cell address to a CPU
-> address but in practice there is no upstream user nor any declaration of
-> this property being valid in this case yet, leading to a warning when
-> constraining a bit more the schema:
-> 
-> 	.../mtd/partitions/nvmem-cells.example.dtb: calibration@f00000:
-> 	Unevaluated properties are not allowed ('ranges' was unexpected)
-> 
-> So let's drop the property from the example, knowing that someone might
-> actually properly define it some day.
+On Mon, 2022-11-14 at 09:03:14 UTC, Miquel Raynal wrote:
+> Setting an object type is redundant when a reference is made, so drop
+> these useless lines.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > Reviewed-by: Rob Herring <robh@kernel.org>
