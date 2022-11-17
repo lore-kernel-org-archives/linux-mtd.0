@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B62E4C41535
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Nov 2022 12:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2461DC4332F
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Nov 2022 12:41:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wufaPF0M+chOuiW4UyN3okmPa4d/uKvELy3WZmpxCJ8=; b=TQXRzqTVtwHxTw
-	uebYwfo7pr6KBq8+EoiC23LYkYsv0K/f77bMzA1J6G5wusdlBd9IJUmADmfO0O2GZN8JfHL2UDqEn
-	yWoszjpj4g+PThgAtzx9iXByKrEfXn/J2zN14P47Q43CbHoYHaQCF4W62pJi1yS25NSe40Tin48tF
-	QxAS86DiPdRfiTdUgv+N6rCoCmCmfIZVEXQ0JzidO9RwgLp8TaicohHop2wroxk9WnOFn06mYkxz6
-	Ol+Spdvp6ocsT67q7Eh1Lo/NcVpjZr+W6J+/TLkgHQtLVN19W0R10pAKB8EEPNbGKmBdsdoXzi1Vl
-	hjKgf4qguRDT19l+dNAw==;
+	List-Owner; bh=SfMBt3Dbs7/XyZfIVveKo+utcqOgkqAUdKPt1pgLsNI=; b=Ja+1LCkBzBAUBu
+	ZiCvQgWQO5zzJLz+xl9xkMVykEvF7ueQQpMz35p+eAIti/RQHvr+p45DMYLzNNTuZ8YB9ejFcwdtC
+	xT8yQjI9SXOHgCEf8xoTtRR5leeT9RMPhqImCUEpQLseFb5NwCq04NAmnOyGm4o/YIJYyjSiTcolB
+	9z/7bcChMGdfoxhVm8ffOVvYiVNnTEpsaGri65nfNLl3/JOmMu7A7mXx2OzuDq+A3TZ4jq0mjs+3y
+	NcccFiuSjoeWpBU3xmfJhluJcyKlsaewT4vLq31cmW8VBQGsj0DQs1EM4cn9vxL3zl8q8dDudJuuE
+	D1S0vSzp31n3oWLAQdUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oveBL-00Dpft-Eg; Thu, 17 Nov 2022 12:39:51 +0000
-Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
+	id 1oveCW-00DqTT-Ix; Thu, 17 Nov 2022 12:41:04 +0000
+Received: from mail-lj1-x235.google.com ([2a00:1450:4864:20::235])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oveAl-00DpH0-CN
-	for linux-mtd@lists.infradead.org; Thu, 17 Nov 2022 12:39:25 +0000
-Received: by mail-lf1-x12b.google.com with SMTP id s8so2566612lfc.8
-        for <linux-mtd@lists.infradead.org>; Thu, 17 Nov 2022 04:39:15 -0800 (PST)
+	id 1oveAq-00Dp9W-IS
+	for linux-mtd@lists.infradead.org; Thu, 17 Nov 2022 12:39:32 +0000
+Received: by mail-lj1-x235.google.com with SMTP id d3so2560304ljl.1
+        for <linux-mtd@lists.infradead.org>; Thu, 17 Nov 2022 04:39:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R8CmD7RbkL+ji5H/crPH42LzC8841fyb/TVI9PZsytk=;
-        b=akgyKWsBf5JOVzUBq8UvEkZoJ6otNSr7tSbXScAFP37V9N27JC+GbZwfaI/dh+bGkP
-         UYZrA3xVSRw7uJu9/IzQBV5XOsW8dDbLI7b6lg3hzHAUeEXnrT3aZoicmVl2T4Qhj51e
-         +He82cpuB1NGbY/jsRdou+x44KghVgtmCAIgVtty7Ajdj+YFM2dQwWMB1X2prFuVvTEo
-         Jl8JewWYn7GO+7hE8xhUCyXTM3/aUrvskStEZFHy2MUZt5GvVr61ysxm7yP385YLbfJn
-         zvYJZufIh8SvuBRZdL3BDpok0859VTkJEuJxrbZY4aZjJTJCfKhSFNMis4139fpVGn7l
-         dwSQ==
+        bh=FJFFdNTCilBROsHdo24V63ZbZAhhEEgqcZxfhZbN7o8=;
+        b=rdz5PIXMqObB86l1KhoZJKcSKbC+xg6NRkgTB1NATFdSIlglOWlXRIvjuNjAzjvTCO
+         y8zZsFvyNaBAJ3JYgXO1JPdPh3To3UQBQF8ZYT+Xs+SqZ3Pz85WQP1ifCFiiPrF+7IsA
+         igQY+5y+DrCUl7a8xmGOtKdzQJMqiZDbwefYzZghibsOKI6dmXc/er8ez17uTiah1G7l
+         7mQ4NF/RzyMelV1c9UT/LoARjsuZLkFC3+x+2gPh/sPASOPAxd0p4szB44T219qd73o3
+         xVm9bFa2ZmqMpeG1LwRd/nrLaH2Uk+lR7uJv3y937vG7+grMPRcepOLACr3489eRm49J
+         vqFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R8CmD7RbkL+ji5H/crPH42LzC8841fyb/TVI9PZsytk=;
-        b=LjkX7dry06OAgVmqc9EfiEa8Sa5FAm4Vpn4aGQj4bGupWSFVOzQavN6KgfkQbJsX0/
-         uafydsuJdMq9MS6TD7vBZRGz9rsZWg00aG3TuCw0vgWQkXkUOIVPhq3WXYl6PXUNqRs+
-         B9XHldimmte0fTkPGax5wAQtHTZa6PlZev2IZc/dvpzaOH2UJ0ZSttTWJuiokOQV1813
-         tAhU1fHFr/TQynhM5DfJwF/RCGZb0aa3Lj8heQuURLvyB3DCNQamvaemk7ZssrRgWYlV
-         zmRxi9H0CIbAtXVynTImeUXjfi5G4yPYgdGNy8PVo6QoUFw1rQHavrmU8hD6Zr7IX8at
-         0F9Q==
-X-Gm-Message-State: ANoB5pmzhysgiiXyCuVNsNC/WppEZLV+KGSHlmgASbC+cOxSiCKPyvrK
-	Fyi7wBUvHxOFuF4J0H+i3fXxdw==
-X-Google-Smtp-Source: AA0mqf7y30IKvOOOde4f7vZWAb3iI/B/VqdojVIdarj+ydxO/NQfC24JkDmXGQARlyE0k2gXx1/exg==
-X-Received: by 2002:a05:6512:340b:b0:4a2:5897:2b44 with SMTP id i11-20020a056512340b00b004a258972b44mr913826lfr.431.1668688754007;
-        Thu, 17 Nov 2022 04:39:14 -0800 (PST)
+        bh=FJFFdNTCilBROsHdo24V63ZbZAhhEEgqcZxfhZbN7o8=;
+        b=ucYKpoeFtPK4LUFt98ZkTCQ5RCbKRpYV4TwdxOpsplJAKExH1euZcPtQcChWSA032J
+         E9Wat+V3E5HC/y5OwHcIyZ6XhtYDgh2h2wV/J9ZTW8/flPUF2BC5zRkNxUKIsd+OEaZv
+         0BQIe2ucYgn98MG8dn1vJ2Vgmw/0aaIeDD7dB9Kw3jsE1X43DbagOVaSK4NNwARKNjvJ
+         6MI8mOQvdDskZlw9sH4UBK1sLiOrmJc0E1/geh4S2LqHxMibtqY3RWLvX6wH0TatJwiR
+         gFumN0BEGJzoatJVQgP5Ji8c92t5wRYuwyKWjTNFRAgcpPbdh7YRdOFZI4ZlIEOCutB7
+         k0Hg==
+X-Gm-Message-State: ANoB5pn2vSvnAHgKCNJWJm5cwTFAaSS1elJfebOQXh1tttNZ+gR4ZoI6
+	xgWpHTq+cR6kswfMKtpKoA6UPA==
+X-Google-Smtp-Source: AA0mqf7DipsuY/Cd5bO8hrjb2IxaeO35/7waWPRAbVpXYlqoqtTpdo18Hp5PA/jEtmhgdlbc5yHKpQ==
+X-Received: by 2002:a05:651c:987:b0:26f:c065:4e99 with SMTP id b7-20020a05651c098700b0026fc0654e99mr997284ljq.394.1668688759946;
+        Thu, 17 Nov 2022 04:39:19 -0800 (PST)
 Received: from krzk-bin.NAT.warszawa.vectranet.pl (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
-        by smtp.gmail.com with ESMTPSA id u28-20020ac24c3c000000b004972b0bb426sm127855lfq.257.2022.11.17.04.39.12
+        by smtp.gmail.com with ESMTPSA id u28-20020ac24c3c000000b004972b0bb426sm127855lfq.257.2022.11.17.04.39.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Nov 2022 04:39:13 -0800 (PST)
+        Thu, 17 Nov 2022 04:39:19 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -91,16 +91,16 @@ To: Rob Herring <robh+dt@kernel.org>,
 	virtualization@lists.linux-foundation.org,
 	linux-watchdog@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [RFC PATCH 5/9] dt-bindings: drop redundant part of title (end, part two)
-Date: Thu, 17 Nov 2022 13:38:46 +0100
-Message-Id: <20221117123850.368213-6-krzysztof.kozlowski@linaro.org>
+Subject: [RFC PATCH 8/9] dt-bindings: clock: drop redundant part of title
+Date: Thu, 17 Nov 2022 13:38:49 +0100
+Message-Id: <20221117123850.368213-9-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221117123850.368213-1-krzysztof.kozlowski@linaro.org>
 References: <20221117123850.368213-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221117_043915_586448_52516CAE 
-X-CRM114-Status: GOOD (  11.04  )
+X-CRM114-CacheID: sfid-20221117_043920_671621_58916B87 
+X-CRM114-Status: GOOD (  11.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,210 +112,310 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhlIERldmljZXRyZWUgYmluZGluZ3MgZG9jdW1lbnQgZG9lcyBub3QgaGF2ZSB0byBzYXkgaW4g
-dGhlIHRpdGxlIHRoYXQKaXQgaXMgYSAiYmluZGluZyIsIGJ1dCBpbnN0ZWFkIGp1c3QgZGVzY3Jp
-YmUgdGhlIGhhcmR3YXJlLgoKRHJvcCB0cmFpbGluZyAiTm9kZXxUcmVlfEdlbmVyaWMgYmluZGlu
-Z3MiIGluIHZhcmlvdXMgZm9ybXMgKGFsc28gd2l0aAp0cmFpbGxpbmcgZnVsbCBzdG9wKToKCiAg
-ZmluZCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvIC10eXBlIGYgLW5hbWUgJyou
-eWFtbCcgXAogICAgLW5vdCAtbmFtZSAndHJpdmlhbC1kZXZpY2VzLnlhbWwnIFwKICAgIC1leGVj
-IHNlZCAtaSAtZSAncy9edGl0bGU6IFwoLipcKSBbbk5db2RlIFtiQl1pbmRpbmdzXD9cLlw/JC90
-aXRsZTogXDEvJyB7fSBcOwoKICBmaW5kIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy8gLXR5cGUgZiAtbmFtZSAnKi55YW1sJyBcCiAgICAtbm90IC1uYW1lICd0cml2aWFsLWRldmlj
-ZXMueWFtbCcgXAogICAgLWV4ZWMgc2VkIC1pIC1lICdzL150aXRsZTogXCguKlwpIFt0VF1yZWUg
-W2JCXWluZGluZ3NcP1wuXD8kL3RpdGxlOiBcMS8nIHt9IFw7CgogIGZpbmQgRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzLyAtdHlwZSBmIC1uYW1lICcqLnlhbWwnIFwKICAgIC1ub3Qg
-LW5hbWUgJ3RyaXZpYWwtZGV2aWNlcy55YW1sJyBcCiAgICAtZXhlYyBzZWQgLWkgLWUgJ3MvXnRp
-dGxlOiBcKC4qXCkgW2dHXWVuZXJpYyBbYkJdaW5kaW5nc1w/XC5cPyQvdGl0bGU6IFwxLycge30g
-XDsKCiAgZmluZCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvIC10eXBlIGYgLW5h
-bWUgJyoueWFtbCcgXAogICAgLW5vdCAtbmFtZSAndHJpdmlhbC1kZXZpY2VzLnlhbWwnIFwKICAg
-IC1leGVjIHNlZCAtaSAtZSAncy9edGl0bGU6IFwoLipcKSBbYkJdaW5kaW5nc1w/IGRlc2NyaXB0
-aW9uXC5cPyQvdGl0bGU6IFwxLycge30gXDsKCiAgZmluZCBEb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvIC10eXBlIGYgLW5hbWUgJyoueWFtbCcgXAogICAgLW5vdCAtbmFtZSAndHJp
-dmlhbC1kZXZpY2VzLnlhbWwnIFwKICAgIC1leGVjIHNlZCAtaSAtZSAncy9edGl0bGU6IFwoLipc
-KSBbYkJdaW5kaW5nc1w/IGRvY3VtZW50XC5cPyQvdGl0bGU6IFwxLycge30gXDsKClNpZ25lZC1v
-ZmYtYnk6IEtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2lAbGluYXJvLm9y
-Zz4KLS0tCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY2xvY2svdGksc2NpLWNs
-ay55YW1sICAgICAgICAgfCAyICstCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-Y3B1L2lkbGUtc3RhdGVzLnlhbWwgICAgICAgICAgfCAyICstCiAuLi4vZGV2aWNldHJlZS9iaW5k
-aW5ncy9uZXQvZHNhL21pY3JvY2hpcCxsYW45Mzd4LnlhbWwgICAgICAgICAgfCAyICstCiAuLi4v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvd2lyZWxlc3MvbWVkaWF0ZWssbXQ3Ni55YW1sICAgICAg
-ICAgfCAyICstCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L3dpcmVsZXNz
-L3FjYSxhdGg5ay55YW1sICAgfCAyICstCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvbmV0L3dpcmVsZXNzL3Fjb20sYXRoMTFrLnlhbWwgfCAyICstCiBEb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvcGh5L2JyY20sbnMyLXBjaWUtcGh5LnlhbWwgICAgfCAyICstCiBE
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L3Fjb20sdXNiLWhzLXBoeS55YW1s
-ICAgICAgfCAyICstCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L3RpLHBo
-eS1nbWlpLXNlbC55YW1sICAgICAgfCAyICstCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvcG93ZXIvZG9tYWluLWlkbGUtc3RhdGUueWFtbCAgfCAyICstCiAuLi4vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9yZXNlcnZlZC1tZW1vcnkvc2hhcmVkLWRtYS1wb29sLnlhbWwgICAgfCAyICst
-CiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVzZXQvdGksc2NpLXJlc2V0Lnlh
-bWwgICAgICAgfCAyICstCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVzZXQv
-dGksdHBzMzgweC1yZXNldC55YW1sICAgfCAyICstCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3Mvc29jL3RpL3NjaS1wbS1kb21haW4ueWFtbCAgICAgfCAyICstCiBEb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvYXVkaW8tZ3JhcGgtcG9ydC55YW1sICAgfCAy
-ICstCiAxNSBmaWxlcyBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspLCAxNSBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY2xvY2svdGks
-c2NpLWNsay55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Nsb2NrL3Rp
-LHNjaS1jbGsueWFtbAppbmRleCAwZTM3MDI4OWEwNTMuLjYzZDk3NjM0MTY5NiAxMDA2NDQKLS0t
-IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Nsb2NrL3RpLHNjaS1jbGsueWFt
-bAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY2xvY2svdGksc2NpLWNs
-ay55YW1sCkBAIC00LDcgKzQsNyBAQAogJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1h
-cy9jbG9jay90aSxzY2ktY2xrLnlhbWwjCiAkc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcv
-bWV0YS1zY2hlbWFzL2NvcmUueWFtbCMKIAotdGl0bGU6IFRJLVNDSSBjbG9jayBjb250cm9sbGVy
-IG5vZGUgYmluZGluZ3MKK3RpdGxlOiBUSS1TQ0kgY2xvY2sgY29udHJvbGxlcgogCiBtYWludGFp
-bmVyczoKICAgLSBOaXNoYW50aCBNZW5vbiA8bm1AdGkuY29tPgpkaWZmIC0tZ2l0IGEvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2NwdS9pZGxlLXN0YXRlcy55YW1sIGIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2NwdS9pZGxlLXN0YXRlcy55YW1sCmluZGV4IGZh
-NGQ0MTQyYWM5My4uYjhjYzgyNmM5NTAxIDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvY3B1L2lkbGUtc3RhdGVzLnlhbWwKKysrIGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL2NwdS9pZGxlLXN0YXRlcy55YW1sCkBAIC00LDcgKzQsNyBAQAog
-JGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9jcHUvaWRsZS1zdGF0ZXMueWFtbCMK
-ICRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIwog
-Ci10aXRsZTogSWRsZSBzdGF0ZXMgYmluZGluZyBkZXNjcmlwdGlvbgordGl0bGU6IElkbGUgc3Rh
-dGVzCiAKIG1haW50YWluZXJzOgogICAtIExvcmVuem8gUGllcmFsaXNpIDxsb3JlbnpvLnBpZXJh
-bGlzaUBhcm0uY29tPgpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL25ldC9kc2EvbWljcm9jaGlwLGxhbjkzN3gueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9uZXQvZHNhL21pY3JvY2hpcCxsYW45Mzd4LnlhbWwKaW5kZXggNjMwYmYw
-ZjgyOTRiLi5iMzRkZTMwMzk2NmIgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9uZXQvZHNhL21pY3JvY2hpcCxsYW45Mzd4LnlhbWwKKysrIGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9kc2EvbWljcm9jaGlwLGxhbjkzN3gueWFtbApA
-QCAtNCw3ICs0LDcgQEAKICRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvbmV0L2Rz
-YS9taWNyb2NoaXAsbGFuOTM3eC55YW1sIwogJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3Jn
-L21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjCiAKLXRpdGxlOiBMQU45Mzd4IEV0aGVybmV0IFN3aXRj
-aCBTZXJpZXMgVHJlZSBCaW5kaW5ncwordGl0bGU6IExBTjkzN3ggRXRoZXJuZXQgU3dpdGNoIFNl
-cmllcwogCiBtYWludGFpbmVyczoKICAgLSBVTkdMaW51eERyaXZlckBtaWNyb2NoaXAuY29tCmRp
-ZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L3dpcmVsZXNz
-L21lZGlhdGVrLG10NzYueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9u
-ZXQvd2lyZWxlc3MvbWVkaWF0ZWssbXQ3Ni55YW1sCmluZGV4IDcwZTMyODU4OWNmYi4uZjBjNzhm
-OTk0NDkxIDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0
-L3dpcmVsZXNzL21lZGlhdGVrLG10NzYueWFtbAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvbmV0L3dpcmVsZXNzL21lZGlhdGVrLG10NzYueWFtbApAQCAtNiw3ICs2LDcg
-QEAKICRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvbmV0L3dpcmVsZXNzL21lZGlh
-dGVrLG10NzYueWFtbCMKICRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVt
-YXMvY29yZS55YW1sIwogCi10aXRsZTogTWVkaWFUZWsgbXQ3NiB3aXJlbGVzcyBkZXZpY2VzIEdl
-bmVyaWMgQmluZGluZwordGl0bGU6IE1lZGlhVGVrIG10NzYgd2lyZWxlc3MgZGV2aWNlcwogCiBt
-YWludGFpbmVyczoKICAgLSBGZWxpeCBGaWV0a2F1IDxuYmRAbmJkLm5hbWU+CmRpZmYgLS1naXQg
-YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L3dpcmVsZXNzL3FjYSxhdGg5
-ay55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC93aXJlbGVzcy9x
-Y2EsYXRoOWsueWFtbAppbmRleCA3MDI5Y2IxZjM4ZmYuLjBlNTQxMmNmZjJiYyAxMDA2NDQKLS0t
-IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC93aXJlbGVzcy9xY2EsYXRo
-OWsueWFtbAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L3dpcmVs
-ZXNzL3FjYSxhdGg5ay55YW1sCkBAIC00LDcgKzQsNyBAQAogJGlkOiBodHRwOi8vZGV2aWNldHJl
-ZS5vcmcvc2NoZW1hcy9uZXQvd2lyZWxlc3MvcWNhLGF0aDlrLnlhbWwjCiAkc2NoZW1hOiBodHRw
-Oi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMKIAotdGl0bGU6IFF1YWxj
-b21tIEF0aGVyb3MgYXRoOWsgd2lyZWxlc3MgZGV2aWNlcyBHZW5lcmljIEJpbmRpbmcKK3RpdGxl
-OiBRdWFsY29tbSBBdGhlcm9zIGF0aDlrIHdpcmVsZXNzIGRldmljZXMKIAogbWFpbnRhaW5lcnM6
-CiAgIC0gVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHRva2UuZGs+CmRpZmYgLS1naXQg
-YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L3dpcmVsZXNzL3Fjb20sYXRo
-MTFrLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L3dpcmVsZXNz
-L3Fjb20sYXRoMTFrLnlhbWwKaW5kZXggZjdjZjEzNWFhMzdmLi41NTZlYjUyMzYwNmEgMTAwNjQ0
-Ci0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvd2lyZWxlc3MvcWNv
-bSxhdGgxMWsueWFtbAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0
-L3dpcmVsZXNzL3Fjb20sYXRoMTFrLnlhbWwKQEAgLTYsNyArNiw3IEBACiAkaWQ6IGh0dHA6Ly9k
-ZXZpY2V0cmVlLm9yZy9zY2hlbWFzL25ldC93aXJlbGVzcy9xY29tLGF0aDExay55YW1sIwogJHNj
-aGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjCiAKLXRp
-dGxlOiBRdWFsY29tbSBUZWNobm9sb2dpZXMgYXRoMTFrIHdpcmVsZXNzIGRldmljZXMgR2VuZXJp
-YyBCaW5kaW5nCit0aXRsZTogUXVhbGNvbW0gVGVjaG5vbG9naWVzIGF0aDExayB3aXJlbGVzcyBk
-ZXZpY2VzCiAKIG1haW50YWluZXJzOgogICAtIEthbGxlIFZhbG8gPGt2YWxvQGtlcm5lbC5vcmc+
-CmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L2JyY20s
-bnMyLXBjaWUtcGh5LnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5
-L2JyY20sbnMyLXBjaWUtcGh5LnlhbWwKaW5kZXggNzBlYjQ4YjM5MWM5Li41MjcwMTA3MDJmNWUg
-MTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvYnJjbSxu
-czItcGNpZS1waHkueWFtbAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-cGh5L2JyY20sbnMyLXBjaWUtcGh5LnlhbWwKQEAgLTQsNyArNCw3IEBACiAkaWQ6IGh0dHA6Ly9k
-ZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3BoeS9icmNtLG5zMi1wY2llLXBoeS55YW1sIwogJHNjaGVt
-YTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjCiAKLXRpdGxl
-OiBCcm9hZGNvbSBOUzIgUENJZSBQSFkgYmluZGluZyBkb2N1bWVudAordGl0bGU6IEJyb2FkY29t
-IE5TMiBQQ0llIFBIWQogCiBtYWludGFpbmVyczoKICAgLSBSYXkgSnVpIDxyYXkuanVpQGJyb2Fk
-Y29tLmNvbT4KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9w
-aHkvcWNvbSx1c2ItaHMtcGh5LnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvcGh5L3Fjb20sdXNiLWhzLXBoeS55YW1sCmluZGV4IDA2NTVlNDg1YjI2MC4uYWE5NzQ3OGRk
-MDE2IDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L3Fj
-b20sdXNiLWhzLXBoeS55YW1sCisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9waHkvcWNvbSx1c2ItaHMtcGh5LnlhbWwKQEAgLTQsNyArNCw3IEBACiAkaWQ6IGh0dHA6Ly9k
-ZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3BoeS9xY29tLHVzYi1ocy1waHkueWFtbCMKICRzY2hlbWE6
-IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIwogCi10aXRsZTog
-UXVhbGNvbW0ncyBVU0IgSFMgUEhZIGJpbmRpbmcgZGVzY3JpcHRpb24KK3RpdGxlOiBRdWFsY29t
-bSdzIFVTQiBIUyBQSFkKIAogbWFpbnRhaW5lcnM6CiAgIC0gQmpvcm4gQW5kZXJzc29uIDxiam9y
-bi5hbmRlcnNzb25AbGluYXJvLm9yZz4KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9waHkvdGkscGh5LWdtaWktc2VsLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvcGh5L3RpLHBoeS1nbWlpLXNlbC55YW1sCmluZGV4IDNhNmQ2ODYz
-ODNjZi4uNmQ0NmY1N2ZhMWI0IDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvcGh5L3RpLHBoeS1nbWlpLXNlbC55YW1sCisrKyBiL0RvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9waHkvdGkscGh5LWdtaWktc2VsLnlhbWwKQEAgLTUsNyArNSw3IEBA
-CiAkaWQ6ICJodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9waHkvdGkscGh5LWdtaWktc2Vs
-LnlhbWwjIgogJHNjaGVtYTogImh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29y
-ZS55YW1sIyIKIAotdGl0bGU6IENQU1cgUG9ydCdzIEludGVyZmFjZSBNb2RlIFNlbGVjdGlvbiBQ
-SFkgVHJlZSBCaW5kaW5ncwordGl0bGU6IENQU1cgUG9ydCdzIEludGVyZmFjZSBNb2RlIFNlbGVj
-dGlvbiBQSFkKIAogbWFpbnRhaW5lcnM6CiAgIC0gS2lzaG9uIFZpamF5IEFicmFoYW0gSSA8a2lz
-aG9uQHRpLmNvbT4KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9wb3dlci9kb21haW4taWRsZS1zdGF0ZS55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL3Bvd2VyL2RvbWFpbi1pZGxlLXN0YXRlLnlhbWwKaW5kZXggNGVlOTIwYTFkZTY5
-Li5lYzFmNmY2NjllNTAgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9wb3dlci9kb21haW4taWRsZS1zdGF0ZS55YW1sCisrKyBiL0RvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9wb3dlci9kb21haW4taWRsZS1zdGF0ZS55YW1sCkBAIC00LDcgKzQs
-NyBAQAogJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9wb3dlci9kb21haW4taWRs
-ZS1zdGF0ZS55YW1sIwogJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1h
-cy9jb3JlLnlhbWwjCiAKLXRpdGxlOiBQTSBEb21haW4gSWRsZSBTdGF0ZXMgYmluZGluZyBkZXNj
-cmlwdGlvbgordGl0bGU6IFBNIERvbWFpbiBJZGxlIFN0YXRlcwogCiBtYWludGFpbmVyczoKICAg
-LSBVbGYgSGFuc3NvbiA8dWxmLmhhbnNzb25AbGluYXJvLm9yZz4KZGlmZiAtLWdpdCBhL0RvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9yZXNlcnZlZC1tZW1vcnkvc2hhcmVkLWRtYS1w
-b29sLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVzZXJ2ZWQtbWVt
-b3J5L3NoYXJlZC1kbWEtcG9vbC55YW1sCmluZGV4IDYxODEwNWYwNzliZS4uNDc2OTYwNzNiNjY1
-IDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVzZXJ2ZWQt
-bWVtb3J5L3NoYXJlZC1kbWEtcG9vbC55YW1sCisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9yZXNlcnZlZC1tZW1vcnkvc2hhcmVkLWRtYS1wb29sLnlhbWwKQEAgLTQsNyAr
-NCw3IEBACiAkaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3Jlc2VydmVkLW1lbW9y
-eS9zaGFyZWQtZG1hLXBvb2wueWFtbCMKICRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9t
-ZXRhLXNjaGVtYXMvY29yZS55YW1sIwogCi10aXRsZTogL3Jlc2VydmVkLW1lbW9yeSBETUEgcG9v
-bCBub2RlIGJpbmRpbmdzCit0aXRsZTogL3Jlc2VydmVkLW1lbW9yeSBETUEgcG9vbAogCiBtYWlu
-dGFpbmVyczoKICAgLSBkZXZpY2V0cmVlLXNwZWNAdmdlci5rZXJuZWwub3JnCmRpZmYgLS1naXQg
-YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVzZXQvdGksc2NpLXJlc2V0Lnlh
-bWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVzZXQvdGksc2NpLXJlc2V0
-LnlhbWwKaW5kZXggNDYzOWQyY2VjNTU3Li5kY2Y5MjA2ZTEyYmUgMTAwNjQ0Ci0tLSBhL0RvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9yZXNldC90aSxzY2ktcmVzZXQueWFtbAorKysg
-Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVzZXQvdGksc2NpLXJlc2V0Lnlh
-bWwKQEAgLTQsNyArNCw3IEBACiAkaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3Jl
-c2V0L3RpLHNjaS1yZXNldC55YW1sIwogJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21l
-dGEtc2NoZW1hcy9jb3JlLnlhbWwjCiAKLXRpdGxlOiBUSS1TQ0kgcmVzZXQgY29udHJvbGxlciBu
-b2RlIGJpbmRpbmdzCit0aXRsZTogVEktU0NJIHJlc2V0IGNvbnRyb2xsZXIKIAogbWFpbnRhaW5l
-cnM6CiAgIC0gTmlzaGFudGggTWVub24gPG5tQHRpLmNvbT4KZGlmZiAtLWdpdCBhL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9yZXNldC90aSx0cHMzODB4LXJlc2V0LnlhbWwgYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVzZXQvdGksdHBzMzgweC1yZXNldC55
-YW1sCmluZGV4IGFmYzgzNWVkYTBlZi4uZjQzNmYyY2YxZGY3IDEwMDY0NAotLS0gYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVzZXQvdGksdHBzMzgweC1yZXNldC55YW1sCisr
-KyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9yZXNldC90aSx0cHMzODB4LXJl
-c2V0LnlhbWwKQEAgLTQsNyArNCw3IEBACiAkaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hl
-bWFzL3Jlc2V0L3RpLHRwczM4MHgtcmVzZXQueWFtbCMKICRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0
-cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIwogCi10aXRsZTogVEkgVFBTMzgweCByZXNl
-dCBjb250cm9sbGVyIG5vZGUgYmluZGluZ3MKK3RpdGxlOiBUSSBUUFMzODB4IHJlc2V0IGNvbnRy
-b2xsZXIKIAogbWFpbnRhaW5lcnM6CiAgIC0gTWFyY28gRmVsc2NoIDxrZXJuZWxAcGVuZ3V0cm9u
-aXguZGU+CmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29j
-L3RpL3NjaS1wbS1kb21haW4ueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9zb2MvdGkvc2NpLXBtLWRvbWFpbi55YW1sCmluZGV4IDllNmNiNGVlOTc1NS4uNWRmNzY4OGEx
-ZTFjIDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL3Rp
-L3NjaS1wbS1kb21haW4ueWFtbAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3Mvc29jL3RpL3NjaS1wbS1kb21haW4ueWFtbApAQCAtNCw3ICs0LDcgQEAKICRpZDogaHR0cDov
-L2RldmljZXRyZWUub3JnL3NjaGVtYXMvc29jL3RpL3NjaS1wbS1kb21haW4ueWFtbCMKICRzY2hl
-bWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIwogCi10aXRs
-ZTogVEktU0NJIGdlbmVyaWMgcG93ZXIgZG9tYWluIG5vZGUgYmluZGluZ3MKK3RpdGxlOiBUSS1T
-Q0kgZ2VuZXJpYyBwb3dlciBkb21haW4KIAogbWFpbnRhaW5lcnM6CiAgIC0gTmlzaGFudGggTWVu
-b24gPG5tQHRpLmNvbT4KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9zb3VuZC9hdWRpby1ncmFwaC1wb3J0LnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3Mvc291bmQvYXVkaW8tZ3JhcGgtcG9ydC55YW1sCmluZGV4IDY0NjU0Y2VlZjIw
-OC4uZjViOGI2ZDEzMDc3IDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3Mvc291bmQvYXVkaW8tZ3JhcGgtcG9ydC55YW1sCisrKyBiL0RvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hdWRpby1ncmFwaC1wb3J0LnlhbWwKQEAgLTQsNyArNCw3
-IEBACiAkaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3NvdW5kL2F1ZGlvLWdyYXBo
-LXBvcnQueWFtbCMKICRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMv
-Y29yZS55YW1sIwogCi10aXRsZTogQXVkaW8gR3JhcGggQ2FyZCAncG9ydCcgTm9kZSBCaW5kaW5n
-cwordGl0bGU6IEF1ZGlvIEdyYXBoIENhcmQgJ3BvcnQnCiAKIG1haW50YWluZXJzOgogICAtIEt1
-bmlub3JpIE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KLS0gCjIu
-MzQuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+The Devicetree bindings document does not have to say in the title that
+it is a "Devicetree binding", but instead just describe the hardware.
+
+Drop "Devicetree bindings" in various forms:
+
+  find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+    -exec sed -i -e 's/^title: [dD]evice[ -]\?[tT]ree [cC]lock [bB]indings\? for \([tT]he \)\?\(.*\)$/title: \u\2 Clock Controller/' {} \;
+
+  find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+    -exec sed -i -e 's/^title: [cC]lock [bB]indings\? for \([tT]he \)\?\(.*\)$/title: \u\2 Clock Controller/' {} \;
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/devicetree/bindings/clock/calxeda.yaml           | 2 +-
+ Documentation/devicetree/bindings/clock/imx1-clock.yaml        | 2 +-
+ Documentation/devicetree/bindings/clock/imx21-clock.yaml       | 2 +-
+ Documentation/devicetree/bindings/clock/imx23-clock.yaml       | 2 +-
+ Documentation/devicetree/bindings/clock/imx25-clock.yaml       | 2 +-
+ Documentation/devicetree/bindings/clock/imx27-clock.yaml       | 2 +-
+ Documentation/devicetree/bindings/clock/imx28-clock.yaml       | 2 +-
+ Documentation/devicetree/bindings/clock/imx31-clock.yaml       | 2 +-
+ Documentation/devicetree/bindings/clock/imx35-clock.yaml       | 2 +-
+ Documentation/devicetree/bindings/clock/imx5-clock.yaml        | 2 +-
+ Documentation/devicetree/bindings/clock/imx6q-clock.yaml       | 2 +-
+ Documentation/devicetree/bindings/clock/imx6sl-clock.yaml      | 2 +-
+ Documentation/devicetree/bindings/clock/imx6sll-clock.yaml     | 2 +-
+ Documentation/devicetree/bindings/clock/imx6sx-clock.yaml      | 2 +-
+ Documentation/devicetree/bindings/clock/imx6ul-clock.yaml      | 2 +-
+ Documentation/devicetree/bindings/clock/imx7d-clock.yaml       | 2 +-
+ Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml | 2 +-
+ Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml | 2 +-
+ Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml   | 2 +-
+ Documentation/devicetree/bindings/clock/ti,lmk04832.yaml       | 2 +-
+ 20 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/clock/calxeda.yaml b/Documentation/devicetree/bindings/clock/calxeda.yaml
+index a34cbf3c9aaf..a88fbe20fef1 100644
+--- a/Documentation/devicetree/bindings/clock/calxeda.yaml
++++ b/Documentation/devicetree/bindings/clock/calxeda.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/calxeda.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Device Tree Clock bindings for Calxeda highbank platform
++title: Calxeda highbank platform Clock Controller
+ 
+ description: |
+   This binding covers the Calxeda SoC internal peripheral and bus clocks
+diff --git a/Documentation/devicetree/bindings/clock/imx1-clock.yaml b/Documentation/devicetree/bindings/clock/imx1-clock.yaml
+index 56f524780b1a..7ade4c32aff3 100644
+--- a/Documentation/devicetree/bindings/clock/imx1-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx1-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx1-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX1 CPUs
++title: Freescale i.MX1 CPUs Clock Controller
+ 
+ maintainers:
+   - Alexander Shiyan <shc_work@mail.ru>
+diff --git a/Documentation/devicetree/bindings/clock/imx21-clock.yaml b/Documentation/devicetree/bindings/clock/imx21-clock.yaml
+index e2d50544700a..79cc843703ec 100644
+--- a/Documentation/devicetree/bindings/clock/imx21-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx21-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx21-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX21
++title: Freescale i.MX21 Clock Controller
+ 
+ maintainers:
+   - Alexander Shiyan <shc_work@mail.ru>
+diff --git a/Documentation/devicetree/bindings/clock/imx23-clock.yaml b/Documentation/devicetree/bindings/clock/imx23-clock.yaml
+index 7e890ab9c77d..5e71c9219500 100644
+--- a/Documentation/devicetree/bindings/clock/imx23-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx23-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx23-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX23
++title: Freescale i.MX23 Clock Controller
+ 
+ maintainers:
+   - Shawn Guo <shawnguo@kernel.org>
+diff --git a/Documentation/devicetree/bindings/clock/imx25-clock.yaml b/Documentation/devicetree/bindings/clock/imx25-clock.yaml
+index 1792e138984b..c626a158590e 100644
+--- a/Documentation/devicetree/bindings/clock/imx25-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx25-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx25-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX25
++title: Freescale i.MX25 Clock Controller
+ 
+ maintainers:
+   - Sascha Hauer <s.hauer@pengutronix.de>
+diff --git a/Documentation/devicetree/bindings/clock/imx27-clock.yaml b/Documentation/devicetree/bindings/clock/imx27-clock.yaml
+index 99925aa22a4c..71d78a0b551f 100644
+--- a/Documentation/devicetree/bindings/clock/imx27-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx27-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx27-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX27
++title: Freescale i.MX27 Clock Controller
+ 
+ maintainers:
+   - Fabio Estevam <festevam@gmail.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx28-clock.yaml b/Documentation/devicetree/bindings/clock/imx28-clock.yaml
+index a542d680b1ca..4aaad7b9c66e 100644
+--- a/Documentation/devicetree/bindings/clock/imx28-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx28-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx28-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX28
++title: Freescale i.MX28 Clock Controller
+ 
+ maintainers:
+   - Shawn Guo <shawnguo@kernel.org>
+diff --git a/Documentation/devicetree/bindings/clock/imx31-clock.yaml b/Documentation/devicetree/bindings/clock/imx31-clock.yaml
+index 168c8ada5e81..50a8498eef8a 100644
+--- a/Documentation/devicetree/bindings/clock/imx31-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx31-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx31-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX31
++title: Freescale i.MX31 Clock Controller
+ 
+ maintainers:
+   - Fabio Estevam <festevam@gmail.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx35-clock.yaml b/Documentation/devicetree/bindings/clock/imx35-clock.yaml
+index 6415bb6a8d04..c063369de3ec 100644
+--- a/Documentation/devicetree/bindings/clock/imx35-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx35-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx35-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX35
++title: Freescale i.MX35 Clock Controller
+ 
+ maintainers:
+   - Steffen Trumtrar <s.trumtrar@pengutronix.de>
+diff --git a/Documentation/devicetree/bindings/clock/imx5-clock.yaml b/Documentation/devicetree/bindings/clock/imx5-clock.yaml
+index c0e19ff92c76..423c0142c1d3 100644
+--- a/Documentation/devicetree/bindings/clock/imx5-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx5-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx5-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX5
++title: Freescale i.MX5 Clock Controller
+ 
+ maintainers:
+   - Fabio Estevam <festevam@gmail.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx6q-clock.yaml b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+index 4f4637eddb8b..bae4fcb3aacc 100644
+--- a/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx6q-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX6 Quad
++title: Freescale i.MX6 Quad Clock Controller
+ 
+ maintainers:
+   - Anson Huang <Anson.Huang@nxp.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx6sl-clock.yaml b/Documentation/devicetree/bindings/clock/imx6sl-clock.yaml
+index b83c8f43d664..c85ff6ea3d24 100644
+--- a/Documentation/devicetree/bindings/clock/imx6sl-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx6sl-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx6sl-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX6 SoloLite
++title: Freescale i.MX6 SoloLite Clock Controller
+ 
+ maintainers:
+   - Anson Huang <Anson.Huang@nxp.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx6sll-clock.yaml b/Documentation/devicetree/bindings/clock/imx6sll-clock.yaml
+index 484894a4b23f..6b549ed1493c 100644
+--- a/Documentation/devicetree/bindings/clock/imx6sll-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx6sll-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx6sll-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX6 SLL
++title: Freescale i.MX6 SLL Clock Controller
+ 
+ maintainers:
+   - Anson Huang <Anson.Huang@nxp.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml b/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml
+index e6c795657c24..55dcad18b7c6 100644
+--- a/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx6sx-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX6 SoloX
++title: Freescale i.MX6 SoloX Clock Controller
+ 
+ maintainers:
+   - Anson Huang <Anson.Huang@nxp.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml b/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
+index 6a51a3f51cd9..be54d4df5afa 100644
+--- a/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx6ul-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX6 UltraLite
++title: Freescale i.MX6 UltraLite Clock Controller
+ 
+ maintainers:
+   - Anson Huang <Anson.Huang@nxp.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx7d-clock.yaml b/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
+index cefb61db01a8..e7d8427e4957 100644
+--- a/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx7d-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX7 Dual
++title: Freescale i.MX7 Dual Clock Controller
+ 
+ maintainers:
+   - Frank Li <Frank.Li@nxp.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml b/Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml
+index 739c3378f8c8..76842038f52e 100644
+--- a/Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx7ulp-pcc-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX7ULP Peripheral Clock Control (PCC) modules
++title: Freescale i.MX7ULP Peripheral Clock Control (PCC) modules Clock Controller
+ 
+ maintainers:
+   - A.s. Dong <aisheng.dong@nxp.com>
+diff --git a/Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml b/Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml
+index d06344d7e34f..5e25bc6d1372 100644
+--- a/Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imx7ulp-scg-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MX7ULP System Clock Generation (SCG) modules
++title: Freescale i.MX7ULP System Clock Generation (SCG) modules Clock Controller
+ 
+ maintainers:
+   - A.s. Dong <aisheng.dong@nxp.com>
+diff --git a/Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml b/Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml
+index 03fc5c1a2939..777af4aad4b2 100644
+--- a/Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml
++++ b/Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/imxrt1050-clock.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for Freescale i.MXRT
++title: Freescale i.MXRT Clock Controller
+ 
+ maintainers:
+   - Giulio Benetti <giulio.benetti@benettiengineering.com>
+diff --git a/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml b/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
+index bd8173848253..73d17830f165 100644
+--- a/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
++++ b/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/ti,lmk04832.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Clock bindings for the Texas Instruments LMK04832
++title: Texas Instruments LMK04832 Clock Controller
+ 
+ maintainers:
+   - Liam Beguin <liambeguin@gmail.com>
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
