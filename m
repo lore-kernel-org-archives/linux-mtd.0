@@ -4,50 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5BC2C433FE
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Nov 2022 06:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DF1BC43217
+	for <linux-mtd@archiver.kernel.org>; Sat, 19 Nov 2022 06:50:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=SK0OYyZrmbBzLHeFnoUMdToMWYhMBVkoJYFPMpXsQNM=; b=NRhL8T6O7/mgw/
-	c/ZyguJKS9QNTVGLq17lItOjuPvm5skIXkHBSZvgPZzkJYGFO88mL5+N4XGHqW8mXh91UgPIRcJ6t
-	ayudaW/YsTMtyULtHlCyfjxz+zCfCbr80D4qtVIeDuc4FPhKiuKYCgtSuJxCihlLgrNlpL8cmP3U9
-	Z3XX1+MMaA4XxFS54uG8E1cGXeTh4Y1yw5U9xmLfmlOdsfiryUfCc+TXW7OxB1X1CdvacOJHxpsw0
-	iC1FhxwfzS3z8v1oqYksH+uX0/yN7PMA0Urvs10z/pmaAZZpzhpvCa+xOYiUWFC1ZEhgdmOyLqCkF
-	yhMV+JOd2Jx1jmwxPQiA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Date:
+	Message-Id:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+PJE0fys2m/T3ElaoDO+FOXukvepTDAoF2sbCnmXkXs=; b=ciE5BG9ddm9P0s
+	Da6fKmJYGTWzbG4KNcJWdXd5qk4Er/HO2qe3bAdruMFgcz5goBdTUd8lwmIdxLxybCQOlSkuH0CIn
+	Wo4XZofHh1aAzg2ALVF0QioipggtuE3fbnsRSitTPx3R1RsXD9RbpYynIwzue74k1Al+B0EyCZXcC
+	t8s/rEJJAAMTzAd68gLej1iFQhPP4Cd39gJ2wEp5ZVRbgzaCL4F7tsYyxArww7RkcRQm2eAQK+Xz4
+	wQOtWyErLNf8gW7VjGE60rKXs/Q15iMTO7SrJz5FdwQW13KtzihScERME4g+tsYxcaeIphuTHD+HC
+	r+BRrZebbADGJZTp+ZEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1owHXE-00BmWm-Aq; Sat, 19 Nov 2022 06:41:04 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1owHgY-00Bvhv-As; Sat, 19 Nov 2022 06:50:42 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1owHXA-00BmRo-6n
-	for linux-mtd@lists.infradead.org; Sat, 19 Nov 2022 06:41:02 +0000
-Received: from kwepemi500016.china.huawei.com (unknown [172.30.72.54])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NDkYS6t9XzRp9x;
-	Sat, 19 Nov 2022 14:40:28 +0800 (CST)
-Received: from huawei.com (10.175.100.227) by kwepemi500016.china.huawei.com
- (7.221.188.220) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sat, 19 Nov
- 2022 14:40:52 +0800
-From: Shang XiaoJing <shangxiaojing@huawei.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<zev@bewilderbeest.net>, <linux-mtd@lists.infradead.org>
-CC: <shangxiaojing@huawei.com>
-Subject: [PATCH] mtd: core: Fix ERROR of refcount due to del_mtd_device()
-Date: Sat, 19 Nov 2022 14:39:15 +0800
-Message-ID: <20221119063915.11108-1-shangxiaojing@huawei.com>
-X-Mailer: git-send-email 2.17.1
+	id 1owHgA-00BvC5-Fu; Sat, 19 Nov 2022 06:50:19 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3CA6560A36;
+	Sat, 19 Nov 2022 06:50:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 86E7AC433B5;
+	Sat, 19 Nov 2022 06:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1668840616;
+	bh=J6A2zN+GaxubPoA4pynMpJ9aRQjTm1qSEAaKvZV9V00=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=d+WNCYrodp79kOfNGIXr5PvvIs5GCF6E/TB0CDa2g+OZEp77Ua/U5QlZvwsWMDrK4
+	 OlLD/U4jjbYyhWaiA4rct4JoYkz9IWVscixQD26JhUaXY3yUQEg8Y11+kSP0F7KpB8
+	 zMZfwDOJzrlQ9jze8VoIW1mJ3xn1MyS9umDxW8U4aWjYwb6wOYhonyX7dPSQGn//c3
+	 ES9sycuBVsgfSKQQ6UBEnGpryiRSmirdvQs2tXppPiSbnayeSEWB/Bx525GuMc+yZz
+	 4Kon/n6VmXCwbfBd8TB8yHub9wkc/uggzN+T8rGWKeov06QFTXG5sVNeaRlrWw+yQP
+	 EzUp1tL6honhQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 64E94E524E4;
+	Sat, 19 Nov 2022 06:50:16 +0000 (UTC)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.100.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500016.china.huawei.com (7.221.188.220)
-X-CFilter-Loop: Reflected
+Subject: Re: [PATCH 000/606] i2c: Complete conversion to i2c_probe_new
+From: patchwork-bot+chrome-platform@kernel.org
+Message-Id:  <166884061640.19423.12726268813615488480.git-patchwork-notify@kernel.org>
+Date: Sat, 19 Nov 2022 06:50:16 +0000
+References: <20221118224540.619276-1-uwe@kleine-koenig.org>
+In-Reply-To: <20221118224540.619276-1-uwe@kleine-koenig.org>
+To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig_=3Cuwe=40kleine-koenig=2Eorg=3E?=@ci.codeaurora.org
+Cc: ang.iglesiasg@gmail.com, lee.jones@linaro.org, grant.likely@linaro.org,
+ wsa@kernel.org, linux-i2c@vger.kernel.org, kernel@pengutronix.de,
+ linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-gpio@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-rpi-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+ linux-input@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-leds@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-media@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-actions@lists.infradead.org,
+ linux-renesas-soc@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ chrome-platform@lists.linux.dev, linux-pm@vger.kernel.org, kernel@puri.sm,
+ linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
+ linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ openipmi-developer@lists.sourceforge.net
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221118_224100_461309_289CE094 
-X-CRM114-Status: GOOD (  10.19  )
+X-CRM114-CacheID: sfid-20221118_225018_613576_DBFA7505 
+X-CRM114-Status: GOOD (  10.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,86 +91,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-del_mtd_device() will call of_node_put() to mtd_get_of_node(mtd), which
-is mtd->dev.of_node. However, memset(&mtd->dev, 0) is called before
-of_node_put(). As the result, of_node_put() won't do anything in
-del_mtd_device(), and causes the refcount leak.
+Hello:
 
-del_mtd_device()
-    memset(&mtd->dev, 0, sizeof(mtd->dev) # clear mtd->dev
-    of_node_put()
-        mtd_get_of_node(mtd) # mtd->dev is cleared, can't locate of_node
-                             # of_node_put(NULL) won't do anything
+This patch was applied to chrome-platform/linux.git (for-next)
+by Tzung-Bi Shih <tzungbi@kernel.org>:
 
-Fix the ERROR by caching the pointer of the device_node.
+On Fri, 18 Nov 2022 23:35:34 +0100 you wrote:
+> Hello,
+> 
+> since commit b8a1a4cd5a98 ("i2c: Provide a temporary .probe_new()
+> call-back type") from 2016 there is a "temporary" alternative probe
+> callback for i2c drivers.
+> 
+> This series completes all drivers to this new callback (unless I missed
+> something). It's based on current next/master.
+> A part of the patches depend on commit 662233731d66 ("i2c: core:
+> Introduce i2c_client_get_device_id helper function"), there is a branch that
+> you can pull into your tree to get it:
+> 
+> [...]
 
-OF: ERROR: memory leak, expected refcount 1 instead of 2,
-of_node_get()/of_node_put() unbalanced - destroy cset entry: attach
-overlay node /spi/spi-sram@0
-CPU: 3 PID: 275 Comm: python3 Tainted: G N 6.1.0-rc3+ #54
-    0d8a1edddf51f172ff5226989a7565c6313b08e2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-Call Trace:
-<TASK>
-    dump_stack_lvl+0x67/0x83
-    kobject_get+0x155/0x160
-    of_node_get+0x1f/0x30
-    of_fwnode_get+0x43/0x70
-    fwnode_handle_get+0x54/0x80
-    fwnode_get_nth_parent+0xc9/0xe0
-    fwnode_full_name_string+0x3f/0xa0
-    device_node_string+0x30f/0x750
-    pointer+0x598/0x7a0
-    vsnprintf+0x62d/0x9b0
-    ...
-    cfs_overlay_release+0x30/0x90
-    config_item_release+0xbe/0x1a0
-    config_item_put+0x5e/0x80
-    configfs_rmdir+0x3bd/0x540
-    vfs_rmdir+0x18c/0x320
-    do_rmdir+0x198/0x330
-    __x64_sys_rmdir+0x2c/0x40
-    do_syscall_64+0x37/0x90
-    entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Here is the summary with links:
+  - [512/606] platform/chrome: cros_ec: Convert to i2c's .probe_new()
+    https://git.kernel.org/chrome-platform/c/f9e510dc92df
 
-Fixes: 00596576a051 ("mtd: core: clear out unregistered devices a bit more")
-Signed-off-by: Shang XiaoJing <shangxiaojing@huawei.com>
----
- drivers/mtd/mtdcore.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 18aa54460d36..74b1a1c61b39 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -774,6 +774,7 @@ int del_mtd_device(struct mtd_info *mtd)
- {
- 	int ret;
- 	struct mtd_notifier *not;
-+	struct device_node *mtd_of_node;
- 
- 	mutex_lock(&mtd_table_mutex);
- 
-@@ -792,6 +793,7 @@ int del_mtd_device(struct mtd_info *mtd)
- 		       mtd->index, mtd->name, mtd->usecount);
- 		ret = -EBUSY;
- 	} else {
-+		mtd_of_node = mtd_get_of_node(mtd);
- 		debugfs_remove_recursive(mtd->dbg.dfs_dir);
- 
- 		/* Try to remove the NVMEM provider */
-@@ -803,7 +805,7 @@ int del_mtd_device(struct mtd_info *mtd)
- 		memset(&mtd->dev, 0, sizeof(mtd->dev));
- 
- 		idr_remove(&mtd_idr, mtd->index);
--		of_node_put(mtd_get_of_node(mtd));
-+		of_node_put(mtd_of_node);
- 
- 		module_put(THIS_MODULE);
- 		ret = 0;
+You are awesome, thank you!
 -- 
-2.17.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
 ______________________________________________________
