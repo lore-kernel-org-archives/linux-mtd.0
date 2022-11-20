@@ -4,59 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2EFFC433FE
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Nov 2022 15:13:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92DE3C4332F
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Nov 2022 15:17:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SYABNkPVOmEptusQkvY0sbAy62w1C4Rn9UkL4dHXD2Y=; b=40uAHoqmltzwa9
-	D5rTPox2bN6DS6OBScAx/1k1ztJCntNZRM9qKPkTxStGn5XJiMGBM//+cMWMm137AZ2DsWwlTh6mZ
-	4w/+r/cRDT12D7RdqMiodbYyzRSJ9Ujp2XlvrYXim4/y8vM7a+6Y54j2SiUeM6yUsO+sGTQZ20qti
-	ATYhVOh4VzsUC+0IhU93F/LQkheyvJtQ2+iUAFaIGcK0+b3v1ypS8aNJMDNyF8HoHFA6NvW6xK6qb
-	lSLGTPcU894TBQGKqy4dI4q1bg4Wi1CQEius5eJQbKpmFkDYaAwYH/A3/s4lsWJlEk37deeJHGxKg
-	q/VspaaW5EUhbmLLPztQ==;
+	List-Owner; bh=PO7gtFatTu7Z77GWDdh+NJwoUFVV2OMfKoCQnI+Jp4U=; b=jAYZExtAr0INIb
+	0RPF/MlNpj3x3qyfhkfk6vABFOiAkt+83iv+Sb78pCCkUsaV/gnSSePizRrC1eScGOM8FW62jgk74
+	U0o0w1B+E3nCT1gGdq85RWb7Qipq5sR2VRyoW2diCzdl7tOrp6tt9RRQXIshT2B/TwxE+h6xME74T
+	YLrVmO51s2i5hBg3+BC+pZUvatHWHrBqsmIyOfILbR82liQ0MdCRKFgnHj4hlJgjgtxN7KacGdj0B
+	es2m37WnzxBLW+XOCUJStKoYd4ccrl09fAInWTQG3toCBhZ7AKW7It/9IIK0JKKesn7MoIpiNYNiF
+	rljHSjP5lZN3hG77wrHQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1owlzS-0059Lr-MR; Sun, 20 Nov 2022 15:12:14 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1owm3h-005AA9-Kl; Sun, 20 Nov 2022 15:16:37 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1owlzQ-0059JA-MV
-	for linux-mtd@lists.infradead.org; Sun, 20 Nov 2022 15:12:14 +0000
+	id 1owm3e-005A9A-Nv
+	for linux-mtd@lists.infradead.org; Sun, 20 Nov 2022 15:16:35 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id AFDE7B80ACA;
-	Sun, 20 Nov 2022 15:12:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 028D8C433C1;
-	Sun, 20 Nov 2022 15:12:01 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AA3A560BFC;
+	Sun, 20 Nov 2022 15:16:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 846CDC433C1;
+	Sun, 20 Nov 2022 15:16:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1668957122;
-	bh=OptdsyuD6uPrHmZmntrSB3Cvr0WP7pXgeP/BVx5u/Vg=;
+	s=k20201202; t=1668957392;
+	bh=/UximhifsHnyMuRvxnsCs//tzMn6Vtl9erSlkKEjSCI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HHrpSSsgJCRQ591jzNDSzvLB79e8nznwNyikVfZSlsGpo6X7nE/qL2kzMvwQqJBse
-	 A9W+ADwVfvTzecF7bKDckTKMVCyX5HSKsDrajyrg8cekLXIfWhKB4EVHf0zSVVOkcx
-	 xSc5wnD+3HZbOaEZFCMsoNvSF/2TX0moPW19usXdMasK3q8s8A/s8HMNsJJZHg19v6
-	 jyvWAYmby6hzPThn9F+I+aNHYQJ/tJpU9wWlTEorHdkgC+rTNo9K1IowYo6o8Qeyir
-	 gjr7LHsfC/KWZKHCKp2ikb9bpRGWjTFRK+/bhMOANuCjNuvKvN2ILzD+EKqyOqQXnd
-	 6Ev0syqsk1AJw==
-Date: Sun, 20 Nov 2022 16:11:58 +0100
+	b=aYJngp+pH/YWXZX16wFxFDPZP7sTEzDRTZv8dV0eJgkJSHD+ylQH7bMq0E7Y1YrwD
+	 rlu/dlUXBx700+9aOFsmfqP546lSRTxNdnpAPQGPEeLpaRBYHebEsbmpXy4gJPu+jv
+	 ed9cy8ClWcpq9X3N01QxLVbVREhXrT6NsOuftGrrqrBFyIc6zzwGV8uo8wTjl5lXEa
+	 o7clSrLxmZSP0qcFDyYqWnzVfQ0bj5/b6p/3QtZhKDASYYu7CcfoQHH+mfjtgE707t
+	 zmqx1pb0EAjnN2NqLCySpyDbX28PeioFwO0X2/27eWRUrueJvRB6lWQ9S1gsXK61Hk
+	 H5CY3TRoB79lg==
+Date: Sun, 20 Nov 2022 16:15:40 +0100
 From: Pratyush Yadav <pratyush@kernel.org>
-To: Dinh Nguyen <dinguyen@kernel.org>
-Cc: linux-mtd@lists.infradead.org, tudor.ambarus@microchip.com,
-	michael@walle.cc, linux-kernel@vger.kernel.org,
-	Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-Subject: Re: [PATCHv2] mtd: spi-nor: macronix: Add support for mx66u1g45g
-Message-ID: <20221120151158.p5jukj7r6yj5t7sm@yadavpratyush.com>
-References: <20221111164015.165581-1-dinguyen@kernel.org>
+To: Potin Lai <potin.lai.pt@gmail.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Michael Walle <michael@walle.cc>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Patrick Williams <patrick@stwcx.xyz>,
+	Potin Lai <potin.lai@quantatw.com>
+Subject: Re: [RESEND PATCH v4 1/1] mtd: spi-nor: winbond: Add support for
+ w25q01jvq
+Message-ID: <20221120151540.mqovzmbabnstul6y@yadavpratyush.com>
+References: <20221111060530.2201084-1-potin.lai.pt@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221111164015.165581-1-dinguyen@kernel.org>
+In-Reply-To: <20221111060530.2201084-1-potin.lai.pt@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221120_071212_903746_79D26AFE 
-X-CRM114-Status: GOOD (  18.36  )
+X-CRM114-CacheID: sfid-20221120_071634_836552_4F615E17 
+X-CRM114-Status: UNSURE (   7.33  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,48 +80,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 11/11/22 10:40AM, Dinh Nguyen wrote:
-> The MX66U1G45G is the smaller sibling (128MB) of the MX66U2G45G (256MB)
-> that is already supported.
+On 11/11/22 02:05PM, Potin Lai wrote:
+> From: Potin Lai <potin.lai@quantatw.com>
 > 
-> Tested on Intel N5X socdk board,
->   - random data write, erase, read   - verified erase operations
->   - random data write, read and compare  - verified write/read operations
+> Add support for winbond w25q01jvq chip
 > 
-> Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
-> ---
-> v2: fixed compile error by removing , after PARSE_SFDP
-> ---
->  drivers/mtd/spi-nor/macronix.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index d81a4cb2812b..07ace9da74b7 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -97,6 +97,10 @@ static const struct flash_info macronix_nor_parts[] = {
->  			      SPI_NOR_QUAD_READ) },
->  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048)
->  		NO_SFDP_FLAGS(SPI_NOR_QUAD_READ) },
-> +	{ "mx66u1g45g",  INFO(0xc2253b, 0, 64 * 1024, 2048)
-> +		PARSE_SFDP
-> +		FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> +		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+> Signed-off-by: Potin Lai <potin.lai@quantatw.com>
+> Signed-off-by: Patrick Williams <patrick@stwcx.xyz>
+> Reviewed-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
 
-Why do you need these extra flags? Can't they be discovered by parsing 
-the SFDP? If they can't, then you should explain in your commit message 
-why that is so.
-
-I would suspect they can be, so perhaps you should try using your flash 
-with just PARSE_SFDP and see if it works.
-
->  	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
->  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-> -- 
-> 2.25.1
-> 
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
 
 -- 
 Regards,
