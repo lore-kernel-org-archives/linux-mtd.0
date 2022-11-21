@@ -4,81 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E527C433FE
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Nov 2022 11:47:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F0A7C4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Nov 2022 12:16:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8W/O3UEL0MO0bGqxSsmyIYtGYCeN/qVF2FrS5BUSb9s=; b=FcDle0itXVw3Qp
-	y4pIR9wNTlxfRleQK5hBRn/RX7VMROFyKXJkHv6UJqLemoezzAl9Z0uns1eSW6KYKJcuiejTrUCDM
-	zgUH6SuIQ7Z7WMQxD97z8rt09SKF0vEVazFXGVQKZKJzsSXA9huwTpGWFAV6Oe7lXPVEpddlaoMKp
-	i2fdPN+1kMU99RJ6EISsrS7Na7TJrUwvmk0qO4BEdGgqRNEM5mUwtoH02bK+/t9bfYGldY+yWHA9O
-	MMZ0MhF+44CCAeormQypHnA3U/Dgmk9a50+npaJ8qZfZthulnF3YpAerjRdn820Gmd13+aBXTo2w/
-	zPGwwk0kvmt7yruNzpaA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=uqLXfZ3JiXPrO8DItz/IR7toly8Ms0QYzhHV3t6s62U=; b=2UD9jNQG7UpfTE
+	pmw832D9s2vHJ9VFRwqm6ns0HpZwueIzPDLVZBE0MHbe99SDmWbGiBebr6neadC8jHB0pAQch1PGY
+	iKqG3LvpJLFmweOYIu22Xm41qFNLR2Y2qfBfAuR3OEhovuKpYytcuTNegcyPsMP8s46b5j6rXwQei
+	68rhuicuneijm8ZrLIHvZfIVUbof/ZYQE48fFhQwLzle/SmxW2NpmPh4nIdMW+9zgt+vUN0mBN3BB
+	XYINJAEC3LtlFIoSXHYlA8F/MwthHktKaNE1LVgRj0mMHOU9MEOnYf1QoiE/iPnRXBetXyZc6AUjK
+	APNYmAzcK3Ita96PXTXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ox5Gk-00D3O8-Hp; Mon, 21 Nov 2022 11:47:22 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+	id 1ox5iY-00DOT4-U5; Mon, 21 Nov 2022 12:16:07 +0000
+Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ox5Gg-00D3KF-Te; Mon, 21 Nov 2022 11:47:20 +0000
-Received: by mail-ed1-x534.google.com with SMTP id x102so15930178ede.0;
-        Mon, 21 Nov 2022 03:47:16 -0800 (PST)
+	id 1ox4dB-00Cmra-8p
+	for linux-mtd@lists.infradead.org; Mon, 21 Nov 2022 11:06:35 +0000
+Received: by mail-lf1-x12e.google.com with SMTP id g7so18298743lfv.5
+        for <linux-mtd@lists.infradead.org>; Mon, 21 Nov 2022 03:06:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uJJXhf0ZouG6Lq8s9N2QMo51VNGYLGy26YpCtzoJ2sk=;
-        b=OMnwEgxNbalqU/91dk07RZKyJeY3LIN8hoJUoyi4ZUcDCO+SznDrmQyTrPKMwZ+6Wl
-         Qx6cuVY6MXEr6ldwwjhpkfF4DIr4risDwAoafJ8GuvHjrmIOZZoeOWz6sO48LUNvANFD
-         MqRyS29A1kTIVBC28vvCAw0lsAzuf9x7BfmPloqQ+vlgtaYm+mYM9h/RFXx5yW4CaF8M
-         9ROox944URXG6anEIGWGT4Ezw/LNG+Q24qfIP/fPe0SW7ms7CHGfVC0+iHDwsw/YpU2H
-         xO7Oo+mcOi0t2DpeAC8c7jJhjSId5Um7B0OqFN2SguJ8z+8Gar9OMea5VVmTWxIw9l8Y
-         S2Sw==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UFWc0lyVlH95oooJGcIUPfd8EfwgVQvFO8qkEV+ffsc=;
+        b=r7hKUlGFZHSmUo8e9T5ttNSJVAtUIkxa+sycNhz6yjMvfgsi4BsfKebzRywymxymx0
+         5u8F1YiUTZQCXcqMn0sfhionqeBApbXWdupVJzyFaxfv5GrU+U3eV6uFF8Uc+bn9QYY9
+         Lms8Y8Dy0jualOb6Q3esqic3f7gurcqjMFZcZ+d9NzQOJ86H32u/XDiWQ2YkDuliRZvv
+         nRAaqsKnXNUtg68nfvEmkjWN8H79Sk3dDjy/u/sisLO3c+s0yeylT32uwz3f7gvWfFaj
+         gF7udl05HElld877JkEGkfP5OdFi8KqGkr7SLX3btVOqu0mHwPCN9Sin0XvK+TjDxtSD
+         nJpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uJJXhf0ZouG6Lq8s9N2QMo51VNGYLGy26YpCtzoJ2sk=;
-        b=kZAUGf6hhWOfq1mAabR6nGx1i2HMQ6/BXBBvFMyNU+gwvcwmqjPIObf5mqbIH8ffg8
-         mOOyeeElUbnInnRY0+tBnYO5j+4I6Ll56T8fZ6rCt+VtEUgqfWGQAN96sM+jj063RZ2x
-         GIgYBzt66bjgLoAOkvqV2KordrMESHYYbJzvaZd2XzM/pGjLzCWsdzfxbNKKiH1Je8rG
-         UiPte0qvnrLpICXRQAcCpSI24mnrYqeN2w+K+s0jzr6xSOdyJBVnvPl2CjcD2geNxVfd
-         1nOzJWImdxuBli1LtVXBNxx2B4CXcwbY3/cSMSN7sB0uYaMjpEDiyHBuAPqYnbXsWsuQ
-         5oFg==
-X-Gm-Message-State: ANoB5pnf9A+X4RBikWCdOzQWhFdQK9Fj4FWF5maIiiQ/9lU0UAg8ZSmG
-	ltoUKRwMJjFv0IEC1jVIE2s=
-X-Google-Smtp-Source: AA0mqf4aDDhBcDN72x3wx/EDR7Z7QMMR9UBxCv5euJ+PDL5gyJvUvP5LZEM7gvGXLJvBRYzMteJtaw==
-X-Received: by 2002:aa7:d3c9:0:b0:459:aa70:d4b6 with SMTP id o9-20020aa7d3c9000000b00459aa70d4b6mr16023510edr.224.1669031235224;
-        Mon, 21 Nov 2022 03:47:15 -0800 (PST)
-Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.gmail.com with ESMTPSA id ay12-20020a170907900c00b00780982d77d1sm4913753ejc.154.2022.11.21.03.47.14
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UFWc0lyVlH95oooJGcIUPfd8EfwgVQvFO8qkEV+ffsc=;
+        b=J6IQThdb2tZGDf8Cv7MNiAv/HfipMVs4DjrKoiHH9xVvJzj+EKl+hPYdbF58qo8TIy
+         6pOTVUqEAX3R97hg3F8wZFWOfacBtVokRaRqrVw25cxAirAhA8dm2QtG1YQFsDQyyGcU
+         TWxetr7MAnz06oxLMBtRWsy6Xx4fukx/WfbfQa4u2YQEKE7NGCcEqmVIVmPqQFqre1+4
+         LkxL8mCqBoj50E5aUWNQ3hBV8zcS6zF+BHONG1b3FL573zRy0k1oGC0UTPOWeZocr8Qc
+         /UNFCrEHTUMzJvg9PlGtObMtAoWVVLMyyut2vgBHCMC/SDdwBqhYNak9sCc/U03JSI9M
+         t9ug==
+X-Gm-Message-State: ANoB5pnbjj6sYEJDH3Od8Ttb04V/N/aCLs9zmwAz7bKDEa/Agedf5ufB
+	DBkcxdzb4BXWycn8zJk+D4djJQ==
+X-Google-Smtp-Source: AA0mqf636Kajsl/vCtaPitrxYhf2ypiEKfsGbHJhGytuU/U+YWfw7NKkZ181BWLvvcggxq6Qzec5vw==
+X-Received: by 2002:a19:dc08:0:b0:4b4:6460:24d with SMTP id t8-20020a19dc08000000b004b46460024dmr5540013lfg.386.1669028786293;
+        Mon, 21 Nov 2022 03:06:26 -0800 (PST)
+Received: from krzk-bin.NAT.warszawa.vectranet.pl (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+        by smtp.gmail.com with ESMTPSA id n1-20020a05651203e100b0049313f77755sm1991521lfq.213.2022.11.21.03.06.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Nov 2022 03:47:14 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+        Mon, 21 Nov 2022 03:06:25 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Michael Walle <michael@walle.cc>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Andrew Lunn <andrew@lunn.ch>,
 	devicetree@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2 dt-schema.git] schemas: add NVMEM cell with #nvmem-cell-cells
-Date: Mon, 21 Nov 2022 12:47:08 +0100
-Message-Id: <20221121114708.10161-1-zajec5@gmail.com>
+	linux-clk@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-iio@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-leds@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-pwm@vger.kernel.org,
+	linux-rtc@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-spi@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	linux-watchdog@vger.kernel.org,
+	Stephen Boyd <sboyd@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Viresh Kumar <vireshk@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v2 3/9] dt-bindings: clock: st,stm32mp1-rcc: add proper title
+Date: Mon, 21 Nov 2022 12:06:09 +0100
+Message-Id: <20221121110615.97962-4-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
+References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221121_034718_999911_7EEA1B22 
-X-CRM114-Status: GOOD (  14.38  )
+X-CRM114-CacheID: sfid-20221121_030629_340758_98F92E50 
+X-CRM114-Status: GOOD (  12.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,51 +123,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKU29tZSBOVk1FTSBjZWxs
-cyBtYXkgcHJvdmlkZSBtb3JlIHRoYW4gMSB2YWx1ZS4gQW4gZXhhbXBsZSBjYW4gYmUgYmFzZQpN
-QUMgYWRkcmVzcyB0aGF0IGlzIHVzZWQgZm9yIGNhbGN1bGF0aW5nIG11bHRpcGxlIE1BQ3MgKGZv
-ciBmZXcKZGlmZmVyZW50IGRldmljZXMpLiBGb3Igc3BlY2lmeWluZyB2YWx1ZSB0byByZWFkIHBo
-YW5kbGUgbmVlZHMgdG8gYmUKdXNlZCB3aXRoIGFuIGFyZ3VtZW50LgoKQ2M6IFNyaW5pdmFzIEth
-bmRhZ2F0bGEiIDxzcmluaXZhcy5rYW5kYWdhdGxhQGxpbmFyby5vcmc+CkNjOiBNaWNoYWVsIFdh
-bGxlIDxtaWNoYWVsQHdhbGxlLmNjPgpTaWduZWQtb2ZmLWJ5OiBSYWZhxYIgTWnFgmVja2kgPHJh
-ZmFsQG1pbGVja2kucGw+Ci0tLQpWMjogRHJvcCByZWR1bmRhbnQgcXVvdGVzICh0aGFua3MgS3J6
-eXN6dG9mKQoKUGxlYXNlIG5vdGUgdGhlcmUgaXMgb25nb2luZyB3b3JrIGJ5IE1pY2hhZWwgd2hv
-IGNob3NlIHRvIG1vZGlmeQptZXRhLXNjaGVtYSBpbiBoaXMgd29yazogaHR0cHM6Ly9naXRodWIu
-Y29tL2RldmljZXRyZWUtb3JnL2R0LXNjaGVtYS9wdWxsLzg5CgpUaGlzIGJpdCBpcyByZXF1aXJl
-ZCBmb3IgbW92aW5nIGZvcndhcmQgd2l0aCB0aGUKW1BBVENIIHYyIDAwLzIwXSBudm1lbTogY29y
-ZTogaW50cm9kdWNlIE5WTUVNIGxheW91dHMKaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgt
-YXJtLWtlcm5lbC8yMDIyMDkwMTIyMTg1Ny4yNjAwMzQwLTEtbWljaGFlbEB3YWxsZS5jYy8KCkFz
-IHBvaW50ZWQgb3V0IGJ5IFJvYiAjbnZtZW0tY2VsbC1jZWxscyBzaG91bGQgYmUgYWRkZWQgdG8g
-dGhlIGR0LXNjaGVtYQphbmQgbm90IGEgTGludXggYmluZGluZzoKUmU6IFtQQVRDSCB2MiAxNS8y
-MF0gZHQtYmluZGluZ3M6IG52bWVtOiBhZGQgWUFNTCBzY2hlbWEgZm9yIHRoZSBzbDI4IHZwZCBs
-YXlvdXQKaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtYXJtLWtlcm5lbC8yMDIyMDkxMjE5
-MjAzOC5HQTE2NjE1NTAtcm9iaEBrZXJuZWwub3JnLwoKc2wyOCBpcyBvbmUgZXhhbXBsZSB0aGF0
-IG5lZWRzICNudm1lbS1jZWxsLWNlbGxzCnUtYm9vdCxlbnYgaXMgYW5vdGhlciBvbmUKLS0tCiBk
-dHNjaGVtYS9zY2hlbWFzL252bWVtL252bWVtLWNlbGwueWFtbCB8IDIzICsrKysrKysrKysrKysr
-KysrKysrKysrCiAxIGZpbGUgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKQogY3JlYXRlIG1vZGUg
-MTAwNjQ0IGR0c2NoZW1hL3NjaGVtYXMvbnZtZW0vbnZtZW0tY2VsbC55YW1sCgpkaWZmIC0tZ2l0
-IGEvZHRzY2hlbWEvc2NoZW1hcy9udm1lbS9udm1lbS1jZWxsLnlhbWwgYi9kdHNjaGVtYS9zY2hl
-bWFzL252bWVtL252bWVtLWNlbGwueWFtbApuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAw
-MDAwLi4xYTE3NDFkCi0tLSAvZGV2L251bGwKKysrIGIvZHRzY2hlbWEvc2NoZW1hcy9udm1lbS9u
-dm1lbS1jZWxsLnlhbWwKQEAgLTAsMCArMSwyMyBAQAorIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmll
-cjogQlNELTItQ2xhdXNlCiskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL252bWVt
-L252bWVtLWNlbGwueWFtbCMKKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNj
-aGVtYXMvYmFzZS55YW1sIworCit0aXRsZTogTlZNRU0gQ2VsbCBDb21tb24gUHJvcGVydGllcwor
-ZGVzY3JpcHRpb246IFNjaGVtYSBmb3IgTlZNRU0gY2VsbCBkZXZpY2V0cmVlIGJpbmRpbmdzCitt
-YWludGFpbmVyczoKKyAgLSBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+CisgIC0g
-U3Jpbml2YXMgS2FuZGFnYXRsYSA8c3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3JnPgorCisj
-IGFsd2F5cyBzZWxlY3QgdGhlIGNvcmUgc2NoZW1hCitzZWxlY3Q6IHRydWUKKworcHJvcGVydGll
-czoKKyAgIiNudm1lbS1jZWxsLWNlbGxzIjoKKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1s
-Iy9kZWZpbml0aW9ucy91aW50MzIKKyAgICBkZXNjcmlwdGlvbjogPgorICAgICAgU29tZSBOVk1F
-TSBjZWxscyBtYXkgY29uc2lzdCBvZiByYXcgZGF0YSB0aGF0IHJlcXVpcmVzIHNvbWUgZXh0cmEK
-KyAgICAgIHByb2Nlc3NpbmcuIFRoZXkgbWF5IHByb3ZpZGUgbW9yZSB0aGFuIDEgdmFsdWUuCisK
-KyAgICAgIFBhc3NpbmcgZXh0cmEgYXJndW1lbnQocykgYWxsb3dzIHNlbGVjdGluZyBkYXRhIHRv
-IGFjY2Vzcy4KKworYWRkaXRpb25hbFByb3BlcnRpZXM6IHRydWUKLS0gCjIuMzQuMQoKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Add device name in the title, because "Reset Clock Controller" sounds
+too generic.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
+index 242fe922b035..5194be0b410e 100644
+--- a/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
++++ b/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/st,stm32mp1-rcc.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Reset Clock Controller Binding
++title: STMicroelectronics STM32MP1 Reset Clock Controller
+ 
+ maintainers:
+   - Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
