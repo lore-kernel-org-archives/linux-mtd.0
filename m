@@ -4,67 +4,158 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1C95C4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Nov 2022 13:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECF9CC4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Nov 2022 13:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sRrBarJwE+nNIjFJddagEbIKnADI1se0GzE0EWmsbqs=; b=x+d/moir7plq8w
-	uASJ1X53WsygZYCgvT0pxQPtDUOBfz6Grj9fJCKmzb7mrHAkQyy+D1EJhxr9XrTDHJkzrQw51Y7My
-	nylR7ft2bzL0kL/dLf4UvOfaTeVI3FhPw0sAsOCpBdKKSDQhcAkZz9W2D0A7Y+WywceZtekJQt26J
-	X0V1Sr1MIS25KVnDP0mKXavItp9EgxvzOQVr6LIshanXLtrW/UR7YHyWYsEFhjq/3zZHe+WiOwo84
-	H4LtbmTDske+NaY7cSsMtL90RTJMIrclnsmP8TU1BxMLmdAib6C4gxeNHEaQRgVuqZT5M0mCHuDdV
-	nE4f8dqwe/qACoLRHHiQ==;
+	List-Owner; bh=BLKgL30p7Eu643OD6JiDE5QR3B53jH4Pet6Fc8msfEU=; b=kQoM2gB3B5sszl
+	Lt+D0yAqyAIyXQTST78AyqRrlLfuvbowC6msUInVze/XAjgUww+Q5uy6oSVuoR49ijhk+1lrhVf1Y
+	eC3l6Tj1dL6FI4RQ7frbpJApVnUQ6mDpzvyWPP4+kD7h5DEK7cVncxU1T6RHLUDfYES9fuxUmKAlr
+	UNniiH/iKQKPcYhCxZ1SCq7FOG3QuFnP30yd971NyX6E4h6cAys77n+5vawh2u3QVlkqHfLeuoeO+
+	OOWIf5/Z3yxbyroZ2iYwe2HKG/zD6HgiHvxDADKfi1YNz/c81lwPP9QNRHNxe6j6Tq4ASY9iVKKg6
+	hVCGkhMXEHAw0qce14qg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ox7Fv-00E8SK-0E; Mon, 21 Nov 2022 13:54:39 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1ox7Ji-00EABs-64; Mon, 21 Nov 2022 13:58:34 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ox7Fo-00E8RO-UC
-	for linux-mtd@lists.infradead.org; Mon, 21 Nov 2022 13:54:37 +0000
+	id 1ox7Jb-00E9rB-Ao
+	for linux-mtd@lists.infradead.org; Mon, 21 Nov 2022 13:58:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1669038874; x=1700574874;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=61pbH5JHMe/ZX6fjwi4xYBFiQ9bqofl3472cjyN55V4=;
-  b=wBejcdjv3Gjm+4hzLXvdhWc4m0OYdlbdLb0aMQwvEPeXU9mXyFva+YvO
-   uqH5/wYis1rFlVwsjDVetTkRh6Bmze/AtbszdPocUSshcZEQBW8Hvc3QV
-   5mHPOFbj80X3DJoTuchzLvjefXrhqVFeip3mOBU9zUfQAxDTWzimv9NPe
-   w5rh1H13Q1AKzUkKxyTScdCS9jk2BoA4AMCc6gT5fQQ9WW/Wb4BMkqPCL
-   4uGTzGRDfDXbZm8rXmZr4vnOV+Xp2sCqqtqmU0KwY6eIqq6K0dXKiIkYQ
-   daSOpW1uLZafdjpIRV4lOK5Blsj4IzPDFfTIRUqjvuok4prhAvUTRTTpC
-   A==;
+  t=1669039107; x=1700575107;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=f4IaknlYAutYqsmZsPuX77XqXcz9pevcOG6Q2quN5zs=;
+  b=CJlELOznxj0nR2ny1VHwsprQm6vcLfFyVtjxZHSr5KJStS8A4gYvmJG6
+   vH1wYttAzpLCZv4Vfi2JIKF5WkOJ5vVGBu5mWiAMfCAG3n08xAKdp+B7o
+   rWf+Lx+C8/hQvjTRf9Ff1+iBg5xjHurQxmoQq4tH6COIaG+3j2BCrIq/X
+   C0ovY/J/F4yirkE5rUBBNiyFHRND0xze1OPbirDDAGQpVMl6DdC8AdWKI
+   VhXTBr+pB8qpN1FsgHxqqehjTh/LXybrRqqM25+uAyk6XdQbfSBfhqN9m
+   HZFChmLx2n1mMZnaFX6rnrXNGzUBwAUSbQEjbuH+w+Vt9DE3YhyJljmQ9
+   g==;
 X-IronPort-AV: E=Sophos;i="5.96,181,1665471600"; 
-   d="scan'208";a="184485482"
+   d="scan'208";a="189855782"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Nov 2022 06:54:33 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Nov 2022 06:58:22 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.12; Mon, 21 Nov 2022 06:54:27 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.12 via Frontend Transport; Mon, 21 Nov 2022 06:54:25 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <j.neuschaefer@gmx.net>, <linux-kernel@vger.kernel.org>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>,
-	<linux-mtd@lists.infradead.org>, <vigneshr@ti.com>, <pratyush@kernel.org>,
-	<richard@nod.at>, <miquel.raynal@bootlin.com>, <michael@walle.cc>
-Subject: Re: [PATCH] mtd: spi-nor: Fix formatting in spi_nor_read_raw() kerneldoc comment
-Date: Mon, 21 Nov 2022 15:54:24 +0200
-Message-ID: <166903885771.86637.15775253700273937900.b4-ty@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221101162906.990125-1-j.neuschaefer@gmx.net>
-References: <20221101162906.990125-1-j.neuschaefer@gmx.net>
+ 15.1.2507.12; Mon, 21 Nov 2022 06:58:22 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.12 via Frontend Transport; Mon, 21 Nov 2022 06:58:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nuYVTecnmRtvt+lAy9RkbdNpRshQPv4f8dIGzYts9onpfqZHsJTKF0h3G4OF98D6xskTbb2TbFUhHwCSQx7zgTDyflhY7WxlkcHX/iySeD4BKHlG7x5650TzqBbh9aD73RB867a+Jf3CUiZRyw2Yc1xxwwpM1U1ViJZj//lcxfvl6b0pTeGBnPhU7ABb49DbC0bozGBL0/iSZ/TDER8BEiDzDWwinEy4HG6pxcDWWCscpGoF3JMQRIVKHCOw0CDa2gKBMFN8qzQSjB1EXdi2lZFxQWYA5UPZCrH9PvS3wNcF0HHZWxTdP/ElRSALVTv5WBdYHH9IFGEl3LeQ0vWRSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f4IaknlYAutYqsmZsPuX77XqXcz9pevcOG6Q2quN5zs=;
+ b=Fbg4Rwa6n+vzaDmo1EXfPcB/0ZUovlAwIyNwy9FO/kcpnu/bOYFLKOhaSgs5UQvdBXsOwVZR6o7CjfqK1vFLaUBEumKAuI+1Ki3BlSKft9+Z0QTEEtWUSTMC/aU4z6+QXdODbxRxFDP6cNwAiz9Hfhbi/H6cTIVhG1dxlhXePZERGIrXDf654p4D2vIOYYIHzs3XNz92fus1+cEnesca1Ec1pX1ZG1MciizSmDL5VF2N0bZIIC/94tuTPnk9BHBFOGb49+Ig/QD49LdgWmUYOXAlkaVMlZRjUNVxhXT09P4nN8NHyimdmjJXiPrp1WwTTb7cy9r96x4B3miVxr+6Qw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f4IaknlYAutYqsmZsPuX77XqXcz9pevcOG6Q2quN5zs=;
+ b=ohvLyQTZkKEkPdBeA0heXdk1m5FcPjlLHzheh0er2DfPqS7yeAHS2DNU8XrAw70Nk+e18Ry/WUkqvw5mAm25PTpJtCU8kL7lit6NKqd2BsD2l6W7hg2auc6CkSSMLWKgsxU+KrcH/fQ6YV2JJ/plAeEsjHzS3HsA/Ljyt9b7R/c=
+Received: from DM4PR11MB6479.namprd11.prod.outlook.com (2603:10b6:8:8c::19) by
+ CH3PR11MB7676.namprd11.prod.outlook.com (2603:10b6:610:127::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5834.15; Mon, 21 Nov 2022 13:58:20 +0000
+Received: from DM4PR11MB6479.namprd11.prod.outlook.com
+ ([fe80::626d:ef37:c13f:1c4b]) by DM4PR11MB6479.namprd11.prod.outlook.com
+ ([fe80::626d:ef37:c13f:1c4b%5]) with mapi id 15.20.5834.009; Mon, 21 Nov 2022
+ 13:58:20 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <Delphine_CC_Chiu@Wiwynn.com>, <michael@walle.cc>
+CC: <patrick@stwcx.xyz>, <garnermic@fb.com>, <pratyush@kernel.org>,
+	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: winbond: add support for w25q01jv-im
+Thread-Topic: [PATCH] mtd: spi-nor: winbond: add support for w25q01jv-im
+Thread-Index: AQHY/bFQnClaKp+Es0alm4ZJaWKJrg==
+Date: Mon, 21 Nov 2022 13:58:20 +0000
+Message-ID: <a18f1506-e54e-d55f-b627-26cae554749b@microchip.com>
+References: <20221007052108.3339266-1-Delphine_CC_Chiu@Wiwynn.com>
+In-Reply-To: <20221007052108.3339266-1-Delphine_CC_Chiu@Wiwynn.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR11MB6479:EE_|CH3PR11MB7676:EE_
+x-ms-office365-filtering-correlation-id: 2f5f0ac9-c080-4172-552d-08dacbc872de
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /LplHvQJpsH48GBrbCq19F3RFC5BuDM2nJ8jG47CVrNZ4XjCIRH+E7a62iRyj/eVcPuRo8mu9TidC8knxHLKiA6tDiWD2ofirRTpWKE6lSD1y5t5HKVmuQPOVeVk2ayWyeEIqou3fYc/itV+RK5m34kurDf/IdSpOubGIY9qFezMGAaesoo1ETPDLE2bqnYjDmgTnuHOQnN+KmEk14mir2WwMBcSRQyOFw9C1HqzGpFU3yW/8FUYEDW1FF+V8vz8u8xoSULbb/ZE+gBqSYzpHVAINit3mnFyF5pkt9fehlUA1luo1N8ZdDBLmkCR3nGJjA7PIdteXiPGZYhLazJ9r35moWs2lYicgj2smmU+jr4RLQSu5+7p+7wKwmfHOgYWf1b+/F/s+uSsZvAOZBL5u/8iqqrHFv1Q72cgJ3t/c7TV4HBzKagsr+ZdutvoPnvWGvD29qqlcY/JtMNowvZk5nsZijOfpQj22pLwBHrHqUkNe4KAr3v+PG+EaeQwoMsh6GUU9n7LFhyHON3IB5WMDdQsxwn1ICrblCZzhCLSyAPZqX/H5OOeKRG9rNHxdSiPkS/iTo7ywqjWx4aejqDt1lq01vk45ZF3TfStPDkCAQ4G5QdL/K9Kzvvj+3t7/+19XPXjA9soJC0PzaiN1YNdK5aTiEEgTUx9mA9pV/X4JX621UW+HdSFieiYMiIuhE5sLJbHDsiUn3H69dg+4Uh8KEwXcXEGHu+XXtLNjdo1nGS6inA+gWupvkSbia0pmnbXwK+lk2DtdcwRbnJ04ovK1OaSd13/DQdBSbqrJK/SRnQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6479.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(366004)(396003)(136003)(39860400002)(376002)(451199015)(186003)(2616005)(53546011)(6512007)(6506007)(966005)(6486002)(110136005)(478600001)(26005)(36756003)(2906002)(71200400001)(122000001)(38100700002)(38070700005)(31696002)(86362001)(91956017)(66556008)(66946007)(66476007)(66446008)(64756008)(76116006)(4326008)(5660300002)(8676002)(7416002)(8936002)(31686004)(54906003)(316002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dXBGVzIvcm95SGwwQUROU2VmTHJiNTV5NldBcHMwb0xDa0t4QVc2cDBDZlVv?=
+ =?utf-8?B?MjhHRSs1Z1p4bTRGV04wdVhzQ2MxNmpqR0VQTEZlMng3eEFQcXZWMVRiNGsx?=
+ =?utf-8?B?N3g5cVh5cGloR1VXYlI4VzNEUmR5M1BhOE5md1ZlOVhsVkFNSzUxazkxKzlD?=
+ =?utf-8?B?YkNJblN3ZDQybkM2NlVrdHdjK3pidk5xTHlHSTl0bSthMWtXazYwN2RFSlJi?=
+ =?utf-8?B?bWlZaFVJemxOR0FxamFsNmpVMFRGd2dkcFpDTEVSWlVoMis2ek0wNCtPUG1J?=
+ =?utf-8?B?YXpvTFBZdm1VWDczLzBBYU9oZE45Zk9rV3RYaDd4TEVkem1iZ2tGT255bDd2?=
+ =?utf-8?B?TmJUV2lqZHdOeW0yb0lBbStKbm5LZERrMnJ1Rmp1Q1pKb0RySEg4WkNTeEdV?=
+ =?utf-8?B?Q1l4RC9memNpNk4vdlVtR25ZVDVSak80VklNM2QwN2pwRW13N0llSDRHTHlY?=
+ =?utf-8?B?SUF2dURHYUxnTk1RU1djZ3JZSHJpZm8zdkZpcW95dmsrRHAvUUtSeUV4alQy?=
+ =?utf-8?B?V0tIMFhVQ2FQRU5Qa1RRWW9GL2ptamJtSmpEZHRKQzR0MDZadzJFemVHaHZj?=
+ =?utf-8?B?aEN0OHZvS2szYXJ6cHdIWGdVOTNJSXIxQ1JocGVwRzBhSHpGT3U3dEEwWXdq?=
+ =?utf-8?B?MnVJSHFjQi9YV3FBdjAraEpkS2cvR3djcnpqOXUxUk8zMnhNUjZZWEQvTDd0?=
+ =?utf-8?B?T2M3V1ZwenVqR09kb1h0aFhlUVUvSEJ6dmU2VHFEQ2lJQ1piSFZ3MXRaYk1H?=
+ =?utf-8?B?SGk3ZkYxMG90akxQU2I0T1FabGZpczVkSXA2eEhSNURpcE15T09TUGNOWml5?=
+ =?utf-8?B?T2FqTzBPSDZxUVZSYitWSUdQVVR3OCtGa3VZK0hLdnYzNFR5LzRGNGtYM1JD?=
+ =?utf-8?B?VC9PRmFMZnM0Tm56VFFQak0wTmV6OWYwcXdCM2JEalBaeUMvS2RtUSs0dVE1?=
+ =?utf-8?B?ZlNGY2hXWU1HWkovR2VpcEZCZDluR3Z3eU4yYUdjNkJtK0FQVlJJSzVWVHpJ?=
+ =?utf-8?B?NWx0eXlORUJxTE9pN0JFS0JnNUVmdy9NRGpDTmlkakRTWWxGcWIyTjBKdGV0?=
+ =?utf-8?B?K2dpRi9OYTBJTEZSMmxscy9QS2NRTm1Mc0x0SGw2NktZNkU2ek5wcGdoSXZ2?=
+ =?utf-8?B?ZkRXbUpwSTVzcnIvSk5aOUJuQVg2YmVQYjBNN1dremRKNUpXVTdYRmRneHZz?=
+ =?utf-8?B?dHRQQU05Z1pjTkczdjNnaVVFZGgzUnZiNTMvWjRBVTM4dDZITGRCYjdDQmVK?=
+ =?utf-8?B?Q3VtVkowazNoMGltejF4aVN1dmpncXJJSVdJRUg3MFBUVXUxTGtpNHZpTXNY?=
+ =?utf-8?B?b2pBUDVycGJ3N3RLdWtWVysrc2NkMEQ4ZEEwc2dSTE5Wak96MVZoSnFiUkpq?=
+ =?utf-8?B?ZUErUGNFOTBRUTZXTkp2eGVWR05ENms3Nloxbk8vU0ZPMCtQK0RiTjIybGU1?=
+ =?utf-8?B?cUV3cklPdldaOVNMWkJURm5MTThuSCttNjhnNW8wS0YwcWMzbkNkbmZtUTda?=
+ =?utf-8?B?QTVHd1dFaDJEM0VlS2pYOGlMTXJCSGdtemoxY2Q2anh0dG1PdncrMG8valZY?=
+ =?utf-8?B?Smp4ZlRydnFYSk56dTR1elBOTVVCQmgxaDVOd3lDVEJvbEJ5a0FCRWVXZ0dJ?=
+ =?utf-8?B?aHR4MUV3aVBMZE9qRFhpREsrcEJuQjI3TVZHdmZaQ2tBN0hxSCtLOTdERHpC?=
+ =?utf-8?B?SjNNbG1rNkFEZWZkM2ZWbXY1Z3Nna21kUnBYWmxmemh1UFRjdnVuRnBzajFm?=
+ =?utf-8?B?YU5jNjBlVFIrUHpCVmVQbDFPZmhublI4OFlJZkl1OVEvT05qd0RHWHRibWVo?=
+ =?utf-8?B?eU9mR1JlUnVwa0ZlcE0rTzdudlpnTkRPbmoxWU1RS3NkNXNGTXJUOExGQXVT?=
+ =?utf-8?B?dE9pUjZSV0d0RUw4L2tyMjBOdkNyQklOSVR4RHhDY094WHp4THBNdko0Skhz?=
+ =?utf-8?B?WFJmWHpIQXpxOG9TdUlBcCtSa28ydVB3bDFXMFhIblpia21jYTVCTm5sazlP?=
+ =?utf-8?B?L2Z4VHErNHYveS9Nb2paeDg0UlRpNHJLajlmMXBhUUJxUEdsRVQyUnhYNExt?=
+ =?utf-8?B?aWIvY0ZOQnJZRWh3am0ycnpXeG9EYXJReHhpL0JjSmpmeFplUTlLVGxrT05s?=
+ =?utf-8?B?SFVISEU4bWhLaGNRNmhmS0s2ZDdyeVpXRVJ6SmdwUXFYQzhCellmRjQ1eVh4?=
+ =?utf-8?B?Snc9PQ==?=
+Content-ID: <40CFC7DECF6E2C4B9B643425A690FE3F@namprd11.prod.outlook.com>
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6479.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f5f0ac9-c080-4172-552d-08dacbc872de
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2022 13:58:20.7105
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y4ZoGQRo2uPFo8ippbCarIdTuKNf8CK0GSW5iM9NIPAON/1Jx5k1LqEkCYgaKIfQ05lq2QxYyRZxjhRwJ0tWqOfsiJbIn5iJfgW0HhVPuPI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7676
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221121_055433_049149_59640FBE 
-X-CRM114-Status: UNSURE (   5.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221121_055827_405067_EB033419 
+X-CRM114-Status: GOOD (  17.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,17 +167,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCAxIE5vdiAyMDIyIDE3OjI5OjA2ICswMTAwLCBKb25hdGhhbiBOZXVzY2jDpGZlciB3
-cm90ZToKPiBJdCBkb2Vzbid0IG1ha2Ugc2Vuc2UgdG8gcHV0ICJzZXQiIG9uIGl0cyBvd24gbGlu
-ZSBsaWtlIHRoYXQuCj4gCj4gCgpBcHBsaWVkIHRvIHNwaS1ub3IvbmV4dCwgdGhhbmtzIQoKWzEv
-MV0gbXRkOiBzcGktbm9yOiBGaXggZm9ybWF0dGluZyBpbiBzcGlfbm9yX3JlYWRfcmF3KCkga2Vy
-bmVsZG9jIGNvbW1lbnQKICAgICAgaHR0cHM6Ly9naXQua2VybmVsLm9yZy9tdGQvYy8yNzA0NTBh
-MWI2ZDgKCkJlc3QgcmVnYXJkcywKLS0gClR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWlj
-cm9jaGlwLmNvbT4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 10/7/22 08:21, Delphine CC Chiu wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> Add support for winbond w25q01jv-im chip.
+> 
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> ---
+>  drivers/mtd/spi-nor/winbond.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+> index ffaa24055259..850f2fd867aa 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -139,6 +139,8 @@ static const struct flash_info winbond_nor_parts[] = {
+>         { "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
+>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+>                               SPI_NOR_QUAD_READ) },
+> +       { "w25q01jvm", INFO(0xef7021, 0, 64 * 1024, 2048)
+> +               PARSE_SFDP },
+>  };
+> 
+
+Hi!
+
+The flash entry is not really needed as all its features and parameters
+are initialized by parsing SFDP, so we can instead use the spi-nor-generic
+driver that was introduced by Michael at:
+https://lore.kernel.org/linux-mtd/166903807811.85501.6803386075881922742.b4-ty@microchip.com/T/#t
+
+-- 
+Cheers,
+ta
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
