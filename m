@@ -4,100 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13740C433FE
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Nov 2022 13:16:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB24DC433FE
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Nov 2022 13:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WoU5/PIa+E6milXMr0CdInXqYNzGiOyDYq04OO3Y82o=; b=UxESjx+hfuAVzK
-	qjCHTSCfZTdfXC39eF37M7eOT4gScZ4qFoWGVOTFsUiS9Fbx342HWsTs6FybqxiOXLVa1JSN/Z5se
-	o9yICXc1fGOwQJ0412d0rsL1w3B8n2/XN5P06JjVh1xCYDngEo+aPR98rvJyhUbn4u0H0xuwCJhJ9
-	3cUViNnHDg8/h9VYL8XsYAVa49VzFq+Gv5++oO40dg+y3T6u17m8NxB23TL7276zwPGBQBUMYyQYE
-	vGvJrGrAu8+tmsbSCbh/x8wtGjuAnk+1syVnldkGdflEq3PMuHhXKQLkiuMNxTdUQyQzmWD+lZOS/
-	cFwgzX7vycubiuD+zw3w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=EbjGYRZ9dr5XBJwkVb/zQZlgtPWvSi/HB86X4SEwmKg=; b=X+S0d40Pr9ev6mc7X7aNd+P3Fj
+	t9fo81a5V2GV955q1UmQrEioq83a6vERFewxItajzfDFh6kVrOVb3dxsRuk24b+gnyXZ38yIQBgEu
+	vKBVrNBvpODn3VC4tq+sEbc2ENVwsSBbegnS69zztLioYON8bTWxQtw6wuDka9JfcwmxFN6HLp5ht
+	o7sZoVXlgWa5/7RRga9J3fO3uxNAbsTvxTKoENpMATozPxLQMBU+QQ++IbMnb6mDHgd1I/a1sBRYU
+	mQOK6DXCBKZTRGO7249OkkNlomL7J2vOHDAQ5h1A3bx7RdIJFgG0/fh/livnouOPm8zdtgxoj2nJt
+	gvUnD3rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxT8P-009Zro-Rt; Tue, 22 Nov 2022 13:16:21 +0000
-Received: from new2-smtp.messagingengine.com ([66.111.4.224])
+	id 1oxTG0-009cuT-N3; Tue, 22 Nov 2022 13:24:12 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxT8F-009ZpD-Gt; Tue, 22 Nov 2022 13:16:13 +0000
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 8BF7D58045D;
-	Tue, 22 Nov 2022 08:16:07 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute3.internal (MEProxy); Tue, 22 Nov 2022 08:16:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to; s=fm3; t=1669122967; x=1669130167; bh=Fsuy/mZZ5T
-	5z+jQhn8xTVdY1LMGSEK1rG+fURdRPHdE=; b=WHL0dDUY9huUqeJ3XElkRvY99G
-	5KKp34kqvZzwAXdz3qWSTP8dkduKL4X6BZrHOUjjKhHFrbnOafMSX40l9hgSvGYd
-	llKjD8KuxUZ5LhSSdvGWRtY2Gnl4Egjxhnw7US/YqRHdhR/w9SCtA3p4WqeD6aH5
-	qd37+5xOqS25Lbv7SM5hRwV1HCbUtrXMUJR55HsgtZWEkXEZg8Ph4IbmSnyFoYZ/
-	OJQN2VQJETBIKGVKNzY2YutaJoXd6ze/IfpET6/cIPNPO3S4n2OKfphnRGHb0UL+
-	X+d73WODat2vuPj8if2mWEGkOdbZM0JeHRjf9SSlw5mTA2Gd9BPmzw4OMTmg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1669122967; x=1669130167; bh=Fsuy/mZZ5T5z+jQhn8xTVdY1LMGS
-	EK1rG+fURdRPHdE=; b=qHd2V94U8jhBOKm1F7zG+lP/0ILwVHOalPWyK84pceBd
-	UChe3Mf4j27Hui5G+5GS29eMaylydiIUnLzfbXHH0I21p1BH+8dAuVHfI8suGZY0
-	PgrRJKZb4aogD3REueoucsglMtfXJ/jT5OfK+2wwZo6U+ADoTNYirlm6Y8/NFUe0
-	R0qt/VLUqmbvopkmPdgQJR5SMcFBbGGX3gdtbGg5IHZjYKyhxUXZDxOHnB/fE5+Z
-	Lp+PYcph9ac+hcCx38TM75RZtbPrR9mWdv7ICcEfyuCTwBW6IqsiddfjmdTnm3E/
-	w3iCi1e7ozKZUqqDPCl/jJi9iTtnR28ICXUrEyFjcg==
-X-ME-Sender: <xms:lct8Y2KIz5BbdA7Y0eEPA5En7mn2GEt8jhrByQ2yONAtxwh01FB3Fw>
-    <xme:lct8Y-I5MxsZRT8j4kyxa66PaWA8bZo1UDUarFGnwFhGlIRqB3GbWf0W-b6a65IfS
-    2jI0XJkXWLQySxPhaM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrheelgddvudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:lct8Y2sJieowFyuaIn7MFFzTsfhKZmpFGTW0srEMHdPs_irOCAEXzw>
-    <xmx:lct8Y7aQVrgFCgyf3CmQdlDJJ2Iry5NEwXwRZZmmPhiafTvZFVsMdw>
-    <xmx:lct8Y9bl6rpaXksVoY01AWgzzkjax4Tu3vysj6w-KHPP3DDLO44xbQ>
-    <xmx:l8t8YxL9v1HssDbcgzDPEdxXDokY03uaja4qBZkPqf9YxCXxT44WGQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C95B5B60098; Tue, 22 Nov 2022 08:16:05 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1115-g8b801eadce-fm-20221102.001-g8b801ead
-Mime-Version: 1.0
-Message-Id: <024e0a68-bb79-4e2e-84f8-f44afb759cdd@app.fastmail.com>
-In-Reply-To: <20221122125244.175295-1-tudor.ambarus@microchip.com>
-References: <20221122125244.175295-1-tudor.ambarus@microchip.com>
-Date: Tue, 22 Nov 2022 14:15:45 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Tudor Ambarus" <tudor.ambarus@microchip.com>,
- "Rob Herring" <robh+dt@kernel.org>,
- "Andrew Morton" <akpm@linux-foundation.org>
-Cc: herbert@gondor.apana.org.au, krzysztof.kozlowski+dt@linaro.org,
- "Nicolas Ferre" <nicolas.ferre@microchip.com>,
- "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
- "Claudiu Beznea" <claudiu.beznea@microchip.com>,
- "Mark Brown" <broonie@kernel.org>, qyousef@layalina.io,
- "Atish Patra" <atishp@atishpatra.org>, "Anup Patel" <anup@brainfault.org>,
- tkhai@ya.ru, quic_abhinavk@quicinc.com, vasily.averin@linux.dev,
- baolin.wang@linux.alibaba.com, colin.i.king@gmail.com,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- pratyush@kernel.org, "Michael Walle" <michael@walle.cc>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Richard Weinberger" <richard@nod.at>
+	id 1oxTFh-009cmZ-Lm; Tue, 22 Nov 2022 13:23:54 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 1C6B16170A;
+	Tue, 22 Nov 2022 13:23:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CABF6C433C1;
+	Tue, 22 Nov 2022 13:23:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1669123432;
+	bh=TrGdsxnKmIHui2RRQxMhxRK2ImgyiQwSaHZqW+YNmIQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MvtBuuIhZ9MXhAtyelT3qJeVn0jV6ooN4SV3AMj6P8SlruA5ifGJDiWcAITsU09gD
+	 neeH8ueUlV6ZkhM68xuzfizub6xLat+h1RUNo93+6auouYEa2IonTaa7GmvE+Y+Enn
+	 C3QTLV1JwmCBoSLlYKWDszPK+ARaaqt5Hy7RWcXPjOkUs0mek/z9G6OtoFTqdwPHb1
+	 aXmtvVAHyScVdRa2L2z8f8/EWQ9bmmmwd2Sp6UfwUCZIdTAmFQ742eyyk9fo6b1FeM
+	 hIFrK4iovn4SxlEMDtt+rB3FoOAcOcKkvPK+jSzkWH9tAiPTuZloTqDNFHfoXT8MHE
+	 T5OCMrBgL1S4w==
+Date: Tue, 22 Nov 2022 13:23:42 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: robh+dt@kernel.org, akpm@linux-foundation.org,
+	herbert@gondor.apana.org.au, krzysztof.kozlowski+dt@linaro.org,
+	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+	claudiu.beznea@microchip.com, qyousef@layalina.io, arnd@arndb.de,
+	atishp@atishpatra.org, anup@brainfault.org, tkhai@ya.ru,
+	quic_abhinavk@quicinc.com, vasily.averin@linux.dev,
+	baolin.wang@linux.alibaba.com, colin.i.king@gmail.com,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+	pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
+	richard@nod.at
 Subject: Re: [PATCH] MAINTAINERS: Update email of Tudor Ambarus
+Message-ID: <Y3zNXjoraLeugNzS@sirena.org.uk>
+References: <20221122125244.175295-1-tudor.ambarus@microchip.com>
+MIME-Version: 1.0
+In-Reply-To: <20221122125244.175295-1-tudor.ambarus@microchip.com>
+X-Cookie: That's what she said.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_051611_834702_FF9F26D2 
-X-CRM114-Status: GOOD (  12.44  )
+X-CRM114-CacheID: sfid-20221122_052353_782267_96602724 
+X-CRM114-Status: UNSURE (   9.35  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,41 +77,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1749694722696803435=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Nov 22, 2022, at 13:52, Tudor Ambarus wrote:
+
+--===============1749694722696803435==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="8Vur0n2Nqa/eczlq"
+Content-Disposition: inline
+
+
+--8Vur0n2Nqa/eczlq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 22, 2022 at 02:52:44PM +0200, Tudor Ambarus wrote:
 > My professional email will change and the microchip one will bounce after
 > mid-november of 2022.
->
-> Update the MAINTAINERS file, the YAML bindings, MODULE_AUTHOR entries and
-> author mentions, and add an entry in the .mailmap file.
->
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-I can take this through the fixes branch of the SoC tree if that
-works for everyone. Alternatively, I can take only the MAINTAINERS
-and .mailmap bits and expect the other changes to get merged
-by the devicetree and crypto maintainers for 6.2.
+Acked-by: Mark Brown <broonie@kernel.org>
 
-      Arnd
+--8Vur0n2Nqa/eczlq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> ---
->  .mailmap                                               |  1 +
->  .../bindings/crypto/atmel,at91sam9g46-aes.yaml         |  2 +-
->  .../bindings/crypto/atmel,at91sam9g46-sha.yaml         |  2 +-
->  .../bindings/crypto/atmel,at91sam9g46-tdes.yaml        |  2 +-
->  .../devicetree/bindings/spi/atmel,at91rm9200-spi.yaml  |  2 +-
->  .../devicetree/bindings/spi/atmel,quadspi.yaml         |  2 +-
->  MAINTAINERS                                            | 10 +++++-----
->  drivers/crypto/atmel-ecc.c                             |  4 ++--
->  drivers/crypto/atmel-i2c.c                             |  4 ++--
->  drivers/crypto/atmel-i2c.h                             |  2 +-
->  10 files changed, 16 insertions(+), 15 deletions(-)
->
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmN8zV0ACgkQJNaLcl1U
+h9ClDAgAgIY214kn4I7zM3+oaKJO2vk03Oi6WrlTHYaDO3jmE1HH3SUPdPeio9u+
+QaaYSZYfnuJqGiq8CN8DygTvB6kOObFY4hYGD+dL6i9kjurhSTNW5NB1Km5FTTvS
+Vs3fS7GOmvkzrOKBPSV6AJoEKB8sNJbtPYS/xC1s5d2ydhVtA2bOjzfGTBL2FZfs
+TzFjy68JLcB3avXPCJrZ4IB07/TdOj4V3DRHx4G1kbJ+HQO3eREYGClg5e9RHzY8
+GIyfRoPiC+PHAQADviznqrgypRL/RM5NZrv3miQTINs58zH6hMvYqZRJelXlyWXb
+BzBf4yMOpCU/P2IKnPOppRYXIhK8Dw==
+=QKj9
+-----END PGP SIGNATURE-----
+
+--8Vur0n2Nqa/eczlq--
+
+
+--===============1749694722696803435==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1749694722696803435==--
+
