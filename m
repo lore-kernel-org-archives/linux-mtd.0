@@ -4,65 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59796C433FE
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Nov 2022 09:15:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7BF9C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Nov 2022 10:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=C54aVdvR5rh8KKxC7q1STXLOlYhQe25BJOfN99ElQ1A=; b=oyZk0XBHUpl99i
-	vRsyCP2tZEusKC2PHqhpKUOU8rr18yN0gx/Ns3mRVB9OYyIqf8Tp9ZI15IywMnDAI+Pyr6f0TCSSw
-	tECP+K07wH518kMmYDU47Ujp/HKqbrfRBXLXq3jkRdltfwn+FMshU2yX5O4fG2MlUx9HsWQuZwQhD
-	lI6wsgSdGcrCtdFaP6F1DEHA8b1R9S+6GzpLEf1+ILiJO2SR/3mOOX6Hkn84rancwbJsB9qwPG5re
-	5GojIlyef06spTlRbzdPU6dXGOQyJCc7AG7H2ZlWwZ6l1zg1y1x5M0qq0bWt9bqccTghsjE4ddHpK
-	VQvMxBF6J+GjGdDZIWgw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Zto/3wzol0bdX0zOlXH/Nfyx4Xok6ThgMr2+46gtQXY=; b=R6OFnWo7fCsyGO
+	/8OU1jM2KHTrh/0oZn0rcM1o5QU5GZKhZwQs8Sl8ENCpfH/KYnHuFYLNA6v6qRRIg96ZqfiLS9gFw
+	ZRrJSJm5/e55UIbqhjU5Ks//5MQbPTgbt4xQlCubajM2S0zsLAwOToq4lTHUrtBBgTYYc633Xt9I0
+	jCiRvYK9U3tBxv6N96ewxbx+GjtRqXfdBcJ1LWYhTQzk7QCsJNngrJ4J6AKb3IzgDN7uDvbIUIztp
+	kOn2IC/W4xqMe7XiXA9BAUlwCS5pyBRYqUc70nYirOBRug0EjJisbVdmOfOF7FqjGB/7i/Drq4L05
+	vB0cwcmuCf7pd5jVbPPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxPNR-006s0x-Oy; Tue, 22 Nov 2022 09:15:37 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1oxQ7C-007YoI-Q2; Tue, 22 Nov 2022 10:02:55 +0000
+Received: from relay10.mail.gandi.net ([2001:4b98:dc4:8::230])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxPNO-006rzp-Qq
-	for linux-mtd@bombadil.infradead.org; Tue, 22 Nov 2022 09:15:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Subject:To:From:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=0BgaW9t8GFER5QecxVkFsHrVi3gO/4V5KAZgJaiRYBs=; b=e5Wad9w2CVmIwOq1DOYo8/ak7O
-	RaRBiiWlSkpLtOf7cbeVMISruyZtK8IMp6v84LKz0xZxq8YSbF8Jo3LtCVY8UmKzv/u0KtsBI6+Xq
-	feYrQRom9TDgVCs1Q3tPw1kYWaj8vEHUVHsuBG0XfpnN9rJyMxwENrhwAIrtfl3bPrLzqNZWS4tEt
-	dTlIq0p+7qgT4wYgNH0SXn6s9SN7T+8nUtGK9Se3cGWPKVQqHI+5WLOw9gYk4tdxdv+G/GBe1g7sY
-	clSca3xJIfA1tdJR9ZOx9epmnQE3Rqag5SY6mwszRdzzvRP2HRim+GcUfOQNbxe5Tw9UoMrSwr9Wd
-	vqoIJGog==;
-Received: from mail.axisfairfi.com ([94.177.230.134])
-	by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxPNL-003O9k-NS
-	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2022 09:15:33 +0000
-Received: by mail.axisfairfi.com (Postfix, from userid 1001)
-	id C79E082592; Tue, 22 Nov 2022 09:15:27 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=axisfairfi.com;
-	s=mail; t=1669108527;
-	bh=0BgaW9t8GFER5QecxVkFsHrVi3gO/4V5KAZgJaiRYBs=;
-	h=Date:From:To:Subject:From;
-	b=O1RRWmjp2NTQO8xMj10HeKgNz3paK74Og6QlvdnS3o79oZwA9j5edF/K7mdVehAK9
-	 eRRxeh+5EjSouTto3oUBaNaiAs+F9lNdA29kFw7aGvuqJfU6Y/NDcA8pijMiGw9sIi
-	 0hIJqvGgC567HuLVYvvcHcrUWwE2SmfdDXF8Gjtrc8aKJKKCnJgp0/RRgUhHqZNjR8
-	 xdNhimHpLJyaRTocSM6DLGWQVrc+mVlaZ8wyg9p0UaUy2QufoplHuMOmx6TxtxHfcI
-	 Xb7k+O9T/oDBFMC5LT4jpZ7LcqtrDwLOoH3iUAMFne8QA9unAcEpJWSeXrImMNx/zX
-	 sKuvEt5cxP18A==
-Received: by mail.axisfairfi.com for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2022 09:15:27 GMT
-Message-ID: <20221122074500-0.1.d.o7w.0.mp5yp4mc7m@axisfairfi.com>
-Date: Tue, 22 Nov 2022 09:15:27 GMT
-From: "Zbynek Spacek" <zbynek.spacek@axisfairfi.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Silikonmischungen
-X-Mailer: mail.axisfairfi.com
+	id 1oxQ75-007Yca-TI
+	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2022 10:02:50 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id B3E27240005;
+	Tue, 22 Nov 2022 10:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1669111363;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WmyFTJevytlulznh6ayTXhdY+HEVUzYjYVjdJQwaGpA=;
+	b=kS1KYIO/K9Qw33D72feMPlykFfp1HxvQj1V26Lb6RRxOCB9idxMwB+em7Z8mwV2QWDqqjw
+	zEjaffLJqRaO4qaW1SDdRYf6VTfSm/gQ2P2ENT116NbcBkoI9VXRZZnq8jXFp1b4ZG7M2n
+	H9baSI2sLX9o002cd4iavRrgVaOkdvCSsHaT7Hz2YFCDokKCOb181N7wBszHJkOFYnSwME
+	s+c5pat0v+obwM/BzYdpSaPPdkXMjEMz+KwOg3znPsGKl6g9ul/lQR0nA7t5NrrMLuNi+I
+	pYYWhvqAIulnfOKBPIOC3G/ukgSzqY+kiUDhWLu65y4xQiqqNzsiFT0jP3Jmvg==
+Date: Tue, 22 Nov 2022 11:02:39 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: <ye.xingchen@zte.com.cn>
+Cc: <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <chi.minghao@zte.com.cn>
+Subject: Re: [PATCH] mtd: rawnand: orion: use  
+ devm_platform_get_and_ioremap_resource()
+Message-ID: <20221122110226.3cdac73a@xps-13>
+In-Reply-To: <202211220933274886024@zte.com.cn>
+References: <202211220933274886024@zte.com.cn>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_091531_873305_DCF955CB 
-X-CRM114-Status: UNSURE (   1.66  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221122_020248_161180_725F004A 
+X-CRM114-Status: GOOD (  14.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,26 +67,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Good morning,
-
-do you need intermediates for processing, plastics (e.g. rubber) or silicone mixtures?
-
-We provide a wide range of silicone rubbers with various properties, silicone mixtures from renowned manufacturers such as Wacker, Elastosil LR and dyes, stabilizers, primers and anti-adhesive additives.
-
-We also produce technical silicone compounds with increased resistance to oils, resistant to high temperatures and water vapor, conductive and many more.
-
-We provide fast order fulfillment, timely deliveries and cost optimization.
-
-Can I introduce what we can offer you?
-
-
-Zbynek Spacek
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgp5ZS54aW5nY2hlbkB6dGUuY29tLmNuIHdyb3RlIG9uIFR1ZSwgMjIgTm92IDIwMjIg
+MDk6MzM6MjcgKzA4MDAgKENTVCk6Cgo+IEZyb206IE1pbmdoYW8gQ2hpIDxjaGkubWluZ2hhb0B6
+dGUuY29tLmNuPgo+IAoKRG91YmxlIHNwYWNlIGluIHRoZSBzdWJqZWN0Cgo+IENvbnZlcnQgcGxh
+dGZvcm1fZ2V0X3Jlc291cmNlKCksIGRldm1faW9yZW1hcF9yZXNvdXJjZSgpIHRvIGEgc2luZ2xl
+Cj4gY2FsbCB0byBkZXZtX3BsYXRmb3JtX2dldF9hbmRfaW9yZW1hcF9yZXNvdXJjZSgpLCBhcyB0
+aGlzIGlzIGV4YWN0bHkKPiB3aGF0IHRoaXMgZnVuY3Rpb24gZG9lcy4KPiAKPiBTaWduZWQtb2Zm
+LWJ5OiBNaW5naGFvIENoaSA8Y2hpLm1pbmdoYW9AenRlLmNvbS5jbj4KPiAtLS0KPiAgZHJpdmVy
+cy9tdGQvbmFuZC9yYXcvb3Jpb25fbmFuZC5jIHwgNCArLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAx
+IGluc2VydGlvbigrKSwgMyBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
+dGQvbmFuZC9yYXcvb3Jpb25fbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvb3Jpb25fbmFu
+ZC5jCj4gaW5kZXggMWJmZWNmNTAyMjE2Li4wMGJkN2JlNzZlMDcgMTAwNjQ0Cj4gLS0tIGEvZHJp
+dmVycy9tdGQvbmFuZC9yYXcvb3Jpb25fbmFuZC5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvb3Jpb25fbmFuZC5jCj4gQEAgLTEwMiw3ICsxMDIsNiBAQCBzdGF0aWMgaW50IF9faW5pdCBv
+cmlvbl9uYW5kX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gIAlzdHJ1Y3Qg
+bXRkX2luZm8gKm10ZDsKPiAgCXN0cnVjdCBuYW5kX2NoaXAgKm5jOwo+ICAJc3RydWN0IG9yaW9u
+X25hbmRfZGF0YSAqYm9hcmQ7Cj4gLQlzdHJ1Y3QgcmVzb3VyY2UgKnJlczsKPiAgCXZvaWQgX19p
+b21lbSAqaW9fYmFzZTsKPiAgCWludCByZXQgPSAwOwo+ICAJdTMyIHZhbCA9IDA7Cj4gQEAgLTEx
+OSw4ICsxMTgsNyBAQCBzdGF0aWMgaW50IF9faW5pdCBvcmlvbl9uYW5kX3Byb2JlKHN0cnVjdCBw
+bGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gIAlpbmZvLT5jb250cm9sbGVyLm9wcyA9ICZvcmlvbl9u
+YW5kX29wczsKPiAgCW5jLT5jb250cm9sbGVyID0gJmluZm8tPmNvbnRyb2xsZXI7Cj4gCj4gLQly
+ZXMgPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwgSU9SRVNPVVJDRV9NRU0sIDApOwo+IC0J
+aW9fYmFzZSA9IGRldm1faW9yZW1hcF9yZXNvdXJjZSgmcGRldi0+ZGV2LCByZXMpOwo+ICsJaW9f
+YmFzZSA9IGRldm1fcGxhdGZvcm1fZ2V0X2FuZF9pb3JlbWFwX3Jlc291cmNlKHBkZXYsIDAsIE5V
+TEwpOwoKSWYgd2Ugbm8gbG9uZ2VyIHVzZSByZXMsIHdoeSBub3QganVzdCBkZXZtX3BsYXRmb3Jt
+X2lvcmVtYXBfcmVzb3VyY2UoKSA/Cgo+IAo+ICAJaWYgKElTX0VSUihpb19iYXNlKSkKPiAgCQly
+ZXR1cm4gUFRSX0VSUihpb19iYXNlKTsKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
+c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC1tdGQvCg==
