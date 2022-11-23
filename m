@@ -4,99 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7D40C4332F
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 01:38:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FAC6C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 03:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9vliw4UvqJkXkSb2iqVSQM0Kw8TWAPqxTytKmxWO2d4=; b=nELLKWPksAI1Cv
-	CYlJ525w63FPymjrRxP/z9VJ7PJMAAG+1zGp38QEeoHlDYMNj2bkaJHu2lT4c0io+EC9DUw4MK70t
-	5dLNGQGePmoCyqtaN5jdEwVHLb7IpydB+JTcRXrs3t+zIaQ5b8II4Vv6f5ouTr8UCq5GhOA5SNJJG
-	iH841tDyABYpAcZq8FR0RNKXMhYSNqrjmiozV/GEMPDNqvx6ICxf1iIyUBdcPIJAvF5uwqsb+Tokg
-	voaXK5DE8YQSTafmouLXYCOAT+iegMnP1Ez+IojLEmPjLaWj5u7Vli8gi+qNzgw+8Ul2qrTxNRc9J
-	b7f62aVNhLyMADbobUvg==;
+	List-Owner; bh=Z6oDRvifnnM3actPvzBNVFr2rxy5ORmXh1B91vPFWy4=; b=BbzLjPGleZx5oj
+	p+g/wfUUFkTZmLnlgnEdPrj9L1LWu0a0fOf59QYFql3QgQCgqhyVqByTm/5v/1NPZ0BlgpFt3qTMu
+	L5hIOH3SAzJJc8FC998YqbXSUfuj5ZMpmnb1rw0pNIqksRJd3A1oYpObIzvm2i1X8USawTmmHqMbm
+	NAWTPLqpTdyA0Sb4nUIKa/la3HYPH+bgMe2d6kymtgRnBYVkuMVwrFRiJpnc31hJvHbH2lA/tDT82
+	+ayNGFhlzGrztTC51RtV4T1i2BE45KwMfKhog7N6B9UlWS2lnTuk1ZYxtF9KpR9eMnKPwP+rS+5c3
+	2+5yQzNdRnXV7TW1zk8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxei3-00Ch7u-Cj; Wed, 23 Nov 2022 01:37:55 +0000
-Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
+	id 1oxgRn-00DVMo-Ia; Wed, 23 Nov 2022 03:29:15 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxehZ-00Cgsl-Tp; Wed, 23 Nov 2022 01:37:27 +0000
-Received: by mail-pf1-x42d.google.com with SMTP id g62so15998271pfb.10;
-        Tue, 22 Nov 2022 17:37:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=57QTDQNjua4bD17eBQRGR4QYAKmDZiaeZv3y3ThjHNA=;
-        b=AJd4p4Y1GJ2PPHHqMJkt2vAn6ERqJlfv48oiJrZolP8/Sh1CAzdLzBPA6Y9SygNMOB
-         ZL09xzKfYY7O9Doh92VB3jb6Ja8HBaQeBTEaB8nC72ZjmyawK/usRw5XgujG3BFx/tAa
-         YQzpVS/GviFMu850709iF5BIFlEAro2HnvijgpS0DgkaoVdPf+crlJ8hgf6xE8Hefq+w
-         79hHmd2FIBoMnyNG0wJ0UGHjyN8DYJcXF/xPRlPXnE/3S7V0L3QNV1H73/xPNO9zBSaj
-         Pg4w7ZIQmKiJxfxA9pfQlebDCPWdCV3XIz9WLiDa5A8wWXQqx8dPEJlxFOfUf9f5WHlm
-         xytw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=57QTDQNjua4bD17eBQRGR4QYAKmDZiaeZv3y3ThjHNA=;
-        b=A2T69U9qzJR4Tu12v1CwkrPpeEY1ppqJq/RQLWWcZgt80HYFwyaqchuEhFTbTxiySO
-         dA6Cj0q/Zb7FHA6tyeGkeMSZ7greMPkL9lPK7KRF6FZd+wVmh8/zhWICNSxLKU/GeM93
-         ZB7WaVUP5gpIgzpyU+B/X6nKoF8TPqJkAdI4rieF+9I3b0ZLQBTCVzlv69kPfZOVZmoY
-         XQLm9gJiVL7RmPIhsbgalPa5dRWw7IYyxOkuky+wvl17x20ygeqoaIpGPdGkTJHvHTWF
-         oUAlV9qCJR4Efnp0lqgjfqTsd3ej66bg/UY6k+iRBMVd2MkRau/JdLNUgAHTkPIjWr+u
-         GCnA==
-X-Gm-Message-State: ANoB5pnQH7AhhM0icgmNpO9yeaopkEXSADCMpgBhJuIlpuNlsa6jOa2W
-	4gxmKCBTPuXI2FhPGzjrUHQXdoYe/9mduA==
-X-Google-Smtp-Source: AA0mqf547JrxZeSVmkQLdlrpalzLSYM74m3LOUHFPzZ3vcYEWkifg+t/S5X1eHUvslK9HNQURfIwrg==
-X-Received: by 2002:a63:de14:0:b0:477:4a61:eb99 with SMTP id f20-20020a63de14000000b004774a61eb99mr16322572pgg.48.1669167442801;
-        Tue, 22 Nov 2022 17:37:22 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:af8d:6047:29d5:446c])
-        by smtp.gmail.com with ESMTPSA id c4-20020a17090a674400b002189ab866bfsm204545pjm.5.2022.11.22.17.37.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Nov 2022 17:37:22 -0800 (PST)
-Date: Tue, 22 Nov 2022 17:37:17 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org, linux-can@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-pwm@vger.kernel.org,
-	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	linux-watchdog@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v2 9/9] dt-bindings: drop redundant part of title (manual)
-Message-ID: <Y315Ta+ST067iVmh@google.com>
-References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
- <20221121110615.97962-10-krzysztof.kozlowski@linaro.org>
+	id 1oxgRk-00DVHJ-9r
+	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2022 03:29:13 +0000
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NH6695YydzmW4H;
+	Wed, 23 Nov 2022 11:28:33 +0800 (CST)
+Received: from [10.67.109.51] (10.67.109.51) by canpemm500009.china.huawei.com
+ (7.192.105.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 23 Nov
+ 2022 11:29:04 +0800
+Message-ID: <ad8ff736-bbce-2ec3-301f-691401a80bd1@huawei.com>
+Date: Wed, 23 Nov 2022 11:29:04 +0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221121110615.97962-10-krzysztof.kozlowski@linaro.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v2] ubifs: Fix build errors as symbol undefined
+To: <richard@nod.at>, <s.hauer@pengutronix.de>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<weiyongjun1@huawei.com>, <yusongping@huawei.com>
+References: <20221121111847.71648-1-hucool.lihua@huawei.com>
+From: "Lihua (lihua, ran)" <hucool.lihua@huawei.com>
+In-Reply-To: <20221121111847.71648-1-hucool.lihua@huawei.com>
+X-Originating-IP: [10.67.109.51]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_173726_001525_E181BF45 
-X-CRM114-Status: UNSURE (   7.83  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221122_192912_543200_2C7F0D3E 
+X-CRM114-Status: GOOD (  11.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,20 +62,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 21, 2022 at 12:06:15PM +0100, Krzysztof Kozlowski wrote:
->  Documentation/devicetree/bindings/input/fsl,scu-key.yaml        | 2 +-
->  Documentation/devicetree/bindings/input/matrix-keymap.yaml      | 2 +-
-
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-
--- 
-Dmitry
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+cGluZwoK5ZyoIDIwMjIvMTEvMjEgMTk6MTgsIExpIEh1YSDlhpnpgZM6Cj4gV2l0aCBDT05GSUdf
+VUJJRlNfRlNfQVVUSEVOVElDQVRJT04gbm90IHNldCwgdGhlIGNvbXBpbGVyIGNhbiBhc3N1bWUg
+dGhhdAo+IHViaWZzX25vZGVfY2hlY2tfaGFzaCgpIGlzIG5ldmVyIHRydWUgYW5kIGRyb3BzIHRo
+ZSBjYWxsIHRvIHViaWZzX2JhZF9oYXNoKCkuCj4gSXMgQ09ORklHX0NDX09QVElNSVpFX0ZPUl9T
+SVpFIGVuYWJsZWQgdGhpcyBvcHRpbWl6YXRpb24gZG9lcyBub3QgaGFwcGVuIGFueW1vcmUuCj4g
+Cj4gU28gV2hlbiBDT05GSUdfVUJJRlNfRlMgYW5kIENPTkZJR19DQ19PUFRJTUlaRV9GT1JfU0la
+RSBpcyBlbmFibGVkIGJ1dAo+IENPTkZJR19VQklGU19GU19BVVRIRU5USUNBVElPTiBpcyBub3Qg
+c2V0LCB0aGUgYnVpbGQgZXJyb3JzIGlzIGFzIGZvbGxvd2Q6Cj4gICAgICBFUlJPUjogbW9kcG9z
+dDogInViaWZzX2JhZF9oYXNoIiBbZnMvdWJpZnMvdWJpZnMua29dIHVuZGVmaW5lZCEKPiAKPiBG
+aXggaXQgYnkgYWRkIG5vLW9wIHViaWZzX2JhZF9oYXNoKCkgZm9yIHRoZSBDT05GSUdfVUJJRlNf
+RlNfQVVUSEVOVElDQVRJT049biBjYXNlLgo+IAo+IEZpeGVzOiAxNmEyNmIyMGQyYWYgKCJ1Ymlm
+czogYXV0aGVudGljYXRpb246IEFkZCBoYXNoZXMgdG8gaW5kZXggbm9kZXMiKQo+IFNpZ25lZC1v
+ZmYtYnk6IExpIEh1YSA8aHVjb29sLmxpaHVhQGh1YXdlaS5jb20+Cj4gLS0tCj4gICBmcy91Ymlm
+cy91Ymlmcy5oIHwgNSArKysrKwo+ICAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKQo+
+IAo+IGRpZmYgLS1naXQgYS9mcy91Ymlmcy91Ymlmcy5oIGIvZnMvdWJpZnMvdWJpZnMuaAo+IGlu
+ZGV4IDQ3OGJiYmI1MzgyZi4uMmYxZjMxNTgxMDk0IDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL3Vi
+aWZzLmgKPiArKysgYi9mcy91Ymlmcy91Ymlmcy5oCj4gQEAgLTE2MjMsOCArMTYyMywxMyBAQCBz
+dGF0aWMgaW5saW5lIGludCB1Ymlmc19jaGVja19obWFjKGNvbnN0IHN0cnVjdCB1Ymlmc19pbmZv
+ICpjLAo+ICAgCXJldHVybiBjcnlwdG9fbWVtbmVxKGV4cGVjdGVkLCBnb3QsIGMtPmhtYWNfZGVz
+Y19sZW4pOwo+ICAgfQo+ICAgCj4gKyNpZmRlZiBDT05GSUdfVUJJRlNfRlNfQVVUSEVOVElDQVRJ
+T04KPiAgIHZvaWQgdWJpZnNfYmFkX2hhc2goY29uc3Qgc3RydWN0IHViaWZzX2luZm8gKmMsIGNv
+bnN0IHZvaWQgKm5vZGUsCj4gICAJCSAgICBjb25zdCB1OCAqaGFzaCwgaW50IGxudW0sIGludCBv
+ZmZzKTsKPiArI2Vsc2UKPiArc3RhdGljIGlubGluZSB2b2lkIHViaWZzX2JhZF9oYXNoKGNvbnN0
+IHN0cnVjdCB1Ymlmc19pbmZvICpjLCBjb25zdCB2b2lkICpub2RlLAo+ICsJCQkJICBjb25zdCB1
+OCAqaGFzaCwgaW50IGxudW0sIGludCBvZmZzKSB7fTsKPiArI2VuZGlmCj4gICAKPiAgIGludCBf
+X3ViaWZzX25vZGVfY2hlY2tfaGFzaChjb25zdCBzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgY29uc3Qg
+dm9pZCAqYnVmLAo+ICAgCQkJICBjb25zdCB1OCAqZXhwZWN0ZWQpOwo+IAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
