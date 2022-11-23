@@ -4,83 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21B72C433FE
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 04:40:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A232C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 07:28:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BrZPkzAhjw6qYKK+PEbqw8yvJVN1amqhv38p1GoRfIw=; b=Mg2AOqEeswN8HI
-	nZQK+YLe33FsPVKi6hIJwum0VEzvAH5VJrbr+GwzGVmwyA+Yv+4JACeFvfHSUqdbGIfMFEwhtp5Nv
-	uwNnIaLk4R4YUvne08kATWXMafbm0/JblKEC0M0XpfTtxfOL8pzKEDoIiU37DYrAXyOPo5gAJWw1b
-	cJIUNb8halAUsmd3x2/N/lpiDescpJa+6msf5JoVEr2FypZIezWEzBvxphIBCe70r1KOtudSYLvft
-	OgYSZQViF9sI6UYy9Op49lkpchrK8b9WtlxENtjaaC9hdCfBAzKBl/V6NWMjJb+7yRl3oFj4HGAuX
-	2e7/1s9KrtNHCrJUq9Uw==;
+	List-Owner; bh=/9oOAhJowSuR4ALfJTHwduXPR1a0mgEraFcAXGNfM0I=; b=D5caWiSwmxkdkc
+	oxhh5AXnYvGVbohkDTe+weL82dWu0g/nfcGpQC2Lp9fgQ8G9oD1SlHxScfkTAAgub3/rOmjAExGiI
+	8dM0NdCvdc7nov016o1dp7ZEhFNoFZ2A1m3DrbkVmXXHrB5HZlKvKZoxPloJzCCaDi7rWMhuhfkhd
+	57DnOFk12PxR3GLq5ARoSfSI2+aSGRHQVAz6ZRBT+a2xDW50Mpv+XMlBdj2xgurNR3CHE2ApMBWYd
+	7g8AkcpjaVQ4M4W6j2NS6hd1ujiUJ/GXfoEatAQctB3wYdBO96n1WmG0Vdw3yX9ngxr2L0Z3jyC6n
+	PtCzzuu49bt7Jxdv2djA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxhYF-00DxfY-FL; Wed, 23 Nov 2022 04:39:59 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1oxkB9-00FAaq-V4; Wed, 23 Nov 2022 07:28:19 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxhXy-00DxXT-34; Wed, 23 Nov 2022 04:39:43 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 97A0B61A3D;
-	Wed, 23 Nov 2022 04:39:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 225EEC433C1;
-	Wed, 23 Nov 2022 04:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1669178381;
-	bh=EVw4Vc0/gYpVHxzZAdah2zLNd6pA0gTQaK+joP95BKw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QeBxZCprwCTU86Pqv1jbwEiUULNLeEVvPC1vdnFLEOwo4ZjJ9TnndaaoA5XZ55BlH
-	 dFNUaBxj1NdIgxQuslei2pAmnW/Z2yQ9Ez0pbOGy0w60FJfyM8TQpvvGSwo4X/CPnL
-	 iGkeDfTcaooUjn+RtR+b8weXzQXvnVb2mgoYJ2ygsOCLKSiOMGNGANIMuXfckChAz+
-	 PyeRCc3K/Sfw5tX54bqUCF6lgw/E5TKozvtW8vmrDPLBxXa96QLuq80CiTdUw3XPSv
-	 11aAf/r27UgMrIlh/qUbpu0OZ3U7Hl/Jm7U0evtgaaia6qFgX/rpiLMZNJZusN3NFD
-	 cRxjZ+VpqSyfQ==
-Date: Wed, 23 Nov 2022 10:09:36 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org, linux-can@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-pwm@vger.kernel.org,
-	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	linux-watchdog@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v2 5/9] dt-bindings: drop redundant part of title (end,
- part two)
-Message-ID: <Y32kCHhdLjQvSnE3@matsya>
-References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
- <20221121110615.97962-6-krzysztof.kozlowski@linaro.org>
+	id 1oxkB7-00FAUr-0a
+	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2022 07:28:18 +0000
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1oxkAv-0000f7-Fn; Wed, 23 Nov 2022 08:28:05 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1oxkAs-00011W-Lt; Wed, 23 Nov 2022 08:28:02 +0100
+Date: Wed, 23 Nov 2022 08:28:02 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Li Hua <hucool.lihua@huawei.com>
+Cc: richard@nod.at, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, weiyongjun1@huawei.com,
+	yusongping@huawei.com
+Subject: Re: [PATCH v2] ubifs: Fix build errors as symbol undefined
+Message-ID: <20221123072802.GC29978@pengutronix.de>
+References: <20221121111847.71648-1-hucool.lihua@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221121110615.97962-6-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221121111847.71648-1-hucool.lihua@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_203942_224456_C69BC679 
-X-CRM114-Status: GOOD (  10.93  )
+X-CRM114-CacheID: sfid-20221122_232817_078562_738DF920 
+X-CRM114-Status: GOOD (  23.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,45 +73,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21-11-22, 12:06, Krzysztof Kozlowski wrote:
-> The Devicetree bindings document does not have to say in the title that
-> it is a "binding", but instead just describe the hardware.
+On Mon, Nov 21, 2022 at 07:18:47PM +0800, Li Hua wrote:
+> With CONFIG_UBIFS_FS_AUTHENTICATION not set, the compiler can assume that
+> ubifs_node_check_hash() is never true and drops the call to ubifs_bad_hash().
+> Is CONFIG_CC_OPTIMIZE_FOR_SIZE enabled this optimization does not happen anymore.
 > 
-> Drop trailing "Node|Tree|Generic bindings" in various forms (also with
-> trailling full stop):
+> So When CONFIG_UBIFS_FS and CONFIG_CC_OPTIMIZE_FOR_SIZE is enabled but
+> CONFIG_UBIFS_FS_AUTHENTICATION is not set, the build errors is as followd:
+>     ERROR: modpost: "ubifs_bad_hash" [fs/ubifs/ubifs.ko] undefined!
 > 
->   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
->     -not -name 'trivial-devices.yaml' \
->     -exec sed -i -e 's/^title: \(.*\) [nN]ode [bB]indings\?\.\?$/title: \1/' {} \;
+> Fix it by add no-op ubifs_bad_hash() for the CONFIG_UBIFS_FS_AUTHENTICATION=n case.
 > 
->   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
->     -not -name 'trivial-devices.yaml' \
->     -exec sed -i -e 's/^title: \(.*\) [tT]ree [bB]indings\?\.\?$/title: \1/' {} \;
-> 
->   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
->     -not -name 'trivial-devices.yaml' \
->     -exec sed -i -e 's/^title: \(.*\) [gG]eneric [bB]indings\?\.\?$/title: \1/' {} \;
-> 
->   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
->     -not -name 'trivial-devices.yaml' \
->     -exec sed -i -e 's/^title: \(.*\) [bB]indings\? description\.\?$/title: \1/' {} \;
-> 
->   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
->     -not -name 'trivial-devices.yaml' \
->     -exec sed -i -e 's/^title: \(.*\) [bB]indings\? document\.\?$/title: \1/' {} \;
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Fixes: 16a26b20d2af ("ubifs: authentication: Add hashes to index nodes")
+> Signed-off-by: Li Hua <hucool.lihua@huawei.com>
 
->  Documentation/devicetree/bindings/phy/brcm,ns2-pcie-phy.yaml    | 2 +-
->  Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml      | 2 +-
->  Documentation/devicetree/bindings/phy/ti,phy-gmii-sel.yaml      | 2 +-
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
+Sascha
+
+> ---
+>  fs/ubifs/ubifs.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+> index 478bbbb5382f..2f1f31581094 100644
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -1623,8 +1623,13 @@ static inline int ubifs_check_hmac(const struct ubifs_info *c,
+>  	return crypto_memneq(expected, got, c->hmac_desc_len);
+>  }
+>  
+> +#ifdef CONFIG_UBIFS_FS_AUTHENTICATION
+>  void ubifs_bad_hash(const struct ubifs_info *c, const void *node,
+>  		    const u8 *hash, int lnum, int offs);
+> +#else
+> +static inline void ubifs_bad_hash(const struct ubifs_info *c, const void *node,
+> +				  const u8 *hash, int lnum, int offs) {};
+> +#endif
+>  
+>  int __ubifs_node_check_hash(const struct ubifs_info *c, const void *buf,
+>  			  const u8 *expected);
+> -- 
+> 2.17.1
+> 
+> 
 
 -- 
-~Vinod
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
