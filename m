@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B8E5C4332F
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 04:39:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21B72C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 04:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=czMEAKzsKmfAanOT7RzolURuY5Yidg48AOKXc6uc5kk=; b=uILZ7qxOHrAUM4
-	F+w4trh1u/SMn0jYUX4YVqSxRthAZdtDnV/hfjixH4w2rDeDWlOuezm8OuNKYm1aSxZ6mR+bSST7g
-	PWmC9AsjBantmz9/TegU9ZVuvCpqxqxJH4hTUnGbcoFSpL0jjKW1rMxxSQnPcqxUPovVenLF8HmHI
-	PnygDqPxc7IH2PPk0/JvrJ7SrXzBhGZlm43gKeWPhIMV1vwh3ahnkxlX6WyolPTWWSf3+eXPuyNJn
-	Dpu0f0wNNeDJefqXNXG/kKi+oSyTXIQm3h9XQYcAuRx8DH+NpEJpCM8Am8sz/atZDVljkJvRU86od
-	X+zrwklWLlSMBPm1XlAA==;
+	List-Owner; bh=BrZPkzAhjw6qYKK+PEbqw8yvJVN1amqhv38p1GoRfIw=; b=Mg2AOqEeswN8HI
+	nZQK+YLe33FsPVKi6hIJwum0VEzvAH5VJrbr+GwzGVmwyA+Yv+4JACeFvfHSUqdbGIfMFEwhtp5Nv
+	uwNnIaLk4R4YUvne08kATWXMafbm0/JblKEC0M0XpfTtxfOL8pzKEDoIiU37DYrAXyOPo5gAJWw1b
+	cJIUNb8halAUsmd3x2/N/lpiDescpJa+6msf5JoVEr2FypZIezWEzBvxphIBCe70r1KOtudSYLvft
+	OgYSZQViF9sI6UYy9Op49lkpchrK8b9WtlxENtjaaC9hdCfBAzKBl/V6NWMjJb+7yRl3oFj4HGAuX
+	2e7/1s9KrtNHCrJUq9Uw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxhXO-00Dx5m-9K; Wed, 23 Nov 2022 04:39:06 +0000
+	id 1oxhYF-00DxfY-FL; Wed, 23 Nov 2022 04:39:59 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxhXC-00Dx1U-Pr; Wed, 23 Nov 2022 04:38:56 +0000
+	id 1oxhXy-00DxXT-34; Wed, 23 Nov 2022 04:39:43 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id BC96461990;
-	Wed, 23 Nov 2022 04:38:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41DBDC433C1;
-	Wed, 23 Nov 2022 04:38:51 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 97A0B61A3D;
+	Wed, 23 Nov 2022 04:39:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 225EEC433C1;
+	Wed, 23 Nov 2022 04:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1669178332;
-	bh=QqrDbDLRcAQr4MUv+oZ9PutfTqVkNXwAFQlJXbN9odk=;
+	s=k20201202; t=1669178381;
+	bh=EVw4Vc0/gYpVHxzZAdah2zLNd6pA0gTQaK+joP95BKw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e//Q0Igg0hWRrSaEgwdgmlRQd6QUnoz7COLqfkBnj6LOQdy+G730Ld4a0mtbj4mXF
-	 2Ns0fWlqq5UDuwlf9gZi0p759DWrC6wlC8ge0bN3ZHQX7ihQg5stNciFtDWoi+LjF+
-	 jWzWEBluurxmktSYXewY3T9nYOayIZyWy4v5xTekb99HPZYHOBbHZT0xSp18BLpDTb
-	 NaAioF2pMRU0zHtAQ3RqHqTT9WvlSrvbvq0f834SNj6byw1vq/7zTaiB7b45SOLdS0
-	 ZrrsM+AKFkbmsFDsQ5lzS4sSEz1POrgSXaqhxXHOGYxGm3acH0ikOnG+UML9Urblga
-	 OhyWc3tcT/vgQ==
-Date: Wed, 23 Nov 2022 10:08:47 +0530
+	b=QeBxZCprwCTU86Pqv1jbwEiUULNLeEVvPC1vdnFLEOwo4ZjJ9TnndaaoA5XZ55BlH
+	 dFNUaBxj1NdIgxQuslei2pAmnW/Z2yQ9Ez0pbOGy0w60FJfyM8TQpvvGSwo4X/CPnL
+	 iGkeDfTcaooUjn+RtR+b8weXzQXvnVb2mgoYJ2ygsOCLKSiOMGNGANIMuXfckChAz+
+	 PyeRCc3K/Sfw5tX54bqUCF6lgw/E5TKozvtW8vmrDPLBxXa96QLuq80CiTdUw3XPSv
+	 11aAf/r27UgMrIlh/qUbpu0OZ3U7Hl/Jm7U0evtgaaia6qFgX/rpiLMZNJZusN3NFD
+	 cRxjZ+VpqSyfQ==
+Date: Wed, 23 Nov 2022 10:09:36 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: Rob Herring <robh+dt@kernel.org>,
@@ -70,17 +70,17 @@ Cc: Rob Herring <robh+dt@kernel.org>,
 	Guenter Roeck <linux@roeck-us.net>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v2 1/9] dt-bindings: drop redundant part of title of
- shared bindings
-Message-ID: <Y32j1+T3bBVTEDxO@matsya>
+Subject: Re: [PATCH v2 5/9] dt-bindings: drop redundant part of title (end,
+ part two)
+Message-ID: <Y32kCHhdLjQvSnE3@matsya>
 References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
- <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
+ <20221121110615.97962-6-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221121110615.97962-6-krzysztof.kozlowski@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_203854_920087_F8BC4584 
-X-CRM114-Status: GOOD (  11.37  )
+X-CRM114-CacheID: sfid-20221122_203942_224456_C69BC679 
+X-CRM114-Status: GOOD (  10.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,18 +99,38 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 21-11-22, 12:06, Krzysztof Kozlowski wrote:
 > The Devicetree bindings document does not have to say in the title that
-> it is a "binding", but instead just describe the hardware.  For shared
-> (re-usable) schemas, name them all as "common properties".
+> it is a "binding", but instead just describe the hardware.
+> 
+> Drop trailing "Node|Tree|Generic bindings" in various forms (also with
+> trailling full stop):
+> 
+>   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+>     -not -name 'trivial-devices.yaml' \
+>     -exec sed -i -e 's/^title: \(.*\) [nN]ode [bB]indings\?\.\?$/title: \1/' {} \;
+> 
+>   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+>     -not -name 'trivial-devices.yaml' \
+>     -exec sed -i -e 's/^title: \(.*\) [tT]ree [bB]indings\?\.\?$/title: \1/' {} \;
+> 
+>   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+>     -not -name 'trivial-devices.yaml' \
+>     -exec sed -i -e 's/^title: \(.*\) [gG]eneric [bB]indings\?\.\?$/title: \1/' {} \;
+> 
+>   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+>     -not -name 'trivial-devices.yaml' \
+>     -exec sed -i -e 's/^title: \(.*\) [bB]indings\? description\.\?$/title: \1/' {} \;
+> 
+>   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+>     -not -name 'trivial-devices.yaml' \
+>     -exec sed -i -e 's/^title: \(.*\) [bB]indings\? document\.\?$/title: \1/' {} \;
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Acked-by: Guenter Roeck <linux@roeck-us.net> # watchdog
 > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> # IIO
-> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/dma/dma-common.yaml           | 2 +-
->  Documentation/devicetree/bindings/dma/dma-controller.yaml       | 2 +-
->  Documentation/devicetree/bindings/dma/dma-router.yaml           | 2 +-
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+>  Documentation/devicetree/bindings/phy/brcm,ns2-pcie-phy.yaml    | 2 +-
+>  Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml      | 2 +-
+>  Documentation/devicetree/bindings/phy/ti,phy-gmii-sel.yaml      | 2 +-
 
 Acked-By: Vinod Koul <vkoul@kernel.org>
 
