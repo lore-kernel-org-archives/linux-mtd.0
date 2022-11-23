@@ -4,83 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2A98C4332F
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 13:53:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 449A7C4332F
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 14:42:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+VfoD/jP9d7fZuwmk8UsECCsM/6WtqoZCnM2nnJd/t0=; b=VUmmIVPpcmUPDYphFhcxNbCBW4
-	mgmtp204M8X7mPYqyrGTC/r/flJxahvSd+9+h2OXDpYxguSdoY0ns7pfZJnTzKgnz9oEYscGs8u1x
-	5CkdFYitEG0g1golijL5o42IDNvqolfz71SEKaIrPJae5grJSNs7L+PIgF7Isdyv6O4aTla/TKihe
-	ZVKdFLc0SjBaEztcE9vn/pceHk26rGt+TcvTOO8KjKSiqJQcV3ND8vNt30t0qmmiyNTDF2QDlCmZo
-	P1L/8hT/Ku3Z5XOLsR2bS9+XG7JUOK+9wkf2+/mig2ObmcWi2s6VetRFbBKWaXKxoUKAnyrECcO66
-	MoDdy78A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=2c7bHglxgdLUjj/Oycw59AMt7h6X5teXCY8CBQ60/wc=; b=10xfQqM/poJpqy
+	QNOwDq+/Y96iFc0M95oFSFnrvoBeutv8i/8QFA65jNTf731GP1RaqmQRfoWvjcN81scL/tsp0pVbG
+	/dMzjpZ7SHxofPRfsKrnq7j0ttx6iuTYPO04GMkbZHYbVmeV9z6hALmV4prk3guwB4bPnpA4Mcaea
+	OVmgQ6zjAJ+ZMIECr68q4JKHGEaoT/+HILtIiXAG+7SIyWGu0Bk6tsORe781R79J307e27s7xfrkH
+	g484I69YvGPjVVDqkkWcb2mO9Z/EJ/PWl4oF3KMKD1EwSaweFh0+rPiQL/MaYDwy/QruDzZzJX2fj
+	p1DZgKr7sXoisDuUp5zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxqAj-00HNmt-2p; Wed, 23 Nov 2022 13:52:17 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1oxqws-0007aX-2w; Wed, 23 Nov 2022 14:42:02 +0000
+Received: from michel.telenet-ops.be ([2a02:1800:110:4::f00:18])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxqAD-00HNbl-1x; Wed, 23 Nov 2022 13:51:46 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 8D4C061CB0;
-	Wed, 23 Nov 2022 13:51:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B70F3C433D6;
-	Wed, 23 Nov 2022 13:51:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1669211504;
-	bh=yn6IQg9xUUV9CgWL40Zq6y52rg1mn5sa8oD03o5v7Xs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UKfpNKKUztgIyNLf4JyG/Wh9x1SnC70ZZ6CMkTeLD14mkOzGlAm4+qghDz9TTaJEY
-	 oavU1DO373ElaIHQhIEpVZi9OKHf+AB7y5AZ3a0QM4K6Mda5mlxZI6uj77Y+34o3+z
-	 tC1+zaqNCkF1IRGWjNnvY9xTloZLlUjIwvwDNzzHVs6iAjJgjo18LVCElB+Z+suDGy
-	 RWQBO44v5C47KQUPl5LJXsrQ6VqWTj1W9The96h2CM4sfIP1b0DOy3ZhTq1Wp6bXDL
-	 C50DRWElKcd6PEaRVrgU5hEWY/A3MmvIZ+aqD+I2bHVUKaydHWSJ+FVF1rDhM8vyJp
-	 Av8NqbWSqNyRA==
-Date: Wed, 23 Nov 2022 13:51:32 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org, linux-can@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-pwm@vger.kernel.org,
-	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	linux-watchdog@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
+	id 1oxqwR-0007W2-Pa
+	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2022 14:41:38 +0000
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:881b:815b:474d:c3fd])
+	by michel.telenet-ops.be with bizsmtp
+	id nqhS2800R49U0Rd06qhSXG; Wed, 23 Nov 2022 15:41:30 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1oxqwH-001Rqj-SD; Wed, 23 Nov 2022 15:41:25 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1oxqwH-0012Hb-4O; Wed, 23 Nov 2022 15:41:25 +0100
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v2 1/9] dt-bindings: drop redundant part of title of
- shared bindings
-Message-ID: <Y34lZFSBEwuI6G+a@sirena.org.uk>
-References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
- <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
+	Richard Weinberger <richard@nod.at>,
+	Mark Brown <broonie@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-spi@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 4/6] memory: renesas-rpc-if: Improve Runtime PM handling
+Date: Wed, 23 Nov 2022 15:41:20 +0100
+Message-Id: <6f2bd3b2b3d98c5bed541d969900b2ad04f93943.1669213027.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1669213027.git.geert+renesas@glider.be>
+References: <cover.1669213027.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-In-Reply-To: <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
-X-Cookie: I'm rated PG-34!!
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221123_055145_166476_AD35A072 
-X-CRM114-Status: GOOD (  12.80  )
+X-CRM114-CacheID: sfid-20221123_064136_114781_46960CF4 
+X-CRM114-Status: GOOD (  12.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,55 +71,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5622518653611572956=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Convert from the deprecated pm_runtime_get_sync() to the new
+pm_runtime_resume_and_get(), and add error checking.
 
---===============5622518653611572956==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sez8m7aAndejrS5d"
-Content-Disposition: inline
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v2:
+  - No changes.
+---
+ drivers/memory/renesas-rpc-if.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
+index 83171242f9514c22..9346dcc29a36662e 100644
+--- a/drivers/memory/renesas-rpc-if.c
++++ b/drivers/memory/renesas-rpc-if.c
+@@ -304,12 +304,13 @@ int rpcif_hw_init(struct rpcif *rpcif, bool hyperflash)
+ {
+ 	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
+ 	u32 dummy;
++	int ret;
+ 
+-	pm_runtime_get_sync(rpc->dev);
++	ret = pm_runtime_resume_and_get(rpc->dev);
++	if (ret)
++		return ret;
+ 
+ 	if (rpc->type == RPCIF_RZ_G2L) {
+-		int ret;
+-
+ 		ret = reset_control_reset(rpc->rstc);
+ 		if (ret)
+ 			return ret;
+@@ -482,7 +483,9 @@ int rpcif_manual_xfer(struct rpcif *rpcif)
+ 	u32 smenr, smcr, pos = 0, max = rpc->bus_size == 2 ? 8 : 4;
+ 	int ret = 0;
+ 
+-	pm_runtime_get_sync(rpc->dev);
++	ret = pm_runtime_resume_and_get(rpc->dev);
++	if (ret < 0)
++		return ret;
+ 
+ 	regmap_update_bits(rpc->regmap, RPCIF_PHYCNT,
+ 			   RPCIF_PHYCNT_CAL, RPCIF_PHYCNT_CAL);
+@@ -650,11 +653,14 @@ ssize_t rpcif_dirmap_read(struct rpcif *rpcif, u64 offs, size_t len, void *buf)
+ 	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
+ 	loff_t from = offs & (rpc->size - 1);
+ 	size_t size = rpc->size - from;
++	int ret;
+ 
+ 	if (len > size)
+ 		len = size;
+ 
+-	pm_runtime_get_sync(rpc->dev);
++	ret = pm_runtime_resume_and_get(rpc->dev);
++	if (ret < 0)
++		return ret;
+ 
+ 	regmap_update_bits(rpc->regmap, RPCIF_CMNCR, RPCIF_CMNCR_MD, 0);
+ 	regmap_write(rpc->regmap, RPCIF_DRCR, 0);
+-- 
+2.25.1
 
---sez8m7aAndejrS5d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 21, 2022 at 12:06:07PM +0100, Krzysztof Kozlowski wrote:
-> The Devicetree bindings document does not have to say in the title that
-> it is a "binding", but instead just describe the hardware.  For shared
-> (re-usable) schemas, name them all as "common properties".
-
-Acked-by: Mark Brown <broonie@kernel.org>
-
---sez8m7aAndejrS5d
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmN+JWMACgkQJNaLcl1U
-h9CJ0gf/ajSRpLgN3RoHR7wLxFr99y5vWRywVoOaKU+lLq3UY2O6a9ssY8wOblzx
-J9LbUP4Acep2fofTZCX1Ks2sTUHXNBB95SaeCwpSD/MX2HltHr0QvTGh8Lc9EfRf
-f4l/ayjov4DbVsOJ019O7MKSgyuKezLb6Rj/5S38OrqdREbbzDoFe2ah8rSxpA8m
-OQPEsY4eAbVfELEo/JQ86QYXN8gT6p3qA0+8IxDb0D+iLi3JCIz3GTrn+ZCudWRS
-DkbD00vhGbeEaAbI/ufYp/KUWT0wfIoONENSAdGhmGMd+deqbmOt1Ryt+YoEt49j
-pRMeSDCxuBZIpBjQfw7H+5ofOT8jsg==
-=hoZL
------END PGP SIGNATURE-----
-
---sez8m7aAndejrS5d--
-
-
---===============5622518653611572956==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5622518653611572956==--
-
