@@ -4,67 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FAA6C4167D
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 14:53:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85AA4C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 15:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IpkE9s9YQ7Kq7bftGMpCRWhsiMbFr2w++EBxkxs84K4=; b=MtKxom+zJZ9+FP2rK9WPKtT7NE
-	swJdexD+5m/TMdOkDfEAsxH07rHmXU5v8IS8Ik3rBck87ZCMyRezqi+HIA2Fb0/K4pX0dbeH6DCGZ
-	/mhX038JT4cc2GY/qWAsqC0ZUjvVs2y8AnMv12xoX0P2mjRsRJfgPc1zpZDvfxPFLF6y5baXu2mZj
-	ZcHRZzLTQxFLkQb/MFYs2NVJB/EDfbB3c7X7k0EJOL7GBZUHExwSIvgQJNLtdM0kMgraJ0M1XlAnN
-	sal68mfa0w90onM7TGQk8Mpv2Qvmp2A8mJWXbX0K3Q7Kl4jFoNpjiSVvUccr7Y0KfJlnME22KgXaB
-	EZcvbBPA==;
+	bh=ZWAjtANV4k+kCFoxpWrtQYk4w/DMvgE9J1vL4+5UlTw=; b=pwl5hF/vf8+X3HtaIwdbexPia1
+	soAmwEm6uGOeMLbTeY6HrhLSz1HJUV0uYUeMpWfZzFhnKuO4YAF59DA3az6lb0NU3NfouzjZhpSeN
+	7eOFM/VI+qE3/15drRZo58ngPuK/LQYlA08PA2WinxU1zIA7JdWR9YR/T23IW9Htt1506KVpU9Vwq
+	L9f0Zy+v4eI8nw5dtCoO03fD9U29jnBpgBhZA8yaPDHnzVfCeZrDEnzd2lA4Kp1kvMKKBWvaywcjV
+	ABGX2cBdpif3InrYQyZ86W9zcv1iQOSsfylLe01KQAdTY4mWgZ8nqi0lF5CgZL9aZAl4lVhQWssk4
+	KO6KSAgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxr6y-000CuE-6G; Wed, 23 Nov 2022 14:52:28 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1oxrp1-000VOZ-56; Wed, 23 Nov 2022 15:37:59 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxr6Y-000Cse-Km
-	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2022 14:52:03 +0000
+	id 1oxroU-000VHt-CZ; Wed, 23 Nov 2022 15:37:27 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id D9A66B8201C;
-	Wed, 23 Nov 2022 14:43:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4054C433D6;
-	Wed, 23 Nov 2022 14:43:53 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B618861DA6;
+	Wed, 23 Nov 2022 15:37:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47180C433D6;
+	Wed, 23 Nov 2022 15:37:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1669214636;
-	bh=Y//1b3rNjcukiNpZ5Pvh7pYLjJ73zqnquLe7wn350Y8=;
+	s=k20201202; t=1669217845;
+	bh=UanCtzyfyh7s6GC+lB/BgGuUYEuJMVRrxquRNUED7QE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZG0A8BqvT2ORUrlb7I1sLgQbAJlUfWRx4X3QT05SHfMJHOiZi+oRORqmZj+4Ve1sr
-	 yrWervl3veC7SaL/o17MVgz3Dhfcy0sfIdmXTsu4djT54VPEw3RJkWavMyc6YUx1SN
-	 g9poRnTZVXeouBC0UZFuX6m9uQ4XqT9Rm2SZUstZY6NdbdpCNIZXXUg8rJ/rXGDFnm
-	 xocVZ/NP1GyqV/SPtlOUK0KMz9pz+BK8ggFE9KJ+P7VJYkoo1Jc9GcfSQ0yDAa9SVX
-	 zznkZz4xqfL53zsXyhV3+8pHvNOb+T4KROZfGYgEnEdEcDbd2YXbZBbjcYD5dpvcKV
-	 yktlDGX0NXmHQ==
-Date: Wed, 23 Nov 2022 14:43:50 +0000
+	b=m6P+8V1/dZMe1Sdy38Jer2Kq0kWOQcWPpch/6FCsgX7mogbRiZx+nRYmaqo4cOT5c
+	 2VBhRCgyAp1QZeQHA3EETx8HSmmQjCOuPPa172HaY1MAN9akX9CNVq37lxVTz8BMr8
+	 BBLccHPaIU6D7mYb41M582jELquyQZxntjmwvKYXyotA//5tW/2MbJATyer9nFW/f0
+	 ufcjB46KzIThaQo20IBXLl20DeebxUayijZK5CPRM4y+7O6LBfTdsu4RRUcLHP5KOK
+	 b4r/lHFcNKfmA5EJjEfSCvbMR52QJimK5ICXr91dLn0KonGcS4j6q3bU+aNI+8DhYx
+	 YzSjHFJvVHfAg==
+Date: Wed, 23 Nov 2022 15:37:13 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org, linux-can@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-pwm@vger.kernel.org,
+	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	linux-watchdog@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] memory: renesas-rpc-if: Pass device instead of
- rpcif to rpcif_*()
-Message-ID: <Y34xpkf4c55D4VRc@sirena.org.uk>
-References: <cover.1669213027.git.geert+renesas@glider.be>
- <0460fe82ba348cedec7a9a75a8eff762c50e817b.1669213027.git.geert+renesas@glider.be>
+	Viresh Kumar <vireshk@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v2 4/9] dt-bindings: drop redundant part of title (end)
+Message-ID: <Y34+KaMMI5H/qBlI@sirena.org.uk>
+References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
+ <20221121110615.97962-5-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <0460fe82ba348cedec7a9a75a8eff762c50e817b.1669213027.git.geert+renesas@glider.be>
+In-Reply-To: <20221121110615.97962-5-krzysztof.kozlowski@linaro.org>
 X-Cookie: I'm rated PG-34!!
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221123_065202_838857_2ED14551 
-X-CRM114-Status: GOOD (  11.59  )
+X-CRM114-CacheID: sfid-20221123_073726_483899_45B4CC16 
+X-CRM114-Status: GOOD (  12.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,47 +91,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0340446247654049478=="
+Content-Type: multipart/mixed; boundary="===============2546547602503291188=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============0340446247654049478==
+--===============2546547602503291188==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="BKAJETaVx6g41XLW"
+	protocol="application/pgp-signature"; boundary="c3/TYdFfqHAXL0OZ"
 Content-Disposition: inline
 
 
---BKAJETaVx6g41XLW
+--c3/TYdFfqHAXL0OZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Nov 23, 2022 at 03:41:21PM +0100, Geert Uytterhoeven wrote:
-> Most rpcif_*() API functions do not need access to any other fields in
-> the rpcif structure than the device pointer.  Simplify dependencies by
-> passing the device pointer instead.
+On Mon, Nov 21, 2022 at 12:06:10PM +0100, Krzysztof Kozlowski wrote:
+> The Devicetree bindings document does not have to say in the title that
+> it is a "Devicetree binding", but instead just describe the hardware.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---BKAJETaVx6g41XLW
+--c3/TYdFfqHAXL0OZ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmN+MaUACgkQJNaLcl1U
-h9Bcugf9Fq5kxq2SwxU/HdgpmKvb/nRaHNMV7D4mCFZNMxmkwUY4eMNTKzbpvly3
-D4lSGL4xRZWS1hQVR4EK5Xs5BCj2PqvvYhNTAM4BLDgLP/qK/+8B9Ezs8PuSYDRg
-CRyR3HF7GGKhP0NM8Vj9+M+OoldvWwfAFp5wx4kp5henzsB1zSuwIs90Z4FxsQTN
-IiCpmwcBJrmDQcBwYeZL+rGYiVWfs5xm/7WPt/E5ssbMGXms/cOnhjMZHgexSFEv
-ZPT3WyWEY7Ka01Ri1OxtooAIgdQ3BHnxEswLJbAhJj5Reb9kPfvl8UN+6h1iV1f6
-jLNoNQ5Gr5aHbQCbbs72ASpRcUqCqA==
-=evAV
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmN+PikACgkQJNaLcl1U
+h9Axvwf9HW9i1/TYYTLxyy8fUtu5a3P9a9v1aqZ5Vk5GOoY4gLBJ+Nn6TQz4e3WA
+B/mLs0ELXPm3nJVTGPQfpqgCN3STLaUwDcVJIskltCSFn08YUWFcyfkQWyBkAWym
+cNTiF+sk8z6Aw5orSNcjJFWhpEZejA/1yQ+eBJbfm3d44vR/G2D5tMGJXmbE3rEA
+bRa98QZef1l34JDi6+gadC0w7LX4jj8Q41K/mjRuLqdmV6BUstQvCsKC/8YIeoua
+G3jLmit5vd8KXG2eEiqK2lY2t5FBYlNLXqLoaE2yjZFcmvABd6Vh/2JDcOOFeBpK
+sPr6SAIesrsLQzCHS/nuT/saF9E/UA==
+=p0qY
 -----END PGP SIGNATURE-----
 
---BKAJETaVx6g41XLW--
+--c3/TYdFfqHAXL0OZ--
 
 
---===============0340446247654049478==
+--===============2546547602503291188==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -126,5 +140,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============0340446247654049478==--
+--===============2546547602503291188==--
 
