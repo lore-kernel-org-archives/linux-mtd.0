@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3FF1C433FE
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 14:44:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7445EC4332F
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 14:44:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mZwziWxOqwhYqxsma94dJydbioX308oiukYHlmQJjG4=; b=VmkdcEdbEQVXE6
-	+Re2NVkAB2ie2vpznrIkBQSv1EcpQBG9CSD4jPkTpySbRJah/Rznhx+g9K1jSsBrBbdRA8tDe0qBq
-	OhsOlgAbiQkMyQz8gWjqJmNqmEff0vfKzL6CYpcfBoAaS6lXsQLfRQP/qWU78ciiCkn/Qa6OhYQG6
-	VVzfJz4d0lzfJFXjbi1Fd0AVKo6ZTAE0zzD0JZKRXYDf0hS9gjEtoCchhBlHzangdpYcT5HSYCPfa
-	mSWsVfoVwnJ8ip2Xv57HP2gl/Tnh3Hjjb/I3JfmQMHVA7XnQ2yOxauxaV5G0280sFiD3yy/pfoNRB
-	oE1FuRdCGBSoWs0/HmeA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aXlEnaBKtmQW2gWSVAq5dno9kVTXKjPXBsksdzyKw/g=; b=O1Jsx+lnTuvnLG
+	aohAB7/YZwkXaJsi6YiE8XAqBKvZeNULrGjzD9W4n/EG4nlq0Rzfte0kpAYZwglUJXlUDuh992vSj
+	lgj83tZNqYxGghunIE/qppxGMPXFzizOckcWs8Iw4O/wFhPmUGzO4GJb5pN+MmqRw4iCPTdArtA/M
+	knPQ7fJhpEAOsvkd4EslxdcB5F75X6SLCqhzht1FX5hNZfdD0cCvs4vOALklkdv5KE69XBqwWnGfk
+	9vPoVLH7Ibr60LpZqCd1mQvMFL0Q/pYvybWJnhOnqKpWfDx4p5gzp58uYn3bmr0wuYd9iFrFX033S
+	Kqsy3UX6fWVZKTLkex5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxqyi-0008CJ-Jw; Wed, 23 Nov 2022 14:43:56 +0000
+	id 1oxqz5-0008Qr-LK; Wed, 23 Nov 2022 14:44:19 +0000
 Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxqwS-0007Wk-G2
-	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2022 14:41:39 +0000
+	id 1oxqwS-0007Wj-EG
+	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2022 14:41:40 +0000
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:881b:815b:474d:c3fd])
 	by albert.telenet-ops.be with bizsmtp
-	id nqhS2800C49U0Rd06qhSTe; Wed, 23 Nov 2022 15:41:30 +0100
+	id nqhS2800949U0Rd06qhSTc; Wed, 23 Nov 2022 15:41:30 +0100
 Received: from rox.of.borg ([192.168.97.57])
 	by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.93)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1oxqwH-001Rqh-NY; Wed, 23 Nov 2022 15:41:25 +0100
+	id 1oxqwH-001Rqf-F7; Wed, 23 Nov 2022 15:41:25 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1oxqwH-0012HN-2m; Wed, 23 Nov 2022 15:41:25 +0100
+	id 1oxqwH-0012HA-00; Wed, 23 Nov 2022 15:41:25 +0100
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -50,16 +50,14 @@ Cc: Philipp Zabel <p.zabel@pengutronix.de>,
 	linux-spi@vger.kernel.org,
 	linux-renesas-soc@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 2/6] memory: renesas-rpc-if: Move resource acquisition to .probe()
-Date: Wed, 23 Nov 2022 15:41:18 +0100
-Message-Id: <c1012ef1de799e08a70817ab7313794e2d8d7bfb.1669213027.git.geert+renesas@glider.be>
+Subject: [PATCH v2 0/6] memory: renesas-rpc-if: Rebind fixes and misc cleanups
+Date: Wed, 23 Nov 2022 15:41:16 +0100
+Message-Id: <cover.1669213027.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1669213027.git.geert+renesas@glider.be>
-References: <cover.1669213027.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221123_064136_785550_E0B50A27 
-X-CRM114-Status: GOOD (  15.18  )
+X-CRM114-CacheID: sfid-20221123_064136_692096_505166E8 
+X-CRM114-Status: GOOD (  20.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,113 +74,69 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-While the acquired resources are tied to the lifetime of the RPC-IF core
-device (through the use of managed resource functions), the actual
-resource acquisition is triggered from the HyperBus and SPI child
-drivers.  Due to this mismatch, unbinding and rebinding the child
-drivers manually fails with -EBUSY:
+	Hi all,
 
-    # echo rpc-if-hyperflash > /sys/bus/platform/drivers/rpc-if-hyperflash/unbind
-    # echo rpc-if-hyperflash > /sys/bus/platform/drivers/rpc-if-hyperflash/bind
-    rpc-if ee200000.spi: can't request region for resource [mem 0xee200000-0xee2001ff]
-    rpc-if-hyperflash: probe of rpc-if-hyperflash failed with error -16
+The Renesas RPC-IF provides either HyperFlash or SPI host access.
+To handle this, three drivers are used:
+  1. The RPC-IF core diver,
+  2. An HyperFlash child driver,
+  3. An SPI child driver.
 
-The same is true for rpc-if-spi.
+Currently this driver collection suffers from a sub-optimal division of
+roles and reponsibilities, leading to (un)bind issues: after manually
+unbinding the child driver, rebinding the child driver fails with
+-EBUSY.
 
-Fix this by moving all resource acquisition to the core driver's probe
-routine.
+This patch series aims to fix this, by splitting off private data and
+making the RPC-IF core driver responsible for resource acquisition.
+After that, a few customary cleanups are provided.
 
-Fixes: ca7d8b980b67f133 ("memory: add Renesas RPC-IF driver")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - Move forward in series,
-  - Add Fixes tag.
----
- drivers/memory/renesas-rpc-if.c | 49 ++++++++++++++++-----------------
- 1 file changed, 24 insertions(+), 25 deletions(-)
+This has been tested on the Salvator-X(S) and Ebisu-4D (HyperFlash) and
+White-Hawk (QSPI FLASH) development boards.
 
-diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index 224973ac859f88fa..42c5f9f10135b86a 100644
---- a/drivers/memory/renesas-rpc-if.c
-+++ b/drivers/memory/renesas-rpc-if.c
-@@ -277,32 +277,7 @@ static const struct regmap_config rpcif_regmap_config = {
- 
- int rpcif_sw_init(struct rpcif *rpcif, struct device *dev)
- {
--	struct platform_device *pdev = to_platform_device(dev);
- 	struct rpcif_priv *rpc = dev_get_drvdata(dev);
--	struct resource *res;
--
--	rpc->base = devm_platform_ioremap_resource_byname(pdev, "regs");
--	if (IS_ERR(rpc->base))
--		return PTR_ERR(rpc->base);
--
--	rpc->regmap = devm_regmap_init(&pdev->dev, NULL, rpc, &rpcif_regmap_config);
--	if (IS_ERR(rpc->regmap)) {
--		dev_err(&pdev->dev,
--			"failed to init regmap for rpcif, error %ld\n",
--			PTR_ERR(rpc->regmap));
--		return	PTR_ERR(rpc->regmap);
--	}
--
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
--	rpc->dirmap = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(rpc->dirmap))
--		return PTR_ERR(rpc->dirmap);
--	rpc->size = resource_size(res);
--
--	rpc->type = (uintptr_t)of_device_get_match_data(dev);
--	rpc->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
--	if (IS_ERR(rpc->rstc))
--		return PTR_ERR(rpc->rstc);
- 
- 	rpcif->dev = dev;
- 	rpcif->dirmap = rpc->dirmap;
-@@ -705,9 +680,11 @@ EXPORT_SYMBOL(rpcif_dirmap_read);
- 
- static int rpcif_probe(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
- 	struct platform_device *vdev;
- 	struct device_node *flash;
- 	struct rpcif_priv *rpc;
-+	struct resource *res;
- 	const char *name;
- 	int ret;
- 
-@@ -732,6 +709,28 @@ static int rpcif_probe(struct platform_device *pdev)
- 	if (!rpc)
- 		return -ENOMEM;
- 
-+	rpc->base = devm_platform_ioremap_resource_byname(pdev, "regs");
-+	if (IS_ERR(rpc->base))
-+		return PTR_ERR(rpc->base);
-+
-+	rpc->regmap = devm_regmap_init(dev, NULL, rpc, &rpcif_regmap_config);
-+	if (IS_ERR(rpc->regmap)) {
-+		dev_err(dev, "failed to init regmap for rpcif, error %ld\n",
-+			PTR_ERR(rpc->regmap));
-+		return	PTR_ERR(rpc->regmap);
-+	}
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
-+	rpc->dirmap = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(rpc->dirmap))
-+		return PTR_ERR(rpc->dirmap);
-+	rpc->size = resource_size(res);
-+
-+	rpc->type = (uintptr_t)of_device_get_match_data(dev);
-+	rpc->rstc = devm_reset_control_get_exclusive(dev, NULL);
-+	if (IS_ERR(rpc->rstc))
-+		return PTR_ERR(rpc->rstc);
-+
- 	vdev = platform_device_alloc(name, pdev->id);
- 	if (!vdev)
- 		return -ENOMEM;
+Changes compared to v1[1]:
+  - Move the two fixes forward and add Fixes-tags to ease backporting,
+    as requested by Krzysztof,
+  - Add Acked-by,
+  - Rebased cleanups,
+  - Remove Runtime PM wrappers,
+  - Drop patch to add system suspend/resume support to the RPC-IF core
+    driver, as this is apparently not needed on R-Car M3-N and R-Car E3,
+    nor fixes the issue on R-Car H3 ES2.0.  I will reply to the original
+    patch with my latest investigation results.
+
+Thanks for your comments!
+
+[1] [PATCH 0/7] memory: renesas-rpc-if: Rebind and s2ram fixes
+    https://lore.kernel.org/r/cover.1656341824.git.geert+renesas@glider.be
+
+Geert Uytterhoeven (6):
+  memory: renesas-rpc-if: Split-off private data from struct rpcif
+  memory: renesas-rpc-if: Move resource acquisition to .probe()
+  memory: renesas-rpc-if: Always use dev in rpcif_probe()
+  memory: renesas-rpc-if: Improve Runtime PM handling
+  memory: renesas-rpc-if: Pass device instead of rpcif to rpcif_*()
+  memory: renesas-rpc-if: Remove Runtime PM wrappers
+
+ drivers/memory/renesas-rpc-if.c | 152 ++++++++++++++++++++------------
+ drivers/mtd/hyperbus/rpc-if.c   |  18 ++--
+ drivers/spi/spi-rpc-if.c        |  14 +--
+ include/memory/renesas-rpc-if.h |  34 +------
+ 4 files changed, 118 insertions(+), 100 deletions(-)
+
 -- 
 2.25.1
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
