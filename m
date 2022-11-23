@@ -4,82 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55EEDC4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Nov 2022 20:17:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CDCBC433FE
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 01:09:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4fPbTBCwYXrxxcaFsbwC8yW3RD4/algX8iuBkXqmO3s=; b=RvLbKHQ0Gg8/vRUnPdTUnKwJoE
-	L0IdAxddyCP+J92Y4+H50ZqBwKKKeDSsbmxGn4vnlJwwL0oOmcUNPiTxTeTqEefUzSaeJuZdsPg6k
-	IeveN3ORJwzAY42NfRr8le6HvW5C8/ki8iHNRQU8WjNsrz0DPln9mUaV1RrRbqNNJVTqeoHaPxh4C
-	h1+VfOoOdyXnQGQq9Tu8X2UC5pjNSlcMassdClWv7kYsVcOjDOrLDVPV5r32Tgknk+Ob5cLKY6qy4
-	NFnvXVOhos23ZyH5CAVH2c0MbgmI6sn6goi4Kq3VSF58VUPC8sTRIttwT7fdXo6f3XBD85Ymf5O+z
-	hhdwUkdA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:To:Cc:From:Subject:
+	References:In-Reply-To:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1jGSv4V0OE/mxlMY0l06w/c0CLQ389uDfFngmxxwtdM=; b=F2VSIwAcx96Nt5
+	zPsh+c7eYwM8NqZDQMIkUBDapsLKarUAhejwCJZymiuB3QYqcERpjWdlQ+uF6Ito/pqqj9Sek5+v+
+	zProbvYz2jkWIo43x4PjXINTpqmcSVQTTNhp6CZRqIg76KZ6Sd5FOHvok7hSI5Nmhva8TN9TErqTY
+	TnnCt0w82B8+TmqklZkZk44IOtK7KJ2LPRo61O6DDOItJ8+UYNPKQvW1GgEg6crwyzxKgCs8CAuwX
+	6ALj6J0k2O31eW7dGDtNuQjmXEbEvcoGf/Jo+OPhRpPRfUE46mGO9rUqky/XaORKma7lJXh2ZFqK2
+	0tbQvtiAaARCWWZCJobQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxZhq-00BkSl-I8; Tue, 22 Nov 2022 20:17:22 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1oxeFM-00CXk1-9J; Wed, 23 Nov 2022 01:08:16 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxZhn-00BkR8-9r
-	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2022 20:17:21 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1oxZhX-0006Qx-Bo; Tue, 22 Nov 2022 21:17:03 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1oxZhR-005v1B-UM; Tue, 22 Nov 2022 21:16:58 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1oxZhS-000s7U-3N; Tue, 22 Nov 2022 21:16:58 +0100
-Date: Tue, 22 Nov 2022 21:16:54 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-	alsa-devel@alsa-project.org, linux-staging@lists.linux.dev,
-	linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-fbdev@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
-	Lee Jones <lee.jones@linaro.org>,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
-	Grant Likely <grant.likely@linaro.org>, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
-	chrome-platform@lists.linux.dev, linux-actions@lists.infradead.org,
-	linux-gpio@vger.kernel.org,
-	Angel Iglesias <ang.iglesiasg@gmail.com>,
-	gregkh@linuxfoundation.org, linux-rpi-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	openipmi-developer@lists.sourceforge.net,
-	linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Purism Kernel Team <kernel@puri.sm>, patches@opensource.cirrus.com,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org, Wolfram Sang <wsa@kernel.org>,
-	linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-	netdev@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 000/606] i2c: Complete conversion to i2c_probe_new
-Message-ID: <20221122201654.5rdaisqho33buibj@pengutronix.de>
-References: <20221118224540.619276-1-uwe@kleine-koenig.org>
- <20221122185818.3740200d@jic23-huawei>
+	id 1oxeFC-00CXi8-CA; Wed, 23 Nov 2022 01:08:07 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D994560F04;
+	Wed, 23 Nov 2022 01:08:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33D46C433B5;
+	Wed, 23 Nov 2022 01:08:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1669165685;
+	bh=qTQ21cFsHNaq36zv0IktHLxNFPVLWU4zT0U5TeMVodI=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=t1GF3SzcQqEax6YraA5cSidEEBrY+t9CKMvXX1RB2OIOQGszcdQKKFeS2makpGNNh
+	 e4I4P34f0tkGChp7gb47xQ/AGIz3FYUjxTW2+uMyfIWKA/DqFQbQRgua2C8UYfCQ8H
+	 LUD9FfLW3L0tpgSJxKD6isoQQEkiA79vLzeZkQWRdmvpXdYAjqtPxd49k0qPQ+Wp30
+	 DhjwqykE7JWbCdDok81NTKOLoNJQevNoBRbcazCXpjtjCDJPo+kV+m2Jkl2prEKmAW
+	 W2RbDr28IQOUcmdrWeOyl/WRLLZSR9ClBHGr6O6aJQnPsTDE9+nb7rS/f6xsjvKfLe
+	 Zz4cyioi1Jocg==
 MIME-Version: 1.0
-In-Reply-To: <20221122185818.3740200d@jic23-huawei>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+In-Reply-To: <20221121110615.97962-4-krzysztof.kozlowski@linaro.org>
+References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org> <20221121110615.97962-4-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 3/9] dt-bindings: clock: st,stm32mp1-rcc: add proper title
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Andrew Lunn <andrew@lunn.ch>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Guenter Roeck <linux@roeck-us.net>, Jonathan Cameron <jic23@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring <robh+dt@kernel.org>, Sebastian Reichel <sre@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org, linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org, linux-pm@vger.kernel.
+ org, linux-pwm@vger.kernel.org, linux-riscv@lists.infradead.org, linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org, linux-spi@vger.kernel.org, linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org, netdev@vger.kernel.org, virtualization@lists.linux-foundation.org
+Date: Tue, 22 Nov 2022 17:08:03 -0800
+User-Agent: alot/0.10
+Message-Id: <20221123010805.33D46C433B5@smtp.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_121719_371026_9C227C70 
-X-CRM114-Status: GOOD (  16.47  )
+X-CRM114-CacheID: sfid-20221122_170806_477439_5232ED69 
+X-CRM114-Status: UNSURE (   7.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,92 +67,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1312490846625247873=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Quoting Krzysztof Kozlowski (2022-11-21 03:06:09)
+> Add device name in the title, because "Reset Clock Controller" sounds
+> too generic.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> ---
 
---===============1312490846625247873==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="t3mjk627u66tfbb3"
-Content-Disposition: inline
-
-
---t3mjk627u66tfbb3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Nov 22, 2022 at 06:58:18PM +0000, Jonathan Cameron wrote:
->=20
-> Queued all of the below:
-> with one tweaked as per your suggestion and the highlighted one dropped o=
-n basis
-> I was already carrying the equivalent - as you pointed out.
->=20
-> I was already carrying the required dependency.
->=20
-> Includes the IIO ones in staging.
->=20
-> Thanks,
->=20
-> Jonathan
->=20
-> p.s. I perhaps foolishly did this in a highly manual way so as to
-> also pick up Andy's RB.  So might have dropped one...
-
-You could have done:
-
-	H=3D$(git rev-parse @)
-	b4 am -P 49-190 20221118224540.619276-1-uwe@kleine-koenig.org
-	git am ...
-	git filter-branch -f --msg-filter "grep -v 'Signed-off-by: Jonathan'; echo=
- 'Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>'; echo '=
-Signed-off-by: Jonathan Cameron <jic23@kernel.org>'" $H..
-
-(untested, but you get the idea).
-
-> Definitely would have been better as one patch per subsystem with
-> a cover letter suitable for replies like Andy's to be picked up
-> by b4.
-
-Next time I will go for one series per subsystem which I like better
-than one patch per subsystem.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---t3mjk627u66tfbb3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmN9LjMACgkQwfwUeK3K
-7An96wf/RMtsCSXVJy8BDrXiXMhey9OEm8p08ulRn0lKYlG54KR8nU/s77uuMjGS
-99aUfUU56Abxk02DuBv6N5Bax8nlFyIlUgkfaYPP9iN1TkF5XiucQ0Se4/haYL4A
-q11UqWIcKBS+5BL3K6Bl1Cqv4dPYpRvs99X3jlU6JmhFqJPPhPgAu0p74arSvLie
-kN6wgOGVdCjZTRD+Z7FxfIQPZqvVo7anPAynyk7XfgTXMSAK80JPR2UeMfvQ7yr2
-W28htsacTaJSnPOb1VIrhN8OytpxASYa120EJ8augNmBXC0IzvjosWI0LZnNljAU
-izPd/d6lzDCP0Mz/LU9QCBYUR1jxuQ==
-=KmMu
------END PGP SIGNATURE-----
-
---t3mjk627u66tfbb3--
-
-
---===============1312490846625247873==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Acked-by: Stephen Boyd <sboyd@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1312490846625247873==--
-
