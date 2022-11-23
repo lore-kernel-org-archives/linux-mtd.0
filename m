@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C2D8C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6978C433FE
 	for <linux-mtd@archiver.kernel.org>; Wed, 23 Nov 2022 21:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ETwUxYqPeeBpUEdjC1Vgzln/Qn0z53N8CXIJ7wwGAJg=; b=PaX9uDk0J3t+eR
-	1d1KghqrkIgWfqpFInMCv+KvgB4yu9rdkyS+PCMd/A4duaMyIVZVS5H1EbzQGeFQtH0QPCW016Drt
-	CVKSmJJDJmf4IT/mO21WvzEMPxHcma5iZt2mp/BGeoPVdEmjHVG6oy+dFzvfnzqrD/A41Ksgdrdmr
-	hoSj4obbrfuEk6YIhmINVG6cr1jgvAaLW75KXTFnMCvyutUrsuj7449XrVSgbXoNk8ulBReAUJQ1e
-	hKXKqSrIQpPWAaIMPkxgc6UjZZrFPa8bEitBqzhY2GssQrSC5tmxy22NjjlsJINlK0h+3b1gpCJ67
-	zE0mVkDFwxG2nLoOlUFw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SQ325K3K5G9oG+VKcYVR5nLKL1NQZU/Qcq4vt/wJEFQ=; b=vL9dw93v2+sOxB
+	c50Mec84VUqoeP0K9gNNO5EI7LrPcVVjuOajH9hiwEtopBVwsegDc6UldQfIanbk+nkFS6EQNZL8+
+	jsEp+bjK4HbBiMu1gycbE7PVwXi/33ER1rrOvRgJEAnnmQn+kV/uWKXIjtqTXhDBSPBb21MwgXg5j
+	CRH1uQTCAoTtmbwSJstuqTgHu88kIspaTBgZV+/x6q36nP5WuYWMzjXJuSFNIrkmqsAwLzHmuvivw
+	WIveKid7ZT78Npw1ML2IAEtTr8e/HOD4ZOkXQyJgrUutD+ScGVYAXEdrWUCob4V7F6b6ngx1NUfAj
+	Ue4svgsE9dT5LEmBQmyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxx42-002T9v-80; Wed, 23 Nov 2022 21:13:50 +0000
+	id 1oxx45-002TAL-Ej; Wed, 23 Nov 2022 21:13:53 +0000
 Received: from mail-qt1-x831.google.com ([2607:f8b0:4864:20::831])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxx3x-002T8o-WD
-	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2022 21:13:47 +0000
-Received: by mail-qt1-x831.google.com with SMTP id w9so12053027qtv.13
-        for <linux-mtd@lists.infradead.org>; Wed, 23 Nov 2022 13:13:44 -0800 (PST)
+	id 1oxx3z-002T9W-7j
+	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2022 21:13:49 +0000
+Received: by mail-qt1-x831.google.com with SMTP id l15so24141qtv.4
+        for <linux-mtd@lists.infradead.org>; Wed, 23 Nov 2022 13:13:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=timesys-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jCAdz79Q9Nl+OKyzqzGeecpOB8hVla9Ab63J2ksR6Vs=;
-        b=hn8hQ/eozXMiB5C6TMwm0AOG6mw/bHwooPBiXgxeZ90DttPFa3/u7OAtBOMpBX+nSj
-         hsJx7G1859fRsXUMsxRPKoTHTPdAW/YiS2AGfKDandRFwGbAh1ILJn3G6uG1UFD2CUWv
-         Iy3hSGc+19ek5rUa6ltWn7D79B3Rj8yNCZ6nW3jASD3QrYMB7nGIgCv7R2EMHq8g5a3n
-         +4GtO5FUBv1wM2mUpgOPf/zxXtslzi9qZcfew69CKjEC+FEbRud+/JWxmYr1VNvBAJ59
-         DbI7ivMeVBd8QyWhVgyD5LTb2ZC4CF1SO5ljh2SfGMJbCAQHNhOSoQZv57k4suUi/qcq
-         h42Q==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=REepYSvQGyqEeu/ZRQp2JZIqxZIOwqWc5SzYerGHAew=;
+        b=mculQF0leNtbQou2zemAjMCIPOe4mtbo6ZaI3SoQUOrPYbmpwZjKEURMJuNIddSc0K
+         S0SKnprU6XhARUarT6G5oq5IhiYPe3iCfjHhP19NfZOCod6gSMVaM+N36/htjyEJDSCd
+         49SL3RXDf/lCk1srcNhPhPwOnmWmch4f72YD5UGOLHWQPMezBsZ7EZ+rngTEbpblm8IR
+         Nn7+X0vSvW/en7Veg8K0fBQ4wt4jP+16DKieDVXvF1ZNlAokrCxrs0ZECvwXu4N6+Kb8
+         X9Ux96PTNRGle1f8x9TN2wF+3JIk4lWegfmhAovLg87swEFnBYR+at6lXd4wZWH2bEiX
+         oRDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jCAdz79Q9Nl+OKyzqzGeecpOB8hVla9Ab63J2ksR6Vs=;
-        b=dFawBotjiC0nS+QiiXrDgXrYhSV3Ia/RCvRWlD73DyG5wuueVwxj/g5snutS7beX91
-         lpvZe870xo7wUnQOfRoWVEAylxhdn9j3HqkhJR0SNjL03SGktjqEQJpOACsPCHQXwGwP
-         IqG/mCOzg+bUuS31ACUJK6pP71o0+OlCyKvmqf9Ry9lq2GraP4U7QHjbl41JXBwl2MXx
-         6mtOinMBe3dUIle0IBpCt4DwCLyVh/AA561CSRw1cjSP9H42FyNIo22MiLPC11M34dCt
-         J5gdf9CNmiCFATlUPL5hSgMTYYDvnYwbwTNYvWkBiD+PuV2QTWJWIm85RS3JuDbkx8WM
-         HWZA==
-X-Gm-Message-State: ANoB5plFwchOkuYp7e8xz3Evu7o3SfxAOvOffvMcaXj+pRHPTl6fxm/j
-	Y0Y7tUyoZkLo0MXMlLR30Hy2iA==
-X-Google-Smtp-Source: AA0mqf6kDoFMZu4ePWxxwUg/J72OEu2pRDPGmxPTlFZFDAGC9mbXV5IpvRV0TQn56/juaryPJFIhYg==
-X-Received: by 2002:a05:622a:2484:b0:3a5:2fdc:9dc8 with SMTP id cn4-20020a05622a248400b003a52fdc9dc8mr28904444qtb.69.1669238024169;
-        Wed, 23 Nov 2022 13:13:44 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=REepYSvQGyqEeu/ZRQp2JZIqxZIOwqWc5SzYerGHAew=;
+        b=cC7ZCXwxtNA7ZxWo8AuuouCJD+OoSlJuoegOYpj/MuYJwHqJq2dewzM2Oks7815KMR
+         5dyKiKbocXtVufn/FyGw8wqCRz8rVQBawFjIgjef7zV/85NJCUdTCfR9bDyxOGsMnQD2
+         htmH81HQsVLkGeEcRJFU1VyHDr8eo4j8KV7zo9xlFF7kTrpW6SdF3ur7WxQB1XJLWVzi
+         phLKv5x6LXEExEdbVx6EsdVVjBQZJJHaSVjkR/b+z4ShNJM+dRusmHcvo9HSsXd+3dtn
+         e5IQiV3dDpWNH7TCLw3ZLVz4Sot1mcznFgTCYhDeKpW/3nd512vQlnYyPM9t2JxhFHgg
+         T0zQ==
+X-Gm-Message-State: ANoB5pmO/Eua1Oj76fJvVdJJfk0LxgqcFMvcS5G3fhyZzXeqQVlCqc29
+	cZ91OCesaQMT0mswUcX9kZuN3w==
+X-Google-Smtp-Source: AA0mqf6S8r1kTn9XVcCp36idhYyS6f+Vi9KZuRKjP5ZxGucP+Q+1FHhyCFZdkmIcqx9NZ68KJz2HpA==
+X-Received: by 2002:a05:622a:1184:b0:3a5:6f39:4bd7 with SMTP id m4-20020a05622a118400b003a56f394bd7mr9685697qtk.226.1669238026485;
+        Wed, 23 Nov 2022 13:13:46 -0800 (PST)
 Received: from nathan-ideapad.. (d-75-76-18-234.oh.cpe.breezeline.net. [75.76.18.234])
-        by smtp.gmail.com with ESMTPSA id cf11-20020a05622a400b00b0039ee562799csm10222928qtb.59.2022.11.23.13.13.43
+        by smtp.gmail.com with ESMTPSA id cf11-20020a05622a400b00b0039ee562799csm10222928qtb.59.2022.11.23.13.13.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Nov 2022 13:13:43 -0800 (PST)
+        Wed, 23 Nov 2022 13:13:46 -0800 (PST)
 From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
 To: 
 Cc: nathan.morrison@timesys.com,
@@ -71,15 +72,16 @@ Cc: nathan.morrison@timesys.com,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 0/2] These are the required patches I found while adding
-Date: Wed, 23 Nov 2022 16:13:33 -0500
-Message-Id: <20221123211335.126417-1-nathan.morrison@timesys.com>
+Subject: [PATCH 2/2] mtd: spi-nor: issi: Add in support for IS25LX256 chip, operating in Octal STR mode
+Date: Wed, 23 Nov 2022 16:13:35 -0500
+Message-Id: <20221123211335.126417-3-nathan.morrison@timesys.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221123211335.126417-1-nathan.morrison@timesys.com>
+References: <20221123211335.126417-1-nathan.morrison@timesys.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221123_131346_239739_FB3605F9 
-X-CRM114-Status: UNSURE (   8.22  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221123_131347_294279_685BD725 
+X-CRM114-Status: GOOD (  16.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,21 +98,140 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1) The core framework needs some additional logic for 8S-8S-8S to pass through
-succesfully.
+Adds the is25lx256 entry to the nor_parts table along with the
+additional STR enablement fixups and logic
 
-2) The IS25LX256 chip needs added to the SPI part table along with various fixups
-
-Nathan Barrett-Morrison (2):
-  mtd: spi-nore: core: Add in framework for 8S-8S-8S Octal STR mode
-  mtd: spi-nor: issi: Add in support for IS25LX256 chip, operating in
-    Octal STR mode
-
- drivers/mtd/spi-nor/core.c |  57 ++++++++++++++++++++-
- drivers/mtd/spi-nor/core.h |   5 +-
+Signed-off-by: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+---
  drivers/mtd/spi-nor/issi.c | 101 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 160 insertions(+), 3 deletions(-)
+ 1 file changed, 101 insertions(+)
 
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index 89a66a19d754..89f3cdd51075 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -8,6 +8,15 @@
+ 
+ #include "core.h"
+ 
++#define SPINOR_OP_STR_RD	0x8B	/* Fast Read opcode in DTR mode */
++#define SPINOR_OP_STR_PP	0x82	/* Octal Input Fast Program */
++#define SPINOR_OP_RD_ANY_REG	0x85	/* Read volatile register */
++#define SPINOR_OP_WR_ANY_REG	0x81	/* Write volatile register */
++#define SPINOR_REG_CFR0V	0x00	/* For setting octal DTR mode */
++#define SPINOR_REG_CFR1V	0x01	/* For setting dummy cycles */
++#define SPINOR_OCT_STR		0xc7	/* Enable Octal DTR. */
++#define SPINOR_EXSPI		0xff	/* Enable Extended SPI (default) */
++
+ static int
+ is25lp256_post_bfpt_fixups(struct spi_nor *nor,
+ 			   const struct sfdp_parameter_header *bfpt_header,
+@@ -29,6 +38,94 @@ static const struct spi_nor_fixups is25lp256_fixups = {
+ 	.post_bfpt = is25lp256_post_bfpt_fixups,
+ };
+ 
++static int spi_nor_issi_octal_str_enable(struct spi_nor *nor, bool enable)
++{
++	struct spi_mem_op op;
++	u8 *buf = nor->bouncebuf;
++	int ret;
++
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	if (enable)
++		*buf = SPINOR_OCT_STR;
++	else
++		*buf = SPINOR_EXSPI;
++
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
++			   SPI_MEM_OP_ADDR(enable ? 3 : 4,
++					   SPINOR_REG_CFR0V, 1),
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
++
++	if (!enable)
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_1_1_8);
++	else
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_1_1_1);
++
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++
++	/* Read flash ID to make sure the switch was successful. */
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
++			   SPI_MEM_OP_NO_ADDR,
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_IN(round_up(nor->info->id_len, 2),
++					      buf, 1));
++
++	if (enable)
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_1_1_8);
++	else
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_1_1_1);
++
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	if (memcmp(buf, nor->info->id, nor->info->id_len))
++		return -EINVAL;
++
++	return 0;
++}
++
++static void is25lx256_default_init(struct spi_nor *nor)
++{
++	nor->params->octal_str_enable = spi_nor_issi_octal_str_enable;
++}
++
++static void is25lx256_post_sfdp_fixup(struct spi_nor *nor)
++{
++	/* Fixup read command to 8 dummy cycles, 1S-1S-8S */
++	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8;
++	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8],
++				  0, 8, SPINOR_OP_STR_RD,
++				  SNOR_PROTO_1_1_8);
++
++	/* Fixup page program command to 1S-1S-8S */
++	nor->params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8;
++	spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP_8_8_8],
++				SPINOR_OP_STR_PP, SNOR_PROTO_1_1_8);
++
++	/*
++	 * The BFPT quad enable field is set to a reserved value so the quad
++	 * enable function is ignored by spi_nor_parse_bfpt(). Make sure we
++	 * disable it.
++	 */
++	nor->params->quad_enable = NULL;
++}
++
++static struct spi_nor_fixups is25lx256_fixups = {
++	.default_init = is25lx256_default_init,
++	.post_sfdp = is25lx256_post_sfdp_fixup,
++};
++
+ static void pm25lv_nor_late_init(struct spi_nor *nor)
+ {
+ 	struct spi_nor_erase_map *map = &nor->params->erase_map;
+@@ -74,6 +171,10 @@ static const struct flash_info issi_nor_parts[] = {
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+ 		.fixups = &is25lp256_fixups },
++	{ "is25lx256",  INFO(0x9d5a19, 0, 128 * 1024, 256)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_STR_PP | SPI_NOR_OCTAL_STR_READ)
++		FIXUP_FLAGS(SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE)
++		.fixups = &is25lx256_fixups },
+ 
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2)
 -- 
 2.30.2
 
