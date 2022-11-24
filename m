@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 082E6C43217
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Nov 2022 14:53:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9659C43217
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Nov 2022 14:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iblFVkitaH/Poww7MBhvaPeoh1jfPfq3Klyb2QxNqUU=; b=rHtcojDox5jykkWfq/PdLj06ip
-	rpKCnLBv96ZvukRV7wCrSaVs4ReMB+0DLVqsQv6QWgDllvxtxeIniTeOswknyuBXfAM44HqronQ0a
-	ShhCIsRZmcnIa7hz4sUz/9CeuZhUyRTSVexutGiPjthv1xeF5lU5tnp/xuQyS8mIq7ggrU40Sr3W3
-	bxsNqa3uTk3HnHn1XKewT0QcOO1TcDcp7otiOW88D9PcxrBXDuEozF+lCYZsyAcrcsNgjiR9JZW6P
-	nSO82ZG01RTLEMsVTG6S8s24g1VlloRkgyyIQGBK16VIDEGm7bg9rtziIoKRxODD8G2x/MlNCoAE5
-	wU49HkVA==;
+	bh=yOoq2HCsmIkvLwzY3Gwe+hrc6g8PKNcLj8WkmHq6Q5Q=; b=fX9V9YhIqccBzbG5zbt6XlQmKd
+	7RRSQGmM7AfgHdPSb/OtKdlrKKA1epIiWCe5X7ker6wgyIvAsuyvQ9XNIzeoi8BnFIEyTBm7ZLCEV
+	SgP7OJb0BKP4dAdwV+hjzKZ7QZLv/EJzP5do3gQijqvXod57Zg19EZw7LINHaoQGpZeLF6hgLQoea
+	pPoauaRkjjR027A/LawntwZygclJ90MSE8SUh48x/9ubcCa0lpU4BKKF6fU/jqP7L8b4mHvRT28JZ
+	YhgUj3Y6BTWqDbAoYBbWuZPDgADQVVuOWmP3ylM28B0MVLvO/NbI9iJx9Z0un2ZEVKg7F3ahBKFOf
+	zeFzUwRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oyDbo-009TUB-7p; Thu, 24 Nov 2022 14:53:48 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1oyDdS-009UMt-GE; Thu, 24 Nov 2022 14:55:30 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oyDbU-009TN7-TT; Thu, 24 Nov 2022 14:53:30 +0000
+	id 1oyDd5-009UAW-79; Thu, 24 Nov 2022 14:55:08 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 73DBC62171;
-	Thu, 24 Nov 2022 14:53:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F372C433C1;
-	Thu, 24 Nov 2022 14:53:26 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8EAEE6219D;
+	Thu, 24 Nov 2022 14:55:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C289BC433C1;
+	Thu, 24 Nov 2022 14:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1669301606;
-	bh=unIV7Ik3dkhviLx7pqEUl7Hj+P8gzwLYsPUrycbdr2U=;
+	s=k20201202; t=1669301706;
+	bh=S3xYwGQuP1zkeAOUdEdt9aQxCaHG1tpwe3PTQbwPO30=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Bjiga38QWyzLlfhROr4+WaCyo1J6wcTkIZj/mwam3dWvx1Hx5xajOxzVB7myXCa9N
-	 WNBAdzWlxBlBs+KppJLdJyV66PPHOF5WPs6Mou2/YQUFWDhxzmXFlw/QhsRkqhAbvM
-	 IKZb4468eQJJDEnwbqI3IOZWGOuAGFvAZoZxBeBNa28SexV/3o2GKds11UG+j34jMn
-	 qFVJwi+/7WO3rd5ejlO/fFF8/Xvu1SgSJacWq2/ZXhnbl5m/YnXscTIWOW5JF6sv2/
-	 7AIFZSfR+8FP0gVVdcX2vRVTsiUKBtO1qb0RumfwgoMEoegx4yHbgmeuc5IR3fUnJ3
-	 WdioSmYng4A7g==
+	b=r0tfM3KXFq8k8dKdKgCyfe0VqkbG+aSVkOzM9rQig5SJnlW4pG8A9wbar7Uad2Eer
+	 erd/sBiYLcZdK67QfsCyxaKSBLZhO58ulwkqoCk28Ny9GnxH61LQVZFc5HueoQogaE
+	 CS+Q6cLAOrlQPiuOBYeFpv5HPB0bJs0s7iEKHQs7qqSRZ//HsO1qoC2lyHDuTAn9+D
+	 o035g2hgwLpT2kmGykDx2rMhldFJ7UN7ULem4MSTcVezL0KlrMkmXz5Ovl5KidGrtn
+	 JOl8xhddKpDWye2PFI5/wXspCDb0bNhouFBGvmHqJjokfG04TYCDIju1kP9KMHfZyZ
+	 ZAJfdZyFaAkCw==
 Received: by mercury (Postfix, from userid 1000)
-	id E481A106092A; Thu, 24 Nov 2022 15:53:23 +0100 (CET)
-Date: Thu, 24 Nov 2022 15:53:23 +0100
+	id 82F7D106092A; Thu, 24 Nov 2022 15:55:03 +0100 (CET)
+Date: Thu, 24 Nov 2022 15:55:03 +0100
 From: Sebastian Reichel <sre@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: Rob Herring <robh+dt@kernel.org>,
@@ -71,16 +71,15 @@ Cc: Rob Herring <robh+dt@kernel.org>,
 	Guenter Roeck <linux@roeck-us.net>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v2 1/9] dt-bindings: drop redundant part of title of
- shared bindings
-Message-ID: <20221124145323.tevilddtr7ajdd7l@mercury.elektranox.org>
+Subject: Re: [PATCH v2 4/9] dt-bindings: drop redundant part of title (end)
+Message-ID: <20221124145503.ir4n5qjonowpyhdz@mercury.elektranox.org>
 References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
- <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
+ <20221121110615.97962-5-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221121110615.97962-5-krzysztof.kozlowski@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221124_065329_056135_3C7E2AEF 
-X-CRM114-Status: GOOD (  19.03  )
+X-CRM114-CacheID: sfid-20221124_065507_387880_4D0999CC 
+X-CRM114-Status: GOOD (  18.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,50 +91,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2753510002638448824=="
+Content-Type: multipart/mixed; boundary="===============5902075911569722435=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============2753510002638448824==
+--===============5902075911569722435==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kmrqy5oh67vgmowj"
+	protocol="application/pgp-signature"; boundary="ksnzyadj7qk2pape"
 Content-Disposition: inline
 
 
---kmrqy5oh67vgmowj
+--ksnzyadj7qk2pape
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-On Mon, Nov 21, 2022 at 12:06:07PM +0100, Krzysztof Kozlowski wrote:
+On Mon, Nov 21, 2022 at 12:06:10PM +0100, Krzysztof Kozlowski wrote:
 > The Devicetree bindings document does not have to say in the title that
-> it is a "binding", but instead just describe the hardware.  For shared
-> (re-usable) schemas, name them all as "common properties".
+> it is a "Devicetree binding", but instead just describe the hardware.
+>=20
+> Drop trailing "Devicetree bindings" in various forms (also with
+> trailling full stop):
+>=20
+>   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+>     -not -name 'trivial-devices.yaml' \
+>     -exec sed -i -e 's/^title: \(.*\) [dD]evice[ -]\?[tT]ree [bB]indings\=
+?\.\?$/title: \1/' {} \;
+>=20
+>   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+>     -not -name 'trivial-devices.yaml' \
+>     -exec sed -i -e 's/^title: \(.*\) [dD]evice[ -]\?[nN]ode [bB]indings\=
+?\.\?$/title: \1/' {} \;
+>=20
+>   find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
+>     -not -name 'trivial-devices.yaml' \
+>     -exec sed -i -e 's/^title: \(.*\) [dD][tT] [bB]indings\?\.\?$/title: =
+\1/' {} \;
 >=20
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Acked-by: Guenter Roeck <linux@roeck-us.net> # watchdog
 > Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> # IIO
-> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > ---
->  .../devicetree/bindings/power/reset/restart-handler.yaml        | 2 +-
 
 =2E..
 
-> diff --git a/Documentation/devicetree/bindings/power/reset/restart-handle=
-r.yaml b/Documentation/devicetree/bindings/power/reset/restart-handler.yaml
-> index 1f9a2aac53c0..378b404af7fd 100644
-> --- a/Documentation/devicetree/bindings/power/reset/restart-handler.yaml
-> +++ b/Documentation/devicetree/bindings/power/reset/restart-handler.yaml
+>  .../devicetree/bindings/power/reset/xlnx,zynqmp-power.yaml      | 2 +-
+>  .../devicetree/bindings/power/supply/maxim,ds2760.yaml          | 2 +-
+>  .../devicetree/bindings/power/supply/maxim,max14656.yaml        | 2 +-
+
+=2E..
+
+> diff --git a/Documentation/devicetree/bindings/power/reset/xlnx,zynqmp-po=
+wer.yaml b/Documentation/devicetree/bindings/power/reset/xlnx,zynqmp-power.=
+yaml
+> index 46de35861738..11f1f98c1cdc 100644
+> --- a/Documentation/devicetree/bindings/power/reset/xlnx,zynqmp-power.yaml
+> +++ b/Documentation/devicetree/bindings/power/reset/xlnx,zynqmp-power.yaml
 > @@ -4,7 +4,7 @@
->  $id: http://devicetree.org/schemas/power/reset/restart-handler.yaml#
+>  $id: http://devicetree.org/schemas/power/reset/xlnx,zynqmp-power.yaml#
 >  $schema: http://devicetree.org/meta-schemas/core.yaml#
 > =20
-> -title: Restart and shutdown handler generic binding
-> +title: Restart and Shutdown Handler Common Properties
+> -title: Xilinx Zynq MPSoC Power Management Device Tree Bindings
+> +title: Xilinx Zynq MPSoC Power Management
+> =20
+>  maintainers:
+>    - Michal Simek <michal.simek@xilinx.com>
+> diff --git a/Documentation/devicetree/bindings/power/supply/maxim,ds2760.=
+yaml b/Documentation/devicetree/bindings/power/supply/maxim,ds2760.yaml
+> index c838efcf7e16..5faa2418fe2f 100644
+> --- a/Documentation/devicetree/bindings/power/supply/maxim,ds2760.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/maxim,ds2760.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/power/supply/maxim,ds2760.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+> =20
+> -title: Maxim DS2760 DT bindings
+> +title: Maxim DS2760
+> =20
+>  maintainers:
+>    - Sebastian Reichel <sre@kernel.org>
+> diff --git a/Documentation/devicetree/bindings/power/supply/maxim,max1465=
+6.yaml b/Documentation/devicetree/bindings/power/supply/maxim,max14656.yaml
+> index 070ef6f96e60..711066b8cdb9 100644
+> --- a/Documentation/devicetree/bindings/power/supply/maxim,max14656.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/maxim,max14656.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/power/supply/maxim,max14656.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+> =20
+> -title: Maxim MAX14656 DT bindings
+> +title: Maxim MAX14656
 > =20
 >  maintainers:
 >    - Sebastian Reichel <sre@kernel.org>
@@ -144,30 +193,30 @@ Acked-by: Sebastian Reichel <sre@kernel.org>
 
 -- Sebastian
 
---kmrqy5oh67vgmowj
+--ksnzyadj7qk2pape
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmN/hVMACgkQ2O7X88g7
-+pqhwA/+M2Nr4azK150ufJYwasgPUHr+IvgiGG6zZbVydz4jcsik67ma/TlLQV0F
-e576CX8Tqzz90OcmpIPWvWr/+Ev0QWetfOvG+4+Io9Zh+w7Er6dnLWZuv3DbPDD8
-b5KbXY0fKBBc30RQVk7T0uhq0Qd/gJ38fOALFl7nymMSzekfDuYm+HNn9gURaxuK
-C3EKJDXCLhT05/DBQK4rx+CVy6tMk8oiQOrrESyGeHRrRv/7va6TjIKRqXoekdAx
-GEA6CF1jXwzX0TnUppKNjGdVeBw8UkflkU8lJrBozSSpo+IzaaT333jOhsX2ROKB
-uDDWkC4CAOVIXnLhUBSNJGm9ifZm906c/zyoZ77EzYNtsFESq5znEyTryuOfzjiS
-ykyxB/WkNLxxJf5Wcu4gqGks0KrnM7aE+pfV+cqViSgGi8ykIUwEjrbY15w34I4M
-1etdToVgbUEaL+ThZaymJ9xWhcWq2NHBTTHIgL2AA34rSqaJe1f990424jUT/SYZ
-7N4jCoDiJPK56gJJe5NRPSvz4LjlFa8bTB3rXioMA4Ep21+e4VrBT6TqERx/Jkaa
-RdEjPVIF6pkxOepaBigKGkjvwDj4AvwdIglKaIXcccH+I55OxMOyPj3FXgaOLB+5
-o6kJsJkqqpyU0tWJqBmeQED3yqn/Zz7XZZ4SunfkjJLBqxop5Ec=
-=r+Zg
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmN/hccACgkQ2O7X88g7
++ppHEw/+Ofnx5vLl+V2sXB4VCd7c5T9abMJs0VA3LSQVJMpmCEWW5XvhGEnmu2bA
+pe/8cmzFUNEal3JsF6Pun9+s8oVlQbtbXgQqqxocYGD0uNtePzX3IGizBN9mod8c
+SB1U/oUlAw3ixwqcW5ZtbvPG1lAAc++86GtlPhulX7wCUFqbSMlbHXO2x8N1pa2+
+cpOUmML55ELsk9srGIh7D88sV+n7hQQ8fMBI3HJt8gpZp1vpSG4mO941XAamkGgQ
+hxEH9NP7AZl0ACiU1hRr3snxA+Yt3zg0mqyvk7OEwZnH85a/rlUqW74AlYeI2htX
++lSqy5fLCEAUifNJqotbU0xNOsiYKoFAcZAcfe89ePJYQoyg/wzPbptF8WK6uPQn
++k6HAHgIKHEd9h8o8LtU5MexYnGJix6nm6nkTOyq9u0PiHfsi75epi6lfw1xXX6Z
+XYXxos+ohbeTUt/yW44aGw3jQ940mpr0f0gnVkudCiqfh4pV8gvWX8YoZH+K2BJa
+C4natf1/bbwe0fTrA92dFqc3iwZB6FdCmdhE/cJ69GAW8araN8PelXTe2WgjmSOi
+GZ6VtLaEi+lDktvqKCb/mw2GvrHW0y/EpRAvctJqNTR2uknOLyncBS9PiseoklUj
+zmMw9e8xCv0ZXkroHdPqE8sDSQSB7gBINlSYEKk6wubHJwWdiyM=
+=rY9T
 -----END PGP SIGNATURE-----
 
---kmrqy5oh67vgmowj--
+--ksnzyadj7qk2pape--
 
 
---===============2753510002638448824==
+--===============5902075911569722435==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -177,5 +226,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============2753510002638448824==--
+--===============5902075911569722435==--
 
