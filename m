@@ -4,93 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDD2CC4321E
-	for <linux-mtd@archiver.kernel.org>; Thu, 24 Nov 2022 11:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFE94C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 24 Nov 2022 11:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Xv2g5A/r8ZZah3nCffYljYJGe/VNgFeZ1V94F+6coCI=; b=LaWoGnLOn8jI4V
-	yjmK/B1YXYYr3F530ZxlCPLnnSFojqysX+h16X0TRO4DxwiZzZ0vp1bk4OF95Oi6hjvsS28H5AQMD
-	zTMg6SlWC4czIx1d+wDOzjq62CgqpR8CT29SJq+1YnEm8z7O+N3fbRsXCrlxVPW7isB9zfEQwcuhi
-	sj3i/QvfH3mn1+4CrHRFpg4Er42TfRSosVfc6EKYKFytNAq3Xd+a9GBl7udbCYYG0UO0Ckat8VlZT
-	iZeeCPiaMr8R50ZX/B5YkOeuyOIH51Z3T2wAvuiSPTKoiCrVEB/RLXjyt91n02jk7CvocK/udyxqk
-	1qDbHeglxg68lGCV92Fg==;
+	List-Owner; bh=k9hDry8VLK4DsVtoO2LrSM4LEt9UvLfkgv7YyBEmwUI=; b=LsNNo0b9ot/WoR
+	AU/+6/HbOJmhPHN0P18QYX1ocgf1Ad8qvREPkwXyXfMOQ7hUUE1IGV3XpDJAp9VyxaHD1gSewzyQ5
+	j0VXv3YR3jhdoFmgay6yBR1qsEmf/zXy0mVKrVloPRam+RipwGGjH9fTgy1AbdNbdg0GnSd+8q4OF
+	iCTCrkYfCZQK9gqX8ng5O051lgUNsAtxEhqqQUfPD3lZP4zWL2lHuYdb5ALT0Tql1AK3XphXEjZLx
+	cDZbWAAiFCgogwzewYfK4XQ2vtOjhjGpwEI/3/1APatNIxjGh9akwo1/vTVqiN7e7yKJ/3pdcj9F6
+	dV0kWpX/4Q0/PotVMVcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oyA0O-007sC1-3F; Thu, 24 Nov 2022 11:02:56 +0000
-Received: from mail-lf1-x132.google.com ([2a00:1450:4864:20::132])
+	id 1oyAWd-00874F-Qq; Thu, 24 Nov 2022 11:36:15 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oyA0C-007s68-4f
-	for linux-mtd@lists.infradead.org; Thu, 24 Nov 2022 11:02:46 +0000
-Received: by mail-lf1-x132.google.com with SMTP id b3so2029450lfv.2
-        for <linux-mtd@lists.infradead.org>; Thu, 24 Nov 2022 03:02:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Nu6pjkXIBFfjqNqFnOUYgw7nMcsD0pE0OGpEOCK7UF8=;
-        b=g18UXMLu+HaZr5Vma7hCKLNfw8vE5DtyJQQ/h0wELeQztKUsZinIOYD0Emd571Ttaz
-         G8gKTl4Gjfv1qddAZVO3V5bexes47auyNSgRTXKOFA86NLV4OWBnG9IySg8lw/SBqNR2
-         6PnX/oZdvF05r2urpn9cDwRFY4lTHRC9NUOphPu+GJomqjVeCR67oNZPdO6U6XYaFViv
-         cSLl3JDzwhR0gYG+PpVdE8ZNwH+pw2fU52yOyyPiANnlSXP5ypDsEtRIcm6t9u4lM4mm
-         2qK/nbsG3QfaEEb8Qrp6NUkLU/PLhyZ5sjNo2AWS7bXDpvtI76RbrJIFzcVc0Y9wceiN
-         bngA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nu6pjkXIBFfjqNqFnOUYgw7nMcsD0pE0OGpEOCK7UF8=;
-        b=HCQfl/EbV5ln7C89PA4dASU6jKfMRov0DB730NvYBiTi1w3Nzd2BDRwt2Ms4cuw/2H
-         RsVLzRZkac/q3PLRde4fQFi9ggK33r8ODLZyi1x8xxGZp5im3yPvFd+ewJC/y3ty9Hnz
-         6un7ogllasaGf+oKmfzSFVQx6HKukg05dBbDtmQqAzZ1cuPYumDJEd8Vs6UaT5w5Jb3Y
-         xtBCA7e6JMldS1ADLM8KFsaFujKXJbtKA0d1C2yTssIDyW4IG5IsxR7dF8QrOmS37ajj
-         vwIcM626o2qYps34erba38pHVgX/mQORFBuHlpiKLGiZrb9a5srP5wsZwaoU84q7p2c8
-         C7yg==
-X-Gm-Message-State: ANoB5pkWge7E18PQHDIXDJeRZPjbrBUrF5KXTiDi0xTWSE+Qu2rr6eZt
-	JabVaC3zDWZUzRJJ29c++A3CxQ==
-X-Google-Smtp-Source: AA0mqf467/nJeQnupvv/69oKsa3gmbQrSZGWwkEVDwG8CorBpsO5lNOGph3XKFrZdmNiiKGZ18jCjg==
-X-Received: by 2002:a19:7b0f:0:b0:4a2:3bed:2008 with SMTP id w15-20020a197b0f000000b004a23bed2008mr11520699lfc.88.1669287761901;
-        Thu, 24 Nov 2022 03:02:41 -0800 (PST)
-Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
-        by smtp.gmail.com with ESMTPSA id f18-20020a05651c161200b00278e9c0d3a2sm73435ljq.33.2022.11.24.03.02.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Nov 2022 03:02:41 -0800 (PST)
-Message-ID: <69540766-4fe8-cc21-f2bc-4ad04643e4b6@linaro.org>
-Date: Thu, 24 Nov 2022 12:02:39 +0100
+	id 1oyAWa-00871v-9K
+	for linux-mtd@lists.infradead.org; Thu, 24 Nov 2022 11:36:14 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 7400C100002;
+	Thu, 24 Nov 2022 11:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1669289768;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Vr8bKLhT8q0qJhXyoRNU+MZCNNRnvBRG3Flc0FO22Po=;
+	b=lIYedw9PzsJwyvr2iLyIsekayL8TQ9T7L8ilsyaYrh1OsGq8eO54sQ1lBO+Jp1ZMt/T7jV
+	gLH9o4goJJUBju+rZX1LeewHujdewqrR47jXQgE0HDn4NW4gxmMn50RkVp/ma3I+Vw0VjF
+	4iV1w8xkpmoD3RrCjI9X2HvCxQWoTljEP8y/NiV3m6oQkvIggCc9SnN7GF1ssm5O6jUQ6u
+	nbjO8/6C7LLf9enTjYFIDeyPW4O0QhnRnNm/xTH3UEssY0+oglMkXU/DuNgPegZM2tESVV
+	cXAIDFJOuGuwfOQMlZvEa5VfPSVUjdTDLFLleeA8ygsI8AOOzUogEN/yDhF0yw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Zheng Yongjun <zhengyongjun3@huawei.com>,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: fix memory leak in pxa2xx_flash_probe()
+Date: Thu, 24 Nov 2022 12:36:06 +0100
+Message-Id: <20221124113606.266257-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221119073307.22929-1-zhengyongjun3@huawei.com>
+References: 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH] MAINTAINERS: Update email of Tudor Ambarus
-Content-Language: en-US
-To: Arnd Bergmann <arnd@arndb.de>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Rob Herring <robh+dt@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: herbert@gondor.apana.org.au, krzysztof.kozlowski+dt@linaro.org,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@microchip.com>,
- Mark Brown <broonie@kernel.org>, qyousef@layalina.io,
- Atish Patra <atishp@atishpatra.org>, Anup Patel <anup@brainfault.org>,
- tkhai@ya.ru, quic_abhinavk@quicinc.com, vasily.averin@linux.dev,
- baolin.wang@linux.alibaba.com, colin.i.king@gmail.com,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- pratyush@kernel.org, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>
-References: <20221122125244.175295-1-tudor.ambarus@microchip.com>
- <024e0a68-bb79-4e2e-84f8-f44afb759cdd@app.fastmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <024e0a68-bb79-4e2e-84f8-f44afb759cdd@app.fastmail.com>
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'2399401feee27c639addc5b7e6ba519d3ca341bf'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221124_030244_194291_1EC1511C 
-X-CRM114-Status: GOOD (  14.90  )
+X-CRM114-CacheID: sfid-20221124_033612_622905_4CA94B47 
+X-CRM114-Status: UNSURE (   6.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,27 +76,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 22/11/2022 14:15, Arnd Bergmann wrote:
-> On Tue, Nov 22, 2022, at 13:52, Tudor Ambarus wrote:
->> My professional email will change and the microchip one will bounce after
->> mid-november of 2022.
->>
->> Update the MAINTAINERS file, the YAML bindings, MODULE_AUTHOR entries and
->> author mentions, and add an entry in the .mailmap file.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+On Sat, 2022-11-19 at 07:33:07 UTC, Zheng Yongjun wrote:
+> If '!info->map.virt' or '!info->mtd' success, 'info' should be
+> freed before return. Otherwise there is a memory leak.
 > 
-> I can take this through the fixes branch of the SoC tree if that
-> works for everyone. Alternatively, I can take only the MAINTAINERS
-> and .mailmap bits and expect the other changes to get merged
-> by the devicetree and crypto maintainers for 6.2.
+> Fixes: e644f7d62894 ("[MTD] MAPS: Merge Lubbock and Mainstone drivers into common PXA2xx driver")
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
