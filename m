@@ -4,64 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 246B4C43217
-	for <linux-mtd@archiver.kernel.org>; Sun, 27 Nov 2022 18:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B479C4332F
+	for <linux-mtd@archiver.kernel.org>; Sun, 27 Nov 2022 21:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=k7Jw13IBUNJwnVlkkUp1a3jZNdloUcBJwKAJsdBEHhE=; b=e/VHBtNQVUJ6fx
-	PTJ0XJzq+O6hNGDMQf7Bo0hYeBRZo+xF+jD5RPBUqErzamDsqljxGYvVwJZY3ocmtCMh99ugZxeTO
-	ejUplIiLwnY4IW4+6FWT4tSQoV3Ihqvry8RqmOUx7KFydkwSmr7RQCMPN1bvCGVUXqtFwvwyBWEPm
-	zMq1fp9qPUlXJtF7v/lm+HUMgs4i2//8S0pXT+RLaHOMtgkm8aMdEt4jG85QMN8NcAQvjmdchOwdA
-	+kT4WWbfK1gqIxzJrXzmTNi7ly2gfncIXyHaOhs7Ei1esruUaLr6ovd0F77qsxWfR91FuDu/dRGq5
-	+apMvk8BvO/C59sT+1pQ==;
+	List-Owner; bh=CIdOUzBD1esIgkrDmgiXo7SZv2UT8GPfFg1zg1WMUO8=; b=tQ0xPDxVY5Cb9N
+	XkpcDr2R6CMWhpB5GvS5fP5EEk9ZB8p3TwBV8IK4rGBwIQpbdPUljhbsbZ5cqeUOo3u7H2P1Wdiik
+	eOSshbOTwwIByPS8fp5XZ7uVcj9bf4JF9aXxzo0HC6t5MkGbp9OvlX3uB8fiqVxeoLS5XuKlQ3OHk
+	h0SU4/bLOXfdq4hVKychPXgBXfA+JxmBZutHRiLBKnQ0xp9HOFG6EfNMaNPOftCJYnfHOcj4H0N5z
+	q7BGk0xDDFdqc+f/dNQ5q0vmkbFQNCa1vqSlV6TKGcHcfG8iXkSIgMD8pYPH+MqehIHW9jdGMFuPL
+	mJCNRGMhra52VFdFNp5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozMLn-00Cx0h-C7; Sun, 27 Nov 2022 18:25:59 +0000
-Received: from mail-io1-f46.google.com ([209.85.166.46])
+	id 1ozPF5-00Dl46-5e; Sun, 27 Nov 2022 21:31:15 +0000
+Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozMLh-00Cwyy-Ua; Sun, 27 Nov 2022 18:25:55 +0000
-Received: by mail-io1-f46.google.com with SMTP id z3so6215047iof.3;
-        Sun, 27 Nov 2022 10:25:53 -0800 (PST)
+	id 1ozPF2-00Dl3S-Qf
+	for linux-mtd@lists.infradead.org; Sun, 27 Nov 2022 21:31:14 +0000
+Received: by mail-lf1-x12f.google.com with SMTP id s8so14653713lfc.8
+        for <linux-mtd@lists.infradead.org>; Sun, 27 Nov 2022 13:31:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ndDeJnwqwm6kB/SvuGOk72RxjCShlDfHw9rgdIIiqSk=;
+        b=EuAuC8BbkcdgJ5SyNzJRzWwgYCO5UrN5YEqYhJEOVMuZr1vIQJP0q1RCT7V5YM+CQc
+         Y6alRc8MMyz8cYcKzelO/z6ir8mqQJk3blNG6CivDOYDpBIAdm1/+NEmdgERutxdapoI
+         V7ZvYC7laLh8rOtDencox4G3xjlH3JaQnvRM7Ec7cfQVX6W/KwGGkGzU5UVb3ndQLKrK
+         yM6Gg1IQXpHDAP22mToVn3vRuRZ91sz4VnR71VlA33GpKIPtStBMyfvkLUuOS8qaKGBX
+         YfJv5hSz7XCOC7i4WPWonMgH3XqA6Fy3BLisp1454vpdrBqkVozGjNGkHl+B0dLioKT2
+         +4jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S8bsHlpNOFcbCNV3S3KNbgx5jtrGlxhIxfZQJSXdiI8=;
-        b=rddQIC1UUmstvyCyr7TEqSTxyUKiw/OGFFxI8mRNOEMx3ebFIsYOd0qJwOCxlj2B18
-         Uyb/lxN/+rPqMrzamCSkncYQxrb0c/ZtCEtVrQi9UHre1/W5CnKByIcLoV7UPa1EvnfL
-         STc39pkHxTEvsGHvGWvhoslomabqWBmOk9I6j8Uuo0Scv7L2vIxNEZUtUcqQjTHD/dLc
-         JE+PBVQ7x6vYIFHxgK3Yb+I1SEtbgMUrbvnLD4YcG0hzWPdZ+KYlOCBOfDbHmAi4tzCr
-         WlE51P29AgwNxib6qHoTg5OaOJ4lYKPOjYpv0aFMub/qC6mm2G1ZTMKYKr1inCmPWo5v
-         cPrg==
-X-Gm-Message-State: ANoB5pmOA/SZT441u9f6mUoyZpUdOYvQemNhNuGrhwex5dWJkv5EfZgF
-	6uYWSzVXNzVe1Jnfo85RPA==
-X-Google-Smtp-Source: AA0mqf4/UTMwRwnIlC+je7s+xyLV5H6yWYNsPoNaMuJssYdZ1JVl/+l7lHnKDkheQefibulNpQHtFg==
-X-Received: by 2002:a05:6638:ca4:b0:389:dbc8:c058 with SMTP id x4-20020a0566380ca400b00389dbc8c058mr1463216jad.10.1669573552742;
-        Sun, 27 Nov 2022 10:25:52 -0800 (PST)
-Received: from robh_at_kernel.org ([2605:ef80:80c1:3b80:81db:640f:ef27:c9e2])
-        by smtp.gmail.com with ESMTPSA id e10-20020a92690a000000b00302e4c93a54sm3113081ilc.79.2022.11.27.10.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Nov 2022 10:25:52 -0800 (PST)
-Received: (nullmailer pid 148616 invoked by uid 1000);
-	Sun, 27 Nov 2022 18:25:52 -0000
-Date: Sun, 27 Nov 2022 12:25:52 -0600
-From: Rob Herring <robh@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: qyousef@layalina.io, atishp@atishpatra.org, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, pratyush@kernel.org, robh+dt@kernel.org, linux-mtd@lists.infradead.org, anup@brainfault.org, richard@nod.at, linux-crypto@vger.kernel.org, miquel.raynal@bootlin.com, nicolas.ferre@microchip.com, devicetree@vger.kernel.org, michael@walle.cc, herbert@gondor.apana.org.au, tkhai@ya.ru, baolin.wang@linux.alibaba.com, alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com, linux-arm-kernel@lists.infradead.org, krzysztof.kozlowski+dt@linaro.org, broonie@kernel.org, arnd@arndb.de, linux-spi@vger.kernel.org, quic_abhinavk@quicinc.com, vasily.averin@linux.dev, colin.i.king@gmail.com
-Subject: Re: [PATCH] MAINTAINERS: Update email of Tudor Ambarus
-Message-ID: <166957354583.148471.5381866020763010078.robh@kernel.org>
-References: <20221122125244.175295-1-tudor.ambarus@microchip.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ndDeJnwqwm6kB/SvuGOk72RxjCShlDfHw9rgdIIiqSk=;
+        b=GUBW6RV2xWj0lmuaZ0oDwUWI9RrCg49hQxO1kkIIF4R/7eAI2L/6030kfhc2wlmOH2
+         ku8H2otEs5SqvSkkIx516xJSqD9f4AwSUFFeSCWAm9w+1Z0cQ4c+no2UEutIX7jWlhGL
+         0eTP17qJHP5Jn68CmT5U+sJwZHpDdKMyr7SBXkxS+rsb8xtrTCi3ZjkMEWXA8wZOfSR8
+         e2Lq0OHX1FcpcuUv7REw8BDiYa0hkyEw9oTvbkHxBhBo1CwuteTBx1GpJyz5mpNoGb/n
+         oBPwhyPce4QXbw2QrgTJOpOpP8YR6AVjRvrk8z2EyrVXEJKhq1LHu5o6aT7AZ3/xhVLh
+         S6mw==
+X-Gm-Message-State: ANoB5plBGESHanqopUMXnIad6SS7kFXKULkeElYgLo/aYBj2XhFR/dfa
+	G3vN8mpENCiqUApPpsO2m5Or3A==
+X-Google-Smtp-Source: AA0mqf5E84tiZKaMJsIeWFfqdi2kx/96mWE5cGhi/qRQc/2OJSAzW83D9xwrn7zjEmIUpuQDSdbrGQ==
+X-Received: by 2002:ac2:58d7:0:b0:4b4:fbce:606b with SMTP id u23-20020ac258d7000000b004b4fbce606bmr4682991lfo.27.1669584671052;
+        Sun, 27 Nov 2022 13:31:11 -0800 (PST)
+Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+        by smtp.gmail.com with ESMTPSA id r13-20020ac252ad000000b004b49025f96dsm1421692lfm.187.2022.11.27.13.31.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Nov 2022 13:31:10 -0800 (PST)
+Message-ID: <b500e42c-f782-79c6-70ce-650e4ea32c54@linaro.org>
+Date: Sun, 27 Nov 2022 22:31:09 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221122125244.175295-1-tudor.ambarus@microchip.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v2 0/6] memory: renesas-rpc-if: Rebind fixes and misc
+ cleanups
+Content-Language: en-US
+To: Geert Uytterhoeven <geert+renesas@glider.be>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+References: <cover.1669213027.git.geert+renesas@glider.be>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <cover.1669213027.git.geert+renesas@glider.be>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221127_102554_022226_0109F6E3 
-X-CRM114-Status: GOOD (  11.23  )
+X-CRM114-CacheID: sfid-20221127_133112_894031_39D9614B 
+X-CRM114-Status: UNSURE (   9.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,30 +100,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Tue, 22 Nov 2022 14:52:44 +0200, Tudor Ambarus wrote:
-> My professional email will change and the microchip one will bounce after
-> mid-november of 2022.
+On 23/11/2022 15:41, Geert Uytterhoeven wrote:
+> 	Hi all,
 > 
-> Update the MAINTAINERS file, the YAML bindings, MODULE_AUTHOR entries and
-> author mentions, and add an entry in the .mailmap file.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  .mailmap                                               |  1 +
->  .../bindings/crypto/atmel,at91sam9g46-aes.yaml         |  2 +-
->  .../bindings/crypto/atmel,at91sam9g46-sha.yaml         |  2 +-
->  .../bindings/crypto/atmel,at91sam9g46-tdes.yaml        |  2 +-
->  .../devicetree/bindings/spi/atmel,at91rm9200-spi.yaml  |  2 +-
->  .../devicetree/bindings/spi/atmel,quadspi.yaml         |  2 +-
->  MAINTAINERS                                            | 10 +++++-----
->  drivers/crypto/atmel-ecc.c                             |  4 ++--
->  drivers/crypto/atmel-i2c.c                             |  4 ++--
->  drivers/crypto/atmel-i2c.h                             |  2 +-
->  10 files changed, 16 insertions(+), 15 deletions(-)
+> The Renesas RPC-IF provides either HyperFlash or SPI host access.
+> To handle this, three drivers are used:
+>   1. The RPC-IF core diver,
+>   2. An HyperFlash child driver,
+>   3. An SPI child driver.
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Thank you for the patch.
+It is too late in the cycle for me to pick it up. I will take it after
+the merge window.
+
+
+Best regards,
+Krzysztof
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
