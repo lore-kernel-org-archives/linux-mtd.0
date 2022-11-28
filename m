@@ -4,64 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B0DFC433FE
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Nov 2022 12:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A0A7C4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Nov 2022 17:25:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
-	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mTGPMm5V3CI9A75xu2fAXq3rbyQ80bSsi0G72D+cO0Y=; b=IMOMFuCcQDXCtJ
-	syvNikcbqQRVhDYrZR0ng62yPG9HHsbkxk8+2A4NDWrKPz3O/lTiEXX3wQLMKGMNV2yFaxi2WD8Hc
-	o7xhKqscGuuzUIXckcEYgfKgjN1tIePZ+yQcgRRVfl8O4JkJuvIF+Vp1PAysj1wkoLDaCnmVZzSv9
-	VSOsqPMK23SIcqBHo53FqeVKuCXQezIIWaJ0Lojj9c6gYblwbhM66CN8qYYf4XsZSd6/FjeegZ0G5
-	AG/BgwBSBIP/29k4OA4+AEat67/jGiJhhT1fBXAnvV3HocV401jjLSjcRnFRBRnZjF5rPEgpY3W2h
-	o4qIJjCsYp3/r6b9Wl5A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=O4zcLwnRrFKvSrvEmx7Rl9UauqiThsCOqMmLayH9GvY=; b=tbGpPJSzfDYXrJ
+	G7uZrffANpbRRran+d1+uFr13s105r/kF8U4PWLpfiZmvGEhhXxaDNo6EzSGkUgyRTcB9a5dfCMuU
+	w/sBAXaVVEeGrOPsyWo8946zzyjsdu/6HqSGjlkABj96o/cE6lDbsqvcwbi7gppdG0+neVNIevmDn
+	7Wd+obdDpU4jBkUdVs+X0kEd3YbgzpMWyt4KZ4/H4ohkEyNNbGIth7IZxeKDp9P44ISCKHJLMLK8K
+	fWirpBahMGiuomsNt5tUXlELC4V26VWRu+AiPdkT5Qfodpt36JdKlC8DPn9vRc1MZ6UN2f5KrLXeR
+	AxUrzQsdVXEYUvu5AaBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozd82-001VeL-JH; Mon, 28 Nov 2022 12:20:54 +0000
-Received: from mail-oa1-f54.google.com ([209.85.160.54])
+	id 1ozhsT-0033vY-4e; Mon, 28 Nov 2022 17:25:09 +0000
+Received: from mail-qk1-x734.google.com ([2607:f8b0:4864:20::734])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozd80-001VdS-BY; Mon, 28 Nov 2022 12:20:53 +0000
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-142faa7a207so12681168fac.13;
-        Mon, 28 Nov 2022 04:20:49 -0800 (PST)
+	id 1ozhsP-0033sg-NL
+	for linux-mtd@lists.infradead.org; Mon, 28 Nov 2022 17:25:07 +0000
+Received: by mail-qk1-x734.google.com with SMTP id d7so7784727qkk.3
+        for <linux-mtd@lists.infradead.org>; Mon, 28 Nov 2022 09:25:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WISYZ1L8dfjkhr9HPz2HhCPMd5gq2zqE5S/0zz5aWa0=;
+        b=hcx970gPX8djEoRWtYW0NHM3NG3c5io9Z9ad1LPZUPufe2wTe0GoeT1ULY2q0sjog7
+         NncYkw5V+5VopZJInbOAWSlwue7xv6ssNaSdX5RMpm1CWKFEwvqeHvqNdotA32Ug6/Nj
+         SCcBemXPE/DvCahfHVNKFZFrtEMLnF1hGcWuMS0qjtL5qMTkRQabXULrNw40xHY6K0T/
+         hnooEZ1UjrCmv3U+mNOldEaKxF8/sDX5HYBFXeaKHCnSOzlmbTe+GNfXB5Jly9q66nfZ
+         OElGWiZxz02rWn3kQW5D0ru7zZEKl1aYBwyt3LAk17NUxUAW604R1mCCo9WnT4cwTO/G
+         xKPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CZfqieASnhH+cyHXFa4EKAUAtyWhOd13pMXBilnYNUI=;
-        b=XWhIsIn9zr3xOVkkfYrrSD7T/+crg5a7cYZx9OZoWlQvgHLTj5/fBBbsiPANMid6sB
-         dKVZMdJaR6M7+WwFNspxquS5QMvjhkpEjq7Z89Am05vdcJfcgATD2YH7kLvZnRUw1Mit
-         /9bJYaAM2p+KnSnWGorsEpbDb8Ni91ni1AY5TeVYrDPkYopXqBJpxJv/kfW5uCP0cFs5
-         1wc5kkJYyc2sODmvQZHoiIx1ky+PJT9DrnIbQ74N6HkQOf00lj5gSsJe+94h3abA3SRp
-         B5vlMbQBki8mOfNWduh3ahPVw6xNRYsPnyy8XgAufWsL9G3H7IPbINCmyPmaFa+VVSb1
-         pDUA==
-X-Gm-Message-State: ANoB5pkiONXNvkuow/7tEx2L3QeXfy5CBsHAfzxwf4+lWey9Yu7TomzD
-	ipwqxcocQvztyreeeJXcTA==
-X-Google-Smtp-Source: AA0mqf4RKqWQ3b691Fmb1KfiNQtiJj0CsVedJ+SQsQPxogZKCvZwUN6fcq8rYa/OZuGhmhfmOTgZLQ==
-X-Received: by 2002:a05:6870:d799:b0:143:8f03:f4a1 with SMTP id bd25-20020a056870d79900b001438f03f4a1mr4879849oab.66.1669638048598;
-        Mon, 28 Nov 2022 04:20:48 -0800 (PST)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id j16-20020a056830271000b0066bb73cce68sm4620796otu.69.2022.11.28.04.20.47
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WISYZ1L8dfjkhr9HPz2HhCPMd5gq2zqE5S/0zz5aWa0=;
+        b=I5rTdNoCt4ewIxD3IlMTGfhzlanhOQ5q48T2STOzW04Mw9aw4YpBeeBqSDGrkUb+6f
+         vzUxGatocNZKW8vgIA6u0ZDKuYrLSSO42/CR6Hha1IZoH9Qpraurtx7brFiOHZW5hWFn
+         HvuLD8mg4/u/Cygkb4helxgWKmxkDNBIOmInM2OqQwk8DV5b93H0zgPToq0ykEKhj6Ld
+         XR4LRb5/YJ/pe+TkfO5iYxOMGF2qWDDPnWpgmFcCnxgH/8jtJ508Whgdh5fQyg6pZLJj
+         XCBiCzdVlEnPaUQghL59K1gKH0aFe/FO51JjI639vVnJw6y5khHPswO+9TZGkNJHHTb6
+         1r6g==
+X-Gm-Message-State: ANoB5pnzYTT6oq1feXhIFqmYstmVGj1sXpBEzie9Pp0c2kj1mbD/kmUC
+	eRExujGUb9vSE4q3GSKhyxCg6w==
+X-Google-Smtp-Source: AA0mqf7J2PGTa8s7U3vNZDbIq6NFc/rDbfTBe35D7AbD06oqD+c+yNMjAQxBaVljPT+i/M7mRn5ZcA==
+X-Received: by 2002:a05:620a:271f:b0:6fc:15c2:c4a8 with SMTP id b31-20020a05620a271f00b006fc15c2c4a8mr27490322qkp.174.1669656302813;
+        Mon, 28 Nov 2022 09:25:02 -0800 (PST)
+Received: from nathan-ideapad.. (d-75-76-18-234.oh.cpe.breezeline.net. [75.76.18.234])
+        by smtp.gmail.com with ESMTPSA id r9-20020a05622a034900b003a526675c07sm7322712qtw.52.2022.11.28.09.25.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Nov 2022 04:20:48 -0800 (PST)
-Received: (nullmailer pid 477521 invoked by uid 1000);
-	Mon, 28 Nov 2022 12:20:47 -0000
+        Mon, 28 Nov 2022 09:25:02 -0800 (PST)
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+To: 
+Cc: nathan.morrison@timesys.com,
+	greg.malysa@timesys.com,
+	Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mtd: spi-nor: issi: Add in support for IS25LX256 chip, operating in 1S-1S-8S mode.
+Date: Mon, 28 Nov 2022 12:24:54 -0500
+Message-Id: <20221128172455.159787-1-nathan.morrison@timesys.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, bin.zhang@mediatek.com, linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>, Matthias Brugger <matthias.bgg@gmail.com>, Chuanhong Guo <gch981213@gmail.com>, benliang.zhao@mediatek.com, Richard Weinberger <richard@nod.at>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, linux-mediatek@lists.infradead.org
-In-Reply-To: <20221128020613.14821-8-xiangsheng.hou@mediatek.com>
-References: <20221128020613.14821-1-xiangsheng.hou@mediatek.com>
- <20221128020613.14821-8-xiangsheng.hou@mediatek.com>
-Message-Id: <166963790250.472824.6710482280926376664.robh@kernel.org>
-Subject:  Re: [PATCH 7/9] dt-bindings: spi: mtk-snfi: add two timing delay property
-Date: Mon, 28 Nov 2022 06:20:47 -0600
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221128_042052_494304_3E54A7CA 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20221128_092505_800569_25E86CC7 
+X-CRM114-Status: GOOD (  10.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,45 +95,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Adds the is25lx256 entry to the nor_parts table along with the additional
+fixup logic to operate in 1S-1S-8S mode while programming.
 
-On Mon, 28 Nov 2022 10:06:11 +0800, Xiangsheng Hou wrote:
-> add rx-sample-delay and rx-latch-latency property.
-> 
-> Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-> ---
->  .../bindings/spi/mediatek,spi-mtk-snfi.yaml      | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
+Signed-off-by: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+---
+ drivers/mtd/spi-nor/issi.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-snfi.yaml: properties:rx-sample-delay:minItems: 0 is less than the minimum of 1
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-snfi.yaml: properties:rx-sample-delay:maxItems: False schema does not allow 47
-	hint: Scalar properties should not have array keywords
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-snfi.yaml: properties:rx-sample-delay:minItems: False schema does not allow 0
-	hint: Scalar properties should not have array keywords
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20221128020613.14821-8-xiangsheng.hou@mediatek.com
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command.
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index 89a66a19d754..e9b32b726bf3 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -29,6 +29,21 @@ static const struct spi_nor_fixups is25lp256_fixups = {
+ 	.post_bfpt = is25lp256_post_bfpt_fixups,
+ };
+ 
++static void is25lx256_post_sfdp_fixup(struct spi_nor *nor)
++{
++	/* Fixup page program command to 1S-1S-8S */
++	nor->params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_8;
++	spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP_1_1_8],
++				SPINOR_OP_PP_1_1_8, SNOR_PROTO_1_1_8);
++
++	/* Disable quad_enable */
++	nor->params->quad_enable = NULL;
++}
++
++static struct spi_nor_fixups is25lx256_fixups = {
++	.post_sfdp = is25lx256_post_sfdp_fixup,
++};
++
+ static void pm25lv_nor_late_init(struct spi_nor *nor)
+ {
+ 	struct spi_nor_erase_map *map = &nor->params->erase_map;
+@@ -74,6 +89,10 @@ static const struct flash_info issi_nor_parts[] = {
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+ 		.fixups = &is25lp256_fixups },
++	{ "is25lx256",  INFO(0x9d5a19, 0, 128 * 1024, 256)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_READ)
++		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
++		.fixups = &is25lx256_fixups },
+ 
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2)
+-- 
+2.30.2
 
 
 ______________________________________________________
