@@ -4,98 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F181BC4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Nov 2022 07:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12BB1C4708A
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Nov 2022 14:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nZosQ2r+xxojJAgPqsoY9sienvrve5uIfcGd9hUplvY=; b=JFBkRa3uvW/mjE
-	b87DlGv9sIDILOkhfrJuWBCA1iGq/ysIU4XMoG/T6OneqYK/Y9+yQRaSEPnPwrl9BbfJbtfS7NYFR
-	B2GvZAu+rgd1ksPdUIIaBR0eih8baiWyAjAGQhpfS/uEsB8WdOOjqVx2eJ/qlXOuNcsuC6WuYDoTl
-	lu7EQ1ur9JqatQzvveOV47o1U2vGqRrwHdfBVi14pcemyV04GkNH2E+6PN5Rp/dKYeWGEb21hlj3g
-	k9KlF+I3+tpDdZQkJecEoW5QPQ2SAEe4+2ycS9840dt2voUbaaG3rg1rRH1aN5H2FXvU2lWwb+SBk
-	Gq0ASZ0+AUlmCBlmX5UQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=u0CAhbYssqOoqnxJpwy11yGGE81c1U/H1e9fEqBq7HY=; b=mmP
+	4xJPE7ds2cWjyZ2Zd/vKUqrX63oco5Q/H8/IZlc2N3p2XKrPdLvM5tK2qIPuyawky60uERrotUP8/
+	Z3JAWcunmktbnigd6PmCo4hb91GCv+05n1rj6gYPd+OwqjAHDVHEx/1K7WkBghkOSVz5JgVtNnvhg
+	LSbuNNvDLLWzTOBGjEGxPRngWQMlxMQ1x9IdlQ6DOrOVD9KuDhaKVsUgq0HBj9WyviK/T7ja5NdML
+	RN4vvMj9juIX980jay9CoOlLhsdxy5abRm0ys6TZIiaOpXr5WyGW15L+ZGr7Erl19evZ5wBEAIXn0
+	aEhIPPku7ddsJH4yfkAY8zZcJPt1dhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozvLp-0073go-Mr; Tue, 29 Nov 2022 07:48:22 +0000
-Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
+	id 1p01te-009PVB-I0; Tue, 29 Nov 2022 14:47:42 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozvLQ-0073WF-Lw
-	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2022 07:47:58 +0000
-Received: by mail-lf1-x12f.google.com with SMTP id r12so21246220lfp.1
-        for <linux-mtd@lists.infradead.org>; Mon, 28 Nov 2022 23:47:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=etxMVrTTVJSTddGDgARHAHEO1RrGD5Hs7SuIw9ap/3I=;
-        b=rJ2CHbAyVDgULRTpj4MDVg2dwBK1HADystIZFbvhbTYoLIME+/tt+UNXjiftguq7ib
-         w244K+6QPoVERfMg79BoElJO38d82eLScZZat5sFVE49snZOfOK2/+f0fnJIKBPDeYwr
-         FMbKUIjfcevvcaBgXAKIO3MbRsFR3P6ZtMV7rNa9PIY4woHjOWMCcZuqv4pX0tOMHtUg
-         i6K9FHqMYrX/NmhNXcCLLkLhSjNQEx5ifmowHQHPkWFrl7Bjgf4qKioahqfbJwtbyu+O
-         kUj+dvJ58qD1SX7rLqgkoUAxuWicMcWgz3BzKtCsL8WBGDD+0gJi4HnxuReDXO62n9lO
-         ykmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=etxMVrTTVJSTddGDgARHAHEO1RrGD5Hs7SuIw9ap/3I=;
-        b=mHS/8N6Xk+310aalWd3txenoVWQoJGdhoX8AEbU+nmNU7I/N7wVcLK7HRfP+FDnCGB
-         65MHM6gdOJK2VRQ/2b0EeHRkGo8fFa7OZw8CFvCrRQtoSJsCMlxl+kIjVGrRGJbpa0yV
-         A63l0deCLJWmo6psvf4EouOErykxc3QO0g506XZbNfsSv/HRUrgwmKDAE3PXVX3YQ9lz
-         a7OQjyrl7vs1zRipSiiNEMWVu7KclG13y3F35uc1dMjWXtQFj7bLP5OGJMUAZy1hffEw
-         IorMCMByMZhxunEZnu+5HnVT4MjYFnhfyg84uYmliUCX1GGQfbpZn/rfcGwz3Fsy/PeQ
-         XFXw==
-X-Gm-Message-State: ANoB5plQxbofYpoiumVxgNF1kz9X3WoticEP7APW6HGG/e5PSseIRiZV
-	0F5oYGwmgp+bh97Df40Vsi1siw==
-X-Google-Smtp-Source: AA0mqf67TcbUg0koPs/HiroxNXgbbcwrSRcrk/nihBw0w3MO/AQgLVDwdMtZH+S68ivSZKmzzQx01Q==
-X-Received: by 2002:a19:ae18:0:b0:4aa:c879:5bc with SMTP id f24-20020a19ae18000000b004aac87905bcmr12172113lfc.498.1669708074608;
-        Mon, 28 Nov 2022 23:47:54 -0800 (PST)
-Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
-        by smtp.gmail.com with ESMTPSA id k16-20020a0565123d9000b0049e9122bd1bsm2080686lfv.164.2022.11.28.23.47.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Nov 2022 23:47:54 -0800 (PST)
-Message-ID: <e512b7fd-3404-3c2d-dbf6-dc66ee662a06@linaro.org>
-Date: Tue, 29 Nov 2022 08:47:53 +0100
+	id 1p01sl-009Oo0-95
+	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2022 14:46:51 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id C7CA3240014;
+	Tue, 29 Nov 2022 14:46:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1669733202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=REo+AjSaADRhkyIjLXZGRa/mLUafG/ep2J68XHPnCms=;
+	b=AyYTovvKW137+GZbK4Bj0zl8Ui4xL2TJqOsXkK7l7dBCB1VoW1bqJpC+3eWn0U8ekXH6G1
+	lMHdtu6acK+4dr5FNZjx51rj2uzyQv4WIV94XwO0nO8Sy607QMH7Jhcp5iouEIAtGl23My
+	A85Y6LRSp1mkasPY8Ak8DC6DYvS9y053EQPyR0an+6AjWrbdmx15V/SDO+hKO8vyAvuHlH
+	OgU39ceON69vQtnhI72uupkKD0TBUcaVLjNdVxLJypJGezhKMS6VufxjzsUZF93pCAXQBO
+	apryCkZWidxWLppx5aQ6Oe972cxdakoC6ewjH5uqO82+vnqohBIYUAXmvv0rrQ==
+Date: Tue, 29 Nov 2022 15:46:31 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
+ <Tudor.Ambarus@microchip.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Frieder Schrempf <frieder.schrempf@kontron.de>, Michael Walle
+ <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>
+Subject: [GIT PULL] mtd: nand: Changes for 6.2
+Message-ID: <20221129154631.1e1a09bf@xps-13>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH 5/9] dt-bindings: spi: mtk-snfi: add mt7986 IC snfi
- bindings
-Content-Language: en-US
-To: =?UTF-8?B?WGlhbmdzaGVuZyBIb3UgKOS+r+elpeiDnCk=?=
- <Xiangsheng.Hou@mediatek.com>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "gch981213@gmail.com" <gch981213@gmail.com>,
- "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at" <richard@nod.at>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- =?UTF-8?B?QmVubGlhbmcgWmhhbyAo6LW15pys5LquKQ==?=
- <Benliang.Zhao@mediatek.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- =?UTF-8?B?QmluIFpoYW5nICjnq6Dmlowp?= <bin.zhang@mediatek.com>
-References: <20221128020613.14821-1-xiangsheng.hou@mediatek.com>
- <20221128020613.14821-6-xiangsheng.hou@mediatek.com>
- <8b8e4b23-a3bc-7e3d-199a-e8f591d05d71@linaro.org>
- <5f76482d33933c19e191ea618f8622cd0660597f.camel@mediatek.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <5f76482d33933c19e191ea618f8622cd0660597f.camel@mediatek.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221128_234756_733625_53F2DFC1 
-X-CRM114-Status: GOOD (  12.00  )
+X-CRM114-CacheID: sfid-20221129_064647_796762_02C9718D 
+X-CRM114-Status: GOOD (  10.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,27 +64,153 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1638666441660456220=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjkvMTEvMjAyMiAwMzo1MCwgWGlhbmdzaGVuZyBIb3UgKOS+r+elpeiDnCkgd3JvdGU6Cj4g
-SGkgS3J6eXN6dG9mLAo+IAo+IE9uIE1vbiwgMjAyMi0xMS0yOCBhdCAxMDowMCArMDEwMCwgS3J6
-eXN6dG9mIEtvemxvd3NraSB3cm90ZToKPj4gT24gMjgvMTEvMjAyMiAwMzowNiwgWGlhbmdzaGVu
-ZyBIb3Ugd3JvdGU6Cj4+PiAxLiBhZGQgbXQ3OTg2IElDIGJpbmRpbmdzCj4+Cj4+IFN1YmplY3Q6
-IGRyb3Agc2Vjb25kLCByZWR1bmRhbnQgImJpbmRpbmdzIi4KPiBXaWxsIGJlIGZpeGVkIGluIG5l
-eHQgc2VyaWVzLgo+IAo+Pj4gICAgY2xvY2tzOgo+Pj4gKyAgICBtaW5JdGVtczogMgo+Pj4gICAg
-ICBpdGVtczoKPj4+ICAgICAgICAtIGRlc2NyaXB0aW9uOiBjbG9jayB1c2VkIGZvciB0aGUgY29u
-dHJvbGxlcgo+Pj4gICAgICAgIC0gZGVzY3JpcHRpb246IGNsb2NrIHVzZWQgZm9yIHRoZSBTUEkg
-YnVzCj4+PiArICAgICAgLSBkZXNjcmlwdGlvbjogY2xvY2sgdXNlZCBmb3IgdGhlIEFIQiBidXMg
-ZG1hIGJ1cywgdGhpcwo+Pj4gZGVwZW5kcyBvbgo+Pj4gKyAgICAgICAgICAgICAgICAgICAgIGhh
-cmR3YXJlIGRlc2lnbiwgc28gdGhpcyBpcyBvcHRpb25hbC4KPj4KPj4gT3B0aW9uYWwgZm9yIHdo
-aWNoIHZhcmlhbnRzPyBGb3IgYWxsIG9mIHRoZW0/Cj4gSXRgcyBvbmx5IG5lZWRlZCBmb3IgdGhl
-IGl0ZW0gMyBuZmlfaGNsay4gSXMgaXQgcHJvcGVyIHdpdGggdGhpcwo+IGRlc2NyaXB0aW9uIG9y
-IGFueSBvdGhlciBzdWdnZXN0aW9uLgoKSSB1bmRlcnN0YW5kIHRoaXJkIGNsb2NrIGlzIG9wdGlv
-bmFsLiBGb3Igd2hpY2ggdmFyaWFudHMvY29tcGF0aWJsZXMgaXQKaXMgb3B0aW9uYWw/IEFkZCBh
-bGxPZjppZjp0aGVuIHJlc3RyaWN0aW5nIGl0LgoKQmVzdCByZWdhcmRzLApLcnp5c3p0b2YKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+--===============1638666441660456220==
+Content-Type: multipart/signed; boundary="Sig_/pQA8w8TNQjYwDQrZ9SCLVW.";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+
+--Sig_/pQA8w8TNQjYwDQrZ9SCLVW.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+The following changes since commit 9abf2313adc1ca1b6180c508c25f22f9395cc780:
+
+  Linux 6.1-rc1 (2022-10-16 15:36:24 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/nand/for=
+-6.2
+
+for you to fetch changes up to 6408cc05a50aaf88074a5a31d065e5af87a456f5:
+
+  mtd: rawnand: Drop obsolete dependencies on COMPILE_TEST (2022-11-25 10:0=
+5:33 +0100)
+
+Please mind the conflict which will need to be managed in the merge
+commit, as raised by Stephen:
+https://lore.kernel.org/linux-next/20221118114546.3ac3521e@canb.auug.org.au/
+
+Thanks,
+Miqu=C3=A8l
+
+----------------------------------------------------------------
+Raw NAND core changes:
+* Drop obsolete dependencies on COMPILE_TEST
+* MAINTAINERS: rectify entry for MESON NAND controller bindings
+* Drop EXPORT_SYMBOL_GPL for nanddev_erase()
+
+Raw NAND driver changes:
+* marvell: Enable NFC/DEVBUS arbiter
+* gpmi: Use pm_runtime_resume_and_get instead of pm_runtime_get_sync
+* mpc5121: Replace NO_IRQ by 0
+* lpc32xx_{slc,mlc}:
+  - Switch to using pm_ptr()
+  - Switch to using gpiod API
+* lpc32xx_mlc: Switch to using pm_ptr()
+* cadence: Support 64-bit slave dma interface
+* rockchip: Describe rk3128-nfc in the bindings
+* brcmnand: Update interrupts description in the bindings
+
+SPI-NAND driver changes:
+* winbond:
+  - Add Winbond W25N02KV flash support
+  - Fix flash identification
+
+----------------------------------------------------------------
+Christophe Leroy (1):
+      mtd: rawnand: mpc5121: Replace NO_IRQ by 0
+
+Dario Binacchi (1):
+      mtd: nand: drop EXPORT_SYMBOL_GPL for nanddev_erase()
+
+Dmitry Torokhov (2):
+      mtd: rawnand: lpc32xx_mlc: switch to using gpiod API
+      mtd: rawnand: lpc32xx_slc: switch to using gpiod API
+
+Geert Uytterhoeven (2):
+      mtd: rawnand: lpc32xx_mlc: Switch to using pm_ptr()
+      mtd: rawnand: lpc32xx_slc: Switch to using pm_ptr()
+
+Hamish Martin (1):
+      mtd: rawnand: marvell: Enable NFC/DEVBUS arbiter
+
+Jean Delvare (1):
+      mtd: rawnand: Drop obsolete dependencies on COMPILE_TEST
+
+Johan Jonker (1):
+      dt-bindings: mtd: rockchip: add rockchip,rk3128-nfc
+
+Lukas Bulwahn (1):
+      MAINTAINERS: rectify entry for MESON NAND controller bindings
+
+Mikhail Kshevetskiy (2):
+      mtd: spinand: winbond: fix flash identification
+      mtd: spinand: winbond: add Winbond W25N02KV flash support
+
+Rafa=C5=82 Mi=C5=82ecki (1):
+      dt-bindings: mtd: brcm,brcmnand: update interrupts description
+
+Valentin Korenblit (1):
+      mtd: rawnand: cadence: support 64-bit slave dma interface
+
+Zhang Qilong (1):
+      mtd: rawnand: gpmi: using pm_runtime_resume_and_get instead of pm_run=
+time_get_sync
+
+ Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml        | 16 ++++--
+ .../devicetree/bindings/mtd/rockchip,nand-controller.yaml       |  4 +-
+ MAINTAINERS                                                     |  2 +-
+ drivers/mtd/nand/core.c                                         |  3 +-
+ drivers/mtd/nand/raw/Kconfig                                    |  6 +--
+ drivers/mtd/nand/raw/cadence-nand-controller.c                  | 70 +++++=
++++++++++++++++-----
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c                      | 12 ++---
+ drivers/mtd/nand/raw/lpc32xx_mlc.c                              | 46 +++++=
++++---------
+ drivers/mtd/nand/raw/lpc32xx_slc.c                              | 43 +++++=
+++---------
+ drivers/mtd/nand/raw/marvell_nand.c                             |  4 +-
+ drivers/mtd/nand/raw/mpc5121_nfc.c                              |  2 +-
+ drivers/mtd/nand/spi/winbond.c                                  | 79 +++++=
++++++++++++++++++++++++-
+ include/linux/mtd/nand.h                                        |  1 -
+ 13 files changed, 203 insertions(+), 85 deletions(-)
+
+
+--Sig_/pQA8w8TNQjYwDQrZ9SCLVW.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEE9HuaYnbmDhq/XIDIJWrqGEe9VoQFAmOGG0cACgkQJWrqGEe9
+VoTNJQf+ItsHYwLhxc7mqJAiRlOZ9QaCMFHLyxZde1D6gp+dYqWvMkKuk1gztWIy
+/98NejeNfd8yjki7x8HjYIfwjeQeD/bDqn4wwoJ3vRdOZI5CUYFXw9JOZq2GBINW
+Oe3+Nq3L4ALDIH4akFsr+/q5oeAAL6ViyCDFfLVM0aLAvR87B8P8fJhmMi9tirHY
+3xiFvlmpaWaa2Z0KA+AD4E/eq0oC8rMdy+AawSLKaWqQfdTMlcmiAHUBBvQ4pXKu
+isbLCrgO7wF55QHj5FFeWr6gV87BkI10otIKB1WeDLAM0i1RU4lYeFMy+lQRCs1T
+RzNlQJDVA66AYPJAaUoEZoVnA0uSiQ==
+=RQwL
+-----END PGP SIGNATURE-----
+
+--Sig_/pQA8w8TNQjYwDQrZ9SCLVW.--
+
+
+--===============1638666441660456220==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1638666441660456220==--
+
