@@ -4,81 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A198C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Nov 2022 04:53:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99303C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Nov 2022 07:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=up+FCYDt7+ZhLmlm9yZwgi0xWQYfSZjIC6Ctudfw6wU=; b=ziD9Q5AqEkWU1e
-	tvH21hg+gVdb54iFirR0ibRVFst4okqc4QaW2Y1ymezqaqL+TXqzVqLNsx0cAHCJr0+bsub7Yazfd
-	BaQh/7LMYzSV08wrRsNrY4uy3QafWTn9do/L2MAjrNhZcKYbD6WOi44YAvAWTpT5GGU5DJmagKc2M
-	KmYnxL8C2PLW2Y+6s6FaQVKo5Lg0T+xO7GPXbtfCAEgRRoyw98+r3S8AwrKTwdY15pFbQbBrZP/3L
-	DbwcEvjoJHv11FX120zWGKXM5I/6VqpzQ0NzJIqm4pSXEVBUumoXt3Y3s4tZuK3CU3BmulZa8qYof
-	ECggJ9iiZjwovufS/omw==;
+	List-Owner; bh=AZpw1SNyVBCE3B2XFv2W4HI8fh0YqOreEzizrr7opyQ=; b=ShLEXAnSnSN8rx
+	ULq/e1Y0NXrKTAWDaC8S3x0ps2aPlmC3YyiWmBXuSGz6Pyipa6G3cZPOYnGf3lwcf78tph8koom/4
+	7NJg3RvHkbSmO8EJAMhy8aFsxCPJWanrXp1oFETCt5rVwSm28Ls/uY4f9SmeZFrZq0s3laC2W17Ph
+	y/KDzz7Md95WAkh7ABpEXQXjnIMmMVpI0lKmLpWju8IKZiMnF7dRzdq+I6LI+68Pp9Lb4qP60qenX
+	w0f6qFi27B8vOYxVWRn7WeBpZhSaU0hLDIQU48Pe4r3pg6HmmFUXNX4Vv4ThE9J5bOiruPqd05S0u
+	b63fpx+zlyHRB+A91iSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozsbt-006CuY-0r; Tue, 29 Nov 2022 04:52:45 +0000
-Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
+	id 1ozvKj-0073B7-4u; Tue, 29 Nov 2022 07:47:13 +0000
+Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozsbp-006CrK-9U
-	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2022 04:52:43 +0000
-Received: by mail-pl1-x62b.google.com with SMTP id p24so8549746plw.1
-        for <linux-mtd@lists.infradead.org>; Mon, 28 Nov 2022 20:52:39 -0800 (PST)
+	id 1ozvKf-00738K-Qz
+	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2022 07:47:11 +0000
+Received: by mail-lf1-x129.google.com with SMTP id f13so21187061lfa.6
+        for <linux-mtd@lists.infradead.org>; Mon, 28 Nov 2022 23:47:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=N1+5tfRuqWTVsOgukn5eT735qWcREEDtuwFhVAis2ns=;
-        b=SKhJ7IFWPCWvn97G1esf5ryu41DTYHaQj+LN784zZSyaN8xddxJJHH2hp55QSaWwbW
-         6WVRTSGesO+2DOHanQ/NhXFZ4VG5cxnq3la4UF/tDAd7qyRIk4y5oIsD84tdxuHKWDE4
-         rSuYvy8AUA50rd8nCdR7YK41k8KKijalrVoQy9+Bt1iU+UaIRv42ZQqVTTbhSzTDec7/
-         xV1hPpkBOdG4xmiVUrVGPiJhpMVDbLsCnvdmsvbHL5ZD3DxSGbqTEtHE48sbuTkP1vei
-         NzEMgl3B7EJiKC2M0/2SbvMO9DZwvjJqcwFVSWJWDrJRnQBZbMkvrOZBjAoswqUPwcrW
-         aGfQ==
+        bh=loSpF9AgG01RMo3LBV/v8v6fFtboHwkwvrGYRwDPayw=;
+        b=BCIwFn6W/n3Cf25bMWz/YeiC1vDxWars4v8YMEFnaxBFn1+klIarsq0thr5IvFXBd9
+         y0iEYk/HW1kb38E9fGJQE23xoYKh1JSMPNptDyAci8eDnjw187PoZRcMaTSsGScprKF0
+         3JnzlEVO7XLzbb726ClGkCFzGKUg130Zltw6RkyFgarJr3EFrx3Ku1npNJ8ga77eTfkO
+         69uWTfnN2vC1onzoddkNRL9JzocY4lCxV2vQJqwWxkWEMQCWlm07jXhcvDk8tqH+MEI6
+         NmW+Z+mOT5piPL3GJr0IjEujQDbz1T01BGCV4QvqAHhK5GOztAAeZlu9lhf35ypj5sSe
+         RrOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N1+5tfRuqWTVsOgukn5eT735qWcREEDtuwFhVAis2ns=;
-        b=6nLrBxgTyUtwFsJpJcLaZ0u452vXsriyhT9AkHMb6+JpXMepH5FiKOgGpDI5scBmvD
-         ugUZrkvdlhehEuv9saqduxPDpYT3TV4Sz8iTi+7S8zRji8b/i4oh4mZd/7YD8dK/MItU
-         4Tj/uB9Zru1gtVfyNF2GOA4lAqDW4y9+EE1NHrEsAgEwC768Npyn6jqresA1YpeSk1p+
-         suK4Glc1qKfhjAlnnnjP/y2LmE+vKkElDzQbw5oThqa8KldmVJ+UmY+5Tah2z7ulWUgk
-         vGqbej4CN8S4f7kQHksRhiAeMCsyholIrGyiz0IhkqM1yKtLGXvVoFM+1MdFksM/jfT/
-         tv2w==
-X-Gm-Message-State: ANoB5pn25+qGJlSHu/Ow1v3133XlwGGiV9FskQHosqBy4BI1GoCTI/yp
-	Zgkdi4A06majQObDc16LXUA=
-X-Google-Smtp-Source: AA0mqf5c+p5dL6zUqx5qZ25QlpNx4UfNiAV/8qXIhTXchmw0FVcF6a6gE72GedLWPA1IiVJNVj4HsQ==
-X-Received: by 2002:a17:902:db0c:b0:189:1963:d0d7 with SMTP id m12-20020a170902db0c00b001891963d0d7mr36119934plx.100.1669697558416;
-        Mon, 28 Nov 2022 20:52:38 -0800 (PST)
-Received: from [192.168.0.10] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id q14-20020a170902dace00b001895d87225csm9584719plx.182.2022.11.28.20.52.35
+        bh=loSpF9AgG01RMo3LBV/v8v6fFtboHwkwvrGYRwDPayw=;
+        b=T+0nzOdWTJ1Q+hnlCwt+xLYn39wsozl963cwUSEu0xldM0JDR6CJzTL/eUn3jruBXl
+         G3V4bIyK2LT659dOZOuOxJgfB8CvWutXkhpZtQ0XyLA++ptwBo8fgVVu/5XiAcPCq9hz
+         nxdGuXK1bbAeurdTRMrbMJ8fA/qdT8hQro1kImy2jWeA+7Wm14Luh3027DERyg8HckjF
+         iGq+6DMwxTOuEr+xoSjHw1fOiBXeGr5OvyWwyBho5RmZxrycIZPYG7pRXsWkEikQoXay
+         2aGn0IR7MDJu/3Vq/9yVFY+y3M4D0AgwXvauyRHs8Tzl//ulxwuTUufK78RtczUFO4dr
+         w6bg==
+X-Gm-Message-State: ANoB5pm3QdPb5PSpiArZ8VKfwmYGnolblg0DG7Y8Itfqdzafxooj84Dc
+	qd5HTzTGlq2s/WC4l75PBO11WJPEwFx3i9Wr
+X-Google-Smtp-Source: AA0mqf6+wcgPAn5cslfEauv8J6Mh6lwM69/leKqgZb2AnXuqe0SSsSZ6WHFsED5uSwSOj/bep+llhw==
+X-Received: by 2002:a05:6512:2212:b0:4b5:acf:8789 with SMTP id h18-20020a056512221200b004b50acf8789mr4757200lfu.549.1669708026761;
+        Mon, 28 Nov 2022 23:47:06 -0800 (PST)
+Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+        by smtp.gmail.com with ESMTPSA id r13-20020ac252ad000000b004b49025f96dsm2096814lfm.187.2022.11.28.23.47.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Nov 2022 20:52:37 -0800 (PST)
-Message-ID: <7b191ded-068f-0dc7-25fa-e35cd1ac5bcf@gmail.com>
-Date: Tue, 29 Nov 2022 13:52:34 +0900
+        Mon, 28 Nov 2022 23:47:06 -0800 (PST)
+Message-ID: <08ebc76a-0220-f984-b546-23dba8677be9@linaro.org>
+Date: Tue, 29 Nov 2022 08:47:05 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH] mtd: spi-nor: spansion: add clear sr fixup for s25fl-l
- family
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH 7/9] dt-bindings: spi: mtk-snfi: add two timing delay
+ property
 Content-Language: en-US
-To: Tudor.Ambarus@microchip.com, yaliang.wang@windriver.com,
- pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, Takahiro.Kuwano@infineon.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20221018095732.251299-1-yaliang.wang@windriver.com>
- <58b39090-d26f-271f-4832-8fb41c624a9c@microchip.com>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <58b39090-d26f-271f-4832-8fb41c624a9c@microchip.com>
+To: =?UTF-8?B?WGlhbmdzaGVuZyBIb3UgKOS+r+elpeiDnCk=?=
+ <Xiangsheng.Hou@mediatek.com>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "gch981213@gmail.com" <gch981213@gmail.com>,
+ "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at" <richard@nod.at>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ =?UTF-8?B?QmVubGlhbmcgWmhhbyAo6LW15pys5LquKQ==?=
+ <Benliang.Zhao@mediatek.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ =?UTF-8?B?QmluIFpoYW5nICjnq6Dmlowp?= <bin.zhang@mediatek.com>
+References: <20221128020613.14821-1-xiangsheng.hou@mediatek.com>
+ <20221128020613.14821-8-xiangsheng.hou@mediatek.com>
+ <9985d44e-977e-d7ea-0932-4879a3ccd14d@linaro.org>
+ <f83184ae803dbe0afd37a31a8a83a369a9772880.camel@mediatek.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <f83184ae803dbe0afd37a31a8a83a369a9772880.camel@mediatek.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221128_205241_401802_E4313093 
-X-CRM114-Status: GOOD (  31.15  )
+X-CRM114-CacheID: sfid-20221128_234709_901391_40307045 
+X-CRM114-Status: GOOD (  15.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,267 +107,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Yaliang and Tudor,
-
-On 11/22/2022 7:28 PM, Tudor.Ambarus@microchip.com wrote:
-> + Takahiro
-> 
-> Hi, Takahiro,
-> 
-> Would you please review/test this spansion patch?
-> 
-> Thanks,
-> ta
-> 
-> On 10/18/22 12:57, yaliang.wang@windriver.com wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> From: Yaliang Wang <Yaliang.Wang@windriver.com>
->>
->> Spansion S25FL-L family flashes s25fl064l/s25fl128l/s25fl256l can't
->> automatically recover from programming/erase errors, the Status Register
->> error bits inflecting the errors will not change until a Clear Status
->> Register command be executed.
->>
->> Same thing also happens on other Spansion flash families, they've
->> properly handled it, USE_CLSR manufacturer flag was introduced for this
->> purpose, but S25FL-L cannot simply reuse their work, because S25FL-L has
->> the different error bit settings. S25FL-L defines programming/erase
->> error bits in Status Register 2, whereas the other families define the
->> same error bits in Status Register 1, causing S25FL-L needs a different
->> method to handle this problem.
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 0074a8f3b303 ("mtd: spi-nor: Add support for s25fl128l and s25fl256l")
->> Fixes: d8b494a32889 ("mtd: spi-nor: Add support for Spansion S25FL064L")
->> Signed-off-by: Yaliang Wang <Yaliang.Wang@windriver.com>
->> ---
->>  drivers/mtd/spi-nor/spansion.c | 119 ++++++++++++++++++++++++++-------
->>  1 file changed, 93 insertions(+), 26 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
->> index 0150049007be..8f353ddda5f5 100644
->> --- a/drivers/mtd/spi-nor/spansion.c
->> +++ b/drivers/mtd/spi-nor/spansion.c
->> @@ -14,6 +14,7 @@
->>  #define SPINOR_OP_CLSR         0x30    /* Clear status register 1 */
->>  #define SPINOR_OP_RD_ANY_REG                   0x65    /* Read any register */
->>  #define SPINOR_OP_WR_ANY_REG                   0x71    /* Write any register */
->> +#define SPINOR_REG_CYPRESS_SR2V                        0x00800001
->>  #define SPINOR_REG_CYPRESS_CFR1V               0x00800002
->>  #define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN       BIT(1)  /* Quad Enable */
->>  #define SPINOR_REG_CYPRESS_CFR2V               0x00800003
->> @@ -25,6 +26,10 @@
->>  #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS    0
->>  #define SPINOR_OP_CYPRESS_RD_FAST              0xee
->>
->> +/* s25fl-l family specific */
->> +#define S25FL_L_SR2V_P_ERR                     BIT(5)  /* Programming Error Occurred */
->> +#define S25FL_L_SR2V_E_ERR                     BIT(6)  /* Erase Error Occurred */
->> +
->>  /* Cypress SPI NOR flash operations. */
->>  #define CYPRESS_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)             \
->>         SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 0),             \
->> @@ -44,6 +49,29 @@
->>                    SPI_MEM_OP_NO_DUMMY,                                 \
->>                    SPI_MEM_OP_NO_DATA)
->>
->> +/**
->> + * spansion_nor_clear_sr() - Clear the Status Register.
->> + * @nor:       pointer to 'struct spi_nor'.
->> + */
->> +static void spansion_nor_clear_sr(struct spi_nor *nor)
->> +{
->> +       int ret;
->> +
->> +       if (nor->spimem) {
->> +               struct spi_mem_op op = SPANSION_CLSR_OP;
->> +
->> +               spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
->> +
->> +               ret = spi_mem_exec_op(nor->spimem, &op);
->> +       } else {
->> +               ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
->> +                                                      NULL, 0);
->> +       }
->> +
->> +       if (ret)
->> +               dev_dbg(nor->dev, "error %d clearing SR\n", ret);
->> +}
->> +
->>  static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
->>  {
->>         struct spi_mem_op op;
->> @@ -342,6 +370,65 @@ static const struct spi_nor_fixups s25fs_s_nor_fixups = {
->>         .post_bfpt = s25fs_s_nor_post_bfpt_fixups,
->>  };
->>
->> +/**
->> + * s25fl_l_sr_ready_and_clear() - S25FL_L family flashes need to query
->> + * Status Register 1 to check if the flash is ready and clear it if
->> + * there are Programming/Erase errors in Status Register 2.
->> + * @nor:       pointer to 'struct spi_nor'.
->> + *
->> + * Return: 1 if ready, 0 if not ready, -errno on errors.
->> + */
->> +static int s25fl_l_sr_ready_and_clear(struct spi_nor *nor)
->> +{
->> +       int ret;
->> +       u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
->> +       struct spi_mem_op op =
->> +               CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
->> +                                         SPINOR_REG_CYPRESS_SR2V,
->> +                                         &nor->bouncebuf[1]);
->> +
-RDAR in S25FL-L family requires 8 dummy cycles by default. This is one of
-discrepancies in Spansion/Cypress/Infineon SPI NOR families.
-
-In S25FL-L and S25FS-S families, number of dummy cycles in RDAR is same
-as read ops (Fast read, Quad output read, etc) latency regardless of
-register type, volatile or non-volatile. It is 8 by default.
-
-In SEMPER family (S25HL/HS-T and S28HL/HS-T), number of dummy cycles in
-RDAR for Non-volatile registers is same as read ops latency. For volatile
-registers, it depends on CFR3[7:6] and is 0 by default.
-
-So, we may want to let CYPRESS_NOR_RD_ANY_REG_OP macro take 'ndummy' param
-to handle this...
-
->> +       /* Read Status Register 1 */
->> +       ret = spi_nor_read_sr(nor, nor->bouncebuf);
->> +       if (ret)
->> +               return ret;
->> +
->> +       /* RDSR2 command isn't available in QPI mode, use RDAR instead  */
-Or use RDSR2 instead. QPI (4-4-4) mode is not supported in this driver.
-
->> +       ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
->> +       if (ret)
->> +               return ret;
->> +
->> +       if (nor->bouncebuf[1] & (S25FL_L_SR2V_P_ERR | S25FL_L_SR2V_E_ERR)) {
->> +               if (nor->bouncebuf[1] & S25FL_L_SR2V_E_ERR)
->> +                       dev_err(nor->dev, "Erase Error occurred\n");
->> +               else
->> +                       dev_err(nor->dev, "Programming Error occurred\n");
->> +
->> +               spansion_nor_clear_sr(nor);
->> +
->> +               /*
->> +                * WEL bit remains set to one when an erase or page program
->> +                * error occurs. Issue a Write Disable command to protect
->> +                * against inadvertent writes that can possibly corrupt the
->> +                * contents of the memory.
->> +                */
->> +               ret = spi_nor_write_disable(nor);
->> +               if (ret)
->> +                       return ret;
->> +
->> +               return -EIO;
->> +       }
->> +
->> +       return !(nor->bouncebuf[0] & SR_WIP);
->> +}
->> +
->> +static void s25fl_l_late_init(struct spi_nor *nor)
->> +{
->> +       nor->params->ready = s25fl_l_sr_ready_and_clear;
->> +}
->> +
->> +static const struct spi_nor_fixups s25fl_l_fixups = {
->> +       .late_init = s25fl_l_late_init,
->> +};
->>  static const struct flash_info spansion_nor_parts[] = {
->>         /* Spansion/Cypress -- single (large) sector size only, at least
->>          * for the chips listed here (without boot sectors).
->> @@ -428,13 +515,16 @@ static const struct flash_info spansion_nor_parts[] = {
->>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
->>         { "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128)
->>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
->> -               FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
->> +               FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
->> +               .fixups = &s25fl_l_fixups },
->>         { "s25fl128l",  INFO(0x016018,      0,  64 * 1024, 256)
->>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
->> -               FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
->> +               FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
->> +               .fixups = &s25fl_l_fixups },
->>         { "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
->>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
->> -               FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
->> +               FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
->> +               .fixups = &s25fl_l_fixups },
-How about merging SR2V check into existing spansion_nor_sr_ready_and_clear()?
-
-Introduce new MFR flag like USE_SR2V then
-
-MFR_FLAGS(USE_CLSR|USE_SR2V)
-
-static int spansion_nor_sr_ready_and_clear(struct spi_nor *nor)
-{
-	int ret;
-
-	ret = spi_nor_read_sr(nor, nor->bouncebuf);
-	if (ret)
-		return ret;
-
-	if (nor->info->mfr_flags & USE_SR2V) {
-		/* check SR2V */
-	} else {
-		/* check SR */
-	}
-
-	...
-}
-
-This is just my preference. What do you think?
-
->>         { "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
->>                 PARSE_SFDP
->>                 MFR_FLAGS(USE_CLSR)
->> @@ -460,29 +550,6 @@ static const struct flash_info spansion_nor_parts[] = {
->>         },
->>  };
->>
->> -/**
->> - * spansion_nor_clear_sr() - Clear the Status Register.
->> - * @nor:       pointer to 'struct spi_nor'.
->> - */
->> -static void spansion_nor_clear_sr(struct spi_nor *nor)
->> -{
->> -       int ret;
->> -
->> -       if (nor->spimem) {
->> -               struct spi_mem_op op = SPANSION_CLSR_OP;
->> -
->> -               spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
->> -
->> -               ret = spi_mem_exec_op(nor->spimem, &op);
->> -       } else {
->> -               ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
->> -                                                      NULL, 0);
->> -       }
->> -
->> -       if (ret)
->> -               dev_dbg(nor->dev, "error %d clearing SR\n", ret);
->> -}
->> -
->>  /**
->>   * spansion_nor_sr_ready_and_clear() - Query the Status Register to see if the
->>   * flash is ready for new commands and clear it if there are any errors.
->> --
->> 2.34.1
->>
-> 
-
-Thanks,
-Takahiro
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjkvMTEvMjAyMiAwMzo1MCwgWGlhbmdzaGVuZyBIb3UgKOS+r+elpeiDnCkgd3JvdGU6Cgo+
+Pj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9tZWRpYXRlayxz
+cGktbXRrLQo+Pj4gc25maS55YW1sCj4+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3Mvc3BpL21lZGlhdGVrLHNwaS1tdGstCj4+PiBzbmZpLnlhbWwKPj4+IEBAIC01NSw2
+ICs1NSwyMiBAQCBwcm9wZXJ0aWVzOgo+Pj4gICAgICBkZXNjcmlwdGlvbjogZGV2aWNlLXRyZWUg
+bm9kZSBvZiB0aGUgYWNjb21wYW55aW5nIEVDQyBlbmdpbmUuCj4+PiAgICAgICRyZWY6IC9zY2hl
+bWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3BoYW5kbGUKPj4+ICAKPj4+ICsgIHJ4LXNhbXBs
+ZS1kZWxheToKPj4KPj4gTm8sIHVzZSBleGlzdGluZyBwcm9wZXJ0eSwgZG9uJ3QgaW52ZW50IHlv
+dXIgb3duIHN0dWZmIC0gbWlzc2luZyB1bml0Cj4+IHN1ZmZpeC4gU2VlIHNwaS1wZXJpcGhlcmFs
+LXByb3BzLnlhbWwuCj4gV2lsbCBjaGFuZ2UgdG8gb3RoZXIgcHJpdmF0ZSBwcm9wZXJ0eS4gVGhl
+IHJlYWQgc2FtcGxlIGRlbGF5IHdpdGgKPiBNZWRpYVRlayBTUEkgTkFORCBjb250cm9sbGVyIGNh
+biBiZSBzZXQgd2l0aCB2YWx1ZXMgZnJvbSAwIHRvIDQ3Lgo+IEhvd2V2ZXIsIGl0YHMgZGlmZmlj
+dWx0IHRvIHNheSB0aGUgdW5pdCBvZiBlYWNoIHZhdWxlLCBiZWNhdXNlIHRoZSB1bml0Cj4gdmFs
+dWUgd2lsbCBiZSBkaWZmZXJlbmNlIHdpdGggZGlmZmVyZW50IGNoaXAgcHJvY2VzcyBvciBkaWZm
+ZXJlbnQKPiBjb3JuZXIgSUMuCgpXaHkgeW91IGNhbm5vdCB1c2Ugc2FtZSBmb3JtdWxhIGFzIG90
+aGVyIFNQSSBkcml2ZXJzIGZvciBzYW1wbGUtZGVsYXk/CkFuZCBkaXZpZGUvbXVsdGlwbGUgYnkg
+c29tZSBmYWN0b3Igc3BlY2lmaWMgdG8gU29DLCB3aGljaCBpcyB0YWtlbiBmcm9tCmRyaXZlcl9k
+YXRhPwoKPiAKPj4+ICsgICAgZGVzY3JpcHRpb246IFJ4IGRlbGF5IHRvIHNhbXBsZSBkYXRhIHdp
+dGggdGhpcyB2YWx1ZSwgdGhlCj4+PiB2YWxpZAo+Pj4gKyAgICAgICAgICAgICAgICAgdmFsdWVz
+IGFyZSBmcm9tIDAgdG8gNDcuIFRoZSBkZWxheSBpcyBzbWFsbGVyCj4+PiB0aGFuCj4+PiArICAg
+ICAgICAgICAgICAgICB0aGUgcngtbGF0Y2gtbGF0ZW5jeS4KPj4+ICsgICAgJHJlZjogL3NjaGVt
+YXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyCj4+Cj4+IERyb3AgJHJlZi4KPiBXaWxs
+IGRvLgo+IAo+Pgo+Pj4gKyAgICBtaW5JdGVtczogMAo+Pj4gKyAgICBtYXhJdGVtczogNDcKPj4+
+ICsgICAgZGVmYXVsdDogMAo+Pj4gKwo+Pj4gKyAgcngtbGF0Y2gtbGF0ZW5jeToKPj4KPj4gU2Ft
+ZSBwcm9ibGVtcy4gRGlkIHlvdSBjaGVjayBzcGktcGVyaXBoZXJhbC1wcm9wcy55YW1sIG9yIG90
+aGVyIFNQSQo+PiBjb250cm9sbGVyIHNjaGVtYXMgZm9yIHN1Y2ggcHJvcGVydHk/Cj4+Cj4+PiAr
+ICAgIGRlc2NyaXB0aW9uOiBSeCBkZWxheSB0byBzYW1wbGUgZGF0YSB3aXRoIHRoaXMgdmFsdWUs
+IHRoZQo+Pj4gdmFsdWUKPj4+ICsgICAgICAgICAgICAgICAgIHVuaXQgaXMgY2xvY2sgY3ljbGUu
+Cj4+Cj4+IEkgdGhpbmsgdGhlIHVuaXQgc2hvdWxkIGJlIHJhdGhlciB0aW1lIChlLmcuIHVzKS4K
+Pj4KPiBZZXMsIEkgY2hlY2tlZCB0aGUgc3BpLXBlcmlwaGVyYWwtcHJvcHMueWFtbCBhbmQgdGhl
+IGRlbGF5IHZhbHVlcyBhcmUKPiBkZXNjcmliZWQgZXhhY3RseSB1bml0IHdpdGggbnMgb3IgdXMu
+IEhvd2V2ZXIgdGhlIHVuaXQgb2YgTWVkaWFUZWsgcmVhZAo+IGxhdGNoIGxhdGVuY3kgaXMgY2xv
+Y2sgY3ljbGUgYW5kIGl0YHMgZGlmZmVyZW5jZSB3aXRoIGRpZmZlcmVudCBjbG9jawo+IGZyZXF1
+ZW5jeS4KClRoaXMgaXMgZmluZSBpbiBzdWNoIGNhc2UuCgo+IAo+Pj4gKyAgICAkcmVmOiAvc2No
+ZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzIKPj4+ICsgICAgZW51bTogWzAsIDEs
+IDIsIDNdCj4+PiArICAgIGRlZmF1bHQ6IDAKPj4+ICsKCkJlc3QgcmVnYXJkcywKS3J6eXN6dG9m
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
