@@ -4,168 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72BB3C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Nov 2022 02:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A198C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Nov 2022 04:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JYAs6VsGC4Q2ASapU6n8fKTrGspviSBoKRDXNWcRD5o=; b=OOF9ZdOE3vCFdP
-	t1yg61MkFW53OEE8bbpkuAbQA9EUbZ2z38cX5wi/jrc0MvR1dIVEEtayCbAMZM9eEi8SlBipESFSm
-	zDXM14iJLGxmrWcPgD6niLlRXhwSd0mParBX8c72h34H1JZYklV3gLGrTIPciNWl4BQuzDwm10iIU
-	q+sy08UwENAQYcYDJOO9s4Cwxb6rxFn4OsGLHHJR3RPRZ7XXpS2yEegpRvXEYjfmZZQdTMFIMy2NF
-	Uj6amPlLUmpkANvDXgq7Hui415yjZeDkspyURKyZq1oR+gnxCK67IYCuLzCSCpb0IbgNXzh99gg7t
-	SdJqUmYdsCeaSgCfSGKQ==;
+	List-Owner; bh=up+FCYDt7+ZhLmlm9yZwgi0xWQYfSZjIC6Ctudfw6wU=; b=ziD9Q5AqEkWU1e
+	tvH21hg+gVdb54iFirR0ibRVFst4okqc4QaW2Y1ymezqaqL+TXqzVqLNsx0cAHCJr0+bsub7Yazfd
+	BaQh/7LMYzSV08wrRsNrY4uy3QafWTn9do/L2MAjrNhZcKYbD6WOi44YAvAWTpT5GGU5DJmagKc2M
+	KmYnxL8C2PLW2Y+6s6FaQVKo5Lg0T+xO7GPXbtfCAEgRRoyw98+r3S8AwrKTwdY15pFbQbBrZP/3L
+	DbwcEvjoJHv11FX120zWGKXM5I/6VqpzQ0NzJIqm4pSXEVBUumoXt3Y3s4tZuK3CU3BmulZa8qYof
+	ECggJ9iiZjwovufS/omw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozqj8-005U1G-1z; Tue, 29 Nov 2022 02:52:06 +0000
-Received: from mailgw01.mediatek.com ([216.200.240.184])
+	id 1ozsbt-006CuY-0r; Tue, 29 Nov 2022 04:52:45 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ozqiC-005TaF-UJ; Tue, 29 Nov 2022 02:51:10 +0000
-X-UUID: 7fa83afc135d40b0a1059293ce15efd0-20221128
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=zMjAK1JVQiKyedPtI7861RA7YnqxMnde54pE4Hhxv4E=;
-	b=eGV/eVdX4FoJmERchT62qh/S3nMTaWbe1REI8z2NtDRtl9B8F9E9kpF6OAWpn1Ikw3d03+YoivF6g33feMvf3f+NhHtLq5R6s0PSZNsujhAw3wn6N7RDPSbgDCab/66rYt8HstJBe6ca91lr1fw0bE6cL7HU9rMHrOu07doL3nI=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.14,REQID:5ff1823a-d5a8-4d50-93e2-1ded39b4ebeb,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:dcaaed0,CLOUDID:9853911e-5e1d-4ab5-ab8e-3e04efc02b30,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 7fa83afc135d40b0a1059293ce15efd0-20221128
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-	(envelope-from <xiangsheng.hou@mediatek.com>)
-	(musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 429884457; Mon, 28 Nov 2022 19:51:05 -0700
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Tue, 29 Nov 2022 10:50:28 +0800
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.239)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Tue, 29 Nov 2022 10:50:28 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OM2ICiBRqtoOCSFGlsDuuGuCiWzDPsQFpmXOqQgTbqPlrKi56lXqvs+w2MMBvHa1Tmc+hkGdRPDhx9g9w0gYCj/SmTVbcrCiTywS0kMdCkR17M0Xm5o4yUYgHx25X0TouZyQ03gKvu0Tf/g1n4hkUTkWJUVHR5ztseIjbjgJf3ytZ+Q2j0Cba7Gkd+Ah4yzS0edeS1+iHsppMU4U9V1F20BfyDSz1P1TpHyxjZy5K0Du1gauhov8uTjQgFs0y1OfXbZdc+CY+SUZfKQHahULN6bhFCDbt91T3eg29vXz96uFKo53kxk3zNzivRsHWPOT65urW0wCKNg/qnqhbaLXNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zMjAK1JVQiKyedPtI7861RA7YnqxMnde54pE4Hhxv4E=;
- b=lO+BQjWMszc98WsGW0tgyWgHphV09AZ8Uw/WQCarIlVeBBaDqfj5K/YC9m8RRWpygZgJcL6yvXjnOFjOxpwN4skno1wouBbOtRbN4i6Y/MZCqqVWxkRl12innX5AD5uhH4timEiEDmh3vTFiOnNEEXVrRyRPgUGr51qApttKht5x/QZgAgYk4ohGjcYDjC9SOQm/vdNf4FiCRo6ARhmHDyfRn/o52RGOnonSYhiNmGTGoN9d2VMugkp0RnDogsGj5uDNHxB3OIbnLqDizhqPoHE4kG5BLVm6sjdA8bkV9rOrfXJqqAgtAj0DRtDQIfewou33VA2DJNkIfoISvfecpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
+	id 1ozsbp-006CrK-9U
+	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2022 04:52:43 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id p24so8549746plw.1
+        for <linux-mtd@lists.infradead.org>; Mon, 28 Nov 2022 20:52:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zMjAK1JVQiKyedPtI7861RA7YnqxMnde54pE4Hhxv4E=;
- b=X0X+uw8IY6JAOA+YAzKB6B0UenFbin0A/WUnM6y/E7I01pnanCGnk0UkaXdR4dDpTPU76igx8q8QhuomTOL4b+Tn37eOzQlw1Xr1UcPKU/0+k90IgQCmcsIzrWQwVoZUVa9hbZQvZBvWM2aARXMwnpqdFotMS9v9hA1fYNYSwTg=
-Received: from SG2PR03MB4565.apcprd03.prod.outlook.com (2603:1096:4:84::10) by
- KL1PR03MB7040.apcprd03.prod.outlook.com (2603:1096:820:dd::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5857.23; Tue, 29 Nov 2022 02:50:26 +0000
-Received: from SG2PR03MB4565.apcprd03.prod.outlook.com
- ([fe80::6f36:b7bc:7906:b179]) by SG2PR03MB4565.apcprd03.prod.outlook.com
- ([fe80::6f36:b7bc:7906:b179%6]) with mapi id 15.20.5857.023; Tue, 29 Nov 2022
- 02:50:25 +0000
-From: =?utf-8?B?WGlhbmdzaGVuZyBIb3UgKOS+r+elpeiDnCk=?=
-	<Xiangsheng.Hou@mediatek.com>
-To: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>, "krzysztof.kozlowski@linaro.org"
-	<krzysztof.kozlowski@linaro.org>, "broonie@kernel.org" <broonie@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, "gch981213@gmail.com"
-	<gch981213@gmail.com>, "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at"
-	<richard@nod.at>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	=?utf-8?B?QmVubGlhbmcgWmhhbyAo6LW15pys5LquKQ==?=
-	<Benliang.Zhao@mediatek.com>, "linux-spi@vger.kernel.org"
-	<linux-spi@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, =?utf-8?B?QmluIFpoYW5nICjnq6Dmlowp?=
-	<bin.zhang@mediatek.com>
-Subject: Re: [PATCH 7/9] dt-bindings: spi: mtk-snfi: add two timing delay
- property
-Thread-Topic: [PATCH 7/9] dt-bindings: spi: mtk-snfi: add two timing delay
- property
-Thread-Index: AQHZAs5U3hXZdqvH5kqzlnM2fDcg7K5UC1yAgAEpsIA=
-Date: Tue, 29 Nov 2022 02:50:25 +0000
-Message-ID: <f83184ae803dbe0afd37a31a8a83a369a9772880.camel@mediatek.com>
-References: <20221128020613.14821-1-xiangsheng.hou@mediatek.com>
-	 <20221128020613.14821-8-xiangsheng.hou@mediatek.com>
-	 <9985d44e-977e-d7ea-0932-4879a3ccd14d@linaro.org>
-In-Reply-To: <9985d44e-977e-d7ea-0932-4879a3ccd14d@linaro.org>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SG2PR03MB4565:EE_|KL1PR03MB7040:EE_
-x-ms-office365-filtering-correlation-id: 8bafcfd8-c6a2-40b2-61bd-08dad1b4779b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Mi3m2dJWo3bJ8ll8WAdXFI+6IMgrnmtdJvbaOafzRYUGY5BSvIQUkPe6+JxB7ak1rtDBHenZeUWxhiUBdAFqP4pfhrB6YL21vW2/82NuCW+FI01umUCasx+w0Q4qoJQr9CipehhTIAaTRvr5gS/aKY5wtdnjhbSqcqzt4favK7ra7dUkD/0bjbbTwV53Kmdc2hzek/VdPJt6cTTgF8M/bwaQpsPVtTmL2MjR1bll3/BXdU6FAXyL+citHiyuMBIaykUUZ+MwgAyunx+CZFxCeF+EsP9WA76GEgev77BScp06L0GKm3FQ87n+vXMnuVon6GVcOgBhPMJmDMjPirMArT7KkpsEGGdYtD8tJyJcsBVFSEG5UUl+O2R9x138hS29RvzkK7aGgLV0gSWFlLveBIOGqu968AMn5gPFISqWvFYw9pNvWGT+hpZwcZme7zE+tYWHw7m31ZxjPM1eH6ahrAvNuNkZVFdwDkUVRfnJX+wtL8P9KRmOcoQZXi88iMfnckaL3SX2uxvxqgGCuphfdRQxGPFnyewzI9r85g5Hf4Hi8o6o7KJkBe2Az7HypAQATIsVjT3sUzIESnVtpfirmNA9PRExwv+Rf3sNWWicxMGXJ+CotfPKMLiOb1BCk0n1wnIGEe0aW8hdqvOAHUbnnTpwOoej0EX+4JjLFfr8XUzsux4W/IwShBYSKmLypl6fTifzuiXGSRCVoPrv/P//hw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR03MB4565.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(376002)(366004)(346002)(136003)(39860400002)(451199015)(478600001)(71200400001)(6486002)(6506007)(53546011)(107886003)(54906003)(316002)(6512007)(26005)(41300700001)(76116006)(2616005)(36756003)(4326008)(8676002)(66556008)(64756008)(66946007)(66476007)(66446008)(8936002)(186003)(85182001)(5660300002)(122000001)(38070700005)(38100700002)(86362001)(83380400001)(110136005)(7416002)(2906002)(4001150100001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Zkw5bEpDekl1SmJaRmRJM2U1eXRGY3hRK0VOa29pUHRndzFlaFp5WnNJZWtW?=
- =?utf-8?B?eENuUE1UQ21WRVFLOE5uNyt1a3QxU0hmN042TDBEak16aWFhazlER3pudFlk?=
- =?utf-8?B?WTRyTkdmU0NLNXFwckFiOUgvL3FPZjVxVzR1ekdNdnZkMG5kRm9SQy8wZEIz?=
- =?utf-8?B?QUFYTUcrM0NEcGZtVnplSDhRTFpNVG1ub0g3THJENW00M1RvZTRORGNrZXQr?=
- =?utf-8?B?b2d0RHZHVFVsdU9xSkFyUXVqVlVKZ1prY1kxbFJ4amlEVW9UbWdubnZnOG9T?=
- =?utf-8?B?eEYwUnVUY0dEY0hyNlBDdUNteFR0YjlzRUl1cmozZEgwZ2hUeTc1WjI1SVJ1?=
- =?utf-8?B?Nk02LzJVWkEwajFJcG9ZdHRHTEd1bHExbit3MTJ0WVRFcmVFR0Q0OWNpQUx3?=
- =?utf-8?B?NWJDYWlSanU1U1o4TmtCcTZWU2tWdE9pVForU29adlEzbzBkZlVOVW82VFRZ?=
- =?utf-8?B?OFMrWmZTcElEejErcFUwdmdJTk1HVldoVjhXWXdYUDlYbFRRVVVndlBGdUEv?=
- =?utf-8?B?Q3lMQ1VhVkFCNTRQb2tIVmVIQ05kdHNodlR1S3Q2akJ5eENsOTc1Rjl5UXdj?=
- =?utf-8?B?SlZQc1JHL1B3REMrN2JQckZGWFl4RXZBVld5THVCVkw5ekRyeUhoa1p1SWpO?=
- =?utf-8?B?RXdxVjZ3Z0hvQllBc3ZmNUFKbkxPaU9UajhJVzZUeXRkNVg2c3VBcDN6dEN0?=
- =?utf-8?B?QVMveEUwYm1VTFh6T0Rwb0F5SXVWcEY4aWVheWdBM0RDT0sxdmJMZjF6Q0E3?=
- =?utf-8?B?R1g1OXV3dXdLSkhtKzBwNEhjU3RYQ2JhVlBjY3FWb2thd1FvYUpRMlE4RkZx?=
- =?utf-8?B?cGdrU3AyOUJ3Wmo4TUR1dDNkT3M1OGNqQmdTT2hFa2lxSXZpdTE0b3BxSU5z?=
- =?utf-8?B?amsyYVBBSzdkQWVCZUNvMk1NT3B0UTBXUThteWM2cXZ5UnpYV05mc0pmOUdk?=
- =?utf-8?B?Mm5EMW9VUmxMaXBkWEl6TVY2UEttN1kxY0ZYSmNuODJBYVpRSlVDM1JGSE9W?=
- =?utf-8?B?RG0va1BGZStGTnQ4MjJRNnBqejZtbHJ3YlBXU2JJOFhrQyszUGVnWXNKOFBu?=
- =?utf-8?B?R2ZWMUxnMXA5ZUlGeXBWczFsTDduajMvbzVveG9jbnY3a0hENXlxbC84UVpt?=
- =?utf-8?B?aHJCRFJqZkFYN1JVamxqSGZFVmZBUnJGd1VMTm1PVGdnT2NwRWUzOGNaRFFa?=
- =?utf-8?B?Vk9PbGYvdXJvbzFoVVBWMlJjYjlDNC9QQzBhaTU5VWlqQUlyRnkxNEFCSE9p?=
- =?utf-8?B?dk9jYUU5MXYxRTZ1M1V1T0dQTG40VUFmalBHanVCQ1RuamVpRXpiWUd1L0tj?=
- =?utf-8?B?NDdhczFUdE5KWkJpWmFkWGRwbzdMTE5CaW1yQ1JNNitXRVZvcHF1QUVJc1o5?=
- =?utf-8?B?TVBYaWZ2eFV0T0cvczNRTmp0YTRCNmRpMHlubkdnV25XYi9DMDI2SWVlVFpn?=
- =?utf-8?B?QjdLRlU5ajI0aVRvMzlhOWduVDBhMlpEM0hjdXhhejVEanRjUE5kNEFaRU5j?=
- =?utf-8?B?UUIrZ09QaXJlRzU1cWlrY1lIc1RUbURxQ2FTSkl2SDFGNHdEZ2x2YlhGc3k4?=
- =?utf-8?B?VmlocHFuTlJOVDljQlJ2M0h5RStNK0Y2cmx6N1Bra3FBenl6cWl6WldWSXE5?=
- =?utf-8?B?UVNSM0NTZWpEKzE0dUgvQkt5NFpMSW9RSzdvU1FQSGI1eUlhZFVSUVdib3Zl?=
- =?utf-8?B?Q1Bma1JuOERMQ28xYkJubWEyQU1wbUdrQkluT2lqK2tILzJlWWJMZitpdWVr?=
- =?utf-8?B?bG1FRUl4cGpiTzJNR0ZZWTBlckRDemZmbU5EMnUwUDhncThvK0dOT2xzeUg0?=
- =?utf-8?B?ZWM4NEJqcHRPMVdQTGFEWGUzR210U3c2QU1KVGdQTFJreFU4cGJ3MHQra3h5?=
- =?utf-8?B?cCtuSVc2WXBSWXk2TXBLVGszSWorYWh2VEtaYi8yM2hTVlFnZFJHVnBPaVB3?=
- =?utf-8?B?Z0xmUkJJZkxlbjJrbjVqME5NVU9kSndJRXdYazloWlN1bEdVT1JiQ1ZwUFJJ?=
- =?utf-8?B?YmlyZUdUcXc1ZWRyZlU1RzVxMXh5bFJoK1orK081TTFsUjhNUjVyY1MzUkQ4?=
- =?utf-8?B?RlFLb0ZoVytQU2h0dWJaME16Zk9nZE9MdDg1bE5xZTN1WFZiOHNVSjlCUndx?=
- =?utf-8?B?d1NnK3N4OVVJSld6TnRGVjJaaVZqc3RSS2ZRRXE4SEt3RjFobkkvQVF5Yklt?=
- =?utf-8?B?Tmc9PQ==?=
-Content-ID: <334D709184DF0F4B953C05292E0797EC@apcprd03.prod.outlook.com>
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N1+5tfRuqWTVsOgukn5eT735qWcREEDtuwFhVAis2ns=;
+        b=SKhJ7IFWPCWvn97G1esf5ryu41DTYHaQj+LN784zZSyaN8xddxJJHH2hp55QSaWwbW
+         6WVRTSGesO+2DOHanQ/NhXFZ4VG5cxnq3la4UF/tDAd7qyRIk4y5oIsD84tdxuHKWDE4
+         rSuYvy8AUA50rd8nCdR7YK41k8KKijalrVoQy9+Bt1iU+UaIRv42ZQqVTTbhSzTDec7/
+         xV1hPpkBOdG4xmiVUrVGPiJhpMVDbLsCnvdmsvbHL5ZD3DxSGbqTEtHE48sbuTkP1vei
+         NzEMgl3B7EJiKC2M0/2SbvMO9DZwvjJqcwFVSWJWDrJRnQBZbMkvrOZBjAoswqUPwcrW
+         aGfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N1+5tfRuqWTVsOgukn5eT735qWcREEDtuwFhVAis2ns=;
+        b=6nLrBxgTyUtwFsJpJcLaZ0u452vXsriyhT9AkHMb6+JpXMepH5FiKOgGpDI5scBmvD
+         ugUZrkvdlhehEuv9saqduxPDpYT3TV4Sz8iTi+7S8zRji8b/i4oh4mZd/7YD8dK/MItU
+         4Tj/uB9Zru1gtVfyNF2GOA4lAqDW4y9+EE1NHrEsAgEwC768Npyn6jqresA1YpeSk1p+
+         suK4Glc1qKfhjAlnnnjP/y2LmE+vKkElDzQbw5oThqa8KldmVJ+UmY+5Tah2z7ulWUgk
+         vGqbej4CN8S4f7kQHksRhiAeMCsyholIrGyiz0IhkqM1yKtLGXvVoFM+1MdFksM/jfT/
+         tv2w==
+X-Gm-Message-State: ANoB5pn25+qGJlSHu/Ow1v3133XlwGGiV9FskQHosqBy4BI1GoCTI/yp
+	Zgkdi4A06majQObDc16LXUA=
+X-Google-Smtp-Source: AA0mqf5c+p5dL6zUqx5qZ25QlpNx4UfNiAV/8qXIhTXchmw0FVcF6a6gE72GedLWPA1IiVJNVj4HsQ==
+X-Received: by 2002:a17:902:db0c:b0:189:1963:d0d7 with SMTP id m12-20020a170902db0c00b001891963d0d7mr36119934plx.100.1669697558416;
+        Mon, 28 Nov 2022 20:52:38 -0800 (PST)
+Received: from [192.168.0.10] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id q14-20020a170902dace00b001895d87225csm9584719plx.182.2022.11.28.20.52.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Nov 2022 20:52:37 -0800 (PST)
+Message-ID: <7b191ded-068f-0dc7-25fa-e35cd1ac5bcf@gmail.com>
+Date: Tue, 29 Nov 2022 13:52:34 +0900
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR03MB4565.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bafcfd8-c6a2-40b2-61bd-08dad1b4779b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Nov 2022 02:50:25.6711
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nEURvgPQFxBSP4cHIWh/SPIwBfWfWO0IloU8S8XTOm5t3idQFrAuwBp8gTQeBs+w5dOqFqgnOa1e67KkTcLXpJF4b5YsCOhBzptXmI6MDTI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB7040
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH] mtd: spi-nor: spansion: add clear sr fixup for s25fl-l
+ family
+Content-Language: en-US
+To: Tudor.Ambarus@microchip.com, yaliang.wang@windriver.com,
+ pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, Takahiro.Kuwano@infineon.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20221018095732.251299-1-yaliang.wang@windriver.com>
+ <58b39090-d26f-271f-4832-8fb41c624a9c@microchip.com>
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+In-Reply-To: <58b39090-d26f-271f-4832-8fb41c624a9c@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221128_185109_074966_0335AFAC 
-X-CRM114-Status: GOOD (  16.30  )
+X-CRM114-CacheID: sfid-20221128_205241_401802_E4313093 
+X-CRM114-Status: GOOD (  31.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -182,77 +95,262 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Krzysztof,
+Hi Yaliang and Tudor,
 
-On Mon, 2022-11-28 at 10:04 +0100, Krzysztof Kozlowski wrote:
-> On 28/11/2022 03:06, Xiangsheng Hou wrote:
-> > add rx-sample-delay and rx-latch-latency property.
+On 11/22/2022 7:28 PM, Tudor.Ambarus@microchip.com wrote:
+> + Takahiro
 > 
-> Start sentences with capital letter.
+> Hi, Takahiro,
 > 
-> Here and in commit subject: property->properties
-Will be fixed in next series.
+> Would you please review/test this spansion patch?
+> 
+> Thanks,
+> ta
+> 
+> On 10/18/22 12:57, yaliang.wang@windriver.com wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> From: Yaliang Wang <Yaliang.Wang@windriver.com>
+>>
+>> Spansion S25FL-L family flashes s25fl064l/s25fl128l/s25fl256l can't
+>> automatically recover from programming/erase errors, the Status Register
+>> error bits inflecting the errors will not change until a Clear Status
+>> Register command be executed.
+>>
+>> Same thing also happens on other Spansion flash families, they've
+>> properly handled it, USE_CLSR manufacturer flag was introduced for this
+>> purpose, but S25FL-L cannot simply reuse their work, because S25FL-L has
+>> the different error bit settings. S25FL-L defines programming/erase
+>> error bits in Status Register 2, whereas the other families define the
+>> same error bits in Status Register 1, causing S25FL-L needs a different
+>> method to handle this problem.
+>>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 0074a8f3b303 ("mtd: spi-nor: Add support for s25fl128l and s25fl256l")
+>> Fixes: d8b494a32889 ("mtd: spi-nor: Add support for Spansion S25FL064L")
+>> Signed-off-by: Yaliang Wang <Yaliang.Wang@windriver.com>
+>> ---
+>>  drivers/mtd/spi-nor/spansion.c | 119 ++++++++++++++++++++++++++-------
+>>  1 file changed, 93 insertions(+), 26 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>> index 0150049007be..8f353ddda5f5 100644
+>> --- a/drivers/mtd/spi-nor/spansion.c
+>> +++ b/drivers/mtd/spi-nor/spansion.c
+>> @@ -14,6 +14,7 @@
+>>  #define SPINOR_OP_CLSR         0x30    /* Clear status register 1 */
+>>  #define SPINOR_OP_RD_ANY_REG                   0x65    /* Read any register */
+>>  #define SPINOR_OP_WR_ANY_REG                   0x71    /* Write any register */
+>> +#define SPINOR_REG_CYPRESS_SR2V                        0x00800001
+>>  #define SPINOR_REG_CYPRESS_CFR1V               0x00800002
+>>  #define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN       BIT(1)  /* Quad Enable */
+>>  #define SPINOR_REG_CYPRESS_CFR2V               0x00800003
+>> @@ -25,6 +26,10 @@
+>>  #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS    0
+>>  #define SPINOR_OP_CYPRESS_RD_FAST              0xee
+>>
+>> +/* s25fl-l family specific */
+>> +#define S25FL_L_SR2V_P_ERR                     BIT(5)  /* Programming Error Occurred */
+>> +#define S25FL_L_SR2V_E_ERR                     BIT(6)  /* Erase Error Occurred */
+>> +
+>>  /* Cypress SPI NOR flash operations. */
+>>  #define CYPRESS_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)             \
+>>         SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 0),             \
+>> @@ -44,6 +49,29 @@
+>>                    SPI_MEM_OP_NO_DUMMY,                                 \
+>>                    SPI_MEM_OP_NO_DATA)
+>>
+>> +/**
+>> + * spansion_nor_clear_sr() - Clear the Status Register.
+>> + * @nor:       pointer to 'struct spi_nor'.
+>> + */
+>> +static void spansion_nor_clear_sr(struct spi_nor *nor)
+>> +{
+>> +       int ret;
+>> +
+>> +       if (nor->spimem) {
+>> +               struct spi_mem_op op = SPANSION_CLSR_OP;
+>> +
+>> +               spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+>> +
+>> +               ret = spi_mem_exec_op(nor->spimem, &op);
+>> +       } else {
+>> +               ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
+>> +                                                      NULL, 0);
+>> +       }
+>> +
+>> +       if (ret)
+>> +               dev_dbg(nor->dev, "error %d clearing SR\n", ret);
+>> +}
+>> +
+>>  static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
+>>  {
+>>         struct spi_mem_op op;
+>> @@ -342,6 +370,65 @@ static const struct spi_nor_fixups s25fs_s_nor_fixups = {
+>>         .post_bfpt = s25fs_s_nor_post_bfpt_fixups,
+>>  };
+>>
+>> +/**
+>> + * s25fl_l_sr_ready_and_clear() - S25FL_L family flashes need to query
+>> + * Status Register 1 to check if the flash is ready and clear it if
+>> + * there are Programming/Erase errors in Status Register 2.
+>> + * @nor:       pointer to 'struct spi_nor'.
+>> + *
+>> + * Return: 1 if ready, 0 if not ready, -errno on errors.
+>> + */
+>> +static int s25fl_l_sr_ready_and_clear(struct spi_nor *nor)
+>> +{
+>> +       int ret;
+>> +       u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
+>> +       struct spi_mem_op op =
+>> +               CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
+>> +                                         SPINOR_REG_CYPRESS_SR2V,
+>> +                                         &nor->bouncebuf[1]);
+>> +
+RDAR in S25FL-L family requires 8 dummy cycles by default. This is one of
+discrepancies in Spansion/Cypress/Infineon SPI NOR families.
 
-> > 
-> > --- a/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-
-> > snfi.yaml
-> > +++ b/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-
-> > snfi.yaml
-> > @@ -55,6 +55,22 @@ properties:
-> >      description: device-tree node of the accompanying ECC engine.
-> >      $ref: /schemas/types.yaml#/definitions/phandle
-> >  
-> > +  rx-sample-delay:
-> 
-> No, use existing property, don't invent your own stuff - missing unit
-> suffix. See spi-peripheral-props.yaml.
-Will change to other private property. The read sample delay with
-MediaTek SPI NAND controller can be set with values from 0 to 47.
-However, it`s difficult to say the unit of each vaule, because the unit
-value will be difference with different chip process or different
-corner IC.
+In S25FL-L and S25FS-S families, number of dummy cycles in RDAR is same
+as read ops (Fast read, Quad output read, etc) latency regardless of
+register type, volatile or non-volatile. It is 8 by default.
 
-> > +    description: Rx delay to sample data with this value, the
-> > valid
-> > +                 values are from 0 to 47. The delay is smaller
-> > than
-> > +                 the rx-latch-latency.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> 
-> Drop $ref.
-Will do.
+In SEMPER family (S25HL/HS-T and S28HL/HS-T), number of dummy cycles in
+RDAR for Non-volatile registers is same as read ops latency. For volatile
+registers, it depends on CFR3[7:6] and is 0 by default.
 
-> 
-> > +    minItems: 0
-> > +    maxItems: 47
-> > +    default: 0
-> > +
-> > +  rx-latch-latency:
-> 
-> Same problems. Did you check spi-peripheral-props.yaml or other SPI
-> controller schemas for such property?
-> 
-> > +    description: Rx delay to sample data with this value, the
-> > value
-> > +                 unit is clock cycle.
-> 
-> I think the unit should be rather time (e.g. us).
-> 
-Yes, I checked the spi-peripheral-props.yaml and the delay values are
-described exactly unit with ns or us. However the unit of MediaTek read
-latch latency is clock cycle and it`s difference with different clock
-frequency.
+So, we may want to let CYPRESS_NOR_RD_ANY_REG_OP macro take 'ndummy' param
+to handle this...
 
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    enum: [0, 1, 2, 3]
-> > +    default: 0
-> > +
-> >  required:
-> >    - compatible
-> >    - reg
+>> +       /* Read Status Register 1 */
+>> +       ret = spi_nor_read_sr(nor, nor->bouncebuf);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       /* RDSR2 command isn't available in QPI mode, use RDAR instead  */
+Or use RDSR2 instead. QPI (4-4-4) mode is not supported in this driver.
+
+>> +       ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       if (nor->bouncebuf[1] & (S25FL_L_SR2V_P_ERR | S25FL_L_SR2V_E_ERR)) {
+>> +               if (nor->bouncebuf[1] & S25FL_L_SR2V_E_ERR)
+>> +                       dev_err(nor->dev, "Erase Error occurred\n");
+>> +               else
+>> +                       dev_err(nor->dev, "Programming Error occurred\n");
+>> +
+>> +               spansion_nor_clear_sr(nor);
+>> +
+>> +               /*
+>> +                * WEL bit remains set to one when an erase or page program
+>> +                * error occurs. Issue a Write Disable command to protect
+>> +                * against inadvertent writes that can possibly corrupt the
+>> +                * contents of the memory.
+>> +                */
+>> +               ret = spi_nor_write_disable(nor);
+>> +               if (ret)
+>> +                       return ret;
+>> +
+>> +               return -EIO;
+>> +       }
+>> +
+>> +       return !(nor->bouncebuf[0] & SR_WIP);
+>> +}
+>> +
+>> +static void s25fl_l_late_init(struct spi_nor *nor)
+>> +{
+>> +       nor->params->ready = s25fl_l_sr_ready_and_clear;
+>> +}
+>> +
+>> +static const struct spi_nor_fixups s25fl_l_fixups = {
+>> +       .late_init = s25fl_l_late_init,
+>> +};
+>>  static const struct flash_info spansion_nor_parts[] = {
+>>         /* Spansion/Cypress -- single (large) sector size only, at least
+>>          * for the chips listed here (without boot sectors).
+>> @@ -428,13 +515,16 @@ static const struct flash_info spansion_nor_parts[] = {
+>>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+>>         { "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128)
+>>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> -               FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+>> +               FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+>> +               .fixups = &s25fl_l_fixups },
+>>         { "s25fl128l",  INFO(0x016018,      0,  64 * 1024, 256)
+>>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> -               FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+>> +               FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+>> +               .fixups = &s25fl_l_fixups },
+>>         { "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
+>>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> -               FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+>> +               FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+>> +               .fixups = &s25fl_l_fixups },
+How about merging SR2V check into existing spansion_nor_sr_ready_and_clear()?
+
+Introduce new MFR flag like USE_SR2V then
+
+MFR_FLAGS(USE_CLSR|USE_SR2V)
+
+static int spansion_nor_sr_ready_and_clear(struct spi_nor *nor)
+{
+	int ret;
+
+	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+	if (ret)
+		return ret;
+
+	if (nor->info->mfr_flags & USE_SR2V) {
+		/* check SR2V */
+	} else {
+		/* check SR */
+	}
+
+	...
+}
+
+This is just my preference. What do you think?
+
+>>         { "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
+>>                 PARSE_SFDP
+>>                 MFR_FLAGS(USE_CLSR)
+>> @@ -460,29 +550,6 @@ static const struct flash_info spansion_nor_parts[] = {
+>>         },
+>>  };
+>>
+>> -/**
+>> - * spansion_nor_clear_sr() - Clear the Status Register.
+>> - * @nor:       pointer to 'struct spi_nor'.
+>> - */
+>> -static void spansion_nor_clear_sr(struct spi_nor *nor)
+>> -{
+>> -       int ret;
+>> -
+>> -       if (nor->spimem) {
+>> -               struct spi_mem_op op = SPANSION_CLSR_OP;
+>> -
+>> -               spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+>> -
+>> -               ret = spi_mem_exec_op(nor->spimem, &op);
+>> -       } else {
+>> -               ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
+>> -                                                      NULL, 0);
+>> -       }
+>> -
+>> -       if (ret)
+>> -               dev_dbg(nor->dev, "error %d clearing SR\n", ret);
+>> -}
+>> -
+>>  /**
+>>   * spansion_nor_sr_ready_and_clear() - Query the Status Register to see if the
+>>   * flash is ready for new commands and clear it if there are any errors.
+>> --
+>> 2.34.1
+>>
 > 
-Best regards,
-Xiangsheng Hou
+
+Thanks,
+Takahiro
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
