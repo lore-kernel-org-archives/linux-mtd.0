@@ -4,71 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71CC3C43217
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Dec 2022 15:46:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F87DC43217
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Dec 2022 18:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ko0ZES1Kw31VJF0kZBkpkWKrNJ7mkd2MBpkdhoKOBe4=; b=lsZ6TQbyUQnjWu
-	swnOSx897JWq6EWhGqTNQeOSpnMcZCjQfCAITE15f7MWQt6TC+CRlfAmm9+fpWoAbjlfnTqpNDHJZ
-	LqRUzRRtslV5JGTTNXGMMVG+sQoDGuqCf8foSvNZcYFmmqAYZROrQHIFj0jOaV6RUn+hJdXMni1sx
-	tA1iVWhdV3amc2wxTp1hodOU+zZV1J6rEhSN2Rzc5l8zjqLC+gD7w2hbxVZCaSLF/wtWpcGeKH8Lx
-	axFX37/KSC2L9iH9ddazwUQDZjr26JbJOcsow9jfCBpDaOnpV4v/pe9bd/TREDTaAVlauvinChJA8
-	MSGw//OlJMCvHgOdNDaA==;
+	List-Owner; bh=t46uJX3U+dVLOlrY2anOSIn5g77znAiI0ttd72sw0D4=; b=qeIVnf7zwT4rO0
+	dCauR2ayDqONXO1oI8noxAsK2xmLWZvdbdGhWg2diNFWm3ilAsmYU9Lvy/ZTDR/ehoTGH58PfS3jN
+	GEXVtm5KLyp8msLnahKxE6b4iCIIBf4hxFmNmwiSInWY5StO+b69dcjWkMFI1bxekjBVz9BY4PraW
+	IaH4DLaERtRg1YUxkIBxbFSs4cBivgiPDnUssZghGbz/9WcHjJ7kXgZSPgysCrL11E2uNjy+eLeeB
+	cfWnHAgC7DHQb/Smso1/sIV3fLeC2niB50MwWZqFnPWNxb5LByB2T5zromLiZonvei5GTN4nLifxD
+	6rD0IPnsu66S0zdBO/+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p0llk-008KYX-58; Thu, 01 Dec 2022 15:46:36 +0000
-Received: from smtp-out-03.comm2000.it ([212.97.32.66])
+	id 1p0o7a-009YQW-3e; Thu, 01 Dec 2022 18:17:18 +0000
+Received: from mail-qv1-xf35.google.com ([2607:f8b0:4864:20::f35])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p0llW-008KU3-Vp; Thu, 01 Dec 2022 15:46:25 +0000
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: francesco@dolcini.it)
-	by smtp-out-03.comm2000.it (Postfix) with ESMTPSA id 10EDAB4ADB8;
-	Thu,  1 Dec 2022 16:46:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
-	s=mailsrv; t=1669909578;
-	bh=MpoeK/SVoG4QpF0S5JGnpX9gBKGENx9957gTXLHgZpM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=pLs+K9RJaACcee8bsgicL0FTI1HERRpymVb828paH+hJDTf2GOxGGBVLqa3515BxJ
-	 Hov/Zjv/4xC/tUcmXiy/X+qkTerfOjHHG8yn4e9hJPQs6RffRcGlE0BPx4MxxP38XE
-	 IOp2l8MnOB74JsdWSZ3NcleHfXSASMzFNYQEMSKjGX0+v7Mb3HW0nXYVIGBDgCwRi6
-	 axSeO71hcPTsiY4V8mdmbP2wl4Qgx77s1vPtIp8bwBECdweO4Wj/s5UHWt37OkQR8H
-	 53uEBjwpFyB1HbrddlzM0bDWKQ6TUlE/LhgutLsWkzk0MjSq8d79SMyWgDaO0v9rOZ
-	 uJyzCD8opB46w==
-Date: Thu, 1 Dec 2022 16:45:53 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Marek Vasut <marex@denx.de>
-Cc: Francesco Dolcini <francesco@dolcini.it>,
-	Shawn Guo <shawnguo@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>, devicetree@vger.kernel.org,
-	stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-	linux-mtd@lists.infradead.org,
+	id 1p0o68-009XL0-Vc
+	for linux-mtd@lists.infradead.org; Thu, 01 Dec 2022 18:15:51 +0000
+Received: by mail-qv1-xf35.google.com with SMTP id s14so1864513qvo.11
+        for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2022 10:15:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kFCBGy/PHSqulvVt1jN7WYpo1L/uAw3+z6frKWBhRoc=;
+        b=5PgqwlpfigOiJb+R6DBfN2Y+9M3plGn2cvcFk1q1idotxQqKkOrHK0SkEt2LX5Shny
+         dg2FU1+jL3L44XsAU66mjo5stS3NmB9Iwpkkuk79rEdcNYkTIHAz++0JNbHh2CpdJTln
+         mC2cKv7jG0a+94XWljJkftKcT5bYlaISFmWePF1nPtobCPxD2qpIvWx+sQYrBgk8nHFH
+         pYPgp4IUNehXtKWkTOFTu9HpVjFWj4Gx6m3WWGcaEdBrnMRmysCSJZkbGlKUgyV/V4Ct
+         LOHU63gedLyv18jT7qn/ArIda/DjU96SEZfNMkgnd3KY5PCVrH4i5PWQK2tNNnUY/GCv
+         0LAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kFCBGy/PHSqulvVt1jN7WYpo1L/uAw3+z6frKWBhRoc=;
+        b=opKuoaim1jhE12AyxwLZLlSSUNp6X015LM9SO54I+wToDM7y5vR0BzZdb56r7m8D0l
+         KlbwY6gfu90tajuNxy7UyTBbi0ZH5ILr/sgP0NN/QMc1qPGRiCxq+K9gZ7yaqhdh/Iss
+         0hkQq7cQSJMmHZlQeTjk2CE6rX6fYB37PmKMHkRoeGgI9hmroW7AILnqHkJI3wpOqwuT
+         mGXjUZIiADV2tfpMIy5GETv+3WcMlSvEget2JGlHCwMwMfGbd5I0XfClsGf6LJMoognu
+         KtJLyYn4r+Ym3GHoSK5Z3Mh0aNfhilo4ITtFq5/vI3wttBPPeNHMh0tCuQQkplPth5ID
+         WZGg==
+X-Gm-Message-State: ANoB5plBQuVNS3I/uYhrNIwuGExlWdfDm11fpflrG1TYmAszl9IfzJg3
+	mmAf4APwaKU0DXrdSBvaF44tOw==
+X-Google-Smtp-Source: AA0mqf4RRVlUXmmFLCa0Fz6p7Ui5DTW9XDLrG2IJ35rybH3l1vfNXfWV+0JDCVGQqW36DNkNulQwxA==
+X-Received: by 2002:a05:6214:3113:b0:4bb:7436:49de with SMTP id ks19-20020a056214311300b004bb743649demr42952713qvb.27.1669918544609;
+        Thu, 01 Dec 2022 10:15:44 -0800 (PST)
+Received: from nathan-ideapad.. (d-75-76-18-234.oh.cpe.breezeline.net. [75.76.18.234])
+        by smtp.gmail.com with ESMTPSA id f12-20020ac8464c000000b003a55fe9f352sm2908912qto.64.2022.12.01.10.15.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Dec 2022 10:15:44 -0800 (PST)
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+To: 
+Cc: nathan.morrison@timesys.com,
+	greg.malysa@timesys.com,
+	Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, u-boot@lists.denx.de
-Subject: Re: Boot failure regression on 6.0.10 stable kernel on iMX7
-Message-ID: <Y4jMMeyktJLHb9ji@francesco-nb.int.toradex.com>
-References: <Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com>
- <12f7fbb7-8252-4520-89c2-c5138931a696@denx.de>
- <Y4fCZmjDMtMMyu+E@francesco-nb.int.toradex.com>
- <fef2598e-e5fc-c4fc-0530-2d3c380ed39a@denx.de>
- <Y4iKAUav9ktuxncE@francesco-nb.int.toradex.com>
- <b5080dd6-40b3-a8f2-0c4e-4c1e52e67fe8@denx.de>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/3] mtd: spi-nor: Extend SFDP 4byte address instruction lookup table with new octal modes as per JEDEC JESD216F
+Date: Thu,  1 Dec 2022 13:15:30 -0500
+Message-Id: <20221201181532.255449-2-nathan.morrison@timesys.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221201181532.255449-1-nathan.morrison@timesys.com>
+References: <20221201181532.255449-1-nathan.morrison@timesys.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <b5080dd6-40b3-a8f2-0c4e-4c1e52e67fe8@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221201_074623_492242_38A1984B 
-X-CRM114-Status: GOOD (  36.65  )
+X-CRM114-CacheID: sfid-20221201_101549_253869_8CE3B1BC 
+X-CRM114-Status: UNSURE (   9.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,79 +99,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+ u-boot list
+This adds the new bit fields for
+reading: 1S-1S-8S, 1S-8S-8S, 1D-8D-8D
+programming: 1S-1S-8S, 1S-8S-8S
 
-On Thu, Dec 01, 2022 at 12:25:34PM +0100, Marek Vasut wrote:
-> On 12/1/22 12:03, Francesco Dolcini wrote:
-> > On Wed, Nov 30, 2022 at 11:59:04PM +0100, Marek Vasut wrote:
-> > > On 11/30/22 21:51, Francesco Dolcini wrote:
-> > > > On Wed, Nov 30, 2022 at 03:41:13PM +0100, Marek Vasut wrote:
-> > > > > On 11/30/22 14:52, Francesco Dolcini wrote:
-> > > > > > [    0.000000] Booting Linux on physical CPU 0x0
-> > > > > > [    0.000000] Linux version 6.0.10 (francesco@francesco-nb) (arm-linux-gnueabihf-gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.
-> > > > > > 4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #36 SMP Wed Nov 30 14:07:15 CET 2022
-> > > > > > ...
-> > > > > > [    4.407499] gpmi-nand: error parsing ofpart partition /soc/nand-controller@33002000/partition@0 (/soc/nand-controller
-> > > > > > @33002000)
-> > > > > > [    4.438401] gpmi-nand 33002000.nand-controller: driver registered.
-> > > > > > ...
-> > > > > > [    5.933906] VFS: Cannot open root device "ubi0:rootfs" or unknown-block(0,0): error -19
-> > > > > > [    5.946504] Please append a correct "root=" boot option; here are the available partitions:
-> > > > > > ...
-> > > > > > 
-> > > > > > Any idea? I'm not familiar with the gpmi-nand driver and I would just revert it, but
-> > > > > > maybe you have a better idea.
-> > > > > 
-> > > > ...
-> > > > OF partition are created by U-Boot from
-> > > >     mtdparts=mtdparts=gpmi-nand:512k(mx7-bcb),1536k(u-boot1)ro,1536k(u-boot2)ro,512k(u-boot-env),-(ubi)
-> > > > env variables calling fdt_fixup_mtdparts from colibri_imx7.c
-> > > > 
-> > > > This is generated by U-Boot, I would need to dump what he did generate
-> > > > from the standard fdt_fixup_mtdparts(). I will try to do it tomorrow
-> > > > unless what I wrote here is already enough to understand what's going
-> > > > on.
-> > > 
-> > > Oh drat ... I see. It's the u-boot fdt_node_set_part_info() which checks the
-> > > current NAND controller #size-cells and uses that when generating MTD
-> > > partitions 'reg' properties. Since #size-cells is now zero, the reg
-> > > properties would be malformed.
-> > 
-> > I think the issue is slightly different, the u-boot code checks it and
-> > if not set it defaults to #size-cells = <1>. Said that u-boot
-> > never set #size-cells anywhere.
-> 
-> Which it really should, can you send a patch there too ?
+Signed-off-by: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+---
+ drivers/mtd/spi-nor/sfdp.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-I guess that it is slightly more complicated.
-
-U-Boot directly updates the nand-controller root node with the
-partitions, unless there is already a partitions child node present. In
-the first case (legacy OF partition definition) setting the #size-cells
-does not seems that correct, while in the second case I agree it should
-really do it. I'll see what I can come-up with.
-
-> > diff --git a/drivers/mtd/parsers/ofpart_core.c b/drivers/mtd/parsers/ofpart_core.c
-> > index 192190c42fc8..fffd60acd926 100644
-> > --- a/drivers/mtd/parsers/ofpart_core.c
-> > +++ b/drivers/mtd/parsers/ofpart_core.c
-> > @@ -122,6 +122,8 @@ static int parse_fixed_partitions(struct mtd_info *master,
-> > 
-> >                  a_cells = of_n_addr_cells(pp);
-> >                  s_cells = of_n_size_cells(pp);
-> > +               if (s_cells == 0)
-> > +                       s_cells = 1; // for backward compatibility
-> >                  if (len / 4 != a_cells + s_cells) {
-> >                          pr_debug("%s: ofpart partition %pOF (%pOF) error parsing reg property.\n",
-> >                                   master->name, pp,
-> 
-> You might want to print a warning too, so users would fix their DTs, since
-> once there is MTD partition > 4 GiB, this would break. Otherwise I like this
-> option.
-
-I tested it and it's working as expected, I'll send a proper patch soon.
-
-Francesco
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 2257f1b4c2e2..e4e87815ba94 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -953,11 +953,16 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 		{ SNOR_HWCAPS_READ_1_1_1_DTR,	BIT(13) },
+ 		{ SNOR_HWCAPS_READ_1_2_2_DTR,	BIT(14) },
+ 		{ SNOR_HWCAPS_READ_1_4_4_DTR,	BIT(15) },
++		{ SNOR_HWCAPS_READ_1_1_8,       BIT(20) },
++		{ SNOR_HWCAPS_READ_1_8_8,       BIT(21) },
++		{ SNOR_HWCAPS_READ_1_8_8_DTR,   BIT(22) },
+ 	};
+ 	static const struct sfdp_4bait programs[] = {
+ 		{ SNOR_HWCAPS_PP,		BIT(6) },
+ 		{ SNOR_HWCAPS_PP_1_1_4,		BIT(7) },
+ 		{ SNOR_HWCAPS_PP_1_4_4,		BIT(8) },
++		{ SNOR_HWCAPS_PP_1_1_8,         BIT(23) },
++		{ SNOR_HWCAPS_PP_1_8_8,         BIT(24) },
+ 	};
+ 	static const struct sfdp_4bait erases[SNOR_ERASE_TYPE_MAX] = {
+ 		{ 0u /* not used */,		BIT(9) },
+-- 
+2.30.2
 
 
 ______________________________________________________
