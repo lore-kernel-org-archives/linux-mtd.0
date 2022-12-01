@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42692C4321E
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Dec 2022 18:17:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22D51C43217
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Dec 2022 18:18:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5gcMenRYZHHt84LDtJJRmN+7MZLx7qdf9Nb3oUoNYD8=; b=BAbMqgVhE+ijhS
-	MfOTLfPubdphNAUVQ5AqOWARDBIUAWmzfMNISOMU4XOMZlQdy1fHiGzMclfN+54zYXvegX8EdhTDX
-	Ssxojnt1paRrq1cB1MpTEn7T4wavoHKBbNelju4GbD1OV4nbkUlVjkRjcErfYytBJ6gHYMn0alSaV
-	BsseaLc02kByDgXcjIXTOr7gNCqutyyQnpWWE0ZeRWO5LHVGXCTuyRJgL2eVSowYgaJpanjzhN8ck
-	VtugJfBD/3olUZS2XKwVec9zAz8qDtigLeYLh0exEFr/jy5NtjcVjLtydsV0FBewRUIMbA/8tX3II
-	P9KDd4f/qu+YpCTIqArQ==;
+	List-Owner; bh=eMaPjbKN+ZX8bUlmyCRJ4H61wLGry8L0XsL9xSwA7OA=; b=OSC9lHTLkCItfI
+	1zKTl2c/3w4RWg/kbc0YluGAjt33ArNGd9iAe1Ml0JY0R/AUSDllSSGYATHrjsw5BbNl9izwQxTj1
+	AfZ/CwMYUwhRBCCR93zixwGwKkEAWwVcxfZ3BeidEgksHJV37QZEJVXhT9rF4fiKBLgVOSgy7yJrx
+	bT8TyY9cE7zQcwmQyClIanILJi3ExYNRO32ZPzqlBcbTuUia43qZ4Td2PsXBRVGuHmtZGcslmvpg2
+	kEPCOSiWKlsl/mtt3MOAznyUdtAkSmApc0Vtd/R/52wB0xAscbF5J3A19dlJu24bWX41CLOZRXDg6
+	H4YnR3Pwc08aDz53mZTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p0o7i-009YYu-6p; Thu, 01 Dec 2022 18:17:26 +0000
-Received: from mail-qt1-x82b.google.com ([2607:f8b0:4864:20::82b])
+	id 1p0o7n-009YcL-1W; Thu, 01 Dec 2022 18:17:31 +0000
+Received: from mail-qv1-xf32.google.com ([2607:f8b0:4864:20::f32])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p0o69-009XLb-6C
+	id 1p0o69-009XLr-TB
 	for linux-mtd@lists.infradead.org; Thu, 01 Dec 2022 18:15:53 +0000
-Received: by mail-qt1-x82b.google.com with SMTP id h24so1864522qta.9
-        for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2022 10:15:47 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id p12so1883807qvu.5
+        for <linux-mtd@lists.infradead.org>; Thu, 01 Dec 2022 10:15:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=timesys-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aQZKgZOgE0+wcpYy5gXw4iw3dPKVanHGPihBaubSi28=;
-        b=x59QEa7bZQqO1AFVk9FRyfCCfSVGHzLtXt+GsDBzQV2XpmgTbI+20SSoPy5NjJtFgX
-         frSLaVwZbwm7Nb2Wyathy4WvUU75+ba0wLS5DldfJj9Q60RbFEqRy6fTIlxCFfluUQob
-         2CSOFUwNoNDIng9xnWp6eBL/UAqSFpBZkS7+OrX9h1UIbPxk1JleYhWSLWQCfxkli469
-         UtOrZyDzD2ob8P3nFLmdaUtZ8Akf7AG4bpaMdiBf1O8Ar7dl7d0y6qBfguHe4Aw+xuQ8
-         h6N9aJksd3DnK2KQgJLjk7q0cQRmd20GsNGHYHnsEpgBQ95IuqCRmhiRQ41/OQL3Hwn6
-         jEfg==
+        bh=pANXxsT6s2u79mRoyA7VZ+6E4AhguQU1FVPz7KDrpYU=;
+        b=olNGjVtiPLiNntuyZnuyzwmHYLt0s6oLYFu/0V27voBfVPFapu9jXckEHeCKR8FL3B
+         T2tfD4Ozdrh9kaT2P6X7hneUOM4QlKxfnz3VBQsSqtm04pjqyRWRgnHTpZjROk58R6d5
+         BHPB9C6rM3xRNba5hfBIZvA1IfroUnyUyVe7iJzzr4sRC3hz3F3JHUX9gLS++kt3yrH6
+         KeU8Ba7vuSJWe8YWokOB9+aLE6s4wRJAzo3CeAej4s4SJH9HLTTSccuYczyriCmH66gj
+         F5pP+VgbuVupiWARmQLGS2z3iKJh+LucWtVNr7bPUKGq+Sz+fxiQ+suLaF2MyDSwmmOg
+         T/ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aQZKgZOgE0+wcpYy5gXw4iw3dPKVanHGPihBaubSi28=;
-        b=qL6/CU6KDk6hG7U8gT3/lx+ck+LZWtjxWFbdYALxKS7v6iOp5xZKiT6V7kx7xM3LNS
-         82SqOPDQwBFgan40ALAn19YQn8Cd7gyqdMBRcCt+1/KKFMSwai3EqMnhJJqfbNZz0bQX
-         5mEDtAvUPoEDssjiKgur/REAvHd8fSVIPMrlMUznHckGRgqfe2wQ9STer0j9guxxCBBf
-         6TKawoqZOgTyZrYdopoGVvbgrrt+Rx4tg5yInvMA+yHLzzqLnQJUtUoYBQ/rLemVvl94
-         Cx3SEAvSC2W+J6049lieqTwR4/dpHo3cpu2H5wKFvdJiLGX0qWD7JRfts/NmUwup6tB3
-         thXA==
-X-Gm-Message-State: ANoB5plO74NQxhfXQ3gvDbHu38NMvvR0XQVcsYoKcFtQjSM6WIXLaP6J
-	tNMlbEOzoGbRUDa/26vOwKzvBw==
-X-Google-Smtp-Source: AA0mqf7+IDmSKa2Va2r5CHxgM9ham1PoxV3KaGTyA7NkUkgl3HX8cBko8K0JCB+8esEWHVjYtYkdMg==
-X-Received: by 2002:a05:622a:8cf:b0:3a4:ef5c:c69d with SMTP id i15-20020a05622a08cf00b003a4ef5cc69dmr23190959qte.194.1669918546392;
-        Thu, 01 Dec 2022 10:15:46 -0800 (PST)
+        bh=pANXxsT6s2u79mRoyA7VZ+6E4AhguQU1FVPz7KDrpYU=;
+        b=U16JST8FOWDbkA16+8LQW6d91+cu8a44CC3P4VF1LTZu6MX/yqATEUHbjpsBftavtM
+         m/h2EjcOYnQNKkagoVWbwyAhtIcOEFH040gfnDoCReGd2tGT+Kau+avWtzVm+KMRL8pX
+         lrTle8XToIk08j/GsoUDRCiAtgbnJxJFWUQXiftAq1J/6RZ+89xzf+2vkIrxpnGSCCvz
+         1niPOl0FTILpjS4oaFFmyLiMIJEAE8gz2zWL7zTz0otKcZDyUeReQ9lXHtrSiZcvt04y
+         kVoOcvExmHuKuYxrBRWDxVaPN99BaRyXy4y+V4UhwcQSK6DkCslgyYXdDpkz3Tl4Ldjb
+         cAeQ==
+X-Gm-Message-State: ANoB5pl/cP+2fCwIBSKVKuCLTtj+YLRPQNwB5No9sDikAU9uOArCdMBD
+	WUAZqmzWD1gtAJg5YFpvYZ6FLQ==
+X-Google-Smtp-Source: AA0mqf5PrTTB1RgDgjYUeisc+mu8R9Hxa0dB3nk89uv9m8akQnghVEox8A3zsm9NMVFX4/+134jktQ==
+X-Received: by 2002:a05:6214:5ec1:b0:4b8:2b54:b798 with SMTP id mn1-20020a0562145ec100b004b82b54b798mr43784980qvb.37.1669918547940;
+        Thu, 01 Dec 2022 10:15:47 -0800 (PST)
 Received: from nathan-ideapad.. (d-75-76-18-234.oh.cpe.breezeline.net. [75.76.18.234])
-        by smtp.gmail.com with ESMTPSA id f12-20020ac8464c000000b003a55fe9f352sm2908912qto.64.2022.12.01.10.15.45
+        by smtp.gmail.com with ESMTPSA id f12-20020ac8464c000000b003a55fe9f352sm2908912qto.64.2022.12.01.10.15.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Dec 2022 10:15:45 -0800 (PST)
+        Thu, 01 Dec 2022 10:15:47 -0800 (PST)
 From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
 To: 
 Cc: nathan.morrison@timesys.com,
@@ -72,16 +72,16 @@ Cc: nathan.morrison@timesys.com,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/3] mtd: spi-nor: Add additional octal-mode flags to be checked during SFDP
-Date: Thu,  1 Dec 2022 13:15:31 -0500
-Message-Id: <20221201181532.255449-3-nathan.morrison@timesys.com>
+Subject: [PATCH 3/3] mtd: spi-nor: Add support for IS25LX256 operating in 1S-1S-8S mode
+Date: Thu,  1 Dec 2022 13:15:32 -0500
+Message-Id: <20221201181532.255449-4-nathan.morrison@timesys.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221201181532.255449-1-nathan.morrison@timesys.com>
 References: <20221201181532.255449-1-nathan.morrison@timesys.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221201_101549_269777_1788FF2E 
-X-CRM114-Status: GOOD (  12.80  )
+X-CRM114-CacheID: sfid-20221201_101549_957014_D0D632B3 
+X-CRM114-Status: GOOD (  10.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,81 +98,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This adds some support for searching a chips SFDP table for:
-
-read commands: 1S-8S-8S
-program commands: 1S-1S-8S, 1S-8S-8S
+This adds the IS25LX256 chip into the ISSI flash_info parts table
 
 Signed-off-by: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
 ---
- drivers/mtd/spi-nor/core.c | 21 ++++++++++++++++++++-
- drivers/mtd/spi-nor/core.h |  9 ++++++---
- 2 files changed, 26 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/issi.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index bee8fc4c9f07..7475a9a22881 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2335,7 +2335,7 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
- {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 	struct spi_nor_erase_map *map = &params->erase_map;
--	const u8 no_sfdp_flags = nor->info->no_sfdp_flags;
-+	const u16 no_sfdp_flags = nor->info->no_sfdp_flags;
- 	u8 i, erase_mask;
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index 89a66a19d754..b4412a9afc4e 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -74,6 +74,9 @@ static const struct flash_info issi_nor_parts[] = {
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+ 		.fixups = &is25lp256_fixups },
++	{ "is25lx256", INFO(0x9d5a19, 0, 128 * 1024, 256)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_4B_OPCODES |
++			      SPI_NOR_OCTAL_PP | SPI_NOR_OCTAL_READ) },
  
- 	if (no_sfdp_flags & SPI_NOR_DUAL_READ) {
-@@ -2359,6 +2359,25 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
- 					  SNOR_PROTO_1_1_8);
- 	}
- 
-+	if (no_sfdp_flags & SPI_NOR_OCTAL_READ_1_8_8) {
-+		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_8_8;
-+		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_8_8],
-+					  0, 16, SPINOR_OP_READ_1_8_8,
-+					  SNOR_PROTO_1_8_8);
-+	}
-+
-+	if (no_sfdp_flags & SPI_NOR_OCTAL_PP) {
-+		params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_8;
-+		spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_1_8],
-+					SPINOR_OP_PP_1_1_8, SNOR_PROTO_1_1_8);
-+	}
-+
-+	if (no_sfdp_flags & SPI_NOR_OCTAL_PP_1_8_8) {
-+		params->hwcaps.mask |= SNOR_HWCAPS_PP_1_8_8;
-+		spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8_8_8],
-+					SPINOR_OP_PP_1_8_8, SNOR_PROTO_1_8_8);
-+	}
-+
- 	if (no_sfdp_flags & SPI_NOR_OCTAL_DTR_READ) {
- 		params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
- 		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_8_8_8_DTR],
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 85b0cf254e97..25a0d4f1850b 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -508,14 +508,17 @@ struct flash_info {
- #define NO_CHIP_ERASE			BIT(7)
- #define SPI_NOR_NO_FR			BIT(8)
- 
--	u8 no_sfdp_flags;
-+	u16 no_sfdp_flags;
- #define SPI_NOR_SKIP_SFDP		BIT(0)
- #define SECT_4K				BIT(1)
- #define SPI_NOR_DUAL_READ		BIT(3)
- #define SPI_NOR_QUAD_READ		BIT(4)
- #define SPI_NOR_OCTAL_READ		BIT(5)
--#define SPI_NOR_OCTAL_DTR_READ		BIT(6)
--#define SPI_NOR_OCTAL_DTR_PP		BIT(7)
-+#define SPI_NOR_OCTAL_READ_1_8_8	BIT(6)
-+#define SPI_NOR_OCTAL_PP		BIT(7)
-+#define SPI_NOR_OCTAL_PP_1_8_8		BIT(8)
-+#define SPI_NOR_OCTAL_DTR_READ		BIT(9)
-+#define SPI_NOR_OCTAL_DTR_PP		BIT(10)
- 
- 	u8 fixup_flags;
- #define SPI_NOR_4B_OPCODES		BIT(0)
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2)
 -- 
 2.30.2
 
