@@ -4,84 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BC79C4321E
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 13:56:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A728C4321E
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 13:56:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wTGEPCS4lSndx7k7a9gRW9SiskfCDgCW4oeDv9qgnoA=; b=1ayBptNWAt2U2l
-	pqtkUIMgpaFH1byxh8oe0gfRJgiE48DNGjB4naejcNKLy+VuBEQ/eS2m6kOXi2nnX/eaUcrM1ezG6
-	QhbIP/Y89at1e/DhCjjT9q6kmyVjaqoODsT3RW7Km50JIXw4KQ+kf9sinMB60no+CfYxqKuP2xhIH
-	UZ5SSYt2nLwWxwLQdDMhq49x3tssokqwT1rzYLWmJAYnEJ5ya2nfzYd64/6zXrHrCLUcYxRCZWqZ9
-	huiWNQZOKzGKTV9ooPLdC06CKXXiSdo3J0J4V3geeYY0weB3PSsXexLy8RMB+qnKgk0BDjaXkb/cO
-	vCuGUr9H1ZKNhSBgxjkA==;
+	List-Owner; bh=j72GJL+Ql+MBxIGmGOCsq18inDCJKkF3PBZHheCs4v0=; b=IgMCJDFNk4RVL6
+	Xx9DS5URPNYEEo3834CDoAC/3YnV2xQqXvCxXN5YHSC20os72psW+YBEr1+8j/RX7k1XTwZ1mIiZH
+	1CE1pOo4HRMCXM7VBrJi+sA4LqeYjJH0MiWAVirQTgX4Juf9eq7CkgaCkypXfaakSOPZPlbLtscVM
+	NCJLzO5LlgBg5ESOucMGZtWDU/afUVAlUrcCcps3PC0w12deJHcwoLRBOM84O2y0nElHUhzKGK822
+	prYZBHTkEO9wAhr2gmXG0sOCXXkNnUgkrCLFmzNdMPK00ANu9J943dL+0HGVvBvOuJoR/eK7hffU9
+	Hu2REkMSHojD65Rabk+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p16WD-00Ghv6-Us; Fri, 02 Dec 2022 13:55:57 +0000
-Received: from mail-qt1-x835.google.com ([2607:f8b0:4864:20::835])
+	id 1p16WZ-00Gi8m-Q4; Fri, 02 Dec 2022 13:56:19 +0000
+Received: from mail-qt1-f176.google.com ([209.85.160.176])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p16W8-00GhpL-0Y
-	for linux-mtd@lists.infradead.org; Fri, 02 Dec 2022 13:55:53 +0000
-Received: by mail-qt1-x835.google.com with SMTP id y15so5132159qtv.5
-        for <linux-mtd@lists.infradead.org>; Fri, 02 Dec 2022 05:55:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aN/7/h+h5Hpms0utb+UumNlSGE7V17/9wj785xAfzjY=;
-        b=LCzV62wD19bVIRTiuK9BapJ+Qf6X3XlFWMnP6gGd28pj3TviIJMod7uNGVKOdQoVX1
-         LsQtUx7YJat0zJT7K4QxsEKU2wfxSR5ZdUHJAnyKCFFK0XMofuQWMpKUs4SmRznJ6S7k
-         tujqZqqCkHhwbkvuZnVqoIVjpVXJkzTHYFWqpmzVX84I3GKV7MD1lHql5hEZxl9sET6p
-         h2u493NCAAOO4u6m2YkTPkjzoHFjp3f1LRkK1CJQRlmTNGMUV7db5dBNBX59a4Az5XT+
-         Fd3nb3MqvIT8BPpsw/mVeoDKF7OldbaE+mcdRdWzoPjPH/N79nmmXwjDWP/zmPqDz0EP
-         2olw==
+	id 1p16WW-00Gi66-P2
+	for linux-mtd@lists.infradead.org; Fri, 02 Dec 2022 13:56:18 +0000
+Received: by mail-qt1-f176.google.com with SMTP id fz10so5148730qtb.3
+        for <linux-mtd@lists.infradead.org>; Fri, 02 Dec 2022 05:56:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aN/7/h+h5Hpms0utb+UumNlSGE7V17/9wj785xAfzjY=;
-        b=A2+01jOEWAbs916utov2XSCycW30M0zfXgbAh3jHzwder6DH8w7OHxo3nqDZ+MjOfq
-         XUWSE5XB2S8UpfeJhfHXVKX/vyJ9EJVXUbbRd98qreb69DpDWI7ww/ImCcs8Tek12bKa
-         uosqHwCEcEg8kJ9cMiGrVfzCJQUXFYa0gGcXbjUTB1TZNyCrXSR/C1krOCthNOFkNB5i
-         XluYlfuJLGoqj87CDTTAkJc4oDF1llyQO6DhQCPVsHNTOesade9pRfJTnlhfm6X8GaeL
-         gllD5pchadQAvNs2m4rxQ8C6DqVTSHwa8ZqDK8XACA5yLv3UkpDcXHcUxOL3KobfeEeE
-         6RIA==
-X-Gm-Message-State: ANoB5pnadq/D2cRC+nxADksvHdBSeIFqmmONQRuE66T3+Dl289oxo23U
-	GuxhG0bdA9Rj7St6M+Iv2BWtxA==
-X-Google-Smtp-Source: AA0mqf7VunQ1iCgqE+Mr+ITm3DVf5R0l2fBjJE6prsVBDnASbLmjCsqFDvhXV+bKBmLfq/ij/nWssg==
-X-Received: by 2002:ac8:704:0:b0:39c:d509:76a5 with SMTP id g4-20020ac80704000000b0039cd50976a5mr50313757qth.382.1669989346833;
-        Fri, 02 Dec 2022 05:55:46 -0800 (PST)
-Received: from nathan-ideapad.. (d-75-76-18-234.oh.cpe.breezeline.net. [75.76.18.234])
-        by smtp.gmail.com with ESMTPSA id x1-20020ac84d41000000b0039a610a04b1sm4122237qtv.37.2022.12.02.05.55.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Dec 2022 05:55:46 -0800 (PST)
-From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
-To: 
-Cc: nathan.morrison@timesys.com,
-	greg.malysa@timesys.com,
-	Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 3/3] mtd: spi-nor: Add support for IS25LX256 operating in 1S-8S-8S octal read mode
-Date: Fri,  2 Dec 2022 08:55:39 -0500
-Message-Id: <20221202135539.271936-4-nathan.morrison@timesys.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221202135539.271936-1-nathan.morrison@timesys.com>
-References: <20221202135539.271936-1-nathan.morrison@timesys.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XXuttiq+R35t3Lo1CqjcwEovWJl6+re6p/cH4Ee/PUs=;
+        b=lwBni16P1YKLiNzjpXU1L7zhUQ4bRqvIQiubmD90OenKQuVJJusqG10gVHIIPv9q9G
+         Ho0TqwTcQmJJ4Fzu4C4tRd6zgGbWrhkXGLZqPnZjVb7P2o+Q+vvs7EVTyCOxRZZHE6T4
+         E8qxGSr6er0RG2siKZHCw5I0WbW4UxQXkEg7363BauL9U94XFrQd4OIgLjiEU5GiqJnm
+         3Miidhl945XTjZWyURIKEOQF2CdKhhxPbixhpXNeqeHp3BvQyRA1nM90PTsLaY4bJPjP
+         mY7HFmOt9jkbZZquBn6R/L+IjhwHYP4JDBIw3HD9ikWICNK4+4nISkiUNgDgQQ0Txj6T
+         ZRnQ==
+X-Gm-Message-State: ANoB5pkN0CZeJFuxi9LGy1LoP+Y+Bt5KxU+RJ1QH1+aC7sPkmhj0znpG
+	pI3BMcJDoGNHVn8oq1zCt23YfAnl1uLKKA==
+X-Google-Smtp-Source: AA0mqf7kOA6C8twfnx+pCCkaz9DypLvLfIUQH4f4RKjqKPKxUi6L/aY53hTSNlTZsWK19ZQ1Mm2oQQ==
+X-Received: by 2002:a05:620a:12c9:b0:6f1:1ca:1b59 with SMTP id e9-20020a05620a12c900b006f101ca1b59mr46240712qkl.528.1669989374071;
+        Fri, 02 Dec 2022 05:56:14 -0800 (PST)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
+        by smtp.gmail.com with ESMTPSA id k3-20020a05620a414300b006f9c2be0b4bsm5454607qko.135.2022.12.02.05.56.13
+        for <linux-mtd@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Dec 2022 05:56:13 -0800 (PST)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-3cbdd6c00adso49085797b3.11
+        for <linux-mtd@lists.infradead.org>; Fri, 02 Dec 2022 05:56:13 -0800 (PST)
+X-Received: by 2002:a81:1486:0:b0:36b:56d3:71b8 with SMTP id
+ 128-20020a811486000000b0036b56d371b8mr1834074ywu.384.1669989373149; Fri, 02
+ Dec 2022 05:56:13 -0800 (PST)
 MIME-Version: 1.0
+References: <363186079b4269891073f620e3e2353cf7d2559a.1669988238.git.geert+renesas@glider.be>
+ <1503a3857107e3a4f34e0c7fb5dada39@walle.cc>
+In-Reply-To: <1503a3857107e3a4f34e0c7fb5dada39@walle.cc>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 2 Dec 2022 14:56:01 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXN+HJb=zGeG=3t=Pie9cVpnBLYuEb_qX6=oSxG8eTkAw@mail.gmail.com>
+Message-ID: <CAMuHMdXN+HJb=zGeG=3t=Pie9cVpnBLYuEb_qX6=oSxG8eTkAw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document support for
+ more MT25QU parts
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-mtd@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221202_055552_080114_B7375F45 
-X-CRM114-Status: GOOD (  13.48  )
+X-CRM114-CacheID: sfid-20221202_055616_837346_0E902FD3 
+X-CRM114-Status: GOOD (  27.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,66 +89,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This adds the IS25LX256 chip into the ISSI flash_info parts table
+Hi Michael,
 
-Signed-off-by: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
----
- drivers/mtd/spi-nor/issi.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+On Fri, Dec 2, 2022 at 2:50 PM Michael Walle <michael@walle.cc> wrote:
+> Am 2022-12-02 14:37, schrieb Geert Uytterhoeven:
+> > Document support for the Micron MT25QU256A and MT25QU512A Serial NOR
+> > FLASHes.
+> >
+> > Merge the new entries with the existing entry for MT25QU02G.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> > mt25qu512a is already in active use, causing "make dtbs_check" errors.
+> > mt25qu256a is supported by the Linux spi-nor driver, but there are no
+> > upstream users yet.
+>
+> Is it encouraged to use the specific compatible with SPI-NOR flashes?
+> As far as I know it isn't. The spi-nor subsys tries hard to identify
+> any flashes at runtime and any additional information in the device tree
+> is used as a last resort (just for flashes which doesn't support the
+> read jedec id command yet). And usually boards have different sources
+> for flash chips, so hardcoding a particular part in the device tree
+> doesn't make sense.
 
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index 89a66a19d754..362bc3603d8f 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -29,6 +29,35 @@ static const struct spi_nor_fixups is25lp256_fixups = {
- 	.post_bfpt = is25lp256_post_bfpt_fixups,
- };
- 
-+static int
-+is25lx256_post_bfpt_fixups(struct spi_nor *nor,
-+			   const struct sfdp_parameter_header *bfpt_header,
-+			   const struct sfdp_bfpt *bfpt)
-+{
-+	/*
-+	 * IS25LX256 supports both 1S-1S-8S and 1S-8S-8S.
-+	 * However, the BFPT does not contain any information denoting this
-+	 * functionality, so the proper fast read opcodes are never setup.
-+	 * We're correcting this issue via the fixup below.  Page program
-+	 * commands are detected and setup properly via the 4BAIT lookup.
-+	 */
-+	params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_8;
-+	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_8],
-+				  0, 8, SPINOR_OP_READ_1_1_8,
-+				  SNOR_PROTO_1_1_8);
-+
-+	params->hwcaps.mask |= SNOR_HWCAPS_READ_1_8_8;
-+	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_8_8],
-+				  0, 16, SPINOR_OP_READ_1_8_8,
-+				  SNOR_PROTO_1_8_8);
-+
-+	return 0;
-+}
-+
-+static const struct spi_nor_fixups is25lx256_fixups = {
-+	.post_bfpt = is25lx256_post_bfpt_fixups,
-+};
-+
- static void pm25lv_nor_late_init(struct spi_nor *nor)
- {
- 	struct spi_nor_erase_map *map = &nor->params->erase_map;
-@@ -74,6 +103,9 @@ static const struct flash_info issi_nor_parts[] = {
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
- 		.fixups = &is25lp256_fixups },
-+	{ "is25lx256", INFO(0x9d5a19, 0, 0, 0)
-+		PARSE_SFDP
-+		.fixups = &is25lx256_fixups },
- 
- 	/* PMC */
- 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2)
--- 
-2.30.2
+Thanks, I am aware there have been pushbacks when trying to
+document more compatible values.
 
+IMHO either all or none of them should be documented.
+If device-specific compatible values are discouraged, the bindings
+should be updated to reflect that, and document a single compatible
+value ("jedec,spi-nor") only.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
