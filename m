@@ -4,70 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 697C2C4321E
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 17:06:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F062C4321E
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 17:08:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WvYFbP5mMioengRMOkOI+3On5VXakmG7Nqgke6BdDUo=; b=XF0/OGfKHXcOXY
-	RaM9uK5l+1gEJr/m9GeOW+Pt+544tFogXiUi/6RLqdI84kxgZuvvR/fSE+uY0s7m+MzBqOe8bVVOS
-	rHAGwazgy0U2x1TK2ZNrJcd4io2ZL7wW47UIxe7jOMtrNBpV84huL0DYIfxLxmpo26zsJmhXZimN2
-	lSNyY1XELusrvjpyzPJJFQ7D4u17m1YQ/LaBDkJ2/Ap4osP5PxKLqCEZ3oJeFZpGvwJOuyEtIscYp
-	y+meO+ZwUsuIniNhNx9OdCCE42cMhlH0nHuHTQqOngatad7SzYNPCuPRtn/XHmBxUuLO1eBMa+sTu
-	IX0fcAMMv6Bet4eGdLDQ==;
+	List-Owner; bh=0ADnKqgxiIj35gO4AOvGnqPIMvo+KOI+j3WUgSKsjyE=; b=mBav1K4Tu5Tjnk
+	KFwsJKhLa5xytwWwyM4lLhUXtHPmisMkn7P3rS62KoDkbfkD763cYhgHtbw1kwvjWdHgLYuOcMj/h
+	lkYwpmpVT/J6eqMzfN2cUyDW/GekPSM5xI7JE26QdG8IRcIOj3k0vODejotE4uAKYbvRvPDVk44tE
+	Gx2c3HMb5MRK5SAMloR5YN9uHlU0HunivXh0qalbxpuC5RIC35i7dyUFk7y03aEJEAe/ZFjEZUtC2
+	T25vQlbitVt2as4gZjEcGhKe38fbUMr041IZJ8wXwFVG55pTid7kwsgISEWYyLCHUOvP8+/vKKqhw
+	Fv0wHNMhwsIB7rZuFmOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p19U9-000EJh-Ut; Fri, 02 Dec 2022 17:06:02 +0000
-Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
+	id 1p19Wr-000Fcc-F2; Fri, 02 Dec 2022 17:08:49 +0000
+Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p19Tm-000E8k-Dv; Fri, 02 Dec 2022 17:05:40 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 5889C2000B;
-	Fri,  2 Dec 2022 17:05:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1670000732;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b1543kr1BA4zVd3F4HG1WX2ZdFskLZROQv8ZbH894QY=;
-	b=bJtZ3brfsuLZSQYMU4sy32nmifcHeTf/6v1x+/CYbuJJI2X7aPsIPm/19mV2M9HZQP4D65
-	fu44hQSe+aSJYv3KaBvqKrxW25O9O62XyAf/BQWc7laFGOuTHdR6zkWRAAMj+TvTOiDNhn
-	ySYzOnSxKfYHMm3tqARzEaDKXkYF55u4qTk8W9drYoFqf+Mvf1xurkFCm3SkQGE2kCLXOL
-	toa1diIN7oYoGXHGAQM/r1K3bYsS8kSvsRFdK52KCuKV0/dhdhOulj2L2jgt1DFjjGRd0K
-	RRbw5pYhLDOp2dnSHiQDIKeZ1MKWeEa8Win6fzNtbdt/7ZVQWkLTu+T2BV6OAg==
-Date: Fri, 2 Dec 2022 18:05:28 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- Francesco Dolcini <francesco.dolcini@toradex.com>, Shawn Guo
- <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
- stable@vger.kernel.org, u-boot@lists.denx.de
-Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is
- 0
-Message-ID: <20221202180528.173ee343@xps-13>
-In-Reply-To: <Y4orsUIp3Ffz8m+r@francesco-nb.int.toradex.com>
-References: <Y4nPmzdgaabg3a3/@francesco-nb.int.toradex.com>
-	<Y4nSXQirO2N5IRfu@francesco-nb.int.toradex.com>
-	<20221202115327.4475d3a2@xps-13>
-	<Y4ngOaKq224LIpQc@francesco-nb.int.toradex.com>
-	<20221202150556.14c5ae43@xps-13>
-	<2b6fc52d-60b9-d0f4-ab91-4cf7a8095999@denx.de>
-	<20221202160030.1b8d0b8a@xps-13>
-	<223b7a4e-3aff-8070-7387-c77d2ded1dd6@denx.de>
-	<20221202164904.08d750df@xps-13>
-	<0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
-	<Y4orsUIp3Ffz8m+r@francesco-nb.int.toradex.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1p19WT-000FPb-9i; Fri, 02 Dec 2022 17:08:27 +0000
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 35FEC843E4;
+	Fri,  2 Dec 2022 18:08:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1670000903;
+	bh=JK/ai9l9hTLZbTMNKDkKRqkQBK7kfMQ22sdksRiNvfo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=nBxPm+YFGzCsBvpYZZXWw7b19M2ta96kP1rpU8d9n4p3JAwP4gHfLivrEia1r4uyJ
+	 sSqYJ2ayRGHIHVrW5X/fzfDX8Lo4hL9j9f9Q9AW1Fp9SUqX4fd0AG6MmJRIKw9azA9
+	 l8xSqeAFgJ1P3h4SXn9eryHjKcTcVpUagp4LI5ZFCRfjwQJWgB0gZlWEXkkGJ3j61G
+	 ODo3RcA212lWb53PhorqGEVdoyt28gmw/HrmirGSxvgesQcxVL/R+4XwisyaT3mMm4
+	 O2fDLRRwZmfuCSTAzUkn5H2XFnnlNQHcAiqd8yz0F+pPQq02X3CV53IoCDxpWcW2XZ
+	 lq2cTKZQAlFGQ==
+Message-ID: <7afd364c-33b8-38a9-65a6-015b4360db6b@denx.de>
+Date: Fri, 2 Dec 2022 18:08:22 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org,
+ Francesco Dolcini <francesco.dolcini@toradex.com>,
+ Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ stable@vger.kernel.org, u-boot@lists.denx.de
+References: <20221202071900.1143950-1-francesco@dolcini.it>
+ <20221202101418.6b4b3711@xps-13>
+ <Y4nPmzdgaabg3a3/@francesco-nb.int.toradex.com>
+ <Y4nSXQirO2N5IRfu@francesco-nb.int.toradex.com>
+ <20221202115327.4475d3a2@xps-13>
+ <Y4ngOaKq224LIpQc@francesco-nb.int.toradex.com>
+ <20221202150556.14c5ae43@xps-13>
+ <2b6fc52d-60b9-d0f4-ab91-4cf7a8095999@denx.de>
+ <20221202160030.1b8d0b8a@xps-13>
+ <223b7a4e-3aff-8070-7387-c77d2ded1dd6@denx.de>
+ <20221202164904.08d750df@xps-13>
+ <0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
+ <20221202174255.2c1cb2ff@xps-13>
+ <e80377c9-1542-d47d-6d35-2efdc15bcbf8@denx.de>
+ <20221202175730.231d75d5@xps-13>
+From: Marek Vasut <marex@denx.de>
+In-Reply-To: <20221202175730.231d75d5@xps-13>
+X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221202_090538_828570_12F4DF4A 
-X-CRM114-Status: GOOD (  29.61  )
+X-CRM114-CacheID: sfid-20221202_090825_683165_5837449C 
+X-CRM114-Status: GOOD (  16.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,75 +87,83 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRnJhbmNlc2NvLAoKZnJhbmNlc2NvQGRvbGNpbmkuaXQgd3JvdGUgb24gRnJpLCAyIERlYyAy
-MDIyIDE3OjQ1OjM3ICswMTAwOgoKPiBPbiBGcmksIERlYyAwMiwgMjAyMiBhdCAwNToxNzo1OVBN
-ICswMTAwLCBNYXJlayBWYXN1dCB3cm90ZToKPiA+IE9uIDEyLzIvMjIgMTY6NDksIE1pcXVlbCBS
-YXluYWwgd3JvdGU6ICAKPiA+ID4gLCBub3QgdGhlIE5BTkQgY29udHJvbGxlciBub2RlLiBJIGhv
-cGUgdGhpcwo+ID4gPiBpcyBjb3JyZWN0bHkgc3VwcG9ydGVkIGluIFUtQm9vdCB0aG91Z2guIFNv
-IGlmIHRoZXJlIGlzIGEgTkFORCBjaGlwCj4gPiA+IHN1Ym5vZGUsIEkgc3VwcG9zZSBVLUJvb3Qg
-d291bGQgdHJ5IHRvIGNyZWF0ZSB0aGUgcGFydGl0aW9ucyB0aGF0IGFyZQo+ID4gPiBpbnNpZGUs
-IG9yIGV2ZW4gaW4gdGhlIHN1YiAicGFydGl0aW9ucyIgY29udGFpbmVyLiAgCj4gPiAKPiA+IE15
-IHVuZGVyc3RhbmRpbmcgaXMgdGhhdCBVLUJvb3QgY2hlY2tzIHRoZSBuYW5kLWNvbnRyb2xsZXIg
-bm9kZSBzaXplLWNlbGxzLAo+ID4gbm90IHRoZSBuYW5kLWNoaXB7fSBvciBwYXJ0aXRpb25ze30g
-c3Vibm9kZSBzaXplLWNlbGxzIC4gIAo+IE5vdCAxMDAlIGNvcnJlY3QuCj4gCj4gIC0gVS1Cb290
-IGJlZm9yZSB2MjAyMi4wNCB1cGRhdGVzIHRoZSBuYW5kLWNvbnRyb2xsZXJ7fSBub2RlLCBubyBt
-YXR0ZXIgd2hhdC4KPiAgLSBVLUJvb3Qgc3RhcnRpbmcgZnJvbSB2MjAyMi4wNCBsb29rcyBmb3Ig
-YHBhcnRpdGlvbnN7fWAgaW50byB0aGUKPiAgICBuYW5kLWNvbnRyb2xsZXJ7fSBub2RlLCBhbmQg
-Y3JlYXRlcyB0aGUgcGFydGl0aW9uIGludG8gaXQgaWYgZm91bmQuCj4gICAgSWYgbm90IGZvdW5k
-IGl0IGJlaGF2ZXMgdGhlIHNhbWUgd2F5IGFzIHRoZSBwcmV2aW91cyB2ZXJzaW9ucy4KPiAgICBT
-ZWUgY29tbWl0IDM2ZmVlMmY3NjIxZSAoImNvbW1vbjogZmR0X3N1cHBvcnQ6IGFkZCBzdXBwb3J0
-IGZvciAicGFydGl0aW9ucyIgc3Vibm9kZSB0byBmZHRfZml4dXBfbXRkcGFydHMoKSIpCj4gCj4g
-SSdkIGxpa2UgdG8gc3RyZXNzIG9uY2UgbW9yZSB0aGUgZmFjdCB0aGF0IHdlIGNhbm5vdCBleHBl
-Y3Qgb2xkIFUtQm9vdAo+IHRvIGJlIHVwZGF0ZWQgaW4gdGhlIGZpZWxkLCBhbmQgdGhleSB3aWxs
-IGtlZXAgZ2VuZXJhdGluZyB0aGUgcGFydGl0aW9ucwo+IGFzIGNoaWxkIG9mIHRoZSBuYW5kLWNv
-bnRyb2xsZXIgbm9kZSB3aGF0ZXZlciB3ZSBkbyB3aXRoIHRoZSBkdHMgZmlsZS4KPiAKPiBJIHRo
-aW5rIHRoYXQgdGhpcyBzaG91bGQgYmUgdHJlYXRlZCB0aGUgc2FtZSB3YXkgYXMgYW55IG90aGVy
-IGZpeHVwIHdlCj4gbWlnaHQgaGF2ZSBmb3IgYnJva2VuIGZpcm13YXJlLCBlc3BlY2lhbGx5IGNv
-bnNpZGVyaW5nIHRoYXQgdGhpcyB1c2VkIHRvCj4gIndvcmsiICh5ZXMsIEkgY2FuIGFncmVlIHRo
-YXQgaXQgaG9ycmlibGUsIGJ1dCBJIGNhbm5vdCBjaGFuZ2UgdGhlIHBhc3QpCj4gd2l0aG91dCBl
-dmVuIGEgd2FybmluZyBzaW5jZSB0aGUgaW14NyBzdXBwb3J0IHdhcyBmaXJzdCBpbnRyb2R1Y2Vk
-IGluCj4gdGhlIGxpbnV4IGtlcm5lbCB5ZWFycyBhZ28uCj4gCj4gPiBGcmFuY2VzY28sIGNhbiB5
-b3UgcGxlYXNlIHNoYXJlIHRoZSBEVCwgaW5jbHVkaW5nIHRoZSBVLUJvb3QgZ2VuZXJhdGVkCj4g
-PiBwYXJ0aXRpb25zLCB3aGljaCBpcyBwYXNzZWQgdG8gTGludXggb24gQ29saWJyaSBNWDcgPyBJ
-IHRoaW5rIHRoYXQgc2hvdWxkCj4gPiBtYWtlIGFsbCBjb25mdXNpb24gZ28gYXdheS4gIAo+IAo+
-IFRoZSBkZXZpY2UgdHJlZSBwYXJ0IGlzIGVhc3ksIGp1c3QKPiBhcmNoL2FybS9ib290L2R0cy9p
-bXg3ZC1jb2xpYnJpLWV2YWwtdjMuZHRzLgo+IAo+IGFuZCB0aGUgbmFuZC1jb250cm9sbGVyIG5v
-ZGUgaXMgY29taW5nIGZyb20KPiAKPiAjaW5jbHVkZSAiaW14N2QuZHRzaSIKPiAKPiBwbHVzCj4g
-Cj4gJmdwbWkgewo+IAlmc2wsdXNlLW1pbmltdW0tZWNjOwo+IAluYW5kLWVjYy1tb2RlID0gImh3
-IjsKPiAJbmFuZC1vbi1mbGFzaC1iYnQ7Cj4gCXBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7Cj4g
-CXBpbmN0cmwtMCA9IDwmcGluY3RybF9ncG1pX25hbmQ+Owo+IH07Cj4gCj4gVGhlIHBhcnRpdGlv
-bnMgbm9kZXMgYXJlIGdlbmVyYXRlZCAxMDAlIGJ5IFUtQm9vdCwgbm90aGluZyBpcyBwcmVzZW50
-IGluCj4gdGhlIGR0cyBzb3VyY2UgZmlsZXMuCgpJIGhvcGUgaWYgeW91IHByb3ZpZGUgYSBOQU5E
-IGNoaXAgY2hpbGQgbm9kZSwgdGhlIHBhcnRpdGlvbnMgYXJlIGNyZWF0ZWQKYXQgdGhlIHJpZ2h0
-IGxvY2F0aW9uLCBvdGhlcndpc2UgdGhpcyBpcyBzbywgc28gd3JvbmcuLi4KCj4gCj4gV2l0aCB0
-aGlzIERUUyBmaWxlIGFzIGlucHV0LCB3aGF0ZXZlciBVLUJvb3QgdmVyc2lvbiBpcyB1c2VkIEkg
-aGF2ZSB0aGUKPiBmb2xsb3dpbmcgZ2VuZXJhdGVkOgo+IAo+IHJvb3RAY29saWJyaS1pbXg3LTAy
-ODQ0MjMzOi8jIGxzIC9wcm9jL2RldmljZS10cmVlL3NvYy9uYW5kLWNvbnRyb2xsZXJAMzMwMDIw
-MDAvCj4gI2FkZHJlc3MtY2VsbHMgICAgICAgICAgZG1hLW5hbWVzICAgICAgICAgICAgICAgbmFu
-ZC1vbi1mbGFzaC1iYnQgICAgICAgcGluY3RybC0wCj4gI3NpemUtY2VsbHMgICAgICAgICAgICAg
-ZG1hcyAgICAgICAgICAgICAgICAgICAgcGFydGl0aW9uQDAgICAgICAgICAgICAgcGluY3RybC1u
-YW1lcwo+IGFzc2lnbmVkLWNsb2NrLXBhcmVudHMgIGZzbCx1c2UtbWluaW11bS1lY2MgICAgIHBh
-cnRpdGlvbkAyMDAwMDAgICAgICAgIHJlZwo+IGFzc2lnbmVkLWNsb2NrcyAgICAgICAgIGludGVy
-cnVwdC1uYW1lcyAgICAgICAgIHBhcnRpdGlvbkAzODAwMDAgICAgICAgIHJlZy1uYW1lcwo+IGNs
-b2NrLW5hbWVzICAgICAgICAgICAgIGludGVycnVwdHMgICAgICAgICAgICAgIHBhcnRpdGlvbkA0
-MDAwMDAgICAgICAgIHN0YXR1cwo+IGNsb2NrcyAgICAgICAgICAgICAgICAgIG5hbWUgICAgICAg
-ICAgICAgICAgICAgIHBhcnRpdGlvbkA4MDAwMAo+IGNvbXBhdGlibGUgICAgICAgICAgICAgIG5h
-bmQtZWNjLW1vZGUgICAgICAgICAgIHBoYW5kbGUKPiAKPiByb290QGNvbGlicmktaW14Ny0wMjg0
-NDIzMzovIyBscyAvcHJvYy9kZXZpY2UtdHJlZS9zb2MvbmFuZC1jb250cm9sbGVyQDMzMDAyMDAw
-L3BhcnRpdGlvbkAqCj4gL3Byb2MvZGV2aWNlLXRyZWUvc29jL25hbmQtY29udHJvbGxlckAzMzAw
-MjAwMC9wYXJ0aXRpb25AMDoKPiBsYWJlbCAgbmFtZSAgIHJlZwo+IAo+IC9wcm9jL2RldmljZS10
-cmVlL3NvYy9uYW5kLWNvbnRyb2xsZXJAMzMwMDIwMDAvcGFydGl0aW9uQDIwMDAwMDoKPiBsYWJl
-bCAgICAgIG5hbWUgICAgICAgcmVhZF9vbmx5ICByZWcKPiAKPiAvcHJvYy9kZXZpY2UtdHJlZS9z
-b2MvbmFuZC1jb250cm9sbGVyQDMzMDAyMDAwL3BhcnRpdGlvbkAzODAwMDA6Cj4gbGFiZWwgIG5h
-bWUgICByZWcKPiAKPiAvcHJvYy9kZXZpY2UtdHJlZS9zb2MvbmFuZC1jb250cm9sbGVyQDMzMDAy
-MDAwL3BhcnRpdGlvbkA0MDAwMDA6Cj4gbGFiZWwgIG5hbWUgICByZWcKPiAKPiAvcHJvYy9kZXZp
-Y2UtdHJlZS9zb2MvbmFuZC1jb250cm9sbGVyQDMzMDAyMDAwL3BhcnRpdGlvbkA4MDAwMDoKPiBs
-YWJlbCAgICAgIG5hbWUgICAgICAgcmVhZF9vbmx5ICByZWcKPiAKPiAKCgpUaGFua3MsCk1pcXXD
-qGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 12/2/22 17:57, Miquel Raynal wrote:
+> Hi Marek,
+
+Hi,
+
+>> On 12/2/22 17:42, Miquel Raynal wrote:
+>>> Hi Marek,
+>>
+>> Hi,
+>>
+>> [...]
+>>
+>>>>> However, it should not be empty, at the very least a reg property
+>>>>> should indicate on which CS it is wired, as expected there:
+>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/Documentation/devicetree/bindings/mtd/nand-chip.yaml?h=mtd/next
+>>>>
+>>>> OK, I see your point. So basically this?
+>>>>
+>>>> &gpmi {
+>>>>      #size-cells = <1>;
+>>>>      ...
+>>>>      nand-chip@0 {
+>>>>        reg = <0>;
+>>>>      };
+>>>> };
+>>>>
+>>>> btw. the GPMI NAND controller supports only one chipselect, so the reg in nand-chip node makes little sense.
+>>>
+>>> I randomly opened a reference manual (IMX6DQL.pdf), they say:
+>>>
+>>> 	"Up to four NAND devices, supported by four chip-selects and one
+>>> 	 ganged ready/ busy."
+>>
+>> Doh, and MX7D has the same controller, so size-cells = <1>; makes sense with nand-chip@N {} .
+> 
+> Actually #address-cells is here for that. You need to point at one CS,
+> so in most cases this is:
+> 
+> controller {
+> 	#address-cells = <1>;
+> 	#size-cells = <0>;
+> 	chip@N {
+> 		reg = <N>;
+> 	};
+> };
+
+Right ... thanks for spotting this.
+
+But then the size-cells in the controller node should be zero. And 
+753395ea1e45 ("ARM: dts: imx7: Fix NAND controller size-cells") is 
+therefore correct ?
+
+But that correction in 753395ea1e45 breaks setup where old U-Boot 
+injects partition@N directly into the nand-controller node, without 
+updating the nand-controller node size-cells, i.e. this:
+nand-controller {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
++       partition@0 { ... };
+};
+Because the size-cells is 0 in that case, and U-Boot does not update the 
+size-cells .
+
+It used to work before because Linux DT contained size-cells=<1> in the 
+nand-controller node before 753395ea1e45 ("ARM: dts: imx7: Fix NAND 
+controller size-cells").
+
+But here I would say this is a firmware bug and it might have to be 
+handled like a firmware bug, i.e. with fixup in the partition parser. I 
+seem to be changing my opinion here again.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
