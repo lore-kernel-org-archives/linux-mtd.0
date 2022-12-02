@@ -4,60 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08161C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 09:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25F25C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 10:13:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rt7lbDPGStM9R1FovWTvl1sdVfBHnlHXG5JVu2G9Wcs=; b=IbADUHQ12zFHIo
-	VBDFxRKiOEV/iueNr1FlonofXaTRld4kr0ERk8XMIIWtMNHDujNvE5mHxJDrhI4gQUJHErssB3jR0
-	/AJiHHeyaKsRC+Ft6lFhv84c5siWqtSptKoEjFpCkdEmhtQR0Ild0ICmgm8ldDueKQmwbO4mHZT8f
-	QSAymfapyoizxv77D/ChHVbNGGS4LIf5CAFmUtkO0xDpono/LXlby3DRZOh73MTXfjtkBFYAa+Ah9
-	xWeVFi/UD/jg0w98+FJAAaWFzlc2VmC4TmvSUTaHmdjIu13BL7Twl8kL/H3eEbgwKGsRlTjiDyIKa
-	3QFI7467jiqmFmfYKWVw==;
+	List-Owner; bh=hR7ZQyBbnSRxb1K6A95W918vUbJ39/IXtyQvtA8cnJU=; b=ZzeqRyvsudydof
+	UImiugRxNk+AzVcIATbcAgf1MiyE6DvOum2ajcnKaNrC8bfceHDfBV5CICPk2CmzPeOeHzN0RUSQ7
+	KASqtYqt+XP5J8b/jBR30INAoMjoltuGvqdudLF+w0IVeK2ww2Nhv/eg9f/zE/w+IcmvqIa5jfj3v
+	SLbWBPY6D1Fvry6v2Esn1H27kj1uiJ6tPK3/zJXxn/+rRF3vWfRnRd5BSjwRw2N3rWVT8u51jqOjZ
+	OU0lK6ezTWus0qBtt1vEIYL/QhEFmKuqi07BDPXJI3bYaRahBZpsOLBKPkuIWnUsXNF0Fpq5mg4z6
+	QjtF+BsQb6SrmhEGdwaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p1280-00Eqtj-2t; Fri, 02 Dec 2022 09:14:40 +0000
-Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
+	id 1p132p-00FLUc-Ob; Fri, 02 Dec 2022 10:13:23 +0000
+Received: from smtp-out-05.comm2000.it ([212.97.32.73])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p127o-00EqsB-LG; Fri, 02 Dec 2022 09:14:30 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 193101BF216;
-	Fri,  2 Dec 2022 09:14:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1669972463;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mo+eSjGRNKIzkQtyYbswTdgChJlhTFTWdGiiawXOxBI=;
-	b=VdhNUhNp8yqwDIE7OuxejSu6Dr4RHeTfyVcIJZ5G8h7bbIXyBBgg0RRGGSWEkM5GgrgxkM
-	t9nIVpFkYMg7rxsaIrXm+mSsspuXCjl59NGOk0hP01XMqLUjPpQ6efmBjFE0hLbUNomTvA
-	zhcla/lwYfWI+GrvAdoAIMapwNRYOKrNw7uL9DRZmOqkdKe9OlrUaHZtgqiTba/9zyo3o0
-	HieI0tG3U8hUM6at+spQzIccZyYRHsQzeOwckry6hDvgcDTU3uP9jdMleLVG52DMQ9ai2y
-	4wUWf7UA685CoEs8+JUvJXq10x6eGHkCDkc4Ny6LJm99FDsugtgIh0yX8B/RZQ==
-Date: Fri, 2 Dec 2022 10:14:18 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org, Marek Vasut
- <marex@denx.de>, Francesco Dolcini <francesco.dolcini@toradex.com>, Shawn
- Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is
- 0
-Message-ID: <20221202101418.6b4b3711@xps-13>
-In-Reply-To: <20221202071900.1143950-1-francesco@dolcini.it>
+	id 1p132f-00FLRJ-Bl; Fri, 02 Dec 2022 10:13:14 +0000
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: francesco@dolcini.it)
+	by smtp-out-05.comm2000.it (Postfix) with ESMTPSA id 8965482630A;
+	Fri,  2 Dec 2022 11:12:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
+	s=mailsrv; t=1669975984;
+	bh=EhXjLytaNloC3jO1CJxW82NXsFq0S8qD5JKyjHxWInE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=hd0Ck2QDAmK4PlJ0kTMREObFocUpZZJ82Uv8R3IttXT8QzAVkT8Dl77W+TyA+KlBM
+	 LTzWsTyyOk8IqQ5Ty0ohGwdqt89z6+p91dIYeAUHl4EpYTiqCc5cnGNl/kuFGBOBMT
+	 IpjTGSJXPhJeQNNjTUE1tWEfSpkpBqMVISDOy/geQ0kkml++igPFEaz5iIoodtk6Sc
+	 Pf5DzGq+zMENYBiodvZyE4E4M1ReiuyAM+Qopo+0CR0GDJjfmR8LDoPSVQqRiuIACH
+	 2j5YaRKGO3x92iXsY/KGIDwBfuGhDf6TRw3gTS7z8HLRTFCOEnQ3QUBU6x3IQuWQnu
+	 b1/VXmEtMqB+w==
+Date: Fri, 2 Dec 2022 11:12:43 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, Marek Vasut <marex@denx.de>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
+Message-ID: <Y4nPmzdgaabg3a3/@francesco-nb.int.toradex.com>
 References: <20221202071900.1143950-1-francesco@dolcini.it>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+ <20221202101418.6b4b3711@xps-13>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221202101418.6b4b3711@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221202_011429_049147_EEFC164C 
-X-CRM114-Status: GOOD (  24.42  )
+X-CRM114-CacheID: sfid-20221202_021313_587489_2C6EB4B8 
+X-CRM114-Status: GOOD (  24.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,58 +71,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRnJhbmNlc2NvLAoKZnJhbmNlc2NvQGRvbGNpbmkuaXQgd3JvdGUgb24gRnJpLCAgMiBEZWMg
-MjAyMiAwODoxOTowMCArMDEwMDoKCj4gRnJvbTogRnJhbmNlc2NvIERvbGNpbmkgPGZyYW5jZXNj
-by5kb2xjaW5pQHRvcmFkZXguY29tPgo+IAo+IEFkZCBhIGZhbGxiYWNrIG1lY2hhbmlzbSB0byBo
-YW5kbGUgdGhlIGNhc2UgaW4gd2hpY2ggI3NpemUtY2VsbHMgaXMgc2V0Cj4gdG8gPDA+LiBBY2Nv
-cmRpbmcgdG8gdGhlIERUIGJpbmRpbmcgdGhlIG5hbmQgY29udHJvbGxlciBub2RlIHNob3VsZCBo
-YXZlCj4gc2V0IGl0IHRvIDAgYW5kIHRoaXMgaXMgbm90IGNvbXBhdGlibGUgd2l0aCB0aGUgbGVn
-YWN5IHdheSBvZgo+IHNwZWNpZnlpbmcgcGFydGl0aW9ucyBkaXJlY3RseSBhcyBjaGlsZCBub2Rl
-cyBvZiB0aGUgbmFuZC1jb250cm9sbGVyIG5vZGUuCgpJIHVuZGVyc3RhbmQgdGhlIHByb2JsZW0s
-IEkgdW5kZXJzdGFuZCB0aGUgZml4LCBidXQgSSBoYXZlIHRvIHNheSwgSQpzdHJvbmdseSBkaXNs
-aWtlIGl0IDopIFRvdWNoaW5nIGFuIG10ZCBjb3JlIGRyaXZlciB0byBmaXggYSBzaW5nbGUKYnJv
-a2VuIHVzZSBjYXNlIGxpa2UgdGhhdCBpcy4uLiBwcm9ibGVtYXRpYywgZm9yIHRoZSBsZWFzdC4K
-CkkgYW0gc29ycnkgYnV0IGlmIGEgNi4wIGtlcm5lbCBicmVha3MgYmVjYXVzZToKLSBhIGxlZ2Fj
-eSBzY2hlbWUgaXMgdXNlZCBpbiB0aGUgZGVzY3JpcHRpb24KLSB1LWJvb3Qgc3RpbGwgZG9lcyBu
-b3QgY29uZm9ybSB0byB0aGUgRFQgc3RhbmRhcmQKLSBhIHBhdGNoIHRyaWVzIHRvIG1ha2UgYSB0
-b29sIGhhcHB5ClRoZW4gdGhlIHNvbHV0aW9uIGlzIGNsZWFybHkgbm90IGFuICdtdGQgY29yZScg
-bWFpbmxpbmUgcGF0Y2guCgpJZiB5b3UgcmVhbGx5IHdhbnQgdG8gd29ya2Fyb3VuZCBVLUJvb3Qs
-IGVpdGhlciB5b3UgcmV2ZXJ0IHRoYXQgcGF0Y2gKb3IgeW91IGp1c3QgZml4IHRoZSBEVCBkZXNj
-cmlwdGlvbiBpbnN0ZWFkLiBUaGUgcGFyZW50L2NoaWxkL3BhcnRpdGlvbnMKc2NoZW1lIGhhcyBi
-ZWVuIGVuZm9yY2VkIGZvciBtYXliZSA1IHllYXJzIG5vdyBhbmQgZm9yIGEgZ29vZCByZWFzb246
-IGEKTkFORCBjb250cm9sbGVyIHdpdGggcGFydGl0aW9ucyBkb2VzIG5vdCBtYWtlIF9hbnlfIHNl
-bnNlLiBUaGVyZSBhcmUKcGxlbnR5IG9mIGV4YW1wbGVzIG91dCB0aGVyZSwgaW14Ny1jb2xpYnJp
-LmR0c2kgaGFzIHJlY2VpdmVkIG1hbnkKdXBkYXRlcyBzaW5jZSBpdHMgaW50cm9kdWN0aW9uIChm
-b3IgdGhlIGJlc3QpLCBzbyB3aHkgbm90IHRoaXMgb25lPwoKQ2hlZXJzLApNaXF1w6hsCgo+IFRo
-aXMgZml4ZXMgYSBib290IGZhaWx1cmUgb24gY29saWJyaS1pbXg3IGFuZCBwb3RlbnRpYWxseSBv
-dGhlciBib2FyZHMuCj4gCj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKPiBGaXhlczogNzUz
-Mzk1ZWExZTQ1ICgiQVJNOiBkdHM6IGlteDc6IEZpeCBOQU5EIGNvbnRyb2xsZXIgc2l6ZS1jZWxs
-cyIpCj4gTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL1k0ZGdCVEdOV3BNNlNRWElA
-ZnJhbmNlc2NvLW5iLmludC50b3JhZGV4LmNvbS8KPiBTaWduZWQtb2ZmLWJ5OiBGcmFuY2VzY28g
-RG9sY2luaSA8ZnJhbmNlc2NvLmRvbGNpbmlAdG9yYWRleC5jb20+Cj4gLS0tCj4gIGRyaXZlcnMv
-bXRkL3BhcnNlcnMvb2ZwYXJ0X2NvcmUuYyB8IDExICsrKysrKysrKysrCj4gIDEgZmlsZSBjaGFu
-Z2VkLCAxMSBpbnNlcnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3BhcnNl
-cnMvb2ZwYXJ0X2NvcmUuYyBiL2RyaXZlcnMvbXRkL3BhcnNlcnMvb2ZwYXJ0X2NvcmUuYwo+IGlu
-ZGV4IDE5MjE5MGM0MmZjOC4uYWEzYjdmYTYxZTUwIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRk
-L3BhcnNlcnMvb2ZwYXJ0X2NvcmUuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL3BhcnNlcnMvb2ZwYXJ0
-X2NvcmUuYwo+IEBAIC0xMjIsNiArMTIyLDE3IEBAIHN0YXRpYyBpbnQgcGFyc2VfZml4ZWRfcGFy
-dGl0aW9ucyhzdHJ1Y3QgbXRkX2luZm8gKm1hc3RlciwKPiAgCj4gIAkJYV9jZWxscyA9IG9mX25f
-YWRkcl9jZWxscyhwcCk7Cj4gIAkJc19jZWxscyA9IG9mX25fc2l6ZV9jZWxscyhwcCk7Cj4gKwkJ
-aWYgKHNfY2VsbHMgPT0gMCkgewo+ICsJCQkvKgo+ICsJCQkgKiBVc2UgI3NpemUtY2VsbHMgPSA8
-MT4gZm9yIGJhY2t3YXJkIGNvbXBhdGliaWxpdHkKPiArCQkJICogaW4gY2FzZSAjc2l6ZS1jZWxs
-cyBpcyBzZXQgdG8gPDA+IGFuZCBmaXJtd2FyZSBhZGRzCj4gKwkJCSAqIE9GIHBhcnRpdGlvbnMg
-d2l0aG91dCBzZXR0aW5nIGl0Lgo+ICsJCQkgKi8KPiArCQkJcHJfd2Fybl9vbmNlKCIlczogb2Zw
-YXJ0IHBhcnRpdGlvbiAlcE9GICglcE9GKSAjc2l6ZS1jZWxscyBpcyA8MD4sIHVzaW5nIDwxPiBm
-b3IgYmFja3dhcmQgY29tcGF0aWJpbGl0eS5cbiIsCj4gKwkJCQkgICAgIG1hc3Rlci0+bmFtZSwg
-cHAsCj4gKwkJCQkgICAgIG10ZF9ub2RlKTsKPiArCQkJc19jZWxscyA9IDE7Cj4gKwkJfQo+ICAJ
-CWlmIChsZW4gLyA0ICE9IGFfY2VsbHMgKyBzX2NlbGxzKSB7Cj4gIAkJCXByX2RlYnVnKCIlczog
-b2ZwYXJ0IHBhcnRpdGlvbiAlcE9GICglcE9GKSBlcnJvciBwYXJzaW5nIHJlZyBwcm9wZXJ0eS5c
-biIsCj4gIAkJCQkgbWFzdGVyLT5uYW1lLCBwcCwKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+Hello Miquel,
+
+On Fri, Dec 02, 2022 at 10:14:18AM +0100, Miquel Raynal wrote:
+> francesco@dolcini.it wrote on Fri,  2 Dec 2022 08:19:00 +0100:
+> > From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> > 
+> > Add a fallback mechanism to handle the case in which #size-cells is set
+> > to <0>. According to the DT binding the nand controller node should have
+> > set it to 0 and this is not compatible with the legacy way of
+> > specifying partitions directly as child nodes of the nand-controller node.
+> 
+> I understand the problem, I understand the fix, but I have to say, I
+> strongly dislike it :) Touching an mtd core driver to fix a single
+> broken use case like that is... problematic, for the least.
+I just noticed it 2 days after this patch was backported to a stable
+kernel, I am just the first one to notice, we are not talking about a single
+use case.
+
+> I am sorry but if a 6.0 kernel breaks because:
+Not only kernel 6.0 is currently broken. This patch is going to be
+backported to any stable kernel given the fixes tag it has.
+
+> If you really want to workaround U-Boot, either you revert that patch
+> or you just fix the DT description instead. The parent/child/partitions
+> scheme has been enforced for maybe 5 years now and for a good reason: a
+> NAND controller with partitions does not make _any_ sense. There are
+> plenty of examples out there, imx7-colibri.dtsi has received many
+> updates since its introduction (for the best), so why not this one?
+
+I can and I will update imx7-colibri.dtsi (patch coming), but is this
+good enough given the kind of boot failure regression this introduce? We
+are going to have old u-boot around that will not work with it, and the
+reality is that there are tons of reasons why people do update the linux
+kernel and dts everyday, but never ever update the bootloader.
+
+We cannot tell
+  "All users of the XXX kernel series must upgrade."
+and at the same time introduce a regression that break the boot and
+ignore it.
+
+Francesco
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
