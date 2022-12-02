@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4742EC47089
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 16:43:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60D7FC4321E
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 16:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fgUiCEe+WMmJ2yOdvd5EkbzwGBORUmLI4KNNOwDjFKo=; b=M88KJyUBQS4X54
-	8V6KXqbwB8FFZ4uHbCoiwq3xCHqM5oGENXvC+P0IqUFCSHRkKxYWV9Q+rJAi52Wm6FKkGb9vwKAra
-	D7Q5XgxWcijOdV+zeHeDxfgvReUfGl/JjYwCafsAGy3RM24qoQi6m8SeNif96MweHM+QCzn18kcTE
-	mPhjA/oZxHhbSDkBNNtPaOvicWqj0HAqTO+gH3eizq3tFIM6ls4c9H8dm6fvw/RWWUX0aLEHSuky/
-	RxBo6z8QWY0chvJA2nCWuIAeXmiFyV8/WkoifV+rlq/tsIOTLQ/mA2MT9xx/5HRCaNWpgO9ALcJDo
-	aQVQyum5T8qRbKfROOuA==;
+	List-Owner; bh=onhZCHUAuPLKEohDbe9yuLWzCjZCHEQHiCEGKhiLdfE=; b=iWzp8tquMKDtsG
+	O2aYSI2RdO+OBh8jhtmn+ByLAM+iYNGNscQ6L10ZP654dvSxzq5FS9F8V8ghJ1eLieZI5OV85jUN7
+	4ufloRBS4T3wzI5myJ6bbbztZM9swinY7CXMVA8lKJy8Zg2axwozNuZAMObGkOk0U96rXh6sFMPwm
+	IVVq2obvpulrAet5v8Wmx9TZnWAChLJSQWf3hHGNmW5eqJqrvfAl1AN6mw/fdJJYVbE/mCYWMFN62
+	APGDXGAXUzJ94eZoWRu4Ty6um1YArLEL6N66MkkB1P/28Vp0m83IXAax/MTqc2bN+h9v0OTKdVXiG
+	TSilUvmjGek9KAnOdbug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p1989-0002pF-Qe; Fri, 02 Dec 2022 16:43:17 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1p19Aj-0003uG-LV; Fri, 02 Dec 2022 16:45:57 +0000
+Received: from smtp-out-06.comm2000.it ([212.97.32.74])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p197x-0002jN-IC; Fri, 02 Dec 2022 16:43:08 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id E70B9E0008;
-	Fri,  2 Dec 2022 16:42:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1669999381;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qzZdYWOBBoSv1bjeFreDloIADPQqX2dduLQgUUoXtj0=;
-	b=RBG7jnhuQUO0w4/BrZr85FPKBqGguvX1wKjZi2R9g34YjMeUywCk4118bn5RXETNBddJ5L
-	Z3iywTG/ZbZgBA68bFcbA1ARlPnPwcGdaX4B1UYsIqaGARRK5U2Ci9AKjWUYMrQO0+IZcC
-	EvQ9k4MHGKzZFFlcRyRsZtZGM+RhNYuk6PdJ2BhUP4vNe25QzNUbqsG7VILEPx1zlc9lRH
-	ZPhT41LpHukvhtmeVtAasCkLXU29SM4Svu1yjrnTJ5brHWtB7rqxoGxTnvD13C+hf+fX4Z
-	23GNrQ31tU7cATdl2X4jBex6vq0ewDvSNdHtwMelmcbr/nI8+qc3sbdYjSuhQw==
-Date: Fri, 2 Dec 2022 17:42:55 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Marek Vasut <marex@denx.de>
-Cc: Francesco Dolcini <francesco@dolcini.it>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, Francesco Dolcini
- <francesco.dolcini@toradex.com>, Shawn Guo <shawnguo@kernel.org>,
- linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
- u-boot@lists.denx.de
-Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is
- 0
-Message-ID: <20221202174255.2c1cb2ff@xps-13>
-In-Reply-To: <0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
-References: <20221202071900.1143950-1-francesco@dolcini.it>
-	<20221202101418.6b4b3711@xps-13>
-	<Y4nPmzdgaabg3a3/@francesco-nb.int.toradex.com>
-	<Y4nSXQirO2N5IRfu@francesco-nb.int.toradex.com>
-	<20221202115327.4475d3a2@xps-13>
-	<Y4ngOaKq224LIpQc@francesco-nb.int.toradex.com>
-	<20221202150556.14c5ae43@xps-13>
-	<2b6fc52d-60b9-d0f4-ab91-4cf7a8095999@denx.de>
-	<20221202160030.1b8d0b8a@xps-13>
-	<223b7a4e-3aff-8070-7387-c77d2ded1dd6@denx.de>
-	<20221202164904.08d750df@xps-13>
-	<0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1p19AX-0003px-Sb; Fri, 02 Dec 2022 16:45:48 +0000
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: francesco@dolcini.it)
+	by smtp-out-06.comm2000.it (Postfix) with ESMTPSA id 950A9561702;
+	Fri,  2 Dec 2022 17:45:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
+	s=mailsrv; t=1669999539;
+	bh=rDhRZkMjIul++T92YcO2Em+dmofCRBVb85rkOgmruxo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=brl/D33BjmmEo+v9O60MrEkcqNX1LUCyi3J5i7ekEAiLZ0+Et6Xn0uYg7MPhb/366
+	 MSa899RvLnw8xESwV7CYiDJXThx+hzkh6OgQ+ohuMShZJfi/3BCh/HQCWP43ixim7V
+	 FVQH9AjcVFHPiBp6BuE+TjZgZJ73655183ySlZgASo7Rp11nJb3eBsUGTszlc+tV3u
+	 WdgFBtipHim65efataTitg5XzOCacT6epsZNuZqosoF1qaJHisO90yWkRwD1HSzcaX
+	 MNn+6upbFBRHZRlyc1+Fy5+/Zc6VYn+rgxA78KjszyIXquF3xtOM1Yy4okayVD7Eb9
+	 7RSTgeyGdtNzg==
+Date: Fri, 2 Dec 2022 17:45:37 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Marek Vasut <marex@denx.de>, Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
+	u-boot@lists.denx.de
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
+Message-ID: <Y4orsUIp3Ffz8m+r@francesco-nb.int.toradex.com>
+References: <Y4nPmzdgaabg3a3/@francesco-nb.int.toradex.com>
+ <Y4nSXQirO2N5IRfu@francesco-nb.int.toradex.com>
+ <20221202115327.4475d3a2@xps-13>
+ <Y4ngOaKq224LIpQc@francesco-nb.int.toradex.com>
+ <20221202150556.14c5ae43@xps-13>
+ <2b6fc52d-60b9-d0f4-ab91-4cf7a8095999@denx.de>
+ <20221202160030.1b8d0b8a@xps-13>
+ <223b7a4e-3aff-8070-7387-c77d2ded1dd6@denx.de>
+ <20221202164904.08d750df@xps-13>
+ <0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221202_084305_923876_E9366087 
-X-CRM114-Status: GOOD (  48.92  )
+X-CRM114-CacheID: sfid-20221202_084546_391620_BA8CEDAA 
+X-CRM114-Status: GOOD (  22.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,122 +80,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyZWssCgptYXJleEBkZW54LmRlIHdyb3RlIG9uIEZyaSwgMiBEZWMgMjAyMiAxNzoxNzo1
-OSArMDEwMDoKCj4gT24gMTIvMi8yMiAxNjo0OSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IEhp
-IE1hcmVrLCAgCj4gCj4gSGksCj4gCj4gPj4gT24gMTIvMi8yMiAxNjowMCwgTWlxdWVsIFJheW5h
-bCB3cm90ZTogIAo+ID4+PiBIaSBNYXJlaywgIAo+ID4+Cj4gPj4gSGksCj4gPj4gIAo+ID4+PiBt
-YXJleEBkZW54LmRlIHdyb3RlIG9uIEZyaSwgMiBEZWMgMjAyMiAxNTozMTo0MCArMDEwMDogIAo+
-ID4+PiAgICA+Pj4+IE9uIDEyLzIvMjIgMTU6MDUsIE1pcXVlbCBSYXluYWwgd3JvdGU6ICAKPiA+
-Pj4+PiBIaSBGcmFuY2VzY28sICAKPiA+Pj4+Cj4gPj4+PiBIaSwKPiA+Pj4+Cj4gPj4+PiBbLi4u
-XSAgCj4gPj4+PiAgID4+Pj4+IEkgc3RpbGwgc3Ryb25nbHkgZGlzYWdyZWUgd2l0aCB0aGUgaW5p
-dGlhbCBwcm9wb3NhbCBidXQgd2hhdCBJIHRoaW5rIHdlICAKPiA+Pj4+PiBjYW4gZG8gaXM6Cj4g
-Pj4+Pj4KPiA+Pj4+PiAxLiBUbyBwcmV2ZW50IGZ1dHVyZSBicmVha2FnZXM6Cj4gPj4+Pj4gICAg
-ICBGaXggZmR0X2ZpeHVwX210ZHBhcnRzKCkgaW4gdS1ib290LiBUaGlzIHdheSBuZXdlciBVLUJv
-b3QgKyBhbnkKPiA+Pj4+PiAgICAgIGtlcm5lbCBzaG91bGQgd29yay4KPiA+Pj4+Pgo+ID4+Pj4+
-IDIuIFRvIGhlbHAgdHJhY2tpbmcgZG93biBzaXR1YXRpb25zIGxpa2UgdGhhdDoKPiA+Pj4+PiAg
-ICAgIEtlZXAgdGhlIHdhcm5pbmcgaW4gb2ZwYXJ0LmMgYnV0IGNvbnRpbnVlIHRvIGZhaWwuCj4g
-Pj4+Pj4KPiA+Pj4+PiAzLiBUbyBmaXggdGhlIGN1cnJlbnQgc2l0dWF0aW9uOgo+ID4+Pj4+ICAg
-ICAgIEltbWVkaWF0ZWx5IHJldmVydCBjb21taXQgKGFuZCBwcmV2ZW50IGl0IGZyb20gYmVpbmcg
-YmFja3BvcnRlZCk6Cj4gPj4+Pj4gICAgICAgNzUzMzk1ZWExZTQ1ICgiQVJNOiBkdHM6IGlteDc6
-IEZpeCBOQU5EIGNvbnRyb2xsZXIgc2l6ZS1jZWxscyIpCj4gPj4+Pj4gICAgICAgVGhpcyB3YXkg
-eW91ciBvd24gYm9vdCBmbG93IGlzIGZpeGVkIGluIHRoZSBzaG9ydCB0ZXJtLiAgCj4gPj4+Pgo+
-ID4+Pj4gSGVyZSBJIGRpc2FncmVlLCB0aGUgZml4IGlzIGNvcnJlY3QgYW5kIEkgdGhpbmsgd2Ug
-c2hvdWxkbid0Cj4gPj4+PiBwcm9saWZlcmF0ZSBpbmNvcnJlY3QgRFRzIHdoaWNoIGRvbid0IG1h
-dGNoIHRoZSBiaW5kaW5nIGRvY3VtZW50LiAgCj4gPj4+Cj4gPj4+IEkgYWdyZWUgd2Ugc2hvdWxk
-IG5vdCBwcm9saWZlcmF0ZSBpbmNvcnJlY3QgRFRzLCBzbyBsZXQncyB1c2UgYSBtb2Rlcm4KPiA+
-Pj4gZGVzY3JpcHRpb24gdGhlbiAgCj4gPj4KPiA+PiBZZXMgcGxlYXNlICEKPiA+PiAgCj4gPj4+
-ICwgd2l0aCBhIGNvbnRyb2xsZXIgYW5kIGEgY2hpbGQgbm9kZSB3aGljaCBkZWZpbmVzIHRoZQo+
-ID4+PiBjaGlwLiAgCj4gPj4KPiA+PiBCdXQgd2hhdCBpZiB0aGVyZSBpcyBubyBjaGlwIGNvbm5l
-Y3RlZCB0byB0aGUgY29udHJvbGxlciBub2RlID8KPiA+Pgo+ID4+IElmIEkgdW5kZXJzdGFuZCB0
-aGUgcHJvcG9zYWwgaGVyZSByaWdodCAocGxlYXNlIGNvcnJlY3QgbWUgaWYgSSdtIHdyb25nKSwg
-dGhlbjogIAo+ID4gCj4gPiBHb29kIGlkZWEgdG8gc3VtbWFyaXplLgo+ID4gICAKPiA+Pgo+ID4+
-IDEpIFRoaXMgaXMgdGhlIG9yaWdpbmFsLCBvbGQsIHdyb25nIGJpbmRpbmc6Cj4gPj4gJmdwbWkg
-ewo+ID4+ICAgICAjc2l6ZS1jZWxscyA9IDwxPjsKPiA+PiAgICAgLi4uCj4gPj4gICAgIHBhcnRp
-dGlvbkBOIHsgLi4uIH07Cj4gPj4gfTsgIAo+ID4gCj4gPiBZZXMuCj4gPiAgIAo+ID4+Cj4gPj4K
-PiA+PiAyKSBUaGlzIGlzIHRoZSBuZXdlciwgYnV0IHN0aWxsIHdyb25nIGJpbmRpbmc6Cj4gPj4g
-JmdwbWkgewo+ID4+ICAgICAjc2l6ZS1jZWxscyA9IDwwPjsKPiA+PiAgICAgLi4uCj4gPj4gICAg
-IHBhcnRpdGlvbnMgewo+ID4+ICAgICAgIHBhcnRpdGlvbkBOIHsgLi4uIH07Cj4gPj4gICAgIH07
-Cj4gPj4gfTsgIAo+ID4gCj4gPiBXZWxsLCB0aGlzIGlzIHdyb25nIGRlc2NyaXB0aW9uLCBidXQg
-aXQgd291bGQgd29yayAoZm9yIGNvbXBhdCByZWFzb25zLAo+ID4gZXZlbiB0aG91Z2ggSSBkb24n
-dCB0aGluayB0aGlzIGlzIGNvbnNpZGVyZWQgdmFsaWQgRFQgYnkgdGhlIHNjaGVtYXMpLgo+ID4g
-ICAKPiA+Pgo+ID4+IDMpIFRoaXMgaXMgdGhlIG5ld2VzdCBiaW5kaW5nLCB3aGF0IHdlIHdhbnQ6
-Cj4gPj4gJmdwbWkgewo+ID4+ICAgICAjc2l6ZS1jZWxscyA9IDwwPjsKPiA+PiAgICAgLi4uCj4g
-Pj4gICAgIG5hbmQtY2hpcCB7Cj4gPj4gICAgICAgcGFydGl0aW9ucyB7Cj4gPj4gICAgICAgICBw
-YXJ0aXRpb25ATiB7IC4uLiB9Owo+ID4+ICAgICAgIH07Cj4gPj4gICAgIH07Cj4gPj4gfTsgIAo+
-ID4gCj4gPiBZZXMKPiA+ICAgCj4gPj4KPiA+PiBCdXQgaWYgdGhlcmUgaXMgbm8gcGh5c2ljYWwg
-bmFuZCBjaGlwIGNvbm5lY3RlZCB0byB0aGUgY29udHJvbGxlciwgd291bGQgd2UgZW5kIHVwIHdp
-dGggZW1wdHkgbmFuZC1jaGlwIG5vZGUgaW4gRFQsIGxpa2UgdGhpcz8KPiA+PiAmZ3BtaSB7Cj4g
-Pj4gICAgICNzaXplLWNlbGxzID0gPFg+Owo+ID4+ICAgICAuLi4KPiA+PiAgICAgbmFuZC1jaGlw
-IHsgLyogZW1wdHkgKi8gfTsKPiA+PiB9OyAgCj4gPiAKPiA+IElzIHRoaXMgcmVhbGx5IGEgY29u
-Y2Vybj8gIAo+IAo+IEkgZG9uJ3Qga25vdywgbWF5YmUgaXQgaXMgbm90Lgo+IAo+ID4gSWYgdGhl
-cmUgaXMgbm8gTkFORCBjaGlwLCB0aGUgY29udHJvbGxlcgo+ID4gc2hvdWxkIGJlIGRpc2FibGVk
-LCBubz8gSSBndWVzcyB0ZWNobmljYWxseSB5b3UgY291bGQgZXZlbiB1c2UgdGhlCj4gPiBzdGF0
-dXMgcHJvcGVydHkgaW4gdGhlIG5hbmQtY2hpcCBub2RlLi4uICAKPiAKPiBTdXJlLgo+IAo+ID4g
-SG93ZXZlciwgaXQgc2hvdWxkIG5vdCBiZSBlbXB0eSwgYXQgdGhlIHZlcnkgbGVhc3QgYSByZWcg
-cHJvcGVydHkKPiA+IHNob3VsZCBpbmRpY2F0ZSBvbiB3aGljaCBDUyBpdCBpcyB3aXJlZCwgYXMg
-ZXhwZWN0ZWQgdGhlcmU6Cj4gPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
-a2VybmVsL2dpdC9tdGQvbGludXguZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL210ZC9uYW5kLWNoaXAueWFtbD9oPW10ZC9uZXh0ICAKPiAKPiBPSywgSSBzZWUgeW91
-ciBwb2ludC4gU28gYmFzaWNhbGx5IHRoaXM/Cj4gCj4gJmdwbWkgewo+ICAgICNzaXplLWNlbGxz
-ID0gPDE+Owo+ICAgIC4uLgo+ICAgIG5hbmQtY2hpcEAwIHsKPiAgICAgIHJlZyA9IDwwPjsKPiAg
-ICB9Owo+IH07Cj4gCj4gYnR3LiB0aGUgR1BNSSBOQU5EIGNvbnRyb2xsZXIgc3VwcG9ydHMgb25s
-eSBvbmUgY2hpcHNlbGVjdCwgc28gdGhlIHJlZyBpbiBuYW5kLWNoaXAgbm9kZSBtYWtlcyBsaXR0
-bGUgc2Vuc2UuCgpJIHJhbmRvbWx5IG9wZW5lZCBhIHJlZmVyZW5jZSBtYW51YWwgKElNWDZEUUwu
-cGRmKSwgdGhleSBzYXk6CgoJIlVwIHRvIGZvdXIgTkFORCBkZXZpY2VzLCBzdXBwb3J0ZWQgYnkg
-Zm91ciBjaGlwLXNlbGVjdHMgYW5kIG9uZQoJIGdhbmdlZCByZWFkeS8gYnVzeS4iCgpBbnl3YXks
-IHRoZSBOQU5EIGNvbnRyb2xsZXIgZ2VuZXJpYyBiaW5kaW5ncyB3aGljaCByZXF1aXJlIHRoaXMg
-cmVnCnByb3BlcnR5LCB3aGF0IHRoZSBjb250cm9sbGVyIG9yIHRoZSBkcml2ZXIgYWN0dWFsbHkg
-c3VwcG9ydHMsIG9yIGV2ZW4KaG93IGl0IGlzIHVzZWQgb24gY3VycmVudCBkZXNpZ25zIGlzIG5v
-dCByZWxldmFudCBoZXJlLgoKPiA+IEJ1dCwgYXMgbmFuZC1jaGlwLnlhbWwgcmVmZXJlbmNlcyBt
-dGQueWFtbCwgeW91IGNhbiBhcyB3ZWxsIHVzZQo+ID4gd2hhdGV2ZXIgaXMgZGVzY3JpYmVkIGhl
-cmU6Cj4gPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9t
-dGQvbGludXguZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9t
-dGQueWFtbD9oPW10ZC9uZXh0Cj4gPiAgIAo+ID4+IFdoYXQgd291bGQgYmUgdGhlIGdwbWkgY29u
-dHJvbGxlciBzaXplIGNlbGxzIChYKSBpbiB0aGF0IGNhc2UsIHN0aWxsIDAsIHJpZ2h0ID8gU28g
-aG93IGRvZXMgdGhhdCBoZWxwIHNvbHZlIHRoaXMgcHJvYmxlbSwgd291bGRuJ3QgVS1Cb290IHN0
-aWxsIHBvcHVsYXRlIHRoZSBwYXJ0aXRpb25zIGRpcmVjdGx5IHVuZGVyIHRoZSBncG1pIG5vZGUg
-b3IgaW50byBwYXJ0aXRpb25zIHN1Yi1ub2RlID8gIAo+ID4gCj4gPiBUaGUgY29tbWl0IHRoYXQg
-d2FzIHBvaW50ZWQgaW4gdGhlIG9yaWdpbmFsIGZpeCBjbGVhcmx5IHN0YXRlZCB0aGF0IHRoZQo+
-ID4gTkFORCBjaGlwIG5vZGUgd2FzIHRhcmdldGVkICAKPiAKPiBJIHRoaW5rIHRoaXMgaXMgYW5v
-dGhlciBtaXNjb21tdW5pY2F0aW9uIGhlcmUuIFRoZSBjb21taXQKPiAKPiA3NTMzOTVlYTFlNDUg
-KCJBUk06IGR0czogaW14NzogRml4IE5BTkQgY29udHJvbGxlciBzaXplLWNlbGxzIikKPiAKPiBt
-b2RpZmllcyB0aGUgc2l6ZS1jZWxscyBvZiB0aGUgTkFORCBjb250cm9sbGVyLiBUaGUgbmFuZC1j
-aGlwIGlzIG5vdCBpbnZvbHZlZCBpbiB0aGlzIGF0IGFsbCAuIEluIHRoZSBleGFtcGxlcyBhYm92
-ZSwgaXQncyB0aGUgIiZncG1pIiBub2RlIHNpemUtY2VsbHMgdGhhdCBpcyBtb2RpZmllZC4KClll
-cyBJIGtub3cuIEkgd2FzIHJlZmVycmluZyB0byB0aGlzIGNvbW1pdCwgc29ycnk6CjM2ZmVlMmY3
-NjIxZSAoImNvbW1vbjogZmR0X3N1cHBvcnQ6IGFkZCBzdXBwb3J0IGZvciAicGFydGl0aW9ucyIg
-c3Vibm9kZSB0byBmZHRfZml4dXBfbXRkcGFydHMoKSIpCgpUaGUgbG9nIHNheXM6CgoJTGlzdGlu
-ZyBNVEQgcGFydGl0aW9ucyBkaXJlY3RseSBpbiB0aGUgZmxhc2ggbW9kZSBoYXMgYmVlbgoJZGVw
-cmVjYXRlZCBmb3IgYSB3aGlsZSBmb3Iga2VybmVsIERldmljZSBUcmVlcy4gTG9vayBmb3IgYSBu
-b2RlICJwYXJ0aXRpb25zIiBpbiB0aGUKCWZvdW5kIGZsYXNoIG5vZGVzIGFuZCB1c2UgaXQgaW5z
-dGVhZCBvZiB0aGUgZmxhc2ggbm9kZSBpdHNlbGYgZm9yIHRoZQoJcGFydGl0aW9uIGxpc3Qgd2hl
-biBpdCBleGlzdHMsIHNvIERldmljZSBUcmVlcyBmb2xsb3dpbmcgdGhlIGN1cnJlbnQKCWJlc3Qg
-cHJhY3RpY2VzIGNhbiBiZSBmaXhlZCB1cC4KCldoaWNoIChJIGhvcGUpIG1lYW5zIFUtYm9vdCB3
-aWxsIGVxdWl2YWxlbnRseSB0cnkgdG8gcGxheSB3aXRoIHRoZQpwYXJ0aXRpb25zIGNvbnRhaW5l
-ciwgZWl0aGVyIGluIHRoZSBjb250cm9sbGVyIG5vZGUgb3IgaW4gdGhlIGNoaXAgbm9kZS4KCj4g
-PiAsIG5vdCB0aGUgTkFORCBjb250cm9sbGVyIG5vZGUuIEkgaG9wZSB0aGlzCj4gPiBpcyBjb3Jy
-ZWN0bHkgc3VwcG9ydGVkIGluIFUtQm9vdCB0aG91Z2guIFNvIGlmIHRoZXJlIGlzIGEgTkFORCBj
-aGlwCj4gPiBzdWJub2RlLCBJIHN1cHBvc2UgVS1Cb290IHdvdWxkIHRyeSB0byBjcmVhdGUgdGhl
-IHBhcnRpdGlvbnMgdGhhdCBhcmUKPiA+IGluc2lkZSwgb3IgZXZlbiBpbiB0aGUgc3ViICJwYXJ0
-aXRpb25zIiBjb250YWluZXIuICAKPiAKPiBNeSB1bmRlcnN0YW5kaW5nIGlzIHRoYXQgVS1Cb290
-IGNoZWNrcyB0aGUgbmFuZC1jb250cm9sbGVyIG5vZGUgc2l6ZS1jZWxscywgbm90IHRoZSBuYW5k
-LWNoaXB7fSBvciBwYXJ0aXRpb25ze30gc3Vibm9kZSBzaXplLWNlbGxzIC4KCkkgZG9uJ3QgdGhp
-bmsgVS1Cb290IGNhcmVzLgoKPiBGcmFuY2VzY28sIGNhbiB5b3UgcGxlYXNlIHNoYXJlIHRoZSBE
-VCwgaW5jbHVkaW5nIHRoZSBVLUJvb3QgZ2VuZXJhdGVkIHBhcnRpdGlvbnMsIHdoaWNoIGlzIHBh
-c3NlZCB0byBMaW51eCBvbiBDb2xpYnJpIE1YNyA/IEkgdGhpbmsgdGhhdCBzaG91bGQgbWFrZSBh
-bGwgY29uZnVzaW9uIGdvIGF3YXkuCgpQbGVhc2UgYWxzbyBkbyBpdCB3aXRoIHRoZSBOQU5EIGNo
-aXAgZGVzY3JpYmVkLiBJZiwgd2hlbiB0aGUgTkFORCBjaGlwCmlzIGRlc2NyaWJlZCBVLUJvb3Qg
-dHJpZXMgdG8gY3JlYXRlIHBhcnRpdGlvbnMgaW4gdGhlIGNvbnRyb2xsZXIgbm9kZSwKdGhlbiB0
-aGUgc2l0dWF0aW9uIGlzIGV2ZW4gd29yc2UgdGhhbiBJIHRob3VnaHQuIEJ1dCBJIGJlbGlldmUK
-ZGVzY3JpYmluZyB0aGUgbm9kZSBsaWtlIGEgc3VnZ2VzdCBpbiB0aGUgRFQgc2hvdWxkIHByZXZl
-bnQgdGhlIGJvb3QKZmFpbHVyZSB3aGlsZSBzdGlsbCBhbGxvd2luZyBhIHJhdGhlciBnb29kIGRl
-c2NyaXB0aW9uIG9mIHRoZSBoYXJkd2FyZS4KCkJUVyBJIHN0aWxsIHRoaW5rIHRoZSByZWxldmFu
-dCBhY3Rpb24gcmlnaHQgbm93IGlzIHRvIHJldmVydCB0aGUgRFQKcGF0Y2guCgpUaGFua3MsCk1p
-cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Fri, Dec 02, 2022 at 05:17:59PM +0100, Marek Vasut wrote:
+> On 12/2/22 16:49, Miquel Raynal wrote:
+> > , not the NAND controller node. I hope this
+> > is correctly supported in U-Boot though. So if there is a NAND chip
+> > subnode, I suppose U-Boot would try to create the partitions that are
+> > inside, or even in the sub "partitions" container.
+> 
+> My understanding is that U-Boot checks the nand-controller node size-cells,
+> not the nand-chip{} or partitions{} subnode size-cells .
+Not 100% correct.
+
+ - U-Boot before v2022.04 updates the nand-controller{} node, no matter what.
+ - U-Boot starting from v2022.04 looks for `partitions{}` into the
+   nand-controller{} node, and creates the partition into it if found.
+   If not found it behaves the same way as the previous versions.
+   See commit 36fee2f7621e ("common: fdt_support: add support for "partitions" subnode to fdt_fixup_mtdparts()")
+
+I'd like to stress once more the fact that we cannot expect old U-Boot
+to be updated in the field, and they will keep generating the partitions
+as child of the nand-controller node whatever we do with the dts file.
+
+I think that this should be treated the same way as any other fixup we
+might have for broken firmware, especially considering that this used to
+"work" (yes, I can agree that it horrible, but I cannot change the past)
+without even a warning since the imx7 support was first introduced in
+the linux kernel years ago.
+
+> Francesco, can you please share the DT, including the U-Boot generated
+> partitions, which is passed to Linux on Colibri MX7 ? I think that should
+> make all confusion go away.
+
+The device tree part is easy, just
+arch/arm/boot/dts/imx7d-colibri-eval-v3.dts.
+
+and the nand-controller node is coming from
+
+#include "imx7d.dtsi"
+
+plus
+
+&gpmi {
+	fsl,use-minimum-ecc;
+	nand-ecc-mode = "hw";
+	nand-on-flash-bbt;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_gpmi_nand>;
+};
+
+The partitions nodes are generated 100% by U-Boot, nothing is present in
+the dts source files.
+
+With this DTS file as input, whatever U-Boot version is used I have the
+following generated:
+
+root@colibri-imx7-02844233:/# ls /proc/device-tree/soc/nand-controller@33002000/
+#address-cells          dma-names               nand-on-flash-bbt       pinctrl-0
+#size-cells             dmas                    partition@0             pinctrl-names
+assigned-clock-parents  fsl,use-minimum-ecc     partition@200000        reg
+assigned-clocks         interrupt-names         partition@380000        reg-names
+clock-names             interrupts              partition@400000        status
+clocks                  name                    partition@80000
+compatible              nand-ecc-mode           phandle
+
+root@colibri-imx7-02844233:/# ls /proc/device-tree/soc/nand-controller@33002000/partition@*
+/proc/device-tree/soc/nand-controller@33002000/partition@0:
+label  name   reg
+
+/proc/device-tree/soc/nand-controller@33002000/partition@200000:
+label      name       read_only  reg
+
+/proc/device-tree/soc/nand-controller@33002000/partition@380000:
+label  name   reg
+
+/proc/device-tree/soc/nand-controller@33002000/partition@400000:
+label  name   reg
+
+/proc/device-tree/soc/nand-controller@33002000/partition@80000:
+label      name       read_only  reg
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
