@@ -4,65 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F2CDC4321E
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 13:51:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 331B1C4321E
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 13:56:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=62Iqnro3tC5SBa/JIXyeyMLFSMGNIrd+5c9qqzganHU=; b=GLxmSujISbKr+D4ZCNu2UweC9u
-	KSSlX+w4RzbYjd+L+p5AEB476hsegyeEiANABVQ/a+1G2WHi+ZmXVTfymHlLmwIt9Avq91cJhRBSG
-	+WrUAJzTOkvsqzI5Z8PLAeFKMRRDC/ZP+Z+Xonrax+9eP535cZrhMakOVpxY3AFhMFR29KwWUbW6m
-	p20XEhaZkKBZw61FIzrJ1Z6MQaBQfgGgqysle4LUZQ5fyiSn1Bqg7/qonvJUY6uRtGfwE9I+KzO2A
-	Kkbme2GQk/dh56CKAjUb2cpU7w0XEpIJAWv9a/WZoIPr62048WEwyWjS5UiFwFeknaNlq5KNWejza
-	tcDaiW9A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=t46uJX3U+dVLOlrY2anOSIn5g77znAiI0ttd72sw0D4=; b=dLfjq6hRxcBjqB
+	KA9mBGk4bxgnpYWsO7HowsZVS4lR0arg4H/a+XqpRw3V99y5P3dRtlW8vNjlLTB9zWn+v8wjSNbAR
+	b3GRScx0N024YJOqLMgu4+55Jhh/UoQxa4AYdlajC+FNs55lNUfYzGBVDCwZGCZkC9+lpslYuhiXw
+	yd07B9fSgUCUY8BDXqRbirfArjTjNrtVHt6u7YHi6bMDvoYufTA/ztbdO+/xsEA6Q9qmQ4WWumBnk
+	wjwqzoI/WGxd7jhJaL1r8gO0dpInQCq6mkKyUP6nLXYT57KNnMBjkgw4xCLmyo2hV1uBxaOxoymNa
+	dHJznQXri/5JSJXVEVQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p16RS-00Ggqx-5v; Fri, 02 Dec 2022 13:51:02 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1p16W9-00Ghsh-SG; Fri, 02 Dec 2022 13:55:53 +0000
+Received: from mail-qt1-x82e.google.com ([2607:f8b0:4864:20::82e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p16RP-00GgqB-6w
-	for linux-mtd@lists.infradead.org; Fri, 02 Dec 2022 13:51:01 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id BB32388;
-	Fri,  2 Dec 2022 14:50:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1669989054;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tilAL8aqBQUyn2WnIvAxQ51aF8srqNrDTY4JFIBpU7s=;
-	b=gsQHzKvfjfX2hKQWxAG3U8OlLn79D3YMj7KHWD5ykMD9WlPkF+l9mW+6kTMTdq23i/eDpf
-	fCP5yYx9aBwrdmm2ViFz4emjfUW6MtAAsdYqxrCjc/G2jk+6Xt+dQUrTdaZVnWexMC0NMH
-	HtubyqWNYsgZjz05u2RPlREyQ53Rr+kczS9kx3QHPRMOTtPe1ULYDuNw8w4beh/tEbirMH
-	P/4xv8Xy6DSrI1m2lV24RbYNLwueQGyANcZIXY+U/4KbTRFt2R5QDrzWl0Ac3cuYTC/Bu0
-	/a3fPtRVhRkS8ZFpk7O2qhhF09n8VFzbFJuL9Lf//znZlRcZ9AuQQLR6cG8adA==
+	id 1p16W3-00GhoP-EW
+	for linux-mtd@lists.infradead.org; Fri, 02 Dec 2022 13:55:48 +0000
+Received: by mail-qt1-x82e.google.com with SMTP id x28so4028186qtv.13
+        for <linux-mtd@lists.infradead.org>; Fri, 02 Dec 2022 05:55:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kFCBGy/PHSqulvVt1jN7WYpo1L/uAw3+z6frKWBhRoc=;
+        b=L5WmemJAO6bGk5YpyHsWgaHHqP8pQGgrhBueew2H9B5Ebuoy8da3D/W/R9F+NDZeiX
+         Q1nKwO1vdtSB39YyxX5uuG4BhSutxQgLJdXYdyePxV0pyf4UhHyqMgoW1B0Ph526ZURO
+         ZyN/xnkiLF/TdMISWsj0uIMog1cQZ2X8xFhoY/bMFrwZIiWp2PpOxFCeaVTUZQDWjgf6
+         hJoP5YJ7c5Ao7nWD4+KTTGOhPe6ujxfIa41ZWwy5a8saDxUfKYxcjbPs78f8LQuM7ysn
+         q/l9orAO4UjDMjYUCDLg8DxBEUnuhlFkvcmuJ8QPapS7rT18UKjNVZyOp+eYQ4fTQzsy
+         t7sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kFCBGy/PHSqulvVt1jN7WYpo1L/uAw3+z6frKWBhRoc=;
+        b=zbEIB6xlqDoLuQtM5tRHcVvE4WOMfjqVoYdznDJUbpfE+IHjlt59kxm625gi5abr5o
+         w/lkku2j6IGe9YHGFu/nF36z6TT1mMuNczbAkUsmWI94ZsZByCl9hUbrhJA12ga5lngv
+         zYRxrj57Tv62svjQ+VORXikcBOoUPWivSWKPJjVbfa1Y3eFtsx3xg6aVHr/aPVI3c4Z5
+         0TFmSh/lZ0jrOUl0sT3M671cHjSS3M/dR23RgMXDFhd1SSBudOUy+qUWFrn9hZBMYY+I
+         K5nwAB4saTkbItaczu/+L56yLSvNedm9o6qzmsfufqOiZywHIloo6ZznBAb8sflQh+da
+         e2RQ==
+X-Gm-Message-State: ANoB5pmwL375xi0cgMmXDwbRlpmFga6wmKuJAvw3AYXk61Sijs8cyvWx
+	ba3t/O1xsV+/kcckXMde0yM3mA==
+X-Google-Smtp-Source: AA0mqf6RbbADM2P3deLJnaVHTUgFXtpfJumgU78/FLtKT5oqsLxeyyOlmZY8ImRuVkI9x6MEslqLdA==
+X-Received: by 2002:a05:622a:590e:b0:3a4:fcde:733d with SMTP id ga14-20020a05622a590e00b003a4fcde733dmr67306718qtb.269.1669989344644;
+        Fri, 02 Dec 2022 05:55:44 -0800 (PST)
+Received: from nathan-ideapad.. (d-75-76-18-234.oh.cpe.breezeline.net. [75.76.18.234])
+        by smtp.gmail.com with ESMTPSA id x1-20020ac84d41000000b0039a610a04b1sm4122237qtv.37.2022.12.02.05.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Dec 2022 05:55:44 -0800 (PST)
+From: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+To: 
+Cc: nathan.morrison@timesys.com,
+	greg.malysa@timesys.com,
+	Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org (open list:SPI NOR SUBSYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4 1/3] mtd: spi-nor: Extend SFDP 4byte address instruction lookup table with new octal modes as per JEDEC JESD216F
+Date: Fri,  2 Dec 2022 08:55:37 -0500
+Message-Id: <20221202135539.271936-2-nathan.morrison@timesys.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221202135539.271936-1-nathan.morrison@timesys.com>
+References: <20221202135539.271936-1-nathan.morrison@timesys.com>
 MIME-Version: 1.0
-Date: Fri, 02 Dec 2022 14:50:54 +0100
-From: Michael Walle <michael@walle.cc>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document support for
- more MT25QU parts
-In-Reply-To: <363186079b4269891073f620e3e2353cf7d2559a.1669988238.git.geert+renesas@glider.be>
-References: <363186079b4269891073f620e3e2353cf7d2559a.1669988238.git.geert+renesas@glider.be>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <1503a3857107e3a4f34e0c7fb5dada39@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221202_055059_997488_8EB31115 
-X-CRM114-Status: GOOD (  11.16  )
+X-CRM114-CacheID: sfid-20221202_055547_511715_1E2F4CEB 
+X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,33 +94,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-12-02 14:37, schrieb Geert Uytterhoeven:
-> Document support for the Micron MT25QU256A and MT25QU512A Serial NOR
-> FLASHes.
-> 
-> Merge the new entries with the existing entry for MT25QU02G.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> mt25qu512a is already in active use, causing "make dtbs_check" errors.
-> mt25qu256a is supported by the Linux spi-nor driver, but there are no
-> upstream users yet.
+This adds the new bit fields for
+reading: 1S-1S-8S, 1S-8S-8S, 1D-8D-8D
+programming: 1S-1S-8S, 1S-8S-8S
 
-Is it encouraged to use the specific compatible with SPI-NOR flashes?
-As far as I know it isn't. The spi-nor subsys tries hard to identify
-any flashes at runtime and any additional information in the device tree
-is used as a last resort (just for flashes which doesn't support the
-read jedec id command yet). And usually boards have different sources
-for flash chips, so hardcoding a particular part in the device tree
-doesn't make sense.
+Signed-off-by: Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+---
+ drivers/mtd/spi-nor/sfdp.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-just my 2 cents,
--michael
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 2257f1b4c2e2..e4e87815ba94 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -953,11 +953,16 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 		{ SNOR_HWCAPS_READ_1_1_1_DTR,	BIT(13) },
+ 		{ SNOR_HWCAPS_READ_1_2_2_DTR,	BIT(14) },
+ 		{ SNOR_HWCAPS_READ_1_4_4_DTR,	BIT(15) },
++		{ SNOR_HWCAPS_READ_1_1_8,       BIT(20) },
++		{ SNOR_HWCAPS_READ_1_8_8,       BIT(21) },
++		{ SNOR_HWCAPS_READ_1_8_8_DTR,   BIT(22) },
+ 	};
+ 	static const struct sfdp_4bait programs[] = {
+ 		{ SNOR_HWCAPS_PP,		BIT(6) },
+ 		{ SNOR_HWCAPS_PP_1_1_4,		BIT(7) },
+ 		{ SNOR_HWCAPS_PP_1_4_4,		BIT(8) },
++		{ SNOR_HWCAPS_PP_1_1_8,         BIT(23) },
++		{ SNOR_HWCAPS_PP_1_8_8,         BIT(24) },
+ 	};
+ 	static const struct sfdp_4bait erases[SNOR_ERASE_TYPE_MAX] = {
+ 		{ 0u /* not used */,		BIT(9) },
+-- 
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
