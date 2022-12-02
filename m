@@ -4,74 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75BDAC4321E
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 16:18:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4742EC47089
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Dec 2022 16:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZvTjYNbI80vBz0okdp6WJAx81CmaVhrvjuZbYmnbdq8=; b=sdtheVk/ROoEDd
-	ixuaWKn2QQ+2B7d2W+r4UrLekFm/iPquN5OeJiN1scLQ90bYNEiU4YF0dNREUzi5Mt/x4/14+1En9
-	EPqEno1H+v4NvZb4xNeGvBS51NcXbjmI8zPd/ut46dbZ7k6hgxWUk50ij6r8Gn4IuZmFbxM+znXA5
-	JgQpwx2CDiR3IZtYFFObfGo952W3QoNgMX18ZLgSFTp0HyxZOVg0SQH05r1EE95RZhTfwDDRyVVn0
-	j0hLji0uI8+TEnXodrD/RAJ71kEaSElwh11iPZNu9LVogAuIhyATArFo/frJrvi/ICv+7EvS/Z65a
-	dxlfm2xu67q2ctXArxcA==;
+	List-Owner; bh=fgUiCEe+WMmJ2yOdvd5EkbzwGBORUmLI4KNNOwDjFKo=; b=M88KJyUBQS4X54
+	8V6KXqbwB8FFZ4uHbCoiwq3xCHqM5oGENXvC+P0IqUFCSHRkKxYWV9Q+rJAi52Wm6FKkGb9vwKAra
+	D7Q5XgxWcijOdV+zeHeDxfgvReUfGl/JjYwCafsAGy3RM24qoQi6m8SeNif96MweHM+QCzn18kcTE
+	mPhjA/oZxHhbSDkBNNtPaOvicWqj0HAqTO+gH3eizq3tFIM6ls4c9H8dm6fvw/RWWUX0aLEHSuky/
+	RxBo6z8QWY0chvJA2nCWuIAeXmiFyV8/WkoifV+rlq/tsIOTLQ/mA2MT9xx/5HRCaNWpgO9ALcJDo
+	aQVQyum5T8qRbKfROOuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p18kM-00HR8U-WA; Fri, 02 Dec 2022 16:18:43 +0000
-Received: from phobos.denx.de ([85.214.62.61])
+	id 1p1989-0002pF-Qe; Fri, 02 Dec 2022 16:43:17 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p18ji-00HQtS-J0; Fri, 02 Dec 2022 16:18:04 +0000
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-	(No client certificate requested)
-	(Authenticated sender: marex@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id CF5B782F29;
-	Fri,  2 Dec 2022 17:17:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1669997880;
-	bh=WTrTtiTeEcjbMtAhGvYuwA6qAl+AkVjLUEnMqtMNKfw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Gusw4R3dAuGAzAk7CgUjYuKCeij5yE5BB7N8Purxn1zmm9xNd3OSnM3TaD4Pd2faV
-	 ZaoeS6XuP8c2e0N1OvVJP9i9o8gN8SW7JK3Vp7Qcgy1a10ubqh0fEXmmpZigNJVQr+
-	 CkGDJ0Em+19JDt3KrPQocHK9ogZvI3ISJTiyv0FWScpGVV8tSfHSQ4ArB7uZADGFml
-	 ENeG0BC/jmWytauGZ3nHpmD+/Q22dP7sbCMG3m6MWSXIRAdfBDihIoi1TOQa2cP3Yo
-	 8gvHh/z+7FfZzyLHA0k8DG46yV1yLeS3FrJN3c4UCJ+l8eryIHzY52fb/XnXBxBPxh
-	 YFx0w57ezqu2A==
-Message-ID: <0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
-Date: Fri, 2 Dec 2022 17:17:59 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Francesco Dolcini <francesco@dolcini.it>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org,
- Francesco Dolcini <francesco.dolcini@toradex.com>,
- Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
- stable@vger.kernel.org, u-boot@lists.denx.de
+	id 1p197x-0002jN-IC; Fri, 02 Dec 2022 16:43:08 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id E70B9E0008;
+	Fri,  2 Dec 2022 16:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1669999381;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qzZdYWOBBoSv1bjeFreDloIADPQqX2dduLQgUUoXtj0=;
+	b=RBG7jnhuQUO0w4/BrZr85FPKBqGguvX1wKjZi2R9g34YjMeUywCk4118bn5RXETNBddJ5L
+	Z3iywTG/ZbZgBA68bFcbA1ARlPnPwcGdaX4B1UYsIqaGARRK5U2Ci9AKjWUYMrQO0+IZcC
+	EvQ9k4MHGKzZFFlcRyRsZtZGM+RhNYuk6PdJ2BhUP4vNe25QzNUbqsG7VILEPx1zlc9lRH
+	ZPhT41LpHukvhtmeVtAasCkLXU29SM4Svu1yjrnTJ5brHWtB7rqxoGxTnvD13C+hf+fX4Z
+	23GNrQ31tU7cATdl2X4jBex6vq0ewDvSNdHtwMelmcbr/nI8+qc3sbdYjSuhQw==
+Date: Fri, 2 Dec 2022 17:42:55 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Marek Vasut <marex@denx.de>
+Cc: Francesco Dolcini <francesco@dolcini.it>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, Francesco Dolcini
+ <francesco.dolcini@toradex.com>, Shawn Guo <shawnguo@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
+ u-boot@lists.denx.de
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is
+ 0
+Message-ID: <20221202174255.2c1cb2ff@xps-13>
+In-Reply-To: <0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
 References: <20221202071900.1143950-1-francesco@dolcini.it>
- <20221202101418.6b4b3711@xps-13>
- <Y4nPmzdgaabg3a3/@francesco-nb.int.toradex.com>
- <Y4nSXQirO2N5IRfu@francesco-nb.int.toradex.com>
- <20221202115327.4475d3a2@xps-13>
- <Y4ngOaKq224LIpQc@francesco-nb.int.toradex.com>
- <20221202150556.14c5ae43@xps-13>
- <2b6fc52d-60b9-d0f4-ab91-4cf7a8095999@denx.de>
- <20221202160030.1b8d0b8a@xps-13>
- <223b7a4e-3aff-8070-7387-c77d2ded1dd6@denx.de>
- <20221202164904.08d750df@xps-13>
-From: Marek Vasut <marex@denx.de>
-In-Reply-To: <20221202164904.08d750df@xps-13>
-X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
-X-Virus-Status: Clean
+	<20221202101418.6b4b3711@xps-13>
+	<Y4nPmzdgaabg3a3/@francesco-nb.int.toradex.com>
+	<Y4nSXQirO2N5IRfu@francesco-nb.int.toradex.com>
+	<20221202115327.4475d3a2@xps-13>
+	<Y4ngOaKq224LIpQc@francesco-nb.int.toradex.com>
+	<20221202150556.14c5ae43@xps-13>
+	<2b6fc52d-60b9-d0f4-ab91-4cf7a8095999@denx.de>
+	<20221202160030.1b8d0b8a@xps-13>
+	<223b7a4e-3aff-8070-7387-c77d2ded1dd6@denx.de>
+	<20221202164904.08d750df@xps-13>
+	<0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221202_081803_102589_AC5620B9 
-X-CRM114-Status: GOOD (  34.65  )
+X-CRM114-CacheID: sfid-20221202_084305_923876_E9366087 
+X-CRM114-Status: GOOD (  48.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,166 +81,122 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/2/22 16:49, Miquel Raynal wrote:
-> Hi Marek,
-
-Hi,
-
->> On 12/2/22 16:00, Miquel Raynal wrote:
->>> Hi Marek,
->>
->> Hi,
->>
->>> marex@denx.de wrote on Fri, 2 Dec 2022 15:31:40 +0100:
->>>    
->>>> On 12/2/22 15:05, Miquel Raynal wrote:
->>>>> Hi Francesco,
->>>>
->>>> Hi,
->>>>
->>>> [...]
->>>>   
->>>>> I still strongly disagree with the initial proposal but what I think we
->>>>> can do is:
->>>>>
->>>>> 1. To prevent future breakages:
->>>>>      Fix fdt_fixup_mtdparts() in u-boot. This way newer U-Boot + any
->>>>>      kernel should work.
->>>>>
->>>>> 2. To help tracking down situations like that:
->>>>>      Keep the warning in ofpart.c but continue to fail.
->>>>>
->>>>> 3. To fix the current situation:
->>>>>       Immediately revert commit (and prevent it from being backported):
->>>>>       753395ea1e45 ("ARM: dts: imx7: Fix NAND controller size-cells")
->>>>>       This way your own boot flow is fixed in the short term.
->>>>
->>>> Here I disagree, the fix is correct and I think we shouldn't
->>>> proliferate incorrect DTs which don't match the binding document.
->>>
->>> I agree we should not proliferate incorrect DTs, so let's use a modern
->>> description then
->>
->> Yes please !
->>
->>> , with a controller and a child node which defines the
->>> chip.
->>
->> But what if there is no chip connected to the controller node ?
->>
->> If I understand the proposal here right (please correct me if I'm wrong), then:
-> 
-> Good idea to summarize.
-> 
->>
->> 1) This is the original, old, wrong binding:
->> &gpmi {
->>     #size-cells = <1>;
->>     ...
->>     partition@N { ... };
->> };
-> 
-> Yes.
-> 
->>
->>
->> 2) This is the newer, but still wrong binding:
->> &gpmi {
->>     #size-cells = <0>;
->>     ...
->>     partitions {
->>       partition@N { ... };
->>     };
->> };
-> 
-> Well, this is wrong description, but it would work (for compat reasons,
-> even though I don't think this is considered valid DT by the schemas).
-> 
->>
->> 3) This is the newest binding, what we want:
->> &gpmi {
->>     #size-cells = <0>;
->>     ...
->>     nand-chip {
->>       partitions {
->>         partition@N { ... };
->>       };
->>     };
->> };
-> 
-> Yes
-> 
->>
->> But if there is no physical nand chip connected to the controller, would we end up with empty nand-chip node in DT, like this?
->> &gpmi {
->>     #size-cells = <X>;
->>     ...
->>     nand-chip { /* empty */ };
->> };
-> 
-> Is this really a concern?
-
-I don't know, maybe it is not.
-
-> If there is no NAND chip, the controller
-> should be disabled, no? I guess technically you could even use the
-> status property in the nand-chip node...
-
-Sure.
-
-> However, it should not be empty, at the very least a reg property
-> should indicate on which CS it is wired, as expected there:
-> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/Documentation/devicetree/bindings/mtd/nand-chip.yaml?h=mtd/next
-
-OK, I see your point. So basically this?
-
-&gpmi {
-   #size-cells = <1>;
-   ...
-   nand-chip@0 {
-     reg = <0>;
-   };
-};
-
-btw. the GPMI NAND controller supports only one chipselect, so the reg 
-in nand-chip node makes little sense.
-
-> But, as nand-chip.yaml references mtd.yaml, you can as well use
-> whatever is described here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/Documentation/devicetree/bindings/mtd/mtd.yaml?h=mtd/next
-> 
->> What would be the gpmi controller size cells (X) in that case, still 0, right ? So how does that help solve this problem, wouldn't U-Boot still populate the partitions directly under the gpmi node or into partitions sub-node ?
-> 
-> The commit that was pointed in the original fix clearly stated that the
-> NAND chip node was targeted
-
-I think this is another miscommunication here. The commit
-
-753395ea1e45 ("ARM: dts: imx7: Fix NAND controller size-cells")
-
-modifies the size-cells of the NAND controller. The nand-chip is not 
-involved in this at all . In the examples above, it's the "&gpmi" node 
-size-cells that is modified.
-
-> , not the NAND controller node. I hope this
-> is correctly supported in U-Boot though. So if there is a NAND chip
-> subnode, I suppose U-Boot would try to create the partitions that are
-> inside, or even in the sub "partitions" container.
-
-My understanding is that U-Boot checks the nand-controller node 
-size-cells, not the nand-chip{} or partitions{} subnode size-cells .
-
-Francesco, can you please share the DT, including the U-Boot generated 
-partitions, which is passed to Linux on Colibri MX7 ? I think that 
-should make all confusion go away.
-
-(or am I the only one who's still confused here?)
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFyZWssCgptYXJleEBkZW54LmRlIHdyb3RlIG9uIEZyaSwgMiBEZWMgMjAyMiAxNzoxNzo1
+OSArMDEwMDoKCj4gT24gMTIvMi8yMiAxNjo0OSwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IEhp
+IE1hcmVrLCAgCj4gCj4gSGksCj4gCj4gPj4gT24gMTIvMi8yMiAxNjowMCwgTWlxdWVsIFJheW5h
+bCB3cm90ZTogIAo+ID4+PiBIaSBNYXJlaywgIAo+ID4+Cj4gPj4gSGksCj4gPj4gIAo+ID4+PiBt
+YXJleEBkZW54LmRlIHdyb3RlIG9uIEZyaSwgMiBEZWMgMjAyMiAxNTozMTo0MCArMDEwMDogIAo+
+ID4+PiAgICA+Pj4+IE9uIDEyLzIvMjIgMTU6MDUsIE1pcXVlbCBSYXluYWwgd3JvdGU6ICAKPiA+
+Pj4+PiBIaSBGcmFuY2VzY28sICAKPiA+Pj4+Cj4gPj4+PiBIaSwKPiA+Pj4+Cj4gPj4+PiBbLi4u
+XSAgCj4gPj4+PiAgID4+Pj4+IEkgc3RpbGwgc3Ryb25nbHkgZGlzYWdyZWUgd2l0aCB0aGUgaW5p
+dGlhbCBwcm9wb3NhbCBidXQgd2hhdCBJIHRoaW5rIHdlICAKPiA+Pj4+PiBjYW4gZG8gaXM6Cj4g
+Pj4+Pj4KPiA+Pj4+PiAxLiBUbyBwcmV2ZW50IGZ1dHVyZSBicmVha2FnZXM6Cj4gPj4+Pj4gICAg
+ICBGaXggZmR0X2ZpeHVwX210ZHBhcnRzKCkgaW4gdS1ib290LiBUaGlzIHdheSBuZXdlciBVLUJv
+b3QgKyBhbnkKPiA+Pj4+PiAgICAgIGtlcm5lbCBzaG91bGQgd29yay4KPiA+Pj4+Pgo+ID4+Pj4+
+IDIuIFRvIGhlbHAgdHJhY2tpbmcgZG93biBzaXR1YXRpb25zIGxpa2UgdGhhdDoKPiA+Pj4+PiAg
+ICAgIEtlZXAgdGhlIHdhcm5pbmcgaW4gb2ZwYXJ0LmMgYnV0IGNvbnRpbnVlIHRvIGZhaWwuCj4g
+Pj4+Pj4KPiA+Pj4+PiAzLiBUbyBmaXggdGhlIGN1cnJlbnQgc2l0dWF0aW9uOgo+ID4+Pj4+ICAg
+ICAgIEltbWVkaWF0ZWx5IHJldmVydCBjb21taXQgKGFuZCBwcmV2ZW50IGl0IGZyb20gYmVpbmcg
+YmFja3BvcnRlZCk6Cj4gPj4+Pj4gICAgICAgNzUzMzk1ZWExZTQ1ICgiQVJNOiBkdHM6IGlteDc6
+IEZpeCBOQU5EIGNvbnRyb2xsZXIgc2l6ZS1jZWxscyIpCj4gPj4+Pj4gICAgICAgVGhpcyB3YXkg
+eW91ciBvd24gYm9vdCBmbG93IGlzIGZpeGVkIGluIHRoZSBzaG9ydCB0ZXJtLiAgCj4gPj4+Pgo+
+ID4+Pj4gSGVyZSBJIGRpc2FncmVlLCB0aGUgZml4IGlzIGNvcnJlY3QgYW5kIEkgdGhpbmsgd2Ug
+c2hvdWxkbid0Cj4gPj4+PiBwcm9saWZlcmF0ZSBpbmNvcnJlY3QgRFRzIHdoaWNoIGRvbid0IG1h
+dGNoIHRoZSBiaW5kaW5nIGRvY3VtZW50LiAgCj4gPj4+Cj4gPj4+IEkgYWdyZWUgd2Ugc2hvdWxk
+IG5vdCBwcm9saWZlcmF0ZSBpbmNvcnJlY3QgRFRzLCBzbyBsZXQncyB1c2UgYSBtb2Rlcm4KPiA+
+Pj4gZGVzY3JpcHRpb24gdGhlbiAgCj4gPj4KPiA+PiBZZXMgcGxlYXNlICEKPiA+PiAgCj4gPj4+
+ICwgd2l0aCBhIGNvbnRyb2xsZXIgYW5kIGEgY2hpbGQgbm9kZSB3aGljaCBkZWZpbmVzIHRoZQo+
+ID4+PiBjaGlwLiAgCj4gPj4KPiA+PiBCdXQgd2hhdCBpZiB0aGVyZSBpcyBubyBjaGlwIGNvbm5l
+Y3RlZCB0byB0aGUgY29udHJvbGxlciBub2RlID8KPiA+Pgo+ID4+IElmIEkgdW5kZXJzdGFuZCB0
+aGUgcHJvcG9zYWwgaGVyZSByaWdodCAocGxlYXNlIGNvcnJlY3QgbWUgaWYgSSdtIHdyb25nKSwg
+dGhlbjogIAo+ID4gCj4gPiBHb29kIGlkZWEgdG8gc3VtbWFyaXplLgo+ID4gICAKPiA+Pgo+ID4+
+IDEpIFRoaXMgaXMgdGhlIG9yaWdpbmFsLCBvbGQsIHdyb25nIGJpbmRpbmc6Cj4gPj4gJmdwbWkg
+ewo+ID4+ICAgICAjc2l6ZS1jZWxscyA9IDwxPjsKPiA+PiAgICAgLi4uCj4gPj4gICAgIHBhcnRp
+dGlvbkBOIHsgLi4uIH07Cj4gPj4gfTsgIAo+ID4gCj4gPiBZZXMuCj4gPiAgIAo+ID4+Cj4gPj4K
+PiA+PiAyKSBUaGlzIGlzIHRoZSBuZXdlciwgYnV0IHN0aWxsIHdyb25nIGJpbmRpbmc6Cj4gPj4g
+JmdwbWkgewo+ID4+ICAgICAjc2l6ZS1jZWxscyA9IDwwPjsKPiA+PiAgICAgLi4uCj4gPj4gICAg
+IHBhcnRpdGlvbnMgewo+ID4+ICAgICAgIHBhcnRpdGlvbkBOIHsgLi4uIH07Cj4gPj4gICAgIH07
+Cj4gPj4gfTsgIAo+ID4gCj4gPiBXZWxsLCB0aGlzIGlzIHdyb25nIGRlc2NyaXB0aW9uLCBidXQg
+aXQgd291bGQgd29yayAoZm9yIGNvbXBhdCByZWFzb25zLAo+ID4gZXZlbiB0aG91Z2ggSSBkb24n
+dCB0aGluayB0aGlzIGlzIGNvbnNpZGVyZWQgdmFsaWQgRFQgYnkgdGhlIHNjaGVtYXMpLgo+ID4g
+ICAKPiA+Pgo+ID4+IDMpIFRoaXMgaXMgdGhlIG5ld2VzdCBiaW5kaW5nLCB3aGF0IHdlIHdhbnQ6
+Cj4gPj4gJmdwbWkgewo+ID4+ICAgICAjc2l6ZS1jZWxscyA9IDwwPjsKPiA+PiAgICAgLi4uCj4g
+Pj4gICAgIG5hbmQtY2hpcCB7Cj4gPj4gICAgICAgcGFydGl0aW9ucyB7Cj4gPj4gICAgICAgICBw
+YXJ0aXRpb25ATiB7IC4uLiB9Owo+ID4+ICAgICAgIH07Cj4gPj4gICAgIH07Cj4gPj4gfTsgIAo+
+ID4gCj4gPiBZZXMKPiA+ICAgCj4gPj4KPiA+PiBCdXQgaWYgdGhlcmUgaXMgbm8gcGh5c2ljYWwg
+bmFuZCBjaGlwIGNvbm5lY3RlZCB0byB0aGUgY29udHJvbGxlciwgd291bGQgd2UgZW5kIHVwIHdp
+dGggZW1wdHkgbmFuZC1jaGlwIG5vZGUgaW4gRFQsIGxpa2UgdGhpcz8KPiA+PiAmZ3BtaSB7Cj4g
+Pj4gICAgICNzaXplLWNlbGxzID0gPFg+Owo+ID4+ICAgICAuLi4KPiA+PiAgICAgbmFuZC1jaGlw
+IHsgLyogZW1wdHkgKi8gfTsKPiA+PiB9OyAgCj4gPiAKPiA+IElzIHRoaXMgcmVhbGx5IGEgY29u
+Y2Vybj8gIAo+IAo+IEkgZG9uJ3Qga25vdywgbWF5YmUgaXQgaXMgbm90Lgo+IAo+ID4gSWYgdGhl
+cmUgaXMgbm8gTkFORCBjaGlwLCB0aGUgY29udHJvbGxlcgo+ID4gc2hvdWxkIGJlIGRpc2FibGVk
+LCBubz8gSSBndWVzcyB0ZWNobmljYWxseSB5b3UgY291bGQgZXZlbiB1c2UgdGhlCj4gPiBzdGF0
+dXMgcHJvcGVydHkgaW4gdGhlIG5hbmQtY2hpcCBub2RlLi4uICAKPiAKPiBTdXJlLgo+IAo+ID4g
+SG93ZXZlciwgaXQgc2hvdWxkIG5vdCBiZSBlbXB0eSwgYXQgdGhlIHZlcnkgbGVhc3QgYSByZWcg
+cHJvcGVydHkKPiA+IHNob3VsZCBpbmRpY2F0ZSBvbiB3aGljaCBDUyBpdCBpcyB3aXJlZCwgYXMg
+ZXhwZWN0ZWQgdGhlcmU6Cj4gPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
+a2VybmVsL2dpdC9tdGQvbGludXguZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL210ZC9uYW5kLWNoaXAueWFtbD9oPW10ZC9uZXh0ICAKPiAKPiBPSywgSSBzZWUgeW91
+ciBwb2ludC4gU28gYmFzaWNhbGx5IHRoaXM/Cj4gCj4gJmdwbWkgewo+ICAgICNzaXplLWNlbGxz
+ID0gPDE+Owo+ICAgIC4uLgo+ICAgIG5hbmQtY2hpcEAwIHsKPiAgICAgIHJlZyA9IDwwPjsKPiAg
+ICB9Owo+IH07Cj4gCj4gYnR3LiB0aGUgR1BNSSBOQU5EIGNvbnRyb2xsZXIgc3VwcG9ydHMgb25s
+eSBvbmUgY2hpcHNlbGVjdCwgc28gdGhlIHJlZyBpbiBuYW5kLWNoaXAgbm9kZSBtYWtlcyBsaXR0
+bGUgc2Vuc2UuCgpJIHJhbmRvbWx5IG9wZW5lZCBhIHJlZmVyZW5jZSBtYW51YWwgKElNWDZEUUwu
+cGRmKSwgdGhleSBzYXk6CgoJIlVwIHRvIGZvdXIgTkFORCBkZXZpY2VzLCBzdXBwb3J0ZWQgYnkg
+Zm91ciBjaGlwLXNlbGVjdHMgYW5kIG9uZQoJIGdhbmdlZCByZWFkeS8gYnVzeS4iCgpBbnl3YXks
+IHRoZSBOQU5EIGNvbnRyb2xsZXIgZ2VuZXJpYyBiaW5kaW5ncyB3aGljaCByZXF1aXJlIHRoaXMg
+cmVnCnByb3BlcnR5LCB3aGF0IHRoZSBjb250cm9sbGVyIG9yIHRoZSBkcml2ZXIgYWN0dWFsbHkg
+c3VwcG9ydHMsIG9yIGV2ZW4KaG93IGl0IGlzIHVzZWQgb24gY3VycmVudCBkZXNpZ25zIGlzIG5v
+dCByZWxldmFudCBoZXJlLgoKPiA+IEJ1dCwgYXMgbmFuZC1jaGlwLnlhbWwgcmVmZXJlbmNlcyBt
+dGQueWFtbCwgeW91IGNhbiBhcyB3ZWxsIHVzZQo+ID4gd2hhdGV2ZXIgaXMgZGVzY3JpYmVkIGhl
+cmU6Cj4gPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9t
+dGQvbGludXguZ2l0L3RyZWUvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9t
+dGQueWFtbD9oPW10ZC9uZXh0Cj4gPiAgIAo+ID4+IFdoYXQgd291bGQgYmUgdGhlIGdwbWkgY29u
+dHJvbGxlciBzaXplIGNlbGxzIChYKSBpbiB0aGF0IGNhc2UsIHN0aWxsIDAsIHJpZ2h0ID8gU28g
+aG93IGRvZXMgdGhhdCBoZWxwIHNvbHZlIHRoaXMgcHJvYmxlbSwgd291bGRuJ3QgVS1Cb290IHN0
+aWxsIHBvcHVsYXRlIHRoZSBwYXJ0aXRpb25zIGRpcmVjdGx5IHVuZGVyIHRoZSBncG1pIG5vZGUg
+b3IgaW50byBwYXJ0aXRpb25zIHN1Yi1ub2RlID8gIAo+ID4gCj4gPiBUaGUgY29tbWl0IHRoYXQg
+d2FzIHBvaW50ZWQgaW4gdGhlIG9yaWdpbmFsIGZpeCBjbGVhcmx5IHN0YXRlZCB0aGF0IHRoZQo+
+ID4gTkFORCBjaGlwIG5vZGUgd2FzIHRhcmdldGVkICAKPiAKPiBJIHRoaW5rIHRoaXMgaXMgYW5v
+dGhlciBtaXNjb21tdW5pY2F0aW9uIGhlcmUuIFRoZSBjb21taXQKPiAKPiA3NTMzOTVlYTFlNDUg
+KCJBUk06IGR0czogaW14NzogRml4IE5BTkQgY29udHJvbGxlciBzaXplLWNlbGxzIikKPiAKPiBt
+b2RpZmllcyB0aGUgc2l6ZS1jZWxscyBvZiB0aGUgTkFORCBjb250cm9sbGVyLiBUaGUgbmFuZC1j
+aGlwIGlzIG5vdCBpbnZvbHZlZCBpbiB0aGlzIGF0IGFsbCAuIEluIHRoZSBleGFtcGxlcyBhYm92
+ZSwgaXQncyB0aGUgIiZncG1pIiBub2RlIHNpemUtY2VsbHMgdGhhdCBpcyBtb2RpZmllZC4KClll
+cyBJIGtub3cuIEkgd2FzIHJlZmVycmluZyB0byB0aGlzIGNvbW1pdCwgc29ycnk6CjM2ZmVlMmY3
+NjIxZSAoImNvbW1vbjogZmR0X3N1cHBvcnQ6IGFkZCBzdXBwb3J0IGZvciAicGFydGl0aW9ucyIg
+c3Vibm9kZSB0byBmZHRfZml4dXBfbXRkcGFydHMoKSIpCgpUaGUgbG9nIHNheXM6CgoJTGlzdGlu
+ZyBNVEQgcGFydGl0aW9ucyBkaXJlY3RseSBpbiB0aGUgZmxhc2ggbW9kZSBoYXMgYmVlbgoJZGVw
+cmVjYXRlZCBmb3IgYSB3aGlsZSBmb3Iga2VybmVsIERldmljZSBUcmVlcy4gTG9vayBmb3IgYSBu
+b2RlICJwYXJ0aXRpb25zIiBpbiB0aGUKCWZvdW5kIGZsYXNoIG5vZGVzIGFuZCB1c2UgaXQgaW5z
+dGVhZCBvZiB0aGUgZmxhc2ggbm9kZSBpdHNlbGYgZm9yIHRoZQoJcGFydGl0aW9uIGxpc3Qgd2hl
+biBpdCBleGlzdHMsIHNvIERldmljZSBUcmVlcyBmb2xsb3dpbmcgdGhlIGN1cnJlbnQKCWJlc3Qg
+cHJhY3RpY2VzIGNhbiBiZSBmaXhlZCB1cC4KCldoaWNoIChJIGhvcGUpIG1lYW5zIFUtYm9vdCB3
+aWxsIGVxdWl2YWxlbnRseSB0cnkgdG8gcGxheSB3aXRoIHRoZQpwYXJ0aXRpb25zIGNvbnRhaW5l
+ciwgZWl0aGVyIGluIHRoZSBjb250cm9sbGVyIG5vZGUgb3IgaW4gdGhlIGNoaXAgbm9kZS4KCj4g
+PiAsIG5vdCB0aGUgTkFORCBjb250cm9sbGVyIG5vZGUuIEkgaG9wZSB0aGlzCj4gPiBpcyBjb3Jy
+ZWN0bHkgc3VwcG9ydGVkIGluIFUtQm9vdCB0aG91Z2guIFNvIGlmIHRoZXJlIGlzIGEgTkFORCBj
+aGlwCj4gPiBzdWJub2RlLCBJIHN1cHBvc2UgVS1Cb290IHdvdWxkIHRyeSB0byBjcmVhdGUgdGhl
+IHBhcnRpdGlvbnMgdGhhdCBhcmUKPiA+IGluc2lkZSwgb3IgZXZlbiBpbiB0aGUgc3ViICJwYXJ0
+aXRpb25zIiBjb250YWluZXIuICAKPiAKPiBNeSB1bmRlcnN0YW5kaW5nIGlzIHRoYXQgVS1Cb290
+IGNoZWNrcyB0aGUgbmFuZC1jb250cm9sbGVyIG5vZGUgc2l6ZS1jZWxscywgbm90IHRoZSBuYW5k
+LWNoaXB7fSBvciBwYXJ0aXRpb25ze30gc3Vibm9kZSBzaXplLWNlbGxzIC4KCkkgZG9uJ3QgdGhp
+bmsgVS1Cb290IGNhcmVzLgoKPiBGcmFuY2VzY28sIGNhbiB5b3UgcGxlYXNlIHNoYXJlIHRoZSBE
+VCwgaW5jbHVkaW5nIHRoZSBVLUJvb3QgZ2VuZXJhdGVkIHBhcnRpdGlvbnMsIHdoaWNoIGlzIHBh
+c3NlZCB0byBMaW51eCBvbiBDb2xpYnJpIE1YNyA/IEkgdGhpbmsgdGhhdCBzaG91bGQgbWFrZSBh
+bGwgY29uZnVzaW9uIGdvIGF3YXkuCgpQbGVhc2UgYWxzbyBkbyBpdCB3aXRoIHRoZSBOQU5EIGNo
+aXAgZGVzY3JpYmVkLiBJZiwgd2hlbiB0aGUgTkFORCBjaGlwCmlzIGRlc2NyaWJlZCBVLUJvb3Qg
+dHJpZXMgdG8gY3JlYXRlIHBhcnRpdGlvbnMgaW4gdGhlIGNvbnRyb2xsZXIgbm9kZSwKdGhlbiB0
+aGUgc2l0dWF0aW9uIGlzIGV2ZW4gd29yc2UgdGhhbiBJIHRob3VnaHQuIEJ1dCBJIGJlbGlldmUK
+ZGVzY3JpYmluZyB0aGUgbm9kZSBsaWtlIGEgc3VnZ2VzdCBpbiB0aGUgRFQgc2hvdWxkIHByZXZl
+bnQgdGhlIGJvb3QKZmFpbHVyZSB3aGlsZSBzdGlsbCBhbGxvd2luZyBhIHJhdGhlciBnb29kIGRl
+c2NyaXB0aW9uIG9mIHRoZSBoYXJkd2FyZS4KCkJUVyBJIHN0aWxsIHRoaW5rIHRoZSByZWxldmFu
+dCBhY3Rpb24gcmlnaHQgbm93IGlzIHRvIHJldmVydCB0aGUgRFQKcGF0Y2guCgpUaGFua3MsCk1p
+cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
