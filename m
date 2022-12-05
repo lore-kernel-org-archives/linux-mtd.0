@@ -4,72 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D180C4321E
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Dec 2022 07:49:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 553BEC4321E
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Dec 2022 08:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i/Y0V0uXRA9xv//7teV8GOsbfHnVdj5ziSezDqHbg+Y=; b=CGWEvIPe5bK76W
-	BaecFVZw87qk+1td9YDGv31+zlRD3hh4UsLfstu/wm67WI9D8ovl60HrfJGp3UQatt61w0uAkKhf4
-	wIbwkT2ea7cASpSv8AcOOcHcqA/Z7O2EWA+mo4JCVs2IoGnXjE2YPsmrHdZOUal0uo3vLZPPPVsV0
-	W8gvMyew5KoeHY7TK1RqYo1cwGgJv7PrQYxo064Io/wps1kx7cKciY33Cl7StUVXm03mraprehbji
-	8b5CXMOmgS7z7HwTuyDUyQE7rM5EtI5uDENiJ0X0n3FW7gxCDTA/jhPu0ltlVjUwYnLa2MpPe3f9J
-	w9E2Y7o0opscdyg+4s9g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+LHgxU6FDxVRp9yE8f5FfxKH5+tUCkpj49fuxUQvQZA=; b=l6EuIaBiQAbOAT8PotDDCUJRqd
+	qOi9XDpZmlcENwIP1WiCh+xLju+orDZx9FQKNpCY9PVIrRWW7gORkQ3RKXx2sPLQMlOMPjRqxqiNq
+	TJ9oqRE1v2yAJbugHSJCmgkp8Df5ciAB170ne4a25TlDh3kdTfsKlqBtAhnFoJJ5BMrku6LFEn38B
+	p0XD8I2Dn9f5LCHqb53ireVwnHM+tkDzRosD/PPcj+W0KhppsxfXbOb6+UxK1L15DzmK3flQgWma6
+	CAvaFoOf/Uw2zrMiWmsJ5yAyiZHPFI7JlPJ66E4TLzsYBTkBgw9tQvrAK1qEAzeOVDwPICNt8Dh2k
+	yN0L2I2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p26Df-00FqI6-7p; Mon, 05 Dec 2022 07:48:55 +0000
-Received: from mailgw01.mediatek.com ([216.200.240.184])
+	id 1p26kR-00GA3A-TK; Mon, 05 Dec 2022 08:22:48 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p26Dc-00FqGy-J4; Mon, 05 Dec 2022 07:48:54 +0000
-X-UUID: 85cc204b41ab45378d28218139a48226-20221205
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=1WMPHgGT2Vc06cNDWGV7eQXxRmPqVm37oCGD2yTJxvQ=;
-	b=DOLBopSdwrxYRACR642xEdclstPqvpiA15BQILD3PwlcKb9dYkhO9ZHgwReZgPTj2hG5d2I1MM+cmcg9/YvWSSMIlCY7IM3JaswwpivhfEDHtEniCOitZogRYfClAFMRbcmQX52eus4zpeskonYOegjmiHzzEmoEUBq+AvXYudQ=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.14,REQID:e27d2e44-f329-49cc-ab86-26ed1d16fc0c,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:dcaaed0,CLOUDID:4e21b030-2938-482e-aafd-98d66723b8a9,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 85cc204b41ab45378d28218139a48226-20221205
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-	(envelope-from <xiangsheng.hou@mediatek.com>)
-	(musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 175316104; Mon, 05 Dec 2022 00:48:48 -0700
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Mon, 5 Dec 2022 14:58:09 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkmbs13n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Mon, 5 Dec 2022 14:58:08 +0800
-From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger
-	<matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>, Chuanhong Guo
-	<gch981213@gmail.com>
-CC: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
-	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-	<benliang.zhao@mediatek.com>, <bin.zhang@mediatek.com>
-Subject: [PATCH v2 1/9] spi: mtk-snfi: Add snfi support for MT7986 IC
-Date: Mon, 5 Dec 2022 14:57:48 +0800
-Message-ID: <20221205065756.26875-2-xiangsheng.hou@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221205065756.26875-1-xiangsheng.hou@mediatek.com>
-References: <20221205065756.26875-1-xiangsheng.hou@mediatek.com>
+	id 1p26kN-00G9qz-CI
+	for linux-mtd@lists.infradead.org; Mon, 05 Dec 2022 08:22:44 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 955D111ED;
+	Mon,  5 Dec 2022 09:22:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1670228557;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cawzhIrCiAJrKU4rgqns2i/i9FlaNB5jAb1CiiwigTg=;
+	b=dzGyMcFnsKv8tBH5RiAV8tn5dQq9ToCaVQiu/j+CK7ZUbklX+1dlFKI4CEpn6wEv+bUbmw
+	22B3R6+qUNjuBBoQrwZ5M7GOaHbJxCx7eAYUtWsY/c68ZJXSU2orOuS2bOfDytKv4N41DQ
+	ZqV5dJ1NMLV/52q7b1CXc07ASRBVFbPg4MwZMRCKN7wELq9H7cKUCisxfpOmOQ6ApdMd4D
+	YI/z8TKCaUJq04TB+QJ3yqSgrHRV3CPaDXie33pTQ+JMoc+0cWG9GdiQzr43gPgsSC0RXP
+	aGm5rBO+wpCGtokA1KvNVNhC14iU3fU9n9/GfyvGMDDDXGi33JpSUJlfpKV1Vw==
 MIME-Version: 1.0
-X-MTK: N
+Date: Mon, 05 Dec 2022 09:22:37 +0100
+From: Michael Walle <michael@walle.cc>
+To: Victor Lim <victorswlim@gmail.com>
+Cc: tudor.ambarus@microchip.com, p.yadav@ti.com, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, vikhyat.goyal@amd.com,
+ amit.kumar-mahapatra@amd.com, alejandro.carmona@amd.com, Victor Lim
+ <vlim@gigadevice.com>
+Subject: Re: [PATCH] Linux: SPI: add Gigadevice part #
+In-Reply-To: <20221204080000.4100-1-vlim@gigadevice.com>
+References: <20221204080000.4100-1-vlim@gigadevice.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <dee37d18f8de5af7d07388031fc08571@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221204_234852_658581_E0ED9E01 
-X-CRM114-Status: GOOD (  13.61  )
+X-CRM114-CacheID: sfid-20221205_002243_724192_7C0DDE7B 
+X-CRM114-Status: UNSURE (   3.47  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,114 +73,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add snfi support for MT7986 IC.
+Hi,
 
-Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
----
- drivers/spi/spi-mtk-snfi.c | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+Am 2022-12-04 09:00, schrieb Victor Lim:
+> Edited gigadevice.c
 
-diff --git a/drivers/spi/spi-mtk-snfi.c b/drivers/spi/spi-mtk-snfi.c
-index d66bf9762557..fa8412ba20e2 100644
---- a/drivers/spi/spi-mtk-snfi.c
-+++ b/drivers/spi/spi-mtk-snfi.c
-@@ -126,7 +126,8 @@
- #define STR_DATA BIT(0)
- 
- #define NFI_STA 0x060
--#define NFI_NAND_FSM GENMASK(28, 24)
-+#define NFI_NAND_FSM_7622 GENMASK(28, 24)
-+#define NFI_NAND_FSM_7986 GENMASK(29, 23)
- #define NFI_FSM GENMASK(19, 16)
- #define READ_EMPTY BIT(12)
- 
-@@ -158,6 +159,7 @@
- #define MAS_WR GENMASK(5, 3)
- #define MAS_RDDLY GENMASK(2, 0)
- #define NFI_MASTERSTA_MASK_7622 (MAS_ADDR | MAS_RD | MAS_WR | MAS_RDDLY)
-+#define NFI_MASTERSTA_MASK_7986 3
- 
- // SNFI registers
- #define SNF_MAC_CTL 0x500
-@@ -220,6 +222,11 @@
- 
- static const u8 mt7622_spare_sizes[] = { 16, 26, 27, 28 };
- 
-+static const u8 mt7986_spare_sizes[] = {
-+	16, 26, 27, 28, 32, 36, 40, 44, 48, 49, 50, 51, 52, 62, 61, 63, 64, 67,
-+	74
-+};
-+
- struct mtk_snand_caps {
- 	u16 sector_size;
- 	u16 max_sectors;
-@@ -230,6 +237,7 @@ struct mtk_snand_caps {
- 	bool bbm_swap;
- 	bool empty_page_check;
- 	u32 mastersta_mask;
-+	u32 nandfsm_mask;
- 
- 	const u8 *spare_sizes;
- 	u32 num_spare_size;
-@@ -244,6 +252,7 @@ static const struct mtk_snand_caps mt7622_snand_caps = {
- 	.bbm_swap = false,
- 	.empty_page_check = false,
- 	.mastersta_mask = NFI_MASTERSTA_MASK_7622,
-+	.nandfsm_mask = NFI_NAND_FSM_7622,
- 	.spare_sizes = mt7622_spare_sizes,
- 	.num_spare_size = ARRAY_SIZE(mt7622_spare_sizes)
- };
-@@ -257,10 +266,25 @@ static const struct mtk_snand_caps mt7629_snand_caps = {
- 	.bbm_swap = true,
- 	.empty_page_check = false,
- 	.mastersta_mask = NFI_MASTERSTA_MASK_7622,
-+	.nandfsm_mask = NFI_NAND_FSM_7622,
- 	.spare_sizes = mt7622_spare_sizes,
- 	.num_spare_size = ARRAY_SIZE(mt7622_spare_sizes)
- };
- 
-+static const struct mtk_snand_caps mt7986_snand_caps = {
-+	.sector_size = 1024,
-+	.max_sectors = 8,
-+	.fdm_size = 8,
-+	.fdm_ecc_size = 1,
-+	.fifo_size = 64,
-+	.bbm_swap = true,
-+	.empty_page_check = true,
-+	.mastersta_mask = NFI_MASTERSTA_MASK_7986,
-+	.nandfsm_mask = NFI_NAND_FSM_7986,
-+	.spare_sizes = mt7986_spare_sizes,
-+	.num_spare_size = ARRAY_SIZE(mt7986_spare_sizes)
-+};
-+
- struct mtk_snand_conf {
- 	size_t page_size;
- 	size_t oob_size;
-@@ -360,7 +384,7 @@ static int mtk_nfi_reset(struct mtk_snand *snf)
- 	}
- 
- 	ret = readl_poll_timeout(snf->nfi_base + NFI_STA, val,
--				 !(val & (NFI_FSM | NFI_NAND_FSM)), 0,
-+				 !(val & (NFI_FSM | snf->caps->nandfsm_mask)), 0,
- 				 SNFI_POLL_INTERVAL);
- 	if (ret) {
- 		dev_err(snf->dev, "Failed to reset NFI\n");
-@@ -1295,6 +1319,7 @@ static irqreturn_t mtk_snand_irq(int irq, void *id)
- static const struct of_device_id mtk_snand_ids[] = {
- 	{ .compatible = "mediatek,mt7622-snand", .data = &mt7622_snand_caps },
- 	{ .compatible = "mediatek,mt7629-snand", .data = &mt7629_snand_caps },
-+	{ .compatible = "mediatek,mt7986-snand", .data = &mt7986_snand_caps },
- 	{},
- };
- 
--- 
-2.25.1
+Please have a look at
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html
 
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
