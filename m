@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33AACC4321E
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Dec 2022 11:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38795C4708C
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Dec 2022 11:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aDqHqw8tp7lp2P/E/jha2414RVI/wneq0Zugbrv9ZFM=; b=HJMWpcxoML+7VN
-	WJspBO6CmsjtYQvEAMZUCnIt7g6+KPbYLYUgBOqfCACgNC6fq75wqVUV0OD7qvBG+vZycCaH0wjFe
-	L9vqRRNxXGK3z7n2i2QEhZno1Lb8GSF5S8QX4kzyHFTVPvICLsQmKgdKgVwNymqMjuxPzepbWWIDW
-	SYLsWiVQ1cSP521y5tPhLSHRSoMh0njUkjmuR5BfaGj0FhPhysIk6wa5AwoNL+G4yU4RI3X6Wav4k
-	MH/IyI0bvXfSxZywg0xQpFEjZXXPFb8sVZ4KjzwNlpHmXD04DFPTU/q1IqApzBH0DaYkEmm961zUb
-	lY+bcXeEWQzoPcFuEE9Q==;
+	List-Owner; bh=8LvYTBxcDHYD9Y0uwHHlRAFFI9qmLyb0RAPSWf5txRQ=; b=N7RGTjyoZwKVk6
+	8+vgaCPLc8gyS2QQoUk8oIF+oX2QgiW0Exjj4HbtGpl/pA6LRbGlIt0e4ceNDS8eymjSV0OPRFiQc
+	sv4NvsEiBpfw3LIWZb/Jp42X1/JhkSjc+ztiY0Z2M+8BROKLtARUsc4G+dmYzlWTHcbKuCfytd5XZ
+	+sGCVB8qCVqzREc68i1vO1fWLk1ErQG+cjkFcHoaB0Y8aJSCDT/H6yO20Ca9GDS7VKHAYHpn9u1kK
+	2xIAP1NeKcEu75FKYI+gU2/T4XSptJ9gpaz/33e+lr/ZURAi0Bm+Ex1xcHyFQmh9GcjXsPsffWkVj
+	KkApvS6hU4OOAs/j/jkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p29cw-001dtD-Ef; Mon, 05 Dec 2022 11:27:14 +0000
-Received: from smtp-out-07.comm2000.it ([212.97.32.77])
+	id 1p29gA-001iER-AT; Mon, 05 Dec 2022 11:30:34 +0000
+Received: from smtp-out-12.comm2000.it ([212.97.32.82])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p29cj-001dd6-T4; Mon, 05 Dec 2022 11:27:04 +0000
+	id 1p29fy-001hh8-8A; Mon, 05 Dec 2022 11:30:23 +0000
 Received: from francesco-nb.int.toradex.com (31-10-206-125.static.upc.ch [31.10.206.125])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	(Authenticated sender: francesco@dolcini.it)
-	by smtp-out-07.comm2000.it (Postfix) with ESMTPSA id 04B633C2104;
-	Mon,  5 Dec 2022 12:26:50 +0100 (CET)
+	by smtp-out-12.comm2000.it (Postfix) with ESMTPSA id 523F6BA1E14;
+	Mon,  5 Dec 2022 12:30:18 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
-	s=mailsrv; t=1670239612;
-	bh=T5iUgqLM5/wTl1bWy1r9VQ72eZ+xJCXi7OjAOJZLSnE=;
+	s=mailsrv; t=1670239818;
+	bh=Kq+5kUwgPfTpYZtS89P4d7VkQaEGPlQnylqnIFbeT74=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=fJSptKx3by6D7wAt+PgUu1Zi/Hmuo16Cpn5Yr8io+VGfuAVwzAxZ3fGCeG+XscN4U
-	 KVBM+qNDjWoBjjF9BOpXet8hlQmnV3l9Q1umhpFEYiY8BLeON7xn99fJAjjOrIK7dB
-	 JaE8o5dYiAddCRYqUi2N1a7YwNgChD5ANyk6yshdjpRZgSMjgRw1iI8xZl/50U4XD9
-	 IA1nHrULn1lUHlqdlTzXkhhc8zC9Y5i1OrsXS3dwvyeDUk016Zm6UUzegTH2lGFPnP
-	 tD7swS4nDZHnyb8SjSJxhAJoHjr3X49unF7SbXOYKS8L+h2jgnFQDUVNyKUHbrcIRL
-	 VVtdZoIFqidRA==
-Date: Mon, 5 Dec 2022 12:26:44 +0100
+	b=g/WRje8fj6jvfHuYkT8TUDWTt85/46AhNKmeCUp8nZyEtUvtKV5018Aumnm61Iv6F
+	 4ZdTgwqueynN39EvnMzDOaDU+UvhCd5ENg5dhJKSWysFf0/OrLZkoFcEoxzv6R4NKP
+	 /tJ9SA63VGqELBmJ3M8/mRF3pHKbtEQlgqK4RikgS+JvwuYZaUDx5sSmTtbLdZhKil
+	 bbUAUhg6SyKGDLkS81DNPpNQc52uzJE0otpXUjSdXf7vt04Y98Sd5RlMDu8wGXD1Yy
+	 +hRORK7IwWExhHGCbI2RrNIue/sQhH8i5GzS9BIJjthj1FkgeLqWKfBO+p/rCCEOSC
+	 hyfYTxSo49gaw==
+Date: Mon, 5 Dec 2022 12:30:16 +0100
 From: Francesco Dolcini <francesco@dolcini.it>
-To: Marek Vasut <marex@denx.de>, Miquel Raynal <miquel.raynal@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Marek Vasut <marex@denx.de>
 Cc: Francesco Dolcini <francesco@dolcini.it>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -52,23 +52,23 @@ Cc: Francesco Dolcini <francesco@dolcini.it>,
 	linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
 	u-boot@lists.denx.de
 Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
-Message-ID: <Y43VdPftDbq6cD2L@francesco-nb.int.toradex.com>
-References: <20221202150556.14c5ae43@xps-13>
+Message-ID: <Y43WSCsvfnfbcMPQ@francesco-nb.int.toradex.com>
+References: <20221202115327.4475d3a2@xps-13>
+ <Y4ngOaKq224LIpQc@francesco-nb.int.toradex.com>
+ <20221202150556.14c5ae43@xps-13>
  <2b6fc52d-60b9-d0f4-ab91-4cf7a8095999@denx.de>
  <20221202160030.1b8d0b8a@xps-13>
  <223b7a4e-3aff-8070-7387-c77d2ded1dd6@denx.de>
  <20221202164904.08d750df@xps-13>
  <0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
  <20221202174255.2c1cb2ff@xps-13>
- <e80377c9-1542-d47d-6d35-2efdc15bcbf8@denx.de>
- <20221202175730.231d75d5@xps-13>
- <7afd364c-33b8-38a9-65a6-015b4360db6b@denx.de>
+ <Y4ozwovVIVhQHHkn@francesco-nb.int.toradex.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <7afd364c-33b8-38a9-65a6-015b4360db6b@denx.de>
+In-Reply-To: <Y4ozwovVIVhQHHkn@francesco-nb.int.toradex.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221205_032702_922694_37E0B466 
-X-CRM114-Status: GOOD (  15.59  )
+X-CRM114-CacheID: sfid-20221205_033022_458745_70DAF336 
+X-CRM114-Status: GOOD (  18.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,37 +85,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Dec 02, 2022 at 06:08:22PM +0100, Marek Vasut wrote:
-> But here I would say this is a firmware bug and it might have to be handled
-> like a firmware bug, i.e. with fixup in the partition parser. I seem to be
-> changing my opinion here again.
+Hello Miquel
 
-I was thinking at this over the weekend, and I came to the following
-ideas:
+On Fri, Dec 02, 2022 at 06:20:02PM +0100, Francesco Dolcini wrote:
+> On Fri, Dec 02, 2022 at 05:42:55PM +0100, Miquel Raynal wrote:
+> > Please also do it with the NAND chip described. If, when the NAND chip
+> > is described U-Boot tries to create partitions in the controller node,
+> > then the situation is even worse than I thought. But I believe
+> 
+> It's like that for U-Boot older than v2022.04 ... and IMO we cannot
+> ignore it.
+> 
+> Said that from the code U-Boot looks into a `partition{}` node only as a
+> direct child of the nand-controller, if there is a nand-chip in between
+> the nand-controller{} and the partitions{} it will just ignore it.
+> 
+> I could try to see what it is doing exactly, but I would need a little
+> bit more time, I just tried changing the DTS as wrote I got a non
+> bootable system.
 
- - we need some improvement on the fixup we already have in the
-   partition parser. We cannot ignore the fdt produced by U-Boot - as
-   bad as it is.
- - the proposed fixup is fine for the immediate need, but it is
-   not going to be enough to cover the general issue with the U-Boot
-   generated partitions. U-Boot might keep generating partitions as direct
-   child of the nand controller even when a partitions{} node is
-   available. In this case the current parser just fails since it looks
-   only into it and it will find it empty.
- - the current U-Boot only handle partitions{} as a direct child of the
-   nand-controller, the nand-chip is ignored. This is not the way it is
-   supposed to work. U-Boot code would need to be improved.
+If I have a nand-chip { partitions {} } described in the dts U-Boot
+(even the latest one) ignores it and generates the partition as child of
+the nand controller, the linux parser however see that partitions{}
+exists, even if empty, and ignore the partition directly defined as
+child of the nand controller.
 
-With all of that said I think that Miquel is right
-
-> When a patch breaks a board and there is no straight fix, you revert
-> it, then you think harder. That's what I am saying. This is a temporary
-> solution.
-
-?
+TL;DR: parser fails and boot fails according to that.
 
 Francesco
-
 
 
 ______________________________________________________
