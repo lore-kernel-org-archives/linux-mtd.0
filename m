@@ -4,68 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41196C4321E
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Dec 2022 08:57:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0CDAC4321E
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Dec 2022 09:06:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QLgjCvYFaV16hSzNkoWLM5fQGFGXqI18G7QoWnC8K1g=; b=QI+thczf9rO+oQKA3n9OZNtx6S
-	zmWxQ+YOpXejr4AaCHooHyj3VNa9s+4cr0JN2rzr+FXUR6TmngiaQ9l+pMQxp61NaquqfRfbd9D/q
-	GFnL4nwQOgLGD9zcgeUSJbrSNLIrgFR3hGWtCxvc5pRsZTgtu/mayMRMEJRKcX/GPSUGsBS4sSA6r
-	vHQV3WEiFtzKAgROFQR4k2aJ85Fw3IuL4uMazpqu2ojKUsXo2iIq4fU3p7yCYCFxKYAakgAY7T/Od
-	JkS4h6EnIC7T8K1BTwzPrLTYsyDzQHEjUwH5LSBa/yKbcF90j+twbHcsIlIbBDdmHl9GLC3pKTvya
-	pjyKrpiw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=0UvrdK2iJFks7QKmsxJdmQVWIXQi6mLpVMsRmaVCsaw=; b=Qhla6jzvJY/UkI
+	8h3uKI8v5FxXamnTR7vguHSI9owxrAfcY39tv0zOmMK2y2zWewb6gJ5SEpxF/3l+vPlkpK24+1dpI
+	SAP9W/4yBAAjcbjsynuykcodLwQ6Aw+/6v/3ujCd8Zg/WQ1F30m0txfX3Sd9iJ9iRbiB9LVnEinvr
+	zFkMjSb1fxrjAgodTfJfR1EHxDgcI2ssH/pxPMgaTLLU72QKQYptReiMI4siIt9mJRj9Bhve6YtNT
+	Kiz8wjH9KuJSaLD2dxElKXtD6kVlzciRhv1eB5sAHB8zkwbzDoe8zqEeBu/0Fk91Q6Wmcw8VI0Q5Q
+	Mev7sBCGBFjszxUHCMSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p27HN-00GgcJ-Ut; Mon, 05 Dec 2022 08:56:49 +0000
-Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
+	id 1p27QE-00GnJx-96; Mon, 05 Dec 2022 09:05:58 +0000
+Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p27HJ-00GgYZ-FY
-	for linux-mtd@lists.infradead.org; Mon, 05 Dec 2022 08:56:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=k1; bh=K7LkyI3EyZtAporb19ChbmQpds4O
-	ChSNzIOkIRouAdM=; b=gmo3iwVfGineystUR+8I7+fJPbd1BFQVff/L03zkTjqv
-	rY8Qn3/XjmRIuQGwgw0KEbGni7ctVfKgwZ/mf6PaZ0KPygxI6ttt0xbqA2BxH5Nv
-	VmuDr3NYgMkq8rJPkPiU6j7T5rcDGoQJwm/WuuRqrV6TPFwcy0CFZJc7Zr74a2Y=
-Received: (qmail 2245272 invoked from network); 5 Dec 2022 09:56:37 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Dec 2022 09:56:37 +0100
-X-UD-Smtp-Session: l3s3148p1@0ulr3RDvRIRehhrO
-Date: Mon, 5 Dec 2022 09:56:36 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Mark Brown <broonie@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] memory: renesas-rpc-if: Rebind fixes and misc
- cleanups
-Message-ID: <Y42yRFSai6XKnLiC@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Mark Brown <broonie@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org
-References: <cover.1669213027.git.geert+renesas@glider.be>
+	id 1p27QB-00GnHl-Ga
+	for linux-mtd@lists.infradead.org; Mon, 05 Dec 2022 09:05:56 +0000
+Received: by mail-lj1-x232.google.com with SMTP id b9so12768997ljr.5
+        for <linux-mtd@lists.infradead.org>; Mon, 05 Dec 2022 01:05:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GqNU7BdzxXArJ1hxutAZbvizBnSeo/vOF+Ym8qXlYBw=;
+        b=ml1UTgwnXNIPc0W8ib4GfMRsHG60XL9gSKPj/qRbbV6GJkzlUj1At0dMUzoOFb60iW
+         tb6annGiyDBjRt7m54+FeXCJAG1k6zyZpV4PZGuHxYm7VptGQ4HE5z/sdf0nd4XNnbM5
+         mqZTLznBvYZ9IvNHoVEltgkurJq2dZTDmC3DBg6SerflSf29uDbJtRwzM6t2VzZKZeKH
+         W3Hdrx+z2zDRhEmNvWjcF8C5cjMzT8oFOD2s9Yr7hkx7NoDA25fDHiauNl77Q6m3BHlu
+         /XzYeQvCP1vLSSqEuf2R0EKAZk20F6w17K7jjdophOvRCEg7i+u82iAK96sKUi78Hro0
+         PT2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GqNU7BdzxXArJ1hxutAZbvizBnSeo/vOF+Ym8qXlYBw=;
+        b=Qc7tigcT6QXUq5IZ3/1zMwvdBjofX4gvxAUtL3qX92NQCyX60SYU0invam3AY7zU91
+         LZl5cS3zalHILIJY5IMwDCzxTxrwv8XLTtCB3PrzWMrIRHBDIERqAq0dCRQGeVK0qHIf
+         CrfUYV4lChiSZ0lxpGfuW/PMShsfnihD42LHH2lrub4BUfzXJ7kgMYNkWa8Rs8I0gU7e
+         pb9vyoCmhAE/do9Te28KipSxaktLjtJV4/agq0IlkJ/kx/N2/eSH+wFl2hNkeskuUMHb
+         iVEwROnqnBMH1WdW3EMPVXLc5/zkxssrQdQkYlds0OjdJnb9Jm6I0EpnmN97vWCdwHfU
+         GbbA==
+X-Gm-Message-State: ANoB5pnp5O3mEiHhYafuFxCUkosoBaFW55gaet/19Z+5HuWqjfDYoO/n
+	uUV8qTGUvI3LrcBK4+rpZ4TmSw==
+X-Google-Smtp-Source: AA0mqf70Cu3Bsc7Sg6w1pGgBN0DBMF+g70wtdk9SSpETzjM7LJKRxqb71DhL1ffyntt/+W0ANkRx6A==
+X-Received: by 2002:a2e:a881:0:b0:26f:a855:c415 with SMTP id m1-20020a2ea881000000b0026fa855c415mr12377855ljq.443.1670231152713;
+        Mon, 05 Dec 2022 01:05:52 -0800 (PST)
+Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+        by smtp.gmail.com with ESMTPSA id g22-20020a2eb5d6000000b00267232d0652sm1322528ljn.46.2022.12.05.01.05.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Dec 2022 01:05:52 -0800 (PST)
+Message-ID: <3e141d37-497b-e9dd-44af-22ec57881b04@linaro.org>
+Date: Mon, 5 Dec 2022 10:05:50 +0100
 MIME-Version: 1.0
-In-Reply-To: <cover.1669213027.git.geert+renesas@glider.be>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v2 5/9] dt-bindings: spi: mtk-snfi: Add compatible for
+ MT7986
+Content-Language: en-US
+To: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Chuanhong Guo <gch981213@gmail.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ benliang.zhao@mediatek.com, bin.zhang@mediatek.com
+References: <20221205065756.26875-1-xiangsheng.hou@mediatek.com>
+ <20221205065756.26875-6-xiangsheng.hou@mediatek.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221205065756.26875-6-xiangsheng.hou@mediatek.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221205_005646_608687_D59A6AAC 
-X-CRM114-Status: GOOD (  15.03  )
+X-CRM114-CacheID: sfid-20221205_010555_614840_8500BD59 
+X-CRM114-Status: UNSURE (   8.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,82 +98,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8214707132106328584=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============8214707132106328584==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3141AOsAMOMu/lh9"
-Content-Disposition: inline
-
-
---3141AOsAMOMu/lh9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 23, 2022 at 03:41:16PM +0100, Geert Uytterhoeven wrote:
-> 	Hi all,
->=20
-> The Renesas RPC-IF provides either HyperFlash or SPI host access.
-> To handle this, three drivers are used:
->   1. The RPC-IF core diver,
->   2. An HyperFlash child driver,
->   3. An SPI child driver.
->=20
-> Currently this driver collection suffers from a sub-optimal division of
-> roles and reponsibilities, leading to (un)bind issues: after manually
-> unbinding the child driver, rebinding the child driver fails with
-> -EBUSY.
->=20
-> This patch series aims to fix this, by splitting off private data and
-> making the RPC-IF core driver responsible for resource acquisition.
-> After that, a few customary cleanups are provided.
->=20
-> This has been tested on the Salvator-X(S) and Ebisu-4D (HyperFlash) and
-> White-Hawk (QSPI FLASH) development boards.
-
-Sadly, I don't have the bandwidth to do a full review. But from a
-glimpse, it all looks good. And from a high level PoV, this all makes a
-lot of sense. So:
-
-Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On 05/12/2022 07:57, Xiangsheng Hou wrote:
+> 1. Add dt-bindings documentation of SPI NAND controller
+> for MediaTek MT7986 SoC platform.
+> 2. Add optional nfi_hclk property which needed for MT7986.
+> 
+> Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+> ---
 
 
---3141AOsAMOMu/lh9
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
------BEGIN PGP SIGNATURE-----
+Best regards,
+Krzysztof
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmONskQACgkQFA3kzBSg
-KbYZCQ/+J9lcmKr9+8n+KR8ECOOyla6PiySP7OhFib9ryO+tOUhFcBwRrNJaDj0J
-Q58ZuHzdo9mDoHct3MZaDuurFDKydb0VtUh/KBfrygvI4iSPK8KKELc3NXMyjBuY
-fdHISN3kPD8dZ4kER+g6NuQ/9xFI2QRfFSFYQm4BsztJgenHkqeVbgERs8j5zBZF
-I49AiK7zYq1bwRSOHV7T2ZVzUB1wpzDIHJNOBdZiXyeVejkB3stHfRvASlksFF6g
-VTTPsBLQ79mZV6o/+FiFYotY+wv34mqkBykBd6wxxcUqjusgW3ty33iyALUHySEK
-P2UrNBxUcNW9NHBh5FDhXaF8Wo9tHjYbdtZuRfKkvIqLVEJye7RkJ+wbDdG3QKyd
-z7BLyFGL4e0+2L18ClK3DzUV+sJYY1a8jw6aKZNKlrjbdirKwq9ZtIlvo9FtrzHM
-7a6jHGH88QpD0nsSBZt5llMqileVG75EiyrY/VsWRZZKYk1kP+qw6boK7y1HZcmu
-uKjPqtHVDPXnZAWJh8KkgV9ogYnwaqijxqt9SPlaB7bJoUOA1pXLNeyXZj+UTMHd
-hR+xmD/u5Q//rJ+wiO3HXfofl/ql4r2l/p67FRmVnKlFg0k75cYEddOYu2PXxGtU
-B64Za2UdTYGdXm0XUPJptoOeajBRo6FlSggm9q+kDCOfeSOw41Q=
-=QLgK
------END PGP SIGNATURE-----
-
---3141AOsAMOMu/lh9--
-
-
---===============8214707132106328584==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8214707132106328584==--
-
