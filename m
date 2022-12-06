@@ -4,76 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBC33C3A5A7
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Dec 2022 08:33:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FACAC3A5A7
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Dec 2022 08:41:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KP6pup7Ey/bRp9TUElwprfT0E1eI78fC2v0X+Yw31xk=; b=0t6oSpGzhnOvm1
-	yjhxgQG1OQoZlHCZ9FbvKP8fR5ST2RKRA8ozXCObTuFleZGpZtEHXgNA+DAuLzKscH9hKBW7VvzwB
-	fLE6srCbOdjHIKc0dvBzUybewg2YYjjT4FS92jHjaZt6B8bK4IENtMH31xjRzVgSaGM3gkkOPOhsc
-	xVrZZMGlJsGNoS7sQivNPSjicJXmxhNAnYMYRCmn/A9qqY1QM/44XJIP0h3iAAnNS8xsf/nR0NdY+
-	9wYcCu9gzrlhYUhZiQoP39vAu62zecJVdDdPuqYmZcyexOZKnI+TGa/KBJ62UZIPrVVe8IeZax2ao
-	r8Ej51Pbr9rUQjiwn4lg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=B65qKsC2ktAvhO/RRU4b06TNnxCO+z/FxBYqef+Yz3o=; b=kLbam6q+8j3Bp5
+	S9gHzz6sN2n0K9/nHKgnnBP1LEWgW5shBQrUwoxYOTp3w1XjG0PV4NgtByThKJ6XykBHNt2FUeHck
+	lisnigpqpskYriFjMjO/SdV8HFn1hlzx6V1rBM3qXvx2GwfclLznHnynyftiG8H1mWfKCjTnBMXW7
+	KcOk5PBTN6NqvPDI1KYtIV098W9LdS3onFaGR75fcecJestohnLEVwfAim+tn9fi61oYJPDLYwYCl
+	J5p8vPerr1gl9Z3c4CrQLHGSP5G/K4ro4Q0lKkw1hC2LFyl8uRRjLaRbbbs/E+hZ/r8gg1xlwCbz+
+	gyz/zU1r4DD7pR+WlxFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2TO5-004uSX-LJ; Tue, 06 Dec 2022 08:33:13 +0000
-Received: from mail-qv1-f45.google.com ([209.85.219.45])
+	id 1p2TW2-0053Aj-0J; Tue, 06 Dec 2022 08:41:26 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2TO0-004uQd-Nz
-	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2022 08:33:10 +0000
-Received: by mail-qv1-f45.google.com with SMTP id s14so9925212qvo.11
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2022 00:33:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ufiPGRxn+u+eF7V9lbnW/2wOS52DtOLgEOMLvePrXwg=;
-        b=AGoszs+3zXs8H5uPSKEMyq4+EbBl9QJYtWfjQkBOaJUkMsPkMumqSOpG/DvXwewalW
-         nvf34s/M7r4Lc3CThMPSVomfIykU8f41phLLOEaZidWZWOT4MGW+TqtblgI+J49x3ZSD
-         6o2RN0CBY3CTt7jrIHIqrnFsFObb9/DwzTdeiFlUbodXZa8dOhLKjsQ3E37fBw3dQjg9
-         HW344avem9q+WQIgre6jQEvm7dHj1PADLklUGnKAuqX/kn1DX3PMEC1rFGbcAS+RZ80i
-         tL3hkSUBWjgfJv+9feWKdcRvXW+Sc4gR0ZHnygTV4vcsjVLv+i1XZgjEwl/pHc9b/ndI
-         +uPg==
-X-Gm-Message-State: ANoB5pmI99DxIif2mR8Fh7Q+9OSW2VkAQzF8kn9Dle2aXdI6sT/OO/5/
-	HpeiCnXZeqgpQ8PPwNEllXwvc+/lU+kOsQ==
-X-Google-Smtp-Source: AA0mqf5ntO7p8fyTO1/Dfmf8+gxg2BAfK2DhMzRo+WGErpm2/9KxFJkbWoj4qOSRTb+3TKq0mejiWw==
-X-Received: by 2002:ad4:5811:0:b0:4c7:8952:630b with SMTP id dd17-20020ad45811000000b004c78952630bmr216551qvb.126.1670315585647;
-        Tue, 06 Dec 2022 00:33:05 -0800 (PST)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id w42-20020a05622a192a00b003431446588fsm11092788qtc.5.2022.12.06.00.33.04
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Dec 2022 00:33:05 -0800 (PST)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-3b56782b3f6so144113257b3.13
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2022 00:33:04 -0800 (PST)
-X-Received: by 2002:a81:1486:0:b0:36b:56d3:71b8 with SMTP id
- 128-20020a811486000000b0036b56d371b8mr16028867ywu.384.1670315584377; Tue, 06
- Dec 2022 00:33:04 -0800 (PST)
+	id 1p2TVy-0052nL-Ix
+	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2022 08:41:24 +0000
+Received: from kwepemm600002.china.huawei.com (unknown [172.30.72.55])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NRDPy2x08zQj6p;
+	Tue,  6 Dec 2022 16:40:22 +0800 (CST)
+Received: from localhost.localdomain (10.175.127.227) by
+ kwepemm600002.china.huawei.com (7.193.23.29) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 6 Dec 2022 16:41:10 +0800
+From: Zhong Jinghua <zhongjinghua@huawei.com>
+To: <richard@nod.at>, <ext-adrian.hunter@nokia.com>,
+	<Artem.Bityutskiy@nokia.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH-next] block: fix null-deref in percpu_ref_put
+Date: Tue, 6 Dec 2022 17:02:08 +0800
+Message-ID: <20221206090208.845185-1-zhongjinghua@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <363186079b4269891073f620e3e2353cf7d2559a.1669988238.git.geert+renesas@glider.be>
- <1503a3857107e3a4f34e0c7fb5dada39@walle.cc> <CAMuHMdXN+HJb=zGeG=3t=Pie9cVpnBLYuEb_qX6=oSxG8eTkAw@mail.gmail.com>
- <20221205163306.GB2012644-robh@kernel.org>
-In-Reply-To: <20221205163306.GB2012644-robh@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 6 Dec 2022 09:32:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUcrh26MNYuiqiC0_FMkeHtq1YnJrZKHEV_WQm5Dgzoaw@mail.gmail.com>
-Message-ID: <CAMuHMdUcrh26MNYuiqiC0_FMkeHtq1YnJrZKHEV_WQm5Dgzoaw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document support for
- more MT25QU parts
-To: Rob Herring <robh@kernel.org>
-Cc: Michael Walle <michael@walle.cc>, Tudor Ambarus <tudor.ambarus@microchip.com>, 
-	Pratyush Yadav <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-mtd@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600002.china.huawei.com (7.193.23.29)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221206_003308_797490_AF87DCD1 
-X-CRM114-Status: GOOD (  33.57  )
+X-CRM114-CacheID: sfid-20221206_004122_817780_695A0C27 
+X-CRM114-Status: UNSURE (   9.82  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,60 +66,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
+A problem was find in stable 5.10 and the root cause of it like below.
 
-On Mon, Dec 5, 2022 at 5:33 PM Rob Herring <robh@kernel.org> wrote:
-> On Fri, Dec 02, 2022 at 02:56:01PM +0100, Geert Uytterhoeven wrote:
-> > On Fri, Dec 2, 2022 at 2:50 PM Michael Walle <michael@walle.cc> wrote:
-> > > Am 2022-12-02 14:37, schrieb Geert Uytterhoeven:
-> > > > Document support for the Micron MT25QU256A and MT25QU512A Serial NOR
-> > > > FLASHes.
-> > > >
-> > > > Merge the new entries with the existing entry for MT25QU02G.
-> > > >
-> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > > ---
-> > > > mt25qu512a is already in active use, causing "make dtbs_check" errors.
-> > > > mt25qu256a is supported by the Linux spi-nor driver, but there are no
-> > > > upstream users yet.
-> > >
-> > > Is it encouraged to use the specific compatible with SPI-NOR flashes?
-> > > As far as I know it isn't. The spi-nor subsys tries hard to identify
-> > > any flashes at runtime and any additional information in the device tree
-> > > is used as a last resort (just for flashes which doesn't support the
-> > > read jedec id command yet). And usually boards have different sources
-> > > for flash chips, so hardcoding a particular part in the device tree
-> > > doesn't make sense.
-> >
-> > Thanks, I am aware there have been pushbacks when trying to
-> > document more compatible values.
-> >
-> > IMHO either all or none of them should be documented.
-> > If device-specific compatible values are discouraged, the bindings
-> > should be updated to reflect that, and document a single compatible
-> > value ("jedec,spi-nor") only.
->
-> That's already allowed, so there's your answer.
+In the use of q_usage_counter of request_queue, blk_cleanup_queue using
+"wait_event(q->mq_freeze_wq, percpu_ref_is_zero(&q->q_usage_counter))"
+to wait q_usage_counter becoming zero. however, if the q_usage_counter
+becoming zero quickly, and percpu_ref_exit will execute and ref->data
+will be freed, maybe another process will cause a null-defef problem
+like below:
 
-It's indeed allowed, but the alternative is documented, too (for some
-values).
+	CPU0                             CPU1
+blk_mq_destroy_queue
+ blk_freeze_queue
+  blk_mq_freeze_queue_wait
+				scsi_end_request
+				 percpu_ref_get
+				 ...
+				 percpu_ref_put
+				  atomic_long_sub_and_test
+ blk_put_queue
+  kobject_put
+   kref_put
+    blk_release_queue
+     percpu_ref_exit
+      ref->data -> NULL
+   				   ref->data->release(ref) -> null-deref
 
-> The caveat is don't be adding them later to your DT when you find an
-> issue and new quirk properties will probably be rejected.
+As suggested by Ming Lei, fix it by getting the release method before
+the referebce count is minus 0.
 
-Adding them later to your DT when you find an issue makes no sense,
-as that breaks compatibility with older DTBs.
+Suggested-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Zhong Jinghua <zhongjinghua@huawei.com>
+---
+ include/linux/percpu-refcount.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Gr{oetje,eeting}s,
+diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
+index d73a1c08c3e3..11e717c95acb 100644
+--- a/include/linux/percpu-refcount.h
++++ b/include/linux/percpu-refcount.h
+@@ -331,8 +331,11 @@ static inline void percpu_ref_put_many(struct percpu_ref *ref, unsigned long nr)
+ 
+ 	if (__ref_is_percpu(ref, &percpu_count))
+ 		this_cpu_sub(*percpu_count, nr);
+-	else if (unlikely(atomic_long_sub_and_test(nr, &ref->data->count)))
+-		ref->data->release(ref);
++	else {
++		percpu_ref_func_t *release = ref->data->release;
++		if (unlikely(atomic_long_sub_and_test(nr, &ref->data->count)))
++			release(ref);
++	}
+ 
+ 	rcu_read_unlock();
+ }
+-- 
+2.31.1
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
