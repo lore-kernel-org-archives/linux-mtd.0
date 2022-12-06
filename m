@@ -4,63 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA836C352A1
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Dec 2022 15:27:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 624BEC4708D
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Dec 2022 16:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tLPIE4PKg3rIC/xfwU5dQ0TWqBE43n8AHsUUmfmUOB4=; b=4M7BFLWfI7lKeO1UOdE4vmvPyw
-	MZqAw9RZMzUiCX6I/r0vzFl2aQDdv0c/QQja6hf1GwNhQzTZQa/DEO0jMS31TdfazbcPIa2dj0U9N
-	NNDM4Ey5Yftf3LWXcSsGaIc09TKGPpzGk0EfYkobHscxQhbNxvN10Fozb/byca1qU+yt/tL+b2Rej
-	lN1VhmkXvM5c1T/qdLMFvUFiqZyNAOnKZ5hrwqswZSS0Yl4Pb5z5lXdWnMebTXNHDyHES2wwMf4En
-	laN8US1JnIvmT5VpoxFm6/EHgDYt0FbB5sdTxWU1qXnZ1o6wt/PATTMS35Wh63erla9vG5lVyzD2O
-	5Y0A3H4Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cSGw9Eh7CX6WJ0BxzJJDjiBqpFdItqoDivPRCPHDiCc=; b=h/f7r/Mp4H8lq1
+	GxUuauNamZLTtvUajP9dME1DOXCucMitCC/kNIvAy1K7RkPI9foTXgSOaKZRcfnNTCi04bOV0uuys
+	2XOStQCya/jblLYOoPSUyMkf6MR/a9Rl9bJjped+PNiUIfg/XAYRVI53lcXoBetyhJvdiK75NZZyq
+	KELTmCO2+trZ2OUTRTRoPklvTG+RThMyWevgWWTiZNlBG8RlOUI+WoCDObRrh5yQATRTuXe7SwKkn
+	gt53cS8tBOQdjW4SeCNoph8SYiMcJw5UgOdZA+ylY5FgsE6cNy5ZCVBViENLGdsiCX7KNySWOrYmZ
+	A2x23rF2NEGOr8dw5GCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2Zpk-00CMwp-E0; Tue, 06 Dec 2022 15:26:12 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1p2aR1-00E2jw-Lm; Tue, 06 Dec 2022 16:04:43 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2Zk8-00CEX9-8L
-	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2022 15:20:26 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	id 1p2aQk-00E27h-7i; Tue, 06 Dec 2022 16:04:27 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 3AA7115A7;
-	Tue,  6 Dec 2022 16:20:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1670340016;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qnwdjB3Mg5HPzl2dLPVLEGGciQ6HTvHeDUycm3jvEmI=;
-	b=edrk4JCz/U3EWnN86SAHZhrcRxHUnNSRZGMarj0ZKYc6p3qowKQw2pXnRRik+ExjTZK/ag
-	PAaCPa3z1DEGLIMjgdCl3EV4NXAFr36sZG/7yderyhF0yMkydd/vv2TYlDZ1nCWRk+5ugM
-	dOu7Bvyp7oV4RVwqZe8aMWu0zvxRTyuwY6xNQQ+Fe8PwH/i+tvH95ppeFgd/4WOiiEOyd7
-	YwItJWb/2/ZSkWWksrr7Oep+ZExB6b/Z3AbaZtCisutS8raoR4CQ47WYfjnuDcbZmB3SNP
-	0E+YNdJ1+rY6RNoB6lVy2YlqSkZUsH52K9FSarFIAPhV1OZFENU8NKH9eyQtkA==
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 921F8617C2;
+	Tue,  6 Dec 2022 16:04:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 263CDC433C1;
+	Tue,  6 Dec 2022 16:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1670342665;
+	bh=Szlr9bhRSHRa3/F8OFwm0BojO1dnfBM+g8JhZoyroVQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=EuHdyOO7jfOqgp/M50bX1Vr0lYkcoMJ0gPiTJr33pdky/0JRMb+5J+sZBvWEU0ENI
+	 s264f0V25aj0eqe7VkWzwOS6m7wqx02l7A1MI+USSIqWtVOgFPwF6S1k1JLPWRgOaz
+	 L5PSESakgZf5/kmeSOY6ZM+JSIYiTYhs8zi2krXQwXnlJz+/bGfWEhUTgTWuQBY8rX
+	 8f2EZtwSdGdJS5ZOizfU6w4fUGlunL/X8/vd+vbPVB+5qMpfhszUeemCdaXdaxCTuP
+	 pw0EnSbeFcNeFDfRtEiY4QJo3HIAvrOjJlka1Sy6vacGHi3kbxiQySBwsVkhC9+KES
+	 PRzMbhZbDP2PA==
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Chuanhong Guo <gch981213@gmail.com>,
+ Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, benliang.zhao@mediatek.com,
+ bin.zhang@mediatek.com, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+In-Reply-To: <20221205065756.26875-1-xiangsheng.hou@mediatek.com>
+References: <20221205065756.26875-1-xiangsheng.hou@mediatek.com>
+Subject:  Re: (subset) [PATCH v2 0/9] Add MediaTek MT7986 SPI NAND and ECC support
+Message-Id: <167034266187.169562.7872281598428362203.b4-ty@kernel.org>
+Date: Tue, 06 Dec 2022 16:04:21 +0000
 MIME-Version: 1.0
-Date: Tue, 06 Dec 2022 16:20:16 +0100
-From: Michael Walle <michael@walle.cc>
-To: Victor Lim <victorswlim@gmail.com>
-Cc: tudor.ambarus@microchip.com, p.yadav@ti.com, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- alejandro.carmona@amd.com, amit.kumar-mahapatra@amd.com,
- vikhyat.goyal@amd.com, Victor Lim <vlim@gigadevice.com>
-Subject: Re: [PATCH] Linux: SPI NOR flash: adding parts to gigadevice.c
-In-Reply-To: <20221206111037.8999-1-vlim@gigadevice.com>
-References: <20221206111037.8999-1-vlim@gigadevice.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <b28701983841143c1d1f456fa15ac88a@walle.cc>
-X-Sender: michael@walle.cc
+X-Mailer: b4 0.11.0-dev-da105
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221206_072024_504664_83BAC210 
-X-CRM114-Status: UNSURE (   7.68  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221206_080426_342214_6C10A8FB 
+X-CRM114-Status: GOOD (  15.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,31 +74,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-12-06 12:10, schrieb Victor Lim:
-> Please find the part #s added below the line
-> /* adding these parts */
+On Mon, 5 Dec 2022 14:57:47 +0800, Xiangsheng Hou wrote:
+> This patch series add MediaTek MT7986 SPI NAND and ECC controller
+> support, split ECC engine with rawnand controller in bindings and
+> hange to YAML schema.
+> 
+> Changes since V1:
+>  - Use existing sample delay property.
+>  - Add restricting for optional nfi_hclk.
+>  - Improve and perfect dt-bindings documentation.
+>  - Change existing node name to match NAND controller DT bingings.
+>  - Fix issues reported by dt_binding_check.
+>  - Fix issues reported by dtbs_check.
+> 
+> [...]
 
-This isn't better either. Frieder already pointed out the mistakes
-in the previous thread.
+Applied to
 
-But in general we need one patch per part with SFDP dumps and also
-some testing with this exact part.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-But in general, if you worry about not being able to boot with
-these flashes, there is now a generic spi-nor driver available [1],
-which uses the information from the SFDP tables. So I'd presume
-every new flash should be supported at least for basic operations
-out of the box.
+Thanks!
 
--michael
+[1/9] spi: mtk-snfi: Add snfi support for MT7986 IC
+      commit: 7073888c86601389e17f3ee8ab15ab7aef148839
 
-[1] 
-https://lore.kernel.org/linux-mtd/166903807811.85501.6803386075881922742.b4-ty@microchip.com/
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 ______________________________________________________
 Linux MTD discussion mailing list
