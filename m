@@ -4,71 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99A01C47089
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Dec 2022 19:08:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83149C47090
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Dec 2022 08:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OfdeNF056F//7jLRHZqyGJvLC5zGdlpC6UTBhtWP2MI=; b=dk0qbwwL0MupRE
-	HNx8kZ1/+tNnF1iktfs22A1aVbwz+F1c7l2SIVRjhFcb1bL58Ze1GH61U+gbwyQLf6keo08J1VMNs
-	2UzNxjecbpE0k2CPjTk55TFGMZykyotG0eJgLkS8GI7vo0/918FC28WgJUmkzfj0Rr7Y+/ium7etq
-	xIU3sP8KpF8C/ZGtRqYeP6H/FoDfoQ6vqt9JnRmDL3MWoyBJpQawiSnoVEtuvj1u62Io4fZYITQST
-	LDRGWpNP4x+x81wCzYud27c5Js8rnX1PuRj8Q0AaXPwJvme3k7sFeABq0GdLzrFOCYQMDW4rLjwIK
-	Xu4sok1dCzUMPP366Jlg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bcwEGeZOb0MEzh/ZGyDlfWn0C0Hf+sxWHZ5J/A/2+ko=; b=jC0BOgzieoVi2GZ6ybnzFUTFOl
+	c7b7DPm9b7P9MxcglU2kZpQU+GFfmCUCIT/TtMUR0wRxIBc2sX7iZmwTCn2qK3AB9NRhNyba6+PLb
+	mepG7ud1KA3reoMbj4+p8V4ZumYS/zktlc5Lop81yKpUTUtrHrteP0QnhO11aKUvDrcvJfo91YDwn
+	YvYmuFN5CzwSk2+YBgtQkOpm0oBjBHM8FntEw+27fq0xFf1ckXaD5W5kCFwjfkicY83zQAfpTmc0b
+	HGcAQyfXlpg9uNSIPnhToAxAHZIpQSJgzLDrbrW3DIvFvYQCrrEbenVlJ9m+lQFtBx5n+5a0esyFi
+	y12xh3mg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2Gof-0096F6-1q; Mon, 05 Dec 2022 19:07:49 +0000
-Received: from smtp-out-03.comm2000.it ([212.97.32.66])
+	id 1p2T9C-004cUH-Jt; Tue, 06 Dec 2022 08:17:50 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2GoS-0095m8-D1; Mon, 05 Dec 2022 19:07:38 +0000
-Received: from francesco-nb.int.toradex.com (unknown [213.55.243.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1p2T98-004cIW-Vf
+	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2022 08:17:48 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: francesco@dolcini.it)
-	by smtp-out-03.comm2000.it (Postfix) with ESMTPSA id 43E18B474AA;
-	Mon,  5 Dec 2022 20:07:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
-	s=mailsrv; t=1670267252;
-	bh=2PZUfJSYd8pUEKuEGRJQTqBQHftyQpzKMAjMYXWyBWg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=z99rN3uXoOuGkbIA01MARMuQWaogCP7WHvnxIiAcmdKCnlE9dE02ZMl/xs13R+9Yh
-	 TEgc3QR+O15gGaIUAwK0DigCJnO3AuGwKDmk35O8yLjJ1jtzXlUD1CAnUZlVGPMkQj
-	 KSOz0WkKVoVtxcLZ5xzVhssN0t/3S3uQbX2x0QMwhLYmAx6xw5h2FMxvjGdXN46jmN
-	 ynE12mXtO4Cz0Cpuzj1O0bBEBL4QmgSIgQu7zWwXkYFzLDFv8zmuqeXoxvKxh+HuyV
-	 6CGmC7k6GZTdMgeTgWuFmhOgoayVKZ+QpcSwzdyuMO1SlmbpdqYULl2XIfiGnq5IDc
-	 N8UdzevdkWwAg==
-Date: Mon, 5 Dec 2022 20:07:18 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Marek Vasut <marex@denx.de>, Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Francesco Dolcini <francesco@dolcini.it>,
-	Shawn Guo <shawnguo@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>, devicetree@vger.kernel.org,
-	linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: Re: [PATCH v1] Revert "ARM: dts: imx7: Fix NAND controller
- size-cells"
-Message-ID: <Y45BZs7dZokgz83I@francesco-nb.int.toradex.com>
-References: <20221205152327.26881-1-francesco@dolcini.it>
- <0aa2d48b-35a0-1781-f265-0387d213bdd6@denx.de>
- <20221205185859.433d6cbf@xps-13>
- <f69746b0-51c0-041c-4035-679c27fcba64@denx.de>
- <20221205191828.3072d872@xps-13>
- <29260d63-3240-6660-b002-cd00dc051574@denx.de>
+	by mail.3ffe.de (Postfix) with ESMTPSA id 43810126D;
+	Tue,  6 Dec 2022 09:17:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1670314663;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6s4cTi1vPx1lT99w7gcEu65YdC3MGfHB7p5R+XR4p4U=;
+	b=ob1t0gLMJPazAqQkmbSP/tuTKYGDYWefM9gGUEn/GHS7a8PYoy2i43fb59b5fXrjAkEqKd
+	rCvNnifxFIw1FBT+zdGarmWsYTyvmABtoDyMrHv/336fHzXMZjNx6Vb4XAAQavZ0hxH3WX
+	6rON1ZlEQRBxKuqBXpjcSAuMIhNBUW/DNXU2/r0BnAmP3fZ1JKloN9Gy6ok5dRTche3660
+	r6+1YyzWtz/Vym4bO8PpT+w+hl26qeGsxqLGG8mqmsccZY8y9rZfdUCuFK4Eja605QFk76
+	8jEBIhuOoJNiwtZkPZFpd7NSTeVAPBrLaxZCqIK30FDjmymtUf9MY5whxEkGKQ==
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <29260d63-3240-6660-b002-cd00dc051574@denx.de>
+Date: Tue, 06 Dec 2022 09:17:43 +0100
+From: Michael Walle <michael@walle.cc>
+To: Vlim <vlim@gigadevice.com>
+Cc: Victor Lim <victorswlim@gmail.com>, tudor.ambarus@microchip.com,
+ p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ vikhyat.goyal@amd.com, amit.kumar-mahapatra@amd.com,
+ alejandro.carmona@amd.com
+Subject: Re: [PATCH] Linux: SPI: add Gigadevice part #
+In-Reply-To: <TY0PR06MB5658B73E2F22472D0AF48BDBBB1B9@TY0PR06MB5658.apcprd06.prod.outlook.com>
+References: <20221204080000.4100-1-vlim@gigadevice.com>
+ <dee37d18f8de5af7d07388031fc08571@walle.cc>
+ <TY0PR06MB5658B73E2F22472D0AF48BDBBB1B9@TY0PR06MB5658.apcprd06.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <d147146428a078bd01ddbb5c1a9a65ce@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221205_110736_618582_3F0F0788 
-X-CRM114-Status: GOOD (  19.22  )
+X-CRM114-CacheID: sfid-20221206_001747_206373_3435B7CB 
+X-CRM114-Status: UNSURE (   7.14  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,39 +75,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 05, 2022 at 07:52:08PM +0100, Marek Vasut wrote:
-> On 12/5/22 19:18, Miquel Raynal wrote:
-> > marex@denx.de wrote on Mon, 5 Dec 2022 19:07:14 +0100:
-> > > On 12/5/22 18:58, Miquel Raynal wrote:
-> > > > , it's not
-> > > > complex to do, there are plenty of examples. This would be IMHO a
-> > > > better step ahead rather than just a cell change. Anyway, I don't mind
-> > > > reverting this once we've sorted this mess out and fixed U-Boot.
-> > > 
-> > > Won't we still have issues with older bootloader versions which
-> > > paste partitions directly into this &gpmi {} node, and which needs
-> > > to be fixed up in the parser in the end ?
-> > 
-> > I believe fdt_fixup_mtdparts() should be killed, so we should no longer
-> > have this problem.
-> 
-> The fdt_fixup_mtdparts is U-Boot code. If contemporary Linux kernel is
-> booted with ancient U-Boot, then you would still get defective DT passed to
-> Linux, and that should be fixed up by Linux. Removing fdt_fixup_mtdparts()
-> from current mainline U-Boot won't solve this problem.
-> 
-> I think this is also what Francesco is trying to convey (please correct me
-> if I'm wrong).
+Hi,
 
-Yes, exactly, thanks!
+Am 2022-12-06 02:27, schrieb Vlim:
+>  I will redo the patch following this doc.
+>  At the meantime, can you point out a few mistakes that I am making so
+> that I can correct it in the next submit.
 
-Francesco
+I really don't know what you want to achieve with this patch. It
+has a bunch of renames. So what is the intention of the renames?
 
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
