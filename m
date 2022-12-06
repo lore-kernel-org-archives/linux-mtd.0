@@ -4,83 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29051C352A1
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Dec 2022 11:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1574BC352A1
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Dec 2022 11:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=A4wELXSnVEyu2uZfeZF5Z+ICewPMKIqLFvl2hEww28A=; b=MVPEJsKG+ovx+k
-	Di8U44Y9EF8lNg2nKkI7bEMI3BT5lU8q8lVlaI/VVcvukUuwOOahKFRm1JozAYDczclPSL4wY/hj+
-	KEDbxP2c5m04yy5aUrhrYao5bmTcjL8vq/hWYL61AcCUJM/sUsaexvJCUe7qaI2ZhA1r4Ji42pmB4
-	Ktgka0Ma0gLvCBOOB6FAsOnLi5DK5cP7ZZRviyV4gzidCcnsRDr3yYADEdVFstikUxLpKRWalHSLZ
-	kXc4mwZTk3udju1yJCq1b180t9F8XdcF5kFt09SPLKWmUnzj6HNexaRTFtsjPQ63szsQ8cvyJnD2C
-	IR/2IbpsoshqsjitqRrg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
+	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=tGTGoN2bFZQ5xgNg6NP+DluerErgKfjLuchlNulBY5U=; b=m9j7ui0R/2SaCyoahEBA7Cdrig
+	/7ob/YiVaKRMp2OcXbhunt0RfKeycqmxTjRrqAQkD5Ojhwn9KcAIMaScY++SY+wtrtmTJxzIj8vmU
+	LLUjDW94nRLc29+HWC+b4HTP5g1tp5N73zNqlbrPE7u//0aOAN9Tn3c3vpGRZ768st79ilUx1WhFS
+	haMQsGUHkUYH2ZEiNdbQb5YrW4pW1ufvdhP7lXokMfJZB4JRuma5V14i8gMnKl1O5CAGhnVbOQQKb
+	pQTvQ5JDZdlMEOkBFHLrhTtbEznwGwZZJkWNFnb5uykokdeKIflb/0edt40lCAEDKpoxDydRtFBX0
+	ks7OAxGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2Vqs-008CgQ-N2; Tue, 06 Dec 2022 11:11:06 +0000
-Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
+	id 1p2WHy-008Yw3-Q0; Tue, 06 Dec 2022 11:39:06 +0000
+Received: from mail-vi1eur05on20707.outbound.protection.outlook.com ([2a01:111:f400:7d00::707] helo=EUR05-VI1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p2VqZ-008C9B-59
-	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2022 11:10:48 +0000
-Received: by mail-pf1-x42d.google.com with SMTP id 21so14209221pfw.4
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Dec 2022 03:10:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=F5w2zEM8EXKIkF385aRGie8u0O3eCGxHYZ/xpr8+2GE=;
-        b=KQcctkZcro++RfetAlHhe950vKjREL1k9+bGqhYOThOwFhuVqYY16nt19bH954BfVy
-         mH9Vsw4ydR5Vn7r4JrvfdLLIwT+g8T+ybZZcYP8/j9p7Ypie2SmhqQ4HTdgtpiYvPE4D
-         Xq6XZt6ge+n0u02IMwRbUiib84mEbhUTpiG6n0cXNpc197mZxKCFqg7bMFsSrcqy2fFX
-         K9y+1zgMU0CzsOhT+z567+Q3X8O+NVAb8FwtG76l7PValWDpFdO6LuAdjwgKYAzNiH5G
-         AjSI+k4/kTUya61gRgegQ7/WTnF3mDzsKGi7SVPbdHupDEeSgeGvwpFROL5+Hw1E0lSV
-         ZoUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F5w2zEM8EXKIkF385aRGie8u0O3eCGxHYZ/xpr8+2GE=;
-        b=Y70GQ0bX53kuc77PguO3WDLNux2RhBBj5ykwwkxPQUzrP28TKN887Cu7/Dz4vsays7
-         kJH9nSqIaLoYUWcM/5S0fppyNrpm0tcSqmPXid0q22hV6sEKsRF3dibsS9T1wVjW3+az
-         UpC6QbanJ4jtldC8OMFh9REVaWeuhRSMgJB3b04FLW9q9FS79sGRaufuBeKiJMgIRxof
-         ormDuyvzvpWR4P+03C8rB3bjIJ1V27NQUDIa/ClUFsbkJL8jLKPyEVaYaIvX6RBP9Vwx
-         1NfBuJLUp/xBOnuJt9R4tmB16UnRwjFIHsJ6dWPU9189GgckHU+HXAsKK8mH1YVVqfdT
-         ndPQ==
-X-Gm-Message-State: ANoB5pnNba2dhc3pvUZwsGNBDWGuype+IQTWcqp3/s8CI6gPcktSn4X+
-	xZp0y2tbJhnXWiIdI4dqBFo1UIrTC6AvPrLN
-X-Google-Smtp-Source: AA0mqf7vk5qJ5C2EhK83YgDc7Brmif8GJKtY81sZ61o448V6n52m3FOnKJB73WI2cag9yrS1Oq6N/Q==
-X-Received: by 2002:a62:b501:0:b0:563:771d:417f with SMTP id y1-20020a62b501000000b00563771d417fmr70248777pfe.45.1670325044897;
-        Tue, 06 Dec 2022 03:10:44 -0800 (PST)
-Received: from victor-17Z990-R-AAC9U1.attlocal.net ([183.171.191.59])
-        by smtp.gmail.com with ESMTPSA id k1-20020a170902c40100b001895b2c4cf6sm12342293plk.297.2022.12.06.03.10.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Dec 2022 03:10:44 -0800 (PST)
-From: Victor Lim <victorswlim@gmail.com>
-X-Google-Original-From: Victor Lim <vlim@gigadevice.com>
-To: tudor.ambarus@microchip.com,
-	michael@walle.cc,
-	p.yadav@ti.com,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	alejandro.carmona@amd.com,
-	amit.kumar-mahapatra@amd.com,
-	vikhyat.goyal@amd.com
-Cc: Victor Lim <vlim@gigadevice.com>
-Subject: [PATCH] Linux: SPI NOR flash: adding parts to gigadevice.c
-Date: Tue,  6 Dec 2022 19:10:37 +0800
-Message-Id: <20221206111037.8999-1-vlim@gigadevice.com>
-X-Mailer: git-send-email 2.25.1
+	id 1p2WG7-008Wx8-G1
+	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2022 11:37:12 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eVJCppWKiui0bcsXRQsM9JJi6m6JfaZ9HwJH5usFnJmn+VVWHB/PortP2T6K9FcjQk/vAXd9rtmkF6wH8lVRNUAFxORu2nnV5AUG6QshFkYBoczL1sEnV4NNyc4zDby95nW7ckVMHTWNCeHBP9v5akh437vlnaDL/N5hNd+6Ct9ajnJ+2IN8lFgKmEicTlUkA1EHftO9ZX6EVF0vpqZyujQWmm4Ba4jKhyep1QGCjcfRTH7SIIVGBCqZLdc4wUOt470bA89RVTV8e4oVCPmWMbdYIJP4i5AGQ8m+D9tN0cNZssylyS7HcBUeTaRaJGCnqw1x9Zllb/t3FwedB44tPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=itH3zC3hBn+5fO9ZxqKQ1Ca3nuJm9tamdTyLySDyjjk=;
+ b=UAP72EGk3T4py2GKAyY7oz+gSS0uC0UqxxEbaIs61hLiCm81PhuQ2AJAsPlW0sC3XFwsnVmgbjWun7sBIveHmZiNpvQCziPcanb5qH9gRCKE2GT/nCCqHaqOnpxrTj7yfVPEhNSeM3zqAnqVuTnVeEh5qS3JWUK3LRdelmbHB29AIgYXv9WUK7aBFlnNxsObt4sEiG2V68JBj5d3iywAazVQcs10dZgU+r+rh2YXF3E1Dwbq3MMUOKV3hDbJeM6wl5tIHWdsvywxB4AB6mSU9bcAd52KelHrXlcpsoF2GrDz7pbRIDBc1IenjMX9D65HsKNG0sYTkAmhp2j9ErWa7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=itH3zC3hBn+5fO9ZxqKQ1Ca3nuJm9tamdTyLySDyjjk=;
+ b=RodBKMxr3WlK88J8e8N1V2I5bBfTfpz6UnjaPlF7ROqU8zPBi8Kuhh+FJ2TCIA3l5r3merlWLnkZ6n6cxRYKaa7kYs+dxDOD3yuFozUwlWuSR6+y4jyMjdNmWsjnfKFS446i781hCWXu0q0g/BjZ5cO7rG9yK9U39lBpFQ5n0Vc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by PRAPR10MB5398.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:292::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.13; Tue, 6 Dec
+ 2022 11:37:04 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::f209:bc86:3574:2ae6]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::f209:bc86:3574:2ae6%6]) with mapi id 15.20.5880.013; Tue, 6 Dec 2022
+ 11:37:04 +0000
+Message-ID: <208ffab6-a20b-c6f0-7ea7-cb258a7c894c@kontron.de>
+Date: Tue, 6 Dec 2022 12:37:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH] Linux: SPI: add Gigadevice part #
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Vlim <vlim@gigadevice.com>
+Cc: Michael Walle <michael@walle.cc>, Victor Lim <victorswlim@gmail.com>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "p.yadav@ti.com" <p.yadav@ti.com>, "richard@nod.at" <richard@nod.at>,
+ "vigneshr@ti.com" <vigneshr@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "vikhyat.goyal@amd.com" <vikhyat.goyal@amd.com>,
+ "amit.kumar-mahapatra@amd.com" <amit.kumar-mahapatra@amd.com>,
+ "alejandro.carmona@amd.com" <alejandro.carmona@amd.com>
+References: <20221204080000.4100-1-vlim@gigadevice.com>
+ <dee37d18f8de5af7d07388031fc08571@walle.cc>
+ <TY0PR06MB5658B73E2F22472D0AF48BDBBB1B9@TY0PR06MB5658.apcprd06.prod.outlook.com>
+ <20221206091846.02f6396f@xps-13>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <20221206091846.02f6396f@xps-13>
+X-ClientProxiedBy: AM4PR07CA0008.eurprd07.prod.outlook.com
+ (2603:10a6:205:1::21) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|PRAPR10MB5398:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4fe3543e-2bee-48b2-e871-08dad77e32c0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	RVf46CvFt84DXpe1BnE1V7YzESpbJ5iPZqfWDilPRNHa5VtKV1xmGh6Tjmc+D17XryEHrn+ut3OmptEZHHZkJOEHipNXa5GxKd4br79fyEWsZJKsaC6dQrlatnpYxjldUSaV9yiNfyarfagNJggUd9/h+tfdBlGe4r2nCPEDgjZn5UDjoNhNpBNpR9QnBbX119RolQtdFhh2z9jnm+f/uh9ub3GCHidwQJN9lTAuwExbt8c/oohtZRuyv4GkfsMIXd2Fh5fNyaTai3bWoxBZqbAgi7veWE2DPVEnvWs7r4qrMpX2bEZzxxTigbYzwFG8oeE25MJtO8NKdlIKQwfGx46a+fAH2Q0En8DKFGkcQTEDIn6x9IggozaW+VVC1nvsiV4h3RCep6dZvIeKF08kJSk4DXZK6x7kZ9JAaZ4gxRBP6mUzSmyGCOiernvloOa5IfuD/3yVrb3M+hoypujm0RL3VzBM2VAq2PEwNm+7APT1jtSKRpiJaynFrle0OhgjCPdTmgDx+QoXHDvYwselM5TvyM4eICLf4q3lgLcsNoIm5q8OUlBBEN0qLeVIizWFxo0OV0uR0GSdfofHCOis6mWN0YzPMey56qveZEiQrPi/TLYIGCzNHKWmFoW/KwkQfuknctwE7vkJyFumZC7B6NoXeXqi0zaEYDjqQe94KhaOYZCXNOhJLAl+GFY/wNvr4LtU6nK1xQK3U5QA1kE/8ILSGKin8FxG2r2r0ZJanNc=
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(376002)(396003)(366004)(136003)(451199015)(6486002)(66556008)(66476007)(8676002)(4326008)(31686004)(4744005)(44832011)(2906002)(66946007)(316002)(7416002)(36756003)(110136005)(5660300002)(54906003)(86362001)(31696002)(6506007)(53546011)(186003)(6512007)(8936002)(26005)(478600001)(38100700002)(2616005)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?utf-8?B?WGVKMkdSYTdHSC80c3pBY0dWM3JQeFRnanhJRS9UTk40QlNXTEIrQnpVaVBv?=
+ =?utf-8?B?NGJWbExiRlQ1TzdyRjZJSVhiNjFlcEtMNFhGV3lwSDhmU1ZET0NpdFVvVDhl?=
+ =?utf-8?B?OFBsRmxYTHVqS3dwczF0RlMvanJDMUpRSkpuc2F5TzlvSnU1WDhGaGk1VElS?=
+ =?utf-8?B?T0xhbFN0NUkxekIwQXEwL1pHVk94eVdtRDVpT3B2NjEzZG9hZnRxd3hubGNN?=
+ =?utf-8?B?U2FpdTFkajZiUmV6VmdFQ2FUREYyYnBrZEFCVHR3aG1NUXZPZy9lZlJTQWJK?=
+ =?utf-8?B?bVlBVG16ay95eGZhaGlwYkhUV3lxUTZrRmFTY3g4NVZOVmZuTVpBcmE4VWFq?=
+ =?utf-8?B?d3BrZjBQYlBRWVRPTU5Qc2hrbEtuWjZYekZwcGNwcTlFUG4vQk5tQ3dYbEpV?=
+ =?utf-8?B?bCtwS1VKWnZvRjBVRG5qWi90RVNtcVpSODNPRUc3a0tyN3ZrbTFnT285Zlhk?=
+ =?utf-8?B?NlZGL2tYTjY1c1J2TkdSR00xK0pGMjdMaFdWY3IzWVVSeUVhUzNWWWlnS25k?=
+ =?utf-8?B?OVgreWxSMVlkSEM2c1RKVnE1ajQxSUhla1pZOEFJZ3hJU2R0cWc4MXVJS1dX?=
+ =?utf-8?B?azVnZjc2RTZMNnNNOGVNSUVVeVozTkJtRDVwVzdXQ2hDYTVadkJSUk1PaHZC?=
+ =?utf-8?B?bldkaFBhZWt0YUlsNno2OUp4RFNMSzUrb1I1S2dwUDhpMTRCVm5nMVhoQTRS?=
+ =?utf-8?B?MXd4UXJySmQ5c0lpVnF6YUVLOXRCMVhQNG40Um9XZERUcjRoVjA4UDVsdEcy?=
+ =?utf-8?B?ckdGanFOZDhYNUltYUV2U0FvbU8xTXBTZnVXdEZ4UXdrVkxRQ2VzcmZXTzVi?=
+ =?utf-8?B?dUFqS1lJRFZOZFpYcENFT2xuaWxxRHZ1M0FJSExwQ1BlUnRyTTliSjBHQmZn?=
+ =?utf-8?B?UEthWW5qY0hWODBCSkpaRis4VjJWVGJJM25qYldWMXF3ZlQ1bG9XemdrL2Ir?=
+ =?utf-8?B?NjMvY29UNHhIVkw5UFUrbSs2Y0ZqN0pOMVN5L01MQzRHN2IvejFMeU1Ia0Zw?=
+ =?utf-8?B?NWlQdzE2ZFEzWUVqZndiM0RFTHU1U3AxRkRqYno2RHVTdzdXOGJ6Ukw1emtQ?=
+ =?utf-8?B?TjBtOWR6bE5xYU5ha0x2L1NGMk5CWmw0RHNIa3J5NFhhOUFPNTZmNlFSTjZP?=
+ =?utf-8?B?VGZFNERWT25CM2ZCUjJKbzEwa0QycXg1aXIrZEk4N3pxRGRuRldLV0tZS01E?=
+ =?utf-8?B?ODBjYWwxV0xzemtBbzI0RUlaaFpqY3BKTXFSODVXcWkySTlGcktzUUo0bmZm?=
+ =?utf-8?B?YUw2K3NKd0liOVczZDV1TUVKUWowWnN5MTg5YjJLOTdKTFFLZjRTQkpON29Q?=
+ =?utf-8?B?Q1RpR1pWZEpjdmZnM3lRUjBvcmlaQUoraE1kaHJjWEdSSS9yMlY4ZG9yQTR2?=
+ =?utf-8?B?VmJad0dxUnEzaWYvTWhJQnp5dEN0ekh2ZGFqUlU5aW4raEtldmhCTjFoK2NW?=
+ =?utf-8?B?Q0FZcVJxQWJJaEJXMUQzV2NybTFuNmZUdGt2emNzYjZtNDVpaXJNcU5GZlpy?=
+ =?utf-8?B?bHJCN0Q0OHkxVm9hTG1HT21KYTVaS2l3YUE2RzExOWVpQWl6cU1EeTk1ZEpW?=
+ =?utf-8?B?R3pUdmJxQ29BcGJFT2NTNENTQ0Z0WENPTUd6UVhoVmt4bGpsT0hvbEw4R0tK?=
+ =?utf-8?B?RWVTeVQxM1Q2Tmx1RzB1RlFOYzAvdHM2V1F6WEh3MGpuaGd3QWF4ZHB6UWFF?=
+ =?utf-8?B?Nkc1OU9rZlNoSUZYLzEybDRyS3hLWERudDlOSGN4MTA5blBzN3lMNzM0YmhI?=
+ =?utf-8?B?dzFrMlFtZjAralUzM0FKNklOQVJlb3lDcExEeVppR1U5U0pZVW1BVjBSZXhi?=
+ =?utf-8?B?c3ZBRkQveUF6b3VVdnJ0ODd5RmVRMWlZQi9NbEJxaHdQdmN5UVptYXNKSjNK?=
+ =?utf-8?B?ZzViQkJiMGNRY3A4VHBOTEdyZzlzMFhYekhDNHpvTVUvMXFmL2ErQTJ0bnpR?=
+ =?utf-8?B?UHZWSGRxY3NBOGVsbllDelMxeldJWmhNNFN5UDNCeWUzdy9JM2pBdEhHOEpZ?=
+ =?utf-8?B?cTBHQ3RHZXJPYlBBNEloWmowYkZqWGFBeFhqRmZVRm5JN094dmt0L3NkZDF6?=
+ =?utf-8?B?TWhDWVplVGdnYWxTVzVxUllLdnJOZHYzcFJ0ZkxVMWR2NGlwOStGbkMyYVRk?=
+ =?utf-8?B?QTVmQ2Z5TVBNUTB3SXlaR0pYWmNZOTdOWWtZRkprcUtqOWpIb2RsdkpBQmpY?=
+ =?utf-8?B?elE9PQ==?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fe3543e-2bee-48b2-e871-08dad77e32c0
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2022 11:37:04.4638
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nmNkZQhTLWGzf5/1kcoBdVbCPGdutkWDVylGFpf8p99oIxE83Jt28BzYHRlpLGfDsWeqXIB45sk0VUAmjRStD1RxyZV3pBrDolXG1PuZEwM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PRAPR10MB5398
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221206_031047_267177_82FFD4BE 
-X-CRM114-Status: UNSURE (   8.84  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221206_033711_601110_71E2BA80 
+X-CRM114-Status: GOOD (  13.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,101 +154,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Please find the part #s added below the line
-/* adding these parts */
+On 06.12.22 09:18, Miquel Raynal wrote:
+> Hi Vlim,
+> 
+> vlim@gigadevice.com wrote on Tue, 6 Dec 2022 01:27:13 +0000:
+> 
+>> Hi, Michael,
+>>
+>> I will redo the patch following this doc.
+>> At the meantime, can you point out a few mistakes that I am making so that I can correct it in the next submit.
+> 
+> Here are a few:
+> - The title is wrong (git log --oneline <file> for hints)
+> - The commit log is useless
+> - Don't make unrelated changes in your commit, one change == one commit
+> - Don't change how the code looks like for no reason or justification
+> 
+> And please avoid top posting when answering.
 
-Signed-off-by: Victor Lim <vlim@gigadevice.com>
----
- drivers/mtd/spi-nor/gigadevice.c | 73 ++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+Here are some more:
 
-diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-index 66c2e75023fc..73f13684291c 100644
---- a/drivers/mtd/spi-nor/gigadevice.c
-+++ b/drivers/mtd/spi-nor/gigadevice.c
-@@ -186,6 +186,79 @@ static const struct flash_info gigadevice_parts[] = {
- 			      SPI_NOR_OCTAL_DTR_PP |
- 			      SPI_NOR_IO_MODE_EN_VOLATILE)
- 		.fixups = &gd25lx256e_fixups },
-+/* adding these parts */
-+	{"gd25b512", INFO(0xc8471A, 0, 64 * 1024, 1024,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd55b01g", INFO(0xc8471B, 0, 64 * 1024, 2048,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd55b02g", INFO(0xc8471C, 0, 64 * 1024, 4096,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25f64", INFO(0xc84317, 0, 64 * 1024, 128,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-+	{"gd25f128", INFO(0xc84318, 0, 64 * 1024, 256,	SECT_4K	|
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-+	{"gd25f256", INFO(0xc84319, 0, 64 * 1024, 512,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd55f512", INFO(0xc8431A, 0, 64 * 1024, 1024,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25t512", INFO(0xc8461A, 0, 64 * 1024, 1024,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd55t01g", INFO(0xc8461B, 0, 64 * 1024, 2048,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd55t02ge", INFO(0xc8461C, 0, 64 * 1024, 4096,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25x512", INFO(0xc8481A, 0, 64 * 1024, 1024,	SECT_4K |
-+	SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-+	{"gd55x01g", INFO(0xc8481B, 0, 64 * 1024, 2048,	SECT_4K |
-+	SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-+	{"gd55x02g", INFO(0xc8481C, 0, 64 * 1024, 4096,	SECT_4K |
-+	SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-+	{"gd25lb16", INFO(0xc86015, 0, 64 * 1024, 32,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-+	{"gd25lb32", INFO(0xc86016, 0, 64 * 1024, 64,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-+	{"gd25lb64", INFO(0xc86017, 0, 64 * 1024, 128,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-+	{"gd25lb128", INFO(0xc86018, 0, 64 * 1024, 256,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-+	{"gd25lb256", INFO(0xc86019, 0, 64 * 1024, 512,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25lb256", INFO(0xc86719, 0, 64 * 1024, 512,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25lb512", INFO(0xc8671A, 0, 64 * 1024, 1024,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd55lb01g", INFO(0xc8671B, 0, 64 * 1024, 2048,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd55lb02g", INFO(0xc8671C, 0, 64 * 1024, 4096,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25lf80", INFO(0xc86314, 0, 64 * 1024, 16,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-+	{"gd25lf16", INFO(0xc86315, 0, 64 * 1024, 32,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-+	{"gd25lf32", INFO(0xc86316, 0, 64 * 1024, 64,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-+	{"gd25lf64", INFO(0xc86317, 0, 64 * 1024, 128,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-+	{"gd25lf128", INFO(0xc86318, 0, 64 * 1024, 256,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-+	{"gd25lf255", INFO(0xc86319, 0, 64 * 1024, 512,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25lf511", INFO(0xc8631A, 0, 64 * 1024, 1024,	SECT_4K |
-+	SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25lt256e", INFO(0xc86619, 0, 64 * 1024, 512,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25lt512", INFO(0xc8661A, 0, 64 * 1024, 1024,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd55lt01g", INFO(0xc8661B, 0, 64 * 1024, 2048,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd55lt02g", INFO(0xc8661C, 0, 64 * 1024, 4096,	SECT_4K |
-+	SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-+	{"gd25lx512", INFO(0xc8681A, 0, 64 * 1024, 1024,	SECT_4K |
-+	SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-+	{"gd55lx01g", INFO(0xc8681B, 0, 64 * 1024, 2048,	SECT_4K |
-+	SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-+	{"gd55lx02g", INFO(0xc8681C, 0, 64 * 1024, 4096,	SECT_4K |
-+	SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
- };
- 
- const struct spi_nor_manufacturer spi_nor_gigadevice = {
--- 
-2.25.1
-
+* sending (almost) the same wrong patch again ignoring feedback from
+maintainers
+* not using version prefixes in your subject line (PATCH v2: ...)
+* not adding a changelog to your patch
+* keeping your replies off the mailing list (probably your @gigadevice
+address is not subscribed!?)
 
 ______________________________________________________
 Linux MTD discussion mailing list
