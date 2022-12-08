@@ -4,89 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F569C63705
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Dec 2022 10:28:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3447C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Dec 2022 10:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0+ofHhmDPwzH7t9/mf35WsievQ3s/NPI4b/0077prDQ=; b=Rt/3x1hDaiyJom
-	B1KgyPfi7VGyXSDhCgGywDhiuEEcT+7YhtgzEATfWf/O/fk9ueIJ8BSD7dTJ1UFhqDGdIkMT0bvuf
-	qfzYnr/IogU9qmFZki5YgLFALGNzPRGEdajQJHMQPTdMBsg2c0IjvbbtdrOgbpDp4B2u2mfAf5zP8
-	2dUiqnHHFGv+ypdR/EedzQVj2oeU0e+1+/Mc2w+6+wOFBm8G8YBPVcEBim+yBLoTNSqwUnpSkvmiP
-	rz7J30WqKRTZMN61egNWyaEp7nUhAU1CZDHioZc/TsXU6ZfQqo7kXvQ55VThCUkFthDqQLEq1UBkI
-	ehXk7/t+/AG6oW0VsWqQ==;
+	List-Owner; bh=oTkwesX3dkgr53zeVDWhVpZMw/Olrd3OfxYDENjLa04=; b=lestsyIN6eAJJE
+	jhmOOL9odlzPfdMw8O9VgiEshxaVN3LN4i3zDzn/5CiJYeWFNuaSdOh/bPE3cz/J0+BP8IJrv0jR9
+	7vSyieVDqBULaVnOiy9ZQmg5zHZ2dgcCsuQX6f7sTGyFvPf3H+aPYcuG15YBdYMA4oN+F48bLIBw2
+	Y96Sd3T86lnBuMhyF/c3THFXPNiMSB/zGgF73XgN00kRUmXgVPfXLKcCAGnCmwnSQCq0A5YwPAuIK
+	IOpSFNPSf5JB/54KWZd7e5i+qraJZA+DS4ShcSBWEqyVCTRTuEDQRSAd5jzYteksYkPQ4Hr48ZRGL
+	zkfUvxy9Xs+ay6b1XPHQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3E7s-00CThk-62; Thu, 08 Dec 2022 10:27:36 +0000
-Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
+	id 1p3EVJ-00DDHV-W1; Thu, 08 Dec 2022 10:51:50 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3E7n-00CTSt-LP
-	for linux-mtd@lists.infradead.org; Thu, 08 Dec 2022 10:27:33 +0000
-Received: by mail-lf1-x12c.google.com with SMTP id b13so1367517lfo.3
-        for <linux-mtd@lists.infradead.org>; Thu, 08 Dec 2022 02:27:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=08K5Vlx4IB2Dsl4MLI7dMUqa7FCe1uwxxccMSj5m7Jc=;
-        b=IixV+1uuN0bY/bbX/+N1Lj3Yzho/GsLoaPm65A55jNVZnGBKdqqPJHjimnAVhl56jG
-         KkHyze5xgI+sqQzAHIwAnyBQlnetfyzeAarswqTTSMXXcJNiQTtHWLlyr2HKy6RJHB3z
-         ftbwsIEMBQHSadpP1Bt5ZwTO7fLPQ6u61hiDiuROWH4cjz5jlPIxKlw8V2u6uH5Ao8X6
-         ghDfPPV54N7yzq3bpv7U8lCMbuW1HOhxWsVQ661f4FCHJfSLxQzRaiJTq2EIx/m89PDH
-         15wEdAs1fzHM+kIxmA0U77aUjmrFCD3ZXlg68lUD2GXnrrxUfb7cp6sY2zmfuaNILclm
-         Db6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=08K5Vlx4IB2Dsl4MLI7dMUqa7FCe1uwxxccMSj5m7Jc=;
-        b=MQE3Y+P6/LQ45Vq+yDqBth2s56RqJjvIB0ETSIzb9yaDj0kBGKzwdX8ZxsS7mfm2bp
-         rjYr7A63t6jSUib4rR1FBfhUcaU2eUWzIzWmvcrTZ6ZhRE+fgNTDTOltyHnFO7HugFaK
-         2CzAtqSB4ZYVTFI6k4O4VskDXOu3tJvIQuFu2b7oIKmEqvDuP5Ck6hKaI5ClZIgn5Cy3
-         snhbtMkHQGoi7nr7Yx8wjxdsupZP6EMm58dPSS8GqsVlSJcgR8pSvlSs9PAlEuXzEvpO
-         TPVgFIG5/Z6hNsikMaB2dHnRmKMy6GUlDWezKsqke04vX7Bshytws4WUsZ7YhIi2WjTV
-         0U8A==
-X-Gm-Message-State: ANoB5pkuIAv3vJBUJQaeNY0uv/yl01e+qqUUcS3wJ+6td826WnOZMPZP
-	2UXJDMj9qBec7iv1tOlg5yULLw==
-X-Google-Smtp-Source: AA0mqf7/AP5zYXuEc0m0ov+YEb0CvMKWc7CDgcN+N/jX1BqZ0D2ehR+bjn3ZqxsyUTZwP+wrkY7e3w==
-X-Received: by 2002:a05:6512:c29:b0:4b1:b061:4815 with SMTP id z41-20020a0565120c2900b004b1b0614815mr30077826lfu.18.1670495249722;
-        Thu, 08 Dec 2022 02:27:29 -0800 (PST)
-Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
-        by smtp.gmail.com with ESMTPSA id v7-20020ac25927000000b0048a982ad0a8sm3304728lfi.23.2022.12.08.02.27.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Dec 2022 02:27:29 -0800 (PST)
-Message-ID: <f3e3a3d0-6d21-c782-38a2-c8b2c36242c3@linaro.org>
-Date: Thu, 8 Dec 2022 11:27:27 +0100
+	id 1p3EV3-00DBzt-Qb; Thu, 08 Dec 2022 10:51:35 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 67C6FC0004;
+	Thu,  8 Dec 2022 10:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1670496687;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jX4qpJhOZfq0Tc57pU2iw5g5rc8m7DS0d+5g0687Ft0=;
+	b=F7JNzgIt3I6hYU/+MJtFg6ivPmkYClN5wsy3v7G1m9kQzXfuztQaq1LgcvBGV8sSBBnhYU
+	bJdglueOmfSxR8ZR1WD0HWV41CHorRhPSqEdvGr0ZjOodhI1IlWvf91DoaVHILLYgy9kSM
+	HPk17yM46JhEGztJVFQ10ZjoYRo6gOipTTp6GcK8El04ZCG3TfMjo9DN22UIfr1NJiRbCq
+	M4zaed9uWAFIncMswV91KO1Tu7ehBppIAMeJwnSTWoL/edWIChknIC2M/HlpH3d2QHAZsT
+	qYY7ktnnHLj46WRausFpBJPcgSHJHmeHj2edNgwwt3nmOpfT2KZI4foEXxxl+w==
+Date: Thu, 8 Dec 2022 11:51:24 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Marek Vasut <marex@denx.de>
+Cc: Francesco Dolcini <francesco@dolcini.it>, Shawn Guo
+ <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org, Francesco
+ Dolcini <francesco.dolcini@toradex.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org, Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [PATCH v1] Revert "ARM: dts: imx7: Fix NAND controller
+ size-cells"
+Message-ID: <20221208115124.6cc7a8bf@xps-13>
+In-Reply-To: <0aa2d48b-35a0-1781-f265-0387d213bdd6@denx.de>
+References: <20221205152327.26881-1-francesco@dolcini.it>
+	<0aa2d48b-35a0-1781-f265-0387d213bdd6@denx.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v3 7/9] dt-bindings: mtd: Split ECC engine with rawnand
- controller
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>,
- Chuanhong Guo <gch981213@gmail.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, benliang.zhao@mediatek.com, bin.zhang@mediatek.com
-References: <20221208062955.2546-1-xiangsheng.hou@mediatek.com>
- <20221208062955.2546-8-xiangsheng.hou@mediatek.com>
- <fe70d964-229a-8bda-a414-e009dd955e5e@linaro.org>
- <20221208110035.5649a051@xps-13>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221208110035.5649a051@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221208_022731_770353_D450A3B7 
-X-CRM114-Status: GOOD (  17.54  )
+X-CRM114-CacheID: sfid-20221208_025134_029436_8C3391B5 
+X-CRM114-Status: GOOD (  12.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,113 +73,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 08/12/2022 11:00, Miquel Raynal wrote:
-> Hi Krzysztof,
-> 
-> krzysztof.kozlowski@linaro.org wrote on Thu, 8 Dec 2022 10:44:17 +0100:
-> 
->> On 08/12/2022 07:29, Xiangsheng Hou wrote:
->>> Split MediaTek ECC engine with rawnand controller and convert to
->>> YAML schema.
->>>
->>> Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
->>> ---
->>>  .../bindings/mtd/mediatek,mtk-nfc.yaml        | 154 +++++++++++++++
->>>  .../mtd/mediatek,nand-ecc-engine.yaml         |  62 ++++++
->>>  .../devicetree/bindings/mtd/mtk-nand.txt      | 176 ------------------
->>>  3 files changed, 216 insertions(+), 176 deletions(-)
->>>  create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
->>>  create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml
->>>  delete mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
->>>
->>> diff --git a/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml b/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
->>> new file mode 100644
->>> index 000000000000..eb1a44c7ae4e
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
->>> @@ -0,0 +1,154 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/mtd/mediatek,mtk-nfc.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: MediaTek(MTK) SoCs raw NAND FLASH controller (NFC)
->>> +
->>> +maintainers:
->>> +  - Xiangsheng Hou <xiangsheng.hou@mediatek.com>
->>> +
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - mediatek,mt2701-nfc
->>> +      - mediatek,mt2712-nfc
->>> +      - mediatek,mt7622-nfc
->>> +
->>> +  reg:
->>> +    items:
->>> +      - description: Base physical address and size of NFI.
->>> +
->>> +  interrupts:
->>> +    items:
->>> +      - description: NFI interrupt
->>> +
->>> +  clocks:
->>> +    items:
->>> +      - description: clock used for the controller
->>> +      - description: clock used for the pad
->>> +
->>> +  clock-names:
->>> +    items:
->>> +      - const: nfi_clk
->>> +      - const: pad_clk
->>> +
->>> +  ecc-engine:
->>> +    description: device-tree node of the required ECC engine.
->>> +    $ref: /schemas/types.yaml#/definitions/phandle
->>> +
->>> +patternProperties:
->>> +  "^nand@[a-f0-9]$":
->>> +    type: object  
->>
->> This should be instead:
->>     $ref: nand-chip.yaml#
->>     unevaluatedProperties: false
->>
->> and then properties below (due to current dtschema limitations) should
->> list properties from nand-controller.yaml:
->>
->>       nand-on-flash-bbt: true
->>
->> Optionally, we could create additional schema - nand-controller-chip,
->> which would be referenced directly by nand-controller and itself would
->> ref nand-chip.
-> 
-> Isn't this enough? (in linux-next)
-> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/tree/Documentation/devicetree/bindings/mtd/nand-controller.yaml?h=mtd/next#n54
-
-No, I tested it and it does not work as intended. In this particular
-case. I think this is a limitation of dtschema, because binding itself
-looks fine. The problem is that you have:
-1. mtk-nfc having nand@ children. mtk-nfc references nand-controller
-which brings these children.
-2. However nand-controller while bringing these children does two things:
-a. ref: nand-chip
-b. add more propeties
-
-3. The mtk-nfc must further extend the nand@ child.
-4. If you add "unevaluatedProperties: false" you notice warnings of
-unevaluated propertie from nand-controller children.
-
-Best regards,
-Krzysztof
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgU2hhd24sCgorIFRob3JzdGVuCgptYXJleEBkZW54LmRlIHdyb3RlIG9uIE1vbiwgNSBEZWMg
+MjAyMiAxNzoyNjo1MyArMDEwMDoKCj4gT24gMTIvNS8yMiAxNjoyMywgRnJhbmNlc2NvIERvbGNp
+bmkgd3JvdGU6Cj4gPiBGcm9tOiBGcmFuY2VzY28gRG9sY2luaSA8ZnJhbmNlc2NvLmRvbGNpbmlA
+dG9yYWRleC5jb20+Cj4gPiAKPiA+IFRoaXMgcmV2ZXJ0cyBjb21taXQgNzUzMzk1ZWExZTQ1Yzcy
+NDE1MDA3MGI1Nzg1OTAwYjZhNDRiZDVmYi4KPiA+IAo+ID4gSXQgaW50cm9kdWNlZCBhIGJvb3Qg
+cmVncmVzc2lvbiBvbiBjb2xpYnJpLWlteDcsIGFuZCBwb3RlbnRpYWxseSBhbnkKPiA+IG90aGVy
+IGkuTVg3IGJvYXJkcyB3aXRoIE1URCBwYXJ0aXRpb24gbGlzdCBnZW5lcmF0ZWQgaW50byB0aGUg
+ZmR0IGJ5Cj4gPiBVLUJvb3QuCj4gPiAKPiA+IFdoaWxlIHRoZSBjb21taXQgd2UgYXJlIHJldmVy
+dGluZyBoZXJlIGlzIG5vdCBvYnZpb3VzbHkgd3JvbmcsIGl0IGZpeGVzCj4gPiBvbmx5IGEgZHQg
+YmluZGluZyBjaGVja2VyIHdhcm5pbmcgdGhhdCBpcyBub24tZnVuY3Rpb25hbCwgd2hpbGUgaXQK
+PiA+IGludHJvZHVjZXMgYSBib290IHJlZ3Jlc3Npb24gYW5kIHRoZXJlIGlzIG5vIG9idmlvdXMg
+Zml4IHJlYWR5Lgo+ID4gCj4gPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwo+ID4gRml4ZXM6
+IDc1MzM5NWVhMWU0NSAoIkFSTTogZHRzOiBpbXg3OiBGaXggTkFORCBjb250cm9sbGVyIHNpemUt
+Y2VsbHMiKQo+ID4gTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL1k0ZGdCVEdOV3BN
+NlNRWElAZnJhbmNlc2NvLW5iLmludC50b3JhZGV4LmNvbS8KPiA+IExpbms6IGh0dHBzOi8vbG9y
+ZS5rZXJuZWwub3JnL2FsbC8yMDIyMTIwNTE0NDkxNy42NTE0MTY4YUB4cHMtMTMvCj4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBGcmFuY2VzY28gRG9sY2luaSA8ZnJhbmNlc2NvLmRvbGNpbmlAdG9yYWRleC5j
+b20+ClsuLi5dCj4gUmV2aWV3ZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9v
+dGxpbi5jb20+ClsuLi5dCj4gQWNrZWQtYnk6IE1hcmVrIFZhc3V0IDxtYXJleEBkZW54LmRlPgpb
+Li4uXQoKQXMgZGlzY3Vzc2VkIGluIHRoZSBhYm92ZSBsaW5rcywgYm9vdCBpcyBicm9rZW4gb24g
+aW14NyBDb2xpYnJpIGJvYXJkcywKdGhpcyByZXZlcnQgd2FzIHRoZSBtb3N0IHF1aWNrIGFuZCBz
+dHJhaWdodGZvcndhcmQgZml4IHdlIGFncmVlZCB1cG9uCndpdGggdGhlIGhvcGUgKH4gZHV0eT8p
+IGl0IHdvdWxkIG1ha2UgaXQgaW4gdjYuMS4gQW55IGNoYW5jZSB5b3UgY291bGQKcGljayB0aGlz
+IHVwIHJhcGlkbHkgYW5kIGZvcndhcmQgaXQgdG8gTGludXM/IE9yIHNob3VsZCB3ZSBpbnZvbHZl
+CmhpbSBkaXJlY3RseSAoVGhvcnN0ZW4/KS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
