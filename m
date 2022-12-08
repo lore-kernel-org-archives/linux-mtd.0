@@ -4,52 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6787EC4332F
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Dec 2022 06:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83271C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Dec 2022 06:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/sY1AbtbC6YCYUU7p+LWnY7y3a7coQBSAFHS7ObZmFg=; b=DCbYDgZpVyBa+x
-	xW6z9Z0enmSTeaTgaTYGUP/WRh8pbQ9tsl0zvSc1JXvy/bztBf1aoJZrPBvTk3zUH+CtoBZQi1zZ6
-	+OTPMLvWAps1VUtQ3v0rImg7x4hr6k7+IQeSUwmgBm/1rCV5PjNJHq4zorzwSzTEr8Lf2U7YHn6Ps
-	2jeQPezCXKeSoRWpT8FaN/MeEADN6ePQNX8hyi5LPA/xqxAWA02DQmMk5EEiW5dfdp2TCcMpvcpf+
-	QE4vmlgf8Mk6WCcsaSR7iwt2duMs1APjsMm+fG5sI0XrpuLaNLwpa9CuO7oYIg7//XN4IVK+Qs5L2
-	B+rjBM4k/RKJM+0bd7/Q==;
+	List-Owner; bh=gGBeil6MaD2WwdCpnx1lXoHvLYyFC1x8w3POOHwJr6s=; b=wSb1aiHsi5+5bo
+	XTaB4ie0JXEczF08aoDmSuTq2zR5IzNzuY3fB5K6YgtzkBd4Nr/GzrOIy+uLbZzG2+vGplQMGpofi
+	RgWV84ix4NFTJXrKB/lMoFhH5zJAQSKcdFIupGwoVc/CjvzXnTEFbEvWJRyqGJcgsujmroBnFwhoa
+	iM/DjRvu8fas6YeQ9+tzERWt1VbqpqIAiTAiJPSj93TldKN+J/kdpkqSB88NCS9XMJfMruB+BvPTF
+	CRNH0AOlh+cOyp0A73j6wykKCx116mHwHjm2QV7oSEJVdOWCqJ91iVXTQ4V8QYPK42ftTmVNslnxn
+	o1kRv6MhCe2sRzI8C7bA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3AUw-00404W-BZ; Thu, 08 Dec 2022 06:35:10 +0000
+	id 1p3AWH-0042BC-6a; Thu, 08 Dec 2022 06:36:33 +0000
 Received: from mailgw02.mediatek.com ([216.200.240.185])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3AQo-003szw-La; Thu, 08 Dec 2022 06:30:55 +0000
-X-UUID: f1186ebd6b0a436e992e700e7e1f7181-20221207
+	id 1p3AR3-003tiW-Li; Thu, 08 Dec 2022 06:31:17 +0000
+X-UUID: f70ed62768cb44b9a9d5e4b03a67fd40-20221207
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=u8/NwowXK2YbUna8Ai7oL8XOLUBZKDsKd5Yc07Xpqao=;
-	b=n2E0Fz6pt3XFUfJr5kdUYNSW+5Qqp3F3tUsSoKUFNb/lE0p7oIYKRU2lA5nOYaY5ltAe3djqrLbpMowErOalX3Ub8bRdDQ90TefJiKkGfQEh0sy9MKJEAJfcenNP5L3Tq/26AI14jgu2eBxn1dOjTXFe2xqR2Gz/27Rg9bTaJgo=;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=hVi9EpIqUGu5hM1nwlZ9chU7gT1LcCd3BvW0rXQFN+4=;
+	b=mgNy2yLNPQe/mLNQa8QEUyZLJT4V4lQM80Scc7Tmz4aKD/oGofgjbC5WdRFqO/gfs/YLMWeJZatDHH289ayt7Fz8XVbc/eVFPuCj3+jgwMO5eUD4Dkz1UuzWes6kFWuqiWnuj7s/CE6gsGgjN3dws3HKywlpEM/RVeJEQ7bpExw=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.14,REQID:b26f28ba-4572-4cb5-822b-0658d09d44a7,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:95
-X-CID-INFO: VERSION:1.1.14,REQID:b26f28ba-4572-4cb5-822b-0658d09d44a7,IP:0,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
-	:quarantine,TS:95
-X-CID-META: VersionHash:dcaaed0,CLOUDID:228ffed1-652d-43fd-a13a-a5dd3c69a43d,B
-	ulkID:221208143015WW8TE27S,BulkQuantity:2,Recheck:0,SF:38|28|17|19|48,TC:n
-	il,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0
-X-UUID: f1186ebd6b0a436e992e700e7e1f7181-20221207
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+X-CID-O-INFO: VERSION:1.1.14,REQID:0c65e739-9add-4353-80c8-3daacd735d2b,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:dcaaed0,CLOUDID:f7d0a924-4387-4253-a41d-4f6f2296b154,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+X-UUID: f70ed62768cb44b9a9d5e4b03a67fd40-20221207
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
 	(envelope-from <xiangsheng.hou@mediatek.com>)
 	(musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 705268432; Wed, 07 Dec 2022 23:30:50 -0700
+	with ESMTP id 1467093437; Wed, 07 Dec 2022 23:31:06 -0700
 Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Thu, 8 Dec 2022 14:30:13 +0800
+ 15.2.792.15; Thu, 8 Dec 2022 14:30:04 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkmbs11n1.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Thu, 8 Dec 2022 14:30:13 +0800
+ Transport; Thu, 8 Dec 2022 14:30:03 +0800
 From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
@@ -62,18 +59,17 @@ CC: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
 	<benliang.zhao@mediatek.com>, <bin.zhang@mediatek.com>
-Subject: [PATCH v3 9/9] dt-bindings: mtd: mediatek,nand-ecc-engine: Add compatible for MT7986
-Date: Thu, 8 Dec 2022 14:29:55 +0800
-Message-ID: <20221208062955.2546-10-xiangsheng.hou@mediatek.com>
+Subject: [PATCH v3 3/9] mtd: nand: ecc-mtk: Add ECC support fot MT7986 IC
+Date: Thu, 8 Dec 2022 14:29:49 +0800
+Message-ID: <20221208062955.2546-4-xiangsheng.hou@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221208062955.2546-1-xiangsheng.hou@mediatek.com>
 References: <20221208062955.2546-1-xiangsheng.hou@mediatek.com>
 MIME-Version: 1.0
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221207_223054_746740_4BB82E94 
-X-CRM114-Status: UNSURE (   8.85  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221207_223115_406354_65007746 
+X-CRM114-Status: GOOD (  12.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,26 +86,95 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add dt-bindings documentation of ECC for MediaTek MT7986 SoC
-platform.
+Add ECC support fot MT7986 IC, and change err_mask value with
+GENMASK macro.
 
 Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 ---
- .../devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml        | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/ecc-mtk.c | 28 +++++++++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml b/Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml
-index b13d801eda76..505baf1e8830 100644
---- a/Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml
-+++ b/Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml
-@@ -18,6 +18,7 @@ properties:
-       - mediatek,mt2701-ecc
-       - mediatek,mt2712-ecc
-       - mediatek,mt7622-ecc
-+      - mediatek,mt7986-ecc
+diff --git a/drivers/mtd/nand/ecc-mtk.c b/drivers/mtd/nand/ecc-mtk.c
+index 9f9b201fe706..c75bb8b80cc1 100644
+--- a/drivers/mtd/nand/ecc-mtk.c
++++ b/drivers/mtd/nand/ecc-mtk.c
+@@ -40,6 +40,10 @@
+ #define ECC_IDLE_REG(op)	((op) == ECC_ENCODE ? ECC_ENCIDLE : ECC_DECIDLE)
+ #define ECC_CTL_REG(op)		((op) == ECC_ENCODE ? ECC_ENCCON : ECC_DECCON)
  
-   reg:
-     items:
++#define ECC_ERRMASK_MT7622	GENMASK(4, 0)
++#define ECC_ERRMASK_MT2701	GENMASK(5, 0)
++#define ECC_ERRMASK_MT2712	GENMASK(6, 0)
++
+ struct mtk_ecc_caps {
+ 	u32 err_mask;
+ 	u32 err_shift;
+@@ -79,6 +83,10 @@ static const u8 ecc_strength_mt7622[] = {
+ 	4, 6, 8, 10, 12
+ };
+ 
++static const u8 ecc_strength_mt7986[] = {
++	4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24
++};
++
+ enum mtk_ecc_regs {
+ 	ECC_ENCPAR00,
+ 	ECC_ENCIRQ_EN,
+@@ -451,7 +459,7 @@ unsigned int mtk_ecc_get_parity_bits(struct mtk_ecc *ecc)
+ EXPORT_SYMBOL(mtk_ecc_get_parity_bits);
+ 
+ static const struct mtk_ecc_caps mtk_ecc_caps_mt2701 = {
+-	.err_mask = 0x3f,
++	.err_mask = ECC_ERRMASK_MT2701,
+ 	.err_shift = 8,
+ 	.ecc_strength = ecc_strength_mt2701,
+ 	.ecc_regs = mt2701_ecc_regs,
+@@ -462,7 +470,7 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt2701 = {
+ };
+ 
+ static const struct mtk_ecc_caps mtk_ecc_caps_mt2712 = {
+-	.err_mask = 0x7f,
++	.err_mask = ECC_ERRMASK_MT2712,
+ 	.err_shift = 8,
+ 	.ecc_strength = ecc_strength_mt2712,
+ 	.ecc_regs = mt2712_ecc_regs,
+@@ -473,7 +481,7 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt2712 = {
+ };
+ 
+ static const struct mtk_ecc_caps mtk_ecc_caps_mt7622 = {
+-	.err_mask = 0x1f,
++	.err_mask = ECC_ERRMASK_MT7622,
+ 	.err_shift = 5,
+ 	.ecc_strength = ecc_strength_mt7622,
+ 	.ecc_regs = mt7622_ecc_regs,
+@@ -483,6 +491,17 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt7622 = {
+ 	.pg_irq_sel = 0,
+ };
+ 
++static const struct mtk_ecc_caps mtk_ecc_caps_mt7986 = {
++	.err_mask = ECC_ERRMASK_MT7622,
++	.err_shift = 8,
++	.ecc_strength = ecc_strength_mt7986,
++	.ecc_regs = mt2712_ecc_regs,
++	.num_ecc_strength = 11,
++	.ecc_mode_shift = 5,
++	.parity_bits = 14,
++	.pg_irq_sel = 1,
++};
++
+ static const struct of_device_id mtk_ecc_dt_match[] = {
+ 	{
+ 		.compatible = "mediatek,mt2701-ecc",
+@@ -493,6 +512,9 @@ static const struct of_device_id mtk_ecc_dt_match[] = {
+ 	}, {
+ 		.compatible = "mediatek,mt7622-ecc",
+ 		.data = &mtk_ecc_caps_mt7622,
++	}, {
++		.compatible = "mediatek,mt7986-ecc",
++		.data = &mtk_ecc_caps_mt7986,
+ 	},
+ 	{},
+ };
 -- 
 2.25.1
 
