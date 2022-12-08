@@ -4,76 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 601CCC4332F
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Dec 2022 11:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49BA7C3A5A7
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Dec 2022 12:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dpaMh6T2IB4MPmYDmdekK0VgPsRuNjNi2z9u1SxNoi0=; b=cxEkwAcJ96eApX
-	ezm4EE2jmk7HE/cY8P//baVs3YgWYeq0A32kz1chntX7V/ye1xOUH8Abd6+NhOA/0rO1ThAm6Jycm
-	EbnzeJV4GZNJFDZg3GKVYr003/PnR+/As78XwwWENd+MbkN9yL79diOjtqVxhVR3AniwK5bJOb0EO
-	3h/RG3vBnXCmfToYjcwx+4lCsFJnMQawhZH0QOpdvyXEuSlTmZUbJio8UGrlRfyEyXC748/HhqvGd
-	haffadYJoyhArAhr4m9EM0mw/xqJaaI7uDkBmdHF7fO48i1Vons2tH4cCQhlAxSBJvmEIdKEJMDh4
-	rNpgD634hRPuLBARBFcA==;
+	List-Owner; bh=d0qsijWSe3uVdyaoTdWC0Oy/IxtZU3fq1bdvUf/q7HY=; b=Ar392HdMfgd01L
+	vJAJ5Kkg3vAePmKk/W2H0JmWjfcOXUzqhagQRDMCe9Qz6rJPB2OQ+56iC82fsLQ76LBsLmov+aEq/
+	be3ocj3Myh9CV3qr3s+eJzfDbNxpoNa0l/5HkJHC0xODpLPDcW8GQfjeoyfSroUILhlZJ2QlVc8km
+	FXvfyHayzlJF2LJYjSRgMDNve7V19TkGW2XiPdjFkdYcvoLtRDiYNdbbo243Uc4OBsXR4H6N8YwGq
+	9eopGQSwU7P634kHApuSlWXKizq4O1nxIQHBPmIptJbiWxgQu2OsUQ1DMmIbvoEkhvNC44J7vCxYW
+	WcM1wLkuX4ToeHzAZs3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3FUN-00FxYR-L9; Thu, 08 Dec 2022 11:54:56 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1p3Fcj-00G8uS-QS; Thu, 08 Dec 2022 12:03:33 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3FTC-00FwAK-KO
-	for linux-mtd@lists.infradead.org; Thu, 08 Dec 2022 11:53:44 +0000
-Received: by mail-wm1-x332.google.com with SMTP id m4-20020a05600c3b0400b003d1cb516ce0so3166994wms.4
-        for <linux-mtd@lists.infradead.org>; Thu, 08 Dec 2022 03:53:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=p18FbFhJEWAP77GdEyssPCAGI7uoX/rYzoyWzSXOZK8=;
-        b=c2WYl3/Mxey+5Dx4ByPJSCNNjgpj+nIOAtEmM1ThBoNU+0+xGG/zQif1Nl6JDOMO38
-         xen+BjhUyJXnbVdDKSqpNzomYd6xcMHBKBKgpFxgHM1dPo5DWtAS8XTWyNGIrhCare3m
-         xrTpQUk9uUhEpAJyBMVm41ePNKcwxMOLcLZbvj3hU9FyiphadSQ2zf12E6rA+uvrnhYj
-         8U4TEnKcJzm9kUZun8AHLu4KwY0b3fiV6kKoGd32ddVms8NHry53rTy5lBd64NRZ6EoC
-         rzsK5kA4jV+MEVLylSsLo2r3j4hFVYNvxvOON62PKAuEqbGkkGgf+ZQc1j4XLDutAPtf
-         yanQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p18FbFhJEWAP77GdEyssPCAGI7uoX/rYzoyWzSXOZK8=;
-        b=jociN+dYnw4APVJvHY2lsuEQMbbo2QU7HbkchiiIrPkmFEOS09jPKS0mEZW4dOLQTK
-         NBKHyd2v5cihGrUKI27OqN/jwOJzJ6BWGTXn2mKIEjmomHYCW2ad/zzqLOcWfWuyzSh7
-         lNRkR5LJmRkc9rBWz3Qy2uGuaVwStdfSR4iv3dEidyHs+u6aNd0NyetzCcsJTFOsvb73
-         2dWbYar6z2uVkyerjUbU3m9r0v11hxPvVX9nHUaYdwMpQdY7+kLRWFNb12aTRvk9khF5
-         Zz5J0/xbTtvCcRT5p3LUeVSeXXB+zvZsBwUEclYr02W9xrEnI6/AMs208jUSgHRfKIlR
-         kADA==
-X-Gm-Message-State: ANoB5plxkO49uTrc21riKNwwklnO5J3SKrI2M86wzjtUEFamBz0QR7PH
-	CeUjByWig/GQeM7d2AsidDQ=
-X-Google-Smtp-Source: AA0mqf7K88JCFYX2OMtO45Y1EvCkxZOB4qOWteOPAw/kalS2ioezRXOjNcGOR2tIS1256P/FITEuQg==
-X-Received: by 2002:a05:600c:601f:b0:3c6:f1fa:d677 with SMTP id az31-20020a05600c601f00b003c6f1fad677mr47836649wmb.59.1670500418860;
-        Thu, 08 Dec 2022 03:53:38 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id ay5-20020a05600c1e0500b003c21ba7d7d6sm4830769wmb.44.2022.12.08.03.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Dec 2022 03:53:38 -0800 (PST)
-Date: Thu, 8 Dec 2022 14:53:27 +0300
-From: Dan Carpenter <error27@gmail.com>
-To: Yuan Can <yuancan@huawei.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	rafal@milecki.pl, linux-mtd@lists.infradead.org
+	id 1p3Fcd-00G8gB-On
+	for linux-mtd@lists.infradead.org; Thu, 08 Dec 2022 12:03:32 +0000
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.56])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4NSXlF1470zJp8v;
+	Thu,  8 Dec 2022 19:59:53 +0800 (CST)
+Received: from [10.174.178.41] (10.174.178.41) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 8 Dec 2022 20:03:24 +0800
+Message-ID: <694c5b4a-d193-b183-11e2-94eac0ff45ba@huawei.com>
+Date: Thu, 8 Dec 2022 20:03:24 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
 Subject: Re: [PATCH v2 RESEND] mtd: parsers: Fix potential memory leak in
  mtd_parser_tplink_safeloader_parse()
-Message-ID: <Y5HQNxsCI5yfd+dV@kadam>
+To: Dan Carpenter <error27@gmail.com>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<rafal@milecki.pl>, <linux-mtd@lists.infradead.org>
 References: <20221208113620.78855-1-yuancan@huawei.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221208113620.78855-1-yuancan@huawei.com>
+ <Y5HQNxsCI5yfd+dV@kadam>
+From: Yuan Can <yuancan@huawei.com>
+In-Reply-To: <Y5HQNxsCI5yfd+dV@kadam>
+X-Originating-IP: [10.174.178.41]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500024.china.huawei.com (7.185.36.10)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221208_035342_711348_CE62F05D 
-X-CRM114-Status: GOOD (  17.71  )
+X-CRM114-CacheID: sfid-20221208_040328_014766_52F892BA 
+X-CRM114-Status: GOOD (  17.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,51 +64,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Dec 08, 2022 at 11:36:20AM +0000, Yuan Can wrote:
-> The parts needs to be freed with all its elements, otherwise it will be
-> leaked.
-> 
-> Fixes: 00a3588084be ("mtd: parsers: add TP-Link SafeLoader partitions table parser")
-> Signed-off-by: Yuan Can <yuancan@huawei.com>
-> ---
-> Changes in v2:
-> - Add a new label err_free_parts and jumps to it when
->   mtd_parser_tplink_safeloader_read_table() failed to avoid leaking parts.
-> 
-
-Reviewed-by: Dan Carpenter <error27@gmail.com>
-
-This is the same code as v2 but with an explanation added.
-
-I spotted that the explanation was missing but knew what the explanation
-was so I didn't mention it.  For me, a lot of patches have minor flaws
-and if I complained about everything the whole kernel development
-process would grind to a halt.  Greg is more picky about explanations
-for new versions because he has to deal with a lot of patches and
-because he is trying to teach newbies how to follow the process.
-
-Although minutes ago I just criticized someone else for not putting the
-note under the cut off but that's because I had no idea why they were
-resending.
-
-Next time please avoid putting RESEND in the subject because that means
-there was no changes because your patch was perfect as-is.  Instead put
-v3:
-
-v2: blah blah
-v3: add this explanatory message.
-
-But don't do that in this case, for now the patch is fine.  :P  I'm
-just telling you the process for next time.
-
-regards,
-dan carpenter
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CuWcqCAyMDIyLzEyLzggMTk6NTMsIERhbiBDYXJwZW50ZXIg5YaZ6YGTOgo+IE9uIFRodSwgRGVj
+IDA4LCAyMDIyIGF0IDExOjM2OjIwQU0gKzAwMDAsIFl1YW4gQ2FuIHdyb3RlOgo+PiBUaGUgcGFy
+dHMgbmVlZHMgdG8gYmUgZnJlZWQgd2l0aCBhbGwgaXRzIGVsZW1lbnRzLCBvdGhlcndpc2UgaXQg
+d2lsbCBiZQo+PiBsZWFrZWQuCj4+Cj4+IEZpeGVzOiAwMGEzNTg4MDg0YmUgKCJtdGQ6IHBhcnNl
+cnM6IGFkZCBUUC1MaW5rIFNhZmVMb2FkZXIgcGFydGl0aW9ucyB0YWJsZSBwYXJzZXIiKQo+PiBT
+aWduZWQtb2ZmLWJ5OiBZdWFuIENhbiA8eXVhbmNhbkBodWF3ZWkuY29tPgo+PiAtLS0KPj4gQ2hh
+bmdlcyBpbiB2MjoKPj4gLSBBZGQgYSBuZXcgbGFiZWwgZXJyX2ZyZWVfcGFydHMgYW5kIGp1bXBz
+IHRvIGl0IHdoZW4KPj4gICAgbXRkX3BhcnNlcl90cGxpbmtfc2FmZWxvYWRlcl9yZWFkX3RhYmxl
+KCkgZmFpbGVkIHRvIGF2b2lkIGxlYWtpbmcgcGFydHMuCj4+Cj4gUmV2aWV3ZWQtYnk6IERhbiBD
+YXJwZW50ZXIgPGVycm9yMjdAZ21haWwuY29tPgo+Cj4gVGhpcyBpcyB0aGUgc2FtZSBjb2RlIGFz
+IHYyIGJ1dCB3aXRoIGFuIGV4cGxhbmF0aW9uIGFkZGVkLgo+Cj4gSSBzcG90dGVkIHRoYXQgdGhl
+IGV4cGxhbmF0aW9uIHdhcyBtaXNzaW5nIGJ1dCBrbmV3IHdoYXQgdGhlIGV4cGxhbmF0aW9uCj4g
+d2FzIHNvIEkgZGlkbid0IG1lbnRpb24gaXQuICBGb3IgbWUsIGEgbG90IG9mIHBhdGNoZXMgaGF2
+ZSBtaW5vciBmbGF3cwo+IGFuZCBpZiBJIGNvbXBsYWluZWQgYWJvdXQgZXZlcnl0aGluZyB0aGUg
+d2hvbGUga2VybmVsIGRldmVsb3BtZW50Cj4gcHJvY2VzcyB3b3VsZCBncmluZCB0byBhIGhhbHQu
+ICBHcmVnIGlzIG1vcmUgcGlja3kgYWJvdXQgZXhwbGFuYXRpb25zCj4gZm9yIG5ldyB2ZXJzaW9u
+cyBiZWNhdXNlIGhlIGhhcyB0byBkZWFsIHdpdGggYSBsb3Qgb2YgcGF0Y2hlcyBhbmQKPiBiZWNh
+dXNlIGhlIGlzIHRyeWluZyB0byB0ZWFjaCBuZXdiaWVzIGhvdyB0byBmb2xsb3cgdGhlIHByb2Nl
+c3MuCj4KPiBBbHRob3VnaCBtaW51dGVzIGFnbyBJIGp1c3QgY3JpdGljaXplZCBzb21lb25lIGVs
+c2UgZm9yIG5vdCBwdXR0aW5nIHRoZQo+IG5vdGUgdW5kZXIgdGhlIGN1dCBvZmYgYnV0IHRoYXQn
+cyBiZWNhdXNlIEkgaGFkIG5vIGlkZWEgd2h5IHRoZXkgd2VyZQo+IHJlc2VuZGluZy4KPgo+IE5l
+eHQgdGltZSBwbGVhc2UgYXZvaWQgcHV0dGluZyBSRVNFTkQgaW4gdGhlIHN1YmplY3QgYmVjYXVz
+ZSB0aGF0IG1lYW5zCj4gdGhlcmUgd2FzIG5vIGNoYW5nZXMgYmVjYXVzZSB5b3VyIHBhdGNoIHdh
+cyBwZXJmZWN0IGFzLWlzLiAgSW5zdGVhZCBwdXQKPiB2MzoKPgo+IHYyOiBibGFoIGJsYWgKPiB2
+MzogYWRkIHRoaXMgZXhwbGFuYXRvcnkgbWVzc2FnZS4KPgo+IEJ1dCBkb24ndCBkbyB0aGF0IGlu
+IHRoaXMgY2FzZSwgZm9yIG5vdyB0aGUgcGF0Y2ggaXMgZmluZS4gIDpQICBJJ20KPiBqdXN0IHRl
+bGxpbmcgeW91IHRoZSBwcm9jZXNzIGZvciBuZXh0IHRpbWUuCk9rLCB0aGFua3MgZm9yIHlvdXIg
+ZXhwbGFuYXRpb24hCgotLSAKQmVzdCByZWdhcmRzLApZdWFuIENhbgoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
+c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC1tdGQvCg==
