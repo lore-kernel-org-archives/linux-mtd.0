@@ -4,99 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FF66C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Dec 2022 15:29:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB62FC04FDE
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Dec 2022 15:49:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S+B6ECKNJHMy1tMjFVjw4MGhGDUcKl0Xi92tNeqXrfY=; b=1Xm7WDHMU8rLcO
-	7TOAVIMlw+YrEuWSdScj94XwAo0UkM/eMotUzkZEo1s7Q7Qf4/4KnKiLdPRmoPz8gDgO1eidw8cFp
-	qSnPXZ3hg0xu8QV4GccbKgM2k9vhvLKo6TEz+2/Z3Fdq0D4rlWQQfLabqO0cDIoppeEUCg/fzR3m0
-	+qlaXZ56bmyqw524ySRUzkYLyxLOm2HPBFjXrpq7PosJij+aF6+odFOH2FrqGCKnpCX7VWPk2AUm2
-	1VwKY3wVujMVVGoSjEozNQpjwQSR1XfCeea+oi4yF44uhclIQRzfQlbzi9h47IKzJdHenLWMAwqtg
-	vbBLZZbxNYFxBw8Chpng==;
+	List-Owner; bh=9HJ2OVXaAxJxg5Y+QoCex2+UwrejKy8vLhwj+LQ6me0=; b=FxUx1Y22hR8yhu
+	R5g4lKDYOhAtVBKAsnuCR0LxVhN9IRL8oIX2uhLcwFNnHmCz6MmizVjij8CbJJ54kWpc6BBdJYDBQ
+	DierYgue+CWBA2D9XUV8hzL3kuZGc1dEES1madX72oufCRIsPDVsbA4ZezCKql63oItc4GbGljmlu
+	SbQ3kM2+mfjualZcIHPVl/lrl9hT8cF08mHBi3dZbxtk9nmhj6t2bJuHa1gO9K4nFYlVufgcG6b1i
+	ne2vYIpPEC7Th9b6b7o4gmWiWp2Z2ya9MGJShji+eBANW8dxDb1KLHgIhsr1JMEq/R192mcC1rMPu
+	UXDUZRaYxzW3wlwRbqwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3fJt-008zqN-PM; Fri, 09 Dec 2022 15:29:50 +0000
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25])
+	id 1p3fcb-0098rR-3X; Fri, 09 Dec 2022 15:49:09 +0000
+Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3fG4-008yFN-MY; Fri, 09 Dec 2022 15:25:54 +0000
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id 0748932005CA;
-	Fri,  9 Dec 2022 10:25:50 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 09 Dec 2022 10:25:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to; s=fm1; t=1670599550; x=1670685950; bh=QcJkwn62sj
-	SUOtcXIxjSe2Ij1zsJVgf9eHa19mY4Xuw=; b=ZB0g3ByITNvp2JclQkUUMmnurx
-	Hw2WKBVfiaeUCZ0qkCu9CRcQgNAwifkRRYdK7ZU8BL1HNSEZql+6qI+ejbR/wtd4
-	UBNYooBMpsy3RNzOL1i6l3/TbJzC9LcQyXQur9VKfLIJ7g75jFon3BvKxiPSbhs6
-	upsDTYn3ACM3rzRkTofG4GygGDeolY0ZU7T5X5UoGGimvp8QdKSSIiKHysaxudPZ
-	Udv1FFwXV5FHRi8JBeuMIkYMSDjh7P7gBF+zkcxtpi83RoQKrXSP9vDyzLgR0HFi
-	ZF7vn8yx7AmqdiopZMryYsbbcvPSY2OTOeLLQ12h60moZ9ZBC8HE6/8F0qFw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1670599550; x=1670685950; bh=QcJkwn62sjSUOtcXIxjSe2Ij1zsJ
-	Vgf9eHa19mY4Xuw=; b=i7ItSB9QnsGmP0r+/l9chqlgI1OKe+6eE94cI8W6tBST
-	wseD/DOIwI/Dtku3VN0v9G8eW4AyMB/lNSoA4bQrzrr7SVM5LCj4ngB209QNH6Aa
-	KfD/ng6CJYxSQuUmF2uxO++u91vDF2DJW8fUaXPEqojMdM3WbhoLKTdT5v7635/j
-	hb22dGebTe4uqIRZulWLTov7xQBztX0KYc0WqzYRS/T97uePJo3a+b9UspTVviZj
-	RoM8j8mWKJmwG0MFQ0Xt/091QcHk35mfITgvzM6pJyAEPwRm9eVtCuSUcY7TYU2S
-	XlZLKPs7OdqanPE8g3/7t3+r13LrZZoHl08CrTlHbQ==
-X-ME-Sender: <xms:flOTY9DYlF9uHVO2E_p0tTIH8xukhAMSrSGtR5rOSR5sQ4LC6IPutQ>
-    <xme:flOTY7hM4fQNhf59GrRArIKcU6ljgLqjEswtVAMmoas8qxsRNCIviBOWsFRkDXQb-
-    RIVMyplMOkDJlp36vg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddvgdejhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:flOTY4lS2-8bcwz2yQ0AM3mN5WRChiyoqOiuCVkiYATp1cRQ_SYh3w>
-    <xmx:flOTY3ymuFViJsl0X-CpNhDE_pCNwlBzFGhRJ9xkkbMmjQKWrICTOA>
-    <xmx:flOTYyQPxqPc3FX8fGIZbXFi9IvbrC6vkSMTSeld3_0chzIVqTX9iA>
-    <xmx:flOTY8BYXfPjSXzLHDTx5_aPnNHRuMmtpp2aiHwYWLgD98nPRDhICQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 21CA5B60086; Fri,  9 Dec 2022 10:25:50 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1115-g8b801eadce-fm-20221102.001-g8b801ead
-Mime-Version: 1.0
-Message-Id: <dbdb4417-a1cf-4613-8f7a-98b524bfdedc@app.fastmail.com>
-In-Reply-To: <bb4e185a-c4db-428b-a1ee-ee1ba767fffb@leemhuis.info>
+	id 1p3fSS-0093S4-LS; Fri, 09 Dec 2022 15:38:43 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 1B515240007;
+	Fri,  9 Dec 2022 15:38:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1670600315;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iEZQ7a3rtGPOj2loD/oWZkyH/UPYQamMD++xVLPyjxU=;
+	b=UqeC9/7xfyDro4Vdn/TMvdKer07QL9tkNgkjMEGojQaS4CHRS7505GOMSfwaFbtJxgKiUd
+	JMbDh4qigIO/mEhhwVUnJeAQHH7TusS3DZOw0gJ2jruaU92ZBTzQsqzGZJOEB+I85kryjZ
+	6vlo9Q4JNO9d7LKbsbbCN80Nhm69NUeHkkhHuuVETBgSZLbc5ukg6DWCzzSpLIQBieYLJ3
+	iQ9h6a4fp73rdzz3rTtjc38NQPxenYWtIiT9kAfqY1k2W7eVhdq+WIg5G+ijIV2O9Uj2/9
+	DqqNmw/uBHwrUPRPqM30IxG9D57QAmsdzqCOf8/crRtAstsd+gmXY0AGkXbyWg==
+Date: Fri, 9 Dec 2022 16:38:30 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: "Thorsten Leemhuis" <regressions@leemhuis.info>, "Marek Vasut"
+ <marex@denx.de>, "Shawn Guo" <shawnguo@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, "Francesco Dolcini"
+ <francesco.dolcini@toradex.com>, "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Sascha Hauer"
+ <s.hauer@pengutronix.de>, "Pengutronix Kernel Team"
+ <kernel@pengutronix.de>, "Fabio Estevam" <festevam@gmail.com>, "NXP Linux
+ Team" <linux-imx@nxp.com>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, stable@vger.kernel.org, "Francesco Dolcini"
+ <francesco@dolcini.it>
+Subject: Re: [PATCH v1] Revert "ARM: dts: imx7: Fix NAND controller
+ size-cells"
+Message-ID: <20221209163830.4b47ccb5@xps-13>
+In-Reply-To: <dbdb4417-a1cf-4613-8f7a-98b524bfdedc@app.fastmail.com>
 References: <20221205152327.26881-1-francesco@dolcini.it>
- <0aa2d48b-35a0-1781-f265-0387d213bdd6@denx.de>
- <20221208115124.6cc7a8bf@xps-13>
- <Y5ITkZtKWHzWaLS4@francesco-nb.int.toradex.com>
- <bb4e185a-c4db-428b-a1ee-ee1ba767fffb@leemhuis.info>
-Date: Fri, 09 Dec 2022 16:25:28 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Thorsten Leemhuis" <regressions@leemhuis.info>
-Cc: "Marek Vasut" <marex@denx.de>, "Shawn Guo" <shawnguo@kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- "Francesco Dolcini" <francesco.dolcini@toradex.com>,
- "Rob Herring" <robh+dt@kernel.org>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
- "Sascha Hauer" <s.hauer@pengutronix.de>,
- "Pengutronix Kernel Team" <kernel@pengutronix.de>,
- "Fabio Estevam" <festevam@gmail.com>, "NXP Linux Team" <linux-imx@nxp.com>,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org, "Francesco Dolcini" <francesco@dolcini.it>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v1] Revert "ARM: dts: imx7: Fix NAND controller size-cells"
+	<0aa2d48b-35a0-1781-f265-0387d213bdd6@denx.de>
+	<20221208115124.6cc7a8bf@xps-13>
+	<Y5ITkZtKWHzWaLS4@francesco-nb.int.toradex.com>
+	<bb4e185a-c4db-428b-a1ee-ee1ba767fffb@leemhuis.info>
+	<dbdb4417-a1cf-4613-8f7a-98b524bfdedc@app.fastmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221209_072552_897793_3F2275DF 
-X-CRM114-Status: GOOD (  10.38  )
+X-CRM114-CacheID: sfid-20221209_073841_073776_1016974C 
+X-CRM114-Status: GOOD (  13.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,31 +79,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Dec 9, 2022, at 14:30, Thorsten Leemhuis wrote:
-> On 08.12.22 17:40, Francesco Dolcini wrote:
->> + Arnd
->
-> Arnd, have you seen this? We haven't heard anything from Shawn afaics,
-> who normally would take care of a patch like this. Hence could you
-> consider picking up the patch at the start of this thread (e.g.
-> https://lore.kernel.org/all/20221205152327.26881-1-francesco@dolcini.it/
-> ) and send it to Linus in the next 48 hours? It seems low-risk and fixes
-> a regression introduced this cycle various people care about. That's why
-> I'll likely ask Linus to consider picking this up directly before
-> releasing 6.1, if I don't hear anything from you soon. But I'd prefer if
-> the patch would go through at least somewhat the proper channels;
-> alternatively a ACK from you to signal Linus "yeah, pick this up" would
-> help as well.
-
-Done now.
-
-   Arnd
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQXJuZCwKCmFybmRAYXJuZGIuZGUgd3JvdGUgb24gRnJpLCAwOSBEZWMgMjAyMiAxNjoyNToy
+OCArMDEwMDoKCj4gT24gRnJpLCBEZWMgOSwgMjAyMiwgYXQgMTQ6MzAsIFRob3JzdGVuIExlZW1o
+dWlzIHdyb3RlOgo+ID4gT24gMDguMTIuMjIgMTc6NDAsIEZyYW5jZXNjbyBEb2xjaW5pIHdyb3Rl
+OiAgCj4gPj4gKyBBcm5kICAKPiA+Cj4gPiBBcm5kLCBoYXZlIHlvdSBzZWVuIHRoaXM/IFdlIGhh
+dmVuJ3QgaGVhcmQgYW55dGhpbmcgZnJvbSBTaGF3biBhZmFpY3MsCj4gPiB3aG8gbm9ybWFsbHkg
+d291bGQgdGFrZSBjYXJlIG9mIGEgcGF0Y2ggbGlrZSB0aGlzLiBIZW5jZSBjb3VsZCB5b3UKPiA+
+IGNvbnNpZGVyIHBpY2tpbmcgdXAgdGhlIHBhdGNoIGF0IHRoZSBzdGFydCBvZiB0aGlzIHRocmVh
+ZCAoZS5nLgo+ID4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjIxMjA1MTUyMzI3LjI2
+ODgxLTEtZnJhbmNlc2NvQGRvbGNpbmkuaXQvCj4gPiApIGFuZCBzZW5kIGl0IHRvIExpbnVzIGlu
+IHRoZSBuZXh0IDQ4IGhvdXJzPyBJdCBzZWVtcyBsb3ctcmlzayBhbmQgZml4ZXMKPiA+IGEgcmVn
+cmVzc2lvbiBpbnRyb2R1Y2VkIHRoaXMgY3ljbGUgdmFyaW91cyBwZW9wbGUgY2FyZSBhYm91dC4g
+VGhhdCdzIHdoeQo+ID4gSSdsbCBsaWtlbHkgYXNrIExpbnVzIHRvIGNvbnNpZGVyIHBpY2tpbmcg
+dGhpcyB1cCBkaXJlY3RseSBiZWZvcmUKPiA+IHJlbGVhc2luZyA2LjEsIGlmIEkgZG9uJ3QgaGVh
+ciBhbnl0aGluZyBmcm9tIHlvdSBzb29uLiBCdXQgSSdkIHByZWZlciBpZgo+ID4gdGhlIHBhdGNo
+IHdvdWxkIGdvIHRocm91Z2ggYXQgbGVhc3Qgc29tZXdoYXQgdGhlIHByb3BlciBjaGFubmVsczsK
+PiA+IGFsdGVybmF0aXZlbHkgYSBBQ0sgZnJvbSB5b3UgdG8gc2lnbmFsIExpbnVzICJ5ZWFoLCBw
+aWNrIHRoaXMgdXAiIHdvdWxkCj4gPiBoZWxwIGFzIHdlbGwuICAKPiAKPiBEb25lIG5vdy4KPiAK
+PiAgICBBcm5kCgpUaGFua3MgYSBsb3QuCgpNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
