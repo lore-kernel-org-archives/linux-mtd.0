@@ -4,60 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32405C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Dec 2022 13:31:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45069C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Dec 2022 15:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2SIarylYFiJfKuy80CO7pPv8wQnvkoxns7vW2LlRG+A=; b=asU5smamYF6lRt
-	QyJxiuZskq+PZx1USDi84A/dlJ7ZTuefI9OYSQa/6JZRw9m9JaSYzMcOD1nt44IOY6P4+Td/beadx
-	sB/chiEnJ+Pf4GvC/3iqzYYKZRRKwC8XUiBJJWgAq6lhCiOw/NAg1f4K1NyBJIvg2ow64KHMWzud1
-	DXpZwOuNI0eluLO+um3EnR31dIBkrfqF+nUGacQDZGGdxCqVCyO6OYX8+YAicaEt9Z8X3j5ZcNxBr
-	y83FxqbKKmB5mk9hNoUEYdw5A0slph5NaN/ZJPP6SoBAr7M4BJxbGJqi98FTLnnSYgI7HzncrOfjZ
-	pEpejRZ1+m076XrKorPQ==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:Message-Id:
+	Mime-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=eBWS8NEjAfWCie9Rv5lBY8mP5fOYmjbix4kYuQvzBkQ=; b=RA8+ylQIbJJKdf
+	VwhjyL8hE0NKNF/y5ZfDeSFV88Pz0yl4Tp4x+XIe0hPaFGu3g+87HK1VkcXm3eA4MWbfd7qNoghBv
+	CuSGGDAOKCa4/igMr6snQKqAoWXKCDlVuCC19UZhtPMCfdCAEpGS43NIdktlw+IFMm0BTNbZQAgDp
+	w4efH9q0PsQl57r559J4CwAizWUKlDrV+/XoHU5MFXsA+I8myu0b4Jpr5A4N9x+ha9dJWtBp4wZ80
+	cANnk+saKGbXnpmySy7t1BnpcVA9gU+Jz+yKLde14YC+HI2mC81OuPUup1Ls1RATo515L/H2MJQ5e
+	HKhapD6xn8BtBQ2HZbzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3dSs-007wGe-Ct; Fri, 09 Dec 2022 13:30:58 +0000
-Received: from wp530.webpack.hosteurope.de ([80.237.130.52])
+	id 1p3fIp-008zO9-4Y; Fri, 09 Dec 2022 15:28:43 +0000
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3dSh-007wDw-9s; Fri, 09 Dec 2022 13:30:49 +0000
-Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1p3dSY-0004xm-Q5; Fri, 09 Dec 2022 14:30:38 +0100
-Message-ID: <bb4e185a-c4db-428b-a1ee-ee1ba767fffb@leemhuis.info>
-Date: Fri, 9 Dec 2022 14:30:38 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v1] Revert "ARM: dts: imx7: Fix NAND controller
- size-cells"
-Content-Language: en-US, de-DE
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Marek Vasut <marex@denx.de>, Shawn Guo <shawnguo@kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- Francesco Dolcini <francesco.dolcini@toradex.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org, Francesco Dolcini <francesco@dolcini.it>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20221205152327.26881-1-francesco@dolcini.it>
- <0aa2d48b-35a0-1781-f265-0387d213bdd6@denx.de>
- <20221208115124.6cc7a8bf@xps-13>
- <Y5ITkZtKWHzWaLS4@francesco-nb.int.toradex.com>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <Y5ITkZtKWHzWaLS4@francesco-nb.int.toradex.com>
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1670592647;295784c2;
-X-HE-SMSGID: 1p3dSY-0004xm-Q5
+	id 1p3fFy-008yAD-Iv; Fri, 09 Dec 2022 15:25:48 +0000
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id B5CEF320091F;
+	Fri,  9 Dec 2022 10:25:38 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Fri, 09 Dec 2022 10:25:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:date:date:from:from:in-reply-to:message-id
+	:mime-version:reply-to:sender:subject:subject:to:to; s=fm1; t=
+	1670599538; x=1670685938; bh=El72L61y206EseKUUon70geO5hnaNo4Skdb
+	zoWJup0s=; b=ZryyW61SmwUNUdXyXyeQ04j4PF/btO/bIFiVJ29PUhV6gC60luy
+	HCSHGECW3YPsUK9C479qv2dQrElPCHFklE0QsHvrS7phHWjGSoA1zJFzV/utK9iC
+	GuOmpFBjBs92WvkROGmKkgiQqTCYOUwVAymioMpWryLBAkOTCXFATk7Mxdi9vk5B
+	chiG82E0ZuGWHLNLI3UOgNB6k64FdxM1pM2w0ylg1govsSZKrLex0pzFuHEHaOWg
+	qy95Y+pkCfF7KGcrxYYwv97yRAqh8mSdj/Wt93HecRDI0FZ3w/Oi3SOaphFtPNEi
+	KIo40JnRIV7Hz0U7Ccw7eRUKfsCzHw4tXAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:mime-version
+	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1670599538; x=
+	1670685938; bh=El72L61y206EseKUUon70geO5hnaNo4SkdbzoWJup0s=; b=M
+	WHAAOylbf+HAsSWpB1jAKZkX+NtsBIJkA9NWLcNLsq3njdBQ4q+Px7TCX/x2AMoC
+	PRLKczD/9UVuDpHXUrd4HFEEK1Tus8esKtHAwq+2WNvq1pAlTXuDwhgcOuOPAkDJ
+	I7xTrDaGz7BQ6Alk4dc4jWO84MVs/ICkmDEdZZME2/jWN196M1EiK2d8u52Zqr9O
+	foQ9ijN7MKjAO7J3dPfyXy/c6dKyaazn9BNwvxAJZ3AZt9KWZESM1b0tDRDpSgl6
+	YnFOgR2wuztmHZ1T9Q9EEMlkKXjh6XYjdTWm2HhVSpZev3xUw/I1tyS6PG3Xz66/
+	lzN45huAuLtd4RuALJKRg==
+X-ME-Sender: <xms:cVOTY6kIgkInYQhS_OQKlTGkmQnhJ6h3e0yL9A-U8nlAUCR3y4_cZA>
+    <xme:cVOTYx2i5_bB9EtX8PJV2OF3vR13VOEerSPii0kjEDmkT6inGDGtxt1PO0xsYKxVh
+    _EwpN_a_Jk9LDWIWv8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddvgdejhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
+    hnpeeffeeuhfekjeevtddvtdelledttddtjeegvdfhtdduvdfhueekudeihfejtefgieen
+    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:cVOTY4psYswyKqlfJrDg2gF_Aci8hRilCeU-hNwLGFR7zMWGN4ByIA>
+    <xmx:cVOTY-meh3OlMcdPaOUbmWMP0VKJIPypP7j11aRaqePKU8p9ocrGwA>
+    <xmx:cVOTY43Dk9LFjhq-wf7sZl8-1uuRhpD0WgqBDTM3XUaszHf4eRzPXA>
+    <xmx:clOTY-xLVuNhsJ5PG_mck_njKRkFepB_7Ha6PMM-ECko88aQ_chGKw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id D8385B60086; Fri,  9 Dec 2022 10:25:37 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-1115-g8b801eadce-fm-20221102.001-g8b801ead
+Mime-Version: 1.0
+Message-Id: <c2178eba-0c25-4310-8b87-1dc7708d2a34@app.fastmail.com>
+Date: Fri, 09 Dec 2022 16:25:17 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Linus Torvalds" <torvalds@linux-foundation.org>
+Cc: "Francesco Dolcini" <francesco.dolcini@toradex.com>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>, "Marek Vasut" <marex@denx.de>,
+ "NXP Linux Team" <linux-imx@nxp.com>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, stable@vger.kernel.org,
+ "Thorsten Leemhuis" <regressions@leemhuis.info>, soc@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] ARM: SoC fixes for 6.1, part 6
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221209_053047_531663_208DCF03 
-X-CRM114-Status: GOOD (  13.09  )
+X-CRM114-CacheID: sfid-20221209_072546_722129_FE0E9ED1 
+X-CRM114-Status: UNSURE (   8.34  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,61 +103,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 08.12.22 17:40, Francesco Dolcini wrote:
-> + Arnd
+The following changes since commit da0cbf9307a227f52a38a0a580a4642ad9d7325c:
 
-Arnd, have you seen this? We haven't heard anything from Shawn afaics,
-who normally would take care of a patch like this. Hence could you
-consider picking up the patch at the start of this thread (e.g.
-https://lore.kernel.org/all/20221205152327.26881-1-francesco@dolcini.it/
-) and send it to Linus in the next 48 hours? It seems low-risk and fixes
-a regression introduced this cycle various people care about. That's why
-I'll likely ask Linus to consider picking this up directly before
-releasing 6.1, if I don't hear anything from you soon. But I'd prefer if
-the patch would go through at least somewhat the proper channels;
-alternatively a ACK from you to signal Linus "yeah, pick this up" would
-help as well.
+  Merge tag 'at91-fixes-6.1-3' of https://git.kernel.org/pub/scm/linux/kernel/git/at91/linux into arm/fixes (2022-11-29 15:45:36 +0100)
 
-Ciao, Thorsten
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-fixes-6.1-6
 
-> On Thu, Dec 08, 2022 at 11:51:24AM +0100, Miquel Raynal wrote:
->> marex@denx.de wrote on Mon, 5 Dec 2022 17:26:53 +0100:
->>> On 12/5/22 16:23, Francesco Dolcini wrote:
->>>> From: Francesco Dolcini <francesco.dolcini@toradex.com>
->>>>
->>>> This reverts commit 753395ea1e45c724150070b5785900b6a44bd5fb.
->>>>
->>>> It introduced a boot regression on colibri-imx7, and potentially any
->>>> other i.MX7 boards with MTD partition list generated into the fdt by
->>>> U-Boot.
->>>>
->>>> While the commit we are reverting here is not obviously wrong, it fixes
->>>> only a dt binding checker warning that is non-functional, while it
->>>> introduces a boot regression and there is no obvious fix ready.
->>>>
->>>> Cc: stable@vger.kernel.org
->>>> Fixes: 753395ea1e45 ("ARM: dts: imx7: Fix NAND controller size-cells")
->>>> Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
->>>> Link: https://lore.kernel.org/all/20221205144917.6514168a@xps-13/
->>>> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
->> [...]
->>> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
->> [...]
->>> Acked-by: Marek Vasut <marex@denx.de>
->> [...]
->>
->> As discussed in the above links, boot is broken on imx7 Colibri boards,
->> this revert was the most quick and straightforward fix we agreed upon
->> with the hope (~ duty?) it would make it in v6.1. Any chance you could
->> pick this up rapidly and forward it to Linus? Or should we involve
->> him directly (Thorsten?).
-> 
-> Hello Arnd,
-> FYI - see Miquel explanation above.
-> 
-> Francesco
-> 
+for you to fetch changes up to ef19964da8a668c683f1d38274f6fb756e047945:
+
+  Revert "ARM: dts: imx7: Fix NAND controller size-cells" (2022-12-08 17:47:57 +0100)
+
+----------------------------------------------------------------
+ARM: SoC fixes for 6.1, part 6
+
+One more last minute revert for a boot regression that was
+found on the popular colibri-imx7.
+
+----------------------------------------------------------------
+
+This came in just after I sent off the "final pull request for 6.1"
+yesterday, and it seems important enough for another even more
+final round.
+
+Author: Francesco Dolcini <francesco.dolcini@toradex.com>
+Date:   Mon Dec 5 16:23:27 2022 +0100
+
+    Revert "ARM: dts: imx7: Fix NAND controller size-cells"
+    
+    This reverts commit 753395ea1e45c724150070b5785900b6a44bd5fb.
+    
+    It introduced a boot regression on colibri-imx7, and potentially any
+    other i.MX7 boards with MTD partition list generated into the fdt by
+    U-Boot.
+    
+    While the commit we are reverting here is not obviously wrong, it fixes
+    only a dt binding checker warning that is non-functional, while it
+    introduces a boot regression and there is no obvious fix ready.
+    
+    Fixes: 753395ea1e45 ("ARM: dts: imx7: Fix NAND controller size-cells")
+    Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+    Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+    Acked-by: Marek Vasut <marex@denx.de>
+    Cc: stable@vger.kernel.org
+    Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
+    Link: https://lore.kernel.org/all/20221205144917.6514168a@xps-13/
+    Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/arch/arm/boot/dts/imx7s.dtsi b/arch/arm/boot/dts/imx7s.dtsi
+index 03d2e8544a4e..0fc9e6b8b05d 100644
+--- a/arch/arm/boot/dts/imx7s.dtsi
++++ b/arch/arm/boot/dts/imx7s.dtsi
+@@ -1270,10 +1270,10 @@ dma_apbh: dma-apbh@33000000 {
+                        clocks = <&clks IMX7D_NAND_USDHC_BUS_RAWNAND_CLK>;
+                };
+ 
+-               gpmi: nand-controller@33002000 {
++               gpmi: nand-controller@33002000{
+                        compatible = "fsl,imx7d-gpmi-nand";
+                        #address-cells = <1>;
+-                       #size-cells = <0>;
++                       #size-cells = <1>;
+                        reg = <0x33002000 0x2000>, <0x33004000 0x4000>;
+                        reg-names = "gpmi-nand", "bch";
+                        interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
 
 ______________________________________________________
 Linux MTD discussion mailing list
