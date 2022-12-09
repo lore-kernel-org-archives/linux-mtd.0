@@ -4,83 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11FACC4332F
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Dec 2022 20:57:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB4D1C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Dec 2022 02:09:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:
-	From:Subject:MIME-Version:Date:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PUwfkbX+ITGV2aRvWGJ8rgKgKrZYvmqkGGPyABw44BU=; b=lg13H/VVvYY9Gr
-	WX2+0AV0MCoE8bOu1ffirkFuy91QdUXaEdfa1qWaMEUYZloz0KuDVEbkAR4NILdL9t+aSaZF5O1xL
-	ZFBZe05WB1McssXiNMp+CSl46Usaaw9tz0sicCtnt8EcAwkCNXS/i+HmchFoS6/vo85dVcy9yoZWc
-	nZojLPUNv94ZoH3ma1WgLqMkuQIb774AFOCogLFc0WXQXB1nRz0i75g/BuWAnw/JN8Jg/QMYuktPk
-	nwvCfIeYn7zVlYEfyUN692YSjItvfYW6eCL01QZ8vhD612v8XuhIRcnmaGg1DsfnaAFCRZRhyDxH5
-	ZAtdX46UHMdiEbrZ/KCw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=oYvU0b5jgPcw6QjOtGCkRKHG8MN2W8yYretiggJ2QO4=; b=EfsPxDrDn0DfGRSFwkM9Eo3ycV
+	G7CRyYsE0G7URfMUTm4pUDVtYq+Qvz7nLZfwU9OaP4QGpdKfu2MH9BwONbwQ2L367NqIgnreLYqol
+	P/L/8QowilQtHHqnRm9zwyLGVxrcYGSrnM7SgEVumKVG32z1c7G8OCw7BFG0tajl9HljwsxtpUAwh
+	hcqcCq7HZGHDXppaBtCsPJErc1fg/rPDJwZHYGeaKtX2ivBGCeTPguu/sT5n2z8tnSEdnTAY3Wm9G
+	X1CjbLhqgIyzJvTyjimJYq1zvZ44rh+HIE8L+5iwErdUc/P9WJdXywDITyWR0YMaAqjfAGHY0sZ+Q
+	2ORheqzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3Nwl-00B31g-Nl; Thu, 08 Dec 2022 20:56:47 +0000
-Received: from mail-lj1-x22e.google.com ([2a00:1450:4864:20::22e])
+	id 1p3SpS-000kem-7X; Fri, 09 Dec 2022 02:09:34 +0000
+Received: from dog.elm.relay.mailchannels.net ([23.83.212.48])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p3NoD-00AvgK-Sl
-	for linux-mtd@lists.infradead.org; Thu, 08 Dec 2022 20:47:59 +0000
-Received: by mail-lj1-x22e.google.com with SMTP id z4so2858951ljq.6
-        for <linux-mtd@lists.infradead.org>; Thu, 08 Dec 2022 12:47:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:reply-to:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=E4OG3gIKhP9b6oDormQTANR9G0dEFN+Gu8sz+bmNZls=;
-        b=GyiIPRyNAXEMxHFiqbUS7k8gnM0YtqOMoPMgDyNNYNSHQtPAjSH2tTQIuIMoGXVZ/q
-         AkmD7PaBDkmCMxCDM9DvV/npcLQDeqdXJngC1JOaRo6Fes25E0BMPD+ITfi90U/oMDyR
-         yUJD2rxFPoivP9sl/U8lfxKp/RoDY61tRte15Tcd55RLatKTnlBq7DonsHWPrKwfNYml
-         aevbu7+Fk3F5x0GfbI7xdV8VjZoQCAo0sitM6VjuLYliQeGCWwCOzsr4JQVYAuFlKUuV
-         h0+UngCqLYRE63u7lRU269/sFPxiPQJXVutKO+kaZD5+/wzRlEFDOUEFkWa2KYvWBBD5
-         RBAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:reply-to:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E4OG3gIKhP9b6oDormQTANR9G0dEFN+Gu8sz+bmNZls=;
-        b=bc9cobvVuUA4DqLX4vduMPoCWYjrOfZdGAnLCrdPRVkFGATLpcxkDBXOB9LVldEl5p
-         uBzMqW3fxlDEC2mP5hBkv7djgRhB7anq4CwHSsPJpZPhUAY8dDedpF5U8lxDTAQv2ELI
-         eOGpadi/ZLN2kEY6ViQmOkkYRRkdpEnTjleCBXBhUwu7wEwjevboEUihirvzn/Lv2CHE
-         ZlVhfCEa3/zjJOMP9zcf9Uh3/XZcDy1pEwqYYfGA4xw5mUmbJQo1FF2KMPLso7bo6UZl
-         ofutme0XgIlmjkvsJ6W7Wl6UOrSmxnqvGqorGcxSsLAWO+ElpWn7Zots8GGH0r3/wtWE
-         tQMQ==
-X-Gm-Message-State: ANoB5pmMboZ4y7Y1G+B2EXxEpLuB75xTy/8bcuFPwhPDrGOmcZcTa8Bn
-	1cB8e3eIUpOY4PGkZRccNfM=
-X-Google-Smtp-Source: AA0mqf5cA+KnSgMkBK+xmYdjKkrs0kuJ0sFQ5TsNPXSWCkaSAiqFExKhsM0FjyEkeUa3C0cdsnc+rw==
-X-Received: by 2002:a2e:9b51:0:b0:27a:2225:ed74 with SMTP id o17-20020a2e9b51000000b0027a2225ed74mr1132642ljj.30.1670532473725;
-        Thu, 08 Dec 2022 12:47:53 -0800 (PST)
-Received: from [172.22.204.227] (ppp85-140-58-71.pppoe.mtu-net.ru. [85.140.58.71])
-        by smtp.gmail.com with ESMTPSA id bf12-20020a2eaa0c000000b0027a2e0b8766sm286433ljb.9.2022.12.08.12.47.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Dec 2022 12:47:53 -0800 (PST)
-Message-ID: <692bb076-dc42-8caa-3c02-c160a006e0e5@gmail.com>
-Date: Thu, 8 Dec 2022 23:47:31 +0300
+	id 1p3SpO-000kU6-Gk
+	for linux-mtd@lists.infradead.org; Fri, 09 Dec 2022 02:09:32 +0000
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 5A11A5C0787;
+	Fri,  9 Dec 2022 02:09:22 +0000 (UTC)
+Received: from pdx1-sub0-mail-a267.dreamhost.com (unknown [127.0.0.6])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id C3CC55C19B2;
+	Fri,  9 Dec 2022 02:09:21 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1670551761; a=rsa-sha256;
+	cv=none;
+	b=DSqcruP0iM4LEk6bxAFfT8cu2PnWwmo9xhZ5igtbj9Vue2iORjFq/yQ3giPe4u5Xxquoo0
+	VK0CT3Uv8Lwu2yPzoqxcfBSeTiaPXMJTx9xcOLWKLhaUryAoKrzV28fY2OPlhoyHI3KzKx
+	62sarE4egV+hipr1wssM6f9dknozrFg9bOOrbuADLw3txzJduLqqlTk4FbejRY0TtyZlLa
+	LY3afqVq29KhZEm1/ysPBA368tdnAeY3WBY/G84F1b3qL7w6BAVypeVZgBHd9vcrMol0zc
+	Ygt4wufOvx3kYGGLe4oMF3NToaiAU0Hz5OCEqe6tTAfH8qH8M6Y/Q/wJFIreRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1670551761;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:dkim-signature;
+	bh=6noX/pnBcWcHX05sCpu8cyyts9NTKcpFhxpqcG6qCOg=;
+	b=rYapv9ydWUckAPFj4jibFbhRNIfDpea8jArVw3nV7DNHel/7cWrKcy8fOiVgCLKGaDR68/
+	E9b4RRQUyZFa3cH2JoL09XJFz8Xb7H3+1rGH7mw7GRmUuvGsZ0w11fJYOgSPdmXd7ZoxcZ
+	RuBXrEa56+2bJpA9JT6EEzr6LqUC9SaYAgICfSaJlywGLJQykK3yRYeCswGvcIskRdKcud
+	pdPGCD/zXgVV8kgibuv02Tw4WJmx5/g5D4/5Y9RxQQ608synIO32GA6FdwZj3jG+pbE1/c
+	89rnrdwyb09jaw8kNryWh/5U3Pd9ExWwgXc4JDR0hPcJIbQOEpoXN3zMXEVyhg==
+ARC-Authentication-Results: i=1;
+	rspamd-85f95c7974-jbg4j;
+	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Descriptive-Average: 7cb0e6be76423bd7_1670551762160_2362704701
+X-MC-Loop-Signature: 1670551762160:2444031178
+X-MC-Ingress-Time: 1670551762160
+Received: from pdx1-sub0-mail-a267.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.123.200.72 (trex/6.7.1);
+	Fri, 09 Dec 2022 02:09:22 +0000
+Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dave@stgolabs.net)
+	by pdx1-sub0-mail-a267.dreamhost.com (Postfix) with ESMTPSA id 4NSvbN5Nt6z99;
+	Thu,  8 Dec 2022 18:09:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+	s=dreamhost; t=1670551761;
+	bh=6noX/pnBcWcHX05sCpu8cyyts9NTKcpFhxpqcG6qCOg=;
+	h=Date:From:To:Cc:Subject:Content-Type;
+	b=cjGKxJNqa+x3imp2jpO+DHkU+9YuJJtPJ8T5QpA9kygsk8T7ZD8IFQoQc3LR/QZop
+	 P61yve9tdGud1C5NYdH1r3+lC78E5KdC/bxjGplQq4GFpZa7Rcw1xQTOCRoF/KPCYk
+	 An3yz3vvAxsUFhgqFWeBhx3Z+9LMUmx7nGCUyzcHvKeBZPH1xERl2mDPrbFJzsq4zX
+	 1VpPRB1lNbgOO7iiCS+HdhR/hV+Komko9vtl7E6kue70YqsKaBJrQSe/Lzr2BljyZ2
+	 GUBKiRodd1H7ro9cR7XOSwIa5M5j/4hsPRLdb9lv46yc0lkl1rtUiY4S2lu9HAtSIS
+	 cmQ+NveY2H0aA==
+Date: Thu, 8 Dec 2022 17:45:12 -0800
+From: Davidlohr Bueso <dave@stgolabs.net>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>, Ming Lei <ming.lei@redhat.com>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-efi@vger.kernel.org
+Subject: Re: [PATCH v4 3/5] partitions/efi: add support for uImage.FIT
+ sub-partitions
+Message-ID: <20221209014512.dos7666lkvmfhahs@offworld>
+References: <Y2rgVIbtuDsySzBr@makrotopia.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH] mtd: parsers: scpart: fix __udivdi3 undefined on mips
-Content-Language: en-US
-From: Mikhail Zhilkin <csharper2005@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>,
- Yang Yingliang <yangyingliang@huawei.com>,
- NOGUCHI Hiroshi <drvlabo@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <8bf10097-519c-a3de-8a08-d0c5d7ddb2de@gmail.com>
-In-Reply-To: <8bf10097-519c-a3de-8a08-d0c5d7ddb2de@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <Y2rgVIbtuDsySzBr@makrotopia.org>
+User-Agent: NeoMutt/20220429
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221208_124758_009271_92D16F26 
-X-CRM114-Status: GOOD (  19.89  )
+X-CRM114-CacheID: sfid-20221208_180930_874645_0DE5E34B 
+X-CRM114-Status: UNSURE (   9.85  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,63 +118,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: 8bf10097-519c-a3de-8a08-d0c5d7ddb2de@gmail.com
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi guys,
+On Tue, 08 Nov 2022, Daniel Golle wrote:
 
-I'm sorry. I noticed that the patch below is broken. For some time now I can't send patches using git-send-mail since the gmail changed the authentication process and I have to use Thunderbird. The Thunderbird broke the line in the patch.  
+>Add new GUID allowing to parse uImage.FIT stored in a GPT partition
+>and map filesystem sub-image as sub-partitions.
+>
+>Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+>---
+> block/partitions/efi.c | 9 +++++++++
+> block/partitions/efi.h | 3 +++
+> 2 files changed, 12 insertions(+)
+>
+>diff --git a/block/partitions/efi.c b/block/partitions/efi.c
+>index 5e9be13a56a8..bf87893eabe4 100644
+>--- a/block/partitions/efi.c
+>+++ b/block/partitions/efi.c
+>@@ -716,6 +716,9 @@ int efi_partition(struct parsed_partitions *state)
+>	gpt_entry *ptes = NULL;
+>	u32 i;
+>	unsigned ssz = queue_logical_block_size(state->disk->queue) / 512;
+>+#ifdef CONFIG_FIT_PARTITION
+>+	u32 extra_slot = 65;
+>+#endif
 
-I've already sent the PATCH v2.
+You can move this in the branch below where you call parse_fit_partitions().
 
-Link:
-https://lore.kernel.org/linux-mtd/805fe58e-690f-6a3f-5ebf-2f6f6e6e4599@gmail.com/
-
-Have a nice day!
-
--- 
-Best regards,
-Mikhail
-
-On 12/8/2022 9:59 PM, Mikhail Zhilkin wrote:
-
-> This fixes the following compile error on mips architecture with clang
-> version 16.0.0 reported by the 0-DAY CI Kernel Test Service:
->    ld.lld: error: undefined symbol: __udivdi3
->    referenced by scpart.c
->    mtd/parsers/scpart.o:(scpart_parse) in archive drivers/built-in.a
-> 
-> As a workaround this makes 'offs' a 32-bit type. This is enough, because
-> the mtd containing partition table practically does not exceed 1 MB. We
-> can revert this when the [Link] has been resolved.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1635
-> Fixes: 9b78ef0c7997 ("mtd: parsers: add support for Sercomm partitions")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Mikhail Zhilkin <csharper2005@gmail.com>
-> ---
->  drivers/mtd/parsers/scpart.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/parsers/scpart.c b/drivers/mtd/parsers/scpart.c
-> index 02601bb33de4..6e5e11c37078 100644
-> --- a/drivers/mtd/parsers/scpart.c
-> +++ b/drivers/mtd/parsers/scpart.c
-> @@ -50,7 +50,7 @@ static int scpart_scan_partmap(struct mtd_info
-> *master, loff_t partmap_offs,
->  	int cnt = 0;
->  	int res = 0;
->  	int res2;
-> -	loff_t offs;
-> +	uint32_t offs;
->  	size_t retlen;
->  	struct sc_part_desc *pdesc = NULL;
->  	struct sc_part_desc *tmpdesc;
-
+>
+>	if (!find_valid_gpt(state, &gpt, &ptes) || !gpt || !ptes) {
+>		kfree(gpt);
+>@@ -749,6 +752,12 @@ int efi_partition(struct parsed_partitions *state)
+>				ARRAY_SIZE(ptes[i].partition_name));
+>		utf16_le_to_7bit(ptes[i].partition_name, label_max, info->volname);
+>		state->parts[i + 1].has_info = true;
+>+		/* If this is a U-Boot FIT volume it may have subpartitions */
+>+#ifdef CONFIG_FIT_PARTITION
+>+		if (!efi_guidcmp(ptes[i].partition_type_guid, PARTITION_LINUX_FIT_GUID))
+>+			(void) parse_fit_partitions(state, start * ssz, size * ssz,
+>+						    &extra_slot, 127, 1);
+>+#endif
+>	}
+>	kfree(ptes);
+>	kfree(gpt);
+>diff --git a/block/partitions/efi.h b/block/partitions/efi.h
+>index 84b9f36b9e47..06c11f6ae398 100644
+>--- a/block/partitions/efi.h
+>+++ b/block/partitions/efi.h
+>@@ -51,6 +51,9 @@
+> #define PARTITION_LINUX_LVM_GUID \
+>     EFI_GUID( 0xe6d6d379, 0xf507, 0x44c2, \
+>               0xa2, 0x3c, 0x23, 0x8f, 0x2a, 0x3d, 0xf9, 0x28)
+>+#define PARTITION_LINUX_FIT_GUID \
+>+    EFI_GUID( 0xcae9be83, 0xb15f, 0x49cc, \
+>+              0x86, 0x3f, 0x08, 0x1b, 0x74, 0x4a, 0x2d, 0x93)
+>
+> typedef struct _gpt_header {
+>	__le64 signature;
+>--
+>2.38.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
