@@ -4,77 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FD62C4332F
-	for <linux-mtd@archiver.kernel.org>; Sun, 11 Dec 2022 08:27:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24549C4332F
+	for <linux-mtd@archiver.kernel.org>; Sun, 11 Dec 2022 22:17:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uUva4H/VTNKIIxVXmetsUOjIsONtPcsnqO/Fm2pc4g0=; b=w3/yqI2KohE9ZT
-	PQpNvEIa4/gjWo2jseG8T81Gf4Qc3yVR5knorP6rPBcbwNpAUgIQvuB0A/C7wXV2xz1be0aAB/qka
-	Fzp57JoEplgC2r5bLak6flQj7NzLDxvJwZ9KGaGzHUOhP8RmyFoY9UF7fQcjBfoMLV0wGMk7U2W1+
-	DZVnn3D2yfuHjgCU8UCigeziOeK4jSbefNkj7WhM6RwUno38nwIfWVjIG5FH7rtvrooTizPhzSfPJ
-	uUZg0eWb3AzH7c31wlgqHqnq8UavTdEsMfN359YonaWcctbdF+z+4mY6PKR4LwpvPYPJ+runtLgvl
-	l0sQ6OGJoZQY7pDd4T0A==;
+	List-Owner; bh=mta/MIa73xgdeub+O5zHmIwdEAE4d9qNBVvo7YOboQk=; b=g/mWMsBWDJFMiB
+	vMa4Gd34gCPOafH9sOb1rZZmPScMCTXESZGAfvymzF7xwYa4IQZUIo9rNc8HQkCspe7ypRcy2c5Wi
+	44RwvENAeapJJfkmvVxVI4iDk+4LHIlIkCwCGvYY/ibQ0fnyd1aFcwqJFe4mdr/l5GqgqLWbjQbwl
+	9WS68U9qMoTw6mAA/CnM9GhTbj2HhZITJUkULkYhRvNSEQwuWQHlDVxBUjD0CXLsJIrcIfpMGSSPR
+	Yz0ajkPWe9TtctI7O6VXEi2tUOzzgs/AFvEAyzO/Z3woOKAWG7eVULmO3qtgVQNKGzVlREU8X5L44
+	2VR/Dw/S97IXZwleih5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p4Hfc-00Endf-2T; Sun, 11 Dec 2022 08:26:48 +0000
-Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
+	id 1p4UcZ-004jUQ-8F; Sun, 11 Dec 2022 22:16:31 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p4HfX-00EnYi-JD
-	for linux-mtd@lists.infradead.org; Sun, 11 Dec 2022 08:26:45 +0000
-Received: by mail-ej1-x633.google.com with SMTP id n20so21040810ejh.0
-        for <linux-mtd@lists.infradead.org>; Sun, 11 Dec 2022 00:26:42 -0800 (PST)
+	id 1p4UcS-004jOr-Kr
+	for linux-mtd@lists.infradead.org; Sun, 11 Dec 2022 22:16:28 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id h12so10289780wrv.10
+        for <linux-mtd@lists.infradead.org>; Sun, 11 Dec 2022 14:16:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=mail.huji.ac.il; s=mailhuji;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=df12UQhWiYTYmdTCUvBoHsOBYTq2DGnQpQX0Hny7LVU=;
-        b=iH+2AItbsTINdOr0Cj28qQmO2p56KfxkOIyQJl/yjKRAmjwb9acWJh/+Vd0E6Ahoeb
-         mMq8nEb2WmHUcXwcQE2oY8N3FBbbMDwT4iuXyZV9ACkXkH2LCEBCsZ1XNOHOWKiX9VlT
-         eAUshl7Bj+PG6ouRCLGKRhdgEsP6ykJvCnIDMW5gl2h7PHFrZsccJSm9kbBQ2SfwuSQy
-         j8/dMUbcUIhYJ9noiW4E7jhX++Xkk2yUCfyeqiZ1zpOFYZ9kuQ8bahEUuU6amf+q0gOT
-         oLOW4eBsfY8FX3clPot4jSlbDaOqN801X/wBsrUsiyBPllp+Ti4m8gWLCQI9Jx6+mc1m
-         D4+Q==
+        bh=xP7SztWgBK+Di2/S95g1mehudvt/HTZxLIDMbTsStrA=;
+        b=NsBv8YBArez4sULmrC65Gp4iZjpiVbOwMXtC5J0t9bXgqExRzgTid04TUvMwzKrntf
+         UskktvrreL59jAExs1Mt8AA2jVEClqV07MezbQtmUghS4oHq/kYSD4OxWv2/PV39/15f
+         bzqlsRtcKcynJK4QqTubWDdAu7wQlVvyHklAI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=df12UQhWiYTYmdTCUvBoHsOBYTq2DGnQpQX0Hny7LVU=;
-        b=6SYKed8ZrIZxYRzM47vx7QSEmTsX49VtzsdoJz2TViHYGoHD1FrSfSu+LRTQTnN0FO
-         HRMd2w2O6cDRiCZmpv0diOOFYIEomgEAc6HgqnpGsQvfhId2ctfmth6MSbITXEksyD6b
-         gNXEgsOW3PqJqMzynixAbERiue0fPTrQy49ky1lln5pZGULomJZ/HGSsNX4JUVyeacch
-         kqqfaqVgN7VPOL7nOs8fAhH5fcW1KPcOSIMCT9AYGuJ4U3KYHMhyYqJmDMQiHC+6FSoA
-         cOQ+lJe9PIBCT/ExfOY5sIjMf5AOlpGUfte8dFfcLnBDr3cZfQRBZnJ1kPJ2Ckv8j7b6
-         yZkQ==
-X-Gm-Message-State: ANoB5pkd0yBJir/owPcpJhNNj6xAB1xh+t/0rkqpxMk3dmWTZycZJYCH
-	UhqsLCX42b4p6s4+W6+Lh+xSnI9bwuJDQvDhcjQ=
-X-Google-Smtp-Source: AA0mqf7ZMdYKNktXbDEDsUat0++lY1WTIOMpXUb/tlsZdsovERwynkwAvgxd5PA7NHNObE1yohlrO37VKDTfvyH6zNQ=
-X-Received: by 2002:a17:906:6d03:b0:78d:9d0b:a9f6 with SMTP id
- m3-20020a1709066d0300b0078d9d0ba9f6mr34394004ejr.661.1670747200885; Sun, 11
- Dec 2022 00:26:40 -0800 (PST)
+        bh=xP7SztWgBK+Di2/S95g1mehudvt/HTZxLIDMbTsStrA=;
+        b=ZX4n3Xvb02XF0ss2WCr5t8p6+7l6Xt/GPgsq6kJWDjNCZEgu83QBrU5S9ineaO/iLa
+         nG8IbOep9PRibHCUJWRNIQ95RFK1wba09nqJck3T4efBkrsEFLtVPK9oE9APb1iyOrkw
+         ozg4WPqXroMicDd/Su8pAfGO5rGRO/zWsSyVr0cWxT5TeBD66OnU6Q+ynqFh4ZL9zGex
+         5JRGLV88acE8d/LgWXJvVMkSFeBLHwQA/g0uTsO+EJEzcc6mbs8FojMEwqc+5rf1UAGy
+         Ctz6c/qfw/h47h1wdyRlyfrHLn55awNqeiuAP4yS0yqXg94RfOLYJy+CoJa6WUwZfYoM
+         aoqA==
+X-Gm-Message-State: ANoB5pm77EK0jUKWEVdQ1HO8LX9S4jce+Fc0SD4ubHD/gsSGfPSTqTV+
+	yftDhFDSouoLuSi4NrbatVyBhw==
+X-Google-Smtp-Source: AA0mqf78YDUe2K8y4Kcbr4ZFKECLu8LJR6RszwRHTVyeY8S7AZZ7xsHqn/enF4FY+rfybmFnQlF/GQ==
+X-Received: by 2002:a05:6000:1c18:b0:242:7594:c2f7 with SMTP id ba24-20020a0560001c1800b002427594c2f7mr10558116wrb.64.1670796979520;
+        Sun, 11 Dec 2022 14:16:19 -0800 (PST)
+Received: from MacBook-Pro-5.lan ([2a0d:6fc2:218c:1a00:a91c:f8bf:c26f:4f15])
+        by smtp.gmail.com with ESMTPSA id d7-20020adffd87000000b002422bc69111sm8605805wrr.9.2022.12.11.14.16.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Dec 2022 14:16:18 -0800 (PST)
+From: david.keisarschm@mail.huji.ac.il
+To: Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Hannes Reinecke <hare@suse.de>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@nvidia.com>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc: David <david.keisarschm@mail.huji.ac.il>,
+	aksecurity@gmail.com,
+	ilay.bahat1@gmail.com,
+	linux-kernel@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-mtd@lists.infradead.org,
+	linux-scsi@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH 1/5] Renaming weak prng invocations - prandom_bytes_state, prandom_u32_state
+Date: Mon, 12 Dec 2022 00:16:04 +0200
+Message-Id: <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
+X-Mailer: git-send-email 2.38.0
+In-Reply-To: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
+References: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
 MIME-Version: 1.0
-References: <CALHCpMgSZOZdOGpLwTYf0sFD5EMNL7CuqHuFJV_6w5VPSWZnUw@mail.gmail.com>
- <CALHCpMgEZjnR39upkR6iozSk-b5A_GHRo9rcDSPXzzQi6x_qCw@mail.gmail.com> <b1b7935d-0785-2e57-bad9-ab2476f0acf2@leemhuis.info>
-In-Reply-To: <b1b7935d-0785-2e57-bad9-ab2476f0acf2@leemhuis.info>
-From: Maxim Kiselev <bigunclemax@gmail.com>
-Date: Sun, 11 Dec 2022 11:26:29 +0300
-Message-ID: <CALHCpMhsM2j=bSXEDC9BWYpOAyvCccgJpJmqXfiRTHvp6=y3tA@mail.gmail.com>
-Subject: Re: Fwd: nvmem-cells regression after adding 'call
- of_platform_populate() for MTD partitions'
-To: Thorsten Leemhuis <regressions@leemhuis.info>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Maxim Kochetkov <fido_max@inbox.ru>, 
-	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	"regressions@lists.linux.dev" <regressions@lists.linux.dev>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221211_002643_703936_84E4A921 
-X-CRM114-Status: GOOD (  35.49  )
+X-CRM114-CacheID: sfid-20221211_141624_749991_AB2A722F 
+X-CRM114-Status: GOOD (  20.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,113 +139,750 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Pk9uIDEwLjEyLjIyIDEwOjUyLCBNYXhpbSBLaXNlbGV2IHdyb3RlOgo+Pgo+PiBBZnRlciBhcHBs
-eWluZwo+Cj5UaGlzIG1ha2VzIG1lIHdvbmRlcjogImFwcGx5aW5nIiBhcyBpbiAiYXBwbHlpbmcg
-aXQgdG8gc29tZSB2ZXJzaW9uIHRoYXQKPmRvZXNuJ3QgY29udGFpbiB0aGlzIGNoYW5nZSBub3Jt
-YWxseSIgb3IgYXMgaXQgImFmdGVyIGl0IHdhcyBhcHBsaWVkIHRvCj5tYWlubGluZSBJIGhhdmUg
-dGhlIGZvbGxvd2luZyBwcm9ibGVtIHdpdGggdmFuaWxsYSBrZXJuZWwgdmVyc2lvbiA8Pz8/PiI/
-CgpTb3JyeSBmb3IgY29uZnVzaW5nIHlvdSwgSSBtZWFuICJhZnRlciBpdCB3YXMgYXBwbGllZCB0
-byBtYWlubGluZSIuCkkgaGF2ZSB0aGlzIHByb2JsZW0gd2l0aCB2YW5pbGxhIGtlcm5lbCB2ZXJz
-aW9uIDYuMC4KCj4+PiBJIGZhY2VkIHdpdGggYSBwcm9ibGVtIHRoYXQgbXkgZXRoZXJuZXQgZGV2
-aWNlIGNhbid0IGJlIHByb2JlZCBiZWNhdXNlIGl0Cj4+PiB3YWl0IHdoZW4gJ252bWVtLWNlbGxz
-JyBkZXZpY2Ugd2lsbCBiZSBwcm9iZWQgZmlyc3QuCj4+Cj4+RldJVywgdGhlcmUgaXMgYSBkaXNj
-dXNzaW9uIGFib3V0IGEgcHJvYmxlbXMgdGhhdCBhdCBsZWFzdCB0byBteQo+PnVudHJhaW5lZCBl
-eWVzIGxvb2tzIHNpbWlsYXI6Cj4+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL1l5ajd3Smxx
-SmtDd09iUm5AbHgyay8KClllcyBpdCBsb29rcyBsaWtlIHRoZSBzYW1lIGlzc3VlLgoKCkkgdGhp
-bmsgdGhlIHJvb3Qgb2YgdGhlIHByb2JsZW0gd2FzIHRoZSBjaG9pY2Ugb2YgJ2NvbXBhdGlibGUn
-CmRldmljZSB0cmVlIHByb3BlcnR5IHRvIG1hcmsgdGhlIG10ZCBwYXJ0aXRpb24gbm9kZSBhcyBh
-IG52bWVtIHByb3ZpZGVyLgoKSSdtIHRhbGtpbmcgYWJvdXQgdGhpcyBwYXJ0IGluICdtdGRfbnZt
-ZW1fYWRkJyBmdW5jdGlvbi4KPiBjb25maWcubm9fb2Zfbm9kZSA9ICFvZl9kZXZpY2VfaXNfY29t
-cGF0aWJsZShub2RlLCAibnZtZW0tY2VsbHMiKTsKCk1heWJlIHdlIHNob3VsZCBjaGFuZ2UgdGhl
-ICdjb21wYXRpYmxlJyBwcm9wZXJ0eSB0byBzb21ldGhpbmcgZWxzZT8KCtGB0LEsIDEwINC00LXQ
-ui4gMjAyMiDQsy4g0LIgMTU6MzUsIFRob3JzdGVuIExlZW1odWlzIDxyZWdyZXNzaW9uc0BsZWVt
-aHVpcy5pbmZvPjoKPgo+IFtDQ2luZyB0aGUgcmVncmVzc2lvbiBtYWlsaW5nIGxpc3QsIGFzIGl0
-IHNob3VsZCBiZSBpbiB0aGUgbG9vcCBmb3IgYWxsCj4gcmVncmVzc2lvbnMsIGFzIGV4cGxhaW5l
-ZCBpbgo+IGh0dHBzOi8vZG9jcy5rZXJuZWwub3JnL2FkbWluLWd1aWRlL3JlcG9ydGluZy1yZWdy
-ZXNzaW9ucy5odG1sIF0KPgo+IEhpLCB0aGlzIGlzIHlvdXIgTGludXgga2VybmVsIHJlZ3Jlc3Np
-b24gdHJhY2tlci4gVGh4IGZvciB0aGUgcmVwb3J0Lgo+Cj4gT24gMTAuMTIuMjIgMTA6NTIsIE1h
-eGltIEtpc2VsZXYgd3JvdGU6Cj4gPgo+ID4gQWZ0ZXIgYXBwbHlpbmcKPgo+IFRoaXMgbWFrZXMg
-bWUgd29uZGVyOiAiYXBwbHlpbmciIGFzIGluICJhcHBseWluZyBpdCB0byBzb21lIHZlcnNpb24g
-dGhhdAo+IGRvZXNuJ3QgY29udGFpbiB0aGlzIGNoYW5nZSBub3JtYWxseSIgb3IgYXMgaXQgImFm
-dGVyIGl0IHdhcyBhcHBsaWVkIHRvCj4gbWFpbmxpbmUgSSBoYXZlIHRoZSBmb2xsb3dpbmcgcHJv
-YmxlbSB3aXRoIHZhbmlsbGEga2VybmVsIHZlcnNpb24gPD8/Pz4iPwo+Cj4gPiB0aGlzIGNvbW1p
-dCAnbXRkOiBjYWxsIG9mX3BsYXRmb3JtX3BvcHVsYXRlKCkgZm9yIE1URAo+ID4gcGFydGl0aW9u
-cycgKGJjZGYwMzE1KSwKPgo+IENDaW5nIFJhZmHFgiwgd2hvIGF1dGhvcmVkIGJjZGYwMzE1Lgo+
-Cj4gPiBJIGZhY2VkIHdpdGggYSBwcm9ibGVtIHRoYXQgbXkgZXRoZXJuZXQgZGV2aWNlIGNhbid0
-IGJlIHByb2JlZCBiZWNhdXNlIGl0Cj4gPiB3YWl0IHdoZW4gJ252bWVtLWNlbGxzJyBkZXZpY2Ug
-d2lsbCBiZSBwcm9iZWQgZmlyc3QuCj4KPiBGV0lXLCB0aGVyZSBpcyBhIGRpc2N1c3Npb24gYWJv
-dXQgYSBwcm9ibGVtcyB0aGF0IGF0IGxlYXN0IHRvIG15Cj4gdW50cmFpbmVkIGV5ZXMgbG9va3Mg
-c2ltaWxhcjoKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvWXlqN3dKbHFKa0N3T2JSbkBs
-eDJrLwo+Cj4gUmFmYcWCLCBoYXMgc29tZSBwcm9ncmVzcyBiZWVuIG1hZGUgdG8gcmVzb2x2ZSB0
-aGlzPwo+Cj4gVG8gbWUgaXQgc291bmRzIGxpa2UgdGhpcyBtaWdodCB3YXJyYW50IGEgInJldmVy
-dCwgYW5kIHJlYXBwbHkgbGF0ZXIKPiB3aGVuIHRoZSBjYXVzZSBmb3IgdGhlIHJlZ3Jlc3Npb24g
-d2FzIGFkZHJlc3NlZCIuIFJhZmHFgiwgaXQgc2VlbXMgeW91Cj4gc3VnZ2VzdGVkIHNvbWV0aGlu
-ZyBsaWtlIHRoYXQsIGJ1dCBpdCBkb2Vzbid0IGxvb2sgbGlrZSB0aGF0IGhhcHBlbmVkCj4gZm9y
-IG9uZSByZWFzb24gb3IgYW5vdGhlci4gT3IgYW0gSSBtaXNzaW5nIHNvbWV0aGluZz8KPgo+IENp
-YW8sIFRob3JzdGVuICh3ZWFyaW5nIGhpcyAndGhlIExpbnV4IGtlcm5lbCdzIHJlZ3Jlc3Npb24g
-dHJhY2tlcicgaGF0KQo+Cj4gUC5TLjogQXMgdGhlIExpbnV4IGtlcm5lbCdzIHJlZ3Jlc3Npb24g
-dHJhY2tlciBJIGRlYWwgd2l0aCBhIGxvdCBvZgo+IHJlcG9ydHMgYW5kIHNvbWV0aW1lcyBtaXNz
-IHNvbWV0aGluZyBpbXBvcnRhbnQgd2hlbiB3cml0aW5nIG1haWxzIGxpa2UKPiB0aGlzLiBJZiB0
-aGF0J3MgdGhlIGNhc2UgaGVyZSwgZG9uJ3QgaGVzaXRhdGUgdG8gdGVsbCBtZSBpbiBhIHB1Ymxp
-Ywo+IHJlcGx5LCBpdCdzIGluIGV2ZXJ5b25lJ3MgaW50ZXJlc3QgdG8gc2V0IHRoZSBwdWJsaWMg
-cmVjb3JkIHN0cmFpZ2h0Lgo+Cj4gPiBCdXQgdGhlcmUgaXMgbm8gc3VjaCBkcml2ZXIgd2hpY2gg
-aXMgY29tcGF0aWJsZSB3aXRoICdudm1lbS1jZWxscycgYmVjYXVzZQo+ID4gJ252bWVtLWNlbGxz
-JyBpcyBqdXN0IGEgbWFyayB1c2VkIGJ5IHRoZSAnbXRkX252bWVtX2FkZCcgZnVuY3Rpb24uCj4g
-Pgo+ID4gU28gdGhpcyBsZWFkcyB0byBhcHBlYXRpbmcgb2YgdW5yZXNvbHZlZCBkZXBlbmRlbmN5
-IGZvciB0aGUgZXRoZXJuZXQgZGV2aWNlLgo+ID4gQW5kIHRoYXQncyB3aHkgdGhlIGV0aGVybmV0
-IGRldmljZSBjYW4ndCBiZSBhZGRlZCBhbmQgcHJvYmVkLgo+ID4KPiA+IEhlcmUgaXMgYSBwYXJ0
-IG9mIGtlcm5lbCBsb2cgd2hlbiBzcGkgZmxhc2ggcHJvYmUgc3RhcnQ6Cj4gPgo+ID4+IGRldmlj
-ZTogJ3NwaTAnOiBkZXZpY2VfYWRkCj4gPj4gZGV2aWNlOiAnc3BpMC4wJzogZGV2aWNlX2FkZAo+
-ID4+IHNwaS1ub3Igc3BpMC4wOiBteDY2bDUxMjM1ZiAoNjU1MzYgS2J5dGVzKQo+ID4+IDcgZml4
-ZWQtcGFydGl0aW9ucyBwYXJ0aXRpb25zIGZvdW5kIG9uIE1URCBkZXZpY2Ugc3BpMC4wCj4gPgo+
-ID4gQWZ0ZXIgJ20yNXA4MCcgcHJvYmUgJ2YxMDcwMDAwLmV0aGVybmV0JyBsaW5rZWQgdG8gJ3Bh
-cnRpdGlvbkAxJyA6Cj4gPgo+ID4+IGRldmljZTogJ2YxMDEwNjAwLnNwaTptMjVwODBAMDoKPiA+
-IHBhcnRpdGlvbnM6cGFydGl0aW9uQDEnOiBkZXZpY2VfYWRkCj4gPj4gZGV2aWNlOiAncGxhdGZv
-cm06ZjEwMTA2MDAuc3BpOm0yNXA4MEAwOnBhcnRpdGlvbnM6cGFydGl0aW9uQDEtLXBsYXRmb3Jt
-OmYxMDcwMDAwLmV0aGVybmV0JzogZGV2aWNlX2FkZAo+ID4+IGRldmljZXNfa3NldDogTW92aW5n
-IGYxMDcwMDAwLmV0aGVybmV0IHRvIGVuZCBvZiBsaXN0Cj4gPj4gcGxhdGZvcm0gZjEwNzAwMDAu
-ZXRoZXJuZXQ6IExpbmtlZCBhcyBhIGNvbnN1bWVyIHRvIGYxMDEwNjAwLnNwaTptMjVwODBAMDpw
-YXJ0aXRpb25zOnBhcnRpdGlvbkAxCj4gPj4gZXRoZXJuZXRANzAwMDAgRHJvcHBpbmcgdGhlIGZ3
-bm9kZSBsaW5rIHRvIHBhcnRpdGlvbkAxCj4gPgo+ID4gQW5kIGFzIGEgcmVzdWx0IEkgZ290IGAt
-RVBST0JFX0RFRkVSYCBmb3IgYGYxMDcwMDAwLmV0aGVybmV0YAo+ID4KPiA+PiBwbGF0Zm9ybSBm
-MTA3MDAwMC5ldGhlcm5ldDogZXJyb3IgLUVQUk9CRV9ERUZFUjogc3VwcGxpZXIgZjEwMTA2MDAu
-c3BpOm0yNXA4MEAwOnBhcnRpdGlvbnM6cGFydGl0aW9uQDEgbm90IHJlYWR5Cj4gPgo+ID4gSGVy
-ZSBpcyBhIHBhcnQgb2YgbXkgZGV2aWNlIHRyZWU6Cj4gPgo+ID4gICAgIGVuZXQxOiBldGhlcm5l
-dEA3MDAwMCB7Cj4gPiAgICAgICAgIHN0YXR1cyA9ICJva2F5IjsKPiA+ICAgICAgICAgbnZtZW0t
-Y2VsbHMgPSA8Jm1hY2FkZHI+Owo+ID4gICAgICAgICBudm1lbS1jZWxsLW5hbWVzID0gIm1hYy1h
-ZGRyZXNzIjsKPiA+ICAgICAgICAgcGh5LW1vZGUgPSAicmdtaWkiOwo+ID4gICAgICAgICBwaHkg
-PSA8JnBoeTA+Owo+ID4gICAgIH07Cj4gPgo+ID4gICAgIHNwaUAxMDYwMCB7Cj4gPiAgICAgICAg
-IHN0YXR1cyA9ICJva2F5IjsKPiA+Cj4gPiAgICAgICAgIG0yNXA4MEAwIHsKPiA+ICAgICAgICAg
-ICAgIGNvbXBhdGlibGUgPSAibXg2Nmw1MTIzNWwiOwo+ID4gICAgICAgICAgICAgcmVnID0gPDA+
-Owo+ID4gICAgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4gPiAgICAgICAgICAgICAj
-c2l6ZS1jZWxscyA9IDwxPjsKPiA+Cj4gPiAgICAgICAgICAgICBwYXJ0aXRpb25zIHsKPiA+ICAg
-ICAgICAgICAgICAgICBjb21wYXRpYmxlID0gImZpeGVkLXBhcnRpdGlvbnMiOwo+ID4gICAgICAg
-ICAgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Owo+ID4gICAgICAgICAgICAgICAgICNzaXpl
-LWNlbGxzID0gPDE+Owo+ID4KPiA+ICAgICAgICAgICAgICAgICBwYXJ0aXRpb25AMCB7Cj4gPiAg
-ICAgICAgICAgICAgICAgICAgIHJlZyA9IDwweDAwMDAwMDAwIDB4MDAwMDgwMDAwPjsKPiA+ICAg
-ICAgICAgICAgICAgICAgICAgbGFiZWwgPSAiU1BJLlVfQk9PVCI7Cj4gPiAgICAgICAgICAgICAg
-ICAgfTsKPiA+Cj4gPiAgICAgICAgICAgICAgICAgcGFydGl0aW9uQDEgewo+ID4gICAgICAgICAg
-ICAgICAgICAgICBjb21wYXRpYmxlID0gIm52bWVtLWNlbGxzIjsKPiA+ICAgICAgICAgICAgICAg
-ICAgICAgcmVnID0gPDB4MDAwQTAwMDAgMHgwMDAyMDAwMD47Cj4gPiAgICAgICAgICAgICAgICAg
-ICAgIGxhYmVsID0gIlNQSS5JTlZfSU5GTyI7Cj4gPiAgICAgICAgICAgICAgICAgICAgICNhZGRy
-ZXNzLWNlbGxzID0gPDE+Owo+ID4gICAgICAgICAgICAgICAgICAgICAjc2l6ZS1jZWxscyA9IDwx
-PjsKPiA+ICAgICAgICAgICAgICAgICAgICAgcmFuZ2VzID0gPDAgMHgwMDBBMDAwMCAweDAwMDIw
-MDAwPjsKPiA+Cj4gPiAgICAgICAgICAgICAgICAgICAgIG1hY2FkZHI6IG1hY0A2IHsKPiA+ICAg
-ICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwweDYgMHg2PjsKPiA+ICAgICAgICAgICAgICAg
-ICAgICAgfTsKPiA+ICAgICAgICAgICAgICAgICB9Owo+ID4KPiA+ICAgICAgICAgICAgIH07Cj4g
-PiAgICAgICAgIH07Cj4gPiAgICAgfTsKPiA+Cj4gPiBJbiB0aGUgZXhhbXBsZSBhYm92ZSAnZXRo
-ZXJuZXRANzAwMDAnIHJlcXVpcmVzICdtYWNhZGRyOiBtYWNANicgd2hpY2ggaXMKPiA+IGxvY2F0
-ZWQgaW5zaWRlIG10ZCAncGFydGl0aW9uQDEnIG9mICdtMjVwODBAMCcgc3BpIGZsYXNoLgo+Cj4g
-UC5QLlMuOiBsZXQgbWUgYWRkIHRoaXMgdG8gdGhlIHJlZ3Jlc3Npb24gdHJhY2tpbmc6Cj4KPiAj
-cmVnemJvdCBeaW50cm9kdWNlZCBiY2RmMDMxNQo+ICNyZWd6Ym90IHRpdGxlIG10ZDogZXRoZXJu
-ZXQgZGV2aWNlIGNhbid0IGJlIHByb2JlZCBhbnltb3JlIGR1ZSB0bwo+IGJyb2tlbiBudm1lbS1j
-ZWxscyBkZXAKPiAjcmVnemJvdCBtb25pdG9yOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwv
-WXlqN3dKbHFKa0N3T2JSbkBseDJrLwo+ICNyZWd6Ym90IGlnbm9yZS1hY3Rpdml0eQoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
-RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+From: David <david.keisarschm@mail.huji.ac.il>
+
+Since the two functions
+ prandom_byte_state and prandom_u32_state
+ use the weak prng prandom_u32,
+ we added the prefix predictable_rng,
+ to their signatures so it is clear they are weak.
+
+Signed-off-by: David <david.keisarschm@mail.huji.ac.il>
+---
+ arch/x86/mm/kaslr.c                           |  2 +-
+ .../gpu/drm/i915/gem/selftests/huge_pages.c   |  2 +-
+ .../i915/gem/selftests/i915_gem_client_blt.c  |  2 +-
+ .../i915/gem/selftests/i915_gem_coherency.c   |  2 +-
+ .../drm/i915/gem/selftests/i915_gem_context.c |  2 +-
+ drivers/gpu/drm/i915/gt/selftest_lrc.c        |  2 +-
+ drivers/gpu/drm/i915/gt/selftest_migrate.c    |  2 +-
+ drivers/gpu/drm/i915/gt/selftest_timeline.c   |  4 +-
+ drivers/gpu/drm/i915/selftests/i915_random.c  |  4 +-
+ drivers/gpu/drm/i915/selftests/i915_random.h  |  4 +-
+ drivers/gpu/drm/i915/selftests/i915_syncmap.c |  4 +-
+ .../drm/i915/selftests/intel_memory_region.c  | 10 ++---
+ drivers/gpu/drm/i915/selftests/scatterlist.c  |  4 +-
+ drivers/gpu/drm/lib/drm_random.c              |  2 +-
+ drivers/mtd/tests/oobtest.c                   | 10 ++---
+ drivers/mtd/tests/pagetest.c                  | 12 +++---
+ drivers/mtd/tests/subpagetest.c               | 12 +++---
+ drivers/scsi/fcoe/fcoe_ctlr.c                 |  2 +-
+ include/linux/prandom.h                       |  6 +--
+ kernel/bpf/core.c                             |  2 +-
+ lib/interval_tree_test.c                      |  6 +--
+ lib/random32.c                                | 42 +++++++++----------
+ lib/rbtree_test.c                             |  4 +-
+ lib/test_bpf.c                                |  2 +-
+ lib/test_parman.c                             |  2 +-
+ lib/test_scanf.c                              |  8 ++--
+ mm/slab.c                                     |  2 +-
+ mm/slab_common.c                              |  2 +-
+ 28 files changed, 79 insertions(+), 79 deletions(-)
+
+diff --git a/arch/x86/mm/kaslr.c b/arch/x86/mm/kaslr.c
+index 557f0fe25..66c17b449 100644
+--- a/arch/x86/mm/kaslr.c
++++ b/arch/x86/mm/kaslr.c
+@@ -123,7 +123,7 @@ void __init kernel_randomize_memory(void)
+ 		 * available.
+ 		 */
+ 		entropy = remain_entropy / (ARRAY_SIZE(kaslr_regions) - i);
+-		prandom_bytes_state(&rand_state, &rand, sizeof(rand));
++		predictable_rng_prandom_bytes_state(&rand_state, &rand, sizeof(rand));
+ 		entropy = (rand % (entropy + 1)) & PUD_MASK;
+ 		vaddr += entropy;
+ 		*kaslr_regions[i].base = vaddr;
+diff --git a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+index c570cf780..f698d58e4 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
++++ b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+@@ -1294,7 +1294,7 @@ static u32 igt_random_size(struct rnd_state *prng,
+ 	GEM_BUG_ON(min_page_size > max_page_size);
+ 
+ 	mask = ((max_page_size << 1ULL) - 1) & PAGE_MASK;
+-	size = prandom_u32_state(prng) & mask;
++	size = predictable_rng_prandom_u32_state(prng) & mask;
+ 	if (size < min_page_size)
+ 		size |= min_page_size;
+ 
+diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_client_blt.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_client_blt.c
+index 9a6a6b5b7..039f17b6b 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_client_blt.c
++++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_client_blt.c
+@@ -630,7 +630,7 @@ static int tiled_blits_prepare(struct tiled_blits *t,
+ 
+ 	/* Use scratch to fill objects */
+ 	for (i = 0; i < ARRAY_SIZE(t->buffers); i++) {
+-		fill_scratch(t, map, prandom_u32_state(prng));
++		fill_scratch(t, map, predictable_rng_prandom_u32_state(prng));
+ 		GEM_BUG_ON(verify_buffer(t, &t->scratch, prng));
+ 
+ 		err = tiled_blit(t,
+diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_coherency.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_coherency.c
+index a666d7e61..24cc7e6d4 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_coherency.c
++++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_coherency.c
+@@ -371,7 +371,7 @@ static int igt_gem_coherency(void *arg)
+ 
+ 					i915_random_reorder(offsets, ncachelines, &prng);
+ 					for (n = 0; n < count; n++)
+-						values[n] = prandom_u32_state(&prng);
++						values[n] = predictable_rng_prandom_u32_state(&prng);
+ 
+ 					for (n = 0; n < count; n++) {
+ 						err = over->set(&ctx, offsets[n], ~values[n]);
+diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c
+index c6ad67b90..6e437a1d6 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c
++++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c
+@@ -1407,7 +1407,7 @@ static int igt_ctx_readonly(void *arg)
+ 					goto out_file;
+ 				}
+ 
+-				if (prandom_u32_state(&prng) & 1)
++				if (predictable_rng_prandom_u32_state(&prng) & 1)
+ 					i915_gem_object_set_readonly(obj);
+ 			}
+ 
+diff --git a/drivers/gpu/drm/i915/gt/selftest_lrc.c b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+index 82d3f8058..e2fe4fe8f 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_lrc.c
++++ b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+@@ -1760,7 +1760,7 @@ static struct i915_request *garbage(struct intel_context *ce,
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+-	prandom_bytes_state(prng,
++	predictable_rng_prandom_bytes_state(prng,
+ 			    ce->lrc_reg_state,
+ 			    ce->engine->context_size -
+ 			    LRC_STATE_OFFSET);
+diff --git a/drivers/gpu/drm/i915/gt/selftest_migrate.c b/drivers/gpu/drm/i915/gt/selftest_migrate.c
+index 2b0c87999..9b6e8cf52 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_migrate.c
++++ b/drivers/gpu/drm/i915/gt/selftest_migrate.c
+@@ -551,7 +551,7 @@ static int threaded_migrate(struct intel_migrate *migrate,
+ 
+ 		thread[i].migrate = migrate;
+ 		thread[i].prng =
+-			I915_RND_STATE_INITIALIZER(prandom_u32_state(&prng));
++			I915_RND_STATE_INITIALIZER(predictable_rng_prandom_u32_state(&prng));
+ 
+ 		tsk = kthread_run(fn, &thread[i], "igt-%d", i);
+ 		if (IS_ERR(tsk)) {
+diff --git a/drivers/gpu/drm/i915/gt/selftest_timeline.c b/drivers/gpu/drm/i915/gt/selftest_timeline.c
+index 522d01905..5c8b662c6 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_timeline.c
++++ b/drivers/gpu/drm/i915/gt/selftest_timeline.c
+@@ -308,7 +308,7 @@ static int bench_sync(void *arg)
+ 		u32 x;
+ 
+ 		/* Make sure the compiler doesn't optimise away the prng call */
+-		WRITE_ONCE(x, prandom_u32_state(&prng));
++		WRITE_ONCE(x, predictable_rng_prandom_u32_state(&prng));
+ 
+ 		count++;
+ 	} while (!time_after(jiffies, end_time));
+@@ -393,7 +393,7 @@ static int bench_sync(void *arg)
+ 	end_time = jiffies + HZ/10;
+ 	do {
+ 		u32 id = random_engine(&prng);
+-		u32 seqno = prandom_u32_state(&prng);
++		u32 seqno = predictable_rng_prandom_u32_state(&prng);
+ 
+ 		if (!__intel_timeline_sync_is_later(&tl, id, seqno))
+ 			__intel_timeline_sync_set(&tl, id, seqno);
+diff --git a/drivers/gpu/drm/i915/selftests/i915_random.c b/drivers/gpu/drm/i915/selftests/i915_random.c
+index abdfadcf6..e6b56688e 100644
+--- a/drivers/gpu/drm/i915/selftests/i915_random.c
++++ b/drivers/gpu/drm/i915/selftests/i915_random.c
+@@ -35,9 +35,9 @@ u64 i915_prandom_u64_state(struct rnd_state *rnd)
+ {
+ 	u64 x;
+ 
+-	x = prandom_u32_state(rnd);
++	x = predictable_rng_prandom_u32_state(rnd);
+ 	x <<= 32;
+-	x |= prandom_u32_state(rnd);
++	x |= predictable_rng_prandom_u32_state(rnd);
+ 
+ 	return x;
+ }
+diff --git a/drivers/gpu/drm/i915/selftests/i915_random.h b/drivers/gpu/drm/i915/selftests/i915_random.h
+index 05364eca2..7290a2eaf 100644
+--- a/drivers/gpu/drm/i915/selftests/i915_random.h
++++ b/drivers/gpu/drm/i915/selftests/i915_random.h
+@@ -40,13 +40,13 @@
+ 	struct rnd_state name__ = I915_RND_STATE_INITIALIZER(i915_selftest.random_seed)
+ 
+ #define I915_RND_SUBSTATE(name__, parent__) \
+-	struct rnd_state name__ = I915_RND_STATE_INITIALIZER(prandom_u32_state(&(parent__)))
++	struct rnd_state name__ = I915_RND_STATE_INITIALIZER(predictable_rng_prandom_u32_state(&(parent__)))
+ 
+ u64 i915_prandom_u64_state(struct rnd_state *rnd);
+ 
+ static inline u32 i915_prandom_u32_max_state(u32 ep_ro, struct rnd_state *state)
+ {
+-	return upper_32_bits(mul_u32_u32(prandom_u32_state(state), ep_ro));
++	return upper_32_bits(mul_u32_u32(predictable_rng_prandom_u32_state(state), ep_ro));
+ }
+ 
+ unsigned int *i915_random_order(unsigned int count,
+diff --git a/drivers/gpu/drm/i915/selftests/i915_syncmap.c b/drivers/gpu/drm/i915/selftests/i915_syncmap.c
+index 47f4ae18a..c02e55133 100644
+--- a/drivers/gpu/drm/i915/selftests/i915_syncmap.c
++++ b/drivers/gpu/drm/i915/selftests/i915_syncmap.c
+@@ -223,7 +223,7 @@ static int igt_syncmap_one(void *arg)
+ 
+ 		for (loop = 0; loop <= max; loop++) {
+ 			err = check_one(&sync, context,
+-					prandom_u32_state(&prng));
++					predictable_rng_prandom_u32_state(&prng));
+ 			if (err)
+ 				goto out;
+ 		}
+@@ -575,7 +575,7 @@ static int igt_syncmap_random(void *arg)
+ 		u32 last_seqno = seqno;
+ 		bool expect;
+ 
+-		seqno = prandom_u32_state(&prng);
++		seqno = predictable_rng_prandom_u32_state(&prng);
+ 		expect = seqno_later(last_seqno, seqno);
+ 
+ 		for (i = 0; i < count; i++) {
+diff --git a/drivers/gpu/drm/i915/selftests/intel_memory_region.c b/drivers/gpu/drm/i915/selftests/intel_memory_region.c
+index 3b18e5905..2c65795e8 100644
+--- a/drivers/gpu/drm/i915/selftests/intel_memory_region.c
++++ b/drivers/gpu/drm/i915/selftests/intel_memory_region.c
+@@ -758,7 +758,7 @@ static int igt_gpu_write(struct i915_gem_context *ctx,
+ 	i = 0;
+ 	engines = i915_gem_context_lock_engines(ctx);
+ 	do {
+-		u32 rng = prandom_u32_state(&prng);
++		u32 rng = predictable_rng_prandom_u32_state(&prng);
+ 		u32 dword = offset_in_page(rng) / 4;
+ 
+ 		ce = engines->engines[order[i] % engines->num_engines];
+@@ -929,7 +929,7 @@ static int igt_lmem_create_cleared_cpu(void *arg)
+ 			goto out_unpin;
+ 		}
+ 
+-		val = prandom_u32_state(&prng);
++		val = predictable_rng_prandom_u32_state(&prng);
+ 
+ 		memset32(vaddr, val, obj->base.size / sizeof(u32));
+ 
+@@ -972,7 +972,7 @@ static int igt_lmem_write_gpu(void *arg)
+ 		goto out_file;
+ 	}
+ 
+-	sz = round_up(prandom_u32_state(&prng) % SZ_32M, PAGE_SIZE);
++	sz = round_up(predictable_rng_prandom_u32_state(&prng) % SZ_32M, PAGE_SIZE);
+ 
+ 	obj = i915_gem_object_create_lmem(i915, sz, 0);
+ 	if (IS_ERR(obj)) {
+@@ -1046,7 +1046,7 @@ static int igt_lmem_write_cpu(void *arg)
+ 
+ 	pr_info("%s: using %s\n", __func__, engine->name);
+ 
+-	sz = round_up(prandom_u32_state(&prng) % SZ_32M, PAGE_SIZE);
++	sz = round_up(predictable_rng_prandom_u32_state(&prng) % SZ_32M, PAGE_SIZE);
+ 	sz = max_t(u32, 2 * PAGE_SIZE, sz);
+ 
+ 	obj = i915_gem_object_create_lmem(i915, sz, I915_BO_ALLOC_CONTIGUOUS);
+@@ -1115,7 +1115,7 @@ static int igt_lmem_write_cpu(void *arg)
+ 		offset = igt_random_offset(&prng, 0, obj->base.size,
+ 					   size, align);
+ 
+-		val = prandom_u32_state(&prng);
++		val = predictable_rng_prandom_u32_state(&prng);
+ 		memset32(vaddr + offset / sizeof(u32), val ^ 0xdeadbeaf,
+ 			 size / sizeof(u32));
+ 
+diff --git a/drivers/gpu/drm/i915/selftests/scatterlist.c b/drivers/gpu/drm/i915/selftests/scatterlist.c
+index d599186d5..ff86bf468 100644
+--- a/drivers/gpu/drm/i915/selftests/scatterlist.c
++++ b/drivers/gpu/drm/i915/selftests/scatterlist.c
+@@ -187,7 +187,7 @@ static unsigned int random(unsigned long n,
+ 			   unsigned long count,
+ 			   struct rnd_state *rnd)
+ {
+-	return 1 + (prandom_u32_state(rnd) % 1024);
++	return 1 + (predictable_rng_prandom_u32_state(rnd) % 1024);
+ }
+ 
+ static unsigned int random_page_size_pages(unsigned long n,
+@@ -201,7 +201,7 @@ static unsigned int random_page_size_pages(unsigned long n,
+ 		BIT(21) >> PAGE_SHIFT,
+ 	};
+ 
+-	return page_count[(prandom_u32_state(rnd) % 3)];
++	return page_count[(predictable_rng_prandom_u32_state(rnd) % 3)];
+ }
+ 
+ static inline bool page_contiguous(struct page *first,
+diff --git a/drivers/gpu/drm/lib/drm_random.c b/drivers/gpu/drm/lib/drm_random.c
+index 31b5a3e21..512455039 100644
+--- a/drivers/gpu/drm/lib/drm_random.c
++++ b/drivers/gpu/drm/lib/drm_random.c
+@@ -9,7 +9,7 @@
+ 
+ u32 drm_prandom_u32_max_state(u32 ep_ro, struct rnd_state *state)
+ {
+-	return upper_32_bits((u64)prandom_u32_state(state) * ep_ro);
++	return upper_32_bits((u64)predictable_rng_prandom_u32_state(state) * ep_ro);
+ }
+ EXPORT_SYMBOL(drm_prandom_u32_max_state);
+ 
+diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+index 13fed3989..fc248fbdb 100644
+--- a/drivers/mtd/tests/oobtest.c
++++ b/drivers/mtd/tests/oobtest.c
+@@ -60,7 +60,7 @@ static int write_eraseblock(int ebnum)
+ 	int err = 0;
+ 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, use_len_max * pgcnt);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, use_len_max * pgcnt);
+ 	for (i = 0; i < pgcnt; ++i, addr += mtd->writesize) {
+ 		ops.mode      = MTD_OPS_AUTO_OOB;
+ 		ops.len       = 0;
+@@ -170,7 +170,7 @@ static int verify_eraseblock(int ebnum)
+ 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
+ 	size_t bitflips;
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, use_len_max * pgcnt);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, use_len_max * pgcnt);
+ 	for (i = 0; i < pgcnt; ++i, addr += mtd->writesize) {
+ 		ops.mode      = MTD_OPS_AUTO_OOB;
+ 		ops.len       = 0;
+@@ -268,7 +268,7 @@ static int verify_eraseblock_in_one_go(int ebnum)
+ 	size_t bitflips;
+ 	int i;
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, len);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, len);
+ 	ops.mode      = MTD_OPS_AUTO_OOB;
+ 	ops.len       = 0;
+ 	ops.retlen    = 0;
+@@ -642,7 +642,7 @@ static int __init mtd_oobtest_init(void)
+ 		if (bbt[i] || bbt[i + 1])
+ 			continue;
+ 		addr = (loff_t)(i + 1) * mtd->erasesize - mtd->writesize;
+-		prandom_bytes_state(&rnd_state, writebuf, sz * cnt);
++		predictable_rng_prandom_bytes_state(&rnd_state, writebuf, sz * cnt);
+ 		for (pg = 0; pg < cnt; ++pg) {
+ 			ops.mode      = MTD_OPS_AUTO_OOB;
+ 			ops.len       = 0;
+@@ -673,7 +673,7 @@ static int __init mtd_oobtest_init(void)
+ 	for (i = 0; i < ebcnt - 1; ++i) {
+ 		if (bbt[i] || bbt[i + 1])
+ 			continue;
+-		prandom_bytes_state(&rnd_state, writebuf, mtd->oobavail * 2);
++		predictable_rng_prandom_bytes_state(&rnd_state, writebuf, mtd->oobavail * 2);
+ 		addr = (loff_t)(i + 1) * mtd->erasesize - mtd->writesize;
+ 		ops.mode      = MTD_OPS_AUTO_OOB;
+ 		ops.len       = 0;
+diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
+index 8eb40b6e6..088146869 100644
+--- a/drivers/mtd/tests/pagetest.c
++++ b/drivers/mtd/tests/pagetest.c
+@@ -42,7 +42,7 @@ static int write_eraseblock(int ebnum)
+ {
+ 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, mtd->erasesize);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, mtd->erasesize);
+ 	cond_resched();
+ 	return mtdtest_write(mtd, addr, mtd->erasesize, writebuf);
+ }
+@@ -62,7 +62,7 @@ static int verify_eraseblock(int ebnum)
+ 	for (i = 0; i < ebcnt && bbt[ebcnt - i - 1]; ++i)
+ 		addrn -= mtd->erasesize;
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, mtd->erasesize);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, mtd->erasesize);
+ 	for (j = 0; j < pgcnt - 1; ++j, addr += pgsize) {
+ 		/* Do a read to set the internal dataRAMs to different data */
+ 		err = mtdtest_read(mtd, addr0, bufsize, twopages);
+@@ -97,7 +97,7 @@ static int verify_eraseblock(int ebnum)
+ 		if (err)
+ 			return err;
+ 		memcpy(boundary, writebuf + mtd->erasesize - pgsize, pgsize);
+-		prandom_bytes_state(&rnd_state, boundary + pgsize, pgsize);
++		predictable_rng_prandom_bytes_state(&rnd_state, boundary + pgsize, pgsize);
+ 		if (memcmp(twopages, boundary, bufsize)) {
+ 			pr_err("error: verify failed at %#llx\n",
+ 			       (long long)addr);
+@@ -210,7 +210,7 @@ static int erasecrosstest(void)
+ 		return err;
+ 
+ 	pr_info("writing 1st page of block %d\n", ebnum);
+-	prandom_bytes_state(&rnd_state, writebuf, pgsize);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, pgsize);
+ 	strcpy(writebuf, "There is no data like this!");
+ 	err = mtdtest_write(mtd, addr0, pgsize, writebuf);
+ 	if (err)
+@@ -235,7 +235,7 @@ static int erasecrosstest(void)
+ 		return err;
+ 
+ 	pr_info("writing 1st page of block %d\n", ebnum);
+-	prandom_bytes_state(&rnd_state, writebuf, pgsize);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, pgsize);
+ 	strcpy(writebuf, "There is no data like this!");
+ 	err = mtdtest_write(mtd, addr0, pgsize, writebuf);
+ 	if (err)
+@@ -284,7 +284,7 @@ static int erasetest(void)
+ 		return err;
+ 
+ 	pr_info("writing 1st page of block %d\n", ebnum);
+-	prandom_bytes_state(&rnd_state, writebuf, pgsize);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, pgsize);
+ 	err = mtdtest_write(mtd, addr0, pgsize, writebuf);
+ 	if (err)
+ 		return err;
+diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
+index 05250a080..3d312a51f 100644
+--- a/drivers/mtd/tests/subpagetest.c
++++ b/drivers/mtd/tests/subpagetest.c
+@@ -46,7 +46,7 @@ static int write_eraseblock(int ebnum)
+ 	int err = 0;
+ 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, subpgsize);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, subpgsize);
+ 	err = mtd_write(mtd, addr, subpgsize, &written, writebuf);
+ 	if (unlikely(err || written != subpgsize)) {
+ 		pr_err("error: write failed at %#llx\n",
+@@ -60,7 +60,7 @@ static int write_eraseblock(int ebnum)
+ 
+ 	addr += subpgsize;
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, subpgsize);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, subpgsize);
+ 	err = mtd_write(mtd, addr, subpgsize, &written, writebuf);
+ 	if (unlikely(err || written != subpgsize)) {
+ 		pr_err("error: write failed at %#llx\n",
+@@ -84,7 +84,7 @@ static int write_eraseblock2(int ebnum)
+ 	for (k = 1; k < 33; ++k) {
+ 		if (addr + (subpgsize * k) > (loff_t)(ebnum + 1) * mtd->erasesize)
+ 			break;
+-		prandom_bytes_state(&rnd_state, writebuf, subpgsize * k);
++		predictable_rng_prandom_bytes_state(&rnd_state, writebuf, subpgsize * k);
+ 		err = mtd_write(mtd, addr, subpgsize * k, &written, writebuf);
+ 		if (unlikely(err || written != subpgsize * k)) {
+ 			pr_err("error: write failed at %#llx\n",
+@@ -120,7 +120,7 @@ static int verify_eraseblock(int ebnum)
+ 	int err = 0;
+ 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, subpgsize);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, subpgsize);
+ 	clear_data(readbuf, subpgsize);
+ 	err = mtd_read(mtd, addr, subpgsize, &read, readbuf);
+ 	if (unlikely(err || read != subpgsize)) {
+@@ -147,7 +147,7 @@ static int verify_eraseblock(int ebnum)
+ 
+ 	addr += subpgsize;
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, subpgsize);
++	predictable_rng_prandom_bytes_state(&rnd_state, writebuf, subpgsize);
+ 	clear_data(readbuf, subpgsize);
+ 	err = mtd_read(mtd, addr, subpgsize, &read, readbuf);
+ 	if (unlikely(err || read != subpgsize)) {
+@@ -184,7 +184,7 @@ static int verify_eraseblock2(int ebnum)
+ 	for (k = 1; k < 33; ++k) {
+ 		if (addr + (subpgsize * k) > (loff_t)(ebnum + 1) * mtd->erasesize)
+ 			break;
+-		prandom_bytes_state(&rnd_state, writebuf, subpgsize * k);
++		predictable_rng_prandom_bytes_state(&rnd_state, writebuf, subpgsize * k);
+ 		clear_data(readbuf, subpgsize * k);
+ 		err = mtd_read(mtd, addr, subpgsize * k, &read, readbuf);
+ 		if (unlikely(err || read != subpgsize * k)) {
+diff --git a/drivers/scsi/fcoe/fcoe_ctlr.c b/drivers/scsi/fcoe/fcoe_ctlr.c
+index ddc048069..e1a0e2c27 100644
+--- a/drivers/scsi/fcoe/fcoe_ctlr.c
++++ b/drivers/scsi/fcoe/fcoe_ctlr.c
+@@ -2224,7 +2224,7 @@ static void fcoe_ctlr_vn_restart(struct fcoe_ctlr *fip)
+ 	 */
+ 	port_id = fip->port_id;
+ 	if (fip->probe_tries)
+-		port_id = prandom_u32_state(&fip->rnd_state) & 0xffff;
++		port_id = predictable_rng_prandom_u32_state(&fip->rnd_state) & 0xffff;
+ 	else if (!port_id)
+ 		port_id = fip->lp->wwpn & 0xffff;
+ 	if (!port_id || port_id == 0xffff)
+diff --git a/include/linux/prandom.h b/include/linux/prandom.h
+index e0a0759dd..d525ab02e 100644
+--- a/include/linux/prandom.h
++++ b/include/linux/prandom.h
+@@ -16,8 +16,8 @@ struct rnd_state {
+ 	__u32 s1, s2, s3, s4;
+ };
+ 
+-u32 prandom_u32_state(struct rnd_state *state);
+-void prandom_bytes_state(struct rnd_state *state, void *buf, size_t nbytes);
++u32 predictable_rng_prandom_u32_state(struct rnd_state *state);
++void predictable_rng_prandom_bytes_state(struct rnd_state *state, void *buf, size_t nbytes);
+ void prandom_seed_full_state(struct rnd_state __percpu *pcpu_state);
+ 
+ #define prandom_init_once(pcpu_state)			\
+@@ -52,7 +52,7 @@ static inline u32 __seed(u32 x, u32 m)
+ }
+ 
+ /**
+- * prandom_seed_state - set seed for prandom_u32_state().
++ * prandom_seed_state - set seed for predictable_rng_prandom_u32_state().
+  * @state: pointer to state structure to receive the seed.
+  * @seed: arbitrary 64-bit value to use as a seed.
+  */
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 25a54e045..4cb5421d9 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2599,7 +2599,7 @@ BPF_CALL_0(bpf_user_rnd_u32)
+ 	u32 res;
+ 
+ 	state = &get_cpu_var(bpf_user_rnd_state);
+-	res = prandom_u32_state(state);
++	res = predictable_rng_prandom_u32_state(state);
+ 	put_cpu_var(bpf_user_rnd_state);
+ 
+ 	return res;
+diff --git a/lib/interval_tree_test.c b/lib/interval_tree_test.c
+index f37f4d44f..1a1a89a39 100644
+--- a/lib/interval_tree_test.c
++++ b/lib/interval_tree_test.c
+@@ -43,8 +43,8 @@ static void init(void)
+ 	int i;
+ 
+ 	for (i = 0; i < nnodes; i++) {
+-		u32 b = (prandom_u32_state(&rnd) >> 4) % max_endpoint;
+-		u32 a = (prandom_u32_state(&rnd) >> 4) % b;
++		u32 b = (predictable_rng_prandom_u32_state(&rnd) >> 4) % max_endpoint;
++		u32 a = (predictable_rng_prandom_u32_state(&rnd) >> 4) % b;
+ 
+ 		nodes[i].start = a;
+ 		nodes[i].last = b;
+@@ -56,7 +56,7 @@ static void init(void)
+ 	 * which is pointless.
+ 	 */
+ 	for (i = 0; i < nsearches; i++)
+-		queries[i] = (prandom_u32_state(&rnd) >> 4) % max_endpoint;
++		queries[i] = (predictable_rng_prandom_u32_state(&rnd) >> 4) % max_endpoint;
+ }
+ 
+ static int interval_tree_test_init(void)
+diff --git a/lib/random32.c b/lib/random32.c
+index 32060b852..3b34ea934 100644
+--- a/lib/random32.c
++++ b/lib/random32.c
+@@ -43,13 +43,13 @@
+ #include <asm/unaligned.h>
+ 
+ /**
+- *	prandom_u32_state - seeded pseudo-random number generator.
++ *	predictable_rng_prandom_u32_state - seeded pseudo-random number generator.
+  *	@state: pointer to state structure holding seeded state.
+  *
+  *	This is used for pseudo-randomness with no outside seeding.
+  *	For more random results, use get_random_u32().
+  */
+-u32 prandom_u32_state(struct rnd_state *state)
++u32 predictable_rng_prandom_u32_state(struct rnd_state *state)
+ {
+ #define TAUSWORTHE(s, a, b, c, d) ((s & c) << d) ^ (((s << a) ^ s) >> b)
+ 	state->s1 = TAUSWORTHE(state->s1,  6U, 13U, 4294967294U, 18U);
+@@ -59,10 +59,10 @@ u32 prandom_u32_state(struct rnd_state *state)
+ 
+ 	return (state->s1 ^ state->s2 ^ state->s3 ^ state->s4);
+ }
+-EXPORT_SYMBOL(prandom_u32_state);
++EXPORT_SYMBOL(predictable_rng_prandom_u32_state);
+ 
+ /**
+- *	prandom_bytes_state - get the requested number of pseudo-random bytes
++ *	predictable_rng_prandom_bytes_state - get the requested number of pseudo-random bytes
+  *
+  *	@state: pointer to state structure holding seeded state.
+  *	@buf: where to copy the pseudo-random bytes to
+@@ -71,18 +71,18 @@ EXPORT_SYMBOL(prandom_u32_state);
+  *	This is used for pseudo-randomness with no outside seeding.
+  *	For more random results, use get_random_bytes().
+  */
+-void prandom_bytes_state(struct rnd_state *state, void *buf, size_t bytes)
++void predictable_rng_prandom_bytes_state(struct rnd_state *state, void *buf, size_t bytes)
+ {
+ 	u8 *ptr = buf;
+ 
+ 	while (bytes >= sizeof(u32)) {
+-		put_unaligned(prandom_u32_state(state), (u32 *) ptr);
++		put_unaligned(predictable_rng_prandom_u32_state(state), (u32 *) ptr);
+ 		ptr += sizeof(u32);
+ 		bytes -= sizeof(u32);
+ 	}
+ 
+ 	if (bytes > 0) {
+-		u32 rem = prandom_u32_state(state);
++		u32 rem = predictable_rng_prandom_u32_state(state);
+ 		do {
+ 			*ptr++ = (u8) rem;
+ 			bytes--;
+@@ -90,21 +90,21 @@ void prandom_bytes_state(struct rnd_state *state, void *buf, size_t bytes)
+ 		} while (bytes > 0);
+ 	}
+ }
+-EXPORT_SYMBOL(prandom_bytes_state);
++EXPORT_SYMBOL(predictable_rng_prandom_bytes_state);
+ 
+ static void prandom_warmup(struct rnd_state *state)
+ {
+ 	/* Calling RNG ten times to satisfy recurrence condition */
+-	prandom_u32_state(state);
+-	prandom_u32_state(state);
+-	prandom_u32_state(state);
+-	prandom_u32_state(state);
+-	prandom_u32_state(state);
+-	prandom_u32_state(state);
+-	prandom_u32_state(state);
+-	prandom_u32_state(state);
+-	prandom_u32_state(state);
+-	prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
++	predictable_rng_prandom_u32_state(state);
+ }
+ 
+ void prandom_seed_full_state(struct rnd_state __percpu *pcpu_state)
+@@ -265,7 +265,7 @@ static int __init prandom_state_selftest(void)
+ 		prandom_state_selftest_seed(&state, test1[i].seed);
+ 		prandom_warmup(&state);
+ 
+-		if (test1[i].result != prandom_u32_state(&state))
++		if (test1[i].result != predictable_rng_prandom_u32_state(&state))
+ 			error = true;
+ 	}
+ 
+@@ -281,9 +281,9 @@ static int __init prandom_state_selftest(void)
+ 		prandom_warmup(&state);
+ 
+ 		for (j = 0; j < test2[i].iteration - 1; j++)
+-			prandom_u32_state(&state);
++			predictable_rng_prandom_u32_state(&state);
+ 
+-		if (test2[i].result != prandom_u32_state(&state))
++		if (test2[i].result != predictable_rng_prandom_u32_state(&state))
+ 			errors++;
+ 
+ 		runs++;
+diff --git a/lib/rbtree_test.c b/lib/rbtree_test.c
+index 41ae3c757..62dd773c8 100644
+--- a/lib/rbtree_test.c
++++ b/lib/rbtree_test.c
+@@ -150,8 +150,8 @@ static void init(void)
+ {
+ 	int i;
+ 	for (i = 0; i < nnodes; i++) {
+-		nodes[i].key = prandom_u32_state(&rnd);
+-		nodes[i].val = prandom_u32_state(&rnd);
++		nodes[i].key = predictable_rng_prandom_u32_state(&rnd);
++		nodes[i].val = predictable_rng_prandom_u32_state(&rnd);
+ 	}
+ }
+ 
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index 582070416..b17e751cc 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -140,7 +140,7 @@ static int bpf_fill_maxinsns3(struct bpf_test *self)
+ 	prandom_seed_state(&rnd, 3141592653589793238ULL);
+ 
+ 	for (i = 0; i < len - 1; i++) {
+-		__u32 k = prandom_u32_state(&rnd);
++		__u32 k = predictable_rng_prandom_u32_state(&rnd);
+ 
+ 		insn[i] = __BPF_STMT(BPF_ALU | BPF_ADD | BPF_K, k);
+ 	}
+diff --git a/lib/test_parman.c b/lib/test_parman.c
+index 35e322436..f89b8192c 100644
+--- a/lib/test_parman.c
++++ b/lib/test_parman.c
+@@ -136,7 +136,7 @@ static void test_parman_rnd_init(struct test_parman *test_parman)
+ 
+ static u32 test_parman_rnd_get(struct test_parman *test_parman)
+ {
+-	return prandom_u32_state(&test_parman->rnd);
++	return predictable_rng_prandom_u32_state(&test_parman->rnd);
+ }
+ 
+ static unsigned long test_parman_priority_gen(struct test_parman *test_parman)
+diff --git a/lib/test_scanf.c b/lib/test_scanf.c
+index b620cf7de..a2de3dee2 100644
+--- a/lib/test_scanf.c
++++ b/lib/test_scanf.c
+@@ -269,16 +269,16 @@ static void __init numbers_simple(void)
+  */
+ static u32 __init next_test_random(u32 max_bits)
+ {
+-	u32 n_bits = hweight32(prandom_u32_state(&rnd_state)) % (max_bits + 1);
++	u32 n_bits = hweight32(predictable_rng_prandom_u32_state(&rnd_state)) % (max_bits + 1);
+ 
+-	return prandom_u32_state(&rnd_state) & GENMASK(n_bits, 0);
++	return predictable_rng_prandom_u32_state(&rnd_state) & GENMASK(n_bits, 0);
+ }
+ 
+ static unsigned long long __init next_test_random_ull(void)
+ {
+-	u32 rand1 = prandom_u32_state(&rnd_state);
++	u32 rand1 = predictable_rng_prandom_u32_state(&rnd_state);
+ 	u32 n_bits = (hweight32(rand1) * 3) % 64;
+-	u64 val = (u64)prandom_u32_state(&rnd_state) * rand1;
++	u64 val = (u64)predictable_rng_prandom_u32_state(&rnd_state) * rand1;
+ 
+ 	return val & GENMASK_ULL(n_bits, 0);
+ }
+diff --git a/mm/slab.c b/mm/slab.c
+index 59c8e28f7..ff71c5757 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -2447,7 +2447,7 @@ static bool shuffle_freelist(struct kmem_cache *cachep, struct slab *slab)
+ 
+ 		/* Fisher-Yates shuffle */
+ 		for (i = count - 1; i > 0; i--) {
+-			rand = prandom_u32_state(&state.rnd_state);
++			rand = predictable_rng_prandom_u32_state(&state.rnd_state);
+ 			rand %= (i + 1);
+ 			swap_free_obj(slab, i, rand);
+ 		}
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 0042fb273..deb764785 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1141,7 +1141,7 @@ static void freelist_randomize(struct rnd_state *state, unsigned int *list,
+ 
+ 	/* Fisher-Yates shuffle */
+ 	for (i = count - 1; i > 0; i--) {
+-		rand = prandom_u32_state(state);
++		rand = predictable_rng_prandom_u32_state(state);
+ 		rand %= (i + 1);
+ 		swap(list[i], list[rand]);
+ 	}
+-- 
+2.38.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
