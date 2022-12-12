@@ -4,59 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3659AC4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Dec 2022 04:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42B3AC4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Dec 2022 08:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3f+m0OyPAf/fxmJzK8097aMWuikf1OD2CCJmOraA2jk=; b=wQziVlfDFUL18C
-	3OdH2qsYWiQbDjMXnEP8ica6emTT3tO4cotdxNca0/VMWIbsGM/31hVTaBx1uagJPrI4nTIxFo2Pn
-	egz++jPa4lYXQPkoqC5KVuS3WnBfUVm1o+4+nG27xVE6ZgfQxbycPWTi75jPan12WTUkT6Soezeef
-	DZp2ftbyMyHH+nvV9y4Syew5YBOA9yDXrccQ9rNM1U2rn2eur+fR2dBLZBftLPFk4G9HVa/Lk4fS7
-	NQjbqojnCtfrnbiftyi91HEOt2OuVUpEC0vmRzG2UiP9iyksWYALe9RV9e3Y2Ye4Gygu/v3jJnQge
-	VwKUQPUGoFmtca1ZY2mg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Vtb7+fD6n3nhVgybywXp+BAfsCKg5J1pSyF/3M+FB+Q=; b=OgCwLCz0kFwmI8
+	De+HJ1X5MPRrow7wrTmrMAyNPcmPa7WSmQrcCkOeLZSUIuHJkQ6qCaQqvjkv4cWebH8eeRIxj18tx
+	11I6p9TUb546RHG9jY4Utyfs+HyOOUEQ2U/C60naZ1+VEGrQ0PBPo7qmCgfltAHDKn8L7V9i7Qz/P
+	LGMcaC6RGdOuu2iTOCeizO4Faym0Lqb9fkAAwPnXHoP8ddrQZPz78UTPx5cijCmB+99eIvcu2s0tq
+	hRbXT/DRnFHhabFnkiGf+W+jympCCRqV0O3Eg/eIqr1WQuU1tqy+0zd2k2XFY25FWU03QENHIo/TT
+	kCVP3M4x0QMYebn3rEEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p4ahc-007qdB-SJ; Mon, 12 Dec 2022 04:46:09 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1p4eIG-00AHyp-NX; Mon, 12 Dec 2022 08:36:12 +0000
+Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p4ahV-007qYG-TO
-	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2022 04:46:07 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id C8C14B80B72;
-	Mon, 12 Dec 2022 04:45:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4021DC433D2;
-	Mon, 12 Dec 2022 04:45:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1670820356;
-	bh=ZiPqywrfVYJKyTMOBz5ADrSOCtd+XOKFfeu5S1nMah4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=HHl82Mya2ZR0wKm/58rpz/ANETzs4T9/LlUcAtG6Jj/kdDcSPMy3nUSluiVp8JwXG
-	 5Zx/BL/ckxlDkCXUPLL9ML9luXQVYAs6fZ+ytcqXBYsADAqzIE7i3GKmkbTrSW/Kw2
-	 3XWKMbBePAmK7rN4+xXQ8ZaI0tsddiJh0pnmP8PZueq0XoVAbGF6TIgTBuagMf3cb6
-	 Lct0ctXRuaxw6z9+1GJaxO70Dsudj2HbinzikLEoff2C/Ux+gZAKDKEfXZsivs/eKS
-	 MgwgMj5QowZcxObgBI0FlnIbym4sDn6ocMgkng+dpntHP+WBUO09whZTmB+UJ6+foK
-	 l2I392lOG5/3w==
-Date: Sun, 11 Dec 2022 20:45:54 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [GIT PULL] fscrypt updates for 6.2
-Message-ID: <Y5ayAsXkTF3jK13s@sol.localdomain>
+	id 1p4eI9-00AHoO-Uo
+	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2022 08:36:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1670834165; x=1702370165;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bFYTa27LxNC965Nl6ptrEOem3ftkvwtR2lcZjjhuh7w=;
+  b=n+ApWSX/vJfjqttM7Gb1jvVjNu4SPOvXXyMALKEpyXIwwfTDTNIN5lYq
+   AjXOn2w7cFqVlOIGppgHhrj2CIOhiv1YjSW+45F0Vq4bYLRU+VxSYtkjC
+   abJTIQ5rX/G6gDImXSwWGgDT65QeZ77L2psjh9y+c6mB9L18b8QOZNzKe
+   rmxn+N44LoD88dYfCqhmYnx1UBKVH5jFFpxLJ3qbGJNVppadslbV5nUzv
+   kOXDr/msokJRnldrovHyBpRK6Q6M74LgBmknO9RaJClVlrWi+g0uJ7vir
+   3b1HysMlsu9aBqG6otf+sJLEJl1ye0w8CXUpbd5BvcwwZ+BplkQwm+5X8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10558"; a="380011026"
+X-IronPort-AV: E=Sophos;i="5.96,237,1665471600"; 
+   d="scan'208";a="380011026"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2022 00:36:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10558"; a="822407894"
+X-IronPort-AV: E=Sophos;i="5.96,237,1665471600"; 
+   d="scan'208";a="822407894"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 12 Dec 2022 00:35:56 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1p4eHx-008Nh5-28;
+	Mon, 12 Dec 2022 10:35:53 +0200
+Date: Mon, 12 Dec 2022 10:35:53 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: david.keisarschm@mail.huji.ac.il
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+	linux-scsi@vger.kernel.org, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/5] Renaming weak prng invocations -
+ prandom_bytes_state, prandom_u32_state
+Message-ID: <Y5bn6XcozgjbcSkf@smile.fi.intel.com>
+References: <cover.1670778651.git.david.keisarschm@mail.huji.ac.il>
+ <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <b3caaa5ac5fca4b729bf1ecd0d01968c09e6d083.1670778652.git.david.keisarschm@mail.huji.ac.il>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221211_204602_139850_ACF4A4A0 
-X-CRM114-Status: GOOD (  11.05  )
+X-CRM114-CacheID: sfid-20221212_003606_070924_B720411C 
+X-CRM114-Status: GOOD (  10.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,51 +93,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The following changes since commit f0c4d9fc9cc9462659728d168387191387e903cc:
+On Mon, Dec 12, 2022 at 12:16:04AM +0200, david.keisarschm@mail.huji.ac.il wrote:
+> From: David <david.keisarschm@mail.huji.ac.il>
+> 
+> Since the two functions
+>  prandom_byte_state and prandom_u32_state
+>  use the weak prng prandom_u32,
+>  we added the prefix predictable_rng,
+>  to their signatures so it is clear they are weak.
 
-  Linux 6.1-rc4 (2022-11-06 15:07:11 -0800)
+It's fancy indentation.
 
-are available in the Git repository at:
+...
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+>  		/* Fisher-Yates shuffle */
+>  		for (i = count - 1; i > 0; i--) {
+> -			rand = prandom_u32_state(&state.rnd_state);
+> +			rand = predictable_rng_prandom_u32_state(&state.rnd_state);
 
-for you to fetch changes up to 41952551acb405080726aa38a8a7ce317d9de4bb:
+Isn't it too many "random":s encoded in the name?
 
-  fscrypt: add additional documentation for SM4 support (2022-12-02 10:43:00 -0800)
+I would leave either "rng" or "[p]random".
 
-----------------------------------------------------------------
+>  			rand %= (i + 1);
+>  			swap_free_obj(slab, i, rand);
+>  		}
 
-This release adds SM4 encryption support, contributed by Tianjia Zhang.
-SM4 is a Chinese block cipher that is an alternative to AES.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-I recommend against using SM4, but (according to Tianjia) some people
-are being required to use it.  Since SM4 has been turning up in many
-other places (crypto API, wireless, TLS, OpenSSL, ARMv8 CPUs, etc.), it
-hasn't been very controversial, and some people have to use it, I don't
-think it would be fair for me to reject this optional feature.
 
-Besides the above, there are a couple cleanups.
-
-----------------------------------------------------------------
-Eric Biggers (4):
-      fscrypt: pass super_block to fscrypt_put_master_key_activeref()
-      fscrypt: add comment for fscrypt_valid_enc_modes_v1()
-      fscrypt: remove unused Speck definitions
-      fscrypt: add additional documentation for SM4 support
-
-Tianjia Zhang (2):
-      blk-crypto: Add support for SM4-XTS blk crypto mode
-      fscrypt: Add SM4 XTS/CTS symmetric algorithm support
-
- Documentation/filesystems/fscrypt.rst |  7 +++++++
- block/blk-crypto.c                    |  6 ++++++
- fs/crypto/fscrypt_private.h           | 13 ++++---------
- fs/crypto/keyring.c                   | 14 ++++++--------
- fs/crypto/keysetup.c                  | 17 ++++++++++++++++-
- fs/crypto/policy.c                    | 12 ++++++++++++
- include/linux/blk-crypto.h            |  1 +
- include/uapi/linux/fscrypt.h          |  4 ++--
- 8 files changed, 54 insertions(+), 20 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
