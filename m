@@ -4,74 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 097B7C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Dec 2022 16:55:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 255B2C10F1B
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Dec 2022 17:01:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+YM0TMNYzkTXI4f90kkfziCSfEXn3ojDNt8/k/Ft2M0=; b=WuF+3Hfupmr9sq
-	t9mA7T0LOE2eyvr8nl5WMtpnNMiHjbsHqCGFb/E/oMc9IPKYk81u4ev8Murpfwpof9kA+LJmlKRLN
-	puduT9YgKK5dUg8mSrXTGNjGiufQFK0mqKLTAre5/PzUloFnZmO0dRA5n8l6hVqQorKT8nqUQWTxO
-	G/e7c9hNNXz78yC3qyGS+/0euQMyy0H6Q4GsfNrByrTRvTBdFGiUK2WPlGr8azcn+1NGcAtA9pmad
-	9BNtPaIqbxju55zdJyECDYPJ6W8Utqp3kOH/PzLQM+au5CcpRXk4fII/jy59rbRDGX6AMqrA9iuCu
-	yj1PsFT6Z3zDa+nhEkaw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=0asklh7lRA25niqIHuEIodgfHVbg6w58a/ov7dNdSVE=; b=A6utzKiQixUJClKiw1JfMUMZe8
+	RZwlSCQ004iJZ8BY/REXbq1c/ImUkT7/rxKR/86c4ZSv75usVj4ELBWLe4ePZN2kpSgPj68UjVsXz
+	uSOy5Gkg1hYWcsgNBdLvAS59w7OYIWTVodT0uX44zDFNUcjYMIBknHLUJaF6idm+X6677l1E698Oh
+	TKPotcT3mxLmS2I7z3B86BB74irqjA5S1/NzQ3yIehU8dALp6cRaHpwhgxL0M4qEQiWYIQmECyMPR
+	1cgZTkbNr7bVPYb3JHzQ8NUOERTDQWh0HSkSStm1Tw86F744hIzX+rjCHQHouc4HCsbNIr9oqI3aF
+	CpGaP7Ug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p58YA-003Ab3-23; Tue, 13 Dec 2022 16:54:38 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1p58f5-003Iu0-71; Tue, 13 Dec 2022 17:01:47 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p58Y5-003ANl-QA
-	for linux-mtd@lists.infradead.org; Tue, 13 Dec 2022 16:54:36 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id AA6A1FF80C;
-	Tue, 13 Dec 2022 16:54:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1670950469;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6i+2/HPdAURjp6RtvmxYlKckI0Zp1d0ZU+1+vdt2LPM=;
-	b=nCauKpCkinbLKRtBfPsHoK1kLxryO91ZfnZobkfPWaB2fnoh0Byw2Iqsrc/u8hH3GICRAy
-	sSQJEEY+wcB7guQHaVHQ3IBY20o3pX3t0tXQyRPVh5aUf+WiTwVHdskYfz0XrjjFNTVEfx
-	wrc3Hs1stmZtQXExvmQpcPQCWZFcCi2Mp0l2iwHoreod71UpuJhWcR65fOWCrpiLaad1dF
-	fFXGegRiBK0LkKcFeZLaStIet5lcz0LSGaqrr30KXigt5DvWz7INxQ71s4rDiSgBmFAFQI
-	I56Cyrz1Tx/pxkecLNK2U5G0nVwvUqnvSIBVGs2VQP+qHU66TINAU6n2CBgVsA==
-Date: Tue, 13 Dec 2022 17:54:24 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Maxim Kiselev <bigunclemax@gmail.com>
-Cc: Maxim Kochetkov <fido_max@inbox.ru>, Thorsten Leemhuis
- <regressions@leemhuis.info>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, "regressions@lists.linux.dev"
- <regressions@lists.linux.dev>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Saravana Kannan <saravanak@google.com>
-Subject: Re: nvmem-cells regression after adding 'call
- of_platform_populate() for MTD partitions'
-Message-ID: <20221213175424.79895b63@xps-13>
-In-Reply-To: <CALHCpMhOku2b+1y5Z=N5RJ6SvCvNakD2rSyRAqp6Gz3JWVvXGg@mail.gmail.com>
-References: <CALHCpMgSZOZdOGpLwTYf0sFD5EMNL7CuqHuFJV_6w5VPSWZnUw@mail.gmail.com>
-	<CALHCpMgEZjnR39upkR6iozSk-b5A_GHRo9rcDSPXzzQi6x_qCw@mail.gmail.com>
-	<b1b7935d-0785-2e57-bad9-ab2476f0acf2@leemhuis.info>
-	<CALHCpMhsM2j=bSXEDC9BWYpOAyvCccgJpJmqXfiRTHvp6=y3tA@mail.gmail.com>
-	<20221212101449.4e465181@xps-13>
-	<CALHCpMimCqZB0bnHaOdCzucey+92NcRRZXCHXYYH5c9vj0nZaQ@mail.gmail.com>
-	<20221212173730.64224599@xps-13>
-	<b75a8769-0cc8-beb3-931a-6755aede3af0@inbox.ru>
-	<20221213104643.052d4a06@xps-13>
-	<CALHCpMhOku2b+1y5Z=N5RJ6SvCvNakD2rSyRAqp6Gz3JWVvXGg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1p58es-003Ifn-0y; Tue, 13 Dec 2022 17:01:35 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 61B70615E6;
+	Tue, 13 Dec 2022 17:01:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E66EC433EF;
+	Tue, 13 Dec 2022 17:01:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1670950892;
+	bh=uH0LYOSexEh5rmYdYN0yvY9zCHzaNdE5DduFSGRtqbs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KMVuCAzlQrQHOlsgTwtFZ+g2DaAoEPxa0+vuEZjFvdj6e/v79u0Kle9K+EB37sTht
+	 bhP1tiiO+FoqeCieMeEcTS0vq1TtyipfxvUflLhdGnwp5xh68oULfypFNoywHnDSCm
+	 /iA2G+keMD7peo0uOV1NSk6zf+DhsttgOoUGAvl7WpzIfnwzOJldQxrz5ccnixN+hw
+	 CR0vpp9gmUKY7Nb9Rc4GAZ/ywx5wY6mx62VbO0AF2ZTgW/TobmW9yIPZmeN4LJV5F1
+	 uTVIghQx24MF7a24ZgmhTDCiseGw1S612dXJFShK/W/3Uz55jO8i98n6tehWX0LjtM
+	 25PbCqI2G18Hw==
+Date: Tue, 13 Dec 2022 17:01:26 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Chuanhong Guo <gch981213@gmail.com>, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org, benliang.zhao@mediatek.com,
+	bin.zhang@mediatek.com
+Subject: Re: [PATCH v4 1/9] spi: mtk-snfi: Change default page format to
+ setup default setting
+Message-ID: <Y5iv5kPsOFm0OQni@sirena.org.uk>
+References: <20221209064317.2828-1-xiangsheng.hou@mediatek.com>
+ <20221209064317.2828-2-xiangsheng.hou@mediatek.com>
 MIME-Version: 1.0
+In-Reply-To: <20221209064317.2828-2-xiangsheng.hou@mediatek.com>
+X-Cookie: Edwin Meese made me wear CORDOVANS!!
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221213_085434_167678_FB3932DD 
-X-CRM114-Status: GOOD (  33.68  )
+X-CRM114-CacheID: sfid-20221213_090134_123382_799C9EEE 
+X-CRM114-Status: GOOD (  14.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,94 +77,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1819869798549773733=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWF4aW0sCgpiaWd1bmNsZW1heEBnbWFpbC5jb20gd3JvdGUgb24gVHVlLCAxMyBEZWMgMjAy
-MiAxNDowMjozNCArMDMwMDoKCj4gSSBsb29rZWQgY2xvc2VyIGF0IGNvbW1pdCA2NThjNDQ0OGJi
-YmYgYW5kIGJjZGYwMzE1YTYxYSwgNWRiMWMyZGJjMDRjMTYgY29tbWl0cy4KPiBMb29rcyBsaWtl
-IHdlIGhhdmUgdHdvIGRpZmZlcmVudCBmZWF0dXJlcyBiaW5kZWQgdG8gb25lIHByb3BlcnR5IC0g
-ImNvbXBhdGlibGUiLgo+IAo+IEZyb20gb25lIHNpZGUgaXQgaXMgdGhlIGFiaWxpdHkgdG8gZm9y
-d2FyZCB0aGUgc3Vibm9kZSBvZiB0aGUgbXRkCj4gcGFydGl0aW9uIHRvIHRoZSBudm1lbSBzdWJz
-eXN0ZW0gKDY1OGM0NDQ4YmJiZiBhbmQgYWM0MmM0NmY5ODNlKS4KPiBBbmQgZnJvbSBhbm90aGVy
-IHNpZGUgaXMgdGhlIGFiaWxpdHkgdG8gdXNlIGN1c3RvbSBpbml0aWFsaXphdGlvbiBvZgo+IHRo
-ZSBtdGQgcGFydGl0aW9uIChiY2RmMDMxNWE2MWEgYW5kIDVkYjFjMmRiYzA0YzE2KS4KPiAKPiBX
-aGF0IEkgbWVhbjoKPiBBY2NvcmRpbmcgdG8gYWM0MmM0NmY5ODNlIEkgY2FuIGNyZWF0ZSBEVCBs
-aWtlIHRoaXM6Cj4gIC0gfAo+ICAgICBwYXJ0aXRpb25zIHsKPiAgICAgICAgIGNvbXBhdGlibGUg
-PSAiZml4ZWQtcGFydGl0aW9ucyI7Cj4gICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsKPiAg
-ICAgICAgICNzaXplLWNlbGxzID0gPDE+Owo+IAo+ICAgICAgICAgcGFydGl0aW9uQDAgewo+ICAg
-ICAgICAgICAgIGNvbXBhdGlibGUgPSAibnZtZW0tY2VsbHMiOwo+ICAgICAgICAgICAgIHJlZyA9
-IDwweDQwMDAwIDB4MTAwMDA+Owo+ICAgICAgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Owo+
-ICAgICAgICAgICAgICNzaXplLWNlbGxzID0gPDE+Owo+ICAgICAgICAgICAgIG1hY2FkZHJfZ21h
-YzE6IG1hY2FkZHJfZ21hYzFAMCB7Cj4gICAgICAgICAgICAgICAgIHJlZyA9IDwweDAgMHg2PjsK
-PiAgICAgICAgICAgICB9Owo+ICAgICAgICAgfTsKPiAgICAgfTsKPiAKPiAKPiBBbmQgYWNjb3Jk
-aW5nIHRvIDVkYjFjMmRiYzA0YzE2IEkgY2FuIGNyZWF0ZSBEVCBsaWtlIHRoaXM6Cj4gIC0gfAo+
-ICAgICBwYXJ0aXRpb25zIHsKPiAgICAgICAgIGNvbXBhdGlibGUgPSAiZml4ZWQtcGFydGl0aW9u
-cyI7Cj4gICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsKPiAgICAgICAgICNzaXplLWNlbGxz
-ID0gPDE+Owo+IAo+ICAgICAgICAgcGFydGl0aW9uQDAgewo+ICAgICAgICAgICAgIGNvbXBhdGli
-bGUgPSAidS1ib290LGVudiI7Cj4gICAgICAgICAgICAgcmVnID0gPDB4NDAwMDAgMHgxMDAwMD47
-Cj4gICAgICAgICB9Owo+ICAgICB9Owo+IAo+IEJ1dCBJIGNhbiBub3QgdXNlIHRoZW0gYm90aCwg
-YmVjYXVzZSBvbmx5IG9uZSAiY29tcGF0aWJsZSIgcHJvcGVydHkgYWxsb3dlZC4KPiBUaGlzIHdp
-bGwgYmUgaW5jb3JyZWN0Ogo+ICAtIHwKPiAgICAgcGFydGl0aW9ucyB7Cj4gICAgICAgICBjb21w
-YXRpYmxlID0gImZpeGVkLXBhcnRpdGlvbnMiOwo+ICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8
-MT47Cj4gICAgICAgICAjc2l6ZS1jZWxscyA9IDwxPjsKPiAKPiAgICAgICAgIHBhcnRpdGlvbkAw
-IHsKPiAgICAgICAgICAgICBjb21wYXRpYmxlID0gInUtYm9vdCxlbnYiOyAgIyBmcm9tIGFjNDJj
-NDZmOTgzZQo+ICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAibnZtZW0tY2VsbHMiOyAjIGZyb20g
-NWRiMWMyZGJjMDRjCgpXaGF0IGFib3V0OgoKCSAgICAgIGNvbXBhdGlibGUgPSAidS1ib290LGVu
-diIsICJudm1lbS1jZWxscyI7CgppbnN0ZWFkPyB0aGF0IHNob3VsZCBhY3R1YWxseSB3b3JrLgoK
-PiAgICAgICAgICAgICByZWcgPSA8MHg0MDAwMCAweDEwMDAwPjsKPiAgICAgICAgICAgICAjYWRk
-cmVzcy1jZWxscyA9IDwxPjsKPiAgICAgICAgICAgICAjc2l6ZS1jZWxscyA9IDwxPjsKPiAgICAg
-ICAgICAgICBtYWNhZGRyX2dtYWMxOiBtYWNhZGRyX2dtYWMxQDAgewo+ICAgICAgICAgICAgICAg
-ICByZWcgPSA8MHgwIDB4Nj47Cj4gICAgICAgICAgICAgfTsKPiAgICAgICAgIH07Cj4gICAgIH07
-Cj4gCj4gPiBjb21wYXRpYmxlOiBEdXBsaWNhdGUgcHJvcGVydHkgbmFtZSAgCj4gCj4g0LLRgiwg
-MTMg0LTQtdC6LiAyMDIyINCzLiDQsiAxMjo0NiwgTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5h
-bEBib290bGluLmNvbT46Cj4gPgo+ID4gSGkgTWF4aW0sCj4gPgo+ID4gZmlkb19tYXhAaW5ib3gu
-cnUgd3JvdGUgb24gTW9uLCAxMiBEZWMgMjAyMiAyMDo1Nzo0OSArMDMwMDoKPiA+ICAKPiA+ID4g
-SGksIE1pcXVlbCEKPiA+ID4KPiA+ID4gT24gMTIuMTIuMjAyMiAxOTozNywgTWlxdWVsIFJheW5h
-bCB3cm90ZToKPiA+ID4gIAo+ID4gPiA+IExldCBtZSB0cnkgdG8gcmVjYXAgdGhlIHNpdHVhdGlv
-biBmb3IgYWxsIHRoZSBwZW9wbGUgSSBqdXN0IGludm9sdmVkOgo+ID4gPiA+Cj4gPiA+ID4gKiBB
-biBFdGhlcm5ldCBkcml2ZXIgZ2V0cyBpdHMgbWFjIGFkZHJlc3MgZnJvbSBhbiBudm1lbSBjZWxs
-LiBUaGUKPiA+ID4gPiAgICBFdGhlcm5ldCBjb250cm9sbGVyIERUIG5vZGUgdGhlbiBoYXMgYW4g
-Im52bWVtLWNlbGxzIiBwcm9wZXJ0eQo+ID4gPiA+ICAgIHBvaW50aW5nIHRvd2FyZHMgYW4gbnZt
-ZW0gY2VsbC4KPiA+ID4gPiAqIFRoZSBudm1lbSBjZWxsIGNvbWVzIGZyb20gYW4gbXRkIHBhcnRp
-dGlvbi4KPiA+ID4gPiAqIFRoZSBtdGQgcGFydGl0aW9uIGlzIGZsYWdnZWQgd2l0aCBhIHBhcnRp
-Y3VsYXIgY29tcGF0aWJsZQo+ID4gPiA+ICAgICh3aGljaCBpcyBhbHNvIG5hbWVkICJudm1lbS1j
-ZWxscyIpIHRvIHRlbGwgdGhlIGtlcm5lbCB0aGF0IHRoZSBub2RlCj4gPiA+ID4gICAgcHJvZHVj
-ZXMgbnZtZW0gY2VsbHMuCj4gPiA+ID4gKiBUaGUgbXRkIHBhcnRpdGlvbiBpdHNlbGYgaGFzIG5v
-IGRyaXZlciwgYnV0IGlzIHRoZSBjaGlsZCBub2RlIG9mIGEKPiA+ID4gPiAgICAicGFydGl0aW9u
-cyIgY29udGFpbmVyIHdoaWNoIGhhcyBvbmUgKGluIHRoaXMgY2FzZSwKPiA+ID4gPiAgICAiZml4
-ZWQtcGFydGl0aW9ucyIsIHNlZSB0aGUgc25pcHBldCBiZWxvdykuCj4gPiA+ID4KPiA+ID4gPiBC
-ZWNhdXNlIHRoZSAibnZtZW0tY2VsbHMiIHByb3BlcnR5IG9mIHRoZSBFdGhlcm5ldCBub2RlIHBv
-aW50cyBhdCB0aGUKPiA+ID4gPiBudm1lbS1jZWxsIG5vZGUsIHRoZSBjb3JlIGNyZWF0ZSBhIGRl
-dmljZSBsaW5rIGJldHdlZW4gdGhlIEV0aGVybmV0Cj4gPiA+ID4gY29udHJvbGxlciAoY29uc3Vt
-ZXIpIGFuZCB0aGUgbXRkIHBhcnRpdGlvbiAocHJvZHVjZXIpLgo+ID4gPiA+Cj4gPiA+ID4gVGhl
-IGRldmljZSBsaW5rIGluIHRoaXMgY2FzZSB3aWxsIG5ldmVyIGJlIHNhdGlzZmllZCBiZWNhdXNl
-IG5vIGRyaXZlcgo+ID4gPiA+IG1hdGNoZXMgdGhlICJudm1lbS1jZWxscyIgY29tcGF0aWJsZSBv
-ZiB0aGUgcGFydGl0aW9uIG5vZGUuCj4gPiA+ID4KPiA+ID4gPiBSZXZlcnRpbmcgY29tbWl0IGJj
-ZGYwMzE1YTYxYSAoIm10ZDogY2FsbCBvZl9wbGF0Zm9ybV9wb3B1bGF0ZSgpIGZvciBNVEQKPiA+
-ID4gPiBwYXJ0aXRpb25zIikgd291bGQgSU1ITyBub3QgbWFrZSBtdWNoIHNlbnNlLCB0aGUgcHJv
-YmxlbSBjb21lcyBmcm9tIHRoZQo+ID4gPiA+IGRldmljZSBsaW5rIHNpZGUgYW5kIGV2ZW4gdGhl
-cmUsIHRoZXJlIGlzIG5vdGhpbmcgcmVhbGx5ICJ3cm9uZyIsCj4gPiA+ID4gYmVjYXVzZSBJIHJl
-YWxseSBleHBlY3QgdGhlIG10ZCBkZXZpY2UgdG8gYmUgcmVhZHkgYmVmb3JlIHRoZQo+ID4gPiA+
-IEV0aGVybmV0IGNvbnRyb2xsZXIgcHJvYmUsIHRoZSBkZXZpY2UgbGluayBpcyBsZWdpdGltYXRl
-Lgo+ID4gPiA+Cj4gPiA+ID4gU28gSSB3b3VsZCBsaWtlIHRvIGV4cGxvcmUgb3RoZXIgYWx0ZXJu
-YXRpdmVzLiBIZXJlIGFyZSBhIGJ1bmNoIG9mCj4gPiA+ID4gaWRlYXMsIGJ1dCBJJ20gb3Blbjog
-IAo+ID4gPgo+ID4gPiBIb3cgYWJvdXQgdG8gY3JlYXRlIHNpbXBsZSBkcml2ZXIgd2l0aCBjb21w
-YXRpYmxlPSJudm1lbS1jZWxsIiBhbmQgdG8gbW92ZSBhbGwgdGhlIHN1ZmYgZnJvbSBtYWluIG10
-ZCBkcml2ZXIgd2hpY2ggc2VydmVzIG52bWVtLWNlbGwgdG8gdGhlIHByb2JlIGZ1bmN0aW9uPyAg
-Cj4gPgo+ID4gVGhpcyBpcyBwcm9iYWJseSB3b3J0aCB0aGUgdHJ5IGJ1dCBJIGRvdWJ0IHlvdSBj
-YW4gbWFrZSBpdCB3b3JrIHdpdGhvdXQKPiA+IHJlZ3Jlc3Npb25zIGJlY2F1c2UgSUlSQyB0aGUg
-bnZtZW0gcmVnaXN0cmF0aW9uIGhhcHBlbnMgbm8gbWF0dGVyIHRoZQo+ID4gY29tcGF0aWJsZSAo
-bm90IG1lbnRpb25pbmcgdGhlIHVzZXItb3RwIGFuZCBmYWN0b3J5LW90cCBjYXNlcykuIFlvdSBj
-YW4KPiA+IGRlZmluaXRlbHkgdHJ5IHRoaXMgb3V0IGlmIHlvdSB0aGluayB5b3UgY2FuIGNvbWUg
-dXAgd2l0aCBzb21ldGhpbmcKPiA+IHRob3VnaC4KPiA+Cj4gPiBCdXQgSSB3b3VsZCBsaWtlIHRv
-IGhlYXIgZnJvbSB0aGUgZGV2aWNlLWxpbmsgZ3VydXMgOikgYmVjYXVzZSBldmVuIGlmCj4gPiB3
-ZSBmaXggbXRkIHdpdGggYSAidHJpY2siIGxpa2UgYWJvdmUsIEkgZ3Vlc3Mgd2UnbGwgdmVyeSBs
-aWtlbHkgZmluZAo+ID4gb3RoZXIgY29ybmVyIGNhc2VzIGxpa2UgdGhhdCBhbmQgSSBhbSBpbnRl
-cmVzdGVkIGluIHVuZGVyc3RhbmRpbmcgdGhlCj4gPiByYXRpb25hbGUgb2Ygd2hhdCBjb3VsZCBi
-ZSBhIHByb3BlciBmaXguCj4gPgo+ID4gVGhhbmtzLAo+ID4gTWlxdcOobCAgCgoKVGhhbmtzLApN
-aXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+--===============1819869798549773733==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jC3ytWRRxsiHrz4c"
+Content-Disposition: inline
+
+
+--jC3ytWRRxsiHrz4c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Dec 09, 2022 at 02:43:09PM +0800, Xiangsheng Hou wrote:
+> Change default page format to setup default setting since the sector
+> size 1024 on MT7986 will lead to probe fail.
+>=20
+> Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+> ---
+>  drivers/spi/spi-mtk-snfi.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+
+Angelo, you've not reviewed this one - is there some problem with it or
+was it just missed?
+
+--jC3ytWRRxsiHrz4c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOYr+UACgkQJNaLcl1U
+h9BU0gf+IvrSdMswYwsbTgS7DBClWKuOuNQAt7lGGUz71eyMXy9UAzCuEDoScV/w
+pB+m2dTLcH79ILHq3hDSDj5S/DjmXwJi6Li/mHhYHvk02J0r6WDrU2zw3z2SECrc
+fEB8quuER9gh7d9QInhiVNRbNoSL4WAE0B/qIhA4CxJEBximJKR8j0Z/tSSa7GK3
+hQ9hudThr90bPE3ykzjPwygyt0uVMgqLHq3zuVX2azJ9yXmrbfWQn6xHvxGXfyt0
+3eeRvgpqUL+FpIMvShXLit8oIoZ5tw/HEa5K2I9RlwAja/TnX1ph49NSRYE/swwk
+8TCiI+HH1h0TM4w9Q6/TRJMSq91cxg==
+=XCqN
+-----END PGP SIGNATURE-----
+
+--jC3ytWRRxsiHrz4c--
+
+
+--===============1819869798549773733==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1819869798549773733==--
+
