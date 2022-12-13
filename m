@@ -4,65 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39F6AC10F1E
-	for <linux-mtd@archiver.kernel.org>; Tue, 13 Dec 2022 05:00:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11D69C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 13 Dec 2022 09:37:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Cwlv/R7j31Uj84p1cq3Jwjuwhl8VbSuiCxfG5IjVPXE=; b=eAHmxDTRnDV4jn
-	2dkX1Ua/HaBnoqtiRjUCtanN4szE/tWu8+Mwi8UU0acsEwRg9PMA06W2fUm/FTik7GA/y7np19MLv
-	vDmKDwhLClUrhcrOgnCKlbe9o8qO0JFM1zzdcND/33jtHssLFmaGl5w95+al6lmBlpoOo82lLU7MV
-	S8UW5kaAFrqn5bg/ApTtbghAYtPylIhNTb0AmxS72UFkQ5cbB4z5C0BCM3JlrW/dSec8wP5fgoii7
-	g/7xUVLUsI2A5gnu5Piqpa6+wozXwxk/J1ChFDQbtIj6o6IdeZcluv3iCMniR4xnqQKGQ7TN1eHww
-	OuBCNm/uTOrnkZnTPa0w==;
+	List-Owner; bh=7v3UD3jOzqQddxusXGeM1BZ9sVlIG3IivUocRdoW+OE=; b=HLSko7U8QGIX8A
+	sff39xQ0+jRT8Uo7tYQn8Bx1FD/QgSjVXkHOoS7uoHLEoor7jjuHbjsZKBkDJjcp/Nj5IK/cUk2Yw
+	WUga/4PfdVgmltDM4FWUT5nbpgFWHFksAjLUpALUdiTYeRLli7Vp5D7jjybJm7RZKtxPJTqVfvy5g
+	KTIJedsvNoCxhdxp/5+SMznRSe0AmrtURPs+kC3bmX8UXJsvUciUPVucPpjyHfT+LvcuFSh9rEVsf
+	Z5tk9IjXslsF2pfu0hDotfZ9F3p/MDkMO+XozmjF8hs5chEjERwegd55S4zLPHCBhIh+L+ZuT52It
+	Rs1H5u+I2IqhJmSe7Rjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p4xOn-00B5Mx-0f; Tue, 13 Dec 2022 05:00:13 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1p51im-00EYNw-0L; Tue, 13 Dec 2022 09:37:08 +0000
+Received: from madras.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e5ab])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p4xOi-00B5Le-G5
-	for linux-mtd@lists.infradead.org; Tue, 13 Dec 2022 05:00:09 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1p51ib-00EYBK-7d; Tue, 13 Dec 2022 09:36:58 +0000
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 31843B810D9;
-	Tue, 13 Dec 2022 05:00:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EA7F8C433D2;
-	Tue, 13 Dec 2022 05:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1670907605;
-	bh=bWHTLgFxQc2o39iSKlfIsi3HueJcoojwB6FD6+BZaL4=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=UACdc+N63MewVjY1V87dLL3dUoq4j35AW4bq3IwmzddfYe0NAX8dTXtLGXrvkAN3L
-	 NsOAZnPyfr8JAUj/Vo7+rPZ/q1tz1vMlZ+12mVFjAOMTOYTzt1Ge7gGSi3OQUg/ToU
-	 y4eko5o2ShNW7a9wl6lMBVHezZU0vQ4NLQ6VZPyu5jbt5MvoQo2aTlvm1V6Vgt3KIX
-	 TysN2qxL6Ymi4z0bJbJIrwZdLOPWVOqBsT2YwuvQeQeRBrF31DrWFDkN6fZn4VhY8W
-	 /awKEYGXDmBksT3tH3Crh2I6OVdws60pNX/k+7cAKkyg49mjpSPam5UJTrr2jcSnvp
-	 cdi2ZNPGvS33g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BEB28C395EE;
-	Tue, 13 Dec 2022 05:00:04 +0000 (UTC)
-Subject: Re: [GIT PULL] fscrypt updates for 6.2
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <Y5ayAsXkTF3jK13s@sol.localdomain>
-References: <Y5ayAsXkTF3jK13s@sol.localdomain>
-X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-X-PR-Tracked-Message-Id: <Y5ayAsXkTF3jK13s@sol.localdomain>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
-X-PR-Tracked-Commit-Id: 41952551acb405080726aa38a8a7ce317d9de4bb
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8129bac60f30936d2339535841db5b66d0520a67
-Message-Id: <167090760471.4886.14328396193429514472.pr-tracker-bot@kernel.org>
-Date: Tue, 13 Dec 2022 05:00:04 +0000
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
+	(Authenticated sender: kholk11)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id C54546602C2F;
+	Tue, 13 Dec 2022 09:36:54 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1670924215;
+	bh=fLn2UAeQvWXC9MeuL7iKd8dOQ4ZLh8KobKr8uewjk20=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eAZmkFqe31udewZc9gRFBkak1tXZAfCHVQtSZtQXetMuV/wIXuzpNEYdeexYqv38b
+	 6ydmVOTgIJvRpZSb/DEmaa4p788XkpMxEj/HXMRI33qAbT7SHSH2VSmXMeIm1NvtmC
+	 HbYtiFQ34VKe9piLr3XUv8538tB3CSD9DPxthgGJ1maEmVB+PX5LoG5mqoyeIupXZ7
+	 WjauhF7zgY8VSFr9nF3FRnZj9hd+tqxUPnNnxvPBjrYjW9WKEOaFBYaphK9/yMjUah
+	 NHr9Km0MSJEZycZHGRVZExwmqx2gl3rqdj0uXwfbLnpV/XkmNPhWqYP6Daxx59SBUw
+	 XGB9IVcB7SNkQ==
+Message-ID: <e518539d-6573-85ae-e69c-6c5318e367fa@collabora.com>
+Date: Tue, 13 Dec 2022 10:36:52 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v4 3/9] mtd: nand: ecc-mtk: Add ECC support fot MT7986 IC
+Content-Language: en-US
+To: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Chuanhong Guo <gch981213@gmail.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ benliang.zhao@mediatek.com, bin.zhang@mediatek.com
+References: <20221209064317.2828-1-xiangsheng.hou@mediatek.com>
+ <20221209064317.2828-4-xiangsheng.hou@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20221209064317.2828-4-xiangsheng.hou@mediatek.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221212_210008_718566_67C5BBD1 
-X-CRM114-Status: UNSURE (   5.72  )
+X-CRM114-CacheID: sfid-20221213_013657_428914_70683004 
+X-CRM114-Status: UNSURE (   7.49  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,24 +78,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Sun, 11 Dec 2022 20:45:54 -0800:
+Il 09/12/22 07:43, Xiangsheng Hou ha scritto:
+> Add ECC support fot MT7986 IC, and change err_mask value with
+> GENMASK macro.
+> 
+> Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 
-> https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8129bac60f30936d2339535841db5b66d0520a67
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
