@@ -4,41 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B561C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Dec 2022 08:13:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE02EC4167B
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Dec 2022 08:13:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8Jo8t6Dlf6joUSRPEnnYmDd4j1Stf34Rf/DuLnNK//Q=; b=dmxN1luI1EF8kg
-	XupHAs2x1llVwlWDsl9TxCIbsH43cDxcnRaedebxc/l16BCyq8ryTYXTF/WYygE7KhB1UeNutAKt2
-	+LvCSK3b1hjRDQdO5eO9vJ7S3IsiMIHWliKXNlQYlVvE5RvepxDcI+mge2K2v8iFL0UATzdouXQTa
-	ra1N/VtjaJv4xoyVf9/gAVbVrPw6zQrWDdDmZclktEO6kj9xGUUlA0M2oHbOsnscqhXgXGXU8UO/Y
-	1WiPXFxnsMnrSlbB0G0xOi6lTNpJoEWuQHrpXHHB82ir/wzlWIcTD5588Euo85Wey8rP469lSrcw9
-	NoYpCJ2fYMMDuvc0XoAw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7JR05UA8KEMAIFoFTtBiPWji3GoSyeStINL0tZDyywE=; b=nFu7kDFojIRO5+
+	rrRY3WVl7CNzyrc0hKwupzBgHBUmvWis2JE+Zq5bCcSkxuLrjvO9cnI5cK2mn6SJCAB7UDM31hiuo
+	LP8mRNDw0RBqPR9FmJhqqY3x50qyWmBbArhs8rBog79GDSZ6seQuciqnBRPS6rITmITbVpMKx3y/k
+	v8zYfDPHg0bOl7F519Lhc+NNDorYdc/Z7it+A+UTu4JJVtvBbmyyRvyXd0xccWNcOmt8MnN7JcG1v
+	9rVMUyTolN4bBF1AIla/ZJzvRs1ikWNonRQysJgtb4DexW43GxY0KRhe6x8ER26SXRfEvtxirmVR2
+	yi/v5Pxa+2RRSn01KWFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5jMT-007YCH-KR; Thu, 15 Dec 2022 08:13:01 +0000
+	id 1p5jMX-007YEj-GQ; Thu, 15 Dec 2022 08:13:05 +0000
 Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5jMH-007Y0z-5e
-	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2022 08:12:51 +0000
+	id 1p5jMK-007Y4e-JV
+	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2022 08:12:54 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 071CDE0005;
-	Thu, 15 Dec 2022 08:12:41 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id E6E64E0017;
+	Thu, 15 Dec 2022 08:12:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1671091964;
+	t=1671091971;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=sFalH7GUDSoIM8eMLjE9Yhz3hrtHFwG00xo1GD82wu4=;
-	b=WNJK9se/y3nn0MRE15hBJ7+klLVTg4BZLMa6ahfU0SZXglFfmBCYdI5I7CyRGWjqtl/DAQ
-	n05sHgkckY4QnzF3DLE+CZhZhpEaOSiyMf4S9hzQOSeQTBKiWGNnncToDs/zDMEFkGwPJi
-	GgvhseQ+ZBI952GG42+tREGjtYU6nvFksCe8x7henD2pQOg6TeasW3fR7T8UgkfDI1ST6M
-	WV0Z7Icp6R6ETRfeGMFiLiKDPPV+rMTXJNpS6ItzABg9AzE55CjucR57Sie/p/3FNJFvGG
-	frV4vz6/46sq8btU6hLjjPo4zOUxggIbkaNxpLlA3vK1uXjrrhgNMzjUBTIcSA==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GaOvg1joB4oL+N5cXkHLmKSs/G3RBWP2pBupd+JLH38=;
+	b=k91EV3P+cZkU1GeSV7LfGhAa1KTCSJZDsX7G7DWaJ7FmERzvqRU7KEk+oCOsW6FjferKZc
+	UaqpbXU4LsPpDxBGE5VyuOSu2C67yJXCYYTuivRXtCQ5uarA9A4nGJ+1rGWYcLuQMgGy8l
+	NjPztF9Kk5kfd1lAFJwYi+Z2dhNf6EoxyQ8WkPAiU/uobagO95GsIKvds0P/AGHB6DTuDY
+	7fiNDwFeeSbB9Mhn7KaXupPPjTO2OWuPznq1JA5a/e0AV/ssDq7PFRTZbHOnDU33Cm4MVw
+	4EY11eDz/HuL7HHwBMhzfeswd6OENNOUKuNRXqpz7SwZbB5ViNgOsI0PE6/u0g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -51,14 +52,16 @@ Cc: Julien Su <juliensu@mxic.com.tw>,
 	Alvin Zhou <alvinzhou@mxic.com.tw>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 0/9] mtd: spi-nor: read while write support
-Date: Thu, 15 Dec 2022 09:12:32 +0100
-Message-Id: <20221215081241.407098-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 6/9] mtd: spi-nor: Prepare the introduction of a new locking mechanism
+Date: Thu, 15 Dec 2022 09:12:38 +0100
+Message-Id: <20221215081241.407098-7-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221215081241.407098-1-miquel.raynal@bootlin.com>
+References: <20221215081241.407098-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221215_001249_572698_669A0322 
-X-CRM114-Status: GOOD (  29.41  )
+X-CRM114-CacheID: sfid-20221215_001252_989219_6A63C516 
+X-CRM114-Status: GOOD (  13.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,123 +73,158 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gZm9sa3MsCgpIZXJlIGlzIHRoZSBmb2xsb3ctdXAgb2YgdGhlIFJGQyB0cnlpbmcgdG8g
-YnJpbmcgYSBsaXR0bGUgYml0IG9mCnBhcmFsbGVsaXNtIHRvIHN1cHBvcnQgU1BJLU5PUiBSZWFk
-IFdoaWxlIFdyaXRlIGZlYXR1cmUgb24gcGFydHMKc3VwcG9ydGluZyBpdCBhbmQgZmVhdHVyaW5n
-IHNldmVyYWwgYmFua3MuCgpJIGhhdmUgcmVjZWl2ZWQgc29tZSBoYXJkd2FyZSB0byBtYWtlIGl0
-IHdvcmssIHNvIHNpbmNlIHRoZSBSRkMsIHRoZQpzZXJpZXMgaGFzIGJlZW4gdXBkYXRlZCB0byBm
-aXggbXkgbWlzdGFrZXMsIGJ1dCB0aGUgb3ZlcmFsbCBpZGVhIGlzIHRoZQpzYW1lLgoKVGhlcmUg
-aXMgbm90aGluZyBNYWNyb25peCBzcGVjaWZpYyBpbiB0aGUgaW1wbGVtZW50YXRpb24sIHRoZSBv
-cGVyYXRpb25zCmFuZCBvcGNvZGVzIGFyZSBleGFjdGx5IHRoZSBzYW1lIGFzIGJlZm9yZS4gVGhl
-IG9ubHkgZGlmZmVyZW5jZSBiZWluZzoKd2UgbWF5IGNvbnNpZGVyIHRoZSBjaGlwIHVzYWJsZSB3
-aGVuIGl0IGlzIGluIHRoZSBidXN5IHN0YXRlIGR1cmluZyBhCndyaXRlIG9yIGFuIGVyYXNlLiBB
-bnkgY2hpcCB3aXRoIGFuIGludGVybmFsIHNwbGl0IGFsbG93aW5nIHRvIHBlcmZvcm0KcGFyYWxs
-ZWwgb3BlcmF0aW9ucyBtaWdodCBwb3NzaWJseSBsZXZlcmFnZSB0aGUgYmVuZWZpdHMgb2YgdGhp
-cwppbXBsZW1lbnRhdGlvbi4KClRoZSBmaXJzdCBwYXRjaGVzIGFyZSBqdXN0IHJlZmFjdG9yaW5n
-IGFuZCBwcmVwYXJhdGlvbiB3b3JrLCB0aGVyZSBpcwphbG1vc3Qgbm8gZnVuY3Rpb25hbCBjaGFu
-Z2UsIGl0J3MganVzdCBhIHdheSB0byBwcmVwYXJlIHRoZSBpbnRyb2R1Y3Rpb24Kb2YgdGhlIG5l
-dyBsb2NraW5nIG1lY2hhbmlzbSBhbmQgaG9wZWZ1bGx5IHByb3ZpZGUgdGhlIGNsZWFuZXN0IGFu
-ZApzaW1wbGVzdCBkaWZmIHBvc3NpYmxlIGZvciB0aGlzIG5ldyBmZWF0dXJlLiBUaGUgYWN0dWFs
-IGNoYW5nZSBpcyBhbGwKY29udGFpbmVkIGluICJtdGQ6IHNwaS1ub3I6IEVuaGFuY2UgbG9ja2lu
-ZyB0byBzdXBwb3J0IHJlYWRzIHdoaWxlCndyaXRlcyIuIFRoZSBsb2dpYyBpcyBkZXNjcmliZWQg
-aW4gdGhlIGNvbW1pdCBsb2cgYW5kIGNvcHkvcGFzdGVkIGhlcmUKZm9yIGNsYXJpdHk6CgoiCiAg
-ICBPbiBkZXZpY2VzIGZlYXR1cmluZyBzZXZlcmFsIGJhbmtzLCB0aGUgUmVhZCBXaGlsZSBXcml0
-ZSAoUldXKSBmZWF0dXJlCiAgICBpcyBoZXJlIHRvIGltcHJvdmUgdGhlIG92ZXJhbGwgcGVyZm9y
-bWFuY2Ugd2hlbiBwZXJmb3JtaW5nIHBhcmFsbGVsCiAgICByZWFkcyBhbmQgd3JpdGVzIGF0IGRp
-ZmZlcmVudCBsb2NhdGlvbnMgKGRpZmZlcmVudCBiYW5rcykuIFRoZQogICAgZm9sbG93aW5nIGNv
-bnN0cmFpbnRzIGhhdmUgdG8gYmUgdGFrZW4gaW50byBhY2NvdW50OgogICAgMSM6IEEgc2luZ2xl
-IG9wZXJhdGlvbiBjYW4gYmUgcGVyZm9ybWVkIGluIGEgZ2l2ZW4gYmFuay4KICAgIDIjOiBPbmx5
-IGEgc2luZ2xlIHByb2dyYW0gb3IgZXJhc2Ugb3BlcmF0aW9uIGNhbiBoYXBwZW4gb24gdGhlIGVu
-dGlyZQogICAgICAgIGNoaXAgKGNvbW1vbiBoYXJkd2FyZSBsaW1pdGF0aW9uIHRvIGxpbWl0IGNv
-c3RzKQogICAgMyM6IFJlYWRzIG11c3QgcmVtYWluIHNlcmlhbGl6ZWQgZXZlbiB0aG91Z2ggcmVh
-ZHMgb24gZGlmZmVyZW50IGJhbmtzCiAgICAgICAgbWlnaHQgb2NjdXIgYXQgdGhlIHNhbWUgdGlt
-ZS4KICAgIDQjOiBUaGUgSS9PIGJ1cyBpcyB1bmlxdWUgYW5kIHRodXMgaXMgdGhlIG1vc3QgY29u
-c3RyYWluZWQgcmVzb3VyY2UsIGFsbAogICAgICAgIHNwaS1ub3Igb3BlcmF0aW9ucyByZXF1aXJp
-bmcgYWNjZXNzIHRvIHRoZSBzcGkgYnVzICh0aHJvdWdoIHRoZSBzcGkKICAgICAgICBjb250cm9s
-bGVyKSBtdXN0IGJlIHNlcmlhbGl6ZWQgdW50aWwgdGhlIGJ1cyBleGNoYW5nZXMgYXJlIG92ZXIu
-IFNvCiAgICAgICAgd2UgbXVzdCBlbnN1cmUgYSBzaW5nbGUgb3BlcmF0aW9uIGNhbiBiZSAic2Vu
-dCIgYXQgYSB0aW1lLgogICAgNSM6IEFueSBvdGhlciBvcGVyYXRpb24gdGhhdCB3b3VsZCBub3Qg
-YmUgZWl0aGVyIGEgcmVhZCBvciBhIHdyaXRlIG9yIGFuCiAgICAgICAgZXJhc2UgaXMgY29uc2lk
-ZXJlZCByZXF1aXJpbmcgYWNjZXNzIHRvIHRoZSBmdWxsIGNoaXAgYW5kIGNhbm5vdCBiZQogICAg
-ICAgIHBhcmFsbGVsaXplZCwgd2UgdGhlbiBuZWVkIHRvIGVuc3VyZSB0aGUgZnVsbCBjaGlwIGlz
-IGluIHRoZSBpZGxlCiAgICAgICAgc3RhdGUgd2hlbiB0aGlzIG9jY3Vycy4KICAgIAogICAgQWxs
-IHRoZXNlIGNvbnN0cmFpbnRzIGNhbiBlYXNpbHkgYmUgbWFuYWdlZCB3aXRoIGEgcHJvcGVyIGxv
-Y2tpbmcgbW9kZWw6CiAgICAxIzogSXMgZW5mb3JjZWQgYnkgYSBiaXRmaWVsZCBvZiB0aGUgaW4t
-dXNlIGJhbmtzLCBzbyB0aGF0IG9ubHkgYSBzaW5nbGUKICAgICAgICBvcGVyYXRpb24gY2FuIGhh
-cHBlbiBpbiBhIHNwZWNpZmljIGJhbmsgYXQgYW55IHRpbWUuCiAgICAyIzogSXMgaGFuZGxlZCBi
-eSB0aGUgb25nb2luZ19wZSBib29sZWFuIHdoaWNoIGlzIHNldCBiZWZvcmUgYW55IHdyaXRlCiAg
-ICAgICAgb3IgZXJhc2UsIGFuZCBpcyByZWxlYXNlZCBvbmx5IGF0IHRoZSB2ZXJ5IGVuZCBvZiB0
-aGUKICAgICAgICBvcGVyYXRpb24uIFRoaXMgd2F5LCBubyBvdGhlciBkZXN0cnVjdGl2ZSBvcGVy
-YXRpb24gb24gdGhlIGNoaXAgY2FuCiAgICAgICAgc3RhcnQgZHVyaW5nIHRoaXMgdGltZSBmcmFt
-ZS4KICAgIDMjOiBBbiBvbmdvaW5nX3JkIGJvb2xlYW4gYWxsb3dzIHRvIHRyYWNrIHRoZSBvbmdv
-aW5nIHJlYWRzLCBzbyB0aGF0CiAgICAgICAgb25seSBvbmUgY2FuIGJlIHBlcmZvcm1lZCBhdCBh
-IHRpbWUuCiAgICA0IzogQW4gb25nb2luZ19pbyBib29sZWFuIGlzIGludHJvZHVjZWQgaW4gb3Jk
-ZXIgdG8gY2FwdHVyZSBhbmQKICAgICAgICBzZXJpYWxpemUgYnVzIGFjY2Vzc2VkLiBUaGlzIGlz
-IHRoZSBvbmUgYmVpbmcgcmVsZWFzZWQgInNvb25lciIKICAgICAgICB0aGFuIGJlZm9yZSwgYmVj
-YXVzZSB3ZSBvbmx5IG5lZWQgdG8gcHJvdGVjdCB0aGUgY2hpcCBhZ2FpbnN0CiAgICAgICAgb3Ro
-ZXIgU1BJIGFjY2Vzc2VzIGR1cmluZyB0aGUgSS9PIHBoYXNlLCB3aGljaCBmb3IgdGhlCiAgICAg
-ICAgZGVzdHJ1Y3RpdmUgb3BlcmF0aW9ucyBpcyB0aGUgYmVnaW5uaW5nIG9mIHRoZSBvcGVyYXRp
-b24gKHdoZW4KICAgICAgICB3ZSBzZW5kIHRoZSBjb21tYW5kIGN5Y2xlcyBhbmQgcG9zc2libHkg
-dGhlIGRhdGEpLCB3aGlsZSB0aGUKICAgICAgICBzZWNvbmQgcGFydCBvZiB0aGUgb3BlcmF0aW9u
-ICh0aGUgZXJhc2UgZGVsYXkgb3IgdGhlCiAgICAgICAgcHJvZ3JhbW1hdGlvbiBkZWxheSkgaXMg
-d2hlbiB3ZSBjYW4gZG8gc29tZXRoaW5nIGVsc2UgaW4gYW5vdGhlcgogICAgICAgIGJhbmsuCiAg
-ICA1IzogSXMgaGFuZGxlZCBieSB0aGUgdGhyZWUgYm9vbGVhbnMgcHJlc2VudGVkIGFib3ZlLCBp
-ZiBhbnkgb2YgdGhlbSBpcwogICAgICAgIHNldCwgdGhlIGNoaXAgaXMgbm90IHlldCByZWFkeSBm
-b3IgdGhlIG9wZXJhdGlvbiBhbmQgbXVzdCB3YWl0LgogICAgCiAgICBBbGwgdGhlc2UgaW50ZXJu
-YWwgdmFyaWFibGVzIGFyZSBwcm90ZWN0ZWQgYnkgdGhlIGV4aXN0aW5nIGxvY2ssIHNvIHRoYXQK
-ICAgIGNoYW5nZXMgaW4gdGhpcyBzdHJ1Y3R1cmUgYXJlIGF0b21pYy4gVGhlIHNlcmlhbGl6YXRp
-b24gaXMgaGFuZGxlZCB3aXRoCiAgICBhIHdhaXQgcXVldWUuIgoKSGVyZSBpcyBub3cgYSBiZW5j
-aG1hcmsgd2l0aCBhIE1hY3Jvbml4IE1YMjVVVzUxMjQ1RyB3aXRoIDQgYmFua3MgYW5kIFJXVwpz
-dXBwb3J0OgoKICAgICAvLyBUZXN0aW5nIHRoZSB0d28gYWNjZXNzZXMgaW4gdGhlIHNhbWUgYmFu
-awogICAgICQgZmxhc2hfc3BlZWQgLWIwIC1rMCAtYzEwIC1kIC9kZXYvbXRkMAogICAgIFsuLi5d
-CiAgICAgdGVzdGluZyByZWFkIHdoaWxlIHdyaXRlIGxhdGVuY3kKICAgICByZWFkIHdoaWxlIHdy
-aXRlIHRvb2sgNTFtcywgcmVhZCBlbmRlZCBhZnRlciA1MW1zCgogICAgIC8vIFRlc3RpbmcgdGhl
-IHR3byBhY2Nlc3NlcyB3aXRoaW4gZGlmZmVyZW50IGJhbmtzCiAgICAgJCBmbGFzaF9zcGVlZCAt
-YjAgLWs0MDk2IC1jMTAgLWQgL2Rldi9tdGQwCiAgICAgWy4uLl0KICAgICB0ZXN0aW5nIHJlYWQg
-d2hpbGUgd3JpdGUgbGF0ZW5jeQogICAgIHJlYWQgd2hpbGUgd3JpdGUgdG9vayA1MW1zLCByZWFk
-IGVuZGVkIGFmdGVyIDIwbXMKClBhcmFsbGVsIGFjY2Vzc2VzIGhhdmUgYmVlbiB2YWxpZGF0ZWQg
-d2l0aCBpb19wYXJhbC4gQSBzbGlnaHQgaW5jcmVhc2UKb2YgdGhlIHRpbWUgc3BlbnQgb24gdGhp
-cyB0ZXN0IGhhcyBob3dldmVyIGJlZW4gbm90aWNlZC4gV2l0aCBteQpjb25maWd1cmF0aW9uLCBv
-dmVyIGEgbGltaXRlZCBudW1iZXIgb2YgYmxvY2tzLCB0aGUgb3ZlcmFsbCBvcGVyYXRpb24KdG9v
-ayAyMiBtaW4gd2l0aG91dCBhbnkgUldXIGNoYW5nZXMgdXAgdG8gMjcgbWluIHdpdGggdGhlc2Ug
-Y2hhbmdlcywKbWF5YmUgZHVlIHRvIHRoZSBudW1iZXIgb2YgYWRkaXRpb25hbCBzY2hlZHVsaW5n
-IHNpdHVhdGlvbnMgaW52b2x2ZWQpLgoKSGVyZSBpcyBhIGJyYW5jaCB3aXRoIHRoZSBtdGQtdXRp
-bHMgcGF0Y2ggYnJpbmdpbmcgc3VwcG9ydCBmb3IgdGhpcwphZGRpdGlvbmFsICItayIgcGFyYW1l
-dGVyIGluIGZsYXNoX3NwZWVkIChmb3IgdGhlIHNlY29uZCBibG9jayB0byB1c2UKZHVyaW5nIFJX
-VyB0ZXN0aW5nKSwgdXNlZCB0byBnZXQgdGhlIGFib3ZlIHJlc3VsdHM6Cmh0dHBzOi8vZ2l0aHVi
-LmNvbS9taXF1ZWxyYXluYWwvbXRkLXV0aWxzL2NvbXBhcmUvbWFzdGVyLi4ucnd3CgpDaGVlcnMs
-Ck1pcXXDqGwKCkNoYW5nZXMgaW4gdjM6CiogRml4IHRoZSBiYW5rIG9mZnNldHMgY2FsY3VsYXRp
-b25zIGJ5IHByb3ZpZGluZyB0aGUgc2FtZSB2YWx1ZXMgd2hlbgogIGxvY2tpbmcgYW5kIHdoZW4g
-dW5sb2NraW5nIChtaWdodCBiZSBjaGFuZ2VkIGJ5IHRoZSBmdW5jdGlvbnMgdGhlbXNlbHZlcwog
-IHdpdGhvdXQgdXNlIG5vdGljaW5nKS4KKiBJIGNvbXBsZXRlbHkgY2hhbmdlZCB0aGUgd2F5IHRo
-ZSBsb2NraW5nIHdvcmtzIGJlY2F1c2UgdGhlcmUgd2FzIGEgbmV3CiAgY29uc3RyYWludDogcmVh
-ZHMgY2Fubm90IGJlIGludGVycnVwdGVkIGFuZCBzdGF0dXMgcmVhZHMgY2Fubm90IGhhcHBlbgog
-IGR1cmluZyBhIHJlYWQuIEhlbmNlLCBhcyB0aGUgbXVsdGktbG9ja3MgZGVzaWduIHdhcyBzdGFy
-dGluZyB0byBiZSB0b28KICBtZXNzeSwgSSBjaGFuZ2VkIHRoZSBpbXBsZW1lbnRhdGlvbiB0byB1
-c2UgYSBidW5jaCBvZiB2YXJpYWJsZXMgdG8KICB0cmFjayB0aGUgcmVhZCB3aGlsZSB3cml0ZSBz
-dGF0ZSwgcHJvdGVjdGVkIGJ5IHRoZSBtYWluIHNwaS1ub3IKICBsb2NrLiBJZiB0aGUgaW50ZXJu
-YWwgc3RhdGUgZG9lcyBub3QgYWxsb3cgdGhlIG9wZXJhdGlvbiwgYSBzbGVlcAogIHN0YXJ0cyBp
-biBhIHF1ZXVlLCB1bnRpbCB0aGUgdGhyZWFkcyBhcmUgd29rZW4gdXAgYWZ0ZXIgYSBzdGF0ZQog
-IHVwZGF0ZS4gSSBrbm93IGl0IGlzIHZlcnkgdmVyYm9zZSwgSSBhbSBvcGVuIHRvIHN1Z2dlc3Rp
-b25zLgoKTWlxdWVsIFJheW5hbCAoOSk6CiAgbXRkOiBzcGktbm9yOiBDcmVhdGUgbWFjcm9zIHRv
-IGRlZmluZSBjaGlwIElEcyBhbmQgZ2VvbWV0cmllcwogIG10ZDogc3BpLW5vcjogSW50cm9kdWNl
-IHRoZSBjb25jZXB0IG9mIGJhbmsKICBtdGQ6IHNwaS1ub3I6IEFkZCBhIG1hY3JvIHRvIGRlZmlu
-ZSBtb3JlIGJhbmtzCiAgbXRkOiBzcGktbm9yOiBSZW9yZGVyIHRoZSBwcmVwYXJhdGlvbiB2cyBs
-b2NraW5nIHN0ZXBzCiAgbXRkOiBzcGktbm9yOiBTZXBhcmF0ZSBwcmVwYXJhdGlvbiBhbmQgbG9j
-a2luZwogIG10ZDogc3BpLW5vcjogUHJlcGFyZSB0aGUgaW50cm9kdWN0aW9uIG9mIGEgbmV3IGxv
-Y2tpbmcgbWVjaGFuaXNtCiAgbXRkOiBzcGktbm9yOiBBZGQgYSBSV1cgZmxhZwogIG10ZDogc3Bp
-LW5vcjogRW5oYW5jZSBsb2NraW5nIHRvIHN1cHBvcnQgcmVhZHMgd2hpbGUgd3JpdGVzCiAgbXRk
-OiBzcGktbm9yOiBtYWNyb25peDogQWRkIHN1cHBvcnQgZm9yIG14MjV1dzUxMjQ1ZyB3aXRoIFJX
-VwoKIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jICAgICB8IDM5NiArKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrLS0KIGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5oICAgICB8ICA2MSAr
-Ky0tLQogZHJpdmVycy9tdGQvc3BpLW5vci9tYWNyb25peC5jIHwgICAzICsKIGluY2x1ZGUvbGlu
-dXgvbXRkL3NwaS1ub3IuaCAgICB8ICAxMyArKwogNCBmaWxlcyBjaGFuZ2VkLCA0MjQgaW5zZXJ0
-aW9ucygrKSwgNDkgZGVsZXRpb25zKC0pCgotLSAKMi4zNC4xCgoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+This commit alone just introduces two new "lock and prepare" pairs of
+helpers which do the exact same thing as before. They will soon be
+improved in a followup commit which actually brings the logic, but I
+figured out it was more readable to do it this way.
+
+One new pair is suffixed _pe which stands for "program and erase" and
+hence is being called by spi_nor_write() and spi_nor_erase().
+
+The other pair is suffixed _rd which stands for "read" and hence is
+being called by spi_nor_read().
+
+One note however, these extra helpers will need to know the operation
+range, so they come with two new parameters to define it. Otherwise
+there is no functional change.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/spi-nor/core.c | 59 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 53 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index f87e57d97692..6c08114e4275 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1086,6 +1086,7 @@ static void spi_nor_unprep(struct spi_nor *nor)
+ 		nor->controller_ops->unprepare(nor);
+ }
+ 
++/* Generic helpers for internal locking and serialization */
+ int spi_nor_lock_and_prep(struct spi_nor *nor)
+ {
+ 	int ret;
+@@ -1106,6 +1107,48 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor)
+ 	spi_nor_unprep(nor);
+ }
+ 
++/* Internal locking helpers for program and erase operations */
++static int spi_nor_lock_and_prep_pe(struct spi_nor *nor, loff_t start, size_t len)
++{
++	int ret;
++
++	ret = spi_nor_prep(nor);
++	if (ret)
++		return ret;
++
++	mutex_lock(&nor->lock);
++
++	return 0;
++}
++
++static void spi_nor_unlock_and_unprep_pe(struct spi_nor *nor, loff_t start, size_t len)
++{
++	mutex_unlock(&nor->lock);
++
++	spi_nor_unprep(nor);
++}
++
++/* Internal locking helpers for read operations */
++static int spi_nor_lock_and_prep_rd(struct spi_nor *nor, loff_t start, size_t len)
++{
++	int ret;
++
++	ret = spi_nor_prep(nor);
++	if (ret)
++		return ret;
++
++	mutex_lock(&nor->lock);
++
++	return 0;
++}
++
++static void spi_nor_unlock_and_unprep_rd(struct spi_nor *nor, loff_t start, size_t len)
++{
++	mutex_unlock(&nor->lock);
++
++	spi_nor_unprep(nor);
++}
++
+ static u32 spi_nor_convert_addr(struct spi_nor *nor, loff_t addr)
+ {
+ 	if (!nor->params->convert_addr)
+@@ -1457,7 +1500,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	addr = instr->addr;
+ 	len = instr->len;
+ 
+-	ret = spi_nor_lock_and_prep(nor);
++	ret = spi_nor_lock_and_prep_pe(nor, instr->addr, instr->len);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1520,7 +1563,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	ret = spi_nor_write_disable(nor);
+ 
+ erase_err:
+-	spi_nor_unlock_and_unprep(nor);
++	spi_nor_unlock_and_unprep_pe(nor, instr->addr, instr->len);
+ 
+ 	return ret;
+ }
+@@ -1690,11 +1733,13 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 			size_t *retlen, u_char *buf)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	loff_t from_lock = from;
++	size_t len_lock = len;
+ 	ssize_t ret;
+ 
+ 	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
+ 
+-	ret = spi_nor_lock_and_prep(nor);
++	ret = spi_nor_lock_and_prep_rd(nor, from_lock, len_lock);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1721,7 +1766,8 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	ret = 0;
+ 
+ read_err:
+-	spi_nor_unlock_and_unprep(nor);
++	spi_nor_unlock_and_unprep_rd(nor, from_lock, len_lock);
++
+ 	return ret;
+ }
+ 
+@@ -1740,7 +1786,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
+ 
+-	ret = spi_nor_lock_and_prep(nor);
++	ret = spi_nor_lock_and_prep_pe(nor, to, len);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1782,7 +1828,8 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	}
+ 
+ write_err:
+-	spi_nor_unlock_and_unprep(nor);
++	spi_nor_unlock_and_unprep_pe(nor, to, len);
++
+ 	return ret;
+ }
+ 
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
