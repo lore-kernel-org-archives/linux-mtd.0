@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9F91C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Dec 2022 08:13:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A2D1C00145
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Dec 2022 08:13:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J/aM0QLYKs7WD8t9z8tPQ0OMuPbRdJP5QLp+NaKQ2F8=; b=4pBlxHq5yOBIoy
-	jXUCOTk/lRUkbZQHid0UGHyBk+q+C44CU4qaW404LwDcLsCU18bO7vMWA5TKl6k7p67Zo5MJyRv3r
-	PmlNpyGilhh/zwyMeDNNmyDvJHLw1G+iBQ+q8uOjuqyphyGbRHRRK8GSVRAD2wJKZZOTs3ByBEIjp
-	4QUIFVpxWd0NmQtObMiiKc1C2pQgvtPoCj/q72zW2abBkPcieohYsVHxJ4tzjm/Yjk5JD+ewreyQf
-	Lcn8zV1ywcxp0Glxmm3cfWga+CSPGl1klZTuLsdicJXk5deD3ZMY6QfUp6KPKn7qr2ggZa6/yYSA/
-	W9793R1sJRParf+qrO8Q==;
+	List-Owner; bh=mnne/1kIWLb3UxRyuzrJtYSi3+ndvlXLK7saGJhGCHI=; b=rZdqE5o5lL3rKk
+	vLPucsDo/ONv+rUY9E6UqzEqrxRlps1VKBPKfAhCg2yErGytaw5CR0WTXO7hwB7pNStXoRn/bDgqA
+	1aA8mG1oET8bsRJhAQkQg/Qa0gtj0EnuR7M1uBsRXon2wZboFIdZ42OTreXSBDkKr/QyjqmaM4ZeL
+	r0+3Ho4ocnxkyCSVdo8Quj17L3FpjQ9yQE5GdhXyU1LNuLlkyJFuA9M0g/Fb2vSo1N/bAe9U8vQun
+	JHLnACjMQK0o5aXyBpUT6fpo0dEY4v3G6iGOdMDUahBJVH/JmihCWv3seHjE7xyhLWc4sWJIZ9N0v
+	cL2zMueUGloxqhteeFpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5jMN-007Y7o-KT; Thu, 15 Dec 2022 08:12:55 +0000
+	id 1p5jMJ-007Y4s-Sv; Thu, 15 Dec 2022 08:12:51 +0000
 Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5jMH-007Y1k-50
-	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2022 08:12:51 +0000
+	id 1p5jMH-007Y1x-54
+	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2022 08:12:50 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 72484E0010;
-	Thu, 15 Dec 2022 08:12:45 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 90724E0014;
+	Thu, 15 Dec 2022 08:12:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1671091966;
+	t=1671091967;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=M+3TX/RHdN0zzB09RhzoGDoZ85bo8ZOrgA6ewXi85TA=;
-	b=kD3TpDoPe0jgs2CBfd07Vvat109BDJfgL3Kn1FrwTWzsSX99NXgarZTf+UfRnYCMDWnkiy
-	/et5U4THGciaK6+uC5a4lT229ECMfgfrGT0SSxgnh8E2fgIIZbARkhJlBMWjmP5gqLLlCo
-	prjtOiwLRgLiF0f7Zp5FTDXR1bY+MeFi9ivSJRcbzCKNFiS5ngs/XKbgcKSibgMgN9jyc5
-	rmwpIYtpKvYBSwyZaYni1hi5GEYm8xlumPR2/L4kwS3h/EwApVkax1ouqTuWK2bpKHnrlt
-	bkD96vV3l0fN5c7Qt4eS8hR/2Qg3GA+MAGFm0L/Bq64gY+GO4lZNmXDFmjgBcQ==
+	bh=ihyoDKMdrFOMi2XVrzupzJURomSfFtPlpzUsTVAdsBg=;
+	b=ZMvYHluVF4YwhjjC98emWifNR4c6fwXUYsSoahgL3Qqy2OxrkvBinlfzNA3oP374AgtDi7
+	tPIsZhtn3pn3WgSIMPEL8yrxYDKDEkiaTZIrItC/jOZdXdR6aTiPm5PI5XfP4wZvwjawhj
+	JOBNR5iHM3Y/Oj3RwtKse8kBZ+l+P+Uupml5/m02aQqO2bp97ccwMof+NeROpKjRd+KkXl
+	i4ei05tqesOk3KEBLPq+UKyuCiYkUmGYBKtIhnlT/Bu+M8B5fqgte+kUjTnSvYZ8Xrwkmz
+	n72c9Fssn0mq1jBVKj4R2iN0FTjmeF/y/JWeRNSt1zoyRshv7NzkyeudNjsoJQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -52,16 +52,17 @@ Cc: Julien Su <juliensu@mxic.com.tw>,
 	Alvin Zhou <alvinzhou@mxic.com.tw>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 2/9] mtd: spi-nor: Introduce the concept of bank
-Date: Thu, 15 Dec 2022 09:12:34 +0100
-Message-Id: <20221215081241.407098-3-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 3/9] mtd: spi-nor: Add a macro to define more banks
+Date: Thu, 15 Dec 2022 09:12:35 +0100
+Message-Id: <20221215081241.407098-4-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221215081241.407098-1-miquel.raynal@bootlin.com>
 References: <20221215081241.407098-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221215_001249_492198_5B886C43 
-X-CRM114-Status: GOOD (  14.53  )
+X-CRM114-CacheID: sfid-20221215_001249_351048_6DB7FFAC 
+X-CRM114-Status: UNSURE (   7.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,104 +79,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SPI-NOR chips are made of pages, which gathered in small groups make
-(erase) sectors. Sectors, gathered together, make banks inside the
-chip. So far there was only one bank per device supported, but we are
-about to introduce support for new chips featuring several banks (up to
-4 so far) where different operations may happen in parallel.
-
-Let's allow describing these additional bank parameters.
+Most of the chips on the market only feature a single bank. However, new
+chips may support more than a single bank, with the possibility to
+parallelize some operations. Let's introduce an INFOB() macro which also
+takes a n_bank parameter.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
 ---
- drivers/mtd/spi-nor/core.c |  3 ++-
- drivers/mtd/spi-nor/core.h | 16 +++++++++++-----
- 2 files changed, 13 insertions(+), 6 deletions(-)
+ drivers/mtd/spi-nor/core.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index f2c64006f8d7..38a57aac6754 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2539,7 +2539,8 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
- 
- 	/* Set SPI NOR sizes. */
- 	params->writesize = 1;
--	params->size = (u64)info->sector_size * info->n_sectors;
-+	params->bank_size = (u64)info->sector_size * info->n_sectors;
-+	params->size = params->bank_size * info->n_banks;
- 	params->page_size = info->page_size;
- 
- 	if (!(info->flags & SPI_NOR_NO_FR)) {
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index dc74c7be3e28..8a067d56c995 100644
+index 8a067d56c995..044d49d749e0 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -336,7 +336,8 @@ struct spi_nor_otp {
-  * by the spi_nor_fixups hooks, or dynamically when parsing the JESD216
-  * Serial Flash Discoverable Parameters (SFDP) tables.
-  *
-- * @size:		the flash memory density in bytes.
-+ * @bank_size:		the flash memory bank density in bytes.
-+ * @size:		the total flash memory density in bytes.
-  * @writesize		Minimal writable flash unit size. Defaults to 1. Set to
-  *			ECC unit size for ECC-ed flashes.
-  * @page_size:		the page size of the SPI NOR flash memory.
-@@ -374,6 +375,7 @@ struct spi_nor_otp {
-  * @locking_ops:	SPI NOR locking methods.
-  */
- struct spi_nor_flash_parameter {
-+	u64				bank_size;
- 	u64				size;
- 	u32				writesize;
- 	u32				page_size;
-@@ -434,7 +436,8 @@ struct spi_nor_fixups {
-  * @id_len:         the number of bytes of ID.
-  * @sector_size:    the size listed here is what works with SPINOR_OP_SE, which
-  *                  isn't necessarily called a "sector" by the vendor.
-- * @n_sectors:      the number of sectors.
-+ * @n_sectors:      the number of sectors per bank.
-+ * @n_banks:        the number of banks.
-  * @page_size:      the flash's page size.
-  * @addr_nbytes:    number of address bytes to send.
-  *
-@@ -493,6 +496,7 @@ struct flash_info {
- 	u8 id_len;
- 	unsigned sector_size;
- 	u16 n_sectors;
-+	u16 n_banks;
- 	u16 page_size;
- 	u8 addr_nbytes;
- 
-@@ -538,23 +542,25 @@ struct flash_info {
- 	.id = { SPI_NOR_ID_3ITEMS(_jedec_id), SPI_NOR_ID_3ITEMS(_ext_id) }, \
- 	.id_len = 6
- 
--#define SPI_NOR_GEOMETRY(_sector_size, _n_sectors)			\
-+#define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
- 	.sector_size = (_sector_size),					\
- 	.n_sectors = (_n_sectors),					\
-+	.n_banks = (_n_banks),						\
- 	.page_size = 256
- 
- /* Used when the "_ext_id" is two bytes at most */
- #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+@@ -553,6 +553,10 @@ struct flash_info {
  	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors)),
-+	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
+ 	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
  
++#define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
++	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
++	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), (_n_banks)),
++
  #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
  	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
--	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors)),
-+	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
- 
- #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
- 		.sector_size = (_sector_size),				\
- 		.n_sectors = (_n_sectors),				\
-+		.n_banks = 1,						\
- 		.page_size = (_page_size),				\
- 		.addr_nbytes = (_addr_nbytes),				\
- 		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
+ 	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
 -- 
 2.34.1
 
