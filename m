@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9128C4167B
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Dec 2022 08:13:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBF77C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Dec 2022 16:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ckxGxi63o9Lgg+q0eq7evEG38GUBvglTTNsErC8tnf4=; b=X5WlmLoS2tuewf
-	i75V7V4o+DXmCDRx5uVDJJ+QmXEJ3eFNhPwoUBa77DFILweLMqo50IwiNJvlAQd4H1N6ZmGvps6Bx
-	fcrw6XfJ5//Fp4NyL5n7CYIHv/mFFjKQv9Sxo7Y7M83xLw2iPdQQXcE86GKnv5ivQ8TtT1eKG8R3H
-	mXBorq77XwB+pWX0ia6v3WYNQnBt+7aouGCclFh8NjxfAB9ABoaJ48NphxXe7j4TCAzhN7iuz2OuG
-	l2WChyhJ4vUiO46W7+vdExyJpsst+D7HgirkvN6yBko+F9IvPxyN0xwJeOZwfsH853CEb5Aq26QqU
-	IM74+6qVXy26OFkDrKyg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0EenEXbaC4W0cHw2YgVIRejx4JSaKJiwoh6htjpSNvY=; b=h0lJJcCCXKVGqM
+	REFunUOE3sZpaJ8IemJkgpc8al708qY1PfJGuUbCX4lRVY0+b0vNtK4oataRlUmF/B3k8rt4gKlhu
+	W9DuAHc9O4bWWH7Brh+a35n1dN96peJgnHdFPYqrSaqC0p2hTTQ87NXysQASWWGC2oDnjIVePmsDL
+	j6GuZaSbxljbYWwb6UZod2fK0N5ZIUjOENXskdbLOUr8vh8Ni9SsPFeIALst+4zNRS2FEcOmCXOtG
+	6CHQKSas8PzaAEwc8pGHmmU+3W4E8OEnXiPo9hkjJ/EFsK5Pc7wzEoCu1ltBmgJFyL90m0ixyYh5W
+	C9RANDQP7MAB4pDGP7Bg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5jMs-007YXn-Md; Thu, 15 Dec 2022 08:13:26 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1p5rH9-00AMFb-R3; Thu, 15 Dec 2022 16:40:03 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5jMO-007Y7W-46
-	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2022 08:12:57 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id AFA2EE0002;
-	Thu, 15 Dec 2022 08:12:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1671091974;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KpcnZIM/nvnkoOD5kEWESQw1w621rkkiGNkytdrjgTY=;
-	b=fdtnilIzAeJljw9odILwipjvZnXxaltWG0pMc1TUVWmeEhGq2LX6Y5aukGlV/9KdESsLSB
-	yXS2BADEoiXzCaSZxNHAaG/wkxF6lt496LNyjcZeOuX9naOstPDWNiDHXq2iXn4lGggU96
-	Zlz4pFE+RznpEPZyV28sgYktUBPahKKI7egF6TMAnXgzVf+wugkmoXyzMHtja8klO6/60R
-	w36rovAHHyhnq0fs+LjXS1VZTkWIVjKAPM7VGeCQUofx5menGlwoJrhTgEgFIoSTqFb4ll
-	uX26BYb2GUo5bvaj+J3fqNL2De+84u6X9Pl2NSukl9jcPGff/6U2N5tg90xUNQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Julien Su <juliensu@mxic.com.tw>,
-	Jaime Liao <jaimeliao@mxic.com.tw>,
-	Alvin Zhou <alvinzhou@mxic.com.tw>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 9/9] mtd: spi-nor: macronix: Add support for mx25uw51245g with RWW
-Date: Thu, 15 Dec 2022 09:12:41 +0100
-Message-Id: <20221215081241.407098-10-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221215081241.407098-1-miquel.raynal@bootlin.com>
-References: <20221215081241.407098-1-miquel.raynal@bootlin.com>
+	id 1p5rH2-00AME7-VB
+	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2022 16:40:00 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5094D61E5C;
+	Thu, 15 Dec 2022 16:39:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 272BFC433D2;
+	Thu, 15 Dec 2022 16:39:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1671122395;
+	bh=pP6atf/tM5bifszUgRPBT2KCcUTS6tZpd3asUA7oItQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=m9sWbQngPK1fyTuHc3qwtSaoLjAT/wbKhmLExrAaSjv9dK3hcndZIwBXuQTjKQukg
+	 wS5t9ZQhKggRG5X4kl41YFzYX+2hDijJWsqFPYyb92wVKWu3KJ/ybq1oul/gFnZI1I
+	 FsOpUcQ116SxQNJ5UfUTxUrrYAhcTqlwqTIk/rulUDB4nmdXwMWk9eaNY/1kVVrnRU
+	 LDpHuhDgq114nlLtSC8iH5nVhtxDLPl0dnfCSlnXCF+sr/DZ5Ip86m5wNwRFQZ4J84
+	 kKE2mpBKS2fYFI3GRaPKlzCc3NOxgSO878XYHHZdjahz++7qy9449AlXX4HzLCixPS
+	 cayMZ8pSdiiRQ==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Tokunori Ikegami <ikegami.t@gmail.com>,
+	Lee Jones <lee.jones@linaro.org>,
+	Mauro Lima <mauro.lima@eclypsium.com>,
+	Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: cfi: allow building spi-intel standalone
+Date: Thu, 15 Dec 2022 17:39:38 +0100
+Message-Id: <20221215163950.649791-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221215_001256_354733_93FE53D3 
-X-CRM114-Status: UNSURE (   9.77  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221215_083957_058984_1B8952B5 
+X-CRM114-Status: GOOD (  13.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,29 +79,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Describe this new part and provide the RWW flag for it.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+When MTD or MTD_CFI_GEOMETRY is disabled, the spi-intel driver
+fails to build, as it includes the shared CFI header:
+
+include/linux/mtd/cfi.h:62:2: error: #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work. [-Werror=cpp]
+   62 | #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work.
+
+Use an #ifdef here to guard the settings so the header can be included
+in all configurations.
+
+Fixes: e23e5a05d1fd ("mtd: spi-nor: intel-spi: Convert to SPI MEM")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/mtd/spi-nor/macronix.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/linux/mtd/cfi.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index d81a4cb2812b..e9b82afcd6c4 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -82,6 +82,9 @@ static const struct flash_info macronix_nor_parts[] = {
- 	{ "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+	{ "mx25uw51245g", INFOB(0xc2813a, 0, 16 * 1024, 1024, 4)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_RWW)
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
- 	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ) },
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index d88bb56c18e2..0e87b6e2faad 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -15,6 +15,7 @@
+ #include <linux/mtd/cfi_endian.h>
+ #include <linux/mtd/xip.h>
+ 
++#if IS_ENABLED(CONFIG_MTD)
+ #ifdef CONFIG_MTD_CFI_I1
+ #define cfi_interleave(cfi) 1
+ #define cfi_interleave_is_1(cfi) (cfi_interleave(cfi) == 1)
+@@ -88,7 +89,7 @@ static inline int cfi_interleave_supported(int i)
+ 		return 0;
+ 	}
+ }
+-
++#endif
+ 
+ /* NB: these values must represents the number of bytes needed to meet the
+  *     device type (x8, x16, x32).  Eg. a 32 bit device is 4 x 8 bytes.
 -- 
-2.34.1
+2.35.1
 
 
 ______________________________________________________
