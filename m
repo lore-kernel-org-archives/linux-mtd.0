@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBF77C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Dec 2022 16:40:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F20C1C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Dec 2022 16:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=0EenEXbaC4W0cHw2YgVIRejx4JSaKJiwoh6htjpSNvY=; b=h0lJJcCCXKVGqM
-	REFunUOE3sZpaJ8IemJkgpc8al708qY1PfJGuUbCX4lRVY0+b0vNtK4oataRlUmF/B3k8rt4gKlhu
-	W9DuAHc9O4bWWH7Brh+a35n1dN96peJgnHdFPYqrSaqC0p2hTTQ87NXysQASWWGC2oDnjIVePmsDL
-	j6GuZaSbxljbYWwb6UZod2fK0N5ZIUjOENXskdbLOUr8vh8Ni9SsPFeIALst+4zNRS2FEcOmCXOtG
-	6CHQKSas8PzaAEwc8pGHmmU+3W4E8OEnXiPo9hkjJ/EFsK5Pc7wzEoCu1ltBmgJFyL90m0ixyYh5W
-	C9RANDQP7MAB4pDGP7Bg==;
+	List-Owner; bh=gEPfH9LM643gyhHSTFYbB+kS57GPw9k6EndJhE/OCh8=; b=cUCHeQ7qY6SOWx
+	5c/7mmGxE5PsEp36vvSBo2qUk7bMGbnYcNT1zWWFP/C/PsjfXQgRC3tQ2ghwohpyWxGDI5DW/ldwk
+	8yJDnpAb0DGEjeMRX/0UKibbP/x/dhXHSbqzlDAcwNot0zjR/3Q/0Mjx/7c+72u3b7xNT2/fJ6OKr
+	X/Wf8VOd0MgOkl/J+C03PZKzxjxkNJSUscCUDipP/a258J5YTDL46ct+gND8sDhmrgNuBmFXUGoeJ
+	YVCyRXDuVaxeBxQJu9T2+QPpMmDLTZgzSOoKk1ApleApadHyPqlHQjL6za9rI8vDg+x/XwwOV+mpT
+	fGFeza13ENMNXDGjkIqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5rH9-00AMFb-R3; Thu, 15 Dec 2022 16:40:03 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1p5rOd-00AOeu-Mg; Thu, 15 Dec 2022 16:47:47 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5rH2-00AME7-VB
-	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2022 16:40:00 +0000
+	id 1p5rOa-00AOdr-UB
+	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2022 16:47:46 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5094D61E5C;
-	Thu, 15 Dec 2022 16:39:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 272BFC433D2;
-	Thu, 15 Dec 2022 16:39:52 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 5A207B81AAC;
+	Thu, 15 Dec 2022 16:47:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D51C4C433D2;
+	Thu, 15 Dec 2022 16:47:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1671122395;
-	bh=pP6atf/tM5bifszUgRPBT2KCcUTS6tZpd3asUA7oItQ=;
+	s=k20201202; t=1671122862;
+	bh=YUTvOViTEdKdQKeqBkH6WtxB3+C/WVCbQ+PFsOp/k7A=;
 	h=From:To:Cc:Subject:Date:From;
-	b=m9sWbQngPK1fyTuHc3qwtSaoLjAT/wbKhmLExrAaSjv9dK3hcndZIwBXuQTjKQukg
-	 wS5t9ZQhKggRG5X4kl41YFzYX+2hDijJWsqFPYyb92wVKWu3KJ/ybq1oul/gFnZI1I
-	 FsOpUcQ116SxQNJ5UfUTxUrrYAhcTqlwqTIk/rulUDB4nmdXwMWk9eaNY/1kVVrnRU
-	 LDpHuhDgq114nlLtSC8iH5nVhtxDLPl0dnfCSlnXCF+sr/DZ5Ip86m5wNwRFQZ4J84
-	 kKE2mpBKS2fYFI3GRaPKlzCc3NOxgSO878XYHHZdjahz++7qy9449AlXX4HzLCixPS
-	 cayMZ8pSdiiRQ==
+	b=GHcj65KDlzl2XP7NCHhDA9/5PbRr5c5TpqBNO2oZHVPX3VlO6lUQQ86MOX7miUv31
+	 PSzRVGAKRNyKtShtg3HycnqVY1bByzxKBtJ8vcvR7WMWlmfzymYJmpp1xtk9bVV+94
+	 FhNcOmAL4Gxhav9qeEchPQPN2OSfwlWMGehzeUjuPoQQADWFMFDhYEIM7EJCHYGLfB
+	 AxdcgABB7MQUf942DCp5c/YC3euz/myZakcuK1pyC7AIr9r6fLhZdVptV5QJ2sOKOM
+	 0JoHiPPlvPENSUMB+dMDaF9OmBPKvfJMVRoWnat7PpRUp76pZmtZegIKZZqAta6TU1
+	 az85nQ6b9vNtQ==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Mark Brown <broonie@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Tokunori Ikegami <ikegami.t@gmail.com>,
-	Lee Jones <lee.jones@linaro.org>,
-	Mauro Lima <mauro.lima@eclypsium.com>,
-	Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Boris Brezillon <boris.brezillon@collabora.com>,
+	Claudius Heine <ch@denx.de>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: cfi: allow building spi-intel standalone
-Date: Thu, 15 Dec 2022 17:39:38 +0100
-Message-Id: <20221215163950.649791-1-arnd@kernel.org>
+Subject: [PATCH] mtd: dataflash: remove duplicate SPI ID table
+Date: Thu, 15 Dec 2022 17:47:30 +0100
+Message-Id: <20221215164736.1315815-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221215_083957_058984_1B8952B5 
-X-CRM114-Status: GOOD (  13.55  )
+X-CRM114-CacheID: sfid-20221215_084745_146036_B191A948 
+X-CRM114-Status: GOOD (  12.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,42 +79,50 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When MTD or MTD_CFI_GEOMETRY is disabled, the spi-intel driver
-fails to build, as it includes the shared CFI header:
+Building with -Werror=override-init revealds that two patches added
+the same device ID table to this driver:
 
-include/linux/mtd/cfi.h:62:2: error: #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work. [-Werror=cpp]
-   62 | #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work.
+drivers/mtd/devices/mtd_dataflash.c:946:27: error: initialized field overwritten [-Werror=override-init]
+  946 |         .id_table       = dataflash_spi_ids,
+      |                           ^~~~~~~~~~~~~~~~~
+drivers/mtd/devices/mtd_dataflash.c:946:27: note: (near initialization for 'dataflash_driver.id_table')
 
-Use an #ifdef here to guard the settings so the header can be included
-in all configurations.
+Remove one of the copies.
 
-Fixes: e23e5a05d1fd ("mtd: spi-nor: intel-spi: Convert to SPI MEM")
+Fixes: 27a030e87292 ("mtd: dataflash: Add device-tree SPI IDs")
+Fixes: ac4f83482afb ("mtd: dataflash: Add SPI ID table")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/mtd/cfi.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/mtd_dataflash.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index d88bb56c18e2..0e87b6e2faad 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -15,6 +15,7 @@
- #include <linux/mtd/cfi_endian.h>
- #include <linux/mtd/xip.h>
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index 25bad4318305..3bbaa590c768 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -96,13 +96,6 @@ struct dataflash {
+ 	struct mtd_info		mtd;
+ };
  
-+#if IS_ENABLED(CONFIG_MTD)
- #ifdef CONFIG_MTD_CFI_I1
- #define cfi_interleave(cfi) 1
- #define cfi_interleave_is_1(cfi) (cfi_interleave(cfi) == 1)
-@@ -88,7 +89,7 @@ static inline int cfi_interleave_supported(int i)
- 		return 0;
- 	}
- }
+-static const struct spi_device_id dataflash_dev_ids[] = {
+-	{ "at45" },
+-	{ "dataflash" },
+-	{ },
+-};
+-MODULE_DEVICE_TABLE(spi, dataflash_dev_ids);
 -
-+#endif
- 
- /* NB: these values must represents the number of bytes needed to meet the
-  *     device type (x8, x16, x32).  Eg. a 32 bit device is 4 x 8 bytes.
+ #ifdef CONFIG_OF
+ static const struct of_device_id dataflash_dt_ids[] = {
+ 	{ .compatible = "atmel,at45", },
+@@ -939,8 +932,6 @@ static struct spi_driver dataflash_driver = {
+ 		.name		= "mtd_dataflash",
+ 		.of_match_table = of_match_ptr(dataflash_dt_ids),
+ 	},
+-	.id_table = dataflash_dev_ids,
+-
+ 	.probe		= dataflash_probe,
+ 	.remove		= dataflash_remove,
+ 	.id_table	= dataflash_spi_ids,
 -- 
 2.35.1
 
