@@ -4,64 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39A96C4167B
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Dec 2022 10:47:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AF85C001B2
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Dec 2022 11:02:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fZqXGJmxIEr9o3e/da4qxxmRixDSqVFXXpZa8pR27oU=; b=SUhT5mTyPU3c91
-	L5M4VECCjzOLL22mA7dPXlQWNbXdUe3/ZQ6OyLQpOGFZeI+q1cO0xxmiVGE/pzXQOTm0Vit3i5qpU
-	muJVIcXR9fFJ/eKfxB9uZb7XxTz42aIWmVVj/y6STDTJGVunGZ0vpi3hkrwAYHwVGS5prgYjBxrIx
-	KyCG3eZRdMIl0uYySFw/pNjIith1yzDgLVhIX8P0SUroro+sjxb0pFYAyILFWKJBIOki0A7zhXNuw
-	vzBsdLuhEPLcpocsZCYPrzY4SMFWPcg6o/5OgNm9LurqCQ8DAZhqEHoawM31Kic84Wy6ONmSPOa8q
-	I3tDisaPQCRMVWbQ/01g==;
+	List-Owner; bh=nKIos6+szQu/I0v+nRo9pcpya9vEaICbC+5usbspZok=; b=juHbHsXvRRg2zm
+	xa0/7nyfFCliD7pC6SEHYktxYenCw5OK2AZkP63R4iekTvHc70mQdHkwyAzGHtfWQqxsHLC1HEIi6
+	J7Y+4Nhu9eJFbopwVpPW7zkFShhpGnIjFU4wiP7J14nsyZTqkih2IENFaQH2oF1xqA/8tDT0joBaH
+	yAHkYx3xAsNEi2fhTuLYVGWDB4llimqgd6kIJ8lXjRXzwWOLdkpHuVLRAjTtD3LSLCBCFcw7TRa3G
+	yG8LEqonIrG/DfyULses0rDKb9S6c/aivBJyE6LLWkR/AaDIz/EdpKaELqKjovn+0JPktiONVV7rW
+	ptVenTB1if7eVIQI8jAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p68Ep-00EC7i-Gx; Fri, 16 Dec 2022 10:46:47 +0000
-Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
+	id 1p68U6-00EJ31-Hf; Fri, 16 Dec 2022 11:02:34 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p68EV-00EByS-Tn; Fri, 16 Dec 2022 10:46:30 +0000
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-	(No client certificate requested)
-	(Authenticated sender: marex@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 5A3C48520E;
-	Fri, 16 Dec 2022 11:46:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1671187580;
-	bh=PIqUEziaW7aCKgN+qBabJu/0k2cDZ3tExytmC9OPj2A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=KOh4hmtiuQW7opZtbe3v6jE9Vydd9/5Abxh7LW6ZxAg4CA4D05VtO+sLpNGZNcO8m
-	 bpRU8RIxmH67jls3FC7k7RicKM8xBxCMaFeXhYtPCU7cmFBrHjTM6HftzpfUB7E268
-	 mSFZ8MmZ0iBU4VNXhNP9CZnNxahpwYeiQ/q6Rc87JJIDeqGNcgrZ0fpKpdnx17xYQJ
-	 DeJiwDKc07jIoTdMQ8YR1VZ/iWgPNx+FNkZf038dtRAmQqmmSAE1kEMZdmeiprItGC
-	 SiPA4lSexHMe4YD6wmOoGwfxDve5Q0Ig0txUiaecALA7CpluyiVG3Ut8YCjZfRVwYX
-	 r5eDIkksdv8lw==
-Message-ID: <6f5f5b32-d7fe-13cc-b52d-83a27bd9f53e@denx.de>
-Date: Fri, 16 Dec 2022 11:46:18 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
-To: Francesco Dolcini <francesco@dolcini.it>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- Francesco Dolcini <francesco.dolcini@toradex.com>,
- Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
- stable@vger.kernel.org, u-boot@lists.denx.de
+	id 1p68Tf-00EItG-Fr; Fri, 16 Dec 2022 11:02:10 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 5A60A20008;
+	Fri, 16 Dec 2022 11:01:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1671188519;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NrRmFSTxWSFOcAFF91oEN2EuEZEt1gzRnrXqpvlWtAY=;
+	b=CspEJzDlwWrWwvnJSBeZSQ9SFAGNYQXpI7a4PI7LvQOike5EZZF7+uKgv7iHWvt0teaFeX
+	V7pgGpiJBZGUcK4ua3uw5SYAOFo7vteXZGV6+uJPIHUK3PQAoiPiuH8noqmb2J/8aNsM0r
+	/lqcqFE8gDh2dKQ0Y3GO0MQGbEKtcxRY5bM2leqJ/IbFv0hMbkly2/DmDNYiz18uFfhtAp
+	yVg//iCmMimR4SxUv5R1BVV7JT3zvEyPvWY2z0ThC1ieBDj9KBVFa75eOcy7L+03ET7Tdd
+	o0ioHcYNR8uAX80T4FcPb7pxpde3ywmit5pvDCH5iFEvNTfCVzKG7bAp32P78w==
+Date: Fri, 16 Dec 2022 12:01:55 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Marek Vasut <marex@denx.de>
+Cc: Francesco Dolcini <francesco@dolcini.it>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, Francesco Dolcini
+ <francesco.dolcini@toradex.com>, Shawn Guo <shawnguo@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
+ u-boot@lists.denx.de
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is
+ 0
+Message-ID: <20221216120155.4b78e5cf@xps-13>
+In-Reply-To: <6f5f5b32-d7fe-13cc-b52d-83a27bd9f53e@denx.de>
 References: <Y5wiAPvPU+YY39oX@francesco-nb.int.toradex.com>
-Content-Language: en-US
-From: Marek Vasut <marex@denx.de>
-In-Reply-To: <Y5wiAPvPU+YY39oX@francesco-nb.int.toradex.com>
-X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
-X-Virus-Status: Clean
+	<6f5f5b32-d7fe-13cc-b52d-83a27bd9f53e@denx.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221216_024628_298587_31EBBB90 
-X-CRM114-Status: GOOD (  39.29  )
+X-CRM114-CacheID: sfid-20221216_030207_870661_E0C4C402 
+X-CRM114-Status: GOOD (  51.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,86 +71,107 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/16/22 08:45, Francesco Dolcini wrote:
-> Hello Marek and Miquel,
-
-Hi,
-
-> On Thu, Dec 15, 2022 at 08:16:04AM +0100, Miquel Raynal wrote:
->> So my first first idea was to avoid using the broken "fixup mtdparts"
->> function in U-Boot and I am still convinced this is what we should do
->> in priority.
-> 
-> This is something that was already discussed, but I was not really
-> thinking much on it till now. Do you think that the whole idea of
-> editing the MTD partitions from the firmware is wrong and we should just
-> pass the partition on the command line OR that the current
-> implementation is broken and can/should be fixed?
-
-No, patching the partition layout into DT is fine. Firmwares of all 
-kinds have been patching various parts of the DT before passing it to OS 
-since forever, or more recently, merging multiple DT fragments and 
-passing the composite DT to Linux.
-
-As far as I recall, OF predates Linux and the OF tree has been usually 
-assembled by the Forth firmware of that era from various chunks stored 
-in different parts of the system. So this patching is fundamental part 
-of the design since the beginning.
-
-It is difficult to describe complex structure like the partition mapping 
-on kernel command line, it should really be in DT or other such 
-structure, so patching it into the DT is fine. The only detail here is, 
-it should be patched into the DT correctly ... and ... if old firmwares 
-do not do that, Linux should fix it up. You don't throw away your old PC 
-just because it doesn't have perfect ACPI tables one would expect today, 
-I don't see why we should do that with DT machines.
-
->> I am still against piggy hacks in the generic ofpart.c driver, but
->> what we could do however is a DT fixup in the init_machine (or the
->> dt_fixup) hook for imx7 Colibri, very much like this:
->> https://elixir.bootlin.com/linux/latest/source/arch/arm/mach-mvebu/board-v7.c#L111
->> Plus a warning there saying "your dt is broken, update your firmware".
-> 
-> I have a couple of concerns/question with this approach:
->   - do we have a single point to handle this? Different architectures are
->     affected by these issue. Duplicating the fixup code in multiple place
->     does not seems a great idea
->   - If we believe that the device tree is wrong, in the i.MX7 case
->     because of #size-cells should be set to 0 and not 1, we should not
->     alter the FDT. Other part of the code could rely on this being
->     correctly set to 0 moving forward.
-> 
-> If I understood you are proposing to have a fixup at the machine level
-> that is converting a valid nand-controller node definition to a "broken"
-> one. Unless I misunderstood you and you are thinking about rewriting the
-> whole MTD partition from a broken definition to a proper one.
-> 
-> On Thu, Dec 15, 2022 at 09:04:46AM +0100, Miquel Raynal wrote:
->> marex@denx.de wrote on Thu, 15 Dec 2022 08:45:33 +0100:
->>> Sadly, it does only fix the known cases, not the unknown cases like
->>> downstream forks which never get any bootloader updates ever, and
->>> which you can't find in upstream U-Boot, and which you therefore
->>> cannot easily catch in the arch side fixup.
->>
->> And ?
-> 
-> I'm not personally and directly concerned, since the machine I care are
-> all available upstream and known, however this is a general problem with
-> U-Boot code being at the same time widely used on a range of embedded
-> products and producing a broken MTD partition list.
-> 
-> I think we will just silently break boards and just creating a lot of
-> issues to people. We would just introduce regression to the users, being
-> aware of it and deliberately decide to not care and move the problem to
-> someone else. I do not think this is a good way to go.
-
-I agree.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Cm1hcmV4QGRlbnguZGUgd3JvdGUgb24gRnJpLCAxNiBEZWMgMjAyMiAxMTo0NjoxOCArMDEwMDoK
+Cj4gT24gMTIvMTYvMjIgMDg6NDUsIEZyYW5jZXNjbyBEb2xjaW5pIHdyb3RlOgo+ID4gSGVsbG8g
+TWFyZWsgYW5kIE1pcXVlbCwgIAo+IAo+IEhpLAo+IAo+ID4gT24gVGh1LCBEZWMgMTUsIDIwMjIg
+YXQgMDg6MTY6MDRBTSArMDEwMCwgTWlxdWVsIFJheW5hbCB3cm90ZTogIAo+ID4+IFNvIG15IGZp
+cnN0IGZpcnN0IGlkZWEgd2FzIHRvIGF2b2lkIHVzaW5nIHRoZSBicm9rZW4gImZpeHVwIG10ZHBh
+cnRzIgo+ID4+IGZ1bmN0aW9uIGluIFUtQm9vdCBhbmQgSSBhbSBzdGlsbCBjb252aW5jZWQgdGhp
+cyBpcyB3aGF0IHdlIHNob3VsZCBkbwo+ID4+IGluIHByaW9yaXR5LiAgCj4gPiAKPiA+IFRoaXMg
+aXMgc29tZXRoaW5nIHRoYXQgd2FzIGFscmVhZHkgZGlzY3Vzc2VkLCBidXQgSSB3YXMgbm90IHJl
+YWxseQo+ID4gdGhpbmtpbmcgbXVjaCBvbiBpdCB0aWxsIG5vdy4gRG8geW91IHRoaW5rIHRoYXQg
+dGhlIHdob2xlIGlkZWEgb2YKPiA+IGVkaXRpbmcgdGhlIE1URCBwYXJ0aXRpb25zIGZyb20gdGhl
+IGZpcm13YXJlIGlzIHdyb25nIGFuZCB3ZSBzaG91bGQganVzdAo+ID4gcGFzcyB0aGUgcGFydGl0
+aW9uIG9uIHRoZSBjb21tYW5kIGxpbmUgT1IgdGhhdCB0aGUgY3VycmVudAo+ID4gaW1wbGVtZW50
+YXRpb24gaXMgYnJva2VuIGFuZCBjYW4vc2hvdWxkIGJlIGZpeGVkPyAgCj4gCj4gTm8sIHBhdGNo
+aW5nIHRoZSBwYXJ0aXRpb24gbGF5b3V0IGludG8gRFQgaXMgZmluZS4gRmlybXdhcmVzIG9mIGFs
+bCBraW5kcyBoYXZlIGJlZW4gcGF0Y2hpbmcgdmFyaW91cyBwYXJ0cyBvZiB0aGUgRFQgYmVmb3Jl
+IHBhc3NpbmcgaXQgdG8gT1Mgc2luY2UgZm9yZXZlciwgb3IgbW9yZSByZWNlbnRseSwgbWVyZ2lu
+ZyBtdWx0aXBsZSBEVCBmcmFnbWVudHMgYW5kIHBhc3NpbmcgdGhlIGNvbXBvc2l0ZSBEVCB0byBM
+aW51eC4KPiAKPiBBcyBmYXIgYXMgSSByZWNhbGwsIE9GIHByZWRhdGVzIExpbnV4IGFuZCB0aGUg
+T0YgdHJlZSBoYXMgYmVlbiB1c3VhbGx5IGFzc2VtYmxlZCBieSB0aGUgRm9ydGggZmlybXdhcmUg
+b2YgdGhhdCBlcmEgZnJvbSB2YXJpb3VzIGNodW5rcyBzdG9yZWQgaW4gZGlmZmVyZW50IHBhcnRz
+IG9mIHRoZSBzeXN0ZW0uIFNvIHRoaXMgcGF0Y2hpbmcgaXMgZnVuZGFtZW50YWwgcGFydCBvZiB0
+aGUgZGVzaWduIHNpbmNlIHRoZSBiZWdpbm5pbmcuCj4gCj4gSXQgaXMgZGlmZmljdWx0IHRvIGRl
+c2NyaWJlIGNvbXBsZXggc3RydWN0dXJlIGxpa2UgdGhlIHBhcnRpdGlvbiBtYXBwaW5nIG9uIGtl
+cm5lbCBjb21tYW5kIGxpbmUsIGl0IHNob3VsZCByZWFsbHkgYmUgaW4gRFQgb3Igb3RoZXIgc3Vj
+aCBzdHJ1Y3R1cmUsIHNvIHBhdGNoaW5nIGl0IGludG8gdGhlIERUIGlzIGZpbmUuCgpJIHRoaW5r
+IGRlc2NyaWJpbmcgaXQgaW4gdGhlIERUIGlzIGZpbmUgYW5kIHdlbGNvbWUuCkkgdGhpbmsgcGF0
+Y2hpbmcgaXQgaW4gdGhlIERUIGlzIHVnbHkuIE15IDJjdHMuCgo+IFRoZSBvbmx5IGRldGFpbCBo
+ZXJlIGlzLCBpdCBzaG91bGQgYmUgcGF0Y2hlZCBpbnRvIHRoZSBEVCBjb3JyZWN0bHkgIC4uLiBh
+bmQgLi4uIGlmIG9sZCBmaXJtd2FyZXMgZG8gbm90IGRvIHRoYXQsIExpbnV4IHNob3VsZCBmaXgg
+aXQgdXAuICBZb3UgZG9uJ3QgdGhyb3cgYXdheSB5b3VyIG9sZCBQQyBqdXN0IGJlY2F1c2UgaXQg
+ZG9lc24ndCBoYXZlIHBlcmZlY3QgIEFDUEkgdGFibGVzIG9uZSB3b3VsZCBleHBlY3QgdG9kYXks
+IEkgZG9uJ3Qgc2VlIHdoeSB3ZSBzaG91bGQgZG8gdGhhdCAgd2l0aCBEVCBtYWNoaW5lcy4KPiAK
+PiA+PiBJIGFtIHN0aWxsIGFnYWluc3QgcGlnZ3kgaGFja3MgaW4gdGhlIGdlbmVyaWMgb2ZwYXJ0
+LmMgZHJpdmVyLCBidXQKPiA+PiB3aGF0IHdlIGNvdWxkIGRvIGhvd2V2ZXIgaXMgYSBEVCBmaXh1
+cCBpbiB0aGUgaW5pdF9tYWNoaW5lIChvciB0aGUKPiA+PiBkdF9maXh1cCkgaG9vayBmb3IgaW14
+NyBDb2xpYnJpLCB2ZXJ5IG11Y2ggbGlrZSB0aGlzOgo+ID4+IGh0dHBzOi8vZWxpeGlyLmJvb3Rs
+aW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2UvYXJjaC9hcm0vbWFjaC1tdmVidS9ib2FyZC12Ny5j
+I0wxMTEKPiA+PiBQbHVzIGEgd2FybmluZyB0aGVyZSBzYXlpbmcgInlvdXIgZHQgaXMgYnJva2Vu
+LCB1cGRhdGUgeW91ciBmaXJtd2FyZSIuICAKPiA+IAo+ID4gSSBoYXZlIGEgY291cGxlIG9mIGNv
+bmNlcm5zL3F1ZXN0aW9uIHdpdGggdGhpcyBhcHByb2FjaDoKPiA+ICAgLSBkbyB3ZSBoYXZlIGEg
+c2luZ2xlIHBvaW50IHRvIGhhbmRsZSB0aGlzPyBEaWZmZXJlbnQgYXJjaGl0ZWN0dXJlcyBhcmUK
+PiA+ICAgICBhZmZlY3RlZCBieSB0aGVzZSBpc3N1ZS4gRHVwbGljYXRpbmcgdGhlIGZpeHVwIGNv
+ZGUgaW4gbXVsdGlwbGUgcGxhY2UKPiA+ICAgICBkb2VzIG5vdCBzZWVtcyBhIGdyZWF0IGlkZWEK
+PiA+ICAgLSBJZiB3ZSBiZWxpZXZlIHRoYXQgdGhlIGRldmljZSB0cmVlIGlzIHdyb25nLCBpbiB0
+aGUgaS5NWDcgY2FzZQo+ID4gICAgIGJlY2F1c2Ugb2YgI3NpemUtY2VsbHMgc2hvdWxkIGJlIHNl
+dCB0byAwIGFuZCBub3QgMSwgd2Ugc2hvdWxkIG5vdAo+ID4gICAgIGFsdGVyIHRoZSBGRFQuIE90
+aGVyIHBhcnQgb2YgdGhlIGNvZGUgY291bGQgcmVseSBvbiB0aGlzIGJlaW5nCj4gPiAgICAgY29y
+cmVjdGx5IHNldCB0byAwIG1vdmluZyBmb3J3YXJkLgo+ID4gCj4gPiBJZiBJIHVuZGVyc3Rvb2Qg
+eW91IGFyZSBwcm9wb3NpbmcgdG8gaGF2ZSBhIGZpeHVwIGF0IHRoZSBtYWNoaW5lIGxldmVsCj4g
+PiB0aGF0IGlzIGNvbnZlcnRpbmcgYSB2YWxpZCBuYW5kLWNvbnRyb2xsZXIgbm9kZSBkZWZpbml0
+aW9uIHRvIGEgImJyb2tlbiIKPiA+IG9uZS4gVW5sZXNzIEkgbWlzdW5kZXJzdG9vZCB5b3UgYW5k
+IHlvdSBhcmUgdGhpbmtpbmcgYWJvdXQgcmV3cml0aW5nIHRoZQo+ID4gd2hvbGUgTVREIHBhcnRp
+dGlvbiBmcm9tIGEgYnJva2VuIGRlZmluaXRpb24gdG8gYSBwcm9wZXIgb25lLgoKTm8sIHF1aXRl
+IHRoZSBvcHBvc2l0ZS4KCkVpdGhlciBzaXplLWNlbGwgaXMgd3Jvbmcgd2hpY2ggbWFrZXMgdGhl
+IGRlc2NyaXB0aW9uIHRvdGFsbHkKaW5jb25zaXN0ZW50IChpZiBzaXplLWNlbGwgaXMgdGhlcmUs
+IGl0IG11c3QgaGF2ZSBhIHVzZSwgb3RoZXJ3aXNlIHdoeQpkbyB3ZSBrZWVwIGl0PykgYW5kIHdl
+IG11c3QgZml4IGl0LCBvciBpdCBpcyByaWdodCBhbmQgd2Ugc2hvdWxkIG5vdAp0b3VjaCBpdC4K
+CldoYXQgSSBwcm9wb3NlIGlzIHRvIGNoZWNrIHZlcnkgZWFybHkgd2hldGhlciB0aGUgZGVzY3Jp
+cHRpb24gaXMKY29uc2lzdGVudCBvbiB0aGUgYm9hcmQga25vd24gdG8gaGF2ZSB0aGlzIHByb2Js
+ZW0uIElmIHRoZSBkZXNjcmlwdGlvbgppcyB3cm9uZywgd2UgZml4IGl0IGFuZCB0aGUgZ2VuZXJp
+YyBwYXJzZXIgY2FuIHRoZW4gZG8gaXRzIHdvcmsKcHJvcGVybHkuCgo+ID4gCj4gPiBPbiBUaHUs
+IERlYyAxNSwgMjAyMiBhdCAwOTowNDo0NkFNICswMTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAg
+Cj4gPj4gbWFyZXhAZGVueC5kZSB3cm90ZSBvbiBUaHUsIDE1IERlYyAyMDIyIDA4OjQ1OjMzICsw
+MTAwOiAgCj4gPj4+IFNhZGx5LCBpdCBkb2VzIG9ubHkgZml4IHRoZSBrbm93biBjYXNlcywgbm90
+IHRoZSB1bmtub3duIGNhc2VzIGxpa2UKPiA+Pj4gZG93bnN0cmVhbSBmb3JrcyB3aGljaCBuZXZl
+ciBnZXQgYW55IGJvb3Rsb2FkZXIgdXBkYXRlcyBldmVyLCBhbmQKPiA+Pj4gd2hpY2ggeW91IGNh
+bid0IGZpbmQgaW4gdXBzdHJlYW0gVS1Cb290LCBhbmQgd2hpY2ggeW91IHRoZXJlZm9yZQo+ID4+
+PiBjYW5ub3QgZWFzaWx5IGNhdGNoIGluIHRoZSBhcmNoIHNpZGUgZml4dXAuICAKPiA+Pgo+ID4+
+IEFuZCA/ICAKPiA+IAo+ID4gSSdtIG5vdCBwZXJzb25hbGx5IGFuZCBkaXJlY3RseSBjb25jZXJu
+ZWQsIHNpbmNlIHRoZSBtYWNoaW5lIEkgY2FyZSBhcmUKPiA+IGFsbCBhdmFpbGFibGUgdXBzdHJl
+YW0gYW5kIGtub3duLCBob3dldmVyIHRoaXMgaXMgYSBnZW5lcmFsIHByb2JsZW0gd2l0aAo+ID4g
+VS1Cb290IGNvZGUgYmVpbmcgYXQgdGhlIHNhbWUgdGltZSB3aWRlbHkgdXNlZCBvbiBhIHJhbmdl
+IG9mIGVtYmVkZGVkCj4gPiBwcm9kdWN0cyBhbmQgcHJvZHVjaW5nIGEgYnJva2VuIE1URCBwYXJ0
+aXRpb24gbGlzdC4KPiA+IAo+ID4gSSB0aGluayB3ZSB3aWxsIGp1c3Qgc2lsZW50bHkgYnJlYWsg
+Ym9hcmRzIGFuZCBqdXN0IGNyZWF0aW5nIGEgbG90IG9mCj4gPiBpc3N1ZXMgdG8gcGVvcGxlLiBX
+ZSB3b3VsZCBqdXN0IGludHJvZHVjZSByZWdyZXNzaW9uIHRvIHRoZSB1c2VycywgYmVpbmcKPiA+
+IGF3YXJlIG9mIGl0IGFuZCBkZWxpYmVyYXRlbHkgZGVjaWRlIHRvIG5vdCBjYXJlIGFuZCBtb3Zl
+IHRoZSBwcm9ibGVtIHRvCj4gPiBzb21lb25lIGVsc2UuIEkgZG8gbm90IHRoaW5rIHRoaXMgaXMg
+YSBnb29kIHdheSB0byBnby4gIAoKV2hhdD8gU2luY2Ugd2hlbiBteSBwcm9wb3NhbCBpcyBicmVh
+a2luZyBib2FyZHM/IE15IHByb3Bvc2FsIGxlYWRzIHRvIGEKc2l0dWF0aW9uIHdoZXJlOgotIElm
+IHlvdSBoYXZlIGEgYm9hcmQgdGhhdCBoYXMgYW4gaW5jb25zaXN0ZW50IGRlc2NyaXB0aW9uIGJ1
+dCB3b3JrZWQsCiAgaXQgd2lsbCBzdGlsbCB3b3JrLgotIElmIHlvdSBoYXZlIGEgYm9hcmQgdGhh
+dCBoYXMgYSBjb25zaXN0ZW50IGRlc2NyaXB0aW9uIGFuZCB3b3JrZWQsIGl0CiAgd2lsbCBzdGls
+bCB3b3JrLgotIElmIHlvdXIgaGF2ZSBhIGJvYXJkIHRoYXQgaGFzIGFuIGluY29uc2lzdGVudCBk
+ZXNjcmlwdGlvbiBhbmQgZ290CiAgYnJva2VuICpyZWNlbnRseSogYnkgYW5vdGhlciBjaGFuZ2Ug
+KHR5cGljYWxseSB5b3UgImZpeCIgdGhlIERUIGluCiAgTGludXggdG8gY29tcGx5IHdpdGggdGhl
+IGJpbmRpbmdzKSwgdGhlbiB5b3UgZ2V0IGEgd2FybmluZyB0aGF0IGxlYWRzCiAgeW91IG9uIHRo
+ZSByaWdodCBwYXRoLCB5b3UgdGhlbiB1cGRhdGUgeW91ciBib290bG9hZGVyIGlmIHlvdSBjYW4s
+CiAgYnV0IGVpdGhlciB3YXkgeW91IGFkZCB5b3VyIG1hY2hpbmUgY29tcGF0aWJsZSB0byB0aGUg
+bGlzdCBvZiBkZXZpY2VzCiAgd2hpY2ggbmVlZCB0aGUgZWFybHkgZml4IGFuZCB5b3VyIGJvb3Qg
+aXMgZml4ZWQuCi0gSWYgeW91IGFkZCBzdXBwb3J0IGZvciBhIG5ldyBib2FyZCB3aXRoIGFuIG9s
+ZCBrZXJuZWwgYW5kIGhhdmUgYW4KICBpbmNvbnNpc3RlbnQgZGVzY3JpcHRpb24gaXQgZG9lcyBu
+b3QgImp1c3Qgd29yayBiZWNhdXNlIHdlIGhhdmUgYW4KICBhdXRvbWF0aWMgcGlnZ3kgaGFjayBp
+biB0aGUgZHJpdmVyIi4gSSBhbSBhZ2FpbnN0IGl0LgoKV2hldGhlciBvciBub3QgaXQgaXMgYWNj
+ZXB0YWJsZSBieSBhcmNoIG1haW50YWluZXIgaXMgc29tZXRoaW5nIGVsc2UsCndlIHdvbid0IGtu
+b3cgdW50aWwgd2UgaW5jbHVkZSB0aGVtIGluIHRoZSBsb29wIHdpdGggYSBwcm9wZXIgcGF0Y2gu
+CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
