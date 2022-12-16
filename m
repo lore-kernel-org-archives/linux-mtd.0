@@ -4,75 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 772DDC4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Dec 2022 06:36:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAD02C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Dec 2022 07:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZX3vtd/T26eQdAJuzDpkMZmon1rocDR8i9jRZddkOH8=; b=kZUsOdXSvj7bR4
-	Dr12PPtxGCzam29rwjIYH8FofJAd8KDMUwQryUWBCPlmY8jKvRP8uRbplPnY+YCNG2u5PfNvNzgRc
-	q8Cp7UxH7nKtqbgq0xGZfjkVITqLUZPtqbM7QLZrFPfWflZ6ofNu632HJUIrQ0P9bs5IyMWO4Exhe
-	0tFzkBzNqBhlJzMD6iG0YjJnpXxmiJeLGdquMJfk3KS3RLpgyb431d4cabp1cU3TGUpFTSNpekyb+
-	fkDGE2N60fQg/d/e+a9LdUaC8vY3lx/J1gRb8fX7elCnmD90APu7CSpgPNQQEi0EnalCDS6+qXdf1
-	SIdbQBbuZAj75fobDq0g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:
+	List-Owner; bh=r/CL2metQnX+tAANt97bs/3SqjOuxdJMJiicMM2TEq0=; b=vxAilcBxXQGZop
+	r+RELGB85zKlfNvAlJQnZUSJYoMYdB+gP/0HC9U1Qwc+FU4L6MBRoKhGZGaNhj9XHXEGQo6P/oq/M
+	p7q0ZmnylYUyAH/4jAhz0qtuFxDvIu/B+z1uC30J41tNUuwrf+tCv5ucv13pKQF3OYIf5W4AZk+Ua
+	vgvTjlsLzewwuHUlxvkjLFnV3K6B4htEgISvs745AGQW2GfTO6UKOvypruo9ZfgQscwp9d8ZkjEJ9
+	z2I80xvLepsqRBcVdc6c9Rhfw+mFggFJDiDC91hp8gtNrAqewCcFLmJUkhDaGGB2Mf041vOHkb9lc
+	BmxdBPPLu0302nidkWHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p64KH-00DBA3-Pl; Fri, 16 Dec 2022 06:36:09 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1p65PI-00DQvx-RG; Fri, 16 Dec 2022 07:45:24 +0000
+Received: from smtp-out-05.comm2000.it ([212.97.32.73])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p64KB-00DB92-UF
-	for linux-mtd@lists.infradead.org; Fri, 16 Dec 2022 06:36:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1671172563; x=1702708563;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vTyDp3WRHQkfKwZUmHm2YaSTJQCuH5GyeO9PrVqb4Ng=;
-  b=jBspDd4iYUAxbm2GSKeKGMJdM7DCR/4ygqxBrdICU4nqS630agjyi6Hx
-   U0SEUdWRRxT5mkW3VKeAgdztz/QFKHbzRkZIDKhwNFvMJLB8XYP5HoAsT
-   QvONlOs+Mgc1YBaEIXJXAiaqVfxqgk1iX2lM/SQDrlIY18T0iFjPLS5E8
-   2Y13yTrDG9gMM3gHseGpqgvH4zZGa2lGGKjS5Pn2hqHC8V/w2PM2QNbfn
-   BH9Xqo7RpbCIVMUfSArzhhVkZgeiDtVAYTaIW4Rs8oI3kWjs/LGf06WJq
-   avEJCjh/i9OPhKncITh+oGyy3sc3izfkLXVMwe4ZOr/j9r9CtOaYbmtSq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10562"; a="345981623"
-X-IronPort-AV: E=Sophos;i="5.96,249,1665471600"; 
-   d="scan'208";a="345981623"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2022 22:36:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10562"; a="627467591"
-X-IronPort-AV: E=Sophos;i="5.96,249,1665471600"; 
-   d="scan'208";a="627467591"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 15 Dec 2022 22:35:56 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id 1FD40F7; Fri, 16 Dec 2022 08:36:26 +0200 (EET)
-Date: Fri, 16 Dec 2022 08:36:26 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	id 1p65P8-00DQrU-CV; Fri, 16 Dec 2022 07:45:16 +0000
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: francesco@dolcini.it)
+	by smtp-out-05.comm2000.it (Postfix) with ESMTPSA id 2FA14823448;
+	Fri, 16 Dec 2022 08:45:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
+	s=mailsrv; t=1671176711;
+	bh=zfM5i+fNhKMz7UOqan+1GC4MIG+OcI2xAD05WANu6CA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To;
+	b=K06f7Sy32XOtDUASbzEkFWbQYE5THTGyNrlXLHO97HHLWRXdvfcRDMQol91XRoXc5
+	 lbJlD9pTZx39qhs2wScf1U/mYoRxSFzP5Jl8tr9/y7jOK1a6XaUZdrshHAtITpDJco
+	 Fr0z3Do2ldfTLjyQkUbH4iixbBnOCndQ07XW6Kf9j1J+tE203hLeEccinr1jP37JDR
+	 4WF5HtFQc2mQ/susgR4fc0Q6RWGLPYvRYhk8Nc4ykCdZ1vlHN1lVpH6LwqYQqKbUGV
+	 7fihpv0fss07+Q5ILAFt30xi8qP+s/W5FwbCstUl8HCMwpWoypJQLa9qFirtdaUX96
+	 PTSZ6RiXzalNA==
+Date: Fri, 16 Dec 2022 08:45:04 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Marek Vasut <marex@denx.de>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Tokunori Ikegami <ikegami.t@gmail.com>,
-	Lee Jones <lee.jones@linaro.org>,
-	Mauro Lima <mauro.lima@eclypsium.com>,
-	Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Boris Brezillon <boris.brezillon@collabora.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: cfi: allow building spi-intel standalone
-Message-ID: <Y5wR6qiYGIYDRE6j@black.fi.intel.com>
-References: <20221215163950.649791-1-arnd@kernel.org>
+	linux-mtd@lists.infradead.org,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
+	u-boot@lists.denx.de
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
+Message-ID: <Y5wiAPvPU+YY39oX@francesco-nb.int.toradex.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221215163950.649791-1-arnd@kernel.org>
+In-Reply-To: <20221215090446.28363133@xps-13>
+ <ac50a1ee-4312-48f6-af78-7b95a77e6fda@denx.de>
+ <20221215081604.5385fa56@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221215_223604_002870_A3ED945F 
-X-CRM114-Status: GOOD (  12.52  )
+X-CRM114-CacheID: sfid-20221215_234514_595914_62AFF611 
+X-CRM114-Status: GOOD (  28.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,22 +77,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Dec 15, 2022 at 05:39:38PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When MTD or MTD_CFI_GEOMETRY is disabled, the spi-intel driver
-> fails to build, as it includes the shared CFI header:
-> 
-> include/linux/mtd/cfi.h:62:2: error: #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work. [-Werror=cpp]
->    62 | #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work.
-> 
-> Use an #ifdef here to guard the settings so the header can be included
-> in all configurations.
-> 
-> Fixes: e23e5a05d1fd ("mtd: spi-nor: intel-spi: Convert to SPI MEM")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hello Marek and Miquel,
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+On Thu, Dec 15, 2022 at 08:16:04AM +0100, Miquel Raynal wrote:
+> So my first first idea was to avoid using the broken "fixup mtdparts"
+> function in U-Boot and I am still convinced this is what we should do
+> in priority.
+
+This is something that was already discussed, but I was not really
+thinking much on it till now. Do you think that the whole idea of
+editing the MTD partitions from the firmware is wrong and we should just
+pass the partition on the command line OR that the current
+implementation is broken and can/should be fixed?
+
+> I am still against piggy hacks in the generic ofpart.c driver, but
+> what we could do however is a DT fixup in the init_machine (or the
+> dt_fixup) hook for imx7 Colibri, very much like this:
+> https://elixir.bootlin.com/linux/latest/source/arch/arm/mach-mvebu/board-v7.c#L111
+> Plus a warning there saying "your dt is broken, update your firmware".
+
+I have a couple of concerns/question with this approach:
+ - do we have a single point to handle this? Different architectures are
+   affected by these issue. Duplicating the fixup code in multiple place
+   does not seems a great idea
+ - If we believe that the device tree is wrong, in the i.MX7 case
+   because of #size-cells should be set to 0 and not 1, we should not
+   alter the FDT. Other part of the code could rely on this being
+   correctly set to 0 moving forward.
+
+If I understood you are proposing to have a fixup at the machine level
+that is converting a valid nand-controller node definition to a "broken"
+one. Unless I misunderstood you and you are thinking about rewriting the
+whole MTD partition from a broken definition to a proper one.
+
+On Thu, Dec 15, 2022 at 09:04:46AM +0100, Miquel Raynal wrote:
+> marex@denx.de wrote on Thu, 15 Dec 2022 08:45:33 +0100:
+> > Sadly, it does only fix the known cases, not the unknown cases like
+> > downstream forks which never get any bootloader updates ever, and
+> > which you can't find in upstream U-Boot, and which you therefore
+> > cannot easily catch in the arch side fixup.
+> 
+> And ?
+
+I'm not personally and directly concerned, since the machine I care are
+all available upstream and known, however this is a general problem with
+U-Boot code being at the same time widely used on a range of embedded
+products and producing a broken MTD partition list.
+
+I think we will just silently break boards and just creating a lot of
+issues to people. We would just introduce regression to the users, being
+aware of it and deliberately decide to not care and move the problem to
+someone else. I do not think this is a good way to go.
+
+Francesco
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
