@@ -4,63 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C109FC4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Dec 2022 13:38:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 512A0C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Dec 2022 14:33:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KkBhvbuuJDL2eVpqcf5/KqqOi1d8TOiolt9mG1Wxdew=; b=GPirw/J7+oBpTy
-	dzNkK70ktDA1DVqJwmR/8NzKxDsGD5hStlvf803TDv2wxbR3GO2JhZJdY54vpBM+VNcnzWx5YuZF8
-	noq81FTS/kmY80pUagqeThcBHQO3r11dBq85tg7T7DssGHEGdDAkHyzYiJ7lV16/jghoik37VnXZN
-	2ApctAPe0P6SLHNPgUWskAvKC48k50k5r48OzZE8l0tEgDaLgGFptGiRiJfJmVDbJTPicvRUFk4qr
-	9yESDeMibmhbZXM5WVsp2xMvsKAgC8mLDEPJAPWUfnk3uCoaXqjVRKipk7sCXOYuMDN1guw8gBWLQ
-	pDXIycipqcn0UZyMDavg==;
+	List-Owner; bh=CpR8gZZIMbhPaVZjykVWZii7oPoyLHZnnvaR55lJByI=; b=am8r3sJwFpoVYM
+	8y35Q/AHHN5XpgFRkvtythlomDVgs2ZUDgLARMV/FBoFI1BJDMl2poZt+Uqx2FjgTqxqtY46I+mUO
+	XuGiwdO35HFqM7YZOVaKiy3wrp+zQzox+frTfmQChvhM3SyawxhJ7FqsHF4YFaEMDV/97PEk5ZcTY
+	x42EIpg4J1P1YWDiC58cgy4Q91/w0XaUhYRcdf5LxuT9zuTyvGe5D7OsMk2BYkUuElrC1UBeWcS44
+	60LSqQOC7un7QsykTmf9jTzleIcLJnNt+dD5ekMhOcFQKZBeaDkcn4r2rW4OpTu2VbUfQkIax+Zln
+	zoiUeLfFd280TAJkqo0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p6AuL-00FM3Y-WA; Fri, 16 Dec 2022 13:37:50 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1p6BlX-00Ffrv-Oz; Fri, 16 Dec 2022 14:32:47 +0000
+Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p6Au3-00FLtG-Ii; Fri, 16 Dec 2022 13:37:34 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id E3D71C000D;
-	Fri, 16 Dec 2022 13:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1671197846;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nT70aYBg/Cm2D0ciqkmRaEWnOMLvAiB0CQw5gxyN+z8=;
-	b=DYKGlGavHsjxuGJLdYUHbxApcucPG5WoqMZrlwyAH436ycQPTFbBcz573UkC6mkd7u3itR
-	PuDdZw+ZqUCNc/WlQgkjTQRLGy9c4FRD0SN9Rxyg0wVcpnYAXKp8OF1CUslIfGjGYhx6U3
-	gVk9wWe5SPUKCC3Mk0jf+Ole+8gX09FKLLBInkKFEWxUfMxwUyJWcvMgSxVUuqporRhGLT
-	hEMBmY/68YbvqzUTddZuGM6Wi4EMG4HmJYnkluPMq+7r5IsWETqUajdlE6jxrjlK4fyWcd
-	DGQhDTV1JdlrLz7kUEDXDjv0NPfq7Zn+DQwsTYKd05PoVUsBYoW85of02aRkvg==
-Date: Fri, 16 Dec 2022 14:37:20 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- Francesco Dolcini <francesco.dolcini@toradex.com>, Shawn Guo
- <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
- stable@vger.kernel.org, u-boot@lists.denx.de
-Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is
- 0
-Message-ID: <20221216143720.3c8923d8@xps-13>
-In-Reply-To: <Y5xmi62hR6JeYUt1@francesco-nb.int.toradex.com>
-References: <Y5wiAPvPU+YY39oX@francesco-nb.int.toradex.com>
-	<6f5f5b32-d7fe-13cc-b52d-83a27bd9f53e@denx.de>
-	<20221216120155.4b78e5cf@xps-13>
-	<Y5xmi62hR6JeYUt1@francesco-nb.int.toradex.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1p6BlL-00Ffp6-KB; Fri, 16 Dec 2022 14:32:38 +0000
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 399DE85098;
+	Fri, 16 Dec 2022 15:32:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1671201150;
+	bh=YcZLu+PifMn6/LIs0eaXk/f/5yxHO5tGvNL/baVZmM8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=jAdo0ae+D/tgrS7aMSIRbVQTQwA5TrltVH/OoPMpkOn3oF2ajFc+6pcHfGtLtLMvD
+	 tZHhP9VIQJyqUE14DiYyhtIAI8YzszTLiMapqN+MzbMoySfntfI/eaVHc7L1Rnbw8a
+	 M9TYA6qs6DgWLoA66u0/nAARWlGWLAevEi7lfiXrH+p3uhmWZOANgKMdWVVWAge8nv
+	 Wn85qaBJb2E6I2DtRNOnzmJDfQzlsSDYugOTBQm/jj4Hq+g54qh1j17iDovtpHy2LV
+	 H7/FYJJF2ntK9zetJqmBOVzM61rFJ+fud6V0Zys5lRzC3J1SCY9qEwZX9DMKVMXwOZ
+	 bmsHguusLgzcQ==
+Message-ID: <fb55a784-eda3-8916-1413-581b9436b3f2@denx.de>
+Date: Fri, 16 Dec 2022 15:32:28 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Francesco Dolcini <francesco@dolcini.it>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ Francesco Dolcini <francesco.dolcini@toradex.com>,
+ Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ stable@vger.kernel.org, u-boot@lists.denx.de
+References: <Y5wiAPvPU+YY39oX@francesco-nb.int.toradex.com>
+ <6f5f5b32-d7fe-13cc-b52d-83a27bd9f53e@denx.de>
+ <20221216120155.4b78e5cf@xps-13>
+ <Y5xmi62hR6JeYUt1@francesco-nb.int.toradex.com>
+ <20221216143720.3c8923d8@xps-13>
+From: Marek Vasut <marex@denx.de>
+In-Reply-To: <20221216143720.3c8923d8@xps-13>
+X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221216_053732_057921_444D7DA7 
-X-CRM114-Status: GOOD (  56.49  )
+X-CRM114-CacheID: sfid-20221216_063236_093249_484CD727 
+X-CRM114-Status: GOOD (  23.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,107 +77,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRnJhbmNlc2NvLAoKZnJhbmNlc2NvQGRvbGNpbmkuaXQgd3JvdGUgb24gRnJpLCAxNiBEZWMg
-MjAyMiAxMzozNzozMSArMDEwMDoKCj4gT24gRnJpLCBEZWMgMTYsIDIwMjIgYXQgMTI6MDE6NTVQ
-TSArMDEwMCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IG1hcmV4QGRlbnguZGUgd3JvdGUgb24g
-RnJpLCAxNiBEZWMgMjAyMiAxMTo0NjoxOCArMDEwMDogIAo+ID4gPiBPbiAxMi8xNi8yMiAwODo0
-NSwgRnJhbmNlc2NvIERvbGNpbmkgd3JvdGU6ICAKPiA+ID4gPiBPbiBUaHUsIERlYyAxNSwgMjAy
-MiBhdCAwODoxNjowNEFNICswMTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAgICAKPiA+ID4gPj4g
-SSBhbSBzdGlsbCBhZ2FpbnN0IHBpZ2d5IGhhY2tzIGluIHRoZSBnZW5lcmljIG9mcGFydC5jIGRy
-aXZlciwgYnV0Cj4gPiA+ID4+IHdoYXQgd2UgY291bGQgZG8gaG93ZXZlciBpcyBhIERUIGZpeHVw
-IGluIHRoZSBpbml0X21hY2hpbmUgKG9yIHRoZQo+ID4gPiA+PiBkdF9maXh1cCkgaG9vayBmb3Ig
-aW14NyBDb2xpYnJpLCB2ZXJ5IG11Y2ggbGlrZSB0aGlzOgo+ID4gPiA+PiBodHRwczovL2VsaXhp
-ci5ib290bGluLmNvbS9saW51eC9sYXRlc3Qvc291cmNlL2FyY2gvYXJtL21hY2gtbXZlYnUvYm9h
-cmQtdjcuYyNMMTExCj4gPiA+ID4+IFBsdXMgYSB3YXJuaW5nIHRoZXJlIHNheWluZyAieW91ciBk
-dCBpcyBicm9rZW4sIHVwZGF0ZSB5b3VyIGZpcm13YXJlIi4gICAgCj4gPiA+ID4gCj4gPiA+ID4g
-SSBoYXZlIGEgY291cGxlIG9mIGNvbmNlcm5zL3F1ZXN0aW9uIHdpdGggdGhpcyBhcHByb2FjaDoK
-PiA+ID4gPiAgIC0gZG8gd2UgaGF2ZSBhIHNpbmdsZSBwb2ludCB0byBoYW5kbGUgdGhpcz8gRGlm
-ZmVyZW50IGFyY2hpdGVjdHVyZXMgYXJlCj4gPiA+ID4gICAgIGFmZmVjdGVkIGJ5IHRoZXNlIGlz
-c3VlLiBEdXBsaWNhdGluZyB0aGUgZml4dXAgY29kZSBpbiBtdWx0aXBsZSBwbGFjZQo+ID4gPiA+
-ICAgICBkb2VzIG5vdCBzZWVtcyBhIGdyZWF0IGlkZWEKPiA+ID4gPiAgIC0gSWYgd2UgYmVsaWV2
-ZSB0aGF0IHRoZSBkZXZpY2UgdHJlZSBpcyB3cm9uZywgaW4gdGhlIGkuTVg3IGNhc2UKPiA+ID4g
-PiAgICAgYmVjYXVzZSBvZiAjc2l6ZS1jZWxscyBzaG91bGQgYmUgc2V0IHRvIDAgYW5kIG5vdCAx
-LCB3ZSBzaG91bGQgbm90Cj4gPiA+ID4gICAgIGFsdGVyIHRoZSBGRFQuIE90aGVyIHBhcnQgb2Yg
-dGhlIGNvZGUgY291bGQgcmVseSBvbiB0aGlzIGJlaW5nCj4gPiA+ID4gICAgIGNvcnJlY3RseSBz
-ZXQgdG8gMCBtb3ZpbmcgZm9yd2FyZC4KPiA+ID4gPiAKPiA+ID4gPiBJZiBJIHVuZGVyc3Rvb2Qg
-eW91IGFyZSBwcm9wb3NpbmcgdG8gaGF2ZSBhIGZpeHVwIGF0IHRoZSBtYWNoaW5lIGxldmVsCj4g
-PiA+ID4gdGhhdCBpcyBjb252ZXJ0aW5nIGEgdmFsaWQgbmFuZC1jb250cm9sbGVyIG5vZGUgZGVm
-aW5pdGlvbiB0byBhICJicm9rZW4iCj4gPiA+ID4gb25lLiBVbmxlc3MgSSBtaXN1bmRlcnN0b29k
-IHlvdSBhbmQgeW91IGFyZSB0aGlua2luZyBhYm91dCByZXdyaXRpbmcgdGhlCj4gPiA+ID4gd2hv
-bGUgTVREIHBhcnRpdGlvbiBmcm9tIGEgYnJva2VuIGRlZmluaXRpb24gdG8gYSBwcm9wZXIgb25l
-LiAgCj4gPiAKPiA+IE5vLCBxdWl0ZSB0aGUgb3Bwb3NpdGUuCj4gPgo+ID4gRWl0aGVyIHNpemUt
-Y2VsbCBpcyB3cm9uZyB3aGljaCBtYWtlcyB0aGUgZGVzY3JpcHRpb24gdG90YWxseQo+ID4gaW5j
-b25zaXN0ZW50IChpZiBzaXplLWNlbGwgaXMgdGhlcmUsIGl0IG11c3QgaGF2ZSBhIHVzZSwgb3Ro
-ZXJ3aXNlIHdoeQo+ID4gZG8gd2Uga2VlcCBpdD8pIGFuZCB3ZSBtdXN0IGZpeCBpdCwgb3IgaXQg
-aXMgcmlnaHQgYW5kIHdlIHNob3VsZCBub3QKPiA+IHRvdWNoIGl0Lgo+ID4gCj4gPiBXaGF0IEkg
-cHJvcG9zZSBpcyB0byBjaGVjayB2ZXJ5IGVhcmx5IHdoZXRoZXIgdGhlIGRlc2NyaXB0aW9uIGlz
-Cj4gPiBjb25zaXN0ZW50IG9uIHRoZSBib2FyZCBrbm93biB0byBoYXZlIHRoaXMgcHJvYmxlbS4g
-SWYgdGhlIGRlc2NyaXB0aW9uCj4gPiBpcyB3cm9uZywgd2UgZml4IGl0IGFuZCB0aGUgZ2VuZXJp
-YyBwYXJzZXIgY2FuIHRoZW4gZG8gaXRzIHdvcmsKPiA+IHByb3Blcmx5LiAgCj4gCj4gV2hhdCBp
-ZiB3ZSBhZGQgYG5hbmQtY2hpcHt9YCBjaGlsZHJlbiBpbiB0aGUgZnV0dXJlICh0aGUgaS5NWCBu
-YW5kCj4gY29udHJvbGxlciBoYXMgbm90aGluZyBpbXBsZW1lbnRlZCBub3QgZGVzY3JpYmVkIGlu
-IHRoZSBzY2hlbWEgc28gZmFyLAo+IGJ1dCBpdCBpcyBzb21ldGhpbmcgdGhhdCBpcyBzdXBwb3J0
-ZWQgYnkgdGhlIGh3KT8gV2lsbCB0aGlzIGlkZWEgc3RpbGwKPiB3b3Jrcz8KCkkgdGhpbmsgeWVz
-LiBJIG1lYW4sIG1vdmluZyB0byBhCgpuYW5kLWNvbnRyb2xsZXIgeyBuYW5kLWNoaXAgeyBwYXJ0
-aXRpb25zIHsgcGFydEB4IHBhcnRAeSB9IH0gfQoKc2NoZW1lIGlzIHdoYXQgd2Ugc2hvdWxkIGV2
-ZW50dWFsbHkgZmluZCBvbiBhbGwgbWFpbnRhaW5lZCBib2FyZHMsIGJ1dApJIHdvdWxkIHNheSwg
-YXQgdGhlIHZlcnkgbGVhc3QsIHRoZSBkZXNjcmlwdGlvbiBtdXN0IGJlIGNvaGVyZW50LgoKQnV0
-IG15IHByZXZpb3VzIGFuc3dlciB3YXMgb25seSBmb2N1c2luZyBvbiB0aGUgY2FzZSB3aGVyZSB5
-b3UgY2hhbmdlCnNvbWV0aGluZyBpbiB0aGUga2VybmVsIG9yIGluIHRoZSBEVCB0aGF0IGJyZWFr
-cyB0aGUgYm9hcmQgYmVjYXVzZSBvZgp0aGUgbWVzcyBmZHRfZml4dXBfbXRkcGFydHMoKSBicmlu
-Z3MuCgo+ID4gPiA+IE9uIFRodSwgRGVjIDE1LCAyMDIyIGF0IDA5OjA0OjQ2QU0gKzAxMDAsIE1p
-cXVlbCBSYXluYWwgd3JvdGU6ICAgIAo+ID4gPiA+PiBtYXJleEBkZW54LmRlIHdyb3RlIG9uIFRo
-dSwgMTUgRGVjIDIwMjIgMDg6NDU6MzMgKzAxMDA6ICAgIAo+ID4gPiA+Pj4gU2FkbHksIGl0IGRv
-ZXMgb25seSBmaXggdGhlIGtub3duIGNhc2VzLCBub3QgdGhlIHVua25vd24gY2FzZXMgbGlrZQo+
-ID4gPiA+Pj4gZG93bnN0cmVhbSBmb3JrcyB3aGljaCBuZXZlciBnZXQgYW55IGJvb3Rsb2FkZXIg
-dXBkYXRlcyBldmVyLCBhbmQKPiA+ID4gPj4+IHdoaWNoIHlvdSBjYW4ndCBmaW5kIGluIHVwc3Ry
-ZWFtIFUtQm9vdCwgYW5kIHdoaWNoIHlvdSB0aGVyZWZvcmUKPiA+ID4gPj4+IGNhbm5vdCBlYXNp
-bHkgY2F0Y2ggaW4gdGhlIGFyY2ggc2lkZSBmaXh1cC4gICAgCj4gPiA+ID4+Cj4gPiA+ID4+IEFu
-ZCA/ICAgIAo+ID4gPiA+IAo+ID4gPiA+IEknbSBub3QgcGVyc29uYWxseSBhbmQgZGlyZWN0bHkg
-Y29uY2VybmVkLCBzaW5jZSB0aGUgbWFjaGluZSBJIGNhcmUgYXJlCj4gPiA+ID4gYWxsIGF2YWls
-YWJsZSB1cHN0cmVhbSBhbmQga25vd24sIGhvd2V2ZXIgdGhpcyBpcyBhIGdlbmVyYWwgcHJvYmxl
-bSB3aXRoCj4gPiA+ID4gVS1Cb290IGNvZGUgYmVpbmcgYXQgdGhlIHNhbWUgdGltZSB3aWRlbHkg
-dXNlZCBvbiBhIHJhbmdlIG9mIGVtYmVkZGVkCj4gPiA+ID4gcHJvZHVjdHMgYW5kIHByb2R1Y2lu
-ZyBhIGJyb2tlbiBNVEQgcGFydGl0aW9uIGxpc3QuCj4gPiA+ID4gCj4gPiA+ID4gSSB0aGluayB3
-ZSB3aWxsIGp1c3Qgc2lsZW50bHkgYnJlYWsgYm9hcmRzIGFuZCBqdXN0IGNyZWF0aW5nIGEgbG90
-IG9mCj4gPiA+ID4gaXNzdWVzIHRvIHBlb3BsZS4gV2Ugd291bGQganVzdCBpbnRyb2R1Y2UgcmVn
-cmVzc2lvbiB0byB0aGUgdXNlcnMsIGJlaW5nCj4gPiA+ID4gYXdhcmUgb2YgaXQgYW5kIGRlbGli
-ZXJhdGVseSBkZWNpZGUgdG8gbm90IGNhcmUgYW5kIG1vdmUgdGhlIHByb2JsZW0gdG8KPiA+ID4g
-PiBzb21lb25lIGVsc2UuIEkgZG8gbm90IHRoaW5rIHRoaXMgaXMgYSBnb29kIHdheSB0byBnby4g
-ICAgCj4gPiAKPiA+IFdoYXQ/ICAKPiAKPiBMZXQgbWUgcmVwaHJhc2UsIEkgd2FzIG5vdCBjbGVh
-ciBlbm91Z2guCj4gCj4gPiBTaW5jZSB3aGVuIG15IHByb3Bvc2FsIGlzIGJyZWFraW5nIGJvYXJk
-cz8gTXkgcHJvcG9zYWwgbGVhZHMgdG8gYQo+ID4gc2l0dWF0aW9uIHdoZXJlOgo+ID4gLSBJZiB5
-b3UgaGF2ZSBhIGJvYXJkIHRoYXQgaGFzIGFuIGluY29uc2lzdGVudCBkZXNjcmlwdGlvbiBidXQg
-d29ya2VkLAo+ID4gICBpdCB3aWxsIHN0aWxsIHdvcmsuCj4gPiAtIElmIHlvdSBoYXZlIGEgYm9h
-cmQgdGhhdCBoYXMgYSBjb25zaXN0ZW50IGRlc2NyaXB0aW9uIGFuZCB3b3JrZWQsIGl0Cj4gPiAg
-IHdpbGwgc3RpbGwgd29yay4KPiA+IC0gSWYgeW91ciBoYXZlIGEgYm9hcmQgdGhhdCBoYXMgYW4g
-aW5jb25zaXN0ZW50IGRlc2NyaXB0aW9uIGFuZCBnb3QKPiA+ICAgYnJva2VuICpyZWNlbnRseSog
-YnkgYW5vdGhlciBjaGFuZ2UgKHR5cGljYWxseSB5b3UgImZpeCIgdGhlIERUIGluCj4gPiAgIExp
-bnV4IHRvIGNvbXBseSB3aXRoIHRoZSBiaW5kaW5ncyksIHRoZW4geW91IGdldCBhIHdhcm5pbmcg
-dGhhdCBsZWFkcwo+ID4gICB5b3Ugb24gdGhlIHJpZ2h0IHBhdGgsIHlvdSB0aGVuIHVwZGF0ZSB5
-b3VyIGJvb3Rsb2FkZXIgaWYgeW91IGNhbiwKPiA+ICAgYnV0IGVpdGhlciB3YXkgeW91IGFkZCB5
-b3VyIG1hY2hpbmUgY29tcGF0aWJsZSB0byB0aGUgbGlzdCBvZiBkZXZpY2VzCj4gPiAgIHdoaWNo
-IG5lZWQgdGhlIGVhcmx5IGZpeCBhbmQgeW91ciBib290IGlzIGZpeGVkLiAgCj4gCj4gVGhpcyBp
-bXBsaWVzIHRoYXQgd2UgY2FuIHByb2FjdGl2ZWx5IGNhdGNoIGFsbCB0aGUgYWZmZWN0ZWQgYm9h
-cmRzLiBJIGRvCj4gbm90IGJlbGlldmUgdGhpcyBpcyByZWFzb25hYmxlIGFuZCBiZWNhdXNlIG9m
-IHRoYXQgbXkgY29tbWVudCBiZWZvcmUKPiBhYm91dCBjcmVhdGluZyByZWdyZXNzaW9uIHRvIHRo
-ZSB1c2Vycy4KCkkgcmVhbGx5IGRvbid0IHVuZGVyc3RhbmQgdGhlIHJlYXNvbmluZyBoZXJlLgoK
-V2hhdCBJIHNheSBpczogbGV0J3MgZml4IHRoZSBib2FyZHMga25vd24gdG8gYmUgaW5jb3JyZWN0
-bHkgZGVzY3JpYmVkCndoZW4gd2UgYnJlYWsgdGhlbSBzbyB0aGV5IGNvbnRpbnVlIHdvcmtpbmcg
-d2l0aCBhIGJyb2tlbiBmaXJtd2FyZS4KCldoYXQgcmVncmVzc2lvbiBjb3VsZCB0aGlzIHBvc3Np
-Ymx5IGJyaW5nPyBJIGRvbid0IGNhcmUgYWJvdXQgY2F0Y2hpbmcKdGhlIDJrIGJvYXJkcyBvdXQg
-dGhlcmUgd2hpY2ggd29yayBidXQgd3JvbmdseSBkZXNjcmliZSB0aGVpcgpwYXJ0aXRpb25zLiBJ
-ZiB0aGV5IHdvcmssIHRoZXkgd2lsbCBjb250aW51ZSB3b3JraW5nLgoKWW91IGFuZCBNYXJlayBz
-YXk6IGxldCdzIGJsaW5kbHkgYWx3YXlzIGNoYW5nZSBhIHByb3BlcnR5IGluIHRoZSBEVCwgbm8K
-bWF0dGVyIGlmIHRoZSBib2FyZCBpcyBicm9rZW4sIGV2ZW4gaWYgd2UgZG9uJ3Qga25vdyBpZiB0
-aGlzIGlzIHRoZQpyaWdodCB0aGluZyB0byBkbywgYW5kIGFwcGx5IHRoaXMgdG8gdGhlIGVudGly
-ZSB3b3JsZC4KCkJ1dCB3aXRoIHRoaXMgYXBwcm9hY2ggeW91J3JlIG5vdCB3b3JyaWVkIGFib3V0
-IHJlZ3Jlc3Npb25zLgoKSSBhbSBzb3JyeSBpdCBkb2VzIG5vdCBzdGFuZC4KClRoYW5rcywKTWlx
-dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On 12/16/22 14:37, Miquel Raynal wrote:
+
+Hi,
+
+[...]
+
+>>> What?
+>>
+>> Let me rephrase, I was not clear enough.
+>>
+>>> Since when my proposal is breaking boards? My proposal leads to a
+>>> situation where:
+>>> - If you have a board that has an inconsistent description but worked,
+>>>    it will still work.
+>>> - If you have a board that has a consistent description and worked, it
+>>>    will still work.
+>>> - If your have a board that has an inconsistent description and got
+>>>    broken *recently* by another change (typically you "fix" the DT in
+>>>    Linux to comply with the bindings), then you get a warning that leads
+>>>    you on the right path, you then update your bootloader if you can,
+>>>    but either way you add your machine compatible to the list of devices
+>>>    which need the early fix and your boot is fixed.
+>>
+>> This implies that we can proactively catch all the affected boards. I do
+>> not believe this is reasonable and because of that my comment before
+>> about creating regression to the users.
+> 
+> I really don't understand the reasoning here.
+> 
+> What I say is: let's fix the boards known to be incorrectly described
+> when we break them so they continue working with a broken firmware.
+
+The second part of the message, as far as I understand it, is "ignore 
+problems this will cause to users of boards we do not know about, let 
+them run into unbootable systems after some linux kernel update, and 
+once they suffer through system recovery, make them add compatible 
+string to the arch-side workaround".
+
+> What regression could this possibly bring? I don't care about catching
+> the 2k boards out there which work but wrongly describe their
+> partitions. If they work, they will continue working.
+
+Those boards would start failing once the Linux-side DT size-cells is 
+corrected.
+
+Also, this got missed in the previous discussion. If you use only board 
+compatible string in arch-side workaround, the workaround would be 
+applied even on systems with updated bootloaders, which is likely not 
+what we want.
+
+> You and Marek say: let's blindly always change a property in the DT, no
+> matter if the board is broken, even if we don't know if this is the
+> right thing to do, and apply this to the entire world.
+
+As far as I can tell, if we have partitions in the NAND controller node 
+and size-cells=0, then the right thing to do is to override size-cells 
+to 1 , because partitions with size-cells=0 make no sense.
+
+If the heuristics here needs to be improved somehow, let's discuss that.
+
+> But with this approach you're not worried about regressions.
+> 
+> I am sorry it does not stand.
+
+[...]
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
