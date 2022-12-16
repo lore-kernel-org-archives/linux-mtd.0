@@ -4,72 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05021C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Dec 2022 07:53:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39A96C4167B
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Dec 2022 10:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+opdQMsTZuGlQ879GwxNV0PzVguy94mHNs1//YSC4PE=; b=eRFZ0GE+LCbqyu
-	jWK/aGplwceaF2GXbXr2dVdqkmm5MFbkO/9sY9XhFnSmV7vRBx6mDmTbyotg5FNWz69S9j8wA7CSz
-	ufEWYtreOm6pMDLUZK/WWJTIWnkVPxTwbG+4GtMsD2ZWuykjm3SGAyX6j2RAF3KIrudjknAXbaFCj
-	meKddPKFJUeHzCzQVQIu70gDAyfiKOYa4J30bMmKQuymWOePaBUIOhk7TsSyeweirU6pA1fni4Bfe
-	x6P5tP647+6sH67LQ4kzvcSxvuOA5Mg7KD0TuT3Dn3Gy/rp1FEBU29OqU77PKudY8/+Sk00g9QDJT
-	kQNgGH6rbs8HiijdQJ9A==;
+	List-Owner; bh=fZqXGJmxIEr9o3e/da4qxxmRixDSqVFXXpZa8pR27oU=; b=SUhT5mTyPU3c91
+	L5M4VECCjzOLL22mA7dPXlQWNbXdUe3/ZQ6OyLQpOGFZeI+q1cO0xxmiVGE/pzXQOTm0Vit3i5qpU
+	muJVIcXR9fFJ/eKfxB9uZb7XxTz42aIWmVVj/y6STDTJGVunGZ0vpi3hkrwAYHwVGS5prgYjBxrIx
+	KyCG3eZRdMIl0uYySFw/pNjIith1yzDgLVhIX8P0SUroro+sjxb0pFYAyILFWKJBIOki0A7zhXNuw
+	vzBsdLuhEPLcpocsZCYPrzY4SMFWPcg6o/5OgNm9LurqCQ8DAZhqEHoawM31Kic84Wy6ONmSPOa8q
+	I3tDisaPQCRMVWbQ/01g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p65Wj-00DSnt-QJ; Fri, 16 Dec 2022 07:53:05 +0000
-Received: from smtp-out-08.comm2000.it ([212.97.32.78])
+	id 1p68Ep-00EC7i-Gx; Fri, 16 Dec 2022 10:46:47 +0000
+Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p65WX-00DSjI-DV; Fri, 16 Dec 2022 07:52:54 +0000
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1p68EV-00EByS-Tn; Fri, 16 Dec 2022 10:46:30 +0000
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
 	(No client certificate requested)
-	(Authenticated sender: francesco@dolcini.it)
-	by smtp-out-08.comm2000.it (Postfix) with ESMTPSA id A9CB6426668;
-	Fri, 16 Dec 2022 08:52:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
-	s=mailsrv; t=1671177169;
-	bh=HLaXNaF9mrgP2DSCe+1XOpANqOwz9+kAh1gAdGINbZY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=gvIZykeGYsqzYQGmpktJ/UnYaqy6LxNezbUxGv+MY1T4LWECVJz67SOMBZYOSUQ3b
-	 ME65aUaExHrdzqsYD91ULBZVqrRC2ramAlirxP/Ju1uWFlII7LTIqU2HKJsVets3cq
-	 IJBeEEl+KWfgRzPWWAlUZnZHNW/w7HrPKErYq3RYy9qwAhf6OIUqrSQ49O2aPNTOg2
-	 s2TyPkDvzLN5qsClutosEJBhfvKOWSdwmQoW80m1JhfzPX4ibffwojnkiANf+kGGKB
-	 Bd+szTsnxVzJXzlqilCizlt4P/3UKOOWUgJs6QDZM5EGokAzpFizJQi5cqFCoaAL6b
-	 XWf6V4fhO1Mbg==
-Date: Fri, 16 Dec 2022 08:52:48 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Marek Vasut <marex@denx.de>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Francesco Dolcini <francesco@dolcini.it>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org,
-	u-boot@lists.denx.de
-Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
-Message-ID: <Y5wj0BHKBYvNRFFK@francesco-nb.int.toradex.com>
-References: <e80377c9-1542-d47d-6d35-2efdc15bcbf8@denx.de>
- <20221202175730.231d75d5@xps-13>
- <7afd364c-33b8-38a9-65a6-015b4360db6b@denx.de>
- <Y43VdPftDbq6cD2L@francesco-nb.int.toradex.com>
- <20221205144917.6514168a@xps-13>
- <ecca019d-b0b7-630c-4221-2684cb51634c@denx.de>
- <20221215081604.5385fa56@xps-13>
- <ac50a1ee-4312-48f6-af78-7b95a77e6fda@denx.de>
- <20221215090446.28363133@xps-13>
- <a54bf573-c14a-a546-10fc-e50274986ff5@denx.de>
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 5A3C48520E;
+	Fri, 16 Dec 2022 11:46:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1671187580;
+	bh=PIqUEziaW7aCKgN+qBabJu/0k2cDZ3tExytmC9OPj2A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KOh4hmtiuQW7opZtbe3v6jE9Vydd9/5Abxh7LW6ZxAg4CA4D05VtO+sLpNGZNcO8m
+	 bpRU8RIxmH67jls3FC7k7RicKM8xBxCMaFeXhYtPCU7cmFBrHjTM6HftzpfUB7E268
+	 mSFZ8MmZ0iBU4VNXhNP9CZnNxahpwYeiQ/q6Rc87JJIDeqGNcgrZ0fpKpdnx17xYQJ
+	 DeJiwDKc07jIoTdMQ8YR1VZ/iWgPNx+FNkZf038dtRAmQqmmSAE1kEMZdmeiprItGC
+	 SiPA4lSexHMe4YD6wmOoGwfxDve5Q0Ig0txUiaecALA7CpluyiVG3Ut8YCjZfRVwYX
+	 r5eDIkksdv8lw==
+Message-ID: <6f5f5b32-d7fe-13cc-b52d-83a27bd9f53e@denx.de>
+Date: Fri, 16 Dec 2022 11:46:18 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a54bf573-c14a-a546-10fc-e50274986ff5@denx.de>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
+To: Francesco Dolcini <francesco@dolcini.it>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ Francesco Dolcini <francesco.dolcini@toradex.com>,
+ Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ stable@vger.kernel.org, u-boot@lists.denx.de
+References: <Y5wiAPvPU+YY39oX@francesco-nb.int.toradex.com>
+Content-Language: en-US
+From: Marek Vasut <marex@denx.de>
+In-Reply-To: <Y5wiAPvPU+YY39oX@francesco-nb.int.toradex.com>
+X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221215_235253_629529_6A629620 
-X-CRM114-Status: GOOD (  16.48  )
+X-CRM114-CacheID: sfid-20221216_024628_298587_31EBBB90 
+X-CRM114-Status: GOOD (  39.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,40 +73,85 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Dec 16, 2022 at 01:36:03AM +0100, Marek Vasut wrote:
-> On 12/15/22 09:04, Miquel Raynal wrote:
-> > > > That would fix all cases and only have an impact on the affected
-> > > > boards.
-> > > 
-> > > Sadly, it does only fix the known cases, not the unknown cases
-> > > like downstream forks which never get any bootloader updates ever,
-> > > and which you can't find in upstream U-Boot, and which you
-> > > therefore cannot easily catch in the arch side fixup.
-> > 
-> > And ?
+On 12/16/22 08:45, Francesco Dolcini wrote:
+> Hello Marek and Miquel,
+
+Hi,
+
+> On Thu, Dec 15, 2022 at 08:16:04AM +0100, Miquel Raynal wrote:
+>> So my first first idea was to avoid using the broken "fixup mtdparts"
+>> function in U-Boot and I am still convinced this is what we should do
+>> in priority.
 > 
-> I was under the impression Linux was supposed to deliver the best possible
-> experience to its users even on not-perfect hardware, and if there are any
-> quirks, the kernel should try to fix them up or work around them as best as
-> it can, not dismiss them as broken hardware and fail to boot outright.
+> This is something that was already discussed, but I was not really
+> thinking much on it till now. Do you think that the whole idea of
+> editing the MTD partitions from the firmware is wrong and we should just
+> pass the partition on the command line OR that the current
+> implementation is broken and can/should be fixed?
 
-I would say something more on this.
+No, patching the partition layout into DT is fine. Firmwares of all 
+kinds have been patching various parts of the DT before passing it to OS 
+since forever, or more recently, merging multiple DT fragments and 
+passing the composite DT to Linux.
 
-We are not talking about Linux not working well on some hardware, we are
-talking about breaking hardware that was working fine since ever.
-I believe that the Linux has a quite strong point of view on such kind
-of regression.
+As far as I recall, OF predates Linux and the OF tree has been usually 
+assembled by the Forth firmware of that era from various chunks stored 
+in different parts of the system. So this patching is fundamental part 
+of the design since the beginning.
 
-Quoting Linus
-> If the kernel used to work for you, the rule is that it continues to work for you.
+It is difficult to describe complex structure like the partition mapping 
+on kernel command line, it should really be in DT or other such 
+structure, so patching it into the DT is fine. The only detail here is, 
+it should be patched into the DT correctly ... and ... if old firmwares 
+do not do that, Linux should fix it up. You don't throw away your old PC 
+just because it doesn't have perfect ACPI tables one would expect today, 
+I don't see why we should do that with DT machines.
 
-Francesco
+>> I am still against piggy hacks in the generic ofpart.c driver, but
+>> what we could do however is a DT fixup in the init_machine (or the
+>> dt_fixup) hook for imx7 Colibri, very much like this:
+>> https://elixir.bootlin.com/linux/latest/source/arch/arm/mach-mvebu/board-v7.c#L111
+>> Plus a warning there saying "your dt is broken, update your firmware".
+> 
+> I have a couple of concerns/question with this approach:
+>   - do we have a single point to handle this? Different architectures are
+>     affected by these issue. Duplicating the fixup code in multiple place
+>     does not seems a great idea
+>   - If we believe that the device tree is wrong, in the i.MX7 case
+>     because of #size-cells should be set to 0 and not 1, we should not
+>     alter the FDT. Other part of the code could rely on this being
+>     correctly set to 0 moving forward.
+> 
+> If I understood you are proposing to have a fixup at the machine level
+> that is converting a valid nand-controller node definition to a "broken"
+> one. Unless I misunderstood you and you are thinking about rewriting the
+> whole MTD partition from a broken definition to a proper one.
+> 
+> On Thu, Dec 15, 2022 at 09:04:46AM +0100, Miquel Raynal wrote:
+>> marex@denx.de wrote on Thu, 15 Dec 2022 08:45:33 +0100:
+>>> Sadly, it does only fix the known cases, not the unknown cases like
+>>> downstream forks which never get any bootloader updates ever, and
+>>> which you can't find in upstream U-Boot, and which you therefore
+>>> cannot easily catch in the arch side fixup.
+>>
+>> And ?
+> 
+> I'm not personally and directly concerned, since the machine I care are
+> all available upstream and known, however this is a general problem with
+> U-Boot code being at the same time widely used on a range of embedded
+> products and producing a broken MTD partition list.
+> 
+> I think we will just silently break boards and just creating a lot of
+> issues to people. We would just introduce regression to the users, being
+> aware of it and deliberately decide to not care and move the problem to
+> someone else. I do not think this is a good way to go.
 
+I agree.
 
 ______________________________________________________
 Linux MTD discussion mailing list
