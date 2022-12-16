@@ -4,61 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21348C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Dec 2022 17:10:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B9F0C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Dec 2022 00:36:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=C7rZg1g0jAYUViDKbI+pIZLljSQqOdCDS8MMsSwTl5g=; b=Y1PCriepVKBi34M3Vl+xPwDNZS
-	FaCxWTLkLn9mT7M5F2BC41ctF4MygK5WerVZoWOP6qh1FxT0jGVxzAfXhUTfUvekC70aZjmCNgAbM
-	xgFf8PVpeUXlGeqsSlVCyZtJJzPGyY/ljagkKU8gIbmBUmSSiObjCkX0h5RFjG2XtTC7VE8j67fh0
-	noeIvpef6KpHU7vwp10vUehWUc8iXbvaPEBRdgsGjJ2fYDQD5PfgO1/SbneZWrVVZsCvpOHWsU+RP
-	9r4fAa1n3X32+ESt4frBYKbRgRnMTOY+W2q7xxTp4e3ZFt9tW+NF0+ExiZnh8opcfyMD9dvbbHOWn
-	hc9Mgwtg==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hPfYyR6GkY3/vwzoVAu0LNxn+CC4z7H6XNX/fqZZyXA=; b=dP+njh5HF/NLZl
+	LhSVQueRa8vKd84j/1dgCp0oOW5G84bkzJeeXWcQ9HJjlwxh0GHc+waqVsxLxeHm7ZTGhvw7Ydi5g
+	yWiKSrYjdSeCamsudexnJT8s8KvdUBOYvBxPdGGW+5eXTB7EueBQjwbMDcZ92u9ELF6vq30VBbMbC
+	KxmiDunQ8EJ65eIN3pHnIqUakfQoTQaY5uOa8BuojYd6QqUcAiUYHtGYIh440XIPbUBlvvzQwGqlb
+	Y9ehWPjUlcYOfFYiD4b4hXw65Lco34Eu/iOikfIEzhwqiNB6G0GgEFu01VC/5pQX/Qug1bv353Qi8
+	HNoDdPG7aLLJCSfAahIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5rki-00AUTG-UB; Thu, 15 Dec 2022 17:10:36 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1p5yi3-00C3nU-7G; Fri, 16 Dec 2022 00:36:19 +0000
+Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p5rkg-00AURF-8X
-	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2022 17:10:36 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1p5rkL-0008Tv-VP; Thu, 15 Dec 2022 18:10:14 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1p5rkH-004k6l-RP; Thu, 15 Dec 2022 18:10:10 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1p5rkH-005Kxd-Ua; Thu, 15 Dec 2022 18:10:09 +0100
-Date: Thu, 15 Dec 2022 18:10:09 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jon Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Claudius Heine <ch@denx.de>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Colin Ian King <colin.i.king@gmail.com>
-Subject: Re: [PATCH] mtd: dataflash: remove duplicate SPI ID table
-Message-ID: <20221215171009.see4b3cvxdqhb5bu@pengutronix.de>
-References: <20221215164736.1315815-1-arnd@kernel.org>
+	id 1p5yhq-00C3ka-53; Fri, 16 Dec 2022 00:36:08 +0000
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id D1CA885353;
+	Fri, 16 Dec 2022 01:36:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1671150964;
+	bh=T+mP39cIMEHonu9/Zp55tlLxMp85cHAptl0xyYvMQsM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=AUDRlfoMeRq2pJ9H7ddvAVT3EcXuJJ5kdj5V4dRKnxh8iAwuvHg18ImxaWlOjgoSw
+	 MDf7E0qfLcX5ru3Sq7KknXCm6WWlkCqD9Wh0qNvEODNfWICtPS8mQxhuqy1GwKshtk
+	 ssAlrIb2uA9Dwlls8bZVFhvebI8FCnU+BVIKXFu8Uo2B0a5Blm0Zm899HdfNFyIMsW
+	 L170opc6OPwjeYScXDDOLPrf+b+VP4OEWr5JtvdxnjFzdoB9gOg2n24QbeBYcvP2a7
+	 CvMXYoGlcST04PIMR3qf4ma9tMDsst/Wg3c4h4/umc4g/w2so1Ppk71wp9PfQdUXMh
+	 qDmc35GRNKPRg==
+Message-ID: <a54bf573-c14a-a546-10fc-e50274986ff5@denx.de>
+Date: Fri, 16 Dec 2022 01:36:03 +0100
 MIME-Version: 1.0
-In-Reply-To: <20221215164736.1315815-1-arnd@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is 0
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org,
+ Francesco Dolcini <francesco.dolcini@toradex.com>,
+ Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ stable@vger.kernel.org, u-boot@lists.denx.de
+References: <20221202150556.14c5ae43@xps-13>
+ <2b6fc52d-60b9-d0f4-ab91-4cf7a8095999@denx.de>
+ <20221202160030.1b8d0b8a@xps-13>
+ <223b7a4e-3aff-8070-7387-c77d2ded1dd6@denx.de>
+ <20221202164904.08d750df@xps-13>
+ <0503c46d-c385-74f5-f762-51d87a5ebaff@denx.de>
+ <20221202174255.2c1cb2ff@xps-13>
+ <e80377c9-1542-d47d-6d35-2efdc15bcbf8@denx.de>
+ <20221202175730.231d75d5@xps-13>
+ <7afd364c-33b8-38a9-65a6-015b4360db6b@denx.de>
+ <Y43VdPftDbq6cD2L@francesco-nb.int.toradex.com>
+ <20221205144917.6514168a@xps-13>
+ <ecca019d-b0b7-630c-4221-2684cb51634c@denx.de>
+ <20221215081604.5385fa56@xps-13>
+ <ac50a1ee-4312-48f6-af78-7b95a77e6fda@denx.de>
+ <20221215090446.28363133@xps-13>
+From: Marek Vasut <marex@denx.de>
+In-Reply-To: <20221215090446.28363133@xps-13>
+X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
+X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221215_091034_322550_42CC85FA 
-X-CRM114-Status: GOOD (  14.56  )
+X-CRM114-CacheID: sfid-20221215_163606_538612_5CF9A189 
+X-CRM114-Status: GOOD (  37.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,85 +88,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6151145650247953108=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 12/15/22 09:04, Miquel Raynal wrote:
+> Hi Marek,
 
---===============6151145650247953108==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ys7z75btzoijufmr"
-Content-Disposition: inline
+Hi,
 
+[...]
 
---ys7z75btzoijufmr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>> Yesterday while talking about an ACPI mis-description which needed
+>>> fixing, I realized fixing up what the firmware provides to Linux should
+>>> preferably be handled as early as possible. So my first first idea was
+>>> to avoid using the broken "fixup mtdparts" function in U-Boot and I am
+>>> still convinced this is what we should do in priority. However, as
+>>> rightly pointed in this thread, we need to take care about the case
+>>> where someone would use a newer DT (let's say, with the reverted changed
+>>> reverted again) with an old U-Boot. I am still against piggy hacks in
+>>> the generic ofpart.c driver, but what we could do however is a DT
+>>> fixup in the init_machine (or the dt_fixup) hook for imx7 Colibri, very
+>>> much like this:
+>>> https://elixir.bootlin.com/linux/latest/source/arch/arm/mach-mvebu/board-v7.c#L111
+>>> Plus a warning there saying "your dt is broken, update your firmware".
+>>
+>> This does not work, because the old U-Boot fixup_mtdparts() may be applied on any machine,
+> 
+> No: https://elixir.bootlin.com/u-boot/latest/A/ident/fdt_fixup_mtdparts
 
-On Thu, Dec 15, 2022 at 05:47:30PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> Building with -Werror=3Doverride-init revealds that two patches added
+These are the boards from vendors who upstreamed their properly.
 
-s/revealds/reveals/
+This does NOT take into account either boards which are using downstream 
+U-Boot, or older U-Boot e.g. because they can not easily update.
 
-> the same device ID table to this driver:
->=20
-> drivers/mtd/devices/mtd_dataflash.c:946:27: error: initialized field over=
-written [-Werror=3Doverride-init]
->   946 |         .id_table       =3D dataflash_spi_ids,
->       |                           ^~~~~~~~~~~~~~~~~
-> drivers/mtd/devices/mtd_dataflash.c:946:27: note: (near initialization fo=
-r 'dataflash_driver.id_table')
->=20
-> Remove one of the copies.
->=20
-> Fixes: 27a030e87292 ("mtd: dataflash: Add device-tree SPI IDs")
-> Fixes: ac4f83482afb ("mtd: dataflash: Add SPI ID table")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> And we should make our best so its use does not proliferate.
 
-I seem to recall this was addressed already before. I found
-https://lore.kernel.org/r/20221004211412.182940-1-colin.i.king@gmail.com
-but it seems Colin (added to Cc:) never followed up on the build
-problems reported by the build bots.
+I am not disputing that, but that's a separate U-Boot side fix which I 
+hope Francesco would submit soon, AND, more importantly, the code is 
+already in at least two U-Boot releases, so it's done, it's not going 
+away any time soon.
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> It's not like there is half a dozen of good ways to describe and forward
+> partitions today.
 
-Best regards
-Uwe
+That's really not what I am disputing here, the approach to describing 
+partitions is crystal clear as far as I can tell.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+>> it is not colibri mx7 specific. Also, new arch-side workaround are
+>> really not welcome by the architecture maintainers as far as I can
+>> tell.
+> 
+> So what? Let's propose the change and see what the maintainers have to
+> say. I am open to discussion.
 
---ys7z75btzoijufmr
-Content-Type: application/pgp-signature; name="signature.asc"
+Why is there such strong opposition toward generic fix in the OF 
+partition parser ?
 
------BEGIN PGP SIGNATURE-----
+> As I said, it is not colibri mx7 specific, there are a few boards which
+> might be affected,
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmObVO4ACgkQwfwUeK3K
-7Anc7Af+NPk1sfcbBoOameluenmscqWrwQwbBn10e54+THdTz/bEWzTOF1vE3Bb8
-tlYZdB1oqcSQ2znrh7zoBBgJtj4M905SkeBr9G91NADozsHTmeZxYykhjWxhiYnW
-ppNNQRWmqKeJ9LgodvcLe13jLLgj7ls2kzpzUQlc7of76NzhJRxBqMhCfh1XgtnC
-kUWdEijo6HjDJrqb5mRlNuJSPxaBlSlTQvqs0Od7OrdCPGkPgfOjfwZqJsQfYEg1
-+SvTHBxmYa4O8Xpi/2ggbcf/T7ZIYqUqPLVh8O9bShwX/6aQNdj1WhpLdlW3Xr6D
-Ln9PSAQZj+ffrYMhuVqSixp7IOPx7w==
-=MApv
------END PGP SIGNATURE-----
+... that you know about ...
 
---ys7z75btzoijufmr--
+> they are all clearly identifiable with a compatible.
+> It's not the entire planet either.
 
+Neither of us can make this statement with certainty, because neither of 
+us knows what hardware is running the affected version of U-Boot.
 
---===============6151145650247953108==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>>> So next time someone stumbles upon this issue, we can tell them "fix
+>>> your bootloader", and apply the same hack in their board family (there
+>>> are three or four IIRC which might be concerned some day).
+>>
+>> There are also those machines we do not even know about which might be generating bogus DT using old U-Boot and fixup_mtdparts(), so, unless there is some all-arch fixup implementation, we wouldn't be able to fix them all on arch side. I think the all-arch fixup implementation would be the driver one, i.e. this patch as it is (or maybe with some improvement).
+> 
+> If we don't know about them, as you say, I don't feel concerned.
+> 
+> If something is buggy, people will report it, we will point them in the
+> right direction so they can fix their firmware and propose a similar
+> fix in their case which will involve adding a new machine compatible to
+> the list of boards that should tweak the #size-cell property.
+
+Why is a potentially lengthy list of compatible strings in arch code, 
+which every single user has to find _after_ their system completely 
+fails to boot and forces them to perform potentially difficult recovery, 
+potentially after an update to new linux-stable release no less -- over 
+-- 4 liner generic fix in OF partition parser, which covers all the 
+systems, does not cause systems to fail to boot completely, does not 
+force users to suffer through recovery, does not require a list of 
+compatibles in arch code, and rather only gracefully prints a warning ?
+
+I very much prefer the second solution over the first.
+
+And one more thing, the list of compatibles in arch code does not really 
+work anyway, since once user updates their bootloader, the compatible 
+won't change and the arch-side workaround would still be applied, which 
+is not desired at that point anymore.
+
+>>> That would fix all cases and only have an impact on the affected boards.
+>>
+>> Sadly, it does only fix the known cases, not the unknown cases like downstream forks which never get any bootloader updates ever, and which you can't find in upstream U-Boot, and which you therefore cannot easily catch in the arch side fixup.
+> 
+> And ?
+
+I was under the impression Linux was supposed to deliver the best 
+possible experience to its users even on not-perfect hardware, and if 
+there are any quirks, the kernel should try to fix them up or work 
+around them as best as it can, not dismiss them as broken hardware and 
+fail to boot outright.
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6151145650247953108==--
-
