@@ -4,73 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52EA6C4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Dec 2022 03:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6980AC4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Dec 2022 07:30:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=axvgtD4o5ng0oDaCI8TqBZ3MzTscCX+IH0+nEXp2hPc=; b=bcHXWwPMtXCmUe
-	2TbEh76HNgrosSfzSpMIUrCzECyBZqT6Jb5uFBdI/hPKgG2DXWa7WLCGldmKHjsy94YeXPatCFTWa
-	1IvRgy8HjvmQBlmsRTxQtMSZYVdsbJUn+1wnu8jCW18kpqLzBX6gmhfbwtwEBXxS4cLIuP62nlGsK
-	h0n5x1+xtSDphb9MJrIltZvs4o0kL6OgbUJ0eyxq8SPXHVEjDhSy+LyYBYYXuPWZJymByysfooyEC
-	1Tcm2Q3K71+ABzuvSKnxCYbJ+nv0VAoeL1s0QfxWK+dRXQgc5NNo4vwFuiacovseWDrui0vBWxsG+
-	wIWUlgE5+f2r9sXrc2/g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Mk9w6hJT82t0e9YXxjsIZdHqmLI3RfeGn3GSMZgV2po=; b=tCRyoucvPXvfRlpFubcFPWquFp
+	jbZwoTaAAUM2H/DHqqZI4kFG071LHKQ4uQe0LtSWnlORkBe87ka0JfHC2eMMiLA+q7oMqOAOJPOdx
+	wZYWAwkbSQxBTChhPTo27OlgbhCkcianI7t3BA5XiIWRLwz2F7ObmyCoTOPghBe54KjmZv4iCPT+Z
+	W4gcC0UiaYXCFG+T0GJp/OtLc2jhmNtNF+D66KWfRj+9m95fAH9ghIWVUhnYl7wPJNsCHNhW2tLjP
+	WsfijI/W+KLvCWOTt1F4EcpBEJzBW6HdXQRe7CH+StFIXiPrYntV8nFDs2yyQEf6UMAnZhum+y5zt
+	k4kUwFDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p7730-007W9c-SG; Mon, 19 Dec 2022 03:42:39 +0000
-Received: from mailgw02.mediatek.com ([216.200.240.185])
+	id 1p7AaU-009tiN-7B; Mon, 19 Dec 2022 07:29:26 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p771w-007VQc-NX; Mon, 19 Dec 2022 03:41:34 +0000
-X-UUID: 29d0e50a7ddc4520b0b0bf0c18d2d7b3-20221218
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=v0RLYJNNjOaZwIF3K4Tu0NmZq0XJJx6TB5aHEi73l4Y=;
-	b=WJoUUjcRY1IJTZnKlOjK6BZX1rK+mDsqhHZIC2OedgUntGsxC41bfPbFIYExk3Br5XDr+rx8y/ojho+aSvGD4ihqxo5eP31HmEckAvPe7M6rySArjF+Y991Mi9r0k5ccSER2m4n3wvP3iQVJ2wgoOuyuX8L4sRccS5f981/Pm7s=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.14,REQID:f76e047c-59be-4e8a-8e71-020bf791bfd0,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:dcaaed0,CLOUDID:4d9745f3-ff42-4fb0-b929-626456a83c14,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 29d0e50a7ddc4520b0b0bf0c18d2d7b3-20221218
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
-	(envelope-from <xiangsheng.hou@mediatek.com>)
-	(musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1514772957; Sun, 18 Dec 2022 20:41:27 -0700
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Mon, 19 Dec 2022 10:40:51 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkmbs11n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Mon, 19 Dec 2022 10:40:50 +0800
-From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger
-	<matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>, Chuanhong Guo
-	<gch981213@gmail.com>
-CC: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
-	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-	<benliang.zhao@mediatek.com>, <bin.zhang@mediatek.com>, "AngeloGioacchino Del
- Regno" <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v5 05/10] spi: mtk-snfi: Add snfi sample delay and read latency adjustment
-Date: Mon, 19 Dec 2022 10:40:14 +0800
-Message-ID: <20221219024019.31974-6-xiangsheng.hou@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221219024019.31974-1-xiangsheng.hou@mediatek.com>
-References: <20221219024019.31974-1-xiangsheng.hou@mediatek.com>
+	id 1p7AaP-009teC-Ag
+	for linux-mtd@lists.infradead.org; Mon, 19 Dec 2022 07:29:24 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 950A11650;
+	Mon, 19 Dec 2022 08:29:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1671434954;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bJxKcynlwztP4tq8dfGNMPsNg59/ckG2EZsgBOYUGxQ=;
+	b=VV2EwLmh6EIv7MVA8cHFxrfc2ywlDUXS9YxZUU+bnYpxbGRCgdr5CYsyj4G8YxodOKIcPL
+	T6XODJgQ4pVlbGwckZc+AHH40mWVUWeYC3QQiG9FIxKUBekAloVqjF5JucTpQsPtikpvF2
+	Yq/N3pykeYSYBp1uMa5VdNTl06t4XvCpSGpJTVJ5JpPICT5zwXLAekA816A7dio7s7EAld
+	d12L01XztuTaIIDGix8DsqNu3o7B2rgQAHcziYa+QTaUlQ9ReiYZyY0cE2daHR4vSAfwwZ
+	NUj3eCRx9607jbUiRBv1f2BRnLdAixBTOaLf6NUST3O/5cVFhesYKPNir/v4lg==
 MIME-Version: 1.0
-X-MTK: N
+Date: Mon, 19 Dec 2022 08:29:14 +0100
+From: Michael Walle <michael@walle.cc>
+To: tkuw584924@gmail.com
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
+ pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, Bacem.Daassi@infineon.com, Takahiro Kuwano
+ <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Add support for Infineon
+ S25FS256T
+In-Reply-To: <20221219015509.15075-1-Takahiro.Kuwano@infineon.com>
+References: <20221219015509.15075-1-Takahiro.Kuwano@infineon.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <511703b7a86075387b5bf07434077724@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221218_194133_001579_10C6702F 
-X-CRM114-Status: GOOD (  11.45  )
+X-CRM114-CacheID: sfid-20221218_232921_772997_30C34513 
+X-CRM114-Status: GOOD (  27.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,75 +72,195 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add snfi sample delay and read latency adjustment which can get
-from dts property.
+Hi,
 
-Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/spi/spi-mtk-snfi.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Am 2022-12-19 02:55, schrieb tkuw584924@gmail.com:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> 
+> Infineon S25FS256T is 256Mbit Quad SPI NOR flash. The key features and
+> differences comparing to other Spansion/Cypress flash familes are:
+>   - 4-byte address mode by factory default
+>   - Quad mode is enabled by factory default
+>   - Supports mixture of 128KB and 64KB sectors by OTP configuration
+>     (this patch supports uniform 128KB only due to complexity of
+>      non-uniform layout)
+> 
+> Tested on Xilinx Zynq-7000 FPGA board.
+> 
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> ---
+> Datasheet:
+> fileId=8ac78c8c80027ecd0180740c5a46707https://www.infineon.com/dgdlac/Infineon-S25FS256T_256Mb_SEMPER_Nano_Flash_Quad_SPI_1.8V-DataSheet-v12_00-EN.pdf?a
+> 
+> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+> s25fs256t
+> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+> 342b190f0890
+> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+> spansion
+> zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> 53464450080101ff00000114000100ff84000102500100ffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffe7ffe2ffffffff0f48eb086bffff
+> ffffeeffffffffff00ffffff00ff11d810d800ff00ff321cfeff71e9ffe1
+> ec031c607a757a75f766805c00d65dfff938c0a100000000000000000000
+> 0000ffffffff710600fedcdcffff
+> zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> 13ecce2f195c4c71648e90d4a7e4a0df  
+> /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> zynq> test_qspi.sh
+> random: crng init done
+> 6+0 records in
+> 6+0 records out
+> 6291456 bytes (6.0MB) copied, 2.787435 seconds, 2.2MB/s
+> Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+> Erased 6291456 bytes from address 0x00000000 in flash
+> Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+> *
+> 0600000
+> Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+> Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+> 2c6e12c0a2346cab755ef72cdf2a72f827241d35  qspi_test
+> 2c6e12c0a2346cab755ef72cdf2a72f827241d35  qspi_read
+> ---
+>  drivers/mtd/spi-nor/spansion.c | 64 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spansion.c 
+> b/drivers/mtd/spi-nor/spansion.c
+> index b621cdfd506f..7d1d2c27ad71 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -24,6 +24,7 @@
+>  #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN	0x3
+>  #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
+>  #define SPINOR_OP_CYPRESS_RD_FAST		0xee
+> +#define SPINOR_REG_CYPRESS_ARCFN		0x00000006
+> 
+>  /* Cypress SPI NOR flash operations. */
+>  #define CYPRESS_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)		\
+> @@ -213,6 +214,66 @@ static int cypress_nor_set_page_size(struct 
+> spi_nor *nor)
+>  	return 0;
+>  }
+> 
+> +static int
+> +s25fs256t_post_bfpt_fixup(struct spi_nor *nor,
+> +			  const struct sfdp_parameter_header *bfpt_header,
+> +			  const struct sfdp_bfpt *bfpt)
+> +{
+> +	struct spi_mem_op op;
+> +	int ret;
+> +
+> +	/* 4-byte address mode is enabled by default */
+> +	nor->params->addr_mode_nbytes = 4;
 
-diff --git a/drivers/spi/spi-mtk-snfi.c b/drivers/spi/spi-mtk-snfi.c
-index 85644308df23..f3f95eb37365 100644
---- a/drivers/spi/spi-mtk-snfi.c
-+++ b/drivers/spi/spi-mtk-snfi.c
-@@ -195,6 +195,8 @@
- #define DATA_READ_MODE_X4 2
- #define DATA_READ_MODE_DUAL 5
- #define DATA_READ_MODE_QUAD 6
-+#define DATA_READ_LATCH_LAT GENMASK(9, 8)
-+#define DATA_READ_LATCH_LAT_S 8
- #define PG_LOAD_CUSTOM_EN BIT(7)
- #define DATARD_CUSTOM_EN BIT(6)
- #define CS_DESELECT_CYC_S 0
-@@ -205,6 +207,9 @@
- 
- #define SNF_DLY_CTL3 0x548
- #define SFCK_SAM_DLY_S 0
-+#define SFCK_SAM_DLY GENMASK(5, 0)
-+#define SFCK_SAM_DLY_TOTAL 9
-+#define SFCK_SAM_DLY_RANGE 47
- 
- #define SNF_STA_CTL1 0x550
- #define CUS_PG_DONE BIT(28)
-@@ -1368,6 +1373,8 @@ static int mtk_snand_probe(struct platform_device *pdev)
- 	const struct of_device_id *dev_id;
- 	struct spi_controller *ctlr;
- 	struct mtk_snand *ms;
-+	unsigned long spi_freq;
-+	u32 val = 0;
- 	int ret;
- 
- 	dev_id = of_match_node(mtk_snand_ids, np);
-@@ -1446,6 +1453,19 @@ static int mtk_snand_probe(struct platform_device *pdev)
- 	// switch to SNFI mode
- 	nfi_write32(ms, SNF_CFG, SPI_MODE);
- 
-+	ret = of_property_read_u32(np, "rx-sample-delay-ns", &val);
-+	if (!ret)
-+		nfi_rmw32(ms, SNF_DLY_CTL3, SFCK_SAM_DLY,
-+			  val * SFCK_SAM_DLY_RANGE / SFCK_SAM_DLY_TOTAL);
-+
-+	ret = of_property_read_u32(np, "mediatek,rx-latch-latency-ns", &val);
-+	if (!ret) {
-+		spi_freq = clk_get_rate(ms->pad_clk);
-+		val = DIV_ROUND_CLOSEST(val, NSEC_PER_SEC / spi_freq);
-+		nfi_rmw32(ms, SNF_MISC_CTL, DATA_READ_LATCH_LAT,
-+			  val << DATA_READ_LATCH_LAT_S);
-+	}
-+
- 	// setup an initial page format for ops matching page_cache_op template
- 	// before ECC is called.
- 	ret = mtk_snand_setup_pagefmt(ms, SZ_2K, SZ_64);
--- 
-2.25.1
+Shouldn't this already be set in spi_nor_parse_4bait()?
 
+> +
+> +	/* Read Architecture Configuration Register (ARCFN) */
+> +	op = (struct spi_mem_op)
+> +		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
+> +					  SPINOR_REG_CYPRESS_ARCFN,
+> +					  nor->bouncebuf);
+> +	op.dummy.nbytes = 1;
+> +	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* ARCFN value must be 0 if uniform sector is selected  */
+> +	if (nor->bouncebuf[0])
+> +		return -EOPNOTSUPP;
+
+EOPNOTSUPP is wrong here. I'd say ENODEV.
+
+> +
+> +	return cypress_nor_set_page_size(nor);
+> +}
+> +
+> +static void s25fs256t_post_sfdp_fixup(struct spi_nor *nor)
+> +{
+> +	struct spi_nor_flash_parameter *params = nor->params;
+> +
+> +	/*
+> +	 * READ_FAST is omitted in 4BAIT parse since OP_READ_FAST_4B(0Ch) is 
+> not
+> +	 * supported. Enable OP_READ_FAST(0Bh) that can work in 4-byte 
+> address
+> +	 * mode.
+> +	 */
+> +	params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+> +	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST], 0, 8,
+> +				  SPINOR_OP_READ_FAST, SNOR_PROTO_1_1_1);
+
+Mh, this requires mode switching, the advantage of the opcodes in
+the 4bait table are that they don't require mode switching.
+OP_READ_FAST doesn't work here if the address mode is set to 3. (I
+know this flash defaults to 1, but there is also a non-volatile
+setting for this).
+
+Regarding mode switching, I guess this is wrong for this flash, because
+it is set to spansion_set_4byte_addr_mode() by default while it should
+really be set to spi_nor_set_4byte_addr_mode().
+
+Also I'm not sure when set_4byte_addr_mode() is called during init.
+It seems slightly wrong to me because it will check wether
+SNOR_F_4B_OPCODES is set. But in the restore path, it is checked for
+!SNOR_F_4B_OPCODES before 3 byte mode is enabled again. Mhh.
+
+> +
+> +	/* PP_1_1_4_4B is supported but missing in SFDP. */
+> +	params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4;
+> +	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_1_4],
+> +				SPINOR_OP_PP_1_1_4_4B,
+> +				SNOR_PROTO_1_1_4);
+> +}
+> +
+> +static void s25fs256t_late_init(struct spi_nor *nor)
+> +{
+> +	/* The writesize should be ECC data unit size */
+> +	nor->params->writesize = 16;
+
+The datasheets mentions, a PP should be either 128 or 256 (for best
+performance). So why 16?
+
+> +}
+> +
+> +static struct spi_nor_fixups s25fs256t_fixups = {
+> +	.post_bfpt = s25fs256t_post_bfpt_fixup,
+> +	.post_sfdp = s25fs256t_post_sfdp_fixup,
+> +	.late_init = s25fs256t_late_init,
+> +};
+> +
+>  static int
+>  s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
+>  			const struct sfdp_parameter_header *bfpt_header,
+> @@ -441,6 +502,9 @@ static const struct flash_info spansion_nor_parts[] 
+> = {
+>  	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+> +	{ "s25fs256t",  INFO6(0x342b19, 0x0f0890, 128 * 1024, 256)
+
+Does INFO6(0x342b19, 0x0f0890, 0, 0) work for you?
+
+> +		PARSE_SFDP
+> +		.fixups = &s25fs256t_fixups },
+>  	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
+>  		PARSE_SFDP
+>  		MFR_FLAGS(USE_CLSR)
 
 ______________________________________________________
 Linux MTD discussion mailing list
