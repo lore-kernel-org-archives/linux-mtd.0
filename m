@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60E29C4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Dec 2022 03:33:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C834EC4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Dec 2022 03:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JUt/yCiQf8QOWMaEytgNr0UXUzJucCs2BnhelU4CEIg=; b=xymGMqkWAYnvve
-	NwyhE0qoV+N2d91uS65jipWhPMB265KzY0ap/FBYe3TEDSueTYd5XRGkDK5chFmXbJKkRLO6RwPED
-	Rn2f4kPcR9GVhDhg6oPSSBd+tkYL4dz0zsZpeSH/nTCzfVNbjDLbnDICg1CKZ5Y1PIkD4CWfRLuWt
-	bw4qkmRw4F2KD1ZklDMqIEqKi37yy+5ugYkwYNoqmm5m4jUPkB6imWJhJDjb9x+EI54HJpn0kCbHY
-	WOaONUQfpVlFlbmInZTy3kIG6o9dIOIVAHxCRHAPPoVtwTdss3xfNypNhpnqQyw3Jm/d3+h2AO8Lv
-	IN8LWJIGl9FAK4GcNreQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ZYZRkGb1z40kM6iBdDN3PceqJC+zDnRwuTcN+QaPcKc=; b=Wjc5uGfiimScyb
+	oiVGpZnwWZAcuT1XdKlHTlpMIoTXNVgNzfMK01vzQgPtIJKxawIUz2oPDfaNvocfh9mZ3mF1dkagS
+	/UFCdn1kU4oUiyo6XNe+/Cek73pxEsBX1k9Js3F1AC3x8IcVFZqwTSV9dq6IoJq2G1ysPXCYfBLVs
+	d+mdRL9Q8PYvPy4tp5ZSo47078WEQDeAmOgjp+48UEdhvEfI8RJsnlus5qrXLu8qHPFBkl+jg3KJd
+	mxDLXXW6cXfu+eTNjiLiO12/quj3KsqNh5dtO3/mIo86Dxg7elV4lMBPz6TUQyb77WZOJ/EiLi2oG
+	sj6KM6Ewzf81K3fcja9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p76tx-007PnH-Jv; Mon, 19 Dec 2022 03:33:17 +0000
-Received: from mailgw02.mediatek.com ([216.200.240.185])
+	id 1p7722-007VXs-OA; Mon, 19 Dec 2022 03:41:38 +0000
+Received: from mailgw01.mediatek.com ([216.200.240.184])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p76tD-007POZ-MC; Mon, 19 Dec 2022 03:32:33 +0000
-X-UUID: 59de907b0b204f3ab3f9d12d850117c5-20221218
+	id 1p771q-007VLF-7I; Mon, 19 Dec 2022 03:41:27 +0000
+X-UUID: 27c2b2106f294a0fa702b2306de45650-20221218
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=jSPLxwziHDvg62AdQtDWFuzS/s8repAi1L0+zOjjYhc=;
-	b=tNjNgTWKksUFybUJSAiANAFIEBHQ9ZWVcZQ1Ca7Hn13lPj6Hzn0U1RhV5Qbqf8ofbpRpVKZOQtVayRydJT89rrfMde2dTar6qE7LpmiCnf19vHsG04nSb5/7TtYisCKaoPRXitaUVPfxgLXiAMi2d3UOcmZY5/nquMvWko/CAyU=;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ICHy0x9L7FZYxDWuW2YY3FBCoGcD6xZ1gGBQdZu8k3s=;
+	b=sIK/qWGQ1KoHQxT0TCESP4Lx7J26TvmKMmWq5L7Z1IeFO/KI8vNVepvmspEokBWLTZyrv+r25Xx6IsFwOA3r6V/YmGTPi4/vdShtaQM5mOntlGILOCAJXYigsFvWKgF1a+JZD8px260vIhEhV6eNLWNV9kcLCBnyORl2gdy5CE0=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.14,REQID:0b4202df-bfad-4ce5-b420-6981552efdfa,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:dcaaed0,CLOUDID:7eaa1b52-dd49-462e-a4be-2143a3ddc739,B
+X-CID-O-INFO: VERSION:1.1.14,REQID:8e4c21f7-7afd-4489-9da6-caa4b1e643df,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:dcaaed0,CLOUDID:44fbb689-8530-4eff-9f77-222cf6e2895b,B
 	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
 	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 59de907b0b204f3ab3f9d12d850117c5-20221218
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
+X-UUID: 27c2b2106f294a0fa702b2306de45650-20221218
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
 	(envelope-from <xiangsheng.hou@mediatek.com>)
 	(musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1559728398; Sun, 18 Dec 2022 20:32:26 -0700
+	with ESMTP id 724295864; Sun, 18 Dec 2022 20:41:21 -0700
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Mon, 19 Dec 2022 10:41:01 +0800
+ 15.2.792.15; Mon, 19 Dec 2022 10:40:31 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkmbs11n2.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
- Transport; Mon, 19 Dec 2022 10:40:59 +0800
+ Transport; Mon, 19 Dec 2022 10:40:30 +0800
 From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
@@ -58,19 +58,16 @@ CC: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
 	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-	<benliang.zhao@mediatek.com>, <bin.zhang@mediatek.com>, "AngeloGioacchino Del
- Regno" <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v5 08/10] arm64: dts: mediatek: Fix existing NAND controller node name
-Date: Mon, 19 Dec 2022 10:40:17 +0800
-Message-ID: <20221219024019.31974-9-xiangsheng.hou@mediatek.com>
+	<benliang.zhao@mediatek.com>, <bin.zhang@mediatek.com>
+Subject: [PATCH v5 00/10] Add MediaTek MT7986 SPI NAND and ECC support
+Date: Mon, 19 Dec 2022 10:40:09 +0800
+Message-ID: <20221219024019.31974-1-xiangsheng.hou@mediatek.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221219024019.31974-1-xiangsheng.hou@mediatek.com>
-References: <20221219024019.31974-1-xiangsheng.hou@mediatek.com>
 MIME-Version: 1.0
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221218_193231_973862_8692E6D8 
-X-CRM114-Status: GOOD (  11.13  )
+X-CRM114-CacheID: sfid-20221218_194126_319553_3279964E 
+X-CRM114-Status: GOOD (  12.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,42 +84,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Change the existing node name in order to match NAND controller DT
-bindings.
+This patch series add MediaTek MT7986 SPI NAND and ECC controller
+support, split ECC engine with rawnand controller in bindings and
+change to YAML schema.
 
-Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- arch/arm64/boot/dts/mediatek/mt2712e.dtsi | 2 +-
- arch/arm64/boot/dts/mediatek/mt7622.dtsi  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Changes since V4:
+ - Split arm and arm64 dts patch for fix existing NAND controller node name.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
-index 92212cddd37e..cfbec2a2ed9d 100644
---- a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
-@@ -560,7 +560,7 @@ spi0: spi@1100a000 {
- 		status = "disabled";
- 	};
- 
--	nandc: nfi@1100e000 {
-+	nandc: nand-controller@1100e000 {
- 		compatible = "mediatek,mt2712-nfc";
- 		reg = <0 0x1100e000 0 0x1000>;
- 		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
-diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-index 146e18b5b1f4..d98aa4936092 100644
---- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-@@ -539,7 +539,7 @@ bluetooth {
- 		};
- 	};
- 
--	nandc: nfi@1100d000 {
-+	nandc: nand-controller@1100d000 {
- 		compatible = "mediatek,mt7622-nfc";
- 		reg = <0 0x1100D000 0 0x1000>;
- 		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
+Changes since V3:
+ - Correct mediatek,mtk-nfc.yaml dt-bindings.
+
+Changes since V2:
+ - Change ECC err_mask value with GENMASK macro.
+ - Change snfi mediatek,rx-latch-latency to mediatek,rx-latch-latency-ns.
+ - Add a separate patch for DTS change.
+ - Move common description to top-level pattern properties.
+ - Drop redundant parts in dt-bindings.
+
+Changes since V1:
+ - Use existing sample delay property.
+ - Add restricting for optional nfi_hclk.
+ - Improve and perfect dt-bindings documentation.
+ - Change existing node name to match NAND controller DT bingings.
+ - Fix issues reported by dt_binding_check.
+ - Fix issues reported by dtbs_check.
+
+Xiangsheng Hou (10):
+  spi: mtk-snfi: Change default page format to setup default setting
+  spi: mtk-snfi: Add optional nfi_hclk which is needed for MT7986
+  mtd: nand: ecc-mtk: Add ECC support fot MT7986 IC
+  dt-bindings: spi: mtk-snfi: Add compatible for MT7986
+  spi: mtk-snfi: Add snfi sample delay and read latency adjustment
+  dt-bindings: spi: mtk-snfi: Add read latch latency property
+  dt-bindings: mtd: Split ECC engine with rawnand controller
+  arm64: dts: mediatek: Fix existing NAND controller node name
+  arm: dts: mediatek: Fix existing NAND controller node name
+  dt-bindings: mtd: mediatek,nand-ecc-engine: Add compatible for MT7986
+
+ .../bindings/mtd/mediatek,mtk-nfc.yaml        | 155 +++++++++++++++
+ .../mtd/mediatek,nand-ecc-engine.yaml         |  63 +++++++
+ .../devicetree/bindings/mtd/mtk-nand.txt      | 176 ------------------
+ .../bindings/spi/mediatek,spi-mtk-snfi.yaml   |  54 +++++-
+ arch/arm/boot/dts/mt2701.dtsi                 |   2 +-
+ arch/arm64/boot/dts/mediatek/mt2712e.dtsi     |   2 +-
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi      |   2 +-
+ drivers/mtd/nand/ecc-mtk.c                    |  28 ++-
+ drivers/spi/spi-mtk-snfi.c                    |  41 +++-
+ 9 files changed, 330 insertions(+), 193 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
+
 -- 
 2.25.1
 
