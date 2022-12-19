@@ -4,81 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 235EBC4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Dec 2022 01:57:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95219C4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Dec 2022 02:42:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=069bEDnmgtkEHNOdbCEUJxQt5+Ze+qsdIexts0zZyZ4=; b=pt7bbDUtdzL64v
-	Bd4+zU7l9kExaUHOe5abji8ykZERw7ug8XcC1N867uNKO1ajATC4Jk/y4HJTljpzTa67I2a8/PgmD
-	mMjAjAvF1FMbLPMGb+8iAxlX85C6BdGkAxBd1znXXCFxotFp0yjf94jOYdcFXHDk2/M4w3hq9qqPQ
-	FimdpiKdKyll25WRnoT/T74rnGaXD57JizRM3XjXwk88sIhT7X4PFifvD5ZuVX6PV1xDkkMF3nyx1
-	/asfsLiEYxorve8pES04NefyAAhC1CyUSKudV7DqnKB+uABhmpTXXY3VQaOH2OGvfZdlTw/MBCFB2
-	LqL84CcMdlyZnL687khw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=kTK5gQSr7PEeoZQSSjeEMLC9mO8B3mnKxvJ+tuM8JFQ=; b=RutvQjwm3yWI8N
+	Jt+dQJ8DOPkRQqSDlc4vGujlWnktrnppxUhN5S8p2J0MJrhgJm+lsUORvSaT+RVtBleHHUQxVn+NY
+	RBbuaHdGisiCwK2ef+k4iOqsuU/hZoOQKXirIqR9ZxM5TVMVv5ldwXClKOsYXFvhOU2I0Kf38ZbmO
+	0x+bSRaKv0bsIUNvJM6T3eh98UbpQ8iCVYjgqn79eR1h+nqNtIXDO0EK2KVyHjytjLmcr1/HLKrM7
+	G5BWQPzB02OGDJh0W5M39f/kN4kMolGJi4tK/s7CiyTiYkA6S3YRuDVPPUpMBIhKngXBEymufHsdo
+	hx5Tft0FoWayxkL6MrRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p75O4-006TsE-6K; Mon, 19 Dec 2022 01:56:16 +0000
-Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
+	id 1p7669-006tvV-RU; Mon, 19 Dec 2022 02:41:49 +0000
+Received: from mailgw02.mediatek.com ([216.200.240.185])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p75Nw-006Tob-2x
-	for linux-mtd@lists.infradead.org; Mon, 19 Dec 2022 01:56:11 +0000
-Received: by mail-pl1-x62b.google.com with SMTP id s7so7643457plk.5
-        for <linux-mtd@lists.infradead.org>; Sun, 18 Dec 2022 17:56:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DlRtV1xLfFBxQVoLDOEZenEiIWKAjx/w9ySmequE8wk=;
-        b=Wp+rGqqu9X+YFD/L2Ikbk7s80Evo7gtlxCiiTKr9UYmBMlrMUTlsdp7+E3tymPbB5C
-         hnfROPkGcfPOHVp+9AwNYZ3dKWcZLpYXLQTI8dBk0EmzbEPfPChIq4YgbaJ9ZxAmD/gN
-         UMIxjon62bMHVjSB2SWOkhRk0cBYzUXUCMdPhppRTuwy8Z8lWOy/40YqNf0BgQVUJC7D
-         tE1hJtgNMiRKvVVdCUD+PRJkie7o+XkQ/A+WvEkxLlN77Aiyj1nG5eNgBr1mZOWNTGI9
-         /Q6dy+Sv6V7WjvDf4Jw67e2ShSzOkQKlxq90trC/Jf6r3sKYcZyCK6eHsqbQlf+FTUPc
-         3UoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DlRtV1xLfFBxQVoLDOEZenEiIWKAjx/w9ySmequE8wk=;
-        b=3XTo4WZTzDWDxawwf9wmfK83ZSdJ1WDHAFiVA345V5phGCbJ7Nbqbo+75XOmQv8te0
-         npk0aL937AAlld3xyYnC8+bsoBbNwhW7/bk+qRHzBtbgLlSsnU5uSu3zgSCkntfkMXnw
-         lgpqYCQo0/4nCGJvOvSl2UQJKEVLvWWgvE1sQqHjwv836Q3+VxPH5SjzZ1hru0bJke9M
-         e9l/Hkr6OlGtUdoz9aPfERobifEoFghhkW9d/vZpqlor607rlIqJF9N0We//NNrU762g
-         Yr/LvFwtIZi+gpyTOPHKm+b4bpmuLtPv1Jh5hMOIJFZMjnbF088E+YLcLfw+wElH2BL9
-         11tQ==
-X-Gm-Message-State: AFqh2koG9PUBLq+fT2MBhX9WWA3/kfvpvaW0BRl6HRoWz16tMQfOcMdo
-	iEfbKJYJBk+1I12b80Giioz+/dBvL/A=
-X-Google-Smtp-Source: AMrXdXupZ+1JEFNl0JSb1KBqq9fpn8mb0LXlZ1JqdGNslXgMEOE1dASsOLY7JUY4PbKL8S08D6cWnA==
-X-Received: by 2002:a05:6a20:e18d:b0:ad:67fa:8e50 with SMTP id ks13-20020a056a20e18d00b000ad67fa8e50mr18333635pzb.57.1671414964711;
-        Sun, 18 Dec 2022 17:56:04 -0800 (PST)
-Received: from ISCNPF1JZGWX.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id h26-20020a63211a000000b00460ea630c1bsm5076291pgh.46.2022.12.18.17.56.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Dec 2022 17:56:04 -0800 (PST)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH] mtd: spi-nor: spansion: Add support for Infineon S25FS256T
-Date: Mon, 19 Dec 2022 10:55:09 +0900
-Message-Id: <20221219015509.15075-1-Takahiro.Kuwano@infineon.com>
+	id 1p7664-006toR-2z; Mon, 19 Dec 2022 02:41:48 +0000
+X-UUID: 2a74932a77624bc3ae7290d3c2f7179f-20221218
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=vQ96c4NSn47HEozTioUQCn+ClpPg8eKUO4BdP4+tPf4=;
+	b=RqXfjZPIDrh/MrTOjUokKq9Kv/eTMgxUoI6x1lLTCA8nessvax/SbwJ8RFWzG1R9KFRz9y5+OxHz+ATB+hfcGa8kje/QHyBZYz8G1Q05+jyucuz2Zw32Vc7JJ73Zp1GThAcvTftnuV5BZIvRRJ55SQsaYeK5OQEfwmWSkxF2mO0=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.14,REQID:22f315a3-1dcd-49cf-af89-b833d6fdc4bd,IP:0,U
+	RL:25,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:0
+X-CID-META: VersionHash:dcaaed0,CLOUDID:068a43f3-ff42-4fb0-b929-626456a83c14,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+X-UUID: 2a74932a77624bc3ae7290d3c2f7179f-20221218
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+	(envelope-from <xiangsheng.hou@mediatek.com>)
+	(musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 489863135; Sun, 18 Dec 2022 19:41:33 -0700
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Mon, 19 Dec 2022 10:40:57 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkmbs11n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via Frontend
+ Transport; Mon, 19 Dec 2022 10:40:56 +0800
+From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger
+	<matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>, Chuanhong Guo
+	<gch981213@gmail.com>
+CC: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
+	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+	<benliang.zhao@mediatek.com>, <bin.zhang@mediatek.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v5 07/10] dt-bindings: mtd: Split ECC engine with rawnand controller
+Date: Mon, 19 Dec 2022 10:40:16 +0800
+Message-ID: <20221219024019.31974-8-xiangsheng.hou@mediatek.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221219024019.31974-1-xiangsheng.hou@mediatek.com>
+References: <20221219024019.31974-1-xiangsheng.hou@mediatek.com>
 MIME-Version: 1.0
+X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221218_175609_859044_05CFFC38 
-X-CRM114-Status: GOOD (  15.35  )
+X-CRM114-CacheID: sfid-20221218_184144_167241_BD7B9EE7 
+X-CRM114-Status: GOOD (  21.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,152 +87,431 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Split MediaTek ECC engine with rawnand controller and convert to
+YAML schema.
 
-Infineon S25FS256T is 256Mbit Quad SPI NOR flash. The key features and
-differences comparing to other Spansion/Cypress flash familes are:
-  - 4-byte address mode by factory default
-  - Quad mode is enabled by factory default
-  - Supports mixture of 128KB and 64KB sectors by OTP configuration
-    (this patch supports uniform 128KB only due to complexity of
-     non-uniform layout)
-
-Tested on Xilinx Zynq-7000 FPGA board.
-
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-Datasheet:
-https://www.infineon.com/dgdlac/Infineon-S25FS256T_256Mb_SEMPER_Nano_Flash_Quad_SPI_1.8V-DataSheet-v12_00-EN.pdf?fileId=8ac78c8c80027ecd0180740c5a46707a
+ .../bindings/mtd/mediatek,mtk-nfc.yaml        | 155 +++++++++++++++
+ .../mtd/mediatek,nand-ecc-engine.yaml         |  62 ++++++
+ .../devicetree/bindings/mtd/mtk-nand.txt      | 176 ------------------
+ 3 files changed, 217 insertions(+), 176 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
 
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-s25fs256t
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-342b190f0890
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-spansion
-zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450080101ff00000114000100ff84000102500100ffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffe7ffe2ffffffff0f48eb086bffff
-ffffeeffffffffff00ffffff00ff11d810d800ff00ff321cfeff71e9ffe1
-ec031c607a757a75f766805c00d65dfff938c0a100000000000000000000
-0000ffffffff710600fedcdcffff
-zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-13ecce2f195c4c71648e90d4a7e4a0df  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-zynq> test_qspi.sh
-random: crng init done
-6+0 records in
-6+0 records out
-6291456 bytes (6.0MB) copied, 2.787435 seconds, 2.2MB/s
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Erased 6291456 bytes from address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0600000
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-2c6e12c0a2346cab755ef72cdf2a72f827241d35  qspi_test
-2c6e12c0a2346cab755ef72cdf2a72f827241d35  qspi_read
----
- drivers/mtd/spi-nor/spansion.c | 64 ++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index b621cdfd506f..7d1d2c27ad71 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -24,6 +24,7 @@
- #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN	0x3
- #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
- #define SPINOR_OP_CYPRESS_RD_FAST		0xee
-+#define SPINOR_REG_CYPRESS_ARCFN		0x00000006
- 
- /* Cypress SPI NOR flash operations. */
- #define CYPRESS_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)		\
-@@ -213,6 +214,66 @@ static int cypress_nor_set_page_size(struct spi_nor *nor)
- 	return 0;
- }
- 
-+static int
-+s25fs256t_post_bfpt_fixup(struct spi_nor *nor,
-+			  const struct sfdp_parameter_header *bfpt_header,
-+			  const struct sfdp_bfpt *bfpt)
-+{
-+	struct spi_mem_op op;
-+	int ret;
+diff --git a/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml b/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
+new file mode 100644
+index 000000000000..a6e7f123eda7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
+@@ -0,0 +1,155 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/mediatek,mtk-nfc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	/* 4-byte address mode is enabled by default */
-+	nor->params->addr_mode_nbytes = 4;
++title: MediaTek(MTK) SoCs raw NAND FLASH controller (NFC)
 +
-+	/* Read Architecture Configuration Register (ARCFN) */
-+	op = (struct spi_mem_op)
-+		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
-+					  SPINOR_REG_CYPRESS_ARCFN,
-+					  nor->bouncebuf);
-+	op.dummy.nbytes = 1;
-+	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
++maintainers:
++  - Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 +
-+	/* ARCFN value must be 0 if uniform sector is selected  */
-+	if (nor->bouncebuf[0])
-+		return -EOPNOTSUPP;
++properties:
++  compatible:
++    enum:
++      - mediatek,mt2701-nfc
++      - mediatek,mt2712-nfc
++      - mediatek,mt7622-nfc
 +
-+	return cypress_nor_set_page_size(nor);
-+}
++  reg:
++    items:
++      - description: Base physical address and size of NFI.
 +
-+static void s25fs256t_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	struct spi_nor_flash_parameter *params = nor->params;
++  interrupts:
++    items:
++      - description: NFI interrupt
 +
-+	/*
-+	 * READ_FAST is omitted in 4BAIT parse since OP_READ_FAST_4B(0Ch) is not
-+	 * supported. Enable OP_READ_FAST(0Bh) that can work in 4-byte address
-+	 * mode.
-+	 */
-+	params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
-+	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST], 0, 8,
-+				  SPINOR_OP_READ_FAST, SNOR_PROTO_1_1_1);
++  clocks:
++    items:
++      - description: clock used for the controller
++      - description: clock used for the pad
 +
-+	/* PP_1_1_4_4B is supported but missing in SFDP. */
-+	params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4;
-+	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_1_4],
-+				SPINOR_OP_PP_1_1_4_4B,
-+				SNOR_PROTO_1_1_4);
-+}
++  clock-names:
++    items:
++      - const: nfi_clk
++      - const: pad_clk
 +
-+static void s25fs256t_late_init(struct spi_nor *nor)
-+{
-+	/* The writesize should be ECC data unit size */
-+	nor->params->writesize = 16;
-+}
++  ecc-engine:
++    description: device-tree node of the required ECC engine.
++    $ref: /schemas/types.yaml#/definitions/phandle
 +
-+static struct spi_nor_fixups s25fs256t_fixups = {
-+	.post_bfpt = s25fs256t_post_bfpt_fixup,
-+	.post_sfdp = s25fs256t_post_sfdp_fixup,
-+	.late_init = s25fs256t_late_init,
-+};
++patternProperties:
++  "^nand@[a-f0-9]$":
++    $ref: nand-chip.yaml#
++    unevaluatedProperties: false
++    properties:
++      reg:
++        maximum: 1
++      nand-on-flash-bbt: true
++      nand-ecc-mode:
++        const: hw
 +
- static int
- s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
- 			const struct sfdp_parameter_header *bfpt_header,
-@@ -441,6 +502,9 @@ static const struct flash_info spansion_nor_parts[] = {
- 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+	{ "s25fs256t",  INFO6(0x342b19, 0x0f0890, 128 * 1024, 256)
-+		PARSE_SFDP
-+		.fixups = &s25fs256t_fixups },
- 	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
- 		PARSE_SFDP
- 		MFR_FLAGS(USE_CLSR)
++allOf:
++  - $ref: nand-controller.yaml#
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: mediatek,mt2701-nfc
++    then:
++      patternProperties:
++        "^nand@[a-f0-9]$":
++          properties:
++            nand-ecc-step-size:
++              enum: [ 512, 1024 ]
++            nand-ecc-strength:
++              enum: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36,
++                     40, 44, 48, 52, 56, 60]
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: mediatek,mt2712-nfc
++    then:
++      patternProperties:
++        "^nand@[a-f0-9]$":
++          properties:
++            nand-ecc-step-size:
++              enum: [ 512, 1024 ]
++            nand-ecc-strength:
++              enum: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36,
++                     40, 44, 48, 52, 56, 60, 68, 72, 80]
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: mediatek,mt7622-nfc
++    then:
++      patternProperties:
++        "^nand@[a-f0-9]$":
++          properties:
++            nand-ecc-step-size:
++              const: 512
++            nand-ecc-strength:
++              enum: [4, 6, 8, 10, 12]
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - ecc-engine
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/mt2701-clk.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        nand-controller@1100d000 {
++            compatible = "mediatek,mt2701-nfc";
++            reg = <0 0x1100d000 0 0x1000>;
++            interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_LOW>;
++            clocks = <&pericfg CLK_PERI_NFI>,
++                     <&pericfg CLK_PERI_NFI_PAD>;
++            clock-names = "nfi_clk", "pad_clk";
++            ecc-engine = <&bch>;
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            nand@0 {
++                reg = <0>;
++
++                nand-on-flash-bbt;
++                nand-ecc-mode = "hw";
++                nand-ecc-step-size = <1024>;
++                nand-ecc-strength = <24>;
++
++                partitions {
++                    compatible = "fixed-partitions";
++                    #address-cells = <1>;
++                    #size-cells = <1>;
++
++                    preloader@0 {
++                        label = "pl";
++                        read-only;
++                        reg = <0x0 0x400000>;
++                    };
++                    android@400000 {
++                        label = "android";
++                        reg = <0x400000 0x12c00000>;
++                    };
++                };
++            };
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml b/Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml
+new file mode 100644
+index 000000000000..b13d801eda76
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/mediatek,nand-ecc-engine.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MediaTek(MTK) SoCs NAND ECC engine
++
++maintainers:
++  - Xiangsheng Hou <xiangsheng.hou@mediatek.com>
++
++description: |
++  MTK NAND ECC engine can cowork with MTK raw NAND and SPI NAND controller.
++
++properties:
++  compatible:
++    enum:
++      - mediatek,mt2701-ecc
++      - mediatek,mt2712-ecc
++      - mediatek,mt7622-ecc
++
++  reg:
++    items:
++      - description: Base physical address and size of ECC.
++
++  interrupts:
++    items:
++      - description: ECC interrupt
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: nfiecc_clk
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/mt2701-clk.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        bch: ecc@1100e000 {
++            compatible = "mediatek,mt2701-ecc";
++            reg = <0 0x1100e000 0 0x1000>;
++            interrupts = <GIC_SPI 55 IRQ_TYPE_LEVEL_LOW>;
++            clocks = <&pericfg CLK_PERI_NFI_ECC>;
++            clock-names = "nfiecc_clk";
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+deleted file mode 100644
+index 839ea2f93d04..000000000000
+--- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
++++ /dev/null
+@@ -1,176 +0,0 @@
+-MTK SoCs NAND FLASH controller (NFC) DT binding
+-
+-This file documents the device tree bindings for MTK SoCs NAND controllers.
+-The functional split of the controller requires two drivers to operate:
+-the nand controller interface driver and the ECC engine driver.
+-
+-The hardware description for both devices must be captured as device
+-tree nodes.
+-
+-1) NFC NAND Controller Interface (NFI):
+-=======================================
+-
+-The first part of NFC is NAND Controller Interface (NFI) HW.
+-Required NFI properties:
+-- compatible:			Should be one of
+-				"mediatek,mt2701-nfc",
+-				"mediatek,mt2712-nfc",
+-				"mediatek,mt7622-nfc".
+-- reg:				Base physical address and size of NFI.
+-- interrupts:			Interrupts of NFI.
+-- clocks:			NFI required clocks.
+-- clock-names:			NFI clocks internal name.
+-- ecc-engine:			Required ECC Engine node.
+-- #address-cells:		NAND chip index, should be 1.
+-- #size-cells:			Should be 0.
+-
+-Example:
+-
+-	nandc: nfi@1100d000 {
+-		compatible = "mediatek,mt2701-nfc";
+-		reg = <0 0x1100d000 0 0x1000>;
+-		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_LOW>;
+-		clocks = <&pericfg CLK_PERI_NFI>,
+-			 <&pericfg CLK_PERI_NFI_PAD>;
+-		clock-names = "nfi_clk", "pad_clk";
+-		ecc-engine = <&bch>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-        };
+-
+-Platform related properties, should be set in {platform_name}.dts:
+-- children nodes:	NAND chips.
+-
+-Children nodes properties:
+-- reg:			Chip Select Signal, default 0.
+-			Set as reg = <0>, <1> when need 2 CS.
+-Optional:
+-- nand-on-flash-bbt:	Store BBT on NAND Flash.
+-- nand-ecc-mode:	the NAND ecc mode (check driver for supported modes)
+-- nand-ecc-step-size:	Number of data bytes covered by a single ECC step.
+-			valid values:
+-			512 and 1024 on mt2701 and mt2712.
+-			512 only on mt7622.
+-			1024 is recommended for large page NANDs.
+-- nand-ecc-strength:	Number of bits to correct per ECC step.
+-			The valid values that each controller supports:
+-			mt2701: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
+-				32, 36, 40, 44, 48, 52, 56, 60.
+-			mt2712: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
+-				32, 36, 40, 44, 48, 52, 56, 60, 68, 72, 80.
+-			mt7622: 4, 6, 8, 10, 12, 14, 16.
+-			The strength should be calculated as follows:
+-			E = (S - F) * 8 / B
+-			S = O / (P / Q)
+-				E :	nand-ecc-strength.
+-				S :	spare size per sector.
+-				F :	FDM size, should be in the range [1,8].
+-					It is used to store free oob data.
+-				O :	oob size.
+-				P :	page size.
+-				Q :	nand-ecc-step-size.
+-				B :	number of parity bits needed to correct
+-					1 bitflip.
+-					According to MTK NAND controller design,
+-					this number depends on max ecc step size
+-					that MTK NAND controller supports.
+-					If max ecc step size supported is 1024,
+-					then it should be always 14. And if max
+-					ecc step size is 512, then it should be
+-					always 13.
+-			If the result does not match any one of the listed
+-			choices above, please select the smaller valid value from
+-			the list.
+-			(otherwise the driver will do the adjustment at runtime)
+-- pinctrl-names:	Default NAND pin GPIO setting name.
+-- pinctrl-0:		GPIO setting node.
+-
+-Example:
+-	&pio {
+-		nand_pins_default: nanddefault {
+-			pins_dat {
+-				pinmux = <MT2701_PIN_111_MSDC0_DAT7__FUNC_NLD7>,
+-					 <MT2701_PIN_112_MSDC0_DAT6__FUNC_NLD6>,
+-					 <MT2701_PIN_114_MSDC0_DAT4__FUNC_NLD4>,
+-					 <MT2701_PIN_118_MSDC0_DAT3__FUNC_NLD3>,
+-					 <MT2701_PIN_121_MSDC0_DAT0__FUNC_NLD0>,
+-					 <MT2701_PIN_120_MSDC0_DAT1__FUNC_NLD1>,
+-					 <MT2701_PIN_113_MSDC0_DAT5__FUNC_NLD5>,
+-					 <MT2701_PIN_115_MSDC0_RSTB__FUNC_NLD8>,
+-					 <MT2701_PIN_119_MSDC0_DAT2__FUNC_NLD2>;
+-				input-enable;
+-				drive-strength = <MTK_DRIVE_8mA>;
+-				bias-pull-up;
+-			};
+-
+-			pins_we {
+-				pinmux = <MT2701_PIN_117_MSDC0_CLK__FUNC_NWEB>;
+-				drive-strength = <MTK_DRIVE_8mA>;
+-				bias-pull-up = <MTK_PUPD_SET_R1R0_10>;
+-			};
+-
+-			pins_ale {
+-				pinmux = <MT2701_PIN_116_MSDC0_CMD__FUNC_NALE>;
+-				drive-strength = <MTK_DRIVE_8mA>;
+-				bias-pull-down = <MTK_PUPD_SET_R1R0_10>;
+-			};
+-		};
+-	};
+-
+-	&nandc {
+-		status = "okay";
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&nand_pins_default>;
+-		nand@0 {
+-			reg = <0>;
+-			nand-on-flash-bbt;
+-			nand-ecc-mode = "hw";
+-			nand-ecc-strength = <24>;
+-			nand-ecc-step-size = <1024>;
+-		};
+-	};
+-
+-NAND chip optional subnodes:
+-- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
+-
+-Example:
+-	nand@0 {
+-		partitions {
+-			compatible = "fixed-partitions";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-
+-			preloader@0 {
+-				label = "pl";
+-				read-only;
+-				reg = <0x00000000 0x00400000>;
+-			};
+-			android@00400000 {
+-				label = "android";
+-				reg = <0x00400000 0x12c00000>;
+-			};
+-		};
+-	};
+-
+-2) ECC Engine:
+-==============
+-
+-Required BCH properties:
+-- compatible:	Should be one of
+-		"mediatek,mt2701-ecc",
+-		"mediatek,mt2712-ecc",
+-		"mediatek,mt7622-ecc".
+-- reg:		Base physical address and size of ECC.
+-- interrupts:	Interrupts of ECC.
+-- clocks:	ECC required clocks.
+-- clock-names:	ECC clocks internal name.
+-
+-Example:
+-
+-	bch: ecc@1100e000 {
+-		compatible = "mediatek,mt2701-ecc";
+-		reg = <0 0x1100e000 0 0x1000>;
+-		interrupts = <GIC_SPI 55 IRQ_TYPE_LEVEL_LOW>;
+-		clocks = <&pericfg CLK_PERI_NFI_ECC>;
+-		clock-names = "nfiecc_clk";
+-	};
 -- 
 2.25.1
 
