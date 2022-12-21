@@ -4,84 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7044DC4167B
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Dec 2022 00:30:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE9AFC4332F
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Dec 2022 06:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/rPBmrIqhdmhX6dNqHpMEiNLcSDU1Q+xzjzi7YPYGVE=; b=0lNsML+MNij62g
-	1IpEWDMVrO83Ln8gxSm8mhrqaXf3ahD+pGkjc6725xitHpwGZQ8JzlDriuLDf/BkCYYo7SHwdICkA
-	hg+QlxzoSssa+VaejLOExPJ+bGoURemMBDGCkZApESTfPhUbjoDbZf/HoN2B5pcPplvCOTJB2wBWc
-	Xg7m2utS0BGQSUa14659sSMFv7HcM+Z8C/UjqyMK7L/GKF1tM/m8fCns5kHaGV37K2wU7TsHCADY0
-	fS4NfaJ+Vhw0+8FJQrpba/H2FBgDLFmYH5ge+fubUrpiPk4NZrwVQIF3Ikqao9/1IfJpjvWE75f7N
-	a0kY6mmCvviPui70qJKw==;
+	List-Owner; bh=M/dPCF8NvzG3LzOAEPJh5BBixT0VA5kMNYTnStfamtc=; b=J0IEQFB8Yw8Kzv
+	QKgycQp7H92QUT/mKhEld1NryUUP3gtWzNgeeaEVQKJVz4HEB9+q8Sun1g6YSONG88eAaz5ZHX94E
+	HrLD3mgi0UYSHAubig0PyHYqApcINkex1kd2hEpVe0ehyKwAZinqX0gk/gngjH7RvvWPHNfAa7bMs
+	yqB9TZm74Zb7ppkxkddKwWPn3YXdAxNG0yDyS00WXO7NtcTjcRSog1Yn+J1k3qYhkK8sTLGj9ye7R
+	C0gT3t2cCrr8yy90qXIPwtigcxS8OlxpksrOjropmIgNSD3RX3quzvsAL1RUbkvQYvfyO83N2QRMa
+	BfK28luqla5+6c/SsI7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p7mzy-006Q0f-VQ; Wed, 21 Dec 2022 00:30:19 +0000
-Received: from mail-oo1-xc2f.google.com ([2607:f8b0:4864:20::c2f])
+	id 1p7svd-00AxAQ-0d; Wed, 21 Dec 2022 06:50:13 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p7mzv-006PxH-3S
-	for linux-mtd@lists.infradead.org; Wed, 21 Dec 2022 00:30:17 +0000
-Received: by mail-oo1-xc2f.google.com with SMTP id t15-20020a4a96cf000000b0049f7e18db0dso2170404ooi.10
-        for <linux-mtd@lists.infradead.org>; Tue, 20 Dec 2022 16:30:13 -0800 (PST)
+	id 1p7svX-00Ax2Z-VD
+	for linux-mtd@lists.infradead.org; Wed, 21 Dec 2022 06:50:09 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id y16so13988136wrm.2
+        for <linux-mtd@lists.infradead.org>; Tue, 20 Dec 2022 22:50:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oQyrHAs8avSuw2RzVe3kkAfZLtEeJGUdPG7123X/iSk=;
-        b=l3JvZYGLdF+uess97IA9FSkL79RRbmXrTgKp+5Mt+GbAQTntR7npqsNfXwRCQc8hNB
-         wtdKg24Kp61fw0JKy1VrtZRbF1aXUKRkThke/R/AVqI2dfkrK56aWL0qDDI/HVJiu1O6
-         zYhYjwvyy8bojIWAadkyMUJ6odkHLfHEs+ZKc2jFZV2Yksv1+ya5vrKfCjC13HVquzft
-         scDgYLLuYZynEUJ+kpCIVf0qr+mcQ37x4Kmr2FIikYQxAiR0sXtxlOSItaQhPH962L6R
-         jx7oq3l66QnBRwmO+9sKEVaeZayJowQOPFDhIrBDI30kl7f6omrAVhXmdrsO1dGVr6Eg
-         bA8g==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l3DtQUdn5yG8C3edbDeOK2NMVM1cqCLWe0A5+U54eM4=;
+        b=pgqp3sYgI0M2y0TLRjzoFFM/5rxF4gkCBlezPnjShaxGBb39t7uWWapYEzhh3ZuOdB
+         DqlaarruN8SdkiwbO3z9OmoCsj07wvdHXWjH9OZmIvUu2VgeZbTw2BZYhgKT1t/T6147
+         cjzOjcdrBNMo1G2UIqkGp3o/l92YwMMX+GBT42W07QEn25bV9MNZun2QsSQlObsFYTSc
+         kCFKO80yY+LhokCaqch1jmWEP+Ff4PJCThkr0cuvMd5NmdOdlfjOTnXvw/1DPcsBTWJJ
+         A7IwVaAnT6RDRfUY1ntnMBplgoIF5Klb6KUCVImaffNSNB2ViJyqVCYJlgshKwtr0QYI
+         x1Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oQyrHAs8avSuw2RzVe3kkAfZLtEeJGUdPG7123X/iSk=;
-        b=ZZfqBfd1nCH62QAXz/rDf0Ms2cPIaFQqUZhzQhIvNleqm8mglD93ySZIdiVHFW3cze
-         ohOU8iWo7Nr3E+Rxxghwx0ZaFLHDvLC4Z0nzBhJukem0yG2qgqfOgeD3r7Qi30i7z3ws
-         zHWKhZ8PAt3jSwdi8ultMUOJdq8Td9X3hp+YJ2dTTp9+upsccefvBSG14wH4NVO8pX2n
-         eN4ar576L5M3lrX+tx9rrGN9EjL69fpJQKgskLRqg5BsqDTymVwVVGXS3TpHA0w1kWNh
-         9pAGi6xHXafHOfDWMpZSghjDqj7DUYWL0bebwwY3UFSWoFmfyJNn62qh+9I9v5Ni1OJk
-         uoSg==
-X-Gm-Message-State: AFqh2kpzgu5/Q9VN9/p7zFG8bATh6ZWbXuES43mvbnQ2yttxYOXsHcFu
-	MBfkOzws1e7m3n9B9wZOJQQ=
-X-Google-Smtp-Source: AMrXdXt9Rl2/cCrsNu/PcY3Hk6ryOG7w5t3xnEyQKPcLXaAekU9sfvLVc1muMLqcmajx0gmlo9U5NA==
-X-Received: by 2002:a4a:97b1:0:b0:49f:dba7:5e65 with SMTP id w46-20020a4a97b1000000b0049fdba75e65mr62577ooi.3.1671582611479;
-        Tue, 20 Dec 2022 16:30:11 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r15-20020a4acb0f000000b004a065c72a05sm5637777ooq.2.2022.12.20.16.30.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Dec 2022 16:30:10 -0800 (PST)
-Date: Tue, 20 Dec 2022 16:30:09 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Sudip Mukherjee <sudip.mukherjee@sifive.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, greentime.hu@sifive.com,
-	jude.onyenegecha@sifive.com, william.salmon@sifive.com,
-	adnan.chowdhury@sifive.com, ben.dooks@sifive.com,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: issi: is25wp256: Init flash based
- on SFDP
-Message-ID: <20221221003009.GA280250@roeck-us.net>
-References: <20220920184808.44876-1-sudip.mukherjee@sifive.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l3DtQUdn5yG8C3edbDeOK2NMVM1cqCLWe0A5+U54eM4=;
+        b=kPAjm20wqztcUZQ2axJKCGJ1cXqmxlK9H4u3aOUU7ZEi4AX5yXSN2tHVp+JwDrxgQk
+         QBOHcVvYoJL9almSHOdyVfhDEL2RWigWd6ebY4Uca89hsCMbOopg8RWHABZaFqluldB/
+         cMG7g6XucF2szBA1WkIlZP1asR1IyNdCrlxZMRpLM+byhM9DLC+SppiVQfakxo5IYGTY
+         eYVSRnjiqe7MTTxT16BLdtjr+u6l1InVKhlk/+A+BNG5MsghQLeX/eAl8vCslaCRJzbo
+         7e1tW1SCpa0XGyF7DyVnLbg772whGMsGh5bKg2eBonXy/54L9vuM9nONC6lSp2Kn6p/B
+         up3A==
+X-Gm-Message-State: AFqh2krs9m3jSQSOZrP478WGHg4yL1TJM7m3PjER3FzMZ8diInoBFqyQ
+	UlmdkCgUgkug0pd/MFSg2WlRnw==
+X-Google-Smtp-Source: AMrXdXth8YVxu/eVaNR55QfF/dyr7TzuzV6+kGR9hoc4Qpo+Qp8xSopCCpRvF2Wi2pqThcWKuwXA4w==
+X-Received: by 2002:adf:e54f:0:b0:242:7fd6:1c82 with SMTP id z15-20020adfe54f000000b002427fd61c82mr278418wrm.16.1671605402105;
+        Tue, 20 Dec 2022 22:50:02 -0800 (PST)
+Received: from [192.168.0.173] ([82.77.81.131])
+        by smtp.gmail.com with ESMTPSA id d11-20020adff84b000000b002425787c5easm14324294wrq.96.2022.12.20.22.50.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Dec 2022 22:50:01 -0800 (PST)
+Message-ID: <026225c6-f17f-e9da-b7c0-5d3473a97e89@linaro.org>
+Date: Wed, 21 Dec 2022 08:49:59 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220920184808.44876-1-sudip.mukherjee@sifive.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH] [v2] mtd: cfi: allow building spi-intel standalone
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Arnd Bergmann <arnd@kernel.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Michael Walle <michael@walle.cc>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+ Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Mauro Lima <mauro.lima@eclypsium.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20221220141352.1486360-1-arnd@kernel.org>
+ <cae6328b-5204-a1ab-810d-8fb64e466453@linaro.org>
+ <20221220165701.5696df1a@xps-13>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20221220165701.5696df1a@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221220_163015_210246_322342EA 
-X-CRM114-Status: GOOD (  13.91  )
+X-CRM114-CacheID: sfid-20221220_225008_108224_D4D41805 
+X-CRM114-Status: GOOD (  13.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,62 +98,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+
+
+On 20.12.2022 17:57, Miquel Raynal wrote:
+> Hi Tudor,
+> 
+
 Hi,
 
-On Tue, Sep 20, 2022 at 07:48:07PM +0100, Sudip Mukherjee wrote:
-> The datasheet of is25wp256 says it supports SFDP. Get rid of the static
-> initialization of the flash parameters and init them when parsing SFDP.
+> tudor.ambarus@linaro.org wrote on Tue, 20 Dec 2022 17:44:49 +0200:
 > 
-> Testing showed the flash using SPINOR_OP_READ_1_1_4_4B 0x6c,
-> SPINOR_OP_PP_4B 0x12 and SPINOR_OP_BE_4K_4B 0x21 before enabling SFDP.
-> After this patch, it parses the SFDP information and still uses the
-> same opcodes.
+>> Hi, Arnd,
+>>
+>> On 20.12.2022 16:13, Arnd Bergmann wrote:
+>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>
+>>> When MTD or MTD_CFI_GEOMETRY is disabled, the spi-intel driver
+>>> fails to build, as it includes the shared CFI header:
+>>>
+>>> include/linux/mtd/cfi.h:62:2: error: #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work. [-Werror=cpp]
+>>>      62 | #warning No CONFIG_MTD_CFI_Ix selected. No NOR chip support can work.
+>>>
+>>> linux/mtd/spi-nor.h does not actually need to include cfi.h, so
+>>> remove the inclusion here to fix the warning. This uncovers a
+>>> missing #include in spi-nor/core.c so add that there to
+>>> prevent a different build issue.
+>>>
+>>> Fixes: e23e5a05d1fd ("mtd: spi-nor: intel-spi: Convert to SPI MEM")
+>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>
+>> Looks good to me. I'll let the linux-0day bot run over it and apply it
+>> once -rc1 is out.
 > 
-> Signed-off-by: Sudip Mukherjee <sudip.mukherjee@sifive.com>
+> The issue sometimes produces build errors, shall I send it through a
+> fixes PR instead?
+> 
 
-With this patch in place, qemu emulations with is25wp256 fail to
-instantiate the flash. Specifically, this affects the qemu sifive_u
-emulation. The resulting error message is:
+Yes, that I was thinking about.
 
-spi-nor spi0.0: BFPT parsing failed. Please consider using SPI_NOR_SKIP_SFDP when declaring the flash
-spi-nor: probe of spi0.0 failed with error -22
-
-qemu command line:
-
-qemu-system-riscv64 -M sifive_u -m 512M \
-     -no-reboot -kernel arch/riscv/boot/Image -snapshot \
-     -drive file=flash.8Vtb7,format=raw,if=mtd -bios default \
-     -append "root=/dev/mtdblock0 mtdparts=spi0.0:- console=ttySIF0,115200 earlycon" \
-     -nographic -monitor none
-
-Reverting this patch fixes the problem.
-
-Guenter
-
----
-# bad: [1e4fa020d574768445fca2d9bbfe473ec8bbd224] Merge tag 'mtd/for-6.2' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
-# good: [a594533df0f6ca391da003f43d53b336a2d23ffa] Merge tag 'drm-next-2022-12-13' of git://anongit.freedesktop.org/drm/drm
-git bisect start '1e4fa020d574' 'a594533df0f6'
-# good: [2399401feee27c639addc5b7e6ba519d3ca341bf] mtd: maps: pxa2xx-flash: fix memory leak in probe
-git bisect good 2399401feee27c639addc5b7e6ba519d3ca341bf
-# good: [bcc0c61e6134066f4629845691a514ea33465653] mtd: spi-nor: micron-st: Enable locking for mt25qu256a
-git bisect good bcc0c61e6134066f4629845691a514ea33465653
-# good: [a50ae8c98e5766a4fcb78e76f13cc658b784eac1] mtd: nand: drop EXPORT_SYMBOL_GPL for nanddev_erase()
-git bisect good a50ae8c98e5766a4fcb78e76f13cc658b784eac1
-# good: [6408cc05a50aaf88074a5a31d065e5af87a456f5] mtd: rawnand: Drop obsolete dependencies on COMPILE_TEST
-git bisect good 6408cc05a50aaf88074a5a31d065e5af87a456f5
-# bad: [1799cd8540b67b88514c82f5fae1c75b986bcbd8] mtd: spi-nor: add SFDP fixups for Quad Page Program
-git bisect bad 1799cd8540b67b88514c82f5fae1c75b986bcbd8
-# bad: [a30f53d8bc0f9b55b4e8eea0e17b68cfd1f07f34] mtd: spi-nor: issi: is25wp256: Init flash based on SFDP
-git bisect bad a30f53d8bc0f9b55b4e8eea0e17b68cfd1f07f34
-# good: [ef434f08b0562069cf431873a052692357d325a1] mtd: spi-nor: winbond: add support for W25Q512NW-IQ
-git bisect good ef434f08b0562069cf431873a052692357d325a1
-# first bad commit: [a30f53d8bc0f9b55b4e8eea0e17b68cfd1f07f34] mtd: spi-nor: issi: is25wp256: Init flash based on SFDP
+Thanks,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
