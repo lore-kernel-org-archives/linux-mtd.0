@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD6D6C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9382C4167B
 	for <linux-mtd@archiver.kernel.org>; Fri, 23 Dec 2022 07:23:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j3dLnpefD3aL6CJFzKf43qrnSuZnn1KppbOQKpsxC8g=; b=VpUP22mbd/LROe
-	hcUdURJ/qb82CGMHEnQm3EKLtSkeaI/pTWnFtGMzQUpkdaTYEzARIl8Og4sXU6N64nrC6RmA++cLj
-	Dnl1a7I1Kr2EriTNG+cuF5d9nwZ73EK5jS9MAgFXb6JhOxl0/Lbm3cQQBN+4Pf4Rnct2CW24K/rm7
-	BTJUdo2H5IboJDvjg7uvZQ/c+dEvsCWETPkADOuPR6bfENE5ebKREcNEqJhRJDcacdOdUVjhBEo6N
-	Oci6BaduJQJ+7v5/CSslEV6gRJaNTPrSViUB6u1uxPjm2OxMrOK2XLe0E7oLmduNxGn9UpjWGmmdR
-	5Y7tFWEh8AQBZ6S9GRpA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=CZ2rI9zBhDHce41pfZ7hRPhWQ+uu00vvthNr1vxr10M=; b=yQZT+6GP8pi3mh
+	ALG+4hYobBzE2AO46bjcX34cfLGSsar0I5sZHgBHVks/NkbeFfW3NidFKvCBygbxSDgrOaoz0Husm
+	J3PRmSPka+9AWj3pmwbOXdVEkv6K9AK+/AMSwMgAmEVmpFxfqR6HUwLy6dhMvBorhLdejep8b3m0Q
+	LYEF7tS1/dNPaojjGhVsHU++pkxBTWPNjDqkzSpu/Q0wRQQ6GKprhR6/WTWTgIrelwzpTi+BBUS//
+	QWI0pvEHjIYae8M5yynib4L5m0YffUprxgFCoAXgwpE8Uf3XbzZwgsZmq4lmRZH1NMQx+e7wYUcOm
+	c7ovkx1XcIzR2wj8e9eA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p8cNr-004jZZ-SG; Fri, 23 Dec 2022 07:22:24 +0000
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+	id 1p8cNi-004jVe-3N; Fri, 23 Dec 2022 07:22:14 +0000
+Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p8cNh-004jTD-Am
-	for linux-mtd@lists.infradead.org; Fri, 23 Dec 2022 07:22:14 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id b12so2816807pgj.6
-        for <linux-mtd@lists.infradead.org>; Thu, 22 Dec 2022 23:22:10 -0800 (PST)
+	id 1p8cNd-004jQw-Pr
+	for linux-mtd@lists.infradead.org; Fri, 23 Dec 2022 07:22:11 +0000
+Received: by mail-pg1-x52b.google.com with SMTP id s196so2828454pgs.3
+        for <linux-mtd@lists.infradead.org>; Thu, 22 Dec 2022 23:22:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t3T3VH8+RiQzqCwP+wL4AxdIJ6QFJSqoiV6duekIP6Y=;
-        b=H5G0XBl0XAZm0/xnVqrC/TiU4T7PiNtj+WJeui5FLUJ4qBrq+Hqwu3K51sfSLbl7HT
-         Ya8SgFajtjyK9+fzm0CBCm5731zfdkpf332NH81nEMIe88KmpM4S6f9/HLQCQxL4tdGE
-         g0Pfma2hkjHd8WOR/bLAkKai1Nq7Hzg5b/8DyCOt6jCkTEdyAbYa/3/DYMFglz56roYC
-         s2vOOjzgxMO+YwuaojfcbSr0LlO1gO0lhTcuyMIoveu/Iz4Q3cEYjGtKFE80N03Z+aD/
-         uJ4APkIyy7VR4D4tZ37zAKqGoij2xfXP8d3znUM2N7HH//ZcSTv4qDmGF+bXD/DvfcbO
-         kQ3Q==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eJAkWt2qiYGFJn7WEj31+ckInBClcHqc6c25FPLQ/HA=;
+        b=EAd7bF4J5ruRoeDGwYduFRPcrW5MTMtctstw+ShQaB70c8t6ICyhSf8Vq5bywwcqsE
+         +eKmjf701WYuViZZnChvMlhphAP+LswfmV9gjkkxOK2yj8bBrUUw/WrTbfyXacYdV4LQ
+         7JIl0tNM4fYXc5eN9n+ZzJH6fHkXvVpOVF2yolNn068kTXv4TY8wm6xSyIltsguWP5IB
+         p3Bkz1pySqGORWMA4Ty/fERrn0Vufm2/C5nRnouwGXoK7QegBDpzlfUCvsyIypzusVyU
+         RMQ/8/Sw7V+7xOZ+L0YHCiyi28BQpAVtvLWpadx1xxHelLf9hxSqdTK2XkMHHc86u6qd
+         LWuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t3T3VH8+RiQzqCwP+wL4AxdIJ6QFJSqoiV6duekIP6Y=;
-        b=eU7HwIK87hbwjaybHT02gliGL35S51lrUdn9bPkIHzAiWH+tkR0u5UyxLwqsHsp+WV
-         A2vlFFwHmpxvvQE9wcp8PEKtCAzqAC0v8eHUb4ra7KtiqX67u6th9WyzxXIo33xN+S+t
-         uJdXcXIx9ZZt4saFSt6vSx+Z0BJqEG6WHpLq6cuhei5JCj1KRqlPgZnm2l0gLJ4S16pw
-         1qa90hAkY1bictTKw5yrk5CwEgWJEmY3TTZGRJp9tnItRA44UfF78bFcXucp2XB8FeDc
-         Wqx577+TvvlhQRdfwRmzlCKpsechcYjEuQG4DL1TNSzUJLeeYSbG9EHpZgQQXpBskcAN
-         ZUrw==
-X-Gm-Message-State: AFqh2ko/i8ItuHlOdJ2TzHCpEPKb+st0fOVhqD1gbIGS793V3cVLUEU/
-	lDHozt/uPBwJLDjieltdrF7CvmYrPv8=
-X-Google-Smtp-Source: AMrXdXt9HGwVCi30wGqm9OCs79tWt5IyqnmESTsc35GPzFiIoOftYDcWBYmqs/KEe5hFOzLp2kkWKQ==
-X-Received: by 2002:a62:6483:0:b0:577:7cfb:a896 with SMTP id y125-20020a626483000000b005777cfba896mr7526861pfb.31.1671780130403;
-        Thu, 22 Dec 2022 23:22:10 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eJAkWt2qiYGFJn7WEj31+ckInBClcHqc6c25FPLQ/HA=;
+        b=LmNkaZcD+jb2VGW8G/8FUVg1X/HZ0OTzq+Pt0TZ7WwqjKFAQ4H70t90ONtzjIJJbZT
+         R6iCMgRwXnUiNt5x0mghItAsExqRpt+BsKYAPukRNz7urPv5abAbIv9LOtcaseq0kHqq
+         DR1Fr9d0fJII105iYbHE3qS2yjnx9IleESzeEpfuGA6GlOq3ARDuSx3KPGtGKrBkFw1J
+         LNE51KE4ZX5Lek1Xb2YhXztnBo7tqA+nkdnyYcVzOzR8ynYZNfYsM8kCi/57oVgJM8u8
+         bv0eGA6pP9FTtSMg+KmK0vzZil8hrDGvYRLiwp9kxcOZdIo92v0rSRZgclYZjPYylo8T
+         Fqyg==
+X-Gm-Message-State: AFqh2kooJ08+gA5nOhsVWVtkmaB4lMdB1YnLRbReEtR4olDuexcZ0iIn
+	5sFKznRyo7eiV4eskb9nyNcVW8FEFEg=
+X-Google-Smtp-Source: AMrXdXsHtw3H77BrAMq94m1LUgWUqMZCgYU6GNP0ySI5Z1ohlIYH6pEbni+QAb9M7M54N5t8zIwuXQ==
+X-Received: by 2002:a62:52c8:0:b0:580:8c1b:e8d7 with SMTP id g191-20020a6252c8000000b005808c1be8d7mr2578864pfb.31.1671780126716;
+        Thu, 22 Dec 2022 23:22:06 -0800 (PST)
 Received: from ISCNPF1JZGWX.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id a24-20020aa795b8000000b00576ce9ed31csm1848146pfk.56.2022.12.22.23.22.07
+        by smtp.gmail.com with ESMTPSA id a24-20020aa795b8000000b00576ce9ed31csm1848146pfk.56.2022.12.22.23.22.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Dec 2022 23:22:09 -0800 (PST)
+        Thu, 22 Dec 2022 23:22:06 -0800 (PST)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -72,16 +71,15 @@ Cc: tudor.ambarus@linaro.org,
 	tkuw584924@gmail.com,
 	Bacem.Daassi@infineon.com,
 	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH 1/3] mtd: spi-nor: sfdp: Fix index value for SCCR dwords
-Date: Fri, 23 Dec 2022 16:21:39 +0900
-Message-Id: <d73012e2a3185d96b8a9fcd9523af54867d50e89.1671684805.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH 0/3] mtd: spi-nor: sfdp: Introduce SFDP_DWORD() macro
+Date: Fri, 23 Dec 2022 16:21:38 +0900
+Message-Id: <cover.1671684805.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1671684805.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1671684805.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221222_232213_429267_38DD640A 
-X-CRM114-Status: GOOD (  10.31  )
+X-CRM114-CacheID: sfid-20221222_232209_899290_B8443C08 
+X-CRM114-Status: UNSURE (   7.46  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,28 +98,30 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Array index for SCCR 22th DOWRD should be 21.
+Existing BFPT_DWORD() converts 1-based indexing to 0-based indexing for
+C arrays, and is used in BFPT parse. This is applicable to other parameter
+tables than BFPT.
 
-Fixes: 981a8d60e01f ("mtd: spi-nor: Parse SFDP SCCR Map")
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Reviewed-by: Michael Walle <michael@walle.cc>
----
- drivers/mtd/spi-nor/sfdp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Based on a suggestion in:
+https://patchwork.ozlabs.org/project/linux-mtd/patch/20220912051317.2369-1-Takahiro.Kuwano@infineon.com/
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 8434f654eca1..5df2fcba5483 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -1228,7 +1228,7 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
- 
- 	le32_to_cpu_array(dwords, sccr_header->length);
- 
--	if (FIELD_GET(SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE, dwords[22]))
-+	if (FIELD_GET(SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE, dwords[21]))
- 		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
- 
- out:
+Confirmed all parameter tables described in JESD216F.02 use the same
+(1-based) indexing.
+
+Tested with S25HS01GT and S28HS01GT.
+
+Takahiro Kuwano (3):
+  mtd: spi-nor: sfdp: Fix index value for SCCR dwords
+  mtd: spi-nor: sfdp: Rename BFPT_DWORD() macro to SFDP_DWORD()
+  mtd: spi-nor: sfdp: Use SFDP_DWORD() macro for optional parameter
+    tables
+
+ drivers/mtd/spi-nor/issi.c     |  2 +-
+ drivers/mtd/spi-nor/macronix.c |  2 +-
+ drivers/mtd/spi-nor/sfdp.c     | 72 ++++++++++++++++++----------------
+ drivers/mtd/spi-nor/sfdp.h     |  9 ++---
+ 4 files changed, 44 insertions(+), 41 deletions(-)
+
 -- 
 2.25.1
 
