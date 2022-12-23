@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAB58C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Dec 2022 07:23:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6683C4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Dec 2022 07:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AD2wjPmfbv6Bsl1jDADq5IK6KikxFOV/U718wXfhAxk=; b=JpFg+XMplFhnml
-	WIsK8sxHRs77Clt16JtvjvvmWAO3Nhi5IxXzy9flfVv5T8ZpNYzIfX46yzyTbX01oNwHawnOxFKD+
-	BxFWTMEw35cHCPqwcq6PH/qlbvsL0mbMtRE40EXMZO1egMQHC5p/oQ6Uc2POy4uRPuu1AZrkWyHeY
-	04Xdxt3xSCEo3wBKAwLGbzHA+8iVlSX/ph4W9j/EIHAqpBUUq1RMwDZqYMLyRkIc3mgKnrxahvdET
-	JOrP63VjsVXH9lWj9Bj484IUOyRl7jjSSsWwiap/+DFO8ov7oRvkyCq3AeImSNQT9om1iyVQmdFEH
-	bK/IW9frYRfA6m8nA+8w==;
+	List-Owner; bh=wRQt+Y27dd6AfzS2hChSO2MZjKXjAlyfWP3VjP8ErVY=; b=IJsDLzsuIcIudx
+	nnogVArHOelY6ccTJ3pdJbe5fe+kEwsExZAVryQjILmIlMdOucm86CteZhy7wPEPSnnmG/oNvLSE1
+	b1w51JSkdlAcAOnDZhqusMez93nsikrBhmW7AJkAsNLc4nDrfbCiBBYGUL52RBM4Hm2QfSi/ceX0T
+	k2mGp/ufzpoe6Mx0gNv5n7qgQLLXStQKUeuVndk6FAqwfGhS2zMkt6UAeMBJ4U6uYuGcDQTbP9PLY
+	YFmlk2q12DWfW74feDwCP6r4dY70Rktozg8EeW9GmUYuYg+02SFz6mRcqxQu8GxgPTONsNuMeXzOX
+	BjBRuW3iZm1RRrRFyNcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p8cNz-004jda-1n; Fri, 23 Dec 2022 07:22:31 +0000
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+	id 1p8cO6-004jgu-R8; Fri, 23 Dec 2022 07:22:39 +0000
+Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p8cNi-004jVo-Nb
-	for linux-mtd@lists.infradead.org; Fri, 23 Dec 2022 07:22:17 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id 7so2833664pga.1
-        for <linux-mtd@lists.infradead.org>; Thu, 22 Dec 2022 23:22:14 -0800 (PST)
+	id 1p8cNo-004jXo-SI
+	for linux-mtd@lists.infradead.org; Fri, 23 Dec 2022 07:22:22 +0000
+Received: by mail-pj1-x1033.google.com with SMTP id n65-20020a17090a2cc700b0021bc5ef7a14so4264685pjd.0
+        for <linux-mtd@lists.infradead.org>; Thu, 22 Dec 2022 23:22:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7GxgAoT7fl3W67WfBWzyQSHZ3BUavBtxbLnNX6lhFqA=;
-        b=kG25j3X97qVdNHK85BZTaZJtPhtcaAKLM5loiPaV8imPbEA1Jj9V00XSf87B8CCgB1
-         PcaixtYhqumPim65hqiTahQdfDdrks4KTfxxDdITlhVBppJllTgp7c+GusAS6iOZsK+b
-         MIL6bKkJ6wqQKtQ7fItvUaLc0Kf3DlEOFhCYxEJfR6ugkXo1pLTq6N1rQ+xJGg4kKpHM
-         RmOTeURUGLLS8lKSddKe5gf2pGoTg4VUlI1lRrf+c2a98TgzT0IoehuOboF2dgNi4o2I
-         owzXGugF0oxf24wGV+2ix4bbhg1Qx3XWN5YE6U2WHrwpVMGlXQVT+AFWJNjOyl7KX7Fm
-         cXAw==
+        bh=PvJLJGQ2+eUycs0JdQsDhAaSY0fQVq/fpPoAcsC0c5s=;
+        b=O4ELEroPenmE97rLiA4Y9GDa9J2NjCGgQTt+pWUDkkFRvbxBIqJz4JkJhgCxfg/Znx
+         VQn8n6Yqbnx9EbOvZMEKa5D57cHAjIQiGybEvNp+p4V4fvZQ29udOfRTVV0R1q/XbyRP
+         SQ7KBFGaOSt5L2fGfpTOpgRTx0lc0vnjd5gIzT57QqfyJNTrVTbmeVankq4gwRkmYA0g
+         5Gg7Ean7BgFgavXLmU2CAAo/+rAwS3ByAxqnG4GyuPYLzo1Q3eTpKzdeytqX7EynDS4O
+         ZHeraL9iCh8WHLfXXBLSXIbANN+2gxxP4oQwRU2h5qOLJaGDvuvL1o7EVRkGy4hPGbqy
+         p5yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7GxgAoT7fl3W67WfBWzyQSHZ3BUavBtxbLnNX6lhFqA=;
-        b=q1cYSvPILPVPuB1kdIo76rXTmJIsp+GNDhvcZdu5BhSz463DLcHl1RV3PVWOTmukCR
-         eij9ff7ZAAp/T1oeaKoIEQdFjia+c1fj0B8bUFfR9WcSFxht7MOA1uBiaLCcrNp+VPbk
-         4TGbR2simfgv4nGkLcmUzgTYVLPt6DnWzq3FBa94OYtOsJd061NiWluOOYPDVFH/Wr2d
-         TO38cWrYqfR/5ekCgWIGcShy7WE25cYf5q70E7pgiNRbE13GYys26DBkvirVzX8j543K
-         ookTrIn1uZRGPSo44z+bisEpjsx2caUBkF19UpjRakNwcJ6odDDqPS9HMZLt9vwt46Ej
-         HWww==
-X-Gm-Message-State: AFqh2kpsFDOB2QB0JOrK+Fa5H3YrK4lC62ENmfWaR2hRZyVfBdJG0LcF
-	p1xZ7cCI7dYTHDICMarg9sctELLHgkU=
-X-Google-Smtp-Source: AMrXdXvHyUmsUydVRghKEohYgw9gqarbKvMGcx4V3zCGD1/ZFJ+kYbWXpF6bj9b2Ck6CcDpYlgRwJw==
-X-Received: by 2002:aa7:8556:0:b0:578:e56:f57b with SMTP id y22-20020aa78556000000b005780e56f57bmr8385160pfn.28.1671780134029;
-        Thu, 22 Dec 2022 23:22:14 -0800 (PST)
+        bh=PvJLJGQ2+eUycs0JdQsDhAaSY0fQVq/fpPoAcsC0c5s=;
+        b=hvuPN/jwz3eL5McpCcNOXfrZWbbS9qFeIXhRXixiV7GyjpPUPzOOu+wsDyK+42lhGO
+         HIJqfRcHD5rQHefJTGyd+qAMj3VWSp4hA6t9FgMCgCuuC6B9MjfQ106MRpKRMZW1TqYp
+         lZJYwZ0gGP+qE3XPt+jcB0/9wkyJEbGl68Hj5t+rHCSGZXTgVeneWYK6A7Ggyk/C6hVc
+         RNu1CdVgijoUfCRacyTe4IZkCyTZNHIJRIj+KFG3Q421cLKzgOok17q5b6mf7Xr5quy5
+         YmnptajcBVouCwD2I6L6/ZQsEJXBVrjbLlmg/Jw0GU8QkdZTnAVmpKiBg3ZOU+2iq1fY
+         fAoA==
+X-Gm-Message-State: AFqh2kojsoghkIjSTSsIX4ITARlEYajZyJvlxInLcSmP+IYyxFbsKXmA
+	pIAHktGUkUrUxmLWRPdfripcsYp587Y=
+X-Google-Smtp-Source: AMrXdXuYoMeFh2RN8G1cqzzlSbJr7UwVfJb6mnlbUN0YJP4TqO6baQLJKx1sbmYj+OV2zEnHafszXg==
+X-Received: by 2002:a05:6a21:3949:b0:a7:9022:5d5e with SMTP id ac9-20020a056a21394900b000a790225d5emr10761804pzc.2.1671780137729;
+        Thu, 22 Dec 2022 23:22:17 -0800 (PST)
 Received: from ISCNPF1JZGWX.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id a24-20020aa795b8000000b00576ce9ed31csm1848146pfk.56.2022.12.22.23.22.10
+        by smtp.gmail.com with ESMTPSA id a24-20020aa795b8000000b00576ce9ed31csm1848146pfk.56.2022.12.22.23.22.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Dec 2022 23:22:13 -0800 (PST)
+        Thu, 22 Dec 2022 23:22:17 -0800 (PST)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -72,16 +72,16 @@ Cc: tudor.ambarus@linaro.org,
 	tkuw584924@gmail.com,
 	Bacem.Daassi@infineon.com,
 	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH 2/3] mtd: spi-nor: sfdp: Rename BFPT_DWORD() macro to SFDP_DWORD()
-Date: Fri, 23 Dec 2022 16:21:40 +0900
-Message-Id: <dedcb32567c6cc7a6d05e3f0f7d0155f20afd422.1671684805.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH 3/3] mtd: spi-nor: sfdp: Use SFDP_DWORD() macro for optional parameter tables
+Date: Fri, 23 Dec 2022 16:21:41 +0900
+Message-Id: <84bd91b96d6824e0c1b3f8a5e33e3e392e7113e7.1671684805.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1671684805.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1671684805.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221222_232214_917903_6DDE2114 
-X-CRM114-Status: GOOD (  16.64  )
+X-CRM114-CacheID: sfid-20221222_232221_203290_C6A1CABB 
+X-CRM114-Status: GOOD (  12.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,201 +100,104 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-To use this macro for other parameter tables than BFPT.
+Change 0-based indexing values of parameter tables to 1-based ones by
+SFDP_DWORD() macro.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/spi-nor/issi.c     |  2 +-
- drivers/mtd/spi-nor/macronix.c |  2 +-
- drivers/mtd/spi-nor/sfdp.c     | 44 +++++++++++++++++-----------------
- drivers/mtd/spi-nor/sfdp.h     |  9 ++++---
- 4 files changed, 28 insertions(+), 29 deletions(-)
+ drivers/mtd/spi-nor/sfdp.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index a0ddad2afffc..400e2b42f45a 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -18,7 +18,7 @@ is25lp256_post_bfpt_fixups(struct spi_nor *nor,
- 	 * BFPT_DWORD1_ADDRESS_BYTES_3_ONLY.
- 	 * Overwrite the number of address bytes advertised by the BFPT.
- 	 */
--	if ((bfpt->dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) ==
-+	if ((bfpt->dwords[SFDP_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) ==
- 		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
- 		nor->params->addr_nbytes = 4;
- 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index d81a4cb2812b..6853ec9ae65d 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -22,7 +22,7 @@ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
- 	 * seems that the F version advertises support for Fast Read 4-4-4 in
- 	 * its BFPT table.
- 	 */
--	if (bfpt->dwords[BFPT_DWORD(5)] & BFPT_DWORD5_FAST_READ_4_4_4)
-+	if (bfpt->dwords[SFDP_DWORD(5)] & BFPT_DWORD5_FAST_READ_4_4_4)
- 		nor->flags |= SNOR_F_4B_OPCODES;
- 
- 	return 0;
 diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 5df2fcba5483..5c2ab868707b 100644
+index 5c2ab868707b..3acc01c3a900 100644
 --- a/drivers/mtd/spi-nor/sfdp.c
 +++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -242,64 +242,64 @@ static const struct sfdp_bfpt_read sfdp_bfpt_reads[] = {
- 	/* Fast Read 1-1-2 */
- 	{
- 		SNOR_HWCAPS_READ_1_1_2,
--		BFPT_DWORD(1), BIT(16),	/* Supported bit */
--		BFPT_DWORD(4), 0,	/* Settings */
-+		SFDP_DWORD(1), BIT(16),	/* Supported bit */
-+		SFDP_DWORD(4), 0,	/* Settings */
- 		SNOR_PROTO_1_1_2,
- 	},
+@@ -1004,7 +1004,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
  
- 	/* Fast Read 1-2-2 */
- 	{
- 		SNOR_HWCAPS_READ_1_2_2,
--		BFPT_DWORD(1), BIT(20),	/* Supported bit */
--		BFPT_DWORD(4), 16,	/* Settings */
-+		SFDP_DWORD(1), BIT(20),	/* Supported bit */
-+		SFDP_DWORD(4), 16,	/* Settings */
- 		SNOR_PROTO_1_2_2,
- 	},
- 
- 	/* Fast Read 2-2-2 */
- 	{
- 		SNOR_HWCAPS_READ_2_2_2,
--		BFPT_DWORD(5),  BIT(0),	/* Supported bit */
--		BFPT_DWORD(6), 16,	/* Settings */
-+		SFDP_DWORD(5),  BIT(0),	/* Supported bit */
-+		SFDP_DWORD(6), 16,	/* Settings */
- 		SNOR_PROTO_2_2_2,
- 	},
- 
- 	/* Fast Read 1-1-4 */
- 	{
- 		SNOR_HWCAPS_READ_1_1_4,
--		BFPT_DWORD(1), BIT(22),	/* Supported bit */
--		BFPT_DWORD(3), 16,	/* Settings */
-+		SFDP_DWORD(1), BIT(22),	/* Supported bit */
-+		SFDP_DWORD(3), 16,	/* Settings */
- 		SNOR_PROTO_1_1_4,
- 	},
- 
- 	/* Fast Read 1-4-4 */
- 	{
- 		SNOR_HWCAPS_READ_1_4_4,
--		BFPT_DWORD(1), BIT(21),	/* Supported bit */
--		BFPT_DWORD(3), 0,	/* Settings */
-+		SFDP_DWORD(1), BIT(21),	/* Supported bit */
-+		SFDP_DWORD(3), 0,	/* Settings */
- 		SNOR_PROTO_1_4_4,
- 	},
- 
- 	/* Fast Read 4-4-4 */
- 	{
- 		SNOR_HWCAPS_READ_4_4_4,
--		BFPT_DWORD(5), BIT(4),	/* Supported bit */
--		BFPT_DWORD(7), 16,	/* Settings */
-+		SFDP_DWORD(5), BIT(4),	/* Supported bit */
-+		SFDP_DWORD(7), 16,	/* Settings */
- 		SNOR_PROTO_4_4_4,
- 	},
- };
- 
- static const struct sfdp_bfpt_erase sfdp_bfpt_erases[] = {
- 	/* Erase Type 1 in DWORD8 bits[15:0] */
--	{BFPT_DWORD(8), 0},
-+	{SFDP_DWORD(8), 0},
- 
- 	/* Erase Type 2 in DWORD8 bits[31:16] */
--	{BFPT_DWORD(8), 16},
-+	{SFDP_DWORD(8), 16},
- 
- 	/* Erase Type 3 in DWORD9 bits[15:0] */
--	{BFPT_DWORD(9), 0},
-+	{SFDP_DWORD(9), 0},
- 
- 	/* Erase Type 4 in DWORD9 bits[31:16] */
--	{BFPT_DWORD(9), 16},
-+	{SFDP_DWORD(9), 16},
- };
- 
- /**
-@@ -458,7 +458,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	le32_to_cpu_array(bfpt.dwords, BFPT_DWORD_MAX);
- 
- 	/* Number of address bytes. */
--	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
-+	switch (bfpt.dwords[SFDP_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
- 	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
- 	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
- 		params->addr_nbytes = 3;
-@@ -475,7 +475,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		discard_hwcaps |= read->hwcaps;
+ 		if ((params->hwcaps.mask & read->hwcaps) &&
+-		    (dwords[0] & read->supported_bit))
++		    (dwords[SFDP_DWORD(1)] & read->supported_bit))
+ 			read_hwcaps |= read->hwcaps;
  	}
  
- 	/* Flash Memory Density (in bits). */
--	val = bfpt.dwords[BFPT_DWORD(2)];
-+	val = bfpt.dwords[SFDP_DWORD(2)];
- 	if (val & BIT(31)) {
- 		val &= ~BIT(31);
- 
-@@ -555,13 +555,13 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
- 
- 	/* Page size: this field specifies 'N' so the page size = 2^N bytes. */
--	val = bfpt.dwords[BFPT_DWORD(11)];
-+	val = bfpt.dwords[SFDP_DWORD(11)];
- 	val &= BFPT_DWORD11_PAGE_SIZE_MASK;
- 	val >>= BFPT_DWORD11_PAGE_SIZE_SHIFT;
- 	params->page_size = 1U << val;
- 
- 	/* Quad Enable Requirements. */
--	switch (bfpt.dwords[BFPT_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
-+	switch (bfpt.dwords[SFDP_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
- 	case BFPT_DWORD15_QER_NONE:
- 		params->quad_enable = NULL;
- 		break;
-@@ -608,7 +608,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+@@ -1023,7 +1023,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 		 * authority for specifying Page Program support.
+ 		 */
+ 		discard_hwcaps |= program->hwcaps;
+-		if (dwords[0] & program->supported_bit)
++		if (dwords[SFDP_DWORD(1)] & program->supported_bit)
+ 			pp_hwcaps |= program->hwcaps;
  	}
  
- 	/* Soft Reset support. */
--	if (bfpt.dwords[BFPT_DWORD(16)] & BFPT_DWORD16_SWRST_EN_RST)
-+	if (bfpt.dwords[SFDP_DWORD(16)] & BFPT_DWORD16_SWRST_EN_RST)
- 		nor->flags |= SNOR_F_SOFT_RESET;
+@@ -1035,7 +1035,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
+ 		const struct sfdp_4bait *erase = &erases[i];
  
- 	/* Stop here if not JESD216 rev C or later. */
-@@ -616,7 +616,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
+-		if (dwords[0] & erase->supported_bit)
++		if (dwords[SFDP_DWORD(1)] & erase->supported_bit)
+ 			erase_mask |= BIT(i);
+ 	}
  
- 	/* 8D-8D-8D command extension. */
--	switch (bfpt.dwords[BFPT_DWORD(18)] & BFPT_DWORD18_CMD_EXT_MASK) {
-+	switch (bfpt.dwords[SFDP_DWORD(18)] & BFPT_DWORD18_CMD_EXT_MASK) {
- 	case BFPT_DWORD18_CMD_EXT_REP:
- 		nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
- 		break;
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index c1969f0a2f46..500659b35655 100644
---- a/drivers/mtd/spi-nor/sfdp.h
-+++ b/drivers/mtd/spi-nor/sfdp.h
-@@ -13,13 +13,12 @@
- #define SFDP_JESD216A_MINOR	5
- #define SFDP_JESD216B_MINOR	6
+@@ -1086,7 +1086,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
  
-+/* SFDP DWORDS are indexed from 1 but C arrays are indexed from 0. */
-+#define SFDP_DWORD(i)		((i) - 1)
-+
- /* Basic Flash Parameter Table */
+ 	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
+ 		if (erase_mask & BIT(i))
+-			erase_type[i].opcode = (dwords[1] >>
++			erase_type[i].opcode = (dwords[SFDP_DWORD(2)] >>
+ 						erase_type[i].idx * 8) & 0xFF;
+ 		else
+ 			spi_nor_set_erase_type(&erase_type[i], 0u, 0xFF);
+@@ -1145,15 +1145,15 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+ 	le32_to_cpu_array(dwords, profile1_header->length);
  
--/*
-- * JESD216 rev D defines a Basic Flash Parameter Table of 20 DWORDs.
-- * They are indexed from 1 but C arrays are indexed from 0.
-- */
--#define BFPT_DWORD(i)		((i) - 1)
-+/* JESD216 rev D defines a Basic Flash Parameter Table of 20 DWORDs. */
- #define BFPT_DWORD_MAX		20
+ 	/* Get 8D-8D-8D fast read opcode and dummy cycles. */
+-	opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, dwords[0]);
++	opcode = FIELD_GET(PROFILE1_DWORD1_RD_FAST_CMD, dwords[SFDP_DWORD(1)]);
  
- struct sfdp_bfpt {
+ 	 /* Set the Read Status Register dummy cycles and dummy address bytes. */
+-	if (dwords[0] & PROFILE1_DWORD1_RDSR_DUMMY)
++	if (dwords[SFDP_DWORD(1)] & PROFILE1_DWORD1_RDSR_DUMMY)
+ 		nor->params->rdsr_dummy = 8;
+ 	else
+ 		nor->params->rdsr_dummy = 4;
+ 
+-	if (dwords[0] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
++	if (dwords[SFDP_DWORD(1)] & PROFILE1_DWORD1_RDSR_ADDR_BYTES)
+ 		nor->params->rdsr_addr_nbytes = 4;
+ 	else
+ 		nor->params->rdsr_addr_nbytes = 0;
+@@ -1167,13 +1167,16 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
+ 	 * Default to PROFILE1_DUMMY_DEFAULT if we don't find anything, and let
+ 	 * flashes set the correct value if needed in their fixup hooks.
+ 	 */
+-	dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, dwords[3]);
++	dummy = FIELD_GET(PROFILE1_DWORD4_DUMMY_200MHZ, dwords[SFDP_DWORD(4)]);
+ 	if (!dummy)
+-		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ, dwords[4]);
++		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_166MHZ,
++				  dwords[SFDP_DWORD(5)]);
+ 	if (!dummy)
+-		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ, dwords[4]);
++		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_133MHZ,
++				  dwords[SFDP_DWORD(5)]);
+ 	if (!dummy)
+-		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ, dwords[4]);
++		dummy = FIELD_GET(PROFILE1_DWORD5_DUMMY_100MHZ,
++				  dwords[SFDP_DWORD(5)]);
+ 	if (!dummy)
+ 		dev_dbg(nor->dev,
+ 			"Can't find dummy cycles from Profile 1.0 table\n");
+@@ -1228,7 +1231,8 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
+ 
+ 	le32_to_cpu_array(dwords, sccr_header->length);
+ 
+-	if (FIELD_GET(SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE, dwords[21]))
++	if (FIELD_GET(SCCR_DWORD22_OCTAL_DTR_EN_VOLATILE,
++		      dwords[SFDP_DWORD(22)]))
+ 		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
+ 
+ out:
 -- 
 2.25.1
 
