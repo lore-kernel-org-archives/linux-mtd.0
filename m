@@ -4,85 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E49EAC3DA79
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Dec 2022 14:49:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59E69C4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Dec 2022 16:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=V1NWj0a6V7mA4tQG5upBKB6YDLdDvXz2uyonotD3qYM=; b=JCIs2em8OukHGK
-	9mzpkFUwPirXbhx2+zbHy9XgI+w8YkE/c/+DmWUB6cTZCBY7zXdP+oWfSZP01rVH9fqf2syamZ868
-	SyB7CGIfwKPPnZ63S22J9oGV3/3c0m1+b76VxQBOExXB0ttpga72RDSng9+qAfzPRl2WDC4Qcam6o
-	Q3JUTEbkD9ndBPM+hC8uTrrDF2H00p0kEOKVamObViMq9faJ2kUAIzl09ObxOFHv5Gnpsd46VpZFd
-	YE2njyjIeYMPlkcAmrixte0qJrg0BOlu/GCH/9EvnCeS++D8qOQaMed/2F9eSmGSDHdukQzmMOCv9
-	gMe6XFP3+H039RCrdDVQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ISj5DpYWo8dPrBXHW4QRMLZGr5yi/Ut2K9AlLeKiUVM=; b=NrWR/Xgjq0bS2X
+	j0mmLJ+9vWj3BslbW5PQn1Ax+P0C7YtF9Vdt9y7YmpujVN+z+UL54A+4S2Pa2a1Jw48AOBhu8Tv6e
+	NQ2yg9kjuNQ+nEWgTku41LUYppLxGh6KWCSUuDFENx/WTtgSuIDgLxJlffc+oG5cbAk2G/QZxSJqD
+	StC4JFDHU6QnD63sp5u1GZx3rBCnV5sgHAbPG4yMP7f0EPJzAQy3EOt1kwP6DuzgaqMN4BEeNf25O
+	49idz7rohXlCzlwrLtcA9kSS12LDi25IdhpN3RNJ85kHfaDmr7I9EAlvoNnmoCl8kwaD/YQ67sexH
+	PenbMYw5RZugN4y9BiOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p9onJ-004qOT-43; Mon, 26 Dec 2022 14:49:38 +0000
-Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
+	id 1p9qlv-005oSi-Ld; Mon, 26 Dec 2022 16:56:20 +0000
+Received: from mga02.intel.com ([134.134.136.20])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p9on5-004qHi-KA
-	for linux-mtd@lists.infradead.org; Mon, 26 Dec 2022 14:49:25 +0000
-Received: by mail-ed1-x529.google.com with SMTP id c17so15668239edj.13
-        for <linux-mtd@lists.infradead.org>; Mon, 26 Dec 2022 06:49:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KduYS0Q2YcNzK4d7Lesj3At/iPe/F3sCf83Rohoe8Lk=;
-        b=nRMlssAaIp5zK9wve/RwFk0dXUIxxeOKaPwndOW04npP7ynDjNrOy8t/waBdBnJ3OQ
-         FVmoypflv1Q2o3uF9B3op/vyIP2tnUbYzqysUXRICq/o518gh3vn3nSlfyc/2fXezFjv
-         glgM24ShKn4bLQsZrAE5F6g+SoeyTAOXHpXg7B2X0cQs1twl/dPttO4ulDG6Mey4WjFW
-         Vr8R84QCUKhPix6G+ik5+LbtKSn63e1Pay6yRS7Ztxq/BjMA2WLxEMqg8tO6gpX2OU3a
-         AX5ezudvjwwGIihDHHxjcvkA6jTEyUKN1nvIjE+0RLDZAZyxt/65v/6Sg8MBilp6efDy
-         kvIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KduYS0Q2YcNzK4d7Lesj3At/iPe/F3sCf83Rohoe8Lk=;
-        b=I1ivlgxk/IAj2KXtml3PAlJPvz611X1wjRXMmvq2TmUWsy0qBdjSJkn+YO+rfZYeph
-         2AUKVl7FxYqr+UdOt+586dV3sIUh92d7oPwgDaGS8aenNh10EXkzVMHSYuk53QBt47Se
-         oOCF+D5ziM4aTAJkgFOtwYVcQ40KTOnFMtpUrKe13ywrTSBMdXlq/t+LIEsjGdRXN+Zg
-         cD5HSRDDNWLhx7bv/VRvcIHHMxlXlKRJmcOZ1YWkgEDkWi8a0UWsHG+FbIo2M/4yohd3
-         Cex/x9z8sHXqamJHY4ApU44tw0+a4dCOlY5t2OweC7pBhzCQUlaY5l3qzCHvU43RLVxB
-         ukMw==
-X-Gm-Message-State: AFqh2koNQsJwH+e/ua7l6wrnw9qTYOnp8u5STdyvfdVPi/9asQK8G2Z0
-	X2J5U1NsPSv5Y3BxdnZdpDj6aw==
-X-Google-Smtp-Source: AMrXdXs+xrKxziOtemuC7EGarcyNCFtjW8Gs0laphl3hUnb150x0TzV7l/tVnSitKbCvhzrNAwMV5Q==
-X-Received: by 2002:aa7:c69a:0:b0:46d:e3f8:4ed4 with SMTP id n26-20020aa7c69a000000b0046de3f84ed4mr15726781edq.21.1672066161780;
-        Mon, 26 Dec 2022 06:49:21 -0800 (PST)
-Received: from [192.168.0.173] ([82.77.81.131])
-        by smtp.gmail.com with ESMTPSA id q2-20020a1709063d4200b0082ddfb47d06sm4951985ejf.148.2022.12.26.06.49.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Dec 2022 06:49:21 -0800 (PST)
-Message-ID: <feb09bac-0ea4-9154-362b-6d81cba352a8@linaro.org>
-Date: Mon, 26 Dec 2022 16:49:19 +0200
+	id 1p9qkh-005ng3-Tt; Mon, 26 Dec 2022 16:55:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1672073703; x=1703609703;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SfZzdNV19bg9UmQpe6KYIZYymHxtUypJH/O7nO8s6g4=;
+  b=ndAQkgI3qB3hVydE0e57ProlCE9WZinFqkVrXmgLIkPhuJA6J74CLySV
+   CyivS58lbpGr5BLbczsNX1MDWLMApNwcjqg73eZPzZ/hnn2HEtSwhkqas
+   omaj03b7XsnoWawZW2jejw8pdhcI+tIGu2yaG+cVm6c7bWNb3kvMWhL+T
+   R4wJNIJr/A2QkPj1vWdNniJtEns50As7dtZqlnsX+nXIYaYiyhmuj+v23
+   6zkfHzC7TiYwLF+OA7o0wqv9VV1Gjw6MA4pxEsNJzLLjiM2P6zSrft+TN
+   gQc+e+VXES2veufpBqRT3/iPddYeiyod1MEs/mn7p19MzFNlWiK3BZ0+W
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10572"; a="308338538"
+X-IronPort-AV: E=Sophos;i="5.96,276,1665471600"; 
+   d="scan'208";a="308338538"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2022 08:55:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10572"; a="646205184"
+X-IronPort-AV: E=Sophos;i="5.96,276,1665471600"; 
+   d="scan'208";a="646205184"
+Received: from lkp-server01.sh.intel.com (HELO b5d47979f3ad) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 26 Dec 2022 08:54:55 -0800
+Received: from kbuild by b5d47979f3ad with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1p9qkZ-000EZN-0D;
+	Mon, 26 Dec 2022 16:54:55 +0000
+Date: Tue, 27 Dec 2022 00:54:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: virtualization@lists.linux-foundation.org,
+ speakup@linux-speakup.org, netdev@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-xfs@vger.kernel.org,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-media@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-cxl@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+ Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ c76083fac3bae1a87ae3d005b5cb1cbc761e31d5
+Message-ID: <63a9d1b2.869GAwHafmAB6R7M%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH v2] MAINTAINERS: Update email of Tudor Ambarus
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: arnd@arndb.de, richard@nod.at, miquel.raynal@bootlin.com
-Cc: krzysztof.kozlowski+dt@linaro.org, herbert@gondor.apana.org.au,
- robh+dt@kernel.org, akpm@linux-foundation.org, nicolas.ferre@microchip.com,
- claudiu.beznea@microchip.com, broonie@kernel.org,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- pratyush@kernel.org, michael@walle.cc,
- Tudor Ambarus <tudor.ambarus@microchip.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20221226144043.367706-1-tudor.ambarus@linaro.org>
-In-Reply-To: <20221226144043.367706-1-tudor.ambarus@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221226_064923_681801_262309EF 
-X-CRM114-Status: GOOD (  19.62  )
+X-CRM114-CacheID: sfid-20221226_085504_477155_2342EA5E 
+X-CRM114-Status: UNSURE (   6.64  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,172 +84,236 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksIEFybmQsCgpXZSBoYXZlIGFsbCB0aGUgcmVxdWlyZWQgQWNrZWQtYnkgdGFncyB0byBxdWV1
-ZSB0aGlzIHBhdGNoLiBEbyB5b3Ugc3RpbGwKcGxhbiB0byB0YWtlIGl0IHRocm91Z2h0IHRoZSBT
-b0MgZml4ZXMgYnJhbmNoPyBUaGUgYWx0ZXJuYXRpdmUgaXMgdG8KcXVldWUgaXQgdG8gbXRkL2Zp
-eGVzLgoKVGhhbmtzLAp0YQoKT24gMjYuMTIuMjAyMiAxNjo0MCwgVHVkb3IgQW1iYXJ1cyB3cm90
-ZToKPiBGcm9tOiBUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+Cj4g
-Cj4gTXkgcHJvZmVzc2lvbmFsIGVtYWlsIHdpbGwgY2hhbmdlIGFuZCB0aGUgbWljcm9jaGlwIG9u
-ZSB3aWxsIGJvdW5jZSBhZnRlcgo+IG1pZC1ub3ZlbWJlciBvZiAyMDIyLgo+IAo+IFVwZGF0ZSB0
-aGUgTUFJTlRBSU5FUlMgZmlsZSwgdGhlIFlBTUwgYmluZGluZ3MsIE1PRFVMRV9BVVRIT1IgZW50
-cmllcyBhbmQKPiBhdXRob3IgbWVudGlvbnMsIGFuZCBhZGQgYW4gZW50cnkgaW4gdGhlIC5tYWls
-bWFwIGZpbGUuCj4gCj4gU2lnbmVkLW9mZi1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1
-c0BtaWNyb2NoaXAuY29tPgo+IEFja2VkLWJ5OiBSb2IgSGVycmluZyA8cm9iaEBrZXJuZWwub3Jn
-Pgo+IEFja2VkLWJ5OiBQcmF0eXVzaCBZYWRhdiA8cHJhdHl1c2hAa2VybmVsLm9yZz4KPiBBY2tl
-ZC1ieTogTWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPgo+IEFja2VkLWJ5OiBOaWNvbGFz
-IEZlcnJlIDxuaWNvbGFzLmZlcnJlQG1pY3JvY2hpcC5jb20+Cj4gQWNrZWQtYnk6IEhlcmJlcnQg
-WHUgPGhlcmJlcnRAZ29uZG9yLmFwYW5hLm9yZy5hdT4KPiBBY2tlZC1ieTogS3J6eXN6dG9mIEtv
-emxvd3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8ub3JnPgo+IC0tLQo+IHYyOiByZWJh
-c2Ugb24gdG9wIG9mIHY2LjItcmMxLCBjb2xsZWN0IEFja2VkLWJ5IHRhZ3MuCj4gCj4gICAubWFp
-bG1hcCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSAr
-Cj4gICAuLi4vYmluZGluZ3MvY3J5cHRvL2F0bWVsLGF0OTFzYW05ZzQ2LWFlcy55YW1sICAgICAg
-ICAgfCAgMiArLQo+ICAgLi4uL2JpbmRpbmdzL2NyeXB0by9hdG1lbCxhdDkxc2FtOWc0Ni1zaGEu
-eWFtbCAgICAgICAgIHwgIDIgKy0KPiAgIC4uLi9iaW5kaW5ncy9jcnlwdG8vYXRtZWwsYXQ5MXNh
-bTlnNDYtdGRlcy55YW1sICAgICAgICB8ICAyICstCj4gICAuLi4vZGV2aWNldHJlZS9iaW5kaW5n
-cy9zcGkvYXRtZWwsYXQ5MXJtOTIwMC1zcGkueWFtbCAgfCAgMiArLQo+ICAgLi4uL2RldmljZXRy
-ZWUvYmluZGluZ3Mvc3BpL2F0bWVsLHF1YWRzcGkueWFtbCAgICAgICAgIHwgIDIgKy0KPiAgIE1B
-SU5UQUlORVJTICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDEw
-ICsrKysrLS0tLS0KPiAgIGRyaXZlcnMvY3J5cHRvL2F0bWVsLWVjYy5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICA0ICsrLS0KPiAgIGRyaXZlcnMvY3J5cHRvL2F0bWVsLWkyYy5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICsrLS0KPiAgIGRyaXZlcnMvY3J5cHRvL2F0
-bWVsLWkyYy5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCj4gICAxMCBmaWxl
-cyBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCspLCAxNSBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0t
-Z2l0IGEvLm1haWxtYXAgYi8ubWFpbG1hcAo+IGluZGV4IGNjYmE0Y2YwZDg5My4uNTYyZjcwZDNi
-NmE1IDEwMDY0NAo+IC0tLSBhLy5tYWlsbWFwCj4gKysrIGIvLm1haWxtYXAKPiBAQCAtNDIyLDYg
-KzQyMiw3IEBAIFRvbnkgTHVjayA8dG9ueS5sdWNrQGludGVsLmNvbT4KPiAgIFRyaXBsZVggQ2h1
-bmcgPHh4eC5waHlAZ21haWwuY29tPiA8dHJpcGxleEB6aC1rZXJuZWwub3JnPgo+ICAgVHJpcGxl
-WCBDaHVuZyA8eHh4LnBoeUBnbWFpbC5jb20+IDx6aG9uZ3l1QDE4bWFpbC5jbj4KPiAgIFRzdW5l
-byBZb3NoaW9rYSA8VHN1bmVvLllvc2hpb2thQGYtc2VjdXJlLmNvbT4KPiArVHVkb3IgQW1iYXJ1
-cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPiA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29t
-Pgo+ICAgVHljaG8gQW5kZXJzZW4gPHR5Y2hvQHR5Y2hvLnBpenphPiA8dHljaG9AdHljaG8ud3M+
-Cj4gICBUenVuZy1CaSBTaGloIDx0enVuZ2JpQGtlcm5lbC5vcmc+IDx0enVuZ2JpQGdvb2dsZS5j
-b20+Cj4gICBVd2UgS2xlaW5lLUvDtm5pZyA8dWtsZWluZWtAaW5mb3JtYXRpay51bmktZnJlaWJ1
-cmcuZGU+Cj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9j
-cnlwdG8vYXRtZWwsYXQ5MXNhbTlnNDYtYWVzLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvY3J5cHRvL2F0bWVsLGF0OTFzYW05ZzQ2LWFlcy55YW1sCj4gaW5kZXggMGNj
-YWFiMTZkYzYxLi4wYjczODNiMzEwNmIgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL2NyeXB0by9hdG1lbCxhdDkxc2FtOWc0Ni1hZXMueWFtbAo+ICsrKyBi
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9jcnlwdG8vYXRtZWwsYXQ5MXNhbTln
-NDYtYWVzLnlhbWwKPiBAQCAtOCw3ICs4LDcgQEAgJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUu
-b3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjCj4gICB0aXRsZTogQXRtZWwgQWR2YW5jZWQgRW5j
-cnlwdGlvbiBTdGFuZGFyZCAoQUVTKSBIVyBjcnlwdG9ncmFwaGljIGFjY2VsZXJhdG9yCj4gICAK
-PiAgIG1haW50YWluZXJzOgo+IC0gIC0gVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNy
-b2NoaXAuY29tPgo+ICsgIC0gVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3Jn
-Pgo+ICAgCj4gICBwcm9wZXJ0aWVzOgo+ICAgICBjb21wYXRpYmxlOgo+IGRpZmYgLS1naXQgYS9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY3J5cHRvL2F0bWVsLGF0OTFzYW05ZzQ2
-LXNoYS55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2NyeXB0by9hdG1l
-bCxhdDkxc2FtOWc0Ni1zaGEueWFtbAo+IGluZGV4IDUxNjNjNTFiNDU0Ny4uZWUyZmZiMDM0MzI1
-IDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9jcnlwdG8v
-YXRtZWwsYXQ5MXNhbTlnNDYtc2hhLnlhbWwKPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvY3J5cHRvL2F0bWVsLGF0OTFzYW05ZzQ2LXNoYS55YW1sCj4gQEAgLTgsNyAr
-OCw3IEBAICRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55
-YW1sIwo+ICAgdGl0bGU6IEF0bWVsIFNlY3VyZSBIYXNoIEFsZ29yaXRobSAoU0hBKSBIVyBjcnlw
-dG9ncmFwaGljIGFjY2VsZXJhdG9yCj4gICAKPiAgIG1haW50YWluZXJzOgo+IC0gIC0gVHVkb3Ig
-QW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPgo+ICsgIC0gVHVkb3IgQW1iYXJ1
-cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPgo+ICAgCj4gICBwcm9wZXJ0aWVzOgo+ICAgICBj
-b21wYXRpYmxlOgo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvY3J5cHRvL2F0bWVsLGF0OTFzYW05ZzQ2LXRkZXMueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9jcnlwdG8vYXRtZWwsYXQ5MXNhbTlnNDYtdGRlcy55YW1sCj4gaW5k
-ZXggZmNjNWFkZjAzY2FkLi4zZDZlZDI0YjFiMDAgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2NyeXB0by9hdG1lbCxhdDkxc2FtOWc0Ni10ZGVzLnlhbWwK
-PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY3J5cHRvL2F0bWVsLGF0
-OTFzYW05ZzQ2LXRkZXMueWFtbAo+IEBAIC04LDcgKzgsNyBAQCAkc2NoZW1hOiBodHRwOi8vZGV2
-aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMKPiAgIHRpdGxlOiBBdG1lbCBUcmlw
-bGUgRGF0YSBFbmNyeXB0aW9uIFN0YW5kYXJkIChUREVTKSBIVyBjcnlwdG9ncmFwaGljIGFjY2Vs
-ZXJhdG9yCj4gICAKPiAgIG1haW50YWluZXJzOgo+IC0gIC0gVHVkb3IgQW1iYXJ1cyA8dHVkb3Iu
-YW1iYXJ1c0BtaWNyb2NoaXAuY29tPgo+ICsgIC0gVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1
-c0BsaW5hcm8ub3JnPgo+ICAgCj4gICBwcm9wZXJ0aWVzOgo+ICAgICBjb21wYXRpYmxlOgo+IGRp
-ZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL2F0bWVsLGF0
-OTFybTkyMDAtc3BpLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3Bp
-L2F0bWVsLGF0OTFybTkyMDAtc3BpLnlhbWwKPiBpbmRleCA0ZGQ5NzNlMzQxZTYuLjZjNTdkZDZj
-M2EzNiAxMDA2NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3Bp
-L2F0bWVsLGF0OTFybTkyMDAtc3BpLnlhbWwKPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3Mvc3BpL2F0bWVsLGF0OTFybTkyMDAtc3BpLnlhbWwKPiBAQCAtOCw3ICs4LDcg
-QEAgJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwj
-Cj4gICB0aXRsZTogQXRtZWwgU1BJIGRldmljZQo+ICAgCj4gICBtYWludGFpbmVyczoKPiAtICAt
-IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4KPiArICAtIFR1ZG9y
-IEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4KPiAgIAo+ICAgYWxsT2Y6Cj4gICAg
-IC0gJHJlZjogc3BpLWNvbnRyb2xsZXIueWFtbCMKPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9hdG1lbCxxdWFkc3BpLnlhbWwgYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL2F0bWVsLHF1YWRzcGkueWFtbAo+IGluZGV4IDFk
-NDkzYWRkNDA1My4uYjBkOTliYzEwNTM1IDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9zcGkvYXRtZWwscXVhZHNwaS55YW1sCj4gKysrIGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9hdG1lbCxxdWFkc3BpLnlhbWwKPiBAQCAtNyw3
-ICs3LDcgQEAgJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3Jl
-LnlhbWwjCj4gICB0aXRsZTogQXRtZWwgUXVhZCBTZXJpYWwgUGVyaXBoZXJhbCBJbnRlcmZhY2Ug
-KFFTUEkpCj4gICAKPiAgIG1haW50YWluZXJzOgo+IC0gIC0gVHVkb3IgQW1iYXJ1cyA8dHVkb3Iu
-YW1iYXJ1c0BtaWNyb2NoaXAuY29tPgo+ICsgIC0gVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1
-c0BsaW5hcm8ub3JnPgo+ICAgCj4gICBhbGxPZjoKPiAgICAgLSAkcmVmOiBzcGktY29udHJvbGxl
-ci55YW1sIwo+IGRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTCj4gaW5kZXgg
-ZjYxZWIyMjE0MTViLi44ZmE5Mzg2NTU5ZjggMTAwNjQ0Cj4gLS0tIGEvTUFJTlRBSU5FUlMKPiAr
-KysgYi9NQUlOVEFJTkVSUwo+IEBAIC0xMzYyMCw3ICsxMzYyMCw3IEBAIEY6CWFyY2gvbWljcm9i
-bGF6ZS8KPiAgIAo+ICAgTUlDUk9DSElQIEFUOTEgRE1BIERSSVZFUlMKPiAgIE06CUx1ZG92aWMg
-RGVzcm9jaGVzIDxsdWRvdmljLmRlc3JvY2hlc0BtaWNyb2NoaXAuY29tPgo+IC1NOglUdWRvciBB
-bWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+Cj4gK006CVR1ZG9yIEFtYmFydXMg
-PHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4KPiAgIEw6CWxpbnV4LWFybS1rZXJuZWxAbGlzdHMu
-aW5mcmFkZWFkLm9yZyAobW9kZXJhdGVkIGZvciBub24tc3Vic2NyaWJlcnMpCj4gICBMOglkbWFl
-bmdpbmVAdmdlci5rZXJuZWwub3JnCj4gICBTOglTdXBwb3J0ZWQKPiBAQCAtMTM2NjUsNyArMTM2
-NjUsNyBAQCBGOglEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvbWljcm9j
-aGlwLGNzaTJkYy55YW1sCj4gICBGOglkcml2ZXJzL21lZGlhL3BsYXRmb3JtL21pY3JvY2hpcC9t
-aWNyb2NoaXAtY3NpMmRjLmMKPiAgIAo+ICAgTUlDUk9DSElQIEVDQyBEUklWRVIKPiAtTToJVHVk
-b3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPgo+ICtNOglUdWRvciBBbWJh
-cnVzIDx0dWRvci5hbWJhcnVzQGxpbmFyby5vcmc+Cj4gICBMOglsaW51eC1jcnlwdG9Admdlci5r
-ZXJuZWwub3JnCj4gICBTOglNYWludGFpbmVkCj4gICBGOglkcml2ZXJzL2NyeXB0by9hdG1lbC1l
-Y2MuKgo+IEBAIC0xMzc2Miw3ICsxMzc2Miw3IEBAIFM6CU1haW50YWluZWQKPiAgIEY6CWRyaXZl
-cnMvbW1jL2hvc3QvYXRtZWwtbWNpLmMKPiAgIAo+ICAgTUlDUk9DSElQIE5BTkQgRFJJVkVSCj4g
-LU06CVR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4KPiArTToJVHVk
-b3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPgo+ICAgTDoJbGludXgtbXRkQGxp
-c3RzLmluZnJhZGVhZC5vcmcKPiAgIFM6CVN1cHBvcnRlZAo+ICAgRjoJRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hdG1lbC1uYW5kLnR4dAo+IEBAIC0xMzgxNCw3ICsxMzgx
-NCw3IEBAIFM6CVN1cHBvcnRlZAo+ICAgRjoJZHJpdmVycy9wb3dlci9yZXNldC9hdDkxLXNhbWE1
-ZDJfc2hkd2MuYwo+ICAgCj4gICBNSUNST0NISVAgU1BJIERSSVZFUgo+IC1NOglUdWRvciBBbWJh
-cnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+Cj4gK006CVR1ZG9yIEFtYmFydXMgPHR1
-ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4KPiAgIFM6CVN1cHBvcnRlZAo+ICAgRjoJZHJpdmVycy9z
-cGkvc3BpLWF0bWVsLioKPiAgIAo+IEBAIC0xOTY2NCw3ICsxOTY2NCw3IEBAIEY6CWRyaXZlcnMv
-Y2xrL3NwZWFyLwo+ICAgRjoJZHJpdmVycy9waW5jdHJsL3NwZWFyLwo+ICAgCj4gICBTUEkgTk9S
-IFNVQlNZU1RFTQo+IC1NOglUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5j
-b20+Cj4gK006CVR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4KPiAgIE06
-CVByYXR5dXNoIFlhZGF2IDxwcmF0eXVzaEBrZXJuZWwub3JnPgo+ICAgUjoJTWljaGFlbCBXYWxs
-ZSA8bWljaGFlbEB3YWxsZS5jYz4KPiAgIEw6CWxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3Jn
-Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY3J5cHRvL2F0bWVsLWVjYy5jIGIvZHJpdmVycy9jcnlw
-dG8vYXRtZWwtZWNjLmMKPiBpbmRleCA1MzEwMGZiOWIwN2IuLjEyMjA1ZTJiNTNiNCAxMDA2NDQK
-PiAtLS0gYS9kcml2ZXJzL2NyeXB0by9hdG1lbC1lY2MuYwo+ICsrKyBiL2RyaXZlcnMvY3J5cHRv
-L2F0bWVsLWVjYy5jCj4gQEAgLTMsNyArMyw3IEBACj4gICAgKiBNaWNyb2NoaXAgLyBBdG1lbCBF
-Q0MgKEkyQykgZHJpdmVyLgo+ICAgICoKPiAgICAqIENvcHlyaWdodCAoYykgMjAxNywgTWljcm9j
-aGlwIFRlY2hub2xvZ3kgSW5jLgo+IC0gKiBBdXRob3I6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFt
-YmFydXNAbWljcm9jaGlwLmNvbT4KPiArICogQXV0aG9yOiBUdWRvciBBbWJhcnVzCj4gICAgKi8K
-PiAgIAo+ICAgI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+Cj4gQEAgLTQxMSw2ICs0MTEsNiBAQCBz
-dGF0aWMgdm9pZCBfX2V4aXQgYXRtZWxfZWNjX2V4aXQodm9pZCkKPiAgIG1vZHVsZV9pbml0KGF0
-bWVsX2VjY19pbml0KTsKPiAgIG1vZHVsZV9leGl0KGF0bWVsX2VjY19leGl0KTsKPiAgIAo+IC1N
-T0RVTEVfQVVUSE9SKCJUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+
-Iik7Cj4gK01PRFVMRV9BVVRIT1IoIlR1ZG9yIEFtYmFydXMiKTsKPiAgIE1PRFVMRV9ERVNDUklQ
-VElPTigiTWljcm9jaGlwIC8gQXRtZWwgRUNDIChJMkMpIGRyaXZlciIpOwo+ICAgTU9EVUxFX0xJ
-Q0VOU0UoIkdQTCB2MiIpOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2NyeXB0by9hdG1lbC1pMmMu
-YyBiL2RyaXZlcnMvY3J5cHRvL2F0bWVsLWkyYy5jCj4gaW5kZXggODFjZTA5YmVkZGE4Li41NWJm
-ZjFlMTMxNDIgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9jcnlwdG8vYXRtZWwtaTJjLmMKPiArKysg
-Yi9kcml2ZXJzL2NyeXB0by9hdG1lbC1pMmMuYwo+IEBAIC0zLDcgKzMsNyBAQAo+ICAgICogTWlj
-cm9jaGlwIC8gQXRtZWwgRUNDIChJMkMpIGRyaXZlci4KPiAgICAqCj4gICAgKiBDb3B5cmlnaHQg
-KGMpIDIwMTcsIE1pY3JvY2hpcCBUZWNobm9sb2d5IEluYy4KPiAtICogQXV0aG9yOiBUdWRvciBB
-bWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+Cj4gKyAqIEF1dGhvcjogVHVkb3Ig
-QW1iYXJ1cwo+ICAgICovCj4gICAKPiAgICNpbmNsdWRlIDxsaW51eC9iaXRyZXYuaD4KPiBAQCAt
-MzkwLDYgKzM5MCw2IEBAIHN0YXRpYyB2b2lkIF9fZXhpdCBhdG1lbF9pMmNfZXhpdCh2b2lkKQo+
-ICAgbW9kdWxlX2luaXQoYXRtZWxfaTJjX2luaXQpOwo+ICAgbW9kdWxlX2V4aXQoYXRtZWxfaTJj
-X2V4aXQpOwo+ICAgCj4gLU1PRFVMRV9BVVRIT1IoIlR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFy
-dXNAbWljcm9jaGlwLmNvbT4iKTsKPiArTU9EVUxFX0FVVEhPUigiVHVkb3IgQW1iYXJ1cyIpOwo+
-ICAgTU9EVUxFX0RFU0NSSVBUSU9OKCJNaWNyb2NoaXAgLyBBdG1lbCBFQ0MgKEkyQykgZHJpdmVy
-Iik7Cj4gICBNT0RVTEVfTElDRU5TRSgiR1BMIHYyIik7Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Y3J5cHRvL2F0bWVsLWkyYy5oIGIvZHJpdmVycy9jcnlwdG8vYXRtZWwtaTJjLmgKPiBpbmRleCA0
-ODkyOWVmZTJhNWIuLjM1Zjc4NTdhN2Y3YyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2NyeXB0by9h
-dG1lbC1pMmMuaAo+ICsrKyBiL2RyaXZlcnMvY3J5cHRvL2F0bWVsLWkyYy5oCj4gQEAgLTEsNyAr
-MSw3IEBACj4gICAvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCAqLwo+ICAgLyoK
-PiAgICAqIENvcHlyaWdodCAoYykgMjAxNywgTWljcm9jaGlwIFRlY2hub2xvZ3kgSW5jLgo+IC0g
-KiBBdXRob3I6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4KPiAr
-ICogQXV0aG9yOiBUdWRvciBBbWJhcnVzCj4gICAgKi8KPiAgIAo+ICAgI2lmbmRlZiBfX0FUTUVM
-X0kyQ19IX18KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: c76083fac3bae1a87ae3d005b5cb1cbc761e31d5  Add linux-next specific files for 20221226
+
+Error/Warning reports:
+
+https://lore.kernel.org/oe-kbuild-all/202212020520.0OkMIno3-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212041528.4TbQL9ys-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212051759.cEv6fyHy-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212061455.6GE7y0jg-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212080938.RHVtvwt0-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212090509.NjAl9tbo-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212242239.hWUlGmm0-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202212250859.uLjFpJy3-lkp@intel.com
+
+Error/Warning: (recently discovered and may have been fixed)
+
+ERROR: modpost: "input_ff_create_memless" [drivers/hid/hid-betopff.ko] undefined!
+ERROR: modpost: "input_ff_create_memless" [drivers/hid/hid-logitech.ko] undefined!
+ERROR: modpost: "input_ff_create_memless" [drivers/hid/hid-megaworld.ko] undefined!
+ERROR: modpost: "input_ff_create_memless" [drivers/hid/hid-mf.ko] undefined!
+ERROR: modpost: "input_ff_create_memless" [drivers/input/misc/drv260x.ko] undefined!
+ERROR: modpost: "input_ff_create_memless" [drivers/input/misc/drv2665.ko] undefined!
+ERROR: modpost: "input_ff_create_memless" [drivers/input/misc/gpio-vibra.ko] undefined!
+ERROR: modpost: "input_ff_create_memless" [drivers/input/misc/regulator-haptic.ko] undefined!
+ERROR: modpost: "input_ff_create_memless" [drivers/input/misc/sc27xx-vibra.ko] undefined!
+aarch64-linux-ld: ID map text too big or misaligned
+arch/arm/kernel/entry-armv.S:485:5: warning: "CONFIG_ARM_THUMB" is not defined, evaluates to 0 [-Wundef]
+arch/arm64/include/asm/pgtable-hwdef.h:82:64: warning: "PMD_SHIFT" is not defined, evaluates to 0 [-Wundef]
+arch/loongarch/kernel/asm-offsets.c:265:6: warning: no previous prototype for 'output_pbe_defines' [-Wmissing-prototypes]
+drivers/regulator/tps65219-regulator.c:310:32: warning: parameter 'dev' set but not used [-Wunused-but-set-parameter]
+drivers/regulator/tps65219-regulator.c:310:60: warning: parameter 'dev' set but not used [-Wunused-but-set-parameter]
+drivers/regulator/tps65219-regulator.c:370:26: sparse:    int
+drivers/regulator/tps65219-regulator.c:370:26: sparse:    struct regulator_dev *[assigned] rdev
+drivers/regulator/tps65219-regulator.c:370:26: warning: ordered comparison of pointer with integer zero [-Wextra]
+loongarch64-linux-ld: sleep.c:(.text+0x22c): undefined reference to `loongarch_wakeup_start'
+sleep.c:(.text+0x228): undefined reference to `loongarch_wakeup_start'
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+drivers/accessibility/speakup/main.c:1290:26: sparse: sparse: obsolete array initializer, use C99 syntax
+drivers/block/null_blk/zoned.c:769 zone_cond_store() warn: potential spectre issue 'dev->zones' [w] (local cap)
+drivers/block/virtio_blk.c:721:9: sparse:    bad type *
+drivers/block/virtio_blk.c:721:9: sparse:    unsigned int *
+drivers/block/virtio_blk.c:721:9: sparse: sparse: incompatible types in comparison expression (different base types):
+drivers/block/virtio_blk.c:721:9: sparse: sparse: no generic selection for 'restricted __le32 [addressable] virtio_cread_v'
+drivers/block/virtio_blk.c:721:9: sparse: sparse: no generic selection for 'restricted __le32 virtio_cread_v'
+drivers/cxl/core/mbox.c:832:18: sparse: sparse: cast from non-scalar
+drivers/cxl/core/mbox.c:832:18: sparse: sparse: cast to non-scalar
+drivers/i2c/busses/i2c-qcom-geni.c:1028:28: sparse: sparse: symbol 'i2c_master_hub' was not declared. Should it be static?
+drivers/iio/adc/twl6030-gpadc.c:955:16-23: duplicated argument to & or |
+drivers/iio/light/tsl2563.c:751:8-33: WARNING: Threaded IRQ with no primary handler requested without IRQF_ONESHOT (unless it is nested IRQ)
+drivers/media/platform/ti/davinci/vpif.c:483:20: sparse: sparse: cast from non-scalar
+drivers/media/platform/ti/davinci/vpif.c:483:20: sparse: sparse: cast to non-scalar
+drivers/media/test-drivers/visl/visl-video.c:690:22: sparse: sparse: symbol 'visl_qops' was not declared. Should it be static?
+fs/exfat/dir.c:862 exfat_get_dentry_set() warn: missing unwind goto?
+fs/xfs/xfs_iomap.c:86:29: sparse: sparse: symbol 'xfs_iomap_page_ops' was not declared. Should it be static?
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- arc-allyesconfig
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- arc-randconfig-r024-20221225
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- arc-randconfig-s041-20221225
+|   `-- fs-xfs-xfs_iomap.c:sparse:sparse:symbol-xfs_iomap_page_ops-was-not-declared.-Should-it-be-static
+|-- arm-allyesconfig
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- arm-badge4_defconfig
+|   `-- arch-arm-kernel-entry-armv.S:warning:CONFIG_ARM_THUMB-is-not-defined-evaluates-to
+|-- arm64-allyesconfig
+|   |-- aarch64-linux-ld:ID-map-text-too-big-or-misaligned
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- arm64-randconfig-c034-20221225
+|   `-- arch-arm64-include-asm-pgtable-hwdef.h:warning:PMD_SHIFT-is-not-defined-evaluates-to
+|-- csky-randconfig-c033-20221225
+|   |-- drivers-iio-light-tsl2563.c:WARNING:Threaded-IRQ-with-no-primary-handler-requested-without-IRQF_ONESHOT-(unless-it-is-nested-IRQ)
+|   `-- drivers-mtd-ubi-build.c:WARNING:conversion-to-bool-not-needed-here
+|-- i386-allyesconfig
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- i386-randconfig-c021-20221226
+|   `-- drivers-iio-light-tsl2563.c:WARNING:Threaded-IRQ-with-no-primary-handler-requested-without-IRQF_ONESHOT-(unless-it-is-nested-IRQ)
+|-- i386-randconfig-m021-20221226
+|   `-- fs-exfat-dir.c-exfat_get_dentry_set()-warn:missing-unwind-goto
+|-- i386-randconfig-s002
+|   `-- fs-xfs-xfs_iomap.c:sparse:sparse:symbol-xfs_iomap_page_ops-was-not-declared.-Should-it-be-static
+|-- ia64-allmodconfig
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- loongarch-allyesconfig
+|   `-- arch-loongarch-kernel-asm-offsets.c:warning:no-previous-prototype-for-output_pbe_defines
+|-- loongarch-randconfig-s043-20221225
+|   |-- arch-loongarch-kernel-asm-offsets.c:warning:no-previous-prototype-for-output_pbe_defines
+|   |-- drivers-cxl-core-mbox.c:sparse:sparse:cast-from-non-scalar
+|   |-- drivers-cxl-core-mbox.c:sparse:sparse:cast-to-non-scalar
+|   |-- drivers-i2c-busses-i2c-qcom-geni.c:sparse:sparse:symbol-i2c_master_hub-was-not-declared.-Should-it-be-static
+|   |-- fs-xfs-xfs_iomap.c:sparse:sparse:symbol-xfs_iomap_page_ops-was-not-declared.-Should-it-be-static
+|   |-- loongarch64-linux-ld:sleep.c:(.text):undefined-reference-to-loongarch_wakeup_start
+|   `-- sleep.c:(.text):undefined-reference-to-loongarch_wakeup_start
+|-- m68k-allmodconfig
+|   |-- drivers-regulator-tps65219-regulator.c:warning:ordered-comparison-of-pointer-with-integer-zero
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+clang_recent_errors
+|-- hexagon-buildonly-randconfig-r003-20221225
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- hexagon-randconfig-r002-20221225
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- riscv-randconfig-r021-20221225
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+|-- x86_64-allyesconfig
+|   `-- drivers-regulator-tps65219-regulator.c:warning:parameter-dev-set-but-not-used
+`-- x86_64-randconfig-a003-20221226
+    `-- vmlinux.o:warning:objtool:___ksymtab_gpl-_RNvNtCsfATHBUcknU9_6kernel5print16call_printk_cont:data-relocation-to-ENDBR:_RNvNtCsfATHBUcknU9_6kernel5print16call_printk_cont
+
+elapsed time: 720m
+
+configs tested: 89
+configs skipped: 2
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                                 defconfig
+alpha                               defconfig
+i386                 randconfig-a012-20221226
+x86_64                    rhel-8.3-kselftests
+arm                                 defconfig
+i386                 randconfig-a011-20221226
+x86_64                          rhel-8.3-func
+i386                                defconfig
+i386                 randconfig-a013-20221226
+x86_64                           rhel-8.3-bpf
+s390                             allmodconfig
+s390                                defconfig
+ia64                             allmodconfig
+i386                 randconfig-a014-20221226
+x86_64                           rhel-8.3-syz
+x86_64                              defconfig
+i386                 randconfig-a016-20221226
+s390                             allyesconfig
+i386                 randconfig-a015-20221226
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+x86_64                            allnoconfig
+x86_64               randconfig-a014-20221226
+powerpc                           allnoconfig
+x86_64               randconfig-a013-20221226
+x86_64                               rhel-8.3
+arm64                            allyesconfig
+x86_64               randconfig-a011-20221226
+arm                              allyesconfig
+x86_64               randconfig-a012-20221226
+i386                             allyesconfig
+x86_64               randconfig-a015-20221226
+x86_64               randconfig-a016-20221226
+sh                               allmodconfig
+m68k                             allyesconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+x86_64                           allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+arm                  randconfig-r046-20221225
+arc                  randconfig-r043-20221225
+arc                  randconfig-r043-20221226
+riscv                randconfig-r042-20221226
+s390                 randconfig-r044-20221226
+x86_64                           alldefconfig
+sh                          lboxre2_defconfig
+arc                               allnoconfig
+sh                             shx3_defconfig
+arm                           tegra_defconfig
+microblaze                          defconfig
+m68k                       m5475evb_defconfig
+m68k                        m5407c3_defconfig
+xtensa                              defconfig
+mips                      maltasmvp_defconfig
+parisc                           alldefconfig
+arm                          badge4_defconfig
+powerpc                     mpc83xx_defconfig
+sh                          rsk7201_defconfig
+sh                 kfr2r09-romimage_defconfig
+powerpc                    klondike_defconfig
+sh                  sh7785lcr_32bit_defconfig
+
+clang tested configs:
+x86_64                          rhel-8.3-rust
+i386                 randconfig-a004-20221226
+i386                 randconfig-a001-20221226
+x86_64               randconfig-a002-20221226
+i386                 randconfig-a003-20221226
+i386                 randconfig-a002-20221226
+x86_64               randconfig-a003-20221226
+x86_64               randconfig-a006-20221226
+i386                 randconfig-a005-20221226
+i386                 randconfig-a006-20221226
+x86_64               randconfig-a001-20221226
+x86_64               randconfig-a004-20221226
+x86_64               randconfig-a005-20221226
+hexagon              randconfig-r045-20221225
+hexagon              randconfig-r041-20221225
+hexagon              randconfig-r041-20221226
+arm                  randconfig-r046-20221226
+s390                 randconfig-r044-20221225
+hexagon              randconfig-r045-20221226
+riscv                randconfig-r042-20221225
+powerpc                     tqm5200_defconfig
+arm                         shannon_defconfig
+arm                         orion5x_defconfig
+arm                           sama7_defconfig
+x86_64                           allyesconfig
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
