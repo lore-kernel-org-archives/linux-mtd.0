@@ -4,84 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7035AC10F1B
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Dec 2022 09:07:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFEBFC10F1B
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Dec 2022 09:10:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WYNyMzTqJA8vDiwALlRWGhj87AF/z3cO44JV+vCQvZc=; b=v998r8q0ZnAkqp
-	cRZs26a18t+jEK3ZQPiIuu87vjN4YsyvMS09ZcuhIWxWiuGlbpZ4W8qdWeJZSuk11Wm41rrELeNYg
-	R50g5TXCEdtshDpuEpYsH756nEHTDDqbJFi9ucf1pC73ns3ImbFyf0gfNWF24pfiCRFf30sY1KJyz
-	wPUpHr7iltZfRBPT0Mq5Pu1dA5vsZYuSQ8zvB23tI39PGm2Gn8QJJQjrsdYIBlWqH911VUCiw/TeZ
-	7zh8XzvVsa9oDasGm/0UTRQGYNmpu7wQDjSsA3Y44FzxSYkKSZeijLSjqdp2m5ihMU0ROC8qbq9eE
-	GYzF7EiyTn6tQHdz4LAQ==;
+	List-Owner; bh=tPAAZDWuqTdluETCDNE2BDSkAYqZ4jQgBp93/GIr7Cs=; b=2ewHpbvozOwYzt
+	u5FC/5itrnbwa6zGxK8qHzX/uJcN3LgGxwzjc0B1qYWn5W61vYjbPxNznpBdqaFJoU1dYR0P4Q+Es
+	ski+I9zKYXio4RPaB8IXLrSrz9MPS85vJqCzA6VzRI222xbuL25Xt9NpvO5fprqFKaZX7dkLbl3Vn
+	5crXPPVr3Vk8nR/E5bRx9M+xV4yH4ZluyvjUUUFUjM6Zaip66X3LzbYr+cdL3jQG6Aw6bjQJDgl0F
+	HE1BKLhLQqXI5kAccJkEYhoIdm41c9yqWWYWVNA0Ot2FojMsmq5a1RuEEvtuUaGKbxP9SKBnfGFkf
+	bj7QK/2P6Cw9S9fVuYPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pA5vG-00Bdlk-3K; Tue, 27 Dec 2022 09:06:58 +0000
-Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
+	id 1pA5y7-00Beym-6e; Tue, 27 Dec 2022 09:09:55 +0000
+Received: from mail-qv1-f46.google.com ([209.85.219.46])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pA5v9-00BdiY-Pc
-	for linux-mtd@lists.infradead.org; Tue, 27 Dec 2022 09:06:56 +0000
-Received: by mail-lf1-x12b.google.com with SMTP id g13so18792513lfv.7
-        for <linux-mtd@lists.infradead.org>; Tue, 27 Dec 2022 01:06:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wgi2g1n+nHbhC11kGT7UTTZnfTwUqhX8cOYNVdVe7V4=;
-        b=ClgKJTw7Bl1MJuZRI2HiZuLxT12iHsCqWSjsVVeX3rxiZs1D/Gn9scVdPi+/1yPL1R
-         1WrifslyTd0mTUXpqEgdVpAlvre9OhKExBdsih4pp36ofbQplLhQ/+sC09j+WY/dsLo8
-         ziglLCPyVN+HzBm0v+CyXJJcH6WIN8eQLO+W+3hJtz6oWkWvyLsuq/CQtBZSnMfApMJg
-         l3zofTkWFudPF7ee8VCQHnlzFjVRVWkWN7OvQx/kw0fTCTMieS1jCgboKO7gtWWSaXLs
-         LXQ1wAOxVdrVAg9p64mlvxixNn5dPOf+9b4b+Okmb9jTjy8pdc/pbVpq03bun23rFKmy
-         ZgCQ==
+	id 1pA5y3-00Bew1-52
+	for linux-mtd@lists.infradead.org; Tue, 27 Dec 2022 09:09:53 +0000
+Received: by mail-qv1-f46.google.com with SMTP id pp21so8791910qvb.5
+        for <linux-mtd@lists.infradead.org>; Tue, 27 Dec 2022 01:09:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wgi2g1n+nHbhC11kGT7UTTZnfTwUqhX8cOYNVdVe7V4=;
-        b=yuena283rI5BoMDGS7iIK3tdRzuLygpm3xBj5/6EfrpYWzAJoReM+0dTIFm1kZzLPp
-         mcNXXzeNkaITAwfPdi/laLdhBMWMciwvpk9QmqnwVtjrHrYPoxL+Jj843q1WDd27mU+W
-         c4zzgfJvMyIvq6gXMDWIclM96EbU6UJfaTRM3nXsnghgpzApZ+1BfY7pkr0u6HbpLY3V
-         1We6VTwmK4YDzwYrD8BwvNhBYK0NvAa0t+ioCAQ1JMYp4h25P8H5Og928hDBaXC/ag+L
-         yVZFDwzUHXSSsOkScd+NNWiqUEOfXabJ1bhO1X0o08SrcrKiPR+WQOzDuyURxFxJdMZg
-         7nbw==
-X-Gm-Message-State: AFqh2ko+O1DIgPsvCcmUP5jtFIAhPEPxEI0c7MEVp5yJXhu3Kq19FjPw
-	YL86vCQmRQ87q+clbI0SVNeyJQ==
-X-Google-Smtp-Source: AMrXdXu1DnHOT4QXJVWjYcj4KtoF8psUezFfIbrl97/RFTeb/sMUQipRBAEYDiflVCFEvtZSvjhcVw==
-X-Received: by 2002:a05:6512:169e:b0:4ca:fa2d:2686 with SMTP id bu30-20020a056512169e00b004cafa2d2686mr3993709lfb.35.1672132008806;
-        Tue, 27 Dec 2022 01:06:48 -0800 (PST)
-Received: from [192.168.0.20] (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
-        by smtp.gmail.com with ESMTPSA id z5-20020ac24f85000000b004b5480edf67sm2162766lfs.36.2022.12.27.01.06.47
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hyk7cPGA30ht9CIHOHoD2wEIGOPlfpDmF3Sx7wsll0k=;
+        b=b+cwOukYxABtmXEgFTZSSoklJ2xeEitnlvrgUKd8cXwNkejJQo5LcbKi7oqd7kStiZ
+         S5Y3XQT1eS/p7TkRsgA/RJuA4DI+ZHM1tW2SZwnjBeSuKrZrtZseGbarygpoKdOwtzJy
+         h7t5dfYLIgmMl8+2p2W0Zri3wbjhH8glg/owiDEMu71WtLWkFXblAybS6fjwG03iJ7Tt
+         lA90/ZTINzm3smte1jKI0s+GbhmBw1AgcECYU/3HRc1AMmsZNib+q85IRaFzYPC2ijAS
+         M4CaqYzrp5f4lrpFW72Bu22UxaPtzyf9e7dQpEMfhlkjTBb6BrS/qxT6IgFfASNxPuuG
+         dTSQ==
+X-Gm-Message-State: AFqh2kroOOPWWQwTCBuPTLDPWBP3VVUvDZt4SRjiBEHzpm54/qWJHAxF
+	hi+6CREaKAYHIhDXPIe8/ODw3m3Tz4/Sdw==
+X-Google-Smtp-Source: AMrXdXsSdhXFh+NputGzj7Rx1y+b6GysWwEMz1IpNnH67Th9BZENYwrQsDf3SodvL/XpzdQMHqIw3Q==
+X-Received: by 2002:a05:6214:3b06:b0:4c7:935f:c888 with SMTP id nm6-20020a0562143b0600b004c7935fc888mr25708660qvb.42.1672132188536;
+        Tue, 27 Dec 2022 01:09:48 -0800 (PST)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id w29-20020a05620a0e9d00b006ec62032d3dsm9090653qkm.30.2022.12.27.01.09.47
+        for <linux-mtd@lists.infradead.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Dec 2022 01:06:48 -0800 (PST)
-Message-ID: <2d62f33e-69d4-064c-f226-2d38396f0e9e@linaro.org>
-Date: Tue, 27 Dec 2022 10:06:47 +0100
+        Tue, 27 Dec 2022 01:09:47 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id e141so13799450ybh.3
+        for <linux-mtd@lists.infradead.org>; Tue, 27 Dec 2022 01:09:47 -0800 (PST)
+X-Received: by 2002:a25:3143:0:b0:77a:b5f3:d0ac with SMTP id
+ x64-20020a253143000000b0077ab5f3d0acmr584880ybx.202.1672132187403; Tue, 27
+ Dec 2022 01:09:47 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v2 0/6] memory: renesas-rpc-if: Rebind fixes and misc
- cleanups
-Content-Language: en-US
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
- Mark Brown <broonie@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-renesas-soc@vger.kernel.org, linux-spi@vger.kernel.org,
- Philipp Zabel <p.zabel@pengutronix.de>, Sergey Shtylyov <s.shtylyov@omp.ru>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <cover.1669213027.git.geert+renesas@glider.be>
- <167213158107.15520.15699943919910529014.b4-ty@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <167213158107.15520.15699943919910529014.b4-ty@linaro.org>
+References: <cover.1669213027.git.geert+renesas@glider.be> <167213158107.15520.15699943919910529014.b4-ty@linaro.org>
+ <2d62f33e-69d4-064c-f226-2d38396f0e9e@linaro.org>
+In-Reply-To: <2d62f33e-69d4-064c-f226-2d38396f0e9e@linaro.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 27 Dec 2022 10:09:34 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUT4eW0KPV8DD40kPD0Cr+QudBfOxfhKy9iWnrcGBSM0Q@mail.gmail.com>
+Message-ID: <CAMuHMdUT4eW0KPV8DD40kPD0Cr+QudBfOxfhKy9iWnrcGBSM0Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] memory: renesas-rpc-if: Rebind fixes and misc cleanups
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Mark Brown <broonie@kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, linux-renesas-soc@vger.kernel.org, 
+	linux-spi@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Sergey Shtylyov <s.shtylyov@omp.ru>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221227_010651_901886_75BC5DDC 
-X-CRM114-Status: GOOD (  10.11  )
+X-CRM114-CacheID: sfid-20221227_010951_370172_4E7BE926 
+X-CRM114-Status: GOOD (  21.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,32 +89,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 27/12/2022 09:59, Krzysztof Kozlowski wrote:
-> On Wed, 23 Nov 2022 15:41:16 +0100, Geert Uytterhoeven wrote:
->> 	Hi all,
->>
->> The Renesas RPC-IF provides either HyperFlash or SPI host access.
->> To handle this, three drivers are used:
->>   1. The RPC-IF core diver,
->>   2. An HyperFlash child driver,
->>   3. An SPI child driver.
->>
->> [...]
-> 
-> Applied, thanks!
-> 
-> [1/6] memory: renesas-rpc-if: Split-off private data from struct rpcif
->       https://git.kernel.org/krzk/linux-mem-ctrl/c/f8fa9cb3fb16e06514fec0bac58996015dedc453
+On Tue, Dec 27, 2022 at 10:06 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> On 27/12/2022 09:59, Krzysztof Kozlowski wrote:
+> > On Wed, 23 Nov 2022 15:41:16 +0100, Geert Uytterhoeven wrote:
+> >> The Renesas RPC-IF provides either HyperFlash or SPI host access.
+> >> To handle this, three drivers are used:
+> >>   1. The RPC-IF core diver,
+> >>   2. An HyperFlash child driver,
+> >>   3. An SPI child driver.
+> >>
+> >> [...]
+> >
+> > Applied, thanks!
+> >
+> > [1/6] memory: renesas-rpc-if: Split-off private data from struct rpcif
+> >       https://git.kernel.org/krzk/linux-mem-ctrl/c/f8fa9cb3fb16e06514fec0bac58996015dedc453
+>
+> Missing checkpatch. I corrected now:
+> WARNING: Please use correct Fixes: style 'Fixes: <12 chars of sha1>
+> ("<title line>")' - ie: 'Fixes: ca7d8b980b67 ("memory: add Renesas
+> RPC-IF driver")'
 
-Missing checkpatch. I corrected now:
-WARNING: Please use correct Fixes: style 'Fixes: <12 chars of sha1>
-("<title line>")' - ie: 'Fixes: ca7d8b980b67 ("memory: add Renesas
-RPC-IF driver")'
+Oh well... Merry Xmas ;-)
 
+Gr{oetje,eeting}s,
 
-Best regards,
-Krzysztof
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
