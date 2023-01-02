@@ -4,81 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4366FC3DA7A
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jan 2023 09:39:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1FA5C46467
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 Jan 2023 09:42:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=etxASh+SisJc6MOoTbs6Zb1SzFXHHaXFpTL/JbX8nNA=; b=kItacLzdg7sEWM
-	xMxSzhdAiE5SdAhyeH3f/1pXnVCvNW9f+cuViM9/kLsWPszraAbC+iriHbi44830jV+KlfmHW9emt
-	/JJqG5XwW4loXZoaBtK/YdkXcmGJTGfq83+T5IVSPnDuAUG4wnid7iT97D7dI7pW5uKBEvpAj07Uj
-	hSKYvbC7ikmVhxI5Gyg93azePEour4HJaPq0p3foWiJC4WSQo7VpUOpD3m16IQe/nKwaCf5Q6FmzB
-	Eava1vzZJmhKgoprvugLc+x3uIPHb2LvNgi68HivzrdyXmPKd7g186ty4NvNqK2o/LH098RDZj4ZW
-	JtsDABlClHIYp1H3zrkA==;
+	List-Owner; bh=rY3cmdEryfMzG0gQrj3eLqkfjnvC+hq50oIPmNA5MsM=; b=LWS/rxFtAoweeW
+	C7LbCDERv1w/kAmvSPl/9DJXGjB8yCGru2RmgCraJxbpzWZi5Sj9vpyrtTrZyQNYjZHcYQDo2cwe/
+	YN16vL8cLNh0R+mC5EhchlNOTdB5dOW16DJHsqoLfy6FX27lECas0O2P0bLTd6+tT2d9lOayXJarQ
+	H4NLl05vmvOAmZkxjNLcSZ4nPOKXyeqYND9iPPiwv89QvGXnV09UV/YMPlLbj7hE01S97NM9IpAyr
+	dSCaDSbuChBLVXlWg4dUeaS0KeBJ1U3GRGChN4m9sO5dB15At5WI84lnEMzMb6hh0pYSVupqGSicD
+	FghrcgELGEDZSH2xcu6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pCHHR-009xq0-CE; Mon, 02 Jan 2023 09:38:53 +0000
-Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
+	id 1pCHKe-009zmZ-5s; Mon, 02 Jan 2023 09:42:12 +0000
+Received: from relay10.mail.gandi.net ([2001:4b98:dc4:8::230])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pCHGN-009wkK-6b; Mon, 02 Jan 2023 09:37:50 +0000
-Received: by mail-ed1-x52d.google.com with SMTP id c17so39211329edj.13;
-        Mon, 02 Jan 2023 01:37:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XzIKgubKsbYp6CHbNgEC7oTL3o/23K1nX1884mvfwHU=;
-        b=G19KnHZkfpxRRK8GEtPuLli3UOIw8JaGumkCm3OfvuuGgyvVoIItwF9UL+YKeEoziV
-         tVaLLp6LncTO3aVNx9fajlVFGGY7KPLBg9VJc5aEjDTIbcKpgiC20I7uipBOUNWxxKrm
-         7sp0QkboCr+8Ff/nn9QaP4Aj+bjlHzvfmjUG+/BPqrAI85dL9RC7fFT8iT78Y37gCR8G
-         4Trio+r7k/Xog96G03l5kDStW939gVOFO6X8zHcaM+ChvSCsr1iwZDqg6bBklfD5R3KL
-         TNn7fidXDuMzE2IAC671VcdQmkt2pAoq1Qw5K9XVeS9rMR/iCoCi45F1zjojjcYdLJ0I
-         jweg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XzIKgubKsbYp6CHbNgEC7oTL3o/23K1nX1884mvfwHU=;
-        b=IertOYkKn/az+OdGVhEOgaWs5q3tWmTU8GhXS8BbkFGpleIyAzaWnPRj3g7gQEtEv9
-         lg/vsEqgViY3gMMj5gHLyEZztoi+bqno/sCUV2jMlxN2yGlLLoo7ENObNXetPUOC786a
-         LZCCmiu12Ys9+FRlyIJknthx0OduV19EzaiEP7mmlpiDYvxxvIKuk4BHKB7tikG/Rsol
-         9Q7AFW2Hb8c6HTlN+wY13n75rmR4ufWAQcBSfYUHwXwEQ42OB4Z7X10hqUoYmCV62Q8B
-         EbJFXjXEA8v9g9m+yuWAsqxJvMbExhik/n4Uz5xq2h2AQFaaVKrzV+z/u/ubJCkfFy/1
-         i3Lg==
-X-Gm-Message-State: AFqh2kriI1EYeCu+85w3i4hDCUWDHfE/6jxkTb4s3pVsb/s7//hQVVkG
-	+AvVriSvgTRN4Vns5TITa2Q=
-X-Google-Smtp-Source: AMrXdXuS1dQR4WrrMJ2ZYnuZUsvK51zUK97T9LdHUD8iN13xlT2i9x/voG32HeRtdP8fLD4ew6NlcQ==
-X-Received: by 2002:a05:6402:b3c:b0:47f:ab65:b3ff with SMTP id bo28-20020a0564020b3c00b0047fab65b3ffmr30127650edb.35.1672652262900;
-        Mon, 02 Jan 2023 01:37:42 -0800 (PST)
-Received: from [192.168.0.104] ([82.77.81.242])
-        by smtp.gmail.com with ESMTPSA id bo6-20020a0564020b2600b0048ca2b6c370sm2385835edb.29.2023.01.02.01.37.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Jan 2023 01:37:42 -0800 (PST)
-Message-ID: <28da9e33-57e8-7ac1-7e6c-13c297a945d6@gmail.com>
-Date: Mon, 2 Jan 2023 11:37:40 +0200
+	id 1pCHIg-009yex-ER; Mon, 02 Jan 2023 09:40:33 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 4B6C6240009;
+	Mon,  2 Jan 2023 09:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1672652406;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5E6lCTS2ynO3kNOr2DrozkQ00vp5/Kkw0BvSXENsHXY=;
+	b=H4c1yh/VB54M+SKD9HDIZAF63eVXa2yhH6f6CxSWCVqlmzIWxOgkzo+mKG7usBZesd4axd
+	q8cwWe5EB8lRIlWHxMOoZLRHic6sLONpwflfrR7ksq6/5TeWBsqqjNz0H/oIzhiUXlC2Xr
+	/gQni3u+Mvg0qvh4LVdTOQi9XVxmFN1QgL3tWhGTI+60xdbq2xJqkzKKohLpJfgvZ3ueGl
+	6mQ7NEKtYXhlViLCJhIXm96QQ7ZwGbaPRLTOBY6/z8PZXWgEMhBCtC6YBCjLLq3U+pvIZa
+	TZWEW9T/0v9VEixvNZaL6G2IHHBOGAtOAez+WSlNcM6EVnmyNUNDiDgCnQbolw==
+Date: Mon, 2 Jan 2023 10:40:04 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Francesco Dolcini <francesco@dolcini.it>
+Cc: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ Francesco Dolcini <francesco.dolcini@toradex.com>, Shawn Guo
+ <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ stable@vger.kernel.org, u-boot@lists.denx.de
+Subject: Re: [PATCH v1] mtd: parsers: ofpart: Fix parsing when size-cells is
+ 0
+Message-ID: <20230102104004.6abae6da@xps-13>
+In-Reply-To: <Y5ydGhn/qYUalamm@francesco-nb.int.toradex.com>
+References: <Y5wiAPvPU+YY39oX@francesco-nb.int.toradex.com>
+	<6f5f5b32-d7fe-13cc-b52d-83a27bd9f53e@denx.de>
+	<20221216120155.4b78e5cf@xps-13>
+	<Y5xmi62hR6JeYUt1@francesco-nb.int.toradex.com>
+	<20221216143720.3c8923d8@xps-13>
+	<fb55a784-eda3-8916-1413-581b9436b3f2@denx.de>
+	<20221216163501.1c2ace21@xps-13>
+	<Y5ydGhn/qYUalamm@francesco-nb.int.toradex.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 1/8] spi: dt-bindings: Introduce spi-cs-setup-ns property
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>, Michael Walle <michael@walle.cc>
-Cc: tudor.ambarus@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@microchip.com, devicetree@vger.kernel.org,
- krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, nicolas.ferre@microchip.com, robh+dt@kernel.org
-References: <20221117105249.115649-2-tudor.ambarus@microchip.com>
- <20221118141458.954646-1-michael@walle.cc> <Y3elIdM3Xz1H4kKk@sirena.org.uk>
-From: Tudor Ambarus <tudor.ambarus@gmail.com>
-In-Reply-To: <Y3elIdM3Xz1H4kKk@sirena.org.uk>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230102_013747_703618_B687D24E 
-X-CRM114-Status: GOOD (  14.26  )
+X-CRM114-CacheID: sfid-20230102_014011_764656_667FF521 
+X-CRM114-Status: GOOD (  27.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,47 +76,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On 18.11.2022 17:30, Mark Brown wrote:
-> On Fri, Nov 18, 2022 at 03:14:58PM +0100, Michael Walle wrote:
->> From: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
->>> +  spi-cs-setup-ns:
->>> +    description:
->>> +      Delay in nanosecods to be introduced by the controller after CS is
->>> +      asserted.
-> 
->> Does this need a type as the spi-cs-setup-ns is apparently just 16bit? At
->> least the driver uses it that way.
-> 
->> But IMHO this should just be a normal uint32 value to be consistent with
->> all the other properties. Also the max value with 16bit will be 'just'
->> 65us.
-> 
-> Making it 32 bit does seem safer.  I've applied the series
-
-Thanks. There are few implications to consider before making this prop a
-u32, and I'd like to check them with you.
-
-struct spi_delay will have to be updated to have a u32 value, now it's a
-u16. This means that we'll have to update spi_delay_to_ns() to either
-return a s64 or to add a u64 *delay parameter to the function so that we
-can still handle the conversions from usecs and the error codes in the
-SPI_DELAY_UNIT_SCK case. Then all its callers have to be updated to
-consider the u64 delay.
-
-I don't know what to say, I'm in between. 65us delays are improbable,
-but I'm fine to update this as well. Let me know your preference.
-
-Thanks,
-ta
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgRnJhbmNlc2NvLAoKZnJhbmNlc2NvQGRvbGNpbmkuaXQgd3JvdGUgb24gRnJpLCAxNiBEZWMg
+MjAyMiAxNzozMDoxOCArMDEwMDoKCj4gT24gRnJpLCBEZWMgMTYsIDIwMjIgYXQgMDQ6MzU6MDFQ
+TSArMDEwMCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiA+IG1hcmV4QGRlbnguZGUgd3JvdGUgb24g
+RnJpLCAxNiBEZWMgMjAyMiAxNTozMjoyOCArMDEwMDogIAo+ID4gPiBUaGUgc2Vjb25kIHBhcnQg
+b2YgdGhlIG1lc3NhZ2UsIGFzIGZhciBhcyBJIHVuZGVyc3RhbmQgaXQsIGlzCj4gPiA+ICJpZ25v
+cmUgcHJvYmxlbXMgdGhpcyB3aWxsIGNhdXNlIHRvIHVzZXJzIG9mIGJvYXJkcyB3ZSBkbyBub3Qg
+a25vdwo+ID4gPiBhYm91dCwgbGV0IHRoZW0gcnVuIGludG8gdW5ib290YWJsZSBzeXN0ZW1zIGFm
+dGVyIHNvbWUgbGludXgga2VybmVsCj4gPiA+IHVwZGF0ZSwgICAKPiA+IAo+ID4gTm93IHlvdSBr
+bm93IHdoYXQga2VybmVsIHVwZGF0ZSB3aWxsIGJyZWFrIHRoZW0sIHNvIHlvdSBjYW4gcHJldmVu
+dCBpdAo+ID4gZnJvbSBoYXBwZW5pbmcuIAo+ID4gCj4gPiBGb3IgYm9hcmRzIHdpdGhvdXQgZXZl
+biBhIGR0c2kgaW4gdGhlIGtlcm5lbCwgc2hvdWxkIHdlIGNhcmU/ICAKPiAKPiBXb3VsZCBjYXJp
+bmcgZm9yIHRob3NlIGJvYXJkcyBub3QgYmUganVzdCBleGFjdCB0aGUgc2FtZSBhcyBjYXJpbmcg
+Zm9yCj4gc29tZSBVRUZJL0FDUEkgbWVzcyBmb3Igd2hpY2ggbm8gc291cmNlIGNvZGUgaXMgbm9y
+bWFsbHkgYXZhaWxhYmxlIGFuZAo+IG5vYm9keSByZWFsbHkga25vd24gYXQgd2hpY2ggcG9pbnQg
+dGhlIHZhcmlvdXMgdmVuZG9ycyBoYXZlIGZvcmtlZCB0aGVpcgo+IHNvdXJjZSBjb2RlIGZyb20g
+c29tZSBJbnRlbCBvciBBTUQgb3Igd2hhdGV2ZXIgcmVmZXJlbmNlIGNvZGU/CgpJIGFtIHNvcnJ5
+IEkgZG9uJ3Qga25vdyBVRUZJL0FDUEkgd2VsbCBlbm91Z2ggdG8gZGlzY3VzcyBpdC4KCj4gSU1I
+TyB3ZSBzaG91bGQgY2FyZSBmb3IgdGhlIG11bHRpcGxlIHJlYXNvbiBJIGhhdmUgYWxyZWFkeSB3
+cml0dGVuIGluIG15Cj4gcHJldmlvdXMgZW1haWxzLgo+IAo+IEFuZCBob25lc3RseSwganVzdCBh
+cyBhIHNpZGUgY29tbWVudCwgSSB3b3VsZCBmZWVsIHdheSBtb3JlIGhhcHB5Cj4gdG8ga25vdyB0
+aGF0IHRoZSBlbGV2YXRvciBjb250cm9sIHN5c3RlbSBpbiB0aGUgZWxldmF0b3IgSSB1c2UgZXZl
+cnlkYXkKPiBvciB0aGUgY2hlbWljYWwgaW5kdXN0cmlhbCBwbGFuIEhNSSBuZXh0IHRvIG15IGhv
+bWUgaXMgcnVubmluZyBhbiB1cCB0bwo+IGRhdGUgTGludXggc3lzdGVtIHRoYXQgaXMgbm90IGFm
+ZmVjdGVkIGJ5IGtub3duIHNlY3VyaXR5IHZ1bG5lcmFiaWxpdGllcwo+IGFuZCB0aGV5IGRpZCBz
+dG9wIHVwZGF0aW5nIGl0IGp1c3QgYmVjYXVzZSB0aGVyZSB3YXMgc29tZSByYW5kb20gYnVnCj4g
+cHJldmVudGluZyB0aGUgdXBkYXRlZCBrZXJuZWwgdG8gYm9vdCBhbmQgbm9ib2R5IGhhZCB0aGUg
+dGltZS9za2lsbCB0bwo+IGludmVzdGlnYXRlIGFuZCBmaXggaXQuIFsxXQoKVGhlIGlzc3VlIGNv
+bWVzIGZyb20gYSB2ZXJ5IHNwZWNpZmljIFUtQm9vdCBmdW5jdGlvbiB0aGF0IHNob3VsZCBoYXZl
+Cm5ldmVyIGV4aXN0ZWQuIEkgaG9wZSBwZW9wbGUgd29ya2luZyBvbiBjaGVtaWNhbCBwbGFudHMg
+ZG8gbm90IG1ha2UKdXNlIG9mIHRoZXNlIGFuZCB3aWxsIG5vdCBkaXNyZWdhcmQgdGhlICJ5b3Vy
+IERUIGlzIGJyb2tlbiB0aGVyZSBbLi4uXSIKd2FybmluZyB3ZSBwbGFuIHRvIGFkZCByaWdodCBi
+ZWZvcmUgdGhlaXIgdXBkYXRlZCBib2FyZCB3aWxsIGZhaWwuIFdlCmFyZSBub3QgbGl2aW5nIHBl
+b3BsZSBpbiB0aGUgZGFyaywgSSBhZ3JlZWQgZm9yIGEgd2FybmluZywgYnV0IEkgZG9uJ3QKdGhp
+bmsgYXBwbHlpbmcgdGhlIHByb3Bvc2VkIGZpeCBibGluZGx5IGlzIHdpc2UgYW5kIGZ1dHVyZS1w
+cm9vZi4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
