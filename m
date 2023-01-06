@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFEF6C5479D
-	for <linux-mtd@archiver.kernel.org>; Fri,  6 Jan 2023 09:48:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71423C5479D
+	for <linux-mtd@archiver.kernel.org>; Fri,  6 Jan 2023 09:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3wYKnki181E3WhmsIHWfk8lH2Fhk6X3vcIcAR0Zck28=; b=yh7ig0DBx7Ng4O
-	8Mb92tmLtNoplyq0Rg7ptNip9Pf2536D5i3M1sjOApvhaLw75Pwft5e/mBCcI1+UETcu+9enyQ43J
-	F4vfq550tWyLktn3WHEhH59B41FqqmeWZj55zqTLSTDWhADq2k7yhgOA1E3Cl+9Yy2ZqwRwbJVbyF
-	wLie9ljyYlaBk3ZZhSUiMaQUN5drovuFoYQCI0CBTHywKj4VuEOR4vmooRU64OwmYqY78BOyt8RB0
-	Ct1BVXg3PdvOa40UW6rBjf2XpVPj7dyvbEAsFkjgQQfjgh/O1B8JQ6CNdgKPiErbvEDIuhMzfccFj
-	n5tnxI9x8qRShX5lbBmQ==;
+	List-Owner; bh=v90j4IZ1MxneMxbP45ghFUW3fRU40BzbpqwUJys3JpE=; b=QTZhdNdt6KsnCS
+	5ZlEWitV3ErZeLRydkvr0wvf9HIz0QQTzjDLMuxEQTmvaQuNih8dbVX2M+iG/kqbCjp37nG9D8LX5
+	IitBcbr/kCsEJPuczq2YJd0jRdIF5kMaHaTH3kRCPTQnMZVSTXz9OnzPFo35M67RZgMwRe2+pBoQL
+	PomiN5Gez1usxdWF6bE7BY7CbzNNkl3h0bRGQyrFyWAolxQvJBmR1aiH19cmeFxouK/X2YekKvru8
+	ACnVQryaE+aZ0ZT5fnOvVB8W1eBCgr2MRA9KiIUV3i5VHdjMdU53LEBKGl7jITVQmwOuJ9LCe88SM
+	TPmWypSrvoV3Uvfo9PQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pDjKb-007CU6-Vp; Fri, 06 Jan 2023 09:48:10 +0000
-Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
+	id 1pDjSB-007FXI-Hx; Fri, 06 Jan 2023 09:55:59 +0000
+Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pDjKV-007CPY-Mz
-	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2023 09:48:05 +0000
-Received: by mail-ej1-x630.google.com with SMTP id jo4so2350320ejb.7
-        for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2023 01:48:00 -0800 (PST)
+	id 1pDjS8-007FUn-Pf
+	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2023 09:55:58 +0000
+Received: by mail-ej1-x62c.google.com with SMTP id jo4so2386814ejb.7
+        for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2023 01:55:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=77vHjeUHiCb66z/I743uh4gP4GpNQ4TQEZW0IuazaZY=;
-        b=Mn1qK9ulnq8ImWay2BFBcXNDLq264mzCvmvq6AowQek49U5nYnVbayLOXnP4HwLJIV
-         nSpt0a7h8jSPkuLiPG208Jt139i3iPgHUa+YzGZwR/hLDCqxqBrWu3lOof/yW/r45RiU
-         iIj2FQY3Qa4Qsy7LeSPOt8J84+CCA8qxGjFy1bAvvpF3q2GLNwujHFR8JDnGZs6Ezwci
-         M8U4d13moLskMm3M4IjXxFnJU0bdNheaVCJTbp6IyPGAAYGCjvbBUae5s4cJsZC4W8E2
-         go/R8RMiLCj9FnKam+Bw6xcS+jVTkL9QBHeSd1JDjsKXMcV137YfV/5rq6kk/bz7DeSU
-         AM7w==
+        bh=MR+/NWA8p6VYz8uv/82PDoV9JZ8XB9MwZrQb5jkWV0Q=;
+        b=Gma/Ht/dQqftf/LiR6DcQta3AYBsESePrvrSgiVzPE2pgxhQdPw/lqfhTD+y8qDejO
+         QfSjvkKint4HPGmTKSTRWInv5nFkTbpOWmU0VtnVtzcYpir/ijafCrg951eo15GIAIQY
+         GfNYHzacOjUQ2hcgk/wJyUN/izI2rO/zubQQPTgYjz0/YwUjnJAZQUN+Fht00s1KEso4
+         v/BqfXIod2yXdwkyDlKGiClUAiYZMZEgncM+H//hJIJAB7brmlSdBw+uPeTUEB0yJzPc
+         0tTx9DwXPzKPPfIkOcu4TbowfBY+i8IjFchX53w8SaYcaeO15aIMifhMy9jmyg1Yy8y0
+         ltAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=77vHjeUHiCb66z/I743uh4gP4GpNQ4TQEZW0IuazaZY=;
-        b=qvyZU21Hjyi9kRt744iSZTUcfx233c+mJPCL3ziqjNR8Jv3PniU0DotRhCKMWk3KJk
-         8HlMF4VM8wpICjsceDMpR/gFieqq/bZJPdg2ZqY90Gr0hG6+hdqbJ0w/sXywvWaOg4r1
-         MNL/zR7Q8t4yheSpht/1iJruUA4BkE8H6ViXk0hLTcDvJCmc8dLVQlIsGpfyHJE2f7DY
-         +N6JMTTH9bryn1mGs1Vz7f7vAgZNqFRfieG2P5LwoNpGwLDTBYljGxFuIsT4vzSEcJfK
-         IwBZ1De3QIy4gvwxtSbhCicCxo1BddsS3eXdLAPDX+CAnwSJSOzE0kbMbR21T5g25soy
-         FyCw==
-X-Gm-Message-State: AFqh2kqxECmlh4/aOE0t15Edb3XbAnnRnDPZwokw0xfC5rIAmcYq1IE8
-	e3DsABaI+B3Hiv1/FKc1oER8Kw==
-X-Google-Smtp-Source: AMrXdXvIYu/IktKkvb5RYfd4aovy6Jrw35I2OrveWf1zeDYWyJafG0t6A/8TBkyL5Db0Nb3k+KEkjw==
-X-Received: by 2002:a17:906:4f14:b0:7c1:98e:ed20 with SMTP id t20-20020a1709064f1400b007c1098eed20mr44270717eju.35.1672998479477;
-        Fri, 06 Jan 2023 01:47:59 -0800 (PST)
+        bh=MR+/NWA8p6VYz8uv/82PDoV9JZ8XB9MwZrQb5jkWV0Q=;
+        b=p/Ba0VtLrxfTQ3a79A+sf9FTIdY71ukt+qvZvlmUMpG2CvWp1o89vk2JlDTN2l+oyc
+         rpmquclgH7DZHeH7r2PRfP5Zxvg5ZdO3aTsDa3YJQNVWyeGJ6DrM35cH/lNgzrCW/IV6
+         JkBb/QugIoAw8DP+5zBTqfvET7dMK7CBcZG8ZxM26zonY6CT1c6kwiRIKVjQh8Ml98qJ
+         7a2aJggZ6v856Wb02koiIHRQbDiy5cGjX46ctzrNyQSmQ9mRVRNwf9AnktwSOOxWZjgA
+         WjAk7Mbdww/Rll64okWLNI/LX16taT9UI1/4YMkK87mTANSFnsegs7uwVWe8tZbFvboJ
+         ePZQ==
+X-Gm-Message-State: AFqh2koVf31a8CPgqUMWZdRRXGfB7IXmFUTl9BuGd0oi8yK19UJQwjMp
+	Rok0rUceq+YAeADIJRWjC4oo9Q==
+X-Google-Smtp-Source: AMrXdXscYlLtCHAq3/z9+5Df9Wjc/Ll9rYmx2DDunqCMB/61SovKITfnbg0PAHfiDTY+HRdzbnKOLQ==
+X-Received: by 2002:a17:907:80ce:b0:7c1:26b9:c556 with SMTP id io14-20020a17090780ce00b007c126b9c556mr50183303ejc.15.1672998953767;
+        Fri, 06 Jan 2023 01:55:53 -0800 (PST)
 Received: from [192.168.0.104] ([82.77.81.242])
-        by smtp.gmail.com with ESMTPSA id lb19-20020a170907785300b0084d1efe9af6sm246287ejc.58.2023.01.06.01.47.58
+        by smtp.gmail.com with ESMTPSA id l10-20020a1709063d2a00b0078db18d7972sm248340ejf.117.2023.01.06.01.55.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Jan 2023 01:47:59 -0800 (PST)
-Message-ID: <493d9a10-aaf3-70f6-36c3-9a2cf39f0759@linaro.org>
-Date: Fri, 6 Jan 2023 11:47:57 +0200
+        Fri, 06 Jan 2023 01:55:53 -0800 (PST)
+Message-ID: <ebfec54e-f82e-4560-9a4a-7c02ed4c841b@linaro.org>
+Date: Fri, 6 Jan 2023 11:55:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.2
 Subject: Re: [PATCH] mtd: spi-nor: spansion: Keep CFR5V[6] as 1 in Octal DTR
  enable/disable
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
 Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
  Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, stable@vger.kernel.org
 References: <20230106030601.6530-1-Takahiro.Kuwano@infineon.com>
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230106030601.6530-1-Takahiro.Kuwano@infineon.com>
+ <493d9a10-aaf3-70f6-36c3-9a2cf39f0759@linaro.org>
+In-Reply-To: <493d9a10-aaf3-70f6-36c3-9a2cf39f0759@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230106_014803_811100_E291210E 
-X-CRM114-Status: GOOD (  15.35  )
+X-CRM114-CacheID: sfid-20230106_015556_861342_06AB6254 
+X-CRM114-Status: GOOD (  16.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,48 +90,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hey, Takahiro,
-
-On 06.01.2023 05:06, tkuw584924@gmail.com wrote:
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> 
-> CFR5V[6] is reserved bit and must always be 1.
-
-have you seen some strange behavior?
-> 
-> Fixes: c3266af101f2 ("mtd: spi-nor: spansion: add support for Cypress Semper flash")
-> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> Cc: stable@vger.kernel.org
-> ---
->   drivers/mtd/spi-nor/spansion.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index b621cdfd506f..4e094a432d29 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -21,8 +21,8 @@
->   #define SPINOR_REG_CYPRESS_CFR3V		0x00800004
->   #define SPINOR_REG_CYPRESS_CFR3V_PGSZ		BIT(4) /* Page size. */
->   #define SPINOR_REG_CYPRESS_CFR5V		0x00800006
-> -#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN	0x3
-> -#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
-> +#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN	0x43
-> +#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0x40
-
-No, this looks bad. Instead of overwriting CFR5V with whatever value, we
-should instead first read it and then update only the bit that we're
-interested in. If it happens to write CFR5V before octal enable/disable,
-you'll overwrite the previous set values.
-
-Cheers,
-ta
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAwNi4wMS4yMDIzIDExOjQ3LCBUdWRvciBBbWJhcnVzIHdyb3RlOgo+IEhleSwgVGFrYWhp
+cm8sCj4gCj4gT24gMDYuMDEuMjAyMyAwNTowNiwgdGt1dzU4NDkyNEBnbWFpbC5jb20gd3JvdGU6
+Cj4+IEZyb206IFRha2FoaXJvIEt1d2FubyA8VGFrYWhpcm8uS3V3YW5vQGluZmluZW9uLmNvbT4K
+Pj4KPj4gQ0ZSNVZbNl0gaXMgcmVzZXJ2ZWQgYml0IGFuZCBtdXN0IGFsd2F5cyBiZSAxLgo+IAo+
+IGhhdmUgeW91IHNlZW4gc29tZSBzdHJhbmdlIGJlaGF2aW9yPwo+Pgo+PiBGaXhlczogYzMyNjZh
+ZjEwMWYyICgibXRkOiBzcGktbm9yOiBzcGFuc2lvbjogYWRkIHN1cHBvcnQgZm9yIEN5cHJlc3Mg
+Cj4+IFNlbXBlciBmbGFzaCIpCj4+IFNpZ25lZC1vZmYtYnk6IFRha2FoaXJvIEt1d2FubyA8VGFr
+YWhpcm8uS3V3YW5vQGluZmluZW9uLmNvbT4KPj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcK
+Pj4gLS0tCj4+IMKgIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BhbnNpb24uYyB8IDQgKystLQo+PiDC
+oCAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+Pgo+PiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGFuc2lvbi5jIAo+PiBiL2RyaXZlcnMv
+bXRkL3NwaS1ub3Ivc3BhbnNpb24uYwo+PiBpbmRleCBiNjIxY2RmZDUwNmYuLjRlMDk0YTQzMmQy
+OSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zcGFuc2lvbi5jCj4+ICsrKyBi
+L2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BhbnNpb24uYwo+PiBAQCAtMjEsOCArMjEsOCBAQAo+PiDC
+oCAjZGVmaW5lIFNQSU5PUl9SRUdfQ1lQUkVTU19DRlIzVsKgwqDCoMKgwqDCoMKgIDB4MDA4MDAw
+MDQKPj4gwqAgI2RlZmluZSBTUElOT1JfUkVHX0NZUFJFU1NfQ0ZSM1ZfUEdTWsKgwqDCoMKgwqDC
+oMKgIEJJVCg0KSAvKiBQYWdlIHNpemUuICovCj4+IMKgICNkZWZpbmUgU1BJTk9SX1JFR19DWVBS
+RVNTX0NGUjVWwqDCoMKgwqDCoMKgwqAgMHgwMDgwMDAwNgo+PiAtI2RlZmluZSBTUElOT1JfUkVH
+X0NZUFJFU1NfQ0ZSNVZfT0NUX0RUUl9FTsKgwqDCoCAweDMKPj4gLSNkZWZpbmUgU1BJTk9SX1JF
+R19DWVBSRVNTX0NGUjVWX09DVF9EVFJfRFPCoMKgwqAgMAo+PiArI2RlZmluZSBTUElOT1JfUkVH
+X0NZUFJFU1NfQ0ZSNVZfT0NUX0RUUl9FTsKgwqDCoCAweDQzCj4+ICsjZGVmaW5lIFNQSU5PUl9S
+RUdfQ1lQUkVTU19DRlI1Vl9PQ1RfRFRSX0RTwqDCoMKgIDB4NDAKPiAKPiBObywgdGhpcyBsb29r
+cyBiYWQuIEluc3RlYWQgb2Ygb3ZlcndyaXRpbmcgQ0ZSNVYgd2l0aCB3aGF0ZXZlciB2YWx1ZSwg
+d2UKPiBzaG91bGQgaW5zdGVhZCBmaXJzdCByZWFkIGl0IGFuZCB0aGVuIHVwZGF0ZSBvbmx5IHRo
+ZSBiaXQgdGhhdCB3ZSdyZQo+IGludGVyZXN0ZWQgaW4uIElmIGl0IGhhcHBlbnMgdG8gd3JpdGUg
+Q0ZSNVYgYmVmb3JlIG9jdGFsIGVuYWJsZS9kaXNhYmxlLAo+IHlvdSdsbCBvdmVyd3JpdGUgdGhl
+IHByZXZpb3VzIHNldCB2YWx1ZXMuCj4gCgpvdGhlciBpZGVhIGlzIHRvIGtlZXAgc29tZSBzb3J0
+IG9mIGNhY2hlIHJlZ2lzdGVyIHZhbHVlcyBpbiB0aGUgY29kZSwgdG8KYXZvaWQgcmVhZGluZyBy
+ZXBlYXRlZGx5IHJlZ2lzdGVyIHZhbHVlcyBhdCBlYWNoIHVwZGF0ZS4gQnV0IHdlIHByb2JhYmx5
+CmRvbid0IGRvIHNvIG1hbnkgdXBkYXRlcyBmb3Igbm93LCBhbmQgbWF5YmUgd2UgY2FuIGxlYXZl
+IHRoaXMgZm9yIGxhdGVyLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
