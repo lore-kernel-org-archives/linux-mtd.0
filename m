@@ -4,78 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55881C54EBD
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 Jan 2023 05:05:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89A94C5479D
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 Jan 2023 08:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=syXMMiSgN+5X0eDge9Tt9SoVHKsN/Zo0U4TlowarRik=; b=OoVIn2wkb7+BSv
-	BJ+sREnxbSTub1hsAqg0D+w5nYtV9uVtSfNPQKCGekQksgZKAQjGLDcQ431quMOBnP43mYN83m3bD
-	oKxLU9XkqkxSyOxliF3pAJfMyah9MSFTeBscIKzb9zM1Lww8gPTylhntpdJkpdZ4imsiX7Ys5+t7F
-	k+NmbdpTR97PFXVO1gDfgnwiFsLC2SigCCkL4my2mX4+aQ3er2m/pXMumCro37vWoZ6n/dISwW0g2
-	MEsnxWr6nh7+qhoBOtfV9zWt/N8lBUE0GnJqhqy7Up/fhM43aJnR8KCfjj1PEMlxIi/GwXf/AAHly
-	KxfPa/Yv9kIuJT5XDKQQ==;
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MU6GftbOIuchGk2MJV/wFzM/U7SShCUWuOJ8RW8aFF4=; b=ldvNsqPksDQbEbYKJCEUlLRnKL
+	OUp2i/c/BmwGOCUdHsvK3zxrjSX2Ytir/ggDWq7SOeLt8Zqv3MNTJUBibI/91haBaGXUk7Sz2A7ns
+	gdMVp7c65zypSv7xNFcw4uWpq/Si7dVVORpMZPeb3XRoU0Z8D5wYp+2X5G9+bjPUZW8bHGY7vq5lv
+	xn7V1TsIWF7ne0rL/w2R411jmvQvOSosGEHo9TlzrTMb0cFfaTGbhUK98HXUlkzkhRS7nABVwY0NA
+	W5qzOgSx8hPibNWnUwRlX6TIf0d4F+XKkyrIL0LBDmmMvgyBeyzqM91dvdTqer06Tw/5wFzZ3rHGj
+	RcUs8qVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pEkKv-00HO9p-PF; Mon, 09 Jan 2023 05:04:41 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1pEnqG-000T1B-RR; Mon, 09 Jan 2023 08:49:16 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pEkKp-00HO8a-20
-	for linux-mtd@lists.infradead.org; Mon, 09 Jan 2023 05:04:37 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 30954NiY054709;
-	Sun, 8 Jan 2023 23:04:23 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1673240663;
-	bh=s1W2ZfWslUfpwbe+XtN7DnIFblspWS94tqfwh5Rdr/o=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=Pnhssb2G991ClaVPTT5bC7Fd+UDHFtALYig+YJlVpsEGAkqfDJiS2EtFA7StLhTBh
-	 MspmY6M9OeTHnAuvmz7CLdp0pj1SRcaYa8N0qDbNjxouT7WaheYnVLOghZ0YpKyknJ
-	 3Ug8k6UNY3Br65wn5IxaW/GPOjeWvax7EyO7CkyA=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 30954MR7082181
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sun, 8 Jan 2023 23:04:22 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Sun, 8
- Jan 2023 23:04:22 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16 via
- Frontend Transport; Sun, 8 Jan 2023 23:04:22 -0600
-Received: from [10.24.69.26] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-	by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 30954J2U094991;
-	Sun, 8 Jan 2023 23:04:19 -0600
-Message-ID: <dd6c7345-4635-dc26-dd25-153c87b4b336@ti.com>
-Date: Mon, 9 Jan 2023 10:34:18 +0530
+	id 1pEnq9-000SzW-L2
+	for linux-mtd@lists.infradead.org; Mon, 09 Jan 2023 08:49:14 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 431F738;
+	Mon,  9 Jan 2023 09:49:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1673254140;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gluxVvcJmCU0vVgleE42V7l99rpup+5K6uOqI+hdG2w=;
+	b=XV+ROy/Eaime+q/+idJ04KuJYgXrzAtTfUhc1/dT4co5hfZnP+PBov+3k8tSg1yrCkI8xv
+	LOk0W/BggzyUNS9w+X3TurnTodbPpcxbZqhslXI4GaH6zSU827kwImchNE6vzapDkJCZ5W
+	VPHl8zAmgqN1oH4js6APUIYhxR13QXr7kV+qQbsE+bFrDw0Hs+T1hBdlb4VTzM8yRDz29a
+	bQ4rzhh5o5aOt+3NL14nhRbZIwyndP60cRM0ky8kGV3pAkYUTQ/XtcHbow+Lychd3ZNBlk
+	0ev7VaAAsKSCPadoeIwzwYMoYQnsejDZ0Bop7pSPYwD+1+X/O+KwW0bLlFSfgw==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
+Date: Mon, 09 Jan 2023 09:49:00 +0100
+From: Michael Walle <michael@walle.cc>
+To: Tomas Winkler <tomas.winkler@intel.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+ <pratyush@kernel.org>, linux-mtd@lists.infradead.org, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org, Alexander
+ Usyskin <alexander.usyskin@intel.com>
 Subject: Re: [PATCH v2] mtd: spi-nor: macronix: add support for mx77l51250f
-Content-Language: en-US
-To: Tomas Winkler <tomas.winkler@intel.com>,
-        Tudor Ambarus
-	<tudor.ambarus@microchip.com>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Michael
- Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger
-	<richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
-        Alexander Usyskin
-	<alexander.usyskin@intel.com>
-References: <20230107214345.2524851-1-tomas.winkler@intel.com>
-From: Dhruva Gole <d-gole@ti.com>
 In-Reply-To: <20230107214345.2524851-1-tomas.winkler@intel.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20230107214345.2524851-1-tomas.winkler@intel.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <5076cc829fb5a9c5959687a401b120ca@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230108_210435_503152_14A626EF 
-X-CRM114-Status: GOOD (  22.24  )
+X-CRM114-CacheID: sfid-20230109_004910_254182_5D92B3BB 
+X-CRM114-Status: GOOD (  11.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,13 +77,7 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hey Tomas,
-
-On 08/01/23 03:13, Tomas Winkler wrote:
-> Add support for mx77l51250f spi-nor chips.
-> 
-> SPI NOR sysfs:
-> 
+Am 2023-01-07 22:43, schrieb Tomas Winkler:
 > $ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
 > mx77l51250f
 > $ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
@@ -120,56 +99,29 @@ On 08/01/23 03:13, Tomas Winkler wrote:
 > $ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
 > 36fb8e3e6f82c45bfabea45ec73c08a8
 > /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 
-> Note: The test_qspi.sh wasn not run as this device in intel setup is used
->        for BIOS and platform firmware storage.
-Thanks for doing the testing but one small suggestion, move this below 
-the "---" lines before sending the patch email.
-> 
-> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-> ---
-For the code and idea itself, pending the changes I have advised below.
 
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
+Thanks for the dumps, as Dhruva mentioned this should go
+in the comment section of this patch. But also see below.
 
-> V2:
-> 1. This chip supports SFDP, parse it instead of the manual configuration.
 
-This sounds good! Do the other flashes in macronix_nor_parts support
-this? Maybe they can be updated in some later patches as well if they do
-support SFDP Parsing.
-
-> 2. Add required output of sysfs attributes
-Yes, but I am not sure in this is the way to do it in the commit body
-itself.
-When Tudor asked you for those test logs, I think he meant for you to
-paste it in the cover letter, or below here not in the patch email. Not 
-in the commit body.
-Refer 
-https://lore.kernel.org/all/cover.1661915569.git.Takahiro.Kuwano@infineon.com/
-where Takahiro has provided the tested details for ID, SFDP, Test logs.
-> 
->   drivers/mtd/spi-nor/macronix.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index 6853ec9ae65d..6c3b4192a8ae 100644
 > --- a/drivers/mtd/spi-nor/macronix.c
 > +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -100,6 +100,8 @@ static const struct flash_info macronix_nor_parts[] = {
->   	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
->   		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
->   		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+> @@ -100,6 +100,8 @@ static const struct flash_info macronix_nor_parts[] 
+> = {
+>  	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
 > +	{ "mx77l51250f", INFO(0xc2751a, 0, 64 * 1024, 4096)
 > +		PARSE_SFDP },
->   };
->   
->   static void macronix_nor_default_init(struct spi_nor *nor)
 
--- 
-Thanks and Regards,
-Dhruva Gole
+With the newest generic spi nor driver [1] this patch shouldn't
+be needed at all anymore. Could you verify, that your flash will work
+without it?
+
+-michael
+
+[1] 
+https://elixir.bootlin.com/linux/v6.2-rc3/source/drivers/mtd/spi-nor/core.c#L1637
 
 ______________________________________________________
 Linux MTD discussion mailing list
