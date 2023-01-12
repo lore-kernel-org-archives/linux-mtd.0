@@ -4,36 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A87D5C54EBD
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 Jan 2023 16:16:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FA76C54EBE
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Jan 2023 20:28:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=48SXKDbJPOrUw18XnRm8KTrreTfrNHIr710kFEpxfD8=; b=cRJBulwYKQjzYx
-	gkwoXUlySwMUANc/4Kn83B6ONOgd+lknyWEyx/bMXsWaYJxo+ROq7dlvi22BFKcEeyMyZUdEsxfT+
-	wx/BQCtI3KBCZwrknJSbhSpFV2nSNZyDKn6DVQQaE2IsJy2pR97tvXTebusoa6CLX6ohcU/4lw8hg
-	k53tO4hr60/+lqclTw2FUWCJ/de72DPb/Yomj+CdV5apbMKzpXBPOsifENWxUKhrpVv+1GPlqzMmH
-	gbCnv8gDul3cH5zycbNuy2OiX1K0rdzDqzQV2s3yxzo3IkXgahnkgI0BpI4CJtlpOihpXj+3Hsaim
-	CiZaXluG2kfLNhL2nCbw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=knUy8l/ZNRvEZOywGw5H8h2RqDA8pTRPjj8PeQipJL0=; b=Mj9UuYGLJfZ2Mr
+	FMUw/If9ckvvSDrGWGKj7LEPkJPMijNI6a1OcToGRKlfBlNOjYdT+gn1ggh/AJQhEhkebj56hzpxq
+	4yUMxhD8TJY88GRlGMIs2yKXy82tb8gf0Tu7NPKq1NqJe3IhZSHDsTxBL1U2Q42dYh2iRWAR3zybs
+	FW9JFUHDR50A9wrSD0GEeMsYy57mMdCKVbNS09hmHCqd4f34wWxaqZ3GIgOEserDpv4Z+UY6xCsZk
+	glbLM2TSgIfeVM6uMpjMNjsLH/iF51dWqbxgD3CevTJDsbFVynXdtDxAyONvVl9/FxcQVNyIWQURp
+	qHk+EcUujZHgbZ7xduTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG0F0-00Fopt-Lx; Thu, 12 Jan 2023 16:15:46 +0000
-Received: from [2001:4bb8:181:656b:476d:b677:997f:e3ad] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG0Ew-00FooI-4o; Thu, 12 Jan 2023 16:15:42 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: richard@nod.at,
-	miquel.raynal@bootlin.com,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH] ubi: block: set BLK_MQ_F_BLOCKING
-Date: Thu, 12 Jan 2023 17:15:40 +0100
-Message-Id: <20230112161540.1392231-1-hch@lst.de>
-X-Mailer: git-send-email 2.39.0
+	id 1pG4AX-00GuOu-FX; Thu, 12 Jan 2023 20:27:25 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1pG3lU-00Giwm-83; Thu, 12 Jan 2023 20:01:34 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 4C397CE1F92;
+	Thu, 12 Jan 2023 20:01:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28061C433D2;
+	Thu, 12 Jan 2023 20:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1673553688;
+	bh=DjplknG/Og42vIVzT/q7FbntQdQMbrnKJqFFsTyhjNM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=EUafdQGi6kPVntwFcsX8dQ++eMfDpAt4hRufXGYp4rn3498p9O5an8Dtzb32f8VZO
+	 /0dwxqLx9EiZWyrofGYjXdGydKTREAjzdQvusJ0Ow7D4V0fv83WO6VIMOVK93JIW2S
+	 WKNFKVIBv7VwC+kTD5h1WgF5etFBp2YPn8S3ZXmT1Seav9nsmaQ1vhNBslaNNmcYRn
+	 zsCLB4TmasZgZxWFa1UpanGfaUnDdJStrP+pk1HardQUH3NiBxgoCCXTezH0ic2ZBw
+	 6otuSPV9m9aONvZu3dzL7IfHqeZgMZCL4VALktP1HibdXNi78cOSWjN0jogQQsvptF
+	 31XhLFJQie5QQ==
+From: Mark Brown <broonie@kernel.org>
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Arnd Bergmann <arnd@kernel.org>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, stern@rowland.harvard.edu,
+ alexandre.belloni@bootlin.com, brgl@bgdev.pl,
+ damien.lemoal@opensource.wdc.com, dmitry.torokhov@gmail.com,
+ linux@dominikbrodowski.net, balbi@kernel.org, gregkh@linuxfoundation.org,
+ deller@gmx.de, perex@perex.cz, jingoohan1@gmail.com, lee@kernel.org,
+ kernel@wantstofly.org, lgirdwood@gmail.com, linus.walleij@linaro.org,
+ marek.vasut@gmail.com, mkpetch@internode.on.net, miquel.raynal@bootlin.com,
+ lost.distance@yahoo.com, philipp.zabel@gmail.com, linux@armlinux.org.uk,
+ sre@kernel.org, slapin@ossfans.org, s.shtylyov@omp.ru,
+ sudipm.mukherjee@gmail.com, tiwai@suse.com, ulf.hansson@linaro.org,
+ vigneshr@ti.com, viresh.kumar@linaro.org, wsa+renesas@sang-engineering.com,
+ linux-pm@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-leds@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
+ linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20230105134622.254560-1-arnd@kernel.org>
+References: <20230105134622.254560-1-arnd@kernel.org>
+Subject:  Re: (subset) [PATCH v2 00/27] ARM: pxa: remove all unused boards&drivers
+Message-Id: <167355367885.2500964.3629822486060649314.b4-ty@kernel.org>
+Date: Thu, 12 Jan 2023 20:01:18 +0000
 MIME-Version: 1.0
+X-Mailer: b4 0.12-dev-8b3d1
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20230112_120132_687257_2138D8E2 
+X-CRM114-Status: GOOD (  16.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -50,216 +89,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Set BLK_MQ_F_BLOCKING so that the block layer always calls ->queue_rq
-from process context and drop the driver internal workqueue.
+On Thu, 05 Jan 2023 14:45:55 +0100, Arnd Bergmann wrote:
+> Most of the legacy PXA board files were marked as unused in linux-5.19 and
+> can get removed in linux-6.3. There is support for pxa250/pxa270/pxa300
+> using devicetree already, which supports a number of boards, but progress
+> on converting the remaining ones has stalled over the past few years.
+> 
+> The two boards that are left in the tree for now are the three 'sharpsl'
+> variants (spitz/akita/borzoi) and the 'gumstix' family of machines.
+> Both of these are supported by qemu, which can be helpful for completing
+> the DT conversion.
+> 
+> [...]
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/mtd/ubi/block.c | 97 ++++++++++++-----------------------------
- 1 file changed, 28 insertions(+), 69 deletions(-)
+Applied to
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 75eaecc8639f00..1f163c443f3049 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -35,7 +35,6 @@
- #include <linux/mutex.h>
- #include <linux/slab.h>
- #include <linux/mtd/ubi.h>
--#include <linux/workqueue.h>
- #include <linux/blkdev.h>
- #include <linux/blk-mq.h>
- #include <linux/hdreg.h>
-@@ -62,7 +61,6 @@ struct ubiblock_param {
- };
- 
- struct ubiblock_pdu {
--	struct work_struct work;
- 	struct ubi_sgl usgl;
- };
- 
-@@ -82,8 +80,6 @@ struct ubiblock {
- 	struct gendisk *gd;
- 	struct request_queue *rq;
- 
--	struct workqueue_struct *wq;
--
- 	struct mutex dev_mutex;
- 	struct list_head list;
- 	struct blk_mq_tag_set tag_set;
-@@ -181,20 +177,29 @@ static struct ubiblock *find_dev_nolock(int ubi_num, int vol_id)
- 	return NULL;
- }
- 
--static int ubiblock_read(struct ubiblock_pdu *pdu)
-+static blk_status_t ubiblock_read(struct request *req)
- {
--	int ret, leb, offset, bytes_left, to_read;
--	u64 pos;
--	struct request *req = blk_mq_rq_from_pdu(pdu);
-+	struct ubiblock_pdu *pdu = blk_mq_rq_to_pdu(req);
- 	struct ubiblock *dev = req->q->queuedata;
-+	u64 pos = blk_rq_pos(req) << 9;
-+	int to_read = blk_rq_bytes(req);
-+	int bytes_left = to_read;
-+	/* Get LEB:offset address to read from */
-+	int offset = do_div(pos, dev->leb_size);
-+	int leb = pos;
-+	struct req_iterator iter;
-+	struct bio_vec bvec;
-+	int ret;
- 
--	to_read = blk_rq_bytes(req);
--	pos = blk_rq_pos(req) << 9;
-+	blk_mq_start_request(req);
- 
--	/* Get LEB:offset address to read from */
--	offset = do_div(pos, dev->leb_size);
--	leb = pos;
--	bytes_left = to_read;
-+	/*
-+	 * It is safe to ignore the return value of blk_rq_map_sg() because
-+	 * the number of sg entries is limited to UBI_MAX_SG_COUNT
-+	 * and ubi_read_sg() will check that limit.
-+	 */
-+	ubi_sgl_init(&pdu->usgl);
-+	blk_rq_map_sg(req->q, req, pdu->usgl.sg);
- 
- 	while (bytes_left) {
- 		/*
-@@ -206,14 +211,17 @@ static int ubiblock_read(struct ubiblock_pdu *pdu)
- 
- 		ret = ubi_read_sg(dev->desc, leb, &pdu->usgl, offset, to_read);
- 		if (ret < 0)
--			return ret;
-+			break;
- 
- 		bytes_left -= to_read;
- 		to_read = bytes_left;
- 		leb += 1;
- 		offset = 0;
- 	}
--	return 0;
-+
-+	rq_for_each_segment(bvec, req, iter)
-+		flush_dcache_page(bvec.bv_page);
-+	return errno_to_blk_status(ret);
- }
- 
- static int ubiblock_open(struct block_device *bdev, fmode_t mode)
-@@ -289,47 +297,15 @@ static const struct block_device_operations ubiblock_ops = {
- 	.getgeo	= ubiblock_getgeo,
- };
- 
--static void ubiblock_do_work(struct work_struct *work)
--{
--	int ret;
--	struct ubiblock_pdu *pdu = container_of(work, struct ubiblock_pdu, work);
--	struct request *req = blk_mq_rq_from_pdu(pdu);
--	struct req_iterator iter;
--	struct bio_vec bvec;
--
--	blk_mq_start_request(req);
--
--	/*
--	 * It is safe to ignore the return value of blk_rq_map_sg() because
--	 * the number of sg entries is limited to UBI_MAX_SG_COUNT
--	 * and ubi_read_sg() will check that limit.
--	 */
--	blk_rq_map_sg(req->q, req, pdu->usgl.sg);
--
--	ret = ubiblock_read(pdu);
--
--	rq_for_each_segment(bvec, req, iter)
--		flush_dcache_page(bvec.bv_page);
--
--	blk_mq_end_request(req, errno_to_blk_status(ret));
--}
--
- static blk_status_t ubiblock_queue_rq(struct blk_mq_hw_ctx *hctx,
- 			     const struct blk_mq_queue_data *bd)
- {
--	struct request *req = bd->rq;
--	struct ubiblock *dev = hctx->queue->queuedata;
--	struct ubiblock_pdu *pdu = blk_mq_rq_to_pdu(req);
--
--	switch (req_op(req)) {
-+	switch (req_op(bd->rq)) {
- 	case REQ_OP_READ:
--		ubi_sgl_init(&pdu->usgl);
--		queue_work(dev->wq, &pdu->work);
--		return BLK_STS_OK;
-+		return ubiblock_read(bd->rq);
- 	default:
- 		return BLK_STS_IOERR;
- 	}
--
- }
- 
- static int ubiblock_init_request(struct blk_mq_tag_set *set,
-@@ -339,8 +315,6 @@ static int ubiblock_init_request(struct blk_mq_tag_set *set,
- 	struct ubiblock_pdu *pdu = blk_mq_rq_to_pdu(req);
- 
- 	sg_init_table(pdu->usgl.sg, UBI_MAX_SG_COUNT);
--	INIT_WORK(&pdu->work, ubiblock_do_work);
--
- 	return 0;
- }
- 
-@@ -401,7 +375,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 	dev->tag_set.ops = &ubiblock_mq_ops;
- 	dev->tag_set.queue_depth = 64;
- 	dev->tag_set.numa_node = NUMA_NO_NODE;
--	dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
-+	dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE | BLK_MQ_F_BLOCKING;
- 	dev->tag_set.cmd_size = sizeof(struct ubiblock_pdu);
- 	dev->tag_set.driver_data = dev;
- 	dev->tag_set.nr_hw_queues = 1;
-@@ -439,31 +413,18 @@ int ubiblock_create(struct ubi_volume_info *vi)
- 	dev->rq = gd->queue;
- 	blk_queue_max_segments(dev->rq, UBI_MAX_SG_COUNT);
- 
--	/*
--	 * Create one workqueue per volume (per registered block device).
--	 * Remember workqueues are cheap, they're not threads.
--	 */
--	dev->wq = alloc_workqueue("%s", 0, 0, gd->disk_name);
--	if (!dev->wq) {
--		ret = -ENOMEM;
--		goto out_remove_minor;
--	}
--
- 	list_add_tail(&dev->list, &ubiblock_devices);
- 
- 	/* Must be the last step: anyone can call file ops from now on */
- 	ret = add_disk(dev->gd);
- 	if (ret)
--		goto out_destroy_wq;
-+		goto out_remove_minor;
- 
- 	dev_info(disk_to_dev(dev->gd), "created from ubi%d:%d(%s)",
- 		 dev->ubi_num, dev->vol_id, vi->name);
- 	mutex_unlock(&devices_mutex);
- 	return 0;
- 
--out_destroy_wq:
--	list_del(&dev->list);
--	destroy_workqueue(dev->wq);
- out_remove_minor:
- 	idr_remove(&ubiblock_minor_idr, gd->first_minor);
- out_cleanup_disk:
-@@ -482,8 +443,6 @@ static void ubiblock_cleanup(struct ubiblock *dev)
- {
- 	/* Stop new requests to arrive */
- 	del_gendisk(dev->gd);
--	/* Flush pending work */
--	destroy_workqueue(dev->wq);
- 	/* Finally destroy the blk queue */
- 	dev_info(disk_to_dev(dev->gd), "released");
- 	put_disk(dev->gd);
--- 
-2.39.0
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[14/27] ASoC: PXA: make SND_PXA2XX_SOC_AC97 user-selectable
+        commit: 5eab9265759e2fb042aa452931c3d06ab7ab8dae
+[15/27] ASoC: pxa: remove unused board support
+        (no commit info)
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 ______________________________________________________
 Linux MTD discussion mailing list
