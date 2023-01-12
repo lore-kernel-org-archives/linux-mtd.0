@@ -4,73 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 520F8C46467
-	for <linux-mtd@archiver.kernel.org>; Wed, 11 Jan 2023 06:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6363EC54EBD
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 Jan 2023 08:42:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3H9ShKulQTAJowRL95Uwyw2yv9k7EuiiGp4n79N7djs=; b=4saUhRpL9Sox/5
-	+ZAAVYiqQ6R+mxU+tp/5XmW0CcXkn7MfFVq2iuLW06FEFuHI4Ii/2nxnxOAV+5SG1cAH46dRxGVu+
-	9DAjocfMnjQl1xa51A4PYgYFggYWPBCkYmc9FkO7lXoWO8X++ODrT4ZWRzpZE9kerf9MjLAsKlg7X
-	HzRZlNrf59ZhScEAeCPSVie7mTZ0qd0OsoQf0GBWau56uGZXAvgdWS8dEHXbFfDw//n4jdXf6S3eu
-	sExW9uL6Pv8obQ1oBaEHoMR6MErQEAA15/+WFW6oB2ZHKrKdFzBfZvaAonFoHK+gDOZRjAPMcpSxv
-	GIrFO+TF57em9elkCQoQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=4VMEYPGUdNTKx52rRFl8uiE1uP3PeZJNrzQzURJDr0o=; b=IFClCI6aXmk/An
+	cUiaQtmH/wk3iTAw1u+ARDV2qnwEpOJvlV5r2hMsS+sydlIJFFSz1g0A4BGA0IKQdrG5gFkDHLkpC
+	zDODh+cHpty2UtbFKQlkyG0THJUhIX8EVobZkgNjHQLI3W8unyCfp5S0L9jL/pbdwmqivzGApARmF
+	swIIpUIP0p5pEe2QUyodcmUzo/Awi2BPgYYE0ry5+DPhAwWYLXMtrrxg4NUg4PJvMPBARKpSWMw2D
+	LnXO3DZ1LZ7a25/YbDdH2eMGN7C2fhK545c7lF4RISxA0WkMIT+ugL/Xg90bE5kh1dR6lr0yhPTOY
+	DGVMoKlguMXWeb6hsG0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pFUeL-009rze-98; Wed, 11 Jan 2023 06:31:49 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1pFt91-00EAGR-SV; Thu, 12 Jan 2023 08:41:07 +0000
+Received: from mail.glencoeaur.com ([217.61.97.113])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pFUeI-009rz9-5C
-	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2023 06:31:47 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 30B6URw2102291;
-	Wed, 11 Jan 2023 00:30:27 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1673418627;
-	bh=23DwmL0+bcMQTL4xS+OEn6n02lNsL7rrZOqpyoM2n+E=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=JEWBdj8cxoaPNYuRonGA9wuUBDg0Y53Jbi9RsXnnWLYW7KtGe3Vt0xvEuAr0C3RGB
-	 P3QCVGWPvzmAevvYcqGlmvjbkYkU6qbjyR1TtrPm6Z4ke0G5fGGGUI6C+o66bPAEHi
-	 3Oe2JEviDMiWY6bBJvgpSB0CbWVK8a6I0NAJQAJ8=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 30B6URki003451
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 11 Jan 2023 00:30:27 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Wed, 11
- Jan 2023 00:30:26 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16 via
- Frontend Transport; Wed, 11 Jan 2023 00:30:26 -0600
-Received: from [10.24.69.26] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-	by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 30B6UNUZ085896;
-	Wed, 11 Jan 2023 00:30:24 -0600
-Message-ID: <12309c41-7141-8848-c0ce-0cdb2d618938@ti.com>
-Date: Wed, 11 Jan 2023 12:00:23 +0530
+	id 1pFt8w-00EAEM-DP
+	for linux-mtd@lists.infradead.org; Thu, 12 Jan 2023 08:41:03 +0000
+Received: by mail.glencoeaur.com (Postfix, from userid 1001)
+	id DF4BB82293; Thu, 12 Jan 2023 08:40:50 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=glencoeaur.com;
+	s=mail; t=1673512860;
+	bh=2S0GQFScndXkBEK4sqdoOhOYLqsB2sEH8Q5XQfVvKpo=;
+	h=Date:From:To:Subject:From;
+	b=p7EvYO+5ik/l8oSkE6JEX95+JfuNiHPcXw1eTvsVfvVVFsYAveYiPxsRaEDf5tsM/
+	 mACSxaFVbdFWNjm9fD54Vo/N9gtBVTneQay9rnPFekBnorr1ucQlycex3RCh/g0loK
+	 CdNNkpYDs6QAgYXRYA8RRDjLD4Mx7iqv2W/+HOmdEm9c5CIR8zkHgLI2KG06stlIK/
+	 AXOS5XkKJnrhxuSPp3u2115U4pg3UgRFa8iLtJgEdH6gTEwqSV4KI0rR8TCDmYMyO3
+	 qJRh+OJhGgF14aeaglfIL6S27w9EGw73uUxWdxyrw5GEaoq2ARDtoRhf9r+dicHDdq
+	 4SMlAXyEQk7Gw==
+Received: by mail.glencoeaur.com for <linux-mtd@lists.infradead.org>; Thu, 12 Jan 2023 08:40:39 GMT
+Message-ID: <20230112074500-0.1.z.3gfb.0.oruzflw4cx@glencoeaur.com>
+Date: Thu, 12 Jan 2023 08:40:39 GMT
+From: "Zbynek Spacek" <zbynek.spacek@glencoeaur.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Silikonmischungen
+X-Mailer: mail.glencoeaur.com
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 2/2] mtd: spi-nor: spansion: Make CFRx reg fields generic
-Content-Language: en-US
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, <Takahiro.Kuwano@infineon.com>,
-        <tkuw584924@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <pratyush@kernel.org>, <michael@walle.cc>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <Bacem.Daassi@infineon.com>
-References: <493d9a10-aaf3-70f6-36c3-9a2cf39f0759@linaro.org>
- <20230110164703.83413-1-tudor.ambarus@linaro.org>
- <20230110164703.83413-2-tudor.ambarus@linaro.org>
-From: Dhruva Gole <d-gole@ti.com>
-In-Reply-To: <20230110164703.83413-2-tudor.ambarus@linaro.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230110_223146_310074_11E317FC 
-X-CRM114-Status: GOOD (  19.82  )
+X-CRM114-CacheID: sfid-20230112_004102_599213_BFB7A516 
+X-CRM114-Status: UNSURE (   1.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,109 +60,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Good morning,
+
+do you need intermediates for processing, plastics (e.g. rubber) or silicone mixtures?
+
+We provide a wide range of silicone rubbers with various properties, silicone mixtures from renowned manufacturers such as Wacker, Elastosil LR and dyes, stabilizers, primers and anti-adhesive additives.
+
+We also produce technical silicone compounds with increased resistance to oils, resistant to high temperatures and water vapor, conductive and many more.
+
+We provide fast order fulfillment, timely deliveries and cost optimization.
+
+Can I introduce what we can offer you?
 
 
-On 10/01/23 22:17, Tudor Ambarus wrote:
-> Cypress defines two flavors of configuration registers, volatile and
-> non volatile, and both use the same bit fields. Rename the bitfields in
-> the configuration registers so that they can be used for both flavors.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
-
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
->   drivers/mtd/spi-nor/spansion.c | 22 +++++++++++-----------
->   1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index 07fe0f6fdfe3..12a256c0ef4c 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -15,19 +15,19 @@
->   #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
->   #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
->   #define SPINOR_REG_CYPRESS_CFR1V		0x00800002
-> -#define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN	BIT(1)	/* Quad Enable */
-> +#define SPINOR_REG_CYPRESS_CFR1_QUAD_EN		BIT(1)	/* Quad Enable */
->   #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
-> -#define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24	0xb
-> +#define SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24	0xb
->   #define SPINOR_REG_CYPRESS_CFR3V		0x00800004
-> -#define SPINOR_REG_CYPRESS_CFR3V_PGSZ		BIT(4) /* Page size. */
-> +#define SPINOR_REG_CYPRESS_CFR3_PGSZ		BIT(4) /* Page size. */
->   #define SPINOR_REG_CYPRESS_CFR5V		0x00800006
->   #define SPINOR_REG_CYPRESS_CFR5_BIT6		BIT(6)
->   #define SPINOR_REG_CYPRESS_CFR5_DDR		BIT(1)
->   #define SPINOR_REG_CYPRESS_CFR5_OPI		BIT(0)
-> -#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN				\
-> +#define SPINOR_REG_CYPRESS_CFR5_OCT_DTR_EN				\
->   	(SPINOR_REG_CYPRESS_CFR5_BIT6 |	SPINOR_REG_CYPRESS_CFR5_DDR |	\
->   	 SPINOR_REG_CYPRESS_CFR5_OPI)
-> -#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	SPINOR_REG_CYPRESS_CFR5_BIT6
-> +#define SPINOR_REG_CYPRESS_CFR5_OCT_DTR_DS	SPINOR_REG_CYPRESS_CFR5_BIT6
->   #define SPINOR_OP_CYPRESS_RD_FAST		0xee
->   
->   /* Cypress SPI NOR flash operations. */
-> @@ -57,7 +57,7 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
->   	u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
->   
->   	/* Use 24 dummy cycles for memory array reads. */
-> -	*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
-> +	*buf = SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24;
->   	op = (struct spi_mem_op)
->   		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
->   					  SPINOR_REG_CYPRESS_CFR2V, 1, buf);
-> @@ -69,7 +69,7 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
->   	nor->read_dummy = 24;
->   
->   	/* Set the octal and DTR enable bits. */
-> -	buf[0] = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
-> +	buf[0] = SPINOR_REG_CYPRESS_CFR5_OCT_DTR_EN;
->   	op = (struct spi_mem_op)
->   		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
->   					  SPINOR_REG_CYPRESS_CFR5V, 1, buf);
-> @@ -103,7 +103,7 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
->   	 * in 8D-8D-8D mode. Since there is no register at the next location,
->   	 * just initialize the value to 0 and let the transaction go on.
->   	 */
-> -	buf[0] = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
-> +	buf[0] = SPINOR_REG_CYPRESS_CFR5_OCT_DTR_DS;
->   	buf[1] = 0;
->   	op = (struct spi_mem_op)
->   		CYPRESS_NOR_WR_ANY_REG_OP(nor->addr_nbytes,
-> @@ -155,11 +155,11 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
->   	if (ret)
->   		return ret;
->   
-> -	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR1V_QUAD_EN)
-> +	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR1_QUAD_EN)
->   		return 0;
->   
->   	/* Update the Quad Enable bit. */
-> -	nor->bouncebuf[0] |= SPINOR_REG_CYPRESS_CFR1V_QUAD_EN;
-> +	nor->bouncebuf[0] |= SPINOR_REG_CYPRESS_CFR1_QUAD_EN;
->   	op = (struct spi_mem_op)
->   		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
->   					  SPINOR_REG_CYPRESS_CFR1V, 1,
-> @@ -210,7 +210,7 @@ static int cypress_nor_set_page_size(struct spi_nor *nor)
->   	if (ret)
->   		return ret;
->   
-> -	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
-> +	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3_PGSZ)
->   		nor->params->page_size = 512;
->   	else
->   		nor->params->page_size = 256;
-
--- 
-Thanks and Regards,
-Dhruva Gole
+Best regards
+Zbynek Spacek
 
 ______________________________________________________
 Linux MTD discussion mailing list
