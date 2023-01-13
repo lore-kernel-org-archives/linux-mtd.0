@@ -4,38 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91D81C54EBE
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 06:40:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A510EC54EBE
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 07:13:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HxI36AdoXA/IDeWdCpQ2bOQs28T9UJTBDtHCsH9rbCs=; b=3lBBiQWiUWbpGJ
-	bIEYrqIKLYlL25p6Vwt1lII1UvpVnjMf3S8Ru4MII5bUt9WW3nWsuegk/GbIh8d49FTgZc8hmg85B
-	cR7Gn/LDdDG1Jz+eNTGMrRoKnWigpdWMPfWiR1KE4doRxXel8DsOxWADSm4HXuNaaL+yK63zYzlXQ
-	UFcuphHrsWGPe4S1RU/Yjr915HeldysXgFgsie4Yrf3VerzjxSYSrU3k1AFJiR5bYFV/v9xnZjH0D
-	yoQD15KH0rMScD6pert1EkCHoohuPKW6eXdjwsjBl5a2cT7Jsqj5YHW3KW7045ZNL/XQBfvgQHX+r
-	eZMPaFDkLnAULMy8E7xQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=vHC70yblPl62A0lCSd7k3jJcNZLcMeIBe9qJua/MVBo=; b=qwbiTAmSWag+sD
+	Q0VDOo8UyWL+JHTc+4otBGT56BoEER/+7cRDHE9tAwivqRe/T9zWGeQo1X91G8Tyd8ohOfV/4E8tw
+	M7xKudOaxX386nsfIaPGWQZGAn7/t7issCmYbR0UUNPXklsJv4XBfCklBp19KQRaofDywTzQitn+W
+	d/ZtXa6Kpru+2L87737y7oLUyzVog+YYWQ2z6/mwD3TL5O00Aswb3qFN3yM0r9gGM9DW+OghTZwpn
+	Uwbpd5ReV6U9Vr+TC5ZgcAPh0MLyKOUfswZ2mU0Q/B+S8/4KIt/1LzB1XLiw9ShOgwD89nElmOH5h
+	WTiL3unhf8Kbi4aEfg2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGDjb-000qbF-2H; Fri, 13 Jan 2023 06:40:15 +0000
-Received: from [2601:1c2:d80:3110::9307] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGDjZ-000qaq-Fq; Fri, 13 Jan 2023 06:40:13 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] ubi: use correct names in function kernel-doc comments
-Date: Thu, 12 Jan 2023 22:40:12 -0800
-Message-Id: <20230113064012.25071-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.39.0
+	id 1pGEFA-000wML-Nt; Fri, 13 Jan 2023 07:12:52 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1pGEF7-000wLF-M9
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 07:12:51 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C10EF62238;
+	Fri, 13 Jan 2023 07:12:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DE1AC433D2;
+	Fri, 13 Jan 2023 07:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1673593968;
+	bh=QW1PY3rFgL7HIa1lrzMI5uksSAfbml0XYJbvQzFAuWk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=0oMMF0AsnNGVsfn35DXLDvgW2FFDBQctJVJeY8ZKTXb5ezzn7lhGkAftJpZH35IQL
+	 SnxMV96zvZ93p/8lbSuV6nhLT/2v6ajWOmV2dS1jXf/y0bbQOvb+apnJ6XXiXzoBRc
+	 F2PSRDe2WkZQdYDnszi1VWAGguwJrTfCgd0RBj8I=
+Date: Fri, 13 Jan 2023 08:12:44 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arch@vger.kernel.org,
+	dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-sh@vger.kernel.org
+Subject: Re: [PATCH 02/22] usb: remove the dead USB_OHCI_SH option
+Message-ID: <Y8EEbCP6PRMzWP5y@kroah.com>
+References: <20230113062339.1909087-1-hch@lst.de>
+ <20230113062339.1909087-3-hch@lst.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230113062339.1909087-3-hch@lst.de>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20230112_231249_789696_D9FEA77B 
+X-CRM114-Status: GOOD (  22.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -52,60 +84,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fix kernel-doc warnings by using the correct function names in
-their kernel-doc notation:
+On Fri, Jan 13, 2023 at 07:23:19AM +0100, Christoph Hellwig wrote:
+> USB_OHCI_SH is a dummy option that never builds any code, remove it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/usb/host/Kconfig | 11 -----------
+>  1 file changed, 11 deletions(-)
+> 
+> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+> index 8d799d23c476e1..ca5f657c092cf4 100644
+> --- a/drivers/usb/host/Kconfig
+> +++ b/drivers/usb/host/Kconfig
+> @@ -548,17 +548,6 @@ config USB_OHCI_HCD_SSB
+>  
+>  	  If unsure, say N.
+>  
+> -config USB_OHCI_SH
+> -	bool "OHCI support for SuperH USB controller (DEPRECATED)"
+> -	depends on SUPERH || COMPILE_TEST
+> -	select USB_OHCI_HCD_PLATFORM
+> -	help
+> -	  This option is deprecated now and the driver was removed, use
+> -	  USB_OHCI_HCD_PLATFORM instead.
+> -
+> -	  Enables support for the on-chip OHCI controller on the SuperH.
+> -	  If you use the PCI OHCI controller, this option is not necessary.
+> -
+>  config USB_OHCI_EXYNOS
+>  	tristate "OHCI support for Samsung S5P/Exynos SoC Series"
+>  	depends on ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
+> -- 
+> 2.39.0
+> 
 
-drivers/mtd/ubi/eba.c:72: warning: expecting prototype for next_sqnum(). Prototype was for ubi_next_sqnum() instead
-drivers/mtd/ubi/wl.c:176: warning: expecting prototype for wl_tree_destroy(). Prototype was for wl_entry_destroy() instead
-drivers/mtd/ubi/misc.c:24: warning: expecting prototype for calc_data_len(). Prototype was for ubi_calc_data_len() instead
+Do you want all of these to go through a single tree, or can they go
+through the different driver subsystem trees?
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/ubi/eba.c  |    2 +-
- drivers/mtd/ubi/misc.c |    2 +-
- drivers/mtd/ubi/wl.c   |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+If single:
 
-diff -- a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -61,7 +61,7 @@ struct ubi_eba_table {
- };
- 
- /**
-- * next_sqnum - get next sequence number.
-+ * ubi_next_sqnum - get next sequence number.
-  * @ubi: UBI device description object
-  *
-  * This function returns next sequence number to use, which is just the current
-diff -- a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
---- a/drivers/mtd/ubi/misc.c
-+++ b/drivers/mtd/ubi/misc.c
-@@ -10,7 +10,7 @@
- #include "ubi.h"
- 
- /**
-- * calc_data_len - calculate how much real data is stored in a buffer.
-+ * ubi_calc_data_len - calculate how much real data is stored in a buffer.
-  * @ubi: UBI device description object
-  * @buf: a buffer with the contents of the physical eraseblock
-  * @length: the buffer length
-diff -- a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -165,7 +165,7 @@ static void wl_tree_add(struct ubi_wl_en
- }
- 
- /**
-- * wl_tree_destroy - destroy a wear-leveling entry.
-+ * wl_entry_destroy - destroy a wear-leveling entry.
-  * @ubi: UBI device description object
-  * @e: the wear-leveling entry to add
-  *
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+If not, I'll be glad to take this.
+
+thanks,
+
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
