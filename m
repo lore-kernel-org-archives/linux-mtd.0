@@ -4,75 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3290C54EBD
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 08:53:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 008B1C54EBD
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 08:54:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7Z0fC41rdEOZpVRdHwOtnh3YXqJ65MWOLssHgJ3ADG4=; b=X2Nz4ROSoMF4fk
-	njli7pC3E1chN1pVtNsSAq2zyBUJc9yZjrpY9CLvNwVIDeoqfyZy7vZ95zHjJogH3EGZO+HN+o4hd
-	ZUiCaQNy2gkkIl16JLN5j8tC593dO1vd1cPQg05nkJbNEzwW1wVszw54+mf1LEaoLpaie8X6n+EAg
-	G7z2KZx5WYe+McBY53d3rHWLpjLaMDu1DN51HzcNViASta7Bd/gvUy5PfI7BtgWEF78ZmsAsVej4N
-	n7wCnu0ZwR+Z6CzsD6k7mpxSAhzv5Wd04ui2greFltjCEJB6i3hNNH08va29gP88DbLUz8Ni44u3W
-	+gN0kfNNLezbaW/7tFIw==;
+	List-Owner; bh=K2zkoGhsw0s7BpP9qjqxv2dZral/2LBdrB370r/Oeik=; b=OGkBLMsJnn/fDF
+	YibJA2WB8Xok1qeAc7sAUeo6K5THBHnEJ3iDy7eg7GavBDwgHkGhuIer0qpB+Ma2LfeX96AOlOCT3
+	pDRq44Ctdg6uBWIaRA9O6Ut9cUQ66EEtRvl1bIREMvLEfAPsjcIrlGfK6mR8yxmKhUs+o+ycDc76V
+	0mF17Fp4nTRIRjz/dTFaPVUM1KdVRDEv+FZ20RknsHxtwIMKePQX5Dn2P3/NWWNY4tTNNX8PQNfqo
+	Uko0imzH5GBNEQog9v1cm2tprz1oCy/mJYv/8Rp2N3p2UxtprZRtHToeF+38SLMpUwrQa9vJNFQ2g
+	5fVrVXPY1/+OQuHEe+cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGFo4-001Kep-1m; Fri, 13 Jan 2023 08:53:00 +0000
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
+	id 1pGFpC-001KsR-9g; Fri, 13 Jan 2023 08:54:10 +0000
+Received: from mail-qt1-f182.google.com ([209.85.160.182])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGFo1-001Kdh-69
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 08:52:58 +0000
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pGFnq-001QE4-Us; Fri, 13 Jan 2023 09:52:46 +0100
-Received: from dynamic-078-054-173-160.78.54.pool.telefonica.de ([78.54.173.160] helo=[192.168.1.11])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pGFnq-002ngG-HF; Fri, 13 Jan 2023 09:52:46 +0100
-Message-ID: <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
-Date: Fri, 13 Jan 2023 09:52:45 +0100
+	id 1pGFp9-001Krl-Lf
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 08:54:08 +0000
+Received: by mail-qt1-f182.google.com with SMTP id s5so14121744qtx.6
+        for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2023 00:54:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iHH87Wz4eqdDYk3yPRdInSdOf4/Qu/uaLfX4LZwjHtY=;
+        b=jq35Dpw1dmd6/vStvUSW7zr4BAL2v1K66dHG7ceqXe5ArktNNlQ+1v6lN7i45qkrFX
+         K0qWq4rdcpeU7y8e2kXs0cz9CT0CGq4Fx5BBiPJoOSYAYNSMcCGQB5FU2iXLFIU12n6k
+         5bKbypnkbCJ77OIdt8PEycu71RiL+IAt/WU1HciZi+DMvHCtPktqV8GCfMhUbpvch8lI
+         EEIMYE+FcnZEbgTLDRLMBkinZUxjNOGzG/QgNHRpDBT+2AYvCNivNTUp+KhVM097VkGH
+         xXjXddkAhsrifLulVMO1BkDIyikZE0Xk42ThwjTPQeuPiMWJU0cCstd0Re6xTZ6+PuUO
+         M02w==
+X-Gm-Message-State: AFqh2komgcI9uTT2WdZ6dtonZnz9HWQEtuomahmXIOLgd5gKCYfnRaWd
+	iYXF+Xjpgn9rUVgAGeocTCjFY470iMBVww==
+X-Google-Smtp-Source: AMrXdXt4U0p5/yv0pFNQQC+PEeH9Ozn4j3ApQmJpxxWKucP+q0Njpr6ZSZmXqatD3NFWEhJj8Nq7Zg==
+X-Received: by 2002:a05:622a:4a0f:b0:3ab:5bbc:bbe3 with SMTP id fv15-20020a05622a4a0f00b003ab5bbcbbe3mr117654429qtb.19.1673600046665;
+        Fri, 13 Jan 2023 00:54:06 -0800 (PST)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id f1-20020ac81341000000b003a6a19ee4f0sm10241300qtj.33.2023.01.13.00.54.05
+        for <linux-mtd@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Jan 2023 00:54:06 -0800 (PST)
+Received: by mail-yb1-f171.google.com with SMTP id a9so4939075ybb.3
+        for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2023 00:54:05 -0800 (PST)
+X-Received: by 2002:a25:d095:0:b0:7b6:daae:ad50 with SMTP id
+ h143-20020a25d095000000b007b6daaead50mr3261996ybg.89.1673600045570; Fri, 13
+ Jan 2023 00:54:05 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: remove arch/sh
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Hellwig <hch@lst.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org,
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arch@vger.kernel.org, dmaengine@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
-References: <20230113062339.1909087-1-hch@lst.de>
- <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
- <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 78.54.173.160
+References: <20230113062339.1909087-1-hch@lst.de> <20230113062339.1909087-20-hch@lst.de>
+In-Reply-To: <20230113062339.1909087-20-hch@lst.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 13 Jan 2023 09:53:54 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWLZF3uF8+Bs8FL__x=MyZPPBUqX-Q6XVQS3B08re-vZw@mail.gmail.com>
+Message-ID: <CAMuHMdWLZF3uF8+Bs8FL__x=MyZPPBUqX-Q6XVQS3B08re-vZw@mail.gmail.com>
+Subject: Re: [PATCH 19/22] fbdev: remove sh7760fb
+To: Christoph Hellwig <hch@lst.de>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
+	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org, 
+	linux-spi@vger.kernel.org, linux-serial@vger.kernel.org, 
+	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, 
+	alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230113_005257_405538_BFB8A6BA 
-X-CRM114-Status: UNSURE (   8.00  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230113_005407_726656_76E67E5C 
+X-CRM114-Status: GOOD (  20.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,29 +92,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Geert!
+Hi Christoph,
 
-On 1/13/23 09:26, Geert Uytterhoeven wrote:
-> Indeed.  The main issue is not the lack of people sending patches and
-> fixes, but those patches never being applied by the maintainers.
-> Perhaps someone is willing to stand up to take over maintainership?
+On Fri, Jan 13, 2023 at 7:25 AM Christoph Hellwig <hch@lst.de> wrote:
+> Now that arch/sh is removed this driver is dead code.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-I actually would be willing to do it but I'm a bit hesitant as I'm not 100%
-sure my skills are sufficient. Maybe if someone can assist me?
+Thanks for your patch!
 
-Adrian
+> --- a/drivers/video/fbdev/Kconfig
+> +++ b/drivers/video/fbdev/Kconfig
+> @@ -1861,7 +1861,7 @@ config FB_W100
+>  config FB_SH_MOBILE_LCDC
+>         tristate "SuperH Mobile LCDC framebuffer support"
+>         depends on FB && HAVE_CLK && HAS_IOMEM
+> -       depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
+> +       depends on ARCH_RENESAS || COMPILE_TEST
 
--- 
-  .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Nit: this part should be a separate patch.
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
