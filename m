@@ -4,83 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A18ACC54EBE
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 08:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3290C54EBD
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 08:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NgcLH2J+kMLXaz+GejyHHcAnSfSI1AK0ZdZtqzBou/0=; b=nFnuFvjQAhbDYV
-	OWCldJQY2kGNg6powe9UoAD6j3k10lEemmNrpL+Esd/Jq1fCcCwJUGtXFa0GQ0oDb+rHumJ4Hp0a/
-	LB/p8zqlQYvwMK2o8U27eLcomVhBAX0rZJD7joKBme1Ui3ZGilevEc1tr9zsJnBQpGi+r21opSuUJ
-	+bGf4JdFLhTMFtYiVOAgSuadtqu2nZ1l3t4fSKcDkegTxGhCNyOScE14rZvN2tgd+OO9jR1Njw6Vw
-	SjAfVNhGksUauX9h3Cx0xEmm2l9vUKZOclYmEFGGfPLHpP7K2oe03VhZ/d4REgZDAFXv5SmjbszjY
-	hrQyyLNKREtz105yHndw==;
+	List-Owner; bh=7Z0fC41rdEOZpVRdHwOtnh3YXqJ65MWOLssHgJ3ADG4=; b=X2Nz4ROSoMF4fk
+	njli7pC3E1chN1pVtNsSAq2zyBUJc9yZjrpY9CLvNwVIDeoqfyZy7vZ95zHjJogH3EGZO+HN+o4hd
+	ZUiCaQNy2gkkIl16JLN5j8tC593dO1vd1cPQg05nkJbNEzwW1wVszw54+mf1LEaoLpaie8X6n+EAg
+	G7z2KZx5WYe+McBY53d3rHWLpjLaMDu1DN51HzcNViASta7Bd/gvUy5PfI7BtgWEF78ZmsAsVej4N
+	n7wCnu0ZwR+Z6CzsD6k7mpxSAhzv5Wd04ui2greFltjCEJB6i3hNNH08va29gP88DbLUz8Ni44u3W
+	+gN0kfNNLezbaW/7tFIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGFlq-001KGg-PJ; Fri, 13 Jan 2023 08:50:42 +0000
-Received: from mail-qv1-f43.google.com ([209.85.219.43])
+	id 1pGFo4-001Kep-1m; Fri, 13 Jan 2023 08:53:00 +0000
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGFln-001KFs-Pg
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 08:50:41 +0000
-Received: by mail-qv1-f43.google.com with SMTP id o17so14422784qvn.4
-        for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2023 00:50:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=awQakUOIwVvp4xWgkhRGNM/c58rzqkM16qYt20+qNyU=;
-        b=vucvIEe9IUps4BKpRmjM1kx7yttnyI5V2zVJeCIfK2KQyXpVsrNaUb3qTAURlcwSXZ
-         bqYclO93ZEXH14MBOzpl4va64XE0aJrW3BKEL9mMYHUs+UBkct5d6Dc9+G/sioaIcWhm
-         ifVUD2W+9vd+Ze5PHSOQiDJ8MgRw8OVRXPIGi1p+kCXXPRlLroCPQvs+OYw1c41MLBXe
-         o0JwTXx2WF0pwaJtWfizc98FUaDczmKPdmLZtDAtKK+2m+Iuf1und9ssz+Pc7BQKukLX
-         CDAP/95U6FqtCuc1utuxJjrPD73gmQNfKhI84jhK903STvNTZtV++wQre7PdoS0brqr7
-         ysrg==
-X-Gm-Message-State: AFqh2kpuA56W73Q20ZRj8FJWy0AGDODEyYqnqIke6c6mB5cCFH0FHc5L
-	m127LR9pJxROtb7oPI0EjJjXu1qeyPdrAQ==
-X-Google-Smtp-Source: AMrXdXs+8JtEzunNp+cZAm/n1KTm/delkozXVppUIcF+zAGGA8uZYuvmAJUEb0e6j3Etx7G6/jAqpA==
-X-Received: by 2002:a0c:c3c9:0:b0:531:8cdb:10a1 with SMTP id p9-20020a0cc3c9000000b005318cdb10a1mr83957695qvi.16.1673599837211;
-        Fri, 13 Jan 2023 00:50:37 -0800 (PST)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id d6-20020a37b406000000b007049f19c736sm12119489qkf.7.2023.01.13.00.50.36
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Jan 2023 00:50:36 -0800 (PST)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-4c131bede4bso275335957b3.5
-        for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2023 00:50:36 -0800 (PST)
-X-Received: by 2002:a81:578e:0:b0:4d9:3858:392 with SMTP id
- l136-20020a81578e000000b004d938580392mr551266ywb.502.1673599835999; Fri, 13
- Jan 2023 00:50:35 -0800 (PST)
+	id 1pGFo1-001Kdh-69
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 08:52:58 +0000
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1pGFnq-001QE4-Us; Fri, 13 Jan 2023 09:52:46 +0100
+Received: from dynamic-078-054-173-160.78.54.pool.telefonica.de ([78.54.173.160] helo=[192.168.1.11])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1pGFnq-002ngG-HF; Fri, 13 Jan 2023 09:52:46 +0100
+Message-ID: <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
+Date: Fri, 13 Jan 2023 09:52:45 +0100
 MIME-Version: 1.0
-References: <20230113062339.1909087-1-hch@lst.de> <20230113062339.1909087-17-hch@lst.de>
-In-Reply-To: <20230113062339.1909087-17-hch@lst.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 13 Jan 2023 09:50:24 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU2vaVaCrcKom5YQYD9GLoeerX8HAQav36uFGUksOFc9w@mail.gmail.com>
-Message-ID: <CAMuHMdU2vaVaCrcKom5YQYD9GLoeerX8HAQav36uFGUksOFc9w@mail.gmail.com>
-Subject: Re: [PATCH 16/22] spi: remove spi-sh-sci
-To: Christoph Hellwig <hch@lst.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
-	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org, 
-	linux-spi@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, 
-	alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: remove arch/sh
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arch@vger.kernel.org, dmaengine@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+References: <20230113062339.1909087-1-hch@lst.de>
+ <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+ <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+In-Reply-To: <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 78.54.173.160
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230113_005039_849277_AAF7DEF0 
-X-CRM114-Status: GOOD (  26.46  )
+X-CRM114-CacheID: sfid-20230113_005257_405538_BFB8A6BA 
+X-CRM114-Status: UNSURE (   8.00  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,52 +84,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jan 13, 2023 at 7:24 AM Christoph Hellwig <hch@lst.de> wrote:
-> Now that arch/sh is removed this driver is dead code.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/spi/Kconfig      |   7 --
->  drivers/spi/Makefile     |   1 -
->  drivers/spi/spi-sh-sci.c | 197 ---------------------------------------
->  3 files changed, 205 deletions(-)
->  delete mode 100644 drivers/spi/spi-sh-sci.c
->
-> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-> index 7508dcef909c78..76f3bc6f8c81fc 100644
-> --- a/drivers/spi/Kconfig
-> +++ b/drivers/spi/Kconfig
-> @@ -882,13 +882,6 @@ config SPI_SH_MSIOF
->         help
->           SPI driver for SuperH and SH Mobile MSIOF blocks.
->
-> -config SPI_SH_SCI
-> -       tristate "SuperH SCI SPI controller"
-> -       depends on SUPERH
-> -       select SPI_BITBANG
-> -       help
-> -         SPI driver for SuperH SCI blocks.
+Hi Geert!
 
-This driver uses the Serial Communications Interface (SCI, cfr.
-drivers/tty/serial/sh-sci.c) in SPI mode. Hence in theory it could be
-used on a variety of Renesas ARM SoCs, and even on RZ/Five.
-Again, no DT support.
+On 1/13/23 09:26, Geert Uytterhoeven wrote:
+> Indeed.  The main issue is not the lack of people sending patches and
+> fixes, but those patches never being applied by the maintainers.
+> Perhaps someone is willing to stand up to take over maintainership?
 
-Gr{oetje,eeting}s,
+I actually would be willing to do it but I'm a bit hesitant as I'm not 100%
+sure my skills are sufficient. Maybe if someone can assist me?
 
-                        Geert
+Adrian
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+-- 
+  .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
