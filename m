@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33DBCC54EBD
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 06:24:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55D07C54EBE
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 06:24:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EF4oLGMYjbTnsX+z2IP2qsi1QM7WD3QRdPLmnti+dHY=; b=U9K8ZjguJ15YcL
-	Wfdfp1yAZzPg8uG+/zDkkVqridMm2jm6SBpJPpE6PoiR+YIBd1JEs6adEmJfizM2bQxoq2k/jzdp4
-	HfJdg2//d++GEaLRqXk6suRQ6ScOgy8OUySRUyyP3ZP3a3exvlSeBuWfl6VwrIfuUbSNjUJI1kcFM
-	+Jmd8KYUU1Q92x4bR6sf5eckeytkI/Bwe+6nEl6wwsBjNd3GuXi+TbLnpUgSeiO3+yQDWKPr5PG3N
-	bqWPG+p3Xft+yWJ7Ewp/M4GQcCUPJSk7cf4XMq8v9rFas2wScUHA5UTkhR8w5JAmxHOjRu86l7LPb
-	ouR5yIpXDbq14Z3bigcA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=jZ9LQSoDIp/ywkjCC3jV6toWMp5hRMh7cf2sjFg5584=; b=Hz1WMeWWNsxSru
+	WPdKAkzQL3Z0UfTC5sWpquK4pdYd0CSsdQiyCKewf9lnilKe7UwYg3BumGFJ61KuXCcAivV0ApEKM
+	81cV8Dc1z+858jfNd74gEyJashgiKBergFZtwRE2u73jcLxNRs5lhUiDVJVsGWUOVIE/K4CbBUsB4
+	31xjT6WWgL2MstH/T7lu+/jOIiwpmcdTlaHC1UbllKnbVT7cNZj49jBTqUgU7kSlMDu3DqjgHpc+b
+	EdXrOzsS5gyVL4acVvfZAbGanI4lNU4C2apzdAr0fnK4Vll28KIiMGa41C/fAkcy0yEPJg4WAXI0P
+	5w5FQIObB0mn8Ep5z9qw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGDU7-000lcx-FR; Fri, 13 Jan 2023 06:24:15 +0000
+	id 1pGDTg-000lOC-5w; Fri, 13 Jan 2023 06:23:48 +0000
 Received: from [2001:4bb8:181:656b:9509:7d20:8d39:f895] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGDTu-000lTC-Dy; Fri, 13 Jan 2023 06:24:04 +0000
+	id 1pGDTZ-000lMO-OM; Fri, 13 Jan 2023 06:23:42 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Yoshinori Sato <ysato@users.sourceforge.jp>,
 	Rich Felker <dalias@libc.org>,
@@ -53,12 +53,10 @@ Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	linux-fbdev@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	linux-sh@vger.kernel.org
-Subject: [PATCH 05/22] sound: remove sh-specific sounds/soc/sh drivers
-Date: Fri, 13 Jan 2023 07:23:22 +0100
-Message-Id: <20230113062339.1909087-6-hch@lst.de>
+Subject: remove arch/sh
+Date: Fri, 13 Jan 2023 07:23:17 +0100
+Message-Id: <20230113062339.1909087-1-hch@lst.de>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230113062339.1909087-1-hch@lst.de>
-References: <20230113062339.1909087-1-hch@lst.de>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,3098 +74,913 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that arch/sh is removed these drivers are dead code.
+Hi all,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- sound/soc/sh/Kconfig       |  44 --
- sound/soc/sh/Makefile      |  16 -
- sound/soc/sh/dma-sh7760.c  | 334 ----------------
- sound/soc/sh/fsi.c         |   9 -
- sound/soc/sh/hac.c         | 345 ----------------
- sound/soc/sh/migor.c       | 205 ----------
- sound/soc/sh/sh7760-ac97.c |  72 ----
- sound/soc/sh/siu.h         | 180 ---------
- sound/soc/sh/siu_dai.c     | 799 -------------------------------------
- sound/soc/sh/siu_pcm.c     | 553 -------------------------
- sound/soc/sh/ssi.c         | 403 -------------------
- 11 files changed, 2960 deletions(-)
- delete mode 100644 sound/soc/sh/dma-sh7760.c
- delete mode 100644 sound/soc/sh/hac.c
- delete mode 100644 sound/soc/sh/migor.c
- delete mode 100644 sound/soc/sh/sh7760-ac97.c
- delete mode 100644 sound/soc/sh/siu.h
- delete mode 100644 sound/soc/sh/siu_dai.c
- delete mode 100644 sound/soc/sh/siu_pcm.c
- delete mode 100644 sound/soc/sh/ssi.c
+arch/sh has been a long drag because it supports a lot of SOCs, and most
+of them haven't even been converted to device tree infrastructure.  These
+SOCs are generally obsolete as well, and all of the support has been barely
+maintained for almost 10 years, and not at all for more than 1 year.
 
-diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index 793a0326f32b46..4367927b81df20 100644
---- a/sound/soc/sh/Kconfig
-+++ b/sound/soc/sh/Kconfig
-@@ -2,25 +2,10 @@
- menu "SoC Audio support for Renesas SoCs"
- 	depends on ARCH_RENESAS || COMPILE_TEST
- 
--config SND_SOC_PCM_SH7760
--	tristate "SoC Audio support for Renesas SH7760"
--	depends on CPU_SUBTYPE_SH7760 && SH_DMABRG
--	help
--	  Enable this option for SH7760 AC97/I2S audio support.
--
--
- ##
- ## Audio unit modules
- ##
- 
--config SND_SOC_SH4_HAC
--	tristate
--	select AC97_BUS
--	select SND_SOC_AC97_BUS
--
--config SND_SOC_SH4_SSI
--	tristate
--
- config SND_SOC_SH4_FSI
- 	tristate "SH4 FSI support"
- 	depends on COMMON_CLK
-@@ -28,14 +13,6 @@ config SND_SOC_SH4_FSI
- 	help
- 	  This option enables FSI sound support
- 
--config SND_SOC_SH4_SIU
--	tristate
--	depends on ARCH_SHMOBILE && HAVE_CLK
--	depends on DMADEVICES
--	select DMA_ENGINE
--	select SH_DMAE
--	select FW_LOADER
--
- config SND_SOC_RCAR
- 	tristate "R-Car series SRU/SCU/SSIU/SSI support"
- 	depends on COMMON_CLK
-@@ -51,25 +28,4 @@ config SND_SOC_RZ
- 	help
- 	  This option enables RZ/G2L SSIF-2 sound support.
- 
--##
--## Boards
--##
--
--config SND_SH7760_AC97
--	tristate "SH7760 AC97 sound support"
--	depends on CPU_SUBTYPE_SH7760 && SND_SOC_PCM_SH7760
--	select SND_SOC_SH4_HAC
--	select SND_SOC_AC97_CODEC
--	help
--	  This option enables generic sound support for the first
--	  AC97 unit of the SH7760.
--
--config SND_SIU_MIGOR
--	tristate "SIU sound support on Migo-R"
--	depends on SH_MIGOR && I2C
--	select SND_SOC_SH4_SIU
--	select SND_SOC_WM8978
--	help
--	  This option enables sound support for the SH7722 Migo-R board
--
- endmenu
-diff --git a/sound/soc/sh/Makefile b/sound/soc/sh/Makefile
-index f6fd79948f6ae9..c308dda887e633 100644
---- a/sound/soc/sh/Makefile
-+++ b/sound/soc/sh/Makefile
-@@ -1,28 +1,12 @@
- # SPDX-License-Identifier: GPL-2.0
--## DMA engines
--snd-soc-dma-sh7760-objs	:= dma-sh7760.o
--obj-$(CONFIG_SND_SOC_PCM_SH7760)	+= snd-soc-dma-sh7760.o
- 
- ## audio units found on some SH-4
--snd-soc-hac-objs	:= hac.o
--snd-soc-ssi-objs	:= ssi.o
- snd-soc-fsi-objs	:= fsi.o
--snd-soc-siu-objs	:= siu_pcm.o siu_dai.o
--obj-$(CONFIG_SND_SOC_SH4_HAC)	+= snd-soc-hac.o
--obj-$(CONFIG_SND_SOC_SH4_SSI)	+= snd-soc-ssi.o
- obj-$(CONFIG_SND_SOC_SH4_FSI)	+= snd-soc-fsi.o
--obj-$(CONFIG_SND_SOC_SH4_SIU)	+= snd-soc-siu.o
- 
- ## audio units for R-Car
- obj-$(CONFIG_SND_SOC_RCAR)	+= rcar/
- 
--## boards
--snd-soc-sh7760-ac97-objs	:= sh7760-ac97.o
--snd-soc-migor-objs		:= migor.o
--
--obj-$(CONFIG_SND_SH7760_AC97)	+= snd-soc-sh7760-ac97.o
--obj-$(CONFIG_SND_SIU_MIGOR)	+= snd-soc-migor.o
--
- # RZ/G2L
- snd-soc-rz-ssi-objs		:= rz-ssi.o
- obj-$(CONFIG_SND_SOC_RZ)	+= snd-soc-rz-ssi.o
-diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
-deleted file mode 100644
-index 121e48f984c50c..00000000000000
---- a/sound/soc/sh/dma-sh7760.c
-+++ /dev/null
-@@ -1,334 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--//
--// SH7760 ("camelot") DMABRG audio DMA unit support
--//
--// Copyright (C) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
--//
--// The SH7760 DMABRG provides 4 dma channels (2x rec, 2x play), which
--// trigger an interrupt when one half of the programmed transfer size
--// has been xmitted.
--//
--// FIXME: little-endian only for now
--
--#include <linux/module.h>
--#include <linux/gfp.h>
--#include <linux/init.h>
--#include <linux/platform_device.h>
--#include <linux/dma-mapping.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--#include <asm/dmabrg.h>
--
--
--/* registers and bits */
--#define BRGATXSAR	0x00
--#define BRGARXDAR	0x04
--#define BRGATXTCR	0x08
--#define BRGARXTCR	0x0C
--#define BRGACR		0x10
--#define BRGATXTCNT	0x14
--#define BRGARXTCNT	0x18
--
--#define ACR_RAR		(1 << 18)
--#define ACR_RDS		(1 << 17)
--#define ACR_RDE		(1 << 16)
--#define ACR_TAR		(1 << 2)
--#define ACR_TDS		(1 << 1)
--#define ACR_TDE		(1 << 0)
--
--/* receiver/transmitter data alignment */
--#define ACR_RAM_NONE	(0 << 24)
--#define ACR_RAM_4BYTE	(1 << 24)
--#define ACR_RAM_2WORD	(2 << 24)
--#define ACR_TAM_NONE	(0 << 8)
--#define ACR_TAM_4BYTE	(1 << 8)
--#define ACR_TAM_2WORD	(2 << 8)
--
--
--struct camelot_pcm {
--	unsigned long mmio;  /* DMABRG audio channel control reg MMIO */
--	unsigned int txid;    /* ID of first DMABRG IRQ for this unit */
--
--	struct snd_pcm_substream *tx_ss;
--	unsigned long tx_period_size;
--	unsigned int  tx_period;
--
--	struct snd_pcm_substream *rx_ss;
--	unsigned long rx_period_size;
--	unsigned int  rx_period;
--
--} cam_pcm_data[2] = {
--	{
--		.mmio	=	0xFE3C0040,
--		.txid	=	DMABRGIRQ_A0TXF,
--	},
--	{
--		.mmio	=	0xFE3C0060,
--		.txid	=	DMABRGIRQ_A1TXF,
--	},
--};
--
--#define BRGREG(x)	(*(unsigned long *)(cam->mmio + (x)))
--
--/*
-- * set a minimum of 16kb per period, to avoid interrupt-"storm" and
-- * resulting skipping. In general, the bigger the minimum size, the
-- * better for overall system performance. (The SH7760 is a puny CPU
-- * with a slow SDRAM interface and poor internal bus bandwidth,
-- * *especially* when the LCDC is active).  The minimum for the DMAC
-- * is 8 bytes; 16kbytes are enough to get skip-free playback of a
-- * 44kHz/16bit/stereo MP3 on a lightly loaded system, and maintain
-- * reasonable responsiveness in MPlayer.
-- */
--#define DMABRG_PERIOD_MIN		16 * 1024
--#define DMABRG_PERIOD_MAX		0x03fffffc
--#define DMABRG_PREALLOC_BUFFER		32 * 1024
--#define DMABRG_PREALLOC_BUFFER_MAX	32 * 1024
--
--static const struct snd_pcm_hardware camelot_pcm_hardware = {
--	.info = (SNDRV_PCM_INFO_MMAP |
--		SNDRV_PCM_INFO_INTERLEAVED |
--		SNDRV_PCM_INFO_BLOCK_TRANSFER |
--		SNDRV_PCM_INFO_MMAP_VALID |
--		SNDRV_PCM_INFO_BATCH),
--	.buffer_bytes_max =	DMABRG_PERIOD_MAX,
--	.period_bytes_min =	DMABRG_PERIOD_MIN,
--	.period_bytes_max =	DMABRG_PERIOD_MAX / 2,
--	.periods_min =		2,
--	.periods_max =		2,
--	.fifo_size =		128,
--};
--
--static void camelot_txdma(void *data)
--{
--	struct camelot_pcm *cam = data;
--	cam->tx_period ^= 1;
--	snd_pcm_period_elapsed(cam->tx_ss);
--}
--
--static void camelot_rxdma(void *data)
--{
--	struct camelot_pcm *cam = data;
--	cam->rx_period ^= 1;
--	snd_pcm_period_elapsed(cam->rx_ss);
--}
--
--static int camelot_pcm_open(struct snd_soc_component *component,
--			    struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct camelot_pcm *cam = &cam_pcm_data[asoc_rtd_to_cpu(rtd, 0)->id];
--	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
--	int ret, dmairq;
--
--	snd_soc_set_runtime_hwparams(substream, &camelot_pcm_hardware);
--
--	/* DMABRG buffer half/full events */
--	dmairq = (recv) ? cam->txid + 2 : cam->txid;
--	if (recv) {
--		cam->rx_ss = substream;
--		ret = dmabrg_request_irq(dmairq, camelot_rxdma, cam);
--		if (unlikely(ret)) {
--			pr_debug("audio unit %d irqs already taken!\n",
--			     asoc_rtd_to_cpu(rtd, 0)->id);
--			return -EBUSY;
--		}
--		(void)dmabrg_request_irq(dmairq + 1,camelot_rxdma, cam);
--	} else {
--		cam->tx_ss = substream;
--		ret = dmabrg_request_irq(dmairq, camelot_txdma, cam);
--		if (unlikely(ret)) {
--			pr_debug("audio unit %d irqs already taken!\n",
--			     asoc_rtd_to_cpu(rtd, 0)->id);
--			return -EBUSY;
--		}
--		(void)dmabrg_request_irq(dmairq + 1, camelot_txdma, cam);
--	}
--	return 0;
--}
--
--static int camelot_pcm_close(struct snd_soc_component *component,
--			     struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct camelot_pcm *cam = &cam_pcm_data[asoc_rtd_to_cpu(rtd, 0)->id];
--	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
--	int dmairq;
--
--	dmairq = (recv) ? cam->txid + 2 : cam->txid;
--
--	if (recv)
--		cam->rx_ss = NULL;
--	else
--		cam->tx_ss = NULL;
--
--	dmabrg_free_irq(dmairq + 1);
--	dmabrg_free_irq(dmairq);
--
--	return 0;
--}
--
--static int camelot_hw_params(struct snd_soc_component *component,
--			     struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *hw_params)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct camelot_pcm *cam = &cam_pcm_data[asoc_rtd_to_cpu(rtd, 0)->id];
--	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
--
--	if (recv) {
--		cam->rx_period_size = params_period_bytes(hw_params);
--		cam->rx_period = 0;
--	} else {
--		cam->tx_period_size = params_period_bytes(hw_params);
--		cam->tx_period = 0;
--	}
--	return 0;
--}
--
--static int camelot_prepare(struct snd_soc_component *component,
--			   struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct camelot_pcm *cam = &cam_pcm_data[asoc_rtd_to_cpu(rtd, 0)->id];
--
--	pr_debug("PCM data: addr 0x%08lx len %d\n",
--		 (u32)runtime->dma_addr, runtime->dma_bytes);
-- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		BRGREG(BRGATXSAR) = (unsigned long)runtime->dma_area;
--		BRGREG(BRGATXTCR) = runtime->dma_bytes;
--	} else {
--		BRGREG(BRGARXDAR) = (unsigned long)runtime->dma_area;
--		BRGREG(BRGARXTCR) = runtime->dma_bytes;
--	}
--
--	return 0;
--}
--
--static inline void dmabrg_play_dma_start(struct camelot_pcm *cam)
--{
--	unsigned long acr = BRGREG(BRGACR) & ~(ACR_TDS | ACR_RDS);
--	/* start DMABRG engine: XFER start, auto-addr-reload */
--	BRGREG(BRGACR) = acr | ACR_TDE | ACR_TAR | ACR_TAM_2WORD;
--}
--
--static inline void dmabrg_play_dma_stop(struct camelot_pcm *cam)
--{
--	unsigned long acr = BRGREG(BRGACR) & ~(ACR_TDS | ACR_RDS);
--	/* forcibly terminate data transmission */
--	BRGREG(BRGACR) = acr | ACR_TDS;
--}
--
--static inline void dmabrg_rec_dma_start(struct camelot_pcm *cam)
--{
--	unsigned long acr = BRGREG(BRGACR) & ~(ACR_TDS | ACR_RDS);
--	/* start DMABRG engine: recv start, auto-reload */
--	BRGREG(BRGACR) = acr | ACR_RDE | ACR_RAR | ACR_RAM_2WORD;
--}
--
--static inline void dmabrg_rec_dma_stop(struct camelot_pcm *cam)
--{
--	unsigned long acr = BRGREG(BRGACR) & ~(ACR_TDS | ACR_RDS);
--	/* forcibly terminate data receiver */
--	BRGREG(BRGACR) = acr | ACR_RDS;
--}
--
--static int camelot_trigger(struct snd_soc_component *component,
--			   struct snd_pcm_substream *substream, int cmd)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct camelot_pcm *cam = &cam_pcm_data[asoc_rtd_to_cpu(rtd, 0)->id];
--	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		if (recv)
--			dmabrg_rec_dma_start(cam);
--		else
--			dmabrg_play_dma_start(cam);
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--		if (recv)
--			dmabrg_rec_dma_stop(cam);
--		else
--			dmabrg_play_dma_stop(cam);
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static snd_pcm_uframes_t camelot_pos(struct snd_soc_component *component,
--				     struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct camelot_pcm *cam = &cam_pcm_data[asoc_rtd_to_cpu(rtd, 0)->id];
--	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
--	unsigned long pos;
--
--	/* cannot use the DMABRG pointer register: under load, by the
--	 * time ALSA comes around to read the register, it is already
--	 * far ahead (or worse, already done with the fragment) of the
--	 * position at the time the IRQ was triggered, which results in
--	 * fast-playback sound in my test application (ScummVM)
--	 */
--	if (recv)
--		pos = cam->rx_period ? cam->rx_period_size : 0;
--	else
--		pos = cam->tx_period ? cam->tx_period_size : 0;
--
--	return bytes_to_frames(runtime, pos);
--}
--
--static int camelot_pcm_new(struct snd_soc_component *component,
--			   struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_pcm *pcm = rtd->pcm;
--
--	/* dont use SNDRV_DMA_TYPE_DEV, since it will oops the SH kernel
--	 * in MMAP mode (i.e. aplay -M)
--	 */
--	snd_pcm_set_managed_buffer_all(pcm,
--		SNDRV_DMA_TYPE_CONTINUOUS,
--		NULL,
--		DMABRG_PREALLOC_BUFFER,	DMABRG_PREALLOC_BUFFER_MAX);
--
--	return 0;
--}
--
--static const struct snd_soc_component_driver sh7760_soc_component = {
--	.open		= camelot_pcm_open,
--	.close		= camelot_pcm_close,
--	.hw_params	= camelot_hw_params,
--	.prepare	= camelot_prepare,
--	.trigger	= camelot_trigger,
--	.pointer	= camelot_pos,
--	.pcm_construct	= camelot_pcm_new,
--};
--
--static int sh7760_soc_platform_probe(struct platform_device *pdev)
--{
--	return devm_snd_soc_register_component(&pdev->dev, &sh7760_soc_component,
--					       NULL, 0);
--}
--
--static struct platform_driver sh7760_pcm_driver = {
--	.driver = {
--			.name = "sh7760-pcm-audio",
--	},
--
--	.probe = sh7760_soc_platform_probe,
--};
--
--module_platform_driver(sh7760_pcm_driver);
--
--MODULE_LICENSE("GPL v2");
--MODULE_DESCRIPTION("SH7760 Audio DMA (DMABRG) driver");
--MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index f3edc2e3d9d7c4..c599070f2210f4 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1372,16 +1372,7 @@ static int fsi_dma_probe(struct fsi_priv *fsi, struct fsi_stream *io, struct dev
- {
- 	int is_play = fsi_stream_is_play(fsi, io);
- 
--#ifdef CONFIG_SUPERH
--	dma_cap_mask_t mask;
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--
--	io->chan = dma_request_channel(mask, shdma_chan_filter,
--				       (void *)io->dma_id);
--#else
- 	io->chan = dma_request_slave_channel(dev, is_play ? "tx" : "rx");
--#endif
- 	if (io->chan) {
- 		struct dma_slave_config cfg = {};
- 		int ret;
-diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
-deleted file mode 100644
-index 46d145cbaf2970..00000000000000
---- a/sound/soc/sh/hac.c
-+++ /dev/null
-@@ -1,345 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--//
--// Hitachi Audio Controller (AC97) support for SH7760/SH7780
--//
--// Copyright (c) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
--//
--// dont forget to set IPSEL/OMSEL register bits (in your board code) to
--// enable HAC output pins!
--
--/* BIG FAT FIXME: although the SH7760 has 2 independent AC97 units, only
-- * the FIRST can be used since ASoC does not pass any information to the
-- * ac97_read/write() functions regarding WHICH unit to use.  You'll have
-- * to edit the code a bit to use the other AC97 unit.		--mlau
-- */
--
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/platform_device.h>
--#include <linux/interrupt.h>
--#include <linux/wait.h>
--#include <linux/delay.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/ac97_codec.h>
--#include <sound/initval.h>
--#include <sound/soc.h>
--
--/* regs and bits */
--#define HACCR		0x08
--#define HACCSAR		0x20
--#define HACCSDR		0x24
--#define HACPCML		0x28
--#define HACPCMR		0x2C
--#define HACTIER		0x50
--#define	HACTSR		0x54
--#define HACRIER		0x58
--#define HACRSR		0x5C
--#define HACACR		0x60
--
--#define CR_CR		(1 << 15)	/* "codec-ready" indicator */
--#define CR_CDRT		(1 << 11)	/* cold reset */
--#define CR_WMRT		(1 << 10)	/* warm reset */
--#define CR_B9		(1 << 9)	/* the mysterious "bit 9" */
--#define CR_ST		(1 << 5)	/* AC97 link start bit */
--
--#define CSAR_RD		(1 << 19)	/* AC97 data read bit */
--#define CSAR_WR		(0)
--
--#define TSR_CMDAMT	(1 << 31)
--#define TSR_CMDDMT	(1 << 30)
--
--#define RSR_STARY	(1 << 22)
--#define RSR_STDRY	(1 << 21)
--
--#define ACR_DMARX16	(1 << 30)
--#define ACR_DMATX16	(1 << 29)
--#define ACR_TX12ATOM	(1 << 26)
--#define ACR_DMARX20	((1 << 24) | (1 << 22))
--#define ACR_DMATX20	((1 << 23) | (1 << 21))
--
--#define CSDR_SHIFT	4
--#define CSDR_MASK	(0xffff << CSDR_SHIFT)
--#define CSAR_SHIFT	12
--#define CSAR_MASK	(0x7f << CSAR_SHIFT)
--
--#define AC97_WRITE_RETRY	1
--#define AC97_READ_RETRY		5
--
--/* manual-suggested AC97 codec access timeouts (us) */
--#define TMO_E1	500	/* 21 < E1 < 1000 */
--#define TMO_E2	13	/* 13 < E2 */
--#define TMO_E3	21	/* 21 < E3 */
--#define TMO_E4	500	/* 21 < E4 < 1000 */
--
--struct hac_priv {
--	unsigned long mmio;	/* HAC base address */
--} hac_cpu_data[] = {
--#if defined(CONFIG_CPU_SUBTYPE_SH7760)
--	{
--		.mmio	= 0xFE240000,
--	},
--	{
--		.mmio	= 0xFE250000,
--	},
--#elif defined(CONFIG_CPU_SUBTYPE_SH7780)
--	{
--		.mmio	= 0xFFE40000,
--	},
--#else
--#error "Unsupported SuperH SoC"
--#endif
--};
--
--#define HACREG(reg)	(*(unsigned long *)(hac->mmio + (reg)))
--
--/*
-- * AC97 read/write flow as outlined in the SH7760 manual (pages 903-906)
-- */
--static int hac_get_codec_data(struct hac_priv *hac, unsigned short r,
--			      unsigned short *v)
--{
--	unsigned int to1, to2, i;
--	unsigned short adr;
--
--	for (i = AC97_READ_RETRY; i; i--) {
--		*v = 0;
--		/* wait for HAC to receive something from the codec */
--		for (to1 = TMO_E4;
--		     to1 && !(HACREG(HACRSR) & RSR_STARY);
--		     --to1)
--			udelay(1);
--		for (to2 = TMO_E4; 
--		     to2 && !(HACREG(HACRSR) & RSR_STDRY);
--		     --to2)
--			udelay(1);
--
--		if (!to1 && !to2)
--			return 0;	/* codec comm is down */
--
--		adr = ((HACREG(HACCSAR) & CSAR_MASK) >> CSAR_SHIFT);
--		*v  = ((HACREG(HACCSDR) & CSDR_MASK) >> CSDR_SHIFT);
--
--		HACREG(HACRSR) &= ~(RSR_STDRY | RSR_STARY);
--
--		if (r == adr)
--			break;
--
--		/* manual says: wait at least 21 usec before retrying */
--		udelay(21);
--	}
--	HACREG(HACRSR) &= ~(RSR_STDRY | RSR_STARY);
--	return i;
--}
--
--static unsigned short hac_read_codec_aux(struct hac_priv *hac,
--					 unsigned short reg)
--{
--	unsigned short val;
--	unsigned int i, to;
--
--	for (i = AC97_READ_RETRY; i; i--) {
--		/* send_read_request */
--		local_irq_disable();
--		HACREG(HACTSR) &= ~(TSR_CMDAMT);
--		HACREG(HACCSAR) = (reg << CSAR_SHIFT) | CSAR_RD;
--		local_irq_enable();
--
--		for (to = TMO_E3;
--		     to && !(HACREG(HACTSR) & TSR_CMDAMT);
--		     --to)
--			udelay(1);
--
--		HACREG(HACTSR) &= ~TSR_CMDAMT;
--		val = 0;
--		if (hac_get_codec_data(hac, reg, &val) != 0)
--			break;
--	}
--
--	return i ? val : ~0;
--}
--
--static void hac_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
--			   unsigned short val)
--{
--	int unit_id = 0 /* ac97->private_data */;
--	struct hac_priv *hac = &hac_cpu_data[unit_id];
--	unsigned int i, to;
--	/* write_codec_aux */
--	for (i = AC97_WRITE_RETRY; i; i--) {
--		/* send_write_request */
--		local_irq_disable();
--		HACREG(HACTSR) &= ~(TSR_CMDDMT | TSR_CMDAMT);
--		HACREG(HACCSDR) = (val << CSDR_SHIFT);
--		HACREG(HACCSAR) = (reg << CSAR_SHIFT) & (~CSAR_RD);
--		local_irq_enable();
--
--		/* poll-wait for CMDAMT and CMDDMT */
--		for (to = TMO_E1;
--		     to && !(HACREG(HACTSR) & (TSR_CMDAMT|TSR_CMDDMT));
--		     --to)
--			udelay(1);
--
--		HACREG(HACTSR) &= ~(TSR_CMDAMT | TSR_CMDDMT);
--		if (to)
--			break;
--		/* timeout, try again */
--	}
--}
--
--static unsigned short hac_ac97_read(struct snd_ac97 *ac97,
--				    unsigned short reg)
--{
--	int unit_id = 0 /* ac97->private_data */;
--	struct hac_priv *hac = &hac_cpu_data[unit_id];
--	return hac_read_codec_aux(hac, reg);
--}
--
--static void hac_ac97_warmrst(struct snd_ac97 *ac97)
--{
--	int unit_id = 0 /* ac97->private_data */;
--	struct hac_priv *hac = &hac_cpu_data[unit_id];
--	unsigned int tmo;
--
--	HACREG(HACCR) = CR_WMRT | CR_ST | CR_B9;
--	msleep(10);
--	HACREG(HACCR) = CR_ST | CR_B9;
--	for (tmo = 1000; (tmo > 0) && !(HACREG(HACCR) & CR_CR); tmo--)
--		udelay(1);
--
--	if (!tmo)
--		printk(KERN_INFO "hac: reset: AC97 link down!\n");
--	/* settings this bit lets us have a conversation with codec */
--	HACREG(HACACR) |= ACR_TX12ATOM;
--}
--
--static void hac_ac97_coldrst(struct snd_ac97 *ac97)
--{
--	int unit_id = 0 /* ac97->private_data */;
--	struct hac_priv *hac;
--	hac = &hac_cpu_data[unit_id];
--
--	HACREG(HACCR) = 0;
--	HACREG(HACCR) = CR_CDRT | CR_ST | CR_B9;
--	msleep(10);
--	hac_ac97_warmrst(ac97);
--}
--
--static struct snd_ac97_bus_ops hac_ac97_ops = {
--	.read	= hac_ac97_read,
--	.write	= hac_ac97_write,
--	.reset	= hac_ac97_coldrst,
--	.warm_reset = hac_ac97_warmrst,
--};
--
--static int hac_hw_params(struct snd_pcm_substream *substream,
--			 struct snd_pcm_hw_params *params,
--			 struct snd_soc_dai *dai)
--{
--	struct hac_priv *hac = &hac_cpu_data[dai->id];
--	int d = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0 : 1;
--
--	switch (params->msbits) {
--	case 16:
--		HACREG(HACACR) |= d ?  ACR_DMARX16 :  ACR_DMATX16;
--		HACREG(HACACR) &= d ? ~ACR_DMARX20 : ~ACR_DMATX20;
--		break;
--	case 20:
--		HACREG(HACACR) &= d ? ~ACR_DMARX16 : ~ACR_DMATX16;
--		HACREG(HACACR) |= d ?  ACR_DMARX20 :  ACR_DMATX20;
--		break;
--	default:
--		pr_debug("hac: invalid depth %d bit\n", params->msbits);
--		return -EINVAL;
--		break;
--	}
--
--	return 0;
--}
--
--#define AC97_RATES	\
--	SNDRV_PCM_RATE_8000_192000
--
--#define AC97_FMTS	\
--	SNDRV_PCM_FMTBIT_S16_LE
--
--static const struct snd_soc_dai_ops hac_dai_ops = {
--	.hw_params	= hac_hw_params,
--};
--
--static struct snd_soc_dai_driver sh4_hac_dai[] = {
--{
--	.name			= "hac-dai.0",
--	.playback = {
--		.rates		= AC97_RATES,
--		.formats	= AC97_FMTS,
--		.channels_min	= 2,
--		.channels_max	= 2,
--	},
--	.capture = {
--		.rates		= AC97_RATES,
--		.formats	= AC97_FMTS,
--		.channels_min	= 2,
--		.channels_max	= 2,
--	},
--	.ops = &hac_dai_ops,
--},
--#ifdef CONFIG_CPU_SUBTYPE_SH7760
--{
--	.name			= "hac-dai.1",
--	.id			= 1,
--	.playback = {
--		.rates		= AC97_RATES,
--		.formats	= AC97_FMTS,
--		.channels_min	= 2,
--		.channels_max	= 2,
--	},
--	.capture = {
--		.rates		= AC97_RATES,
--		.formats	= AC97_FMTS,
--		.channels_min	= 2,
--		.channels_max	= 2,
--	},
--	.ops = &hac_dai_ops,
--
--},
--#endif
--};
--
--static const struct snd_soc_component_driver sh4_hac_component = {
--	.name			= "sh4-hac",
--	.legacy_dai_naming	= 1,
--};
--
--static int hac_soc_platform_probe(struct platform_device *pdev)
--{
--	int ret;
--
--	ret = snd_soc_set_ac97_ops(&hac_ac97_ops);
--	if (ret != 0)
--		return ret;
--
--	return devm_snd_soc_register_component(&pdev->dev, &sh4_hac_component,
--					  sh4_hac_dai, ARRAY_SIZE(sh4_hac_dai));
--}
--
--static int hac_soc_platform_remove(struct platform_device *pdev)
--{
--	snd_soc_set_ac97_ops(NULL);
--	return 0;
--}
--
--static struct platform_driver hac_pcm_driver = {
--	.driver = {
--			.name = "hac-pcm-audio",
--	},
--
--	.probe = hac_soc_platform_probe,
--	.remove = hac_soc_platform_remove,
--};
--
--module_platform_driver(hac_pcm_driver);
--
--MODULE_LICENSE("GPL v2");
--MODULE_DESCRIPTION("SuperH onchip HAC (AC97) audio driver");
--MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
-diff --git a/sound/soc/sh/migor.c b/sound/soc/sh/migor.c
-deleted file mode 100644
-index 7082c12d3bf238..00000000000000
---- a/sound/soc/sh/migor.c
-+++ /dev/null
-@@ -1,205 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--//
--// ALSA SoC driver for Migo-R
--//
--// Copyright (C) 2009-2010 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
--
--#include <linux/clkdev.h>
--#include <linux/device.h>
--#include <linux/firmware.h>
--#include <linux/module.h>
--
--#include <asm/clock.h>
--
--#include <cpu/sh7722.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#include "../codecs/wm8978.h"
--#include "siu.h"
--
--/* Default 8000Hz sampling frequency */
--static unsigned long codec_freq = 8000 * 512;
--
--static unsigned int use_count;
--
--/* External clock, sourced from the codec at the SIUMCKB pin */
--static unsigned long siumckb_recalc(struct clk *clk)
--{
--	return codec_freq;
--}
--
--static struct sh_clk_ops siumckb_clk_ops = {
--	.recalc = siumckb_recalc,
--};
--
--static struct clk siumckb_clk = {
--	.ops		= &siumckb_clk_ops,
--	.rate		= 0, /* initialised at run-time */
--};
--
--static struct clk_lookup *siumckb_lookup;
--
--static int migor_hw_params(struct snd_pcm_substream *substream,
--			   struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	int ret;
--	unsigned int rate = params_rate(params);
--
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8978_PLL, 13000000,
--				     SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8978_OPCLKRATE, rate * 512);
--	if (ret < 0)
--		return ret;
--
--	codec_freq = rate * 512;
--	/*
--	 * This propagates the parent frequency change to children and
--	 * recalculates the frequency table
--	 */
--	clk_set_rate(&siumckb_clk, codec_freq);
--	dev_dbg(codec_dai->dev, "%s: configure %luHz\n", __func__, codec_freq);
--
--	ret = snd_soc_dai_set_sysclk(asoc_rtd_to_cpu(rtd, 0), SIU_CLKB_EXT,
--				     codec_freq / 2, SND_SOC_CLOCK_IN);
--
--	if (!ret)
--		use_count++;
--
--	return ret;
--}
--
--static int migor_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--
--	if (use_count) {
--		use_count--;
--
--		if (!use_count)
--			snd_soc_dai_set_sysclk(codec_dai, WM8978_PLL, 0,
--					       SND_SOC_CLOCK_IN);
--	} else {
--		dev_dbg(codec_dai->dev, "Unbalanced hw_free!\n");
--	}
--
--	return 0;
--}
--
--static const struct snd_soc_ops migor_dai_ops = {
--	.hw_params = migor_hw_params,
--	.hw_free = migor_hw_free,
--};
--
--static const struct snd_soc_dapm_widget migor_dapm_widgets[] = {
--	SND_SOC_DAPM_HP("Headphone", NULL),
--	SND_SOC_DAPM_MIC("Onboard Microphone", NULL),
--	SND_SOC_DAPM_MIC("External Microphone", NULL),
--};
--
--static const struct snd_soc_dapm_route audio_map[] = {
--	/* Headphone output connected to LHP/RHP, enable OUT4 for VMID */
--	{ "Headphone", NULL,  "OUT4 VMID" },
--	{ "OUT4 VMID", NULL,  "LHP" },
--	{ "OUT4 VMID", NULL,  "RHP" },
--
--	/* On-board microphone */
--	{ "RMICN", NULL, "Mic Bias" },
--	{ "RMICP", NULL, "Mic Bias" },
--	{ "Mic Bias", NULL, "Onboard Microphone" },
--
--	/* External microphone */
--	{ "LMICN", NULL, "Mic Bias" },
--	{ "LMICP", NULL, "Mic Bias" },
--	{ "Mic Bias", NULL, "External Microphone" },
--};
--
--/* migor digital audio interface glue - connects codec <--> CPU */
--SND_SOC_DAILINK_DEFS(wm8978,
--	DAILINK_COMP_ARRAY(COMP_CPU("siu-pcm-audio")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("wm8978.0-001a", "wm8978-hifi")),
--	DAILINK_COMP_ARRAY(COMP_PLATFORM("siu-pcm-audio")));
--
--static struct snd_soc_dai_link migor_dai = {
--	.name = "wm8978",
--	.stream_name = "WM8978",
--	.dai_fmt = SND_SOC_DAIFMT_NB_IF | SND_SOC_DAIFMT_I2S |
--		   SND_SOC_DAIFMT_CBS_CFS,
--	.ops = &migor_dai_ops,
--	SND_SOC_DAILINK_REG(wm8978),
--};
--
--/* migor audio machine driver */
--static struct snd_soc_card snd_soc_migor = {
--	.name = "Migo-R",
--	.owner = THIS_MODULE,
--	.dai_link = &migor_dai,
--	.num_links = 1,
--
--	.dapm_widgets = migor_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(migor_dapm_widgets),
--	.dapm_routes = audio_map,
--	.num_dapm_routes = ARRAY_SIZE(audio_map),
--};
--
--static struct platform_device *migor_snd_device;
--
--static int __init migor_init(void)
--{
--	int ret;
--
--	ret = clk_register(&siumckb_clk);
--	if (ret < 0)
--		return ret;
--
--	siumckb_lookup = clkdev_create(&siumckb_clk, "siumckb_clk", NULL);
--	if (!siumckb_lookup) {
--		ret = -ENOMEM;
--		goto eclkdevalloc;
--	}
--
--	/* Port number used on this machine: port B */
--	migor_snd_device = platform_device_alloc("soc-audio", 1);
--	if (!migor_snd_device) {
--		ret = -ENOMEM;
--		goto epdevalloc;
--	}
--
--	platform_set_drvdata(migor_snd_device, &snd_soc_migor);
--
--	ret = platform_device_add(migor_snd_device);
--	if (ret)
--		goto epdevadd;
--
--	return 0;
--
--epdevadd:
--	platform_device_put(migor_snd_device);
--epdevalloc:
--	clkdev_drop(siumckb_lookup);
--eclkdevalloc:
--	clk_unregister(&siumckb_clk);
--	return ret;
--}
--
--static void __exit migor_exit(void)
--{
--	clkdev_drop(siumckb_lookup);
--	clk_unregister(&siumckb_clk);
--	platform_device_unregister(migor_snd_device);
--}
--
--module_init(migor_init);
--module_exit(migor_exit);
--
--MODULE_AUTHOR("Guennadi Liakhovetski <g.liakhovetski@gmx.de>");
--MODULE_DESCRIPTION("ALSA SoC Migor");
--MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/sh/sh7760-ac97.c b/sound/soc/sh/sh7760-ac97.c
-deleted file mode 100644
-index d267243a159ba6..00000000000000
---- a/sound/soc/sh/sh7760-ac97.c
-+++ /dev/null
-@@ -1,72 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--//
--// Generic AC97 sound support for SH7760
--//
--// (c) 2007 Manuel Lauss
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/platform_device.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <asm/io.h>
--
--#define IPSEL 0xFE400034
--
--SND_SOC_DAILINK_DEFS(ac97,
--	DAILINK_COMP_ARRAY(COMP_CPU("hac-dai.0")),	/* HAC0 */
--	DAILINK_COMP_ARRAY(COMP_CODEC("ac97-codec", "ac97-hifi")),
--	DAILINK_COMP_ARRAY(COMP_PLATFORM("sh7760-pcm-audio")));
--
--static struct snd_soc_dai_link sh7760_ac97_dai = {
--	.name = "AC97",
--	.stream_name = "AC97 HiFi",
--	SND_SOC_DAILINK_REG(ac97),
--};
--
--static struct snd_soc_card sh7760_ac97_soc_machine  = {
--	.name = "SH7760 AC97",
--	.owner = THIS_MODULE,
--	.dai_link = &sh7760_ac97_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *sh7760_ac97_snd_device;
--
--static int __init sh7760_ac97_init(void)
--{
--	int ret;
--	unsigned short ipsel;
--
--	/* enable both AC97 controllers in pinmux reg */
--	ipsel = __raw_readw(IPSEL);
--	__raw_writew(ipsel | (3 << 10), IPSEL);
--
--	ret = -ENOMEM;
--	sh7760_ac97_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!sh7760_ac97_snd_device)
--		goto out;
--
--	platform_set_drvdata(sh7760_ac97_snd_device,
--			     &sh7760_ac97_soc_machine);
--	ret = platform_device_add(sh7760_ac97_snd_device);
--
--	if (ret)
--		platform_device_put(sh7760_ac97_snd_device);
--
--out:
--	return ret;
--}
--
--static void __exit sh7760_ac97_exit(void)
--{
--	platform_device_unregister(sh7760_ac97_snd_device);
--}
--
--module_init(sh7760_ac97_init);
--module_exit(sh7760_ac97_exit);
--
--MODULE_LICENSE("GPL v2");
--MODULE_DESCRIPTION("Generic SH7760 AC97 sound machine");
--MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
-diff --git a/sound/soc/sh/siu.h b/sound/soc/sh/siu.h
-deleted file mode 100644
-index a675c36fc9d956..00000000000000
---- a/sound/soc/sh/siu.h
-+++ /dev/null
-@@ -1,180 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0+
--//
--// siu.h - ALSA SoC driver for Renesas SH7343, SH7722 SIU peripheral.
--//
--// Copyright (C) 2009-2010 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
--// Copyright (C) 2006 Carlos Munoz <carlos@kenati.com>
--
--#ifndef SIU_H
--#define SIU_H
--
--/* Common kernel and user-space firmware-building defines and types */
--
--#define YRAM0_SIZE		(0x0040 / 4)		/* 16 */
--#define YRAM1_SIZE		(0x0080 / 4)		/* 32 */
--#define YRAM2_SIZE		(0x0040 / 4)		/* 16 */
--#define YRAM3_SIZE		(0x0080 / 4)		/* 32 */
--#define YRAM4_SIZE		(0x0080 / 4)		/* 32 */
--#define YRAM_DEF_SIZE		(YRAM0_SIZE + YRAM1_SIZE + YRAM2_SIZE + \
--				 YRAM3_SIZE + YRAM4_SIZE)
--#define YRAM_FIR_SIZE		(0x0400 / 4)		/* 256 */
--#define YRAM_IIR_SIZE		(0x0200 / 4)		/* 128 */
--
--#define XRAM0_SIZE		(0x0400 / 4)		/* 256 */
--#define XRAM1_SIZE		(0x0200 / 4)		/* 128 */
--#define XRAM2_SIZE		(0x0200 / 4)		/* 128 */
--
--/* PRAM program array size */
--#define PRAM0_SIZE		(0x0100 / 4)		/* 64 */
--#define PRAM1_SIZE		((0x2000 - 0x0100) / 4)	/* 1984 */
--
--#include <linux/types.h>
--
--struct siu_spb_param {
--	__u32	ab1a;	/* input FIFO address */
--	__u32	ab0a;	/* output FIFO address */
--	__u32	dir;	/* 0=the ather except CPUOUTPUT, 1=CPUINPUT */
--	__u32	event;	/* SPB program starting conditions */
--	__u32	stfifo;	/* STFIFO register setting value */
--	__u32	trdat;	/* TRDAT register setting value */
--};
--
--struct siu_firmware {
--	__u32			yram_fir_coeff[YRAM_FIR_SIZE];
--	__u32			pram0[PRAM0_SIZE];
--	__u32			pram1[PRAM1_SIZE];
--	__u32			yram0[YRAM0_SIZE];
--	__u32			yram1[YRAM1_SIZE];
--	__u32			yram2[YRAM2_SIZE];
--	__u32			yram3[YRAM3_SIZE];
--	__u32			yram4[YRAM4_SIZE];
--	__u32			spbpar_num;
--	struct siu_spb_param	spbpar[32];
--};
--
--#ifdef __KERNEL__
--
--#include <linux/dmaengine.h>
--#include <linux/interrupt.h>
--#include <linux/io.h>
--#include <linux/sh_dma.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--
--#define SIU_PERIOD_BYTES_MAX	8192		/* DMA transfer/period size */
--#define SIU_PERIOD_BYTES_MIN	256		/* DMA transfer/period size */
--#define SIU_PERIODS_MAX		64		/* Max periods in buffer */
--#define SIU_PERIODS_MIN		4		/* Min periods in buffer */
--#define SIU_BUFFER_BYTES_MAX	(SIU_PERIOD_BYTES_MAX * SIU_PERIODS_MAX)
--
--/* SIU ports: only one can be used at a time */
--enum {
--	SIU_PORT_A,
--	SIU_PORT_B,
--	SIU_PORT_NUM,
--};
--
--/* SIU clock configuration */
--enum {
--	SIU_CLKA_PLL,
--	SIU_CLKA_EXT,
--	SIU_CLKB_PLL,
--	SIU_CLKB_EXT
--};
--
--struct device;
--struct siu_info {
--	struct device		*dev;
--	int			port_id;
--	u32 __iomem		*pram;
--	u32 __iomem		*xram;
--	u32 __iomem		*yram;
--	u32 __iomem		*reg;
--	struct siu_firmware	fw;
--};
--
--struct siu_stream {
--	struct work_struct		work;
--	struct snd_pcm_substream	*substream;
--	snd_pcm_format_t		format;
--	size_t				buf_bytes;
--	size_t				period_bytes;
--	int				cur_period;	/* Period currently in dma */
--	u32				volume;
--	snd_pcm_sframes_t		xfer_cnt;	/* Number of frames */
--	u8				rw_flg;		/* transfer status */
--	/* DMA status */
--	struct dma_chan			*chan;		/* DMA channel */
--	struct dma_async_tx_descriptor	*tx_desc;
--	dma_cookie_t			cookie;
--	struct sh_dmae_slave		param;
--};
--
--struct siu_port {
--	unsigned long		play_cap;	/* Used to track full duplex */
--	struct snd_pcm		*pcm;
--	struct siu_stream	playback;
--	struct siu_stream	capture;
--	u32			stfifo;		/* STFIFO value from firmware */
--	u32			trdat;		/* TRDAT value from firmware */
--};
--
--extern struct siu_port *siu_ports[SIU_PORT_NUM];
--
--static inline struct siu_port *siu_port_info(struct snd_pcm_substream *substream)
--{
--	struct platform_device *pdev =
--		to_platform_device(substream->pcm->card->dev);
--	return siu_ports[pdev->id];
--}
--
--/* Register access */
--static inline void siu_write32(u32 __iomem *addr, u32 val)
--{
--	__raw_writel(val, addr);
--}
--
--static inline u32 siu_read32(u32 __iomem *addr)
--{
--	return __raw_readl(addr);
--}
--
--/* SIU registers */
--#define SIU_IFCTL	(0x000 / sizeof(u32))
--#define SIU_SRCTL	(0x004 / sizeof(u32))
--#define SIU_SFORM	(0x008 / sizeof(u32))
--#define SIU_CKCTL	(0x00c / sizeof(u32))
--#define SIU_TRDAT	(0x010 / sizeof(u32))
--#define SIU_STFIFO	(0x014 / sizeof(u32))
--#define SIU_DPAK	(0x01c / sizeof(u32))
--#define SIU_CKREV	(0x020 / sizeof(u32))
--#define SIU_EVNTC	(0x028 / sizeof(u32))
--#define SIU_SBCTL	(0x040 / sizeof(u32))
--#define SIU_SBPSET	(0x044 / sizeof(u32))
--#define SIU_SBFSTS	(0x068 / sizeof(u32))
--#define SIU_SBDVCA	(0x06c / sizeof(u32))
--#define SIU_SBDVCB	(0x070 / sizeof(u32))
--#define SIU_SBACTIV	(0x074 / sizeof(u32))
--#define SIU_DMAIA	(0x090 / sizeof(u32))
--#define SIU_DMAIB	(0x094 / sizeof(u32))
--#define SIU_DMAOA	(0x098 / sizeof(u32))
--#define SIU_DMAOB	(0x09c / sizeof(u32))
--#define SIU_DMAML	(0x0a0 / sizeof(u32))
--#define SIU_SPSTS	(0x0cc / sizeof(u32))
--#define SIU_SPCTL	(0x0d0 / sizeof(u32))
--#define SIU_BRGASEL	(0x100 / sizeof(u32))
--#define SIU_BRRA	(0x104 / sizeof(u32))
--#define SIU_BRGBSEL	(0x108 / sizeof(u32))
--#define SIU_BRRB	(0x10c / sizeof(u32))
--
--extern const struct snd_soc_component_driver siu_component;
--extern struct siu_info *siu_i2s_data;
--
--int siu_init_port(int port, struct siu_port **port_info, struct snd_card *card);
--void siu_free_port(struct siu_port *port_info);
--
--#endif
--
--#endif /* SIU_H */
-diff --git a/sound/soc/sh/siu_dai.c b/sound/soc/sh/siu_dai.c
-deleted file mode 100644
-index f2a386fcd92e4d..00000000000000
---- a/sound/soc/sh/siu_dai.c
-+++ /dev/null
-@@ -1,799 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0+
--//
--// siu_dai.c - ALSA SoC driver for Renesas SH7343, SH7722 SIU peripheral.
--//
--// Copyright (C) 2009-2010 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
--// Copyright (C) 2006 Carlos Munoz <carlos@kenati.com>
--
--#include <linux/delay.h>
--#include <linux/firmware.h>
--#include <linux/pm_runtime.h>
--#include <linux/slab.h>
--#include <linux/module.h>
--
--#include <asm/clock.h>
--#include <asm/siu.h>
--
--#include <sound/control.h>
--#include <sound/soc.h>
--
--#include "siu.h"
--
--/* Board specifics */
--#if defined(CONFIG_CPU_SUBTYPE_SH7722)
--# define SIU_MAX_VOLUME		0x1000
--#else
--# define SIU_MAX_VOLUME		0x7fff
--#endif
--
--#define PRAM_SIZE	0x2000
--#define XRAM_SIZE	0x800
--#define YRAM_SIZE	0x800
--
--#define XRAM_OFFSET	0x4000
--#define YRAM_OFFSET	0x6000
--#define REG_OFFSET	0xc000
--
--#define PLAYBACK_ENABLED	1
--#define CAPTURE_ENABLED		2
--
--#define VOLUME_CAPTURE		0
--#define VOLUME_PLAYBACK		1
--#define DFLT_VOLUME_LEVEL	0x08000800
--
--/*
-- * SPDIF is only available on port A and on some SIU implementations it is only
-- * available for input. Due to the lack of hardware to test it, SPDIF is left
-- * disabled in this driver version
-- */
--struct format_flag {
--	u32	i2s;
--	u32	pcm;
--	u32	spdif;
--	u32	mask;
--};
--
--struct port_flag {
--	struct format_flag	playback;
--	struct format_flag	capture;
--};
--
--struct siu_info *siu_i2s_data;
--
--static struct port_flag siu_flags[SIU_PORT_NUM] = {
--	[SIU_PORT_A] = {
--		.playback = {
--			.i2s	= 0x50000000,
--			.pcm	= 0x40000000,
--			.spdif	= 0x80000000,	/* not on all SIU versions */
--			.mask	= 0xd0000000,
--		},
--		.capture = {
--			.i2s	= 0x05000000,
--			.pcm	= 0x04000000,
--			.spdif	= 0x08000000,
--			.mask	= 0x0d000000,
--		},
--	},
--	[SIU_PORT_B] = {
--		.playback = {
--			.i2s	= 0x00500000,
--			.pcm	= 0x00400000,
--			.spdif	= 0,		/* impossible - turn off */
--			.mask	= 0x00500000,
--		},
--		.capture = {
--			.i2s	= 0x00050000,
--			.pcm	= 0x00040000,
--			.spdif	= 0,		/* impossible - turn off */
--			.mask	= 0x00050000,
--		},
--	},
--};
--
--static void siu_dai_start(struct siu_port *port_info)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--
--	dev_dbg(port_info->pcm->card->dev, "%s\n", __func__);
--
--	/* Issue software reset to siu */
--	siu_write32(base + SIU_SRCTL, 0);
--
--	/* Wait for the reset to take effect */
--	udelay(1);
--
--	port_info->stfifo = 0;
--	port_info->trdat = 0;
--
--	/* portA, portB, SIU operate */
--	siu_write32(base + SIU_SRCTL, 0x301);
--
--	/* portA=256fs, portB=256fs */
--	siu_write32(base + SIU_CKCTL, 0x40400000);
--
--	/* portA's BRG does not divide SIUCKA */
--	siu_write32(base + SIU_BRGASEL, 0);
--	siu_write32(base + SIU_BRRA, 0);
--
--	/* portB's BRG divides SIUCKB by half */
--	siu_write32(base + SIU_BRGBSEL, 1);
--	siu_write32(base + SIU_BRRB, 0);
--
--	siu_write32(base + SIU_IFCTL, 0x44440000);
--
--	/* portA: 32 bit/fs, master; portB: 32 bit/fs, master */
--	siu_write32(base + SIU_SFORM, 0x0c0c0000);
--
--	/*
--	 * Volume levels: looks like the DSP firmware implements volume controls
--	 * differently from what's described in the datasheet
--	 */
--	siu_write32(base + SIU_SBDVCA, port_info->playback.volume);
--	siu_write32(base + SIU_SBDVCB, port_info->capture.volume);
--}
--
--static void siu_dai_stop(struct siu_port *port_info)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--
--	/* SIU software reset */
--	siu_write32(base + SIU_SRCTL, 0);
--}
--
--static void siu_dai_spbAselect(struct siu_port *port_info)
--{
--	struct siu_info *info = siu_i2s_data;
--	struct siu_firmware *fw = &info->fw;
--	u32 *ydef = fw->yram0;
--	u32 idx;
--
--	/* path A use */
--	if (!info->port_id)
--		idx = 1;		/* portA */
--	else
--		idx = 2;		/* portB */
--
--	ydef[0] = (fw->spbpar[idx].ab1a << 16) |
--		(fw->spbpar[idx].ab0a << 8) |
--		(fw->spbpar[idx].dir << 7) | 3;
--	ydef[1] = fw->yram0[1];	/* 0x03000300 */
--	ydef[2] = (16 / 2) << 24;
--	ydef[3] = fw->yram0[3];	/* 0 */
--	ydef[4] = fw->yram0[4];	/* 0 */
--	ydef[7] = fw->spbpar[idx].event;
--	port_info->stfifo |= fw->spbpar[idx].stfifo;
--	port_info->trdat |= fw->spbpar[idx].trdat;
--}
--
--static void siu_dai_spbBselect(struct siu_port *port_info)
--{
--	struct siu_info *info = siu_i2s_data;
--	struct siu_firmware *fw = &info->fw;
--	u32 *ydef = fw->yram0;
--	u32 idx;
--
--	/* path B use */
--	if (!info->port_id)
--		idx = 7;		/* portA */
--	else
--		idx = 8;		/* portB */
--
--	ydef[5] = (fw->spbpar[idx].ab1a << 16) |
--		(fw->spbpar[idx].ab0a << 8) | 1;
--	ydef[6] = fw->spbpar[idx].event;
--	port_info->stfifo |= fw->spbpar[idx].stfifo;
--	port_info->trdat |= fw->spbpar[idx].trdat;
--}
--
--static void siu_dai_open(struct siu_stream *siu_stream)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--	u32 srctl, ifctl;
--
--	srctl = siu_read32(base + SIU_SRCTL);
--	ifctl = siu_read32(base + SIU_IFCTL);
--
--	switch (info->port_id) {
--	case SIU_PORT_A:
--		/* portA operates */
--		srctl |= 0x200;
--		ifctl &= ~0xc2;
--		break;
--	case SIU_PORT_B:
--		/* portB operates */
--		srctl |= 0x100;
--		ifctl &= ~0x31;
--		break;
--	}
--
--	siu_write32(base + SIU_SRCTL, srctl);
--	/* Unmute and configure portA */
--	siu_write32(base + SIU_IFCTL, ifctl);
--}
--
--/*
-- * At the moment only fixed Left-upper, Left-lower, Right-upper, Right-lower
-- * packing is supported
-- */
--static void siu_dai_pcmdatapack(struct siu_stream *siu_stream)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--	u32 dpak;
--
--	dpak = siu_read32(base + SIU_DPAK);
--
--	switch (info->port_id) {
--	case SIU_PORT_A:
--		dpak &= ~0xc0000000;
--		break;
--	case SIU_PORT_B:
--		dpak &= ~0x00c00000;
--		break;
--	}
--
--	siu_write32(base + SIU_DPAK, dpak);
--}
--
--static int siu_dai_spbstart(struct siu_port *port_info)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--	struct siu_firmware *fw = &info->fw;
--	u32 *ydef = fw->yram0;
--	int cnt;
--	u32 __iomem *add;
--	u32 *ptr;
--
--	/* Load SPB Program in PRAM */
--	ptr = fw->pram0;
--	add = info->pram;
--	for (cnt = 0; cnt < PRAM0_SIZE; cnt++, add++, ptr++)
--		siu_write32(add, *ptr);
--
--	ptr = fw->pram1;
--	add = info->pram + (0x0100 / sizeof(u32));
--	for (cnt = 0; cnt < PRAM1_SIZE; cnt++, add++, ptr++)
--		siu_write32(add, *ptr);
--
--	/* XRAM initialization */
--	add = info->xram;
--	for (cnt = 0; cnt < XRAM0_SIZE + XRAM1_SIZE + XRAM2_SIZE; cnt++, add++)
--		siu_write32(add, 0);
--
--	/* YRAM variable area initialization */
--	add = info->yram;
--	for (cnt = 0; cnt < YRAM_DEF_SIZE; cnt++, add++)
--		siu_write32(add, ydef[cnt]);
--
--	/* YRAM FIR coefficient area initialization */
--	add = info->yram + (0x0200 / sizeof(u32));
--	for (cnt = 0; cnt < YRAM_FIR_SIZE; cnt++, add++)
--		siu_write32(add, fw->yram_fir_coeff[cnt]);
--
--	/* YRAM IIR coefficient area initialization */
--	add = info->yram + (0x0600 / sizeof(u32));
--	for (cnt = 0; cnt < YRAM_IIR_SIZE; cnt++, add++)
--		siu_write32(add, 0);
--
--	siu_write32(base + SIU_TRDAT, port_info->trdat);
--	port_info->trdat = 0x0;
--
--
--	/* SPB start condition: software */
--	siu_write32(base + SIU_SBACTIV, 0);
--	/* Start SPB */
--	siu_write32(base + SIU_SBCTL, 0xc0000000);
--	/* Wait for program to halt */
--	cnt = 0x10000;
--	while (--cnt && siu_read32(base + SIU_SBCTL) != 0x80000000)
--		cpu_relax();
--
--	if (!cnt)
--		return -EBUSY;
--
--	/* SPB program start address setting */
--	siu_write32(base + SIU_SBPSET, 0x00400000);
--	/* SPB hardware start(FIFOCTL source) */
--	siu_write32(base + SIU_SBACTIV, 0xc0000000);
--
--	return 0;
--}
--
--static void siu_dai_spbstop(struct siu_port *port_info)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--
--	siu_write32(base + SIU_SBACTIV, 0);
--	/* SPB stop */
--	siu_write32(base + SIU_SBCTL, 0);
--
--	port_info->stfifo = 0;
--}
--
--/*		API functions		*/
--
--/* Playback and capture hardware properties are identical */
--static const struct snd_pcm_hardware siu_dai_pcm_hw = {
--	.info			= SNDRV_PCM_INFO_INTERLEAVED,
--	.formats		= SNDRV_PCM_FMTBIT_S16,
--	.rates			= SNDRV_PCM_RATE_8000_48000,
--	.rate_min		= 8000,
--	.rate_max		= 48000,
--	.channels_min		= 2,
--	.channels_max		= 2,
--	.buffer_bytes_max	= SIU_BUFFER_BYTES_MAX,
--	.period_bytes_min	= SIU_PERIOD_BYTES_MIN,
--	.period_bytes_max	= SIU_PERIOD_BYTES_MAX,
--	.periods_min		= SIU_PERIODS_MIN,
--	.periods_max		= SIU_PERIODS_MAX,
--};
--
--static int siu_dai_info_volume(struct snd_kcontrol *kctrl,
--			       struct snd_ctl_elem_info *uinfo)
--{
--	struct siu_port *port_info = snd_kcontrol_chip(kctrl);
--
--	dev_dbg(port_info->pcm->card->dev, "%s\n", __func__);
--
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--	uinfo->count = 2;
--	uinfo->value.integer.min = 0;
--	uinfo->value.integer.max = SIU_MAX_VOLUME;
--
--	return 0;
--}
--
--static int siu_dai_get_volume(struct snd_kcontrol *kctrl,
--			      struct snd_ctl_elem_value *ucontrol)
--{
--	struct siu_port *port_info = snd_kcontrol_chip(kctrl);
--	struct device *dev = port_info->pcm->card->dev;
--	u32 vol;
--
--	dev_dbg(dev, "%s\n", __func__);
--
--	switch (kctrl->private_value) {
--	case VOLUME_PLAYBACK:
--		/* Playback is always on port 0 */
--		vol = port_info->playback.volume;
--		ucontrol->value.integer.value[0] = vol & 0xffff;
--		ucontrol->value.integer.value[1] = vol >> 16 & 0xffff;
--		break;
--	case VOLUME_CAPTURE:
--		/* Capture is always on port 1 */
--		vol = port_info->capture.volume;
--		ucontrol->value.integer.value[0] = vol & 0xffff;
--		ucontrol->value.integer.value[1] = vol >> 16 & 0xffff;
--		break;
--	default:
--		dev_err(dev, "%s() invalid private_value=%ld\n",
--			__func__, kctrl->private_value);
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static int siu_dai_put_volume(struct snd_kcontrol *kctrl,
--			      struct snd_ctl_elem_value *ucontrol)
--{
--	struct siu_port *port_info = snd_kcontrol_chip(kctrl);
--	struct device *dev = port_info->pcm->card->dev;
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--	u32 new_vol;
--	u32 cur_vol;
--
--	dev_dbg(dev, "%s\n", __func__);
--
--	if (ucontrol->value.integer.value[0] < 0 ||
--	    ucontrol->value.integer.value[0] > SIU_MAX_VOLUME ||
--	    ucontrol->value.integer.value[1] < 0 ||
--	    ucontrol->value.integer.value[1] > SIU_MAX_VOLUME)
--		return -EINVAL;
--
--	new_vol = ucontrol->value.integer.value[0] |
--		ucontrol->value.integer.value[1] << 16;
--
--	/* See comment above - DSP firmware implementation */
--	switch (kctrl->private_value) {
--	case VOLUME_PLAYBACK:
--		/* Playback is always on port 0 */
--		cur_vol = port_info->playback.volume;
--		siu_write32(base + SIU_SBDVCA, new_vol);
--		port_info->playback.volume = new_vol;
--		break;
--	case VOLUME_CAPTURE:
--		/* Capture is always on port 1 */
--		cur_vol = port_info->capture.volume;
--		siu_write32(base + SIU_SBDVCB, new_vol);
--		port_info->capture.volume = new_vol;
--		break;
--	default:
--		dev_err(dev, "%s() invalid private_value=%ld\n",
--			__func__, kctrl->private_value);
--		return -EINVAL;
--	}
--
--	if (cur_vol != new_vol)
--		return 1;
--
--	return 0;
--}
--
--static const struct snd_kcontrol_new playback_controls = {
--	.iface		= SNDRV_CTL_ELEM_IFACE_MIXER,
--	.name		= "PCM Playback Volume",
--	.index		= 0,
--	.info		= siu_dai_info_volume,
--	.get		= siu_dai_get_volume,
--	.put		= siu_dai_put_volume,
--	.private_value	= VOLUME_PLAYBACK,
--};
--
--static const struct snd_kcontrol_new capture_controls = {
--	.iface		= SNDRV_CTL_ELEM_IFACE_MIXER,
--	.name		= "PCM Capture Volume",
--	.index		= 0,
--	.info		= siu_dai_info_volume,
--	.get		= siu_dai_get_volume,
--	.put		= siu_dai_put_volume,
--	.private_value	= VOLUME_CAPTURE,
--};
--
--int siu_init_port(int port, struct siu_port **port_info, struct snd_card *card)
--{
--	struct device *dev = card->dev;
--	struct snd_kcontrol *kctrl;
--	int ret;
--
--	*port_info = kzalloc(sizeof(**port_info), GFP_KERNEL);
--	if (!*port_info)
--		return -ENOMEM;
--
--	dev_dbg(dev, "%s: port #%d@%p\n", __func__, port, *port_info);
--
--	(*port_info)->playback.volume = DFLT_VOLUME_LEVEL;
--	(*port_info)->capture.volume = DFLT_VOLUME_LEVEL;
--
--	/*
--	 * Add mixer support. The SPB is used to change the volume. Both
--	 * ports use the same SPB. Therefore, we only register one
--	 * control instance since it will be used by both channels.
--	 * In error case we continue without controls.
--	 */
--	kctrl = snd_ctl_new1(&playback_controls, *port_info);
--	ret = snd_ctl_add(card, kctrl);
--	if (ret < 0)
--		dev_err(dev,
--			"failed to add playback controls %p port=%d err=%d\n",
--			kctrl, port, ret);
--
--	kctrl = snd_ctl_new1(&capture_controls, *port_info);
--	ret = snd_ctl_add(card, kctrl);
--	if (ret < 0)
--		dev_err(dev,
--			"failed to add capture controls %p port=%d err=%d\n",
--			kctrl, port, ret);
--
--	return 0;
--}
--
--void siu_free_port(struct siu_port *port_info)
--{
--	kfree(port_info);
--}
--
--static int siu_dai_startup(struct snd_pcm_substream *substream,
--			   struct snd_soc_dai *dai)
--{
--	struct siu_info *info = snd_soc_dai_get_drvdata(dai);
--	struct snd_pcm_runtime *rt = substream->runtime;
--	struct siu_port	*port_info = siu_port_info(substream);
--	int ret;
--
--	dev_dbg(substream->pcm->card->dev, "%s: port=%d@%p\n", __func__,
--		info->port_id, port_info);
--
--	snd_soc_set_runtime_hwparams(substream, &siu_dai_pcm_hw);
--
--	ret = snd_pcm_hw_constraint_integer(rt, SNDRV_PCM_HW_PARAM_PERIODS);
--	if (unlikely(ret < 0))
--		return ret;
--
--	siu_dai_start(port_info);
--
--	return 0;
--}
--
--static void siu_dai_shutdown(struct snd_pcm_substream *substream,
--			     struct snd_soc_dai *dai)
--{
--	struct siu_info *info = snd_soc_dai_get_drvdata(dai);
--	struct siu_port	*port_info = siu_port_info(substream);
--
--	dev_dbg(substream->pcm->card->dev, "%s: port=%d@%p\n", __func__,
--		info->port_id, port_info);
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		port_info->play_cap &= ~PLAYBACK_ENABLED;
--	else
--		port_info->play_cap &= ~CAPTURE_ENABLED;
--
--	/* Stop the siu if the other stream is not using it */
--	if (!port_info->play_cap) {
--		/* during stmread or stmwrite ? */
--		if (WARN_ON(port_info->playback.rw_flg || port_info->capture.rw_flg))
--			return;
--		siu_dai_spbstop(port_info);
--		siu_dai_stop(port_info);
--	}
--}
--
--/* PCM part of siu_dai_playback_prepare() / siu_dai_capture_prepare() */
--static int siu_dai_prepare(struct snd_pcm_substream *substream,
--			   struct snd_soc_dai *dai)
--{
--	struct siu_info *info = snd_soc_dai_get_drvdata(dai);
--	struct snd_pcm_runtime *rt = substream->runtime;
--	struct siu_port *port_info = siu_port_info(substream);
--	struct siu_stream *siu_stream;
--	int self, ret;
--
--	dev_dbg(substream->pcm->card->dev,
--		"%s: port %d, active streams %lx, %d channels\n",
--		__func__, info->port_id, port_info->play_cap, rt->channels);
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		self = PLAYBACK_ENABLED;
--		siu_stream = &port_info->playback;
--	} else {
--		self = CAPTURE_ENABLED;
--		siu_stream = &port_info->capture;
--	}
--
--	/* Set up the siu if not already done */
--	if (!port_info->play_cap) {
--		siu_stream->rw_flg = 0;	/* stream-data transfer flag */
--
--		siu_dai_spbAselect(port_info);
--		siu_dai_spbBselect(port_info);
--
--		siu_dai_open(siu_stream);
--
--		siu_dai_pcmdatapack(siu_stream);
--
--		ret = siu_dai_spbstart(port_info);
--		if (ret < 0)
--			goto fail;
--	} else {
--		ret = 0;
--	}
--
--	port_info->play_cap |= self;
--
--fail:
--	return ret;
--}
--
--/*
-- * SIU can set bus format to I2S / PCM / SPDIF independently for playback and
-- * capture, however, the current API sets the bus format globally for a DAI.
-- */
--static int siu_dai_set_fmt(struct snd_soc_dai *dai,
--			   unsigned int fmt)
--{
--	struct siu_info *info = snd_soc_dai_get_drvdata(dai);
--	u32 __iomem *base = info->reg;
--	u32 ifctl;
--
--	dev_dbg(dai->dev, "%s: fmt 0x%x on port %d\n",
--		__func__, fmt, info->port_id);
--
--	if (info->port_id < 0)
--		return -ENODEV;
--
--	/* Here select between I2S / PCM / SPDIF */
--	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--	case SND_SOC_DAIFMT_I2S:
--		ifctl = siu_flags[info->port_id].playback.i2s |
--			siu_flags[info->port_id].capture.i2s;
--		break;
--	case SND_SOC_DAIFMT_LEFT_J:
--		ifctl = siu_flags[info->port_id].playback.pcm |
--			siu_flags[info->port_id].capture.pcm;
--		break;
--	/* SPDIF disabled - see comment at the top */
--	default:
--		return -EINVAL;
--	}
--
--	ifctl |= ~(siu_flags[info->port_id].playback.mask |
--		   siu_flags[info->port_id].capture.mask) &
--		siu_read32(base + SIU_IFCTL);
--	siu_write32(base + SIU_IFCTL, ifctl);
--
--	return 0;
--}
--
--static int siu_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
--			      unsigned int freq, int dir)
--{
--	struct clk *siu_clk, *parent_clk;
--	char *siu_name, *parent_name;
--	int ret;
--
--	if (dir != SND_SOC_CLOCK_IN)
--		return -EINVAL;
--
--	dev_dbg(dai->dev, "%s: using clock %d\n", __func__, clk_id);
--
--	switch (clk_id) {
--	case SIU_CLKA_PLL:
--		siu_name = "siua_clk";
--		parent_name = "pll_clk";
--		break;
--	case SIU_CLKA_EXT:
--		siu_name = "siua_clk";
--		parent_name = "siumcka_clk";
--		break;
--	case SIU_CLKB_PLL:
--		siu_name = "siub_clk";
--		parent_name = "pll_clk";
--		break;
--	case SIU_CLKB_EXT:
--		siu_name = "siub_clk";
--		parent_name = "siumckb_clk";
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	siu_clk = clk_get(dai->dev, siu_name);
--	if (IS_ERR(siu_clk)) {
--		dev_err(dai->dev, "%s: cannot get a SIU clock: %ld\n", __func__,
--			PTR_ERR(siu_clk));
--		return PTR_ERR(siu_clk);
--	}
--
--	parent_clk = clk_get(dai->dev, parent_name);
--	if (IS_ERR(parent_clk)) {
--		ret = PTR_ERR(parent_clk);
--		dev_err(dai->dev, "cannot get a SIU clock parent: %d\n", ret);
--		goto epclkget;
--	}
--
--	ret = clk_set_parent(siu_clk, parent_clk);
--	if (ret < 0) {
--		dev_err(dai->dev, "cannot reparent the SIU clock: %d\n", ret);
--		goto eclksetp;
--	}
--
--	ret = clk_set_rate(siu_clk, freq);
--	if (ret < 0)
--		dev_err(dai->dev, "cannot set SIU clock rate: %d\n", ret);
--
--	/* TODO: when clkdev gets reference counting we'll move these to siu_dai_shutdown() */
--eclksetp:
--	clk_put(parent_clk);
--epclkget:
--	clk_put(siu_clk);
--
--	return ret;
--}
--
--static const struct snd_soc_dai_ops siu_dai_ops = {
--	.startup	= siu_dai_startup,
--	.shutdown	= siu_dai_shutdown,
--	.prepare	= siu_dai_prepare,
--	.set_sysclk	= siu_dai_set_sysclk,
--	.set_fmt	= siu_dai_set_fmt,
--};
--
--static struct snd_soc_dai_driver siu_i2s_dai = {
--	.name	= "siu-i2s-dai",
--	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.formats = SNDRV_PCM_FMTBIT_S16,
--		.rates = SNDRV_PCM_RATE_8000_48000,
--	},
--	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.formats = SNDRV_PCM_FMTBIT_S16,
--		.rates = SNDRV_PCM_RATE_8000_48000,
--	 },
--	.ops = &siu_dai_ops,
--};
--
--static int siu_probe(struct platform_device *pdev)
--{
--	const struct firmware *fw_entry;
--	struct resource *res, *region;
--	struct siu_info *info;
--	int ret;
--
--	info = devm_kmalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
--	if (!info)
--		return -ENOMEM;
--	siu_i2s_data = info;
--	info->dev = &pdev->dev;
--
--	ret = request_firmware(&fw_entry, "siu_spb.bin", &pdev->dev);
--	if (ret)
--		return ret;
--
--	/*
--	 * Loaded firmware is "const" - read only, but we have to modify it in
--	 * snd_siu_sh7343_spbAselect() and snd_siu_sh7343_spbBselect()
--	 */
--	memcpy(&info->fw, fw_entry->data, fw_entry->size);
--
--	release_firmware(fw_entry);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res)
--		return -ENODEV;
--
--	region = devm_request_mem_region(&pdev->dev, res->start,
--					 resource_size(res), pdev->name);
--	if (!region) {
--		dev_err(&pdev->dev, "SIU region already claimed\n");
--		return -EBUSY;
--	}
--
--	info->pram = devm_ioremap(&pdev->dev, res->start, PRAM_SIZE);
--	if (!info->pram)
--		return -ENOMEM;
--	info->xram = devm_ioremap(&pdev->dev, res->start + XRAM_OFFSET,
--				  XRAM_SIZE);
--	if (!info->xram)
--		return -ENOMEM;
--	info->yram = devm_ioremap(&pdev->dev, res->start + YRAM_OFFSET,
--				  YRAM_SIZE);
--	if (!info->yram)
--		return -ENOMEM;
--	info->reg = devm_ioremap(&pdev->dev, res->start + REG_OFFSET,
--			    resource_size(res) - REG_OFFSET);
--	if (!info->reg)
--		return -ENOMEM;
--
--	dev_set_drvdata(&pdev->dev, info);
--
--	/* register using ARRAY version so we can keep dai name */
--	ret = devm_snd_soc_register_component(&pdev->dev, &siu_component,
--					      &siu_i2s_dai, 1);
--	if (ret < 0)
--		return ret;
--
--	pm_runtime_enable(&pdev->dev);
--
--	return 0;
--}
--
--static int siu_remove(struct platform_device *pdev)
--{
--	pm_runtime_disable(&pdev->dev);
--	return 0;
--}
--
--static struct platform_driver siu_driver = {
--	.driver 	= {
--		.name	= "siu-pcm-audio",
--	},
--	.probe		= siu_probe,
--	.remove		= siu_remove,
--};
--
--module_platform_driver(siu_driver);
--
--MODULE_AUTHOR("Carlos Munoz <carlos@kenati.com>");
--MODULE_DESCRIPTION("ALSA SoC SH7722 SIU driver");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-deleted file mode 100644
-index f15ff36e793455..00000000000000
---- a/sound/soc/sh/siu_pcm.c
-+++ /dev/null
-@@ -1,553 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0+
--//
--// siu_pcm.c - ALSA driver for Renesas SH7343, SH7722 SIU peripheral.
--//
--// Copyright (C) 2009-2010 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
--// Copyright (C) 2006 Carlos Munoz <carlos@kenati.com>
--
--#include <linux/delay.h>
--#include <linux/dma-mapping.h>
--#include <linux/dmaengine.h>
--#include <linux/interrupt.h>
--#include <linux/module.h>
--#include <linux/platform_device.h>
--
--#include <sound/control.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--
--#include <asm/siu.h>
--
--#include "siu.h"
--
--#define DRV_NAME "siu-i2s"
--#define GET_MAX_PERIODS(buf_bytes, period_bytes) \
--				((buf_bytes) / (period_bytes))
--#define PERIOD_OFFSET(buf_addr, period_num, period_bytes) \
--				((buf_addr) + ((period_num) * (period_bytes)))
--
--#define RWF_STM_RD		0x01		/* Read in progress */
--#define RWF_STM_WT		0x02		/* Write in progress */
--
--struct siu_port *siu_ports[SIU_PORT_NUM];
--
--/* transfersize is number of u32 dma transfers per period */
--static int siu_pcm_stmwrite_stop(struct siu_port *port_info)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--	struct siu_stream *siu_stream = &port_info->playback;
--	u32 stfifo;
--
--	if (!siu_stream->rw_flg)
--		return -EPERM;
--
--	/* output FIFO disable */
--	stfifo = siu_read32(base + SIU_STFIFO);
--	siu_write32(base + SIU_STFIFO, stfifo & ~0x0c180c18);
--	pr_debug("%s: STFIFO %x -> %x\n", __func__,
--		 stfifo, stfifo & ~0x0c180c18);
--
--	/* during stmwrite clear */
--	siu_stream->rw_flg = 0;
--
--	return 0;
--}
--
--static int siu_pcm_stmwrite_start(struct siu_port *port_info)
--{
--	struct siu_stream *siu_stream = &port_info->playback;
--
--	if (siu_stream->rw_flg)
--		return -EPERM;
--
--	/* Current period in buffer */
--	port_info->playback.cur_period = 0;
--
--	/* during stmwrite flag set */
--	siu_stream->rw_flg = RWF_STM_WT;
--
--	/* DMA transfer start */
--	queue_work(system_highpri_wq, &siu_stream->work);
--
--	return 0;
--}
--
--static void siu_dma_tx_complete(void *arg)
--{
--	struct siu_stream *siu_stream = arg;
--
--	if (!siu_stream->rw_flg)
--		return;
--
--	/* Update completed period count */
--	if (++siu_stream->cur_period >=
--	    GET_MAX_PERIODS(siu_stream->buf_bytes,
--			    siu_stream->period_bytes))
--		siu_stream->cur_period = 0;
--
--	pr_debug("%s: done period #%d (%u/%u bytes), cookie %d\n",
--		__func__, siu_stream->cur_period,
--		siu_stream->cur_period * siu_stream->period_bytes,
--		siu_stream->buf_bytes, siu_stream->cookie);
--
--	queue_work(system_highpri_wq, &siu_stream->work);
--
--	/* Notify alsa: a period is done */
--	snd_pcm_period_elapsed(siu_stream->substream);
--}
--
--static int siu_pcm_wr_set(struct siu_port *port_info,
--			  dma_addr_t buff, u32 size)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--	struct siu_stream *siu_stream = &port_info->playback;
--	struct snd_pcm_substream *substream = siu_stream->substream;
--	struct device *dev = substream->pcm->card->dev;
--	struct dma_async_tx_descriptor *desc;
--	dma_cookie_t cookie;
--	struct scatterlist sg;
--	u32 stfifo;
--
--	sg_init_table(&sg, 1);
--	sg_set_page(&sg, pfn_to_page(PFN_DOWN(buff)),
--		    size, offset_in_page(buff));
--	sg_dma_len(&sg) = size;
--	sg_dma_address(&sg) = buff;
--
--	desc = dmaengine_prep_slave_sg(siu_stream->chan,
--		&sg, 1, DMA_MEM_TO_DEV, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
--	if (!desc) {
--		dev_err(dev, "Failed to allocate a dma descriptor\n");
--		return -ENOMEM;
--	}
--
--	desc->callback = siu_dma_tx_complete;
--	desc->callback_param = siu_stream;
--	cookie = dmaengine_submit(desc);
--	if (cookie < 0) {
--		dev_err(dev, "Failed to submit a dma transfer\n");
--		return cookie;
--	}
--
--	siu_stream->tx_desc = desc;
--	siu_stream->cookie = cookie;
--
--	dma_async_issue_pending(siu_stream->chan);
--
--	/* only output FIFO enable */
--	stfifo = siu_read32(base + SIU_STFIFO);
--	siu_write32(base + SIU_STFIFO, stfifo | (port_info->stfifo & 0x0c180c18));
--	dev_dbg(dev, "%s: STFIFO %x -> %x\n", __func__,
--		stfifo, stfifo | (port_info->stfifo & 0x0c180c18));
--
--	return 0;
--}
--
--static int siu_pcm_rd_set(struct siu_port *port_info,
--			  dma_addr_t buff, size_t size)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--	struct siu_stream *siu_stream = &port_info->capture;
--	struct snd_pcm_substream *substream = siu_stream->substream;
--	struct device *dev = substream->pcm->card->dev;
--	struct dma_async_tx_descriptor *desc;
--	dma_cookie_t cookie;
--	struct scatterlist sg;
--	u32 stfifo;
--
--	dev_dbg(dev, "%s: %u@%llx\n", __func__, size, (unsigned long long)buff);
--
--	sg_init_table(&sg, 1);
--	sg_set_page(&sg, pfn_to_page(PFN_DOWN(buff)),
--		    size, offset_in_page(buff));
--	sg_dma_len(&sg) = size;
--	sg_dma_address(&sg) = buff;
--
--	desc = dmaengine_prep_slave_sg(siu_stream->chan,
--		&sg, 1, DMA_DEV_TO_MEM, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
--	if (!desc) {
--		dev_err(dev, "Failed to allocate dma descriptor\n");
--		return -ENOMEM;
--	}
--
--	desc->callback = siu_dma_tx_complete;
--	desc->callback_param = siu_stream;
--	cookie = dmaengine_submit(desc);
--	if (cookie < 0) {
--		dev_err(dev, "Failed to submit dma descriptor\n");
--		return cookie;
--	}
--
--	siu_stream->tx_desc = desc;
--	siu_stream->cookie = cookie;
--
--	dma_async_issue_pending(siu_stream->chan);
--
--	/* only input FIFO enable */
--	stfifo = siu_read32(base + SIU_STFIFO);
--	siu_write32(base + SIU_STFIFO, siu_read32(base + SIU_STFIFO) |
--		    (port_info->stfifo & 0x13071307));
--	dev_dbg(dev, "%s: STFIFO %x -> %x\n", __func__,
--		stfifo, stfifo | (port_info->stfifo & 0x13071307));
--
--	return 0;
--}
--
--static void siu_io_work(struct work_struct *work)
--{
--	struct siu_stream *siu_stream = container_of(work, struct siu_stream,
--						     work);
--	struct snd_pcm_substream *substream = siu_stream->substream;
--	struct device *dev = substream->pcm->card->dev;
--	struct snd_pcm_runtime *rt = substream->runtime;
--	struct siu_port *port_info = siu_port_info(substream);
--
--	dev_dbg(dev, "%s: flags %x\n", __func__, siu_stream->rw_flg);
--
--	if (!siu_stream->rw_flg) {
--		dev_dbg(dev, "%s: stream inactive\n", __func__);
--		return;
--	}
--
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
--		dma_addr_t buff;
--		size_t count;
--
--		buff = (dma_addr_t)PERIOD_OFFSET(rt->dma_addr,
--						siu_stream->cur_period,
--						siu_stream->period_bytes);
--		count = siu_stream->period_bytes;
--
--		/* DMA transfer start */
--		siu_pcm_rd_set(port_info, buff, count);
--	} else {
--		siu_pcm_wr_set(port_info,
--			       (dma_addr_t)PERIOD_OFFSET(rt->dma_addr,
--						siu_stream->cur_period,
--						siu_stream->period_bytes),
--			       siu_stream->period_bytes);
--	}
--}
--
--/* Capture */
--static int siu_pcm_stmread_start(struct siu_port *port_info)
--{
--	struct siu_stream *siu_stream = &port_info->capture;
--
--	if (siu_stream->xfer_cnt > 0x1000000)
--		return -EINVAL;
--	if (siu_stream->rw_flg)
--		return -EPERM;
--
--	/* Current period in buffer */
--	siu_stream->cur_period = 0;
--
--	/* during stmread flag set */
--	siu_stream->rw_flg = RWF_STM_RD;
--
--	queue_work(system_highpri_wq, &siu_stream->work);
--
--	return 0;
--}
--
--static int siu_pcm_stmread_stop(struct siu_port *port_info)
--{
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--	struct siu_stream *siu_stream = &port_info->capture;
--	struct device *dev = siu_stream->substream->pcm->card->dev;
--	u32 stfifo;
--
--	if (!siu_stream->rw_flg)
--		return -EPERM;
--
--	/* input FIFO disable */
--	stfifo = siu_read32(base + SIU_STFIFO);
--	siu_write32(base + SIU_STFIFO, stfifo & ~0x13071307);
--	dev_dbg(dev, "%s: STFIFO %x -> %x\n", __func__,
--		stfifo, stfifo & ~0x13071307);
--
--	/* during stmread flag clear */
--	siu_stream->rw_flg = 0;
--
--	return 0;
--}
--
--static bool filter(struct dma_chan *chan, void *secondary)
--{
--	struct sh_dmae_slave *param = secondary;
--
--	pr_debug("%s: secondary ID %d\n", __func__, param->shdma_slave.slave_id);
--
--	chan->private = &param->shdma_slave;
--	return true;
--}
--
--static int siu_pcm_open(struct snd_soc_component *component,
--			struct snd_pcm_substream *ss)
--{
--	/* Playback / Capture */
--	struct siu_platform *pdata = component->dev->platform_data;
--	struct siu_info *info = siu_i2s_data;
--	struct siu_port *port_info = siu_port_info(ss);
--	struct siu_stream *siu_stream;
--	u32 port = info->port_id;
--	struct device *dev = ss->pcm->card->dev;
--	dma_cap_mask_t mask;
--	struct sh_dmae_slave *param;
--
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--
--	dev_dbg(dev, "%s, port=%d@%p\n", __func__, port, port_info);
--
--	if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		siu_stream = &port_info->playback;
--		param = &siu_stream->param;
--		param->shdma_slave.slave_id = port ? pdata->dma_slave_tx_b :
--			pdata->dma_slave_tx_a;
--	} else {
--		siu_stream = &port_info->capture;
--		param = &siu_stream->param;
--		param->shdma_slave.slave_id = port ? pdata->dma_slave_rx_b :
--			pdata->dma_slave_rx_a;
--	}
--
--	/* Get DMA channel */
--	siu_stream->chan = dma_request_channel(mask, filter, param);
--	if (!siu_stream->chan) {
--		dev_err(dev, "DMA channel allocation failed!\n");
--		return -EBUSY;
--	}
--
--	siu_stream->substream = ss;
--
--	return 0;
--}
--
--static int siu_pcm_close(struct snd_soc_component *component,
--			 struct snd_pcm_substream *ss)
--{
--	struct siu_info *info = siu_i2s_data;
--	struct device *dev = ss->pcm->card->dev;
--	struct siu_port *port_info = siu_port_info(ss);
--	struct siu_stream *siu_stream;
--
--	dev_dbg(dev, "%s: port=%d\n", __func__, info->port_id);
--
--	if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		siu_stream = &port_info->playback;
--	else
--		siu_stream = &port_info->capture;
--
--	dma_release_channel(siu_stream->chan);
--	siu_stream->chan = NULL;
--
--	siu_stream->substream = NULL;
--
--	return 0;
--}
--
--static int siu_pcm_prepare(struct snd_soc_component *component,
--			   struct snd_pcm_substream *ss)
--{
--	struct siu_info *info = siu_i2s_data;
--	struct siu_port *port_info = siu_port_info(ss);
--	struct device *dev = ss->pcm->card->dev;
--	struct snd_pcm_runtime *rt;
--	struct siu_stream *siu_stream;
--	snd_pcm_sframes_t xfer_cnt;
--
--	if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		siu_stream = &port_info->playback;
--	else
--		siu_stream = &port_info->capture;
--
--	rt = siu_stream->substream->runtime;
--
--	siu_stream->buf_bytes = snd_pcm_lib_buffer_bytes(ss);
--	siu_stream->period_bytes = snd_pcm_lib_period_bytes(ss);
--
--	dev_dbg(dev, "%s: port=%d, %d channels, period=%u bytes\n", __func__,
--		info->port_id, rt->channels, siu_stream->period_bytes);
--
--	/* We only support buffers that are multiples of the period */
--	if (siu_stream->buf_bytes % siu_stream->period_bytes) {
--		dev_err(dev, "%s() - buffer=%d not multiple of period=%d\n",
--		       __func__, siu_stream->buf_bytes,
--		       siu_stream->period_bytes);
--		return -EINVAL;
--	}
--
--	xfer_cnt = bytes_to_frames(rt, siu_stream->period_bytes);
--	if (!xfer_cnt || xfer_cnt > 0x1000000)
--		return -EINVAL;
--
--	siu_stream->format = rt->format;
--	siu_stream->xfer_cnt = xfer_cnt;
--
--	dev_dbg(dev, "port=%d buf=%lx buf_bytes=%d period_bytes=%d "
--		"format=%d channels=%d xfer_cnt=%d\n", info->port_id,
--		(unsigned long)rt->dma_addr, siu_stream->buf_bytes,
--		siu_stream->period_bytes,
--		siu_stream->format, rt->channels, (int)xfer_cnt);
--
--	return 0;
--}
--
--static int siu_pcm_trigger(struct snd_soc_component *component,
--			   struct snd_pcm_substream *ss, int cmd)
--{
--	struct siu_info *info = siu_i2s_data;
--	struct device *dev = ss->pcm->card->dev;
--	struct siu_port *port_info = siu_port_info(ss);
--	int ret;
--
--	dev_dbg(dev, "%s: port=%d@%p, cmd=%d\n", __func__,
--		info->port_id, port_info, cmd);
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			ret = siu_pcm_stmwrite_start(port_info);
--		else
--			ret = siu_pcm_stmread_start(port_info);
--
--		if (ret < 0)
--			dev_warn(dev, "%s: start failed on port=%d\n",
--				 __func__, info->port_id);
--
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--		if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			siu_pcm_stmwrite_stop(port_info);
--		else
--			siu_pcm_stmread_stop(port_info);
--		ret = 0;
--
--		break;
--	default:
--		dev_err(dev, "%s() unsupported cmd=%d\n", __func__, cmd);
--		ret = -EINVAL;
--	}
--
--	return ret;
--}
--
--/*
-- * So far only resolution of one period is supported, subject to extending the
-- * dmangine API
-- */
--static snd_pcm_uframes_t
--siu_pcm_pointer_dma(struct snd_soc_component *component,
--		    struct snd_pcm_substream *ss)
--{
--	struct device *dev = ss->pcm->card->dev;
--	struct siu_info *info = siu_i2s_data;
--	u32 __iomem *base = info->reg;
--	struct siu_port *port_info = siu_port_info(ss);
--	struct snd_pcm_runtime *rt = ss->runtime;
--	size_t ptr;
--	struct siu_stream *siu_stream;
--
--	if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		siu_stream = &port_info->playback;
--	else
--		siu_stream = &port_info->capture;
--
--	/*
--	 * ptr is the offset into the buffer where the dma is currently at. We
--	 * check if the dma buffer has just wrapped.
--	 */
--	ptr = PERIOD_OFFSET(rt->dma_addr,
--			    siu_stream->cur_period,
--			    siu_stream->period_bytes) - rt->dma_addr;
--
--	dev_dbg(dev,
--		"%s: port=%d, events %x, FSTS %x, xferred %u/%u, cookie %d\n",
--		__func__, info->port_id, siu_read32(base + SIU_EVNTC),
--		siu_read32(base + SIU_SBFSTS), ptr, siu_stream->buf_bytes,
--		siu_stream->cookie);
--
--	if (ptr >= siu_stream->buf_bytes)
--		ptr = 0;
--
--	return bytes_to_frames(ss->runtime, ptr);
--}
--
--static int siu_pcm_new(struct snd_soc_component *component,
--		       struct snd_soc_pcm_runtime *rtd)
--{
--	/* card->dev == socdev->dev, see snd_soc_new_pcms() */
--	struct snd_card *card = rtd->card->snd_card;
--	struct snd_pcm *pcm = rtd->pcm;
--	struct siu_info *info = siu_i2s_data;
--	struct platform_device *pdev = to_platform_device(card->dev);
--	int ret;
--	int i;
--
--	/* pdev->id selects between SIUA and SIUB */
--	if (pdev->id < 0 || pdev->id >= SIU_PORT_NUM)
--		return -EINVAL;
--
--	info->port_id = pdev->id;
--
--	/*
--	 * While the siu has 2 ports, only one port can be on at a time (only 1
--	 * SPB). So far all the boards using the siu had only one of the ports
--	 * wired to a codec. To simplify things, we only register one port with
--	 * alsa. In case both ports are needed, it should be changed here
--	 */
--	for (i = pdev->id; i < pdev->id + 1; i++) {
--		struct siu_port **port_info = &siu_ports[i];
--
--		ret = siu_init_port(i, port_info, card);
--		if (ret < 0)
--			return ret;
--
--		snd_pcm_set_managed_buffer_all(pcm,
--				SNDRV_DMA_TYPE_DEV, card->dev,
--				SIU_BUFFER_BYTES_MAX, SIU_BUFFER_BYTES_MAX);
--
--		(*port_info)->pcm = pcm;
--
--		/* IO works */
--		INIT_WORK(&(*port_info)->playback.work, siu_io_work);
--		INIT_WORK(&(*port_info)->capture.work, siu_io_work);
--	}
--
--	dev_info(card->dev, "SuperH SIU driver initialized.\n");
--	return 0;
--}
--
--static void siu_pcm_free(struct snd_soc_component *component,
--			 struct snd_pcm *pcm)
--{
--	struct platform_device *pdev = to_platform_device(pcm->card->dev);
--	struct siu_port *port_info = siu_ports[pdev->id];
--
--	cancel_work_sync(&port_info->capture.work);
--	cancel_work_sync(&port_info->playback.work);
--
--	siu_free_port(port_info);
--
--	dev_dbg(pcm->card->dev, "%s\n", __func__);
--}
--
--const struct snd_soc_component_driver siu_component = {
--	.name			= DRV_NAME,
--	.open			= siu_pcm_open,
--	.close			= siu_pcm_close,
--	.prepare		= siu_pcm_prepare,
--	.trigger		= siu_pcm_trigger,
--	.pointer		= siu_pcm_pointer_dma,
--	.pcm_construct		= siu_pcm_new,
--	.pcm_destruct		= siu_pcm_free,
--	.legacy_dai_naming	= 1,
--};
--EXPORT_SYMBOL_GPL(siu_component);
-diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
-deleted file mode 100644
-index 96cf523c227343..00000000000000
---- a/sound/soc/sh/ssi.c
-+++ /dev/null
-@@ -1,403 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--//
--// Serial Sound Interface (I2S) support for SH7760/SH7780
--//
--// Copyright (c) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
--//
--// dont forget to set IPSEL/OMSEL register bits (in your board code) to
--// enable SSI output pins!
--
--/*
-- * LIMITATIONS:
-- *	The SSI unit has only one physical data line, so full duplex is
-- *	impossible.  This can be remedied  on the  SH7760 by  using the
-- *	other SSI unit for recording; however the SH7780 has only 1 SSI
-- *	unit, and its pins are shared with the AC97 unit,  among others.
-- *
-- * FEATURES:
-- *	The SSI features "compressed mode": in this mode it continuously
-- *	streams PCM data over the I2S lines and uses LRCK as a handshake
-- *	signal.  Can be used to send compressed data (AC3/DTS) to a DSP.
-- *	The number of bits sent over the wire in a frame can be adjusted
-- *	and can be independent from the actual sample bit depth. This is
-- *	useful to support TDM mode codecs like the AD1939 which have a
-- *	fixed TDM slot size, regardless of sample resolution.
-- */
--
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/platform_device.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/initval.h>
--#include <sound/soc.h>
--#include <asm/io.h>
--
--#define SSICR	0x00
--#define SSISR	0x04
--
--#define CR_DMAEN	(1 << 28)
--#define CR_CHNL_SHIFT	22
--#define CR_CHNL_MASK	(3 << CR_CHNL_SHIFT)
--#define CR_DWL_SHIFT	19
--#define CR_DWL_MASK	(7 << CR_DWL_SHIFT)
--#define CR_SWL_SHIFT	16
--#define CR_SWL_MASK	(7 << CR_SWL_SHIFT)
--#define CR_SCK_MASTER	(1 << 15)	/* bitclock master bit */
--#define CR_SWS_MASTER	(1 << 14)	/* wordselect master bit */
--#define CR_SCKP		(1 << 13)	/* I2Sclock polarity */
--#define CR_SWSP		(1 << 12)	/* LRCK polarity */
--#define CR_SPDP		(1 << 11)
--#define CR_SDTA		(1 << 10)	/* i2s alignment (msb/lsb) */
--#define CR_PDTA		(1 << 9)	/* fifo data alignment */
--#define CR_DEL		(1 << 8)	/* delay data by 1 i2sclk */
--#define CR_BREN		(1 << 7)	/* clock gating in burst mode */
--#define CR_CKDIV_SHIFT	4
--#define CR_CKDIV_MASK	(7 << CR_CKDIV_SHIFT)	/* bitclock divider */
--#define CR_MUTE		(1 << 3)	/* SSI mute */
--#define CR_CPEN		(1 << 2)	/* compressed mode */
--#define CR_TRMD		(1 << 1)	/* transmit/receive select */
--#define CR_EN		(1 << 0)	/* enable SSI */
--
--#define SSIREG(reg)	(*(unsigned long *)(ssi->mmio + (reg)))
--
--struct ssi_priv {
--	unsigned long mmio;
--	unsigned long sysclk;
--	int inuse;
--} ssi_cpu_data[] = {
--#if defined(CONFIG_CPU_SUBTYPE_SH7760)
--	{
--		.mmio	= 0xFE680000,
--	},
--	{
--		.mmio	= 0xFE690000,
--	},
--#elif defined(CONFIG_CPU_SUBTYPE_SH7780)
--	{
--		.mmio	= 0xFFE70000,
--	},
--#else
--#error "Unsupported SuperH SoC"
--#endif
--};
--
--/*
-- * track usage of the SSI; it is simplex-only so prevent attempts of
-- * concurrent playback + capture. FIXME: any locking required?
-- */
--static int ssi_startup(struct snd_pcm_substream *substream,
--		       struct snd_soc_dai *dai)
--{
--	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
--	if (ssi->inuse) {
--		pr_debug("ssi: already in use!\n");
--		return -EBUSY;
--	} else
--		ssi->inuse = 1;
--	return 0;
--}
--
--static void ssi_shutdown(struct snd_pcm_substream *substream,
--			 struct snd_soc_dai *dai)
--{
--	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
--
--	ssi->inuse = 0;
--}
--
--static int ssi_trigger(struct snd_pcm_substream *substream, int cmd,
--		       struct snd_soc_dai *dai)
--{
--	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		SSIREG(SSICR) |= CR_DMAEN | CR_EN;
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--		SSIREG(SSICR) &= ~(CR_DMAEN | CR_EN);
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static int ssi_hw_params(struct snd_pcm_substream *substream,
--			 struct snd_pcm_hw_params *params,
--			 struct snd_soc_dai *dai)
--{
--	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
--	unsigned long ssicr = SSIREG(SSICR);
--	unsigned int bits, channels, swl, recv, i;
--
--	channels = params_channels(params);
--	bits = params->msbits;
--	recv = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ? 0 : 1;
--
--	pr_debug("ssi_hw_params() enter\nssicr was    %08lx\n", ssicr);
--	pr_debug("bits: %u channels: %u\n", bits, channels);
--
--	ssicr &= ~(CR_TRMD | CR_CHNL_MASK | CR_DWL_MASK | CR_PDTA |
--		   CR_SWL_MASK);
--
--	/* direction (send/receive) */
--	if (!recv)
--		ssicr |= CR_TRMD;	/* transmit */
--
--	/* channels */
--	if ((channels < 2) || (channels > 8) || (channels & 1)) {
--		pr_debug("ssi: invalid number of channels\n");
--		return -EINVAL;
--	}
--	ssicr |= ((channels >> 1) - 1) << CR_CHNL_SHIFT;
--
--	/* DATA WORD LENGTH (DWL): databits in audio sample */
--	i = 0;
--	switch (bits) {
--	case 32: ++i;
--	case 24: ++i;
--	case 22: ++i;
--	case 20: ++i;
--	case 18: ++i;
--	case 16: ++i;
--		 ssicr |= i << CR_DWL_SHIFT;
--	case 8:	 break;
--	default:
--		pr_debug("ssi: invalid sample width\n");
--		return -EINVAL;
--	}
--
--	/*
--	 * SYSTEM WORD LENGTH: size in bits of half a frame over the I2S
--	 * wires. This is usually bits_per_sample x channels/2;  i.e. in
--	 * Stereo mode  the SWL equals DWL.  SWL can  be bigger than the
--	 * product of (channels_per_slot x samplebits), e.g.  for codecs
--	 * like the AD1939 which  only accept 32bit wide TDM slots.  For
--	 * "standard" I2S operation we set SWL = chans / 2 * DWL here.
--	 * Waiting for ASoC to get TDM support ;-)
--	 */
--	if ((bits > 16) && (bits <= 24)) {
--		bits = 24;	/* these are padded by the SSI */
--		/*ssicr |= CR_PDTA;*/ /* cpu/data endianness ? */
--	}
--	i = 0;
--	swl = (bits * channels) / 2;
--	switch (swl) {
--	case 256: ++i;
--	case 128: ++i;
--	case 64:  ++i;
--	case 48:  ++i;
--	case 32:  ++i;
--	case 16:  ++i;
--		  ssicr |= i << CR_SWL_SHIFT;
--	case 8:   break;
--	default:
--		pr_debug("ssi: invalid system word length computed\n");
--		return -EINVAL;
--	}
--
--	SSIREG(SSICR) = ssicr;
--
--	pr_debug("ssi_hw_params() leave\nssicr is now %08lx\n", ssicr);
--	return 0;
--}
--
--static int ssi_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
--			  unsigned int freq, int dir)
--{
--	struct ssi_priv *ssi = &ssi_cpu_data[cpu_dai->id];
--
--	ssi->sysclk = freq;
--
--	return 0;
--}
--
--/*
-- * This divider is used to generate the SSI_SCK (I2S bitclock) from the
-- * clock at the HAC_BIT_CLK ("oversampling clock") pin.
-- */
--static int ssi_set_clkdiv(struct snd_soc_dai *dai, int did, int div)
--{
--	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
--	unsigned long ssicr;
--	int i;
--
--	i = 0;
--	ssicr = SSIREG(SSICR) & ~CR_CKDIV_MASK;
--	switch (div) {
--	case 16: ++i;
--	case 8:  ++i;
--	case 4:  ++i;
--	case 2:  ++i;
--		 SSIREG(SSICR) = ssicr | (i << CR_CKDIV_SHIFT);
--	case 1:  break;
--	default:
--		pr_debug("ssi: invalid sck divider %d\n", div);
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static int ssi_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
--{
--	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
--	unsigned long ssicr = SSIREG(SSICR);
--
--	pr_debug("ssi_set_fmt()\nssicr was    0x%08lx\n", ssicr);
--
--	ssicr &= ~(CR_DEL | CR_PDTA | CR_BREN | CR_SWSP | CR_SCKP |
--		   CR_SWS_MASTER | CR_SCK_MASTER);
--
--	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--	case SND_SOC_DAIFMT_I2S:
--		break;
--	case SND_SOC_DAIFMT_RIGHT_J:
--		ssicr |= CR_DEL | CR_PDTA;
--		break;
--	case SND_SOC_DAIFMT_LEFT_J:
--		ssicr |= CR_DEL;
--		break;
--	default:
--		pr_debug("ssi: unsupported format\n");
--		return -EINVAL;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
--	case SND_SOC_DAIFMT_CONT:
--		break;
--	case SND_SOC_DAIFMT_GATED:
--		ssicr |= CR_BREN;
--		break;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--	case SND_SOC_DAIFMT_NB_NF:
--		ssicr |= CR_SCKP;	/* sample data at low clkedge */
--		break;
--	case SND_SOC_DAIFMT_NB_IF:
--		ssicr |= CR_SCKP | CR_SWSP;
--		break;
--	case SND_SOC_DAIFMT_IB_NF:
--		break;
--	case SND_SOC_DAIFMT_IB_IF:
--		ssicr |= CR_SWSP;	/* word select starts low */
--		break;
--	default:
--		pr_debug("ssi: invalid inversion\n");
--		return -EINVAL;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
--	case SND_SOC_DAIFMT_BC_FC:
--		break;
--	case SND_SOC_DAIFMT_BP_FC:
--		ssicr |= CR_SCK_MASTER;
--		break;
--	case SND_SOC_DAIFMT_BC_FP:
--		ssicr |= CR_SWS_MASTER;
--		break;
--	case SND_SOC_DAIFMT_BP_FP:
--		ssicr |= CR_SWS_MASTER | CR_SCK_MASTER;
--		break;
--	default:
--		pr_debug("ssi: invalid master/secondary configuration\n");
--		return -EINVAL;
--	}
--
--	SSIREG(SSICR) = ssicr;
--	pr_debug("ssi_set_fmt() leave\nssicr is now 0x%08lx\n", ssicr);
--
--	return 0;
--}
--
--/* the SSI depends on an external clocksource (at HAC_BIT_CLK) even in
-- * Master mode,  so really this is board specific;  the SSI can do any
-- * rate with the right bitclk and divider settings.
-- */
--#define SSI_RATES	\
--	SNDRV_PCM_RATE_8000_192000
--
--/* the SSI can do 8-32 bit samples, with 8 possible channels */
--#define SSI_FMTS	\
--	(SNDRV_PCM_FMTBIT_S8      | SNDRV_PCM_FMTBIT_U8      |	\
--	 SNDRV_PCM_FMTBIT_S16_LE  | SNDRV_PCM_FMTBIT_U16_LE  |	\
--	 SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_U20_3LE |	\
--	 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_U24_3LE |	\
--	 SNDRV_PCM_FMTBIT_S32_LE  | SNDRV_PCM_FMTBIT_U32_LE)
--
--static const struct snd_soc_dai_ops ssi_dai_ops = {
--	.startup	= ssi_startup,
--	.shutdown	= ssi_shutdown,
--	.trigger	= ssi_trigger,
--	.hw_params	= ssi_hw_params,
--	.set_sysclk	= ssi_set_sysclk,
--	.set_clkdiv	= ssi_set_clkdiv,
--	.set_fmt	= ssi_set_fmt,
--};
--
--static struct snd_soc_dai_driver sh4_ssi_dai[] = {
--{
--	.name			= "ssi-dai.0",
--	.playback = {
--		.rates		= SSI_RATES,
--		.formats	= SSI_FMTS,
--		.channels_min	= 2,
--		.channels_max	= 8,
--	},
--	.capture = {
--		.rates		= SSI_RATES,
--		.formats	= SSI_FMTS,
--		.channels_min	= 2,
--		.channels_max	= 8,
--	},
--	.ops = &ssi_dai_ops,
--},
--#ifdef CONFIG_CPU_SUBTYPE_SH7760
--{
--	.name			= "ssi-dai.1",
--	.playback = {
--		.rates		= SSI_RATES,
--		.formats	= SSI_FMTS,
--		.channels_min	= 2,
--		.channels_max	= 8,
--	},
--	.capture = {
--		.rates		= SSI_RATES,
--		.formats	= SSI_FMTS,
--		.channels_min	= 2,
--		.channels_max	= 8,
--	},
--	.ops = &ssi_dai_ops,
--},
--#endif
--};
--
--static const struct snd_soc_component_driver sh4_ssi_component = {
--	.name			= "sh4-ssi",
--	.legacy_dai_naming	= 1,
--};
--
--static int sh4_soc_dai_probe(struct platform_device *pdev)
--{
--	return devm_snd_soc_register_component(&pdev->dev, &sh4_ssi_component,
--					       sh4_ssi_dai,
--					       ARRAY_SIZE(sh4_ssi_dai));
--}
--
--static struct platform_driver sh4_ssi_driver = {
--	.driver = {
--			.name = "sh4-ssi-dai",
--	},
--
--	.probe = sh4_soc_dai_probe,
--};
--
--module_platform_driver(sh4_ssi_driver);
--
--MODULE_LICENSE("GPL v2");
--MODULE_DESCRIPTION("SuperH onchip SSI (I2S) audio driver");
--MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
--- 
-2.39.0
+Drop arch/sh and everything that depends on it.
 
+Diffstat:
+ Documentation/sh/booting.rst                             |   12 
+ Documentation/sh/features.rst                            |    3 
+ Documentation/sh/index.rst                               |   56 
+ Documentation/sh/new-machine.rst                         |  277 -
+ Documentation/sh/register-banks.rst                      |   40 
+ arch/sh/Kbuild                                           |    7 
+ arch/sh/Kconfig                                          |  793 ----
+ arch/sh/Kconfig.cpu                                      |  100 
+ arch/sh/Kconfig.debug                                    |   78 
+ arch/sh/Makefile                                         |  215 -
+ arch/sh/boards/Kconfig                                   |  400 --
+ arch/sh/boards/Makefile                                  |   20 
+ arch/sh/boards/board-apsh4a3a.c                          |  182 
+ arch/sh/boards/board-apsh4ad0a.c                         |  132 
+ arch/sh/boards/board-edosk7705.c                         |   79 
+ arch/sh/boards/board-edosk7760.c                         |  178 
+ arch/sh/boards/board-espt.c                              |  105 
+ arch/sh/boards/board-magicpanelr2.c                      |  390 --
+ arch/sh/boards/board-polaris.c                           |  156 
+ arch/sh/boards/board-secureedge5410.c                    |   75 
+ arch/sh/boards/board-sh2007.c                            |  146 
+ arch/sh/boards/board-sh7757lcr.c                         |  604 ---
+ arch/sh/boards/board-sh7785lcr.c                         |  384 --
+ arch/sh/boards/board-shmin.c                             |   35 
+ arch/sh/boards/board-titan.c                             |   21 
+ arch/sh/boards/board-urquell.c                           |  218 -
+ arch/sh/boards/mach-ap325rxa/Makefile                    |    3 
+ arch/sh/boards/mach-ap325rxa/sdram.S                     |   66 
+ arch/sh/boards/mach-ap325rxa/setup.c                     |  573 ---
+ arch/sh/boards/mach-dreamcast/Makefile                   |    7 
+ arch/sh/boards/mach-dreamcast/irq.c                      |  155 
+ arch/sh/boards/mach-dreamcast/rtc.c                      |   96 
+ arch/sh/boards/mach-dreamcast/setup.c                    |   39 
+ arch/sh/boards/mach-ecovec24/Makefile                    |   10 
+ arch/sh/boards/mach-ecovec24/sdram.S                     |  108 
+ arch/sh/boards/mach-ecovec24/setup.c                     | 1521 --------
+ arch/sh/boards/mach-highlander/Kconfig                   |   26 
+ arch/sh/boards/mach-highlander/Makefile                  |   12 
+ arch/sh/boards/mach-highlander/irq-r7780mp.c             |   71 
+ arch/sh/boards/mach-highlander/irq-r7780rp.c             |   64 
+ arch/sh/boards/mach-highlander/irq-r7785rp.c             |   83 
+ arch/sh/boards/mach-highlander/pinmux-r7785rp.c          |   17 
+ arch/sh/boards/mach-highlander/psw.c                     |  119 
+ arch/sh/boards/mach-highlander/setup.c                   |  416 --
+ arch/sh/boards/mach-hp6xx/Makefile                       |    8 
+ arch/sh/boards/mach-hp6xx/hp6xx_apm.c                    |  109 
+ arch/sh/boards/mach-hp6xx/pm.c                           |  156 
+ arch/sh/boards/mach-hp6xx/pm_wakeup.S                    |   39 
+ arch/sh/boards/mach-hp6xx/setup.c                        |  172 
+ arch/sh/boards/mach-kfr2r09/Makefile                     |    5 
+ arch/sh/boards/mach-kfr2r09/lcd_wqvga.c                  |  275 -
+ arch/sh/boards/mach-kfr2r09/sdram.S                      |   77 
+ arch/sh/boards/mach-kfr2r09/setup.c                      |  649 ---
+ arch/sh/boards/mach-landisk/Makefile                     |    6 
+ arch/sh/boards/mach-landisk/gio.c                        |  164 
+ arch/sh/boards/mach-landisk/irq.c                        |   63 
+ arch/sh/boards/mach-landisk/psw.c                        |  140 
+ arch/sh/boards/mach-landisk/setup.c                      |  102 
+ arch/sh/boards/mach-lboxre2/Makefile                     |    6 
+ arch/sh/boards/mach-lboxre2/irq.c                        |   27 
+ arch/sh/boards/mach-lboxre2/setup.c                      |   79 
+ arch/sh/boards/mach-microdev/Makefile                    |    6 
+ arch/sh/boards/mach-microdev/fdc37c93xapm.c              |  157 
+ arch/sh/boards/mach-microdev/io.c                        |  123 
+ arch/sh/boards/mach-microdev/irq.c                       |  150 
+ arch/sh/boards/mach-microdev/setup.c                     |  197 -
+ arch/sh/boards/mach-migor/Kconfig                        |   16 
+ arch/sh/boards/mach-migor/Makefile                       |    3 
+ arch/sh/boards/mach-migor/lcd_qvga.c                     |  163 
+ arch/sh/boards/mach-migor/sdram.S                        |   66 
+ arch/sh/boards/mach-migor/setup.c                        |  649 ---
+ arch/sh/boards/mach-r2d/Kconfig                          |   24 
+ arch/sh/boards/mach-r2d/Makefile                         |    6 
+ arch/sh/boards/mach-r2d/irq.c                            |  156 
+ arch/sh/boards/mach-r2d/setup.c                          |  305 -
+ arch/sh/boards/mach-rsk/Kconfig                          |   29 
+ arch/sh/boards/mach-rsk/Makefile                         |    5 
+ arch/sh/boards/mach-rsk/devices-rsk7203.c                |  137 
+ arch/sh/boards/mach-rsk/devices-rsk7264.c                |   55 
+ arch/sh/boards/mach-rsk/devices-rsk7269.c                |   57 
+ arch/sh/boards/mach-rsk/setup.c                          |   84 
+ arch/sh/boards/mach-sdk7780/Kconfig                      |   17 
+ arch/sh/boards/mach-sdk7780/Makefile                     |    6 
+ arch/sh/boards/mach-sdk7780/irq.c                        |   43 
+ arch/sh/boards/mach-sdk7780/setup.c                      |   96 
+ arch/sh/boards/mach-sdk7786/Makefile                     |    5 
+ arch/sh/boards/mach-sdk7786/fpga.c                       |   69 
+ arch/sh/boards/mach-sdk7786/gpio.c                       |   46 
+ arch/sh/boards/mach-sdk7786/irq.c                        |   45 
+ arch/sh/boards/mach-sdk7786/nmi.c                        |   80 
+ arch/sh/boards/mach-sdk7786/setup.c                      |  266 -
+ arch/sh/boards/mach-sdk7786/sram.c                       |   69 
+ arch/sh/boards/mach-se/7206/Makefile                     |    6 
+ arch/sh/boards/mach-se/7206/irq.c                        |  151 
+ arch/sh/boards/mach-se/7206/setup.c                      |   96 
+ arch/sh/boards/mach-se/7343/Makefile                     |    6 
+ arch/sh/boards/mach-se/7343/irq.c                        |  123 
+ arch/sh/boards/mach-se/7343/setup.c                      |  182 
+ arch/sh/boards/mach-se/770x/Makefile                     |    6 
+ arch/sh/boards/mach-se/770x/irq.c                        |  109 
+ arch/sh/boards/mach-se/770x/setup.c                      |  205 -
+ arch/sh/boards/mach-se/7721/Makefile                     |    2 
+ arch/sh/boards/mach-se/7721/irq.c                        |   42 
+ arch/sh/boards/mach-se/7721/setup.c                      |   92 
+ arch/sh/boards/mach-se/7722/Makefile                     |   11 
+ arch/sh/boards/mach-se/7722/irq.c                        |  116 
+ arch/sh/boards/mach-se/7722/setup.c                      |  190 
+ arch/sh/boards/mach-se/7724/Makefile                     |   11 
+ arch/sh/boards/mach-se/7724/irq.c                        |  143 
+ arch/sh/boards/mach-se/7724/sdram.S                      |  128 
+ arch/sh/boards/mach-se/7724/setup.c                      |  986 -----
+ arch/sh/boards/mach-se/7751/Makefile                     |    6 
+ arch/sh/boards/mach-se/7751/irq.c                        |   51 
+ arch/sh/boards/mach-se/7751/setup.c                      |   60 
+ arch/sh/boards/mach-se/7780/Makefile                     |   11 
+ arch/sh/boards/mach-se/7780/irq.c                        |   65 
+ arch/sh/boards/mach-se/7780/setup.c                      |  111 
+ arch/sh/boards/mach-se/Makefile                          |   11 
+ arch/sh/boards/mach-se/board-se7619.c                    |   27 
+ arch/sh/boards/mach-sh03/Makefile                        |    7 
+ arch/sh/boards/mach-sh03/rtc.c                           |  143 
+ arch/sh/boards/mach-sh03/setup.c                         |   97 
+ arch/sh/boards/mach-sh7763rdp/Makefile                   |    2 
+ arch/sh/boards/mach-sh7763rdp/irq.c                      |   42 
+ arch/sh/boards/mach-sh7763rdp/setup.c                    |  213 -
+ arch/sh/boards/mach-x3proto/Makefile                     |    4 
+ arch/sh/boards/mach-x3proto/gpio.c                       |  136 
+ arch/sh/boards/mach-x3proto/ilsel.c                      |  156 
+ arch/sh/boards/mach-x3proto/setup.c                      |  270 -
+ arch/sh/boards/of-generic.c                              |  172 
+ arch/sh/boot/.gitignore                                  |    5 
+ arch/sh/boot/Makefile                                    |  115 
+ arch/sh/boot/compressed/.gitignore                       |    2 
+ arch/sh/boot/compressed/Makefile                         |   66 
+ arch/sh/boot/compressed/ashiftrt.S                       |    2 
+ arch/sh/boot/compressed/ashldi3.c                        |    2 
+ arch/sh/boot/compressed/ashlsi3.S                        |    2 
+ arch/sh/boot/compressed/ashrsi3.S                        |    2 
+ arch/sh/boot/compressed/cache.c                          |   13 
+ arch/sh/boot/compressed/head_32.S                        |  126 
+ arch/sh/boot/compressed/head_64.S                        |  159 
+ arch/sh/boot/compressed/lshrsi3.S                        |    2 
+ arch/sh/boot/compressed/misc.c                           |  146 
+ arch/sh/boot/compressed/vmlinux.scr                      |   10 
+ arch/sh/boot/dts/Makefile                                |    2 
+ arch/sh/boot/dts/j2_mimas_v2.dts                         |   99 
+ arch/sh/boot/romimage/Makefile                           |   30 
+ arch/sh/boot/romimage/head.S                             |   85 
+ arch/sh/boot/romimage/mmcif-sh7724.c                     |   78 
+ arch/sh/boot/romimage/vmlinux.scr                        |    8 
+ arch/sh/cchips/Kconfig                                   |   46 
+ arch/sh/cchips/hd6446x/Makefile                          |    4 
+ arch/sh/cchips/hd6446x/hd64461.c                         |  112 
+ arch/sh/configs/ap325rxa_defconfig                       |  103 
+ arch/sh/configs/apsh4a3a_defconfig                       |   91 
+ arch/sh/configs/apsh4ad0a_defconfig                      |  122 
+ arch/sh/configs/dreamcast_defconfig                      |   72 
+ arch/sh/configs/ecovec24-romimage_defconfig              |   58 
+ arch/sh/configs/ecovec24_defconfig                       |  132 
+ arch/sh/configs/edosk7705_defconfig                      |   35 
+ arch/sh/configs/edosk7760_defconfig                      |  114 
+ arch/sh/configs/espt_defconfig                           |  114 
+ arch/sh/configs/hp6xx_defconfig                          |   60 
+ arch/sh/configs/j2_defconfig                             |   42 
+ arch/sh/configs/kfr2r09-romimage_defconfig               |   53 
+ arch/sh/configs/kfr2r09_defconfig                        |   84 
+ arch/sh/configs/landisk_defconfig                        |  115 
+ arch/sh/configs/lboxre2_defconfig                        |   62 
+ arch/sh/configs/magicpanelr2_defconfig                   |   90 
+ arch/sh/configs/microdev_defconfig                       |   43 
+ arch/sh/configs/migor_defconfig                          |   94 
+ arch/sh/configs/polaris_defconfig                        |   83 
+ arch/sh/configs/r7780mp_defconfig                        |  109 
+ arch/sh/configs/r7785rp_defconfig                        |  107 
+ arch/sh/configs/rsk7201_defconfig                        |   63 
+ arch/sh/configs/rsk7203_defconfig                        |  121 
+ arch/sh/configs/rsk7264_defconfig                        |   71 
+ arch/sh/configs/rsk7269_defconfig                        |   56 
+ arch/sh/configs/rts7751r2d1_defconfig                    |   91 
+ arch/sh/configs/rts7751r2dplus_defconfig                 |   96 
+ arch/sh/configs/sdk7780_defconfig                        |  139 
+ arch/sh/configs/sdk7786_defconfig                        |  217 -
+ arch/sh/configs/se7206_defconfig                         |  108 
+ arch/sh/configs/se7343_defconfig                         |   96 
+ arch/sh/configs/se7619_defconfig                         |   43 
+ arch/sh/configs/se7705_defconfig                         |   54 
+ arch/sh/configs/se7712_defconfig                         |  101 
+ arch/sh/configs/se7721_defconfig                         |  127 
+ arch/sh/configs/se7722_defconfig                         |   56 
+ arch/sh/configs/se7724_defconfig                         |  132 
+ arch/sh/configs/se7750_defconfig                         |   55 
+ arch/sh/configs/se7751_defconfig                         |   46 
+ arch/sh/configs/se7780_defconfig                         |  106 
+ arch/sh/configs/secureedge5410_defconfig                 |   53 
+ arch/sh/configs/sh03_defconfig                           |  126 
+ arch/sh/configs/sh2007_defconfig                         |  199 -
+ arch/sh/configs/sh7710voipgw_defconfig                   |   55 
+ arch/sh/configs/sh7724_generic_defconfig                 |   41 
+ arch/sh/configs/sh7757lcr_defconfig                      |   85 
+ arch/sh/configs/sh7763rdp_defconfig                      |  116 
+ arch/sh/configs/sh7770_generic_defconfig                 |   43 
+ arch/sh/configs/sh7785lcr_32bit_defconfig                |  149 
+ arch/sh/configs/sh7785lcr_defconfig                      |  117 
+ arch/sh/configs/shmin_defconfig                          |   52 
+ arch/sh/configs/shx3_defconfig                           |  103 
+ arch/sh/configs/titan_defconfig                          |  272 -
+ arch/sh/configs/ul2_defconfig                            |   84 
+ arch/sh/configs/urquell_defconfig                        |  147 
+ arch/sh/drivers/Kconfig                                  |   20 
+ arch/sh/drivers/Makefile                                 |   11 
+ arch/sh/drivers/dma/Kconfig                              |   74 
+ arch/sh/drivers/dma/Makefile                             |    9 
+ arch/sh/drivers/dma/dma-api.c                            |  417 --
+ arch/sh/drivers/dma/dma-g2.c                             |  197 -
+ arch/sh/drivers/dma/dma-pvr2.c                           |  102 
+ arch/sh/drivers/dma/dma-sh.c                             |  414 --
+ arch/sh/drivers/dma/dma-sysfs.c                          |  164 
+ arch/sh/drivers/dma/dmabrg.c                             |  196 -
+ arch/sh/drivers/heartbeat.c                              |  152 
+ arch/sh/drivers/pci/Makefile                             |   27 
+ arch/sh/drivers/pci/common.c                             |  159 
+ arch/sh/drivers/pci/fixups-dreamcast.c                   |   84 
+ arch/sh/drivers/pci/fixups-landisk.c                     |   57 
+ arch/sh/drivers/pci/fixups-r7780rp.c                     |   18 
+ arch/sh/drivers/pci/fixups-rts7751r2d.c                  |   64 
+ arch/sh/drivers/pci/fixups-sdk7780.c                     |   40 
+ arch/sh/drivers/pci/fixups-sdk7786.c                     |   64 
+ arch/sh/drivers/pci/fixups-se7751.c                      |  113 
+ arch/sh/drivers/pci/fixups-sh03.c                        |   33 
+ arch/sh/drivers/pci/fixups-snapgear.c                    |   37 
+ arch/sh/drivers/pci/fixups-titan.c                       |   36 
+ arch/sh/drivers/pci/ops-dreamcast.c                      |   79 
+ arch/sh/drivers/pci/ops-sh4.c                            |  105 
+ arch/sh/drivers/pci/ops-sh7786.c                         |  168 
+ arch/sh/drivers/pci/pci-dreamcast.c                      |   97 
+ arch/sh/drivers/pci/pci-sh4.h                            |  182 
+ arch/sh/drivers/pci/pci-sh7751.c                         |  179 
+ arch/sh/drivers/pci/pci-sh7751.h                         |  126 
+ arch/sh/drivers/pci/pci-sh7780.c                         |  407 --
+ arch/sh/drivers/pci/pci-sh7780.h                         |   43 
+ arch/sh/drivers/pci/pci.c                                |  298 -
+ arch/sh/drivers/pci/pcie-sh7786.c                        |  609 ---
+ arch/sh/drivers/pci/pcie-sh7786.h                        |  577 ---
+ arch/sh/drivers/platform_early.c                         |  340 -
+ arch/sh/drivers/push-switch.c                            |  136 
+ arch/sh/drivers/superhyway/Makefile                      |    7 
+ arch/sh/drivers/superhyway/ops-sh4-202.c                 |  168 
+ arch/sh/include/asm/Kbuild                               |    5 
+ arch/sh/include/asm/adc.h                                |   12 
+ arch/sh/include/asm/addrspace.h                          |   63 
+ arch/sh/include/asm/alignment.h                          |   22 
+ arch/sh/include/asm/asm-offsets.h                        |    2 
+ arch/sh/include/asm/atomic-grb.h                         |   86 
+ arch/sh/include/asm/atomic-irq.h                         |   72 
+ arch/sh/include/asm/atomic-llsc.h                        |   88 
+ arch/sh/include/asm/atomic.h                             |   38 
+ arch/sh/include/asm/barrier.h                            |   45 
+ arch/sh/include/asm/bitops-cas.h                         |   94 
+ arch/sh/include/asm/bitops-grb.h                         |  173 
+ arch/sh/include/asm/bitops-llsc.h                        |  147 
+ arch/sh/include/asm/bitops-op32.h                        |  143 
+ arch/sh/include/asm/bitops.h                             |   72 
+ arch/sh/include/asm/bl_bit.h                             |    2 
+ arch/sh/include/asm/bl_bit_32.h                          |   34 
+ arch/sh/include/asm/bug.h                                |  121 
+ arch/sh/include/asm/bugs.h                               |   74 
+ arch/sh/include/asm/cache.h                              |   46 
+ arch/sh/include/asm/cache_insns.h                        |    2 
+ arch/sh/include/asm/cache_insns_32.h                     |   22 
+ arch/sh/include/asm/cacheflush.h                         |  106 
+ arch/sh/include/asm/checksum.h                           |    2 
+ arch/sh/include/asm/checksum_32.h                        |  203 -
+ arch/sh/include/asm/clock.h                              |   17 
+ arch/sh/include/asm/cmpxchg-cas.h                        |   25 
+ arch/sh/include/asm/cmpxchg-grb.h                        |   95 
+ arch/sh/include/asm/cmpxchg-irq.h                        |   54 
+ arch/sh/include/asm/cmpxchg-llsc.h                       |   53 
+ arch/sh/include/asm/cmpxchg-xchg.h                       |   50 
+ arch/sh/include/asm/cmpxchg.h                            |   74 
+ arch/sh/include/asm/device.h                             |   17 
+ arch/sh/include/asm/dma-register.h                       |   50 
+ arch/sh/include/asm/dma.h                                |  140 
+ arch/sh/include/asm/dmabrg.h                             |   24 
+ arch/sh/include/asm/dwarf.h                              |  417 --
+ arch/sh/include/asm/elf.h                                |  211 -
+ arch/sh/include/asm/entry-macros.S                       |  123 
+ arch/sh/include/asm/extable.h                            |    7 
+ arch/sh/include/asm/fb.h                                 |   20 
+ arch/sh/include/asm/fixmap.h                             |   86 
+ arch/sh/include/asm/flat.h                               |   33 
+ arch/sh/include/asm/fpu.h                                |   69 
+ arch/sh/include/asm/freq.h                               |   12 
+ arch/sh/include/asm/ftrace.h                             |   48 
+ arch/sh/include/asm/futex-cas.h                          |   35 
+ arch/sh/include/asm/futex-irq.h                          |   25 
+ arch/sh/include/asm/futex-llsc.h                         |   42 
+ arch/sh/include/asm/futex.h                              |   72 
+ arch/sh/include/asm/gpio.h                               |   50 
+ arch/sh/include/asm/hardirq.h                            |   11 
+ arch/sh/include/asm/hd64461.h                            |  252 -
+ arch/sh/include/asm/heartbeat.h                          |   19 
+ arch/sh/include/asm/hugetlb.h                            |   38 
+ arch/sh/include/asm/hw_breakpoint.h                      |   70 
+ arch/sh/include/asm/hw_irq.h                             |   36 
+ arch/sh/include/asm/i2c-sh7760.h                         |   21 
+ arch/sh/include/asm/io.h                                 |  294 -
+ arch/sh/include/asm/io_generic.h                         |   19 
+ arch/sh/include/asm/io_noioport.h                        |   86 
+ arch/sh/include/asm/io_trapped.h                         |   59 
+ arch/sh/include/asm/irq.h                                |   58 
+ arch/sh/include/asm/irqflags.h                           |   10 
+ arch/sh/include/asm/kdebug.h                             |   19 
+ arch/sh/include/asm/kexec.h                              |   72 
+ arch/sh/include/asm/kgdb.h                               |   38 
+ arch/sh/include/asm/kprobes.h                            |   57 
+ arch/sh/include/asm/linkage.h                            |    8 
+ arch/sh/include/asm/machvec.h                            |   41 
+ arch/sh/include/asm/mmiowb.h                             |   12 
+ arch/sh/include/asm/mmu.h                                |  107 
+ arch/sh/include/asm/mmu_context.h                        |  178 
+ arch/sh/include/asm/mmu_context_32.h                     |   51 
+ arch/sh/include/asm/mmzone.h                             |   45 
+ arch/sh/include/asm/module.h                             |   14 
+ arch/sh/include/asm/page.h                               |  186 
+ arch/sh/include/asm/pci.h                                |   91 
+ arch/sh/include/asm/perf_event.h                         |   30 
+ arch/sh/include/asm/pgalloc.h                            |   40 
+ arch/sh/include/asm/pgtable-2level.h                     |   24 
+ arch/sh/include/asm/pgtable-3level.h                     |   59 
+ arch/sh/include/asm/pgtable.h                            |  150 
+ arch/sh/include/asm/pgtable_32.h                         |  462 --
+ arch/sh/include/asm/platform_early.h                     |   61 
+ arch/sh/include/asm/posix_types.h                        |    2 
+ arch/sh/include/asm/processor.h                          |  173 
+ arch/sh/include/asm/processor_32.h                       |  202 -
+ arch/sh/include/asm/ptrace.h                             |  139 
+ arch/sh/include/asm/ptrace_32.h                          |   14 
+ arch/sh/include/asm/push-switch.h                        |   32 
+ arch/sh/include/asm/reboot.h                             |   22 
+ arch/sh/include/asm/romimage-macros.h                    |   74 
+ arch/sh/include/asm/rtc.h                                |   15 
+ arch/sh/include/asm/seccomp.h                            |   21 
+ arch/sh/include/asm/sections.h                           |   12 
+ arch/sh/include/asm/setup.h                              |   25 
+ arch/sh/include/asm/sfp-machine.h                        |   80 
+ arch/sh/include/asm/sh7760fb.h                           |  198 -
+ arch/sh/include/asm/sh_bios.h                            |   28 
+ arch/sh/include/asm/shmparam.h                           |   19 
+ arch/sh/include/asm/siu.h                                |   20 
+ arch/sh/include/asm/smc37c93x.h                          |  191 -
+ arch/sh/include/asm/smp-ops.h                            |   52 
+ arch/sh/include/asm/smp.h                                |   83 
+ arch/sh/include/asm/sparsemem.h                          |   12 
+ arch/sh/include/asm/spi.h                                |   14 
+ arch/sh/include/asm/spinlock-cas.h                       |   89 
+ arch/sh/include/asm/spinlock-llsc.h                      |  198 -
+ arch/sh/include/asm/spinlock.h                           |   19 
+ arch/sh/include/asm/spinlock_types.h                     |   22 
+ arch/sh/include/asm/sram.h                               |   39 
+ arch/sh/include/asm/stackprotector.h                     |   21 
+ arch/sh/include/asm/stacktrace.h                         |   21 
+ arch/sh/include/asm/string.h                             |    2 
+ arch/sh/include/asm/string_32.h                          |  102 
+ arch/sh/include/asm/suspend.h                            |   97 
+ arch/sh/include/asm/switch_to.h                          |    7 
+ arch/sh/include/asm/switch_to_32.h                       |  131 
+ arch/sh/include/asm/syscall.h                            |    9 
+ arch/sh/include/asm/syscall_32.h                         |   69 
+ arch/sh/include/asm/syscalls.h                           |   14 
+ arch/sh/include/asm/syscalls_32.h                        |   27 
+ arch/sh/include/asm/thread_info.h                        |  171 
+ arch/sh/include/asm/timex.h                              |   24 
+ arch/sh/include/asm/tlb.h                                |   29 
+ arch/sh/include/asm/tlbflush.h                           |   52 
+ arch/sh/include/asm/topology.h                           |   28 
+ arch/sh/include/asm/traps.h                              |   18 
+ arch/sh/include/asm/traps_32.h                           |   61 
+ arch/sh/include/asm/types.h                              |   16 
+ arch/sh/include/asm/uaccess.h                            |  133 
+ arch/sh/include/asm/uaccess_32.h                         |  227 -
+ arch/sh/include/asm/uncached.h                           |   59 
+ arch/sh/include/asm/unistd.h                             |   31 
+ arch/sh/include/asm/unwinder.h                           |   32 
+ arch/sh/include/asm/user.h                               |   55 
+ arch/sh/include/asm/vermagic.h                           |   30 
+ arch/sh/include/asm/vga.h                                |    7 
+ arch/sh/include/asm/vmalloc.h                            |    4 
+ arch/sh/include/asm/vmlinux.lds.h                        |   18 
+ arch/sh/include/asm/watchdog.h                           |  159 
+ arch/sh/include/asm/word-at-a-time.h                     |   54 
+ arch/sh/include/cpu-common/cpu/addrspace.h               |   16 
+ arch/sh/include/cpu-common/cpu/mmu_context.h             |   13 
+ arch/sh/include/cpu-common/cpu/pfc.h                     |   18 
+ arch/sh/include/cpu-common/cpu/rtc.h                     |    9 
+ arch/sh/include/cpu-common/cpu/sigcontext.h              |   18 
+ arch/sh/include/cpu-common/cpu/timer.h                   |    7 
+ arch/sh/include/cpu-sh2/cpu/cache.h                      |   40 
+ arch/sh/include/cpu-sh2/cpu/freq.h                       |   15 
+ arch/sh/include/cpu-sh2/cpu/watchdog.h                   |   66 
+ arch/sh/include/cpu-sh2a/cpu/addrspace.h                 |   11 
+ arch/sh/include/cpu-sh2a/cpu/cache.h                     |   40 
+ arch/sh/include/cpu-sh2a/cpu/freq.h                      |   13 
+ arch/sh/include/cpu-sh2a/cpu/rtc.h                       |    9 
+ arch/sh/include/cpu-sh2a/cpu/sh7203.h                    |  144 
+ arch/sh/include/cpu-sh2a/cpu/sh7264.h                    |  169 
+ arch/sh/include/cpu-sh2a/cpu/sh7269.h                    |  213 -
+ arch/sh/include/cpu-sh2a/cpu/watchdog.h                  |    2 
+ arch/sh/include/cpu-sh3/cpu/adc.h                        |   29 
+ arch/sh/include/cpu-sh3/cpu/cache.h                      |   40 
+ arch/sh/include/cpu-sh3/cpu/dac.h                        |   42 
+ arch/sh/include/cpu-sh3/cpu/dma-register.h               |   38 
+ arch/sh/include/cpu-sh3/cpu/dma.h                        |   19 
+ arch/sh/include/cpu-sh3/cpu/freq.h                       |   24 
+ arch/sh/include/cpu-sh3/cpu/gpio.h                       |   78 
+ arch/sh/include/cpu-sh3/cpu/mmu_context.h                |   42 
+ arch/sh/include/cpu-sh3/cpu/serial.h                     |   11 
+ arch/sh/include/cpu-sh3/cpu/sh7720.h                     |  175 
+ arch/sh/include/cpu-sh3/cpu/watchdog.h                   |   22 
+ arch/sh/include/cpu-sh4/cpu/addrspace.h                  |   41 
+ arch/sh/include/cpu-sh4/cpu/cache.h                      |   41 
+ arch/sh/include/cpu-sh4/cpu/dma-register.h               |   98 
+ arch/sh/include/cpu-sh4/cpu/dma.h                        |   18 
+ arch/sh/include/cpu-sh4/cpu/fpu.h                        |   30 
+ arch/sh/include/cpu-sh4/cpu/freq.h                       |   74 
+ arch/sh/include/cpu-sh4/cpu/mmu_context.h                |   79 
+ arch/sh/include/cpu-sh4/cpu/rtc.h                        |   14 
+ arch/sh/include/cpu-sh4/cpu/sh7722.h                     |  252 -
+ arch/sh/include/cpu-sh4/cpu/sh7723.h                     |  285 -
+ arch/sh/include/cpu-sh4/cpu/sh7724.h                     |  319 -
+ arch/sh/include/cpu-sh4/cpu/sh7734.h                     |  307 -
+ arch/sh/include/cpu-sh4/cpu/sh7757.h                     |  290 -
+ arch/sh/include/cpu-sh4/cpu/sh7785.h                     |  260 -
+ arch/sh/include/cpu-sh4/cpu/sh7786.h                     |  138 
+ arch/sh/include/cpu-sh4/cpu/shx3.h                       |   65 
+ arch/sh/include/cpu-sh4/cpu/sigcontext.h                 |   25 
+ arch/sh/include/cpu-sh4/cpu/sq.h                         |   33 
+ arch/sh/include/cpu-sh4/cpu/watchdog.h                   |   41 
+ arch/sh/include/cpu-sh4a/cpu/dma.h                       |   72 
+ arch/sh/include/cpu-sh4a/cpu/serial.h                    |    8 
+ arch/sh/include/mach-common/mach/highlander.h            |  208 -
+ arch/sh/include/mach-common/mach/hp6xx.h                 |   59 
+ arch/sh/include/mach-common/mach/lboxre2.h               |   24 
+ arch/sh/include/mach-common/mach/magicpanelr2.h          |   64 
+ arch/sh/include/mach-common/mach/mangle-port.h           |   46 
+ arch/sh/include/mach-common/mach/microdev.h              |   69 
+ arch/sh/include/mach-common/mach/r2d.h                   |   71 
+ arch/sh/include/mach-common/mach/romimage.h              |   12 
+ arch/sh/include/mach-common/mach/sdk7780.h               |   79 
+ arch/sh/include/mach-common/mach/secureedge5410.h        |   47 
+ arch/sh/include/mach-common/mach/sh2007.h                |  118 
+ arch/sh/include/mach-common/mach/sh7763rdp.h             |   50 
+ arch/sh/include/mach-common/mach/sh7785lcr.h             |   58 
+ arch/sh/include/mach-common/mach/shmin.h                 |   10 
+ arch/sh/include/mach-common/mach/titan.h                 |   20 
+ arch/sh/include/mach-common/mach/urquell.h               |   69 
+ arch/sh/include/mach-dreamcast/mach/dma.h                |   29 
+ arch/sh/include/mach-dreamcast/mach/maple.h              |   38 
+ arch/sh/include/mach-dreamcast/mach/pci.h                |   24 
+ arch/sh/include/mach-dreamcast/mach/sysasic.h            |   46 
+ arch/sh/include/mach-ecovec24/mach/partner-jet-setup.txt |   82 
+ arch/sh/include/mach-ecovec24/mach/romimage.h            |   48 
+ arch/sh/include/mach-kfr2r09/mach/kfr2r09.h              |   24 
+ arch/sh/include/mach-kfr2r09/mach/partner-jet-setup.txt  |  144 
+ arch/sh/include/mach-kfr2r09/mach/romimage.h             |   31 
+ arch/sh/include/mach-landisk/mach/gio.h                  |   38 
+ arch/sh/include/mach-landisk/mach/iodata_landisk.h       |   46 
+ arch/sh/include/mach-migor/mach/migor.h                  |   16 
+ arch/sh/include/mach-sdk7786/mach/fpga.h                 |  156 
+ arch/sh/include/mach-sdk7786/mach/irq.h                  |    8 
+ arch/sh/include/mach-se/mach/mrshpc.h                    |   53 
+ arch/sh/include/mach-se/mach/se.h                        |  120 
+ arch/sh/include/mach-se/mach/se7206.h                    |   14 
+ arch/sh/include/mach-se/mach/se7343.h                    |  143 
+ arch/sh/include/mach-se/mach/se7721.h                    |   68 
+ arch/sh/include/mach-se/mach/se7722.h                    |   98 
+ arch/sh/include/mach-se/mach/se7724.h                    |   69 
+ arch/sh/include/mach-se/mach/se7751.h                    |   75 
+ arch/sh/include/mach-se/mach/se7780.h                    |  106 
+ arch/sh/include/mach-sh03/mach/io.h                      |   26 
+ arch/sh/include/mach-sh03/mach/sh03.h                    |   19 
+ arch/sh/include/mach-x3proto/mach/hardware.h             |   13 
+ arch/sh/include/mach-x3proto/mach/ilsel.h                |   46 
+ arch/sh/include/uapi/asm/Kbuild                          |    4 
+ arch/sh/include/uapi/asm/auxvec.h                        |   39 
+ arch/sh/include/uapi/asm/byteorder.h                     |   11 
+ arch/sh/include/uapi/asm/cachectl.h                      |   20 
+ arch/sh/include/uapi/asm/cpu-features.h                  |   28 
+ arch/sh/include/uapi/asm/hw_breakpoint.h                 |    5 
+ arch/sh/include/uapi/asm/ioctls.h                        |  116 
+ arch/sh/include/uapi/asm/posix_types.h                   |    2 
+ arch/sh/include/uapi/asm/posix_types_32.h                |   23 
+ arch/sh/include/uapi/asm/ptrace.h                        |   30 
+ arch/sh/include/uapi/asm/ptrace_32.h                     |   78 
+ arch/sh/include/uapi/asm/sigcontext.h                    |   25 
+ arch/sh/include/uapi/asm/signal.h                        |   18 
+ arch/sh/include/uapi/asm/sockios.h                       |   18 
+ arch/sh/include/uapi/asm/stat.h                          |   78 
+ arch/sh/include/uapi/asm/swab.h                          |   50 
+ arch/sh/include/uapi/asm/unistd.h                        |    2 
+ arch/sh/kernel/.gitignore                                |    2 
+ arch/sh/kernel/Makefile                                  |   49 
+ arch/sh/kernel/asm-offsets.c                             |   60 
+ arch/sh/kernel/cpu/Makefile                              |   21 
+ arch/sh/kernel/cpu/adc.c                                 |   37 
+ arch/sh/kernel/cpu/clock-cpg.c                           |   78 
+ arch/sh/kernel/cpu/clock.c                               |   52 
+ arch/sh/kernel/cpu/fpu.c                                 |   92 
+ arch/sh/kernel/cpu/init.c                                |  366 -
+ arch/sh/kernel/cpu/irq/Makefile                          |    6 
+ arch/sh/kernel/cpu/irq/imask.c                           |   85 
+ arch/sh/kernel/cpu/irq/ipr.c                             |   80 
+ arch/sh/kernel/cpu/pfc.c                                 |   25 
+ arch/sh/kernel/cpu/proc.c                                |  151 
+ arch/sh/kernel/cpu/sh2/Makefile                          |   12 
+ arch/sh/kernel/cpu/sh2/clock-sh7619.c                    |   74 
+ arch/sh/kernel/cpu/sh2/entry.S                           |  373 -
+ arch/sh/kernel/cpu/sh2/ex.S                              |   44 
+ arch/sh/kernel/cpu/sh2/probe.c                           |   71 
+ arch/sh/kernel/cpu/sh2/setup-sh7619.c                    |  205 -
+ arch/sh/kernel/cpu/sh2/smp-j2.c                          |  136 
+ arch/sh/kernel/cpu/sh2a/Makefile                         |   25 
+ arch/sh/kernel/cpu/sh2a/clock-sh7201.c                   |   82 
+ arch/sh/kernel/cpu/sh2a/clock-sh7203.c                   |   78 
+ arch/sh/kernel/cpu/sh2a/clock-sh7206.c                   |   80 
+ arch/sh/kernel/cpu/sh2a/clock-sh7264.c                   |  157 
+ arch/sh/kernel/cpu/sh2a/clock-sh7269.c                   |  181 
+ arch/sh/kernel/cpu/sh2a/entry.S                          |  247 -
+ arch/sh/kernel/cpu/sh2a/ex.S                             |   70 
+ arch/sh/kernel/cpu/sh2a/fpu.c                            |  572 ---
+ arch/sh/kernel/cpu/sh2a/opcode_helper.c                  |   51 
+ arch/sh/kernel/cpu/sh2a/pinmux-sh7203.c                  |   27 
+ arch/sh/kernel/cpu/sh2a/pinmux-sh7264.c                  |   27 
+ arch/sh/kernel/cpu/sh2a/pinmux-sh7269.c                  |   28 
+ arch/sh/kernel/cpu/sh2a/probe.c                          |   57 
+ arch/sh/kernel/cpu/sh2a/setup-mxg.c                      |  175 
+ arch/sh/kernel/cpu/sh2a/setup-sh7201.c                   |  418 --
+ arch/sh/kernel/cpu/sh2a/setup-sh7203.c                   |  355 -
+ arch/sh/kernel/cpu/sh2a/setup-sh7206.c                   |  291 -
+ arch/sh/kernel/cpu/sh2a/setup-sh7264.c                   |  552 --
+ arch/sh/kernel/cpu/sh2a/setup-sh7269.c                   |  568 --
+ arch/sh/kernel/cpu/sh3/Makefile                          |   34 
+ arch/sh/kernel/cpu/sh3/clock-sh3.c                       |   86 
+ arch/sh/kernel/cpu/sh3/clock-sh7705.c                    |   81 
+ arch/sh/kernel/cpu/sh3/clock-sh7706.c                    |   81 
+ arch/sh/kernel/cpu/sh3/clock-sh7709.c                    |   82 
+ arch/sh/kernel/cpu/sh3/clock-sh7710.c                    |   75 
+ arch/sh/kernel/cpu/sh3/clock-sh7712.c                    |   68 
+ arch/sh/kernel/cpu/sh3/entry.S                           |  509 --
+ arch/sh/kernel/cpu/sh3/ex.S                              |   56 
+ arch/sh/kernel/cpu/sh3/pinmux-sh7720.c                   |   27 
+ arch/sh/kernel/cpu/sh3/probe.c                           |  108 
+ arch/sh/kernel/cpu/sh3/serial-sh770x.c                   |   34 
+ arch/sh/kernel/cpu/sh3/serial-sh7710.c                   |   21 
+ arch/sh/kernel/cpu/sh3/serial-sh7720.c                   |   38 
+ arch/sh/kernel/cpu/sh3/setup-sh3.c                       |   69 
+ arch/sh/kernel/cpu/sh3/setup-sh7705.c                    |  190 
+ arch/sh/kernel/cpu/sh3/setup-sh770x.c                    |  246 -
+ arch/sh/kernel/cpu/sh3/setup-sh7710.c                    |  189 
+ arch/sh/kernel/cpu/sh3/setup-sh7720.c                    |  286 -
+ arch/sh/kernel/cpu/sh3/swsusp.S                          |  144 
+ arch/sh/kernel/cpu/sh4/Makefile                          |   37 
+ arch/sh/kernel/cpu/sh4/clock-sh4-202.c                   |  174 
+ arch/sh/kernel/cpu/sh4/clock-sh4.c                       |   77 
+ arch/sh/kernel/cpu/sh4/fpu.c                             |  425 --
+ arch/sh/kernel/cpu/sh4/perf_event.c                      |  265 -
+ arch/sh/kernel/cpu/sh4/probe.c                           |  260 -
+ arch/sh/kernel/cpu/sh4/setup-sh4-202.c                   |  139 
+ arch/sh/kernel/cpu/sh4/setup-sh7750.c                    |  359 -
+ arch/sh/kernel/cpu/sh4/setup-sh7760.c                    |  297 -
+ arch/sh/kernel/cpu/sh4/softfloat.c                       |  930 ----
+ arch/sh/kernel/cpu/sh4/sq.c                              |  414 --
+ arch/sh/kernel/cpu/sh4a/Makefile                         |   53 
+ arch/sh/kernel/cpu/sh4a/clock-sh7343.c                   |  277 -
+ arch/sh/kernel/cpu/sh4a/clock-sh7366.c                   |  270 -
+ arch/sh/kernel/cpu/sh4a/clock-sh7722.c                   |  253 -
+ arch/sh/kernel/cpu/sh4a/clock-sh7723.c                   |  301 -
+ arch/sh/kernel/cpu/sh4a/clock-sh7724.c                   |  367 -
+ arch/sh/kernel/cpu/sh4a/clock-sh7734.c                   |  256 -
+ arch/sh/kernel/cpu/sh4a/clock-sh7757.c                   |  152 
+ arch/sh/kernel/cpu/sh4a/clock-sh7763.c                   |  116 
+ arch/sh/kernel/cpu/sh4a/clock-sh7770.c                   |   70 
+ arch/sh/kernel/cpu/sh4a/clock-sh7780.c                   |  122 
+ arch/sh/kernel/cpu/sh4a/clock-sh7785.c                   |  174 
+ arch/sh/kernel/cpu/sh4a/clock-sh7786.c                   |  189 
+ arch/sh/kernel/cpu/sh4a/clock-shx3.c                     |  148 
+ arch/sh/kernel/cpu/sh4a/intc-shx3.c                      |   31 
+ arch/sh/kernel/cpu/sh4a/perf_event.c                     |  299 -
+ arch/sh/kernel/cpu/sh4a/pinmux-sh7722.c                  |   21 
+ arch/sh/kernel/cpu/sh4a/pinmux-sh7723.c                  |   27 
+ arch/sh/kernel/cpu/sh4a/pinmux-sh7724.c                  |   32 
+ arch/sh/kernel/cpu/sh4a/pinmux-sh7734.c                  |   32 
+ arch/sh/kernel/cpu/sh4a/pinmux-sh7757.c                  |   32 
+ arch/sh/kernel/cpu/sh4a/pinmux-sh7785.c                  |   27 
+ arch/sh/kernel/cpu/sh4a/pinmux-sh7786.c                  |   32 
+ arch/sh/kernel/cpu/sh4a/pinmux-shx3.c                    |   26 
+ arch/sh/kernel/cpu/sh4a/serial-sh7722.c                  |   24 
+ arch/sh/kernel/cpu/sh4a/setup-sh7343.c                   |  444 --
+ arch/sh/kernel/cpu/sh4a/setup-sh7366.c                   |  388 --
+ arch/sh/kernel/cpu/sh4a/setup-sh7722.c                   |  666 ---
+ arch/sh/kernel/cpu/sh4a/setup-sh7723.c                   |  644 ---
+ arch/sh/kernel/cpu/sh4a/setup-sh7724.c                   | 1288 ------
+ arch/sh/kernel/cpu/sh4a/setup-sh7734.c                   |  621 ---
+ arch/sh/kernel/cpu/sh4a/setup-sh7757.c                   | 1242 ------
+ arch/sh/kernel/cpu/sh4a/setup-sh7763.c                   |  455 --
+ arch/sh/kernel/cpu/sh4a/setup-sh7770.c                   |  571 ---
+ arch/sh/kernel/cpu/sh4a/setup-sh7780.c                   |  505 --
+ arch/sh/kernel/cpu/sh4a/setup-sh7785.c                   |  608 ---
+ arch/sh/kernel/cpu/sh4a/setup-sh7786.c                   |  841 ----
+ arch/sh/kernel/cpu/sh4a/setup-shx3.c                     |  396 --
+ arch/sh/kernel/cpu/sh4a/smp-shx3.c                       |  146 
+ arch/sh/kernel/cpu/sh4a/ubc.c                            |  130 
+ arch/sh/kernel/cpu/shmobile/Makefile                     |    8 
+ arch/sh/kernel/cpu/shmobile/cpuidle.c                    |   95 
+ arch/sh/kernel/cpu/shmobile/pm.c                         |  153 
+ arch/sh/kernel/cpu/shmobile/sleep.S                      |  402 --
+ arch/sh/kernel/crash_dump.c                              |   27 
+ arch/sh/kernel/debugtraps.S                              |   38 
+ arch/sh/kernel/disassemble.c                             |  572 ---
+ arch/sh/kernel/dma-coherent.c                            |   33 
+ arch/sh/kernel/dumpstack.c                               |  156 
+ arch/sh/kernel/dwarf.c                                   | 1206 ------
+ arch/sh/kernel/entry-common.S                            |  400 --
+ arch/sh/kernel/ftrace.c                                  |  365 -
+ arch/sh/kernel/head_32.S                                 |  365 -
+ arch/sh/kernel/hw_breakpoint.c                           |  408 --
+ arch/sh/kernel/idle.c                                    |   57 
+ arch/sh/kernel/io.c                                      |  111 
+ arch/sh/kernel/io_trapped.c                              |  291 -
+ arch/sh/kernel/iomap.c                                   |  162 
+ arch/sh/kernel/ioport.c                                  |   41 
+ arch/sh/kernel/irq.c                                     |  249 -
+ arch/sh/kernel/irq_32.c                                  |   54 
+ arch/sh/kernel/kdebugfs.c                                |   14 
+ arch/sh/kernel/kgdb.c                                    |  378 -
+ arch/sh/kernel/kprobes.c                                 |  452 --
+ arch/sh/kernel/machine_kexec.c                           |  204 -
+ arch/sh/kernel/machvec.c                                 |  122 
+ arch/sh/kernel/module.c                                  |  104 
+ arch/sh/kernel/nmi_debug.c                               |   75 
+ arch/sh/kernel/perf_callchain.c                          |   32 
+ arch/sh/kernel/perf_event.c                              |  363 -
+ arch/sh/kernel/process.c                                 |   77 
+ arch/sh/kernel/process_32.c                              |  197 -
+ arch/sh/kernel/ptrace.c                                  |   34 
+ arch/sh/kernel/ptrace_32.c                               |  487 --
+ arch/sh/kernel/reboot.c                                  |   96 
+ arch/sh/kernel/relocate_kernel.S                         |  230 -
+ arch/sh/kernel/return_address.c                          |   56 
+ arch/sh/kernel/setup.c                                   |  356 -
+ arch/sh/kernel/sh_bios.c                                 |  169 
+ arch/sh/kernel/sh_ksyms_32.c                             |  118 
+ arch/sh/kernel/signal_32.c                               |  507 --
+ arch/sh/kernel/smp.c                                     |  471 --
+ arch/sh/kernel/stacktrace.c                              |   79 
+ arch/sh/kernel/swsusp.c                                  |   35 
+ arch/sh/kernel/sys_sh.c                                  |   96 
+ arch/sh/kernel/sys_sh32.c                                |   61 
+ arch/sh/kernel/syscalls/Makefile                         |   32 
+ arch/sh/kernel/syscalls/syscall.tbl                      |  455 --
+ arch/sh/kernel/syscalls_32.S                             |   17 
+ arch/sh/kernel/time.c                                    |   45 
+ arch/sh/kernel/topology.c                                |   74 
+ arch/sh/kernel/traps.c                                   |  204 -
+ arch/sh/kernel/traps_32.c                                |  795 ----
+ arch/sh/kernel/unwinder.c                                |  165 
+ arch/sh/kernel/vmlinux.lds.S                             |   82 
+ arch/sh/kernel/vsyscall/.gitignore                       |    2 
+ arch/sh/kernel/vsyscall/Makefile                         |   36 
+ arch/sh/kernel/vsyscall/vsyscall-note.S                  |   26 
+ arch/sh/kernel/vsyscall/vsyscall-sigreturn.S             |   75 
+ arch/sh/kernel/vsyscall/vsyscall-syscall.S               |   11 
+ arch/sh/kernel/vsyscall/vsyscall-trapa.S                 |   40 
+ arch/sh/kernel/vsyscall/vsyscall.c                       |   93 
+ arch/sh/kernel/vsyscall/vsyscall.lds.S                   |   85 
+ arch/sh/lib/Makefile                                     |   32 
+ arch/sh/lib/__clear_user.S                               |  109 
+ arch/sh/lib/ashiftrt.S                                   |  128 
+ arch/sh/lib/ashldi3.c                                    |   30 
+ arch/sh/lib/ashlsi3.S                                    |  189 
+ arch/sh/lib/ashrdi3.c                                    |   32 
+ arch/sh/lib/ashrsi3.S                                    |  179 
+ arch/sh/lib/checksum.S                                   |  365 -
+ arch/sh/lib/copy_page.S                                  |  390 --
+ arch/sh/lib/delay.c                                      |   54 
+ arch/sh/lib/div64-generic.c                              |   20 
+ arch/sh/lib/div64.S                                      |   47 
+ arch/sh/lib/io.c                                         |   79 
+ arch/sh/lib/libgcc.h                                     |   27 
+ arch/sh/lib/lshrdi3.c                                    |   30 
+ arch/sh/lib/lshrsi3.S                                    |  188 
+ arch/sh/lib/mcount.S                                     |  287 -
+ arch/sh/lib/memchr.S                                     |   27 
+ arch/sh/lib/memcpy-sh4.S                                 |  800 ----
+ arch/sh/lib/memcpy.S                                     |  228 -
+ arch/sh/lib/memmove.S                                    |  255 -
+ arch/sh/lib/memset-sh4.S                                 |  108 
+ arch/sh/lib/memset.S                                     |   59 
+ arch/sh/lib/movmem.S                                     |  217 -
+ arch/sh/lib/strlen.S                                     |   71 
+ arch/sh/lib/udiv_qrnnd.S                                 |   60 
+ arch/sh/lib/udivsi3.S                                    |   66 
+ arch/sh/lib/udivsi3_i4i-Os.S                             |  128 
+ arch/sh/lib/udivsi3_i4i.S                                |  645 ---
+ arch/sh/math-emu/Makefile                                |    2 
+ arch/sh/math-emu/math.c                                  |  506 --
+ arch/sh/math-emu/sfp-util.h                              |   73 
+ arch/sh/mm/Kconfig                                       |  254 -
+ arch/sh/mm/Makefile                                      |   45 
+ arch/sh/mm/alignment.c                                   |  189 
+ arch/sh/mm/asids-debugfs.c                               |   59 
+ arch/sh/mm/cache-debugfs.c                               |  109 
+ arch/sh/mm/cache-j2.c                                    |   64 
+ arch/sh/mm/cache-sh2.c                                   |   90 
+ arch/sh/mm/cache-sh2a.c                                  |  188 
+ arch/sh/mm/cache-sh3.c                                   |  102 
+ arch/sh/mm/cache-sh4.c                                   |  390 --
+ arch/sh/mm/cache-sh7705.c                                |  194 -
+ arch/sh/mm/cache-shx3.c                                  |   44 
+ arch/sh/mm/cache.c                                       |  360 -
+ arch/sh/mm/consistent.c                                  |   65 
+ arch/sh/mm/extable_32.c                                  |   24 
+ arch/sh/mm/fault.c                                       |  504 --
+ arch/sh/mm/flush-sh4.c                                   |  111 
+ arch/sh/mm/hugetlbpage.c                                 |   82 
+ arch/sh/mm/init.c                                        |  424 --
+ arch/sh/mm/ioremap.c                                     |  192 -
+ arch/sh/mm/ioremap.h                                     |   23 
+ arch/sh/mm/ioremap_fixed.c                               |  135 
+ arch/sh/mm/kmap.c                                        |   65 
+ arch/sh/mm/mmap.c                                        |  184 
+ arch/sh/mm/nommu.c                                       |   98 
+ arch/sh/mm/numa.c                                        |   56 
+ arch/sh/mm/pgtable.c                                     |   57 
+ arch/sh/mm/pmb.c                                         |  887 ----
+ arch/sh/mm/sram.c                                        |   35 
+ arch/sh/mm/tlb-debugfs.c                                 |  160 
+ arch/sh/mm/tlb-pteaex.c                                  |  106 
+ arch/sh/mm/tlb-sh3.c                                     |   95 
+ arch/sh/mm/tlb-sh4.c                                     |  108 
+ arch/sh/mm/tlb-urb.c                                     |   93 
+ arch/sh/mm/tlbex_32.c                                    |   82 
+ arch/sh/mm/tlbflush_32.c                                 |  137 
+ arch/sh/mm/uncached.c                                    |   44 
+ arch/sh/tools/Makefile                                   |   16 
+ arch/sh/tools/gen-mach-types                             |   48 
+ arch/sh/tools/mach-types                                 |   67 
+ b/Documentation/arch.rst                                 |    1 
+ b/Documentation/watchdog/watchdog-parameters.rst         |   12 
+ b/MAINTAINERS                                            |   10 
+ b/drivers/Makefile                                       |    1 
+ b/drivers/base/platform.c                                |    4 
+ b/drivers/clocksource/sh_cmt.c                           |   16 
+ b/drivers/clocksource/sh_mtu2.c                          |   16 
+ b/drivers/clocksource/sh_tmu.c                           |   17 
+ b/drivers/cpufreq/Kconfig                                |   14 
+ b/drivers/cpufreq/Makefile                               |    1 
+ b/drivers/dma/sh/Kconfig                                 |   20 
+ b/drivers/dma/sh/Makefile                                |   13 
+ b/drivers/gpu/drm/Kconfig                                |    2 
+ b/drivers/gpu/drm/Makefile                               |    1 
+ b/drivers/i2c/busses/Kconfig                             |   13 
+ b/drivers/i2c/busses/Makefile                            |    1 
+ b/drivers/input/keyboard/Kconfig                         |   10 
+ b/drivers/input/keyboard/Makefile                        |    1 
+ b/drivers/media/platform/renesas/Kconfig                 |   11 
+ b/drivers/media/platform/renesas/Makefile                |    1 
+ b/drivers/mmc/host/Kconfig                               |    6 
+ b/drivers/mmc/host/sh_mmcif.c                            |   21 
+ b/drivers/mtd/nand/raw/Kconfig                           |    8 
+ b/drivers/mtd/nand/raw/Makefile                          |    1 
+ b/drivers/net/ethernet/8390/Kconfig                      |   14 
+ b/drivers/net/ethernet/8390/Makefile                     |    1 
+ b/drivers/net/ethernet/renesas/Kconfig                   |    2 
+ b/drivers/net/ethernet/smsc/Kconfig                      |    4 
+ b/drivers/pinctrl/renesas/Kconfig                        |   63 
+ b/drivers/pinctrl/renesas/Makefile                       |   27 
+ b/drivers/pinctrl/renesas/core.c                         |  598 ---
+ b/drivers/rtc/Kconfig                                    |    4 
+ b/drivers/rtc/rtc-sh.c                                   |   18 
+ b/drivers/spi/Kconfig                                    |   24 
+ b/drivers/spi/Makefile                                   |    3 
+ b/drivers/tty/serial/Kconfig                             |    3 
+ b/drivers/tty/serial/sh-sci.c                            |   57 
+ b/drivers/tty/vt/keyboard.c                              |    2 
+ b/drivers/usb/host/Kconfig                               |   18 
+ b/drivers/usb/host/ehci-hcd.c                            |    7 
+ b/drivers/usb/renesas_usbhs/Kconfig                      |    2 
+ b/drivers/video/console/Kconfig                          |    2 
+ b/drivers/video/fbdev/Kconfig                            |   17 
+ b/drivers/video/fbdev/Makefile                           |    1 
+ b/drivers/video/logo/Kconfig                             |   15 
+ b/drivers/video/logo/Makefile                            |    3 
+ b/drivers/video/logo/logo.c                              |   12 
+ b/drivers/watchdog/Kconfig                               |   20 
+ b/drivers/watchdog/Makefile                              |    3 
+ b/fs/Kconfig.binfmt                                      |    2 
+ b/fs/minix/Kconfig                                       |    2 
+ b/include/linux/cpuhotplug.h                             |    1 
+ b/include/linux/platform_device.h                        |   15 
+ b/include/linux/sh_intc.h                                |    4 
+ b/include/linux/shdma-base.h                             |    4 
+ b/init/Kconfig                                           |    2 
+ b/kernel/sysctl.c                                        |    3 
+ b/lib/Kconfig.debug                                      |    2 
+ b/lib/math/div64.c                                       |    4 
+ b/lib/test_user_copy.c                                   |    3 
+ b/scripts/coccinelle/misc/cond_no_effect.cocci           |   13 
+ b/scripts/head-object-list.txt                           |    1 
+ b/sound/Kconfig                                          |    2 
+ b/sound/Makefile                                         |    2 
+ b/sound/soc/sh/Kconfig                                   |   48 
+ b/sound/soc/sh/Makefile                                  |   16 
+ b/sound/soc/sh/fsi.c                                     |    9 
+ b/tools/include/asm/barrier.h                            |    2 
+ b/tools/perf/util/dwarf-regs.c                           |    1 
+ drivers/cpufreq/sh-cpufreq.c                             |  175 
+ drivers/dma/sh/shdma-base.c                              | 1052 -----
+ drivers/dma/sh/shdma.h                                   |   61 
+ drivers/dma/sh/shdmac.c                                  |  938 ----
+ drivers/gpu/drm/shmobile/Kconfig                         |   12 
+ drivers/gpu/drm/shmobile/Makefile                        |    8 
+ drivers/gpu/drm/shmobile/shmob_drm_backlight.c           |   82 
+ drivers/gpu/drm/shmobile/shmob_drm_backlight.h           |   19 
+ drivers/gpu/drm/shmobile/shmob_drm_crtc.c                |  683 ---
+ drivers/gpu/drm/shmobile/shmob_drm_crtc.h                |   55 
+ drivers/gpu/drm/shmobile/shmob_drm_drv.c                 |  303 -
+ drivers/gpu/drm/shmobile/shmob_drm_drv.h                 |   42 
+ drivers/gpu/drm/shmobile/shmob_drm_kms.c                 |  150 
+ drivers/gpu/drm/shmobile/shmob_drm_kms.h                 |   29 
+ drivers/gpu/drm/shmobile/shmob_drm_plane.c               |  261 -
+ drivers/gpu/drm/shmobile/shmob_drm_plane.h               |   19 
+ drivers/gpu/drm/shmobile/shmob_drm_regs.h                |  310 -
+ drivers/i2c/busses/i2c-sh7760.c                          |  565 --
+ drivers/input/keyboard/sh_keysc.c                        |  334 -
+ drivers/media/platform/renesas/sh_vou.c                  | 1375 -------
+ drivers/mtd/nand/raw/sh_flctl.c                          | 1234 ------
+ drivers/net/ethernet/8390/stnic.c                        |  302 -
+ drivers/pinctrl/renesas/pfc-sh7203.c                     | 1577 --------
+ drivers/pinctrl/renesas/pfc-sh7264.c                     | 2131 -----------
+ drivers/pinctrl/renesas/pfc-sh7269.c                     | 2851 ---------------
+ drivers/pinctrl/renesas/pfc-sh7720.c                     | 1201 ------
+ drivers/pinctrl/renesas/pfc-sh7722.c                     | 1703 --------
+ drivers/pinctrl/renesas/pfc-sh7723.c                     | 1902 ----------
+ drivers/pinctrl/renesas/pfc-sh7724.c                     | 2177 -----------
+ drivers/pinctrl/renesas/pfc-sh7734.c                     | 2408 ------------
+ drivers/pinctrl/renesas/pfc-sh7757.c                     | 2219 -----------
+ drivers/pinctrl/renesas/pfc-sh7785.c                     | 1258 ------
+ drivers/pinctrl/renesas/pfc-sh7786.c                     |  809 ----
+ drivers/pinctrl/renesas/pfc-shx3.c                       |  557 --
+ drivers/sh/Kconfig                                       |    6 
+ drivers/sh/Makefile                                      |   12 
+ drivers/sh/clk/Makefile                                  |    4 
+ drivers/sh/clk/core.c                                    |  624 ---
+ drivers/sh/clk/cpg.c                                     |  477 --
+ drivers/sh/intc/Kconfig                                  |   44 
+ drivers/sh/intc/Makefile                                 |    6 
+ drivers/sh/intc/access.c                                 |  246 -
+ drivers/sh/intc/balancing.c                              |   97 
+ drivers/sh/intc/chip.c                                   |  211 -
+ drivers/sh/intc/core.c                                   |  501 --
+ drivers/sh/intc/handle.c                                 |  306 -
+ drivers/sh/intc/internals.h                              |  191 -
+ drivers/sh/intc/irqdomain.c                              |   68 
+ drivers/sh/intc/userimask.c                              |   84 
+ drivers/sh/intc/virq-debugfs.c                           |   54 
+ drivers/sh/intc/virq.c                                   |  269 -
+ drivers/sh/maple/Makefile                                |    4 
+ drivers/sh/maple/maple.c                                 |  895 ----
+ drivers/sh/pm_runtime.c                                  |   40 
+ drivers/sh/superhyway/Makefile                           |    8 
+ drivers/sh/superhyway/superhyway-sysfs.c                 |   54 
+ drivers/sh/superhyway/superhyway.c                       |  234 -
+ drivers/spi/spi-jcore.c                                  |  235 -
+ drivers/spi/spi-sh-sci.c                                 |  197 -
+ drivers/spi/spi-sh.c                                     |  474 --
+ drivers/usb/host/ehci-sh.c                               |  182 
+ drivers/video/fbdev/sh7760fb.c                           |  587 ---
+ drivers/video/logo/logo_superh_clut224.ppm               | 1604 --------
+ drivers/video/logo/logo_superh_vga16.ppm                 | 1604 --------
+ drivers/watchdog/shwdt.c                                 |  344 -
+ include/linux/mtd/sh_flctl.h                             |  180 
+ include/linux/sh_clk.h                                   |  213 -
+ include/linux/superhyway.h                               |  107 
+ sound/sh/Kconfig                                         |   32 
+ sound/sh/Makefile                                        |   11 
+ sound/sh/aica.c                                          |  628 ---
+ sound/sh/aica.h                                          |   68 
+ sound/sh/sh_dac_audio.c                                  |  412 --
+ sound/soc/sh/dma-sh7760.c                                |  334 -
+ sound/soc/sh/hac.c                                       |  345 -
+ sound/soc/sh/migor.c                                     |  205 -
+ sound/soc/sh/sh7760-ac97.c                               |   72 
+ sound/soc/sh/siu.h                                       |  180 
+ sound/soc/sh/siu_dai.c                                   |  799 ----
+ sound/soc/sh/siu_pcm.c                                   |  553 --
+ sound/soc/sh/ssi.c                                       |  403 --
+ 896 files changed, 46 insertions(+), 138518 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
