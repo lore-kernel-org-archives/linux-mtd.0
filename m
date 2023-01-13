@@ -4,45 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A510EC54EBE
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 07:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1DFBC54EBD
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 07:14:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vHC70yblPl62A0lCSd7k3jJcNZLcMeIBe9qJua/MVBo=; b=qwbiTAmSWag+sD
-	Q0VDOo8UyWL+JHTc+4otBGT56BoEER/+7cRDHE9tAwivqRe/T9zWGeQo1X91G8Tyd8ohOfV/4E8tw
-	M7xKudOaxX386nsfIaPGWQZGAn7/t7issCmYbR0UUNPXklsJv4XBfCklBp19KQRaofDywTzQitn+W
-	d/ZtXa6Kpru+2L87737y7oLUyzVog+YYWQ2z6/mwD3TL5O00Aswb3qFN3yM0r9gGM9DW+OghTZwpn
-	Uwbpd5ReV6U9Vr+TC5ZgcAPh0MLyKOUfswZ2mU0Q/B+S8/4KIt/1LzB1XLiw9ShOgwD89nElmOH5h
-	WTiL3unhf8Kbi4aEfg2A==;
+	List-Owner; bh=bTmCQ3ZVH1QhfuZ5987UctBdb7rsltV+R6tpgyv5b/s=; b=uCOFaZVt/iN2W0
+	vcXWv1bEqp46PKro2fWxyozY7jd3+vIEOr2kh8CXr/M6SKHkWtl9wC2sLlW27r7CQP6PNgH9ZzHlh
+	xFgORoQI15gO/PiGSAZE3b/iH0Aks0doC/MRhM+WVUj9N6wUSMjRe5VB8LzWJ+qYDDBJdmNWvUkUg
+	KT1uFSVeTvyJVaxv2v3rHmKxLrThUi4syDDvxJV/yYJxgWepAvIlioQx4fyM3tITBV4SEAoqyppCq
+	2PvI2gUD8EbZFn7gaZK7T4l8U/d0MB5aqYAeK8IhJO/IkyXy+QQZlMOs8uovcGgOwmr6IbQkmNrCn
+	SYOk//fuY/1BhgA5hFbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGEFA-000wML-Nt; Fri, 13 Jan 2023 07:12:52 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pGEGf-000wjI-5a; Fri, 13 Jan 2023 07:14:25 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGEF7-000wLF-M9
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 07:12:51 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C10EF62238;
-	Fri, 13 Jan 2023 07:12:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DE1AC433D2;
-	Fri, 13 Jan 2023 07:12:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1673593968;
-	bh=QW1PY3rFgL7HIa1lrzMI5uksSAfbml0XYJbvQzFAuWk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=0oMMF0AsnNGVsfn35DXLDvgW2FFDBQctJVJeY8ZKTXb5ezzn7lhGkAftJpZH35IQL
-	 SnxMV96zvZ93p/8lbSuV6nhLT/2v6ajWOmV2dS1jXf/y0bbQOvb+apnJ6XXiXzoBRc
-	 F2PSRDe2WkZQdYDnszi1VWAGguwJrTfCgd0RBj8I=
-Date: Fri, 13 Jan 2023 08:12:44 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
+	id 1pGEGc-000whB-6B
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 07:14:23 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 78A2D68D07; Fri, 13 Jan 2023 08:14:13 +0100 (CET)
+Date: Fri, 13 Jan 2023 08:14:13 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
 	Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
 	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
@@ -59,15 +48,15 @@ Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
 	linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org,
 	linux-sh@vger.kernel.org
 Subject: Re: [PATCH 02/22] usb: remove the dead USB_OHCI_SH option
-Message-ID: <Y8EEbCP6PRMzWP5y@kroah.com>
-References: <20230113062339.1909087-1-hch@lst.de>
- <20230113062339.1909087-3-hch@lst.de>
+Message-ID: <20230113071413.GA25637@lst.de>
+References: <20230113062339.1909087-1-hch@lst.de> <20230113062339.1909087-3-hch@lst.de> <Y8EEbCP6PRMzWP5y@kroah.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230113062339.1909087-3-hch@lst.de>
+In-Reply-To: <Y8EEbCP6PRMzWP5y@kroah.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230112_231249_789696_D9FEA77B 
-X-CRM114-Status: GOOD (  22.32  )
+X-CRM114-CacheID: sfid-20230112_231422_410375_97949EA1 
+X-CRM114-Status: GOOD (  12.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,52 +73,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jan 13, 2023 at 07:23:19AM +0100, Christoph Hellwig wrote:
-> USB_OHCI_SH is a dummy option that never builds any code, remove it.
+On Fri, Jan 13, 2023 at 08:12:44AM +0100, Greg Kroah-Hartman wrote:
+> Do you want all of these to go through a single tree, or can they go
+> through the different driver subsystem trees?
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/usb/host/Kconfig | 11 -----------
->  1 file changed, 11 deletions(-)
+> If single:
 > 
-> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
-> index 8d799d23c476e1..ca5f657c092cf4 100644
-> --- a/drivers/usb/host/Kconfig
-> +++ b/drivers/usb/host/Kconfig
-> @@ -548,17 +548,6 @@ config USB_OHCI_HCD_SSB
->  
->  	  If unsure, say N.
->  
-> -config USB_OHCI_SH
-> -	bool "OHCI support for SuperH USB controller (DEPRECATED)"
-> -	depends on SUPERH || COMPILE_TEST
-> -	select USB_OHCI_HCD_PLATFORM
-> -	help
-> -	  This option is deprecated now and the driver was removed, use
-> -	  USB_OHCI_HCD_PLATFORM instead.
-> -
-> -	  Enables support for the on-chip OHCI controller on the SuperH.
-> -	  If you use the PCI OHCI controller, this option is not necessary.
-> -
->  config USB_OHCI_EXYNOS
->  	tristate "OHCI support for Samsung S5P/Exynos SoC Series"
->  	depends on ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
-> -- 
-> 2.39.0
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
+> If not, I'll be glad to take this.
 
-Do you want all of these to go through a single tree, or can they go
-through the different driver subsystem trees?
-
-If single:
-
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-If not, I'll be glad to take this.
-
-thanks,
-
-greg k-h
+I think taking all the patches together would make most sense.
 
 ______________________________________________________
 Linux MTD discussion mailing list
