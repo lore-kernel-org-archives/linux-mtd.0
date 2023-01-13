@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55D07C54EBE
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 06:24:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CFA7C54EBD
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 06:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=jZ9LQSoDIp/ywkjCC3jV6toWMp5hRMh7cf2sjFg5584=; b=Hz1WMeWWNsxSru
-	WPdKAkzQL3Z0UfTC5sWpquK4pdYd0CSsdQiyCKewf9lnilKe7UwYg3BumGFJ61KuXCcAivV0ApEKM
-	81cV8Dc1z+858jfNd74gEyJashgiKBergFZtwRE2u73jcLxNRs5lhUiDVJVsGWUOVIE/K4CbBUsB4
-	31xjT6WWgL2MstH/T7lu+/jOIiwpmcdTlaHC1UbllKnbVT7cNZj49jBTqUgU7kSlMDu3DqjgHpc+b
-	EdXrOzsS5gyVL4acVvfZAbGanI4lNU4C2apzdAr0fnK4Vll28KIiMGa41C/fAkcy0yEPJg4WAXI0P
-	5w5FQIObB0mn8Ep5z9qw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Ws807abx+QcUkD8q/RfyFwWhWT4HnjIb+aeP4l3QdZs=; b=HL1h2GIlzFZk9X
+	0O9MqHUUzLx+HNowNSOuY6ZkxVwVRQRJbF29h0traQw6MIoIvMhs1HRjTLGEQd0JtehYCWsiH5ecX
+	v8Q9lt4IPkre6uxTUxlD17hLjgOTCLpaQVX8EkLm6v3EOpdYyCWBEdZosY3ucp677A+VLRXXbE3Jo
+	3+bvdbeUx+zKxSAbNIP8R3OQkh+MQhhbarCRrzaLaB1st/HPIi6pOT2SBqlzpTICNA/Afh9Xo/xPl
+	05kL3geGGYcjwP0LB8eqQ4M/AduNd58+AadLwZ7n5pWPhZbWsZ0HCR1sowtWVBVfCl4qk55iW0HWa
+	KuG5n+hhNy/T5NY8nP9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGDTg-000lOC-5w; Fri, 13 Jan 2023 06:23:48 +0000
+	id 1pGDU0-000lY6-G9; Fri, 13 Jan 2023 06:24:08 +0000
 Received: from [2001:4bb8:181:656b:9509:7d20:8d39:f895] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGDTZ-000lMO-OM; Fri, 13 Jan 2023 06:23:42 +0000
+	id 1pGDTr-000lRy-FI; Fri, 13 Jan 2023 06:24:00 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Yoshinori Sato <ysato@users.sourceforge.jp>,
 	Rich Felker <dalias@libc.org>,
@@ -53,10 +53,12 @@ Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	linux-fbdev@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	linux-sh@vger.kernel.org
-Subject: remove arch/sh
-Date: Fri, 13 Jan 2023 07:23:17 +0100
-Message-Id: <20230113062339.1909087-1-hch@lst.de>
+Subject: [PATCH 04/22] sound: remove sound/sh
+Date: Fri, 13 Jan 2023 07:23:21 +0100
+Message-Id: <20230113062339.1909087-5-hch@lst.de>
 X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230113062339.1909087-1-hch@lst.de>
+References: <20230113062339.1909087-1-hch@lst.de>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,913 +76,1234 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+Now that arch/sh is removed these drivers are dead code.
 
-arch/sh has been a long drag because it supports a lot of SOCs, and most
-of them haven't even been converted to device tree infrastructure.  These
-SOCs are generally obsolete as well, and all of the support has been barely
-maintained for almost 10 years, and not at all for more than 1 year.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ sound/Kconfig           |   2 -
+ sound/Makefile          |   2 +-
+ sound/sh/Kconfig        |  32 --
+ sound/sh/Makefile       |  11 -
+ sound/sh/aica.c         | 628 ----------------------------------------
+ sound/sh/aica.h         |  68 -----
+ sound/sh/sh_dac_audio.c | 412 --------------------------
+ 7 files changed, 1 insertion(+), 1154 deletions(-)
+ delete mode 100644 sound/sh/Kconfig
+ delete mode 100644 sound/sh/Makefile
+ delete mode 100644 sound/sh/aica.c
+ delete mode 100644 sound/sh/aica.h
+ delete mode 100644 sound/sh/sh_dac_audio.c
 
-Drop arch/sh and everything that depends on it.
+diff --git a/sound/Kconfig b/sound/Kconfig
+index e56d96d2b11cae..14361bb428baa1 100644
+--- a/sound/Kconfig
++++ b/sound/Kconfig
+@@ -75,8 +75,6 @@ source "sound/spi/Kconfig"
+ 
+ source "sound/mips/Kconfig"
+ 
+-source "sound/sh/Kconfig"
+-
+ # the following will depend on the order of config.
+ # here assuming USB is defined before ALSA
+ source "sound/usb/Kconfig"
+diff --git a/sound/Makefile b/sound/Makefile
+index 04ef04b1168f39..bb4b8806321c67 100644
+--- a/sound/Makefile
++++ b/sound/Makefile
+@@ -4,7 +4,7 @@
+ 
+ obj-$(CONFIG_SOUND) += soundcore.o
+ obj-$(CONFIG_DMASOUND) += oss/dmasound/
+-obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ sh/ synth/ usb/ \
++obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ synth/ usb/ \
+ 	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/ hda/ x86/ xen/ \
+ 	virtio/
+ obj-$(CONFIG_SND_AOA) += aoa/
+diff --git a/sound/sh/Kconfig b/sound/sh/Kconfig
+deleted file mode 100644
+index b75fbb3236a7b9..00000000000000
+--- a/sound/sh/Kconfig
++++ /dev/null
+@@ -1,32 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-# ALSA SH drivers
+-
+-menuconfig SND_SUPERH
+-	bool "SUPERH sound devices"
+-	depends on SUPERH
+-	default y
+-	help
+-	  Support for sound devices specific to SUPERH architectures.
+-	  Drivers that are implemented on ASoC can be found in
+-	  "ALSA for SoC audio support" section.
+-
+-if SND_SUPERH
+-
+-config SND_AICA
+-	tristate "Dreamcast Yamaha AICA sound"
+-	depends on SH_DREAMCAST
+-	select SND_PCM
+-	select G2_DMA
+-	help
+-	  ALSA Sound driver for the SEGA Dreamcast console.
+-
+-config SND_SH_DAC_AUDIO
+-	tristate "SuperH DAC audio support"
+-	depends on SND
+-	depends on CPU_SH3 && HIGH_RES_TIMERS
+-	select SND_PCM
+-	help
+-	  Say Y here to include support for the on-chip DAC.
+-
+-endif	# SND_SUPERH
+-
+diff --git a/sound/sh/Makefile b/sound/sh/Makefile
+deleted file mode 100644
+index c0bbc500c17c73..00000000000000
+--- a/sound/sh/Makefile
++++ /dev/null
+@@ -1,11 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-#
+-# Makefile for ALSA
+-#
+-
+-snd-aica-objs := aica.o
+-snd-sh_dac_audio-objs := sh_dac_audio.o
+-
+-# Toplevel Module Dependency
+-obj-$(CONFIG_SND_AICA) += snd-aica.o
+-obj-$(CONFIG_SND_SH_DAC_AUDIO) += snd-sh_dac_audio.o
+diff --git a/sound/sh/aica.c b/sound/sh/aica.c
+deleted file mode 100644
+index 6e9d6bd67369af..00000000000000
+--- a/sound/sh/aica.c
++++ /dev/null
+@@ -1,628 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+-*
+-* Copyright Adrian McMenamin 2005, 2006, 2007
+-* <adrian@mcmen.demon.co.uk>
+-* Requires firmware (BSD licenced) available from:
+-* http://linuxdc.cvs.sourceforge.net/linuxdc/linux-sh-dc/sound/oss/aica/firmware/
+-* or the maintainer
+-*/
+-
+-#include <linux/init.h>
+-#include <linux/jiffies.h>
+-#include <linux/slab.h>
+-#include <linux/time.h>
+-#include <linux/wait.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/firmware.h>
+-#include <linux/timer.h>
+-#include <linux/delay.h>
+-#include <linux/workqueue.h>
+-#include <linux/io.h>
+-#include <sound/core.h>
+-#include <sound/control.h>
+-#include <sound/pcm.h>
+-#include <sound/initval.h>
+-#include <sound/info.h>
+-#include <asm/dma.h>
+-#include <mach/sysasic.h>
+-#include "aica.h"
+-
+-MODULE_AUTHOR("Adrian McMenamin <adrian@mcmen.demon.co.uk>");
+-MODULE_DESCRIPTION("Dreamcast AICA sound (pcm) driver");
+-MODULE_LICENSE("GPL");
+-MODULE_FIRMWARE("aica_firmware.bin");
+-
+-/* module parameters */
+-#define CARD_NAME "AICA"
+-static int index = -1;
+-static char *id;
+-static bool enable = 1;
+-module_param(index, int, 0444);
+-MODULE_PARM_DESC(index, "Index value for " CARD_NAME " soundcard.");
+-module_param(id, charp, 0444);
+-MODULE_PARM_DESC(id, "ID string for " CARD_NAME " soundcard.");
+-module_param(enable, bool, 0644);
+-MODULE_PARM_DESC(enable, "Enable " CARD_NAME " soundcard.");
+-
+-/* Simple platform device */
+-static struct platform_device *pd;
+-static struct resource aica_memory_space[2] = {
+-	{
+-	 .name = "AICA ARM CONTROL",
+-	 .start = ARM_RESET_REGISTER,
+-	 .flags = IORESOURCE_MEM,
+-	 .end = ARM_RESET_REGISTER + 3,
+-	 },
+-	{
+-	 .name = "AICA Sound RAM",
+-	 .start = SPU_MEMORY_BASE,
+-	 .flags = IORESOURCE_MEM,
+-	 .end = SPU_MEMORY_BASE + 0x200000 - 1,
+-	 },
+-};
+-
+-/* SPU specific functions */
+-/* spu_write_wait - wait for G2-SH FIFO to clear */
+-static void spu_write_wait(void)
+-{
+-	int time_count;
+-	time_count = 0;
+-	while (1) {
+-		if (!(readl(G2_FIFO) & 0x11))
+-			break;
+-		/* To ensure hardware failure doesn't wedge kernel */
+-		time_count++;
+-		if (time_count > 0x10000) {
+-			snd_printk
+-			    ("WARNING: G2 FIFO appears to be blocked.\n");
+-			break;
+-		}
+-	}
+-}
+-
+-/* spu_memset - write to memory in SPU address space */
+-static void spu_memset(u32 toi, u32 what, int length)
+-{
+-	int i;
+-	unsigned long flags;
+-	if (snd_BUG_ON(length % 4))
+-		return;
+-	for (i = 0; i < length; i++) {
+-		if (!(i % 8))
+-			spu_write_wait();
+-		local_irq_save(flags);
+-		writel(what, toi + SPU_MEMORY_BASE);
+-		local_irq_restore(flags);
+-		toi++;
+-	}
+-}
+-
+-/* spu_memload - write to SPU address space */
+-static void spu_memload(u32 toi, const void *from, int length)
+-{
+-	unsigned long flags;
+-	const u32 *froml = from;
+-	u32 __iomem *to = (u32 __iomem *) (SPU_MEMORY_BASE + toi);
+-	int i;
+-	u32 val;
+-	length = DIV_ROUND_UP(length, 4);
+-	spu_write_wait();
+-	for (i = 0; i < length; i++) {
+-		if (!(i % 8))
+-			spu_write_wait();
+-		val = *froml;
+-		local_irq_save(flags);
+-		writel(val, to);
+-		local_irq_restore(flags);
+-		froml++;
+-		to++;
+-	}
+-}
+-
+-/* spu_disable - set spu registers to stop sound output */
+-static void spu_disable(void)
+-{
+-	int i;
+-	unsigned long flags;
+-	u32 regval;
+-	spu_write_wait();
+-	regval = readl(ARM_RESET_REGISTER);
+-	regval |= 1;
+-	spu_write_wait();
+-	local_irq_save(flags);
+-	writel(regval, ARM_RESET_REGISTER);
+-	local_irq_restore(flags);
+-	for (i = 0; i < 64; i++) {
+-		spu_write_wait();
+-		regval = readl(SPU_REGISTER_BASE + (i * 0x80));
+-		regval = (regval & ~0x4000) | 0x8000;
+-		spu_write_wait();
+-		local_irq_save(flags);
+-		writel(regval, SPU_REGISTER_BASE + (i * 0x80));
+-		local_irq_restore(flags);
+-	}
+-}
+-
+-/* spu_enable - set spu registers to enable sound output */
+-static void spu_enable(void)
+-{
+-	unsigned long flags;
+-	u32 regval = readl(ARM_RESET_REGISTER);
+-	regval &= ~1;
+-	spu_write_wait();
+-	local_irq_save(flags);
+-	writel(regval, ARM_RESET_REGISTER);
+-	local_irq_restore(flags);
+-}
+-
+-/* 
+- * Halt the sound processor, clear the memory,
+- * load some default ARM7 code, and then restart ARM7
+-*/
+-static void spu_reset(void)
+-{
+-	unsigned long flags;
+-	spu_disable();
+-	spu_memset(0, 0, 0x200000 / 4);
+-	/* Put ARM7 in endless loop */
+-	local_irq_save(flags);
+-	__raw_writel(0xea000002, SPU_MEMORY_BASE);
+-	local_irq_restore(flags);
+-	spu_enable();
+-}
+-
+-/* aica_chn_start - write to spu to start playback */
+-static void aica_chn_start(void)
+-{
+-	unsigned long flags;
+-	spu_write_wait();
+-	local_irq_save(flags);
+-	writel(AICA_CMD_KICK | AICA_CMD_START, (u32 *) AICA_CONTROL_POINT);
+-	local_irq_restore(flags);
+-}
+-
+-/* aica_chn_halt - write to spu to halt playback */
+-static void aica_chn_halt(void)
+-{
+-	unsigned long flags;
+-	spu_write_wait();
+-	local_irq_save(flags);
+-	writel(AICA_CMD_KICK | AICA_CMD_STOP, (u32 *) AICA_CONTROL_POINT);
+-	local_irq_restore(flags);
+-}
+-
+-/* ALSA code below */
+-static const struct snd_pcm_hardware snd_pcm_aica_playback_hw = {
+-	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
+-	.formats =
+-	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
+-	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
+-	.rates = SNDRV_PCM_RATE_8000_48000,
+-	.rate_min = 8000,
+-	.rate_max = 48000,
+-	.channels_min = 1,
+-	.channels_max = 2,
+-	.buffer_bytes_max = AICA_BUFFER_SIZE,
+-	.period_bytes_min = AICA_PERIOD_SIZE,
+-	.period_bytes_max = AICA_PERIOD_SIZE,
+-	.periods_min = AICA_PERIOD_NUMBER,
+-	.periods_max = AICA_PERIOD_NUMBER,
+-};
+-
+-static int aica_dma_transfer(int channels, int buffer_size,
+-			     struct snd_pcm_substream *substream)
+-{
+-	int q, err, period_offset;
+-	struct snd_card_aica *dreamcastcard;
+-	struct snd_pcm_runtime *runtime;
+-	unsigned long flags;
+-	err = 0;
+-	dreamcastcard = substream->pcm->private_data;
+-	period_offset = dreamcastcard->clicks;
+-	period_offset %= (AICA_PERIOD_NUMBER / channels);
+-	runtime = substream->runtime;
+-	for (q = 0; q < channels; q++) {
+-		local_irq_save(flags);
+-		err = dma_xfer(AICA_DMA_CHANNEL,
+-			       (unsigned long) (runtime->dma_area +
+-						(AICA_BUFFER_SIZE * q) /
+-						channels +
+-						AICA_PERIOD_SIZE *
+-						period_offset),
+-			       AICA_CHANNEL0_OFFSET + q * CHANNEL_OFFSET +
+-			       AICA_PERIOD_SIZE * period_offset,
+-			       buffer_size / channels, AICA_DMA_MODE);
+-		if (unlikely(err < 0)) {
+-			local_irq_restore(flags);
+-			break;
+-		}
+-		dma_wait_for_completion(AICA_DMA_CHANNEL);
+-		local_irq_restore(flags);
+-	}
+-	return err;
+-}
+-
+-static void startup_aica(struct snd_card_aica *dreamcastcard)
+-{
+-	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
+-		    dreamcastcard->channel, sizeof(struct aica_channel));
+-	aica_chn_start();
+-}
+-
+-static void run_spu_dma(struct work_struct *work)
+-{
+-	int buffer_size;
+-	struct snd_pcm_runtime *runtime;
+-	struct snd_card_aica *dreamcastcard;
+-	dreamcastcard =
+-	    container_of(work, struct snd_card_aica, spu_dma_work);
+-	runtime = dreamcastcard->substream->runtime;
+-	if (unlikely(dreamcastcard->dma_check == 0)) {
+-		buffer_size =
+-		    frames_to_bytes(runtime, runtime->buffer_size);
+-		if (runtime->channels > 1)
+-			dreamcastcard->channel->flags |= 0x01;
+-		aica_dma_transfer(runtime->channels, buffer_size,
+-				  dreamcastcard->substream);
+-		startup_aica(dreamcastcard);
+-		dreamcastcard->clicks =
+-		    buffer_size / (AICA_PERIOD_SIZE * runtime->channels);
+-		return;
+-	} else {
+-		aica_dma_transfer(runtime->channels,
+-				  AICA_PERIOD_SIZE * runtime->channels,
+-				  dreamcastcard->substream);
+-		snd_pcm_period_elapsed(dreamcastcard->substream);
+-		dreamcastcard->clicks++;
+-		if (unlikely(dreamcastcard->clicks >= AICA_PERIOD_NUMBER))
+-			dreamcastcard->clicks %= AICA_PERIOD_NUMBER;
+-		mod_timer(&dreamcastcard->timer, jiffies + 1);
+-	}
+-}
+-
+-static void aica_period_elapsed(struct timer_list *t)
+-{
+-	struct snd_card_aica *dreamcastcard = from_timer(dreamcastcard,
+-							      t, timer);
+-	struct snd_pcm_substream *substream = dreamcastcard->substream;
+-	/*timer function - so cannot sleep */
+-	int play_period;
+-	struct snd_pcm_runtime *runtime;
+-	runtime = substream->runtime;
+-	dreamcastcard = substream->pcm->private_data;
+-	/* Have we played out an additional period? */
+-	play_period =
+-	    frames_to_bytes(runtime,
+-			    readl
+-			    (AICA_CONTROL_CHANNEL_SAMPLE_NUMBER)) /
+-	    AICA_PERIOD_SIZE;
+-	if (play_period == dreamcastcard->current_period) {
+-		/* reschedule the timer */
+-		mod_timer(&(dreamcastcard->timer), jiffies + 1);
+-		return;
+-	}
+-	if (runtime->channels > 1)
+-		dreamcastcard->current_period = play_period;
+-	if (unlikely(dreamcastcard->dma_check == 0))
+-		dreamcastcard->dma_check = 1;
+-	schedule_work(&(dreamcastcard->spu_dma_work));
+-}
+-
+-static void spu_begin_dma(struct snd_pcm_substream *substream)
+-{
+-	struct snd_card_aica *dreamcastcard;
+-	struct snd_pcm_runtime *runtime;
+-	runtime = substream->runtime;
+-	dreamcastcard = substream->pcm->private_data;
+-	/*get the queue to do the work */
+-	schedule_work(&(dreamcastcard->spu_dma_work));
+-	mod_timer(&dreamcastcard->timer, jiffies + 4);
+-}
+-
+-static int snd_aicapcm_pcm_open(struct snd_pcm_substream
+-				*substream)
+-{
+-	struct snd_pcm_runtime *runtime;
+-	struct aica_channel *channel;
+-	struct snd_card_aica *dreamcastcard;
+-	if (!enable)
+-		return -ENOENT;
+-	dreamcastcard = substream->pcm->private_data;
+-	channel = kmalloc(sizeof(struct aica_channel), GFP_KERNEL);
+-	if (!channel)
+-		return -ENOMEM;
+-	/* set defaults for channel */
+-	channel->sfmt = SM_8BIT;
+-	channel->cmd = AICA_CMD_START;
+-	channel->vol = dreamcastcard->master_volume;
+-	channel->pan = 0x80;
+-	channel->pos = 0;
+-	channel->flags = 0;	/* default to mono */
+-	dreamcastcard->channel = channel;
+-	runtime = substream->runtime;
+-	runtime->hw = snd_pcm_aica_playback_hw;
+-	spu_enable();
+-	dreamcastcard->clicks = 0;
+-	dreamcastcard->current_period = 0;
+-	dreamcastcard->dma_check = 0;
+-	return 0;
+-}
+-
+-static int snd_aicapcm_pcm_close(struct snd_pcm_substream
+-				 *substream)
+-{
+-	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
+-	flush_work(&(dreamcastcard->spu_dma_work));
+-	del_timer(&dreamcastcard->timer);
+-	dreamcastcard->substream = NULL;
+-	kfree(dreamcastcard->channel);
+-	spu_disable();
+-	return 0;
+-}
+-
+-static int snd_aicapcm_pcm_prepare(struct snd_pcm_substream
+-				   *substream)
+-{
+-	struct snd_card_aica *dreamcastcard = substream->pcm->private_data;
+-	if ((substream->runtime)->format == SNDRV_PCM_FORMAT_S16_LE)
+-		dreamcastcard->channel->sfmt = SM_16BIT;
+-	dreamcastcard->channel->freq = substream->runtime->rate;
+-	dreamcastcard->substream = substream;
+-	return 0;
+-}
+-
+-static int snd_aicapcm_pcm_trigger(struct snd_pcm_substream
+-				   *substream, int cmd)
+-{
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		spu_begin_dma(substream);
+-		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		aica_chn_halt();
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-	return 0;
+-}
+-
+-static unsigned long snd_aicapcm_pcm_pointer(struct snd_pcm_substream
+-					     *substream)
+-{
+-	return readl(AICA_CONTROL_CHANNEL_SAMPLE_NUMBER);
+-}
+-
+-static const struct snd_pcm_ops snd_aicapcm_playback_ops = {
+-	.open = snd_aicapcm_pcm_open,
+-	.close = snd_aicapcm_pcm_close,
+-	.prepare = snd_aicapcm_pcm_prepare,
+-	.trigger = snd_aicapcm_pcm_trigger,
+-	.pointer = snd_aicapcm_pcm_pointer,
+-};
+-
+-/* TO DO: set up to handle more than one pcm instance */
+-static int __init snd_aicapcmchip(struct snd_card_aica
+-				  *dreamcastcard, int pcm_index)
+-{
+-	struct snd_pcm *pcm;
+-	int err;
+-	/* AICA has no capture ability */
+-	err =
+-	    snd_pcm_new(dreamcastcard->card, "AICA PCM", pcm_index, 1, 0,
+-			&pcm);
+-	if (unlikely(err < 0))
+-		return err;
+-	pcm->private_data = dreamcastcard;
+-	strcpy(pcm->name, "AICA PCM");
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+-			&snd_aicapcm_playback_ops);
+-	/* Allocate the DMA buffers */
+-	snd_pcm_set_managed_buffer_all(pcm,
+-				       SNDRV_DMA_TYPE_CONTINUOUS,
+-				       NULL,
+-				       AICA_BUFFER_SIZE,
+-				       AICA_BUFFER_SIZE);
+-	return 0;
+-}
+-
+-/* Mixer controls */
+-#define aica_pcmswitch_info		snd_ctl_boolean_mono_info
+-
+-static int aica_pcmswitch_get(struct snd_kcontrol *kcontrol,
+-			      struct snd_ctl_elem_value *ucontrol)
+-{
+-	ucontrol->value.integer.value[0] = 1;	/* TO DO: Fix me */
+-	return 0;
+-}
+-
+-static int aica_pcmswitch_put(struct snd_kcontrol *kcontrol,
+-			      struct snd_ctl_elem_value *ucontrol)
+-{
+-	if (ucontrol->value.integer.value[0] == 1)
+-		return 0;	/* TO DO: Fix me */
+-	else
+-		aica_chn_halt();
+-	return 0;
+-}
+-
+-static int aica_pcmvolume_info(struct snd_kcontrol *kcontrol,
+-			       struct snd_ctl_elem_info *uinfo)
+-{
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 1;
+-	uinfo->value.integer.min = 0;
+-	uinfo->value.integer.max = 0xFF;
+-	return 0;
+-}
+-
+-static int aica_pcmvolume_get(struct snd_kcontrol *kcontrol,
+-			      struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct snd_card_aica *dreamcastcard;
+-	dreamcastcard = kcontrol->private_data;
+-	if (unlikely(!dreamcastcard->channel))
+-		return -ETXTBSY;	/* we've not yet been set up */
+-	ucontrol->value.integer.value[0] = dreamcastcard->channel->vol;
+-	return 0;
+-}
+-
+-static int aica_pcmvolume_put(struct snd_kcontrol *kcontrol,
+-			      struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct snd_card_aica *dreamcastcard;
+-	unsigned int vol;
+-	dreamcastcard = kcontrol->private_data;
+-	if (unlikely(!dreamcastcard->channel))
+-		return -ETXTBSY;
+-	vol = ucontrol->value.integer.value[0];
+-	if (vol > 0xff)
+-		return -EINVAL;
+-	if (unlikely(dreamcastcard->channel->vol == vol))
+-		return 0;
+-	dreamcastcard->channel->vol = ucontrol->value.integer.value[0];
+-	dreamcastcard->master_volume = ucontrol->value.integer.value[0];
+-	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
+-		    dreamcastcard->channel, sizeof(struct aica_channel));
+-	return 1;
+-}
+-
+-static const struct snd_kcontrol_new snd_aica_pcmswitch_control = {
+-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-	.name = "PCM Playback Switch",
+-	.index = 0,
+-	.info = aica_pcmswitch_info,
+-	.get = aica_pcmswitch_get,
+-	.put = aica_pcmswitch_put
+-};
+-
+-static const struct snd_kcontrol_new snd_aica_pcmvolume_control = {
+-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-	.name = "PCM Playback Volume",
+-	.index = 0,
+-	.info = aica_pcmvolume_info,
+-	.get = aica_pcmvolume_get,
+-	.put = aica_pcmvolume_put
+-};
+-
+-static int load_aica_firmware(void)
+-{
+-	int err;
+-	const struct firmware *fw_entry;
+-	spu_reset();
+-	err = request_firmware(&fw_entry, "aica_firmware.bin", &pd->dev);
+-	if (unlikely(err))
+-		return err;
+-	/* write firmware into memory */
+-	spu_disable();
+-	spu_memload(0, fw_entry->data, fw_entry->size);
+-	spu_enable();
+-	release_firmware(fw_entry);
+-	return err;
+-}
+-
+-static int add_aicamixer_controls(struct snd_card_aica *dreamcastcard)
+-{
+-	int err;
+-	err = snd_ctl_add
+-	    (dreamcastcard->card,
+-	     snd_ctl_new1(&snd_aica_pcmvolume_control, dreamcastcard));
+-	if (unlikely(err < 0))
+-		return err;
+-	err = snd_ctl_add
+-	    (dreamcastcard->card,
+-	     snd_ctl_new1(&snd_aica_pcmswitch_control, dreamcastcard));
+-	if (unlikely(err < 0))
+-		return err;
+-	return 0;
+-}
+-
+-static int snd_aica_remove(struct platform_device *devptr)
+-{
+-	struct snd_card_aica *dreamcastcard;
+-	dreamcastcard = platform_get_drvdata(devptr);
+-	if (unlikely(!dreamcastcard))
+-		return -ENODEV;
+-	snd_card_free(dreamcastcard->card);
+-	kfree(dreamcastcard);
+-	return 0;
+-}
+-
+-static int snd_aica_probe(struct platform_device *devptr)
+-{
+-	int err;
+-	struct snd_card_aica *dreamcastcard;
+-	dreamcastcard = kzalloc(sizeof(struct snd_card_aica), GFP_KERNEL);
+-	if (unlikely(!dreamcastcard))
+-		return -ENOMEM;
+-	err = snd_card_new(&devptr->dev, index, SND_AICA_DRIVER,
+-			   THIS_MODULE, 0, &dreamcastcard->card);
+-	if (unlikely(err < 0)) {
+-		kfree(dreamcastcard);
+-		return err;
+-	}
+-	strcpy(dreamcastcard->card->driver, "snd_aica");
+-	strcpy(dreamcastcard->card->shortname, SND_AICA_DRIVER);
+-	strcpy(dreamcastcard->card->longname,
+-	       "Yamaha AICA Super Intelligent Sound Processor for SEGA Dreamcast");
+-	/* Prepare to use the queue */
+-	INIT_WORK(&(dreamcastcard->spu_dma_work), run_spu_dma);
+-	timer_setup(&dreamcastcard->timer, aica_period_elapsed, 0);
+-	/* Load the PCM 'chip' */
+-	err = snd_aicapcmchip(dreamcastcard, 0);
+-	if (unlikely(err < 0))
+-		goto freedreamcast;
+-	/* Add basic controls */
+-	err = add_aicamixer_controls(dreamcastcard);
+-	if (unlikely(err < 0))
+-		goto freedreamcast;
+-	/* Register the card with ALSA subsystem */
+-	err = snd_card_register(dreamcastcard->card);
+-	if (unlikely(err < 0))
+-		goto freedreamcast;
+-	platform_set_drvdata(devptr, dreamcastcard);
+-	snd_printk
+-	    ("ALSA Driver for Yamaha AICA Super Intelligent Sound Processor\n");
+-	return 0;
+-      freedreamcast:
+-	snd_card_free(dreamcastcard->card);
+-	kfree(dreamcastcard);
+-	return err;
+-}
+-
+-static struct platform_driver snd_aica_driver = {
+-	.probe = snd_aica_probe,
+-	.remove = snd_aica_remove,
+-	.driver = {
+-		.name = SND_AICA_DRIVER,
+-	},
+-};
+-
+-static int __init aica_init(void)
+-{
+-	int err;
+-	err = platform_driver_register(&snd_aica_driver);
+-	if (unlikely(err < 0))
+-		return err;
+-	pd = platform_device_register_simple(SND_AICA_DRIVER, -1,
+-					     aica_memory_space, 2);
+-	if (IS_ERR(pd)) {
+-		platform_driver_unregister(&snd_aica_driver);
+-		return PTR_ERR(pd);
+-	}
+-	/* Load the firmware */
+-	return load_aica_firmware();
+-}
+-
+-static void __exit aica_exit(void)
+-{
+-	platform_device_unregister(pd);
+-	platform_driver_unregister(&snd_aica_driver);
+-	/* Kill any sound still playing and reset ARM7 to safe state */
+-	spu_reset();
+-}
+-
+-module_init(aica_init);
+-module_exit(aica_exit);
+diff --git a/sound/sh/aica.h b/sound/sh/aica.h
+deleted file mode 100644
+index 021b132e088e82..00000000000000
+--- a/sound/sh/aica.h
++++ /dev/null
+@@ -1,68 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/* aica.h
+- * Header file for ALSA driver for
+- * Sega Dreamcast Yamaha AICA sound
+- * Copyright Adrian McMenamin
+- * <adrian@mcmen.demon.co.uk>
+- * 2006
+- */
+-
+-/* SPU memory and register constants etc */
+-#define G2_FIFO 0xa05f688c
+-#define SPU_MEMORY_BASE 0xA0800000
+-#define ARM_RESET_REGISTER 0xA0702C00
+-#define SPU_REGISTER_BASE 0xA0700000
+-
+-/* AICA channels stuff */
+-#define AICA_CONTROL_POINT 0xA0810000
+-#define AICA_CONTROL_CHANNEL_SAMPLE_NUMBER 0xA0810008
+-#define AICA_CHANNEL0_CONTROL_OFFSET 0x10004
+-
+-/* Command values */
+-#define AICA_CMD_KICK 0x80000000
+-#define AICA_CMD_NONE 0
+-#define AICA_CMD_START 1
+-#define AICA_CMD_STOP 2
+-#define AICA_CMD_VOL 3
+-
+-/* Sound modes */
+-#define SM_8BIT		1
+-#define SM_16BIT	0
+-#define SM_ADPCM	2
+-
+-/* Buffer and period size */
+-#define AICA_BUFFER_SIZE 0x8000
+-#define AICA_PERIOD_SIZE 0x800
+-#define AICA_PERIOD_NUMBER 16
+-
+-#define AICA_CHANNEL0_OFFSET 0x11000
+-#define AICA_CHANNEL1_OFFSET 0x21000
+-#define CHANNEL_OFFSET 0x10000
+-
+-#define AICA_DMA_CHANNEL 5
+-#define AICA_DMA_MODE 5
+-
+-#define SND_AICA_DRIVER "AICA"
+-
+-struct aica_channel {
+-	uint32_t cmd;		/* Command ID           */
+-	uint32_t pos;		/* Sample position      */
+-	uint32_t length;	/* Sample length        */
+-	uint32_t freq;		/* Frequency            */
+-	uint32_t vol;		/* Volume 0-255         */
+-	uint32_t pan;		/* Pan 0-255            */
+-	uint32_t sfmt;		/* Sound format         */
+-	uint32_t flags;		/* Bit flags            */
+-};
+-
+-struct snd_card_aica {
+-	struct work_struct spu_dma_work;
+-	struct snd_card *card;
+-	struct aica_channel *channel;
+-	struct snd_pcm_substream *substream;
+-	int clicks;
+-	int current_period;
+-	struct timer_list timer;
+-	int master_volume;
+-	int dma_check;
+-};
+diff --git a/sound/sh/sh_dac_audio.c b/sound/sh/sh_dac_audio.c
+deleted file mode 100644
+index 8ebd972846acb5..00000000000000
+--- a/sound/sh/sh_dac_audio.c
++++ /dev/null
+@@ -1,412 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * sh_dac_audio.c - SuperH DAC audio driver for ALSA
+- *
+- * Copyright (c) 2009 by Rafael Ignacio Zurita <rizurita@yahoo.com>
+- *
+- * Based on sh_dac_audio.c (Copyright (C) 2004, 2005 by Andriy Skulysh)
+- */
+-
+-#include <linux/hrtimer.h>
+-#include <linux/interrupt.h>
+-#include <linux/io.h>
+-#include <linux/platform_device.h>
+-#include <linux/slab.h>
+-#include <linux/module.h>
+-#include <sound/core.h>
+-#include <sound/initval.h>
+-#include <sound/pcm.h>
+-#include <sound/sh_dac_audio.h>
+-#include <asm/clock.h>
+-#include <asm/hd64461.h>
+-#include <mach/hp6xx.h>
+-#include <cpu/dac.h>
+-
+-MODULE_AUTHOR("Rafael Ignacio Zurita <rizurita@yahoo.com>");
+-MODULE_DESCRIPTION("SuperH DAC audio driver");
+-MODULE_LICENSE("GPL");
+-
+-/* Module Parameters */
+-static int index = SNDRV_DEFAULT_IDX1;
+-static char *id = SNDRV_DEFAULT_STR1;
+-module_param(index, int, 0444);
+-MODULE_PARM_DESC(index, "Index value for SuperH DAC audio.");
+-module_param(id, charp, 0444);
+-MODULE_PARM_DESC(id, "ID string for SuperH DAC audio.");
+-
+-/* main struct */
+-struct snd_sh_dac {
+-	struct snd_card *card;
+-	struct snd_pcm_substream *substream;
+-	struct hrtimer hrtimer;
+-	ktime_t wakeups_per_second;
+-
+-	int rate;
+-	int empty;
+-	char *data_buffer, *buffer_begin, *buffer_end;
+-	int processed; /* bytes proccesed, to compare with period_size */
+-	int buffer_size;
+-	struct dac_audio_pdata *pdata;
+-};
+-
+-
+-static void dac_audio_start_timer(struct snd_sh_dac *chip)
+-{
+-	hrtimer_start(&chip->hrtimer, chip->wakeups_per_second,
+-		      HRTIMER_MODE_REL);
+-}
+-
+-static void dac_audio_stop_timer(struct snd_sh_dac *chip)
+-{
+-	hrtimer_cancel(&chip->hrtimer);
+-}
+-
+-static void dac_audio_reset(struct snd_sh_dac *chip)
+-{
+-	dac_audio_stop_timer(chip);
+-	chip->buffer_begin = chip->buffer_end = chip->data_buffer;
+-	chip->processed = 0;
+-	chip->empty = 1;
+-}
+-
+-static void dac_audio_set_rate(struct snd_sh_dac *chip)
+-{
+-	chip->wakeups_per_second = 1000000000 / chip->rate;
+-}
+-
+-
+-/* PCM INTERFACE */
+-
+-static const struct snd_pcm_hardware snd_sh_dac_pcm_hw = {
+-	.info			= (SNDRV_PCM_INFO_MMAP |
+-					SNDRV_PCM_INFO_MMAP_VALID |
+-					SNDRV_PCM_INFO_INTERLEAVED |
+-					SNDRV_PCM_INFO_HALF_DUPLEX),
+-	.formats		= SNDRV_PCM_FMTBIT_U8,
+-	.rates			= SNDRV_PCM_RATE_8000,
+-	.rate_min		= 8000,
+-	.rate_max		= 8000,
+-	.channels_min		= 1,
+-	.channels_max		= 1,
+-	.buffer_bytes_max	= (48*1024),
+-	.period_bytes_min	= 1,
+-	.period_bytes_max	= (48*1024),
+-	.periods_min		= 1,
+-	.periods_max		= 1024,
+-};
+-
+-static int snd_sh_dac_pcm_open(struct snd_pcm_substream *substream)
+-{
+-	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-	runtime->hw = snd_sh_dac_pcm_hw;
+-
+-	chip->substream = substream;
+-	chip->buffer_begin = chip->buffer_end = chip->data_buffer;
+-	chip->processed = 0;
+-	chip->empty = 1;
+-
+-	chip->pdata->start(chip->pdata);
+-
+-	return 0;
+-}
+-
+-static int snd_sh_dac_pcm_close(struct snd_pcm_substream *substream)
+-{
+-	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
+-
+-	chip->substream = NULL;
+-
+-	dac_audio_stop_timer(chip);
+-	chip->pdata->stop(chip->pdata);
+-
+-	return 0;
+-}
+-
+-static int snd_sh_dac_pcm_prepare(struct snd_pcm_substream *substream)
+-{
+-	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
+-	struct snd_pcm_runtime *runtime = chip->substream->runtime;
+-
+-	chip->buffer_size = runtime->buffer_size;
+-	memset(chip->data_buffer, 0, chip->pdata->buffer_size);
+-
+-	return 0;
+-}
+-
+-static int snd_sh_dac_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+-{
+-	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
+-
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		dac_audio_start_timer(chip);
+-		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		chip->buffer_begin = chip->buffer_end = chip->data_buffer;
+-		chip->processed = 0;
+-		chip->empty = 1;
+-		dac_audio_stop_timer(chip);
+-		break;
+-	default:
+-		 return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-
+-static int snd_sh_dac_pcm_copy(struct snd_pcm_substream *substream,
+-			       int channel, unsigned long pos,
+-			       void __user *src, unsigned long count)
+-{
+-	/* channel is not used (interleaved data) */
+-	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
+-
+-	if (copy_from_user_toio(chip->data_buffer + pos, src, count))
+-		return -EFAULT;
+-	chip->buffer_end = chip->data_buffer + pos + count;
+-
+-	if (chip->empty) {
+-		chip->empty = 0;
+-		dac_audio_start_timer(chip);
+-	}
+-
+-	return 0;
+-}
+-
+-static int snd_sh_dac_pcm_copy_kernel(struct snd_pcm_substream *substream,
+-				      int channel, unsigned long pos,
+-				      void *src, unsigned long count)
+-{
+-	/* channel is not used (interleaved data) */
+-	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
+-
+-	memcpy_toio(chip->data_buffer + pos, src, count);
+-	chip->buffer_end = chip->data_buffer + pos + count;
+-
+-	if (chip->empty) {
+-		chip->empty = 0;
+-		dac_audio_start_timer(chip);
+-	}
+-
+-	return 0;
+-}
+-
+-static int snd_sh_dac_pcm_silence(struct snd_pcm_substream *substream,
+-				  int channel, unsigned long pos,
+-				  unsigned long count)
+-{
+-	/* channel is not used (interleaved data) */
+-	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
+-
+-	memset_io(chip->data_buffer + pos, 0, count);
+-	chip->buffer_end = chip->data_buffer + pos + count;
+-
+-	if (chip->empty) {
+-		chip->empty = 0;
+-		dac_audio_start_timer(chip);
+-	}
+-
+-	return 0;
+-}
+-
+-static
+-snd_pcm_uframes_t snd_sh_dac_pcm_pointer(struct snd_pcm_substream *substream)
+-{
+-	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
+-	int pointer = chip->buffer_begin - chip->data_buffer;
+-
+-	return pointer;
+-}
+-
+-/* pcm ops */
+-static const struct snd_pcm_ops snd_sh_dac_pcm_ops = {
+-	.open		= snd_sh_dac_pcm_open,
+-	.close		= snd_sh_dac_pcm_close,
+-	.prepare	= snd_sh_dac_pcm_prepare,
+-	.trigger	= snd_sh_dac_pcm_trigger,
+-	.pointer	= snd_sh_dac_pcm_pointer,
+-	.copy_user	= snd_sh_dac_pcm_copy,
+-	.copy_kernel	= snd_sh_dac_pcm_copy_kernel,
+-	.fill_silence	= snd_sh_dac_pcm_silence,
+-	.mmap		= snd_pcm_lib_mmap_iomem,
+-};
+-
+-static int snd_sh_dac_pcm(struct snd_sh_dac *chip, int device)
+-{
+-	int err;
+-	struct snd_pcm *pcm;
+-
+-	/* device should be always 0 for us */
+-	err = snd_pcm_new(chip->card, "SH_DAC PCM", device, 1, 0, &pcm);
+-	if (err < 0)
+-		return err;
+-
+-	pcm->private_data = chip;
+-	strcpy(pcm->name, "SH_DAC PCM");
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sh_dac_pcm_ops);
+-
+-	/* buffer size=48K */
+-	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+-				       NULL, 48 * 1024, 48 * 1024);
+-
+-	return 0;
+-}
+-/* END OF PCM INTERFACE */
+-
+-
+-/* driver .remove  --  destructor */
+-static int snd_sh_dac_remove(struct platform_device *devptr)
+-{
+-	snd_card_free(platform_get_drvdata(devptr));
+-	return 0;
+-}
+-
+-/* free -- it has been defined by create */
+-static int snd_sh_dac_free(struct snd_sh_dac *chip)
+-{
+-	/* release the data */
+-	kfree(chip->data_buffer);
+-	kfree(chip);
+-
+-	return 0;
+-}
+-
+-static int snd_sh_dac_dev_free(struct snd_device *device)
+-{
+-	struct snd_sh_dac *chip = device->device_data;
+-
+-	return snd_sh_dac_free(chip);
+-}
+-
+-static enum hrtimer_restart sh_dac_audio_timer(struct hrtimer *handle)
+-{
+-	struct snd_sh_dac *chip = container_of(handle, struct snd_sh_dac,
+-					       hrtimer);
+-	struct snd_pcm_runtime *runtime = chip->substream->runtime;
+-	ssize_t b_ps = frames_to_bytes(runtime, runtime->period_size);
+-
+-	if (!chip->empty) {
+-		sh_dac_output(*chip->buffer_begin, chip->pdata->channel);
+-		chip->buffer_begin++;
+-
+-		chip->processed++;
+-		if (chip->processed >= b_ps) {
+-			chip->processed -= b_ps;
+-			snd_pcm_period_elapsed(chip->substream);
+-		}
+-
+-		if (chip->buffer_begin == (chip->data_buffer +
+-					   chip->buffer_size - 1))
+-			chip->buffer_begin = chip->data_buffer;
+-
+-		if (chip->buffer_begin == chip->buffer_end)
+-			chip->empty = 1;
+-
+-	}
+-
+-	if (!chip->empty)
+-		hrtimer_start(&chip->hrtimer, chip->wakeups_per_second,
+-			      HRTIMER_MODE_REL);
+-
+-	return HRTIMER_NORESTART;
+-}
+-
+-/* create  --  chip-specific constructor for the cards components */
+-static int snd_sh_dac_create(struct snd_card *card,
+-			     struct platform_device *devptr,
+-			     struct snd_sh_dac **rchip)
+-{
+-	struct snd_sh_dac *chip;
+-	int err;
+-
+-	static const struct snd_device_ops ops = {
+-		   .dev_free = snd_sh_dac_dev_free,
+-	};
+-
+-	*rchip = NULL;
+-
+-	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (chip == NULL)
+-		return -ENOMEM;
+-
+-	chip->card = card;
+-
+-	hrtimer_init(&chip->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+-	chip->hrtimer.function = sh_dac_audio_timer;
+-
+-	dac_audio_reset(chip);
+-	chip->rate = 8000;
+-	dac_audio_set_rate(chip);
+-
+-	chip->pdata = devptr->dev.platform_data;
+-
+-	chip->data_buffer = kmalloc(chip->pdata->buffer_size, GFP_KERNEL);
+-	if (chip->data_buffer == NULL) {
+-		kfree(chip);
+-		return -ENOMEM;
+-	}
+-
+-	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+-	if (err < 0) {
+-		snd_sh_dac_free(chip);
+-		return err;
+-	}
+-
+-	*rchip = chip;
+-
+-	return 0;
+-}
+-
+-/* driver .probe  --  constructor */
+-static int snd_sh_dac_probe(struct platform_device *devptr)
+-{
+-	struct snd_sh_dac *chip;
+-	struct snd_card *card;
+-	int err;
+-
+-	err = snd_card_new(&devptr->dev, index, id, THIS_MODULE, 0, &card);
+-	if (err < 0) {
+-			snd_printk(KERN_ERR "cannot allocate the card\n");
+-			return err;
+-	}
+-
+-	err = snd_sh_dac_create(card, devptr, &chip);
+-	if (err < 0)
+-		goto probe_error;
+-
+-	err = snd_sh_dac_pcm(chip, 0);
+-	if (err < 0)
+-		goto probe_error;
+-
+-	strcpy(card->driver, "snd_sh_dac");
+-	strcpy(card->shortname, "SuperH DAC audio driver");
+-	printk(KERN_INFO "%s %s", card->longname, card->shortname);
+-
+-	err = snd_card_register(card);
+-	if (err < 0)
+-		goto probe_error;
+-
+-	snd_printk(KERN_INFO "ALSA driver for SuperH DAC audio");
+-
+-	platform_set_drvdata(devptr, card);
+-	return 0;
+-
+-probe_error:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-/*
+- * "driver" definition
+- */
+-static struct platform_driver sh_dac_driver = {
+-	.probe	= snd_sh_dac_probe,
+-	.remove = snd_sh_dac_remove,
+-	.driver = {
+-		.name = "dac_audio",
+-	},
+-};
+-
+-module_platform_driver(sh_dac_driver);
+-- 
+2.39.0
 
-Diffstat:
- Documentation/sh/booting.rst                             |   12 
- Documentation/sh/features.rst                            |    3 
- Documentation/sh/index.rst                               |   56 
- Documentation/sh/new-machine.rst                         |  277 -
- Documentation/sh/register-banks.rst                      |   40 
- arch/sh/Kbuild                                           |    7 
- arch/sh/Kconfig                                          |  793 ----
- arch/sh/Kconfig.cpu                                      |  100 
- arch/sh/Kconfig.debug                                    |   78 
- arch/sh/Makefile                                         |  215 -
- arch/sh/boards/Kconfig                                   |  400 --
- arch/sh/boards/Makefile                                  |   20 
- arch/sh/boards/board-apsh4a3a.c                          |  182 
- arch/sh/boards/board-apsh4ad0a.c                         |  132 
- arch/sh/boards/board-edosk7705.c                         |   79 
- arch/sh/boards/board-edosk7760.c                         |  178 
- arch/sh/boards/board-espt.c                              |  105 
- arch/sh/boards/board-magicpanelr2.c                      |  390 --
- arch/sh/boards/board-polaris.c                           |  156 
- arch/sh/boards/board-secureedge5410.c                    |   75 
- arch/sh/boards/board-sh2007.c                            |  146 
- arch/sh/boards/board-sh7757lcr.c                         |  604 ---
- arch/sh/boards/board-sh7785lcr.c                         |  384 --
- arch/sh/boards/board-shmin.c                             |   35 
- arch/sh/boards/board-titan.c                             |   21 
- arch/sh/boards/board-urquell.c                           |  218 -
- arch/sh/boards/mach-ap325rxa/Makefile                    |    3 
- arch/sh/boards/mach-ap325rxa/sdram.S                     |   66 
- arch/sh/boards/mach-ap325rxa/setup.c                     |  573 ---
- arch/sh/boards/mach-dreamcast/Makefile                   |    7 
- arch/sh/boards/mach-dreamcast/irq.c                      |  155 
- arch/sh/boards/mach-dreamcast/rtc.c                      |   96 
- arch/sh/boards/mach-dreamcast/setup.c                    |   39 
- arch/sh/boards/mach-ecovec24/Makefile                    |   10 
- arch/sh/boards/mach-ecovec24/sdram.S                     |  108 
- arch/sh/boards/mach-ecovec24/setup.c                     | 1521 --------
- arch/sh/boards/mach-highlander/Kconfig                   |   26 
- arch/sh/boards/mach-highlander/Makefile                  |   12 
- arch/sh/boards/mach-highlander/irq-r7780mp.c             |   71 
- arch/sh/boards/mach-highlander/irq-r7780rp.c             |   64 
- arch/sh/boards/mach-highlander/irq-r7785rp.c             |   83 
- arch/sh/boards/mach-highlander/pinmux-r7785rp.c          |   17 
- arch/sh/boards/mach-highlander/psw.c                     |  119 
- arch/sh/boards/mach-highlander/setup.c                   |  416 --
- arch/sh/boards/mach-hp6xx/Makefile                       |    8 
- arch/sh/boards/mach-hp6xx/hp6xx_apm.c                    |  109 
- arch/sh/boards/mach-hp6xx/pm.c                           |  156 
- arch/sh/boards/mach-hp6xx/pm_wakeup.S                    |   39 
- arch/sh/boards/mach-hp6xx/setup.c                        |  172 
- arch/sh/boards/mach-kfr2r09/Makefile                     |    5 
- arch/sh/boards/mach-kfr2r09/lcd_wqvga.c                  |  275 -
- arch/sh/boards/mach-kfr2r09/sdram.S                      |   77 
- arch/sh/boards/mach-kfr2r09/setup.c                      |  649 ---
- arch/sh/boards/mach-landisk/Makefile                     |    6 
- arch/sh/boards/mach-landisk/gio.c                        |  164 
- arch/sh/boards/mach-landisk/irq.c                        |   63 
- arch/sh/boards/mach-landisk/psw.c                        |  140 
- arch/sh/boards/mach-landisk/setup.c                      |  102 
- arch/sh/boards/mach-lboxre2/Makefile                     |    6 
- arch/sh/boards/mach-lboxre2/irq.c                        |   27 
- arch/sh/boards/mach-lboxre2/setup.c                      |   79 
- arch/sh/boards/mach-microdev/Makefile                    |    6 
- arch/sh/boards/mach-microdev/fdc37c93xapm.c              |  157 
- arch/sh/boards/mach-microdev/io.c                        |  123 
- arch/sh/boards/mach-microdev/irq.c                       |  150 
- arch/sh/boards/mach-microdev/setup.c                     |  197 -
- arch/sh/boards/mach-migor/Kconfig                        |   16 
- arch/sh/boards/mach-migor/Makefile                       |    3 
- arch/sh/boards/mach-migor/lcd_qvga.c                     |  163 
- arch/sh/boards/mach-migor/sdram.S                        |   66 
- arch/sh/boards/mach-migor/setup.c                        |  649 ---
- arch/sh/boards/mach-r2d/Kconfig                          |   24 
- arch/sh/boards/mach-r2d/Makefile                         |    6 
- arch/sh/boards/mach-r2d/irq.c                            |  156 
- arch/sh/boards/mach-r2d/setup.c                          |  305 -
- arch/sh/boards/mach-rsk/Kconfig                          |   29 
- arch/sh/boards/mach-rsk/Makefile                         |    5 
- arch/sh/boards/mach-rsk/devices-rsk7203.c                |  137 
- arch/sh/boards/mach-rsk/devices-rsk7264.c                |   55 
- arch/sh/boards/mach-rsk/devices-rsk7269.c                |   57 
- arch/sh/boards/mach-rsk/setup.c                          |   84 
- arch/sh/boards/mach-sdk7780/Kconfig                      |   17 
- arch/sh/boards/mach-sdk7780/Makefile                     |    6 
- arch/sh/boards/mach-sdk7780/irq.c                        |   43 
- arch/sh/boards/mach-sdk7780/setup.c                      |   96 
- arch/sh/boards/mach-sdk7786/Makefile                     |    5 
- arch/sh/boards/mach-sdk7786/fpga.c                       |   69 
- arch/sh/boards/mach-sdk7786/gpio.c                       |   46 
- arch/sh/boards/mach-sdk7786/irq.c                        |   45 
- arch/sh/boards/mach-sdk7786/nmi.c                        |   80 
- arch/sh/boards/mach-sdk7786/setup.c                      |  266 -
- arch/sh/boards/mach-sdk7786/sram.c                       |   69 
- arch/sh/boards/mach-se/7206/Makefile                     |    6 
- arch/sh/boards/mach-se/7206/irq.c                        |  151 
- arch/sh/boards/mach-se/7206/setup.c                      |   96 
- arch/sh/boards/mach-se/7343/Makefile                     |    6 
- arch/sh/boards/mach-se/7343/irq.c                        |  123 
- arch/sh/boards/mach-se/7343/setup.c                      |  182 
- arch/sh/boards/mach-se/770x/Makefile                     |    6 
- arch/sh/boards/mach-se/770x/irq.c                        |  109 
- arch/sh/boards/mach-se/770x/setup.c                      |  205 -
- arch/sh/boards/mach-se/7721/Makefile                     |    2 
- arch/sh/boards/mach-se/7721/irq.c                        |   42 
- arch/sh/boards/mach-se/7721/setup.c                      |   92 
- arch/sh/boards/mach-se/7722/Makefile                     |   11 
- arch/sh/boards/mach-se/7722/irq.c                        |  116 
- arch/sh/boards/mach-se/7722/setup.c                      |  190 
- arch/sh/boards/mach-se/7724/Makefile                     |   11 
- arch/sh/boards/mach-se/7724/irq.c                        |  143 
- arch/sh/boards/mach-se/7724/sdram.S                      |  128 
- arch/sh/boards/mach-se/7724/setup.c                      |  986 -----
- arch/sh/boards/mach-se/7751/Makefile                     |    6 
- arch/sh/boards/mach-se/7751/irq.c                        |   51 
- arch/sh/boards/mach-se/7751/setup.c                      |   60 
- arch/sh/boards/mach-se/7780/Makefile                     |   11 
- arch/sh/boards/mach-se/7780/irq.c                        |   65 
- arch/sh/boards/mach-se/7780/setup.c                      |  111 
- arch/sh/boards/mach-se/Makefile                          |   11 
- arch/sh/boards/mach-se/board-se7619.c                    |   27 
- arch/sh/boards/mach-sh03/Makefile                        |    7 
- arch/sh/boards/mach-sh03/rtc.c                           |  143 
- arch/sh/boards/mach-sh03/setup.c                         |   97 
- arch/sh/boards/mach-sh7763rdp/Makefile                   |    2 
- arch/sh/boards/mach-sh7763rdp/irq.c                      |   42 
- arch/sh/boards/mach-sh7763rdp/setup.c                    |  213 -
- arch/sh/boards/mach-x3proto/Makefile                     |    4 
- arch/sh/boards/mach-x3proto/gpio.c                       |  136 
- arch/sh/boards/mach-x3proto/ilsel.c                      |  156 
- arch/sh/boards/mach-x3proto/setup.c                      |  270 -
- arch/sh/boards/of-generic.c                              |  172 
- arch/sh/boot/.gitignore                                  |    5 
- arch/sh/boot/Makefile                                    |  115 
- arch/sh/boot/compressed/.gitignore                       |    2 
- arch/sh/boot/compressed/Makefile                         |   66 
- arch/sh/boot/compressed/ashiftrt.S                       |    2 
- arch/sh/boot/compressed/ashldi3.c                        |    2 
- arch/sh/boot/compressed/ashlsi3.S                        |    2 
- arch/sh/boot/compressed/ashrsi3.S                        |    2 
- arch/sh/boot/compressed/cache.c                          |   13 
- arch/sh/boot/compressed/head_32.S                        |  126 
- arch/sh/boot/compressed/head_64.S                        |  159 
- arch/sh/boot/compressed/lshrsi3.S                        |    2 
- arch/sh/boot/compressed/misc.c                           |  146 
- arch/sh/boot/compressed/vmlinux.scr                      |   10 
- arch/sh/boot/dts/Makefile                                |    2 
- arch/sh/boot/dts/j2_mimas_v2.dts                         |   99 
- arch/sh/boot/romimage/Makefile                           |   30 
- arch/sh/boot/romimage/head.S                             |   85 
- arch/sh/boot/romimage/mmcif-sh7724.c                     |   78 
- arch/sh/boot/romimage/vmlinux.scr                        |    8 
- arch/sh/cchips/Kconfig                                   |   46 
- arch/sh/cchips/hd6446x/Makefile                          |    4 
- arch/sh/cchips/hd6446x/hd64461.c                         |  112 
- arch/sh/configs/ap325rxa_defconfig                       |  103 
- arch/sh/configs/apsh4a3a_defconfig                       |   91 
- arch/sh/configs/apsh4ad0a_defconfig                      |  122 
- arch/sh/configs/dreamcast_defconfig                      |   72 
- arch/sh/configs/ecovec24-romimage_defconfig              |   58 
- arch/sh/configs/ecovec24_defconfig                       |  132 
- arch/sh/configs/edosk7705_defconfig                      |   35 
- arch/sh/configs/edosk7760_defconfig                      |  114 
- arch/sh/configs/espt_defconfig                           |  114 
- arch/sh/configs/hp6xx_defconfig                          |   60 
- arch/sh/configs/j2_defconfig                             |   42 
- arch/sh/configs/kfr2r09-romimage_defconfig               |   53 
- arch/sh/configs/kfr2r09_defconfig                        |   84 
- arch/sh/configs/landisk_defconfig                        |  115 
- arch/sh/configs/lboxre2_defconfig                        |   62 
- arch/sh/configs/magicpanelr2_defconfig                   |   90 
- arch/sh/configs/microdev_defconfig                       |   43 
- arch/sh/configs/migor_defconfig                          |   94 
- arch/sh/configs/polaris_defconfig                        |   83 
- arch/sh/configs/r7780mp_defconfig                        |  109 
- arch/sh/configs/r7785rp_defconfig                        |  107 
- arch/sh/configs/rsk7201_defconfig                        |   63 
- arch/sh/configs/rsk7203_defconfig                        |  121 
- arch/sh/configs/rsk7264_defconfig                        |   71 
- arch/sh/configs/rsk7269_defconfig                        |   56 
- arch/sh/configs/rts7751r2d1_defconfig                    |   91 
- arch/sh/configs/rts7751r2dplus_defconfig                 |   96 
- arch/sh/configs/sdk7780_defconfig                        |  139 
- arch/sh/configs/sdk7786_defconfig                        |  217 -
- arch/sh/configs/se7206_defconfig                         |  108 
- arch/sh/configs/se7343_defconfig                         |   96 
- arch/sh/configs/se7619_defconfig                         |   43 
- arch/sh/configs/se7705_defconfig                         |   54 
- arch/sh/configs/se7712_defconfig                         |  101 
- arch/sh/configs/se7721_defconfig                         |  127 
- arch/sh/configs/se7722_defconfig                         |   56 
- arch/sh/configs/se7724_defconfig                         |  132 
- arch/sh/configs/se7750_defconfig                         |   55 
- arch/sh/configs/se7751_defconfig                         |   46 
- arch/sh/configs/se7780_defconfig                         |  106 
- arch/sh/configs/secureedge5410_defconfig                 |   53 
- arch/sh/configs/sh03_defconfig                           |  126 
- arch/sh/configs/sh2007_defconfig                         |  199 -
- arch/sh/configs/sh7710voipgw_defconfig                   |   55 
- arch/sh/configs/sh7724_generic_defconfig                 |   41 
- arch/sh/configs/sh7757lcr_defconfig                      |   85 
- arch/sh/configs/sh7763rdp_defconfig                      |  116 
- arch/sh/configs/sh7770_generic_defconfig                 |   43 
- arch/sh/configs/sh7785lcr_32bit_defconfig                |  149 
- arch/sh/configs/sh7785lcr_defconfig                      |  117 
- arch/sh/configs/shmin_defconfig                          |   52 
- arch/sh/configs/shx3_defconfig                           |  103 
- arch/sh/configs/titan_defconfig                          |  272 -
- arch/sh/configs/ul2_defconfig                            |   84 
- arch/sh/configs/urquell_defconfig                        |  147 
- arch/sh/drivers/Kconfig                                  |   20 
- arch/sh/drivers/Makefile                                 |   11 
- arch/sh/drivers/dma/Kconfig                              |   74 
- arch/sh/drivers/dma/Makefile                             |    9 
- arch/sh/drivers/dma/dma-api.c                            |  417 --
- arch/sh/drivers/dma/dma-g2.c                             |  197 -
- arch/sh/drivers/dma/dma-pvr2.c                           |  102 
- arch/sh/drivers/dma/dma-sh.c                             |  414 --
- arch/sh/drivers/dma/dma-sysfs.c                          |  164 
- arch/sh/drivers/dma/dmabrg.c                             |  196 -
- arch/sh/drivers/heartbeat.c                              |  152 
- arch/sh/drivers/pci/Makefile                             |   27 
- arch/sh/drivers/pci/common.c                             |  159 
- arch/sh/drivers/pci/fixups-dreamcast.c                   |   84 
- arch/sh/drivers/pci/fixups-landisk.c                     |   57 
- arch/sh/drivers/pci/fixups-r7780rp.c                     |   18 
- arch/sh/drivers/pci/fixups-rts7751r2d.c                  |   64 
- arch/sh/drivers/pci/fixups-sdk7780.c                     |   40 
- arch/sh/drivers/pci/fixups-sdk7786.c                     |   64 
- arch/sh/drivers/pci/fixups-se7751.c                      |  113 
- arch/sh/drivers/pci/fixups-sh03.c                        |   33 
- arch/sh/drivers/pci/fixups-snapgear.c                    |   37 
- arch/sh/drivers/pci/fixups-titan.c                       |   36 
- arch/sh/drivers/pci/ops-dreamcast.c                      |   79 
- arch/sh/drivers/pci/ops-sh4.c                            |  105 
- arch/sh/drivers/pci/ops-sh7786.c                         |  168 
- arch/sh/drivers/pci/pci-dreamcast.c                      |   97 
- arch/sh/drivers/pci/pci-sh4.h                            |  182 
- arch/sh/drivers/pci/pci-sh7751.c                         |  179 
- arch/sh/drivers/pci/pci-sh7751.h                         |  126 
- arch/sh/drivers/pci/pci-sh7780.c                         |  407 --
- arch/sh/drivers/pci/pci-sh7780.h                         |   43 
- arch/sh/drivers/pci/pci.c                                |  298 -
- arch/sh/drivers/pci/pcie-sh7786.c                        |  609 ---
- arch/sh/drivers/pci/pcie-sh7786.h                        |  577 ---
- arch/sh/drivers/platform_early.c                         |  340 -
- arch/sh/drivers/push-switch.c                            |  136 
- arch/sh/drivers/superhyway/Makefile                      |    7 
- arch/sh/drivers/superhyway/ops-sh4-202.c                 |  168 
- arch/sh/include/asm/Kbuild                               |    5 
- arch/sh/include/asm/adc.h                                |   12 
- arch/sh/include/asm/addrspace.h                          |   63 
- arch/sh/include/asm/alignment.h                          |   22 
- arch/sh/include/asm/asm-offsets.h                        |    2 
- arch/sh/include/asm/atomic-grb.h                         |   86 
- arch/sh/include/asm/atomic-irq.h                         |   72 
- arch/sh/include/asm/atomic-llsc.h                        |   88 
- arch/sh/include/asm/atomic.h                             |   38 
- arch/sh/include/asm/barrier.h                            |   45 
- arch/sh/include/asm/bitops-cas.h                         |   94 
- arch/sh/include/asm/bitops-grb.h                         |  173 
- arch/sh/include/asm/bitops-llsc.h                        |  147 
- arch/sh/include/asm/bitops-op32.h                        |  143 
- arch/sh/include/asm/bitops.h                             |   72 
- arch/sh/include/asm/bl_bit.h                             |    2 
- arch/sh/include/asm/bl_bit_32.h                          |   34 
- arch/sh/include/asm/bug.h                                |  121 
- arch/sh/include/asm/bugs.h                               |   74 
- arch/sh/include/asm/cache.h                              |   46 
- arch/sh/include/asm/cache_insns.h                        |    2 
- arch/sh/include/asm/cache_insns_32.h                     |   22 
- arch/sh/include/asm/cacheflush.h                         |  106 
- arch/sh/include/asm/checksum.h                           |    2 
- arch/sh/include/asm/checksum_32.h                        |  203 -
- arch/sh/include/asm/clock.h                              |   17 
- arch/sh/include/asm/cmpxchg-cas.h                        |   25 
- arch/sh/include/asm/cmpxchg-grb.h                        |   95 
- arch/sh/include/asm/cmpxchg-irq.h                        |   54 
- arch/sh/include/asm/cmpxchg-llsc.h                       |   53 
- arch/sh/include/asm/cmpxchg-xchg.h                       |   50 
- arch/sh/include/asm/cmpxchg.h                            |   74 
- arch/sh/include/asm/device.h                             |   17 
- arch/sh/include/asm/dma-register.h                       |   50 
- arch/sh/include/asm/dma.h                                |  140 
- arch/sh/include/asm/dmabrg.h                             |   24 
- arch/sh/include/asm/dwarf.h                              |  417 --
- arch/sh/include/asm/elf.h                                |  211 -
- arch/sh/include/asm/entry-macros.S                       |  123 
- arch/sh/include/asm/extable.h                            |    7 
- arch/sh/include/asm/fb.h                                 |   20 
- arch/sh/include/asm/fixmap.h                             |   86 
- arch/sh/include/asm/flat.h                               |   33 
- arch/sh/include/asm/fpu.h                                |   69 
- arch/sh/include/asm/freq.h                               |   12 
- arch/sh/include/asm/ftrace.h                             |   48 
- arch/sh/include/asm/futex-cas.h                          |   35 
- arch/sh/include/asm/futex-irq.h                          |   25 
- arch/sh/include/asm/futex-llsc.h                         |   42 
- arch/sh/include/asm/futex.h                              |   72 
- arch/sh/include/asm/gpio.h                               |   50 
- arch/sh/include/asm/hardirq.h                            |   11 
- arch/sh/include/asm/hd64461.h                            |  252 -
- arch/sh/include/asm/heartbeat.h                          |   19 
- arch/sh/include/asm/hugetlb.h                            |   38 
- arch/sh/include/asm/hw_breakpoint.h                      |   70 
- arch/sh/include/asm/hw_irq.h                             |   36 
- arch/sh/include/asm/i2c-sh7760.h                         |   21 
- arch/sh/include/asm/io.h                                 |  294 -
- arch/sh/include/asm/io_generic.h                         |   19 
- arch/sh/include/asm/io_noioport.h                        |   86 
- arch/sh/include/asm/io_trapped.h                         |   59 
- arch/sh/include/asm/irq.h                                |   58 
- arch/sh/include/asm/irqflags.h                           |   10 
- arch/sh/include/asm/kdebug.h                             |   19 
- arch/sh/include/asm/kexec.h                              |   72 
- arch/sh/include/asm/kgdb.h                               |   38 
- arch/sh/include/asm/kprobes.h                            |   57 
- arch/sh/include/asm/linkage.h                            |    8 
- arch/sh/include/asm/machvec.h                            |   41 
- arch/sh/include/asm/mmiowb.h                             |   12 
- arch/sh/include/asm/mmu.h                                |  107 
- arch/sh/include/asm/mmu_context.h                        |  178 
- arch/sh/include/asm/mmu_context_32.h                     |   51 
- arch/sh/include/asm/mmzone.h                             |   45 
- arch/sh/include/asm/module.h                             |   14 
- arch/sh/include/asm/page.h                               |  186 
- arch/sh/include/asm/pci.h                                |   91 
- arch/sh/include/asm/perf_event.h                         |   30 
- arch/sh/include/asm/pgalloc.h                            |   40 
- arch/sh/include/asm/pgtable-2level.h                     |   24 
- arch/sh/include/asm/pgtable-3level.h                     |   59 
- arch/sh/include/asm/pgtable.h                            |  150 
- arch/sh/include/asm/pgtable_32.h                         |  462 --
- arch/sh/include/asm/platform_early.h                     |   61 
- arch/sh/include/asm/posix_types.h                        |    2 
- arch/sh/include/asm/processor.h                          |  173 
- arch/sh/include/asm/processor_32.h                       |  202 -
- arch/sh/include/asm/ptrace.h                             |  139 
- arch/sh/include/asm/ptrace_32.h                          |   14 
- arch/sh/include/asm/push-switch.h                        |   32 
- arch/sh/include/asm/reboot.h                             |   22 
- arch/sh/include/asm/romimage-macros.h                    |   74 
- arch/sh/include/asm/rtc.h                                |   15 
- arch/sh/include/asm/seccomp.h                            |   21 
- arch/sh/include/asm/sections.h                           |   12 
- arch/sh/include/asm/setup.h                              |   25 
- arch/sh/include/asm/sfp-machine.h                        |   80 
- arch/sh/include/asm/sh7760fb.h                           |  198 -
- arch/sh/include/asm/sh_bios.h                            |   28 
- arch/sh/include/asm/shmparam.h                           |   19 
- arch/sh/include/asm/siu.h                                |   20 
- arch/sh/include/asm/smc37c93x.h                          |  191 -
- arch/sh/include/asm/smp-ops.h                            |   52 
- arch/sh/include/asm/smp.h                                |   83 
- arch/sh/include/asm/sparsemem.h                          |   12 
- arch/sh/include/asm/spi.h                                |   14 
- arch/sh/include/asm/spinlock-cas.h                       |   89 
- arch/sh/include/asm/spinlock-llsc.h                      |  198 -
- arch/sh/include/asm/spinlock.h                           |   19 
- arch/sh/include/asm/spinlock_types.h                     |   22 
- arch/sh/include/asm/sram.h                               |   39 
- arch/sh/include/asm/stackprotector.h                     |   21 
- arch/sh/include/asm/stacktrace.h                         |   21 
- arch/sh/include/asm/string.h                             |    2 
- arch/sh/include/asm/string_32.h                          |  102 
- arch/sh/include/asm/suspend.h                            |   97 
- arch/sh/include/asm/switch_to.h                          |    7 
- arch/sh/include/asm/switch_to_32.h                       |  131 
- arch/sh/include/asm/syscall.h                            |    9 
- arch/sh/include/asm/syscall_32.h                         |   69 
- arch/sh/include/asm/syscalls.h                           |   14 
- arch/sh/include/asm/syscalls_32.h                        |   27 
- arch/sh/include/asm/thread_info.h                        |  171 
- arch/sh/include/asm/timex.h                              |   24 
- arch/sh/include/asm/tlb.h                                |   29 
- arch/sh/include/asm/tlbflush.h                           |   52 
- arch/sh/include/asm/topology.h                           |   28 
- arch/sh/include/asm/traps.h                              |   18 
- arch/sh/include/asm/traps_32.h                           |   61 
- arch/sh/include/asm/types.h                              |   16 
- arch/sh/include/asm/uaccess.h                            |  133 
- arch/sh/include/asm/uaccess_32.h                         |  227 -
- arch/sh/include/asm/uncached.h                           |   59 
- arch/sh/include/asm/unistd.h                             |   31 
- arch/sh/include/asm/unwinder.h                           |   32 
- arch/sh/include/asm/user.h                               |   55 
- arch/sh/include/asm/vermagic.h                           |   30 
- arch/sh/include/asm/vga.h                                |    7 
- arch/sh/include/asm/vmalloc.h                            |    4 
- arch/sh/include/asm/vmlinux.lds.h                        |   18 
- arch/sh/include/asm/watchdog.h                           |  159 
- arch/sh/include/asm/word-at-a-time.h                     |   54 
- arch/sh/include/cpu-common/cpu/addrspace.h               |   16 
- arch/sh/include/cpu-common/cpu/mmu_context.h             |   13 
- arch/sh/include/cpu-common/cpu/pfc.h                     |   18 
- arch/sh/include/cpu-common/cpu/rtc.h                     |    9 
- arch/sh/include/cpu-common/cpu/sigcontext.h              |   18 
- arch/sh/include/cpu-common/cpu/timer.h                   |    7 
- arch/sh/include/cpu-sh2/cpu/cache.h                      |   40 
- arch/sh/include/cpu-sh2/cpu/freq.h                       |   15 
- arch/sh/include/cpu-sh2/cpu/watchdog.h                   |   66 
- arch/sh/include/cpu-sh2a/cpu/addrspace.h                 |   11 
- arch/sh/include/cpu-sh2a/cpu/cache.h                     |   40 
- arch/sh/include/cpu-sh2a/cpu/freq.h                      |   13 
- arch/sh/include/cpu-sh2a/cpu/rtc.h                       |    9 
- arch/sh/include/cpu-sh2a/cpu/sh7203.h                    |  144 
- arch/sh/include/cpu-sh2a/cpu/sh7264.h                    |  169 
- arch/sh/include/cpu-sh2a/cpu/sh7269.h                    |  213 -
- arch/sh/include/cpu-sh2a/cpu/watchdog.h                  |    2 
- arch/sh/include/cpu-sh3/cpu/adc.h                        |   29 
- arch/sh/include/cpu-sh3/cpu/cache.h                      |   40 
- arch/sh/include/cpu-sh3/cpu/dac.h                        |   42 
- arch/sh/include/cpu-sh3/cpu/dma-register.h               |   38 
- arch/sh/include/cpu-sh3/cpu/dma.h                        |   19 
- arch/sh/include/cpu-sh3/cpu/freq.h                       |   24 
- arch/sh/include/cpu-sh3/cpu/gpio.h                       |   78 
- arch/sh/include/cpu-sh3/cpu/mmu_context.h                |   42 
- arch/sh/include/cpu-sh3/cpu/serial.h                     |   11 
- arch/sh/include/cpu-sh3/cpu/sh7720.h                     |  175 
- arch/sh/include/cpu-sh3/cpu/watchdog.h                   |   22 
- arch/sh/include/cpu-sh4/cpu/addrspace.h                  |   41 
- arch/sh/include/cpu-sh4/cpu/cache.h                      |   41 
- arch/sh/include/cpu-sh4/cpu/dma-register.h               |   98 
- arch/sh/include/cpu-sh4/cpu/dma.h                        |   18 
- arch/sh/include/cpu-sh4/cpu/fpu.h                        |   30 
- arch/sh/include/cpu-sh4/cpu/freq.h                       |   74 
- arch/sh/include/cpu-sh4/cpu/mmu_context.h                |   79 
- arch/sh/include/cpu-sh4/cpu/rtc.h                        |   14 
- arch/sh/include/cpu-sh4/cpu/sh7722.h                     |  252 -
- arch/sh/include/cpu-sh4/cpu/sh7723.h                     |  285 -
- arch/sh/include/cpu-sh4/cpu/sh7724.h                     |  319 -
- arch/sh/include/cpu-sh4/cpu/sh7734.h                     |  307 -
- arch/sh/include/cpu-sh4/cpu/sh7757.h                     |  290 -
- arch/sh/include/cpu-sh4/cpu/sh7785.h                     |  260 -
- arch/sh/include/cpu-sh4/cpu/sh7786.h                     |  138 
- arch/sh/include/cpu-sh4/cpu/shx3.h                       |   65 
- arch/sh/include/cpu-sh4/cpu/sigcontext.h                 |   25 
- arch/sh/include/cpu-sh4/cpu/sq.h                         |   33 
- arch/sh/include/cpu-sh4/cpu/watchdog.h                   |   41 
- arch/sh/include/cpu-sh4a/cpu/dma.h                       |   72 
- arch/sh/include/cpu-sh4a/cpu/serial.h                    |    8 
- arch/sh/include/mach-common/mach/highlander.h            |  208 -
- arch/sh/include/mach-common/mach/hp6xx.h                 |   59 
- arch/sh/include/mach-common/mach/lboxre2.h               |   24 
- arch/sh/include/mach-common/mach/magicpanelr2.h          |   64 
- arch/sh/include/mach-common/mach/mangle-port.h           |   46 
- arch/sh/include/mach-common/mach/microdev.h              |   69 
- arch/sh/include/mach-common/mach/r2d.h                   |   71 
- arch/sh/include/mach-common/mach/romimage.h              |   12 
- arch/sh/include/mach-common/mach/sdk7780.h               |   79 
- arch/sh/include/mach-common/mach/secureedge5410.h        |   47 
- arch/sh/include/mach-common/mach/sh2007.h                |  118 
- arch/sh/include/mach-common/mach/sh7763rdp.h             |   50 
- arch/sh/include/mach-common/mach/sh7785lcr.h             |   58 
- arch/sh/include/mach-common/mach/shmin.h                 |   10 
- arch/sh/include/mach-common/mach/titan.h                 |   20 
- arch/sh/include/mach-common/mach/urquell.h               |   69 
- arch/sh/include/mach-dreamcast/mach/dma.h                |   29 
- arch/sh/include/mach-dreamcast/mach/maple.h              |   38 
- arch/sh/include/mach-dreamcast/mach/pci.h                |   24 
- arch/sh/include/mach-dreamcast/mach/sysasic.h            |   46 
- arch/sh/include/mach-ecovec24/mach/partner-jet-setup.txt |   82 
- arch/sh/include/mach-ecovec24/mach/romimage.h            |   48 
- arch/sh/include/mach-kfr2r09/mach/kfr2r09.h              |   24 
- arch/sh/include/mach-kfr2r09/mach/partner-jet-setup.txt  |  144 
- arch/sh/include/mach-kfr2r09/mach/romimage.h             |   31 
- arch/sh/include/mach-landisk/mach/gio.h                  |   38 
- arch/sh/include/mach-landisk/mach/iodata_landisk.h       |   46 
- arch/sh/include/mach-migor/mach/migor.h                  |   16 
- arch/sh/include/mach-sdk7786/mach/fpga.h                 |  156 
- arch/sh/include/mach-sdk7786/mach/irq.h                  |    8 
- arch/sh/include/mach-se/mach/mrshpc.h                    |   53 
- arch/sh/include/mach-se/mach/se.h                        |  120 
- arch/sh/include/mach-se/mach/se7206.h                    |   14 
- arch/sh/include/mach-se/mach/se7343.h                    |  143 
- arch/sh/include/mach-se/mach/se7721.h                    |   68 
- arch/sh/include/mach-se/mach/se7722.h                    |   98 
- arch/sh/include/mach-se/mach/se7724.h                    |   69 
- arch/sh/include/mach-se/mach/se7751.h                    |   75 
- arch/sh/include/mach-se/mach/se7780.h                    |  106 
- arch/sh/include/mach-sh03/mach/io.h                      |   26 
- arch/sh/include/mach-sh03/mach/sh03.h                    |   19 
- arch/sh/include/mach-x3proto/mach/hardware.h             |   13 
- arch/sh/include/mach-x3proto/mach/ilsel.h                |   46 
- arch/sh/include/uapi/asm/Kbuild                          |    4 
- arch/sh/include/uapi/asm/auxvec.h                        |   39 
- arch/sh/include/uapi/asm/byteorder.h                     |   11 
- arch/sh/include/uapi/asm/cachectl.h                      |   20 
- arch/sh/include/uapi/asm/cpu-features.h                  |   28 
- arch/sh/include/uapi/asm/hw_breakpoint.h                 |    5 
- arch/sh/include/uapi/asm/ioctls.h                        |  116 
- arch/sh/include/uapi/asm/posix_types.h                   |    2 
- arch/sh/include/uapi/asm/posix_types_32.h                |   23 
- arch/sh/include/uapi/asm/ptrace.h                        |   30 
- arch/sh/include/uapi/asm/ptrace_32.h                     |   78 
- arch/sh/include/uapi/asm/sigcontext.h                    |   25 
- arch/sh/include/uapi/asm/signal.h                        |   18 
- arch/sh/include/uapi/asm/sockios.h                       |   18 
- arch/sh/include/uapi/asm/stat.h                          |   78 
- arch/sh/include/uapi/asm/swab.h                          |   50 
- arch/sh/include/uapi/asm/unistd.h                        |    2 
- arch/sh/kernel/.gitignore                                |    2 
- arch/sh/kernel/Makefile                                  |   49 
- arch/sh/kernel/asm-offsets.c                             |   60 
- arch/sh/kernel/cpu/Makefile                              |   21 
- arch/sh/kernel/cpu/adc.c                                 |   37 
- arch/sh/kernel/cpu/clock-cpg.c                           |   78 
- arch/sh/kernel/cpu/clock.c                               |   52 
- arch/sh/kernel/cpu/fpu.c                                 |   92 
- arch/sh/kernel/cpu/init.c                                |  366 -
- arch/sh/kernel/cpu/irq/Makefile                          |    6 
- arch/sh/kernel/cpu/irq/imask.c                           |   85 
- arch/sh/kernel/cpu/irq/ipr.c                             |   80 
- arch/sh/kernel/cpu/pfc.c                                 |   25 
- arch/sh/kernel/cpu/proc.c                                |  151 
- arch/sh/kernel/cpu/sh2/Makefile                          |   12 
- arch/sh/kernel/cpu/sh2/clock-sh7619.c                    |   74 
- arch/sh/kernel/cpu/sh2/entry.S                           |  373 -
- arch/sh/kernel/cpu/sh2/ex.S                              |   44 
- arch/sh/kernel/cpu/sh2/probe.c                           |   71 
- arch/sh/kernel/cpu/sh2/setup-sh7619.c                    |  205 -
- arch/sh/kernel/cpu/sh2/smp-j2.c                          |  136 
- arch/sh/kernel/cpu/sh2a/Makefile                         |   25 
- arch/sh/kernel/cpu/sh2a/clock-sh7201.c                   |   82 
- arch/sh/kernel/cpu/sh2a/clock-sh7203.c                   |   78 
- arch/sh/kernel/cpu/sh2a/clock-sh7206.c                   |   80 
- arch/sh/kernel/cpu/sh2a/clock-sh7264.c                   |  157 
- arch/sh/kernel/cpu/sh2a/clock-sh7269.c                   |  181 
- arch/sh/kernel/cpu/sh2a/entry.S                          |  247 -
- arch/sh/kernel/cpu/sh2a/ex.S                             |   70 
- arch/sh/kernel/cpu/sh2a/fpu.c                            |  572 ---
- arch/sh/kernel/cpu/sh2a/opcode_helper.c                  |   51 
- arch/sh/kernel/cpu/sh2a/pinmux-sh7203.c                  |   27 
- arch/sh/kernel/cpu/sh2a/pinmux-sh7264.c                  |   27 
- arch/sh/kernel/cpu/sh2a/pinmux-sh7269.c                  |   28 
- arch/sh/kernel/cpu/sh2a/probe.c                          |   57 
- arch/sh/kernel/cpu/sh2a/setup-mxg.c                      |  175 
- arch/sh/kernel/cpu/sh2a/setup-sh7201.c                   |  418 --
- arch/sh/kernel/cpu/sh2a/setup-sh7203.c                   |  355 -
- arch/sh/kernel/cpu/sh2a/setup-sh7206.c                   |  291 -
- arch/sh/kernel/cpu/sh2a/setup-sh7264.c                   |  552 --
- arch/sh/kernel/cpu/sh2a/setup-sh7269.c                   |  568 --
- arch/sh/kernel/cpu/sh3/Makefile                          |   34 
- arch/sh/kernel/cpu/sh3/clock-sh3.c                       |   86 
- arch/sh/kernel/cpu/sh3/clock-sh7705.c                    |   81 
- arch/sh/kernel/cpu/sh3/clock-sh7706.c                    |   81 
- arch/sh/kernel/cpu/sh3/clock-sh7709.c                    |   82 
- arch/sh/kernel/cpu/sh3/clock-sh7710.c                    |   75 
- arch/sh/kernel/cpu/sh3/clock-sh7712.c                    |   68 
- arch/sh/kernel/cpu/sh3/entry.S                           |  509 --
- arch/sh/kernel/cpu/sh3/ex.S                              |   56 
- arch/sh/kernel/cpu/sh3/pinmux-sh7720.c                   |   27 
- arch/sh/kernel/cpu/sh3/probe.c                           |  108 
- arch/sh/kernel/cpu/sh3/serial-sh770x.c                   |   34 
- arch/sh/kernel/cpu/sh3/serial-sh7710.c                   |   21 
- arch/sh/kernel/cpu/sh3/serial-sh7720.c                   |   38 
- arch/sh/kernel/cpu/sh3/setup-sh3.c                       |   69 
- arch/sh/kernel/cpu/sh3/setup-sh7705.c                    |  190 
- arch/sh/kernel/cpu/sh3/setup-sh770x.c                    |  246 -
- arch/sh/kernel/cpu/sh3/setup-sh7710.c                    |  189 
- arch/sh/kernel/cpu/sh3/setup-sh7720.c                    |  286 -
- arch/sh/kernel/cpu/sh3/swsusp.S                          |  144 
- arch/sh/kernel/cpu/sh4/Makefile                          |   37 
- arch/sh/kernel/cpu/sh4/clock-sh4-202.c                   |  174 
- arch/sh/kernel/cpu/sh4/clock-sh4.c                       |   77 
- arch/sh/kernel/cpu/sh4/fpu.c                             |  425 --
- arch/sh/kernel/cpu/sh4/perf_event.c                      |  265 -
- arch/sh/kernel/cpu/sh4/probe.c                           |  260 -
- arch/sh/kernel/cpu/sh4/setup-sh4-202.c                   |  139 
- arch/sh/kernel/cpu/sh4/setup-sh7750.c                    |  359 -
- arch/sh/kernel/cpu/sh4/setup-sh7760.c                    |  297 -
- arch/sh/kernel/cpu/sh4/softfloat.c                       |  930 ----
- arch/sh/kernel/cpu/sh4/sq.c                              |  414 --
- arch/sh/kernel/cpu/sh4a/Makefile                         |   53 
- arch/sh/kernel/cpu/sh4a/clock-sh7343.c                   |  277 -
- arch/sh/kernel/cpu/sh4a/clock-sh7366.c                   |  270 -
- arch/sh/kernel/cpu/sh4a/clock-sh7722.c                   |  253 -
- arch/sh/kernel/cpu/sh4a/clock-sh7723.c                   |  301 -
- arch/sh/kernel/cpu/sh4a/clock-sh7724.c                   |  367 -
- arch/sh/kernel/cpu/sh4a/clock-sh7734.c                   |  256 -
- arch/sh/kernel/cpu/sh4a/clock-sh7757.c                   |  152 
- arch/sh/kernel/cpu/sh4a/clock-sh7763.c                   |  116 
- arch/sh/kernel/cpu/sh4a/clock-sh7770.c                   |   70 
- arch/sh/kernel/cpu/sh4a/clock-sh7780.c                   |  122 
- arch/sh/kernel/cpu/sh4a/clock-sh7785.c                   |  174 
- arch/sh/kernel/cpu/sh4a/clock-sh7786.c                   |  189 
- arch/sh/kernel/cpu/sh4a/clock-shx3.c                     |  148 
- arch/sh/kernel/cpu/sh4a/intc-shx3.c                      |   31 
- arch/sh/kernel/cpu/sh4a/perf_event.c                     |  299 -
- arch/sh/kernel/cpu/sh4a/pinmux-sh7722.c                  |   21 
- arch/sh/kernel/cpu/sh4a/pinmux-sh7723.c                  |   27 
- arch/sh/kernel/cpu/sh4a/pinmux-sh7724.c                  |   32 
- arch/sh/kernel/cpu/sh4a/pinmux-sh7734.c                  |   32 
- arch/sh/kernel/cpu/sh4a/pinmux-sh7757.c                  |   32 
- arch/sh/kernel/cpu/sh4a/pinmux-sh7785.c                  |   27 
- arch/sh/kernel/cpu/sh4a/pinmux-sh7786.c                  |   32 
- arch/sh/kernel/cpu/sh4a/pinmux-shx3.c                    |   26 
- arch/sh/kernel/cpu/sh4a/serial-sh7722.c                  |   24 
- arch/sh/kernel/cpu/sh4a/setup-sh7343.c                   |  444 --
- arch/sh/kernel/cpu/sh4a/setup-sh7366.c                   |  388 --
- arch/sh/kernel/cpu/sh4a/setup-sh7722.c                   |  666 ---
- arch/sh/kernel/cpu/sh4a/setup-sh7723.c                   |  644 ---
- arch/sh/kernel/cpu/sh4a/setup-sh7724.c                   | 1288 ------
- arch/sh/kernel/cpu/sh4a/setup-sh7734.c                   |  621 ---
- arch/sh/kernel/cpu/sh4a/setup-sh7757.c                   | 1242 ------
- arch/sh/kernel/cpu/sh4a/setup-sh7763.c                   |  455 --
- arch/sh/kernel/cpu/sh4a/setup-sh7770.c                   |  571 ---
- arch/sh/kernel/cpu/sh4a/setup-sh7780.c                   |  505 --
- arch/sh/kernel/cpu/sh4a/setup-sh7785.c                   |  608 ---
- arch/sh/kernel/cpu/sh4a/setup-sh7786.c                   |  841 ----
- arch/sh/kernel/cpu/sh4a/setup-shx3.c                     |  396 --
- arch/sh/kernel/cpu/sh4a/smp-shx3.c                       |  146 
- arch/sh/kernel/cpu/sh4a/ubc.c                            |  130 
- arch/sh/kernel/cpu/shmobile/Makefile                     |    8 
- arch/sh/kernel/cpu/shmobile/cpuidle.c                    |   95 
- arch/sh/kernel/cpu/shmobile/pm.c                         |  153 
- arch/sh/kernel/cpu/shmobile/sleep.S                      |  402 --
- arch/sh/kernel/crash_dump.c                              |   27 
- arch/sh/kernel/debugtraps.S                              |   38 
- arch/sh/kernel/disassemble.c                             |  572 ---
- arch/sh/kernel/dma-coherent.c                            |   33 
- arch/sh/kernel/dumpstack.c                               |  156 
- arch/sh/kernel/dwarf.c                                   | 1206 ------
- arch/sh/kernel/entry-common.S                            |  400 --
- arch/sh/kernel/ftrace.c                                  |  365 -
- arch/sh/kernel/head_32.S                                 |  365 -
- arch/sh/kernel/hw_breakpoint.c                           |  408 --
- arch/sh/kernel/idle.c                                    |   57 
- arch/sh/kernel/io.c                                      |  111 
- arch/sh/kernel/io_trapped.c                              |  291 -
- arch/sh/kernel/iomap.c                                   |  162 
- arch/sh/kernel/ioport.c                                  |   41 
- arch/sh/kernel/irq.c                                     |  249 -
- arch/sh/kernel/irq_32.c                                  |   54 
- arch/sh/kernel/kdebugfs.c                                |   14 
- arch/sh/kernel/kgdb.c                                    |  378 -
- arch/sh/kernel/kprobes.c                                 |  452 --
- arch/sh/kernel/machine_kexec.c                           |  204 -
- arch/sh/kernel/machvec.c                                 |  122 
- arch/sh/kernel/module.c                                  |  104 
- arch/sh/kernel/nmi_debug.c                               |   75 
- arch/sh/kernel/perf_callchain.c                          |   32 
- arch/sh/kernel/perf_event.c                              |  363 -
- arch/sh/kernel/process.c                                 |   77 
- arch/sh/kernel/process_32.c                              |  197 -
- arch/sh/kernel/ptrace.c                                  |   34 
- arch/sh/kernel/ptrace_32.c                               |  487 --
- arch/sh/kernel/reboot.c                                  |   96 
- arch/sh/kernel/relocate_kernel.S                         |  230 -
- arch/sh/kernel/return_address.c                          |   56 
- arch/sh/kernel/setup.c                                   |  356 -
- arch/sh/kernel/sh_bios.c                                 |  169 
- arch/sh/kernel/sh_ksyms_32.c                             |  118 
- arch/sh/kernel/signal_32.c                               |  507 --
- arch/sh/kernel/smp.c                                     |  471 --
- arch/sh/kernel/stacktrace.c                              |   79 
- arch/sh/kernel/swsusp.c                                  |   35 
- arch/sh/kernel/sys_sh.c                                  |   96 
- arch/sh/kernel/sys_sh32.c                                |   61 
- arch/sh/kernel/syscalls/Makefile                         |   32 
- arch/sh/kernel/syscalls/syscall.tbl                      |  455 --
- arch/sh/kernel/syscalls_32.S                             |   17 
- arch/sh/kernel/time.c                                    |   45 
- arch/sh/kernel/topology.c                                |   74 
- arch/sh/kernel/traps.c                                   |  204 -
- arch/sh/kernel/traps_32.c                                |  795 ----
- arch/sh/kernel/unwinder.c                                |  165 
- arch/sh/kernel/vmlinux.lds.S                             |   82 
- arch/sh/kernel/vsyscall/.gitignore                       |    2 
- arch/sh/kernel/vsyscall/Makefile                         |   36 
- arch/sh/kernel/vsyscall/vsyscall-note.S                  |   26 
- arch/sh/kernel/vsyscall/vsyscall-sigreturn.S             |   75 
- arch/sh/kernel/vsyscall/vsyscall-syscall.S               |   11 
- arch/sh/kernel/vsyscall/vsyscall-trapa.S                 |   40 
- arch/sh/kernel/vsyscall/vsyscall.c                       |   93 
- arch/sh/kernel/vsyscall/vsyscall.lds.S                   |   85 
- arch/sh/lib/Makefile                                     |   32 
- arch/sh/lib/__clear_user.S                               |  109 
- arch/sh/lib/ashiftrt.S                                   |  128 
- arch/sh/lib/ashldi3.c                                    |   30 
- arch/sh/lib/ashlsi3.S                                    |  189 
- arch/sh/lib/ashrdi3.c                                    |   32 
- arch/sh/lib/ashrsi3.S                                    |  179 
- arch/sh/lib/checksum.S                                   |  365 -
- arch/sh/lib/copy_page.S                                  |  390 --
- arch/sh/lib/delay.c                                      |   54 
- arch/sh/lib/div64-generic.c                              |   20 
- arch/sh/lib/div64.S                                      |   47 
- arch/sh/lib/io.c                                         |   79 
- arch/sh/lib/libgcc.h                                     |   27 
- arch/sh/lib/lshrdi3.c                                    |   30 
- arch/sh/lib/lshrsi3.S                                    |  188 
- arch/sh/lib/mcount.S                                     |  287 -
- arch/sh/lib/memchr.S                                     |   27 
- arch/sh/lib/memcpy-sh4.S                                 |  800 ----
- arch/sh/lib/memcpy.S                                     |  228 -
- arch/sh/lib/memmove.S                                    |  255 -
- arch/sh/lib/memset-sh4.S                                 |  108 
- arch/sh/lib/memset.S                                     |   59 
- arch/sh/lib/movmem.S                                     |  217 -
- arch/sh/lib/strlen.S                                     |   71 
- arch/sh/lib/udiv_qrnnd.S                                 |   60 
- arch/sh/lib/udivsi3.S                                    |   66 
- arch/sh/lib/udivsi3_i4i-Os.S                             |  128 
- arch/sh/lib/udivsi3_i4i.S                                |  645 ---
- arch/sh/math-emu/Makefile                                |    2 
- arch/sh/math-emu/math.c                                  |  506 --
- arch/sh/math-emu/sfp-util.h                              |   73 
- arch/sh/mm/Kconfig                                       |  254 -
- arch/sh/mm/Makefile                                      |   45 
- arch/sh/mm/alignment.c                                   |  189 
- arch/sh/mm/asids-debugfs.c                               |   59 
- arch/sh/mm/cache-debugfs.c                               |  109 
- arch/sh/mm/cache-j2.c                                    |   64 
- arch/sh/mm/cache-sh2.c                                   |   90 
- arch/sh/mm/cache-sh2a.c                                  |  188 
- arch/sh/mm/cache-sh3.c                                   |  102 
- arch/sh/mm/cache-sh4.c                                   |  390 --
- arch/sh/mm/cache-sh7705.c                                |  194 -
- arch/sh/mm/cache-shx3.c                                  |   44 
- arch/sh/mm/cache.c                                       |  360 -
- arch/sh/mm/consistent.c                                  |   65 
- arch/sh/mm/extable_32.c                                  |   24 
- arch/sh/mm/fault.c                                       |  504 --
- arch/sh/mm/flush-sh4.c                                   |  111 
- arch/sh/mm/hugetlbpage.c                                 |   82 
- arch/sh/mm/init.c                                        |  424 --
- arch/sh/mm/ioremap.c                                     |  192 -
- arch/sh/mm/ioremap.h                                     |   23 
- arch/sh/mm/ioremap_fixed.c                               |  135 
- arch/sh/mm/kmap.c                                        |   65 
- arch/sh/mm/mmap.c                                        |  184 
- arch/sh/mm/nommu.c                                       |   98 
- arch/sh/mm/numa.c                                        |   56 
- arch/sh/mm/pgtable.c                                     |   57 
- arch/sh/mm/pmb.c                                         |  887 ----
- arch/sh/mm/sram.c                                        |   35 
- arch/sh/mm/tlb-debugfs.c                                 |  160 
- arch/sh/mm/tlb-pteaex.c                                  |  106 
- arch/sh/mm/tlb-sh3.c                                     |   95 
- arch/sh/mm/tlb-sh4.c                                     |  108 
- arch/sh/mm/tlb-urb.c                                     |   93 
- arch/sh/mm/tlbex_32.c                                    |   82 
- arch/sh/mm/tlbflush_32.c                                 |  137 
- arch/sh/mm/uncached.c                                    |   44 
- arch/sh/tools/Makefile                                   |   16 
- arch/sh/tools/gen-mach-types                             |   48 
- arch/sh/tools/mach-types                                 |   67 
- b/Documentation/arch.rst                                 |    1 
- b/Documentation/watchdog/watchdog-parameters.rst         |   12 
- b/MAINTAINERS                                            |   10 
- b/drivers/Makefile                                       |    1 
- b/drivers/base/platform.c                                |    4 
- b/drivers/clocksource/sh_cmt.c                           |   16 
- b/drivers/clocksource/sh_mtu2.c                          |   16 
- b/drivers/clocksource/sh_tmu.c                           |   17 
- b/drivers/cpufreq/Kconfig                                |   14 
- b/drivers/cpufreq/Makefile                               |    1 
- b/drivers/dma/sh/Kconfig                                 |   20 
- b/drivers/dma/sh/Makefile                                |   13 
- b/drivers/gpu/drm/Kconfig                                |    2 
- b/drivers/gpu/drm/Makefile                               |    1 
- b/drivers/i2c/busses/Kconfig                             |   13 
- b/drivers/i2c/busses/Makefile                            |    1 
- b/drivers/input/keyboard/Kconfig                         |   10 
- b/drivers/input/keyboard/Makefile                        |    1 
- b/drivers/media/platform/renesas/Kconfig                 |   11 
- b/drivers/media/platform/renesas/Makefile                |    1 
- b/drivers/mmc/host/Kconfig                               |    6 
- b/drivers/mmc/host/sh_mmcif.c                            |   21 
- b/drivers/mtd/nand/raw/Kconfig                           |    8 
- b/drivers/mtd/nand/raw/Makefile                          |    1 
- b/drivers/net/ethernet/8390/Kconfig                      |   14 
- b/drivers/net/ethernet/8390/Makefile                     |    1 
- b/drivers/net/ethernet/renesas/Kconfig                   |    2 
- b/drivers/net/ethernet/smsc/Kconfig                      |    4 
- b/drivers/pinctrl/renesas/Kconfig                        |   63 
- b/drivers/pinctrl/renesas/Makefile                       |   27 
- b/drivers/pinctrl/renesas/core.c                         |  598 ---
- b/drivers/rtc/Kconfig                                    |    4 
- b/drivers/rtc/rtc-sh.c                                   |   18 
- b/drivers/spi/Kconfig                                    |   24 
- b/drivers/spi/Makefile                                   |    3 
- b/drivers/tty/serial/Kconfig                             |    3 
- b/drivers/tty/serial/sh-sci.c                            |   57 
- b/drivers/tty/vt/keyboard.c                              |    2 
- b/drivers/usb/host/Kconfig                               |   18 
- b/drivers/usb/host/ehci-hcd.c                            |    7 
- b/drivers/usb/renesas_usbhs/Kconfig                      |    2 
- b/drivers/video/console/Kconfig                          |    2 
- b/drivers/video/fbdev/Kconfig                            |   17 
- b/drivers/video/fbdev/Makefile                           |    1 
- b/drivers/video/logo/Kconfig                             |   15 
- b/drivers/video/logo/Makefile                            |    3 
- b/drivers/video/logo/logo.c                              |   12 
- b/drivers/watchdog/Kconfig                               |   20 
- b/drivers/watchdog/Makefile                              |    3 
- b/fs/Kconfig.binfmt                                      |    2 
- b/fs/minix/Kconfig                                       |    2 
- b/include/linux/cpuhotplug.h                             |    1 
- b/include/linux/platform_device.h                        |   15 
- b/include/linux/sh_intc.h                                |    4 
- b/include/linux/shdma-base.h                             |    4 
- b/init/Kconfig                                           |    2 
- b/kernel/sysctl.c                                        |    3 
- b/lib/Kconfig.debug                                      |    2 
- b/lib/math/div64.c                                       |    4 
- b/lib/test_user_copy.c                                   |    3 
- b/scripts/coccinelle/misc/cond_no_effect.cocci           |   13 
- b/scripts/head-object-list.txt                           |    1 
- b/sound/Kconfig                                          |    2 
- b/sound/Makefile                                         |    2 
- b/sound/soc/sh/Kconfig                                   |   48 
- b/sound/soc/sh/Makefile                                  |   16 
- b/sound/soc/sh/fsi.c                                     |    9 
- b/tools/include/asm/barrier.h                            |    2 
- b/tools/perf/util/dwarf-regs.c                           |    1 
- drivers/cpufreq/sh-cpufreq.c                             |  175 
- drivers/dma/sh/shdma-base.c                              | 1052 -----
- drivers/dma/sh/shdma.h                                   |   61 
- drivers/dma/sh/shdmac.c                                  |  938 ----
- drivers/gpu/drm/shmobile/Kconfig                         |   12 
- drivers/gpu/drm/shmobile/Makefile                        |    8 
- drivers/gpu/drm/shmobile/shmob_drm_backlight.c           |   82 
- drivers/gpu/drm/shmobile/shmob_drm_backlight.h           |   19 
- drivers/gpu/drm/shmobile/shmob_drm_crtc.c                |  683 ---
- drivers/gpu/drm/shmobile/shmob_drm_crtc.h                |   55 
- drivers/gpu/drm/shmobile/shmob_drm_drv.c                 |  303 -
- drivers/gpu/drm/shmobile/shmob_drm_drv.h                 |   42 
- drivers/gpu/drm/shmobile/shmob_drm_kms.c                 |  150 
- drivers/gpu/drm/shmobile/shmob_drm_kms.h                 |   29 
- drivers/gpu/drm/shmobile/shmob_drm_plane.c               |  261 -
- drivers/gpu/drm/shmobile/shmob_drm_plane.h               |   19 
- drivers/gpu/drm/shmobile/shmob_drm_regs.h                |  310 -
- drivers/i2c/busses/i2c-sh7760.c                          |  565 --
- drivers/input/keyboard/sh_keysc.c                        |  334 -
- drivers/media/platform/renesas/sh_vou.c                  | 1375 -------
- drivers/mtd/nand/raw/sh_flctl.c                          | 1234 ------
- drivers/net/ethernet/8390/stnic.c                        |  302 -
- drivers/pinctrl/renesas/pfc-sh7203.c                     | 1577 --------
- drivers/pinctrl/renesas/pfc-sh7264.c                     | 2131 -----------
- drivers/pinctrl/renesas/pfc-sh7269.c                     | 2851 ---------------
- drivers/pinctrl/renesas/pfc-sh7720.c                     | 1201 ------
- drivers/pinctrl/renesas/pfc-sh7722.c                     | 1703 --------
- drivers/pinctrl/renesas/pfc-sh7723.c                     | 1902 ----------
- drivers/pinctrl/renesas/pfc-sh7724.c                     | 2177 -----------
- drivers/pinctrl/renesas/pfc-sh7734.c                     | 2408 ------------
- drivers/pinctrl/renesas/pfc-sh7757.c                     | 2219 -----------
- drivers/pinctrl/renesas/pfc-sh7785.c                     | 1258 ------
- drivers/pinctrl/renesas/pfc-sh7786.c                     |  809 ----
- drivers/pinctrl/renesas/pfc-shx3.c                       |  557 --
- drivers/sh/Kconfig                                       |    6 
- drivers/sh/Makefile                                      |   12 
- drivers/sh/clk/Makefile                                  |    4 
- drivers/sh/clk/core.c                                    |  624 ---
- drivers/sh/clk/cpg.c                                     |  477 --
- drivers/sh/intc/Kconfig                                  |   44 
- drivers/sh/intc/Makefile                                 |    6 
- drivers/sh/intc/access.c                                 |  246 -
- drivers/sh/intc/balancing.c                              |   97 
- drivers/sh/intc/chip.c                                   |  211 -
- drivers/sh/intc/core.c                                   |  501 --
- drivers/sh/intc/handle.c                                 |  306 -
- drivers/sh/intc/internals.h                              |  191 -
- drivers/sh/intc/irqdomain.c                              |   68 
- drivers/sh/intc/userimask.c                              |   84 
- drivers/sh/intc/virq-debugfs.c                           |   54 
- drivers/sh/intc/virq.c                                   |  269 -
- drivers/sh/maple/Makefile                                |    4 
- drivers/sh/maple/maple.c                                 |  895 ----
- drivers/sh/pm_runtime.c                                  |   40 
- drivers/sh/superhyway/Makefile                           |    8 
- drivers/sh/superhyway/superhyway-sysfs.c                 |   54 
- drivers/sh/superhyway/superhyway.c                       |  234 -
- drivers/spi/spi-jcore.c                                  |  235 -
- drivers/spi/spi-sh-sci.c                                 |  197 -
- drivers/spi/spi-sh.c                                     |  474 --
- drivers/usb/host/ehci-sh.c                               |  182 
- drivers/video/fbdev/sh7760fb.c                           |  587 ---
- drivers/video/logo/logo_superh_clut224.ppm               | 1604 --------
- drivers/video/logo/logo_superh_vga16.ppm                 | 1604 --------
- drivers/watchdog/shwdt.c                                 |  344 -
- include/linux/mtd/sh_flctl.h                             |  180 
- include/linux/sh_clk.h                                   |  213 -
- include/linux/superhyway.h                               |  107 
- sound/sh/Kconfig                                         |   32 
- sound/sh/Makefile                                        |   11 
- sound/sh/aica.c                                          |  628 ---
- sound/sh/aica.h                                          |   68 
- sound/sh/sh_dac_audio.c                                  |  412 --
- sound/soc/sh/dma-sh7760.c                                |  334 -
- sound/soc/sh/hac.c                                       |  345 -
- sound/soc/sh/migor.c                                     |  205 -
- sound/soc/sh/sh7760-ac97.c                               |   72 
- sound/soc/sh/siu.h                                       |  180 
- sound/soc/sh/siu_dai.c                                   |  799 ----
- sound/soc/sh/siu_pcm.c                                   |  553 --
- sound/soc/sh/ssi.c                                       |  403 --
- 896 files changed, 46 insertions(+), 138518 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
