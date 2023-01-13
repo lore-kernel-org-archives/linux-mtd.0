@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46022C677F1
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 07:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19278C54EBE
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 07:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MkXqTgL5iJjE9++qx7FLqKHrB+HTObXKhTz9oU35Sro=; b=sSTrlE78NhDDlr
-	nHlHRB/HEgFoqNmSx8CkC6dmCrPCH6B3j/5PS9pOdVP9oQE9D7KZiTeK1YWj8obMGDzYPSzZfTVon
-	v0fxuSbcnoDMPcnSTpMfYehJ6BTNFe0SDhklKu673XSq94mg2tCtkhPGCU/Flx6hE/QPl8pPpI2gb
-	iDMKQ2qi0+48Otl5Jzp9A9ytxYVCX0yAPjCxhni9QsXBRT5YlwNevvS6+7X/T3vp2aeQu33ZUEf0x
-	gKaWQHqwVXHdFMX85uEML4LXzZYbpPMnOnbYdpPB0MEr3kqa2dN4S8OKelIDdCSgB32r2qoHVk4FG
-	OJuXI/cE2bltjGJT8lUw==;
+	List-Owner; bh=yfXcOtIKLMn+gnKRtKtZGKjePpHtp5tTx2nPoQSykno=; b=kLCn5B1HZNMWQd
+	a2iHh+djjaevH+fuiQjKdMwUsNMkp/5ejeGf1sq0F01F7X/Y/8TlWQzQN4OukcnzzQbAYkSD8Ya++
+	IImXxjpSCFt0N1U1cIIR1wcxc5WuC7kRqhAwZpXK9083nqwg8Ey6/KmSO7AraO/3IDz20d25yQHqO
+	qkWA0U2u5pSVnBuCZGLy5cDq0xSUZYHP200QMvDcMREaD6CeAUsYbweMjL1iHZ03rxhJnjnSe/QM0
+	2Nqg0lTX769FleQRsZQJs3egwF3aA+jvYQ6CZkEvj81/LZjOtplJ6Sg6xjYTkTDYDQFOv62l/tAW2
+	r1BgR5uM/iHrDUoFp8wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGEWs-000zIG-Dl; Fri, 13 Jan 2023 07:31:10 +0000
+	id 1pGEWz-000zKj-TF; Fri, 13 Jan 2023 07:31:17 +0000
 Received: from [2001:4bb8:181:656b:9509:7d20:8d39:f895] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGDUT-000lua-TT; Fri, 13 Jan 2023 06:24:38 +0000
+	id 1pGDUf-000m3E-Fe; Fri, 13 Jan 2023 06:24:49 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Yoshinori Sato <ysato@users.sourceforge.jp>,
 	Rich Felker <dalias@libc.org>,
@@ -53,9 +53,9 @@ Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	linux-fbdev@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	linux-sh@vger.kernel.org
-Subject: [PATCH 15/22] spi: remove spi-sh
-Date: Fri, 13 Jan 2023 07:23:32 +0100
-Message-Id: <20230113062339.1909087-16-hch@lst.de>
+Subject: [PATCH 19/22] fbdev: remove sh7760fb
+Date: Fri, 13 Jan 2023 07:23:36 +0100
+Message-Id: <20230113062339.1909087-20-hch@lst.de>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230113062339.1909087-1-hch@lst.de>
 References: <20230113062339.1909087-1-hch@lst.de>
@@ -80,521 +80,652 @@ Now that arch/sh is removed this driver is dead code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/spi/Kconfig  |   6 -
- drivers/spi/Makefile |   1 -
- drivers/spi/spi-sh.c | 474 -------------------------------------------
- 3 files changed, 481 deletions(-)
- delete mode 100644 drivers/spi/spi-sh.c
+ drivers/video/fbdev/Kconfig    |  17 +-
+ drivers/video/fbdev/Makefile   |   1 -
+ drivers/video/fbdev/sh7760fb.c | 587 ---------------------------------
+ 3 files changed, 1 insertion(+), 604 deletions(-)
+ delete mode 100644 drivers/video/fbdev/sh7760fb.c
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 2c5226adf5e1d3..7508dcef909c78 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -882,12 +882,6 @@ config SPI_SH_MSIOF
- 	help
- 	  SPI driver for SuperH and SH Mobile MSIOF blocks.
+diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+index b2bed599e6c6ea..cba0ba512a6ddb 100644
+--- a/drivers/video/fbdev/Kconfig
++++ b/drivers/video/fbdev/Kconfig
+@@ -1861,7 +1861,7 @@ config FB_W100
+ config FB_SH_MOBILE_LCDC
+ 	tristate "SuperH Mobile LCDC framebuffer support"
+ 	depends on FB && HAVE_CLK && HAS_IOMEM
+-	depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
++	depends on ARCH_RENESAS || COMPILE_TEST
+ 	select FB_SYS_FILLRECT
+ 	select FB_SYS_COPYAREA
+ 	select FB_SYS_IMAGEBLIT
+@@ -2048,21 +2048,6 @@ config FB_COBALT
+ 	tristate "Cobalt server LCD frame buffer support"
+ 	depends on FB && MIPS_COBALT
  
--config SPI_SH
--	tristate "SuperH SPI controller"
--	depends on SUPERH || COMPILE_TEST
+-config FB_SH7760
+-	bool "SH7760/SH7763/SH7720/SH7721 LCDC support"
+-	depends on FB && (CPU_SUBTYPE_SH7760 || CPU_SUBTYPE_SH7763 \
+-		|| CPU_SUBTYPE_SH7720 || CPU_SUBTYPE_SH7721)
+-	select FB_CFB_FILLRECT
+-	select FB_CFB_COPYAREA
+-	select FB_CFB_IMAGEBLIT
 -	help
--	  SPI driver for SuperH SPI blocks.
+-	  Support for the SH7760/SH7763/SH7720/SH7721 integrated
+-	  (D)STN/TFT LCD Controller.
+-	  Supports display resolutions up to 1024x1024 pixel, grayscale and
+-	  color operation, with depths ranging from 1 bpp to 8 bpp monochrome
+-	  and 8, 15 or 16 bpp color; 90 degrees clockwise display rotation for
+-	  panels <= 320 pixel horizontal resolution.
 -
- config SPI_SH_SCI
- 	tristate "SuperH SCI SPI controller"
- 	depends on SUPERH
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index be9ba40ef8d03d..342a7eb5181c9b 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -116,7 +116,6 @@ obj-$(CONFIG_SPI_S3C24XX)		+= spi-s3c24xx-hw.o
- spi-s3c24xx-hw-y			:= spi-s3c24xx.o
- obj-$(CONFIG_SPI_S3C64XX)		+= spi-s3c64xx.o
- obj-$(CONFIG_SPI_SC18IS602)		+= spi-sc18is602.o
--obj-$(CONFIG_SPI_SH)			+= spi-sh.o
- obj-$(CONFIG_SPI_SH_HSPI)		+= spi-sh-hspi.o
- obj-$(CONFIG_SPI_SH_MSIOF)		+= spi-sh-msiof.o
- obj-$(CONFIG_SPI_SH_SCI)		+= spi-sh-sci.o
-diff --git a/drivers/spi/spi-sh.c b/drivers/spi/spi-sh.c
+ config FB_DA8XX
+ 	tristate "DA8xx/OMAP-L1xx/AM335x Framebuffer support"
+ 	depends on FB && HAVE_CLK && HAS_IOMEM
+diff --git a/drivers/video/fbdev/Makefile b/drivers/video/fbdev/Makefile
+index 7795c4126706fd..9941a30522b4b3 100644
+--- a/drivers/video/fbdev/Makefile
++++ b/drivers/video/fbdev/Makefile
+@@ -97,7 +97,6 @@ obj-$(CONFIG_FB_MAXINE)		  += maxinefb.o
+ obj-$(CONFIG_FB_METRONOME)        += metronomefb.o
+ obj-$(CONFIG_FB_BROADSHEET)       += broadsheetfb.o
+ obj-$(CONFIG_FB_S1D13XXX)	  += s1d13xxxfb.o
+-obj-$(CONFIG_FB_SH7760)		  += sh7760fb.o
+ obj-$(CONFIG_FB_IMX)              += imxfb.o
+ obj-$(CONFIG_FB_S3C)		  += s3c-fb.o
+ obj-$(CONFIG_FB_S3C2410)	  += s3c2410fb.o
+diff --git a/drivers/video/fbdev/sh7760fb.c b/drivers/video/fbdev/sh7760fb.c
 deleted file mode 100644
-index 3e72fad99adfd4..00000000000000
---- a/drivers/spi/spi-sh.c
+index 5978a892123226..00000000000000
+--- a/drivers/video/fbdev/sh7760fb.c
 +++ /dev/null
-@@ -1,474 +0,0 @@
+@@ -1,587 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0
 -/*
-- * SH SPI bus driver
+- * SH7760/SH7763 LCDC Framebuffer driver.
 - *
-- * Copyright (C) 2011  Renesas Solutions Corp.
+- * (c) 2006-2008 MSC Vertriebsges.m.b.H.,
+- *             Manuel Lauss <mano@roarinelk.homelinux.net>
+- * (c) 2008 Nobuhiro Iwamatsu <iwamatsu.nobuhiro@renesas.com>
 - *
-- * Based on pxa2xx_spi.c:
-- * Copyright (C) 2005 Stephen Street / StreetFire Sound Labs
+- * PLEASE HAVE A LOOK AT Documentation/fb/sh7760fb.rst!
+- *
+- * Thanks to Siegfried Schaefer <s.schaefer at schaefer-edv.de>
+- *     for his original source and testing!
+- *
+- * sh7760_setcolreg get from drivers/video/sh_mobile_lcdcfb.c
 - */
 -
--#include <linux/module.h>
--#include <linux/kernel.h>
--#include <linux/sched.h>
--#include <linux/errno.h>
--#include <linux/timer.h>
+-#include <linux/completion.h>
 -#include <linux/delay.h>
--#include <linux/list.h>
--#include <linux/workqueue.h>
+-#include <linux/dma-mapping.h>
+-#include <linux/fb.h>
 -#include <linux/interrupt.h>
--#include <linux/platform_device.h>
 -#include <linux/io.h>
--#include <linux/spi/spi.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/slab.h>
 -
--#define SPI_SH_TBR		0x00
--#define SPI_SH_RBR		0x00
--#define SPI_SH_CR1		0x08
--#define SPI_SH_CR2		0x10
--#define SPI_SH_CR3		0x18
--#define SPI_SH_CR4		0x20
--#define SPI_SH_CR5		0x28
+-#include <asm/sh7760fb.h>
 -
--/* CR1 */
--#define SPI_SH_TBE		0x80
--#define SPI_SH_TBF		0x40
--#define SPI_SH_RBE		0x20
--#define SPI_SH_RBF		0x10
--#define SPI_SH_PFONRD		0x08
--#define SPI_SH_SSDB		0x04
--#define SPI_SH_SSD		0x02
--#define SPI_SH_SSA		0x01
--
--/* CR2 */
--#define SPI_SH_RSTF		0x80
--#define SPI_SH_LOOPBK		0x40
--#define SPI_SH_CPOL		0x20
--#define SPI_SH_CPHA		0x10
--#define SPI_SH_L1M0		0x08
--
--/* CR3 */
--#define SPI_SH_MAX_BYTE		0xFF
--
--/* CR4 */
--#define SPI_SH_TBEI		0x80
--#define SPI_SH_TBFI		0x40
--#define SPI_SH_RBEI		0x20
--#define SPI_SH_RBFI		0x10
--#define SPI_SH_WPABRT		0x04
--#define SPI_SH_SSS		0x01
--
--/* CR8 */
--#define SPI_SH_P1L0		0x80
--#define SPI_SH_PP1L0		0x40
--#define SPI_SH_MUXI		0x20
--#define SPI_SH_MUXIRQ		0x10
--
--#define SPI_SH_FIFO_SIZE	32
--#define SPI_SH_SEND_TIMEOUT	(3 * HZ)
--#define SPI_SH_RECEIVE_TIMEOUT	(HZ >> 3)
--
--#undef DEBUG
--
--struct spi_sh_data {
--	void __iomem *addr;
+-struct sh7760fb_par {
+-	void __iomem *base;
 -	int irq;
--	struct spi_master *master;
--	unsigned long cr1;
--	wait_queue_head_t wait;
--	int width;
+-
+-	struct sh7760fb_platdata *pd;	/* display information */
+-
+-	dma_addr_t fbdma;	/* physical address */
+-
+-	int rot;		/* rotation enabled? */
+-
+-	u32 pseudo_palette[16];
+-
+-	struct platform_device *dev;
+-	struct resource *ioarea;
+-	struct completion vsync;	/* vsync irq event */
 -};
 -
--static void spi_sh_write(struct spi_sh_data *ss, unsigned long data,
--			     unsigned long offset)
+-static irqreturn_t sh7760fb_irq(int irq, void *data)
 -{
--	if (ss->width == 8)
--		iowrite8(data, ss->addr + (offset >> 2));
--	else if (ss->width == 32)
--		iowrite32(data, ss->addr + offset);
--}
+-	struct completion *c = data;
 -
--static unsigned long spi_sh_read(struct spi_sh_data *ss, unsigned long offset)
--{
--	if (ss->width == 8)
--		return ioread8(ss->addr + (offset >> 2));
--	else if (ss->width == 32)
--		return ioread32(ss->addr + offset);
--	else
--		return 0;
--}
--
--static void spi_sh_set_bit(struct spi_sh_data *ss, unsigned long val,
--				unsigned long offset)
--{
--	unsigned long tmp;
--
--	tmp = spi_sh_read(ss, offset);
--	tmp |= val;
--	spi_sh_write(ss, tmp, offset);
--}
--
--static void spi_sh_clear_bit(struct spi_sh_data *ss, unsigned long val,
--				unsigned long offset)
--{
--	unsigned long tmp;
--
--	tmp = spi_sh_read(ss, offset);
--	tmp &= ~val;
--	spi_sh_write(ss, tmp, offset);
--}
--
--static void clear_fifo(struct spi_sh_data *ss)
--{
--	spi_sh_set_bit(ss, SPI_SH_RSTF, SPI_SH_CR2);
--	spi_sh_clear_bit(ss, SPI_SH_RSTF, SPI_SH_CR2);
--}
--
--static int spi_sh_wait_receive_buffer(struct spi_sh_data *ss)
--{
--	int timeout = 100000;
--
--	while (spi_sh_read(ss, SPI_SH_CR1) & SPI_SH_RBE) {
--		udelay(10);
--		if (timeout-- < 0)
--			return -ETIMEDOUT;
--	}
--	return 0;
--}
--
--static int spi_sh_wait_write_buffer_empty(struct spi_sh_data *ss)
--{
--	int timeout = 100000;
--
--	while (!(spi_sh_read(ss, SPI_SH_CR1) & SPI_SH_TBE)) {
--		udelay(10);
--		if (timeout-- < 0)
--			return -ETIMEDOUT;
--	}
--	return 0;
--}
--
--static int spi_sh_send(struct spi_sh_data *ss, struct spi_message *mesg,
--			struct spi_transfer *t)
--{
--	int i, retval = 0;
--	int remain = t->len;
--	int cur_len;
--	unsigned char *data;
--	long ret;
--
--	if (t->len)
--		spi_sh_set_bit(ss, SPI_SH_SSA, SPI_SH_CR1);
--
--	data = (unsigned char *)t->tx_buf;
--	while (remain > 0) {
--		cur_len = min(SPI_SH_FIFO_SIZE, remain);
--		for (i = 0; i < cur_len &&
--				!(spi_sh_read(ss, SPI_SH_CR4) &
--							SPI_SH_WPABRT) &&
--				!(spi_sh_read(ss, SPI_SH_CR1) & SPI_SH_TBF);
--				i++)
--			spi_sh_write(ss, (unsigned long)data[i], SPI_SH_TBR);
--
--		if (spi_sh_read(ss, SPI_SH_CR4) & SPI_SH_WPABRT) {
--			/* Abort SPI operation */
--			spi_sh_set_bit(ss, SPI_SH_WPABRT, SPI_SH_CR4);
--			retval = -EIO;
--			break;
--		}
--
--		cur_len = i;
--
--		remain -= cur_len;
--		data += cur_len;
--
--		if (remain > 0) {
--			ss->cr1 &= ~SPI_SH_TBE;
--			spi_sh_set_bit(ss, SPI_SH_TBE, SPI_SH_CR4);
--			ret = wait_event_interruptible_timeout(ss->wait,
--						 ss->cr1 & SPI_SH_TBE,
--						 SPI_SH_SEND_TIMEOUT);
--			if (ret == 0 && !(ss->cr1 & SPI_SH_TBE)) {
--				printk(KERN_ERR "%s: timeout\n", __func__);
--				return -ETIMEDOUT;
--			}
--		}
--	}
--
--	if (list_is_last(&t->transfer_list, &mesg->transfers)) {
--		spi_sh_clear_bit(ss, SPI_SH_SSD | SPI_SH_SSDB, SPI_SH_CR1);
--		spi_sh_set_bit(ss, SPI_SH_SSA, SPI_SH_CR1);
--
--		ss->cr1 &= ~SPI_SH_TBE;
--		spi_sh_set_bit(ss, SPI_SH_TBE, SPI_SH_CR4);
--		ret = wait_event_interruptible_timeout(ss->wait,
--					 ss->cr1 & SPI_SH_TBE,
--					 SPI_SH_SEND_TIMEOUT);
--		if (ret == 0 && (ss->cr1 & SPI_SH_TBE)) {
--			printk(KERN_ERR "%s: timeout\n", __func__);
--			return -ETIMEDOUT;
--		}
--	}
--
--	return retval;
--}
--
--static int spi_sh_receive(struct spi_sh_data *ss, struct spi_message *mesg,
--			  struct spi_transfer *t)
--{
--	int i;
--	int remain = t->len;
--	int cur_len;
--	unsigned char *data;
--	long ret;
--
--	if (t->len > SPI_SH_MAX_BYTE)
--		spi_sh_write(ss, SPI_SH_MAX_BYTE, SPI_SH_CR3);
--	else
--		spi_sh_write(ss, t->len, SPI_SH_CR3);
--
--	spi_sh_clear_bit(ss, SPI_SH_SSD | SPI_SH_SSDB, SPI_SH_CR1);
--	spi_sh_set_bit(ss, SPI_SH_SSA, SPI_SH_CR1);
--
--	spi_sh_wait_write_buffer_empty(ss);
--
--	data = (unsigned char *)t->rx_buf;
--	while (remain > 0) {
--		if (remain >= SPI_SH_FIFO_SIZE) {
--			ss->cr1 &= ~SPI_SH_RBF;
--			spi_sh_set_bit(ss, SPI_SH_RBF, SPI_SH_CR4);
--			ret = wait_event_interruptible_timeout(ss->wait,
--						 ss->cr1 & SPI_SH_RBF,
--						 SPI_SH_RECEIVE_TIMEOUT);
--			if (ret == 0 &&
--			    spi_sh_read(ss, SPI_SH_CR1) & SPI_SH_RBE) {
--				printk(KERN_ERR "%s: timeout\n", __func__);
--				return -ETIMEDOUT;
--			}
--		}
--
--		cur_len = min(SPI_SH_FIFO_SIZE, remain);
--		for (i = 0; i < cur_len; i++) {
--			if (spi_sh_wait_receive_buffer(ss))
--				break;
--			data[i] = (unsigned char)spi_sh_read(ss, SPI_SH_RBR);
--		}
--
--		remain -= cur_len;
--		data += cur_len;
--	}
--
--	/* deassert CS when SPI is receiving. */
--	if (t->len > SPI_SH_MAX_BYTE) {
--		clear_fifo(ss);
--		spi_sh_write(ss, 1, SPI_SH_CR3);
--	} else {
--		spi_sh_write(ss, 0, SPI_SH_CR3);
--	}
--
--	return 0;
--}
--
--static int spi_sh_transfer_one_message(struct spi_controller *ctlr,
--					struct spi_message *mesg)
--{
--	struct spi_sh_data *ss = spi_controller_get_devdata(ctlr);
--	struct spi_transfer *t;
--	int ret;
--
--	pr_debug("%s: enter\n", __func__);
--
--	spi_sh_clear_bit(ss, SPI_SH_SSA, SPI_SH_CR1);
--
--	list_for_each_entry(t, &mesg->transfers, transfer_list) {
--		pr_debug("tx_buf = %p, rx_buf = %p\n",
--			 t->tx_buf, t->rx_buf);
--		pr_debug("len = %d, delay.value = %d\n",
--			 t->len, t->delay.value);
--
--		if (t->tx_buf) {
--			ret = spi_sh_send(ss, mesg, t);
--			if (ret < 0)
--				goto error;
--		}
--		if (t->rx_buf) {
--			ret = spi_sh_receive(ss, mesg, t);
--			if (ret < 0)
--				goto error;
--		}
--		mesg->actual_length += t->len;
--	}
--
--	mesg->status = 0;
--	spi_finalize_current_message(ctlr);
--
--	clear_fifo(ss);
--	spi_sh_set_bit(ss, SPI_SH_SSD, SPI_SH_CR1);
--	udelay(100);
--
--	spi_sh_clear_bit(ss, SPI_SH_SSA | SPI_SH_SSDB | SPI_SH_SSD,
--			 SPI_SH_CR1);
--
--	clear_fifo(ss);
--
--	return 0;
--
-- error:
--	mesg->status = ret;
--	spi_finalize_current_message(ctlr);
--	if (mesg->complete)
--		mesg->complete(mesg->context);
--
--	spi_sh_clear_bit(ss, SPI_SH_SSA | SPI_SH_SSDB | SPI_SH_SSD,
--			 SPI_SH_CR1);
--	clear_fifo(ss);
--
--	return ret;
--}
--
--static int spi_sh_setup(struct spi_device *spi)
--{
--	struct spi_sh_data *ss = spi_master_get_devdata(spi->master);
--
--	pr_debug("%s: enter\n", __func__);
--
--	spi_sh_write(ss, 0xfe, SPI_SH_CR1);	/* SPI sycle stop */
--	spi_sh_write(ss, 0x00, SPI_SH_CR1);	/* CR1 init */
--	spi_sh_write(ss, 0x00, SPI_SH_CR3);	/* CR3 init */
--
--	clear_fifo(ss);
--
--	/* 1/8 clock */
--	spi_sh_write(ss, spi_sh_read(ss, SPI_SH_CR2) | 0x07, SPI_SH_CR2);
--	udelay(10);
--
--	return 0;
--}
--
--static void spi_sh_cleanup(struct spi_device *spi)
--{
--	struct spi_sh_data *ss = spi_master_get_devdata(spi->master);
--
--	pr_debug("%s: enter\n", __func__);
--
--	spi_sh_clear_bit(ss, SPI_SH_SSA | SPI_SH_SSDB | SPI_SH_SSD,
--			 SPI_SH_CR1);
--}
--
--static irqreturn_t spi_sh_irq(int irq, void *_ss)
--{
--	struct spi_sh_data *ss = (struct spi_sh_data *)_ss;
--	unsigned long cr1;
--
--	cr1 = spi_sh_read(ss, SPI_SH_CR1);
--	if (cr1 & SPI_SH_TBE)
--		ss->cr1 |= SPI_SH_TBE;
--	if (cr1 & SPI_SH_TBF)
--		ss->cr1 |= SPI_SH_TBF;
--	if (cr1 & SPI_SH_RBE)
--		ss->cr1 |= SPI_SH_RBE;
--	if (cr1 & SPI_SH_RBF)
--		ss->cr1 |= SPI_SH_RBF;
--
--	if (ss->cr1) {
--		spi_sh_clear_bit(ss, ss->cr1, SPI_SH_CR4);
--		wake_up(&ss->wait);
--	}
+-	complete(c);
 -
 -	return IRQ_HANDLED;
 -}
 -
--static int spi_sh_remove(struct platform_device *pdev)
+-/* wait_for_lps - wait until power supply has reached a certain state. */
+-static int wait_for_lps(struct sh7760fb_par *par, int val)
 -{
--	struct spi_sh_data *ss = platform_get_drvdata(pdev);
+-	int i = 100;
+-	while (--i && ((ioread16(par->base + LDPMMR) & 3) != val))
+-		msleep(1);
 -
--	spi_unregister_master(ss->master);
--	free_irq(ss->irq, ss);
+-	if (i <= 0)
+-		return -ETIMEDOUT;
 -
 -	return 0;
 -}
 -
--static int spi_sh_probe(struct platform_device *pdev)
+-/* en/disable the LCDC */
+-static int sh7760fb_blank(int blank, struct fb_info *info)
 -{
--	struct resource *res;
--	struct spi_master *master;
--	struct spi_sh_data *ss;
--	int ret, irq;
+-	struct sh7760fb_par *par = info->par;
+-	struct sh7760fb_platdata *pd = par->pd;
+-	unsigned short cntr = ioread16(par->base + LDCNTR);
+-	unsigned short intr = ioread16(par->base + LDINTR);
+-	int lps;
 -
--	/* get base addr */
+-	if (blank == FB_BLANK_UNBLANK) {
+-		intr |= VINT_START;
+-		cntr = LDCNTR_DON2 | LDCNTR_DON;
+-		lps = 3;
+-	} else {
+-		intr &= ~VINT_START;
+-		cntr = LDCNTR_DON2;
+-		lps = 0;
+-	}
+-
+-	if (pd->blank)
+-		pd->blank(blank);
+-
+-	iowrite16(intr, par->base + LDINTR);
+-	iowrite16(cntr, par->base + LDCNTR);
+-
+-	return wait_for_lps(par, lps);
+-}
+-
+-static int sh7760_setcolreg (u_int regno,
+-	u_int red, u_int green, u_int blue,
+-	u_int transp, struct fb_info *info)
+-{
+-	u32 *palette = info->pseudo_palette;
+-
+-	if (regno >= 16)
+-		return -EINVAL;
+-
+-	/* only FB_VISUAL_TRUECOLOR supported */
+-
+-	red >>= 16 - info->var.red.length;
+-	green >>= 16 - info->var.green.length;
+-	blue >>= 16 - info->var.blue.length;
+-	transp >>= 16 - info->var.transp.length;
+-
+-	palette[regno] = (red << info->var.red.offset) |
+-		(green << info->var.green.offset) |
+-		(blue << info->var.blue.offset) |
+-		(transp << info->var.transp.offset);
+-
+-	return 0;
+-}
+-
+-static int sh7760fb_get_color_info(struct device *dev,
+-				   u16 lddfr, int *bpp, int *gray)
+-{
+-	int lbpp, lgray;
+-
+-	lgray = lbpp = 0;
+-
+-	switch (lddfr & LDDFR_COLOR_MASK) {
+-	case LDDFR_1BPP_MONO:
+-		lgray = 1;
+-		lbpp = 1;
+-		break;
+-	case LDDFR_2BPP_MONO:
+-		lgray = 1;
+-		lbpp = 2;
+-		break;
+-	case LDDFR_4BPP_MONO:
+-		lgray = 1;
+-	case LDDFR_4BPP:
+-		lbpp = 4;
+-		break;
+-	case LDDFR_6BPP_MONO:
+-		lgray = 1;
+-	case LDDFR_8BPP:
+-		lbpp = 8;
+-		break;
+-	case LDDFR_16BPP_RGB555:
+-	case LDDFR_16BPP_RGB565:
+-		lbpp = 16;
+-		lgray = 0;
+-		break;
+-	default:
+-		dev_dbg(dev, "unsupported LDDFR bit depth.\n");
+-		return -EINVAL;
+-	}
+-
+-	if (bpp)
+-		*bpp = lbpp;
+-	if (gray)
+-		*gray = lgray;
+-
+-	return 0;
+-}
+-
+-static int sh7760fb_check_var(struct fb_var_screeninfo *var,
+-			      struct fb_info *info)
+-{
+-	struct fb_fix_screeninfo *fix = &info->fix;
+-	struct sh7760fb_par *par = info->par;
+-	int ret, bpp;
+-
+-	/* get color info from register value */
+-	ret = sh7760fb_get_color_info(info->dev, par->pd->lddfr, &bpp, NULL);
+-	if (ret)
+-		return ret;
+-
+-	var->bits_per_pixel = bpp;
+-
+-	if ((var->grayscale) && (var->bits_per_pixel == 1))
+-		fix->visual = FB_VISUAL_MONO10;
+-	else if (var->bits_per_pixel >= 15)
+-		fix->visual = FB_VISUAL_TRUECOLOR;
+-	else
+-		fix->visual = FB_VISUAL_PSEUDOCOLOR;
+-
+-	/* TODO: add some more validation here */
+-	return 0;
+-}
+-
+-/*
+- * sh7760fb_set_par - set videomode.
+- *
+- * NOTE: The rotation, grayscale and DSTN codepaths are
+- *     totally untested!
+- */
+-static int sh7760fb_set_par(struct fb_info *info)
+-{
+-	struct sh7760fb_par *par = info->par;
+-	struct fb_videomode *vm = par->pd->def_mode;
+-	unsigned long sbase, dstn_off, ldsarl, stride;
+-	unsigned short hsynp, hsynw, htcn, hdcn;
+-	unsigned short vsynp, vsynw, vtln, vdln;
+-	unsigned short lddfr, ldmtr;
+-	int ret, bpp, gray;
+-
+-	par->rot = par->pd->rotate;
+-
+-	/* rotate only works with xres <= 320 */
+-	if (par->rot && (vm->xres > 320)) {
+-		dev_dbg(info->dev, "rotation disabled due to display size\n");
+-		par->rot = 0;
+-	}
+-
+-	/* calculate LCDC reg vals from display parameters */
+-	hsynp = vm->right_margin + vm->xres;
+-	hsynw = vm->hsync_len;
+-	htcn = vm->left_margin + hsynp + hsynw;
+-	hdcn = vm->xres;
+-	vsynp = vm->lower_margin + vm->yres;
+-	vsynw = vm->vsync_len;
+-	vtln = vm->upper_margin + vsynp + vsynw;
+-	vdln = vm->yres;
+-
+-	/* get color info from register value */
+-	ret = sh7760fb_get_color_info(info->dev, par->pd->lddfr, &bpp, &gray);
+-	if (ret)
+-		return ret;
+-
+-	dev_dbg(info->dev, "%dx%d %dbpp %s (orientation %s)\n", hdcn,
+-		vdln, bpp, gray ? "grayscale" : "color",
+-		par->rot ? "rotated" : "normal");
+-
+-#ifdef CONFIG_CPU_LITTLE_ENDIAN
+-	lddfr = par->pd->lddfr | (1 << 8);
+-#else
+-	lddfr = par->pd->lddfr & ~(1 << 8);
+-#endif
+-
+-	ldmtr = par->pd->ldmtr;
+-
+-	if (!(vm->sync & FB_SYNC_HOR_HIGH_ACT))
+-		ldmtr |= LDMTR_CL1POL;
+-	if (!(vm->sync & FB_SYNC_VERT_HIGH_ACT))
+-		ldmtr |= LDMTR_FLMPOL;
+-
+-	/* shut down LCDC before changing display parameters */
+-	sh7760fb_blank(FB_BLANK_POWERDOWN, info);
+-
+-	iowrite16(par->pd->ldickr, par->base + LDICKR);	/* pixclock */
+-	iowrite16(ldmtr, par->base + LDMTR);	/* polarities */
+-	iowrite16(lddfr, par->base + LDDFR);	/* color/depth */
+-	iowrite16((par->rot ? 1 << 13 : 0), par->base + LDSMR);	/* rotate */
+-	iowrite16(par->pd->ldpmmr, par->base + LDPMMR);	/* Power Management */
+-	iowrite16(par->pd->ldpspr, par->base + LDPSPR);	/* Power Supply Ctrl */
+-
+-	/* display resolution */
+-	iowrite16(((htcn >> 3) - 1) | (((hdcn >> 3) - 1) << 8),
+-		  par->base + LDHCNR);
+-	iowrite16(vdln - 1, par->base + LDVDLNR);
+-	iowrite16(vtln - 1, par->base + LDVTLNR);
+-	/* h/v sync signals */
+-	iowrite16((vsynp - 1) | ((vsynw - 1) << 12), par->base + LDVSYNR);
+-	iowrite16(((hsynp >> 3) - 1) | (((hsynw >> 3) - 1) << 12),
+-		  par->base + LDHSYNR);
+-	/* AC modulation sig */
+-	iowrite16(par->pd->ldaclnr, par->base + LDACLNR);
+-
+-	stride = (par->rot) ? vtln : hdcn;
+-	if (!gray)
+-		stride *= (bpp + 7) >> 3;
+-	else {
+-		if (bpp == 1)
+-			stride >>= 3;
+-		else if (bpp == 2)
+-			stride >>= 2;
+-		else if (bpp == 4)
+-			stride >>= 1;
+-		/* 6 bpp == 8 bpp */
+-	}
+-
+-	/* if rotated, stride must be power of 2 */
+-	if (par->rot) {
+-		unsigned long bit = 1 << 31;
+-		while (bit) {
+-			if (stride & bit)
+-				break;
+-			bit >>= 1;
+-		}
+-		if (stride & ~bit)
+-			stride = bit << 1;	/* not P-o-2, round up */
+-	}
+-	iowrite16(stride, par->base + LDLAOR);
+-
+-	/* set display mem start address */
+-	sbase = (unsigned long)par->fbdma;
+-	if (par->rot)
+-		sbase += (hdcn - 1) * stride;
+-
+-	iowrite32(sbase, par->base + LDSARU);
+-
+-	/*
+-	 * for DSTN need to set address for lower half.
+-	 * I (mlau) don't know which address to set it to,
+-	 * so I guessed at (stride * yres/2).
+-	 */
+-	if (((ldmtr & 0x003f) >= LDMTR_DSTN_MONO_8) &&
+-	    ((ldmtr & 0x003f) <= LDMTR_DSTN_COLOR_16)) {
+-
+-		dev_dbg(info->dev, " ***** DSTN untested! *****\n");
+-
+-		dstn_off = stride;
+-		if (par->rot)
+-			dstn_off *= hdcn >> 1;
+-		else
+-			dstn_off *= vdln >> 1;
+-
+-		ldsarl = sbase + dstn_off;
+-	} else
+-		ldsarl = 0;
+-
+-	iowrite32(ldsarl, par->base + LDSARL);	/* mem for lower half of DSTN */
+-
+-	info->fix.line_length = stride;
+-
+-	sh7760fb_check_var(&info->var, info);
+-
+-	sh7760fb_blank(FB_BLANK_UNBLANK, info);	/* panel on! */
+-
+-	dev_dbg(info->dev, "hdcn  : %6d htcn  : %6d\n", hdcn, htcn);
+-	dev_dbg(info->dev, "hsynw : %6d hsynp : %6d\n", hsynw, hsynp);
+-	dev_dbg(info->dev, "vdln  : %6d vtln  : %6d\n", vdln, vtln);
+-	dev_dbg(info->dev, "vsynw : %6d vsynp : %6d\n", vsynw, vsynp);
+-	dev_dbg(info->dev, "clksrc: %6d clkdiv: %6d\n",
+-		(par->pd->ldickr >> 12) & 3, par->pd->ldickr & 0x1f);
+-	dev_dbg(info->dev, "ldpmmr: 0x%04x ldpspr: 0x%04x\n", par->pd->ldpmmr,
+-		par->pd->ldpspr);
+-	dev_dbg(info->dev, "ldmtr : 0x%04x lddfr : 0x%04x\n", ldmtr, lddfr);
+-	dev_dbg(info->dev, "ldlaor: %ld\n", stride);
+-	dev_dbg(info->dev, "ldsaru: 0x%08lx ldsarl: 0x%08lx\n", sbase, ldsarl);
+-
+-	return 0;
+-}
+-
+-static const struct fb_ops sh7760fb_ops = {
+-	.owner = THIS_MODULE,
+-	.fb_blank = sh7760fb_blank,
+-	.fb_check_var = sh7760fb_check_var,
+-	.fb_setcolreg = sh7760_setcolreg,
+-	.fb_set_par = sh7760fb_set_par,
+-	.fb_fillrect = cfb_fillrect,
+-	.fb_copyarea = cfb_copyarea,
+-	.fb_imageblit = cfb_imageblit,
+-};
+-
+-static void sh7760fb_free_mem(struct fb_info *info)
+-{
+-	struct sh7760fb_par *par = info->par;
+-
+-	if (!info->screen_base)
+-		return;
+-
+-	dma_free_coherent(info->dev, info->screen_size,
+-			  info->screen_base, par->fbdma);
+-
+-	par->fbdma = 0;
+-	info->screen_base = NULL;
+-	info->screen_size = 0;
+-}
+-
+-/* allocate the framebuffer memory. This memory must be in Area3,
+- * (dictated by the DMA engine) and contiguous, at a 512 byte boundary.
+- */
+-static int sh7760fb_alloc_mem(struct fb_info *info)
+-{
+-	struct sh7760fb_par *par = info->par;
+-	void *fbmem;
+-	unsigned long vram;
+-	int ret, bpp;
+-
+-	if (info->screen_base)
+-		return 0;
+-
+-	/* get color info from register value */
+-	ret = sh7760fb_get_color_info(info->dev, par->pd->lddfr, &bpp, NULL);
+-	if (ret) {
+-		printk(KERN_ERR "colinfo\n");
+-		return ret;
+-	}
+-
+-	/* min VRAM: xres_min = 16, yres_min = 1, bpp = 1: 2byte -> 1 page
+-	   max VRAM: xres_max = 1024, yres_max = 1024, bpp = 16: 2MB */
+-
+-	vram = info->var.xres * info->var.yres;
+-	if (info->var.grayscale) {
+-		if (bpp == 1)
+-			vram >>= 3;
+-		else if (bpp == 2)
+-			vram >>= 2;
+-		else if (bpp == 4)
+-			vram >>= 1;
+-	} else if (bpp > 8)
+-		vram *= 2;
+-	if ((vram < 1) || (vram > 1024 * 2048)) {
+-		dev_dbg(info->dev, "too much VRAM required. Check settings\n");
+-		return -ENODEV;
+-	}
+-
+-	if (vram < PAGE_SIZE)
+-		vram = PAGE_SIZE;
+-
+-	fbmem = dma_alloc_coherent(info->dev, vram, &par->fbdma, GFP_KERNEL);
+-
+-	if (!fbmem)
+-		return -ENOMEM;
+-
+-	if ((par->fbdma & SH7760FB_DMA_MASK) != SH7760FB_DMA_MASK) {
+-		sh7760fb_free_mem(info);
+-		dev_err(info->dev, "kernel gave me memory at 0x%08lx, which is"
+-			"unusable for the LCDC\n", (unsigned long)par->fbdma);
+-		return -ENOMEM;
+-	}
+-
+-	info->screen_base = fbmem;
+-	info->screen_size = vram;
+-	info->fix.smem_start = (unsigned long)info->screen_base;
+-	info->fix.smem_len = info->screen_size;
+-
+-	return 0;
+-}
+-
+-static int sh7760fb_probe(struct platform_device *pdev)
+-{
+-	struct fb_info *info;
+-	struct resource *res;
+-	struct sh7760fb_par *par;
+-	int ret;
+-
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 -	if (unlikely(res == NULL)) {
 -		dev_err(&pdev->dev, "invalid resource\n");
 -		return -EINVAL;
 -	}
 -
--	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
--
--	master = devm_spi_alloc_master(&pdev->dev, sizeof(struct spi_sh_data));
--	if (master == NULL) {
--		dev_err(&pdev->dev, "spi_alloc_master error.\n");
+-	info = framebuffer_alloc(sizeof(struct sh7760fb_par), &pdev->dev);
+-	if (!info)
 -		return -ENOMEM;
+-
+-	par = info->par;
+-	par->dev = pdev;
+-
+-	par->pd = pdev->dev.platform_data;
+-	if (!par->pd) {
+-		dev_dbg(info->dev, "no display setup data!\n");
+-		ret = -ENODEV;
+-		goto out_fb;
 -	}
 -
--	ss = spi_master_get_devdata(master);
--	platform_set_drvdata(pdev, ss);
--
--	switch (res->flags & IORESOURCE_MEM_TYPE_MASK) {
--	case IORESOURCE_MEM_8BIT:
--		ss->width = 8;
--		break;
--	case IORESOURCE_MEM_32BIT:
--		ss->width = 32;
--		break;
--	default:
--		dev_err(&pdev->dev, "No support width\n");
--		return -ENODEV;
+-	par->ioarea = request_mem_region(res->start,
+-					 resource_size(res), pdev->name);
+-	if (!par->ioarea) {
+-		dev_err(&pdev->dev, "mmio area busy\n");
+-		ret = -EBUSY;
+-		goto out_fb;
 -	}
--	ss->irq = irq;
--	ss->master = master;
--	ss->addr = devm_ioremap(&pdev->dev, res->start, resource_size(res));
--	if (ss->addr == NULL) {
--		dev_err(&pdev->dev, "ioremap error.\n");
--		return -ENOMEM;
--	}
--	init_waitqueue_head(&ss->wait);
 -
--	ret = request_irq(irq, spi_sh_irq, 0, "spi_sh", ss);
+-	par->base = ioremap(res->start, resource_size(res));
+-	if (!par->base) {
+-		dev_err(&pdev->dev, "cannot remap\n");
+-		ret = -ENODEV;
+-		goto out_res;
+-	}
+-
+-	iowrite16(0, par->base + LDINTR);	/* disable vsync irq */
+-	par->irq = platform_get_irq(pdev, 0);
+-	if (par->irq >= 0) {
+-		ret = request_irq(par->irq, sh7760fb_irq, 0,
+-				  "sh7760-lcdc", &par->vsync);
+-		if (ret) {
+-			dev_err(&pdev->dev, "cannot grab IRQ\n");
+-			par->irq = -ENXIO;
+-		} else
+-			disable_irq_nosync(par->irq);
+-	}
+-
+-	fb_videomode_to_var(&info->var, par->pd->def_mode);
+-
+-	ret = sh7760fb_alloc_mem(info);
+-	if (ret) {
+-		dev_dbg(info->dev, "framebuffer memory allocation failed!\n");
+-		goto out_unmap;
+-	}
+-
+-	info->pseudo_palette = par->pseudo_palette;
+-
+-	/* fixup color register bitpositions. These are fixed by hardware */
+-	info->var.red.offset = 11;
+-	info->var.red.length = 5;
+-	info->var.red.msb_right = 0;
+-
+-	info->var.green.offset = 5;
+-	info->var.green.length = 6;
+-	info->var.green.msb_right = 0;
+-
+-	info->var.blue.offset = 0;
+-	info->var.blue.length = 5;
+-	info->var.blue.msb_right = 0;
+-
+-	info->var.transp.offset = 0;
+-	info->var.transp.length = 0;
+-	info->var.transp.msb_right = 0;
+-
+-	strcpy(info->fix.id, "sh7760-lcdc");
+-
+-	/* set the DON2 bit now, before cmap allocation, as it will randomize
+-	 * palette memory.
+-	 */
+-	iowrite16(LDCNTR_DON2, par->base + LDCNTR);
+-	info->fbops = &sh7760fb_ops;
+-
+-	ret = fb_alloc_cmap(&info->cmap, 256, 0);
+-	if (ret) {
+-		dev_dbg(info->dev, "Unable to allocate cmap memory\n");
+-		goto out_mem;
+-	}
+-
+-	ret = register_framebuffer(info);
 -	if (ret < 0) {
--		dev_err(&pdev->dev, "request_irq error\n");
--		return ret;
+-		dev_dbg(info->dev, "cannot register fb!\n");
+-		goto out_cmap;
 -	}
+-	platform_set_drvdata(pdev, info);
 -
--	master->num_chipselect = 2;
--	master->bus_num = pdev->id;
--	master->setup = spi_sh_setup;
--	master->transfer_one_message = spi_sh_transfer_one_message;
--	master->cleanup = spi_sh_cleanup;
--
--	ret = spi_register_master(master);
--	if (ret < 0) {
--		printk(KERN_ERR "spi_register_master error.\n");
--		goto error3;
--	}
+-	printk(KERN_INFO "%s: memory at phys 0x%08lx-0x%08lx, size %ld KiB\n",
+-	       pdev->name,
+-	       (unsigned long)par->fbdma,
+-	       (unsigned long)(par->fbdma + info->screen_size - 1),
+-	       info->screen_size >> 10);
 -
 -	return 0;
 -
-- error3:
--	free_irq(irq, ss);
+-out_cmap:
+-	sh7760fb_blank(FB_BLANK_POWERDOWN, info);
+-	fb_dealloc_cmap(&info->cmap);
+-out_mem:
+-	sh7760fb_free_mem(info);
+-out_unmap:
+-	if (par->irq >= 0)
+-		free_irq(par->irq, &par->vsync);
+-	iounmap(par->base);
+-out_res:
+-	release_mem_region(res->start, resource_size(res));
+-out_fb:
+-	framebuffer_release(info);
 -	return ret;
 -}
 -
--static struct platform_driver spi_sh_driver = {
--	.probe = spi_sh_probe,
--	.remove = spi_sh_remove,
--	.driver = {
--		.name = "sh_spi",
--	},
--};
--module_platform_driver(spi_sh_driver);
+-static int sh7760fb_remove(struct platform_device *dev)
+-{
+-	struct fb_info *info = platform_get_drvdata(dev);
+-	struct sh7760fb_par *par = info->par;
 -
--MODULE_DESCRIPTION("SH SPI bus driver");
+-	sh7760fb_blank(FB_BLANK_POWERDOWN, info);
+-	unregister_framebuffer(info);
+-	fb_dealloc_cmap(&info->cmap);
+-	sh7760fb_free_mem(info);
+-	if (par->irq >= 0)
+-		free_irq(par->irq, &par->vsync);
+-	iounmap(par->base);
+-	release_mem_region(par->ioarea->start, resource_size(par->ioarea));
+-	framebuffer_release(info);
+-
+-	return 0;
+-}
+-
+-static struct platform_driver sh7760_lcdc_driver = {
+-	.driver = {
+-		   .name = "sh7760-lcdc",
+-		   },
+-	.probe = sh7760fb_probe,
+-	.remove = sh7760fb_remove,
+-};
+-
+-module_platform_driver(sh7760_lcdc_driver);
+-
+-MODULE_AUTHOR("Nobuhiro Iwamatsu, Manuel Lauss");
+-MODULE_DESCRIPTION("FBdev for SH7760/63 integrated LCD Controller");
 -MODULE_LICENSE("GPL v2");
--MODULE_AUTHOR("Yoshihiro Shimoda");
--MODULE_ALIAS("platform:sh_spi");
 -- 
 2.39.0
 
