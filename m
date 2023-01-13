@@ -4,71 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0828FC677F1
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 19:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AED1EC3DA78
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 19:05:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1vej9TlBaq7KQp0xxfCiUIrvQUKj/tHSfI6jz+fchYg=; b=DWU1C7oqyU7DNe
-	cNtCAececm66/mNizWJMIRKvCIydquPSeWMZPD7me/n6cwm5wsCJnwkocbhrICMT77Ps/vdQVCNoB
-	ankPR9OhiJAEZnrMn7RR42SOpkAsn3cSzagoTvFGns35mDIxrRj27FbwPPjDs/NY46Iu++GjCp4y3
-	n63Rm12e8Y/AkLzqyP6rqlA3fNNjgukomvIV6IJZhGuirfuVVGdiN/g5bhzGxeO5071vcONPKpYYM
-	uIhzpxvYwr1ibL6AvHXS9o51OYOpFm2OKls4MUdhJ7ExMEYNxgzv/CyWsp7bC7Gvl5jW3ZnXagzIG
-	EhlrIQ2uMDCpVd7Kp41Q==;
+	List-Owner; bh=xefuC7nzuCPJLptqVhMQZyi6BGNmbkhkkqZmcFOLG4k=; b=hUhzdqOl8cMeB0
+	eOhnmAkd/hplo3C7i96aQ1dy/e6AiMGQeMedEVQ1pPEImHpJ6XeWS/Zr7zad8qYC+fnCIdIrIIFJp
+	X3NKe3MNIbEPCxKZkrEpimGG6fOYz8mL76atP8ABj+X5LFNnqz4gEqJ9eCPMV3XFm71m9Ndrpkhxm
+	sLxRfISnMBjL8Z2AwjSgoFV46OYlPWaX2Ve5vlmvx+uTDxqR/C8yj/BzRje+plIUBZzDJqnKbuZc2
+	Tg4AY1ae9S0k2YK5uQk/1r4RDL/MO9gD2ho7RhHj0KP2so20dwWOjK/zipEkKiveaYIHguACKa4Ff
+	kkPn7YhrRtfZ+EUe1Q8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGPHP-0049td-Mo; Fri, 13 Jan 2023 18:59:55 +0000
-Received: from mail-oo1-xc2d.google.com ([2607:f8b0:4864:20::c2d])
+	id 1pGPN2-004AXS-IF; Fri, 13 Jan 2023 19:05:44 +0000
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGPHM-0049sR-5K
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 18:59:53 +0000
-Received: by mail-oo1-xc2d.google.com with SMTP id d16-20020a4a5210000000b004f23d1aea58so2004713oob.3
-        for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2023 10:59:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bTIDomgS8mXkDJCvxm5Zm+LjWmMOagP4MCI8VhlfZ4M=;
-        b=PS9bts8WEYUdHc2dq03MseWIdo5SmkGasWJ1IHK/82VNd2x1nauvFpnIRKJHReewV4
-         qHgmemCtG+n4JzEug1j/TkXXGr7XuvlNF4IBzbNfnN6lagwFrOKhEymKlD3N/LDBaGvv
-         sKYDqBaLKXsSv5VTvSWrpB1Ro6mV2B1zSTvwS3WrXPPhGJgdWKpIwnEsYL1x49CphPxG
-         SL4YOgYdR5jGUY39ZZius3Ig7i4WfTYOC67k8Vh1lto4GbCgV9uKa97KEalM5EmLMGPn
-         3yGQHE93+pmLVFjd1TlIZLJrfjBmFeNgyn5vD6/2wKe8LZIYKJC7joRnrftdzonfyS0K
-         +t4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bTIDomgS8mXkDJCvxm5Zm+LjWmMOagP4MCI8VhlfZ4M=;
-        b=69HB8VMgyF9gBxtNgdcufIaKeBnKnz4Ot1SPHjJtQahwnGsJzm0/CjxsVQuS/rJVsS
-         3hObKdj7HuXKo6tTYbq1lS1pOcjT6CDeKvNjS2FZJSHpbf2OBLsdm0Bp+6cwqCa+sXL+
-         VgGIVoPHpmdcEuEUmQ+N2wexYpkGZTg4H+djX75maXfxjCgT3DfWth3YCOJpDOg/2qbv
-         IV9nDpysxLmzraXSgEaJoMQvkr8o5JG5pd/HImTAJhYlfEzToQfqIAqkNbYuhrKofE+W
-         CZlZRPju3FzNraB0dP5G0Lq3EMv3OZoP+FR906IuXEPtYsv4Buxq8KzTvpJ5+4f6TBcd
-         nTCQ==
-X-Gm-Message-State: AFqh2krlX+X5/YFFZ8EBFPQJPVw4OQvco8UZ5fIG0mGZe5vKQjMuHkY3
-	ErPm+aF5EJmuJS4w5Q3lCzUo6A==
-X-Google-Smtp-Source: AMrXdXvaOiO0G10Az4EGLc64Vx6N+KrZr3PuLGXv0M+M3iF7lrA3WUc8R2fIq6AYtp8ZC6Mk4E9lCQ==
-X-Received: by 2002:a4a:c594:0:b0:4e7:5d43:a654 with SMTP id x20-20020a4ac594000000b004e75d43a654mr22358114oop.0.1673636389556;
-        Fri, 13 Jan 2023 10:59:49 -0800 (PST)
-Received: from [192.168.86.224] ([136.62.38.22])
-        by smtp.gmail.com with ESMTPSA id bc31-20020a056820169f00b0049f8b4b2095sm10111163oob.44.2023.01.13.10.59.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Jan 2023 10:59:48 -0800 (PST)
-Message-ID: <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
-Date: Fri, 13 Jan 2023 13:11:56 -0600
+	id 1pGPMz-004AVM-7n
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 19:05:43 +0000
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1pGPMg-003M27-Uf; Fri, 13 Jan 2023 20:05:22 +0100
+Received: from p57ae5361.dip0.t-ipconnect.de ([87.174.83.97] helo=[192.168.178.35])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1pGPMg-000Hn8-Jc; Fri, 13 Jan 2023 20:05:22 +0100
+Message-ID: <fe09d811-e290-821d-ec8b-75936b6583c2@physik.fu-berlin.de>
+Date: Fri, 13 Jan 2023 20:05:20 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
+ Thunderbird/102.6.1
 Subject: Re: remove arch/sh
 Content-Language: en-US
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Geert Uytterhoeven <geert@linux-m68k.org>
+To: Rob Landley <rob@landley.net>, Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Christoph Hellwig <hch@lst.de>,
  Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
  Arnd Bergmann <arnd@arndb.de>,
@@ -90,11 +66,14 @@ References: <20230113062339.1909087-1-hch@lst.de>
  <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
  <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
  <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
+ <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+In-Reply-To: <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.174.83.97
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230113_105952_415989_D5FD9AD1 
-X-CRM114-Status: GOOD (  13.89  )
+X-CRM114-CacheID: sfid-20230113_110541_458991_B42843A6 
+X-CRM114-Status: GOOD (  15.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,42 +85,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/13/23 02:52, John Paul Adrian Glaubitz wrote:
-> Hi Geert!
+Hi Rob!
+
+On 1/13/23 20:11, Rob Landley wrote:
+>> I actually would be willing to do it but I'm a bit hesitant as I'm not 100%
+>> sure my skills are sufficient. Maybe if someone can assist me?
 > 
-> On 1/13/23 09:26, Geert Uytterhoeven wrote:
->> Indeed.  The main issue is not the lack of people sending patches and
->> fixes, but those patches never being applied by the maintainers.
->> Perhaps someone is willing to stand up to take over maintainership?
+> My skills aren't sufficient and I dunno how much time I have, but I can
+> certainly assist. I test sh4 regularlyish and it's in the list of architectures
+> I ship binaries and tiny VM images for, just refreshed tuesday:
 > 
-> I actually would be willing to do it but I'm a bit hesitant as I'm not 100%
-> sure my skills are sufficient. Maybe if someone can assist me?
+> https://landley.net/toybox/downloads/binaries/0.8.9/
+> https://landley.net/toybox/downloads/binaries/mkroot/0.8.9/
+> 
+> (The sh2eb isn't a VM, it's a physical board I have here...)
+> 
+> There is definitely interest in this architecture. I'm aware Rich hasn't been
+> the most responsive maintainer. (I'm told he's on vacation with his family at
+> the moment, according to the text I got about this issue from the J-core
+> hardware guys in Japan.)
 
-My skills aren't sufficient and I dunno how much time I have, but I can
-certainly assist. I test sh4 regularlyish and it's in the list of architectures
-I ship binaries and tiny VM images for, just refreshed tuesday:
+Well, maybe we can just give it a try together ...
 
-https://landley.net/toybox/downloads/binaries/0.8.9/
-https://landley.net/toybox/downloads/binaries/mkroot/0.8.9/
+> The main reason we haven't converted everything to device tree is we only have
+> access to test hardware for a subset of the boards. Pruning the list of
+> supported boards and converting the rest to device tree might make sense. We can
+> always add/convert boards back later...
 
-(The sh2eb isn't a VM, it's a physical board I have here...)
+There is a patch by Yoshinori Sato which adds device tree support to SH. Maybe we
+can revive it.
 
-There is definitely interest in this architecture. I'm aware Rich hasn't been
-the most responsive maintainer. (I'm told he's on vacation with his family at
-the moment, according to the text I got about this issue from the J-core
-hardware guys in Japan.)
+Adrian
 
-The main reason we haven't converted everything to device tree is we only have
-access to test hardware for a subset of the boards. Pruning the list of
-supported boards and converting the rest to device tree might make sense. We can
-always add/convert boards back later...
+-- 
+  .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
-Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
