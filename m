@@ -4,75 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66096C54EBD
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 19:34:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C419BC3DA78
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 23:20:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=oZCPoKSmw1nrkHHjfjw0TGGFXL8fD0GLV9XhQIAoSps=; b=OAU5LcWirkfFA/7n+Erx4sd0sQ
-	FqQ2wW1EMEGb0fCBrNSEJHH1T+6lSNxDrXuxPxHg91S5RHjNLn+NYJ5d9pC+OTkL0mpqgwD330C0K
-	8aYLV1fjbF3Cw3CX3u83aLIHZ1X9MIj24O/2xY6+9fnIeC8xtrndkKtx8cI8O/VVyMX2AfWJIjb+T
-	6Ex/Q2xVrWxiP5vkpNWr2zqktu19+WkApfTb24vsNAudW7gR56xDJPkgdJ0H0Uh0YsuM5pJY3bhPE
-	dwjj7QPimfOdtPmscVEYq0azSEYuGL5HsP0llrzbNw6XVA2k2V6OhIVk1jgoWS2gacQNv2ITkSN3r
-	0yXHvWDw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=DZuSyxlga0YNPjk34uicguBvAhkoZ/2aRkKJwjtoP9Y=; b=AVClwdObIGiAJ1
+	vOa7MV8jsfpm5oMrbkSduClt4ekUTu/ridAR5dM0Xi3jMDfk7s97xYZFM//JbtFdVzjem4MF3yQp/
+	lQ5n6ZPtr8vHziJPyqQHyjLgUxoL6CGmBTCTem9QDvVQRsoQNjj/Qhi9+otLq2vT0ghLbF4ZQRVJJ
+	YWtQbD6JC+yQkrcP83o2MAfBSWSDdm0t1YvC1TEodcFrt7jZmIQ4cyVjyVS3EWoHNP7dbwK3XxoK6
+	ihmkkedcC2DeOq6vD5RcCig7GkZJ4ssL0m78LlyqWQeJAU2RnpVIPYhSF6uhbEvyDRD91+mCLgxth
+	phsZ5JjG0iTT21qAPfAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGPol-004F4l-5H; Fri, 13 Jan 2023 19:34:23 +0000
-Received: from mail-qt1-x82e.google.com ([2607:f8b0:4864:20::82e])
+	id 1pGTLN-004oAA-Pb; Fri, 13 Jan 2023 23:20:17 +0000
+Received: from mail-oa1-x36.google.com ([2001:4860:4864:20::36])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGPoh-004F3s-SP
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 19:34:21 +0000
-Received: by mail-qt1-x82e.google.com with SMTP id g9so5260233qtu.2
-        for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2023 11:34:15 -0800 (PST)
+	id 1pGTLJ-004o9A-Jv
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 23:20:15 +0000
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-142b72a728fso23904437fac.9
+        for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2023 15:20:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LME7dFBoVKWzOV1o89cnMvL5T8FQ/ou+66O2dzYfR04=;
-        b=C+cdEvkE1EjYt/u/YtrUektRTWKRLQUw77i53V7AZIUtvyJiDIPLfWFc1ztGWurrke
-         IcfGhyyNR6AkuS5R54EHhHmoJIXtwxw77jptsqIczwViEUILpeEBP54u66Lc8bDgNdI0
-         4Zlg1xMjNUM8yRIy+/mKjByuTl2PhCwSU8jVQ=
+        d=landley-net.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TQ9PrP3iNHpghVpkywhiMHcSFTwXN8kLEUSP7zNfGWk=;
+        b=HEeiDnUeOlaMmzrHg6LtTWNe2KIF6Q5d6PASMOjvpBnFNwlXnpxtBoyLsjdUSiFic5
+         Zy4GrupmECG1CN3m99XRInimzLkAyFlnAC1yFwr9ZV5WqZ8Mxia0axE41+SyDlpGZHOF
+         b9/hPmk9ZzrDZTerjRuPw9aOBuwmuFZgGCgGCyi5DNv5BOgrp6hpzWbx8PiSSS3PCS6S
+         UoJjpLq7r0mXx6nv8CL2PCVxH6W+Fc0fSdqCoguiOJxRwovXLajxMhMVOFQITRvWQd2L
+         +x8hdq/wHJdMhQD25h3cEnBEwX4srdIbxyBywCRXQlXO+4KVbgaam+X20emmeoxJCckb
+         5wPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LME7dFBoVKWzOV1o89cnMvL5T8FQ/ou+66O2dzYfR04=;
-        b=J7biLdxnv719yek0mYqez+WbfYEt9xcBGuArMOA5roQpSz+i3j1dpTHQ/UYlB04DyY
-         QhWw3e8QzRsYVZneknidrCZ34LMjhZH2GouetxK/OiO/w79yFAi7B55G600vpzaugHwC
-         yxkROQS8nnksZB/CxiwKvGrjBzJYxlvLpTd3A6qYf2HaDOS1UNsMvHdxg0Pt3IGKCNUW
-         W56unkJDDrj0g17ZuEZDenrAFdtkx4fpzuDo/Rq5Jo7XbJBFF1Z3lPKX7e7klQROft8Q
-         oMsQrQxO/JmlmW+rNEwLizT/CEsxAhzZ+dtrxzufIfpfC28T9YrTX4tV7IM1X8C8ZRFV
-         oNcw==
-X-Gm-Message-State: AFqh2kpX89nEtfe+dmeXSarYLyVW7SkkhP7xxH3Fw+6cF6CuN48mfUbn
-	RpIvkikWwLrLI6rUcpfm1/AkLw==
-X-Google-Smtp-Source: AMrXdXstHRll1qN5mvWUmSV7S+WjKbKRL+AM5PDtn3/lo/7+0qdHHXHQ4rREd58ESrtnBvMdG9r91A==
-X-Received: by 2002:ac8:6f07:0:b0:3ab:c8c6:51c2 with SMTP id bs7-20020ac86f07000000b003abc8c651c2mr56625741qtb.62.1673638453561;
-        Fri, 13 Jan 2023 11:34:13 -0800 (PST)
-Received: from bill-the-cat (2603-6081-7b00-6400-a538-813d-bada-d144.res6.spectrum.com. [2603:6081:7b00:6400:a538:813d:bada:d144])
-        by smtp.gmail.com with ESMTPSA id cq12-20020a05622a424c00b00397e97baa96sm11062066qtb.0.2023.01.13.11.34.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Jan 2023 11:34:13 -0800 (PST)
-Date: Fri, 13 Jan 2023 14:34:11 -0500
-From: Tom Rini <trini@konsulko.com>
-To: Francesco Dolcini <francesco@dolcini.it>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Simon Glass <sjg@chromium.org>, u-boot@lists.denx.de,
-	Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v1 0/3] fdt: Fix mtparts fixup
-Message-ID: <20230113193411.GW3787616@bill-the-cat>
-References: <20230113184547.487322-1-francesco@dolcini.it>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TQ9PrP3iNHpghVpkywhiMHcSFTwXN8kLEUSP7zNfGWk=;
+        b=gwPbyZ1Om4Aa++o1LFurp9N5Fyqq90Ov8Eq+tGE544nHkiRnclZIP5rO1DLrwhmpqT
+         CP0dY/4NDlrNJl27AJIkciHRo08C1hSrKo5yWCdmN6quJTVfLn5K1BrpPj/Hk/YhfOat
+         B/rW3ix5dMy/jt6uKlW9jEO132REfpgJfp3teGruYkhY1JE7Xz7zJ2KmdzgRs15xC0S5
+         pgP5NceHRT4TAVB6ul+wByYaFHgIctqWNNTFUmcRiOwKRKY2Uubj1dqSTemZcRgRTla3
+         DiII4TN60jhsY+zbX4h6tCvRVK9sZtpgklr+F3j4m8ntGHxNuTlZjhatP7FD3Hyfk0yo
+         J8+g==
+X-Gm-Message-State: AFqh2krbbXnnZQ6zafjrDaRalU55IbU78hl5aUZZ2U04/bwikCT/FF3c
+	4sYsIZ1cgvV8GMXLW4Ku0s27MA==
+X-Google-Smtp-Source: AMrXdXu9HHEo/oiUtz2RMFCVU9bzsQZjZJ6cJq7QQE+EgrBS53y1RWYqF/4GpGuzhXIiUysKwMTRjQ==
+X-Received: by 2002:a05:6871:4090:b0:155:cb39:7325 with SMTP id kz16-20020a056871409000b00155cb397325mr16579350oab.6.1673652012126;
+        Fri, 13 Jan 2023 15:20:12 -0800 (PST)
+Received: from [192.168.86.224] ([136.62.38.22])
+        by smtp.gmail.com with ESMTPSA id z13-20020a056870738d00b0013ae39d0575sm11411907oam.15.2023.01.13.15.20.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Jan 2023 15:20:11 -0800 (PST)
+Message-ID: <38200b53-c743-4396-6603-7274f4a29c86@landley.net>
+Date: Fri, 13 Jan 2023 17:32:20 -0600
 MIME-Version: 1.0
-In-Reply-To: <20230113184547.487322-1-francesco@dolcini.it>
-X-Clacks-Overhead: GNU Terry Pratchett
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: remove arch/sh
+Content-Language: en-US
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arch@vger.kernel.org, dmaengine@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+References: <20230113062339.1909087-1-hch@lst.de>
+ <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+ <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
+ <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
+ <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
+ <fe09d811-e290-821d-ec8b-75936b6583c2@physik.fu-berlin.de>
+From: Rob Landley <rob@landley.net>
+In-Reply-To: <fe09d811-e290-821d-ec8b-75936b6583c2@physik.fu-berlin.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230113_113419_946042_BCD08F38 
-X-CRM114-Status: GOOD (  19.67  )
+X-CRM114-CacheID: sfid-20230113_152013_911414_533C24E7 
+X-CRM114-Status: GOOD (  16.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,91 +108,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8638848310983654695=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 1/13/23 13:05, John Paul Adrian Glaubitz wrote:
+> Hi Rob!
+> 
+> On 1/13/23 20:11, Rob Landley wrote:
+>> There is definitely interest in this architecture. I'm aware Rich hasn't been
+>> the most responsive maintainer. (I'm told he's on vacation with his family at
+>> the moment, according to the text I got about this issue from the J-core
+>> hardware guys in Japan.)
+> 
+> Well, maybe we can just give it a try together ...
 
---===============8638848310983654695==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1+BOKhzaS22CDnKa"
-Content-Disposition: inline
+Jeff Dionne said he'd make himself available to answer hardware questions. (He
+said he maintained some Linux ports 20 years ago, but isn't current with Linux
+plumbing. Last month he was digging through the guts of vxworks, and the project
+before that was some sort of BSD I think?)
 
+I _do_ maintain Linux patches, I just generally don't bother to repost them
+endlessly. Here's my "on top of 6.1" stack for example, each of which links to
+at least one time it was posted to linux-kernel:
 
---1+BOKhzaS22CDnKa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+https://landley.net/toybox/downloads/binaries/mkroot/0.8.9/linux-patches/
 
-On Fri, Jan 13, 2023 at 07:45:44PM +0100, Francesco Dolcini wrote:
+>> The main reason we haven't converted everything to device tree is we only have
+>> access to test hardware for a subset of the boards. Pruning the list of
+>> supported boards and converting the rest to device tree might make sense. We can
+>> always add/convert boards back later...
+> 
+> There is a patch by Yoshinori Sato which adds device tree support to SH. Maybe we
+> can revive it.
 
-> From: Francesco Dolcini <francesco.dolcini@toradex.com>
->=20
-> Recently we had a boot regression on colibri-imx7 because of a cleanup ch=
-ange
-> on Linux imx7.dtsi setting nand controller node #size-cells from 1 to 0.
->=20
-> Because of that Linux partition parser was no longer able to properly
-> parse the OF partitions leading to a boot failure, the above change was
-> reverted in the meantime as an immediate workaround, but some improvement
-> is required on both Linux and U-Boot.
->=20
-> This change improve the U-Boot part of it, #size-cell is set to 1 when
-> it has an invalid value. This has the limitation to work only with devices
-> smaller than 4GiB. In general the suggestion from the Linux MTD maintaine=
-r would
-> be to just deprecate using this U-Boot function and pass the MTD partitio=
-ns
-> from the command line, unless they are statically defined in the DTS file
-> in the first place.
->=20
-> This series therefore convert colibri-imx6ull and colibri-imx7 to pass the
-> partition list from the command line instead of fixing up the DT.
->=20
-> Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@dolc=
-ini.it/
-> Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.torad=
-ex.com/
+The turtle board is device tree and has been since it was merged. The
+infrastructure is there, the question is converting over boards and testing
+them, or deciding to prune them. Did Sato-san convert many boards? (I'm not
+finding his patch via google...)
 
-My higher level question / concern here is, is using one of the dts
-partition schemes still valid / preferred, or should everyone now have
-reverted to passing via the kernel command line?  If device tree still,
-is mtd/partitions/fixed-partitions.yaml the one to follow or something
-else?
+> Adrian
 
---=20
-Tom
-
---1+BOKhzaS22CDnKa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmPBsjAACgkQFHw5/5Y0
-tyyelgv/SpM7fKhXk5p36lmuFPK6FR+TG+ORIjzhgme/lo4+lYi+DU/EVAE3g7Fg
-juzDVnaWiqyd8fYujyV3SW+yNAtU3KpvqaLRy5o9ldDJkWiWAlKCWexafUQZPksV
-wulXcllSVHCYsgsdG4n76tE8V/jlC7668aQ/IGZY/1JAlIJdCk6j6hfLa71uL4R1
-rtQ+n11KEBkmj5Gm0e62O1RPo4tBhapWdQYDigiIYF5X+K113KeeQxb7GWPppoSi
-IbRMvjJPbHnU3AvDuAaQPMSFvAZRQCpNexB7ZOF2rGjlnkIRA6PyfCEr/egIwrpF
-7MJHKXODHIht908WtvTmjAvGfd8tt1g3n2jgRMfy+Q/yrePx1WiJ6Hhyy1bPqbeC
-eeqFGnQ9gdhJHpE2NSiX34scK19OQP1UTl03NbTcts37KNq6yDLf/gt2uz2ymnrx
-csSdWPfiXa7X7maasdG/pFryaPqH+pMPZyQ7MuZAl3d+3yI8VKN4pyMJ3JeB/dW1
-IRsZHa2t
-=GdY7
------END PGP SIGNATURE-----
-
---1+BOKhzaS22CDnKa--
-
-
---===============8638848310983654695==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8638848310983654695==--
-
