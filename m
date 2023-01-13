@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F261BC54EBE
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 09:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6516C54EBE
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 09:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=WJwQQulXD2c/zW0dCnWDcsWjWEiTDFZlcFDOyYPyves=; b=NxYefweZQoWD9c
-	KF0N+r5eOt0Z2+yzIqwxsdOOFAQ3J4i7wfc82ijLZGsaomIFBSx4jWB/j3R8jGG95YUS7JnAB1Btn
-	s/3SngVtWS1TtZ6Oi6+67DBwqchv4UkpLtFMp58zLoPllzQ1PrlwTcpMp/cQBq+TLfcPb68DRq8G9
-	ztjqX3xw5sHwtcpF8CK0dcvSdXiWmKhJ3pSnStBLdGyzHfxtam16VfuK9IzLeViCODW2UurLE3lYJ
-	lTL8jK/dTmG21NtKg2jbFXfAUFFLQiu/upBD9MnILcWFBzgxQdVARpnZ9+eZIKXd1skGuZ+AL2Gor
-	XUxD0pdJkcjy++7fpnvw==;
+	List-Owner; bh=u8+y7rkdkL89RYeI8NoN9i5Cp/UGV/4lL+Fqi9mRmQc=; b=tQYI16DZlC+Wyz
+	Ie5xB7JS0Ha8p2aNYmAFhbIeXLYZY/1PXrAMLrtUkTYjb1y7TdL5df9BWY7W9i9J2NN3ECKkRuUly
+	xENm7goODX1//ScvaeW8LWuLI4z/dpgON+OZscoqXzRd6RurpuAB63EGv38OCgd+jKIBJbbeajgJz
+	n3QILYTYVdIBIIwTFHcUtAYOzuF4j/+y3ssFyMBUixmh53F3E5BiK3rtfErhb7xUZNVIEelKV4uCN
+	fef7C8k00qrX9RTBQK+kJhh4ycTD+qZGd5wieyO+PH+y8og88wWsqIq9dZW0gbk1eokJLDZgWRgSC
+	bYdbezW9RfdClWm0BEyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGGYC-001X4O-L0; Fri, 13 Jan 2023 09:40:40 +0000
-Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
+	id 1pGGhT-001YRj-Mw; Fri, 13 Jan 2023 09:50:15 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGGYA-001X3M-Bq
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 09:40:39 +0000
-Received: by mail-ej1-x635.google.com with SMTP id vm8so50977122ejc.2
-        for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2023 01:40:32 -0800 (PST)
+	id 1pGGhR-001YQS-8K
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2023 09:50:14 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id c17so30409010edj.13
+        for <linux-mtd@lists.infradead.org>; Fri, 13 Jan 2023 01:50:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=hC9HEjzcXeU38jBnMA4OTOYS/MiZjNhem7YnIhwAh7s=;
-        b=Q5Zk3S36YShgqdL+3yUXsNOacKVIrqq04rYu4yNXXokQ8yGkMtwqPcaO2OSOmP0eKv
-         eNBSBR2iu0EM4xVPyiHWQ8oRhFTqBPPPLINf36ekOOvhaoLTHr2yXQdPtxE4UtTOIOqS
-         3MNsu1z/mjVmUVZVaPtoCgz1SZbJqt7/36acQN8ATMcSCIQxSPAhI4HAmcgbcFAIwnWd
-         5+CNMPFYM1ox7q6K7WibuYST3Ei1kOOQ/Xz5XC65LQnG/5ov8aXfPRetbOB5GpFQE3I9
-         jqQRxOx58QUAvp+VC/5+gagtR+Xfa+UEFz126c0ANeNSFrlJxfTaUTBqHcEvOhZxM/p0
-         WblA==
+        bh=ftrudCvXJLVXBRbqfIRHJFLEm5YaepZ41CYo7Cuk+6o=;
+        b=ODMGQnkWPWi/MEzaXG55NPMe6AZkNrfkXofl/quYy/sHLj+S9rnypQCWUxFq+55xPI
+         QJ/I2i2e3VvcdhsciNR7WIZ4lKlaPq5sIvpRiGvf7wRMWSIpsZgR+43XxEE29LqyYrfK
+         a/k3mthFJOsG/9C+vxbEkLL5HI4UQUE2wkFBKbFoTsZiuNw1OSi4qbkRpLj3pwVPmjqT
+         FTswPVl23bMIoftdp7rm4pR4H8dZ1YKT/EF0zCDU/rhXOYdBJ+oIKRAM1NZyRvRft56Y
+         PDiieliR3FJuurD7YChScD9CT9bvUJ5y16KzgtpOsPUsTpOPgMlRN2jQr6qm5kmqjllS
+         879g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hC9HEjzcXeU38jBnMA4OTOYS/MiZjNhem7YnIhwAh7s=;
-        b=iO+fQLbEeOOJ9SiAscQBMIUbSGj7xi7zRI1deLNdk2TwlyXSooPaXPukJOSO8XaH7F
-         AJ72iDClwX4Z5YiiEOGsXHWaEbhIUzl4HRrZjK7dXaQjpgCsb1O4um+yzAvYK4bWg/RD
-         VLGMKoQgagmpdjutEnSocOvWtLzCD3li96qDqQYuxD8EtpH30qnTnD60PtaliK1IYsNF
-         HE91twzOevtV0IbEpyb1RQWBGHXhx2DHR58h8HWIMiAcWNkNzgStWGMBb0yYOiiMa5dI
-         7ALIWTR67il3B+QhnmBVtmSIGJbnmSUhsWrWxLlKNDwuJIg4z+SNo1Lrs4ZCHk3QJ56A
-         SMDQ==
-X-Gm-Message-State: AFqh2krXG3DPP1xb8Mddeg/Fh5XgUrwBBdmcmJLbOYS3fwv29F5SCdjN
-	8xizd4O66zeq/17Ry0n0iRvg+O3ZFkymXuV1S6c=
-X-Google-Smtp-Source: AMrXdXufU1OhlckllATLjWDVALvXEx0rW/mRsVEl4pI+agb63em+RGzaFRYt3c87JUfNpw/XmRJslOQ3sEKUiblbb+A=
-X-Received: by 2002:a17:906:3918:b0:7c0:b3a1:2caf with SMTP id
- f24-20020a170906391800b007c0b3a12cafmr7916322eje.443.1673602830180; Fri, 13
- Jan 2023 01:40:30 -0800 (PST)
+        bh=ftrudCvXJLVXBRbqfIRHJFLEm5YaepZ41CYo7Cuk+6o=;
+        b=GuFbCVKi7r+o4xyJntfupQLfPSRMMjvi2jchDGPg5Wqe89k7Jig/6cX8uVpZbAPOGn
+         zsmS+j3u6aZ4Fh4tFO5J1LeA3nG/l7adqTilxIM2bv+3CQa9u1DZAV47GLCkEPyfps6b
+         d8bG4pS5kyplqoWdS46sE1G5uZ8Sd+SLVEM/2nPyiNzb5j0VIjLwsdNBoRox6/Uu4TyC
+         SuMAJSsocISFj+csAYaoN6tm3WqFBk65R7NXwArQs4E0kREQdnufA7NnjACNE/sBvreO
+         fHAJM2BzWNe6B+K+ZdagUj49tAxTg2Hudd+xxKMmROqCYtDdbpE35SeyGV+g1hOAFprD
+         B1LQ==
+X-Gm-Message-State: AFqh2koWvCD8lqVaML5dEPtoAwDw8MI4vM184v87HkubflW5fE6D2LMV
+	FiOAjQBASt7hJxA0JmKJ+SYPGAGWScbTyU6X9sg=
+X-Google-Smtp-Source: AMrXdXsP0J6YMOz0HJVl/n1T7XJDMa0mzI0LxLnIZZXB1nupljJO8UMdxvBf+cR04mFeQab5X1wMzcpcmCy3KjoqZY8=
+X-Received: by 2002:a05:6402:4515:b0:492:7579:d633 with SMTP id
+ ez21-20020a056402451500b004927579d633mr3834600edb.426.1673603410532; Fri, 13
+ Jan 2023 01:50:10 -0800 (PST)
 MIME-Version: 1.0
 From: liao jaime <jaimeliao.tw@gmail.com>
-Date: Fri, 13 Jan 2023 17:40:19 +0800
-Message-ID: <CAAQoYRkBHV296oXOVWUh7dSJXS5CQYeMdpQc78ZZVRU+hhmSmw@mail.gmail.com>
-Subject: [PATCH v2 2/3] mtd: rawnand: Prepare the late addition of supported
- operation checks
+Date: Fri, 13 Jan 2023 17:49:59 +0800
+Message-ID: <CAAQoYR=R8NLcdf5PgchzffA1EGx3X15cxR22ntxwKBEsuyVBTg@mail.gmail.com>
+Subject: [PATCH v2 1/3] mtd: rawnand: Check the data only read pattern only once
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
 	Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>, 
 	Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org
@@ -68,8 +67,8 @@ Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
 	Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
 	Miquel Raynal <miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230113_014038_440344_598E4B41 
-X-CRM114-Status: GOOD (  16.90  )
+X-CRM114-CacheID: sfid-20230113_015013_379024_D0F58CE5 
+X-CRM114-Status: GOOD (  26.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,44 +85,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> Add an empty envelope just to show how to add additional checks for new
-> operations. This is going to be used for sequential cached reads, which
-> require the page size to be known (and the discovery to be over), hence
-> the "late" designation.
+> Instead of checking if a pattern is supported each time we need it,
+> let's create a bitfield that only the core would be allowed to fill at
+> startup time. The core and the individual drivers may then use it in
+> order to check what operation they should use. This bitfield is supposed
+> to grow over time.
 >
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  drivers/mtd/nand/raw/nand_base.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> drivers/mtd/nand/raw/nand_base.c  | 20 ++++++++++++++++++++
+> drivers/mtd/nand/raw/nand_jedec.c |  3 +--
+> drivers/mtd/nand/raw/nand_onfi.c  |  3 +--
+> include/linux/mtd/rawnand.h       |  8 ++++++++
+> 4 files changed, 30 insertions(+), 4 deletions(-)
 >
 > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 83bfb1ba2fa3..34395d5d3a47 100644
+> index 33f2c98a030e..83bfb1ba2fa3 100644
 > --- a/drivers/mtd/nand/raw/nand_base.c
 > +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5009,6 +5009,14 @@ static void rawnand_early_check_supported_ops(struct nand_chip *chip)
->   rawnand_check_data_only_read_support(chip);
->  }
+> @@ -4991,6 +4991,24 @@ nand_manufacturer_name(const struct nand_manufacturer_desc *manufacturer_desc)
+>  return manufacturer_desc ? manufacturer_desc->name : "Unknown";
+> }
 
-> +static void rawnand_late_check_supported_ops(struct nand_chip *chip)
+> +static void rawnand_check_data_only_read_support(struct nand_chip *chip)
+> +{
+> + /* Use an arbitrary size for the check */
+> + if (!nand_read_data_op(chip, NULL, SZ_512, true, true))
+> + chip->controller->supported_op.data_only_read = 1;
+> +}
+> +
+> +static void rawnand_early_check_supported_ops(struct nand_chip *chip)
 > +{
 > + /* The supported_op fields should not be set by individual drivers */
+> + WARN_ON_ONCE(chip->controller->supported_op.data_only_read);
 > +
 > + if (!nand_has_exec_op(chip))
 > + return;
+> +
+> + rawnand_check_data_only_read_support(chip);
 > +}
 > +
 > /*
->  * Get the flash and manufacturer id and lookup if the type is supported.
->  */
-> @@ -6345,6 +6353,8 @@ static int nand_scan_tail(struct nand_chip *chip)
->     goto err_free_interface_config;
->   }
->
-> + rawnand_late_check_supported_ops(chip);
+> * Get the flash and manufacturer id and lookup if the type is supported.
+> */
+> @@ -5023,6 +5041,8 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+>  /* Select the device */
+>  nand_select_target(chip, 0);
+
+> + rawnand_early_check_supported_ops(chip);
 > +
->   /*
->    * Look for secure regions in the NAND chip. These regions are supposed
->    * to be protected by a secure element like Trustzone. So the read/write
+>  /* Send the command for reading device ID */
+>  ret = nand_readid_op(chip, 0, id_data, 2);
+>  if (ret)
+> diff --git a/drivers/mtd/nand/raw/nand_jedec.c b/drivers/mtd/nand/raw/nand_jedec.c
+> index 85b6d9372d80..836757717660 100644
+> --- a/drivers/mtd/nand/raw/nand_jedec.c
+> +++ b/drivers/mtd/nand/raw/nand_jedec.c
+> @@ -46,8 +46,7 @@ int nand_jedec_detect(struct nand_chip *chip)
+>  if (!p)
+>  return -ENOMEM;
+>
+> - if (!nand_has_exec_op(chip) ||
+> -    !nand_read_data_op(chip, p, sizeof(*p), true, true))
+> + if (!nand_has_exec_op(chip) || chip->controller->supported_op.data_only_read)
+>  use_datain = true;
+>
+>  for (i = 0; i < JEDEC_PARAM_PAGES; i++) {
+> diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
+> index 7586befce7f9..f15ef90aec8c 100644
+> --- a/drivers/mtd/nand/raw/nand_onfi.c
+> +++ b/drivers/mtd/nand/raw/nand_onfi.c
+> @@ -166,8 +166,7 @@ int nand_onfi_detect(struct nand_chip *chip)
+>  if (!pbuf)
+>  return -ENOMEM;
+>
+> - if (!nand_has_exec_op(chip) ||
+> -    !nand_read_data_op(chip, &pbuf[0], sizeof(*pbuf), true, true))
+> + if (!nand_has_exec_op(chip) || chip->controller->supported_op.data_only_read)
+>  use_datain = true;
+>
+>  for (i = 0; i < ONFI_PARAM_PAGES; i++) {
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index dcf90144d70b..28c5dce782dd 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -1094,10 +1094,18 @@ struct nand_controller_ops {
+>  *
+>  * @lock: lock used to serialize accesses to the NAND controller
+>  * @ops: NAND controller operations.
+> + * @supported_op: NAND controller known-to-be-supported operations,
+> + * only writable by the core after initial checking.
+> + * @supported_op.data_only_read: The controller supports reading more data from
+> + * the bus without restarting an entire read operation nor
+> + * changing the column.
+>  */
+> struct nand_controller {
+>  struct mutex lock;
+>  const struct nand_controller_ops *ops;
+> + struct {
+> + unsigned int data_only_read: 1;
+> + } supported_op;
+> };
+>
+> static inline void nand_controller_init(struct nand_controller *nfc)
 > --
 > 2.34.1
 
