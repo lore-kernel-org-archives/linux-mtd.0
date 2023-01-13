@@ -4,37 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2677C54EBD
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 06:40:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91D81C54EBE
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 Jan 2023 06:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=PwGdz7s30XmPBdA3rHXWJ4kI9aC5U0xYLd+xSA+apiU=; b=Vejgd0CB/AT8r3
-	d8AZIHSCGWVxZlOfZJoUGWHkjT3VWNngC40n8UOBcqvizlxE1H6xPig0e7VDL5IiSxY9O7Fqna/Uc
-	UfHzPc4Zhg80TvUyFNeloPWIk0MWGharsV7h0pX5ILueswmcAOB38nBKUPnd2W/P/KBVMDOBP8td4
-	d0lXcw+9M2dPgZwjV3kw1zd2d6cgr7iLIuyehD4acPv397poP5i7y9iil8i9vPUuJ0yixmRgD0gOG
-	EOnRN9v8xPBEiC6j5I++53sP8P0JbYFylVjIq/juZkNFMPGnl6QZr74VtqFk49/Eb0ADgfB89cIXl
-	OI2XLnNUTWkUQHRYabjw==;
+	List-Owner; bh=HxI36AdoXA/IDeWdCpQ2bOQs28T9UJTBDtHCsH9rbCs=; b=3lBBiQWiUWbpGJ
+	bIEYrqIKLYlL25p6Vwt1lII1UvpVnjMf3S8Ru4MII5bUt9WW3nWsuegk/GbIh8d49FTgZc8hmg85B
+	cR7Gn/LDdDG1Jz+eNTGMrRoKnWigpdWMPfWiR1KE4doRxXel8DsOxWADSm4HXuNaaL+yK63zYzlXQ
+	UFcuphHrsWGPe4S1RU/Yjr915HeldysXgFgsie4Yrf3VerzjxSYSrU3k1AFJiR5bYFV/v9xnZjH0D
+	yoQD15KH0rMScD6pert1EkCHoohuPKW6eXdjwsjBl5a2cT7Jsqj5YHW3KW7045ZNL/XQBfvgQHX+r
+	eZMPaFDkLnAULMy8E7xQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGDjT-000qZw-BF; Fri, 13 Jan 2023 06:40:07 +0000
+	id 1pGDjb-000qbF-2H; Fri, 13 Jan 2023 06:40:15 +0000
 Received: from [2601:1c2:d80:3110::9307] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGDjR-000qZP-4T; Fri, 13 Jan 2023 06:40:05 +0000
+	id 1pGDjZ-000qaq-Fq; Fri, 13 Jan 2023 06:40:13 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Stefan Agner <stefan@agner.ch>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: rawnand: vf610_nfc: use regular comments for functions
-Date: Thu, 12 Jan 2023 22:40:04 -0800
-Message-Id: <20230113064004.24391-1-rdunlap@infradead.org>
+Subject: [PATCH] ubi: use correct names in function kernel-doc comments
+Date: Thu, 12 Jan 2023 22:40:12 -0800
+Message-Id: <20230113064012.25071-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -53,46 +52,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-These comments are not quite in kernel-doc format and they don't need
-to be, so just use "/*" comment markers for them. This prevents these
-kernel-doc warnings:
+Fix kernel-doc warnings by using the correct function names in
+their kernel-doc notation:
 
-drivers/mtd/nand/raw/vf610_nfc.c:210: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * Read accessor for internal SRAM buffer
-drivers/mtd/nand/raw/vf610_nfc.c:245: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * Write accessor for internal SRAM buffer
+drivers/mtd/ubi/eba.c:72: warning: expecting prototype for next_sqnum(). Prototype was for ubi_next_sqnum() instead
+drivers/mtd/ubi/wl.c:176: warning: expecting prototype for wl_tree_destroy(). Prototype was for wl_entry_destroy() instead
+drivers/mtd/ubi/misc.c:24: warning: expecting prototype for calc_data_len(). Prototype was for ubi_calc_data_len() instead
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Stefan Agner <stefan@agner.ch>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/nand/raw/vf610_nfc.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/eba.c  |    2 +-
+ drivers/mtd/ubi/misc.c |    2 +-
+ drivers/mtd/ubi/wl.c   |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff -- a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
---- a/drivers/mtd/nand/raw/vf610_nfc.c
-+++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -206,7 +206,7 @@ static inline bool vf610_nfc_kernel_is_l
- #endif
+diff -- a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -61,7 +61,7 @@ struct ubi_eba_table {
+ };
+ 
+ /**
+- * next_sqnum - get next sequence number.
++ * ubi_next_sqnum - get next sequence number.
+  * @ubi: UBI device description object
+  *
+  * This function returns next sequence number to use, which is just the current
+diff -- a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
+--- a/drivers/mtd/ubi/misc.c
++++ b/drivers/mtd/ubi/misc.c
+@@ -10,7 +10,7 @@
+ #include "ubi.h"
+ 
+ /**
+- * calc_data_len - calculate how much real data is stored in a buffer.
++ * ubi_calc_data_len - calculate how much real data is stored in a buffer.
+  * @ubi: UBI device description object
+  * @buf: a buffer with the contents of the physical eraseblock
+  * @length: the buffer length
+diff -- a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -165,7 +165,7 @@ static void wl_tree_add(struct ubi_wl_en
  }
  
--/**
-+/*
-  * Read accessor for internal SRAM buffer
-  * @dst: destination address in regular memory
-  * @src: source address in SRAM buffer
-@@ -241,7 +241,7 @@ static inline void vf610_nfc_rd_from_sra
- 	}
- }
- 
--/**
-+/*
-  * Write accessor for internal SRAM buffer
-  * @dst: destination address in SRAM buffer
-  * @src: source address in regular memory
+ /**
+- * wl_tree_destroy - destroy a wear-leveling entry.
++ * wl_entry_destroy - destroy a wear-leveling entry.
+  * @ubi: UBI device description object
+  * @e: the wear-leveling entry to add
+  *
 
 ______________________________________________________
 Linux MTD discussion mailing list
