@@ -4,65 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED867C54EBE
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Jan 2023 18:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50F0CC46467
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Jan 2023 23:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Xu0m3kSPcFZyeY1wuirGjFMIoQMc/GcsZk/vhZaz8WY=; b=1lysSuSME8nfnZ
-	7DUxs5trFUiOqyStSmzprBV81J+d6ePZ1tWX9QqIwL8FnnmfzPw2ydKYbrvR8W8z1YN6euSbAjjYb
-	oT6IMUOXvRIupIa+yXvIPxgGRS0kGRKE9EfD1p6qkzzOF3t7RkNpKbyNFtPzxvvFnL3gE1n4y1b1g
-	Sf8LdJEduYfZ6vSfvQ5Do+G2Vq6YXDbOBUAwNL9YhvQLYWnBOHFRjmKUHG4XdMF7QEmfjpH5llTqJ
-	g6Lo1qiJlOr99/3XL8Tpfsxexb58G/FU9oaSogoLT4Q/GmhMNBwz9M745ZaWjqySrDgWcn8ljmo8P
-	yqCgMZXIzpaavWq0hEgw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2i09zGjGA8XFA+oq44HugMt6GX2aJiXQ4Q1RI7sspa4=; b=BX5H3zIm25eKeg
+	ZDD85bUC7uwcA4ePq23FqAxOi49oyT6M3DpxZ3MCEbc6xARdFzBYRY12bjTI0GhWZiq2K2k9wINEn
+	OfzVoJeimGACyywYGmmiQas+TQhPDWNsb1VVhxVS6qb+JZx1XF6bHnpcH/fqCYCY+N11ULyoB/RcX
+	JYCxFhGpoNj+B+P14NApclkxN/son0Zl03V1RNko3kfmhZmn2uVPpPHfMvAg52hcL1dOQ3IW6KY82
+	dvpGQpWAyPFxE9Z8wiWM0qekqeVsI1FfHnDvWLCKPXjjw4VXIgXwWYiBmosSnuJgo7BYdY+C030B+
+	TVi3chUz8pqbp6EGvIJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHTmo-00Bcx2-Iu; Mon, 16 Jan 2023 18:00:46 +0000
-Received: from smtp-out-05.comm2000.it ([212.97.32.73])
+	id 1pHZ2E-00CGy7-DY; Mon, 16 Jan 2023 23:37:02 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHTmk-00BcvF-S5
-	for linux-mtd@lists.infradead.org; Mon, 16 Jan 2023 18:00:45 +0000
-Received: from francesco-nb.int.toradex.com (31-10-206-125.static.upc.ch [31.10.206.125])
+	id 1pHZ2B-00CGxH-AC
+	for linux-mtd@lists.infradead.org; Mon, 16 Jan 2023 23:37:00 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: francesco@dolcini.it)
-	by smtp-out-05.comm2000.it (Postfix) with ESMTPSA id F361B823801;
-	Mon, 16 Jan 2023 19:00:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
-	s=mailsrv; t=1673892021;
-	bh=Ht4j5zvsKCpLpenGypyh8flQGV1XZhR+PS4DLmnVTVI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=2ZytoT2hJlY3+h10c5cQg74E3WMmrs5BxYAocuLVpyMyV4yCkMWBGdbnJd9j72+O0
-	 z7Hnzug3RyUCj9Sxdb8EIlLg67BgOQIrEAPEvbNZlg8t/PI+dQiTbBjF7xmhzK6/C6
-	 YwbXs3VEwMf16kfmdNULaoEng2UaeM7qXHK47rNs6PzbhdFMAXqnQt6NfSsIWn1ZUm
-	 e3Q8Vtk00rvW063ZzKLOE6ZLzT8iKK1pQYMpP+mmZ6Elp8jt8xjrQJd/syPtkqOjHE
-	 Y456cXMWv03uw4cQ08D9UwSJjTjO+R9g9ovlSD9mZFtt/A3eOwvsUxvg1ZvH0/NDJ+
-	 8AQiJETU/CNLQ==
-Date: Mon, 16 Jan 2023 19:00:16 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Marek Vasut <marex@denx.de>
-Cc: Francesco Dolcini <francesco@dolcini.it>,
-	Simon Glass <sjg@chromium.org>, u-boot@lists.denx.de,
-	Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v1 1/3] fdt: validate/fix cells count on mtdpart fixup
-Message-ID: <Y8WQsIHXEDuJJuLd@francesco-nb.int.toradex.com>
-References: <20230113184547.487322-1-francesco@dolcini.it>
- <20230113184547.487322-2-francesco@dolcini.it>
- <9ed3b4e4-7336-baf3-5a5a-8e77543e210d@denx.de>
- <Y8VdR4iCcuj9/rT+@francesco-nb.int.toradex.com>
- <06279fe3-a3b3-f3c4-276f-7cd0d4773875@denx.de>
+	by ams.source.kernel.org (Postfix) with ESMTPS id 4CC5FB810B2;
+	Mon, 16 Jan 2023 23:36:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA94AC433D2;
+	Mon, 16 Jan 2023 23:36:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1673912214;
+	bh=N8IFuauoFBlRBCPllH9x+bpTPBvYcnFCohv+H6rAcmg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=i1lWyLdD4VO3VFps3DuBp+8Z/vTP0S0L8hquBQo1OzEKM5RiCVb03zyaa6uMzedTX
+	 iO+PY4M95I0DpX1uZh+drGIwSpqXeJyzFYra2/mnUauRT60MHI/Tl4IAw4Hq5d5spx
+	 /etztWrnI3tYB4Y8amWjhYreLBTGZShe8EpVt8Pt6UZuUZy2/40MiPl/Tl+sw3XBdD
+	 d6CD7VhJhG71U4IpdKuFFf7O7hFCCl/tzq3md/HZb2ddPMbmDav+jTk+AcqqDth0tG
+	 97Q+xSZxDmiC3jSQmCDCuO+RDDk2yRr3WSprBBoXlSGuvwo4hDGAgM4yxUmFrG5A0/
+	 yxaqOQjeS7BpQ==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-fscrypt@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-btrfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: update fscrypt git repo
+Date: Mon, 16 Jan 2023 15:34:24 -0800
+Message-Id: <20230116233424.65657-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <06279fe3-a3b3-f3c4-276f-7cd0d4773875@denx.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230116_100043_065477_4A82B60E 
-X-CRM114-Status: GOOD (  48.14  )
+X-CRM114-CacheID: sfid-20230116_153659_539322_0103DED7 
+X-CRM114-Status: GOOD (  11.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,188 +73,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 16, 2023 at 06:54:44PM +0100, Marek Vasut wrote:
-> On 1/16/23 15:20, Francesco Dolcini wrote:
-> > On Sun, Jan 15, 2023 at 03:35:25PM +0100, Marek Vasut wrote:
-> > > On 1/13/23 19:45, Francesco Dolcini wrote:
-> > > > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > > 
-> > > > Fixup #size-cells value when updating the MTD partitions, this is
-> > > > required to prevent issues in case the MTD parent set #size-cells to
-> > > > zero.
-> > > > This could happen for example in the legacy case in which the partitions
-> > > > are created as direct child of the mtd node and that specific node has
-> > > > no children. Recent clean-up on Linux device tree files created a boot
-> > > > regression on colibri-imx7.
-> > > > 
-> > > > This fixup has the limitation to assume 32-bit (#size-cells=1)
-> > > > addressing, therefore it will not work with device bigger than 4GiB.
-> > > > 
-> > > > This change also enforce #address-cells to be the same as #size-cells,
-> > > > this was already silently enforced by fdt_node_set_part_info(), now this
-> > > > is checked explicitly and partition fixup will just fail in such case.
-> > > > 
-> > > > In general board should not generally need nor use this functionality
-> > > > and should be just deprecated, passing mtdparts= in the kernel command
-> > > > line is the preferred way according to Linux MTD subsystem maintainer.
-> > > > 
-> > > > Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@dolcini.it/
-> > > > Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
-> > > > Cc: Marek Vasut <marex@denx.de>
-> > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > > ---
-> > > >    common/fdt_support.c | 45 ++++++++++++++++++++++++++++++++++----------
-> > > >    1 file changed, 35 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/common/fdt_support.c b/common/fdt_support.c
-> > > > index dbceec6f2dcc..3aee826e60cf 100644
-> > > > --- a/common/fdt_support.c
-> > > > +++ b/common/fdt_support.c
-> > > > @@ -877,27 +877,20 @@ static int fdt_del_partitions(void *blob, int parent_offset)
-> > > >    	return 0;
-> > > >    }
-> > > > -static int fdt_node_set_part_info(void *blob, int parent_offset,
-> > > > +/* This expects #address-cells and #size-cells to have same value */
-> > > > +static int fdt_node_set_part_info(void *blob, int parent_offset, int sizecell,
-> > > >    				  struct mtd_device *dev)
-> > > >    {
-> > > >    	struct list_head *pentry;
-> > > >    	struct part_info *part;
-> > > >    	int off, ndepth = 0;
-> > > >    	int part_num, ret;
-> > > > -	int sizecell;
-> > > >    	char buf[64];
-> > > >    	ret = fdt_del_partitions(blob, parent_offset);
-> > > >    	if (ret < 0)
-> > > >    		return ret;
-> > > > -	/*
-> > > > -	 * Check if size/address is 1 or 2 cells.
-> > > > -	 * We assume #address-cells and #size-cells have same value.
-> > > > -	 */
-> > > > -	sizecell = fdt_getprop_u32_default_node(blob, parent_offset,
-> > > > -						0, "#size-cells", 1);
-> > > > -
-> > > >    	/*
-> > > >    	 * Check if it is nand {}; subnode, adjust
-> > > >    	 * the offset in this case
-> > > > @@ -992,6 +985,31 @@ err_prop:
-> > > >    	return ret;
-> > > >    }
-> > > > +static int fdt_mtdparts_cell_cnt(void *fdt, int off)
-> > > > +{
-> > > > +	int sizecell, addrcell;
-> > > > +
-> > > > +	sizecell = fdt_getprop_u32_default_node(fdt, off, 0, "#size-cells", 0);
-> > > > +	if (sizecell != 1 && sizecell != 2) {
-> > > > +		printf("%s: Invalid or missing #size-cells %d value, assuming 1\n",
-> > > > +		       __func__, sizecell);
-> > > > +
-> > > > +		sizecell = 1;
-> > > > +		if (fdt_setprop_u32(fdt, off, "#size-cells", sizecell))
-> > > > +			return -1;
-> > > > +	}
-> > > > +
-> > > > +	addrcell = fdt_getprop_u32_default_node(fdt, off, 0,
-> > > > +						"#address-cells", 0);
-> > > > +	if (addrcell != sizecell) {
-> > > > +		printf("%s: Invalid #address-cells %d != #size-cells %d, aborting\n",
-> > > > +		       __func__, addrcell, sizecell);
-> > > > +		return -1;
-> > > > +	}
-> > > > +
-> > > > +	return sizecell;
-> > > > +}
-> > > > +
-> > > >    /*
-> > > >     * Update partitions in nor/nand nodes using info from
-> > > >     * mtdparts environment variable. The nodes to update are
-> > > > @@ -1037,12 +1055,19 @@ void fdt_fixup_mtdparts(void *blob, const struct node_info *node_info,
-> > > >    			dev = device_find(node_info[i].type, idx++);
-> > > >    			if (dev) {
-> > > > +				int cell;
-> > > > +
-> > > >    				parts = fdt_subnode_offset(blob, noff,
-> > > >    							   "partitions");
-> > > >    				if (parts < 0)
-> > > >    					parts = noff;
-> > > > -				if (fdt_node_set_part_info(blob, parts, dev))
-> > > > +				cell = fdt_mtdparts_cell_cnt(blob, parts);
-> > > > +				if (cell < 0)
-> > > > +					return;
-> > > > +
-> > > > +				if (fdt_node_set_part_info(blob, parts,
-> > > > +							   cell, dev))
-> > > >    					return; /* return on error */
-> > > >    			}
-> > > >    		}
-> > > 
-> > > Can you please include the resulting gpmi node content with this fixup
-> > > applied in the commit message , so it can be validated ?
-> > 
-> > I will add it to v2, I would wait a little bit more time to get
-> > additional feedback sending it however.
-> > 
-> > In the meantime here the output, but nothing really changed!
-> > What this change is doing is just
-> >   - setting #size-cells to <1> when it is invalid
-> >   - skip generation at all when #size-cells != #address-cells. Former
-> >     code was just generating a broken table without any error
-> >     message.
-> > 
-> > Here what is generated for colibri-imx7
-> > 
-> > nand-controller@33002000 {
-> > 	compatible = "fsl,imx7d-gpmi-nand";
-> > 
-> > 	#address-cells = <0x01>;
-> > 	#size-cells = <0x01>;
-> > 
-> > [...snip...]
-> > 
-> > 	partition@0 {
-> > 		label = "mx7-bcb";
-> > 		reg = <0x00 0x80000>;
-> > 	};
-> > 
-> > 	partition@400000 {
-> > 		label = "ubi";
-> > 		reg = <0x400000 0x1fc00000>;
-> > 	};
-> > 
-> > 	partition@80000 {
-> > 		read_only;
-> > 		label = "u-boot1";
-> > 		reg = <0x80000 0x180000>;
-> > 	};
-> > 
-> > 	partition@380000 {
-> > 		label = "u-boot-env";
-> > 		reg = <0x380000 0x80000>;
-> > 	};
-> > 
-> > 	partition@200000 {
-> > 		read_only;
-> > 		label = "u-boot2";
-> > 		reg = <0x200000 0x180000>;
-> > 	};
-> > };
-> 
-> This is what I was afraid of, shouldn't this contain the partitions in
-> per-chipselect sub-node instead of directly in the GPMI node ?
+From: Eric Biggers <ebiggers@google.com>
 
-That does not exists in my source DTS, this function just look for a
-partitions node and update it when it exists.
-I do not have a nand chip, and I do not want to add.
+fscrypt.git is being renamed to linux.git, so update MAINTAINERS
+accordingly.  (The reasons for the rename are to match what I'm doing
+for the new fsverity repo, which also involves the branch names changing
+to be clearer; and to avoid ambiguity with userspace tools.)
 
-The reason is what I wrote in my other email, if I would do something
-like older U-Boot's would ignore it and just generate the partitions
-as direct children of the nand-controller.
+As long as I'm updating the fscrypt MAINTAINERS entry anyway, also:
 
-Commit 36fee2f7621e ("common: fdt_support: add support for "partitions"
-subnode to fdt_fixup_mtdparts()") was introduced only in v2022.04.
+- Move my name to the top, so that people bother me first if they just
+  choose the first person.  (In practice I'm the primary maintainer, and
+  Ted and Jaegeuk are backups.)
 
-Francesco
+- Remove an unnecessary wildcard.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ MAINTAINERS | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 42fc47c6edfd7..8d0ee9f17b4d4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8468,16 +8468,16 @@ F:	fs/fscache/
+ F:	include/linux/fscache*.h
+ 
+ FSCRYPT: FILE SYSTEM LEVEL ENCRYPTION SUPPORT
++M:	Eric Biggers <ebiggers@kernel.org>
+ M:	Theodore Y. Ts'o <tytso@mit.edu>
+ M:	Jaegeuk Kim <jaegeuk@kernel.org>
+-M:	Eric Biggers <ebiggers@kernel.org>
+ L:	linux-fscrypt@vger.kernel.org
+ S:	Supported
+ Q:	https://patchwork.kernel.org/project/linux-fscrypt/list/
+-T:	git git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
++T:	git https://git.kernel.org/pub/scm/fs/fscrypt/linux.git
+ F:	Documentation/filesystems/fscrypt.rst
+ F:	fs/crypto/
+-F:	include/linux/fscrypt*.h
++F:	include/linux/fscrypt.h
+ F:	include/uapi/linux/fscrypt.h
+ 
+ FSI SUBSYSTEM
+
+base-commit: 5dc4c995db9eb45f6373a956eb1f69460e69e6d4
+-- 
+2.39.0
 
 
 ______________________________________________________
