@@ -4,63 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC88FC46467
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 Jan 2023 09:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F32D0C46467
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 Jan 2023 13:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=EjdZ619MFO8pJfR9FkifZ36B+R8bilJtemol1hD+kHM=; b=cbPmnfClwdfKTw
-	tVfhToDvbUiYvo/uA7MddVQYt+t3xAsP7AN0GraI7gllKGQjCRgKVJDijrH1eW+Po0U6S7tkTSmhI
-	9tIhZlLbZ2fIjg8+hF4aysmYJZxn8avwWS29VAApPfbyCIRy2VIm3G2Gwoo7ZL3EA9uU9mKGyWrBm
-	Nlr1/5TZ+r3BZaO7W6OWxX9N8NwlriIGDuq/JBFUEFJV8SGlS/8jUz+04QVpAnL25E52G825og+Sl
-	dcY2NLjYXVK0biuZW52mh/eQz+YANuB7rmrhbwwxuzoSCH+7qv7yekENrJnwwgGhrO8PqWpB/HQ39
-	oXanpupaklBy0h9iypRQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=t1ycUyjV1Gn61RRIGXeiyooJDX+UmXS3JAoUItwa9es=; b=PO9
+	NXoJpkepURpuW3kCYtT6dwEh3mZaCO1HyX3KuqXxqkKW4ALsH8aqPxjnKF7jakiSO1QhzlqIwImeK
+	zQYH3eIJohF9aoIR53yf2m5ooUO7xx52ZfPVM8tyOa2KQiFhZnsc+IvtdYIfmQ43qlKfd+l1UvF2J
+	W5GOLFoynpykYd+DqvZgO6VAqoPTo1fOSTsDS261QBY9lyrj9RhjVQtPPdINHC+zKAHtFgPxU/7e6
+	uwlx5nZOl8Ujl6X3sdwSvFXtiGMFKjwvv3oSAH8KSMKHOq9wuWhDsnPWYmrHCap7yzdrHqcsJHaau
+	+Ut4/fvtNIOyX7g1HAsWLSh4TmDONIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHM5z-009T1C-He; Mon, 16 Jan 2023 09:48:03 +0000
-Received: from relay11.mail.gandi.net ([2001:4b98:dc4:8::231])
+	id 1pHPn1-00AXyM-Is; Mon, 16 Jan 2023 13:44:43 +0000
+Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHM5m-009SsU-Nq
-	for linux-mtd@lists.infradead.org; Mon, 16 Jan 2023 09:47:52 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id D7D4810000A;
-	Mon, 16 Jan 2023 09:47:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1673862465;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=iovkvBdCIqu8LeMuEk5/sBiaBBiNcoPwgU6qzxfo5Ls=;
-	b=YIrjIL4uK9oFAYl495P2lOXWw7SfEYoJ71noj4DFa8VLDfxkRQbr1Hg3PRAyPw0JMYaHxA
-	1+Luxa1gozFEYVFe16GuTj922BKEOLLaKzQc+dnUCzGEGJjeo5Eb/yto45GSIXjbTLAhQq
-	ymBF55vPv++lljFhAGwo7hL2CXmEP0hIAR4fHEdziU8kHgcHKDxQywH/+Zf082UpWP+1v7
-	1JV1rdG6B8xLTOTElfqxmQ28ScIzD/6obqsI8O8i+ldS+vdJMqGrJyq9SdvuiCMtwW9AjC
-	HEcz7RmvJUoXemxLMJ3GVvseqW1nBWViQWNyDFj5w+yhA0Zjl/2sPFvrwnvtqg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Julien Su <juliensu@mxic.com.tw>,
-	Jaime Liao <jaimeliao@mxic.com.tw>,
-	Jaime Liao <jaimeliao.tw@gmail.com>,
-	Alvin Zhou <alvinzhou@mxic.com.tw>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] mtd: rawnand: Fix nand_chip kdoc
-Date: Mon, 16 Jan 2023 10:47:35 +0100
-Message-Id: <20230116094735.11483-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
+	id 1pHPmv-00AXuD-CZ
+	for linux-mtd@lists.infradead.org; Mon, 16 Jan 2023 13:44:39 +0000
+Received: by mail-wr1-x430.google.com with SMTP id t5so23121156wrq.1
+        for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2023 05:44:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=criticallink.com; s=google;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rno1igLp9IqYeH1qSYjcx11MtVviekrTz8yJwoDR31w=;
+        b=VW+qXWzMBOKWcFkZKWT3tJxeHqIgrLzdTv+PUHumRPIPjSWHT5sDRt36xoYaeSOrwC
+         ntMzdY+OJatrgHJTiRR5ym0X3U3YrXm8AMhkP4MMDZhy5jRUXxltnX65GQiJ4d9ZWVSC
+         wZ6GcfNuVEnOFFH11565J1nzqSymfW+WOWT0nIfplsakfx9bk8RQR3TygMKECnx+IktE
+         ujRlVh/XmkuDUyJ26kpqhoev2I3T6aSVQf1f16wfpa0eUwffqZefIsmO5eZMVL3ZCDRg
+         z4GujhsDzMk0NMs+i9F3NwAzcNwQJrbfxewRFsN/Lnc2j0Fl9vPBlWQ4EqwIXoL1FWNL
+         P3Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rno1igLp9IqYeH1qSYjcx11MtVviekrTz8yJwoDR31w=;
+        b=Rsk/10InouMn1Au9jqy7Dyfun71lFMppRlV57N8ebxG0+O82CPAauF/vXJ5+sZtSoa
+         L3vbEKM1lTTGGTbtBzDpBEMGlC7Y1d5b6CCA25CnlZtrvf70FeUI37oRUfkkYvUJhAKa
+         TpXtB3x+Xm+ZKEL/sgoafNMDw4ANHnNkxwtCGs7Ph4kl6JMK7CLwOy9pp2q7NiIcS97Q
+         8ibc907Wdsgg60x0WWoG3X+R2P5WpjAI52jVbNitF3p7X92FHUBG/mg2PDjXmVu1ZE7s
+         5KGwKuTpKu3MSvi6RwFVn7lZqLnPnauHZU4nUeFEoHGVf9YRWW1SVR0cH+N7JU7PbYff
+         uBXg==
+X-Gm-Message-State: AFqh2kr7qNxcwfuwFuxRdp7o675HhAfME79o7kbMqNc0v/XdkV6RAO57
+	sZJVNpUxQSPmUPPC+GcsyK/z0YgI4m/9WxXupTdxkKFfodB4bIK9
+X-Google-Smtp-Source: AMrXdXuNwA6LIvVpPBts1loqoG1/Vx6wU/Ge7GRPN0Nr4GPXVjIxGp/3coR/cQJXVEj6wJYE6qnO5eQjMIUfHVc719A=
+X-Received: by 2002:a05:6000:14d:b0:2bd:dca4:38d0 with SMTP id
+ r13-20020a056000014d00b002bddca438d0mr526306wrx.71.1673876670968; Mon, 16 Jan
+ 2023 05:44:30 -0800 (PST)
 MIME-Version: 1.0
+From: Mike Williamson <michael.williamson@criticallink.com>
+Date: Mon, 16 Jan 2023 08:44:20 -0500
+Message-ID: <CAHEoWwuK_rZfka+skd=CTBf2mjAFL71HX_qC77rCWcaO+qy-vg@mail.gmail.com>
+Subject: Question about SPI-NOR micron-st.c driver and OSPI devices.
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230116_014750_961355_7B64223B 
-X-CRM114-Status: UNSURE (   8.29  )
+X-CRM114-CacheID: sfid-20230116_054437_474012_C939B3DB 
+X-CRM114-Status: UNSURE (   5.83  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,36 +81,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Describe the continuous read nand_chip fields to avoid the following
-htmldocs warning:
-include/linux/mtd/rawnand.h:1325: warning: Function parameter or member
-'cont_read' not described in 'nand_chip'
+Hello,
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential cache reads")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- include/linux/mtd/rawnand.h | 4 ++++
- 1 file changed, 4 insertions(+)
+I am looking at the drivers/mtd/spi-not/micron-st.c file.
 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 1b0936fe3c6e..f8d4be9c587a 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1260,6 +1260,10 @@ struct nand_secure_region {
-  * @read_retries: The number of read retry modes supported
-  * @secure_regions: Structure containing the secure regions info
-  * @nr_secure_regions: Number of secure regions
-+ * @cont_read: Sequential page read internals
-+ * @cont_read.ongoing: Whether a continuous read is ongoing or not
-+ * @cont_read.first_page: Start of the continuous read operation
-+ * @cont_read.last_page: End of the continuous read operation
-  * @controller: The hardware controller	structure which is shared among multiple
-  *              independent devices
-  * @ecc: The ECC controller structure
--- 
-2.34.1
+I was wondering why the mt35xu512aba_fixups, and in general the patch below,
+were not also applied to the mt35xu02g device entry?  Best I can tell, the
+datasheets for the two parts (same family, different densities) look nearly
+identical and the
 
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2333941.html
+
+I ask because we are having some troubles with the mt35xu02g and I am
+wondering if we need these fixups to run reliably in octal mode.
+
+Thanks,
+Mike Williamson
 
 ______________________________________________________
 Linux MTD discussion mailing list
