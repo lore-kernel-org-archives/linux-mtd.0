@@ -4,52 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64DC3C3DA78
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jan 2023 16:55:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24A96C3DA78
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jan 2023 19:02:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=0tN+tX9Ysen6fXLgFbkMVM1BDPr6k+dePz74RJrpZTY=; b=r7pThyL8Eyl4i9
-	tA02FT5GjZs5D9lN0IKkjv/sUl12bZB4PBpI89Jv/vIo34et3YQKE/mIII9fdK+mlJYa5NfFtudD8
-	H00fudJO1+tfsA10DlIc1JKV5rnnWlDOeYRzD76AG+RnyNaOWMcdvVQO0io3L31gOLtSJrO09aylg
-	Zu0EYvt7wNxSSciJ83byRkUJO6jHRXqN3vjmSMoUGkrkTic4ZWMYDW8l9i6noFBvONQblGGcQIZ3u
-	HYhujgGRdOLEX8Em8T9ZQP7noTGEUQpcbeHK4zZTJ11AVkq8TVeGZGsXGei3iGUOAlODrJmBEddzn
-	7wU0V7uSB74y2Exs3vAw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SgTRb1jD8PraP/XJtpNmadWMJ6yczunLCX19jWpS+is=; b=f0z2Iw8dQR40u9
+	en6bdIQNOxY8E6nGzV4QHe5nAJGNHk8cCduPPjfOf99M84tXy1CMjCzLdY25gM0cHWWYCXvsbogt/
+	YVeMlLyeJ8q274R5EK/KD/RtdezojzRXqiSu2Ylusnzg1OXgxSjUeUMne6LgFQAJqEwVAFByUuBIt
+	5oEo6i3zvXyjQyzjY7zquy8/Yj9bc3LePy6khbwwCor5oNBLaMuA3r80FjuocPbhkye5aKpmTgB64
+	yrL9ObFVGCeCXngtP75Wh+NXlQBX1koYFoiHix7o5yzf0V6fHXCGepMS1KC1OojdcmdO85pDeXtcn
+	wXcImH4VYrco3qgR+7oQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHpFE-00FAqq-G2; Tue, 17 Jan 2023 16:55:32 +0000
-Received: from www.zeus06.de ([194.117.254.36] helo=mail.zeus06.de)
+	id 1pHrDd-00FWyr-Fa; Tue, 17 Jan 2023 19:02:01 +0000
+Received: from mail-oa1-x31.google.com ([2001:4860:4864:20::31])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHpF8-00FApm-RW
-	for linux-mtd@lists.infradead.org; Tue, 17 Jan 2023 16:55:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=kicherer.org; h=from:to
-	:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=k1; bh=MuSprVR79wzn6FUJMcyvs5dUUfJ
-	PY+y/8zHi13Zvn5U=; b=OJ/0VyWDnQWeXw9UODKyhdFzPDfMAAWCZXYnQOALoQc
-	0lDEBuZxIHJuuT4oCS9jTYKRtGT9bb4LvHauoi/lUDZzrz6SaI+U6iXIRw2Q2GqL
-	EYHjEZAE/5FlM3wE3qNUpGqu8phS/PiUYOfziOVpRWFzEeBeYvfa9egNfgbfoxH4
-	=
-Received: (qmail 1183727 invoked from network); 17 Jan 2023 17:55:14 +0100
-Received: by mail.zeus06.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 Jan 2023 17:55:14 +0100
-X-UD-Smtp-Session: l3s6476p2@kHgvkHjy/9LCtAHJ
-From: Mario Kicherer <dev@kicherer.org>
-To: linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	Mario Kicherer <dev@kicherer.org>,
-	Dhruva Gole <d-gole@ti.com>
-Subject: [PATCH v2] mtd: spinand: Add support for AllianceMemory AS5F34G04SND
-Date: Tue, 17 Jan 2023 17:54:41 +0100
-Message-Id: <20230117165441.1368447-1-dev@kicherer.org>
-X-Mailer: git-send-email 2.34.1
+	id 1pHrD4-00FWkd-FT
+	for linux-mtd@lists.infradead.org; Tue, 17 Jan 2023 19:01:28 +0000
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-15bb8ec196aso21231558fac.3
+        for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2023 11:01:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OgaymgAXi9Z6g6pYwBOzM02/P477EqWitgDVTE3LFbU=;
+        b=7UFMvbpKkJyjWVLlq6ctk0nXiLL3RrLgvGqk+/g8pD0wAzMEFNodkoMNXxSPAzvJye
+         T4nqVDpRCF5Pkw4fe0ROrd1BjE8DZbycDcUSRlgnihtqJaZkkqELJ7TzEZYyPHojRNxM
+         MBh6YZCgcmJgLXwboxe3bvrjmez4qHhfCRIxGuc2G0+QOOJ/eKT38XBZ7MfSSmNLVm7z
+         gDt6C3Ymsnj+eKLcMZ0dj5q2KFKnZutgcY/1C6+IgeLmT5DwAU4QsUhG6TCQdnlD6nEb
+         fYtWfawIuB6wYahQA/cq89ISwAR2GZXbrrCFpCVxRJqHc9Mn337ID3jg/QgfKjbyHIu6
+         BObQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OgaymgAXi9Z6g6pYwBOzM02/P477EqWitgDVTE3LFbU=;
+        b=FhecGpNPG5Q7qU2CxXXwoNblp9ukji5inSvq2ulZYHxY2FMm3EC/eiZ9UcVpGRGIPP
+         6xgj/4JMS+vONWd52QBuel3960/n20+P+6zNy5rkA/J4ngEaWs4aH3Ry8jpCUCviq+Om
+         3F0zu9NTLyOc8MWQil3Bse/VbKVrQxIoHaeCFf5xmszau1kx6bKzHIpF/VdHb4SuKIDs
+         L8EXhw7lEa6x0tey6QMBc1VBw19QNq+0S+GEkbcTsmqT2Bznv4H4Q0VbuBvIuyXCYU5j
+         HJJ8X/gsclGq6Pz8PIAJHMjnFXc6a5WaJl8rrmCsU2i99Re5JDY8MB9Qy3RGEdByA3+E
+         isUA==
+X-Gm-Message-State: AFqh2kqfd9DBByrVRdkFi2d89YBuJv/ZwgWMagBb0OEtQ18iTtLK+jte
+	sqj2gZwSgIBSw9C2umF8zS7wgw==
+X-Google-Smtp-Source: AMrXdXsgzCxMhqm+bb3il7EsJjEv0NbGPCzT1qf9VREFYRxVllxrk/YEzaFAyrBdtefAaDgGfnk/UQ==
+X-Received: by 2002:a05:6870:c190:b0:15e:cfca:b312 with SMTP id h16-20020a056870c19000b0015ecfcab312mr2807015oad.52.1673982083592;
+        Tue, 17 Jan 2023 11:01:23 -0800 (PST)
+Received: from [192.168.86.224] ([136.62.38.22])
+        by smtp.gmail.com with ESMTPSA id r18-20020a05687080d200b0012763819bcasm16664335oab.50.2023.01.17.11.01.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Jan 2023 11:01:22 -0800 (PST)
+Message-ID: <9325a949-8d19-435a-50bd-9ebe0a432012@landley.net>
+Date: Tue, 17 Jan 2023 13:13:38 -0600
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: remove arch/sh
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
+ <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arch@vger.kernel.org, dmaengine@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+References: <20230113062339.1909087-1-hch@lst.de>
+ <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+ <20230116071306.GA15848@lst.de>
+From: Rob Landley <rob@landley.net>
+In-Reply-To: <20230116071306.GA15848@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230117_085527_211400_48766B41 
-X-CRM114-Status: GOOD (  17.96  )
+X-CRM114-CacheID: sfid-20230117_110126_840588_0DD00E46 
+X-CRM114-Status: GOOD (  19.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,185 +109,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for AllianceMemory AS5F34G04SND SPI NAND flash
+On 1/16/23 01:13, Christoph Hellwig wrote:
+> On Fri, Jan 13, 2023 at 09:09:52AM +0100, John Paul Adrian Glaubitz wrote:
+>> I'm still maintaining and using this port in Debian.
+>>
+>> It's a bit disappointing that people keep hammering on it. It works fine for me.
+> 
+> What platforms do you (or your users) use it on?
 
-Datasheet:
-- https://www.alliancememory.com/wp-content/uploads/pdf/flash/AllianceMemory_SPI_NAND_Flash_July2020_Rev1.0.pdf
+3 j-core boards, two sh4 boards (the sh7760 one I patched the kernel of), and an
+sh4 emulator.
 
-Signed-off-by: Mario Kicherer <dev@kicherer.org>
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
----
-Changes since v1:
- - added missing email recipients, sorry for the noise!
+I have multiple j-core systems (sh2 compatible with extensions, nommu, 3
+different kinds of boards running it here). There's an existing mmu version of
+j-core that's sh3 flavored but they want to redo it so it hasn't been publicly
+released yet, I have yet to get that to run Linux because the mmu code would
+need adapting, but the most recent customer projects were on the existing nommu
+SOC, as was last year's ASIC work via sky130.
 
- drivers/mtd/nand/spi/Makefile         |   2 +-
- drivers/mtd/nand/spi/alliancememory.c | 119 ++++++++++++++++++++++++++
- drivers/mtd/nand/spi/core.c           |   1 +
- include/linux/mtd/spinand.h           |   1 +
- 4 files changed, 122 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/alliancememory.c
+My physical sh4 boards are a Johnson Controls N40 (sh7760 chipset) and the
+little blue one is... sh4a I think? (It can run the same userspace, I haven't
+replaced that board's kernel since I got it, I think it's the type Glaubitz is
+using? It's mostly in case he had an issue I couldn't reproduce on different
+hardware, or if I spill something on my N40.)
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index b520fe634041..4ec973b8b6bf 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o ato.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o xtx.o
-+spinand-objs := core.o alliancememory.o ato.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o xtx.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/alliancememory.c b/drivers/mtd/nand/spi/alliancememory.c
-new file mode 100644
-index 000000000000..7f4b90befd27
---- /dev/null
-+++ b/drivers/mtd/nand/spi/alliancememory.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Author: Mario Kicherer <dev@kicherer.org>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_ALLIANCEMEMORY	0x52
-+
-+#define AM_STATUS_ECC_BITMASK		(3 << 4)
-+
-+#define AM_STATUS_ECC_NONE_DETECTED	(0 << 4)
-+#define AM_STATUS_ECC_1_CORRECTED	(1 << 4)
-+#define AM_STATUS_ECC_1_DETECTED	(2 << 4)
-+#define AM_STATUS_ECC_MAX_CORRECTED	(3 << 4)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+			   SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+			   SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+			   SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int as5f34g04snd_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				      struct mtd_oob_region *region)
-+{
-+	if (section > 3)
-+		return -ERANGE;
-+
-+	region->offset = 0x48;
-+	region->length = 0x38;
-+
-+	return 0;
-+}
-+
-+static int as5f34g04snd_ooblayout_free(struct mtd_info *mtd, int section,
-+				       struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	/*
-+	 * It is unclear how many bytes are used for the bad block marker. We
-+	 * reserve one byte here.
-+	 */
-+
-+	region->offset = 1;
-+	region->length = 0x48 - 1;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops as5f34g04snd_ooblayout = {
-+	.ecc = as5f34g04snd_ooblayout_ecc,
-+	.free = as5f34g04snd_ooblayout_free,
-+};
-+
-+static int am_ecc_get_status(struct spinand_device *spinand, u8 status)
-+{
-+	switch (status & AM_STATUS_ECC_BITMASK) {
-+	case AM_STATUS_ECC_NONE_DETECTED:
-+		return 0;
-+
-+	case AM_STATUS_ECC_1_CORRECTED:
-+		return 1;
-+
-+	case AM_STATUS_ECC_MAX_CORRECTED:
-+		return 8;
-+
-+	case AM_STATUS_ECC_1_DETECTED:
-+		return -EBADMSG;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct spinand_info alliancememory_spinand_table[] = {
-+	SPINAND_INFO("AS5F34G04SND",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x2f),
-+		     NAND_MEMORG(1, 2048, 128, 64, 4096, 80, 1, 1, 1),
-+		     NAND_ECCREQ(4, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_HAS_QE_BIT,
-+		     SPINAND_ECCINFO(&as5f34g04snd_ooblayout,
-+				     am_ecc_get_status)),
-+};
-+
-+static int alliancememory_spinand_init(struct spinand_device *spinand)
-+{
-+	return 0;
-+}
-+
-+static const struct spinand_manufacturer_ops alliancememory_spinand_manuf_ops = {
-+	.init = alliancememory_spinand_init,
-+};
-+
-+const struct spinand_manufacturer alliancememory_spinand_manufacturer = {
-+	.id = SPINAND_MFR_ALLIANCEMEMORY,
-+	.name = "AllianceMemory",
-+	.chips = alliancememory_spinand_table,
-+	.nchips = ARRAY_SIZE(alliancememory_spinand_table),
-+	.ops = &alliancememory_spinand_manuf_ops,
-+};
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index dacd9c0e8b20..638391f77d8c 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -937,6 +937,7 @@ static const struct nand_ops spinand_ops = {
- };
- 
- static const struct spinand_manufacturer *spinand_manufacturers[] = {
-+	&alliancememory_spinand_manufacturer,
- 	&ato_spinand_manufacturer,
- 	&gigadevice_spinand_manufacturer,
- 	&macronix_spinand_manufacturer,
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 6d3392a7edc6..01be9f0f008a 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -260,6 +260,7 @@ struct spinand_manufacturer {
- };
- 
- /* SPI NAND manufacturers */
-+extern const struct spinand_manufacturer alliancememory_spinand_manufacturer;
- extern const struct spinand_manufacturer ato_spinand_manufacturer;
- extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
--- 
-2.34.1
+I also have a physical sh2 board on the shelf which I haven't touched in years
+(used to comparison test during j2 development, and then the j2 boards replaced it).
 
+I'm lazy and mostly test each new sh4 build under qemu -M r2d because it's
+really convenient: neither of my physical boards boot from SD card so replacing
+the kernel requires reflashing soldered in flash. (They'll net mount userspace
+but I haven't gotten either bootloader to net-boot a kernel.)
+
+I include sh4 in the my mkroot builds each toybox release, I have a ~300 line
+bash script that builds bootable toybox systems for a dozen-ish architectures,
+including building a kernel configured to run under qemu:
+
+  https://github.com/landley/toybox/blob/master/scripts/mkroot.sh
+
+And I ship the resulting bootable system images, most recent release is at:
+
+  https://landley.net/toybox/downloads/binaries/mkroot/0.8.9/
+
+As described at:
+
+  http://landley.net/toybox/faq.html#mkroot
+
+Various people in Japan have more hardware, but I haven't made it physically
+back there since 2020. (My residency card expired during the pandemic.)
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
