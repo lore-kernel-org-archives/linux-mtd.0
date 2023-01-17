@@ -4,68 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 566E9C54EBE
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jan 2023 01:46:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64DC3C3DA78
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jan 2023 16:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Lag7OCwtOVLbxI8cKI43V2yOPsGGuGfPR5zUfC7wxqY=; b=nFMWU/EG+ZwsCo
-	1DGl9Q8Vr0Ivw7UZLqD4+USEx1o08YYz1bi3hZUXaRqIDPATyVtYnFWRJEMQW01pKRr8VYPgVs6iC
-	Mej+ryv9E++pIQkE+RG5EinMHAw7pUCOpmvn7dXf2fy2zQF+dJWSADk2iDj0SE+v4wm0VJQYG+nMK
-	e6F/m15WsAGSUNjM+ctG7baAZy5cjZ1D/hSXMMuznKBoz1V6QW8PrS2dmT+1i95JhkxqWVG63m6LB
-	yIa+T6UvzmA/k0gThyLJ22JhFFWYo/0DoglKKa980sNlWcWj4NJvKj595119M/OcyIyh4FbqEuOQ1
-	sP7E6Ty/wcOBBxY58gsA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0tN+tX9Ysen6fXLgFbkMVM1BDPr6k+dePz74RJrpZTY=; b=r7pThyL8Eyl4i9
+	tA02FT5GjZs5D9lN0IKkjv/sUl12bZB4PBpI89Jv/vIo34et3YQKE/mIII9fdK+mlJYa5NfFtudD8
+	H00fudJO1+tfsA10DlIc1JKV5rnnWlDOeYRzD76AG+RnyNaOWMcdvVQO0io3L31gOLtSJrO09aylg
+	Zu0EYvt7wNxSSciJ83byRkUJO6jHRXqN3vjmSMoUGkrkTic4ZWMYDW8l9i6noFBvONQblGGcQIZ3u
+	HYhujgGRdOLEX8Em8T9ZQP7noTGEUQpcbeHK4zZTJ11AVkq8TVeGZGsXGei3iGUOAlODrJmBEddzn
+	7wU0V7uSB74y2Exs3vAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHb3g-00CYUI-Hl; Tue, 17 Jan 2023 01:46:40 +0000
-Received: from phobos.denx.de ([2a01:238:438b:c500:173d:9f52:ddab:ee01])
+	id 1pHpFE-00FAqq-G2; Tue, 17 Jan 2023 16:55:32 +0000
+Received: from www.zeus06.de ([194.117.254.36] helo=mail.zeus06.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHb3c-00CYR2-TZ
-	for linux-mtd@lists.infradead.org; Tue, 17 Jan 2023 01:46:39 +0000
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-	(No client certificate requested)
-	(Authenticated sender: marex@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 7BF4C855B3;
-	Tue, 17 Jan 2023 02:46:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1673919993;
-	bh=9t+GT2j8iPQSv3jyzBTWyagcrzf32X61XBFG9XEUVa4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VtG+tJDApGbrIq6NObejHcT5fXy8iPLUqg0e1AQAhyjq8cScSNUgLnBZcvW6lasur
-	 /qua/E7Gr4DT9afSrk6ofMDT5o2To0ZOTVvzvWQtxvwFTpyJ83Gg6Ru7ca+mTfDiqU
-	 Gtw4hy0B6MQP1uCdAZjDciDIzGz7dL6C8cEMQFwoROQ5p8MqWJd+4TD07VJxEPfoRk
-	 bY2i3YyG7VA22MmUm27LPykcgs40ozTLH3+Fii7ql7halV4cODRHrKtSeTdWvkAFxw
-	 m+rw38zCq2pbXMH0mYdg0ASMuWqGnQ4r5EEX+BJucP9RpP2dGPtz6L4WoJ3jNMP/+2
-	 Q29+mOemzki8A==
-Message-ID: <0584cc0e-eacb-ce71-0317-27d10264d3bf@denx.de>
-Date: Tue, 17 Jan 2023 01:59:54 +0100
+	id 1pHpF8-00FApm-RW
+	for linux-mtd@lists.infradead.org; Tue, 17 Jan 2023 16:55:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=kicherer.org; h=from:to
+	:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=k1; bh=MuSprVR79wzn6FUJMcyvs5dUUfJ
+	PY+y/8zHi13Zvn5U=; b=OJ/0VyWDnQWeXw9UODKyhdFzPDfMAAWCZXYnQOALoQc
+	0lDEBuZxIHJuuT4oCS9jTYKRtGT9bb4LvHauoi/lUDZzrz6SaI+U6iXIRw2Q2GqL
+	EYHjEZAE/5FlM3wE3qNUpGqu8phS/PiUYOfziOVpRWFzEeBeYvfa9egNfgbfoxH4
+	=
+Received: (qmail 1183727 invoked from network); 17 Jan 2023 17:55:14 +0100
+Received: by mail.zeus06.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 Jan 2023 17:55:14 +0100
+X-UD-Smtp-Session: l3s6476p2@kHgvkHjy/9LCtAHJ
+From: Mario Kicherer <dev@kicherer.org>
+To: linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	Mario Kicherer <dev@kicherer.org>,
+	Dhruva Gole <d-gole@ti.com>
+Subject: [PATCH v2] mtd: spinand: Add support for AllianceMemory AS5F34G04SND
+Date: Tue, 17 Jan 2023 17:54:41 +0100
+Message-Id: <20230117165441.1368447-1-dev@kicherer.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH v1 1/3] fdt: validate/fix cells count on mtdpart fixup
-Content-Language: en-US
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Simon Glass <sjg@chromium.org>, u-boot@lists.denx.de,
- Marcel Ziswiler <marcel.ziswiler@toradex.com>,
- Francesco Dolcini <francesco.dolcini@toradex.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-References: <20230113184547.487322-1-francesco@dolcini.it>
- <20230113184547.487322-2-francesco@dolcini.it>
- <9ed3b4e4-7336-baf3-5a5a-8e77543e210d@denx.de>
- <Y8VdR4iCcuj9/rT+@francesco-nb.int.toradex.com>
- <06279fe3-a3b3-f3c4-276f-7cd0d4773875@denx.de>
- <Y8WQsIHXEDuJJuLd@francesco-nb.int.toradex.com>
-From: Marek Vasut <marex@denx.de>
-In-Reply-To: <Y8WQsIHXEDuJJuLd@francesco-nb.int.toradex.com>
-X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
-X-Virus-Status: Clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230116_174637_304348_5A5C77EC 
-X-CRM114-Status: GOOD (  34.41  )
+X-CRM114-CacheID: sfid-20230117_085527_211400_48766B41 
+X-CRM114-Status: GOOD (  17.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,200 +61,190 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/16/23 19:00, Francesco Dolcini wrote:
-> On Mon, Jan 16, 2023 at 06:54:44PM +0100, Marek Vasut wrote:
->> On 1/16/23 15:20, Francesco Dolcini wrote:
->>> On Sun, Jan 15, 2023 at 03:35:25PM +0100, Marek Vasut wrote:
->>>> On 1/13/23 19:45, Francesco Dolcini wrote:
->>>>> From: Francesco Dolcini <francesco.dolcini@toradex.com>
->>>>>
->>>>> Fixup #size-cells value when updating the MTD partitions, this is
->>>>> required to prevent issues in case the MTD parent set #size-cells to
->>>>> zero.
->>>>> This could happen for example in the legacy case in which the partitions
->>>>> are created as direct child of the mtd node and that specific node has
->>>>> no children. Recent clean-up on Linux device tree files created a boot
->>>>> regression on colibri-imx7.
->>>>>
->>>>> This fixup has the limitation to assume 32-bit (#size-cells=1)
->>>>> addressing, therefore it will not work with device bigger than 4GiB.
->>>>>
->>>>> This change also enforce #address-cells to be the same as #size-cells,
->>>>> this was already silently enforced by fdt_node_set_part_info(), now this
->>>>> is checked explicitly and partition fixup will just fail in such case.
->>>>>
->>>>> In general board should not generally need nor use this functionality
->>>>> and should be just deprecated, passing mtdparts= in the kernel command
->>>>> line is the preferred way according to Linux MTD subsystem maintainer.
->>>>>
->>>>> Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@dolcini.it/
->>>>> Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
->>>>> Cc: Marek Vasut <marex@denx.de>
->>>>> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
->>>>> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
->>>>> ---
->>>>>     common/fdt_support.c | 45 ++++++++++++++++++++++++++++++++++----------
->>>>>     1 file changed, 35 insertions(+), 10 deletions(-)
->>>>>
->>>>> diff --git a/common/fdt_support.c b/common/fdt_support.c
->>>>> index dbceec6f2dcc..3aee826e60cf 100644
->>>>> --- a/common/fdt_support.c
->>>>> +++ b/common/fdt_support.c
->>>>> @@ -877,27 +877,20 @@ static int fdt_del_partitions(void *blob, int parent_offset)
->>>>>     	return 0;
->>>>>     }
->>>>> -static int fdt_node_set_part_info(void *blob, int parent_offset,
->>>>> +/* This expects #address-cells and #size-cells to have same value */
->>>>> +static int fdt_node_set_part_info(void *blob, int parent_offset, int sizecell,
->>>>>     				  struct mtd_device *dev)
->>>>>     {
->>>>>     	struct list_head *pentry;
->>>>>     	struct part_info *part;
->>>>>     	int off, ndepth = 0;
->>>>>     	int part_num, ret;
->>>>> -	int sizecell;
->>>>>     	char buf[64];
->>>>>     	ret = fdt_del_partitions(blob, parent_offset);
->>>>>     	if (ret < 0)
->>>>>     		return ret;
->>>>> -	/*
->>>>> -	 * Check if size/address is 1 or 2 cells.
->>>>> -	 * We assume #address-cells and #size-cells have same value.
->>>>> -	 */
->>>>> -	sizecell = fdt_getprop_u32_default_node(blob, parent_offset,
->>>>> -						0, "#size-cells", 1);
->>>>> -
->>>>>     	/*
->>>>>     	 * Check if it is nand {}; subnode, adjust
->>>>>     	 * the offset in this case
->>>>> @@ -992,6 +985,31 @@ err_prop:
->>>>>     	return ret;
->>>>>     }
->>>>> +static int fdt_mtdparts_cell_cnt(void *fdt, int off)
->>>>> +{
->>>>> +	int sizecell, addrcell;
->>>>> +
->>>>> +	sizecell = fdt_getprop_u32_default_node(fdt, off, 0, "#size-cells", 0);
->>>>> +	if (sizecell != 1 && sizecell != 2) {
->>>>> +		printf("%s: Invalid or missing #size-cells %d value, assuming 1\n",
->>>>> +		       __func__, sizecell);
->>>>> +
->>>>> +		sizecell = 1;
->>>>> +		if (fdt_setprop_u32(fdt, off, "#size-cells", sizecell))
->>>>> +			return -1;
->>>>> +	}
->>>>> +
->>>>> +	addrcell = fdt_getprop_u32_default_node(fdt, off, 0,
->>>>> +						"#address-cells", 0);
->>>>> +	if (addrcell != sizecell) {
->>>>> +		printf("%s: Invalid #address-cells %d != #size-cells %d, aborting\n",
->>>>> +		       __func__, addrcell, sizecell);
->>>>> +		return -1;
->>>>> +	}
->>>>> +
->>>>> +	return sizecell;
->>>>> +}
->>>>> +
->>>>>     /*
->>>>>      * Update partitions in nor/nand nodes using info from
->>>>>      * mtdparts environment variable. The nodes to update are
->>>>> @@ -1037,12 +1055,19 @@ void fdt_fixup_mtdparts(void *blob, const struct node_info *node_info,
->>>>>     			dev = device_find(node_info[i].type, idx++);
->>>>>     			if (dev) {
->>>>> +				int cell;
->>>>> +
->>>>>     				parts = fdt_subnode_offset(blob, noff,
->>>>>     							   "partitions");
->>>>>     				if (parts < 0)
->>>>>     					parts = noff;
->>>>> -				if (fdt_node_set_part_info(blob, parts, dev))
->>>>> +				cell = fdt_mtdparts_cell_cnt(blob, parts);
->>>>> +				if (cell < 0)
->>>>> +					return;
->>>>> +
->>>>> +				if (fdt_node_set_part_info(blob, parts,
->>>>> +							   cell, dev))
->>>>>     					return; /* return on error */
->>>>>     			}
->>>>>     		}
->>>>
->>>> Can you please include the resulting gpmi node content with this fixup
->>>> applied in the commit message , so it can be validated ?
->>>
->>> I will add it to v2, I would wait a little bit more time to get
->>> additional feedback sending it however.
->>>
->>> In the meantime here the output, but nothing really changed!
->>> What this change is doing is just
->>>    - setting #size-cells to <1> when it is invalid
->>>    - skip generation at all when #size-cells != #address-cells. Former
->>>      code was just generating a broken table without any error
->>>      message.
->>>
->>> Here what is generated for colibri-imx7
->>>
->>> nand-controller@33002000 {
->>> 	compatible = "fsl,imx7d-gpmi-nand";
->>>
->>> 	#address-cells = <0x01>;
->>> 	#size-cells = <0x01>;
->>>
->>> [...snip...]
->>>
->>> 	partition@0 {
->>> 		label = "mx7-bcb";
->>> 		reg = <0x00 0x80000>;
->>> 	};
->>>
->>> 	partition@400000 {
->>> 		label = "ubi";
->>> 		reg = <0x400000 0x1fc00000>;
->>> 	};
->>>
->>> 	partition@80000 {
->>> 		read_only;
->>> 		label = "u-boot1";
->>> 		reg = <0x80000 0x180000>;
->>> 	};
->>>
->>> 	partition@380000 {
->>> 		label = "u-boot-env";
->>> 		reg = <0x380000 0x80000>;
->>> 	};
->>>
->>> 	partition@200000 {
->>> 		read_only;
->>> 		label = "u-boot2";
->>> 		reg = <0x200000 0x180000>;
->>> 	};
->>> };
->>
->> This is what I was afraid of, shouldn't this contain the partitions in
->> per-chipselect sub-node instead of directly in the GPMI node ?
-> 
-> That does not exists in my source DTS, this function just look for a
-> partitions node and update it when it exists.
-> I do not have a nand chip, and I do not want to add.
+Add support for AllianceMemory AS5F34G04SND SPI NAND flash
 
-I know. I wonder if the function should convert the bindings to latest 
-greatest, but I am starting to feel like hard-coding this kind of 
-complex logic into bootloader is not a great idea .
+Datasheet:
+- https://www.alliancememory.com/wp-content/uploads/pdf/flash/AllianceMemory_SPI_NAND_Flash_July2020_Rev1.0.pdf
 
-> The reason is what I wrote in my other email, if I would do something
-> like older U-Boot's would ignore it and just generate the partitions
-> as direct children of the nand-controller.
-> 
-> Commit 36fee2f7621e ("common: fdt_support: add support for "partitions"
-> subnode to fdt_fixup_mtdparts()") was introduced only in v2022.04.
+Signed-off-by: Mario Kicherer <dev@kicherer.org>
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+---
+Changes since v1:
+ - added missing email recipients, sorry for the noise!
 
-There is the Linux BOOT_CONFIG , that might be some sort of alternative 
-to complex kernel command line, but that's a bit more work. I figured 
-I'd mention it here.
+ drivers/mtd/nand/spi/Makefile         |   2 +-
+ drivers/mtd/nand/spi/alliancememory.c | 119 ++++++++++++++++++++++++++
+ drivers/mtd/nand/spi/core.c           |   1 +
+ include/linux/mtd/spinand.h           |   1 +
+ 4 files changed, 122 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/alliancememory.c
+
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index b520fe634041..4ec973b8b6bf 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o ato.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o xtx.o
++spinand-objs := core.o alliancememory.o ato.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o xtx.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/alliancememory.c b/drivers/mtd/nand/spi/alliancememory.c
+new file mode 100644
+index 000000000000..7f4b90befd27
+--- /dev/null
++++ b/drivers/mtd/nand/spi/alliancememory.c
+@@ -0,0 +1,119 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Author: Mario Kicherer <dev@kicherer.org>
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++#define SPINAND_MFR_ALLIANCEMEMORY	0x52
++
++#define AM_STATUS_ECC_BITMASK		(3 << 4)
++
++#define AM_STATUS_ECC_NONE_DETECTED	(0 << 4)
++#define AM_STATUS_ECC_1_CORRECTED	(1 << 4)
++#define AM_STATUS_ECC_1_DETECTED	(2 << 4)
++#define AM_STATUS_ECC_MAX_CORRECTED	(3 << 4)
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++			   SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++			   SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++			   SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++static int as5f34g04snd_ooblayout_ecc(struct mtd_info *mtd, int section,
++				      struct mtd_oob_region *region)
++{
++	if (section > 3)
++		return -ERANGE;
++
++	region->offset = 0x48;
++	region->length = 0x38;
++
++	return 0;
++}
++
++static int as5f34g04snd_ooblayout_free(struct mtd_info *mtd, int section,
++				       struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++
++	/*
++	 * It is unclear how many bytes are used for the bad block marker. We
++	 * reserve one byte here.
++	 */
++
++	region->offset = 1;
++	region->length = 0x48 - 1;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops as5f34g04snd_ooblayout = {
++	.ecc = as5f34g04snd_ooblayout_ecc,
++	.free = as5f34g04snd_ooblayout_free,
++};
++
++static int am_ecc_get_status(struct spinand_device *spinand, u8 status)
++{
++	switch (status & AM_STATUS_ECC_BITMASK) {
++	case AM_STATUS_ECC_NONE_DETECTED:
++		return 0;
++
++	case AM_STATUS_ECC_1_CORRECTED:
++		return 1;
++
++	case AM_STATUS_ECC_MAX_CORRECTED:
++		return 8;
++
++	case AM_STATUS_ECC_1_DETECTED:
++		return -EBADMSG;
++
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++
++static const struct spinand_info alliancememory_spinand_table[] = {
++	SPINAND_INFO("AS5F34G04SND",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x2f),
++		     NAND_MEMORG(1, 2048, 128, 64, 4096, 80, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&as5f34g04snd_ooblayout,
++				     am_ecc_get_status)),
++};
++
++static int alliancememory_spinand_init(struct spinand_device *spinand)
++{
++	return 0;
++}
++
++static const struct spinand_manufacturer_ops alliancememory_spinand_manuf_ops = {
++	.init = alliancememory_spinand_init,
++};
++
++const struct spinand_manufacturer alliancememory_spinand_manufacturer = {
++	.id = SPINAND_MFR_ALLIANCEMEMORY,
++	.name = "AllianceMemory",
++	.chips = alliancememory_spinand_table,
++	.nchips = ARRAY_SIZE(alliancememory_spinand_table),
++	.ops = &alliancememory_spinand_manuf_ops,
++};
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index dacd9c0e8b20..638391f77d8c 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -937,6 +937,7 @@ static const struct nand_ops spinand_ops = {
+ };
+ 
+ static const struct spinand_manufacturer *spinand_manufacturers[] = {
++	&alliancememory_spinand_manufacturer,
+ 	&ato_spinand_manufacturer,
+ 	&gigadevice_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 6d3392a7edc6..01be9f0f008a 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -260,6 +260,7 @@ struct spinand_manufacturer {
+ };
+ 
+ /* SPI NAND manufacturers */
++extern const struct spinand_manufacturer alliancememory_spinand_manufacturer;
+ extern const struct spinand_manufacturer ato_spinand_manufacturer;
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
