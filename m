@@ -4,85 +4,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4C07C3DA78
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jan 2023 20:27:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B0A5C00A5A
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 Jan 2023 22:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HTLfzUHfzF0xDfASo6YNoohdgu808XDszR9y1oNPR30=; b=qDDp2fattjws9w
-	XYerdK4GNaLXKXqVVIISZf/NTbVbIDc2UNod0HEABqOOXQ/Xxe1FpITs2at6FFK22YS62CQfQEK3R
-	dp9SiS8DnzgFrAXbxeLaWkOGXZtjtrcrZY+AgRDiuU/xTe+P/dfXDKVwTGhFAgyg0AIvulvHxtBlT
-	Oi022j1g6vBMQqTDzngvI/VdHbzEZwlrJ/rwG9oNoZB7fTmvLbs98w8c9P/DENri8lIWO31ko7GG/
-	+JVabanxVYIC8ni71gH5guniazh5jo3ENeAwnRIZSkjhEwWoC3oJ21U8l/h5WaINOJyopvc0spYzj
-	yWw+XJ595rQNzi7dLqFg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:References:
+	In-Reply-To:Subject:Cc:To:From:Message-ID:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=jz1/SqlnV/QWMvjZEFx6OHx6AykGkI/yle5sAUF8sJM=; b=AxqZAeNdC/CyB4h3MFUzrHrUbQ
+	c/VTHJosKBXxz0NhuGCY18+hT3j58KR/3BQbthSwhFDvBuC/B5tPwI+3boA3wA/jyyWGHhTpRLoEg
+	BjHHuMvg+CW1bHUJqHz5BMSExsi8YbMJ+4U5ZYJPxu6DY0/oPxXQ0rGXICYzmX/7+pFIv5KoN9eBA
+	aBz+Z55xsgDq8A5FBibTOUpJxMps4UXsXMVTBxAMSk0SPlABXR0A5LkLXTldPLlGOQcPGL5z2SfEl
+	TwqruQViN9QqwnJRUJbKcwmnYOLiqFHRw91zW5bS8gUVdI5rlrfcbuEKZenmluwdU+8X7YD6L3YJ1
+	mjvTC0Wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHsXe-00FlKw-LN; Tue, 17 Jan 2023 20:26:46 +0000
-Received: from mail-qv1-f46.google.com ([209.85.219.46])
+	id 1pHuok-00GAXA-DI; Tue, 17 Jan 2023 22:52:34 +0000
+Received: from mail-os0jpn01on2128.outbound.protection.outlook.com ([40.107.113.128] helo=JPN01-OS0-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHsXb-00FlK4-6q
-	for linux-mtd@lists.infradead.org; Tue, 17 Jan 2023 20:26:44 +0000
-Received: by mail-qv1-f46.google.com with SMTP id i12so22398381qvs.2
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2023 12:26:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7rC0mNjXax5vqLz2OAo+EH0y+cJfjyIAm7sm9u5PvgQ=;
-        b=fAMAklJ4AMICevAFQHxj8aOvnfULzB9s4Pq/PTBT57PzyPmJtPS2xxOGnRZqTpSYop
-         QshG8I+uOykl0yCCUDeigh6bXe8HI3iVDAjcKwZfSSlr3KKUEzAaSGQGdySH8MKUVoO1
-         eEfnDL+IKom+TPGWiGIVz8D9uxhgHRTUH99AcNYr82nLewmscloxY7+vMD5j3otQpd/S
-         1a9Y7WcunMjwtj+bcI7beapKZUl5b5FmhKXk/x8ONrKL1foEfGGWtC43aVGzAa1N6HNC
-         Wt0r28ieYD/U6rOi4dQjkymm2bQXgdn44xiBKPoYCXnnjHo2xhbo3WAUFc9sknzIbweN
-         tOFg==
-X-Gm-Message-State: AFqh2kpf3bXRqfgRFB53+fc909FmpULfv+06+CmHKlA+nk/ux4isv69Z
-	Fl+ufbtuGs9VcwOeSTlBv8FzSxdfeE6ryg==
-X-Google-Smtp-Source: AMrXdXupdhDUTTrHvG5heRhGYiCXMj+0Bx3zl29SM6IbXXxKHx54UztWnpzB/19y3Zt/a5WLd7QlEA==
-X-Received: by 2002:a05:6214:2622:b0:532:c1dc:61ff with SMTP id gv2-20020a056214262200b00532c1dc61ffmr9463786qvb.39.1673987200692;
-        Tue, 17 Jan 2023 12:26:40 -0800 (PST)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id bs14-20020a05620a470e00b006b95b0a714esm234210qkb.17.2023.01.17.12.26.39
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Jan 2023 12:26:40 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id e130so6069844yba.7
-        for <linux-mtd@lists.infradead.org>; Tue, 17 Jan 2023 12:26:39 -0800 (PST)
-X-Received: by 2002:a25:9012:0:b0:7b8:a0b8:f7ec with SMTP id
- s18-20020a259012000000b007b8a0b8f7ecmr707665ybl.36.1673987199250; Tue, 17 Jan
- 2023 12:26:39 -0800 (PST)
+	id 1pHuoi-00GAW0-4Q
+	for linux-mtd@lists.infradead.org; Tue, 17 Jan 2023 22:52:33 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ecdbkIS5e5pcnD47APNleEfeEIheYN5uFqZ3SfAbP1uGDdbn6vKK0m89WOa0gAfdyi42CK9PDk/pc/ENDRJsaXjyIXOLc7lLZz1UPqWMxbEo/8pG2B5GA8QhACpRDtmdakPKwaL/S7Ff8MjoBdPRfoB+//w1tAi8JAiwKp2o4Q2LOczpuWwcSqvnrXDprjxHMRE7Jagvmcs7lEWyGVlzo+CS9ai6W6qcVlmlDtoWj/dTyWL4YnycesDMYgcZUu6of6KxnJO0adVRMyA7eLe1sWP5AUM4mJ1qIdoXsiSbDc0qr+dHJK0k0LNIvtRW9zMil/czRNM7T9lM8UjWf/qkuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O/hH+tGbJuZtF85CByKB3t4EoTi8CvYAcYaLwC2SE0E=;
+ b=U/aeDDvsHrbLshcAOnID6xCPHquf+Q25XYpbcUSsZVzRzvTnPA12uyLOpKgWCQwD/KicWzVc9Myy6IaWfFjFod59PENbcsQIm9ADmKa4IFnIDOkN+WsqVu14hp0AoY71Vx6JWThsANUKAUqS0B+XvY1oUxyKfmwlMyff3ekWF6C9cnGn6FEMgadx18yG/s53pd3dmdIZsn6aW55SPg4ghJxfP8xUHGl3LkwXEPBjmWVaoU0vgritVdHUiN0CJ/5uOSvvp6Abr9G48A9OCFGW8m4KHsUR8T0idxJ90OVo0eqniEzZQVzMpCOSydYskXc4E94kAZEZr1qndrtWwOb6nw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O/hH+tGbJuZtF85CByKB3t4EoTi8CvYAcYaLwC2SE0E=;
+ b=PYP/0HLopJ6OBpVGhKHkIdVJ2BLvWY6O4lR7DAFUF8x+N90AMG+/s7qBBAJYuAijrkZkgkUQ9MGWwuPrdYeKxMyPTsX3IlyFxSdf1T0R1vz3w9+QaPNC7mpjtDu/m2Krd4VEgvVRM8ZaIL3ODQuyxUjyyWvNqBaZOnMqa1avqFU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=renesas.com;
+Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com (2603:1096:604:194::10)
+ by TYAPR01MB6010.jpnprd01.prod.outlook.com (2603:1096:402:31::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.12; Tue, 17 Jan
+ 2023 22:52:23 +0000
+Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com
+ ([fe80::3cd7:a7b5:ea86:9ae]) by OS3PR01MB8426.jpnprd01.prod.outlook.com
+ ([fe80::3cd7:a7b5:ea86:9ae%4]) with mapi id 15.20.6002.012; Tue, 17 Jan 2023
+ 22:52:23 +0000
+Message-ID: <877cxkdba6.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	linux-kernel@vger.kernel.org,
+	linux-watchdog@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-rtc@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-sh@vger.kernel.org
+Subject: Re: [PATCH 05/22] sound: remove sh-specific sounds/soc/sh drivers
+In-Reply-To: <20230113062339.1909087-6-hch@lst.de>
+References: <20230113062339.1909087-1-hch@lst.de>
+	<20230113062339.1909087-6-hch@lst.de>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+Date: Tue, 17 Jan 2023 22:52:22 +0000
+X-ClientProxiedBy: TYAPR01CA0070.jpnprd01.prod.outlook.com
+ (2603:1096:404:2b::34) To OS3PR01MB8426.jpnprd01.prod.outlook.com
+ (2603:1096:604:194::10)
 MIME-Version: 1.0
-References: <20230113062339.1909087-1-hch@lst.de> <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
- <20230116071306.GA15848@lst.de> <9325a949-8d19-435a-50bd-9ebe0a432012@landley.net>
-In-Reply-To: <9325a949-8d19-435a-50bd-9ebe0a432012@landley.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 17 Jan 2023 21:26:27 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUJm5QvzH8hvqwvn9O6qSbzNOapabjw5nh9DJd0F55Zdg@mail.gmail.com>
-Message-ID: <CAMuHMdUJm5QvzH8hvqwvn9O6qSbzNOapabjw5nh9DJd0F55Zdg@mail.gmail.com>
-Subject: Re: remove arch/sh
-To: Rob Landley <rob@landley.net>
-Cc: Christoph Hellwig <hch@lst.de>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
-	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org, 
-	linux-spi@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, 
-	alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OS3PR01MB8426:EE_|TYAPR01MB6010:EE_
+X-MS-Office365-Filtering-Correlation-Id: b379b111-69b2-4922-9459-08daf8dd7ef3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	QfvrGbYcPVRDZqzEvw69I3/6c6y4wOmoABUT6hjIQ0LcPnxW5B+AP1BqefHu9U6pd8Z5Y45xZPLlNPM71u5BKTFjUjzDx6B+AgT0m5PRHBTxv2yhVCjC8DcjIx6bPUR9UstMuh8kZ/M+JGv9eZcemwi9zaMdJaaSqPd+m1d67EMBCsaRJHmgSXIaki2nbIeoKy6sCAqyNixO1jY7hDtxlPELZygbxbGotSxqAE5HihP2Sw1DunN9CS8P72zScF9i6TaKd2iAldxoamQ3Bi8ms8ZFNmVXVRFmYH+Wfx613oLR4ZOsHZ0Crz1oGQqy2/MU6Ruy0BVGyUXRToAW9qBAebcSiCWBAv9HD3rH4GJxyamHzL1o/wWNLCIlnAOjJ5vYXMEqmvp0qYnpUFRvn+WAlkLlGK4HEDYAyyzsLsmHBmeXJiTLu2E7epjRXwc17iBLFpclSGVTE8R34sdLqVT8lFdJcMhdfdX3XM7fXnXLw+5/Hk0OZPsYOonlHsBF3DpQDL4tDPaowNDfxa5zKVeQ1z7vX2UdBEumZJ75gVrP7CUpBY0lklpw5H3/Q8J58XPw2sQ2v+qHQkmKtr7FXajRalxr0TwpvywIuxvadA8OQae9Hgs96+tq3sMUUXJRLnR6xffoMd2gThesQQyqsPBu1WrD5TDHPikmMoATcS2yw8CVuZk3Wq4zGAgUS+dMyXec
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB8426.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(136003)(376002)(396003)(39860400002)(346002)(451199015)(36756003)(41300700001)(66556008)(2616005)(66476007)(66946007)(26005)(6512007)(186003)(6916009)(8676002)(4326008)(86362001)(5660300002)(7416002)(38350700002)(8936002)(478600001)(54906003)(316002)(6506007)(52116002)(6486002)(38100700002)(2906002)(4744005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?mZOl0elRhwt/KGbhGU8a1THpk6ytUEPKVJp140gOHJFbaPRrzSxXeVoa1oZZ?=
+ =?us-ascii?Q?IYomH6N4sZjvo6EOL1eO2Lq2VTXH6gvy/bytgluorShxS6ogxSiYb8OMi0oB?=
+ =?us-ascii?Q?wUGuebwXhnysR3O5ckcV/Qq2MlOn91hH5UhqFu80F73TEG3Ei6G5+ug95R42?=
+ =?us-ascii?Q?7otfnLYknydYIoOinGDfLgUVBMACiheyrXm5EFcS3ZIM6F7+1jKD7Eyqpsms?=
+ =?us-ascii?Q?fasKOBH0e1FJGCWXc5LA3md64OuHd1ZJZDjUrIIyVPjS/7HfYE5GmDI5GW1P?=
+ =?us-ascii?Q?BMgEbXtbpdTjjvOL9KNuix1r/h2rMl4CqqyM0ENx919W4GmVCJqqhsf6AE23?=
+ =?us-ascii?Q?p0jQVQhAzBfLblmv3vYGGL+VL6wzKM6/O2RJz2XwK/lCTdA6kyfw1xzEKCAL?=
+ =?us-ascii?Q?rrC4aDLkQoxBx3F5Y881Y6ukI34yBg0NqTmWHcVDNrxFwz8moXvkqHE848Oq?=
+ =?us-ascii?Q?fr27sf8MLKeiuUZzFhIETinxqm3kaROXn3kd/xdLHl+QsYjEa90Rd+iM2fiB?=
+ =?us-ascii?Q?Via+4zYpLFPGCrPDHkuIJH+4Ex5uEUxIPqRMiFADRe3aJWdxBjNbOkv9ClNt?=
+ =?us-ascii?Q?PjWnCBVc6uxCMfG7jR8zMm+g1PAViUga/hWk9sYKjv/ji9efwj5NmbeNd2cL?=
+ =?us-ascii?Q?tZwBQa1Xg1qMR2eqz2d5+pf/fYnppHdD12VHWYWrZJPkMlE+qy/rRBMG/MQQ?=
+ =?us-ascii?Q?7+PovCtLT7C9HykZsbY1T168gAQ0svOUkjmbjkHnzKvybkn9qRwumy8cYIey?=
+ =?us-ascii?Q?cOfPqd6NY7jcSw1hCKels9F1SVpnx9j4zzmm7hjte2xLvlP2avzN/5nrvPZV?=
+ =?us-ascii?Q?0vgHJIJ/T2ojiDnuCZxJqRKVlH8IhppZxiQZTqipBpcxcx03UvTUrb1kAsBN?=
+ =?us-ascii?Q?eXObdglw9mH9JQHCGZSwgHMl+7J6pY4RrXheOUBdxAhZ4dA9XrGGnV0e4k2b?=
+ =?us-ascii?Q?5fi5EawJmOpgYpTvrZ7GypK+0gUkXIysvedbS2Cs04qRXiTS/EBp1Ch59f6F?=
+ =?us-ascii?Q?LXNzpXOWQO7J4gzXJpDuMwHPkBh9d+7v6Z3BKnFVwhw/LCuqxU7cMn3WYNEY?=
+ =?us-ascii?Q?neUMQfFNNssM6C+uviOPSgFlsbdEmuA9HiAaAqjScsFsRvrxM9WRZNWoFnTd?=
+ =?us-ascii?Q?cDkVREQ6Re2NnYyfxNCurBNjPmnhIxBEnk8NZMLZNGx/rnHL73h2PrOq9SSR?=
+ =?us-ascii?Q?PTQMQ2xnWCIfTHBgWTrkXW6tzVKeJcCVZ1HPZo1jDXm1IQadXcKtzesM8gPy?=
+ =?us-ascii?Q?rSI5MIb/+W7YxdmK6MNVZ15DmBhWC/D2kBjrHHl2iB+3RG+94rbmU4xHoj5x?=
+ =?us-ascii?Q?ff3/NCy/zHpGbZEMc1SupvMx4iIs4/tiwBNQV5B2b2h/ESdLg2A2KmoyJIvG?=
+ =?us-ascii?Q?mDxRfOdRBR9g67CX4iPKpRNT4v5vF8LcnxhLpECO9TjQ6wBULvYP+lKRQ0w5?=
+ =?us-ascii?Q?kvKRBRKOfDM8RPF7SUSr1wRswGXZTd/x5o4KG1mUvkGHFlYdX+ss2q6WRT/H?=
+ =?us-ascii?Q?AqvE0KztlecLLtgCWBNpQmbEdjc9s7G1BjY3Wb3v/1amJ5j2UhYR1S8VEF63?=
+ =?us-ascii?Q?rqQvakXf0/xvQR09nxzbsWImBcwxTLatRZJPkok+xiYCKCYvLPRjLlVdXKKl?=
+ =?us-ascii?Q?XU7LeAeHdmrfSJsu14tKvPc=3D?=
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b379b111-69b2-4922-9459-08daf8dd7ef3
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB8426.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2023 22:52:23.0355
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Lj1mhU1Xlqt+WLwQ6CnlFII94JNv7so1T0iRaWrLBwU2hRYWSAXB0a+GQYnA4yJWzF5ZZrUJpX4Mux38JDOt+JIx9SvQMIOxU3VNEh82Bqg5avcw6VR/JHbrwjA4CTnZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB6010
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230117_122643_269343_1EF5D97B 
-X-CRM114-Status: GOOD (  36.20  )
+X-CRM114-CacheID: sfid-20230117_145232_205010_613E87E9 
+X-CRM114-Status: UNSURE (   7.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,70 +161,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
 
-On Tue, Jan 17, 2023 at 8:01 PM Rob Landley <rob@landley.net> wrote:
-> On 1/16/23 01:13, Christoph Hellwig wrote:
-> > On Fri, Jan 13, 2023 at 09:09:52AM +0100, John Paul Adrian Glaubitz wrote:
-> >> I'm still maintaining and using this port in Debian.
-> >>
-> >> It's a bit disappointing that people keep hammering on it. It works fine for me.
-> >
-> > What platforms do you (or your users) use it on?
->
-> 3 j-core boards, two sh4 boards (the sh7760 one I patched the kernel of), and an
-> sh4 emulator.
->
-> I have multiple j-core systems (sh2 compatible with extensions, nommu, 3
-> different kinds of boards running it here). There's an existing mmu version of
-> j-core that's sh3 flavored but they want to redo it so it hasn't been publicly
-> released yet, I have yet to get that to run Linux because the mmu code would
-> need adapting, but the most recent customer projects were on the existing nommu
-> SOC, as was last year's ASIC work via sky130.
+Hi Christoph
+> 
+> Now that arch/sh is removed these drivers are dead code.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+(snip)
+>  sound/soc/sh/fsi.c         |   9 -
+(snip)
+>  config SND_SOC_SH4_FSI
+>  	tristate "SH4 FSI support"
+>  	depends on COMMON_CLK
 
-J4 still vaporware?
+You can remove sound/soc/sh/fsi.c
+It is for SH SoC.
 
-> My physical sh4 boards are a Johnson Controls N40 (sh7760 chipset) and the
-> little blue one is... sh4a I think? (It can run the same userspace, I haven't
-> replaced that board's kernel since I got it, I think it's the type Glaubitz is
-> using? It's mostly in case he had an issue I couldn't reproduce on different
-> hardware, or if I spill something on my N40.)
->
-> I also have a physical sh2 board on the shelf which I haven't touched in years
-> (used to comparison test during j2 development, and then the j2 boards replaced it).
->
-> I'm lazy and mostly test each new sh4 build under qemu -M r2d because it's
-> really convenient: neither of my physical boards boot from SD card so replacing
-> the kernel requires reflashing soldered in flash. (They'll net mount userspace
-> but I haven't gotten either bootloader to net-boot a kernel.)
+Thank you for your help !!
 
-On my landisk (with boots from CompactFLASH), I boot the original 2.6.22
-kernel, and use kexec to boot-test each and every renesas-drivers
-release.  Note that this requires both the original 2.6.22 kernel
-and matching kexec-tools.  Apparently both upstreamed kernel and
-kexec-tools support for SH are different, and incompatible with each
-other, so you cannot kexec from a contemporary kernel.
-I tried working my way up from 2.6.22, but gave up around 2.6.29.
-Probably I should do this with r2d and qemu instead ;-)
-
-Both r2d and landisk are SH7751.
-
-Probably SH7722/'23'24 (e.g. Migo-R and Ecovec boards) are also
-worth keeping.  Most on-SoC blocks have drivers with DT support,
-as they are shared with ARM.  So the hardest part is clock and
-interrupt-controller support.
-Unfortunately I no longer have access to the (remote) Migo-R.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best regards
+---
+Kuninori Morimoto
 
 ______________________________________________________
 Linux MTD discussion mailing list
