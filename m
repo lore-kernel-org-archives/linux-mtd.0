@@ -4,100 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A6CDC38147
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 Jan 2023 11:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 927D0C38142
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Jan 2023 03:48:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7AT/O4SqQQdkz+Fyb1QqrsIWt/2gVtLAbwat6UPrmrk=; b=Of3oOoKZEnJOCz
-	MnAQNanOaaojJUeBFLIFuvcmKEWL+9cvrpfp+KU/8RjcdtjfihJoRgfdtUvGTb/ZbZh5wKKVp2rBX
-	Mn9dPhwiGZafJG8AxdTtWsVhW9XmXEE33+KL9FKgFSCfbyEEnjikB9RUjNY3ELGqjwal+IDbDZ6/k
-	qPfJP1Bdju+s6PRx6ANQ9el3lD80Xfc6v94XlGnWgSfQekypwrNp+fqlgr+cBUS1Ixgay2gzqODil
-	PKjK+B39CclQd/Z+W9x6x+b34vrfISPLkQYF7De7TiIDNxzwqLoqnqxOefhz/RDdTU7had9myisr2
-	EoLu5miO6F6kosLarHyg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7qgy72nw8poCs20EYxLKr2josxRdLdO1JGsbjNhud5g=; b=viVAyEOQ82xja9
+	EJDNFXYfAxtp61moD8I68+niLUbg3UEi7SVseQVULculgq275XK5+xg+Wa210I9BP5Z41/P/+yaC7
+	au0s1il0eZ25K94PyG6PWAtibwMrSmUBJWZO8S2egXygIX3gum7fBSgtHuTnzCUB+0y/UcVghHqS0
+	N0//JLbJpSU35cZFAPxUCaocgxI4Lka7lSOGB8uD0odJfBQ1aeyJ/imPkiYh7CCFPqxCU8i0Dpr98
+	JYGtpJq1Os1ZBcUfAueaGLbVW4FJY6OWJbe+0d3JRG98HRDlyf/yIy/roiNFBZZuYMCOJjENMVN26
+	vXSEokZUI9E9kD18mFsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pI6DF-000SYm-Dh; Wed, 18 Jan 2023 11:02:37 +0000
-Received: from mail-oa1-x30.google.com ([2001:4860:4864:20::30])
+	id 1pILty-003Mw8-2O; Thu, 19 Jan 2023 03:47:46 +0000
+Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pI6D1-000SQC-Ly
-	for linux-mtd@lists.infradead.org; Wed, 18 Jan 2023 11:02:25 +0000
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-15f83e0fc63so1613030fac.11
-        for <linux-mtd@lists.infradead.org>; Wed, 18 Jan 2023 03:02:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KuI0iwHsMdHgi9UUhJbv/FF6Zx1hDWv0kF6EEdUlD2I=;
-        b=5PCGooyhPIEuUA8LfHpgz2E1NSo9q7mSLwwd+kP7a2WQx5oIObawC1SZ8b3GjlhI6w
-         k+aUwf08xYT06HES1GVAUttTfmtlU/+2mUQ+E6nwI3mvpykPVqpS3CT4T1OK8Y7wh8Lh
-         OxdivEq+CnvHPuPDLKxMirSIFn7kanNvD0azdCBrxVrZC626tljgU09Q5NwDlRdCl5Pm
-         h30BKW+O6Gpe2j8vZBVS7nQX0CZx9F+vnTsIKQmfF0oeOZkgBCg3IFGxtjTVee8Llq3v
-         VTgrTzM1eGIkuy0knsusfqmXW3O1e3iUrjIXv4sd1h2zvdReBrfi+vZn6Ejf/45OptwH
-         w5QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KuI0iwHsMdHgi9UUhJbv/FF6Zx1hDWv0kF6EEdUlD2I=;
-        b=lvfV45inTG3ew4/ufyNBpPTN9Mp2nkbePsU2W1PXjZS/kvz0jSamxz9+tMSjHCNe4K
-         m2fdJfRfR9DO06fC3kbGO2Wwo4PmiPTbWX1/S53i6HCANcXsf0wcyj8SdPwyn6yY39BD
-         fc2qZwcN2N3bQVB1+UZB3HZD0wNMp+zK5a5GBABxFo9qK2VL/mstZnEV3vK6dfhlMk6k
-         w0AuPL518zTvBy2IaQT74Sj7DCyH188aulg8rr0Eks+smi9+Iha51zarTquz+UhQI7l9
-         dgbchea6F7ZAniCEKFmPuSVoX35Dqc3dRNm8DEE9BXQW9si203bE4TgUHxbqWzHNXw1A
-         3WBw==
-X-Gm-Message-State: AFqh2krgp/NPnZtiLLb0zop3CYVryNuBUfZpCPkxPMFQyXnDTMC++UPr
-	Yp3y3HHdtgpep75jp4thMrW+Ng==
-X-Google-Smtp-Source: AMrXdXvlrp1Ed3XBrrhA3zCnrQ6Rbb/wKmg6UrVk+wIslhGo+AMwXBPpNO4DwySZY2+3rtlEwlTN+A==
-X-Received: by 2002:a05:6870:c190:b0:15e:cc77:1e6d with SMTP id h16-20020a056870c19000b0015ecc771e6dmr4364085oad.13.1674039741194;
-        Wed, 18 Jan 2023 03:02:21 -0800 (PST)
-Received: from ?IPV6:2607:fb91:120e:1c84:8038:3fff:fe9f:cbb4? ([2607:fb91:120e:1c84:8038:3fff:fe9f:cbb4])
-        by smtp.gmail.com with ESMTPSA id e19-20020a056871045300b001442fada152sm18099522oag.46.2023.01.18.03.02.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Jan 2023 03:02:20 -0800 (PST)
-Message-ID: <efa6a8aa-466e-cfaa-0113-b85002af008e@landley.net>
-Date: Wed, 18 Jan 2023 05:14:36 -0600
+	id 1pILsA-003MA6-1v
+	for linux-mtd@lists.infradead.org; Thu, 19 Jan 2023 03:45:55 +0000
+Received: from local
+	by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1pILs6-0004aJ-14;
+	Thu, 19 Jan 2023 04:45:50 +0100
+Date: Thu, 19 Jan 2023 03:45:43 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Mason Yang <masonccyang@mxic.com.tw>,
+	Jianhui Zhao <zhaojh329@gmail.com>
+Subject: [PATCH] mtd: spinand: macronix: use scratch buffer for DMA operation
+Message-ID: <Y8i85zM0u4XdM46z@makrotopia.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: remove arch/sh
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Hellwig <hch@lst.de>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org,
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arch@vger.kernel.org, dmaengine@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
-References: <20230113062339.1909087-1-hch@lst.de>
- <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
- <20230116071306.GA15848@lst.de>
- <9325a949-8d19-435a-50bd-9ebe0a432012@landley.net>
- <CAMuHMdUJm5QvzH8hvqwvn9O6qSbzNOapabjw5nh9DJd0F55Zdg@mail.gmail.com>
- <7329212f-b1a0-41eb-99b3-a56eb1d23138@landley.net>
- <CAMuHMdXo3iR2C=CAaXO5tBRCncnQAAMR6BMPLOm_nBpFAeVhrA@mail.gmail.com>
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <CAMuHMdXo3iR2C=CAaXO5tBRCncnQAAMR6BMPLOm_nBpFAeVhrA@mail.gmail.com>
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230118_030223_971743_83620DB9 
-X-CRM114-Status: GOOD (  14.17  )
+X-CRM114-CacheID: sfid-20230118_194554_153205_448A4E8F 
+X-CRM114-Status: GOOD (  12.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,36 +62,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/18/23 01:46, Geert Uytterhoeven wrote:
-> Again, I think you're talking about something different.
-> Does kexec work for you?
+The mx35lf1ge4ab_get_eccsr() function uses an SPI DMA operation to
+read the eccsr, hence the buffer should not be on stack. Since commit
+380583227c0c7f ("spi: spi-mem: Add extra sanity checks on the op param")
+the kernel emmits a warning and blocks such operations.
 
-Sorry, got woken up several hours early by sirens and flashy lights this morning
-(duplex on the corner caught fire, Austin has a LOT of emergency vehicles), been
-a bit underclocked all day.
+Use the scratch buffer to get eccsr instead of trying to directly read
+into a stack-allocated variable.
 
-No, I haven't tried kexec on sh4. I'll add it to the todo heap.
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/mtd/nand/spi/macronix.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->> > I tried working my way up from 2.6.22, but gave up around 2.6.29.
->> > Probably I should do this with r2d and qemu instead ;-)
->>
->> I have current running there. I've had current running there for years. Config
->> attached...
->>
->> > Both r2d and landisk are SH7751.
->>
->> Cool. Shouldn't be hard to get landisk running current then.
-> 
-> Current kernels work fine on landisk with an old Debian userspace
-> on CF.  The 8139cp driver is a bit flaky: last time I tried nfsroot,
-> that didn't work well.
+diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
+index dce835132a1e2..722a9738ba370 100644
+--- a/drivers/mtd/nand/spi/macronix.c
++++ b/drivers/mtd/nand/spi/macronix.c
+@@ -83,9 +83,10 @@ static int mx35lf1ge4ab_ecc_get_status(struct spinand_device *spinand,
+ 		 * in order to avoid forcing the wear-leveling layer to move
+ 		 * data around if it's not necessary.
+ 		 */
+-		if (mx35lf1ge4ab_get_eccsr(spinand, &eccsr))
++		if (mx35lf1ge4ab_get_eccsr(spinand, spinand->scratchbuf))
+ 			return nanddev_get_ecc_conf(nand)->strength;
+ 
++		eccsr = *spinand->scratchbuf;
+ 		if (WARN_ON(eccsr > nanddev_get_ecc_conf(nand)->strength ||
+ 			    !eccsr))
+ 			return nanddev_get_ecc_conf(nand)->strength;
+-- 
+2.39.1
 
-I've never had luck with NFS, I was using NBD. Hadn't noticed the flake but
-haven't stress tested it too hard either?
-
-Mostly new userspace is what I'm testing...
-
-Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
