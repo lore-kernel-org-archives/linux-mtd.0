@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34925C004D4
-	for <linux-mtd@archiver.kernel.org>; Thu, 19 Jan 2023 19:07:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6F05C46467
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 Jan 2023 20:02:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W9zSm7N8h1qTiVs9YuOFYxQh+BsHVG1JHGgWBFxPycA=; b=PF9nsWTZbwSmRV
-	kpEzgONud5+aAz8bo3BS0NWhBskeXxulVjTTalK498cE3RXVEZ1bB3+sz4v996lz+G7Kpx10RzxUB
-	82C1E7cGFo9oApCGVEZWZe0pkInOfFkG/slsm3DcWIIB//f621HQlGU/a1IGEbBTQUAyPJNYZtuOp
-	g+l7812Vma0jvX1Ei+2pHWS0RRFHibJ+SXHIBy7khe6G8ecjomBPiLTII8S66+4LFUZdPk4sWO38c
-	tO0yi+HaLa65/JY8opxLcGUATSEx2t1t6iu9TvFbWokOb+S23PCounC5KldR1te90W2dIxOnMlhhT
-	k6zYMMp2zrJbR/vC3Uig==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=KOVnXbKrFfs/F7la7pRttZqAW+Xg5Gc+7hzct8/6INI=; b=a3wOKC0UVIBnM8
+	NkwriNEh/v61H+7WDJ36LFcYG8taqgmE1f4RzTu3DFXmgxmWkUl9zy7G6fwrYh3KAHPVTcFav/dLX
+	Wh2ZLbPn64RPc8iBP+iOJ2D3ZL9TCxeM7a12CLCP4bec237cfkmMDWfoFvmkLo0kA7Vd6oR/UYi98
+	ns75cwrSETc3OYXOoX2KR+Y+BDZ6Trsycz8dn9dd4qtnyPLBUFv/KSRBVZb5+tQ0eBwLBRmtcDVoD
+	zBy4VWDG0If1Y2DTOnAXTWR1uWnyUFNJG9op0N49iMl/hQp7I8B0QiOPxJrbcT0cAY8yGHWkIHuGH
+	K3UBnLcOZeRya10fEsvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pIaFl-006n0w-Fd; Thu, 19 Jan 2023 19:07:13 +0000
-Received: from mail-dm6nam10on2056.outbound.protection.outlook.com ([40.107.93.56] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
+	id 1pIb5w-0076QM-QI; Thu, 19 Jan 2023 20:01:09 +0000
+Received: from mail-bn8nam12on2071.outbound.protection.outlook.com ([40.107.237.71] helo=NAM12-BN8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pIa8e-006jDf-0K; Thu, 19 Jan 2023 18:59:55 +0000
+	id 1pIa3J-006gJD-IA; Thu, 19 Jan 2023 18:54:26 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TMeyYE+Qb4iuC2Itd3drZ3ffHrIGC/pWSFW/0IGGikkjTkSKbN+WmEXa+yQxjoKb2z+byKJIbBmc9Yjw8nlVV906XRtRZBrNXs6UdSfsI8g7Wz3pI0O4cSRpO1qmmEXLzE2+GK0BhtR5ESB2oFr8CmbVOKYbhv6g6YKKDNQdVncwsieGmEjnPpYezR61pbH6Ze8pKsZCmUYB1OMFW+sPHEQvwT6Fp5Bp+No5rFNoB0HUGMdPnSPT8WFmgCUaaqUnqQQyXDehSFBu86FJv4gAF2oYGi9HTXcmkl87oVHkxc7MbU4+eBQP0xAXywOIEmSOa7iuYDFGcHUEeHOBwxwUDA==
+ b=XI4A8Q8VbnUZx7yap4wx18lmLRCUOCTnWTI8omh0h1rPcSSGRfH2FXulNiADKtzbdMY3Bochpl+UyPCaMTyxaoO/qVVno93v3FkQYCfJYwbIkaD6R4O7PzmHjfT/PKMXURCV0KML9v6N8AL1TFo185fCGNo00rnZ2fiBNaUKbf9IhWrCysQVcc+R67X9SDXda6BKAmrRsQomCPaGkpIFV4LKebdB+ymoNB9TAroBhqL+vku10Z7b/USyO7gRojr2V/SfU3oMYy0eEfyy5jitokKY0Szs6+JjYwtzbi6PckaA1NW2Is/pV2G5LU2sik5nQ4gEpEacvAI3eN+QBDI2gw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0ddMvLDT0J0fhvUiIo3eTl/IYAM9NaFqZsLmKBKi4lg=;
- b=bNvvW65zoaq1C/F+ISzwMx8kBpxrk59ktOZ+PHTr2nFSLrmkGgJr8RxGBF2pe6C7e2frUh+pSq2Uiy8Eu6tXXBHPr2blrGbT3/5mycE4bMQu0oT8nrTyZ9hAGXSp2qEHKwUAkehyhAwn5ntlWFftEa8kzVcSQLUb//UBJ+ZCWgThsheRwtyqV1oO0kdR/E2BZDThFMTknpGlFYGwnXY07FZ+pE/bxS1UcKePntDQCv6leoiI9pdmtyokS1gA70ylLKRs7DCJpOd7Ufp6gn5i6PU8Wpf/OTylEKeEZ+mIoaUsjDWNq3FHEnjBw2oZbk1CMKmrykv04YcQ8NCmJGeoXw==
+ bh=1b8ygK4l4t9D1VUmNx5SCNMOort3UV1hUcI4VTpZAvs=;
+ b=SuLVdS0mgOeJGmpkaUxhUzd/jnjSvWA8OSMmzi9iizfIsPcjmuRXGsZY4DljIWpGn2oZZYzJ3C/pWhkSvIpq7FqyVuVU+goAwNhEL5FPRSPXgtehSNgQDO5VmVvH7tB3DXv+WeNQWgprcXJGhMF3Exq5jGdvDPlnuIu5NDMoyEwqoRrUrVxElDht/Zlm7faecFSCfSQfVMopTzzWJaJO0ZHu3iislJmw+laFaGWpgReBIf+EsNvqxEmDQuraN0hc+WUJzSVUGNU5X2iOufzCo3pBx3Mj+PT+VCDT7CmavQUA2aAyhygxnWcySot0L/sLPvZ7KcDWeQOs+iwFm5gO9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0ddMvLDT0J0fhvUiIo3eTl/IYAM9NaFqZsLmKBKi4lg=;
- b=jhOxSqjPWBSu1v/vX40Ev0z4wpyq3yTy6AAEogi7fEzLEskH/x2lsMl6HWnPSvWdW6HX7ytgnjL1b6u0+XUQSuf6fjURK8kFLX55DjfsLtYS+SE9KkAHHjvcMUqUnoIY/i3Oc3e5Jd4jvjPQwEyuuQaUc7K5qK/JDzaqyq2uKHY=
-Received: from BN9PR03CA0280.namprd03.prod.outlook.com (2603:10b6:408:f5::15)
- by PH7PR12MB7281.namprd12.prod.outlook.com (2603:10b6:510:208::6) with
+ bh=1b8ygK4l4t9D1VUmNx5SCNMOort3UV1hUcI4VTpZAvs=;
+ b=f+GL3+VyYV9gl5oLGwNzGT3/GTaxesOefL1+VtGAPaop9d5JWPsmdQvXZtbPescvr8OIocxf9L7BbC51grVUmIVt4FBXlz/HdMl08tAB8/MQ4H+yQ/p5rT8U63WQ8O+XvLMXcGQfuCBi1uPkZOeMsdCo4MnQZSajHAEq3BO3oqg=
+Received: from SJ0PR13CA0113.namprd13.prod.outlook.com (2603:10b6:a03:2c5::28)
+ by IA1PR12MB6483.namprd12.prod.outlook.com (2603:10b6:208:3a8::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.24; Thu, 19 Jan
- 2023 18:59:47 +0000
-Received: from BL02EPF0000C408.namprd05.prod.outlook.com
- (2603:10b6:408:f5:cafe::20) by BN9PR03CA0280.outlook.office365.com
- (2603:10b6:408:f5::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.25 via Frontend
- Transport; Thu, 19 Jan 2023 18:59:46 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.25; Thu, 19 Jan
+ 2023 18:54:14 +0000
+Received: from CO1PEPF00001A5E.namprd05.prod.outlook.com
+ (2603:10b6:a03:2c5:cafe::16) by SJ0PR13CA0113.outlook.office365.com
+ (2603:10b6:a03:2c5::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6023.16 via Frontend
+ Transport; Thu, 19 Jan 2023 18:54:13 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -56,20 +56,20 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
 Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BL02EPF0000C408.mail.protection.outlook.com (10.167.241.10) with Microsoft
+ CO1PEPF00001A5E.mail.protection.outlook.com (10.167.241.5) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6002.11 via Frontend Transport; Thu, 19 Jan 2023 18:59:46 +0000
-Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
+ 15.20.6002.11 via Frontend Transport; Thu, 19 Jan 2023 18:54:12 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
  (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 19 Jan
- 2023 12:59:46 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
- (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 12:54:09 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 19 Jan
- 2023 10:59:45 -0800
+ 2023 10:54:08 -0800
 Received: from xhdsneeli40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Thu, 19 Jan 2023 12:59:20 -0600
+ Transport; Thu, 19 Jan 2023 12:53:43 -0600
 From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 To: <broonie@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
 	<vigneshr@ti.com>, <jic23@kernel.org>, <tudor.ambarus@microchip.com>,
@@ -118,35 +118,33 @@ CC: <git@amd.com>, <linux-spi@vger.kernel.org>,
 	<linux-riscv@lists.infradead.org>, <linux-media@vger.kernel.org>,
 	<dri-devel@lists.freedesktop.org>, <greybus-dev@lists.linaro.org>,
 	<linux-staging@lists.linux.dev>, <amitrkcian2002@gmail.com>
-Subject: [PATCH v2 13/13] spi: spi-zynqmp-gqspi: Add parallel memories support in GQSPI driver
-Date: Fri, 20 Jan 2023 00:23:42 +0530
-Message-ID: <20230119185342.2093323-14-amit.kumar-mahapatra@amd.com>
+Subject: [PATCH v2 00/13] spi: Add support for stacked/parallel memories
+Date: Fri, 20 Jan 2023 00:23:29 +0530
+Message-ID: <20230119185342.2093323-1-amit.kumar-mahapatra@amd.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230119185342.2093323-1-amit.kumar-mahapatra@amd.com>
-References: <20230119185342.2093323-1-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0000C408:EE_|PH7PR12MB7281:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5e0b6c3f-7684-47a1-0cf7-08dafa4f5561
+X-MS-TrafficTypeDiagnostic: CO1PEPF00001A5E:EE_|IA1PR12MB6483:EE_
+X-MS-Office365-Filtering-Correlation-Id: 77f1653e-d41a-46eb-9623-08dafa4e8e37
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	Q+mWrfx8k8KBPJK1OEz8WZeYYNgb2xN5vQcY2Dy7rbPiGFnv+jzi7FgaaJMLl0wS5WqFsu6wCKJNXMahA8ew46sN7qRYS4WLHj7V5/8z2VvLaNhlRtsvlFqp/vW7OKvTo0IkYYpCn5snlf/r71RShSiVc8p7cRAa/zd2CfDDSk7j+4O/nNwdzOZnamcYqXp2ul1/58nY1O1powAxcRqAunpXD7s8fs3kKf8eJUnfxZowOj1C2MC3SXhcx8DdtiB2vnlxgzOd5SAsjR/baHxAjvkD45WX0FtKZ6v4wlIUWCbrr/Vh1/ihh8gTspAXBuUg04D9ps0gObChzpGbbetvLr+NBsDY70nWN2y2me8LHDnSqPSGn1oeYNL3j5JZLMeyRVNHyBMpW0ZNrs7vNtv3OnuMeBVc8NnRys8J+7pcGnYz98+MPfIi/lNbLzI2Ht7c0g+IdlJbOzOzixndyJAun+4fWzpv0Kir3oyj3QgHH5TpKBat79Vjj2AHI1Q8GcYj14G90VNh9zt/GDw/HjPhmvWS0NTnceEBGJ/r4sn0usUXgZzRkwUe1JA+xeiJl9P7dF3PPWf1NRpOiVmvTt2go8raS6y/cvHAErz3pYsYMIpDROb67VXz/GW7jytrRtLyAlkExI1QDhwT+D42FXFYnPG1krTwCCl6k+/NFc1fz63AyDMZXBvAjbBYnVlr5HFlPMRP/ovbYIeQAQCyKxdcjQJKhM6JTyt2EBKQl/41s+o+1/9rHKqpEhh2FLLtpcklKQdv8rM/RX9hKc4nlwkWDOQHoWhkDDk0BEBXcG1jsgID+xU5mvNHW+nqF7v3ORnK+qv4LNRfLFH1PF76feWM0zwJytouTwZ10JRWhhw5Fbw=
-X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(136003)(396003)(376002)(451199015)(46966006)(36840700001)(40470700004)(1191002)(36756003)(110136005)(54906003)(478600001)(186003)(8936002)(1076003)(6666004)(2616005)(921005)(40480700001)(356005)(81166007)(82310400005)(86362001)(8676002)(26005)(83380400001)(426003)(5660300002)(7366002)(336012)(7406005)(7416002)(70206006)(7336002)(70586007)(7276002)(47076005)(40460700003)(41300700001)(316002)(4326008)(82740400003)(2906002)(36860700001)(41080700001)(2101003)(84006005)(83996005)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 	ZDBpCSjbv/cRfsFYckWfcw1Z4CytZfw/jR+0nWB/4pW//twXGEJkmy8CRkAsXJi0lT/cYNYlWPxVYBKj0S2fIu1yVqJSYng2+66kg1E4wmEW1OrLGlIRtBlHPVdHBv6AXwpV+Br+K1Khlbi9z2VUEQfOOHAdTK27pvwNWwC7jkFMdrsq7nmYvAy9BtdCxPpLTwVPNB1Wq7rTatpfNOirKmYLhVo3hxQcxU5rBFf6fK1Ip9cXymRZJbfsALQ2Av8GONJNNbSsMPiaEWXa0jpTq2qy6wsdDeaZ+98CB1uzVI5++7K6QbwzabKCwRU6kab5c+zOEl2AbHdtkNACxeKlZMsAup9+2MTKbT7dwsSANlkge5BGPOJXCmo8b1GoZKsmrQLILWGxzjEdbhYo+QrIVDXH1upsQ74MljxaJ34OcHyXmUo6NVOjna1EjAW7To9QzyVgoClN6s9K0j0NjdnmZNlnPBfFcq+d7htFn8DuuwAdxXaBW++B/hh1qbQhVxsho8HxVf2BczpEDEm2Qy13GgQKzxgcnTu+ImZDRsygMsB/LXG3eH9LIX3pN0zPq/lIvg2bsa0mTOtXV3ZhXafaP5U4LZxyKf8F/oasjplokXxf5Rw4B+kDZM8iZKsmTn6kRQQ7yX6vOFNqvdvBDAfTQQS42+1f6ekK5+pArUvoo4hrrQOzM/cZCfGu64QdupIlTkg+UEvkfLInCcQBPYDwfpzyGy0D87tbtou4OaF7mlI8/rvwXnCAMuktFe9aIeikJST27/4UgxtB4ji6/qpdltnwiFkUbmrVriDZMsfrpDXxcc32yy8cF+RK1vDPwyTD5Pk277ckkva50D3r+sRuzZH6Jx1WSHNhWzdmsl0StoA=
+X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(376002)(396003)(136003)(451199015)(36840700001)(46966006)(40470700004)(86362001)(40460700003)(36756003)(6666004)(478600001)(8936002)(316002)(5660300002)(40480700001)(82740400003)(7406005)(70586007)(70206006)(4326008)(7276002)(7336002)(7366002)(8676002)(7416002)(41300700001)(36860700001)(921005)(26005)(356005)(186003)(2616005)(82310400005)(1191002)(83380400001)(2906002)(81166007)(54906003)(110136005)(47076005)(426003)(336012)(1076003)(83996005)(84006005)(2101003)(41080700001)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2023 18:59:46.6411
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2023 18:54:12.3778
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e0b6c3f-7684-47a1-0cf7-08dafa4f5561
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77f1653e-d41a-46eb-9623-08dafa4e8e37
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	BL02EPF0000C408.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: 	CO1PEPF00001A5E.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7281
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6483
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230119_105952_577346_6D6C4BC9 
-X-CRM114-Status: GOOD (  20.15  )
+X-CRM114-CacheID: sfid-20230119_105423_871075_AA151BF4 
+X-CRM114-Status: GOOD (  12.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -163,107 +161,170 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During GQSPI driver probe set ctlr->multi-cs-cap for enabling multi CS
-capability of the controller. In parallel mode the controller can either
-split the data between both the flash or can send the same data to both the
-flashes, this is determined by the STRIPE bit. While sending commands to
-the flashes the GQSPI driver send the same command to both the flashes by
-resetting the STRIPE bit, but while writing/reading data to & from the
-flash the GQSPI driver splits the data evenly between both the flashes by
-setting the STRIPE bit.
+This patch is in the continuation to the discussions which happened on
+'commit f89504300e94 ("spi: Stacked/parallel memories bindings")' for
+adding dt-binding support for stacked/parallel memories.
 
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+This patch series updated the spi-nor, spi core and the spi drivers
+to add stacked and parallel memories support.
 ---
- drivers/spi/spi-zynqmp-gqspi.c | 39 +++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+BRANCH: mtd/next
 
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index 4759f704bf5c..9e44371bfda2 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -23,6 +23,7 @@
- #include <linux/spinlock.h>
- #include <linux/workqueue.h>
- #include <linux/spi/spi-mem.h>
-+#include <linux/mtd/spi-nor.h>
- 
- /* Generic QSPI register offsets */
- #define GQSPI_CONFIG_OFST		0x00000100
-@@ -192,6 +193,7 @@ struct qspi_platform_data {
-  * @op_lock:		Operational lock
-  * @speed_hz:          Current SPI bus clock speed in hz
-  * @has_tapdelay:	Used for tapdelay register available in qspi
-+ * @is_parallel:		Used for multi CS support
-  */
- struct zynqmp_qspi {
- 	struct spi_controller *ctlr;
-@@ -214,8 +216,33 @@ struct zynqmp_qspi {
- 	struct mutex op_lock;
- 	u32 speed_hz;
- 	bool has_tapdelay;
-+	bool is_parallel;
- };
- 
-+/**
-+ * zynqmp_gqspi_update_stripe - For GQSPI controller data stripe capabilities
-+ * @op:	Pointer to mem ops
-+ * Return:      Status of the data stripe
-+ *
-+ * Returns true if data stripe need to be enabled, else returns false
-+ */
-+bool zynqmp_gqspi_update_stripe(const struct spi_mem_op *op)
-+{
-+	if (op->cmd.opcode ==  SPINOR_OP_BE_4K ||
-+	    op->cmd.opcode ==  SPINOR_OP_BE_32K ||
-+	    op->cmd.opcode ==  SPINOR_OP_CHIP_ERASE ||
-+	    op->cmd.opcode ==  SPINOR_OP_SE ||
-+	    op->cmd.opcode ==  SPINOR_OP_BE_32K_4B ||
-+	    op->cmd.opcode ==  SPINOR_OP_SE_4B ||
-+	    op->cmd.opcode == SPINOR_OP_BE_4K_4B ||
-+	    op->cmd.opcode ==  SPINOR_OP_WRSR ||
-+	    op->cmd.opcode ==  SPINOR_OP_BRWR ||
-+	    (op->cmd.opcode ==  SPINOR_OP_WRSR2 && !op->addr.nbytes))
-+		return false;
-+
-+	return true;
-+}
-+
- /**
-  * zynqmp_gqspi_read - For GQSPI controller read operation
-  * @xqspi:	Pointer to the zynqmp_qspi structure
-@@ -470,7 +497,14 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
- 
- 	genfifoentry |= GQSPI_GENFIFO_MODE_SPI;
- 
--	if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
-+	if ((qspi->cs_index_mask & GQSPI_SELECT_LOWER_CS) &&
-+	    (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS)) {
-+		zynqmp_gqspi_selectslave(xqspi,
-+					 GQSPI_SELECT_FLASH_CS_BOTH,
-+					 GQSPI_SELECT_FLASH_BUS_BOTH);
-+		if (!xqspi->is_parallel)
-+			xqspi->is_parallel = true;
-+	} else if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
- 		zynqmp_gqspi_selectslave(xqspi,
- 					 GQSPI_SELECT_FLASH_CS_UPPER,
- 					 GQSPI_SELECT_FLASH_BUS_LOWER);
-@@ -1139,6 +1173,8 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
- 	}
- 
- 	if (op->data.nbytes) {
-+		if (xqspi->is_parallel && zynqmp_gqspi_update_stripe(op))
-+			genfifoentry |= GQSPI_GENFIFO_STRIPE;
- 		reinit_completion(&xqspi->data_completion);
- 		if (op->data.dir == SPI_MEM_DATA_OUT) {
- 			xqspi->txbuf = (u8 *)op->data.buf.out;
-@@ -1334,6 +1370,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
- 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
- 	ctlr->dev.of_node = np;
- 	ctlr->auto_runtime_pm = true;
-+	ctlr->multi_cs_cap = true;
- 
- 	ret = devm_spi_register_controller(&pdev->dev, ctlr);
- 	if (ret) {
+Changes in v2:
+- Rebased the patches on top of v6.2-rc1 
+- Created separate patch to add get & set APIs for spi->chip_select & 
+  spi->cs_gpiod, and replaced all spi->chip_select and spi->cs_gpiod 
+  references with the API calls.
+- Created separate patch to add get & set APIs for nor->params.
+---
+Amit Kumar Mahapatra (13):
+  spi: Add APIs in spi core to set/get spi->chip_select and
+    spi->cs_gpiod
+  spi: Replace all spi->chip_select and spi->cs_gpiod references with
+    function call
+  net: Replace all spi->chip_select and spi->cs_gpiod references with
+    function call
+  iio: imu: Replace all spi->chip_select and spi->cs_gpiod references
+    with function call
+  mtd: devices: Replace all spi->chip_select and spi->cs_gpiod
+    references with function call
+  staging: Replace all spi->chip_select and spi->cs_gpiod references
+    with function call
+  platform/x86: serial-multi-instantiate: Replace all spi->chip_select
+    and spi->cs_gpiod references with function call
+  spi: Add stacked and parallel memories support in SPI core
+  mtd: spi-nor: Add APIs to set/get nor->params
+  mtd: spi-nor: Add stacked memories support in spi-nor
+  spi: spi-zynqmp-gqspi: Add stacked memories support in GQSPI driver
+  mtd: spi-nor: Add parallel memories support in spi-nor
+  spi: spi-zynqmp-gqspi: Add parallel memories support in GQSPI driver
+
+ drivers/iio/imu/adis16400.c                   |   2 +-
+ drivers/mtd/devices/mtd_dataflash.c           |   2 +-
+ drivers/mtd/spi-nor/atmel.c                   |  17 +-
+ drivers/mtd/spi-nor/core.c                    | 665 +++++++++++++++---
+ drivers/mtd/spi-nor/core.h                    |   8 +
+ drivers/mtd/spi-nor/debugfs.c                 |   4 +-
+ drivers/mtd/spi-nor/gigadevice.c              |   4 +-
+ drivers/mtd/spi-nor/issi.c                    |  11 +-
+ drivers/mtd/spi-nor/macronix.c                |   6 +-
+ drivers/mtd/spi-nor/micron-st.c               |  39 +-
+ drivers/mtd/spi-nor/otp.c                     |  25 +-
+ drivers/mtd/spi-nor/sfdp.c                    |  29 +-
+ drivers/mtd/spi-nor/spansion.c                |  50 +-
+ drivers/mtd/spi-nor/sst.c                     |   7 +-
+ drivers/mtd/spi-nor/swp.c                     |  22 +-
+ drivers/mtd/spi-nor/winbond.c                 |  10 +-
+ drivers/mtd/spi-nor/xilinx.c                  |  18 +-
+ drivers/net/ethernet/adi/adin1110.c           |   2 +-
+ drivers/net/ethernet/asix/ax88796c_main.c     |   2 +-
+ drivers/net/ethernet/davicom/dm9051.c         |   2 +-
+ drivers/net/ethernet/qualcomm/qca_debug.c     |   2 +-
+ drivers/net/ieee802154/ca8210.c               |   2 +-
+ drivers/net/wan/slic_ds26522.c                |   2 +-
+ .../net/wireless/marvell/libertas/if_spi.c    |   2 +-
+ drivers/net/wireless/silabs/wfx/bus_spi.c     |   2 +-
+ drivers/net/wireless/st/cw1200/cw1200_spi.c   |   2 +-
+ .../platform/x86/serial-multi-instantiate.c   |   3 +-
+ drivers/spi/spi-altera-core.c                 |   2 +-
+ drivers/spi/spi-amd.c                         |   4 +-
+ drivers/spi/spi-ar934x.c                      |   2 +-
+ drivers/spi/spi-armada-3700.c                 |   4 +-
+ drivers/spi/spi-aspeed-smc.c                  |  13 +-
+ drivers/spi/spi-at91-usart.c                  |   2 +-
+ drivers/spi/spi-ath79.c                       |   4 +-
+ drivers/spi/spi-atmel.c                       |  26 +-
+ drivers/spi/spi-au1550.c                      |   4 +-
+ drivers/spi/spi-axi-spi-engine.c              |   2 +-
+ drivers/spi/spi-bcm-qspi.c                    |  10 +-
+ drivers/spi/spi-bcm2835.c                     |  19 +-
+ drivers/spi/spi-bcm2835aux.c                  |   4 +-
+ drivers/spi/spi-bcm63xx-hsspi.c               |  22 +-
+ drivers/spi/spi-bcm63xx.c                     |   2 +-
+ drivers/spi/spi-cadence-quadspi.c             |   5 +-
+ drivers/spi/spi-cadence-xspi.c                |   4 +-
+ drivers/spi/spi-cadence.c                     |   4 +-
+ drivers/spi/spi-cavium.c                      |   8 +-
+ drivers/spi/spi-coldfire-qspi.c               |   8 +-
+ drivers/spi/spi-davinci.c                     |  18 +-
+ drivers/spi/spi-dln2.c                        |   6 +-
+ drivers/spi/spi-dw-core.c                     |   2 +-
+ drivers/spi/spi-dw-mmio.c                     |   4 +-
+ drivers/spi/spi-falcon.c                      |   2 +-
+ drivers/spi/spi-fsi.c                         |   2 +-
+ drivers/spi/spi-fsl-dspi.c                    |  16 +-
+ drivers/spi/spi-fsl-espi.c                    |   6 +-
+ drivers/spi/spi-fsl-lpspi.c                   |   2 +-
+ drivers/spi/spi-fsl-qspi.c                    |   6 +-
+ drivers/spi/spi-fsl-spi.c                     |   2 +-
+ drivers/spi/spi-geni-qcom.c                   |   6 +-
+ drivers/spi/spi-gpio.c                        |   4 +-
+ drivers/spi/spi-gxp.c                         |   4 +-
+ drivers/spi/spi-hisi-sfc-v3xx.c               |   2 +-
+ drivers/spi/spi-img-spfi.c                    |  14 +-
+ drivers/spi/spi-imx.c                         |  30 +-
+ drivers/spi/spi-ingenic.c                     |   4 +-
+ drivers/spi/spi-intel.c                       |   2 +-
+ drivers/spi/spi-jcore.c                       |   4 +-
+ drivers/spi/spi-lantiq-ssc.c                  |   6 +-
+ drivers/spi/spi-mem.c                         |   4 +-
+ drivers/spi/spi-meson-spicc.c                 |   2 +-
+ drivers/spi/spi-microchip-core.c              |   6 +-
+ drivers/spi/spi-mpc512x-psc.c                 |   8 +-
+ drivers/spi/spi-mpc52xx.c                     |   2 +-
+ drivers/spi/spi-mt65xx.c                      |   6 +-
+ drivers/spi/spi-mt7621.c                      |   2 +-
+ drivers/spi/spi-mux.c                         |   8 +-
+ drivers/spi/spi-mxic.c                        |  10 +-
+ drivers/spi/spi-mxs.c                         |   2 +-
+ drivers/spi/spi-npcm-fiu.c                    |  20 +-
+ drivers/spi/spi-nxp-fspi.c                    |  10 +-
+ drivers/spi/spi-omap-100k.c                   |   2 +-
+ drivers/spi/spi-omap-uwire.c                  |   8 +-
+ drivers/spi/spi-omap2-mcspi.c                 |  24 +-
+ drivers/spi/spi-orion.c                       |   4 +-
+ drivers/spi/spi-pci1xxxx.c                    |   4 +-
+ drivers/spi/spi-pic32-sqi.c                   |   2 +-
+ drivers/spi/spi-pic32.c                       |   4 +-
+ drivers/spi/spi-pl022.c                       |   4 +-
+ drivers/spi/spi-pxa2xx.c                      |   6 +-
+ drivers/spi/spi-qcom-qspi.c                   |   2 +-
+ drivers/spi/spi-rb4xx.c                       |   2 +-
+ drivers/spi/spi-rockchip-sfc.c                |   2 +-
+ drivers/spi/spi-rockchip.c                    |  26 +-
+ drivers/spi/spi-rspi.c                        |  10 +-
+ drivers/spi/spi-s3c64xx.c                     |   2 +-
+ drivers/spi/spi-sc18is602.c                   |   4 +-
+ drivers/spi/spi-sh-msiof.c                    |   6 +-
+ drivers/spi/spi-sh-sci.c                      |   2 +-
+ drivers/spi/spi-sifive.c                      |   6 +-
+ drivers/spi/spi-sn-f-ospi.c                   |   2 +-
+ drivers/spi/spi-st-ssc4.c                     |   2 +-
+ drivers/spi/spi-stm32-qspi.c                  |  12 +-
+ drivers/spi/spi-sun4i.c                       |   2 +-
+ drivers/spi/spi-sun6i.c                       |   2 +-
+ drivers/spi/spi-synquacer.c                   |   6 +-
+ drivers/spi/spi-tegra114.c                    |  28 +-
+ drivers/spi/spi-tegra20-sflash.c              |   2 +-
+ drivers/spi/spi-tegra20-slink.c               |   6 +-
+ drivers/spi/spi-tegra210-quad.c               |   8 +-
+ drivers/spi/spi-ti-qspi.c                     |  16 +-
+ drivers/spi/spi-topcliff-pch.c                |   4 +-
+ drivers/spi/spi-wpcm-fiu.c                    |  12 +-
+ drivers/spi/spi-xcomm.c                       |   2 +-
+ drivers/spi/spi-xilinx.c                      |   6 +-
+ drivers/spi/spi-xlp.c                         |   4 +-
+ drivers/spi/spi-zynq-qspi.c                   |   2 +-
+ drivers/spi/spi-zynqmp-gqspi.c                |  58 +-
+ drivers/spi/spi.c                             | 224 ++++--
+ drivers/spi/spidev.c                          |   6 +-
+ drivers/staging/fbtft/fbtft-core.c            |   2 +-
+ drivers/staging/greybus/spilib.c              |   2 +-
+ include/linux/mtd/spi-nor.h                   |  18 +-
+ include/linux/spi/spi.h                       |  46 +-
+ include/trace/events/spi.h                    |  10 +-
+ 124 files changed, 1319 insertions(+), 594 deletions(-)
+
 -- 
 2.17.1
 
