@@ -4,73 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDCC7C38159
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 Jan 2023 04:31:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89A72C05027
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 Jan 2023 10:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=niA3R/hhNffCjza0rEK2QMF6d1w6nghWgfHJcRz3J80=; b=EEV7BHVl3rt5WR
-	iTDPw9NAOhpJ6XINF14O4hxlU+hhg792X4snjZxg8+7lm+9awx/mVFM4j+QdsE99KuBxDFSxccGiQ
-	0u2904WuhrQfT+VzZevTj8W92gyR59OAwN7TVOz9BKNgQiw4GOgy9MlZKCx/5Rf0ukOdg/GwPAMBI
-	xa6o1ehM7HKbyJgPVSgZKFZzX+yWDVxh0tGQnIZq/ZI8e/jd+ANh00jzvlSiJu+HOjzyqghcIBUCG
-	Xm0HWBYZcQ6DJeCPYQxzZ7vEstKqVfAz78GuCpCkx8GMe419QKqrDb5pjPLJM+Dk7EG3MQXtQDHF5
-	KUGZQc59/IN4sKeU31rg==;
+	List-Owner; bh=Zil907ikKuG29khwEjVCRsEPki5FC4ZL0JzRfSGfzJc=; b=qu9MsFJ/1nOlTE
+	4tZj6uV9xKlnKaxNRbQkNRqFvLzy6mrEQ3wEHVJWYGEkNVaJ3KjkX8T6elMsQYNpRjZDmKTJCaIgy
+	oQ1ZM3r1HYwM0pzwkVMwfF0b7pfdIlhuV7AyAv0rEb/R7j2JMPPAw9ZKKXx6qMjVR8FNlwW9CdZ2/
+	SR4HrZggH9PuhU7QWvr2+I+tAY1EsXZvAmiw5hrOJ4oSABdGjR/t4fU7W1XGotyDZPTO+pmmA71EY
+	1PL9V6411wwodFfm2ak1gPT2VOTY+EtEqrs1fPmZ+4P8Q4ACxq1beui/Ba7YUcIhIjWNLL2PO2vmi
+	SRHzIlsQADIr9fH8mohA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pIj32-008LGG-NH; Fri, 20 Jan 2023 04:30:40 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1pIoG1-009eO0-4o; Fri, 20 Jan 2023 10:04:25 +0000
+Received: from gloria.sntech.de ([185.11.138.130])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pIj2z-008LDI-0R
-	for linux-mtd@lists.infradead.org; Fri, 20 Jan 2023 04:30:38 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 30K4UDN0117944;
-	Thu, 19 Jan 2023 22:30:13 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1674189013;
-	bh=iezSynNH5W1oFTWX7VE7fYRtxIVPYwi3S16nlZLNrIc=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=p9/6wEPY16TKS1V4cFMywOK3klEnssGDfRunmqGvKUXBQImQaleB986h94DZ13CYR
-	 h1PPsT1URYRc2/FZC2XEco1Q3APXhHjIdgKTtH0KU0Eor4JUlQ0XzTQL0U75bUz0FU
-	 +WzvjJDPYc0FwFYXoY2WNHviv1DJvbdEkWXghdBM=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 30K4UDOE094394
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 19 Jan 2023 22:30:13 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Thu, 19
- Jan 2023 22:30:13 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16 via
- Frontend Transport; Thu, 19 Jan 2023 22:30:13 -0600
-Received: from [10.24.69.26] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-	by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 30K4UAwc026047;
-	Thu, 19 Jan 2023 22:30:10 -0600
-Message-ID: <6a5f3395-8f1f-5bc3-29ce-205686ff704a@ti.com>
-Date: Fri, 20 Jan 2023 10:00:09 +0530
+	id 1pIo1P-009WiF-Sp; Fri, 20 Jan 2023 09:49:21 +0000
+Received: from ip5b412258.dynamic.kabel-deutschland.de ([91.65.34.88] helo=diego.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1pInzo-0002mL-W5; Fri, 20 Jan 2023 10:47:41 +0100
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: broonie@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, jic23@kernel.org, tudor.ambarus@microchip.com,
+ pratyush@kernel.org, sanju.mehta@amd.com, chin-ting_kuo@aspeedtech.com,
+ clg@kaod.org, kdasu.kdev@gmail.com, f.fainelli@gmail.com, rjui@broadcom.com,
+ sbranden@broadcom.com, eajames@linux.ibm.com, olteanv@gmail.com,
+ han.xu@nxp.com, john.garry@huawei.com, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, narmstrong@baylibre.com, khilman@baylibre.com,
+ matthias.bgg@gmail.com, haibo.chen@nxp.com, linus.walleij@linaro.org,
+ daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+ agross@kernel.org, bjorn.andersson@linaro.org,
+ krzysztof.kozlowski@linaro.org, andi@etezian.org, mcoquelin.stm32@gmail.com,
+ alexandre.torgue@foss.st.com, wens@csie.org, jernej.skrabec@gmail.com,
+ samuel@sholland.org, masahisa.kojima@linaro.org, jaswinder.singh@linaro.org,
+ rostedt@goodmis.org, mingo@redhat.com, l.stelmach@samsung.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ alex.aring@gmail.com, stefan@datenfreihafen.org, kvalo@kernel.org,
+ thierry.reding@gmail.com, jonathanh@nvidia.com, skomatineni@nvidia.com,
+ sumit.semwal@linaro.org, christian.koenig@amd.com, j.neuschaefer@gmx.net,
+ vireshk@kernel.org, rmfrfs@gmail.com, johan@kernel.org, elder@kernel.org,
+ gregkh@linuxfoundation.org,
+ Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: git@amd.com, linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ joel@jms.id.au, andrew@aj.id.au, radu_nicolae.pirea@upb.ro,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ claudiu.beznea@microchip.com, bcm-kernel-feedback-list@broadcom.com,
+ fancer.lancer@gmail.com, kernel@pengutronix.de, festevam@gmail.com,
+ linux-imx@nxp.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+ avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+ venture@google.com, yuenn@google.com, benjaminfair@google.com,
+ yogeshgaur.83@gmail.com, konrad.dybcio@somainline.org,
+ alim.akhtar@samsung.com, ldewangan@nvidia.com, michal.simek@amd.com,
+ linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ netdev@vger.kernel.org, linux-wpan@vger.kernel.org,
+ libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+ linux-mtd@lists.infradead.org, lars@metafoo.de, Michael.Hennerich@analog.com,
+ linux-iio@vger.kernel.org, michael@walle.cc, palmer@dabbelt.com,
+ linux-riscv@lists.infradead.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, greybus-dev@lists.linaro.org,
+ linux-staging@lists.linux.dev, amitrkcian2002@gmail.com
+Subject:  Re: [PATCH v2 02/13] spi: Replace all spi->chip_select and spi->cs_gpiod
+ references with function call
+Date: Fri, 20 Jan 2023 10:47:37 +0100
+Message-ID: <3658396.MHq7AAxBmi@diego>
+In-Reply-To: <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
+References:  <20230119185342.2093323-1-amit.kumar-mahapatra@amd.com>
+ <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH] mtd: spinand: macronix: use scratch buffer for DMA
- operation
-Content-Language: en-US
-To: Daniel Golle <daniel@makrotopia.org>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC: Mason Yang <masonccyang@mxic.com.tw>, Jianhui Zhao <zhaojh329@gmail.com>
-References: <Y8i85zM0u4XdM46z@makrotopia.org>
-From: Dhruva Gole <d-gole@ti.com>
-In-Reply-To: <Y8i85zM0u4XdM46z@makrotopia.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230119_203037_534146_A2F43CF3 
-X-CRM114-Status: GOOD (  19.55  )
+X-CRM114-CacheID: sfid-20230120_014920_137153_D6BDDC22 
+X-CRM114-Status: GOOD (  22.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,53 +96,117 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Daniel,
-
-On 19/01/23 09:15, Daniel Golle wrote:
-> The mx35lf1ge4ab_get_eccsr() function uses an SPI DMA operation to
-> read the eccsr, hence the buffer should not be on stack. Since commit
-> 380583227c0c7f ("spi: spi-mem: Add extra sanity checks on the op param")
-> the kernel emmits a warning and blocks such operations.
-
-Good catch!
-
+Am Donnerstag, 19. Januar 2023, 19:53:31 CET schrieb Amit Kumar Mahapatra:
+> Supporting multi-cs in spi drivers would require the chip_select & cs_gpiod
+> members of struct spi_device to be an array. But changing the type of these
+> members to array would break the spi driver functionality. To make the
+> transition smoother introduced four new APIs to get/set the
+> spi->chip_select & spi->cs_gpiod and replaced all spi->chip_select and
+> spi->cs_gpiod references with get or set API calls.
+> While adding multi-cs support in further patches the chip_select & cs_gpiod
+> members of the spi_device structure would be converted to arrays & the
+> "idx" parameter of the APIs would be used as array index i.e.,
+> spi->chip_select[idx] & spi->cs_gpiod[idx] respectively.
 > 
-> Use the scratch buffer to get eccsr instead of trying to directly read
-> into a stack-allocated variable.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 > ---
 
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
+> diff --git a/drivers/spi/spi-rockchip-sfc.c b/drivers/spi/spi-rockchip-sfc.c
+> index bd87d3c92dd3..246e81453ec3 100644
+> --- a/drivers/spi/spi-rockchip-sfc.c
+> +++ b/drivers/spi/spi-rockchip-sfc.c
+> @@ -346,7 +346,7 @@ static int rockchip_sfc_xfer_setup(struct rockchip_sfc *sfc,
+>  
+>  	/* set the Controller */
+>  	ctrl |= SFC_CTRL_PHASE_SEL_NEGETIVE;
+> -	cmd |= mem->spi->chip_select << SFC_CMD_CS_SHIFT;
+> +	cmd |= spi_get_chipselect(mem->spi, 0) << SFC_CMD_CS_SHIFT;
+>  
+>  	dev_dbg(sfc->dev, "sfc addr.nbytes=%x(x%d) dummy.nbytes=%x(x%d)\n",
+>  		op->addr.nbytes, op->addr.buswidth,
+> diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
+> index 79242dc5272d..adc5638eff4b 100644
+> --- a/drivers/spi/spi-rockchip.c
+> +++ b/drivers/spi/spi-rockchip.c
+> @@ -246,28 +246,30 @@ static void rockchip_spi_set_cs(struct spi_device *spi, bool enable)
+>  	bool cs_asserted = spi->mode & SPI_CS_HIGH ? enable : !enable;
+>  
+>  	/* Return immediately for no-op */
+> -	if (cs_asserted == rs->cs_asserted[spi->chip_select])
+> +	if (cs_asserted == rs->cs_asserted[spi_get_chipselect(spi, 0)])
+>  		return;
+>  
+>  	if (cs_asserted) {
+>  		/* Keep things powered as long as CS is asserted */
+>  		pm_runtime_get_sync(rs->dev);
+>  
+> -		if (spi->cs_gpiod)
+> +		if (spi_get_csgpiod(spi, 0))
+>  			ROCKCHIP_SPI_SET_BITS(rs->regs + ROCKCHIP_SPI_SER, 1);
+>  		else
+> -			ROCKCHIP_SPI_SET_BITS(rs->regs + ROCKCHIP_SPI_SER, BIT(spi->chip_select));
+> +			ROCKCHIP_SPI_SET_BITS(rs->regs + ROCKCHIP_SPI_SER,
+> +					      BIT(spi_get_chipselect(spi, 0)));
+>  	} else {
+> -		if (spi->cs_gpiod)
+> +		if (spi_get_csgpiod(spi, 0))
+>  			ROCKCHIP_SPI_CLR_BITS(rs->regs + ROCKCHIP_SPI_SER, 1);
+>  		else
+> -			ROCKCHIP_SPI_CLR_BITS(rs->regs + ROCKCHIP_SPI_SER, BIT(spi->chip_select));
+> +			ROCKCHIP_SPI_CLR_BITS(rs->regs + ROCKCHIP_SPI_SER,
+> +					      BIT(spi_get_chipselect(spi, 0)));
+>  
+>  		/* Drop reference from when we first asserted CS */
+>  		pm_runtime_put(rs->dev);
+>  	}
+>  
+> -	rs->cs_asserted[spi->chip_select] = cs_asserted;
+> +	rs->cs_asserted[spi_get_chipselect(spi, 0)] = cs_asserted;
+>  }
+>  
+>  static void rockchip_spi_handle_err(struct spi_controller *ctlr,
+> @@ -541,7 +543,7 @@ static int rockchip_spi_config(struct rockchip_spi *rs,
+>  	if (spi->mode & SPI_LSB_FIRST)
+>  		cr0 |= CR0_FBM_LSB << CR0_FBM_OFFSET;
+>  	if (spi->mode & SPI_CS_HIGH)
+> -		cr0 |= BIT(spi->chip_select) << CR0_SOI_OFFSET;
+> +		cr0 |= BIT(spi_get_chipselect(spi, 0)) << CR0_SOI_OFFSET;
+>  
+>  	if (xfer->rx_buf && xfer->tx_buf)
+>  		cr0 |= CR0_XFM_TR << CR0_XFM_OFFSET;
+> @@ -724,7 +726,7 @@ static int rockchip_spi_setup(struct spi_device *spi)
+>  	struct rockchip_spi *rs = spi_controller_get_devdata(spi->controller);
+>  	u32 cr0;
+>  
+> -	if (!spi->cs_gpiod && (spi->mode & SPI_CS_HIGH) && !rs->cs_high_supported) {
+> +	if (!spi_get_csgpiod(spi, 0) && (spi->mode & SPI_CS_HIGH) && !rs->cs_high_supported) {
+>  		dev_warn(&spi->dev, "setup: non GPIO CS can't be active-high\n");
+>  		return -EINVAL;
+>  	}
+> @@ -735,10 +737,10 @@ static int rockchip_spi_setup(struct spi_device *spi)
+>  
+>  	cr0 &= ~(0x3 << CR0_SCPH_OFFSET);
+>  	cr0 |= ((spi->mode & 0x3) << CR0_SCPH_OFFSET);
+> -	if (spi->mode & SPI_CS_HIGH && spi->chip_select <= 1)
+> -		cr0 |= BIT(spi->chip_select) << CR0_SOI_OFFSET;
+> -	else if (spi->chip_select <= 1)
+> -		cr0 &= ~(BIT(spi->chip_select) << CR0_SOI_OFFSET);
+> +	if (spi->mode & SPI_CS_HIGH && spi_get_chipselect(spi, 0) <= 1)
+> +		cr0 |= BIT(spi_get_chipselect(spi, 0)) << CR0_SOI_OFFSET;
+> +	else if (spi_get_chipselect(spi, 0) <= 1)
+> +		cr0 &= ~(BIT(spi_get_chipselect(spi, 0)) << CR0_SOI_OFFSET);
+>  
+>  	writel_relaxed(cr0, rs->regs + ROCKCHIP_SPI_CTRLR0);
 
->   drivers/mtd/nand/spi/macronix.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
-> index dce835132a1e2..722a9738ba370 100644
-> --- a/drivers/mtd/nand/spi/macronix.c
-> +++ b/drivers/mtd/nand/spi/macronix.c
-> @@ -83,9 +83,10 @@ static int mx35lf1ge4ab_ecc_get_status(struct spinand_device *spinand,
->   		 * in order to avoid forcing the wear-leveling layer to move
->   		 * data around if it's not necessary.
->   		 */
-> -		if (mx35lf1ge4ab_get_eccsr(spinand, &eccsr))
-> +		if (mx35lf1ge4ab_get_eccsr(spinand, spinand->scratchbuf))
->   			return nanddev_get_ecc_conf(nand)->strength;
->   
-> +		eccsr = *spinand->scratchbuf;
->   		if (WARN_ON(eccsr > nanddev_get_ecc_conf(nand)->strength ||
->   			    !eccsr))
->   			return nanddev_get_ecc_conf(nand)->strength;
+for the two Rockchip drivers
+Acked-by: Heiko Stuebner <heiko@sntech.de>
 
--- 
-Thanks and Regards,
-Dhruva Gole
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
