@@ -4,85 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27A80C54E94
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 15:03:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A30D0C38142
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 15:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Content-ID:MIME-Version:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RfeZDbWP/b8ldOrIyAtTnidXvgBGH4JUyhtfWgPU++4=; b=SndBhbTs1qgg3F
-	YkXRMd76IPSiYMqz+d0yPuSNuQshrVgZH8xoBZTrqPa3P+0UaMzAZAEDaj7XVNCwzI59RQxnpjLZF
-	+LDF+LRmCcmqyZPrS7gVAVQt4IORDj9+USioehdEzQdULeFuRm5aXDc1DwlW9HL8N5BgCOP/oGyIw
-	BiF0cc+ODe7YFuLPb8ZOLqLKP2EcBWntgGZCZoQJuCjYeVSDiifh61M4lW9L4mRf/Mh4+ZS70RKuZ
-	VMpKidm+b/YdOpsToEhf1yiZmAf6jBdKuaJZ/ag1m30Tq0NH3gMlXbvDgNDSHPrYByRa5T6eUOw7B
-	+rFGTivBcd+7YVTS9+Hg==;
+	List-Owner; bh=XEAwvDCdnyB033TKAJDd0ri8RadTfxsDxxBiF4SZgd4=; b=pw7mo9VUEr+PlG
+	qitwHSZeiDMztaWMGozF2hnlSOMFfkGZ8cJXY1oL4hpV1n7q426Qfl+mDj6SWlJxk9U5kE9Axq1s+
+	hc8aRRmGxORNQY9TGwT2XXDeq/nkfEeO2XMqq50l/9i6xfzqdsOdK7mPnasp2X8XZ2MKmNoOYLgU6
+	hVFAU1RHu9saPklEe05sVRaHBQK9m+i9wgITWUJcbH3z2zpKvkU4sivqJRdzf77zFMRwF+NKFGZMi
+	pUcMwJW4gceg8bZRaDKzx5Tny8067BrYRXqQZu5161xv66zRWFgwoVR58t93ImznJynxFilikdSXT
+	UKS2+4eRvslwoK4IasrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJyLc-0003G5-4U; Mon, 23 Jan 2023 15:03:00 +0000
-Received: from mx1.tq-group.com ([93.104.207.81])
+	id 1pJyNp-0003cZ-S9; Mon, 23 Jan 2023 15:05:17 +0000
+Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJyLY-0003F6-NO
-	for linux-mtd@lists.infradead.org; Mon, 23 Jan 2023 15:02:58 +0000
+	id 1pJyNb-0003Xi-QC; Mon, 23 Jan 2023 15:05:05 +0000
+Received: by mail-lf1-x12e.google.com with SMTP id cf42so18660683lfb.1;
+        Mon, 23 Jan 2023 07:05:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1674486176; x=1706022176;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:mime-version:content-id:
-   content-transfer-encoding;
-  bh=GEa2wspqr6J3lyPu8fImvpGGVirL3i14PWRHbuLKCRk=;
-  b=GyL4LUOXmuRynq0Xb4SFOMvcnfzJHK+DsHL5Mpph0xms4TmM45aqU6tX
-   4uZDv8FDjCRXoGBv448axqw5G5w2Xbk4SyrLskMZhPQVD00euEQYzkPSE
-   15B1AWfjay1UBTuIRrBv0ITrBlngThxibQNIcHTRWS4XVh6FrosaCgfEd
-   mhnFB85RaFex6o1aBisUte/NBi4dx8w3aNK+Mi1tknw0OA8JQIcJDUOAy
-   JlrPHykdkY3lya3PyYZdnbH19Mb2uCppjZ8eddJma1PpZKxv3SoCfkG5c
-   8+6Vcnco7+ui6SYK36DxR0/4jK1nNDUYvyBPnGYaVKqdUAFfnQ9hQY4Kh
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.97,239,1669071600"; 
-   d="scan'208";a="28595830"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 23 Jan 2023 16:02:46 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 23 Jan 2023 16:02:47 +0100
-X-PGP-Universal: processed;
-	by tq-pgp-pr1.tq-net.de on Mon, 23 Jan 2023 16:02:47 +0100
-X-IronPort-AV: E=Sophos;i="5.97,239,1669071600"; 
-   d="scan'208";a="28595829"
-Received: from vmail01.tq-net.de ([10.150.72.11])
-  by mx1.tq-group.com with ESMTP; 23 Jan 2023 16:02:46 +0100
-Received: from vmail01.tq-net.de (10.150.72.11) by vmail01.tq-net.de
- (10.150.72.11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Mon, 23 Jan
- 2023 16:02:45 +0100
-Received: from vmail01.tq-net.de ([10.150.72.11]) by vmail01.tq-net.de
- ([10.150.72.11]) with mapi id 15.01.2507.016; Mon, 23 Jan 2023 16:02:45 +0100
-From: "Stein, Alexander" <Alexander.Stein@tq-group.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>
-CC: "michael@walle.cc" <michael@walle.cc>, "p.yadav@ti.com" <p.yadav@ti.com>,
-	"vigneshr@ti.com" <vigneshr@ti.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
-Thread-Topic: [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
-Thread-Index: AQHYOQodYTda3weuU0+yf380GWE6Ea6t9KqA
-Date: Mon, 23 Jan 2023 15:02:45 +0000
-Message-ID: <5642351.DvuYhMxLoT@steina-w>
-References: <20211106075616.95401-1-tudor.ambarus@microchip.com>
- <5550605.DvuYhMxLoT@steina-w>
- <b8d01f36-663a-928a-6dbe-64952b5bd8d0@microchip.com>
-In-Reply-To: <b8d01f36-663a-928a-6dbe-64952b5bd8d0@microchip.com>
-Accept-Language: de-DE, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.150.72.21]
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P3rqFJi0wYIMyx4eFEnrANXBYlUWFGjnlOrB4sJY0mc=;
+        b=VSvjd1+J+2hfVE0rK2aWfDA0OVUPFITcaGU/EEk+ovd3PB+LZoSIbLXjg/6O4g0QkX
+         wQSOdPQHW8ShVOvuv6K4ehak+/FUBZ6bBjlKapxHcHQImaA7q7t1gEwYZmwObqGrP/PP
+         CuO1Q1/NA1X4wba91SbkMkbJ02vBgbwFgxkUGAZz0utThM5EFRk4Y/dHFQrqiTC3T8XY
+         pxEaA9cykcbArWN/Q14sLzrf2oqArLVwTmvV0IHeWZXjaXfjdJS++GDWvaf9CtXKja5B
+         /+o8WCQ6Z8OG5i90gfUfiXJhw6rQk2gldlIFYsb4njbrpXyfD3NMkTBxEGrhoTwav/UE
+         HUzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P3rqFJi0wYIMyx4eFEnrANXBYlUWFGjnlOrB4sJY0mc=;
+        b=uEluSrt+jwzKCF2AW6SN98wnxjkw/R1FBSLdBCBlymwPc7SJmnlUzkvtUy98+4CyOY
+         QfzoxDWYlxPXpZy04JBeuRBt5gtKScTSM88lJIal3ffEV/tjmqDYr+Jw8XvlBzyGGAyS
+         UTjJdBlfADcphC/GYwB1Y9bkE/EPYqsNz0LyTjb9+TXEELOg9LsWeNUvu2TYaBxmqBrB
+         Kmjn2OcHN1HAsz4zfE/uuAAdQSTBXwDyTifu3CwgX3LTGCjoPnpurumsoiK7N1+RWMVI
+         pYQLAb5JwfBofLK3y412aly4ftvPi1pt8JQ9JEjTpj2aIJiMElICaJ67YrAu0BFFCKCm
+         DQ4A==
+X-Gm-Message-State: AFqh2koIC40gjvYRPDeHXubwpHlCK2wWaypLGZRuYT2eQlx2DW5nYilm
+	VGjDzhC251smpnSoj9Bcglo=
+X-Google-Smtp-Source: AMrXdXuHnINfpXEMI/5P6IHfO27xMrOaiT1cQnmYVDzQ2npYaq/u8eUakJKoBBnDu0eFJD/hs2QaqA==
+X-Received: by 2002:a05:6512:340a:b0:4d2:551e:3838 with SMTP id i10-20020a056512340a00b004d2551e3838mr7464162lfr.29.1674486299330;
+        Mon, 23 Jan 2023 07:04:59 -0800 (PST)
+Received: from mobilestation ([95.79.133.202])
+        by smtp.gmail.com with ESMTPSA id b8-20020a0565120b8800b004d593f218absm1011508lfv.108.2023.01.23.07.04.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Jan 2023 07:04:58 -0800 (PST)
+Date: Mon, 23 Jan 2023 18:04:56 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: broonie@kernel.org, miquel.raynal@bootlin.com, linus.walleij@linaro.org,
+	krzysztof.kozlowski@linaro.org, vireshk@kernel.org,
+	gregkh@linuxfoundation.org, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+	kernel@pengutronix.de, linux-aspeed@lists.ozlabs.org,
+	openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-amlogic@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	netdev@vger.kernel.org, linux-wpan@vger.kernel.org,
+	libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-iio@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, greybus-dev@lists.linaro.org,
+	linux-staging@lists.linux.dev
+Subject: Re: [PATCH v2 02/13] spi: Replace all spi->chip_select and
+ spi->cs_gpiod references with function call
+Message-ID: <20230123145953.ytaaq3x4tetgepyf@mobilestation>
+References: <20230119185342.2093323-1-amit.kumar-mahapatra@amd.com>
+ <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
-Content-Language: en-US
-Content-ID: <442701B35985684F88905FBEBE92D650@tq-group.com>
+Content-Disposition: inline
+In-Reply-To: <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230123_070257_189527_545BB969 
-X-CRM114-Status: GOOD (  19.71  )
+X-CRM114-CacheID: sfid-20230123_070503_902046_76D55349 
+X-CRM114-Status: GOOD (  16.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,118 +102,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
+On Fri, Jan 20, 2023 at 12:23:31AM +0530, Amit Kumar Mahapatra wrote:
+> Supporting multi-cs in spi drivers would require the chip_select & cs_gpiod
+> members of struct spi_device to be an array. But changing the type of these
+> members to array would break the spi driver functionality. To make the
+> transition smoother introduced four new APIs to get/set the
+> spi->chip_select & spi->cs_gpiod and replaced all spi->chip_select and
+> spi->cs_gpiod references with get or set API calls.
+> While adding multi-cs support in further patches the chip_select & cs_gpiod
+> members of the spi_device structure would be converted to arrays & the
+> "idx" parameter of the APIs would be used as array index i.e.,
+> spi->chip_select[idx] & spi->cs_gpiod[idx] respectively.
+> 
+> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+> ---
 
-Am Mittwoch, 16. M=E4rz 2022, 08:47:40 CET schrieb Tudor.Ambarus@microchip.=
-com:
-> On 3/16/22 09:39, Alexander Stein wrote:
-> =
+[nip]
 
-> > [You don't often get email from alexander.stein@tq-group.com. Learn why
-> > this is important at http://aka.ms/LearnAboutSenderIdentification.]
- =
+>  drivers/spi/spi-dw-core.c         |  2 +-
+>  drivers/spi/spi-dw-mmio.c         |  4 ++--
 
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
-the
-> > content is safe
- =
+[nip]
 
-> > Hello,
-> =
+> diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+> index 99edddf9958b..4fd1aa800cc3 100644
+> --- a/drivers/spi/spi-dw-core.c
+> +++ b/drivers/spi/spi-dw-core.c
+> @@ -103,7 +103,7 @@ void dw_spi_set_cs(struct spi_device *spi, bool enable)
+>  	 * support active-high or active-low CS level.
+>  	 */
+>  	if (cs_high == enable)
+> -		dw_writel(dws, DW_SPI_SER, BIT(spi->chip_select));
+> +		dw_writel(dws, DW_SPI_SER, BIT(spi_get_chipselect(spi, 0)));
+>  	else
+>  		dw_writel(dws, DW_SPI_SER, 0);
+>  }
+> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+> index 26c40ea6dd12..d511da766ce8 100644
+> --- a/drivers/spi/spi-dw-mmio.c
+> +++ b/drivers/spi/spi-dw-mmio.c
+> @@ -65,7 +65,7 @@ static void dw_spi_mscc_set_cs(struct spi_device *spi, bool enable)
+>  	struct dw_spi *dws = spi_master_get_devdata(spi->master);
+>  	struct dw_spi_mmio *dwsmmio = container_of(dws, struct dw_spi_mmio, dws);
+>  	struct dw_spi_mscc *dwsmscc = dwsmmio->priv;
+> -	u32 cs = spi->chip_select;
+> +	u32 cs = spi_get_chipselect(spi, 0);
+>  
+>  	if (cs < 4) {
+>  		u32 sw_mode = MSCC_SPI_MST_SW_MODE_SW_PIN_CTRL_MODE;
+> @@ -138,7 +138,7 @@ static void dw_spi_sparx5_set_cs(struct spi_device *spi, bool enable)
+>  	struct dw_spi *dws = spi_master_get_devdata(spi->master);
+>  	struct dw_spi_mmio *dwsmmio = container_of(dws, struct dw_spi_mmio, dws);
+>  	struct dw_spi_mscc *dwsmscc = dwsmmio->priv;
+> -	u8 cs = spi->chip_select;
+> +	u8 cs = spi_get_chipselect(spi, 0);
+>  
+>  	if (!enable) {
+>  		/* CS override drive enable */
 
-> =
+For the DW SSI part:
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-> hi,
-> =
+-Serge(y)
 
-> =
-
-> > =
-
-> > Am Samstag, 6. November 2021, 08:56:15 CET schrieb Tudor Ambarus:
-> > =
-
-> >> When paring SFDP we may choose to mask out an erase type, passing
-> >> an erase size of zero to spi_nor_set_erase_type().
-> >> Fix shift-out-of-bounds and just clear the erase params when
-> >> passing zero for erase size.
-> >> While here avoid a superfluous dereference and use 'size' directly.
-> >>
-> >>
-> >>
-> >> UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2237:24
-> >> shift exponent 4294967295 is too large for 32-bit type 'int'
-> >>
-> >>
-> >>
-> >> Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI
-> >> NOR
- flash memories") Reported-by: Alexander Stein
-> >> <Alexander.Stein@tq-group.com>
-> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> >> ---
-> >> =
-
-> >>  drivers/mtd/spi-nor/core.c | 9 +++++++--
-> >>  1 file changed, 7 insertions(+), 2 deletions(-)
-> >>
-> >>
-> >>
-> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> >> index 3d97c189c332..a1b5d5432f41 100644
-> >> --- a/drivers/mtd/spi-nor/core.c
-> >> +++ b/drivers/mtd/spi-nor/core.c
-> >> @@ -2230,8 +2230,13 @@ void spi_nor_set_erase_type(struct
-> >> spi_nor_erase_type
- *erase, u32 size, erase->size =3D size;
-> >> =
-
-> >>       erase->opcode =3D opcode;
-> >>       /* JEDEC JESD216B Standard imposes erase sizes to be power of 2.
-> >>       */
-> >> =
-
-> >> -     erase->size_shift =3D ffs(erase->size) - 1;
-> >> -     erase->size_mask =3D (1 << erase->size_shift) - 1;
-> >> +     if (size) {
-> >> +             erase->size_shift =3D ffs(size) - 1;
-> >> +             erase->size_mask =3D (1 << erase->size_shift) - 1;
-> >> +     } else {
-> >> +             erase->size_shift =3D 0;
-> >> +             erase->size_mask =3D 0;
-> >> +     }
-> >> =
-
-> >>  }
-> >>
-> >>
-> >>
-> >>  /**
-> > =
-
-> > =
-
-> > What is the status of this patch? It is not applied up until now, no? H=
-as
-> > it
- been superseeded?
-> > =
-
-> =
-
-> =
-
-> I think it's marked with "changes requested". I'm going to send a v2.
-
-Is there a v2 somewhere?
-
-Best regards,
-Alexander
+[nip]
 
 ______________________________________________________
 Linux MTD discussion mailing list
