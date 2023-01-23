@@ -4,90 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B2A6C05027
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 07:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 970D9C38142
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 08:13:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=fdna8ZL0i2zooGCqv69mj35kTBZVhTo2NmDHufOZjyI=; b=yHez77cMdzhumj
-	oC+JiQPW9eTj15h90v7NF0sPS8fZy2bNvnaFGOBH7r1Abbx82M0jxX2SsBjnzX/iakSNnFwNbZaOY
-	YM7eZNuWnumqL+CDKoRg+es09RC70b8XWy6BljcPMSKx10HE0h/l3n45vqDAo1/Jvs+Hqg3zeAa6s
-	S7ZJ8VmEHUCHU0SaX2ImuUx2w+9avbBmBm7gt4Vafn3CWO/87XSsJnIbEoNt6dqSMD3snpiQSVF10
-	f5duaEeqKdpIWiWxB/fZ/lKhQekUr/0KBkE+WN8Mqz0BcIt912r3RveiP9Tgp8ky1ioNRd1zVGgqO
-	6oB0OYR7oydgXYaVKLeA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=2qjAY33nA1WrPcs6bp92Bgb6Vx2nn3AJPMyCkdcF6nE=; b=KnbAbO+CfJvIIi
+	LF/bOmOhsIZ0gyc16HxI4t6wgpaxF6O2IvELKQnxmp6hFaxf+23hi1Emw47kzRzCOOJaGDKsd6E0P
+	LaZlRG3N4gT/51RaAskt9f3m/Dc+BUPW2TZ1is9GMjoPsglAmlukea3GaYgspVWpb/XgAL11jdmQy
+	IaVf8Ype/Ku0UHP1uAwyA0IxJP6Dl0bzoJH+5mZl29S702a6yoSi+WKlptIKhgOVIXLw8hDCOZPCV
+	MyszSitLRJ4g+iPQ1ZoOJ9Qq49rhETs2CU4dcBeLadXejLrx0wzV8RbtuqjJdM8f/LWaegPEmHs3w
+	khKQQQlySR2VNtlP6KFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJrNp-00GF9v-8e; Mon, 23 Jan 2023 07:36:49 +0000
-Received: from sender3-op-o18.zoho.com ([136.143.184.18])
+	id 1pJrww-00GJWs-Vc; Mon, 23 Jan 2023 08:13:07 +0000
+Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJrNm-00GF9Q-1r
-	for linux-mtd@lists.infradead.org; Mon, 23 Jan 2023 07:36:47 +0000
-ARC-Seal: i=1; a=rsa-sha256; t=1674459357; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=H7BwwRZ01ZN1U1RMbNO1pzm8QIU76QnpD1Vo+T4QfTTTFJsT3KYL8TyQM5QLd8ot6lcCeraREJkrjla9Pa6uiBnni+LDreRm299NAp8epsAvhspRIBy8yb7emmnYILSR1hTvSerkrPNB0a4jIcLQa8+6JHBBEJJiU+215wfLyRo=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1674459357; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject; 
-	bh=HkG+SmbIjA7sw7BLtfWk5YKVQYC6xM4eS1D5oo5HkRg=; 
-	b=CkpUrhKdNV6tLpuCqRjAYMct1rnU7+6ddITri4lxt2d1A0BgOASuGBeLothybj6CdE0RNaUqOMD6Ew9qaPweozGL+no3AP/39+41YOI77glP8KAOxpOowicvsncnZyL9ct6An7d8w5sVdtjg+1TXPy6fh9BJDFgR/8+8+W5EcZs=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<lchen@ambarella.com>
-Received: from shbuild9.ambarella.net (116.246.37.178 [116.246.37.178]) by mx.zohomail.com
-	with SMTPS id 1674459355500620.8753836206259; Sun, 22 Jan 2023 23:35:55 -0800 (PST)
-From: Li Chen <lchen@ambarella.com>
-To: 
-Cc: Li Chen <lchen@ambarella.com>,
-	=?UTF-8?q?Andreas=20B=C3=B6hler?= <dev@aboehler.at>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Brian Norris <briannorris@chromium.org>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Christian Lamparter <chunkeey@gmail.com>,
-	Chuanhong Guo <gch981213@gmail.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Daniel Palmer <daniel@0x0f.com>,
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
-	Jean Delvare <jdelvare@suse.de>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Liang Yang <liang.yang@amlogic.com>,
-	Li Chen <lchen@ambarella.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)),
-	linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
-	linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-	linux-gpio@vger.kernel.org (open list:PIN CONTROL SUBSYSTEM),
-	linux-kernel@vger.kernel.org (open list),
-	linux-mtd@lists.infradead.org (open list:MEMORY TECHNOLOGY DEVICES (MTD)),
-	linux-serial@vger.kernel.org (open list:SERIAL DRIVERS),
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Rickard x Andersson <rickaran@axis.com>,
-	Rob Herring <robh@kernel.org>,
-	Roger Quadros <rogerq@kernel.org>,
-	Samuel Holland <samuel@sholland.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sven Peter <sven@svenpeter.dev>,
-	Yinbo Zhu <zhuyinbo@loongson.cn>
-Subject: [PATCH 00/15] Ambarella S6LM SoC bring-up
-Date: Mon, 23 Jan 2023 15:32:15 +0800
-Message-Id: <20230123073305.149940-1-lchen@ambarella.com>
-X-Mailer: git-send-email 2.34.1
+	id 1pJrwt-00GJVN-Rh
+	for linux-mtd@lists.infradead.org; Mon, 23 Jan 2023 08:13:05 +0000
+Received: by mail-wr1-x431.google.com with SMTP id d14so6277283wrr.9
+        for <linux-mtd@lists.infradead.org>; Mon, 23 Jan 2023 00:13:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/vmftNUH4lJM4o0fNkA/Mo2hyPMGER9tgtwQaLax718=;
+        b=CEmcLOfj2uvDlsYOFfECG5QQo4JiI2GmtU0n2XxyqOL1bKFVNhfJ1/+xG9c7Gdn9LR
+         5WwlQ7E8XLdqIc9GgYHkGSOFz5wBs2OMXwVD82N7gP7gQj04Ivlt99ERv5AUh/UZDsNR
+         g3dOMhaO/2LOy8qXRrQPLe0HcSFLVLis05909Xe0Agfyn5QqxRzxc6ofRoeYgjaX0XJh
+         fq7tNfnzb7n891YjupRGBvu4HUgA4zVFs7BwZsFnNZMTAPLZcOwzetuKwbGqGM/cFXTh
+         flK1UERpj2Z+YpqtvJwleYtcFX9c2NWvvDSuVUBwZ0797nRn4xn7RvPt9YZdGxuAfQkZ
+         ykvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/vmftNUH4lJM4o0fNkA/Mo2hyPMGER9tgtwQaLax718=;
+        b=7+S69W3i3F4U+3dXJ4LAFfEEHwpkQG2jheZRDncVzkLoSzevULU4v2yhcCyPQnhyO6
+         LozeEJNOE51t558+WJhClGpWC0N/aqFEujwGi4LkInGvBqoPkE11pof/sR9GbgQTqXTi
+         p48FVqt8u2PiIJ9voFmXLcwsj7Kyg7Ea9c4fzLOm4pkS7wwSMKN1PtASmo+tBTQcZKaj
+         hX/H71gW0BnVsnlrhCnv3Esz8+aiGYZ7Rh0ApgKF29CFWRW8QsZwkXHectqmtoqyievG
+         z3iYmgcd/UJFI8spPoVimkqpmEK5Yt4yktVWcKUxYSg5amdY0rrE5jDzjkt+rfkLJM8j
+         M6ig==
+X-Gm-Message-State: AFqh2kpnRSoxe7yNrlrhGjwKXZelUj2haNEI14fY5GKm2paPbmGJnVnc
+	bvrp4VTsZMbP/XmPYdYC2GiQ3A==
+X-Google-Smtp-Source: AMrXdXuwG3DQj4QQEJp6l1ReLzlEPBchCHBIwvu+r6Zfs2PgFt87jgzGiZo4ZgAND9u0Z90u0jypyA==
+X-Received: by 2002:a05:6000:1b83:b0:2be:34f5:ac05 with SMTP id r3-20020a0560001b8300b002be34f5ac05mr14935369wru.0.1674461582432;
+        Mon, 23 Jan 2023 00:13:02 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id c24-20020adfa318000000b002366e3f1497sm4719097wrb.6.2023.01.23.00.13.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Jan 2023 00:13:02 -0800 (PST)
+Message-ID: <f6545c08-3be2-523e-db21-81b2b9233743@linaro.org>
+Date: Mon, 23 Jan 2023 09:13:00 +0100
 MIME-Version: 1.0
-X-ZohoMailClient: External
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+Subject: Re: [PATCH 11/15] dt-bindings: mtd: Add binding for Ambarella
+Content-Language: en-US
+To: Li Chen <lchen@ambarella.com>, Li Chen <me@linux.beauty>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: "moderated list:ARM/Ambarella SoC support"
+ <linux-arm-kernel@lists.infradead.org>,
+ "open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20230123073305.149940-1-lchen@ambarella.com>
+ <20230123073305.149940-12-lchen@ambarella.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230123073305.149940-12-lchen@ambarella.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230122_233646_167569_92AB1AB5 
-X-CRM114-Status: GOOD (  12.16  )
+X-CRM114-CacheID: sfid-20230123_001303_967246_0FCD36DD 
+X-CRM114-Status: GOOD (  16.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,102 +100,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This series brings up initial support for the Ambarella S6LM
-SoC.
+On 23/01/2023 08:32, Li Chen wrote:
+> Ambarella SoC contains nand flash controller.
+> Add compatible for it.
+> 
+> Signed-off-by: Li Chen <lchen@ambarella.com>
+> Change-Id: I4108699a0678ba45e5d4347cbd860bc552dd91dd
+> ---
+>  .../bindings/mtd/ambarella,nand.yaml          | 77 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 78 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/ambarella,nand.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/ambarella,nand.yaml b/Documentation/devicetree/bindings/mtd/ambarella,nand.yaml
+> new file mode 100644
+> index 000000000000..7c2e7c2ebc7b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/ambarella,nand.yaml
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/ambarella,nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Ambarella NAND Controller
+> +
+> +maintainers:
+> +  - Li Chen <lchen@ambarella.com>
+> +
+> +properties:
+> +  compatible:
+> +    - const: ambarella,nand
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 1
 
-The following features are supported in this initial port:
+All your patches are weirder and weirder. Do you see such syntax in any
+patches before?
 
-- UART with console support
-- Pinctrl with GPIO controller
-- Nand flash controller
-- Devicetree
+Drop minItems.
 
-Li Chen (15):
-  debugfs: allow to use regmap for print regs
-  dt-bindings: vendor-prefixes: add Ambarella prefix
-  dt-bindings: arm: ambarella: Add binding for Ambarella ARM platforms
-  dt-bindings: arm: add support for Ambarella SoC
-  arm64: Kconfig: Introduce CONFIG_ARCH_AMBARELLA
-  soc: add Ambarella driver
-  dt-bindings: clock: Add Ambarella clock bindings
-  clk: add support for Ambarella clocks
-  dt-bindings: serial: add support for Ambarella
-  serial: ambarella: add support for Ambarella uart_port
-  dt-bindings: mtd: Add binding for Ambarella
-  mtd: nand: add Ambarella nand support
-  dt-bindings: pinctrl: add support for Ambarella
-  pinctrl: Add pinctrl/GPIO for Ambarella SoCs
-  arm64: dts: ambarella: introduce Ambarella s6lm SoC
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 1
 
- .../devicetree/bindings/arm/ambarella.yaml    |   22 +
- .../arm/ambarella/ambarella,cpuid.yaml        |   24 +
- .../bindings/arm/ambarella/ambarella,rct.yaml |   24 +
- .../arm/ambarella/ambarella,scratchpad.yaml   |   24 +
- .../bindings/arm/ambarella/ambarella.yaml     |   22 +
- .../clock/ambarella,composite-clock.yaml      |   52 +
- .../bindings/clock/ambarella,pll-clock.yaml   |   59 +
- .../bindings/mtd/ambarella,nand.yaml          |   77 +
- .../bindings/pinctrl/ambarella,pinctrl.yaml   |  160 ++
- .../bindings/serial/ambarella_uart.yaml       |   57 +
- .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
- Documentation/filesystems/debugfs.rst         |    2 +
- MAINTAINERS                                   |   29 +
- arch/arm64/Kconfig.platforms                  |    9 +
- .../boot/dts/ambarella/ambarella-s6lm.dtsi    |  332 ++++
- .../boot/dts/ambarella/s6lm_pineapple.dts     |   29 +
- drivers/clk/Makefile                          |    1 +
- drivers/clk/ambarella/Makefile                |    5 +
- drivers/clk/ambarella/clk-composite.c         |  293 +++
- drivers/clk/ambarella/clk-pll-common.c        |  308 ++++
- drivers/clk/ambarella/clk-pll-common.h        |   96 +
- drivers/clk/ambarella/clk-pll-normal.c        |  328 ++++
- drivers/mtd/nand/raw/Kconfig                  |    8 +
- drivers/mtd/nand/raw/Makefile                 |    1 +
- drivers/mtd/nand/raw/ambarella_combo_nand.c   | 1519 ++++++++++++++++
- drivers/mtd/nand/raw/ambarella_combo_nand.h   |  370 ++++
- drivers/mtd/nand/raw/nand_ids.c               |    4 +
- drivers/pinctrl/Kconfig                       |    6 +
- drivers/pinctrl/Makefile                      |    1 +
- drivers/pinctrl/pinctrl-ambarella.c           | 1357 ++++++++++++++
- drivers/soc/Makefile                          |    1 +
- drivers/soc/ambarella/Makefile                |    3 +
- drivers/soc/ambarella/soc.c                   |  136 ++
- drivers/tty/serial/Kconfig                    |   16 +
- drivers/tty/serial/Makefile                   |    1 +
- drivers/tty/serial/ambarella_uart.c           | 1581 +++++++++++++++++
- drivers/tty/serial/ambarella_uart.h           |  120 ++
- fs/debugfs/file.c                             |   43 +-
- include/linux/debugfs.h                       |   11 +
- include/soc/ambarella/misc.h                  |   17 +
- 40 files changed, 7149 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/arm/ambarella.yaml
- create mode 100644 Documentation/devicetree/bindings/arm/ambarella/ambarella,cpuid.yaml
- create mode 100644 Documentation/devicetree/bindings/arm/ambarella/ambarella,rct.yaml
- create mode 100644 Documentation/devicetree/bindings/arm/ambarella/ambarella,scratchpad.yaml
- create mode 100644 Documentation/devicetree/bindings/arm/ambarella/ambarella.yaml
- create mode 100644 Documentation/devicetree/bindings/clock/ambarella,composite-clock.yaml
- create mode 100644 Documentation/devicetree/bindings/clock/ambarella,pll-clock.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/ambarella,nand.yaml
- create mode 100644 Documentation/devicetree/bindings/pinctrl/ambarella,pinctrl.yaml
- create mode 100644 Documentation/devicetree/bindings/serial/ambarella_uart.yaml
- create mode 100644 arch/arm64/boot/dts/ambarella/ambarella-s6lm.dtsi
- create mode 100644 arch/arm64/boot/dts/ambarella/s6lm_pineapple.dts
- create mode 100644 drivers/clk/ambarella/Makefile
- create mode 100644 drivers/clk/ambarella/clk-composite.c
- create mode 100644 drivers/clk/ambarella/clk-pll-common.c
- create mode 100644 drivers/clk/ambarella/clk-pll-common.h
- create mode 100644 drivers/clk/ambarella/clk-pll-normal.c
- create mode 100644 drivers/mtd/nand/raw/ambarella_combo_nand.c
- create mode 100644 drivers/mtd/nand/raw/ambarella_combo_nand.h
- create mode 100644 drivers/pinctrl/pinctrl-ambarella.c
- create mode 100644 drivers/soc/ambarella/Makefile
- create mode 100644 drivers/soc/ambarella/soc.c
- create mode 100644 drivers/tty/serial/ambarella_uart.c
- create mode 100644 drivers/tty/serial/ambarella_uart.h
- create mode 100644 include/soc/ambarella/misc.h
+Drop both.
 
--- 
-2.34.1
+> +    items:
+> +      - description: fio irq
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description: reference to the clock for the NAND controller
+> +
+> +  nand-on-flash-bbt:
+
+OK, so this was for sure not tested.
+
+Do not send untested patches.
+
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
