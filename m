@@ -4,128 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA599C61DA2
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 17:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6601C25B50
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 20:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x0uyYV+yIjCcOOGcVUrrAkwkSST3XV1cjI4flrNhf6w=; b=SvznoOrGwoYIm8
-	6/71+x+DzF3IYHUjqXSoV/w/iYHw4l4C3wYIIk8FOTD2Wa2U8IvC32Vwx2riKoOg1W3wz/AQYicMg
-	vrHZ4d6/A40V1/xf5FlR+N2mOM5LZEGBQ1/OSWy4NuWTgI6pC7F7wIMsa4M9oV9PKjkIttnlWLe1a
-	BTbPBz97EYFlCqlWmxOJkmDKnul7cpw2k4D6Wquyf8j7ZyBZVXhl+j/ShwRU+DKqiPJf69RTvpnXF
-	pfklv6Opg7UTv9rK3jsZyVX8/R99tMm0rXkFRK+qc3UxhhQBhnxrABRCiJQjGqS846zPYzhh9Rb43
-	seFWBhhFS6yGxhVo0wJQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=dZVmapt5rMklVeHMAmpVxFJP51SUe0LrKlQbu/DRcTk=; b=lGq5snpaV8u4iKzeM71lGah1Tc
+	ekirVrSrSYU0jmvq+2JKKILT3Fnm9x5h56/g5M7n5fTXgIPJ6vD22+bhGE1MStBambX+U3CkHuQVi
+	naL33oHOMpEo98d4PlJztPq/qrvmd2HHanISGmSL7mTM/FrQz2iA4Xt42/bhLTFflC54e0VHvvmI9
+	vNqedaGh2Im+3Am7j7h5gJyBDEUo7WDmAot2mrSMCjA+RzaVU4k9WrhTBCWNvVgXuk8raVXfnyLoP
+	xLsc8Fx6fhifYAP7p1vLNLMe+lOynpEup2Sw9YYM+mfnEhKbL7mhQlGO4sU10ciAEUKqb2ibrfKgG
+	eyCjgcCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pK0RQ-000nQu-L1; Mon, 23 Jan 2023 17:17:08 +0000
-Received: from mx07-00178001.pphosted.com ([185.132.182.106])
+	id 1pK30d-001Fne-Au; Mon, 23 Jan 2023 20:01:39 +0000
+Received: from mail-ot1-x32c.google.com ([2607:f8b0:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pK0RM-000nNk-Jx; Mon, 23 Jan 2023 17:17:06 +0000
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 30NEJOGm009639;
-	Mon, 23 Jan 2023 18:16:42 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=R1aMUGjTbxhxY6hkyKRGBk4zxbzWjzxiNcedON6udFo=;
- b=Zm5ggXoNZruq7Bb3b8N1qmVGlQxdkRIHa80INaPpZBBpXyjLW8eCZLOi26l5A6+RB5/w
- Z+PZ3/cL4Va46yqtmJi5PORwYTY46FioxWKylbeuPxm436newkRnSC7hmZnYsKWHL2Kb
- E8O4kMxS5/CdwDsQ4mM0v4xIMFleF1b25tB/cNt2YL3f/fwzgGAIWdrLxxMD8SuKdWQu
- cPFgMv67SOjqXrPKNSoqvl1+YjTlQbFYmJvNya7GzzdG/j6Oyh9icv6JPWXR/j9Hrm2V
- cNegJauCMm20Z1Gl+nUL+NtrY2i2G1zVxWNtOmY+nTZipz1phWQlTPi0LXd8tXF5+ztP QA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3n89epk4d4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 23 Jan 2023 18:16:42 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 733D910002A;
-	Mon, 23 Jan 2023 18:16:37 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 89E49228A2B;
-	Mon, 23 Jan 2023 18:16:37 +0100 (CET)
-Received: from [10.201.21.26] (10.201.21.26) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.13; Mon, 23 Jan
- 2023 18:16:34 +0100
-Message-ID: <e068c541-b492-a513-6212-fd698e4fc9c4@foss.st.com>
-Date: Mon, 23 Jan 2023 18:16:33 +0100
+	id 1pK30a-001Fm2-0c
+	for linux-mtd@lists.infradead.org; Mon, 23 Jan 2023 20:01:37 +0000
+Received: by mail-ot1-x32c.google.com with SMTP id x21-20020a056830245500b006865ccca77aso7978566otr.11
+        for <linux-mtd@lists.infradead.org>; Mon, 23 Jan 2023 12:01:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/vFJYnjWTF7/HDz4/nqFC2EMBgYqD6KAwwiGoEwbNLo=;
+        b=GCv7fsaXcsEEryq1B5BqP3EcsBjo2FV3ccbQ3rtQpojQYjsfgp7EssDVvk8UK5MwQW
+         FYfX4cvbKhWQjZ5eUIAev63TcqFAsreTKrzfdDIPl+r88yj9Fno9HvhlZ1xZhwbONo7R
+         tHJdCmGTHxQdkShfel2IRP3fSVDHfOiYQVmcU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/vFJYnjWTF7/HDz4/nqFC2EMBgYqD6KAwwiGoEwbNLo=;
+        b=t0XxzZbofW6E7124BPX9TYL5ddkMEdqbuWhyI84Eb3h9s1urXwNW2QXVmJLsewEIy/
+         3H4rzYQ+MKtCNHNLAkQH2nrpfBylw9abTRjcnUf5ZYvLuf7KozUFWLpONgM9AjXETScI
+         Y8DemZ1prJ556PqTLaLwXPjovGTY5olWT8Mbithr0omjPeO05SPl+XHNHNeAwt/EwEUy
+         JAMSfLIEPdIdTGCYZawQ0AF1p+PVTPNtuA17wzKiBqlsHsRAD9cAUt3gKf675NuDoy2y
+         in/5Hf7EcS0Rd3KSY4w2S4JSYSTgmpiqhg4OCWAllne2/Tmzn9dBPxXHMkl76k9+odTq
+         hNgA==
+X-Gm-Message-State: AFqh2kr5PjrSkH49o4zGhCzOOQuasNlE/2d+DSg/BQbewTfjJzdBggPU
+	DiixRbVx+S5pT/OHtK0Q17SqMCVukjfk8wmXVYs=
+X-Google-Smtp-Source: AMrXdXv1KtVpe5q9LOFqZjcrPXdWnrceoL72fRwoLMtthVkgXnqZBjxukvYS1YZ2D5t4eWeYDo1s+g==
+X-Received: by 2002:a05:6830:18e6:b0:67f:e4ff:2996 with SMTP id d6-20020a05683018e600b0067fe4ff2996mr10877848otf.12.1674504093711;
+        Mon, 23 Jan 2023 12:01:33 -0800 (PST)
+Received: from bill-the-cat (2603-6081-7b00-6400-6451-01cf-0286-1d77.res6.spectrum.com. [2603:6081:7b00:6400:6451:1cf:286:1d77])
+        by smtp.gmail.com with ESMTPSA id j10-20020a05620a0a4a00b00706a452c074sm50365qka.104.2023.01.23.12.01.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Jan 2023 12:01:33 -0800 (PST)
+Date: Mon, 23 Jan 2023 15:01:31 -0500
+From: Tom Rini <trini@konsulko.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
+	Simon Glass <sjg@chromium.org>, u-boot@lists.denx.de,
+	Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+	Patrick Delaunay <patrick.delaunay@foss.st.com>,
+	Patrice Chotard <patrice.chotard@foss.st.com>
+Subject: Re: [PATCH v1 0/3] fdt: Fix mtparts fixup
+Message-ID: <20230123200131.GD631605@bill-the-cat>
+References: <20230113184547.487322-1-francesco@dolcini.it>
+ <20230113193411.GW3787616@bill-the-cat>
+ <20230123110606.56110e40@xps-13>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH v2 02/13] spi: Replace all spi->chip_select and
- spi->cs_gpiod references with function call
-To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>, <broonie@kernel.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <jic23@kernel.org>, <tudor.ambarus@microchip.com>,
-        <pratyush@kernel.org>, <sanju.mehta@amd.com>,
-        <chin-ting_kuo@aspeedtech.com>, <clg@kaod.org>, <kdasu.kdev@gmail.com>,
-        <f.fainelli@gmail.com>, <rjui@broadcom.com>, <sbranden@broadcom.com>,
-        <eajames@linux.ibm.com>, <olteanv@gmail.com>, <han.xu@nxp.com>,
-        <john.garry@huawei.com>, <shawnguo@kernel.org>,
-        <s.hauer@pengutronix.de>, <narmstrong@baylibre.com>,
-        <khilman@baylibre.com>, <matthias.bgg@gmail.com>, <haibo.chen@nxp.com>,
-        <linus.walleij@linaro.org>, <daniel@zonque.org>,
-        <haojian.zhuang@gmail.com>, <robert.jarzmik@free.fr>,
-        <agross@kernel.org>, <bjorn.andersson@linaro.org>, <heiko@sntech.de>,
-        <krzysztof.kozlowski@linaro.org>, <andi@etezian.org>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <wens@csie.org>, <jernej.skrabec@gmail.com>, <samuel@sholland.org>,
-        <masahisa.kojima@linaro.org>, <jaswinder.singh@linaro.org>,
-        <rostedt@goodmis.org>, <mingo@redhat.com>, <l.stelmach@samsung.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <alex.aring@gmail.com>,
-        <stefan@datenfreihafen.org>, <kvalo@kernel.org>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <skomatineni@nvidia.com>, <sumit.semwal@linaro.org>,
-        <christian.koenig@amd.com>, <j.neuschaefer@gmx.net>,
-        <vireshk@kernel.org>, <rmfrfs@gmail.com>, <johan@kernel.org>,
-        <elder@kernel.org>, <gregkh@linuxfoundation.org>
-CC: <git@amd.com>, <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <radu_nicolae.pirea@upb.ro>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <claudiu.beznea@microchip.com>,
-        <bcm-kernel-feedback-list@broadcom.com>, <fancer.lancer@gmail.com>,
-        <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>,
-        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
-        <avifishman70@gmail.com>, <tmaimon77@gmail.com>,
-        <tali.perry1@gmail.com>, <venture@google.com>, <yuenn@google.com>,
-        <benjaminfair@google.com>, <yogeshgaur.83@gmail.com>,
-        <konrad.dybcio@somainline.org>, <alim.akhtar@samsung.com>,
-        <ldewangan@nvidia.com>, <michal.simek@amd.com>,
-        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-sunxi@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
-        <libertas-dev@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <lars@metafoo.de>,
-        <Michael.Hennerich@analog.com>, <linux-iio@vger.kernel.org>,
-        <michael@walle.cc>, <palmer@dabbelt.com>,
-        <linux-riscv@lists.infradead.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <greybus-dev@lists.linaro.org>,
-        <linux-staging@lists.linux.dev>, <amitrkcian2002@gmail.com>
-References: <20230119185342.2093323-1-amit.kumar-mahapatra@amd.com>
- <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
-Content-Language: en-US
-From: Patrice CHOTARD <patrice.chotard@foss.st.com>
-In-Reply-To: <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
-X-Originating-IP: [10.201.21.26]
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-23_12,2023-01-23_01,2022-06-22_01
+In-Reply-To: <20230123110606.56110e40@xps-13>
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230123_091705_156013_08D9365B 
-X-CRM114-Status: GOOD (  20.56  )
+X-CRM114-CacheID: sfid-20230123_120136_089192_F425DA95 
+X-CRM114-Status: GOOD (  37.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,91 +88,130 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7051750284636002020=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Amit
 
-On 1/19/23 19:53, Amit Kumar Mahapatra wrote:
-> Supporting multi-cs in spi drivers would require the chip_select & cs_gpiod
-> members of struct spi_device to be an array. But changing the type of these
-> members to array would break the spi driver functionality. To make the
-> transition smoother introduced four new APIs to get/set the
-> spi->chip_select & spi->cs_gpiod and replaced all spi->chip_select and
-> spi->cs_gpiod references with get or set API calls.
-> While adding multi-cs support in further patches the chip_select & cs_gpiod
-> members of the spi_device structure would be converted to arrays & the
-> "idx" parameter of the APIs would be used as array index i.e.,
-> spi->chip_select[idx] & spi->cs_gpiod[idx] respectively.
-> 
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-> ---
+--===============7051750284636002020==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="+1aBKeCoRrxtQ74y"
+Content-Disposition: inline
 
-[...]
 
->  drivers/spi/spi-stm32-qspi.c      | 12 ++++++------
+--+1aBKeCoRrxtQ74y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+On Mon, Jan 23, 2023 at 11:06:06AM +0100, Miquel Raynal wrote:
+> Hi Tom,
+>=20
+> trini@konsulko.com wrote on Fri, 13 Jan 2023 14:34:11 -0500:
+>=20
+> > On Fri, Jan 13, 2023 at 07:45:44PM +0100, Francesco Dolcini wrote:
+> >=20
+> > > From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> > >=20
+> > > Recently we had a boot regression on colibri-imx7 because of a cleanu=
+p change
+> > > on Linux imx7.dtsi setting nand controller node #size-cells from 1 to=
+ 0.
+> > >=20
+> > > Because of that Linux partition parser was no longer able to properly
+> > > parse the OF partitions leading to a boot failure, the above change w=
+as
+> > > reverted in the meantime as an immediate workaround, but some improve=
+ment
+> > > is required on both Linux and U-Boot.
+> > >=20
+> > > This change improve the U-Boot part of it, #size-cell is set to 1 when
+> > > it has an invalid value. This has the limitation to work only with de=
+vices
+> > > smaller than 4GiB. In general the suggestion from the Linux MTD maint=
+ainer would
+> > > be to just deprecate using this U-Boot function and pass the MTD part=
+itions
+> > > from the command line, unless they are statically defined in the DTS =
+file
+> > > in the first place.
+> > >=20
+> > > This series therefore convert colibri-imx6ull and colibri-imx7 to pas=
+s the
+> > > partition list from the command line instead of fixing up the DT.
+> > >=20
+> > > Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@=
+dolcini.it/
+> > > Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.t=
+oradex.com/ =20
+> >=20
+> > My higher level question / concern here is, is using one of the dts
+> > partition schemes still valid / preferred, or should everyone now have
+> > reverted to passing via the kernel command line?  If device tree still,
+> > is mtd/partitions/fixed-partitions.yaml the one to follow or something
+> > else?
+>=20
+> I don't think we can "prefer" one mode over the other between cmdline
+> and DTS. Both should work pretty well. Of course on the cmdline you can
+> only define fixed partitions and many devices require more advanced
+> parsers, which are only available through DTS, but for simple
+> partitions, it works totally okay.
 
-> diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-> index 9131660c1afb..b9e61372dcfb 100644
-> --- a/drivers/spi/spi-stm32-qspi.c
-> +++ b/drivers/spi/spi-stm32-qspi.c
-> @@ -359,7 +359,7 @@ static int stm32_qspi_get_mode(u8 buswidth)
->  static int stm32_qspi_send(struct spi_device *spi, const struct spi_mem_op *op)
->  {
->  	struct stm32_qspi *qspi = spi_controller_get_devdata(spi->master);
-> -	struct stm32_qspi_flash *flash = &qspi->flash[spi->chip_select];
-> +	struct stm32_qspi_flash *flash = &qspi->flash[spi_get_chipselect(spi, 0)];
->  	u32 ccr, cr;
->  	int timeout, err = 0, err_poll_status = 0;
->  
-> @@ -564,7 +564,7 @@ static int stm32_qspi_transfer_one_message(struct spi_controller *ctrl,
->  	struct spi_mem_op op;
->  	int ret = 0;
->  
-> -	if (!spi->cs_gpiod)
-> +	if (!spi_get_csgpiod(spi, 0))
->  		return -EOPNOTSUPP;
->  
->  	ret = pm_runtime_resume_and_get(qspi->dev);
-> @@ -573,7 +573,7 @@ static int stm32_qspi_transfer_one_message(struct spi_controller *ctrl,
->  
->  	mutex_lock(&qspi->lock);
->  
-> -	gpiod_set_value_cansleep(spi->cs_gpiod, true);
-> +	gpiod_set_value_cansleep(spi_get_csgpiod(spi, 0), true);
->  
->  	list_for_each_entry(transfer, &msg->transfers, transfer_list) {
->  		u8 dummy_bytes = 0;
-> @@ -626,7 +626,7 @@ static int stm32_qspi_transfer_one_message(struct spi_controller *ctrl,
->  	}
->  
->  end_of_transfer:
-> -	gpiod_set_value_cansleep(spi->cs_gpiod, false);
-> +	gpiod_set_value_cansleep(spi_get_csgpiod(spi, 0), false);
->  
->  	mutex_unlock(&qspi->lock);
->  
-> @@ -669,8 +669,8 @@ static int stm32_qspi_setup(struct spi_device *spi)
->  
->  	presc = DIV_ROUND_UP(qspi->clk_rate, spi->max_speed_hz) - 1;
->  
-> -	flash = &qspi->flash[spi->chip_select];
-> -	flash->cs = spi->chip_select;
-> +	flash = &qspi->flash[spi_get_chipselect(spi, 0)];
-> +	flash->cs = spi_get_chipselect(spi, 0);
->  	flash->presc = presc;
->  
->  	mutex_lock(&qspi->lock);
+When both are present, which one is used?
 
-Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> The only thing that I would like to avoid is the need to write code in
+> the bootloaders to tweak the FDT in order to add partitions. That is
+> clearly not needed, error prone, and do not follow evolution of the
+> "standard", as we just discovered.
 
-Thanks
-Patrice
+I'm not sure about this. Looking around in U-Boot today, I see two types
+of cases. One of which, the colibri case, can clearly be not done and
+either passed on the command line, or put in to the device tree as
+there's nothing run-time related being tweaked here. That's a fine path
+to take on those platforms and Francesco's patches should be updated to
+remove the unused C code too from the board code.
+
+But the other cases are doing something dynamic and run-time related.
+There's the omap3 igep00x0 family (which yes, legacy) that is doing NAND
+or oneNAND and adjusting things at run time.  I don't know how much
+anyone has interest in those platforms at this point, nor exactly who to
+contact (for Linux or U-Boot). There's also the stm32mp1 family doing
+something that's very not obvious at first glance, so I've cc'd the
+maintainers there.
+
+--=20
+Tom
+
+--+1aBKeCoRrxtQ74y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmPO55QACgkQFHw5/5Y0
+tywlVwv6AqZisaSzvQbWbcCigTNfWIrJr8UK8llgM0WQyWwJD7bZFEkHjGnZPaLR
+5FLmPEUg/GidQv8RML7na1sn8ID1a4XcL3xMyHyvcvjAJgUAs8xoh51baNAfdZBB
+prhQT8CrAQDryXdqsYnedmeQO3YA0ChWzBWigPO+5AIy0su45qlf7vWPJPlld3No
+6QiOWyltXsYLaHt9buZMF8o+W9TLSTFSCQ1wzBiEpTZHSRd7fi7o2w54g2hNw6wU
+Blpb2X/7EXlim8qw44pkRU8m/EZNI8CvfB9u3fWACNdDIu605StbAIvh4/BBfCHh
+xXU1Xt3iQFmLm2adzTnyOgDsN3LE0oXFT0mDVRPOSjx9Pc8DkRgs5bpLVcKFIEUy
+WTH5idJ9JFQChbcuJMj9+NNKLRxZQ3OBO+UTqwEoG9pCDDyt3P0BFTwF93L24258
+ySu8+ESKzENLV6fqnVHDmUgNzRFr6QyZea8tIEWzxL7axtA7vGHab4qCb+mr+n6D
+69a7Pq6n
+=CK7E
+-----END PGP SIGNATURE-----
+
+--+1aBKeCoRrxtQ74y--
+
+
+--===============7051750284636002020==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7051750284636002020==--
+
