@@ -4,85 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 970D9C38142
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 08:13:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12EC1C38142
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 08:33:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2qjAY33nA1WrPcs6bp92Bgb6Vx2nn3AJPMyCkdcF6nE=; b=KnbAbO+CfJvIIi
-	LF/bOmOhsIZ0gyc16HxI4t6wgpaxF6O2IvELKQnxmp6hFaxf+23hi1Emw47kzRzCOOJaGDKsd6E0P
-	LaZlRG3N4gT/51RaAskt9f3m/Dc+BUPW2TZ1is9GMjoPsglAmlukea3GaYgspVWpb/XgAL11jdmQy
-	IaVf8Ype/Ku0UHP1uAwyA0IxJP6Dl0bzoJH+5mZl29S702a6yoSi+WKlptIKhgOVIXLw8hDCOZPCV
-	MyszSitLRJ4g+iPQ1ZoOJ9Qq49rhETs2CU4dcBeLadXejLrx0wzV8RbtuqjJdM8f/LWaegPEmHs3w
-	khKQQQlySR2VNtlP6KFQ==;
+	List-Owner; bh=EMQeWUT/Cq0okO83G/J26sZ4QTstVxjzokI2+yqc9Zk=; b=AP6B9ZLpgbCX1G
+	WIBt7/bDy+JY8Rj9ahCji/B/VG/7Ma3zarkQIDTUBQzbP0mZ2VlcxO2zbqzcs2w/v6eT+SAndLccI
+	Xx4kTdbrp35Cit+4cr7xqoeEn2LIMuMTEO4fddUBMtK3mjBfjev+g5D1GRsVKhMbhJiwjF2rGWsCK
+	O9KQv/A117ehTz3dRdeiUwdF/6m3OTS3FMprpO1jdqHaAP48YFH77mhFrFJ3XlDjG2LUyuaIvqfEN
+	kQlEMxJ5FlSjQdOoxLlu3ZfehSjPKpGT9d15fA+I9wu5pV0lv/lyJ3iYczPjj8D6LjUrgHRNdzgNZ
+	zivdathbGvUBkF5FQfDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJrww-00GJWs-Vc; Mon, 23 Jan 2023 08:13:07 +0000
-Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
+	id 1pJsFk-00GMKS-Bl; Mon, 23 Jan 2023 08:32:32 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJrwt-00GJVN-Rh
-	for linux-mtd@lists.infradead.org; Mon, 23 Jan 2023 08:13:05 +0000
-Received: by mail-wr1-x431.google.com with SMTP id d14so6277283wrr.9
-        for <linux-mtd@lists.infradead.org>; Mon, 23 Jan 2023 00:13:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/vmftNUH4lJM4o0fNkA/Mo2hyPMGER9tgtwQaLax718=;
-        b=CEmcLOfj2uvDlsYOFfECG5QQo4JiI2GmtU0n2XxyqOL1bKFVNhfJ1/+xG9c7Gdn9LR
-         5WwlQ7E8XLdqIc9GgYHkGSOFz5wBs2OMXwVD82N7gP7gQj04Ivlt99ERv5AUh/UZDsNR
-         g3dOMhaO/2LOy8qXRrQPLe0HcSFLVLis05909Xe0Agfyn5QqxRzxc6ofRoeYgjaX0XJh
-         fq7tNfnzb7n891YjupRGBvu4HUgA4zVFs7BwZsFnNZMTAPLZcOwzetuKwbGqGM/cFXTh
-         flK1UERpj2Z+YpqtvJwleYtcFX9c2NWvvDSuVUBwZ0797nRn4xn7RvPt9YZdGxuAfQkZ
-         ykvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/vmftNUH4lJM4o0fNkA/Mo2hyPMGER9tgtwQaLax718=;
-        b=7+S69W3i3F4U+3dXJ4LAFfEEHwpkQG2jheZRDncVzkLoSzevULU4v2yhcCyPQnhyO6
-         LozeEJNOE51t558+WJhClGpWC0N/aqFEujwGi4LkInGvBqoPkE11pof/sR9GbgQTqXTi
-         p48FVqt8u2PiIJ9voFmXLcwsj7Kyg7Ea9c4fzLOm4pkS7wwSMKN1PtASmo+tBTQcZKaj
-         hX/H71gW0BnVsnlrhCnv3Esz8+aiGYZ7Rh0ApgKF29CFWRW8QsZwkXHectqmtoqyievG
-         z3iYmgcd/UJFI8spPoVimkqpmEK5Yt4yktVWcKUxYSg5amdY0rrE5jDzjkt+rfkLJM8j
-         M6ig==
-X-Gm-Message-State: AFqh2kpnRSoxe7yNrlrhGjwKXZelUj2haNEI14fY5GKm2paPbmGJnVnc
-	bvrp4VTsZMbP/XmPYdYC2GiQ3A==
-X-Google-Smtp-Source: AMrXdXuwG3DQj4QQEJp6l1ReLzlEPBchCHBIwvu+r6Zfs2PgFt87jgzGiZo4ZgAND9u0Z90u0jypyA==
-X-Received: by 2002:a05:6000:1b83:b0:2be:34f5:ac05 with SMTP id r3-20020a0560001b8300b002be34f5ac05mr14935369wru.0.1674461582432;
-        Mon, 23 Jan 2023 00:13:02 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
-        by smtp.gmail.com with ESMTPSA id c24-20020adfa318000000b002366e3f1497sm4719097wrb.6.2023.01.23.00.13.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Jan 2023 00:13:02 -0800 (PST)
-Message-ID: <f6545c08-3be2-523e-db21-81b2b9233743@linaro.org>
-Date: Mon, 23 Jan 2023 09:13:00 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH 11/15] dt-bindings: mtd: Add binding for Ambarella
-Content-Language: en-US
-To: Li Chen <lchen@ambarella.com>, Li Chen <me@linux.beauty>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: "moderated list:ARM/Ambarella SoC support"
- <linux-arm-kernel@lists.infradead.org>,
- "open list:MEMORY TECHNOLOGY DEVICES (MTD)" <linux-mtd@lists.infradead.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+	id 1pJsFa-00GMIQ-0T; Mon, 23 Jan 2023 08:32:24 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id D5AB54000C;
+	Mon, 23 Jan 2023 08:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1674462734;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=N5sr1+ft/o4KFGfy74z6A876hko9sf4WKrKKmi7Je/Y=;
+	b=KuoNAfOv2pzHTPxQdsQDTsRxDucuLyajao1IkRwSgW0PBw/AR0kYdXWOVgMFnNpsqGFx+h
+	41ejb8jbZap1x8ttBNzcXJZPqDSO9tXmdmnXaB4VoOySlL6kUZ7wLfT6iMnScmRCIGHzO6
+	PiMk5LexuK8SRkHyEYIiXIAcdE+W/dAEx6sv5T/d6EigOw8p5514TFKf1wFOg4lgoiUshk
+	0o8PJFBOlUK59cdoMz3N5rZsKV4c2N1Clgu/cPlgRXekCBEZJ2kiHF29ilWrDlZXYpxhAo
+	2DOnc9oStAtUweOC3GsaqSRs4hhn9v7ChZPIcSChth/FXjZuwv9ibKkUEgcC9w==
+Date: Mon, 23 Jan 2023 09:32:09 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Li Chen <lchen@ambarella.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Li Chen <me@linux.beauty>, Roger Quadros
+ <rogerq@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, Krzysztof
+ Kozlowski <krzk@kernel.org>, Chuanhong Guo <gch981213@gmail.com>, Liang
+ Yang <liang.yang@amlogic.com>, Jean Delvare <jdelvare@suse.de>, Andreas
+ =?UTF-8?B?QsO2aGxlcg==?= <dev@aboehler.at>, Christian Lamparter
+ <chunkeey@gmail.com>, Rickard x Andersson <rickaran@axis.com>,
+ linux-kernel@vger.kernel.org (open list), linux-mtd@lists.infradead.org
+ (open list:NAND FLASH SUBSYSTEM), linux-arm-kernel@lists.infradead.org
+ (moderated list:ARM/Ambarella SoC support)
+Subject: Re: [PATCH 12/15] mtd: nand: add Ambarella nand support
+Message-ID: <20230123093209.770995cf@xps-13>
+In-Reply-To: <20230123073305.149940-13-lchen@ambarella.com>
 References: <20230123073305.149940-1-lchen@ambarella.com>
- <20230123073305.149940-12-lchen@ambarella.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230123073305.149940-12-lchen@ambarella.com>
+	<20230123073305.149940-13-lchen@ambarella.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230123_001303_967246_0FCD36DD 
+X-CRM114-CacheID: sfid-20230123_003222_359412_C0A0D5A6 
 X-CRM114-Status: GOOD (  16.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -95,77 +74,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 23/01/2023 08:32, Li Chen wrote:
-> Ambarella SoC contains nand flash controller.
-> Add compatible for it.
-> 
-> Signed-off-by: Li Chen <lchen@ambarella.com>
-> Change-Id: I4108699a0678ba45e5d4347cbd860bc552dd91dd
-> ---
->  .../bindings/mtd/ambarella,nand.yaml          | 77 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 78 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/ambarella,nand.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/ambarella,nand.yaml b/Documentation/devicetree/bindings/mtd/ambarella,nand.yaml
-> new file mode 100644
-> index 000000000000..7c2e7c2ebc7b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/ambarella,nand.yaml
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/ambarella,nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Ambarella NAND Controller
-> +
-> +maintainers:
-> +  - Li Chen <lchen@ambarella.com>
-> +
-> +properties:
-> +  compatible:
-> +    - const: ambarella,nand
-> +
-> +  reg:
-> +    minItems: 1
-> +    maxItems: 1
-
-All your patches are weirder and weirder. Do you see such syntax in any
-patches before?
-
-Drop minItems.
-
-> +
-> +  interrupts:
-> +    minItems: 1
-> +    maxItems: 1
-
-Drop both.
-
-> +    items:
-> +      - description: fio irq
-> +
-> +  clocks:
-> +    maxItems: 1
-> +    description: reference to the clock for the NAND controller
-> +
-> +  nand-on-flash-bbt:
-
-OK, so this was for sure not tested.
-
-Do not send untested patches.
-
-Best regards,
-Krzysztof
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTGksCgpJJ20gc29ycnksIHRoaXMgaXMgbm90IGdvaW5nIHRvIHdvcmsgYXQgYWxsLgoKPiAr
+CWFtYmFyZWxsYV9uYW5kX2luaXQoaG9zdCk7Cj4gKwo+ICsJbXRkID0gbmFuZF90b19tdGQoJmhv
+c3QtPmNoaXApOwo+ICsJbXRkLT5uYW1lID0gImFtYmFfbmFuZCI7Cj4gKwo+ICsJbmFuZF9jb250
+cm9sbGVyX2luaXQoJmhvc3QtPmNvbnRyb2xsZXIpOwo+ICsJbmFuZF9zZXRfY29udHJvbGxlcl9k
+YXRhKCZob3N0LT5jaGlwLCBob3N0KTsKPiArCW5hbmRfc2V0X2ZsYXNoX25vZGUoJmhvc3QtPmNo
+aXAsIGRldi0+b2Zfbm9kZSk7Cj4gKwo+ICsJaG9zdC0+Y2hpcC5jb250cm9sbGVyID0gJmhvc3Qt
+PmNvbnRyb2xsZXI7Cj4gKwlob3N0LT5jaGlwLmNvbnRyb2xsZXItPm9wcyA9ICZhbWJhcmVsbGFf
+Y29udHJvbGxlcl9vcHM7Cj4gKwlob3N0LT5jaGlwLmxlZ2FjeS5jaGlwX2RlbGF5ID0gMDsKPiAr
+CWhvc3QtPmNoaXAubGVnYWN5LnJlYWRfYnl0ZSA9IGFtYmFyZWxsYV9uYW5kX3JlYWRfYnl0ZTsK
+PiArCWhvc3QtPmNoaXAubGVnYWN5LndyaXRlX2J1ZiA9IGFtYmFyZWxsYV9uYW5kX3dyaXRlX2J1
+ZjsKPiArCWhvc3QtPmNoaXAubGVnYWN5LnJlYWRfYnVmID0gYW1iYXJlbGxhX25hbmRfcmVhZF9i
+dWY7Cj4gKwlob3N0LT5jaGlwLmxlZ2FjeS5zZWxlY3RfY2hpcCA9IGFtYmFyZWxsYV9uYW5kX3Nl
+bGVjdF9jaGlwOwo+ICsJaG9zdC0+Y2hpcC5sZWdhY3kuY21kX2N0cmwgPSBhbWJhcmVsbGFfbmFu
+ZF9jbWRfY3RybDsKPiArCWhvc3QtPmNoaXAubGVnYWN5LmRldl9yZWFkeSA9IGFtYmFyZWxsYV9u
+YW5kX2Rldl9yZWFkeTsKPiArCWhvc3QtPmNoaXAubGVnYWN5LndhaXRmdW5jID0gYW1iYXJlbGxh
+X25hbmRfd2FpdGZ1bmM7Cj4gKwlob3N0LT5jaGlwLmxlZ2FjeS5jbWRmdW5jID0gYW1iYXJlbGxh
+X25hbmRfY21kZnVuYzsKPiArCWhvc3QtPmNoaXAubGVnYWN5LnNldF9mZWF0dXJlcyA9IG5hbmRf
+Z2V0X3NldF9mZWF0dXJlc19ub3RzdXBwOwo+ICsJaG9zdC0+Y2hpcC5sZWdhY3kuZ2V0X2ZlYXR1
+cmVzID0gbmFuZF9nZXRfc2V0X2ZlYXR1cmVzX25vdHN1cHA7CgpQbGVhc2UgYmUgYXdhcmUgdGhh
+dCB3ZSBubyBsb25nZXIgYWNjZXB0IGxlZ2FjeSBpbnRyb2R1Y3Rpb25zIHVwc3RyZWFtLgoKWW91
+IGNhbiBsb29rIGZvciAtPmV4ZWNfb3AoKSBjb252ZXJzaW9ucyB1c2luZyBnaXQtbG9nLgoKPiAr
+CWhvc3QtPmNoaXAub3B0aW9ucyB8PSBOQU5EX05PX1NVQlBBR0VfV1JJVEUgfCBOQU5EX1VTRVNf
+RE1BOwo+ICsKPiArCXJ2YWwgPSBuYW5kX3NjYW4oJmhvc3QtPmNoaXAsIDEpOwo+ICsJaWYgKHJ2
+YWwgPCAwKQo+ICsJCXJldHVybiBydmFsOwo+ICsKPiArCXJ2YWwgPSBtdGRfZGV2aWNlX3JlZ2lz
+dGVyKG10ZCwgTlVMTCwgMCk7Cj4gKwlpZiAocnZhbCA8IDApCj4gKwkJbmFuZF9jbGVhbnVwKCZo
+b3N0LT5jaGlwKTsKPiArCj4gKwlyZXR1cm4gcnZhbDsKPiArfQoKWy4uLl0KCj4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfaWRzLmMKYi9kcml2ZXJzL210ZC9uYW5kL3Jh
+dy9uYW5kX2lkcy5jCj4gaW5kZXggZGFjYzU1MjliM2RmLi45ZjI2NGUyYTY0ODQgMTAwNjQ0Cj4g
+LS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9pZHMuYwo+ICsrKyBiL2RyaXZlcnMvbXRk
+L25hbmQvcmF3L25hbmRfaWRzLmMKPiBAQCAtNjIsNiArNjIsMTAgQEAgc3RydWN0IG5hbmRfZmxh
+c2hfZGV2IG5hbmRfZmxhc2hfaWRzW10gPSB7Cj4gIAkJeyAuaWQgPSB7MHg5OCwgMHhkMywgMHg5
+MSwgMHgyNiwgMHg3Nn0gfSwKPiAgCQkgIFNaXzRLLCBTWl8xSywgU1pfMjU2SywgMCwgNSwgMjU2
+LCBOQU5EX0VDQ19JTkZPKDgsIFNaXzUxMil9LAo+ICAKPiArCXsiTVQyOUYyRzAxQUJBR0QgU1BJ
+TkFORCAyRyAzLjNWIDgtYml0IiwKPiArCQl7IC5pZCA9IHsweDJjLCAweDI0LCAweDAwLCAweDAw
+LCAweDAwfSB9LAo+ICsJCSAgU1pfMkssIFNaXzI1NiwgU1pfMTI4SywgMCwgMiwgMTI4fSwKPiAr
+CgpSYXcgTkFORCAhPSBTUEktTkFORC4gSSBkb24ndCBnZXQgd2hhdCB5b3UncmUgZG9pbmcgaGVy
+ZSBidXQgZWl0aGVyIHlvdQp3YW50IHRvIGRyaXZlIFNQSS1OQU5EcyBhbmQgdGhpcyBpcyBhIFNQ
+SSBjb250cm9sbGVyIGRyaXZlciB0aGF0CmltcGxlbWVudHMgc3BpLW1lbSBvcHMgYW5kIHNob3Vs
+ZCBiZSBsb2NhdGVkIHVuZGVyIGRyaXZlcnMvc3BpLywgb3IKdGhpcyBpcyBhIHBsYWluIHJhdyBO
+QU5EIGNvbnRyb2xsZXIgd2hpY2ggaXMgd2lyZWQgdG8gYSBwYXJhbGxlbCBOQU5ECmFuZCB0aGlz
+IHNob3VsZCBiZSB1bmRlciBkcml2ZXJzL210ZC9uYW5kL3Jhdy8uCgpFQ0MgY29udHJvbGxlcnMg
+Y2FuIGJlIHNoYXJlZCB3aXRoIHRoZSBFQ0MgZW5naW5lIGFic3RyYWN0aW9uIHRob3VnaC4KCj4g
+IAlMRUdBQ1lfSURfTkFORCgiTkFORCA0TWlCIDVWIDgtYml0IiwgICAweDZCLCA0LCBTWl84Sywg
+U1BfT1BUSU9OUyksCj4gIAlMRUdBQ1lfSURfTkFORCgiTkFORCA0TWlCIDMsM1YgOC1iaXQiLCAw
+eEUzLCA0LCBTWl84SywgU1BfT1BUSU9OUyksCj4gIAlMRUdBQ1lfSURfTkFORCgiTkFORCA0TWlC
+IDMsM1YgOC1iaXQiLCAweEU1LCA0LCBTWl84SywgU1BfT1BUSU9OUyksCgoKVGhhbmtzLApNaXF1
+w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
