@@ -4,75 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90BAFC05027
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 14:38:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27A80C54E94
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 15:03:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Content-ID:MIME-Version:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mIo8/FQiNVJK+n69vraQyGW+gMmPv2nZe1L7r+uttR4=; b=bDxlxODmJlNHnG
-	PU+RyLnjTD9acXj4gwfnYOTrI+qP3nthIQieRTK1oM/d7B4pEQl596J7bQdFu1c8mQNLeXW9Fan5q
-	gAdNuSiBU3YAhbiM+LbHRoqC9zCGk7uLVmtO2G2dm2EWMj7rSJDrkcXP4Pd2ucX1nyV8oWerAi+xp
-	MTtTp8bLad+uNIUu+0zqNP/1HR9ZhwcffOOVvevyKQwlnhPO8MnVeFEPQ8sjdNvyMXiEQ2YPcaif/
-	bnFB0LO9N9SkvIWzfm5gotUeHPJKDRpLtfkGuDxjoioZN1JjzQNAaoG3OLD/qGOWa5ZIDb3rVatKn
-	oOe77gCF8psHD7MAu09Q==;
+	List-Owner; bh=RfeZDbWP/b8ldOrIyAtTnidXvgBGH4JUyhtfWgPU++4=; b=SndBhbTs1qgg3F
+	YkXRMd76IPSiYMqz+d0yPuSNuQshrVgZH8xoBZTrqPa3P+0UaMzAZAEDaj7XVNCwzI59RQxnpjLZF
+	+LDF+LRmCcmqyZPrS7gVAVQt4IORDj9+USioehdEzQdULeFuRm5aXDc1DwlW9HL8N5BgCOP/oGyIw
+	BiF0cc+ODe7YFuLPb8ZOLqLKP2EcBWntgGZCZoQJuCjYeVSDiifh61M4lW9L4mRf/Mh4+ZS70RKuZ
+	VMpKidm+b/YdOpsToEhf1yiZmAf6jBdKuaJZ/ag1m30Tq0NH3gMlXbvDgNDSHPrYByRa5T6eUOw7B
+	+rFGTivBcd+7YVTS9+Hg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJxxj-0000cz-Lk; Mon, 23 Jan 2023 14:38:19 +0000
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29])
+	id 1pJyLc-0003G5-4U; Mon, 23 Jan 2023 15:03:00 +0000
+Received: from mx1.tq-group.com ([93.104.207.81])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJxxh-0000cN-6Z
-	for linux-mtd@lists.infradead.org; Mon, 23 Jan 2023 14:38:18 +0000
+	id 1pJyLY-0003F6-NO
+	for linux-mtd@lists.infradead.org; Mon, 23 Jan 2023 15:02:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1674484698; x=1706020698;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=SJX4PVYeLVKUMm0XqCg6voyg5gx9laMAgzbQqQcAGqI=;
-  b=DzZRIxU6M2m5sf001WZEXVPmWqB51XOiktxRUHmRerw8sCWTOHqSTWWE
-   LTOYc32+gdGJ7TPOh3ZYW/XyB8JDgjLauK9LvDwPsf1MH38N5PW/gh0sn
-   ueRJXjbaIcpQUawPGrVQ8ZuI1Af+meGymQwvjKYOPJQPUPH5f1ImDiFn1
-   c=;
-X-IronPort-AV: E=Sophos;i="5.97,239,1669075200"; 
-   d="scan'208";a="303213743"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2023 14:38:08 +0000
-Received: from EX13MTAUWB002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-	by email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com (Postfix) with ESMTPS id 3BEEA40E7F;
-	Mon, 23 Jan 2023 14:38:07 +0000 (UTC)
-Received: from EX19D040UWB001.ant.amazon.com (10.13.138.82) by
- EX13MTAUWB002.ant.amazon.com (10.43.161.202) with Microsoft SMTP Server (TLS)
- id 15.0.1497.45; Mon, 23 Jan 2023 14:38:06 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX19D040UWB001.ant.amazon.com (10.13.138.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.7; Mon, 23 Jan 2023 14:38:06 +0000
-Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
- by mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
- 15.0.1497.45 via Frontend Transport; Mon, 23 Jan 2023 14:38:05 +0000
-Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
-	id 18BD020D8B; Mon, 23 Jan 2023 15:38:06 +0100 (CET)
-From: Pratyush Yadav <ptyadav@amazon.de>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-CC: <Takahiro.Kuwano@infineon.com>, <tkuw584924@gmail.com>,
-	<linux-mtd@lists.infradead.org>, <pratyush@kernel.org>, <michael@walle.cc>,
-	<miquel.raynal@bootlin.com>, <richard@nod.at>, <Bacem.Daassi@infineon.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: spansion: Make CFRx reg fields generic
-References: <493d9a10-aaf3-70f6-36c3-9a2cf39f0759@linaro.org>
-	<20230110164703.83413-1-tudor.ambarus@linaro.org>
-	<20230110164703.83413-2-tudor.ambarus@linaro.org>
-Date: Mon, 23 Jan 2023 15:38:06 +0100
-In-Reply-To: <20230110164703.83413-2-tudor.ambarus@linaro.org> (Tudor
-	Ambarus's message of "Tue, 10 Jan 2023 18:47:03 +0200")
-Message-ID: <mafs0r0vlb9kh.fsf_-_@amazon.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1674486176; x=1706022176;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:mime-version:content-id:
+   content-transfer-encoding;
+  bh=GEa2wspqr6J3lyPu8fImvpGGVirL3i14PWRHbuLKCRk=;
+  b=GyL4LUOXmuRynq0Xb4SFOMvcnfzJHK+DsHL5Mpph0xms4TmM45aqU6tX
+   4uZDv8FDjCRXoGBv448axqw5G5w2Xbk4SyrLskMZhPQVD00euEQYzkPSE
+   15B1AWfjay1UBTuIRrBv0ITrBlngThxibQNIcHTRWS4XVh6FrosaCgfEd
+   mhnFB85RaFex6o1aBisUte/NBi4dx8w3aNK+Mi1tknw0OA8JQIcJDUOAy
+   JlrPHykdkY3lya3PyYZdnbH19Mb2uCppjZ8eddJma1PpZKxv3SoCfkG5c
+   8+6Vcnco7+ui6SYK36DxR0/4jK1nNDUYvyBPnGYaVKqdUAFfnQ9hQY4Kh
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.97,239,1669071600"; 
+   d="scan'208";a="28595830"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 23 Jan 2023 16:02:46 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Mon, 23 Jan 2023 16:02:47 +0100
+X-PGP-Universal: processed;
+	by tq-pgp-pr1.tq-net.de on Mon, 23 Jan 2023 16:02:47 +0100
+X-IronPort-AV: E=Sophos;i="5.97,239,1669071600"; 
+   d="scan'208";a="28595829"
+Received: from vmail01.tq-net.de ([10.150.72.11])
+  by mx1.tq-group.com with ESMTP; 23 Jan 2023 16:02:46 +0100
+Received: from vmail01.tq-net.de (10.150.72.11) by vmail01.tq-net.de
+ (10.150.72.11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Mon, 23 Jan
+ 2023 16:02:45 +0100
+Received: from vmail01.tq-net.de ([10.150.72.11]) by vmail01.tq-net.de
+ ([10.150.72.11]) with mapi id 15.01.2507.016; Mon, 23 Jan 2023 16:02:45 +0100
+From: "Stein, Alexander" <Alexander.Stein@tq-group.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>
+CC: "michael@walle.cc" <michael@walle.cc>, "p.yadav@ti.com" <p.yadav@ti.com>,
+	"vigneshr@ti.com" <vigneshr@ti.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
+Thread-Topic: [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
+Thread-Index: AQHYOQodYTda3weuU0+yf380GWE6Ea6t9KqA
+Date: Mon, 23 Jan 2023 15:02:45 +0000
+Message-ID: <5642351.DvuYhMxLoT@steina-w>
+References: <20211106075616.95401-1-tudor.ambarus@microchip.com>
+ <5550605.DvuYhMxLoT@steina-w>
+ <b8d01f36-663a-928a-6dbe-64952b5bd8d0@microchip.com>
+In-Reply-To: <b8d01f36-663a-928a-6dbe-64952b5bd8d0@microchip.com>
+Accept-Language: de-DE, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.150.72.21]
 MIME-Version: 1.0
+Content-Language: en-US
+Content-ID: <442701B35985684F88905FBEBE92D650@tq-group.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230123_063817_325355_874DA643 
-X-CRM114-Status: UNSURE (   9.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230123_070257_189527_545BB969 
+X-CRM114-Status: GOOD (  19.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,37 +94,118 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 10 2023, Tudor Ambarus wrote:
+Hi Tudor,
 
-> Cypress defines two flavors of configuration registers, volatile and
-> non volatile, and both use the same bit fields. Rename the bitfields in
-> the configuration registers so that they can be used for both flavors.
->
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Am Mittwoch, 16. M=E4rz 2022, 08:47:40 CET schrieb Tudor.Ambarus@microchip.=
+com:
+> On 3/16/22 09:39, Alexander Stein wrote:
+> =
 
-Reviewed-by: Pratyush Yadav <ptyadav@amazon.de>
+> > [You don't often get email from alexander.stein@tq-group.com. Learn why
+> > this is important at http://aka.ms/LearnAboutSenderIdentification.]
+ =
 
--- 
-Regards,
-Pratyush Yadav
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
+the
+> > content is safe
+ =
 
+> > Hello,
+> =
 
+> =
 
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
+> hi,
+> =
 
+> =
 
+> > =
 
+> > Am Samstag, 6. November 2021, 08:56:15 CET schrieb Tudor Ambarus:
+> > =
+
+> >> When paring SFDP we may choose to mask out an erase type, passing
+> >> an erase size of zero to spi_nor_set_erase_type().
+> >> Fix shift-out-of-bounds and just clear the erase params when
+> >> passing zero for erase size.
+> >> While here avoid a superfluous dereference and use 'size' directly.
+> >>
+> >>
+> >>
+> >> UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2237:24
+> >> shift exponent 4294967295 is too large for 32-bit type 'int'
+> >>
+> >>
+> >>
+> >> Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI
+> >> NOR
+ flash memories") Reported-by: Alexander Stein
+> >> <Alexander.Stein@tq-group.com>
+> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >> ---
+> >> =
+
+> >>  drivers/mtd/spi-nor/core.c | 9 +++++++--
+> >>  1 file changed, 7 insertions(+), 2 deletions(-)
+> >>
+> >>
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> >> index 3d97c189c332..a1b5d5432f41 100644
+> >> --- a/drivers/mtd/spi-nor/core.c
+> >> +++ b/drivers/mtd/spi-nor/core.c
+> >> @@ -2230,8 +2230,13 @@ void spi_nor_set_erase_type(struct
+> >> spi_nor_erase_type
+ *erase, u32 size, erase->size =3D size;
+> >> =
+
+> >>       erase->opcode =3D opcode;
+> >>       /* JEDEC JESD216B Standard imposes erase sizes to be power of 2.
+> >>       */
+> >> =
+
+> >> -     erase->size_shift =3D ffs(erase->size) - 1;
+> >> -     erase->size_mask =3D (1 << erase->size_shift) - 1;
+> >> +     if (size) {
+> >> +             erase->size_shift =3D ffs(size) - 1;
+> >> +             erase->size_mask =3D (1 << erase->size_shift) - 1;
+> >> +     } else {
+> >> +             erase->size_shift =3D 0;
+> >> +             erase->size_mask =3D 0;
+> >> +     }
+> >> =
+
+> >>  }
+> >>
+> >>
+> >>
+> >>  /**
+> > =
+
+> > =
+
+> > What is the status of this patch? It is not applied up until now, no? H=
+as
+> > it
+ been superseeded?
+> > =
+
+> =
+
+> =
+
+> I think it's marked with "changes requested". I'm going to send a v2.
+
+Is there a v2 somewhere?
+
+Best regards,
+Alexander
 
 ______________________________________________________
 Linux MTD discussion mailing list
