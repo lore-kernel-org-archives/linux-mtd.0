@@ -4,122 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29469C38142
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 14:22:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBCFDC38142
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 Jan 2023 14:37:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aUi7JapuNywYp/zf/396DdeBeoWDTqaAVJHnbYTWaNs=; b=KGQiDdnctFCiWX
-	XIGEH4d5Ex2Bf51r2xKd1DqchBIczqsHOySVOn9KBy/Mz9YJNBZEqnUgfdHQCLePQQoccPOXkI/EC
-	m4SFChzSO0H9PNA2p9GzgDSK7GfrAqlLGQenDz1idBrZHuzToQWDo8i3GWrzB9BPgJAYm20SMaJV0
-	7o50GUUFKjLB+ovQdsn16sFYRyP/c3m6DDTiU9cT7ojGmLxwCFUI8ZC1rNrIZm1kVkDTP7WtlhvbC
-	xUJoQan4oZib+HEXZngM5Rw104ZGPz/7xnKi4Cu60bbUOAsp5qCDQxp8I67zS2A8OhmLOAMKVQ3S9
-	TeeHKMWKNWkhTs58q+zQ==;
+	List-Owner; bh=yV0JlLZAB5CA6qEranIvvXB8U8F67pX/kgjRGuu/5GE=; b=eMD+YfHtRgO0yN
+	6iACYSOZOtU0sO9wo9G0l+Y1idjmfZGrURo0a9kh2ML8Zm6S5DQ2JibsgmPseFzjm/L4XaRaeGQvu
+	3MZv9VdHWKdZx5dRADHiVx+IBb/f8aJqZl2JG2xczj38f9Ix6jsihi1KDGic9+p7D2tA3qjx5nfFu
+	BBHD1zcWJoS78pq3g2MJHA9BjgDPA7U1jc/0r460xUEPha8DOU7AyFSKiN08q3UaaK3lNuxl4Trcq
+	NfR2I3PtFuIOkhTFwpAQ47FdsQ7VyIielyHdB67w1hdt2LqMBMSXGkLZmXoZYai+BEjMY7WpE8D6J
+	ev5jISGirsQnT0geIxiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJxhj-00HYss-34; Mon, 23 Jan 2023 14:21:47 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1pJxwo-0000RX-GX; Mon, 23 Jan 2023 14:37:22 +0000
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pJxhf-00HYrv-VB; Mon, 23 Jan 2023 14:21:45 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 30NELWXp089410;
-	Mon, 23 Jan 2023 08:21:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1674483692;
-	bh=BlwQD0ARUqblb48RoEOI25OrVzMPGwg0R8vqptzkpJg=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=FvdWBlHevL+XhAXaPy6/J5HISPF/VxUYp4ghd1OWL43dNVfYvXx7g2ekBT5wQUebb
-	 Z/07W4YvJKF6TF7RTc4RvQAKzkBGhqILEYF+bDhNVaut9uibJTMsoi4PzBJtGFNdxQ
-	 U3G4OdSkYHOE3bCY4gA0ok7R5fHJd+5EAWcvuU0g=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 30NELW7M048257
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 23 Jan 2023 08:21:32 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Mon, 23
- Jan 2023 08:21:31 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16 via
- Frontend Transport; Mon, 23 Jan 2023 08:21:31 -0600
-Received: from [10.250.234.171] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-	by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 30NEKpI9018755;
-	Mon, 23 Jan 2023 08:20:53 -0600
-Message-ID: <90084f5f-6e9d-7b17-5487-3b4b01bd5e7d@ti.com>
-Date: Mon, 23 Jan 2023 19:50:50 +0530
+	id 1pJxwl-0000QP-UN
+	for linux-mtd@lists.infradead.org; Mon, 23 Jan 2023 14:37:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1674484640; x=1706020640;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=rxHa7fX5EGT6y96h4hm1HrsVopIqXKimYGpsM4vJx7o=;
+  b=OQoP6mmNYPUFckHxcYd6tsGwFzNvfWi1nD1eOeAQ2SIG+97FoDK8mqN0
+   HK51CatRD+ipM8CqnQxKC4GmsJXeYh7wsNaVjknRAVoT8c02MYdhjkdDd
+   D14dna4t8Cy6a4Tpcnk4w4mSD6asKA3IzDwmw+jP5S994uYBmdHa1kVsE
+   I=;
+X-IronPort-AV: E=Sophos;i="5.97,239,1669075200"; 
+   d="scan'208";a="257150820"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2023 14:37:06 +0000
+Received: from EX13MTAUEB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+	by email-inbound-relay-iad-1d-m6i4x-153b24bc.us-east-1.amazon.com (Postfix) with ESMTPS id ECB10C23DE;
+	Mon, 23 Jan 2023 14:37:02 +0000 (UTC)
+Received: from EX13D26UEB003.ant.amazon.com (10.43.60.42) by
+ EX13MTAUEB001.ant.amazon.com (10.43.60.129) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.45; Mon, 23 Jan 2023 14:37:02 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
+ EX13D26UEB003.ant.amazon.com (10.43.60.42) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.45; Mon, 23 Jan 2023 14:37:01 +0000
+Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
+ by mail-relay.amazon.com (10.43.60.234) with Microsoft SMTP Server id
+ 15.0.1497.45 via Frontend Transport; Mon, 23 Jan 2023 14:37:01 +0000
+Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
+	id 3F2CD20D8B; Mon, 23 Jan 2023 15:37:00 +0100 (CET)
+From: Pratyush Yadav <ptyadav@amazon.de>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+CC: <Takahiro.Kuwano@infineon.com>, <tkuw584924@gmail.com>,
+	<linux-mtd@lists.infradead.org>, <pratyush@kernel.org>, <michael@walle.cc>,
+	<miquel.raynal@bootlin.com>, <richard@nod.at>, <Bacem.Daassi@infineon.com>,
+	Dhruva Gole <d-gole@ti.com>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: spansion: Consider reserved bits in
+ CFR5 register
+References: <493d9a10-aaf3-70f6-36c3-9a2cf39f0759@linaro.org>
+	<20230110164703.83413-1-tudor.ambarus@linaro.org>
+Date: Mon, 23 Jan 2023 15:37:00 +0100
+In-Reply-To: <20230110164703.83413-1-tudor.ambarus@linaro.org> (Tudor
+	Ambarus's message of "Tue, 10 Jan 2023 18:47:02 +0200")
+Message-ID: <mafs0v8kxb9mb.fsf_-_@amazon.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH v2 02/13] spi: Replace all spi->chip_select and
- spi->cs_gpiod references with function call
-Content-Language: en-US
-To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>, <broonie@kernel.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <jic23@kernel.org>, <tudor.ambarus@microchip.com>,
-        <pratyush@kernel.org>, <sanju.mehta@amd.com>,
-        <chin-ting_kuo@aspeedtech.com>, <clg@kaod.org>, <kdasu.kdev@gmail.com>,
-        <f.fainelli@gmail.com>, <rjui@broadcom.com>, <sbranden@broadcom.com>,
-        <eajames@linux.ibm.com>, <olteanv@gmail.com>, <han.xu@nxp.com>,
-        <john.garry@huawei.com>, <shawnguo@kernel.org>,
-        <s.hauer@pengutronix.de>, <narmstrong@baylibre.com>,
-        <khilman@baylibre.com>, <matthias.bgg@gmail.com>, <haibo.chen@nxp.com>,
-        <linus.walleij@linaro.org>, <daniel@zonque.org>,
-        <haojian.zhuang@gmail.com>, <robert.jarzmik@free.fr>,
-        <agross@kernel.org>, <bjorn.andersson@linaro.org>, <heiko@sntech.de>,
-        <krzysztof.kozlowski@linaro.org>, <andi@etezian.org>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <wens@csie.org>, <jernej.skrabec@gmail.com>, <samuel@sholland.org>,
-        <masahisa.kojima@linaro.org>, <jaswinder.singh@linaro.org>,
-        <rostedt@goodmis.org>, <mingo@redhat.com>, <l.stelmach@samsung.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <alex.aring@gmail.com>,
-        <stefan@datenfreihafen.org>, <kvalo@kernel.org>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <skomatineni@nvidia.com>, <sumit.semwal@linaro.org>,
-        <christian.koenig@amd.com>, <j.neuschaefer@gmx.net>,
-        <vireshk@kernel.org>, <rmfrfs@gmail.com>, <johan@kernel.org>,
-        <elder@kernel.org>, <gregkh@linuxfoundation.org>
-CC: <git@amd.com>, <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <radu_nicolae.pirea@upb.ro>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <claudiu.beznea@microchip.com>,
-        <bcm-kernel-feedback-list@broadcom.com>, <fancer.lancer@gmail.com>,
-        <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>,
-        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
-        <avifishman70@gmail.com>, <tmaimon77@gmail.com>,
-        <tali.perry1@gmail.com>, <venture@google.com>, <yuenn@google.com>,
-        <benjaminfair@google.com>, <yogeshgaur.83@gmail.com>,
-        <konrad.dybcio@somainline.org>, <alim.akhtar@samsung.com>,
-        <ldewangan@nvidia.com>, <michal.simek@amd.com>,
-        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-sunxi@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
-        <libertas-dev@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <lars@metafoo.de>,
-        <Michael.Hennerich@analog.com>, <linux-iio@vger.kernel.org>,
-        <michael@walle.cc>, <palmer@dabbelt.com>,
-        <linux-riscv@lists.infradead.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <greybus-dev@lists.linaro.org>,
-        <linux-staging@lists.linux.dev>, <amitrkcian2002@gmail.com>
-References: <20230119185342.2093323-1-amit.kumar-mahapatra@amd.com>
- <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
-From: Dhruva Gole <d-gole@ti.com>
-In-Reply-To: <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230123_062144_199447_0D8A2B21 
-X-CRM114-Status: GOOD (  11.34  )
+X-CRM114-CacheID: sfid-20230123_063720_060739_DF1F0184 
+X-CRM114-Status: GOOD (  19.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -136,35 +88,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Amit,
++Cc Dhruva
 
-On 20/01/23 00:23, Amit Kumar Mahapatra wrote:
-> Supporting multi-cs in spi drivers would require the chip_select & cs_gpiod
-> members of struct spi_device to be an array. But changing the type of these
-> members to array would break the spi driver functionality. To make the
-> transition smoother introduced four new APIs to get/set the
-> spi->chip_select & spi->cs_gpiod and replaced all spi->chip_select and
-> spi->cs_gpiod references with get or set API calls.
-> While adding multi-cs support in further patches the chip_select & cs_gpiod
-> members of the spi_device structure would be converted to arrays & the
-> "idx" parameter of the APIs would be used as array index i.e.,
-> spi->chip_select[idx] & spi->cs_gpiod[idx] respectively.
+Hi Tudor,
+
+On Tue, Jan 10 2023, Tudor Ambarus wrote:
+
+> CFR5[6] is reserved bit and must be always 1. Set it to comply with flash
+> requirements. While fixing SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_{EN, DS}
+> definition, stop using magic numbers and describe the missing bit fields
+> in CFR5 register. This is useful for both readability and future possible
+> addition of Octal STR mode support.
 >
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+> Fixes: c3266af101f2 ("mtd: spi-nor: spansion: add support for Cypress Semper flash")
+> Cc: stable@vger.kernel.org
+> Reported-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > ---
-> [...]
->  drivers/spi/spi-cadence-quadspi.c |  5 +++--
->  drivers/spi/spi-cadence-xspi.c    |  4 ++--
->  drivers/spi/spi-cadence.c         |  4 ++--
-[...]
+>  drivers/mtd/spi-nor/spansion.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+> index b621cdfd506f..07fe0f6fdfe3 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -21,8 +21,13 @@
+>  #define SPINOR_REG_CYPRESS_CFR3V               0x00800004
+>  #define SPINOR_REG_CYPRESS_CFR3V_PGSZ          BIT(4) /* Page size. */
+>  #define SPINOR_REG_CYPRESS_CFR5V               0x00800006
+> -#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN    0x3
+> -#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS    0
+> +#define SPINOR_REG_CYPRESS_CFR5_BIT6           BIT(6)
 
-For SPI Cadence QSPI,
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
+Perhaps comment here that this bit is reserved. Otherwise it is not
+obvious what this does and why we are setting it without going through
+git-blame. No need for a re-roll, I think it is fine if you add this
+when applying.
+
+> +#define SPINOR_REG_CYPRESS_CFR5_DDR            BIT(1)
+> +#define SPINOR_REG_CYPRESS_CFR5_OPI            BIT(0)
+> +#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN                            \
+> +       (SPINOR_REG_CYPRESS_CFR5_BIT6 | SPINOR_REG_CYPRESS_CFR5_DDR |   \
+> +        SPINOR_REG_CYPRESS_CFR5_OPI)
+> +#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS    SPINOR_REG_CYPRESS_CFR5_BIT6
+
+I would say don't fix what isn't broken. But if you do, test it. Do you
+or Takahiro have a Cypress S28* flash to test this change on? If no,
+then perhaps Dhruva can help here since TI uses this flash on a bunch of
+their boards?
+
+The change looks fine to me with the above comment added, I just would
+like someone to test it once.
+
+Reviewed-by: Pratyush Yadav <ptyadav@amazon.de>
+
+>  #define SPINOR_OP_CYPRESS_RD_FAST              0xee
+>
+>  /* Cypress SPI NOR flash operations. */
+> --
+> 2.34.1
+>
+>
 
 -- 
-Best regards,
-Dhruva Gole
-Texas Instruments Incorporated
+Regards,
+Pratyush Yadav
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
 
 ______________________________________________________
