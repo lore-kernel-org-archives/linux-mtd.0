@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DD6BC54E94
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Jan 2023 23:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38582C54EED
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Jan 2023 23:02:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=T7X1Nw2yArvX9OJRPUUoV1KNLGEg76hw5P4hvTf6h5A=; b=Qi+uX/0fM0ln88
-	imAmJkgfyaQEOEvBwI53qVdpaWWqffB4r9we8hD3jTVvj3Nol6UktI9Bdt+SqR1zl/VtaZueTUaib
-	dk8u86qmAJ2oDo5D+N2YSprbkpEoZzdrh8IGRPn5ewsxu2A2KsypGLvhNSReqJx66keaDPd29aJrx
-	yAKun/qfadQgzBC+gSvTsVBhsmvEIlMMTj0zicmyeoBJEr8hcpZibauGgYWM1ao06iySEGqT+iAoJ
-	Skm30pvQwl3v2MpIkPzwp7XcJohSXZkLgq27B2UG4A0cGUed+aIWUMPS4j8Y+DllAJKaSlkC94l0r
-	sfyphIMyHO75q6CMx4wQ==;
+	List-Owner; bh=T7X1Nw2yArvX9OJRPUUoV1KNLGEg76hw5P4hvTf6h5A=; b=o40Z7E1id1RuKb
+	erpFCJxkmYeZSljok+P2oBLmBlAFB49oGt2dEqb9D0O2HU16nMTlEgrUEg7dhGw5CGKG7ckYLOoBy
+	l6AgJxx1XdOzecq4dDvXcbOgr2pNQI5xqb3C09WVyJUk56SmD5E87EG4xxDyFy4eb+vu46FWLw9jI
+	W7ukoOnFAVbm8sM8Z0VZDUPoJ6OnKwfpWY5M6EYuRv7yWO+aPy+QSVHpjg812UWnX4BP84rBaST1o
+	IyI5o/RqMGZNGsiDFhaVkEmlHwCoAm6rs5bsECartgl6q0o7YyMOLCnnIpXlN/gxkOLZBWJDAvDI1
+	rCMjNunf13BqmbBvGSXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKSHo-005aRW-Ih; Tue, 24 Jan 2023 23:01:04 +0000
-Received: from mail-ot1-f53.google.com ([209.85.210.53])
+	id 1pKSJQ-005atg-Pq; Tue, 24 Jan 2023 23:02:44 +0000
+Received: from mail-oi1-f181.google.com ([209.85.167.181])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKSHb-005aO6-LZ; Tue, 24 Jan 2023 23:00:54 +0000
-Received: by mail-ot1-f53.google.com with SMTP id cm26-20020a056830651a00b00684e5c0108dso10142971otb.9;
-        Tue, 24 Jan 2023 15:00:51 -0800 (PST)
+	id 1pKSJE-005ap9-6e; Tue, 24 Jan 2023 23:02:35 +0000
+Received: by mail-oi1-f181.google.com with SMTP id v17so14774511oie.5;
+        Tue, 24 Jan 2023 15:02:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=GI/5UOaSfmciN645orkiQBi7mLRaRF0ZS1ZUuYBdNvc=;
-        b=ZcuEPSbRUiilxh0pLK3j/Fmm048ogD9/Y+f6WQ94PJ1AIuUjlPZyeYsuRb4/UkwRo3
-         VVmGFIczRgOAQPLLQburpLaueIRMecTaS/W8mf6H3RD1RX4DwvZ0tRqnP5edulj17WzN
-         CD6DIQemfaX+3UDBXok1V80mVYqlPfcdbttQ8IjFCebvGG/WklDus+8w32k9FT1GJBYP
-         A+x2tw9Sstx1BFG3t/73q3g+/WTOTDBluxMt+2z9jHEVLKRj/3EYf71AjrFuuIzQZx7w
-         fP3cqzLDGIie2f+VoEtThtgI+bNmQhMEpxHcQMXHkJCi2CWVufcfqIGAIQLm8eTtWsWz
-         eaVA==
-X-Gm-Message-State: AFqh2kpbEYk1SQtgZ9BSDHxfcARtAFjmDuqWMgzz7Bu2i30FCdRcbG/g
-	1N1tdXcyvjJ+/ACw7sp1GsMoeCr1og==
-X-Google-Smtp-Source: AMrXdXtwZAvSnvJGaUSS3u1UoHFrxbCEGZ5ra6dbyH4du4dP2dJIPhqJdNtyQ1xoNiu1fbBJcFGzZA==
-X-Received: by 2002:a9d:3c5:0:b0:684:d418:573b with SMTP id f63-20020a9d03c5000000b00684d418573bmr14339968otf.29.1674601250284;
-        Tue, 24 Jan 2023 15:00:50 -0800 (PST)
+        b=A4JN8Gt6DugjzGiDmssxib47oCL+DGtQUAxWbhF5uQAKN3pDLKykXWkh/bDM6yKrPo
+         vjddXh+AKpUczD5fs0ZY4AoSDB0ZSuYupnwCuyVLTCbVwRc5zL0wlLdrnatQkuYHESRf
+         0q3MKnUWwiXkIjHHnLMR5hiKPCSIPy9SgbAsgHuCm4J2XOfHQIoZyS5nZCsO/nQRqy5d
+         FO/ahX1CCYZmZIGxsWKiVwQdkHuBfWU7Tqs00MypOlLsj8qHuj1OJUUrwn95iuYts7lz
+         lvl5LocbiyCiSGX2JIjClwPsXH5lQjR0E2mNU0VxSoyX5Jw7lneodvloDT/7bexKS/G9
+         KV1A==
+X-Gm-Message-State: AFqh2kocmcm1OLx0FCZ9azBIpeLzGoHQlZWXodyO8NE0fS54+BC3i0jj
+	A+aG+6OnVfEkBsX0QZblUw==
+X-Google-Smtp-Source: AMrXdXvdr0agArHpsAjC0SYwsKJoe5IWZplu6bM//bvuJYMGkb3h85lvSOD5D3tM8CDFXlVRI5Kcdw==
+X-Received: by 2002:a05:6808:2191:b0:361:8570:d3cf with SMTP id be17-20020a056808219100b003618570d3cfmr19282175oib.6.1674601349894;
+        Tue, 24 Jan 2023 15:02:29 -0800 (PST)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id f10-20020a9d2c0a000000b0068848d6b231sm322689otb.30.2023.01.24.15.00.48
+        by smtp.gmail.com with ESMTPSA id q64-20020acac043000000b0035e7ed5daa1sm1555463oif.26.2023.01.24.15.02.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Jan 2023 15:00:49 -0800 (PST)
-Received: (nullmailer pid 371735 invoked by uid 1000);
-	Tue, 24 Jan 2023 23:00:48 -0000
+        Tue, 24 Jan 2023 15:02:29 -0800 (PST)
+Received: (nullmailer pid 373886 invoked by uid 1000);
+	Tue, 24 Jan 2023 23:02:28 -0000
 From: Rob Herring <robh@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Bartosz Golaszewski <brgl@bgdev.pl>, Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>, Jassi Brar <jassisinghbrar@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Lee Jones <lee@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org, linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-media@vger.kernel.org, openbmc@lists.ozlabs.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pm@vger.kernel.org, alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, linux-usb@vger.kernel.org
 Subject: [PATCH] dt-bindings: Add missing (unevaluated|additional)Properties on child node schemas
-Date: Tue, 24 Jan 2023 17:00:48 -0600
-Message-Id: <20230124230048.371144-1-robh@kernel.org>
+Date: Tue, 24 Jan 2023 17:02:28 -0600
+Message-Id: <20230124230228.372305-1-robh@kernel.org>
 X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230124_150051_743399_A96A1942 
+X-CRM114-CacheID: sfid-20230124_150232_260953_4A3AC3E7 
 X-CRM114-Status: GOOD (  17.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
