@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1A63C25B4E
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Jan 2023 14:02:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66EECC25B4E
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Jan 2023 14:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j9vZJNUIXbIcwLQGQNkDKDMK5uoZBfGV5aEnUc6JXE4=; b=ndqp20TY+3EiIX
-	GNq2y7yIZptP78IhuTJPi2vL8iCAcp567LlR0B6bF+RMkILF981whAUC2cuxUJmr7lEHNX8kr9me7
-	/f16x0TIpr5lBNYPddzZKx3NFd4d/aVPfdDvx/Q6nAUKx8qZIGvHFPvGj5cv89EyZylh5bbH1kP+V
-	Vx2cskDs/EwFRkrQX8jkR0RWaR+DqtjENQlngl4jguj2j0qnXQRBeY30vW15qBpHw1aF5tfC9g56t
-	vDgc6gYpK6epFsaz2R5M13W3suURk61N6Qhh+jbBh3JCFbPuLBsJAxHN+MRn2S8Bf0dmqngoWrtiv
-	SPqf16AXN2QsasEwt64Q==;
+	List-Owner; bh=vFyeSZELBGJppQNkqgCh/mbilfv062gGjRQf3X8dZJ4=; b=WmDZmnDj7fojii
+	h2LaVulhHiewI6CcWJ2kT+uKtixDxnu5qaNYOI2IHy3tDtiReWzZ8N/lH5MhusvxkcIG0Pgj/f9Ia
+	FrA8OyAlfgAbvWa+HF7QlP/SADaG0c73tpT11CCrZtwwKWLHDSeZEfmCopqMmqH0jja9SFRjSuqrS
+	sSLy3rmTxlH5PL3/tw1/gH0HjWRQekx4fNvTF2thywV+QDyfL9f8Fei9PHVcMDGUDuR3LZj/znpn9
+	Za/nikQHdS9+O/leglcPx/QuFj587C7SL5we7HC5vBsdzDEGB2jgJqXaVoxhAPpP1FL1GO1RS+ZV0
+	dLrlJLRik7ulnJb7q95A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKJsP-004A79-AG; Tue, 24 Jan 2023 14:02:17 +0000
-Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
+	id 1pKJx6-004CUY-Ul; Tue, 24 Jan 2023 14:07:09 +0000
+Received: from smtp-fw-80007.amazon.com ([99.78.197.218])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKJep-004465-SM
-	for linux-mtd@lists.infradead.org; Tue, 24 Jan 2023 13:48:18 +0000
-Received: by mail-wm1-x330.google.com with SMTP id q10-20020a1cf30a000000b003db0edfdb74so954660wmq.1
-        for <linux-mtd@lists.infradead.org>; Tue, 24 Jan 2023 05:48:13 -0800 (PST)
+	id 1pKJrw-0049q2-IW
+	for linux-mtd@lists.infradead.org; Tue, 24 Jan 2023 14:01:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=criticallink.com; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dxaf/f1QewW4LzAbNfnn+pTasvGPcVaqV+QnlU1wFXM=;
-        b=hZMl1kv6qogirZi2caqeHlazTd0rr0Mb8dmaOvVpVRCU5ZYx7vSGZIFXIeljnuudip
-         5mkXZZo7IMWHwdHbtd83F5ZAVwTBX2AUb05cdyyd0T6DUQk1yB+h34c6vkK9BxJE8/pz
-         TBsD6b7N0gWCUePkKaNjC1MlwpqoWyxnnZD9ixwUKDrk0L1TOJFpyG3GHfzntJ0/TPdq
-         SUgp3yOOt3Jvp/Zte5V741bTy3F3dzE8/mLvRIL6Ezmu1kX3QMzgzYj0vY4bkyfAybW8
-         /jvO6GyYCQ9v3pHJCRE2VszQRfZZpAUVbF2iHMgk+B1bch7D5lRcKL6UpK+ZqdptGtaz
-         swRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Dxaf/f1QewW4LzAbNfnn+pTasvGPcVaqV+QnlU1wFXM=;
-        b=R2hRNH/DuKw2ci9ClV1OveYxkLElkjWP60iyEz5LxHz3ob4Cf1FJ4JaOhnbbKFpEDJ
-         DflLPc8YHjGHaDNDc0an2HkDyTeuNl+d8SNPAQVbjOn6NJISTO+RdZ+IjzSudsEShw13
-         kFqzZZMv+ObbQy5SGBtOe51hZTMEHQqBcU/9DolCEbi5zquo2cmKtIl6TyPtKSeT8uLK
-         ZJh+D5hZYvcZrBm9rJrsM0oEMA9lXlyaBY29Y0O6yb/ziwu593tzBCcBK+qKNlK1WutV
-         I+6T8iCFl39py1OodxWO7H1si5rBQ71VbdTxcH3SEu+JcgOH/hPqL13wMZY7PImvuW2u
-         YUBQ==
-X-Gm-Message-State: AFqh2krhWTQZ24SUb2pNe+xSZIdn1ZliP3mjlrJbnkNsQQK8m0FVXj9t
-	gJo06RCfs6Z9rXga1yIHWV+x4mGSLDLceeNI5EClHg==
-X-Google-Smtp-Source: AMrXdXueQc4IgTBNSkLOZ6ednEGEyPVX2rus59b2Pqn/um3cAsNRbtcIjWybgC5Uvt+lUmv3Lz89ZfzcitzqMZ2v0GE=
-X-Received: by 2002:a05:600c:805:b0:3cf:81b1:bc7b with SMTP id
- k5-20020a05600c080500b003cf81b1bc7bmr1464312wmp.121.1674568091782; Tue, 24
- Jan 2023 05:48:11 -0800 (PST)
-MIME-Version: 1.0
-References: <CAHEoWwuK_rZfka+skd=CTBf2mjAFL71HX_qC77rCWcaO+qy-vg@mail.gmail.com>
- <mafs0lelsf6p9.fsf@amazon.de>
-In-Reply-To: <mafs0lelsf6p9.fsf@amazon.de>
-From: Mike Williamson <michael.williamson@criticallink.com>
-Date: Tue, 24 Jan 2023 08:48:00 -0500
-Message-ID: <CAHEoWwu+x6jhbZF301HALL9dTAh6-N7u-or8YNQ8_z5q3TLWzg@mail.gmail.com>
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1674568908; x=1706104908;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=4AvKOIRzPhLbzhXbhPzpLZQ31L3Np9S6BHPnavRXgEg=;
+  b=BGSfYumOyjxLMj4uo1cpIjpAW7kn4SOlYdtoHV8jDvgUsmvv0smi9xW4
+   r1C7lt9gT+JFR3VV5/a6v3XiZkq29+DRjZT4wQPkRWTWKqJquErEtbYHc
+   DQ2WCk94xmxiUJ5lIqEMc769snu/N9CTdua6kUwr0i4YhxJujWDba7XKt
+   k=;
+X-IronPort-AV: E=Sophos;i="5.97,242,1669075200"; 
+   d="scan'208";a="174521123"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2023 14:01:39 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+	by email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com (Postfix) with ESMTPS id 1EA4B81A27;
+	Tue, 24 Jan 2023 14:01:39 +0000 (UTC)
+Received: from EX19D011UEB002.ant.amazon.com (10.252.135.4) by
+ EX13MTAUEB002.ant.amazon.com (10.43.60.12) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.45; Tue, 24 Jan 2023 14:01:37 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
+ EX19D011UEB002.ant.amazon.com (10.252.135.4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.7; Tue, 24 Jan 2023 14:01:37 +0000
+Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
+ by mail-relay.amazon.com (10.43.60.234) with Microsoft SMTP Server id
+ 15.0.1497.45 via Frontend Transport; Tue, 24 Jan 2023 14:01:37 +0000
+Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
+	id 48AA920CF6; Tue, 24 Jan 2023 15:01:36 +0100 (CET)
+From: Pratyush Yadav <ptyadav@amazon.de>
+To: Mike Williamson <michael.williamson@criticallink.com>
+CC: <linux-mtd@lists.infradead.org>
 Subject: Re: Question about SPI-NOR micron-st.c driver and OSPI devices.
-To: Pratyush Yadav <ptyadav@amazon.de>
-Cc: linux-mtd@lists.infradead.org
+References: <CAHEoWwuK_rZfka+skd=CTBf2mjAFL71HX_qC77rCWcaO+qy-vg@mail.gmail.com>
+	<mafs0lelsf6p9.fsf@amazon.de>
+	<CAHEoWwu+x6jhbZF301HALL9dTAh6-N7u-or8YNQ8_z5q3TLWzg@mail.gmail.com>
+Date: Tue, 24 Jan 2023 15:01:36 +0100
+In-Reply-To: <CAHEoWwu+x6jhbZF301HALL9dTAh6-N7u-or8YNQ8_z5q3TLWzg@mail.gmail.com> (Mike
+	Williamson's message of "Tue, 24 Jan 2023 08:48:00 -0500")
+Message-ID: <mafs0h6wgf2v3.fsf_-_@amazon.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230124_054816_290865_EF66A7DE 
-X-CRM114-Status: GOOD (  28.83  )
+X-CRM114-CacheID: sfid-20230124_060148_749042_88008229 
+X-CRM114-Status: GOOD (  35.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,56 +86,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Pratyush,
+Hi Mike,
 
-On Tue, Jan 24, 2023 at 7:46 AM Pratyush Yadav <ptyadav@amazon.de> wrote:
->
-> Hi Mike,
->
-> On Mon, Jan 16 2023, Mike Williamson wrote:
->
-> > Hello,
-> >
-> > I am looking at the drivers/mtd/spi-not/micron-st.c file.
-> >
-> > I was wondering why the mt35xu512aba_fixups, and in general the patch below,
-> > were not also applied to the mt35xu02g device entry?  Best I can tell, the
-> > datasheets for the two parts (same family, different densities) look nearly
-> > identical and the
-> >
-> > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2333941.html
-> >
-> > I ask because we are having some troubles with the mt35xu02g and I am
-> > wondering if we need these fixups to run reliably in octal mode.
->
-> When I wrote the patches for Octal DTR support on MT35 flash family, I
-> only had the mt35xu512aba flash on me. And it was a new feature so I did
-> not want to add it to a flash I could not test, and risk breaking it. I
-> figured if someone really wanted Octal DTR support on the 02G part, they
-> can populate the fixups and test it themselves.
->
-> So this is what I suggest you do as well. Add the fixups, test it out,
-> and if it works, upstream the patch.
+On Tue, Jan 24 2023, Mike Williamson wrote:
 
-I have tested using the fixups on the 02G part successfully, but we are
-working out of a 5.10 branch TI is providing for a new SOC.  I'm not sure
-when I will be able to test against mainline/next as I don't know the state
-of the SOC drivers (for TI's AM62x).  I know they are working to get them
-in, but I don't think they are there yet.
-
-Knowing the motivation for leaving the fixups out is helpful. I have a bit of
-confidence that the patch is likely the right fix for Octal DTR support.
-
-> ... While you are at it, perhaps also
-> convert it to use the PARSE_SFDP flag. See db391efe765c ("mtd: spi-nor:
-> spansion: Remove NO_SFDP_FLAGS from s28hs512t info") or a30f53d8bc0f
-> ("mtd: spi-nor: issi: is25wp256: Init flash based on SFDP") for example.
+> Hi Pratyush,
 >
+> On Tue, Jan 24, 2023 at 7:46 AM Pratyush Yadav <ptyadav@amazon.de> wrote:
+>>
+>> Hi Mike,
+>>
+>> On Mon, Jan 16 2023, Mike Williamson wrote:
+>>
+>> > Hello,
+>> >
+>> > I am looking at the drivers/mtd/spi-not/micron-st.c file.
+>> >
+>> > I was wondering why the mt35xu512aba_fixups, and in general the patch below,
+>> > were not also applied to the mt35xu02g device entry?  Best I can tell, the
+>> > datasheets for the two parts (same family, different densities) look nearly
+>> > identical and the
+>> >
+>> > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2333941.html
+>> >
+>> > I ask because we are having some troubles with the mt35xu02g and I am
+>> > wondering if we need these fixups to run reliably in octal mode.
+>>
+>> When I wrote the patches for Octal DTR support on MT35 flash family, I
+>> only had the mt35xu512aba flash on me. And it was a new feature so I did
+>> not want to add it to a flash I could not test, and risk breaking it. I
+>> figured if someone really wanted Octal DTR support on the 02G part, they
+>> can populate the fixups and test it themselves.
+>>
+>> So this is what I suggest you do as well. Add the fixups, test it out,
+>> and if it works, upstream the patch.
+>
+> I have tested using the fixups on the 02G part successfully, but we are
+> working out of a 5.10 branch TI is providing for a new SOC.  I'm not sure
+> when I will be able to test against mainline/next as I don't know the state
+> of the SOC drivers (for TI's AM62x).  I know they are working to get them
+> in, but I don't think they are there yet.
 
-I will have a look.
+I think base support for AM62x has been in mainline since a033588ec66b
+("arm64: dts: ti: Add support for AM62-SK"), which landed in v5.18. It
+might not have all the devices/drivers supported yet but I think SPI NOR
+should at least work. So you _should_ be able to boot mainline kernel on
+AM62x SK, and you should be able to develop patches for mainline.
 
-Thanks,
-Mike
+But if you only want support for this device on TI's tree then you need to
+contact TI for that.
+
+>
+> Knowing the motivation for leaving the fixups out is helpful. I have a bit of
+> confidence that the patch is likely the right fix for Octal DTR support.
+>
+>> ... While you are at it, perhaps also
+>> convert it to use the PARSE_SFDP flag. See db391efe765c ("mtd: spi-nor:
+>> spansion: Remove NO_SFDP_FLAGS from s28hs512t info") or a30f53d8bc0f
+>> ("mtd: spi-nor: issi: is25wp256: Init flash based on SFDP") for example.
+>>
+>
+> I will have a look.
+
+-- 
+Regards,
+Pratyush Yadav
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
