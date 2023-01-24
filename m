@@ -4,78 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78A63C25B4E
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Jan 2023 12:04:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DDE9C54EED
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Jan 2023 12:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
 	Date:References:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6FpktyV89sCl4LQrvgYlPVFbY4vQUgss3/pRgmfhXLc=; b=PHA9TgI3YwtuRt
-	ZH8yc4+AW9Qa/CsHyzO3qRzoi9sTlIqspU16aOqA+Gc8bgVHMxf0RlFqVS8bVxBTD4Y0eQjDIWJc2
-	bpgncuQGQmVPuHGOGfLbt/wPcR0pYL5PYsUtnAZhuABXQHFoMgo8WvgoyVEHST8l0XdeHKAqnw10C
-	xOh2ZO507MtD/BMSshCa5QYwWUry7n0eKm5aciCqsa5DLr0UCdHwcEN7Rqqnacn1+fZ3HQQgXQ0vr
-	cUeMbmP2AXY3Smd2bUtgihOnP33RfXVZtqVktZgm/RhB/wqwNWyl3Gtz5a2dEN1f5QFGZ1mVytJoO
-	ptBhY2nyPJs/k9dlrtdg==;
+	List-Owner; bh=VmDSypIacQpUZuIi54lCNmjdf3PXrmsOWCP6/L7k8pU=; b=mbXNsWH89Xdbwi
+	WStORDNCUX6CP8VPsZ+US9EnPEQz7t+zGAfT6RzpEjGMhO9Msxe+tIvpHMt4v3tWHAqyf4bl8e0Zg
+	yLb5wOXG86RSiVm2ozoV3PandjuS52zhAGBe/lNzR2wd6fXymc2IELy4kCvXprRbuTUUd7UYf5lKk
+	BkoMiK36rnO5slk3XWSAMYKr95T5me34tgKy+fMbG+f3NXOs83urDsj2NN+g8Eg3NjswUECgUer/w
+	7UQY3SJ5if7Xq6ro5aoBpOAm4oHruw3uSt+EkdNqqyYkxgGUlf2xH26K1mWe3Wg1ETwtrOXu4iJZe
+	qO765Tlys4LthqTdInhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKI2F-003cf2-4a; Tue, 24 Jan 2023 12:04:19 +0000
+	id 1pKIhS-003mrk-J2; Tue, 24 Jan 2023 12:46:54 +0000
 Received: from smtp-fw-9102.amazon.com ([207.171.184.29])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKI28-003cbN-Uj
-	for linux-mtd@lists.infradead.org; Tue, 24 Jan 2023 12:04:14 +0000
+	id 1pKIhP-003mqM-Bx
+	for linux-mtd@lists.infradead.org; Tue, 24 Jan 2023 12:46:53 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1674561853; x=1706097853;
+  t=1674564411; x=1706100411;
   h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version:content-transfer-encoding;
-  bh=ugl48vImlLULq3rgoz0ufZQz3sBht52eV1+xe5PT1lk=;
-  b=a3CJG0ot5P8KIGrsiZi8IuL+88vJLC8tg+3MeIu5zWGz3RhV93fxOOxz
-   i/83X9Z+S15DkXHsIbjX9de796bPxLMwLrAeWdLkxCLdrYrbI0OHTIT6c
-   OSGS/oDjc8b/LsmdUZARTSnR0me3AzK2GuWvqMKgmWFZOt7U9cuwti1ME
-   0=;
+   message-id:mime-version;
+  bh=MLPk8wEYjQyqQkXiifuaSZSLGPgO0rBpXws0XqJrbNI=;
+  b=Hri1czElHnjzq4jopuiFZiX8vOORilZ5H1uK0lSytHFlKaKSGr2fOKeO
+   QT9uxl6+p809dgTuBproZ5AMcjr+O3LVFzqIp7wDrkDmNGiQOm6of/La5
+   cVzsrbSALH/ZyjP7Q1uOVZ0q/vkJ/6s/XH4uvJVtowfEtlEPVzrAO/EEL
+   s=;
 X-IronPort-AV: E=Sophos;i="5.97,242,1669075200"; 
-   d="scan'208";a="303632290"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-f05d30a1.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2023 12:04:04 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-	by email-inbound-relay-iad-1d-m6i4x-f05d30a1.us-east-1.amazon.com (Postfix) with ESMTPS id 0F83081F49;
-	Tue, 24 Jan 2023 12:03:55 +0000 (UTC)
-Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1497.45; Tue, 24 Jan 2023 12:03:55 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.45; Tue, 24 Jan 2023 12:03:55 +0000
+   d="scan'208";a="303657576"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-d7759ebe.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2023 12:38:47 +0000
+Received: from EX13MTAUEB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+	by email-inbound-relay-iad-1d-m6i4x-d7759ebe.us-east-1.amazon.com (Postfix) with ESMTPS id 7DADD4133C;
+	Tue, 24 Jan 2023 12:38:45 +0000 (UTC)
+Received: from EX13D34UEB002.ant.amazon.com (10.43.60.92) by
+ EX13MTAUEB001.ant.amazon.com (10.43.60.96) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.45; Tue, 24 Jan 2023 12:38:45 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
+ EX13D34UEB002.ant.amazon.com (10.43.60.92) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.45; Tue, 24 Jan 2023 12:38:44 +0000
 Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
- by mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server id
- 15.0.1497.45 via Frontend Transport; Tue, 24 Jan 2023 12:03:55 +0000
+ by mail-relay.amazon.com (10.43.60.234) with Microsoft SMTP Server id
+ 15.0.1497.45 via Frontend Transport; Tue, 24 Jan 2023 12:38:43 +0000
 Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
-	id CD77120D95; Tue, 24 Jan 2023 13:03:53 +0100 (CET)
+	id C99CD20CD7; Tue, 24 Jan 2023 13:38:42 +0100 (CET)
 From: Pratyush Yadav <ptyadav@amazon.de>
-To: Dhruva Gole <d-gole@ti.com>
-CC: Tudor Ambarus <tudor.ambarus@linaro.org>, <Takahiro.Kuwano@infineon.com>,
-	<tkuw584924@gmail.com>, <linux-mtd@lists.infradead.org>,
-	<pratyush@kernel.org>, <michael@walle.cc>, <miquel.raynal@bootlin.com>,
-	<richard@nod.at>, <Bacem.Daassi@infineon.com>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: spansion: Consider reserved bits in
- CFR5 register
-References: <493d9a10-aaf3-70f6-36c3-9a2cf39f0759@linaro.org>
-	<20230110164703.83413-1-tudor.ambarus@linaro.org>
-	<mafs0v8kxb9mb.fsf_-_@amazon.de>
-	<e02d6aa5-2189-4afb-2521-6034feaa3460@ti.com>
-	<mafs0tu0gfc1z.fsf_-_@amazon.de>
-	<073bb72e-ed53-ef40-1860-c0957d88e0c6@ti.com>
-Date: Tue, 24 Jan 2023 13:03:53 +0100
-In-Reply-To: <073bb72e-ed53-ef40-1860-c0957d88e0c6@ti.com> (Dhruva Gole's
-	message of "Tue, 24 Jan 2023 16:42:47 +0530")
-Message-ID: <mafs0pmb4f8ba.fsf_-_@amazon.de>
+To: Mike Williamson <michael.williamson@criticallink.com>
+CC: <linux-mtd@lists.infradead.org>
+Subject: Re: Question about SPI-NOR micron-st.c driver and OSPI devices.
+References: <CAHEoWwuK_rZfka+skd=CTBf2mjAFL71HX_qC77rCWcaO+qy-vg@mail.gmail.com>
+Date: Tue, 24 Jan 2023 13:38:42 +0100
+In-Reply-To: <CAHEoWwuK_rZfka+skd=CTBf2mjAFL71HX_qC77rCWcaO+qy-vg@mail.gmail.com> (Mike
+	Williamson's message of "Mon, 16 Jan 2023 08:44:20 -0500")
+Message-ID: <mafs0lelsf6p9.fsf@amazon.de>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230124_040413_080540_FA424B4F 
-X-CRM114-Status: GOOD (  26.37  )
+X-CRM114-CacheID: sfid-20230124_044651_512603_52CB375A 
+X-CRM114-Status: GOOD (  18.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,103 +78,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBKYW4gMjQgMjAyMywgRGhydXZhIEdvbGUgd3JvdGU6Cgo+IE9uIDI0LzAxLzIzIDE2
-OjEzLCBQcmF0eXVzaCBZYWRhdiB3cm90ZToKPj4gT24gTW9uLCBKYW4gMjMgMjAyMywgRGhydXZh
-IEdvbGUgd3JvdGU6Cj4+Cj4+PiBIaSBQcmF0eXVzaCwKPj4+Cj4+PiBPbiAyMy8wMS8yMyAyMDow
-NywgUHJhdHl1c2ggWWFkYXYgd3JvdGU6Cj4+Pj4gK0NjIERocnV2YQo+Pj4gSSBoYWQgYWxyZWFk
-eSByZXZpZXdlZCB0aGlzLCBidXQgbm93IEkgaGF2ZSBsb2NhbGx5IGFwcGxpZWQgdGhlIHBhdGNo
-ZXMsCj4+PiB0byBsaW51eCBtYXN0ZXIgYW5kIGJ1aWx0IGFuZCB0ZXN0ZWQgLSBzZWVtcyBva2F5
-LAo+Pj4+IEhpIFR1ZG9yLAo+Pj4+Cj4+Pj4gT24gVHVlLCBKYW4gMTAgMjAyMywgVHVkb3IgQW1i
-YXJ1cyB3cm90ZToKPj4+Pgo+Pj4+PiBDRlI1WzZdIGlzIHJlc2VydmVkIGJpdCBhbmQgbXVzdCBi
-ZSBhbHdheXMgMS4gU2V0IGl0IHRvIGNvbXBseSB3aXRoIGZsYXNoCj4+Pj4+IHJlcXVpcmVtZW50
-cy4gV2hpbGUgZml4aW5nIFNQSU5PUl9SRUdfQ1lQUkVTU19DRlI1Vl9PQ1RfRFRSX3tFTiwgRFN9
-Cj4+Pj4+IGRlZmluaXRpb24sIHN0b3AgdXNpbmcgbWFnaWMgbnVtYmVycyBhbmQgZGVzY3JpYmUg
-dGhlIG1pc3NpbmcgYml0IGZpZWxkcwo+Pj4+PiBpbiBDRlI1IHJlZ2lzdGVyLiBUaGlzIGlzIHVz
-ZWZ1bCBmb3IgYm90aCByZWFkYWJpbGl0eSBhbmQgZnV0dXJlIHBvc3NpYmxlCj4+Pj4+IGFkZGl0
-aW9uIG9mIE9jdGFsIFNUUiBtb2RlIHN1cHBvcnQuCj4+Pj4+Cj4+Pj4+IEZpeGVzOiBjMzI2NmFm
-MTAxZjIgKCJtdGQ6IHNwaS1ub3I6IHNwYW5zaW9uOiBhZGQgc3VwcG9ydCBmb3IgQ3lwcmVzcyBT
-ZW1wZXIgZmxhc2giKQo+Pj4+PiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwo+Pj4+PiBSZXBv
-cnRlZC1ieTogVGFrYWhpcm8gS3V3YW5vIDxUYWthaGlyby5LdXdhbm9AaW5maW5lb24uY29tPgo+
-Pj4+PiBTaWduZWQtb2ZmLWJ5OiBUdWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQGxpbmFyby5v
-cmc+Cj4+Pj4+IC0tLQo+Pj4+PiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGFuc2lvbi5jIHwgOSAr
-KysrKysrLS0KPj4+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDIgZGVsZXRp
-b25zKC0pCj4+Pj4+Cj4+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NwYW5z
-aW9uLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwYW5zaW9uLmMKPj4+Pj4gaW5kZXggYjYyMWNk
-ZmQ1MDZmLi4wN2ZlMGY2ZmRmZTMgMTAwNjQ0Cj4+Pj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1u
-b3Ivc3BhbnNpb24uYwo+Pj4+PiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwYW5zaW9uLmMK
-Pj4+Pj4gQEAgLTIxLDggKzIxLDEzIEBACj4+Pj4+ICAjZGVmaW5lIFNQSU5PUl9SRUdfQ1lQUkVT
-U19DRlIzViAgICAgICAgICAgICAgIDB4MDA4MDAwMDQKPj4+Pj4gICNkZWZpbmUgU1BJTk9SX1JF
-R19DWVBSRVNTX0NGUjNWX1BHU1ogICAgICAgICAgQklUKDQpIC8qIFBhZ2Ugc2l6ZS4gKi8KPj4+
-Pj4gICNkZWZpbmUgU1BJTk9SX1JFR19DWVBSRVNTX0NGUjVWICAgICAgICAgICAgICAgMHgwMDgw
-MDAwNgo+Pj4+PiAtI2RlZmluZSBTUElOT1JfUkVHX0NZUFJFU1NfQ0ZSNVZfT0NUX0RUUl9FTiAg
-ICAweDMKPj4+Pj4gLSNkZWZpbmUgU1BJTk9SX1JFR19DWVBSRVNTX0NGUjVWX09DVF9EVFJfRFMg
-ICAgMAo+Pj4+PiArI2RlZmluZSBTUElOT1JfUkVHX0NZUFJFU1NfQ0ZSNV9CSVQ2ICAgICAgICAg
-ICBCSVQoNikKPj4+PiBQZXJoYXBzIGNvbW1lbnQgaGVyZSB0aGF0IHRoaXMgYml0IGlzIHJlc2Vy
-dmVkLiBPdGhlcndpc2UgaXQgaXMgbm90Cj4+Pj4gb2J2aW91cyB3aGF0IHRoaXMgZG9lcyBhbmQg
-d2h5IHdlIGFyZSBzZXR0aW5nIGl0IHdpdGhvdXQgZ29pbmcgdGhyb3VnaAo+Pj4+IGdpdC1ibGFt
-ZS4gTm8gbmVlZCBmb3IgYSByZS1yb2xsLCBJIHRoaW5rIGl0IGlzIGZpbmUgaWYgeW91IGFkZCB0
-aGlzCj4+Pj4gd2hlbiBhcHBseWluZy4KPj4+Pgo+Pj4+PiArI2RlZmluZSBTUElOT1JfUkVHX0NZ
-UFJFU1NfQ0ZSNV9ERFIgICAgICAgICAgICBCSVQoMSkKPj4+Pj4gKyNkZWZpbmUgU1BJTk9SX1JF
-R19DWVBSRVNTX0NGUjVfT1BJICAgICAgICAgICAgQklUKDApCj4+Pj4+ICsjZGVmaW5lIFNQSU5P
-Ul9SRUdfQ1lQUkVTU19DRlI1Vl9PQ1RfRFRSX0VOICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IFwKPj4+Pj4gKyAgICAgICAoU1BJTk9SX1JFR19DWVBSRVNTX0NGUjVfQklUNiB8IFNQSU5PUl9S
-RUdfQ1lQUkVTU19DRlI1X0REUiB8ICAgXAo+Pj4+PiArICAgICAgICBTUElOT1JfUkVHX0NZUFJF
-U1NfQ0ZSNV9PUEkpCj4+Pj4+ICsjZGVmaW5lIFNQSU5PUl9SRUdfQ1lQUkVTU19DRlI1Vl9PQ1Rf
-RFRSX0RTICAgIFNQSU5PUl9SRUdfQ1lQUkVTU19DRlI1X0JJVDYKPj4+PiBJIHdvdWxkIHNheSBk
-b24ndCBmaXggd2hhdCBpc24ndCBicm9rZW4uIEJ1dCBpZiB5b3UgZG8sIHRlc3QgaXQuIERvIHlv
-dQo+Pj4+IG9yIFRha2FoaXJvIGhhdmUgYSBDeXByZXNzIFMyOCogZmxhc2ggdG8gdGVzdCB0aGlz
-IGNoYW5nZSBvbj8gSWYgbm8sCj4+Pj4gdGhlbiBwZXJoYXBzIERocnV2YSBjYW4gaGVscCBoZXJl
-IHNpbmNlIFRJIHVzZXMgdGhpcyBmbGFzaCBvbiBhIGJ1bmNoIG9mCj4+Pj4gdGhlaXIgYm9hcmRz
-Pwo+Pj4+Cj4+Pj4gVGhlIGNoYW5nZSBsb29rcyBmaW5lIHRvIG1lIHdpdGggdGhlIGFib3ZlIGNv
-bW1lbnQgYWRkZWQsIEkganVzdCB3b3VsZAo+Pj4+IGxpa2Ugc29tZW9uZSB0byB0ZXN0IGl0IG9u
-Y2UuCj4+PiBUZXN0ZWQgT1NQSV9TX0ZVTkNfRERfUldfRVJBU0VTSVpFX1VCSUZTIGZyb20gbHRw
-LWRkdCBhbmQgdGVzdCBzZWVtZWQgdG8gcGFzcyBvbiBteQo+Pj4gQU02MjUgU0sgRVZNIGhhdmlu
-ZyBhbiBPU1BJIE5PUiBTMjhIUzUxMlQgRmxhc2guCj4+IFRoYW5rcy4KPj4KPj4gQlRXLCBvbmUg
-aW50ZXJlc3RpbmcgYml0IGFib3V0IHRoaXMgaW4gY2FzZSB5b3UgZGlkbid0IGtub3cgYWxyZWFk
-eS4KPj4gU2luY2UgdGhpcyBpcyBwbGF5aW5nIHdpdGggT2N0YWwgRFRSIGVuYWJsZS9kaXNhYmxl
-LCB5b3UgbWlnaHQgYWxzbyB3YW50Cj4+IHRvIGRvdWJsZS1jaGVjayB5b3UgYXJlIGFjdHVhbGx5
-IHVzaW5nIE9jdGFsIERUUiBtb2RlLiBUaGlzIGNhbiBiZSBkb25lCj4+IGJ5IGxvb2tpbmcgYXQg
-dGhlIFNQSSBOT1IgZGVidWdmcyBlbnRyeSAodXN1YWxseSBpbgo+PiAvc3lzL2tlcm5lbC9kZWJ1
-Zy9zcGktbm9yKS4gWW91IGNhbiAiY2F0IHBhcmFtcyIgYW5kIHNlZSB3aGF0IHByb3RvY29scwo+
-PiBhcmUgYmVpbmcgdXNlZCwgYW5kIG1ha2Ugc3VyZSA4RC04RC04RCBpcyBiZWluZyB1c2VkLgo+
-IFllcywgSSBiZWxpZXZlIDhELThELThEIGlzIGJlaW5nIHVzZWQuCj4gSGVyZSdzIHRoZSBvdXRw
-dXQ6Cj4gLi4uCj4gcm9vdEBhbTYyeHgtZXZtOn4jIGNhdCAvc3lzL2tlcm5lbC9kZWJ1Zy9zcGkt
-bm9yL3NwaTAuMC9wYXJhbXMKPiBuYW1lICAgICAgICAgICAgczI4aHM1MTJ0Cj4gaWQgICAgICAg
-ICAgICAgIDM0IDViIDFhIDBmIDAzIDkwCj4gc2l6ZSAgICAgICAgICAgIDY0LjAgTWlCCj4gd3Jp
-dGUgc2l6ZSAgICAgIDE2Cj4gcGFnZSBzaXplICAgICAgIDI1Ngo+IGFkZHJlc3MgbmJ5dGVzICA0
-Cj4gZmxhZ3MgICAgICAgICAgIDRCX09QQ09ERVMgfCBIQVNfNEJBSVQgfCBIQVNfMTZCSVRfU1Ig
-fCBJT19NT0RFX0VOX1ZPTEFUSUxFIHwgU09GVF9SRVNFVAo+Cj4gb3Bjb2Rlcwo+ICByZWFkICAg
-ICAgICAgICAweGVlCj4gICBkdW1teSBjeWNsZXMgIDI0Cj4gIGVyYXNlICAgICAgICAgIDB4ZDgK
-PiAgcHJvZ3JhbSAgICAgICAgMHgxMgo+ICA4RCBleHRlbnNpb24gICByZXBlYXQKPgo+IHByb3Rv
-Y29scwo+ICByZWFkICAgICAgICAgICA4RC04RC04RAo+ICB3cml0ZSAgICAgICAgICA4RC04RC04
-RAo+ICByZWdpc3RlciAgICAgICA4RC04RC04RAo+Cj4gZXJhc2UgY29tbWFuZHMKPiAgMjEgKDQu
-MDAgS2lCKSBbMl0KPiAgZGMgKDI1NiBLaUIpIFszXQo+ICBjNyAoNjQuMCBNaUIpCj4KPiBzZWN0
-b3IgbWFwCj4gIHJlZ2lvbiAoaW4gaGV4KSAgIHwgZXJhc2UgbWFzayB8IGZsYWdzCj4gIC0tLS0t
-LS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0rLS0tLS0tLS0tLQo+ICAwMDAwMDAwMC0wMDAxZmZm
-ZiB8wqDCoMKgwqAgW8KgIDIgXSB8Cj4gIDAwMDIwMDAwLTAwMDNmZmZmIHzCoMKgwqDCoCBbwqDC
-oCAzXSB8IG92ZXJsYWlkCj4gIDAwMDQwMDAwLTAzZmZmZmZmIHzCoMKgwqDCoCBbwqDCoCAzXSB8
-Cj4gLi4uCj4KPiBBbHNvLCB0aGUgcmF3IHJlYWQgc3BlZWQgaXMgYWJvdXQgNDAgTUJQUwo+IFRo
-ZSBmcmVxdWVuY3kgd2Ugc2V0IGZyb20gRFQgaXMgMjUgTUh6LAo+IGFzc3VtaW5nIDFNQiBpcyB0
-cmFuc2ZlcmVkIGV2ZXJ5IGN5Y2xlJ3MgcmlzaW5nIGFuZCBmYWxsaW5nIGVkZ2UsCj4gaWUuIDI1
-KjIgPSA1MCBNQlBTIGlzIGlkZWFsIHNwZWVkLgoKWWVwLCB0aGF0J3Mgd2hhdCBJIHdvdWxkIGV4
-cGVjdCBhcyB3ZWxsLiBUaGFua3MgZm9yIGNvbmZpcm1pbmcuCgo+Cj4+Cj4+IEFNNjI1IFNLIF9z
-aG91bGRfIGJlIHVzaW5nIDhELThELThEIG1vZGUgYWxyZWFkeSwgYnV0IEkgdGhpbmsgaXQgaXMK
-Pj4gdXNlZnVsIGlmIHlvdSBrbm93IGhvdyB0byBjb25maXJtIHRoaXMgYXNzdW1wdGlvbiA6LSkK
-Pj4KPj4+PiBSZXZpZXdlZC1ieTogUHJhdHl1c2ggWWFkYXYgPHB0eWFkYXZAYW1hem9uLmRlPgo+
-Pj4gRm9yIHRoaXMgc2VyaWVzLAo+Pj4KPj4+IFRlc3RlZC1ieTogRGhydXZhIEdvbGUgPGQtZ29s
-ZUB0aS5jb20+Cj4+Pgo+Pj4+PiAgI2RlZmluZSBTUElOT1JfT1BfQ1lQUkVTU19SRF9GQVNUICAg
-ICAgICAgICAgICAweGVlCj4+Pj4+Cj4+Pj4+ICAvKiBDeXByZXNzIFNQSSBOT1IgZmxhc2ggb3Bl
-cmF0aW9ucy4gKi8KPgo+IC0tCj4gQmVzdCByZWdhcmRzLAo+IERocnV2YSBHb2xlCj4gVGV4YXMg
-SW5zdHJ1bWVudHMgSW5jb3Jwb3JhdGVkCj4KCi0tIApSZWdhcmRzLApQcmF0eXVzaCBZYWRhdgoK
-CgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApLcmF1c2Vuc3RyLiAzOAox
-MDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4gU2NobGFlZ2VyLCBKb25h
-dGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFybG90dGVuYnVyZyB1bnRl
-ciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5IDIzNyA4NzkKCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Mike,
+
+On Mon, Jan 16 2023, Mike Williamson wrote:
+
+> Hello,
+>
+> I am looking at the drivers/mtd/spi-not/micron-st.c file.
+>
+> I was wondering why the mt35xu512aba_fixups, and in general the patch below,
+> were not also applied to the mt35xu02g device entry?  Best I can tell, the
+> datasheets for the two parts (same family, different densities) look nearly
+> identical and the
+>
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2333941.html
+>
+> I ask because we are having some troubles with the mt35xu02g and I am
+> wondering if we need these fixups to run reliably in octal mode.
+
+When I wrote the patches for Octal DTR support on MT35 flash family, I
+only had the mt35xu512aba flash on me. And it was a new feature so I did
+not want to add it to a flash I could not test, and risk breaking it. I
+figured if someone really wanted Octal DTR support on the 02G part, they
+can populate the fixups and test it themselves.
+
+So this is what I suggest you do as well. Add the fixups, test it out,
+and if it works, upstream the patch. While you are at it, perhaps also
+convert it to use the PARSE_SFDP flag. See db391efe765c ("mtd: spi-nor:
+spansion: Remove NO_SFDP_FLAGS from s28hs512t info") or a30f53d8bc0f
+("mtd: spi-nor: issi: is25wp256: Init flash based on SFDP") for example.
+
+-- 
+Regards,
+Pratyush Yadav
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
