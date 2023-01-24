@@ -4,62 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3DA3C38142
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 Jan 2023 10:37:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41ECAC38142
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 Jan 2023 10:43:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=35fpjszcppRoSbJIh6zKeWXyq2IzX2sURm5B62edlXU=; b=4dqUs29D6FOccP
-	uQs8UlumsjYnEu2Aj8w+x0/dverybz6gPvz6G1PeeBgFM0fMeJ/vCEp7R1xZmsQKToEMqBZfXZ6AG
-	fUeV97FVTWnT1RuhC0Ewn3E/N3UJ97ucAdJm6FEKqyctojJRoQi5H+6w3Vdn53XIZwKnZ6fkHmKD6
-	y5GDPpuyESGW3bUvxHtCRv1otODCV0vaAb+LU18rA/JXHVgI5J75HZDFT+3FhZmHhkiykQx6pH9x1
-	QoySyJjnLcNmH9Cjo/uwHzJ0I7jiF7et6ljj88/7mrF+8JSsfrbG9dspISibG8ppgJHHPoihRq9kV
-	4p9qeKDMDzFq3u3fxpTg==;
+	List-Owner; bh=g2r2E37GFwhM2guBpS1ilDaJYoPi53RjfPTdl/v4IeI=; b=b63Ihc8/jZH5Gl
+	Y8SLeHTjBkPkbVKEIMPt1uhwMgUdhwQ4hczadVoKCF49GoJwgrITVeTHTD5bJuiCODHtRqtdMC1a8
+	WXgbYetVpCZdb3j87pAQmN6Ici6N4QOPCVVrAylW9Ec4Kuk3LFAOOAuSs0yvJreNoCClY48Qj9i1I
+	huWxBcBpORcbvt9nvvlVOVJ84Rier3ilshjYdx2aSNqGBW0PpkZ/UVKXVOuMxTbwOyaQXnskqzhJP
+	dgeYVBewG0srYPM8JIwDkRakPUg9zVM4PKNJu1n+zxDCbLmrJ0UAPlR0UNH9/h4XDUJMrTIGu1DZ2
+	JI0z/xUDwUl3VJaqWb+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKGf9-0039o0-Im; Tue, 24 Jan 2023 10:36:23 +0000
-Received: from smtp-out-12.comm2000.it ([212.97.32.82])
+	id 1pKGlw-003CPV-Mq; Tue, 24 Jan 2023 10:43:24 +0000
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKGf6-0039li-BN
-	for linux-mtd@lists.infradead.org; Tue, 24 Jan 2023 10:36:22 +0000
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: francesco@dolcini.it)
-	by smtp-out-12.comm2000.it (Postfix) with ESMTPSA id CFF7CBA3DBB;
-	Tue, 24 Jan 2023 11:36:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
-	s=mailsrv; t=1674556562;
-	bh=/XdyYB6IAyCKtdBDIn+omS7z5hJmbDbO9iC88oMkQZI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=n+Jktu5Vb6N//GFEjkbMo52/K8TqOl/RsmBpUI6bPeXRm5lLGE+TbHizTlC0o57gn
-	 jV4tuG6RcHy3TUJNNxZ2nasvT4HOj8hPJMkcZX0F3l0WSTPo8FNz3zvTXnY2uXIOFi
-	 qeZVugI6q/UU2/cXAorU/3FrbiU15cV508TyDaQ1ylhYFflRfZCqoP7tGKhIYjCYr/
-	 +SqSrc9Yu5zxJOx+eUyiTWMjylvJDZ6EaTTIW95pWzkTMzuukvNrgxHsIJWsfLMzhA
-	 ca/vqtW7dkaw9UOTHm9suNALbbm3pGPwamaCl2CkMjr+FkBT9JlVFu3JbcT0pINPLI
-	 OCK4CWxSz8Oaw==
-Date: Tue, 24 Jan 2023 11:36:00 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Francesco Dolcini <francesco@dolcini.it>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, Marek Vasut <marex@denx.de>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	u-boot@lists.denx.de,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3] mtd: parsers: ofpart: add workaround for #size-cells 0
-Message-ID: <Y8+0kM+cg57EZjMr@francesco-nb.int.toradex.com>
-References: <20230124083500.321369-1-francesco@dolcini.it>
+	id 1pKGlt-003CNo-GV
+	for linux-mtd@lists.infradead.org; Tue, 24 Jan 2023 10:43:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1674557001; x=1706093001;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=1U5juJaPb30fEPviPWIKuhE2qdxYLM2FWTjsBl3qn0E=;
+  b=dhn19tcDDiag89CqXYOGzZxTz3lyLnDyLf3I4h4x0e5g0GEkCBsyQuR1
+   ABmV3jLs1nTVfVCr7lJPON7l3unQD82W9ZLRtTXa7fLIf47YIV9NQ/GGk
+   8Wpfss3Uah/aZJRbbaKzoF44mNRlOdqX1JI1D0owSYXTKdS0MLJ/Rj/fx
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.97,242,1669075200"; 
+   d="scan'208";a="257403172"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2023 10:43:11 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+	by email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com (Postfix) with ESMTPS id DB2DA80069;
+	Tue, 24 Jan 2023 10:43:06 +0000 (UTC)
+Received: from EX13D33UEE004.ant.amazon.com (10.43.62.107) by
+ EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.45; Tue, 24 Jan 2023 10:43:06 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
+ EX13D33UEE004.ant.amazon.com (10.43.62.107) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.45; Tue, 24 Jan 2023 10:43:06 +0000
+Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
+ by mail-relay.amazon.com (10.43.62.224) with Microsoft SMTP Server id
+ 15.0.1497.45 via Frontend Transport; Tue, 24 Jan 2023 10:43:05 +0000
+Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
+	id B711220D95; Tue, 24 Jan 2023 11:43:04 +0100 (CET)
+From: Pratyush Yadav <ptyadav@amazon.de>
+To: Dhruva Gole <d-gole@ti.com>
+CC: Tudor Ambarus <tudor.ambarus@linaro.org>, <Takahiro.Kuwano@infineon.com>,
+	<tkuw584924@gmail.com>, <linux-mtd@lists.infradead.org>,
+	<pratyush@kernel.org>, <michael@walle.cc>, <miquel.raynal@bootlin.com>,
+	<richard@nod.at>, <Bacem.Daassi@infineon.com>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: spansion: Consider reserved bits in
+ CFR5 register
+References: <493d9a10-aaf3-70f6-36c3-9a2cf39f0759@linaro.org>
+	<20230110164703.83413-1-tudor.ambarus@linaro.org>
+	<mafs0v8kxb9mb.fsf_-_@amazon.de>
+	<e02d6aa5-2189-4afb-2521-6034feaa3460@ti.com>
+Date: Tue, 24 Jan 2023 11:43:04 +0100
+In-Reply-To: <e02d6aa5-2189-4afb-2521-6034feaa3460@ti.com> (Dhruva Gole's
+	message of "Mon, 23 Jan 2023 22:01:07 +0530")
+Message-ID: <mafs0tu0gfc1z.fsf_-_@amazon.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230124083500.321369-1-francesco@dolcini.it>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230124_023620_542454_A517084A 
-X-CRM114-Status: GOOD (  24.98  )
+X-CRM114-CacheID: sfid-20230124_024321_617912_390C5E2E 
+X-CRM114-Status: GOOD (  24.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,60 +90,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 24, 2023 at 09:35:00AM +0100, Francesco Dolcini wrote:
-> From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> 
-> Add a mechanism to handle the case in which partitions are present as
-> direct child of the nand controller node and #size-cells is set to <0>.
-> 
-> This could happen if the nand-controller node in the DTS is supposed to
-> have #size-cells set to 0, but for some historical reason/bug it was set
-> to 1 in the past, and the firmware (e.g. U-Boot) is adding the partition
-> as direct children of the nand-controller defaulting to #size-cells
-> being to 1.
-> 
-> This prevents a real boot failure on colibri-imx7 that happened during v6.1
-> development cycles.
-> 
-> Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
-> Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@dolcini.it/
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
-> I do not expect this patch to be backported to stable, however I would expect
-> that we do not backport nand-controller dts cleanups neither.
-> 
-> v3:
->  minor formatting change, removed not needed new-line and space. 
-> 
-> v2:
->  fixup size-cells only when partitions are direct children of the nand-controller
->  completely revised commit message, comments and warning print
->  use pr_warn instead of pr_warn_once
->  added Reviewed-by Greg
->  removed cc:stable@ and fixes tag, since the problematic commit was reverted
-> ---
->  drivers/mtd/parsers/ofpart_core.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/drivers/mtd/parsers/ofpart_core.c b/drivers/mtd/parsers/ofpart_core.c
-> index 192190c42fc8..5077000a00e6 100644
-> --- a/drivers/mtd/parsers/ofpart_core.c
-> +++ b/drivers/mtd/parsers/ofpart_core.c
-> @@ -122,6 +122,25 @@ static int parse_fixed_partitions(struct mtd_info *master,
->  
->  		a_cells = of_n_addr_cells(pp);
->  		s_cells = of_n_size_cells(pp);
-> +		if (!dedicated && s_cells == 0) {
-> +			/*
-> +			 * This is a hugly workaround to not create
-s/hugly/ugly
+On Mon, Jan 23 2023, Dhruva Gole wrote:
 
-> +			 * regression on devices that are still creating
-> +			 * partitions as direct child of the nand controller.
-s/child/children
+> Hi Pratyush,
+>
+> On 23/01/23 20:07, Pratyush Yadav wrote:
+>> +Cc Dhruva
+> I had already reviewed this, but now I have locally applied the patches,
+> to linux master and built and tested - seems okay,
+>> Hi Tudor,
+>>
+>> On Tue, Jan 10 2023, Tudor Ambarus wrote:
+>>
+>>> CFR5[6] is reserved bit and must be always 1. Set it to comply with flash
+>>> requirements. While fixing SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_{EN, DS}
+>>> definition, stop using magic numbers and describe the missing bit fields
+>>> in CFR5 register. This is useful for both readability and future possible
+>>> addition of Octal STR mode support.
+>>>
+>>> Fixes: c3266af101f2 ("mtd: spi-nor: spansion: add support for Cypress Semper flash")
+>>> Cc: stable@vger.kernel.org
+>>> Reported-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>>> ---
+>>>  drivers/mtd/spi-nor/spansion.c | 9 +++++++--
+>>>  1 file changed, 7 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>>> index b621cdfd506f..07fe0f6fdfe3 100644
+>>> --- a/drivers/mtd/spi-nor/spansion.c
+>>> +++ b/drivers/mtd/spi-nor/spansion.c
+>>> @@ -21,8 +21,13 @@
+>>>  #define SPINOR_REG_CYPRESS_CFR3V               0x00800004
+>>>  #define SPINOR_REG_CYPRESS_CFR3V_PGSZ          BIT(4) /* Page size. */
+>>>  #define SPINOR_REG_CYPRESS_CFR5V               0x00800006
+>>> -#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN    0x3
+>>> -#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS    0
+>>> +#define SPINOR_REG_CYPRESS_CFR5_BIT6           BIT(6)
+>> Perhaps comment here that this bit is reserved. Otherwise it is not
+>> obvious what this does and why we are setting it without going through
+>> git-blame. No need for a re-roll, I think it is fine if you add this
+>> when applying.
+>>
+>>> +#define SPINOR_REG_CYPRESS_CFR5_DDR            BIT(1)
+>>> +#define SPINOR_REG_CYPRESS_CFR5_OPI            BIT(0)
+>>> +#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN                            \
+>>> +       (SPINOR_REG_CYPRESS_CFR5_BIT6 | SPINOR_REG_CYPRESS_CFR5_DDR |   \
+>>> +        SPINOR_REG_CYPRESS_CFR5_OPI)
+>>> +#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS    SPINOR_REG_CYPRESS_CFR5_BIT6
+>> I would say don't fix what isn't broken. But if you do, test it. Do you
+>> or Takahiro have a Cypress S28* flash to test this change on? If no,
+>> then perhaps Dhruva can help here since TI uses this flash on a bunch of
+>> their boards?
+>>
+>> The change looks fine to me with the above comment added, I just would
+>> like someone to test it once.
+> Tested OSPI_S_FUNC_DD_RW_ERASESIZE_UBIFS from ltp-ddt and test seemed to pass on my
+> AM625 SK EVM having an OSPI NOR S28HS512T Flash.
 
-Miquel, let me send a v4 with these fixed ...
+Thanks.
+
+BTW, one interesting bit about this in case you didn't know already.
+Since this is playing with Octal DTR enable/disable, you might also want
+to double-check you are actually using Octal DTR mode. This can be done
+by looking at the SPI NOR debugfs entry (usually in
+/sys/kernel/debug/spi-nor). You can "cat params" and see what protocols
+are being used, and make sure 8D-8D-8D is being used.
+
+AM625 SK _should_ be using 8D-8D-8D mode already, but I think it is
+useful if you know how to confirm this assumption :-)
+
+>>
+>> Reviewed-by: Pratyush Yadav <ptyadav@amazon.de>
+> For this series,
+>
+> Tested-by: Dhruva Gole <d-gole@ti.com>
+>
+>>>  #define SPINOR_OP_CYPRESS_RD_FAST              0xee
+>>>
+>>>  /* Cypress SPI NOR flash operations. */
+
+-- 
+Regards,
+Pratyush Yadav
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
 
 
 
