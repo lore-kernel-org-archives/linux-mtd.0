@@ -4,83 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B1ADC27C76
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Jan 2023 16:27:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A0AC54E94
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Jan 2023 21:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0R+Ol9FP0uR/Yc7oRTkYXlbCv7Mh0DYMOMumS1eq9MI=; b=2lbx+fdW3Mgq+0
-	0UzQ+PXZ2RrRJFbMBP068mggszTeqG0zdeBOnFF7LIcwNRirZA/jXNY9NDF+cMaHBMIPWW9j+guai
-	Jo3EAE50CYqAXOsGc6HAEadb4sIVUwlrW2iLHyu2fHDtUlFZNIcJTgIX6z0oSYnCk+cvq/I7b+rNW
-	rdIMquu3zat5nsq9/rGT0Vb4NJU9FhXMeBMA2V3xTmo4zQ0ysMzBIVYzWD+QAkEtNKmRmV8BaZUJQ
-	1IjI42yL+nxdJilE8xxkdPRJX8P9Fya6ltuRCOKKMDG0Z2kHpN5xf8XmzPC19qpxYrZeyKIfK9vcK
-	Op9ct6MoWuG5iR8mbQvQ==;
+	List-Owner; bh=BlqWE+KVxEQIMR58TkYOXg8VNVz5YNvvWL3BYp4icLE=; b=aQf5DshiDE3RtM
+	ec1BloNhUkjrTmD5X8HnN+i/ehJxkvFwf3nV9AUilFvE7nEzaf9+AcGHygTAIdLaYAD5Q+TaFQ1v0
+	H241NtRkv3/OR8s1JOZxwSz7hydOlnE77OrwWxSOlX5PwQXKraBXoIGWnBmdZEIJfaaJdbCN8k5pz
+	XBaOGgp6zsdWI8dP10dSbKyWT0LnQan9OZ6ehkHLfrfyvnLYU1FyRs9skYv42f75MosQ833Wnck/h
+	9v6XzLlt7sLXvUWVjeObk1rejW0qEwO3B65/14dw64y3JEEgoQNBPkX+MIQYgkb7vEh8eAXP4eccg
+	wZxOUjgKEsR/Nyr9A8cg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKic0-007wis-8q; Wed, 25 Jan 2023 16:27:00 +0000
-Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
+	id 1pKmzQ-008o4z-P6; Wed, 25 Jan 2023 21:07:28 +0000
+Received: from smtp-out-03.comm2000.it ([212.97.32.66])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKibp-007wgS-AN; Wed, 25 Jan 2023 16:26:50 +0000
-Received: by mail-ed1-x52c.google.com with SMTP id y19so22364421edc.2;
-        Wed, 25 Jan 2023 08:26:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ilN6S2DYFu/DESx5TOWbGLPHlfDmzvINI2SI+/X/LA=;
-        b=o4j8nJomybIx4kE59DRw52ujqDVZ1WQewtiJ58C37pZX/5DWWR3us5SruXAAGyfGBc
-         0oxAeGxQTdIDM++/ONptAOL1nO0F6K6FiZC1F/r6Qme1XRV2lBzY485x0B9dWJnV3W0W
-         TnQMulrN7yyZXGHFTiOyWDC1wY59f/tjlS5vjPAnXkbmCVxXIc2maTfx3FlJemGXPbEd
-         oIhFRB2EHA0oTv8BIEwV/oq0Vp9kY4A8qUg2UpNdvj82VIuPM+pGvvRPDGd+iKkdN0iE
-         fMhuNZyuRhr5wQD9uKjHTu0/dBcgt18B09bb5lO3wvYzPbjdtZ4zCb8IaUuWGDUTVpmZ
-         9R4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1ilN6S2DYFu/DESx5TOWbGLPHlfDmzvINI2SI+/X/LA=;
-        b=nZ+L+uOKIPawKQktcpfL8IkGoB3XWRCPcEo+zXOre5Gb0334JEs3aQ9bxfKnNsGe8X
-         Y/NNF54ySdsvmljDFpsfD1lkX04Bg8+0J8ctuz9O2bcTgqmbb1yKTtNSYNzoXzq9ydoY
-         ykyFxt6v66pKz6gEGJq4nfIPUv4CE5m6bcyZDecVX7li2uM7ayIgND8BMJKPJSQuIDvP
-         SGwQ1ji250sksKDR92p3yvK/LWewW/mu8pm6BwYDZFvRedskgkHUx/+dSaWaRy5VDVi5
-         YE3i9igpji9ylliD/7PNhx3KWitrywsstgyz2BfW8WRBH4Cmxek+3ilblx25z8zfFyBs
-         i2Wg==
-X-Gm-Message-State: AO0yUKVml3XkdqSGW0Z3biPZo37JrZgQvuc0Dg5WPh3Ug9DBaRTpbfU9
-	uEOPeeanhEgeg+LX3BSV7e1n89qjUBBdS0nwnes=
-X-Google-Smtp-Source: AK7set8Ywx0iAQrGoEEkgv3qLgP8YXwI3+TvqWY8ReSLX18XMQnjssyGUpWN7izePXDq8V+lj0t2lykY83BEM5yxFts=
-X-Received: by 2002:a05:6402:d59:b0:4a0:90da:4653 with SMTP id
- ec25-20020a0564020d5900b004a090da4653mr814683edb.153.1674664006555; Wed, 25
- Jan 2023 08:26:46 -0800 (PST)
+	id 1pKmzL-008ntQ-IM
+	for linux-mtd@lists.infradead.org; Wed, 25 Jan 2023 21:07:27 +0000
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: francesco@dolcini.it)
+	by smtp-out-03.comm2000.it (Postfix) with ESMTPSA id F126CB42CB2;
+	Wed, 25 Jan 2023 22:07:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
+	s=mailsrv; t=1674680823;
+	bh=YA1owfDBS96L7G518IG8UnBdMZb6XdHmxtms9cJlADk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=JBKurt+sTObJAHIJ4XMWYkL7KbXfGAWY++aLlw7ztMlGJg/S9kbytQsmoFSB+MGf0
+	 NcChnwANqWClTrej5VymUJtWIAvRDcC8irLNRmh8JRzp/4BaNu0MbrybtvqlMz7Hsc
+	 gNit7cYzhWgYnml3+wPEv3m/Wi66cjkpjg83sXRXAMLEhs/G1hyzXhad18jP8tIipi
+	 gvJroD3nMqWACtlLHW2PLUrCZWezR7yAX0S40ltZ4EEPVIYOiqm6FKOFgEzua9gEr+
+	 S+GY4VqWTVXjPCvHAf8GbqP2ZTPXKFNY7VvYU14MQWIvaiZPWFnwGUhltuU5OqP3ty
+	 EVDYhWcx9ydtA==
+Date: Wed, 25 Jan 2023 22:06:57 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, Marek Vasut <marex@denx.de>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	u-boot@lists.denx.de
+Subject: Re: [PATCH v4] mtd: parsers: ofpart: add workaround for #size-cells 0
+Message-ID: <Y9GZ8c9VDXC582IA@francesco-nb.int.toradex.com>
+References: <20230124104444.330913-1-francesco@dolcini.it>
+ <Y8/7k1HHjJbHvWDB@kroah.com>
 MIME-Version: 1.0
-References: <20230124230048.371144-1-robh@kernel.org>
-In-Reply-To: <20230124230048.371144-1-robh@kernel.org>
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Date: Wed, 25 Jan 2023 10:26:35 -0600
-Message-ID: <CABb+yY3FwCwEsNYuNP8MBi+2TUra5O7+-GWMzWr06x1g4MJUyg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Add missing (unevaluated|additional)Properties
- on child node schemas
-To: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Bartosz Golaszewski <brgl@bgdev.pl>, Jean Delvare <jdelvare@suse.com>, 
-	Guenter Roeck <linux@roeck-us.net>, Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Lee Jones <lee@kernel.org>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-arm-kernel@lists.infradead.org, 
-	dri-devel@lists.freedesktop.org, linux-gpio@vger.kernel.org, 
-	linux-hwmon@vger.kernel.org, linux-media@vger.kernel.org, 
-	openbmc@lists.ozlabs.org, linux-mmc@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-pm@vger.kernel.org, 
-	alsa-devel@alsa-project.org, linux-spi@vger.kernel.org, 
-	linux-usb@vger.kernel.org
+Content-Disposition: inline
+In-Reply-To: <Y8/7k1HHjJbHvWDB@kroah.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_082649_374435_2BED3235 
-X-CRM114-Status: GOOD (  12.12  )
+X-CRM114-CacheID: sfid-20230125_130723_935046_8C2035EC 
+X-CRM114-Status: GOOD (  34.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,20 +78,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 24, 2023 at 5:00 PM Rob Herring <robh@kernel.org> wrote:
->
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present.
->
-> Add unevaluatedProperties or additionalProperties as appropriate, and
-> then add any missing properties flagged by the addition.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-For the mailbox change,
-   Acked-by: Jassi Brar <jassisinghbrar@gmail.com>
+Hello Miquel, Greg and all
+
+On Tue, Jan 24, 2023 at 04:38:59PM +0100, Greg Kroah-Hartman wrote:
+> On Tue, Jan 24, 2023 at 11:44:44AM +0100, Francesco Dolcini wrote:
+> > From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> > 
+> > Add a mechanism to handle the case in which partitions are present as
+> > direct child of the nand controller node and #size-cells is set to <0>.
+> > 
+> > This could happen if the nand-controller node in the DTS is supposed to
+> > have #size-cells set to 0, but for some historical reason/bug it was set
+> > to 1 in the past, and the firmware (e.g. U-Boot) is adding the partition
+> > as direct children of the nand-controller defaulting to #size-cells
+> > being to 1.
+> > 
+> > This prevents a real boot failure on colibri-imx7 that happened during v6.1
+> > development cycles.
+> > 
+> > Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
+> > Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@dolcini.it/
+> > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> > I do not expect this patch to be backported to stable, however I would expect
+> > that we do not backport nand-controller dts cleanups neither.
+> > 
+> > v4:
+> >  fixed wrong English spelling in the comment
+> > 
+> > v3:
+> >  minor formatting change, removed not needed new-line and space. 
+> > 
+> > v2:
+> >  fixup size-cells only when partitions are direct children of the nand-controller
+> >  completely revised commit message, comments and warning print
+> >  use pr_warn instead of pr_warn_once
+> >  added Reviewed-by Greg
+> >  removed cc:stable@ and fixes tag, since the problematic commit was reverted
+> > ---
+> >  drivers/mtd/parsers/ofpart_core.c | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/parsers/ofpart_core.c b/drivers/mtd/parsers/ofpart_core.c
+> > index 192190c42fc8..e7b8e9d0a910 100644
+> > --- a/drivers/mtd/parsers/ofpart_core.c
+> > +++ b/drivers/mtd/parsers/ofpart_core.c
+> > @@ -122,6 +122,25 @@ static int parse_fixed_partitions(struct mtd_info *master,
+> >  
+> >  		a_cells = of_n_addr_cells(pp);
+> >  		s_cells = of_n_size_cells(pp);
+> > +		if (!dedicated && s_cells == 0) {
+> > +			/*
+> > +			 * This is a ugly workaround to not create
+> > +			 * regression on devices that are still creating
+> > +			 * partitions as direct children of the nand controller.
+> > +			 * This can happen in case the nand controller node has
+> > +			 * #size-cells equal to 0 and the firmware (e.g.
+> > +			 * U-Boot) just add the partitions there assuming
+> > +			 * 32-bit addressing.
+> > +			 *
+> > +			 * If you get this warning your firmware and/or DTS
+> > +			 * should be really fixed.
+> > +			 *
+> > +			 * This is working only for devices smaller than 4GiB.
+> > +			 */
+> > +			pr_warn("%s: ofpart partition %pOF (%pOF) #size-cells is wrongly set to <0>, assuming <1> for parsing partitions.\n",
+> > +				master->name, pp, mtd_node);
+> 
+> This is a driver, always use dev_*() calls, not pr_*() calls so that we
+> know what is being referred to exactly.
+
+Is this reasonable here? Where can I get the struct device?
+
+In general this file uses only pr_* debug API and messages are about OF
+nodes/properties, not about a device.
+
+> I take back my "reviewed-by" line above, please fix this up to not need
+> pr_warn, but to use dev_warn() instead.
+
+Francesco
 
 ______________________________________________________
 Linux MTD discussion mailing list
