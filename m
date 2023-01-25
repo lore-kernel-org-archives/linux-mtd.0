@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 674B6C61DA2
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Jan 2023 14:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 680CFC27C76
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Jan 2023 14:40:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H6eKYfTyvvb9Zy7bIJJAI452qaAcPa4jzSOUWikI2eE=; b=Eyl48z8bRdb/uF
-	RuRi3NgKXjfLT8BJX6Xghq0BZDT7WZ1NBEF6cc2qQlWaPaRh9/UINSrP0DcVMQXdrItI/BeA2YiFj
-	m0+evKapHK1gccMPYH2Kvxv576NPmYn/lKqtZEwCqIsRf4fgPNlwEHoXmUK+C6iTHe3leqLtQ8r7U
-	tQNJHxsV9X9k7SHQVxu6jDHOFGc6x1ppNesfsAyu1WyRZYW8R4GTLjY8l07m+uVp25wzXAQwrWNs4
-	BwfF8V0OXVQuYsof2eqFmCToT9WdlwqmT7XiXaU0m12nLj9oq1ZGyYfH2qngP/vCt3O+aIqdPHg4N
-	H94l1pQ7+8KCVJxTMs6A==;
+	List-Owner; bh=HSUv3h51EduhTbOLSr+eDgda2Y5T8/l6MERRCfxY1Ak=; b=lnZ/iHpwqR2jiV
+	gvTCNws63bJUensl1nFJ4DSXQsLM/R/1yM5a8+SoZE/WtFMusZQ3LSzw7MSHYoqmJYDrjsA0693/7
+	ni8+dxkQw0IlevXOiC3mDhXP/XROZQTgw1NBwF4ktnoDoGHvl1W87ufjLhvL74h01iCHIqICiN3uf
+	/EACvTTMLzE2DvG51h/tbbJVXBBLm1wSHZXcVwoLHVIchYJxOPY0bzBEFH5udQrhVVOplWA4JvlkC
+	d63ZjDrNqMSfGUFBo9CmRcu9U3ryXjKlK7E4ETAtJIIBJFnpuxTzjLRE+XdK1JKeio+M4OzJQuiZr
+	R5rIDn9gNXIuiXcIHtfA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKgsV-007ZpQ-2p; Wed, 25 Jan 2023 14:35:55 +0000
+	id 1pKgx5-007cEy-L8; Wed, 25 Jan 2023 14:40:39 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKgri-007ZNc-NB; Wed, 25 Jan 2023 14:35:08 +0000
+	id 1pKgs5-007Zck-9C; Wed, 25 Jan 2023 14:35:30 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 29D7661519;
-	Wed, 25 Jan 2023 14:35:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17329C4339C;
-	Wed, 25 Jan 2023 14:35:05 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C0B3261511;
+	Wed, 25 Jan 2023 14:35:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADA0EC433D2;
+	Wed, 25 Jan 2023 14:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1674657305;
-	bh=DwE0aciCS7m1CLloDdEbT7AoS3V1fBrqXEptGTtb0rM=;
+	s=korg; t=1674657328;
+	bh=f6ppKayRUr7vsPgDqYxYeWCDPUB24nWR6oxyS6RxttI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Affl/NlCjExKztE4qzigDJQkInvfvtCIrYxIvlFxplAQlFKKBKPjPicyergcu0VEs
-	 mnldq2oV5JNcE2Q7uuFLlFFERUT6cYcWS0cyde5uyy2oTCzp/RaPABF65YcrGxK61o
-	 PknfYSDA12Xv0MtPGnatIXO/wxd3AjIIhGAS5G1o=
-Date: Wed, 25 Jan 2023 15:35:02 +0100
+	b=iXRlm+7XLdqQ3M8qH34O78lITOWuy66dXjDG9k9FX7094bxbfiTNoqEck+RGgGUdW
+	 Mu3UaoPgDoGhMuPYS1vFqTdkS82zEchYur6y7DkBRvU5GGWn7orW2gVyIj7oYnX0Li
+	 a4g4b1uHK4Um9Ae1Sbyh4u9sDkYGMHuHE3BCky4A=
+Date: Wed, 25 Jan 2023 15:35:25 +0100
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: Rob Herring <robh@kernel.org>
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -64,14 +64,14 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	linux-usb@vger.kernel.org
 Subject: Re: [PATCH] dt-bindings: Add missing
  (unevaluated|additional)Properties on child node schemas
-Message-ID: <Y9E+FjXnZiizTLc6@kroah.com>
-References: <20230124230048.371144-1-robh@kernel.org>
+Message-ID: <Y9E+LX0/wQ894SiU@kroah.com>
+References: <20230124230228.372305-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230124230048.371144-1-robh@kernel.org>
+In-Reply-To: <20230124230228.372305-1-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_063506_864175_F750D518 
-X-CRM114-Status: GOOD (  15.49  )
+X-CRM114-CacheID: sfid-20230125_063529_386147_DD9C58D3 
+X-CRM114-Status: GOOD (  12.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,7 +88,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 24, 2023 at 05:00:48PM -0600, Rob Herring wrote:
+On Tue, Jan 24, 2023 at 05:02:28PM -0600, Rob Herring wrote:
 > Just as unevaluatedProperties or additionalProperties are required at
 > the top level of schemas, they should (and will) also be required for
 > child node schemas. That ensures only documented properties are
@@ -98,38 +98,6 @@ On Tue, Jan 24, 2023 at 05:00:48PM -0600, Rob Herring wrote:
 > then add any missing properties flagged by the addition.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> To: David Airlie <airlied@gmail.com>
-> To: Daniel Vetter <daniel@ffwll.ch>
-> To: Bartosz Golaszewski <brgl@bgdev.pl>
-> To: Jean Delvare <jdelvare@suse.com>
-> To: Guenter Roeck <linux@roeck-us.net>
-> To: Thomas Gleixner <tglx@linutronix.de>
-> To: Marc Zyngier <maz@kernel.org>
-> To: Jassi Brar <jassisinghbrar@gmail.com>
-> To: Mauro Carvalho Chehab <mchehab@kernel.org>
-> To: Lee Jones <lee@kernel.org>
-> To: Ulf Hansson <ulf.hansson@linaro.org>
-> To: Richard Weinberger <richard@nod.at>
-> To: Vignesh Raghavendra <vigneshr@ti.com>
-> To: Sebastian Reichel <sre@kernel.org>
-> To: Mark Brown <broonie@kernel.org>
-> To: "Rafael J. Wysocki" <rafael@kernel.org>
-> To: Daniel Lezcano <daniel.lezcano@linaro.org>
-> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-hwmon@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: openbmc@lists.ozlabs.org
-> Cc: linux-mmc@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-spi@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
 
 Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
