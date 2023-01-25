@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E507BC27C76
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Jan 2023 15:09:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4A90C27C76
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Jan 2023 15:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=56RVWx19vAEAkNF4ZKGhFy/vbQRU/QgHzBanY1S06Ws=; b=lUrSz+dyiHcimU
-	shK5VR3cqnvPzlWie5VFPjIPjNia2AVBE83MTky5laSeUQsuRZOKSc2moLd9qgRE5jf5S1g0XqnCQ
-	g34pMQoes9wUPVsW5PLL/dEZ30hvvjHTA9o1ArBRTZPpQxichJo/54W6hDwIOJEhaELGPKU2ncdVj
-	B2CKd1Ut5bpoDH3p6SpB9bE2XQqMSOq86Cejg+AbjF+Q059CIS2nCD1VKXVS45CLOPR+EXDAVbgON
-	bjUIiErZMAlsBqNkhzyNwvwi7fP/f0kiIDXZz08H6spE+FYF79GMpCllYKFJD/4QnTAWMmcKfoN3e
-	HlcaJ3lZzNnhlmHS61Zw==;
+	List-Owner; bh=xKP3b8QCLqTVLIav9czUaTr9WVOn6LKeTaewxrYWzds=; b=XcfB9SH+xbxUtv
+	+73yI4Yn/qZP9VuzboAvBbjqQlYWScd2W1Od2+k1whfOSyp06IEVfJhxzMga7NZwbVDDbbUK6AfS6
+	/DOTArDsHoBXIIPn9QJPFrmA7mR6GErlfn2lmNogo4vGXUpFa1xGqCdpa+Bc7MJ6gwvTQkHMV+oGz
+	yNDB7xy9r/pwtAebfR4GKv/rXBCfcU2Xna4ZgITJfTlxmoYLDvEncCvwKitV5TPZ7FZsoImkcJBrf
+	VbwMLulZVxxqfOph6sxzdtNfFrQps/yBq7TJWVAq1fPeLLjmvuhthN8HkcX6Uk/gUkYRaHpxp53oO
+	Rl2jV5Bpd1B5rBxe1oRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKhOs-007jRb-Mb; Wed, 25 Jan 2023 15:09:22 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1pKhQi-007k8y-Pr; Wed, 25 Jan 2023 15:11:16 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKhOd-007jMR-AW; Wed, 25 Jan 2023 15:09:09 +0000
+	id 1pKhQG-007jvF-IF; Wed, 25 Jan 2023 15:10:50 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id B706DB819F3;
-	Wed, 25 Jan 2023 15:09:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FC81C433EF;
-	Wed, 25 Jan 2023 15:08:58 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C548161494;
+	Wed, 25 Jan 2023 15:10:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A53B0C4339E;
+	Wed, 25 Jan 2023 15:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1674659344;
-	bh=v+B+KDBEA50AHtVt9lQ1BTuMYwoPUgbIgH8/Amio1lE=;
+	s=k20201202; t=1674659447;
+	bh=TofsbXpZihSKZUVsy9XrANh9lc730J6wSOc2QP9eoTI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hSoessefOv16Xt7Qbj98AdgmJicOcikMVtEdI8hVuvfe5IRYVPezihO/irb3buQZt
-	 3ZFdNvsViDwPHeE3Jm/XuN6iGzIm1ESIZsv0lbDa1vk4s6rEEf6cKYM+bN/iuQe9VW
-	 P/Svjep8k+fSgfN9zyFG7lQqfCHheo29BxDr+K+4T3lE67taLSodJ3E7d4EG4RrRqe
-	 73RJMrkg3YqzKBZH4GY2t14YGyMJND9cOXmrIKdYBcHjYwCgCzhERtbbPGPR5fu5EG
-	 NLAP3xoucfO28ZdQF16a1/t4V81l7sTg4luWlxs+aH+wX1wDHuET+t7+76hhEK6te3
-	 8HtxOatriltJw==
-Date: Wed, 25 Jan 2023 15:08:54 +0000
+	b=PWvP9JOJGFWee6ASV9x3ADUxkKdcW+FrahCSA7zAki85HcwH0S+Qlftb5AVSx76V4
+	 qBpzvZbPNozQG37LDylg+pITOqfq3rlpjhbTAHNw0Oafns2nuDLECj60B1OrLEWMnV
+	 /DBCokptbh1fiSNjleo4CBNt1NKQdn8kPf8iqz68WINnJ4LRJldl0YhHV/lKBLFxj7
+	 iiB6+dKsKTB+B07SQ3EH4R91GxqW6sbp7ZwJOpScy+CeEyBddDco4n5ScTpc1xMwwc
+	 EyMfjtYYEe2OMD5XlBJx97JPAnsmnx3im+jMYOD9UXRGxoX7/db0GPAIhfy7NJWA1c
+	 KRS15JP4gUAzw==
+Date: Wed, 25 Jan 2023 15:10:38 +0000
 From: Lee Jones <lee@kernel.org>
 To: Rob Herring <robh@kernel.org>
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -68,14 +68,14 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	linux-usb@vger.kernel.org
 Subject: Re: [PATCH] dt-bindings: Add missing
  (unevaluated|additional)Properties on child node schemas
-Message-ID: <Y9FGBqFKMxL3XraK@google.com>
-References: <20230124230228.372305-1-robh@kernel.org>
+Message-ID: <Y9FGbr8LB9dEHx1Z@google.com>
+References: <20230124230048.371144-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230124230228.372305-1-robh@kernel.org>
+In-Reply-To: <20230124230048.371144-1-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_070907_655604_EA3356BE 
-X-CRM114-Status: GOOD (  18.70  )
+X-CRM114-CacheID: sfid-20230125_071048_700230_D36275A7 
+X-CRM114-Status: GOOD (  19.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,7 +164,8 @@ RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NyYW0vcWNvbSxvY21lbS55YW1sIHwg
 IDEgKwo+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy90aGVybWFsL3RoZXJtYWwtem9uZXMueWFt
 bCAgICAgfCAgMSArCj4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvcWNv
 bSxkd2MzLnlhbWwgICB8ICAxICsKPiAgMzYgZmlsZXMgY2hhbmdlZCwgNjUgaW5zZXJ0aW9ucygr
-KSwgOCBkZWxldGlvbnMoLSkKCkFja2VkLWJ5OiBMZWUgSm9uZXMgPGxlZUBrZXJuZWwub3JnPgoK
-LS0gCkxlZSBKb25lcyBb5p2O55C85pavXQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+KSwgOCBkZWxldGlvbnMoLSkKCklzIHRoaXMgdGhlIHNhbWUgYXMgdGhlIHBhdGNoIEkganVzdCBy
+ZXZpZXdlZD8KCi0tIApMZWUgSm9uZXMgW+adjueQvOaWr10KCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
