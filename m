@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92D2CC27C76
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Jan 2023 11:41:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B80F7C54E94
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 Jan 2023 11:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=K5F8RMDqbNP0hmumjO9wZU4a2ZjF6XGMaXd7JF/pOUk=; b=wgdrODzzJhO5VdghnvWji/PocO
-	nAktuJyHk7pR/WvV4bZKSSIjH0Nz5nOffajZOz1vdS1atkHNCOjxtdH+EVoK3tPTTp3SDM0HhrUol
-	k3eVT4CAa6eaR4B8HjFdB+HOfo1Fh51UOtTa4hdTAI6SE261OAsNnS18cX8LKDp9PQ+O/uzVDAJYH
-	vtFx9LP48lovDhmlbta3JRyf8hUptZGpstTa2Tmkt9/MXDHErx0jiZ7iL0Jf2I19bknx37Z6KUeXD
-	Pki4PMrAsVCnlm/a6tmpC3X52Hs6toyqznR8ChqH9TS1efXBEBR4ygzzknGeaYvXWXX4Cm9XDoBLV
-	S0Cx49eg==;
+	bh=WQMERO6mGSm6//NuqzZ6Nu3/85TtirLzzhRLn7c+5y0=; b=iLBW5u11KQZYXJ5/vzA1ELLFhm
+	wk5vqQYPAfAZ23rMEy+Qs811KVU2fIgo7lmjzXguSFhrpSUdxUK6ICSwVGUv8t57+zTzJ2IcqVe+L
+	zNTLSuq9uw8Ckidkhc6rW5DKh3dCzJGw7QI1ynzZIh7z+HYBWevVQAplyz4oKI1hP3ihg8jkZjv44
+	zIceWoezFGFksQIVIYDuO0jQ5Rvxc5fBqLR75TTM9UF7eCTVPsFXbwJIku+9soxKZ7lJke+VuSBZQ
+	7M34hfw395Q1Zv8oQ9QE4rjSIRHWd1LrpXHBdCOqYj0dQu/X8+N7Vz3PIrgCY/T1Rixq1zqvDzZd0
+	O2aIPxLg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKe9t-007CKe-An; Wed, 25 Jan 2023 11:41:41 +0000
+	id 1pKeAE-007CTB-0B; Wed, 25 Jan 2023 11:42:02 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKe9h-007CGl-Hv; Wed, 25 Jan 2023 11:41:30 +0000
+	id 1pKeA1-007CMj-CE; Wed, 25 Jan 2023 11:41:50 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id B5C7B614C7;
-	Wed, 25 Jan 2023 11:41:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E044DC433D2;
-	Wed, 25 Jan 2023 11:41:26 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E166C614D4;
+	Wed, 25 Jan 2023 11:41:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E1CFC4339B;
+	Wed, 25 Jan 2023 11:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1674646887;
-	bh=BSf4VdDu/Cipkbp8RNs0rNyAzPjqHzof5Fj9ZYA48xM=;
+	s=k20201202; t=1674646908;
+	bh=ezg2eabCWSVB4l7XhnzfHs+x1Vn9MQYl2SLTazGntOk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GfilqO/eKu/QoPePHTTuTn8J1r0Gfr8WyYnJTWSK83NPY89Lt3LaqRMiaWnnxEdz1
-	 5GfmqGH8yJFKJlrPMbcp84JgDUzRLc2uldIX4k89jTMcPIFXHFbL6PPgMyEPoohaU3
-	 uAQ2xL2z2Rjhzaa8w1lCI5+i1z2YED4iJtXXyaxZ0XqaEafwrnSL76HnHSEhWrfZh2
-	 BSVoMTAFP3PkmPkb7Kyti1fKVYFgPbZvpPHr2csZ0HOGM4Do6P0nTDzzOAj/HPpgzU
-	 RU4p1z0AJO7YjLO6ciSZmTplImSf9p4ZS2V0k6wbLHUb3lAFakk5haqH41gWo/0kO1
-	 OKWEJLNDmmlsQ==
-Date: Wed, 25 Jan 2023 11:41:25 +0000
+	b=uU/+AR2CwjeymulismW9BMOZiWHGFUxIhzBe/aKJI2+1c1gGId0ABjLtUTu03obBG
+	 0TFOLM7sjKuh6JqE19PasKUw/fvnXB7YE0xCaFg5WiyMAIKVkKtlhBM5bqlPOX0vF2
+	 jqOIv4Lzg2mbrHyFDTB/sT/C2DMoFJbEIIYrevZ3CAW7a2KiT9E0Re7km+4HgBgIOT
+	 zZP2aSxEMoUywBiSAljmGYeT2e7Ev0v8lhU58lq5FU2XR7xxT3c3QzPrbzSP8csD9I
+	 Q2YYEKrr+65C+KSNc3vZRbtDtiQJKw0dwU6Ei7YFxw7oqI2CdfL95Y8MAebk/UDJgf
+	 Dh8XnNgakkOTQ==
+Date: Wed, 25 Jan 2023 11:41:47 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Rob Herring <robh@kernel.org>
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -68,14 +68,14 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	linux-usb@vger.kernel.org
 Subject: Re: [PATCH] dt-bindings: Add missing
  (unevaluated|additional)Properties on child node schemas
-Message-ID: <Y9EVZQJEV8i5vdgp@sirena.org.uk>
-References: <20230124230048.371144-1-robh@kernel.org>
+Message-ID: <Y9EVexQ3yAN1n1NF@sirena.org.uk>
+References: <20230124230228.372305-1-robh@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230124230048.371144-1-robh@kernel.org>
+In-Reply-To: <20230124230228.372305-1-robh@kernel.org>
 X-Cookie: Serving suggestion.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_034129_644161_E87B84D3 
-X-CRM114-Status: GOOD (  13.57  )
+X-CRM114-CacheID: sfid-20230125_034149_474334_EE32F887 
+X-CRM114-Status: GOOD (  13.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,23 +87,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2340859999289062057=="
+Content-Type: multipart/mixed; boundary="===============2548840753244481897=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============2340859999289062057==
+--===============2548840753244481897==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YLw58GmZKH9QcKuc"
+	protocol="application/pgp-signature"; boundary="j0ZYRAV1FZ0iGu90"
 Content-Disposition: inline
 
 
---YLw58GmZKH9QcKuc
+--j0ZYRAV1FZ0iGu90
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 24, 2023 at 05:00:48PM -0600, Rob Herring wrote:
+On Tue, Jan 24, 2023 at 05:02:28PM -0600, Rob Herring wrote:
 > Just as unevaluatedProperties or additionalProperties are required at
 > the top level of schemas, they should (and will) also be required for
 > child node schemas. That ensures only documented properties are
@@ -114,25 +114,25 @@ On Tue, Jan 24, 2023 at 05:00:48PM -0600, Rob Herring wrote:
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---YLw58GmZKH9QcKuc
+--j0ZYRAV1FZ0iGu90
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPRFWIACgkQJNaLcl1U
-h9C5IQf9Gj9QI/FW6Xw+gMpDw41zL45NSAa01ZJ7G8XkRAaJNWXTMWR1sZKiK4XJ
-5rjn6QJUusYQuPpRmgG2DjO115ttDY8PNNWUlbpHxdQ+0dQI/dzilsrEFOrFXH1S
-PcEA3qn6o7eU3ICxhOnhcJzf1auMMUeq0hHtfjHxHLhgxeJZ13yZA61DnR9uShhF
-DT2ZXj0DrflrKoX2haOnuhvLc0Rx5qV+O3LfPBcO53OdCgjkAkmW2Jll2UrtTUIc
-9+G5v1R2fy/qBGUUQSzfPcTESH8bAwxpdP3i61xeoUYzaRNM/K4F/00nXADmY71w
-uWdFdQq7y1nxrTCAKIbIk2i8KCJlTg==
-=IpOI
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPRFXoACgkQJNaLcl1U
+h9DUcAf7Btv4DlmnSpwnSwLLZLZjLHnfTWVpZJ81qaPCs4SvmkBNiQxX1s9Vld21
+8O/QaZxTRJp7+kru4tljDPFtPWIPRvcqVwgCtUoOJ2AIEKapcFBMVIh7nidnnNjs
++LXDzG2e4va5huH2/ghU9TQwULN6X3M3UY8y/sq604qT0koHoN9zoZo5idZF7BSQ
+/GVeXQzXzB3UgOLv0hHuuQ9sD8QDIHfNn7ThUEPWhDwvinpB7VqkiIOD8nrr9mhr
+AdbkpaWOi2iv3A5BgxyGFDMufybabjkqztUT54muSHZDxbCjU7vUe/fyyK1NEQGa
+sgZbeoPjsTAlgN0ytBYi1aQSUR2wLw==
+=DSza
 -----END PGP SIGNATURE-----
 
---YLw58GmZKH9QcKuc--
+--j0ZYRAV1FZ0iGu90--
 
 
---===============2340859999289062057==
+--===============2548840753244481897==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -142,5 +142,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============2340859999289062057==--
+--===============2548840753244481897==--
 
