@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F01D7C54E94
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Jan 2023 08:53:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6B0FC05027
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Jan 2023 09:04:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XXQjX3gm5oiYVomtkJn6VPLhFhrUt7csfg9mQ9x6Elo=; b=29JaHaV6XQnHrd
-	jR4q6An9/QZh6uq3du13zra4VcVdRkHqIfkich/M7piUKXd5yB4WFhwev1GI4V65Mdybd5hTg3h/8
-	fiGIHdLZdSKHKn9zyks4FoCzjpemSF/yzwL216kyFHfZQlrJ9WoCrtBJ+V3wXFW3ccV5lUPT3t43F
-	CPxVCWctU9Lqof8b7grxncNS1Ttad8wr+GcX/ri6axnL8YgnN6xi1tzE30XzCfk7paNx9PYwzQyoc
-	3V3qxbs7FesQsOrZ//Ln+7GRAF4Zlhb50nYCni0uwDNDVNz4AdUNgByf7vsiPDsVr08PqNitM4S8/
-	YSTk4EnQDkV0RXHhM+dw==;
+	List-Owner; bh=GDCTpx+XmJTXWsHY5bfEnKJbgCUlbj35tARO+0LR/ls=; b=BLWxfuYm+1FDiE
+	XUMDkKB+seciaiivxYXx0UfnY35fXv88OeL8m8N9081TcJ69Z16mHopnuWk2ho4m9EvmCLnrm3n3I
+	ru6PMdSmH41KxAnbrP9cBtkFOntCp0jXQHyPKyMGQqLbzRHS4aLlqdsW1Z9Ty8Vtibvk9kh/vQ8JK
+	2AnnzBmTKqUrSjVdwJkJymgk8jGPgAA4OC6fxh1ma1nRCmaqsb7fv20vZzwSjqKLKu/E9+sdcFGEF
+	tJO7jsjJzSxPo6OIv1MPRepDhmWTHknRrkTj2LqNg2Y7yW7Dz8B1XQSyPjINQdGDLEcCZrR5qBtAq
+	eY6nHEkZnKGmtd4W6VCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKxzx-00A7uQ-Rl; Thu, 26 Jan 2023 08:52:45 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1pKyAM-00ACi2-9F; Thu, 26 Jan 2023 09:03:30 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKxyX-00A7GF-9H
-	for linux-mtd@lists.infradead.org; Thu, 26 Jan 2023 08:51:19 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 8D06EE000E;
-	Thu, 26 Jan 2023 08:51:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1674723074;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9n8ssSDibiOqBCRF537mEk7qaUXuw6GctioHmF+HkAQ=;
-	b=LOuKsWfAKjbcLaihgDGWa00kEQwA4TEzchcJ06mznGzasSU6a9oWSnEl8tQ0SYHNrOXVh/
-	+nCURw74KjAIVg+S8wk45pMpMdwUJSygzO93mmdyt1jEXOZVsbTYBQqta0QOcJ3+uRjNGs
-	++OLPhSMEnUI8BAgITIMHEsFIZeGFjdmDXFMhT3ADHqnoocvHHxzLVKFj0e8eP3oKJwYKo
-	klx+hdESczxNg2BAQQn/pvQruv/DgqzRdZ3H8gwzwRztzuT6GjwKl1O37mbi2uzzcJo86Q
-	nlfaxH8J5Jd2Y2AiuLzGfQm1Uu4kZetgfi4wdFrPiHBX4ybcUhE+fq6LiIQfYg==
-Date: Thu, 26 Jan 2023 09:51:12 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mario Kicherer <dev@kicherer.org>
-Cc: linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com, Dhruva
- Gole <d-gole@ti.com>
-Subject: Re: [PATCH v2] mtd: spinand: Add support for AllianceMemory
- AS5F34G04SND
-Message-ID: <20230126095112.3fd55899@xps-13>
-In-Reply-To: <c452cc08efa87359294d7042ea68ffee@kicherer.org>
-References: <20230117165441.1368447-1-dev@kicherer.org>
-	<20230123113337.78f5e3db@xps-13>
-	<fae6950f62ebde63b3be0cde384fbde9@kicherer.org>
-	<20230125152733.3b6bf0bd@xps-13>
-	<c452cc08efa87359294d7042ea68ffee@kicherer.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1pKy82-00ABWB-K6
+	for linux-mtd@lists.infradead.org; Thu, 26 Jan 2023 09:01:10 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 1D00F6172A;
+	Thu, 26 Jan 2023 09:01:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F462C4339B;
+	Thu, 26 Jan 2023 09:01:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1674723664;
+	bh=lsuNROJqXsQm9nrB/MquRcwvMry/sNCyFZpV//FoQos=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H8Jb8hgXzwglCk3/wlmRf09XwBu3wlAVl3pqxk0hqJmxPwAU+6PXMlyy2psjkf6Fu
+	 DTFuQEDQNik/hlF+IeJq6QqqPmdqqA38aOWfpUy0C15c3MaGOOHm1lCrRtPTYrlAqO
+	 9qtfMA153UWFoiKdHar3ldh6KoCoisHpn3BmXbN0=
+Date: Thu, 26 Jan 2023 10:01:02 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Francesco Dolcini <francesco@dolcini.it>
+Cc: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, Marek Vasut <marex@denx.de>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	u-boot@lists.denx.de
+Subject: Re: [PATCH v4] mtd: parsers: ofpart: add workaround for #size-cells 0
+Message-ID: <Y9JBTgmA8WX03QzK@kroah.com>
+References: <20230124104444.330913-1-francesco@dolcini.it>
+ <Y8/7k1HHjJbHvWDB@kroah.com>
+ <Y9GZ8c9VDXC582IA@francesco-nb.int.toradex.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <Y9GZ8c9VDXC582IA@francesco-nb.int.toradex.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230126_005117_670635_37C8AC0F 
-X-CRM114-Status: GOOD (  28.86  )
+X-CRM114-CacheID: sfid-20230126_010106_793715_61E47F77 
+X-CRM114-Status: GOOD (  37.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,54 +70,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyaW8sCgpkZXZAa2ljaGVyZXIub3JnIHdyb3RlIG9uIFdlZCwgMjUgSmFuIDIwMjMgMTY6
-MDM6NTggKzAxMDA6Cgo+IE9uIDIwMjMtMDEtMjUgMTU6MjcsIE1pcXVlbCBSYXluYWwgd3JvdGU6
-Cj4gPj4gPj4gK3N0YXRpYyBpbnQgYW1fZWNjX2dldF9zdGF0dXMoc3RydWN0IHNwaW5hbmRfZGV2
-aWNlICpzcGluYW5kLCB1OCA+PiBzdGF0dXMpCj4gPj4gPj4gK3sKPiA+PiA+PiArCXN3aXRjaCAo
-c3RhdHVzICYgQU1fU1RBVFVTX0VDQ19CSVRNQVNLKSB7Cj4gPj4gPj4gKwljYXNlIEFNX1NUQVRV
-U19FQ0NfTk9ORV9ERVRFQ1RFRDoKPiA+PiA+PiArCQlyZXR1cm4gMDsKPiA+PiA+PiArCj4gPj4g
-Pj4gKwljYXNlIEFNX1NUQVRVU19FQ0NfMV9DT1JSRUNURUQ6Cj4gPj4gPj4gKwkJcmV0dXJuIDE7
-Cj4gPj4gPj4gKwo+ID4+ID4+ICsJY2FzZSBBTV9TVEFUVVNfRUNDX01BWF9DT1JSRUNURUQ6Cj4g
-Pj4gPj4gKwkJcmV0dXJuIDg7Cj4gPj4gPj4gKwo+ID4+ID4+ICsJY2FzZSBBTV9TVEFUVVNfRUND
-XzFfREVURUNURUQ6ICAKPiA+PiA+Cj4gPj4gPiBXaGF0IGRvZXMgdGhpcyBtZWFuICIxIGRldGVj
-dGVkIj8gIAo+ID4+ID4+IEFjY29yZGluZyB0byB0aGUgbWFudWFsLCB0aGUgY2hpcCBjYW4gcmVw
-b3J0IHRoYXQgYSBiaXQgZXJyb3Igd2FzID4+IGRldGVjdGVkICAKPiA+PiBidXQgY291bGQgbm90
-IGJlIGNvcnJlY3RlZC4gIAo+ID4gCj4gPiBUaGF0IGRvZXMgbm90IG1ha2UgYSBsb3Qgb2Ygc2Vu
-c2UuIEVpdGhlciB5b3UgdXNlIGEgSGFtbWluZyBhbGdvcml0aG0sCj4gPiB5b3Ugd2lsbCBiZSBh
-YmxlIHRvIGNvcnJlY3QgMSBiaXQgZXJyb3IgYW5kIHRvIGRldGVjdCAyIGJpdCBlcnJvcnMsIG9y
-Cj4gPiB5b3UgdXNlIGFub3RoZXIgYWxnb3JpdGhtIChCQ0gsIHVzdWFsbHkpIHdpdGggYSBzdHJl
-bmd0aCBvZiBYIChYID4gMSkKPiA+IGFuZCB5b3UnbGwgYmUgYWJsZSB0byBjb3JyZWN0IHVwIHRv
-IFggZXJyb3JzIGFuZCBkZXRlY3QgWCsxIGVycm9ycy4KPiA+IAo+ID4gQnV0IG9ubHkgYmVpbmcg
-YWJsZSB0byBkZXRlY3QgYSBzaW5nbGUgYml0IGZsaXAgd2l0aG91dCBiZWluZyBhYmxlIHRvCj4g
-PiBjb3JyZWN0IGl0IGlzIHN0cmFuZ2UgKGV2ZW4gdXNlbGVzcz8pLiBTbyBJIGRvbid0IHVuZGVy
-c3RhbmQgaG93IGl0Cj4gPiBzaG91bGQgYmUgdXNlZC4gIAo+IAo+IFVuZm9ydHVuYXRlbHksIEkg
-ZG8gbm90IGhhdmUgbXVjaCBleHBlcmllbmNlIHdpdGggTkFORCBmbGFzaGVzLiBUaGUKPiBtYW51
-YWwgZG9lcyBub3Qgc2F5IG11Y2ggbW9yZSAtIHBhZ2UgNDEgaW4gWzFdIGluIGNhc2UgeW91IHdh
-bnQgdG8KPiBzZWUgZm9yIHlvdXJzZWxmLiBJIHRob3VnaHQgcmV0dXJuaW5nIC1FQkFETVNHIGlu
-IHRoaXMgY2FzZSB3b3VsZCBiZQo+IHRoZSByaWdodCB0aGluZyB0byBkbyBhcyBhbiB1bmNvcnJl
-Y3RhYmxlIGVycm9yIGhhcHBlbmVkLgoKMDBiID0gTm8gYml0IGVycm9ycyB3ZXJlIGRldGVjdGVk
-CjAxYiA9IGJpdCBlcnJvciB3YXMgZGV0ZWN0ZWQgYW5kIGNvcnJlY3RlZAoxMGIgPSBiaXQgZXJy
-b3Igd2FzIGRldGVjdGVkIGFuZCBub3QgY29ycmVjdGVkCjExYiA9IGJpdCBlcnJvciB3YXMgZGV0
-ZWN0ZWQgYW5kIGNvcnJlY3RlZCwgZXJyb3IgYml0IG51bWJlciA9IEVDQyBtYXggd2hpY2gKaXMg
-YWNjb3JkaW5nIHRvIGV4dGVuZGVkIHJlZ2lzdGVyLgoKSSBndWVzcyBpdCBtZWFucyB0aGF0IGlm
-IHlvdSBoYXZlIGEgc3RyZW5ndGggb2YgWDoKLSBmcm9tIDEgYmYgdG8gWC0xIHRoZSBzdGF0dXMg
-d2lsbCBiZSBzZXQgdG8gMHgxCi0gaWYgeW91IGhhdmUgWCBiZiBpdCB3aWxsIGJlIHNldCB0byAw
-eDMKLSBpZiB5b3UgaGF2ZSBtb3JlIHRoYW4gWCBiZiwgaXQgd2lsbCBiZSBzZXQgdG8gMHgyLgoK
-UGxlYXNlIHVwZGF0ZSB0aGUgY29kZSBhbmQgdXNlIG10ZC11dGlscyAobGlrZSB0aGUgYml0IGVy
-cm9yIHRlc3QpIHRvCnZlcmlmeSB3aGF0IHRoZSB0b29scyBzYXlzIGFuZCBieSB0cmFjaW5nIHRo
-ZSByZWdpc3RlciB2YWx1ZXMgZXh0cmFjdGVkCndpdGggYSBzaW1wbGUgcHJpbnRrIHRvIGZvbGxv
-dyBpZiB0aGUgYWJvdmUgbG9naWMgd29ya3MuCgo+IEkgaGF2ZSBub3QgdXNlZCB0aGUgZmxhc2gg
-bXVjaCB5ZXQsIHNvIEkgY2Fubm90IHNheSB0aGF0IEkgaGF2ZSBtdWNoCj4gY29uZmlkZW5jZSBp
-bnRvIHRoZSBjaGlwJ3MgZXJyb3IgcmVwb3J0aW5nLiBTbyBmYXIgdGhlIGZsYXNoIHdvcmtlZAo+
-IHdpdGhvdXQgaXNzdWVzLgo+IAo+IFNob3VsZCBJIGNoYW5nZSBzb21ldGhpbmcgaW4gdGhlIHBh
-dGNoPwo+IAo+IEJlc3QgcmVnYXJkcywKPiBNYXJpbwo+IAo+IFsxXSBodHRwczovL3d3dy5hbGxp
-YW5jZW1lbW9yeS5jb20vd3AtY29udGVudC91cGxvYWRzL3BkZi9mbGFzaC9BbGxpYW5jZU1lbW9y
-eV9TUElfTkFORF9GbGFzaF9KdWx5MjAyMF9SZXYxLjAucGRmCgoKVGhhbmtzLApNaXF1w6hsCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Wed, Jan 25, 2023 at 10:06:57PM +0100, Francesco Dolcini wrote:
+> Hello Miquel, Greg and all
+> 
+> On Tue, Jan 24, 2023 at 04:38:59PM +0100, Greg Kroah-Hartman wrote:
+> > On Tue, Jan 24, 2023 at 11:44:44AM +0100, Francesco Dolcini wrote:
+> > > From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> > > 
+> > > Add a mechanism to handle the case in which partitions are present as
+> > > direct child of the nand controller node and #size-cells is set to <0>.
+> > > 
+> > > This could happen if the nand-controller node in the DTS is supposed to
+> > > have #size-cells set to 0, but for some historical reason/bug it was set
+> > > to 1 in the past, and the firmware (e.g. U-Boot) is adding the partition
+> > > as direct children of the nand-controller defaulting to #size-cells
+> > > being to 1.
+> > > 
+> > > This prevents a real boot failure on colibri-imx7 that happened during v6.1
+> > > development cycles.
+> > > 
+> > > Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
+> > > Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@dolcini.it/
+> > > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> > > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > ---
+> > > I do not expect this patch to be backported to stable, however I would expect
+> > > that we do not backport nand-controller dts cleanups neither.
+> > > 
+> > > v4:
+> > >  fixed wrong English spelling in the comment
+> > > 
+> > > v3:
+> > >  minor formatting change, removed not needed new-line and space. 
+> > > 
+> > > v2:
+> > >  fixup size-cells only when partitions are direct children of the nand-controller
+> > >  completely revised commit message, comments and warning print
+> > >  use pr_warn instead of pr_warn_once
+> > >  added Reviewed-by Greg
+> > >  removed cc:stable@ and fixes tag, since the problematic commit was reverted
+> > > ---
+> > >  drivers/mtd/parsers/ofpart_core.c | 19 +++++++++++++++++++
+> > >  1 file changed, 19 insertions(+)
+> > > 
+> > > diff --git a/drivers/mtd/parsers/ofpart_core.c b/drivers/mtd/parsers/ofpart_core.c
+> > > index 192190c42fc8..e7b8e9d0a910 100644
+> > > --- a/drivers/mtd/parsers/ofpart_core.c
+> > > +++ b/drivers/mtd/parsers/ofpart_core.c
+> > > @@ -122,6 +122,25 @@ static int parse_fixed_partitions(struct mtd_info *master,
+> > >  
+> > >  		a_cells = of_n_addr_cells(pp);
+> > >  		s_cells = of_n_size_cells(pp);
+> > > +		if (!dedicated && s_cells == 0) {
+> > > +			/*
+> > > +			 * This is a ugly workaround to not create
+> > > +			 * regression on devices that are still creating
+> > > +			 * partitions as direct children of the nand controller.
+> > > +			 * This can happen in case the nand controller node has
+> > > +			 * #size-cells equal to 0 and the firmware (e.g.
+> > > +			 * U-Boot) just add the partitions there assuming
+> > > +			 * 32-bit addressing.
+> > > +			 *
+> > > +			 * If you get this warning your firmware and/or DTS
+> > > +			 * should be really fixed.
+> > > +			 *
+> > > +			 * This is working only for devices smaller than 4GiB.
+> > > +			 */
+> > > +			pr_warn("%s: ofpart partition %pOF (%pOF) #size-cells is wrongly set to <0>, assuming <1> for parsing partitions.\n",
+> > > +				master->name, pp, mtd_node);
+> > 
+> > This is a driver, always use dev_*() calls, not pr_*() calls so that we
+> > know what is being referred to exactly.
+> 
+> Is this reasonable here? Where can I get the struct device?
+
+Walk back up the call chain, there has to be a device somewhere
+controlling this, right?
+
+> In general this file uses only pr_* debug API and messages are about OF
+> nodes/properties, not about a device.
+
+OF nodes and properties are part of a device's properties :)
+
+thanks,
+
+greg k-h
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
