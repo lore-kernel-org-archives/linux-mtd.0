@@ -4,64 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4A1CC05027
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 Jan 2023 14:58:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FA30C54E94
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Jan 2023 15:02:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NUxU6aDLe5KT8zXOj5j5Gxjrqf8eXYR0OewY1qZV01s=; b=v7R0gOHPiVaRPz
-	vYAqBybrkh9Ffsi0FEWNwmrM6SeJXSw9LDuPdGHUG0cKBUYlA5jOLgLc+1CO5YLigusoIl+T64pLi
-	+nVUydv9/HA0sFeqiwV8b7RyZUdd9BfIdO1oDfCdF2B8EVQHbVU1wUPJQyI4XS42u1R6+Vvrqixge
-	T8b1RgWichCDBAYX2ELhqVsEaTha2STFNh+Z5kxcw0xaV0lDF94bWPzucQoWisQXdkBRiDLKgj+Wu
-	nLKJ9JHvIClesIdXd6/yuvKBWPJfI3sydO5UOAj9H3NqKxOd/ijY+1KCA8Sd04oRzGFxFzIUllFNt
-	PeOKfLL4e+HcKhcHzLkg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=p+7TuPp6PeFq7dnWA+b88dPx/Z0KDqcoXNsPvdyuXVk=; b=kTdVcYOA/TRI16
+	9ILAqbqzhpG39GpREXk0umG4KaJ8mHsdoDQ08Qt+wiSji0SyIuHBCx1xM7q6rkLXnPf1x93rk38ew
+	CqhhgMuEZ5QCadOXLdqCaS87IjvthTOl76GB+hml9JhvI1DTzjjNgGtAb33kbYx35Yxz8cC+pCUs9
+	kx/hNFHd3VBTvT5q/JtCmyppkxfou+g+vXvDa65HiDwqDVr2QJjaDdLg75tvwzht1yQNjJ2VkKY9o
+	wpgthIjLGIKDWSglcFkdzyBQ+CJDyYfXee0aFMM3KPPz0RG4h+2XDn15CIuyXSY9Uj0hYLug6H53+
+	32fZCWUdHz9oNxJwsqPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pL3i5-00BLFs-TS; Thu, 26 Jan 2023 14:58:42 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1pL3lU-00BMdk-Dl; Thu, 26 Jan 2023 15:02:12 +0000
+Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pL3aR-00BICu-DR
-	for linux-mtd@lists.infradead.org; Thu, 26 Jan 2023 14:50:53 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 802DA40003;
-	Thu, 26 Jan 2023 14:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1674744641;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o5HaAlf12Z8C/D/Ob84tlnnUxlZv1t3lQu23e+eG6VU=;
-	b=T06iD/Tj6WN+jWDKKWNC3vwkDxozfkV2YSxzkqHNC1qkzKLOnLOWXMGdSMTX1j5bRoAg3A
-	1DsJmbBN9Iu8JGmHD75hz0zBsQzDASTSqJiShDevjrZhepirjShQSxM16pGgWhCFPJrUEv
-	POIAIEkTXy6I3rDp7dYzsN2dQf6ZtCR+Ch0HQTJZ4PuLlW9YWB2eWl8uDjlXzvkogvCfIg
-	vjxGUZqEr0qnePuglYmdS0CeSaDBlANUUbAAys0xnbR2u2wp6t/5VhQhCa7I6EyFBPKs5m
-	wZLEJdYGl+Pq7qvF4FYCmy+pFAkaY0g0A1bWWFQ8we8UXKsDd8f0uMnU+gWVzA==
-Date: Thu, 26 Jan 2023 15:50:36 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mario Kicherer <dev@kicherer.org>
-Cc: linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com, Dhruva
- Gole <d-gole@ti.com>
-Subject: Re: [PATCH v2] mtd: spinand: Add support for AllianceMemory
- AS5F34G04SND
-Message-ID: <20230126155036.532ca8fe@xps-13>
-In-Reply-To: <07c86c5f57145fdc5f06c6f57b8fea84@kicherer.org>
-References: <20230117165441.1368447-1-dev@kicherer.org>
-	<20230123113337.78f5e3db@xps-13>
-	<fae6950f62ebde63b3be0cde384fbde9@kicherer.org>
-	<20230125152733.3b6bf0bd@xps-13>
-	<c452cc08efa87359294d7042ea68ffee@kicherer.org>
-	<20230126095112.3fd55899@xps-13>
-	<07c86c5f57145fdc5f06c6f57b8fea84@kicherer.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1pL3gQ-00BKee-Vu
+	for linux-mtd@lists.infradead.org; Thu, 26 Jan 2023 14:57:01 +0000
+Received: by mail-wr1-x433.google.com with SMTP id b7so2056782wrt.3
+        for <linux-mtd@lists.infradead.org>; Thu, 26 Jan 2023 06:56:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yGOKKMo3R8QfnKwfvnMn5JBc0/EEZ44Vy89goIkXDis=;
+        b=pdnaei/k5JjWLp8Wd4iQY1Lt89myuCll2DoKYylxvJPlSeiZ8if/vXSwiPujVsUXLV
+         UYI/8/4qo4E9giqdW7v/GJlqUBVwL6n9d/GdlqLVvL094Z/kUa7LmZgvJYyjYtushMRV
+         zC9EbFXzjASO4vq+Vt8bVeGkf7vtZpXX8wjYV/nzHU29OGOA3IOJinU/BQTKjRdfjVMg
+         YEZoBxsyr2mRt7wA4vP6ETp4N3sJBndKc9ltYR6wTzX2bEwG2mRqi6M1/ebZqrRIjqmZ
+         c1drlhZU1WihbSRbLxL2OnvtzOYfIs+YfiDILa+qsLbl4jvAZx5HnKNiJtkMqSPu9Tqx
+         nxLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yGOKKMo3R8QfnKwfvnMn5JBc0/EEZ44Vy89goIkXDis=;
+        b=FSd0yVPrYGXqfXYTzRIaI/2MbfP/uR/0f0mFvZfOjth8BJNW+Enn1QpZCJQYGgQQMY
+         zqtbKtWetTYcvvIM0krh2tdPrnMiyDxxjVGs3/6pApsNEauavK76KPir5RcOmfz1IJq9
+         TlbSZpAYIFT4fpwNMW54Ge5ze70OLOrsYUucY3NltDcP9etXAq+Ux/bTYLe0TVSH1OuP
+         Qj2PfKEr0jYNz2pFYPS4ZTkx6hJ/XxPO1HPFaooDJUw32BZJvFU7AstEzYlBsYICqqSe
+         b3rx4xtQYYI21DzWA34wC7X+IElYyH+jogqUOPVtfARMtEqu2e4i7rLqFV7XqS5IPfSH
+         91+w==
+X-Gm-Message-State: AO0yUKWP1oFZx/wMIUSLBBCp//FFbKgY76UHsPZiZttoyzgNl3RVcBgh
+	4Kz5RkNChwdcNGvBwUM3HKh7Qs9+Wsm8upT7
+X-Google-Smtp-Source: AK7set9umNSvClemRa66XkfD020OyxHqFvpxeU289aR0DFrsTVoKnZc8TikzZMkduN9ydkquo4AI8g==
+X-Received: by 2002:a5d:5e90:0:b0:2bf:b7e3:6d60 with SMTP id ck16-20020a5d5e90000000b002bfb7e36d60mr6685705wrb.56.1674745017403;
+        Thu, 26 Jan 2023 06:56:57 -0800 (PST)
+Received: from midgar.. ([2001:912:1480:1c0::1])
+        by smtp.gmail.com with ESMTPSA id a4-20020adffb84000000b002bc7f64efa3sm1462092wrr.29.2023.01.26.06.56.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Jan 2023 06:56:56 -0800 (PST)
+From: lrannou@baylibre.com
+To: linux-mtd@lists.infradead.org
+Cc: tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	Louis Rannou <lrannou@baylibre.com>
+Subject: [PATCH] mtd: spi_nor: Fixes out of bound shift
+Date: Thu, 26 Jan 2023 15:26:12 +0100
+Message-Id: <20230126142612.1518046-1-lrannou@baylibre.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230126_065047_730507_593324BC 
-X-CRM114-Status: GOOD (  10.05  )
+X-CRM114-CacheID: sfid-20230126_065659_115616_F77E3A32 
+X-CRM114-Status: GOOD (  16.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,43 +84,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpkZXZAa2ljaGVyZXIub3JnIHdyb3RlIG9uIFRodSwgMjYgSmFuIDIwMjMgMTU6MzQ6
-NDcgKzAxMDA6Cgo+IEhlbGxvIE1pcXXDqGwsCj4gCj4gSSBtYWRlIGFsbCByZXF1ZXN0ZWQgY2hh
-bmdlcyBhbmQgYWRkZWQgYWRkaXRpb25hbCBjb2RlIHRvIG1ha2UgdGhlIG9vYmxheW91dAo+IGZ1
-bmN0aW9ucyBjb21wYXRpYmxlIHdpdGggYWxsIGZsYXNoZXMgb2YgdGhpcyBzZXJpZXMuCj4gCj4g
-SSBhbHNvIHJhbiBuYW5kYml0ZXJycyB3aXRoIHRoZSBmb2xsb3dpbmcgcmVzdWx0Ogo+IAo+ICMg
-bmFuZGJpdGVycnMgLWkgL2Rldi9tdGQxMQo+IGluY3JlbWVudGFsIGJpdGVycm9ycyB0ZXN0Cj4g
-U3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAwIGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKPiBJbnNlcnRl
-ZCBiaXRlcnJvciBAIDAvNQo+IFJlYWQgcmVwb3J0ZWQgNyBjb3JyZWN0ZWQgYml0IGVycm9ycwo+
-IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgMSBiaXQgZXJyb3JzIHBlciBzdWJwYWdlCgpZZWFoLCB3
-ZWxsLCBJIGd1ZXNzIHdlIGRvbid0IGhhdmUgYSBjaG9pY2UuIFVCSSB3b3VsZCBzZWUgdGhpcyBh
-cyBhCm5lZWQgdG8gcmV3cml0ZSB0aGUgYmxvY2sgc29tZXdoZXJlIGVsc2UgYmVjYXVzZSBvZiB0
-aGUgdG9vIGhpZ2ggYW1vdW50Cm9mIGJpdCBmbGlwcy4gVUJJJ3MgdGhyZXNob2xkIGlzIHNvbWV3
-aGVyZSBhcm91bmQgMy80IG9yIHRoZSBzdHJlbmd0aCwKc28gdGhlc2UgZmxhc2hlcyBjb3VsZCBy
-YXBpZGx5IHdlYXIgb3V0LCBidXQgSSBkb24ndCB0aGluayB3ZSBoYXZlCmFub3RoZXIgY2hvaWNl
-LgoKPiBJbnNlcnRlZCBiaXRlcnJvciBAIDAvMgo+IFJlYWQgcmVwb3J0ZWQgNyBjb3JyZWN0ZWQg
-Yml0IGVycm9ycwo+IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgMiBiaXQgZXJyb3JzIHBlciBzdWJw
-YWdlCj4gSW5zZXJ0ZWQgYml0ZXJyb3IgQCAwLzAKPiBSZWFkIHJlcG9ydGVkIDcgY29ycmVjdGVk
-IGJpdCBlcnJvcnMKPiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDMgYml0IGVycm9ycyBwZXIgc3Vi
-cGFnZQo+IEluc2VydGVkIGJpdGVycm9yIEAgMS83Cj4gUmVhZCByZXBvcnRlZCA3IGNvcnJlY3Rl
-ZCBiaXQgZXJyb3JzCj4gU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCA0IGJpdCBlcnJvcnMgcGVyIHN1
-YnBhZ2UKPiBJbnNlcnRlZCBiaXRlcnJvciBAIDEvNQo+IFJlYWQgcmVwb3J0ZWQgNyBjb3JyZWN0
-ZWQgYml0IGVycm9ycwo+IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgNSBiaXQgZXJyb3JzIHBlciBz
-dWJwYWdlCj4gSW5zZXJ0ZWQgYml0ZXJyb3IgQCAxLzIKPiBSZWFkIHJlcG9ydGVkIDcgY29ycmVj
-dGVkIGJpdCBlcnJvcnMKPiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDYgYml0IGVycm9ycyBwZXIg
-c3VicGFnZQo+IEluc2VydGVkIGJpdGVycm9yIEAgMS8wCj4gUmVhZCByZXBvcnRlZCA3IGNvcnJl
-Y3RlZCBiaXQgZXJyb3JzCj4gU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCA3IGJpdCBlcnJvcnMgcGVy
-IHN1YnBhZ2UKPiBJbnNlcnRlZCBiaXRlcnJvciBAIDIvNgo+IFJlYWQgcmVwb3J0ZWQgOCBjb3Jy
-ZWN0ZWQgYml0IGVycm9ycwo+IFN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgOCBiaXQgZXJyb3JzIHBl
-ciBzdWJwYWdlCj4gSW5zZXJ0ZWQgYml0ZXJyb3IgQCAyLzUKPiBGYWlsZWQgdG8gcmVjb3ZlciAx
-IGJpdGZsaXBzCj4gUmVhZCBlcnJvciBhZnRlciA5IGJpdCBlcnJvcnMgcGVyIHBhZ2UKPiAKPiBJ
-IHdvdWxkIHNheSB0aGlzIGxvb2tzIGdvb2Q/Cj4gCj4gSSB3aWxsIHNlbmQgdGhlIG5ldyBwYXRj
-aCBpbiBhIGZldyBzZWNvbmRzLgo+IAo+IFRoYW5rIHlvdSEKPiBNYXJpbwo+IAoKClRoYW5rcywK
-TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+From: Louis Rannou <lrannou@baylibre.com>
+
+spi_nor_set_erase_type is called twice in sfdp.c with a null size. The
+return from ffs is 0 as well and the shift size becomes (2^32 - 1) which is
+out of bound when applied to the << operator.
+
+This considers as illegal a call to this function with null size. It
+creates a replacement spi_nor_mask_erase_type for explicit calls to mask
+the erase type.
+
+Signed-off-by: Louis Rannou <lrannou@baylibre.com>
+---
+ drivers/mtd/spi-nor/core.c | 19 +++++++++++++++++--
+ drivers/mtd/spi-nor/sfdp.c |  4 ++--
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index d67c926bca8b..140a8fa81f03 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2015,15 +2015,30 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
+  * @erase:	pointer to a structure that describes a SPI NOR erase type
+  * @size:	the size of the sector/block erased by the erase type
+  * @opcode:	the SPI command op code to erase the sector/block
++ *
++ * Return: 0 on success, -errno otherwise
+  */
+-void spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
+-			    u8 opcode)
++int spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
++			   u8 opcode)
+ {
+ 	erase->size = size;
+ 	erase->opcode = opcode;
+ 	/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
++	if (size == 0)
++		return -EINVAL;
+ 	erase->size_shift = ffs(erase->size) - 1;
+ 	erase->size_mask = (1 << erase->size_shift) - 1;
++	return 0;
++}
++
++/**
++ * spi_nor_mask_erase_type() - mask out a SPI NOR erase type
++ * @erase:	pointer to a structure that describes a SPI NOR erase type
++ */
++void spi_nor_mask_erase_type(struct spi_nor_erase_type *erase)
++{
++	erase->size = 0;
++	erase->opcode = 0xFF;
+ }
+ 
+ /**
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 8434f654eca1..8d158243fe49 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -875,7 +875,7 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+ 	 */
+ 	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
+ 		if (!(regions_erase_type & BIT(erase[i].idx)))
+-			spi_nor_set_erase_type(&erase[i], 0, 0xFF);
++			spi_nor_mask_erase_type(&erase[i]);
+ 
+ 	return 0;
+ }
+@@ -1089,7 +1089,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 			erase_type[i].opcode = (dwords[1] >>
+ 						erase_type[i].idx * 8) & 0xFF;
+ 		else
+-			spi_nor_set_erase_type(&erase_type[i], 0u, 0xFF);
++			spi_nor_mask_erase_type(&erase_type[i]);
+ 	}
+ 
+ 	/*
+-- 
+2.39.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
