@@ -4,64 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A0AC54E94
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 Jan 2023 21:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78CFEC54E94
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 Jan 2023 08:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BlqWE+KVxEQIMR58TkYOXg8VNVz5YNvvWL3BYp4icLE=; b=aQf5DshiDE3RtM
-	ec1BloNhUkjrTmD5X8HnN+i/ehJxkvFwf3nV9AUilFvE7nEzaf9+AcGHygTAIdLaYAD5Q+TaFQ1v0
-	H241NtRkv3/OR8s1JOZxwSz7hydOlnE77OrwWxSOlX5PwQXKraBXoIGWnBmdZEIJfaaJdbCN8k5pz
-	XBaOGgp6zsdWI8dP10dSbKyWT0LnQan9OZ6ehkHLfrfyvnLYU1FyRs9skYv42f75MosQ833Wnck/h
-	9v6XzLlt7sLXvUWVjeObk1rejW0qEwO3B65/14dw64y3JEEgoQNBPkX+MIQYgkb7vEh8eAXP4eccg
-	wZxOUjgKEsR/Nyr9A8cg==;
+	List-Owner; bh=wNhwixMWbeMxOWL/dShKa4mkdtswudsyiFOFwvSRBLA=; b=GaJ9v3B/Pr7o1g
+	Uvt0sBrauP+igYzaemndYqn3q2uBu7SFewR14Bjl7MGnlrtevpjANhCRO3HkxfsCYXvDlOfkpFt+G
+	ECbH6KP99YkGmnS61KcYUU85q5fXwPr/Y8/5pq8sepRAx2NaYMvdK0b4vmEbuS4D7ioVNAIM7UFSc
+	a1hBYpyI786Wf4XZcPoK7H+Hy7YqfPjVtZnR4exKvv8D6seK3UkucQh1u6Z27/6xd2Bis/0/nyGVu
+	86fsmPIeYveYHoraH7RNVA+2mNdW/SooWLf2sv44C7PoJVlPo/XKY2wkF5tXHGVOaVK8WHVEjLu8U
+	IhVj9dgzJ8zloOHbGA5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKmzQ-008o4z-P6; Wed, 25 Jan 2023 21:07:28 +0000
-Received: from smtp-out-03.comm2000.it ([212.97.32.66])
+	id 1pKxws-00A6OS-Sc; Thu, 26 Jan 2023 08:49:35 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKmzL-008ntQ-IM
-	for linux-mtd@lists.infradead.org; Wed, 25 Jan 2023 21:07:27 +0000
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: francesco@dolcini.it)
-	by smtp-out-03.comm2000.it (Postfix) with ESMTPSA id F126CB42CB2;
-	Wed, 25 Jan 2023 22:07:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
-	s=mailsrv; t=1674680823;
-	bh=YA1owfDBS96L7G518IG8UnBdMZb6XdHmxtms9cJlADk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=JBKurt+sTObJAHIJ4XMWYkL7KbXfGAWY++aLlw7ztMlGJg/S9kbytQsmoFSB+MGf0
-	 NcChnwANqWClTrej5VymUJtWIAvRDcC8irLNRmh8JRzp/4BaNu0MbrybtvqlMz7Hsc
-	 gNit7cYzhWgYnml3+wPEv3m/Wi66cjkpjg83sXRXAMLEhs/G1hyzXhad18jP8tIipi
-	 gvJroD3nMqWACtlLHW2PLUrCZWezR7yAX0S40ltZ4EEPVIYOiqm6FKOFgEzua9gEr+
-	 S+GY4VqWTVXjPCvHAf8GbqP2ZTPXKFNY7VvYU14MQWIvaiZPWFnwGUhltuU5OqP3ty
-	 EVDYhWcx9ydtA==
-Date: Wed, 25 Jan 2023 22:06:57 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Francesco Dolcini <francesco@dolcini.it>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, Marek Vasut <marex@denx.de>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	u-boot@lists.denx.de
-Subject: Re: [PATCH v4] mtd: parsers: ofpart: add workaround for #size-cells 0
-Message-ID: <Y9GZ8c9VDXC582IA@francesco-nb.int.toradex.com>
+	id 1pKxqK-00A3n4-1R
+	for linux-mtd@lists.infradead.org; Thu, 26 Jan 2023 08:42:50 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id B17EA20005;
+	Thu, 26 Jan 2023 08:42:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1674722563;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/GKvBFREFo1QxDB3p3koRcJ3KYeBE1Z7zOVPCpCgnJw=;
+	b=UMgrjHYZJLOSxOIO3K0m8noVCN/wyuNDocyKz7+we+Zq6FOYY4dwxXHj25wprcKRY8ixfg
+	r6rmp4HS/GJMFL/gdaZ93dPnw7/fDumwaiX/Zr2kAmVkvITTSUj8FuhX5U/puES65hnLZt
+	5V7RM1kddA/bz2ng/h4gT1N1fXtrPx4pvvLuelQJUCiQoUnpD4bF76goHSPzHUImqZikug
+	t+EHad9OJX0ZiMS9hVVJ4k7PRaAnTrpv9QZGkSnrWOgJXEBd910JjDnECTRZG/0zdg/rmA
+	oqc4ulbkPM1RgG1b7K7tYD5N3vxtRYVEt6uwtPoOLi/S3amexNgjeeo2BBLm0Q==
+Date: Thu, 26 Jan 2023 09:42:40 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Francesco Dolcini <francesco@dolcini.it>
+Cc: linux-mtd@lists.infradead.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Marek Vasut <marex@denx.de>, Francesco
+ Dolcini <francesco.dolcini@toradex.com>, u-boot@lists.denx.de
+Subject: Re: [PATCH v4] mtd: parsers: ofpart: add workaround for #size-cells
+ 0
+Message-ID: <20230126094240.158fd4f4@xps-13>
+In-Reply-To: <Y9GZ8c9VDXC582IA@francesco-nb.int.toradex.com>
 References: <20230124104444.330913-1-francesco@dolcini.it>
- <Y8/7k1HHjJbHvWDB@kroah.com>
+	<Y8/7k1HHjJbHvWDB@kroah.com>
+	<Y9GZ8c9VDXC582IA@francesco-nb.int.toradex.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y8/7k1HHjJbHvWDB@kroah.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_130723_935046_8C2035EC 
-X-CRM114-Status: GOOD (  34.61  )
+X-CRM114-CacheID: sfid-20230126_004248_418615_E3CECEB9 
+X-CRM114-Status: GOOD (  39.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,92 +71,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Miquel, Greg and all
-
-On Tue, Jan 24, 2023 at 04:38:59PM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Jan 24, 2023 at 11:44:44AM +0100, Francesco Dolcini wrote:
-> > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > 
-> > Add a mechanism to handle the case in which partitions are present as
-> > direct child of the nand controller node and #size-cells is set to <0>.
-> > 
-> > This could happen if the nand-controller node in the DTS is supposed to
-> > have #size-cells set to 0, but for some historical reason/bug it was set
-> > to 1 in the past, and the firmware (e.g. U-Boot) is adding the partition
-> > as direct children of the nand-controller defaulting to #size-cells
-> > being to 1.
-> > 
-> > This prevents a real boot failure on colibri-imx7 that happened during v6.1
-> > development cycles.
-> > 
-> > Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
-> > Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@dolcini.it/
-> > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> > I do not expect this patch to be backported to stable, however I would expect
-> > that we do not backport nand-controller dts cleanups neither.
-> > 
-> > v4:
-> >  fixed wrong English spelling in the comment
-> > 
-> > v3:
-> >  minor formatting change, removed not needed new-line and space. 
-> > 
-> > v2:
-> >  fixup size-cells only when partitions are direct children of the nand-controller
-> >  completely revised commit message, comments and warning print
-> >  use pr_warn instead of pr_warn_once
-> >  added Reviewed-by Greg
-> >  removed cc:stable@ and fixes tag, since the problematic commit was reverted
-> > ---
-> >  drivers/mtd/parsers/ofpart_core.c | 19 +++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/parsers/ofpart_core.c b/drivers/mtd/parsers/ofpart_core.c
-> > index 192190c42fc8..e7b8e9d0a910 100644
-> > --- a/drivers/mtd/parsers/ofpart_core.c
-> > +++ b/drivers/mtd/parsers/ofpart_core.c
-> > @@ -122,6 +122,25 @@ static int parse_fixed_partitions(struct mtd_info *master,
-> >  
-> >  		a_cells = of_n_addr_cells(pp);
-> >  		s_cells = of_n_size_cells(pp);
-> > +		if (!dedicated && s_cells == 0) {
-> > +			/*
-> > +			 * This is a ugly workaround to not create
-> > +			 * regression on devices that are still creating
-> > +			 * partitions as direct children of the nand controller.
-> > +			 * This can happen in case the nand controller node has
-> > +			 * #size-cells equal to 0 and the firmware (e.g.
-> > +			 * U-Boot) just add the partitions there assuming
-> > +			 * 32-bit addressing.
-> > +			 *
-> > +			 * If you get this warning your firmware and/or DTS
-> > +			 * should be really fixed.
-> > +			 *
-> > +			 * This is working only for devices smaller than 4GiB.
-> > +			 */
-> > +			pr_warn("%s: ofpart partition %pOF (%pOF) #size-cells is wrongly set to <0>, assuming <1> for parsing partitions.\n",
-> > +				master->name, pp, mtd_node);
-> 
-> This is a driver, always use dev_*() calls, not pr_*() calls so that we
-> know what is being referred to exactly.
-
-Is this reasonable here? Where can I get the struct device?
-
-In general this file uses only pr_* debug API and messages are about OF
-nodes/properties, not about a device.
-
-> I take back my "reviewed-by" line above, please fix this up to not need
-> pr_warn, but to use dev_warn() instead.
-
-Francesco
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR3JlZywKCmZyYW5jZXNjb0Bkb2xjaW5pLml0IHdyb3RlIG9uIFdlZCwgMjUgSmFuIDIwMjMg
+MjI6MDY6NTcgKzAxMDA6Cgo+IEhlbGxvIE1pcXVlbCwgR3JlZyBhbmQgYWxsCj4gCj4gT24gVHVl
+LCBKYW4gMjQsIDIwMjMgYXQgMDQ6Mzg6NTlQTSArMDEwMCwgR3JlZyBLcm9haC1IYXJ0bWFuIHdy
+b3RlOgo+ID4gT24gVHVlLCBKYW4gMjQsIDIwMjMgYXQgMTE6NDQ6NDRBTSArMDEwMCwgRnJhbmNl
+c2NvIERvbGNpbmkgd3JvdGU6ICAKPiA+ID4gRnJvbTogRnJhbmNlc2NvIERvbGNpbmkgPGZyYW5j
+ZXNjby5kb2xjaW5pQHRvcmFkZXguY29tPgo+ID4gPiAKPiA+ID4gQWRkIGEgbWVjaGFuaXNtIHRv
+IGhhbmRsZSB0aGUgY2FzZSBpbiB3aGljaCBwYXJ0aXRpb25zIGFyZSBwcmVzZW50IGFzCj4gPiA+
+IGRpcmVjdCBjaGlsZCBvZiB0aGUgbmFuZCBjb250cm9sbGVyIG5vZGUgYW5kICNzaXplLWNlbGxz
+IGlzIHNldCB0byA8MD4uCj4gPiA+IAo+ID4gPiBUaGlzIGNvdWxkIGhhcHBlbiBpZiB0aGUgbmFu
+ZC1jb250cm9sbGVyIG5vZGUgaW4gdGhlIERUUyBpcyBzdXBwb3NlZCB0bwo+ID4gPiBoYXZlICNz
+aXplLWNlbGxzIHNldCB0byAwLCBidXQgZm9yIHNvbWUgaGlzdG9yaWNhbCByZWFzb24vYnVnIGl0
+IHdhcyBzZXQKPiA+ID4gdG8gMSBpbiB0aGUgcGFzdCwgYW5kIHRoZSBmaXJtd2FyZSAoZS5nLiBV
+LUJvb3QpIGlzIGFkZGluZyB0aGUgcGFydGl0aW9uCj4gPiA+IGFzIGRpcmVjdCBjaGlsZHJlbiBv
+ZiB0aGUgbmFuZC1jb250cm9sbGVyIGRlZmF1bHRpbmcgdG8gI3NpemUtY2VsbHMKPiA+ID4gYmVp
+bmcgdG8gMS4KPiA+ID4gCj4gPiA+IFRoaXMgcHJldmVudHMgYSByZWFsIGJvb3QgZmFpbHVyZSBv
+biBjb2xpYnJpLWlteDcgdGhhdCBoYXBwZW5lZCBkdXJpbmcgdjYuMQo+ID4gPiBkZXZlbG9wbWVu
+dCBjeWNsZXMuCj4gPiA+IAo+ID4gPiBMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwv
+WTRkZ0JUR05XcE02U1FYSUBmcmFuY2VzY28tbmIuaW50LnRvcmFkZXguY29tLwo+ID4gPiBMaW5r
+OiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMjEyMDIwNzE5MDAuMTE0Mzk1MC0xLWZy
+YW5jZXNjb0Bkb2xjaW5pLml0Lwo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBGcmFuY2VzY28gRG9sY2lu
+aSA8ZnJhbmNlc2NvLmRvbGNpbmlAdG9yYWRleC5jb20+Cj4gPiA+IFJldmlld2VkLWJ5OiBHcmVn
+IEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPgo+ID4gPiAtLS0KPiA+
+ID4gSSBkbyBub3QgZXhwZWN0IHRoaXMgcGF0Y2ggdG8gYmUgYmFja3BvcnRlZCB0byBzdGFibGUs
+IGhvd2V2ZXIgSSB3b3VsZCBleHBlY3QKPiA+ID4gdGhhdCB3ZSBkbyBub3QgYmFja3BvcnQgbmFu
+ZC1jb250cm9sbGVyIGR0cyBjbGVhbnVwcyBuZWl0aGVyLgo+ID4gPiAKPiA+ID4gdjQ6Cj4gPiA+
+ICBmaXhlZCB3cm9uZyBFbmdsaXNoIHNwZWxsaW5nIGluIHRoZSBjb21tZW50Cj4gPiA+IAo+ID4g
+PiB2MzoKPiA+ID4gIG1pbm9yIGZvcm1hdHRpbmcgY2hhbmdlLCByZW1vdmVkIG5vdCBuZWVkZWQg
+bmV3LWxpbmUgYW5kIHNwYWNlLiAKPiA+ID4gCj4gPiA+IHYyOgo+ID4gPiAgZml4dXAgc2l6ZS1j
+ZWxscyBvbmx5IHdoZW4gcGFydGl0aW9ucyBhcmUgZGlyZWN0IGNoaWxkcmVuIG9mIHRoZSBuYW5k
+LWNvbnRyb2xsZXIKPiA+ID4gIGNvbXBsZXRlbHkgcmV2aXNlZCBjb21taXQgbWVzc2FnZSwgY29t
+bWVudHMgYW5kIHdhcm5pbmcgcHJpbnQKPiA+ID4gIHVzZSBwcl93YXJuIGluc3RlYWQgb2YgcHJf
+d2Fybl9vbmNlCj4gPiA+ICBhZGRlZCBSZXZpZXdlZC1ieSBHcmVnCj4gPiA+ICByZW1vdmVkIGNj
+OnN0YWJsZUAgYW5kIGZpeGVzIHRhZywgc2luY2UgdGhlIHByb2JsZW1hdGljIGNvbW1pdCB3YXMg
+cmV2ZXJ0ZWQKPiA+ID4gLS0tCj4gPiA+ICBkcml2ZXJzL210ZC9wYXJzZXJzL29mcGFydF9jb3Jl
+LmMgfCAxOSArKysrKysrKysrKysrKysrKysrCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTkgaW5z
+ZXJ0aW9ucygrKQo+ID4gPiAKPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3BhcnNlcnMv
+b2ZwYXJ0X2NvcmUuYyBiL2RyaXZlcnMvbXRkL3BhcnNlcnMvb2ZwYXJ0X2NvcmUuYwo+ID4gPiBp
+bmRleCAxOTIxOTBjNDJmYzguLmU3YjhlOWQwYTkxMCAxMDA2NDQKPiA+ID4gLS0tIGEvZHJpdmVy
+cy9tdGQvcGFyc2Vycy9vZnBhcnRfY29yZS5jCj4gPiA+ICsrKyBiL2RyaXZlcnMvbXRkL3BhcnNl
+cnMvb2ZwYXJ0X2NvcmUuYwo+ID4gPiBAQCAtMTIyLDYgKzEyMiwyNSBAQCBzdGF0aWMgaW50IHBh
+cnNlX2ZpeGVkX3BhcnRpdGlvbnMoc3RydWN0IG10ZF9pbmZvICptYXN0ZXIsCj4gPiA+ICAKPiA+
+ID4gIAkJYV9jZWxscyA9IG9mX25fYWRkcl9jZWxscyhwcCk7Cj4gPiA+ICAJCXNfY2VsbHMgPSBv
+Zl9uX3NpemVfY2VsbHMocHApOwo+ID4gPiArCQlpZiAoIWRlZGljYXRlZCAmJiBzX2NlbGxzID09
+IDApIHsKPiA+ID4gKwkJCS8qCj4gPiA+ICsJCQkgKiBUaGlzIGlzIGEgdWdseSB3b3JrYXJvdW5k
+IHRvIG5vdCBjcmVhdGUKPiA+ID4gKwkJCSAqIHJlZ3Jlc3Npb24gb24gZGV2aWNlcyB0aGF0IGFy
+ZSBzdGlsbCBjcmVhdGluZwo+ID4gPiArCQkJICogcGFydGl0aW9ucyBhcyBkaXJlY3QgY2hpbGRy
+ZW4gb2YgdGhlIG5hbmQgY29udHJvbGxlci4KPiA+ID4gKwkJCSAqIFRoaXMgY2FuIGhhcHBlbiBp
+biBjYXNlIHRoZSBuYW5kIGNvbnRyb2xsZXIgbm9kZSBoYXMKPiA+ID4gKwkJCSAqICNzaXplLWNl
+bGxzIGVxdWFsIHRvIDAgYW5kIHRoZSBmaXJtd2FyZSAoZS5nLgo+ID4gPiArCQkJICogVS1Cb290
+KSBqdXN0IGFkZCB0aGUgcGFydGl0aW9ucyB0aGVyZSBhc3N1bWluZwo+ID4gPiArCQkJICogMzIt
+Yml0IGFkZHJlc3NpbmcuCj4gPiA+ICsJCQkgKgo+ID4gPiArCQkJICogSWYgeW91IGdldCB0aGlz
+IHdhcm5pbmcgeW91ciBmaXJtd2FyZSBhbmQvb3IgRFRTCj4gPiA+ICsJCQkgKiBzaG91bGQgYmUg
+cmVhbGx5IGZpeGVkLgo+ID4gPiArCQkJICoKPiA+ID4gKwkJCSAqIFRoaXMgaXMgd29ya2luZyBv
+bmx5IGZvciBkZXZpY2VzIHNtYWxsZXIgdGhhbiA0R2lCLgo+ID4gPiArCQkJICovCj4gPiA+ICsJ
+CQlwcl93YXJuKCIlczogb2ZwYXJ0IHBhcnRpdGlvbiAlcE9GICglcE9GKSAjc2l6ZS1jZWxscyBp
+cyB3cm9uZ2x5IHNldCB0byA8MD4sIGFzc3VtaW5nIDwxPiBmb3IgcGFyc2luZyBwYXJ0aXRpb25z
+LlxuIiwKPiA+ID4gKwkJCQltYXN0ZXItPm5hbWUsIHBwLCBtdGRfbm9kZSk7ICAKPiA+IAo+ID4g
+VGhpcyBpcyBhIGRyaXZlciwgYWx3YXlzIHVzZSBkZXZfKigpIGNhbGxzLCBub3QgcHJfKigpIGNh
+bGxzIHNvIHRoYXQgd2UKPiA+IGtub3cgd2hhdCBpcyBiZWluZyByZWZlcnJlZCB0byBleGFjdGx5
+LiAgCj4gCj4gSXMgdGhpcyByZWFzb25hYmxlIGhlcmU/IFdoZXJlIGNhbiBJIGdldCB0aGUgc3Ry
+dWN0IGRldmljZT8KPiAKPiBJbiBnZW5lcmFsIHRoaXMgZmlsZSB1c2VzIG9ubHkgcHJfKiBkZWJ1
+ZyBBUEkgYW5kIG1lc3NhZ2VzIGFyZSBhYm91dCBPRgo+IG5vZGVzL3Byb3BlcnRpZXMsIG5vdCBh
+Ym91dCBhIGRldmljZS4KCkknbSBhbHNvIHNrZXB0aWNhbCBoZXJlLCB0aGlzIGlzIG5vdCBhIGRl
+dmljZSBkcml2ZXIsIGl0J3MgYSBnZW5lcmljCnBhcnNlciBhbmQgaXQgc2VlbXMgbW9yZSBhcHBy
+b3ByaWF0ZSB0byB3YXJuIGFib3V0IGFuIG9mIG5vZGUgcmF0aGVyCnRoYW4gYSBzdHJ1Y3QgZGV2
+aWNlLgoKTVREIGRldmljZXMgaW5oZXJpdCBmcm9tIHN0cnVjdCBkZXZpY2UgKG10ZC0+ZGV2KSB3
+aGljaCBJIGd1ZXNzCm1pZ2h0IGJlIHVzZWQgaGVyZS4gVGhlIGJ1cyBpbmZyYXN0cnVjdHVyZSBk
+ZXZpY2UKKG10ZC0+ZGV2aWNlLT5wYXJlbnRzKSBpcyBsZXNzIGFwcHJvcHJpYXRlIGFzIGl0IHNv
+bWV0aW1lcyBwb2ludHMgYXQgdGhlCmNvbnRyb2xsZXIgKHJhdyBOQU5EKSBhbmQgc29tZXRpbWVz
+IGF0IHRoZSBzcGkgZGV2aWNlIChTUEktTkFORCwgU1BJCk5PUikuCgpwcl93YXJuIGlzIGZpbmUg
+aGVyZSBJTUhPLCBidXQgaWYgR3JlZyBpbnNpc3QsIHN3aXRjaCBpdCB0byBkZXZfd2FybiwgSQpk
+b24ndCBtaW5kLiBNYXliZSBpdCBpcyB3b3J0aCB0ZXN0aW5nIHRoYXQgZGV2X3dhcm4gc3RpbGwg
+ZGlzcGxheXMgYW4KZWFzeS10by11bmRlcnN0YW5kIG1lc3NhZ2UgaW4gdGhhdCBjYXNlLgoKPiA+
+IEkgdGFrZSBiYWNrIG15ICJyZXZpZXdlZC1ieSIgbGluZSBhYm92ZSwgcGxlYXNlIGZpeCB0aGlz
+IHVwIHRvIG5vdCBuZWVkCj4gPiBwcl93YXJuLCBidXQgdG8gdXNlIGRldl93YXJuKCkgaW5zdGVh
+ZC4gIAo+IAo+IEZyYW5jZXNjbwoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
