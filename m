@@ -4,74 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92FB5C38142
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Jan 2023 15:17:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 549DAC61DA4
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Jan 2023 17:59:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w0ODeBxu9P6T/3pISG5QlMnFKrJIVxEjfJXvfX2pd5E=; b=3tFwEz+3gopptB
-	qQu3TcAC1kqDBnQs5a2DB7cw9P8XcOQIlzuzTi354O5qZTb1rvwmUbxL24srAGoKTCaWK5QD+cGwX
-	rIDTvKhHk/NkHvs36bkLEvTBWFx6olKfqZ752PtCphugVMeDbOk0SFuCbxEf5wuyZafVMMLNQBJOb
-	va6UIwOHYpsCDGgpi3cpBpFz8QE2vEiMSHTRHryNDFsbzNSVJiT5R4wYDsY+mr4BYN/uXoV3FcxIW
-	AmsfxQ5V9qn/CwROEvpzjAE2PxdFnj56DdyE6UiAeMuimjecLvRU1JtlAUWpujKMybrleID5yPofi
-	SzCqBb4YRj8PIISx3E+Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=pwkgJJVUg2/cwtU3h4ci6noLbRHAv0AjFe6ImPvasKI=; b=w4Z8WeaqtH9eAB
+	r7arTMM14sZw89H9yPwACwAXC7PhUJ4oz6O6h805Nqyg2az3f4a6NGgUN1tbvvQKPn2OmKIYhekq6
+	xvv6isv3cstsjDJnPpL4nbA1F4I9VHNBOicZeB2wqfVafZ/xfObsFhoaKLmO5a+mQlS1sFI4WUdpU
+	xtMbfVn6gC7GEmYwz3X8AkRrzF9ftY9AjB1bB3eoAKctzymD8Ktg5OYSQf0S/4MNFV/aqy1S1/T9K
+	CYaK3018Px03tJNeXZM//z7ZYT30bqt4exEH7JwXWNnJ0aQ8KUUixz2gxZRcjNgPyYWxFCH8ngFu8
+	VF4oxUX7kD8cDEkDMSRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pLQT6-00FR3j-SW; Fri, 27 Jan 2023 15:16:44 +0000
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154])
+	id 1pLSzv-00FxjM-HJ; Fri, 27 Jan 2023 17:58:47 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pLQSr-00FQy2-Cl; Fri, 27 Jan 2023 15:16:34 +0000
+	id 1pLSzr-00Fxi6-T1; Fri, 27 Jan 2023 17:58:45 +0000
+Received: by mail-ej1-x636.google.com with SMTP id m2so15350905ejb.8;
+        Fri, 27 Jan 2023 09:58:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1674832590; x=1706368590;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=J85XzxxjAKCt6wUsJoyOWvpKjjyw1igxFqPQ00CyA24=;
-  b=m1twaUKAZ0yi8nEDFbRn8VC8/ASM8X+8UmxQBs5YCjYeyphZ7POIWZeb
-   b3xNvzn5o0qjppVlOeC+1Gt+nI3ASkiBtIzBmaT+S8rPDEPo8mcToV2gZ
-   iPtd6NMAHKvZcOrMPj0BVvPntCZMKDznX0cDgtXOZ6TMRC7Pm6KiXcUzL
-   A=;
-X-IronPort-AV: E=Sophos;i="5.97,251,1669075200"; 
-   d="scan'208";a="292851507"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-d7759ebe.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2023 15:16:23 +0000
-Received: from EX13MTAUWB002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-	by email-inbound-relay-iad-1d-m6i4x-d7759ebe.us-east-1.amazon.com (Postfix) with ESMTPS id A7AA943230;
-	Fri, 27 Jan 2023 15:16:21 +0000 (UTC)
-Received: from EX19D009UWB003.ant.amazon.com (10.13.138.95) by
- EX13MTAUWB002.ant.amazon.com (10.43.161.202) with Microsoft SMTP Server (TLS)
- id 15.0.1497.45; Fri, 27 Jan 2023 15:16:21 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX19D009UWB003.ant.amazon.com (10.13.138.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.24; Fri, 27 Jan 2023 15:16:21 +0000
-Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
- by mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
- 15.0.1497.45 via Frontend Transport; Fri, 27 Jan 2023 15:16:20 +0000
-Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
-	id 6FD3220D34; Fri, 27 Jan 2023 16:16:19 +0100 (CET)
-From: Pratyush Yadav <ptyadav@amazon.de>
-To: Dhruva Gole <d-gole@ti.com>
-CC: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
-	Vaishnav Achath <vaishnav.a@ti.com>, <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <Takahiro.Kuwano@infineon.com>
-Subject: Re: [PATCH v2 1/4] spi: cadence-quadspi: Reset CMD_CTRL Reg on cmd
- r/w completion
-References: <20230125081023.1573712-1-d-gole@ti.com>
-	<20230125081023.1573712-2-d-gole@ti.com>
-Date: Fri, 27 Jan 2023 16:16:19 +0100
-In-Reply-To: <20230125081023.1573712-2-d-gole@ti.com> (Dhruva Gole's message
-	of "Wed, 25 Jan 2023 13:40:20 +0530")
-Message-ID: <mafs07cx8f1oc.fsf_-_@amazon.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AkTXtXZvSlyW7dhrOhtl54a2x6aLLDzgCZF3MBO2yT4=;
+        b=D45urjwlLOqJ5oEWUBgdQkmsYbSjvXmkD1jToywten5PtNhUD9c8awHO3NHAzmQl46
+         2Ay7kmFQRTQ8cZlB/KTtUw4eoj7fQiY6CGXuax+YXRwNWSVSiw4757N6Bzx17MKeSu01
+         k0IehkZHiqWzWobRDv3JZXtZ9P1YJv/2yildPxCacxYjqdIGstP2wDmIpbjXyE9fpa5s
+         nWgSHzL5YwOsqCngAEOjpzySj8hclwm0nOaStOt0f2qt9S/Lo7ONKJyFSQxx8nap4w29
+         /WrsHxbyuxSN7wYTpEZKcbmqp9cceq8uzA+byVq4aZffRa2Q/oB/VixxOTb4yuoN/UrI
+         kkAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AkTXtXZvSlyW7dhrOhtl54a2x6aLLDzgCZF3MBO2yT4=;
+        b=Tiv6RW4apF7OhdQ7CFhLxkPjg96QfvZ7worE2Et5S1Lv98Dccw9t/iHnxo4/4SKwon
+         uEvYu3ON/TUtVyO7z3hAfdJzH0eN0noydpx9Wgj8/8QO7evwKFboL3sZiIj8GBzPSdVn
+         cEsHE/YyYY/eZFUTomjMtXiyXUHWOL+baJqSOlUT1/0rKY3QtLtDWSu2BOJHotT0uzYG
+         ET7aN5aBRxzO8hR1ZUWyPOsINFmkx70btzhtvTqBqXi2BDl7iroNY6Of3af7IkGhfEZd
+         fIe3wYMniE/IWsXAv+aQWvKPeemldv8P5aVXDN81p5afItY1w+NBqgoAyXXLOJJ67hlr
+         06+Q==
+X-Gm-Message-State: AO0yUKUYEOoF27ogEyKgBKyTbtzbcsIKTTA9y9eVeeIv12l/sb3KTBNS
+	jUWx0JDm9lBjWcoyk/8YSyo=
+X-Google-Smtp-Source: AK7set9YFRj0WFfdzKw45ndnfLNVXHirfZXQPMiwuSaPd2a9SuM0Yn0MHy2+hb2rKxYyINLcUmX2FA==
+X-Received: by 2002:a17:907:c26:b0:878:53a5:70a1 with SMTP id ga38-20020a1709070c2600b0087853a570a1mr10777796ejc.50.1674842321108;
+        Fri, 27 Jan 2023 09:58:41 -0800 (PST)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id z22-20020a1709067e5600b0087276f66c6asm2600508ejr.115.2023.01.27.09.58.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Jan 2023 09:58:40 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Michael Walle <michael@walle.cc>,
+	devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 1/2] dt-bindings: nvmem: io: new binding for IO accessible NVMEM devices
+Date: Fri, 27 Jan 2023 18:58:30 +0100
+Message-Id: <20230127175831.26753-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230127_071629_611605_CFFAED90 
-X-CRM114-Status: GOOD (  17.79  )
+X-CRM114-CacheID: sfid-20230127_095843_978097_EF7CA721 
+X-CRM114-Status: GOOD (  13.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,81 +87,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-Hi,
-
-On Wed, Jan 25 2023, Dhruva Gole wrote:
-
-> If one leaves the CQSPI_REG_CMDCTRL in an unclean state this may cause
-> issues in future command reads. This issue came to light when some flash
-> reads in STIG mode were coming back dirty.
-
-Can you explain in more detail what you mean by "reads coming back
-dirty"? Because I don't see any clear reason why not resetting the
-register would break anything. We re-create the register value from the
-scratch on the next read anyway, and as soon as you writel() that, the
-old fields get thrown away anyway.
-
->
-> Signed-off-by: Dhruva Gole <d-gole@ti.com>
-> ---
->  drivers/spi/spi-cadence-quadspi.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-> index 676313e1bdad..6030da942c6e 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -549,6 +549,9 @@ static int cqspi_command_read(struct cqspi_flash_pdata *f_pdata,
->                 memcpy(rxbuf, &reg, read_len);
->         }
->
-> +       /* Reset CMD_CTRL Reg once command read completes */
-> +       writel(0, reg_base + CQSPI_REG_CMDCTRL);
-> +
->         return 0;
->  }
->
-> @@ -613,7 +616,12 @@ static int cqspi_command_write(struct cqspi_flash_pdata *f_pdata,
->                 }
->         }
->
-> -       return cqspi_exec_flash_cmd(cqspi, reg);
-> +       ret = cqspi_exec_flash_cmd(cqspi, reg);
-> +
-> +       /* Reset CMD_CTRL Reg once command write completes */
-> +       writel(0, reg_base + CQSPI_REG_CMDCTRL);
-> +
-> +       return ret;
->  }
->
->  static int cqspi_read_setup(struct cqspi_flash_pdata *f_pdata,
-> --
-> 2.25.1
->
-
--- 
-Regards,
-Pratyush Yadav
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKV2l0aCB0aGUgTlZNRU0g
+bGF5b3V0cyBiaW5kaW5nIGluIHBsYWNlIHdlIHNob3VsZCBub3cgdXNlOgoxLiBOVk1FTSBkZXZp
+Y2UgYWNjZXNzIGJpbmRpbmdzCjIuIE5WTUVNIGNvbnRlbnQgZGVzY3JpcHRpb24gYmluZGluZ3MK
+ClRoaXMgYmluZGluZyBhbGxvd3MgZGVzY3JpYmluZyBOVk1FTSBkZXZpY2VzIHRoYXQgY2FuIGJl
+IGFjY2Vzc2VkIHVzaW5nCklPIG1hcHBpbmdzLgoKU2lnbmVkLW9mZi1ieTogUmFmYcWCIE1pxYJl
+Y2tpIDxyYWZhbEBtaWxlY2tpLnBsPgotLS0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVt
+L2lvLnlhbWwgICAgICAgICB8IDM3ICsrKysrKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2Vk
+LCAzNyBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL252bWVtL2lvLnlhbWwKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvbnZtZW0vaW8ueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9udm1lbS9pby55YW1sCm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAw
+MDAwMDAwMDAwMC4uNjdlMGFhZTljZDk0Ci0tLSAvZGV2L251bGwKKysrIGIvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL2lvLnlhbWwKQEAgLTAsMCArMSwzNyBAQAorIyBT
+UERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UpCisl
+WUFNTCAxLjIKKy0tLQorJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9udm1lbS9p
+by55YW1sIworJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3Jl
+LnlhbWwjCisKK3RpdGxlOiBJTyBhY2Nlc3MgYmFzZWQgTlZNRU0KKworZGVzY3JpcHRpb246IHwK
+KyAgVGhpcyBiaW5kaW5nIGRlc2NyaWJlcyBzaW1wbGUgTlZNRU0gZGV2aWNlcyB0aGF0IGNhbiBi
+ZSBhY2Nlc3NlZCBieSBzaW1wbHkKKyAgbWFwcGluZyBhIHByZWRlZmluZWQgSU8gYWRkcmVzcy4K
+KworICBJdCdzIGEgZ2VuZXJpYyBzb2x1dGlvbiBmb3IgcHJvdmlkaW5nIE5WTUVNIGNvbnRlbnQg
+YWNjZXNzLiBUaGUgd2F5IG9mCisgIGhhbmRsaW5nIGFjdHVhbCBjb250ZW50IG1heSBiZSBkZXZp
+Y2Ugc3BlY2lmaWMgYW5kIGNhbiBiZSBkZXNjcmliZWQgdXNpbmcgYQorICBwcm9wZXIgbGF5b3V0
+LgorCittYWludGFpbmVyczoKKyAgLSBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+
+CisKK2FsbE9mOgorICAtICRyZWY6IG52bWVtLnlhbWwjCisKK3Byb3BlcnRpZXM6CisgIGNvbXBh
+dGlibGU6CisgICAgY29uc3Q6IGlvLW52bWVtCisKKyAgcmVnOgorICAgIG1heEl0ZW1zOiAxCisK
+K3VuZXZhbHVhdGVkUHJvcGVydGllczogZmFsc2UKKworZXhhbXBsZXM6CisgIC0gfAorICAgIG52
+bWVtQDEwMDAwIHsKKyAgICAgICAgY29tcGF0aWJsZSA9ICJpby1udm1lbSI7CisgICAgICAgIHJl
+ZyA9IDwweDEwMDAwMDAwIDB4MTAwMDA+OworICAgIH07Ci0tIAoyLjM0LjEKCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
