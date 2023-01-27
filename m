@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19504C38142
-	for <linux-mtd@archiver.kernel.org>; Fri, 27 Jan 2023 13:50:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D79D4C61DA3
+	for <linux-mtd@archiver.kernel.org>; Fri, 27 Jan 2023 13:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F0VxrHR/z0a4k2fAuyZJ7euW+NY3UU0tkHmOJw82SpQ=; b=j7TpcePCyeXVDf
-	JA/iN7kRELAh5t5Hh+rbxLcsQZhqPcOs3SQcUMOfWaiRwYop3zNOry4np9u06Ko6r9X0Zy0TX55qq
-	YQK7dGsC9y7CE56u9DnHq+c4xBHYShoKxEK+YmgQ2h97YP3j6ZKYCCpdfi9EnJeNe0OOomHsNdZud
-	BJlHab1WWxUNguYlvj0QoXCdbnjzMgZYInQloI4JmLr2ij1WDU+A0y+eimXP7z3251hbWtF0yMWna
-	tSNzO+Ul2H4GunYU+qx/ZuIZLOIxzxpovaAwWJuMdBYIj6kU2bGPjgE/IbMT1n6lE85GityvIYw8w
-	6nM2Wh1ncpXZGhEf7XBg==;
+	List-Owner; bh=sGSD2gz4VQPS8rnvR2YiezafSS/ncN1T7nqTEdTmK6w=; b=HuB8n1nL1vC0OF
+	cMv94HLPq3o3gjawfQoi7EIPcdxxvRy8deqKErUG6M1+WEVuXuQRD1UnsyyPgaDvjGed4BlSZZQOi
+	iHLemfJjDgnu5+irxn6T+8AvVLF9MCCWVFbZQH0W9efBk/r4Jz4wkboQKMdPThnkfbARUU1mI5p+H
+	+0nshyc9OtR+O/9bXhVl8nuQOM9WoabueDRe85eDeusQVImMYxRmH715jR7C7GQ6PNtmK9wPf+RNZ
+	H2OFbQhbvfXEPisVjTvzFzV7HN8tt4A8UtLiNDKekDSiNhQOI+j3Qc7d845vNS2NDZPNvu8ii2fV6
+	frg47AnHmgefz7lqSacQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pLP73-00F8EF-GG; Fri, 27 Jan 2023 13:49:53 +0000
-Received: from mail-yw1-x1130.google.com ([2607:f8b0:4864:20::1130])
+	id 1pLP9A-00F92l-Rc; Fri, 27 Jan 2023 13:52:04 +0000
+Received: from mail-yb1-xb2b.google.com ([2607:f8b0:4864:20::b2b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pLOi4-00Ey0g-QB
-	for linux-mtd@lists.infradead.org; Fri, 27 Jan 2023 13:24:07 +0000
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-4ff1fa82bbbso66481687b3.10
-        for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2023 05:24:04 -0800 (PST)
+	id 1pLOj5-00EyKo-Ph
+	for linux-mtd@lists.infradead.org; Fri, 27 Jan 2023 13:25:09 +0000
+Received: by mail-yb1-xb2b.google.com with SMTP id x4so5974698ybp.1
+        for <linux-mtd@lists.infradead.org>; Fri, 27 Jan 2023 05:25:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LZZ3MuEVu6XkQPyGITmSKOdfGu07b5+34vXdaMUVpmM=;
-        b=UAHrFOhuENO8p4X6jjmFs9KrdLnh1L5ioIcN1vRBhDE992xV4cddAO0IjROU44dIG/
-         nalP7afFVUtdPnm8JH4xghgm1GM/q5GOZS2kC5Yd9GXI9Z7PktEengh3fovMoq+zsVVE
-         t0IPxp6dqeh897/z5G46UH91FQqy4WJQU8D3SIuIya0S9WZHfZk2C5Y30r2S827bu9eD
-         CJLrDr1gIIxiC13d3vWqjY/9ZHwEpUdCVVNQAD/k++s1nG+mBWETZdTm2h8dtkZQWFeu
-         swJGEwBP9C1DSuiQ188wLhYmsd5xFXheW++Lnq9ZpWPRKwvE/hZ2po1OCXDHo+L7t9nf
-         jzGw==
+        bh=YfmZdMJN/D3xI4YTB54xIsWSAze0zkG8RrFJPkBL4AQ=;
+        b=d2yyXte/yKIliOx/+8dSFRH8+M3Ex72UVdCuqh3m2tyi3rrRYlzuFLuFuOaXo8UJua
+         gElqKdzCZZxnNL7BluA63zU1vXbJTTdCGK01yYehPr6WfmZLwmosoPiS95G7b5lmagCS
+         L/upqPf5qIY2pjLEDKrUW9EdvBvPWpcC2GegAPRzTI8cGzevNc5TRFXyVw8hHFy7XJzN
+         TH3bv0sOG57U6+65n9Xq6fsYWtTWYlZhS/Bzf440xEraF0lC2iKIkZMz3ndkI1DvtaHw
+         EQNdQGri5E5aTQGN016ehd0p8PTqoPCqtOXzj5K3ayVZ69ryCa5toREYxDUTePUi+iWo
+         LVcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LZZ3MuEVu6XkQPyGITmSKOdfGu07b5+34vXdaMUVpmM=;
-        b=ek20dAaTHcow79GlOOjKcozx6lcFOclk7Dj+g7kBFrtHWZF5HI9RwDZRjSF7+wEx93
-         p7jeMulc8bh/bQSF6nTLqV4AefWhRFOvyKgJ1Fym6l6/Rtt6H5wVWzTPg3UpuwmtQTFh
-         h0BbOppZofc/9HbOlXCa+QqbowPHM13MUpTs8N6MWw1q3H0zszFpfzDw+gmdy7Zb/FTS
-         l2RTHpBLPspT0j8bQUyubGvelaqDgPIEVoTFf+Hd4yZpSUFbDOjLEPYm7Tw5f1AGGPIX
-         DEStVvodMq3YJinaGqGvukemJ9E42RlblfO262U/yLT+KIZ9yBk5XQy0ToVvwYZh7kvH
-         5bHQ==
-X-Gm-Message-State: AFqh2kqN1mGMBKpUyg9H78R8wmwNI4eROy7ls8o97EmhTAD6VCJXx6gj
-	57RmO98rDe4fm6IK3ON37dSyCXpXdkdMpPKgMsBBEg==
-X-Google-Smtp-Source: AMrXdXsM2Y+feqWmDnpZZfAnDgXVYRK43870GInPFgNTT7qpRIbR4qPNx7T9fr58byEQonupKGetuGN9HSWpF17Olo4=
-X-Received: by 2002:a05:690c:39b:b0:4f3:8d0e:edce with SMTP id
- bh27-20020a05690c039b00b004f38d0eedcemr3538984ywb.185.1674825843435; Fri, 27
- Jan 2023 05:24:03 -0800 (PST)
+        bh=YfmZdMJN/D3xI4YTB54xIsWSAze0zkG8RrFJPkBL4AQ=;
+        b=tckMbOQEROBhtfXApk6m+FOVrhevHDIl4ZtJYu6smj4o1g/1LKce49RNL8pkYHt2gQ
+         dxrLsYgg9UEKVKKoDCyjrTCqIEvZ7EdCWWkTFliCzprI8OHzCEiBy4+33HuMr5ock1rD
+         IB/uVz2OGjLaGI4NMVPdDX3yXK11zXrLcVKxhtq4RjzR5ZJ+6+0uTHhsn7mAKhn6oE0k
+         R6xBjePoh+fOrlI/9XovjjbMq0z+uKE6fgiDMW0Fg5FslAEmGA+T5aLqkKkucb+P/H3o
+         CblAaq47qhJs1t7If1sfdbBv6sdg/SS9fU9vIvIzMfN0aQZt9vufCilW6lb5kkCge32l
+         RTRg==
+X-Gm-Message-State: AO0yUKXxVGjIr33+xI0eBgwVxsstpg3Jnu3Il+hrBFd2DfWYVkKKMl1q
+	QcPUJO2Zl3lUouN/XA9WsTBD5TySbMjlTARO4th2Bg==
+X-Google-Smtp-Source: AK7set/AyCr5YILgHa1njAbv5GENd6K1HRNPT5FGDcIp6NDqNoyOABScAptxZu4MVa9CTfeWH7nQwPnr2nr1FbGyMhU=
+X-Received: by 2002:a25:d1d1:0:b0:80b:4d84:b25 with SMTP id
+ i200-20020a25d1d1000000b0080b4d840b25mr1325238ybg.584.1674825903381; Fri, 27
+ Jan 2023 05:25:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20230127093217.60818-1-krzysztof.kozlowski@linaro.org> <20230127093217.60818-2-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230127093217.60818-2-krzysztof.kozlowski@linaro.org>
+References: <20230127093217.60818-1-krzysztof.kozlowski@linaro.org> <20230127093217.60818-3-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230127093217.60818-3-krzysztof.kozlowski@linaro.org>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 27 Jan 2023 14:23:51 +0100
-Message-ID: <CACRpkdabA03VEFFVDVDiEVnLDZXGmW-kyCpD8iRVOcBzNBTfkw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: intel,ixp4xx-expansion-bus: split out
- peripheral properties
+Date: Fri, 27 Jan 2023 14:24:52 +0100
+Message-ID: <CACRpkdZUD1rw5j=Kik9KMt0w=JzS_T06FOGnyUA9GWmWZyQjcA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: reference MC peripheral properties in
+ relevant devices
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: Damien Le Moal <damien.lemoal@opensource.wdc.com>, Rob Herring <robh+dt@kernel.org>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Linus Walleij <linusw@kernel.org>, 
@@ -76,8 +76,9 @@ Cc: Damien Le Moal <damien.lemoal@opensource.wdc.com>, Rob Herring <robh+dt@kern
 	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, 
 	linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230127_052404_971058_27FCC848 
-X-CRM114-Status: GOOD (  12.19  )
+X-CRM114-CacheID: sfid-20230127_052507_876127_268DA981 
+X-CRM114-Status: UNSURE (   8.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,22 +98,20 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On Fri, Jan 27, 2023 at 10:32 AM Krzysztof Kozlowski
 <krzysztof.kozlowski@linaro.org> wrote:
 
-> The properties of devices in IXP4xx expansion bus need to be also
-> applied to actual devices' bindings.  Prepare for this by splitting them
-> to separate intel,ixp4xx-expansion-peripheral-props binding, just like
-> other memory-controller peripheral properties.
+> Several devices can be attached to memory controllers (or memory-mapped
+> buses), thus they can come with additional controller-specific
+> properties, e.g. devices wired under Intel IXP4XX bus: cfi-flash,
+> intel,ixp4xx-compact-flash, NS8250 serial and MAX6369 watchdog.
+>
+> Referencing Memory Controller or IXP4XX bus peripheral properties fixes
+> few dtbs_check warnings like:
+>
+>   intel-ixp42x-gateworks-gw2348.dtb: ide@1,0: Unevaluated properties are not allowed
+>     ('intel,ixp4xx-eb-ahb-split-transfers', 'intel,ixp4xx-eb-byte-access', ... ' were unexpected)
 >
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Whoa, this is a complex one!
-But I assume you and Marek know what you're doing so:
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-Maybe I can assign the following external bus interface to the Qcom
-people, as it is yet another one of those:
-Documentation/devicetree/bindings/bus/qcom,ebi2.txt
-
-I've been uncertain about how I should convert that one over properly.
 
 Yours,
 Linus Walleij
