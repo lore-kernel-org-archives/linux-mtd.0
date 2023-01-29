@@ -4,82 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E81C9C54EAA
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Jan 2023 16:56:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 023E7C54EED
+	for <linux-mtd@archiver.kernel.org>; Mon, 30 Jan 2023 17:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xD8SloFystyTsbyb7cchkIL2bpEyLqzLilynvF4IJ48=; b=nbXhIQ9SQIZ/jg
-	XD7PfDKyat0NGc3NDNwJmlavfLSLLitWokyy7u9q0hFeQdv7XUeHugRvPrjtPnV48nLFveA321/rb
-	gUPbE+6MTTwaKKSExsuozYEG2USeDx6FeOmxsbj1PMOfz8QA/KbcdKU68b2VKMeabxsWqz0Y87QpX
-	dtmub4kWOOmcLam8XlPBrCwPpBwrnEqv6M8+ew0mV8gns0sdxdd+dFxJL/vWlR+EccgJirG25O683
-	FBwWr0KYfO4BAwSZ6/UmH7MlDjXBL43uvZcZ49LqmUTadDBi0ys+cRYPBMsh4QmvE+0TGXie2x9fo
-	VWhi8Yi73Wp1nic62W8A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=qMTOVoEeq7rvwoOMNc7KYRyW4l85cvk9KgobQ1LiAoQ=; b=UbCDJ50vuGAY17O2Ez91Ei0vak
+	uOl6dTAVVpO8bZh5BYpwdXcsNoWi3WSSUfS0sDSUCGjpaAxc+0CRjHTxey8SIRBnz2cLdzu4wepvg
+	BnzHJfOwAgbteHL2wG/DG1iivsyvwMOmtBRagjttxpG9tzBhJ9ntlBIjtbTQ7o+O8QgIT7FczxOQs
+	jFhb9/7/+fyvuTvuHI+iWoRKElJObnqpVXhQensrP4LNr5AC0GTmQDuZo3yc1CKPTmfODBbbwsT1x
+	Ie6pz6bU1arXGsN86AxKKNjDxbN0ZdhVwN2GIFcVCpClKNfe0ztV3CE2WvYa1KRrQb8ZnsWMLj/eI
+	vo+kgQ6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMXRW-004KLE-OL; Mon, 30 Jan 2023 16:55:42 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1pMY3k-004bgK-O5; Mon, 30 Jan 2023 17:35:12 +0000
+Received: from madras.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e5ab])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMXQf-004KB3-HA; Mon, 30 Jan 2023 16:54:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675097689; x=1706633689;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=F1ULbSw1MBsHWcGX+HC4GSetpggTnGdsHsr0Ru7tKp4=;
-  b=nMFM730HXecM27ePAg7HgnpjmmqH848cWoLL8E+o93W8UeaK0NV7Oz0C
-   g2vfT9DT479Vp/b/YAYwlTIzO/Mu+fxgzUqg7o9nMVm5EEQ1cRDFPDhcg
-   VvWWJdSccW6HlDVmmnOZOqwPyehP5sbWsl/xD0XPWAnWffpHVdw3IN6bo
-   m10vvtV2ttoWzSD86BOOizVkvGHf6xn8QWqatCHBjzS69fjmq5tOGlhWo
-   ipJU+xuOp4nYaWv6QOigam+mHVj2ItD1NCUIp4ikr3QgZIbvf+7PwBex2
-   7iS/tzaekwFexfjRPdttHdCRG8dmleXXQKmb5G9Gqefs2rnLqcJwdEkD1
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10606"; a="329715481"
-X-IronPort-AV: E=Sophos;i="5.97,258,1669104000"; 
-   d="scan'208";a="329715481"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2023 08:29:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10606"; a="772570775"
-X-IronPort-AV: E=Sophos;i="5.97,258,1669104000"; 
-   d="scan'208";a="772570775"
-Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 30 Jan 2023 08:29:08 -0800
-Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pMX1o-0003kE-0N;
-	Mon, 30 Jan 2023 16:29:08 +0000
-Date: Tue, 31 Jan 2023 00:28:16 +0800
-From: kernel test robot <lkp@intel.com>
-To: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+	id 1pMXwo-004Xz0-HO; Mon, 30 Jan 2023 17:28:04 +0000
+Received: from mercury (unknown [185.209.196.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 64034660086E;
+	Sun, 29 Jan 2023 23:51:36 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1675036296;
+	bh=IIIAwVilRWbK/VxJ9R07BpYKGovKnA/g9pkFp6lqOE0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BqkFNT0Zs/lQ4ZAdZec7R7noK9RCNBkqilV/t1bQhOMZbIlDsCTR8QIJkJbNxvyOU
+	 VbE7ue6VTg0M3DdOWcJ6aGjsAcjTr2+ZxqzGv8a4wgAiwvMHBZJQ6DDXAkuexFJSWl
+	 X/R91K3+3QzQ9ulj8z1XnphRoMblYCn+zpF9EVSp+xN1/FLHdO8Hkm6XRWqdErQRuJ
+	 XeOTeXAI9WSIaEqngDpgSjhUg3RwspINiAkv6i7zlzWrTopqAX91YHvKTxV3bw79iu
+	 MRFOyiLlAzyqG/4UwvkFeNkVVuel8NH5rRpODeuULeaiH/bQDGOlXtMZ5C14IPTwFL
+	 k7BwaWsFHnZdQ==
+Received: by mercury (Postfix, from userid 1000)
+	id 44F4B1060A24; Mon, 30 Jan 2023 00:51:34 +0100 (CET)
+Date: Mon, 30 Jan 2023 00:51:34 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>,
+	Jassi Brar <jassisinghbrar@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Lee Jones <lee@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
-	Chuanhong Guo <gch981213@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org, benliang.zhao@mediatek.com,
-	bin.zhang@mediatek.com
-Subject: Re: [RESEND PATCH v5 07/10] dt-bindings: mtd: Split ECC engine with
- rawnand controller
-Message-ID: <202301310056.ZF1Yst4B-lkp@intel.com>
-References: <20230130030656.12127-8-xiangsheng.hou@mediatek.com>
+	dri-devel@lists.freedesktop.org, linux-gpio@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, linux-media@vger.kernel.org,
+	openbmc@lists.ozlabs.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-pm@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Add missing
+ (unevaluated|additional)Properties on child node schemas
+Message-ID: <20230129235134.bmlr33mmxkges22h@mercury.elektranox.org>
+References: <20230124230228.372305-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230130030656.12127-8-xiangsheng.hou@mediatek.com>
+In-Reply-To: <20230124230228.372305-1-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230130_085449_650597_C52148BA 
-X-CRM114-Status: GOOD (  14.93  )
+X-CRM114-CacheID: sfid-20230130_092802_749879_5A89911D 
+X-CRM114-Status: GOOD (  16.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,45 +88,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4001557912506028215=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Xiangsheng,
 
-Thank you for the patch! Perhaps something to improve:
+--===============4001557912506028215==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gicruapujo3hf3sv"
+Content-Disposition: inline
 
-[auto build test WARNING on broonie-spi/for-next]
-[also build test WARNING on robh/for-next mtd/mtd/next mtd/mtd/fixes linus/master v6.2-rc6 next-20230130]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Xiangsheng-Hou/spi-mtk-snfi-Change-default-page-format-to-setup-default-setting/20230130-111021
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-patch link:    https://lore.kernel.org/r/20230130030656.12127-8-xiangsheng.hou%40mediatek.com
-patch subject: [RESEND PATCH v5 07/10] dt-bindings: mtd: Split ECC engine with rawnand controller
-reproduce:
-        # https://github.com/intel-lab-lkp/linux/commit/f3a5f8d573b8be1d7a10224f0e10a699d9a0ea09
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Xiangsheng-Hou/spi-mtk-snfi-Change-default-page-format-to-setup-default-setting/20230130-111021
-        git checkout f3a5f8d573b8be1d7a10224f0e10a699d9a0ea09
-        make menuconfig
-        # enable CONFIG_COMPILE_TEST, CONFIG_WARN_MISSING_DOCUMENTS, CONFIG_WARN_ABI_ERRORS
-        make htmldocs
+--gicruapujo3hf3sv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
+Hi,
 
-All warnings (new ones prefixed by >>):
+On Tue, Jan 24, 2023 at 05:02:28PM -0600, Rob Herring wrote:
+> Just as unevaluatedProperties or additionalProperties are required at
+> the top level of schemas, they should (and will) also be required for
+> child node schemas. That ensures only documented properties are
+> present.
+>=20
+> Add unevaluatedProperties or additionalProperties as appropriate, and
+> then add any missing properties flagged by the addition.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> [...]
+> diff --git a/Documentation/devicetree/bindings/power/supply/ti,lp8727.yam=
+l b/Documentation/devicetree/bindings/power/supply/ti,lp8727.yaml
+> index ce6fbdba8f6b..0542d4126cf5 100644
+> --- a/Documentation/devicetree/bindings/power/supply/ti,lp8727.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/ti,lp8727.yaml
+> @@ -28,6 +28,7 @@ properties:
+>  patternProperties:
+>    '^(ac|usb)$':
+>      type: object
+> +    additionalProperties: false
+>      description: USB/AC charging parameters
+>      properties:
+>        charger-type:
 
->> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/mtd/mtk-nand.txt
+Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+-- Sebastian
+
+--gicruapujo3hf3sv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmPXBoUACgkQ2O7X88g7
++ppJ7Q/9G9KiN17FVwYLLs8SnUjgqv/kYKrPVShDKerSSX6M0f7jyOVMBZz/QMpm
+Qzn0tl5laK3KtKo8zTuT/nHHQrwIyURSi8k3pEYUNc4KW8lTxLA4gLOCNjU+mA3r
+hFuUUvRcrmDnS9e+du/tWzYg8mSp0eucjWzURwTq+OA2qeUlEfH+1YAb+8LWHxWP
+O1pnLG9pGJMA1D3WDQzfXB0YfKpOkPYhxczD3VK0xqO77Z/PFANzD0Us/1XKtoFn
+NcsoPPSPBA/KpyjVWi94Rgy7zCXxKTeodChRqTVNUpms71aK75cO7z13ZOSYj3Kh
+5ZDpVLxWk2Yp5UujqxsMBYkJ31nQHS63CirMS84oPRR6WKbWzl9Qavl9VdPLMDe5
+9lwmcjlHoe0MSwwwuBDuwJRuO2Yr6KcOYvepEbv0/aes6hCB0e4IGq716JG2clLQ
+ZDVV5R3dmZk3KR3Ctu5twKz22MXyzqmoemtciqIsHkrLePBXwK6ylrLJfadUpgc1
+9hvsiNNTMntVlLI3gIQvsqw3W89s8UmTQAV02ykLZ19yAXhSQW34aslkoG204Dbk
+JRW+Mp6cXkXwNoMyqq1rCt4yFIG3ys3ELjFNGRX4we4+XJ7ZVU6agwxNMbyrFuUt
+UKXHATWoGucDR6hd83W0A7eREcm/GZzUnBKCAMTu4FUu1UBEOqM=
+=p8Fr
+-----END PGP SIGNATURE-----
+
+--gicruapujo3hf3sv--
+
+
+--===============4001557912506028215==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============4001557912506028215==--
+
