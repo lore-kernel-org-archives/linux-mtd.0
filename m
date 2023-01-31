@@ -4,81 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BCE6C54EAA
-	for <linux-mtd@archiver.kernel.org>; Mon, 30 Jan 2023 22:43:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F14AC636D3
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Jan 2023 05:12:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YsnH6FmDGVCP9TgA4pMWoi77w6hSN8dzACgiSHP05Io=; b=FoCplR7dINw6no
-	b5g0cek9aJDSHDFM8kbO5pjAsVsuq7t/zXavzxMG+GnNPZeiO//HdewMhnFrwouKHYo3Y4HuhqWle
-	tUOkdu0Euw/7WglWBwsB96GR3MR9lyhCk3Z7n+NmDVUxDwgYE5X4a3rvaYQ3IEIGAyL7yoKcP7+tq
-	ATLl/hYjOKFlYxXWvo0X9JytOc8kQravCSmMc00ruG6UmWs1FItbuLkKUpVYyBxPWX4Nta2qWYR0a
-	Ievwbt3NPPfRbl02KdrqNY6G+gBWyFr3M/9PMNwKE7KQEYAo8mxJIWwFuj7T4ZHkrazWu6eW7I6DA
-	LbvXX7xrTkQBnHpUctcQ==;
+	List-Owner; bh=gki7swMxfKTHHOuKKTHdceJ4Sqtsm3BPiNJqCMR44VE=; b=OFkdwcI/m8PjBQ
+	2lVTxubld8wXO6DWJAqBfZ2svObsBIUABilQ7d7BWubYdvEDavldJLRUambwOGbFJrhvuPBlwkDIq
+	/H/iSk38TDkamzR8u6KapwpdJ/kYw5xwYDgjJd1HvoWQIOMiN1BKS0/hnE6zqJcPML9wJhLdXpmY5
+	HxaOW7qUGdw6O7uLMhksxufuQLUdvShGIvWZyH5K+Fs87B+OVmWUXvnn2J7HIhUeqRVHTxPB/kkUu
+	rAzb28JpzVCHG/AMmfUJZ1sxzUb5OagauMmGALHwe1DnAh+cpjZ9cmRsTl+kXxaX3Xfw/Was1Lgkt
+	PPqoJkugzI0AqZF10Cmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMcrq-005fvk-V5; Mon, 30 Jan 2023 22:43:15 +0000
-Received: from mail-yw1-x1132.google.com ([2607:f8b0:4864:20::1132])
+	id 1pMivo-006JXI-0s; Tue, 31 Jan 2023 05:11:44 +0000
+Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMcrg-005fsg-Br
-	for linux-mtd@lists.infradead.org; Mon, 30 Jan 2023 22:43:05 +0000
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-4a263c4ddbaso181086917b3.0
-        for <linux-mtd@lists.infradead.org>; Mon, 30 Jan 2023 14:43:03 -0800 (PST)
+	id 1pMivj-006JWH-Pd
+	for linux-mtd@lists.infradead.org; Tue, 31 Jan 2023 05:11:41 +0000
+Received: by mail-ej1-x631.google.com with SMTP id qw12so22383986ejc.2
+        for <linux-mtd@lists.infradead.org>; Mon, 30 Jan 2023 21:11:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+TZHpce+LkRMQa6vx6q9obcgDlv0XoFb3aljOsKv7qU=;
-        b=nCBrIiE+L+vdLXic+BhlJTEfwEv/ysg8qF3ePyjPsY/A6pPFUyJ9yxWfviS5IS9XZ+
-         aTkrqx4WuQWd2ry/CmUYytg0ONmjJ++XzlyAcGDLyhrZ4/IX03EskCTili/5UQq5yKge
-         +e1rwxjmS0vI2LeI41+8f4VGz+I/dUip0S2eGn72UYX+dBh2W8CPEuyvYqHBwUzQTY52
-         5vUM6PPZirJQEM/wFGgVbRt8dqUJz0ZaVONsNu44LnLGVX5dLOGLew5RenS7kd33ruoM
-         AeG1hFJb4M2UAk+s92c6xRoPBpxkWpcN0CqUVNQ0xsATgHZATATevhE+7nH+bY+9BJXI
-         PhRw==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8yN6JDIHRFYqmgH85mkduV4msHBx/Je2FjLzQMUTzC8=;
+        b=MbV7LGuBPHEJETgjKdBC8og+iKnV6M73SlF2lPIfANCOsadpIlTk1EorA1H9IZGCq8
+         q+t+2hGkjEQvjpLoiEXuKs0TpnEGc8kZb9ERU8mzuEsSISSkOj0jAliTY5xGlZ3PjoIx
+         zPy/dAli6Fhe9MEvuwpqzma4lRP+LPGdKQFTsSljqqHXsjf1BwGYC1Jj18a6cF8sFb8T
+         HtuFHh0ABm3hMnVcLusvMhV9hgMUjz4yjvPvPDhGQ+7AUsgPgEe2SnflCCjvj4rDFWy0
+         QoZvLbx6ytv026kwpPm5eIw2nSX9qjR7TOuCgcT/3iv5Dw/24Rqh0kHHX0lQel3WJnNM
+         mGfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+TZHpce+LkRMQa6vx6q9obcgDlv0XoFb3aljOsKv7qU=;
-        b=PKkN0dEpFkBGjkKV5a6K4UD7hIYDSnVW7LFp98jjdLASTU6czWIFYmGgrWc3hWYTPY
-         BvMPaslumX0MuvG/5ICq0NVM43okAuio7CQVqZKCDbpGISvfoFNm2OcFEnpx1oSHhD1j
-         YFnoUygTwLfFAErqVyLLXTlcxrfYCt9wBGIWMoTbsAh4Muppdi3wpdQ/gN9aOFl5W/aj
-         jfpxnuZQRyxedS54ZHlotYl2P8kC3E221J8x7nI6cDhI/Pmw1vwJLBuSrGIJEx5NevCQ
-         kl5qaWsxHCWCLgUKG7f9v8Xd2pBespm0wZ3yEXRBIWZ6Rf84P9vuM98A7AMHuLfJ+D/J
-         Pd+g==
-X-Gm-Message-State: AFqh2kodLJZOou+1z8LSk6oWCJOa0jdam784Op0iXbKblvkNb+/S9KEX
-	xV2cZ+HmIBo3ivhmp9AJzkzkkmzjsLlZj8RQHp4faw==
-X-Google-Smtp-Source: AMrXdXtQIx/gOYQWR7Z9y8qC4zSuzlnGWFfiiT/LekYqnnNUbvQG32KG8P3YQVm2xu2If9pxmW9DcUUds+3TfNO/91s=
-X-Received: by 2002:a05:690c:39b:b0:4f3:8d0e:edce with SMTP id
- bh27-20020a05690c039b00b004f38d0eedcemr4580998ywb.185.1675118582401; Mon, 30
- Jan 2023 14:43:02 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8yN6JDIHRFYqmgH85mkduV4msHBx/Je2FjLzQMUTzC8=;
+        b=rKgCIzm8NUxNOwiLDFHH4UY1JNqSyJNQRPR2uMGq5lEgeGik758i6AzRz2b1Y3F/qn
+         7Wsah+P1XQb/LwHqozaP3Uj9VtemyiJSpZaCPLtMf4ZPaLL7JNLo+f3pTLbgzAW7NeyJ
+         gmKIOqQN5GI/aB2M1rTdm1F4G2oPzqhWt46x5zZPjB0VzR5Yg4BhPtSfKgazPpDXVQxR
+         xSmdgNA9t60T2pDrCSNLFkG+CmsWCUZXCl9OAB+anwEHgX0MbeNVVUyKMnNxZA4hOK8Q
+         5hoH2eAitYDa+GWJRr3YhHa1awLh9oH/saInf5JKAUeodnV2gOt7Lb+UUjGzh14SJmyX
+         lS7w==
+X-Gm-Message-State: AO0yUKXUuawL+OT1JvTVj72kuWPXuTdxM1o66znqGb+m6yDEPrAN+nHe
+	CL8dAX94c7ka7yzFnk4boAoa3w==
+X-Google-Smtp-Source: AK7set/AtcAivfLd4J7FxA/usB1cuUxBlA7MDTBjBLL1jGWt6yqeMYER3cU6liAo5Sq21RblLDbxVQ==
+X-Received: by 2002:a17:906:6d2:b0:88a:8e57:f05b with SMTP id v18-20020a17090606d200b0088a8e57f05bmr4193197ejb.22.1675141895518;
+        Mon, 30 Jan 2023 21:11:35 -0800 (PST)
+Received: from [192.168.2.104] ([79.115.63.122])
+        by smtp.gmail.com with ESMTPSA id ss2-20020a170907c00200b0084d381d0528sm7759858ejc.180.2023.01.30.21.11.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Jan 2023 21:11:35 -0800 (PST)
+Message-ID: <b1841011-ba05-e290-d9b1-336a2346b1e3@linaro.org>
+Date: Tue, 31 Jan 2023 05:11:33 +0000
 MIME-Version: 1.0
-References: <20230127093217.60818-1-krzysztof.kozlowski@linaro.org>
- <20230127093217.60818-4-krzysztof.kozlowski@linaro.org> <CACRpkdbOZLhQ1DTNJowNXF=O-Nvpqcb_A+PwkPWFiUSQUbkR9A@mail.gmail.com>
- <755d4a78-0b23-a381-c422-d12b0063f06f@linaro.org>
-In-Reply-To: <755d4a78-0b23-a381-c422-d12b0063f06f@linaro.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 30 Jan 2023 23:42:51 +0100
-Message-ID: <CACRpkdZWqea+RT75g5CkCzT9zMOj419GMJeydgpZGSLvC9Xoog@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] dt-bindings: serial: restrict possible child node names
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Damien Le Moal <damien.lemoal@opensource.wdc.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Linus Walleij <linusw@kernel.org>, 
-	Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, Marek Vasut <marex@denx.de>, 
-	Lubomir Rintel <lkundrak@v3.sk>, - <devicetree@vger.kernel.org>, 
-	Marc Zyngier <maz@kernel.org>, linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org, 
-	linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH v3 4/9] mtd: spi-nor: Reorder the preparation vs locking
+ steps
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org
+Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
+ Alvin Zhou <alvinzhou@mxic.com.tw>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20221215081241.407098-1-miquel.raynal@bootlin.com>
+ <20221215081241.407098-5-miquel.raynal@bootlin.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20221215081241.407098-5-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230130_144304_434630_548BE9BC 
-X-CRM114-Status: GOOD (  16.05  )
+X-CRM114-CacheID: sfid-20230130_211139_895705_FCA7FBAC 
+X-CRM114-Status: GOOD (  22.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,46 +94,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Jan 29, 2023 at 4:48 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
-> On 27/01/2023 14:29, Linus Walleij wrote:
-> > On Fri, Jan 27, 2023 at 10:32 AM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >
-> >> The re-usable serial.yaml schema matches every property with ".*"
-> >> pattern, thus any other schema referencing it will not report unknown
-> >> (unevaluated) properties.  This hides several wrong properties.  It is
-> >> a limitation of dtschema, thus provide a simple workaround: expect
-> >> children to be only of few names matching upstream usage (Bluetooth,
-> >> GNSS, GPS and MCU).
-> >>
-> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >
-> > Fair enough,
-> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> >
-> > However I think V.35 WAN devices (high speed serial network links)
-> > should actually be using this? They are just some fancy serial port
-> > after all. Cf
-> > Documentation/devicetree/bindings/net/intel,ixp4xx-hss.yaml
-> >
-> > No big deal I guess since they are mostly an anarchronism and not
-> > on the table right now.
->
-> intel,ixp4xx-hss is not part of the expansion bus node.
+Hi, Miquel,
 
-True, my point is that WAN V.35 devices in general should be,
-so that the pattern properties should include wan.
+On 12/15/22 08:12, Miquel Raynal wrote:
+> The ->prepare()/->unprepare() hooks are now legacy, and there are only
+> two controllers left supporting them. In both cases, the implementation
 
-But we can add it later if a user appears.
+now there's only one, hisi-sfc.c.
 
-Yours,
-Linus Walleij
+> acquires a mutex, which is somehow redundant with the spi-nor main lock
+
+I see a HIFMC_MAX_CHIP_NUM with value 2, the controller seems to be able
+to operate 2 flashes in parallel and that's why the internal mutex.
+
+> that we acquire as well in the spi_nor_[un]lock_and_[un]prep() helpers.
+> 
+> While the mutex taken in the core is necessary, the helper can be
+> reorganized to first do the preparation, then acquire the core
+> lock. This is necessary in order to be able to improve the locking
+> mechanism in the core and should have no side effect.
+> 
+
+the change seems fine for hisi, and since we're no longer adding drivers
+under spi-nor/controllers we should be good.
+
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>   drivers/mtd/spi-nor/core.c | 15 ++++++---------
+>   1 file changed, 6 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 38a57aac6754..de77ca55f74d 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1074,23 +1074,20 @@ int spi_nor_lock_and_prep(struct spi_nor *nor)
+
+you'll have to rename it to spi_nor_prep_and_lock to reflect the order
+of ops.
+
+>   {
+>   	int ret = 0;
+>   
+> -	mutex_lock(&nor->lock);
+> -
+> -	if (nor->controller_ops &&  nor->controller_ops->prepare) {
+> +	if (nor->controller_ops && nor->controller_ops->prepare)
+>   		ret = nor->controller_ops->prepare(nor);
+> -		if (ret) {
+> -			mutex_unlock(&nor->lock);
+> -			return ret;
+> -		}
+> -	}
+> +
+> +	mutex_lock(&nor->lock);
+> +
+>   	return ret;
+>   }
+> 
+
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
