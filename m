@@ -4,81 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A9C7C636CC
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Jan 2023 09:00:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B02A5C38142
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Jan 2023 13:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:From:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HOf00Mt+mecg5fl77hFEGmnw6shwLcxFjax2LoZWbRU=; b=RumgeYT674i9qz
-	yNHO1ZUecj1SMqbteWIzcl0nKxaGSSMRUTHNXM9McpK22XCanwhDu56GAxOA7pFMNMTjHqn9ZdkZN
-	qBDFDFK5+kDn+zMXlxhrd5P83KXN14EnCCbSVOZWcnDZKuAH6j8QLwzEFhwQ3FIxUwe5FlqgktPwb
-	lqQzl+NXcBRiiVpBclX5DPhR3vev3PyBBKpscXN2dJPlO1NWdCmkXNirQrDMV/BuqSzqH4YovAFRW
-	kpCodwpNLvxwgnHD1UXMS48RDByJf2JMICHyWC64cOMuPq2Iz8fyld15/jSQnmoAirLdrJMAEbj3r
-	rACXk586Q6gasImjcHQg==;
+	List-Owner; bh=igJINTpIuTx/Ltka5K1hi1TXk+axaOQ6/mRsIp3M/Ag=; b=moWYQ6Op+q8S1i
+	9+u+L4AeFq4UuBxe1E5u5NATYk7XWqe0XiOPEGeVb+CLEkpSmArjrmajDtWHHGtSwpdCBbPYs8ywg
+	SsgRGuMC+4b7D491ev8llloNk/Es1A89KOiKmNAGKxJsGOW3WMxcjKzOcYXJYk1mqjLBjZdM4zsgN
+	V3F/3oNbVwc0mXaGy8VQOq3lJFVgr34DfjleEpbfv4UY1vAviIFQfTEOjW0/uyt+98I0f998EVJX2
+	k/01fNGzRQ7vWi+ANeuKFESPTj3yG/FJ1hghmtb2qRMCXUQqgwyY/posZKjQRFEFADPH0sYSnrXAs
+	LFAANrqLXCalHKL9uUhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMmV1-006si5-UB; Tue, 31 Jan 2023 09:00:19 +0000
-Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
+	id 1pMqOW-0080OF-MI; Tue, 31 Jan 2023 13:09:52 +0000
+Received: from out30-7.freemail.mail.aliyun.com ([115.124.30.7])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMmUy-006sgc-Sn
-	for linux-mtd@lists.infradead.org; Tue, 31 Jan 2023 09:00:18 +0000
-Received: by mail-ej1-x633.google.com with SMTP id bk15so39503692ejb.9
-        for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2023 01:00:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YVhZ75/1BJntMwjdrWXFKhLK+whyj6nKMsfuAvUzboE=;
-        b=QVwvwXTnU7c2WB1/81AcFN4NiLnQrf9SjNaNbW6HbX5JZjkJMXg+ORQKFmXSMcGVqL
-         K79XySAjUSt9XroiSimmqEtQ4K1S5M0NijaM+AIR0M+Z7qP4SqZFZkkcDgrprfx1E/GN
-         PUOkxkf2emS9jHkXCbngFdh+6tK2g/81/H5J6hsKU3BHrBLXZGkAFmO/2NaaTv7ZOelb
-         Vq25C1De8UWo/dxbuzHk/WE4G/scq3jynYA8t0JOURy+dt4PClv53luID3brCjPbwMh6
-         VCHmToi7mQZ4Fr2fnH5K5gQvrN4sRP0Z329tE7h3HLfbEse1KReUrT3oLpENuJ8E8V1M
-         xoKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YVhZ75/1BJntMwjdrWXFKhLK+whyj6nKMsfuAvUzboE=;
-        b=iU8LPSyYaP96NakuQlKpptB28atR4SnTF++Lj2TXFCHKy61u4CaNnw/ldotXln/0Ot
-         GA5frQG6UJP32m9g4BHjNzSYJHrcXZvnsjP3Z0LSs1SkBxcdy23CNyNihz+1hbwoN3xZ
-         YjkjPWFti6RPCvIqNeMCL0Fo0ek9Z3sb2NSE0Ex2CMOJsjwA15msjriJXtdntb0GXVcW
-         vsrn8owJ6jID6kH5ARcX5oWLEcSPXvkiWNzeLfNw1wkweWkKL59QXDqc2AX1hAJ5mZyj
-         5xoAtfra6sT9tgHc2BLzUA2a07bmMK0xo/rcoDGuoUufPd4rRS7qvYLInsZ/C3JAKyZB
-         ++ig==
-X-Gm-Message-State: AO0yUKXSi4pkm/BNiqIQ+apB1SAev1qcFSh+yr6yd87p01OnpRAKsLiT
-	qpLEzgnCLtnXIGQzktR3ZktWSw==
-X-Google-Smtp-Source: AK7set/BgNNTwTxtqlRMF5Dt4dYOU5e8i5JGgeI+wqXcMG90Q7nmUS1+2KDhWKptOR6NUy7N7ALRnQ==
-X-Received: by 2002:a17:906:a2d0:b0:883:c829:fc5e with SMTP id by16-20020a170906a2d000b00883c829fc5emr11787487ejb.68.1675155613196;
-        Tue, 31 Jan 2023 01:00:13 -0800 (PST)
-Received: from [192.168.2.104] ([79.115.63.122])
-        by smtp.gmail.com with ESMTPSA id 11-20020a170906318b00b0088a161c232esm1475453ejy.172.2023.01.31.01.00.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Jan 2023 01:00:12 -0800 (PST)
-Message-ID: <9224dca4-561d-d492-0b09-3629c95acea7@linaro.org>
-Date: Tue, 31 Jan 2023 11:00:11 +0200
+	id 1pMqOR-0080KT-78
+	for linux-mtd@lists.infradead.org; Tue, 31 Jan 2023 13:09:49 +0000
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=guoheyi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VaX6U-C_1675170563;
+Received: from 30.233.48.168(mailfrom:guoheyi@linux.alibaba.com fp:SMTPD_---0VaX6U-C_1675170563)
+          by smtp.aliyun-inc.com;
+          Tue, 31 Jan 2023 21:09:35 +0800
+Message-ID: <a5920ee3-7168-7415-f975-fcdbdde069d5@linux.alibaba.com>
+Date: Tue, 31 Jan 2023 21:09:23 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 1/2] mtd: spi-nor: spansion: Consider reserved bits in
- CFR5 register
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.6.1
+From: Heyi Guo <guoheyi@linux.alibaba.com>
+Subject: Re: [PATCH] drivers/spi-nor: add support for Winbond w25q01jv
+To: Michael Walle <michael@walle.cc>
+Cc: linux-kernel@vger.kernel.org, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org
+References: <20230128033957.125853-1-guoheyi@linux.alibaba.com>
+ <c7c3c4cf5dd477953e366053859df08f@walle.cc>
 Content-Language: en-US
-To: Takahiro.Kuwano@infineon.com, tkuw584924@gmail.com
-Cc: linux-mtd@lists.infradead.org, pratyush@kernel.org, michael@walle.cc,
- miquel.raynal@bootlin.com, richard@nod.at, Bacem.Daassi@infineon.com,
- stable@vger.kernel.org
-References: <493d9a10-aaf3-70f6-36c3-9a2cf39f0759@linaro.org>
- <20230110164703.83413-1-tudor.ambarus@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230110164703.83413-1-tudor.ambarus@linaro.org>
+In-Reply-To: <c7c3c4cf5dd477953e366053859df08f@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230131_010016_963880_AC9D5690 
-X-CRM114-Status: GOOD (  10.79  )
+X-CRM114-CacheID: sfid-20230131_050947_524083_581A1941 
+X-CRM114-Status: GOOD (  17.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,31 +60,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 10.01.2023 18:47, Tudor Ambarus wrote:
-> CFR5[6] is reserved bit and must be always 1. Set it to comply with flash
-> requirements. While fixing SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_{EN, DS}
-> definition, stop using magic numbers and describe the missing bit fields
-> in CFR5 register. This is useful for both readability and future possible
-> addition of Octal STR mode support.
-> 
-> Fixes: c3266af101f2 ("mtd: spi-nor: spansion: add support for Cypress Semper flash")
-> Cc:stable@vger.kernel.org
-> Reported-by: Takahiro Kuwano<Takahiro.Kuwano@infineon.com>
-> Signed-off-by: Tudor Ambarus<tudor.ambarus@linaro.org>
-> ---
->   drivers/mtd/spi-nor/spansion.c | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
-
-
-both applied, thanks!
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Ck9uIDIwMjMvMS8zMCDkuIvljYg1OjI5LCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+IEhpLAo+Cj4+
+IFdpbmJvbmQgVzI1UTAxSlYgaXMgYSAxMjhNQiBTUEktTk9SIGZsYXNoIGNoaXAuCj4+Cj4+IFNp
+Z25lZC1vZmYtYnk6IEhleWkgR3VvIDxndW9oZXlpQGxpbnV4LmFsaWJhYmEuY29tPgo+Pgo+PiAt
+LSAKPj4gQ2M6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4KPj4g
+Q2M6IFByYXR5dXNoIFlhZGF2IDxwcmF0eXVzaEBrZXJuZWwub3JnPgo+PiBDYzogTWljaGFlbCBX
+YWxsZSA8bWljaGFlbEB3YWxsZS5jYz4KPj4gQ2M6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXlu
+YWxAYm9vdGxpbi5jb20+Cj4+IENjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0
+Pgo+PiBDYzogVmlnbmVzaCBSYWdoYXZlbmRyYSA8dmlnbmVzaHJAdGkuY29tPgo+PiBDYzogbGlu
+dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4gLS0tCj4+IMKgZHJpdmVycy9tdGQvc3BpLW5v
+ci93aW5ib25kLmMgfCAzICsrKwo+PiDCoDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKykK
+Pj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivd2luYm9uZC5jIAo+PiBiL2Ry
+aXZlcnMvbXRkL3NwaS1ub3Ivd2luYm9uZC5jCj4+IGluZGV4IGNhMzlhY2Y0MTEyYzguLjBjZDQ5
+ZjUzNGJmOGQgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivd2luYm9uZC5jCj4+
+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivd2luYm9uZC5jCj4+IEBAIC0xNDIsNiArMTQyLDkg
+QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIAo+PiB3aW5ib25kX25vcl9wYXJ0c1td
+ID0gewo+PiDCoMKgwqDCoCB7ICJ3MjVxNTEyanZxIiwgSU5GTygweGVmNDAyMCwgMCwgNjQgKiAx
+MDI0LCAxMDI0KQo+PiDCoMKgwqDCoMKgwqDCoMKgIE5PX1NGRFBfRkxBR1MoU0VDVF80SyB8IFNQ
+SV9OT1JfRFVBTF9SRUFEIHwKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IFNQSV9OT1JfUVVBRF9SRUFEKSB9LAo+PiArwqDCoMKgIHsgIncyNXEwMWp2IiwgSU5GTygweGVm
+NDAyMSwgMCwgNjQgKiAxMDI0LCAyMDQ4KQo+PiArwqDCoMKgwqDCoMKgwqAgTk9fU0ZEUF9GTEFH
+UyhTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBTUElfTk9SX1FVQURfUkVBRCkgfSwKPgo+IEknZCBndWVzcyB0aGlzIGZs
+YXNoIGhhcyBTRkRQIHN1cHBvcnQsIGNvcnJlY3Q/CgpZZXMsIHRoZSBzcGVjIHNheXMgaXQgc3Vw
+cG9ydHMgU0ZEUCA6KQoKCj4gSW4gdGhpcyBjYXNlLAo+IGNvdWxkIHlvdSBwbGVhc2UgdHJ5IHRo
+ZSBsYXRlc3QgbmV4dCAob3IgLXJjKSBrZXJuZWwgd2l0aG91dAo+IHRoaXMgY2hhbmdlPwoKSXMg
+djYuMi1yYzMgT0sgZm9yIHRoZSB0ZXN0PyBJZiBzbywgc3VyZWx5IEkgY2FuIGRvIHRoYXQuCgpU
+aGFua3MgZm9yIHlvdXIgY29tbWVudHMgOikKCkhleWkKCgo+IEluIHRoZSBtZWFudGltZSB3ZSBo
+YXZlIGEgZ2VuZXJpYyBzcGktbm9yIGRyaXZlciBbMV0KPiBzbyB5b3UgZG9uJ3QgbmVlZCBhIG5l
+dyBlbnRyeSBpbiBtb3N0IGNhc2VzLgo+Cj4gQXBhcnQgZnJvbSB0aGF0LCBpdCB3b3VsZCBiZSBu
+aWNlIGlmIHlvdSBjb3VsZCBkdW1wIHRoZQo+IFNGRFAgdGFibGVzLCBzZWUgWzJdLgo+Cj4gLW1p
+Y2hhZWwKPgo+IFsxXSAKPiBodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC92Ni4yLXJj
+NS9zb3VyY2UvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMjTDE2MzgKPiBbMl0gaHR0cHM6Ly9s
+b3JlLmtlcm5lbC5vcmcvci80MzA0ZTE5ZjMzOTlhMGE2ZTg1NjExOWQwMWNjYWJlMEB3YWxsZS5j
+Yy8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
