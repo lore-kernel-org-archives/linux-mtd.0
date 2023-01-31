@@ -4,81 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F365C636CD
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Jan 2023 08:59:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10499C636CC
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Jan 2023 08:59:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CwUixB0bvhkwhIOMKIeZ5h8xYBKbN9zE4IfIJ0cSoGs=; b=OKG8LHC7320FJa
-	qW+JzKdnmZQJhlyV+PGr8ATZ72bQZWv1ZieHUvj3A82npYi2HvEGG6fyZJvTR5wGMjCsTjjaci5Vv
-	cxCA5je57Up+92M+7KylzfwWulPjDxDLUTDOIn/NpVrH7Dnq6PUuhHbtknUUxrfPXRpNSjD5Wj0l2
-	hFMnYOwg0iNCudWGc/+VDfc2qJg9s0H70FIuUphPVDZRKoua09kWotgdRYhSQqU0gzN/jSQWM6oyI
-	kkdeeZW9nQoCDwZVGhhyahute8cvTDou6KMRu8noo1K+6BLcbFrucK9WsTeVi38SF0pbQJlEv1a8O
-	tyaazdyuGHck8S+hFPTw==;
+	List-Owner; bh=HtbhMtCFQrTaKi7rrFFf8h5EBQioz9qiMl3S5ZUoa0Y=; b=X0l++p7HI+Gsmx
+	BZa6SXa995Yim0PwgBGNJi4kBSz7d+J7T+TOEgFQt1Pb1z5vn+SFf0n9X04bZq8RFpJ+62Xk3FkFE
+	i8nirZ5BiZ43D+k1Kxya6gb8lIyKjHMWDAzjUdf1LLbSLR1i1N4Zj+ZkKJobHKRfH+00NBCjYL0GD
+	l0oj4UsPQ7zRIY2S0gjajpJg9J80554c6a0aYGUmVmRQm7LsDRwuWykiFdpaPuTFwEVGZWL3mzjMV
+	/anVWYyYS1aYmaJr3fG+MW7iJ7CZLmd38D+P2o8ZYnUY3uCBP/nlkdibFYcdnjHcwaT53PJKbuYk+
+	yga8SZV/TqmkBcGL+YqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMmTO-006sC8-Gm; Tue, 31 Jan 2023 08:58:38 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1pMmTw-006sNM-BJ; Tue, 31 Jan 2023 08:59:12 +0000
+Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMmTL-006sAq-RA
-	for linux-mtd@lists.infradead.org; Tue, 31 Jan 2023 08:58:37 +0000
-Received: by mail-ej1-x632.google.com with SMTP id m2so39064221ejb.8
-        for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2023 00:58:33 -0800 (PST)
+	id 1pMmTt-006sLW-Dz
+	for linux-mtd@lists.infradead.org; Tue, 31 Jan 2023 08:59:10 +0000
+Received: by mail-ed1-x530.google.com with SMTP id cw4so8550634edb.13
+        for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2023 00:59:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CAJfnR6fa3MBsUu3iXXYgokOOtyOI7KhZSRkynFniHg=;
-        b=JkTkS+2rjbNOSlZiA3zAqBj7mmSK37oNiNJoq6N0ed+a5XQQtJRCjYutzP8GgcQvIc
-         xbNwteWMV1Hy2wadM1Xh7zckRxLzuuL5qFEMpzCEPN+lIKHpKly5knwZnZHnC2c7HS3s
-         9TEMPSALr+AspEDIpl7O46lTHjlGtUh2rFh06QM0qcixBJmOONLCNuxfZimfLSWg1q8p
-         IjHYPCH0qK6quQ/H9L0Y4hWIRIuWiCGcyCUQNq5U0lGDLq13d+JR3kyi4JnCk5upym15
-         LY1oKim+jL4c5vVMpONhEOG+Dr7D4h7dcBeO/GmH7yG2wYf7RPCS6+C+QYvjfYkWVnxX
-         oxaQ==
+        bh=SPt41RSXqAxCKBmzSJxC29sn12Bxhg/i2r1+DtUK584=;
+        b=qulLNpEYEScq0Jd/coJGO0Ugu7gTenJOgurMepPFAWeOb2ksQWhQjoO5EPLdXjo986
+         BwvMKdjqaU8HhmnvQF4gKzj64tXhwyzm8we5so9jg2NyRe6SjvwBuTleqycadf98FdNv
+         U8yF7a4j/OqJRFKqTYHGM4fUUASEhEbyBHyyEaAh0dVfNWyWo/yFr24aBtIt7RryvXjI
+         u/F5IRekumUr9AiN/83F5hKyDcpd+eVKj9tOUL7A2Q1YARtbj0xj2eGCmJd3aXrV4BkA
+         LTsJUfAm5VL5s5vI4MW5ntyQPGn4MWGcA0Yr0wagmjSBW6PLtaCgg3ugvz4W+xiQr1tT
+         8NAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CAJfnR6fa3MBsUu3iXXYgokOOtyOI7KhZSRkynFniHg=;
-        b=ZFiarLaK0wz0KLMBM0dN0GHSPSqIeAyJcBQ7DpI/X1ACjcRy1QCbvuA9YmBN+0goel
-         0s42iZ+ujGKz5dcQTjvs+tHEX9rbOhzoxLw8vtbS23mpRdhmg5NqEaOTtPNDRLwh83JB
-         kGzoULdZQR86az2cANCTpRQ7bkke/kZJfTmIOvFdu6sekYIXgPYHcvzGQasG76/0Ktqp
-         XmWj2p3hSYLnIh8X2VG9mlFRjueNZymeqqmmT8Gl0hhdwFleCwe0T68GVhYZwncBV33x
-         uHpRWQfmPpoQVVZF8oRYqLX98iswdftSfb8hLOU2lh2ayhb0lqg64zfrwi+PtFxEN0Ib
-         +K7w==
-X-Gm-Message-State: AO0yUKXMgwiqHE5BpBERKBaj9coubzvGrv892v6AvTRrIk3iSta4aP1t
-	zBwVmAqJ8ka3bra0qBtF+tg7qrLiOy8q0366
-X-Google-Smtp-Source: AK7set+2tG9/pHS/JAaPaeSjIod59bnjV7G4qPj/Wdlonz5su46y+RDgsBF6WUH/ANgRvtkh6y7fvw==
-X-Received: by 2002:a17:906:b812:b0:880:3129:d84a with SMTP id dv18-20020a170906b81200b008803129d84amr13866531ejb.60.1675155511617;
-        Tue, 31 Jan 2023 00:58:31 -0800 (PST)
+        bh=SPt41RSXqAxCKBmzSJxC29sn12Bxhg/i2r1+DtUK584=;
+        b=vCs7oI3uZB68Hwr0T8YeowSCLQmKPI+zi0HQULf/abxxxg1VynNVENlOPfFKtbyRIf
+         7aJtIa+C/Ab6IFQ9voqVnSyHzLQhqjD6aVsawoUIEYAjX1XiUgHub82ZVkxym/3XtG86
+         X+3fRGoUQGh6Hpmh3aZZnFbQigYqbLbcoQUVh7ciJehC3IFEEH9+s0oKKY45FqvKpKOY
+         Xx1V203p+hHnoAssZlpFOciX+71oKFarfcgsOZM+SpPhxYTmVPQJ7dFrn+av3Zk2VEJb
+         qyae2r9OGydb0EvuW62eKlX3Ye0AF0knC39JEUy0MnK+nQdoitMbs1VuExizx6ntVMRp
+         9qYQ==
+X-Gm-Message-State: AO0yUKXgwahYgdEPGkuxm7XOSka7pN0W8hIWZSFBpq7lGiuRA3VCZ7bt
+	5kaiDNhSHA/SV03dJIMo7JaJeA==
+X-Google-Smtp-Source: AK7set9yliRCind0S3HgLNwz9u1YKJucnvRx4VfMrY+EXzafiRwwOJs9CFmwlobK7pzxgOCaxSsbVw==
+X-Received: by 2002:aa7:df15:0:b0:4a2:2d5c:9b06 with SMTP id c21-20020aa7df15000000b004a22d5c9b06mr12824660edy.17.1675155544941;
+        Tue, 31 Jan 2023 00:59:04 -0800 (PST)
 Received: from [192.168.2.104] ([79.115.63.122])
-        by smtp.gmail.com with ESMTPSA id c7-20020a170906d18700b00871f66bf354sm7989817ejz.204.2023.01.31.00.57.44
+        by smtp.gmail.com with ESMTPSA id q11-20020aa7d44b000000b0046ac460da13sm8026715edr.53.2023.01.31.00.58.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Jan 2023 00:58:02 -0800 (PST)
-Message-ID: <9e9a080b-62d7-38ef-b8cc-53a9eb70b130@gmail.com>
-Date: Tue, 31 Jan 2023 10:57:43 +0200
+        Tue, 31 Jan 2023 00:59:04 -0800 (PST)
+Message-ID: <37d80e1e-9f6d-8e5f-ff3e-105343d4c681@linaro.org>
+Date: Tue, 31 Jan 2023 10:58:54 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.2
-Subject: Re: [PATCH -next] mtd: spi-nor: core: fix implicit declaration
- warning
-To: Zeng Heng <zengheng4@huawei.com>, tudor.ambarus@microchip.com,
- pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, liwei391@huawei.com
-References: <20220923031457.56103-1-zengheng4@huawei.com>
-From: Tudor Ambarus <tudor.ambarus@gmail.com>
+Subject: Re: [PATCH v3 1/9] mtd: spi-nor: Create macros to define chip IDs and
+ geometries
 Content-Language: en-US
-In-Reply-To: <20220923031457.56103-1-zengheng4@huawei.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org
+Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
+ Alvin Zhou <alvinzhou@mxic.com.tw>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20221215081241.407098-1-miquel.raynal@bootlin.com>
+ <20221215081241.407098-2-miquel.raynal@bootlin.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20221215081241.407098-2-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230131_005835_916656_5784D620 
-X-CRM114-Status: UNSURE (   7.84  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230131_005909_532100_454B9574 
+X-CRM114-Status: GOOD (  11.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,23 +94,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAyMy4wOS4yMDIyIDA2OjE0LCBaZW5nIEhlbmcgd3JvdGU6Cj4gc3BpLW5vci9jb3JlLmMg
-bmVlZHMgdG8gaW5jbHVkZSBsaW51eC9kZWxheS5oLAo+IG9yIGl0IHdvdWxkIHJhaXNlIGJlbG93
-IGNvbXBpbGUgd2FybmluZzoKPiAKPiBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYzogSW4gZnVu
-Y3Rpb24g4oCYc3BpX25vcl9zb2Z0X3Jlc2V04oCZOgo+IGRyaXZlcnMvbXRkL3NwaS1ub3IvY29y
-ZS5jOjI3Nzk6MjogZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmHVz
-bGVlcF9yYW5nZeKAmSBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0KPiAg
-IDI3NzkgfCAgdXNsZWVwX3JhbmdlKFNQSV9OT1JfU1JTVF9TTEVFUF9NSU4sIFNQSV9OT1JfU1JT
-VF9TTEVFUF9NQVgpOwo+ICAgICAgICB8ICBefn5+fn5+fn5+fn4KPiAKPiBGaXhlczogZDczZWU3
-NTM0Y2M1ICgibXRkOiBzcGktbm9yOiBjb3JlOiBwZXJmb3JtIGEgU29mdCBSZXNldCBvbiBzaHV0
-ZG93biIpCj4gU2lnbmVkLW9mZi1ieTogWmVuZyBIZW5nIDx6ZW5naGVuZzRAaHVhd2VpLmNvbT4K
-CkFwcGxpZWQgdG8gZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
-L210ZC9saW51eC5naXQsIApzcGktbm9yL25leHQgYnJhbmNoLgoKVGhhbmtzLAp0YQoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
-RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+
+
+On 15.12.2022 10:12, Miquel Raynal wrote:
+> The INFO() macro defines an ID array and a couple of geometry
+> properties. Right now all its lines are duplicated twice because of the
+> INFO6() macro (for extended IDs) and soon as well we will need to add a
+> geometry parameter to include the number of banks.
+> 
+> In order to limit the code duplication, let's create a number of
+> intermediate macros which will facilitate defining high-level INFOX()
+> macros.
+> 
+> There is not functional change.
+s/not/no and applied to spi-nor/next.
+
+Thanks!
+> 
+> Signed-off-by: Miquel Raynal<miquel.raynal@bootlin.com>
+> Reviewed-by: Pratyush Yadav<pratyush@kernel.org>
+> ---
+>   drivers/mtd/spi-nor/core.h | 43 ++++++++++++++++++--------------------
+>   1 file changed, 20 insertions(+), 23 deletions(-)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
