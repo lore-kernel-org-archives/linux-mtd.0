@@ -4,85 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F14AC636D3
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Jan 2023 05:12:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2C6EC38142
+	for <linux-mtd@archiver.kernel.org>; Tue, 31 Jan 2023 05:29:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gki7swMxfKTHHOuKKTHdceJ4Sqtsm3BPiNJqCMR44VE=; b=OFkdwcI/m8PjBQ
-	2lVTxubld8wXO6DWJAqBfZ2svObsBIUABilQ7d7BWubYdvEDavldJLRUambwOGbFJrhvuPBlwkDIq
-	/H/iSk38TDkamzR8u6KapwpdJ/kYw5xwYDgjJd1HvoWQIOMiN1BKS0/hnE6zqJcPML9wJhLdXpmY5
-	HxaOW7qUGdw6O7uLMhksxufuQLUdvShGIvWZyH5K+Fs87B+OVmWUXvnn2J7HIhUeqRVHTxPB/kkUu
-	rAzb28JpzVCHG/AMmfUJZ1sxzUb5OagauMmGALHwe1DnAh+cpjZ9cmRsTl+kXxaX3Xfw/Was1Lgkt
-	PPqoJkugzI0AqZF10Cmg==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=IPFHBVeB8Pb6Tnh4I0npUa3VAE5fjpC8bIwu5eAlJA4=; b=flN1rQZ8pslXmPrT623VPE6HPU
+	4XJ8UTbr84mdpYdNjarwqsLseJIAp03uEXEoVJmazEfq01RJ+9pTSP7IL4V3QSvTlr+H/LG0BJ3+Z
+	Hu29AyHxTdOxEYxMtQMHt1nWjZIRDILrQ20yYLaHYYl4LC6lilqU6Tb5VxOX9MYxTnrB0gHTgM7pP
+	iL1JnG3S7mt6bAfaRcrI0xMNMtqAgJNgnz2WLEZ3SdCvHo4fODghp2XH4BEHsS4AxhBjaTqSwQ+Pw
+	OTTRuQzFGmB/um7BB0zGwcNDcXTeou2WZ2DctjJM687r4w08A7MFSVta66+YJo27neytoWl3DrIAl
+	ubJoGsWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMivo-006JXI-0s; Tue, 31 Jan 2023 05:11:44 +0000
-Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+	id 1pMjDF-006KuQ-Vs; Tue, 31 Jan 2023 05:29:46 +0000
+Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMivj-006JWH-Pd
-	for linux-mtd@lists.infradead.org; Tue, 31 Jan 2023 05:11:41 +0000
-Received: by mail-ej1-x631.google.com with SMTP id qw12so22383986ejc.2
-        for <linux-mtd@lists.infradead.org>; Mon, 30 Jan 2023 21:11:37 -0800 (PST)
+	id 1pMjDC-006KtT-Pv
+	for linux-mtd@lists.infradead.org; Tue, 31 Jan 2023 05:29:44 +0000
+Received: by mail-ej1-x62a.google.com with SMTP id mf7so19630613ejc.6
+        for <linux-mtd@lists.infradead.org>; Mon, 30 Jan 2023 21:29:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8yN6JDIHRFYqmgH85mkduV4msHBx/Je2FjLzQMUTzC8=;
-        b=MbV7LGuBPHEJETgjKdBC8og+iKnV6M73SlF2lPIfANCOsadpIlTk1EorA1H9IZGCq8
-         q+t+2hGkjEQvjpLoiEXuKs0TpnEGc8kZb9ERU8mzuEsSISSkOj0jAliTY5xGlZ3PjoIx
-         zPy/dAli6Fhe9MEvuwpqzma4lRP+LPGdKQFTsSljqqHXsjf1BwGYC1Jj18a6cF8sFb8T
-         HtuFHh0ABm3hMnVcLusvMhV9hgMUjz4yjvPvPDhGQ+7AUsgPgEe2SnflCCjvj4rDFWy0
-         QoZvLbx6ytv026kwpPm5eIw2nSX9qjR7TOuCgcT/3iv5Dw/24Rqh0kHHX0lQel3WJnNM
-         mGfQ==
+        bh=FUV+QxS4mN4RZmQS8NBOQ0xBYLUXPue9jJ/7nYktyeA=;
+        b=Mu7tHMaug6A6sBVyJ8jmTp5S1W62R9mZ9/pqt/IjDAciXp84IBOH+mTtFqv+2F7f8S
+         YNuP/cN0hApMMLvitgB6/fo7mHopHsQpgLoVoaKUzjefP5I/MSNlHSd5fsLS3HuF7uHe
+         0Qx9GASp1I7WDuO6wy5Vg7RmECU9p16gjWsMi1dmeQdc7km2mclqQDzPu4aC9KjSm4+X
+         x+MOmFxUDade7k+Ykwv1yiyrdOahOZWy2rUN5rz6rrsTbYLYM4OIsSlOeUo2UJ+hT5Yb
+         UZ0PnGdClpl2JiGKOf6SeFYQYpUvQsdCwfanfBxmWRrCzvCvP/ZggYMT9KzBpuF8JBTg
+         /W5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8yN6JDIHRFYqmgH85mkduV4msHBx/Je2FjLzQMUTzC8=;
-        b=rKgCIzm8NUxNOwiLDFHH4UY1JNqSyJNQRPR2uMGq5lEgeGik758i6AzRz2b1Y3F/qn
-         7Wsah+P1XQb/LwHqozaP3Uj9VtemyiJSpZaCPLtMf4ZPaLL7JNLo+f3pTLbgzAW7NeyJ
-         gmKIOqQN5GI/aB2M1rTdm1F4G2oPzqhWt46x5zZPjB0VzR5Yg4BhPtSfKgazPpDXVQxR
-         xSmdgNA9t60T2pDrCSNLFkG+CmsWCUZXCl9OAB+anwEHgX0MbeNVVUyKMnNxZA4hOK8Q
-         5hoH2eAitYDa+GWJRr3YhHa1awLh9oH/saInf5JKAUeodnV2gOt7Lb+UUjGzh14SJmyX
-         lS7w==
-X-Gm-Message-State: AO0yUKXUuawL+OT1JvTVj72kuWPXuTdxM1o66znqGb+m6yDEPrAN+nHe
-	CL8dAX94c7ka7yzFnk4boAoa3w==
-X-Google-Smtp-Source: AK7set/AtcAivfLd4J7FxA/usB1cuUxBlA7MDTBjBLL1jGWt6yqeMYER3cU6liAo5Sq21RblLDbxVQ==
-X-Received: by 2002:a17:906:6d2:b0:88a:8e57:f05b with SMTP id v18-20020a17090606d200b0088a8e57f05bmr4193197ejb.22.1675141895518;
-        Mon, 30 Jan 2023 21:11:35 -0800 (PST)
+        bh=FUV+QxS4mN4RZmQS8NBOQ0xBYLUXPue9jJ/7nYktyeA=;
+        b=637LmOvcPJiscjgLvEf3E648HTrXlib1+SqLxME0EU+cFwI/tUj5H7I8SU2rqk6VEe
+         xH+/RhizrFQyiBqF2YUDL6onaDmgwrl7iCirJOrT0+bfKyH5JBDqrwcQ4vQ94LmRtIb7
+         z1KVcs/g/8/ZLUYg1dT/ejm23I45IHrWRfdht/h9j6iWKZS3h963GRQNxq1ZqfBqM67h
+         x0oKShGK2eehcYZjFXznKQ6njvmEfHe8PLiyzIOKnTVS+TYAh8d2RF0JDTeIozi5o2zj
+         jdp/71A3h8XdYhynDFMbMGHeMBe9oAvqPDSBz4RppyZXRctUXitX7wBjn9VAniR5g9SJ
+         qeqg==
+X-Gm-Message-State: AO0yUKVkbxirdzxUCmvwtjGk4HVOi3/FWhrO4TqE9bw0P8CU7KQmXBOs
+	MGnOTw5TLig8Zw+WfQ0DjjpSWYiNDsX4P1X4tSI=
+X-Google-Smtp-Source: AK7set+pZl+A/hivKsLfYGfpW9oNrZQBGbk7InV/oPlsHCA3g2FWtPxa8cOBV7UHhte3HNKp9/8yOQ==
+X-Received: by 2002:a17:906:244f:b0:888:787d:2064 with SMTP id a15-20020a170906244f00b00888787d2064mr6815672ejb.75.1675142977953;
+        Mon, 30 Jan 2023 21:29:37 -0800 (PST)
 Received: from [192.168.2.104] ([79.115.63.122])
-        by smtp.gmail.com with ESMTPSA id ss2-20020a170907c00200b0084d381d0528sm7759858ejc.180.2023.01.30.21.11.34
+        by smtp.gmail.com with ESMTPSA id t26-20020a17090616da00b007aee7ca1199sm7959090ejd.10.2023.01.30.21.29.37
+        for <linux-mtd@lists.infradead.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Jan 2023 21:11:35 -0800 (PST)
-Message-ID: <b1841011-ba05-e290-d9b1-336a2346b1e3@linaro.org>
-Date: Tue, 31 Jan 2023 05:11:33 +0000
+        Mon, 30 Jan 2023 21:29:37 -0800 (PST)
+Message-ID: <2c94d073-4b63-bad0-3b76-fdf5856926c8@linaro.org>
+Date: Tue, 31 Jan 2023 05:29:36 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.0
-Subject: Re: [PATCH v3 4/9] mtd: spi-nor: Reorder the preparation vs locking
- steps
+Subject: Re: [PATCH v3 6/9] mtd: spi-nor: Prepare the introduction of a new
+ locking mechanism
 Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org
-Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
- Alvin Zhou <alvinzhou@mxic.com.tw>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+To: linux-mtd@lists.infradead.org
 References: <20221215081241.407098-1-miquel.raynal@bootlin.com>
- <20221215081241.407098-5-miquel.raynal@bootlin.com>
+ <20221215081241.407098-7-miquel.raynal@bootlin.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20221215081241.407098-5-miquel.raynal@bootlin.com>
+In-Reply-To: <20221215081241.407098-7-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230130_211139_895705_FCA7FBAC 
-X-CRM114-Status: GOOD (  22.58  )
+X-CRM114-CacheID: sfid-20230130_212942_870765_4393EC3D 
+X-CRM114-Status: GOOD (  10.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,63 +93,20 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Miquel,
+
 
 On 12/15/22 08:12, Miquel Raynal wrote:
-> The ->prepare()/->unprepare() hooks are now legacy, and there are only
-> two controllers left supporting them. In both cases, the implementation
-
-now there's only one, hisi-sfc.c.
-
-> acquires a mutex, which is somehow redundant with the spi-nor main lock
-
-I see a HIFMC_MAX_CHIP_NUM with value 2, the controller seems to be able
-to operate 2 flashes in parallel and that's why the internal mutex.
-
-> that we acquire as well in the spi_nor_[un]lock_and_[un]prep() helpers.
-> 
-> While the mutex taken in the core is necessary, the helper can be
-> reorganized to first do the preparation, then acquire the core
-> lock. This is necessary in order to be able to improve the locking
-> mechanism in the core and should have no side effect.
+> This commit alone just introduces two new "lock and prepare" pairs of
+> helpers which do the exact same thing as before. They will soon be
+> improved in a followup commit which actually brings the logic, but I
+> figured out it was more readable to do it this way.
 > 
 
-the change seems fine for hisi, and since we're no longer adding drivers
-under spi-nor/controllers we should be good.
-
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->   drivers/mtd/spi-nor/core.c | 15 ++++++---------
->   1 file changed, 6 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 38a57aac6754..de77ca55f74d 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1074,23 +1074,20 @@ int spi_nor_lock_and_prep(struct spi_nor *nor)
-
-you'll have to rename it to spi_nor_prep_and_lock to reflect the order
-of ops.
-
->   {
->   	int ret = 0;
->   
-> -	mutex_lock(&nor->lock);
-> -
-> -	if (nor->controller_ops &&  nor->controller_ops->prepare) {
-> +	if (nor->controller_ops && nor->controller_ops->prepare)
->   		ret = nor->controller_ops->prepare(nor);
-> -		if (ret) {
-> -			mutex_unlock(&nor->lock);
-> -			return ret;
-> -		}
-> -	}
-> +
-> +	mutex_lock(&nor->lock);
-> +
->   	return ret;
->   }
-> 
+I'd like to not introduce new support for SPI NOR controller drivers
+(those under drivers/mtd/spi-nor/controllers/) so that we motivate the
+owners to move their drivers to SPI. So we may have to rewrite the
+helpers a bit, but I won't stumble on this right now, let me get the
+general idea of read while write support first.
 
 Cheers,
 ta
