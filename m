@@ -4,54 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E68BDC38142
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Feb 2023 02:18:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 339E1C636D3
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Feb 2023 02:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6wFdPIvT7wBXx+h7cJ6gYnJARfrFO8oiMfy5/Lg62Co=; b=1Rg52Q0N+yYmn6
-	IzpPRY9Z2bDurWdjTlAJ9rbSLb3kHmyiv+5+qz07sh6Pho9I5eMEmSG/Pg+UJzyRXuR6djSMIUi2f
-	ymfW3RRcfiMSsC9oJRAA7qWutIxDsGXKRG3JgQafPo2s+0ZqN2pIh3eYU3OS3DP5ZvpGzjJN8Q0fD
-	Verjv1Qekkwmopq5XGF9RliXpE6X+bvDAdosZKIDgyRZMZKrjHmUB3RBwi3iEc379YKDamufw56A+
-	Zv/Q8md/gdU4vc5H2yawf+swQENi8El5shk9FmyFXGhnujtZeI5DoDCNFP11FMam1xkdIi7NSvmo5
-	NP8UMJ/G3+0CByFs27Pg==;
+	List-Owner; bh=v+6j1l9QNYkcviexc0WZwnN+whFYyUPr2hqqa+L6W3U=; b=npwTq3VegPpbk7
+	35BV/hMs0AOgOiRLUenl6UZx6FK5Qg3Pr4tBSsZVarvrBEQ1LbVdDmUdJO0HwItCXJvY2M0YNt7Fb
+	Agu+qAoPoDHPU0OlM8vuCHeoujcOH5g5FhNXLcpYZr52DCpglz25rfNRXVYoq23SnzqPGAOio++l0
+	TsbpfhkRIN0tKmS7fnnlloKNeWA2XuL+uLXRbXcirIbA4gy+/kkmddZYEH1M1m24yKc01TnJJZCQp
+	fgxXp6dx72SpIjM8qhk1YlN8s+mVa6WCvGo7Kykh5stzmn109rEUlvwRlYix0w5e7hN+6zkUe8fM9
+	FqpfwN9zeRnA0LGQEh2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pN2hO-009xLm-Ly; Wed, 01 Feb 2023 02:18:11 +0000
+	id 1pN2gt-009x45-5v; Wed, 01 Feb 2023 02:17:39 +0000
 Received: from mailgw02.mediatek.com ([216.200.240.185])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pN2f5-009wEi-Gl; Wed, 01 Feb 2023 02:15:49 +0000
-X-UUID: 5547a952a1d611eda08d4d6090ec5a5c-20230131
+	id 1pN2f2-009wDW-Ic; Wed, 01 Feb 2023 02:15:46 +0000
+X-UUID: 527fbca0a1d611eda08d4d6090ec5a5c-20230131
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=AljLcemnKAdfrmjxC/s2CRMhH5DsQc4QT4V+1YYAYTU=;
-	b=u0YmEQ/SvwqgDUH5J7kmK9g/HnYgub8R/uzE9WIekZBS70LHyC3Dc7XwksNEwOTon1V3Rpxv9be7eqEga1sdtl9uzk+s73B4BJNKo1RKIGXAGCGqf4d29U+u+ar/9BdRpWZ+SYgE1jjDYf7qWTyvk6uVrmDUVvekIjiuuF5gyic=;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=9GnQCKCJ+uUWL47OxvG6a21LJefJdMK9slss2lEbc1Q=;
+	b=ajprIpwlghZjjsJMyB5XGdKmIlltqQgbBzH3jx+Kfgq2PEtYl9RXCKOzfUgVisirrGXU9A2+KycO/tYhGQZCFW6Gz9mVwG5FKUzBqIFu7r8JIr7Lxmjs1nVYjrurnQBdTgRGx+qDSgJ5B7bOjxIcQIIi3gRoYlrf3+6yZyr8Cpg=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.18,REQID:8764ca8b-7ae8-43af-a240-40dd284e884f,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:70
-X-CID-INFO: VERSION:1.1.18,REQID:8764ca8b-7ae8-43af-a240-40dd284e884f,IP:0,URL
-	:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTI
-	ON:quarantine,TS:70
-X-CID-META: VersionHash:3ca2d6b,CLOUDID:4f75ea55-dd49-462e-a4be-2143a3ddc739,B
-	ulkID:230201101521IV0XRMIM,BulkQuantity:2,Recheck:0,SF:38|29|28|17|19|48,T
-	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,
-	OSI:0,OSA:0
+X-CID-O-INFO: VERSION:1.1.18,REQID:fbc1210e-3b30-4cf4-bb8d-05d149668301,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:3ca2d6b,CLOUDID:893f858d-8530-4eff-9f77-222cf6e2895b,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0
 X-CID-BVR: 0
-X-UUID: 5547a952a1d611eda08d4d6090ec5a5c-20230131
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+X-UUID: 527fbca0a1d611eda08d4d6090ec5a5c-20230131
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
 	(envelope-from <xiangsheng.hou@mediatek.com>)
 	(musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 514138698; Tue, 31 Jan 2023 19:15:44 -0700
+	with ESMTP id 603739524; Tue, 31 Jan 2023 19:15:39 -0700
 Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Wed, 1 Feb 2023 10:15:11 +0800
+ 15.2.792.15; Wed, 1 Feb 2023 10:15:06 +0800
 Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
  mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.15 via Frontend Transport; Wed, 1 Feb 2023 10:15:09 +0800
+ 15.2.792.15 via Frontend Transport; Wed, 1 Feb 2023 10:15:05 +0800
 From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
 	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
@@ -64,17 +60,17 @@ CC: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
 	<linux-kernel@vger.kernel.org>, <benliang.zhao@mediatek.com>,
 	<bin.zhang@mediatek.com>, AngeloGioacchino Del Regno
 	<angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v6 5/5] mtd: nand: ecc-mtk: Add ECC support fot MT7986 IC
-Date: Wed, 1 Feb 2023 10:15:00 +0800
-Message-ID: <20230201021500.26769-6-xiangsheng.hou@mediatek.com>
+Subject: [PATCH v6 2/5] arm64: dts: mediatek: Fix existing NAND controller node name
+Date: Wed, 1 Feb 2023 10:14:57 +0800
+Message-ID: <20230201021500.26769-3-xiangsheng.hou@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230201021500.26769-1-xiangsheng.hou@mediatek.com>
 References: <20230201021500.26769-1-xiangsheng.hou@mediatek.com>
 MIME-Version: 1.0
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230131_181547_603315_2E3F3C45 
-X-CRM114-Status: GOOD (  12.43  )
+X-CRM114-CacheID: sfid-20230131_181544_666785_94EFF505 
+X-CRM114-Status: GOOD (  11.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,96 +87,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add ECC support fot MT7986 IC, and change err_mask value with
-GENMASK macro.
+Change the existing node name in order to match NAND controller DT
+bindings.
 
 Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/mtd/nand/ecc-mtk.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/mediatek/mt2712e.dtsi | 2 +-
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/ecc-mtk.c b/drivers/mtd/nand/ecc-mtk.c
-index 9f9b201fe706..c75bb8b80cc1 100644
---- a/drivers/mtd/nand/ecc-mtk.c
-+++ b/drivers/mtd/nand/ecc-mtk.c
-@@ -40,6 +40,10 @@
- #define ECC_IDLE_REG(op)	((op) == ECC_ENCODE ? ECC_ENCIDLE : ECC_DECIDLE)
- #define ECC_CTL_REG(op)		((op) == ECC_ENCODE ? ECC_ENCCON : ECC_DECCON)
+diff --git a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
+index 879dff24dcd3..ed1a9d319415 100644
+--- a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
+@@ -559,7 +559,7 @@ spi0: spi@1100a000 {
+ 		status = "disabled";
+ 	};
  
-+#define ECC_ERRMASK_MT7622	GENMASK(4, 0)
-+#define ECC_ERRMASK_MT2701	GENMASK(5, 0)
-+#define ECC_ERRMASK_MT2712	GENMASK(6, 0)
-+
- struct mtk_ecc_caps {
- 	u32 err_mask;
- 	u32 err_shift;
-@@ -79,6 +83,10 @@ static const u8 ecc_strength_mt7622[] = {
- 	4, 6, 8, 10, 12
- };
+-	nandc: nfi@1100e000 {
++	nandc: nand-controller@1100e000 {
+ 		compatible = "mediatek,mt2712-nfc";
+ 		reg = <0 0x1100e000 0 0x1000>;
+ 		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
+diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+index 62487a3c4db1..eb4e4638b548 100644
+--- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+@@ -538,7 +538,7 @@ bluetooth {
+ 		};
+ 	};
  
-+static const u8 ecc_strength_mt7986[] = {
-+	4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24
-+};
-+
- enum mtk_ecc_regs {
- 	ECC_ENCPAR00,
- 	ECC_ENCIRQ_EN,
-@@ -451,7 +459,7 @@ unsigned int mtk_ecc_get_parity_bits(struct mtk_ecc *ecc)
- EXPORT_SYMBOL(mtk_ecc_get_parity_bits);
- 
- static const struct mtk_ecc_caps mtk_ecc_caps_mt2701 = {
--	.err_mask = 0x3f,
-+	.err_mask = ECC_ERRMASK_MT2701,
- 	.err_shift = 8,
- 	.ecc_strength = ecc_strength_mt2701,
- 	.ecc_regs = mt2701_ecc_regs,
-@@ -462,7 +470,7 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt2701 = {
- };
- 
- static const struct mtk_ecc_caps mtk_ecc_caps_mt2712 = {
--	.err_mask = 0x7f,
-+	.err_mask = ECC_ERRMASK_MT2712,
- 	.err_shift = 8,
- 	.ecc_strength = ecc_strength_mt2712,
- 	.ecc_regs = mt2712_ecc_regs,
-@@ -473,7 +481,7 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt2712 = {
- };
- 
- static const struct mtk_ecc_caps mtk_ecc_caps_mt7622 = {
--	.err_mask = 0x1f,
-+	.err_mask = ECC_ERRMASK_MT7622,
- 	.err_shift = 5,
- 	.ecc_strength = ecc_strength_mt7622,
- 	.ecc_regs = mt7622_ecc_regs,
-@@ -483,6 +491,17 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt7622 = {
- 	.pg_irq_sel = 0,
- };
- 
-+static const struct mtk_ecc_caps mtk_ecc_caps_mt7986 = {
-+	.err_mask = ECC_ERRMASK_MT7622,
-+	.err_shift = 8,
-+	.ecc_strength = ecc_strength_mt7986,
-+	.ecc_regs = mt2712_ecc_regs,
-+	.num_ecc_strength = 11,
-+	.ecc_mode_shift = 5,
-+	.parity_bits = 14,
-+	.pg_irq_sel = 1,
-+};
-+
- static const struct of_device_id mtk_ecc_dt_match[] = {
- 	{
- 		.compatible = "mediatek,mt2701-ecc",
-@@ -493,6 +512,9 @@ static const struct of_device_id mtk_ecc_dt_match[] = {
- 	}, {
- 		.compatible = "mediatek,mt7622-ecc",
- 		.data = &mtk_ecc_caps_mt7622,
-+	}, {
-+		.compatible = "mediatek,mt7986-ecc",
-+		.data = &mtk_ecc_caps_mt7986,
- 	},
- 	{},
- };
+-	nandc: nfi@1100d000 {
++	nandc: nand-controller@1100d000 {
+ 		compatible = "mediatek,mt7622-nfc";
+ 		reg = <0 0x1100D000 0 0x1000>;
+ 		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
 -- 
 2.25.1
 
