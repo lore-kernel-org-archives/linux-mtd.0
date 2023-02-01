@@ -4,63 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D76A8C05027
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Feb 2023 13:43:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E8B1C05027
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Feb 2023 15:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iERUL2l4uBNN01PXqASdBA6YQPZHbUHgkwC/S/s1IH0=; b=W/BIKJ4lWsgDW3
-	nzo7HzonJRaSIZKyu/LdK4wzvSHnMFZRuWtCK0L91CgXio8bjYAmLUd0JDoxVQIkNuXmKIGQVIQGB
-	ac8jmaUyWqStoRIrBojxUqvsK0B2B3JSSPXGk2Cp/RS1dd9carwuUkxdFnzXJ5Dodz051e/C7/mfr
-	lkZbGllLYc+2daGBdMpISNKE1onpEKhWhzH157LoYkeCjDiG70Jzycyj1zyDYYTnJrNa137Fsa2ze
-	AYxZLiszi9D4o2ZOqXUy5Odgkxr5uOv2Kp+9IDvnPfQK7NuHVhrDCPYyfwMdRjIMVhQkHrAKdNaHo
-	OLgldNIGR+uVx6D0J4mg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FMa1twk9s9YNpV3su8p2tHFK/w1/lEu/S+907ZpB1og=; b=WXM9JqK+Eh7F+RfYvG2lNtRTYE
+	37Zg2Kd11TARnITJQF/muMKEKk8yFn0QUBUAudyXYnJEVQZVMui4OhPthZ4KMfVIOMrOTOdUhtvwq
+	EHNm/eCe1pilHdYbgl5pZldcttaPFsvESDwtKFdHqCfOGBtwGd80rrnKzccYe86Pg9WXsUTq2xVQO
+	aMCXDxUUZHo7eBu3RgK/ILx1LpCy0f5d6SXwll88iolg/LBz7fBd5mJVHC2ZSIOsSQ+2vvmnYyAvW
+	Jju/q55d3sp+qZrHfeLQLPQZdP7uYrenTWcXbY1HdxOy2wV9PbFQ3SMIrfyZiV30rH5DxR5ZFzWra
+	6NpK/HOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNDOD-00C7ig-0r; Wed, 01 Feb 2023 13:43:05 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1pNEqF-00CbvX-B8; Wed, 01 Feb 2023 15:16:07 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNDOA-00C7i9-I3
-	for linux-mtd@lists.infradead.org; Wed, 01 Feb 2023 13:43:03 +0000
+	id 1pNEq9-00CbsF-5w; Wed, 01 Feb 2023 15:16:02 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 09227B82168;
-	Wed,  1 Feb 2023 13:43:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5161DC433EF;
-	Wed,  1 Feb 2023 13:42:57 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 58CC5617E3;
+	Wed,  1 Feb 2023 15:16:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52DF4C433D2;
+	Wed,  1 Feb 2023 15:15:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1675258979;
-	bh=236qP/C90Z1wdMee922mWauOTL0WF+oXGDgnJ96vQFg=;
+	s=k20201202; t=1675264559;
+	bh=LRcOg2q+eDGVIXXY2nwx4erwH77a/aRq28NUs5IDyCc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lMMF4aTsthtPu0qSDZz5BvWT3Pmxnz+NILt33rgl1+vXpJfzqEv41DYzKsqYGtoGo
-	 RfbSM457WNfz2Hj+9ntpXQApKcCjAJVksXRu34iUU27WSsyzFHxu28zKksBwqEgFjq
-	 bEmZWftDL1skahY8fxJIf/X2bYWhUr5/ruKGAoT6wF16to0EWnPfOxShNm4aNuTyFH
-	 TllIEyGeIvTdR60qHVy/Feh2ApS62j8QtGi5QRujJzXjmj7KFrOB8C3HaUwsJdZUwf
-	 P83wP7ZfiBKmcU8JDkWwvICV8r+9vwyn/20bGSvqbW6MrkafLuuV0989PpLRqSWgss
-	 U+lNph1qFbXHw==
-Date: Wed, 1 Feb 2023 14:42:54 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-	Seth Forshee <sforshee@kernel.org>,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-mtd@lists.infradead.org, reiserfs-devel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] acl: drop posix acl handlers from xattr handlers
-Message-ID: <20230201134254.fai2vc7gtzj6iikx@wittgenstein>
-References: <20230125-fs-acl-remove-generic-xattr-handlers-v3-0-f760cc58967d@kernel.org>
- <20230201133020.GA31902@lst.de>
+	b=KU4ZzAZCfEIFr0jm610wDLcfNDu1BT7alWBq4lCdAi8jxLcmCiG+N3M8pD98e92bq
+	 jEveutD/LRtarHkLSi1VT+wkWbr0FiUwuP11kxiQ/FQ/0dLJS9f7wk4WIsY81RNwsT
+	 zE2rXqGv+swsJ+x2navfQqq5XD8GmEgv0vJSNVcB+mloglAaqXwO0rFQl2XUbT1nWE
+	 N9OHyols6boAqmJ12PCA7BF6t1yvrYW7Nw9tEb0eKdvPWGnJ5Rqf1wv3Ng4NK3ygNW
+	 owxjCxS1tCFcCwRtOSIJKriVsuXGINVmjP3mb2jgXizk7d2Q0jSrHyCO8vF9Om7Gjt
+	 MSXjxi7+9AcEg==
+Date: Wed, 1 Feb 2023 15:15:35 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	jic23@kernel.org, tudor.ambarus@microchip.com, pratyush@kernel.org,
+	sanju.mehta@amd.com, chin-ting_kuo@aspeedtech.com, clg@kaod.org,
+	kdasu.kdev@gmail.com, f.fainelli@gmail.com, rjui@broadcom.com,
+	sbranden@broadcom.com, eajames@linux.ibm.com, olteanv@gmail.com,
+	han.xu@nxp.com, john.garry@huawei.com, shawnguo@kernel.org,
+	s.hauer@pengutronix.de, narmstrong@baylibre.com,
+	khilman@baylibre.com, matthias.bgg@gmail.com, haibo.chen@nxp.com,
+	linus.walleij@linaro.org, daniel@zonque.org,
+	haojian.zhuang@gmail.com, robert.jarzmik@free.fr, agross@kernel.org,
+	bjorn.andersson@linaro.org, heiko@sntech.de,
+	krzysztof.kozlowski@linaro.org, andi@etezian.org,
+	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+	wens@csie.org, jernej.skrabec@gmail.com, samuel@sholland.org,
+	masahisa.kojima@linaro.org, jaswinder.singh@linaro.org,
+	rostedt@goodmis.org, mingo@redhat.com, l.stelmach@samsung.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, alex.aring@gmail.com, stefan@datenfreihafen.org,
+	kvalo@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
+	skomatineni@nvidia.com, sumit.semwal@linaro.org,
+	christian.koenig@amd.com, j.neuschaefer@gmx.net, vireshk@kernel.org,
+	rmfrfs@gmail.com, johan@kernel.org, elder@kernel.org,
+	gregkh@linuxfoundation.org, git@amd.com, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, joel@jms.id.au, andrew@aj.id.au,
+	radu_nicolae.pirea@upb.ro, nicolas.ferre@microchip.com,
+	alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
+	bcm-kernel-feedback-list@broadcom.com, fancer.lancer@gmail.com,
+	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+	jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+	avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+	venture@google.com, yuenn@google.com, benjaminfair@google.com,
+	yogeshgaur.83@gmail.com, konrad.dybcio@somainline.org,
+	alim.akhtar@samsung.com, ldewangan@nvidia.com, michal.simek@amd.com,
+	linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-amlogic@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	netdev@vger.kernel.org, linux-wpan@vger.kernel.org,
+	libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+	linux-mtd@lists.infradead.org, lars@metafoo.de,
+	Michael.Hennerich@analog.com, linux-iio@vger.kernel.org,
+	michael@walle.cc, palmer@dabbelt.com,
+	linux-riscv@lists.infradead.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, greybus-dev@lists.linaro.org,
+	linux-staging@lists.linux.dev, amitrkcian2002@gmail.com
+Subject: Re: [PATCH v2 02/13] spi: Replace all spi->chip_select and
+ spi->cs_gpiod references with function call
+Message-ID: <Y9qCF7DS+FQo1RYp@sirena.org.uk>
+References: <20230119185342.2093323-1-amit.kumar-mahapatra@amd.com>
+ <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230201133020.GA31902@lst.de>
+In-Reply-To: <20230119185342.2093323-3-amit.kumar-mahapatra@amd.com>
+X-Cookie: Oh no, not again.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230201_054302_757712_F4736675 
-X-CRM114-Status: GOOD (  11.65  )
+X-CRM114-CacheID: sfid-20230201_071601_342503_047F312F 
+X-CRM114-Status: GOOD (  13.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,23 +116,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3362417282557215019=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Feb 01, 2023 at 02:30:20PM +0100, Christoph Hellwig wrote:
-> This version looks good to me, but I'd really prefer if a reiserfs
-> insider could look over the reiserfs patches.
 
-I consider this material for v6.4 even with an -rc8 for v6.3. So there's
-time but we shouldn't block it on reiserfs. Especially, since it's
-marked deprecated.
+--===============3362417282557215019==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="RnOekfr0Q/w96KQx"
+Content-Disposition: inline
 
-Fwiw, I've tested reiserfs with xfstests on a kernel with and without
-this series applied and there's no regressions. But it's overall pretty
-buggy at least according to xfstests. Which is expected, I guess.
+
+--RnOekfr0Q/w96KQx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jan 20, 2023 at 12:23:31AM +0530, Amit Kumar Mahapatra wrote:
+> Supporting multi-cs in spi drivers would require the chip_select & cs_gpiod
+> members of struct spi_device to be an array. But changing the type of these
+> members to array would break the spi driver functionality. To make the
+> transition smoother introduced four new APIs to get/set the
+> spi->chip_select & spi->cs_gpiod and replaced all spi->chip_select and
+> spi->cs_gpiod references with get or set API calls.
+> While adding multi-cs support in further patches the chip_select & cs_gpiod
+> members of the spi_device structure would be converted to arrays & the
+> "idx" parameter of the APIs would be used as array index i.e.,
+> spi->chip_select[idx] & spi->cs_gpiod[idx] respectively.
+
+This doesn't apply against current code, please check and resend.
+
+--RnOekfr0Q/w96KQx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPaghYACgkQJNaLcl1U
+h9Cmcgf7BtQa6jVrXNU71IJVO9/XKJzR22YYvwnRLJqC4Pd6uUnIG4DAhyw1qQyf
+fucGeAY9Y8jlqFuw1RM+0pFy53EabmhZAQjypGnDXk/YJ0fTV2VJuT7bSfXC+JJe
+0Qs8nYPpVfn9TmLvBxiPjnsghneRyWbx+V7MzflSFTsVl/fM5ypTH92qZ3S6rTDh
+ExXE6oTe7hNyto8+VoMfi0qvdqTKMyPciO0DnOeUsbPG3FpAiNiHN1lD5yhI6QEM
+jA8R67+KRGUoFZsozgB5N3NN8BH9FWq5Hrl/ToTuWP1AT9C8prAEa2uwlU3YVDmA
+SztMxe2B+kl+AF4gZ5yyL6EOiMGk6g==
+=zhKL
+-----END PGP SIGNATURE-----
+
+--RnOekfr0Q/w96KQx--
+
+
+--===============3362417282557215019==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3362417282557215019==--
+
