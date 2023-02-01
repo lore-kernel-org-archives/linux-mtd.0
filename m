@@ -4,63 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97D1AC636D3
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Feb 2023 11:33:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E31B6C636D3
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Feb 2023 11:36:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yMswJ8l42d0UFqhDh6b72deWJkTK6emalOaKmDOnWZw=; b=d+JRFQpfA2wRkd
-	4ESj0xoFKHsJnv4cStI8JfAWP9fiv3WQBNjDt0NEdyjQQgSAkyhTDcVs1ha072iQ+5Vw9BoI1/TBE
-	omJmz7yWATrptPpC2Ix98Npa60Pvtw2F0NmaEV2e00/HWsaUwee/kd9qBozdxQ0VjQdsg2gNtby9H
-	nEzFEH2vZ+X1lP+r9mMoz067uBH7aBZhK7C4C0P7meNJUH1Uz/pl9BzKqaIV48DSATVxC5HjBqtuJ
-	3OB6UPFifkSXq5nHuoZZSQYXVpTgP7kLLmGBlfNjd7W5xrNoz+8m4O6AFLsEMeq41sIDQnTzIHBuV
-	2P2GHiN4Fvkf204MnsrA==;
+	List-Owner; bh=EqUiGxAD3Ri3EfhRrMoT10FbM0qcD7xcCPPvTAER0yo=; b=ZZvr2MI4VhbNL4
+	1T168CLuX4Xhoz4kiWb/1zNfLQ9d2aUXAdGTRpex6csWDS7Rbqpvakp+CHkovjC7F4mu/j+lZiRtN
+	1qSzPq+PlSgOGYsDxNKV6zyzcRqLYiSruQ7fo8uIIX6QIs+9beMgbeURpLtM61NBv2Lsd3jtLkBHo
+	lr98B/CrY+w/w7Fo5pmZhQg/eUUVgfbu6aeEr2wY5gRVtPwQWaBIsgctTKJ1HbWAqrziUHe1NBA8X
+	6IHAKbFKkfWZSfDq6zMpxLNFZwil+TMqMXr4h8INKxvb+alv0WsBsNPtmBQNT0nEnxwdCYLTASlN7
+	c70ZIlaihyI+tBgBE+CA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNBMT-00BUFh-5H; Wed, 01 Feb 2023 11:33:09 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1pNBPo-00BVPk-G8; Wed, 01 Feb 2023 11:36:36 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNBMO-00BUCD-V3
-	for linux-mtd@lists.infradead.org; Wed, 01 Feb 2023 11:33:07 +0000
+	id 1pNBPP-00BVFc-IS; Wed, 01 Feb 2023 11:36:13 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id E77981BF20D;
-	Wed,  1 Feb 2023 11:32:53 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 96F5924000B;
+	Wed,  1 Feb 2023 11:36:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1675251178;
+	t=1675251369;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9/9uz0i3N7ltQWkVllleelAkBzJ/snbbe3WxrqCbcx4=;
-	b=CoDnhhjBlQ135G5w7O6azwAAx5ESABR+WKUApncQFJpkvefOhe6DPqFafOU1+Lg0NU2rSJ
-	ifpO7roj0ekGTDyOM6bht9CKes9n9rnkBKiKwr1rfYCYpLToxfd6qnccL71/+HNfcAMWVn
-	t0ilerRwof16bZA0ouKopgWB5ZQW/A5hrjWusiG626ApRGrFbCgEe064vWq+xjA3k7Iiyk
-	nOVyXGJO2pRrFdJYtFuzG57txJISpaJvj2c9HA09OyQAc3OUOEJFU3bSY2IYatcH9qV8Up
-	JGJjUGfIEnzwzv498DHTQzkhJE2WyWz/6SbW5klF7kiOBQ+mQomz32pn8FdpXg==
-Date: Wed, 1 Feb 2023 12:32:52 +0100
+	bh=zXVgZ23fkg1ZHbDrZEPRPTDcAF/+j77Bc28ZoPF681E=;
+	b=M4c5ZBApm0x/mve3DmhUTJ9iMbnqkZd0wfOMSbAk+q9fnpWcoMajBQWyosxme2aG1WQf2j
+	sJBYa89cEDG+8HK/jwDRxuXn2frwEsxm4os5ve+5nk8yKhkal1SHnFOUa2tVTuZ7QKctxC
+	8ADt7vY0kK6gT3JhH0BhZwidHV48TFY0d6XWTst4aYEiRGaJv8mT5EMGRU08PpzqeRzz7P
+	KsZ7fZ2xgiWFLZG2fgXjPnQPTKQLo7+jpHVkdtKVV0dUiBdzhtgDCui81MNaXGT4+mWv7O
+	y9h99gKVLGeI/+SCgCeEcybVkJN1bYbezgXeioCFuRjAKaEXj9esUwulXgQQrA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
- Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org, Julien Su <juliensu@mxic.com.tw>, Jaime Liao
- <jaimeliao@mxic.com.tw>, Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 2/9] mtd: spi-nor: Introduce the concept of bank
-Message-ID: <20230201123252.2d6bf221@xps-13>
-In-Reply-To: <9e5f4a2b-b232-880f-e1dd-37e23e4a98b6@linaro.org>
-References: <20221215081241.407098-1-miquel.raynal@bootlin.com>
-	<20221215081241.407098-3-miquel.raynal@bootlin.com>
-	<9e5f4a2b-b232-880f-e1dd-37e23e4a98b6@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Julien Su <juliensu@mxic.com.tw>,
+	Jaime Liao <jaimeliao@mxic.com.tw>,
+	Jaime Liao <jaimeliao.tw@gmail.com>,
+	Alvin Zhou <alvinzhou@mxic.com.tw>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Michal Simek <monstr@monstr.eu>,
+	<linux-arm-kernel@lists.infradead.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v4 1/8] mtd: spi-nor: Introduce the concept of bank
+Date: Wed,  1 Feb 2023 12:35:56 +0100
+Message-Id: <20230201113603.293758-2-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230201113603.293758-1-miquel.raynal@bootlin.com>
+References: <20230201113603.293758-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230201_033305_445821_0AC1EF88 
-X-CRM114-Status: GOOD (  34.24  )
+X-CRM114-CacheID: sfid-20230201_033611_902536_B4E99A76 
+X-CRM114-Status: GOOD (  15.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,116 +75,132 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVHVkb3IsCgpKYWltZSwgYSBmZXcgcXVlc3Rpb25zIGZvciB5b3UgYmVsb3cuCgp0dWRvci5h
-bWJhcnVzQGxpbmFyby5vcmcgd3JvdGUgb24gVGh1LCAxOSBKYW4gMjAyMyAxNjozNDoyOCArMDAw
-MDoKCj4gSGksIE1pcXVlbCwKPiAKPiBPbiAxMi8xNS8yMiAwODoxMiwgTWlxdWVsIFJheW5hbCB3
-cm90ZToKPiA+IFNQSS1OT1IgY2hpcHMgYXJlIG1hZGUgb2YgcGFnZXMsIHdoaWNoIGdhdGhlcmVk
-IGluIHNtYWxsIGdyb3VwcyBtYWtlICAKPiAKPiBuaXQ6IHMvU1BJLU5PUi8gU1BJIE5PUgoKTm90
-ZWQuCgo+IAo+ID4gKGVyYXNlKSBzZWN0b3JzLiBTZWN0b3JzLCBnYXRoZXJlZCB0b2dldGhlciwg
-bWFrZSBiYW5rcyBpbnNpZGUgdGhlCj4gPiBjaGlwLiBTbyBmYXIgdGhlcmUgd2FzIG9ubHkgb25l
-IGJhbmsgcGVyIGRldmljZSBzdXBwb3J0ZWQsIGJ1dCB3ZSBhcmUKPiA+IGFib3V0IHRvIGludHJv
-ZHVjZSBzdXBwb3J0IGZvciBuZXcgY2hpcHMgZmVhdHVyaW5nIHNldmVyYWwgYmFua3MgKHVwIHRv
-Cj4gPiA0IHNvIGZhcikgd2hlcmUgZGlmZmVyZW50IG9wZXJhdGlvbnMgbWF5IGhhcHBlbiBpbiBw
-YXJhbGxlbC4KPiA+IAo+ID4gTGV0J3MgYWxsb3cgZGVzY3JpYmluZyB0aGVzZSBhZGRpdGlvbmFs
-IGJhbmsgcGFyYW1ldGVycy4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8
-bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KPiA+IFJldmlld2VkLWJ5OiBQcmF0eXVzaCBZYWRh
-diA8cHJhdHl1c2hAa2VybmVsLm9yZz4KPiA+IC0tLQo+ID4gICBkcml2ZXJzL210ZC9zcGktbm9y
-L2NvcmUuYyB8ICAzICsrLQo+ID4gICBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaCB8IDE2ICsr
-KysrKysrKysrLS0tLS0KPiA+ICAgMiBmaWxlcyBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCA2
-IGRlbGV0aW9ucygtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9j
-b3JlLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYwo+ID4gaW5kZXggZjJjNjQwMDZmOGQ3
-Li4zOGE1N2FhYzY3NTQgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUu
-Ywo+ID4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKPiA+IEBAIC0yNTM5LDcgKzI1
-MzksOCBAQCBzdGF0aWMgdm9pZCBzcGlfbm9yX2luaXRfZGVmYXVsdF9wYXJhbXMoc3RydWN0IHNw
-aV9ub3IgKm5vcikgIAo+ID4gICA+ICAgCS8qIFNldCBTUEkgTk9SIHNpemVzLiAqLyAgCj4gPiAg
-IAlwYXJhbXMtPndyaXRlc2l6ZSA9IDE7Cj4gPiAtCXBhcmFtcy0+c2l6ZSA9ICh1NjQpaW5mby0+
-c2VjdG9yX3NpemUgKiBpbmZvLT5uX3NlY3RvcnM7Cj4gPiArCXBhcmFtcy0+YmFua19zaXplID0g
-KHU2NClpbmZvLT5zZWN0b3Jfc2l6ZSAqIGluZm8tPm5fc2VjdG9yczsKPiA+ICsJcGFyYW1zLT5z
-aXplID0gcGFyYW1zLT5iYW5rX3NpemUgKiBpbmZvLT5uX2JhbmtzOyAgCj4gCj4gSXMgdGhlIGRh
-dGFzaGVldCBmb3IgdGhlc2UgY2hpcHMgcHVibGljPyBJIHNlZSBKRVNEMjE2IHNheXMgbm90aGlu
-Zwo+IGFib3V0IGZsYXNoIGJhbmtzLgoKSmFpbWUsIGRvIHlvdSBoYXZlIGEgcHVibGljIGRhdGFz
-aGVldCBmb3IgdGhlIE1YMjVVVzUxMjQ1RyA/Cgo+IEknbSB3b25kZXJpbmcgd2hldGhlciB3ZSBz
-aG91bGQga2VlcCB0aGUgbl9zZWN0b3JzIGFzIHRoZSB0b3RhbCBudW1iZXIgb2Ygc2VjdG9ycyBw
-ZXIgZmxhc2ggb3Igbm90LgoKVGhpcyBpcyBpbmRlZWQgYSBnb29kIHBvaW50IGFuZCBJIGRpZCB0
-aGluayBhYm91dCBpdCB3aGVuIEkgd3JvdGUgdGhlCmluaXRpYWwgc3VwcG9ydC4gRm9yIG1lIGl0
-IGxvb2tzIGxpa2UgdGhlIGJhbmtzIGFyZSBvbmx5IHJlbGV2YW50IGZvcgp0aGUgUldXIHB1cnBv
-c2UgKGZvciBub3cpIHNvIEkgZGVjaWRlZCBJIHdvdWxkIGtlZXAgdGhlIGNoYW5nZXMgbWluaW1h
-bAphbmQgbm90IG1lc3Mgd2l0aCB0aGUgZXhpc3RpbmcgdmFyaWFibGVzIGZ1cnRoZXIuIFNvIEkg
-anVzdCBhZGRlZCBhCiJiYW5rIiBtZW1iZXIsIGFuZCBpZiB5b3Ugd2FudCB0aGUgbnVtYmVyIG9m
-IHNlY3RvcnMgcGVyIGJhbmssIHlvdSBjYW4KZGl2aWRlIG5zZWN0b3JzIGJ5IHRoZSBudW1iZXIg
-b2YgYmFua3MuIEFub3RoZXIgYXBwcm9hY2ggbWlnaHQgYmUsIGFzCnlvdSBhc2ssIHRvIGNvdW50
-IHRoZSBudW1iZXIgb2Ygc2VjdG9ycyBiYXNlZCBvbiB0aGUgbnVtYmVyIG9mIHNlY3RvcnMKcGVy
-IGJhbmsgYW5kIHRoZSBudW1iZXIgb2YgYmFua3MuIFdlIGNhbiBtb3ZlIHRvIHRoaXMgYXBwcm9h
-Y2ggbGF0ZXIgSQpiZWxpZXZlLCBpZiBldmVyIHVzZWZ1bC4KCj4gRG9lcyB0aGlzIGZsYXNoIHR5
-cGUgc3VwcG9ydCBTb2Z0d2FyZSBCbG9jawo+IFByb3RlY3Rpb24/IEhvdyBkbyB0aGV5IGNvdW50
-IHRoZSBzZWN0b3JzIG9uIEJsb2NrIFByb3RlY3Rpb24sIHBlciBmbGFzaAo+IG9yIHBlciBiYW5r
-PwoKWWVzIGl0IHN1cHBvcnRzIGJsb2NrIHByb3RlY3Rpb24sIEFGQUlDUyBpdCBpcyBhIHBlci1z
-ZWN0b3IKY29uZmlndXJhdGlvbiwgd2hpY2ggZG9lcyBub3QgY2FyZSBhYm91dCBiYW5rcyBhdCBh
-bGwuIEl0IGxvb2tzIGxpa2UKeW91IGNhbiBwcm90ZWN0IDJebiBzZWN0b3JzIChjYWxsZWQgImJs
-b2NrcyIgaW4gdGhlIGRhdGFzaGVldCkgZnJvbSB0aGUKc3RhcnQgb3IgZnJvbSB0aGUgZW5kIG9m
-IHRoZSBkZXZpY2UuCgpKYWltZSwgZG8geW91IGNvbmZpcm0/Cgo+ID4gICAJcGFyYW1zLT5wYWdl
-X3NpemUgPSBpbmZvLT5wYWdlX3NpemU7ICAKPiA+ICAgPiAgIAlpZiAoIShpbmZvLT5mbGFncyAm
-IFNQSV9OT1JfTk9fRlIpKSB7ICAKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9y
-L2NvcmUuaCBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5oCj4gPiBpbmRleCBkYzc0YzdiZTNl
-MjguLjhhMDY3ZDU2Yzk5NSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29y
-ZS5oCj4gPiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaAo+ID4gQEAgLTMzNiw3ICsz
-MzYsOCBAQCBzdHJ1Y3Qgc3BpX25vcl9vdHAgewo+ID4gICAgKiBieSB0aGUgc3BpX25vcl9maXh1
-cHMgaG9va3MsIG9yIGR5bmFtaWNhbGx5IHdoZW4gcGFyc2luZyB0aGUgSkVTRDIxNgo+ID4gICAg
-KiBTZXJpYWwgRmxhc2ggRGlzY292ZXJhYmxlIFBhcmFtZXRlcnMgKFNGRFApIHRhYmxlcy4KPiA+
-ICAgICoKPiA+IC0gKiBAc2l6ZToJCXRoZSBmbGFzaCBtZW1vcnkgZGVuc2l0eSBpbiBieXRlcy4K
-PiA+ICsgKiBAYmFua19zaXplOgkJdGhlIGZsYXNoIG1lbW9yeSBiYW5rIGRlbnNpdHkgaW4gYnl0
-ZXMuCj4gPiArICogQHNpemU6CQl0aGUgdG90YWwgZmxhc2ggbWVtb3J5IGRlbnNpdHkgaW4gYnl0
-ZXMuCj4gPiAgICAqIEB3cml0ZXNpemUJCU1pbmltYWwgd3JpdGFibGUgZmxhc2ggdW5pdCBzaXpl
-LiBEZWZhdWx0cyB0byAxLiBTZXQgdG8KPiA+ICAgICoJCQlFQ0MgdW5pdCBzaXplIGZvciBFQ0Mt
-ZWQgZmxhc2hlcy4KPiA+ICAgICogQHBhZ2Vfc2l6ZToJCXRoZSBwYWdlIHNpemUgb2YgdGhlIFNQ
-SSBOT1IgZmxhc2ggbWVtb3J5Lgo+ID4gQEAgLTM3NCw2ICszNzUsNyBAQCBzdHJ1Y3Qgc3BpX25v
-cl9vdHAgewo+ID4gICAgKiBAbG9ja2luZ19vcHM6CVNQSSBOT1IgbG9ja2luZyBtZXRob2RzLgo+
-ID4gICAgKi8KPiA+ICAgc3RydWN0IHNwaV9ub3JfZmxhc2hfcGFyYW1ldGVyIHsKPiA+ICsJdTY0
-CQkJCWJhbmtfc2l6ZTsKPiA+ICAgCXU2NAkJCQlzaXplOwo+ID4gICAJdTMyCQkJCXdyaXRlc2l6
-ZTsKPiA+ICAgCXUzMgkJCQlwYWdlX3NpemU7Cj4gPiBAQCAtNDM0LDcgKzQzNiw4IEBAIHN0cnVj
-dCBzcGlfbm9yX2ZpeHVwcyB7Cj4gPiAgICAqIEBpZF9sZW46ICAgICAgICAgdGhlIG51bWJlciBv
-ZiBieXRlcyBvZiBJRC4KPiA+ICAgICogQHNlY3Rvcl9zaXplOiAgICB0aGUgc2l6ZSBsaXN0ZWQg
-aGVyZSBpcyB3aGF0IHdvcmtzIHdpdGggU1BJTk9SX09QX1NFLCB3aGljaAo+ID4gICAgKiAgICAg
-ICAgICAgICAgICAgIGlzbid0IG5lY2Vzc2FyaWx5IGNhbGxlZCBhICJzZWN0b3IiIGJ5IHRoZSB2
-ZW5kb3IuCj4gPiAtICogQG5fc2VjdG9yczogICAgICB0aGUgbnVtYmVyIG9mIHNlY3RvcnMuCj4g
-PiArICogQG5fc2VjdG9yczogICAgICB0aGUgbnVtYmVyIG9mIHNlY3RvcnMgcGVyIGJhbmsuCj4g
-PiArICogQG5fYmFua3M6ICAgICAgICB0aGUgbnVtYmVyIG9mIGJhbmtzLgo+ID4gICAgKiBAcGFn
-ZV9zaXplOiAgICAgIHRoZSBmbGFzaCdzIHBhZ2Ugc2l6ZS4KPiA+ICAgICogQGFkZHJfbmJ5dGVz
-OiAgICBudW1iZXIgb2YgYWRkcmVzcyBieXRlcyB0byBzZW5kLgo+ID4gICAgKgo+ID4gQEAgLTQ5
-Myw2ICs0OTYsNyBAQCBzdHJ1Y3QgZmxhc2hfaW5mbyB7Cj4gPiAgIAl1OCBpZF9sZW47Cj4gPiAg
-IAl1bnNpZ25lZCBzZWN0b3Jfc2l6ZTsKPiA+ICAgCXUxNiBuX3NlY3RvcnM7Cj4gPiArCXUxNiBu
-X2JhbmtzOwo+ID4gICAJdTE2IHBhZ2Vfc2l6ZTsgIAo+IAo+IFdlIGNhbiB0cnkgdTggbmJhbmtz
-IGZvciBub3cuIEFuZCB3ZSB3b3VsZCBkZWZpbmUgaXQgaGVyZSwgdG8gYXZvaWQKPiBzdHJ1Y3Qg
-cGFkZGluZy4KCk9rLgoKPiA+ICAgCXU4IGFkZHJfbmJ5dGVzOyAgCj4gPiAgID4gQEAgLTUzOCwy
-MyArNTQyLDI1IEBAIHN0cnVjdCBmbGFzaF9pbmZvIHsgIAo+ID4gICAJLmlkID0geyBTUElfTk9S
-X0lEXzNJVEVNUyhfamVkZWNfaWQpLCBTUElfTk9SX0lEXzNJVEVNUyhfZXh0X2lkKSB9LCBcCj4g
-PiAgIAkuaWRfbGVuID0gNiAgCj4gPiAgID4gLSNkZWZpbmUgU1BJX05PUl9HRU9NRVRSWShfc2Vj
-dG9yX3NpemUsIF9uX3NlY3RvcnMpCQkJXCAgCj4gPiArI2RlZmluZSBTUElfTk9SX0dFT01FVFJZ
-KF9zZWN0b3Jfc2l6ZSwgX25fc2VjdG9ycywgX25fYmFua3MpCQlcCj4gPiAgIAkuc2VjdG9yX3Np
-emUgPSAoX3NlY3Rvcl9zaXplKSwJCQkJCVwKPiA+ICAgCS5uX3NlY3RvcnMgPSAoX25fc2VjdG9y
-cyksCQkJCQlcCj4gPiArCS5uX2JhbmtzID0gKF9uX2JhbmtzKSwJCQkJCQlcCj4gPiAgIAkucGFn
-ZV9zaXplID0gMjU2ICAKPiA+ICAgPiAgIC8qIFVzZWQgd2hlbiB0aGUgIl9leHRfaWQiIGlzIHR3
-byBieXRlcyBhdCBtb3N0ICovICAKPiA+ICAgI2RlZmluZSBJTkZPKF9qZWRlY19pZCwgX2V4dF9p
-ZCwgX3NlY3Rvcl9zaXplLCBfbl9zZWN0b3JzKQkJXAo+ID4gICAJU1BJX05PUl9JRCgoX2plZGVj
-X2lkKSwgKF9leHRfaWQpKSwJCQkJXAo+ID4gLQlTUElfTk9SX0dFT01FVFJZKChfc2VjdG9yX3Np
-emUpLCAoX25fc2VjdG9ycykpLAo+ID4gKwlTUElfTk9SX0dFT01FVFJZKChfc2VjdG9yX3NpemUp
-LCAoX25fc2VjdG9ycyksIDEpLCAgCj4gPiAgID4gICAjZGVmaW5lIElORk82KF9qZWRlY19pZCwg
-X2V4dF9pZCwgX3NlY3Rvcl9zaXplLCBfbl9zZWN0b3JzKQkJXCAgCj4gPiAgIAlTUElfTk9SX0lE
-NigoX2plZGVjX2lkKSwgKF9leHRfaWQpKSwJCQkJXAo+ID4gLQlTUElfTk9SX0dFT01FVFJZKChf
-c2VjdG9yX3NpemUpLCAoX25fc2VjdG9ycykpLAo+ID4gKwlTUElfTk9SX0dFT01FVFJZKChfc2Vj
-dG9yX3NpemUpLCAoX25fc2VjdG9ycyksIDEpLCAgCj4gPiAgID4gICAjZGVmaW5lIENBVDI1X0lO
-Rk8oX3NlY3Rvcl9zaXplLCBfbl9zZWN0b3JzLCBfcGFnZV9zaXplLCBfYWRkcl9uYnl0ZXMpCVwg
-IAo+ID4gICAJCS5zZWN0b3Jfc2l6ZSA9IChfc2VjdG9yX3NpemUpLAkJCQlcCj4gPiAgIAkJLm5f
-c2VjdG9ycyA9IChfbl9zZWN0b3JzKSwJCQkJXAo+ID4gKwkJLm5fYmFua3MgPSAxLAkJCQkJCVwK
-PiA+ICAgCQkucGFnZV9zaXplID0gKF9wYWdlX3NpemUpLAkJCQlcCj4gPiAgIAkJLmFkZHJfbmJ5
-dGVzID0gKF9hZGRyX25ieXRlcyksCQkJCVwKPiA+ICAgCQkuZmxhZ3MgPSBTUElfTk9SX05PX0VS
-QVNFIHwgU1BJX05PUl9OT19GUiwJCVwgIAo+IAo+IHlvdSBuZWVkIHRvIHVwZGF0ZSBTM0FOX0lO
-Rk8gYXMgd2VsbC4KCkNvbXBsZXRlbHkgbWlzc2VkIHRoYXQgb25lLCB0aGFua3MhCgpDaGVlcnMs
-Ck1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+SPI NOR chips are made of pages, which gathered in small groups make
+(erase) sectors. Sectors, gathered together, make banks inside the
+chip. So far there was only one bank per device supported, but we are
+about to introduce support for new chips featuring several banks (up to
+4 so far) where different operations may happen in parallel.
+
+Let's allow describing these additional bank parameters, and let's do
+this independently of any other value (like the number of sectors) with
+an absolute value.
+
+By default we consider that all chips have a single bank.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
+---
+ drivers/mtd/spi-nor/core.c   |  3 ++-
+ drivers/mtd/spi-nor/core.h   | 18 ++++++++++++------
+ drivers/mtd/spi-nor/xilinx.c |  1 +
+ 3 files changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index b500655f7937..3845de9c874c 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2574,7 +2574,8 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+ 
+ 	/* Set SPI NOR sizes. */
+ 	params->writesize = 1;
+-	params->size = (u64)info->sector_size * info->n_sectors;
++	params->bank_size = (u64)info->sector_size * info->n_sectors;
++	params->size = params->bank_size * info->n_banks;
+ 	params->page_size = info->page_size;
+ 
+ 	if (!(info->flags & SPI_NOR_NO_FR)) {
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index f6d012e1f681..768ccd1a5a8a 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -336,7 +336,8 @@ struct spi_nor_otp {
+  * by the spi_nor_fixups hooks, or dynamically when parsing the JESD216
+  * Serial Flash Discoverable Parameters (SFDP) tables.
+  *
+- * @size:		the flash memory density in bytes.
++ * @bank_size:		the flash memory bank density in bytes.
++ * @size:		the total flash memory density in bytes.
+  * @writesize		Minimal writable flash unit size. Defaults to 1. Set to
+  *			ECC unit size for ECC-ed flashes.
+  * @page_size:		the page size of the SPI NOR flash memory.
+@@ -374,6 +375,7 @@ struct spi_nor_otp {
+  * @locking_ops:	SPI NOR locking methods.
+  */
+ struct spi_nor_flash_parameter {
++	u64				bank_size;
+ 	u64				size;
+ 	u32				writesize;
+ 	u32				page_size;
+@@ -434,7 +436,8 @@ struct spi_nor_fixups {
+  * @id_len:         the number of bytes of ID.
+  * @sector_size:    the size listed here is what works with SPINOR_OP_SE, which
+  *                  isn't necessarily called a "sector" by the vendor.
+- * @n_sectors:      the number of sectors.
++ * @n_sectors:      the number of sectors per bank.
++ * @n_banks:        the number of banks.
+  * @page_size:      the flash's page size.
+  * @addr_nbytes:    number of address bytes to send.
+  *
+@@ -495,6 +498,7 @@ struct flash_info {
+ 	unsigned sector_size;
+ 	u16 n_sectors;
+ 	u16 page_size;
++	u8 n_banks;
+ 	u8 addr_nbytes;
+ 
+ 	bool parse_sfdp;
+@@ -540,24 +544,26 @@ struct flash_info {
+ 	.id = { SPI_NOR_ID_3ITEMS(_jedec_id), SPI_NOR_ID_3ITEMS(_ext_id) }, \
+ 	.id_len = 6
+ 
+-#define SPI_NOR_GEOMETRY(_sector_size, _n_sectors)			\
++#define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
+ 	.sector_size = (_sector_size),					\
+ 	.n_sectors = (_n_sectors),					\
+-	.page_size = 256
++	.page_size = 256,						\
++	.n_banks = (_n_banks)
+ 
+ /* Used when the "_ext_id" is two bytes at most */
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+ 	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors)),
++	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
+ 
+ #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+ 	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors)),
++	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
+ 
+ #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
+ 		.sector_size = (_sector_size),				\
+ 		.n_sectors = (_n_sectors),				\
+ 		.page_size = (_page_size),				\
++		.n_banks = 1,						\
+ 		.addr_nbytes = (_addr_nbytes),				\
+ 		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
+ 
+diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
+index 5723157739fc..7175de8aa336 100644
+--- a/drivers/mtd/spi-nor/xilinx.c
++++ b/drivers/mtd/spi-nor/xilinx.c
+@@ -31,6 +31,7 @@
+ 		.sector_size = (8 * (_page_size)),			\
+ 		.n_sectors = (_n_sectors),				\
+ 		.page_size = (_page_size),				\
++		.n_banks = 1,						\
+ 		.addr_nbytes = 3,					\
+ 		.flags = SPI_NOR_NO_FR
+ 
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
