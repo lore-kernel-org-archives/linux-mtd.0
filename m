@@ -4,79 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78E5EC636D4
-	for <linux-mtd@archiver.kernel.org>; Tue, 31 Jan 2023 15:05:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E16C636CC
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Feb 2023 02:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7/KVAjp6Dmf3XCoWXmStqROZ2UAaUzSgO/UdFXzJ3Tg=; b=I8gqMeiBhjlsLX
-	bZLO1PqOJaFuRV3LB7A9G84EOBXaoU6VEosV0pASKMLKF7fBeNBpD7tA442QSAJXgpQA6fZenvRMs
-	DGHxZgwVMFR7auBi2dR1O/UZYsJ1L/MCBVx/Q3sLt53bipQuGqnC/gR/hkgNtpgjMHR66E0f1kqz5
-	P5e8uHeGkGXj0gEIf3BhkPw83m7EbQq7gfBuPlSy/U04/cYH9W7y5pMzFr2Fxd5yHBY5Y7o+yU2R1
-	kt9nv+5CJcJuv6q0RVypHpI9jsIEPVBAecdH2M//ip8IpyL1QOIJfzkvBPxFw2Ot2LcqQfo1iNSlw
-	5zZr7Sn9sZpKLkHwE3QA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=074yM3sZOpysQGvQoxqnciGYmuYrXuhxCHd0U/LuTf4=; b=b42yAFcYdF/c9Q
+	4/vRLZlB+Vb1kYcJyN/U9nadSKq+HDW+q0c09DvWh7VAWxexNC9qV+H2CeMMQt1zxwvWPAdWFnwt5
+	9IhJepI4798ZljS0wSY+EhFJe0HlivEY4tO2EwfbW+jC3/fn4Vfh0B3j7vxuRyrWmkGPo3umxGks5
+	CGuDwtpyfPN1jaNzG0H3BfsPRhM0SqJonkfdA3xyEbfOPVYlLYcp0jv5lVCZDwyjK4nxvinIXoiVZ
+	nzLEY0flxVMt31dP/zEmw2Kepa1mLWowGQlnIDNzNKdcGW9d24RUHujh5DAUp2FSRudtjJNs+S+7p
+	0JXqo5BfEoV29kRCoXMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMsBv-008PIN-Dy; Tue, 31 Jan 2023 15:04:59 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1pN2fR-009wME-KP; Wed, 01 Feb 2023 02:16:09 +0000
+Received: from mailgw02.mediatek.com ([216.200.240.185])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMsBr-008PEv-QU
-	for linux-mtd@lists.infradead.org; Tue, 31 Jan 2023 15:04:57 +0000
-Received: by mail-wm1-x332.google.com with SMTP id j29-20020a05600c1c1d00b003dc52fed235so5270751wms.1
-        for <linux-mtd@lists.infradead.org>; Tue, 31 Jan 2023 07:04:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g4jYHU6rVcOlKOTfAngIOmChKtxtK0j1pwyPTw3jOAE=;
-        b=JzZ/3ow856Jb4SczdwpPYh2c/FPq/QLk1jGgWE079Sb0wbwfAnDxsjbdFtl9AhLjlH
-         rlwPOIvFzB7wCgXAaVXcvYThgB14shRl61LiExNRt/5wGkv1dn2kbhVY7IcwMv3Iy3Gt
-         NOMA3KQqlkHTo/3B2u1MNoXaw/Ce5VyXTa6OlnkwkUmeQfp1XVDqCUQ1TvNJW0hDEZBh
-         bdNLH2jBO7dWfSTFcixxluPwfLZwEBAAM8DGLWw8VX6/6BFIA+H8O3I80jE6s1N2i4FF
-         kZb66edVs3c7PUFf4i2JVKJCED6skYUtebbftKZOnxbRDrhlJjE5oJYWKACHU9arzCdJ
-         vQ+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g4jYHU6rVcOlKOTfAngIOmChKtxtK0j1pwyPTw3jOAE=;
-        b=UgaIPAbvYBd8GkrXJI9rESG1L8qyQkVzslWVkKfd6lQE3eRI31vZZmtcB/cEgkue9/
-         qLJsc0h5J3ZMBoB5QtbZ7TMwtwU7S36gmAIxKV/tXxlgoLemwuGf2mHtKNgZDIy61m2M
-         udgn6MGwxVooe7nxyyh3ONS3y7UBrKazQd5aDvwBcuS3rQL+j7LYGcG0gY1MGjgvNFlu
-         EznRGQ02N/7xfnT+Saett/ZOqAIdM1UoeFIFXH/l4aggB+cZqdIsMI1HKqzwovw1/fSm
-         ktF1LClcgltoFkU3a6aI0vW/zCt5jLLgtJbhimV6qwhEoWudQH98Z/fZZY4p6HpHDD7U
-         UYeA==
-X-Gm-Message-State: AFqh2krx/RCPfIphKFfhr8vnF9fR32abiYngsduy1tYoEiJESzPzUQ4C
-	abVntYD2hZ4ZadvgrD1uYXNilw==
-X-Google-Smtp-Source: AMrXdXv0TfWIX/uWXu6EMlwgY3P+BrX75PnrIMz7EedMt83YGz5qrTvOz1OAaJ4T+ZV8TNv2jdsAzQ==
-X-Received: by 2002:a05:600c:c07:b0:3da:ff60:f5c9 with SMTP id fm7-20020a05600c0c0700b003daff60f5c9mr53205550wmb.40.1675177491390;
-        Tue, 31 Jan 2023 07:04:51 -0800 (PST)
-Received: from [172.30.105.10] (lmontsouris-658-1-109-35.w92-154.abo.wanadoo.fr. [92.154.6.35])
-        by smtp.gmail.com with ESMTPSA id o3-20020a05600c4fc300b003db1d9553e7sm23169371wmq.32.2023.01.31.07.04.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Jan 2023 07:04:50 -0800 (PST)
-Message-ID: <bbf61b7a-5de7-2ef7-1528-e5eda118183b@baylibre.com>
-Date: Tue, 31 Jan 2023 16:04:50 +0100
+	id 1pN2ez-009wC7-RX; Wed, 01 Feb 2023 02:15:43 +0000
+X-UUID: 517f8510a1d611eda08d4d6090ec5a5c-20230131
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=/YTk/4myQC/KyrxLyPo1I1KSJqbfhccuiIeb+TgIHG0=;
+	b=A98zsQmVV1zG/UELvowoBSywEgiKopakSPM81a997WykRzN14lPDjRx9iYvJsDh5jMhvqlkmvpRQsdx0ekDMJlC4dUU+tx2QGFQYBgIgvoHNrohG3mnujrR6iw+nEpUl/RhKgoae+ecimluMcJfMPfguu17hP6IwAFB3i63V4pU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.18,REQID:7d405d9d-06cf-4088-800a-22282b235dd3,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:3ca2d6b,CLOUDID:1f3f858d-8530-4eff-9f77-222cf6e2895b,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0
+X-CID-BVR: 0
+X-UUID: 517f8510a1d611eda08d4d6090ec5a5c-20230131
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+	(envelope-from <xiangsheng.hou@mediatek.com>)
+	(musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1770434041; Tue, 31 Jan 2023 19:15:38 -0700
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Wed, 1 Feb 2023 10:15:03 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Wed, 1 Feb 2023 10:15:02 +0800
+From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger
+	<matthias.bgg@gmail.com>
+CC: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
+	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <benliang.zhao@mediatek.com>,
+	<bin.zhang@mediatek.com>
+Subject: [PATCH v6 0/5] Add MediaTek MT7986 NAND ECC engine support
+Date: Wed, 1 Feb 2023 10:14:55 +0800
+Message-ID: <20230201021500.26769-1-xiangsheng.hou@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH] mtd: spi_nor: Fixes out of bound shift
-Content-Language: en-US
-To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
- pratyush@kernel.org, "khilman@baylibre.com" <khilman@baylibre.com>
-References: <20230126142612.1518046-1-lrannou@baylibre.com>
- <27e7476a179b68d7b4501ffdd368bad5@walle.cc>
-From: Louis Rannou <lrannou@baylibre.com>
-In-Reply-To: <27e7476a179b68d7b4501ffdd368bad5@walle.cc>
+X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230131_070456_068825_7A73B362 
-X-CRM114-Status: GOOD (  13.03  )
+X-CRM114-CacheID: sfid-20230131_181541_928431_EB68A5D0 
+X-CRM114-Status: GOOD (  12.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,40 +79,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+This patch series split from bellow series which pick-up mtd relevant patches
+https://lore.kernel.org/all/20230130030656.12127-1-xiangsheng.hou@mediatek.com.
+This series add MediaTek MT7986 NAND ECC controller support, split ECC engine
+with rawnand controller in bindings and change to YAML schema.
 
-On 31/01/2023 09:17, Michael Walle wrote:
-> Hi,
-> 
-> Am 2023-01-26 15:26, schrieb lrannou@baylibre.com:
->> From: Louis Rannou <lrannou@baylibre.com>
->>
->> spi_nor_set_erase_type is called twice in sfdp.c with a null size. The
->> return from ffs is 0 as well and the shift size becomes (2^32 - 1) 
->> which is
->> out of bound when applied to the << operator.
->>
->> This considers as illegal a call to this function with null size. It
->> creates a replacement spi_nor_mask_erase_type for explicit calls to mask
->> the erase type.
->>
->> Signed-off-by: Louis Rannou <lrannou@baylibre.com>
-> 
-> There is also this thread with a pending patch:
-> https://lore.kernel.org/r/20211106075616.95401-1-tudor.ambarus@microchip.com/
+Changes since V5:
+ - Split from previous series V4.
+ - Fix warning by change mtk-nand.txt references to new yaml file.
 
-Indeed, I did not see that.
+Changes since V4:
+ - Split arm and arm64 dts patch for fix existing NAND controller node name.
 
-My patch also misses the core.h update. Let's see if we get news from 
-this pending patch. And then perhaps we'll see if I push a v2.
+Changes since V3:
+ - Correct mediatek,mtk-nfc.yaml dt-bindings.
 
-Regards,
-Louis
+Changes since V2:
+ - Change ECC err_mask value with GENMASK macro.
+ - Change snfi mediatek,rx-latch-latency to mediatek,rx-latch-latency-ns.
+ - Add a separate patch for DTS change.
+ - Move common description to top-level pattern properties.
+ - Drop redundant parts in dt-bindings.
+
+Changes since V1:
+ - Improve and perfect dt-bindings documentation.
+ - Change existing node name to match NAND controller DT bingings.
+ - Fix issues reported by dt_binding_check.
+ - Fix issues reported by dtbs_check.
+
+Xiangsheng Hou (5):
+  dt-bindings: mtd: Split ECC engine with rawnand controller
+  arm64: dts: mediatek: Fix existing NAND controller node name
+  arm: dts: mediatek: Fix existing NAND controller node name
+  dt-bindings: mtd: mediatek,nand-ecc-engine: Add compatible for MT7986
+  mtd: nand: ecc-mtk: Add ECC support fot MT7986 IC
+
+ .../bindings/mtd/mediatek,mtk-nfc.yaml        | 155 +++++++++++++++
+ .../mtd/mediatek,nand-ecc-engine.yaml         |  63 +++++++
+ .../devicetree/bindings/mtd/mtk-nand.txt      | 176 ------------------
+ MAINTAINERS                                   |   2 +-
+ arch/arm/boot/dts/mt2701.dtsi                 |   2 +-
+ arch/arm64/boot/dts/mediatek/mt2712e.dtsi     |   2 +-
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi      |   2 +-
+ drivers/mtd/nand/ecc-mtk.c                    |  28 ++-
+ 8 files changed, 247 insertions(+), 183 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,nand-ecc-engine.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/mtk-nand.txt
+
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
