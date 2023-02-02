@@ -4,110 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51389C05027
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Feb 2023 16:41:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B119C05027
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Feb 2023 19:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9tg12vhMDCasRl+Oj1anxAlsYtTGY6/oz5eSfT+Jx7g=; b=4qPUiAKGajp4Gf
-	Sg3f8+LOSr+paDtOHa62HKbE5EaS/DfYNQTrunRuuullxeFx0/T6ZN0Lif2D7VilwnV3gcNGbjuZd
-	3R6tthZzIyIH+UUTWni2LdeLRa8ZaEnS6Ect/w1h4kZvewJbW9EULlCgW0YN6xFozXpf0RiSl+eVi
-	5YN5f5VK6xmG1XnGN9bdB1WVKH/IZgRWUEt2fS75CcQnNoowRDtLEDl45ifqJeFlwrC1ihQDF+pyE
-	CN9AUUcyWSu3a0gj5voMlpH2xkZiDwlVcW/3s48rbcut7cXtZ/wGHbTefoYJr2my6d5eceEUJi9RQ
-	a2/4dEpxECm31qozrgbQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=x+x7AAfxeddIFH4MTI3cMnozgnNxB/xgpHNWWRvZXR0=; b=pxPZJmbv9zRRTa
+	ifFtng7SUWFdJT3KHnNuaYXc8aOAlq9ZnBbLCAVlJhcMXasVw8C5BOoqnKbD8HBXESqR9W++7+dev
+	ztBt90e/7E69rsaFOubdAzh4l0Qxy36EKVy47ReNXDtJTkMkyPu5UN3wImQEaoc+C4FW1tD/SfuYu
+	V783Sdvg02pAvAVhl2CXdyQK7zlLmsxfb829ZgTn7+r0MiMpb/E31EksDpLfgh9qlZEmJ+PRF44r+
+	tUDTTdn4znPC+2NMhGo0mlndMe2B39uh9sXD8hTNxdDp3OTMJj5TdHrdyFoCxzUCYE1ppDXjx23dc
+	hfge0OGflB4DTTtKaGLw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNcdm-00GglC-Cx; Thu, 02 Feb 2023 16:40:50 +0000
-Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
+	id 1pNf2y-00H31F-2e; Thu, 02 Feb 2023 19:15:00 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNcdh-00Ggiu-4V; Thu, 02 Feb 2023 16:40:46 +0000
-Received: by mail-ej1-x629.google.com with SMTP id ml19so7791631ejb.0;
-        Thu, 02 Feb 2023 08:40:41 -0800 (PST)
+	id 1pNf2u-00H2uj-Q4
+	for linux-mtd@lists.infradead.org; Thu, 02 Feb 2023 19:14:58 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id h16so2620369wrz.12
+        for <linux-mtd@lists.infradead.org>; Thu, 02 Feb 2023 11:14:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1JxadcUmstQQisxG5SMmC/yE89rXvA6AYxcU2YUnVDQ=;
-        b=F0H3B8NAgseBrYAc9OhvFrrJcHUs5RxsmEgusiWeYI4oHZkbOFHj9Ncu15Uvbi4tCO
-         GCoGClEA/o94QYw0U1UfeOAEL80uwq+5tCfPJWGsWnHH8HpmO1lWGzeCrAsIdF4Fu6zR
-         kNR+WhBg1xqNyaBWvq3l+bklN9GSWeF5rkZflnjP5JjP6Pm7phnd2Ab56G7cA8boFLp0
-         xzt+aopsRq/bEYAtjRCwCMmTji3jBwX9xCOCD4tzAC2fkbovQWodfYFH0SLzujYlkR2S
-         3SeXJQSQvZdrRrWbPhPWjXi7p2pGkVjdnp+X80CVTlvacpypSO18F0i1MgCSG84IgzXR
-         jpqA==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cuuIDYYSQu+C3zWqyLE6YBJV/AlT1XUkT6NrSVIsSuE=;
+        b=paYr8zpf2I9DEpZpSdQqKH6MFWICVpFPHEc5nqN1UqZtu6lMw6GAW//VoL4MUfVa5v
+         yiIlPL8cyEXfBFDJUv98dYAj/ak2RWRCXiKVHTSqDT8J02gBI21rkwI7YXHxYNpgjfr6
+         mnt0FXNdznM9UwttacKMmWHtJWJ/+S0t8eMB+G4o430IAZfzHJfnsO48yzd7/pVkko8e
+         Rw9ARI3wu4sbEqYnMm/5kPZLQ4WHJLyvvGpCB6nyAiO/ao7aaQGtg3xLvqZH5I+Wx/v7
+         +BaxR3DbwmzLwQMuQoJSAwaqlpbIm2WO8grklNPfGpMneI9tWux2Ke4XyoNbsexfNreS
+         AC/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1JxadcUmstQQisxG5SMmC/yE89rXvA6AYxcU2YUnVDQ=;
-        b=1gDFr5xPxO6RUuFBZf1UQKp3vlCvMzV7z11KOVLQkDZujKDRikr1ikD5B7A8h/R7H5
-         Dt9u/G82NZbhpBWDRURI+KOZHVzA2xm1IgqwIxftz8HHwWkm4wQPep62C/0y+NRFYW83
-         FQc2kkgKI/nZOGCWPs4Z24vMZsygbMwkz5ticXnz7rkxpYPklKwCVgTXyu5tJMtbcNkd
-         sgQ1IxM4a/asmLEfda6O8dgcRVY94h4dfSolax8WyXD9eiwlCbPcfuGSEEdWRFukUQIr
-         WJUBpjnkT9/vOLBHg14MTRoNZSu2sueRWeBQdkL1fzGIWvxh6ux5Yit4kcZp5H0IMj97
-         vSGA==
-X-Gm-Message-State: AO0yUKWgJpfk/QxyPRgCV4KtKMqTk4GQgBrLqJeYPHAe8tbfjpbbJz9F
-	NZ+EjVjkljU20DKQm8OmP8I=
-X-Google-Smtp-Source: AK7set8DElzpOFybgSqmpPkVSDP76pQ9uMXg+BggB0EZ9TIGd1XdSGpOOvGTm4L9iJVvil59yp3mTw==
-X-Received: by 2002:a17:906:c156:b0:88d:ba89:1835 with SMTP id dp22-20020a170906c15600b0088dba891835mr2844484ejc.6.1675356040636;
-        Thu, 02 Feb 2023 08:40:40 -0800 (PST)
-Received: from jernej-laptop.localnet (82-149-19-102.dynamic.telemach.net. [82.149.19.102])
-        by smtp.gmail.com with ESMTPSA id by13-20020a0564021b0d00b004a277d55a6csm3387108edb.1.2023.02.02.08.40.35
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cuuIDYYSQu+C3zWqyLE6YBJV/AlT1XUkT6NrSVIsSuE=;
+        b=T4kovNNAqtaKyi7wSxdEH5vdysNYM8d9cj9Se05HDzxe4J0B/og6tlRf9siDLqf6iP
+         WmqEZu3XTWvqEhxniA6A/6Fk6K9olUa/nHlOQgZfTJ/Msoy8Rj9oufh2jJZ2SSGHs7BK
+         L9hfw7xr0wGIXhT7c0EDJ7ZXVbwV/pBDiHv+k/qoKAl7ifteePh/wpOVZbbdfeCBxmR+
+         1mmi4PEqssDLR4dY9dOex41UpXdeHYKZQIKxRwagHaEvW8UpsFd7CB9cl3lnFbmY0f7d
+         GXclgMoQPkEhDBygyuMHH0aF1WvakjN/oPOm6hztx1JkFeB9ug59UQM4HIsAhhIocCYx
+         luXg==
+X-Gm-Message-State: AO0yUKXxc4FIyEPxcGWYX9WQbOjHK7u8Ugn9Cg1b4ApU00VkeHquHQe4
+	IPDLKQW+pcdJ7SFiMaVH3ySBsg==
+X-Google-Smtp-Source: AK7set8oLT+QQSd09IoTQr0pHXnNO7smD9ydEOJi6rTJeX1mL3b6kg1hQfa/4e19wPlccDPY0MhAWQ==
+X-Received: by 2002:adf:e30e:0:b0:2bb:e868:6a45 with SMTP id b14-20020adfe30e000000b002bbe8686a45mr5938309wrj.56.1675365295107;
+        Thu, 02 Feb 2023 11:14:55 -0800 (PST)
+Received: from 1.. ([79.115.63.122])
+        by smtp.gmail.com with ESMTPSA id k4-20020a5d4284000000b002bdc19f8e8asm213552wrq.79.2023.02.02.11.14.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Feb 2023 08:40:40 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: broonie@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, jic23@kernel.org, tudor.ambarus@microchip.com,
- pratyush@kernel.org, sanju.mehta@amd.com, chin-ting_kuo@aspeedtech.com,
- clg@kaod.org, kdasu.kdev@gmail.com, f.fainelli@gmail.com, rjui@broadcom.com,
- sbranden@broadcom.com, eajames@linux.ibm.com, olteanv@gmail.com,
- han.xu@nxp.com, john.garry@huawei.com, shawnguo@kernel.org,
- s.hauer@pengutronix.de, narmstrong@baylibre.com, khilman@baylibre.com,
- matthias.bgg@gmail.com, haibo.chen@nxp.com, linus.walleij@linaro.org,
- daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
- agross@kernel.org, bjorn.andersson@linaro.org, heiko@sntech.de,
- krzysztof.kozlowski@linaro.org, andi@etezian.org, mcoquelin.stm32@gmail.com,
- alexandre.torgue@foss.st.com, wens@csie.org, samuel@sholland.org,
- masahisa.kojima@linaro.org, jaswinder.singh@linaro.org, rostedt@goodmis.org,
- mingo@redhat.com, l.stelmach@samsung.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- alex.aring@gmail.com, stefan@datenfreihafen.org, kvalo@kernel.org,
- Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>, palmer@dabbelt.com
-Cc: git@amd.com, linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- joel@jms.id.au, andrew@aj.id.au, radu_nicolae.pirea@upb.ro,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@microchip.com, bcm-kernel-feedback-list@broadcom.com,
- fancer.lancer@gmail.com, kernel@pengutronix.de, festevam@gmail.com,
- linux-imx@nxp.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
- avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
- venture@google.com, yuenn@google.com, benjaminfair@google.com,
- yogeshgaur.83@gmail.com, konrad.dybcio@somainline.org,
- alim.akhtar@samsung.com, ldewangan@nvidia.com, thierry.reding@gmail.com,
- linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
- linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
- linux-amlogic@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
- netdev@vger.kernel.org, linux-wpan@vger.kernel.org,
- libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-iio@vger.kernel.org,
- linux-riscv@lists.infradead.org
-Subject:  Re: [PATCH v3 01/13] spi: Replace all spi->chip_select and spi->cs_gpiod
- references with function call
-Date: Thu, 02 Feb 2023 17:40:35 +0100
-Message-ID: <4802797.31r3eYUQgx@jernej-laptop>
-In-Reply-To: <20230202152258.512973-2-amit.kumar-mahapatra@amd.com>
-References:  <20230202152258.512973-1-amit.kumar-mahapatra@amd.com>
- <20230202152258.512973-2-amit.kumar-mahapatra@amd.com>
+        Thu, 02 Feb 2023 11:14:54 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: pratyush@kernel.org,
+	michael@walle.cc,
+	Alexander.Stein@tq-group.com,
+	lrannou@baylibre.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] mtd: spi-nor: Fix shift-out-of-bounds in spi_nor_set_erase_type
+Date: Thu,  2 Feb 2023 21:14:51 +0200
+Message-Id: <20230202191451.35142-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3822; i=tudor.ambarus@linaro.org; h=from:subject; bh=iKQGjGNpvhffSxY5NHmj2gjmtWquRWoatIrxAXoi2HA=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBj3Aurob14sGr7fKmeOulA00hcONr8iP9bQNd8Z S6GXR9C6e2JATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCY9wLqwAKCRBLVU9HpY0U 6YiTB/9ey4lz/jh5tK1eAzCGIvHMnC9hiLk2cyw6nJT+PQy6zp25EU4qvxCdr07+T/ho/k+8Ij/ hwTMRdLusG3F/dGirDWkSlXY8f8zOVQIoV7GCqN6IembhSujyVdnX1/JO2XXLWOFN/g1bpI8kV/ Tn6Xwovy5hK7tp2jLRXjEcejLernMQcrLT7kioFq8uAq8HYRMj/MSPr0vAe8dY6+b3UBtmk40qj pvjBlNICPmoIV4QcvYFP4ULMYzpGtEEkCKf/lq7VpGE6Roib2JFkunkwxu3t//ObG2mnK3DhBb3 C/tIamnBuPvZ/k41SBSBYc2DCtqvsS5KFVZXNcjrNddXxYKO
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230202_084045_228293_E2F3FA10 
-X-CRM114-Status: GOOD (  14.38  )
+X-CRM114-CacheID: sfid-20230202_111456_874040_6781B924 
+X-CRM114-Status: GOOD (  18.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,116 +89,109 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkhCgpEbmUgxI1ldHJ0ZWssIDAyLiBmZWJydWFyIDIwMjMgb2IgMTY6MjI6NDYgQ0VUIGplIEFt
-aXQgS3VtYXIgTWFoYXBhdHJhIApuYXBpc2FsKGEpOgo+IFN1cHBvcnRpbmcgbXVsdGktY3MgaW4g
-c3BpIGRyaXZlcnMgd291bGQgcmVxdWlyZSB0aGUgY2hpcF9zZWxlY3QgJiBjc19ncGlvZAo+IG1l
-bWJlcnMgb2Ygc3RydWN0IHNwaV9kZXZpY2UgdG8gYmUgYW4gYXJyYXkuIEJ1dCBjaGFuZ2luZyB0
-aGUgdHlwZSBvZiB0aGVzZQo+IG1lbWJlcnMgdG8gYXJyYXkgd291bGQgYnJlYWsgdGhlIHNwaSBk
-cml2ZXIgZnVuY3Rpb25hbGl0eS4gVG8gbWFrZSB0aGUKPiB0cmFuc2l0aW9uIHNtb290aGVyIGlu
-dHJvZHVjZWQgZm91ciBuZXcgQVBJcyB0byBnZXQvc2V0IHRoZQo+IHNwaS0+Y2hpcF9zZWxlY3Qg
-JiBzcGktPmNzX2dwaW9kIGFuZCByZXBsYWNlZCBhbGwgc3BpLT5jaGlwX3NlbGVjdCBhbmQKPiBz
-cGktPmNzX2dwaW9kIHJlZmVyZW5jZXMgd2l0aCBnZXQgb3Igc2V0IEFQSSBjYWxscy4KPiBXaGls
-ZSBhZGRpbmcgbXVsdGktY3Mgc3VwcG9ydCBpbiBmdXJ0aGVyIHBhdGNoZXMgdGhlIGNoaXBfc2Vs
-ZWN0ICYgY3NfZ3Bpb2QKPiBtZW1iZXJzIG9mIHRoZSBzcGlfZGV2aWNlIHN0cnVjdHVyZSB3b3Vs
-ZCBiZSBjb252ZXJ0ZWQgdG8gYXJyYXlzICYgdGhlCj4gImlkeCIgcGFyYW1ldGVyIG9mIHRoZSBB
-UElzIHdvdWxkIGJlIHVzZWQgYXMgYXJyYXkgaW5kZXggaS5lLiwKPiBzcGktPmNoaXBfc2VsZWN0
-W2lkeF0gJiBzcGktPmNzX2dwaW9kW2lkeF0gcmVzcGVjdGl2ZWx5Lgo+IAo+IFNpZ25lZC1vZmYt
-Ynk6IEFtaXQgS3VtYXIgTWFoYXBhdHJhIDxhbWl0Lmt1bWFyLW1haGFwYXRyYUBhbWQuY29tPgo+
-IEFja2VkLWJ5OiBIZWlrbyBTdHVlYm5lciA8aGVpa29Ac250ZWNoLmRlPiAjIFJvY2tjaGlwIGRy
-aXZlcnMKPiBSZXZpZXdlZC1ieTogTWljaGFsIFNpbWVrIDxtaWNoYWwuc2ltZWtAYW1kLmNvbT4K
-PiBSZXZpZXdlZC1ieTogQ8OpZHJpYyBMZSBHb2F0ZXIgPGNsZ0BrYW9kLm9yZz4gIyBBc3BlZWQg
-ZHJpdmVyCj4gUmV2aWV3ZWQtYnk6IERocnV2YSBHb2xlIDxkLWdvbGVAdGkuY29tPiAjIFNQSSBD
-YWRlbmNlIFFTUEkKPiBSZXZpZXdlZC1ieTogUGF0cmljZSBDaG90YXJkIDxwYXRyaWNlLmNob3Rh
-cmRAZm9zcy5zdC5jb20+ICMgc3BpLXN0bTMyLXFzcGkKPiBBY2tlZC1ieTogV2lsbGlhbSBaaGFu
-ZyA8d2lsbGlhbS56aGFuZ0Bicm9hZGNvbS5jb20+ICMgYmNtNjN4eC1oc3NwaSBkcml2ZXIKPiAt
-LS0KPiAgZHJpdmVycy9zcGkvc3BpLWFsdGVyYS1jb3JlLmMgICAgIHwgIDIgKy0KPiAgZHJpdmVy
-cy9zcGkvc3BpLWFtZC5jICAgICAgICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGkt
-YXI5MzR4LmMgICAgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktYXJtYWRhLTM3MDAu
-YyAgICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1hc3BlZWQtc21jLmMgICAgICB8IDEz
-ICsrKysrKystLS0tLS0KPiAgZHJpdmVycy9zcGkvc3BpLWF0OTEtdXNhcnQuYyAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9zcGkvc3BpLWF0aDc5LmMgICAgICAgICAgIHwgIDQgKystLQo+ICBkcml2
-ZXJzL3NwaS9zcGktYXRtZWwuYyAgICAgICAgICAgfCAyNiArKysrKysrKysrKysrLS0tLS0tLS0t
-LS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktYXUxNTUwLmMgICAgICAgICAgfCAgNCArKy0tCj4gIGRy
-aXZlcnMvc3BpL3NwaS1heGktc3BpLWVuZ2luZS5jICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3Nw
-aS1iY20tcXNwaS5jICAgICAgICB8IDEwICsrKysrLS0tLS0KPiAgZHJpdmVycy9zcGkvc3BpLWJj
-bTI4MzUuYyAgICAgICAgIHwgMTkgKysrKysrKysrKy0tLS0tLS0tLQo+ICBkcml2ZXJzL3NwaS9z
-cGktYmNtMjgzNWF1eC5jICAgICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1iY202M3h4
-LWhzc3BpLmMgICB8IDIyICsrKysrKysrKysrLS0tLS0tLS0tLS0KPiAgZHJpdmVycy9zcGkvc3Bp
-LWJjbTYzeHguYyAgICAgICAgIHwgIDIgKy0KPiAgZHJpdmVycy9zcGkvc3BpLWNhZGVuY2UtcXVh
-ZHNwaS5jIHwgIDUgKysrLS0KPiAgZHJpdmVycy9zcGkvc3BpLWNhZGVuY2UteHNwaS5jICAgIHwg
-IDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGktY2FkZW5jZS5jICAgICAgICAgfCAgNCArKy0tCj4g
-IGRyaXZlcnMvc3BpL3NwaS1jYXZpdW0uYyAgICAgICAgICB8ICA4ICsrKystLS0tCj4gIGRyaXZl
-cnMvc3BpL3NwaS1jb2xkZmlyZS1xc3BpLmMgICB8ICA4ICsrKystLS0tCj4gIGRyaXZlcnMvc3Bp
-L3NwaS1kYXZpbmNpLmMgICAgICAgICB8IDE4ICsrKysrKysrKy0tLS0tLS0tLQo+ICBkcml2ZXJz
-L3NwaS9zcGktZGxuMi5jICAgICAgICAgICAgfCAgNiArKystLS0KPiAgZHJpdmVycy9zcGkvc3Bp
-LWR3LWNvcmUuYyAgICAgICAgIHwgIDIgKy0KPiAgZHJpdmVycy9zcGkvc3BpLWR3LW1taW8uYyAg
-ICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGktZmFsY29uLmMgICAgICAgICAgfCAg
-MiArLQo+ICBkcml2ZXJzL3NwaS9zcGktZnNpLmMgICAgICAgICAgICAgfCAgMiArLQo+ICBkcml2
-ZXJzL3NwaS9zcGktZnNsLWRzcGkuYyAgICAgICAgfCAxNiArKysrKysrKy0tLS0tLS0tCj4gIGRy
-aXZlcnMvc3BpL3NwaS1mc2wtZXNwaS5jICAgICAgICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3Nw
-aS9zcGktZnNsLWxwc3BpLmMgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktZnNsLXFz
-cGkuYyAgICAgICAgfCAgNiArKystLS0KPiAgZHJpdmVycy9zcGkvc3BpLWZzbC1zcGkuYyAgICAg
-ICAgIHwgIDIgKy0KPiAgZHJpdmVycy9zcGkvc3BpLWdlbmktcWNvbS5jICAgICAgIHwgIDYgKysr
-LS0tCj4gIGRyaXZlcnMvc3BpL3NwaS1ncGlvLmMgICAgICAgICAgICB8ICA0ICsrLS0KPiAgZHJp
-dmVycy9zcGkvc3BpLWd4cC5jICAgICAgICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9z
-cGktaGlzaS1zZmMtdjN4eC5jICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktaW1nLXNwZmku
-YyAgICAgICAgfCAxNCArKysrKysrLS0tLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktaW14LmMgICAg
-ICAgICAgICAgfCAzMCArKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0KPiAgZHJpdmVycy9z
-cGkvc3BpLWluZ2VuaWMuYyAgICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGktaW50
-ZWwuYyAgICAgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktamNvcmUuYyAgICAgICAg
-ICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1sYW50aXEtc3NjLmMgICAgICB8ICA2ICsr
-Ky0tLQo+ICBkcml2ZXJzL3NwaS9zcGktbWVtLmMgICAgICAgICAgICAgfCAgNCArKy0tCj4gIGRy
-aXZlcnMvc3BpL3NwaS1tZXNvbi1zcGljYy5jICAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3Nw
-aS1taWNyb2NoaXAtY29yZS5jICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3NwaS9zcGktbXBjNTEy
-eC1wc2MuYyAgICAgfCAgOCArKysrLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktbXBjNTJ4eC5jICAg
-ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktbXQ2NXh4LmMgICAgICAgICAgfCAgNiAr
-KystLS0KPiAgZHJpdmVycy9zcGkvc3BpLW10NzYyMS5jICAgICAgICAgIHwgIDIgKy0KPiAgZHJp
-dmVycy9zcGkvc3BpLW11eC5jICAgICAgICAgICAgIHwgIDggKysrKy0tLS0KPiAgZHJpdmVycy9z
-cGkvc3BpLW14aWMuYyAgICAgICAgICAgIHwgMTAgKysrKystLS0tLQo+ICBkcml2ZXJzL3NwaS9z
-cGktbXhzLmMgICAgICAgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktbnBjbS1maXUu
-YyAgICAgICAgfCAyMCArKysrKysrKysrLS0tLS0tLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktbnhw
-LWZzcGkuYyAgICAgICAgfCAxMCArKysrKy0tLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS1vbWFwLTEw
-MGsuYyAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS1vbWFwLXV3aXJlLmMgICAgICB8
-ICA4ICsrKystLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS1vbWFwMi1tY3NwaS5jICAgICB8IDI0ICsr
-KysrKysrKysrKy0tLS0tLS0tLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktb3Jpb24uYyAgICAgICAg
-ICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1wY2kxeHh4eC5jICAgICAgICB8ICA0ICsr
-LS0KPiAgZHJpdmVycy9zcGkvc3BpLXBpYzMyLXNxaS5jICAgICAgIHwgIDIgKy0KPiAgZHJpdmVy
-cy9zcGkvc3BpLXBpYzMyLmMgICAgICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGkt
-cGwwMjIuYyAgICAgICAgICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1weGEyeHguYyAg
-ICAgICAgICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3NwaS9zcGktcWNvbS1xc3BpLmMgICAgICAg
-fCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktcmI0eHguYyAgICAgICAgICAgfCAgMiArLQo+ICBk
-cml2ZXJzL3NwaS9zcGktcm9ja2NoaXAtc2ZjLmMgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9z
-cGktcm9ja2NoaXAuYyAgICAgICAgfCAyNiArKysrKysrKysrKysrKy0tLS0tLS0tLS0tLQo+ICBk
-cml2ZXJzL3NwaS9zcGktcnNwaS5jICAgICAgICAgICAgfCAxMCArKysrKy0tLS0tCj4gIGRyaXZl
-cnMvc3BpL3NwaS1zM2M2NHh4LmMgICAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS1z
-YzE4aXM2MDIuYyAgICAgICB8ICA0ICsrLS0KPiAgZHJpdmVycy9zcGkvc3BpLXNoLW1zaW9mLmMg
-ICAgICAgIHwgIDYgKysrLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS1zaC1zY2kuYyAgICAgICAgICB8
-ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS1zaWZpdmUuYyAgICAgICAgICB8ICA2ICsrKy0tLQo+
-ICBkcml2ZXJzL3NwaS9zcGktc24tZi1vc3BpLmMgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3Nw
-aS9zcGktc3Qtc3NjNC5jICAgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktc3RtMzIt
-cXNwaS5jICAgICAgfCAxMiArKysrKystLS0tLS0KPiAgZHJpdmVycy9zcGkvc3BpLXN1bjRpLmMg
-ICAgICAgICAgIHwgIDIgKy0KPiAgZHJpdmVycy9zcGkvc3BpLXN1bjZpLmMgICAgICAgICAgIHwg
-IDIgKy0KCkZvciBzdW40aSwgc3VuNmk6CkFja2VkLWJ5OiBKZXJuZWogU2tyYWJlYyA8amVybmVq
-LnNrcmFiZWNAZ21haWwuY29tPgoKQmVzdCByZWdhcmRzLApKZXJuZWoKCj4gIGRyaXZlcnMvc3Bp
-L3NwaS1zeW5xdWFjZXIuYyAgICAgICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3NwaS9zcGktdGVn
-cmExMTQuYyAgICAgICAgfCAyOCArKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tCj4gIGRyaXZl
-cnMvc3BpL3NwaS10ZWdyYTIwLXNmbGFzaC5jICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS10
-ZWdyYTIwLXNsaW5rLmMgICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3NwaS9zcGktdGVncmEyMTAt
-cXVhZC5jICAgfCAgOCArKysrLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktdGktcXNwaS5jICAgICAg
-ICAgfCAxNiArKysrKysrKy0tLS0tLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS10b3BjbGlmZi1wY2gu
-YyAgICB8ICA0ICsrLS0KPiAgZHJpdmVycy9zcGkvc3BpLXdwY20tZml1LmMgICAgICAgIHwgMTIg
-KysrKysrLS0tLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS14Y29tbS5jICAgICAgICAgICB8ICAyICst
-Cj4gIGRyaXZlcnMvc3BpL3NwaS14aWxpbnguYyAgICAgICAgICB8ICA2ICsrKy0tLQo+ICBkcml2
-ZXJzL3NwaS9zcGkteGxwLmMgICAgICAgICAgICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3Nw
-aS16eW5xLXFzcGkuYyAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS16eW5xbXAtZ3Fz
-cGkuYyAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaWRldi5jICAgICAgICAgICAgICB8ICA2
-ICsrKy0tLQo+ICBpbmNsdWRlL3RyYWNlL2V2ZW50cy9zcGkuaCAgICAgICAgfCAxMCArKysrKy0t
-LS0tCj4gIDkyIGZpbGVzIGNoYW5nZWQsIDMxNSBpbnNlcnRpb25zKCspLCAzMTAgZGVsZXRpb25z
-KC0pCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+spi_nor_set_erase_type() was used either to set or to mask out an erase
+type. When we used it to mask out an erase type a shift-out-of-bounds
+was hit:
+UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2237:24
+shift exponent 4294967295 is too large for 32-bit type 'int'
+
+size_shift and size_mask were not used anyway when erase size was set to
+zero, so the functionality was not affected. The setting of the
+size_{shift, mask} and of the opcode are unnecessary when the erase size
+is zero, as throughout the code just the erase size is considered to
+determine whether an erase type is supported or not. Setting the opcode
+to 0xFF was wrong too as nobody guarantees that 0xFF is an unused opcode.
+Thus condition the setting of these params by the erase size. This will
+fix the shift-out-of-bounds too. While here avoid a superfluous
+dereference and use 'size' directly.
+
+Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories")
+Cc: stable@vger.kernel.org
+Reported-by: Alexander Stein <Alexander.Stein@tq-group.com>
+Suggested-by: Louis Rannou <lrannou@baylibre.com>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+v1 at https://lore.kernel.org/r/20211106075616.95401-1-tudor.ambarus@microchip.com/
+
+ drivers/mtd/spi-nor/core.c | 20 ++++++++++++++++----
+ drivers/mtd/spi-nor/core.h |  1 +
+ drivers/mtd/spi-nor/sfdp.c |  4 ++--
+ 3 files changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 247d1014879a..9b90d941d87a 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2019,10 +2019,22 @@ void spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
+ 			    u8 opcode)
+ {
+ 	erase->size = size;
+-	erase->opcode = opcode;
+-	/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
+-	erase->size_shift = ffs(erase->size) - 1;
+-	erase->size_mask = (1 << erase->size_shift) - 1;
++
++	if (size) {
++		erase->opcode = opcode;
++		/* JEDEC JESD216B imposes erase sizes to be power of 2. */
++		erase->size_shift = ffs(size) - 1;
++		erase->size_mask = (1 << erase->size_shift) - 1;
++	}
++}
++
++/**
++ * spi_nor_mask_erase_type() - mask out an SPI NOR erase type
++ * @erase:	pointer to a structure that describes a SPI NOR erase type
++ */
++void spi_nor_mask_erase_type(struct spi_nor_erase_type *erase)
++{
++	erase->size = 0;
+ }
+ 
+ /**
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index f6d012e1f681..25423225c29d 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -681,6 +681,7 @@ void spi_nor_set_pp_settings(struct spi_nor_pp_command *pp, u8 opcode,
+ 
+ void spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
+ 			    u8 opcode);
++void spi_nor_mask_erase_type(struct spi_nor_erase_type *erase);
+ struct spi_nor_erase_region *
+ spi_nor_region_next(struct spi_nor_erase_region *region);
+ void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index fd4daf8fa5df..298ab5e53a8c 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -875,7 +875,7 @@ static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
+ 	 */
+ 	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
+ 		if (!(regions_erase_type & BIT(erase[i].idx)))
+-			spi_nor_set_erase_type(&erase[i], 0, 0xFF);
++			spi_nor_mask_erase_type(&erase[i]);
+ 
+ 	return 0;
+ }
+@@ -1089,7 +1089,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 			erase_type[i].opcode = (dwords[SFDP_DWORD(2)] >>
+ 						erase_type[i].idx * 8) & 0xFF;
+ 		else
+-			spi_nor_set_erase_type(&erase_type[i], 0u, 0xFF);
++			spi_nor_mask_erase_type(&erase_type[i]);
+ 	}
+ 
+ 	/*
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
