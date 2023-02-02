@@ -4,85 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B78DC05027
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Feb 2023 12:19:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3610AC05027
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Feb 2023 14:46:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QLyAudlewZB1ttiYcAZ0k1ThpO+FcoMKgG9iD7+8fhM=; b=ixEUkRNzSCeyCo
-	b8ogFoIsXjR3Fw3qkX48bpNBbzP8iKrpbrDXX1OFEEQ7mdXdjSEyc3FJjTVKs7tuKE8QmFQb9Abov
-	0W4rcDZFebq4wUv5FMcfYVQq5RHs1cMyCqC121XQ+8B25V4FuW39+TEzrGYzVLNPpWPZVEUpHZhOF
-	HySAe20LcI4zhATB88sjF6oxyZ9XQcBY9bmvA6xsoPMtu7466GFE9WXf4xnmKqtEx81JuKDti7mm6
-	s7JDaXhFTqwZI5rhWPo1EtABbmTbnuyunxbkyinD5krXPYSnzBVTv//ev28dLJlfL5j/0Kkfe48LU
-	kTeSqwdJ87muSpNIqRLA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=xHNp3rMzvIGGh8q/TgDvK/WJ1JQaMqkaJxLZXVm9oRE=; b=WbYoznLME9FRJf
+	bSYDBnZP0qLfdHZKdrIkb0zKb5x0JIpSvSSIHspsMDo8sUskV4bupq+oOb3bUKvBTpHaVxxElcRJq
+	Uss1FbuenDL+IdBdOnWdSNim9anaMsffFCBDmjE4cKo/GDfYQDYTvh6m0/22UCAb/wyVhOvr/IYAc
+	Vca4tMfz9DsQ3BPvfMbNR3yhTmmgsAxeAuWuorkbf308u0TcJV3a9pXX0LpMhtbN538rFDfWhGZc3
+	+ChPI+9fvfVMZK3NoXkbHHtICRcZOSO+8aijirgd4pZQKGo4SlkK5HLl/erlzYypxxo8Xlrqs/f6f
+	xkHIPOd3hZWRb31fIAmA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNYZ7-00Fk7R-VY; Thu, 02 Feb 2023 12:19:46 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+	id 1pNarE-00GCDU-F8; Thu, 02 Feb 2023 14:46:36 +0000
+Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNYZ4-00Fk5j-OT; Thu, 02 Feb 2023 12:19:44 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id d14so1516613wrr.9;
-        Thu, 02 Feb 2023 04:19:39 -0800 (PST)
+	id 1pNarC-00GCD1-FH
+	for linux-mtd@lists.infradead.org; Thu, 02 Feb 2023 14:46:35 +0000
+Received: by mail-wm1-x32b.google.com with SMTP id f47-20020a05600c492f00b003dc584a7b7eso3893944wmp.3
+        for <linux-mtd@lists.infradead.org>; Thu, 02 Feb 2023 06:46:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0Obxz9fH35OWB4UXxiqSp3CJYqzK8VLJncs58vA/I1w=;
-        b=hGavQITnzkxfZqIrRHR/2XSpzp2m8GPHONYsjIwWEbYgAi16e05vrSDeaHsKjKvl5i
-         /93+b/uh8LPctsU7akwIsoOgqel3WzEGEvNTWJOnGj2ZEW2ZSpzNPkHI7XK0XLwxXEYF
-         +aJH6kyveI5s8zMSR/Gu+KJjDcPP8Rlh+zmLg6sS6Gb6b7Lp+9eLL5s4imARqnwE25VI
-         XLS+oxwfKS6P9KEQzINoe2iDh6DWCpKXOvVZyhSyLLpgdcdgomq6fXT6oVCbtMRLIYyK
-         x5bUFz/HnCo2n3xfKPTYnb7JK4+uLCVSSEsyNyyLG2ERESsIxWbVGoZBkk/q5txRdxB+
-         nkVw==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=J0fzJnEdJhZs6pzCO3QQHXezw8AwzK62aFAVJcTyA3k=;
+        b=CoyyTK621tmUL/qz7HY01Buj71zKbLt+AinKrr+uU+lAXFAvi5OVelGgJiZGH+MlOp
+         RB4PeDCSowhaROxovbzinvAreugeFJ8bF1fXqgZi1E2no2eG6WOePy5LiWwNrSyes1Dn
+         gdh0Rc06thZopl0gFcX1RtktfPBjdYMFl1Kxqgz26ajbye0vg3WqVt9FQssUTrg2s7Bl
+         c/wavxv2GlztcpGOyAgEKz6/ezfuPCZx3R4cxLtqaY4KhiIwffZQ1ee/YN76E8bNlXcP
+         eywJqHChG1HYyFGGPe+sdIdZN8hiU+BqhhTEEuaod1ihARy3dLeXyl6bNSaBNf9x/7P3
+         as/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Obxz9fH35OWB4UXxiqSp3CJYqzK8VLJncs58vA/I1w=;
-        b=yawimwjLjVXiRkRm9JJhST8BKsJ96jRLrWVroKEvMl2PrRGgb6Aw88qRo67fRySDmv
-         sXKbNXjgEBDpO+G0hKokFqLSj1JmCI7/P7YsJAhaN/K6rk5cfLu8EkdPlR2gH1k0uUkM
-         Uct6ZS+J02MPhdDky0cxd9REbmDRjlcwBuAi3oJKmvG2m2FY0jz+J+65WAxhowf0nRLp
-         6FFMBeevMvOtEQTpnat7IL35YaPJFqa8Hmt31783hot1/THrmNXOTUMIU6bPIZs3WtA3
-         BP+VBdfJ2NgPGkjq6HPfvr6invbu0PTH+9ib5E2owKtk527BiPhUl6+mp/6aPbTtmg51
-         Rqzw==
-X-Gm-Message-State: AO0yUKUfpzG/IrW/gsfbdF/HdHNXSFXxucn6Y+vACyHHC6AGHhrtDOLN
-	Z169Jqj5OcEjx6+urKR74as=
-X-Google-Smtp-Source: AK7set/4lyENg811N/tf0ykVq/rm55qR04z2wrUgYTqv/PP7TDtGNwCZFpOJaeB9bXho9exywA3evQ==
-X-Received: by 2002:adf:fa07:0:b0:2c0:6217:8459 with SMTP id m7-20020adffa07000000b002c062178459mr4765480wrr.16.1675340378510;
-        Thu, 02 Feb 2023 04:19:38 -0800 (PST)
-Received: from [192.168.2.177] ([207.188.167.132])
-        by smtp.gmail.com with ESMTPSA id h4-20020adfaa84000000b002bfbf4c3f9fsm19786807wrc.17.2023.02.02.04.19.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Feb 2023 04:19:38 -0800 (PST)
-Message-ID: <27d1f8ae-4948-317d-b4a6-be7dc0dfe22a@gmail.com>
-Date: Thu, 2 Feb 2023 13:19:36 +0100
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J0fzJnEdJhZs6pzCO3QQHXezw8AwzK62aFAVJcTyA3k=;
+        b=i0htsDIj0lzTjDFPFihiufMuJZn/pW8PLK50QZjJuZWidBXkP6cu29IX7NBPOXimzA
+         aQKOa0/rA09C9rQCGKQzX7pVaPiIksLXl+wIBnh3I6UJ+UQl505fUsY5cwmvvKGS1r04
+         QZEQj/NR9EERbqKrIp8woEGDn9S7bpcTUDyzb6MoeYJX+PHN+6ZKTaPjxt1PuOqmX+KX
+         zZdxhvri+CdSmmMSWOfk3QJz65soD3GLlyaYXkMc0rdtu9xvAmy37rlk7estzhWE0ZYT
+         L7wtmL4fCKHeaGqQKaEy1s7kZ2Vc6Z+CUdTT/s7YNKc9mU97xYfUKxro1NGB7vzKPDl7
+         SMjQ==
+X-Gm-Message-State: AO0yUKWgXy33EVdngI0xZaCQX6xZITfos2acQBU4jssBecrvaeiieDPk
+	VSXW8asDgR5LB4u9vsoH2+yEKA==
+X-Google-Smtp-Source: AK7set91pbKUq+jVvKK+Ei04Wn4aADYjb1vFONXliCGvfx+8s37To2li9nAhPaiWD6IOzxBHg0VuJw==
+X-Received: by 2002:a05:600c:46ca:b0:3de:1588:bcee with SMTP id q10-20020a05600c46ca00b003de1588bceemr6347743wmo.13.1675349191766;
+        Thu, 02 Feb 2023 06:46:31 -0800 (PST)
+Received: from 1.. ([79.115.63.122])
+        by smtp.gmail.com with ESMTPSA id i40-20020a05600c4b2800b003dc42d48defsm4687337wmp.6.2023.02.02.06.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 06:46:31 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: pratyush@kernel.org,
+	michael@walle.cc
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH] mtd: spi-nor: Sort headers alphabetically
+Date: Thu,  2 Feb 2023 16:46:28 +0200
+Message-Id: <20230202144628.14443-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v6 5/5] mtd: nand: ecc-mtk: Add ECC support fot MT7986 IC
-Content-Language: en-US
-To: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, benliang.zhao@mediatek.com,
- bin.zhang@mediatek.com,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-References: <20230201021500.26769-1-xiangsheng.hou@mediatek.com>
- <20230201021500.26769-6-xiangsheng.hou@mediatek.com>
-From: Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <20230201021500.26769-6-xiangsheng.hou@mediatek.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2115; i=tudor.ambarus@linaro.org; h=from:subject; bh=0gGH7H0BhjnUjMUAb0C6utVrv4qHVqzlIDWKnNiDBLE=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBj28zE7R1LDrqHWCEpy8gJcsplwB0YFOUhAGW8t fMAyEFs3raJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCY9vMxAAKCRBLVU9HpY0U 6blPB/9faYjcDUu2AALLFjO6bnmDq6+ip+Bx1SnP+D0W8kwb6zvWT0O0UljDgIjkpfyXTNLYogK 9I1pFo6ef7Xtta3xhOQ7ZarQb/pYxRx4Q4mmg8yEHkJduxeiDnhsWDHD13MXnkKpGV4AUz283SO bUhkQPaXPMAxTSaaxWWk+a8V1sBhtn13A2OEjSs7PMolkBSiun0EklKsXakoVMGn1hblHmDHvzm dTjhwDWLZd2WotTf13PkimCVRFHAKdKTaYT66XzWcAqyvxPGV83eox5IUK8++wBx0pBXc2byxlz DPBcv9q3HBv21yZxNlMjIbXcRd7SE5yGWd1vrbAr8wCB2Dqq
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230202_041942_830041_4CD0DBB9 
-X-CRM114-Status: GOOD (  17.24  )
+X-CRM114-CacheID: sfid-20230202_064634_533430_DC2CC465 
+X-CRM114-Status: GOOD (  10.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,107 +86,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Sort headers alphabetically - it helps locating duplicates, and makes it
+easier to figure out where to insert new headers. Alphabetic order should
+also prove that each header is self-contained, i.e. can be included without
+prerequisites.
 
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ drivers/mtd/spi-nor/core.c    | 13 ++++++-------
+ drivers/mtd/spi-nor/debugfs.c |  2 +-
+ drivers/mtd/spi-nor/sfdp.c    |  2 +-
+ 3 files changed, 8 insertions(+), 9 deletions(-)
 
-On 01/02/2023 03:15, Xiangsheng Hou wrote:
-> Add ECC support fot MT7986 IC, and change err_mask value with
-> GENMASK macro.
-> 
-> Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index b500655f7937..247d1014879a 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -9,19 +9,18 @@
+ 
+ #include <linux/err.h>
+ #include <linux/errno.h>
+-#include <linux/module.h>
++#include <linux/delay.h>
+ #include <linux/device.h>
+-#include <linux/mutex.h>
+ #include <linux/math64.h>
+-#include <linux/sizes.h>
+-#include <linux/slab.h>
+-#include <linux/delay.h>
+-
++#include <linux/module.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/spi-nor.h>
++#include <linux/mutex.h>
+ #include <linux/of_platform.h>
+ #include <linux/sched/task_stack.h>
++#include <linux/sizes.h>
++#include <linux/slab.h>
+ #include <linux/spi/flash.h>
+-#include <linux/mtd/spi-nor.h>
+ 
+ #include "core.h"
+ 
+diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+index ff895f6758ea..845b78c7ecc7 100644
+--- a/drivers/mtd/spi-nor/debugfs.c
++++ b/drivers/mtd/spi-nor/debugfs.c
+@@ -1,9 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
++#include <linux/debugfs.h>
+ #include <linux/mtd/spi-nor.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/spi-mem.h>
+-#include <linux/debugfs.h>
+ 
+ #include "core.h"
+ 
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 3acc01c3a900..fd4daf8fa5df 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -5,9 +5,9 @@
+  */
+ 
+ #include <linux/bitfield.h>
++#include <linux/mtd/spi-nor.h>
+ #include <linux/slab.h>
+ #include <linux/sort.h>
+-#include <linux/mtd/spi-nor.h>
+ 
+ #include "core.h"
+ 
+-- 
+2.34.1
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-> ---
->   drivers/mtd/nand/ecc-mtk.c | 28 +++++++++++++++++++++++++---
->   1 file changed, 25 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/ecc-mtk.c b/drivers/mtd/nand/ecc-mtk.c
-> index 9f9b201fe706..c75bb8b80cc1 100644
-> --- a/drivers/mtd/nand/ecc-mtk.c
-> +++ b/drivers/mtd/nand/ecc-mtk.c
-> @@ -40,6 +40,10 @@
->   #define ECC_IDLE_REG(op)	((op) == ECC_ENCODE ? ECC_ENCIDLE : ECC_DECIDLE)
->   #define ECC_CTL_REG(op)		((op) == ECC_ENCODE ? ECC_ENCCON : ECC_DECCON)
->   
-> +#define ECC_ERRMASK_MT7622	GENMASK(4, 0)
-> +#define ECC_ERRMASK_MT2701	GENMASK(5, 0)
-> +#define ECC_ERRMASK_MT2712	GENMASK(6, 0)
-> +
->   struct mtk_ecc_caps {
->   	u32 err_mask;
->   	u32 err_shift;
-> @@ -79,6 +83,10 @@ static const u8 ecc_strength_mt7622[] = {
->   	4, 6, 8, 10, 12
->   };
->   
-> +static const u8 ecc_strength_mt7986[] = {
-> +	4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24
-> +};
-> +
->   enum mtk_ecc_regs {
->   	ECC_ENCPAR00,
->   	ECC_ENCIRQ_EN,
-> @@ -451,7 +459,7 @@ unsigned int mtk_ecc_get_parity_bits(struct mtk_ecc *ecc)
->   EXPORT_SYMBOL(mtk_ecc_get_parity_bits);
->   
->   static const struct mtk_ecc_caps mtk_ecc_caps_mt2701 = {
-> -	.err_mask = 0x3f,
-> +	.err_mask = ECC_ERRMASK_MT2701,
->   	.err_shift = 8,
->   	.ecc_strength = ecc_strength_mt2701,
->   	.ecc_regs = mt2701_ecc_regs,
-> @@ -462,7 +470,7 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt2701 = {
->   };
->   
->   static const struct mtk_ecc_caps mtk_ecc_caps_mt2712 = {
-> -	.err_mask = 0x7f,
-> +	.err_mask = ECC_ERRMASK_MT2712,
->   	.err_shift = 8,
->   	.ecc_strength = ecc_strength_mt2712,
->   	.ecc_regs = mt2712_ecc_regs,
-> @@ -473,7 +481,7 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt2712 = {
->   };
->   
->   static const struct mtk_ecc_caps mtk_ecc_caps_mt7622 = {
-> -	.err_mask = 0x1f,
-> +	.err_mask = ECC_ERRMASK_MT7622,
->   	.err_shift = 5,
->   	.ecc_strength = ecc_strength_mt7622,
->   	.ecc_regs = mt7622_ecc_regs,
-> @@ -483,6 +491,17 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt7622 = {
->   	.pg_irq_sel = 0,
->   };
->   
-> +static const struct mtk_ecc_caps mtk_ecc_caps_mt7986 = {
-> +	.err_mask = ECC_ERRMASK_MT7622,
-> +	.err_shift = 8,
-> +	.ecc_strength = ecc_strength_mt7986,
-> +	.ecc_regs = mt2712_ecc_regs,
-> +	.num_ecc_strength = 11,
-> +	.ecc_mode_shift = 5,
-> +	.parity_bits = 14,
-> +	.pg_irq_sel = 1,
-> +};
-> +
->   static const struct of_device_id mtk_ecc_dt_match[] = {
->   	{
->   		.compatible = "mediatek,mt2701-ecc",
-> @@ -493,6 +512,9 @@ static const struct of_device_id mtk_ecc_dt_match[] = {
->   	}, {
->   		.compatible = "mediatek,mt7622-ecc",
->   		.data = &mtk_ecc_caps_mt7622,
-> +	}, {
-> +		.compatible = "mediatek,mt7986-ecc",
-> +		.data = &mtk_ecc_caps_mt7986,
->   	},
->   	{},
->   };
 
 ______________________________________________________
 Linux MTD discussion mailing list
