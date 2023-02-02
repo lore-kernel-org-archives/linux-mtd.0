@@ -4,145 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33DA4C05027
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Feb 2023 15:30:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51389C05027
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Feb 2023 16:41:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=D0aelB+L8hi8bprc8vgxiMAEmMjiK9V4vT9fT0nSKAc=; b=S6kxyqOIFN6XRR
-	YJX26lmZ0qIwsQJcSQyskIZVxcCEWsQkeoRGH5v7mSRVaskZFQvn2427jDQgUJsXFfyO72x2y9lYm
-	myEEJb1Si2cO+brfg3PTBaM+Y2BNnkeJD98ooA6bK+4H+Nr0Z09LsLaxKA3bDObMREyEXP4oosifU
-	uX+GRFnOl/zjulGmhwp62MJ3OWSvJK0FXoncZpx/HQVufDC565WIem9i6B9IdPntDnvw73VeNR10i
-	Tq+6GS3sBgqJqucW0yUYTpXtvKxhAY8D49MJOZHsdMbpY0N6uiPxaF0aJYntt1Kc8KmA0GNZHjo1l
-	3hZoUNb6EEt1idUq1Ttg==;
+	List-Owner; bh=9tg12vhMDCasRl+Oj1anxAlsYtTGY6/oz5eSfT+Jx7g=; b=4qPUiAKGajp4Gf
+	Sg3f8+LOSr+paDtOHa62HKbE5EaS/DfYNQTrunRuuullxeFx0/T6ZN0Lif2D7VilwnV3gcNGbjuZd
+	3R6tthZzIyIH+UUTWni2LdeLRa8ZaEnS6Ect/w1h4kZvewJbW9EULlCgW0YN6xFozXpf0RiSl+eVi
+	5YN5f5VK6xmG1XnGN9bdB1WVKH/IZgRWUEt2fS75CcQnNoowRDtLEDl45ifqJeFlwrC1ihQDF+pyE
+	CN9AUUcyWSu3a0gj5voMlpH2xkZiDwlVcW/3s48rbcut7cXtZ/wGHbTefoYJr2my6d5eceEUJi9RQ
+	a2/4dEpxECm31qozrgbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNbXb-00GOJn-Nz; Thu, 02 Feb 2023 15:30:24 +0000
-Received: from mail-bn1nam02on2061f.outbound.protection.outlook.com ([2a01:111:f400:7eb2::61f] helo=NAM02-BN1-obe.outbound.protection.outlook.com)
+	id 1pNcdm-00GglC-Cx; Thu, 02 Feb 2023 16:40:50 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNbVs-00GN8B-7W; Thu, 02 Feb 2023 15:28:38 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ChyoQqSXhSnI7KoY5biInXOIJANssAPJrEvZH6mPHFvtP0lVOqeQidsJ4Uto1H6iquYZjLAaxDFcNqa2JU7ntt9CIYV0+A+wTqMkMObUCWZpPqoAgx0s52/VKSMFp3aUnply0g7COSTuobhfxGKlQten9DCIbEi3MDXySNM+ori5NHMEIIrY0sbF5aLACqNCumzvZHDbjV8KC+7rnpvEY0wh+StU1nFUAFXjUY9JBSDu4cZkBNeDjEMZV9+nbve1k6du4mK6lOjLD9FeZAjGpfMS0MMcfxtFsyLOcyQbnOMLiqvU/mP47ACKcWYURjbV6fpHAJYYsaJm5Gg5L7gs3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2pEjyARU/iDHF4qEL808MswcLI+5ZEPTvCc976Kw1g4=;
- b=ECbHH6DIKxNnbu7Ao6TpVUFAK+561mk7hftiWheVrhrhcHvlOyaYbUdMikCftUFGbuyuqB27emkT8sbKmuwtd4dLwI6ORXiU97+CT8dKEJZmWoV5yYwiPjYxx8d+3ki/+0ybP3OFT7yxci1eeHlLFbUwnk/b5YkPCx2ZF2Gvagxhjez9G2cgIBWFaje7mnUoyqXiEocllzTJ6K5qiuA93P/A1B36vLBopjSMao5BaLib+Y9aaEKZ4gbL8+C+XyjmXtKJ4fK0d50MqPjrIAg47O2W4oqcC3TsFqKLJrpTUqM28FBL0lPd6QA5/XHMDqlHLdpfIB01oWrMesL3eITibg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2pEjyARU/iDHF4qEL808MswcLI+5ZEPTvCc976Kw1g4=;
- b=HFvChiGMfTn/v0rutEii1Iz7VC8vZawQmS93vvsHzOOwopFciQroMfPUOv/t/y8UKLbhjfwEcqHzPBl5veOm3oduamJB4RksMKOZqhlwKZ29cW6djKM/7hmcrVnp1diDu9CZmx6WffJ3sdGLHjeznv/6hcYB1q5TWbNmsYwkR4E=
-Received: from BLAPR03CA0135.namprd03.prod.outlook.com (2603:10b6:208:32e::20)
- by SA1PR12MB6750.namprd12.prod.outlook.com (2603:10b6:806:257::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.27; Thu, 2 Feb
- 2023 15:28:29 +0000
-Received: from BL02EPF000108E8.namprd05.prod.outlook.com
- (2603:10b6:208:32e:cafe::d1) by BLAPR03CA0135.outlook.office365.com
- (2603:10b6:208:32e::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.24 via Frontend
- Transport; Thu, 2 Feb 2023 15:28:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF000108E8.mail.protection.outlook.com (10.167.241.201) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6064.17 via Frontend Transport; Thu, 2 Feb 2023 15:28:29 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 2 Feb
- 2023 09:28:28 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 2 Feb
- 2023 09:28:28 -0600
-Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Thu, 2 Feb 2023 09:28:05 -0600
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-To: <broonie@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-	<vigneshr@ti.com>, <jic23@kernel.org>, <tudor.ambarus@microchip.com>,
-	<pratyush@kernel.org>, <sanju.mehta@amd.com>, <chin-ting_kuo@aspeedtech.com>,
-	<clg@kaod.org>, <kdasu.kdev@gmail.com>, <f.fainelli@gmail.com>,
-	<rjui@broadcom.com>, <sbranden@broadcom.com>, <eajames@linux.ibm.com>,
-	<olteanv@gmail.com>, <han.xu@nxp.com>, <john.garry@huawei.com>,
-	<shawnguo@kernel.org>, <s.hauer@pengutronix.de>, <narmstrong@baylibre.com>,
-	<khilman@baylibre.com>, <matthias.bgg@gmail.com>, <haibo.chen@nxp.com>,
-	<linus.walleij@linaro.org>, <daniel@zonque.org>, <haojian.zhuang@gmail.com>,
-	<robert.jarzmik@free.fr>, <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-	<heiko@sntech.de>, <krzysztof.kozlowski@linaro.org>, <andi@etezian.org>,
-	<mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>, <wens@csie.org>,
-	<jernej.skrabec@gmail.com>, <samuel@sholland.org>,
-	<masahisa.kojima@linaro.org>, <jaswinder.singh@linaro.org>,
-	<rostedt@goodmis.org>, <mingo@redhat.com>, <l.stelmach@samsung.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <alex.aring@gmail.com>, <stefan@datenfreihafen.org>,
-	<kvalo@kernel.org>
-CC: <git@amd.com>, <linux-spi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-	<radu_nicolae.pirea@upb.ro>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@microchip.com>,
-	<bcm-kernel-feedback-list@broadcom.com>, <fancer.lancer@gmail.com>,
-	<kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>,
-	<jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
-	<avifishman70@gmail.com>, <tmaimon77@gmail.com>, <tali.perry1@gmail.com>,
-	<venture@google.com>, <yuenn@google.com>, <benjaminfair@google.com>,
-	<yogeshgaur.83@gmail.com>, <konrad.dybcio@somainline.org>,
-	<alim.akhtar@samsung.com>, <ldewangan@nvidia.com>,
-	<thierry.reding@gmail.com>, <jonathanh@nvidia.com>, <michal.simek@amd.com>,
-	<linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<linux-rpi-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-	<linux-rockchip@lists.infradead.org>, <linux-samsung-soc@vger.kernel.org>,
-	<linux-stm32@st-md-mailman.stormreply.com>, <linux-sunxi@lists.linux.dev>,
-	<linux-tegra@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<linux-wpan@vger.kernel.org>, <libertas-dev@lists.infradead.org>,
-	<linux-wireless@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-	<linux-iio@vger.kernel.org>, <michael@walle.cc>, <palmer@dabbelt.com>,
-	<linux-riscv@lists.infradead.org>, <amitrkcian2002@gmail.com>, "Amit Kumar
- Mahapatra" <amit.kumar-mahapatra@amd.com>
-Subject: [PATCH v3 13/13] spi: spi-zynqmp-gqspi: Add parallel memories support in GQSPI driver
-Date: Thu, 2 Feb 2023 20:52:58 +0530
-Message-ID: <20230202152258.512973-14-amit.kumar-mahapatra@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230202152258.512973-1-amit.kumar-mahapatra@amd.com>
-References: <20230202152258.512973-1-amit.kumar-mahapatra@amd.com>
+	id 1pNcdh-00Ggiu-4V; Thu, 02 Feb 2023 16:40:46 +0000
+Received: by mail-ej1-x629.google.com with SMTP id ml19so7791631ejb.0;
+        Thu, 02 Feb 2023 08:40:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1JxadcUmstQQisxG5SMmC/yE89rXvA6AYxcU2YUnVDQ=;
+        b=F0H3B8NAgseBrYAc9OhvFrrJcHUs5RxsmEgusiWeYI4oHZkbOFHj9Ncu15Uvbi4tCO
+         GCoGClEA/o94QYw0U1UfeOAEL80uwq+5tCfPJWGsWnHH8HpmO1lWGzeCrAsIdF4Fu6zR
+         kNR+WhBg1xqNyaBWvq3l+bklN9GSWeF5rkZflnjP5JjP6Pm7phnd2Ab56G7cA8boFLp0
+         xzt+aopsRq/bEYAtjRCwCMmTji3jBwX9xCOCD4tzAC2fkbovQWodfYFH0SLzujYlkR2S
+         3SeXJQSQvZdrRrWbPhPWjXi7p2pGkVjdnp+X80CVTlvacpypSO18F0i1MgCSG84IgzXR
+         jpqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1JxadcUmstQQisxG5SMmC/yE89rXvA6AYxcU2YUnVDQ=;
+        b=1gDFr5xPxO6RUuFBZf1UQKp3vlCvMzV7z11KOVLQkDZujKDRikr1ikD5B7A8h/R7H5
+         Dt9u/G82NZbhpBWDRURI+KOZHVzA2xm1IgqwIxftz8HHwWkm4wQPep62C/0y+NRFYW83
+         FQc2kkgKI/nZOGCWPs4Z24vMZsygbMwkz5ticXnz7rkxpYPklKwCVgTXyu5tJMtbcNkd
+         sgQ1IxM4a/asmLEfda6O8dgcRVY94h4dfSolax8WyXD9eiwlCbPcfuGSEEdWRFukUQIr
+         WJUBpjnkT9/vOLBHg14MTRoNZSu2sueRWeBQdkL1fzGIWvxh6ux5Yit4kcZp5H0IMj97
+         vSGA==
+X-Gm-Message-State: AO0yUKWgJpfk/QxyPRgCV4KtKMqTk4GQgBrLqJeYPHAe8tbfjpbbJz9F
+	NZ+EjVjkljU20DKQm8OmP8I=
+X-Google-Smtp-Source: AK7set8DElzpOFybgSqmpPkVSDP76pQ9uMXg+BggB0EZ9TIGd1XdSGpOOvGTm4L9iJVvil59yp3mTw==
+X-Received: by 2002:a17:906:c156:b0:88d:ba89:1835 with SMTP id dp22-20020a170906c15600b0088dba891835mr2844484ejc.6.1675356040636;
+        Thu, 02 Feb 2023 08:40:40 -0800 (PST)
+Received: from jernej-laptop.localnet (82-149-19-102.dynamic.telemach.net. [82.149.19.102])
+        by smtp.gmail.com with ESMTPSA id by13-20020a0564021b0d00b004a277d55a6csm3387108edb.1.2023.02.02.08.40.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 08:40:40 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: broonie@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, jic23@kernel.org, tudor.ambarus@microchip.com,
+ pratyush@kernel.org, sanju.mehta@amd.com, chin-ting_kuo@aspeedtech.com,
+ clg@kaod.org, kdasu.kdev@gmail.com, f.fainelli@gmail.com, rjui@broadcom.com,
+ sbranden@broadcom.com, eajames@linux.ibm.com, olteanv@gmail.com,
+ han.xu@nxp.com, john.garry@huawei.com, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, narmstrong@baylibre.com, khilman@baylibre.com,
+ matthias.bgg@gmail.com, haibo.chen@nxp.com, linus.walleij@linaro.org,
+ daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+ agross@kernel.org, bjorn.andersson@linaro.org, heiko@sntech.de,
+ krzysztof.kozlowski@linaro.org, andi@etezian.org, mcoquelin.stm32@gmail.com,
+ alexandre.torgue@foss.st.com, wens@csie.org, samuel@sholland.org,
+ masahisa.kojima@linaro.org, jaswinder.singh@linaro.org, rostedt@goodmis.org,
+ mingo@redhat.com, l.stelmach@samsung.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ alex.aring@gmail.com, stefan@datenfreihafen.org, kvalo@kernel.org,
+ Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>, palmer@dabbelt.com
+Cc: git@amd.com, linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ joel@jms.id.au, andrew@aj.id.au, radu_nicolae.pirea@upb.ro,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ claudiu.beznea@microchip.com, bcm-kernel-feedback-list@broadcom.com,
+ fancer.lancer@gmail.com, kernel@pengutronix.de, festevam@gmail.com,
+ linux-imx@nxp.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+ avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+ venture@google.com, yuenn@google.com, benjaminfair@google.com,
+ yogeshgaur.83@gmail.com, konrad.dybcio@somainline.org,
+ alim.akhtar@samsung.com, ldewangan@nvidia.com, thierry.reding@gmail.com,
+ linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ netdev@vger.kernel.org, linux-wpan@vger.kernel.org,
+ libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-iio@vger.kernel.org,
+ linux-riscv@lists.infradead.org
+Subject:  Re: [PATCH v3 01/13] spi: Replace all spi->chip_select and spi->cs_gpiod
+ references with function call
+Date: Thu, 02 Feb 2023 17:40:35 +0100
+Message-ID: <4802797.31r3eYUQgx@jernej-laptop>
+In-Reply-To: <20230202152258.512973-2-amit.kumar-mahapatra@amd.com>
+References:  <20230202152258.512973-1-amit.kumar-mahapatra@amd.com>
+ <20230202152258.512973-2-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF000108E8:EE_|SA1PR12MB6750:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64e877f6-3653-4e8d-acc9-08db053222c8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	xGpiEMVI0Q79Sm8quNRd1PoYqX8Os2QrTQscMq54fZXySLuL5b5pypVhT9FwWTm6A8VP7CFpp1AuC3+JiGjP0zjzIqP0vyeZd9MGpGCFEx3I7SyCK4cKXlZFo8xlaVnLLLbnGg/O5reTo/v7lPPwUGXgHUOyBAJTY66fTr/SsbLyF6YqUa9WsU4KQ6Whksv3JKdG4ACqmx3HZDlmyEQZ9P2vYqIxDSpzgb3yl1Ez1WpYPU7WQoOG20L/F7uSCCjLFQopJUcTBq5f2z0EcONqSRiguyN/6nBIO6VRPo/hdapw90Drrz46kjFOm8phoINDvox4ZKMUCBFUnxN9OMXmMoomB+ybIxKWpHlSpOmxDxcfEVPeZY0dJidUgckyXU3U7RD2/u0yYGL0iCQqZr1SBWHtH4ROpjmX5CYBJJ8qbKlEgdp7It+ar2ldVuZFHg9z1j40dDoFTG2qaY1hPreqKsLZMGKk1/O6M9+qegWyG3UpdchLe6XTdTNSlgfIfkVPCgov0d5Ow1aYqio2RJxk6o9+GNkKF0KOTP7wqL7BtaUWaFwf5NhSOYY2iljvCfrAxFLI4InlWMwSn5+rk7IllvazKGbKsQQJ4MKrmSF+6AYBhNrLJsORzZW4CAhF8UzgWuDkVZTt74VGRwEyi9G+ME/CmSAYufpa8bTDfnFwDPUZK2rMObUCM3mRYj/4Ava/QJVreqb2LNwoLdjCdLU2m632Y2/AUB1UYK7QBgl0zdKBl+BzDHQgwGel0wwk1Na6st0GzkFOSyhMz1lm4HbalJaSFVoTgz7b/afIlLYjP8RzxNiECSTRue2blY1HJnMvlyTSX0s0cLcFXD85nXMJWw==
-X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(346002)(376002)(396003)(136003)(451199018)(46966006)(36840700001)(40470700004)(356005)(921005)(40480700001)(36756003)(36860700001)(47076005)(82310400005)(81166007)(40460700003)(426003)(82740400003)(8676002)(2906002)(4326008)(54906003)(70586007)(110136005)(7416002)(7406005)(7366002)(316002)(70206006)(6666004)(8936002)(86362001)(41300700001)(5660300002)(7276002)(7336002)(1076003)(478600001)(26005)(186003)(83380400001)(2616005)(336012)(36900700001)(41080700001)(2101003)(83996005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2023 15:28:29.1575
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64e877f6-3653-4e8d-acc9-08db053222c8
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	BL02EPF000108E8.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6750
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230202_072836_351007_D7C4D6D5 
-X-CRM114-Status: GOOD (  18.91  )
+X-CRM114-CacheID: sfid-20230202_084045_228293_E2F3FA10 
+X-CRM114-Status: GOOD (  14.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -154,116 +119,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During GQSPI driver probe set ctlr->multi-cs-cap for enabling multi CS
-capability of the controller. In parallel mode the controller can either
-split the data between both the flash or can send the same data to both the
-flashes, this is determined by the STRIPE bit. While sending commands to
-the flashes the GQSPI driver send the same command to both the flashes by
-resetting the STRIPE bit, but while writing/reading data to & from the
-flash the GQSPI driver splits the data evenly between both the flashes by
-setting the STRIPE bit.
-
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
----
- drivers/spi/spi-zynqmp-gqspi.c | 39 +++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index 4759f704bf5c..9e44371bfda2 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -23,6 +23,7 @@
- #include <linux/spinlock.h>
- #include <linux/workqueue.h>
- #include <linux/spi/spi-mem.h>
-+#include <linux/mtd/spi-nor.h>
- 
- /* Generic QSPI register offsets */
- #define GQSPI_CONFIG_OFST		0x00000100
-@@ -192,6 +193,7 @@ struct qspi_platform_data {
-  * @op_lock:		Operational lock
-  * @speed_hz:          Current SPI bus clock speed in hz
-  * @has_tapdelay:	Used for tapdelay register available in qspi
-+ * @is_parallel:		Used for multi CS support
-  */
- struct zynqmp_qspi {
- 	struct spi_controller *ctlr;
-@@ -214,8 +216,33 @@ struct zynqmp_qspi {
- 	struct mutex op_lock;
- 	u32 speed_hz;
- 	bool has_tapdelay;
-+	bool is_parallel;
- };
- 
-+/**
-+ * zynqmp_gqspi_update_stripe - For GQSPI controller data stripe capabilities
-+ * @op:	Pointer to mem ops
-+ * Return:      Status of the data stripe
-+ *
-+ * Returns true if data stripe need to be enabled, else returns false
-+ */
-+bool zynqmp_gqspi_update_stripe(const struct spi_mem_op *op)
-+{
-+	if (op->cmd.opcode ==  SPINOR_OP_BE_4K ||
-+	    op->cmd.opcode ==  SPINOR_OP_BE_32K ||
-+	    op->cmd.opcode ==  SPINOR_OP_CHIP_ERASE ||
-+	    op->cmd.opcode ==  SPINOR_OP_SE ||
-+	    op->cmd.opcode ==  SPINOR_OP_BE_32K_4B ||
-+	    op->cmd.opcode ==  SPINOR_OP_SE_4B ||
-+	    op->cmd.opcode == SPINOR_OP_BE_4K_4B ||
-+	    op->cmd.opcode ==  SPINOR_OP_WRSR ||
-+	    op->cmd.opcode ==  SPINOR_OP_BRWR ||
-+	    (op->cmd.opcode ==  SPINOR_OP_WRSR2 && !op->addr.nbytes))
-+		return false;
-+
-+	return true;
-+}
-+
- /**
-  * zynqmp_gqspi_read - For GQSPI controller read operation
-  * @xqspi:	Pointer to the zynqmp_qspi structure
-@@ -470,7 +497,14 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
- 
- 	genfifoentry |= GQSPI_GENFIFO_MODE_SPI;
- 
--	if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
-+	if ((qspi->cs_index_mask & GQSPI_SELECT_LOWER_CS) &&
-+	    (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS)) {
-+		zynqmp_gqspi_selectslave(xqspi,
-+					 GQSPI_SELECT_FLASH_CS_BOTH,
-+					 GQSPI_SELECT_FLASH_BUS_BOTH);
-+		if (!xqspi->is_parallel)
-+			xqspi->is_parallel = true;
-+	} else if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
- 		zynqmp_gqspi_selectslave(xqspi,
- 					 GQSPI_SELECT_FLASH_CS_UPPER,
- 					 GQSPI_SELECT_FLASH_BUS_LOWER);
-@@ -1139,6 +1173,8 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
- 	}
- 
- 	if (op->data.nbytes) {
-+		if (xqspi->is_parallel && zynqmp_gqspi_update_stripe(op))
-+			genfifoentry |= GQSPI_GENFIFO_STRIPE;
- 		reinit_completion(&xqspi->data_completion);
- 		if (op->data.dir == SPI_MEM_DATA_OUT) {
- 			xqspi->txbuf = (u8 *)op->data.buf.out;
-@@ -1334,6 +1370,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
- 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
- 	ctlr->dev.of_node = np;
- 	ctlr->auto_runtime_pm = true;
-+	ctlr->multi_cs_cap = true;
- 
- 	ret = devm_spi_register_controller(&pdev->dev, ctlr);
- 	if (ret) {
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkhCgpEbmUgxI1ldHJ0ZWssIDAyLiBmZWJydWFyIDIwMjMgb2IgMTY6MjI6NDYgQ0VUIGplIEFt
+aXQgS3VtYXIgTWFoYXBhdHJhIApuYXBpc2FsKGEpOgo+IFN1cHBvcnRpbmcgbXVsdGktY3MgaW4g
+c3BpIGRyaXZlcnMgd291bGQgcmVxdWlyZSB0aGUgY2hpcF9zZWxlY3QgJiBjc19ncGlvZAo+IG1l
+bWJlcnMgb2Ygc3RydWN0IHNwaV9kZXZpY2UgdG8gYmUgYW4gYXJyYXkuIEJ1dCBjaGFuZ2luZyB0
+aGUgdHlwZSBvZiB0aGVzZQo+IG1lbWJlcnMgdG8gYXJyYXkgd291bGQgYnJlYWsgdGhlIHNwaSBk
+cml2ZXIgZnVuY3Rpb25hbGl0eS4gVG8gbWFrZSB0aGUKPiB0cmFuc2l0aW9uIHNtb290aGVyIGlu
+dHJvZHVjZWQgZm91ciBuZXcgQVBJcyB0byBnZXQvc2V0IHRoZQo+IHNwaS0+Y2hpcF9zZWxlY3Qg
+JiBzcGktPmNzX2dwaW9kIGFuZCByZXBsYWNlZCBhbGwgc3BpLT5jaGlwX3NlbGVjdCBhbmQKPiBz
+cGktPmNzX2dwaW9kIHJlZmVyZW5jZXMgd2l0aCBnZXQgb3Igc2V0IEFQSSBjYWxscy4KPiBXaGls
+ZSBhZGRpbmcgbXVsdGktY3Mgc3VwcG9ydCBpbiBmdXJ0aGVyIHBhdGNoZXMgdGhlIGNoaXBfc2Vs
+ZWN0ICYgY3NfZ3Bpb2QKPiBtZW1iZXJzIG9mIHRoZSBzcGlfZGV2aWNlIHN0cnVjdHVyZSB3b3Vs
+ZCBiZSBjb252ZXJ0ZWQgdG8gYXJyYXlzICYgdGhlCj4gImlkeCIgcGFyYW1ldGVyIG9mIHRoZSBB
+UElzIHdvdWxkIGJlIHVzZWQgYXMgYXJyYXkgaW5kZXggaS5lLiwKPiBzcGktPmNoaXBfc2VsZWN0
+W2lkeF0gJiBzcGktPmNzX2dwaW9kW2lkeF0gcmVzcGVjdGl2ZWx5Lgo+IAo+IFNpZ25lZC1vZmYt
+Ynk6IEFtaXQgS3VtYXIgTWFoYXBhdHJhIDxhbWl0Lmt1bWFyLW1haGFwYXRyYUBhbWQuY29tPgo+
+IEFja2VkLWJ5OiBIZWlrbyBTdHVlYm5lciA8aGVpa29Ac250ZWNoLmRlPiAjIFJvY2tjaGlwIGRy
+aXZlcnMKPiBSZXZpZXdlZC1ieTogTWljaGFsIFNpbWVrIDxtaWNoYWwuc2ltZWtAYW1kLmNvbT4K
+PiBSZXZpZXdlZC1ieTogQ8OpZHJpYyBMZSBHb2F0ZXIgPGNsZ0BrYW9kLm9yZz4gIyBBc3BlZWQg
+ZHJpdmVyCj4gUmV2aWV3ZWQtYnk6IERocnV2YSBHb2xlIDxkLWdvbGVAdGkuY29tPiAjIFNQSSBD
+YWRlbmNlIFFTUEkKPiBSZXZpZXdlZC1ieTogUGF0cmljZSBDaG90YXJkIDxwYXRyaWNlLmNob3Rh
+cmRAZm9zcy5zdC5jb20+ICMgc3BpLXN0bTMyLXFzcGkKPiBBY2tlZC1ieTogV2lsbGlhbSBaaGFu
+ZyA8d2lsbGlhbS56aGFuZ0Bicm9hZGNvbS5jb20+ICMgYmNtNjN4eC1oc3NwaSBkcml2ZXIKPiAt
+LS0KPiAgZHJpdmVycy9zcGkvc3BpLWFsdGVyYS1jb3JlLmMgICAgIHwgIDIgKy0KPiAgZHJpdmVy
+cy9zcGkvc3BpLWFtZC5jICAgICAgICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGkt
+YXI5MzR4LmMgICAgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktYXJtYWRhLTM3MDAu
+YyAgICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1hc3BlZWQtc21jLmMgICAgICB8IDEz
+ICsrKysrKystLS0tLS0KPiAgZHJpdmVycy9zcGkvc3BpLWF0OTEtdXNhcnQuYyAgICAgIHwgIDIg
+Ky0KPiAgZHJpdmVycy9zcGkvc3BpLWF0aDc5LmMgICAgICAgICAgIHwgIDQgKystLQo+ICBkcml2
+ZXJzL3NwaS9zcGktYXRtZWwuYyAgICAgICAgICAgfCAyNiArKysrKysrKysrKysrLS0tLS0tLS0t
+LS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktYXUxNTUwLmMgICAgICAgICAgfCAgNCArKy0tCj4gIGRy
+aXZlcnMvc3BpL3NwaS1heGktc3BpLWVuZ2luZS5jICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3Nw
+aS1iY20tcXNwaS5jICAgICAgICB8IDEwICsrKysrLS0tLS0KPiAgZHJpdmVycy9zcGkvc3BpLWJj
+bTI4MzUuYyAgICAgICAgIHwgMTkgKysrKysrKysrKy0tLS0tLS0tLQo+ICBkcml2ZXJzL3NwaS9z
+cGktYmNtMjgzNWF1eC5jICAgICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1iY202M3h4
+LWhzc3BpLmMgICB8IDIyICsrKysrKysrKysrLS0tLS0tLS0tLS0KPiAgZHJpdmVycy9zcGkvc3Bp
+LWJjbTYzeHguYyAgICAgICAgIHwgIDIgKy0KPiAgZHJpdmVycy9zcGkvc3BpLWNhZGVuY2UtcXVh
+ZHNwaS5jIHwgIDUgKysrLS0KPiAgZHJpdmVycy9zcGkvc3BpLWNhZGVuY2UteHNwaS5jICAgIHwg
+IDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGktY2FkZW5jZS5jICAgICAgICAgfCAgNCArKy0tCj4g
+IGRyaXZlcnMvc3BpL3NwaS1jYXZpdW0uYyAgICAgICAgICB8ICA4ICsrKystLS0tCj4gIGRyaXZl
+cnMvc3BpL3NwaS1jb2xkZmlyZS1xc3BpLmMgICB8ICA4ICsrKystLS0tCj4gIGRyaXZlcnMvc3Bp
+L3NwaS1kYXZpbmNpLmMgICAgICAgICB8IDE4ICsrKysrKysrKy0tLS0tLS0tLQo+ICBkcml2ZXJz
+L3NwaS9zcGktZGxuMi5jICAgICAgICAgICAgfCAgNiArKystLS0KPiAgZHJpdmVycy9zcGkvc3Bp
+LWR3LWNvcmUuYyAgICAgICAgIHwgIDIgKy0KPiAgZHJpdmVycy9zcGkvc3BpLWR3LW1taW8uYyAg
+ICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGktZmFsY29uLmMgICAgICAgICAgfCAg
+MiArLQo+ICBkcml2ZXJzL3NwaS9zcGktZnNpLmMgICAgICAgICAgICAgfCAgMiArLQo+ICBkcml2
+ZXJzL3NwaS9zcGktZnNsLWRzcGkuYyAgICAgICAgfCAxNiArKysrKysrKy0tLS0tLS0tCj4gIGRy
+aXZlcnMvc3BpL3NwaS1mc2wtZXNwaS5jICAgICAgICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3Nw
+aS9zcGktZnNsLWxwc3BpLmMgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktZnNsLXFz
+cGkuYyAgICAgICAgfCAgNiArKystLS0KPiAgZHJpdmVycy9zcGkvc3BpLWZzbC1zcGkuYyAgICAg
+ICAgIHwgIDIgKy0KPiAgZHJpdmVycy9zcGkvc3BpLWdlbmktcWNvbS5jICAgICAgIHwgIDYgKysr
+LS0tCj4gIGRyaXZlcnMvc3BpL3NwaS1ncGlvLmMgICAgICAgICAgICB8ICA0ICsrLS0KPiAgZHJp
+dmVycy9zcGkvc3BpLWd4cC5jICAgICAgICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9z
+cGktaGlzaS1zZmMtdjN4eC5jICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktaW1nLXNwZmku
+YyAgICAgICAgfCAxNCArKysrKysrLS0tLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktaW14LmMgICAg
+ICAgICAgICAgfCAzMCArKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0KPiAgZHJpdmVycy9z
+cGkvc3BpLWluZ2VuaWMuYyAgICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGktaW50
+ZWwuYyAgICAgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktamNvcmUuYyAgICAgICAg
+ICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1sYW50aXEtc3NjLmMgICAgICB8ICA2ICsr
+Ky0tLQo+ICBkcml2ZXJzL3NwaS9zcGktbWVtLmMgICAgICAgICAgICAgfCAgNCArKy0tCj4gIGRy
+aXZlcnMvc3BpL3NwaS1tZXNvbi1zcGljYy5jICAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3Nw
+aS1taWNyb2NoaXAtY29yZS5jICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3NwaS9zcGktbXBjNTEy
+eC1wc2MuYyAgICAgfCAgOCArKysrLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktbXBjNTJ4eC5jICAg
+ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktbXQ2NXh4LmMgICAgICAgICAgfCAgNiAr
+KystLS0KPiAgZHJpdmVycy9zcGkvc3BpLW10NzYyMS5jICAgICAgICAgIHwgIDIgKy0KPiAgZHJp
+dmVycy9zcGkvc3BpLW11eC5jICAgICAgICAgICAgIHwgIDggKysrKy0tLS0KPiAgZHJpdmVycy9z
+cGkvc3BpLW14aWMuYyAgICAgICAgICAgIHwgMTAgKysrKystLS0tLQo+ICBkcml2ZXJzL3NwaS9z
+cGktbXhzLmMgICAgICAgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktbnBjbS1maXUu
+YyAgICAgICAgfCAyMCArKysrKysrKysrLS0tLS0tLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktbnhw
+LWZzcGkuYyAgICAgICAgfCAxMCArKysrKy0tLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS1vbWFwLTEw
+MGsuYyAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS1vbWFwLXV3aXJlLmMgICAgICB8
+ICA4ICsrKystLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS1vbWFwMi1tY3NwaS5jICAgICB8IDI0ICsr
+KysrKysrKysrKy0tLS0tLS0tLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktb3Jpb24uYyAgICAgICAg
+ICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1wY2kxeHh4eC5jICAgICAgICB8ICA0ICsr
+LS0KPiAgZHJpdmVycy9zcGkvc3BpLXBpYzMyLXNxaS5jICAgICAgIHwgIDIgKy0KPiAgZHJpdmVy
+cy9zcGkvc3BpLXBpYzMyLmMgICAgICAgICAgIHwgIDQgKystLQo+ICBkcml2ZXJzL3NwaS9zcGkt
+cGwwMjIuYyAgICAgICAgICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3NwaS1weGEyeHguYyAg
+ICAgICAgICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3NwaS9zcGktcWNvbS1xc3BpLmMgICAgICAg
+fCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktcmI0eHguYyAgICAgICAgICAgfCAgMiArLQo+ICBk
+cml2ZXJzL3NwaS9zcGktcm9ja2NoaXAtc2ZjLmMgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9z
+cGktcm9ja2NoaXAuYyAgICAgICAgfCAyNiArKysrKysrKysrKysrKy0tLS0tLS0tLS0tLQo+ICBk
+cml2ZXJzL3NwaS9zcGktcnNwaS5jICAgICAgICAgICAgfCAxMCArKysrKy0tLS0tCj4gIGRyaXZl
+cnMvc3BpL3NwaS1zM2M2NHh4LmMgICAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS1z
+YzE4aXM2MDIuYyAgICAgICB8ICA0ICsrLS0KPiAgZHJpdmVycy9zcGkvc3BpLXNoLW1zaW9mLmMg
+ICAgICAgIHwgIDYgKysrLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS1zaC1zY2kuYyAgICAgICAgICB8
+ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS1zaWZpdmUuYyAgICAgICAgICB8ICA2ICsrKy0tLQo+
+ICBkcml2ZXJzL3NwaS9zcGktc24tZi1vc3BpLmMgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3Nw
+aS9zcGktc3Qtc3NjNC5jICAgICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL3NwaS9zcGktc3RtMzIt
+cXNwaS5jICAgICAgfCAxMiArKysrKystLS0tLS0KPiAgZHJpdmVycy9zcGkvc3BpLXN1bjRpLmMg
+ICAgICAgICAgIHwgIDIgKy0KPiAgZHJpdmVycy9zcGkvc3BpLXN1bjZpLmMgICAgICAgICAgIHwg
+IDIgKy0KCkZvciBzdW40aSwgc3VuNmk6CkFja2VkLWJ5OiBKZXJuZWogU2tyYWJlYyA8amVybmVq
+LnNrcmFiZWNAZ21haWwuY29tPgoKQmVzdCByZWdhcmRzLApKZXJuZWoKCj4gIGRyaXZlcnMvc3Bp
+L3NwaS1zeW5xdWFjZXIuYyAgICAgICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3NwaS9zcGktdGVn
+cmExMTQuYyAgICAgICAgfCAyOCArKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tCj4gIGRyaXZl
+cnMvc3BpL3NwaS10ZWdyYTIwLXNmbGFzaC5jICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS10
+ZWdyYTIwLXNsaW5rLmMgICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3NwaS9zcGktdGVncmEyMTAt
+cXVhZC5jICAgfCAgOCArKysrLS0tLQo+ICBkcml2ZXJzL3NwaS9zcGktdGktcXNwaS5jICAgICAg
+ICAgfCAxNiArKysrKysrKy0tLS0tLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS10b3BjbGlmZi1wY2gu
+YyAgICB8ICA0ICsrLS0KPiAgZHJpdmVycy9zcGkvc3BpLXdwY20tZml1LmMgICAgICAgIHwgMTIg
+KysrKysrLS0tLS0tCj4gIGRyaXZlcnMvc3BpL3NwaS14Y29tbS5jICAgICAgICAgICB8ICAyICst
+Cj4gIGRyaXZlcnMvc3BpL3NwaS14aWxpbnguYyAgICAgICAgICB8ICA2ICsrKy0tLQo+ICBkcml2
+ZXJzL3NwaS9zcGkteGxwLmMgICAgICAgICAgICAgfCAgNCArKy0tCj4gIGRyaXZlcnMvc3BpL3Nw
+aS16eW5xLXFzcGkuYyAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaS16eW5xbXAtZ3Fz
+cGkuYyAgICB8ICAyICstCj4gIGRyaXZlcnMvc3BpL3NwaWRldi5jICAgICAgICAgICAgICB8ICA2
+ICsrKy0tLQo+ICBpbmNsdWRlL3RyYWNlL2V2ZW50cy9zcGkuaCAgICAgICAgfCAxMCArKysrKy0t
+LS0tCj4gIDkyIGZpbGVzIGNoYW5nZWQsIDMxNSBpbnNlcnRpb25zKCspLCAzMTAgZGVsZXRpb25z
+KC0pCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
