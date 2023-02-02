@@ -4,65 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE90CC61DA4
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Feb 2023 11:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67332C05027
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Feb 2023 12:13:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lFUZZgplzevUgpeuDNcaXQKWKoiujPHLg3K63CU1grU=; b=pL4V3vV2NA57xL
-	/knEn8CyAaWCT58zg3VjXQR1sxYD3bRrBGDlX5Q5zll9FYNtXdTgsC8p8cEIG8LEUuwN1WynKdD9P
-	S/DhhI+Tt4+9AcWgwah2ZxQIx5/Cjq+eJasGhs/3IZpl2dGq3aA5yYGsumaQoNca0ygC9rS+7VXQ4
-	njwEAgvAXmMeRzbb9vEdhTNEY+549qIDHX3Txqy/KDhWoFS+vldV65KyZfWUxuFq3U8aQ6XjmQQbE
-	8/pwl53FXwKuTLbW8CLykEnYC5bTP0F8OzZPFbISJmINmZGPzVV/ZXx/+t23AMMqZNVnZw8m48WNV
-	83DPPb22Y3/idb7bPyaA==;
+	List-Owner; bh=0nr1HvjxDcjOWkejBuXtWkK7fcbpPJlMOGjjEZl2VwE=; b=uGpIy2GE+XkOR/
+	duuvwPwm9Zfnp0i59LuV/NJC8oQKZff2tu5z8f8Rd7MapnS/L3k6NGMkxL3OxejsmYRiCFnUGJMXh
+	FgIByVOGznV/SdlkXHYJUX0/p1Zg3f2MV3U0+wwpkRegkBrZLFSHRTbPoCUgDFE8mS9F7XhU6ifOh
+	JiKeY5QxYy57MV5WiPjlZSfOgkt7VSuLYjML/+FvJVJFs3Bx5/StBhdfD6grxu6SM1pClj7D68qEL
+	EiwYhhuvxR6SU0Zj7XSqfnmrubXHYXNR6SkuYqR722K0rMtbuZy9CeJoNYrqbepQpPCGRQpRqcxbC
+	REdQGt0kImsMkdXdGTpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNXwr-00FdZ5-Du; Thu, 02 Feb 2023 11:40:13 +0000
-Received: from smtp-out-05.comm2000.it ([212.97.32.73])
+	id 1pNYSm-00Fi1p-Ll; Thu, 02 Feb 2023 12:13:12 +0000
+Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNXwn-00FdXw-8Z
-	for linux-mtd@lists.infradead.org; Thu, 02 Feb 2023 11:40:11 +0000
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: francesco@dolcini.it)
-	by smtp-out-05.comm2000.it (Postfix) with ESMTPSA id 45325821D3F;
-	Thu,  2 Feb 2023 12:33:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
-	s=mailsrv; t=1675337620;
-	bh=Ti+s+G1LvjvGobyKqqI92/2t3LJn4dwjsT7IuvtNa5M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=xj7edZC+NxdinWh71n52mtVyPlJUGvjMjWZWmto88BE4JXHWmirgK1lS88VruOjMn
-	 kEErYKPQThFV0CRvrWT7xKGpq74qRmZoT/wld5uw7GmaRTHdpaSiS4sCfbL95W9/OY
-	 Q3awdsfSaBJSQQVYg6OHEk5LgounbhWZubRswQE8OJOeYBHLD3sO7qi5T+H1ICLXkh
-	 kSD5c/rcKc4gxrvtO2SMaR2YjANFyNJtkeoh04gp4OB+GpI2gJAdccsFn3jdkgNFhh
-	 dy/BD7Ig3a9X1kfDjF54kba1pvizE0Jh1ri++YiyB4vVTCQPBPt9U8l9pGNoR6L2GB
-	 zy+1L9WOSJwWg==
-Date: Thu, 2 Feb 2023 12:33:34 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Francesco Dolcini <francesco@dolcini.it>,
-	linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Marek Vasut <marex@denx.de>,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	u-boot@lists.denx.de
-Subject: Re: [PATCH v4] mtd: parsers: ofpart: add workaround for #size-cells 0
-Message-ID: <Y9ufjoLLnFvxG6/2@francesco-nb.int.toradex.com>
-References: <20230124104444.330913-1-francesco@dolcini.it>
- <Y8/7k1HHjJbHvWDB@kroah.com>
- <Y9GZ8c9VDXC582IA@francesco-nb.int.toradex.com>
- <Y9JBTgmA8WX03QzK@kroah.com>
- <20230126101204.245ace0d@xps-13>
+	id 1pNYSj-00Fi1A-UR; Thu, 02 Feb 2023 12:13:11 +0000
+Received: by mail-wr1-x42e.google.com with SMTP id r2so1505297wrv.7;
+        Thu, 02 Feb 2023 04:13:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9JFY/1NaFcQJxriJ5Nglyu5euCxsa3XuMh1hTRdAMO8=;
+        b=Gb6wv+fems3L4HhTw7k9YzFTd1lY070awJ4ifr/28qS7RWw6W6s5FTPBGe7IyzrJzS
+         MMLvZCfq2xIu87rzSPKdtyCVh5lC950V5hPtEvTRgalo6dzUqnxYPyhxgRdk3nxgXuza
+         kdcoOsbB9oOERE1H6DIomSCMRl2fuP/Zltdc0HtIkCF8IP2NLmP6oFA7xcAbGCeTb386
+         Ar4YryeVON/rFJIbzt8fwbb8hO16bVOuiZBIHEpc+ee2j9sjODNrnJNPVMuxCE8Rsg+y
+         WaZL/MW1hT0Ho+NpOhVQh1J3ygBVm8zVQOhfaeHjOyOjDF92EOs/JvMrXuqRTzen/nJs
+         sIzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9JFY/1NaFcQJxriJ5Nglyu5euCxsa3XuMh1hTRdAMO8=;
+        b=r/EOkmjpPknI0+PAyv/TkjBDL6HAesEEns/q0t2w9pVjmjuCyOn8DoXP04qY6BUxHu
+         yIaTBAjuZWDDgartbEpZmBlspqzgfB3nZXw7Qu7U50giMiUjFCrW8jilU0zAunXNvXnQ
+         0RtDFCXXJeDVO1xQ0D9rWgyOykj6v24Gumz7sDW4C6IwnHkKpBsCrbaT/sTQrz5rJiGY
+         IYV0prAkN52GNLvKdUWr4fsRIS2wvC3Weyoptbh5dMv4JcV6JrEeWsl1HQ4vekBiohsV
+         o/nh8jIT7OBTXwO3+jAB9ZS9Dq+Bs2HqlKoC6NLUOdsxsXdqYMaHciu+vvWAZuoQFpvh
+         LXyg==
+X-Gm-Message-State: AO0yUKVm/HqPZc1x5QY92B/+If67d6Ya/zs1b41vUQEwIOLVPYbTKldz
+	YxmqQOsP/5S4qmnmIecTQhg=
+X-Google-Smtp-Source: AK7set9tRKVVWu4q2LyASgx0E1BBc2t6l0gIfR1ti+UZFp/4PhRDKlvvVgTj8Rk4DWgGoBILlDqjHA==
+X-Received: by 2002:a5d:604c:0:b0:2bf:c31b:1922 with SMTP id j12-20020a5d604c000000b002bfc31b1922mr5102901wrt.3.1675339987722;
+        Thu, 02 Feb 2023 04:13:07 -0800 (PST)
+Received: from [192.168.2.177] ([207.188.167.132])
+        by smtp.gmail.com with ESMTPSA id f7-20020a5d64c7000000b002bdfe3aca17sm21470152wri.51.2023.02.02.04.13.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Feb 2023 04:13:07 -0800 (PST)
+Message-ID: <eea6f2f1-9f07-0bb8-50af-c1daf5131357@gmail.com>
+Date: Thu, 2 Feb 2023 13:13:05 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230126101204.245ace0d@xps-13>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v6 2/5] arm64: dts: mediatek: Fix existing NAND controller
+ node name
+Content-Language: en-US
+To: Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, benliang.zhao@mediatek.com,
+ bin.zhang@mediatek.com,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+References: <20230201021500.26769-1-xiangsheng.hou@mediatek.com>
+ <20230201021500.26769-3-xiangsheng.hou@mediatek.com>
+From: Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20230201021500.26769-3-xiangsheng.hou@mediatek.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230202_034009_628181_FC0623A7 
-X-CRM114-Status: GOOD (  43.30  )
+X-CRM114-CacheID: sfid-20230202_041310_009505_EC252BF2 
+X-CRM114-Status: GOOD (  15.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,129 +95,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 26, 2023 at 10:12:04AM +0100, Miquel Raynal wrote:
-> gregkh@linuxfoundation.org wrote on Thu, 26 Jan 2023 10:01:02 +0100:
+
+
+On 01/02/2023 03:14, Xiangsheng Hou wrote:
+> Change the existing node name in order to match NAND controller DT
+> bindings.
 > 
-> > On Wed, Jan 25, 2023 at 10:06:57PM +0100, Francesco Dolcini wrote:
-> > > Hello Miquel, Greg and all
-> > > 
-> > > On Tue, Jan 24, 2023 at 04:38:59PM +0100, Greg Kroah-Hartman wrote:  
-> > > > On Tue, Jan 24, 2023 at 11:44:44AM +0100, Francesco Dolcini wrote:  
-> > > > > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > > > 
-> > > > > Add a mechanism to handle the case in which partitions are present as
-> > > > > direct child of the nand controller node and #size-cells is set to <0>.
-> > > > > 
-> > > > > This could happen if the nand-controller node in the DTS is supposed to
-> > > > > have #size-cells set to 0, but for some historical reason/bug it was set
-> > > > > to 1 in the past, and the firmware (e.g. U-Boot) is adding the partition
-> > > > > as direct children of the nand-controller defaulting to #size-cells
-> > > > > being to 1.
-> > > > > 
-> > > > > This prevents a real boot failure on colibri-imx7 that happened during v6.1
-> > > > > development cycles.
-> > > > > 
-> > > > > Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
-> > > > > Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@dolcini.it/
-> > > > > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > > > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > ---
-> > > > > I do not expect this patch to be backported to stable, however I would expect
-> > > > > that we do not backport nand-controller dts cleanups neither.
-> > > > > 
-> > > > > v4:
-> > > > >  fixed wrong English spelling in the comment
-> > > > > 
-> > > > > v3:
-> > > > >  minor formatting change, removed not needed new-line and space. 
-> > > > > 
-> > > > > v2:
-> > > > >  fixup size-cells only when partitions are direct children of the nand-controller
-> > > > >  completely revised commit message, comments and warning print
-> > > > >  use pr_warn instead of pr_warn_once
-> > > > >  added Reviewed-by Greg
-> > > > >  removed cc:stable@ and fixes tag, since the problematic commit was reverted
-> > > > > ---
-> > > > >  drivers/mtd/parsers/ofpart_core.c | 19 +++++++++++++++++++
-> > > > >  1 file changed, 19 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/mtd/parsers/ofpart_core.c b/drivers/mtd/parsers/ofpart_core.c
-> > > > > index 192190c42fc8..e7b8e9d0a910 100644
-> > > > > --- a/drivers/mtd/parsers/ofpart_core.c
-> > > > > +++ b/drivers/mtd/parsers/ofpart_core.c
-> > > > > @@ -122,6 +122,25 @@ static int parse_fixed_partitions(struct mtd_info *master,
-> > > > >  
-> > > > >  		a_cells = of_n_addr_cells(pp);
-> > > > >  		s_cells = of_n_size_cells(pp);
-> > > > > +		if (!dedicated && s_cells == 0) {
-> > > > > +			/*
-> > > > > +			 * This is a ugly workaround to not create
-> > > > > +			 * regression on devices that are still creating
-> > > > > +			 * partitions as direct children of the nand controller.
-> > > > > +			 * This can happen in case the nand controller node has
-> > > > > +			 * #size-cells equal to 0 and the firmware (e.g.
-> > > > > +			 * U-Boot) just add the partitions there assuming
-> > > > > +			 * 32-bit addressing.
-> > > > > +			 *
-> > > > > +			 * If you get this warning your firmware and/or DTS
-> > > > > +			 * should be really fixed.
-> > > > > +			 *
-> > > > > +			 * This is working only for devices smaller than 4GiB.
-> > > > > +			 */
-> > > > > +			pr_warn("%s: ofpart partition %pOF (%pOF) #size-cells is wrongly set to <0>, assuming <1> for parsing partitions.\n",
-> > > > > +				master->name, pp, mtd_node);  
-> > > > 
-> > > > This is a driver, always use dev_*() calls, not pr_*() calls so that we
-> > > > know what is being referred to exactly.  
-> > > 
-> > > Is this reasonable here? Where can I get the struct device?  
-> > 
-> > Walk back up the call chain, there has to be a device somewhere
-> > controlling this, right?
-> > 
-> > > In general this file uses only pr_* debug API and messages are about OF
-> > > nodes/properties, not about a device.  
-> > 
-> > OF nodes and properties are part of a device's properties :)
+> Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+Queued for the next merge window, thanks!
+
+> ---
+>   arch/arm64/boot/dts/mediatek/mt2712e.dtsi | 2 +-
+>   arch/arm64/boot/dts/mediatek/mt7622.dtsi  | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> Yes but the warning comes from a wrong DT description, hence it felt
-> better suited to warn against the node name which is easily identifiable
-> in a text file and must be fixed rather than the device which is a pure
-> software component.
-> 
-> Anyway, Francesco, please show us the resultant line and if it feels
-> meaningful enough we'll take the dev_warn approach.
-
-So, I tried, but I guess I failed.
-
-Both
-
-  dev_warn(&mtd_get_master(master)->dev, ...);
-
-and
-
-  dev_warn(&master->dev, ...);
-
-are NULL.
-
-
-(null): gpmi-nand: ofpart partition /soc/nand-controller@33002000/partition@0 (/soc/nand-controller@33002000) #size-cells is wrongly set to <0>, assuming <1> for parsing partitions.
-
-while the current v4 is just:
-
-gpmi-nand: ofpart partition /soc/nand-controller@33002000/partition@0 (/soc/nand-controller@33002000) #size-cells is wrongly set to <0>, assuming <1> for parsing partitions.
-
-on a colibri-imx7.
-
-Any advice?
-
-Francesco
-
+> diff --git a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
+> index 879dff24dcd3..ed1a9d319415 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
+> @@ -559,7 +559,7 @@ spi0: spi@1100a000 {
+>   		status = "disabled";
+>   	};
+>   
+> -	nandc: nfi@1100e000 {
+> +	nandc: nand-controller@1100e000 {
+>   		compatible = "mediatek,mt2712-nfc";
+>   		reg = <0 0x1100e000 0 0x1000>;
+>   		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
+> diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+> index 62487a3c4db1..eb4e4638b548 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+> @@ -538,7 +538,7 @@ bluetooth {
+>   		};
+>   	};
+>   
+> -	nandc: nfi@1100d000 {
+> +	nandc: nand-controller@1100d000 {
+>   		compatible = "mediatek,mt7622-nfc";
+>   		reg = <0 0x1100D000 0 0x1000>;
+>   		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
 
 ______________________________________________________
 Linux MTD discussion mailing list
