@@ -4,80 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAA99C61DA4
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 08:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5581AC636CC
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 08:21:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HdENZsEGDjs1zjnkm9D243lKSjF39IAYk2zj7kOD1Ug=; b=cKtXxruRNKl4BJ
-	zd4Q8g3hiplfzP9dhiX6GqX0nDzXZ8R8TuwGXmBeQPqfRKDrAVmxtcNE8g/goW7q+Rij+fe8Tdvad
-	jk5btRtKJ1OqumOE6cZMiDkwFnIc2nRC/BB/kzIgW/hFbWgFowtT52y8bR8PxKoPWkN4rGgGJ/ykW
-	EZ38ucwhImrGC/IEUPaezNmczOPJcXnNSmoiG3z+EcCHTZGYBSYj10Akb0h8se7dt1TYVQD9F23Tm
-	nqdtDTJh80QEBxZjIX6mOnx72SeZ7R/VU7ejcY9W7RqNo1h/WcsxLx74ul4nJXa6Uz/8XkqbcuVzi
-	R6pVaxScdtjDq4i1whwA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7Smdz72o5y8NdiZHOqEm0hV3iwP4nYonjUMrlQpRwcM=; b=fsWn3UBqXjxfzz
+	s69cIkUXzklHFQbZjmbe6cvIdhep0iI+vS+BgujnOMoRtwb3Nin7JNttaiOmdFWCm/5h7MHoVTP3b
+	8H8L+bzudSNOchsbktkY7Xv7KPAtebUjTP/72H9en2o+NUi3swniGP/Kwa7X6qtIooL1brydSxmAi
+	bhAPE747/QUXXlcyiKI1PE8FMlAo9hhsIQbGhh/qqqEG7f4f1yrDFpkNMO68A29zSUK+LPqZgXkqf
+	lIYtu3UjHGLGCxFh4BvqnGw742CIrf9yLDx+JdlfoYcNS9k/hVlKpLRZxv0As2F/zyc+eZbMXYS+D
+	rQck73rjyMvQ3hnxFBeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNr10-000ugJ-EH; Fri, 03 Feb 2023 08:01:46 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1pNrJe-000zow-EG; Fri, 03 Feb 2023 08:21:02 +0000
+Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNr0x-000udg-5Z
-	for linux-mtd@lists.infradead.org; Fri, 03 Feb 2023 08:01:45 +0000
-Received: by mail-wm1-x331.google.com with SMTP id l21-20020a05600c1d1500b003dfe462b7e4so1182178wms.0
-        for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2023 00:01:40 -0800 (PST)
+	id 1pNrJZ-000zml-SE
+	for linux-mtd@lists.infradead.org; Fri, 03 Feb 2023 08:21:00 +0000
+Received: by mail-wm1-x336.google.com with SMTP id o36so3255113wms.1
+        for <linux-mtd@lists.infradead.org>; Fri, 03 Feb 2023 00:20:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FHDhUD+71qEiWJNtSvciAjMHwmVmo53j1uhmb0eIIrY=;
-        b=l1Rv45CCB/Lnvd14SrwdE3KyJhmwjCK8T9ymCV9vexXSaznRLy1pk8X0wzqzo8XMjP
-         9LE+dkfT3dafMc3GCROwWkta68MSVMCV/0lS0kRL0nbWjeVhxzsfk7ogv5m5NRT+2zVQ
-         YDoNs5cEjD19B6bTiLZTEPuyQY+HBwz0/Mei90Xkv9aGljMXARi/CN5SfQgkRwpvrADU
-         CEVCClwmOxc6Y69iIs5hmY7fJVRVtUmvHZQU5vKx6d8N1helaB+4ncad0oNxZ4mhFP5R
-         f6jyNSPgE1li9vDeS6GaT4ZLtG9QFonF5T47PLFkVIMtwLjhv/rjd01s7i2eeFZn7B/b
-         EF7w==
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FZB8u0hK8celsgtBGywiqDlydZ2H2zIP8KlZldNqcYw=;
+        b=EAgjKJMPNyK4poNVECYtLG0rsTsJIuVTCORN0LPHrwCT/whMyMRl3IBF95/P7zq/Co
+         0qnKGlA0C46ErMlxBCaNNPOWi2uIYD2Pl2UxyA+Gy7+XcLJLrY7JusV41ngfn8K9i7a0
+         Gmkt+WGawsbrjSeTRFrWEkUsuR0f61vYc5NwmvK/WJkZfa3/45ThJPA1GQAjUVy09Jl/
+         adWHh5T74c3JS36ZEOCMrNlCFK+4vZf/DrL2095j2AAHNUBt8/zN6W2qzCFDkW1fDtFz
+         N6+yDWNvqkvk9JhPu/8maEjIjK5uHXomgHuZvxNMVpC2oqdgEUZcheb4g8PQfuOKsq+y
+         L/ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FHDhUD+71qEiWJNtSvciAjMHwmVmo53j1uhmb0eIIrY=;
-        b=r7JMY4ZozIbg1+yWa3JftOP8iKPHVsCB1gqittYvMmU7TBo9Jab0o8r9I6BWmM47/i
-         2wVBkRYPlZCC+qKys2qMaOIHur89kpfWo6aKS+S38B+fbNFX8U7e32Gi4MVL2urO0XZG
-         BaMD5YYD+S+iIStixWhGtwew0m5r7nvV5WTmuAXo+r0OVkrm2FxAYKwE+fU3r/fvfwfY
-         6xY7/bX/r/WSJwRHOZTAk3nGtL40WwVaqbGnKSwwh/U6g/l5qBnNndE44HXJQOBJ9q/G
-         t8zvRYcgvvxrXVHJ5amlOSrSD0rn6mUvY67ntmclmHe/y3QYy1RIY9oE4LhK4HtgHW99
-         5+kg==
-X-Gm-Message-State: AO0yUKV1Brh0EXJ6UPttQqUz311YYCqN0NAGYEnoDPiJdob9+F7C+zWi
-	7fu9+Knp/76dcN3lUmyFC/+8mQ==
-X-Google-Smtp-Source: AK7set/Oybc4z8/L81CmXmB+w/P0zz9sur8qbagAXk/xMTtQRid0YfgGJvkdzOcjTpc+c+/mSsnV4A==
-X-Received: by 2002:a05:600c:4f95:b0:3dc:47f4:a022 with SMTP id n21-20020a05600c4f9500b003dc47f4a022mr3762481wmq.25.1675411299447;
-        Fri, 03 Feb 2023 00:01:39 -0800 (PST)
-Received: from 1.. ([79.115.63.122])
-        by smtp.gmail.com with ESMTPSA id y13-20020a1c4b0d000000b003dc4aae4739sm6886802wma.27.2023.02.03.00.01.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Feb 2023 00:01:39 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com,
-	richard@nod.at
-Cc: broonie@kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH] mtd: s/a SPI/an SPI
-Date: Fri,  3 Feb 2023 10:01:36 +0200
-Message-Id: <20230203080136.68505-1-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FZB8u0hK8celsgtBGywiqDlydZ2H2zIP8KlZldNqcYw=;
+        b=rrwf5cS0oVtkcblek5cIZ7U6sjnF+IPrmJ0OVnt2j4nGUKoz7wGXmAtQRL3eG8R5f6
+         zyK3lggQ8+a2rG6xQZXXL63DneEV6sM+A2MFYEMRwbLbzTlanLLChEpnLcIcsiI3O9l4
+         aX8RA42q9oWphQbyzdewOuN/60ZHvzqrMRGZ1sqX8KtTaCM6u9sR37T7gu/Q8/BAl2Be
+         MieUbARBj2bF6qkh+R8If+PhZRoFhIGExNHMsFxLml7pQ2JkQkkBiOuwlpb5Y7wnhmZW
+         56m8Zpmm2aiZY6YZnvANJ+irRq0hxvwhGKEaFFYq+rHGFMDH+nkJvonOBFDWI5IYvAeH
+         IMuw==
+X-Gm-Message-State: AO0yUKUwEpp1qRxychxAfA8JakpUhl6IfOFVm8eIjjnKlzu+0CLXofS9
+	eoYFpb0FlYl0scWt+SzsbEtTbA==
+X-Google-Smtp-Source: AK7set8+kH5SMVKA7sX9Jdesxl82jJn2oQYyylNW8iP0NfM4Mu8ony2ygAjv75ff08zF07oNTbHwjw==
+X-Received: by 2002:a7b:c388:0:b0:3db:2e6e:7826 with SMTP id s8-20020a7bc388000000b003db2e6e7826mr10526474wmj.5.1675412455864;
+        Fri, 03 Feb 2023 00:20:55 -0800 (PST)
+Received: from [192.168.43.12] (pop.92-184-100-89.mobile.abo.orange.fr. [92.184.100.89])
+        by smtp.gmail.com with ESMTPSA id k24-20020a05600c0b5800b003cfa622a18asm7026917wmr.3.2023.02.03.00.20.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Feb 2023 00:20:55 -0800 (PST)
+Message-ID: <008e9ab2-fee5-90f7-f619-504e30863f8d@baylibre.com>
+Date: Fri, 3 Feb 2023 09:20:54 +0100
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8364; i=tudor.ambarus@linaro.org; h=from:subject; bh=ZjylBt1sdLZyW4HO90rGzIhsczZHvnd0rmIAF8GGXc4=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBj3L9ggKo9W2c1MyxBoo7OJhGbyrmIuwS4hXz0m Bn9KcOhK7mJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCY9y/YAAKCRBLVU9HpY0U 6dhKB/4jF1gsk6sPlKdJohpNPKlf07D6SVQYUCgHC+j/IIQ2DNhhHzomBLCpbbtjX+GrbL74nKa Jk8ma8mLok5VAP7Jcu2a6eJeH85Ro/ILGZWUEbfL+pkiDYWRoQkixF2eNL8bnOSIdA/osGE51ex YPVLNs+3GGFognqlp1xIczbnaGolzORv2EEyslkr4lQc/hMxgWW68qh2yt5TeDyzfRHRzvA+D2g 6Tc2IyX+n6jE5DS0FsbSP3Qe3BCvwvFr8TGcIHEM2IDjb0Ln1FduvHCSDkrKGIqmoWQimljnslM zx8a/fad+3jI9Cs3SzMemJGpydxTFDOzSYxja1NuSvhHPJh0
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH] mtd: spi_nor: Fixes out of bound shift
+Content-Language: en-US
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, linux-mtd@lists.infradead.org
+Cc: pratyush@kernel.org, michael@walle.cc
+References: <20230126142612.1518046-1-lrannou@baylibre.com>
+ <8c38974f-abe6-499c-6769-e368f298deea@linaro.org>
+From: Louis Rannou <lrannou@baylibre.com>
+In-Reply-To: <8c38974f-abe6-499c-6769-e368f298deea@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230203_000143_250667_1803419E 
-X-CRM114-Status: GOOD (  19.01  )
+X-CRM114-CacheID: sfid-20230203_002058_162567_D1936B0F 
+X-CRM114-Status: GOOD (  24.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,200 +87,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The deciding factor for when a/an should be used is the sound
-that begins the word which follows these indefinite articles,
-rather than the letter which does. Use "an SPI". (SPI begins
-with the consonant letter S, but the S is pronounced with its
-letter name, "es.")
-
-Used sed to do the replacement:
-find include/linux/mtd/ -type f -exec sed -i "s/ a SPI/ an SPI/g" {} \;
-find drivers/mtd/ -type f -exec sed -i "s/ a SPI/ an SPI/g" {} \;
-
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/mtd/spi-nor/controllers/Kconfig |  2 +-
- drivers/mtd/spi-nor/core.c              | 14 +++++++-------
- drivers/mtd/spi-nor/core.h              |  4 ++--
- drivers/mtd/spi-nor/sfdp.c              |  6 +++---
- include/linux/mtd/spinand.h             | 14 +++++++-------
- 5 files changed, 20 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-index ca45dcd3ffe8..250295c8d85c 100644
---- a/drivers/mtd/spi-nor/controllers/Kconfig
-+++ b/drivers/mtd/spi-nor/controllers/Kconfig
-@@ -14,5 +14,5 @@ config SPI_NXP_SPIFI
- 	  Enable support for the NXP LPC SPI Flash Interface controller.
- 
- 	  SPIFI is a specialized controller for connecting serial SPI
--	  Flash. Enable this option if you have a device with a SPIFI
-+	  Flash. Enable this option if you have a device with an SPIFI
- 	  controller and want to access the Flash as a mtd device.
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 22cb18b6c941..875fe7a8b1cb 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1137,7 +1137,7 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 
- /**
-  * spi_nor_div_by_erase_size() - calculate remainder and update new dividend
-- * @erase:	pointer to a structure that describes a SPI NOR erase type
-+ * @erase:	pointer to a structure that describes an SPI NOR erase type
-  * @dividend:	dividend value
-  * @remainder:	pointer to u32 remainder (will be updated)
-  *
-@@ -1158,7 +1158,7 @@ static u64 spi_nor_div_by_erase_size(const struct spi_nor_erase_type *erase,
-  *				    which the address fits is expected to be
-  *				    provided.
-  * @map:	the erase map of the SPI NOR
-- * @region:	pointer to a structure that describes a SPI NOR erase region
-+ * @region:	pointer to a structure that describes an SPI NOR erase region
-  * @addr:	offset in the serial flash memory
-  * @len:	number of bytes to erase
-  *
-@@ -1216,7 +1216,7 @@ static u64 spi_nor_region_end(const struct spi_nor_erase_region *region)
- 
- /**
-  * spi_nor_region_next() - get the next spi nor region
-- * @region:	pointer to a structure that describes a SPI NOR erase region
-+ * @region:	pointer to a structure that describes an SPI NOR erase region
-  *
-  * Return: the next spi nor region or NULL if last region.
-  */
-@@ -1259,8 +1259,8 @@ spi_nor_find_erase_region(const struct spi_nor_erase_map *map, u64 addr)
- 
- /**
-  * spi_nor_init_erase_cmd() - initialize an erase command
-- * @region:	pointer to a structure that describes a SPI NOR erase region
-- * @erase:	pointer to a structure that describes a SPI NOR erase type
-+ * @region:	pointer to a structure that describes an SPI NOR erase region
-+ * @erase:	pointer to a structure that describes an SPI NOR erase type
-  *
-  * Return: the pointer to the allocated erase command, ERR_PTR(-errno)
-  *	   otherwise.
-@@ -2010,8 +2010,8 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
- }
- 
- /**
-- * spi_nor_set_erase_type() - set a SPI NOR erase type
-- * @erase:	pointer to a structure that describes a SPI NOR erase type
-+ * spi_nor_set_erase_type() - set an SPI NOR erase type
-+ * @erase:	pointer to a structure that describes an SPI NOR erase type
-  * @size:	the size of the sector/block erased by the erase type
-  * @opcode:	the SPI command op code to erase the sector/block
-  */
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 25423225c29d..39dde1cc1092 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -189,7 +189,7 @@ enum spi_nor_pp_command_index {
- };
- 
- /**
-- * struct spi_nor_erase_type - Structure to describe a SPI NOR erase type
-+ * struct spi_nor_erase_type - Structure to describe an SPI NOR erase type
-  * @size:		the size of the sector/block erased by the erase type.
-  *			JEDEC JESD216B imposes erase sizes to be a power of 2.
-  * @size_shift:		@size is a power of 2, the shift is stored in
-@@ -228,7 +228,7 @@ struct spi_nor_erase_command {
- };
- 
- /**
-- * struct spi_nor_erase_region - Structure to describe a SPI NOR erase region
-+ * struct spi_nor_erase_region - Structure to describe an SPI NOR erase region
-  * @offset:		the offset in the data array of erase region start.
-  *			LSB bits are used as a bitmask encoding flags to
-  *			determine if this region is overlaid, if this region is
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 298ab5e53a8c..39fd535416f0 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -304,7 +304,7 @@ static const struct sfdp_bfpt_erase sfdp_bfpt_erases[] = {
- 
- /**
-  * spi_nor_set_erase_settings_from_bfpt() - set erase type settings from BFPT
-- * @erase:	pointer to a structure that describes a SPI NOR erase type
-+ * @erase:	pointer to a structure that describes an SPI NOR erase type
-  * @size:	the size of the sector/block erased by the erase type
-  * @opcode:	the SPI command op code to erase the sector/block
-  * @i:		erase type index as sorted in the Basic Flash Parameter Table
-@@ -775,8 +775,8 @@ static void spi_nor_region_mark_overlay(struct spi_nor_erase_region *region)
- 
- /**
-  * spi_nor_region_check_overlay() - set overlay bit when the region is overlaid
-- * @region:	pointer to a structure that describes a SPI NOR erase region
-- * @erase:	pointer to a structure that describes a SPI NOR erase type
-+ * @region:	pointer to a structure that describes an SPI NOR erase region
-+ * @erase:	pointer to a structure that describes an SPI NOR erase type
-  * @erase_type:	erase type bitmask
-  */
- static void
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 6d3392a7edc6..2564de8b6ed3 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -231,8 +231,8 @@ struct spinand_devid {
- 
- /**
-  * struct manufacurer_ops - SPI NAND manufacturer specific operations
-- * @init: initialize a SPI NAND device
-- * @cleanup: cleanup a SPI NAND device
-+ * @init: initialize an SPI NAND device
-+ * @cleanup: cleanup an SPI NAND device
-  *
-  * Each SPI NAND manufacturer driver should implement this interface so that
-  * NAND chips coming from this vendor can be initialized properly.
-@@ -293,7 +293,7 @@ struct spinand_op_variants {
- 	}
- 
- /**
-- * spinand_ecc_info - description of the on-die ECC implemented by a SPI NAND
-+ * spinand_ecc_info - description of the on-die ECC implemented by an SPI NAND
-  *		      chip
-  * @get_status: get the ECC status. Should return a positive number encoding
-  *		the number of corrected bitflips if correction was possible or
-@@ -462,7 +462,7 @@ static inline struct spinand_device *mtd_to_spinand(struct mtd_info *mtd)
- }
- 
- /**
-- * spinand_to_mtd() - Get the MTD device embedded in a SPI NAND device
-+ * spinand_to_mtd() - Get the MTD device embedded in an SPI NAND device
-  * @spinand: SPI NAND device
-  *
-  * Return: the MTD device embedded in @spinand.
-@@ -484,7 +484,7 @@ static inline struct spinand_device *nand_to_spinand(struct nand_device *nand)
- }
- 
- /**
-- * spinand_to_nand() - Get the NAND device embedded in a SPI NAND object
-+ * spinand_to_nand() - Get the NAND device embedded in an SPI NAND object
-  * @spinand: SPI NAND device
-  *
-  * Return: the NAND device embedded in @spinand.
-@@ -496,11 +496,11 @@ spinand_to_nand(struct spinand_device *spinand)
- }
- 
- /**
-- * spinand_set_of_node - Attach a DT node to a SPI NAND device
-+ * spinand_set_of_node - Attach a DT node to an SPI NAND device
-  * @spinand: SPI NAND device
-  * @np: DT node
-  *
-- * Attach a DT node to a SPI NAND device.
-+ * Attach a DT node to an SPI NAND device.
-  */
- static inline void spinand_set_of_node(struct spinand_device *spinand,
- 				       struct device_node *np)
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Ck9uIDAyLzAyLzIwMjMgMjA6MTgsIFR1ZG9yIEFtYmFydXMgd3JvdGU6Cj4gSGkhCj4gCj4gT24g
+MjYuMDEuMjAyMyAxNjoyNiwgbHJhbm5vdUBiYXlsaWJyZS5jb20gd3JvdGU6Cj4+IEZyb206IExv
+dWlzIFJhbm5vdSA8bHJhbm5vdUBiYXlsaWJyZS5jb20+Cj4+Cj4+IHNwaV9ub3Jfc2V0X2VyYXNl
+X3R5cGUgaXMgY2FsbGVkIHR3aWNlIGluIHNmZHAuYyB3aXRoIGEgbnVsbCBzaXplLiBUaGUKPj4g
+cmV0dXJuIGZyb20gZmZzIGlzIDAgYXMgd2VsbCBhbmQgdGhlIHNoaWZ0IHNpemUgYmVjb21lcyAo
+Ml4zMiAtIDEpIAo+PiB3aGljaCBpcwo+PiBvdXQgb2YgYm91bmQgd2hlbiBhcHBsaWVkIHRvIHRo
+ZSA8PCBvcGVyYXRvci4KPj4KPj4gVGhpcyBjb25zaWRlcnMgYXMgaWxsZWdhbCBhIGNhbGwgdG8g
+dGhpcyBmdW5jdGlvbiB3aXRoIG51bGwgc2l6ZS4gSXQKPj4gY3JlYXRlcyBhIHJlcGxhY2VtZW50
+IHNwaV9ub3JfbWFza19lcmFzZV90eXBlIGZvciBleHBsaWNpdCBjYWxscyB0byBtYXNrCj4+IHRo
+ZSBlcmFzZSB0eXBlLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBMb3VpcyBSYW5ub3UgPGxyYW5ub3VA
+YmF5bGlicmUuY29tPgo+PiAtLS0KPj4gwqAgZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMgfCAx
+OSArKysrKysrKysrKysrKysrKy0tCj4+IMKgIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5jIHzC
+oCA0ICsrLS0KPj4gwqAgMiBmaWxlcyBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCA0IGRlbGV0
+aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMgYi9k
+cml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYwo+PiBpbmRleCBkNjdjOTI2YmNhOGIuLjE0MGE4ZmE4
+MWYwMyAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKPj4gKysrIGIv
+ZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKPj4gQEAgLTIwMTUsMTUgKzIwMTUsMzAgQEAgc3Bp
+X25vcl9zcGltZW1fYWRqdXN0X2h3Y2FwcyhzdHJ1Y3Qgc3BpX25vciAKPj4gKm5vciwgdTMyICpo
+d2NhcHMpCj4+IMKgwqAgKiBAZXJhc2U6wqDCoMKgIHBvaW50ZXIgdG8gYSBzdHJ1Y3R1cmUgdGhh
+dCBkZXNjcmliZXMgYSBTUEkgTk9SIGVyYXNlIAo+PiB0eXBlCj4+IMKgwqAgKiBAc2l6ZTrCoMKg
+wqAgdGhlIHNpemUgb2YgdGhlIHNlY3Rvci9ibG9jayBlcmFzZWQgYnkgdGhlIGVyYXNlIHR5cGUK
+Pj4gwqDCoCAqIEBvcGNvZGU6wqDCoMKgIHRoZSBTUEkgY29tbWFuZCBvcCBjb2RlIHRvIGVyYXNl
+IHRoZSBzZWN0b3IvYmxvY2sKPj4gKyAqCj4+ICsgKiBSZXR1cm46IDAgb24gc3VjY2VzcywgLWVy
+cm5vIG90aGVyd2lzZQo+PiDCoMKgICovCj4+IC12b2lkIHNwaV9ub3Jfc2V0X2VyYXNlX3R5cGUo
+c3RydWN0IHNwaV9ub3JfZXJhc2VfdHlwZSAqZXJhc2UsIHUzMiBzaXplLAo+PiAtwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHU4IG9wY29kZSkKPj4gK2ludCBzcGlfbm9yX3NldF9lcmFz
+ZV90eXBlKHN0cnVjdCBzcGlfbm9yX2VyYXNlX3R5cGUgKmVyYXNlLCB1MzIgc2l6ZSwKPj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdTggb3Bjb2RlKQo+PiDCoCB7Cj4+IMKgwqDCoMKg
+wqAgZXJhc2UtPnNpemUgPSBzaXplOwo+PiDCoMKgwqDCoMKgIGVyYXNlLT5vcGNvZGUgPSBvcGNv
+ZGU7Cj4+IMKgwqDCoMKgwqAgLyogSkVERUMgSkVTRDIxNkIgU3RhbmRhcmQgaW1wb3NlcyBlcmFz
+ZSBzaXplcyB0byBiZSBwb3dlciBvZiAyLiAqLwo+PiArwqDCoMKgIGlmIChzaXplID09IDApCj4+
+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVJTlZBTDsKPiAKPiB3ZSBzaG91bGQgY2hlY2sgdGhl
+IHJldHVybiB2YWx1ZSBvbiBlYWNoIGNhbGwgdGhlbi4KPiAKPj4gwqDCoMKgwqDCoCBlcmFzZS0+
+c2l6ZV9zaGlmdCA9IGZmcyhlcmFzZS0+c2l6ZSkgLSAxOwo+PiDCoMKgwqDCoMKgIGVyYXNlLT5z
+aXplX21hc2sgPSAoMSA8PCBlcmFzZS0+c2l6ZV9zaGlmdCkgLSAxOwo+PiArwqDCoMKgIHJldHVy
+biAwOwo+PiArfQo+PiArCj4+ICsvKioKPj4gKyAqIHNwaV9ub3JfbWFza19lcmFzZV90eXBlKCkg
+LSBtYXNrIG91dCBhIFNQSSBOT1IgZXJhc2UgdHlwZQo+PiArICogQGVyYXNlOsKgwqDCoCBwb2lu
+dGVyIHRvIGEgc3RydWN0dXJlIHRoYXQgZGVzY3JpYmVzIGEgU1BJIE5PUiBlcmFzZSB0eXBlCj4+
+ICsgKi8KPj4gK3ZvaWQgc3BpX25vcl9tYXNrX2VyYXNlX3R5cGUoc3RydWN0IHNwaV9ub3JfZXJh
+c2VfdHlwZSAqZXJhc2UpCj4+ICt7Cj4+ICvCoMKgwqAgZXJhc2UtPnNpemUgPSAwOwo+IAo+IGJ1
+dCBJIGxpa2UgdGhlIGlkZWEgb2YgaW50cm9kdWNpbmcgYSBtYXNrIG91dCBtZXRob2QuCj4gCj4g
+SSBzZW50IGEgc2xpZ2h0bHkgZGlmZmVyZW50IHZlcnNpb24gd2hlcmUgSSBhZGRlZCB5b3VyIFN1
+Z2dlc3RlZC1ieSB0YWcKPiBmb3IgdGhlIG1hc2sgb3V0IGlkZWEuIExldCBtZSBrbm93IGlmIGl0
+J3MgZmluZSBieSB5b3U6Cj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtbXRkLzIwMjMw
+MjAyMTkxNDUxLjM1MTQyLTEtdHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnL1QvI3UKCk9mIGNvdXJz
+ZSBpdCdzIGZpbmUgZm9yIG1lLiBJIGFsc28gYWdyZWUgdG8gdGhlIHYzLgoKVGhhbmtzICEKTG91
+aXMKCj4gCj4gQ2hlZXJzLAo+IHRhCj4+ICvCoMKgwqAgZXJhc2UtPm9wY29kZSA9IDB4RkY7Cj4+
+IMKgIH0KPj4gwqAgLyoqCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAu
+YyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5jCj4+IGluZGV4IDg0MzRmNjU0ZWNhMS4uOGQx
+NTgyNDNmZTQ5IDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYwo+PiAr
+KysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYwo+PiBAQCAtODc1LDcgKzg3NSw3IEBAIHN0
+YXRpYyBpbnQgCj4+IHNwaV9ub3JfaW5pdF9ub25fdW5pZm9ybV9lcmFzZV9tYXAoc3RydWN0IHNw
+aV9ub3IgKm5vciwKPj4gwqDCoMKgwqDCoMKgICovCj4+IMKgwqDCoMKgwqAgZm9yIChpID0gMDsg
+aSA8IFNOT1JfRVJBU0VfVFlQRV9NQVg7IGkrKykKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGlmICgh
+KHJlZ2lvbnNfZXJhc2VfdHlwZSAmIEJJVChlcmFzZVtpXS5pZHgpKSkKPj4gLcKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgc3BpX25vcl9zZXRfZXJhc2VfdHlwZSgmZXJhc2VbaV0sIDAsIDB4RkYpOwo+
+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzcGlfbm9yX21hc2tfZXJhc2VfdHlwZSgmZXJhc2Vb
+aV0pOwo+PiDCoMKgwqDCoMKgIHJldHVybiAwOwo+PiDCoCB9Cj4+IEBAIC0xMDg5LDcgKzEwODks
+NyBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcGFyc2VfNGJhaXQoc3RydWN0IHNwaV9ub3IgKm5vciwK
+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZXJhc2VfdHlwZVtpXS5vcGNvZGUgPSAoZHdv
+cmRzWzFdID4+Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGVyYXNlX3R5cGVbaV0uaWR4ICogOCkgJiAweEZGOwo+PiDCoMKgwqDCoMKgwqDCoMKg
+wqAgZWxzZQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzcGlfbm9yX3NldF9lcmFzZV90eXBl
+KCZlcmFzZV90eXBlW2ldLCAwdSwgMHhGRik7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNw
+aV9ub3JfbWFza19lcmFzZV90eXBlKCZlcmFzZV90eXBlW2ldKTsKPj4gwqDCoMKgwqDCoCB9Cj4+
+IMKgwqDCoMKgwqAgLyoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
