@@ -4,37 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55F14C6379F
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 07:14:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8688C61DA4
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 07:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8vwFCHG16yAmMitrrLTdpORw6LJSbzTfIgB2xzgXWuo=; b=LwAjhMgEuqG9PY
-	5AfXJhF5KrSb/nJvYM4Mm95vpe0pI2rt6r9CE4YOq6nIqvFcMeJh1yhQRgZi5ysAJI6IDLhRKPv7u
-	qYrykdtmcwINXw+NsIP4TCFaSPo7wR2FuVtRMEuXl5hwmIIa4pkGRj2UP5jjwrHPY6w4AgU3XBv7T
-	83N1TyRH+P/a4Xa1H98hVmISvxFUSrXy8esVEkRg8Bb9D6hhHf5+9VF+M/830MledlfbHjb92ojaK
-	PmseVLt/qfaHFqP12p832X6gZQiGgsEXVKXtKZRHKPscoiX4n4nrVgyi29j4Ez70ZZuTfygu+4Vm0
-	06xvhV5XlAXQsHly/c9Q==;
+	List-Owner; bh=PaBqy2odaoItCrvH8MCZYKL69OHdxphJDkUnPuRzgoo=; b=M5+T4/1yEJt+iH
+	1LCwbG7tOBIIMTbEodacpGHwXLT+UXUCgng5fa44xwpO4eS4TGryR3FuqwxA1WiXV1G0vW6UHMuRY
+	p4zmo2bIrtpEMLPP4BZ4f//25Q1kxUr41IM5AdQSaZwHuzwkL6LpkBI5OVJakFT2gGGWCfoLVmf7W
+	XJVJRzBWZAaw14qDicW1ku2mdpZwkTX9uKS94NtCFYL40yOkYmvRNN3xh+Lnn+USR/tqqMGe+jfXf
+	gYW99/KtZG80UT3Gwh8eGq9DyT4atz6YISgWZrz+0LOByDzX2RVovqV0RV93t06Fe7Y3gp3VUyQJ8
+	3IKCi3qxOgvoehU8bkXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNqHI-000kK4-6y; Fri, 03 Feb 2023 07:14:32 +0000
+	id 1pNqHy-000kTX-21; Fri, 03 Feb 2023 07:15:14 +0000
 Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNqHF-000kJT-KZ
-	for linux-mtd@lists.infradead.org; Fri, 03 Feb 2023 07:14:30 +0000
+	id 1pNqHu-000kSf-RJ
+	for linux-mtd@lists.infradead.org; Fri, 03 Feb 2023 07:15:12 +0000
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 9CB7868C4E; Fri,  3 Feb 2023 08:14:23 +0100 (CET)
-Date: Fri, 3 Feb 2023 08:14:23 +0100
+	id AFA2168D05; Fri,  3 Feb 2023 08:15:07 +0100 (CET)
+Date: Fri, 3 Feb 2023 08:15:06 +0100
 From: Christoph Hellwig <hch@lst.de>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Cc: Christoph Hellwig <hch@lst.de>,
 	Yoshinori Sato <ysato@users.sourceforge.jp>,
 	Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
 	Geert Uytterhoeven <geert+renesas@glider.be>,
 	linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
@@ -48,16 +47,17 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
 	linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org,
 	linux-sh@vger.kernel.org
-Subject: Re: remove arch/sh
-Message-ID: <20230203071423.GA24833@lst.de>
-References: <20230113062339.1909087-1-hch@lst.de> <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de> <20230116071306.GA15848@lst.de> <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
+Subject: Re: [PATCH 01/22] gpu/drm: remove the shmobile drm driver
+Message-ID: <20230203071506.GB24833@lst.de>
+References: <20230113062339.1909087-1-hch@lst.de> <20230113062339.1909087-2-hch@lst.de> <Y8EMZ0GI5rtor9xr@pendragon.ideasonboard.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
+In-Reply-To: <Y8EMZ0GI5rtor9xr@pendragon.ideasonboard.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230202_231429_840561_8C99BCC2 
-X-CRM114-Status: GOOD (  11.42  )
+X-CRM114-CacheID: sfid-20230202_231511_039421_B535C797 
+X-CRM114-Status: UNSURE (   9.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,14 +74,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 16, 2023 at 09:52:10AM +0100, John Paul Adrian Glaubitz wrote:
-> We have had a discussion between multiple people invested in the SuperH port and
-> I have decided to volunteer as a co-maintainer of the port to support Rich Felker
-> when he isn't available.
-
-So, this still isn't reflected in MAINTAINERS in linux-next.  When
-do you plan to take over?  What platforms will remain supported and
-what can we start dropping due to being unused and unmaintained?
+So given that the big series doesn't go in, can we get this removal
+picked up through the drm tree?
 
 ______________________________________________________
 Linux MTD discussion mailing list
