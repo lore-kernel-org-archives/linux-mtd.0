@@ -4,79 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F5FBC61DA4
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 10:28:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ACA5C636CC
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 10:30:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mThRG9L6VRESSCahwlcLNNad63W2wpVSKyr4RpFeWY8=; b=xDIQ3LPuOZWWcv
-	3HYQF09/BH+5Wf8VJCon+VG14Be7QXD5eZrZaVFOmWiyeqWrVLxx8I0xJS9eLm+RTxYXExYYt+1rT
-	tqqd/s6R4WAVVhutgAfjAhIjus9ksoP4htVAf0K+uGMXOTwXbgufMsalT/TfmU2SkTghb5O5nj9d6
-	f8qRe3NDMdQdZ1efW2e8oMdkE9kyWZPwzz80qVbfykzLqyW7POarlqdVo+/K+dV9DuzLsh9MQYJqp
-	VKU7ZqIUAsw5qKnBpGIgf3KS6VO7dZn9fTLd1+G8ZSQ5zB4eQoBJRvitxeg52pmGux72wlhslxkgZ
-	iwOvL2RO/mA9tJWBouqg==;
+	List-Owner; bh=Lc7YQqaL+CuwuIN9+f4Pxd/4PqzEJeAiomvfsDOBRwc=; b=Gfc+eID/He+k4y
+	Ku9lnMm15iFQ0hXynMrD8wFSQmAtSdwdmbwBdbq22fsHQ4WzD9b8dR41jDEXnX4WTIDvdQjadv+Lr
+	O4HwIFvrW0/VxY5tBsHLvnE7nw5Sk0s5vvt4naZBy4MYzKrgnrwcbw3ScoQHIZ14nqanWdW2N2aSu
+	ZJlIJaERo5eBaCJfJLsq/J3fGTwUIK7XuOQBP9feFn2QtCmwrVmz/dgCes6Q/pmY2esWSh+9SII/2
+	iA9aqPjs8IU0eqxGO5BXElCeZ89EQ2Hiwdab1z0/QFjSyJHaEFxiVhrBKO5+dtXBrcjbV6aDaM+Xu
+	p19YxNTms5cWEu16kDeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNtJ0-001Nug-2t; Fri, 03 Feb 2023 10:28:30 +0000
-Received: from mail-qt1-f182.google.com ([209.85.160.182])
+	id 1pNtKG-001OJt-BB; Fri, 03 Feb 2023 10:29:48 +0000
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNtIq-001Nrs-BB; Fri, 03 Feb 2023 10:28:21 +0000
-Received: by mail-qt1-f182.google.com with SMTP id h24so4881529qta.12;
-        Fri, 03 Feb 2023 02:28:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OONFnhP6I7zS1Y45r5yPBZWg15dDNXvDl8f/Zu5HTcU=;
-        b=0yIdso4umS16xnOnzVPlNgaOBogZB+TjiR6pKZ/VpDXHbh6ehXU/v+0Ys68joRyySx
-         r1nEJ5m8fe7fY9mYTeBSD5zhLQgYyYjELpSx81dN5sj1ncONwjyqKSd5eB/bKldN4ETy
-         ETzmnWqbXXHeql4w711XOHpPeVJYjiK20BnauCS14UiHwTwqManuzM8Fs97W6NfZSFDW
-         Zw9+LqXXXiFjt/PvFHY7g195NEGfsyPhgzlDpYE8tH72wlBkD+pKlSHbPv0KA6yhtW4h
-         XmF1uZ+Ojs/BQpPwjPvKcp9FyCeXEMVgs8tP/xAEkD6neFFuCPnogetI1HOmllqMdJAp
-         nglQ==
-X-Gm-Message-State: AO0yUKUFQ+A7N8VU/ChmdBwGM/IpfEo6oDumvzBJbNfQC0pNMzgXImsH
-	R9+UTDD5880X+cyFT01WKybIPxVf8KwJUw==
-X-Google-Smtp-Source: AK7set9e7IQJAoFDm1eCs+JSG7aWql/gNFe7Lrl9xyl7FSiGjUr/FaW2ju/M0IdDobBYtcNXWNqNpw==
-X-Received: by 2002:a05:622a:1755:b0:3b9:c7f1:a655 with SMTP id l21-20020a05622a175500b003b9c7f1a655mr12201695qtk.24.1675420096268;
-        Fri, 03 Feb 2023 02:28:16 -0800 (PST)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id bs37-20020a05620a472500b00728b8f26939sm1579294qkb.103.2023.02.03.02.28.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Feb 2023 02:28:15 -0800 (PST)
-Received: by mail-yb1-f174.google.com with SMTP id 129so5745030ybb.0;
-        Fri, 03 Feb 2023 02:28:15 -0800 (PST)
-X-Received: by 2002:a25:820a:0:b0:7d5:b884:3617 with SMTP id
- q10-20020a25820a000000b007d5b8843617mr1035225ybk.380.1675420094927; Fri, 03
- Feb 2023 02:28:14 -0800 (PST)
+	id 1pNtKC-001OHc-QU
+	for linux-mtd@lists.infradead.org; Fri, 03 Feb 2023 10:29:46 +0000
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1pNtJx-0002fq-Hz; Fri, 03 Feb 2023 11:29:29 +0100
+Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1pNtJx-000PVD-9p; Fri, 03 Feb 2023 11:29:29 +0100
+Message-ID: <d10fe31b2af6cf4e03618f38ca9d3ca5c72601ed.camel@physik.fu-berlin.de>
+Subject: Re: remove arch/sh
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
+ <dalias@libc.org>,  Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Laurent Pinchart
+ <laurent.pinchart@ideasonboard.com>, Kieran Bingham
+ <kieran.bingham+renesas@ideasonboard.com>, Geert Uytterhoeven
+ <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
+ linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org,  linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org,  linux-fbdev@vger.kernel.org,
+ alsa-devel@alsa-project.org,  linux-sh@vger.kernel.org
+Date: Fri, 03 Feb 2023 11:29:27 +0100
+In-Reply-To: <20230203083037.GA30738@lst.de>
+References: <20230113062339.1909087-1-hch@lst.de>
+	 <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+	 <20230116071306.GA15848@lst.de>
+	 <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
+	 <20230203071423.GA24833@lst.de>
+	 <afd056a95d21944db1dc0c9708f692dd1f7bb757.camel@physik.fu-berlin.de>
+	 <20230203083037.GA30738@lst.de>
+User-Agent: Evolution 3.46.3 
 MIME-Version: 1.0
-References: <20230203101624.474611-1-tudor.ambarus@linaro.org>
-In-Reply-To: <20230203101624.474611-1-tudor.ambarus@linaro.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 3 Feb 2023 11:28:03 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVeDbTGLBAk5QWGQGf=o6g25t341FjGTmNsHw0_sDOceg@mail.gmail.com>
-Message-ID: <CAMuHMdVeDbTGLBAk5QWGQGf=o6g25t341FjGTmNsHw0_sDOceg@mail.gmail.com>
-Subject: Re: [PATCH] tree-wide: trivial: s/ a SPI/ an SPI/
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: trivial@kernel.org, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-iio@vger.kernel.org, linux-input@vger.kernel.org, 
-	linux-leds@vger.kernel.org, linux-media@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mmc@vger.kernel.org, netdev@vger.kernel.org, linux-spi@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, 
-	linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	linux-wireless@vger.kernel.org, chrome-platform@lists.linux.dev, 
-	linux-rtc@vger.kernel.org, linux-fbdev@vger.kernel.org, 
-	linux-staging@lists.linux.dev, linux-usb@vger.kernel.org, 
-	Mark Brown <broonie@kernel.org>
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.148.100
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230203_022820_399250_730355F6 
-X-CRM114-Status: GOOD (  16.31  )
+X-CRM114-CacheID: sfid-20230203_022945_020181_C383294C 
+X-CRM114-Status: GOOD (  21.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,29 +89,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
+Hi Christoph!
 
-On Fri, Feb 3, 2023 at 11:17 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
-> The deciding factor for when a/an should be used is the sound
-> that begins the word which follows these indefinite articles,
-> rather than the letter which does. Use "an SPI" (SPI begins
-> with the consonant letter S, but the S is pronounced with its
-> letter name, "es.").
+On Fri, 2023-02-03 at 09:30 +0100, Christoph Hellwig wrote:
+> On Fri, Feb 03, 2023 at 09:24:46AM +0100, John Paul Adrian Glaubitz wrote:
+> > Since this is my very first time stepping up as a kernel maintainer, I was hoping
+> > to get some pointers on what to do to make this happen.
+> > 
+> > So far, we have set up a new kernel tree and I have set up a local development and
+> > test environment for SH kernels using my SH7785LCR board as the target platform.
+> > 
+> > Do I just need to send a patch asking to change the corresponding entry in the
+> > MAINTAINERS file?
+> 
+> I'm not sure a there is a document, but:
+> 
+>  - add the MAINTAINERS change to your tree
+>  - ask Stephen to get your tree included in linux-next
+> 
+> then eventually send a pull request to Linus with all of that.  Make
+> sure it's been in linux-next for a while.
 
-While I agree with your pronunciation, I believe the SPI maintainer
-(which you forgot to CC) pronounces it in James Bond-style, i.e. rhymes
-with "spy" ;-)
+OK, thanks for the pointers! Will try to get this done by next week.
 
-Gr{oetje,eeting}s,
+We're still discussing among SuperH developer community whether there will be a second
+maintainer, so please bear with us a few more days. I will collect patches in the
+meantime.
 
-                        Geert
+Adrian
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
 ______________________________________________________
 Linux MTD discussion mailing list
