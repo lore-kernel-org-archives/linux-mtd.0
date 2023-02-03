@@ -4,34 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D5D7C64EC3
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 07:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00212C61DA4
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 07:25:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xYvnafdyoDgJjMt/HLcLTg/9Ralp6P8PDFCxZHzWBZ8=; b=c3sj/xhMaFtr+Y
-	rPN3Dn4DxygJl+GGxCPc71kU5O2/+rXp2BD5j/h8yOQiMJqQtCB+ZK5bni+fi1/9l7LXrLfiDpKe6
-	Vt4lOgxMHi+lgq11HV8HubeGVuAdHrsfxTuXQIGx8AAd2UmOQw3bnihmLsqyNPXa4C0hw8ycPewWc
-	UAcXskWCgBDCjUK1UTNItL//N+xdxzSfwrG4KOxWdv3PDtZefJ8TSoWW7bnk+86Wcckgy2U+0SCwE
-	2idV5P5M4huv6nBKjTM7Ehjkh3ayYsYM4ST/whq04PnKF7a4yQjWqlw0OmtvXVB22BrU9sCgRZHxR
-	rYNd9VpK/j/i98XQTk8g==;
+	List-Owner; bh=fbrU0UrRrLP2zeD93oKhJ+0UiAfRyyRwKKOkL20aPtc=; b=onm62V+hC45NLf
+	jq7Wg4t2KZKYXLc0c2KBETbpkZn7iO4+l/6Fj0WkUAxlcWEXckbOO0FP+nujVGBLt9mrOwkETjMmQ
+	11KCoihMYiNVt9liPo8ATJEX267IJJgIh2y1l+e4YwMbnKXGil11KMXd41LvZp7oGDcZf4yka8fH8
+	+dw1u4nvUDlxxvaeuIWUWWRjGVsxRugTRHWjkcflwGkFeJSVSJfZnrUhn8NtXE3bqHtg2gJQOYXmt
+	h38VkjXVpkOmdzEWGv7e2Bz9mH5nxnHlECsl719urlsr4ilQFOEW82EYAwH2r7HKvvhBLpZdHel7v
+	2mmIhRb1gv4diLsBUU7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNqIW-000kdy-EH; Fri, 03 Feb 2023 07:15:48 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1pNqRo-000miK-I5; Fri, 03 Feb 2023 07:25:24 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNqIT-000kci-NX
-	for linux-mtd@lists.infradead.org; Fri, 03 Feb 2023 07:15:46 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id DB51E68C4E; Fri,  3 Feb 2023 08:15:42 +0100 (CET)
-Date: Fri, 3 Feb 2023 08:15:42 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	id 1pNqRm-000mhK-8C
+	for linux-mtd@lists.infradead.org; Fri, 03 Feb 2023 07:25:23 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 479EEB82913;
+	Fri,  3 Feb 2023 07:25:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B9EAC433D2;
+	Fri,  3 Feb 2023 07:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1675409118;
+	bh=w/73Uc/n5KxsufzX5CddSnsJWhi8Tl5rHcWOUj980gE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KvD8eTpjLOtWB+UEaur78gdbkDk2uNg4iTyG7EduGBBQeFYYfDMJR0zI5M46iGXgI
+	 B/g60xlZj15BQnrefnVhdWcwV0eYwBhVI1fWaHKJRFJ022Eb8m0gihPo6B9goL/ROM
+	 S4BKuWCyK0zSKt6MO3m0b0jgs8LUO3Xke14ThSpk=
+Date: Fri, 3 Feb 2023 08:25:15 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
 	Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
 	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
@@ -48,15 +59,17 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org,
 	linux-sh@vger.kernel.org
 Subject: Re: [PATCH 02/22] usb: remove the dead USB_OHCI_SH option
-Message-ID: <20230203071542.GC24833@lst.de>
-References: <20230113062339.1909087-1-hch@lst.de> <20230113062339.1909087-3-hch@lst.de> <Y8EEbCP6PRMzWP5y@kroah.com>
+Message-ID: <Y9y221RalpLWJE0S@kroah.com>
+References: <20230113062339.1909087-1-hch@lst.de>
+ <20230113062339.1909087-3-hch@lst.de>
+ <Y8EEbCP6PRMzWP5y@kroah.com>
+ <20230203071542.GC24833@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Y8EEbCP6PRMzWP5y@kroah.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20230203071542.GC24833@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230202_231545_922645_D956ECBD 
-X-CRM114-Status: GOOD (  11.86  )
+X-CRM114-CacheID: sfid-20230202_232522_452840_D4182758 
+X-CRM114-Status: GOOD (  12.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,12 +86,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jan 13, 2023 at 08:12:44AM +0100, Greg Kroah-Hartman wrote:
-> Do you want all of these to go through a single tree, or can they go
-> through the different driver subsystem trees?
+On Fri, Feb 03, 2023 at 08:15:42AM +0100, Christoph Hellwig wrote:
+> On Fri, Jan 13, 2023 at 08:12:44AM +0100, Greg Kroah-Hartman wrote:
+> > Do you want all of these to go through a single tree, or can they go
+> > through the different driver subsystem trees?
+> 
+> Looks like the big removal isn't going in for this merge winodw,
+> so can you queue this patch up after all Greg?
 
-Looks like the big removal isn't going in for this merge winodw,
-so can you queue this patch up after all Greg?
+Sure, I'll go apply it right now, thanks.
+
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
