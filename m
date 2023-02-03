@@ -4,77 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D8EAC61DA4
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 10:37:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C2AEC636D6
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Feb 2023 11:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CxmMTh/8jm9RvidVAGRdhMhhUXRK9rAWOkhO1e5xiuc=; b=r7Zd2eHRW7wOjI
-	G5GnrqEjvbzqHSN02rX63HNeV94nMIjyjkxaMFZ90f1S1cLh8GIO3huU4xNgDnX+0VjZ7EUi+s2RJ
-	mZKjV+tW52gRCLXNb5rbimQbzTb0ot3xh6u66J1UhedKxaTs5PCIOaHUWzn00CTydOFcfhixmlX6u
-	CXlPpTVik83QvZyjmyhCnoz0dAMD6IRjk1bZO49VSHVEqHNIe4kWRPQ6bX8+0mFhDm0IYfSt80h2P
-	IYfeO519twJx89U0GQw7nxz52kgd9uvU1REZEWUkIIYgOupQbMnXbu2hRhlA/44/c/oQgNCttic/j
-	Y3N4VvWreN2w83xWknQA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bQT0UVwwv+gB/I/CM3wW/d6I/FM31pwl1Flf6Dc2S3M=; b=gOiTk00Nl4U58ABhqA4z0ja4nb
+	ErrRO7wBkRFsL2S2KpkSJGepBH+mexFn6Us1zrjOBF5NvyDAcSg/pOvI+dNrkPCSH5MIavD4w5qTO
+	jieMsFUuMfSuBSblWnlHxZaFGDr4ppxMtz4v+ILKSAdf3iy/XvNjlwqKHKKO2dfbm1CydvcB7CNEc
+	Mu5cgtS6riIa8TRhgNpkhbLvGYLBMlAXSfy0gssrBJ5pz6NuGPUdfs/OSt4kIRlPtjcN+5soSp2wx
+	G5m/VqFtErTeKG3zeYJsD0y8f9QN+IZ4Ympa3ByOkKJ0ngtAvP2LUXPmbjm0D9CHdbRHqwe7x96MW
+	sr8sk/Ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNtR9-001QAq-10; Fri, 03 Feb 2023 10:36:55 +0000
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
+	id 1pNuYF-001daL-FN; Fri, 03 Feb 2023 11:48:19 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pNtR6-001Q9x-2n
-	for linux-mtd@lists.infradead.org; Fri, 03 Feb 2023 10:36:53 +0000
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pNtQu-0005LU-Pm; Fri, 03 Feb 2023 11:36:40 +0100
-Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pNtQu-000Qu4-EY; Fri, 03 Feb 2023 11:36:40 +0100
-Message-ID: <1c4be6be8aa9f69af71c967b4cc0b77344d374de.camel@physik.fu-berlin.de>
-Subject: Re: remove arch/sh
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+	id 1pNuY2-001dVS-Rp; Fri, 03 Feb 2023 11:48:08 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6030D61EDF;
+	Fri,  3 Feb 2023 11:48:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89106C433EF;
+	Fri,  3 Feb 2023 11:48:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1675424885;
+	bh=sXBX1FG6ndVGefT904bnksV8B+g4LxIK97sutzKIqNE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OQ5/MYRvKvLBYmD0dA3PJdZ7Epr40/BTH7nbSlK7+wFZPoEBj5EmO4JWqecjeRxR+
+	 B/iSweeCvTGY3fjdke/bBXjQtVykCLPdFqqGU9ktxc0N70sghU8BNDNuaNjzfDMWhS
+	 9xRmj7NUziC4xCvRKjHJVNZOLGyot+RdeudHWY7IRVy13TkKgaDOYBJU9t6ynd5wQy
+	 8feOq45sLlq6jWd1OVq10ZXObB6hZ7Ishp7lMHgECKl5O5z5sPGynRTQhdAmFwGN6/
+	 ydAbA0R/fQhWdcJFsjLIHKeABeGhliAhtNPY7Cop+P0ZgWlFp3i2xIHg8Lh04A7wPg
+	 waLBdhfqtax9g==
+Date: Fri, 3 Feb 2023 11:47:57 +0000
+From: Mark Brown <broonie@kernel.org>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Hellwig <hch@lst.de>, Yoshinori Sato
- <ysato@users.sourceforge.jp>,  Rich Felker <dalias@libc.org>, Arnd Bergmann
- <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Laurent
- Pinchart <laurent.pinchart@ideasonboard.com>, Kieran Bingham
- <kieran.bingham+renesas@ideasonboard.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org,  linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org,  linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org,  linux-sh@vger.kernel.org
-Date: Fri, 03 Feb 2023 11:36:35 +0100
-In-Reply-To: <CAMuHMdUitVfW088YOmqYm4kwbKwkwb22fAakHcu6boxv7dXDfQ@mail.gmail.com>
-References: <20230113062339.1909087-1-hch@lst.de>
-	 <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
-	 <20230116071306.GA15848@lst.de>
-	 <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
-	 <20230203071423.GA24833@lst.de>
-	 <afd056a95d21944db1dc0c9708f692dd1f7bb757.camel@physik.fu-berlin.de>
-	 <20230203083037.GA30738@lst.de>
-	 <d10fe31b2af6cf4e03618f38ca9d3ca5c72601ed.camel@physik.fu-berlin.de>
-	 <CAMuHMdUitVfW088YOmqYm4kwbKwkwb22fAakHcu6boxv7dXDfQ@mail.gmail.com>
-User-Agent: Evolution 3.46.3 
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, trivial@kernel.org,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+	netdev@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-acpi@vger.kernel.org,
+	linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-wireless@vger.kernel.org, chrome-platform@lists.linux.dev,
+	linux-rtc@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	linux-staging@lists.linux.dev, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] tree-wide: trivial: s/ a SPI/ an SPI/
+Message-ID: <Y9z0bQ8TeFROA0Fj@sirena.org.uk>
+References: <20230203101624.474611-1-tudor.ambarus@linaro.org>
+ <CAMuHMdVeDbTGLBAk5QWGQGf=o6g25t341FjGTmNsHw0_sDOceg@mail.gmail.com>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.148.100
+In-Reply-To: <CAMuHMdVeDbTGLBAk5QWGQGf=o6g25t341FjGTmNsHw0_sDOceg@mail.gmail.com>
+X-Cookie: Pay toll ahead.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230203_023652_288714_AF399CD4 
-X-CRM114-Status: GOOD (  27.94  )
+X-CRM114-CacheID: sfid-20230203_034806_996304_48AFA462 
+X-CRM114-Status: GOOD (  14.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,60 +78,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3889416626034853503=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Geert!
 
-On Fri, 2023-02-03 at 11:33 +0100, Geert Uytterhoeven wrote:
-> Hi Adrian,
-> 
-> On Fri, Feb 3, 2023 at 11:29 AM John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
-> > On Fri, 2023-02-03 at 09:30 +0100, Christoph Hellwig wrote:
-> > > On Fri, Feb 03, 2023 at 09:24:46AM +0100, John Paul Adrian Glaubitz wrote:
-> > > > Since this is my very first time stepping up as a kernel maintainer, I was hoping
-> > > > to get some pointers on what to do to make this happen.
-> > > > 
-> > > > So far, we have set up a new kernel tree and I have set up a local development and
-> > > > test environment for SH kernels using my SH7785LCR board as the target platform.
-> > > > 
-> > > > Do I just need to send a patch asking to change the corresponding entry in the
-> > > > MAINTAINERS file?
-> > > 
-> > > I'm not sure a there is a document, but:
-> > > 
-> > >  - add the MAINTAINERS change to your tree
-> > >  - ask Stephen to get your tree included in linux-next
-> > > 
-> > > then eventually send a pull request to Linus with all of that.  Make
-> > > sure it's been in linux-next for a while.
-> > 
-> > OK, thanks for the pointers! Will try to get this done by next week.
-> > 
-> > We're still discussing among SuperH developer community whether there will be a second
-> > maintainer, so please bear with us a few more days. I will collect patches in the
-> > meantime.
-> 
-> Thanks a lot!
-> 
-> If you need any help with process, setup, ... don't hesitate to ask
-> (on e.g. #renesas-soc on Libera).
+--===============3889416626034853503==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="SpLBoke9z0+WTDIl"
+Content-Disposition: inline
 
-Thanks a lot! I've got some real-life tasks to do today, but I will join later today.
 
-And I will ask questions ;-).
+--SpLBoke9z0+WTDIl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Adrian
+On Fri, Feb 03, 2023 at 11:28:03AM +0100, Geert Uytterhoeven wrote:
+> On Fri, Feb 3, 2023 at 11:17 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> > The deciding factor for when a/an should be used is the sound
+> > that begins the word which follows these indefinite articles,
+> > rather than the letter which does. Use "an SPI" (SPI begins
+> > with the consonant letter S, but the S is pronounced with its
+> > letter name, "es.").
+
+> While I agree with your pronunciation, I believe the SPI maintainer
+> (which you forgot to CC) pronounces it in James Bond-style, i.e. rhymes
+> with "spy" ;-)
+
+Yes, I do.  To the best of my knowledge most people just say "spy"
+rather than pronouncing the letters or anything.
+
+In any case as I said in reply to one of the individual patches English
+isn't regular enough to go with hard and fast rules on anything, and the
+letter rule is much more commonly used where something is needed.  Using
+an here looks wrong to me, and the fact that a is so widely used does
+suggest that usage has escaped whatever rule there is.
+
+--SpLBoke9z0+WTDIl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPc9GwACgkQJNaLcl1U
+h9BWWgf7B2SbxlDCRQ/tXsgEj6IpmRoheV/Rc6V7cDJ3WW0RDwuKuwr+iYGYH4wI
+JMhxrKQp0ohQOtyboaLZK7RSARZQtK65wRZ2Cnrc3ilSy9T0cwDCOwBQ8I14Rclq
+/g2LhsTjAgrRpbQDo70vY9TV1fgGhwKHTNkGBfUAlfdPRz38Q/xX53UXHBy6cVqC
+ZWmrmxiRWO0ERd1qkYXsmPVVrtor6skFKeuri+z1H/l/Rl+vj0R4zLIiek1nzhnm
+W92b3oRnp6fRbyoiNsBO24Hrvd4POfaUHRf006dJ3jQnJpFKQwP8sFCMJD3BLpIU
+flkBLxV/d8OAm+zvn+ZpbTQr/78vKQ==
+=4YMj
+-----END PGP SIGNATURE-----
+
+--SpLBoke9z0+WTDIl--
+
+
+--===============3889416626034853503==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3889416626034853503==--
+
