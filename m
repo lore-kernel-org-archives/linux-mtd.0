@@ -4,66 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E437C61DA4
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Feb 2023 11:56:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D158FC61DA4
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Feb 2023 22:49:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Yr9SsJHBDsFFCXhLxbZ11BOaex1w3Akz2Ebp4mlyyuM=; b=dSt0uXDWAEscmF
-	JPmcDkCmX4f8Qt05LM4Ba5W/YJMKEFcvilX9pq9WhlzHfyEr1pt4fkHsEjiVMDtqxIOEyiD46ZU0T
-	ffQVoqCd8sHfBcjO9NrbND3fSbRrKFHc2wjojgIp0EoWplwZsDszrByk/XMAkdjvHMIhn5o42cOoI
-	R6juOtlXQ6SGBd/pOVPSs8TsTFcCOAN8vuo38CQclxzrDI8JHWSYKZJoWa8/+vT+hP7Ez3g3IdjA0
-	8HzL0M4NeD5Rj48lgwTZIQbIA0W05MI26ot3rnre8NSHwg+7St+qog73NnHt8TUiIoJoepIwaLXgr
-	FHOrYux0yTk2Nav3eJRg==;
+	List-Owner; bh=S2hbKvwnI26l+THsCUvhJDn+NOU0lwAnpGLGkq6K+0E=; b=eYyOq+yQUFDmEO
+	W7tD9E3Oa2qV2eCTW14AHwxm9+D3s1vj2XzyuCwO+bijfnQwgw73gN9iEohBHSiNsuJUh1JoiG9Lt
+	/iYMD/tyuyCmn8cwWNZ3eeCeDTGuIpG1b2S7b+MCOP8veZbQY6ejqpRUkXfM7677nbIXJsamd05eh
+	zisXmPy9uuoDW+RvEqsvQUe82LBBWm8JmsLyS5mKpWyurWdvoNwPJmMtaS1s0G6uyP0pPRfsS+GyG
+	Qh9618Q9VEhkdXh3n9Y3NyLf/AK9lgZjtjI02P8/OD8Zy/alwIc1qebQ2uGJib/UaENdK8qW9KHN3
+	wWziVSrcrkevv3MXBIFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pP06Q-008MtV-Ma; Mon, 06 Feb 2023 11:56:06 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1pPAIG-00A60N-9g; Mon, 06 Feb 2023 22:49:00 +0000
+Received: from smtp-out-01.comm2000.it ([212.97.32.64])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pP05s-008MYG-PE; Mon, 06 Feb 2023 11:55:34 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 9AC16E0003;
-	Mon,  6 Feb 2023 11:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1675684528;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t6opdrNXEFTZP/9r8sTzfu5r14DTeRX8UGZDZ1N132Q=;
-	b=dQM39NG9tdBzdOSMBVXvNAhdkiNm0ThDtqGF20nsPA0ShGtP5SbQHprPSujOQxa5VyQVvA
-	d/yc9GAL2Y0/MCCOhM3csRA+Ahvd8zGnjw71h3a0V9+3gVPl/c/5W0qrWACS4guNCYk4BC
-	2N/bKMwwTmvfJuoi2r9urlC8qDCDOhOeClzjHEmQ9oVh5FEg1qzhmtfHSER9qQ5j8yg3/5
-	j69rqQF1AlWiv2CPyKVpeC6jrc8RB1khXYxt4uKjEedDkR9doMcll/PIeqBf0gpweVXWwV
-	n56mrVFzi3QMcQPoqLZ0++9pAqlimqD+VzIyxjGsezMLzYAf9w6+7zvK/sPgDA==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Samuel Holland <samuel@sholland.org>,
+	id 1pPAID-00A5zN-B9
+	for linux-mtd@lists.infradead.org; Mon, 06 Feb 2023 22:48:59 +0000
+Received: from francesco-nb.toradex.int (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: francesco@dolcini.it)
+	by smtp-out-01.comm2000.it (Postfix) with ESMTPSA id C7FC9842D92;
+	Mon,  6 Feb 2023 23:48:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
+	s=mailsrv; t=1675723726;
+	bh=ZNkkGwhMyvpPHg/6J0bLWFiwfr7Q5ZeTJRoXaY/icHo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=UnLRUcfkT6DYlbeHMa/A1Bq4gES8y7Z1sD5re7YHEZW6NKooUPhHifsFHgX2DRCrt
+	 OfLk628DNzCm5wEvX9oeRg6JB0D24AgBsFOS7VVBh1RCIX5QMpmaXZymCqhgPV2da1
+	 MvPKVf5l4Nri/xB1jCpV5MOHdIxNnaNV51qz9j8XYw5zgS34uZ2rQ64KG4dYLWFGKW
+	 dyiH1SufrvXpW0HdtUug8d9zQKLHNs7dtbjtaat4EZj5XK+Ko0+lqAWkMkvTD/CVKL
+	 DNg1w31KoipCSIlxJAY2RE2kkSWbr1g6PMMimpxmzvkFWis6lqa00UU3RMbJDH4dlQ
+	 VB85p8F9Mdxaw==
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Simon Glass <sjg@chromium.org>,
+	u-boot@lists.denx.de,
+	Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Cc: Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Marek Vasut <marex@denx.de>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Boris Brezillon <bbrezillon@kernel.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Chen-Yu Tsai <wens@csie.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v2 1/3] mtd: rawnand: sunxi: Update OOB layout to match hardware
-Date: Mon,  6 Feb 2023 12:55:26 +0100
-Message-Id: <20230206115526.560886-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230204143520.9682-2-samuel@sholland.org>
-References: 
+	linux-mtd@lists.infradead.org
+Subject: [PATCH v2 1/3] fdt: validate/fix cells count on mtdpart fixup
+Date: Mon,  6 Feb 2023 23:48:36 +0100
+Message-Id: <20230206224838.75963-2-francesco@dolcini.it>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230206224838.75963-1-francesco@dolcini.it>
+References: <20230206224838.75963-1-francesco@dolcini.it>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'3998a4611e8be2e9b5833e7aae29619ea0305437'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230206_035532_985280_D11AB4BB 
-X-CRM114-Status: UNSURE (   9.08  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230206_144857_704157_97AFEE63 
+X-CRM114-Status: GOOD (  23.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,22 +75,131 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 2023-02-04 at 14:35:18 UTC, Samuel Holland wrote:
-> When using the hardware ECC engine, the OOB data is made available in
-> the NFC_REG_USER_DATA registers, as one 32-bit word per ECC step. Any
-> additional bytes are only accessible through raw reads and software
-> descrambling. For efficiency, and to match the vendor driver, ignore
-> these extra bytes when using hardware ECC.
-> 
-> Note that until commit 34569d869532 ("mtd: rawnand: sunxi: Fix the size
-> of the last OOB region"), this extra free area was reported with length
-> zero, so this is not a functional change for any stable kernel user.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Fixup #size-cells value when updating the MTD partitions, this is
+required to prevent issues in case the MTD parent set #size-cells to
+zero.
+This could happen for example in the legacy case in which the partitions
+are created as direct child of the mtd node and that specific node has
+no children. Recent clean-up on Linux device tree files created a boot
+regression on colibri-imx7 [0].
 
-Miquel
+This fixup has the limitation to assume 32-bit (#size-cells=1)
+addressing, therefore it will not work with device bigger than 4GiB.
+
+This change also enforce #address-cells to be the same as #size-cells,
+this was already silently enforced by fdt_node_set_part_info(), now this
+is checked explicitly and partition fixup will just fail in such case.
+
+When the partition list is static the preferred way to pass the mtd
+partition list to the kernel is to either define those in the source DTS
+file or use mtdparts= in the command line.
+Tweaking the DT from U-Boot should be avoided, unless some dynamic
+changes are required, since it proved to be problematic when not
+following the evolution of the "standard".
+
+Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.int.toradex.com/
+Link: https://lore.kernel.org/all/20221202071900.1143950-1-francesco@dolcini.it/
+Cc: Marek Vasut <marex@denx.de>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+---
+v2: improved commit message
+---
+ common/fdt_support.c | 45 ++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 35 insertions(+), 10 deletions(-)
+
+diff --git a/common/fdt_support.c b/common/fdt_support.c
+index dbceec6f2dcc..3aee826e60cf 100644
+--- a/common/fdt_support.c
++++ b/common/fdt_support.c
+@@ -877,27 +877,20 @@ static int fdt_del_partitions(void *blob, int parent_offset)
+ 	return 0;
+ }
+ 
+-static int fdt_node_set_part_info(void *blob, int parent_offset,
++/* This expects #address-cells and #size-cells to have same value */
++static int fdt_node_set_part_info(void *blob, int parent_offset, int sizecell,
+ 				  struct mtd_device *dev)
+ {
+ 	struct list_head *pentry;
+ 	struct part_info *part;
+ 	int off, ndepth = 0;
+ 	int part_num, ret;
+-	int sizecell;
+ 	char buf[64];
+ 
+ 	ret = fdt_del_partitions(blob, parent_offset);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/*
+-	 * Check if size/address is 1 or 2 cells.
+-	 * We assume #address-cells and #size-cells have same value.
+-	 */
+-	sizecell = fdt_getprop_u32_default_node(blob, parent_offset,
+-						0, "#size-cells", 1);
+-
+ 	/*
+ 	 * Check if it is nand {}; subnode, adjust
+ 	 * the offset in this case
+@@ -992,6 +985,31 @@ err_prop:
+ 	return ret;
+ }
+ 
++static int fdt_mtdparts_cell_cnt(void *fdt, int off)
++{
++	int sizecell, addrcell;
++
++	sizecell = fdt_getprop_u32_default_node(fdt, off, 0, "#size-cells", 0);
++	if (sizecell != 1 && sizecell != 2) {
++		printf("%s: Invalid or missing #size-cells %d value, assuming 1\n",
++		       __func__, sizecell);
++
++		sizecell = 1;
++		if (fdt_setprop_u32(fdt, off, "#size-cells", sizecell))
++			return -1;
++	}
++
++	addrcell = fdt_getprop_u32_default_node(fdt, off, 0,
++						"#address-cells", 0);
++	if (addrcell != sizecell) {
++		printf("%s: Invalid #address-cells %d != #size-cells %d, aborting\n",
++		       __func__, addrcell, sizecell);
++		return -1;
++	}
++
++	return sizecell;
++}
++
+ /*
+  * Update partitions in nor/nand nodes using info from
+  * mtdparts environment variable. The nodes to update are
+@@ -1037,12 +1055,19 @@ void fdt_fixup_mtdparts(void *blob, const struct node_info *node_info,
+ 
+ 			dev = device_find(node_info[i].type, idx++);
+ 			if (dev) {
++				int cell;
++
+ 				parts = fdt_subnode_offset(blob, noff,
+ 							   "partitions");
+ 				if (parts < 0)
+ 					parts = noff;
+ 
+-				if (fdt_node_set_part_info(blob, parts, dev))
++				cell = fdt_mtdparts_cell_cnt(blob, parts);
++				if (cell < 0)
++					return;
++
++				if (fdt_node_set_part_info(blob, parts,
++							   cell, dev))
+ 					return; /* return on error */
+ 			}
+ 		}
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
