@@ -4,8 +4,8 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B46E9C05027
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 02:03:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39242C61DA4
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 02:03:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,72 +13,72 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Mime-Version:Message-Id:In-Reply-To:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=Tos7crH1LwYR8RxYphpvNfJCQNj3q3B+UO/z0ylpLYE=; b=eNRHD4Hh0+wsb1o7X55QT+zzPR
-	509FrWfvq2ZZ5ZLV7JXa+cSAj3ZxQ+ClW6aFa947rEMayFAK9b+VwGhRb6jYuv91J0klLMM6QGKwO
-	y9bbxNYmzUCKxyU+Ogqk3jO5jC9D0tqIY05CnxJOWuNiPxqigsQmxDWpjcl07DykXUVRgdbuSgLIi
-	dmBKh6K+7VCZCAX2o+a98KZXj1Tn2loQ2Ki7u45KW0BQu42Ecv3U5ZAUFuzPP+44ErGlcjz2zVz/Z
-	MhzY3mNa+sRqvx0yolUJ06/KC2rFb13ik4ZTe1VLWmW7UOngC4yzQ4Ksx2nuTM9B7QzKVJYatbBnR
-	+IhDA6bA==;
+	bh=X+v6+sxovyoh0/1dSuE/l9/I/zE/uaHfGB5xEz+K75M=; b=pQ3+F3vd9su1fZwZCP4aeqQbvO
+	YOAdyEgr7bHhh4SKb3xg5dlij+efbcxUouXOZt12xN+NP5PJ30y2R8xx/tJq8+fh9d7M8Wa7c+MWX
+	R1kpvTJxM0HyCWmHXjbKBfR8awT+4xJUGB36ISztJy4yiDFLbzO9Fkml1P67OYlk2zQIEMSzZV03e
+	iHh5H3YdQh2gPjJkeb4PwpN9ZXF/MIyMJwhV6AauGb40euiXbKOTj7FrGeNZXqyceKT36LQu8a4h8
+	cfbC2+EtfQxzFl+fJSH8As0GFEQApH+CmnqH69zm4+Wk6KEUJP1iaBsmaw1fs1QyDU4jP38fHaBmf
+	juskT3tg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPDJh-00ARr8-PP; Tue, 07 Feb 2023 02:02:41 +0000
+	id 1pPDJl-00ARsk-L5; Tue, 07 Feb 2023 02:02:45 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPDJg-00ARqo-S6
-	for linux-mtd@bombadil.infradead.org; Tue, 07 Feb 2023 02:02:41 +0000
+	id 1pPDJk-00ARrv-Mc
+	for linux-mtd@bombadil.infradead.org; Tue, 07 Feb 2023 02:02:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:From:Subject:
 	References:Mime-Version:Message-Id:In-Reply-To:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=eHkn7URR+Wxf1z7FIYAyiZv9JLKLhxrUf9FZBGK7iDo=; b=NjtW98MAxpv38rR8Ob3Pr0q3sV
-	c+65eBSZuxN7JPSWZmlyCGewwNDnsdWjgSXT3ot9Q0jLo7whprF0nEPprN8oehTzEmbzFmWQK4GLL
-	KB0ySDFY/z2VzZEPbbtDwcW5HV1i0K0r0qBKOQHNv8dsJGEFksRxnZYhyNyu93Xa2pl66s7NDmEdf
-	9Y54UUuxqHA1v161h3iaYfPK90y/bTubZWiaF8A96A/d9DFj6pr3DL82ejl1ocwpsQbbG6E2TSI+4
-	il6WnoWOY5oxd70bJuA18i0DTrrekNV+dkycuMNgeTtv+PM4OsYDXZmVEeJ4o/+HLWp7iDLZSQ6T+
-	hGCY4SIw==;
-Received: from mail-pf1-x449.google.com ([2607:f8b0:4864:20::449])
+	bh=6A/x+0p8PMNq+UMi21kh87Q0g2/Jiu6oRRXgMmXymQw=; b=CJ4VSBhC+uWea6F86v2D2ggj7Z
+	qdsB9zGZDtyTQDNECQD/DABfRtSFAcsPqonfKuvYncpDnQthntv1FKBqVtV2QvM1r5LCxZah2kVRJ
+	xD2Jq8a51nIy/IFthWpxzBzHv/HzEGaVCXmvehbhtRzbiM8Ht+t0MpQ6HpWWpCa7pC7suU4uzRlps
+	O/8SUYr7dQLV+74EG2aaOqcDd7rkXDCvbfrId7/zqxlvkyAvuY+5LBr9RE8JFTJGkjnlmXvhsoNjU
+	xjplVehWJZZhP7ww83iExtFnjm8itCLJNawIvRtPx7wGcc5wexGHNvnQ7KWE2u+b6IAHnk/TtrHf/
+	of/HAgxA==;
+Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pPCzg-006k2b-38
+	id 1pPCzm-006k3L-1A
 	for linux-mtd@lists.infradead.org;
-	Tue, 07 Feb 2023 01:42:03 +0000
-Received: by mail-pf1-x449.google.com with SMTP id g5-20020a62e305000000b00593dc84b678so7330165pfh.18
-        for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2023 17:42:36 -0800 (PST)
+	Tue, 07 Feb 2023 01:42:08 +0000
+Received: by mail-yb1-xb49.google.com with SMTP id i17-20020a25be91000000b0082663f3eecbso13134523ybk.2
+        for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2023 17:42:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eHkn7URR+Wxf1z7FIYAyiZv9JLKLhxrUf9FZBGK7iDo=;
-        b=X39XxihNmunqazOTpIkjvNwzLVqnqPsFSYGCONP99rFEEJQTw0YZGZIGdZ2G3+9vBn
-         jLSmp7NH6muan+2mAEaSNl5yTC31b7Q5T/udBdAm9llcuJBX5oUbFtMr82F8YTjvEw2Q
-         doJbf8H77vo5qapVNP6ot4Js78tZNZVyzlWLT3b2iKSUDPPQA+szJzHBSQRLwdPsZQW6
-         I+1EE/BAl9hm3vZvs+d558fqJuGREAMebpGf7PWMwlbfgiVJvDcr+ymp2N4YVKoNN+NW
-         P1oJl3asALANFBOisjnueYBs1keAmZXsNfAhWIe4VBy5tPGQ8fI9v7pI096EUfbmPWQy
-         vqFA==
+        bh=6A/x+0p8PMNq+UMi21kh87Q0g2/Jiu6oRRXgMmXymQw=;
+        b=L5SU9yrkdCoQISM+/wTwNBtt9so41vGiUxcF1ahsAlqhPaBFdZ9BDHj5PmwJYCl3t5
+         yHWeuyzyFi1Vdpek1s61VTHHj+vCMUwdpIlXNVlAwD+q2ZgHmHT68Mgoisp0fKBP+9Ye
+         AKuV+3jXCiNI4TvL5bTaYwjcjvjt6nHSeRli1b16m+nWjdvaQpCaLUzxcHWRE8E5TnS1
+         d0NPJtXNewRsKNlQC1Z7BIw/LVmY8gig4kKT1UdBbSEKM0EGx8tI2Hg9ZraY7mst5nHt
+         8sz2cJJNBzpaUhYmCNVGrSD9LOhg+ouviu7qdeJhnsPY9u5+SlS77RJ9No7k5rq3weF9
+         /HxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eHkn7URR+Wxf1z7FIYAyiZv9JLKLhxrUf9FZBGK7iDo=;
-        b=C3u4ASh1pfuiY9btTPHG3O+vQ1cK29pCmVXjNpwwio3qwW/xOGlzO0rtba6gUw9oXW
-         VKlY6KlEK7Qb+auu2qDQaGgDe8hEGnf1cNJOLlX4rsnqXojH8O3JjNW8TjJgzAGHSrcx
-         0iCYGcdRJLUcuA8OehZByVLFEwJY3eG7lOO+mSMt78zsjSrOdl9k5EHKbN+4nQMV3tXA
-         uvMnO3/eEuu6u/qsVi8EM+6XXbnDPNmSgAcHu4Vx75pgnZrBCfX0AicQGpF1GmsRsrc3
-         XRNoiO01MxeO79iEvf6SBjIqlo3OSHxrlOocE2QIW2WEj2fTb2QIHheC1HbVVpIYcvL4
-         1RVg==
-X-Gm-Message-State: AO0yUKXGcZlf8VyOvsbdkNcKFnlIXajegx+J65zuA4ZOayjPWbX0m7Y7
-	SuNyYFsfguy/dHxI05tOsIVEyDZ3/WYx+tE=
-X-Google-Smtp-Source: AK7set9gap7iVtj70G9Lb/TrrQyg8mWjZcfTC68UXJ/UbN0WLTioSeWRqcHRtuDY/mEnQb4c6/HizBrhqtXfNvE=
+        bh=6A/x+0p8PMNq+UMi21kh87Q0g2/Jiu6oRRXgMmXymQw=;
+        b=t0KZ2UCqMbO66kewdtgCh5Wc+q200AXxqiwt6ttSPe37KlbQvrtAQ/BeQuVaF4f5O3
+         5q5fpYaGNA2EkjhDgswii8lgSgDm1ueL7ZfyTPukTEOBvx/JqZrQA2reV4nd604X2OwK
+         ikQ3GbqY7D9SlaJDJdpvByPC0Ldz6NPWNZEOLlNCz/5SXnl0z+d0V2ea95kJUrYL/BZf
+         cIKzbgpAxl/VHlX0+dlizle2OUARYqoaisUWSH9v6ksNs8leIo7PQZcCeh98YHcOSR/T
+         DN3TbH+vW6EMu4B7Hfi4XicXc8+gL99OjtWHdVQAwiKAuKdOE+ePlms4brHfCHFNTVLl
+         d1Pg==
+X-Gm-Message-State: AO0yUKW0954tltrcOMvjn4aCRL6/PPCm3Ez1PVxCzuDn7dJZI/8CRQNU
+	v3WWpwXkskKi/zY4veqgYS1//XhAOWo+2yU=
+X-Google-Smtp-Source: AK7set+GZlE4Povwj1RwyeX6tO9l13sdnFTxa+J8n89nUczFeQdItr8brE7AhM3WB/T2LWQ/yln8wcGWuiwenUI=
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:ae1:aba6:f21c:4a94])
- (user=saravanak job=sendgmr) by 2002:a17:90b:198c:b0:230:ebc1:3ab3 with SMTP
- id mv12-20020a17090b198c00b00230ebc13ab3mr146048pjb.104.1675734154917; Mon,
- 06 Feb 2023 17:42:34 -0800 (PST)
-Date: Mon,  6 Feb 2023 17:42:01 -0800
+ (user=saravanak job=sendgmr) by 2002:a81:6146:0:b0:526:a392:c07e with SMTP id
+ v67-20020a816146000000b00526a392c07emr128848ywb.106.1675734157775; Mon, 06
+ Feb 2023 17:42:37 -0800 (PST)
+Date: Mon,  6 Feb 2023 17:42:02 -0800
 In-Reply-To: <20230207014207.1678715-1-saravanak@google.com>
-Message-Id: <20230207014207.1678715-10-saravanak@google.com>
+Message-Id: <20230207014207.1678715-11-saravanak@google.com>
 Mime-Version: 1.0
 References: <20230207014207.1678715-1-saravanak@google.com>
 X-Mailer: git-send-email 2.39.1.519.gcb327c4b5f-goog
-Subject: [PATCH v3 09/12] of: property: Simplify of_link_to_phandle()
+Subject: [PATCH v3 10/12] irqchip/irq-imx-gpcv2: Mark fwnode device as not initialized
 From: Saravana Kannan <saravanak@google.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
 	Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
@@ -107,8 +107,8 @@ Cc: Abel Vesa <abel.vesa@linaro.org>, Alexander Stein <alexander.stein@ew.tq-gro
 	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
 	linux-acpi@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230207_014201_450443_49E66509 
-X-CRM114-Status: GOOD (  24.88  )
+X-CRM114-CacheID: sfid-20230207_014206_790076_7B4B5856 
+X-CRM114-Status: GOOD (  18.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,136 +125,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The driver core now:
-- Has the parent device of a supplier pick up the consumers if the
-  supplier never has a device created for it.
-- Ignores a supplier if the supplier has no parent device and will never
-  be probed by a driver
-
-And already prevents creating a device link with the consumer as a
-supplier of a parent.
-
-So, we no longer need to find the "compatible" node of the supplier or
-do any other checks in of_link_to_phandle(). We simply need to make sure
-that the supplier is available in DT.
+Since this device is only partially initialized by the irqchip driver,
+we need to mark the fwnode device as not initialized. This is to let
+fw_devlink know that the device will be completely initialized at a
+later point. That way, fw_devlink will continue to defer the probe of
+the power domain consumers till the power domain driver successfully
+binds to the struct device and completes the initialization of the
+device.
 
 Signed-off-by: Saravana Kannan <saravanak@google.com>
-Tested-by: Colin Foster <colin.foster@in-advantage.com>
-Tested-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- drivers/of/property.c | 84 +++++++------------------------------------
- 1 file changed, 13 insertions(+), 71 deletions(-)
+ drivers/irqchip/irq-imx-gpcv2.c | 1 +
+ drivers/soc/imx/gpcv2.c         | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index 134cfc980b70..c651aad6f34b 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1062,20 +1062,6 @@ of_fwnode_device_get_match_data(const struct fwnode_handle *fwnode,
- 	return of_device_get_match_data(dev);
+diff --git a/drivers/irqchip/irq-imx-gpcv2.c b/drivers/irqchip/irq-imx-gpcv2.c
+index b9c22f764b4d..8a0e82067924 100644
+--- a/drivers/irqchip/irq-imx-gpcv2.c
++++ b/drivers/irqchip/irq-imx-gpcv2.c
+@@ -283,6 +283,7 @@ static int __init imx_gpcv2_irqchip_init(struct device_node *node,
+ 	 * later the GPC power domain driver will not be skipped.
+ 	 */
+ 	of_node_clear_flag(node, OF_POPULATED);
++	fwnode_dev_initialized(domain->fwnode, false);
+ 	return 0;
  }
  
--static bool of_is_ancestor_of(struct device_node *test_ancestor,
--			      struct device_node *child)
--{
--	of_node_get(child);
--	while (child) {
--		if (child == test_ancestor) {
--			of_node_put(child);
--			return true;
--		}
--		child = of_get_next_parent(child);
--	}
--	return false;
--}
--
- static struct device_node *of_get_compat_node(struct device_node *np)
- {
- 	of_node_get(np);
-@@ -1106,71 +1092,27 @@ static struct device_node *of_get_compat_node_parent(struct device_node *np)
- 	return node;
- }
+diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
+index 7a47d14fde44..4b3300b090a8 100644
+--- a/drivers/soc/imx/gpcv2.c
++++ b/drivers/soc/imx/gpcv2.c
+@@ -1518,7 +1518,7 @@ static int imx_gpcv2_probe(struct platform_device *pdev)
+ 		domain->genpd.power_off = imx_pgc_power_down;
  
--/**
-- * of_link_to_phandle - Add fwnode link to supplier from supplier phandle
-- * @con_np: consumer device tree node
-- * @sup_np: supplier device tree node
-- *
-- * Given a phandle to a supplier device tree node (@sup_np), this function
-- * finds the device that owns the supplier device tree node and creates a
-- * device link from @dev consumer device to the supplier device. This function
-- * doesn't create device links for invalid scenarios such as trying to create a
-- * link with a parent device as the consumer of its child device. In such
-- * cases, it returns an error.
-- *
-- * Returns:
-- * - 0 if fwnode link successfully created to supplier
-- * - -EINVAL if the supplier link is invalid and should not be created
-- * - -ENODEV if struct device will never be create for supplier
-- */
--static int of_link_to_phandle(struct device_node *con_np,
-+static void of_link_to_phandle(struct device_node *con_np,
- 			      struct device_node *sup_np)
- {
--	struct device *sup_dev;
--	struct device_node *tmp_np = sup_np;
-+	struct device_node *tmp_np = of_node_get(sup_np);
+ 		pd_pdev->dev.parent = dev;
+-		pd_pdev->dev.of_node = np;
++		device_set_node(&pd_pdev->dev, of_fwnode_handle(np));
  
--	/*
--	 * Find the device node that contains the supplier phandle.  It may be
--	 * @sup_np or it may be an ancestor of @sup_np.
--	 */
--	sup_np = of_get_compat_node(sup_np);
--	if (!sup_np) {
--		pr_debug("Not linking %pOFP to %pOFP - No device\n",
--			 con_np, tmp_np);
--		return -ENODEV;
--	}
-+	/* Check that sup_np and its ancestors are available. */
-+	while (tmp_np) {
-+		if (of_fwnode_handle(tmp_np)->dev) {
-+			of_node_put(tmp_np);
-+			break;
-+		}
- 
--	/*
--	 * Don't allow linking a device node as a consumer of one of its
--	 * descendant nodes. By definition, a child node can't be a functional
--	 * dependency for the parent node.
--	 */
--	if (of_is_ancestor_of(con_np, sup_np)) {
--		pr_debug("Not linking %pOFP to %pOFP - is descendant\n",
--			 con_np, sup_np);
--		of_node_put(sup_np);
--		return -EINVAL;
--	}
-+		if (!of_device_is_available(tmp_np)) {
-+			of_node_put(tmp_np);
-+			return;
-+		}
- 
--	/*
--	 * Don't create links to "early devices" that won't have struct devices
--	 * created for them.
--	 */
--	sup_dev = get_dev_from_fwnode(&sup_np->fwnode);
--	if (!sup_dev &&
--	    (of_node_check_flag(sup_np, OF_POPULATED) ||
--	     sup_np->fwnode.flags & FWNODE_FLAG_NOT_DEVICE)) {
--		pr_debug("Not linking %pOFP to %pOFP - No struct device\n",
--			 con_np, sup_np);
--		of_node_put(sup_np);
--		return -ENODEV;
-+		tmp_np = of_get_next_parent(tmp_np);
- 	}
--	put_device(sup_dev);
- 
- 	fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(sup_np));
--	of_node_put(sup_np);
--
--	return 0;
- }
- 
- /**
+ 		ret = platform_device_add(pd_pdev);
+ 		if (ret) {
 -- 
 2.39.1.519.gcb327c4b5f-goog
 
