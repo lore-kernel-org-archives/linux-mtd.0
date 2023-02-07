@@ -4,73 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50C12C636CD
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 09:08:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 198B3C636CD
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 09:23:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Subject:
+	Cc:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eVUlPxHwbfm8aSu689bsYRbTNZL1kdD5qQh0unBy1MI=; b=F6OdwWpVSe5tJ7
-	6U/JCOddrgFd2aijsY4UC7y/YYKqoyONw5AAFkfoxoITFvvM3bCx0/JDtLaMTNWeTXMaZh2q159JP
-	zLSCHkjoOVc8AZ2Htcjtkpy0PCGFmEWvBRPSktwS2uIChz25jkVdtVORFt3yh8nGM9JybdWkiuhy1
-	eXKGHPQohJopGjicpBx4DlaXAyNjmhpNdCtS7lUmU0Xh4FPEiiYpH25KwIrSMZezAFzgrwau/PQ1T
-	u9W36AgGPd/uaFhuRHZclBwoADsRG5rUJDeXacon1mJ4T7tq+qkHsGDMRq/5KOymnaZLbeO4AhB29
-	O24gjCEXA7MsVaL7DvZg==;
+	List-Owner; bh=Hfmdaluj+tZWlYWda6zQYMsUPejA+ioT11yOfbKc+pw=; b=ftt7D3tzIpqDik
+	Tjl3IeYToIMzYcc0V88rP2DWZWMdfYrpFjG6aF68DPZUG3pYuwRn7LZZGMd9wl+jb/mcZhDMwKNmp
+	d/J9remJ2jj5gd0+8WwzMdalt/NQ2WSpZRQcZqOXTMkcylLwL9gDGDX6dhAv3FZaWVMBc0lsIaNSm
+	OBdFybp9TFuONunDnyJKk0EYzLKsRvUkultDRq02LTiJHjy+oEuOTpspxgOeBF2jmU/zGglBTuuSR
+	+nEYfQ4YgvEUi/k8HbM2yTQgEkPwOR8nNOmuKdGA0RtdMISqlVKT88qCdmimGd/4sUQKMnwfxPMOz
+	CozgIy5EILkYfUcGsycw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPJwu-00BO17-57; Tue, 07 Feb 2023 09:07:36 +0000
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
+	id 1pPKCA-00BScB-Rk; Tue, 07 Feb 2023 09:23:22 +0000
+Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPJwr-00BNsl-8V
-	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 09:07:34 +0000
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pPJwG-001RJZ-JC; Tue, 07 Feb 2023 10:06:56 +0100
-Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pPJwE-000mCw-Hc; Tue, 07 Feb 2023 10:06:56 +0100
-Message-ID: <60ed320c8f5286e8dbbf71be29b760339fd25069.camel@physik.fu-berlin.de>
-Subject: Re: remove arch/sh
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
- <dalias@libc.org>,  Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Laurent Pinchart
- <laurent.pinchart@ideasonboard.com>, Kieran Bingham
- <kieran.bingham+renesas@ideasonboard.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org,  linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org,  linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org,  linux-sh@vger.kernel.org
-Date: Tue, 07 Feb 2023 10:06:53 +0100
-In-Reply-To: <20230203071423.GA24833@lst.de>
-References: <20230113062339.1909087-1-hch@lst.de>
-	 <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
-	 <20230116071306.GA15848@lst.de>
-	 <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
-	 <20230203071423.GA24833@lst.de>
-User-Agent: Evolution 3.46.3 
-MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.148.100
+	id 1pPKBy-00BSY8-LU
+	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 09:23:14 +0000
+Received: by mail-ej1-x634.google.com with SMTP id ud5so41537120ejc.4
+        for <linux-mtd@lists.infradead.org>; Tue, 07 Feb 2023 01:23:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I70HhxHLsI2HHGcZI04fStNVNeSuevhKRqsln0/FI/A=;
+        b=yrMGmfrMG5RKmVutlzGybx2TOoPNybxgeoFTGv81EX+SrqeMxTBh6j1swNcISVyw+p
+         AgxQ+dFKkqs4M+u7dP5WPvcw6t/6BiMCzK+bOyEBzFiotz/5L2G3eEMdJFEYX4+4bwpJ
+         Z0MRw+rSaCVL7tO3EKomyzEQp/H7CkFnKCW7+mzsAR0ABkwjVvW9n6FRXkKWS8OtlSVW
+         0GnttzP+aRl1UBX6dKSXSyf58HWn/JgZXGprVJzROGcIll13KS+KQKtI+car/sh4sQk3
+         i7b90CA7JynTrQkutLlEKl4SxpFEHmuY9HM0fTBVmDHIJUDDQFwDmwPsvnJidHbLmfFO
+         CVaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=I70HhxHLsI2HHGcZI04fStNVNeSuevhKRqsln0/FI/A=;
+        b=znEtk6sLpIljTBSKiMvCl9jQ3CuvK/cyaCPNnWyNYX2PwrsGSg7qNgixJ7Z0b40fgD
+         qWWxktDfa6LDbJt+OGZnxIYauonIRlNiEAd33xN7ppoCwV9ZJoslpNB672BwUf+N/IeQ
+         rXng7Wd2vXKUH3DRz4IIVWDhJsEDueIQyCrEuhTJcPqGsu5Yu2lqxeGHXbFb4Wldqg2h
+         6P0oBtAKqqBM76L8DNO0oivOZyBpd+s271h/q2iVAiT67bJyUEsvD/HHos5/Jb6EDDo0
+         bpi7zRZmYE+AjnCg+/rtTCcVLOGQK2NXFOVZGXoV+KLzbL5vNP3UyDjL0pJubsLrPckP
+         Odgg==
+X-Gm-Message-State: AO0yUKXPzWbnIwt8G0pi+r1G58w7MB9trsuFmaQCv0D1k6D8FKY8W2Es
+	erC4D+P2qluo2U5rORb/GnDSoQ==
+X-Google-Smtp-Source: AK7set/4jc5ZZLArDJD4G8kQ0dT4ezIRyv/eZI/G0ee7KmVpY7u9jRJrKjLsy6MxGRs020d764r0jA==
+X-Received: by 2002:a17:906:448c:b0:88a:4a22:dd5 with SMTP id y12-20020a170906448c00b0088a4a220dd5mr2585928ejo.23.1675761787520;
+        Tue, 07 Feb 2023 01:23:07 -0800 (PST)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id ml18-20020a170906cc1200b00882f9130eafsm6599467ejb.26.2023.02.07.01.23.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Feb 2023 01:23:07 -0800 (PST)
+Mime-Version: 1.0
+Date: Tue, 07 Feb 2023 10:23:06 +0100
+Message-Id: <CQC7Z4ZMDRKJ.3UUSZY1495PEQ@otso>
+Cc: "Abel Vesa" <abel.vesa@linaro.org>, "Alexander Stein"
+ <alexander.stein@ew.tq-group.com>, "Tony Lindgren" <tony@atomide.com>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>, "John Stultz"
+ <jstultz@google.com>, "Doug Anderson" <dianders@chromium.org>, "Guenter
+ Roeck" <linux@roeck-us.net>, "Dmitry Baryshkov"
+ <dmitry.baryshkov@linaro.org>, "Maxim Kiselev" <bigunclemax@gmail.com>,
+ "Maxim Kochetkov" <fido_max@inbox.ru>, "Colin Foster"
+ <colin.foster@in-advantage.com>, "Martin Kepplinger"
+ <martin.kepplinger@puri.sm>, "Jean-Philippe Brucker" <jpb@kernel.org>,
+ "Vladimir Oltean" <vladimir.oltean@nxp.com>, <kernel-team@android.com>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-gpio@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+ <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v3 00/12] fw_devlink improvements
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Saravana Kannan" <saravanak@google.com>, "Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ "Sudeep Holla" <sudeep.holla@arm.com>, "Cristian Marussi"
+ <cristian.marussi@arm.com>, "Linus Walleij" <linus.walleij@linaro.org>,
+ "Bartosz Golaszewski" <brgl@bgdev.pl>, "Thomas Gleixner"
+ <tglx@linutronix.de>, "Marc Zyngier" <maz@kernel.org>, "Shawn Guo"
+ <shawnguo@kernel.org>, "Sascha Hauer" <s.hauer@pengutronix.de>,
+ "Pengutronix Kernel Team" <kernel@pengutronix.de>, "Fabio Estevam"
+ <festevam@gmail.com>, "NXP Linux Team" <linux-imx@nxp.com>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Rob Herring"
+ <robh+dt@kernel.org>, "Frank Rowand" <frowand.list@gmail.com>, "Geert
+ Uytterhoeven" <geert+renesas@glider.be>, "Magnus Damm"
+ <magnus.damm@gmail.com>, "Andy Shevchenko"
+ <andriy.shevchenko@linux.intel.com>, "Daniel Scally" <djrscally@gmail.com>,
+ "Heikki Krogerus" <heikki.krogerus@linux.intel.com>, "Sakari Ailus"
+ <sakari.ailus@linux.intel.com>, "Len Brown" <lenb@kernel.org>,
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+X-Mailer: aerc 0.14.0
+References: <20230207014207.1678715-1-saravanak@google.com>
+In-Reply-To: <20230207014207.1678715-1-saravanak@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230207_010733_480297_C324FECC 
-X-CRM114-Status: GOOD (  12.42  )
+X-CRM114-CacheID: sfid-20230207_012311_572262_AA6609FB 
+X-CRM114-Status: GOOD (  28.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,32 +119,130 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Christoph!
+On Tue Feb 7, 2023 at 2:41 AM CET, Saravana Kannan wrote:
+> Naresh, Tony, Abel, Geert, Dmitry, Maxim(s), Miquel, Luca, Doug, Martin,
+> Jean-Philippe,
+>
+> Can I get your Tested-by's for this v3 series please?
 
-On Fri, 2023-02-03 at 08:14 +0100, Christoph Hellwig wrote:
-> On Mon, Jan 16, 2023 at 09:52:10AM +0100, John Paul Adrian Glaubitz wrote:
-> > We have had a discussion between multiple people invested in the SuperH port and
-> > I have decided to volunteer as a co-maintainer of the port to support Rich Felker
-> > when he isn't available.
-> 
-> So, this still isn't reflected in MAINTAINERS in linux-next.  When
-> do you plan to take over?  What platforms will remain supported and
-> what can we start dropping due to being unused and unmaintained?
+Hi Saravana,
 
-I'm getting everything ready now with Geert's help and I have a probably dumb
-question regarding the MAINTAINERS file change: Shall I just add myself as an
-additional maintainer first or shall I also drop Yoshinori Sato?
+Seems to be alright on the same platform where it broke previously.
 
-Also, is it desirable to add a "T:" entry for the kernel tree?
+Tested-by: Luca Weiss <luca.weiss@fairphone.com> # qcom/sm7225-fairphone-fp4
 
-Thanks,
-Adrian
+Regards
+Luca
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+>
+> Vladimir,
+>
+> Ccing you because DSA's and fw_devlink have known/existing problems
+> (still in my TODOs to fix). But I want to make sure this series doesn't
+> cause additional problems for DSA.
+>
+> All,
+>
+> This patch series improves fw_devlink in the following ways:
+>
+> 1. It no longer cares about a fwnode having a "compatible" property. It
+>    figures this out more dynamically. The only expectation is that
+>    fwnodes that are converted to devices actually get probed by a driver
+>    for the dependencies to be enforced correctly.
+>
+> 2. Finer grained dependency tracking. fw_devlink will now create device
+>    links from the consumer to the actual resource's device (if it has one,
+>    Eg: gpio_device) instead of the parent supplier device. This improves
+>    things like async suspend/resume ordering, potentially remove the need
+>    for frameworks to create device links, more parallelized async probing,
+>    and better sync_state() tracking.
+>
+> 3. Handle hardware/software quirks where a child firmware node gets
+>    populated as a device before its parent firmware node AND actually
+>    supplies a non-optional resource to the parent firmware node's
+>    device.
+>
+> 4. Way more robust at cycle handling (see patch for the insane cases).
+>
+> 5. Stops depending on OF_POPULATED to figure out some corner cases.
+>
+> 6. Simplifies the work that needs to be done by the firmware specific
+>    code.
+>
+> The v3 series has gone through my usual testing on my end and looks good
+> to me.
+>
+> Thanks,
+> Saravana
+>
+> [1] - https://lore.kernel.org/lkml/20220810060040.321697-1-saravanak@google.com/
+> [2] - https://lore.kernel.org/lkml/CAGETcx-JUV1nj8wBJrTPfyvM7=Mre5j_vkVmZojeiumUGG6QZQ@mail.gmail.com/
+>
+> v1 -> v2:
+> - Fixed Patch 1 to handle a corner case discussed in [2].
+> - New patch 10 to handle "fsl,imx8mq-gpc" being initialized by 2 drivers.
+> - New patch 11 to add fw_devlink support for SCMI devices.
+>
+> v2 -> v3:
+> - Addressed most of Andy's comments in v2
+> - Added Colin and Sudeep's Tested-by for the series (except the imx and
+>   renesas patches)
+> - Added Sudeep's Acked-by for the scmi patch.
+> - Added Geert's Reviewed-by for the renesas patch.
+> - Fixed gpiolib crash reported by Naresh.
+> - Patch 6: Fix __fwnode_links_move_consumers() to preserve fwnode link flags.
+> - New Patch 12 to fix nvmem-cells issue reported by Maxim(s)/Miquel.
+> - Deleted some stale function doc in Patch 8
+>
+> Cc: Abel Vesa <abel.vesa@linaro.org>
+> Cc: Alexander Stein <alexander.stein@ew.tq-group.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: John Stultz <jstultz@google.com>
+> Cc: Doug Anderson <dianders@chromium.org>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: Maxim Kiselev <bigunclemax@gmail.com>
+> Cc: Maxim Kochetkov <fido_max@inbox.ru>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Luca Weiss <luca.weiss@fairphone.com>
+> Cc: Colin Foster <colin.foster@in-advantage.com>
+> Cc: Martin Kepplinger <martin.kepplinger@puri.sm>
+> Cc: Jean-Philippe Brucker <jpb@kernel.org>
+> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+>
+> Saravana Kannan (12):
+>   driver core: fw_devlink: Don't purge child fwnode's consumer links
+>   driver core: fw_devlink: Improve check for fwnode with no
+>     device/driver
+>   soc: renesas: Move away from using OF_POPULATED for fw_devlink
+>   gpiolib: Clear the gpio_device's fwnode initialized flag before adding
+>   driver core: fw_devlink: Add DL_FLAG_CYCLE support to device links
+>   driver core: fw_devlink: Allow marking a fwnode link as being part of
+>     a cycle
+>   driver core: fw_devlink: Consolidate device link flag computation
+>   driver core: fw_devlink: Make cycle detection more robust
+>   of: property: Simplify of_link_to_phandle()
+>   irqchip/irq-imx-gpcv2: Mark fwnode device as not initialized
+>   firmware: arm_scmi: Set fwnode for the scmi_device
+>   mtd: mtdpart: Don't create platform device that'll never probe
+>
+>  drivers/base/core.c             | 449 +++++++++++++++++++++-----------
+>  drivers/firmware/arm_scmi/bus.c |   3 +-
+>  drivers/gpio/gpiolib.c          |   7 +
+>  drivers/irqchip/irq-imx-gpcv2.c |   1 +
+>  drivers/mtd/mtdpart.c           |  10 +
+>  drivers/of/property.c           |  84 +-----
+>  drivers/soc/imx/gpcv2.c         |   2 +-
+>  drivers/soc/renesas/rcar-sysc.c |   2 +-
+>  include/linux/device.h          |   1 +
+>  include/linux/fwnode.h          |  12 +-
+>  10 files changed, 344 insertions(+), 227 deletions(-)
+>
+> -- 
+> 2.39.1.519.gcb327c4b5f-goog
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
