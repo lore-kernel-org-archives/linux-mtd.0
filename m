@@ -4,112 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23663C05027
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 02:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F586C6379F
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 06:10:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:References:
-	Mime-Version:Message-Id:In-Reply-To:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=zQgCf8UY4v8UJa4PeQ2dcehlcgeYqlLB6Oj9QicRk9o=; b=zy3cKz6DydVGS+RvRjUx+SJ0AP
-	SfM9gBfjzmc7f65w1jeaX513mDAgBKFGIRtKT44V6FdCWjSPTnRrfz1GhPaMwubXTAGcobmvC1QDC
-	L1PBA2H4LCih5SWOHO3gU19TCTlZ1BV6CeIx34ONl3gLSYCN/xVEJYzHeFI/Affs7jpTKQ9eO1A2+
-	EfWTug6fdLBCrZlQFUPl5IcSCABj3G7mHzkP6Lbd4XCLmNhD3St3SlS2a2v1mG3avvKgK9E5f8NTU
-	0K5HlCuwhy+MigC0zex0wLhT7C4p39GAWMHRBmbLGVwh+EeNkL0ipxgOPIa8zHU1geZR9rx4Vozgi
-	3LG+eYvA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ml096bah18WO3gtNBXEBhvUMzVzvWR3G2pq9CcgXK2o=; b=T8+uXc6u6TXb/f
+	q+SbvTkqBgeFV331Rgmkxq3jtaTYnLSox3yo5UZrhH6AFwMF5OW4DnCV9NjdZQ5rXVF/4GY/dNxxf
+	rKbTIDVVHDjYrOIiZye9pI5WAIYm6XBuReZSMiU0HfSy9/n+fLv+gEqqkqx3gIrSOjawICAICVAYn
+	ZOiEDO4hKUBFJRXvpXDMsiEZgf2XKjvF58QEJeFTZKLnreyz5DexKNNGugaTXECnfmC6zBPJNt7ii
+	4Fylem3lKx89k0RfrOlAuZNd0P0U3CGoMSVQbnQACkxiasKWwo/npTOd2dnVkm1PDV0+xWANPz5W6
+	oTuyE1xFFIrMaycQpLow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPDKD-00AS58-AE; Tue, 07 Feb 2023 02:03:13 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1pPHAt-00AvYz-LS; Tue, 07 Feb 2023 06:09:51 +0000
+Received: from mail-dm6nam12on2060f.outbound.protection.outlook.com ([2a01:111:f400:fe59::60f] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPDKB-00AS4E-Mi
-	for linux-mtd@bombadil.infradead.org; Tue, 07 Feb 2023 02:03:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:From:Subject:
-	References:Mime-Version:Message-Id:In-Reply-To:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=YX1zBRfC33D3rDRElKAdT20jJS5RQeSlv0JzqWYnjho=; b=XiNd2/wEjf9r2Pgyh1gM2kMi7j
-	09D9imgnRT/bH+Gkts1xSDmNqqssBg1nX3i2EcLZPp61JhyqxQCxiDV8ShDeO5YnfC3wElmg0m98h
-	nuTb7Wjsk8emyj3Xs0IwEDOV1xLNIyOuTG4/nblK9eRgwFKkojOEauioaF9IH3+0yC2dQMm3pNTTZ
-	LbweZl+uI2dV+Ba68Hm+r2EPgENmBHpBSpv2Hw145YmzfCZ7zk69OV8w2Vn00WNF7CZbvUArh8dMx
-	uYWj02qV8FcFUK2AQn1sI6/99wKvbDfQIhIZPihrjwo+NX7F1Rh61PcloW/YDi5E6Dnq5Ob0ldIJ2
-	Fxiw1wPw==;
-Received: from mail-pj1-x104a.google.com ([2607:f8b0:4864:20::104a])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pPCzo-006k3y-25
-	for linux-mtd@lists.infradead.org;
-	Tue, 07 Feb 2023 01:42:15 +0000
-Received: by mail-pj1-x104a.google.com with SMTP id a20-20020a17090ad81400b0022c3185ebbeso5300833pjv.3
-        for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2023 17:42:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YX1zBRfC33D3rDRElKAdT20jJS5RQeSlv0JzqWYnjho=;
-        b=UGmq1xHhmv8QgalRGnvex5vaBwzzKCS6zloJhLFOA04JYhf7s2xljRYpy9kTAoNsHa
-         iBC98QSDMciwj7mZAoPpI2usajIcl1gF62f5Z4nG2GjxXwW1tEOTSt3uCwYi8iyDdG37
-         BQfwQH+F5b5B8hHp73/BToUo9eBPbPtsoJG7VHsq9ww2xJmU91i6mybd4OadC8hcmn4L
-         z/JS/fusQ1z+bJZfl9x8ljB4BFuvxFXBUNKd3sGG9GJYtq6qpJhSHd3ZvicyZg0osOk+
-         QxgZAlVpjyrodYVEXosDI3FM0qnhjaVmzWT6ld85NejZtUeLAUKpBMz5nIKrGLcp4W86
-         p/oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YX1zBRfC33D3rDRElKAdT20jJS5RQeSlv0JzqWYnjho=;
-        b=QvsVGf4YZsF6ldxpuNEzJgdzQkIU85MqIcZRjS3kCLarm4Q/6sTM552NQyJ4tbIvIT
-         S9J2YmOqt49aCXYU2ihIol3SyMcbcobXluEcDaxVAU+DWEj7gvpuBMInw0sEvpMiUAc1
-         fyFgNetOE5cXj+lT+8/+yf0myzJMkgDB4TQno/Gai+IdorWV1Ok/wqBNb61D6q5V2WbP
-         tUHMdaHNg7//lfx25cR13kFVSVc9+b+9VTWDnmMp5hmQhEG0daWz1+W0AH00JFs4diP+
-         Mm20yCpV0P5zeHGumES/1LbjMaKH/v6DQngCF/MhDmKZjjbUEfZPovVANiZs1LE7LrJE
-         Raow==
-X-Gm-Message-State: AO0yUKX9YQkuMvLs+9ghD20pNhxbLlW2ui2VMXErhrYhti6WfoAfDfQL
-	RETPxgPR+xzogYLPmrV9nSXal/W3EumGQt8=
-X-Google-Smtp-Source: AK7set8Gcli9J3BzSmSCx9wcmgEyp38uzEhI1HIWAsHDVULR2jB9pwdeXZpjU2A6RPq1Ak9f9gnun0I1Kq/a1mU=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:ae1:aba6:f21c:4a94])
- (user=saravanak job=sendgmr) by 2002:a17:90a:1d4e:b0:230:ae97:c349 with SMTP
- id u14-20020a17090a1d4e00b00230ae97c349mr441075pju.8.1675734163194; Mon, 06
- Feb 2023 17:42:43 -0800 (PST)
-Date: Mon,  6 Feb 2023 17:42:04 -0800
-In-Reply-To: <20230207014207.1678715-1-saravanak@google.com>
-Message-Id: <20230207014207.1678715-13-saravanak@google.com>
-Mime-Version: 1.0
-References: <20230207014207.1678715-1-saravanak@google.com>
-X-Mailer: git-send-email 2.39.1.519.gcb327c4b5f-goog
-Subject: [PATCH v3 12/12] mtd: mtdpart: Don't create platform device that'll
- never probe
-From: Saravana Kannan <saravanak@google.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, 
-	Frank Rowand <frowand.list@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Magnus Damm <magnus.damm@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Daniel Scally <djrscally@gmail.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
-	Saravana Kannan <saravanak@google.com>, 
-	"=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?=" <rafal@milecki.pl>
-Cc: Abel Vesa <abel.vesa@linaro.org>, Alexander Stein <alexander.stein@ew.tq-group.com>, 
-	Tony Lindgren <tony@atomide.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	John Stultz <jstultz@google.com>, Doug Anderson <dianders@chromium.org>, 
-	Guenter Roeck <linux@roeck-us.net>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Maxim Kiselev <bigunclemax@gmail.com>, Maxim Kochetkov <fido_max@inbox.ru>, 
-	Luca Weiss <luca.weiss@fairphone.com>, Colin Foster <colin.foster@in-advantage.com>, 
-	Martin Kepplinger <martin.kepplinger@puri.sm>, Jean-Philippe Brucker <jpb@kernel.org>, 
-	Vladimir Oltean <vladimir.oltean@nxp.com>, kernel-team@android.com, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-acpi@vger.kernel.org
+	id 1pPHAp-00AvXR-Cp
+	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 06:09:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jX1vEWOtMSB/fDZJ0HFBFDCA23lPF/FD0uEnT3LdqNYBqupX3rteVBDIRJkmvVoEnCX4S4rsvS6R4rezzbvmlY9HWd4OMzz7oI/2u2cKN2kZvNH+hs3hQnGB+WTKypT90UXyWfxq0T/bw9gOCgxbI6EOyza3tTruM0HTENB9PAWW8FbY47HhmXE/q8ZPbwptlbQ5oiyRH7cbON4ETwKdEeRw5pqBjEsUJekB6tsXcj5vCSvkhIHF0lUbSPJms2x0kdGEcXsyfNUslYbZpt/1TjPfi8W24D2OSFnkec7BpC1+qak+tplIYV+e3Vr/F0NO+oRZUXE900EQTLbJHHR6pA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lb39lMuGyKRA6a75xFxCEvckoMqixhUV+R0ScK0kG8Q=;
+ b=dL63kpuYl94q+HQy0050s2wXRyKDvma5NY6eQu50WJRFU9z+K9H0xIvqPSPU8Dm+n80eMQGYHkJHpgN2VuvM/k9s7xEq0qRCaAzoI6RG/ggoI2pjmdTMnFcYXnqEg+ySZcOjGQ9uXd6Qf/f2bpSPd6mgAk5Chx+V07NdtoWspHCx1SpreqpsoLLw4jW5vNAXPXs1Qb65fRjkHXKGomd3a8wHhIpMqLWNZw+J5EePV7hGwTTa1o+C71fEaJcWdCOO2dzNCjTa/b9zv3mvrDrCxlOD0SwtQFYdHl1IHZTjrSbTgdLLm1JCEboi/CWPeGOtluWV03PoaluoXm7BcY5uDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lb39lMuGyKRA6a75xFxCEvckoMqixhUV+R0ScK0kG8Q=;
+ b=zMMRMYCjgw8fH7p9XK7jY9365YSbZKuaqKo0e2IzdXOgPyZNG5ccNDUs3owEeMhtCR9j/K8vXnWqpET3qFUqzHEt0j9vrgXYC5vDZLo38/zEW9TuLmkUCQqr80Pqrev3WR94mdxJv/VVo0Pf6sIqdj1Tme9iwuI1Lx6mBMvZla4=
+Received: from DS7PR05CA0038.namprd05.prod.outlook.com (2603:10b6:8:2f::23) by
+ SJ0PR12MB5674.namprd12.prod.outlook.com (2603:10b6:a03:42c::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6064.36; Tue, 7 Feb 2023 06:09:38 +0000
+Received: from DM6NAM11FT106.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:8:2f:cafe::d6) by DS7PR05CA0038.outlook.office365.com
+ (2603:10b6:8:2f::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.16 via Frontend
+ Transport; Tue, 7 Feb 2023 06:09:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ DM6NAM11FT106.mail.protection.outlook.com (10.13.172.229) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6064.35 via Frontend Transport; Tue, 7 Feb 2023 06:09:38 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 7 Feb
+ 2023 00:09:38 -0600
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 6 Feb
+ 2023 22:09:37 -0800
+Received: from xhdlakshmis40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Tue, 7 Feb 2023 00:09:34 -0600
+From: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+To: Mark Brown <broonie@kernel.org>, Tudor Ambarus
+	<tudor.ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>, "Michael
+ Walle" <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <saikrishna12468@gmail.com>, <git@amd.com>,
+	Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+Subject: [PATCH 0/3] spi: spi-cadence-quadspi: Add Rx tuning support for DTR mode
+Date: Tue, 7 Feb 2023 11:39:21 +0530
+Message-ID: <20230207060924.265789-1-sai.krishna.potthuri@amd.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT106:EE_|SJ0PR12MB5674:EE_
+X-MS-Office365-Filtering-Correlation-Id: dbb77705-dea4-4068-5f0e-08db08d1e4ed
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	L+IrRVbu8vGmIHEJfhS7ZE2nz9csruYQ4SR57/cJbKq8QwYtnZYVaNyNhoRE11dGhkvg2CUWcWcm1MR/IiRGlVaRUKCJRq4MpRmIlhusIJj+3oYeD9WqeQFKY+il5uLuboO5yVySXNGhQZFUH29dqhVGlc/D7my16oUnTL5cYqvGOqvfYsJ5YlnnRAvomvnpYoCByLCFduyDA14RBbsAEfvNXYuloi50cFiO0YCe/rW61p9QvkWrOrtNs3DCRNID/3CK2jCpqlN5SKcl9s9/tkoVdJ1BAI9uDo2HS+VFeLZVwhYvlNTfT8tZcC9wD2S8b9PhfDXVVWs6XvDfTd3KLjfp/826zj+VOdTruC1GoKslV0Tj+tNoeUO2svc4It/Lbch3Fne+02hH0qmbYjVg25hhSr/s7jyx42GHAwJn9sT3D1pAjrPUkyODotcU50HnO7bthC5bWmEDD0gxwjb7QEA/mEddyAgb3zPHnY0XZtqCH8r1Oeqot+82MDyLpB7vJfx01Higu/963NB2XYKoVULMoLWrpvZR3oDDWNfMZuuz64QY1opvOznkV9DJ5kqxcvo0/NCJEfPgDE6F1eLFFDAVwyWxRhz2q5rajGtjUHzodEsavFs+I/CJZghMnUHZjr0/+McQVawed+LRjZNyRrRRDQzM6mT8yRveid+WjvPYKNESk6kAK4q2DtBP1GHBR3VXHUYxUOuNpgAWO3YfFlXl1RJTB1poiQG7dRZUFs0=
+X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(346002)(376002)(396003)(39860400002)(136003)(451199018)(40470700004)(36840700001)(46966006)(2906002)(36756003)(103116003)(82310400005)(47076005)(426003)(83380400001)(336012)(6666004)(1076003)(26005)(186003)(40460700003)(478600001)(2616005)(70206006)(70586007)(4326008)(8676002)(86362001)(5660300002)(7416002)(8936002)(41300700001)(40480700001)(316002)(82740400003)(36860700001)(110136005)(54906003)(356005)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2023 06:09:38.4380
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: dbb77705-dea4-4068-5f0e-08db08d1e4ed
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 	DM6NAM11FT106.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5674
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230207_014209_040208_D4DDDD0A 
-X-CRM114-Status: GOOD (  15.98  )
+X-CRM114-CacheID: sfid-20230206_220947_770091_23A0E225 
+X-CRM114-Status: GOOD (  12.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,52 +121,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-These "nvmem-cells" platform devices never get probed because there's no
-platform driver for it and it's never used anywhere else. So it's a
-waste of memory. These devices also cause fw_devlink to block nvmem
-consumers of "nvmem-cells" partition from probing because the supplier
-device never probes.
+Enable PHY and DQS required for Xilinx Versal Octal SPI to operate in DTR
+protocol.
+Add and update device_id field in spi_mem structure with flash id
+information. Xilinx Versal Octal SPI driver requires the device id
+information to perform the Rx tuning operation. Since there is no common
+Tuning Data Pattern defined across all vendors, controllers like Xilinx
+Versal Octal SPI which requires Rx tuning to find out the optimal sampling
+point for data lines, this device id information will be used as a golden
+data.
+The reason behind choosing this approach instead of reading the ID again
+in the controller driver is to make it generic solution.
+- Other controller drivers which want to use similar tuning process, they
+will make use of this ID instead of reading the ID again in the driver.
+- Also, we can avoid hardcoding the command information and initiating the
+transfer in the controller driver as this should happen from spi-nor.
 
-So stop creating platform devices for nvmem-cells partitions to avoid
-wasting memory and to avoid blocking probing of consumers.
+Sai Krishna Potthuri (3):
+  spi: cadence-quadspi: Add support for PHY module and DQS
+  mtd: spi-nor: Add and update device_id field in spi_mem structure
+  spi: cadence-quadspi: Add Rx tuning support for Xilinx Versal OSPI
 
-Reported-by: Maxim Kiselev <bigunclemax@gmail.com>
-Fixes: bcdf0315a61a ("mtd: call of_platform_populate() for MTD partitions")
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/mtd/mtdpart.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/mtd/spi-nor/core.c        |   1 +
+ drivers/spi/spi-cadence-quadspi.c | 226 +++++++++++++++++++++++++++++-
+ include/linux/spi/spi-mem.h       |   4 +
+ 3 files changed, 230 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index d442fa94c872..85f5ee6f06fc 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -577,6 +577,7 @@ static int mtd_part_of_parse(struct mtd_info *master,
- {
- 	struct mtd_part_parser *parser;
- 	struct device_node *np;
-+	struct device_node *child;
- 	struct property *prop;
- 	struct device *dev;
- 	const char *compat;
-@@ -594,6 +595,15 @@ static int mtd_part_of_parse(struct mtd_info *master,
- 	else
- 		np = of_get_child_by_name(np, "partitions");
- 
-+	/*
-+	 * Don't create devices that are added to a bus but will never get
-+	 * probed. That'll cause fw_devlink to block probing of consumers of
-+	 * this partition until the partition device is probed.
-+	 */
-+	for_each_child_of_node(np, child)
-+		if (of_device_is_compatible(child, "nvmem-cells"))
-+			of_node_set_flag(child, OF_POPULATED);
-+
- 	of_property_for_each_string(np, "compatible", prop, compat) {
- 		parser = mtd_part_get_compatible_parser(compat);
- 		if (!parser)
 -- 
-2.39.1.519.gcb327c4b5f-goog
+2.25.1
 
 
 ______________________________________________________
