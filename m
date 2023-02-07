@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAE0DC64EC4
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5D2DC636D3
 	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 01:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -13,58 +13,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Mime-Version:Message-Id:In-Reply-To:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=+3qO1UTQpdgGDpjpr5SM8nRAS+SdC4CYMxj6ivwa9sY=; b=VID9J/G2toi5geRgaZJvItH6eD
-	QVm/eFzzd7i/1/1AEqk6/Da1rHbRG18odKGDMH+vPxcJyYs3IQjNUssqTSe/quzunRtk0UngItiEX
-	KiyGP0T5MNXto/X3t5EIG/+1TBNLhPE3cOKXj/fYb7208ugIQhDZacWv8Zmp8UGhjr3TgyrTH6CYX
-	dzLc9B1VQXxqIxYKUzuU+unYVFNS43ab61GbnxMZ1i4TmIucV2GOibARalaB+ZOaemwjtAyFxMwpw
-	5AH5LGxGvlubc24FGSXolTQvKG+U2I4X5JH8bVwut865akMuQefTJK3eyF+LYeAzHFXlIVt+RzwmT
-	nUKmuXEg==;
+	bh=g0YYIhsYpnOPTOcCEJinUeuZp0olto+M7Hg0HfkmqI8=; b=g1ZE8Js7iVDxZBUnu8oZQbJnoJ
+	HjFXxgb2T2DLEZsRZq2DmQ0GTC+tfdsvH2c6QTcrXfd3o2LyTTClMtxMbnmQ3WaWa5Rmpn9iNK3lA
+	wxJKMBM4iSp/FDg70/oCA9rXJq37d4pKk6bXVwiTf4V3L79IRbBOPmOOoZvk70avBwm1JVVs5QxVR
+	yuJf/+SUhVDnebkQCMGQRVf9/f3xlduWJ9XecCNn14BeYdwysvscyyE0q2cOMtR9iG84y8whmCpfn
+	PByIbdkJIOkRJOCgiyfVDhapqlH89uFk1/KJ9zB0dCkwOVBztuXvf35kllRBiTSp2pb1rUSIrzpNb
+	2MtS9LmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPD03-00ANWL-Hl; Tue, 07 Feb 2023 01:42:23 +0000
-Received: from mail-pj1-x104a.google.com ([2607:f8b0:4864:20::104a])
+	id 1pPD0C-00ANbC-31; Tue, 07 Feb 2023 01:42:32 +0000
+Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPCzy-00ANTP-EB
-	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 01:42:19 +0000
-Received: by mail-pj1-x104a.google.com with SMTP id e11-20020a17090a77cb00b0022925dd66d3so9580856pjs.4
-        for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2023 17:42:16 -0800 (PST)
+	id 1pPD04-00ANV3-1A
+	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 01:42:25 +0000
+Received: by mail-pl1-x649.google.com with SMTP id i3-20020a170902cf0300b00198bc9ba4edso7378775plg.21
+        for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2023 17:42:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rF935xJruDmZakfcqYl07qySBy4v0tdY/SRPeseRpYs=;
-        b=nVLihGug+gPNpky+kL8lZ+ojXplNGe2YAeogfY96aFh2Qm/Qk1O3o22nE2SbLQGizJ
-         IQUGcIv0V1RiPC3mFC95Ns51BBCdycBZmzZp1eBZeHMb3hEEexERUn9/qygKgFkVNpb0
-         Diq/OdiPdmE0e1Mvqy6mPGaGFUAI0qc+AzilSeGTt20pgttfB2UI6oxiuR9XlQq9Felm
-         iClxVp1dKr/FoyJc+rxT9XgQscF8UCsnjjVVGve0zIcTwL+GUrEfoISySe93O475VMth
-         fWwpZNaXC0o8y1s1tvJPiWtm14hX9OdBngkkg5kHlfY9ArsLQ75uwryzy35mTFf3XSiq
-         xXfA==
+        bh=ORUuC30mhLyGGOfOGNQGmV2Hk9NLu8NgqlPyUePgVtw=;
+        b=W3ks5YEw7SKIgSIZBtQHBL9lJVPSdYZt5YLLOMNiqg39kU3nN1EI6XuA+B32uaPZGb
+         v5zyhRmRRHO+O/PDHZr10O4cRAMqIo+F89AcNblg/s/+76O4QIK+2qBAbUZrxge36Zai
+         oUQ3lkDhN+g7lBRIxR1KVI98eol03ANv+ysGxNp9Jy33gMZ7+KWT14YWjTKmLM4h0Sde
+         uDNF/Fk2U8cuXtdVSlDGUvhsCS+fTpqnyi3ghq5nNuitlb38EuGaeD8xzBpXE/R4GDSO
+         N9LcyuvRftt3ULpiqwLSIoYSZ3EjoLNyWNXZS4LCua4bI5CqUx3cJx+UrAWXqFnajwKW
+         grxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rF935xJruDmZakfcqYl07qySBy4v0tdY/SRPeseRpYs=;
-        b=W9vEZjQ8DkyTcDA2g7z6CukvJj9u5hMk8L2JY2p1v+gKu9ocBqsTfdrV8pHTApsocr
-         ynag2MZUDtGPe0XPNimnjiii2Xh9oNeXmFTfC2zz8xt9StNqk8NTWJWm5WjbsSNsJLUK
-         jznHHPrd8ncHwzFomf45du+W73B1hRu1Os/y8iVpKVz/9RfaMxnvwHmZOA216HXTp7wk
-         ykhwWMTzLmpm8B3ixOGDv3iMbeKTzx4n+1IgXGZgaHmhOj3KXR2uCv7+l8r+rG8IeMzg
-         WcNaQNkYbEa8jkyWjVN5TMMCr4R7iqSHl5rkOiV4gNAWNBxSPndRCI6LUD+UwCszCDsc
-         OnfQ==
-X-Gm-Message-State: AO0yUKX/u0+pLEI7t8T5githjklpTSSts1YyjOVuxVfY1k8tyw9dowbK
-	9WE1l1AgLZKAKjwQHDMihjpDfkp7tCweZ7Q=
-X-Google-Smtp-Source: AK7set9i7jgE6FpR3noUhzo8MnwFszLcteNew7Oyn7nbowkMqjNTsdQ07Wf9bCz+hy9cTEgusCXLrQQHzICPoq0=
+        bh=ORUuC30mhLyGGOfOGNQGmV2Hk9NLu8NgqlPyUePgVtw=;
+        b=NTa4/OxrtEg9Z0UozZwBo6hstX4g2kEWCbXFXToLogc9n5oZHjicv6D3+regNbya4T
+         TFAaxXMv2xv0aTC2CeWLn/xeaX4v/a9O0cPPScnmj/i8/DJ07OPfzUiOpO1WBI2+Wm9h
+         11qX0ZHsa/fyMi5pcI4YPymbE1nlSKsgqXuJpq4r94wg3Qu8IQpkwyUTUgqpBDNUw8V2
+         jA13s4wGnfiBKlH5GSinMfk8zuxLMtsQ9LMhhVj2f/kjgmvZnZFLxvZJsentOTUodOkA
+         ODGDrTtrXBJTgL0PxYMKR7LYv0rfhtMsfX7PepnxSFXNYOsquYWaubc8d1j0WH2aL5Kr
+         VI3Q==
+X-Gm-Message-State: AO0yUKWpXV1gkLGtjAQQl4k2aEgvHnsivOSTL1hdhnKmYAjFyULu9N7A
+	h7up5azziqpwDT8KqSSn5JERU1z+rFKShkA=
+X-Google-Smtp-Source: AK7set8txtYYhJ0J+28pL4WUJBO9Kkr3uP9QQWYQBMNjYhLp0mg9chNGGE1J5xNq3IdUI/epAkGwDw5ZAcogFH0=
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:ae1:aba6:f21c:4a94])
- (user=saravanak job=sendgmr) by 2002:a63:7114:0:b0:476:f69c:2304 with SMTP id
- m20-20020a637114000000b00476f69c2304mr169807pgc.77.1675734135795; Mon, 06 Feb
- 2023 17:42:15 -0800 (PST)
-Date: Mon,  6 Feb 2023 17:41:54 -0800
+ (user=saravanak job=sendgmr) by 2002:a17:90a:3f8f:b0:230:792d:7519 with SMTP
+ id m15-20020a17090a3f8f00b00230792d7519mr425744pjc.22.1675734141281; Mon, 06
+ Feb 2023 17:42:21 -0800 (PST)
+Date: Mon,  6 Feb 2023 17:41:56 -0800
 In-Reply-To: <20230207014207.1678715-1-saravanak@google.com>
-Message-Id: <20230207014207.1678715-3-saravanak@google.com>
+Message-Id: <20230207014207.1678715-5-saravanak@google.com>
 Mime-Version: 1.0
 References: <20230207014207.1678715-1-saravanak@google.com>
 X-Mailer: git-send-email 2.39.1.519.gcb327c4b5f-goog
-Subject: [PATCH v3 02/12] driver core: fw_devlink: Improve check for fwnode
- with no device/driver
+Subject: [PATCH v3 04/12] gpiolib: Clear the gpio_device's fwnode initialized
+ flag before adding
 From: Saravana Kannan <saravanak@google.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
 	Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
@@ -93,8 +93,8 @@ Cc: Abel Vesa <abel.vesa@linaro.org>, Alexander Stein <alexander.stein@ew.tq-gro
 	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
 	linux-acpi@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230206_174218_495770_18BE1EB5 
-X-CRM114-Status: GOOD (  18.32  )
+X-CRM114-CacheID: sfid-20230206_174224_100128_EA0F2364 
+X-CRM114-Status: GOOD (  14.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,78 +111,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-fw_devlink shouldn't defer the probe of a device to wait on a supplier
-that'll never have a struct device or will never be probed by a driver.
-We currently check if a supplier falls into this category, but don't
-check its ancestors. We need to check the ancestors too because if the
-ancestor will never probe, then the supplier will never probe either.
+Registering an irqdomain sets the flag for the fwnode. But having the
+flag set when a device is added is interpreted by fw_devlink to mean the
+device has already been initialized and will never probe. This prevents
+fw_devlink from creating device links with the gpio_device as a
+supplier. So, clear the flag before adding the device.
 
 Signed-off-by: Saravana Kannan <saravanak@google.com>
+Acked-by: Bartosz Golaszewski <brgl@bgdev.pl>
 Tested-by: Colin Foster <colin.foster@in-advantage.com>
 Tested-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- drivers/base/core.c | 40 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 38 insertions(+), 2 deletions(-)
+ drivers/gpio/gpiolib.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 001e1914858d..368bfd96b511 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1867,6 +1867,35 @@ static int fw_devlink_relax_cycle(struct device *con, void *sup)
- 	return ret;
- }
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 939c776b9488..bdb9493857eb 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -578,6 +578,13 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
+ {
+ 	int ret;
  
-+static bool fwnode_init_without_drv(struct fwnode_handle *fwnode)
-+{
-+	struct device *dev;
-+	bool ret;
-+
-+	if (!(fwnode->flags & FWNODE_FLAG_INITIALIZED))
-+		return false;
-+
-+	dev = get_dev_from_fwnode(fwnode);
-+	ret = !dev || dev->links.status == DL_DEV_NO_DRIVER;
-+	put_device(dev);
-+
-+	return ret;
-+}
-+
-+static bool fwnode_ancestor_init_without_drv(struct fwnode_handle *fwnode)
-+{
-+	struct fwnode_handle *parent;
-+
-+	fwnode_for_each_parent_node(fwnode, parent) {
-+		if (fwnode_init_without_drv(parent)) {
-+			fwnode_handle_put(parent);
-+			return true;
-+		}
-+	}
-+
-+	return false;
-+}
-+
- /**
-  * fw_devlink_create_devlink - Create a device link from a consumer to fwnode
-  * @con: consumer device for the device link
-@@ -1948,9 +1977,16 @@ static int fw_devlink_create_devlink(struct device *con,
- 		goto out;
- 	}
- 
--	/* Supplier that's already initialized without a struct device. */
--	if (sup_handle->flags & FWNODE_FLAG_INITIALIZED)
 +	/*
-+	 * Supplier or supplier's ancestor already initialized without a struct
-+	 * device or being probed by a driver.
++	 * If fwnode doesn't belong to another device, it's safe to clear its
++	 * initialized flag.
 +	 */
-+	if (fwnode_init_without_drv(sup_handle) ||
-+	    fwnode_ancestor_init_without_drv(sup_handle)) {
-+		dev_dbg(con, "Not linking %pfwP - Might never probe\n",
-+			sup_handle);
- 		return -EINVAL;
-+	}
- 
- 	/*
- 	 * DL_FLAG_SYNC_STATE_ONLY doesn't block probing and supports
++	if (gdev->dev.fwnode && !gdev->dev.fwnode->dev)
++		fwnode_dev_initialized(gdev->dev.fwnode, false);
++
+ 	ret = gcdev_register(gdev, gpio_devt);
+ 	if (ret)
+ 		return ret;
 -- 
 2.39.1.519.gcb327c4b5f-goog
 
