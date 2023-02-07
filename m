@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0C86C636D3
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 20:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79EC9C636CC
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 21:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aGGngaonNRvDVXVETrEWT9V86Z6mkUL0wRXQieBgKDc=; b=QiyyrdwLtB6doO
-	1zKhdFfIZfnnz3xdhBTSTHE44P8Dvcrjih/NrU9OeLD4B5uQ15R2a4CocDm+omdn3K0NUi7/8XvU2
-	YudrUD+vFclCHDcQ+RamXQ1RZ4neO1TLmoHZNUXEZsptzJlt7r4jL+oD28sFQb7vdgcX1wu6phXtt
-	u1LlXc6VH4NhxqBqKAsMx2pVPo8eWVk2HGu3KMr0yYRIX1MwqlXWAOXGf2QFQIHnphKPRQAfs2RZd
-	fmNACSKPo7dQoSWsAoNrqkUQNbREq5ju9KV9hYlVg9EUByEzqBua+Hp1ZZaLkANZBySeBE4oY9ZjW
-	PJdo9QIT3RZ6KLiyxZMg==;
+	List-Owner; bh=S79vs4hWmsNfEJWfwnx0Lfb4qxIWzR4vfFCMe+uifrA=; b=MdGzQoGyA4wHHa
+	qlytWTpcQ+SjRHL1ASbElDM+PpSjj25aFEoxcCixHPsrO8PGzPUWhGCdeYewMie+OAudkiZr37aEH
+	lkjkuoOeGE3zPw8axwD4Nqw0TrokuSGMa44RbGPpZWx4Wzisuz5PKkQw3XSEaZSxzPf53ociMLgPO
+	xycQLUgfbBCVRu3hwhXPOzMgTUxahHYCGcmvqTDMKI3149E9WoteDZ/SiK414LwR0wzBRAFyUrQfj
+	o39fzLhDMF3ADgtr/w9Q08szU5l1HICuSFWwW+ueJDNGskK/SJP4/NSFMqEi/6wvyeK0TuubCP/7d
+	Cq2YtGDDYmsDwP+pYagA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPV2E-00DOVp-E3; Tue, 07 Feb 2023 20:57:50 +0000
-Received: from mail-oa1-f44.google.com ([209.85.160.44])
+	id 1pPVdd-00DVHN-86; Tue, 07 Feb 2023 21:36:29 +0000
+Received: from mail-qt1-f178.google.com ([209.85.160.178])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPV22-00DOSs-Qh; Tue, 07 Feb 2023 20:57:40 +0000
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-16a7f5b6882so3352168fac.10;
-        Tue, 07 Feb 2023 12:57:38 -0800 (PST)
+	id 1pPVdT-00DVFz-9j; Tue, 07 Feb 2023 21:36:20 +0000
+Received: by mail-qt1-f178.google.com with SMTP id h24so18530922qtr.0;
+        Tue, 07 Feb 2023 13:36:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=stAVsaUhrI2VyH6NyKcHcY+/3Po2YLTE8rKYRoMV1wU=;
-        b=Ip6ujCrKkc5DqGMryi45It0dwXXnRPJ6yVle2En0NdbUDysOPZQlVMY0r6b7s8BVxk
-         GGN0zIR3AhWDRud89CJK5e6Na9mCSMnEaavjLIU8I3C78896ISg3egDu4lCIAqOuAiC6
-         CovFNHhOfHsfARob3X1tJZTUlqD2gsPzJMt/Iag7NlP2+Cs2XU9qL80blgz6sk7QQYIs
-         1gF+0ju4XLTLF0y+MckMuwliYWjk4LbEsgAMEVM69wUyG8aggq4wT8v2ATgAMUO7u1fX
-         EIfIba4WDxXwJfuihr9CeqwzWT21ex5dnB0uat/udAKYzy0aGx2Q7sAnHNOuvs2kwSg8
-         3MpA==
-X-Gm-Message-State: AO0yUKWjIYnz+atCQ7QR4YXLiCOyu96349tiJCKJIAcFCPsZO7FOiD4r
-	DFyxYDtDAgeczU3efZesTwXH/8Ak7XbPHQ==
-X-Google-Smtp-Source: AK7set/SMrRSrw+i8y3nXfJVy66wuFVEK7MjxrjMQBSWN0ZIxNJoogla/ARVwpyNRwqirgo8w/Cowg==
-X-Received: by 2002:a05:6870:4248:b0:15f:c10f:4e4c with SMTP id v8-20020a056870424800b0015fc10f4e4cmr3132673oac.44.1675803457446;
-        Tue, 07 Feb 2023 12:57:37 -0800 (PST)
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com. [209.85.210.46])
-        by smtp.gmail.com with ESMTPSA id a4-20020a056870618400b0014fc049fc0asm5899217oah.57.2023.02.07.12.57.37
+        bh=lg0sHUTSECVWWUA2U2vv5V8YfzjLBhdgpAqAGOEck8k=;
+        b=xTjNkAjYrhAXQ9JaVJv2MgXoWT54IWn9Ou84xR7FTyIYLeqWKQF17S4t17ghk2q0nq
+         LaXmyMSx7flFnymIEvkrDgcJ0iQwpEQ5O7TrflvEfkKy8/gsknz25NWJFdpCUYRHngkF
+         rpNZffI9is3UTOL54dE7NWsLcWoR9IdYE7m7D2YemMi7eNpFb2yoapUiSm0xBGzkNdeP
+         9EJD/kYVLjmb/BNUUy0MG8F1nSA84aepAMc7s4vARO9TWiDAbNTKnQq6OXXjd7/8L56F
+         VnFU+4LGXt0rBfkEVXg8/S1CtAwbQUJ1BnOV7m7IO2jfk7470SWJyoLAvyp+7UEuvKR9
+         nqQQ==
+X-Gm-Message-State: AO0yUKXRCNZRg/ad/wAum9r1lHN4ZTn2nGJAjDcDV4MVxcB9ftnmwgF6
+	368kw0qX+Yq4P8JuGjTuMcy3UIhy6TKpVQ==
+X-Google-Smtp-Source: AK7set8rkR8VoOqKpbeUAdoA/fSXExDEwkbEKVlympW4JWhxysG11J31vzTa01hz2g8evoRIIp0jJA==
+X-Received: by 2002:a05:622a:292:b0:3b9:a42e:cb80 with SMTP id z18-20020a05622a029200b003b9a42ecb80mr8343767qtw.40.1675805775491;
+        Tue, 07 Feb 2023 13:36:15 -0800 (PST)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id k6-20020ac80206000000b003b9bd163403sm5238822qtg.4.2023.02.07.13.36.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Feb 2023 12:57:37 -0800 (PST)
-Received: by mail-ot1-f46.google.com with SMTP id e12-20020a0568301e4c00b0068bc93e7e34so4632417otj.4;
-        Tue, 07 Feb 2023 12:57:37 -0800 (PST)
-X-Received: by 2002:a25:928e:0:b0:8a0:2a4:a96c with SMTP id
- y14-20020a25928e000000b008a002a4a96cmr477401ybl.380.1675803446414; Tue, 07
- Feb 2023 12:57:26 -0800 (PST)
+        Tue, 07 Feb 2023 13:36:15 -0800 (PST)
+Received: by mail-yb1-f176.google.com with SMTP id u7so4220687ybi.6;
+        Tue, 07 Feb 2023 13:36:15 -0800 (PST)
+X-Received: by 2002:a5b:508:0:b0:8a3:59a4:340e with SMTP id
+ o8-20020a5b0508000000b008a359a4340emr532033ybp.604.1675805764091; Tue, 07 Feb
+ 2023 13:36:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20230207014207.1678715-1-saravanak@google.com> <20230207014207.1678715-10-saravanak@google.com>
-In-Reply-To: <20230207014207.1678715-10-saravanak@google.com>
+References: <20230207014207.1678715-1-saravanak@google.com>
+In-Reply-To: <20230207014207.1678715-1-saravanak@google.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 7 Feb 2023 21:57:14 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXEnSD4rRJ-o90x4OprUacN_rJgyo8x6=9F9rZ+-KzjOg@mail.gmail.com>
-Message-ID: <CAMuHMdXEnSD4rRJ-o90x4OprUacN_rJgyo8x6=9F9rZ+-KzjOg@mail.gmail.com>
-Subject: Re: [PATCH v3 09/12] of: property: Simplify of_link_to_phandle()
+Date: Tue, 7 Feb 2023 22:35:51 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWWc6pbrxCETL+VcXiwesfpUE7r2xc9U9ti5aTietqzDQ@mail.gmail.com>
+Message-ID: <CAMuHMdWWc6pbrxCETL+VcXiwesfpUE7r2xc9U9ti5aTietqzDQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/12] fw_devlink improvements
 To: Saravana Kannan <saravanak@google.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
 	Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
@@ -69,9 +69,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael
 	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
 	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
 	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, 
-	Frank Rowand <frowand.list@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Frank Rowand <frowand.list@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Magnus Damm <magnus.damm@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Daniel Scally <djrscally@gmail.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
 	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
 	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
 	Abel Vesa <abel.vesa@linaro.org>, Alexander Stein <alexander.stein@ew.tq-group.com>, 
@@ -87,8 +87,8 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael
 	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
 	linux-acpi@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230207_125738_886865_529655A2 
-X-CRM114-Status: GOOD (  28.73  )
+X-CRM114-CacheID: sfid-20230207_133619_359515_C795F499 
+X-CRM114-Status: GOOD (  19.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,114 +108,17 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 Hi Saravana,
 
 On Tue, Feb 7, 2023 at 2:42 AM Saravana Kannan <saravanak@google.com> wrote:
-> The driver core now:
-> - Has the parent device of a supplier pick up the consumers if the
->   supplier never has a device created for it.
-> - Ignores a supplier if the supplier has no parent device and will never
->   be probed by a driver
+> Naresh, Tony, Abel, Geert, Dmitry, Maxim(s), Miquel, Luca, Doug, Martin,
+> Jean-Philippe,
 >
-> And already prevents creating a device link with the consumer as a
-> supplier of a parent.
->
-> So, we no longer need to find the "compatible" node of the supplier or
-> do any other checks in of_link_to_phandle(). We simply need to make sure
-> that the supplier is available in DT.
->
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Can I get your Tested-by's for this v3 series please?
 
-Thanks for your patch!
-
-This patch introduces a regression when dynamically loading DT overlays.
-Unfortunately this happens when using the out-of-tree OF configfs,
-which is not supported upstream.  Still, there may be (obscure)
-in-tree users.
-
-When loading a DT overlay[1] to enable an SPI controller, and
-instantiate a connected SPI EEPROM:
-
-    $ overlay add 25lc040
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /keys/status
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/pinctrl-0
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/pinctrl-names
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/cs-gpios
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/status
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /__symbols__/msiof0_pins
-
-The SPI controller and the SPI EEPROM are no longer instantiated.
-
-    # cat /sys/kernel/debug/devices_deferred
-    e6e90000.spi    platform: wait for supplier msiof0
-
-Let's remove the overlay again:
-
-    $ overlay rm 25lc040
-    input: keys as /devices/platform/keys/input/input1
-
-And retry:
-
-    $ overlay add 25lc040
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /keys/status
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/pinctrl-0
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/pinctrl-names
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/cs-gpios
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/status
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /__symbols__/msiof0_pins
-    spi_sh_msiof e6e90000.spi: DMA available
-    spi_sh_msiof e6e90000.spi: registered master spi0
-    spi spi0.0: setup mode 0, 8 bits/w, 100000 Hz max --> 0
-    at25 spi0.0: 512 Byte at25 eeprom, pagesize 16
-    spi_sh_msiof e6e90000.spi: registered child spi0.0
-
-Now it succeeds, and the SPI EEPROM is available, and works.
-
-Without this patch, or with this patch reverted after applying the
-full series:
-
-    $ overlay add 25lc040
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /keys/status
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/pinctrl-0
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/pinctrl-names
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/cs-gpios
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /soc/spi@e6e90000/status
-    OF: overlay: WARNING: memory leak will occur if overlay removed,
-property: /__symbols__/msiof0_pins
-    OF: Not linking spi@e6e90000 to interrupt-controller@f1010000 - No
-struct device
-    spi_sh_msiof e6e90000.spi: DMA available
-    spi_sh_msiof e6e90000.spi: registered master spi0
-    spi spi0.0: setup mode 0, 8 bits/w, 100000 Hz max --> 0
-    at25 spi0.0: 444 bps (2 bytes in 9 ticks)
-    at25 spi0.0: 512 Byte at25 eeprom, pagesize 16
-    spi_sh_msiof e6e90000.spi: registered child spi0.0
-
-The SPI EEPROM is available on the first try after boot.
-
-All output is with #define DEBUG in drivers/of/property.c, and with
-CONFIG_SPI_DEBUG=y.
-
-Note that your patch has no impact on drivers/of/unittest.c, as that
-checks only internal DT structures, not actual device instantiation.
-
-Thanks! ;-)
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/diff/arch/arm64/boot/dts/renesas/r8a77990-ebisu-cn41-msiof0-25lc040.dtso?h=topic/renesas-overlays&id=86d0cf6fa7f191145380485c22f684873c5cce26
+I have tested this on a variety of Renesas arm32/arm64 platforms,
+and on several RISC-V platforms.
+Apart from the regression related to dynamic overlays caused by
+"[PATCH v3 09/12] of: property: Simplify of_link_to_phandle()"
+(which you may decide to ignore for now ;-)
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
 Gr{oetje,eeting}s,
 
