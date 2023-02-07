@@ -4,8 +4,8 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 530A5C05027
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 01:42:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAE0DC64EC4
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 01:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,58 +13,58 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Mime-Version:Message-Id:In-Reply-To:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=N0X+6GZ4gaxcFy2j34CXTCENPA7TXrQ4a346gEVBeB8=; b=UVz2HOmZjX7q3/166sfzauF/cQ
-	fnpmStYCwzZ/zQb5+QKI/gzhqM6TGrEkeB0hHP3OztnOHuZ/Cn/7GbDgXd7F4CuIv8izINu+wgASM
-	FF4HFKo/BapmKOqgk72+TIHBb7f/6CJeQjTpF0olNxHssQ0gLRNGYJUnABwZtOFcSdge+C5DWc1I+
-	tGFLLY4fHEaGJQQf/AYLWQ6AF02E9p3JysQQ7QfCXhGo0nz/kZSCpRQ1xlpVtm75zEZGZnDSQ5K7j
-	rFTvkuAMwxVM97ZhXbaBqlg4qjQQ+Rs6zuRMwoAIrn1nZ12weu7+zXWbSJqnKGrh3ls01SeQZ3tTN
-	KaBp7KWg==;
+	bh=+3qO1UTQpdgGDpjpr5SM8nRAS+SdC4CYMxj6ivwa9sY=; b=VID9J/G2toi5geRgaZJvItH6eD
+	QVm/eFzzd7i/1/1AEqk6/Da1rHbRG18odKGDMH+vPxcJyYs3IQjNUssqTSe/quzunRtk0UngItiEX
+	KiyGP0T5MNXto/X3t5EIG/+1TBNLhPE3cOKXj/fYb7208ugIQhDZacWv8Zmp8UGhjr3TgyrTH6CYX
+	dzLc9B1VQXxqIxYKUzuU+unYVFNS43ab61GbnxMZ1i4TmIucV2GOibARalaB+ZOaemwjtAyFxMwpw
+	5AH5LGxGvlubc24FGSXolTQvKG+U2I4X5JH8bVwut865akMuQefTJK3eyF+LYeAzHFXlIVt+RzwmT
+	nUKmuXEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPD0E-00ANcN-3j; Tue, 07 Feb 2023 01:42:34 +0000
-Received: from mail-pf1-x44a.google.com ([2607:f8b0:4864:20::44a])
+	id 1pPD03-00ANWL-Hl; Tue, 07 Feb 2023 01:42:23 +0000
+Received: from mail-pj1-x104a.google.com ([2607:f8b0:4864:20::104a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPD05-00ANX3-8j
-	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 01:42:27 +0000
-Received: by mail-pf1-x44a.google.com with SMTP id u3-20020a056a00124300b0056d4ab0c7cbso7259473pfi.7
-        for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2023 17:42:24 -0800 (PST)
+	id 1pPCzy-00ANTP-EB
+	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 01:42:19 +0000
+Received: by mail-pj1-x104a.google.com with SMTP id e11-20020a17090a77cb00b0022925dd66d3so9580856pjs.4
+        for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2023 17:42:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GzemyWsbe1874/35X2pGE6I7zLC/qObwAXplkSqm2aE=;
-        b=b7u37IEj5Fvd6YXLTEOU720DHRSwTWNj09MbzD4MFmQBovqJgQg/oKrS1P046uOL3W
-         wTyWtdFCoTfoIgRQeaARkhnceMX2583Jt9ShPGALCTgQifsrFvgU/DdEOZxYTEIquAsw
-         HrxCZ06UNjYJMftUEHe1ow4Tv6q2XYScigicpVP27au4gdTVa6EeeO+wgmUNMe9cCEog
-         LaNPQCCahp25YO89ePuDfYwQXExsNtfJ7zTvd1EnsoPpeBtfm+oghEapmUp893sivQJM
-         0+clHCPHG1Hnj1tLQRTLevMmypFLA7Tn8AWn71fXIYRoOpq4aLcl0otIKMQmn6405jAT
-         RNAQ==
+        bh=rF935xJruDmZakfcqYl07qySBy4v0tdY/SRPeseRpYs=;
+        b=nVLihGug+gPNpky+kL8lZ+ojXplNGe2YAeogfY96aFh2Qm/Qk1O3o22nE2SbLQGizJ
+         IQUGcIv0V1RiPC3mFC95Ns51BBCdycBZmzZp1eBZeHMb3hEEexERUn9/qygKgFkVNpb0
+         Diq/OdiPdmE0e1Mvqy6mPGaGFUAI0qc+AzilSeGTt20pgttfB2UI6oxiuR9XlQq9Felm
+         iClxVp1dKr/FoyJc+rxT9XgQscF8UCsnjjVVGve0zIcTwL+GUrEfoISySe93O475VMth
+         fWwpZNaXC0o8y1s1tvJPiWtm14hX9OdBngkkg5kHlfY9ArsLQ75uwryzy35mTFf3XSiq
+         xXfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GzemyWsbe1874/35X2pGE6I7zLC/qObwAXplkSqm2aE=;
-        b=WqsoBO9Fnglbzmp7B9r6z1M6ygYwYcrP/zussJCuDdChH6XgsV6i72bCqupDCXx6Pp
-         d6+wmbOo/jwacJB2tK/4deVOHm1RXLSdtYnb4p1CmVFWKZFFw9iqiWv6wT6FFvhKMzSs
-         rhll/KUpxYcF/as1L0MRigilEPiWAKriD8M8tHMdCGdU3ntqdQLHmIjM068RiBDwalEF
-         M1sV5gEF8a9uMZvlaNgHsR/LwOBup/tK4zY7kqXI4JdnLsBq9MAtAe4Z+9zQqKquZjSi
-         BzEHVELXhp6fgkI6jFIAlbLw+AaOOFYuYWwn8nLI/oFwnzkaZpK71gVd9+44rf7Blggj
-         vXvg==
-X-Gm-Message-State: AO0yUKW54vVeotGLEiAjH8IPVwVoBWiKw1LLnRIs7r1v9a8rCaMw9+C/
-	Dwzi6cd9RPJINWauaWicKY7JPbJZWkWYEcU=
-X-Google-Smtp-Source: AK7set+0IxdeFoc+Kn+E3OD6+a3ZeegbPKAGCsgRpOcmEvW2y10wLjL8U1hVM8p0ddZt3HY7VH3NvMmLcJc1hoM=
+        bh=rF935xJruDmZakfcqYl07qySBy4v0tdY/SRPeseRpYs=;
+        b=W9vEZjQ8DkyTcDA2g7z6CukvJj9u5hMk8L2JY2p1v+gKu9ocBqsTfdrV8pHTApsocr
+         ynag2MZUDtGPe0XPNimnjiii2Xh9oNeXmFTfC2zz8xt9StNqk8NTWJWm5WjbsSNsJLUK
+         jznHHPrd8ncHwzFomf45du+W73B1hRu1Os/y8iVpKVz/9RfaMxnvwHmZOA216HXTp7wk
+         ykhwWMTzLmpm8B3ixOGDv3iMbeKTzx4n+1IgXGZgaHmhOj3KXR2uCv7+l8r+rG8IeMzg
+         WcNaQNkYbEa8jkyWjVN5TMMCr4R7iqSHl5rkOiV4gNAWNBxSPndRCI6LUD+UwCszCDsc
+         OnfQ==
+X-Gm-Message-State: AO0yUKX/u0+pLEI7t8T5githjklpTSSts1YyjOVuxVfY1k8tyw9dowbK
+	9WE1l1AgLZKAKjwQHDMihjpDfkp7tCweZ7Q=
+X-Google-Smtp-Source: AK7set9i7jgE6FpR3noUhzo8MnwFszLcteNew7Oyn7nbowkMqjNTsdQ07Wf9bCz+hy9cTEgusCXLrQQHzICPoq0=
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:ae1:aba6:f21c:4a94])
- (user=saravanak job=sendgmr) by 2002:a17:90a:148:b0:230:e030:844f with SMTP
- id z8-20020a17090a014800b00230e030844fmr409952pje.77.1675734143942; Mon, 06
- Feb 2023 17:42:23 -0800 (PST)
-Date: Mon,  6 Feb 2023 17:41:57 -0800
+ (user=saravanak job=sendgmr) by 2002:a63:7114:0:b0:476:f69c:2304 with SMTP id
+ m20-20020a637114000000b00476f69c2304mr169807pgc.77.1675734135795; Mon, 06 Feb
+ 2023 17:42:15 -0800 (PST)
+Date: Mon,  6 Feb 2023 17:41:54 -0800
 In-Reply-To: <20230207014207.1678715-1-saravanak@google.com>
-Message-Id: <20230207014207.1678715-6-saravanak@google.com>
+Message-Id: <20230207014207.1678715-3-saravanak@google.com>
 Mime-Version: 1.0
 References: <20230207014207.1678715-1-saravanak@google.com>
 X-Mailer: git-send-email 2.39.1.519.gcb327c4b5f-goog
-Subject: [PATCH v3 05/12] driver core: fw_devlink: Add DL_FLAG_CYCLE support
- to device links
+Subject: [PATCH v3 02/12] driver core: fw_devlink: Improve check for fwnode
+ with no device/driver
 From: Saravana Kannan <saravanak@google.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
 	Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
@@ -93,8 +93,8 @@ Cc: Abel Vesa <abel.vesa@linaro.org>, Alexander Stein <alexander.stein@ew.tq-gro
 	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
 	linux-acpi@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230206_174225_364580_CE7D8847 
-X-CRM114-Status: GOOD (  21.46  )
+X-CRM114-CacheID: sfid-20230206_174218_495770_18BE1EB5 
+X-CRM114-Status: GOOD (  18.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,150 +111,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-fw_devlink uses DL_FLAG_SYNC_STATE_ONLY device link flag for two
-purposes:
+fw_devlink shouldn't defer the probe of a device to wait on a supplier
+that'll never have a struct device or will never be probed by a driver.
+We currently check if a supplier falls into this category, but don't
+check its ancestors. We need to check the ancestors too because if the
+ancestor will never probe, then the supplier will never probe either.
 
-1. To allow a parent device to proxy its child device's dependency on a
-   supplier so that the supplier doesn't get its sync_state() callback
-   before the child device/consumer can be added and probed. In this
-   usage scenario, we need to ignore cycles for ensure correctness of
-   sync_state() callbacks.
-
-2. When there are dependency cycles in firmware, we don't know which of
-   those dependencies are valid. So, we have to ignore them all wrt
-   probe ordering while still making sure the sync_state() callbacks
-   come correctly.
-
-However, when detecting dependency cycles, there can be multiple
-dependency cycles between two devices that we need to detect. For
-example:
-
-A -> B -> A and A -> C -> B -> A.
-
-To detect multiple cycles correct, we need to be able to differentiate
-DL_FLAG_SYNC_STATE_ONLY device links used for (1) vs (2) above.
-
-To allow this differentiation, add a DL_FLAG_CYCLE that can be use to
-mark use case (2). We can then use the DL_FLAG_CYCLE to decide which
-DL_FLAG_SYNC_STATE_ONLY device links to follow when looking for
-dependency cycles.
-
-Fixes: 2de9d8e0d2fe ("driver core: fw_devlink: Improve handling of cyclic dependencies")
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 Tested-by: Colin Foster <colin.foster@in-advantage.com>
 Tested-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- drivers/base/core.c    | 28 ++++++++++++++++++----------
- include/linux/device.h |  1 +
- 2 files changed, 19 insertions(+), 10 deletions(-)
+ drivers/base/core.c | 40 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 368bfd96b511..071c454844d6 100644
+index 001e1914858d..368bfd96b511 100644
 --- a/drivers/base/core.c
 +++ b/drivers/base/core.c
-@@ -322,6 +322,12 @@ static bool device_is_ancestor(struct device *dev, struct device *target)
- 	return false;
+@@ -1867,6 +1867,35 @@ static int fw_devlink_relax_cycle(struct device *con, void *sup)
+ 	return ret;
  }
  
-+static inline bool device_link_flag_is_sync_state_only(u32 flags)
++static bool fwnode_init_without_drv(struct fwnode_handle *fwnode)
 +{
-+	return (flags & ~(DL_FLAG_INFERRED | DL_FLAG_CYCLE)) ==
-+		(DL_FLAG_SYNC_STATE_ONLY | DL_FLAG_MANAGED);
++	struct device *dev;
++	bool ret;
++
++	if (!(fwnode->flags & FWNODE_FLAG_INITIALIZED))
++		return false;
++
++	dev = get_dev_from_fwnode(fwnode);
++	ret = !dev || dev->links.status == DL_DEV_NO_DRIVER;
++	put_device(dev);
++
++	return ret;
++}
++
++static bool fwnode_ancestor_init_without_drv(struct fwnode_handle *fwnode)
++{
++	struct fwnode_handle *parent;
++
++	fwnode_for_each_parent_node(fwnode, parent) {
++		if (fwnode_init_without_drv(parent)) {
++			fwnode_handle_put(parent);
++			return true;
++		}
++	}
++
++	return false;
 +}
 +
  /**
-  * device_is_dependent - Check if one device depends on another one
-  * @dev: Device to check dependencies for.
-@@ -348,8 +354,7 @@ int device_is_dependent(struct device *dev, void *target)
- 		return ret;
- 
- 	list_for_each_entry(link, &dev->links.consumers, s_node) {
--		if ((link->flags & ~DL_FLAG_INFERRED) ==
--		    (DL_FLAG_SYNC_STATE_ONLY | DL_FLAG_MANAGED))
-+		if (device_link_flag_is_sync_state_only(link->flags))
- 			continue;
- 
- 		if (link->consumer == target)
-@@ -422,8 +427,7 @@ static int device_reorder_to_tail(struct device *dev, void *not_used)
- 
- 	device_for_each_child(dev, NULL, device_reorder_to_tail);
- 	list_for_each_entry(link, &dev->links.consumers, s_node) {
--		if ((link->flags & ~DL_FLAG_INFERRED) ==
--		    (DL_FLAG_SYNC_STATE_ONLY | DL_FLAG_MANAGED))
-+		if (device_link_flag_is_sync_state_only(link->flags))
- 			continue;
- 		device_reorder_to_tail(link->consumer, NULL);
+  * fw_devlink_create_devlink - Create a device link from a consumer to fwnode
+  * @con: consumer device for the device link
+@@ -1948,9 +1977,16 @@ static int fw_devlink_create_devlink(struct device *con,
+ 		goto out;
  	}
-@@ -684,7 +688,8 @@ postcore_initcall(devlink_class_init);
- 			       DL_FLAG_AUTOREMOVE_SUPPLIER | \
- 			       DL_FLAG_AUTOPROBE_CONSUMER  | \
- 			       DL_FLAG_SYNC_STATE_ONLY | \
--			       DL_FLAG_INFERRED)
-+			       DL_FLAG_INFERRED | \
-+			       DL_FLAG_CYCLE)
  
- #define DL_ADD_VALID_FLAGS (DL_MANAGED_LINK_FLAGS | DL_FLAG_STATELESS | \
- 			    DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
-@@ -753,8 +758,6 @@ struct device_link *device_link_add(struct device *consumer,
- 	if (!consumer || !supplier || consumer == supplier ||
- 	    flags & ~DL_ADD_VALID_FLAGS ||
- 	    (flags & DL_FLAG_STATELESS && flags & DL_MANAGED_LINK_FLAGS) ||
--	    (flags & DL_FLAG_SYNC_STATE_ONLY &&
--	     (flags & ~DL_FLAG_INFERRED) != DL_FLAG_SYNC_STATE_ONLY) ||
- 	    (flags & DL_FLAG_AUTOPROBE_CONSUMER &&
- 	     flags & (DL_FLAG_AUTOREMOVE_CONSUMER |
- 		      DL_FLAG_AUTOREMOVE_SUPPLIER)))
-@@ -770,6 +773,10 @@ struct device_link *device_link_add(struct device *consumer,
- 	if (!(flags & DL_FLAG_STATELESS))
- 		flags |= DL_FLAG_MANAGED;
+-	/* Supplier that's already initialized without a struct device. */
+-	if (sup_handle->flags & FWNODE_FLAG_INITIALIZED)
++	/*
++	 * Supplier or supplier's ancestor already initialized without a struct
++	 * device or being probed by a driver.
++	 */
++	if (fwnode_init_without_drv(sup_handle) ||
++	    fwnode_ancestor_init_without_drv(sup_handle)) {
++		dev_dbg(con, "Not linking %pfwP - Might never probe\n",
++			sup_handle);
+ 		return -EINVAL;
++	}
  
-+	if (flags & DL_FLAG_SYNC_STATE_ONLY &&
-+	    !device_link_flag_is_sync_state_only(flags))
-+		return NULL;
-+
- 	device_links_write_lock();
- 	device_pm_lock();
- 
-@@ -1729,7 +1736,7 @@ static void fw_devlink_relax_link(struct device_link *link)
- 	if (!(link->flags & DL_FLAG_INFERRED))
- 		return;
- 
--	if (link->flags == (DL_FLAG_MANAGED | FW_DEVLINK_FLAGS_PERMISSIVE))
-+	if (device_link_flag_is_sync_state_only(link->flags))
- 		return;
- 
- 	pm_runtime_drop_link(link);
-@@ -1853,8 +1860,8 @@ static int fw_devlink_relax_cycle(struct device *con, void *sup)
- 		return ret;
- 
- 	list_for_each_entry(link, &con->links.consumers, s_node) {
--		if ((link->flags & ~DL_FLAG_INFERRED) ==
--		    (DL_FLAG_SYNC_STATE_ONLY | DL_FLAG_MANAGED))
-+		if (!(link->flags & DL_FLAG_CYCLE) &&
-+		    device_link_flag_is_sync_state_only(link->flags))
- 			continue;
- 
- 		if (!fw_devlink_relax_cycle(link->consumer, sup))
-@@ -1863,6 +1870,7 @@ static int fw_devlink_relax_cycle(struct device *con, void *sup)
- 		ret = 1;
- 
- 		fw_devlink_relax_link(link);
-+		link->flags |= DL_FLAG_CYCLE;
- 	}
- 	return ret;
- }
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 44e3acae7b36..f4d20655d2d7 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -328,6 +328,7 @@ enum device_link_state {
- #define DL_FLAG_MANAGED			BIT(6)
- #define DL_FLAG_SYNC_STATE_ONLY		BIT(7)
- #define DL_FLAG_INFERRED		BIT(8)
-+#define DL_FLAG_CYCLE			BIT(9)
- 
- /**
-  * enum dl_dev_state - Device driver presence tracking information.
+ 	/*
+ 	 * DL_FLAG_SYNC_STATE_ONLY doesn't block probing and supports
 -- 
 2.39.1.519.gcb327c4b5f-goog
 
