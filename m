@@ -4,110 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19631C636CC
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 06:10:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2600C636CD
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 06:48:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=smeouqTUyTFhLQqG44ZKmOtN2fwCt2K2avzh0gkf8Iw=; b=BgqrLvHTTPqbo7
-	LGI7N6uQ8tlst4mvp1qm8pqv78wEThVytsw+SVrDEtVf6giy5eweQqTxD0CHvskGB09y5KCZxdxj2
-	Q6uMxxZTsq4b/ylylr3z8DWrpVqVzoPcM62lByHa+PcXXR2ztDapEcIz3+CQF1MA+nHPmtqHG0J02
-	a46LiqWNqK+uaCFlA1Jat92SSWHyARIXtGo5AY1QadA7/PRHFeFJIRGnQwhA++o7SqNu2Knr1TVLF
-	umQkbxXFBoxOGF7RRlB3Z5vgSa923mps8biuu8qPp6tsVhlOaZo7fqNwvsb7hRtLq8jM6rGHQEKz1
-	pDmdoEsZfVBk/n0RCSIA==;
+	List-Owner; bh=j6K98dW06juvSyw6MJXXs/xhfIvLHxksyXxx3929ATk=; b=rOh3NtLTwWOQ/8
+	8TXfOFWoFyuNfaLJGhuEHGyE7c5DWSgRpxZtNSgoaO5POtu97sIK+PVu5ciu9AytQPBurkH9nyusJ
+	9v4KXUuHY2ILOJzcm9LFDbimqyFl9WqvwTmqFeJ1/7YFPfaxKjKg2a7j+40lxSQmbZ6gGBnhKfD0g
+	KM0jKH9SGWKJKQFDhkMawV/BZfsfetKdqu4AyJRoToqW8kJR4n8p3uLzEXkvjR2X1dlzz0uNdN3aU
+	ijjTaUX+O+gr5NYYulFJja0Ucxohika/uJFBpqIaiwBpbC8trx/BuZw92xi27XqG4SCwut6moKWnT
+	Ihl64seLvFt6IB9rHzFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPHAv-00AvZi-Aq; Tue, 07 Feb 2023 06:09:53 +0000
-Received: from mail-mw2nam12on2061a.outbound.protection.outlook.com ([2a01:111:f400:fe5a::61a] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
+	id 1pPHm0-00B1sm-Eq; Tue, 07 Feb 2023 06:48:12 +0000
+Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPHAp-00AvXf-OI
-	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 06:09:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h66DGzSByZNSQBJ7Jfn78OcuGcl8nkiKM8/G99tOxhjCvLzUC+tzCkQCaC5Hm+fX5rnHrTVepr8qMWrfKt+UtX9mrmfFX7ECESqa8XOWuymW9g4yUxdM5IIocXON17akgf0ro5+oAUHM3qdGzgh8WX2RWi1uDyYWXkdtS8zR/tQFfQGys0WEm4knoZfWdoVUCxQieygxpxt3jGwiNYsHmB6VDN9ZhW+v5CFsCOjZ2fgRUeLG58ds1wY/W6dPIJMF4t8Tdxk6Ik6DMIuBXhUpQxv0KDGkVyHDpM6r4JocAaH+Wj+rkahBRzBAJeMC7b1qK+B0QCE9Wqt/li3m/UmJcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s014qIdrVIxPpZVloQ7M/vCeKFR+q5a6fzI9mp/0hjY=;
- b=LAhhNTBnWSXIiUke5degSfDC/kPUw48f+WGmxK/UH64Uf0ZFBxv566w87gyMxEGt7p5Jtq1lDodAS6ox51BMnJUpGPdISGzcU/nUeJdsFfcp+ePMWI0NiHLwcs0RhFlVO369tPBv2JRiEhfIm8xxErzdxmrbnpyM9Ckjb9mlQPOUSaTBDrIvNsqzT8pygBa4ZZpAD1U6REwS3STj77mL+bqStgFY0Vz1sQhD8soorZQJ9ON+jC4W2yp4V1b9h+ck+onmandvUMC5CaKx1/NtCa+94y4d4p93fhGmvYX49s6FNqOk1us7AhZqrvTqFlcYPqHwwhYIivm3YbPPGL/9gQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s014qIdrVIxPpZVloQ7M/vCeKFR+q5a6fzI9mp/0hjY=;
- b=mNi6ZrWTJ/yUI5quFgiKC9OpvC8fbmma3QZ+pMz7+Aa6NWo8oeAEEFYyW6ZVGCjMdCCOvnSPiId77y/HhLOq7p8ruYdCDeChI/gbvQPcNjMFwL/F8fZTUVF2zQereqVeA0xLByVawU+4dJHf7kk9RwgZ15RvxgF+tTViIx+R5D4=
-Received: from DM6PR02CA0123.namprd02.prod.outlook.com (2603:10b6:5:1b4::25)
- by CH3PR12MB8511.namprd12.prod.outlook.com (2603:10b6:610:15c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.34; Tue, 7 Feb
- 2023 06:09:42 +0000
-Received: from DM6NAM11FT109.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1b4:cafe::83) by DM6PR02CA0123.outlook.office365.com
- (2603:10b6:5:1b4::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.34 via Frontend
- Transport; Tue, 7 Feb 2023 06:09:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DM6NAM11FT109.mail.protection.outlook.com (10.13.173.178) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6064.34 via Frontend Transport; Tue, 7 Feb 2023 06:09:42 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 7 Feb
- 2023 00:09:41 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 7 Feb
- 2023 00:09:41 -0600
-Received: from xhdlakshmis40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Tue, 7 Feb 2023 00:09:38 -0600
-From: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
-To: Mark Brown <broonie@kernel.org>, Tudor Ambarus
-	<tudor.ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>, "Michael
- Walle" <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <saikrishna12468@gmail.com>, <git@amd.com>,
-	Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
-Subject: [PATCH 1/3] spi: cadence-quadspi: Add support for PHY module and DQS
-Date: Tue, 7 Feb 2023 11:39:22 +0530
-Message-ID: <20230207060924.265789-2-sai.krishna.potthuri@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230207060924.265789-1-sai.krishna.potthuri@amd.com>
-References: <20230207060924.265789-1-sai.krishna.potthuri@amd.com>
+	id 1pPHlw-00B1ri-Vy
+	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 06:48:10 +0000
+Received: by mail-wm1-x332.google.com with SMTP id k8-20020a05600c1c8800b003dc57ea0dfeso12418647wms.0
+        for <linux-mtd@lists.infradead.org>; Mon, 06 Feb 2023 22:48:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0+/U+QeK9hEvR6ABz+IUCKA1l4N6KPAD5pigWZc0fCI=;
+        b=PuElOJ85V+kFpfl3zu7zCKumBa64kSyH1+BScbb0uNTmSHsLoKEBVtlCQcoxSAASOr
+         kzdOwtho7xSPQJ638hf/8BkmHQM3ghsoJOfZSnagx0kVzGk0PtjKB4++QsGlfES+s1oF
+         L/xpGmzlhjFMLQZq5J46Fiirv2V63YA8P3gVSU56CeuIvaHQ3b4jPZ/IpwLXzaWuidNY
+         YfcqmJPSo7AtuiMn5dGrneo1gPHQZ+OELT2dzmloA7f5x+pwvdWCxlFcj2/YV+7/h8+4
+         of3pa1wV436yuX59pcLro+vfLxW3Cy4OxlhoCnzQFDeIeBrd+irSUt1XDUzqFPWPZNKV
+         5kFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0+/U+QeK9hEvR6ABz+IUCKA1l4N6KPAD5pigWZc0fCI=;
+        b=2Stda7arDMTRhUlO+jvRV2A8Fa2uO8zAGOl13VM09hC+YG9+tOLO1SMertZyBBr+0T
+         /xSBb2BZqN3+Qw9FufBPw+GGpvkw7KQVxpCFMn5sXGML6IZcj2WjeVCThD9he9qDonao
+         yrVeCxcbldggWOkSHKOL/uxg5mgvsCxVx0TtjxZTQ/VK6Nrh9u85FJOhksUKoUr9cAfO
+         BRFjJLof/6+vnzEjf93/ttigBTBlShgWZ17RAObJCLPazbMIZqzyyjOHEVrsAnej46sk
+         xdRD2hx26qwWN0mHuv5LRNfKk4wXo8MIZAo4bLmzeooGC00cRQi56My1fkBpiNbShAg+
+         wsWg==
+X-Gm-Message-State: AO0yUKW1ub2MuMWXUQkvfJ2vwPNyT1wsQAgRDjjR/FwmDLbAARsTH1iV
+	S0y78FJcTD2zqeCqYx787kI4/w==
+X-Google-Smtp-Source: AK7set8/0UZWOQVVrAPWQTpokDH093Y0jNluxoRsQ7HVW1Y5DviGGWIwbHisbRqsQTbbkAN+r4DDkQ==
+X-Received: by 2002:a05:600c:44c9:b0:3df:f9e9:7600 with SMTP id f9-20020a05600c44c900b003dff9e97600mr2042146wmo.25.1675752486463;
+        Mon, 06 Feb 2023 22:48:06 -0800 (PST)
+Received: from [192.168.0.104] ([82.77.80.113])
+        by smtp.gmail.com with ESMTPSA id s22-20020a1cf216000000b003dffe312925sm6097811wmc.15.2023.02.06.22.48.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Feb 2023 22:48:06 -0800 (PST)
+Message-ID: <67e1d3af-d106-bd5c-f8d8-3f43a58975a0@linaro.org>
+Date: Tue, 7 Feb 2023 06:48:04 +0000
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT109:EE_|CH3PR12MB8511:EE_
-X-MS-Office365-Filtering-Correlation-Id: 137dce3e-ba54-47a4-de56-08db08d1e755
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	6hNLwCv6XahYBN4zJQKjil9IamUld/t2uljBcE3ppCKjo/n1zsD/oLxuUvklOJOXnVtV3sjgrq0Fe/rNozT2VMpxbcZiZ71hzzcpIFYfvwOKmUJpD7cKAZbMv+DskwM5dFm5dp0m9IuEz5/qGh/NiERH3Jk8wQMmdDm9qx1D7sIme/FSFd2fcbQS41F5Oi5BegFPurOmZ9hhR3XSSvzZOGNYcv1oY+STnhQSRLtSQtz9fumw+GyYpz3CcfI2gR0zCgeLCXFOyFHTD3wlp9P4qMNRatBzcpGYu+3D0ojr1gyqLbVp8C33prt3De5L++/WOE4uGzD5Z91AFSKZn94/KiM589D4DO4xae+ScrHhPrIhvK0TUOihPIY6LJkOYihJgasPJ9N73bPCHt375P6PEO1PC7aT4bK5p4egoQonhUuSudOKz4yihcdckET1vgHM83qVjmSkmOTWHJHs6z+0mtUJRVEfSbKqYV8IbCn0Bfu3VC88OqqCglnhZC6C4oRsO/bv+rKsSdh/rhDSnZP7XrGrj/HUkH8neJZuVCnMZjFZlJrQkU67r7zX5CSqUmhQftuLy8iuIeyBdn19cwWfj7mSVo9z8sLhWiwpmPuSU0m8nM29lzTTTH/VXYSonOqCZq7d6KjLDhrZmkhdPN+b6TJz1ZILl6BZZSYgv/pvUrChFGcr5yjrkO8uCI+BTMmnTRfI+ub4tKpanBkQvMQ9vq4WCTlPylSDFVRPqFNBXyU=
-X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(396003)(376002)(39860400002)(346002)(136003)(451199018)(40470700004)(46966006)(36840700001)(81166007)(356005)(47076005)(82740400003)(82310400005)(1076003)(6666004)(186003)(26005)(36756003)(40460700003)(86362001)(70206006)(2616005)(8676002)(336012)(426003)(4326008)(83380400001)(70586007)(54906003)(316002)(36860700001)(7416002)(103116003)(478600001)(110136005)(2906002)(5660300002)(41300700001)(8936002)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2023 06:09:42.3689
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 137dce3e-ba54-47a4-de56-08db08d1e755
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	DM6NAM11FT109.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8511
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH 0/3] spi: spi-cadence-quadspi: Add Rx tuning support for
+ DTR mode
+Content-Language: en-US
+To: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
+ Mark Brown <broonie@kernel.org>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>,
+ Michael Walle <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, saikrishna12468@gmail.com, git@amd.com
+References: <20230207060924.265789-1-sai.krishna.potthuri@amd.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230207060924.265789-1-sai.krishna.potthuri@amd.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230206_220947_811153_3AA088D0 
-X-CRM114-Status: GOOD (  17.84  )
+X-CRM114-CacheID: sfid-20230206_224809_082732_9C8AB8AF 
+X-CRM114-Status: GOOD (  21.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -119,115 +92,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cadence Octal SPI Flash Controller has PHY module, which is used for
-handling SPI transactions when there is a requirement for high
-performance. Also, this controller supports DQS(data strobe) used for
-data capturing in PHY mode rather than internally generated ref_clk.
-Xilinx Versal Octal SPI use PHY module and DQS signal when operating in
-DTR protocol.
 
-Signed-off-by: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
----
- drivers/spi/spi-cadence-quadspi.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 676313e1bdad..b55b763003f0 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -40,6 +40,8 @@
- #define CQSPI_SUPPORT_EXTERNAL_DMA	BIT(2)
- #define CQSPI_NO_SUPPORT_WR_COMPLETION	BIT(3)
- #define CQSPI_SLOW_SRAM		BIT(4)
-+#define CQSPI_HAS_PHY			BIT(5)
-+#define CQSPI_HAS_DQS			BIT(6)
- 
- /* Capabilities */
- #define CQSPI_SUPPORTS_OCTAL		BIT(0)
-@@ -89,6 +91,8 @@ struct cqspi_st {
- 	u32			pd_dev_id;
- 	bool			wr_completion;
- 	bool			slow_sram;
-+	bool			use_phy;
-+	bool			use_dqs;
- };
- 
- struct cqspi_driver_platdata {
-@@ -112,6 +116,7 @@ struct cqspi_driver_platdata {
- /* Register map */
- #define CQSPI_REG_CONFIG			0x00
- #define CQSPI_REG_CONFIG_ENABLE_MASK		BIT(0)
-+#define CQSPI_REG_CONFIG_PHY_MODE		BIT(3)
- #define CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL	BIT(7)
- #define CQSPI_REG_CONFIG_DECODE_MASK		BIT(9)
- #define CQSPI_REG_CONFIG_CHIPSELECT_LSB		10
-@@ -151,6 +156,7 @@ struct cqspi_driver_platdata {
- #define CQSPI_REG_DELAY_TSHSL_MASK		0xFF
- 
- #define CQSPI_REG_READCAPTURE			0x10
-+#define CQSPI_REG_READCAPTURE_DQS		BIT(8)
- #define CQSPI_REG_READCAPTURE_BYPASS_LSB	0
- #define CQSPI_REG_READCAPTURE_DELAY_LSB		1
- #define CQSPI_REG_READCAPTURE_DELAY_MASK	0xF
-@@ -468,6 +474,8 @@ static int cqspi_enable_dtr(struct cqspi_flash_pdata *f_pdata,
- 	if (op->cmd.dtr) {
- 		reg |= CQSPI_REG_CONFIG_DTR_PROTO;
- 		reg |= CQSPI_REG_CONFIG_DUAL_OPCODE;
-+		if (cqspi->use_phy)
-+			reg |= CQSPI_REG_CONFIG_PHY_MODE;
- 
- 		/* Set up command opcode extension. */
- 		ret = cqspi_setup_opcode_ext(f_pdata, op, shift);
-@@ -476,10 +484,20 @@ static int cqspi_enable_dtr(struct cqspi_flash_pdata *f_pdata,
- 	} else {
- 		reg &= ~CQSPI_REG_CONFIG_DTR_PROTO;
- 		reg &= ~CQSPI_REG_CONFIG_DUAL_OPCODE;
-+		reg &= ~CQSPI_REG_CONFIG_PHY_MODE;
- 	}
- 
- 	writel(reg, reg_base + CQSPI_REG_CONFIG);
- 
-+	reg = readl(reg_base + CQSPI_REG_READCAPTURE);
-+
-+	if (op->cmd.dtr)
-+		reg |= CQSPI_REG_READCAPTURE_DQS;
-+	else
-+		reg &= ~CQSPI_REG_READCAPTURE_DQS;
-+
-+	writel(reg, reg_base + CQSPI_REG_READCAPTURE);
-+
- 	return cqspi_wait_idle(cqspi);
- }
- 
-@@ -1700,6 +1718,10 @@ static int cqspi_probe(struct platform_device *pdev)
- 			cqspi->wr_completion = false;
- 		if (ddata->quirks & CQSPI_SLOW_SRAM)
- 			cqspi->slow_sram = true;
-+		if (ddata->quirks & CQSPI_HAS_PHY)
-+			cqspi->use_phy = true;
-+		if (ddata->quirks & CQSPI_HAS_DQS)
-+			cqspi->use_dqs = true;
- 
- 		if (of_device_is_compatible(pdev->dev.of_node,
- 					    "xlnx,versal-ospi-1.0"))
-@@ -1820,7 +1842,8 @@ static const struct cqspi_driver_platdata socfpga_qspi = {
- 
- static const struct cqspi_driver_platdata versal_ospi = {
- 	.hwcaps_mask = CQSPI_SUPPORTS_OCTAL,
--	.quirks = CQSPI_DISABLE_DAC_MODE | CQSPI_SUPPORT_EXTERNAL_DMA,
-+	.quirks = CQSPI_DISABLE_DAC_MODE | CQSPI_SUPPORT_EXTERNAL_DMA
-+			| CQSPI_HAS_PHY | CQSPI_HAS_DQS,
- 	.indirect_read_dma = cqspi_versal_indirect_read_dma,
- 	.get_dma_status = cqspi_get_versal_dma_status,
- };
--- 
-2.25.1
+On 2/7/23 06:09, Sai Krishna Potthuri wrote:
+> Enable PHY and DQS required for Xilinx Versal Octal SPI to operate in DTR
+> protocol.
+> Add and update device_id field in spi_mem structure with flash id
+> information. Xilinx Versal Octal SPI driver requires the device id
+> information to perform the Rx tuning operation. Since there is no common
+> Tuning Data Pattern defined across all vendors, controllers like Xilinx
+> Versal Octal SPI which requires Rx tuning to find out the optimal sampling
+> point for data lines, this device id information will be used as a golden
+> data.
 
+Using only 6 bytes as golden pattern seems fragile, but you are aware of
+that, as I see that you chose to read the ID 10 times to make the
+decision whether the tap is valid or not. Other option (which is not
+perfect) is to use SFDP data as golden pattern. If I remember
+correctly, JESD216 suggests to use the Read SFDP cmd at 50 MHz, so it
+won't help you much. In practice SPI NOR uses the Read SFDP command at
+the flash's maximum speed and we haven't seen problems. But better would
+be to use some flash OTP data maybe? I remember Pratyush has submitted a
+phy calibration series in the past, I haven't had the chance to read his
+proposal. Did you? How's your proposal different than his?
+
+Cheers,
+ta
+
+> The reason behind choosing this approach instead of reading the ID again
+> in the controller driver is to make it generic solution.
+> - Other controller drivers which want to use similar tuning process, they
+> will make use of this ID instead of reading the ID again in the driver.
+> - Also, we can avoid hardcoding the command information and initiating the
+> transfer in the controller driver as this should happen from spi-nor.
+> 
+> Sai Krishna Potthuri (3):
+>    spi: cadence-quadspi: Add support for PHY module and DQS
+>    mtd: spi-nor: Add and update device_id field in spi_mem structure
+>    spi: cadence-quadspi: Add Rx tuning support for Xilinx Versal OSPI
+> 
+>   drivers/mtd/spi-nor/core.c        |   1 +
+>   drivers/spi/spi-cadence-quadspi.c | 226 +++++++++++++++++++++++++++++-
+>   include/linux/spi/spi-mem.h       |   4 +
+>   3 files changed, 230 insertions(+), 1 deletion(-)
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
