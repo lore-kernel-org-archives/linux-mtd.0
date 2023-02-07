@@ -4,92 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0331BC636CD
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 07:56:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50C12C636CD
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 09:08:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RYtCniNid6riKr8eJZaIrF8NZ7dg1Kc/Km2Sudb0Umg=; b=L/GskPndiZ+xsS
-	owzueJTMtiOUkz1yMCZCJDPLpEOUb+KBGXlze8L/ft0WcOUl3jXYJmGMusD2d2wp8q9kOj2uEWra4
-	g8wwTX4bICTefbSSQuxw1liiQWJaAh1+IEhng5834DMhYZz3LeKYMp4TdmRdo46h/v/yKmo1OLhIg
-	zIpFdGhIrOCw5Iy11HrXA3Wg4Vn96p9IllsvWE+PCdWySQucb0VfT/F2bSaK3PvwH0cZL7KVfSrac
-	2j+WaF6SN73+rzIXl3txsuWoJ/bpJ+B/XMxcbcLCHvKD6BLCGX/EKU2cDHEqTUqW54SpO1WiAFGJD
-	AN7Hse2gkRrUAdC4UQ5A==;
+	List-Owner; bh=eVUlPxHwbfm8aSu689bsYRbTNZL1kdD5qQh0unBy1MI=; b=F6OdwWpVSe5tJ7
+	6U/JCOddrgFd2aijsY4UC7y/YYKqoyONw5AAFkfoxoITFvvM3bCx0/JDtLaMTNWeTXMaZh2q159JP
+	zLSCHkjoOVc8AZ2Htcjtkpy0PCGFmEWvBRPSktwS2uIChz25jkVdtVORFt3yh8nGM9JybdWkiuhy1
+	eXKGHPQohJopGjicpBx4DlaXAyNjmhpNdCtS7lUmU0Xh4FPEiiYpH25KwIrSMZezAFzgrwau/PQ1T
+	u9W36AgGPd/uaFhuRHZclBwoADsRG5rUJDeXacon1mJ4T7tq+qkHsGDMRq/5KOymnaZLbeO4AhB29
+	O24gjCEXA7MsVaL7DvZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPIqO-00BD7Z-JH; Tue, 07 Feb 2023 07:56:48 +0000
-Received: from mail-ot1-f41.google.com ([209.85.210.41])
+	id 1pPJwu-00BO17-57; Tue, 07 Feb 2023 09:07:36 +0000
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPIqD-00BD4N-ID; Tue, 07 Feb 2023 07:56:39 +0000
-Received: by mail-ot1-f41.google.com with SMTP id v24-20020a05683011d800b0068bdd29b160so3932494otq.13;
-        Mon, 06 Feb 2023 23:56:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X2wYlj6gN2naNv6gpoblV6OOQNS/n19UAH0L94v4JNA=;
-        b=wk6IDB5lEM1lo0MStF+zxBUX2Xje77PT9FoV0RMGtHRXPih4geh5hfpXxDVMh/MvEv
-         V/4kmrhcLolNIcLjqnpwjWGz81WxHYg669jkQoC6d2wNL0uvIeD1nNVmLALOv22HWg9o
-         oTfkXq1HmQR6dt9/JKp4g6DV+TeEaI5MyQv2aL9BP3ZIzO4ysfMa2axVU/mv3rgUIEUe
-         +7pWa2GMkcZRyyzNEdiucFigGnnO7xYUqZGMqcbHo679clnp7iTkVlRPa5E5X6zD/Q2H
-         Z3AT+m7lf+BC3bEUzRq/vtWt7FU69hXrxcgv2rewnVlb8I/6X8EKwsVUnQw1E2moE0Jl
-         lhZg==
-X-Gm-Message-State: AO0yUKU5KYMk6czgFExkLuzI5g+fVZ3MmfOHzX0ecnPMH0EXtLSBxC9x
-	r9N/dguwLPR1/JSVvsSJz0ek98vbc1xF2g==
-X-Google-Smtp-Source: AK7set9vp9VM4BPRQYJ/hLkTTmmIef3SyKCo0nkbjtoKX0NLxJaD2YtqloyXlKSnaXSTyxiiSizTXw==
-X-Received: by 2002:a05:6830:2b14:b0:68b:bd51:dd01 with SMTP id l20-20020a0568302b1400b0068bbd51dd01mr1664737otv.38.1675756594659;
-        Mon, 06 Feb 2023 23:56:34 -0800 (PST)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
-        by smtp.gmail.com with ESMTPSA id j74-20020a9d17d0000000b0068bd04b4292sm6069098otj.31.2023.02.06.23.56.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Feb 2023 23:56:34 -0800 (PST)
-Received: by mail-ot1-f47.google.com with SMTP id f5-20020a9d5f05000000b00684c0c2eb3fso3937281oti.10;
-        Mon, 06 Feb 2023 23:56:34 -0800 (PST)
-X-Received: by 2002:a5b:508:0:b0:8a3:59a4:340e with SMTP id
- o8-20020a5b0508000000b008a359a4340emr269046ybp.604.1675756583781; Mon, 06 Feb
- 2023 23:56:23 -0800 (PST)
+	id 1pPJwr-00BNsl-8V
+	for linux-mtd@lists.infradead.org; Tue, 07 Feb 2023 09:07:34 +0000
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1pPJwG-001RJZ-JC; Tue, 07 Feb 2023 10:06:56 +0100
+Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1pPJwE-000mCw-Hc; Tue, 07 Feb 2023 10:06:56 +0100
+Message-ID: <60ed320c8f5286e8dbbf71be29b760339fd25069.camel@physik.fu-berlin.de>
+Subject: Re: remove arch/sh
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
+ <dalias@libc.org>,  Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Laurent Pinchart
+ <laurent.pinchart@ideasonboard.com>, Kieran Bingham
+ <kieran.bingham+renesas@ideasonboard.com>, Geert Uytterhoeven
+ <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
+ linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org,  linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org,  linux-fbdev@vger.kernel.org,
+ alsa-devel@alsa-project.org,  linux-sh@vger.kernel.org
+Date: Tue, 07 Feb 2023 10:06:53 +0100
+In-Reply-To: <20230203071423.GA24833@lst.de>
+References: <20230113062339.1909087-1-hch@lst.de>
+	 <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+	 <20230116071306.GA15848@lst.de>
+	 <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
+	 <20230203071423.GA24833@lst.de>
+User-Agent: Evolution 3.46.3 
 MIME-Version: 1.0
-References: <20230207014207.1678715-1-saravanak@google.com> <20230207014207.1678715-4-saravanak@google.com>
-In-Reply-To: <20230207014207.1678715-4-saravanak@google.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 7 Feb 2023 08:56:11 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVRq-+zMuMPMuqLt45t5X78P4nRWZ-cJe8fk=1TsugTYA@mail.gmail.com>
-Message-ID: <CAMuHMdVRq-+zMuMPMuqLt45t5X78P4nRWZ-cJe8fk=1TsugTYA@mail.gmail.com>
-Subject: Re: [PATCH v3 03/12] soc: renesas: Move away from using OF_POPULATED
- for fw_devlink
-To: Saravana Kannan <saravanak@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, 
-	Frank Rowand <frowand.list@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Magnus Damm <magnus.damm@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Daniel Scally <djrscally@gmail.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
-	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	Abel Vesa <abel.vesa@linaro.org>, Alexander Stein <alexander.stein@ew.tq-group.com>, 
-	Tony Lindgren <tony@atomide.com>, John Stultz <jstultz@google.com>, 
-	Doug Anderson <dianders@chromium.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Maxim Kiselev <bigunclemax@gmail.com>, 
-	Maxim Kochetkov <fido_max@inbox.ru>, Luca Weiss <luca.weiss@fairphone.com>, 
-	Colin Foster <colin.foster@in-advantage.com>, 
-	Martin Kepplinger <martin.kepplinger@puri.sm>, Jean-Philippe Brucker <jpb@kernel.org>, 
-	Vladimir Oltean <vladimir.oltean@nxp.com>, kernel-team@android.com, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-acpi@vger.kernel.org
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.148.100
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230206_235637_623509_1A43ACCA 
-X-CRM114-Status: GOOD (  22.83  )
+X-CRM114-CacheID: sfid-20230207_010733_480297_C324FECC 
+X-CRM114-Status: GOOD (  12.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,32 +87,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Feb 7, 2023 at 2:42 AM Saravana Kannan <saravanak@google.com> wrote:
-> The OF_POPULATED flag was set to let fw_devlink know that the device
-> tree node will not have a struct device created for it. This information
-> is used by fw_devlink to avoid deferring the probe of consumers of this
-> device tree node.
->
-> Let's use fwnode_dev_initialized() instead because it achieves the same
-> effect without using OF specific flags. This allows more generic code to
-> be written in driver core.
->
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Hello Christoph!
 
-You've missed my earlier:
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Fri, 2023-02-03 at 08:14 +0100, Christoph Hellwig wrote:
+> On Mon, Jan 16, 2023 at 09:52:10AM +0100, John Paul Adrian Glaubitz wrote:
+> > We have had a discussion between multiple people invested in the SuperH port and
+> > I have decided to volunteer as a co-maintainer of the port to support Rich Felker
+> > when he isn't available.
+> 
+> So, this still isn't reflected in MAINTAINERS in linux-next.  When
+> do you plan to take over?  What platforms will remain supported and
+> what can we start dropping due to being unused and unmaintained?
 
-Gr{oetje,eeting}s,
+I'm getting everything ready now with Geert's help and I have a probably dumb
+question regarding the MAINTAINERS file change: Shall I just add myself as an
+additional maintainer first or shall I also drop Yoshinori Sato?
 
-                        Geert
+Also, is it desirable to add a "T:" entry for the kernel tree?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
+Adrian
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
 ______________________________________________________
 Linux MTD discussion mailing list
