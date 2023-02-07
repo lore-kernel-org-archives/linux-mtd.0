@@ -4,113 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7019EC636CD
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 10:29:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5F43C636CC
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Feb 2023 13:07:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GpWJ5kDg4KVwTdcOQf6AMXgJLWEyOYBStoRQf43Qyfw=; b=Th2Q+R4YTk0RWT
-	Y4hdas945X24UV6VEwLD2vsSQ59SoXNbaX2g8YMe3zthex9p/tgWg+l9zFbQnCWoYbKYhidaO00Qn
-	RnK2oECHuarxdFnpqoLGUq3pOVG8uBLFzYaOPzIsRxUcOKQIH/zM50zzNmbaq9so0dmmdU0f7Sz8f
-	CWsr2PB2n0AzY3/33X6PWBsDXIZj5BYtZPT9vBjvQClgMmn7K1+2jyxFqZHsl+YN0EhNZIrb7tT6B
-	+xuxZ0ooOpDF8NpKkXhtKzFvmufDQT3+9TFnqaknFB0jtNdovOTLpO6yFqgLQbD95yqBT9ys2aAr8
-	pTzptXl0sYDFCPxy1vGA==;
+	List-Owner; bh=Akt5vpsP4JkdD289H2tWLAtmh0FESQFzdxyxCWuFgGg=; b=a0hq1pKFsngCGd
+	ogpkjVO4FGCvLQs2zfinkELm4z0AuTtjKvfr4zjmo7yoTXDLjnw15HG2J5aq8y/NNj9jZmDZYPGsy
+	5woRu9XfxRkHCCKrANm6/E/QT9ZgmQqWiRItIMn7gOp0ryWRiKtWrQK/etkvVsEJoHESMLC7rwRhb
+	hM3NFuJn2Sq0ltMQdTH3ysWYhDwcSp3qe5IAWOKUKaqFfyXoiu8JSeP0RYcYwhrUJjI7MNXmmbz4h
+	yBq3TI+dLWcDKSdk0CO/LSLjxDiPU+ZRjGUZTURU/cLtHqbNobRm1os6NLKv2Yru0lYYfCf3aK4uc
+	KpwbLkNC1tTdzgWBU2UA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPLDd-00BhuF-M0; Tue, 07 Feb 2023 10:28:57 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1pPNgD-00CCAt-Bh; Tue, 07 Feb 2023 13:06:37 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPLDS-00Bhre-NP; Tue, 07 Feb 2023 10:28:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675765726; x=1707301726;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qFKo6P9N6kXoK08jHrxIsWsAo99hMsJ26Xtn6cj93Is=;
-  b=hWLT3hR4T6IdjfVKyjCXuOZru6N1cDz4WFG6kkvniWYSK5vv4I837e3j
-   yHT870hXyr6L9tx0EVHgFjA95uN3TXYHPWHuoTOJcoEvfAYuMD4u84Z5M
-   RNwAUO8qh5vsaZd+0FqS2PnWlAHkVgfktdSWfszLBaeJnSImp84rNlVb9
-   qJQgwzM54ZUpB6Ex7AfdNkQ8gj5Z7LbjFCWSqsJQwPS6SERqW5wjAvWWt
-   j3rhzukVjW5bSYiDuV3PGQzPBOYch6aiLL3OmdTi1E9gjzULI0N8DxrTh
-   1pk08QQfvWRaxZ9Ywq2c/9wNX80dHQsx4QVy4N3RsSlrIUa+M0wCoiyQw
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="356841103"
-X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="356841103"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2023 02:28:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="616762031"
-X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="616762031"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP; 07 Feb 2023 02:28:32 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1pPLD9-003ZAe-19;
-	Tue, 07 Feb 2023 12:28:27 +0200
-Date: Tue, 7 Feb 2023 12:28:27 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Len Brown <lenb@kernel.org>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	John Stultz <jstultz@google.com>,
-	Doug Anderson <dianders@chromium.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Maxim Kiselev <bigunclemax@gmail.com>,
-	Maxim Kochetkov <fido_max@inbox.ru>,
-	Luca Weiss <luca.weiss@fairphone.com>,
-	Colin Foster <colin.foster@in-advantage.com>,
-	Martin Kepplinger <martin.kepplinger@puri.sm>,
-	Jean-Philippe Brucker <jpb@kernel.org>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>, kernel-team@android.com,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3 04/12] gpiolib: Clear the gpio_device's fwnode
- initialized flag before adding
-Message-ID: <Y+Iny2bM9vcUPsDy@smile.fi.intel.com>
-References: <20230207014207.1678715-1-saravanak@google.com>
- <20230207014207.1678715-5-saravanak@google.com>
- <Y+ImCyHS7ZIr8bNd@smile.fi.intel.com>
+	id 1pPNfz-00CC8y-Q3; Tue, 07 Feb 2023 13:06:29 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 317D6CsR033880;
+	Tue, 7 Feb 2023 07:06:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1675775172;
+	bh=ekpjB4H4unY73nJ7BkdNZHsEInjoxv8tnvp+z0/THYw=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=SCEbkJ2JVL81GhMal0ahTjr9ZTbbGSd8TKcQIa4oRBAIu6mb9j1H0tabPyPO0VffD
+	 FuyDvoy7q9/99tVHVuZiwhjxfeX6cQrRiPLdTqJhWONkdCAzN9B28XyOn0Ct4fPi/r
+	 zkr9KGvedmNaoDGAZxRerzS6sliLz5U3i3X31rHI=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 317D6CE3036467
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 7 Feb 2023 07:06:12 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Tue, 7
+ Feb 2023 07:06:12 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16 via
+ Frontend Transport; Tue, 7 Feb 2023 07:06:12 -0600
+Received: from [172.24.221.26] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+	by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 317D67Rc025797;
+	Tue, 7 Feb 2023 07:06:09 -0600
+Message-ID: <f624e2f0-5fcf-a5b4-8376-6ef37a799493@ti.com>
+Date: Tue, 7 Feb 2023 18:36:07 +0530
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y+ImCyHS7ZIr8bNd@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v2 1/4] spi: cadence-quadspi: Reset CMD_CTRL Reg on cmd
+ r/w completion
+Content-Language: en-US
+To: Pratyush Yadav <ptyadav@amazon.de>
+CC: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Vaishnav Achath <vaishnav.a@ti.com>, <linux-mtd@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <Takahiro.Kuwano@infineon.com>
+References: <20230125081023.1573712-1-d-gole@ti.com>
+ <20230125081023.1573712-2-d-gole@ti.com> <mafs07cx8f1oc.fsf_-_@amazon.de>
+From: "Gole, Dhruva" <d-gole@ti.com>
+Organization: Texas Instruments Incorporated
+In-Reply-To: <mafs07cx8f1oc.fsf_-_@amazon.de>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230207_022846_792090_AB795240 
-X-CRM114-Status: GOOD (  17.65  )
+X-CRM114-CacheID: sfid-20230207_050624_776994_1EB96D1F 
+X-CRM114-Status: GOOD (  10.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,29 +87,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Feb 07, 2023 at 12:20:59PM +0200, Andy Shevchenko wrote:
-> On Mon, Feb 06, 2023 at 05:41:56PM -0800, Saravana Kannan wrote:
-> > Registering an irqdomain sets the flag for the fwnode. But having the
-> > flag set when a device is added is interpreted by fw_devlink to mean the
-> > device has already been initialized and will never probe. This prevents
-> > fw_devlink from creating device links with the gpio_device as a
-> > supplier. So, clear the flag before adding the device.
+Thanks for taking a look Pratyush!
 
-...
-
-> > +	if (gdev->dev.fwnode && !gdev->dev.fwnode->dev)
-> > +		fwnode_dev_initialized(gdev->dev.fwnode, false);
-> 
-> Please, do not dereference fwnode from struct device. We have dev_fwnode()
-> for that.
-
-Note, with that fixed you may add my
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On 1/27/2023 8:46 PM, Pratyush Yadav wrote:
+> Hi,
+>
+> On Wed, Jan 25 2023, Dhruva Gole wrote:
+>
+>> If one leaves the CQSPI_REG_CMDCTRL in an unclean state this may cause
+>> issues in future command reads. This issue came to light when some flash
+>> reads in STIG mode were coming back dirty.
+> Can you explain in more detail what you mean by "reads coming back
+> dirty"? Because I don't see any clear reason why not resetting the
+> register would break anything. We re-create the register value from the
+> scratch on the next read anyway, and as soon as you writel() that, the
+> old fields get thrown away anyway.
+There's a hardware bug due to which clearing of this register is necessary.
+> [...]
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Regards,
+Dhruva Gole <d-gole@ti.com>
 
 
 ______________________________________________________
