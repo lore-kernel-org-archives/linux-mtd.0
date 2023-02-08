@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77C86C05027
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 05:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95DC7C636CC
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 05:54:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=j1sPcWx0HrAihNuBGcDqORbet52rI6YIolZP0y5pVvQ=; b=zjjbJ04ES4iloc
-	CQvCmJhtmfWojf7MWhpTK/jkcSbJ/HvB+OsYfm0T4D21qGk9GjR2VxdU5bTCC0qaPAI9bReYpSXUh
-	g01neb5EY+hxUg8yXQcS6a4hH3yVVM/izQAHF/OQN5kr6aRNckmeovd7sV7R9Neauhe8fvxSaBcE6
-	y//DnGFY4u2UhZ7LhXXuDyttxIYwGBL1g4OxAF4A+75ELajXAFpInO8TDt7Sqb5KxCS2M5/py4P7g
-	a40vMtbB1aUJgGCQVDbHuVRUv+wILaVt+ykxHwmM0q2m7NIxcKFSojhO+I9jxE7ha6vjP8ELHkggZ
-	JPlZ0LzE1UWgl0gF4uGQ==;
+	List-Owner; bh=/uKSWTz+duQJP33mihkZ+gWonlhdtq4VdJ/K4V84TdU=; b=mobSniQZjyaGEV
+	oauYjG9bnI8fdN1w+k5Ygr3Wn6DZuY68zJp0PHT6h+yJ0tpt/m2rsrqNjDtkzQfXzD0dqO2rml8WA
+	m7B4SoLbQEUvoWAkckStc7HT4Jlpr9/p01HUt8ZPSgpjocAr8PFE2rnpzRLlVhqaSkVYCHfvgvHr9
+	ZCzP6Opk6Q56QCIpErwZLjNnJyCEG2Fq0Z8Eqy4/o7EHVzCSxPeyOCpzTCYYg3HsUDa+L8BRvt0Jq
+	T87lmTbqQMG1Ap5tOZQRbGHUW+OXH6ZLYa/W5K81rz1LSBc33Pv6ulkZSLatrcYoT+3A1QCNdfBeO
+	XGJOB+h+lN3yhASoZNGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPdPq-00EE2p-1Z; Wed, 08 Feb 2023 05:54:46 +0000
-Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
+	id 1pPdPu-00EE4g-3p; Wed, 08 Feb 2023 05:54:50 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPdPm-00EE1P-Ke
-	for linux-mtd@lists.infradead.org; Wed, 08 Feb 2023 05:54:44 +0000
-Received: by mail-pj1-x102d.google.com with SMTP id on9-20020a17090b1d0900b002300a96b358so1214903pjb.1
-        for <linux-mtd@lists.infradead.org>; Tue, 07 Feb 2023 21:54:42 -0800 (PST)
+	id 1pPdPq-00EDy7-9N
+	for linux-mtd@lists.infradead.org; Wed, 08 Feb 2023 05:54:47 +0000
+Received: by mail-pl1-x629.google.com with SMTP id g13so13333772ple.10
+        for <linux-mtd@lists.infradead.org>; Tue, 07 Feb 2023 21:54:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NG7uhvC5DrWj/sM2t5u2Vw0UUf/ViHzmkq6Z2LAcF0o=;
-        b=XMUywQG1n9u5onCQe/KlV0uDFMwdlpJFy726SvOhLNuSLGeL4zvLpFoY/1tF3OPH/t
-         KojETjEMoIZ6FqgY9WTwsngWSYR/6VNOmtV5gF1mK+tAV3f96Z1IISWCwQq7D6tx1jjJ
-         z2Mu3QYHHTlRQehP4tY42jCTCddQh6aW+2rgmZTxfu1PvcAH1/w6rdKZM4+GzjIhx/sm
-         MnKUpNRb4Hm54l4pWaLkU7P/Rac2E8kSGlJDQh/JKGiTAoZRoqrnvC9At08Y9Pt57pNI
-         nkPXkqbr3RbBicBwNn6Pi0JC6tviXhN3m6c1AZqGakGSfVgo/+Q1951rYFg7O1Jnynsx
-         y3VQ==
+        bh=Er+JSFDBh5oTxOwSj95fFMxz6IO6ysToZ41DLhWyCjY=;
+        b=HLI14ijgsXw4TvW9eh7uQpbMIBMW20w/ErBLNW/gW740lwzVeYRJz1suUZyDRXv1X3
+         iSbNC/NWn6ni4BkmN6Qod06PUf28L4l6W49SkewA3CKMqlVRJdXu5VXHvVhBFDMDuBGK
+         bxCu3mNsxa8w4gkNXXuNKwRscnjzqnUdwfvABzLhTb7xFIWsHghImmip1XbCbW7b6vwz
+         xltUIlBIjkK2lpch9XVyHhAtoYWIWs9ShM9XwcFAJr0CbqY+bZ5yVMPxPsmStTh/ElhF
+         WFektlXMYVEHHZu1MHUrOyWbBzYwncTo9dOm2WPe5ChEP5gK81lhaYXiG/K//Zduuh+u
+         ZtRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NG7uhvC5DrWj/sM2t5u2Vw0UUf/ViHzmkq6Z2LAcF0o=;
-        b=uEhjniP5mPLAyjWUFhZp+2UTUpQvBRj2y9NQ8l/QUbadyvtdcwQla3sN/1m/YNmGkq
-         IPLbJ1/9owAAOhriw1L3ELmDvbdYWVJhtoY66T2N3kb3O4SzxOXy7OiKp/QiqEAER7P7
-         BEaruBpQfFF7JPz4nPGxPlN0gwvU+j2lhgEj2SDD2xh6tUK3rd16LCOinfuRy+uQffM+
-         MlYvmu6ASY2AcSKoAvocWvI5X74uFsKOYOboeopsBplGc25t33T9r6MuHPTSaPAAx/RR
-         54wLzIi7W8rznowFOhkb5KsRpG+CxKjgbtg5zcA3KisIy1MpY1aaIxzCBYWbAQP99RwK
-         wP0g==
-X-Gm-Message-State: AO0yUKWPlD+4xCqYLxoRKw07Egc9ycD8YgNoBD83t4YMoVwu78RxxFla
-	BRxneukTLiTXOV0AwPu4mBS9ScSx5cM=
-X-Google-Smtp-Source: AK7set9/2oiDEOwRBc7DP+tScCDzKgl2agjyxCm8msTUzgWQNIftspX3UklEGtvHY3CakOzlYtgj1Q==
-X-Received: by 2002:a05:6a20:12cd:b0:bc:c663:41be with SMTP id v13-20020a056a2012cd00b000bcc66341bemr7565308pzg.30.1675835682230;
-        Tue, 07 Feb 2023 21:54:42 -0800 (PST)
+        bh=Er+JSFDBh5oTxOwSj95fFMxz6IO6ysToZ41DLhWyCjY=;
+        b=0vq4L+oh2vKTcquaFzpJTcTdQA0uBVMP1mPU9eUOfHRa82t1T4MwPUBJYr+OwFbycx
+         crbQV4X+bd83Kkvy6Rcqqz3tTlufr4gWjsbE2Lf3aKYmFarOadLFThGPJyqldvS5++uK
+         bXRvQCT+ANKTetP1eFnThf7MbOYH+v9Q/uN8xs8MtQkF7POMle8iZ8LXPwqDcrC76P79
+         x3LXjnr9TCEbk1u01VeYuqTiOOsp5QIjo2MKqPv1SgNYvkkU6/0EG0K6wK6FpNrddu2+
+         VswBA7mMxASig3OmZ5xqsobDQAdwzE3jHAv5S1zqLq+72doT4d+eptGV/yUhP6r9K3ZQ
+         XwyQ==
+X-Gm-Message-State: AO0yUKXkp0eX3Shy9Twv8Z6jhKy0b9n247dcpycxtPzHRft6akbrYF/Y
+	SDxXdS2DzRQgSu3kvEopfwYXYf4BlNI=
+X-Google-Smtp-Source: AK7set9eN2H03vka6o1bnmpi8Hy/C1WpIrdhcumbujV+J5pTiNW+yt98IEoq0ASsys5ITCjQUow3rw==
+X-Received: by 2002:a17:90b:4c8e:b0:230:c40d:45b4 with SMTP id my14-20020a17090b4c8e00b00230c40d45b4mr7197174pjb.13.1675835685895;
+        Tue, 07 Feb 2023 21:54:45 -0800 (PST)
 Received: from ISCNPF1JZGWX.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id r16-20020a638f50000000b004eca54eab50sm8915954pgn.28.2023.02.07.21.54.38
+        by smtp.gmail.com with ESMTPSA id r16-20020a638f50000000b004eca54eab50sm8915954pgn.28.2023.02.07.21.54.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 21:54:41 -0800 (PST)
+        Tue, 07 Feb 2023 21:54:45 -0800 (PST)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -72,16 +72,16 @@ Cc: tudor.ambarus@linaro.org,
 	tkuw584924@gmail.com,
 	Bacem.Daassi@infineon.com,
 	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v2 4/8] mtd: spi-nor: spansion: Rework cypress_nor_set_page_size() for multi-chip device support
-Date: Wed,  8 Feb 2023 14:53:41 +0900
-Message-Id: <08b8d366534e6f9ac3f1dcf08560451293e0b4b1.1675835253.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v2 5/8] mtd: spi-nor: spansion: Rework cypress_nor_quad_enable_volatile() for multi-chip device support
+Date: Wed,  8 Feb 2023 14:53:42 +0900
+Message-Id: <07bd9e12e5c990e39d168fb528380fbc4d6be228.1675835253.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1675835253.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1675835253.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230207_215442_725306_4139622E 
-X-CRM114-Status: GOOD (  20.51  )
+X-CRM114-CacheID: sfid-20230207_215446_365340_4B9ADEDD 
+X-CRM114-Status: GOOD (  15.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,124 +100,108 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-For multi-chip devices, we can use 512B page only when the all dice are
-configured as 512B page size. Simple for-loop with params->num_of_dice can
-check the CFR3V in each die. The volatile register address is calculated
-inside the loop by using die number and volatile register offset.
-
-The location of cypress_nor_set_page_size() call is moved from
-post_bfpt_fixup() to post_sfdp_fixup(), because the number of dice and
-volatile register offset are parsed after BFPT. The post_sfdp_fixup()
-does not return error code so cypress_nor_set_page_size() prints error
-message instead of returning error code.
+For multi-chip devices, we need to enable QUAD by updating CFR1V in all
+dice in the device. That is done by for-loop with params->num_of_dice.
+The volatile register address is calculated inside the loop by using die
+number and volatile register offset.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/spi-nor/spansion.c | 47 ++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 22 deletions(-)
+ drivers/mtd/spi-nor/spansion.c | 65 +++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 12a256c0ef4c..7c533737d7c3 100644
+index 7c533737d7c3..33c8a5afcb76 100644
 --- a/drivers/mtd/spi-nor/spansion.c
 +++ b/drivers/mtd/spi-nor/spansion.c
-@@ -18,7 +18,7 @@
+@@ -14,7 +14,7 @@
+ #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+ #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
+ #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
+-#define SPINOR_REG_CYPRESS_CFR1V		0x00800002
++#define SPINOR_REG_CYPRESS_CFR1			0x2
  #define SPINOR_REG_CYPRESS_CFR1_QUAD_EN		BIT(1)	/* Quad Enable */
  #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
  #define SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24	0xb
--#define SPINOR_REG_CYPRESS_CFR3V		0x00800004
-+#define SPINOR_REG_CYPRESS_CFR3			0x4
- #define SPINOR_REG_CYPRESS_CFR3_PGSZ		BIT(4) /* Page size. */
- #define SPINOR_REG_CYPRESS_CFR5V		0x00800006
- #define SPINOR_REG_CYPRESS_CFR5_BIT6		BIT(6)
-@@ -195,27 +195,34 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
-  * The BFPT table advertises a 512B or 256B page size depending on part but the
-  * page size is actually configurable (with the default being 256B). Read from
-  * CFR3V[4] and set the correct size.
-- *
-- * Return: 0 on success, -errno otherwise.
-  */
--static int cypress_nor_set_page_size(struct spi_nor *nor)
-+static void cypress_nor_set_page_size(struct spi_nor *nor)
+@@ -142,46 +142,47 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
+ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
  {
-+	struct spi_nor_flash_parameter *params = nor->params;
- 	struct spi_mem_op op =
--		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR3V,
-+		CYPRESS_NOR_RD_ANY_REG_OP(params->addr_mode_nbytes, 0,
- 					  nor->bouncebuf);
- 	int ret;
+ 	struct spi_mem_op op;
++	u32 addr;
 +	u8 i;
+ 	u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
+ 	u8 cfr1v_written;
+ 	int ret;
  
+-	op = (struct spi_mem_op)
+-		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
+-					  SPINOR_REG_CYPRESS_CFR1V,
+-					  nor->bouncebuf);
+-
 -	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
 -	if (ret)
 -		return ret;
-+	/* Set to default page size */
-+	params->page_size = 256;
- 
--	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3_PGSZ)
--		nor->params->page_size = 512;
--	else
--		nor->params->page_size = 256;
-+	for (i = 0; i < params->num_of_dice; i++) {
-+		op.addr.val = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR3;
- 
--	return 0;
++	for (i = 0; i < nor->params->num_of_dice; i++) {
++		addr = nor->params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR1;
++		op = (struct spi_mem_op)
++			CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes, addr,
++						  nor->bouncebuf);
 +		ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-+		if (ret) {
-+			dev_err(nor->dev, "Failed to read page size configuration. Use default 256B.\n");
-+			return;
++		if (ret)
++			return ret;
+ 
+-	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR1_QUAD_EN)
+-		return 0;
++		if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR1_QUAD_EN)
++			continue;
+ 
+-	/* Update the Quad Enable bit. */
+-	nor->bouncebuf[0] |= SPINOR_REG_CYPRESS_CFR1_QUAD_EN;
+-	op = (struct spi_mem_op)
+-		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
+-					  SPINOR_REG_CYPRESS_CFR1V, 1,
+-					  nor->bouncebuf);
+-	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
+-	if (ret)
+-		return ret;
++		/* Update the Quad Enable bit. */
++		nor->bouncebuf[0] |= SPINOR_REG_CYPRESS_CFR1_QUAD_EN;
++		op = (struct spi_mem_op)
++			CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes, addr, 1,
++						  nor->bouncebuf);
++		ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
++		if (ret)
++			return ret;
+ 
+-	cfr1v_written = nor->bouncebuf[0];
++		cfr1v_written = nor->bouncebuf[0];
+ 
+-	/* Read back and check it. */
+-	op = (struct spi_mem_op)
+-		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
+-					  SPINOR_REG_CYPRESS_CFR1V,
+-					  nor->bouncebuf);
+-	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
+-	if (ret)
+-		return ret;
++		/* Read back and check it. */
++		op = (struct spi_mem_op)
++			CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes, addr,
++						  nor->bouncebuf);
++		ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
++		if (ret)
++			return ret;
+ 
+-	if (nor->bouncebuf[0] != cfr1v_written) {
+-		dev_err(nor->dev, "CFR1: Read back test failed\n");
+-		return -EIO;
++		if (nor->bouncebuf[0] != cfr1v_written) {
++			dev_err(nor->dev, "CFR1: Read back test failed\n");
++			return -EIO;
 +		}
-+
-+		if (!(nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3_PGSZ))
-+			return;
-+	}
-+
-+	/* We reach here only when all dice are configured to 512B */
-+	params->page_size = 512;
- }
- 
- static int
-@@ -226,7 +233,7 @@ s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
- 	/* Replace Quad Enable with volatile version */
- 	nor->params->quad_enable = cypress_nor_quad_enable_volatile;
- 
--	return cypress_nor_set_page_size(nor);
-+	return 0;
- }
- 
- static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
-@@ -251,6 +258,8 @@ static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
- 			break;
- 		}
  	}
-+
-+	cypress_nor_set_page_size(nor);
- }
  
- static void s25hx_t_late_init(struct spi_nor *nor)
-@@ -312,13 +321,8 @@ static void s28hx_t_post_sfdp_fixup(struct spi_nor *nor)
- 	 * actual value for that is 4.
- 	 */
- 	nor->params->rdsr_addr_nbytes = 4;
--}
- 
--static int s28hx_t_post_bfpt_fixup(struct spi_nor *nor,
--				   const struct sfdp_parameter_header *bfpt_header,
--				   const struct sfdp_bfpt *bfpt)
--{
--	return cypress_nor_set_page_size(nor);
-+	cypress_nor_set_page_size(nor);
- }
- 
- static void s28hx_t_late_init(struct spi_nor *nor)
-@@ -329,7 +333,6 @@ static void s28hx_t_late_init(struct spi_nor *nor)
- 
- static const struct spi_nor_fixups s28hx_t_fixups = {
- 	.post_sfdp = s28hx_t_post_sfdp_fixup,
--	.post_bfpt = s28hx_t_post_bfpt_fixup,
- 	.late_init = s28hx_t_late_init,
- };
- 
+ 	return 0;
 -- 
 2.25.1
 
