@@ -4,61 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D807BC636CC
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 14:53:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E324BC636CC
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 15:29:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=y3KdzvslLSYAJizIHSKzZE8BgiqcqQpNOa5pK/Qj2aM=; b=hDYUJEh+76hOCL
-	W3I+n7iwKcL0tu20PCK5dos9t4ekd59OPHYhjQtmIQ8+wd7hr3UDxWoLwW9+O5KveZwmk1KgaKTRS
-	jj8qLKWPNzJyGTuqo8wFSWdDCv3PzUtUeK8wqn8kh7hEVJwyX6LGfIq+oa9XK6g3uhx3CLDYIPGg5
-	nv1AtYzxOPNDUSZopNCy9O2O23/hqpqWeUR+YxkG7EyW4ZEfzRIeEH7shS2z7X010Gbrevhkqrdvl
-	HnV2Vxojcsr7Blt82Ri5Hueh98XhxNfPHUvajR101HZJH2lRTcuoZdyBOfs97oCdEsem4nTmBVfc1
-	48axFVPc43/hikYD3AgQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=cjKqgddO0JoHXBb3jnLIQE5LgL2aOl/2I/wOqsw0TzE=; b=snphU5AyDEmM32NJqOrvuJOUya
+	AAn1A491/jX6QoMoaaV9Usjfk68j0x8rvm08PskhXF2N6wj0eGFcvMdgOmo9hSxbxqYkQ29qJbzqH
+	B3GkdgKL8Q3VlmT7UwGLD2ab2ccloeZ56PzRp5YCbcmBQYGCLH/fbHx2i0PwUQn57lb8oU/wHMR+N
+	BBEM3LoHQty7NH1eM9AlDGZvZJcvz81EQnjUNbJbt4/9PE0UbPVRf9JtsyjQsERG1vFQN+m7NyCeP
+	YHEfG12CF7FMj9v8rt7pE0Kjb7HKIC404OGjPxw/9nkAWk8aJj2536pgRR+vCHNZu33y6yzBjjRCQ
+	JeTvemhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPlot-00FyHN-04; Wed, 08 Feb 2023 14:53:11 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1pPmNR-00G5Kl-TL; Wed, 08 Feb 2023 15:28:53 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPlop-00FyFz-E1
-	for linux-mtd@lists.infradead.org; Wed, 08 Feb 2023 14:53:08 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1pPmNO-00G5Jy-Qw
+	for linux-mtd@lists.infradead.org; Wed, 08 Feb 2023 15:28:52 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 017EF616EB;
-	Wed,  8 Feb 2023 14:53:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAC4BC433EF;
-	Wed,  8 Feb 2023 14:53:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1675867986;
-	bh=cd86XYxF2jYpvg+aqqQ8j2VWQfPNvNV812fP3jecRts=;
-	h=From:To:Cc:Subject:Date:From;
-	b=HR9ntnbDGUbgd1pjhCQC4d9XISfQhZq2A6GjsBYm3TI/3cMcqCfWhkpiSoq0oKbVL
-	 jDdV5utgotZAQWp019D6/fLmR6aEg8yjzBKaq+ZBC7yURmh7fYL41wdYq1COPUCnkp
-	 Qu2hq2JBwcxUqsnKzAroZMSddM4LVTOHVOawT5gw=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH v3] mtd: spi-nor: fix memory leak when using debugfs_lookup()
-Date: Wed,  8 Feb 2023 15:53:01 +0100
-Message-Id: <20230208145301.2169646-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.39.1
+	by mail.3ffe.de (Postfix) with ESMTPSA id 1AE7D41;
+	Wed,  8 Feb 2023 16:28:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1675870126;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UUOsinKT95zdvP+DuwsEu/6FCF+W9T+lwViOXbsC0Cg=;
+	b=GAsHcMbSvB/qufQyWOM797Et6E16LUSaXlA3V1MIX9LIu1195TosiheZ64C5ZT5vy8As4X
+	TCHzVM5j+VL1ARz+Dv6a3LVGeafaY0vOQQugn8DUJpcIZwItwJ/4Q75gq4lTvCR5yuPOdM
+	/dBYks1zeylukqEsOhVf3DBN/QK7whvOiBrNTQamn24RHT4XGWcVPl+W3MAigAxk3iEGk5
+	rN2xCsNDAtqC1Df+D4PWgY4oIl68O6Lx3lUA6ZNwh7bKfWVmY65TI2qfMUAfUqZRfMhZ00
+	Oh55QgGkUxZKrPb+1X+xUWkIMg9sHWuxe+e750q/KMgBV9CGsEdNuKBzrlcI+A==
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3341; i=gregkh@linuxfoundation.org; h=from:subject; bh=cd86XYxF2jYpvg+aqqQ8j2VWQfPNvNV812fP3jecRts=; b=owGbwMvMwCRo6H6F97bub03G02pJDMmPt3vfZOJl9b5tYT03+pJRGZuwZZBr2OcsB4npU6q7bqnP LZ7SEcvCIMjEICumyPJlG8/R/RWHFL0MbU/DzGFlAhnCwMUpABMp5GGYZ9Yz471gBvs67r2uImGXdG fIPE6rY5ifn3CXlevcqVm7XzZOtp12YtWDzGmRAA==
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Date: Wed, 08 Feb 2023 16:28:45 +0100
+From: Michael Walle <michael@walle.cc>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3] mtd: spi-nor: fix memory leak when using
+ debugfs_lookup()
+In-Reply-To: <20230208145301.2169646-1-gregkh@linuxfoundation.org>
+References: <20230208145301.2169646-1-gregkh@linuxfoundation.org>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <68d10a9b27a0a3894a290b28c1a22085@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230208_065307_567708_98A233F5 
-X-CRM114-Status: GOOD (  16.95  )
+X-CRM114-CacheID: sfid-20230208_072851_058077_918A216A 
+X-CRM114-Status: UNSURE (   6.73  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,110 +73,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When calling debugfs_lookup() the result must have dput() called on it,
-otherwise the memory will leak over time.  To solve this, remove the
-lookup and create the directory on the first device found, and then
-remove it when the module is unloaded.
+> +static void __exit spi_nor_module_exit(void)
+> +{
+> +	spi_nor_debugfs_shutdown();
+> +	spi_mem_driver_unregister(&spi_nor_driver);
 
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>
-Cc: Michael Walle <michael@walle.cc>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v3: create the directory the first time it is used, and then remove it
-    if it is present when the module is unloaded.  More complex than v2,
-    but correct.
-v2: fix up to work when module is removed and added, making the fix
-    much simpler.
+Hm, does the order matter here? I didn't test it, but this will
+lead to:
 
- drivers/mtd/spi-nor/core.c    | 14 +++++++++++++-
- drivers/mtd/spi-nor/core.h    |  2 ++
- drivers/mtd/spi-nor/debugfs.c | 12 +++++++++---
- 3 files changed, 24 insertions(+), 4 deletions(-)
+rootdir = debugfs_create_dir("spi-nor", NULL);
+nor->debugfs_root = debugfs_create_dir("spi0", rootdir);
+debugfs_remove(rootdir);
+debugfs_remove(nor->debugfs_root);
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index d67c926bca8b..adf85ce7fdb3 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3335,7 +3335,19 @@ static struct spi_mem_driver spi_nor_driver = {
- 	.remove = spi_nor_remove,
- 	.shutdown = spi_nor_shutdown,
- };
--module_spi_mem_driver(spi_nor_driver);
-+
-+static int __init spi_nor_module_init(void)
-+{
-+	return spi_mem_driver_register(&spi_nor_driver);
-+}
-+module_init(spi_nor_module_init);
-+
-+static void __exit spi_nor_module_exit(void)
-+{
-+	spi_nor_debugfs_shutdown();
-+	spi_mem_driver_unregister(&spi_nor_driver);
-+}
-+module_exit(spi_nor_module_exit);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Huang Shijie <shijie8@gmail.com>");
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index f03b55cf7e6f..e62cd9964456 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -713,8 +713,10 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
- 
- #ifdef CONFIG_DEBUG_FS
- void spi_nor_debugfs_register(struct spi_nor *nor);
-+void spi_nor_debugfs_shutdown(void);
- #else
- static inline void spi_nor_debugfs_register(struct spi_nor *nor) {}
-+static inline void spi_nor_debugfs_shutdown(void) {}
- #endif
- 
- #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
-diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index ff895f6758ea..cd9c2dc07509 100644
---- a/drivers/mtd/spi-nor/debugfs.c
-+++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -226,13 +226,13 @@ static void spi_nor_debugfs_unregister(void *data)
- 	nor->debugfs_root = NULL;
- }
- 
-+static struct dentry *rootdir;
-+
- void spi_nor_debugfs_register(struct spi_nor *nor)
- {
--	struct dentry *rootdir, *d;
-+	struct dentry *d;
- 	int ret;
- 
--	/* Create rootdir once. Will never be deleted again. */
--	rootdir = debugfs_lookup(SPI_NOR_DEBUGFS_ROOT, NULL);
- 	if (!rootdir)
- 		rootdir = debugfs_create_dir(SPI_NOR_DEBUGFS_ROOT, NULL);
- 
-@@ -247,3 +247,9 @@ void spi_nor_debugfs_register(struct spi_nor *nor)
- 	debugfs_create_file("capabilities", 0444, d, nor,
- 			    &spi_nor_capabilities_fops);
- }
-+
-+void spi_nor_debugfs_shutdown(void)
-+{
-+	if (rootdir)
-+		debugfs_remove(rootdir);
-+}
--- 
-2.39.1
+If that's ok, then this looks good.
 
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
