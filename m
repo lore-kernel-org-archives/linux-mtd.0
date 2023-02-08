@@ -4,84 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0216FC05027
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 07:01:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BE4C636CC
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 07:31:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4YCdomGOxfrkSvWlbdA9Zp2NRbop0xrW8cX3FlFp6T8=; b=Q6m1k2zMKwLUmG
-	aoKxcb4vRUEjFY8zWbkN6DJyWk+THzIU6cqQYBkXExuSQUv4pZZesOmBnzdjR8Yp9am0ohQ/ODlkJ
-	HaDTesaxL+6ZSiyHhrQHK2gLa0zXNJRiTmlGM83i68IRvELYNXLpD2EGCh7r99xIJfp6Zo8NSlpaE
-	SBiRCsz52sRQMCwboKwQom0Mf/4GjH0fGpmhgs4TtVVgM3zEfsHq/fN84bnXntwz6pJ1y9H3+nrIU
-	1iUqLVGZxywaVR1ljrvv6Ri0S4eiEuTsQoziOOH+MoD+EOHIASz+Yz/SFeZIiiRQay8wyYxbucTa1
-	exGRAghH99jS1bQX21OA==;
+	List-Owner; bh=yeOf+SSYToolLLmA/jxjueZFO0dV4QqFHM4O54+QL5w=; b=2m9QQBX/4aziIY
+	dX9gZicc1tBkyp0170OldDDNA9lXIiT9aHVTwcAG6mNMDH2NYlMxuEwGBgNdRkRWfdbnD9v5fqzmz
+	O80QtE1MPkkPmsJoG+qqcG7qmTjjr0F6DEvQm+O4jvO3zYHz94xIGgAgS/uufmOkjzSX/jzpxuv77
+	JhBJnHoU77SvuT89Mbtk8OwUC8l/Zu77PIJfdLZGX9CFRIu28fWnX+uywh5TQ96evyJz/h3fkl2r4
+	pG1IgADf6OlOzP11xS4ot2Hq/1ZrHjV2BdOaXEvGKckbHINFypp+Fi82LdjXBUqjkjwRqhJPwVbV+
+	uJAs33SONAtDMU3dHC8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPeRf-00EN3V-F2; Wed, 08 Feb 2023 07:00:43 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1pPevU-00EQul-4w; Wed, 08 Feb 2023 07:31:32 +0000
+Received: from mail-qt1-f181.google.com ([209.85.160.181])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPdQ0-00EE6O-GE
-	for linux-mtd@lists.infradead.org; Wed, 08 Feb 2023 05:54:58 +0000
-Received: by mail-pl1-x632.google.com with SMTP id k13so18179882plg.0
-        for <linux-mtd@lists.infradead.org>; Tue, 07 Feb 2023 21:54:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iZNoH5KCj5lZUQajU+gCDj9e7WO6prUbiznUwx8mhzg=;
-        b=W7ydn0xbYcD2BXO71Zsr2+5fZDxAlZArqsj7ICoFptsfZLx0nDmcrfw7szcnJ5UAMa
-         4rkmMN24Xhr3wnxxeRMTHDRlFRhP9WFYgaWSF/tG9yvmRygMtK/ZqVA7PpYAN+nmqVdV
-         5xTBMgk/pYrlFzRwR3fM12a6iyjJes1SkXRPczDtSzm0GmZb/SAPY35E69goud2Hf3sl
-         xDTQCzVAcMhsITf3K3GcleG4/6bNOb8z5RUD+ElW9Vz5wosqTPHJX0R7b2NSfk2aOVEQ
-         u9lNTw9VefhUGE7PvxI6qaO0fEFp7iVf1YWXwDIVcO7XbQ2GK/+X7MGDNnKlLifmzAux
-         Vm2A==
+	id 1pPevH-00EQte-JA; Wed, 08 Feb 2023 07:31:23 +0000
+Received: by mail-qt1-f181.google.com with SMTP id cr22so19788505qtb.10;
+        Tue, 07 Feb 2023 23:31:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iZNoH5KCj5lZUQajU+gCDj9e7WO6prUbiznUwx8mhzg=;
-        b=UhrXSwob2N3fakm2yFcXkF1GRpN8ciL2IBwnhoUaH7MHfqE//M08oeS3vkR+PgnSr2
-         ItDLW4sU1MQyKdNAVrtRtGr8lpi4Y4516l/CSBdY4XTUQc2grcV3cj4pgrg8ciPW7tnz
-         IKpMttzD6A7uQS3hHRtZBmMb3/285+sEDJ0SOJYXPeNwXNYDcb29YntmsPuFUF/cnwWU
-         Ik6sCd1bGjYJHIQBlhZwEcXR/ZClVTlDKtF1G7PmQks4FDFsvXoOZYIBZIgL5h6JmVUl
-         NUMEyh1mI6ZYBmu1DTkKgk5a4F1TkqIagb6/5Mar50mAiM4XTdwgxfnbn6CSr5MihzN7
-         dRAQ==
-X-Gm-Message-State: AO0yUKVRRT2e7d6Xp+mnWohp7OXElf+1yL46K42T3c0Z1rd1/5pgOy7I
-	VR7TQiWDocQNh98pFOEia5qcV/3G9qE=
-X-Google-Smtp-Source: AK7set/u1inJmXUFnhRdeM5THFIo4nEV8nsPMwlD8l15e2ITDOLSWrQZ1FFncK02EqAIj+snbgyKXw==
-X-Received: by 2002:a05:6a20:c191:b0:bc:6ffd:c064 with SMTP id bg17-20020a056a20c19100b000bc6ffdc064mr6597264pzb.25.1675835693381;
-        Tue, 07 Feb 2023 21:54:53 -0800 (PST)
-Received: from ISCNPF1JZGWX.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id r16-20020a638f50000000b004eca54eab50sm8915954pgn.28.2023.02.07.21.54.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 21:54:52 -0800 (PST)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v2 7/8] mtd: spi-nor: spansion: Set params->addr_mode_nbytes = 4 for multi-die parts
-Date: Wed,  8 Feb 2023 14:53:44 +0900
-Message-Id: <9006f197a4f0f287efaef77a8ff0935d5d7833fb.1675835253.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1675835253.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1675835253.git.Takahiro.Kuwano@infineon.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E2bppoHuX82os++/Py2NRHmX1jE3ZJ52UnRWRf0XIy0=;
+        b=cZP3GRZWbp/ukBLP52FMAztxqk5EU9EiTSImrWi0PAtrPDLfv9sgRv7+HjfRCWXZeJ
+         dmIypFYuLXcEK/J2tOwf9bD/+Eu+Dl+0otsC83vxNlQrhVzO7cKYbkR/y8pyl5XTW2Ct
+         s2AzLjaGBuQe2cvF5W9J8oos96UdOs/CbByv1VtiTYSdECSuIiJMtUfUK0JN2gldjSrQ
+         S8iITKq9haNejMY6/GLWuVs9Apjf/EOBy1JEt7usP4hNMtpIrg4U7EW0FWvnENhmAhfy
+         wRtb0Dxnk1+asa5g2zVzsK9lwfmnwyiwh0S1hfsbMfsgpLbRVHWlOkYVgFPgNg3Ewiki
+         Qbiw==
+X-Gm-Message-State: AO0yUKVAJdXgfX+rT7cCwOJdGfUM7SCm4NVRpYVXCtSDKaTAim9/ifLQ
+	gQ/sEk9mSNTaT2Spua9LjQdnGPDBYe/KFw==
+X-Google-Smtp-Source: AK7set8vVlxZjhmy/Ef8F/5w3wvzMmhQDDi7kXypFPiI/hmbnwnnEJ5P2E0mbywGIjpdXYU+1gmT4A==
+X-Received: by 2002:a05:622a:1825:b0:3ba:36f2:c207 with SMTP id t37-20020a05622a182500b003ba36f2c207mr6828360qtc.39.1675841475666;
+        Tue, 07 Feb 2023 23:31:15 -0800 (PST)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
+        by smtp.gmail.com with ESMTPSA id dl12-20020a05620a1d0c00b0071323d3e37fsm11082092qkb.133.2023.02.07.23.31.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Feb 2023 23:31:15 -0800 (PST)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-4b718cab0e4so224218827b3.9;
+        Tue, 07 Feb 2023 23:31:15 -0800 (PST)
+X-Received: by 2002:a0d:ca03:0:b0:506:6b5d:523c with SMTP id
+ m3-20020a0dca03000000b005066b5d523cmr523838ywd.283.1675841464452; Tue, 07 Feb
+ 2023 23:31:04 -0800 (PST)
 MIME-Version: 1.0
+References: <20230207014207.1678715-1-saravanak@google.com>
+ <20230207014207.1678715-10-saravanak@google.com> <CAMuHMdXEnSD4rRJ-o90x4OprUacN_rJgyo8x6=9F9rZ+-KzjOg@mail.gmail.com>
+ <CAGETcx8DaZqS7+47PhX4hQOfSk7AzPcTu=2i+4gAgXr6wyDNgg@mail.gmail.com>
+In-Reply-To: <CAGETcx8DaZqS7+47PhX4hQOfSk7AzPcTu=2i+4gAgXr6wyDNgg@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 8 Feb 2023 08:30:51 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXPosaKarsRWZpuGGD7Xam6qngsej+3iJdfWGTBDiWhLA@mail.gmail.com>
+Message-ID: <CAMuHMdXPosaKarsRWZpuGGD7Xam6qngsej+3iJdfWGTBDiWhLA@mail.gmail.com>
+Subject: Re: [PATCH v3 09/12] of: property: Simplify of_link_to_phandle()
+To: Saravana Kannan <saravanak@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, 
+	Frank Rowand <frowand.list@gmail.com>, Magnus Damm <magnus.damm@gmail.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Len Brown <lenb@kernel.org>, 
+	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
+	Abel Vesa <abel.vesa@linaro.org>, Alexander Stein <alexander.stein@ew.tq-group.com>, 
+	Tony Lindgren <tony@atomide.com>, John Stultz <jstultz@google.com>, 
+	Doug Anderson <dianders@chromium.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Maxim Kiselev <bigunclemax@gmail.com>, 
+	Maxim Kochetkov <fido_max@inbox.ru>, Luca Weiss <luca.weiss@fairphone.com>, 
+	Colin Foster <colin.foster@in-advantage.com>, 
+	Martin Kepplinger <martin.kepplinger@puri.sm>, Jean-Philippe Brucker <jpb@kernel.org>, 
+	Vladimir Oltean <vladimir.oltean@nxp.com>, kernel-team@android.com, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-acpi@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230207_215456_588845_64C7B3C0 
-X-CRM114-Status: GOOD (  13.25  )
+X-CRM114-CacheID: sfid-20230207_233119_659638_77FFAD8E 
+X-CRM114-Status: GOOD (  50.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,46 +107,143 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Hi Saravana,
 
-The params->addr_mode_nbytes is set to 3 during BFPT parse in case of
-BFPT_DWORD1_ADDRESS_BYTES_3_OR_4. Infineon SEMPER multi-chip devices are
-in 3- or 4-byte address mode by factory default, depending on model number.
-3-byte address mode is for backward compatibility for some SoCs. Since we
-cannot access to registers in 2nd die by 3-byte addressing. We assume post
-BootRom programs change the address mode to 4 before hand-off.
+On Wed, Feb 8, 2023 at 3:08 AM Saravana Kannan <saravanak@google.com> wrote:
+> On Tue, Feb 7, 2023 at 12:57 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Tue, Feb 7, 2023 at 2:42 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > The driver core now:
+> > > - Has the parent device of a supplier pick up the consumers if the
+> > >   supplier never has a device created for it.
+> > > - Ignores a supplier if the supplier has no parent device and will never
+> > >   be probed by a driver
+> > >
+> > > And already prevents creating a device link with the consumer as a
+> > > supplier of a parent.
+> > >
+> > > So, we no longer need to find the "compatible" node of the supplier or
+> > > do any other checks in of_link_to_phandle(). We simply need to make sure
+> > > that the supplier is available in DT.
+> > >
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >
+> > Thanks for your patch!
+> >
+> > This patch introduces a regression when dynamically loading DT overlays.
+> > Unfortunately this happens when using the out-of-tree OF configfs,
+> > which is not supported upstream.  Still, there may be (obscure)
+> > in-tree users.
+> >
+> > When loading a DT overlay[1] to enable an SPI controller, and
+> > instantiate a connected SPI EEPROM:
+> >
+> >     $ overlay add 25lc040
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /keys/status
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/pinctrl-0
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/pinctrl-names
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/cs-gpios
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/status
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /__symbols__/msiof0_pins
+> >
+> > The SPI controller and the SPI EEPROM are no longer instantiated.
+> >
+> >     # cat /sys/kernel/debug/devices_deferred
+> >     e6e90000.spi    platform: wait for supplier msiof0
+> >
+> > Let's remove the overlay again:
+> >
+> >     $ overlay rm 25lc040
+> >     input: keys as /devices/platform/keys/input/input1
+> >
+> > And retry:
+> >
+> >     $ overlay add 25lc040
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /keys/status
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/pinctrl-0
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/pinctrl-names
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/cs-gpios
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/status
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /__symbols__/msiof0_pins
+> >     spi_sh_msiof e6e90000.spi: DMA available
+> >     spi_sh_msiof e6e90000.spi: registered master spi0
+> >     spi spi0.0: setup mode 0, 8 bits/w, 100000 Hz max --> 0
+> >     at25 spi0.0: 512 Byte at25 eeprom, pagesize 16
+> >     spi_sh_msiof e6e90000.spi: registered child spi0.0
+> >
+> > Now it succeeds, and the SPI EEPROM is available, and works.
+> >
+> > Without this patch, or with this patch reverted after applying the
+> > full series:
+> >
+> >     $ overlay add 25lc040
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /keys/status
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/pinctrl-0
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/pinctrl-names
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/cs-gpios
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /soc/spi@e6e90000/status
+> >     OF: overlay: WARNING: memory leak will occur if overlay removed,
+> > property: /__symbols__/msiof0_pins
+> >     OF: Not linking spi@e6e90000 to interrupt-controller@f1010000 - No
+> > struct device
+> >     spi_sh_msiof e6e90000.spi: DMA available
+> >     spi_sh_msiof e6e90000.spi: registered master spi0
+> >     spi spi0.0: setup mode 0, 8 bits/w, 100000 Hz max --> 0
+> >     at25 spi0.0: 444 bps (2 bytes in 9 ticks)
+> >     at25 spi0.0: 512 Byte at25 eeprom, pagesize 16
+> >     spi_sh_msiof e6e90000.spi: registered child spi0.0
+> >
+> > The SPI EEPROM is available on the first try after boot.
+>
+> Sigh... I spent way too long trying to figure out if I caused a memory
+> leak. I should have scrolled down further! Doesn't look like that part
+> is related to anything I did.
 
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
----
- drivers/mtd/spi-nor/spansion.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Please ignore the memory leak messages.  They are known issues
+in the upstream DT overlay code, and not related to your series.
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 45377566ecbd..33b44074f941 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -303,6 +303,18 @@ s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
- 	/* Replace Quad Enable with volatile version */
- 	nor->params->quad_enable = cypress_nor_quad_enable_volatile;
- 
-+	/*
-+	 * The factory default of address mode in multi-die parts (>128MB) may
-+	 * be 3- or 4-byte, depending on model number. Since register address of
-+	 * 2nd die is mappeted to 32-bit address space, we cannot access to
-+	 * registers in 2nd die in 3-byte mode. 3-byte mode is for backward
-+	 * compatibility as some SoCs use 3-byte address in their BootROM. So
-+	 * far we assume post BootROM programs change the address mode to 4
-+	 * before handing off, rather than calling set_4byte_addr_mode() here.
-+	 */
-+	if (nor->params->size > SZ_128M)
-+		nor->params->addr_mode_nbytes = 4;
-+
- 	return 0;
- }
- 
--- 
-2.25.1
+> There are some flags set to avoid re-parsing fwnodes multiple times.
+> My guess is that the issue you are seeing has to do with how many of
+> the in memory structs are reused vs not when an overlay is
+> applied/removed and some of these flags might not be getting cleared
+> and this is having a bigger impact with this patch (because the fwnode
+> links are no longer anchored on "compatible" nodes).
+>
+> With/without this patch (let's keep the series) can you look at how
+> the following things change between each step you do above (add,
+> remove, retry):
+> 1) List of directories under /sys/class/devlink
+> 2) Enable the debug logs inside __fwnode_link_add(),
+> __fwnode_link_del(), device_link_add()
 
+Thanks, I'll give that a try, later...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
