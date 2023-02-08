@@ -4,79 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AB14C636CC
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 12:38:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F6D0C636D7
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 12:58:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ejMtokfaLKu9XjnC0FMwhDn5wiad4mIbmHDMie+4AnY=; b=TADFSWTb8zulXA
-	St2rI3+BZmbhaaWF4tM66tes6NjULreGHKoj2nMzFs7sRDXrYuiJW3u3qYZYz5rd9UdzUtmyu6Doy
-	xZFiObHF/ENoPbm00C3Ss+72uMuhA7JH546DEdWG6ohSuXOC3s4g6fh/mx0cIMbpL9oXX6X5XyUni
-	O0D3CjRBwZaZH+vkNfdmHQHF6L35861L8Z7zql0p2JdLAxnNtoEYCs236hGqX9APzzC1uhYPfF7X8
-	0fEn83FBIjD4otD/k3hjslDirlprJCBGFHsLxIp8Zk6K5FJ0nu7uCf1NRICRj5flkVnlJE8r4zIsY
-	bXW1X5bs6VFfA7ZUvgbw==;
+	List-Owner; bh=p2Hp2JL/qldy8wjb6OewRIhB8www0hzf0PCTuVGlpCM=; b=I3Udcp5iWB56sM
+	6cAelEM/ww0FLH0D9fK8LrBoL6pKKyaNW5zJmrGoPtC0ciph+ijr/rGVkAb5xUGKZVNGQj/3GBmzp
+	BDu7dDaGEpo4BrRq5ekQYuJNfLyK4Ir4Dez29gtXiHKXgl/FTLRNIgiN+mX5Toni9co9s9eCC3wut
+	tUlIiQ1w7mV/sdFfBGQ6GgvbFRAkf7EkHbeyam2lI2/pDkzMsuMzjZAPE0ugCgcHjohm+bwMuyCGn
+	oKPRACzam5iTUhiJcDjeNSFSwspDuUAULFQ0vv/IKsKaV8LvjcRYsyYnBzY2NV7VTGfUV1gLe7KJ9
+	YJiMlc9EHxy6SxahNxYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPji6-00FbtI-OY; Wed, 08 Feb 2023 12:38:02 +0000
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
+	id 1pPk1m-00Ffjn-TO; Wed, 08 Feb 2023 12:58:22 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPji3-00Fbs3-RV
-	for linux-mtd@lists.infradead.org; Wed, 08 Feb 2023 12:38:01 +0000
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pPjhm-002HdN-3f; Wed, 08 Feb 2023 13:37:42 +0100
-Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pPjhl-000IqT-Oa; Wed, 08 Feb 2023 13:37:42 +0100
-Message-ID: <91be7f6b52d8ed74798e86270d59bc5cddefe130.camel@physik.fu-berlin.de>
-Subject: Re: remove arch/sh
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Randy Dunlap <rdunlap@infradead.org>, Christoph Hellwig <hch@lst.de>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- Arnd Bergmann <arnd@arndb.de>,  Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Laurent Pinchart
- <laurent.pinchart@ideasonboard.com>, Kieran Bingham
- <kieran.bingham+renesas@ideasonboard.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org,  linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org,  linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org,  linux-sh@vger.kernel.org
-Date: Wed, 08 Feb 2023 13:37:40 +0100
-In-Reply-To: <CAAhV-H57bV855SMr6iBqoQzdak5QSnaRLjQ9oAbOtYZnik5SoQ@mail.gmail.com>
-References: <20230113062339.1909087-1-hch@lst.de>
-	 <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
-	 <20230116071306.GA15848@lst.de>
-	 <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
-	 <20230203071423.GA24833@lst.de>
-	 <60ed320c8f5286e8dbbf71be29b760339fd25069.camel@physik.fu-berlin.de>
-	 <0e26bf17-864e-eb22-0d07-5b91af4fde92@infradead.org>
-	 <f6317e9073362b13b10df57de23e63945becea32.camel@physik.fu-berlin.de>
-	 <CAAhV-H57bV855SMr6iBqoQzdak5QSnaRLjQ9oAbOtYZnik5SoQ@mail.gmail.com>
-User-Agent: Evolution 3.46.3 
+	id 1pPk1k-00Ffiy-JT
+	for linux-mtd@lists.infradead.org; Wed, 08 Feb 2023 12:58:22 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 0C402B81E29;
+	Wed,  8 Feb 2023 12:58:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C0EBC433EF;
+	Wed,  8 Feb 2023 12:58:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1675861097;
+	bh=CpIvJaGObLNYCCXgT1uJ8IVXPtC9179OM5CTzskSEJ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=K1b27viSchQEUNZ2cknFunGmvz0++HYBqjo/INs7CdKJQFn/ziTfzdqvPAHtk80AS
+	 s2hL5Y2brI3dfOKUUTEnVd2/lDGvvcGbNMXhk+Vzj9Js1K1LaW2l67+4KK0mBSHXA4
+	 2CDuab1igzUya/C6swcaxEB0+xWjirHp2vTxVIr8=
+Date: Wed, 8 Feb 2023 13:58:14 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Michael Walle <michael@walle.cc>
+Cc: tudor.ambarus@microchip.com, pratyush@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, stable <stable@kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: fix memory leak when using debugfs_lookup()
+Message-ID: <Y+OcZoFhS7HzUifp@kroah.com>
+References: <20220902133724.278133-1-gregkh@linuxfoundation.org>
+ <bcd0cc5153457fb52566519a76e7b5b4@walle.cc>
+ <Yy7D3hmH9dYDUsdR@kroah.com>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.148.100
+Content-Disposition: inline
+In-Reply-To: <Yy7D3hmH9dYDUsdR@kroah.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230208_043800_047480_AC41B04D 
-X-CRM114-Status: UNSURE (   7.20  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230208_045820_810105_6306A01A 
+X-CRM114-Status: GOOD (  28.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,25 +75,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Huacei!
-
-On Wed, 2023-02-08 at 20:24 +0800, Huacai Chen wrote:
-> Emm, maybe this patch has its chance to be merged now. :)
+On Sat, Sep 24, 2022 at 10:46:22AM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Sep 02, 2022 at 04:01:36PM +0200, Michael Walle wrote:
+> > Hi,
+> > 
+> > Am 2022-09-02 15:37, schrieb Greg Kroah-Hartman:
+> > > When calling debugfs_lookup() the result must have dput() called on it,
+> > > otherwise the memory will leak over time.  Fix this up to be much
+> > > simpler logic and only create the root debugfs directory once when the
+> > > driver is first accessed.  That resolves the memory leak and makes
+> > > things more obvious as to what the intent is.
+> > > 
+> > > Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
+> > > Cc: Pratyush Yadav <pratyush@kernel.org>
+> > > Cc: Michael Walle <michael@walle.cc>
+> > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > Cc: Richard Weinberger <richard@nod.at>
+> > > Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> > > Cc: linux-mtd@lists.infradead.org
+> > > Cc: stable <stable@kernel.org>
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > ---
+> > >  drivers/mtd/spi-nor/debugfs.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/spi-nor/debugfs.c
+> > > b/drivers/mtd/spi-nor/debugfs.c
+> > > index df76cb5de3f9..3aab595e82d1 100644
+> > > --- a/drivers/mtd/spi-nor/debugfs.c
+> > > +++ b/drivers/mtd/spi-nor/debugfs.c
+> > > @@ -228,11 +228,11 @@ static void spi_nor_debugfs_unregister(void *data)
+> > > 
+> > >  void spi_nor_debugfs_register(struct spi_nor *nor)
+> > >  {
+> > > -	struct dentry *rootdir, *d;
+> > > +	static struct dentry *rootdir;
+> > > +	struct dentry *d;
+> > >  	int ret;
+> > > 
+> > >  	/* Create rootdir once. Will never be deleted again. */
+> > > -	rootdir = debugfs_lookup(SPI_NOR_DEBUGFS_ROOT, NULL);
+> > 
+> > IIRC I had that one and it didn't work with spi-nor as a module.
+> > Wouldn't it try to create the root dir twice if you remove the module
+> > and load it again?
 > 
-> https://lore.kernel.org/linux-sh/CAAhV-H6siOtVkZpkS4aABejgZCqTwp3TihA0+0HGZ1+mU3XAVA@mail.gmail.com/T/#u
+> Yes it would, that is a use-model I did not consider at all, thanks.
+> I'll rework this.
 
-Yes, that's the plan. We're collecting the various patches people have sent
-in for arch/sh, review and test them and apply them.
+v2 with this fixed up now sent, thanks.
 
-My test board is running the latest kernel now, so I can test new patches, too.
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
