@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6991C05027
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 07:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08924C636CC
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Feb 2023 07:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+5SUlx7P5/euLEDVFQBMi9s+vR6Scxect4GNqJhfR/Q=; b=by/Sj25gS0fk9L
-	ik8gk7aRFCD9WfijDqHvGy6+1p4aTWgFloP1TJcWUc4ti6Eynm95Ys/YQDY3ZYNfs0f8a/nQCR/O0
-	kcMfjCaTrfHxNJQCVXy0+C+u3PCKR8XOdtWjVtonLpmEKjCijCRBiqLeKfB9voQPcMzEEIvCA007+
-	SUuuD2+7E+utl8e3RXaAsVUi3CrgZRLv+Ka1dSgakqOOIXQwFAIVoJRQU7Qu7U3g2J3Ay5h6mHkWT
-	blruKLmwx13FeFDlmPh161z114pzIKpplLLi3ZtHQtOZa8bKklKZT5yLBRZg/qB7PLRQheRJwXIQ+
-	IGaHj9o5ZFbUAi/Ufv6Q==;
+	List-Owner; bh=PyGSxplORjL505P1PUOltPx8KtT2o6pCs2N7chE2VSs=; b=AqmSUj6R16RXv3
+	nLY3PZaNnMDoeJskIjdVu8VmBz3j5+8s+4VzwjcFZmaW7Ahfi91G+6wURx1++yPaI8YB0aKwrNsbP
+	rjTfsQL6JtTYGWVG4BcEcMi4K295bxAjQMMdXzfrtpULVgscfd7x2wVGk1hRQKFQwXo/zF38t40hU
+	uPMBPbb/075tG98KcKuknenZVl2Ep1zAUr3vWU417edV/a5AGUGuWAtb9HgiFL4WuAyZ5/9hV8KBP
+	Pn544o4maNp9VbYWwe5Ue4PY16V68Xz3hy58P3KvJh/FQcy1ak93ylq/qNyXRer+u1+2SYCMldGK2
+	lytiUqL2Q8OngSK1i0QA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPfEK-00EUcx-E9; Wed, 08 Feb 2023 07:51:00 +0000
-Received: from mail-ot1-f47.google.com ([209.85.210.47])
+	id 1pPfKV-00EVSD-3C; Wed, 08 Feb 2023 07:57:23 +0000
+Received: from mail-qt1-f173.google.com ([209.85.160.173])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pPfE9-00EUZh-3Y; Wed, 08 Feb 2023 07:50:50 +0000
-Received: by mail-ot1-f47.google.com with SMTP id n25-20020a9d7119000000b0068bd8c1e836so4960185otj.3;
-        Tue, 07 Feb 2023 23:50:46 -0800 (PST)
+	id 1pPfKJ-00EVPh-W4; Wed, 08 Feb 2023 07:57:13 +0000
+Received: by mail-qt1-f173.google.com with SMTP id c2so19853425qtw.5;
+        Tue, 07 Feb 2023 23:57:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1mVnPAd0AxN2Xeetse6ostcKuisaMZaCTAVRb6pMiOQ=;
-        b=aA5k3EtzpC/ZNNuc9fmJNY6FfQUmLCokLCVZe/1jacgaoU7wWwcNXf/Pm3k0LFRYhU
-         pxEJkkLagamDqQizaCE3iy3LF6HZf2bNMSYjB7TjTSNKuI+VBMkWk+W9AaQQqveVEdct
-         kn5+oV63/b78GPn6o5HpjIuCwq0yNsRak2koaKWPEyCssJiLFoNWaxkMdjuQACIdSaEW
-         7vAR/lAX8p2KmUe2VhLFmXd6YO8qC+TqoGe2hSHdBBFs22Wm2SwAOD7uSS4m4rE3MO/i
-         DGpQiDKxNN8yWwTQb33UhEmKXO1+00MF7wjWdh8ui2lptDpv0xc0Jn0oqqJgUnKLlqsJ
-         Ng1w==
-X-Gm-Message-State: AO0yUKXSLJ+wcUUx8U/8wmWPXiVDuh2dyhcC0xKRnfjg0qoKmf7TOek1
-	moY/Ua0ZZmPEP3RZXZJxoQQTqJwqp8WT/w==
-X-Google-Smtp-Source: AK7set9Y8e0MIj61/1UgMnVh59VqbNXztKJx3x0q49jGVVwtlofFShI4Pu/VsXCnI0THcpjIPy4TOQ==
-X-Received: by 2002:a9d:65d6:0:b0:68b:ca3e:ffb5 with SMTP id z22-20020a9d65d6000000b0068bca3effb5mr3014812oth.24.1675842645469;
-        Tue, 07 Feb 2023 23:50:45 -0800 (PST)
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com. [209.85.210.41])
-        by smtp.gmail.com with ESMTPSA id w10-20020a9d638a000000b0068d6ed06b73sm6503616otk.18.2023.02.07.23.50.45
+        bh=nfN06Fr/21gttqDSQulqZGi0pmIW2PjRSxTzZoYMCB8=;
+        b=mm+LWlKbXQUbrfSriWt0D7+ifGkOke4QDPwE29eCl0AGBdo2UB8m75JiV3zGxkpWDw
+         Mm00du4qVBx03Cbi82uKtOVZtY6ey4LB6Xd+QUULGWXT4ApZqH2jY/n1RWJOpz9JEnrH
+         AtP4xjJXGipSyVDiaEjI6gXob0mGVV0qIa5R4+u5q9rkf0yTCTsgXDObKZN5JuxH7I37
+         lWdE/XeIecOB9imyf8mCYk60KsjcddiMwZRTYQyvDy9YQukdf0StaEEwhKnz87glcMx6
+         wy5fS5aa9PdpqgBinYg6rUont+gaebwoSnEfkbemAle+oghra1fMMb0Eo3hM7CNh5M7C
+         oH/Q==
+X-Gm-Message-State: AO0yUKXZNCyD5/9QI38fke+ZOJ8bMoYtcVJDJtR4ScgDhe/T8PDsAc60
+	V3jvJcLNw4QOdswQ6/uLzv7pDsP0Jublow==
+X-Google-Smtp-Source: AK7set/t6KLk+uAnDZK/gL0TqIeF9Y3yYinYDufLCipJOqd0mjZicnEF43b8niAaBnYRVGmqEOq/MQ==
+X-Received: by 2002:ac8:7d52:0:b0:3ad:9e9a:17de with SMTP id h18-20020ac87d52000000b003ad9e9a17demr10486973qtb.42.1675843029280;
+        Tue, 07 Feb 2023 23:57:09 -0800 (PST)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id g12-20020a05620a278c00b0070531c5d655sm11132659qkp.90.2023.02.07.23.57.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Feb 2023 23:50:45 -0800 (PST)
-Received: by mail-ot1-f41.google.com with SMTP id e12-20020a0568301e4c00b0068bc93e7e34so4954154otj.4;
-        Tue, 07 Feb 2023 23:50:45 -0800 (PST)
-X-Received: by 2002:a5b:24c:0:b0:87a:68fd:181a with SMTP id
- g12-20020a5b024c000000b0087a68fd181amr839537ybp.36.1675842634268; Tue, 07 Feb
- 2023 23:50:34 -0800 (PST)
+        Tue, 07 Feb 2023 23:57:09 -0800 (PST)
+Received: by mail-yb1-f178.google.com with SMTP id a1so21267362ybj.9;
+        Tue, 07 Feb 2023 23:57:08 -0800 (PST)
+X-Received: by 2002:a0d:f444:0:b0:526:78ad:bb15 with SMTP id
+ d65-20020a0df444000000b0052678adbb15mr694356ywf.47.1675843017906; Tue, 07 Feb
+ 2023 23:56:57 -0800 (PST)
 MIME-Version: 1.0
 References: <20230207014207.1678715-1-saravanak@google.com>
  <20230207014207.1678715-10-saravanak@google.com> <CAMuHMdXEnSD4rRJ-o90x4OprUacN_rJgyo8x6=9F9rZ+-KzjOg@mail.gmail.com>
- <Y+NQUVR9P3hmqFcL@kroah.com>
-In-Reply-To: <Y+NQUVR9P3hmqFcL@kroah.com>
+ <CAGETcx8DaZqS7+47PhX4hQOfSk7AzPcTu=2i+4gAgXr6wyDNgg@mail.gmail.com> <CAGETcx_bkuFaLCiPrAWCPQz+w79ccDp6=9e881qmK=vx3hBMyg@mail.gmail.com>
+In-Reply-To: <CAGETcx_bkuFaLCiPrAWCPQz+w79ccDp6=9e881qmK=vx3hBMyg@mail.gmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 8 Feb 2023 08:50:22 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXyeU=HP6XVYuXrkjQ8JF53kEW-6mvthCwfL+u3Efuk1A@mail.gmail.com>
-Message-ID: <CAMuHMdXyeU=HP6XVYuXrkjQ8JF53kEW-6mvthCwfL+u3Efuk1A@mail.gmail.com>
+Date: Wed, 8 Feb 2023 08:56:45 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVREiVoGp-jvXKAdPSwjio13VgtPXWppnGOB+gSS9op+g@mail.gmail.com>
+Message-ID: <CAMuHMdVREiVoGp-jvXKAdPSwjio13VgtPXWppnGOB+gSS9op+g@mail.gmail.com>
 Subject: Re: [PATCH v3 09/12] of: property: Simplify of_link_to_phandle()
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Saravana Kannan <saravanak@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+To: Saravana Kannan <saravanak@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
 	Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
 	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
 	Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
@@ -89,8 +89,8 @@ Cc: Saravana Kannan <saravanak@google.com>, "Rafael J. Wysocki" <rafael@kernel.o
 	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
 	linux-acpi@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230207_235049_165666_2FDAB904 
-X-CRM114-Status: GOOD (  37.16  )
+X-CRM114-CacheID: sfid-20230207_235712_056120_F16B2E7A 
+X-CRM114-Status: GOOD (  72.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,37 +107,137 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Greg,
+Hi Saravana,
 
-On Wed, Feb 8, 2023 at 8:33 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Tue, Feb 07, 2023 at 09:57:14PM +0100, Geert Uytterhoeven wrote:
-> > On Tue, Feb 7, 2023 at 2:42 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > The driver core now:
-> > > - Has the parent device of a supplier pick up the consumers if the
-> > >   supplier never has a device created for it.
-> > > - Ignores a supplier if the supplier has no parent device and will never
-> > >   be probed by a driver
+On Wed, Feb 8, 2023 at 8:32 AM Saravana Kannan <saravanak@google.com> wrote:
+> On Tue, Feb 7, 2023 at 6:08 PM Saravana Kannan <saravanak@google.com> wrote:
+> > On Tue, Feb 7, 2023 at 12:57 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Tue, Feb 7, 2023 at 2:42 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > > The driver core now:
+> > > > - Has the parent device of a supplier pick up the consumers if the
+> > > >   supplier never has a device created for it.
+> > > > - Ignores a supplier if the supplier has no parent device and will never
+> > > >   be probed by a driver
+> > > >
+> > > > And already prevents creating a device link with the consumer as a
+> > > > supplier of a parent.
+> > > >
+> > > > So, we no longer need to find the "compatible" node of the supplier or
+> > > > do any other checks in of_link_to_phandle(). We simply need to make sure
+> > > > that the supplier is available in DT.
+> > > >
+> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
 > > >
-> > > And already prevents creating a device link with the consumer as a
-> > > supplier of a parent.
+> > > Thanks for your patch!
 > > >
-> > > So, we no longer need to find the "compatible" node of the supplier or
-> > > do any other checks in of_link_to_phandle(). We simply need to make sure
-> > > that the supplier is available in DT.
+> > > This patch introduces a regression when dynamically loading DT overlays.
+> > > Unfortunately this happens when using the out-of-tree OF configfs,
+> > > which is not supported upstream.  Still, there may be (obscure)
+> > > in-tree users.
 > > >
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > When loading a DT overlay[1] to enable an SPI controller, and
+> > > instantiate a connected SPI EEPROM:
+
+[...]
+
+> > > The SPI controller and the SPI EEPROM are no longer instantiated.
+
+> > Sigh... I spent way too long trying to figure out if I caused a memory
+> > leak. I should have scrolled down further! Doesn't look like that part
+> > is related to anything I did.
 > >
-> > Thanks for your patch!
+> > There are some flags set to avoid re-parsing fwnodes multiple times.
+> > My guess is that the issue you are seeing has to do with how many of
+> > the in memory structs are reused vs not when an overlay is
+> > applied/removed and some of these flags might not be getting cleared
+> > and this is having a bigger impact with this patch (because the fwnode
+> > links are no longer anchored on "compatible" nodes).
 > >
-> > This patch introduces a regression when dynamically loading DT overlays.
-> > Unfortunately this happens when using the out-of-tree OF configfs,
-> > which is not supported upstream.  Still, there may be (obscure)
-> > in-tree users.
+> > With/without this patch (let's keep the series) can you look at how
+> > the following things change between each step you do above (add,
+> > remove, retry):
+> > 1) List of directories under /sys/class/devlink
+> > 2) Enable the debug logs inside __fwnode_link_add(),
+> > __fwnode_link_del(), device_link_add()
+> >
+> > My guess is that the final solution would entail clearing
+> > FWNODE_FLAG_LINKS_ADDED for some fwnodes.
 >
-> As we can't do anything about out-of-tree code, why does this matter?
+> You replied just as I was about to hit send. So sending this anyway...
+>
+> Ok, I took a closer look and I think it's a bit of a mess. The fact
+> that it even worked for you without this patch is a bit of a
+> coincidence.
+>
+> Let's just take platform devices that are created by
+> driver/of/platform.c as an example.
+>
+> The main problem is that when you add/remove properties to a DT node
+> of an existing platform device, nothing is really done about it at the
+> device level. We don't even unbind and rebind the driver so the driver
+> could make use of the new properties. We don't remove and add back the
+> device so whoever might use the new property will use it. And if you
+> are adding a new node, it'll only trigger any platform device level
+> impact if it's a new node of a "simple-bus" (or similar bus) device.
+>
+> Problem 1:
+> So if you add a new child node to an existing probed device that adds
+> its children explicitly (as in, the parent is not a "simple-bus" like
+> device), nothing will happen. The newly added child device node will
+> get converted into a platform device, not will the parent device
+> notice it. So in your case of adding msiof0_pins, it's just that when
+> the consumer gets the pins, the driver doesn't get involved much and
+> it's the pinctrl framework that reads the DT and figures it out.
+>
+> With this patch, the fwnode links point to the actual resource and the
+> actual parent device inherits them if they don't get converted to a
+> struct device. But since we are adding this msiof0_pins after the
+> parent device has probed, the fwnode link isn't inherited by the
+> parent pinctrl device.
+>
+> Problem 2:
+> So if you add a property to an already bound device, nothing is done
+> by the driver. In your overlay example, if you move the status="okay"
+> line to be the first property you change in the msiof0 spi device,
+> you'll probably see that fw_devlink is no longer the one blocking the
+> probe. This is because the platform device will get added as soon as
+> the status flips from disabled to enabled and at that point fw_devlink
+> will think it has no suppliers and won't do any probe deferring. And
+> then as the new properties get added nothing will happen at the device
+> or fw_devlink level. If the msiof0's spi driver fails immediately with
+> NOT -EPROBE_DEFER when platform device is added because it couldn't
+> find any pinctrl property, then msiof0 will never probe (unless you
+> remove and add the driver). If it had failed with -EPROBE_DEFER, then
+> it might probe again if something else triggers a deferred probe
+> attempt. Clearly, things working/not working based on the order of
+> properties in DT is not a good implementation.
+>
+> Problem 3:
+> What if you enable a previously disabled supplier. There's no way to
+> handle that from a fw_devlink level without re-parsing the entire
+> device tree because existing devices might be consumers now.
+>
+> Anyway, long story short, it's sorta worked due to coincidence and
+> it's quite messy to get it to work correctly.
 
-Because the actual DT overlay mechanism is upstream.
+Several subsystems register notifiers to be informed of the events
+above. E.g. drivers/spi/spi.c:
+
+        if (IS_ENABLED(CONFIG_OF_DYNAMIC))
+                WARN_ON(of_reconfig_notifier_register(&spi_of_notifier));
+        if (IS_ENABLED(CONFIG_ACPI))
+                WARN_ON(acpi_reconfig_notifier_register(&spi_acpi_notifier));
+
+So my issue might be triggered using ACPI, too.
+
+> Another way to get this to work is to:
+> 1) unload pinctrl driver, unload spi driver.
+> 2) apply overlay
+> 3) reload pinctrl driver, reload spi driver.
+>
+> This is assuming unloading those 2 drivers doesn't crash your system.
+
+Unloading the pinctrl driver is not an option.
 
 Gr{oetje,eeting}s,
 
