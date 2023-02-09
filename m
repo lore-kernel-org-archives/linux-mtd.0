@@ -4,79 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72EBEC05027
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Feb 2023 09:16:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 244E8C61DA4
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Feb 2023 12:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fYiXKF4toaDb1raOVt4Wlr1SZYQgERoqiT5jqvcRo/E=; b=DyHU0Hb3QJG3DJ
-	rQ1gU72bnw4QL/Lc8FpP4k/qDoMBPgGDHk6OeF/1qWTrf9jP/d11ZCcX92PoJzP5B9818W0N5gVP4
-	hpW/muXvPoAEZBPjl8IliMv9vpBTORLNnZ99Z122QdXpIivv3FEn+cbfTv8pypXJjVsSlBYJ2X90V
-	xrF6f9U0UWbG0fnbdo0AywyvhmR0ui5Pd+nxwiiT8QJzuHD5lVXkCJ9pJZZiYsVuAZEYDnVGtKbp9
-	BKR55r4Nlmtl6w45ATndEhFyd/isTXuRqbT8ayjHwwxeqeMxYingCJkPOtqA4SQR457HHz6RPLwhy
-	7ScLiuMFfmhDdi6sRvkg==;
+	List-Owner; bh=T6oeO0aFN1Sl55YTaWK3oyx50tLrVmYxqeMTXa2sQac=; b=J3bnEqsgL2+6fn
+	AAU3st9HvzV7I3WBvpRraireuiavZoa/lNXKD190FkB5qh8b70pxCE1Qob1Znp7BIViJWbERPlLWK
+	qvGuAk2txuq/rmpX9pSn++m9Ah4yxl3Bozhjgx22xTnQCIT0iLBNUCxwuPo2ZThVyG7kzS4hTl0Sk
+	hcT+BvugrEu4Wru4Sy/9hqPGHdeDA8kK5MVXjTDGWhS/IpgQlmjG7Mc1wT+4zQUkR52fz+jJk/fht
+	wxuGiKP2uhcLPLXfOhURgzzFmbai7Mo5weQru3ZCJSlWyHiSxxbuOZuhsdBZKMDFsNotMKnr1WBU/
+	VQ78060GH6dvr/AxYf+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pQ32O-000iaU-29; Thu, 09 Feb 2023 09:16:16 +0000
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
+	id 1pQ5ji-001SKP-EM; Thu, 09 Feb 2023 12:09:10 +0000
+Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pQ32K-000iYY-Tj
-	for linux-mtd@lists.infradead.org; Thu, 09 Feb 2023 09:16:14 +0000
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pQ323-003ncL-Bt; Thu, 09 Feb 2023 10:15:55 +0100
-Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pQ323-0012H8-3k; Thu, 09 Feb 2023 10:15:55 +0100
-Message-ID: <ed4a36508c3d047f9e9a882475388be18b790b76.camel@physik.fu-berlin.de>
-Subject: Re: remove arch/sh
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Rob Landley <rob@landley.net>, Randy Dunlap <rdunlap@infradead.org>, 
-	Christoph Hellwig
-	 <hch@lst.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
- <dalias@libc.org>,  Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Laurent Pinchart
- <laurent.pinchart@ideasonboard.com>, Kieran Bingham
- <kieran.bingham+renesas@ideasonboard.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org,  linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org,  linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org,  linux-sh@vger.kernel.org
-Date: Thu, 09 Feb 2023 10:15:52 +0100
-In-Reply-To: <1c6e7a19-a650-1852-6f74-ca5547db44c4@landley.net>
-References: <20230113062339.1909087-1-hch@lst.de>
-	 <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
-	 <20230116071306.GA15848@lst.de>
-	 <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
-	 <20230203071423.GA24833@lst.de>
-	 <60ed320c8f5286e8dbbf71be29b760339fd25069.camel@physik.fu-berlin.de>
-	 <0e26bf17-864e-eb22-0d07-5b91af4fde92@infradead.org>
-	 <f6317e9073362b13b10df57de23e63945becea32.camel@physik.fu-berlin.de>
-	 <1c6e7a19-a650-1852-6f74-ca5547db44c4@landley.net>
-User-Agent: Evolution 3.46.3 
+	id 1pQ5jc-001SH3-Ll
+	for linux-mtd@lists.infradead.org; Thu, 09 Feb 2023 12:09:05 +0000
+Received: by mail-pl1-x62e.google.com with SMTP id u9so2552009plr.9
+        for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2023 04:09:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c0We/d0AZn2JiqqrS3ogajJuTcMdhsIMmVbPovskn+4=;
+        b=UUVa9yJkTB4QQ4LxL7dU4IQqRm0olS6IrTK6lm49/+l+VjTbRBwqm+8jnd77tbgh7b
+         VIzarSvEMVCxFusq9iwDCAUY89apoZAV8WjL2+ENElKmNG9gUUATBnWxlnP6D9Itd+Ia
+         c/QaRju/0bHZdcJ8YiozydzoGx1ouuYfuR6H6Tdlmm+E9uGiiTqewQWEoVrYTIwVs81u
+         MiwpS/CHjSMlv8dzkfwAtO2WT/f/dAvmWAkhNVDmyJuY3GqRH4Umioo+rAvlzQjapIV5
+         d8uuonFnDaD4BwfCbFCu0C0Z/+05PVlfiOnV+bfmY+u9ptGAGu3gB29cnntypyNVi1Xq
+         bxWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c0We/d0AZn2JiqqrS3ogajJuTcMdhsIMmVbPovskn+4=;
+        b=b03tVTu8hd2WtImpjXtpjZGVN+W+HvMF09nzsCFWD3sOrNh99YIKi2o2jHSZP6/hlP
+         nRcqxSqnSIZwsIT8nqKjFsuGz8jujS1fRdvTVduWrCueo6n9yfy+FRLDX0bcEc3GlmfM
+         YoIXpFoimBPTK/nVY9SAh7dSLwckRjecNIixbOB+0jTd/LVj74X7O+LiJwk9ZId7N7dr
+         iZnnD5+uVlU0+9HXjaEpm/G77at64CpzpSQLAsDWQN6wucQM74rxBOhpD5PH7RIrMntS
+         ea/XoVteKeIM8zszymO7LrTB8I5DlpjJcADouv4BbubFDkukJ/uqDTmSzMmgw662wVe1
+         RjNw==
+X-Gm-Message-State: AO0yUKWDaV2SnD1T26rbDX/Geklc1YJ+YFd3uEj0xeVXMOADij0ZXnH9
+	W6/uXSjVEifa54sTnku6rmsnrfdUwuU=
+X-Google-Smtp-Source: AK7set+Wq3VSlhRGb/hctoj8/Ty3iQMVX/wBbNBUTcDdjFRa7SC46oH5bz3wPrXGxqri62RKNtQGMA==
+X-Received: by 2002:a17:90b:1d02:b0:22c:8e00:1222 with SMTP id on2-20020a17090b1d0200b0022c8e001222mr12392151pjb.23.1675944542731;
+        Thu, 09 Feb 2023 04:09:02 -0800 (PST)
+Received: from mp600-ThinkCentre-M710t.. ([123.51.145.88])
+        by smtp.gmail.com with ESMTPSA id ms15-20020a17090b234f00b00233217fa85esm449746pjb.28.2023.02.09.04.09.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Feb 2023 04:09:02 -0800 (PST)
+From: Jaime Liao <jaimeliao.tw@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at
+Cc: jaimeliao@mxic.com.tw,
+	jaimeliao.tw@gmail.com
+Subject: [PATCH v2 1/4] mtd: spinand: Add support continuous read mode
+Date: Thu,  9 Feb 2023 20:08:50 +0800
+Message-Id: <20230209120853.660564-2-jaimeliao.tw@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230209120853.660564-1-jaimeliao.tw@gmail.com>
+References: <20230209120853.660564-1-jaimeliao.tw@gmail.com>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.148.100
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230209_011613_118492_381FA202 
-X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-CacheID: sfid-20230209_040904_726255_1E5ABF18 
+X-CRM114-Status: UNSURE (   9.58  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -94,23 +93,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2023-02-08 at 21:09 -0600, Rob Landley wrote:
-> > Geert has suggested to wait with adding a tree source to the entry until I get my
-> > own kernel.org account. I have enough GPG signatures from multiple kernel developers
-> > on my GPG key, so I think it shouldn't be too difficult to qualify for an account.
-> 
-> So you're not planning to use https://lk.j-core.org/J-Core-Developers/sh-linux
-> but push to kernel.org and ask Linus to pull from there?
+The patch supports setting the "CONT" bit of the configuration
+register and create spinand_continuous_read_enable/disable functions.
 
-Yes, that's what Geert recommended.
+Signed-off-by: Jaime Liao <jaimeliao.tw@gmail.com>
+---
+ drivers/mtd/nand/spi/core.c | 11 +++++++++++
+ include/linux/mtd/spinand.h |  1 +
+ 2 files changed, 12 insertions(+)
 
-Adrian
-
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index dacd9c0e8b20..c13374933372 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -193,6 +193,17 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
+ 			       enable ? CFG_QUAD_ENABLE : 0);
+ }
+ 
++static int spinand_continuous_read_enable(struct spinand_device *spinand)
++{
++	return spinand_upd_cfg(spinand, CFG_CONT_READ_ENABLE,
++			       CFG_CONT_READ_ENABLE);
++}
++
++static int spinand_continuous_read_disable(struct spinand_device *spinand)
++{
++	return spinand_upd_cfg(spinand, CFG_CONT_READ_ENABLE, 0);
++}
++
+ static int spinand_ecc_enable(struct spinand_device *spinand,
+ 			      bool enable)
+ {
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 6d3392a7edc6..e98d770173dc 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -154,6 +154,7 @@
+ #define REG_CFG			0xb0
+ #define CFG_OTP_ENABLE		BIT(6)
+ #define CFG_ECC_ENABLE		BIT(4)
++#define CFG_CONT_READ_ENABLE	BIT(2)
+ #define CFG_QUAD_ENABLE		BIT(0)
+ 
+ /* status register */
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
