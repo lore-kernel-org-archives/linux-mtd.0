@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62DEAC05027
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Feb 2023 02:16:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D109C636CD
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Feb 2023 09:25:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=F66wYuF7l+xFWCd2/fUBrJYCAWB1q56cxrVZJCtJtk4=; b=MafoUsoe5Mw02B
-	NmeNLSd1oOjM5kCQRtmqbYohUV7SK3HYVWaL1/Qpj4/6fHZgF7ZqqtxwZjLcwpSN+xG54BZDc3fm3
-	wQ5nKM0pnL/8tL7w/OBSt111cWGfF1UT61eD+j39fwmwqib4pgWfOjECTdwUaIUwuE2XvqZ72UQ8V
-	fjWVj/a5cnyiK/BhrTkdk1qT7i0ewg7JPrxFvZJRgTtmJncfCbaCqXNf+GiKVAyK1d1lQBsYOtkZq
-	4pVFQhy9yv48JdHkflpxgEJxf5jNQXg77P8AenyFJulGgUyBjmu4PL4hoLR71CYmwEOGhd3cjiSPP
-	834yVzTf5qtbqeGacxUA==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Mime-Version:
+	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=/Icl34JwOZFg/TknO/HxDLJS/EktpUwUf5eN4OMSark=; b=gjI
+	j9LvY6kNbGJiwSBczICF+0mJg95OvbzKx4paGqKbkMPOLpS/OP0tLQcjCt+HfY0zQN3+G7+7G5oS3
+	p9bTuOOaqpUq8HMM/gQC9l+efYcsmvircu8lVyES6m6ws8prGba2nVq32Z0mcIzA7yF7XBNjFCYOT
+	xK04bSViEOhUX9zNA6T12UvZjpexpXxWaIh8PKccoUYhY35PaPAdQcM4KsLMb3rchuA8k6B5ADFzv
+	UdVrZxHffRxpRwYNbR3VUiTFCeZjGYeaxVXdvv8KZfv4OVMtE0ou0g1ASqt2fJ8srV0aahmazQp7X
+	iFJjfYd6QeL20EsW1MofPEaVyA/3QCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pQIxa-003v2q-PU; Fri, 10 Feb 2023 02:16:22 +0000
-Received: from todd.t-8ch.de ([2a01:4f8:c010:41de::1])
+	id 1pQPdk-00543v-F1; Fri, 10 Feb 2023 09:24:20 +0000
+Received: from mxct.zte.com.cn ([183.62.165.209])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pQIxX-003v22-Hd
-	for linux-mtd@lists.infradead.org; Fri, 10 Feb 2023 02:16:21 +0000
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-	s=mail; t=1675995376;
-	bh=IcKXUOph5Uq/d7rKrb0onbZjg5XcHRfrd3jO9HnwOtc=;
-	h=From:Date:Subject:To:Cc:From;
-	b=C1Zl+D0kHHP6WRG/IcJ9m+o7ZDWLuR52OXL9kQ0PXvscuX9Gqhw45LIPxRb4aQyWm
-	 pofvytHVdbTTdwl4rO/xHeZIJk30zckiwUV0lWrj1WHmK/lU6jl1tAzeQ65GsF8mei
-	 pEIYkjjMG4jJWWc5lIpXhiPISPA2eGHeVR4+2pJI=
-Date: Fri, 10 Feb 2023 02:16:13 +0000
-Subject: [PATCH] ubifs: make kobj_type structures constant
-MIME-Version: 1.0
-Message-Id: <20230210-kobj_type-ubifs-v1-1-052419f90fae@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAOyo5WMC/x2N0QqDMAwAf0XyvECtm6K/MkRajRqVKo2ODfHfF
- 3y8g+NOEIpMAlVyQqQPC69BIX0k0I4uDITcKYM1NjM2NTivfmr230Z4eO4FX0VpXNY9cyoL0Mo
- 7IfTRhXbULhzLonKL1PP33rzr6/oDPO1kK3YAAAA=
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1675995374; l=1131;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=IcKXUOph5Uq/d7rKrb0onbZjg5XcHRfrd3jO9HnwOtc=;
- b=h0oBl2kNVAVRAwQ2FkTKyDUx9MVHRilJY04iy94HQb8x1TyJyARqGBUi9S71Y+mutyUYJTxf/
- i01Zdk1h9O4CnFX8UnzZijYlgogTGypPDMf+V2UrLIEFFhYGzHc5aH3
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+	id 1pQPdg-00542E-6B
+	for linux-mtd@lists.infradead.org; Fri, 10 Feb 2023 09:24:17 +0000
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mxct.zte.com.cn (FangMail) with ESMTPS id 4PCpG60gPDz4xpyD;
+	Fri, 10 Feb 2023 17:24:14 +0800 (CST)
+Received: from xaxapp01.zte.com.cn ([10.88.99.176])
+	by mse-fl2.zte.com.cn with SMTP id 31A9Nrtu090567;
+	Fri, 10 Feb 2023 17:23:54 +0800 (+08)
+	(envelope-from ye.xingchen@zte.com.cn)
+Received: from mapi (xaxapp01[null])
+	by mapi (Zmail) with MAPI id mid31;
+	Fri, 10 Feb 2023 17:23:56 +0800 (CST)
+Date: Fri, 10 Feb 2023 17:23:56 +0800 (CST)
+X-Zmail-TransId: 2af963e60d2c5b93241f
+X-Mailer: Zmail v1.0
+Message-ID: <202302101723563685569@zte.com.cn>
+Mime-Version: 1.0
+From: <ye.xingchen@zte.com.cn>
+To: <miquel.raynal@bootlin.com>
+Cc: <richard@nod.at>, <vigneshr@ti.com>, <christophe.jaillet@wanadoo.fr>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIIHYyXSBtdGQ6IHJhd25hbmQ6IG9yaW9uOiB1c2UgZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlKCk=?=
+X-MAIL: mse-fl2.zte.com.cn 31A9Nrtu090567
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 63E60D3E.000/4PCpG60gPDz4xpyD
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230209_181619_764145_EAD161A1 
-X-CRM114-Status: UNSURE (   8.75  )
+X-CRM114-CacheID: sfid-20230210_012416_400687_B32EEE83 
+X-CRM114-Status: UNSURE (   9.92  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -66,30 +66,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-U2luY2UgY29tbWl0IGVlNmQzZGQ0ZWQ0OCAoImRyaXZlciBjb3JlOiBtYWtlIGtvYmpfdHlwZSBj
-b25zdGFudC4iKQp0aGUgZHJpdmVyIGNvcmUgYWxsb3dzIHRoZSB1c2FnZSBvZiBjb25zdCBzdHJ1
-Y3Qga29ial90eXBlLgoKVGFrZSBhZHZhbnRhZ2Ugb2YgdGhpcyB0byBjb25zdGlmeSB0aGUgc3Ry
-dWN0dXJlIGRlZmluaXRpb25zIHRvIHByZXZlbnQKbW9kaWZpY2F0aW9uIGF0IHJ1bnRpbWUuCgpT
-aWduZWQtb2ZmLWJ5OiBUaG9tYXMgV2Vpw59zY2h1aCA8bGludXhAd2Vpc3NzY2h1aC5uZXQ+Ci0t
-LQogZnMvdWJpZnMvc3lzZnMuYyB8IDQgKystLQogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
-cygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9mcy91Ymlmcy9zeXNmcy5jIGIvZnMv
-dWJpZnMvc3lzZnMuYwppbmRleCAwNmFkOGZhMWZjZmIuLjQ0MDRjYTRmMmNlOSAxMDA2NDQKLS0t
-IGEvZnMvdWJpZnMvc3lzZnMuYworKysgYi9mcy91Ymlmcy9zeXNmcy5jCkBAIC03NCwxMyArNzQs
-MTMgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzeXNmc19vcHMgdWJpZnNfYXR0cl9vcHMgPSB7CiAJ
-LnNob3cJPSB1Ymlmc19hdHRyX3Nob3csCiB9OwogCi1zdGF0aWMgc3RydWN0IGtvYmpfdHlwZSB1
-Ymlmc19zYl9rdHlwZSA9IHsKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qga29ial90eXBlIHViaWZzX3Ni
-X2t0eXBlID0gewogCS5kZWZhdWx0X2dyb3Vwcwk9IHViaWZzX2dyb3VwcywKIAkuc3lzZnNfb3Bz
-CT0gJnViaWZzX2F0dHJfb3BzLAogCS5yZWxlYXNlCT0gdWJpZnNfc2JfcmVsZWFzZSwKIH07CiAK
-LXN0YXRpYyBzdHJ1Y3Qga29ial90eXBlIHViaWZzX2t0eXBlID0geworc3RhdGljIGNvbnN0IHN0
-cnVjdCBrb2JqX3R5cGUgdWJpZnNfa3R5cGUgPSB7CiAJLnN5c2ZzX29wcwk9ICZ1Ymlmc19hdHRy
-X29wcywKIH07CiAKCi0tLQpiYXNlLWNvbW1pdDogZTU0NGEwNzQzODUyMmFiMzY4ODQxNmU2ZTJl
-MzRiZjBlZTZkODc1NQpjaGFuZ2UtaWQ6IDIwMjMwMjEwLWtvYmpfdHlwZS11Ymlmcy01NzkwYTNk
-NDZlOTcKCkJlc3QgcmVnYXJkcywKLS0gClRob21hcyBXZWnDn3NjaHVoIDxsaW51eEB3ZWlzc3Nj
-aHVoLm5ldD4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Ye Xingchen <ye.xingchen@zte.com.cn>
+
+Convert platform_get_resource(), devm_ioremap_resource() to a single
+call to devm_platform_ioremap_resource(), as this is exactly what this
+function does.
+
+Signed-off-by: Ye Xingchen <ye.xingchen@zte.com.cn>
+---
+v1 -> v2
+change devm_platform_get_and_ioremap_resource to devm_platform_ioremap_resource.
+Fix the double space in subject.
+
+ drivers/mtd/nand/raw/orion_nand.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/orion_nand.c b/drivers/mtd/nand/raw/orion_nand.c
+index 1bfecf502216..1bdcd544c3fa 100644
+--- a/drivers/mtd/nand/raw/orion_nand.c
++++ b/drivers/mtd/nand/raw/orion_nand.c
+@@ -102,7 +102,6 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 	struct mtd_info *mtd;
+ 	struct nand_chip *nc;
+ 	struct orion_nand_data *board;
+-	struct resource *res;
+ 	void __iomem *io_base;
+ 	int ret = 0;
+ 	u32 val = 0;
+@@ -119,8 +118,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 	info->controller.ops = &orion_nand_ops;
+ 	nc->controller = &info->controller;
+
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	io_base = devm_ioremap_resource(&pdev->dev, res);
++	io_base = devm_platform_ioremap_resource(pdev, 0);
+
+ 	if (IS_ERR(io_base))
+ 		return PTR_ERR(io_base);
+-- 
+2.25.1
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
