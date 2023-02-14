@@ -4,75 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1531CC05027
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Feb 2023 15:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9520C61DA4
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Feb 2023 15:57:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SQ/HJzEEubmvs7zFM46UAtqLEKkLhyMsChrhppXQ7Bg=; b=ddwYDtpH/A8wzX
-	jHeWlIZFtrrsdKpXM8lL1t/PEQqGg1M1Pq3dLXvRC2c6CcpQUw7dfRLzdwLdhBJvSiAmITvhufvK4
-	jsrd/xCNkhvEeHHtuQoeIrLk1MGMEkjaaecgc1L9BPnY5C1dv2jQTpYN8yr/gK6oWrKGes/iGTN3l
-	gqg8MKW/0NrdXcmYyVsFvdb7Fy1U2sbkypR64OFVoY71NppwC6jlKPgIKNa6z+m7q5pFh+SgCXXfx
-	MQ+yy/Cgnbtlfb7S692Gy2YjqygraXtnqNR4EDebHY7n8Ux0W9iypez2fF3HSSA57zys3FGzHtefs
-	+FCOorYW3XCGN7KEhTyA==;
+	List-Owner; bh=I16xduV6nTClIeIiEOXQ1XqFi5u+94ZMHno2naWa7jw=; b=TlRZRfCy7vncMr
+	/iPlJUxnjDDfIGoOf5S2feE+tkvdkNWYJ8mVIXPCR6HXQwqoMX2E2f0rPmZAsFr8eJaGlSPxfzt9P
+	ig3sg3qzd/hA7IE63axFOKItmNtJoKglMEL3tcw5cwoHnS1pzNUfxSnh+sb7KAWqdbgiwfctLYvHf
+	MPkZsHr+FkWV5ue5v5PktHM/Oul/RDmh/aX0vmBV9d7ar1zQRrEoQjmWOcgczpigGiipghxp0xsmT
+	bkGJPoj7t+xaf+RwnCFGZk0lceEnAyz6mDC/eqru5EcB13yaNdxsj40eiKaEdvZcIR6e9eTe2jWF7
+	D9wzwcylqsH4dZFKnnYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pRx8e-002WIN-H2; Tue, 14 Feb 2023 15:22:36 +0000
-Received: from mail-qt1-f181.google.com ([209.85.160.181])
+	id 1pRxfl-002fkU-O8; Tue, 14 Feb 2023 15:56:49 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pRx8Y-002WEl-NZ
-	for linux-mtd@lists.infradead.org; Tue, 14 Feb 2023 15:22:32 +0000
-Received: by mail-qt1-f181.google.com with SMTP id w3so17779429qts.7
-        for <linux-mtd@lists.infradead.org>; Tue, 14 Feb 2023 07:22:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4SHQ35UeliM91D1wLKZjKtKGrS2DGLJ/hyCLpMmalEE=;
-        b=Gx3w3h3BwOauXZoIRHZZjNCFUrTBUvNJdLNaxK6OVTJkrJ8OSSFXVjafS16U2eAPzD
-         dyVCYVY+eZmBuZqV42IBUsD3QSw03NPcv4GGg6fH3zQyQDFkkJ4p6Jnylh8JZg2JuZ2m
-         4XZtrHcC8qAvKR45Gw5jvQAtW1MiD47j7PgOLeOIMjKjfIqRT7RCAiAP0fQDolbhut7E
-         bbkq+9jSicceNYfhfoo/edSE0ahL03zzcG2qvhbhD3K6rlau8mEkmZ9dDzoBXfyx2o3R
-         9ejITY2GyBCAwVSYxulHDvBtXHptzjsJ9pPnVYqaqxq86bxWys2gwY1VKN+SvFTyyeuF
-         nIEw==
-X-Gm-Message-State: AO0yUKWnbUKh+Qfy/hHkIZWf9SBvW4d8OIuOnmnPZRlqSPGwJ1IxD+3S
-	EtCdF7P8+hXjH6GLjL6RpffXI4JwnB8hqzgr
-X-Google-Smtp-Source: AK7set9QAPRpOWYSm+P9a0a1rxdmGJLHvcA+WiPUOKuIdnGURx6jhrVpmbFnMjQ/cHXcqUHvRXaeUQ==
-X-Received: by 2002:a05:622a:14cf:b0:3b8:3391:bde5 with SMTP id u15-20020a05622a14cf00b003b83391bde5mr3903008qtx.26.1676388148113;
-        Tue, 14 Feb 2023 07:22:28 -0800 (PST)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id q1-20020ac84101000000b003b9dca4cdf4sm11362450qtl.83.2023.02.14.07.22.26
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Feb 2023 07:22:27 -0800 (PST)
-Received: by mail-yb1-f177.google.com with SMTP id x71so17643129ybg.6
-        for <linux-mtd@lists.infradead.org>; Tue, 14 Feb 2023 07:22:26 -0800 (PST)
-X-Received: by 2002:a05:6902:14d:b0:921:783:f2f5 with SMTP id
- p13-20020a056902014d00b009210783f2f5mr231912ybh.574.1676388146523; Tue, 14
- Feb 2023 07:22:26 -0800 (PST)
-MIME-Version: 1.0
+	id 1pRxfh-002fjU-4n
+	for linux-mtd@lists.infradead.org; Tue, 14 Feb 2023 15:56:47 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 8F2A52000A;
+	Tue, 14 Feb 2023 15:56:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1676390200;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vNKGSGMg8f++uU4wWjyIvzgyGnDvNR/WlS+2/U80G8U=;
+	b=Ejr7sNtEtXRqpXUU+WCTcDwLrHnimWJPzCRHYgSteerTTDCqasSDuy0z7imGZIbDP+qrap
+	03llLZoGdnzSzOHE75z7OC7a/uDELmhZLByqKufP6q1JsgmEOwjEdxwYGPd+MEybsI2m9y
+	1CUSy9Y+2T3mqLk6EOCqlBP1/piLzDIm8LqCb9fQKPpCtJyBgG/ixmugcsvrFRcUwqzmg8
+	8tKYN704Yar6jK56J2RuNaBe8hCSt1cU8mrEDGvoDD2LhK64AuS9IIOMi4C4VKcFMq8BfD
+	uV07gry0AztsNvAV7VPn8IgSQpXyCjIqh/gd8W3PrBDTlybL5KdfFfFFWNYUVQ==
+Date: Tue, 14 Feb 2023 16:56:37 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, Michael Walle <michael@walle.cc>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Mark Brown <broonie@kernel.org>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document CPOL/CPHA
+ support
+Message-ID: <20230214165637.56102b18@xps-13>
+In-Reply-To: <CAMuHMdVK7vOTNMF53SvHn8LtiHX7MSN-Fp80jngSsosYBhhrHQ@mail.gmail.com>
 References: <afe470603028db9374930b0c57464b1f6d52bdd3.1676384304.git.geert+renesas@glider.be>
- <20230214154433.6a421c51@xps-13>
-In-Reply-To: <20230214154433.6a421c51@xps-13>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 14 Feb 2023 16:22:15 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVK7vOTNMF53SvHn8LtiHX7MSN-Fp80jngSsosYBhhrHQ@mail.gmail.com>
-Message-ID: <CAMuHMdVK7vOTNMF53SvHn8LtiHX7MSN-Fp80jngSsosYBhhrHQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document CPOL/CPHA support
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
-	Michael Walle <michael@walle.cc>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Mark Brown <broonie@kernel.org>, 
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org
+	<20230214154433.6a421c51@xps-13>
+	<CAMuHMdVK7vOTNMF53SvHn8LtiHX7MSN-Fp80jngSsosYBhhrHQ@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230214_072230_797902_B54DC5F3 
-X-CRM114-Status: GOOD (  30.80  )
+X-CRM114-CacheID: sfid-20230214_075645_468137_5BAD0A1C 
+X-CRM114-Status: GOOD (  24.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,74 +74,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On Tue, Feb 14, 2023 at 3:44 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> geert+renesas@glider.be wrote on Tue, 14 Feb 2023 15:26:43 +0100:
-> > SPI EEPROMs typically support both SPI Mode 0 (CPOL=CPHA=0) and Mode 3
-> > (CPOL=CPHA=1).  However, using the latter is currently flagged as an
-> > error by "make dtbs_check", e.g.:
-> >
-> >     arch/arm/boot/dts/r8a7791-koelsch.dtb: flash@0: Unevaluated properties are not allowed ('spi-cpha', 'spi-cpol' were unexpected)
-> >           From schema: Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> >
-> > Fix this by documenting support for CPOL=CPHA=1.
-> >
-> > Fixes: 233363aba72ac638 ("spi/panel: dt-bindings: drop CPHA and CPOL from common properties")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> >  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > index f86255ce13af0871..bb62ac4585822982 100644
-> > --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > @@ -76,6 +76,13 @@ properties:
-> >        If "broken-flash-reset" is present then having this property does not
-> >        make any difference.
-> >
-> > +  spi-cpol: true
-> > +  spi-cpha: true
->
-> I see that spi-cpol and spi-cpha are described in spi-controller.yaml
-> which references spi-peripheral-props.yaml, but jedec,spi-nor.yaml
-> only references spi-peripheral-props.yaml leading to spi-cpol and
-> spi-cpha not being recognized as valid properties.
->
-> Wouldn't it be cleaner to to have these two properties defined in
-> spi-peripheral-props.yaml instead?
-
-They were moved out of that file by the commit referenced in the
-Fixes: tag above, because they are not supported by all SPI targets.
-It's the responsibility of the SPI target bindings to list what is supported.
-
->
-> > +
-> > +dependencies:
-> > +  spi-cpol: [ spi-cpha ]
-> > +  spi-cpha: [ spi-cpol ]
-> > +
-> >  unevaluatedProperties: false
-> >
-> >  examples:
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR2VlcnQsCgpnZWVydEBsaW51eC1tNjhrLm9yZyB3cm90ZSBvbiBUdWUsIDE0IEZlYiAyMDIz
+IDE2OjIyOjE1ICswMTAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gT24gVHVlLCBGZWIgMTQsIDIwMjMg
+YXQgMzo0NCBQTSBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90
+ZToKPiA+IGdlZXJ0K3JlbmVzYXNAZ2xpZGVyLmJlIHdyb3RlIG9uIFR1ZSwgMTQgRmViIDIwMjMg
+MTU6MjY6NDMgKzAxMDA6ICAKPiA+ID4gU1BJIEVFUFJPTXMgdHlwaWNhbGx5IHN1cHBvcnQgYm90
+aCBTUEkgTW9kZSAwIChDUE9MPUNQSEE9MCkgYW5kIE1vZGUgMwo+ID4gPiAoQ1BPTD1DUEhBPTEp
+LiAgSG93ZXZlciwgdXNpbmcgdGhlIGxhdHRlciBpcyBjdXJyZW50bHkgZmxhZ2dlZCBhcyBhbgo+
+ID4gPiBlcnJvciBieSAibWFrZSBkdGJzX2NoZWNrIiwgZS5nLjoKPiA+ID4KPiA+ID4gICAgIGFy
+Y2gvYXJtL2Jvb3QvZHRzL3I4YTc3OTEta29lbHNjaC5kdGI6IGZsYXNoQDA6IFVuZXZhbHVhdGVk
+IHByb3BlcnRpZXMgYXJlIG5vdCBhbGxvd2VkICgnc3BpLWNwaGEnLCAnc3BpLWNwb2wnIHdlcmUg
+dW5leHBlY3RlZCkKPiA+ID4gICAgICAgICAgIEZyb20gc2NoZW1hOiBEb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvbXRkL2plZGVjLHNwaS1ub3IueWFtbAo+ID4gPgo+ID4gPiBGaXgg
+dGhpcyBieSBkb2N1bWVudGluZyBzdXBwb3J0IGZvciBDUE9MPUNQSEE9MS4KPiA+ID4KPiA+ID4g
+Rml4ZXM6IDIzMzM2M2FiYTcyYWM2MzggKCJzcGkvcGFuZWw6IGR0LWJpbmRpbmdzOiBkcm9wIENQ
+SEEgYW5kIENQT0wgZnJvbSBjb21tb24gcHJvcGVydGllcyIpCj4gPiA+IFNpZ25lZC1vZmYtYnk6
+IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnQrcmVuZXNhc0BnbGlkZXIuYmU+Cj4gPiA+IC0tLQo+
+ID4gPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9qZWRlYyxzcGktbm9y
+LnlhbWwgfCA3ICsrKysrKysKPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKykK
+PiA+ID4KPiA+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9tdGQvamVkZWMsc3BpLW5vci55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL210ZC9qZWRlYyxzcGktbm9yLnlhbWwKPiA+ID4gaW5kZXggZjg2MjU1Y2UxM2FmMDg3MS4u
+YmI2MmFjNDU4NTgyMjk4MiAxMDA2NDQKPiA+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL210ZC9qZWRlYyxzcGktbm9yLnlhbWwKPiA+ID4gKysrIGIvRG9jdW1lbnRh
+dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9qZWRlYyxzcGktbm9yLnlhbWwKPiA+ID4gQEAg
+LTc2LDYgKzc2LDEzIEBAIHByb3BlcnRpZXM6Cj4gPiA+ICAgICAgICBJZiAiYnJva2VuLWZsYXNo
+LXJlc2V0IiBpcyBwcmVzZW50IHRoZW4gaGF2aW5nIHRoaXMgcHJvcGVydHkgZG9lcyBub3QKPiA+
+ID4gICAgICAgIG1ha2UgYW55IGRpZmZlcmVuY2UuCj4gPiA+Cj4gPiA+ICsgIHNwaS1jcG9sOiB0
+cnVlCj4gPiA+ICsgIHNwaS1jcGhhOiB0cnVlICAKPiA+Cj4gPiBJIHNlZSB0aGF0IHNwaS1jcG9s
+IGFuZCBzcGktY3BoYSBhcmUgZGVzY3JpYmVkIGluIHNwaS1jb250cm9sbGVyLnlhbWwKPiA+IHdo
+aWNoIHJlZmVyZW5jZXMgc3BpLXBlcmlwaGVyYWwtcHJvcHMueWFtbCwgYnV0IGplZGVjLHNwaS1u
+b3IueWFtbAo+ID4gb25seSByZWZlcmVuY2VzIHNwaS1wZXJpcGhlcmFsLXByb3BzLnlhbWwgbGVh
+ZGluZyB0byBzcGktY3BvbCBhbmQKPiA+IHNwaS1jcGhhIG5vdCBiZWluZyByZWNvZ25pemVkIGFz
+IHZhbGlkIHByb3BlcnRpZXMuCj4gPgo+ID4gV291bGRuJ3QgaXQgYmUgY2xlYW5lciB0byB0byBo
+YXZlIHRoZXNlIHR3byBwcm9wZXJ0aWVzIGRlZmluZWQgaW4KPiA+IHNwaS1wZXJpcGhlcmFsLXBy
+b3BzLnlhbWwgaW5zdGVhZD8gIAo+IAo+IFRoZXkgd2VyZSBtb3ZlZCBvdXQgb2YgdGhhdCBmaWxl
+IGJ5IHRoZSBjb21taXQgcmVmZXJlbmNlZCBpbiB0aGUKPiBGaXhlczogdGFnIGFib3ZlLCBiZWNh
+dXNlIHRoZXkgYXJlIG5vdCBzdXBwb3J0ZWQgYnkgYWxsIFNQSSB0YXJnZXRzLgo+IEl0J3MgdGhl
+IHJlc3BvbnNpYmlsaXR5IG9mIHRoZSBTUEkgdGFyZ2V0IGJpbmRpbmdzIHRvIGxpc3Qgd2hhdCBp
+cyBzdXBwb3J0ZWQuCgpPb3BzLCBJIG92ZXJsb29rZWQgdGhhdCBsaW5lLgoKSSBhY3R1YWxseSBz
+ZWUgbm8gcG9pbnQgaW4gY29uc3RyYWluaW5nIGRldmljZSB0cmVlcyBvbiB0aGF0IHJlZ2FyZCwK
+YnV0LCB3ZWxsLCBLcnp5c3p0b2YgaXMgdGhlIGF1dGhvciwgSSBiZWxpZXZlIGhlIGtub3dzIGhp
+cyBzdHVmZiwgc28KbGV0J3MgZ28gZm9yIGl0LgoKUmV2aWV3ZWQtYnk6IE1pcXVlbCBSYXluYWwg
+PG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
