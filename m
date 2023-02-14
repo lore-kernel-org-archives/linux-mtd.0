@@ -4,75 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E27FDC636D4
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Feb 2023 16:31:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C841C61DA4
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Feb 2023 09:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aJeArGDY1gEyiJZVQ8Y2t1ZSQp8u8S4A+y7gT/H7Zec=; b=KmqK0V2fJAygqE
-	x6v/ElGyxoz7J+c90a4uIxYFnzAPejXkC3H/X2ar1/WsDdol4paErREhobSsZ0UAeunDumBxh5vYU
-	cGbGs+fr3d3/v1PCwV+WrAUh2g3OPltvvUBe+2F8KrPW4Zrw/3p2LAEprV0F+y9DMAV5pUjehWR3q
-	S76aw6C2sy1D/bf15HNlVTbnGkSuEhYLCX/pWjr0wRXLWkbxYg0KlxLY+Kdv67vM3hRlAf51JjUlN
-	LiAMjSPsERspS9LeUKP8wI2PFAAwY9Iu4eV0TavFdeJKQ2k7ylf8sLteHFlJgSPF2yUWZRiPe7+Bq
-	47bXyJoncfuUpGBfGKBQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=/UHB0CHqpGZzlGQ4de/HbgKs/rHtvKsjpLt0dsLDr9o=; b=xczkHAvRzgNH7n
+	kdKh9kyQOFyzN1Cen94qPl1RSoRgoyyfLj9LLzfmYARg1+QBInePAK3X50XG1FWVuRlcoqsRGn8jp
+	nnGgNRZRJa7EBOQ3xOTPek0vWujLc+H5wR6zzzWVaxKmiW1/rlhjBR6Tz30B4TTee7OSTA8wCocgL
+	RWTWjMaS6XB4Tgn9uoFW0YctdXXN36N+gBYiH9QLlyRBtBCVMBPB2U+/aVBIm6dFy1GhzMGPNiXWO
+	QQepBNEgJ0FrcCPtNv/jRJTBWOk8Mz7ERy89OKtrRn9na//JVN0NN0EHAmoqXKvxtqrcE9WMgpyRO
+	YOBIEWC0GWJmP/bSf4SQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pRbjh-00FTyi-Bd; Mon, 13 Feb 2023 16:31:25 +0000
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
+	id 1pRrlR-000kOi-Uz; Tue, 14 Feb 2023 09:38:18 +0000
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pRbje-00FTo4-Mh
-	for linux-mtd@lists.infradead.org; Mon, 13 Feb 2023 16:31:24 +0000
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pRbiw-0043kT-S2; Mon, 13 Feb 2023 17:30:38 +0100
-Received: from p5b13aa49.dip0.t-ipconnect.de ([91.19.170.73] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pRbiw-0046cc-HY; Mon, 13 Feb 2023 17:30:38 +0100
-Message-ID: <dbda1f6e1c280c13d963ad6e7f68a853a7741199.camel@physik.fu-berlin.de>
-Subject: Re: remove arch/sh
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Christoph Hellwig <hch@lst.de>, Yoshinori Sato
- <ysato@users.sourceforge.jp>,  Rich Felker <dalias@libc.org>, Arnd Bergmann
- <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Laurent
- Pinchart <laurent.pinchart@ideasonboard.com>, Kieran Bingham
- <kieran.bingham+renesas@ideasonboard.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, linux-kernel@vger.kernel.org, 
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-arch@vger.kernel.org, dmaengine@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org,  linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org,  linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org,  linux-sh@vger.kernel.org
-Date: Mon, 13 Feb 2023 17:30:36 +0100
-In-Reply-To: <20230206100856.603a0f8f@canb.auug.org.au>
-References: <20230113062339.1909087-1-hch@lst.de>
-	 <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
-	 <20230116071306.GA15848@lst.de>
-	 <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
-	 <20230203071423.GA24833@lst.de>
-	 <afd056a95d21944db1dc0c9708f692dd1f7bb757.camel@physik.fu-berlin.de>
-	 <20230203083037.GA30738@lst.de> <20230206100856.603a0f8f@canb.auug.org.au>
-User-Agent: Evolution 3.46.4 
+	id 1pRrlP-000kMp-4y
+	for linux-mtd@lists.infradead.org; Tue, 14 Feb 2023 09:38:17 +0000
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31E8Nwip029770;
+	Tue, 14 Feb 2023 09:38:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2022-7-12; bh=abN3WeABrZKVtxO1m8F3An7TfDTw3na3P2oNLuQ0iD0=;
+ b=bMDprgcBQxdcyi2GIA5mnSGE5QDvyaLEK5kBkClQn9Vu97DqG85NwKJ5NS5Gyu5+/oHF
+ n+w8O9XuzI3JZ0uGT6XDB/yjqlWl02chc96ujYmXV3hYcNx8RC+hCS+n2CjHHmVH/IOY
+ RfACQB4uP3s4ew15KfzopJGaIIYqg9i9EcF4BZaVz/j44P7R0uizLsUY1s//axcgxBPI
+ R/dqZ27jYuNd+ACGpYb8PzL3yKgdr+5n5H9HhngC08OMDTzJfCMKovqrpWd4x0JyQn8z
+ /wrJpJ43ZG4qS/AB+2LHh/4Q5+IfuzH7JpYSgNkmnnzzRyNmx74Cu6fOwNA9TzaHi6i4 PQ== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3np2mtcvmj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 14 Feb 2023 09:38:07 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 31E8hXUI018473;
+	Tue, 14 Feb 2023 09:38:07 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3np1f5sdjf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 14 Feb 2023 09:38:07 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31E9YwXd016428;
+	Tue, 14 Feb 2023 09:38:06 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3np1f5sdgy-1;
+	Tue, 14 Feb 2023 09:38:06 +0000
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To: 
+Cc: harshit.m.mogalapalli@gmail.com, error27@gmail.com, hch@lst.de,
+        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH linux-next] ubi: block: Fix a possible use-after-free bug in ubiblock_create()
+Date: Tue, 14 Feb 2023 01:38:01 -0800
+Message-Id: <20230214093801.1267044-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.170.73
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-14_06,2023-02-13_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2302140082
+X-Proofpoint-GUID: tf3NqCX4zp4U7_Z1qCxZJXI7tqDbV-L-
+X-Proofpoint-ORIG-GUID: tf3NqCX4zp4U7_Z1qCxZJXI7tqDbV-L-
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230213_083122_913903_19E5A057 
-X-CRM114-Status: GOOD (  25.97  )
+X-CRM114-CacheID: sfid-20230214_013815_625479_17BFCA09 
+X-CRM114-Status: GOOD (  14.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,49 +94,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Steve!
+Smatch warns:
+	drivers/mtd/ubi/block.c:438 ubiblock_create()
+	warn: '&dev->list' not removed from list
 
-On Mon, 2023-02-06 at 10:08 +1100, Stephen Rothwell wrote:
-> Hi,
-> 
-> On Fri, 3 Feb 2023 09:30:37 +0100 Christoph Hellwig <hch@lst.de> wrote:
-> > 
-> > On Fri, Feb 03, 2023 at 09:24:46AM +0100, John Paul Adrian Glaubitz wrote:
-> > > Since this is my very first time stepping up as a kernel maintainer, I was hoping
-> > > to get some pointers on what to do to make this happen.
-> > > 
-> > > So far, we have set up a new kernel tree and I have set up a local development and
-> > > test environment for SH kernels using my SH7785LCR board as the target platform.
-> > > 
-> > > Do I just need to send a patch asking to change the corresponding entry in the
-> > > MAINTAINERS file?  
-> > 
-> > I'm not sure a there is a document, but:
-> > 
-> >  - add the MAINTAINERS change to your tree
-> >  - ask Stephen to get your tree included in linux-next
-> 
-> And by "Stephen", Christoph means me.  When you are ready, please send
-> me a request to include your tree/branch in linux-next (usually the
-> branch is called something like "for-next" or just "next") telling me
-> the git URL, and the contacts I should send email to if there are
-> conflicts/build issues with the branch.  I will then fetch the branch
-> every time I create a new linux-next release (most work days), so all
-> you need to do is update that branch each time you are ready to publish
-> more commits.
+'dev' is freed in 'out_free_dev:, but it is still on the list.
 
-I'm in the MAINTAINERS now in Linus' tree. I have requested a kernel.org
-account now and will hopefully have my trees set up later this week.
+To fix this, delete the list item before freeing.
 
-I'll let you know about the URLs as soon as possible.
+Fixes: 91cc8fbcc8c7 ("ubi: block: set BLK_MQ_F_BLOCKING")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+Found by static analysis(smatch). Only Compile tested.
+---
+ drivers/mtd/ubi/block.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Adrian
-
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index f5d036203fe7..763704c8d05c 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -429,6 +429,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	return 0;
+ 
+ out_remove_minor:
++	list_del(&dev->list);
+ 	idr_remove(&ubiblock_minor_idr, gd->first_minor);
+ out_cleanup_disk:
+ 	put_disk(dev->gd);
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.38.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
