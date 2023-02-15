@@ -4,50 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33E29C6379F
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Feb 2023 02:01:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08AD1C636CC
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Feb 2023 06:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=MdUlT6ocok8J77L02A9HOoS1pj8RJHNy9bBfHFVqHQM=; b=WcyerGo3WTutOV
-	ZJAsTezr8/tzeGgr9oLaZ9wgIWkVg8JbKmduAgCjNL+ED1Y19wMErvDv8M3nSiHWtGBqfxY47LvVq
-	hGyaDT+R40hLtEvvflMdpkNYn5LKZEVvnF8ySREeCp848+BS2HveGKKsfMUTugsqgwrEW197fPu+X
-	jr0KxDdOdpGsoVcGJXmSboFK1EdNLVeAEW9VQCWURwML7WO3aAJE/O400FFoK1GXRHbKlUSXgpbL/
-	QZzfxsO8I1RqQT+RNj7BTYF/dwN5QlKpk6sZ/CvYUVy3lX+IxhSWhp1SsA+dLnftajTmG4dKs9LLX
-	dgtlfuL1+Z8uj6YyXKlQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=YoBFBBLCKS+tcPfHmD1KuunTbIgdp9vYQYNEPIUIbZg=; b=DhbmRahwmynOLm
+	kbIl6wEv7iMrkXa04++a2mthtz+N1LyvZsplnwm1JFeJktf1tmBgPQK5KBg8cFhclw6Y8Ux2jv52r
+	1sN/bLbQF/SMgw2bRK249uheVaRE5D5DWbwivtXHLSfwcVfApk0CWkMtwMGDRwGK+A/biifKtNNRY
+	i3Y/TqkmCW9ovV93uP6o6QfyXCS2T5GZik+DMYbKEDvBHAekpW/J0FsWaGIL/S+LFrmEXFPYvIil+
+	ttDsI0lITHSSKfA01n85/27C16SpiWe0lpiwAqwfE6FbB4OlHNSIwqpXb81s8y+kEiTYSzmuvmiyS
+	7R0dhOUHwwEQ0qyr9t4A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pS779-004LLi-W6; Wed, 15 Feb 2023 02:01:44 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1pSBdn-004zJ6-Sv; Wed, 15 Feb 2023 06:51:43 +0000
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pS776-004LKe-Is
-	for linux-mtd@lists.infradead.org; Wed, 15 Feb 2023 02:01:43 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.55])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PGh8H3NMrz16Nd4;
-	Wed, 15 Feb 2023 09:59:11 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.17; Wed, 15 Feb
- 2023 10:01:30 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<chengzhihao1@huawei.com>
-Subject: [PATCH v2] ubifs: dirty_cow_znode: Fix memleak in error handling path
-Date: Wed, 15 Feb 2023 10:25:07 +0800
-Message-ID: <20230215022507.2363193-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	id 1pSBdj-004zDh-1d
+	for linux-mtd@lists.infradead.org; Wed, 15 Feb 2023 06:51:41 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id bu23so17978026wrb.8
+        for <linux-mtd@lists.infradead.org>; Tue, 14 Feb 2023 22:51:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AGXGn+iszj7wBKyEG3uxWkLyNhixgFRBNkfqVVC8+cE=;
+        b=LnmSHKKcgrxPFh5MUwsFLSL8Paf9tDabrv8LO0Ygx8XGHA0dRjqVov0vOKJYMcpJF4
+         ewFStEkRyM3VeaVcLUrsUsxmIUOnoJmeomJ8B9raSnYYZGYDtXHIbzgRjp9j8yuSBpIB
+         uaXcDCibGtuxEbkN5X43/iba7YhsxIvm3AL+g1Oc6bbQKM0IljCXmyAdRGKU2RcSWxZv
+         I+9XIPNoXI/XRehmJe/yFNv2C5jSfjkmlzxnPEoQRw9IwjJZPYyDS1RnkvJSMlqtEpzZ
+         Ia1MP9spXZ8w4ZuSZysb5kTQw0N2+N+1eoQOKQpsqB2ydpjAv4sdxRIfDam3Ov1Q1Zkp
+         at5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AGXGn+iszj7wBKyEG3uxWkLyNhixgFRBNkfqVVC8+cE=;
+        b=NImL3Xkuqz1iWp+kKhs5fSbHcOL5mWRlNi3G+CYRn/6fa+DvSlJZC2vHyBGAn7uT7H
+         AYpvkoEQ2was6PiHyVoUTlw/gIGIwXL/uTtjtfJLQFsAzzFOVpcBi+yCkX50MVu3sZJt
+         2zjx6j5i8x8CTLYg46NGG3hjw/kXBgNKkqzLQ7NtRyhu+vj3RY0uquwVdZ9Q/zAtyWoM
+         Rg0Fol5VFfDZKLgwPVGp173jTmz7s0o5kmrdt+NfuLYRDPzpZ/d3UETIKpT608POgkUo
+         2oIAogruBQNOK/Hj87voXkEmXwav/+3IY4qasJUBTKEcaWv+sytOuPVC5VTx0Bwdg+kt
+         8UQQ==
+X-Gm-Message-State: AO0yUKVfX8B4jku6bkL60fQTmo6jCAlaIDIrpgyFt3/OyEYCI5zdLkc2
+	3meg33bxemkjwVBqCcdGAFe4jVgLe9jT3K2u0csU22pCCiU=
+X-Google-Smtp-Source: AK7set+htt932d5LJyii6scvyO1AxkotK+GY0JCBhQcQwFtqeJzRrqAqi/VJRzY9uq4Fxlqoh7piTSznJIXjnm/dxsc=
+X-Received: by 2002:adf:fa45:0:b0:2c5:63df:8d4c with SMTP id
+ y5-20020adffa45000000b002c563df8d4cmr30405wrr.698.1676443888445; Tue, 14 Feb
+ 2023 22:51:28 -0800 (PST)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+References: <20230209120853.660564-1-jaimeliao.tw@gmail.com> <20230209120853.660564-4-jaimeliao.tw@gmail.com>
+In-Reply-To: <20230209120853.660564-4-jaimeliao.tw@gmail.com>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Wed, 15 Feb 2023 14:51:15 +0800
+Message-ID: <CAJsYDV+EgDe-qTS9XUEYLQm1e=+rUiKpDzxQZM03tufyKxeNjA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] mtd: spinand: Add support continuous read operation
+To: Jaime Liao <jaimeliao.tw@gmail.com>
+Cc: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at, 
+	jaimeliao@mxic.com.tw
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230214_180140_984196_4AD81C18 
-X-CRM114-Status: GOOD (  18.29  )
+X-CRM114-CacheID: sfid-20230214_225139_167270_C34FFA63 
+X-CRM114-Status: GOOD (  23.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,225 +85,96 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Following process will cause a memleak for copied up znode:
+Hi!
 
-dirty_cow_znode
-  zn = copy_znode(c, znode);
-  err = insert_old_idx(c, zbr->lnum, zbr->offs);
-  if (unlikely(err))
-     return ERR_PTR(err);   // No one refers to zn.
+On Thu, Feb 9, 2023 at 8:10 PM Jaime Liao <jaimeliao.tw@gmail.com> wrote:
+> [...]
+> +static int spinand_mtd_continuous_read(struct mtd_info *mtd, loff_t from,
+> +                                      struct mtd_oob_ops *ops,
+> +                                      struct nand_io_iter *iter)
+> +{
+> +       struct spinand_device *spinand = mtd_to_spinand(mtd);
+> +       struct nand_device *nand = mtd_to_nanddev(mtd);
+> +       int ret = 0;
+> +
+> +       /*
+> +        * Continuous read mode could reduce some operation in On-die ECC free
+> +        * flash when read page sequentially.
+> +        */
+> +       iter->req.type = NAND_PAGE_READ;
+> +       iter->req.mode = MTD_OPS_RAW;
+> +       iter->req.dataoffs = nanddev_offs_to_pos(nand, from, &iter->req.pos);
+> +       iter->req.databuf.in = ops->datbuf;
+> +       iter->req.datalen = ops->len;
+> +
+> +       if (from & (nanddev_page_size(nand) - 1)) {
+> +               pr_debug("%s: unaligned address\n", __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       ret = spinand_continuous_read_enable(spinand);
+> +       if (ret)
+> +               return ret;
+> +
+> +       spinand->use_continuous_read = true;
+> +
+> +       ret = spinand_select_target(spinand, iter->req.pos.target);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /*
+> +        * The continuous read operation including: firstly, starting with the
+> +        * page read command and the 1 st page data will be read into the cache
+> +        * after the read latency tRD. Secondly, Issuing the Read From Cache
+> +        * commands (03h/0Bh/3Bh/6Bh/BBh/EBh) to read out the data from cache
+> +        * continuously.
+> +        *
+> +        * The cache is divided into two halves, while one half of the cache is
+> +        * outputting the data, the other half will be loaded for the new data;
+> +        * therefore, the host can read out the data continuously from page to
+> +        * page. Multiple of Read From Cache commands can be issued in one
+> +        * continuous read operation, each Read From Cache command is required
+> +        * to read multiple 4-byte data exactly; otherwise, the data output will
+> +        * be out of sequence from one Read From Cache command to another Read
+> +        * From Cache command.
+> +        *
+> +        * After all the data is read out, the host should pull CS# high to
+> +        * terminate this continuous read operation and wait a 6us of tRST for
+> +        * the NAND device resets read operation. The data output for each page
+> +        * will always start from byte 0 and a full page data should be read out
+> +        * for each page.
+> +        */
 
-Fetch a reproducer in [Link].
+This mode requires the entire read_from_cache op to finish in one command.
+i.e. there can only be one read_from_cache command and the chip-select
+can only be pulled low exactly once.
+There's no guarantee that spinand_read_from_cache_op issues exactly one
+command. spi-mem controllers may have a transfer size limit, requiring an
+operation to be split into multiple read_from_cache requests with different
+column addresses. spi-mem controllers with dirmap support can map a
+memory space to a specific spi-mem read operation, and reading from this
+memory-mapped space also isn't guaranteed to be completed in one
+command. (Controllers may decide to respond to a bus read request using
+multiple spi-mem ops with auto-incremented op addr.)
+So, in order to use this mode, you can't reuse the spinand_read_from_cache_op
+function. Instead, you should write a new function for read_from_cache
+using spi_mem_adjust_op_size and spi_mem_exec_op: When calling
+adjust_op_size, check whether the op size is truncated. If it is, current
+continuous_read request should be aborted and fallback to the normal
+read mode.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216705
-Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- v1: https://patchwork.ozlabs.org/project/linux-mtd/patch/20221118090236.664244-3-chengzhihao1@huawei.com/
- v1->v2: In v1, if insert_old_idx() failed, old index neither exists in
-	 TNC nor in old-index tree. Which means that old index node could
-	 be overwritten in layout_leb_in_gaps(), then ubifs image will be
-	 corrupted in power-cut.
-	 In v2, copy_znode() is splitted into 2 parts: resouce allocation
-	 and znode replacement, insert_old_idx() is splitted in similar
-	 way, so resouce cleanup could be done in error handling path
-	 without corrupting metadata(mem & disk).
-	 It's okay that old index inserting is put behind of add_idx_dirt(),
-	 old index is used in layout_leb_in_gaps(), so the two processes
-	 do not depend on each other.
- fs/ubifs/tnc.c | 137 +++++++++++++++++++++++++++++++------------------
- 1 file changed, 87 insertions(+), 50 deletions(-)
+> +       ret = spinand_read_page(spinand, &iter->req);
+> +       if (ret)
+> +               goto continuous_read_error;
+> +
+> +       ret = spinand_reset_op(spinand);
+> +       if (ret)
+> +               goto continuous_read_error;
+> +
 
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 2df56bbc6865..6b7d95b65f4b 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -44,6 +44,33 @@ enum {
- 	NOT_ON_MEDIA = 3,
- };
- 
-+static void do_insert_old_idx(struct ubifs_info *c,
-+			      struct ubifs_old_idx *old_idx)
-+{
-+	struct ubifs_old_idx *o;
-+	struct rb_node **p, *parent = NULL;
-+
-+	p = &c->old_idx.rb_node;
-+	while (*p) {
-+		parent = *p;
-+		o = rb_entry(parent, struct ubifs_old_idx, rb);
-+		if (old_idx->lnum < o->lnum)
-+			p = &(*p)->rb_left;
-+		else if (old_idx->lnum > o->lnum)
-+			p = &(*p)->rb_right;
-+		else if (old_idx->offs < o->offs)
-+			p = &(*p)->rb_left;
-+		else if (old_idx->offs > o->offs)
-+			p = &(*p)->rb_right;
-+		else {
-+			ubifs_err(c, "old idx added twice!");
-+			kfree(old_idx);
-+		}
-+	}
-+	rb_link_node(&old_idx->rb, parent, p);
-+	rb_insert_color(&old_idx->rb, &c->old_idx);
-+}
-+
- /**
-  * insert_old_idx - record an index node obsoleted since the last commit start.
-  * @c: UBIFS file-system description object
-@@ -69,35 +96,15 @@ enum {
-  */
- static int insert_old_idx(struct ubifs_info *c, int lnum, int offs)
- {
--	struct ubifs_old_idx *old_idx, *o;
--	struct rb_node **p, *parent = NULL;
-+	struct ubifs_old_idx *old_idx;
- 
- 	old_idx = kmalloc(sizeof(struct ubifs_old_idx), GFP_NOFS);
- 	if (unlikely(!old_idx))
- 		return -ENOMEM;
- 	old_idx->lnum = lnum;
- 	old_idx->offs = offs;
-+	do_insert_old_idx(c, old_idx);
- 
--	p = &c->old_idx.rb_node;
--	while (*p) {
--		parent = *p;
--		o = rb_entry(parent, struct ubifs_old_idx, rb);
--		if (lnum < o->lnum)
--			p = &(*p)->rb_left;
--		else if (lnum > o->lnum)
--			p = &(*p)->rb_right;
--		else if (offs < o->offs)
--			p = &(*p)->rb_left;
--		else if (offs > o->offs)
--			p = &(*p)->rb_right;
--		else {
--			ubifs_err(c, "old idx added twice!");
--			kfree(old_idx);
--			return 0;
--		}
--	}
--	rb_link_node(&old_idx->rb, parent, p);
--	rb_insert_color(&old_idx->rb, &c->old_idx);
- 	return 0;
- }
- 
-@@ -199,23 +206,6 @@ static struct ubifs_znode *copy_znode(struct ubifs_info *c,
- 	__set_bit(DIRTY_ZNODE, &zn->flags);
- 	__clear_bit(COW_ZNODE, &zn->flags);
- 
--	ubifs_assert(c, !ubifs_zn_obsolete(znode));
--	__set_bit(OBSOLETE_ZNODE, &znode->flags);
--
--	if (znode->level != 0) {
--		int i;
--		const int n = zn->child_cnt;
--
--		/* The children now have new parent */
--		for (i = 0; i < n; i++) {
--			struct ubifs_zbranch *zbr = &zn->zbranch[i];
--
--			if (zbr->znode)
--				zbr->znode->parent = zn;
--		}
--	}
--
--	atomic_long_inc(&c->dirty_zn_cnt);
- 	return zn;
- }
- 
-@@ -233,6 +223,42 @@ static int add_idx_dirt(struct ubifs_info *c, int lnum, int dirt)
- 	return ubifs_add_dirt(c, lnum, dirt);
- }
- 
-+/**
-+ * replace_znode - replace old znode with new znode.
-+ * @c: UBIFS file-system description object
-+ * @new_zn: new znode
-+ * @old_zn: old znode
-+ * @zbr: the branch of parent znode
-+ *
-+ * Replace old znode with new znode in TNC.
-+ */
-+static void replace_znode(struct ubifs_info *c, struct ubifs_znode *new_zn,
-+			  struct ubifs_znode *old_zn, struct ubifs_zbranch *zbr)
-+{
-+	ubifs_assert(c, !ubifs_zn_obsolete(old_zn));
-+	__set_bit(OBSOLETE_ZNODE, &old_zn->flags);
-+
-+	if (old_zn->level != 0) {
-+		int i;
-+		const int n = new_zn->child_cnt;
-+
-+		/* The children now have new parent */
-+		for (i = 0; i < n; i++) {
-+			struct ubifs_zbranch *child = &new_zn->zbranch[i];
-+
-+			if (child->znode)
-+				child->znode->parent = new_zn;
-+		}
-+	}
-+
-+	zbr->znode = new_zn;
-+	zbr->lnum = 0;
-+	zbr->offs = 0;
-+	zbr->len = 0;
-+
-+	atomic_long_inc(&c->dirty_zn_cnt);
-+}
-+
- /**
-  * dirty_cow_znode - ensure a znode is not being committed.
-  * @c: UBIFS file-system description object
-@@ -265,21 +291,32 @@ static struct ubifs_znode *dirty_cow_znode(struct ubifs_info *c,
- 		return zn;
- 
- 	if (zbr->len) {
--		err = insert_old_idx(c, zbr->lnum, zbr->offs);
--		if (unlikely(err))
--			return ERR_PTR(err);
-+		struct ubifs_old_idx *old_idx;
-+
-+		old_idx = kmalloc(sizeof(struct ubifs_old_idx), GFP_NOFS);
-+		if (unlikely(!old_idx)) {
-+			err = -ENOMEM;
-+			goto out;
-+		}
-+		old_idx->lnum = zbr->lnum;
-+		old_idx->offs = zbr->offs;
-+
- 		err = add_idx_dirt(c, zbr->lnum, zbr->len);
--	} else
--		err = 0;
-+		if (err) {
-+			kfree(old_idx);
-+			goto out;
-+		}
- 
--	zbr->znode = zn;
--	zbr->lnum = 0;
--	zbr->offs = 0;
--	zbr->len = 0;
-+		do_insert_old_idx(c, old_idx);
-+	}
-+
-+	replace_znode(c, zn, znode, zbr);
- 
--	if (unlikely(err))
--		return ERR_PTR(err);
- 	return zn;
-+
-+out:
-+	kfree(zn);
-+	return ERR_PTR(err);
- }
- 
- /**
 -- 
-2.31.1
-
+Regards,
+Chuanhong Guo
 
 ______________________________________________________
 Linux MTD discussion mailing list
