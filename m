@@ -4,60 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA1F8C61DA4
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Feb 2023 21:11:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95090C61DA4
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Feb 2023 01:21:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TqH37AZ8y7RTxHiqn306Q+UOIpDjdZ+1tZQNQZSAINk=; b=vH4SxHJQwnZRzA
-	EaorjUBBC9piwVufd7Pd/K7itdKdnM9LjnJ9R3d5MNBpfEFw0Ft4FpZFChJkXcJTfwHTqH0hzC510
-	C1PfxC8lGYAAxSXKMvyNfNGd6lhRUEvq3fG77xDsc/GneQ6E/IZomP7RvMkjCpB+4TsN1fG3Gq8Me
-	cCa5Oi1pKHgiAgbR1YTn5GMBFOWE1ZOVA5zovjziWAx35IaaGIAZSE1vCRO69OsuZTm3KxAgH7ceq
-	ziwKHnGEtyeSo3mweOPVpqC26lhbwbga+Iq3xXPq9jjvKf3IiAviV22X8NTL5ijmIF497fRE3TyP2
-	R5JPbZa0/KJiQS58H1Tw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aSkkspW59xog8WjKLs6SUak4R6q5PYd7aBkOQGPsUMo=; b=k89LEq/v2VZRNI
+	lvNJVkLVqUA0rBefJ+9ye3/RREIeEpygN1FCaI2xaBifMwDxbu3AJ8ReEUD5oAUa7c5AvSTtijV9X
+	KMnZWjvRa5zjMcdaB7aWBqqaG2eOzxPZqdIcBkKNtZTEIIDrv3Bef27Fh3mXumV3AyMTcMjTqtN5w
+	gWeS89YVq/SYyt9qOmBUVdGXlcYB1WyCcPdVB0rs/BOlU4HoCl+utwka+X2llQ5qhCqdTBR66yPva
+	exCQkc0j/BVpHoiAjwAAQK1Lt5W6nHCnGDyopSRtaWBHytE0Y3RQ5mPqM4gNxVCfdafaHaaTsEyUF
+	we4ahcl5QJRLn9DQyItg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pS2a2-003SYx-T5; Tue, 14 Feb 2023 21:11:14 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1pS6UA-004EvD-GP; Wed, 15 Feb 2023 01:21:26 +0000
+Received: from out30-118.freemail.mail.aliyun.com ([115.124.30.118])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pS2Zo-003SWO-VB; Tue, 14 Feb 2023 21:11:02 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 8ADD6618CE;
-	Tue, 14 Feb 2023 21:11:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86F2DC4339B;
-	Tue, 14 Feb 2023 21:10:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1676409059;
-	bh=fDIAaeLvnV9bS7cSr3lrCN+H7tSKNpzTS60LB1VS550=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=OYpoOHHcfZA2DoLCNbBAVzJp8sFxNPyS2f/SZUonAGV6v84jwoP6HqzaINqJtJx+V
-	 eNmLIK6bSwMZgADeM3pRNmocG+FeYNk+b2jLHgYGEO4Syrmg1sms51h2Pt1t/JASMr
-	 YnRDg5v8rcyKFFpsgpX5QG1bx89dNfflDCBybv4Y0t943O27UPUnPCpGi1M2wRZYDv
-	 ydw57lZOktRsllTgxazuatWX1dI+cHkYEl/g3N0VhTVcuQON4t471d8GUtHahLcnQ6
-	 r+PRS9MX7YFgBVhye1WUn+fM7FlmI66WbRT7vi9zOQaMcfmuR/grFUbU7g36CKCWBf
-	 FShqN3cntzCKA==
-From: Mark Brown <broonie@kernel.org>
-To: Dhruva Gole <d-gole@ti.com>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Vignesh Raghavendra <vigneshr@ti.com>, Vaishnav Achath <vaishnav.a@ti.com>, 
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- Takahiro.Kuwano@infineon.com, Pratyush Yadav <ptyadav@amazon.de>, 
- Pratyush Yadav <pratyush@kernel.org>
-In-Reply-To: <20230125081023.1573712-1-d-gole@ti.com>
-References: <20230125081023.1573712-1-d-gole@ti.com>
-Subject: Re: [PATCH v2 0/4] STIG Mode Fixes for spi-cadence-qspi driver
-Message-Id: <167640905650.3115947.2076945563527929294.b4-ty@kernel.org>
-Date: Tue, 14 Feb 2023 21:10:56 +0000
+	id 1pS6U7-004Ero-7G
+	for linux-mtd@lists.infradead.org; Wed, 15 Feb 2023 01:21:24 +0000
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vbhgv1j_1676424078;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vbhgv1j_1676424078)
+          by smtp.aliyun-inc.com;
+          Wed, 15 Feb 2023 09:21:18 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: miquel.raynal@bootlin.com
+Cc: vigneshr@ti.com,
+	richard@nod.at,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] mtd: ubi: Simplify bool conversion
+Date: Wed, 15 Feb 2023 09:21:17 +0800
+Message-Id: <20230215012117.83938-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-X-Mailer: b4 0.12.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230214_131101_089657_360DBCDF 
-X-CRM114-Status: GOOD (  17.13  )
+X-CRM114-CacheID: sfid-20230214_172123_453040_E9278EC8 
+X-CRM114-Status: UNSURE (   7.52  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,54 +62,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 25 Jan 2023 13:40:19 +0530, Dhruva Gole wrote:
-> * Reset the CMD_CTRL Register, without which read/writes in STIG mode
-> were failing in some cases. The issue came to light while using STIG
-> Mode for small reads.
-> * Also add a flag that can allow us to do direct reads but distinguish
-> direct writes, thus enabling us to disable writes in DAC mode in some
-> cases that require it. (Like to write to some connected Flash registers)
-> * Fix register reads in STIG mode and also use STIG mode while reading flash
-> registers.
-> Currently if you try to read a register while in STIG mode there is no
-> support for ADDR and thus naturally a register never gets read from the
-> flash.
-> 
-> [...]
+./drivers/mtd/ubi/build.c:1261:33-38: WARNING: conversion to bool not needed here
 
-Applied to
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4061
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/mtd/ubi/build.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-   broonie/spi.git for-next
-
-Thanks!
-
-[1/4] spi: cadence-quadspi: Reset CMD_CTRL Reg on cmd r/w completion
-      commit: d4f43a2d05faf7febb839edb2e9e8f85dfb9d2d2
-[2/4] spi: cadence-quadspi: Add flag for direct mode writes
-      commit: e8c51b164355c1d519a4b8ad0873f131035d26b7
-[3/4] spi: cadence-quadspi: setup ADDR Bits in cmd reads
-      commit: a8674ae02db232927385c2d0a063e10c0118f5ca
-[4/4] spi: cadence-quadspi: use STIG mode for small reads
-      commit: d403fb6e76bf854ef0f7d84e797e51b9494788e0
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 0904eb40c95f..e9c153b7c471 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1258,7 +1258,7 @@ static int __init ubi_init(void)
+ 		mutex_lock(&ubi_devices_mutex);
+ 		err = ubi_attach_mtd_dev(mtd, p->ubi_num,
+ 					 p->vid_hdr_offs, p->max_beb_per1024,
+-					 p->enable_fm == 0 ? true : false);
++					 p->enable_fm == 0);
+ 		mutex_unlock(&ubi_devices_mutex);
+ 		if (err < 0) {
+ 			pr_err("UBI error: cannot attach mtd%d\n",
+-- 
+2.20.1.7.g153144c
 
 
 ______________________________________________________
