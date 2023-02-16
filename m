@@ -4,87 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFC4FC636CC
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Feb 2023 10:47:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F222DC636CC
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Feb 2023 17:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GaEbw/AbxrnO9qwJZrV24bmSjyvQIk05t/y8D/qRRSQ=; b=fhWeHIZElyZ1nB
-	JHiXA8Q7SuD7soispfwsdkvY0BWeMWHyKM6memd2l/4OOJspFe7K34QB9XdjKsbSwvVZ20iHXqkhB
-	rXdZ3R1Jlz1SmD/TfhIYSTseP3s7AghQcI6LHOOuwP9DyEa/3xHYJThjTyX9yeKb+8u6lNkI98iS6
-	zb+TNQUWZEc2vWmPGqOEhqk9vA+WmL4sutIcOov98C4Y9ecU6e6AG7YGpZy2HkdrlT9MkDTMBhyNE
-	wL96bqcYngUvOtkjhRFjAZmgCPe1aHiqiN3bTKEqSzB13TIE7/gIR/HE7e2zqFzcNwS4P1PDSvzWi
-	zofod/MPDa2P2yi7/zlA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date
+	:Subject:CC:To:From:Reply-To:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=L/lAG3i6RO9V5NVIPjZVGHSiaxkILieOeijn2XFIrmc=; b=efS9J7nHmz/0YX
+	AAWOht2qx6mhuUfEP6WwTHi4dqApbxMrZUoNEbkEh8aOn+Dq2UTMRAkU0XpchiQVumAl7QznPT7jJ
+	IJ8pVObnIqatcPkGY8subQOOIcBXRSRjEjF/QbYS6nOr7fs5SFnAlblr6AOOyfut5KKoyq9hTKKZ7
+	gwgiu21Ua89NgOQf7Z1LICpOiNSoxz+hA1YWNMwJt8ppRXSCmJy+dC9qhgXTNVGPpFtshQ+MUA1Dl
+	5GQdo7byb20L6G7JQIlqvzW+I9k4L1y51bYDbVEc9ziD6eCUEm9nXzc2eFetsE96v8we9LBPGla2v
+	QeBauOD9YwbS7r7oqX/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSbn0-009gzq-8k; Thu, 16 Feb 2023 10:46:58 +0000
-Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
+	id 1pSiW6-00BPc4-Dd; Thu, 16 Feb 2023 17:57:58 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSbfH-009cUj-MQ
-	for linux-mtd@lists.infradead.org; Thu, 16 Feb 2023 10:39:01 +0000
-Received: by mail-ej1-x62b.google.com with SMTP id my5so4060581ejc.7
-        for <linux-mtd@lists.infradead.org>; Thu, 16 Feb 2023 02:38:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sLrFLNHeU+0lLuzFD8IVs3u+DZSPRSwwfeLZdEjgDYM=;
-        b=hn+vFzEL3ILDwPxJqj6OUOa9CnpR84xsN2Hr6TESe15oV73q3F3WW1o3f4JnPjRsni
-         7LRG806AS5WO5/8YYqZzUTU51Dz2nKYeClgphuDAHOSKX5SqbHJ/bauW3dt9fUvykleU
-         bts0uLzBeCDqAoaHXovdRxr1Me8hV3XTEqFWqPCa5w/u/egkC/xG+t5HrdGl9jUkit2r
-         +gbXsnEMTS+Gmf7L6vpgpLJwxA8X9nIThTpBr+KYTXZWj6MsPIIPnE7vxDPfKEzqCCCU
-         UQO365K6JJRkdxCSbnCDFq6/+U5NVLwp4w+y8o2+AHXFecOK0sdyI8TlTivmY2ZY/9c/
-         39cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sLrFLNHeU+0lLuzFD8IVs3u+DZSPRSwwfeLZdEjgDYM=;
-        b=0BhoiamcvSZHkK5w7lhhZBQTzQ6RbgGDbDSFkFLfZVQW1U401tJLGVlK9V3EhGAj8t
-         K1Rr9xWAHJxS+Nf8atruZtvaTJPc62SBd9PerypVNYiIWwgu4EK4gpYL97AzSqkQN0mX
-         CVYILtZI5YCLE9XtwEbBoN/+NuRDN1UtYUW6mlq9C0s+n3NE7IwHpVQPaxtDA6BP4hZi
-         mZXFVHCURkM9xe2myk8zeNHM4y1+P9gOm20g9eofvmhlGg87kPvB9O8l0OdzhGCFe4Yh
-         nEkNFqCNugrqjrAsxXK3Q0Vtj7BxluPO7RAmO2+Jy4B35WZz8cAjCBttEXMzxda/VUS0
-         pguw==
-X-Gm-Message-State: AO0yUKVxFZrXX659ARC2S9TqgUkJylMhdDokpDxMSwxvMfTZUmLrcFQH
-	rcmAufmT6QVXgMF2pey+E9M06w==
-X-Google-Smtp-Source: AK7set9/CqKyWkEqPDvPc2d1jdxozbn09liDcmYzlQaGwfPl7/6w6LJzSsv7ImeZK73flh1q13DHTQ==
-X-Received: by 2002:a17:906:d114:b0:88b:4962:b72f with SMTP id b20-20020a170906d11400b0088b4962b72fmr5900381ejz.20.1676543937987;
-        Thu, 16 Feb 2023 02:38:57 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
-        by smtp.gmail.com with ESMTPSA id kk15-20020a170907766f00b0087329ff591esm637089ejc.132.2023.02.16.02.38.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Feb 2023 02:38:52 -0800 (PST)
-Message-ID: <028e8b51-621e-e0af-f781-b7395802601b@linaro.org>
-Date: Thu, 16 Feb 2023 11:38:50 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document CPOL/CPHA
- support
+	id 1pSiVs-00BPWq-LF; Thu, 16 Feb 2023 17:57:46 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id 8E9FD5FD10;
+	Thu, 16 Feb 2023 20:57:35 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1676570255;
+	bh=SduSeqOwVL90O9MEgDTlHkV2YuE15AjLaWPjyDCCbvQ=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version;
+	b=kFmCVb1rxHNm8v5I0wrODLKy6oWi5DrJVjX3n8ylfuqC+mgu2vSVFodi/xRTa5lY4
+	 2fT6+47r/IzlJvv4YbX0jwJPTGo+9JPMORi3+eEaFqLqsYoHSvI+1FFQuTwGwV3naM
+	 hV01t8DBIQdoZW6ecsJ5hb8hDZQzzwLB+YWdvr0bkxhrlwCdwYJ/+o79NxK1YyVgas
+	 jiD85t+P389oy8WjJo8IpxT7Rh7SCr0ul22l57qP9lrmTdzifKHrA3PioaTya0H24+
+	 id7ng3Sqjty+eEOzpb0vrzy9oZNg+LiZ+iYI/aA8ONo3aVsoQrsSyO65BazcTQZt90
+	 jNh5GZjJ2pAKw==
+Received: from S-MS-EXCH02.sberdevices.ru (S-MS-EXCH02.sberdevices.ru [172.16.1.5])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Thu, 16 Feb 2023 20:57:32 +0300 (MSK)
+From: =?utf-8?B?0JrRgNCw0YHQvdC+0LIg0JDRgNGB0LXQvdC40Lk=?=
+	<AVKrasnov@sberdevices.ru>
+To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
+ Raghavendra" <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	=?utf-8?B?0JrRgNCw0YHQvdC+0LIg0JDRgNGB0LXQvdC40Lk=?=
+	<AVKrasnov@sberdevices.ru>, Krasnov Arseniy <oxffffaa@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-amlogic@lists.infradead.org"
+	<linux-amlogic@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, kernel <kernel@sberdevices.ru>
+Subject: [PATCH] mtd: rawnand: meson: initialize struct with zeroes
+Thread-Topic: [PATCH] mtd: rawnand: meson: initialize struct with zeroes
+Thread-Index: AQHZQjAk8W+Ow1LN4Uavv419Ihk4sA==
+Date: Thu, 16 Feb 2023 17:57:32 +0000
+Message-ID: <8881a365-e218-916a-e68d-d889797279be@sberdevices.ru>
+Accept-Language: en-US, ru-RU
 Content-Language: en-US
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Mark Brown <broonie@kernel.org>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org
-References: <afe470603028db9374930b0c57464b1f6d52bdd3.1676384304.git.geert+renesas@glider.be>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <afe470603028db9374930b0c57464b1f6d52bdd3.1676384304.git.geert+renesas@glider.be>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.1.12]
+Content-ID: <67C80C4B08BF6441AA617A43FDA00DA0@sberdevices.ru>
+MIME-Version: 1.0
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/02/16 08:39:00 #20868660
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230216_023859_829209_5181FB26 
-X-CRM114-Status: UNSURE (   7.32  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230216_095745_447947_18A627C0 
+X-CRM114-Status: GOOD (  11.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,19 +92,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 14/02/2023 15:26, Geert Uytterhoeven wrote:
-> SPI EEPROMs typically support both SPI Mode 0 (CPOL=CPHA=0) and Mode 3
-> (CPOL=CPHA=1).  However, using the latter is currently flagged as an
-> error by "make dtbs_check", e.g.:
-> 
+This structure must be zeroed, because it's field 'hw->core' is used as
+'parent' in 'clk_core_fill_parent_index()', but it will be uninitialized.
+The following backtrace is result of the dereference of such pointer:
 
+[    1.081319]  __clk_register+0x414/0x820
+[    1.085113]  devm_clk_register+0x64/0xd0
+[    1.088995]  meson_nfc_probe+0x258/0x6ec
+[    1.092875]  platform_probe+0x70/0xf0
+[    1.096498]  really_probe+0xc8/0x3e0
+[    1.100034]  __driver_probe_device+0x84/0x190
+[    1.104346]  driver_probe_device+0x44/0x120
+[    1.108487]  __driver_attach+0xb4/0x220
+[    1.112282]  bus_for_each_dev+0x78/0xd0
+[    1.116077]  driver_attach+0x2c/0x40
+[    1.119613]  bus_add_driver+0x184/0x240
+[    1.123408]  driver_register+0x80/0x140
+[    1.127203]  __platform_driver_register+0x30/0x40
+[    1.131860]  meson_nfc_driver_init+0x24/0x30
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+---
+ drivers/mtd/nand/raw/meson_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
-Krzysztof
-
-
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index 5ee01231ac4c..30e326adabfc 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -991,7 +991,7 @@ static const struct mtd_ooblayout_ops meson_ooblayout_ops = {
+ 
+ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+ {
+-	struct clk_parent_data nfc_divider_parent_data[1];
++	struct clk_parent_data nfc_divider_parent_data[1] = {0};
+ 	struct clk_init_data init = {0};
+ 	int ret;
+ 
+-- 
+2.35.0
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
