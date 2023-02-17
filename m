@@ -4,86 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAC5BC05027
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Feb 2023 17:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CB8DC05027
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Feb 2023 23:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=IyUcnUB4CFDeu3uRfFYa8u/qr7QmWHYr0xAXLwSsjOE=; b=ccLzHM0rTeC8A/
-	OZ0/I+rVQrivecmhqTXWTnKONXds0dli5wKX+vMP+V8TzE33qvVjn+NzK2Zs+gAJpILO5Tf3FooiP
-	gD+Tv+neNj4bsnOGk4H6CETCuWFlyENM3pohvbUw2fWE+jwVU771UMs7nt/2GRVSIfthzATnslw+J
-	h5NXc6nX6cb8G/fbkHPAYjQS3O5cm19soHQ+eTwHNwyGO0S3NLS4FesbfY6oSzGEbWwcG2UvyZ0q0
-	ikT5KMYYUybCQB1WS93T08DqDpQ/K0m9SSVqfD1tKrmvyd+NZMkJzs3wpUpamSmpasmo1Pzqtlvlt
-	TV2NS71TpuosD1iKV1Mw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CXUNtw/UU/LatrACeZGK97EAN00kBBo2l86rjWPVbN4=; b=BrRW/Y3hEiRvVt
+	RA4RwlYeSDX/Pb0OyUsuWEhxAWVvMzfN3SrrCNZ/nIrYvWDRDMFSqXxHe3jD3i79TRf9UXYV96PrU
+	wqTntS6o6PboNr6GLzRpftAEW7cns5ferpeOB9Y9j2AYF9SzIb60uuefvxIxWR5rli8CJovSgJenR
+	Xiwl4JpoeGFc3zetLZ7JWBeMVvP92tk8biWcGR007+tCr9wBKGiNDBdMaYPGOYfe7eDLX5aOlRYZx
+	mXYP2nZNhEVKLY7610ucazQBMmUCcMXmVHe377KUAV15csOYR+tWFQoKknQgX1tHTKV5l4RiEvRDw
+	ksntUH03QScztiW910dA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pT46g-00FAdM-V1; Fri, 17 Feb 2023 17:01:11 +0000
-Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
+	id 1pTA8F-00Fx6Y-4h; Fri, 17 Feb 2023 23:27:11 +0000
+Received: from mail-oa1-f45.google.com ([209.85.160.45])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pT46e-00FAbJ-A2
-	for linux-mtd@lists.infradead.org; Fri, 17 Feb 2023 17:01:09 +0000
-Received: by mail-pl1-x629.google.com with SMTP id 19so2210178plo.7
-        for <linux-mtd@lists.infradead.org>; Fri, 17 Feb 2023 09:01:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=user-agent:content-disposition:mime-version:mail-followup-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1CmMG6Bjrj55x+g0WwIsSci8pNsPP4XDLQDm9PqSpIM=;
-        b=RAUUWFldyLPjGSheNOIq6G8uYWWP0gAKTPALYQvcwHJRP8rIYOBIYIqZ0l0QiOgpI4
-         BmRN2EH3XT44R1QVRQbtFM+sez585aP618jvo+nftzHfykjas90LU4RWFK+7D09c9TWG
-         HLQW/Q6lD0zd0Os5D/neaKqg0GgxwV8B3Y097zSAQdttWlnzcUlsUYNv/v8k1sSLN9hf
-         rWxCPN2Ye+aNIiHB1e9rnXHREG1I+CAMMWuz7Tl/6PoHfcufOJHSspnvCVpb9DEuC8l6
-         Iehw0teIWwAQ0cS3KSr3Khnn9aPd4nSTCJ6e+LAApn2yrXIW6suB9yeimWF7QcJTU1qD
-         U8yQ==
+	id 1pTA8A-00Fx5p-Gp
+	for linux-mtd@lists.infradead.org; Fri, 17 Feb 2023 23:27:07 +0000
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-170c8a8e206so3268743fac.10
+        for <linux-mtd@lists.infradead.org>; Fri, 17 Feb 2023 15:27:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:content-disposition:mime-version:mail-followup-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1CmMG6Bjrj55x+g0WwIsSci8pNsPP4XDLQDm9PqSpIM=;
-        b=bA/bJWCV5K8KItH9/SNNmCECd5ubJAVPkgAxs0LVSnguJ5sRa8Y4vY3qRpykeAzG/f
-         /hORvIl60RYkmQDlcoJ9yctmbYNOrm3MlJQczOKEByq9nS2kns26vaW8EMhLglNxWDnf
-         nbNRc4X3qwWZMx7KOuRwoxDfLzjFnHU4A9/XuwVYelyT7rNPjIUBeCSbPUO0A94eMh/a
-         dpfpGSATeuCY9NCVgDmXbmSvFj1LECWg5et3pisEVPQb1aMK2dd+nT+rTzCQlX5WE5d/
-         ZuKmOfMpj/AhEkf5ol3LxeuApUzLAtW5nmhHvEzKwPYtksAQlhtubEjK4UaC5e/fybJI
-         ajkw==
-X-Gm-Message-State: AO0yUKWRCT31ntiJ/rga2Yl266k+sRwp62AJ1eCrgeKEqUpC5iprT2Xi
-	pPc8QYhEiqZN/aL36AaxBr4=
-X-Google-Smtp-Source: AK7set/4ilB4G2TkmFxdRwuCoA6bW6LLDRjvY2SEttqZb4vbAwGObXZU5dNtLdu1y+2r/zAwusaHNA==
-X-Received: by 2002:a17:903:48f:b0:19a:9610:b237 with SMTP id jj15-20020a170903048f00b0019a9610b237mr1540289plb.45.1676653260569;
-        Fri, 17 Feb 2023 09:01:00 -0800 (PST)
-Received: from udknight.localhost ([117.30.83.51])
-        by smtp.gmail.com with ESMTPSA id jb6-20020a170903258600b0019a7563ff15sm3401546plb.115.2023.02.17.09.00.59
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Feb 2023 09:01:00 -0800 (PST)
-Received: from udknight.localhost (localhost [127.0.0.1])
-	by udknight.localhost (8.14.9/8.14.4) with ESMTP id 31HH0uab030595;
-	Sat, 18 Feb 2023 01:00:56 +0800
-Received: (from root@localhost)
-	by udknight.localhost (8.14.9/8.14.9/Submit) id 31HGw8bo005510;
-	Sat, 18 Feb 2023 00:58:08 +0800
-Date: Sat, 18 Feb 2023 00:58:08 +0800
-From: Wang YanQing <udknight@gmail.com>
-To: miquel.raynal@bootlin.com
-Cc: bbrezillon@kernel.org, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: ubi: eba.c: fix return value overwrite issue in
- try_write_vid_and_data()
-Message-ID: <20230217165442.GA28288@udknight>
-Mail-Followup-To: Wang YanQing <udknight@gmail.com>,
-	miquel.raynal@bootlin.com, bbrezillon@kernel.org, richard@nod.at,
-	vigneshr@ti.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LKUc5pbw1yazGVhBpNKjeMy/4FeHfZzgptlXZ0pQics=;
+        b=Ht1QmumTeJeO3ttQ8dga0G6nTxIsqvvUz2BLeit3ydun5Z6GFKKtowEB4Ope1o+Do8
+         EDUCyQPWPkORi+5sJKs6q7zXOyOFUDYmowS+AomXP+eQTZ7uCyWi/Y9xUkTOx12rhxlA
+         VIDkYHjii42I6ZTOVMcijYZKesDQjEIf08/IcYoHkq6MZVQXQs6H+DZRtQE0ZSsDoz9R
+         LdohswWbcaj2Y6tnGuAbXFFCeCimgwPrk2M4GGdkdqDgYSBRf/JWl9jLgA++RBzqFT08
+         UUGSLsnlwTHOjsp7k9zy1z/JxU8Xy7N2RI5veIjzH4jzCT/DER2ZLEhTptqetaqFsKdB
+         sxNw==
+X-Gm-Message-State: AO0yUKUrYj0nzakd79Sq1RaLq2SHbMK2HltGHbZj/M5Zh5mrmP0ne48X
+	sfFzvjjEN/6gO7IM0EKcHg==
+X-Google-Smtp-Source: AK7set+mj3tCBmniQ4Vc/uuMNYw3VzuxafpQVmLbG/0nKq0jLJoNNkhvc7DvBjP86Zs2XAxRPe2WTA==
+X-Received: by 2002:a05:6870:b150:b0:169:dcba:1ec9 with SMTP id a16-20020a056870b15000b00169dcba1ec9mr1615221oal.41.1676676423521;
+        Fri, 17 Feb 2023 15:27:03 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id v1-20020a056870e28100b0015f4d1b195bsm2194520oad.36.2023.02.17.15.27.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Feb 2023 15:27:03 -0800 (PST)
+Received: (nullmailer pid 2260551 invoked by uid 1000);
+	Fri, 17 Feb 2023 23:27:02 -0000
+Date: Fri, 17 Feb 2023 17:27:02 -0600
+From: Rob Herring <robh@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document CPOL/CPHA
+ support
+Message-ID: <20230217232702.GA2257281-robh@kernel.org>
+References: <afe470603028db9374930b0c57464b1f6d52bdd3.1676384304.git.geert+renesas@glider.be>
+ <20230214154433.6a421c51@xps-13>
+ <CAMuHMdVK7vOTNMF53SvHn8LtiHX7MSN-Fp80jngSsosYBhhrHQ@mail.gmail.com>
+ <20230214165637.56102b18@xps-13>
 MIME-Version: 1.0
 Content-Disposition: inline
-User-Agent: Mutt/1.7.1 (2016-10-04)
+In-Reply-To: <20230214165637.56102b18@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230217_090108_371868_D50EAA6C 
-X-CRM114-Status: GOOD (  13.42  )
+X-CRM114-CacheID: sfid-20230217_152706_610864_186583D7 
+X-CRM114-Status: GOOD (  30.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,50 +83,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The commit 2d78aee426d8 ("UBI: simplify LEB write and atomic LEB change code")
-adds helper function, try_write_vid_and_data(), to simplify the code, but this
-helper function has bug, it will return 0 (success) when ubi_io_write_vid_hdr()
-or the ubi_io_write_data() return error number (-EIO, etc), because the return
-value of ubi_wl_put_peb() will overwrite the original return value.
+On Tue, Feb 14, 2023 at 04:56:37PM +0100, Miquel Raynal wrote:
+> Hi Geert,
+> 
+> geert@linux-m68k.org wrote on Tue, 14 Feb 2023 16:22:15 +0100:
+> 
+> > Hi Miquel,
+> > 
+> > On Tue, Feb 14, 2023 at 3:44 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > > geert+renesas@glider.be wrote on Tue, 14 Feb 2023 15:26:43 +0100:  
+> > > > SPI EEPROMs typically support both SPI Mode 0 (CPOL=CPHA=0) and Mode 3
+> > > > (CPOL=CPHA=1).  However, using the latter is currently flagged as an
+> > > > error by "make dtbs_check", e.g.:
+> > > >
+> > > >     arch/arm/boot/dts/r8a7791-koelsch.dtb: flash@0: Unevaluated properties are not allowed ('spi-cpha', 'spi-cpol' were unexpected)
+> > > >           From schema: Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > > >
+> > > > Fix this by documenting support for CPOL=CPHA=1.
+> > > >
+> > > > Fixes: 233363aba72ac638 ("spi/panel: dt-bindings: drop CPHA and CPOL from common properties")
+> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 7 +++++++
+> > > >  1 file changed, 7 insertions(+)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > > > index f86255ce13af0871..bb62ac4585822982 100644
+> > > > --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > > > +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > > > @@ -76,6 +76,13 @@ properties:
+> > > >        If "broken-flash-reset" is present then having this property does not
+> > > >        make any difference.
+> > > >
+> > > > +  spi-cpol: true
+> > > > +  spi-cpha: true  
+> > >
+> > > I see that spi-cpol and spi-cpha are described in spi-controller.yaml
+> > > which references spi-peripheral-props.yaml, but jedec,spi-nor.yaml
+> > > only references spi-peripheral-props.yaml leading to spi-cpol and
+> > > spi-cpha not being recognized as valid properties.
+> > >
+> > > Wouldn't it be cleaner to to have these two properties defined in
+> > > spi-peripheral-props.yaml instead?  
+> > 
+> > They were moved out of that file by the commit referenced in the
+> > Fixes: tag above, because they are not supported by all SPI targets.
+> > It's the responsibility of the SPI target bindings to list what is supported.
+> 
+> Oops, I overlooked that line.
+> 
+> I actually see no point in constraining device trees on that regard,
+> but, well, Krzysztof is the author, I believe he knows his stuff, so
+> let's go for it.
 
-This issue will cause unexpected data loss issue, because the caller of this
-function and UBIFS willn't know the data is lost.
+It's a feature of the specific device as to what modes it supports. For 
+most cases where there is only one choice it should be implied from the 
+compatible, but there's some exceptions like this one. 
 
-Fixes: 2d78aee426d8 ("UBI: simplify LEB write and atomic LEB change code")
-
-Signed-off-by: Wang YanQing <udknight@gmail.com>
----
- drivers/mtd/ubi/eba.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 09c408c..4e32b25 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -981,10 +981,17 @@ static int try_write_vid_and_data(struct ubi_volume *vol, int lnum,
- out_put:
- 	up_read(&ubi->fm_eba_sem);
- 
--	if (err && pnum >= 0)
--		err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
--	else if (!err && opnum >= 0)
--		err = ubi_wl_put_peb(ubi, vol_id, lnum, opnum, 0);
-+	if (err && pnum >= 0) {
-+		if (ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1) != 0) {
-+			ubi_warn(ubi, "failed to return physical eraseblock %d",
-+				 pnum);
-+		}
-+	} else if (!err && opnum >= 0) {
-+		if (ubi_wl_put_peb(ubi, vol_id, lnum, opnum, 0) != 0) {
-+			ubi_warn(ubi, "failed to return physical eraseblock %d",
-+				 opnum);
-+		}
-+	}
- 
- 	return err;
- }
--- 
-1.8.5.6.2.g3d8a54e.dirty
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
