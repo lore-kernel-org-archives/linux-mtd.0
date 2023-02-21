@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61757C636D7
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Feb 2023 06:34:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4C81C6379F
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Feb 2023 10:08:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date
 	:Subject:CC:To:From:Reply-To:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=1QI6CcpjVymdqrBeqYplpLOs2RdBQ5x2A3XTb/szt0M=; b=Db3yCi1X9tCb9W
-	6xR8UvBdHfoDIyxAEfq6RFisJIiGyE1xObbLofz7t/AVEFQWGPshybPHe7aBI2ktHlLFlKitNDBiq
-	rHB4gC6amJB9kVzELM51SHNZlJA7nbTJ4d4afGJcn7QUZZYzZTdX26n8Q6M7JUXmsJ2NkUrQ+7/dK
-	3tDC+o+JNPayWPfgIfzIUmp5HzkY0nwHtG+SlQvKSxaZvRhHB4PgmKJwO+obwJjFv7KUA/YkBn02H
-	08ibBIqm/gvJ/SjWe0cy0SFlW2HNbpgD4etQJ/GrA8FdFXPYbjiIlkUU9FaTnsM4w4qMMl8uhobX4
-	W7Q00CVksy/00ExCYFoQ==;
+	List-Owner; bh=u/bdLVpKV9oAQV22r1+O3BvF6rIDN3VOT97DTKiCLzg=; b=g/dH+6l0rh7rWh
+	ROI3d/G8u525LwkpTGsh6vayyRPoBRSvihzojz2zlzQr2AcMj7Kk83gtU0EeQ6YiVPjiUa/lNvvDC
+	wIBmHA0WCQLql+c6ptEX2mM8cPjp4fBSVUNZbPkuF5z1uxp/F/tocqZKravUliIIz8SaKVnyx4jaa
+	CXbkC4Om0d5NBODMFqJO8f/swH/5drl3LMka8ZNG0WjMlLn1vPRPfX/U3M9Qe4OExZt8FHuY9motV
+	nv5OuHglw1uqUXur3E2sqEhyMrdPfc4HPt6hoThsfnLArJ2iDMBN3eHvOvsp0+4X3v2LdMhQOGolP
+	4VNrem4lOWdpXP4ftTuw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pUMDr-006l37-0w; Tue, 21 Feb 2023 06:33:55 +0000
+	id 1pUPZB-007Kjy-DV; Tue, 21 Feb 2023 10:08:09 +0000
 Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pUMDf-006kzm-MU; Tue, 21 Feb 2023 06:33:45 +0000
+	id 1pUPZ0-007KfQ-FN; Tue, 21 Feb 2023 10:08:00 +0000
 Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 736BB5FD4A;
-	Tue, 21 Feb 2023 09:33:41 +0300 (MSK)
+	by mx.sberdevices.ru (Postfix) with ESMTP id 12C785FD49;
+	Tue, 21 Feb 2023 13:07:46 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1676961221;
-	bh=J4GGD+2l/dLrAC7SommQy5cNs2a8BqaY2AypKovMSnw=;
+	s=mail; t=1676974066;
+	bh=kCGIEEIrOqEx79jHMP9Gmz2sP9t0agLEDmq0KjBVZP8=;
 	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version;
-	b=H5mWv+a4/3PrOU5+6r/HWaHqjlghL3+HU74g0ctMEHN3mho1SxruF31ruNO1VxZMk
-	 sB0/GB+XlkCEmw/2H8rcZza/BqO8s0DAgRiLYlJxMeD4vAc9enKve7P2jBBYC7vzlL
-	 yoc84zuACIZKQsKbMVdDcMzJzpb9phq52zJV/CBDxrL52FqSDgdtD1dCZWzlzNvaiY
-	 Tl5Ovq3zroo7TBRyl0nJu+1ZOA6n1s1Zxxe43Wlbx8EIRoLZjMYcWLp6GfDlnFKMgv
-	 E7aSbSBp+edvh8fPZkYVUEF3MlsxY6BKbNl77v8zzZQ/7dFrprBSsuuewuemYLk/jL
-	 +lCDG44njt/8Q==
+	b=lN5oUYhBnOQUvyJHNQazaB5dKKD0r8t8gxpRFP65kc5bGf+zY2d5efjKJPf4iG0aO
+	 yrzzfWzxuOXhufqAnb0+mjzMKhb8V7sAFSJfe3+WRodzGRfacSS83nPJDn85d/ThRZ
+	 zF3senP2ZZ1BZt+ET9K+N5BDbQfYORKbgJqSdGzEqVUoqe4hpkrU5tgIkhlLCHeq0V
+	 XLh3fWyZ5FTHBOoaFUvwMzIfcnw7YoR/0YfDsWs89ypKeRZk/O2X5fOMQ9uhWn9dX2
+	 3CxS4+IAC680lZuxOkDWSStBpV6WI7Kq+qwrGRt0GwQJGn6O+CYyjuZm3hgsA2vN78
+	 PE+V5bRB2E86w==
 Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
 	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Tue, 21 Feb 2023 09:33:41 +0300 (MSK)
+	Tue, 21 Feb 2023 13:07:44 +0300 (MSK)
 From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
 To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
 	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
@@ -52,17 +52,17 @@ CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	<linux-amlogic@lists.infradead.org>, "linux-kernel@vger.kernel.org"
 	<linux-kernel@vger.kernel.org>, kernel <kernel@sberdevices.ru>, "Krasnov
  Arseniy" <oxffffaa@gmail.com>
-Subject: [PATCH] mtd: rawnand: meson: initialize struct with zeroes
-Thread-Topic: [PATCH] mtd: rawnand: meson: initialize struct with zeroes
-Thread-Index: AQHZRb5vNxURJELs6U2kTl21bK7YBg==
-Date: Tue, 21 Feb 2023 06:33:40 +0000
-Message-ID: <688e481f-5273-e74a-3349-cbf8de73e791@sberdevices.ru>
+Subject: [PATCH v2] mtd: rawnand: meson: initialize struct with zeroes
+Thread-Topic: [PATCH v2] mtd: rawnand: meson: initialize struct with zeroes
+Thread-Index: AQHZRdxXC52Hg9QgTkGFFc963YCP5A==
+Date: Tue, 21 Feb 2023 10:07:44 +0000
+Message-ID: <6474e163-e61a-e04c-590d-60c674dc7ed9@sberdevices.ru>
 Accept-Language: en-US, ru-RU
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-originating-ip: [172.16.1.12]
-Content-ID: <7E6F31EA176CE44E979062A9F4E1BC7F@sberdevices.ru>
+Content-ID: <90BD33636B30B148A690A4B10727C254@sberdevices.ru>
 MIME-Version: 1.0
 X-KSMG-Rule-ID: 4
 X-KSMG-Message-Action: clean
@@ -72,8 +72,8 @@ X-KSMG-AntiPhishing: not scanned, disabled by settings
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/02/21 02:56:00 #20885447
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230220_223344_076325_10338010 
-X-CRM114-Status: GOOD (  12.26  )
+X-CRM114-CacheID: sfid-20230221_020758_878450_7BBB2A30 
+X-CRM114-Status: GOOD (  12.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,6 +113,7 @@ result of dereference of such pointer:
 [    1.127203]  __platform_driver_register+0x30/0x40
 [    1.131860]  meson_nfc_driver_init+0x24/0x30
 
+Fixes: 1e4d3ba66888 ("mtd: rawnand: meson: fix the clock")
 Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
 ---
  drivers/mtd/nand/raw/meson_nand.c | 2 +-
