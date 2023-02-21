@@ -4,76 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4C81C6379F
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Feb 2023 10:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A142C6379F
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Feb 2023 11:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date
-	:Subject:CC:To:From:Reply-To:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=u/bdLVpKV9oAQV22r1+O3BvF6rIDN3VOT97DTKiCLzg=; b=g/dH+6l0rh7rWh
-	ROI3d/G8u525LwkpTGsh6vayyRPoBRSvihzojz2zlzQr2AcMj7Kk83gtU0EeQ6YiVPjiUa/lNvvDC
-	wIBmHA0WCQLql+c6ptEX2mM8cPjp4fBSVUNZbPkuF5z1uxp/F/tocqZKravUliIIz8SaKVnyx4jaa
-	CXbkC4Om0d5NBODMFqJO8f/swH/5drl3LMka8ZNG0WjMlLn1vPRPfX/U3M9Qe4OExZt8FHuY9motV
-	nv5OuHglw1uqUXur3E2sqEhyMrdPfc4HPt6hoThsfnLArJ2iDMBN3eHvOvsp0+4X3v2LdMhQOGolP
-	4VNrem4lOWdpXP4ftTuw==;
+	List-Owner; bh=GGrZzXhxvOhF5jvnm+UvlMvxyN48vS/odhBZiaAvyzw=; b=i+1/gumwaFIc4+
+	b7g+is0A1UzagdjWpNg+avyqIQc9vEPt2f64xbWWqiCPwyjfjb+LHxXeilSWYxy2wdv89b1TQS/S+
+	i+KqAxsVEu+8WMGGZoA4rYPllUhQoUjRp+gXw6kNnPY/mEVYLKRzfWDLrnWdU2nARobVHfPHiH+5G
+	BPOGr4vvyAjyKpA9i7eoQqplI/3pF/8NLb+FeLEglQGqK0K+hZTiSM1JjfNHj4opPu2jdvVL71wDp
+	GlmWqSBaWVKHOSrphZUQkPcy+6pL6sjemAw7NIv+Bgd05KM4HXqo3I8qOvAeixYA7boYh5wJpOnoh
+	VBh46bkwzsRw7j88rwKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pUPZB-007Kjy-DV; Tue, 21 Feb 2023 10:08:09 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1pUQay-007XA8-KV; Tue, 21 Feb 2023 11:14:04 +0000
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pUPZ0-007KfQ-FN; Tue, 21 Feb 2023 10:08:00 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 12C785FD49;
-	Tue, 21 Feb 2023 13:07:46 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1676974066;
-	bh=kCGIEEIrOqEx79jHMP9Gmz2sP9t0agLEDmq0KjBVZP8=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version;
-	b=lN5oUYhBnOQUvyJHNQazaB5dKKD0r8t8gxpRFP65kc5bGf+zY2d5efjKJPf4iG0aO
-	 yrzzfWzxuOXhufqAnb0+mjzMKhb8V7sAFSJfe3+WRodzGRfacSS83nPJDn85d/ThRZ
-	 zF3senP2ZZ1BZt+ET9K+N5BDbQfYORKbgJqSdGzEqVUoqe4hpkrU5tgIkhlLCHeq0V
-	 XLh3fWyZ5FTHBOoaFUvwMzIfcnw7YoR/0YfDsWs89ypKeRZk/O2X5fOMQ9uhWn9dX2
-	 3CxS4+IAC680lZuxOkDWSStBpV6WI7Kq+qwrGRt0GwQJGn6O+CYyjuZm3hgsA2vN78
-	 PE+V5bRB2E86w==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Tue, 21 Feb 2023 13:07:44 +0300 (MSK)
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
- Raghavendra" <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-amlogic@lists.infradead.org"
-	<linux-amlogic@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, kernel <kernel@sberdevices.ru>, "Krasnov
- Arseniy" <oxffffaa@gmail.com>
-Subject: [PATCH v2] mtd: rawnand: meson: initialize struct with zeroes
-Thread-Topic: [PATCH v2] mtd: rawnand: meson: initialize struct with zeroes
-Thread-Index: AQHZRdxXC52Hg9QgTkGFFc963YCP5A==
-Date: Tue, 21 Feb 2023 10:07:44 +0000
-Message-ID: <6474e163-e61a-e04c-590d-60c674dc7ed9@sberdevices.ru>
-Accept-Language: en-US, ru-RU
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.1.12]
-Content-ID: <90BD33636B30B148A690A4B10727C254@sberdevices.ru>
+	id 1pUQau-007X8j-DV
+	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2023 11:14:02 +0000
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 012BB3F583
+	for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2023 11:13:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1676978034;
+	bh=ro4x+56p6k4eFwybCxILtCF2vhcwpYTnKWiQ2Fw4Iq4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+	b=QnwpGe9xRsZhbTFijauqOnXr8lefQT/X6BdUd9ANKN84M7HyMOF2bX8lx7W5HA/p6
+	 jENkP4kEHsDHzbVhHvdP27U+DuC3+H19rPRT/ir8gzfNMwVaHV5nTlJRMDTou9JNF9
+	 1Dm0/1IFIFI2V2kmVMTPvYJzLrl46Et71t0B4DCgkvyDB2IO7vD27rVdxmoLkwyZyx
+	 mI4fBCFeTFc15rzY9wVQWMC+yjoPblDuiVFpavEHIwY8pujWHEIOvmDOHSzNb4xdKK
+	 X8Sw7jrGOzAcYUFvBhEP+rPZnqTxV+V5hCXqVPpkJLZ3X1HYPb8EHcUDuz6JLq19Zo
+	 Xoj7yOTE5PsSA==
+Received: by mail-ed1-f70.google.com with SMTP id er17-20020a056402449100b004ad793116d5so3889789edb.23
+        for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2023 03:13:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ro4x+56p6k4eFwybCxILtCF2vhcwpYTnKWiQ2Fw4Iq4=;
+        b=exhWuTgMmVtcxBRQ/a8hw4IkVQQz2szAdkH1Vi4OaG8O2EfhaIuBZtyUTe4yGkN7Qg
+         +nTb6rQeDPBS+LKbXYDpBymOQABrOrekjMosxxj+4TPROd9bV1VXUSEt6vUvF7aeZj2Z
+         UR5i1EUTk6W+nsTa+6doa6Qw40b3X48YDHmMaW9oAlVaiFu/nbWvV6n+/TPtaph4bd4p
+         /ca4egPbbCqxgkmmqlHbC1FvwH2HJf5Q9RJz9o3WQeqi7/qNyOzVBHOnutYHhBHVs15N
+         pVFv6UnldQ+jWXMv4s/OF5ef7utVVoXLTUXY0E6eyUbJR3z8v96mVWcuTenNLUBH84OV
+         qo/A==
+X-Gm-Message-State: AO0yUKWxoPu6SiqjI6OY97IkxgxA/1nUc1C3nMn0fZZ28CRNraaCUn7z
+	Xgiu7w2BSIwQSdstGml8iK6g21n1RVGk4ICyWmxurgKKwYgljfsMvCpNNHnGndq5hw+6AK1zW9N
+	726DB4A+MjXPtMYydQ1qYGLn7bBdkPOHNqzvcR971qZs=
+X-Received: by 2002:a17:907:c297:b0:8aa:6edf:2a9 with SMTP id tk23-20020a170907c29700b008aa6edf02a9mr13089945ejc.69.1676978033507;
+        Tue, 21 Feb 2023 03:13:53 -0800 (PST)
+X-Google-Smtp-Source: AK7set9qGtS26yt0C3R8UVON9AwCXrJoOkhG6nyRf+nsk0tAcFExR5s6BvJMjzCmiEfCTQYQ1KHnCg==
+X-Received: by 2002:a17:907:c297:b0:8aa:6edf:2a9 with SMTP id tk23-20020a170907c29700b008aa6edf02a9mr13089925ejc.69.1676978033219;
+        Tue, 21 Feb 2023 03:13:53 -0800 (PST)
+Received: from localhost.localdomain (host-79-44-179-55.retail.telecomitalia.it. [79.44.179.55])
+        by smtp.gmail.com with ESMTPSA id t14-20020a1709066bce00b008cff300cf47sm2804832ejs.72.2023.02.21.03.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Feb 2023 03:13:52 -0800 (PST)
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>
+Cc: Michael Walle <michael@walle.cc>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Cristian Birsan <cristian.birsan@microchip.com>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: fix shift-out-of-bounds in spi_nor_set_erase_type()
+Date: Tue, 21 Feb 2023 12:13:46 +0100
+Message-Id: <20230221111346.34268-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/02/21 02:56:00 #20885447
-X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230221_020758_878450_7BBB2A30 
-X-CRM114-Status: GOOD (  12.58  )
+X-CRM114-CacheID: sfid-20230221_031400_897102_5DCA1666 
+X-CRM114-Status: GOOD (  14.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,50 +103,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This structure must be zeroed, because it's field 'hw->core' is used as
-'parent' in 'clk_core_fill_parent_index()', but it will be uninitialized.
-This happens, because when this struct is not zeroed, pointer 'hw' is
-"initialized" by garbage, which is valid pointer, but points to some
-garbage. So 'hw' will be dereferenced, but 'core' contains some random
-data which will be interpreted as pointer. The following backtrace is
-result of dereference of such pointer:
+It seems that according to JEDEC JESD216B Standard erase size needs to
+be a power of 2, but sometimes we set the size to 0 (e.g., in
+spi_nor_parse_4bait()) causing UBSAN warnings like the following:
 
-[    1.081319]  __clk_register+0x414/0x820
-[    1.085113]  devm_clk_register+0x64/0xd0
-[    1.088995]  meson_nfc_probe+0x258/0x6ec
-[    1.092875]  platform_probe+0x70/0xf0
-[    1.096498]  really_probe+0xc8/0x3e0
-[    1.100034]  __driver_probe_device+0x84/0x190
-[    1.104346]  driver_probe_device+0x44/0x120
-[    1.108487]  __driver_attach+0xb4/0x220
-[    1.112282]  bus_for_each_dev+0x78/0xd0
-[    1.116077]  driver_attach+0x2c/0x40
-[    1.119613]  bus_add_driver+0x184/0x240
-[    1.123408]  driver_register+0x80/0x140
-[    1.127203]  __platform_driver_register+0x30/0x40
-[    1.131860]  meson_nfc_driver_init+0x24/0x30
+  UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2026:24
+  shift exponent 4294967295 is too large for 32-bit type 'int'
+  Hardware name: Dell Inc. XPS 13 9300/077Y9N, BIOS 1.11.0 03/22/2022
+  Call Trace:
+   <TASK>
+   show_stack+0x4e/0x61
+   dump_stack_lvl+0x4a/0x6f
+   dump_stack+0x10/0x18
+   ubsan_epilogue+0x9/0x3a
+   __ubsan_handle_shift_out_of_bounds.cold+0x61/0xef
+   spi_nor_set_erase_type.cold+0x16/0x1e [spi_nor]
+   spi_nor_parse_4bait+0x270/0x380 [spi_nor]
+   spi_nor_parse_sfdp+0x47f/0x610 [spi_nor]
 
-Fixes: 1e4d3ba66888 ("mtd: rawnand: meson: fix the clock")
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Fix by checking if size is a power when setting struct
+spi_nor_erase_type, otherwise consider size, mask and shift as invalid.
+
+Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories")
+Reported-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
 ---
- drivers/mtd/nand/raw/meson_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 5ee01231ac4c..30e326adabfc 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -991,7 +991,7 @@ static const struct mtd_ooblayout_ops meson_ooblayout_ops = {
- 
- static int meson_nfc_clk_init(struct meson_nfc *nfc)
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index d67c926bca8b..3c5b5bf9cbd1 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2019,11 +2019,17 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
+ void spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
+ 			    u8 opcode)
  {
--	struct clk_parent_data nfc_divider_parent_data[1];
-+	struct clk_parent_data nfc_divider_parent_data[1] = {0};
- 	struct clk_init_data init = {0};
- 	int ret;
+-	erase->size = size;
+ 	erase->opcode = opcode;
+ 	/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
+-	erase->size_shift = ffs(erase->size) - 1;
+-	erase->size_mask = (1 << erase->size_shift) - 1;
++	if (likely(is_power_of_2(size))) {
++		erase->size = size;
++		erase->size_shift = ffs(erase->size) - 1;
++		erase->size_mask = (1 << erase->size_shift) - 1;
++	} else {
++		erase->size = 0u;
++		erase->size_shift = ~0u;
++		erase->size_mask = ~0u;
++	}
+ }
  
+ /**
 -- 
-2.35.0
+2.38.1
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
