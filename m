@@ -4,131 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33343C61DA4
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Feb 2023 15:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04CCBC61DA4
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Feb 2023 15:38:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=oPM1yqu1XeR31aGyZ+LnWsoFtaOS+ngDQyCKmoOx6PM=; b=W7gpOaxiZYhVRO
-	7W+e6ampY3YPunGmxjn75douaGa2iPRZyuKXThkfHL6+yKCmL2MyN+I9amXp/xyfxPwkyPw2OrHCO
-	lPDxvpzNTz2bdufYRQ6GriHYbEPSGJ3Xj4WCQXs23qwymcks5gQRoXmiccLkdIVdiN5hpHPsou+TT
-	y/GRmeZEPLcXVOHPp9CAWu9ePbYv0Z8mkQyMiILMbNKDAibpygJy78dEtIZPD3awaPDeV2jlomdbD
-	2z/VoAAt9GL7jwIxk0h75OWhu1FXr5nIBqIxsMwI/lU9xXCBJx5NTRBK5u7Xhq1H26TchTg82QMlQ
-	mD6fH7f9QsyeYV4ztYSQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Y1FmcXEva6qfEHpwK4cOZT6/AEc6WkfUVD/pDm2Lk8Y=; b=E9aVsl4lTL0I02
+	uj6i9r/mqCv7A9ahCt5JXQHtZy/A0F8RmTEhkeQ8tZqxyFaFD8YHrnO4ncV37QQyfwheKndEciFQx
+	hU2r3uSKJOpyUvcqHwiGh/G6Mtq1bvez+LfqCbEIAMQvUnAzd+D1F2OaQyVPWluB6xmzyyKsvUCfI
+	VDzjmdVmGqkVjZymk6rt7C+f+gn8exPHVs6Vxzs2ILEnWnZ0117GMz/8NCuzBfxA6pLZlaQ9qSH/q
+	51KdBhm41FpBgPk1Z3rUTeicxPRfKDcVhaU+hwjgdnEQK8rSlKtOvC8ksj/ecNajXDASnLhGAlkBW
+	8MqGr20ngAiv3StRTeew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pUr0H-00Cr19-0L; Wed, 22 Feb 2023 15:25:57 +0000
-Received: from outbound-ip23a.ess.barracuda.com ([209.222.82.205])
+	id 1pUrBU-00CtVg-Cf; Wed, 22 Feb 2023 15:37:32 +0000
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pUr0C-00Cqze-GA
-	for linux-mtd@lists.infradead.org; Wed, 22 Feb 2023 15:25:55 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170]) by mx-outbound10-241.us-east-2a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Wed, 22 Feb 2023 15:25:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i3TaK1D+YSIwwtoWhGTnrsyXRvzvClcv3g+5/bRvevDk8up9U8yRxbRxF9g0DBDPLS/LKrF7skI/tz2DkAReU/xhumzQDAOUNTVoCHLzoc6j7jm1C/9xzzH6R91MsK8B7VOhhxTRrTM1YZXYzZpqMFesIs6C7B7UdaKMtMxhygHQnIHDD3TRLch1/m4OfhDgg9Rj/96IBSrCLtI5xrYN+1GOWGPWnqw4zhFJfhdgZcxe+iekVPlTqCnzwNwDgG/dVjcHqsNsUsm/+6KvnvWZkx/irAlnTfDahh2Xk58jeX/szv+9Y3+fCOwUvmQ265SyXi0Mn2Kt1lggMtX0LmHa4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NzWNYZW7+cv+IYPT9F00PNvuczMq8lhqSLRj8L9T9zU=;
- b=nfSi+ct7EmlvriYjKpWK9vxaBI8Sp/l16Pufy252wVWqcvxpiNtEa3VL0fSuzisKAzPM92c869pQRjS/Hy0JVSp77jjQPeqlkePtdT0mJUdFb/uv/3KZczHQJssoplLcORrH9e7EPXoEHtbg7QgMbTdROvN46YGDHGOcanuxhIt0kN5HCirAtG4TcfcbjynxTGpVV3DsBWWv7xJURdy9ZqHAsqkh6PPHx/Ywd2uTV2BsOdt1eDhRnzngpkQrULlsVgJjvZksSt38WhD3TyI7HuQwWPN+dLYDG3TuTRPbKxh5yRhrxX5c9BvPcWrIGDKmIZX9SrviXWaMSZMqlPhTzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=digi.com; dmarc=pass action=none header.from=digi.com;
- dkim=pass header.d=digi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NzWNYZW7+cv+IYPT9F00PNvuczMq8lhqSLRj8L9T9zU=;
- b=iWQXhykoloCs9vsNjtg5l74gT4KVoMCCZbpMV5HeP6DdKIkcAlNcTiyn9eciYcrAwsjQ/pC3nnsabZWKDJRhhxqLvQ4vORtEusMwD8ECbZYBozQCKWhE170bRj8+urRWL5GyxAZaeYPvGYOQY65JwLu9UDs3gTVqbETsIRgIYQ/MGejwtNv3OsYTmt5IvzqLQxGAsiPcn6MBz6b+/4DwgEiWFkD4RnNw1SprDNuJvkh5mT77JF/HhVI+yjl/cyff6GMkb+uRFiH7y+eZEC6B8/jQPNr5xwBBzO/aNwpfBJp1aXZtsMioaVcLOPume/ahYvalxhrIAmu5LkClMgXGiw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=digi.com;
-Received: from BY5PR10MB4370.namprd10.prod.outlook.com (2603:10b6:a03:20b::19)
- by PH0PR10MB4536.namprd10.prod.outlook.com (2603:10b6:510:40::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.19; Wed, 22 Feb
- 2023 15:25:36 +0000
-Received: from BY5PR10MB4370.namprd10.prod.outlook.com
- ([fe80::88cb:a839:2d87:1124]) by BY5PR10MB4370.namprd10.prod.outlook.com
- ([fe80::88cb:a839:2d87:1124%7]) with mapi id 15.20.6134.019; Wed, 22 Feb 2023
- 15:25:35 +0000
-From: Hector Palacios <hector.palacios@digi.com>
-To: herve.codina@bootlin.com,
-	miquel.raynal@bootlin.com,
-	sashal@kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: hector.palacios@digi.com
-Subject: [PATCH] nand_base: force best_mode to be >= 0
-Date: Wed, 22 Feb 2023 16:25:10 +0100
-Message-Id: <20230222152510.1064332-1-hector.palacios@digi.com>
-X-Mailer: git-send-email 2.34.1
-X-ClientProxiedBy: VI1PR07CA0237.eurprd07.prod.outlook.com
- (2603:10a6:802:58::40) To BY5PR10MB4370.namprd10.prod.outlook.com
- (2603:10b6:a03:20b::19)
+	id 1pUrBR-00CtU1-Mg
+	for linux-mtd@lists.infradead.org; Wed, 22 Feb 2023 15:37:31 +0000
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 78ED33F57F
+	for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2023 15:37:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1677080242;
+	bh=8JWkkKuY/mBsg2CPf/80E/i9Tneo0oqJt3Gz/3GLDP0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=W6JsaxrrKqSy2vwHXxTliRjOCidyVFfMr9JkWWaizxLNWk5hq5nWa8hwhdX+hL8qQ
+	 MpssmPbmaHUe/I8Fj8ik/ue37VEnDEOooTh70dxVnNjrmIgVpkqjbjI/o503qP9JX2
+	 oetHfD0s5VtLv7eS5CNgVeDP5cm9ZMxGPiw3iNB2SvURSxmECPMz+vE8SgJSlKkve9
+	 yMl98aLj+k5cdKVQzBRPIx56kP7mkRbuLnD2IQSccc1HMp1TdGUc+b4fNsV/E3a58C
+	 DEXIOjohCtMjtpmCaJ524KXd8BY+oKd0ErFfYjdNrb9m8pnSfegtt/p+4je8wZhxFB
+	 46c6fBaTZx/Ew==
+Received: by mail-ed1-f70.google.com with SMTP id ec13-20020a0564020d4d00b004a621e993a8so11101117edb.13
+        for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2023 07:37:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8JWkkKuY/mBsg2CPf/80E/i9Tneo0oqJt3Gz/3GLDP0=;
+        b=TLSEDyHMMqzi4MXVsaLEiy7zrjlm1lg6KCJoJYXlRzMmvwAwhJVRKq2oeQRAt3RonD
+         a3pKRBhLOKbHcSbRT9FwMlJuh/A8ct7adDkyLPaU9iZ6CFaUWsZjQJonuqTmx8WA+i5l
+         XkLmpO7RsIuK3iJ83HmzV5lkc4A6DL4F7VS8Je7iKiDEaub9O0YPiNUcS75Bw2D6PDZb
+         Y66CZaISVnFSH6VooakhLpDOX91njly2nfn8WEuX8WwqAlX96fR3hiyHRvAYwcbw/8/5
+         jWjOPipmqi+FaAg4HM8kiwWCNcsFEsTqfykti7hWVRTS2v88ZKDu+kPVet1dzRVmrqiQ
+         YAwg==
+X-Gm-Message-State: AO0yUKW7G6Gia2MVnknKRqzm/9CGA5Lm4cGPFZ24oyQk/xFNbHbAAXRJ
+	U6E2tyDSEArK1Od2WtOUGieSXZfFDKGDa/Wu96Yk62/ZsYROy2F6HJZXCRtVa4NGTYckR5sncvI
+	P2IdRb6GrWULSJS9UukkzKXZ+PeyxOq9GDMVpOw94vrM=
+X-Received: by 2002:aa7:d88f:0:b0:4ac:cb71:42c with SMTP id u15-20020aa7d88f000000b004accb71042cmr9373008edq.37.1677080241838;
+        Wed, 22 Feb 2023 07:37:21 -0800 (PST)
+X-Google-Smtp-Source: AK7set8nplrbIbgKrRBuUUF6Neaqb+KCYt+AJHeHCvX+8WacNd7VJXttTkv6+JQA5aVbfqHpGQxCeA==
+X-Received: by 2002:aa7:d88f:0:b0:4ac:cb71:42c with SMTP id u15-20020aa7d88f000000b004accb71042cmr9372978edq.37.1677080241536;
+        Wed, 22 Feb 2023 07:37:21 -0800 (PST)
+Received: from localhost (host-79-44-179-55.retail.telecomitalia.it. [79.44.179.55])
+        by smtp.gmail.com with ESMTPSA id co10-20020a0564020c0a00b004aab66d34c7sm4286713edb.7.2023.02.22.07.37.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Feb 2023 07:37:21 -0800 (PST)
+Date: Wed, 22 Feb 2023 16:37:20 +0100
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Cristian Birsan <cristian.birsan@microchip.com>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: fix shift-out-of-bounds in
+ spi_nor_set_erase_type()
+Message-ID: <Y/Y2sEZ5Ojos9fpg@righiandr-XPS-13-7390>
+References: <20230221111346.34268-1-andrea.righi@canonical.com>
+ <d87efbd8-5290-b462-beb3-c2d3be267ade@linaro.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4370:EE_|PH0PR10MB4536:EE_
-X-MS-Office365-Filtering-Correlation-Id: fe8aac51-d681-499d-1546-08db14e90b02
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	1x1nxYq6KyYHdG2DsJZ1VuJg95g70WsgIa2NMzs8J5UdjYbKB+QZBTygGaqQMk3YF16lU/ksuy/nsF+GwRfeN1TXRj99LF5KzYJbMiqHc97xRJ5e6PJqSN+rBns9JOOOQUfHWrY8HlWAdaWhHvtJwaw95QDPREdzBHfFmyYuP8P9om2jw71uvbxfoVj1is1CQFKsQCZXJZA/IAFIKRnaPfty/Y/Uha16atp6Od2Nx1b9xFCAiXi2p8Z47fVqbZ/LgF6y4KTY77k6C3Tdvbkkp77M42AFajlMC/g2vGb8YPKr8cR3y3Iz7f6D9MTW8L20dPf5gHAsT9zl/yLnePmGSYzRAVdGcDzwrdDz21DSwvtOzR1WdUxPNmq6tXMP/RXBVkPZhzhix/Bj59ozdUyBfFqlBl3Gfz4ykumxVxSBg2RE4Arua/LpAn4pMPpcI7LeEUa6azQm4bdh5abF3Q7DOOkMYJgh8MNfz6lLBUztl75iPoSJ7p/uidNyjSOiteUmYL8NtNkxVrs7qPbPonEOEm/cENCieChZv+J0F2AWrS2M7a2qMj/Xx+2WZsCHm2TdrqMcp2rvts1zLGggqDrvjIR1tHKY0bVDMFWyEkRMA9cljC83hOe2dRuGJXMU+1ouZSd8YlVEUQ97rpHtWd969ncdVKixEq9y+UaW65TYuXmMT50mlII02z3JZevl/+bafxXytO/UNE+K3OtuHYn95Q==
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4370.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(136003)(366004)(396003)(39850400004)(346002)(376002)(451199018)(83380400001)(66556008)(66476007)(26005)(316002)(4326008)(478600001)(8676002)(66946007)(6506007)(6512007)(1076003)(186003)(6666004)(36756003)(38350700002)(38100700002)(86362001)(5660300002)(41300700001)(107886003)(2906002)(44832011)(8936002)(6486002)(52116002)(2616005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?u1c33CwGZtIUXkmObSvyWE6cFelfTXMc0jkoFpjq39mKSPp/vJIHr0wq2rqs?=
- =?us-ascii?Q?Hty88oSRu6zQlsqttBgpg38d8adC47LRQElnr89SrZStKV6Ec0s4AOBcY0bY?=
- =?us-ascii?Q?JOxLDTiAnoPMfrzEizV6JbpioJ/LbkzAlTPFcnnGOXfNmfndG5Rk7UCTiCiS?=
- =?us-ascii?Q?RX4DJwM2xLPnyDmyslqC5xcIuoVxnM2K12QZ29Qm73uf2xoEyVCWraDt584F?=
- =?us-ascii?Q?I3Xz03D/jczz63EdwbX0Cwb3Ep1MPsDINutZCBW4nsP+kdgf1vDyxn9MHnu3?=
- =?us-ascii?Q?I4N5RVmFGDTj6urnG/Kk24qtNCli2W5MOMY2feNEaNEs4vQM+Bm6memYxmxq?=
- =?us-ascii?Q?YS1cNTCPK+Nz9S8G1/MzIUsR1Xlin29DkVxAjgvkVbybwO3U31gR+ZFlWrIj?=
- =?us-ascii?Q?rwNaC608Y7lr9vohjyjWPVa5uY8mJAe+mzJShHJExl4wbynemYo7d+ye2v5L?=
- =?us-ascii?Q?iLyj/25y1PIQsO3hFc1OPB2uqSGLS8AgLGWxIZ5HRbnkKjrTX2BLiikn5DOB?=
- =?us-ascii?Q?hk8l6hCUcxZm8EwDLfjLBodjDzBV2+BuqbzSWArURCHIC/fp3WpAKuy5GM8Z?=
- =?us-ascii?Q?BhNTZNdNytuLqvqnoaYDJQdziEgxNzsbVC0VuC4stf9/ZasJgkx723qjH10G?=
- =?us-ascii?Q?9qMkMe9IqoGU1q1HV1rE00B/jDhNwTm1O0r+wCsZzyoOXve/edj9MpalM1t9?=
- =?us-ascii?Q?nhMQKnQqp1xrA/e2JOWxgBD+iDkryly2NyG8A4sjoUMqrS4JHbqyoKN97wRc?=
- =?us-ascii?Q?Clruik+z9OkwPVZD7z7n3j/0FnzTrYgj/ocDnTsW/iyhu5McEAIFRDrB3h8+?=
- =?us-ascii?Q?CcXVM/KCMXm+N1jfWxQ/fcO7thTKfE0VFLhS44L/pB+vXX9MpGvwznU+4QCL?=
- =?us-ascii?Q?wXW1gH5CenK0jQM3ydE4kGLCGws3N5xBO7bKz7TY7V4Irj9nEsuWrWafLHZt?=
- =?us-ascii?Q?moVg0jrUvI3gGQ8g9/3AU/+B678ZdR8s0ZZDzyxq7O4Q9X0Xtu4+059Otq9x?=
- =?us-ascii?Q?1DKXSzjQMKcF/6AZ9Filk7MO4ijRIHP7OOhpZuYYHh++RhJi+czHZjbobair?=
- =?us-ascii?Q?QInmvO1FWl3jYH6LyghvBysy+dAtXoJ+tf9Q8Hqd95pF/yKWluLaInA60QRD?=
- =?us-ascii?Q?ZjV61xkbyqp8t6nb2Zdvog0gMITXGP8XgNnNA/qP3R/5+tABmO6FoXC38AQ8?=
- =?us-ascii?Q?Ar9c/HnlbcnpjgZBiHDoCSG8WHoPoZLU7q28i7oKP8mcevVLVNxtm5yUxoWl?=
- =?us-ascii?Q?iHjn7f7kuXZHPGJRM+c3GWtm4Fypce3jxsaqD034fnk0QLgBMBmfdWlvPqIx?=
- =?us-ascii?Q?vZXLNYOCn+l8VFg/H3DuED0laFSIOz9JnXYYdUKhDtQYnCJYACaCf+wRBP++?=
- =?us-ascii?Q?zRe1Kbc+a818WyrQ1hzNlhMFrkZpYlAYKLWccxYrQItzd19dZnIHFd9GK6nm?=
- =?us-ascii?Q?qXIM4B8iQaKViIYZ2J6RGRX3aBR1IZwW4W2DS/woU1kM4brUKbNNpMM3asSl?=
- =?us-ascii?Q?C3AjlVNGLtCK0ReMdzAMA6qw1O9PwDDWM/dvZaBOFaQFou6W7Y5kGbyyH4CC?=
- =?us-ascii?Q?ddPcdeWCZhhbyY3K4eFVzmb0czLfszGazlpn20UA?=
-X-OriginatorOrg: digi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe8aac51-d681-499d-1546-08db14e90b02
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4370.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2023 15:25:35.1740
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: abb4cdb7-1b7e-483e-a143-7ebfd1184b9e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xToAkQfZUtAuWlnt6x/o4vYNV08hUTCv+TGZHphjv64/1tO0GN5+GODFXrhhqdU968t4H4lTPn3sg110ecwUzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4536
-X-BESS-ID: 1677079539-102801-5454-20650-1
-X-BESS-VER: 2019.1_20230221.1854
-X-BESS-Apparent-Source-IP: 104.47.55.170
-X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVoZGluZAVgZQ0Nw01dAi0czQ3N
-	LQMDnZzMw4JTE1xcDS0tzcItE4xdRYqTYWAFdgj+lBAAAA
-X-BESS-Outbound-Spam-Score: 0.00
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.246332 [from 
-	cloudscan21-242.us-east-2b.ess.aws.cudaops.com]
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------
-	0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS112744 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND
-X-BESS-BRTS-Status: 1
+Content-Disposition: inline
+In-Reply-To: <d87efbd8-5290-b462-beb3-c2d3be267ade@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230222_072553_960301_5C5824B0 
-X-CRM114-Status: GOOD (  13.88  )
+X-CRM114-CacheID: sfid-20230222_073730_140305_E255B783 
+X-CRM114-Status: GOOD (  29.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,36 +106,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-According to the ONFI specification, bit 0 of 'SDR timing mode support'
-(bytes 129-130) "shall be 1". That means the NAND supports at least
-timing mode 0.
+On Wed, Feb 22, 2023 at 02:50:42PM +0000, Tudor Ambarus wrote:
+> Hi!
+> 
+> This should be fixed by:
+> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=spi-nor/next&id=f0f0cfdc3a024e21161714f2e05f0df3b84d42ad
 
-NAND chip Hynix H27U4G8F2GDA-BI (at least) is reading a 0 on this field
-which makes best_mode = -1 and the following loop be skipped. An error
-code is returned upstream and the NAND probe fails.
+Ah yes, this should definitely fix it.
 
-Given that sdr_timing_modes *must* be 1 by specification, force best_mode
-to be 1 at least, so that this function doesn't return an error on a NAND
-that can work with such timings despite reporting an incorrect ONFI value.
+It'd still like to do a check like is_power_of_2(size) in
+spi_nor_set_erase_type(), to make sure we don't silently set size to
+something non-standard, but I can send another patch for that, so for
+now you can ignore this patch.
 
-Signed-off-by: Hector Palacios <hector.palacios@digi.com>
----
- drivers/mtd/nand/raw/nand_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Which base did you use?
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index c3cc66039925..474850e4455c 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -947,7 +947,7 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
- 		/* Fallback to slower modes */
- 		best_mode = iface->timings.mode;
- 	} else if (chip->parameters.onfi) {
--		best_mode = fls(chip->parameters.onfi->sdr_timing_modes) - 1;
-+		best_mode = fls(chip->parameters.onfi->sdr_timing_modes | 1) - 1;
- 	}
- 
- 	for (mode = best_mode; mode >= 0; mode--) {
+I used the latest git from Linus' repository that doesn't have this
+commit yet.
+
+Thanks,
+-Andrea
+
+> 
+> Cheers,
+> ta
+> 
+> On 2/21/23 11:13, Andrea Righi wrote:
+> > It seems that according to JEDEC JESD216B Standard erase size needs to
+> > be a power of 2, but sometimes we set the size to 0 (e.g., in
+> > spi_nor_parse_4bait()) causing UBSAN warnings like the following:
+> > 
+> >    UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2026:24
+> >    shift exponent 4294967295 is too large for 32-bit type 'int'
+> >    Hardware name: Dell Inc. XPS 13 9300/077Y9N, BIOS 1.11.0 03/22/2022
+> >    Call Trace:
+> >     <TASK>
+> >     show_stack+0x4e/0x61
+> >     dump_stack_lvl+0x4a/0x6f
+> >     dump_stack+0x10/0x18
+> >     ubsan_epilogue+0x9/0x3a
+> >     __ubsan_handle_shift_out_of_bounds.cold+0x61/0xef
+> >     spi_nor_set_erase_type.cold+0x16/0x1e [spi_nor]
+> >     spi_nor_parse_4bait+0x270/0x380 [spi_nor]
+> >     spi_nor_parse_sfdp+0x47f/0x610 [spi_nor]
+> > 
+> > Fix by checking if size is a power when setting struct
+> > spi_nor_erase_type, otherwise consider size, mask and shift as invalid.
+> > 
+> > Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories")
+> > Reported-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> > ---
+> >   drivers/mtd/spi-nor/core.c | 12 +++++++++---
+> >   1 file changed, 9 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index d67c926bca8b..3c5b5bf9cbd1 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -2019,11 +2019,17 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
+> >   void spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
+> >   			    u8 opcode)
+> >   {
+> > -	erase->size = size;
+> >   	erase->opcode = opcode;
+> >   	/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
+> > -	erase->size_shift = ffs(erase->size) - 1;
+> > -	erase->size_mask = (1 << erase->size_shift) - 1;
+> > +	if (likely(is_power_of_2(size))) {
+> > +		erase->size = size;
+> > +		erase->size_shift = ffs(erase->size) - 1;
+> > +		erase->size_mask = (1 << erase->size_shift) - 1;
+> > +	} else {
+> > +		erase->size = 0u;
+> > +		erase->size_shift = ~0u;
+> > +		erase->size_mask = ~0u;
+> > +	}
+> >   }
+> >   /**
 
 ______________________________________________________
 Linux MTD discussion mailing list
