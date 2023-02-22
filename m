@@ -4,92 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04CCBC61DA4
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Feb 2023 15:38:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 884BEC61DA4
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Feb 2023 21:15:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Y1FmcXEva6qfEHpwK4cOZT6/AEc6WkfUVD/pDm2Lk8Y=; b=E9aVsl4lTL0I02
-	uj6i9r/mqCv7A9ahCt5JXQHtZy/A0F8RmTEhkeQ8tZqxyFaFD8YHrnO4ncV37QQyfwheKndEciFQx
-	hU2r3uSKJOpyUvcqHwiGh/G6Mtq1bvez+LfqCbEIAMQvUnAzd+D1F2OaQyVPWluB6xmzyyKsvUCfI
-	VDzjmdVmGqkVjZymk6rt7C+f+gn8exPHVs6Vxzs2ILEnWnZ0117GMz/8NCuzBfxA6pLZlaQ9qSH/q
-	51KdBhm41FpBgPk1Z3rUTeicxPRfKDcVhaU+hwjgdnEQK8rSlKtOvC8ksj/ecNajXDASnLhGAlkBW
-	8MqGr20ngAiv3StRTeew==;
+	List-Owner; bh=S4rC+UNN7VtrY8EjQEu4OY0AzVfXOIE6+1MsAvGzkzk=; b=V4Rna1pmwy3P4K
+	QJ5Y9vi4+uZkzRPJwZCb84tXgmLIs2tj5ZEJLwM6p5P3RxbyAQ+gqjEUmvmbDVczQY725B8lXiCMD
+	SlEPyleS5kJehu9lNiM9PQxcQnkmLWMRjLdgklm5zphxhYKSpro2VklcMVvCbvJildMjPLNYiVZ3+
+	8KaPOjN8rrq7lU+ZVl7277kzVOctpRhz1DBYAfOaMJ+ZyrMmO/LgC7LNBr4r9akZ29llzqCmA3ia5
+	8cftSOBuqz3ULaUj5oaN1LgxePnhqZMWac8dkWm99OEaZp20rEDfO+S7YHBshjSRWoA5zdICeqmXR
+	Cz7SlBZRGtMZdJHnqkxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pUrBU-00CtVg-Cf; Wed, 22 Feb 2023 15:37:32 +0000
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
+	id 1pUwSI-00E98A-1e; Wed, 22 Feb 2023 21:15:14 +0000
+Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pUrBR-00CtU1-Mg
-	for linux-mtd@lists.infradead.org; Wed, 22 Feb 2023 15:37:31 +0000
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 78ED33F57F
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2023 15:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1677080242;
-	bh=8JWkkKuY/mBsg2CPf/80E/i9Tneo0oqJt3Gz/3GLDP0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To;
-	b=W6JsaxrrKqSy2vwHXxTliRjOCidyVFfMr9JkWWaizxLNWk5hq5nWa8hwhdX+hL8qQ
-	 MpssmPbmaHUe/I8Fj8ik/ue37VEnDEOooTh70dxVnNjrmIgVpkqjbjI/o503qP9JX2
-	 oetHfD0s5VtLv7eS5CNgVeDP5cm9ZMxGPiw3iNB2SvURSxmECPMz+vE8SgJSlKkve9
-	 yMl98aLj+k5cdKVQzBRPIx56kP7mkRbuLnD2IQSccc1HMp1TdGUc+b4fNsV/E3a58C
-	 DEXIOjohCtMjtpmCaJ524KXd8BY+oKd0ErFfYjdNrb9m8pnSfegtt/p+4je8wZhxFB
-	 46c6fBaTZx/Ew==
-Received: by mail-ed1-f70.google.com with SMTP id ec13-20020a0564020d4d00b004a621e993a8so11101117edb.13
-        for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2023 07:37:22 -0800 (PST)
+	id 1pUwSE-00E96V-Tn; Wed, 22 Feb 2023 21:15:12 +0000
+Received: by mail-ed1-x533.google.com with SMTP id eg37so32060472edb.12;
+        Wed, 22 Feb 2023 13:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1hpkcdj31Kp+64I0H+8QjpzTiuX76hZTeMvrWdpVOt4=;
+        b=Y95tEBQTvJnja0wiaBFlONHEPFFpg4E5Aidd7Wxu88GO6+Efw9s32CSm6Qrv+mXXKE
+         i5+x1nQprf7tfF0IcJzKPjG26LQSm8lVS+CQndNmsIeuLxTz3Zws+u23ldaG3K54+WIL
+         IKeo6NJCJ7WchtpfymyIpeNWai8L7kAy3lwcxu51e9DNdYZrZ0f3D1Sw8ivAk+CfDKS3
+         Ek4oq62+5hOyx3h0ySU4oZmDiESIURoGhUvHFCUOXpdaqhWIldAEFOJmG9Rfku2zdt2S
+         XHD98cqCLTBp5a+c55IWJPbpd06egfIFbD37YQMjJACS4ZlT8leLyYR4DAvtMaXLTN/X
+         IY6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8JWkkKuY/mBsg2CPf/80E/i9Tneo0oqJt3Gz/3GLDP0=;
-        b=TLSEDyHMMqzi4MXVsaLEiy7zrjlm1lg6KCJoJYXlRzMmvwAwhJVRKq2oeQRAt3RonD
-         a3pKRBhLOKbHcSbRT9FwMlJuh/A8ct7adDkyLPaU9iZ6CFaUWsZjQJonuqTmx8WA+i5l
-         XkLmpO7RsIuK3iJ83HmzV5lkc4A6DL4F7VS8Je7iKiDEaub9O0YPiNUcS75Bw2D6PDZb
-         Y66CZaISVnFSH6VooakhLpDOX91njly2nfn8WEuX8WwqAlX96fR3hiyHRvAYwcbw/8/5
-         jWjOPipmqi+FaAg4HM8kiwWCNcsFEsTqfykti7hWVRTS2v88ZKDu+kPVet1dzRVmrqiQ
-         YAwg==
-X-Gm-Message-State: AO0yUKW7G6Gia2MVnknKRqzm/9CGA5Lm4cGPFZ24oyQk/xFNbHbAAXRJ
-	U6E2tyDSEArK1Od2WtOUGieSXZfFDKGDa/Wu96Yk62/ZsYROy2F6HJZXCRtVa4NGTYckR5sncvI
-	P2IdRb6GrWULSJS9UukkzKXZ+PeyxOq9GDMVpOw94vrM=
-X-Received: by 2002:aa7:d88f:0:b0:4ac:cb71:42c with SMTP id u15-20020aa7d88f000000b004accb71042cmr9373008edq.37.1677080241838;
-        Wed, 22 Feb 2023 07:37:21 -0800 (PST)
-X-Google-Smtp-Source: AK7set8nplrbIbgKrRBuUUF6Neaqb+KCYt+AJHeHCvX+8WacNd7VJXttTkv6+JQA5aVbfqHpGQxCeA==
-X-Received: by 2002:aa7:d88f:0:b0:4ac:cb71:42c with SMTP id u15-20020aa7d88f000000b004accb71042cmr9372978edq.37.1677080241536;
-        Wed, 22 Feb 2023 07:37:21 -0800 (PST)
-Received: from localhost (host-79-44-179-55.retail.telecomitalia.it. [79.44.179.55])
-        by smtp.gmail.com with ESMTPSA id co10-20020a0564020c0a00b004aab66d34c7sm4286713edb.7.2023.02.22.07.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Feb 2023 07:37:21 -0800 (PST)
-Date: Wed, 22 Feb 2023 16:37:20 +0100
-From: Andrea Righi <andrea.righi@canonical.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Cristian Birsan <cristian.birsan@microchip.com>,
-	Boris Brezillon <bbrezillon@kernel.org>,
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: fix shift-out-of-bounds in
- spi_nor_set_erase_type()
-Message-ID: <Y/Y2sEZ5Ojos9fpg@righiandr-XPS-13-7390>
-References: <20230221111346.34268-1-andrea.righi@canonical.com>
- <d87efbd8-5290-b462-beb3-c2d3be267ade@linaro.org>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1hpkcdj31Kp+64I0H+8QjpzTiuX76hZTeMvrWdpVOt4=;
+        b=ESzvGo2YbvD9LkdPZngcUgPHxKJHJ11ML7/WfBdKFcxFjShY0Cg7AHlZ+t5/7ZkBRO
+         bRgczKqzjlpebS6eCV6yaDCjdwuwmw8hbJUhwhDoFM4EbfEHf6MdWrD93vGGv38vVCNw
+         Pt8ABVBZyiVcx5NObesb1koQjM6Z7iICBI2I6CofEKzQNmlnyopcSNdocw2hhHKWbmVM
+         Wj0sRZw86o2KEUrEd+dkZYA/VnKwMzW2JdWTvw9Yya/MBCOMHTGl/nSODbYojH0aSTOs
+         LTef2Wz9WItTcVQd/d7966NXo54PTBwopnF2mLx9oMkChnXe/MS1FnuMKpA2l70azBxJ
+         jLoA==
+X-Gm-Message-State: AO0yUKVu+6q8GGYg54UdQxtMYeLW6Y4q1xtF/XYb0p7x+Ghd9pNDjpvt
+	uK6eP+6iWbJvoDPsVbgL+SI30gkqRESBAm3PyZ0=
+X-Google-Smtp-Source: AK7set8TXb46bTmDPfzW/xczn6QfGU7MdMXPRf/CaO6cyWdNx+3X84yvibHTXzLWWA/EAH5iiZY+OShEAAHjsEGwRMc=
+X-Received: by 2002:a50:f611:0:b0:4ac:b7c1:9109 with SMTP id
+ c17-20020a50f611000000b004acb7c19109mr4476929edn.6.1677100506156; Wed, 22 Feb
+ 2023 13:15:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d87efbd8-5290-b462-beb3-c2d3be267ade@linaro.org>
+References: <20230221145021.31993-1-zajec5@gmail.com> <CAFBinCDxB=xtz9mtZupBC7J5oxknN1ENHzJ-cFxX4FTDSgZeFQ@mail.gmail.com>
+ <101a5bdf-870a-a1bb-954d-1d675ecad5a7@gmail.com>
+In-Reply-To: <101a5bdf-870a-a1bb-954d-1d675ecad5a7@gmail.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Wed, 22 Feb 2023 22:14:55 +0100
+Message-ID: <CAFBinCDcDYtdOdikc2ieXjRUkrjgwNKaPYvYZb_v84gh66q=bw@mail.gmail.com>
+Subject: Re: [PATCH] nvmem: add explicit config option to read OF fixed cells
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>, 
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
+	Jerome Brunet <jbrunet@baylibre.com>, Claudiu Beznea <claudiu.beznea@microchip.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andy Gross <agross@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Orson Zhai <orsonzhai@gmail.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Vincent Shih <vincent.sunplus@gmail.com>, Chen-Yu Tsai <wens@csie.org>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Michal Simek <michal.simek@xilinx.com>, Alessandro Zummo <a.zummo@towertech.it>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Evgeniy Polyakov <zbr@ioremap.net>, 
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-amlogic@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, 
+	linux-rtc@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230222_073730_140305_E255B783 
-X-CRM114-Status: GOOD (  29.31  )
+X-CRM114-CacheID: sfid-20230222_131510_988749_858D027B 
+X-CRM114-Status: GOOD (  23.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,91 +104,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Feb 22, 2023 at 02:50:42PM +0000, Tudor Ambarus wrote:
-> Hi!
-> 
-> This should be fixed by:
-> https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=spi-nor/next&id=f0f0cfdc3a024e21161714f2e05f0df3b84d42ad
-
-Ah yes, this should definitely fix it.
-
-It'd still like to do a check like is_power_of_2(size) in
-spi_nor_set_erase_type(), to make sure we don't silently set size to
-something non-standard, but I can send another patch for that, so for
-now you can ignore this patch.
-
-> 
-> Which base did you use?
-
-I used the latest git from Linus' repository that doesn't have this
-commit yet.
-
-Thanks,
--Andrea
-
-> 
-> Cheers,
-> ta
-> 
-> On 2/21/23 11:13, Andrea Righi wrote:
-> > It seems that according to JEDEC JESD216B Standard erase size needs to
-> > be a power of 2, but sometimes we set the size to 0 (e.g., in
-> > spi_nor_parse_4bait()) causing UBSAN warnings like the following:
-> > 
-> >    UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2026:24
-> >    shift exponent 4294967295 is too large for 32-bit type 'int'
-> >    Hardware name: Dell Inc. XPS 13 9300/077Y9N, BIOS 1.11.0 03/22/2022
-> >    Call Trace:
-> >     <TASK>
-> >     show_stack+0x4e/0x61
-> >     dump_stack_lvl+0x4a/0x6f
-> >     dump_stack+0x10/0x18
-> >     ubsan_epilogue+0x9/0x3a
-> >     __ubsan_handle_shift_out_of_bounds.cold+0x61/0xef
-> >     spi_nor_set_erase_type.cold+0x16/0x1e [spi_nor]
-> >     spi_nor_parse_4bait+0x270/0x380 [spi_nor]
-> >     spi_nor_parse_sfdp+0x47f/0x610 [spi_nor]
-> > 
-> > Fix by checking if size is a power when setting struct
-> > spi_nor_erase_type, otherwise consider size, mask and shift as invalid.
-> > 
-> > Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories")
-> > Reported-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> > ---
-> >   drivers/mtd/spi-nor/core.c | 12 +++++++++---
-> >   1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index d67c926bca8b..3c5b5bf9cbd1 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -2019,11 +2019,17 @@ spi_nor_spimem_adjust_hwcaps(struct spi_nor *nor, u32 *hwcaps)
-> >   void spi_nor_set_erase_type(struct spi_nor_erase_type *erase, u32 size,
-> >   			    u8 opcode)
-> >   {
-> > -	erase->size = size;
-> >   	erase->opcode = opcode;
-> >   	/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
-> > -	erase->size_shift = ffs(erase->size) - 1;
-> > -	erase->size_mask = (1 << erase->size_shift) - 1;
-> > +	if (likely(is_power_of_2(size))) {
-> > +		erase->size = size;
-> > +		erase->size_shift = ffs(erase->size) - 1;
-> > +		erase->size_mask = (1 << erase->size_shift) - 1;
-> > +	} else {
-> > +		erase->size = 0u;
-> > +		erase->size_shift = ~0u;
-> > +		erase->size_mask = ~0u;
-> > +	}
-> >   }
-> >   /**
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gUmFmYcWCLAoKT24gVHVlLCBGZWIgMjEsIDIwMjMgYXQgMTE6MjkgUE0gUmFmYcWCIE1p
+xYJlY2tpIDx6YWplYzVAZ21haWwuY29tPiB3cm90ZToKWy4uLl0KPiA+IEkgYW0gbm90IGZhbWls
+aWFyIHdpdGggdGhlIHJlY2VudCBjaGFuZ2VzIGFyb3VuZCBkeW5hbWljIGNlbGxzLgo+ID4gSXMg
+dGhlcmUgYW55IGRpc2N1c3Npb24vc3VtbWFyeSB0aGF0IEkgY2FuIHJlYWQgdG8gZ2V0IHVwIHRv
+IHNwZWVkPwo+Cj4gU29tZSBOVk1FTSBkZXZpY2VzIGRvbid0IHN0b3JlIHNwZWNpZmljIGRhdGEg
+YXQgaGFyZGNvZGVkIG9mZnNldHMuIEZvcgo+IHN1Y2ggZGV2aWNlcyB3ZSBoYXZlIGRyaXZlcnMg
+KHRvIGJlY29tZTogbGF5b3V0cykgdGhhdCBwYXJzZSB0aGVpciBtYWdpYwo+IGNvbnRlbnQuIFRo
+ZXkgZGlzY292ZXIgY2VsbHMgYW5kIHJlZ2lzdGVyIHRoZW0gYW5kIHByb3ZpZGUgbWF0Y2hpbmcg
+d2l0aAo+IHByb3BlciBEVCBub2Rlcy4KPgo+IEZvciBiaW5kaW5ncyBzZWU6Cj4gaHR0cHM6Ly9n
+aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0
+L2NvbW1pdC8/aWQ9MDg0OTczZTk0NGJlYzIxODA0ZjhhZmIwNTE1YjI1NDM0NDM4Njk5YQo+IGh0
+dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xp
+bnV4LmdpdC9jb21taXQvP2lkPWE2MDdhODUwYmExZmE5NjZjYmIwMzU1NDRjMTU4OGUyNGE2MzA3
+ZGYKPgo+IEZvciBleGFtcGxlIGRyaXZlciBzZWU6Cj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9w
+dWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC8/aWQ9NmU5
+NzdlYWE4MjgwZTk1N2I4NzkwNGI1MzY2NjE1NTBmMmE2YjNlOAo+IGh0dHBzOi8vZ2l0Lmtlcm5l
+bC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQv
+P2lkPTIwNzc3NWY3ZTE3YjhmZDA0MjZhMmFjNGE1YjgxZTRlMWQ3MTg0OWUKPgo+IEZvciB1c2Fn
+ZSBzZWU6Cj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
+dG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC8/aWQ9Yzg0NDJmMGZiMDljYTNkODQyYjliMjNkMWQw
+NjUwZjY0OWZkMTBmOApUaGFua3MsIHRoYXQgbWFrZXMgdGhpbmdzIGNsZWFyZXIgZm9yIG1lIQoK
+PiA+IE15IG1haW4gdGhvdWdodCBpczogaWYgdGhlcmUgYXJlIG1hbnkgImZpeGVkIE9GIGNlbGxz
+IiBpbXBsZW1lbnRhdGlvbnMKPiA+IGFuZCBvbmx5IGEgZmV3ICJkeW5hbWljIiBvbmVzIC0gZG9l
+cyBpdCBtYWtlIHNlbnNlIHRvIGZsaXAgdGhlIGxvZ2ljCj4gPiBhbmQgaW50cm9kdWNlIGEgbmV3
+ICJ1c2VfZHluYW1pY19vZl9jZWxscyIgZmxhZyBpbnN0ZWFkPwo+Cj4gVGhlIHByb2JsZW0gaXMg
+dGhhdCB0aGVyZSBhcmUgbW9yZSBjYXNlcyB0aGFuIGp1c3QgdHdvLiBXZSBjYW4gaGF2ZToKPiAx
+LiBObyBjZWxscyBhdCBhbGwKPiAyLiBGaXhlZCBjZWxscyBpbiBEVAo+IDMuIER5bmFtaWMgY2Vs
+bHMgd2l0aCByZWZlcmVuY2VzIGluIERUCj4gNC4gRHJpdmVyIHNwZWNpZmllZCBjZWxscyAoc3Bl
+Y2lmaWVkIHdpdGhpbiBjb25maWcpCj4gNS4gQ2VsbHMgZGVmaW5lZCBpbiBhIGdsb2JhbCB0YWJs
+ZQo+Cj4gU28gd2UgbmVlZCB0byByZWZlcmVuY2UgRFQgY2VsbHMgZXhwbGljaXRseSAod2UgY2Fu
+J3QganVzdCBjb25maXJtIC8KPiBkZW55ICpkeW5hbWljKiBjZWxscykuCj4KPiBBbm90aGVyIHNv
+bHV0aW9uIHdvdWxkIGJlIHRvIGhhdmUgIm5vX2ZpeGVkX29mX2NlbGxzIiBidXQ6Cj4KPiAxLiBQ
+ZXJzb25hbGx5IEkgdGhpbmsgbmVnYXRpb24gaXMgbGVzcyBjbGVhciAvIGVhc3kgdG8gZm9sbG93
+Cj4KPiAyLiBUaGVyZSBtYXkgYmUgYWN0dWFsbHkgbW9yZSBkcml2ZXJzIHdpdGggbm8gZml4ZWQg
+Y2VsbHMuCj4gSSB0aGluayBJIG1vZGlmaWVkIDE4IGRyaXZlcnMuIEl0IHNlZW1zIGRldm1fbnZt
+ZW1fcmVnaXN0ZXIoKSBpcwo+IHJlZmVyZW5jZWQgaW4gNDQgcGxhY2VzLiBGZXcgb2YgdGhlbSBt
+YXkgYmUgbm90IGFjdHVhbCB1c2VycyBidXQgaXQKPiBzdGlsbCBzZWVtcyB0byBiZSBhYm91dCBl
+cXVhbC4KVGhhbmtzIGZvciB0aGlzIG92ZXJ2aWV3IG9mIGFsbCB0aGUgc3BlY2lhbCBjYXNlcy4g
+UGxlYXNlIGFkZCBteToKQWNrZWQtYnk6IE1hcnRpbiBCbHVtZW5zdGluZ2wgPG1hcnRpbi5ibHVt
+ZW5zdGluZ2xAZ29vZ2xlbWFpbC5jb20+CmZvciB0aGUgZm9sbG93aW5nIHR3byBkcml2ZXJzOgot
+IGRyaXZlcnMvbnZtZW0vbWVzb24tZWZ1c2UuYwotIGRyaXZlcnMvbnZtZW0vbWVzb24tbXgtZWZ1
+c2UuYwoKCkJlc3QgcmVnYXJkcywKTWFydGluCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
+aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
+Lwo=
