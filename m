@@ -4,56 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4CEBC636D7
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Feb 2023 09:22:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EE1FC61DA4
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Feb 2023 09:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+RJBCeMqMuOdY09nYXnqZF7vE20spZ7WwPppz7wAWfY=; b=pjEQEIMw51PfPX
-	FYkN/a4qdTbUoBFUjIoOJrZX3zI0uLtKm2Wko1FoLn4YrynTtHNd0HQy9dJ7yVMG+ht6L12VRsK0N
-	OKOh8NvCKL2vW2V1aGStbDoSyR9uGZeZH7FsoOnsoUtYxLskZzbvq1+exvrI+Dwz2NFDYcrt/h38u
-	tEmzMg7jbL3E/diWfKdA6RQrDdVkQ50t1op6zVdKSOpl1ZepT2zIfL9XIFVf/ssrvV2h7bMa6+9rs
-	V8MvoIpVlaSdtjHCLH4GsKMR2egm/Ul9o+Kef+anAJuAhy9xg3jrY5BG8kerNRm07sjQOr7Vyc60j
-	XGHByKWFPZ/DUmRsNUyA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=g/P+KUbOtO9GtXA39Ojuoe0kz8XbHEqxxDLtHSllO2U=; b=x3tzei2hOh4cpj5Z+v5eLpjoSc
+	SjyO3tFDyr70MRoRav4CvMuJ7q/3ZQH03U/GG6p7Erw4Idjzfnwm9vXmlaXa5K2SkHImfr7T4uENP
+	QKk8u4JqdpiesAbP9ZCClxP7O9UBLH0Bvnt50x6kZlRsAAPTo2TapRk9rvJQTfT6LBKPSsL90lUf9
+	uLETE29ys3cFyV7xK8bSoCc+FXNM526HuPIQ4VG9I//mEBdVLbFnWqbsojpF/danTWfQGTew0j+xe
+	DzzWDxZpyTGbfjnHWRJKZ96iwno4KUFzMxra9aKnVz0EDWLnqepJR45sGlhEXZImMYrggz6P2+DG6
+	DwyMMO/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pV7nG-00Fg6L-6R; Thu, 23 Feb 2023 09:21:38 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1pV7uQ-00FhjV-8m; Thu, 23 Feb 2023 09:29:02 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pV7nA-00Fg4l-8d
-	for linux-mtd@lists.infradead.org; Thu, 23 Feb 2023 09:21:34 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 30A9B240006;
-	Thu, 23 Feb 2023 09:21:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1677144088;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=spTZmh8u8PdMLsUTshljA4g/SIy8QpZ6NKXZ5Lt0Q7c=;
-	b=GTZH1c1fu/czsRIh6YLpG8TAjlhgVlJp1uutXA0FkNXQV/+K4Hla7GQqJkfzJJU+hX7bMX
-	pauaS0SdcIyOrrv/De41zmg1EbK4/aF1xCb8bPT5LklDHwmjh5JjpVd/c2B4XPUiQJmAtF
-	y/NNrgYZQBnXpTEbv7wjEBwKNiXYJSi/YT5nJzM7iO4il1lOdzgPK9O3iAeWVqNXJGn+Kh
-	jX+VfaDIioP6RTf8J/W6AdWo4/GZSkVelBuiTm/hdnEY+eMLaqmQdNfPl3tur9j/+eH/dK
-	+WYTzXmehLQ6O5fF+kKgk88/Fb58+R1DEhoU1qmg9PWOmFR+Q+px59Q8BdSMsQ==
-Date: Thu, 23 Feb 2023 10:21:25 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus <Tudor.Ambarus@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf
- <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush
- Yadav <pratyush@kernel.org>
-Subject: [GIT PULL] mtd: nand: Changes for 6.3
-Message-ID: <20230223102125.4d913f60@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1pV7uG-00FhgM-SB
+	for linux-mtd@lists.infradead.org; Thu, 23 Feb 2023 09:28:54 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 31N9SlYX113352
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2023 03:28:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1677144527;
+	bh=b6kO0FfQ7eB2ONyZ3pFEFu3MUKrth4LsOXLfk4WVgsc=;
+	h=Date:Subject:To:References:From:In-Reply-To;
+	b=tFJu/Sd2/ETyOIF0nn2HPRDZOnPVkh6WJCpfefESINvF5bP/MsORg7QeI1Am/OBZ0
+	 j2F57H+rX3YIw7+xQ0EUySa6McmU+O0+RR4hDYEJvKoW0mgDO+OKfAuAVNO7w6opX2
+	 7LPajFg4twXEnOh+uAX+fEmzxXLlwA870s+HWSgk=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 31N9SlDT120976
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL)
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2023 03:28:47 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Thu, 23
+ Feb 2023 03:28:47 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16 via
+ Frontend Transport; Thu, 23 Feb 2023 03:28:47 -0600
+Received: from [10.24.69.26] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+	by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 31N9SkJH056453
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2023 03:28:46 -0600
+Message-ID: <7459aaf2-b14f-f537-a2ed-2f5ac63d16d9@ti.com>
+Date: Thu, 23 Feb 2023 14:58:45 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v2 1/8] mtd: spi-nor: core: Introduce number of dice and
+ volatile register offset params
+Content-Language: en-US
+To: <linux-mtd@lists.infradead.org>
+References: <cover.1675835253.git.Takahiro.Kuwano@infineon.com>
+ <97e4456016d31567649e2a99d6d4daff7ed90e4a.1675835253.git.Takahiro.Kuwano@infineon.com>
+From: Dhruva Gole <d-gole@ti.com>
+In-Reply-To: <97e4456016d31567649e2a99d6d4daff7ed90e4a.1675835253.git.Takahiro.Kuwano@infineon.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230223_012132_747253_DFB98418 
-X-CRM114-Status: GOOD (  13.37  )
+X-CRM114-CacheID: sfid-20230223_012853_143056_BBA39113 
+X-CRM114-Status: GOOD (  20.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,107 +78,81 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpUaGlzIGlzIHRoZSBOQU5EIFBSIGZvciA2LjMuCgpUaGFua3MsCk1pcXXDqGwKClRo
-ZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgMWI5MjljMDJhZmQzNzg3MWQ1YWZiOWQ0
-OTg0MjZmODM0MzJlNzFjMjoKCiAgTGludXggNi4yLXJjMSAoMjAyMi0xMi0yNSAxMzo0MTozOSAt
-MDgwMCkKCmFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5IGF0OgoKICBnaXQ6Ly9n
-aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xpbnV4LmdpdCB0YWdz
-L25hbmQvZm9yLTYuMwoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvIGVmM2U2MzI3ZmYw
-NGFmODUyN2IzNTU4ZTAyM2U5OWYxY2MyNDFiY2U6CgogIG10ZDogcmF3bmFuZDogc3VueGk6IFBy
-ZWNvbXB1dGUgdGhlIEVDQ19DVEwgcmVnaXN0ZXIgdmFsdWUgKDIwMjMtMDItMDYgMTI6NTM6MDgg
-KzAxMDApCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tCk5BTkQgY29yZSBjaGFuZ2VzOgoqIENoZWNrIHRoZSBkYXRhIG9ubHkg
-cmVhZCBwYXR0ZXJuIG9ubHkgb25jZQoqIFByZXBhcmUgdGhlIGxhdGUgYWRkaXRpb24gb2Ygc3Vw
-cG9ydGVkIG9wZXJhdGlvbiBjaGVja3MKKiBTdXBwb3J0IGZvciBzZXF1ZW50aWFsIGNhY2hlIHJl
-YWRzCiogRml4IG5hbmRfY2hpcCBrZG9jCgpSYXcgTkFORCBjaGFuZ2VzOgoqIEZzbF9lbGJjOiBQ
-cm9wYWdhdGUgSFcgRUNDIHNldHRpbmdzIHRvIEhXCiogTWFydmVsbDogQWRkIG1pc3NpbmcgbGF5
-b3V0cwoqIFBhc2VtaTogRG9uJ3QgdXNlIHN0YXRpYyBkYXRhIHRvIHRyYWNrIHBlci1kZXZpY2Ug
-c3RhdGUKKiBTdW54aToKICAtIEZpeCB0aGUgc2l6ZSBvZiB0aGUgbGFzdCBPT0IgcmVnaW9uCiAg
-LSBSZW1vdmUgYW4gdW5uZWNlc3NhcnkgY2hlY2sKICAtIFJlbW92ZSBhbiB1bm5lY2Vzc2FyeSBj
-aGVjawogIC0gQ2xlYW4gdXAgY2hpcHMgYWZ0ZXIgZmFpbGVkIGluaXQKICAtIFByZWNvbXB1dGUg
-dGhlIEVDQ19DVEwgcmVnaXN0ZXIgdmFsdWUKICAtIEVtYmVkIHN1bnhpX25hbmRfaHdfZWNjIGJ5
-IHZhbHVlCiAgLSBVcGRhdGUgT09CIGxheW91dCB0byBtYXRjaCBoYXJkd2FyZQoqIHRtaW9fbmFu
-ZDogUmVtb3ZlIGRyaXZlcgoqIHZmNjEwX25mYzogVXNlIHJlZ3VsYXIgY29tbWVudHMgZm9yIGZ1
-bmN0aW9ucwoKU1BJLU5BTkQgY2hhbmdlczoKKiBBZGQgc3VwcG9ydCBmb3IgQWxsaWFuY2VNZW1v
-cnkgQVM1RjM0RzA0U05ECiogTWFjcm9uaXg6IHVzZSBzY3JhdGNoIGJ1ZmZlciBmb3IgRE1BIG9w
-ZXJhdGlvbgoKTkFORCBFQ0MgY2hhbmdlczoKKiBNZWRpYXRlazoKICAtIEFkZCBFQ0Mgc3VwcG9y
-dCBmb3QgTVQ3OTg2IElDCiAgLSBBZGQgY29tcGF0aWJsZSBmb3IgTVQ3OTg2CiAgLSBkdC1iaW5k
-aW5nczogU3BsaXQgRUNDIGVuZ2luZSB3aXRoIHJhd25hbmQgY29udHJvbGxlcgoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpB
-cm5kIEJlcmdtYW5uICgxKToKICAgICAgbXRkOiByZW1vdmUgdG1pb19uYW5kIGRyaXZlcgoKQXZp
-cmFtIERhbGkgKDEpOgogICAgICBtdGQ6IHJhd25hbmQ6IG1hcnZlbGw6IGFkZCBtaXNzaW5nIGxh
-eW91dHMKCkRhbmllbCBHb2xsZSAoMSk6CiAgICAgIG10ZDogc3BpbmFuZDogbWFjcm9uaXg6IHVz
-ZSBzY3JhdGNoIGJ1ZmZlciBmb3IgRE1BIG9wZXJhdGlvbgoKSmFpbWVMaWFvICgxKToKICAgICAg
-bXRkOiByYXduYW5kOiBTdXBwb3J0IGZvciBzZXF1ZW50aWFsIGNhY2hlIHJlYWRzCgpNYXJpbyBL
-aWNoZXJlciAoMSk6CiAgICAgIG10ZDogc3BpbmFuZDogQWRkIHN1cHBvcnQgZm9yIEFsbGlhbmNl
-TWVtb3J5IEFTNUYzNEcwNFNORAoKTWlxdWVsIFJheW5hbCAoMyk6CiAgICAgIG10ZDogcmF3bmFu
-ZDogQ2hlY2sgdGhlIGRhdGEgb25seSByZWFkIHBhdHRlcm4gb25seSBvbmNlCiAgICAgIG10ZDog
-cmF3bmFuZDogUHJlcGFyZSB0aGUgbGF0ZSBhZGRpdGlvbiBvZiBzdXBwb3J0ZWQgb3BlcmF0aW9u
-IGNoZWNrcwogICAgICBtdGQ6IHJhd25hbmQ6IEZpeCBuYW5kX2NoaXAga2RvYwoKUGFsaSBSb2jD
-oXIgKDEpOgogICAgICBtdGQ6IHJhd25hbmQ6IGZzbF9lbGJjOiBQcm9wYWdhdGUgSFcgRUNDIHNl
-dHRpbmdzIHRvIEhXCgpSYW5keSBEdW5sYXAgKDEpOgogICAgICBtdGQ6IHJhd25hbmQ6IHZmNjEw
-X25mYzogdXNlIHJlZ3VsYXIgY29tbWVudHMgZm9yIGZ1bmN0aW9ucwoKU2FtdWVsIEhvbGxhbmQg
-KDcpOgogICAgICBtdGQ6IHJhd25hbmQ6IHN1bnhpOiBDbGVhbiB1cCBjaGlwcyBhZnRlciBmYWls
-ZWQgaW5pdAogICAgICBtdGQ6IHJhd25hbmQ6IHN1bnhpOiBSZW1vdmUgYW4gdW5uZWNlc3Nhcnkg
-Y2hlY2sKICAgICAgbXRkOiByYXduYW5kOiBzdW54aTogUmVtb3ZlIGFuIHVubmVjZXNzYXJ5IGNo
-ZWNrCiAgICAgIG10ZDogcmF3bmFuZDogc3VueGk6IEZpeCB0aGUgc2l6ZSBvZiB0aGUgbGFzdCBP
-T0IgcmVnaW9uCiAgICAgIG10ZDogcmF3bmFuZDogc3VueGk6IFVwZGF0ZSBPT0IgbGF5b3V0IHRv
-IG1hdGNoIGhhcmR3YXJlCiAgICAgIG10ZDogcmF3bmFuZDogc3VueGk6IEVtYmVkIHN1bnhpX25h
-bmRfaHdfZWNjIGJ5IHZhbHVlCiAgICAgIG10ZDogcmF3bmFuZDogc3VueGk6IFByZWNvbXB1dGUg
-dGhlIEVDQ19DVEwgcmVnaXN0ZXIgdmFsdWUKClV3ZSBLbGVpbmUtS8O2bmlnICgxKToKICAgICAg
-bXRkOiByYXduYW5kOiBwYXNlbWk6IERvbid0IHVzZSBzdGF0aWMgZGF0YSB0byB0cmFjayBwZXIt
-ZGV2aWNlIHN0YXRlCgpYaWFuZ3NoZW5nIEhvdSAoMyk6CiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6
-IFNwbGl0IEVDQyBlbmdpbmUgd2l0aCByYXduYW5kIGNvbnRyb2xsZXIKICAgICAgZHQtYmluZGlu
-Z3M6IG10ZDogbWVkaWF0ZWssbmFuZC1lY2MtZW5naW5lOiBBZGQgY29tcGF0aWJsZSBmb3IgTVQ3
-OTg2CiAgICAgIG10ZDogbmFuZDogZWNjLW10azogQWRkIEVDQyBzdXBwb3J0IGZvdCBNVDc5ODYg
-SUMKCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL21lZGlhdGVrLG10ay1u
-ZmMueWFtbCAgICAgICAgIHwgMTU1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKwogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tZWRpYXRlayxuYW5k
-LWVjYy1lbmdpbmUueWFtbCB8ICA2MyArKysrKysrKysrKysrKysrCiBEb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvbXRkL210ay1uYW5kLnR4dCAgICAgICAgICAgICAgICAgIHwgMTc2
-IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogTUFJTlRBSU5F
-UlMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAgMiArLQogZHJpdmVycy9tdGQvbmFuZC9lY2MtbXRrLmMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICAyOCArKysrKysrLQogZHJpdmVycy9tdGQvbmFuZC9y
-YXcvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNyAt
-LQogZHJpdmVycy9tdGQvbmFuZC9yYXcvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICB8ICAgMSAtCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9mc2xfZWxiY19uYW5k
-LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA4ICsrKwogZHJpdmVycy9tdGQv
-bmFuZC9yYXcvbWFydmVsbF9uYW5kLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
-ICAgNyArKwogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICB8IDE0OSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKystLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9qZWRlYy5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICB8ICAgMyArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9v
-bmZpLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMyArLQogZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvcGFzZW1pX25hbmQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICA2MyArKysrKysrKy0tLS0tLS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9zdW54aV9u
-YW5kLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTIyICsrKysrKysrKysr
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L3RtaW9fbmFuZC5jICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCA1MzMgLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy92ZjYxMF9uZmMuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHwgICA0ICstCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9NYWtlZmlsZSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICstCiBkcml2ZXJzL210
-ZC9uYW5kL3NwaS9hbGxpYW5jZW1lbW9yeS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgMTUzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogZHJpdmVycy9t
-dGQvbmFuZC9zcGkvY29yZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAgMSArCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9tYWNyb25peC5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHwgICAzICstCiBpbmNsdWRlL2xpbnV4L210ZC9yYXduYW5k
-LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIxICsrKysrKwog
-aW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8ICAgMSArCiAyMiBmaWxlcyBjaGFuZ2VkLCA2NjQgaW5zZXJ0aW9ucygrKSwg
-ODQxIGRlbGV0aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9tdGQvbWVkaWF0ZWssbXRrLW5mYy55YW1sCiBjcmVhdGUgbW9kZSAxMDA2
-NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tZWRpYXRlayxuYW5kLWVj
-Yy1lbmdpbmUueWFtbAogZGVsZXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9tdGQvbXRrLW5hbmQudHh0CiBkZWxldGUgbW9kZSAxMDA2NDQgZHJpdmVycy9t
-dGQvbmFuZC9yYXcvdG1pb19uYW5kLmMKIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9u
-YW5kL3NwaS9hbGxpYW5jZW1lbW9yeS5jCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+
+On 08/02/23 11:23, tkuw584924@gmail.com wrote:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> 
+> In use of mult-chip devices, we need to access registers in each die for
+
+s/mult-/multi-
+
+> configuration and status check. The number of dice in the device and
+> volatile register offset for each die are essential to iterate register
+
+s/offset/offsets for each die
+
+> access ops.
+> 
+> The number of dice must be initialized as 1 and may be updated through
+> SFDP parse.
+> 
+> The volatile register offset table is dinamically allocated based on
+
+s/dinamically/dynamically
+
+> the number of dice then filled with offset values collected from SFDP.
+> 
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> ---
+>   drivers/mtd/spi-nor/core.c | 1 +
+>   drivers/mtd/spi-nor/core.h | 4 ++++
+>   2 files changed, 5 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index b500655f7937..f18be6283740 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2576,6 +2576,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+>   	params->writesize = 1;
+>   	params->size = (u64)info->sector_size * info->n_sectors;
+>   	params->page_size = info->page_size;
+> +	params->num_of_dice = 1;
+>   
+>   	if (!(info->flags & SPI_NOR_NO_FR)) {
+>   		/* Default to Fast Read for DT and non-DT platform devices. */
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index f6d012e1f681..c876ece62f13 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -349,6 +349,8 @@ struct spi_nor_otp {
+>    *			in octal DTR mode.
+>    * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
+>    *			command in octal DTR mode.
+> + * @num_of_dice:	number of dice in the flash memory.
+> + * @vreg_offset:	volatile register offset for each die.
+>    * @hwcaps:		describes the read and page program hardware
+>    *			capabilities.
+>    * @reads:		read capabilities ordered by priority: the higher index
+> @@ -381,6 +383,8 @@ struct spi_nor_flash_parameter {
+>   	u8				addr_mode_nbytes;
+>   	u8				rdsr_dummy;
+>   	u8				rdsr_addr_nbytes;
+> +	u8				num_of_dice;
+> +	u32				*vreg_offset;
+>   
+>   	struct spi_nor_hwcaps		hwcaps;
+>   	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+
+-- 
+Thanks and Regards,
+Dhruva Gole
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
