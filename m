@@ -4,131 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F280C6379F
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Feb 2023 16:52:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17345C61DA4
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Feb 2023 22:35:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xbFzfx3HcWZ0eLBE4BB0cy3xc6KR4H9rAkt4S6LFnSQ=; b=cbmdZE95D46Mpl
-	R2Mi5NbqKEaj7drOr8Arq0Jr1ZYhU9OObHK4mfiZbiEhWO+xWdbFxELPD5oljuAnYlGjuX3sta0nP
-	bZ7XvJbCf6kfghm90s7nOjoUiV2xNsN5X1BhtejS6dJrkdNyhhlBQUdWkQ+xkASeJg1q20LlC426S
-	+KUHH8KL8bqaGsIKyHUUDMc0GRJJQI0wNlPtm0wf1LCPmXAjJL+6ygLi5lZQh/AWuIQ3ILWjUIkyV
-	WwRqvk1g7HVw+CvU8JIuww6dvLV+Y88aI4teJBM0PFL2IpvOafjMYXyaGJWQr+jsB1dsiqNo2RT/y
-	djc5w9Z+wEqRtVTh6R2g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=jOzj5oC9LajQw1UJxPwx2HDAB6D8jeXEhvDPTyXGltU=; b=Ue+caZgYR71Nu/my1LQ8039VzO
+	2yC9Ol9k4PrnLIwnUivH7WauZsL3dxvtAuK4PRk94upS60FcTw2K42K5RHh5rouHg8r5m4r5sBApm
+	0rVWAqYgeAJ2ffiJAsujaD3/ZoocbJ23l0vQO085QzXdAzhYxd+HgxCft/GzHCtRZ1do8HETUs3F9
+	FlREMShA7OBNwmhy7IFPsjFOi+fHl1I1xKdH3oVsyrbR/Fz47IFBZSSbF/m5axesXKGTet0iGksAI
+	z5M67uLcTBKum3tkpDjo+3IhimFKtvm7jVTwx4ZEpPNB5d8Tk2FofyxjCz5krjAy7JgmuV49JkUh+
+	LcR2FCRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pVEp4-00HHDG-M6; Thu, 23 Feb 2023 16:51:58 +0000
-Received: from outbound-ip23a.ess.barracuda.com ([209.222.82.205])
+	id 1pVKBK-000VNc-QJ; Thu, 23 Feb 2023 22:35:18 +0000
+Received: from mail-qv1-xf35.google.com ([2607:f8b0:4864:20::f35])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pVEoz-00HHCV-C3
-	for linux-mtd@lists.infradead.org; Thu, 23 Feb 2023 16:51:56 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176]) by mx-outbound14-71.us-east-2a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Thu, 23 Feb 2023 16:51:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ebm2G5nztmX6TS471WXGnyxhR2KbT+Mb8CSdn4clmckxL+IZ9uOiTvW+JvSnKU0yhsbBxTncAZ1qX+WU18Rmv4u5KBNWESotW88srMkifOL0yriVDG1YM/Cm/gWY2FEbEJ3NSm5N6lXF9sd7rsOUXD9ibJwXsKnlWbKYbpJlydgzsGXJn07aflTslJ61iQOlSbHZNQPhE77/lynDMrtn2zWaIFeAxVspcI+NaKe5S1hqV4rjG3CL0/R1PwAr0Zc0Xn9uYGM/UMFsCWmGMNlWfzeXmmkxx+nD8oCOoavdtiXfjLNHNHZg4YG4f0Y8mDxpY0q4H3dCfAEAxLtclSBXrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FE5330FRpvFLIc3SyvBkqnjw8SNucuGGDQAnYVERMB4=;
- b=C6RkMky3DiNxLUUGh2P472mW1Gw28bYKPHz3fFJpMArdlAkFqs7feomYGc4XIGelWTtBH3hF01PB+IB2QImGEf8YmsyuHfsbtEtT/FDLOJrFOqvgWZTlUWUGTycq7BeqQXZbLSQGbW8J1v199IQOxl0CN6vxZaJUw5Zm5tnfwJUkit2KEkP0v47YDAfeh4/DG9sKWND1XFTwG7RME1gPA+zHUsjx5NIEL0wRUewC/5KyWmkOSddJh8nKzXIPBkI82r8oVEu7tV5j6JRwxP/lq4OfXUW3A5W0LACyJ9YDJ4W1KIXFC0UHaHKsBIW0IFpV6idpoFSKQUZwYy6UTFwwbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=digi.com; dmarc=pass action=none header.from=digi.com;
- dkim=pass header.d=digi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FE5330FRpvFLIc3SyvBkqnjw8SNucuGGDQAnYVERMB4=;
- b=sO3wOOiSuCrcDzaKjfZ6J2wlb2lo4XHBpIIYJB7nxTIOTZq6G6LWv/iAjpULhbRzaKf5UdkRBe9uf+7+g8aF4OtdF/oGr4hbqrtnZYWt7C+sTdKZFcfy5nrZ9uZBbfDiq7oVN+tlUaNJ7SLU6KuUS0XkH7sX7ZsS0LTqRS0aInb4zkeWzvGZGdVEITuuFoGJlJwCuVKNbCCxiGswo/5E8fZO13OQJrMLKHccz/Pq9fxCacnaNyWDhqK8k6r255pKIvS2XiHB6R+1ZS7y0NrnSWEOEc99Iu9SI1Pquo7cN0WRJ/0adcv/jQ1zYK1H7gGG8hPBbDZWM2mx5xfPVNsRog==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=digi.com;
-Received: from BY5PR10MB4370.namprd10.prod.outlook.com (2603:10b6:a03:20b::19)
- by SN7PR10MB6570.namprd10.prod.outlook.com (2603:10b6:806:2a9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.19; Thu, 23 Feb
- 2023 16:51:34 +0000
-Received: from BY5PR10MB4370.namprd10.prod.outlook.com
- ([fe80::88cb:a839:2d87:1124]) by BY5PR10MB4370.namprd10.prod.outlook.com
- ([fe80::88cb:a839:2d87:1124%7]) with mapi id 15.20.6134.019; Thu, 23 Feb 2023
- 16:51:34 +0000
-From: Hector Palacios <hector.palacios@digi.com>
-To: miquel.raynal@bootlin.com
-Cc: herve.codina@bootlin.com,
-	sashal@kernel.org,
-	linux-mtd@lists.infradead.org,
-	hector.palacios@digi.com
-Subject: [PATCH v3] mtd: rawnand: hynix: fix up bit 0 of sdr_timing_mode
-Date: Thu, 23 Feb 2023 17:51:04 +0100
-Message-Id: <20230223165104.525852-1-hector.palacios@digi.com>
-X-Mailer: git-send-email 2.34.1
-X-ClientProxiedBy: VI1PR0701CA0070.eurprd07.prod.outlook.com
- (2603:10a6:800:5f::32) To BY5PR10MB4370.namprd10.prod.outlook.com
- (2603:10b6:a03:20b::19)
+	id 1pVKBH-000VLs-OT
+	for linux-mtd@lists.infradead.org; Thu, 23 Feb 2023 22:35:17 +0000
+Received: by mail-qv1-xf35.google.com with SMTP id f1so13063845qvx.13
+        for <linux-mtd@lists.infradead.org>; Thu, 23 Feb 2023 14:35:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5TDQXxl+FX0fRazZmsOFaDn8hdf8TptupQVbcaS3P9Q=;
+        b=Bz6lHQ8AkEl14uMqOCipoOZ3zjjTbCQHOFQrnbmw0JeimzrffclqI+l9ukGCSuzMYT
+         JjlnSqTe29P7TC55v9EKK+scgG19RB5bg4XqfY3fK2vlthykkcBpVT6fwb2CqRqIsvEm
+         vk6biogK5yFNQwnZHzE7tQTyFa71vKBh+Pcpw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5TDQXxl+FX0fRazZmsOFaDn8hdf8TptupQVbcaS3P9Q=;
+        b=TLjD4Sty7Rqk3oVkw0gbuXobaJxfQAPv9vakKDx3n63PDrdqjodNdGQMJwvf2X7bTI
+         CIH/eiNrrn7Fnh8Uh24gOnCCfN8HtpxO6kn6SHiSR08tc2lLiWK7AzmhEKwi5x5sZF8s
+         4v6JKacjVk+Wbrp1JzlUKRo0fYNatt8byT+NXEr3IXpz3CSMrh5AXfWnXdpGAX6gU4j2
+         RvMSI8Q2fZtQQgrOXvs3dXjqJjoIKhwpmifPSVSSpP3ZJRDB+PqbySlJYCdwe7+EFeNs
+         VojSve05IPs69ClguDbH6wxrInAmBl+/huaIrttkrKnZi6y8nRNVG6R4aorinwhKPTEX
+         GL2Q==
+X-Gm-Message-State: AO0yUKXUiQ0oN1ymTmNhgcuZDvpOGPgvp3jVPBVlYXKUlOJ22iKSDUpq
+	pfUGY5K+WSE0a5DeXa4KbMklJQ==
+X-Google-Smtp-Source: AK7set9jqjNRAVuT/ujGFL2lCKuiXu/aQwCtREUj+Dm1NS5dhPzMuBW2pK7DykWK2rjCPFydU+c6Ag==
+X-Received: by 2002:a05:6214:5010:b0:56e:a96a:2be1 with SMTP id jo16-20020a056214501000b0056ea96a2be1mr22934548qvb.48.1677191712605;
+        Thu, 23 Feb 2023 14:35:12 -0800 (PST)
+Received: from bill-the-cat (2603-6081-7b00-6400-7b76-35a4-b335-d04d.res6.spectrum.com. [2603:6081:7b00:6400:7b76:35a4:b335:d04d])
+        by smtp.gmail.com with ESMTPSA id q205-20020a3743d6000000b0073b75718428sm5349722qka.134.2023.02.23.14.35.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Feb 2023 14:35:12 -0800 (PST)
+Date: Thu, 23 Feb 2023 17:35:10 -0500
+From: Tom Rini <trini@konsulko.com>
+To: Patrick DELAUNAY <patrick.delaunay@foss.st.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Patrice Chotard <patrice.chotard@foss.st.com>,
+	Francesco Dolcini <francesco@dolcini.it>,
+	Simon Glass <sjg@chromium.org>, u-boot@lists.denx.de,
+	Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+	Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v1 0/3] fdt: Fix mtparts fixup
+Message-ID: <Y/fqHjw4e8LSaz1e@bill-the-cat>
+References: <20230113184547.487322-1-francesco@dolcini.it>
+ <20230113193411.GW3787616@bill-the-cat>
+ <20230123110606.56110e40@xps-13>
+ <20230123200131.GD631605@bill-the-cat>
+ <5a01a9d1-9068-576a-7028-53415cc03ed8@foss.st.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4370:EE_|SN7PR10MB6570:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8e683d2-c4b5-4d4e-dc49-08db15be3874
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	gbSi9nZAik6gvQb7BPCoDxz7HM1Ol/m2mr11sa7lngrPqsIRiiftL1xRz0fciFhpizPIkDlJwB1tpWP0ykviPQbtniiv8g3dHDds5n5eC5f50nGsrMf2Mwfu1ptMTvP8+Z/l/a6AV9b5CDg9YmSYY2cNNuLZojZPNMOYtuZMJuEj8o+FhLqDJ8dreq9lFkNHF6aA2vgxa0drJU4nfU8278u9Tct0NrZq+U60ECkx7Ya5lFBAWbpcao2Wg5ejgAR2mSFoAAg2z1veg/ZJTUl9+s1/8vxIh6eQ33vV9FZN59quLv1L14hdssQhZfqXCl0xna147iRoh2Wg1UJI2uUewXpI7LWPiaL9JRKnXCK6GNL5VN32tuoyyAARs6nPYREJ2SWW/dWA2UE6HtYfXs0xevo5mHm/x3cs0ewHYFnhfD5ZD7WgI+qFpbWptfEirVzmPPjhkqHjqgwCnq0tVzAeZv1iPiuA0u+oWGy9PzoGAkrPG2kYwg3MhjBuVHqghLOUgRnvbhDIibpf5MJ1m1uhdG5IT53KR59sbv9SnubqS9G/Pq/TrKuEt+5K31OfTgg3cPtjb2WnWX9sZCUdy8jJ7UsNomN1CDTPg4dqcI/a6ONMTcI5xLw90CYUkfaU9dUfVQjAKC2kSUnZrkFaPVX80z+/5kO23gXCr4TuRq9EGaEKBDoWEidbmT517T4A6E+lu/8YdrN9bJfAa1wpvEUvrg==
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4370.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(396003)(136003)(366004)(376002)(39850400004)(346002)(451199018)(186003)(6666004)(107886003)(6512007)(26005)(2616005)(6486002)(6506007)(52116002)(83380400001)(316002)(478600001)(1076003)(66476007)(8676002)(4326008)(66946007)(66556008)(6916009)(41300700001)(38100700002)(44832011)(2906002)(5660300002)(8936002)(38350700002)(86362001)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?icU0d80Dnj7IUYRZw+xzPkmQQlZkiEWMd5N/ffRcDTG+Y31EIlskO0Mo/LuY?=
- =?us-ascii?Q?oK4Lu0lmoNJTL/3Kgk2iinyFUOokIMfGYlZwnJVkOqEX3aaUwkLafGRGIvuM?=
- =?us-ascii?Q?kJ9AQ1IzJrXiUKMUcHMvAfPXogAOKKlIlOSyGsgwGWEPZHKMb0bStuQDM9yn?=
- =?us-ascii?Q?RSxuqAtAJzeWQvbou+dWHBOZQmh3xLvgr12DPPHmOWoznwpX9O3N03bygMj/?=
- =?us-ascii?Q?HR+lbBmIs0+RhZDCw9K/asmHzMaqV22EgRzqEo9QC2LpzLT28BxtsrODPVSm?=
- =?us-ascii?Q?EKUdJNFrD+iIiVxjIbi401SisBwijTHWmvTYppvsZ2TSfWFX3AZg8ntmAbCM?=
- =?us-ascii?Q?j8IuRn4eRJ0d+q50jXNyiQeMJl7Rq+7GYBfsht13bC6+0GrAt5ojzrxVak+1?=
- =?us-ascii?Q?MGXlgQkA4V4S3GtbSQ14UjULjJFuyG+0YUxalYXj1DrWl0/b9rSPfrZ4BEs0?=
- =?us-ascii?Q?i45spNwomcKUlGSEnbSdLxQoYITSxWKYjZghxw5ANFB+in+icDUn+1YEVkWA?=
- =?us-ascii?Q?aI1NliP1j9F2vUKfSpV45oxA5PfpIdMCrHiRXjRjz/JgFpMIW0ijqpUAlCZe?=
- =?us-ascii?Q?if06iEf834qrC1feaU0ZH6+MhR5UdQwkTCNMZ8qIzqCv8hYGYjcLwdEjJkwl?=
- =?us-ascii?Q?dxrPeTvl2Sn9gURs82W+KyPKHVmxNjpmZdMW8w0a+JnAV9ABBMA8zsKysEoY?=
- =?us-ascii?Q?tBRiu3OkUXt15oD2p2mXJNgJoVKSJh+Jc9CLj7FPk6RVLJdPiCwCv/JUXElp?=
- =?us-ascii?Q?shdwtSdkNR+PD7UBzDpukxF380OAkwY1kqWgr9ijrnyt9x2puJdjjOOJTMnL?=
- =?us-ascii?Q?JXs/rFJt1MDhuIsX+Fi2z6xkT+4h06zoWrXltMgCgiguqKwRIte3GoPJt0N9?=
- =?us-ascii?Q?Ymzaye/SedkWxzWG3gzZRPXYkc3zJaEurwe+907Mig9T8U5//kx6IJG3G+YE?=
- =?us-ascii?Q?9ZgZjLd16J7IC5KYt2qnRQ7D9HbHUSLw4k8AMMua58vZwnI8MD9wAUtm3XNT?=
- =?us-ascii?Q?5b8kmgVYo0r/RA6HaNda+Jy4MSIfV6BlkGs3lN7QLtvar1kQm39RRnYGv+YH?=
- =?us-ascii?Q?FFBcZpqTJ7S5BSMkaCT9deSx6gV7lRzHEIXSocouWs1eG5jaAmnM4uFlON1N?=
- =?us-ascii?Q?9JHGxLEU8EFW3d2DSW3Cj8A9fKcGz4ln+m+m7F/e1cs8wlY6tg12sCvnN93W?=
- =?us-ascii?Q?I3anvMKd4nbLULLidBX2bDXRIYC6tsiMVxi2hAwp7zhKfP2i7oCfRHd3AUiT?=
- =?us-ascii?Q?ugF0DdXrj5S9dFud6Zl1PCUwFDanF2wEw2qExyy8FieBK7PC1gNPK9PzRKOT?=
- =?us-ascii?Q?YDNrdrhIa2rERt/JmyxBd1/bzhH6Uaqv5JnFPPyb136MpHCYwItrHJrO+Zqv?=
- =?us-ascii?Q?o9GYklAh7edb7sFW8EEOvD0BxaeoktDZGZiCZByY4cC1XM7QxjJMJFNdvI/g?=
- =?us-ascii?Q?fAXWL9Pd1NIdms0rBBsRhX0YiVV14TWDCrPhqu+oKL9su7n7oo0j+IlURKna?=
- =?us-ascii?Q?YiJDW1FPyG5QizQZZkvDGeoBoprwuISUrOw8UlpLAeLJf9IZRL4vTSqbgPIo?=
- =?us-ascii?Q?3BG76gOzsXPskPQRxQEKAZ2P8p/u7h+JbUADuHL7?=
-X-OriginatorOrg: digi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8e683d2-c4b5-4d4e-dc49-08db15be3874
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4370.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2023 16:51:34.1659
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: abb4cdb7-1b7e-483e-a143-7ebfd1184b9e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2hi0454sAi20ktzBY4pcwNnnoFhq/RVIoj8Y/TFUD+FRkSbsRkrSr1sSMaIdt+VDLzFGeu6fbov4QqByd+CN0w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6570
-X-BESS-ID: 1677171096-103655-5411-12796-1
-X-BESS-VER: 2019.1_20230221.1854
-X-BESS-Apparent-Source-IP: 104.47.57.176
-X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUioBkjpK+cVKVobmxgZAVgZQMNnULCnVMMUw2c
-	LC3NAgMdXCIs3E3CTVNMnS0tDMPMVcqTYWAPWuGHpBAAAA
-X-BESS-Outbound-Spam-Score: 0.00
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.246355 [from 
-	cloudscan9-229.us-east-2a.ess.aws.cudaops.com]
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------
-	0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS112744 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND
-X-BESS-BRTS-Status: 1
+In-Reply-To: <5a01a9d1-9068-576a-7028-53415cc03ed8@foss.st.com>
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230223_085154_343174_EA9F1565 
-X-CRM114-Status: GOOD (  12.71  )
+X-CRM114-CacheID: sfid-20230223_143515_820348_DC8A3D2D 
+X-CRM114-Status: GOOD (  47.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,64 +90,164 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1231858612096626244=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-According to the ONFI specification, bit 0 of 'SDR timing mode support'
-(bytes 129-130) "shall be 1". That means the NAND supports at least
-timing mode 0.
 
-NAND chip Hynix H27U4G8F2GDA-BI (at least) is reading a 0 on this field
-which makes nand_choose_best_sdr_timings() return with error and the
-probe function to eventually fail.
+--===============1231858612096626244==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fgdlogPFaVxQHz81"
+Content-Disposition: inline
 
-Given that sdr_timing_modes bit 0 must be 1 by specification, force
-it in case the NAND reports it is not set. This is a safe assumption
-because the mode 0 is the minimum (safer) set of timings that the
-NAND can work with.
 
-Signed-off-by: Hector Palacios <hector.palacios@digi.com>
----
-v3:
-  Forcibly set bit 0.
-v2:
-  Move patch to Hynix specific fixup hook.
-  Use BIT(0) macro.
-v1:
-  Implement generic patch in nand_base.c.
+--fgdlogPFaVxQHz81
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- drivers/mtd/nand/raw/nand_hynix.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+On Thu, Feb 23, 2023 at 11:23:41AM +0100, Patrick DELAUNAY wrote:
+> Hi,
+>=20
+> On 1/23/23 21:01, Tom Rini wrote:
+> > On Mon, Jan 23, 2023 at 11:06:06AM +0100, Miquel Raynal wrote:
+> > > Hi Tom,
+> > >=20
+> > > trini@konsulko.com wrote on Fri, 13 Jan 2023 14:34:11 -0500:
+> > >=20
+> > > > On Fri, Jan 13, 2023 at 07:45:44PM +0100, Francesco Dolcini wrote:
+> > > >=20
+> > > > > From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> > > > >=20
+> > > > > Recently we had a boot regression on colibri-imx7 because of a cl=
+eanup change
+> > > > > on Linux imx7.dtsi setting nand controller node #size-cells from =
+1 to 0.
+> > > > >=20
+> > > > > Because of that Linux partition parser was no longer able to prop=
+erly
+> > > > > parse the OF partitions leading to a boot failure, the above chan=
+ge was
+> > > > > reverted in the meantime as an immediate workaround, but some imp=
+rovement
+> > > > > is required on both Linux and U-Boot.
+> > > > >=20
+> > > > > This change improve the U-Boot part of it, #size-cell is set to 1=
+ when
+> > > > > it has an invalid value. This has the limitation to work only wit=
+h devices
+> > > > > smaller than 4GiB. In general the suggestion from the Linux MTD m=
+aintainer would
+> > > > > be to just deprecate using this U-Boot function and pass the MTD =
+partitions
+> > > > > from the command line, unless they are statically defined in the =
+DTS file
+> > > > > in the first place.
+> > > > >=20
+> > > > > This series therefore convert colibri-imx6ull and colibri-imx7 to=
+ pass the
+> > > > > partition list from the command line instead of fixing up the DT.
+> > > > >=20
+> > > > > Link: https://lore.kernel.org/all/20221202071900.1143950-1-france=
+sco@dolcini.it/
+> > > > > Link: https://lore.kernel.org/all/Y4dgBTGNWpM6SQXI@francesco-nb.i=
+nt.toradex.com/
+> > > > My higher level question / concern here is, is using one of the dts
+> > > > partition schemes still valid / preferred, or should everyone now h=
+ave
+> > > > reverted to passing via the kernel command line?  If device tree st=
+ill,
+> > > > is mtd/partitions/fixed-partitions.yaml the one to follow or someth=
+ing
+> > > > else?
+> > > I don't think we can "prefer" one mode over the other between cmdline
+> > > and DTS. Both should work pretty well. Of course on the cmdline you c=
+an
+> > > only define fixed partitions and many devices require more advanced
+> > > parsers, which are only available through DTS, but for simple
+> > > partitions, it works totally okay.
+> > When both are present, which one is used?
+> >=20
+> > > The only thing that I would like to avoid is the need to write code in
+> > > the bootloaders to tweak the FDT in order to add partitions. That is
+> > > clearly not needed, error prone, and do not follow evolution of the
+> > > "standard", as we just discovered.
+> > I'm not sure about this. Looking around in U-Boot today, I see two types
+> > of cases. One of which, the colibri case, can clearly be not done and
+> > either passed on the command line, or put in to the device tree as
+> > there's nothing run-time related being tweaked here. That's a fine path
+> > to take on those platforms and Francesco's patches should be updated to
+> > remove the unused C code too from the board code.
+> >=20
+> > But the other cases are doing something dynamic and run-time related.
+> > There's the omap3 igep00x0 family (which yes, legacy) that is doing NAND
+> > or oneNAND and adjusting things at run time.  I don't know how much
+> > anyone has interest in those platforms at this point, nor exactly who to
+> > contact (for Linux or U-Boot). There's also the stm32mp1 family doing
+> > something that's very not obvious at first glance, so I've cc'd the
+> > maintainers there.
+> >=20
+>=20
+> For information, today for stm32mp1 family we are using the build
+>=20
+> =A0of MTDPARTS and fdt fixup, only for backward compatibility issue
+>=20
+> (the MTD partitions change for boot with or without OP-TEE,
+>=20
+> with or wihtout FIP, with SPL).
+>=20
+>=20
+> Today we are already plan to remove this dynamic management
+>=20
+> and to switch to static MTD partition defined in device tree,
+>=20
+> as already proposed by Tom in the serie
+>=20
+> =A0"mtd: spi: nor: force mtd name to "nor%d""
+>=20
+> http://patchwork.ozlabs.org/project/uboot/patch/20210916155040.v3.2.Ia461=
+e670c7438478aa8f8939209d45c818ccd284@changeid/
+>=20
+>=20
+> This patchset is already ready, we are currently testing it internally
+>=20
+> and it should be pushed when it will be validated in our donwstream.
 
-diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-index 0d4d4bbfdece..5f64bb9b7ead 100644
---- a/drivers/mtd/nand/raw/nand_hynix.c
-+++ b/drivers/mtd/nand/raw/nand_hynix.c
-@@ -728,8 +728,21 @@ static int hynix_nand_init(struct nand_chip *chip)
- 	return ret;
- }
- 
-+static void hynix_fixup_onfi_param_page(struct nand_chip *chip,
-+					struct nand_onfi_params *p)
-+{
-+	/*
-+	 * Certain chips might report a 0 on sdr_timing_mode field
-+	 * (bytes 129-130). This has been seen on H27U4G8F2GDA-BI.
-+	 * According to ONFI specification, bit 0 of this field "shall be 1".
-+	 * Forcibly set this bit.
-+	 */
-+	p->sdr_timing_modes |= BIT(0);
-+}
-+
- const struct nand_manufacturer_ops hynix_nand_manuf_ops = {
- 	.detect = hynix_nand_decode_id,
- 	.init = hynix_nand_init,
- 	.cleanup = hynix_nand_cleanup,
-+	.fixup_onfi_param_page = hynix_fixup_onfi_param_page,
- };
+Great, thanks.
+
+--=20
+Tom
+
+--fgdlogPFaVxQHz81
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmP36h4ACgkQFHw5/5Y0
+tyw+bwwAjmh/Sd3o/7CPbh4rpOP7buBNm3A3BcQvAK6rFBShQrCQXw76hc/mgwDY
+ZEdSHTYoz+/5U3DOrFtT9v8Wm9WDgC07Hh+en4KYSliX/KjW3OARsha89u2heDAb
+sUhm8uOZHRYZ3DLtYElIVqniAgMP/lrnAEMOZN/m7YxgHk55wC84PC3z6JHiQCNx
+QOhcI3McvekvqJa+rMn5g0vKYFiRNFd8IbgkpEqOPdq8o721+JQJL0zaKR2inQAT
+sdvHf2L8mCRgxxhTST4Th4gMJTr2MbVS7VIm6/oei9ioaNCwou2YrPFC9e8eJSck
+0FwsnXWulkhuCEmIhNlceexcjsQR1WW2dzoAFpAbB/Uoydc7+o7MyzWoOOqmw7EB
+OWZv8osrphIxwi8K+gfgAExpdcIY7Sk2l4HDxMW+paOqnnn6FXTU7YU6g0p0w4Cv
+uD9xEpojIMBJ3NpD3rsknlQNIj/DTl7Hfb+4xSESXskPs8wuzDNNIPKIX4sRpYYw
+MmhUXOHb
+=KRDt
+-----END PGP SIGNATURE-----
+
+--fgdlogPFaVxQHz81--
+
+
+--===============1231858612096626244==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1231858612096626244==--
+
