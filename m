@@ -4,67 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DAA6C636CC
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Feb 2023 17:37:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5030FC7EE2D
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Feb 2023 16:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=RCLmA66qcEnh5OZHOOA/x7sGL8sxnQjDHwjJ7RSHYzE=; b=IBP
-	d34uiRZoPoCSEJsL0LAvTRrM2O2W6NTnUYhoezPT2IXpYybDcKGg5uElHTKb8HbHZrTjC7ZYEsCBJ
-	jDq2yyLbvh+VA3myR7SrvmKpjSdtyEJkJWVmoF6jeBARbJngTfky/A6NbK4rxocdL0pSThx+JW3KQ
-	xQ9ZyODUOT/kWJVYOMNzJVr+J1SRAm7Ou418r1quOYSMHG+PX3tmX3/Fn18bkESLQbfCKZI7XBnFl
-	nY1ds+V/8gGCvMdLylvSVEXAdrPcGpe4FFoiG0ZMMPpyEPTVB1U2HaZIA2h4wKxw8K7oR9QHQuMd+
-	yH355Dqki5PKPD/BK1RGesMV5pNhNRA==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:
+	From:Subject:MIME-Version:Date:Message-ID:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=58Y5qEjFeOcYIwoKD7PToc5/IsSl5fokYiM+Dd9Spe8=; b=KY91FUEsngLk7S
+	4V8wIiOvOFalQhDnxrx2qVDm4Rf7H9rMn3iC7sZYQWwagNs+AScyNNfDIydONZrmj8lI2uCfdW7JK
+	jmntviOECA7R03SSJTrXK+2HF9/2LDKx5KBWgL2pQBgCAadz4HBAH9eIyrZ8h0GnJ9XkAJj3cjuYN
+	1QuuGoOJZxugLNTfH09PIs3BQxOHPxSKy7Nkr1fhRuyh/1OqLJpAiNv3CMDXi7SXIDQxwP/x3I21n
+	D8kMV9aNKlzPdsdTj1zAeqk9Wm7rNcFWoTkwLPvINGXY+jOSDdWBy5Gc+BTu2QAUe4hbW+sKyZUXk
+	X5AMuyuHNnRBGfJn3g0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSLiE-006ikw-VO; Wed, 15 Feb 2023 17:36:59 +0000
-Received: from mail-vs1-xe2e.google.com ([2607:f8b0:4864:20::e2e])
+	id 1pVaj2-0034sx-R6; Fri, 24 Feb 2023 16:15:12 +0000
+Received: from wp530.webpack.hosteurope.de ([80.237.130.52])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSLiB-006ij5-45
-	for linux-mtd@lists.infradead.org; Wed, 15 Feb 2023 17:36:56 +0000
-Received: by mail-vs1-xe2e.google.com with SMTP id k4so20629498vsc.4
-        for <linux-mtd@lists.infradead.org>; Wed, 15 Feb 2023 09:36:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=D/KbAz5FeBvde1DWwl9iOIWYjZFr9YJ9qIF1/orABb4=;
-        b=cYriOyhdNuA2EoNNZXNy8xPtjOPisuyaTfco6+x0PjLBbTswJBsYT4Fwt2qOSWPO8P
-         dGFe0Wy45dR2Ls/fygoyz2AMcyfuBs69+rPHB/9WlL/Gk7hucnCcHOaEr+vBxM9b9JxT
-         R2icLxUhzRNM1iFWGmGvoB2yT6U9Fwk7fQDojLUQuZXvstlbNTWDFDyAy550jzB5uYuh
-         /jBGmeATOLlD80kMZZuX3Rm8LcIjjkMP+96z5OrEr4n6GU+lpccryZdLrDaxXK2HZCjN
-         86Jj4niv0FnG0A2l0lyqMtIC969ym85sc2EI8dcOYDwjKL5y8gTBNQ7+ucfAeNlS8Zeg
-         t0sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D/KbAz5FeBvde1DWwl9iOIWYjZFr9YJ9qIF1/orABb4=;
-        b=rfQB2NN2UwAIUFScredWqf7uvLzQuPfqEt4K5pf+bY85oBcsv5BEOrte53rPG7vGW8
-         9jHRCxvERPNjtZ5HED1U5MxX6WpMiwsviz4N5jpyP241ak4S/9B+/a581jb3WyQBmavx
-         /2B35YMdH6AKZfo1rfpxlWCOXW3+nafgVFxrXeiaWR2Zin1tmdecqJbA50X7AOLosB/5
-         9M9YCWv485k9BVUY40F0PLXvmECYjNgYCLUz15O+b9rK88VsIWhfZ8HzuSsoj12Aj/7u
-         wkAWeLFT3LnUa+CbvExoB5FZQd5payXZo5+QUVSEm38Dz9/4fsmxk8ofZDpw0mhlNLFF
-         C42w==
-X-Gm-Message-State: AO0yUKVVmE653CFBcTDEyILt6TtbfrmTdFuBxm6mXZ5CDpyziAkAWitF
-	D9gxPyMTjYSUpqL/MmIIUOuMjqPjqgMCLZURV4o788Q1de4=
-X-Google-Smtp-Source: AK7set9t//t+6BdnqgMCsubhUnUjEi3iNV6s16IQ0BY9MHTtCZkXx9TuWw2aBnkLQElmbsc+smedsNFcrl6WEVmSZQo=
-X-Received: by 2002:a67:ef41:0:b0:401:57f8:7c18 with SMTP id
- k1-20020a67ef41000000b0040157f87c18mr534314vsr.51.1676482611590; Wed, 15 Feb
- 2023 09:36:51 -0800 (PST)
+	id 1pVaiz-0034re-LU
+	for linux-mtd@lists.infradead.org; Fri, 24 Feb 2023 16:15:11 +0000
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1pVair-0005aa-Or; Fri, 24 Feb 2023 17:15:01 +0100
+Message-ID: <1209941d-a3cb-6eb3-4fb7-0e09a8c32197@leemhuis.info>
+Date: Fri, 24 Feb 2023 17:15:01 +0100
 MIME-Version: 1.0
-From: Pintu Agarwal <pintu.ping@gmail.com>
-Date: Wed, 15 Feb 2023 23:06:40 +0530
-Message-ID: <CAOuPNLgTWNMSaZmE4UzOq8UhsLWnBzyt0xwsO=dS9NpQxh-h_g@mail.gmail.com>
-Subject: 
-To: open list <linux-kernel@vger.kernel.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: Fwd: nvmem-cells regression after adding 'call
+ of_platform_populate() for MTD partitions'
+Content-Language: en-US, de-DE
+From: "Linux regression tracking #update (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+To: Maxim Kiselev <bigunclemax@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Maxim Kochetkov <fido_max@inbox.ru>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, "regressions@lists.linux.dev"
+ <regressions@lists.linux.dev>
+References: <CALHCpMgSZOZdOGpLwTYf0sFD5EMNL7CuqHuFJV_6w5VPSWZnUw@mail.gmail.com>
+ <CALHCpMgEZjnR39upkR6iozSk-b5A_GHRo9rcDSPXzzQi6x_qCw@mail.gmail.com>
+ <b1b7935d-0785-2e57-bad9-ab2476f0acf2@leemhuis.info>
+In-Reply-To: <b1b7935d-0785-2e57-bad9-ab2476f0acf2@leemhuis.info>
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1677255309;f85d2906;
+X-HE-SMSGID: 1pVair-0005aa-Or
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230215_093655_229049_BD5A6C11 
-X-CRM114-Status: UNSURE (   6.50  )
+X-CRM114-CacheID: sfid-20230224_081509_899068_F352B768 
+X-CRM114-Status: UNSURE (   9.17  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,53 +66,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+[TLDR: This mail in primarily relevant for Linux regression tracking. A
+change or fix related to the regression discussed in this thread was
+posted or applied, but it did not use a Link: tag to point to the
+report, as Linus and the documentation call for. Things happen, no
+worries -- but now the regression tracking bot needs to be told manually
+about the fix. See link in footer if these mails annoy you.]
 
-We are seeing below "ubi errors" during booting.
-Although this does not cause any functionality break, I am wondering
-if there is any way to fix it ?
-We are using Kernel 4.14 with UBI and squashfs (ubiblock) as volumes,
-and with systemd.
+On 10.12.22 13:35, Thorsten Leemhuis wrote:
+> [...]
+> P.P.S.: let me add this to the regression tracking:
+> 
+> #regzbot ^introduced bcdf0315
+> #regzbot title mtd: ethernet device can't be probed anymore due to
+> broken nvmem-cells dep
+> #regzbot monitor: https://lore.kernel.org/all/Yyj7wJlqJkCwObRn@lx2k/
+> #regzbot ignore-activity
 
-Anybody have experienced the similar logs with ubi/squashfs and
-figured out a way to avoid it ?
-It seems like these open volumes are called twice, thus error -16
-indicates (device or resource busy).
-Or, are these logs expected because of squashfs or ubiblock ?
-Or, do we need to add anything related to udev-rules ?
+#regzbot fix: mtd: mtdpart: Don't create platform device that'll never probe
+#regzbot ignore-activity
 
-{
-....
-[  129.394789] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 6, error -16
-[  129.486498] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 7, error -16
-[  129.546582] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 8, error -16
-[  129.645014] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 9, error -16
-[  129.676456] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 6, error -16
-[  129.706655] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 10, error -16
-[  129.732740] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 7, error -16
-[  129.811111] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 8, error -16
-[  129.852308] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 9, error -16
-[  129.923429] ubi0 error: ubi_open_volume: cannot open device 0,
-volume 10, error -16
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
-}
-
-Thanks,
-Pintu
 
 ______________________________________________________
 Linux MTD discussion mailing list
