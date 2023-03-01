@@ -4,58 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81AB2C7EE32
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Mar 2023 15:25:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9378AC64ED6
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Mar 2023 18:02:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=98CEXNj0q8Sah6FekfD4TAGwttL8/5k9Fn/iJkPBtkQ=; b=N5z+KAI/W1OmWx
-	ioVrst+NhHdo/edP15TpFmXIZKZ0eHDMyj0YsW2HIezf+9vAFI3B1iWcRXjIiMI7mSSFGrKekxHJf
-	8FMTpeDvKjvCrtQXXt9Sm2515R9IKC4cIla5/6EXFuzSrIWLTSGUEV4C/9T3HAyFsQ4Zpsr7hfJlo
-	FJeHsLBJb/d8xbe8qF4PiZJoWQkvJb3dD8Bt4PpH76sGwyKE1fttxW2pgaSUI7mE0HWpAVxWXxP3D
-	35nXZnC3QiHwGAk9GU6eKqdTXZpsfgKae3TBj4MUp+o7azq/D5KBVpzI+vThpHzdUWNjavZsIKKSF
-	vgIFKHLp8zosfAXMzCUQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=vrIyiRJHbic/7fAkmcR4kuASerF64ih87nLN+b9W6qI=; b=1GgGtWflhhDmdz
+	39darhShuPgYfUzeDufy83wyea2exYV8t4ebFG8Yy6heEo9u1983G6qx968BVcUG3fuOn305kaX7b
+	Asi7qgfBjIasNCSptphN96bU88AWFmAfcHcsxdQmsCN7yr4YFqo45s+SwyHuBDfV6Bbi0s5pE3K4a
+	wTj0eWho3wx6IH1hLElB1xDYnIH64R7iyE6Zrmcn46Ynp53TfbMq9jhkVhvFB45F3JK9derPBH261
+	xNxW9bjU3aX8VRBgIvPf7uiwFUo3uG1XbCCn2dFvwJi72POBkZYZpNHBPuVVaNx0lWLyCld2oGivN
+	yZ377wPqJ0xXQY1o2Avg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXOK5-00GYOY-UL; Wed, 01 Mar 2023 15:24:53 +0000
-Received: from relay10.mail.gandi.net ([2001:4b98:dc4:8::230])
+	id 1pXQmN-00H3lP-12; Wed, 01 Mar 2023 18:02:15 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXOK2-00GYN2-P8
-	for linux-mtd@lists.infradead.org; Wed, 01 Mar 2023 15:24:52 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 2C43E24000F;
-	Wed,  1 Mar 2023 15:24:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1677684282;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=OeSGRipvbXsFNKwStYkECuExZzDFDwyg9e30PZ6NqA4=;
-	b=EBNog4cZDriLI4+aJls/0Q+a07EzFnKRiRLReYhZG12V/XSE6XWZgp2tCSJ/bomUSgaI9y
-	tzkRXL8TIKMQw9tORr3WFYx/tptDyCegImk6us9DXr1zzsEFFJM0yXXC32mVCug7bJN1SI
-	rT6NZw02/fzqNOZA2W+G6th+GoC7J5XDZQRTM940MF8fDOdrK3wkq8a8X1cIzHLB0gvr1G
-	Dx5aLbLlZ2wxduEhy3ElUueNIlk0jLSoCVrv3IzhBbSF44gZDgz03rarDwEqU2tftEJbh/
-	/KKbQ11GFxCwmLRzCx8M4BDAyODUXTsA/Yl4j5sC17VJCEZ0Ro34SPXewJK3HQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: Avoid printing error messages on probe deferrals
-Date: Wed,  1 Mar 2023 16:24:40 +0100
-Message-Id: <20230301152440.531465-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
+	id 1pXQmK-00H3kR-2v
+	for linux-mtd@lists.infradead.org; Wed, 01 Mar 2023 18:02:13 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A686461451;
+	Wed,  1 Mar 2023 18:02:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1721DC4339E;
+	Wed,  1 Mar 2023 18:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1677693731;
+	bh=LpStxG0IjAy/LEOuBDHzbJ9MpA68B0mjih3rawyQLYw=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=gWAF2467fnFlclkzvSQB+DTOztfYPmFq+uZlHCR2OhnEcpejXYM3sU6I1T9fMGT2o
+	 WfTxGBGzIci7oXrc8rWqgF43ZMx0PPeuZDnTYeBoAu3UPIH1NFU7eRazo7l+jx2hqa
+	 +UdfUi7XRa+DOVzJua/3b2FOJ+BbTdDALukZdyyNmpO7V1NmZPlIAxia9MSo2RKP23
+	 n3ktsD7QgYe2+KrghF7noJaAwMKuPpVFiYwdqn75lXQxSIi+LKKjF2fzgcGBhkrkrl
+	 lR9DrRvK2zxWXy9wqa+k2ST7yh7C8XugKGPa7ED4a8HI6ZZ1JQMJZVyeMpcbVDM6PI
+	 nGuo8mbvkPGNg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 031D8C41676;
+	Wed,  1 Mar 2023 18:02:11 +0000 (UTC)
+Subject: Re: [GIT PULL] JFFS2, UBI and UBIFS updates for v6.3-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1115586887.187161.1677658022188.JavaMail.zimbra@nod.at>
+References: <1115586887.187161.1677658022188.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <1115586887.187161.1677658022188.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.3-rc1
+X-PR-Tracked-Commit-Id: 8fcf2d012c8641c18adcd139dba6a1e556338d36
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e31b283a58dfe50ab1641d8fd2ead9b62f9ab256
+Message-Id: <167769373100.10213.18332230181152988117.pr-tracker-bot@kernel.org>
+Date: Wed, 01 Mar 2023 18:02:11 +0000
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>, linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_072451_014336_6CD787A1 
-X-CRM114-Status: GOOD (  13.21  )
+X-CRM114-CacheID: sfid-20230301_100212_255638_91EB5CEF 
+X-CRM114-Status: UNSURE (   5.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,52 +75,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is no reason to complain about probe errors in case of deferrals.
+The pull request you sent on Wed, 1 Mar 2023 09:07:02 +0100 (CET):
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/mtdcore.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/ubifs-for-linus-6.3-rc1
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 0feacb9fbdac..d163c690750a 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -518,6 +518,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- {
- 	struct device_node *node = mtd_get_of_node(mtd);
- 	struct nvmem_config config = {};
-+	int ret;
- 
- 	config.id = -1;
- 	config.dev = &mtd->dev;
-@@ -535,12 +536,15 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 
- 	mtd->nvmem = nvmem_register(&config);
- 	if (IS_ERR(mtd->nvmem)) {
-+		ret = PTR_ERR(mtd->nvmem);
- 		/* Just ignore if there is no NVMEM support in the kernel */
--		if (PTR_ERR(mtd->nvmem) == -EOPNOTSUPP) {
-+		if (ret == -EOPNOTSUPP) {
- 			mtd->nvmem = NULL;
- 		} else {
--			dev_err(&mtd->dev, "Failed to register NVMEM device\n");
--			return PTR_ERR(mtd->nvmem);
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(&mtd->dev,
-+					"Failed to register NVMEM device (%d)\n", ret);
-+			return ret;
- 		}
- 	}
- 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e31b283a58dfe50ab1641d8fd2ead9b62f9ab256
+
+Thank you!
+
 -- 
-2.34.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
