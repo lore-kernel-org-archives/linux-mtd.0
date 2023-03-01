@@ -4,72 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE6B5C64EC7
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Mar 2023 11:15:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA499C64EC7
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Mar 2023 11:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6rzMcjkALxYATET+xFFlfUvi1GsqiGF4VCinJbskWIk=; b=vnzFTt5OTcBaXxxHcRflJE9ZJk
-	Cz/ROVi4hr1+6/hVd4kRbjJ2iZUaK0i7yrNIhFagBxzYNP1xSBNHTq2C/gAZiYJ0ogsVgI4wqTYVi
-	b7+PQkBW27gcdBZk0pxE2IuoJb97RGu1RiYs7NVCLkOKKvUaa3dPtHz4JpYQZDWyzefgEi5RmiNAa
-	P39L0zwOoK07lkgefbkxHoCtKvmi57Yhm5jSKB4tfQmVsBSNypO6wHMKjGiebftoAEfPsQsHb83MS
-	1UIKl4njEFTKlXrMpDPb/S5m6tvLgJzKZepBGkDZ4bnn8Bhi/9uGvYbB55o+904OBXhJH3iqWgsia
-	6EQvS0Lg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=1DK5GDPBpGARS9TRCfDalEbCnNr3sDUAs4fzVLz6zLc=; b=xTyHOLWydvDTQGEiVdngQhlXJ+
+	G6PebDReHNgHJ2Ywi3JtoEluAA7m/QNzctIDk/FL6zBlTgxgusziZkklTdfuX0X+w5jxt2gM8lol7
+	/WKxM1zZ7eTaZlHlN2gxz2GlJBMCjMCERnC0NBD5lzeXmxKhqL6MOlZou2N/gannnDkNwMyNCcnIi
+	8ibSItFkTzkID91Bn8+p0HC09nvXxacZYQT7/ZYEPToZ6GJueHigth36nBLeJb4+VOFA/cIsZ1rmI
+	RvmdgoYWC+MfUM8LIQeUgbEPQr5y0gLke9r+5RUubhS1DTklckbCnk/+uvousMxlzApeaGaffiV8A
+	aWwiAUSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXKPo-00FtZv-Tc; Wed, 01 Mar 2023 11:14:32 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1pXKd7-00FvlY-RL; Wed, 01 Mar 2023 11:28:17 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXKPn-00FtYy-S1
-	for linux-mtd@bombadil.infradead.org; Wed, 01 Mar 2023 11:14:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:MIME-Version:Date:Message-ID:From:References:CC:To:Subject:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=ffZTZ0HpQAbOTDiIOr8aQH1FNKoZG0VYLonffSG0YyM=; b=afbmBhEsJTWmKLF0PeHTo58oMi
-	NcKAbgik/zKMq/6WMSoIkdmKoLSXh5Wne2ub0R07eWOztVEG2aX0PD5tG2srvf++vyZzYP69Mue8P
-	bWJ8Avtrq/44Ej+LprP0nZMAIKPIXqXiVxiRb3id/64kJlUyiaMi4HV77dw0JI1XtFba82h6fhvJ3
-	HOKTJb24IMfRUyUO8WhZKzKwDstGjJzLoVjujhOX3KU0ZGvvnmhgMF4PHaS1aHx+ZlEieD5FI9D3a
-	/0bU6WrqdgaWSq5Ru8ixUTA1ZNHvK/w/iKKuIo+ORCEy3zJvLJNw7OJtVqexJlo8fDzmoiwt9iSBI
-	oI3kt2tA==;
-Received: from szxga08-in.huawei.com ([45.249.212.255])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pXKPf-00EsQm-2l
-	for linux-mtd@lists.infradead.org;
-	Wed, 01 Mar 2023 11:14:27 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.55])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PRWky0Ptgz16P7F;
-	Wed,  1 Mar 2023 19:11:22 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 1 Mar 2023 19:14:00 +0800
-Subject: Re: [PATCH v2] ubifs: dirty_cow_znode: Fix memleak in error handling
- path
-To: Richard Weinberger <richard@nod.at>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Sascha Hauer
-	<s.hauer@pengutronix.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+	id 1pXKd3-00Fvk7-TD
+	for linux-mtd@lists.infradead.org; Wed, 01 Mar 2023 11:28:16 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 229AC6382EF7;
+	Wed,  1 Mar 2023 12:28:10 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id VzUUj5x2PD0C; Wed,  1 Mar 2023 12:28:09 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 7BDF86382F03;
+	Wed,  1 Mar 2023 12:28:09 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id uELCjn1QVamu; Wed,  1 Mar 2023 12:28:09 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 565826382EF5;
+	Wed,  1 Mar 2023 12:28:09 +0100 (CET)
+Date: Wed, 1 Mar 2023 12:28:09 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: chengzhihao1 <chengzhihao1@huawei.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
 	linux-kernel <linux-kernel@vger.kernel.org>
-References: <20230215022507.2363193-1-chengzhihao1@huawei.com>
- <9121ae91-5b4f-4b10-46fc-6cc0683c949d@huawei.com>
- <34189394.187159.1677657964794.JavaMail.zimbra@nod.at>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <299a85b4-aea5-b8b8-394f-4b7093b6a754@huawei.com>
-Date: Wed, 1 Mar 2023 19:13:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+Message-ID: <1637751218.187351.1677670089216.JavaMail.zimbra@nod.at>
+In-Reply-To: <299a85b4-aea5-b8b8-394f-4b7093b6a754@huawei.com>
+References: <20230215022507.2363193-1-chengzhihao1@huawei.com> <9121ae91-5b4f-4b10-46fc-6cc0683c949d@huawei.com> <34189394.187159.1677657964794.JavaMail.zimbra@nod.at> <299a85b4-aea5-b8b8-394f-4b7093b6a754@huawei.com>
+Subject: Re: [PATCH v2] ubifs: dirty_cow_znode: Fix memleak in error
+ handling path
 MIME-Version: 1.0
-In-Reply-To: <34189394.187159.1677657964794.JavaMail.zimbra@nod.at>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: dirty_cow_znode: Fix memleak in error handling path
+Thread-Index: jI6dxxZj4vvQSlt0IvLuiHnakpyrZA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_111425_439754_C72DA660 
-X-CRM114-Status: UNSURE (   5.39  )
+X-CRM114-CacheID: sfid-20230301_032814_111951_105D6DE9 
+X-CRM114-Status: UNSURE (   3.47  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -82,16 +73,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjMvMy8xIDE2OjA2LCBSaWNoYXJkIFdlaW5iZXJnZXIg5YaZ6YGTOgo+IFdlIGNhbm5v
-dCByZXBsYWNlIHRoZSBwYXRjaCBpbiBsaW51eC1uZXh0LCB0aGUgbWVyZ2Ugd2luZG93IGlzIGFs
-cmVhZHkgb3Blbi4KPiBBIGZvbGxvdyB1cCBmaXggaXMgcG9zc2libGUgYWZ0ZXIgNi4zLXJjMSBp
-cyBkb25lLiBTbywgbmV4dCB3ZWVrLgoKSXQncyBva2F5LCB0aGFua3MuIEkgd2lsbCBzZW5kIGZp
-eCBwYXRjaCBhZ2FpbiBhZnRlciA2LjMtcmMxLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImNoZW5nemhpaGFvMSIgPGNo
+ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IEFuOiAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Pgo+
+IENDOiAiTWlxdWVsIFJheW5hbCIgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+LCAiU2FzY2hh
+IEhhdWVyIiA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4sICJsaW51eC1tdGQiCj4gPGxpbnV4LW10
+ZEBsaXN0cy5pbmZyYWRlYWQub3JnPiwgImxpbnV4LWtlcm5lbCIgPGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmc+Cj4gR2VzZW5kZXQ6IE1pdHR3b2NoLCAxLiBNw6RyeiAyMDIzIDEyOjEzOjU5
+Cj4gQmV0cmVmZjogUmU6IFtQQVRDSCB2Ml0gdWJpZnM6IGRpcnR5X2Nvd196bm9kZTogRml4IG1l
+bWxlYWsgaW4gZXJyb3IgaGFuZGxpbmcgcGF0aAoKPiDlnKggMjAyMy8zLzEgMTY6MDYsIFJpY2hh
+cmQgV2VpbmJlcmdlciDlhpnpgZM6Cj4+IFdlIGNhbm5vdCByZXBsYWNlIHRoZSBwYXRjaCBpbiBs
+aW51eC1uZXh0LCB0aGUgbWVyZ2Ugd2luZG93IGlzIGFscmVhZHkgb3Blbi4KPj4gQSBmb2xsb3cg
+dXAgZml4IGlzIHBvc3NpYmxlIGFmdGVyIDYuMy1yYzEgaXMgZG9uZS4gU28sIG5leHQgd2Vlay4K
+PiAKPiBJdCdzIG9rYXksIHRoYW5rcy4gSSB3aWxsIHNlbmQgZml4IHBhdGNoIGFnYWluIGFmdGVy
+IDYuMy1yYzEuCgpZb3UgY2FuIHNlbmQgaXQgcmlnaHQgbm93LiBCdXQgSSBoYXZlIHRvIHdhaXQg
+YSBiaXQuCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
