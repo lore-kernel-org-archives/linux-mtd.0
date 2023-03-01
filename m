@@ -4,63 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA499C64EC7
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Mar 2023 11:28:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B939C7EE2D
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Mar 2023 12:06:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=1DK5GDPBpGARS9TRCfDalEbCnNr3sDUAs4fzVLz6zLc=; b=xTyHOLWydvDTQGEiVdngQhlXJ+
-	G6PebDReHNgHJ2Ywi3JtoEluAA7m/QNzctIDk/FL6zBlTgxgusziZkklTdfuX0X+w5jxt2gM8lol7
-	/WKxM1zZ7eTaZlHlN2gxz2GlJBMCjMCERnC0NBD5lzeXmxKhqL6MOlZou2N/gannnDkNwMyNCcnIi
-	8ibSItFkTzkID91Bn8+p0HC09nvXxacZYQT7/ZYEPToZ6GJueHigth36nBLeJb4+VOFA/cIsZ1rmI
-	RvmdgoYWC+MfUM8LIQeUgbEPQr5y0gLke9r+5RUubhS1DTklckbCnk/+uvousMxlzApeaGaffiV8A
-	aWwiAUSg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=c5XT2C1tdUNY0h3jgPflYVBDHyutpi6VlWGwYJkEORQ=; b=EAyEHh8/59TCFp
+	DXR/ErjIJR940yl9TjlnBxwAbwEl66QsbdPBUNqFABIgIxJnI1MITOKxXS9Pt08nUCLh16rLM8Hyh
+	3Q0iOSLVnQPqz2cVOSQF2YhPttgtRE9+MKZ+LphumNRynXQ33+fH29LVOTSRX9QPOfU9DOdbITFGV
+	+/o20EdJHWd0G53te6x60mlo5P0IvuyC/e9q1xY+PyVNjw8jkQYSiUVtxRl10VwXWOXv7FA591T+C
+	w/GH/4XH3aS+Qr6XkPjyKdrO5Ib/ccj/Y2akjj3kPb8UmYRD3jI4C61Y4dFLH8sdcC+cUn1vZ3UOZ
+	UgPXxUFUQH4R/kB732kw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXKd7-00FvlY-RL; Wed, 01 Mar 2023 11:28:17 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1pXLDz-00G37X-CP; Wed, 01 Mar 2023 12:06:23 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXKd3-00Fvk7-TD
-	for linux-mtd@lists.infradead.org; Wed, 01 Mar 2023 11:28:16 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 229AC6382EF7;
-	Wed,  1 Mar 2023 12:28:10 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id VzUUj5x2PD0C; Wed,  1 Mar 2023 12:28:09 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 7BDF86382F03;
-	Wed,  1 Mar 2023 12:28:09 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id uELCjn1QVamu; Wed,  1 Mar 2023 12:28:09 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 565826382EF5;
-	Wed,  1 Mar 2023 12:28:09 +0100 (CET)
-Date: Wed, 1 Mar 2023 12:28:09 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: chengzhihao1 <chengzhihao1@huawei.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1637751218.187351.1677670089216.JavaMail.zimbra@nod.at>
-In-Reply-To: <299a85b4-aea5-b8b8-394f-4b7093b6a754@huawei.com>
-References: <20230215022507.2363193-1-chengzhihao1@huawei.com> <9121ae91-5b4f-4b10-46fc-6cc0683c949d@huawei.com> <34189394.187159.1677657964794.JavaMail.zimbra@nod.at> <299a85b4-aea5-b8b8-394f-4b7093b6a754@huawei.com>
-Subject: Re: [PATCH v2] ubifs: dirty_cow_znode: Fix memleak in error
- handling path
+	id 1pXLDu-00G35O-WE
+	for linux-mtd@lists.infradead.org; Wed, 01 Mar 2023 12:06:21 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.53])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PRXrH4y9PzKmSX;
+	Wed,  1 Mar 2023 20:01:03 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 1 Mar
+ 2023 20:06:01 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>, <s.hauer@pengutronix.de>, <miquel.raynal@bootlin.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>
+Subject: [PATCH -next 0/2] Rework fix method for memleak in
+Date: Wed, 1 Mar 2023 20:29:17 +0800
+Message-ID: <20230301122919.266818-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: dirty_cow_znode: Fix memleak in error handling path
-Thread-Index: jI6dxxZj4vvQSlt0IvLuiHnakpyrZA==
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_032814_111951_105D6DE9 
-X-CRM114-Status: UNSURE (   3.47  )
+X-CRM114-CacheID: sfid-20230301_040619_223857_ED3CA0AA 
+X-CRM114-Status: UNSURE (   5.18  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,24 +60,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImNoZW5nemhpaGFvMSIgPGNo
-ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IEFuOiAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Pgo+
-IENDOiAiTWlxdWVsIFJheW5hbCIgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+LCAiU2FzY2hh
-IEhhdWVyIiA8cy5oYXVlckBwZW5ndXRyb25peC5kZT4sICJsaW51eC1tdGQiCj4gPGxpbnV4LW10
-ZEBsaXN0cy5pbmZyYWRlYWQub3JnPiwgImxpbnV4LWtlcm5lbCIgPGxpbnV4LWtlcm5lbEB2Z2Vy
-Lmtlcm5lbC5vcmc+Cj4gR2VzZW5kZXQ6IE1pdHR3b2NoLCAxLiBNw6RyeiAyMDIzIDEyOjEzOjU5
-Cj4gQmV0cmVmZjogUmU6IFtQQVRDSCB2Ml0gdWJpZnM6IGRpcnR5X2Nvd196bm9kZTogRml4IG1l
-bWxlYWsgaW4gZXJyb3IgaGFuZGxpbmcgcGF0aAoKPiDlnKggMjAyMy8zLzEgMTY6MDYsIFJpY2hh
-cmQgV2VpbmJlcmdlciDlhpnpgZM6Cj4+IFdlIGNhbm5vdCByZXBsYWNlIHRoZSBwYXRjaCBpbiBs
-aW51eC1uZXh0LCB0aGUgbWVyZ2Ugd2luZG93IGlzIGFscmVhZHkgb3Blbi4KPj4gQSBmb2xsb3cg
-dXAgZml4IGlzIHBvc3NpYmxlIGFmdGVyIDYuMy1yYzEgaXMgZG9uZS4gU28sIG5leHQgd2Vlay4K
-PiAKPiBJdCdzIG9rYXksIHRoYW5rcy4gSSB3aWxsIHNlbmQgZml4IHBhdGNoIGFnYWluIGFmdGVy
-IDYuMy1yYzEuCgpZb3UgY2FuIHNlbmQgaXQgcmlnaHQgbm93LiBCdXQgSSBoYXZlIHRvIHdhaXQg
-YSBiaXQuCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Patch 1 reverts old solution.
+Patch 2 provides a new fix method.
+
+https://lore.kernel.org/lkml/20230215022507.2363193-1-chengzhihao1@huawei.com/
+
+Zhihao Cheng (2):
+  Revert "ubifs: dirty_cow_znode: Fix memleak in error handling path"
+  ubifs: dirty_cow_znode: Fix memleak when insert_old_idx() failed
+
+ fs/ubifs/tnc.c | 142 ++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 86 insertions(+), 56 deletions(-)
+
+-- 
+2.31.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
