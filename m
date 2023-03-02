@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB49FC678D4
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Mar 2023 06:48:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 621BFC7EE2F
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Mar 2023 07:36:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5OXVxpzTv2DnlzR3w6y3iMsd9/Lm6HD9bnzMcfKbCWE=; b=mNXJfBogeN7tL5
-	5bD65X+c8CiNn0nvrMyUpeshmCgmAyfe5r4StsUSCMEBEfn8DMkPDZkQPTV4k8mKCn38LOvPCCx/P
-	mGpBDetPtLxsip7l2qzLQkSWULHi27vf99I99IXI6lVODrkDLqjI0kpP/0yl/cnK+4oq3KuJuLleX
-	PbRlYQKqD8/PDZd6G0aMkK4L22VpoK9FPjYI+vBmdeduJauS8CeEBg4X+OQxmEHBrorbxQSRu0f7s
-	UVGijseL0tQsGgqTLGhF7Oo0nHt/Dhc5d04scgWri3H9n44o9jBi+G1cebI+vIlpe9qH6lKKBf3ML
-	QpT5WuDoGD5r1hDBwQ+Q==;
+	List-Owner; bh=uyCnaxfowRANqksISl/FvvXtM1AveUv08ozSUN21doo=; b=Lkcr0BVjZtBSqc
+	2o7g4OHGTpH/JXNo5Xo58ZObVuk3cn1kEeghs8C/Kk/foSJWbnGM3yEZbvyF0U8nB4eWIawC5IS+J
+	glAQsGsDHCBzHqoa6Oe4unmOpl0zojJHkIbUT16jiFqQxlmsvyyuXiT24O106Dei5CHnsLzzcq7KG
+	J5JjjlHNoT1II6wL+2xwTgSb3vVWEJHQe2EMVTeKW4dE2GPOPqTUziUtz9wyQgXaYN150GOpyUwEw
+	YYkGvrY8kAHrLTIf+No7zK5HHVhjMZ25DVqQgul+zBIyerlKTggxAaCkO61dbY9DZQOXaonstkhzl
+	keJ17NASsahr/Fio3WgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXck6-0013pp-Gy; Thu, 02 Mar 2023 06:48:42 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+	id 1pXdTN-0019Af-RV; Thu, 02 Mar 2023 07:35:29 +0000
+Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXck2-0013pB-N2
-	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2023 06:48:40 +0000
-Received: by mail-ed1-x534.google.com with SMTP id f13so63568350edz.6
-        for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2023 22:48:36 -0800 (PST)
+	id 1pXdTK-00199i-HR
+	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2023 07:35:28 +0000
+Received: by mail-pg1-x52b.google.com with SMTP id s17so9272294pgv.4
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2023 23:35:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1677739715;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+1nPB4vOkBUw8ToSzdQ00DgnuHTl/myS9AiY/9rEggw=;
-        b=Y+m2lfskttKESbExwqAS6wiDYhmP7BlWsEVJB9UB6c4W+unPrurw0Q2obf6S6vKZBr
-         o7sHxqrqjr95gzxuuX0H79BmPP4ynabq4h8f/CKVXMf56Q5f9tLmoz0oh4WK6vo93ywV
-         aV7AyF1rAptQJtWDUSyrsAzi1zAlfLM2Yq60lR4BaKMXPKd/ZjiFF+xSgwTdpYhy+t6R
-         N6gGJHX1N7bYHtYEgamNXpYnQb1dHWXIz4lnyew0pE+MFtb+TD3jl0O9qtUvmcAnIKuU
-         qCeC0AIKy8mQ7wK10pqXFMs0WAqnMPTqgWefsj+KcT5W4uzDSA16xkRjfabGcV3lX//n
-         jCWA==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/KDHzeB9uc/l49VsYgi257Or69Bw9U5YVQkiaw+HUdw=;
+        b=ePFLAvHZXdcOE9BbeMWUkZhRE7HLeyOWa/jXw+K5O83ILqV37mxVgVvPdxZ+5oaMS0
+         xS4ZqtPYX7+0hq4V5fU67pSsojM3DOW3d3rZjtCCYndyoCGOxUOKL4JheGJaO7IdM+5u
+         ILuMbQBHtHfzRa1cLWR/nP73VKzBnWE/i9QHro2twVm7S0h1WbKhYGotYuz5vXnoQlyL
+         kWnMoOeyhYLCRPEe1IxF26LDN5F3hdqTF9uV7t+/2U2mfi6DvofHfznJiklipFV51MpN
+         f+pYEjGyyHiWF9V6QzlQc8hXTXya1aowJle/on8I33y9slazjOTeUdmcDRW1x0Ox/OWX
+         onzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677739715;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+1nPB4vOkBUw8ToSzdQ00DgnuHTl/myS9AiY/9rEggw=;
-        b=KIT1P6edtIFxTeAGzLstlSJ2xSy2cdJSWxdOJWHQwhxoOj3aUaeF3slVhXLTHGZbM9
-         z68G8tmeZvjUQt+/sMFKAaSIzyo307rTNWqvMvCgsQGsdGJljbTL7LMISeamBP8CmZHd
-         J7f3A7NuOiLmUSlUQ8yYViq5FisjfXtQEsLgvJ3r38mckdxZbr+AKKW1GXTXiTHA3CQk
-         L+/b4ahefnyDsycimVAtZqW20ef+XY42a+JPYVUgTBfe8QedFFgZNbTYyivHx4IwfJZ2
-         2QoW90xA36hBKSPLjYpQJUJZ58/CpFh1jRHJEMkDrQtTGdRjhq4NhbuSgULQeCoHGZmN
-         HfOw==
-X-Gm-Message-State: AO0yUKUX8tKBA9sKtX8KqoVXSHnNRIC71y5FtZysUUdy8BupIzaMq1DU
-	AEjX+IzAQVE026017nq13aEu7A==
-X-Google-Smtp-Source: AK7set+HZNrdgaTTU0ui9LA273R21UUt2xYL+eRtO3lVsxa7rp+Wc951hK7anAPUkkGnrHhtc/oy3Q==
-X-Received: by 2002:a17:906:1991:b0:87e:a34b:9e2b with SMTP id g17-20020a170906199100b0087ea34b9e2bmr8599886ejd.28.1677739714860;
-        Wed, 01 Mar 2023 22:48:34 -0800 (PST)
-Received: from [192.168.0.173] ([79.115.63.78])
-        by smtp.gmail.com with ESMTPSA id n15-20020a5099cf000000b004aef147add6sm6456081edb.47.2023.03.01.22.48.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Mar 2023 22:48:34 -0800 (PST)
-Message-ID: <05590349-64cb-da8b-c7b9-41b5ec9ed27a@linaro.org>
-Date: Thu, 2 Mar 2023 08:48:33 +0200
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/KDHzeB9uc/l49VsYgi257Or69Bw9U5YVQkiaw+HUdw=;
+        b=lMYzIuOLxdigpZEr9SmJ+tD4pUoMTQTT2TOf4VUcAk0eJxL0YneHT3RLagIb71L6+A
+         JEYiJ6GAHwHyKl60/DCwwUuJNY3mQtSbfHgUtLWTLvfekBl3ArNAsCaESMEYzY/OWnGq
+         lXmbvc4isrb9KwWOL+NPVB80M5VGR46gZFbBCWYG3Lv3lSlLBd/JjDYHk0QAE4XH1c/A
+         5z/505zL9C2Iy2lIMGoZyCnoZVuH2cZXqXORNlwswPsB9cLJ4GVabyXXPXR/cKncQ8Mu
+         sIemf1ZDX1AzIGoE6llnHM53XbGDAhmPlvV3lUElFVJ1D6qZrcYUikBroZ/paku5tK6Z
+         ci5Q==
+X-Gm-Message-State: AO0yUKX30TxBIGIevBUHCM/YLsDLz2vACuiNSgPxzTz6C2tRqikSlO3l
+	c1y0zpbUbPGzYs1Nww5rVLeCnLVDK2xrwA==
+X-Google-Smtp-Source: AK7set/Hc0x+HkNWZsDQlaYpqLrfxj3MV17MSmwKjQcHh2MpMSp2qYFUayG9Pa8DXG7U1Ftle3sBKA==
+X-Received: by 2002:aa7:960d:0:b0:5ce:ef1b:a8b with SMTP id q13-20020aa7960d000000b005ceef1b0a8bmr8014513pfg.30.1677742524488;
+        Wed, 01 Mar 2023 23:35:24 -0800 (PST)
+Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id v26-20020a62a51a000000b005a8e9e2f1c5sm9085898pfm.187.2023.03.01.23.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Mar 2023 23:35:24 -0800 (PST)
+From: tkuw584924@gmail.com
+X-Google-Original-From: Takahiro.Kuwano@infineon.com
+To: linux-mtd@lists.infradead.org
+Cc: tudor.ambarus@microchip.com,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	Bacem.Daassi@infineon.com,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v3 2/2] mtd: spi-nor: spansion: Add support for Infineon S25FS256T
+Date: Thu,  2 Mar 2023 16:35:07 +0900
+Message-Id: <097ef04484966593ba1326d0a99462753d7d1073.1677557525.git.Takahiro.Kuwano@infineon.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1677557525.git.Takahiro.Kuwano@infineon.com>
+References: <cover.1677557525.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v2 1/8] mtd: spi-nor: core: Introduce number of dice and
- volatile register offset params
-Content-Language: en-US
-To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
-Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-References: <cover.1675835253.git.Takahiro.Kuwano@infineon.com>
- <97e4456016d31567649e2a99d6d4daff7ed90e4a.1675835253.git.Takahiro.Kuwano@infineon.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <97e4456016d31567649e2a99d6d4daff7ed90e4a.1675835253.git.Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_224838_811255_DC468B17 
-X-CRM114-Status: GOOD (  19.98  )
+X-CRM114-CacheID: sfid-20230301_233526_604061_B2A321B6 
+X-CRM114-Status: GOOD (  17.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,70 +92,130 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
+Infineon S25FS256T is 256Mbit Quad SPI NOR flash. The key features and
+differences comparing to other Spansion/Cypress flash familes are:
+  - 4-byte address mode by factory default
+  - Quad mode is enabled by factory default
+  - OP_READ_FAST_4B(0Ch) is not supported
+  - Supports mixture of 128KB and 64KB sectors by OTP configuration
+    (this patch supports uniform 128KB only due to complexity of
+     non-uniform layout)
 
-On 08.02.2023 07:53, tkuw584924@gmail.com wrote:
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> 
-> In use of mult-chip devices, we need to access registers in each die for
-> configuration and status check. The number of dice in the device and
-> volatile register offset for each die are essential to iterate register
-> access ops.
-> 
-> The number of dice must be initialized as 1 and may be updated through
-> SFDP parse.
-> 
-> The volatile register offset table is dinamically allocated based on
-> the number of dice then filled with offset values collected from SFDP.
-> 
-> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> ---
->   drivers/mtd/spi-nor/core.c | 1 +
->   drivers/mtd/spi-nor/core.h | 4 ++++
->   2 files changed, 5 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index b500655f7937..f18be6283740 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2576,6 +2576,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
->   	params->writesize = 1;
->   	params->size = (u64)info->sector_size * info->n_sectors;
->   	params->page_size = info->page_size;
-> +	params->num_of_dice = 1;
->   
->   	if (!(info->flags & SPI_NOR_NO_FR)) {
->   		/* Default to Fast Read for DT and non-DT platform devices. */
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index f6d012e1f681..c876ece62f13 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -349,6 +349,8 @@ struct spi_nor_otp {
->    *			in octal DTR mode.
->    * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
->    *			command in octal DTR mode.
-> + * @num_of_dice:	number of dice in the flash memory.
-> + * @vreg_offset:	volatile register offset for each die.
->    * @hwcaps:		describes the read and page program hardware
->    *			capabilities.
->    * @reads:		read capabilities ordered by priority: the higher index
-> @@ -381,6 +383,8 @@ struct spi_nor_flash_parameter {
->   	u8				addr_mode_nbytes;
->   	u8				rdsr_dummy;
->   	u8				rdsr_addr_nbytes;
-> +	u8				num_of_dice;
+Tested on Xilinx Zynq-7000 FPGA board.
 
-ndice maybe?
+Link: https://www.infineon.com/dgdlac/Infineon-S25FS256T_256Mb_SEMPER_Nano_Flash_Quad_SPI_1.8V-DataSheet-v12_00-EN.pdf?fileId=8ac78c8c80027ecd0180740c5a46707a
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+---
+Changes in v3:
+  - add params->addr_nbytes = 4 in post_bfpt
+  - give 'ndummy' to RD_ANY_REG_OP in post_bfpt
+  - s/SFDP/4BAIT in post_sfdp 
 
-> +	u32				*vreg_offset;
->   
->   	struct spi_nor_hwcaps		hwcaps;
->   	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
+Changes in v2:
+  - s/EOPNOTSUPP/ENODEV
+  - Drop READ_FAST support
+  - Amend comment in late_init()
+  - sector size and page size as 0 in sizeINFO6()
+
+---
+ drivers/mtd/spi-nor/spansion.c | 60 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 9faab29aba57..1678b7b2e9f7 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -29,6 +29,7 @@
+ 	 SPINOR_REG_CYPRESS_CFR5_OPI)
+ #define SPINOR_REG_CYPRESS_CFR5_OCT_DTR_DS	SPINOR_REG_CYPRESS_CFR5_BIT6
+ #define SPINOR_OP_CYPRESS_RD_FAST		0xee
++#define SPINOR_REG_CYPRESS_ARCFN		0x00000006
+ 
+ /* Cypress SPI NOR flash operations. */
+ #define CYPRESS_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)		\
+@@ -218,6 +219,62 @@ static int cypress_nor_set_page_size(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
++static int
++s25fs256t_post_bfpt_fixup(struct spi_nor *nor,
++			  const struct sfdp_parameter_header *bfpt_header,
++			  const struct sfdp_bfpt *bfpt)
++{
++	struct spi_mem_op op;
++	int ret;
++
++	/* 4-byte address mode is enabled by default */
++	nor->params->addr_nbytes = 4;
++	nor->params->addr_mode_nbytes = 4;
++
++	/* Read Architecture Configuration Register (ARCFN) */
++	op = (struct spi_mem_op)
++		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
++					  SPINOR_REG_CYPRESS_ARCFN, 1,
++					  nor->bouncebuf);
++	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
++	if (ret)
++		return ret;
++
++	/* ARCFN value must be 0 if uniform sector is selected  */
++	if (nor->bouncebuf[0])
++		return -ENODEV;
++
++	return cypress_nor_set_page_size(nor);
++}
++
++static void s25fs256t_post_sfdp_fixup(struct spi_nor *nor)
++{
++	struct spi_nor_flash_parameter *params = nor->params;
++
++	/* PP_1_1_4_4B is supported but missing in 4BAIT. */
++	params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4;
++	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_1_4],
++				SPINOR_OP_PP_1_1_4_4B,
++				SNOR_PROTO_1_1_4);
++}
++
++static void s25fs256t_late_init(struct spi_nor *nor)
++{
++	/*
++	 * Programming is supported only in 16-byte ECC data unit granularity.
++	 * Byte-programming, bit-walking, or multiple program operations to the
++	 * same ECC data unit without an erase are not allowed. See chapter
++	 * 5.3.1 and 5.6 in the datasheet.
++	 */
++	nor->params->writesize = 16;
++}
++
++static struct spi_nor_fixups s25fs256t_fixups = {
++	.post_bfpt = s25fs256t_post_bfpt_fixup,
++	.post_sfdp = s25fs256t_post_sfdp_fixup,
++	.late_init = s25fs256t_late_init,
++};
++
+ static int
+ s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
+ 			const struct sfdp_parameter_header *bfpt_header,
+@@ -446,6 +503,9 @@ static const struct flash_info spansion_nor_parts[] = {
+ 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
++	{ "s25fs256t",  INFO6(0x342b19, 0x0f0890, 0, 0)
++		PARSE_SFDP
++		.fixups = &s25fs256t_fixups },
+ 	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLSR)
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
