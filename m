@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43B1CC6FA8E
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Mar 2023 05:47:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2391C6FA8E
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Mar 2023 06:10:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:Subject:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Fys00RmDy/I3RAqOc3kWKy0W7+Q0+6vN1Rr5I0+s6jU=; b=oPJv5f8sRe5/rU
-	RTnHeJO4MyBrupOmDXzkPXwrSFnMF4AhZx+5p0phi/Tz/4jY2ei5bT1KHYMQSJd4Pixe3m18V8SvM
-	V4M/DA14yywremxUAA5LPXYF3bosttoT3XxNx1Qvq7ZEAhc9tSq6gESSUn8P5hTQXaeITCkGhuSPB
-	wNQIDJU2joFcSkh/5fson3l/NrjGAjZnNfJ5k1gJhH9pgKS8i9geBHwow6YuDMAw7M5wSteClkk7m
-	yjRVcrxyk+MKxwG1ZLY/CXUAjOvTUMlkix+vqivp8f9i8tC6Am6EtPQFCBZL3eXLeB82S2f71/xb8
-	vKqktbRjik8bRumHUS6w==;
+	List-Owner; bh=I1PGxF1aWg4zPMsMNnUUTixq3bV2iY6XfjvycGewwFg=; b=0NG/sryCW6c2Fk
+	y5bspMNdHb3CQMQFruR5vOQaS+k3/URCs1wFCBsbqM+GacGmMem3ARNlRN8JpBAaTpjjq1sfR8Sy+
+	o1nNBOzmS4F7GIiJ6xPcdIO+Cga+++/Lc0PW8Ittwpf0iUeNFR7hVEGIorckgZ8ZIQxncoZ2Vv4pe
+	wTr9CtX0TlnBExsHAY61WMWNMJWuUo6gZB3A7RZP1E3PLaNs/ggq021oD79l3OdzldpM2PnE6NsqL
+	KRq5yOunQWNEvfvz3ZiAhmztwaVL7Avb8TFn4tt+ChVgpBd9VLGylICbt5xpU8V+JCSLcsgBVnSET
+	VhtQ8wv9pFJAzn6PYotA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXbn4-000vGi-EU; Thu, 02 Mar 2023 05:47:42 +0000
-Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
+	id 1pXc8E-000z8m-9w; Thu, 02 Mar 2023 06:09:34 +0000
+Received: from mail-ed1-x52f.google.com ([2a00:1450:4864:20::52f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXbn1-000vG8-8N
-	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2023 05:47:40 +0000
-Received: by mail-ed1-x52a.google.com with SMTP id x3so179569edb.10
-        for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2023 21:47:37 -0800 (PST)
+	id 1pXc8B-000z85-8M
+	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2023 06:09:32 +0000
+Received: by mail-ed1-x52f.google.com with SMTP id g3so7841974eda.1
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2023 22:09:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1677736056;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+        d=linaro.org; s=google; t=1677737367;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=AsvJmlYKHKHdzSIIiRk6fxEhrJuDO6mu2zGIT1TDaes=;
-        b=Rnzllh5/tEg91oLRldJQFK6MzOZlKjYMKJ6p+L30bLQTlzg+VesZy4la/qwh9g+9nk
-         7e7O86KbXA0qD3INpZs9xaL1A9KbHmF3QssoV9a+Gc5eDLnKNr4pdCKe2+HdWJtO/pYa
-         VQaa+AERR877EfjYw1jGqrU8hRKHv9nAKOVKIgj4oReOF3gSLaoaOfkHB4VaQuc7qdB8
-         8aXJZPfB3NcAkWAqV76rNSDqCe1hcjytN1cEybm+j+1Csr0LZsvo7Z6qGy/VrYEUPIiO
-         1GI91Ns+D40Iu3HJEQA8Gzga2flq6EG3PRIYTxTBqsp/IWRnbW3myz+WrDhrcjt8dZAf
-         +50Q==
+        bh=S3ITF3pSvtpmw4hz0vyDFGg0p1dkMqgdpv8hA+dYiF0=;
+        b=K56A1+Cf9bXeOePpz1eIU+BjiURiReUBrHOSlcZt0ZotJ5rzOBnWi2wdUXMZEZ1Kq9
+         QgbN8U9g9/eU4Y8/umbz94DGSmIFc73Dyd1yYuXPRqBlIC6yyQOrnvSHyAbpJYXsYki+
+         ndO4BvUTYXN1kIJdcoxH0apYqkJMhM3M+8SCBmzza6tyZ1D6Rh708/psNbb+4535LILz
+         qiGUqyJGzt1Vdwy0+PrOxNLwbQptVOz1NoiFK4Dg7MJV2X6m0IM4yyvb0atu0P3R0ddp
+         LgOsGG+6F4rC3EA8ypl6WMaWSe2X2MfxtTbUuFxUXUDT3WpFynW7h7vt/vGFDRIgevM4
+         DH1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677736056;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+        d=1e100.net; s=20210112; t=1677737367;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AsvJmlYKHKHdzSIIiRk6fxEhrJuDO6mu2zGIT1TDaes=;
-        b=dZQjG6DIyjWYDKyHLn8E70bLDX+tscmEsimtjuGHBe4SwQjv6ncD9U4Kqx3xWmWOJ/
-         48LrRRuVyzD/CRIZzzbJLNNY9dSB9tyc4L7Z1cZ25fWr6G8GQvRP5E9Bd9rzh6EJ1GLo
-         JFakzC+HIh1oRXk4/YfM26Gtk5GlPkcbXRnLj+DCclh+J+IIXfKgzJA9IPSnYLHaZIa0
-         1MFAPkLAOO6MFb1/2KgNf/PlHhFGtMIWzs8SkA2/pvxueNwnf/WyZ3PdCl3JXAnJMOVY
-         VLHGEpAomoEoLNyrc4udwwzYaptRdyIDnuKUwBRWdkqAks2n/TFkb7t7u5Cse7A/vMgq
-         M0UQ==
-X-Gm-Message-State: AO0yUKUt1tgj+eJEBnDv1SoT9sQ+lBilbNT2QTSuzvfbEzoFBX62fLT2
-	/BciSZuk+n1T5yiOADRYRFA58Q==
-X-Google-Smtp-Source: AK7set99YYtEeWbyoMxpbh7gjW0nbvtvE6WqujRi/LCnIEmkTuSZFz1GCXUNJejbpLmSW5o0K6/s3w==
-X-Received: by 2002:a17:906:4910:b0:8b1:3b95:cf3f with SMTP id b16-20020a170906491000b008b13b95cf3fmr8041532ejq.70.1677736056071;
-        Wed, 01 Mar 2023 21:47:36 -0800 (PST)
+        bh=S3ITF3pSvtpmw4hz0vyDFGg0p1dkMqgdpv8hA+dYiF0=;
+        b=yc2lDtp5dNS8bBrVe0YQBcnCG6p2s/HRr6N50aYCrciUnnoDSB4Ft4X+L9Spoevs7C
+         tILTvVNkrM7rE2dzM85YSWBgCTntO/Rm0XgV53iow6xIWXxB9i09cW8IRJl0CU0+ii+t
+         N2xKKmULlmYbrQjH1SLUOb3FIAYdpeA3fmfmoYpNb17LMIy7stvittU22VtSMgfJR33l
+         N4JfRqSDRXi96G7zvWe+2IPYJqDbQBk4n63x8opdfbYxnLDB7dDYB8IzUnW9eRYY48BJ
+         m2vqP3LY6bOFrbQ930O/KhvgHatNSEjE85RvLJOg9cPaI2CniH2c9M/t9auspGydJbZu
+         lDqw==
+X-Gm-Message-State: AO0yUKVabzhukOO9RL9W+PGZ9Ip5WkHQD6IJ5x5nIvTUBfB+HzAcbGS8
+	nLOVEFtz+0GX7hWVFyyneFGpqA==
+X-Google-Smtp-Source: AK7set8OR3xG71PfYOtdtcrah9iPuC9qLlOMgIsz+4gKucw5DZXHVN674EmQl7H7ZjqELF1vlf+rDA==
+X-Received: by 2002:a05:6402:120d:b0:4ae:eab6:9fac with SMTP id c13-20020a056402120d00b004aeeab69facmr9889804edw.32.1677737367576;
+        Wed, 01 Mar 2023 22:09:27 -0800 (PST)
 Received: from [192.168.0.173] ([79.115.63.78])
-        by smtp.gmail.com with ESMTPSA id m5-20020a170906234500b008d9c518a318sm6808491eja.142.2023.03.01.21.47.35
+        by smtp.gmail.com with ESMTPSA id a92-20020a509ee5000000b004a23558f01fsm6489787edf.43.2023.03.01.22.09.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Mar 2023 21:47:35 -0800 (PST)
-Message-ID: <8ee51f7c-b911-b4cc-5c48-c22cae0b6891@linaro.org>
-Date: Thu, 2 Mar 2023 07:47:34 +0200
+        Wed, 01 Mar 2023 22:09:27 -0800 (PST)
+Message-ID: <5f72a5a0-b23e-3ffd-5690-958e85dc66db@linaro.org>
+Date: Thu, 2 Mar 2023 08:09:25 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [PATCH v2 3/8] mtd: spi-nor: sfdp: Add support for SCCR map for
- multi-chip device
+Subject: Re: [PATCH v2 4/8] mtd: spi-nor: spansion: Rework
+ cypress_nor_set_page_size() for multi-chip device support
 Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
 Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
  Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 References: <cover.1675835253.git.Takahiro.Kuwano@infineon.com>
- <5ffa62bf55f2e6e3fee5104e4c53e2b1caa8c8cc.1675835253.git.Takahiro.Kuwano@infineon.com>
- <1bac4c22-03af-3455-21b0-2b23a39a7c12@linaro.org>
-In-Reply-To: <1bac4c22-03af-3455-21b0-2b23a39a7c12@linaro.org>
+ <08b8d366534e6f9ac3f1dcf08560451293e0b4b1.1675835253.git.Takahiro.Kuwano@infineon.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <08b8d366534e6f9ac3f1dcf08560451293e0b4b1.1675835253.git.Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_214739_340056_8AEC7BE2 
-X-CRM114-Status: GOOD (  26.40  )
+X-CRM114-CacheID: sfid-20230301_220931_352535_CBB96880 
+X-CRM114-Status: GOOD (  33.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,102 +90,151 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAwMi4wMy4yMDIzIDA3OjQxLCBUdWRvciBBbWJhcnVzIHdyb3RlOgo+IAo+IAo+IE9uIDA4
-LjAyLjIwMjMgMDc6NTMsIHRrdXc1ODQ5MjRAZ21haWwuY29tIHdyb3RlOgo+PiBGcm9tOiBUYWth
-aGlybyBLdXdhbm8gPFRha2FoaXJvLkt1d2Fub0BpbmZpbmVvbi5jb20+Cj4+Cj4+IFNDQ1IgbWFw
-IGZvciBtdWx0aS1jaGlwIGRldmljZXMgY29udGFpbnMgdGhlIG51bWJlciBvZiBhZGRpdGlvbmFs
-IGRpY2UgaW4KPj4gdGhlIGRldmljZSBhbmQgcmVnaXN0ZXIgb2Zmc2V0IHZhbHVlcyBmb3IgZWFj
-aCBhZGRpdGlvbmFsIGRpY2UuCj4+Cj4+IHNwaV9ub3JfcGFyc2Vfc2Njcl9tYygpIGlzIGFkZGVk
-IHRvIGRldGVybWluZSB0aGUgbnVtYmVyIG9mIGRpY2UgYW5kCj4+IHZvbGF0aWxlIHJlZ2lzdGVy
-IG9mZnNldCBmb3IgZWFjaCBkaWUuIFRoZSB2b2xhdGlsZSByZWdpc3RlciBvZmZzZXQgdGFibGUK
-Pj4gbWF5IGFscmVhZHkgYmUgYWxsb2NhdGVkIGFuZCBjb250YWlucyBvZmZzZXQgdmFsdWUgZm9y
-IGRpZS0wIHZpYSBTQ0NSIG1hcAo+PiBwYXJzZS4gU28sIHdlIHNob3VsZCB1c2UgZGV2bV9rcmVh
-bGxvYygpIHRvIGV4cGFuZCB0aGUgdGFibGUgd2l0aAo+PiBwcmVzZXJ2aW5nIGRpZS0wIG9mZnNl
-dC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogVGFrYWhpcm8gS3V3YW5vIDxUYWthaGlyby5LdXdhbm9A
-aW5maW5lb24uY29tPgo+PiAtLS0KPj4gwqAgZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMgfCA2
-NCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+PiDCoCAxIGZpbGUgY2hh
-bmdlZCwgNjQgaW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3Bp
-LW5vci9zZmRwLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYwo+PiBpbmRleCBlNWI1Nzc2
-ZDgxNzIuLmI3YzA4ZmU4NjIzOSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9z
-ZmRwLmMKPj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMKPj4gQEAgLTI2LDYgKzI2
-LDExIEBACj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICog
-U3RhdHVzLCBDb250cm9sIGFuZCBDb25maWd1cmF0aW9uCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogUmVnaXN0ZXIgTWFwLgo+PiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLwo+PiArI2RlZmluZSBTRkRQX1NDQ1Jf
-TUFQX01DX0lEwqDCoMKgIDB4ZmY4OMKgwqDCoCAvKgo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCAqIFN0YXR1cywgQ29udHJvbCBhbmQgQ29uZmlndXJhdGlvbgo+
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIFJlZ2lzdGVyIE1h
-cCBPZmZzZXRzIGZvciBNdWx0aS1DaGlwCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgICogU1BJIE1lbW9yeSBEZXZpY2VzLgo+PiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLwo+PiDCoCAjZGVmaW5lIFNGRFBfU0lHTkFUVVJFwqDC
-oMKgwqDCoMKgwqAgMHg1MDQ0NDY1M1UKPj4gQEAgLTEyNTIsNiArMTI1Nyw2MSBAQCBzdGF0aWMg
-aW50IHNwaV9ub3JfcGFyc2Vfc2NjcihzdHJ1Y3Qgc3BpX25vciAqbm9yLAo+PiDCoMKgwqDCoMKg
-IHJldHVybiByZXQ7Cj4+IMKgIH0KPj4gKy8qKgo+PiArICogc3BpX25vcl9wYXJzZV9zY2NyX21j
-KCkgLSBQYXJzZSB0aGUgU3RhdHVzLCBDb250cm9sIGFuZCBDb25maWd1cmF0aW9uCj4+ICsgKsKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgUmVnaXN0
-ZXIgTWFwIE9mZnNldHMgZm9yIE11bHRpLUNoaXAgU1BJIAo+PiBNZW1vcnkKPj4gKyAqwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBEZXZpY2VzLgo+
-PiArICogQG5vcjrCoMKgwqDCoMKgwqDCoCBwb2ludGVyIHRvIGEgJ3N0cnVjdCBzcGlfbm9yJwo+
-PiArICogQHNjY3JfbWNfaGVhZGVyOsKgwqDCoCBwb2ludGVyIHRvIHRoZSAnc3RydWN0IHNmZHBf
-cGFyYW1ldGVyX2hlYWRlcicgCj4+IGRlc2NyaWJpbmcKPj4gKyAqwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCB0aGUgU0NDUiBNYXAgb2Zmc2V0cyB0YWJsZSBsZW5ndGggYW5kIHZlcnNpb24uCj4+ICsg
-Kgo+PiArICogUmV0dXJuOiAwIG9uIHN1Y2Nlc3MsIC1lcnJubyBvdGhlcndpc2UuCj4+ICsgKi8K
-Pj4gK3N0YXRpYyBpbnQgc3BpX25vcl9wYXJzZV9zY2NyX21jKHN0cnVjdCBzcGlfbm9yICpub3Is
-Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb25zdCBzdHJ1Y3Qgc2ZkcF9w
-YXJhbWV0ZXJfaGVhZGVyICpzY2NyX21jX2hlYWRlcikKPj4gK3sKPj4gK8KgwqDCoCBzdHJ1Y3Qg
-c3BpX25vcl9mbGFzaF9wYXJhbWV0ZXIgKnBhcmFtcyA9IG5vci0+cGFyYW1zOwo+PiArwqDCoMKg
-IHUzMiAqZHdvcmRzLCBhZGRyOwo+PiArwqDCoMKgIHNpemVfdCBsZW47Cj4+ICvCoMKgwqAgaW50
-IHJldDsKPj4gK8KgwqDCoCB1OCBpOwo+PiArCj4+ICvCoMKgwqAgbGVuID0gc2Njcl9tY19oZWFk
-ZXItPmxlbmd0aCAqIHNpemVvZigqZHdvcmRzKTsKPj4gK8KgwqDCoCBkd29yZHMgPSBrbWFsbG9j
-KGxlbiwgR0ZQX0tFUk5FTCk7Cj4+ICvCoMKgwqAgaWYgKCFkd29yZHMpCj4+ICvCoMKgwqDCoMKg
-wqDCoCByZXR1cm4gLUVOT01FTTsKPj4gKwo+PiArwqDCoMKgIGFkZHIgPSBTRkRQX1BBUkFNX0hF
-QURFUl9QVFAoc2Njcl9tY19oZWFkZXIpOwo+PiArwqDCoMKgIHJldCA9IHNwaV9ub3JfcmVhZF9z
-ZmRwKG5vciwgYWRkciwgbGVuLCBkd29yZHMpOwo+PiArwqDCoMKgIGlmIChyZXQpCj4+ICvCoMKg
-wqDCoMKgwqDCoCBnb3RvIG91dDsKPj4gKwo+PiArwqDCoMKgIGxlMzJfdG9fY3B1X2FycmF5KGR3
-b3Jkcywgc2Njcl9tY19oZWFkZXItPmxlbmd0aCk7Cj4+ICsKPj4gK8KgwqDCoCAvKgo+PiArwqDC
-oMKgwqAgKiBQYWlyIG9mIERPV1JEcyAodm9sYXRpbGUgYW5kIG5vbi12b2xhdGlsZSByZWdpc3Rl
-ciBvZmZzZXRzKSBwZXIKPj4gK8KgwqDCoMKgICogYWRkaXRpb25hbCBkaWUuIEhlbmNlLCBsZW5n
-dGggPSAyICogKG51bWJlciBvZiBhZGRpdGlvbmFsIGRpY2UpLgo+PiArwqDCoMKgwqAgKi8KPj4g
-K8KgwqDCoCBwYXJhbXMtPm51bV9vZl9kaWNlICs9IHNjY3JfbWNfaGVhZGVyLT5sZW5ndGggLyAy
-Owo+PiArCj4+ICvCoMKgwqAgLyogQWRkcmVzcyBvZmZzZXQgZm9yIHZvbGF0aWxlIHJlZ2lzdGVy
-cyBvZiBhZGRpdGlvbmFsIGRpY2UgKi8KPj4gK8KgwqDCoCBwYXJhbXMtPnZyZWdfb2Zmc2V0ID0K
-Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2bV9rcmVhbGxvYyhub3ItPmRldiwgcGFyYW1z
-LT52cmVnX29mZnNldCwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBwYXJhbXMtPm51bV9vZl9kaWNlICogc2l6ZW9mKCpkd29yZHMpLAo+PiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEdGUF9LRVJORUwpOwo+PiArwqDCoMKg
-IGlmICghcGFyYW1zLT52cmVnX29mZnNldCkgewo+PiArwqDCoMKgwqDCoMKgwqAgcmV0ID0gLUVO
-T01FTTsKPj4gK8KgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Owo+PiArwqDCoMKgIH0KPj4gKwo+PiAr
-wqDCoMKgIGZvciAoaSA9IDE7IGkgPCBwYXJhbXMtPm51bV9vZl9kaWNlOyBpKyspCj4gCj4gaGVy
-ZSB5b3UgbGltaXQgdGhlIG51bWJlciBvZiBkaWNlcyB0byAyNTYsIHdoaWxlIHRoZSBqZXNkMjE2
-IHNheXMgImFueQo+IG51bWJlciBmcm9tIDIgYW5kIHVwIG1heSBiZSB1c2VkIi4gV2hpbGUgSSBh
-Z3JlZSB0aGF0IGhhdmluZyAyNTYgZGljZXMKPiBpcyBpbXByb2JhYmxlIHdlJ2xsIGhhdmUgdG8g
-ZGVjaWRlIHdoZXRoZXI6Cj4gMS8ga2VlcCB1c2luZyB1OCBmb3IgdGhlIG51bWJlciBvZiBkaWNl
-cywgdGh1cyBsaW1pdGluZyB0aGVtIHRvIDI1NiwKPiBhc3N1bWluZyB0aGF0IHRoZSB0YWJsZSBs
-ZW5ndGggaXMgd3JvbmcuIEluIHRoaXMgY2FzZSB5b3UnbGwgaGF2ZSB0bwo+IGNoZWNrIHNjY3Jf
-bWNfaGVhZGVyLT5sZW5ndGggYW5kIHJldHVybiBhbiBlcnJvciBmb3Igbm8tb2YtZGljZXMgPiAy
-NTYKPiAyLyB1c2UgdW5zaWduZWQgaW50IGZvciB0aGUgbnVtYmVyIG9mIGRpY2VzIGFuZCBob3Bl
-IHlvdSdsbCBnZXQgYW4KPiBFTk9NRU0gc29vbmVyIG9yIGxhdGVyCj4gCj4+ICvCoMKgwqDCoMKg
-wqDCoCBwYXJhbXMtPnZyZWdfb2Zmc2V0W2ldID0gZHdvcmRzWyhpIC0gMSkgKiAyXTsKPiAKPiB1
-c2UgU0ZEUF9EV09SRCgpIHBsZWFzZQo+PiArCj4+ICtvdXQ6Cj4+ICvCoMKgwqAga2ZyZWUoZHdv
-cmRzKTsKPj4gK8KgwqDCoCByZXR1cm4gcmV0Owo+PiArfQo+PiArCj4+IMKgIC8qKgo+PiDCoMKg
-ICogc3BpX25vcl9wb3N0X3NmZHBfZml4dXBzKCkgLSBVcGRhdGVzIHRoZSBmbGFzaCdzIHBhcmFt
-ZXRlcnMgYW5kIAo+PiBzZXR0aW5ncwo+PiDCoMKgICogYWZ0ZXIgU0ZEUCBoYXMgYmVlbiBwYXJz
-ZWQuIENhbGxlZCBvbmx5IGZvciBmbGFzaGVzIHRoYXQgZGVmaW5lIAo+PiBKRVNEMjE2IFNGRFAK
-Pj4gQEAgLTE0NjEsNiArMTUyMSwxMCBAQCBpbnQgc3BpX25vcl9wYXJzZV9zZmRwKHN0cnVjdCBz
-cGlfbm9yICpub3IpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVyciA9IHNwaV9ub3Jf
-cGFyc2Vfc2Njcihub3IsIHBhcmFtX2hlYWRlcik7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGJyZWFrOwo+PiArwqDCoMKgwqDCoMKgwqAgY2FzZSBTRkRQX1NDQ1JfTUFQX01DX0lEOgo+
-PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlcnIgPSBzcGlfbm9yX3BhcnNlX3NjY3JfbWMobm9y
-LCBwYXJhbV9oZWFkZXIpOwoKd2hhdCBoYXBwZW5zIGlmIHlvdSBnZXQgYW4gZXJyb3IgaGVyZT8g
-V2lsbCB0aGUgZmxhc2ggd29yayBmaW5lIGp1c3QgZm9yCnRoZSBmaXJzdCBkaWNlIG9yIGl0IHdp
-bGwgbm90IHdvcmsgYXQgYWxsPwoKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+
-ICsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGRlZmF1bHQ6Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGJyZWFrOwo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgfQoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+
+
+On 08.02.2023 07:53, tkuw584924@gmail.com wrote:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> 
+> For multi-chip devices, we can use 512B page only when the all dice are
+> configured as 512B page size. Simple for-loop with params->num_of_dice can
+> check the CFR3V in each die. The volatile register address is calculated
+> inside the loop by using die number and volatile register offset.
+> 
+> The location of cypress_nor_set_page_size() call is moved from
+> post_bfpt_fixup() to post_sfdp_fixup(), because the number of dice and
+> volatile register offset are parsed after BFPT. The post_sfdp_fixup()
+
+No, this looks wrong.
+
+BFPT is the only mandatory table and should be sufficient to make any
+flash work (in the multi die case, just for the first die). All the
+other tables are considered optional. If we get an error when parsing
+BFPT we return an error, if we get an error in any optional table, we
+just print a warning and continue. So you should make sure that the
+flash works fine even if sccr_map_mc fails.
+
+> does not return error code so cypress_nor_set_page_size() prints error
+> message instead of returning error code.
+> 
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> ---
+>   drivers/mtd/spi-nor/spansion.c | 47 ++++++++++++++++++----------------
+>   1 file changed, 25 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+> index 12a256c0ef4c..7c533737d7c3 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -18,7 +18,7 @@
+>   #define SPINOR_REG_CYPRESS_CFR1_QUAD_EN		BIT(1)	/* Quad Enable */
+>   #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
+>   #define SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24	0xb
+> -#define SPINOR_REG_CYPRESS_CFR3V		0x00800004
+> +#define SPINOR_REG_CYPRESS_CFR3			0x4
+>   #define SPINOR_REG_CYPRESS_CFR3_PGSZ		BIT(4) /* Page size. */
+>   #define SPINOR_REG_CYPRESS_CFR5V		0x00800006
+>   #define SPINOR_REG_CYPRESS_CFR5_BIT6		BIT(6)
+> @@ -195,27 +195,34 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
+>    * The BFPT table advertises a 512B or 256B page size depending on part but the
+>    * page size is actually configurable (with the default being 256B). Read from
+>    * CFR3V[4] and set the correct size.
+> - *
+> - * Return: 0 on success, -errno otherwise.
+>    */
+> -static int cypress_nor_set_page_size(struct spi_nor *nor)
+> +static void cypress_nor_set_page_size(struct spi_nor *nor)
+>   {
+> +	struct spi_nor_flash_parameter *params = nor->params;
+>   	struct spi_mem_op op =
+> -		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
+> -					  SPINOR_REG_CYPRESS_CFR3V,
+> +		CYPRESS_NOR_RD_ANY_REG_OP(params->addr_mode_nbytes, 0,
+>   					  nor->bouncebuf);
+>   	int ret;
+> +	u8 i;
+>   
+> -	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
+> -	if (ret)
+> -		return ret;
+> +	/* Set to default page size */
+> +	params->page_size = 256;
+>   
+> -	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3_PGSZ)
+> -		nor->params->page_size = 512;
+> -	else
+> -		nor->params->page_size = 256;
+> +	for (i = 0; i < params->num_of_dice; i++) {
+> +		op.addr.val = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR3;
+
+in case sccr_map fails vreg_offset is zero here, you'll read garbage
+>   
+> -	return 0;
+> +		ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
+> +		if (ret) {
+> +			dev_err(nor->dev, "Failed to read page size configuration. Use default 256B.\n");
+> +			return;
+
+why did we consider a no-go error and exited in the past and now we just
+use a default config?
+
+> +		}
+> +
+> +		if (!(nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3_PGSZ))
+> +			return;
+> +	}
+> +
+> +	/* We reach here only when all dice are configured to 512B */
+> +	params->page_size = 512;
+>   }
+>   
+>   static int
+> @@ -226,7 +233,7 @@ s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
+>   	/* Replace Quad Enable with volatile version */
+>   	nor->params->quad_enable = cypress_nor_quad_enable_volatile;
+>   
+> -	return cypress_nor_set_page_size(nor);
+> +	return 0;
+>   }
+>   
+>   static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
+> @@ -251,6 +258,8 @@ static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
+>   			break;
+>   		}
+>   	}
+> +
+> +	cypress_nor_set_page_size(nor);
+>   }
+>   
+>   static void s25hx_t_late_init(struct spi_nor *nor)
+> @@ -312,13 +321,8 @@ static void s28hx_t_post_sfdp_fixup(struct spi_nor *nor)
+>   	 * actual value for that is 4.
+>   	 */
+>   	nor->params->rdsr_addr_nbytes = 4;
+> -}
+>   
+> -static int s28hx_t_post_bfpt_fixup(struct spi_nor *nor,
+> -				   const struct sfdp_parameter_header *bfpt_header,
+> -				   const struct sfdp_bfpt *bfpt)
+> -{
+> -	return cypress_nor_set_page_size(nor);
+> +	cypress_nor_set_page_size(nor);
+>   }
+>   
+>   static void s28hx_t_late_init(struct spi_nor *nor)
+> @@ -329,7 +333,6 @@ static void s28hx_t_late_init(struct spi_nor *nor)
+>   
+>   static const struct spi_nor_fixups s28hx_t_fixups = {
+>   	.post_sfdp = s28hx_t_post_sfdp_fixup,
+> -	.post_bfpt = s28hx_t_post_bfpt_fixup,
+>   	.late_init = s28hx_t_late_init,
+>   };
+>   
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
