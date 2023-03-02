@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9C14C6FA8E
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Mar 2023 06:42:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB49FC678D4
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Mar 2023 06:48:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tJCprhHnqtBWUDim6sZd2Rje7yJeicYKmnlRv5Lp3mQ=; b=AzmI36EMApCB73
-	TLiXosV590RwMdwyb3eNrXtDY9t4Byew/Ge2hyq4fJrGLgg9Ah/I8CRUdqRqH3IEu56KDnJIMKA+J
-	sfcg+5QFw+POxvPMaZJ4OyzNpKV6mj98yqs8iirSaP6P9KzwfDKe2tz9rIg2H2FWm6OPMexGOkGe5
-	oWDDbbDXT++rjndBEHHZygzQcoRU7DeeueutBxY8+zT7B2cTFzRT709mdp0iEWlirF+tR++VlBQI4
-	+rAf1S/6OKEO9dVg6qE34OObEbSXU2Nn5WetSkcElFEbMWSD3fm2M8HNY2E6QFEG6PxeKuCQrwkJu
-	ogHM4S8af8eLWQGQODGA==;
+	List-Owner; bh=5OXVxpzTv2DnlzR3w6y3iMsd9/Lm6HD9bnzMcfKbCWE=; b=mNXJfBogeN7tL5
+	5bD65X+c8CiNn0nvrMyUpeshmCgmAyfe5r4StsUSCMEBEfn8DMkPDZkQPTV4k8mKCn38LOvPCCx/P
+	mGpBDetPtLxsip7l2qzLQkSWULHi27vf99I99IXI6lVODrkDLqjI0kpP/0yl/cnK+4oq3KuJuLleX
+	PbRlYQKqD8/PDZd6G0aMkK4L22VpoK9FPjYI+vBmdeduJauS8CeEBg4X+OQxmEHBrorbxQSRu0f7s
+	UVGijseL0tQsGgqTLGhF7Oo0nHt/Dhc5d04scgWri3H9n44o9jBi+G1cebI+vIlpe9qH6lKKBf3ML
+	QpT5WuDoGD5r1hDBwQ+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXcdc-0012uP-Dh; Thu, 02 Mar 2023 06:42:00 +0000
-Received: from mail-ed1-x535.google.com ([2a00:1450:4864:20::535])
+	id 1pXck6-0013pp-Gy; Thu, 02 Mar 2023 06:48:42 +0000
+Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXcdZ-0012sz-Fj
-	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2023 06:41:58 +0000
-Received: by mail-ed1-x535.google.com with SMTP id eg37so63366955edb.12
-        for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2023 22:41:55 -0800 (PST)
+	id 1pXck2-0013pB-N2
+	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2023 06:48:40 +0000
+Received: by mail-ed1-x534.google.com with SMTP id f13so63568350edz.6
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2023 22:48:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1677739314;
+        d=linaro.org; s=google; t=1677739715;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qrvWbUkFg6M3i4StPsZDInyKYzYlqynbXskR5F0DAqY=;
-        b=Lgt4hBrb16XcH9ikobusXxqSRAsXzzZrH9FwMBx6P5S6BK400OukDGhbks6y2aWiiD
-         VugNQDxoh91qUh2p0uhECVXqtCsy+Z4gth4pQorTVAs3RX0wdi92pPZuQSZ/7d2FESgb
-         cCXIXJDHhTz2RVG7vxsL7sdrw1OdlxK9UnCWrzrTIrHHAcolyLo1ji1a2QmZgubL8LzY
-         0HAnXVVnv6l+1qFec0zckIFcJw0QNR7l3+Qh0HPFGLGON0xGlhFSjw2L2+LHs7MZFRWV
-         2MYtRiAHN1yGDzJjyixeSi27VoKcZLrte4IJ9P7lSijpXKdDbF6hTVG9iCybbhO0+EkJ
-         ah9g==
+        bh=+1nPB4vOkBUw8ToSzdQ00DgnuHTl/myS9AiY/9rEggw=;
+        b=Y+m2lfskttKESbExwqAS6wiDYhmP7BlWsEVJB9UB6c4W+unPrurw0Q2obf6S6vKZBr
+         o7sHxqrqjr95gzxuuX0H79BmPP4ynabq4h8f/CKVXMf56Q5f9tLmoz0oh4WK6vo93ywV
+         aV7AyF1rAptQJtWDUSyrsAzi1zAlfLM2Yq60lR4BaKMXPKd/ZjiFF+xSgwTdpYhy+t6R
+         N6gGJHX1N7bYHtYEgamNXpYnQb1dHWXIz4lnyew0pE+MFtb+TD3jl0O9qtUvmcAnIKuU
+         qCeC0AIKy8mQ7wK10pqXFMs0WAqnMPTqgWefsj+KcT5W4uzDSA16xkRjfabGcV3lX//n
+         jCWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677739314;
+        d=1e100.net; s=20210112; t=1677739715;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qrvWbUkFg6M3i4StPsZDInyKYzYlqynbXskR5F0DAqY=;
-        b=sB/WpCG2zxsyGme/hp2xvcqAR/JyX/foz+t3yyV+yzxAlFpASjgoX3y2/1vMSmTWzn
-         zsGXBGLIzslfx37Zx016ideIPVMeBTecN9L6eAZ4VJbGiSMaoH+g2RGRvnQFQpCSsMez
-         EVUDatUP3GpoleRzPy7B/mRAMFH55oLWwv6hMbUURjS0PvQJ4wTQ5SaiWFYcLFXy8/SP
-         sFZvbsuVoLINdTZqv1riO+9ooAGYUngx2myg1hDRbM1EXMQ1HMc/oAWsRozSSt4rf8sS
-         KurUh8rvrZIwsWv7/jJjNTDRU03mmek/C7LS/Q43Tq1ht8u9MUcIqaCSp7sZ5gpFUy1m
-         /N8w==
-X-Gm-Message-State: AO0yUKVI6bM6PZKfO4DAd+Ki0P0vNm6CRzaO/yD5N/wChmwF0ineV7nS
-	pF1NnCxyF198V6/WYv4Es2d6Hg==
-X-Google-Smtp-Source: AK7set/SzQvhkJXd/IYsYmt1lQVLtSIGYt5T2Lk5iQt3AkKaMuHjkclghISAMsLV2admkHKovSIPag==
-X-Received: by 2002:a17:907:3e0d:b0:8af:2107:6ce5 with SMTP id hp13-20020a1709073e0d00b008af21076ce5mr11940559ejc.35.1677739314509;
-        Wed, 01 Mar 2023 22:41:54 -0800 (PST)
+        bh=+1nPB4vOkBUw8ToSzdQ00DgnuHTl/myS9AiY/9rEggw=;
+        b=KIT1P6edtIFxTeAGzLstlSJ2xSy2cdJSWxdOJWHQwhxoOj3aUaeF3slVhXLTHGZbM9
+         z68G8tmeZvjUQt+/sMFKAaSIzyo307rTNWqvMvCgsQGsdGJljbTL7LMISeamBP8CmZHd
+         J7f3A7NuOiLmUSlUQ8yYViq5FisjfXtQEsLgvJ3r38mckdxZbr+AKKW1GXTXiTHA3CQk
+         L+/b4ahefnyDsycimVAtZqW20ef+XY42a+JPYVUgTBfe8QedFFgZNbTYyivHx4IwfJZ2
+         2QoW90xA36hBKSPLjYpQJUJZ58/CpFh1jRHJEMkDrQtTGdRjhq4NhbuSgULQeCoHGZmN
+         HfOw==
+X-Gm-Message-State: AO0yUKUX8tKBA9sKtX8KqoVXSHnNRIC71y5FtZysUUdy8BupIzaMq1DU
+	AEjX+IzAQVE026017nq13aEu7A==
+X-Google-Smtp-Source: AK7set+HZNrdgaTTU0ui9LA273R21UUt2xYL+eRtO3lVsxa7rp+Wc951hK7anAPUkkGnrHhtc/oy3Q==
+X-Received: by 2002:a17:906:1991:b0:87e:a34b:9e2b with SMTP id g17-20020a170906199100b0087ea34b9e2bmr8599886ejd.28.1677739714860;
+        Wed, 01 Mar 2023 22:48:34 -0800 (PST)
 Received: from [192.168.0.173] ([79.115.63.78])
-        by smtp.gmail.com with ESMTPSA id c12-20020a50f60c000000b004bc607d433bsm1532026edn.62.2023.03.01.22.41.53
+        by smtp.gmail.com with ESMTPSA id n15-20020a5099cf000000b004aef147add6sm6456081edb.47.2023.03.01.22.48.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Mar 2023 22:41:54 -0800 (PST)
-Message-ID: <fc43d34e-86d5-2151-7d77-2e0fab7e303e@linaro.org>
-Date: Thu, 2 Mar 2023 08:41:52 +0200
+        Wed, 01 Mar 2023 22:48:34 -0800 (PST)
+Message-ID: <05590349-64cb-da8b-c7b9-41b5ec9ed27a@linaro.org>
+Date: Thu, 2 Mar 2023 08:48:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [PATCH v2 7/8] mtd: spi-nor: spansion: Set
- params->addr_mode_nbytes = 4 for multi-die parts
+Subject: Re: [PATCH v2 1/8] mtd: spi-nor: core: Introduce number of dice and
+ volatile register offset params
 Content-Language: en-US
 To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
 Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
  richard@nod.at, vigneshr@ti.com, Bacem.Daassi@infineon.com,
  Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 References: <cover.1675835253.git.Takahiro.Kuwano@infineon.com>
- <9006f197a4f0f287efaef77a8ff0935d5d7833fb.1675835253.git.Takahiro.Kuwano@infineon.com>
+ <97e4456016d31567649e2a99d6d4daff7ed90e4a.1675835253.git.Takahiro.Kuwano@infineon.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <9006f197a4f0f287efaef77a8ff0935d5d7833fb.1675835253.git.Takahiro.Kuwano@infineon.com>
+In-Reply-To: <97e4456016d31567649e2a99d6d4daff7ed90e4a.1675835253.git.Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_224157_615906_4FEB59CC 
-X-CRM114-Status: GOOD (  10.69  )
+X-CRM114-CacheID: sfid-20230301_224838_811255_DC468B17 
+X-CRM114-Status: GOOD (  19.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,25 +100,60 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On 08.02.2023 07:53, tkuw584924@gmail.com wrote:
 > From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 > 
-> The params->addr_mode_nbytes is set to 3 during BFPT parse in case of
-> BFPT_DWORD1_ADDRESS_BYTES_3_OR_4. Infineon SEMPER multi-chip devices are
-> in 3- or 4-byte address mode by factory default, depending on model number.
+> In use of mult-chip devices, we need to access registers in each die for
+> configuration and status check. The number of dice in the device and
+> volatile register offset for each die are essential to iterate register
+> access ops.
+> 
+> The number of dice must be initialized as 1 and may be updated through
+> SFDP parse.
+> 
+> The volatile register offset table is dinamically allocated based on
+> the number of dice then filled with offset values collected from SFDP.
+> 
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> ---
+>   drivers/mtd/spi-nor/core.c | 1 +
+>   drivers/mtd/spi-nor/core.h | 4 ++++
+>   2 files changed, 5 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index b500655f7937..f18be6283740 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2576,6 +2576,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+>   	params->writesize = 1;
+>   	params->size = (u64)info->sector_size * info->n_sectors;
+>   	params->page_size = info->page_size;
+> +	params->num_of_dice = 1;
+>   
+>   	if (!(info->flags & SPI_NOR_NO_FR)) {
+>   		/* Default to Fast Read for DT and non-DT platform devices. */
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index f6d012e1f681..c876ece62f13 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -349,6 +349,8 @@ struct spi_nor_otp {
+>    *			in octal DTR mode.
+>    * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
+>    *			command in octal DTR mode.
+> + * @num_of_dice:	number of dice in the flash memory.
+> + * @vreg_offset:	volatile register offset for each die.
+>    * @hwcaps:		describes the read and page program hardware
+>    *			capabilities.
+>    * @reads:		read capabilities ordered by priority: the higher index
+> @@ -381,6 +383,8 @@ struct spi_nor_flash_parameter {
+>   	u8				addr_mode_nbytes;
+>   	u8				rdsr_dummy;
+>   	u8				rdsr_addr_nbytes;
+> +	u8				num_of_dice;
 
-are the models differentiated by unique IDs?
+ndice maybe?
 
-> 3-byte address mode is for backward compatibility for some SoCs. Since we
-> cannot access to registers in 2nd die by 3-byte addressing. We assume post
-> BootRom programs change the address mode to 4 before hand-off.
-
-no, we can't make this assumption. The only assumption that we may
-accept is that the flash is at the factory default settings. But this is
-fragile too, because one can configure the flash in a non volatile way
-and change the factory default settings. You can't add support for
-flashes that come with 3 byte address mode by default without
-discovering the address mode at run-time.
-
-Cheers,
-ta
+> +	u32				*vreg_offset;
+>   
+>   	struct spi_nor_hwcaps		hwcaps;
+>   	struct spi_nor_read_command	reads[SNOR_CMD_READ_MAX];
 
 ______________________________________________________
 Linux MTD discussion mailing list
