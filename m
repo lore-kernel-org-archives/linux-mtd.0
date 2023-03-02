@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BDA6C6FA8E
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Mar 2023 07:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 009B9C7EE32
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Mar 2023 07:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G04aR734yutKMxdhAmIOYb1pPkSHbQyWyUjyle9iTso=; b=meGJ2q2wPY75RT
-	yz8dmhzaVfKZlBJILGcoOGceFfvmCdf2DBp2Paz+5RZ7mDEK24eLp0S1uaroAklM5NJ68n0y+GCCF
-	TS1c6xZb7QDCKLYPQybmYuv7RkFz+gK6hHNSNq/rElp2eRGGlJUmV6vKJIeHUdtQee38xO+pStRGd
-	XeQufERha/reObLfZ9jh1XrQCWZ5FFhBjH10WQS99YguADx676d5ZnKN7I71UvmqcRRTh+boSa2iB
-	bMgWTfn863HGdoySP0Rsyfh/o0ZrEk88aDweQdmB5SnoPKYGPkdUg8y6+sQd3A6AfpaeX66cMsgL2
-	3vIC6Ypx1poku/Q2xx+A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HkfXC4PSr+ZI9hR/S+cVE0HXln8BADFRlsQCJpERweM=; b=HGn329q2moNxA9
+	chOulO9lD3fPXHYa8iwDzN05WAp3lRgchnDKp7jwJUc58l6oGryke0pBCXX7CV3hipEaTDLB4N2bp
+	KHKChSg7UIZaM2UfAjKfGLu9oFqv4Vs1q1gjRxZYsMNyWFDqW92+ZCIYB1IqtyndbuaJn7ZMeGJJg
+	WHTbmaaRu21sIejvTLqPn9UAAg08JzM5M+iLtNtICu42VyXI7zZNHiyqC6ulgc7MXqtWarn25OEva
+	UxFyaV3vc/x30YmDP3ohV9VujhO/2XUJvCZFqHxLaUNMrLHDTEGKgKiM7jn5qC2vxfOGvs+UknRJf
+	XSc9MDeAoJ8RAcfuHdjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXdTL-0019A3-6q; Thu, 02 Mar 2023 07:35:27 +0000
-Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
+	id 1pXdTJ-00199h-KG; Thu, 02 Mar 2023 07:35:25 +0000
+Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXdTG-00198m-R0
-	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2023 07:35:24 +0000
-Received: by mail-pf1-x434.google.com with SMTP id u20so9521314pfm.7
-        for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2023 23:35:21 -0800 (PST)
+	id 1pXdTF-00198M-Q1
+	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2023 07:35:23 +0000
+Received: by mail-pj1-x1033.google.com with SMTP id bo22so4400907pjb.4
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2023 23:35:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bac/RpBXYVxnDqXNA3EgO2xm1b59XlFbCd7Xvwt5ZTo=;
-        b=Q7DVeBXwzA7EjhBDmaDm2/G77bRKpoPCAL55Y9HPWfu4wSmuS83liGyw69KN6k8bCS
-         IoXuD5kLLXyKkAK/nD3+SkMv3qITq+ri6RWIJqOuDnlPReUoo4dF3Uf9Cp3UaLJYlVb5
-         0Kf8mYF8BdA1oZTPmhxIcKCW2If22aDHKC967N9M97QX1zLGJQvqi5OHMpm1GQXDqp21
-         JAsPPAbF4wnA/GVRZMzSbTumRAegArdopRe1ty3CYECSp6gH6YEIid6vPhNwq4yQvkcL
-         OKFuD5Kuh4DcIflfQlpqAIJ5PTyA6U0dHyAbV9oFD8TO9FdeRXpH2WjccE232lBhkg5S
-         UDNQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3SSO0/IlnMwYCcbwBxRHcp8VmWtK9hXGTYgr9zTy1u4=;
+        b=kIKAAsFyvUkkYm0HB0NzBs0/lWeGyv29Xpcr9FBpNJnDrAtqryH2QW8uHiSoSTQIwG
+         4I2EfyNgdeKLUWt/4Tvl9zCrOCA3psh/fN+o6+PnooCdcei9G3LAMerB2ntCCa8TOvJZ
+         MbToWX84iTSW0anG6R2WR8tSf2m+CcuNdwyizJTjG0p0CPcc0EbPcshK19/rbpClcsML
+         /IFryivunvbH94Aq2/sp2iTlYTvTrNlRCqNeP8BZsSIVhbx/3C387Mx/brsJmIX/mPoX
+         Z2j60q2JyEJi4qNZX9gxS/vdb0AfRaY3GiN4evyDVBnBqNP+oWqDmzCocl01obnXmZhf
+         suUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bac/RpBXYVxnDqXNA3EgO2xm1b59XlFbCd7Xvwt5ZTo=;
-        b=R7QPGoQ+KFRajptNyqi6Oum/KRc2ZLJqxDR83nPQpCF0C8e9Kv0WyRHVJ/FBJYemOn
-         /xHlAyZEOq9nN5NQ7o7rhAUVWdtjz7ZU6N50U/ow9nzyGPXWcIb6ie4PYT7zzmTJ3Ghp
-         3q1VYYxlKt9FBIp+THWlQjWUJqJyMqyYQ1kAPJCoy58rDXCwSGWFqXAVBhRlIVs30SR1
-         jUMAdpQN7VcNpIjFj1roXE/cu9hftlsgfsVQebnJOPS3pP2GhJsubuLckZKq6vc39JTL
-         c7BMfSLwdy8x0JlEZm+Sw/IyYH+z2ebbXtzxPTVMc/AEQpv7ierojqaleocNvVjxLNDD
-         UdxA==
-X-Gm-Message-State: AO0yUKUD0v58lgiaKTu4kkq/ZUK9VlIJh3rZHF4sW/7rmFpCpqEYTzRu
-	vtTnfN5QdiAnA81Be0iOb29fzE022Xvy1A==
-X-Google-Smtp-Source: AK7set82Cpbyd1YQ+k4l4oUcguYJJJxyYPz4yzMFRIHmKwgiGGgx4ZYO0aqVnYtexc35ewMbcsByZQ==
-X-Received: by 2002:a62:1c0a:0:b0:60a:dc94:5d19 with SMTP id c10-20020a621c0a000000b0060adc945d19mr2476008pfc.33.1677742521047;
-        Wed, 01 Mar 2023 23:35:21 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3SSO0/IlnMwYCcbwBxRHcp8VmWtK9hXGTYgr9zTy1u4=;
+        b=Zk6KbBwEMvNFpx0rPXMqJX7vnllPchsoepPUAnLlmds0FvOa6zGkYaz4OnPVT2YAMX
+         o+LbkZ141wPaZ5ojdIk+1pJvtGZyut0iAZN5q4OwZKB+GakaeaIQCp7ak3GFaQ6kg0Xo
+         FhKs/zmQgjAffkCIpIWAXKmRHd2Cf0JO3Jk48uyzr5QsYCtV/b3FO/WTnS0tpyNmrSFH
+         qKPqd2j6eEnEgYxbXB+ZIVn8BBLQ62RzG8mCNt62w6JIO9iKEa5YMLb+BuS1z7atP70Z
+         Lja0+YPs9cte03MaVYEodUOuvgOKFQQNC0XBYGvR1NJKqfD+s0FXWs5qx11jecKe1YfH
+         6R6A==
+X-Gm-Message-State: AO0yUKVrGbz6fg7GMkdC9u1ECbBFNCOZLraCXpcIWLIkSqWIc99jQFnw
+	+VXqm53CaTDfLrb5MfWFRGGBzGqcgC6BUg==
+X-Google-Smtp-Source: AK7set+HR92DSBrxar4DV+voZYNFzTSwOerCFLjckQSo2qVx/zrUdMemHbm4pLhD75Hx6O894yZHSQ==
+X-Received: by 2002:a05:6a20:440d:b0:cd:aaa:59e6 with SMTP id ce13-20020a056a20440d00b000cd0aaa59e6mr13480800pzb.51.1677742517373;
+        Wed, 01 Mar 2023 23:35:17 -0800 (PST)
 Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id v26-20020a62a51a000000b005a8e9e2f1c5sm9085898pfm.187.2023.03.01.23.35.17
+        by smtp.gmail.com with ESMTPSA id v26-20020a62a51a000000b005a8e9e2f1c5sm9085898pfm.187.2023.03.01.23.35.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Mar 2023 23:35:20 -0800 (PST)
+        Wed, 01 Mar 2023 23:35:16 -0800 (PST)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -70,18 +69,16 @@ Cc: tudor.ambarus@microchip.com,
 	pratyush@kernel.org,
 	michael@walle.cc,
 	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v3 1/2] mtd: spi-nor: spansion: Make RD_ANY_REG_OP macro take number of dummy bytes
-Date: Thu,  2 Mar 2023 16:35:06 +0900
-Message-Id: <03756e9e3ac41d2016a71d2afb702398dd0b19ed.1677557525.git.Takahiro.Kuwano@infineon.com>
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v3 0/2] mtd: spi-nor: spansion: Add support for Infineon S25FS256T
+Date: Thu,  2 Mar 2023 16:35:05 +0900
+Message-Id: <cover.1677557525.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1677557525.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1677557525.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_233522_915777_96CDCD73 
-X-CRM114-Status: GOOD (  12.31  )
+X-CRM114-CacheID: sfid-20230301_233521_907780_DBEA69BE 
+X-CRM114-Status: UNSURE (   8.44  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,61 +97,57 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Currently Read Any Register op is used to read volatile registers without
-any dummy cycles, but the op requires dummy cycles depending on register
-type (volatiler or non-volatile), device family, and device configuration.
-Add 'ndummy' argument to RD_ANY_REG_OP macro to support other use cases.
+Infineon S25FS256T is 256Mbit Quad SPI NOR flash. This series updates
+RD_ANY_REG_OP macro to support dummy cycles and then adds ID and fixups
+for S25FS256T.
 
-Suggested-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/spi-nor/spansion.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25fs256t
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342b190f0890
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080101ff00000114000100ff84000102500100ffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe7ffe2ffffffff0f48eb086bffff
+ffffeeffffffffff00ffffff00ff11d810d800ff00ff321cfeff71e9ffe1
+ec031c607a757a75f766805c00d65dfff938c0a100000000000000000000
+0000ffffffff710600fedcdcffff
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+13ecce2f195c4c71648e90d4a7e4a0df  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+random: crng init done
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 3.200008 seconds, 1.9MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+3b47256fecc997f606d7e75e6a9b567a8e8037c1  qspi_test
+3b47256fecc997f606d7e75e6a9b567a8e8037c1  qspi_read
+---
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 12a256c0ef4c..9faab29aba57 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -37,10 +37,10 @@
- 		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
- 
--#define CYPRESS_NOR_RD_ANY_REG_OP(naddr, addr, buf)			\
-+#define CYPRESS_NOR_RD_ANY_REG_OP(naddr, addr, ndummy, buf)		\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 0),		\
- 		   SPI_MEM_OP_ADDR(naddr, addr, 0),			\
--		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
- 		   SPI_MEM_OP_DATA_IN(1, buf, 0))
- 
- #define SPANSION_CLSR_OP						\
-@@ -148,7 +148,7 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
- 
- 	op = (struct spi_mem_op)
- 		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR1V,
-+					  SPINOR_REG_CYPRESS_CFR1V, 0,
- 					  nor->bouncebuf);
- 
- 	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-@@ -173,7 +173,7 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
- 	/* Read back and check it. */
- 	op = (struct spi_mem_op)
- 		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR1V,
-+					  SPINOR_REG_CYPRESS_CFR1V, 0,
- 					  nor->bouncebuf);
- 	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
- 	if (ret)
-@@ -202,7 +202,7 @@ static int cypress_nor_set_page_size(struct spi_nor *nor)
- {
- 	struct spi_mem_op op =
- 		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR3V,
-+					  SPINOR_REG_CYPRESS_CFR3V, 0,
- 					  nor->bouncebuf);
- 	int ret;
- 
+Takahiro Kuwano (2):
+  mtd: spi-nor: spansion: Make RD_ANY_REG_OP macro take number of dummy
+    bytes
+  mtd: spi-nor: spansion: Add support for Infineon S25FS256T
+
+ drivers/mtd/spi-nor/spansion.c | 70 +++++++++++++++++++++++++++++++---
+ 1 file changed, 65 insertions(+), 5 deletions(-)
+
 -- 
 2.25.1
 
