@@ -4,54 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CC0DC61DA4
-	for <linux-mtd@archiver.kernel.org>; Sat,  4 Mar 2023 02:32:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04092C678D5
+	for <linux-mtd@archiver.kernel.org>; Sat,  4 Mar 2023 05:09:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=pD/gUR5e2FbtkJ+5Be6CZRb2yHTjeMsM2jf+R1UAUUU=; b=Pfyq8I+0ZXldPpQ55u/4mIK9to
-	Lk8TpIoI98kiuGlyKytsqSEivZvwcTr1SNEMXIChtAwa7it7xvKPpMHpkHzXmPQYT2JEBnJPRGsUA
-	AYHJxsOB6D/IgYlxexPDiZgjfgrXXCPwbUKVh5JCNBZC+L52Aa4X0jFeV5mnHGB6Mkn2xqIZbj8Da
-	P2g0Q9GyfUCoFwC2THbBcRkH/4/HHRwR2VOb2yAsDMw8qtCp8qLVHhm7YYv1qD2z49qz/QD5AOKQf
-	nYqTOTjXW8K+vojUrw5T3cGsjXBLIyU+GyiM4wNeVI9fUTiIwGrhn+auLDdl80xX+Sa/IJXYzNEiS
-	/LJLDGtQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1cNnRmoGHRgVnY+tER8SduOLoATkUUnm/Ue98ebkeAY=; b=lweqUpNPEl4ygM
+	f2VZT+RLxTS8ZKKgBVFddtOcGX/Ob/yWAF30v+Gka9oD2mBPWJUHZ8k4mHAn9KE6pqKj0zhORgPAv
+	BFAWDW5sx2GoYQo2e9LwlTMyjz13GV1H4+T3YkZOuiUknpo/mhOTEXllR6vQWZiCDH4O5UVvj2f62
+	3E9OaJ9PZcGyJVEuXV/0xTs8iqUpkbWyGIKsH7yYxoVwrHJlLQjrTxMjMNRENgVRq0EpSsVXuWKtm
+	8mnENCC0kdPpsbabvPLcwAwUhEelYyfT+leXHEAL+0I45M5VvHe+KShUh2XD557Xv2OWFlZNLdoEc
+	/3lfwQeLKq7MUd/UDgjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pYHh4-008AW8-Ug; Sat, 04 Mar 2023 02:32:18 +0000
+	id 1pYK8D-008Khi-Mx; Sat, 04 Mar 2023 05:08:29 +0000
 Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pYHh1-008AVY-KU
-	for linux-mtd@lists.infradead.org; Sat, 04 Mar 2023 02:32:17 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.54])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PT81G5XW1z16NjP;
-	Sat,  4 Mar 2023 10:29:22 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Sat, 4 Mar 2023 10:32:04 +0800
-Subject: Re: [PATCH] ubi: Fix deadlock caused by recursively holding work_sem
-To: ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
-	<miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>
-References: <20230304014141.2099204-1-wangzhaolong1@huawei.com>
+	id 1pYK8A-008Kg7-2H
+	for linux-mtd@lists.infradead.org; Sat, 04 Mar 2023 05:08:28 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.53])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4PTCTZ1rDLz16P79;
+	Sat,  4 Mar 2023 13:05:38 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Sat, 4 Mar
+ 2023 13:07:43 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <2d3b033a-5329-be95-fe38-2cceb17b9014@huawei.com>
-Date: Sat, 4 Mar 2023 10:32:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
+	<george.kennedy@oracle.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH] ubi: Fix failure attaching when vid_hdr offset equals to (sub)page size
+Date: Sat, 4 Mar 2023 13:30:56 +0800
+Message-ID: <20230304053056.403325-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20230304014141.2099204-1-wangzhaolong1@huawei.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230303_183215_892422_3C52706A 
-X-CRM114-Status: GOOD (  19.32  )
+X-CRM114-CacheID: sfid-20230303_210826_312536_FF158F85 
+X-CRM114-Status: GOOD (  10.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,65 +60,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> During the processing of the bgt, if the sync_erase() return -EBUSY
-> or some other error code in __erase_worker(),schedule_erase() called
-> again lead to the down_read(ubi->work_sem) hold twice and may get
-> block by down_write(ubi->work_sem) in ubi_update_fastmap(),
-> which cause deadlock.
-> 
->            ubi bgt                        other task
->   do_work
->    down_read(&ubi->work_sem)          ubi_update_fastmap
->    erase_worker                         # Blocked by down_read
->     __erase_worker                      down_write(&ubi->work_sem)
->      schedule_erase
->       schedule_ubi_work
->        down_read(&ubi->work_sem)
-> 
-> Fix this by changing input parameter @nested of the schedule_erase() to
-> 'true' to avoid recursively acquiring the down_read(&ubi->work_sem).
-> 
-> Also, fix the incorrect comment about @nested parameter of the
-> schedule_erase() because when down_write(ubi->work_sem) is held, the
-> @nested is also need be true.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217093
-> Fixes: 2e8f08deabbc ("ubi: Fix races around ubi_refill_pools()")
-> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
-> ---
->   drivers/mtd/ubi/wl.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+Following process will make ubi attaching failed since commit
+1b42b1a36fc946 ("ubi: ensure that VID header offset ... size"):
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> 
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 40f39e5d6dfc..26a214f016c1 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -575,7 +575,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
->    * @vol_id: the volume ID that last used this PEB
->    * @lnum: the last used logical eraseblock number for the PEB
->    * @torture: if the physical eraseblock has to be tortured
-> - * @nested: denotes whether the work_sem is already held in read mode
-> + * @nested: denotes whether the work_sem is already held
->    *
->    * This function returns zero in case of success and a %-ENOMEM in case of
->    * failure.
-> @@ -1131,7 +1131,7 @@ static int __erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk)
->   		int err1;
->   
->   		/* Re-schedule the LEB for erasure */
-> -		err1 = schedule_erase(ubi, e, vol_id, lnum, 0, false);
-> +		err1 = schedule_erase(ubi, e, vol_id, lnum, 0, true);
->   		if (err1) {
->   			spin_lock(&ubi->wl_lock);
->   			wl_entry_destroy(ubi, e);
-> 
+ID="0xec,0xa1,0x00,0x15" # 128M 128KB 2KB
+modprobe nandsim id_bytes=$ID
+flash_eraseall /dev/mtd0
+modprobe ubi mtd="0,2048"  # set vid_hdr offset as 2048 (one page)
+(dmesg):
+  ubi0 error: ubi_attach_mtd_dev [ubi]: VID header offset 2048 too large.
+  UBI error: cannot attach mtd0
+  UBI error: cannot initialize UBI, error -22
+
+Rework original solution, the key point is making sure
+'vid_hdr_shift + UBI_VID_HDR_SIZE < ubi->vid_hdr_alsize',
+so we should check vid_hdr_shift rather not vid_hdr_offset.
+Then, ubi still support (sub)page aligined VID header offset.
+
+Fixes: 1b42b1a36fc946 ("ubi: ensure that VID header offset ... size")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mtd/ubi/build.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 0904eb40c95f..677e809526d2 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -666,12 +666,6 @@ static int io_init(struct ubi_device *ubi, int max_beb_per1024)
+ 	ubi->ec_hdr_alsize = ALIGN(UBI_EC_HDR_SIZE, ubi->hdrs_min_io_size);
+ 	ubi->vid_hdr_alsize = ALIGN(UBI_VID_HDR_SIZE, ubi->hdrs_min_io_size);
+ 
+-	if (ubi->vid_hdr_offset && ((ubi->vid_hdr_offset + UBI_VID_HDR_SIZE) >
+-	    ubi->vid_hdr_alsize)) {
+-		ubi_err(ubi, "VID header offset %d too large.", ubi->vid_hdr_offset);
+-		return -EINVAL;
+-	}
+-
+ 	dbg_gen("min_io_size      %d", ubi->min_io_size);
+ 	dbg_gen("max_write_size   %d", ubi->max_write_size);
+ 	dbg_gen("hdrs_min_io_size %d", ubi->hdrs_min_io_size);
+@@ -689,6 +683,21 @@ static int io_init(struct ubi_device *ubi, int max_beb_per1024)
+ 						ubi->vid_hdr_aloffset;
+ 	}
+ 
++	/*
++	 * Memory allocation for VID header is ubi->vid_hdr_alsize
++	 * which is described in comments in io.c.
++	 * Make sure VID header shift + UBI_VID_HDR_SIZE not exceeds
++	 * ubi->vid_hdr_alsize, so that all vid header operations
++	 * won't access memory out of bounds.
++	 */
++	if ((ubi->vid_hdr_shift + UBI_VID_HDR_SIZE) > ubi->vid_hdr_alsize) {
++		ubi_err(ubi, "Invalid VID header offset %d, VID header shift(%d)"
++			" + VID header size(%lu) > VID header aligned size(%d).",
++			ubi->vid_hdr_offset, ubi->vid_hdr_shift,
++			UBI_VID_HDR_SIZE, ubi->vid_hdr_alsize);
++		return -EINVAL;
++	}
++
+ 	/* Similar for the data offset */
+ 	ubi->leb_start = ubi->vid_hdr_offset + UBI_VID_HDR_SIZE;
+ 	ubi->leb_start = ALIGN(ubi->leb_start, ubi->min_io_size);
+-- 
+2.31.1
 
 
 ______________________________________________________
