@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45C76C61DA4
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Mar 2023 12:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15951C678D4
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Mar 2023 12:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ptuWMhPvTbbWenM8ZR9ZW9bnnjRdiFsfPeBE7+BE0nE=; b=VxD2Udv5q8Jxec
-	lprOUHyXalg7UdswzIqUnNd+JY+y5HFA3narCEHPFPdpm9OY5o3A75o3ZGlcwTGL0wJe/Pv4JeLhf
-	KAc/AvMmlfzOb19PkaASGk+yTq1nHpJSacfWm93Lnlt9MSEV/q75BYAd0yE+wnCf0K6R62GAJkKi0
-	UXzk+vpaIF+gKxQQCB8nDHa4HTrXyf4jeeEARUdDpPnObEFdfqfzpGegAPq9VIv81alClaT9umrv/
-	/QJ7NN15tOXNtBSL74A9X/g4rWycFD3NpNTpZ0ayuQRuxcU394qoTkGphAvv4yHjoEz9R+htzaeMG
-	mjTGftd2Q36ltXpSyFLA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=F4EoUNTGBt40FPXkE/jsfbOwxiD4FxTNSrHVS5A6r0s=; b=f/0d9mlNVcrkay
+	A2to8dAWqzMyttjYPsqI1/52rarXGkkn2vqbLFBZDgJMLrIZ6GUt+f3mEvNSBwdwgZNRUxxsP4UlR
+	PM4xrmigqa5cwFyqGRteDk6kYsLGIHWATiSNs4dYM3fSd6kWuN03x0tQeuN7QM6VRKQnExb5U613n
+	9bRh1EfFp2IwgHLRPunAIVtXmQh6VX0/2B5RD+HxB5czry9oGtxhN8iLZ1acRhTs3GQ/Gj0isgdPg
+	U96NOgbd0WVzdeP8cx15ZBndNYqbLlRUV6S+mKO70T5oJ9z3ocn0q8ninTKp0HpUa6t5RJ3Y3xFjV
+	kCOnQbNTRxbsrglXRkeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZAQB-00Cm4s-Dn; Mon, 06 Mar 2023 12:58:31 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1pZAQE-00Cm5u-FA; Mon, 06 Mar 2023 12:58:34 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZAQ7-00Cm2s-Ak
-	for linux-mtd@lists.infradead.org; Mon, 06 Mar 2023 12:58:29 +0000
+	id 1pZAQ7-00Cm2k-Ht
+	for linux-mtd@lists.infradead.org; Mon, 06 Mar 2023 12:58:31 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 3E19C166A;
-	Mon,  6 Mar 2023 13:58:20 +0100 (CET)
+	by mail.3ffe.de (Postfix) with ESMTPSA id D7E6D100;
+	Mon,  6 Mar 2023 13:58:17 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1678107500;
+	t=1678107498;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VjUKX8vcOHRxfuq1rLlQX2Q888LcQ64xmxe+6S+e/IE=;
-	b=remoxRjffuVdFV7RP3A/DnTRNbgpNuzcP3/5Mg9FRfPXhjxTQZ50iPuDU7OZnQcfHyZ7zO
-	9E7JrxIJIKD7pqQim7XtEAG+cO3qoXl3QzBIxSExnODOS2nuzneBbUL8Z35SobE49Eik7+
-	ry9Ino+B/stNJLhVunGZmd6t+JJVAsfqqefv6K/tixr06EYzbzuwfxvqI1yvBHI/Zlhgtz
-	Y6uNyLjCduevVlEnmfGrCoib/8UiZ+qK+YiMSRDCcaDCp75kLJBg4ltLf0zjAeSKb5oK4B
-	dIdBBn5Zk4La6lL4Lj/8CTrMQVvXmJ9P970akTIj2U3/eVVBg5pyf1r23rvDWQ==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=felfT43D0ByEEC43Rq1xqotzNKKcG2VF+lRhbg02WB4=;
+	b=tgaP+NM0dhhp7GXFV8BWTt6vnZLjr1w+1W/5++uBU3EwNELH8TA/dSk8nEjPE7hC3vvvxV
+	xbADrut9+vZU3+IEgKrhA+DFgS52V98rRBEtFn2AumZX+b3sLMpowctuF45agryOrcwb0j
+	Sb7fNhecL0+AmyBRFj+tcx/2EGLu4N0DXl9xfDa8qjbniCuD7rZZZXiHDDeckY2xuv/2VW
+	TNUzuwazhSNsxkH5RuJqdv71mgPVF1Eqlul+RjJo6GJtj2rqp4T9MeIybpjy9y9sz0yeIN
+	AvF88gzzRDul1iVPKJ2w+dI2iwVV7eaSkUrh4hVju4W6cZX/+9UjD39RETt4aw==
 From: Michael Walle <michael@walle.cc>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Michael Walle <michael@walle.cc>
-Subject: [PATCH 4/4] mtd: core: prepare mtd_otp_nvmem_add() to handle -EPROBE_DEFER
-Date: Mon,  6 Mar 2023 13:58:05 +0100
-Message-Id: <20230306125805.678668-4-michael@walle.cc>
+	Michael Walle <michael@walle.cc>,
+	stable@vger.kernel.org
+Subject: [PATCH 1/4] mtd: core: provide unique name for nvmem device, take two
+Date: Mon,  6 Mar 2023 13:58:02 +0100
+Message-Id: <20230306125805.678668-1-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230306125805.678668-1-michael@walle.cc>
-References: <20230306125805.678668-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230306_045828_583684_5D2009E6 
-X-CRM114-Status: GOOD (  10.55  )
+X-CRM114-CacheID: sfid-20230306_045828_582035_AEC6ED37 
+X-CRM114-Status: GOOD (  12.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,47 +74,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-NVMEM soon will get the ability for nvmem layouts and these might
-not be ready when nvmem_register() is called and thus it might
-return -EPROBE_DEFER. Don't print the error message in this case.
+Commit c048b60d39e1 ("mtd: core: provide unique name for nvmem device")
+tries to give the nvmem device a unique name, but fails badly if the mtd
+device doesn't have a "struct device" associated with it, i.e. if
+CONFIG_MTD_PARTITIONED_MASTER is not set. This will result in the name
+"(null)-user-otp", which is not unique. It seems the best we can do is
+to use the compatible name together with a unique identifier added by
+the nvmem subsystem by using NVMEM_DEVID_AUTO.
 
+Fixes: c048b60d39e1 ("mtd: core: provide unique name for nvmem device")
+Cc: stable@vger.kernel.org
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/mtdcore.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/mtd/mtdcore.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index d6675bf03557..4f9bd78bc6f9 100644
+index 0feacb9fbdac..3fe2825a85a1 100644
 --- a/drivers/mtd/mtdcore.c
 +++ b/drivers/mtd/mtdcore.c
-@@ -952,8 +952,8 @@ static int mtd_otp_nvmem_add(struct mtd_info *mtd)
- 			nvmem = mtd_otp_nvmem_register(mtd, "user-otp", size,
- 						       mtd_nvmem_user_otp_reg_read);
- 			if (IS_ERR(nvmem)) {
--				dev_err(dev, "Failed to register OTP NVMEM device\n");
--				return PTR_ERR(nvmem);
-+				err = PTR_ERR(nvmem);
-+				goto err;
- 			}
- 			mtd->otp_user_nvmem = nvmem;
- 		}
-@@ -970,7 +970,6 @@ static int mtd_otp_nvmem_add(struct mtd_info *mtd)
- 			nvmem = mtd_otp_nvmem_register(mtd, "factory-otp", size,
- 						       mtd_nvmem_fact_otp_reg_read);
- 			if (IS_ERR(nvmem)) {
--				dev_err(dev, "Failed to register OTP NVMEM device\n");
- 				err = PTR_ERR(nvmem);
- 				goto err;
- 			}
-@@ -982,7 +981,7 @@ static int mtd_otp_nvmem_add(struct mtd_info *mtd)
+@@ -888,8 +888,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
  
- err:
- 	nvmem_unregister(mtd->otp_user_nvmem);
--	return err;
-+	return dev_err_probe(dev, err, "Failed to register OTP NVMEM device\n");
+ 	/* OTP nvmem will be registered on the physical device */
+ 	config.dev = mtd->dev.parent;
+-	config.name = kasprintf(GFP_KERNEL, "%s-%s", dev_name(&mtd->dev), compatible);
+-	config.id = NVMEM_DEVID_NONE;
++	config.name = compatible;
+ 	config.owner = THIS_MODULE;
+ 	config.type = NVMEM_TYPE_OTP;
+ 	config.root_only = true;
+@@ -905,7 +904,6 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
+ 		nvmem = NULL;
+ 
+ 	of_node_put(np);
+-	kfree(config.name);
+ 
+ 	return nvmem;
  }
- 
- /**
 -- 
 2.30.2
 
