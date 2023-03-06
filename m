@@ -4,66 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE1F4C6FA99
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Mar 2023 14:51:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DF7DC61DA4
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Mar 2023 14:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pJxlMc9grDQIM2owziKd7dSdvGI+I9qUqulnBm3geck=; b=evhQRJkNQGqXmr
-	go+9kdA3t37rE83uWYjoBdpsNptKPXvluAUkxxEohT152Csis78qTWXE1463XUPD+m/E0h3hb/eBm
-	a7SDq5BykC7GrTYP9qlGDGiIHzNDrgJfA8SIY+yQH3177gwiEVAFdmk9DJIeVAjOrV/b+4Mh9Z3Wh
-	0gVN18lSHl7djVL47WiXy7epZNrtxXAzrRdCfDzDUq5G3leCuNQvKxL2XDy/LuMe3QvX2/MOtj1VW
-	kW25Ss/1hOlw3zoVb4syXtURmk+p427Im6hhK7avsSgXvZNbv5EY8C3XO8fAZoFqjvbwIRIS8CKZR
-	PyDb3frDU23gHGjPvcFg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=C+OqHioDSSpsxFRD1LCuRhWtWxGbZGkWj3wEmPbDaKk=; b=b7i1qaJb+gqrBb
+	pbGtmXcpuUFU1duxLDajEabqNrt4i6cuhbS+//dTbiATIRXWiMTAOBKrgDbu/+AqW9mFt2sraJ7ts
+	5pc3lQltMq6UiO6XUoMQoXwYI27HGs7vcF/iHutfUTI/EW0FBJ60eA/HM8tlcVcty9wtFN73dFa6n
+	qbnoMhiC6ln55aldLmALGA4UYVk4pb1NhAg8UjwYOis4o+r78Hw7A5NXmN0kYQLHxRuOndwVvslTh
+	BUroAFXiHWVzyI9e1rzqy2eXMymbqFO/WAyP2R+0F/ggnRqKr7ANUGcFJ4q61omOQYSH8Ry6IUEa4
+	1Ih78/UUa69eF+16WzHQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZCAw-00DQm3-AA; Mon, 06 Mar 2023 14:50:54 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1pZCCb-00DRY8-Re; Mon, 06 Mar 2023 14:52:38 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZBzP-00DL1s-0x
-	for linux-mtd@lists.infradead.org; Mon, 06 Mar 2023 14:39:01 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 24CE820010;
-	Mon,  6 Mar 2023 14:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1678113535;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7CihFIQuO8EkmKbOqb/odYY87aF0bfbQPJr+dXyqKWM=;
-	b=imwyQChFmKzT+FDHfXvNHpYEw+0cNlqq2MzSIf0Y6kQRaRnympSOGcJyCF6oa+u0s++p1f
-	z0TZhBtyQLY3G4mMI2RJcpXyltBnvfqIRMmpCk/QB2jt1ItcexfiduaTzQHjv7dCHyT+Ew
-	fg6wrc11NJX8dsfzZ/4AlqToIGTn5U+35lJ8Z4GQAiLBy/OH/HH/EFfE2xQ2XXcxinDmTE
-	bi8an4Vs5CU+ULHj85iPNr/Vv9D8pPQwOFl6ugxdO2aOz3EYXuDOAfsmabOrOZimj4LV1b
-	ZJq50BHsr/xVg9cHoEb7RR/WgqiM9jwk9lWFotMS6aOIPc22YDwZFiPRPZzArg==
-Date: Mon, 6 Mar 2023 15:38:51 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
- <robh+dt@kernel.org>, <vigneshr@ti.com>, <richard@nod.at>,
- <agross@kernel.org>, <bjorn.andersson@linaro.org>,
- <quic_srichara@quicinc.com>, <qpic_varada@quicinc.com>,
- <quic_sjaganat@quicinc.com>
-Subject: Re: [PATCH 2/5] mtd: rawnand: qcom: Add initial support for qspi
- nand
-Message-ID: <20230306153851.0dcdda27@xps-13>
-In-Reply-To: <b70ddb40-a1f1-f967-6b7b-057a39b0bcc2@quicinc.com>
-References: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
-	<1602307902-16761-3-git-send-email-mdalam@codeaurora.org>
-	<20201029100751.713e27df@collabora.com>
-	<b70ddb40-a1f1-f967-6b7b-057a39b0bcc2@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+	id 1pZC2H-00DMUF-LT
+	for linux-mtd@lists.infradead.org; Mon, 06 Mar 2023 14:41:59 +0000
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 326Dgfil005007;
+	Mon, 6 Mar 2023 14:41:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=/2QNenuQo6MbSF7cRXmwd59aJmgafR20m5SsTmAQTOU=;
+ b=Nk34kNHI75clCX0DD2icUXU5HDxodW80So7KgJibghJSbWxHN3WzTX2+NQKdOGTZ7avl
+ FV2M50DYYZAeBBUtlan5ZeMDQrTmD9CPnRMTaePbKpbEQd1sDnJK3atbODzFM4ntjXqx
+ 64TE0PCsybNj3/JlXAqojxf8jhhCM/34VddaW8Uw8KcfKXfgm0euEeYvc7XXOcxnrrCM
+ xopl4pgLphfKSISmEgOXgua0eEMgehjLZ9Ei592PtL6ycx5A+fYD/MMROyzFnUF8KS8K
+ 24XCqaHTCr4XwczbxlwwRFXCrsGX6TA42dU4zGRPwi92YDXlUGS9WsEaMuLjopnmM9nf IA== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p418751mm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 06 Mar 2023 14:41:50 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 326EfjpM011970;
+	Mon, 6 Mar 2023 14:41:45 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3p4fft5hsq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Mon, 06 Mar 2023 14:41:45 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 326EfjQE011965;
+	Mon, 6 Mar 2023 14:41:45 GMT
+Received: from mdalam-linux.qualcomm.com (mdalam-linux.qualcomm.com [10.201.2.71])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 326EfiSw011964;
+	Mon, 06 Mar 2023 14:41:45 +0000
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+	id D735412010CA; Mon,  6 Mar 2023 20:11:43 +0530 (IST)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mani@kernel.org
+Cc: quic_sjaganat@quicinc.com, quic_srichara@quicinc.com,
+        quic_varada@quicinc.com, Md Sadre Alam <quic_mdalam@quicinc.com>
+Subject: [PATCH 1/5] mtd: nand: raw: qcom_nandc: Use devm_platform_get_and_ioremap_resource()
+Date: Mon,  6 Mar 2023 20:11:41 +0530
+Message-Id: <20230306144141.15360-1-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ag-00pLbdU9YvMST_nueD7Ca12fmZqS_
+X-Proofpoint-ORIG-GUID: ag-00pLbdU9YvMST_nueD7Ca12fmZqS_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-06_08,2023-03-06_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=821 bulkscore=0 suspectscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2303060129
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230306_063859_361971_4D1B2005 
-X-CRM114-Status: GOOD (  20.87  )
+X-CRM114-CacheID: sfid-20230306_064157_761000_6C10EC81 
+X-CRM114-Status: GOOD (  13.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,52 +93,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpxdWljX21kYWxhbUBxdWljaW5jLmNvbSB3cm90ZSBvbiBNb24sIDYgTWFyIDIwMjMg
-MTk6NDU6NTggKzA1MzA6Cgo+IE9uIDEwLzI5LzIwMjAgMjozNyBQTSwgQm9yaXMgQnJlemlsbG9u
-IHdyb3RlOgo+ID4gSGVsbG8sCj4gPgo+ID4gT24gU2F0LCAxMCBPY3QgMjAyMCAxMTowMTozOSAr
-MDUzMAo+ID4gTWQgU2FkcmUgQWxhbSA8bWRhbGFtQGNvZGVhdXJvcmEub3JnPiB3cm90ZToKPiA+
-ICAKPiA+PiBUaGlzIGNoYW5nZSB3aWxsIGFkZCBpbml0aWFsIHN1cHBvcnQgZm9yIHFzcGkgKHNl
-cmlhbCBuYW5kKS4KPiA+Pgo+ID4+IFFQSUMgVmVyc2lvbiB2LjIuMCBvbndhcmRzIHN1cHBvcnRz
-IHNlcmlhbCBuYW5kIGFzIHdlbGwgc28gdGhpcwo+ID4+IGNoYW5nZSB3aWxsIGluaXRpYWxpemUg
-YWxsIHJlcXVpcmVkIHJlZ2lzdGVyIHRvIGVuYWJsZSBxc3BpIChzZXJpYWwKPiA+PiBuYW5kKS4K
-PiA+Pgo+ID4+IFRoaXMgY2hhbmdlIGlzIHN1cHBvcnRpbmcgdmVyeSBiYXNpYyBmdW5jdGlvbmFs
-aXR5IG9mIHFzcGkgbmFuZCBmbGFzaC4KPiA+Pgo+ID4+IDEuIFJlc2V0IGRldmljZSAoUmVzZXQg
-UVNQSSBOQU5EIGRldmljZSkuCj4gPj4KPiA+PiAyLiBEZXZpY2UgZGV0ZWN0aW9uIChSZWFkIGlk
-IFFTUEkgTkFORCBkZXZpY2UpLiAgCj4gPiBVbmZvcnR1bmF0ZWx5LCB0aGF0J3Mgbm90IGdvaW5n
-IHRvIHdvcmsgaW4gdGhlIGxvbmcgdGVybS4gWW91J3JlCj4gPiBiYXNpY2FsbHkgaGFja2luZyB0
-aGUgcmF3IE5BTkQgZnJhbWV3b3JrIHRvIG1ha2UgU1BJIE5BTkRzIGZpdC4gSSBkbwo+ID4gdW5k
-ZXJzdGFuZCB0aGUgcmF0aW9uYWxlIGJlaGluZCB0aGlzIGRlY2lzaW9uIChyZS11c2luZyB0aGUg
-Y29kZSBmb3IKPiA+IEVDQyBhbmQgcHJvYmFibHkgb3RoZXIgdGhpbmdzKSwgYnV0IHRoYXQncyBu
-b3QgZ29pbmcgdG8gd29yay4gU28gSSdkCj4gPiByZWNvbW1lbmQgZG9pbmcgdGhlIGZvbGxvd2lu
-ZyBpbnN0ZWFkOgo+ID4KPiA+IDEvIGltcGxlbWVudCBhIFNQSS1tZW0gY29udHJvbGxlciBkcml2
-ZXIKPiA+IDIvIGltcGxlbWVudCBhbiBFQ0MgZW5naW5lIGRyaXZlciBzbyB0aGUgRUNDIGxvZ2lj
-IGNhbiBiZSBzaGFyZWQKPiA+ICAgICBiZXR3ZWVuIHRoZSBTUEkgY29udHJvbGxlciBhbmQgcmF3
-IE5BTkQgY29udHJvbGxlciBkcml2ZXJzCj4gPiAzLyBjb252ZXJ0IHRoZSByYXcgTkFORCBkcml2
-ZXIgdG8gdGhlIGV4ZWNfb3AoKSBpbnRlcmZhY2UgKG5vbmUgb2YKPiA+ICAgICB0aGlzIGhhY2sg
-d291bGQgaGF2ZSBiZWVuIHBvc3NpYmxlIGlmIHRoZSBkcml2ZXIgd2FzIHVzaW5nIHRoZSBuZXcK
-PiA+ICAgICBBUEkpCj4gPgo+ID4gUmVnYXJkcywKPiA+Cj4gPiBCb3Jpcwo+ID4gIAo+ICDCoMKg
-IFNvcnJ5IGZvciBsYXRlIHJlcGx5LCBhZ2FpbiBzdGFydGVkIHdvcmtpbmcgb24gdGhpcyBmZWF0
-dXJlIHN1cHBvcnQuwqAgVGhlIFFQSUMgdjIgb24gd2FyZHMgdGhlcmUgaXMgc2VyaWFsIG5hbmQg
-c3VwcG9ydCBnb3QgYWRkZWQgLCBpdHMgbm90IGEgc3RhbmRhcmQgU1BJIGNvbnRyb2xsZXIKPiAK
-PiAgwqDCoCBpdHMgUVBJQyBjb250cm9sbGVyIGhhdmluZyBzdXBwb3J0IGZvciBzZXJpYWwgbmFu
-ZC4gQWxsIFNQSSByZWxhdGVkIGNvbmZpZ3VyYXRpb24gZG9uZSBieSBRUElDIGhhcmR3YXJlIGFu
-ZCBpdHMgbm90IGV4cG9zZWQgYXMgU1BJIGJ1cyB0byB0aGUgZXh0ZXJuYWwgd29ybGQuIE9ubHkg
-YmFzZWQgb24KPiAKPiAgwqDCoCBRUElDX1NQSV9DRkcgPSAxLCBzZXJpYWwgZnVuY3Rpb25hbGl0
-eSB3aWxsIGdldCBzZWxlY3RlZC4gU28gdGhhdCBubyBuZWVkIHRvIGltcGxlbWVudCBhcyBTUEkt
-bWVtIGNvbnRyb2xsZXIgZHJpdmVyLCBzaW5jZSBpdHMgbm90IGEgU1BJIGNvbnRyb2xsZXIuCj4g
-Cj4gIMKgIFBsZWFzZSBjaGVjayB0aGUgYmVsb3cgZGlhZ3JhbSBmb3IgdG9wIHZpZXcgb2YgUVBJ
-QyBjb250cm9sbGVyLgoKT25lIG9mIHRoZSBoYXJkIHRoaW5ncyBpbiB0aGUgTGludXgga2VybmVs
-IGlzIHRvIG1ha2UgZGV2aWNlcyBmaXQKZnJhbWV3b3Jrcy4gVGhpcyBmZWF0dXJlIGRvZXMgbm90
-IGZpdCB0aGUgcmF3IE5BTkQgZnJhbWV3b3JrLiBJdCBkb2VzCm5vdCBmb2xsb3cgYW55IG9mIHRo
-ZSBjb252ZW50aW9ucyB0YWtlbiB0aGVyZS4gSXQgaXMgbm90IGdvbm5hIGJlCmFjY2VwdGVkIHRo
-ZXJlLiBZb3UgbmVlZCB0byBleHBvc2Ugc3BpLW1lbSBmdW5jdGlvbmFsaXRpZXMsIGV2ZW4gaWYg
-dGhlCnNwaS1wcm9wZXIgZmVhdHVyZXMgYXJlIG5vdCBhdmFpbGFibGUuIEkgYmVsaWV2ZSB5b3Vy
-IHNpdHVhdGlvbiBzdGlsbApmaXRzIHRoZSBzcGktbWVtIGFic3RyYWN0aW9uLgoKVGhhbmtzLApN
-aXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Convert platform_get_resource(), devm_ioremap_resource() to a single
+call to devm_platform_get_and_ioremap_resource(), as this is exactly
+what this function does.
+
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 198a44794d2d..5cc1cbc9517d 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -3269,8 +3269,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	nandc->base = devm_ioremap_resource(dev, res);
++	nandc->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(nandc->base))
+ 		return PTR_ERR(nandc->base);
+ 
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
