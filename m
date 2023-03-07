@@ -4,112 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3364C64EC4
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Mar 2023 21:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 271F1C678D5
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Mar 2023 04:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CKUAMAU2uBVaU6+4dI0V5elu9+/Xi13jHrE4BWyW/Po=; b=m7NlWsGlrzj9i3z0Maxi3DmJB4
-	x5JJANVAL0W/G1zfnj/LldPK7sBXBqhLEEzGm/5Mp/znJ0/k7gwjkshkfxv0XzSqUmw9Hx6tIEih7
-	5NLQmgIMHy9YmS7sE658RBP3GY3sXIHDqrvzF7R/17MO98hZ9EinoHPC4G+Uc2nLNQPy8qGWLQ92R
-	u3U5DgFDOkOuq7XSLmNen4QneZifRz6tLNLazRnALHrJpg3wEwDaKA5zq+2QjFKem5qgslXhIAism
-	oUoDBspUoBpu6Cn2DqYEiGPDS93D1t9Frl1pz91hqxl4LaBrPdKEWO6QKznf0xqmdaJ22ODekYQP6
-	qc1mLYiA==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ae0g/GyIdzlxh08TilluRa/YYiY4hN3RMxulf6Ow+rU=; b=cLm/C63raSuAnX
+	nQgusTPPnqPO9/4uY4oXzyq/KqPrOnMCHTbzUi95rkcp3HWr0Ttn2G+ewb5ocjYHOlrvP4XjIVnqG
+	ebPhmo3IROIG3YIYIAA8KN0L8scBZelejfiEPxzEvaNQtyoTK+lkZzwEl47otXYKf7VjR9NjhPSd5
+	nRkm98HRb3d+M5b0z41GDbRNdNwFO6Yj2yU3G9Yv19CljBi89tbNzJgv0iMdrQb4QdJ+yPrVw+00E
+	e0z1T8h+he+DjeycLFwoYq9mWts90YYV1dV94fpRuAWSb/BiGaQQjdn0KKbHzjVvcVyY89jKCvboA
+	edWaQJ19YVj40baa89oQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZINK-00F5YC-4D; Mon, 06 Mar 2023 21:28:06 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pZOpD-00G9my-H6; Tue, 07 Mar 2023 04:21:19 +0000
+Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZINE-00F5WR-Ax; Mon, 06 Mar 2023 21:28:01 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E2CF760C7A;
-	Mon,  6 Mar 2023 21:27:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA102C433A1;
-	Mon,  6 Mar 2023 21:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678138079;
-	bh=OPscq8j4gixbBXyx4rYRiqcOtug0pajWX+t3LwK0uPE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PsQMxWTNyqmjmOyLA6f4aBxEbqjXLjGnQvTHUoE4f6zTvuB0TEbKKoow7O0Bl6lqg
-	 gYnqSQeBrO1rJ29HWmn+yvMly1eyD9pru67Ei5XhYPhftQR6cu4eDx5Y2uE63s5KIt
-	 s3zsZ4FOYFUkiy7gTDlGyR2DhiXrF2ddTXSUbWfDk94k+YWjCuHsJXdkT6LOyMmw3/
-	 OBMkdU9AXHfmpJlFP0bcKZdHq+IuioXEaW+oivplUHjLiBGkJeMjuBmdvu2rgkgh5Q
-	 WG7SALFgV1PPXh9MrSvGscl5OUXQrlqRl1aL8dYkfSYDeEvI72A6J1sMyBNHxpS7Fw
-	 LxAw7Z0FF0jTA==
-Date: Mon, 6 Mar 2023 21:27:32 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	jic23@kernel.org, tudor.ambarus@microchip.com, pratyush@kernel.org,
-	Sanju.Mehta@amd.com, chin-ting_kuo@aspeedtech.com, clg@kaod.org,
-	kdasu.kdev@gmail.com, f.fainelli@gmail.com, rjui@broadcom.com,
-	sbranden@broadcom.com, eajames@linux.ibm.com, olteanv@gmail.com,
-	han.xu@nxp.com, john.garry@huawei.com, shawnguo@kernel.org,
-	s.hauer@pengutronix.de, narmstrong@baylibre.com,
-	khilman@baylibre.com, matthias.bgg@gmail.com, haibo.chen@nxp.com,
-	linus.walleij@linaro.org, daniel@zonque.org,
-	haojian.zhuang@gmail.com, robert.jarzmik@free.fr, agross@kernel.org,
-	bjorn.andersson@linaro.org, heiko@sntech.de,
-	krzysztof.kozlowski@linaro.org, andi@etezian.org,
-	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-	wens@csie.org, jernej.skrabec@gmail.com, samuel@sholland.org,
-	masahisa.kojima@linaro.org, jaswinder.singh@linaro.org,
-	rostedt@goodmis.org, mingo@redhat.com, l.stelmach@samsung.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, alex.aring@gmail.com, stefan@datenfreihafen.org,
-	kvalo@kernel.org, james.schulman@cirrus.com,
-	david.rhodes@cirrus.com, tanureal@opensource.cirrus.com,
-	rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com,
-	npiggin@gmail.com, christophe.leroy@csgroup.eu, mpe@ellerman.id.au,
-	oss@buserror.net, windhl@126.com, yangyingliang@huawei.com,
-	william.zhang@broadcom.com, kursad.oney@broadcom.com,
-	jonas.gorski@gmail.com, anand.gore@broadcom.com, rafal@milecki.pl,
-	git@amd.com, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, joel@jms.id.au, andrew@aj.id.au,
-	radu_nicolae.pirea@upb.ro, nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
-	bcm-kernel-feedback-list@broadcom.com, fancer.lancer@gmail.com,
-	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-	jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
-	avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-	venture@google.com, yuenn@google.com, benjaminfair@google.com,
-	yogeshgaur.83@gmail.com, konrad.dybcio@somainline.org,
-	alim.akhtar@samsung.com, ldewangan@nvidia.com,
-	thierry.reding@gmail.com, jonathanh@nvidia.com,
-	michal.simek@amd.com, linux-aspeed@lists.ozlabs.org,
-	openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	netdev@vger.kernel.org, linux-wpan@vger.kernel.org,
-	libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
-	linux-mtd@lists.infradead.org, lars@metafoo.de,
-	Michael.Hennerich@analog.com, linux-iio@vger.kernel.org,
-	michael@walle.cc, palmer@dabbelt.com,
-	linux-riscv@lists.infradead.org, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, linuxppc-dev@lists.ozlabs.org,
-	amitrkcian2002@gmail.com, Dhruva Gole <d-gole@ti.com>,
-	Patrice Chotard <patrice.chotard@foss.st.com>
-Subject: Re: [PATCH V5 01/15] spi: Replace all spi->chip_select and
- spi->cs_gpiod references with function call
-Message-ID: <00684da3-520f-459d-b6bd-55e728e93ebf@sirena.org.uk>
-References: <20230306172109.595464-1-amit.kumar-mahapatra@amd.com>
- <20230306172109.595464-2-amit.kumar-mahapatra@amd.com>
+	id 1pZOp9-00G9mJ-7i
+	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2023 04:21:16 +0000
+Received: by mail-ed1-x534.google.com with SMTP id j11so27897102edq.4
+        for <linux-mtd@lists.infradead.org>; Mon, 06 Mar 2023 20:21:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1678162872;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R6hqEkT/LNIvtq4ZHl1mUunRseH00GHLQMY6WXXGwOM=;
+        b=u+d6SR1Z/9lh6/d/v7YLU5EvQpi4JWlyT7b9prNf+4U5AoEgCQQVnm8OdlYQzJZOIZ
+         rrsMK7F6DKD0B0zFC/tThzB/VtSGXossihkiH6CqXNt2iaJTaHq7BFl5peXPNz4ncLjt
+         ewpE90AghDEbOlkFxovEti0nIUTyq9f2FCXOmNffaxOilR+RjGmgtido6cPX4WNylNmP
+         npiPJZ5asIycPfjVsKrJNI+VlUG+Dqcg2sYRkRqcP6KERqe/R3ftwDQ+wKIdAHXCojM0
+         K8i1biFqUW/O4UMCpOKkLBx2lD2cjaiWq5PHKi7FFs2WfD/wR4yt0BtrvKOpjEgfbXHn
+         up+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678162872;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R6hqEkT/LNIvtq4ZHl1mUunRseH00GHLQMY6WXXGwOM=;
+        b=l47DM9WmFEKYcnXWQa1Q2fcUZb3ECQQ0Ypfm/BES4vcNElFnxAG9O+5uNCaIWeuZmL
+         sJDcoBR+LqXPw0GZUmX8E7ebpq+ZhOG/WzV7B9uM65beO6uLRxx56DyNaZLAnVGO72RW
+         i7/6eSiplqFjUqZaTqgu6On3L527HIP/dGPq36PqXubMBVV70R11NPP9BTNGbi09px4G
+         vam5omZKLrPd9v9tYAc4eNC0FBI450oYQCAmb3Kowrai8o85eEtPp7HNayg3rKHz6+yu
+         /VVNpd+63vEAWQdn5w/173ODh5MzhRfMoFgzCOM9L34P26MckK6aAx7YQGx+5qWiYggo
+         ykNA==
+X-Gm-Message-State: AO0yUKXv87CLb9lR0SOc/mNokkIx23uzmm7lBtCJS9+iFA2Vfhc/rM/F
+	moK5PB+p/YzdjsvzuQx3qq+yNQ==
+X-Google-Smtp-Source: AK7set+r0tF6JBXxJqwMfhX4rBE0rEOE9RzrvS5/X9eHIIFUmglTdwr4eZPvR7zlr6tvrFh3wGOs3A==
+X-Received: by 2002:a17:906:308e:b0:878:7a0e:5730 with SMTP id 14-20020a170906308e00b008787a0e5730mr13215080ejv.56.1678162872128;
+        Mon, 06 Mar 2023 20:21:12 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.78])
+        by smtp.gmail.com with ESMTPSA id n24-20020a1709062bd800b008b17aa6afc8sm5429013ejg.30.2023.03.06.20.21.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Mar 2023 20:21:11 -0800 (PST)
+Message-ID: <1bbda9e6-37fb-195b-fd62-0e437847c636@linaro.org>
+Date: Tue, 7 Mar 2023 04:21:10 +0000
 MIME-Version: 1.0
-In-Reply-To: <20230306172109.595464-2-amit.kumar-mahapatra@amd.com>
-X-Cookie: teamwork, n.:
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH V5 09/15] spi: Add stacked and parallel memories support
+ in SPI core
+Content-Language: en-US
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>, broonie@kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ jic23@kernel.org, pratyush@kernel.org
+Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20230306172109.595464-1-amit.kumar-mahapatra@amd.com>
+ <20230306172109.595464-10-amit.kumar-mahapatra@amd.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230306172109.595464-10-amit.kumar-mahapatra@amd.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230306_132800_518515_DC400698 
-X-CRM114-Status: UNSURE (   8.02  )
+X-CRM114-CacheID: sfid-20230306_202115_375719_565FBAE1 
+X-CRM114-Status: UNSURE (   7.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -122,55 +92,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1489919985079133880=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+There were too many recipients in To and Cc and I couldn't reply to the
+email. I whipped off the Cc filed and most of the people from To and
+added the lists in Cc.
 
---===============1489919985079133880==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RfYQ7lwbbyjtjTUN"
-Content-Disposition: inline
+On 3/6/23 17:21, Amit Kumar Mahapatra wrote:
+> Multi CS support using GPIO is not tested due to unavailability of
+> necessary hardware setup.
 
+Please don't add code that is not used or tested.
 
---RfYQ7lwbbyjtjTUN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Mar 06, 2023 at 10:50:55PM +0530, Amit Kumar Mahapatra wrote:
-
->  drivers/spi/spi-omap-100k.c       |  2 +-
-
-This is also not against -rc1, this file was removed in bcace9c4c9270292
-("spi: remove omap 100K driver").
-
---RfYQ7lwbbyjtjTUN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQGWsMACgkQJNaLcl1U
-h9C7Fwf+MqZVyi3PlI6YIKPDaaFyWnmjZtweIjxd+4E2eEmTZq9MbcCHS/W56cUk
-TPWusPOjIa33XHC376rZpTYGqNTRjvOo8UwttJFAFQFbtMNui8BfC1bnrROwoyUE
-AxcOxhCAi3r1P0nRIkS126TepySOo1qXD1gf6YUQydf6/iDxzq7VddVjfqtt3dPF
-6rnt0G5xA5O0Z75Kc76h4ePCX7kXMqJhJSaJf7HFcGwD2P5HIeRcRyucD2q4Ddnr
-KzkdziV90/s6X7Q9cfiA620jfm8jVdqqN3yC+JX/L2Iu8kpeefFFgD49yG2aMtxv
-zgXP6uMpvQm5g7F9e/wo/JMWhjfh8g==
-=uJRe
------END PGP SIGNATURE-----
-
---RfYQ7lwbbyjtjTUN--
-
-
---===============1489919985079133880==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1489919985079133880==--
-
