@@ -4,76 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7390C678D5
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Mar 2023 07:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEDF0C678D5
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Mar 2023 08:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=g7eaXOGwzMh8EvbXaM2riDc3ZKh6v/0iQH01Vvt7m24=; b=vj6WuZoiHK+gYD
-	PJ1MxtSm0nhzf4JKqnXon+ySC6XKKrIROB/dCN/tm5UzX9T3ogTJkyY0LnXWC0isbdEmeo5OCCOab
-	zGUNURhXoClPzMkkrruDnG3RGyaJFOaCFpDfyQ2eQqLqFkgG89DeIJUI79hBkc7Yew9fzz88ZRc/F
-	8p+izMO0LFo0OYphuFFF++F0OoT+kci8ZHsFwJgPzi/wYZmf1qYKR8GbO9sRm2XWmJkHxn0vTYura
-	xoYmj08vU3Uvr2inCzldZKYRL2R+TCAQS0IX32bGLkyjBr5xL8blBphPBpMypBneUe4tU7VRXrAQ5
-	4wPDnyFfehYq4a45KhDw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
+	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=IKlAzX0FDbRMdCdxNh4qAeHPYICcuCMuq1DPZYmF3nc=; b=AQSEzT09x9nmoF
+	4YeIA/Uigm70x/zq26fC9i1k4Nt7wOeVDN1VbHn3DiE3uuA+89foh3pah/qg9tedvsytza3l3OPvd
+	kb2BXmP37qqjld16tdjQQwq+ZvclPDyQxcTvRSAEhMyMEOVy7vLwDMRLBEbgsXBOcZQPnsFn6rVx5
+	YjnMp/yNFtndymkRKLo5IhWYQubKXQ8gJZFnyCXwu0BqsjekQzi/kAlkC4qeGfBIvDaKtCtSkw4r9
+	LRTcs4Bh+xHVqXc6iR7H29qlkHF6EEuC3H/SCiz9dEEMXJalZ1/NHKufTYYoqWo5LShKPjCKynmJh
+	aLvIx8GnIIuhZ+rwFy1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZRwG-00GWXi-AC; Tue, 07 Mar 2023 07:40:48 +0000
-Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
+	id 1pZSUZ-00GeuP-EM; Tue, 07 Mar 2023 08:16:15 +0000
+Received: from out1-smtp.messagingengine.com ([66.111.4.25])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZRwD-00GWWl-O7
-	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2023 07:40:47 +0000
-Received: by mail-ed1-x52c.google.com with SMTP id da10so48751834edb.3
-        for <linux-mtd@lists.infradead.org>; Mon, 06 Mar 2023 23:40:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678174841;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L5IpSKyXyeFe9/34ExltwmVNhqdaflxRmwhQAOMuSGk=;
-        b=Ktfkc1GCbZfBCATHYdSFkaawD4zQyKTqA7JZYwaqKWhc+HVXomvDx/3o9sLo2/HqoA
-         hbw/9bVUv6ukVu/0eABchQbfGBi02CJAE/66AaqRued8zleO76QN4BPpcGrMaA9W+/3i
-         6rbqxMbBcn7a7He0tEGb+nv1iRPU3lg6b0vRhjWL+a4y0w0OkOXa23bKuuZJRz0vBfsE
-         foZO68/I4M/+lRvofB//8HZUxQYNJaAXuvORSDQ1WDbIAofmQYHjtIhIwqMK3poBZt60
-         /NeSHYogP+4tg40lsCrbnZzxLWD8Y1XHktwlwoodmVr3nf04nzlk+99pyUZMtv81SuSS
-         k4GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678174841;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L5IpSKyXyeFe9/34ExltwmVNhqdaflxRmwhQAOMuSGk=;
-        b=C9/2V7hH53KUDPIzQIeltI++uGfkYYpMstAbED8N+ECs0KxR2yPnhwLQpXHl0K62y6
-         Ncodv7hymcXODabKpXik/UI10j/c78ZJ/oUx5U4Vwlte8lzw0k3fHcK/jNIo09grE+52
-         4lZYomRB2HXm+Dhy3qtH2ohIKXQv8UPWfo/i7iMVNiOJk+QNyro5YNoJVsahxch07jSF
-         7P7nqaem8eTyULLki6ft1BYMDiqKPUlNfuXrEtImE32OuRtD1Ep8sP72cVtqcFrJVrsf
-         U25SGwDQq9YYfi1mGqPddw583PqdsaHfbY12bbGriqjbuxcrIJP7uDkLFuwuJIu0x3LT
-         BeGA==
-X-Gm-Message-State: AO0yUKV60rAFCRxA6ieJ7qRtT7bruqDwbO1sV65wn0D3ClWsQfzDStJ5
-	oD/FhVDNoibd+wiLkUMOhGk=
-X-Google-Smtp-Source: AK7set/9jJyUKVijolFNnzdZe4RkPQrD3rXz5wZWpxUGZUr8oynFlSwBDKwxTCqglSp7mMVRbr0g5g==
-X-Received: by 2002:aa7:d683:0:b0:4ac:bbb4:9772 with SMTP id d3-20020aa7d683000000b004acbbb49772mr8653860edr.40.1678174840834;
-        Mon, 06 Mar 2023 23:40:40 -0800 (PST)
-Received: from felia.fritz.box ([2a02:810d:2a40:1104:a517:a52e:cdbc:e30d])
-        by smtp.gmail.com with ESMTPSA id d26-20020a50f69a000000b004c0239e41d8sm6167084edn.81.2023.03.06.23.40.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Mar 2023 23:40:40 -0800 (PST)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] mtd: parsers: remove reference to config MTD_NAND_TMIO
-Date: Tue,  7 Mar 2023 08:40:38 +0100
-Message-Id: <20230307074038.17391-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	id 1pZSUW-00GetZ-0b
+	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2023 08:16:13 +0000
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id F03A65C013F;
+	Tue,  7 Mar 2023 03:16:10 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 07 Mar 2023 03:16:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to; s=fm1; t=1678176970; x=1678263370; bh=8C
+	6VRDlcxQhH+mSpw+nDDgGpxEIKQm9RL18lCT50WgQ=; b=N8RZhZsHo49RtxHhXw
+	eIIUbw2NFCNlTZbpZ9Tb9n7m9U8jpOkbuQyD8MDvJynsAzzGqWWvr8U3Ydt3VF7m
+	0oQTKWO3wF+3/vs85ZLKWq5ofm9fntOwAfcrzN00x5QGyleNeQs12kfOESuY1G5u
+	nqKKrtRTCZv3Ot3zNRRjzlv6ft/YlWQhIllf+pe32fvkbib65DqdoipTxi4WXLZJ
+	qBGCl5vO3imvGX/0m/sibUq2O4Sac/yrV+0FMEfxuX8jLxdaolFK7Jg+0Eco/76t
+	E9EhGpAaWxeOq05tLIaP/eDl1UkBZ601+fU32NEMOxr13mwkgqGGL346hAMZ7lHL
+	hb8g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm1; t=1678176970; x=1678263370; bh=8C6VRDlcxQhH+
+	mSpw+nDDgGpxEIKQm9RL18lCT50WgQ=; b=oYBKZNa2k+kbf6GRcK2SQFkYf55sJ
+	hF//TPcdDfl81FggoAOg/Ado4CtID9mymJDqhFAVOhUnUvTqxPpu4nY33IpLzbd0
+	dasK94wHOAXu/NVgW2qJJ63tqawoxXvg0Vr0+AdgxlAtxY0OgfwVSnJaCKF8R3P+
+	V90rZbuQMzX15HfoIthX/O16jRx8wg6A+RVFtkdEtX0yoe62OfhGOM8bTuv+GkOz
+	N5Zf5Im4Vf4JeGSZ8x3vp+5yWxJJRHAiK0yf079J/E/16e3O47q/mBdptLp3wyrV
+	7m205vQgLtXv1Lf35YnClj2GcO8KpMMnMD+tUYA+Ae/igN9AEjonuG8XA==
+X-ME-Sender: <xms:yvIGZM0Yybb5PhVUQ3udu_2OKChQFsPHEnKjXth8E4c_lrg_RJE9-g>
+    <xme:yvIGZHHZ2WqH9A7L0MfSpRhvSes4_T94uSrx_J09K3yPhPMrmysbo5cRZK8Pcnx2a
+    RSd_MWEpAbMuDCswMk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtledgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:yvIGZE5zqaF0cM3HRyIFRF5zCBj5snQdOENGGLlv9V0KcJVV17daUQ>
+    <xmx:yvIGZF2YiUepTP5aTlW837uM0rB2EJ538_m72vALVev3SO9gcfQFLg>
+    <xmx:yvIGZPExeWxW_d1SGJ0LHKlKSKc2JQX8WI0BUPR6mFn19i8R1xcMVg>
+    <xmx:yvIGZDjhMMAVNutvq8vUxcH6VRw61DzMNZ2jp5VDXLSgi-Jcs2SZhQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 73950B60086; Tue,  7 Mar 2023 03:16:10 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-206-g57c8fdedf8-fm-20230227.001-g57c8fded
+Mime-Version: 1.0
+Message-Id: <61c230da-a826-4cbf-8e4c-79e607ce5878@app.fastmail.com>
+In-Reply-To: <20230307074038.17391-1-lukas.bulwahn@gmail.com>
+References: <20230307074038.17391-1-lukas.bulwahn@gmail.com>
+Date: Tue, 07 Mar 2023 09:15:49 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Lukas Bulwahn" <lukas.bulwahn@gmail.com>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: parsers: remove reference to config MTD_NAND_TMIO
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230306_234045_877476_B75D6F72 
-X-CRM114-Status: GOOD (  12.94  )
+X-CRM114-CacheID: sfid-20230307_001612_141912_B9DD69EC 
+X-CRM114-Status: UNSURE (   8.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,41 +100,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit 568494db6809 ("mtd: remove tmio_nand driver") removes the config
-MTD_NAND_TMIO and its corresponding driver.
+On Tue, Mar 7, 2023, at 08:40, Lukas Bulwahn wrote:
+> Commit 568494db6809 ("mtd: remove tmio_nand driver") removes the config
+> MTD_NAND_TMIO and its corresponding driver.
+>
+> Remove the reference in MTD_SHARPSL_PARTS to that removed config.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> Arnd, please ack.
+> Miquel, please pick this minor non-urgent patch on top of the commit above.
 
-Remove the reference in MTD_SHARPSL_PARTS to that removed config.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Arnd, please ack.
-Miquel, please pick this minor non-urgent patch on top of the commit above.
-
- drivers/mtd/parsers/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index b20e0c38b517..60738edcd5d5 100644
---- a/drivers/mtd/parsers/Kconfig
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -149,7 +149,7 @@ config MTD_PARSER_TRX
- 
- config MTD_SHARPSL_PARTS
- 	tristate "Sharp SL Series NAND flash partition parser"
--	depends on MTD_NAND_SHARPSL || MTD_NAND_TMIO || COMPILE_TEST
-+	depends on MTD_NAND_SHARPSL || COMPILE_TEST
- 	help
- 	  This provides the read-only FTL logic necessary to read the partition
- 	  table from the NAND flash of Sharp SL Series (Zaurus) and the MTD
--- 
-2.17.1
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
 ______________________________________________________
 Linux MTD discussion mailing list
