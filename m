@@ -4,108 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 845C0C61DA4
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Mar 2023 09:40:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9193C64EC4
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Mar 2023 10:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NTPS9EFEGAWBX3gbSgN0NXveKmZUGOl3Ah4i7D29EIg=; b=ivLbyXjiIbpuiO
-	Y0tBZpcgX8M5ukUoQlyasf1WHHrF2EJesQVNcqQcqe89r+GoYkWDYj/8SYmcrOje7+MPgobwrjWJ8
-	xRg4w8ctYxwKNrZ7n1o9uyo39aAkz4SXPxqq0g0BoH5mwdKok3X2F+GCdX3Cdk6z33NmQlwjD/8RN
-	W8HLjx5cMDMKCD4DHlv6RKyLgYvl4s5+buuCiUErsm2nt5TtEVbQSxg5oNFZw0xh2YqGcVcbDsLbb
-	5X8D2vgTf95PKre6kcudaelAj0ORcENz0cj7waCJBduUpjAG+U5vxHsyE0sx/1lrrHLQ4UzmyjlwC
-	lOlWGQFWqjp5wViuOgIg==;
+	List-Owner; bh=etr+txszZ1AL6a7gbvPKb+T4KXRJiTLS6pbtuEKbd6Y=; b=IYsVdTWmDj+fes
+	mamZm+xiwQuP2/UBPBX/awsk9ab4/T19esIX5I7juHxLwEjdGmMWJk9JAJyWpSyVA9empEBuNHhd0
+	NmdqUevweWdgMEGmkVAQx3DV6d1vnYSb9EU3LEiCZ9T07FIc6l40MRXnGiATQrmXngPaoIXowep/k
+	Bmo+11FErK7E4G1GvxtszH9lIfcIUTnIpNhbO/H327gaFsLg5yZB0T2odAV0Nvf+wmNgQtrB9DTj6
+	8JvfxYDKABaxL5Gq6Gvij6vuxEzeaBAmKenmEbxgDnpLpGNiDq9mFL4R0DNylkVDXWFR8zlrErL9R
+	nYtSlD006/WcVmYsuffg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1paCl6-008rA7-2E; Thu, 09 Mar 2023 09:40:24 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1paDlq-009BR5-NR; Thu, 09 Mar 2023 10:45:14 +0000
+Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1paCl1-008r75-E1; Thu, 09 Mar 2023 09:40:20 +0000
-Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 0EF2A127D;
-	Thu,  9 Mar 2023 10:40:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1678354816;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j6A1cqIav5oN+sJ0Pm8CyKz7tSgwht+condPuImcVwY=;
-	b=zsMPy9kNOSpYIQk2v92UlAChhQ1RPWvR19mptAEqIVjK7y7MtNDhCwb2WjCLD1XqQrz1Lw
-	q8s4RCfCX8HShn15fWBvySjzhsBHUFHE1ZVKHu5VkB4RcwxibgapaU57G1lZ9MaCbGS+ZB
-	d8zZihUMbqMqbCgfK1NPj8qFc6HdOzqsvmbsDviuS3ZwcHJ6DMQw2zRg/+2Ht3+IwL13B9
-	3XbUFM/uL/TIFiDCwAouAEb4qEnSGJF/f7NhSKUHWODVLEtFviq2WFQVuobulTjGODAOt4
-	qJx7Hf6BNV7PeSGwCgjwgSvM/epAZE1St3F3Qp7iV4+07CGebjwrTQ4MPMgtqQ==
-From: Michael Walle <michael@walle.cc>
-To: zajec5@gmail.com
-Cc: a.zummo@towertech.it,
-	agross@kernel.org,
-	alexandre.belloni@bootlin.com,
-	alexandre.torgue@foss.st.com,
-	alyssa@rosenzweig.io,
-	andersson@kernel.org,
-	angelogioacchino.delregno@collabora.com,
-	asahi@lists.linux.dev,
-	baolin.wang@linux.alibaba.com,
-	claudiu.beznea@microchip.com,
-	festevam@gmail.com,
-	hayashi.kunihiko@socionext.com,
-	heiko@sntech.de,
-	jbrunet@baylibre.com,
-	jernej.skrabec@gmail.com,
-	kernel@pengutronix.de,
-	khilman@baylibre.com,
-	konrad.dybcio@linaro.org,
-	linux-amlogic@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-mtd@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-rtc@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-sunxi@lists.linux.dev,
-	marcan@marcan.st,
-	martin.blumenstingl@googlemail.com,
-	matthias.bgg@gmail.com,
-	mcoquelin.stm32@gmail.com,
-	mhiramat@kernel.org,
-	michal.simek@xilinx.com,
-	miquel.raynal@bootlin.com,
-	neil.armstrong@linaro.org,
-	orsonzhai@gmail.com,
-	rafal@milecki.pl,
-	richard@nod.at,
-	s.hauer@pengutronix.de,
-	samuel@sholland.org,
-	shawnguo@kernel.org,
-	srinivas.kandagatla@linaro.org,
-	sven@svenpeter.dev,
-	vigneshr@ti.com,
-	vincent.sunplus@gmail.com,
-	wens@csie.org,
-	zbr@ioremap.net,
-	zhang.lyra@gmail.com,
-	Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH V2] nvmem: add explicit config option to read OF fixed cells
-Date: Thu,  9 Mar 2023 10:40:10 +0100
-Message-Id: <20230309094010.1051573-1-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230224072903.20945-1-zajec5@gmail.com>
-References: <20230224072903.20945-1-zajec5@gmail.com>
+	id 1paDjN-0099ah-Ps
+	for linux-mtd@lists.infradead.org; Thu, 09 Mar 2023 10:42:45 +0000
+Received: by mail-wr1-x434.google.com with SMTP id h11so1381663wrm.5
+        for <linux-mtd@lists.infradead.org>; Thu, 09 Mar 2023 02:42:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1678358559;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AXe5GLVgfCGpsOd/5Hq05tqMS28XNylXrDvLRZzzBYk=;
+        b=nBr8nAd36m9PAaXhfYM/4OLaddFdsGqVE33IkJXe836CVY1mwrMaJ0z6xZBf96qoOI
+         wHtu0PFtoKoyIzX+VPr+/fuzdwvpjf7WHn48t+f9zcU6YwYZWztwBuqGj7l0dwdbArgj
+         9BdJxnMMnENBMqvEWmtN9PjHCRl7l2YExcQXYKyBbziRvao/CePqrt7EvP4HpVtto5VH
+         QXi3YjTFTii/7goIfJr/GTdt68ovUVdmBOWoUiiz0gXw5VAu3RMa5w0b1gBU8OSuUqb4
+         AEtkZbqFYD4W0WJ0d3IiA/1XF2s9Fl82n7X/PtjFCiLZRgjUzj9Q13c24vjHb1a/yAmF
+         vQrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678358559;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AXe5GLVgfCGpsOd/5Hq05tqMS28XNylXrDvLRZzzBYk=;
+        b=Djv+58mn4BbRrwJ1POUg72fXBJCiJE8yLwXtPGrPIm5/N/Jt4FUi3cF8IoDG+VnxrY
+         DDg5TxEtZ35841OtEqKimNRy1MNkFQnMqAxd5kMC7Vy16WXg8nzfsSO11GAGXd39c4gt
+         1ZriirPGUT6ALDHodXGRmeg/TjQ8eowCHhWIvjEXc4y1F300xFCdgkdLvvHJ+hBS4JM/
+         KfzBLXjBDAIAuUiTwYEMMv5FJ2hvW2cguJcy/ADupZ6OURpr+69ILmTNMmRd0VJnWC11
+         hBoq/lLQ4ul0nl7+hbSEpM9/+w5PrOY38HUHVkSP6mzA3TyX6dHe0Cx0eNJXCfFV+jt8
+         6zDQ==
+X-Gm-Message-State: AO0yUKVHs0l0JG+tUGtLhVpmfN/B2SN95LgkrSv6vcRgPNh6ipVme5Bt
+	rlzyBkYFlalsmFwsUTwkmJ/6Iw==
+X-Google-Smtp-Source: AK7set9TX+g8GQa3ZvYm7K5IyQckLiVBKmzBF9eqRJS1rvlystpDX78yR8o1b1wUu4lOee+V+S+WMQ==
+X-Received: by 2002:a05:6000:507:b0:2c5:4f2d:d9b4 with SMTP id a7-20020a056000050700b002c54f2dd9b4mr12687108wrf.58.1678358559301;
+        Thu, 09 Mar 2023 02:42:39 -0800 (PST)
+Received: from [192.168.0.173] ([79.115.63.78])
+        by smtp.gmail.com with ESMTPSA id f12-20020a5d58ec000000b002c71b4d476asm17579951wrd.106.2023.03.09.02.42.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Mar 2023 02:42:38 -0800 (PST)
+Message-ID: <1849e2c8-54f5-9e56-4ed8-8b0e4a826d04@linaro.org>
+Date: Thu, 9 Mar 2023 12:42:35 +0200
 MIME-Version: 1.0
-X-Spam: Yes
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH] spi: Replace `dummy.nbytes` with `dummy.ncycles`
+To: Michael Walle <michael@walle.cc>
+Cc: Serge Semin <fancer.lancer@gmail.com>, Sergiu.Moga@microchip.com,
+ Mark Brown <broonie@kernel.org>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <pratyush@kernel.org>,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
+ Claudiu.Beznea@microchip.com, chin-ting_kuo@aspeedtech.com, clg@kaod.org,
+ joel@jms.id.au, andrew@aj.id.au, kdasu.kdev@gmail.com, han.xu@nxp.com,
+ john.garry@huawei.com, matthias.bgg@gmail.com, avifishman70@gmail.com,
+ tmaimon77@gmail.com, tali.perry1@gmail.com, venture@google.com,
+ yuenn@google.com, benjaminfair@google.com, haibo.chen@nxp.com,
+ yogeshgaur.83@gmail.com, heiko@sntech.de, mcoquelin.stm32@gmail.com,
+ alexandre.torgue@foss.st.com, michal.simek@xilinx.com,
+ bcm-kernel-feedback-list@broadcom.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ openbmc@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com
+References: <20220911174551.653599-1-sergiu.moga@microchip.com>
+ <20220925220304.buk3yuqoh6vszfci@mobilestation>
+ <18e6e8a8-6412-7e31-21e0-6becd4400ac1@microchip.com>
+ <20220926172454.kbpzck7med5bopre@mobilestation>
+ <1766f6ef-d9d8-04f7-a6bf-0ea6bc0b3d23@linaro.org>
+ <f647e713a65f5d3f0f2e3af95c4d0a89@walle.cc>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Content-Language: en-US
+In-Reply-To: <f647e713a65f5d3f0f2e3af95c4d0a89@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230309_014019_651227_B407760E 
-X-CRM114-Status: GOOD (  15.72  )
+X-CRM114-CacheID: sfid-20230309_024241_910567_5B5A4AEC 
+X-CRM114-Status: GOOD (  17.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,53 +107,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-[as this mentions  nvmem layouts it would have been nice to include me]
 
-> NVMEM subsystem looks for fixed NVMEM cells (specified in DT) by
-> default. This behaviour made sense in early days before adding support
-> for dynamic cells.
 
-Why is that? It still makes sense, doesn't it?
+On 09.03.2023 10:38, Michael Walle wrote:
+>> In an ideal world, where both the controller and the device talk about
+>> dummy number of cycles, I would agree with you, buswidth and dtr should
+>> not be relevant for the number of dummy cycles. But it seems that there
+>> are old controllers (e.g. spi-hisi-sfc-v3xx.c, spi-mt65xx.c, spi-mxic.c)
+>> that support buswidths > 1 and work only with dummy nbytes, they are not
+>> capable of specifying a smaller granularity (ncycles). Thus the older
+>> controllers would have to convert the dummy ncycles to dummy nbytes.
+>> Since mixed transfer modes are a thing (see jesd251, it talks about
+>> 4S-4D-4D), where single transfer mode (S) can be mixed with double
+>> transfer mode (D) for a command, the controller would have to guess the
+>> buswidth and dtr of the dummy. Shall they replicate the buswidth and dtr
+>> of the address or of the data? There's no rule for that.
+> 
+> But in the end that doesn't matter because they are just dummy clock
+> cycles and the mode will only affect the data/address/command. Therefore,
+> the controller is free to choose the mode that suits it best.
+>  > But that begs the question, is ncycles in regard to DTR or SDR? That is,
+> are you counting just one type of edges or both the falling and rising
+> edges. The smallest granularity would be ncycles in regard of DTR. To me,
+> it's not obvious what the SEMPER Nano Flash [1] uses. I'd say we choose
+> the smallest granularty in spi-mem to be future proof and maybe provide
+> some spi-mem helper to help setting the cycles for SDR/DTR. As an example,
+> if you want to wait 4 cycles in SDR you'd have ncycles=8 in spi-mem.
+> 
 
-> With every new supported NVMEM device with dynamic cells current
-> behaviour becomes non-optimal. It results in unneeded iterating over DT
-> nodes and may result in false discovery of cells (depending on used DT
-> properties).
+No, we can't invent our own measuring units. We have cycles and half 
+cycles (regardless of the transfer mode used (STR, DTR)).
 
-What false discoveries?
-
-> This behaviour has actually caused a problem already with the MTD
-> subsystem. MTD subpartitions were incorrectly treated as NVMEM cells.
-
-But this is solved, correct?
-
-> Also with upcoming support for NVMEM layouts no new binding or driver
-> should support fixed cells defined in device node.
-
-How would you support older device trees with newer kernels or the
-other way around? I'm not sure I get your motivation to drop handling
-the fixed cells.
-
-> Solve this by modifying drivers for bindings that support specifying
-> fixed NVMEM cells in DT. Make them explicitly tell NVMEM subsystem to
-> read cells from DT.
-
-How can a driver know when there are fixed cells and when not? IOW.
-only new ones can be affected.
-
-If you want to get rid of the schema for *new* drivers then what
-about having a new child node, something like "nvmem-fixed-cells",
-similar to "nvmem-layout".
-
-And then you'd tell the new drivers to use the new-style dt binding. But
-there are no new drivers yet. So I'm still not sure I get your motivation.
-
--michael
+> So you won't need the mode nor the dtr property.
+> 
+> -michael
+> 
+> [1] 
+> https://www.infineon.com/dgdl/Infineon-S25FS256T_256Mb_SEMPER_Nano_Flash_Quad_SPI_1.8V-DataSheet-v01_00-EN.pdf?fileId=8ac78c8c80027ecd0180740c5a46707a
 
 ______________________________________________________
 Linux MTD discussion mailing list
