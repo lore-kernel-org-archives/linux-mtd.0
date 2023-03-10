@@ -4,80 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 679FEC6FA99
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Mar 2023 10:54:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82122C64EC4
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Mar 2023 11:23:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=l7PoglGfTYf746ZacIeKcRMKXUyyEs736711SLVYBt4=; b=gYCGlgtn5QFff9
-	mZi7SRqlWpF/1yFJJAebRz/xUP9O9/FfeE/DXIijlL5pmol/FaEXdBgv5sxb3JoFSoK5KLZJb5HFE
-	fSbV4U/zV/2uqABvpFnFGOpUPp/gpLfjgAZawWRPtZUwqci8vliOEyOGTqGOpXA7Hw7vEOriWwD0o
-	aLPcQuzCPpvWKXDW9ZrMW3f9MxAdnKevegZhqjvjzixcKe9fo9PZ8ytvTRvAS1S+Up6CQtNvo0zY6
-	jc0dzWYjBPrsntRp5Ol/vXesSHmwGinYErnhZrNNopGydlafyWUc71csGUO5NZUx0/zkXzXy5cu19
-	FJCd6htWLh1FFYC6+KcQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=j9dlFaoHNs5iXG0O6rmiPUHsg+r7Qh6VneYLKhTVy8I=; b=i2mxOLTUlRMRF7g1eo0Uxm/1fE
+	lx8i/8b5k+QUYPOKtA/qzcxPRMbQ9Dka3SIPoNbqsfCtqg96UZWv3oCyhQ6UJ7tNPYpG1yI3uUk7S
+	CvtspOuEeK13la/ht6zgABo6wwU+hdp8foK9X29Y2PUtx/9rUG59bScUC+ilQeRZy2BSrSHfmA7FE
+	DlpgauMVtW+AL8dvTssdZmkZVVu7WC74Nzaj1OkxjMlvHd/msvHo561h6Eu8TdUX+IjqBixIRfBRr
+	eMhDJLl216cm4+K7AknImiNN4jnZstLOcOzM4tGvNPuWAkxa895xqJEP6GO9EntTRu5kPbLgZwFTM
+	J3+yvIYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1paaNb-00EG6o-9i; Fri, 10 Mar 2023 10:53:43 +0000
-Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
+	id 1paapH-00ELK7-20; Fri, 10 Mar 2023 11:22:19 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1paaNY-00EG66-9U
-	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2023 10:53:41 +0000
-Received: by mail-lf1-x12c.google.com with SMTP id n2so6033148lfb.12
-        for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2023 02:53:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678445615;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BAQLdEeSrfZYQHVCxX67ELAHVT8Gl44hvbILMrM52aY=;
-        b=ICetKMmwCbwiDaE3yxZqjn1i8MDyjkxLfzPryIFYluhAX4cs+hkaiU7gRkMyRf1Pz3
-         KJZ1Kuqp6KFJctWPSUefng+c9ORzp0dsPVLkm1eE6R7s0A1Nb/gnZvl9bik8p2fpe6Ng
-         6AuNYO08jRgLr1ICaUBJaP4Zg6/syX8m/5QwjbY4XAIprHZyKCRl7iBrsKCdUSQwipYh
-         gdNbDKIqgQsPeK/CYyC8nBrlWfiIUZ+ILKPupulpnIf0/fkaenb9bCmGT2lDVCWM0yx6
-         ZzMynhGA1lmX9cHFtwT1YJwUkI5yMebzfM0sUDCNZjrScq7Q56KYo83m9o8yHGgufQ4J
-         z/fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678445615;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BAQLdEeSrfZYQHVCxX67ELAHVT8Gl44hvbILMrM52aY=;
-        b=KWIqCfvanECxHUB71usTK3y2Tpng0B8P/RWT12sFewcBzMc0P2MGWFhUC5Z4Mv4P2j
-         Uv1R0auUzNyD/BOUmIxKRxXZeQ1wVkcSIGn1O1ZRO5PuoJZFUAVJRFqx9+GYo4hS1Vak
-         SzYDxkPqZ3NkRmVMvaS/jZ3i39MoeccN/IQadrXIFFpZPpDDOJpzwnkee5imRAW1PEsH
-         MQYrRCIbuGTKJN4PcYh9k0vUHnSPSZoo7dLEsiAtQsK1ghB/ppbdHzDOe0kfTFJoUTqI
-         0XPZHvnC8Sw6M/KaelY6I9YSGv9WLUQeP+iFtLI5uxsqkTVMQkkLKdTVLm0x0Yy3OI4P
-         gzfw==
-X-Gm-Message-State: AO0yUKWxEBgMbPq3l+QAWI9ZOhlYdYcY06mI5nWaCjSagxclIeB4AJmS
-	L1/Ad/p1CvitEdiXaSVOxf4=
-X-Google-Smtp-Source: AK7set9Pu1hCa4aONY/APd64XeHEzqooYZVnWsx7KB+q0u6a5dWjYGHYDwgMHXNkRCFxPDkErwii4Q==
-X-Received: by 2002:ac2:4432:0:b0:4d8:7f17:d0e9 with SMTP id w18-20020ac24432000000b004d87f17d0e9mr5963165lfl.14.1678445615544;
-        Fri, 10 Mar 2023 02:53:35 -0800 (PST)
-Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.gmail.com with ESMTPSA id q5-20020a2eb4a5000000b0029335c12997sm194532ljm.58.2023.03.10.02.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Mar 2023 02:53:34 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Michael Walle <michael@walle.cc>,
-	devicetree@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] dt-bindings: nvmem: allow MTD to be explicitly an NVMEM provider
-Date: Fri, 10 Mar 2023 11:53:30 +0100
-Message-Id: <20230310105330.14181-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	id 1paapD-00ELJ8-2D
+	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2023 11:22:17 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PY3Xw1495zKmXd;
+	Fri, 10 Mar 2023 19:21:52 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 10 Mar 2023 19:22:00 +0800
+Subject: Re: [PATCH] mtd: rawnand: nandsim: Artificially prevent sequential
+ page reads
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
+	<tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Michael
+ Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>
+CC: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
+	Jaime Liao <jaimeliao.tw@gmail.com>, Alvin Zhou <alvinzhou@mxic.com.tw>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20230310085452.1368716-1-miquel.raynal@bootlin.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <27cd6524-07ad-28a3-966d-9bd543da15a4@huawei.com>
+Date: Fri, 10 Mar 2023 19:21:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20230310085452.1368716-1-miquel.raynal@bootlin.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230310_025340_352150_D6B1988E 
-X-CRM114-Status: GOOD (  14.84  )
+X-CRM114-CacheID: sfid-20230310_032215_477071_A2FADDF3 
+X-CRM114-Status: GOOD (  33.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,50 +67,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKVGhlcmUgYXJlIGEgbG90
-IG9mIGRldmljZXMgd2l0aCBOVk1FTSBjb250ZW50IHN0b3JlZCBpbiBNVEQgZGV2aWNlcyBpbgpy
-ZWxldmFudCBwYXJ0aXRpb25zLiBBZGQgYSBEVCBiaW5kaW5nIGZvciBtYXJraW5nIHN1Y2ggcGFy
-dGl0aW9ucy4KCk5vdGU6IExpbnV4IGFscmVhZHkgdHJlYXRzIGV2ZXJ5IE1URCBwYXJ0aXRpb24g
-YXMgTlZNRU0gcHJvdmlkZXIgc28gaW4KZ2VuZXJhbCBpdCBkb2Vzbid0IG5lZWQgdG8gY2FyZSBh
-Ym91dCB0aGlzIGJpbmRpbmcuIEl0J3MgbWVhbnQganVzdCB0bwptYWtlIERUIGNsZWFyZXIgaW4g
-ZGVzY3JpYmluZyBoYXJkd2FyZS4KClNpZ25lZC1vZmYtYnk6IFJhZmHFgiBNacWCZWNraSA8cmFm
-YWxAbWlsZWNraS5wbD4KLS0tCkFzIGV4cGxhaW5lZCBpbiBjb21taXQgYm9keSB0aGlzIGlzbid0
-IHJlYWxseSBuZWVkZWQgZm9yIExpbnV4LiBJCnRob3VnaHQgaXQnZCBiZSBhIHNtYWxsIG5pY2Ug
-YWRkaXRpb24gZm9yIHdyaXRpbmcgY2xlYXIgRFRTIGZpbGVzLgotLS0KIC4uLi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL252bWVtL210ZC55YW1sICAgICAgICB8IDUyICsrKysrKysrKysrKysrKysrKysK
-IDEgZmlsZSBjaGFuZ2VkLCA1MiBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL210ZC55YW1sCgpkaWZmIC0tZ2l0
-IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL210ZC55YW1sIGIvRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL210ZC55YW1sCm5ldyBmaWxlIG1v
-ZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAwMDAwMC4uNzQzNWIyODAzY2Y5Ci0tLSAvZGV2L251bGwK
-KysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL210ZC55YW1sCkBA
-IC0wLDAgKzEsNTIgQEAKKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9ubHkg
-T1IgQlNELTItQ2xhdXNlKQorJVlBTUwgMS4yCistLS0KKyRpZDogaHR0cDovL2RldmljZXRyZWUu
-b3JnL3NjaGVtYXMvbnZtZW0vbXRkLnlhbWwjCiskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5v
-cmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMKKwordGl0bGU6IE1URCBhY2Nlc3MgYmFzZWQgTlZN
-RU0KKworZGVzY3JpcHRpb246IHwKKyAgTVREIHBhcnRpdGlvbnMgY2FuIGJlIE5WTUVNIHByb3Zp
-ZGVycy4gVGhpcyBiaW5kaW5nIGFsbG93cyBleHBsaWNpdGx5IG1hcmtpbmcKKyAgc3VjaCBwYXJ0
-aXRpb25zLgorCisgIFRoZSBleGFjdCB3YXkgb2YgaGFuZGxpbmcgTVREIHBhcnRpdGlvbiBjb250
-ZW50IChOVk1FTSBjZWxscykgc2hvdWxkIGJlCisgIGRlc2NyaWJlZCB1c2luZyBhIHByb3BlciBO
-Vk1FTSBsYXlvdXQuCisKK21haW50YWluZXJzOgorICAtIFJhZmHFgiBNacWCZWNraSA8cmFmYWxA
-bWlsZWNraS5wbD4KKworYWxsT2Y6CisgIC0gJHJlZjogbnZtZW0ueWFtbCMKKyAgLSAkcmVmOiAv
-c2NoZW1hcy9tdGQvcGFydGl0aW9ucy9wYXJ0aXRpb24ueWFtbCMKKworcHJvcGVydGllczoKKyAg
-Y29tcGF0aWJsZToKKyAgICBjb25zdDogbXRkLW52bWVtCisKKyAgcmVnOgorICAgIG1heEl0ZW1z
-OiAxCisKK3JlcXVpcmVkOgorICAtIHJlZworCit1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNl
-CisKK2V4YW1wbGVzOgorICAtIHwKKyAgICBwYXJ0aXRpb25zIHsKKyAgICAgICAgY29tcGF0aWJs
-ZSA9ICJmaXhlZC1wYXJ0aXRpb25zIjsKKyAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47Cisg
-ICAgICAgICNzaXplLWNlbGxzID0gPDE+OworCisgICAgICAgIHBhcnRpdGlvbkAwIHsKKyAgICAg
-ICAgICAgIGNvbXBhdGlibGUgPSAibXRkLW52bWVtIjsKKyAgICAgICAgICAgIHJlZyA9IDwweDAg
-MHg0MDAwMD47CisgICAgICAgICAgICBsYWJlbCA9ICJkZXZpY2UtZGF0YSI7CisKKyAgICAgICAg
-ICAgIG52bWVtLWxheW91dCB7CisgICAgICAgICAgICAgICAgLyogSnVzdCBhIGR1bW15IGV4YW1w
-bGU6IEtvbnRyb24gY2FuIGJlIGZvdW5kIG9uIE9UUCBhY3R1YWxseSAqLworICAgICAgICAgICAg
-ICAgIGNvbXBhdGlibGUgPSAia29udHJvbixzbDI4LXZwZCI7CisgICAgICAgICAgICB9OworICAg
-ICAgICB9OworICAgIH07Ci0tIAoyLjM0LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+Hi Miquel,
+> The continuous read support added recently makes nandsim
+> unhappy. Indeed, all the supported commands should be re-encoded into
+> internal commands, so of course there is currently no support for the
+> commands and patterns needed for continuous reads to work.
+> 
+> I tried to add support for them but nandsim (which is more a tool to
+> develop/debug upper layers rather than the raw NAND core) suffers from a
+> big limitation: it's internal parser needs to know what exact operation
+> is happening when the address cycles are performed. The research is then
+> sequential from the start up to the address cycles, but does not check
+> what's coming next even though the information is available. This is a
+> limitation which is related to the old API used by the core which kind
+> of forced the controllers to guess what operation was being performed
+> rather early. Today the core uses a more transparent API called
+> ->exec_op() which no longer requires controller drivers to do any more
+> guessing, but despite being updated to ->exec_op(), nandsim is still a
+> bit constrained on this regard and thus cannot handle sequential page
+> reads because the start sequence beginning is identical to a regular
+> page read.
+> 
+> If the internal algorithm is updated some day, it should be possible to
+> make it support sequential page reads by adding something like:
+> 
+>         /* Large page devices continuous read page start */
+>         {OPT_LARGEPAGE, {STATE_CMD_READ0, STATE_ADDR_PAGE, STATE_CMD_READSTART,
+>                          STATE_CMD_READCACHESEQ | ACTION_CPY, STATE_DATAOUT,
+>                          STATE_READY}},
+>         /* Large page devices continuous read page continue */
+>         {OPT_LARGEPAGE, {STATE_CMD_READCACHESEQ | ACTION_CPY_NEXT, STATE_DATAOUT,
+>                          STATE_READY}},
+>         /* Large page devices continuous read page end */
+>         {OPT_LARGEPAGE, {STATE_CMD_READCACHEEND | ACTION_CPY_NEXT, STATE_DATAOUT,
+>                          STATE_READY}},
+> 
+> For now, we just return -EOPNOTSUPP when the core asks controller
+> drivers if they support the feature in order to prevent any further use
+> of these opcodes.
+> 
+> Note: This is a hack, ->exec_op() is not supposed to check against the
+> COMMAND opcodes unless _really_ needed.
+> 
+> Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential cache reads")
+> Reported-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Link: https://lore.kernel.org/linux-mtd/fd34fe55-7f4a-030d-8653-9bb9cf08410d@huawei.com/
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>   drivers/mtd/nand/raw/nandsim.c | 17 ++++++++++++++++-
+>   1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+
+This patch works! Thanks for you help.
+
+Tested-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+> index c21abf748948..179b28459b4b 100644
+> --- a/drivers/mtd/nand/raw/nandsim.c
+> +++ b/drivers/mtd/nand/raw/nandsim.c
+> @@ -2160,8 +2160,23 @@ static int ns_exec_op(struct nand_chip *chip, const struct nand_operation *op,
+>   	const struct nand_op_instr *instr = NULL;
+>   	struct nandsim *ns = nand_get_controller_data(chip);
+>   
+> -	if (check_only)
+> +	if (check_only) {
+> +		/* The current implementation of nandsim needs to know the
+> +		 * ongoing operation when performing the address cycles. This
+> +		 * means it cannot make the difference between a regular read
+> +		 * and a continuous read. Hence, this hack to manually refuse
+> +		 * supporting sequential cached operations.
+> +		 */
+> +		for (op_id = 0; op_id < op->ninstrs; op_id++) {
+> +			instr = &op->instrs[op_id];
+> +			if (instr->type == NAND_OP_CMD_INSTR &&
+> +			    (instr->ctx.cmd.opcode == NAND_CMD_READCACHEEND ||
+> +			     instr->ctx.cmd.opcode == NAND_CMD_READCACHESEQ))
+> +				return -EOPNOTSUPP;
+> +		}
+> +
+>   		return 0;
+> +	}
+>   
+>   	ns->lines.ce = 1;
+>   
+> 
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
