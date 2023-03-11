@@ -4,46 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E2C0C61DA4
-	for <linux-mtd@archiver.kernel.org>; Sat, 11 Mar 2023 08:15:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E79F5C61DA4
+	for <linux-mtd@archiver.kernel.org>; Sat, 11 Mar 2023 09:30:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SmJ9QcUTuiA1eLkq900dAcNOM1viGAj5n0GdlDZIagQ=; b=dG24Hp4MY30dVb
-	yDeNcqVT2HWax6aR+O1LJycOck8P57vJMA2iNjtfKLxXP9gDQFn+H9PAXZd0hAEzuZV0DMlcrgMcm
-	cwEGboxuNI2OabLGwToQZ/QSdtjSSIX15RvA2tx79xqY8vpd8/oRRC962589BarWbCCJRsD/rBPIZ
-	dqg0SJQ87TnC3pa2cj41EWuVvm+V53SIyWBfX/oNK6u0rnLADb3JpnOgcP3J5lvpthoHQ0XQZM2lI
-	pro8AdOXscq3Ysj+lRgmaxuYBT8K8BL6FLks/1YwPbPlIkxFDG+bbryUsc1079HooDzu7BlC/nyb1
-	mRaNaf+zwj3ZAj8cswoA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=grbAKGKJ9q3V/17xVdSjC7juswxKrbV+lO4BD5fgsZw=; b=RcpgngGKbCyS0M
+	NCwV+pQ7PEewY/ILa2CteINHR44zk3I29bjVkv9L4sZcrEZ5ZP+cMhoxi0ES4umPlhtH7Y1/N/rXa
+	MH/yDwv4kLP0pijitoTy7jrYp+LJnmEezGCwUk4d4oPBZ+DD6K00EGIBvmV2MNYRRhtFDGWAeyiMw
+	jwjAHKl36Le+bIgPvDkzOoxUrL1J54NkAfdqInEOT30hw/R9DuBHUCZSGH9+5i/G4EGbW+hFF/SAx
+	TctJAtO9RDh0vOfYygffv3fJTwy+Rdp31UfcG/h+4vWdlkNVcDS75f8RTx4r5GqOdQPzc2bTvwkJD
+	2DAgMUQPTHmwm9KWAvNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pauNa-00HTcN-K1; Sat, 11 Mar 2023 08:15:02 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1pavY7-0003Uz-Sv; Sat, 11 Mar 2023 09:29:59 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pauNV-00HTb4-HH
-	for linux-mtd@lists.infradead.org; Sat, 11 Mar 2023 08:14:59 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 2969968AA6; Sat, 11 Mar 2023 09:14:47 +0100 (CET)
-Date: Sat, 11 Mar 2023 09:14:46 +0100
-From: hch <hch@lst.de>
-To: Richard Weinberger <richard@nod.at>
-Cc: torvalds <torvalds@linux-foundation.org>,
-	Daniel Palmer <daniel@0x0f.com>, hch <hch@lst.de>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] JFFS2, UBI and UBIFS updates for v6.3-rc1
-Message-ID: <20230311081446.GA17461@lst.de>
-References: <1115586887.187161.1677658022188.JavaMail.zimbra@nod.at> <CAFr9PXktRBm66vgVjOnwTeucBD36OuPjDVNd9cH1F8u0nesKrA@mail.gmail.com> <CAHk-=wi29bbBNh3RqJKu3PxzpjDN5D5K17gEVtXrb7-6bfrnMQ@mail.gmail.com> <349964589.230468.1678469537890.JavaMail.zimbra@nod.at>
+	id 1pavY2-0003UV-PE
+	for linux-mtd@lists.infradead.org; Sat, 11 Mar 2023 09:29:56 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id E617961989E6;
+	Sat, 11 Mar 2023 10:29:50 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id 3g_el_QkYBeq; Sat, 11 Mar 2023 10:29:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id CA1EA61989EA;
+	Sat, 11 Mar 2023 10:29:49 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 0uJFQxCAaqwE; Sat, 11 Mar 2023 10:29:49 +0100 (CET)
+Received: from blindfold.corp.sigma-star.at (089144204221.atnat0013.highway.webapn.at [89.144.204.221])
+	by lithops.sigma-star.at (Postfix) with ESMTPSA id 03ECF61989E6;
+	Sat, 11 Mar 2023 10:29:48 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>,
+	Daniel Palmer <daniel@0x0f.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Christoph Hellwig <hch@lst.de>
+Subject: [PATCH] ubi: block: Fix missing blk_mq_end_request
+Date: Sat, 11 Mar 2023 10:29:29 +0100
+Message-Id: <20230311092929.2827-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <349964589.230468.1678469537890.JavaMail.zimbra@nod.at>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230311_001457_750761_C3A469B7 
-X-CRM114-Status: UNSURE (   8.16  )
+X-CRM114-CacheID: sfid-20230311_012954_989698_4361B408 
+X-CRM114-Status: UNSURE (   9.33  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -61,13 +72,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 10, 2023 at 06:32:17PM +0100, Richard Weinberger wrote:
-> Indeed, I'm able to reproduce the problem and adding blk_mq_end_request()
-> back fixes it.
+Switching to BLK_MQ_F_BLOCKING wrongly removed the call to
+blk_mq_end_request(). Add it back to have our IOs finished
 
-Yes, that was my braino about failures from ->queue_req being handled
-by the block layer by doing completions, but successful I/O of course
-is not. 
+Cc: Daniel Palmer <daniel@0x0f.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Fixes: 91cc8fbcc8c7 ("ubi: block: set BLK_MQ_F_BLOCKING")
+Analyzed-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Daniel Palmer <daniel@0x0f.com>
+Link: https://lore.kernel.org/linux-mtd/CAHk-=wi29bbBNh3RqJKu3PxzpjDN5D5K17gEVtXrb7-6bfrnMQ@mail.gmail.com/
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/block.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 1de87062c67b..3711d7f74600 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -221,7 +221,10 @@ static blk_status_t ubiblock_read(struct request *req)
+ 
+ 	rq_for_each_segment(bvec, req, iter)
+ 		flush_dcache_page(bvec.bv_page);
+-	return errno_to_blk_status(ret);
++
++	blk_mq_end_request(req, errno_to_blk_status(ret));
++
++	return BLK_STS_OK;
+ }
+ 
+ static int ubiblock_open(struct block_device *bdev, fmode_t mode)
+-- 
+2.26.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
