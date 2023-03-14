@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49CA9C6FD1C
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Mar 2023 12:44:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B070C6FD1D
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Mar 2023 12:44:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wrDjVYizRXEtaTXVLzDVq3IvKZ0Uz+UTntzhbGqvw0Y=; b=DlpYaLLESO7XP+
-	TRBiUhR7wZ1gOT0Tgdrhijplq6EFE/uUApwftDfqPm9bLZKjIKdB9NT5Vz04OO9LJb0twmYRBF9N6
-	9rm3Ra198ruqsXyF0B2ULGo25Em8VagVzVRbCzKtasDdXymLVmIHJDtEmnFSlBap1PRpRm7/2AP99
-	FfxoD+U8m5yPKg8OGGI7j180BWuUBk9UhdhSOjdaSFo2de5cV5gXUkkTi3bKOG+dwV1rPLg/skcN3
-	XZdGRftPgHUqMhF7BbGnwbhddVEUPKY++fhhdsFsHB28ZtV49TiUPDDHYIrmlu3G5nluvLb51VU8l
-	8XRWPPn/31BckhOtiUow==;
+	List-Owner; bh=wrDjVYizRXEtaTXVLzDVq3IvKZ0Uz+UTntzhbGqvw0Y=; b=hH5/ErTVXE4zDq
+	NkRvcEjLZWHjULBM8XtR1fqjMdaJ0Do7ezuW22GsdBaX2t40HQ45hh0dL9/WdjyqadADZ5WV4lpJk
+	8xFlD8wbT2Tv4ZYiuTrRqTbW0YN1Y3dDoF4E8GFYAgke2dzOWM+/tHm4TXguLolW8Mfn+oezedqqp
+	LEsq1KrJ7YeS3myl9gr3Ji7cZz2sjLOVljX+eXpt6S+Vf8GT2bk8K7xivKeexzmZwLCMTvh1YKXhG
+	TbppQftvBOOjaoZ2DYzYZqSkKRdLH4aC/8m3HSOnr/MYSenKsQciIBbBn2Jy9Mg3bOqrd0AvIdOmB
+	l7BhDuoWz8wa+nyzocYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pc40O-00A9cw-0u;
-	Tue, 14 Mar 2023 12:43:52 +0000
+	id 1pc40e-00A9oH-2a;
+	Tue, 14 Mar 2023 12:44:08 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pc40L-00A9aL-1D
+	id 1pc40a-00A9kv-2q
 	for linux-mtd@lists.infradead.org;
-	Tue, 14 Mar 2023 12:43:51 +0000
+	Tue, 14 Mar 2023 12:44:07 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 000A361766;
-	Tue, 14 Mar 2023 12:43:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D41D2C4339C;
-	Tue, 14 Mar 2023 12:43:47 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 67D946178A;
+	Tue, 14 Mar 2023 12:44:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C408C4339B;
+	Tue, 14 Mar 2023 12:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678797828;
+	s=k20201202; t=1678797844;
 	bh=UZ/pKeFho25nxzsR7ToDZuBnj1qqvUk5s71vj7Pfj7Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cdV4nSGSKt2FpCL5+vNT34X2BGTWsvXlzB7pLKhHt4NmZDe+HWyB0Hk3Yvy9v3ufL
-	 1d3T9oUZJwSr3KOUNylrrzWbQue+roIKFeW3NsGw1N5888/8l8gkNrBhPum3pPvZ0I
-	 WjFg1BdcF9jhLTiByVpmPwJq8+/6Hdt7DghVGczu3EmEurBzHkNEjO/3HPpd2dsWiw
-	 tEK7/TXqPZyzjWtc6U22Qv9yxdy5TSgPieV1riSyzF3WitNnrj4A60hTz+rSlWLf1x
-	 FecGT7Pq3foh3w2arNk9SwNAG255RBYrbIe14Z2OYte0NNDQVqVR3QhbhP/X+76RS9
-	 IqhbyAn1DeRbQ==
+	b=Y9GHGo0rL5T0J8LASu7uZVpC/b8LOU5tzvosO5J6BsGHMNJqEh7UD5M7m2HYh1woQ
+	 sTHcNhp0+yNOUqkvXW+LXb7PT/Qj+813/KoAI9bCxRsZNDEsuaK0pDhZsBeNKfHNF4
+	 mwHcxsJO+HqHUzFpXP+OwrhXkN9Q7A+42EVDL8yeLMLMPj3j7deCS5Vp/J/iQvxN7U
+	 B4G3OGd0aRTjLHL8iqp6giHpJj2W00MAXCl8qKCa1oLAd+5JSrqB/Zz/1jnpj20Q1J
+	 XB9Z2K54pW7NFVSyftovQAo3dVHVvr2mzL2mS4X6EO3pU1jBw6OCf4CQkGYec9/9nF
+	 lYEYuuvg6uXgA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -54,18 +54,18 @@ Cc: Yifei Liu <yifeliu@cs.stonybrook.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	dwmw2@infradead.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.15 02/10] jffs2: correct logic when creating a hole in jffs2_write_begin
-Date: Tue, 14 Mar 2023 08:43:36 -0400
-Message-Id: <20230314124344.471127-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 2/8] jffs2: correct logic when creating a hole in jffs2_write_begin
+Date: Tue, 14 Mar 2023 08:43:54 -0400
+Message-Id: <20230314124400.471257-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230314124344.471127-1-sashal@kernel.org>
-References: <20230314124344.471127-1-sashal@kernel.org>
+In-Reply-To: <20230314124400.471257-1-sashal@kernel.org>
+References: <20230314124400.471257-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230314_054349_489544_F181EC3B 
-X-CRM114-Status: GOOD (  19.44  )
+X-CRM114-CacheID: sfid-20230314_054405_004825_833B38F4 
+X-CRM114-Status: GOOD (  19.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
