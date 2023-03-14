@@ -4,61 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34074C6FD1C
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Mar 2023 12:44:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FEE5C74A5B
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Mar 2023 12:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Gn6l4AhJcsCH9UMlYUyTJx+gcGCuw7t2hjwjBuvEgns=; b=ChU98W1UolQ1n7
-	O9l1QZLknhdYYWiJaeyTY6shCHqMW5RNlMiyB7zBizfRkrqEMQSqZfK44WJymwMZC7w2RR1v7HGJo
-	Ysy/XUlDdpMojL70Qbx0l1u9bOa5wdm1GU38Cnrfjm4gfPXynenx2tRyn3K0urn6qjgwLexcN3XBr
-	rnqpr5c85KDowBU7eA6XK5Wzc7gnmFE63AiMeC+FSmhMelEz3NpruxD3GNTchPjb7BKY6C9yDTC/g
-	BJjU39kBTUbZWEQVa5ltPWDAAgE24ReqboV3fC7aOFRWNyVtLew7ZZ2IJSvPAiFY6gt6rG5eZStwU
-	OyTjUmDnJiGdf7CqmZCQ==;
+	List-Owner; bh=WfL3W/xdAKvvYG/Q/cGyj8PZrzQzwodqnqYJJoKNP3Y=; b=GAQepUp97OFxp2
+	x06Ci6pnfRw6ATw1JEUwk83vpZIo5spzrpZkNeX2BuHffL1bxJg8hX7QYwDf54CySwHuF2VSaDyuH
+	aeel8YQideAdc7VWg3CO0vxCJafNsYg8sCoo/2ZMA+5CE26GKaYLQRpH8G42uIjYy6hXJ4TOSwgWD
+	I1cgrMH4UYHaUDwXtXGN3NXStzbwAPdT1adoYLrCbO0X73+O1cQNExOUBzIbzQ2L4Oxn0orLL7nWG
+	zS6SzxBeGnQP0QlvzoUuySBuekWAly6Rm1gnSWWAiYmE+y+VKYGF5jPjx6MNG6vWDGNZmqa6Siyjs
+	iUPlvH9SLybagqEy9zfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pc40w-00AA0D-1R;
-	Tue, 14 Mar 2023 12:44:26 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1pc412-00AA4E-0x;
+	Tue, 14 Mar 2023 12:44:32 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pc40u-00A9yN-2O
-	for linux-mtd@bombadil.infradead.org;
-	Tue, 14 Mar 2023 12:44:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=1l/OCXfXb7USSL83srJj7DWcBu6T/Jf3+O/gmXa7YN8=; b=JtAI4+FmSIVI+oGuHj4D1GkgKK
-	CTx/5ofNTQscuF/m0QdyIQgmCSp7/yHhO83QNi5QV4SpGYTTsPWS18kpEliV1MMb9SsN1UxM175Mj
-	vFkgYcvvycJvhNe8V/HldC2IavCOfpbWdZsKF/kt53WNg7Ou2LBH2KJAttAEYJz5NeU7JgSjs/xFW
-	P/QN9rlS7ypxPDKLUMioNJmFmDJpttarCO2W53S/And+V+66xgeLUzyYW88RFmS85omQhbbF0fwwm
-	IT4MJdUoispoKMXnLIgvhazSBgWM+j6PD4Rf24U4W1TFdwOpp8tuN6yBYFsBqIjkjlfbKu4zEYvlJ
-	grYT1+sA==;
-Received: from dfw.source.kernel.org ([139.178.84.217])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pc40q-001mef-18
+	id 1pc40y-00AA1U-2I
 	for linux-mtd@lists.infradead.org;
-	Tue, 14 Mar 2023 12:44:23 +0000
+	Tue, 14 Mar 2023 12:44:30 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D49BD6177C;
-	Tue, 14 Mar 2023 12:44:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBB2FC433A1;
-	Tue, 14 Mar 2023 12:44:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4DAED6177C;
+	Tue, 14 Mar 2023 12:44:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E003C4339B;
+	Tue, 14 Mar 2023 12:44:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678797856;
-	bh=v6nTogP6iEQ2uww4dLnsRnckbyhaQOz1zvK0D9le53s=;
+	s=k20201202; t=1678797868;
+	bh=1ZcReL0BMJCMioeHH6nGC394nujvTu/i6y58SC+T8vk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mcNWXe/nYqhMwCh3J7y3h28I/MzjYcR59TOJX8aKHAi2aALbOcUU68oW/l28KUTKa
-	 PcgcvA7bucmhWrWbtflcXDduCvkcuCkToS7uKlOC44MVgYrQFG3tirwOM8IMLQyqkx
-	 vHS6gpzGl/OpnykDaJqO6oRdoYPTRDonX4aLH2EDfHAu3LANTKb9NaWBn0NsTfzAzN
-	 AsaEpvwZXKPz9ykc5p8K/Mk6AMLqsCVaOWTeqIZX5mVBt25AwEmJl/OwNkSQj7M6dN
-	 NcJJaar4iU6L3PW1zv+r4pn7srIa00XIdLNUJnEzegGiX4Q3JdeRYhBtJen6AcQGwW
-	 lunTK5YnUxk8A==
+	b=luLx3kzWa+qrzyAtt6IXh3DO3rQIxcP3EBKDbwB2lxQLv6Kyqh3H2em2AtJmg5XBA
+	 ONhkZGqwMdtxgj+q+jYU5Nam8BWQaC8UlzOnw0Dii3yZLFUp2m2I8s/o80mvrOlIcv
+	 POk3wfOhZohc0PXZnb2SaO6pBjYEI4f28OOrxVYFeMrWCez6ZhJt1mA21M1EJbe3iI
+	 lx0ZG4NCao0H9k6Qs5xYetPi0OtAmQewIcqemb23j15sMUCRzPoQM2Axk34S5z+SgI
+	 c4kQ75zzpV1iHcYEtrZ/uURBBFJo/30doVDBzCu8AmhWvBaPVl8SCs4dD4Sqm8MrrV
+	 HOTgdSAowDxNA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -69,18 +54,18 @@ Cc: Yifei Liu <yifeliu@cs.stonybrook.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	dwmw2@infradead.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 2/7] jffs2: correct logic when creating a hole in jffs2_write_begin
-Date: Tue, 14 Mar 2023 08:44:07 -0400
-Message-Id: <20230314124412.471364-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 2/7] jffs2: correct logic when creating a hole in jffs2_write_begin
+Date: Tue, 14 Mar 2023 08:44:19 -0400
+Message-Id: <20230314124424.471460-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230314124412.471364-1-sashal@kernel.org>
-References: <20230314124412.471364-1-sashal@kernel.org>
+In-Reply-To: <20230314124424.471460-1-sashal@kernel.org>
+References: <20230314124424.471460-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230314_124420_795963_1E3FC868 
-X-CRM114-Status: GOOD (  19.39  )
+X-CRM114-CacheID: sfid-20230314_054428_829570_904D7A6A 
+X-CRM114-Status: GOOD (  19.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -155,7 +140,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index 34880a4c21732..94bd4bbd37875 100644
+index 3047872fdac9b..bf3d8a4516a52 100644
 --- a/fs/jffs2/file.c
 +++ b/fs/jffs2/file.c
 @@ -137,19 +137,18 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
