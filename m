@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76DE8C6FD1D
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 982F8C7618D
 	for <linux-mtd@archiver.kernel.org>; Wed, 15 Mar 2023 06:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,56 +12,56 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iuKJNwh7L3R2dnwBHsypyOWxvwTCWOVvk5CYp2J9938=; b=KQELsrm0qBvADM
-	lrNDv4SxKq5MFalerJBb9zrzQfb3uW32WV3q+zQoL/WBQlpn+7QHpCIU2TXnPK8FSo5Ya55bckUca
-	12ZSYPU428kB1m9MnstX84J4grL8WvJOy2cmXd3L1nU5ePx+cgB5j6j+Ib6/CviaFvnIS9qGJ13m1
-	6vT6iMWqF2oeudp8A17dkxDxZJjtiUu7iPb3O3DvtPfYXaAHcHwrqX+rJTzTr5aUWfJrdUaRGafyY
-	QLhEDFVzf4zfTljUr0ABAe8pbMo0ON5ZvGnolsvrjKvM4BTH/jNxFf91g25Z8Oj0ViJKUun7kLdEK
-	SNEEdr15KL+1AHXW8uXg==;
+	List-Owner; bh=DIERh3qy9Up+N+eJzBP2bzC4M0Xipvve1ToQD6NxtLw=; b=HcC/BGJ0p3RbWf
+	BBEXn3DkBZKb8LQGEvEENWbyB9paRYDYbkAWQg/cAU4Bpl6HnsGCbOrgk8Bmus1CxtVjMKBKdMYOh
+	9eonol0y08JRyurcl09tMvrEW8AqhstKJIn9BYrkFy34L6rV+hLtk7iQ9cRpFZUvj8mNPXB2CfLAd
+	rld8AZV+WYlwhb+ptQ0oa2jcQ/umYTTb4WN53XMzzqutKbCw7VUj/WeF2GqYytau7L9TDzfTeSVnH
+	2Z74q+z0H+uvc7Lg6HibT94tSIaptglzjsB+dd/QcYfUtIkdPai1wXyVpqICU6cc6FAahUDbDjMAk
+	ricgcseLOjqUC3qsQoMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pcKjB-00CXjl-1X;
-	Wed, 15 Mar 2023 06:35:13 +0000
-Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
+	id 1pcKjF-00CXkx-1a;
+	Wed, 15 Mar 2023 06:35:17 +0000
+Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pcKj7-00CXiT-30
+	id 1pcKjB-00CXjk-3B
 	for linux-mtd@lists.infradead.org;
-	Wed, 15 Mar 2023 06:35:11 +0000
-Received: by mail-pl1-x62b.google.com with SMTP id k2so11122094pll.8
-        for <linux-mtd@lists.infradead.org>; Tue, 14 Mar 2023 23:35:09 -0700 (PDT)
+	Wed, 15 Mar 2023 06:35:15 +0000
+Received: by mail-pj1-x1033.google.com with SMTP id d13so7702569pjh.0
+        for <linux-mtd@lists.infradead.org>; Tue, 14 Mar 2023 23:35:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678862109;
+        d=gmail.com; s=20210112; t=1678862112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cmOODTc6/7lFVkljsQorTosaMctgEfM6gFeqnDoQOFE=;
-        b=F2Kb2W/FWyRaWmAN3I429qqQaqHdIuzJnjYNUrRsuDAKhzcOulBpljbmqcosOJ0J10
-         XHi8mVsSVX99Ra7fLYFS+xHueuuFQwwSu8f9iBEs3owsK77BGNNmJO/2DSiox9gamyv6
-         MkAzzqAGw/nCxZuysSnEy6Dj6EHjYfDz9BPxyrPS89Rzmp2jZCHc30QYPVmdjpLTKX1d
-         Mp7kvz03I7Oo+Xs9276F+eXjUMzbCSWqaEnOLsTEtTYqHUmH9PjtMxUDOD+chm0uekds
-         Fu1JctpCnoRl7OQDaXb6R/hLKbiUqrBPj05R5QlCzTUtX6VueMjqaBr0Hvb8VlDCbfeg
-         8JIA==
+        bh=kMSwSbJsTS4y6fz9hKjPpbpHEWXtJ/JwdzVt0jfJQ20=;
+        b=T08cVCxfPRIOpVY/yOxAFJWHY4j2fVPy+4oH1u/fjCfzzpJAEicLiX3lO/0ma7qev5
+         omDNHIQA6oxAN+shMa59wEdJ3ycukIEFy5krQ9c3jlDNXoTaVWvytjYZeH8Q6CQESCZJ
+         W1f6ObN+FO2aDRImpDPCFua8Bzk8g3qmrFJ2e7a+xoEyz5eX4NTS6ZscDrPIsVH3vfFB
+         pvPvjZL1t1j7RUJfI/RvFK0qfghR++9Wk5g0ieboakdElfydrYPdjBUejhnohUnBDeXm
+         /Tmi974zuCeSFLtvIRdcn4hYLRv5IiifwJ47oR6WfeqaoNTxNKroSdySLvWJhBLLz+Fp
+         aCxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678862109;
+        d=1e100.net; s=20210112; t=1678862112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cmOODTc6/7lFVkljsQorTosaMctgEfM6gFeqnDoQOFE=;
-        b=pFVZFnbgMj1ht/j7imH7Cps6m6FjXiYPiOPOLHQbJoc1vggM9WE/4HWp9ZMDJ/+J2O
-         byyanaxbmEYJDLHJzPmtrIz8n/+Qoot5fuvccpTP7NNyB/dA5sDn9ELc8f55QFMYI3nO
-         GkoMJVu5eyLkjAwLPadEQk9pEAUj6GsAqgPgwjo3OYg9urLDcKCpGcLx5jFpY64Qk44u
-         2LyNyXsVdPPJfUNNOqIdzMd0lQDiH94c7W4UUIrFi+mx4+qpYbivNL6BEAhjSUuPCGxC
-         9jUO6wTT4edol+01DOfY02PWAQnpUxyLjJMu2kRNVTKG9ipgadK0U3jLSf+c9zfOvSS7
-         dsHw==
-X-Gm-Message-State: AO0yUKWVdfy2moeJ8EgWLHBTphfPqdeJr8tEPAYwJT6Yvr8MqhK7LJsz
-	DUVg3BKGpuIVERJrluFqjlffiSKbdqH4Cw==
-X-Google-Smtp-Source: AK7set+Y6tkpzUq9Hvy00D0o+hGnpqWrOK0mo/sKHTRkh7l9PbYyOCOfeijA+MXI6y3uJuFdmeZp5Q==
-X-Received: by 2002:a17:902:ecd0:b0:19f:3e9b:7527 with SMTP id a16-20020a170902ecd000b0019f3e9b7527mr1770389plh.61.1678862109517;
-        Tue, 14 Mar 2023 23:35:09 -0700 (PDT)
+        bh=kMSwSbJsTS4y6fz9hKjPpbpHEWXtJ/JwdzVt0jfJQ20=;
+        b=GALBhnwl0mHanP6AhdIArgAamYqTZhQGKBHAJqdzcHgfHBJAmSIqHae8JrfH4m6SlN
+         J+ara3zIuyTGvOWLRGjMJ10F6yPEkYcdg69U29pAF42p/bLCGE9kX9H3JYjXLpHTQdht
+         zGqOLoespFtkUls7ih4w2GgEGh5wjUdlET2zpvkvYxYHuQOoBTjNR8BR3vk7BRnq1GId
+         /T9NrCIxP7I4GhDOnTv30j5voMSwn2numLWo6KcBUfVsKkWPB+B+CAVCkvREeMHidAc+
+         MLH2+lrCOlKdqgZ7hbDVJfEhbrBihFdGhEvGtOtdOwz1ua/UJ9yo98e8iK1VJGvTIA0r
+         0KcQ==
+X-Gm-Message-State: AO0yUKWO6+yg/J9NQuISt1SHk+hA/OBuUDElCVm20wRhYFP2TBLp6lAL
+	Q1aGyFXrY40WSkSWaHblLIbxTvp1Emf4dw==
+X-Google-Smtp-Source: AK7set/Na6v3ee9GV0STLnUi9JvQFv1QztTp57yL+r2HWUUebgUlc/oF1Z/f+QvkDcgIRoEVv/ex1g==
+X-Received: by 2002:a17:902:e890:b0:19f:e9e7:4cb with SMTP id w16-20020a170902e89000b0019fe9e704cbmr1768343plg.45.1678862112348;
+        Tue, 14 Mar 2023 23:35:12 -0700 (PDT)
 Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id jk19-20020a170903331300b00199536fbc6fsm61114plb.280.2023.03.14.23.35.07
+        by smtp.gmail.com with ESMTPSA id jk19-20020a170903331300b00199536fbc6fsm61114plb.280.2023.03.14.23.35.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Mar 2023 23:35:09 -0700 (PDT)
+        Tue, 14 Mar 2023 23:35:12 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -75,16 +75,16 @@ Cc: tudor.ambarus@linaro.org,
 	tkuw584924@gmail.com,
 	Bacem.Daassi@infineon.com,
 	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH 1/2] mtd: spi-nor: core: Allow manufacturer fixups to set nor->mtd.flags
-Date: Wed, 15 Mar 2023 15:34:56 +0900
-Message-Id: <ad48c4d0a94a413f06900ee435df2fa50c530dd6.1678858206.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH 2/2] mtd: spi-nor: spansion: Add a helper for ECC related initialization
+Date: Wed, 15 Mar 2023 15:34:57 +0900
+Message-Id: <9e1c639a5bcd2b3f347385ff243dbb521bbe5857.1678858206.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1678858206.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1678858206.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230314_233509_990885_DF45E4AA 
-X-CRM114-Status: GOOD (  12.24  )
+X-CRM114-CacheID: sfid-20230314_233514_100063_984EEE44 
+X-CRM114-Status: GOOD (  14.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,37 +103,89 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Infineon SEMPER Flash family has on-die ECC and multiple programming on
-the same 16-byte ECC data unit is not allowed to preserve ECC.
+JFFS2 supports write buffer mode for ECC'd NOR flash such like SEMPER
+flash family (s26hl/s25hs/s28hl/s28hs). To activate it,
+MTD_BIT_WRITEABLE needs to be unset in mtd->flags.
 
-In JFFS2, ECC'd NOR Flash is supported when CONFIG_JFFS2_FS_WRITEBUFFER
-is set and MTD_BIT_WRITEABLE is not set in mtd.flag.
+In existing late_init() functions for SEMPER flash family,
+params->writesize is set to 16 to avoid multiple programs in 16-byte ECC
+data unit.
 
-In spi-nor/core, the mtd.flags is set to MTD_CAP_NORFLASH that defined as
-(MTD_WRITEABLE | MTD_BIT_WRITEABLE).
-
-The mtd.flags should be set to MTD_CAP_NORFLASH in spi-nor/core when it
-is not yet set, to allow manufacturer fixups set it.
+This patch adds a common cypress_nor_ecc_init() helper that takes care
+for those ECC related initialization.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/spi-nor/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/spansion.c | 33 ++++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 0a78045ca1d9..5be9392b65c1 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2976,7 +2976,8 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
- 	if (!mtd->name)
- 		mtd->name = dev_name(dev);
- 	mtd->type = MTD_NORFLASH;
--	mtd->flags = MTD_CAP_NORFLASH;
-+	if (!mtd->flags)
-+		mtd->flags = MTD_CAP_NORFLASH;
- 	if (nor->info->flags & SPI_NOR_NO_ERASE)
- 		mtd->flags |= MTD_NO_ERASE;
- 	else
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 1678b7b2e9f7..9539968c4a6d 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -219,6 +219,22 @@ static int cypress_nor_set_page_size(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
++static void cypress_nor_ecc_init(struct spi_nor *nor)
++{
++	/*
++	 * Programming is supported only in 16-byte ECC data unit granularity.
++	 * Byte-programming, bit-walking, or multiple program operations to the
++	 * same ECC data unit without an erase are not allowed.
++	 */
++	nor->params->writesize = 16;
++
++	/*
++	 * Unset MTD_BIT_WRITEABLE to activate JFFS2 write buffer for ECC'd NOR
++	 * flash.
++	 */
++	nor->mtd.flags = MTD_CAP_NORFLASH & ~MTD_BIT_WRITEABLE;
++}
++
+ static int
+ s25fs256t_post_bfpt_fixup(struct spi_nor *nor,
+ 			  const struct sfdp_parameter_header *bfpt_header,
+@@ -260,13 +276,7 @@ static void s25fs256t_post_sfdp_fixup(struct spi_nor *nor)
+ 
+ static void s25fs256t_late_init(struct spi_nor *nor)
+ {
+-	/*
+-	 * Programming is supported only in 16-byte ECC data unit granularity.
+-	 * Byte-programming, bit-walking, or multiple program operations to the
+-	 * same ECC data unit without an erase are not allowed. See chapter
+-	 * 5.3.1 and 5.6 in the datasheet.
+-	 */
+-	nor->params->writesize = 16;
++	cypress_nor_ecc_init(nor);
+ }
+ 
+ static struct spi_nor_fixups s25fs256t_fixups = {
+@@ -312,13 +322,10 @@ static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
+ 
+ static void s25hx_t_late_init(struct spi_nor *nor)
+ {
+-	struct spi_nor_flash_parameter *params = nor->params;
+-
+ 	/* Fast Read 4B requires mode cycles */
+-	params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
++	nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
+ 
+-	/* The writesize should be ECC data unit size */
+-	params->writesize = 16;
++	cypress_nor_ecc_init(nor);
+ }
+ 
+ static struct spi_nor_fixups s25hx_t_fixups = {
+@@ -381,7 +388,7 @@ static int s28hx_t_post_bfpt_fixup(struct spi_nor *nor,
+ static void s28hx_t_late_init(struct spi_nor *nor)
+ {
+ 	nor->params->octal_dtr_enable = cypress_nor_octal_dtr_enable;
+-	nor->params->writesize = 16;
++	cypress_nor_ecc_init(nor);
+ }
+ 
+ static const struct spi_nor_fixups s28hx_t_fixups = {
 -- 
 2.34.1
 
