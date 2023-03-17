@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6874EC76195
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Mar 2023 08:56:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1341C74A5B
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Mar 2023 09:15:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+zfv0WoP+3kH8qHTYuZjECbHaKwRV2l2Mmnhw4KNWKY=; b=4dfkOcCcS8LBN5
-	bRGce5m+SEegX1y2RNK5Jt/nAxjK7GxUFsoRz4oTy3pL92LFy/8OfFZcOe1N2LJI5O+t/rwcBvGcc
-	HgoaWBwIhFMDu+NZePWeq7U0pJjwtC5A5jnJOlp+IcISYQvWq4eyYsawg3LKz2XEd8paIKY2q/U+K
-	sLxehAX3P6Xq9YKi/BFc3mlvrycyAmh5OkEIL64K2vacO8Ll9V7MeGzuRe8rbGkusUQs3ZTI2tlnY
-	a4M3C5RHPJUc6QbNaksqWeW8QkT9WA/A5MQ/wvm/MLoMo9JRM7MdgrOqSiC3hEYWSRgTwke+zMGYx
-	9rhNsunZWbcDP9M1qYKQ==;
+	List-Owner; bh=YKeMH0VNQDYhVyDH5gXSHkJhbtK5kVmSCI8jaG3A5YY=; b=Lbul6SVE33Vpcn
+	TZktvJtYaq7Gn3nxC5pAmolBtNK4HPEToNNC1qeFN/h/siFdJbbdwluqG5wnc8DFqfpyRVUmKwNQr
+	68QNk+exQNTBLqYwf3wEtiDo2AUvuBH/g97nchOQIF2Nd3ZUM4KsdDrqLvtuQPW417LhWih+gnlWi
+	31dVL9niOTHQfrkCNXDju8HdT6TZx7Cl3lfuDlio+vw/kiL5ock+KnARcXO268mCT6zFnw8a1WhFT
+	VD8c1koDcaI2TiOFcx/+cHFbl0IXaDRaDsmv6wYN2Kn4IYSCY8a4nItsXLrggwo9TtBzop72AkpRj
+	On3NMX9MbMet8qXCdoHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd5sG-001aD4-2h;
-	Fri, 17 Mar 2023 08:55:44 +0000
-Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
+	id 1pd6BR-001gTe-15;
+	Fri, 17 Mar 2023 09:15:33 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd5sE-001aAH-1F
+	id 1pd6BN-001gSs-2j
 	for linux-mtd@lists.infradead.org;
-	Fri, 17 Mar 2023 08:55:43 +0000
-Received: by mail-ed1-x52d.google.com with SMTP id y4so17626033edo.2
-        for <linux-mtd@lists.infradead.org>; Fri, 17 Mar 2023 01:55:39 -0700 (PDT)
+	Fri, 17 Mar 2023 09:15:31 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id x3so17677014edb.10
+        for <linux-mtd@lists.infradead.org>; Fri, 17 Mar 2023 02:15:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679043337;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gxSX5L1OmpXcthvfw5MjweyMCmUxCbeZZbdbWsawBJo=;
-        b=p0Utw7dcfsntbaYjKuVKxmYZs3+AC1QfMw5BYSbjjjouaZFQspDdIKPeIoTm8fioZ5
-         FJNjSowwffLVKHWnGjJzqgh61X90caxvTMXc3zwcoA4DtyTLaPhx/tRqb21BkVRM4PyZ
-         ZB6H7vK0DvtpuI31/rUfeiUj6pLETPLZPmaYW+YUTul8WwqQBk26xMMGkHMZAasuNlRF
-         BA7bD53oFpVrsB8G/2UMbA9N4uzWmQk12Ppbrh7Y3NjxjBTO0zpQQJT62YV99SOvf1n/
-         fq5JVkhQ2G2bHPphW6hxWm0lNzPe/YSCE7WHQHJo3fyGFHCJghJbbgk6aoG7aJUu0Sxm
-         tygg==
+        d=linaro.org; s=google; t=1679044527;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IQojUQ1+osHyQhyWKtUsKQb283x3aBEgM9AZ+zCYjYo=;
+        b=A0SyuecpeRIAwfGF8sxqg5jIr4dsblUik6RHUxUxjUwrPixRVxT+CUOiyqUW/HUKpT
+         S0lre76Kn0ZR91ykTfP5Bpkbp6v/mTZep4w+L+1NjeFXVqOjmSSpRLqVwrGIWLvv9Z1Q
+         LDhN37h55aecsPrs29NS4eb/zwhDXTLA766s7hj3W14lUNA1cdDJOwNaEaNbUnockqya
+         M1oc27+QsPtHV7GRItHP4/zTf6MYnx2bV2x1QPRcUJX30uvtpYK4hhwkiomyeJ71IOiO
+         4U9TNqoHWWl5SSL9sAiDUuzRRLp/f2WbUPCYyWx50PKCKkk8u8eiZtO+ETpNrPob24lt
+         Ng1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679043337;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gxSX5L1OmpXcthvfw5MjweyMCmUxCbeZZbdbWsawBJo=;
-        b=VGdNSwZufpfQs1Rd7xZvt/X1n5tmtgJLveeCFWF64/OeCiRLGL58UnypDQBLD0XvfM
-         CPT6FZtOej7pxmLbxF41BYCm9kJw98yYYTjvocLLW2/9xcrZn8oK81v0CwjGsIOzNjnr
-         jE3QB6jzgwSyW6HsKLWaGSbBVp0X+XKc434XBU2qEfppIQkGdpr/IpVn4RSFK0bPaZ5l
-         4HnISX2xW+CsmnXDI/hdP/yFaBpy4PmgfHCCcmZJuYVLhU9o6qWHlDmKWiabwG09bk7J
-         aKOErlKM2kvmEZsTI7dfkd+u+V1oC45RD7mR0sZc/ARFMCbXpeGkcq1agDhvo3wbJLd0
-         6UUQ==
-X-Gm-Message-State: AO0yUKXIGSDmKc1Bta8HYSdyVNMs8fFZSawg9d/sXp7cpZGo/WbJXGHI
-	ARCk61ICKWlocEU36gHF2sBf5A==
-X-Google-Smtp-Source: AK7set/JcZYMegW4uUuY2gSACs5BA94ZRDAXXR6jpkDT8Iq97dpw13jDjyDiTrYpyN/imNVXwbwQPA==
-X-Received: by 2002:a17:906:4d53:b0:926:e917:133c with SMTP id b19-20020a1709064d5300b00926e917133cmr13567040ejv.47.1679043337365;
-        Fri, 17 Mar 2023 01:55:37 -0700 (PDT)
-Received: from [192.168.0.173] ([79.115.63.78])
-        by smtp.gmail.com with ESMTPSA id gz14-20020a170906f2ce00b00923221f4062sm714787ejb.112.2023.03.17.01.55.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Mar 2023 01:55:36 -0700 (PDT)
-Message-ID: <5d712ab6-915f-75c2-45e6-dbe57ebf5fc6@linaro.org>
-Date: Fri, 17 Mar 2023 10:55:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: Document CPOL/CPHA
- support
-Content-Language: en-US
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Mark Brown <broonie@kernel.org>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org
-References: <afe470603028db9374930b0c57464b1f6d52bdd3.1676384304.git.geert+renesas@glider.be>
+        d=1e100.net; s=20210112; t=1679044527;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IQojUQ1+osHyQhyWKtUsKQb283x3aBEgM9AZ+zCYjYo=;
+        b=rqZBdaC+nv693LiftKdt8sQsX9oJfAFquDqXk3PujE4mcLP5Obq6RnLEoudCXvRFcm
+         g0WvOt6y/h/6gUR9JpV2rcW1dVQAv5BaacmXVpATRU6DzgZilYhkj7p1et4/dyzZLhxT
+         vNjEZrsgGmH22vIpEft42MKm4IHk5ZLain97g50hTod+eZCrJYJ3E4arHVann4didunh
+         WGmOjA6GfZEsvbQ722JieQKal2YG0nADUJJFdVF0jxt+COXa2Tl4zyuu1pLs4ODmTVxg
+         pEZ1WkVSS4NNwY0UC9cTQedia1u0FJHs19fZuMv9VIyvdpLdYrIoDO6M8mn6273j/ois
+         RTJA==
+X-Gm-Message-State: AO0yUKU5ET8Anj08jiVZTy+EDyaz4IUfCQbuCV87LtRg7YxFXNYfeOeV
+	y1VIcHm+T3RJspJee3X6MQMemlWzPv4ROeKXcIWG+oRv
+X-Google-Smtp-Source: AK7set+MINcXU/3nmA98iUTrVSEIzwSMHipq6ariFSKUY/ZcxNnZtTzdtjlfBZcTw1yDjagM+SJC2Q==
+X-Received: by 2002:a17:907:60cd:b0:928:d4f6:6f7b with SMTP id hv13-20020a17090760cd00b00928d4f66f7bmr15404993ejc.66.1679044527736;
+        Fri, 17 Mar 2023 02:15:27 -0700 (PDT)
+Received: from 1.. ([79.115.63.78])
+        by smtp.gmail.com with ESMTPSA id gl13-20020a170906e0cd00b00925d50190a3sm730635ejb.80.2023.03.17.02.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Mar 2023 02:15:27 -0700 (PDT)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <afe470603028db9374930b0c57464b1f6d52bdd3.1676384304.git.geert+renesas@glider.be>
+To: linux-mtd@lists.infradead.org,
+	tkuw584924@gmail.com
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	Bacem.Daassi@infineon.com,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH v3 0/2] mtd: spi-nor: spansion: Add support for Infineon S25FS256T
+Date: Fri, 17 Mar 2023 11:15:24 +0200
+Message-Id: <167904442209.32859.856237187092157111.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1677557525.git.Takahiro.Kuwano@infineon.com>
+References: <cover.1677557525.git.Takahiro.Kuwano@infineon.com>
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=633; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=+Xrgke8jgsEPD1rzJawgAZFQUV7p/g74CLtOMIBHpaY=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkFC+ondsPhPfJwk6AVgJ6qIK3yd+2wH/Ojom1h gQXLWS0laOJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZBQvqAAKCRBLVU9HpY0U 6finCACiBEseRV0Y7nzWriqf22/WYEuTlmXLPSpBukW0Q1pNPgVCNa9rxCh2j88aT8ZN0RtknRQ 4oOLlO3mMpp3oGU/+ceVIJUcNwQTJUqP0YInA4goxItSsTXoN7HuGbU6WluTU50bf9DX7B32zqQ PxgEv9+YP1f7aZpUkNcQ0x3gF8fp1KkFTP37pjwQj4buJUUGyPRodzV3/N9Bq8cDP45iPAG6k8/ fi9X5FB0CxofPA0jVvykUy5G/FOHxzeLKEjkN8TGwY/ktcG6USven/gna5SibvY7n2lR75tsW1y lG8qnF97CfbNCXhl3qKT0mZdTOJ/3lnrSH6cYSkSoVqoFeOO
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230317_015542_427247_B9842FAF 
-X-CRM114-Status: UNSURE (   9.50  )
+X-CRM114-CacheID: sfid-20230317_021529_942633_A56B689F 
+X-CRM114-Status: UNSURE (   6.40  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -102,31 +102,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Miquel,
-
-Would you please take this through mtd/fixes?
-
-On 14.02.2023 16:26, Geert Uytterhoeven wrote:
-> SPI EEPROMs typically support both SPI Mode 0 (CPOL=CPHA=0) and Mode 3
-> (CPOL=CPHA=1).  However, using the latter is currently flagged as an
-> error by "make dtbs_check", e.g.:
+On Thu, 02 Mar 2023 16:35:05 +0900, tkuw584924@gmail.com wrote:
+> Infineon S25FS256T is 256Mbit Quad SPI NOR flash. This series updates
+> RD_ANY_REG_OP macro to support dummy cycles and then adds ID and fixups
+> for S25FS256T.
 > 
->     arch/arm/boot/dts/r8a7791-koelsch.dtb: flash@0: Unevaluated properties are not allowed ('spi-cpha', 'spi-cpol' were unexpected)
-> 	    From schema: Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> 
-> Fix this by documenting support for CPOL=CPHA=1.
->
 
-Would be good if you can amend the commit message to Cc stable:
-Cc: <stable@vger.kernel.org>
+Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git, spi-nor/next.
 
-> Fixes: 233363aba72ac638 ("spi/panel: dt-bindings: drop CPHA and CPOL from common properties")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Thanks!
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+[1/2] mtd: spi-nor: spansion: Make RD_ANY_REG_OP macro take number of dummy bytes
+      https://git.kernel.org/mtd/c/d628783c46d3
+[2/2] mtd: spi-nor: spansion: Add support for Infineon S25FS256T
+      https://git.kernel.org/mtd/c/6afcc84080c4
 
-Cheers,
-ta
+-- 
+Tudor Ambarus <tudor.ambarus@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
