@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9A84C74A5B
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Mar 2023 07:43:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38E1AC74A5B
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Mar 2023 07:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GqFPGIh0kVsvdk7w7ktlf+iFOzEbF9OvyXl4Jrsr+Zw=; b=vH4V57R21bqRpN
-	OnSkdQhmsUfNl+BGsR8JCxS8FRK46bKJiLAVLhVj9YiWdD/K2LeRY2Q1SNNrHIukhTPx8drpQTVrL
-	4F5mL1okBFkup85/OTn5jFiG6QQSg3eM+Q6wmEK5MR0wN/yrQRJ1bSlfm4GBryBDaVrPiUyBlNBSZ
-	vVeiaH1yjqJFG6IXmz9Ympj/RjZ/+H7XfeXcaQ0ThL5154Z+OI22OzFBc/qD3reMS8zVhDnuwncjy
-	H9L+UoWd+FElSZ3Tr3/Uqq8XHHvzBbvLptjYAayHJIHoso4T2kgJo1ouF/cMYRR/HTr3sOAr9E/UB
-	kqE8aObEOevC+DLMJmtQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=jfTKgUxphLf8zpopvtJYkdrhesXDpwOj2A5dCiLvGZE=; b=TpBe8ZIGygHcI7
+	c9TdO1cB1IymF5cwFkH0OzJyMGaK2xqW7i5mAs1ieHY0FOPnHcqcBBACiZP9JkP/flRZAWX2uRB1A
+	9bJPIr7JVZg0gRYT1eKzhxcDiZxlZqWR/t9TXrVOuyZZ7+Nl/BFmBliP3H4MH7zbbYqWodVs4oHme
+	mloGQxqFcnck7qEeEYmpbtjU8n2ElzwxUEQKzlHdc4N3MdnxonMLP+OkvPpwbTDfgdSxS62CZDSgr
+	3CkLBXYPi0Chj0AZpPTnA/9dr4f9KO4fZWsg4OcLdHnj9ruv1U1MaZFb5tairnRP+oXlNfg70QJvb
+	0ezsiwQDh9erwzVUtqcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd4ke-001K8g-2U;
-	Fri, 17 Mar 2023 07:43:48 +0000
-Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
+	id 1pd4oY-001Ks5-2B;
+	Fri, 17 Mar 2023 07:47:50 +0000
+Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pd4kc-001K7Q-0S;
-	Fri, 17 Mar 2023 07:43:47 +0000
-Received: by mail-pl1-x62d.google.com with SMTP id iw3so4479155plb.6;
-        Fri, 17 Mar 2023 00:43:45 -0700 (PDT)
+	id 1pd4oV-001KrD-3A
+	for linux-mtd@lists.infradead.org;
+	Fri, 17 Mar 2023 07:47:49 +0000
+Received: by mail-lj1-x22a.google.com with SMTP id g18so4173377ljl.3
+        for <linux-mtd@lists.infradead.org>; Fri, 17 Mar 2023 00:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679039024;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CChaWG1gFFoYHtP3iaA6HjuBSgLAz7V8FgN0lGzLkLI=;
-        b=TsvbSS71bsJ8SjnA3/xTySORzhScNDeAQYRzY8S4dJaMDhJmR88ub2KNvj+oB87VfD
-         qW0sCaZV5FgpffllYOKfoOUHLHBYk7UpGJ3bo4GgPrV7wZPvluGHK1n+to179Akwqwnt
-         xOyqnLXST/dxceUYXGuc1N6BC8di/fAT9nWl6gL0H7Oh0ncaocbHgLHckU1CuDYoOrVC
-         9JXq1P5IaaUAvWGllIKO7gN8HpKMHmpXuU8NYisfpTciMhnQ+6nPq6are0LlQkOA23qM
-         9vr+p3Ii/L+RxrPrKqb9RbMrqd3RpgbW+8kVdBov2JGbB06PkczHMb5qsUnIk697FFOc
-         6EOA==
+        d=gmail.com; s=20210112; t=1679039265;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zyTzJAstb2sufGT3LOYhfDOVgqbVY7GStE/9I2R9cno=;
+        b=gS1msluopnlLvvcdA0NI5pxIMFbbB5+si77CJkQjUhlqlTXWPdnIsxFEIPahg+4Rjx
+         pXY/A6F9wEIa8Krceyl8tj/4beLfne1MvBH7D9eQS5AQo7BCR5Cs1UfmLJIF1pK7lpPi
+         lEkPwPdOWt0PjU+bzCy9BrIbD280LShRUuFBjddzyghfK7JQV663sNH9EfzpAoQG5qP5
+         3tmtB5nkdWaVFNhduYPOkJjzPe/ekUp0aKcSUmWnS4h9Ebfdyc+FdUY7dyXfW20NeMig
+         B5GOeId1/TIq8pwayeUW3wlhG9UG78Mz7/6I0aUA75vsSbt24Gf1rGKdBWF2aGkI+0RW
+         dwsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679039024;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20210112; t=1679039265;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CChaWG1gFFoYHtP3iaA6HjuBSgLAz7V8FgN0lGzLkLI=;
-        b=m5mgSHdiq93cYoEsmkGpINpuPbK6YX0dU98soZE8/lxo23Y/3Vz0NMmZqLzEfHX47W
-         2vMP2LaXNHYdnbjGgdeeLnVdVInJ4Yflpc71mru80PN8fH5FzvaletlmJpwr9Gb/WWGJ
-         ZBeaf9AaEWaveF0JUU3i0G6tzhXq8Jlynt9IGkf2I99VvglwMkGgf71Stg70Y6n/xWf7
-         NCeqG617ex+uprJpmy2bH8U+qzIz1Pkb9Ww1tv5jCoHfu/OLChugVMX4BOTqoI3spBXy
-         2vjrzB3HkCq64tlxq4lL/ofVd3p+x/5WUvDQP/WFVhLb4C5/V9poCgo1FsKFnbvFPt/g
-         YX5Q==
-X-Gm-Message-State: AO0yUKW2QkmCkCUNi0Sxw/JOLtIQKrpFSc4E5z0e5doJ76QYYpKkO3g+
-	v7yuCrHTBtaTk322iaWBB66dmf2g/1kA61d3Bckg79xRlzA=
-X-Google-Smtp-Source: AK7set+IlFL84tFmGN1pWFcsGQAjdGLS7PCJi9NiGaXpQpFplGwkcLE7gU0trVHh5yw5JVVN1nH8rk8DoCYhK3gKfYs=
-X-Received: by 2002:a17:902:f80a:b0:1a0:5445:c565 with SMTP id
- ix10-20020a170902f80a00b001a05445c565mr2607697plb.5.1679039024601; Fri, 17
- Mar 2023 00:43:44 -0700 (PDT)
+        bh=zyTzJAstb2sufGT3LOYhfDOVgqbVY7GStE/9I2R9cno=;
+        b=4ED7ICGP+mvZe35qa8S1AHEZ12KPNbCGWaEoSaQIh8YnlKUD+5RNneDjGjJEusew4+
+         DkGj6DRs5BmaMb8bvEnVxxUSL+fqOnocQ3FIxsnz3qYnreqHxF4N/lUkU+ADo3T5uU14
+         N9lEAhw7nY/FyluLvoKtJtSaHYAIQMMKZywBOSMt+3rOv98lK/cV2GhdPr0gzdrZbF7I
+         XKvfsAObH5mu9ay9iDLMmsUobdAzh4om6cZNggoc97eo6LqMRqU5G5CaOKKS7keB4Gds
+         nz9sfIK/66O8hmuaLLXSt94OkMCzm6kuSn2oc1gjfZeow4z9nogllsKht8/ozsHXi4/B
+         Wjwg==
+X-Gm-Message-State: AO0yUKXZdeMkUiNVE54AMy1EGR9VLh99HlLckZlPBE0fadVbW9s53kTy
+	UY+SazYGNE3kGFcxZWCSEIs=
+X-Google-Smtp-Source: AK7set9tqn7X0J52etmvUwLr1Ljcwb33WD+up1h8k5TGNtgot5EyT67+Ty967HMZNZB0Mrjia7Ak7w==
+X-Received: by 2002:a2e:9001:0:b0:299:ac49:46da with SMTP id h1-20020a2e9001000000b00299ac4946damr1342316ljg.42.1679039265391;
+        Fri, 17 Mar 2023 00:47:45 -0700 (PDT)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id z1-20020a2e9641000000b002934fe524d2sm267417ljh.83.2023.03.17.00.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Mar 2023 00:47:44 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH] mtd: core: print error code if registering NVMEM fails
+Date: Fri, 17 Mar 2023 08:47:36 +0100
+Message-Id: <20230317074736.28944-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230201113603.293758-1-miquel.raynal@bootlin.com>
- <20230201113603.293758-9-miquel.raynal@bootlin.com> <8c54df69-52ac-b2e7-09d8-2066fb15c998@linaro.org>
-In-Reply-To: <8c54df69-52ac-b2e7-09d8-2066fb15c998@linaro.org>
-From: liao jaime <jaimeliao.tw@gmail.com>
-Date: Fri, 17 Mar 2023 15:43:33 +0800
-Message-ID: <CAAQoYRmk6X287B5-U3sk-ThUrm-210W_u8mkvBcsxBwaCDX53w@mail.gmail.com>
-Subject: Re: [PATCH v4 8/8] mtd: spi-nor: macronix: Add support for
- mx25uw51245g with RWW
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>, 
-	linux-mtd@lists.infradead.org, Jaime Liao <jaimeliao@mxic.com.tw>, 
-	Julien Su <juliensu@mxic.com.tw>, Alvin Zhou <alvinzhou@mxic.com.tw>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Michal Simek <monstr@monstr.eu>, 
-	linux-arm-kernel@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230317_004346_198358_5F14B4C7 
-X-CRM114-Status: GOOD (  21.12  )
+X-CRM114-CacheID: sfid-20230317_004748_017487_0772AE25 
+X-CRM114-Status: GOOD (  10.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,59 +86,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor
-
->
-> Hi, Jaime, Miquel,
->
-> Any news with the datasheet, can you send me a copy of it?
->
-> On 2/1/23 11:36, Miquel Raynal wrote:
-> > Describe this new part and provide the RWW flag for it.
-> >
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  drivers/mtd/spi-nor/macronix.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> > index 6853ec9ae65d..655e7eec865c 100644
-> > --- a/drivers/mtd/spi-nor/macronix.c
-> > +++ b/drivers/mtd/spi-nor/macronix.c
-> > @@ -82,6 +82,9 @@ static const struct flash_info macronix_nor_parts[] = {
-> >       { "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024)
-> >               NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> >               FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-> > +     { "mx25uw51245g", INFOB(0xc2813a, 0, 16 * 1024, 1024, 4)
-> > +             NO_SFDP_FLAGS(SECT_4K | SPI_NOR_RWW)
-> > +             FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
->
-> Is this flash not really supporting SFDP?
-Yap MX25UW51245G have SFDP table support.
-As below is the link of octal DTR feature patch which include
-MX25UW51245G SFDP information.
-
-https://patchwork.ozlabs.org/project/uboot/patch/20220718064922.20193-2-jaimeliao.tw@gmail.com/
-
-Sorry for that I can't share the link of datasheet cause Macronix
-didn't make it public.
->
-> We ask people that update or add new flash entries to do a erase, verify
-> erase, write, read back and compare test. Also to dump the sysfs
-> entries. Here's how to do that:
->
-> https://lore.kernel.org/lkml/97a3b023-b9bc-c34d-45a4-ddd56f47bd76@microchip.com/T/
->
-> Thanks,
-> ta
-Thanks
-Jaime
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKSXQncyBhIGNvbW1vbiBw
+cmFjdGljZSB0aGF0IGhlbHBzIGRlYnVnZ2luZyBwcm9ibGVtcy4KClNpZ25lZC1vZmYtYnk6IFJh
+ZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KLS0tCiBkcml2ZXJzL210ZC9tdGRjb3Jl
+LmMgfCAzICsrLQogMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
+KQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZGNvcmUuYyBiL2RyaXZlcnMvbXRkL210ZGNv
+cmUuYwppbmRleCA4M2EyMjU2NmE4Y2UuLjgzMDNjZTYyYzc1MSAxMDA2NDQKLS0tIGEvZHJpdmVy
+cy9tdGQvbXRkY29yZS5jCisrKyBiL2RyaXZlcnMvbXRkL210ZGNvcmUuYwpAQCAtNTM5LDcgKzUz
+OSw4IEBAIHN0YXRpYyBpbnQgbXRkX252bWVtX2FkZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKIAkJ
+aWYgKFBUUl9FUlIobXRkLT5udm1lbSkgPT0gLUVPUE5PVFNVUFApIHsKIAkJCW10ZC0+bnZtZW0g
+PSBOVUxMOwogCQl9IGVsc2UgewotCQkJZGV2X2VycigmbXRkLT5kZXYsICJGYWlsZWQgdG8gcmVn
+aXN0ZXIgTlZNRU0gZGV2aWNlXG4iKTsKKwkJCWRldl9lcnIoJm10ZC0+ZGV2LCAiRmFpbGVkIHRv
+IHJlZ2lzdGVyIE5WTUVNIGRldmljZTogJWxkXG4iLAorCQkJCVBUUl9FUlIobXRkLT5udm1lbSkp
+OwogCQkJcmV0dXJuIFBUUl9FUlIobXRkLT5udm1lbSk7CiAJCX0KIAl9Ci0tIAoyLjM0LjEKCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
+dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
