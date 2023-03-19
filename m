@@ -4,96 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4742CC7618A
-	for <linux-mtd@archiver.kernel.org>; Sun, 19 Mar 2023 12:07:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA620C7618A
+	for <linux-mtd@archiver.kernel.org>; Sun, 19 Mar 2023 21:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9LR+IkdDlpkcb8w1rt6ugFx16GTkFz4vFCPHS8SApNU=; b=FZDoghnmR7at4e
-	K/arAhZwiB+TzJcI0CuLP/gQd1gqXJWNEpe0S6fxuu5si6yBOoK4W5LxMPLDqOxGcpxkpQZLHkT2Z
-	KmphXPUanFwJovdBisYUjIZra7qRUa7VAPTtNDsKc2uqsG4w1Nv8/wA/i6j4532KSUBVLfgtxwHyZ
-	4IbTB1I49SsHkEwTQvATdwtBc6KV831B2AIte2Aj3xccw+Z7MraRixz9TMP2TYxRoKAuz9RtTrdt2
-	XtwG3PSCZ5/x+3Aqlla8X0CL8D5yTJD/zpYQ+0pQ5/uNvqtpQjrpxM5UkX4KirO2lY0ijpZ3Yurgu
-	9cIGVOGYLFsm5W7LeIlg==;
+	List-Owner; bh=RcC2PxK51J0AlpyrtaJk9avIrGrBzLkvCg8dD/72JHo=; b=NtAKK621QWzSEJ
+	W/G6d+iW36mtirAP0HUNXMkKIXg3xW3rAse/zfyJ7duRC5UQJqMnKGza+zxTwOVEQECIOk0GFcHph
+	8gc+JtvaoP1xQw7HUATSoCAOKuQeQvEbYE7KEgzCkV4rR1Rx1adLYTZMeFH3h+5PzQkq7wt5h2pMx
+	mk0B1eqrKeSu9imOMhtnaN3G/0N99whqznZxDqTJlZwJIDBFWEICz/J+DTwkt7CaZZTA+O2r3PC2j
+	uQdP5lX4vODIW1a6wK9FdqLB9f8dzE/GrnfFn1Ft1uHS9hJwAarebGHi5xWblx44yg1gmKgBnQzDg
+	2nJwNSEIOHsH2jndTapQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pdroj-006ct3-2q;
-	Sun, 19 Mar 2023 12:07:17 +0000
-Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
+	id 1pe0Os-007SiH-34;
+	Sun, 19 Mar 2023 21:17:10 +0000
+Received: from mail-yb1-xb2f.google.com ([2607:f8b0:4864:20::b2f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pdroe-006cog-2g
+	id 1pe0Op-007Sgo-04
 	for linux-mtd@lists.infradead.org;
-	Sun, 19 Mar 2023 12:07:15 +0000
-Received: by mail-ed1-x52e.google.com with SMTP id cy23so36695623edb.12
-        for <linux-mtd@lists.infradead.org>; Sun, 19 Mar 2023 05:07:11 -0700 (PDT)
+	Sun, 19 Mar 2023 21:17:08 +0000
+Received: by mail-yb1-xb2f.google.com with SMTP id e65so10851359ybh.10
+        for <linux-mtd@lists.infradead.org>; Sun, 19 Mar 2023 14:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679227630;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3GQ0kuX+CANTyKsciGzMU4Vb8Jeilt6T7QwH/C5HtcI=;
-        b=TzAXlqE8TgfprcWtggNsM5B4SQJQtCXYoRCn8uqjU6Dppl3AIp4F/El+x+T+cy9/Hp
-         oAdm77wfFODxSKeyHAiXXUxrdkhRop2rDx79qH1f2hq0fJQiR6YqC0/5p587b7PhB50N
-         Az1pLOxhlA4adj+8SICk15XWO3UofGCHYaEdHmQfeW5uy/uSbfi0mu2/WOM2SoE5NwK9
-         XKhHart75hNrLBOJU0s4puBzvV/H170DSekttmS/Ku+kn8xvWyBxg94fAif55VGfJ2lc
-         s8ZrCs9dbcSnm0K6ktftWRN9UtNVNOy7IHzXjQI/cq3HVT1durOmcBipUAdQzSZ9tz+J
-         7FNg==
+        d=linaro.org; s=google; t=1679260626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=umIKUZ29cWxRGLpplScGRMR85hsAlE3Adfx/LlasVhM=;
+        b=odOHan5KodgnZmQYP5bE+Zx5oWuObSka+JlAj9+I+PEuls9mRUte5Fd1E9WehPEH0v
+         ZEUouTX/UvXXQBiT/SNrO1n/f3o+kSQlfaYmdNK4DAR8Ejqf2fhzotkFgCdRQtcs1CVC
+         t5VLMfDqC+6dzZCRc67iIWhzpcy/Pk8gir+iKkECVK6wCNHZH2ZDuC5lvdh7tZq5DQuj
+         ObQBbb4TSLQVxE7XBRQy+d8Lbb9XjTL/2eJtfomhereizk9tghsCcrHhrXpWlcA+TL2p
+         v61FtSAq1/yzKQz5Qm+nbB//3YVMqfY7U/pGKdm4qJTu9FwuezpIoi2MADQXjrLIWQlB
+         6CZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679227630;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3GQ0kuX+CANTyKsciGzMU4Vb8Jeilt6T7QwH/C5HtcI=;
-        b=z8RTSCzPhjbxK7eq+IbOupG9QuZ29jRDvnC0qxuD8MYNb2IHG9cGlk7VHCiJs+vB+2
-         ciA6wO01nnhQpHMNSF67cDZSKlPBRcXz6QdVBOE062RgisnTE/GIy4gfFrN6mEgb+olr
-         JOr7innVHnUaVNGcVNiOOQVNHo8BZObu0q8pyu9lt9wg2E250uD1YTD/TfgYBOZtKzrT
-         gkns2ftIqUgioUkaMdTQi9KSpa7z56hxV0Rhou1hyVdADbCxQiiJXJa/TgUuxU0Q9BTy
-         GD/P/Hk7zXW5pAf7R8mqW6vtM1uei7B+7oha3OI48Jy/4gj3bGoMtJbCAUY5TrcrbY/I
-         Piew==
-X-Gm-Message-State: AO0yUKWS0eoJEnmf94Frm6zxJfAR1pcOUZADEYLegHBR24/eEsmKgZ5p
-	EtH3QuW8DxNzcF5K22gAqMG9bw==
-X-Google-Smtp-Source: AK7set8ojqGhOAjmBHwzN76QhQtwOWV8Psp9NGV0PffUGEU20N+02MFB5rvCOFkPKNTFQrrwRiSzoQ==
-X-Received: by 2002:a17:906:40c2:b0:91f:32f9:82f0 with SMTP id a2-20020a17090640c200b0091f32f982f0mr5542602ejk.29.1679227630370;
-        Sun, 19 Mar 2023 05:07:10 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:5b5f:f22b:a0b:559d? ([2a02:810d:15c0:828:5b5f:f22b:a0b:559d])
-        by smtp.gmail.com with ESMTPSA id jj4-20020a170907984400b009323f08827dsm2744307ejc.13.2023.03.19.05.07.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Mar 2023 05:07:10 -0700 (PDT)
-Message-ID: <68a5d8d8-b70a-e58e-e38e-5f185121e01a@linaro.org>
-Date: Sun, 19 Mar 2023 13:07:08 +0100
+        d=1e100.net; s=20210112; t=1679260626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=umIKUZ29cWxRGLpplScGRMR85hsAlE3Adfx/LlasVhM=;
+        b=ZzLU0dX35J41iKHIOyVWAkSkUajEjm75fUuOMMgoMTUiXuPwI3JQBkWjYZPW9RFQqy
+         7Pziquikq3mvrXaX1qK7+H80zbvT3Qf1tzNrmKMlMF+BXrLpHVDV1583CwPTIyiWPSDz
+         DWizOTaatm2iqpiAPdp1mwKXXYogR4Wlm8sNltZlyojSxs4rNyd7dIb7zZ3JF7PfwRCS
+         7PCmhAPUQI9GIcMsd661TAM9ot2uvQW9x5qyWoVWVmjN9/qCix7akDQHUSA2d/DwChX+
+         WXhHrT6IuIdebEJQak5J3+PW7tZXMK4uS0yUmdhEhoSgUgB9V+LbSI7kjjH+8SrkvYYc
+         3Nkw==
+X-Gm-Message-State: AO0yUKW/ivSjptQxKiAmDYvn+fTh9rsDs3XRM16FbySIv+Dv2R1xM4tG
+	0+AgU/czEaLn//Lk1vmFhNzevnrgR5MsX1IFASdLWA==
+X-Google-Smtp-Source: AK7set9Y0TmDGARQ0tonQqRCQHdH+03X2NR6qq22FebqKohfKPMVp4wrMtKTGiLfsl0XoE3P/cG/TeF1FO39PIanZTY=
+X-Received: by 2002:a05:6902:1143:b0:aa9:bd2e:3746 with SMTP id
+ p3-20020a056902114300b00aa9bd2e3746mr2999493ybu.4.1679260626301; Sun, 19 Mar
+ 2023 14:17:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH] dt-bindings: mtd: Drop unneeded quotes
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- Linus Walleij <linus.walleij@linaro.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Manivannan Sadhasivam <mani@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com
 References: <20230317233631.3968509-1-robh@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 In-Reply-To: <20230317233631.3968509-1-robh@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 19 Mar 2023 22:16:55 +0100
+Message-ID: <CACRpkdY0twhF1+ipbV0DuWUdeCyq09uZidyVSNr7eW=K6ecnkw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mtd: Drop unneeded quotes
+To: Rob Herring <robh@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Samuel Holland <samuel@sholland.org>, Naga Sureshkumar Relli <nagasure@xilinx.com>, 
+	Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
+	Michael Walle <michael@walle.cc>, Andy Gross <agross@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-stm32@st-md-mailman.stormreply.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230319_050712_871174_661730C0 
-X-CRM114-Status: UNSURE (   9.57  )
+X-CRM114-CacheID: sfid-20230319_141707_057660_255EC8EA 
+X-CRM114-Status: UNSURE (   8.70  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -106,24 +96,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 18/03/2023 00:36, Rob Herring wrote:
-> Cleanup bindings dropping unneeded quotes. Once all these are fixed,
-> checking for this can be enabled in yamllint.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gU2F0LCBNYXIgMTgsIDIwMjMgYXQgMTI6MzbigK9BTSBSb2IgSGVycmluZyA8cm9iaEBrZXJu
+ZWwub3JnPiB3cm90ZToKCj4gQ2xlYW51cCBiaW5kaW5ncyBkcm9wcGluZyB1bm5lZWRlZCBxdW90
+ZXMuIE9uY2UgYWxsIHRoZXNlIGFyZSBmaXhlZCwKPiBjaGVja2luZyBmb3IgdGhpcyBjYW4gYmUg
+ZW5hYmxlZCBpbiB5YW1sbGludC4KPgo+IFNpZ25lZC1vZmYtYnk6IFJvYiBIZXJyaW5nIDxyb2Jo
+QGtlcm5lbC5vcmc+CgpSZXZpZXdlZC1ieTogTGludXMgV2FsbGVpaiA8bGludXMud2FsbGVpakBs
+aW5hcm8ub3JnPgoKWW91cnMsCkxpbnVzIFdhbGxlaWoKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
