@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E48DDC761AF
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 16:08:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C24AC6FD1F
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 16:09:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MGm+BbTO/qqh3s370Zv7cfxQGnl0/j47TjBmCfN/OAw=; b=0fPVOobIGwukvm
-	9JkUQ9R6MVbiLiV+/z93BBYX8Z+rMEI4EJfi1pak95xOnYrlj2eaaFXa8e1bbVQSjQXelxdB43Dcb
-	yZS6AFtk2hqT6rN9rOqHonpAyluZM0gTa1mDBtRidE+mPgPzs1ISJAqrMHRHWtFAQ5/jMPmn05K2a
-	zYVUh8Y3/EvquPeJa7TIg6d4ziLv4ualABmO+r+f4Tobs7Bu6DRZaLJ1dvoGfHOtdNA005p7TSO7a
-	tmFoa4cbKMH7eqBrKMtp//unkS+tEd5n/bAhVhbBtFsH4EAPpAs7tpCG1lBepJKqr06rZcBtadtG6
-	EF5OEMqk8EKgR3edYkTw==;
+	List-Owner; bh=/SiA/2UE7FIGoHBI37SAe1QrHQuC3y5qU7rFImhVW6c=; b=NctJIbNpF0PL4G
+	8iwzuWmTB9oa2Pw0M8fF42QLOJExL9D3GGokdWD6Pf5Il2QfQd/Hz8lhkcRhRw9nr4AgsDb1XF6g7
+	Tv7vnKKQYjqohyFpQK+i8DOQWvrQOeuDqm0S60qzRTEbwI8rr12AZkKYH6NOCfw6EaVsvQ2hGHOCs
+	alvrC2pXU8bNphrh5gUFetSLwEW44+iqk/ZcZOxibYEDaUAv8ahf/NNEZO8V+9cqMcEE2Qc3dJ+YQ
+	wsKND7JThgkTICPLHZXrDALLpyz9BMmYEbG69fdP1JTvMdwh+JacTEWCvxj0xR+kmMVXt/wfx4Rti
+	/soS/EW5KZt40GF61dMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf10a-00GbLK-1f;
-	Wed, 22 Mar 2023 16:08:16 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1pf11H-00Gbp6-0U;
+	Wed, 22 Mar 2023 16:08:59 +0000
+Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf10V-00GbFe-2J
-	for linux-mtd@lists.infradead.org;
-	Wed, 22 Mar 2023 16:08:14 +0000
+	id 1pf10r-00GbSR-24;
+	Wed, 22 Mar 2023 16:08:37 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 353DF240004;
-	Wed, 22 Mar 2023 16:08:00 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 021CD1C0004;
+	Wed, 22 Mar 2023 16:08:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1679501282;
+	t=1679501308;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JRHiruRHD09dsVz3xB7VqxnrO35/Pw0ZmK+hXqwrLL8=;
-	b=Ws2zcO5hdh2g4Y7I+e4Y3mWR3i/5rzpHsix8CyMY+zyNRJZSQKbdU+TRmPI+Sacd7BkuZq
-	F2zMGqSk+heEB8yMhUkzaAIspY0Jm6vVrtYf9eDuiE4a20oKrcc89kmTHeFgi2pCXZeEg2
-	q7UO6lEvJ5An9ZD31Bcqomrn2rUw/o9Xx0hO5v9mkCKydVak1zHWsN/NYHI255ZswNBdUU
-	Itcmqh41ZMIcaH67ZUEJAv05sgxUddV5Y+H/fcwgv7iCWiu3am4A0MVDSfScK4kfasXWLw
-	KTB+O5FZdylMpBfU2667sfxhz9nGoavzaSjJcTdyGQxj8Up90+LFIMfnH6CcFw==
+	bh=dt4HoT+yYJ4HPjHglsZ/hMmFGsQX2hkqWUWZQbfR6lk=;
+	b=dvthIQqE6hdD3zrssw7UAsPOUtWuYBcS78+lXwTr8wKRINeZMzfIRHLTbl8vYa9wcS1jHF
+	HNIztIjmgUATH3eVNgw1LLCPGQza3jak4sSBWGuE+ZfcJL2UUbjziiOGKWWHwdl90j2J78
+	MFi32f9wWCaXHUKQBxdpIw+ugtSbWyynCT3LLu13P2d0VY8Kw885ZfQJyRIet9QvTK+x1R
+	KroN+DD8PtAU56HSPx7pvDwc/Qf/J0EmM4joPmEW3yAVSeZ0+TwVq4Y1+kD63mM/RafqP8
+	aD8EA2+YDELN/QDiyDKsy3qX9CL3WE+VcUOyeQht9hs7bX/u+UVmnV9j62yZUQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Rob Herring <robh@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
+	Vladimir Zapolskiy <vz@mleia.com>,
 	Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	linux-mtd@lists.infradead.org
-Cc: Julien Su <juliensu@mxic.com.tw>,
-	Jaime Liao <jaimeliao@mxic.com.tw>,
-	Jaime Liao <jaimeliao.tw@gmail.com>,
-	Alvin Zhou <alvinzhou@mxic.com.tw>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>
-Subject: Re: [PATCH] mtd: rawnand: nandsim: Artificially prevent sequential page reads
-Date: Wed, 22 Mar 2023 17:07:59 +0100
-Message-Id: <20230322160759.2232642-1-miquel.raynal@bootlin.com>
+	Michael Walle <michael@walle.cc>
+Cc: devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: Use of_property_read_bool() for boolean properties
+Date: Wed, 22 Mar 2023 17:08:26 +0100
+Message-Id: <20230322160826.2232802-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230310085452.1368716-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20230310144716.1543995-1-robh@kernel.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'9b043c649022ec55040aa9315cc72059c4ec254c'
+X-linux-mtd-patch-commit: b'57150c40b6391bc350c6016641b2a487a3de3cba'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_090812_133139_88D5289A 
-X-CRM114-Status: GOOD (  21.37  )
+X-CRM114-CacheID: sfid-20230322_090833_871411_9608E6C2 
+X-CRM114-Status: UNSURE (   6.70  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,56 +83,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2023-03-10 at 08:54:52 UTC, Miquel Raynal wrote:
-> The continuous read support added recently makes nandsim
-> unhappy. Indeed, all the supported commands should be re-encoded into
-> internal commands, so of course there is currently no support for the
-> commands and patterns needed for continuous reads to work.
+On Fri, 2023-03-10 at 14:47:15 UTC, Rob Herring wrote:
+> It is preferred to use typed property access functions (i.e.
+> of_property_read_<type> functions) rather than low-level
+> of_get_property/of_find_property functions for reading properties.
+> Convert reading boolean properties to to of_property_read_bool().
 > 
-> I tried to add support for them but nandsim (which is more a tool to
-> develop/debug upper layers rather than the raw NAND core) suffers from a
-> big limitation: it's internal parser needs to know what exact operation
-> is happening when the address cycles are performed. The research is then
-> sequential from the start up to the address cycles, but does not check
-> what's coming next even though the information is available. This is a
-> limitation which is related to the old API used by the core which kind
-> of forced the controllers to guess what operation was being performed
-> rather early. Today the core uses a more transparent API called
-> ->exec_op() which no longer requires controller drivers to do any more
-> guessing, but despite being updated to ->exec_op(), nandsim is still a
-> bit constrained on this regard and thus cannot handle sequential page
-> reads because the start sequence beginning is identical to a regular
-> page read.
-> 
-> If the internal algorithm is updated some day, it should be possible to
-> make it support sequential page reads by adding something like:
-> 
->        /* Large page devices continuous read page start */
->        {OPT_LARGEPAGE, {STATE_CMD_READ0, STATE_ADDR_PAGE, STATE_CMD_READSTART,
->                         STATE_CMD_READCACHESEQ | ACTION_CPY, STATE_DATAOUT,
->                         STATE_READY}},
->        /* Large page devices continuous read page continue */
->        {OPT_LARGEPAGE, {STATE_CMD_READCACHESEQ | ACTION_CPY_NEXT, STATE_DATAOUT,
->                         STATE_READY}},
->        /* Large page devices continuous read page end */
->        {OPT_LARGEPAGE, {STATE_CMD_READCACHEEND | ACTION_CPY_NEXT, STATE_DATAOUT,
->                         STATE_READY}},
-> 
-> For now, we just return -EOPNOTSUPP when the core asks controller
-> drivers if they support the feature in order to prevent any further use
-> of these opcodes.
-> 
-> Note: This is a hack, ->exec_op() is not supposed to check against the
-> COMMAND opcodes unless _really_ needed.
-> 
-> Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential cache reads")
-> Reported-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> Link: https://lore.kernel.org/linux-mtd/fd34fe55-7f4a-030d-8653-9bb9cf08410d@huawei.com/
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Tested-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> Acked-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
 Miquel
 
