@@ -4,84 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06E2CC74A5B
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 06:41:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD85CC6FD1F
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 08:35:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=P3esYHtvDvJSLoRs3mLf78x7Ittz+ONc33N8nOSEFuE=; b=xb6NvrbYbpSYFB
-	EcRSYW7Of0Q5N6mRa/GO32VPM+5MWn1n2MONZj03BEsvzXpEiWNC3D4xXtGsnsmbk/eRzzCHBjls8
-	JljEds91WsScM84IsbOlbk+oVCtY42ahhEqRKOVrysMjhtsffSwPMQ6Ix4DxUuHNZ232Rs/dnxFE8
-	KShhFZLwdEhv2X5UYXI2wvB2BqsFPqXrtaR7WQPYYdcdLyFmNhREFVlputc5TIrXUQtI8TKyQh61Z
-	p15uaOPCZKGRtKFS3awrEV26Jj3QcAsWgeMHQNU64PGDCHVZLgtgmM5YuOoqSiTLcLiDqO2r/hXdB
-	7jxhpwBQhyIomqFpOwgA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=t0+Jx4clXIdv2r4NcWVMP4dVzNl8C1lNBjBRDWmPwIk=; b=v0vA2Hd+BL6lB8aTKveLzmUny/
+	Jz0NY3XELi0ZvcBoAOFRrhyb0HlytF6B51UDI9iYtc6WNq3ljneZjw4Esk/S8D5UN/5ZxBqCBYg1D
+	qkKcK8O5e75oc36VqAugngyEQexqfjjwOGGXZv/kc1s/1G9off0VfWdyEp4StPdfnCCvQKKLAEo3G
+	c75NrbuITRv2uw41Qark914h/RwJKVGSFDfWpvebk6FcnGxGN4K0VW9wigtr6tPXWR8Yev7+1xIJS
+	EoEWYvUAAkKJ+VEQYrc5RjFsCCak1FUTs4T/VxwuwlrIACI2KypEKjG+cdpMYzzr6v1Y3uvLyjcsy
+	CdCbZbyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pes9e-00Etz3-0s;
-	Wed, 22 Mar 2023 06:41:02 +0000
-Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
+	id 1petvs-00FCtd-0i;
+	Wed, 22 Mar 2023 08:34:56 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pes9Q-00EtoG-1y
+	id 1petvo-00FCpq-12
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Mar 2023 06:40:50 +0000
-Received: by mail-lf1-x130.google.com with SMTP id c29so4582409lfv.3
-        for <linux-mtd@lists.infradead.org>; Tue, 21 Mar 2023 23:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679467246;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UB2d2IEiiJcGXzBHNy9s2vUD62/sXfHS54tkdN1U+34=;
-        b=sAYham2shXJkNdF7HOQMen2SiiZX4gIz+Lgi/ueSbtSZtaCcRBgdtSxfVSP1UnNWhQ
-         J/O+obHZp6SPmO/nkkEuwsxbqkah93ye/6a5tbm4+IxHdCeWfGz9OF6OORvNCwC3GjtL
-         /WkBGlgwEfiI2vyBivW5ItzEpOteTz/6+lF/nzXoYZWO+ergRmPkKql0cRnrK30eJSaS
-         padq4NJz/vRgRP+2781iVyDhgF+t9tbJdZVqDiFcCFHWxM4Vl4ELR3ZR9edmVKJyPamq
-         c+q4MmPI3IGHJ9SxAnvEluDpz8a+UFmqHmn/0A7EI7aLPggqoA0WgSBkrORVbBLP/0YZ
-         PtxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679467246;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UB2d2IEiiJcGXzBHNy9s2vUD62/sXfHS54tkdN1U+34=;
-        b=2jR62IlPD8S7H39KzEgqn+PbUn/HpLyyK/ZXIp+WV34uNifab9cjtltx5NkxFnelxq
-         eMPuGQk9hIiwMl49FvCHaIi+p9ZaEF/Xy3mzDW4uGiD7Pmwnos2rZNFdV1pAu+eKA85c
-         i0Q1QPhUOakryB2lknHA3AgK4Xtcdq3YOBGlcVcQZ3wvwBeVyYDQ2/riWfVHxgJltmDB
-         urUwqbscu7NLUReFD19QCTwbV9FrFz35Yi551epKyvG8595I91ogSfmxHJtuSklY5aRY
-         N6MkwPOPUMAjqxPWhz9Fgl03RKvj5zezvbaopj3AjBMma3l4HHboFYfAolCO/BXcA2SE
-         mbeg==
-X-Gm-Message-State: AO0yUKU7FIR9jb8zkhjNtV7dygc4+jima3EA7tuwa0a8b6c3luJHu/z3
-	l+tE3oA3h+47mzi20Mqa8Mq1MoSLLT+4UrOFog7WJg==
-X-Google-Smtp-Source: AK7set+xMoeEZ739iDZP0qDAY5AXuY0e5jSQ8XLUOpn1wXMnT5NNU5jq4Up+LET1pTHT3IQ6q7UIcw==
-X-Received: by 2002:a19:ad03:0:b0:4a4:6af4:43b7 with SMTP id t3-20020a19ad03000000b004a46af443b7mr1601504lfc.69.1679467246059;
-        Tue, 21 Mar 2023 23:40:46 -0700 (PDT)
-Received: from ta1.c.googlers.com.com (61.215.228.35.bc.googleusercontent.com. [35.228.215.61])
-        by smtp.gmail.com with ESMTPSA id n20-20020ac242d4000000b004dafde0e7b7sm2462255lfl.279.2023.03.21.23.40.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Mar 2023 23:40:45 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: michael@walle.cc,
-	pratyush@kernel.org
-Cc: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	Takahiro.Kuwano@infineon.com,
-	bacem.daassi@infineon.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v4 11/11] mtd: spi-nor: spansion: Determine current address mode
-Date: Wed, 22 Mar 2023 06:40:33 +0000
-Message-Id: <20230322064033.2370483-12-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.40.0.rc1.284.g88254d51c5-goog
-In-Reply-To: <20230322064033.2370483-1-tudor.ambarus@linaro.org>
-References: <20230322064033.2370483-1-tudor.ambarus@linaro.org>
+	Wed, 22 Mar 2023 08:34:54 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id DA8AA6431C32;
+	Wed, 22 Mar 2023 09:34:40 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id iS04sMUEkv9H; Wed, 22 Mar 2023 09:34:40 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 0C6536431C2D;
+	Wed, 22 Mar 2023 09:34:40 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ISRELn3i-ccd; Wed, 22 Mar 2023 09:34:39 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id E0F0160719A6;
+	Wed, 22 Mar 2023 09:34:39 +0100 (CET)
+Date: Wed, 22 Mar 2023 09:34:39 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, 
+	Tudor Ambarus <tudor.ambarus@linaro.org>, 
+	pratyush <pratyush@kernel.org>, Michael Walle <michael@walle.cc>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>, 
+	Jaime Liao <jaimeliao.tw@gmail.com>, 
+	Alvin Zhou <alvinzhou@mxic.com.tw>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	chengzhihao1 <chengzhihao1@huawei.com>
+Message-ID: <1424924498.273909.1679474079885.JavaMail.zimbra@nod.at>
+In-Reply-To: <20230310085452.1368716-1-miquel.raynal@bootlin.com>
+References: <20230310085452.1368716-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH] mtd: rawnand: nandsim: Artificially prevent sequential
+ page reads
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: rawnand: nandsim: Artificially prevent sequential page reads
+Thread-Index: 4iY3blAxMewiDlyH/NCbZFLrqfL2eA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230321_234048_655706_D7B9640C 
-X-CRM114-Status: GOOD (  20.68  )
+X-CRM114-CacheID: sfid-20230322_013452_678652_F9CA76E2 
+X-CRM114-Status: GOOD (  26.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,209 +79,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-
-Internal address mode (3- or 4-byte) affects to the address length in
-Read Any Reg op. Read Any Reg op is used in SMPT parse and other setup
-functions. Current driver assumes that address mode is factory default
-but users can change it via volatile and non-volatile registers.
-
-Current address mode can be checked by CFR2V[7] but Read Any Reg op is
-needed to read CFR2V (chicken-and-egg).
-
-This patch introduces a way to determine current address mode by
-comparing status register 1 values read by different address length.
-
-Suggested-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/mtd/spi-nor/spansion.c | 131 ++++++++++++++++++++++++++++++++-
- 1 file changed, 128 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 1678b7b2e9f7..ab2103dace76 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -14,10 +14,12 @@
- #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
- #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
- #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
-+#define SPINOR_REG_CYPRESS_STR1V		0x00800000
- #define SPINOR_REG_CYPRESS_CFR1V		0x00800002
- #define SPINOR_REG_CYPRESS_CFR1_QUAD_EN		BIT(1)	/* Quad Enable */
- #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
- #define SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24	0xb
-+#define SPINOR_REG_CYPRESS_CFR2_ADRBYT		BIT(7)
- #define SPINOR_REG_CYPRESS_CFR3V		0x00800004
- #define SPINOR_REG_CYPRESS_CFR3_PGSZ		BIT(4) /* Page size. */
- #define SPINOR_REG_CYPRESS_CFR5V		0x00800006
-@@ -188,6 +190,117 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
- 	return 0;
- }
- 
-+/**
-+ * cypress_nor_determine_addr_mode_by_sr1() - Determine current address mode
-+ *                                            (3 or 4-byte) by querying status
-+ *                                            register 1 (SR1).
-+ * @nor:		pointer to a 'struct spi_nor'
-+ * @addr_mode:		ponter to a buffer where we return the determined
-+ *			address mode.
-+ *
-+ * This function tries to determine current address mode by comparing SR1 value
-+ * from RDSR1(no address), RDAR(3-byte address), and RDAR(4-byte address).
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int cypress_nor_determine_addr_mode_by_sr1(struct spi_nor *nor,
-+						  u8 *addr_mode)
-+{
-+	struct spi_mem_op op =
-+		CYPRESS_NOR_RD_ANY_REG_OP(3, SPINOR_REG_CYPRESS_STR1V, 0,
-+					  nor->bouncebuf);
-+	bool is3byte, is4byte;
-+	int ret;
-+
-+	ret = spi_nor_read_sr(nor, &nor->bouncebuf[1]);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	is3byte = (nor->bouncebuf[0] == nor->bouncebuf[1]);
-+
-+	op = (struct spi_mem_op)
-+		CYPRESS_NOR_RD_ANY_REG_OP(4, SPINOR_REG_CYPRESS_STR1V, 0,
-+					  nor->bouncebuf);
-+	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	is4byte = (nor->bouncebuf[0] == nor->bouncebuf[1]);
-+
-+	if (is3byte == is4byte)
-+		return -EIO;
-+	if (is3byte)
-+		*addr_mode = 3;
-+	else
-+		*addr_mode = 4;
-+
-+	return 0;
-+}
-+
-+/**
-+ * cypress_nor_set_addr_mode_nbytes() - Set the number of address bytes mode of
-+ *                                      current address mode.
-+ * @nor:		pointer to a 'struct spi_nor'
-+ *
-+ * Determine current address mode by reading SR1 with different methods, then
-+ * query CFR2V[7] to confirm. If determination is failed, force enter to 4-byte
-+ * address mode.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int cypress_nor_set_addr_mode_nbytes(struct spi_nor *nor)
-+{
-+	u8 addr_mode;
-+	struct spi_mem_op op;
-+	int ret;
-+
-+	/*
-+	 * Read SR1 by RDSR1 and RDAR(3- AND 4-byte addr). Use write enable
-+	 * that sets bit-1 in SR1.
-+	 */
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+	ret = cypress_nor_determine_addr_mode_by_sr1(nor, &addr_mode);
-+	if (ret) {
-+		ret = spi_nor_set_4byte_addr_mode(nor, true);
-+		if (ret)
-+			return ret;
-+		return spi_nor_write_disable(nor);
-+	}
-+	ret = spi_nor_write_disable(nor);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * Query CFR2V and make sure no contradiction between determined address
-+	 * mode and CFR2V[7].
-+	 */
-+	op = (struct spi_mem_op)
-+		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode, SPINOR_REG_CYPRESS_CFR2V,
-+					  0, nor->bouncebuf);
-+	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR2_ADRBYT) {
-+		if (addr_mode != 4)
-+			return spi_nor_set_4byte_addr_mode(nor, true);
-+	} else {
-+		if (addr_mode != 3)
-+			return spi_nor_set_4byte_addr_mode(nor, true);
-+	}
-+
-+	nor->params->addr_nbytes = addr_mode;
-+	nor->params->addr_mode_nbytes = addr_mode;
-+
-+	return 0;
-+}
-+
- /**
-  * cypress_nor_set_page_size() - Set page size which corresponds to the flash
-  *                               configuration.
-@@ -227,9 +340,9 @@ s25fs256t_post_bfpt_fixup(struct spi_nor *nor,
- 	struct spi_mem_op op;
- 	int ret;
- 
--	/* 4-byte address mode is enabled by default */
--	nor->params->addr_nbytes = 4;
--	nor->params->addr_mode_nbytes = 4;
-+	ret = cypress_nor_set_addr_mode_nbytes(nor);
-+	if (ret)
-+		return ret;
- 
- 	/* Read Architecture Configuration Register (ARCFN) */
- 	op = (struct spi_mem_op)
-@@ -280,6 +393,12 @@ s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
- 			const struct sfdp_parameter_header *bfpt_header,
- 			const struct sfdp_bfpt *bfpt)
- {
-+	int ret;
-+
-+	ret = cypress_nor_set_addr_mode_nbytes(nor);
-+	if (ret)
-+		return ret;
-+
- 	/* Replace Quad Enable with volatile version */
- 	nor->params->quad_enable = cypress_nor_quad_enable_volatile;
- 
-@@ -375,6 +494,12 @@ static int s28hx_t_post_bfpt_fixup(struct spi_nor *nor,
- 				   const struct sfdp_parameter_header *bfpt_header,
- 				   const struct sfdp_bfpt *bfpt)
- {
-+	int ret;
-+
-+	ret = cypress_nor_set_addr_mode_nbytes(nor);
-+	if (ret)
-+		return ret;
-+
- 	return cypress_nor_set_page_size(nor);
- }
- 
--- 
-2.40.0.rc1.284.g88254d51c5-goog
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIk1pcXVlbCBSYXluYWwiIDxt
+aXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+IFRoZSBjb250aW51b3VzIHJlYWQgc3VwcG9ydCBh
+ZGRlZCByZWNlbnRseSBtYWtlcyBuYW5kc2ltCj4gdW5oYXBweS4gSW5kZWVkLCBhbGwgdGhlIHN1
+cHBvcnRlZCBjb21tYW5kcyBzaG91bGQgYmUgcmUtZW5jb2RlZCBpbnRvCj4gaW50ZXJuYWwgY29t
+bWFuZHMsIHNvIG9mIGNvdXJzZSB0aGVyZSBpcyBjdXJyZW50bHkgbm8gc3VwcG9ydCBmb3IgdGhl
+Cj4gY29tbWFuZHMgYW5kIHBhdHRlcm5zIG5lZWRlZCBmb3IgY29udGludW91cyByZWFkcyB0byB3
+b3JrLgo+IAo+IEkgdHJpZWQgdG8gYWRkIHN1cHBvcnQgZm9yIHRoZW0gYnV0IG5hbmRzaW0gKHdo
+aWNoIGlzIG1vcmUgYSB0b29sIHRvCj4gZGV2ZWxvcC9kZWJ1ZyB1cHBlciBsYXllcnMgcmF0aGVy
+IHRoYW4gdGhlIHJhdyBOQU5EIGNvcmUpIHN1ZmZlcnMgZnJvbSBhCj4gYmlnIGxpbWl0YXRpb246
+IGl0J3MgaW50ZXJuYWwgcGFyc2VyIG5lZWRzIHRvIGtub3cgd2hhdCBleGFjdCBvcGVyYXRpb24K
+PiBpcyBoYXBwZW5pbmcgd2hlbiB0aGUgYWRkcmVzcyBjeWNsZXMgYXJlIHBlcmZvcm1lZC4gVGhl
+IHJlc2VhcmNoIGlzIHRoZW4KPiBzZXF1ZW50aWFsIGZyb20gdGhlIHN0YXJ0IHVwIHRvIHRoZSBh
+ZGRyZXNzIGN5Y2xlcywgYnV0IGRvZXMgbm90IGNoZWNrCj4gd2hhdCdzIGNvbWluZyBuZXh0IGV2
+ZW4gdGhvdWdoIHRoZSBpbmZvcm1hdGlvbiBpcyBhdmFpbGFibGUuIFRoaXMgaXMgYQo+IGxpbWl0
+YXRpb24gd2hpY2ggaXMgcmVsYXRlZCB0byB0aGUgb2xkIEFQSSB1c2VkIGJ5IHRoZSBjb3JlIHdo
+aWNoIGtpbmQKPiBvZiBmb3JjZWQgdGhlIGNvbnRyb2xsZXJzIHRvIGd1ZXNzIHdoYXQgb3BlcmF0
+aW9uIHdhcyBiZWluZyBwZXJmb3JtZWQKPiByYXRoZXIgZWFybHkuIFRvZGF5IHRoZSBjb3JlIHVz
+ZXMgYSBtb3JlIHRyYW5zcGFyZW50IEFQSSBjYWxsZWQKPiAtPmV4ZWNfb3AoKSB3aGljaCBubyBs
+b25nZXIgcmVxdWlyZXMgY29udHJvbGxlciBkcml2ZXJzIHRvIGRvIGFueSBtb3JlCj4gZ3Vlc3Np
+bmcsIGJ1dCBkZXNwaXRlIGJlaW5nIHVwZGF0ZWQgdG8gLT5leGVjX29wKCksIG5hbmRzaW0gaXMg
+c3RpbGwgYQo+IGJpdCBjb25zdHJhaW5lZCBvbiB0aGlzIHJlZ2FyZCBhbmQgdGh1cyBjYW5ub3Qg
+aGFuZGxlIHNlcXVlbnRpYWwgcGFnZQo+IHJlYWRzIGJlY2F1c2UgdGhlIHN0YXJ0IHNlcXVlbmNl
+IGJlZ2lubmluZyBpcyBpZGVudGljYWwgdG8gYSByZWd1bGFyCj4gcGFnZSByZWFkLgo+IAo+IElm
+IHRoZSBpbnRlcm5hbCBhbGdvcml0aG0gaXMgdXBkYXRlZCBzb21lIGRheSwgaXQgc2hvdWxkIGJl
+IHBvc3NpYmxlIHRvCj4gbWFrZSBpdCBzdXBwb3J0IHNlcXVlbnRpYWwgcGFnZSByZWFkcyBieSBh
+ZGRpbmcgc29tZXRoaW5nIGxpa2U6Cj4gCj4gICAgICAgLyogTGFyZ2UgcGFnZSBkZXZpY2VzIGNv
+bnRpbnVvdXMgcmVhZCBwYWdlIHN0YXJ0ICovCj4gICAgICAge09QVF9MQVJHRVBBR0UsIHtTVEFU
+RV9DTURfUkVBRDAsIFNUQVRFX0FERFJfUEFHRSwgU1RBVEVfQ01EX1JFQURTVEFSVCwKPiAgICAg
+ICAgICAgICAgICAgICAgICAgIFNUQVRFX0NNRF9SRUFEQ0FDSEVTRVEgfCBBQ1RJT05fQ1BZLCBT
+VEFURV9EQVRBT1VULAo+ICAgICAgICAgICAgICAgICAgICAgICAgU1RBVEVfUkVBRFl9fSwKPiAg
+ICAgICAvKiBMYXJnZSBwYWdlIGRldmljZXMgY29udGludW91cyByZWFkIHBhZ2UgY29udGludWUg
+Ki8KPiAgICAgICB7T1BUX0xBUkdFUEFHRSwge1NUQVRFX0NNRF9SRUFEQ0FDSEVTRVEgfCBBQ1RJ
+T05fQ1BZX05FWFQsIFNUQVRFX0RBVEFPVVQsCj4gICAgICAgICAgICAgICAgICAgICAgICBTVEFU
+RV9SRUFEWX19LAo+ICAgICAgIC8qIExhcmdlIHBhZ2UgZGV2aWNlcyBjb250aW51b3VzIHJlYWQg
+cGFnZSBlbmQgKi8KPiAgICAgICB7T1BUX0xBUkdFUEFHRSwge1NUQVRFX0NNRF9SRUFEQ0FDSEVF
+TkQgfCBBQ1RJT05fQ1BZX05FWFQsIFNUQVRFX0RBVEFPVVQsCj4gICAgICAgICAgICAgICAgICAg
+ICAgICBTVEFURV9SRUFEWX19LAo+IAo+IEZvciBub3csIHdlIGp1c3QgcmV0dXJuIC1FT1BOT1RT
+VVBQIHdoZW4gdGhlIGNvcmUgYXNrcyBjb250cm9sbGVyCj4gZHJpdmVycyBpZiB0aGV5IHN1cHBv
+cnQgdGhlIGZlYXR1cmUgaW4gb3JkZXIgdG8gcHJldmVudCBhbnkgZnVydGhlciB1c2UKPiBvZiB0
+aGVzZSBvcGNvZGVzLgo+IAo+IE5vdGU6IFRoaXMgaXMgYSBoYWNrLCAtPmV4ZWNfb3AoKSBpcyBu
+b3Qgc3VwcG9zZWQgdG8gY2hlY2sgYWdhaW5zdCB0aGUKPiBDT01NQU5EIG9wY29kZXMgdW5sZXNz
+IF9yZWFsbHlfIG5lZWRlZC4KPiAKPiBGaXhlczogMDAzZmU0Yjk1NDViICgibXRkOiByYXduYW5k
+OiBTdXBwb3J0IGZvciBzZXF1ZW50aWFsIGNhY2hlIHJlYWRzIikKPiBSZXBvcnRlZC1ieTogWmhp
+aGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiBMaW5rOgo+IGh0dHBzOi8vbG9y
+ZS5rZXJuZWwub3JnL2xpbnV4LW10ZC9mZDM0ZmU1NS03ZjRhLTAzMGQtODY1My05YmI5Y2YwODQx
+MGRAaHVhd2VpLmNvbS8KPiBTaWduZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
+bmFsQGJvb3RsaW4uY29tPgo+IC0tLQo+IGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRzaW0uYyB8
+IDE3ICsrKysrKysrKysrKysrKystCj4gMSBmaWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyks
+IDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
+ZHNpbS5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZHNpbS5jCj4gaW5kZXggYzIxYWJmNzQ4
+OTQ4Li4xNzliMjg0NTliNGIgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
+ZHNpbS5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZHNpbS5jCj4gQEAgLTIxNjAs
+OCArMjE2MCwyMyBAQCBzdGF0aWMgaW50IG5zX2V4ZWNfb3Aoc3RydWN0IG5hbmRfY2hpcCAqY2hp
+cCwgY29uc3QKPiBzdHJ1Y3QgbmFuZF9vcGVyYXRpb24gKm9wLAo+IAljb25zdCBzdHJ1Y3QgbmFu
+ZF9vcF9pbnN0ciAqaW5zdHIgPSBOVUxMOwo+IAlzdHJ1Y3QgbmFuZHNpbSAqbnMgPSBuYW5kX2dl
+dF9jb250cm9sbGVyX2RhdGEoY2hpcCk7Cj4gCj4gLQlpZiAoY2hlY2tfb25seSkKPiArCWlmIChj
+aGVja19vbmx5KSB7Cj4gKwkJLyogVGhlIGN1cnJlbnQgaW1wbGVtZW50YXRpb24gb2YgbmFuZHNp
+bSBuZWVkcyB0byBrbm93IHRoZQo+ICsJCSAqIG9uZ29pbmcgb3BlcmF0aW9uIHdoZW4gcGVyZm9y
+bWluZyB0aGUgYWRkcmVzcyBjeWNsZXMuIFRoaXMKPiArCQkgKiBtZWFucyBpdCBjYW5ub3QgbWFr
+ZSB0aGUgZGlmZmVyZW5jZSBiZXR3ZWVuIGEgcmVndWxhciByZWFkCj4gKwkJICogYW5kIGEgY29u
+dGludW91cyByZWFkLiBIZW5jZSwgdGhpcyBoYWNrIHRvIG1hbnVhbGx5IHJlZnVzZQo+ICsJCSAq
+IHN1cHBvcnRpbmcgc2VxdWVudGlhbCBjYWNoZWQgb3BlcmF0aW9ucy4KPiArCQkgKi8KPiArCQlm
+b3IgKG9wX2lkID0gMDsgb3BfaWQgPCBvcC0+bmluc3Ryczsgb3BfaWQrKykgewo+ICsJCQlpbnN0
+ciA9ICZvcC0+aW5zdHJzW29wX2lkXTsKPiArCQkJaWYgKGluc3RyLT50eXBlID09IE5BTkRfT1Bf
+Q01EX0lOU1RSICYmCj4gKwkJCSAgICAoaW5zdHItPmN0eC5jbWQub3Bjb2RlID09IE5BTkRfQ01E
+X1JFQURDQUNIRUVORCB8fAo+ICsJCQkgICAgIGluc3RyLT5jdHguY21kLm9wY29kZSA9PSBOQU5E
+X0NNRF9SRUFEQ0FDSEVTRVEpKQo+ICsJCQkJcmV0dXJuIC1FT1BOT1RTVVBQOwo+ICsJCX0KPiAr
+Cj4gCQlyZXR1cm4gMDsKPiArCX0KPiAKPiAJbnMtPmxpbmVzLmNlID0gMTsKCkFja2VkLWJ5OiBS
+aWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgoKVGhhbmtzLAovL3JpY2hhcmQKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
