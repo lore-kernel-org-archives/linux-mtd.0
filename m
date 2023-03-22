@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8522C76195
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 16:09:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F6DFC6FD1F
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 16:09:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tG73ah8mL6tUrpte6qg5/eKMMrwJIrGIa1A2GF3PzJU=; b=zz2o4F33XcqkB0
-	dUw/9ZenlOP54wQ9Xg+Bf/x0v+nRRtCW4duSJm6AjNIDxoiPiDVDMKW6kGyL3U/CVKIuNE1AKjqWj
-	JtAD3HgWGznHenlFLpEUSU+LPojl3A3xkRVMRGhWOUL8cdH0ALnKnhw0galSxaiu8T8CzV1LgceYC
-	lin5ttOhZR/jfKjF9lZ9uIiGmoXq7kFj5g9TgnkI6ZhmDkI6Oni82PjcnWiDzEAnAhMPMXk1gZh9n
-	iMyq/icDbRX1oA03D9pdtrQslldc5snfTtQqDqL6hO9IeaueFWm157F0EXU8YiIlqPdzfwy3m1dLc
-	fe8WE5ZAIvQHuqXtETqA==;
+	List-Owner; bh=CFY0ZJhTlODn50GffLdSLo3+uHfS7IsvjBya3JBKxAk=; b=fAmWC1xzm95GTs
+	yCREDAuO8XcVdrTVvlZh4zFSgXJ8r1PnhTCjsp8os0lVKU82+hivhkSoMLzpRCoL5CzCW7LMGOkVd
+	zn4NkC8gZQfmVCppoAjk8wv04M6x4MNS059CbNHCqr1HP9M/NGMYNyevHuCJ2dCBRb6F3zkOntfnp
+	3UUAGu68qyqy/CbRA64Ii7z3opRSXd0ZWB0RZTlBIrTxn1gz3e3fzIZEdjh1GQxvQ3SpemDSlyIOH
+	V6o4NDttGgLx262L5ZWl1Pi+dttEcBHSUvF5OruxJ36FN8GN0y0PtSWh781myJbPPv6QKJdWxn4f/
+	0Nw1nz0KzkJiwIa3Zs5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf11M-00GbuP-1A;
-	Wed, 22 Mar 2023 16:09:04 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1pf11S-00GbyD-1j;
+	Wed, 22 Mar 2023 16:09:10 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf10v-00GbYd-0V
+	id 1pf113-00Gbf9-27
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Mar 2023 16:08:39 +0000
+	Wed, 22 Mar 2023 16:08:49 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id BDB6F24000D;
-	Wed, 22 Mar 2023 16:08:34 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id EC19A240003;
+	Wed, 22 Mar 2023 16:08:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1679501315;
+	t=1679501324;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=U2cqPqiiXUnLRrvg7EXLCXB7phDabOi9CfV7wq6/u7k=;
-	b=hxmba1p0qPMhPp6nf3oJ+gTcGks9TnfkMCIb2yi81ZeEHXAI2Nc51P8rdLJAjSxTW8/pQz
-	b0+LV4If/dLWYzcSgUexHy3u63MoknbEjclS0WmFLaKI5XsTBueoxF+pqtA+rfc91dkPUH
-	kWkBVBuRClCnYRAKiKe5TxBl+P4mVFq1oXX5W9mG31O9+amkWgZz0DE4esAysdzRGLH7Lw
-	yLH/vTv1rv5ocFfU4X6aniiW0yTWs7SBZQdevZCCwPV8ftMwHK05trSIk3OT3vVuwVc17W
-	bjqov6648UkoONABAalux5FZTajGAkJ22WiuWYTlHXFh1Pno5I0sKYtX8dgZ6g==
+	bh=BmDJBFU4ANKKPCDO66I9sZQV3Gy2AT4HbhZE3mw6cAA=;
+	b=NxKlPRE2Cyiwga0SmhmhPvcnNA1Gpa0fv0rUnQTvB53hWr1L7ffLkedpZWzKqWxUMQKRhz
+	00LnNQ2MztC8ckIn/zhhKSK6jxm/aBBF9jhbJjOJWDFmlBSppYK8PCFx8+pRnM6X1DvaBb
+	4HY/aC+32EqWmWKNhht+C8maVMICy1i63EjQW8i7ojUP+lNEBAc89TTFKAd+sOTfgpEizq
+	f9h2iYyu/VmxtLCbNkKq1WcxtQRjRh6TaV+L9UOSUNKjL3G4xYFHiYotDELvtU3YfIc31E
+	OPGdjThTi0blZ9QN1/dw+BcDwmcjMd31ikS5RTD0LtSzUkingBxLZEJl/hgdAw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2] mtd: Avoid printing error messages on probe deferrals
-Date: Wed, 22 Mar 2023 17:08:34 +0100
-Message-Id: <20230322160834.2232864-1-miquel.raynal@bootlin.com>
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: qcom: Use of_property_present() for testing DT property presence
+Date: Wed, 22 Mar 2023 17:08:42 +0100
+Message-Id: <20230322160842.2232923-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230307192506.439532-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20230310144715.1543926-1-robh@kernel.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'5cab06156aade17fbee2fd926bce8c503e55b2b5'
+X-linux-mtd-patch-commit: b'7c09abba58cf912fa417be8720cff00df12354aa'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_090837_555105_B5658AD2 
-X-CRM114-Status: UNSURE (   5.86  )
+X-CRM114-CacheID: sfid-20230322_090845_855305_D041F366 
+X-CRM114-Status: UNSURE (   8.04  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,13 +81,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2023-03-07 at 19:25:06 UTC, Miquel Raynal wrote:
-> There is no reason to complain about probe errors in case of deferrals.
+On Fri, 2023-03-10 at 14:47:15 UTC, Rob Herring wrote:
+> It is preferred to use typed property access functions (i.e.
+> of_property_read_<type> functions) rather than low-level
+> of_get_property/of_find_property functions for reading properties. As
+> part of this, convert of_get_property/of_find_property calls to the
+> recently added of_property_present() helper when we just want to test
+> for presence of a property and nothing more.
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Reviewed-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
 Miquel
 
