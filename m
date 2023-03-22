@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F4BAC6FD1F
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 16:09:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C212EC6FD1C
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 16:09:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Nf66z9BHjpB5f9dT0MYZHzcXFCh1ri8K78MxgLZIKRw=; b=CtKWsHgVbDloZh
-	T+fz3fCe8s+4+riCoD/5hdqXR5cPQGiuYUuAhUuRshp8JDdMy+dNAN+1YKAES9qVBscF1WiHacQOz
-	8R48mNGgFyBeQi62b47cdqITN5QNE2fT91cuiggWg/8d1fUkz/zQ7SsXisVV7TPUF+PeL+kkj5S3W
-	VgkAlBIeCYeYmEBWLMNL182tdrA60xibVI/JCPygd5yPAEkGAHODCCD1QUYnjb+eQZ2dfQasfc1u3
-	D5y4Ky9wW4bXMVAKUa2L1drvpeEpNydOdKK76JJnLJAD5QCSIn0TgbsdlQKi8JXxUem8Qm8cZ8iD1
-	gmB9WlTWjZXUH/BPFrnA==;
+	List-Owner; bh=U+ATlfhsGO+9NWlWImA9dfrthcRlMA0s3xkiUQ8AbgY=; b=vLLQQ0/iahTqcR
+	RiGmRKAbONcrLxhlLid+KQ8qXzNz+GMrUwyv49AjF+2EQeU+ZPsNjp5AoN5F3dxLV3OGLvHVE0Svs
+	xjZom12bHalRCQGX08W3sJH2jYNs3PeNCceEtlln+jepr5L2u5g0eVGIDtVM9vyS29r0FH6ztBtsW
+	xDy3Vgn4tErnb4yXzIXXpvEVCTo1Xxybb7QALjwY7L4qvaRq5nfaTjQaecU4eyI9JZ0WIiZTTJqth
+	uvlcx4x5GzmVh/GYOe1Uyy6i7sL8qdbTJenqDBIKKDzdsSYqtcTvqtrHLEE9zfTbophtx2sdcCYN+
+	Dhl248H/plLV2Wlbqn8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf11O-00Gbvq-1g;
-	Wed, 22 Mar 2023 16:09:06 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1pf11Z-00Gc4v-1z;
+	Wed, 22 Mar 2023 16:09:17 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf113-00GbcB-1J
+	id 1pf116-00GbiO-2Y
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Mar 2023 16:08:48 +0000
+	Wed, 22 Mar 2023 16:08:51 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id CF9061BF20D;
-	Wed, 22 Mar 2023 16:08:38 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id E983724000B;
+	Wed, 22 Mar 2023 16:08:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1679501320;
+	t=1679501327;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+PSmnxBcZaUN7gsWHWZ45hdp2vXlK1DT4al4TDhvtl0=;
-	b=Vcy9+zDUUhG2rn8iTHsAKvO4V15dpsX94dRn8OkrHPjFyLXe6ywWgPbEPvusnyMYH83Q97
-	tCQOmTrZ1QcXbh3HZjJ4zYRu4tyyvNoZL2WRA95hzgT+EaIOdLuxFDbjOS+TMApsc79d1E
-	Jw0delv/2t3kli1J9Z18PCMXo2myl74EE/QERYaiKu2MWG3XEM9lSOy/Bc4PpynWLKSECi
-	UC7w0ZxbhROnrZGgnMiOlnxjBn/Ub8+UbKPPNq3V+tyw4q/M4Z+W7vbR3UVmY4DN2gdKCl
-	515mFRhlCtFGdgLnoHWcwXtvJGgMnYLVbVO9KbQ/z+wJMGPZFfg3Y8Gu/ZcwZw==
+	bh=pcE5Vh/YHn/UUWlxMLPTBmTY6gfuVYjV/FWBldw0FIk=;
+	b=eEJ6f3eFxrPY3y7pL3FVUvsc00nO2UgKJKKnxUvjkBOgacxnoPLm8u7dV0eVPufhgW1DgX
+	zSNeavo6pdKFYH8jbOpZyyiGs8fjjhhi9KFa177zb7MV5t0T5i2Vcm3lHFoU4VvFq0ShRW
+	DfabE7RuhGXrGHYeH55jSftu/M6UIZAt9qjCmvu3Pb3tuPXnP+V7dU2uRbvbNGqLireIDV
+	/yHEn97rhJBuKM1OqhcmZ4+ANWUL34UIIPGyXVGUmvfyRvsCzrIqs/vKGaA6YxJJUb5mi8
+	+dS8QJMv7E9OIZrJ0skU5LT34FZWnAxTSzVsHArjK2HmRlaVKTGYcPBPbXJzOA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tom Rix <trix@redhat.com>,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	nathan@kernel.org,
-	ndesaulniers@google.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH] mtd: rawnand: remove unused is_imx51_nfc and imx53_nfc functions
-Date: Wed, 22 Mar 2023 17:08:38 +0100
-Message-Id: <20230322160838.2232894-1-miquel.raynal@bootlin.com>
+To: Hector Palacios <hector.palacios@digi.com>,
+	miquel.raynal@bootlin.com
+Cc: herve.codina@bootlin.com,
+	linux-mtd@lists.infradead.org,
+	sashal@kernel.org
+Subject: Re: [PATCH v5] mtd: rawnand: hynix: fix up bit 0 of sdr_timing_mode
+Date: Wed, 22 Mar 2023 17:08:46 +0100
+Message-Id: <20230322160846.2232952-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230321114638.1782086-1-trix@redhat.com>
+In-Reply-To: <20230310080609.1930869-1-hector.palacios@digi.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'cb70cf99abae487941bbb5d3661653c02a5103cc'
+X-linux-mtd-patch-commit: b'e8c047b4a92cf4af7a81bf31e9b31fedc7434335'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_090845_588844_BB84EDB5 
-X-CRM114-Status: UNSURE (   6.14  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230322_090849_041216_B1621C1E 
+X-CRM114-Status: GOOD (  10.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,19 +76,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2023-03-21 at 11:46:38 UTC, Tom Rix wrote:
-> clang with W=1 reports
-> drivers/mtd/nand/raw/mxc_nand.c:1602:19: error: unused function
->   'is_imx51_nfc' [-Werror,-Wunused-function]
-> static inline int is_imx51_nfc(struct mxc_nand_host *host)
->                   ^
-> drivers/mtd/nand/raw/mxc_nand.c:1607:19: error: unused function
->   'is_imx53_nfc' [-Werror,-Wunused-function]
-> static inline int is_imx53_nfc(struct mxc_nand_host *host)
->                   ^
-> These functions are not used, so remove them.
+On Fri, 2023-03-10 at 08:06:09 UTC, Hector Palacios wrote:
+> According to the ONFI specification, bit 0 of 'SDR timing mode support'
+> (bytes 129-130) "shall be 1". That means the NAND supports at least
+> timing mode 0.
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> NAND chip Hynix H27U4G8F2GDA-BI (at least) is reading a 0 on this field
+> which makes nand_choose_best_sdr_timings() return with error and the
+> probe function to eventually fail.
+> 
+> Given that sdr_timing_modes bit 0 must be 1 by specification, force
+> it in case the NAND reports it is not set. This is a safe assumption
+> because the mode 0 is the minimum (safer) set of timings that the
+> NAND can work with.
+> 
+> Signed-off-by: Hector Palacios <hector.palacios@digi.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Link: https://lore.kernel.org/linux-mtd/20230223165104.525852-1-hector.palacios@digi.com
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
