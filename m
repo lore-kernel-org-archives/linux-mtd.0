@@ -4,60 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 540EFC76195
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 14:56:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FED6C6FD1C
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 15:17:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=t5kQZmYcL8SBbHJ+T51638Wcn9qTzJYkhlZ28r/gZ00=; b=JVa+QejnoFOXr8
-	KkEhQGRy2Mk/KTQ2XArOlsPY92xIPmYUBCbL2hfySTHK4/6PxKumvx1UduM0VSXabNyu0JMTdjFiR
-	AQ0gML5d7wfiOLHRYvUlrNmQKUmeBimDeJp+6YtUIBxABqNNJpvGqwX2cc+vz/wvxGcd3Rcq93lQS
-	gP+yj6Lh9HaMMYKW5Xp/9BHrK9N+baVniNdzef7NRo5mFuTfBpsrNKqcAaZuk1skPyLDJ/wPGqTj2
-	2nXJeJUtafgDP76sca10SF5XYI3cWzDJLp8LjdiSWII+b3LyTaAOoH2jhu84PMNFKFk+PyjQBAzjC
-	tiwq5UAsOgjs8TBCdHKQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=inZ5126LsAaG93axHMqI1tEqFq+jHaXC+7kGdU6V8SM=; b=rJ1e3Cp5EyMIYX
+	oXtK6/jg8wPxd+iqGhtwrw3m6xde4Bo0a933thd3QyQ+jxtCRyP1WVKJ4ADedaXFQdGzG0wOUluGQ
+	DbhyAuXZWRdPMZEAUS2+0fR50obmRySHs/ggub0+9ZvdoUmbayvjs9He4QTlsD88/s+Og9PK9iem2
+	k9L7O5ItWD+K82d2DevQX5ftuTTV1FNpXB8aVeDhj1lTmQDFChKPSWsNh1M2FHTENAyjjTGjCuv/i
+	wueREFplirylSKVmGJKYLzt3mQOEFnWzl9u+ZTk4RAqQlNDx7xTpKHjy9oJDen+kUS30aUB8MsRSt
+	pvl85jGt1EberhLSqW0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pezsC-00GOS5-19;
-	Wed, 22 Mar 2023 14:55:32 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1pf0DF-00GTZs-0x;
+	Wed, 22 Mar 2023 15:17:17 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pezrz-00GOPa-0B
+	id 1pf0D8-00GTWr-08
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Mar 2023 14:55:21 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 2D5FE1C0006;
-	Wed, 22 Mar 2023 14:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1679496911;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zFfA11oca0z60zNaQoo8l9bTRoSybNo1r8bX+dEwnH8=;
-	b=BCbP6P978hjPpmfP/HktMsFzWqr2cU0aBDRzuVx41Ae0cZRzjkyus4BSPwKrR6cYX5AqO8
-	gHoiybIdDDQ2ljSgvr9wgMX+RUZmHncu3eNxt92/OFb8eiKFnNpOzdDKkmR2tUm4dfYetq
-	a+FI1WM/diBlWqWK4c+/909BZ1a9Sk1krU9Ll2J81yCZi9DTmXPtJI3DXFB1HfT4tvu9P/
-	X7Tv0VNktXp6L5UHUDLV8748FA4PNoJY9qqgHrOVWse7FOMzXhOG37LIqrb/oCddNt3wHl
-	M4BY/dmkEoTDru7gq70xfNaedXdlIjEEdcp9XxGj3LZppZiHsgIa5IzLTSsgtw==
-Date: Wed, 22 Mar 2023 15:55:08 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] mtd: rawnand: mxc: Remove the unused function
- is_imx51_nfc()
-Message-ID: <20230322155508.6f4acb80@xps-13>
-In-Reply-To: <20230317074041.115036-1-jiapeng.chong@linux.alibaba.com>
-References: <20230317074041.115036-1-jiapeng.chong@linux.alibaba.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Wed, 22 Mar 2023 15:17:12 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id 1724C5FD42;
+	Wed, 22 Mar 2023 18:17:07 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1679498227;
+	bh=PE5BBQKZYaZpy2ceXFudsdtpoaJahbTFeAodv44PEEk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=mrJC46T6+MrE4S/SZgYyLvjKVrjkajNxRQPo180pmdelR99/Wvwqs0M+8fEqbhIjY
+	 c/svfsvckzUGKXcVH7apjkPt93n1jUIEYp0Z3G+Mm9kZ4GAT84NWUIZbNghLfCsIFe
+	 pydG7MrZ1oQGuYkpu5h/k/YoTOuvA905w5U7OwNhspnwJPnPrFcUC9gKq+TRSMz6tQ
+	 afaDn7wOEv1iwfK0M0f1+OURpXTEtxRYTtTgNbfr+Pw544+8T7y8pEZJ1eg9YbsC7U
+	 5wleQSK13PFD15NB2LCHGvzo3blbwMQLD90ucDkaO0CWPRu61MOwT0oNJjNy8UQWqG
+	 GRtz4mO4cW6tQ==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Wed, 22 Mar 2023 18:17:05 +0300 (MSK)
+From: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Dmitry Rokosov
+	<ddrokosov@sberdevices.ru>, Chuanhong Guo <gch981213@gmail.com>, Aidan
+ MacDonald <aidanmacdonald.0x0@gmail.com>, Felix Matouschek
+	<felix@matouschek.org>, <kernel@kempniu.pl>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<kernel@sberdevices.ru>, Martin Kurbanov <mmkurbanov@sberdevices.ru>
+Subject: [PATCH v3] mtd: spinand: add support for ESMT F50x1G41LB
+Date: Wed, 22 Mar 2023 18:16:25 +0300
+Message-ID: <20230322151625.791131-1-mmkurbanov@sberdevices.ru>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/03/22 10:34:00 #20990985
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_075519_399206_47845B2A 
-X-CRM114-Status: GOOD (  12.82  )
+X-CRM114-CacheID: sfid-20230322_081710_799755_8DAE8C8E 
+X-CRM114-Status: GOOD (  22.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,35 +80,227 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpqaWFwZW5nLmNob25nQGxpbnV4LmFsaWJhYmEuY29tIHdyb3RlIG9uIEZyaSwgMTcgTWFy
-IDIwMjMgMTU6NDA6NDEKKzA4MDA6Cgo+IFRoZSBmdW5jdGlvbiBpc19pbXg1MV9uZmMgaXMgZGVm
-aW5lZCBpbiB0aGUgbXhjX25hbmQuYyBmaWxlLCBidXQgbm90Cj4gY2FsbGVkIGVsc2V3aGVyZSwg
-c28gcmVtb3ZlIHRoaXMgdW51c2VkIGZ1bmN0aW9uLgo+IAo+IGRyaXZlcnMvbXRkL25hbmQvcmF3
-L214Y19uYW5kLmM6MTYwMjoxOTogd2FybmluZzogdW51c2VkIGZ1bmN0aW9uICdpc19pbXg1MV9u
-ZmMnLgoKVGhhbmtzIGZvciB5b3VyIHBhdGNoLCBidXQgYXBwYXJlbnRseSBpc19pbXg1M19uZmMo
-KSBpcyBhbHNvIHVudXNlZCwKc3RyYW5nZSB0aGUgcm9ib3QgZGlkIG5vdCBwaWNrIHRoaXMgdXAu
-IEFueXdheSwgbm8gbmVlZCB0byByZXNlbmQsIEkKcmVjZWl2ZWQgYW5vdGhlciBwYXRjaCByZW1v
-dmluZyBib3RoIGZ1bmN0aW9ucyBhbHJlYWR5LgoKPiAKPiBSZXBvcnRlZC1ieTogQWJhY2kgUm9i
-b3QgPGFiYWNpQGxpbnV4LmFsaWJhYmEuY29tPgo+IExpbms6IGh0dHBzOi8vYnVnemlsbGEub3Bl
-bmFub2xpcy5jbi9zaG93X2J1Zy5jZ2k/aWQ9NDU1OQo+IFNpZ25lZC1vZmYtYnk6IEppYXBlbmcg
-Q2hvbmcgPGppYXBlbmcuY2hvbmdAbGludXguYWxpYmFiYS5jb20+Cj4gLS0tCj4gIGRyaXZlcnMv
-bXRkL25hbmQvcmF3L214Y19uYW5kLmMgfCA1IC0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGRl
-bGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9teGNfbmFu
-ZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbXhjX25hbmQuYwo+IGluZGV4IGY2Yzk2MzQxYjg5
-Ni4uMTZkNzk1YzI1NjA5IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L214Y19u
-YW5kLmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9teGNfbmFuZC5jCj4gQEAgLTE1OTks
-MTEgKzE1OTksNiBAQCBzdGF0aWMgaW5saW5lIGludCBpc19pbXgyNV9uZmMoc3RydWN0IG14Y19u
-YW5kX2hvc3QgKmhvc3QpCj4gIAlyZXR1cm4gaG9zdC0+ZGV2dHlwZV9kYXRhID09ICZpbXgyNV9u
-YW5kX2RldnR5cGVfZGF0YTsKPiAgfQo+ICAKPiAtc3RhdGljIGlubGluZSBpbnQgaXNfaW14NTFf
-bmZjKHN0cnVjdCBteGNfbmFuZF9ob3N0ICpob3N0KQo+IC17Cj4gLQlyZXR1cm4gaG9zdC0+ZGV2
-dHlwZV9kYXRhID09ICZpbXg1MV9uYW5kX2RldnR5cGVfZGF0YTsKPiAtfQo+IC0KPiAgc3RhdGlj
-IGlubGluZSBpbnQgaXNfaW14NTNfbmZjKHN0cnVjdCBteGNfbmFuZF9ob3N0ICpob3N0KQo+ICB7
-Cj4gIAlyZXR1cm4gaG9zdC0+ZGV2dHlwZV9kYXRhID09ICZpbXg1M19uYW5kX2RldnR5cGVfZGF0
-YTsKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+From: Chuanhong Guo <gch981213@gmail.com>
+
+This patch adds support for ESMT F50L1G41LB and F50D1G41LB.
+It seems that ESMT likes to use random JEDEC ID from other vendors.
+Their 1G chips uses 0xc8 from GigaDevice and 2G/4G chips uses 0x2c from
+Micron. For this reason, the ESMT entry is named esmt_c8 with explicit
+JEDEC ID in variable name.
+
+Datasheets:
+https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F50L1G41LB(2M).pdf
+https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F50D1G41LB(2M).pdf
+
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+Signed-off-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+Signed-off-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Tested-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+---
+The implementation has been tested on the Amlogic A113L SoC based device
+connected with ESMT F50L1G41LB spinand flash.
+
+Changes v3 since v2 at [1]:
+  - fix OOB layout
+
+Changes v2 since v1 at [2]:
+  - drop 0x7f padding from SPINAND_ID.
+
+Links:
+  [1] https://lore.kernel.org/lkml/20220413083824.247136-1-gch981213@gmail.com/
+  [2] https://lore.kernel.org/lkml/20220413042337.160263-1-gch981213@gmail.com/
+---
+ drivers/mtd/nand/spi/Makefile |   3 +-
+ drivers/mtd/nand/spi/core.c   |   1 +
+ drivers/mtd/nand/spi/esmt.c   | 135 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h   |   1 +
+ 4 files changed, 139 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/esmt.c
+
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index b520fe634041..c8ab4c9bf0e6 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o ato.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o xtx.o
++spinand-objs := core.o ato.o esmt.o gigadevice.o macronix.o micron.o
++spinand-objs += paragon.o toshiba.o winbond.o xtx.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index dacd9c0e8b20..af3988c870c3 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -938,6 +938,7 @@ static const struct nand_ops spinand_ops = {
+
+ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&ato_spinand_manufacturer,
++	&esmt_c8_spinand_manufacturer,
+ 	&gigadevice_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
+new file mode 100644
+index 000000000000..1a3ffb982335
+--- /dev/null
++++ b/drivers/mtd/nand/spi/esmt.c
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Author:
++ *	Chuanhong Guo <gch981213@gmail.com> - the main driver logic
++ *	Martin Kurbanov <mmkurbanov@sberdevices.ru> - OOB layout
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++/* ESMT uses GigaDevice 0xc8 JECDEC ID on some SPI NANDs */
++#define SPINAND_MFR_ESMT_C8			0xc8
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++			   SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++			   SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++			   SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++			   SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++/*
++ * OOB spare area map (64 bytes)
++ *
++ * Bad Block Markers
++ * filled by HW and kernel                 Reserved
++ *   |                 +-----------------------+-----------------------+
++ *   |                 |                       |                       |
++ *   |                 |    OOB free data Area |non ECC protected      |
++ *   |   +-------------|-----+-----------------|-----+-----------------|-----+
++ *   |   |             |     |                 |     |                 |     |
++ * +-|---|----------+--|-----|--------------+--|-----|--------------+--|-----|--------------+
++ * | |   | section0 |  |     |    section1  |  |     |    section2  |  |     |    section3  |
++ * +-v-+-v-+---+----+--v--+--v--+-----+-----+--v--+--v--+-----+-----+--v--+--v--+-----+-----+
++ * |   |   |   |    |     |     |     |     |     |     |     |     |     |     |     |     |
++ * |0:1|2:3|4:7|8:15|16:17|18:19|20:23|24:31|32:33|34:35|36:39|40:47|48:49|50:51|52:55|56:63|
++ * |   |   |   |    |     |     |     |     |     |     |     |     |     |     |     |     |
++ * +---+---+-^-+--^-+-----+-----+--^--+--^--+-----+-----+--^--+--^--+-----+-----+--^--+--^--+
++ *           |    |                |     |                 |     |                 |     |
++ *           |    +----------------|-----+-----------------|-----+-----------------|-----+
++ *           |             ECC Area|(Main + Spare) - filled|by ESMT NAND HW        |
++ *           |                     |                       |                       |
++ *           +---------------------+-----------------------+-----------------------+
++ *                         OOB ECC protected Area - not used due to
++ *                         partial programming from some filesystems
++ *                             (like JFFS2 with cleanmarkers)
++ */
++
++#define ESMT_OOB_SECTION_COUNT			4
++#define ESMT_OOB_SECTION_SIZE(nand) \
++	(nanddev_per_page_oobsize(nand) / ESMT_OOB_SECTION_COUNT)
++#define ESMT_OOB_FREE_SIZE(nand) \
++	(ESMT_OOB_SECTION_SIZE(nand) / 2)
++#define ESMT_OOB_ECC_SIZE(nand) \
++	(ESMT_OOB_SECTION_SIZE(nand) - ESMT_OOB_FREE_SIZE(nand))
++#define ESMT_OOB_BBM_SIZE			2
++
++static int f50l1g41lb_ooblayout_ecc(struct mtd_info *mtd, int section,
++				    struct mtd_oob_region *region)
++{
++	struct nand_device *nand = mtd_to_nanddev(mtd);
++
++	if (section >= ESMT_OOB_SECTION_COUNT)
++		return -ERANGE;
++
++	region->offset = section * ESMT_OOB_SECTION_SIZE(nand) +
++			 ESMT_OOB_FREE_SIZE(nand);
++	region->length = ESMT_OOB_ECC_SIZE(nand);
++
++	return 0;
++}
++
++static int f50l1g41lb_ooblayout_free(struct mtd_info *mtd, int section,
++				     struct mtd_oob_region *region)
++{
++	struct nand_device *nand = mtd_to_nanddev(mtd);
++
++	if (section >= ESMT_OOB_SECTION_COUNT)
++		return -ERANGE;
++
++	/*
++	 * Reserve space for bad blocks markers (section0) and
++	 * reserved bytes (sections 1-3)
++	 */
++	region->offset = section * ESMT_OOB_SECTION_SIZE(nand) + 2;
++
++	/* Use only 2 non-protected ECC bytes per each OOB section */
++	region->length = 2;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
++	.ecc = f50l1g41lb_ooblayout_ecc,
++	.free = f50l1g41lb_ooblayout_free,
++};
++
++static const struct spinand_info esmt_c8_spinand_table[] = {
++	SPINAND_INFO("F50L1G41LB",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(1, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
++	SPINAND_INFO("F50D1G41LB",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(1, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
++};
++
++static const struct spinand_manufacturer_ops esmt_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer esmt_c8_spinand_manufacturer = {
++	.id = SPINAND_MFR_ESMT_C8,
++	.name = "ESMT",
++	.chips = esmt_c8_spinand_table,
++	.nchips = ARRAY_SIZE(esmt_c8_spinand_table),
++	.ops = &esmt_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 6d3392a7edc6..2469b8ede770 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -261,6 +261,7 @@ struct spinand_manufacturer {
+
+ /* SPI NAND manufacturers */
+ extern const struct spinand_manufacturer ato_spinand_manufacturer;
++extern const struct spinand_manufacturer esmt_c8_spinand_manufacturer;
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
+--
+2.40.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
