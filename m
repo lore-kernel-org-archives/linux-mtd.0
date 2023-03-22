@@ -4,66 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F6DFC6FD1F
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 16:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C13BDC6FD1F
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 16:09:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CFY0ZJhTlODn50GffLdSLo3+uHfS7IsvjBya3JBKxAk=; b=fAmWC1xzm95GTs
-	yCREDAuO8XcVdrTVvlZh4zFSgXJ8r1PnhTCjsp8os0lVKU82+hivhkSoMLzpRCoL5CzCW7LMGOkVd
-	zn4NkC8gZQfmVCppoAjk8wv04M6x4MNS059CbNHCqr1HP9M/NGMYNyevHuCJ2dCBRb6F3zkOntfnp
-	3UUAGu68qyqy/CbRA64Ii7z3opRSXd0ZWB0RZTlBIrTxn1gz3e3fzIZEdjh1GQxvQ3SpemDSlyIOH
-	V6o4NDttGgLx262L5ZWl1Pi+dttEcBHSUvF5OruxJ36FN8GN0y0PtSWh781myJbPPv6QKJdWxn4f/
-	0Nw1nz0KzkJiwIa3Zs5Q==;
+	List-Owner; bh=yKIMT8aXh0EanDDP8yXpHiA4vCsuZH1jsoM8bYpPpFg=; b=S4ztAl4pPlmu2Z
+	oXC12QPfof3LTA1aZdCAv7NjnqRWkmjePlbMtmLxIAhau6GnxL48anpY0SUma6mtNzFy1SAIP1z0L
+	lXnD5IhC50xHNPHc+iefFvAjDPwvbYjdxk7JZVrffn656IcWnlLZB+wV7k1ze18uo4rUxBQeZOYHr
+	RtvArSWZanNa+DlBOJEq0cRajzQ2z4mFmMavEpbR/DqOsIs4WBR1kRqM1+1N1HVti/VbvNlQrxGnW
+	J+5GbwplCJfOURYQ+j5s44sXDx+JkhkQ+phXjTdDcmnEyPV/DxuVaJns1lYn7PmiNQhKd/GjoJMuY
+	/mBHjCt4YzLl5/+340EQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf11S-00GbyD-1j;
-	Wed, 22 Mar 2023 16:09:10 +0000
-Received: from relay10.mail.gandi.net ([217.70.178.230])
+	id 1pf118-00Gbk9-1d;
+	Wed, 22 Mar 2023 16:08:50 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf113-00Gbf9-27
+	id 1pf10s-00GbVv-2X
 	for linux-mtd@lists.infradead.org;
-	Wed, 22 Mar 2023 16:08:49 +0000
+	Wed, 22 Mar 2023 16:08:37 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id EC19A240003;
-	Wed, 22 Mar 2023 16:08:42 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 280A61C0005;
+	Wed, 22 Mar 2023 16:08:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1679501324;
+	t=1679501311;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BmDJBFU4ANKKPCDO66I9sZQV3Gy2AT4HbhZE3mw6cAA=;
-	b=NxKlPRE2Cyiwga0SmhmhPvcnNA1Gpa0fv0rUnQTvB53hWr1L7ffLkedpZWzKqWxUMQKRhz
-	00LnNQ2MztC8ckIn/zhhKSK6jxm/aBBF9jhbJjOJWDFmlBSppYK8PCFx8+pRnM6X1DvaBb
-	4HY/aC+32EqWmWKNhht+C8maVMICy1i63EjQW8i7ojUP+lNEBAc89TTFKAd+sOTfgpEizq
-	f9h2iYyu/VmxtLCbNkKq1WcxtQRjRh6TaV+L9UOSUNKjL3G4xYFHiYotDELvtU3YfIc31E
-	OPGdjThTi0blZ9QN1/dw+BcDwmcjMd31ikS5RTD0LtSzUkingBxLZEJl/hgdAw==
+	bh=v9cdWABbjSFG+G4Dod5eJEhiqyLINQCKDLHQsKXOq5M=;
+	b=I+7G0FDLouZhjIlVDkdr5xP67+y+fpkHH/F067PeKXWveRx/pq/6oysz65B2oLn+wqWsT6
+	wtfA4O5tA2G+1p856ClQ2KLixuIZdl1vZLBIRPsbA7lSZSOe8c+GeMMLtk+uk9Jopk0d+s
+	mTrJqyQc6mRxvfcdz8/oU+qbJgSZB+GEzHCkbzj+Zsc3rg8wqsDTGe0+ECHY2cC6FDRfFe
+	ZdSNYF/CWeQsGGhc3sWivPDLXdk6+IYxSEQrkwiSAI5Xbho1senKhkAPiPqkcNnJqLKEGe
+	aasJkpeXIWoXIoOKZh2I5q8fIr0jYIZhbacjSfwHr2Q9+4kBSxzi+P0IV5GMKw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: devicetree@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: qcom: Use of_property_present() for testing DT property presence
-Date: Wed, 22 Mar 2023 17:08:42 +0100
-Message-Id: <20230322160842.2232923-1-miquel.raynal@bootlin.com>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: Avoid magic values
+Date: Wed, 22 Mar 2023 17:08:30 +0100
+Message-Id: <20230322160830.2232834-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230310144715.1543926-1-robh@kernel.org>
+In-Reply-To: <20230307192536.470997-1-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'7c09abba58cf912fa417be8720cff00df12354aa'
+X-linux-mtd-patch-commit: b'75f32f4b9d5263829d1d13f990000db929140559'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_090845_855305_D041F366 
-X-CRM114-Status: UNSURE (   8.04  )
+X-CRM114-CacheID: sfid-20230322_090834_971581_FC9D01FC 
+X-CRM114-Status: UNSURE (   5.29  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,17 +79,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2023-03-10 at 14:47:15 UTC, Rob Herring wrote:
-> It is preferred to use typed property access functions (i.e.
-> of_property_read_<type> functions) rather than low-level
-> of_get_property/of_find_property functions for reading properties. As
-> part of this, convert of_get_property/of_find_property calls to the
-> recently added of_property_present() helper when we just want to test
-> for presence of a property and nothing more.
+On Tue, 2023-03-07 at 19:25:36 UTC, Miquel Raynal wrote:
+> Nvmem producer config ID "-1" is actually defined, so use the definition
+> rather than hardcoding it with a magic value.
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> Suggested-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Michael Walle <michael@walle.cc>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next.
 
 Miquel
 
