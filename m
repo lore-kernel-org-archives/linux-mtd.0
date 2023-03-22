@@ -4,78 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5657FC6FD1F
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 20:10:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57A75C6FD1F
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Mar 2023 23:32:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ofomUUrxiQEkvro9vrjrsXp1SGMzlsmD1+vLc+m0ddU=; b=0z9Kjr/jEdw5+p
-	Jtn5YoreVc64110NOs9kFfLREesnZ3X6X4UUMQ/T8PDDgvYw/wBchDOaLD17GL8BtraClh7wtZbVo
-	BuV88cp45TA01pEjdH7W7NH538G+iaF2xCMWv/2RGj8UMEB3PwwpIA5e7SvkX42FNShJ77Ax8W8DI
-	yzItr0T1yqRMyumo5wWTDeea7hII/t7DFiTuexAnyNB3CF4BHPyo8neu2eLuvPBXiNLm2UhuQknQD
-	Yd+N5p1/Zq83JvsckR+i7wlliclNLNsiPXjfNBbkBPIaeDtvJSeTrh8a9xwuOGhokSnJfdqgfoUFH
-	/nJoar0CHXkaG3jPAP/w==;
+	List-Owner; bh=f8uKlT92TTz4mNYWq/LUH2G2+M/o4EB8+qur65NYAfI=; b=Rj3BhJK7Rxyh5a
+	mEPNFtRwe3tseA5LWRq65bocVkd4dczRc8RjL1X8VIYrhi0/VmqEqWfyjPkK0XgGkS/cKQC1HlD9H
+	jYUBOcpkkope3l66tyVcV6mVmoHqvXQuPW6plZp6WVqTCfQmblUOAle4NUcy7kBMCYzEko+5msvbX
+	SSdYRTy7y8hetjl+IE9YZo/PO0yWPM9hwJQqUtC20x0Ql1zenwpO0aJ0eCwKfdIqs6Al2LgJoujov
+	W08VJqx592pCZiPGKrPDqLmdqIUbU1oXIvy90g8HaWDYXiH4uH+xeQJtuxT9zQaj/QrJHoA6be+4z
+	iUc/M9ypz412JcOwtZ8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf4my-00HIoD-12;
-	Wed, 22 Mar 2023 20:10:28 +0000
-Received: from mail-ed1-x52f.google.com ([2a00:1450:4864:20::52f])
+	id 1pf7vl-0009Df-0Q;
+	Wed, 22 Mar 2023 23:31:45 +0000
+Received: from esa1.hgst.iphmx.com ([68.232.141.245])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf4mv-00HImZ-1c;
-	Wed, 22 Mar 2023 20:10:26 +0000
-Received: by mail-ed1-x52f.google.com with SMTP id y4so77886032edo.2;
-        Wed, 22 Mar 2023 13:10:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112; t=1679515823;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KO+RxVHj93oqiOjN3tvlrX0xqusRwNw2CRPttJ0nsbE=;
-        b=f21cfHvZpvxODQkPMeHZw0VVc7+hdYHVEuQrlKDrGD/COeQVOhKdoDJfgdUtV2TnVg
-         wO5SEK5cPVhSnvlyG5LGJLwWFrNlWcPZ8uwu8NBbuSQZQRe+vMJRlsuvYZizBoV4E3q6
-         Rb5CtVZE66GOuBy5hxIF/0Gv2y1LIf9vLDPxLSFwnMGVYqGHTA3hz7w3KP3d0gIeCtFq
-         t0xf28qfjXHsLnD8hGV5bJuKt8h/RO6vBzQwLkk/EfXZgrVy+jsITd0Gec1PT5oX6U+g
-         7krNRgyEAX7j5+qxlHL3lrp7ZgglHS6keLKOTmjH4s/AzA094WiQz9Zk6FZfp/8iGskg
-         J1tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679515823;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KO+RxVHj93oqiOjN3tvlrX0xqusRwNw2CRPttJ0nsbE=;
-        b=lBVxFbHful64d1y7smk/vbYhi9VgUkA8UNPqQdHXfWpkUwfrmVjBZRpPloOsFPSeqA
-         EU4BnwBdWz0s3ulNbXY8DtQqpPD5BRylqffbx0x7xT9VibmSyuJ+Yu/LDMth+LGAr+NF
-         Ga5x78b6NtWrns1USDMg7aDVtIOvD/QO+gB9bh8wA+1JVJ2ktosYz8+D55po8KN2B547
-         vjtlT3+kBx2K3uxwDrQQbo03Zxsg7FpMGCV1lWWRxAg24HCBSyq6brTYE8EnLVLuZ5el
-         Kfqw7i8Osbz2WoUR/qxpIHhL/S1tFy2B0vxbAqXyk+3xVStX6WgGlx1fNnGCvMPAef07
-         l3Ag==
-X-Gm-Message-State: AO0yUKV+8IYY5FhCOui6IGuVAvM+KPXOCoanAVJE5/6xjNSVYzX3GY37
-	XBd8CRBb3LXKPu9/UCgGsRhcFzd/NuyciSYNahA=
-X-Google-Smtp-Source: AK7set/0TeN0zr8cVu1eyLlBoDyP0EfiM6Qqt0rJeFiCyF/NYwC7cB4mSBs7WoqIFgnDZFFXTgGzjTITMMXf7hXth5w=
-X-Received: by 2002:a17:907:788e:b0:932:4577:6705 with SMTP id
- ku14-20020a170907788e00b0093245776705mr4082690ejc.6.1679515823192; Wed, 22
- Mar 2023 13:10:23 -0700 (PDT)
+	id 1pf7vh-0009Cg-0r
+	for linux-mtd@lists.infradead.org;
+	Wed, 22 Mar 2023 23:31:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1679527901; x=1711063901;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=q9SHaaGc/iP3oUCDDkuobziv3fI8u5euiS4kcHH3kx8=;
+  b=fGhRed7WUoBjrjIdo4SbgQTMXCrstuKgASuBx7XNAXQN0YaV+AMAN1yG
+   j55E2Nu/B9SeI6f3KJA+T85/IiyJa4CKYthtznw0L8zl4SSlERw09AYsT
+   r1M3pubMRYC80SnXkacb8ErZ8vQCQ83laKkGI26ht6qrhA0iOpKeh+n51
+   5UJXuFZg3S8bUYmSeCCX3LnjKTvW3RavK7qHeP2bFthwfbOIRsRX18G9T
+   VuiwQ4ozDq2Xy2n7CnlxMCdiztNRTVZufAifXJXe3o+OtLOdygtmlzDjF
+   GKnVgaW4571LNr9qj5vTeNXAuqc5aXIlignCRvVFKgeO/37xhQ+yt2F7t
+   w==;
+X-IronPort-AV: E=Sophos;i="5.98,282,1673884800"; 
+   d="scan'208";a="338330689"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Mar 2023 07:31:40 +0800
+IronPort-SDR: SmsE2y3fXi7geW5xWC6X2EuYUnVxYaDgw9HI0r/cRQvuTtlum68vBhPDLdlXbhaf0xB9L7j/nx
+ 3VyrzvFR9LanIJvL35JoEhIv0V2I5Zazha2ZsP8S4AqhNObK0davyCWe9t2eNXUf7C8+id88Xv
+ IfaevbrSFanyF8vj+RpG37XnPHTq3PpBXnO6IPvEopjur3Iq9tcERDUDmJ78KZOoEJ54Oj67PB
+ EXJhBBvnV6o7QXNQjGYDZr7SxvFckcbnlMt4KsYMNfaQu30Ct+NFIqR5jIaJQ882nzJEVyzyrj
+ 0+E=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Mar 2023 15:42:17 -0700
+IronPort-SDR: 0MuPbwGWTn32sQPJDD8ytuSrRUF20oCGDG1XxqhmPYOfWJWgbDaKMNd4glyV1CISfx5lIdTfUX
+ 1wHI3qr7SFYR1UBVfV29+SK28KlG41wP7kwlj/2UIe9tlFl7I+MGu5xIVzOhejBmZ0v7kZb4WO
+ dJPxofjiiCvGUgn21HfAW/txy3e/S4C6tu1Rs3giIJhkc43zbhu1oMBQ71WtbR6xITeCfkg7OX
+ Sxfx5lTMOmJwOqBxB9Xl4rkX0byhkOf7qhxstwqw1qOzZatEIFLrWwazxKj9HMOvwIlagvoRgm
+ dJA=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Mar 2023 16:31:40 -0700
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+	by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Phl9R5997z1RtW2
+	for <linux-mtd@lists.infradead.org>; Wed, 22 Mar 2023 16:31:39 -0700 (PDT)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+	reason="pass (just generated, assumed good)"
+	header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+	opensource.wdc.com; h=content-transfer-encoding:content-type
+	:in-reply-to:organization:from:references:to:content-language
+	:subject:user-agent:mime-version:date:message-id; s=dkim; t=
+	1679527898; x=1682119899; bh=q9SHaaGc/iP3oUCDDkuobziv3fI8u5euiS4
+	kcHH3kx8=; b=jXOcAHSjzQp3Y8DRAhI7Eqaykde0th0S9alUrID1c2LCC3wfAb9
+	gKLpCqhNvhXIVpoACyCWdORhWPyVwcLyv+I3A4HyVbq47iykpBBgezzTIryrgP44
+	YEKzud94Zk+Y8HC/UY2RnSvJBZedTJ3OfzPeXnPWHU3PAOtYg4P8hX2IvtQ6yBhi
+	j4r/QQvfwmqbzwmimzdJGIuPI0o0MfJdBhX8DuQYGVDi4A2JABTEyXrQamz1e+uF
+	+gUlyjlv0VsY1s6/lX1w99QOTvab/kA98gC8MKGuF5bkUAv65So0qyJzKTEypPY0
+	ciNq+kgkTDjVCQlQD4ZfSdBBlYkyJL09/6w==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+	by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id hPrggCbMzO7O for <linux-mtd@lists.infradead.org>;
+	Wed, 22 Mar 2023 16:31:38 -0700 (PDT)
+Received: from [10.225.163.96] (unknown [10.225.163.96])
+	by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Phl9H74fjz1RtVm;
+	Wed, 22 Mar 2023 16:31:31 -0700 (PDT)
+Message-ID: <5e7e8187-f514-c65e-2615-26762a329590@opensource.wdc.com>
+Date: Thu, 23 Mar 2023 08:31:30 +0900
 MIME-Version: 1.0
-References: <d4338bd5-125c-a9e7-cb46-6f5e1da05cfa@sberdevices.ru>
-In-Reply-To: <d4338bd5-125c-a9e7-cb46-6f5e1da05cfa@sberdevices.ru>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Wed, 22 Mar 2023 21:10:12 +0100
-Message-ID: <CAFBinCB3yuyNJD=7UJ7jzf45Masms_PD4sm42YNjO8M4cr+4wg@mail.gmail.com>
-Subject: Re: [PATCH v1] mtd: rawnand: meson: fix bitmask for length in command word
-To: Arseniy Krasnov <avkrasnov@sberdevices.ru>
-Cc: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
-	Jerome Brunet <jbrunet@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>, 
-	Yixun Lan <yixun.lan@amlogic.com>, linux-mtd@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, kernel@sberdevices.ru, oxffffaa@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3 01/10] kobject: introduce kobject_del_and_put()
+Content-Language: en-US
+To: Yangtao Li <frank.li@vivo.com>, clm@fb.com, josef@toxicpanda.com,
+ dsterba@suse.com, xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
+ jefflexu@linux.alibaba.com, jaegeuk@kernel.org,
+ trond.myklebust@hammerspace.com, anna@kernel.org, konishi.ryusuke@gmail.com,
+ mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+ richard@nod.at, djwong@kernel.org, naohiro.aota@wdc.com, jth@kernel.org,
+ gregkh@linuxfoundation.org, rafael@kernel.org
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+ ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+ linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20230322165830.55071-1-frank.li@vivo.com>
+From: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital Research
+In-Reply-To: <20230322165830.55071-1-frank.li@vivo.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_131025_560142_B5D7B520 
-X-CRM114-Status: GOOD (  13.62  )
+X-CRM114-CacheID: sfid-20230322_163141_335675_FF609797 
+X-CRM114-Status: GOOD (  23.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,34 +121,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gQXJzZW5peSwKCnRoYW5rIHlvdSBmb3Igc3VibWl0dGluZyB0aGlzIGZpeCEKCk9uIFdl
-ZCwgTWFyIDIyLCAyMDIzIGF0IDc6NDXigK9QTSBBcnNlbml5IEtyYXNub3YKPGF2a3Jhc25vdkBz
-YmVyZGV2aWNlcy5ydT4gd3JvdGU6Cj4KPiBWYWxpZCBtYXNrIGlzIDB4M0ZGRiwgd2l0aG91dCB0
-aGlzIHBhdGNoIHRoZSBmb2xsb3dpbmcgcHJvYmxlbXMgd2VyZQo+IGZvdW5kOgo+Cj4gMSkgWyAg
-ICAwLjkzODkxNF0gQ291bGQgbm90IGZpbmQgYSB2YWxpZCBPTkZJIHBhcmFtZXRlciBwYWdlLCB0
-cnlpbmcKPiAgICAgICAgICAgICAgICAgICBiaXQtd2lzZSBtYWpvcml0eSB0byByZWNvdmVyIGl0
-Cj4gICAgWyAgICAwLjk0NzM4NF0gT05GSSBwYXJhbWV0ZXIgcmVjb3ZlcnkgZmFpbGVkLCBhYm9y
-dGluZwo+Cj4gMikgUmVhZCB3aXRoIGRpc2FibGVkIEVDQyBtb2RlIHdhcyBicm9rZW4uCj4KPiBG
-aXhlczogOGZhZTg1NmM1MzUwICgibXRkOiByYXduYW5kOiBtZXNvbjogYWRkIHN1cHBvcnQgZm9y
-IEFtbG9naWMgTkFORCBmbGFzaCBjb250cm9sbGVyIikKPiBTaWduZWQtb2ZmLWJ5OiBBcnNlbml5
-IEtyYXNub3YgPEFWS3Jhc25vdkBzYmVyZGV2aWNlcy5ydT4KVGhpcyBtYXRjaGVzIHdoYXQgSSBj
-YW4gc2VlIGluIHRoZSBvbGQgdmVuZG9yIGRyaXZlciwgc286CkFja2VkLWJ5OiBNYXJ0aW4gQmx1
-bWVuc3RpbmdsIDxtYXJ0aW4uYmx1bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tPgoKWy4uLl0KPiAt
-ICAgICAgICAgICAgICAgY21kID0gKGxlbiAmIEdFTk1BU0soNSwgMCkpIHwgc2NyYW1ibGVyIHwg
-RE1BX0RJUihkaXIpOwo+ICsgICAgICAgICAgICAgICBjbWQgPSAobGVuICYgR0VOTUFTSygxMywg
-MCkpIHwgc2NyYW1ibGVyIHwgRE1BX0RJUihkaXIpOwpNeSB1bmRlcnN0YW5kaW5nIG9mIHRoZSB2
-ZW5kb3IgZHJpdmVyIGlzIHRoYXQgdGhpcyAibGVuIiBpcyBvbmx5IHVzZWQKZm9yICJyYXciIGFj
-Y2VzcyAobXkgb3duIHdvcmRzOiBhbnkgYWNjZXNzIHRoYXQgZG9lc24ndCB1c2UgdGhlIEhXIEVD
-QwplbmdpbmUpLgpBcyBhIGZ1dHVyZSBpbXByb3ZlbWVudCAobm8gbmVlZCB0byB1cGRhdGUgcmUt
-c2VuZCB0aGlzIHBhdGNoKSBpdAp3b3VsZCBiZSBncmVhdCB0byBoYXZlIGEgI2RlZmluZSB3aXRo
-IGEgbWVhbmluZ2Z1bCBuYW1lIGZvcgoiR0VOTUFTSygxMywgMCkiIChtYXliZSBzb21ldGhpbmcg
-bGlrZSBORkNfQ01EX1JBV19MRU5HVEgpIGFzIGl0J3MKdXNlZCBpbiBtdWx0aXBsZSBwbGFjZXMg
-bm93CgoKQmVzdCByZWdhcmRzLApNYXJ0aW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+On 3/23/23 01:58, Yangtao Li wrote:
+> There are plenty of using kobject_del() and kobject_put() together
+> in the kernel tree. This patch wraps these two calls in a single helper.
+> 
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> ---
+> v3:
+> -convert to inline helper
+> v2:
+> -add kobject_del_and_put() users
+>  include/linux/kobject.h | 13 +++++++++++++
+>  lib/kobject.c           |  3 +--
+>  2 files changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/kobject.h b/include/linux/kobject.h
+> index bdab370a24f4..e21b7c22e355 100644
+> --- a/include/linux/kobject.h
+> +++ b/include/linux/kobject.h
+> @@ -112,6 +112,19 @@ extern struct kobject * __must_check kobject_get_unless_zero(
+>  						struct kobject *kobj);
+>  extern void kobject_put(struct kobject *kobj);
+>  
+> +/**
+> + * kobject_del_and_put() - Delete kobject.
+> + * @kobj: object.
+> + *
+> + * Unlink kobject from hierarchy and decrement the refcount.
+
+Unlink kobject from hierarchy and decrement its refcount.
+
+> + * If refcount is 0, call kobject_cleanup().
+
+That is done by kobject_put() and not explicitly done directly in this helper.
+So I would not mention this to avoid confusion as you otherwise have a
+description that does not match the code we can see here.
+
+With that fixed, this looks OK to me, so feel free to add:
+
+Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+
+> + */
+> +static inline void kobject_del_and_put(struct kobject *kobj)
+> +{
+> +	kobject_del(kobj);
+> +	kobject_put(kobj);
+> +}
+> +
+>  extern const void *kobject_namespace(const struct kobject *kobj);
+>  extern void kobject_get_ownership(const struct kobject *kobj,
+>  				  kuid_t *uid, kgid_t *gid);
+> diff --git a/lib/kobject.c b/lib/kobject.c
+> index f79a434e1231..e6c5a3ff1c53 100644
+> --- a/lib/kobject.c
+> +++ b/lib/kobject.c
+> @@ -876,8 +876,7 @@ void kset_unregister(struct kset *k)
+>  {
+>  	if (!k)
+>  		return;
+> -	kobject_del(&k->kobj);
+> -	kobject_put(&k->kobj);
+> +	kobject_del_and_put(&k->kobj);
+
+Nit: You could simplify this one to be:
+
+	if (k)
+		kobject_del_and_put(&k->kobj);
+
+and drop the return line.
+
+>  }
+>  EXPORT_SYMBOL(kset_unregister);
+>  
+
+-- 
+Damien Le Moal
+Western Digital Research
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
