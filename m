@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72418C6FD1C
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Mar 2023 05:17:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF862C76196
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Mar 2023 08:02:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eJs1oK6TIIYwVCyrghOOEXCG/aLaerc/9glQId1Pt98=; b=kL3UUDRCTY9m0R
-	Hh4XqFZ3c0jg9rVFOYjcZbLrSrrW10u6GJLNUkPmFzqmNmnLOwgFqL0vBRnliDBnnnskQEEy3ysSH
-	NS+jcgCXcF1zMyniazhhKYkdn1YU4Ca00uv8qH6Cfrufh6HZfsND0nupYn77jpTskOEJ6qRhxx5iG
-	FaMyKpIQy4lvFgZWrT07BZmTI7azIaz0rPxYyndFhmgvORBYW5AFn1yVxqhDIB88ymeMYREpfD5cL
-	01YfbiDW37Si/m1BiZKAc0K0OInPlxyYGCyATpQDUBLqA3IXMmCWjk9+Z/MSd218uKDV+SZ5v3bnx
-	l5VB8oaIWP6vc469vnmg==;
+	List-Owner; bh=5t82/MTg0Nr1o4QXufPIFmNOy6pV+/11bn0ZaS0co/0=; b=DOS1O1Wm8OgL0V
+	1XZNA/51H9Zfwp5jzaDMZ2/+12PW+O9F7F62z/8rujEbj4vMzSbynQ/FG/0ZBOqS67B4loUZ5GYxF
+	1zU/h9qWlnKk70P+5i44VxW4tD7NyfT8wbGXaeanPVbipqLMrJ6+CTYn4XjOIDhUNNM0RV7ISMyML
+	OWrqLnIL47V+z/Lz3dv4k/6EQ06gx4MwX2T1CuTU6No7/gUapUOq7W+Ls01XS9+G9Ic9U3+6cu9mV
+	NPrJtm7R4Y7keDFtAmoPaqPvo7PJYWVPoxpnVFaAWiWqO+01xoojH2QP8PhSYZ4NC2VCWh4XyxXWT
+	hqHs1EAWaddMeMmWPeqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfDJr-000p4k-1Z;
-	Thu, 23 Mar 2023 05:16:59 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1pfFss-001CDf-2h;
+	Thu, 23 Mar 2023 08:01:18 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfDJo-000p3p-2p
-	for linux-mtd@lists.infradead.org;
-	Thu, 23 Mar 2023 05:16:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1679548612;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HoUzTMO8R5MhPq7S8OoMssryl9/6eR6zluDti49MEro=;
-	b=eDNhgma4RHwHo38UjyW4mFPa+ytR2DlR2DQhp7HfmCF63ds7b2521j6UMry4gpKdrYGsw1
-	SlsDJDZFruvM7qvS6B8FN3jcC/qtU5Q7V2gFWDfBZbHbwsCZVRfCOIxUIGLEseQpGVCLv1
-	THLYBYqEBQa0Q9tXhdictkx96Sdkv+Q=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-179-KY9zo7YzPqyCZhglvOgcqw-1; Thu, 23 Mar 2023 01:16:43 -0400
-X-MC-Unique: KY9zo7YzPqyCZhglvOgcqw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 362258828C2;
-	Thu, 23 Mar 2023 05:16:41 +0000 (UTC)
-Received: from ovpn-8-16.pek2.redhat.com (ovpn-8-16.pek2.redhat.com [10.72.8.16])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D3854021B1;
-	Thu, 23 Mar 2023 05:16:24 +0000 (UTC)
-Date: Thu, 23 Mar 2023 13:16:20 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Yangtao Li <frank.li@vivo.com>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, xiang@kernel.org,
-	chao@kernel.org, huyue2@coolpad.com, jefflexu@linux.alibaba.com,
-	jaegeuk@kernel.org, trond.myklebust@hammerspace.com,
-	anna@kernel.org, konishi.ryusuke@gmail.com, mark@fasheh.com,
-	jlbec@evilplan.org, joseph.qi@linux.alibaba.com, richard@nod.at,
-	djwong@kernel.org, damien.lemoal@opensource.wdc.com,
-	naohiro.aota@wdc.com, jth@kernel.org, gregkh@linuxfoundation.org,
-	rafael@kernel.org, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, ming.lei@redhat.com
-Subject: Re: [PATCH v3 01/10] kobject: introduce kobject_del_and_put()
-Message-ID: <ZBvgpBzEuFuyOD/c@ovpn-8-16.pek2.redhat.com>
-References: <20230322165830.55071-1-frank.li@vivo.com>
+	id 1pfFso-001CC4-0D;
+	Thu, 23 Mar 2023 08:01:16 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id 5F4285FD45;
+	Thu, 23 Mar 2023 11:01:09 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1679558469;
+	bh=O7oYKc3LTw4AoaR0hMXQ+c+BRl+QFQbOY09tziUSnEs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	b=c7xOLGbe7skXPzXF2yS/VEyLxNWBFVB7DBrvBlW/G6yZyEa/uAm8o/w1BTPJiEOEL
+	 zxN2FAOEBTwz09bwFsZ3jlNS4TCQBf8phoB7T8hyCsluBT4PfEALHWOvJsL4Xq0PXA
+	 xDkDpnfisQGv1mKmkU/gfIEgFg+z+VtzmEst051CZILhU+qRgyjI4pucTzN71U2PLJ
+	 EWYY3JLzx8yU1QNa3TlqMm5g4EdNwrmICq1GMYnjXYi0eYbXn9C3CgnG0d7sD3p/6I
+	 TQtuR6/7pFKyGyfcrzBRn+nk8XgrYF5CarIyMpDXYbztexd2KwmRx+OEmHhlLjp3br
+	 yX60YAxpgfCJw==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Thu, 23 Mar 2023 11:01:07 +0300 (MSK)
+Message-ID: <fe2ed378-cdac-dbb3-acd2-ff542bd7e887@sberdevices.ru>
+Date: Thu, 23 Mar 2023 10:57:56 +0300
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230322165830.55071-1-frank.li@vivo.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v1] mtd: rawnand: meson: fix bitmask for length in command
+ word
+Content-Language: en-US
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Jianxin Pan <jianxin.pan@amlogic.com>, Yixun Lan <yixun.lan@amlogic.com>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <d4338bd5-125c-a9e7-cb46-6f5e1da05cfa@sberdevices.ru>
+ <CAFBinCB3yuyNJD=7UJ7jzf45Masms_PD4sm42YNjO8M4cr+4wg@mail.gmail.com>
+From: Arseniy Krasnov <avkrasnov@sberdevices.ru>
+In-Reply-To: <CAFBinCB3yuyNJD=7UJ7jzf45Masms_PD4sm42YNjO8M4cr+4wg@mail.gmail.com>
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/03/23 05:59:00 #20997558
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_221657_006991_488F3902 
-X-CRM114-Status: GOOD (  18.40  )
+X-CRM114-CacheID: sfid-20230323_010114_815005_6CD4F8F9 
+X-CRM114-Status: GOOD (  17.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,55 +87,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Mar 23, 2023 at 12:58:30AM +0800, Yangtao Li wrote:
-> There are plenty of using kobject_del() and kobject_put() together
-> in the kernel tree. This patch wraps these two calls in a single helper.
-> 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
-> v3:
-> -convert to inline helper
-> v2:
-> -add kobject_del_and_put() users
->  include/linux/kobject.h | 13 +++++++++++++
->  lib/kobject.c           |  3 +--
->  2 files changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/kobject.h b/include/linux/kobject.h
-> index bdab370a24f4..e21b7c22e355 100644
-> --- a/include/linux/kobject.h
-> +++ b/include/linux/kobject.h
-> @@ -112,6 +112,19 @@ extern struct kobject * __must_check kobject_get_unless_zero(
->  						struct kobject *kobj);
->  extern void kobject_put(struct kobject *kobj);
->  
-> +/**
-> + * kobject_del_and_put() - Delete kobject.
-> + * @kobj: object.
-> + *
-> + * Unlink kobject from hierarchy and decrement the refcount.
-> + * If refcount is 0, call kobject_cleanup().
-> + */
-> +static inline void kobject_del_and_put(struct kobject *kobj)
-> +{
-> +	kobject_del(kobj);
-> +	kobject_put(kobj);
-> +}
-
-kobject_put() actually covers kobject removal automatically, which is
-single stage removal. So if you see the two called together, it is
-safe to kill kobject_del() directly.
-
-
-thanks,
-Ming
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAyMi4wMy4yMDIzIDIzOjEwLCBNYXJ0aW4gQmx1bWVuc3RpbmdsIHdyb3RlOgo+IEhlbGxv
+IEFyc2VuaXksCj4gCj4gdGhhbmsgeW91IGZvciBzdWJtaXR0aW5nIHRoaXMgZml4IQpUaGFua3Mh
+Cj4gCj4gT24gV2VkLCBNYXIgMjIsIDIwMjMgYXQgNzo0NeKAr1BNIEFyc2VuaXkgS3Jhc25vdgo+
+IDxhdmtyYXNub3ZAc2JlcmRldmljZXMucnU+IHdyb3RlOgo+Pgo+PiBWYWxpZCBtYXNrIGlzIDB4
+M0ZGRiwgd2l0aG91dCB0aGlzIHBhdGNoIHRoZSBmb2xsb3dpbmcgcHJvYmxlbXMgd2VyZQo+PiBm
+b3VuZDoKPj4KPj4gMSkgWyAgICAwLjkzODkxNF0gQ291bGQgbm90IGZpbmQgYSB2YWxpZCBPTkZJ
+IHBhcmFtZXRlciBwYWdlLCB0cnlpbmcKPj4gICAgICAgICAgICAgICAgICAgYml0LXdpc2UgbWFq
+b3JpdHkgdG8gcmVjb3ZlciBpdAo+PiAgICBbICAgIDAuOTQ3Mzg0XSBPTkZJIHBhcmFtZXRlciBy
+ZWNvdmVyeSBmYWlsZWQsIGFib3J0aW5nCj4+Cj4+IDIpIFJlYWQgd2l0aCBkaXNhYmxlZCBFQ0Mg
+bW9kZSB3YXMgYnJva2VuLgo+Pgo+PiBGaXhlczogOGZhZTg1NmM1MzUwICgibXRkOiByYXduYW5k
+OiBtZXNvbjogYWRkIHN1cHBvcnQgZm9yIEFtbG9naWMgTkFORCBmbGFzaCBjb250cm9sbGVyIikK
+Pj4gU2lnbmVkLW9mZi1ieTogQXJzZW5peSBLcmFzbm92IDxBVktyYXNub3ZAc2JlcmRldmljZXMu
+cnU+Cj4gVGhpcyBtYXRjaGVzIHdoYXQgSSBjYW4gc2VlIGluIHRoZSBvbGQgdmVuZG9yIGRyaXZl
+ciwgc286Ck1vcmVvdmVyIGl0IHdhcyBjbGVhciB0aGF0IG1hc2sgb2YgMHgzZiBpcyB0b28gc21h
+bGwgZm9yIGxlbmd0aCBvZiBkYXRhIGluCmJ5dGVzLCBmb3IgZXhhbXBsZSBmb3IgMjA0OCArIE9P
+QiBzaXplLgo+IEFja2VkLWJ5OiBNYXJ0aW4gQmx1bWVuc3RpbmdsIDxtYXJ0aW4uYmx1bWVuc3Rp
+bmdsQGdvb2dsZW1haWwuY29tPgo+IAo+IFsuLi5dCj4+IC0gICAgICAgICAgICAgICBjbWQgPSAo
+bGVuICYgR0VOTUFTSyg1LCAwKSkgfCBzY3JhbWJsZXIgfCBETUFfRElSKGRpcik7Cj4+ICsgICAg
+ICAgICAgICAgICBjbWQgPSAobGVuICYgR0VOTUFTSygxMywgMCkpIHwgc2NyYW1ibGVyIHwgRE1B
+X0RJUihkaXIpOwo+IE15IHVuZGVyc3RhbmRpbmcgb2YgdGhlIHZlbmRvciBkcml2ZXIgaXMgdGhh
+dCB0aGlzICJsZW4iIGlzIG9ubHkgdXNlZAo+IGZvciAicmF3IiBhY2Nlc3MgKG15IG93biB3b3Jk
+czogYW55IGFjY2VzcyB0aGF0IGRvZXNuJ3QgdXNlIHRoZSBIVyBFQ0MKPiBlbmdpbmUpLgpFeGFj
+dGx5LCAnbGVuJyBpcyBvbmx5IGZvciByYXcgYWNjZXNzLgo+IEFzIGEgZnV0dXJlIGltcHJvdmVt
+ZW50IChubyBuZWVkIHRvIHVwZGF0ZSByZS1zZW5kIHRoaXMgcGF0Y2gpIGl0Cj4gd291bGQgYmUg
+Z3JlYXQgdG8gaGF2ZSBhICNkZWZpbmUgd2l0aCBhIG1lYW5pbmdmdWwgbmFtZSBmb3IKPiAiR0VO
+TUFTSygxMywgMCkiIChtYXliZSBzb21ldGhpbmcgbGlrZSBORkNfQ01EX1JBV19MRU5HVEgpIGFz
+IGl0J3MKPiB1c2VkIGluIG11bHRpcGxlIHBsYWNlcyBub3cKQWNrCgpUaGFua3MsIEFyc2VuaXkK
+PiAKPiAKPiBCZXN0IHJlZ2FyZHMsCj4gTWFydGluCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+bXRkLwo=
