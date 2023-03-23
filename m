@@ -4,57 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 705A8C6FD1C
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Mar 2023 01:09:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72418C6FD1C
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Mar 2023 05:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=URpGGo6MdyZ2NWnVUqmDhrCxsLqIRGtnH1HnSUWkw1c=; b=x8acoLb523tqNgj/5zRyaTPx+G
-	DLmo4DpU6hOYbHlzA+2Z+G0oV9Y2+7Jwi9XkNLnfI4shqETG1VT5dmKNI3t/vG1ZTr8FMcwNtqVx5
-	/E524fXMl/RHpMz5BZceFdfS+Pj3o1EoH06Qwk5ao5VZV6DbAOlDGvRLsb/vixo0oDsyg9CidgoSO
-	GHEAC+nR/CEFp3XbzOlQ/HEaH5xGlDxFVkOg4FtOMw9lwE4GnbOBOE0xa4lcqSO7R30YeVKUjhvEr
-	Y7bwodXdXKtzwoB2RVgukAlTZDePc/fPqWEXPRHnd1dL5hoCKyxC7sv2znVjrJ+9COSmZitv8NOdJ
-	HV4gK8ow==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=eJs1oK6TIIYwVCyrghOOEXCG/aLaerc/9glQId1Pt98=; b=kL3UUDRCTY9m0R
+	Hh4XqFZ3c0jg9rVFOYjcZbLrSrrW10u6GJLNUkPmFzqmNmnLOwgFqL0vBRnliDBnnnskQEEy3ysSH
+	NS+jcgCXcF1zMyniazhhKYkdn1YU4Ca00uv8qH6Cfrufh6HZfsND0nupYn77jpTskOEJ6qRhxx5iG
+	FaMyKpIQy4lvFgZWrT07BZmTI7azIaz0rPxYyndFhmgvORBYW5AFn1yVxqhDIB88ymeMYREpfD5cL
+	01YfbiDW37Si/m1BiZKAc0K0OInPlxyYGCyATpQDUBLqA3IXMmCWjk9+Z/MSd218uKDV+SZ5v3bnx
+	l5VB8oaIWP6vc469vnmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf9Rs-000PvV-1M;
-	Thu, 23 Mar 2023 01:09:00 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1pfDJr-000p4k-1Z;
+	Thu, 23 Mar 2023 05:16:59 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pf9Ro-000Ptn-2o
+	id 1pfDJo-000p3p-2p
 	for linux-mtd@lists.infradead.org;
-	Thu, 23 Mar 2023 01:08:58 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4PhnK30GlTz9vMh;
-	Thu, 23 Mar 2023 09:08:23 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 23 Mar 2023 09:08:44 +0800
-Subject: Re: [PATCH v3 05/10] ubifs: convert to kobject_del_and_put()
-To: Yangtao Li <frank.li@vivo.com>, Richard Weinberger <richard@nod.at>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
-	<rafael@kernel.org>, Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20230322165905.55389-1-frank.li@vivo.com>
- <20230322165905.55389-4-frank.li@vivo.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <c3c19fcb-07b7-415a-95ed-eba31702badf@huawei.com>
-Date: Thu, 23 Mar 2023 09:08:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Thu, 23 Mar 2023 05:16:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1679548612;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HoUzTMO8R5MhPq7S8OoMssryl9/6eR6zluDti49MEro=;
+	b=eDNhgma4RHwHo38UjyW4mFPa+ytR2DlR2DQhp7HfmCF63ds7b2521j6UMry4gpKdrYGsw1
+	SlsDJDZFruvM7qvS6B8FN3jcC/qtU5Q7V2gFWDfBZbHbwsCZVRfCOIxUIGLEseQpGVCLv1
+	THLYBYqEBQa0Q9tXhdictkx96Sdkv+Q=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-179-KY9zo7YzPqyCZhglvOgcqw-1; Thu, 23 Mar 2023 01:16:43 -0400
+X-MC-Unique: KY9zo7YzPqyCZhglvOgcqw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 362258828C2;
+	Thu, 23 Mar 2023 05:16:41 +0000 (UTC)
+Received: from ovpn-8-16.pek2.redhat.com (ovpn-8-16.pek2.redhat.com [10.72.8.16])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D3854021B1;
+	Thu, 23 Mar 2023 05:16:24 +0000 (UTC)
+Date: Thu, 23 Mar 2023 13:16:20 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Yangtao Li <frank.li@vivo.com>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, xiang@kernel.org,
+	chao@kernel.org, huyue2@coolpad.com, jefflexu@linux.alibaba.com,
+	jaegeuk@kernel.org, trond.myklebust@hammerspace.com,
+	anna@kernel.org, konishi.ryusuke@gmail.com, mark@fasheh.com,
+	jlbec@evilplan.org, joseph.qi@linux.alibaba.com, richard@nod.at,
+	djwong@kernel.org, damien.lemoal@opensource.wdc.com,
+	naohiro.aota@wdc.com, jth@kernel.org, gregkh@linuxfoundation.org,
+	rafael@kernel.org, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, ming.lei@redhat.com
+Subject: Re: [PATCH v3 01/10] kobject: introduce kobject_del_and_put()
+Message-ID: <ZBvgpBzEuFuyOD/c@ovpn-8-16.pek2.redhat.com>
+References: <20230322165830.55071-1-frank.li@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <20230322165905.55389-4-frank.li@vivo.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <20230322165830.55071-1-frank.li@vivo.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230322_180857_093573_D78E6D20 
-X-CRM114-Status: GOOD (  10.95  )
+X-CRM114-CacheID: sfid-20230322_221657_006991_488F3902 
+X-CRM114-Status: GOOD (  18.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,38 +86,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> Use kobject_del_and_put() to simplify code.
+On Thu, Mar 23, 2023 at 12:58:30AM +0800, Yangtao Li wrote:
+> There are plenty of using kobject_del() and kobject_put() together
+> in the kernel tree. This patch wraps these two calls in a single helper.
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Damien Le Moal <damien.lemoal@opensource.wdc.com>
 > Signed-off-by: Yangtao Li <frank.li@vivo.com>
 > ---
->   fs/ubifs/sysfs.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+> v3:
+> -convert to inline helper
+> v2:
+> -add kobject_del_and_put() users
+>  include/linux/kobject.h | 13 +++++++++++++
+>  lib/kobject.c           |  3 +--
+>  2 files changed, 14 insertions(+), 2 deletions(-)
 > 
+> diff --git a/include/linux/kobject.h b/include/linux/kobject.h
+> index bdab370a24f4..e21b7c22e355 100644
+> --- a/include/linux/kobject.h
+> +++ b/include/linux/kobject.h
+> @@ -112,6 +112,19 @@ extern struct kobject * __must_check kobject_get_unless_zero(
+>  						struct kobject *kobj);
+>  extern void kobject_put(struct kobject *kobj);
+>  
+> +/**
+> + * kobject_del_and_put() - Delete kobject.
+> + * @kobj: object.
+> + *
+> + * Unlink kobject from hierarchy and decrement the refcount.
+> + * If refcount is 0, call kobject_cleanup().
+> + */
+> +static inline void kobject_del_and_put(struct kobject *kobj)
+> +{
+> +	kobject_del(kobj);
+> +	kobject_put(kobj);
+> +}
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> diff --git a/fs/ubifs/sysfs.c b/fs/ubifs/sysfs.c
-> index 1c958148bb87..9571718e61a9 100644
-> --- a/fs/ubifs/sysfs.c
-> +++ b/fs/ubifs/sysfs.c
-> @@ -130,8 +130,7 @@ int ubifs_sysfs_register(struct ubifs_info *c)
->   
->   void ubifs_sysfs_unregister(struct ubifs_info *c)
->   {
-> -	kobject_del(&c->kobj);
-> -	kobject_put(&c->kobj);
-> +	kobject_del_and_put(&c->kobj);
->   	wait_for_completion(&c->kobj_unregister);
->   
->   	kfree(c->stats);
-> 
+kobject_put() actually covers kobject removal automatically, which is
+single stage removal. So if you see the two called together, it is
+safe to kill kobject_del() directly.
+
+
+thanks,
+Ming
 
 
 ______________________________________________________
