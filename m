@@ -4,67 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C245EC6FD20
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Mar 2023 15:34:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B333C6FD1C
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Mar 2023 15:52:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BkiWgj2qd7eVIU1Rj/lJJBVmjZjao/a2nNr4tVhECYw=; b=zQRe+c08emrbNP
-	umRsq/IPJ2fLhpli8Z7KlaRPVQjncCLkYvqI8uKl+B6rD/9ZizOIvORiQGiQQsepHRx9HL4KUhl9p
-	XuxDWcGhQFG1V3gLJ35hP1/5q1Bf2GsCUwbHC+00ZChraQ2pWXBnvu63OP/eh8BrjjzmhnHxMk3nC
-	CZKSgBU9OF0+5AVkG5xTgkzaHH3yy9e2LYJK5YTcQN4kE0no+XpupTzqCSmH4UyG2JwiF/i4G6WOj
-	ctt7eACPXdUjLigH9Uy5Vb++XyTqEv8u/0gg7iolTygPS9ZXOFPYir5W/9k6yHjX5CLhkpdi9Muhb
-	I3RtoZ3Htch/n+rsGP7A==;
+	List-Owner; bh=x5jWcMVCrc+QkqdllWVZZKPSE0SxwVk2+ecwje3IGdI=; b=rP/eGuY61TxJb1
+	Xxblfp9Xx/s+tzaMLq3+CbsCiP+wpLs6ZM0X0yU5Jlpu3yflwLLZs6EYJjZv2VSqmCNCr8atKTNjC
+	+2TLUKZJNCjgNU4qRCvSOHG5hQqxe8qa0JsxlGdKzBsSwMOEDcq0WokWXnPhrDYrAUcAl+QI7+zh0
+	LdrTO/8Ewv+hsYrv3W7cnEV9u1tANz+o5/kKwAxt5R66Cag10QJ5t2zGXncns6L18s4AVHFM6uYSZ
+	59s6qLRQBIlx2LRlQcls/hqikBPGoLhexN8vyiM+a5BGJsb2y4OSuBW/1GK1dQiukzbrZDAadbJrW
+	7a3smLSECf/RMsTnKazg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfjL1-004r1B-0u;
-	Fri, 24 Mar 2023 15:28:19 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1pfjiZ-004uQk-2g;
+	Fri, 24 Mar 2023 15:52:39 +0000
+Received: from mx08-00178001.pphosted.com ([91.207.212.93] helo=mx07-00178001.pphosted.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfjKx-004qzn-0A;
-	Fri, 24 Mar 2023 15:28:16 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 65C78240003;
-	Fri, 24 Mar 2023 15:28:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1679671690;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8mARXfwIpf7ZAMCd0ELn/Vnpscd1lyFKGWYROoI8jh0=;
-	b=LSg1YdPGMOxa4BJpJm97Tt3DkwYIAK0pfyk5FVixxrb9dHIZBmkKE8uibuffYFL7gqNmkw
-	G0AQLhmCdPEREItZHoNU2k+schy9xR3q2FQx5BrWslcAWmIX/GkXicg4WEXppUupT33ejN
-	7PVV16QFy8G9/y32RTXyOkdyWWIZHKGTCoBqKakl4uxAVhpLd+xQCwpkewH3RdrDtjCv6S
-	w8AKgZMubG5d1GixDmyCTtN08ojTGQJG9j2iMF45G9KhacJt0OXLule6p13G88Sd+bwrkL
-	PCme0KGHNgRJ3uQcTTaOMsTuPVr0wDZ440HBgdo4hYdsCwsdFWxaQy2lC9Boaw==
-Date: Fri, 24 Mar 2023 16:28:02 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>, Michael Walle
- <michael@walle.cc>, linux-mtd@lists.infradead.org, Julien Su
- <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>, Jaime Liao
- <jaimeliao.tw@gmail.com>, Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, Michal Simek <monstr@monstr.eu>,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 3/8] mtd: spi-nor: Reorder the preparation vs locking
- steps
-Message-ID: <20230324162802.28338739@xps-13>
-In-Reply-To: <57a59ac4-56bf-9aa4-540a-9d72455951d3@linaro.org>
-References: <20230201113603.293758-1-miquel.raynal@bootlin.com>
-	<20230201113603.293758-4-miquel.raynal@bootlin.com>
-	<2e2050ee-69eb-9c8a-6a4b-3d9b1b8e9286@linaro.org>
-	<57a59ac4-56bf-9aa4-540a-9d72455951d3@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1pfjiV-004uOo-2a
+	for linux-mtd@lists.infradead.org;
+	Fri, 24 Mar 2023 15:52:37 +0000
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32ODHvwE010735;
+	Fri, 24 Mar 2023 16:52:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=selector1;
+ bh=JFtlxCELTTuNK4fwI5IIBKgcJAW7TQM275B47uT8+VM=;
+ b=zk5tQtxIrDt3yVQLjCl9PmfjPjSXrkJFdvZxtEDYmLVsTX2OnHyg/jafqNHH5wNAbuKe
+ +QjiOIP97uXKdcqCEzwSz59GgFgWRWg6qA+tASLygmgZ6PO0PKk9CtRKgweufXp42Rql
+ 869FyEtHCXUml+QxmyapVGsvudYdwbD+bKhDnL1QJs96j32o+yeO66tPv9bXE3Ctf4Mh
+ 9M11dKPwJ0sJr51lAbqKgYIARSESkHrtA1VFIgDGDJRQKuz92Ul4BxzKEpQ6mOOI5yfe
+ +gXGA4ORG450d6zcZQgGW/6/cDMhRPL16QGJjqgU90Xp1mrjYkYuTAJWiU2BZTyAsHcq Eg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3pgxjcduna-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 24 Mar 2023 16:52:27 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1B4B8100039;
+	Fri, 24 Mar 2023 16:52:23 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 024F6218632;
+	Fri, 24 Mar 2023 16:51:52 +0100 (CET)
+Received: from localhost (10.48.0.175) by SHFDAG1NODE3.st.com (10.75.129.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.17; Fri, 24 Mar
+ 2023 16:51:51 +0100
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <krzysztof.kozlowski@linaro.org>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Christophe Kerello
+	<christophe.kerello@foss.st.com>
+Subject: [PATCH 2/2] mtd: rawnand: stm32_fmc2: depends on ARCH_STM32 instead of MACH_STM32MP157
+Date: Fri, 24 Mar 2023 16:51:05 +0100
+Message-ID: <20230324155105.826063-3-christophe.kerello@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230324155105.826063-1-christophe.kerello@foss.st.com>
+References: <20230324155105.826063-1-christophe.kerello@foss.st.com>
 MIME-Version: 1.0
+X-Originating-IP: [10.48.0.175]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-24_10,2023-03-24_01,2023-02-09_01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230324_082815_221431_834CEE5C 
-X-CRM114-Status: GOOD (  14.03  )
+X-CRM114-CacheID: sfid-20230324_085236_148728_0BE50E7A 
+X-CRM114-Status: GOOD (  15.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,30 +87,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVHVkb3IsCgp0dWRvci5hbWJhcnVzQGxpbmFyby5vcmcgd3JvdGUgb24gRnJpLCAxNyBNYXIg
-MjAyMyAwMzo1MTozNyArMDAwMDoKCj4gT24gMy8xNy8yMyAwMzozOSwgVHVkb3IgQW1iYXJ1cyB3
-cm90ZToKPiA+IAo+ID4gCj4gPiBPbiAyLzEvMjMgMTE6MzUsIE1pcXVlbCBSYXluYWwgd3JvdGU6
-ICAKPiA+PiBUaGUgLT5wcmVwYXJlKCkvLT51bnByZXBhcmUoKSBob29rcyBhcmUgbm93IGxlZ2Fj
-eSwgd2Ugbm8gbG9uZ2VyIGFjY2VwdAo+ID4+IG5ldyBkcml2ZXJzIHN1cHBvcnRpbmcgdGhlbS4g
-VGhlIG9ubHkgcmVtYWluaW5nIGNvbnRyb2xsZXJzIHVzaW5nIHRoZW0KPiA+PiBhY3F1aXJlcyBh
-IHBlci1jaGlwIG11dGV4LCB3aGljaCBzaG91bGQgbm90IGludGVyZmVyZSB3aXRoIHRoZSByZXN0
-IG9mCj4gPj4gdGhlIG9wZXJhdGlvbiBkb25lIGluIHRoZSBjb3JlLiBBcyBhIHJlc3VsdCwgd2Ug
-c2hvdWxkIGJlIHNhZmUgdG8KPiA+PiByZW9yZ2FuaXplIHRoZXNlIGhlbHBlcnMgdG8gZmlyc3Qg
-cGVyZm9ybSB0aGUgcHJlcGFyYXRpb24sIGJlZm9yZQo+ID4+IGFjcXVpcmluZyB0aGUgY29yZSBs
-b2Nrcy4gVGhpcyBpcyBuZWNlc3NhcnkgaW4gb3JkZXIgdG8gYmUgYWJsZSB0bwo+ID4+IGltcHJv
-dmUgdGhlIGxvY2tpbmcgbWVjaGFuaXNtIGluIHRoZSBjb3JlIChjb21pbmcgbmV4dCkuIE5vIHNp
-ZGUgZWZmZWN0cwo+ID4+IGFyZSBleHBlY3RlZC4KPiA+Pgo+ID4+IFNpZ25lZC1vZmYtYnk6IE1p
-cXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+ICAKPiA+IAo+ID4gUmV2aWV3
-ZWQtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4gIAo+IAo+IE5v
-LCBJIHRha2UgYmFjayBteSBSLWIuIFRoZSByZW9yZGVyIGlzIGZpbmUsIGJ1dCB5b3UgbWlzc2Vk
-IHRvIHVwZGF0ZQo+IG90cC5jIGFuZCBzd3AuYywgc2VlIGJlbG93LgoKL21lIGd1aWx0eQoKTm90
-IHN1cmUgaG93IHRoYXQgc2xpcHBlZCBpbi4gQW55aG93LCBJJ2xsIGdvIHRocm91Z2ggdGhlIG1p
-c3NpbmcgZmlsZXMKb2ZjLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+To be able to compile the driver on all STM32MP SOCs, we move the
+"depends on" on ARCH_STM32.
+
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+---
+ drivers/mtd/nand/raw/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 170f1185ddc4..b523354dfb00 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -373,7 +373,7 @@ config MTD_NAND_TEGRA
+ 
+ config MTD_NAND_STM32_FMC2
+ 	tristate "Support for NAND controller on STM32MP SoCs"
+-	depends on MACH_STM32MP157 || COMPILE_TEST
++	depends on ARCH_STM32 || COMPILE_TEST
+ 	select MFD_SYSCON
+ 	help
+ 	  Enables support for NAND Flash chips on SoCs containing the FMC2
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
