@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B333C6FD1C
-	for <linux-mtd@archiver.kernel.org>; Fri, 24 Mar 2023 15:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B954AC6FD20
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Mar 2023 15:53:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x5jWcMVCrc+QkqdllWVZZKPSE0SxwVk2+ecwje3IGdI=; b=rP/eGuY61TxJb1
-	Xxblfp9Xx/s+tzaMLq3+CbsCiP+wpLs6ZM0X0yU5Jlpu3yflwLLZs6EYJjZv2VSqmCNCr8atKTNjC
-	+2TLUKZJNCjgNU4qRCvSOHG5hQqxe8qa0JsxlGdKzBsSwMOEDcq0WokWXnPhrDYrAUcAl+QI7+zh0
-	LdrTO/8Ewv+hsYrv3W7cnEV9u1tANz+o5/kKwAxt5R66Cag10QJ5t2zGXncns6L18s4AVHFM6uYSZ
-	59s6qLRQBIlx2LRlQcls/hqikBPGoLhexN8vyiM+a5BGJsb2y4OSuBW/1GK1dQiukzbrZDAadbJrW
-	7a3smLSECf/RMsTnKazg==;
+	List-Owner; bh=hhhu4Rsyhvrd6Nl6KPeloHjTTGWVL2xJ6w4CaT5eYxo=; b=VsyMlSelI2gams
+	9QwDGHOyJDwXF+Bvkr/Dlh69TeDvIYSej6yd9lZQb//mKFINSxrmv+ed2JNb+IWnutCtAPk3T4Z7X
+	gIGLglpI9vB0FEw8OMhW1aFi24HALscCeK6fiCBvvIa9HDO4UyVursW9u/yK7XIiRz2325KSJrS96
+	HfpsIHXQN0rxYoeczmdYaIiHbHKCcGU0Jg36v2/QGH9lYSt54cVDoWXgiGyBuMlb+nM5q7nyJO0hI
+	P7ua9iWbm67P3uGsXygO+ILghjN/u2ASyY7K467RtH4mv2hpci8bXFqN0uPNch23Su0gtgwalcFJX
+	m+Yu1875G7U7k6wO++5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfjiZ-004uQk-2g;
+	id 1pfjiZ-004uQd-0o;
 	Fri, 24 Mar 2023 15:52:39 +0000
 Received: from mx08-00178001.pphosted.com ([91.207.212.93] helo=mx07-00178001.pphosted.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfjiV-004uOo-2a
+	id 1pfjiV-004uOy-2L
 	for linux-mtd@lists.infradead.org;
 	Fri, 24 Mar 2023 15:52:37 +0000
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32ODHvwE010735;
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32OFkx41016287;
 	Fri, 24 Mar 2023 16:52:27 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=selector1;
- bh=JFtlxCELTTuNK4fwI5IIBKgcJAW7TQM275B47uT8+VM=;
- b=zk5tQtxIrDt3yVQLjCl9PmfjPjSXrkJFdvZxtEDYmLVsTX2OnHyg/jafqNHH5wNAbuKe
- +QjiOIP97uXKdcqCEzwSz59GgFgWRWg6qA+tASLygmgZ6PO0PKk9CtRKgweufXp42Rql
- 869FyEtHCXUml+QxmyapVGsvudYdwbD+bKhDnL1QJs96j32o+yeO66tPv9bXE3Ctf4Mh
- 9M11dKPwJ0sJr51lAbqKgYIARSESkHrtA1VFIgDGDJRQKuz92Ul4BxzKEpQ6mOOI5yfe
- +gXGA4ORG450d6zcZQgGW/6/cDMhRPL16QGJjqgU90Xp1mrjYkYuTAJWiU2BZTyAsHcq Eg== 
+ bh=lPzs3gk0GyXmQ2Aftj9Ob2Edm9JcZ5gvy9kTYjlmsyw=;
+ b=vb3QJElMqA4/yraJ9RhyUE5Y7R/ndem/jA7ohUskL51s5NCgj7A9a+UHDRsXkOMd0WUk
+ 4tobmyuBWrA+5YBR1nmNp0EAPD6v9I4/3zmb0CjnEI4R5CAQUGOaN+TFQQn7m1O3wkMf
+ nbdWUBo0kKQwTZ/lUllecWyBhEIBqtTLNsR5eVmRzGHh015hRWdIEFXJkULNlqRVQq9i
+ 0c3+eUlLwqqeaFD3Ek6LOE8esHzWeVvdVCTifQHp09dqC4+2HtI4iZ67QHV1kthnIJx8
+ ClbqWMcVgBOAKFGc2m9AhymbAjDs7ZHDExJoYDjk4KplOH/jQ/TC89TssU0lyIXMgp+l qg== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3pgxjcduna-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3pgxjedkxx-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 24 Mar 2023 16:52:27 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1B4B8100039;
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 19D86100038;
 	Fri, 24 Mar 2023 16:52:23 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 024F6218632;
-	Fri, 24 Mar 2023 16:51:52 +0100 (CET)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id ACC11218627;
+	Fri, 24 Mar 2023 16:51:42 +0100 (CET)
 Received: from localhost (10.48.0.175) by SHFDAG1NODE3.st.com (10.75.129.71)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.17; Fri, 24 Mar
- 2023 16:51:51 +0100
+ 2023 16:51:42 +0100
 From: Christophe Kerello <christophe.kerello@foss.st.com>
 To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
         <krzysztof.kozlowski@linaro.org>
@@ -60,9 +60,9 @@ CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         Christophe Kerello
 	<christophe.kerello@foss.st.com>
-Subject: [PATCH 2/2] mtd: rawnand: stm32_fmc2: depends on ARCH_STM32 instead of MACH_STM32MP157
-Date: Fri, 24 Mar 2023 16:51:05 +0100
-Message-ID: <20230324155105.826063-3-christophe.kerello@foss.st.com>
+Subject: [PATCH 1/2] memory: stm32-fmc2-ebi: depends on ARCH_STM32 instead of MACH_STM32MP157
+Date: Fri, 24 Mar 2023 16:51:04 +0100
+Message-ID: <20230324155105.826063-2-christophe.kerello@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230324155105.826063-1-christophe.kerello@foss.st.com>
 References: <20230324155105.826063-1-christophe.kerello@foss.st.com>
@@ -74,8 +74,8 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-24_10,2023-03-24_01,2023-02-09_01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230324_085236_148728_0BE50E7A 
-X-CRM114-Status: GOOD (  15.21  )
+X-CRM114-CacheID: sfid-20230324_085236_129380_4A17A609 
+X-CRM114-Status: GOOD (  14.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,22 +97,22 @@ To be able to compile the driver on all STM32MP SOCs, we move the
 
 Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
 ---
- drivers/mtd/nand/raw/Kconfig | 2 +-
+ drivers/memory/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 170f1185ddc4..b523354dfb00 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -373,7 +373,7 @@ config MTD_NAND_TEGRA
+diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+index fac290e48e0b..91774e6ee624 100644
+--- a/drivers/memory/Kconfig
++++ b/drivers/memory/Kconfig
+@@ -228,7 +228,7 @@ config RENESAS_RPCIF
  
- config MTD_NAND_STM32_FMC2
- 	tristate "Support for NAND controller on STM32MP SoCs"
+ config STM32_FMC2_EBI
+ 	tristate "Support for FMC2 External Bus Interface on STM32MP SoCs"
 -	depends on MACH_STM32MP157 || COMPILE_TEST
 +	depends on ARCH_STM32 || COMPILE_TEST
  	select MFD_SYSCON
  	help
- 	  Enables support for NAND Flash chips on SoCs containing the FMC2
+ 	  Select this option to enable the STM32 FMC2 External Bus Interface
 -- 
 2.25.1
 
