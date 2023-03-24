@@ -4,78 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB5B4C6FD1C
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Mar 2023 14:04:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AA39C6FD1C
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Mar 2023 09:40:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3lDCpseVd+NNjhITG/UZ5APHwdbVQLjU2Sfy6G5ykLI=; b=eunNQHPoozs0Ue
-	HbTK47L2c/ZsGkPQ1/eEWRW0ut4iGkZNN+ym4x2mlJLangQzsRXaNhDwFMUNVGywtYfCh8YZ26J9H
-	2EvNF9ZLWSD1nV/6sbkTd9XGE5Wu/6VD58ulBZQTQ0v6cSZkS96JJYbEI7OTzmy5wuSia7cjBloOq
-	J09V5ehlXmbcgOfp90XXSyDzudMoAZkcY+WYlq4M8QE2qR97TJ5DfWtZSSwHBTT76ti72Tzquvqq8
-	8w/10NEdSPf5n1JOMkwpRbOaLNhrZmjdwx/jVSq2xMfO4AgqqfjbY83XSJ8v/zrxhZUTOnn+d68Ih
-	EkIrMygUEGgSzXtRQFPA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=VJKH7ATewVrUBqYz7iaDlJILsXFjRspEpYI278V6qJs=; b=jj51jXHKC8582X
+	+U+5dXvhbGSZWSnjq2DwkG2rJZsEBvH6LhJVZfnXk8U1LpzxroQDVu7E3qpDbIyriqK5imLV3didh
+	zf6EiCRriPqJ1pw/GTdsHS3cWmvXL9ZjjS8+bgsU8LZ2SksOAyxRxk4jWfPI+Gi2+KUMusFGz6WUI
+	pB9qUqdbXRe0Zsa51eIs8Nav3+7ETgiVPo0belCMdirUzJApzAQqRnb+wvZc1lyVZ/q6sehAtNsNJ
+	pGMLhTmwM7NvkLoRuoRzh/RvXCTDX6vXQCJVSsXjoXGN6CIPEVWTTRPQGTrZV7dlqd/fqvBdQyawe
+	VRh1RXmr1dGXYDHADfcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfLY2-00275c-0p;
-	Thu, 23 Mar 2023 14:04:10 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1pfduV-0043IB-2i;
+	Fri, 24 Mar 2023 09:40:35 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pfLXv-00274V-1i
+	id 1pfduR-0043Gf-1w
 	for linux-mtd@lists.infradead.org;
-	Thu, 23 Mar 2023 14:04:08 +0000
-Received: by mail-pl1-x630.google.com with SMTP id le6so22366544plb.12
-        for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2023 07:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679580241;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=m/FSVIgFkJKT5jPFJCXaDrLahDNeQHDN2HW+X//0cEg=;
-        b=J7irfwBK/AlyWjxu7eOdGZc3k24K4lB+89Vl/zz4hK5xhMiv41olFotAiTc+3WCGgy
-         4cMirpt3fatv777O2iGcdLsHqFxgzg0Of+Dx+r9KaQi3ZcX3E9Lncwgmy7noLBDjikH4
-         qeFPxJMXmBJ7rl7xsVcBu3NrRU89/WTJx5Y/FmB5rkNHCTn354ln3Hu1p+V0UCD4z7q+
-         lZ7EoPbT6M4jOPrAj1w3LZOiSIxcjONMuB+R15oUGS+9n2BS5pt2GsGMTGnVqeshSECB
-         PvejD3n6QPnwaE1fyXtLr7FvpOotEGMK3LXpiL4twfF5nd37v0qBb4ILaEy1GnA4JSbY
-         Bjgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679580241;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m/FSVIgFkJKT5jPFJCXaDrLahDNeQHDN2HW+X//0cEg=;
-        b=upCqE3dzW5aqsEO4Gv3zIqq+3MJ05xPz7UsQcY4yLvMREzpmmEjqbFL/KJIdWg/swp
-         3j06l931toAnL8WSHXi4r87Dvu1HYp99YGutsdw3SBsvpzGp7wzJpJt06vHZYjs8TrcA
-         i3yzUm1TZudU8x34BChgoqYLP7Fu5qF3kBKY7mqJPVudSH4kDL2D4qYoZ12lAv4BYu39
-         QNhMZgFbd9I1mnRhCo2Wc3EQX4qDMOJF/D7lH73gtsr9DcTmeXg0NcXMQxE+U4UKSwI9
-         EAS9EVgcD8aIvLgXLovhCFHa/2hjAY0tOQtsWOjm+xiq80s8BWtAOtC7X6z9z1EV75Jm
-         YW8w==
-X-Gm-Message-State: AO0yUKUX0myQzqyJx+6GwX7lT5/SnHdDwAdEGm3SYP5qE2axgy4in0pp
-	irY9Ho/OWV6w+R/6jm7LPuisOVhtL/fOi2+Y
-X-Google-Smtp-Source: AK7set+No4CboYrqtpIMXSn3p5AoVWa7v7kwsrrDO8wk4wxo/FiN6fQ5stgd6ORe1owxLtO0hvB1mA==
-X-Received: by 2002:a17:902:ebcf:b0:1a1:dc27:202b with SMTP id p15-20020a170902ebcf00b001a1dc27202bmr6165242plg.20.1679580241020;
-        Thu, 23 Mar 2023 07:04:01 -0700 (PDT)
-Received: from localhost.localdomain ([115.204.224.149])
-        by smtp.gmail.com with ESMTPSA id x12-20020a1709029a4c00b001a1a9a639c2sm11967376plv.134.2023.03.23.07.03.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 07:04:00 -0700 (PDT)
-From: Bang Li <libang.linuxer@gmail.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Bang Li <libang.linuxer@gmail.com>
-Subject: [PATCH] mtdblock: tolerate corrected bit-flips
-Date: Thu, 23 Mar 2023 22:03:50 +0800
-Message-Id: <20230323140350.69908-1-libang.linuxer@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	Fri, 24 Mar 2023 09:40:33 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 1A5F1240009;
+	Fri, 24 Mar 2023 09:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1679650826;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tfAKNLINoAFCJxtObHpd6qzp3wuoC13J4SnQQo/qL/w=;
+	b=mRY6y3KS98Yvv4kQKfT8tHIKiqhJBOAKKJqbtewDvDpralDha4cvXqaVlpj0Lz5amLtCkf
+	WtPk2l4noyb4JXkAsUjWu9ETGqgbwpSpgtLnzbiqjuN9uGdPeVDbFIN6F0CanNxopllIay
+	IKuxBm1V+mTTGPOhq26e53x3sTSUx4xDX4rG6HcmUifoatmHIf4dlQ56cq82ZytlMQKBXa
+	HHBcoO+Mt7DuQWl3odKY/AyzzmMbIxTnWNovkJbg59cB/1k9MnJ4fL+bC418afObE0kz4u
+	hsqKgeFLjY+2EB3JQB0PMUoODFJLl8dVbr00znSOG1R3y0+nq0t4JIgm9ZruMw==
+Date: Fri, 24 Mar 2023 10:40:20 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>
+Cc: richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, masonccyang@mxic.com.tw,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: mtd: nand: Macronix: document new
+ binding
+Message-ID: <20230324104020.54754079@xps-13>
+In-Reply-To: <20230323124510.2484808-2-noltari@gmail.com>
+References: <20230323124510.2484808-1-noltari@gmail.com>
+	<20230323124510.2484808-2-noltari@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230323_070403_586787_F4466386 
-X-CRM114-Status: GOOD (  11.83  )
+X-CRM114-CacheID: sfid-20230324_024031_785153_ED8C7D11 
+X-CRM114-Status: GOOD (  14.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,60 +72,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mtd_read() may return -EUCLEAN in case of corrected bit-flips.This
-particular condition should not be treated like an error.
-
-Signed-off-by: Bang Li <libang.linuxer@gmail.com>
----
- drivers/mtd/mtdblock.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index 1e94e7d10b8b..a0a1194dc1d9 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -153,7 +153,7 @@ static int do_cached_write (struct mtdblk_dev *mtdblk, unsigned long pos,
- 				mtdblk->cache_state = STATE_EMPTY;
- 				ret = mtd_read(mtd, sect_start, sect_size,
- 					       &retlen, mtdblk->cache_data);
--				if (ret)
-+				if (ret && !mtd_is_bitflip(ret))
- 					return ret;
- 				if (retlen != sect_size)
- 					return -EIO;
-@@ -188,8 +188,12 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
- 	pr_debug("mtdblock: read on \"%s\" at 0x%lx, size 0x%x\n",
- 			mtd->name, pos, len);
- 
--	if (!sect_size)
--		return mtd_read(mtd, pos, len, &retlen, buf);
-+	if (!sect_size) {
-+		ret = mtd_read(mtd, pos, len, &retlen, buf);
-+		if (ret && !mtd_is_bitflip(ret))
-+			return ret;
-+		return 0;
-+	}
- 
- 	while (len > 0) {
- 		unsigned long sect_start = (pos/sect_size)*sect_size;
-@@ -209,7 +213,7 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
- 			memcpy (buf, mtdblk->cache_data + offset, size);
- 		} else {
- 			ret = mtd_read(mtd, pos, size, &retlen, buf);
--			if (ret)
-+			if (ret && !mtd_is_bitflip(ret))
- 				return ret;
- 			if (retlen != size)
- 				return -EIO;
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgw4FsdmFybywKCm5vbHRhcmlAZ21haWwuY29tIHdyb3RlIG9uIFRodSwgMjMgTWFyIDIwMjMg
+MTM6NDU6MDkgKzAxMDA6Cgo+IEFkZCBuZXcgIm14aWMsZGlzYWJsZS1ibG9jay1wcm90ZWN0aW9u
+IiBiaW5kaW5nIGRvY3VtZW50YXRpb24uCj4gVGhpcyBiaW5kaW5nIGFsbG93cyBkaXNhYmxpbmcg
+YmxvY2sgcHJvdGVjdGlvbiBzdXBwb3J0IGZvciB0aG9zZSBkZXZpY2VzIG5vdAo+IHN1cHBvcnRp
+bmcgaXQuCj4gCj4gU2lnbmVkLW9mZi1ieTogw4FsdmFybyBGZXJuw6FuZGV6IFJvamFzIDxub2x0
+YXJpQGdtYWlsLmNvbT4KPiAtLS0KPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L210ZC9uYW5kLW1hY3Jvbml4LnR4dCB8IDMgKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2Vy
+dGlvbnMoKykKPiAKPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL210ZC9uYW5kLW1hY3Jvbml4LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9tdGQvbmFuZC1tYWNyb25peC50eHQKPiBpbmRleCBmZmFiMjhhMmM0ZDEuLjAzZjY1Y2Ez
+MmNkMyAxMDA2NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
+L25hbmQtbWFjcm9uaXgudHh0Cj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL210ZC9uYW5kLW1hY3Jvbml4LnR4dAo+IEBAIC0xNiw2ICsxNiw5IEBAIGluIGNoaWxkcmVu
+IG5vZGVzLgo+ICBSZXF1aXJlZCBOQU5EIGNoaXAgcHJvcGVydGllcyBpbiBjaGlsZHJlbiBtb2Rl
+Ogo+ICAtIHJhbmRvbWl6ZXIgZW5hYmxlOiBzaG91bGQgYmUgIm14aWMsZW5hYmxlLXJhbmRvbWl6
+ZXItb3RwIgo+ICAKPiArT3B0aW9uYWwgTkFORCBjaGlwIHByb3BlcnRpZXMgaW4gY2hpbGRyZW4g
+bW9kZToKPiArLSBibG9jayBwcm90ZWN0aW9uIGRpc2FibGU6IHNob3VsZCBiZSAibXhpYyxkaXNh
+YmxlLWJsb2NrLXByb3RlY3Rpb24iCj4gKwoKQmVzaWRlcyB0aGUgZmFjdCB0aGF0IG5vd2FkYXlz
+IHdlIHByZWZlciB0byBzZWUgYmluZGluZyBjb252ZXJzaW9ucyB0bwp5YW1sIGJlZm9yZSBhZGRp
+bmcgYW55dGhpbmcsIEkgZG9uJ3QgdGhpbmsgdGhpcyB3aWxsIGZseS4KCkknbSBub3Qgc3VyZSBl
+eGFjdGx5IHdoYXQgImRpc2FibGUgYmxvY2sgcHJvdGVjdGlvbiIgbWVhbnMsIHdlCmFscmVhZHkg
+aGF2ZSBzaW1pbGFyIHByb3BlcnRpZXMgbGlrZSAibG9jayIgYW5kICJzZWN1cmUtcmVnaW9ucyIs
+IG5vdApzdXJlIHRoZXkgd2lsbCBmaXQgYnV0IEkgdGhpbmsgaXQncyB3b3J0aCBjaGVja2luZy4K
+Ck90aGVyd2lzZSwgd2h5IHdvdWxkIHlvdSBkaXNhYmxlIHRoZSBibG9jayBwcm90ZWN0aW9uPyBX
+aGF0IGRvZXMgaXQKbWVhbiBleGFjdGx5PyBJJ20gbm90IGluIGZhdm9yIG9mIGEgTWFjcm9uaXgt
+c3BlY2lmaWMgcHJvcGVydHkgaGVyZS4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
