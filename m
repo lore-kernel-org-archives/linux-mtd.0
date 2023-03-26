@@ -4,80 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18E42C6FD1C
-	for <linux-mtd@archiver.kernel.org>; Sat, 25 Mar 2023 09:44:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69E14C7619A
+	for <linux-mtd@archiver.kernel.org>; Sun, 26 Mar 2023 23:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0xRDbzh3V0P3wWBb2Qzb5+7tAnuP0DWAqlYKi54QTis=; b=HqRDk4sehXhX8t
-	/V1lKYX3q48MdeF5jSr7qF5mE3eOG+rcf7u65bVWtssbrXAtAnVdpO3n4HPcr8rqEazOyXiZUhK6t
-	MZm/LkqWDdv6sgi43tixcvJpHPxxHSpNy4K1xLM5V7tltMxisj1TJtEywlC8zKGxeZnghZFIQD7li
-	bMJJVS0KQQ6+1GliK/tVq4xR39iLR3X0M/2X0lLanQmzvYnu1WYNAcFXX/oUAVjdsD9K8UELi8TU/
-	Npe2PCdiBINlXSYiBldt9CchOoLPgZi0NX+VZ957x9wJtVHsshAeR2llPoFmgJYgLW7k5ubMZNWE8
-	PvM5LFgkm0Tdl5hqQwIg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Ll9nPpJYg/4L0XElxKmoO0m8R/860t8GWdpBByOp8+o=; b=J6AM7Zk3n0FFVW
+	4JQSZGNZH0o9KkAj2+Rd95rFCGfov64e4doO3ig4V/y3WNvK97P9ec1kxMCADCXrku2SgxlHjEi+k
+	YqNx00rtq46oDCwZbvTFgZZBcbp0LhgGpleBGqrrEwmFsRx9oUT8DitfsbNBF8eAKGsmuEIZXdtU/
+	evJqF9MyTYB11hZTa8U/wsYdhg8CqoK2ZPOF7caLQVHJ3XWf1PrAlAvxWLzhB8Y1jyt//4qUuHm4o
+	u1GLTNWK9LcnZsfynyb/o1TF5d+Z5tNamepfF4/PG3+1CLgjvBLO61gdYbf+p76mfXZnRGbCKxN5F
+	mTE58s5tk0whwOEiGSRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pg0Ra-006VKD-2x;
-	Sat, 25 Mar 2023 09:44:14 +0000
-Received: from mout.web.de ([212.227.15.14])
+	id 1pgaAQ-009NSo-36;
+	Sun, 26 Mar 2023 23:52:54 +0000
+Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pg0RV-006VJ2-1G
+	id 1pgaAN-009NS5-20
 	for linux-mtd@lists.infradead.org;
-	Sat, 25 Mar 2023 09:44:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1679737434; i=markus.elfring@web.de;
-	bh=KT3i+XCwOpBgEiE2fWQZLWXtbQK7aLmFAw3Ez2jHa1Y=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:In-Reply-To;
-	b=jboFmKu+n5eM01Gkil+cVMh5DMDjPj6tHWmGomWZU80m4AImJbbCpEE4l3yah3gUD
-	 irYtT4Ppy/lwuuS2YXz98HB/UQ6BDvckGWSQEIwPRDdAdl0SXghKZVsUKjIZ6VHrrd
-	 zitnxGwyxe7jx6lOb3SkZxJ5Lt1vlkeO5fjQ+8gLZ/grYkWA6jFRQLe1aJAcTjv5VR
-	 +Y6zy5OFJBgBishIuj4g3KpLWWg4xsnzZSIeE/IZCEbS6ohlV94rL48odPs6hk274o
-	 N+XcEgi9wFINHRZdV31Xo8lYOCRBaIdkcAXKkPiiDaSfBhLAmukTxjE8Xc94dqn1x0
-	 GfG8h8RHORWDw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.83]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Myv70-1qRf6e1jH8-00vo7V; Sat, 25
- Mar 2023 10:43:54 +0100
-Message-ID: <5eeddd9f-7e68-6798-5a17-76e59278d968@web.de>
-Date: Sat, 25 Mar 2023 10:43:53 +0100
+	Sun, 26 Mar 2023 23:52:53 +0000
+Received: by mail-wm1-x333.google.com with SMTP id n19so4086571wms.0
+        for <linux-mtd@lists.infradead.org>; Sun, 26 Mar 2023 16:52:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tomn.co.uk; s=google; t=1679874769;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mVT486p4K1nhoxKc0w9XDqDSduSDIiQYo+LAG7KIkEM=;
+        b=HBC/iemV+5YQ/3Y5am10OecYtf4KMEnoRZWqfmGt4lxs5KrPn4br2KvYIIsiMVUx8k
+         8dWUeuCm8A4LLUmSV5lXvnTzaZjxmf1SjuNYNWUxIoAcupJmCtyZ3+yuNUnTFY2ei0uH
+         ZqBGZ3MMxvTNg8ZdwSXLQ3Ui4fox+jqNVgjNU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679874769;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mVT486p4K1nhoxKc0w9XDqDSduSDIiQYo+LAG7KIkEM=;
+        b=r5SJKFq55vdmkx+PBFFliBCv43RMlpsm/n24vPYq4Mj/DI0zKv/3mb0DpEusG4np/B
+         FDWvxi9ifXYXEv0wYz9TbirDGwkTKWfaT7wx5s+SKT8j7yxqtUI2+MZPLCXIDSqUgmHq
+         tfDNC9pHp6a+iYO/ouk4R/xrMp5IgQFb0rOE4uwR0pNJ6pNGMBeYQaXfHMxlkCUlbV7Y
+         +sTBkDf8O249aVMjyvFNA7jXNb+VZeHHfc/naAor2enn3EpMI2yC1+CaZJPf1VRXmPDO
+         FdsLJQsIPycZ1pkgP6ifjBQqQoXg3OipAYG6sDjCJE0A/mhpsq0ZL6LsngRrx4aHWRfo
+         9IsA==
+X-Gm-Message-State: AO0yUKVcABV47c99FQg51rovnOfpsxhu5GYP+4Kqn34UrwWW9wofAPCZ
+	z2QSz+wW9VDM8bUfBg8xlXGR3UePIBDVKis8bw4=
+X-Google-Smtp-Source: AK7set/kY+pa2vFDxywtVRreQThedb0qSFQq+xtRD+ls2+F4uwP0BmUg1fg4j+Me7VPXOZEgNnfh5g==
+X-Received: by 2002:a05:600c:378d:b0:3ea:f6c4:5f3d with SMTP id o13-20020a05600c378d00b003eaf6c45f3dmr8113371wmr.2.1679874769188;
+        Sun, 26 Mar 2023 16:52:49 -0700 (PDT)
+Received: from tom-tp (218.95.2.81.in-addr.arpa. [81.2.95.218])
+        by smtp.gmail.com with ESMTPSA id x11-20020a05600c21cb00b003ede3e54ed7sm11864410wmj.6.2023.03.26.16.52.48
+        for <linux-mtd@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Mar 2023 16:52:48 -0700 (PDT)
+Date: Mon, 27 Mar 2023 00:52:39 +0100
+From: Thomas Nixon <tom@tomn.co.uk>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH RFC] mtd: rawnand: xway: don't yield while holding spinlock
+Message-ID: <ZCDax6AWvz9mKGPr@tom-tp>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: [PATCH resent] mtd: cfi_cmdset_0001: Fix exception handling in
- cfi_intelext_setup()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-To: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: cocci@inria.fr, LKML <linux-kernel@vger.kernel.org>
-References: <f9303bdc-b1a7-be5e-56c6-dfa8232b8b55@web.de>
- <3675f707-bff0-3caf-29a2-b99e5b9c6554@web.de>
-In-Reply-To: <3675f707-bff0-3caf-29a2-b99e5b9c6554@web.de>
-X-Provags-ID: V03:K1:SQOftfhZ5atvEUhY7+UaBk+J1ViVanb6XOugrqglrpZOrM5Ik0W
- vpnNbosTgnEQfItq5M5SrJOabW58VJd/dMZhN3LoHsE6JBic2otGqR1iqFNSg5AclLMwJb7
- CzF8vv2SlGzRpy/lhPhEvUeYgAWPZRGxTLgFMNAeWH5W1v0APcVI9nTAcovkmOGooDSkmB9
- vpyDWgrhFLUvrDf6bEakw==
-UI-OutboundReport: notjunk:1;M01:P0:mIYw/rqJ+Zw=;muK+JFnOyudj8qp9W8OGaC/Y0e2
- Dw/VEetUaxOzhTaaHQEtNccC48YQL0q6QrpAo3MbP6Rf/Gi5fXC+JwclfQhcgjHjYPNxi1DY4
- L4kpMqyPXaaaWOMG5On6TvKTt2Wwa/bjSe9L9ZWCrXLNGmybgRYa9M0T+Bh4Y25e70E2rDtdR
- E+7dnz/cu47qstp9Fk55z+hcTN0wIc7L5etSTjPKhyxztLM5EY2cgmAbn7lGK6DLRtBv+P574
- S/JKE6UcG0uifuHvsaKIFe1sbFPjd3IfakZtWn+K9A9jqqMtWFyk8F5BuCRRIybVfGYHZgy+z
- 7Vw86hpdgSMqPfEEVGhryqdyoeakNXJUn9etqdw3OPKQvsfc25v3yyckgfPkRDk9GxdJHC+i1
- xVgNf2YlLyCg9fj7zvJuaR3z43eQ1CgevrLG+oIGFWkReWj8XpfEjIsYCqKRTQyUDzoGpzHNs
- NMvQVueCm73ntmM1XBFEVidLGSXENGelAIUwOFyX6J6rHImJb5yaomiCJkI/6o3kZ6Q5OJQLU
- ypBNbmz+0UTD+b1Rmno7Qo9G2csr/uHkEkaSHZtcoX0PhTB73zrr4jtd31iqOqMSd3BVB0cJW
- 5zm/fdHQm6Tk0P5mDfhVS83kZMRAJXWtDhJmA0Ffe3/fdU8JVwvQ3rgRlLYNkkiKX03mwfNSM
- AfcTZqhFrv+z+C+Ht06JzpIUzfsgYcNQ+OJNWyOMFzVObctuFcbCevpvJh7YD3BVAC0aPARj4
- W0/sKAX9CQ7iLoLl0Xe7+mKSTDkldwsk+K+opnjUI04yS1Ag7NTrId4lVezpa2ny+GxfNf6v0
- 3cPNCWExWWIjxzsbUZNTbCSHQlmkBPJJz9ZqAzmfuUtPswd1le7PCRL+GNFxiUmeXP+GCysst
- gX7lfOK3GeTGFHV1caRB35HKkFTpLjrjCAQmuVFZggijGy+bRJ6BS0P7k
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230325_024409_713775_51C828A2 
-X-CRM114-Status: GOOD (  12.03  )
+X-CRM114-CacheID: sfid-20230326_165251_659531_4A891978 
+X-CRM114-Status: GOOD (  11.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,60 +79,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RGF0ZTogVHVlLCAyMSBNYXIgMjAyMyAyMDoxMzo1MSArMDEwMAoKVGhlIGxhYmVsIOKAnHNldHVw
-X2VycuKAnSB3YXMgdXNlZCB0byBqdW1wIHRvIGFub3RoZXIgcG9pbnRlciBjaGVjayBkZXNwaXRl
-IG9mCnRoZSBkZXRhaWwgaW4gdGhlIGltcGxlbWVudGF0aW9uIG9mIHRoZSBmdW5jdGlvbiDigJxj
-ZmlfaW50ZWxleHRfc2V0dXDigJ0KdGhhdCBpdCB3YXMgZGV0ZXJtaW5lZCBhbHJlYWR5IHRoYXQg
-YSBjb3JyZXNwb25kaW5nIHZhcmlhYmxlIGNvbnRhaW5lZAphIG51bGwgcG9pbnRlciBiZWNhdXNl
-IG9mIGEgZmFpbGVkIG1lbW9yeSBhbGxvY2F0aW9uLgoKKiBUaHVzIHVzZSBtb3JlIGFwcHJvcHJp
-YXRlIGxhYmVscyBpbnN0ZWFkLgoKKiBEZWxldGUgYSByZWR1bmRhbnQgY2hlY2suCgoKVGhpcyBp
-c3N1ZSB3YXMgZGV0ZWN0ZWQgYnkgdXNpbmcgdGhlIENvY2NpbmVsbGUgc29mdHdhcmUuCgpGaXhl
-czogMWRhMTc3ZTRjM2Y0MTUyNGU4ODZiN2YxYjhhMGMxZmM3MzIxY2FjMiAoIkxpbnV4LTIuNi4x
-Mi1yYzIiKQpTaWduZWQtb2ZmLWJ5OiBNYXJrdXMgRWxmcmluZyA8ZWxmcmluZ0B1c2Vycy5zb3Vy
-Y2Vmb3JnZS5uZXQ+Ci0tLQogZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAxLmMgfCAx
-OCArKysrKysrKystLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDkg
-ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8w
-MDAxLmMgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYwppbmRleCA1NGY5MmQw
-OWQ5Y2YuLmEwNjMxOGNkNWVhNCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2Nt
-ZHNldF8wMDAxLmMKKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAxLmMKQEAg
-LTYxNCw3ICs2MTQsNyBAQCBzdGF0aWMgc3RydWN0IG10ZF9pbmZvICpjZmlfaW50ZWxleHRfc2V0
-dXAoc3RydWN0IG10ZF9pbmZvICptdGQpCiAJCQkJICAgIHNpemVvZihzdHJ1Y3QgbXRkX2VyYXNl
-X3JlZ2lvbl9pbmZvKSwKIAkJCQkgICAgR0ZQX0tFUk5FTCk7CiAJaWYgKCFtdGQtPmVyYXNlcmVn
-aW9ucykKLQkJZ290byBzZXR1cF9lcnI7CisJCWdvdG8gZnJlZV9tdGQ7CgogCWZvciAoaT0wOyBp
-PGNmaS0+Y2ZpcS0+TnVtRXJhc2VSZWdpb25zOyBpKyspIHsKIAkJdW5zaWduZWQgbG9uZyBlcm51
-bSwgZXJzaXplOwpAQCAtNjMwLDcgKzYzMCw3IEBAIHN0YXRpYyBzdHJ1Y3QgbXRkX2luZm8gKmNm
-aV9pbnRlbGV4dF9zZXR1cChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKIAkJCW10ZC0+ZXJhc2VyZWdp
-b25zWyhqKmNmaS0+Y2ZpcS0+TnVtRXJhc2VSZWdpb25zKStpXS5udW1ibG9ja3MgPSBlcm51bTsK
-IAkJCW10ZC0+ZXJhc2VyZWdpb25zWyhqKmNmaS0+Y2ZpcS0+TnVtRXJhc2VSZWdpb25zKStpXS5s
-b2NrbWFwID0ga21hbGxvYyhlcm51bSAvIDggKyAxLCBHRlBfS0VSTkVMKTsKIAkJCWlmICghbXRk
-LT5lcmFzZXJlZ2lvbnNbKGoqY2ZpLT5jZmlxLT5OdW1FcmFzZVJlZ2lvbnMpK2ldLmxvY2ttYXAp
-Ci0JCQkJZ290byBzZXR1cF9lcnI7CisJCQkJZ290byByZWxlYXNlX2xvb3A7CiAJCX0KIAkJb2Zm
-c2V0ICs9IChlcnNpemUgKiBlcm51bSk7CiAJfQpAQCAtNjM4LDcgKzYzOCw3IEBAIHN0YXRpYyBz
-dHJ1Y3QgbXRkX2luZm8gKmNmaV9pbnRlbGV4dF9zZXR1cChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkK
-IAlpZiAob2Zmc2V0ICE9IGRldnNpemUpIHsKIAkJLyogQXJnaCAqLwogCQlwcmludGsoS0VSTl9X
-QVJOSU5HICJTdW0gb2YgcmVnaW9ucyAoJWx4KSAhPSB0b3RhbCBzaXplIG9mIHNldCBvZiBpbnRl
-cmxlYXZlZCBjaGlwcyAoJWx4KVxuIiwgb2Zmc2V0LCBkZXZzaXplKTsKLQkJZ290byBzZXR1cF9l
-cnI7CisJCWdvdG8gcmVsZWFzZV9sb29wOwogCX0KCiAJZm9yIChpPTA7IGk8bXRkLT5udW1lcmFz
-ZXJlZ2lvbnM7aSsrKXsKQEAgLTY2MCwxOCArNjYwLDE4IEBAIHN0YXRpYyBzdHJ1Y3QgbXRkX2lu
-Zm8gKmNmaV9pbnRlbGV4dF9zZXR1cChzdHJ1Y3QgbXRkX2luZm8gKm10ZCkKIAkvKiBUaGlzIGZ1
-bmN0aW9uIGhhcyB0aGUgcG90ZW50aWFsIHRvIGRpc3RvcnQgdGhlIHJlYWxpdHkKIAkgICBhIGJp
-dCBhbmQgdGhlcmVmb3JlIHNob3VsZCBiZSBjYWxsZWQgbGFzdC4gKi8KIAlpZiAoY2ZpX2ludGVs
-ZXh0X3BhcnRpdGlvbl9maXh1cChtdGQsICZjZmkpICE9IDApCi0JCWdvdG8gc2V0dXBfZXJyOwor
-CQlnb3RvIHJlbGVhc2VfbG9vcDsKCiAJX19tb2R1bGVfZ2V0KFRISVNfTU9EVUxFKTsKIAlyZWdp
-c3Rlcl9yZWJvb3Rfbm90aWZpZXIoJm10ZC0+cmVib290X25vdGlmaWVyKTsKIAlyZXR1cm4gbXRk
-OwoKLSBzZXR1cF9lcnI6Ci0JaWYgKG10ZC0+ZXJhc2VyZWdpb25zKQotCQlmb3IgKGk9MDsgaTxj
-ZmktPmNmaXEtPk51bUVyYXNlUmVnaW9uczsgaSsrKQotCQkJZm9yIChqPTA7IGo8Y2ZpLT5udW1j
-aGlwczsgaisrKQotCQkJCWtmcmVlKG10ZC0+ZXJhc2VyZWdpb25zWyhqKmNmaS0+Y2ZpcS0+TnVt
-RXJhc2VSZWdpb25zKStpXS5sb2NrbWFwKTsKK3JlbGVhc2VfbG9vcDoKKwlmb3IgKGk9MDsgaTxj
-ZmktPmNmaXEtPk51bUVyYXNlUmVnaW9uczsgaSsrKQorCQlmb3IgKGo9MDsgajxjZmktPm51bWNo
-aXBzOyBqKyspCisJCQlrZnJlZShtdGQtPmVyYXNlcmVnaW9uc1soaipjZmktPmNmaXEtPk51bUVy
-YXNlUmVnaW9ucykraV0ubG9ja21hcCk7CiAJa2ZyZWUobXRkLT5lcmFzZXJlZ2lvbnMpOworZnJl
-ZV9tdGQ6CiAJa2ZyZWUobXRkKTsKIAlrZnJlZShjZmktPmNtZHNldF9wcml2KTsKIAlyZXR1cm4g
-TlVMTDsKLS0KMi40MC4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+xway_nand holds the ebu_lock spinlock during transactions by locking and
+unlocking in select_chip. Yielding while this is held is bad, so block
+in dev_ready so that nand_wait and nand_wait_ready never yield.
+
+This fixes crashes mostly seen in ath9k_pci_owl_loader.
+
+Tested on a bt homehub v5a, with openwrt-patched 5.10 and 5.15 kernels.
+
+Link: https://github.com/openwrt/openwrt/issues/9829
+Signed-off-by: Thomas Nixon <tom@tomn.co.uk>
+---
+
+Obviously this is a hack, but other options don't seem great either --
+maybe someone has a better idea?
+
+Perhaps this should implement a timeout warning too? Adding an actual
+timeout seems tricky, as xway_dev_ready would have to return 1 even when
+it's not ready in to break out of the loop in nand_wait/nand_wait_ready
+without yielding (and triggering this bug).
+
+ drivers/mtd/nand/raw/xway_nand.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
+index 035b82aa2f4a..ea10a35db6db 100644
+--- a/drivers/mtd/nand/raw/xway_nand.c
++++ b/drivers/mtd/nand/raw/xway_nand.c
+@@ -122,7 +122,13 @@ static void xway_cmd_ctrl(struct nand_chip *chip, int cmd, unsigned int ctrl)
+ 
+ static int xway_dev_ready(struct nand_chip *chip)
+ {
+-	return ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_RD;
++	/*
++	 * wait until ready, as otherwise the driver will yield in nand_wait or
++	 * nand_wait_ready, which is a bad idea when we're holding ebu_lock
++	 */
++	while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_RD) == 0)
++		;
++	return 1;
+ }
+ 
+ static unsigned char xway_read_byte(struct nand_chip *chip)
+-- 
+2.33.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
