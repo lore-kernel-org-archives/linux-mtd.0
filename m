@@ -4,72 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94518C76195
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Mar 2023 08:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 221B0C76195
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Mar 2023 09:29:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=P1DaQb2fCvwy1GO1sraCfhccCGqjdHOBC/JkrUbM2Tg=; b=mDjJ1w6435NBqO
-	3VnNF7REqcwvfSNWdgBvtAV9xplIxnqDhEdoptV+NYQYPv7F7LW7egfS8yyGYHgxS4liv5lycjt+w
-	bkh0HEm7QaONU63l+ihMHCAA7Ys24UsnaY/gH+oY4IpkeAwstYT6Cs0j66iFf8/b2XFlSO5wr+j9M
-	qbQFlQXJL1b0b4DB0mR1F4xs7HvjZgH+PDEl0kkw7VMnHeMMPDtCI/uap7Z8fSwKB6s1UYkGRru9D
-	9jlbQaCS0mtcIV9n0cOSQiqs+koH8Omz2Vgq88vbeOP9/X2ovO+2r1S8/ANE93wL7T+7vNPDGqCbk
-	XTIB9a+sqJWTLwnNyl2Q==;
+	List-Owner; bh=CN9u1MIM0Nky5S5ii5Vz0rivcN9RP37CjLycgrsqRhQ=; b=YH30KHHfciVtwy
+	wV+jCzyK2ktA8vo8vM1Crbj6zFGCsfjFAWqCmdMUteSXPCOJrWgKUalAa6Mek8qC7YQf4JIVGmTd/
+	HJd51A5Og8yTQhv9+Ydk8WyDUocBmf/MQi66MGxCbW2EUZtvHXtnQUgJeboKAW9iMPEUdyDW0wGnA
+	MuxZBaFGZCTKPIwxMzXPuR3uGpzXcCRBEuTL91Xw3AygqY7G1OtlFzE3QCOMMYQIZ8C4x8qG/u+Ge
+	ULn4aFOKHeHhoD2ojGMUh0SF27OwFAm4ruecQlJYAobojnrZdUO+XaaQCuTcAgkA+Eq3Z1UU8bdER
+	lnzdXCejAA8hO7AFyF8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pgi6P-00ADPc-04;
-	Mon, 27 Mar 2023 08:21:17 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1pgjAA-00ATD8-0W;
+	Mon, 27 Mar 2023 09:29:14 +0000
+Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pgi6K-00ADOG-10
+	id 1pgjA6-00ATBF-0G
 	for linux-mtd@lists.infradead.org;
-	Mon, 27 Mar 2023 08:21:15 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 281BE40002;
-	Mon, 27 Mar 2023 08:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1679905269;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4cexv42ANv4fYBHqbCbxRq6rnEJu69JHh4tjUOyz+S0=;
-	b=VbbTJhMWMgiaoUPLk2ZHROYFsd5Oei+3L/1rnXPwAAMsgKOUTtZhrZ/EiZ3INuxkK8wJRC
-	tPXgsG2Asotk7sG7QSbmvQ51F+d8UIk3Rm2mSMB6C3X/QYKI7EUMSMUe6KeWSICvGzmC1M
-	ZAEp4sxkZBtw0IsW9HkxJSc/JaxONYj4pTdKLW1jGU3JL0DqWIvAwC9AxwOx37knYzrmLW
-	DCoFIs2BDDIsjnghFC90hs2afKpUgDDsCDkG7BH1GU/axA4ciEf/ivNLeJHrqPOceZN8n5
-	Vo/qbLjzqp3a6XCt98IJW79cLfBKBQ9e5Kn6cMG29HpCBZi/z/0eZgM1tckmZA==
-Date: Mon, 27 Mar 2023 10:21:05 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>
-Cc: richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, masonccyang@mxic.com.tw,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Jaime Liao <jaimeliao@mxic.com.tw>, YouChing
- <ycllin@mxic.com.tw>
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: nand: Macronix: document new
- binding
-Message-ID: <20230327102105.2a8c8e58@xps-13>
-In-Reply-To: <CAKR-sGegBo2M-+mHZknWBJhmgHtT21Lsd=W==5zU-raja6aJuA@mail.gmail.com>
-References: <20230323124510.2484808-1-noltari@gmail.com>
-	<20230323124510.2484808-2-noltari@gmail.com>
-	<20230324104020.54754079@xps-13>
-	<CAKR-sGcbRRjqt3raXHcvfCfKFDfFWsuu+C7XW3qFckawMsqe4w@mail.gmail.com>
-	<20230324114911.19e00ae1@xps-13>
-	<CAKR-sGc3R_k_+-hzv5DOOeRO-5rHL1k_dq7mpZLcv=FgZ1Moug@mail.gmail.com>
-	<20230324144559.3473c537@xps-13>
-	<CAKR-sGdxFbMZYGcDnWHW9SU=6hchZMi75=BjGtDen_Ws1keORg@mail.gmail.com>
-	<20230324153602.66a8841d@xps-13>
-	<CAKR-sGegBo2M-+mHZknWBJhmgHtT21Lsd=W==5zU-raja6aJuA@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Mon, 27 Mar 2023 09:29:12 +0000
+Received: by mail-wr1-x431.google.com with SMTP id i9so7972552wrp.3
+        for <linux-mtd@lists.infradead.org>; Mon, 27 Mar 2023 02:29:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1679909345;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WakzKlq0zhiR2kGfuhbg0OJRZ9vK+K27tkK+aXZITVs=;
+        b=hOBsoe5j1T0WCmh5PDpWp2SDy6cg7JepZXgb+aPXfQPwmAdeYTYSTWH6g4x9y03mNK
+         Ue67l70B5RMY06zP1xdIKmR/RiNmjFSvMtyFzjRzNu6nMxl+BzpUXOTKnTAsssZ6OXmi
+         qVjI/U2Nfy4brNcVl2nsJK1U9XITePZEV+uFh6OXPdudA6DOsxs3scnn+KGumRqAZFBP
+         NiGUe7BWSzT/OKemaV8AMq/3yKy90kSU7yR7zc/8GwPhhswaYdUTh3cFfwHaD4KlM99a
+         TJ6hVrWA+Bglx5SqAYYjsEO2g9rTm9epAM40W6phwtMDRCUlsbRnrY/vmbJVFDfWtaC5
+         YcAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679909345;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WakzKlq0zhiR2kGfuhbg0OJRZ9vK+K27tkK+aXZITVs=;
+        b=giS8RQgvSpCJBG2f1SKg3WK57DlIH4gFU3bKH4ixzM/f8iaWSfmTeMqG15w2p7rztx
+         5C16ElccygQ8NAwyY62CuSpRXQJPRUqAtB8l6KMlvUzYnMcGX5WZYPIsfQ0amoCX7Uz/
+         AKvHy0sZtJ+JcwxrflBcBITxETrPnbP2kdVRGIK2vnZ+uWNOOzHQsNVR3o/3xuLUe/Sd
+         OkVqkKO6XwcRAuAH9gaEBqYFvN/cP445TqA7V0unlcYxrf6WOLYs9VP0d7D1C6rFIFyN
+         2CxsXAWTOilKPliqJfZbKXRDycxyJnphNrn4C+uxMcCTFDZlvitBGnsiMb1AaFRSNxNl
+         kFHw==
+X-Gm-Message-State: AAQBX9dIz42IT0YGA8iHkjqllSMHajZh0B6QU27+9baJmtvjybhnbJVp
+	FMNxZZ4Jp0+/TR++eB3wmSphTg==
+X-Google-Smtp-Source: AKy350a0j936hg24fP6nC6LrjjgT+yehNsjf0UZZaYjFpKrMRERi0niLd4d9fctYKJxOTXSkFQB4Qg==
+X-Received: by 2002:a5d:4fce:0:b0:2d0:354e:dc77 with SMTP id h14-20020a5d4fce000000b002d0354edc77mr8372277wrw.66.1679909345115;
+        Mon, 27 Mar 2023 02:29:05 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.91])
+        by smtp.gmail.com with ESMTPSA id n16-20020adffe10000000b002cfe63ded49sm24606778wrr.26.2023.03.27.02.29.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Mar 2023 02:29:04 -0700 (PDT)
+Message-ID: <ebe01832-96c3-449a-462e-342ed706ef8a@linaro.org>
+Date: Mon, 27 Mar 2023 10:29:03 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v4 7/8] mtd: spi-nor: Enhance locking to support reads
+ while writes
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>,
+ Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
+ Jaime Liao <jaimeliao.tw@gmail.com>, Alvin Zhou <alvinzhou@mxic.com.tw>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Michal Simek <monstr@monstr.eu>, linux-arm-kernel@lists.infradead.org
+References: <20230201113603.293758-1-miquel.raynal@bootlin.com>
+ <20230201113603.293758-8-miquel.raynal@bootlin.com>
+ <c76eb1cf-3555-d042-a18f-93f240e1cd64@linaro.org>
+ <20230324184112.2090f4a7@xps-13>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230324184112.2090f4a7@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230327_012112_635419_0D2BED51 
-X-CRM114-Status: GOOD (  61.62  )
+X-CRM114-CacheID: sfid-20230327_022910_127537_E74E4DC7 
+X-CRM114-Status: GOOD (  55.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,198 +98,363 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgw4FsdmFybywKCm5vbHRhcmlAZ21haWwuY29tIHdyb3RlIG9uIEZyaSwgMjQgTWFyIDIwMjMg
-MTg6MDQ6MzggKzAxMDA6Cgo+IEhpIE1pcXXDqGwsCj4gCj4gMjAyMy0wMy0yNCAxNTozNiBHTVQr
-MDE6MDAsIE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Ogo+ID4gSGkg
-w4FsdmFybywKPiA+Cj4gPiArIFlvdUNoaW5nIGFuZCBKYWltZSBmcm9tIE1hY3Jvbml4Cj4gPiBU
-TERSIGZvciB0aGVtOiB0aGVyZSBpcyBhIG1pc2JlaGF2aW9yIHNpbmNlIE1hc29uIGFkZGVkIGJs
-b2NrCj4gPiBwcm90ZWN0aW9uIHN1cHBvcnQuIEp1c3QgY2hlY2tpbmcgaWYgdGhlIGJsb2NrcyBh
-cmUgcHJvdGVjdGVkIHNlZW1zIHRvCj4gPiBtaXNjb25maWd1cmUgdGhlIGNoaXAgZW50aXJlbHks
-IHNlZSBiZWxvdy4gQW55IGhpbnRzPyAgCj4gCj4gQ291bGQgaXQgYmUgdGhhdCB0aGUgTkFORCBp
-cyBzdHVjayBleHBlY3RpbmcgYSByZWFkIDB4MDAgY29tbWFuZCB3aGljaAo+IGlzbuKAmXQgc2Vu
-dCBhZnRlciBnZXR0aW5nIHRoZSBmZWF0dXJlcz8KCkkgaGF2ZSBubyBpZGVhLCBwbGVhc2UgdHJ5
-IHRoYXQsIHlvdSBjYW4gbWFudWFsbHkgZ2VuZXJhdGUgYSBSRUFEMCBieQpoYWNraW5nIGFuIGV4
-aXN0aW5nIHJlYWQgaGVscGVyLgoKPiA+IG5vbHRhcmlAZ21haWwuY29tIHdyb3RlIG9uIEZyaSwg
-MjQgTWFyIDIwMjMgMTU6MTU6NDcgKzAxMDA6Cj4gPiAgCj4gPj4gSGkgTWlxdcOobCwKPiA+Pgo+
-ID4+IDIwMjMtMDMtMjQgMTQ6NDUgR01UKzAxOjAwLCBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
-bmFsQGJvb3RsaW4uY29tPjogIAo+ID4+ID4gSGkgw4FsdmFybywKPiA+PiA+Cj4gPj4gPiBub2x0
-YXJpQGdtYWlsLmNvbSB3cm90ZSBvbiBGcmksIDI0IE1hciAyMDIzIDEyOjIxOjExICswMTAwOgo+
-ID4+ID4gIAo+ID4+ID4+IEVsIHZpZSwgMjQgbWFyIDIwMjMgYSBsYXMgMTE6NDksIE1pcXVlbCBS
-YXluYWwKPiA+PiA+PiAoPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+KSBlc2NyaWJpw7M6ICAK
-PiA+PiA+PiA+Cj4gPj4gPj4gPiBIaSDDgWx2YXJvLAo+ID4+ID4+ID4KPiA+PiA+PiA+IG5vbHRh
-cmlAZ21haWwuY29tIHdyb3RlIG9uIEZyaSwgMjQgTWFyIDIwMjMgMTE6MzE6MTcgKzAxMDA6Cj4g
-Pj4gPj4gPiAgCj4gPj4gPj4gPiA+IEhpIE1pcXXDqGwsCj4gPj4gPj4gPiA+Cj4gPj4gPj4gPiA+
-IEVsIHZpZSwgMjQgbWFyIDIwMjMgYSBsYXMgMTA6NDAsIE1pcXVlbCBSYXluYWwKPiA+PiA+PiA+
-ID4gKDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPikgZXNjcmliacOzOiAgCj4gPj4gPj4gPiA+
-ID4KPiA+PiA+PiA+ID4gPiBIaSDDgWx2YXJvLAo+ID4+ID4+ID4gPiA+Cj4gPj4gPj4gPiA+ID4g
-bm9sdGFyaUBnbWFpbC5jb20gd3JvdGUgb24gVGh1LCAyMyBNYXIgMjAyMyAxMzo0NTowOSArMDEw
-MDoKPiA+PiA+PiA+ID4gPiAgCj4gPj4gPj4gPiA+ID4gPiBBZGQgbmV3ICJteGljLGRpc2FibGUt
-YmxvY2stcHJvdGVjdGlvbiIgYmluZGluZyBkb2N1bWVudGF0aW9uLgo+ID4+ID4+ID4gPiA+ID4g
-VGhpcyBiaW5kaW5nIGFsbG93cyBkaXNhYmxpbmcgYmxvY2sgcHJvdGVjdGlvbiBzdXBwb3J0IGZv
-cgo+ID4+ID4+ID4gPiA+ID4gdGhvc2UKPiA+PiA+PiA+ID4gPiA+IGRldmljZXMgbm90Cj4gPj4g
-Pj4gPiA+ID4gPiBzdXBwb3J0aW5nIGl0Lgo+ID4+ID4+ID4gPiA+ID4KPiA+PiA+PiA+ID4gPiA+
-IFNpZ25lZC1vZmYtYnk6IMOBbHZhcm8gRmVybsOhbmRleiBSb2phcyA8bm9sdGFyaUBnbWFpbC5j
-b20+Cj4gPj4gPj4gPiA+ID4gPiAtLS0KPiA+PiA+PiA+ID4gPiA+ICBEb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvbXRkL25hbmQtbWFjcm9uaXgudHh0IHwgMwo+ID4+ID4+ID4gPiA+
-ID4gKysrCj4gPj4gPj4gPiA+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQo+
-ID4+ID4+ID4gPiA+ID4KPiA+PiA+PiA+ID4gPiA+IGRpZmYgLS1naXQKPiA+PiA+PiA+ID4gPiA+
-IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9uYW5kLW1hY3Jvbml4LnR4
-dAo+ID4+ID4+ID4gPiA+ID4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
-L25hbmQtbWFjcm9uaXgudHh0Cj4gPj4gPj4gPiA+ID4gPiBpbmRleCBmZmFiMjhhMmM0ZDEuLjAz
-ZjY1Y2EzMmNkMyAxMDA2NDQKPiA+PiA+PiA+ID4gPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9tdGQvbmFuZC1tYWNyb25peC50eHQKPiA+PiA+PiA+ID4gPiA+ICsr
-KyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbmFuZC1tYWNyb25peC50
-eHQKPiA+PiA+PiA+ID4gPiA+IEBAIC0xNiw2ICsxNiw5IEBAIGluIGNoaWxkcmVuIG5vZGVzLgo+
-ID4+ID4+ID4gPiA+ID4gIFJlcXVpcmVkIE5BTkQgY2hpcCBwcm9wZXJ0aWVzIGluIGNoaWxkcmVu
-IG1vZGU6Cj4gPj4gPj4gPiA+ID4gPiAgLSByYW5kb21pemVyIGVuYWJsZTogc2hvdWxkIGJlICJt
-eGljLGVuYWJsZS1yYW5kb21pemVyLW90cCIKPiA+PiA+PiA+ID4gPiA+Cj4gPj4gPj4gPiA+ID4g
-PiArT3B0aW9uYWwgTkFORCBjaGlwIHByb3BlcnRpZXMgaW4gY2hpbGRyZW4gbW9kZToKPiA+PiA+
-PiA+ID4gPiA+ICstIGJsb2NrIHByb3RlY3Rpb24gZGlzYWJsZTogc2hvdWxkIGJlCj4gPj4gPj4g
-PiA+ID4gPiAibXhpYyxkaXNhYmxlLWJsb2NrLXByb3RlY3Rpb24iCj4gPj4gPj4gPiA+ID4gPiAr
-ICAKPiA+PiA+PiA+ID4gPgo+ID4+ID4+ID4gPiA+IEJlc2lkZXMgdGhlIGZhY3QgdGhhdCBub3dh
-ZGF5cyB3ZSBwcmVmZXIgdG8gc2VlIGJpbmRpbmcKPiA+PiA+PiA+ID4gPiBjb252ZXJzaW9ucwo+
-ID4+ID4+ID4gPiA+IHRvCj4gPj4gPj4gPiA+ID4geWFtbCBiZWZvcmUgYWRkaW5nIGFueXRoaW5n
-LCBJIGRvbid0IHRoaW5rIHRoaXMgd2lsbCBmbHkuCj4gPj4gPj4gPiA+ID4KPiA+PiA+PiA+ID4g
-PiBJJ20gbm90IHN1cmUgZXhhY3RseSB3aGF0ICJkaXNhYmxlIGJsb2NrIHByb3RlY3Rpb24iIG1l
-YW5zLCB3ZQo+ID4+ID4+ID4gPiA+IGFscmVhZHkgaGF2ZSBzaW1pbGFyIHByb3BlcnRpZXMgbGlr
-ZSAibG9jayIgYW5kCj4gPj4gPj4gPiA+ID4gInNlY3VyZS1yZWdpb25zIiwKPiA+PiA+PiA+ID4g
-PiBub3QKPiA+PiA+PiA+ID4gPiBzdXJlIHRoZXkgd2lsbCBmaXQgYnV0IEkgdGhpbmsgaXQncyB3
-b3J0aCBjaGVja2luZy4gIAo+ID4+ID4+ID4gPgo+ID4+ID4+ID4gPiBBcyBleHBsYWluZWQgaW4g
-Mi8yLCBjb21taXQgMDNhNTM5YzdhMTE4IGludHJvZHVjZWQgYSByZWdyZXNzaW9uCj4gPj4gPj4g
-PiA+IG9uCj4gPj4gPj4gPiA+IFNlcmNvbW0gSDUwMC1zIChCQ002MzI2OCkgT3BlbldydCBkZXZp
-Y2VzIHdpdGggTWFjcm9uaXgKPiA+PiA+PiA+ID4gTVgzMExGMUcxOEFDCj4gPj4gPj4gPiA+IHdo
-aWNoIGhhbmdzIHRoZSBkZXZpY2UuCj4gPj4gPj4gPiA+Cj4gPj4gPj4gPiA+IFRoaXMgaXMgdGhl
-IGxvZyB3aXRoIGJsb2NrIHByb3RlY3Rpb24gZGlzYWJsZWQ6Cj4gPj4gPj4gPiA+IFsgICAgMC40
-OTU4MzFdIGJjbTYzNjhfbmFuZCAxMDAwMDIwMC5uYW5kOiB0aGVyZSBpcyBub3QgdmFsaWQgbWFw
-cwo+ID4+ID4+ID4gPiBmb3IKPiA+PiA+PiA+ID4gc3RhdGUgZGVmYXVsdAo+ID4+ID4+ID4gPiBb
-ICAgIDAuNTA0OTk1XSBuYW5kOiBkZXZpY2UgZm91bmQsIE1hbnVmYWN0dXJlciBJRDogMHhjMiwg
-Q2hpcCBJRDoKPiA+PiA+PiA+ID4gMHhmMQo+ID4+ID4+ID4gPiBbICAgIDAuNTExNTI2XSBuYW5k
-OiBNYWNyb25peCBNWDMwTEYxRzE4QUMKPiA+PiA+PiA+ID4gWyAgICAwLjUxNTU4Nl0gbmFuZDog
-MTI4IE1pQiwgU0xDLCBlcmFzZSBzaXplOiAxMjggS2lCLCBwYWdlIHNpemU6Cj4gPj4gPj4gPiA+
-IDIwNDgsIE9PQiBzaXplOiA2NAo+ID4+ID4+ID4gPiBbICAgIDAuNTIzNTE2XSBiY202MzY4X25h
-bmQgMTAwMDAyMDAubmFuZDogZGV0ZWN0ZWQgMTI4TWlCIHRvdGFsLAo+ID4+ID4+ID4gPiAxMjhL
-aUIgYmxvY2tzLCAyS2lCIHBhZ2VzLCAxNkIgT09CLCA4LWJpdCwgQkNILTQKPiA+PiA+PiA+ID4g
-WyAgICAwLjUzNTkxMl0gQmFkIGJsb2NrIHRhYmxlIGZvdW5kIGF0IHBhZ2UgNjU0NzIsIHZlcnNp
-b24gMHgwMQo+ID4+ID4+ID4gPiBbICAgIDAuNTQ0MjY4XSBCYWQgYmxvY2sgdGFibGUgZm91bmQg
-YXQgcGFnZSA2NTQwOCwgdmVyc2lvbiAweDAxCj4gPj4gPj4gPiA+IFsgICAgMC45NTQzMjldIDkg
-Zml4ZWQtcGFydGl0aW9ucyBwYXJ0aXRpb25zIGZvdW5kIG9uIE1URCBkZXZpY2UKPiA+PiA+PiA+
-ID4gYnJjbW5hbmQuMAo+ID4+ID4+ID4gPiAuLi4KPiA+PiA+PiA+ID4KPiA+PiA+PiA+ID4gVGhp
-cyBpcyB0aGUgbG9nIHdpdGggYmxvY2sgcHJvdGVjdGlvbiBlbmFibGVkOgo+ID4+ID4+ID4gPiBb
-ICAgIDAuNDk1MDk1XSBiY202MzY4X25hbmQgMTAwMDAyMDAubmFuZDogdGhlcmUgaXMgbm90IHZh
-bGlkIG1hcHMKPiA+PiA+PiA+ID4gZm9yCj4gPj4gPj4gPiA+IHN0YXRlIGRlZmF1bHQKPiA+PiA+
-PiA+ID4gWyAgICAwLjUwNDI0OV0gbmFuZDogZGV2aWNlIGZvdW5kLCBNYW51ZmFjdHVyZXIgSUQ6
-IDB4YzIsIENoaXAgSUQ6Cj4gPj4gPj4gPiA+IDB4ZjEKPiA+PiA+PiA+ID4gWyAgICAwLjUxMDc3
-Ml0gbmFuZDogTWFjcm9uaXggTVgzMExGMUcxOEFDCj4gPj4gPj4gPiA+IFsgICAgMC41MTQ4NzRd
-IG5hbmQ6IDEyOCBNaUIsIFNMQywgZXJhc2Ugc2l6ZTogMTI4IEtpQiwgcGFnZSBzaXplOgo+ID4+
-ID4+ID4gPiAyMDQ4LCBPT0Igc2l6ZTogNjQKPiA+PiA+PiA+ID4gWyAgICAwLjUyMjc4MF0gYmNt
-NjM2OF9uYW5kIDEwMDAwMjAwLm5hbmQ6IGRldGVjdGVkIDEyOE1pQiB0b3RhbCwKPiA+PiA+PiA+
-ID4gMTI4S2lCIGJsb2NrcywgMktpQiBwYWdlcywgMTZCIE9PQiwgOC1iaXQsIEJDSC00Cj4gPj4g
-Pj4gPiA+IFsgICAgMC41Mzk2ODddIEJhZCBibG9jayB0YWJsZSBub3QgZm91bmQgZm9yIGNoaXAg
-MAo+ID4+ID4+ID4gPiBbICAgIDAuNTUwMTUzXSBCYWQgYmxvY2sgdGFibGUgbm90IGZvdW5kIGZv
-ciBjaGlwIDAKPiA+PiA+PiA+ID4gWyAgICAwLjU1NTA2OV0gU2Nhbm5pbmcgZGV2aWNlIGZvciBi
-YWQgYmxvY2tzCj4gPj4gPj4gPiA+IFsgICAgMC42MDEyMTNdIENQVSAxIFVuYWJsZSB0byBoYW5k
-bGUga2VybmVsIHBhZ2luZyByZXF1ZXN0IGF0Cj4gPj4gPj4gPiA+IHZpcnR1YWwKPiA+PiA+PiA+
-ID4gYWRkcmVzcyAxMDI3N2YwMCwgZXBjID09IDgwMzljZTcwLCByYSA9PSA4MDE2YWQ1MAo+ID4+
-ID4+ID4gPiAqKiogRGV2aWNlIGhhbmdzICoqKgo+ID4+ID4+ID4gPgo+ID4+ID4+ID4gPiBFbmFi
-bGluZyBtYWNyb25peF9uYW5kX2Jsb2NrX3Byb3RlY3Rpb25fc3VwcG9ydCgpIG1ha2VzIHRoZSBk
-ZXZpY2UKPiA+PiA+PiA+ID4gdW5hYmxlIHRvIGRldGVjdCB0aGUgYmFkIGJsb2NrIHRhYmxlIGFu
-ZCBoYW5ncyBpdCB3aGVuIHRyeWluZyB0bwo+ID4+ID4+ID4gPiBzY2FuCj4gPj4gPj4gPiA+IGZv
-ciBiYWQgYmxvY2tzLiAgCj4gPj4gPj4gPgo+ID4+ID4+ID4gUGxlYXNlIHRyYWNlIG5hbmRfbWFj
-cm9uaXguYyBhbmQgbG9vazoKPiA+PiA+PiA+IC0gYXJlIHRoZSBnZXRfZmVhdHVyZXMgYW5kIHNl
-dF9mZWF0dXJlcyByZWFsbHkgc3VwcG9ydGVkIGJ5IHRoZQo+ID4+ID4+ID4gICBjb250cm9sbGVy
-IGRyaXZlcj8gIAo+ID4+ID4+Cj4gPj4gPj4gVGhpcyBpcyB3aGF0IEkgY291bGQgZmluZCBieSBk
-ZWJ1Z2dpbmc6Cj4gPj4gPj4gWyAgICAwLjQ5NDk5M10gYmNtNjM2OF9uYW5kIDEwMDAwMjAwLm5h
-bmQ6IHRoZXJlIGlzIG5vdCB2YWxpZCBtYXBzIGZvcgo+ID4+ID4+IHN0YXRlIGRlZmF1bHQKPiA+
-PiA+PiBbICAgIDAuNTA1Mzc1XSBuYW5kOiBkZXZpY2UgZm91bmQsIE1hbnVmYWN0dXJlciBJRDog
-MHhjMiwgQ2hpcCBJRDoKPiA+PiA+PiAweGYxCj4gPj4gPj4gWyAgICAwLjUxMjA3N10gbmFuZDog
-TWFjcm9uaXggTVgzMExGMUcxOEFDCj4gPj4gPj4gWyAgICAwLjUxNTk5NF0gbmFuZDogMTI4IE1p
-QiwgU0xDLCBlcmFzZSBzaXplOiAxMjggS2lCLCBwYWdlIHNpemU6Cj4gPj4gPj4gMjA0OCwgT09C
-IHNpemU6IDY0Cj4gPj4gPj4gWyAgICAwLjUyMzkyOF0gYmNtNjM2OF9uYW5kIDEwMDAwMjAwLm5h
-bmQ6IGRldGVjdGVkIDEyOE1pQiB0b3RhbCwKPiA+PiA+PiAxMjhLaUIgYmxvY2tzLCAyS2lCIHBh
-Z2VzLCAxNkIgT09CLCA4LWJpdCwgQkNILTQKPiA+PiA+PiBbICAgIDAuNTM0NDE1XSBiY202MzY4
-X25hbmQgMTAwMDAyMDAubmFuZDogbGxfb3AgY21kIDB4YTAwZWUKPiA+PiA+PiBbICAgIDAuNTM5
-OTg4XSBiY202MzY4X25hbmQgMTAwMDAyMDAubmFuZDogbGxfb3AgY21kIDB4NjAwYTAKPiA+PiA+
-PiBbICAgIDAuNTQ1NjU5XSBiY202MzY4X25hbmQgMTAwMDAyMDAubmFuZDogbGxfb3AgY21kIDB4
-MTAwMDAKPiA+PiA+PiBbICAgIDAuNTUxMjE0XSBiY202MzY4X25hbmQgMTAwMDAyMDAubmFuZDog
-TkFORF9DTURfR0VUX0ZFQVRVUkVTID0KPiA+PiA+PiAweDAwCj4gPj4gPj4gWyAgICAwLjU1Nzg0
-M10gYmNtNjM2OF9uYW5kIDEwMDAwMjAwLm5hbmQ6IGxsX29wIGNtZCAweDEwMDAwCj4gPj4gPj4g
-WyAgICAwLjU2MzQ3NV0gYmNtNjM2OF9uYW5kIDEwMDAwMjAwLm5hbmQ6IE5BTkRfQ01EX0dFVF9G
-RUFUVVJFUyA9Cj4gPj4gPj4gMHgwMAo+ID4+ID4+IFsgICAgMC41Njk5OThdIGJjbTYzNjhfbmFu
-ZCAxMDAwMDIwMC5uYW5kOiBsbF9vcCBjbWQgMHgxMDAwMAo+ID4+ID4+IFsgICAgMC41NzU2NTNd
-IGJjbTYzNjhfbmFuZCAxMDAwMDIwMC5uYW5kOiBOQU5EX0NNRF9HRVRfRkVBVFVSRVMgPQo+ID4+
-ID4+IDB4MDAKPiA+PiA+PiBbICAgIDAuNTgyMjQ2XSBiY202MzY4X25hbmQgMTAwMDAyMDAubmFu
-ZDogbGxfb3AgY21kIDB4ODAwMTAwMDAKPiA+PiA+PiBbICAgIDAuNTg4MDY3XSBiY202MzY4X25h
-bmQgMTAwMDAyMDAubmFuZDogTkFORF9DTURfR0VUX0ZFQVRVUkVTID0KPiA+PiA+PiAweDAwCj4g
-Pj4gPj4gWyAgICAwLjU5NDY1N10gbmFuZDogbmFuZF9nZXRfZmVhdHVyZXM6IGFkZHI9YTAgc3Vi
-ZmVhdHVyZV9wYXJhbT1bMDAKPiA+PiA+PiAwMCAwMCAwMF0gLT4gMAo+ID4+ID4+IFsgICAgMC42
-MDIzNDFdIG1hY3Jvbml4X25hbmRfYmxvY2tfcHJvdGVjdGlvbl9zdXBwb3J0Ogo+ID4+ID4+IE9O
-RklfRkVBVFVSRV9BRERSX01YSUNfUFJPVEVDVElPTj0wCj4gPj4gPj4gWyAgICAwLjYxMDU0OF0g
-bWFjcm9uaXhfbmFuZF9ibG9ja19wcm90ZWN0aW9uX3N1cHBvcnQ6ICE9Cj4gPj4gPj4gTVhJQ19C
-TE9DS19QUk9URUNUSU9OX0FMTF9MT0NLCj4gPj4gPj4gWyAgICAwLjYyNDc2MF0gQmFkIGJsb2Nr
-IHRhYmxlIG5vdCBmb3VuZCBmb3IgY2hpcCAwCj4gPj4gPj4gWyAgICAwLjYzNTU0Ml0gQmFkIGJs
-b2NrIHRhYmxlIG5vdCBmb3VuZCBmb3IgY2hpcCAwCj4gPj4gPj4gWyAgICAwLjY0MDI3MF0gU2Nh
-bm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzCj4gPj4gPj4KPiA+PiA+PiBJIGRvbid0IGtub3cg
-aG93IHRvIHRlbGwgaWYgZ2V0X2ZlYXR1cmVzIC8gc2V0X2ZlYXR1cmVzIGlzIHJlYWxseQo+ID4+
-ID4+IHN1cHBvcnRlZC4uLiAgCj4gPj4gPgo+ID4+ID4gTG9va3MgbGlrZSB5b3VyIGRyaXZlciBk
-b2VzIG5vdCBzdXBwb3J0IGV4ZWNfb3AgYnV0IHRoZSBjb3JlIHByb3ZpZGVzIGEKPiA+PiA+IGdl
-dC9zZXRfZmVhdHVyZSBpbXBsZW1lbnRhdGlvbi4gIAo+ID4+Cj4gPj4gQWNjb3JkaW5nIHRvIEZs
-b3JpYW4sIGxvdyBsZXZlbCBzaG91bGQgYmUgc3VwcG9ydGVkIG9uIGJyY21uYW5kCj4gPj4gY29u
-dHJvbGxlcnMgPj0gNC4wCj4gPj4gQWxzbzoKPiA+PiBodHRwczovL2dpdGh1Yi5jb20vbm9taXMv
-YmNtOTYzeHhfNC4xMkwuMDZCX2NvbnN1bWVyL2Jsb2IvZTJmMjNkZGJiMjBiZjc1Njg5MzcyYjZl
-NmE1YTBkYzYxM2Y2ZTMxMy9zaGFyZWQvb3BlbnNvdXJjZS9pbmNsdWRlL2JjbTk2M3h4LzYzMjY4
-X21hcF9wYXJ0LmgjTDE1OTcgIAo+ID4KPiA+IEp1c3QgdG8gYmUgc3VyZSwgeW91J3JlIHVzaW5n
-IGEgbWFpbmxpbmUgY29udHJvbGxlciBkcml2ZXIsIG5vdCB0aGlzCj4gPiBvbmU/ICAKPiAKPiBZ
-ZXMsIHRoaXMgd2FzIGp1c3QgdG8gcHJvdmUgdGhhdCB0aGUgSFcgSeKAmW0gdXNpbmcgaGFzIGdl
-dC9zZXQgZmVhdHVyZXMgc3VwcG9ydC4KPiBJ4oCZbSB1c2luZyBPcGVuV3J0LCBzbyBpdOKAmXMg
-bGludXggdjUuMTUgZHJpdmVyLgoKT2ssIHRoYW5rcyBmb3IgdGhlIGNvbmZpcm1hdGlvbi4KCj4g
-Cj4gPiAgCj4gPj4gPiAgCj4gPj4gPj4gIAo+ID4+ID4+ID4gLSB3aGF0IGlzIHRoZSBzdGF0ZSBv
-ZiB0aGUgbG9ja2luZyBjb25maWd1cmF0aW9uIGluIHRoZSBjaGlwIHdoZW4KPiA+PiA+PiA+IHlv
-dQo+ID4+ID4+ID4gICBib290PyAgCj4gPj4gPj4KPiA+PiA+PiBVbmxvY2tlZCwgSSBndWVzcy4u
-Lgo+ID4+ID4+IEhvdyBjYW4gSSBjaGVjayB0aGF0PyAgCj4gPj4gPgo+ID4+ID4gSXQncyBpbiB5
-b3VyIGR1bXAsIHRoZSBjaGlwIHJldHVybnMgMCwgbWVhbmluZyBpdCdzIGFsbCB1bmxvY2tlZCwK
-PiA+PiA+IGFwcGFyZW50bHkuICAKPiA+Pgo+ID4+IFdlbGwsIEkgY2FuIHJlYWQvd3JpdGUgdGhl
-IGRldmljZSBpZiBibG9jayBwcm90ZWN0aW9uIGlzbuKAmXQgZGlzYWJsZWQsCj4gPj4gc28gSSBn
-dWVzcyB3ZSBjYW4gY29uZmlybSBpdOKAmXMgdW5sb2NrZWTigKYKPiA+PiAgCj4gPj4gPiAgCj4g
-Pj4gPj4gPiAtIGlzIHRoZXJlIGFueXRoaW5nIHRoYXQgbG9ja3MgdGhlIGRldmljZSBieSBjYWxs
-aW5nIG14aWNfbmFuZF9sb2NrKCkKPiA+PiA+PiA+ID8gIAo+ID4+ID4KPiA+PiA+IFNvIG5vYm9k
-eSBsb2NrcyB0aGUgZGV2aWNlIEkgZ3Vlc3M/IERpZCB5b3UgYWRkIHRyYWNlcyB0aGVyZT8gIAo+
-ID4+Cj4gPj4gSXQgZG9lc27igJl0IGdldCB0byB0aGUgcG9pbnQgdGhhdCBpdCBlbmFibGVkIHRo
-ZSBsb2NrL3VubG9jayBmdW5jdGlvbnMKPiA+PiBzaW5jZSBpdCBmYWlscyB3aGVuIGNoZWNraW5n
-IGlmIGZlYXR1cmUgaXMgMHgzOCwgc28gdGhlcmXigJlzIG5vIHBvaW50Cj4gPj4gaW4gYWRkaW5n
-IHRob3NlIHRyYWNlc+KApiAgCj4gPgo+ID4gUmlnaHQsIGl0IHJldHVybnMgYmVmb3JlIHNldHRp
-bmcgdGhlc2UgSSBndWVzcy4KPiA+ICAKPiA+PiAgCj4gPj4gPiAgCj4gPj4gPj4gPiAtIGZpbmRp
-bmcgbm8gYmJ0IGlzIG9uZSB0aGluZywgaGFuZ2luZyBpcyBhbm90aGVyLCB3aGVyZSBpcyBpdAo+
-ID4+ID4+ID4gaGFuZ2luZwo+ID4+ID4+ID4gICBleGFjdGx5PyAob2Zmc2V0IGluIG5hbmQvIGFu
-ZCBsaW5lIGluIHRoZSBjb2RlKSAgCj4gPj4gPj4KPiA+PiA+PiBJJ3ZlIGdvdCBubyBpZGVhLi4u
-ICAKPiA+PiA+Cj4gPj4gPiBZb3UgY2FuIHVzZSBmdHJhY2Ugb3IganVzdCBhZGQgcHJpbnRrcyBh
-IGJpdCBldmVyeXdoZXJlIGFuZCB0cnkgdG8gZ2V0Cj4gPj4gPiBjbG9zZXIgYW5kIGNsb3Nlci4g
-IAo+ID4+Cj4gPj4gSSB0aGluayB0aGF0IGFmdGVyIHRyeWluZyB0byBnZXQgdGhlIGZlYXR1cmUg
-aXQganVzdCBzdGFydCByZWFkaW5nCj4gPj4gbm9uc2Vuc2UgZnJvbSB0aGUgTkFORCBhbmQgYXQg
-c29tZSBwb2ludCBpdCBoYW5ncyBkdWUgdG8gdGhhdCBnYXJiYWdl4oCmICAKPiA+Cj4gPiBJdCBz
-aG91bGQgcmVmdXNlIHRvIG1vdW50IHRoZSBkZXZpY2Ugc29tZWhvdywgYnV0IGluIG5vIGNhc2Ug
-dGhlIGtlcm5lbAo+ID4gc2hvdWxkIGhhbmcuICAKPiAKPiBZZXMsIEkgdGhpbmsgdGhhdCB0aGlz
-IGlzIGEgc2lkZSBlZmZlY3QgKG1heWJlIGEgZGlmZmVyZW50IGJ1ZyBzb21ld2hlcmUgZWxzZSku
-CgpDb3VsZCBiZSB3b3J0aCBjaGVja2luZy4KCj4gCj4gPiAgCj4gPj4gSXMgaXQgcG9zaWJsZSB0
-aGF0IHRoZSBOQU5EIHN0YXJ0cyBiZWhhdmluZyBsaWtlIHRoaXMgYWZ0ZXIgZ2V0dGluZwo+ID4+
-IHRoZSBmZWF0dXJlIGR1ZSB0byBzb21lIHNwZWNpZmljIGNvbmZpZyBvZiBteSBkZXZpY2U/Cj4g
-Pj4gIAo+ID4+ID4KPiA+PiA+IEkgbG9va2VkIGF0IHRoZSBwYXRjaCwgSSBkb24ndCBzZWUgYW55
-dGhpbmcgc3RyYW5nZS4gQmVzaWRlcywgSSBoYXZlIGEKPiA+PiA+IGNsb3NlIGVub3VnaCBkYXRh
-c2hlZXQgYW5kIEkgZG9uJ3Qgc2VlIHdoYXQgY291bGQgY29uZnVzZSB0aGUgZGV2aWNlLgo+ID4+
-ID4KPiA+PiA+IEFyZSB5b3UgcmVhbGx5IHN1cmUgdGhpcyBwYXRjaCBpcyB0aGUgcHJvYmxlbT8g
-SXMgdGhlIFdQIHBpbiB3aXJlZCBvbgo+ID4+ID4geW91ciBkZXNpZ24/ICAKPiA+Pgo+ID4+IFRo
-ZXJl4oCZcyBubyBXUCBwaW4gaW4gYnJjbW5hbmQgY29udHJvbGxlcnMgPCA3LjAgIAo+ID4KPiA+
-IFdoYXQgYWJvdXQgdGhlIGNoaXA/ICAKPiAKPiBNYXliZSBpdCBoYXMgYSBHUElPIGNvbnRyb2xs
-aW5nIHRoYXQsIGJ1dCBJIGRvbuKAmXQgaGF2ZSB0aGF0IGluZm/igKYKCkkgbWVhbiwgb24gdGhl
-IGJvYXJkLCBpcyB0aGUgY2hpcCBjb25uZWN0ZWQgdG8gc29tZSBraW5kIG9mCnB1bGwtdXAvZG93
-biByZXNpc3Rvcj8gQmVjYXVzZSBpdCBtYXkgY2hhbmdlIGl0cyBiZWhhdmlvci4KClJlZ2FyZGlu
-ZyB5b3VyIGlzc3VlLCBJIHNlZSB0aGVyZSBpcyBhIHByb2JsZW0sIGJ1dCBJIGRvbid0IGdldCB3
-aHkuClRoZSBjdXJyZW50IHByb3Bvc2FsIGlzIG5vdCBzYXRpc2Z5aW5nLCBJIGNhbm5vdCBwaWNr
-IHRoaXMgdXAuIFdlCm5lZWQgZmVlZGJhY2sgZnJvbSBNYWNyb25peCA6LSkKClRoYW5rcywKTWlx
-dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+
+
+On 3/24/23 17:41, Miquel Raynal wrote:
+> Hi Tudor,
+> 
+
+Hi!
+
+> tudor.ambarus@linaro.org wrote on Fri, 17 Mar 2023 05:59:08 +0000:
+> 
+>> Hi, Miquel,
+>>
+>> I find the overall idea good.
+> 
+> Thanks a lot for the detailed review!
+> 
+>> On 2/1/23 11:36, Miquel Raynal wrote:
+>>> On devices featuring several banks, the Read While Write (RWW) feature
+>>> is here to improve the overall performance when performing parallel
+>>> reads and writes at different locations (different banks). The following
+>>> constraints have to be taken into account:
+>>> 1#: A single operation can be performed in a given bank.
+>>> 2#: Only a single program or erase operation can happen on the entire
+>>>     chip (common hardware limitation to limit costs)
+>>> 3#: Reads must remain serialized even though reads on different banks
+>>>     might occur at the same time.  
+>>
+>> 3# is unclear if one limits just at reading the commit message. Are the
+>> reads serialized per bank or per flash?
+> 
+> Per flash.
+> 
+>> After reading the code, it looks like all the reads are serialized per
+>> flash regardless if it reads registers or memory. I assume you meant
+>> that crossing a bank boundary with a single read is fine.
+> 
+> Yes, I will update that item to clarify.
+
+thanks!
+
+> 
+>> But can you
+>> really read from bank 1 and bank 3 at the same time? The code doesn't
+>> take this into consideration.
+> 
+> Yes this is taken into account and supported, a read can cross a bank
+> boundary.
+
+No, I meant that you can't do a read from bank 1 and while the first
+read is in progress, to start a second read from the 3rd bank and
+process both reads in parallel, reading from both banks at the same
+time. At least not with the current code, because you set
+rww.{ongoing_io, ongoing_rd} to true and the second read will wait.
+Cross boundary reads on successive banks should work with current code,
+yes. So what does the hw support?
+
+> 
+>>
+>>> 4#: The I/O bus is unique and thus is the most constrained resource, all
+>>>     spi-nor operations requiring access to the spi bus (through the spi
+>>>     controller) must be serialized until the bus exchanges are over. So
+>>>     we must ensure a single operation can be "sent" at a time.
+>>> 5#: Any other operation that would not be either a read or a write or an
+>>>     erase is considered requiring access to the full chip and cannot be
+>>>     parallelized, we then need to ensure the full chip is in the idle
+>>>     state when this occurs.
+>>>
+>>> All these constraints can easily be managed with a proper locking model:
+>>> 1#: Is enforced by a bitfield of the in-use banks, so that only a single
+>>>     operation can happen in a specific bank at any time.
+>>> 2#: Is handled by the ongoing_pe boolean which is set before any write
+>>>     or erase, and is released only at the very end of the
+>>>     operation. This way, no other destructive operation on the chip can
+>>>     start during this time frame.
+>>> 3#: An ongoing_rd boolean allows to track the ongoing reads, so that
+>>>     only one can be performed at a time.
+>>> 4#: An ongoing_io boolean is introduced in order to capture and serialize
+>>>     bus accessed. This is the one being released "sooner" than before,
+>>>     because we only need to protect the chip against other SPI accesses
+>>>     during the I/O phase, which for the destructive operations is the
+>>>     beginning of the operation (when we send the command cycles and
+>>>     possibly the data), while the second part of the operation (the
+>>>     erase delay or the programmation delay) is when we can do something
+>>>     else in another bank.
+>>> 5#: Is handled by the three booleans presented above, if any of them is
+>>>     set, the chip is not yet ready for the operation and must wait.
+>>>
+>>> All these internal variables are protected by the existing lock, so that
+>>> changes in this structure are atomic. The serialization is handled with
+>>> a wait queue.
+>>>
+>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>>> ---
+>>>  drivers/mtd/spi-nor/core.c  | 319 ++++++++++++++++++++++++++++++++++--
+>>>  include/linux/mtd/spi-nor.h |  13 ++
+>>>  2 files changed, 317 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>>> index ac4627e0d6c2..ad2436e3688f 100644
+>>> --- a/drivers/mtd/spi-nor/core.c
+>>> +++ b/drivers/mtd/spi-nor/core.c
+>>> @@ -589,6 +589,66 @@ int spi_nor_sr_ready(struct spi_nor *nor)
+>>>  	return !(nor->bouncebuf[0] & SR_WIP);
+>>>  }
+>>>  
+>>> +/**
+>>> + * spi_nor_parallel_locking() - Checks if the RWW locking scheme shall be used
+>>> + * @nor:	pointer to 'struct spi_nor'.
+>>> + *
+>>> + * Return: true if parallel locking is enabled, false otherwise.
+>>> + */
+>>> +static bool spi_nor_parallel_locking(struct spi_nor *nor)
+>>> +{
+>>> +	if (nor->controller_ops &&
+>>> +	    (nor->controller_ops->prepare || nor->controller_ops->unprepare))
+>>> +		return false;  
+>>
+>> We won't allow controller drivers in spi-nor/controllers to benefit of
+>> this feature, just do:
+>> 	if (nor->controller_ops)
+>> 		return false;
+> 
+> That is also checked in the spi-nor init helper, where SNOR_F_RWW is
+> now set, so no need to check it again and again.
+> 
+>>> +	return nor->info->n_banks > 1 && nor->info->no_sfdp_flags & SPI_NOR_RWW;  
+>>
+>> we don't play with flash info flags throughout the core. Introduce a
+>> SNOR_F equivalent flag, see how they're used. You'll be able to get rid
+>> of the n_banks check as well.
+> 
+> Thanks for the clear pointers, looks much nicer now!
+> 
+>>> +}
+>>> +
+>>> +/* Locking helpers for status read operations */
+>>> +static int spi_nor_rww_start_rdst(struct spi_nor *nor)
+>>> +{
+>>> +	int ret = -EAGAIN;  
+>>
+>> you can have a pointer to rww here, you'll avoid all those dereferences
+>> from nor. I would add such a pointer wherever there is more than one
+>> dereference, so the comment is for the entire patch.
+> 
+> haha, I guess this is a matter of taste, I'm not bothered by those, but
+> ok, I'll make the change here and after :-)>
+>>> +
+>>> +	mutex_lock(&nor->lock);
+>>> +
+>>> +	if (nor->rww.ongoing_io || nor->rww.ongoing_rd)
+>>> +		goto busy;
+>>> +
+>>> +	nor->rww.ongoing_io = true;
+>>> +	nor->rww.ongoing_rd = true;
+>>> +	ret = 0;
+>>> +
+>>> +busy:
+>>> +	mutex_unlock(&nor->lock);
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static void spi_nor_rww_end_rdst(struct spi_nor *nor)
+>>> +{
+>>> +	mutex_lock(&nor->lock);
+>>> +
+>>> +	nor->rww.ongoing_io = false;
+>>> +	nor->rww.ongoing_rd = false;
+>>> +
+>>> +	mutex_unlock(&nor->lock);
+>>> +}
+>>> +
+>>> +static int spi_nor_lock_rdst(struct spi_nor *nor)
+>>> +{
+>>> +	if (spi_nor_parallel_locking(nor))
+>>> +		return spi_nor_rww_start_rdst(nor);
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static void spi_nor_unlock_rdst(struct spi_nor *nor)
+>>> +{
+>>> +	if (spi_nor_parallel_locking(nor)) {
+>>> +		spi_nor_rww_end_rdst(nor);
+>>> +		wake_up(&nor->rww.wait);
+>>> +	}
+>>> +}
+>>> +
+>>>  /**
+>>>   * spi_nor_ready() - Query the flash to see if it is ready for new commands.
+>>>   * @nor:	pointer to 'struct spi_nor'.
+>>> @@ -597,11 +657,21 @@ int spi_nor_sr_ready(struct spi_nor *nor)
+>>>   */
+>>>  static int spi_nor_ready(struct spi_nor *nor)
+>>>  {
+>>> +	int ret;
+>>> +
+>>> +	ret = spi_nor_lock_rdst(nor);
+>>> +	if (ret)
+>>> +		return 0;
+>>> +
+>>>  	/* Flashes might override the standard routine. */
+>>>  	if (nor->params->ready)
+>>> -		return nor->params->ready(nor);
+>>> +		ret = nor->params->ready(nor);
+>>> +	else
+>>> +		ret = spi_nor_sr_ready(nor);
+>>>  
+>>> -	return spi_nor_sr_ready(nor);
+>>> +	spi_nor_unlock_rdst(nor);
+>>> +
+>>> +	return ret;
+>>>  }
+>>>  
+>>>  /**
+>>> @@ -1087,7 +1157,81 @@ static void spi_nor_unprep(struct spi_nor *nor)
+>>>  		nor->controller_ops->unprepare(nor);
+>>>  }
+>>>  
+>>> +static void spi_nor_offset_to_banks(struct spi_nor *nor, loff_t start, size_t len,  
+>>
+>> pass directly the bank_size instead of the pointer to nor, you'll avoid
+>> the double dereference.
+> 
+> Done
+> 
+>>
+>>> +				    unsigned int *first, unsigned int *last)  
+>>
+>> unsigned long long *first, *last ?
+> 
+> Actually I want these to remain unsigned int, the ULL suffix just mean
+> the input might be a 64-bit value, but it is quite common to treat the
+> output as 32-bit. Here we do not expect values greater than 4.
+
+Ok. Then maybe we should match how we define nbanks in NOR. Was it a u8?
+
+> 
+>>> +{
+>>> +	*first = DIV_ROUND_DOWN_ULL(start, nor->params->bank_size);
+>>> +	*last = DIV_ROUND_DOWN_ULL(start + len - 1, nor->params->bank_size);
+>>> +}
+>>> +
+>>>  /* Generic helpers for internal locking and serialization */
+>>> +static bool spi_nor_rww_start_io(struct spi_nor *nor)
+>>> +{
+>>> +	bool start = false;
+>>> +
+>>> +	mutex_lock(&nor->lock);
+>>> +
+>>> +	if (nor->rww.ongoing_io)
+>>> +		goto busy;
+>>> +
+>>> +	nor->rww.ongoing_io = true;
+>>> +	start = true;
+>>> +
+>>> +busy:
+>>> +	mutex_unlock(&nor->lock);
+>>> +	return start;
+>>> +}
+>>> +
+>>> +static void spi_nor_rww_end_io(struct spi_nor *nor)
+>>> +{
+>>> +	mutex_lock(&nor->lock);
+>>> +	nor->rww.ongoing_io = false;
+>>> +	mutex_unlock(&nor->lock);
+>>> +}
+>>> +
+>>> +static int spi_nor_lock_device(struct spi_nor *nor)
+>>> +{
+>>> +	if (!spi_nor_parallel_locking(nor))
+>>> +		return 0;
+>>> +
+>>> +	return wait_event_killable(nor->rww.wait, spi_nor_rww_start_io(nor));
+>>> +}
+>>> +
+>>> +static void spi_nor_unlock_device(struct spi_nor *nor)
+>>> +{
+>>> +	if (spi_nor_parallel_locking(nor))
+>>> +		spi_nor_rww_end_io(nor);  
+>>
+>> shall we wake_up here too?
+> 
+> True
+> 
+>>
+>>> +}
+>>> +
+>>> +/* Generic helpers for internal locking and serialization */
+>>> +static bool spi_nor_rww_start_exclusive(struct spi_nor *nor)
+>>> +{
+>>> +	bool start = false;
+>>> +
+>>> +	mutex_lock(&nor->lock);
+>>> +
+>>> +	if (nor->rww.ongoing_io || nor->rww.ongoing_rd || nor->rww.ongoing_pe)
+>>> +		goto busy;
+>>> +
+>>> +	nor->rww.ongoing_io = true;
+>>> +	nor->rww.ongoing_rd = true;
+>>> +	nor->rww.ongoing_pe = true;
+>>> +	start = true;
+>>> +
+>>> +busy:
+>>> +	mutex_unlock(&nor->lock);
+>>> +	return start;
+>>> +}
+>>> +
+>>> +static void spi_nor_rww_end_exclusive(struct spi_nor *nor)
+>>> +{
+>>> +	mutex_lock(&nor->lock);
+>>> +	nor->rww.ongoing_io = false;
+>>> +	nor->rww.ongoing_rd = false;
+>>> +	nor->rww.ongoing_pe = false;
+>>> +	mutex_unlock(&nor->lock);
+>>> +}
+>>> +
+>>>  int spi_nor_prep_and_lock(struct spi_nor *nor)
+>>>  {
+>>>  	int ret;
+>>> @@ -1096,19 +1240,71 @@ int spi_nor_prep_and_lock(struct spi_nor *nor)
+>>>  	if (ret)
+>>>  		return ret;
+>>>  
+>>> -	mutex_lock(&nor->lock);
+>>> +	if (!spi_nor_parallel_locking(nor))
+>>> +		mutex_lock(&nor->lock);
+>>> +	else
+>>> +		ret = wait_event_killable(nor->rww.wait,
+>>> +					  spi_nor_rww_start_exclusive(nor));
+>>>  
+>>
+>> No, don't touch spi_nor_prep_and_lock() and spi_nor_unlock_and_unprep(),
+>> you're giving the impresion that users of it (OTP, SWP) are safe to use
+>> them while reads or PE are in progress, which is not the case, because
+>> you don't guard the ops that they're using. You'll also have to document
+>> the flash info RWW flag ands say it is mutual exclusive with SWP and OTP
+>> features.
+> 
+> Actually I'm not getting what you mean here. Any access that is not
+> a pure read, write or erase (like register accesses, otp and swp
+> accesses) are automatically treated as needing full and exclusive
+> access to the chip. So everything works as before with these, even
+> if RWW is enabled, because that's not where we want performance
+
+oh, yes, all SWP and OTP ops are guarded with spi_nor_prep_and_lock()
+and spi_nor_unlock_and_unprep(), you should be good to go.
+
+> improvements. So I need to implement a dedicated "parallel_locking"
+> path inside these helpers to clearly enforcing an exclusive access to
+> the chip.
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
