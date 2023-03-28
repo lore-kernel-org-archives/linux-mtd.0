@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A362C76196
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Mar 2023 15:42:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4FB4C76196
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Mar 2023 15:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OxhO5DRzjcmGPvIAZx000icrKt3MqgYzmIYpAKQlQ1o=; b=2Zu5c/dNqyZXR2
-	agwu2PKGx1QI2NMrXLVyGngRKdcvtx2jX7WLyAjslbui27LYLjXU1TKuJKO8GhIAHcDzAW7DzTocc
-	PYdssubzV48CVk7zFKNa0OvpVEQpxInugxwFAoeCrlOhqd3t+VM8ABs8zhytT08fcAwbU+zbLL01z
-	m5PPfzPXz2k0ZfPx6+jHGxHMBP+jU+z8WzRmYvhNGNSlwWDyJwVg9CW2QZ8ONE/ILvrmCGVQA53uR
-	oO4imTGKHcDIb3m2iHepBvVgHDs3d0DpD96ZLNo8EYmWug8dxKnhrTAC8K4CxSZpfxVcQqaxTfaTY
-	q7M2P+p0Y1PDjpiPY6Sg==;
+	List-Owner; bh=TkuRIJ5KPFBQ1gC10DMGLj1j4fiSxvIH9dJEEB8xJrU=; b=L85qkY4p9vKfDk
+	abY3fxLnVpwWBxCwo3lq6r/+vTyslzZnV7DK8Ter8n2NasJEF9afBiUbvsfIsg3dXGgCJXCr18Y6Z
+	MsUwAICKWSP5OsOKhGXXWCwOAdpakVaoGx3WoegNRNgrr5vZpbzspWbWiMOoUWynxgQDTERrqKJMt
+	2MOeN6R1cI325QTnpWjxVzUV83XQYVQE58zK7QRVGLizcSJTgPL9m08yETyYC8zFzu2cmsUlxTSUJ
+	tE2hFVq7lzMf+OG/JHVcUpK8mcZMNd+dfAkIYy8lIxsKcXMFjYWBmXyGlLNbJGfnkKkd+zsudQ/Td
+	RaMiZKNKTEI7DkzWUwgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1phBST-00EzCg-24;
-	Tue, 28 Mar 2023 15:42:01 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1phBSZ-00EzHw-2z;
+	Tue, 28 Mar 2023 15:42:07 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1phBRn-00Eygd-27;
-	Tue, 28 Mar 2023 15:41:22 +0000
+	id 1phBRp-00Eyhl-0e;
+	Tue, 28 Mar 2023 15:41:24 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 1F64B60007;
-	Tue, 28 Mar 2023 15:41:16 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 0E8D56000F;
+	Tue, 28 Mar 2023 15:41:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1680018077;
+	t=1680018079;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=f44Jt6ki3YZzVQv+c39mwH925zrn6cTrzM5orWtRgts=;
-	b=br7IKpspyyoFU0HMnU6mdnDtBhqkR6X+KdjbWHuF8KPqbPvvx+i9X1tREJn/AUHwmdFNYu
-	aLjvu72jDR7CbOnF8NBTlL9cGoXDZuI6ujOCIheKJurl9sK6uiN0qVPUO50evzb6HxcpIH
-	bxwf4sz7TguVoWhk8H287V9Z1ch04LeHGdRtNZjjPmNSlVyh5QDKG23wMcGAzqq4MAuxmR
-	RHU+f50bAzWuoa29vNmo0520k8y9Kb/wk6pjGSktPpXR4hMNdST5CUU6VlzgpM3dzhOCEt
-	irmbdH5OmT0ALU6mlcmFVixTp/U6kZBUQMEEthf2vloXkm0Ppm5DVnIIeU+cQA==
+	bh=ll9laDylLlA3Vjk2Q3vsPWAQBy04WBguwL1IDbn2b+U=;
+	b=YMDRO2iuGlanMTchSo8vhCQyyf3bnnNkN/pQP1oS2BS58cZ+r6DbTWsPgfqEU1J7+EWOHE
+	VGfkgR7F0D50IlLd2YYhqI2mvVhEEIOMKwcoFg8npG2yM4prd8vllWktyZaQTpdsTwOnfw
+	fIdVXqSt8QxfAaCOduHjUnZ5P8kgt1KIpJzhwOS0YwK7/tmh6g5epdjkAOivI1b8H+apvN
+	d4sJxdqUFAFORt9ZibVcXVtS+ss2UpNLEVCYKivKyiSjCs9y3mSmwAkhW6O6W4yptBTkql
+	KF/BVr1mRujMyhLaBDw3hpBHhoY5NtWO0rR8aZQ8uOOagTiPhbUQvQVJ2stpAA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -56,16 +56,16 @@ Cc: Julien Su <juliensu@mxic.com.tw>,
 	Michal Simek <monstr@monstr.eu>,
 	<linux-arm-kernel@lists.infradead.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 5/8] mtd: spi-nor: Prepare the introduction of a new locking mechanism
-Date: Tue, 28 Mar 2023 17:41:02 +0200
-Message-Id: <20230328154105.448540-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 6/8] mtd: spi-nor: Add a RWW flag
+Date: Tue, 28 Mar 2023 17:41:03 +0200
+Message-Id: <20230328154105.448540-7-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230328154105.448540-1-miquel.raynal@bootlin.com>
 References: <20230328154105.448540-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230328_084120_029566_EC25BCDF 
-X-CRM114-Status: GOOD (  13.57  )
+X-CRM114-CacheID: sfid-20230328_084121_551589_0C7D5C06 
+X-CRM114-Status: GOOD (  12.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,148 +82,72 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This commit alone just introduces two new "prepare and lock" pairs of
-helpers which do the exact same thing as before. They will soon be
-improved in a followup commit which actually brings the logic, but I
-figured out it was more readable to do it this way.
-
-One new pair is suffixed _pe which stands for "program and erase" and
-hence is being called by spi_nor_write() and spi_nor_erase().
-
-The other pair is suffixed _rd which stands for "read" and hence is
-being called by spi_nor_read().
-
-One note however, these extra helpers will need to know the operation
-range, so they come with two new parameters to define it. Otherwise
-there is no functional change.
+Introduce a new (no SFDP) flag for the feature that we are about to
+support: Read While Write. This means, if the chip has several banks and
+supports RWW, once a page of data to write has been transferred into the
+chip's internal SRAM, another read operation happening on a different
+bank can be performed during the tPROG delay.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c | 59 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 53 insertions(+), 6 deletions(-)
+ drivers/mtd/spi-nor/core.c    | 3 +++
+ drivers/mtd/spi-nor/core.h    | 3 +++
+ drivers/mtd/spi-nor/debugfs.c | 1 +
+ 3 files changed, 7 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index e80677d36a8c..daed09950ee1 100644
+index daed09950ee1..75ec7a3d0b43 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -1086,6 +1086,7 @@ static void spi_nor_unprep(struct spi_nor *nor)
- 		nor->controller_ops->unprepare(nor);
+@@ -2530,6 +2530,9 @@ static void spi_nor_init_flags(struct spi_nor *nor)
+ 
+ 	if (flags & NO_CHIP_ERASE)
+ 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
++
++	if (flags & SPI_NOR_RWW)
++		nor->flags |= SNOR_F_RWW;
  }
  
-+/* Generic helpers for internal locking and serialization */
- int spi_nor_prep_and_lock(struct spi_nor *nor)
- {
- 	int ret;
-@@ -1106,6 +1107,48 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor)
- 	spi_nor_unprep(nor);
- }
+ /**
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index c4c78729ccea..de31e430f77e 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -130,6 +130,7 @@ enum spi_nor_option_flags {
+ 	SNOR_F_IO_MODE_EN_VOLATILE = BIT(11),
+ 	SNOR_F_SOFT_RESET	= BIT(12),
+ 	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
++	SNOR_F_RWW		= BIT(14),
+ };
  
-+/* Internal locking helpers for program and erase operations */
-+static int spi_nor_prep_and_lock_pe(struct spi_nor *nor, loff_t start, size_t len)
-+{
-+	int ret;
-+
-+	ret = spi_nor_prep(nor);
-+	if (ret)
-+		return ret;
-+
-+	mutex_lock(&nor->lock);
-+
-+	return 0;
-+}
-+
-+static void spi_nor_unlock_and_unprep_pe(struct spi_nor *nor, loff_t start, size_t len)
-+{
-+	mutex_unlock(&nor->lock);
-+
-+	spi_nor_unprep(nor);
-+}
-+
-+/* Internal locking helpers for read operations */
-+static int spi_nor_prep_and_lock_rd(struct spi_nor *nor, loff_t start, size_t len)
-+{
-+	int ret;
-+
-+	ret = spi_nor_prep(nor);
-+	if (ret)
-+		return ret;
-+
-+	mutex_lock(&nor->lock);
-+
-+	return 0;
-+}
-+
-+static void spi_nor_unlock_and_unprep_rd(struct spi_nor *nor, loff_t start, size_t len)
-+{
-+	mutex_unlock(&nor->lock);
-+
-+	spi_nor_unprep(nor);
-+}
-+
- static u32 spi_nor_convert_addr(struct spi_nor *nor, loff_t addr)
- {
- 	if (!nor->params->convert_addr)
-@@ -1459,7 +1502,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	addr = instr->addr;
- 	len = instr->len;
+ struct spi_nor_read_command {
+@@ -462,6 +463,7 @@ struct spi_nor_fixups {
+  *   NO_CHIP_ERASE:           chip does not support chip erase.
+  *   SPI_NOR_NO_FR:           can't do fastread.
+  *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
++ *   SPI_NOR_RWW:             flash supports reads while write.
+  *
+  * @no_sfdp_flags:  flags that indicate support that can be discovered via SFDP.
+  *                  Used when SFDP tables are not defined in the flash. These
+@@ -513,6 +515,7 @@ struct flash_info {
+ #define NO_CHIP_ERASE			BIT(7)
+ #define SPI_NOR_NO_FR			BIT(8)
+ #define SPI_NOR_QUAD_PP			BIT(9)
++#define SPI_NOR_RWW			BIT(10)
  
--	ret = spi_nor_prep_and_lock(nor);
-+	ret = spi_nor_prep_and_lock_pe(nor, instr->addr, instr->len);
- 	if (ret)
- 		return ret;
- 
-@@ -1522,7 +1565,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	ret = spi_nor_write_disable(nor);
- 
- erase_err:
--	spi_nor_unlock_and_unprep(nor);
-+	spi_nor_unlock_and_unprep_pe(nor, instr->addr, instr->len);
- 
- 	return ret;
- }
-@@ -1715,11 +1758,13 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			size_t *retlen, u_char *buf)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-+	loff_t from_lock = from;
-+	size_t len_lock = len;
- 	ssize_t ret;
- 
- 	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
- 
--	ret = spi_nor_prep_and_lock(nor);
-+	ret = spi_nor_prep_and_lock_rd(nor, from_lock, len_lock);
- 	if (ret)
- 		return ret;
- 
-@@ -1746,7 +1791,8 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	ret = 0;
- 
- read_err:
--	spi_nor_unlock_and_unprep(nor);
-+	spi_nor_unlock_and_unprep_rd(nor, from_lock, len_lock);
-+
- 	return ret;
- }
- 
-@@ -1765,7 +1811,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
- 
--	ret = spi_nor_prep_and_lock(nor);
-+	ret = spi_nor_prep_and_lock_pe(nor, to, len);
- 	if (ret)
- 		return ret;
- 
-@@ -1807,7 +1853,8 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	}
- 
- write_err:
--	spi_nor_unlock_and_unprep(nor);
-+	spi_nor_unlock_and_unprep_pe(nor, to, len);
-+
- 	return ret;
- }
+ 	u8 no_sfdp_flags;
+ #define SPI_NOR_SKIP_SFDP		BIT(0)
+diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+index 845b78c7ecc7..e200f5b9234c 100644
+--- a/drivers/mtd/spi-nor/debugfs.c
++++ b/drivers/mtd/spi-nor/debugfs.c
+@@ -25,6 +25,7 @@ static const char *const snor_f_names[] = {
+ 	SNOR_F_NAME(IO_MODE_EN_VOLATILE),
+ 	SNOR_F_NAME(SOFT_RESET),
+ 	SNOR_F_NAME(SWP_IS_VOLATILE),
++	SNOR_F_NAME(RWW),
+ };
+ #undef SNOR_F_NAME
  
 -- 
 2.34.1
