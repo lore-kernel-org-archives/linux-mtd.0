@@ -4,76 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF10CC76196
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Mar 2023 13:07:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AAD6C76196
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Mar 2023 13:22:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aYEdzxRRI5QBtwZK7n98505b4LEo9/DUVTTqloeM79o=; b=wW6iuRkkacDPVD
-	UPxAa4ZnANJnz6DWu0OZGcAhdmpP/YZBdfxXB1e+bek5oBmPXkTvu5dwL9R2yGFK0q5DHlMeph52E
-	ZXmJ6EvllZWZrTIB6T/AgDBsciz6vsMcu9f3WDxUaSo5N11EXetUib0cfA4idifEFHbKGHGbmc+9G
-	Y7/07RVpDtVp6sCXJJLSDN7s4ZugIMfJN60MjWmWfB5H9QJSpyDrFEL0uzc8+/lDiKXUf5/RF/88l
-	nGCBRB8Jp4C8MRVjOiT+MqfftR+4k70z+0ZNOQGNCrkb9G3n5hb4D298eMVwzqAI+z9KZMV27LavX
-	vELi62o3A2BwplJJJucg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=1XqFvmkJyasNzsEQuW2Y3QgDGC/j8BNVRlhJgrKAPNI=; b=HV6hd2tj3jWYBqdlf/F8phordw
+	EnHb5vSLv1HDI6n/Rnr4ZpglY38ryElA2tQ2gvy/QfJGhcGwXOx6eN4ksut9byueFhLIep4BFXR7T
+	7R+1D2ekxIAQ1qCodOoath152EogyjYatMliWfLJHeuREyz+gUBDcECavxXcWmv9eUnnK8hTpFwIS
+	X8NIgeSjVdGAvlNmOCsOi05Mfi0VN1Oar2YfpVIRh7mzj9yyYC7wJtItCfRDgXY0tA+B7RpxLIBsb
+	RVrueMz/3mG7+mImTZIseclrUTPcmXpyUstoehYK/obAIn7sd0X/NTbP9lUsxZEDOhbgom9vqFjC8
+	alCo9m9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1ph92h-00EUhN-2R;
-	Tue, 28 Mar 2023 13:07:15 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1ph9H6-00EYbn-1p;
+	Tue, 28 Mar 2023 13:22:08 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1ph92b-00EUfi-2f
+	id 1ph9H3-00EYY9-0t
 	for linux-mtd@lists.infradead.org;
-	Tue, 28 Mar 2023 13:07:14 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 7EE3A5FD14;
-	Tue, 28 Mar 2023 16:06:59 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1680008819;
-	bh=5rDfZC8d79blVeGeWpEEZesfjJmirAJLjs3jHC7svIM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	b=CKz8G7ntT/IDl4V17xoe7K5oRh5pQHZZOXaACv0B3yrhmXE87VuXtR3z5qhar9XuO
-	 Lv0W3HgEzNelk9ZQLg3Lv2oGKq0+VH1xBrlLKGL02x7wpT8+JzWCM3nFD4X4NMq0vc
-	 v8iqCXkKtX1L5+AzvcIhfPQfLtDnCkrHXaPIVLrQazW5uRqv2iFERwOhoYJJEUuONy
-	 CmanQVulOCsVYWkFfAVE6jvIuYYX6SlF7bqeyPywlkaXRuIk0GmTrKSYwXqspLywBj
-	 0RnXyCmmzKmulsOE1urqdqpdWfWbAzNMXxGGaIBkUksEIUh7USCcoi+0jyhUhjwF8z
-	 ih3m20ummXwlg==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Tue, 28 Mar 2023 16:06:57 +0300 (MSK)
-Message-ID: <0c18b3b7-b890-e029-2f67-d0b7df545ad4@sberdevices.ru>
-Date: Tue, 28 Mar 2023 16:06:55 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v3] mtd: spinand: add support for ESMT F50x1G41LB
+	Tue, 28 Mar 2023 13:22:07 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 86ABF64548A5;
+	Tue, 28 Mar 2023 15:21:51 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id xKZKaNllip0A; Tue, 28 Mar 2023 15:21:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 30EE864548B6;
+	Tue, 28 Mar 2023 15:21:51 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id NMSP10wv6tYQ; Tue, 28 Mar 2023 15:21:51 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 1579B64548A5;
+	Tue, 28 Mar 2023 15:21:51 +0200 (CEST)
+Date: Tue, 28 Mar 2023 15:21:50 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
-	<vigneshr@ti.com>, Dmitry Rokosov <ddrokosov@sberdevices.ru>, Chuanhong Guo
-	<gch981213@gmail.com>, Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, Felix
- Matouschek <felix@matouschek.org>, <kernel@kempniu.pl>,
-	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<kernel@sberdevices.ru>
-References: <20230322151625.791131-1-mmkurbanov@sberdevices.ru>
- <20230328145639.1aef44e2@xps-13>
-Content-Language: en-US
-From: Martin Kurbanov <mmkurbanov@sberdevices.ru>
-In-Reply-To: <20230328145639.1aef44e2@xps-13>
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/03/28 06:38:00 #21021220
-X-KSMG-AntiVirus-Status: Clean, skipped
+Cc: Bang Li <libang.linuxer@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1785377500.357636.1680009710991.JavaMail.zimbra@nod.at>
+In-Reply-To: <20230328145848.5c7e4f14@xps-13>
+References: <20230323140350.69908-1-libang.linuxer@gmail.com> <20230328145848.5c7e4f14@xps-13>
+Subject: Re: [PATCH] mtdblock: tolerate corrected bit-flips
+MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: mtdblock: tolerate corrected bit-flips
+Thread-Index: IScXBlLI190GBUfLWxK6EVGzIzw6pA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230328_060710_401630_27AB9AD1 
-X-CRM114-Status: UNSURE (   9.54  )
+X-CRM114-CacheID: sfid-20230328_062205_483296_6C978D87 
+X-CRM114-Status: UNSURE (   6.20  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -86,23 +73,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Miquel,
-
-On 28.03.2023 15:56, Miquel Raynal wrote:
-> I was about to merge this patch but it turns out there are conflicts in
-> the tree. Can you please rebase on top of nand/next and send a v4?
-
-Ack
-
--- 
-Best Regards,
-Martin Kurbanov
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkhCgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gbGliYW5nLmxpbnV4ZXJAZ21h
+aWwuY29tIHdyb3RlIG9uIFRodSwgMjMgTWFyIDIwMjMgMjI6MDM6NTAgKzA4MDA6Cj4gCj4+IG10
+ZF9yZWFkKCkgbWF5IHJldHVybiAtRVVDTEVBTiBpbiBjYXNlIG9mIGNvcnJlY3RlZCBiaXQtZmxp
+cHMuVGhpcwo+PiBwYXJ0aWN1bGFyIGNvbmRpdGlvbiBzaG91bGQgbm90IGJlIHRyZWF0ZWQgbGlr
+ZSBhbiBlcnJvci4KPiAKPiBJJ20gZmluZSB3aXRoIHRoZSBwYXRjaCwgUmljaGFyZCwgYXJlIHlv
+dSBva2F5IGFzIHdlbGw/CgpIbSB5ZXMuIEkgc2VlIHRoZSBidWcuIEkgdGhpbmsgaXQgYnJva2Ug
+YWJvdXQgMTAgeWVhcnMgYWdvCmJ5IGU0N2Y2ODU4N2I4MiAoIm10ZDogY2hlY2sgZm9yIG1heF9i
+aXRmbGlwcyBpbiBtdGRfcmVhZF9vb2IoKSIpLgoKSW4gdGhlIGVhcmx5IGRheSBJJ2QgZXhwZWN0
+IHNvbWVvbmUgdG8gaGl0IHRoaXMgYnVnIGJ1dCBJIGd1ZXNzCm9uIHRoZSBsYXN0IDEwIHllYXJz
+IG10ZGJsb2NrIGhhZCBubyByZWFsIHVzZXJzLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
