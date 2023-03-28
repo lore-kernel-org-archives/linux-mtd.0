@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4FB4C76196
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Mar 2023 15:43:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28375C6FD18
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Mar 2023 15:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TkuRIJ5KPFBQ1gC10DMGLj1j4fiSxvIH9dJEEB8xJrU=; b=L85qkY4p9vKfDk
-	abY3fxLnVpwWBxCwo3lq6r/+vTyslzZnV7DK8Ter8n2NasJEF9afBiUbvsfIsg3dXGgCJXCr18Y6Z
-	MsUwAICKWSP5OsOKhGXXWCwOAdpakVaoGx3WoegNRNgrr5vZpbzspWbWiMOoUWynxgQDTERrqKJMt
-	2MOeN6R1cI325QTnpWjxVzUV83XQYVQE58zK7QRVGLizcSJTgPL9m08yETyYC8zFzu2cmsUlxTSUJ
-	tE2hFVq7lzMf+OG/JHVcUpK8mcZMNd+dfAkIYy8lIxsKcXMFjYWBmXyGlLNbJGfnkKkd+zsudQ/Td
-	RaMiZKNKTEI7DkzWUwgQ==;
+	List-Owner; bh=ms4s+GgdAroMYvaa47tEst0rVUtmocqELyLTJ/nbBT4=; b=CaiDLOKhU+E27q
+	CNYTNLKoi6l9A5zACM4LxrHEpbjb8furG8dEb+SLHU2Mnf7eh3ZQK7MwoNnUTVNmGrLzjVpE+kuGx
+	bK0kxb3mgy5g38xTEkZIzDiz84eNl2dWswDfBNpBqGt7wbMa9B1ZItdiJNzXwqCM55kaFiWBmaNQ0
+	pN6+kYBo7hnQWEVgUxAMjL74QQZtRFP7h71WKFTwtMBzIDghgBMtq2pE3IeYQrc1pEhuVQ1KFMycq
+	NkSzBkv4xOxWQ7Bo9xU3UAnjfFFhF3SE66iC4jbLs/3+1XOeuooaMP/LagFPvHw+bETxXhmYVbz05
+	KIeiMjvl27iB37okhivg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1phBSZ-00EzHw-2z;
-	Tue, 28 Mar 2023 15:42:07 +0000
+	id 1phBSv-00EzZs-0u;
+	Tue, 28 Mar 2023 15:42:29 +0000
 Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1phBRp-00Eyhl-0e;
-	Tue, 28 Mar 2023 15:41:24 +0000
+	id 1phBRt-00Eyk3-1D;
+	Tue, 28 Mar 2023 15:41:26 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 0E8D56000F;
-	Tue, 28 Mar 2023 15:41:17 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 1355960005;
+	Tue, 28 Mar 2023 15:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1680018079;
+	t=1680018083;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ll9laDylLlA3Vjk2Q3vsPWAQBy04WBguwL1IDbn2b+U=;
-	b=YMDRO2iuGlanMTchSo8vhCQyyf3bnnNkN/pQP1oS2BS58cZ+r6DbTWsPgfqEU1J7+EWOHE
-	VGfkgR7F0D50IlLd2YYhqI2mvVhEEIOMKwcoFg8npG2yM4prd8vllWktyZaQTpdsTwOnfw
-	fIdVXqSt8QxfAaCOduHjUnZ5P8kgt1KIpJzhwOS0YwK7/tmh6g5epdjkAOivI1b8H+apvN
-	d4sJxdqUFAFORt9ZibVcXVtS+ss2UpNLEVCYKivKyiSjCs9y3mSmwAkhW6O6W4yptBTkql
-	KF/BVr1mRujMyhLaBDw3hpBHhoY5NtWO0rR8aZQ8uOOagTiPhbUQvQVJ2stpAA==
+	bh=9E7Cfw8PjSH7IBExwFg02Sat12AoGtk1zeyWxu1XsQM=;
+	b=H7nan/xp7GAHMEJAzLszlQ/HTdCLS+hA+vOoSyBIaMrIy1j+Wr7wlpB6bhhX2KrHhr9orW
+	qolnhuABusLammZDyeJjBdO05wbzlwaShWN2Y70k8glzVHn1GR3ySa9zM1qanUcUoylfY8
+	xU5c2NYuk/PXjoWNzLgVxG/4jygILL1ezuLsdL8M756nT8dQpUBlh3/lawcSQKOcma8UoK
+	LYH5WXGOow2TtA8YnI8sU8SE9LRkiN6Rtqk7ylOjNWNT5OT3jPrJz53WBt8ajO6jOgJj1F
+	1gGMNrP2n+ltwMh9V7Ziqw/JQ6BjonEZhaZHdOuA1/MhROSYmZaNMXCY8/tUEg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -56,16 +56,16 @@ Cc: Julien Su <juliensu@mxic.com.tw>,
 	Michal Simek <monstr@monstr.eu>,
 	<linux-arm-kernel@lists.infradead.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 6/8] mtd: spi-nor: Add a RWW flag
-Date: Tue, 28 Mar 2023 17:41:03 +0200
-Message-Id: <20230328154105.448540-7-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 8/8] mtd: spi-nor: macronix: Add support for mx25uw51245g with RWW
+Date: Tue, 28 Mar 2023 17:41:05 +0200
+Message-Id: <20230328154105.448540-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230328154105.448540-1-miquel.raynal@bootlin.com>
 References: <20230328154105.448540-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230328_084121_551589_0C7D5C06 
-X-CRM114-Status: GOOD (  12.72  )
+X-CRM114-CacheID: sfid-20230328_084125_718326_2B1D9FC5 
+X-CRM114-Status: GOOD (  10.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,73 +82,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Introduce a new (no SFDP) flag for the feature that we are about to
-support: Read While Write. This means, if the chip has several banks and
-supports RWW, once a page of data to write has been transferred into the
-chip's internal SRAM, another read operation happening on a different
-bank can be performed during the tPROG delay.
+Describe this new part and provide the RWW flag for it.
+
+There is no public datasheet, but here are the sfdp tables plus base
+testing to show it works.
+
+mx25uw51245g
+c2813a
+macronix
+53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+00ff0c2010d800ff00ff87790100821200e27704674630b030b0f4bdd55c
+000000ff101000200000000000007ca14800000000008888000000000000
+00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+727103b80000000090a3188200c069960000000000000000727100987271
+00b8727100990000000072710098727100f872710099727100f900000000
+00000000011501d0727106d8000086500000060100000000020001030002
+00000000060100000000000072060002000000eec0697272717100d8f7f6
+000a00001445988043060f0021dcffff
+047a884cf44d9ffc2a94d3ab37b48c63  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+
+6+0 records in
+6+0 records out
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+d24a9523db829a0df688f34b8dc76a1383b74024  qspi_test
+d24a9523db829a0df688f34b8dc76a1383b74024  qspi_read
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c    | 3 +++
- drivers/mtd/spi-nor/core.h    | 3 +++
- drivers/mtd/spi-nor/debugfs.c | 1 +
- 3 files changed, 7 insertions(+)
+ drivers/mtd/spi-nor/macronix.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index daed09950ee1..75ec7a3d0b43 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2530,6 +2530,9 @@ static void spi_nor_init_flags(struct spi_nor *nor)
- 
- 	if (flags & NO_CHIP_ERASE)
- 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
-+
-+	if (flags & SPI_NOR_RWW)
-+		nor->flags |= SNOR_F_RWW;
- }
- 
- /**
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index c4c78729ccea..de31e430f77e 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -130,6 +130,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_IO_MODE_EN_VOLATILE = BIT(11),
- 	SNOR_F_SOFT_RESET	= BIT(12),
- 	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
-+	SNOR_F_RWW		= BIT(14),
- };
- 
- struct spi_nor_read_command {
-@@ -462,6 +463,7 @@ struct spi_nor_fixups {
-  *   NO_CHIP_ERASE:           chip does not support chip erase.
-  *   SPI_NOR_NO_FR:           can't do fastread.
-  *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
-+ *   SPI_NOR_RWW:             flash supports reads while write.
-  *
-  * @no_sfdp_flags:  flags that indicate support that can be discovered via SFDP.
-  *                  Used when SFDP tables are not defined in the flash. These
-@@ -513,6 +515,7 @@ struct flash_info {
- #define NO_CHIP_ERASE			BIT(7)
- #define SPI_NOR_NO_FR			BIT(8)
- #define SPI_NOR_QUAD_PP			BIT(9)
-+#define SPI_NOR_RWW			BIT(10)
- 
- 	u8 no_sfdp_flags;
- #define SPI_NOR_SKIP_SFDP		BIT(0)
-diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index 845b78c7ecc7..e200f5b9234c 100644
---- a/drivers/mtd/spi-nor/debugfs.c
-+++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -25,6 +25,7 @@ static const char *const snor_f_names[] = {
- 	SNOR_F_NAME(IO_MODE_EN_VOLATILE),
- 	SNOR_F_NAME(SOFT_RESET),
- 	SNOR_F_NAME(SWP_IS_VOLATILE),
-+	SNOR_F_NAME(RWW),
- };
- #undef SNOR_F_NAME
- 
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 6853ec9ae65d..b65d41e5f749 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -82,6 +82,10 @@ static const struct flash_info macronix_nor_parts[] = {
+ 	{ "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
++	{ "mx25uw51245g", INFOB(0xc2813a, 0, 16 * 1024, 1024, 4)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_RWW)
++		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+ 	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ) },
 -- 
 2.34.1
 
