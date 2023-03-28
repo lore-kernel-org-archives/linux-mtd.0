@@ -4,59 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D39EC761AF
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Mar 2023 12:59:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF10CC76196
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Mar 2023 13:07:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PuOzXw461OLjbj44ciDowCjHtzjctSloNHkrX6dwAZ8=; b=p4U7p8qRWccP+g
-	eVj/leFkDX5NVnbF48GpEfn8arKGmS5EM+U1c6Mf4B1tYmWGnsArHvOsCCLx4vm6J6N8WLtW/wrfq
-	Uqddmf00rrIyHoznk8BAGE795MhLftuzvRx7dLUgGfEFcsLMcSVsPA1VUafSeVpEiX8uJOvHjRvBo
-	IfbQ9clMiXmf0lUp4909yrji30s0ILCS8RctLydJ+i9oJWZEjFq7oaE18YrLjyQT7+UqKyRmehC0O
-	CiMB23HsAbLd5hsT7vYK0ifB3Dplme9y7QCH7lrTZPRsiws1fqpPQ6s/dSLVz2YLdkYaR0Ck79yDO
-	dCO7oG58RZyvZO5TTglQ==;
+	List-Owner; bh=aYEdzxRRI5QBtwZK7n98505b4LEo9/DUVTTqloeM79o=; b=wW6iuRkkacDPVD
+	UPxAa4ZnANJnz6DWu0OZGcAhdmpP/YZBdfxXB1e+bek5oBmPXkTvu5dwL9R2yGFK0q5DHlMeph52E
+	ZXmJ6EvllZWZrTIB6T/AgDBsciz6vsMcu9f3WDxUaSo5N11EXetUib0cfA4idifEFHbKGHGbmc+9G
+	Y7/07RVpDtVp6sCXJJLSDN7s4ZugIMfJN60MjWmWfB5H9QJSpyDrFEL0uzc8+/lDiKXUf5/RF/88l
+	nGCBRB8Jp4C8MRVjOiT+MqfftR+4k70z+0ZNOQGNCrkb9G3n5hb4D298eMVwzqAI+z9KZMV27LavX
+	vELi62o3A2BwplJJJucg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1ph8ug-00ETJJ-0i;
-	Tue, 28 Mar 2023 12:58:58 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1ph92h-00EUhN-2R;
+	Tue, 28 Mar 2023 13:07:15 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1ph8ud-00ETHa-0e
+	id 1ph92b-00EUfi-2f
 	for linux-mtd@lists.infradead.org;
-	Tue, 28 Mar 2023 12:58:56 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 2872240014;
-	Tue, 28 Mar 2023 12:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1680008331;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SaraH5Y77gs5q9fjwC2tIxEic4YCl0W2OFuwmvWv0mc=;
-	b=dsXuhsKyObeBblYlxHAMlTqFDwoZAoeu4ltY0Ows9OgexMiHB24FGwxidITC62ZsxiwCoF
-	WeOEgXBdJ9A0957X9ZDsrsTwXuN5vnZ4ndccXSTVyagOw9zhhENPVAJuyoxvOhTxXvj2wZ
-	dNqGAig/kWxcWMgzgaNAWz5A9exTAvHxFq6ilpwObe+CsC1Zi5gmQE778spJIQshqGQmgo
-	dFpw07/xcCXEkd8sb4ltR2Gz9jOKiarTALJzTIkGDMjnp9KmJtoY4SBrBWG4e7UUKJyBs8
-	aYXR8vp9vJBflmbr2qmfXSWy36RdAEj4J22Wbm2W54+YFbF4Xg5lbDpYzy6Hvg==
-Date: Tue, 28 Mar 2023 14:58:48 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Bang Li <libang.linuxer@gmail.com>
-Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtdblock: tolerate corrected bit-flips
-Message-ID: <20230328145848.5c7e4f14@xps-13>
-In-Reply-To: <20230323140350.69908-1-libang.linuxer@gmail.com>
-References: <20230323140350.69908-1-libang.linuxer@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Tue, 28 Mar 2023 13:07:14 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id 7EE3A5FD14;
+	Tue, 28 Mar 2023 16:06:59 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1680008819;
+	bh=5rDfZC8d79blVeGeWpEEZesfjJmirAJLjs3jHC7svIM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	b=CKz8G7ntT/IDl4V17xoe7K5oRh5pQHZZOXaACv0B3yrhmXE87VuXtR3z5qhar9XuO
+	 Lv0W3HgEzNelk9ZQLg3Lv2oGKq0+VH1xBrlLKGL02x7wpT8+JzWCM3nFD4X4NMq0vc
+	 v8iqCXkKtX1L5+AzvcIhfPQfLtDnCkrHXaPIVLrQazW5uRqv2iFERwOhoYJJEUuONy
+	 CmanQVulOCsVYWkFfAVE6jvIuYYX6SlF7bqeyPywlkaXRuIk0GmTrKSYwXqspLywBj
+	 0RnXyCmmzKmulsOE1urqdqpdWfWbAzNMXxGGaIBkUksEIUh7USCcoi+0jyhUhjwF8z
+	 ih3m20ummXwlg==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Tue, 28 Mar 2023 16:06:57 +0300 (MSK)
+Message-ID: <0c18b3b7-b890-e029-2f67-d0b7df545ad4@sberdevices.ru>
+Date: Tue, 28 Mar 2023 16:06:55 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3] mtd: spinand: add support for ESMT F50x1G41LB
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+	<vigneshr@ti.com>, Dmitry Rokosov <ddrokosov@sberdevices.ru>, Chuanhong Guo
+	<gch981213@gmail.com>, Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, Felix
+ Matouschek <felix@matouschek.org>, <kernel@kempniu.pl>,
+	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<kernel@sberdevices.ru>
+References: <20230322151625.791131-1-mmkurbanov@sberdevices.ru>
+ <20230328145639.1aef44e2@xps-13>
+Content-Language: en-US
+From: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+In-Reply-To: <20230328145639.1aef44e2@xps-13>
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/03/28 06:38:00 #21021220
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230328_055855_370018_43A2A1BE 
-X-CRM114-Status: GOOD (  16.05  )
+X-CRM114-CacheID: sfid-20230328_060710_401630_27AB9AD1 
+X-CRM114-Status: UNSURE (   9.54  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,43 +86,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpsaWJhbmcubGludXhlckBnbWFpbC5jb20gd3JvdGUgb24gVGh1LCAyMyBNYXIgMjAy
-MyAyMjowMzo1MCArMDgwMDoKCj4gbXRkX3JlYWQoKSBtYXkgcmV0dXJuIC1FVUNMRUFOIGluIGNh
-c2Ugb2YgY29ycmVjdGVkIGJpdC1mbGlwcy5UaGlzCj4gcGFydGljdWxhciBjb25kaXRpb24gc2hv
-dWxkIG5vdCBiZSB0cmVhdGVkIGxpa2UgYW4gZXJyb3IuCgpJJ20gZmluZSB3aXRoIHRoZSBwYXRj
-aCwgUmljaGFyZCwgYXJlIHlvdSBva2F5IGFzIHdlbGw/Cgo+IFNpZ25lZC1vZmYtYnk6IEJhbmcg
-TGkgPGxpYmFuZy5saW51eGVyQGdtYWlsLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvbXRkYmxv
-Y2suYyB8IDEyICsrKysrKysrLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCsp
-LCA0IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9tdGRibG9jay5j
-IGIvZHJpdmVycy9tdGQvbXRkYmxvY2suYwo+IGluZGV4IDFlOTRlN2QxMGI4Yi4uYTBhMTE5NGRj
-MWQ5IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL210ZGJsb2NrLmMKPiArKysgYi9kcml2ZXJz
-L210ZC9tdGRibG9jay5jCj4gQEAgLTE1Myw3ICsxNTMsNyBAQCBzdGF0aWMgaW50IGRvX2NhY2hl
-ZF93cml0ZSAoc3RydWN0IG10ZGJsa19kZXYgKm10ZGJsaywgdW5zaWduZWQgbG9uZyBwb3MsCj4g
-IAkJCQltdGRibGstPmNhY2hlX3N0YXRlID0gU1RBVEVfRU1QVFk7Cj4gIAkJCQlyZXQgPSBtdGRf
-cmVhZChtdGQsIHNlY3Rfc3RhcnQsIHNlY3Rfc2l6ZSwKPiAgCQkJCQkgICAgICAgJnJldGxlbiwg
-bXRkYmxrLT5jYWNoZV9kYXRhKTsKPiAtCQkJCWlmIChyZXQpCj4gKwkJCQlpZiAocmV0ICYmICFt
-dGRfaXNfYml0ZmxpcChyZXQpKQo+ICAJCQkJCXJldHVybiByZXQ7Cj4gIAkJCQlpZiAocmV0bGVu
-ICE9IHNlY3Rfc2l6ZSkKPiAgCQkJCQlyZXR1cm4gLUVJTzsKPiBAQCAtMTg4LDggKzE4OCwxMiBA
-QCBzdGF0aWMgaW50IGRvX2NhY2hlZF9yZWFkIChzdHJ1Y3QgbXRkYmxrX2RldiAqbXRkYmxrLCB1
-bnNpZ25lZCBsb25nIHBvcywKPiAgCXByX2RlYnVnKCJtdGRibG9jazogcmVhZCBvbiBcIiVzXCIg
-YXQgMHglbHgsIHNpemUgMHgleFxuIiwKPiAgCQkJbXRkLT5uYW1lLCBwb3MsIGxlbik7Cj4gIAo+
-IC0JaWYgKCFzZWN0X3NpemUpCj4gLQkJcmV0dXJuIG10ZF9yZWFkKG10ZCwgcG9zLCBsZW4sICZy
-ZXRsZW4sIGJ1Zik7Cj4gKwlpZiAoIXNlY3Rfc2l6ZSkgewo+ICsJCXJldCA9IG10ZF9yZWFkKG10
-ZCwgcG9zLCBsZW4sICZyZXRsZW4sIGJ1Zik7Cj4gKwkJaWYgKHJldCAmJiAhbXRkX2lzX2JpdGZs
-aXAocmV0KSkKPiArCQkJcmV0dXJuIHJldDsKPiArCQlyZXR1cm4gMDsKPiArCX0KPiAgCj4gIAl3
-aGlsZSAobGVuID4gMCkgewo+ICAJCXVuc2lnbmVkIGxvbmcgc2VjdF9zdGFydCA9IChwb3Mvc2Vj
-dF9zaXplKSpzZWN0X3NpemU7Cj4gQEAgLTIwOSw3ICsyMTMsNyBAQCBzdGF0aWMgaW50IGRvX2Nh
-Y2hlZF9yZWFkIChzdHJ1Y3QgbXRkYmxrX2RldiAqbXRkYmxrLCB1bnNpZ25lZCBsb25nIHBvcywK
-PiAgCQkJbWVtY3B5IChidWYsIG10ZGJsay0+Y2FjaGVfZGF0YSArIG9mZnNldCwgc2l6ZSk7Cj4g
-IAkJfSBlbHNlIHsKPiAgCQkJcmV0ID0gbXRkX3JlYWQobXRkLCBwb3MsIHNpemUsICZyZXRsZW4s
-IGJ1Zik7Cj4gLQkJCWlmIChyZXQpCj4gKwkJCWlmIChyZXQgJiYgIW10ZF9pc19iaXRmbGlwKHJl
-dCkpCj4gIAkJCQlyZXR1cm4gcmV0Owo+ICAJCQlpZiAocmV0bGVuICE9IHNpemUpCj4gIAkJCQly
-ZXR1cm4gLUVJTzsKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+Hello Miquel,
+
+On 28.03.2023 15:56, Miquel Raynal wrote:
+> I was about to merge this patch but it turns out there are conflicts in
+> the tree. Can you please rebase on top of nand/next and send a v4?
+
+Ack
+
+-- 
+Best Regards,
+Martin Kurbanov
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
