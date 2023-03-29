@@ -4,81 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EF87C74A5B
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 10:59:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19C4EC6FD18
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 11:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0om8v6ah4cza5WFCecanX4nrseme03JL2ewkMIN2auk=; b=FNgixMjCh6jbNh
-	6RyVZsAGuBa/54jgZzPwoZ08O1fUQu4dhBAWFpxxeCamHJQLGJaXgUJVoOP3tbfk8iVRDxVDqpDso
-	IjQX27ezJ4hFyolScdyfgRZpeIrpnBhBmbYDo8lFN94P8BxFtRCO6mY4TZYwD0g/r4sNbqs9ngwLx
-	FrJOwHEIzwbFfN3t4I6VYDKhXrihirQfJODUgCDwgoKGqCTfV+ShlMpb7FcdStQ8Cw5cAEKrzSxDN
-	p1/8WEPZS86GUsNZk9CtlMieVlZ2ozZMSrXvq9VYg4mew6uXzVM+uHPFJ738AEwVzL8/3FUrp3r7H
-	daRo8Dv7RFDrVj/4PO5A==;
+	List-Owner; bh=uVGgrveP3gqsJUO5MO/ABqa07SpFllk2T2IScoDpFFo=; b=ocLCoruan+U4ni
+	eZB4fHDYysbnTjGJSD31XTrAuxousmCfUTmXOgOMSxNwG6VEUSxLtKr/r4ZAeqCXV0jT2yf9zeN8c
+	oZ2a5s3xF3kT7YVOCfLWwOURaTUaWsHxk8azAu7lTqIMt0WtFzkyWD3eLveUgLXXLTZ6sLHrxTnA2
+	9rlN68LlBbhEAXOIU4qagBlBdhAoJCdOpDOG5Z+086kHv4hmGM5ZBg60AdDwdTdk/Fs/3v/vfWspc
+	iPROLIAPl5t9OZt9nDSuKAXst8te+j22zo3lnyOr+S6YEp0d4/lGP0he0uJBnImgV86oB7kL+ifj3
+	PuFXdNnD6b65K1wcLTKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1phTWC-00HXZU-2e;
-	Wed, 29 Mar 2023 10:59:04 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1phTjI-00HZD2-23;
+	Wed, 29 Mar 2023 11:12:36 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1phTW7-00HXXA-0P;
-	Wed, 29 Mar 2023 10:59:01 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id DA0455FD1C;
-	Wed, 29 Mar 2023 13:58:52 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1680087532;
-	bh=2RiAZcjm7f7fZ6eDOOysdqaLXhVvLMfLn4XnqyG2nKM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	b=MEnJ+y7qM8X68v4BX902DNuyddPZX+zOuwWBOqRh8gxt7xxAJa/dG8X/L2L+WrwI3
-	 Z2CGIP3E+n3mAj/+o+GINFap/38+X/sSR84fmAe9WS0q6rbfhoIN5ioFURiQMNqM4S
-	 1EezKrN/EoeXdL4uo3IJQgD5LEiJuDX/aWs6AGYjO754F4rZtz7YIqXbvkX2hTClV/
-	 O1Rpc4VeDLhR76pKJaMy2eM39AnuaKCAZsekaAY8etg9b9ikLYQjJnQGmMDnuXrp/9
-	 dyGl8hPkWnBxJtfLi80MKXafN3VUw+R2EzbJvJ39IsraJN6SfQ0hmCbilGyVbbMKMC
-	 zWmbmkZedjxpw==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Wed, 29 Mar 2023 13:58:51 +0300 (MSK)
-Message-ID: <f3dfc075-08e2-36a8-1526-e2bbd6eb110f@sberdevices.ru>
-Date: Wed, 29 Mar 2023 13:55:29 +0300
+	id 1phTjF-00HZBp-0J
+	for linux-mtd@lists.infradead.org;
+	Wed, 29 Mar 2023 11:12:34 +0000
+Received: by mail-wr1-x436.google.com with SMTP id v1so15250896wrv.1
+        for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2023 04:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680088351;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=u7uBggWPep8LzWC8musIl7sBP7Epwidb0rSty9bgw+g=;
+        b=wh5PpbYm5Kt3OfLC5haNuiQKnsqkeXxsOprmrfOJtU7lM0BLgWyT772Vfx8iMcwWup
+         1sTRuitAaV2qPjBPyHD39sBSfgGvHgafSDUyfouDeosKEOfekuiS6SkDOcOvJ1nrSlyV
+         3U9OMKy8NJfISzi+Eb7+Mpu6ptQToj+bGJ0AujdjJ5TRQSiW1bSTnmWFSdsxqfRfV23g
+         gos0YdtskJOe7vdpyRqWK/5fckjzhd8ysQj+eSKTuZzcFodNWhUkYTps0hbSOC+DCwBE
+         McfTWYpLO5vo5bSIwYAzSzV399wePtyO02lps4g6QehLNaOGQd8XcfwIWWvk/YjnLOka
+         rxbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680088351;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u7uBggWPep8LzWC8musIl7sBP7Epwidb0rSty9bgw+g=;
+        b=LYGPuMd7QH+AlJN4ReTtAxTzgu+5UIlh+/4e17SBspP3oSEWMl0YEWZdk9D0yg3FOx
+         pfdLHYfGLhK3+nJl80FLpblb5JetIKEAztxlQ6ShlvfvngOZVut3ZvbRqJfbfHAtzh/K
+         nAXnmliPxRHOIEUiF/fZK+LsTNGuXHIzbznstrV0g4uBKStPTmPfAYHdLhmK8/cncsaa
+         jny+x/HI+Ky26R+8i+JWwYjCRpdaIELR9qgN6wG2tke5RyXsnfvjLoN78wvWub08uvsu
+         xIrFRvA/qzB298lfYdYk0O6UfoEVz7RkkNLDX4EuW4BOSgRIV1Lu4pOtSdoqcAluFfFf
+         q0eQ==
+X-Gm-Message-State: AAQBX9cqcG5Uw3Z0cQPlYlweo6RXgQLPBFqlzuTRwdFBB1MNcUVGK9B7
+	MJ+kr9s1NBd2G/SacIh2AomarQ==
+X-Google-Smtp-Source: AKy350a+ndi7TVZFzxVyzVnCFNqvUZRW7lI3oTnMDcnhTFKHu/JbmEM8ZukYJFkNs1i1Puuh7tXKcQ==
+X-Received: by 2002:a05:6000:2:b0:2cf:e3e3:5b01 with SMTP id h2-20020a056000000200b002cfe3e35b01mr13333134wrx.56.1680088351584;
+        Wed, 29 Mar 2023 04:12:31 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.91])
+        by smtp.gmail.com with ESMTPSA id t6-20020adff606000000b002d828a9f9ddsm21835724wrp.115.2023.03.29.04.12.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Mar 2023 04:12:31 -0700 (PDT)
+Message-ID: <f243010c-72e3-6b59-6696-af7c7cdc6596@linaro.org>
+Date: Wed, 29 Mar 2023 12:12:29 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [PATCH v2] mtd: rawnand: meson: fix bitmask for length in command
- word
+Subject: Re: [PATCH v5 8/8] mtd: spi-nor: macronix: Add support for
+ mx25uw51245g with RWW
 Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Tudor Ambarus <tudor.ambarus@linaro.org>, Liang Yang
-	<liang.yang@amlogic.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Jianxin Pan
-	<jianxin.pan@amlogic.com>, Yixun Lan <yixun.lan@amlogic.com>,
-	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <3794ffbf-dfea-e96f-1f97-fe235b005e19@sberdevices.ru>
- <447abc1b-b4a3-5848-c99a-ecbff11486fe@linaro.org>
- <c110bd0f-f25a-a74a-07cb-4c3fdb8ef306@sberdevices.ru>
- <20230329110054.68455418@xps-13>
-From: Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <20230329110054.68455418@xps-13>
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/03/29 07:09:00 #21026578
-X-KSMG-AntiVirus-Status: Clean, skipped
+To: liao jaime <jaimeliao.tw@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>,
+ Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
+ Alvin Zhou <alvinzhou@mxic.com.tw>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Michal Simek <monstr@monstr.eu>, linux-arm-kernel@lists.infradead.org
+References: <20230328154105.448540-1-miquel.raynal@bootlin.com>
+ <20230328154105.448540-9-miquel.raynal@bootlin.com>
+ <8ade974e-eb68-f448-7ec5-91c6b636eacf@linaro.org>
+ <20230328184536.33f2f023@xps-13>
+ <CAAQoYRknqq7=HFAeAB=W59G5ui_t3VSt3Xa33YbXeWPtJyxQsQ@mail.gmail.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <CAAQoYRknqq7=HFAeAB=W59G5ui_t3VSt3Xa33YbXeWPtJyxQsQ@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230329_035859_854642_5F8C4358 
-X-CRM114-Status: GOOD (  21.65  )
+X-CRM114-CacheID: sfid-20230329_041233_160507_8009994F 
+X-CRM114-Status: GOOD (  22.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,68 +100,127 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAyOS4wMy4yMDIzIDEyOjAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+IEhpIEFyc2VuaXks
-Cj4gCj4gYXZrcmFzbm92QHNiZXJkZXZpY2VzLnJ1IHdyb3RlIG9uIFdlZCwgMjkgTWFyIDIwMjMg
-MTE6MzM6MzggKzAzMDA6Cj4gCj4+IE9uIDI5LjAzLjIwMjMgMTE6MDksIFR1ZG9yIEFtYmFydXMg
-d3JvdGU6Cj4+Pgo+Pj4KPj4+IE9uIDMvMjkvMjMgMDg6NDcsIEFyc2VuaXkgS3Jhc25vdiB3cm90
-ZTogIAo+Pj4+IFZhbGlkIG1hc2sgaXMgMHgzRkZGLCB3aXRob3V0IHRoaXMgcGF0Y2ggdGhlIGZv
-bGxvd2luZyBwcm9ibGVtcyB3ZXJlCj4+Pj4gZm91bmQ6Cj4+Pj4KPj4+PiAxKSBbICAgIDAuOTM4
-OTE0XSBDb3VsZCBub3QgZmluZCBhIHZhbGlkIE9ORkkgcGFyYW1ldGVyIHBhZ2UsIHRyeWluZwo+
-Pj4+ICAgICAgICAgICAgICAgICAgIGJpdC13aXNlIG1ham9yaXR5IHRvIHJlY292ZXIgaXQKPj4+
-PiAgICBbICAgIDAuOTQ3Mzg0XSBPTkZJIHBhcmFtZXRlciByZWNvdmVyeSBmYWlsZWQsIGFib3J0
-aW5nCj4+Pj4KPj4+PiAyKSBSZWFkIHdpdGggZGlzYWJsZWQgRUNDIG1vZGUgd2FzIGJyb2tlbi4K
-Pj4+Pgo+Pj4+IEZpeGVzOiA4ZmFlODU2YzUzNTAgKCJtdGQ6IHJhd25hbmQ6IG1lc29uOiBhZGQg
-c3VwcG9ydCBmb3IgQW1sb2dpYyBOQU5EIGZsYXNoIGNvbnRyb2xsZXIiKQo+Pj4+IENjOiA8U3Rh
-YmxlQHZnZXIua2VybmVsLm9yZz4KPj4+PiBTaWduZWQtb2ZmLWJ5OiBBcnNlbml5IEtyYXNub3Yg
-PEFWS3Jhc25vdkBzYmVyZGV2aWNlcy5ydT4KPj4+PiAtLS0KPj4+PiAgZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvbWVzb25fbmFuZC5jIHwgNiArKystLS0KPj4+PiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5z
-ZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPj4+Pgo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9u
-YW5kLmMKPj4+PiBpbmRleCBhMjg1NzRjMDA5MDAuLjA3NGUxNDIyNWMwNiAxMDA2NDQKPj4+PiAt
-LS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMKPj4+PiArKysgYi9kcml2ZXJz
-L210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMKPj4+PiBAQCAtMjgwLDcgKzI4MCw3IEBAIHN0YXRp
-YyB2b2lkIG1lc29uX25mY19jbWRfYWNjZXNzKHN0cnVjdCBuYW5kX2NoaXAgKm5hbmQsIGludCBy
-YXcsIGJvb2wgZGlyLAo+Pj4+ICAKPj4+PiAgCWlmIChyYXcpIHsKPj4+PiAgCQlsZW4gPSBtdGQt
-PndyaXRlc2l6ZSArIG10ZC0+b29ic2l6ZTsKPj4+PiAtCQljbWQgPSAobGVuICYgR0VOTUFTSyg1
-LCAwKSkgfCBzY3JhbWJsZXIgfCBETUFfRElSKGRpcik7Cj4+Pj4gKwkJY21kID0gKGxlbiAmIEdF
-Tk1BU0soMTMsIDApKSB8IHNjcmFtYmxlciB8IERNQV9ESVIoZGlyKTsgIAo+Pj4KPj4+IFdoYXQg
-aGFwcGVucyB3aGVuIGxlbiA+IEdFTk1BU0soMTMsIDApPyBEbyB5b3UgY2hlY2sgdGhpcyBzb21l
-d2hlcmU/ICAKPj4KPj4gJ2xlbicgd2lsbCBiZSB0cmltbWVkLiBJJ20gbm90IHN1cmUgdGhhdCB0
-aGlzIGNhc2UgaXMgcG9zc2libGUgaGVyZSwgYmVjYXVzZSBHRU5NQVNLKDEzLCAwKQo+PiBpcyBo
-YXJkd2FyZSBsaW1pdCBmb3IgdGhpcyBOQU5EIGNvbnRyb2xsZXIsIHNvICd3cml0ZXNpemUnIGFu
-ZCAnb29ic2l6ZScgd2lsbCBiZSBpbml0aWFsaXplZAo+PiB0byBmaXQgdGhpcyB2YWx1ZS4gTW9y
-ZW92ZXIgR0VOTUFTSygxMywgMCkgaXMgMTZLYiAtIGkgdGhpbmsgaXQgaXMgYmlnIGVub3VnaCBm
-b3Igc2luZ2xlCj4+IHJlYWQuIEFsc28gaSdtIG5vdCBzdXJlIHRoYXQgaXQgaXMgZ29vZCBhcHBy
-b2FjaCB0byBjaGVjayAnbGVuJyBoZXJlIC0gd2UgYXJlIGluIHRoZSBtaWRkbGUKPj4gb2YgTkFO
-RCByZWFkIHByb2Nlc3NpbmcuCj4gCj4gTm8sIHlvdSBzaG91bGQgY2hlY2sgdGhlIHBhZ2Ugc2l6
-ZSB3aWxsIG5vdCBleGNlZWQgdGhpcyBsaW1pdCBpbiB0aGUKPiBhdHRhY2ggaG9vaywgbGlrZWx5
-Lgo+IAo+IFlvdSBzaG91bGQgYWxzbyByZWZ1c2UgZXhlY19vcCBvcGVyYXRpb25zIHdpdGggYSBk
-YXRhIGxlbmd0aCBiaWdnZXIKPiB0aGFuIDE2ayAoZWl0aGVyIHdpdGggYSBtYW51YWwgY2hlY2sg
-aW4geW91ciBvd24gcGFyc2VyIG9yIGp1c3QgYnkKPiBwcm92aWRpbmcgdGhlIG1heCBzaXplIHRv
-IHRoZSBwYXJzZXIgdGFibGUsIGRlcGVuZGluZyBvbiB3aGF0J3MgdXNlZCkuCj4KCiAKT2ssIEkg
-c2VlLgoKVGhhbmtzLCBBcnNlbml5Cgo+Pgo+Pj4KPj4+IFBsZWFzZSBpbnRyb2R1Y2UgYSBtYWNy
-by9maWVsZCBmb3IgR0VOTUFTSygxMywgMCksIGhhdmluZyBzdWNoIG1hc2sKPj4+IHNjYXR0ZXJl
-ZCBhbG9uZyB0aGUgY29kZSBsb29rcyBoYWNraXNoIGFuZCBkb2Vzbid0IGhlbHAgcmVhZGFiaWxp
-dHkuCj4+PiBZb3UnbGwgZ2V0IHRvIHVzZSBGSUVMRF9QUkVQIGFzIHdlbGwuICAKPj4KPj4gQWNr
-LCBpJ2xsIGRvIGl0IGluIHYzCj4+Cj4+IFRoYW5rcywgQXJzZW5peQo+Pgo+Pj4gICAKPj4+PiAg
-CQl3cml0ZWwoY21kLCBuZmMtPnJlZ19iYXNlICsgTkZDX1JFR19DTUQpOwo+Pj4+ICAJCXJldHVy
-bjsKPj4+PiAgCX0KPj4+PiBAQCAtNTQ0LDcgKzU0NCw3IEBAIHN0YXRpYyBpbnQgbWVzb25fbmZj
-X3JlYWRfYnVmKHN0cnVjdCBuYW5kX2NoaXAgKm5hbmQsIHU4ICpidWYsIGludCBsZW4pCj4+Pj4g
-IAlpZiAocmV0KQo+Pj4+ICAJCWdvdG8gb3V0Owo+Pj4+ICAKPj4+PiAtCWNtZCA9IE5GQ19DTURf
-TjJNIHwgKGxlbiAmIEdFTk1BU0soNSwgMCkpOwo+Pj4+ICsJY21kID0gTkZDX0NNRF9OMk0gfCAo
-bGVuICYgR0VOTUFTSygxMywgMCkpOwo+Pj4+ICAJd3JpdGVsKGNtZCwgbmZjLT5yZWdfYmFzZSAr
-IE5GQ19SRUdfQ01EKTsKPj4+PiAgCj4+Pj4gIAltZXNvbl9uZmNfZHJhaW5fY21kKG5mYyk7Cj4+
-Pj4gQEAgLTU2OCw3ICs1NjgsNyBAQCBzdGF0aWMgaW50IG1lc29uX25mY193cml0ZV9idWYoc3Ry
-dWN0IG5hbmRfY2hpcCAqbmFuZCwgdTggKmJ1ZiwgaW50IGxlbikKPj4+PiAgCWlmIChyZXQpCj4+
-Pj4gIAkJcmV0dXJuIHJldDsKPj4+PiAgCj4+Pj4gLQljbWQgPSBORkNfQ01EX00yTiB8IChsZW4g
-JiBHRU5NQVNLKDUsIDApKTsKPj4+PiArCWNtZCA9IE5GQ19DTURfTTJOIHwgKGxlbiAmIEdFTk1B
-U0soMTMsIDApKTsKPj4+PiAgCXdyaXRlbChjbWQsIG5mYy0+cmVnX2Jhc2UgKyBORkNfUkVHX0NN
-RCk7Cj4+Pj4gIAo+Pj4+ICAJbWVzb25fbmZjX2RyYWluX2NtZChuZmMpOyAgCj4gCj4gCj4gVGhh
-bmtzLAo+IE1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+
+On 3/29/23 06:48, liao jaime wrote:
+> Hi Miquel
+> 
+>>
+>> Hi Tudor,
+>>
+>> tudor.ambarus@linaro.org wrote on Tue, 28 Mar 2023 17:31:46 +0100:
+>>
+>>> On 3/28/23 16:41, Miquel Raynal wrote:
+>>>> Describe this new part and provide the RWW flag for it.
+>>>>
+>>>> There is no public datasheet, but here are the sfdp tables plus base
+>>>> testing to show it works.
+>>>>
+>>>> mx25uw51245g
+>>>> c2813a
+>>>> macronix
+>>>> 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+>>>> 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+>>>> ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+>>>> 00ff0c2010d800ff00ff87790100821200e27704674630b030b0f4bdd55c
+>>>> 000000ff101000200000000000007ca14800000000008888000000000000
+>>>> 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+>>>> 727103b80000000090a3188200c069960000000000000000727100987271
+>>>> 00b8727100990000000072710098727100f872710099727100f900000000
+>>>> 00000000011501d0727106d8000086500000060100000000020001030002
+>>>> 00000000060100000000000072060002000000eec0697272717100d8f7f6
+>>>> 000a00001445988043060f0021dcffff
+>>>> 047a884cf44d9ffc2a94d3ab37b48c63  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+>>>
+>>> which hash alg was used, was it sha1? No need to resubmnit just for this.
+>>
+>> Actually git just ignored all the lines starting with '#'
+>> like if they were comments and I did not notice...
+>>
+>> I will amend my commit logs and resend.
+>>
+>>>>
+>>>> 6+0 records in
+>>>> 6+0 records out
+>>>> Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+>>>> Erased 6291456 bytes from address 0x00000000 in flash
+>>>> Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+>>>> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+>>>> *
+>>>> 0600000
+>>>> Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+>>>> Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+>>>> d24a9523db829a0df688f34b8dc76a1383b74024  qspi_test
+>>>> d24a9523db829a0df688f34b8dc76a1383b74024  qspi_read
+>>>>
+>>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>>>> ---
+>>>>  drivers/mtd/spi-nor/macronix.c | 4 ++++
+>>>>  1 file changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+>>>> index 6853ec9ae65d..b65d41e5f749 100644
+>>>> --- a/drivers/mtd/spi-nor/macronix.c
+>>>> +++ b/drivers/mtd/spi-nor/macronix.c
+>>>> @@ -82,6 +82,10 @@ static const struct flash_info macronix_nor_parts[] = {
+>>>>     { "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024)
+>>>>             NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>>>>             FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+>>>> +   { "mx25uw51245g", INFOB(0xc2813a, 0, 16 * 1024, 1024, 4)
+>>>
+>>> Sector size and nsectors shall be discovered at parse SFDP time.
+>>> Does INFOB(0xc2813a, 0, 0, 0, 4) work for you?
+>>
+>> I'll check.
+>>
+>>>
+>>>> +           PARSE_SFDP
+>>>
+>>> Yaay
+>>>
+>>>> +           FLAGS(SPI_NOR_RWW)
+>>>> +           FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+>>>
+>>> Is SPI_NOR_4B_OPCODES flag really needed?
+>>
+>> I have no idea, I took that from older code.
+>>
+>> Jaime, what do you think?
+> I think Tudor hopes that SFDP table could determine how many address bytes.
+
+No, no.
+
+:) and hope and programming don't get along.
+
+Does this flash define the 4bait table? Can you add a print in
+parse_4bait table and check if SNOR_F_4B_OPCODES is set? If yes, the
+fixup flag is not needed.
+
+SNOR_F_4B_OPCODES is an indication that the flash supports dedicated
+opcodes for 4byte address, without the need to change the address mode
+to 4 byte. When 4B_OPCODES are supported, we prefer not changing the
+address mode, because when changing to 4 byte address mode, the state is
+kept at reset (or power loss) and flashes might not be able to boot at
+lower layers (u-boot for example).
+
+So I'd try:
+{ "mx25uw51245g", INFOB(0xc2813a, 0, 0, 0, 4)
+		PARSE_SFDP
+		FLAGS(SPI_NOR_RWW) },
+
+In the future we'd like to add a sfdp-decoder in mtd-utils to decode the
+sfdp dump and ease the review and avoid such questions, but we couldn't
+allocate the time to implement it up to now. Meh, we're doing it at best
+effort, in our spare time. Volunteers?
+
+Cheers,
+ta
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
