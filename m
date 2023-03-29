@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95995C74A5B
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 11:43:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DD2CC761A6
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 13:01:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eQZRsNhNl7wZK1zxh2lnG+mP5uQoRkYDfvw7UVAHYFc=; b=LoSgikMMzQJcmC
-	pU1fSpazA7tRvenu4uno3jv5f17uCgUysBhzm9Ocw4wSS48zYdUO9l8YzFIl7oqa21IyarSw/VxAe
-	uzYHJ4107AWbBTUEuAW5Ms0ojAnrEGoAjz7Qcqlx23CudxpEWMf/tU0WRLn7L+s5wbbmtj+l+HsjB
-	CP//adHsOXJDpZKZr8sDLk0bOldGRMMSlH6DI70IAxDcbAClfX+14THEAaDmPdkWF0JuR8Hm7eqp9
-	ID8UzLADk+KY09RcnTIbSpnrD/0Ak2ViS1ZgRPMB5z0I8vvFco409QpwHshrQxv1z4VkyN7Laj0MB
-	gBPkkdi2g5Vk7eXj3mYQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SZTFCEojJ7LUzolwrN982FAK0veiMMu6zFvyN5edmkc=; b=jjQBR9/J032uW+
+	U+adKQZn0k3mfcPQ70sXmvdlHDZjgugGyKRhhxl6TBn5q6rcm9bFQyAD/fmd8KrfYbs9opTQRdYEY
+	8TBD5xQnryVE2zc5SfJXCShbmivJqZKdewNuHucCDIt3SbrrsDxmtEp6gYqjU2HGW6XyB4rY7dyuO
+	sXur0SIXhMPSOqbtd/O2DXE+KlavvMKXy3vwel3kBm2owt6ju2q0C8rblC++CdDNJLTIm78pLoaZ4
+	buW4FYU17AP1NJ9l5pKW08XX5n6/MYlz2u6q1mGwKOzTtk4Vxn9722d3usGcithS5NC+kJfkTFLhB
+	Ef+FJ9PAXmLH1R9STZNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1phUDT-0002zK-2r;
-	Wed, 29 Mar 2023 11:43:47 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1phVPn-000Ghw-1a;
+	Wed, 29 Mar 2023 13:00:35 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1phUDP-0002y4-1G
-	for linux-mtd@lists.infradead.org;
-	Wed, 29 Mar 2023 11:43:46 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id DA99F5FD1E;
-	Wed, 29 Mar 2023 14:43:31 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1680090211;
-	bh=w/vWujC1+XPSD+C2mUNWQ7JnaRNnxNuI+zCkN445pWA=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=Rdul/wsL/UelP9MMB/QTEpG1KwmjxGoHF5j4cXcrqol5vib8N42J7Ggu73f+9X+4G
-	 3N60wx4yALxiz2TY+hOU0UVPhzI76Gx4eCoK9iBrEayHMWL5M55Er6NsCsL4cBXbUY
-	 H4iF788/DsBpvRNOz7HLRtpkBXRtf/rVHHFWxH8yx1zBRYM5Yu5jFBmmN5LbB1OrxP
-	 uabhSOzf+z8Gcp0vLbni6ANNOYjoxnaqph00ATpWLUtL5hoqmz+IPiU8yZLFvziWH5
-	 uO7MG+Lb3K6gaFtTm3osCnvMUzbNzA1EV3b7N3LJLgFNDCpJ/uLgI2KuGL2kuYAMF8
-	 XxooZjeiXecpw==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Wed, 29 Mar 2023 14:43:30 +0300 (MSK)
-From: Martin Kurbanov <mmkurbanov@sberdevices.ru>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Dmitry Rokosov
-	<ddrokosov@sberdevices.ru>, Chuanhong Guo <gch981213@gmail.com>, Aidan
- MacDonald <aidanmacdonald.0x0@gmail.com>, Felix Matouschek
-	<felix@matouschek.org>, <kernel@kempniu.pl>
-CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<kernel@sberdevices.ru>, Martin Kurbanov <mmkurbanov@sberdevices.ru>
-Subject: [PATCH v4] mtd: spinand: add support for ESMT F50x1G41LB
-Date: Wed, 29 Mar 2023 14:42:40 +0300
-Message-ID: <20230329114240.378722-1-mmkurbanov@sberdevices.ru>
-X-Mailer: git-send-email 2.40.0
+	id 1phUOD-0004Gx-1Y;
+	Wed, 29 Mar 2023 11:54:57 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 1D68920004;
+	Wed, 29 Mar 2023 11:54:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1680090887;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=knOYXRtP8SDqLpq0crhNzHSBYLrxhwLGdaqSHiVqPb0=;
+	b=T/wJHysqbeLok10dBlcRA7RZch5ah3xOSzNOpgpMcysk4eGDPLKSKWaZDb/HivvQVIi3zW
+	DBIr/23gtuVqdHf4SFNU7f6Duh+wP604UNJ6x2nbyr+1E3FnDNbMdcLhqFpQ3FSei8neGB
+	4DfsCSUeAAF7zxCLaHcieTD9MOPqV5SISf40/wypSgAyrbR0LjzSo5s4R3BuJVDTc38bV0
+	UXGcOdQk0NKZ7NuMC+mY6fWPH6Mi50E1MMQlF1e7uX+nWvAQU+fsV6D8Wy1JVFWL+28LDR
+	rWM5+SeewGtwO9aE2ynLHdYpbSu0I7+O/pAiJv+fueudXcInsGIbrPoJxbOlgA==
+Date: Wed, 29 Mar 2023 13:54:42 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: liao jaime <jaimeliao.tw@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Pratyush Yadav
+ <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, Julien Su <juliensu@mxic.com.tw>, Jaime Liao
+ <jaimeliao@mxic.com.tw>, Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, Michal Simek <monstr@monstr.eu>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 8/8] mtd: spi-nor: macronix: Add support for
+ mx25uw51245g with RWW
+Message-ID: <20230329135442.20669531@xps-13>
+In-Reply-To: <f243010c-72e3-6b59-6696-af7c7cdc6596@linaro.org>
+References: <20230328154105.448540-1-miquel.raynal@bootlin.com>
+	<20230328154105.448540-9-miquel.raynal@bootlin.com>
+	<8ade974e-eb68-f448-7ec5-91c6b636eacf@linaro.org>
+	<20230328184536.33f2f023@xps-13>
+	<CAAQoYRknqq7=HFAeAB=W59G5ui_t3VSt3Xa33YbXeWPtJyxQsQ@mail.gmail.com>
+	<f243010c-72e3-6b59-6696-af7c7cdc6596@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/03/29 07:09:00 #21026578
-X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230329_044343_799480_505472E4 
-X-CRM114-Status: GOOD (  22.45  )
+X-CRM114-CacheID: sfid-20230329_045453_868959_B9ED7EBF 
+X-CRM114-Status: GOOD (  31.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,231 +78,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Chuanhong Guo <gch981213@gmail.com>
-
-This patch adds support for ESMT F50L1G41LB and F50D1G41LB.
-It seems that ESMT likes to use random JEDEC ID from other vendors.
-Their 1G chips uses 0xc8 from GigaDevice and 2G/4G chips uses 0x2c from
-Micron. For this reason, the ESMT entry is named esmt_c8 with explicit
-JEDEC ID in variable name.
-
-Datasheets:
-https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F50L1G41LB(2M).pdf
-https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F50D1G41LB(2M).pdf
-
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-Signed-off-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
-Signed-off-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
-Tested-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
----
- The implementation has been tested on the Amlogic A113L SoC based
- device connected with ESMT F50L1G41LB spinand flash.
-
- Changes v4 since v3 at [1]:
-   - rebase on top of nand/next
-
- Changes v3 since v2 at [2]:
-   - fix OOB layout
-
- Changes v2 since v1 at [3]:
-   - drop 0x7f padding from SPINAND_ID.
-
- Links:
-   [1] https://lore.kernel.org/lkml/20230322151625.791131-1-mmkurbanov@sberdevices.ru/
-   [2] https://lore.kernel.org/lkml/20220413083824.247136-1-gch981213@gmail.com/
-   [3] https://lore.kernel.org/lkml/20220413042337.160263-1-gch981213@gmail.com/
-
- drivers/mtd/nand/spi/Makefile |   3 +-
- drivers/mtd/nand/spi/core.c   |   1 +
- drivers/mtd/nand/spi/esmt.c   | 135 ++++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h   |   1 +
- 4 files changed, 139 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/esmt.c
-
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 4ec973b8b6bf..cd8b66bf7740 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o alliancememory.o ato.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o xtx.o
-+spinand-objs := core.o alliancememory.o ato.o esmt.o gigadevice.o macronix.o
-+spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 638391f77d8c..393ff37f0d23 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -939,6 +939,7 @@ static const struct nand_ops spinand_ops = {
- static const struct spinand_manufacturer *spinand_manufacturers[] = {
- 	&alliancememory_spinand_manufacturer,
- 	&ato_spinand_manufacturer,
-+	&esmt_c8_spinand_manufacturer,
- 	&gigadevice_spinand_manufacturer,
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
-diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
-new file mode 100644
-index 000000000000..1a3ffb982335
---- /dev/null
-+++ b/drivers/mtd/nand/spi/esmt.c
-@@ -0,0 +1,135 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Author:
-+ *	Chuanhong Guo <gch981213@gmail.com> - the main driver logic
-+ *	Martin Kurbanov <mmkurbanov@sberdevices.ru> - OOB layout
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+/* ESMT uses GigaDevice 0xc8 JECDEC ID on some SPI NANDs */
-+#define SPINAND_MFR_ESMT_C8			0xc8
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+			   SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+			   SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+			   SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+			   SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+			   SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+			   SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+			   SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+/*
-+ * OOB spare area map (64 bytes)
-+ *
-+ * Bad Block Markers
-+ * filled by HW and kernel                 Reserved
-+ *   |                 +-----------------------+-----------------------+
-+ *   |                 |                       |                       |
-+ *   |                 |    OOB free data Area |non ECC protected      |
-+ *   |   +-------------|-----+-----------------|-----+-----------------|-----+
-+ *   |   |             |     |                 |     |                 |     |
-+ * +-|---|----------+--|-----|--------------+--|-----|--------------+--|-----|--------------+
-+ * | |   | section0 |  |     |    section1  |  |     |    section2  |  |     |    section3  |
-+ * +-v-+-v-+---+----+--v--+--v--+-----+-----+--v--+--v--+-----+-----+--v--+--v--+-----+-----+
-+ * |   |   |   |    |     |     |     |     |     |     |     |     |     |     |     |     |
-+ * |0:1|2:3|4:7|8:15|16:17|18:19|20:23|24:31|32:33|34:35|36:39|40:47|48:49|50:51|52:55|56:63|
-+ * |   |   |   |    |     |     |     |     |     |     |     |     |     |     |     |     |
-+ * +---+---+-^-+--^-+-----+-----+--^--+--^--+-----+-----+--^--+--^--+-----+-----+--^--+--^--+
-+ *           |    |                |     |                 |     |                 |     |
-+ *           |    +----------------|-----+-----------------|-----+-----------------|-----+
-+ *           |             ECC Area|(Main + Spare) - filled|by ESMT NAND HW        |
-+ *           |                     |                       |                       |
-+ *           +---------------------+-----------------------+-----------------------+
-+ *                         OOB ECC protected Area - not used due to
-+ *                         partial programming from some filesystems
-+ *                             (like JFFS2 with cleanmarkers)
-+ */
-+
-+#define ESMT_OOB_SECTION_COUNT			4
-+#define ESMT_OOB_SECTION_SIZE(nand) \
-+	(nanddev_per_page_oobsize(nand) / ESMT_OOB_SECTION_COUNT)
-+#define ESMT_OOB_FREE_SIZE(nand) \
-+	(ESMT_OOB_SECTION_SIZE(nand) / 2)
-+#define ESMT_OOB_ECC_SIZE(nand) \
-+	(ESMT_OOB_SECTION_SIZE(nand) - ESMT_OOB_FREE_SIZE(nand))
-+#define ESMT_OOB_BBM_SIZE			2
-+
-+static int f50l1g41lb_ooblayout_ecc(struct mtd_info *mtd, int section,
-+				    struct mtd_oob_region *region)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+
-+	if (section >= ESMT_OOB_SECTION_COUNT)
-+		return -ERANGE;
-+
-+	region->offset = section * ESMT_OOB_SECTION_SIZE(nand) +
-+			 ESMT_OOB_FREE_SIZE(nand);
-+	region->length = ESMT_OOB_ECC_SIZE(nand);
-+
-+	return 0;
-+}
-+
-+static int f50l1g41lb_ooblayout_free(struct mtd_info *mtd, int section,
-+				     struct mtd_oob_region *region)
-+{
-+	struct nand_device *nand = mtd_to_nanddev(mtd);
-+
-+	if (section >= ESMT_OOB_SECTION_COUNT)
-+		return -ERANGE;
-+
-+	/*
-+	 * Reserve space for bad blocks markers (section0) and
-+	 * reserved bytes (sections 1-3)
-+	 */
-+	region->offset = section * ESMT_OOB_SECTION_SIZE(nand) + 2;
-+
-+	/* Use only 2 non-protected ECC bytes per each OOB section */
-+	region->length = 2;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
-+	.ecc = f50l1g41lb_ooblayout_ecc,
-+	.free = f50l1g41lb_ooblayout_free,
-+};
-+
-+static const struct spinand_info esmt_c8_spinand_table[] = {
-+	SPINAND_INFO("F50L1G41LB",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
-+	SPINAND_INFO("F50D1G41LB",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
-+};
-+
-+static const struct spinand_manufacturer_ops esmt_spinand_manuf_ops = {
-+};
-+
-+const struct spinand_manufacturer esmt_c8_spinand_manufacturer = {
-+	.id = SPINAND_MFR_ESMT_C8,
-+	.name = "ESMT",
-+	.chips = esmt_c8_spinand_table,
-+	.nchips = ARRAY_SIZE(esmt_c8_spinand_table),
-+	.ops = &esmt_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 01be9f0f008a..3e285c09d16d 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -262,6 +262,7 @@ struct spinand_manufacturer {
- /* SPI NAND manufacturers */
- extern const struct spinand_manufacturer alliancememory_spinand_manufacturer;
- extern const struct spinand_manufacturer ato_spinand_manufacturer;
-+extern const struct spinand_manufacturer esmt_c8_spinand_manufacturer;
- extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
---
-2.40.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVHVkb3IsCgp0dWRvci5hbWJhcnVzQGxpbmFyby5vcmcgd3JvdGUgb24gV2VkLCAyOSBNYXIg
+MjAyMyAxMjoxMjoyOSArMDEwMDoKCj4gT24gMy8yOS8yMyAwNjo0OCwgbGlhbyBqYWltZSB3cm90
+ZToKPiA+IEhpIE1pcXVlbAo+ID4gICAKPiA+Pgo+ID4+IEhpIFR1ZG9yLAo+ID4+Cj4gPj4gdHVk
+b3IuYW1iYXJ1c0BsaW5hcm8ub3JnIHdyb3RlIG9uIFR1ZSwgMjggTWFyIDIwMjMgMTc6MzE6NDYg
+KzAxMDA6Cj4gPj4gIAo+ID4+PiBPbiAzLzI4LzIzIDE2OjQxLCBNaXF1ZWwgUmF5bmFsIHdyb3Rl
+OiAgCj4gPj4+PiBEZXNjcmliZSB0aGlzIG5ldyBwYXJ0IGFuZCBwcm92aWRlIHRoZSBSV1cgZmxh
+ZyBmb3IgaXQuCj4gPj4+Pgo+ID4+Pj4gVGhlcmUgaXMgbm8gcHVibGljIGRhdGFzaGVldCwgYnV0
+IGhlcmUgYXJlIHRoZSBzZmRwIHRhYmxlcyBwbHVzIGJhc2UKPiA+Pj4+IHRlc3RpbmcgdG8gc2hv
+dyBpdCB3b3Jrcy4KPiA+Pj4+Cj4gPj4+PiBteDI1dXc1MTI0NWcKPiA+Pj4+IGMyODEzYQo+ID4+
+Pj4gbWFjcm9uaXgKPiA+Pj4+IDUzNDY0NDUwMDgwMTA0ZmQwMDA3MDExNDQwMDAwMGZmODcwMTAx
+MWM5MDAwMDBmZjBhMDAwMTA4MDAwMQo+ID4+Pj4gMDBmZjA1MDAwMTA1MjAwMTAwZmY4NDAwMDEw
+MjM0MDEwMGZmMDAwMDAwMDAwMDAwMDAwMGZmZmZmZmZmCj4gPj4+PiBmZmZmZmZmZmU1MjA4YWZm
+ZmZmZmZmMWYwMGZmMDBmZjAwZmYwMGZmZWVmZmZmZmZmZmZmMDBmZmZmZmYKPiA+Pj4+IDAwZmYw
+YzIwMTBkODAwZmYwMGZmODc3OTAxMDA4MjEyMDBlMjc3MDQ2NzQ2MzBiMDMwYjBmNGJkZDU1Ywo+
+ID4+Pj4gMDAwMDAwZmYxMDEwMDAyMDAwMDAwMDAwMDAwMDdjYTE0ODAwMDAwMDAwMDA4ODg4MDAw
+MDAwMDAwMDAwCj4gPj4+PiAwMDQwMGZkMWZmZjMwZmQxZmZmMzAwMDUwMDkwMDAwNTAwYjEwMDJi
+MDA5NTAwMmIwMDk2NzI3MTAzYjgKPiA+Pj4+IDcyNzEwM2I4MDAwMDAwMDA5MGEzMTg4MjAwYzA2
+OTk2MDAwMDAwMDAwMDAwMDAwMDcyNzEwMDk4NzI3MQo+ID4+Pj4gMDBiODcyNzEwMDk5MDAwMDAw
+MDA3MjcxMDA5ODcyNzEwMGY4NzI3MTAwOTk3MjcxMDBmOTAwMDAwMDAwCj4gPj4+PiAwMDAwMDAw
+MDAxMTUwMWQwNzI3MTA2ZDgwMDAwODY1MDAwMDAwNjAxMDAwMDAwMDAwMjAwMDEwMzAwMDIKPiA+
+Pj4+IDAwMDAwMDAwMDYwMTAwMDAwMDAwMDAwMDcyMDYwMDAyMDAwMDAwZWVjMDY5NzI3MjcxNzEw
+MGQ4ZjdmNgo+ID4+Pj4gMDAwYTAwMDAxNDQ1OTg4MDQzMDYwZjAwMjFkY2ZmZmYKPiA+Pj4+IDA0
+N2E4ODRjZjQ0ZDlmZmMyYTk0ZDNhYjM3YjQ4YzYzICAvc3lzL2J1cy9zcGkvZGV2aWNlcy9zcGkw
+LjAvc3BpLW5vci9zZmRwICAKPiA+Pj4KPiA+Pj4gd2hpY2ggaGFzaCBhbGcgd2FzIHVzZWQsIHdh
+cyBpdCBzaGExPyBObyBuZWVkIHRvIHJlc3VibW5pdCBqdXN0IGZvciB0aGlzLiAgCj4gPj4KPiA+
+PiBBY3R1YWxseSBnaXQganVzdCBpZ25vcmVkIGFsbCB0aGUgbGluZXMgc3RhcnRpbmcgd2l0aCAn
+IycKPiA+PiBsaWtlIGlmIHRoZXkgd2VyZSBjb21tZW50cyBhbmQgSSBkaWQgbm90IG5vdGljZS4u
+Lgo+ID4+Cj4gPj4gSSB3aWxsIGFtZW5kIG15IGNvbW1pdCBsb2dzIGFuZCByZXNlbmQuCj4gPj4g
+IAo+ID4+Pj4KPiA+Pj4+IDYrMCByZWNvcmRzIGluCj4gPj4+PiA2KzAgcmVjb3JkcyBvdXQKPiA+
+Pj4+IENvcGllZCA2MjkxNDU2IGJ5dGVzIGZyb20gcXNwaV90ZXN0IHRvIGFkZHJlc3MgMHgwMDAw
+MDAwMCBpbiBmbGFzaAo+ID4+Pj4gRXJhc2VkIDYyOTE0NTYgYnl0ZXMgZnJvbSBhZGRyZXNzIDB4
+MDAwMDAwMDAgaW4gZmxhc2gKPiA+Pj4+IENvcGllZCA2MjkxNDU2IGJ5dGVzIGZyb20gYWRkcmVz
+cyAweDAwMDAwMDAwIGluIGZsYXNoIHRvIHFzcGlfcmVhZAo+ID4+Pj4gMDAwMDAwMCBmZmZmIGZm
+ZmYgZmZmZiBmZmZmIGZmZmYgZmZmZiBmZmZmIGZmZmYKPiA+Pj4+ICoKPiA+Pj4+IDA2MDAwMDAK
+PiA+Pj4+IENvcGllZCA2MjkxNDU2IGJ5dGVzIGZyb20gcXNwaV90ZXN0IHRvIGFkZHJlc3MgMHgw
+MDAwMDAwMCBpbiBmbGFzaAo+ID4+Pj4gQ29waWVkIDYyOTE0NTYgYnl0ZXMgZnJvbSBhZGRyZXNz
+IDB4MDAwMDAwMDAgaW4gZmxhc2ggdG8gcXNwaV9yZWFkCj4gPj4+PiBkMjRhOTUyM2RiODI5YTBk
+ZjY4OGYzNGI4ZGM3NmExMzgzYjc0MDI0ICBxc3BpX3Rlc3QKPiA+Pj4+IGQyNGE5NTIzZGI4Mjlh
+MGRmNjg4ZjM0YjhkYzc2YTEzODNiNzQwMjQgIHFzcGlfcmVhZAo+ID4+Pj4KPiA+Pj4+IFNpZ25l
+ZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gPj4+
+PiAtLS0KPiA+Pj4+ICBkcml2ZXJzL210ZC9zcGktbm9yL21hY3Jvbml4LmMgfCA0ICsrKysKPiA+
+Pj4+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspCj4gPj4+Pgo+ID4+Pj4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvbWFjcm9uaXguYyBiL2RyaXZlcnMvbXRkL3NwaS1u
+b3IvbWFjcm9uaXguYwo+ID4+Pj4gaW5kZXggNjg1M2VjOWFlNjVkLi5iNjVkNDFlNWY3NDkgMTAw
+NjQ0Cj4gPj4+PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL21hY3Jvbml4LmMKPiA+Pj4+ICsr
+KyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvbWFjcm9uaXguYwo+ID4+Pj4gQEAgLTgyLDYgKzgyLDEw
+IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyBtYWNyb25peF9ub3JfcGFydHNbXSA9
+IHsKPiA+Pj4+ICAgICB7ICJteDI1dTUxMjQ1ZyIsIElORk8oMHhjMjI1M2EsIDAsIDY0ICogMTAy
+NCwgMTAyNCkKPiA+Pj4+ICAgICAgICAgICAgIE5PX1NGRFBfRkxBR1MoU0VDVF80SyB8IFNQSV9O
+T1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpCj4gPj4+PiAgICAgICAgICAgICBGSVhV
+UF9GTEFHUyhTUElfTk9SXzRCX09QQ09ERVMpIH0sCj4gPj4+PiArICAgeyAibXgyNXV3NTEyNDVn
+IiwgSU5GT0IoMHhjMjgxM2EsIDAsIDE2ICogMTAyNCwgMTAyNCwgNCkgIAo+ID4+Pgo+ID4+PiBT
+ZWN0b3Igc2l6ZSBhbmQgbnNlY3RvcnMgc2hhbGwgYmUgZGlzY292ZXJlZCBhdCBwYXJzZSBTRkRQ
+IHRpbWUuCj4gPj4+IERvZXMgSU5GT0IoMHhjMjgxM2EsIDAsIDAsIDAsIDQpIHdvcmsgZm9yIHlv
+dT8gIAo+ID4+Cj4gPj4gSSdsbCBjaGVjay4KPiA+PiAgCj4gPj4+ICAKPiA+Pj4+ICsgICAgICAg
+ICAgIFBBUlNFX1NGRFAgIAo+ID4+Pgo+ID4+PiBZYWF5Cj4gPj4+ICAKPiA+Pj4+ICsgICAgICAg
+ICAgIEZMQUdTKFNQSV9OT1JfUldXKQo+ID4+Pj4gKyAgICAgICAgICAgRklYVVBfRkxBR1MoU1BJ
+X05PUl80Ql9PUENPREVTKSB9LCAgCj4gPj4+Cj4gPj4+IElzIFNQSV9OT1JfNEJfT1BDT0RFUyBm
+bGFnIHJlYWxseSBuZWVkZWQ/ICAKPiA+Pgo+ID4+IEkgaGF2ZSBubyBpZGVhLCBJIHRvb2sgdGhh
+dCBmcm9tIG9sZGVyIGNvZGUuCj4gPj4KPiA+PiBKYWltZSwgd2hhdCBkbyB5b3UgdGhpbms/ICAK
+PiA+IEkgdGhpbmsgVHVkb3IgaG9wZXMgdGhhdCBTRkRQIHRhYmxlIGNvdWxkIGRldGVybWluZSBo
+b3cgbWFueSBhZGRyZXNzIGJ5dGVzLiAgCj4gCj4gTm8sIG5vLgo+IAo+IDopIGFuZCBob3BlIGFu
+ZCBwcm9ncmFtbWluZyBkb24ndCBnZXQgYWxvbmcuCj4gCj4gRG9lcyB0aGlzIGZsYXNoIGRlZmlu
+ZSB0aGUgNGJhaXQgdGFibGU/IENhbiB5b3UgYWRkIGEgcHJpbnQgaW4KPiBwYXJzZV80YmFpdCB0
+YWJsZSBhbmQgY2hlY2sgaWYgU05PUl9GXzRCX09QQ09ERVMgaXMgc2V0PyBJZiB5ZXMsIHRoZQo+
+IGZpeHVwIGZsYWcgaXMgbm90IG5lZWRlZC4KCkFscmlnaHQsIHdpbGwgY2hlY2suCgo+IAo+IFNO
+T1JfRl80Ql9PUENPREVTIGlzIGFuIGluZGljYXRpb24gdGhhdCB0aGUgZmxhc2ggc3VwcG9ydHMg
+ZGVkaWNhdGVkCj4gb3Bjb2RlcyBmb3IgNGJ5dGUgYWRkcmVzcywgd2l0aG91dCB0aGUgbmVlZCB0
+byBjaGFuZ2UgdGhlIGFkZHJlc3MgbW9kZQo+IHRvIDQgYnl0ZS4gV2hlbiA0Ql9PUENPREVTIGFy
+ZSBzdXBwb3J0ZWQsIHdlIHByZWZlciBub3QgY2hhbmdpbmcgdGhlCj4gYWRkcmVzcyBtb2RlLCBi
+ZWNhdXNlIHdoZW4gY2hhbmdpbmcgdG8gNCBieXRlIGFkZHJlc3MgbW9kZSwgdGhlIHN0YXRlIGlz
+Cj4ga2VwdCBhdCByZXNldCAob3IgcG93ZXIgbG9zcykgYW5kIGZsYXNoZXMgbWlnaHQgbm90IGJl
+IGFibGUgdG8gYm9vdCBhdAo+IGxvd2VyIGxheWVycyAodS1ib290IGZvciBleGFtcGxlKS4KCk9o
+IHllYWggSSByZW1lbWJlci4KCj4gCj4gU28gSSdkIHRyeToKPiB7ICJteDI1dXc1MTI0NWciLCBJ
+TkZPQigweGMyODEzYSwgMCwgMCwgMCwgNCkKPiAJCVBBUlNFX1NGRFAKPiAJCUZMQUdTKFNQSV9O
+T1JfUldXKSB9LAoKQ2xlYXIhCgo+IAo+IEluIHRoZSBmdXR1cmUgd2UnZCBsaWtlIHRvIGFkZCBh
+IHNmZHAtZGVjb2RlciBpbiBtdGQtdXRpbHMgdG8gZGVjb2RlIHRoZQo+IHNmZHAgZHVtcCBhbmQg
+ZWFzZSB0aGUgcmV2aWV3IGFuZCBhdm9pZCBzdWNoIHF1ZXN0aW9ucywgYnV0IHdlIGNvdWxkbid0
+Cj4gYWxsb2NhdGUgdGhlIHRpbWUgdG8gaW1wbGVtZW50IGl0IHVwIHRvIG5vdy4gTWVoLCB3ZSdy
+ZSBkb2luZyBpdCBhdCBiZXN0Cj4gZWZmb3J0LCBpbiBvdXIgc3BhcmUgdGltZS4gVm9sdW50ZWVy
+cz8KCkkgcmVhbGx5IGxpa2UgdGhlIGlkZWEhIFdvdWxkIGJlIGV4Y2VsbGVudC4KClRoYW5rcywK
+TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
