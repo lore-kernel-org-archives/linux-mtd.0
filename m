@@ -4,83 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E780EC74A5B
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 17:29:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DE85C74A5B
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 21:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LLGmlZAPyc3EhKlxOtUoZxl+573XM/zCR6U15TyX1dg=; b=La8xkdy1r4KMo6
-	eLG0UqTVldKim8xugwLRXFpJXavwayPT3d90x4+aGzW+1EW997J7cmGCsG7FeFMwhy835K14XF9li
-	NZW+FXrLwHJGTubvXldgxZw00VhPlAae00FLhllg+qdfHG0HR0chAeCkghJG7S/4+q9YcrnaZHdVF
-	rrkZzXNjZxIT0PeQoAgpqY35GUxI8DRNsr+KYGFbBFIbpKXneHj4eRyWSQsCeWa9ZdM1uo5fu5Zw8
-	DALOdLZyvu0PUN8VJwFm5qx00gCe1f3lqoccFZVjC+QGDoRMy7EIInAzvIKldHqgy36qvhAuHVpc+
-	092UB/IlJuWObZ3wda3w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=OJownQvfx+OgsOzKvwkysfe8wAKBw3XRWXSVjNi0+ak=; b=aKytH19j4Z3ibZYWuydQtky/7M
+	eyleHAe2PFkGU7I7U296ChpLQlh8CA+u14uMh9vvYXZjyI/F2Ap5tJvjpHB/0mgMLH2mCYIlb8flL
+	2avH5JVmBYrA9H0cmKvJifn8j5bhgIHsrFJYGpuiBLk+PenDBLWuRNqn/NW6SAJAMIorQ8v9WUz9v
+	TRUltx6653/NSJ4TbTgWWcHBJN//5B+VvY1HxPKWKC4GA+gdKb7MyEDUN+IEqY7ITVCFmw5KmF6Do
+	qrxy0tgWaD5RcIXgFYLdwjmMlSHbyeMGjsl0OkrX43Slfvo/pX86ni55EIraxQy+bn0rm0faMTeko
+	U8OjjZTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1phZbA-001J0I-2q;
-	Wed, 29 Mar 2023 17:28:36 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1phdQa-001u9j-06;
+	Wed, 29 Mar 2023 21:33:56 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1phZb8-001Iza-1z
+	id 1phdQW-001u8e-2B
 	for linux-mtd@lists.infradead.org;
-	Wed, 29 Mar 2023 17:28:35 +0000
-Received: by mail-wr1-x432.google.com with SMTP id e18so16548370wra.9
-        for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2023 10:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680110910;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rZCNxr+oj4cFsqW1MLQR23HStFyvDDXQrrpexBrJfQA=;
-        b=vlogCfIt59EF3vLeHX5VIm0sLO1Z11g5kuWxjI6vgJBQJPXhBrFnTXxxLzCqj3CPsI
-         mjdMYojOh6lJZGN+tsAPuif6kzwUCSJNvjJjYcDNSEsfPsYBVUHtjZGYJfyPqXxqoJty
-         UvI1vbLP1KZqiCPD9mEmtx9NFGzuEukDdVZtbMC1rfyenzGdyhdtJdxi44+0LujyFHvb
-         0BnL0rf/6KVBUY6MgDXx5qQgBBV9TsNVI4k0NKmgpuMvAZAuCVWkpC97sVIhIhPWa9J5
-         ykGC3t84AikAZRGT22dhJE1p/83FbREZVV02EQXxXmz8S1FXjOG6PK18jOqyqdL9q5oI
-         64GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680110910;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rZCNxr+oj4cFsqW1MLQR23HStFyvDDXQrrpexBrJfQA=;
-        b=lHA6egXJD3nTZrSSNtqASqwV+JIevlWrIQ66Mz57g9u0ekegWCau6LQTFgXL9fJ0rU
-         iJDkl68X+ahszTKnWEBtXtUv3ZfFlNa2BTYpW1zovAyIS7pYa1JCxzhOZun5t0KIgUHD
-         vctz3ZiiC44IeWPHqmc3JWG6j5g916zeGopQw6H/UhGisa6vB4tMPu2ic0OQ/tx1q8Xl
-         /ERzkzamnXPWyiFwb0MKDbpH3GiTt2hYKEBXF0gFLidJAmlXjd4mbgtC+hJXJuiKXyw0
-         njPkNbWT32q3wFSEWUoDllLsL3CHBxCYD0oFQUyE8hbqG021Vu3RnbnFVLAUmk5eon8K
-         ILBA==
-X-Gm-Message-State: AAQBX9cCBLalhP7crVjkhaNsN8jttEUYtcsORfZkKDzSNBOCSu2ggoi2
-	7bZXl26guYwSJtoViYp/xQZKkw==
-X-Google-Smtp-Source: AKy350ZGeUJMVibVvn0q1wY24TPjN8cv1M4NvOz7Wgb304/gu1m4+JBV7UoNb0UbLTMsjpegdAlJ2g==
-X-Received: by 2002:adf:f3c9:0:b0:2ce:9da7:6d42 with SMTP id g9-20020adff3c9000000b002ce9da76d42mr15295791wrp.38.1680110910682;
-        Wed, 29 Mar 2023 10:28:30 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.91])
-        by smtp.gmail.com with ESMTPSA id k16-20020a5d6d50000000b002cff0e213ddsm30645860wri.14.2023.03.29.10.28.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Mar 2023 10:28:30 -0700 (PDT)
-Message-ID: <03f2edb2-e747-6952-ac01-d642dfae4fcf@linaro.org>
-Date: Wed, 29 Mar 2023 18:28:29 +0100
+	Wed, 29 Mar 2023 21:33:54 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 8E6B760719A6;
+	Wed, 29 Mar 2023 23:33:41 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id 2anPznKkB6Ly; Wed, 29 Mar 2023 23:33:41 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id E19E8609D2FA;
+	Wed, 29 Mar 2023 23:33:40 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Jhtf2j6S2kn1; Wed, 29 Mar 2023 23:33:40 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id C3AE764548A7;
+	Wed, 29 Mar 2023 23:33:40 +0200 (CEST)
+Date: Wed, 29 Mar 2023 23:33:40 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: chengzhihao1 <chengzhihao1@huawei.com>, 
+	Nicolas Schichan <nschichan@freebox.fr>, 
+	George Kennedy <george.kennedy@oracle.com>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, 
+	yi zhang <yi.zhang@huawei.com>
+Message-ID: <53992166.434647.1680125620704.JavaMail.zimbra@nod.at>
+In-Reply-To: <20230329175421.3bd4906e@xps-13>
+References: <20230306013308.3884777-1-chengzhihao1@huawei.com> <20230324161923.1456371-1-nschichan@freebox.fr> <2c2c2ce9-795b-4f76-cde9-db4a4066dcc1@huawei.com> <20230329175421.3bd4906e@xps-13>
+Subject: Re: [PATCH -next v3] ubi: Fix failure attaching when vid_hdr offset
+ equals to (sub)page size
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v4 11/11] mtd: spi-nor: spansion: Determine current
- address mode
-Content-Language: en-US
-To: michael@walle.cc, pratyush@kernel.org
-Cc: miquel.raynal@bootlin.com, richard@nod.at, Takahiro.Kuwano@infineon.com,
- bacem.daassi@infineon.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20230322064033.2370483-1-tudor.ambarus@linaro.org>
- <20230322064033.2370483-12-tudor.ambarus@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230322064033.2370483-12-tudor.ambarus@linaro.org>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Fix failure attaching when vid_hdr offset equals to (sub)page size
+Thread-Index: XAujqRaYgCyfoBWH7qHDWkn/zHQjaw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230329_102834_680291_510AEAAF 
-X-CRM114-Status: UNSURE (   7.85  )
+X-CRM114-CacheID: sfid-20230329_143352_885072_876181DD 
+X-CRM114-Status: UNSURE (   2.98  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -93,23 +78,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 3/22/23 06:40, Tudor Ambarus wrote:
-> +static int cypress_nor_set_addr_mode_nbytes(struct spi_nor *nor)
-> +{
-> +	u8 addr_mode;
-> +	struct spi_mem_op op;
-> +	int ret;
-> +
-
-reverse xmas tree in next patch set
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIk1pcXVlbCBSYXluYWwiIDxt
+aXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+PiBUaGFua3MgZm9yIHRlc3RpbmcuCj4+IAo+PiA+
+IFRlc3RlZC1ieTogTmljb2xhcyBTY2hpY2hhbiA8bnNjaGljaGFuQGZyZWVib3guZnI+Cj4gCj4g
+U2FtZSBoZXJlLgo+IAo+IFRlc3RlZC1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBi
+b290bGluLmNvbT4gIyB2NS4xMCwgdjQuMTkKCkFwcGxpZWQgdG8gbmV4dCwgUFIgd2lsbCBmb2xs
+b3cgc29vbi4KClRoYW5rcyBldmVyeW9uZSEKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
