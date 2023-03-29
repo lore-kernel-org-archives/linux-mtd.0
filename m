@@ -4,63 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1413BC6FD18
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 15:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A0C8C74A5B
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 17:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=95dHPqeelkrTxsAA79FadHFHyJ7HVJSpIwqgV8CgbY4=; b=eMdV8+FhtLvdWl
-	oA9JZP1pynB1bs+Cfs7ePMG/yi9ljjBl8z5t1ni1G+KQtMrjE8PJp1pukHb4o0F2xFDh5a2DzaRWO
-	OD9WVqAC1UIfi3VlIqXcXPFCgt6thB1is3gAPt9lgqe1HQsEiS+OlP7MFl3mqyRMiHZvGnsEUnDJn
-	xa98vY/uZyv6UetGygNCm5tSImFqD0T3JllFaRUTplEK+6UkeI59o/WExqtjY5/aT3FvB3Joj9vEZ
-	MqiqxKtL/rsiZCynSOViE54YyCNsDzuHQipolQ/mkIWLwciIigHG/YJBf1npUrfHdt/T0xtYECuVJ
-	PBXABp0yzVpJRaa6EbFw==;
+	List-Owner; bh=Q6ma/gQ3+m7yADDWpsmHa335b6VLQiEl52/f7JRMBtU=; b=iE6hGcpMQ4e2Xr
+	mzgV4843dHcReDtbyOX+iE0yeKBHNeowgmzYYf+HiM4f//OMdNjYvtrY4M61P8DbjomvMHF0/r3j7
+	9CYJfcsO9/6CzoTcPht/nVf3IdvoaL6P46gEn1KE9TuUI3LUQQwG5YehnMtvgaE6dP6w5inzXWYw2
+	+dOby13TRLrYDXFYaNVFfgcxqALqjrJ08b6Fn88IYfrx8UEXRJL3TJ2wK/SDaseT65LqH9r92Yl0X
+	IMKzoPDWcu8iVpgMmmfByTrHZ9vQhsyvCwjS8uFCYll8OFLawbDOqzsc+xvnvjQRlj58H3puN/GYV
+	UGv0sL/VTlzEJXN+XhqQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1phY8B-000u3I-38;
-	Wed, 29 Mar 2023 15:54:35 +0000
-Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
+	id 1phZVV-001Hik-2m;
+	Wed, 29 Mar 2023 17:22:45 +0000
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1phY85-000tur-2W
+	id 1phZVT-001HgV-0P
 	for linux-mtd@lists.infradead.org;
-	Wed, 29 Mar 2023 15:54:31 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 4A3161BF204;
-	Wed, 29 Mar 2023 15:54:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1680105264;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+Ik6VA5/O4bfb2QZv+TNi9tynbKEN1V0x7QzIUnGobU=;
-	b=lmXC+h5NEhVsiPxedwwsWTs9Z+Ajr48MtUDE7kXzzL7GwgKLVy89oRKiaJiKlwH0YEJkqA
-	3wZt0Jqp7r+lRFuWqHci4vbxZ6ZSiz2aPfH62Rgwk8092f2Id7PbiUfLAoXgyrVzSruNOK
-	iJCUqpSLzopMjWFPckrsFjNUJjqV7CopKetKiewnl7FaqyRceu6jZrNI0Db3da7SLznSbt
-	w4qsNVug2xyIsgqpzI5vXE9fWIvp2lDMQu048xgfui50HHBb7WqzkWj7yEmE21Q7g4OBKZ
-	bhl6dbT6+xv2x2WWViroGnrIoeGNT9kguBfov8F8yPCFrvnzxcsF8SpHZnSB0w==
-Date: Wed, 29 Mar 2023 17:54:21 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: Nicolas Schichan <nschichan@freebox.fr>, <george.kennedy@oracle.com>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <richard@nod.at>, <s.hauer@pengutronix.de>, <yi.zhang@huawei.com>
-Subject: Re: [PATCH -next v3] ubi: Fix failure attaching when vid_hdr offset
- equals to (sub)page size
-Message-ID: <20230329175421.3bd4906e@xps-13>
-In-Reply-To: <2c2c2ce9-795b-4f76-cde9-db4a4066dcc1@huawei.com>
-References: <20230306013308.3884777-1-chengzhihao1@huawei.com>
-	<20230324161923.1456371-1-nschichan@freebox.fr>
-	<2c2c2ce9-795b-4f76-cde9-db4a4066dcc1@huawei.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Wed, 29 Mar 2023 17:22:44 +0000
+Received: by mail-wm1-x335.google.com with SMTP id i5-20020a05600c354500b003edd24054e0so11939575wmq.4
+        for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2023 10:22:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680110557;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CBLp/jpc9y9rMvN5jw6+q5ZIa3l3RNNfXuhJJ0vQxR0=;
+        b=VC7WGgGMWaIeOKyxq6SQxvp9oqdZxna2+hYudCWSUs8GeIpJDaBDhBpKAKwxRscwDX
+         RN1h08gvCeCF51kMXoXnx7yKVHxdMCZINtJZfkA0CflsMpyH4+TkrITtHzqZ+mJz0v7I
+         88Ujk4P2vnreGOOC8IH2NQHPPrK1+eloCX8YS4w+iAvT90uPqxYll5qCYKpgtIoHX8qe
+         llpMvo+ht67jL4l0Y+cfJOOHt+R180i7mmANwAeXlmz78m70hdeaOiD2CHASjf4Kg4/K
+         9vnjnmwLpfjsafeJix1DcQw4MSc8qeFA9aRyUYZxGOsSE8VNU2U6J7jSrLDt0A05HO/h
+         WBUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680110557;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CBLp/jpc9y9rMvN5jw6+q5ZIa3l3RNNfXuhJJ0vQxR0=;
+        b=MdoRsukD7HOOQWZQiN4nonPAkP86+s61OwodbXXA2wflxzcx4Us6spIMTzSveUDBRs
+         9T29bV91ev5YUUnP4mEWM9YhZtL5gQfnxkM2hoWHbm/k/1cVvpGdfzTLTF9v+dG9FRnS
+         RyGJNHUErprq2YGivRKz+vIxFbjPmCAlmdgLKmUmGwME32oqLFC8nLJ6fZlm+rTDOQiu
+         ji/yQTKUDuBpZMhZ78YE2zyXCGy6rE8pGCSIBxPKLHzxp3xii/mt0tmYOxlcLIWsfzS4
+         pAvpU0K8b3m1HgzhggTo/flYnkFpQaprXzLYEMsFvCDvqsiwu4Aosyfkd1MhenOxWbtb
+         5jtQ==
+X-Gm-Message-State: AO0yUKVIT7oxH8IEFgfCRQ5olTJCWBoYcDhH+VWjE/PxiHKE17361y3T
+	CJF5UH8+aO2SZBVJXk2e6wMgNw==
+X-Google-Smtp-Source: AK7set/NSAMg6i4zixiSHj3EJSwBQeYlpqO8qP+egSBJ7ZX924oEjLN4eEaaKdMHEOIWuKM4RsdJfA==
+X-Received: by 2002:a7b:ca58:0:b0:3ed:93de:49ff with SMTP id m24-20020a7bca58000000b003ed93de49ffmr14877842wml.0.1680110556986;
+        Wed, 29 Mar 2023 10:22:36 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.91])
+        by smtp.gmail.com with ESMTPSA id c8-20020a7bc848000000b003eea205671fsm2902356wml.39.2023.03.29.10.22.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Mar 2023 10:22:36 -0700 (PDT)
+Message-ID: <86d79a51-d7d9-897e-9a4a-590987270e05@linaro.org>
+Date: Wed, 29 Mar 2023 18:22:35 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v4 06/11] mtd: spi-nor: Parse BFPT to determine the 4-Byte
+ Address Mode methods
+To: michael@walle.cc, pratyush@kernel.org
+Cc: miquel.raynal@bootlin.com, richard@nod.at, Takahiro.Kuwano@infineon.com,
+ bacem.daassi@infineon.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20230322064033.2370483-1-tudor.ambarus@linaro.org>
+ <20230322064033.2370483-7-tudor.ambarus@linaro.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230322064033.2370483-7-tudor.ambarus@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230329_085429_989428_7051309D 
-X-CRM114-Status: GOOD (  15.33  )
+X-CRM114-CacheID: sfid-20230329_102243_168558_B29409A8 
+X-CRM114-Status: GOOD (  30.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,40 +92,142 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbSB3cm90ZSBvbiBTYXQsIDI1IE1hciAyMDIz
-IDA5OjAyOjQwICswODAwOgoKPiBIaSwKPiA+ICAgCj4gPj4gRm9sbG93aW5nIHByb2Nlc3Mgd2ls
-bCBtYWtlIHViaSBhdHRhY2hpbmcgZmFpbGVkIHNpbmNlIGNvbW1pdAo+ID4+IDFiNDJiMWEzNmZj
-OTQ2ICgidWJpOiBlbnN1cmUgdGhhdCBWSUQgaGVhZGVyIG9mZnNldCAuLi4gc2l6ZSIpOgo+ID4+
-Cj4gPj4gSUQ9IjB4ZWMsMHhhMSwweDAwLDB4MTUiICMgMTI4TSAxMjhLQiAyS0IKPiA+PiBtb2Rw
-cm9iZSBuYW5kc2ltIGlkX2J5dGVzPSRJRAo+ID4+IGZsYXNoX2VyYXNlYWxsIC9kZXYvbXRkMAo+
-ID4+IG1vZHByb2JlIHViaSBtdGQ9IjAsMjA0OCIgICMgc2V0IHZpZF9oZHIgb2Zmc2V0IGFzIDIw
-NDggKG9uZSBwYWdlKQo+ID4+IChkbWVzZyk6Cj4gPj4gICAgdWJpMCBlcnJvcjogdWJpX2F0dGFj
-aF9tdGRfZGV2IFt1YmldOiBWSUQgaGVhZGVyIG9mZnNldCAyMDQ4IHRvbyBsYXJnZS4KPiA+PiAg
-ICBVQkkgZXJyb3I6IGNhbm5vdCBhdHRhY2ggbXRkMAo+ID4+ICAgIFVCSSBlcnJvcjogY2Fubm90
-IGluaXRpYWxpemUgVUJJLCBlcnJvciAtMjIKPiA+Pgo+ID4+IFJld29yayBvcmlnaW5hbCBzb2x1
-dGlvbiwgdGhlIGtleSBwb2ludCBpcyBtYWtpbmcgc3VyZQo+ID4+ICd2aWRfaGRyX3NoaWZ0ICsg
-VUJJX1ZJRF9IRFJfU0laRSA8IHViaS0+dmlkX2hkcl9hbHNpemUnLAo+ID4+IHNvIHdlIHNob3Vs
-ZCBjaGVjayB2aWRfaGRyX3NoaWZ0IHJhdGhlciBub3QgdmlkX2hkcl9vZmZzZXQuCj4gPj4gVGhl
-biwgdWJpIHN0aWxsIHN1cHBvcnQgKHN1YilwYWdlIGFsaWdpbmVkIFZJRCBoZWFkZXIgb2Zmc2V0
-LgoKCQkJCQlhbGlnbmVkCgo+ID4+Cj4gPj4gRml4ZXM6IDFiNDJiMWEzNmZjOTQ2ICgidWJpOiBl
-bnN1cmUgdGhhdCBWSUQgaGVhZGVyIG9mZnNldCAuLi4gc2l6ZSIpCgpUaGlzIGNvbW1pdCBoYXMg
-YmVlbiBiYWNrcG9ydGVkIHRvIHN0YWJsZSwgc28gaXQgaXMgaW1wb3J0YW50IHRoaXMgZml4CmFs
-c28gZ2V0cyB0aGVyZSBxdWlja2x5OgoKQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKCj4gPj4g
-U2lnbmVkLW9mZi1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4KPiA+
-PiAtLS0KPiA+PiAgIHYyLT52MzogVXNlIHByaW50aW5nIGZvcm1hdCAnJXp1JyBmb3IgVUJJX1ZJ
-RF9IRFJfU0laRS4KPiA+PiAgIGRyaXZlcnMvbXRkL3ViaS9idWlsZC5jIHwgMjEgKysrKysrKysr
-KysrKysrLS0tLS0tCj4gPj4gICAxIGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgNiBk
-ZWxldGlvbnMoLSkgIAo+ID4gCj4gPiBbLi4uXQo+ID4gCj4gPiBIZWxsbywKPiA+IAo+ID4gSGF2
-aW5nIGhhZCB0aGUgcHJvYmxlbSwgYW5kIGZvdW5kIHRoaXMgcGF0Y2ggYXMgYSBmaXgsIGZlZWwg
-ZnJlZSB0bwo+ID4gYWRkIG15Ogo+ID4gICAKPiAKPiBUaGFua3MgZm9yIHRlc3RpbmcuCj4gCj4g
-PiBUZXN0ZWQtYnk6IE5pY29sYXMgU2NoaWNoYW4gPG5zY2hpY2hhbkBmcmVlYm94LmZyPgoKU2Ft
-ZSBoZXJlLgoKVGVzdGVkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4u
-Y29tPiAjIHY1LjEwLCB2NC4xOQoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwo=
+
+
+On 3/22/23 06:40, Tudor Ambarus wrote:
+> BFPT[DWORD(16)] defines the methods to enter and exit the 4-Byte Address
+> Mode. Parse BFPT to determine the method. Will rename the methods with
+> generic names in a further patch, to keep things trackable in this one.>
+
+I forgot to update the commit message, will respin.
+
+> Some regressions may be introduced by this patch, because the
+> params->set_4byte_addr_mode method that was set either in
+> spi_nor_init_default_params() or later overwritten in default_init() hooks,
+> may now be overwritten with a different value based on the BFPT data. If
+> that's the case, the fix is to introduce a post_bfpt fixup hook where one
+> should fix the wrong BFPT info.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  drivers/mtd/spi-nor/sfdp.c    | 11 +++++++++++
+>  drivers/mtd/spi-nor/sfdp.h    | 28 ++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/winbond.c | 11 ++++++++++-
+>  3 files changed, 49 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> index 298ab5e53a8c..63b2810cf75e 100644
+> --- a/drivers/mtd/spi-nor/sfdp.c
+> +++ b/drivers/mtd/spi-nor/sfdp.c
+> @@ -438,6 +438,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  	size_t len;
+>  	int i, cmd, err;
+>  	u32 addr, val;
+> +	u32 dword;
+>  	u16 half;
+>  	u8 erase_mask;
+>  
+> @@ -607,6 +608,16 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  		break;
+>  	}
+>  
+> +	dword = bfpt.dwords[SFDP_DWORD(16)] & BFPT_DWORD16_4B_ADDR_MODE_MASK;
+> +	if (sfdp_bits_set(dword, BFPT_DWORD16_4B_ADDR_MODE_BRWR))
+> +		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_brwr;
+> +	else if (sfdp_bits_set(dword, BFPT_DWORD16_4B_ADDR_MODE_WREN_EN4B_EX4B))
+> +		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_wren_en4b_ex4b;
+> +	else if (sfdp_bits_set(dword, BFPT_DWORD16_4B_ADDR_MODE_EN4B_EX4B))
+> +		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
+> +	else
+> +		dev_dbg(nor->dev, "BFPT: 4-Byte Address Mode method is not recognized or not implemented\n");
+> +
+>  	/* Soft Reset support. */
+>  	if (bfpt.dwords[SFDP_DWORD(16)] & BFPT_DWORD16_SWRST_EN_RST)
+>  		nor->flags |= SNOR_F_SOFT_RESET;
+> diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+> index 500659b35655..a4b5fe795f18 100644
+> --- a/drivers/mtd/spi-nor/sfdp.h
+> +++ b/drivers/mtd/spi-nor/sfdp.h
+> @@ -16,6 +16,8 @@
+>  /* SFDP DWORDS are indexed from 1 but C arrays are indexed from 0. */
+>  #define SFDP_DWORD(i)		((i) - 1)
+>  
+> +#define sfdp_bits_set(dword, mask)		(((dword) & (mask)) == (mask))
+
+s/sfdp_bits_set/sfdp_mask_check> +
+>  /* Basic Flash Parameter Table */
+>  
+>  /* JESD216 rev D defines a Basic Flash Parameter Table of 20 DWORDs. */
+> @@ -89,6 +91,32 @@ struct sfdp_bfpt {
+>  #define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
+>  #define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
+>  
+> +#define BFPT_DWORD16_EN4B_MASK			GENMASK(31, 24)
+> +#define BFPT_DWORD16_EN4B_ALWAYS_4B		BIT(30)
+> +#define BFPT_DWORD16_EN4B_4B_OPCODES		BIT(29)
+> +#define BFPT_DWORD16_EN4B_16BIT_NV_CR		BIT(28)
+> +#define BFPT_DWORD16_EN4B_BRWR			BIT(27)
+> +#define BFPT_DWORD16_EN4B_WREAR			BIT(26)
+> +#define BFPT_DWORD16_EN4B_WREN_EN4B		BIT(25)
+> +#define BFPT_DWORD16_EN4B_EN4B			BIT(24)
+> +#define BFPT_DWORD16_EX4B_MASK			GENMASK(18, 14)
+> +#define BFPT_DWORD16_EX4B_16BIT_NV_CR		BIT(18)
+> +#define BFPT_DWORD16_EX4B_BRWR			BIT(17)
+> +#define BFPT_DWORD16_EX4B_WREAR			BIT(16)
+> +#define BFPT_DWORD16_EX4B_WREN_EX4B		BIT(15)
+> +#define BFPT_DWORD16_EX4B_EX4B			BIT(14)
+> +#define BFPT_DWORD16_4B_ADDR_MODE_MASK			\
+> +	(BFPT_DWORD16_EN4B_MASK | BFPT_DWORD16_EX4B_MASK)
+> +#define BFPT_DWORD16_4B_ADDR_MODE_16BIT_NV_CR		\
+> +	(BFPT_DWORD16_EN4B_16BIT_NV_CR | BFPT_DWORD16_EX4B_16BIT_NV_CR)
+> +#define BFPT_DWORD16_4B_ADDR_MODE_BRWR			\
+> +	(BFPT_DWORD16_EN4B_BRWR | BFPT_DWORD16_EX4B_BRWR)
+> +#define BFPT_DWORD16_4B_ADDR_MODE_WREAR			\
+> +	(BFPT_DWORD16_EN4B_WREAR | BFPT_DWORD16_EX4B_WREAR)
+> +#define BFPT_DWORD16_4B_ADDR_MODE_WREN_EN4B_EX4B	\
+> +	(BFPT_DWORD16_EN4B_WREN_EN4B | BFPT_DWORD16_EX4B_WREN_EX4B)
+> +#define BFPT_DWORD16_4B_ADDR_MODE_EN4B_EX4B		\
+> +	(BFPT_DWORD16_EN4B_EN4B | BFPT_DWORD16_EX4B_EX4B)
+>  #define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
+>  
+>  #define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+> index 9cea241c204b..a1b387accc07 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -218,13 +218,22 @@ static const struct spi_nor_otp_ops winbond_nor_otp_ops = {
+>  
+>  static void winbond_nor_default_init(struct spi_nor *nor)
+>  {
+> -	nor->params->set_4byte_addr_mode = winbond_nor_set_4byte_addr_mode;
+>  }
+
+I should have got ridden of default_init entirely, it's now an empty
+function.
+>  
+>  static void winbond_nor_late_init(struct spi_nor *nor)
+>  {
+>  	if (nor->params->otp.org->n_regions)
+>  		nor->params->otp.ops = &winbond_nor_otp_ops;
+> +
+> +	/*
+> +	 * Winbond seems to require that the Extended Address Register to be set
+> +	 * to zero when exiting the 4-Byte Address Mode, at least for W25Q256FV.
+> +	 * This requirement is not described in the JESD216 SFDP standard, thus
+> +	 * it is Winbond specific. Since we do not know if other Winbond flashes
+> +	 * have the same requirement, play safe and overwrite the method parsed
+> +	 * from BFPT, if any.
+> +	 */
+> +	nor->params->set_4byte_addr_mode = winbond_nor_set_4byte_addr_mode;
+>  }
+>  
+>  static const struct spi_nor_fixups winbond_nor_fixups = {
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
