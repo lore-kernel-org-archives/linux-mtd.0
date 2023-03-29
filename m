@@ -4,91 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19C4EC6FD18
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 11:13:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95995C74A5B
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Mar 2023 11:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uVGgrveP3gqsJUO5MO/ABqa07SpFllk2T2IScoDpFFo=; b=ocLCoruan+U4ni
-	eZB4fHDYysbnTjGJSD31XTrAuxousmCfUTmXOgOMSxNwG6VEUSxLtKr/r4ZAeqCXV0jT2yf9zeN8c
-	oZ2a5s3xF3kT7YVOCfLWwOURaTUaWsHxk8azAu7lTqIMt0WtFzkyWD3eLveUgLXXLTZ6sLHrxTnA2
-	9rlN68LlBbhEAXOIU4qagBlBdhAoJCdOpDOG5Z+086kHv4hmGM5ZBg60AdDwdTdk/Fs/3v/vfWspc
-	iPROLIAPl5t9OZt9nDSuKAXst8te+j22zo3lnyOr+S6YEp0d4/lGP0he0uJBnImgV86oB7kL+ifj3
-	PuFXdNnD6b65K1wcLTKA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=eQZRsNhNl7wZK1zxh2lnG+mP5uQoRkYDfvw7UVAHYFc=; b=LoSgikMMzQJcmC
+	pU1fSpazA7tRvenu4uno3jv5f17uCgUysBhzm9Ocw4wSS48zYdUO9l8YzFIl7oqa21IyarSw/VxAe
+	uzYHJ4107AWbBTUEuAW5Ms0ojAnrEGoAjz7Qcqlx23CudxpEWMf/tU0WRLn7L+s5wbbmtj+l+HsjB
+	CP//adHsOXJDpZKZr8sDLk0bOldGRMMSlH6DI70IAxDcbAClfX+14THEAaDmPdkWF0JuR8Hm7eqp9
+	ID8UzLADk+KY09RcnTIbSpnrD/0Ak2ViS1ZgRPMB5z0I8vvFco409QpwHshrQxv1z4VkyN7Laj0MB
+	gBPkkdi2g5Vk7eXj3mYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1phTjI-00HZD2-23;
-	Wed, 29 Mar 2023 11:12:36 +0000
-Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
+	id 1phUDT-0002zK-2r;
+	Wed, 29 Mar 2023 11:43:47 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1phTjF-00HZBp-0J
+	id 1phUDP-0002y4-1G
 	for linux-mtd@lists.infradead.org;
-	Wed, 29 Mar 2023 11:12:34 +0000
-Received: by mail-wr1-x436.google.com with SMTP id v1so15250896wrv.1
-        for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2023 04:12:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680088351;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=u7uBggWPep8LzWC8musIl7sBP7Epwidb0rSty9bgw+g=;
-        b=wh5PpbYm5Kt3OfLC5haNuiQKnsqkeXxsOprmrfOJtU7lM0BLgWyT772Vfx8iMcwWup
-         1sTRuitAaV2qPjBPyHD39sBSfgGvHgafSDUyfouDeosKEOfekuiS6SkDOcOvJ1nrSlyV
-         3U9OMKy8NJfISzi+Eb7+Mpu6ptQToj+bGJ0AujdjJ5TRQSiW1bSTnmWFSdsxqfRfV23g
-         gos0YdtskJOe7vdpyRqWK/5fckjzhd8ysQj+eSKTuZzcFodNWhUkYTps0hbSOC+DCwBE
-         McfTWYpLO5vo5bSIwYAzSzV399wePtyO02lps4g6QehLNaOGQd8XcfwIWWvk/YjnLOka
-         rxbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680088351;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u7uBggWPep8LzWC8musIl7sBP7Epwidb0rSty9bgw+g=;
-        b=LYGPuMd7QH+AlJN4ReTtAxTzgu+5UIlh+/4e17SBspP3oSEWMl0YEWZdk9D0yg3FOx
-         pfdLHYfGLhK3+nJl80FLpblb5JetIKEAztxlQ6ShlvfvngOZVut3ZvbRqJfbfHAtzh/K
-         nAXnmliPxRHOIEUiF/fZK+LsTNGuXHIzbznstrV0g4uBKStPTmPfAYHdLhmK8/cncsaa
-         jny+x/HI+Ky26R+8i+JWwYjCRpdaIELR9qgN6wG2tke5RyXsnfvjLoN78wvWub08uvsu
-         xIrFRvA/qzB298lfYdYk0O6UfoEVz7RkkNLDX4EuW4BOSgRIV1Lu4pOtSdoqcAluFfFf
-         q0eQ==
-X-Gm-Message-State: AAQBX9cqcG5Uw3Z0cQPlYlweo6RXgQLPBFqlzuTRwdFBB1MNcUVGK9B7
-	MJ+kr9s1NBd2G/SacIh2AomarQ==
-X-Google-Smtp-Source: AKy350a+ndi7TVZFzxVyzVnCFNqvUZRW7lI3oTnMDcnhTFKHu/JbmEM8ZukYJFkNs1i1Puuh7tXKcQ==
-X-Received: by 2002:a05:6000:2:b0:2cf:e3e3:5b01 with SMTP id h2-20020a056000000200b002cfe3e35b01mr13333134wrx.56.1680088351584;
-        Wed, 29 Mar 2023 04:12:31 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.91])
-        by smtp.gmail.com with ESMTPSA id t6-20020adff606000000b002d828a9f9ddsm21835724wrp.115.2023.03.29.04.12.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Mar 2023 04:12:31 -0700 (PDT)
-Message-ID: <f243010c-72e3-6b59-6696-af7c7cdc6596@linaro.org>
-Date: Wed, 29 Mar 2023 12:12:29 +0100
+	Wed, 29 Mar 2023 11:43:46 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id DA99F5FD1E;
+	Wed, 29 Mar 2023 14:43:31 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1680090211;
+	bh=w/vWujC1+XPSD+C2mUNWQ7JnaRNnxNuI+zCkN445pWA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=Rdul/wsL/UelP9MMB/QTEpG1KwmjxGoHF5j4cXcrqol5vib8N42J7Ggu73f+9X+4G
+	 3N60wx4yALxiz2TY+hOU0UVPhzI76Gx4eCoK9iBrEayHMWL5M55Er6NsCsL4cBXbUY
+	 H4iF788/DsBpvRNOz7HLRtpkBXRtf/rVHHFWxH8yx1zBRYM5Yu5jFBmmN5LbB1OrxP
+	 uabhSOzf+z8Gcp0vLbni6ANNOYjoxnaqph00ATpWLUtL5hoqmz+IPiU8yZLFvziWH5
+	 uO7MG+Lb3K6gaFtTm3osCnvMUzbNzA1EV3b7N3LJLgFNDCpJ/uLgI2KuGL2kuYAMF8
+	 XxooZjeiXecpw==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Wed, 29 Mar 2023 14:43:30 +0300 (MSK)
+From: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Dmitry Rokosov
+	<ddrokosov@sberdevices.ru>, Chuanhong Guo <gch981213@gmail.com>, Aidan
+ MacDonald <aidanmacdonald.0x0@gmail.com>, Felix Matouschek
+	<felix@matouschek.org>, <kernel@kempniu.pl>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<kernel@sberdevices.ru>, Martin Kurbanov <mmkurbanov@sberdevices.ru>
+Subject: [PATCH v4] mtd: spinand: add support for ESMT F50x1G41LB
+Date: Wed, 29 Mar 2023 14:42:40 +0300
+Message-ID: <20230329114240.378722-1-mmkurbanov@sberdevices.ru>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v5 8/8] mtd: spi-nor: macronix: Add support for
- mx25uw51245g with RWW
-Content-Language: en-US
-To: liao jaime <jaimeliao.tw@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>,
- Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
- Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
- Alvin Zhou <alvinzhou@mxic.com.tw>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Michal Simek <monstr@monstr.eu>, linux-arm-kernel@lists.infradead.org
-References: <20230328154105.448540-1-miquel.raynal@bootlin.com>
- <20230328154105.448540-9-miquel.raynal@bootlin.com>
- <8ade974e-eb68-f448-7ec5-91c6b636eacf@linaro.org>
- <20230328184536.33f2f023@xps-13>
- <CAAQoYRknqq7=HFAeAB=W59G5ui_t3VSt3Xa33YbXeWPtJyxQsQ@mail.gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAAQoYRknqq7=HFAeAB=W59G5ui_t3VSt3Xa33YbXeWPtJyxQsQ@mail.gmail.com>
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/03/29 07:09:00 #21026578
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230329_041233_160507_8009994F 
-X-CRM114-Status: GOOD (  22.03  )
+X-CRM114-CacheID: sfid-20230329_044343_799480_505472E4 
+X-CRM114-Status: GOOD (  22.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,121 +85,225 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: Chuanhong Guo <gch981213@gmail.com>
 
+This patch adds support for ESMT F50L1G41LB and F50D1G41LB.
+It seems that ESMT likes to use random JEDEC ID from other vendors.
+Their 1G chips uses 0xc8 from GigaDevice and 2G/4G chips uses 0x2c from
+Micron. For this reason, the ESMT entry is named esmt_c8 with explicit
+JEDEC ID in variable name.
 
-On 3/29/23 06:48, liao jaime wrote:
-> Hi Miquel
-> 
->>
->> Hi Tudor,
->>
->> tudor.ambarus@linaro.org wrote on Tue, 28 Mar 2023 17:31:46 +0100:
->>
->>> On 3/28/23 16:41, Miquel Raynal wrote:
->>>> Describe this new part and provide the RWW flag for it.
->>>>
->>>> There is no public datasheet, but here are the sfdp tables plus base
->>>> testing to show it works.
->>>>
->>>> mx25uw51245g
->>>> c2813a
->>>> macronix
->>>> 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
->>>> 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
->>>> ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
->>>> 00ff0c2010d800ff00ff87790100821200e27704674630b030b0f4bdd55c
->>>> 000000ff101000200000000000007ca14800000000008888000000000000
->>>> 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
->>>> 727103b80000000090a3188200c069960000000000000000727100987271
->>>> 00b8727100990000000072710098727100f872710099727100f900000000
->>>> 00000000011501d0727106d8000086500000060100000000020001030002
->>>> 00000000060100000000000072060002000000eec0697272717100d8f7f6
->>>> 000a00001445988043060f0021dcffff
->>>> 047a884cf44d9ffc2a94d3ab37b48c63  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
->>>
->>> which hash alg was used, was it sha1? No need to resubmnit just for this.
->>
->> Actually git just ignored all the lines starting with '#'
->> like if they were comments and I did not notice...
->>
->> I will amend my commit logs and resend.
->>
->>>>
->>>> 6+0 records in
->>>> 6+0 records out
->>>> Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
->>>> Erased 6291456 bytes from address 0x00000000 in flash
->>>> Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
->>>> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
->>>> *
->>>> 0600000
->>>> Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
->>>> Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
->>>> d24a9523db829a0df688f34b8dc76a1383b74024  qspi_test
->>>> d24a9523db829a0df688f34b8dc76a1383b74024  qspi_read
->>>>
->>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->>>> ---
->>>>  drivers/mtd/spi-nor/macronix.c | 4 ++++
->>>>  1 file changed, 4 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
->>>> index 6853ec9ae65d..b65d41e5f749 100644
->>>> --- a/drivers/mtd/spi-nor/macronix.c
->>>> +++ b/drivers/mtd/spi-nor/macronix.c
->>>> @@ -82,6 +82,10 @@ static const struct flash_info macronix_nor_parts[] = {
->>>>     { "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024)
->>>>             NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
->>>>             FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
->>>> +   { "mx25uw51245g", INFOB(0xc2813a, 0, 16 * 1024, 1024, 4)
->>>
->>> Sector size and nsectors shall be discovered at parse SFDP time.
->>> Does INFOB(0xc2813a, 0, 0, 0, 4) work for you?
->>
->> I'll check.
->>
->>>
->>>> +           PARSE_SFDP
->>>
->>> Yaay
->>>
->>>> +           FLAGS(SPI_NOR_RWW)
->>>> +           FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
->>>
->>> Is SPI_NOR_4B_OPCODES flag really needed?
->>
->> I have no idea, I took that from older code.
->>
->> Jaime, what do you think?
-> I think Tudor hopes that SFDP table could determine how many address bytes.
+Datasheets:
+https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F50L1G41LB(2M).pdf
+https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F50D1G41LB(2M).pdf
 
-No, no.
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+Signed-off-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+Signed-off-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Tested-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+---
+ The implementation has been tested on the Amlogic A113L SoC based
+ device connected with ESMT F50L1G41LB spinand flash.
 
-:) and hope and programming don't get along.
+ Changes v4 since v3 at [1]:
+   - rebase on top of nand/next
 
-Does this flash define the 4bait table? Can you add a print in
-parse_4bait table and check if SNOR_F_4B_OPCODES is set? If yes, the
-fixup flag is not needed.
+ Changes v3 since v2 at [2]:
+   - fix OOB layout
 
-SNOR_F_4B_OPCODES is an indication that the flash supports dedicated
-opcodes for 4byte address, without the need to change the address mode
-to 4 byte. When 4B_OPCODES are supported, we prefer not changing the
-address mode, because when changing to 4 byte address mode, the state is
-kept at reset (or power loss) and flashes might not be able to boot at
-lower layers (u-boot for example).
+ Changes v2 since v1 at [3]:
+   - drop 0x7f padding from SPINAND_ID.
 
-So I'd try:
-{ "mx25uw51245g", INFOB(0xc2813a, 0, 0, 0, 4)
-		PARSE_SFDP
-		FLAGS(SPI_NOR_RWW) },
+ Links:
+   [1] https://lore.kernel.org/lkml/20230322151625.791131-1-mmkurbanov@sberdevices.ru/
+   [2] https://lore.kernel.org/lkml/20220413083824.247136-1-gch981213@gmail.com/
+   [3] https://lore.kernel.org/lkml/20220413042337.160263-1-gch981213@gmail.com/
 
-In the future we'd like to add a sfdp-decoder in mtd-utils to decode the
-sfdp dump and ease the review and avoid such questions, but we couldn't
-allocate the time to implement it up to now. Meh, we're doing it at best
-effort, in our spare time. Volunteers?
+ drivers/mtd/nand/spi/Makefile |   3 +-
+ drivers/mtd/nand/spi/core.c   |   1 +
+ drivers/mtd/nand/spi/esmt.c   | 135 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h   |   1 +
+ 4 files changed, 139 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/esmt.c
 
-Cheers,
-ta
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index 4ec973b8b6bf..cd8b66bf7740 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o alliancememory.o ato.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o xtx.o
++spinand-objs := core.o alliancememory.o ato.o esmt.o gigadevice.o macronix.o
++spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 638391f77d8c..393ff37f0d23 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -939,6 +939,7 @@ static const struct nand_ops spinand_ops = {
+ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&alliancememory_spinand_manufacturer,
+ 	&ato_spinand_manufacturer,
++	&esmt_c8_spinand_manufacturer,
+ 	&gigadevice_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
+new file mode 100644
+index 000000000000..1a3ffb982335
+--- /dev/null
++++ b/drivers/mtd/nand/spi/esmt.c
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Author:
++ *	Chuanhong Guo <gch981213@gmail.com> - the main driver logic
++ *	Martin Kurbanov <mmkurbanov@sberdevices.ru> - OOB layout
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++/* ESMT uses GigaDevice 0xc8 JECDEC ID on some SPI NANDs */
++#define SPINAND_MFR_ESMT_C8			0xc8
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++			   SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++			   SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++			   SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++			   SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++/*
++ * OOB spare area map (64 bytes)
++ *
++ * Bad Block Markers
++ * filled by HW and kernel                 Reserved
++ *   |                 +-----------------------+-----------------------+
++ *   |                 |                       |                       |
++ *   |                 |    OOB free data Area |non ECC protected      |
++ *   |   +-------------|-----+-----------------|-----+-----------------|-----+
++ *   |   |             |     |                 |     |                 |     |
++ * +-|---|----------+--|-----|--------------+--|-----|--------------+--|-----|--------------+
++ * | |   | section0 |  |     |    section1  |  |     |    section2  |  |     |    section3  |
++ * +-v-+-v-+---+----+--v--+--v--+-----+-----+--v--+--v--+-----+-----+--v--+--v--+-----+-----+
++ * |   |   |   |    |     |     |     |     |     |     |     |     |     |     |     |     |
++ * |0:1|2:3|4:7|8:15|16:17|18:19|20:23|24:31|32:33|34:35|36:39|40:47|48:49|50:51|52:55|56:63|
++ * |   |   |   |    |     |     |     |     |     |     |     |     |     |     |     |     |
++ * +---+---+-^-+--^-+-----+-----+--^--+--^--+-----+-----+--^--+--^--+-----+-----+--^--+--^--+
++ *           |    |                |     |                 |     |                 |     |
++ *           |    +----------------|-----+-----------------|-----+-----------------|-----+
++ *           |             ECC Area|(Main + Spare) - filled|by ESMT NAND HW        |
++ *           |                     |                       |                       |
++ *           +---------------------+-----------------------+-----------------------+
++ *                         OOB ECC protected Area - not used due to
++ *                         partial programming from some filesystems
++ *                             (like JFFS2 with cleanmarkers)
++ */
++
++#define ESMT_OOB_SECTION_COUNT			4
++#define ESMT_OOB_SECTION_SIZE(nand) \
++	(nanddev_per_page_oobsize(nand) / ESMT_OOB_SECTION_COUNT)
++#define ESMT_OOB_FREE_SIZE(nand) \
++	(ESMT_OOB_SECTION_SIZE(nand) / 2)
++#define ESMT_OOB_ECC_SIZE(nand) \
++	(ESMT_OOB_SECTION_SIZE(nand) - ESMT_OOB_FREE_SIZE(nand))
++#define ESMT_OOB_BBM_SIZE			2
++
++static int f50l1g41lb_ooblayout_ecc(struct mtd_info *mtd, int section,
++				    struct mtd_oob_region *region)
++{
++	struct nand_device *nand = mtd_to_nanddev(mtd);
++
++	if (section >= ESMT_OOB_SECTION_COUNT)
++		return -ERANGE;
++
++	region->offset = section * ESMT_OOB_SECTION_SIZE(nand) +
++			 ESMT_OOB_FREE_SIZE(nand);
++	region->length = ESMT_OOB_ECC_SIZE(nand);
++
++	return 0;
++}
++
++static int f50l1g41lb_ooblayout_free(struct mtd_info *mtd, int section,
++				     struct mtd_oob_region *region)
++{
++	struct nand_device *nand = mtd_to_nanddev(mtd);
++
++	if (section >= ESMT_OOB_SECTION_COUNT)
++		return -ERANGE;
++
++	/*
++	 * Reserve space for bad blocks markers (section0) and
++	 * reserved bytes (sections 1-3)
++	 */
++	region->offset = section * ESMT_OOB_SECTION_SIZE(nand) + 2;
++
++	/* Use only 2 non-protected ECC bytes per each OOB section */
++	region->length = 2;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
++	.ecc = f50l1g41lb_ooblayout_ecc,
++	.free = f50l1g41lb_ooblayout_free,
++};
++
++static const struct spinand_info esmt_c8_spinand_table[] = {
++	SPINAND_INFO("F50L1G41LB",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(1, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
++	SPINAND_INFO("F50D1G41LB",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(1, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
++};
++
++static const struct spinand_manufacturer_ops esmt_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer esmt_c8_spinand_manufacturer = {
++	.id = SPINAND_MFR_ESMT_C8,
++	.name = "ESMT",
++	.chips = esmt_c8_spinand_table,
++	.nchips = ARRAY_SIZE(esmt_c8_spinand_table),
++	.ops = &esmt_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 01be9f0f008a..3e285c09d16d 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -262,6 +262,7 @@ struct spinand_manufacturer {
+ /* SPI NAND manufacturers */
+ extern const struct spinand_manufacturer alliancememory_spinand_manufacturer;
+ extern const struct spinand_manufacturer ato_spinand_manufacturer;
++extern const struct spinand_manufacturer esmt_c8_spinand_manufacturer;
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
+--
+2.40.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
