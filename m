@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 024F5C6FD18
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 08:36:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E4D9C6FD18
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 08:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XGFYILX1zVBshGga9zBvWF73/La8BR8iSjudkuShOSo=; b=dj77ORj6QRzYf3
-	CqQo5YqHJSrYC6l76NZYYu8desa1XjBO5O4LikTNz8GJ2bFclUHw5wRHbzwyG1n8LrE8laZ7Ncxd+
-	af4d9wYo9NBpaGKvFETgdbs5cYkFo3I0HrElO8c99g2OsPPthG3RYwsvMmO8MSfBgRH2pCqmSj1Fm
-	UCf4Mx/ET0Md2AVsLp75ePY8X3EN5xrVYKy+H2tOh8EoF2mpwZkBQXvdVERPcwzJaLfPZ1sdynxDt
-	kZzFzbl3URGw8zuEw//c70mpdvzsj/sSUsARv/A2jYWOkl0tVFJxsBo0hGA2tWOh3bYqbvKEoLm63
-	IR2G4fFl5q6dySK8W3kw==;
+	List-Owner; bh=js8mzBcXrZmreE53hMklt5jnUZD5G3+9MbQ+aYTi+Ls=; b=zV1Z00LAwKViUn
+	UmtLg1urOzfV18+gWMfqKDsWG0EMhCDCOCN/HUCwYmpfQt0V2T0LYnwmHfiiZvmG7oV1Wtdm1+3/P
+	IQbls6Xw5HCXkgGpfAsqEIXkinlllKElm0BLZpmZNCzw/JPOSTig9uw2xBCat6fuQ9AOLlf9Xs4qq
+	DDVwSmS0/KUxPIUQTcd0Ba5XKI97Q7Pger4Q3yVMKALR6HY9dtjurYTnCSr+v9zpUfAsBy9RmYf7i
+	uqA4kZWja56jZ+W1SNmt1qXk4Cbf7Zadd6cKn8TB6JjN6baif+QLG2BqN8zzETpv0Oj1987rcldlC
+	tbANdDS0aJhPMWThbTMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1piAFC-006RKA-2g;
-	Fri, 31 Mar 2023 08:36:22 +0000
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+	id 1piAFR-006RWr-2w;
+	Fri, 31 Mar 2023 08:36:38 +0000
+Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1piAE4-006QL1-2k
+	id 1piAE9-006Qau-1E
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Mar 2023 08:35:14 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id e18so21584384wra.9
+	Fri, 31 Mar 2023 08:35:18 +0000
+Received: by mail-wr1-x436.google.com with SMTP id j24so21631982wrd.0
         for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 01:35:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680251712;
+        d=linaro.org; s=google; t=1680251711;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Lfco65EqQfHZJxTK1kxWA78ZamfCWUWZKPHL0Bp1xH4=;
-        b=SqOTTD4EeiNGBszaNOzDLqviTo9jI0ZhAKSeRT3l5LeAaBvHoV1VbnUiNYxQjrF5S5
-         UUujdXiQCveG/Iy+PsAnxgkKeorfMhJAmQ2J1mYgkX8eg020zgf6nL/f/EExNZqkpRUx
-         XcdDXQ5bnCtHLOcSYFcdnuXeE9b+QxZG2/mH1nfNDIA7j4YtTmk1Al3zY4k3rR5puTQU
-         l2NatRLdUPmY31rjFWxbQkcwmbAI5FXvErZOPP+aB0G/SM/9J1u6rMIIFKuvCVysu2q3
-         VMSa4Jt860AaDpWD2pjM4fb8tv0/a2sxwe3l0seQy7PhpYace6EYCoZskI6VrPmid9Ji
-         W8oQ==
+        bh=5S8DS7MwX0eSMjECdngcIupXRvdIfBFKmoZZhwAEom0=;
+        b=tnfnYtQdWHkb+imXQ5cdS0qz5r299xH4jhkGPSnNJ2hyhvDgzphIZ+JrRafIpmAM9p
+         AYZ75Po2o2Z0SH8MZ2PJlbzGo/n61VmC8VnuZ2JuYUqUV2XrQWwn3l07chxkJqnSXjPP
+         5f1CEgxiSVpvn2h1nzoHxbtdANfxsiKSj6kGo5Gn+zXB98k4Ll0nq2FYEQMcqg9qKycl
+         SaFHJ31SA4vogcCrvZnJv61gFMikTvHDNS7J+H+by9jPFBPOVQx/EaIZbfwOl1I2Oqqc
+         0h4V53L2ZH7bwDuc5XrqWaqkZAcFFMRby1EyH50XYnZmPSj9SLb8FRQWZxdM2RBBTVHm
+         BCmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680251712;
+        d=1e100.net; s=20210112; t=1680251711;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Lfco65EqQfHZJxTK1kxWA78ZamfCWUWZKPHL0Bp1xH4=;
-        b=pn35N0Uf4GpD0DK8DHge+yFv6u4DfKOSXLVxrPtSjK1Bf7BkrABJlTa3FV7OyM8fqF
-         q715ahXNPOQFstcj0mp6ehyr/LoSdK0ddiuox5ltc6GbMlkxUmbRMNMU/kOQE6Ig5Kda
-         CNzGvsuA1Jr+ww4tKtHG/YNzkWhlLLxzDmbXpbr5UJtpMHxJhj2WmFp/E38xR6jIbC4C
-         0RaktLn3+6xXpdzCUFWv7C2xcK380RN1AOiJx12FWatr+oBWkfSGHfcepVkDRGLIAuXD
-         2rZC7gu4Zp11+XsGMXidA2nKkacuorXv3TUkM17LkVythwvKmJAEGOB2ZzOwjoHPi+YH
-         FG7w==
-X-Gm-Message-State: AAQBX9cEgEvsmqyF2kwk2duHZZZqySHNew2cObmfw+ECskxvm81GU0az
-	JvlnShGk7BIzV7D17WFhREMvbg==
-X-Google-Smtp-Source: AKy350YfLJVXZRDyUNg84s43q40a428Zli09J7iKvodwvFp3SatohdxhFRTG46DXiPWYNxkqIkfYZA==
-X-Received: by 2002:adf:f348:0:b0:2d7:9206:488d with SMTP id e8-20020adff348000000b002d79206488dmr20315336wrp.36.1680251712356;
-        Fri, 31 Mar 2023 01:35:12 -0700 (PDT)
+        bh=5S8DS7MwX0eSMjECdngcIupXRvdIfBFKmoZZhwAEom0=;
+        b=6X8bctvykH1qKJzBEuvGrpJQ9tYYRGjjr+TIBwDoQPsHeqgI3WPWRHTKZB5+yHEvZP
+         5Dc1wmA+Mq5UrBUlK4zHekOxVxIkAErPVpQcBelv9//6yMVWHZ6BwFUxEoRylRToYgYK
+         fyF/ZR6tS1ayY7EixW5Mkdw/k5KhXi2BgDewN+FNRw7Du3X+N+ims6v7qlLW2exMroTg
+         cpr54MavswAkcxUgQLTdhrq2/sgB/wh19rYWohb61dQSEEpZkCdR5MKtz5depxLige++
+         Vg+/rrEqCU21H0yB4Xw2FHcXzt3YIVDoPrLncOGEZ+mjSQLoox/emFzGM1ztzqg7thep
+         nqPw==
+X-Gm-Message-State: AAQBX9cd4/+u8KPkvMwE9gymZfHhnUnmeHBIbi32K/KR5JHAbqFOp05m
+	kQ+pyNmQn6n6Q9t/zPLFL1/bXg==
+X-Google-Smtp-Source: AKy350bVO2xvOdcujlPweNogfEF/aS/RwRjRN7oD1rhoaEfLODuiLQvDCF4zUxggrf8oM3l2ae/tZg==
+X-Received: by 2002:adf:fa09:0:b0:2dd:cb8:2299 with SMTP id m9-20020adffa09000000b002dd0cb82299mr20102833wrr.11.1680251710872;
+        Fri, 31 Mar 2023 01:35:10 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id e11-20020a5d4e8b000000b002cde626cd96sm1563153wru.65.2023.03.31.01.35.10
+        by smtp.gmail.com with ESMTPSA id e11-20020a5d4e8b000000b002cde626cd96sm1563153wru.65.2023.03.31.01.35.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 01:35:11 -0700 (PDT)
+        Fri, 31 Mar 2023 01:35:10 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Fri, 31 Mar 2023 10:34:58 +0200
-Subject: [PATCH RFC 20/20] MAINTAINERS: remove OXNAS entry
+Date: Fri, 31 Mar 2023 10:34:57 +0200
+Subject: [PATCH RFC 19/20] dt-bindings: interrupt-controller:
+ arm,versatile-fpga-irq: mark oxnas compatible as deprecated
 MIME-Version: 1.0
-Message-Id: <20230331-topic-oxnas-upstream-remove-v1-20-5bd58fd1dd1f@linaro.org>
+Message-Id: <20230331-topic-oxnas-upstream-remove-v1-19-5bd58fd1dd1f@linaro.org>
 References: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
 In-Reply-To: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
 To: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, 
@@ -94,8 +95,8 @@ Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-pm@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230331_013512_901620_9037DB2D 
-X-CRM114-Status: GOOD (  10.33  )
+X-CRM114-CacheID: sfid-20230331_013517_421392_1774321C 
+X-CRM114-Status: GOOD (  12.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,35 +114,36 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Due to lack of maintainance and stall of development for a few years now,
-and since no new features will ever be added upstream, remove MAINTAINERS
-entry for OXNAS files.
+and since no new features will ever be added upstream, mark the
+OX810 and OX820 IRQ compatible as deprecated.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- MAINTAINERS | 10 ----------
- 1 file changed, 10 deletions(-)
+ .../bindings/interrupt-controller/arm,versatile-fpga-irq.txt          | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d5bc223f305..c9a29d839ea2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2551,16 +2551,6 @@ S:	Maintained
- W:	http://www.digriz.org.uk/ts78xx/kernel
- F:	arch/arm/mach-orion5x/ts78xx-*
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt b/Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
+index 2a1d16bdf834..ea939f54c5eb 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
++++ b/Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
+@@ -6,7 +6,7 @@ controllers are OR:ed together and fed to the CPU tile's IRQ input. Each
+ instance can handle up to 32 interrupts.
  
--ARM/OXNAS platform support
--M:	Neil Armstrong <neil.armstrong@linaro.org>
--L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
--L:	linux-oxnas@groups.io (moderated for non-subscribers)
--S:	Maintained
--F:	arch/arm/boot/dts/ox8*.dts*
--F:	arch/arm/mach-oxnas/
--F:	drivers/power/reset/oxnas-restart.c
--N:	oxnas
--
- ARM/QUALCOMM SUPPORT
- M:	Andy Gross <agross@kernel.org>
- M:	Bjorn Andersson <andersson@kernel.org>
+ Required properties:
+-- compatible: "arm,versatile-fpga-irq" or "oxsemi,ox810se-rps-irq"
++- compatible: "arm,versatile-fpga-irq"
+ - interrupt-controller: Identifies the node as an interrupt controller
+ - #interrupt-cells: The number of cells to define the interrupts.  Must be 1
+   as the FPGA IRQ controller has no configuration options for interrupt
+@@ -19,6 +19,8 @@ Required properties:
+   the system till not make it possible for devices to request these
+   interrupts.
+ 
++The "oxsemi,ox810se-rps-irq" compatible is deprecated.
++
+ Example:
+ 
+ pic: pic@14000000 {
 
 -- 
 2.34.1
