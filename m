@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18144C77B62
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 08:36:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF1FDC77B62
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 08:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XaX9Oq7qbrhrfh7OOj6FaeKJIIxPZ/3nJnvU+PDiZtk=; b=fsfXFK7K+vkhmP
-	h8BQ21cJaShEIHUj8dAr+G399Qk6jLPz74JWw7Vyk3wbjEcXlyTpYEv8TI6MZ8QfYuIv1JiuQbvRv
-	yE9wAjPwmksCX0Nzip9EV2XAYYT1DGhjex8dmF5czM6xuZvZUbQHRjhMyfIDMy78AisAhM5nOESzl
-	GErzZXGBG/f+NitwEL+ORuU1us2LxmmXw+TzL6GpVQY73rNoL322I/LoNARqS9WOGKbBzrwwkl8Oj
-	F8BvDTrGgxRBT/eDGTpnMI8o61zcd+CGGJWIPyWBoM5U86iNOtOtTyCxwdqFtqCuy/rLQG3yqWqcr
-	GYLygbAcqsgmEr9tYs7g==;
+	List-Owner; bh=dCbQ0GDSU6ws1b5yFk31ARfLgwllComYAXGw/vdjeM8=; b=S2UKruIKf/ciJ1
+	DTON2cwJMSWjzZFQXZnmbRvzCBLPdliHNGFMnvIZDSYmQhw5AM5HLOWN7OYrjV3DQHh6teJk4cD1J
+	J+nErcybgNlbj41hEp/j3/WAjJWyRrIWsKNohiRcLCbCFbSkabawWzPwk2QoaoKBKMn3HFlFLfTjQ
+	0IYdYpDDEnVOHCVChY4KaaRz3IUc8y8JBMu3H+UjiC3SMEgwOIk/Bs9A0cshIBZV8J2N6odWhPK0A
+	E/qt18FLdk1AzVhygXUfEY5NrWRmfY+nOjMkIF0AthTzX2bDzGu8pVsSL5Rxg4y4Vb39LvgUlT4rQ
+	VB4DlOJdQsrrnP8kDpGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1piAEq-006R1p-2K;
-	Fri, 31 Mar 2023 08:36:00 +0000
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+	id 1piAET-006Qlk-2u;
+	Fri, 31 Mar 2023 08:35:37 +0000
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1piAE0-006QLm-1g
+	id 1piADn-006QQC-04
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Mar 2023 08:35:10 +0000
-Received: by mail-wr1-x435.google.com with SMTP id m2so21589463wrh.6
-        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 01:35:08 -0700 (PDT)
+	Fri, 31 Mar 2023 08:34:58 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id v1so21592614wrv.1
+        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 01:34:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680251708;
+        d=linaro.org; s=google; t=1680251694;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wyeKmakvQ1hkSbEX4Ij16MupXpQFelz4/2NYVgWuJEU=;
-        b=zClFd5Vlxi7e28KuIdUeqTBp1gtaAf//uuz3h43rioEByZfX20BHjwgCWryxHTo+9i
-         oWtko8Ixqknbs450gQiNdzgPyJimKEQS8qc/dtfvgsqCDKLQqr6yI900pjhX/qGMFZdX
-         E9YiCGD7wJEMaP2livuoEdQ3bY4d1sZa49exj5qQSZvqCNDpuRGe68UZyI6Xua/Z9nt1
-         a5+zKV2l3pR4RD+Kel2t/PZXyj7R7YgcnFPa4uM70rQY8XI8A3moL7BiabGuEw6lZAtT
-         fhJgPmMUIhLlGzDOshxVzvMD+/1i7AaQ78yMnrrXECZVdQNAju2O9I0ysOGtmNk5iTB6
-         qXnw==
+        bh=lbX5AvtH3XQkpXillVC2r4t4ZcO7K1MUGKa8995+UMc=;
+        b=FXPQE0eL9eqATklkjZEYI6FjUYba0uQ/MQ+Nov2T3gJF3W+h3+1jgFcJnDVdHt17UU
+         vhTpGd1CnckRRNR2FMMFJDdlPLcqhq7wVtKtupuheO3qJnU4yi/dnsPI4aZ+Jq7uyo9V
+         g8W//zwz0inADvyoEIMT35Q/6Pbjj1CacqHmhVjcT9k8m14teR64Ytv9umBulZJyn4ye
+         xoFBF0UW0z1k6fwE5uVdc5uPydJLwya3pHrzDxk4wv8JyWGSU8Y5rQ7Y00Eef2fwqvs7
+         lsL6aOkIB4J2tq9HaaGj8W7m89y51dE1sYpZw6c91qmFImmY9Nhokl1z0Wg0jc3YIii2
+         Azvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680251708;
+        d=1e100.net; s=20210112; t=1680251694;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wyeKmakvQ1hkSbEX4Ij16MupXpQFelz4/2NYVgWuJEU=;
-        b=JuDZb8GFOJYNYf2QgCI7lZzfVR4pBaVaE0wNPweZDL7ri10FypWhj7dfWvjyrou2bc
-         AIKNe3Q1oKZuxs57q9GnRUAKridtGW+6h16YCbT/BZCcoE69S+qoY/9Tdo+VVgrhbnZg
-         jgIoqWJtV0v/nthhwiB/KAPLmQCKFdC0L1QjeQ4CS41lpAZNOjIsif0bFZdyz0AnYjnS
-         P8//RZ4Gavd4CnjFIo4JEs17ctva/MomIqahVnw7RG6WWN7jygXooMxPqPxRjbb5/HOR
-         +o2w81rgEv0XcXE+CbtnsWt8ckxdERlhebLfNLmYiMzFbqMc+b/VRGOzUzqfcrmVcj7t
-         cM4g==
-X-Gm-Message-State: AAQBX9cTEL91WVrZKgAjX3OUl1f8lpEzVaPcpTxs2CptiKka/ifBGM+A
-	cvuyHSmFW0NOZXTYmNMrKD+Zdg==
-X-Google-Smtp-Source: AKy350ZgpW5+Oe3dbmzsCW6vw7rhJNBdmiyWR1Pp/d0MnEm1IxdpSh8x2o9HxYqyhz/1afKGjly3uQ==
-X-Received: by 2002:a5d:538e:0:b0:2d5:ac9e:cdde with SMTP id d14-20020a5d538e000000b002d5ac9ecddemr18097313wrv.51.1680251707922;
-        Fri, 31 Mar 2023 01:35:07 -0700 (PDT)
+        bh=lbX5AvtH3XQkpXillVC2r4t4ZcO7K1MUGKa8995+UMc=;
+        b=WXOEpgCiXtyvL6JOwlkQKW9pIZsF6VORj6GugNpEWAr3OQMb0l3Hg7vdUksFeVrvyQ
+         aetW/YejWRj3edn/pAdMIHEcwbsHdYEc1sTm5RQv20JMUDISieYKH+Z8anOjHUuqJzR1
+         kgTpzK/uB0ZsqojwBCm+a+Ql4mMgd2pFaevwHN3smVFkiuvUss1QJfr4+1tZbL72ZL3z
+         9jMDNE8M3tNVU3BmS6gL4+F280gigGejxAIc+aCuTdVb9RKWkQc+3LEUl/soW7HYwTZP
+         hoo9g/qgaeuNOS8oxSJkTQF8weCHy6Pc1hmDBArNChaFWPmnxbUp84ZH2yzLnUT8R4a7
+         Wbyg==
+X-Gm-Message-State: AAQBX9d5sHBkuFKeYcV6I7rd8Y4g88bhXoNOEpJelYkeORR0vKcqGKqZ
+	LU//EH52re9Yif8qfCu1EKh2eQ==
+X-Google-Smtp-Source: AKy350a6Wf8rj2xwut2Qu0Ukl1DJvimaFjv0cbtV5kR6Di/Cb/RS9MmoOkXKp4Sl7MChLqy4NJUeWA==
+X-Received: by 2002:adf:fa11:0:b0:2c5:510b:8f9c with SMTP id m17-20020adffa11000000b002c5510b8f9cmr20833338wrr.52.1680251693811;
+        Fri, 31 Mar 2023 01:34:53 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id e11-20020a5d4e8b000000b002cde626cd96sm1563153wru.65.2023.03.31.01.35.06
+        by smtp.gmail.com with ESMTPSA id e11-20020a5d4e8b000000b002cde626cd96sm1563153wru.65.2023.03.31.01.34.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 01:35:07 -0700 (PDT)
+        Fri, 31 Mar 2023 01:34:53 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Fri, 31 Mar 2023 10:34:55 +0200
-Subject: [PATCH RFC 17/20] reset: oxnas: remove obsolete reset driver
+Date: Fri, 31 Mar 2023 10:34:45 +0200
+Subject: [PATCH RFC 07/20] clksource: timer-oxnas-rps: remove obsolete
+ timer driver
 MIME-Version: 1.0
-Message-Id: <20230331-topic-oxnas-upstream-remove-v1-17-5bd58fd1dd1f@linaro.org>
+Message-Id: <20230331-topic-oxnas-upstream-remove-v1-7-5bd58fd1dd1f@linaro.org>
 References: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
 In-Reply-To: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
 To: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, 
@@ -94,8 +95,8 @@ Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-pm@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230331_013508_583712_B911C407 
-X-CRM114-Status: GOOD (  17.51  )
+X-CRM114-CacheID: sfid-20230331_013455_583625_7FC5CB3F 
+X-CRM114-Status: GOOD (  16.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,200 +115,339 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Due to lack of maintainance and stall of development for a few years now,
 and since no new features will ever be added upstream, remove support
-for OX810 and OX820 peripheral reset.
+for OX810 and OX820 timer.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- .../devicetree/bindings/reset/oxnas,reset.txt      |  32 ------
- drivers/reset/Kconfig                              |   3 -
- drivers/reset/Makefile                             |   1 -
- drivers/reset/reset-oxnas.c                        | 114 ---------------------
- 4 files changed, 150 deletions(-)
+ drivers/clocksource/Kconfig           |   7 -
+ drivers/clocksource/Makefile          |   1 -
+ drivers/clocksource/timer-oxnas-rps.c | 288 ----------------------------------
+ 3 files changed, 296 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/reset/oxnas,reset.txt b/Documentation/devicetree/bindings/reset/oxnas,reset.txt
-deleted file mode 100644
-index d27ccb5d04fc..000000000000
---- a/Documentation/devicetree/bindings/reset/oxnas,reset.txt
-+++ /dev/null
-@@ -1,32 +0,0 @@
--Oxford Semiconductor OXNAS SoC Family RESET Controller
--================================================
--
--Please also refer to reset.txt in this directory for common reset
--controller binding usage.
--
--Required properties:
--- compatible: For OX810SE, should be "oxsemi,ox810se-reset"
--	      For OX820, should be "oxsemi,ox820-reset"
--- #reset-cells: 1, see below
--
--Parent node should have the following properties :
--- compatible: For OX810SE, should be :
--			"oxsemi,ox810se-sys-ctrl", "syscon", "simple-mfd"
--	      For OX820, should be :
--			"oxsemi,ox820-sys-ctrl", "syscon", "simple-mfd"
--
--Reset indices are in dt-bindings include files :
--- For OX810SE: include/dt-bindings/reset/oxsemi,ox810se.h
--- For OX820: include/dt-bindings/reset/oxsemi,ox820.h
--
--example:
--
--sys: sys-ctrl@000000 {
--	compatible = "oxsemi,ox810se-sys-ctrl", "syscon", "simple-mfd";
--	reg = <0x000000 0x100000>;
--
--	reset: reset-controller {
--		compatible = "oxsemi,ox810se-reset";
--		#reset-cells = <1>;
--	};
--};
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 2a52c990d4fe..695419d888ab 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -143,9 +143,6 @@ config RESET_NPCM
- 	  This enables the reset controller driver for Nuvoton NPCM
- 	  BMC SoCs.
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 5fc8f0e7fb38..cd494646ebf4 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -461,13 +461,6 @@ config VF_PIT_TIMER
+ 	help
+ 	  Support for Periodic Interrupt Timer on Freescale Vybrid Family SoCs.
  
--config RESET_OXNAS
--	bool
+-config OXNAS_RPS_TIMER
+-	bool "Oxford Semiconductor OXNAS RPS Timers driver" if COMPILE_TEST
+-	select TIMER_OF
+-	select CLKSRC_MMIO
+-	help
+-	  This enables support for the Oxford Semiconductor OXNAS RPS timers.
 -
- config RESET_PISTACHIO
- 	bool "Pistachio Reset Driver"
- 	depends on MIPS || COMPILE_TEST
-diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 3e7e5fd633a8..cb1f229e20a6 100644
---- a/drivers/reset/Makefile
-+++ b/drivers/reset/Makefile
-@@ -20,7 +20,6 @@ obj-$(CONFIG_RESET_MCHP_SPARX5) += reset-microchip-sparx5.o
- obj-$(CONFIG_RESET_MESON) += reset-meson.o
- obj-$(CONFIG_RESET_MESON_AUDIO_ARB) += reset-meson-audio-arb.o
- obj-$(CONFIG_RESET_NPCM) += reset-npcm.o
--obj-$(CONFIG_RESET_OXNAS) += reset-oxnas.o
- obj-$(CONFIG_RESET_PISTACHIO) += reset-pistachio.o
- obj-$(CONFIG_RESET_POLARFIRE_SOC) += reset-mpfs.o
- obj-$(CONFIG_RESET_QCOM_AOSS) += reset-qcom-aoss.o
-diff --git a/drivers/reset/reset-oxnas.c b/drivers/reset/reset-oxnas.c
+ config SYS_SUPPORTS_SH_CMT
+ 	bool
+ 
+diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+index 64ab547de97b..a15608cb0ea3 100644
+--- a/drivers/clocksource/Makefile
++++ b/drivers/clocksource/Makefile
+@@ -53,7 +53,6 @@ obj-$(CONFIG_CLKSRC_QCOM)	+= timer-qcom.o
+ obj-$(CONFIG_MTK_TIMER)		+= timer-mediatek.o
+ obj-$(CONFIG_CLKSRC_PISTACHIO)	+= timer-pistachio.o
+ obj-$(CONFIG_CLKSRC_TI_32K)	+= timer-ti-32k.o
+-obj-$(CONFIG_OXNAS_RPS_TIMER)	+= timer-oxnas-rps.o
+ obj-$(CONFIG_OWL_TIMER)		+= timer-owl.o
+ obj-$(CONFIG_MILBEAUT_TIMER)	+= timer-milbeaut.o
+ obj-$(CONFIG_SPRD_TIMER)	+= timer-sprd.o
+diff --git a/drivers/clocksource/timer-oxnas-rps.c b/drivers/clocksource/timer-oxnas-rps.c
 deleted file mode 100644
-index 8209f922dc16..000000000000
---- a/drivers/reset/reset-oxnas.c
+index d514b44e67dd..000000000000
+--- a/drivers/clocksource/timer-oxnas-rps.c
 +++ /dev/null
-@@ -1,114 +0,0 @@
+@@ -1,288 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0-only
 -/*
-- * Oxford Semiconductor Reset Controller driver
+- * drivers/clocksource/timer-oxnas-rps.c
 - *
-- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
-- * Copyright (C) 2014 Ma Haijun <mahaijuns@gmail.com>
 - * Copyright (C) 2009 Oxford Semiconductor Ltd
+- * Copyright (C) 2013 Ma Haijun <mahaijuns@gmail.com>
+- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
 - */
--#include <linux/err.h>
+-
+-#define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
+-
 -#include <linux/init.h>
--#include <linux/of.h>
--#include <linux/platform_device.h>
--#include <linux/reset-controller.h>
+-#include <linux/irq.h>
+-#include <linux/io.h>
+-#include <linux/clk.h>
 -#include <linux/slab.h>
--#include <linux/delay.h>
--#include <linux/types.h>
--#include <linux/regmap.h>
--#include <linux/mfd/syscon.h>
+-#include <linux/interrupt.h>
+-#include <linux/of_irq.h>
+-#include <linux/of_address.h>
+-#include <linux/clockchips.h>
+-#include <linux/sched_clock.h>
 -
--/* Regmap offsets */
--#define RST_SET_REGOFFSET	0x34
--#define RST_CLR_REGOFFSET	0x38
+-/* TIMER1 used as tick
+- * TIMER2 used as clocksource
+- */
 -
--struct oxnas_reset {
--	struct regmap *regmap;
--	struct reset_controller_dev rcdev;
+-/* Registers definitions */
+-
+-#define TIMER_LOAD_REG		0x0
+-#define TIMER_CURR_REG		0x4
+-#define TIMER_CTRL_REG		0x8
+-#define TIMER_CLRINT_REG	0xC
+-
+-#define TIMER_BITS		24
+-
+-#define TIMER_MAX_VAL		(BIT(TIMER_BITS) - 1)
+-
+-#define TIMER_PERIODIC		BIT(6)
+-#define TIMER_ENABLE		BIT(7)
+-
+-#define TIMER_DIV1		(0)
+-#define TIMER_DIV16		(1 << 2)
+-#define TIMER_DIV256		(2 << 2)
+-
+-#define TIMER1_REG_OFFSET	0
+-#define TIMER2_REG_OFFSET	0x20
+-
+-/* Clockevent & Clocksource data */
+-
+-struct oxnas_rps_timer {
+-	struct clock_event_device clkevent;
+-	void __iomem *clksrc_base;
+-	void __iomem *clkevt_base;
+-	unsigned long timer_period;
+-	unsigned int timer_prescaler;
+-	struct clk *clk;
+-	int irq;
 -};
 -
--static int oxnas_reset_reset(struct reset_controller_dev *rcdev,
--			      unsigned long id)
+-static irqreturn_t oxnas_rps_timer_irq(int irq, void *dev_id)
 -{
--	struct oxnas_reset *data =
--		container_of(rcdev, struct oxnas_reset, rcdev);
+-	struct oxnas_rps_timer *rps = dev_id;
 -
--	regmap_write(data->regmap, RST_SET_REGOFFSET, BIT(id));
--	msleep(50);
--	regmap_write(data->regmap, RST_CLR_REGOFFSET, BIT(id));
+-	writel_relaxed(0, rps->clkevt_base + TIMER_CLRINT_REG);
+-
+-	rps->clkevent.event_handler(&rps->clkevent);
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static void oxnas_rps_timer_config(struct oxnas_rps_timer *rps,
+-				   unsigned long period,
+-				   unsigned int periodic)
+-{
+-	uint32_t cfg = rps->timer_prescaler;
+-
+-	if (period)
+-		cfg |= TIMER_ENABLE;
+-
+-	if (periodic)
+-		cfg |= TIMER_PERIODIC;
+-
+-	writel_relaxed(period, rps->clkevt_base + TIMER_LOAD_REG);
+-	writel_relaxed(cfg, rps->clkevt_base + TIMER_CTRL_REG);
+-}
+-
+-static int oxnas_rps_timer_shutdown(struct clock_event_device *evt)
+-{
+-	struct oxnas_rps_timer *rps =
+-		container_of(evt, struct oxnas_rps_timer, clkevent);
+-
+-	oxnas_rps_timer_config(rps, 0, 0);
 -
 -	return 0;
 -}
 -
--static int oxnas_reset_assert(struct reset_controller_dev *rcdev,
--			      unsigned long id)
+-static int oxnas_rps_timer_set_periodic(struct clock_event_device *evt)
 -{
--	struct oxnas_reset *data =
--		container_of(rcdev, struct oxnas_reset, rcdev);
+-	struct oxnas_rps_timer *rps =
+-		container_of(evt, struct oxnas_rps_timer, clkevent);
 -
--	regmap_write(data->regmap, RST_SET_REGOFFSET, BIT(id));
+-	oxnas_rps_timer_config(rps, rps->timer_period, 1);
 -
 -	return 0;
 -}
 -
--static int oxnas_reset_deassert(struct reset_controller_dev *rcdev,
--				unsigned long id)
+-static int oxnas_rps_timer_set_oneshot(struct clock_event_device *evt)
 -{
--	struct oxnas_reset *data =
--		container_of(rcdev, struct oxnas_reset, rcdev);
+-	struct oxnas_rps_timer *rps =
+-		container_of(evt, struct oxnas_rps_timer, clkevent);
 -
--	regmap_write(data->regmap, RST_CLR_REGOFFSET, BIT(id));
+-	oxnas_rps_timer_config(rps, rps->timer_period, 0);
 -
 -	return 0;
 -}
 -
--static const struct reset_control_ops oxnas_reset_ops = {
--	.reset		= oxnas_reset_reset,
--	.assert		= oxnas_reset_assert,
--	.deassert	= oxnas_reset_deassert,
--};
--
--static const struct of_device_id oxnas_reset_dt_ids[] = {
--	 { .compatible = "oxsemi,ox810se-reset", },
--	 { .compatible = "oxsemi,ox820-reset", },
--	 { /* sentinel */ },
--};
--
--static int oxnas_reset_probe(struct platform_device *pdev)
+-static int oxnas_rps_timer_next_event(unsigned long delta,
+-				struct clock_event_device *evt)
 -{
--	struct oxnas_reset *data;
--	struct device *parent;
+-	struct oxnas_rps_timer *rps =
+-		container_of(evt, struct oxnas_rps_timer, clkevent);
 -
--	parent = pdev->dev.parent;
--	if (!parent) {
--		dev_err(&pdev->dev, "no parent\n");
--		return -ENODEV;
+-	oxnas_rps_timer_config(rps, delta, 0);
+-
+-	return 0;
+-}
+-
+-static int __init oxnas_rps_clockevent_init(struct oxnas_rps_timer *rps)
+-{
+-	ulong clk_rate = clk_get_rate(rps->clk);
+-	ulong timer_rate;
+-
+-	/* Start with prescaler 1 */
+-	rps->timer_prescaler = TIMER_DIV1;
+-	rps->timer_period = DIV_ROUND_UP(clk_rate, HZ);
+-	timer_rate = clk_rate;
+-
+-	if (rps->timer_period > TIMER_MAX_VAL) {
+-		rps->timer_prescaler = TIMER_DIV16;
+-		timer_rate = clk_rate / 16;
+-		rps->timer_period = DIV_ROUND_UP(timer_rate, HZ);
+-	}
+-	if (rps->timer_period > TIMER_MAX_VAL) {
+-		rps->timer_prescaler = TIMER_DIV256;
+-		timer_rate = clk_rate / 256;
+-		rps->timer_period = DIV_ROUND_UP(timer_rate, HZ);
 -	}
 -
--	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
--	if (!data)
+-	rps->clkevent.name = "oxnas-rps";
+-	rps->clkevent.features = CLOCK_EVT_FEAT_PERIODIC |
+-				 CLOCK_EVT_FEAT_ONESHOT |
+-				 CLOCK_EVT_FEAT_DYNIRQ;
+-	rps->clkevent.tick_resume = oxnas_rps_timer_shutdown;
+-	rps->clkevent.set_state_shutdown = oxnas_rps_timer_shutdown;
+-	rps->clkevent.set_state_periodic = oxnas_rps_timer_set_periodic;
+-	rps->clkevent.set_state_oneshot = oxnas_rps_timer_set_oneshot;
+-	rps->clkevent.set_next_event = oxnas_rps_timer_next_event;
+-	rps->clkevent.rating = 200;
+-	rps->clkevent.cpumask = cpu_possible_mask;
+-	rps->clkevent.irq = rps->irq;
+-	clockevents_config_and_register(&rps->clkevent,
+-					timer_rate,
+-					1,
+-					TIMER_MAX_VAL);
+-
+-	pr_info("Registered clock event rate %luHz prescaler %x period %lu\n",
+-			clk_rate,
+-			rps->timer_prescaler,
+-			rps->timer_period);
+-
+-	return 0;
+-}
+-
+-/* Clocksource */
+-
+-static void __iomem *timer_sched_base;
+-
+-static u64 notrace oxnas_rps_read_sched_clock(void)
+-{
+-	return ~readl_relaxed(timer_sched_base);
+-}
+-
+-static int __init oxnas_rps_clocksource_init(struct oxnas_rps_timer *rps)
+-{
+-	ulong clk_rate = clk_get_rate(rps->clk);
+-	int ret;
+-
+-	/* use prescale 16 */
+-	clk_rate = clk_rate / 16;
+-
+-	writel_relaxed(TIMER_MAX_VAL, rps->clksrc_base + TIMER_LOAD_REG);
+-	writel_relaxed(TIMER_PERIODIC | TIMER_ENABLE | TIMER_DIV16,
+-			rps->clksrc_base + TIMER_CTRL_REG);
+-
+-	timer_sched_base = rps->clksrc_base + TIMER_CURR_REG;
+-	sched_clock_register(oxnas_rps_read_sched_clock,
+-			     TIMER_BITS, clk_rate);
+-	ret = clocksource_mmio_init(timer_sched_base,
+-				    "oxnas_rps_clocksource_timer",
+-				    clk_rate, 250, TIMER_BITS,
+-				    clocksource_mmio_readl_down);
+-	if (WARN_ON(ret)) {
+-		pr_err("can't register clocksource\n");
+-		return ret;
+-	}
+-
+-	pr_info("Registered clocksource rate %luHz\n", clk_rate);
+-
+-	return 0;
+-}
+-
+-static int __init oxnas_rps_timer_init(struct device_node *np)
+-{
+-	struct oxnas_rps_timer *rps;
+-	void __iomem *base;
+-	int ret;
+-
+-	rps = kzalloc(sizeof(*rps), GFP_KERNEL);
+-	if (!rps)
 -		return -ENOMEM;
 -
--	data->regmap = syscon_node_to_regmap(parent->of_node);
--	if (IS_ERR(data->regmap)) {
--		dev_err(&pdev->dev, "failed to get parent regmap\n");
--		return PTR_ERR(data->regmap);
+-	rps->clk = of_clk_get(np, 0);
+-	if (IS_ERR(rps->clk)) {
+-		ret = PTR_ERR(rps->clk);
+-		goto err_alloc;
 -	}
 -
--	platform_set_drvdata(pdev, data);
+-	ret = clk_prepare_enable(rps->clk);
+-	if (ret)
+-		goto err_clk;
 -
--	data->rcdev.owner = THIS_MODULE;
--	data->rcdev.nr_resets = 32;
--	data->rcdev.ops = &oxnas_reset_ops;
--	data->rcdev.of_node = pdev->dev.of_node;
+-	base = of_iomap(np, 0);
+-	if (!base) {
+-		ret = -ENXIO;
+-		goto err_clk_prepare;
+-	}
 -
--	return devm_reset_controller_register(&pdev->dev, &data->rcdev);
+-	rps->irq = irq_of_parse_and_map(np, 0);
+-	if (!rps->irq) {
+-		ret = -EINVAL;
+-		goto err_iomap;
+-	}
+-
+-	rps->clkevt_base = base + TIMER1_REG_OFFSET;
+-	rps->clksrc_base = base + TIMER2_REG_OFFSET;
+-
+-	/* Disable timers */
+-	writel_relaxed(0, rps->clkevt_base + TIMER_CTRL_REG);
+-	writel_relaxed(0, rps->clksrc_base + TIMER_CTRL_REG);
+-	writel_relaxed(0, rps->clkevt_base + TIMER_LOAD_REG);
+-	writel_relaxed(0, rps->clksrc_base + TIMER_LOAD_REG);
+-	writel_relaxed(0, rps->clkevt_base + TIMER_CLRINT_REG);
+-	writel_relaxed(0, rps->clksrc_base + TIMER_CLRINT_REG);
+-
+-	ret = request_irq(rps->irq, oxnas_rps_timer_irq,
+-			  IRQF_TIMER | IRQF_IRQPOLL,
+-			  "rps-timer", rps);
+-	if (ret)
+-		goto err_iomap;
+-
+-	ret = oxnas_rps_clocksource_init(rps);
+-	if (ret)
+-		goto err_irqreq;
+-
+-	ret = oxnas_rps_clockevent_init(rps);
+-	if (ret)
+-		goto err_irqreq;
+-
+-	return 0;
+-
+-err_irqreq:
+-	free_irq(rps->irq, rps);
+-err_iomap:
+-	iounmap(base);
+-err_clk_prepare:
+-	clk_disable_unprepare(rps->clk);
+-err_clk:
+-	clk_put(rps->clk);
+-err_alloc:
+-	kfree(rps);
+-
+-	return ret;
 -}
 -
--static struct platform_driver oxnas_reset_driver = {
--	.probe	= oxnas_reset_probe,
--	.driver = {
--		.name		= "oxnas-reset",
--		.of_match_table	= oxnas_reset_dt_ids,
--	},
--};
--builtin_platform_driver(oxnas_reset_driver);
+-TIMER_OF_DECLARE(ox810se_rps,
+-		       "oxsemi,ox810se-rps-timer", oxnas_rps_timer_init);
+-TIMER_OF_DECLARE(ox820_rps,
+-		       "oxsemi,ox820-rps-timer", oxnas_rps_timer_init);
 
 -- 
 2.34.1
