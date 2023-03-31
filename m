@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CF10C76196
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 08:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18144C77B62
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 08:36:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XeHj/tZ2lHiFBBA1RrMXa8+IN4YsC4HQ4DG6pLX/jj8=; b=J5/g7Pb6tqDr6l
-	3GcA+Pd7XOnR+jKE2j0uNkhqCH59WLs1Wg8SqBcfiMJmasoqzY9p8JbtVMk5GxxO15CJIJaOBF2S7
-	aT4wZJpIFc+U2gQ1HOZTOWsCnt88nAYx1yGhC4jefZoNRwUjjMFjyEbjqOP0OV8D7T9ZFhml0nXYf
-	+L5RmK/xcnCAo8/+f3l+reG/Oy2Gt4ub13dV4TDxsV98sqsuTlaVU89zO2jT/59ov6yB6ZJz49VtJ
-	hrITpUCysHsj8BrSOfpayX9gGkZVHP0U+yOwxWdLJgMFwE/PGE+BLXpSud/VvvHP9OtndSdM0baX/
-	JP1hO2sxxdLVi5W1qUOg==;
+	List-Owner; bh=XaX9Oq7qbrhrfh7OOj6FaeKJIIxPZ/3nJnvU+PDiZtk=; b=fsfXFK7K+vkhmP
+	h8BQ21cJaShEIHUj8dAr+G399Qk6jLPz74JWw7Vyk3wbjEcXlyTpYEv8TI6MZ8QfYuIv1JiuQbvRv
+	yE9wAjPwmksCX0Nzip9EV2XAYYT1DGhjex8dmF5czM6xuZvZUbQHRjhMyfIDMy78AisAhM5nOESzl
+	GErzZXGBG/f+NitwEL+ORuU1us2LxmmXw+TzL6GpVQY73rNoL322I/LoNARqS9WOGKbBzrwwkl8Oj
+	F8BvDTrGgxRBT/eDGTpnMI8o61zcd+CGGJWIPyWBoM5U86iNOtOtTyCxwdqFtqCuy/rLQG3yqWqcr
+	GYLygbAcqsgmEr9tYs7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1piAEP-006Qj5-2k;
-	Fri, 31 Mar 2023 08:35:33 +0000
-Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
+	id 1piAEq-006R1p-2K;
+	Fri, 31 Mar 2023 08:36:00 +0000
+Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1piADn-006QL2-27
+	id 1piAE0-006QLm-1g
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Mar 2023 08:34:58 +0000
-Received: by mail-wr1-x430.google.com with SMTP id m2so21588854wrh.6
-        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 01:34:55 -0700 (PDT)
+	Fri, 31 Mar 2023 08:35:10 +0000
+Received: by mail-wr1-x435.google.com with SMTP id m2so21589463wrh.6
+        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 01:35:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680251695;
+        d=linaro.org; s=google; t=1680251708;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0V8nry5kWVC4/7uVK2TIBPivIea0+SnMt7iP0mU4Cw8=;
-        b=chZXAA03Ktj6cCYt4xjrNnHn2g3CbaZsDusqs4uU9Vhv0+pAm8jD8YNmIH6rxRpV+h
-         vZbIeRwPEq02v7H1BQWanP2WxcrxIeZKG+trsgqWf+VelBUfmK5t3LKEmSAqUKxTZ13L
-         +G9CVycFJ35xf9hcvHQ/5mpMm4vgT5JJt3pCOGXggW1pTaO5/XGxwGfSkh0l2D4lx3xm
-         CdU9FttI+BGLbTmFYxZ4WJMPU0cKt87qQLmEz7fPijrzLc+aEfpd2hBm32tMeL2yzewe
-         wa8ggH+56W4skf84z3SrfyGgzpsmcwI8xPuwXPLIfYxeKh5XiRGPo7geoXtpM7Y1dKG0
-         wv7w==
+        bh=wyeKmakvQ1hkSbEX4Ij16MupXpQFelz4/2NYVgWuJEU=;
+        b=zClFd5Vlxi7e28KuIdUeqTBp1gtaAf//uuz3h43rioEByZfX20BHjwgCWryxHTo+9i
+         oWtko8Ixqknbs450gQiNdzgPyJimKEQS8qc/dtfvgsqCDKLQqr6yI900pjhX/qGMFZdX
+         E9YiCGD7wJEMaP2livuoEdQ3bY4d1sZa49exj5qQSZvqCNDpuRGe68UZyI6Xua/Z9nt1
+         a5+zKV2l3pR4RD+Kel2t/PZXyj7R7YgcnFPa4uM70rQY8XI8A3moL7BiabGuEw6lZAtT
+         fhJgPmMUIhLlGzDOshxVzvMD+/1i7AaQ78yMnrrXECZVdQNAju2O9I0ysOGtmNk5iTB6
+         qXnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680251695;
+        d=1e100.net; s=20210112; t=1680251708;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0V8nry5kWVC4/7uVK2TIBPivIea0+SnMt7iP0mU4Cw8=;
-        b=zgLBGlbVt4YZVCUj6iv+HuhnkwIaPbe5JG55TWjD/AQaeARwRYWQiwmcfoYrN+1hxB
-         4dS7oVeUyaPy3p9+aOKFoCBHUjzDUqKH1oIM0N/S0uJR2QwFyAPtBVAhpociNzFuMrrH
-         kGiOlz54cXOv7hUFL6zIo5ch7erNGcKbtmWq43oSsU2h2iK+yKON8a2Up1GXg05eVDV5
-         mHDL/2Ekps1ZZE6jQiZp2jtZibd+0MMfjHuviA3RdEGgUfGrI50UxDLr6RFu2/uLeLC4
-         JbU4X9jkSF8mzCSyoShmgmQPgLBLi+Zp1clLJWTAKHatx/G6KIXFgKinSL+p0CHJFhMu
-         51CQ==
-X-Gm-Message-State: AAQBX9cC4WRfSC0FusnGK9THYDfUenW9zOlwGOvinpuE8NdoTYzqxtuw
-	Y9YoUl3/oPKPUJ6RBkbwY0GCqQ==
-X-Google-Smtp-Source: AKy350bhK+x7s++84IOWEFVO/gMXDRH9T/LCqh08NqEq24KOmp+VFPEpoLewHAutg0wJysva85qmrQ==
-X-Received: by 2002:a5d:550c:0:b0:2d9:5608:ee0 with SMTP id b12-20020a5d550c000000b002d956080ee0mr20654106wrv.69.1680251695160;
-        Fri, 31 Mar 2023 01:34:55 -0700 (PDT)
+        bh=wyeKmakvQ1hkSbEX4Ij16MupXpQFelz4/2NYVgWuJEU=;
+        b=JuDZb8GFOJYNYf2QgCI7lZzfVR4pBaVaE0wNPweZDL7ri10FypWhj7dfWvjyrou2bc
+         AIKNe3Q1oKZuxs57q9GnRUAKridtGW+6h16YCbT/BZCcoE69S+qoY/9Tdo+VVgrhbnZg
+         jgIoqWJtV0v/nthhwiB/KAPLmQCKFdC0L1QjeQ4CS41lpAZNOjIsif0bFZdyz0AnYjnS
+         P8//RZ4Gavd4CnjFIo4JEs17ctva/MomIqahVnw7RG6WWN7jygXooMxPqPxRjbb5/HOR
+         +o2w81rgEv0XcXE+CbtnsWt8ckxdERlhebLfNLmYiMzFbqMc+b/VRGOzUzqfcrmVcj7t
+         cM4g==
+X-Gm-Message-State: AAQBX9cTEL91WVrZKgAjX3OUl1f8lpEzVaPcpTxs2CptiKka/ifBGM+A
+	cvuyHSmFW0NOZXTYmNMrKD+Zdg==
+X-Google-Smtp-Source: AKy350ZgpW5+Oe3dbmzsCW6vw7rhJNBdmiyWR1Pp/d0MnEm1IxdpSh8x2o9HxYqyhz/1afKGjly3uQ==
+X-Received: by 2002:a5d:538e:0:b0:2d5:ac9e:cdde with SMTP id d14-20020a5d538e000000b002d5ac9ecddemr18097313wrv.51.1680251707922;
+        Fri, 31 Mar 2023 01:35:07 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id e11-20020a5d4e8b000000b002cde626cd96sm1563153wru.65.2023.03.31.01.34.53
+        by smtp.gmail.com with ESMTPSA id e11-20020a5d4e8b000000b002cde626cd96sm1563153wru.65.2023.03.31.01.35.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 01:34:54 -0700 (PDT)
+        Fri, 31 Mar 2023 01:35:07 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Fri, 31 Mar 2023 10:34:46 +0200
-Subject: [PATCH RFC 08/20] dt-bindings: timer: oxsemi,rps-timer: remove
- obsolete bindings
+Date: Fri, 31 Mar 2023 10:34:55 +0200
+Subject: [PATCH RFC 17/20] reset: oxnas: remove obsolete reset driver
 MIME-Version: 1.0
-Message-Id: <20230331-topic-oxnas-upstream-remove-v1-8-5bd58fd1dd1f@linaro.org>
+Message-Id: <20230331-topic-oxnas-upstream-remove-v1-17-5bd58fd1dd1f@linaro.org>
 References: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
 In-Reply-To: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
 To: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, 
@@ -95,8 +94,8 @@ Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-pm@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230331_013456_274786_3E8407D6 
-X-CRM114-Status: GOOD (  11.32  )
+X-CRM114-CacheID: sfid-20230331_013508_583712_B911C407 
+X-CRM114-Status: GOOD (  17.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,37 +113,201 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Due to lack of maintainance and stall of development for a few years now,
-and since no new features will ever be added upstream, remove the
-OX810 and OX820 timer bindings.
+and since no new features will ever be added upstream, remove support
+for OX810 and OX820 peripheral reset.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- .../devicetree/bindings/timer/oxsemi,rps-timer.txt      | 17 -----------------
- 1 file changed, 17 deletions(-)
+ .../devicetree/bindings/reset/oxnas,reset.txt      |  32 ------
+ drivers/reset/Kconfig                              |   3 -
+ drivers/reset/Makefile                             |   1 -
+ drivers/reset/reset-oxnas.c                        | 114 ---------------------
+ 4 files changed, 150 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/timer/oxsemi,rps-timer.txt b/Documentation/devicetree/bindings/timer/oxsemi,rps-timer.txt
+diff --git a/Documentation/devicetree/bindings/reset/oxnas,reset.txt b/Documentation/devicetree/bindings/reset/oxnas,reset.txt
 deleted file mode 100644
-index d191612539e8..000000000000
---- a/Documentation/devicetree/bindings/timer/oxsemi,rps-timer.txt
+index d27ccb5d04fc..000000000000
+--- a/Documentation/devicetree/bindings/reset/oxnas,reset.txt
 +++ /dev/null
-@@ -1,17 +0,0 @@
--Oxford Semiconductor OXNAS SoCs Family RPS Timer
+@@ -1,32 +0,0 @@
+-Oxford Semiconductor OXNAS SoC Family RESET Controller
 -================================================
 -
+-Please also refer to reset.txt in this directory for common reset
+-controller binding usage.
+-
 -Required properties:
--- compatible: Should be "oxsemi,ox810se-rps-timer" or "oxsemi,ox820-rps-timer"
--- reg : Specifies base physical address and size of the registers.
--- interrupts : The interrupts of the two timers
--- clocks : The phandle of the timer clock source
+-- compatible: For OX810SE, should be "oxsemi,ox810se-reset"
+-	      For OX820, should be "oxsemi,ox820-reset"
+-- #reset-cells: 1, see below
+-
+-Parent node should have the following properties :
+-- compatible: For OX810SE, should be :
+-			"oxsemi,ox810se-sys-ctrl", "syscon", "simple-mfd"
+-	      For OX820, should be :
+-			"oxsemi,ox820-sys-ctrl", "syscon", "simple-mfd"
+-
+-Reset indices are in dt-bindings include files :
+-- For OX810SE: include/dt-bindings/reset/oxsemi,ox810se.h
+-- For OX820: include/dt-bindings/reset/oxsemi,ox820.h
 -
 -example:
 -
--timer0: timer@200 {
--	compatible = "oxsemi,ox810se-rps-timer";
--	reg = <0x200 0x40>;
--	clocks = <&rpsclk>;
--	interrupts = <4 5>;
+-sys: sys-ctrl@000000 {
+-	compatible = "oxsemi,ox810se-sys-ctrl", "syscon", "simple-mfd";
+-	reg = <0x000000 0x100000>;
+-
+-	reset: reset-controller {
+-		compatible = "oxsemi,ox810se-reset";
+-		#reset-cells = <1>;
+-	};
 -};
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index 2a52c990d4fe..695419d888ab 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -143,9 +143,6 @@ config RESET_NPCM
+ 	  This enables the reset controller driver for Nuvoton NPCM
+ 	  BMC SoCs.
+ 
+-config RESET_OXNAS
+-	bool
+-
+ config RESET_PISTACHIO
+ 	bool "Pistachio Reset Driver"
+ 	depends on MIPS || COMPILE_TEST
+diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+index 3e7e5fd633a8..cb1f229e20a6 100644
+--- a/drivers/reset/Makefile
++++ b/drivers/reset/Makefile
+@@ -20,7 +20,6 @@ obj-$(CONFIG_RESET_MCHP_SPARX5) += reset-microchip-sparx5.o
+ obj-$(CONFIG_RESET_MESON) += reset-meson.o
+ obj-$(CONFIG_RESET_MESON_AUDIO_ARB) += reset-meson-audio-arb.o
+ obj-$(CONFIG_RESET_NPCM) += reset-npcm.o
+-obj-$(CONFIG_RESET_OXNAS) += reset-oxnas.o
+ obj-$(CONFIG_RESET_PISTACHIO) += reset-pistachio.o
+ obj-$(CONFIG_RESET_POLARFIRE_SOC) += reset-mpfs.o
+ obj-$(CONFIG_RESET_QCOM_AOSS) += reset-qcom-aoss.o
+diff --git a/drivers/reset/reset-oxnas.c b/drivers/reset/reset-oxnas.c
+deleted file mode 100644
+index 8209f922dc16..000000000000
+--- a/drivers/reset/reset-oxnas.c
++++ /dev/null
+@@ -1,114 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Oxford Semiconductor Reset Controller driver
+- *
+- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
+- * Copyright (C) 2014 Ma Haijun <mahaijuns@gmail.com>
+- * Copyright (C) 2009 Oxford Semiconductor Ltd
+- */
+-#include <linux/err.h>
+-#include <linux/init.h>
+-#include <linux/of.h>
+-#include <linux/platform_device.h>
+-#include <linux/reset-controller.h>
+-#include <linux/slab.h>
+-#include <linux/delay.h>
+-#include <linux/types.h>
+-#include <linux/regmap.h>
+-#include <linux/mfd/syscon.h>
+-
+-/* Regmap offsets */
+-#define RST_SET_REGOFFSET	0x34
+-#define RST_CLR_REGOFFSET	0x38
+-
+-struct oxnas_reset {
+-	struct regmap *regmap;
+-	struct reset_controller_dev rcdev;
+-};
+-
+-static int oxnas_reset_reset(struct reset_controller_dev *rcdev,
+-			      unsigned long id)
+-{
+-	struct oxnas_reset *data =
+-		container_of(rcdev, struct oxnas_reset, rcdev);
+-
+-	regmap_write(data->regmap, RST_SET_REGOFFSET, BIT(id));
+-	msleep(50);
+-	regmap_write(data->regmap, RST_CLR_REGOFFSET, BIT(id));
+-
+-	return 0;
+-}
+-
+-static int oxnas_reset_assert(struct reset_controller_dev *rcdev,
+-			      unsigned long id)
+-{
+-	struct oxnas_reset *data =
+-		container_of(rcdev, struct oxnas_reset, rcdev);
+-
+-	regmap_write(data->regmap, RST_SET_REGOFFSET, BIT(id));
+-
+-	return 0;
+-}
+-
+-static int oxnas_reset_deassert(struct reset_controller_dev *rcdev,
+-				unsigned long id)
+-{
+-	struct oxnas_reset *data =
+-		container_of(rcdev, struct oxnas_reset, rcdev);
+-
+-	regmap_write(data->regmap, RST_CLR_REGOFFSET, BIT(id));
+-
+-	return 0;
+-}
+-
+-static const struct reset_control_ops oxnas_reset_ops = {
+-	.reset		= oxnas_reset_reset,
+-	.assert		= oxnas_reset_assert,
+-	.deassert	= oxnas_reset_deassert,
+-};
+-
+-static const struct of_device_id oxnas_reset_dt_ids[] = {
+-	 { .compatible = "oxsemi,ox810se-reset", },
+-	 { .compatible = "oxsemi,ox820-reset", },
+-	 { /* sentinel */ },
+-};
+-
+-static int oxnas_reset_probe(struct platform_device *pdev)
+-{
+-	struct oxnas_reset *data;
+-	struct device *parent;
+-
+-	parent = pdev->dev.parent;
+-	if (!parent) {
+-		dev_err(&pdev->dev, "no parent\n");
+-		return -ENODEV;
+-	}
+-
+-	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+-	if (!data)
+-		return -ENOMEM;
+-
+-	data->regmap = syscon_node_to_regmap(parent->of_node);
+-	if (IS_ERR(data->regmap)) {
+-		dev_err(&pdev->dev, "failed to get parent regmap\n");
+-		return PTR_ERR(data->regmap);
+-	}
+-
+-	platform_set_drvdata(pdev, data);
+-
+-	data->rcdev.owner = THIS_MODULE;
+-	data->rcdev.nr_resets = 32;
+-	data->rcdev.ops = &oxnas_reset_ops;
+-	data->rcdev.of_node = pdev->dev.of_node;
+-
+-	return devm_reset_controller_register(&pdev->dev, &data->rcdev);
+-}
+-
+-static struct platform_driver oxnas_reset_driver = {
+-	.probe	= oxnas_reset_probe,
+-	.driver = {
+-		.name		= "oxnas-reset",
+-		.of_match_table	= oxnas_reset_dt_ids,
+-	},
+-};
+-builtin_platform_driver(oxnas_reset_driver);
 
 -- 
 2.34.1
