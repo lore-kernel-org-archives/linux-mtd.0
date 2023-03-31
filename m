@@ -4,84 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF268C76196
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 07:47:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1E0CC77B62
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 08:35:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d9lYbwSCBz8eiLhcjPnGZiRYYDnzQP9nQNyAEiP23GU=; b=G0TItgphxO3oy5
-	Vrmk17XoBSB/ZCEr16kTBU+273t/JSiHeEL7RDkuI1UBBbN5JfKFlOGogmmDyN/QheZLnVWo4C6LM
-	0e3U2IoNE3DEZZEyq45BjzUjV6KLiIlGTYTuqIymUgR2tPtEnnmNytcJBymuXcu6iAv0a31YQpyq2
-	VBUDHBubGTFDR3SeqD8XYKBpIuMrWv6pVdT9cOEw7qc5u2mKv/wP1q6rPQQWCsP+shXF4GalTYZQW
-	y7asmyjygJaoygn+iWL3ovrL5ryhvoOMVk/eeFZjFCmWNJUF6S4avu/huxQnbopRw/7MlWFkF7UKk
-	RXZPxAjjg3uU0yx/6y+A==;
+	List-Owner; bh=eld3aa40Aih9xicf+uiMMY2ZgqqoD80syc+HBfM4aG4=; b=Tcspa8lrJn99q1
+	zQR3pzqrC0YvhUkuedQoUGoXrsRTC2RL1C86zK51+8deb4MFjyqolbZZhFQjju4ZMuf5vHNnTeOVN
+	iqkvVABin+mFvgzOC3tti2z+DjRXt2DNrgJW37autuLGpNcTbKGL0DZmHb1hF1Gnf135NSMHp+OO9
+	um+AtDVIxfZuqMwaPdl/URwofNfkxFpNaDs1WVhVkdAdTmR/jZNIMz0okmwmLfP+8uG4ASTqN6jby
+	9u6t3joETuSmbsWcQw9KCSn3bC19Er82iV5d9NDMf7so4arH+aQ+q3GXvrVYE0kX5tFBnAuP/UxVm
+	DT/Mnns84wNNFhF7eWcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pi9TA-006DAN-0g;
-	Fri, 31 Mar 2023 07:46:44 +0000
-Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
+	id 1piAEM-006QhI-24;
+	Fri, 31 Mar 2023 08:35:30 +0000
+Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pi9Sp-006Cu5-1R
+	id 1piADk-006QMl-2z
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Mar 2023 07:46:27 +0000
-Received: by mail-lj1-x234.google.com with SMTP id t14so22148457ljd.5
-        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 00:46:19 -0700 (PDT)
+	Fri, 31 Mar 2023 08:34:55 +0000
+Received: by mail-wr1-x434.google.com with SMTP id l27so21596986wrb.2
+        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 01:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680248776;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VskMtKqJo2Tm6jcABPqz9otpp15wXPXFPfERL76lmb8=;
-        b=Elu0oDZbKYEaJk3BPLEWS5s8WTLK+AaaOOVyg0VGUguJTbOOn25MNKzUV3tCoWCCTT
-         BiCRfHHRXXZZfUOACZrGAK/qaOzRs15WE+pgplX+7qZd9dAz9/KW7RTSEq99zR0Gp2x1
-         DxqR6vFs5pY6d4hICY+TzZynuFIi5us7VYuUJ+I0V6rObnijrCZ+xO6O1skXCrc8zk7j
-         CY/YPA+MFqglO4ThyH56V+xL3ZPK2fnHJND6e1XCMR/BDhrUWqJx6EB4VHdK4GlRkHbw
-         3mdt1XI4rrMwBJCs61qe3pXW6gUTl1aQr6S1DLRxkrfqFLm5mb9Owc7LYEwPMqNlTF6T
-         0GYQ==
+        d=linaro.org; s=google; t=1680251689;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vqQMlPFjpwyJDFMp/Q+5qT+SRMNMN9WWVCzGVB/CCjE=;
+        b=Z8O/YlVKluZ3frIjBWHinHyf35Hl9tXFgyrb2DvpZeBIUlCdj7trg1eKmtw4ORy470
+         mjOyF9tBJQi2Ey8HheeRE65rpBTqzTq9i3mTVsYp3fwCYypvkM8U5gPx6qo1NyW4w1AT
+         RfYhDtpld7nV252R85LScU8iMrj1F28/lGNNhzXDXFzbXr5XuNt/qTx3rFv33Dysc9qj
+         ng2S0S7/e4gg8Qc0+fK2hotP9nkIwGeMnI0zHMmxfcMcDiw6soURCd1MEiMLog9EoaiT
+         Chmx1245yKaUYuvICD7WIsPKuFiAmHnlmK5dBY5gRvaOBgG75ZXytjZ5wMeIuLRKYD2k
+         uZ8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680248776;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1680251689;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VskMtKqJo2Tm6jcABPqz9otpp15wXPXFPfERL76lmb8=;
-        b=zCq8+03EPFDlLfcLWYXdp8txowBlQzIH5hC6qqlSMfC3Lhq0BpE0vXMH7zzEv9YMZ4
-         MDsve0CPKnFtFm+X+2gkK2DkQWkgTgzHxQ3q60yzJry+GtPj8Q6OjSxoiQAkavrl8W2m
-         tRvNu76KOPr1Bb7oTaDOSj2h6BoOOIypOE++IbfFD24CefassukoFmsfsYFeYPPm+y5F
-         GWLBVEGie9V1t2VRaQ9Hso5cSLEDSjtjaB8GkyGnlrDlWo9XmncAEhS7ae3HTbPlHel9
-         E+/af3FuN4hTpwJa4RD7Ze6mTRbsCQPsWqTngG0/Dp7bROQ3ro+FggZbWdrZepNsfw92
-         RhzQ==
-X-Gm-Message-State: AAQBX9eSr3ai2wQn6Vjf9y+3sV+9OB1W+HvrWb4lTEGbQiXHLS7a0jvi
-	e5ghFZ2j8rIK9CrMSYEQW89A3rrAkdHnIF5SizodIQ==
-X-Google-Smtp-Source: AKy350aAhXaohE8Hvyy3v/ekKM2Vs2P+IJ8jEz+Nt0k2TBTY5ykvbGfHN5gWB273oUVJ87tLm+i9Rg==
-X-Received: by 2002:a2e:320a:0:b0:298:b03d:5715 with SMTP id y10-20020a2e320a000000b00298b03d5715mr8307472ljy.25.1680248775893;
-        Fri, 31 Mar 2023 00:46:15 -0700 (PDT)
-Received: from ta1.c.googlers.com.com (61.215.228.35.bc.googleusercontent.com. [35.228.215.61])
-        by smtp.gmail.com with ESMTPSA id n20-20020a2e8794000000b0029573844d03sm241201lji.109.2023.03.31.00.46.15
+        bh=vqQMlPFjpwyJDFMp/Q+5qT+SRMNMN9WWVCzGVB/CCjE=;
+        b=xXlKSUqCL4UDbrmwgGU9fhZThKj4S8ts5f9Sc9yHr58/J02aZPXiNZva715JLkmyz3
+         Du1cQCxA7gZ+GQbBA9bpWV8aIXnXpDcVtXGu4s2c6/zn7Kk87iSa6J6B+ynqg+0L/KHu
+         BaK79U5y6jOTmarELGMQ+lqOkmui6esmYkWR+Y22gDyJ3f/EcO1JVgfxD+cs/H+1F39K
+         y/bROJLENYv8ULJgoRyYWJ8Bzai+lMVSmW4Wqg6usO4kuT2r8jBUFvUweZ4LVzadwszc
+         Kg2kg4laO3D+XTDAQcKL+ui+fONcscNpOEKEbrf8z5/3s9gt9NXM3Gwz/29r0WfZMCac
+         OcGQ==
+X-Gm-Message-State: AAQBX9foN2bZHJjTWIWngb29wpBR0ouykq8v6wVSs2uu/3GW2v8ow4Ks
+	6PBNHhosa+C8sfdaO+eMlOCDeg==
+X-Google-Smtp-Source: AKy350aYMRhuGCU7lgJkqotrX72DL9blN95WJq8/pg0rFFj2/jBzU25Plf3PTEmdwgAKOY8ASbmEgw==
+X-Received: by 2002:a5d:5742:0:b0:2d0:c37a:5ebd with SMTP id q2-20020a5d5742000000b002d0c37a5ebdmr19721443wrw.64.1680251689686;
+        Fri, 31 Mar 2023 01:34:49 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id e11-20020a5d4e8b000000b002cde626cd96sm1563153wru.65.2023.03.31.01.34.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 00:46:15 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: michael@walle.cc,
-	pratyush@kernel.org
-Cc: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	Takahiro.Kuwano@infineon.com,
-	bacem.daassi@infineon.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v5 04/10] mtd: spi-nor: core: Update name and description of spi_nor_set_4byte_addr_mode
-Date: Fri, 31 Mar 2023 07:46:00 +0000
-Message-Id: <20230331074606.3559258-5-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
-In-Reply-To: <20230331074606.3559258-1-tudor.ambarus@linaro.org>
-References: <20230331074606.3559258-1-tudor.ambarus@linaro.org>
+        Fri, 31 Mar 2023 01:34:49 -0700 (PDT)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Date: Fri, 31 Mar 2023 10:34:42 +0200
+Subject: [PATCH RFC 04/20] dt-bindings: arm: oxnas: remove obsolete
+ bindings
 MIME-Version: 1.0
+Message-Id: <20230331-topic-oxnas-upstream-remove-v1-4-5bd58fd1dd1f@linaro.org>
+References: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
+In-Reply-To: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
+To: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, 
+ soc@kernel.org, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Russell King <linux@armlinux.org.uk>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Sebastian Reichel <sre@kernel.org>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, Marc Zyngier <maz@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
+ linux-stm32@st-md-mailman.stormreply.com, linux-gpio@vger.kernel.org, 
+ linux-pm@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230331_004623_501217_38E8B40F 
-X-CRM114-Status: GOOD (  11.78  )
+X-CRM114-CacheID: sfid-20230331_013453_053229_43A58F84 
+X-CRM114-Status: GOOD (  10.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,91 +113,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Rename method to spi_nor_set_4byte_addr_mode_en4b_ex4b and extend its
-description. This method is described in JESD216 BFPT[SFDP_DWORD(16)],
-BIT(31) and BIT(23).
+Due to lack of maintainance and stall of development for a few years now,
+and since no new features will ever be added upstream, remove the
+OX810 and OX820 SoC and boards bindings.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/mtd/spi-nor/core.c     | 8 +++++---
- drivers/mtd/spi-nor/core.h     | 2 +-
- drivers/mtd/spi-nor/macronix.c | 2 +-
- drivers/mtd/spi-nor/winbond.c  | 2 +-
- 4 files changed, 8 insertions(+), 6 deletions(-)
+ Documentation/devicetree/bindings/arm/oxnas.txt | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index e8f6141c0ef6..4c9264e427ff 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -508,14 +508,16 @@ int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
- }
- 
- /**
-- * spi_nor_set_4byte_addr_mode() - Enter/Exit 4-byte address mode.
-+ * spi_nor_set_4byte_addr_mode_en4b_ex4b() - Enter/Exit 4-byte address mode
-+ *			using SPINOR_OP_EN4B/SPINOR_OP_EX4B. Typically used by
-+ *			Winbond and Macronix.
-  * @nor:	pointer to 'struct spi_nor'.
-  * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-  *		address mode.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+int spi_nor_set_4byte_addr_mode_en4b_ex4b(struct spi_nor *nor, bool enable)
- {
- 	int ret;
- 
-@@ -556,7 +558,7 @@ int spi_nor_set_4byte_addr_mode_wren_en4b_ex4b(struct spi_nor *nor, bool enable)
- 	if (ret)
- 		return ret;
- 
--	ret = spi_nor_set_4byte_addr_mode(nor, enable);
-+	ret = spi_nor_set_4byte_addr_mode_en4b_ex4b(nor, enable);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index d8e3fd60d6ee..067945c10023 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -647,7 +647,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- 			     const enum spi_nor_protocol proto);
- int spi_nor_write_enable(struct spi_nor *nor);
- int spi_nor_write_disable(struct spi_nor *nor);
--int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
-+int spi_nor_set_4byte_addr_mode_en4b_ex4b(struct spi_nor *nor, bool enable);
- int spi_nor_set_4byte_addr_mode_wren_en4b_ex4b(struct spi_nor *nor,
- 					       bool enable);
- int spi_nor_wait_till_ready(struct spi_nor *nor);
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 6853ec9ae65d..91a8fa7d4512 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -105,7 +105,7 @@ static const struct flash_info macronix_nor_parts[] = {
- static void macronix_nor_default_init(struct spi_nor *nor)
- {
- 	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
--	nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode;
-+	nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
- }
- 
- static const struct spi_nor_fixups macronix_nor_fixups = {
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index ca39acf4112c..9cea241c204b 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -188,7 +188,7 @@ static int winbond_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- {
- 	int ret;
- 
--	ret = spi_nor_set_4byte_addr_mode(nor, enable);
-+	ret = spi_nor_set_4byte_addr_mode_en4b_ex4b(nor, enable);
- 	if (ret || enable)
- 		return ret;
- 
+diff --git a/Documentation/devicetree/bindings/arm/oxnas.txt b/Documentation/devicetree/bindings/arm/oxnas.txt
+deleted file mode 100644
+index ac64e60f99f1..000000000000
+--- a/Documentation/devicetree/bindings/arm/oxnas.txt
++++ /dev/null
+@@ -1,14 +0,0 @@
+-Oxford Semiconductor OXNAS SoCs Family device tree bindings
+--------------------------------------------
+-
+-Boards with the OX810SE SoC shall have the following properties:
+-  Required root node property:
+-    compatible: "oxsemi,ox810se"
+-
+-Boards with the OX820 SoC shall have the following properties:
+-  Required root node property:
+-    compatible: "oxsemi,ox820"
+-
+-Board compatible values:
+-  - "wd,mbwe" (OX810SE)
+-  - "cloudengines,pogoplugv3" (OX820)
+
 -- 
-2.40.0.348.gf938b09366-goog
+2.34.1
 
 
 ______________________________________________________
