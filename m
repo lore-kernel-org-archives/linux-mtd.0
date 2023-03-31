@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 743D2C76196
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 09:46:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A4A9C77B60
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 09:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VdMx73pAJlSFSDxGhCO+VJnX8DLjiAyMxLvwuktU3kY=; b=INFoTE4gqkAtVG
-	8PYqrvKTtde5P/30y64pS7X/vcwBQ3YkNQfPtZHIcVl4r2UGSyO58m3HEClVV6NhIw26J1tJ/1urQ
-	+9KqlVkxMNMzfAo5xKfp7bVTBX79oA13sxE6ZXjKEIaUy5eTWtKXWRlzaNYLEENACVR5dsFKKqcH3
-	o2IPLUkVENgA1wUlUJoobP8JsX4W8vfz2mHHnuAa/ESUe8ZXuvuHicNvxJpagKScWpHIb/RsFx+yB
-	Fyxrg4q1DEySWqdfJc0fYatsbQCDLrZ+2uDy+SrRyvnz2ikrnWDQ7j0lQFiJRBAo1egcctd3KuAPC
-	tWNwxixqWxSRBqtoN91Q==;
+	List-Owner; bh=T7F/5btjvwgelMNPxMpRTo909AMpfogFkq5zKqmWeKQ=; b=u84Kbo5BchahlD
+	63ZT9vtvG23QNqRvZRJIOJsgj2T9PqAI7409P+88Cpd/ZvR3Jb2Zy7BOsRjVpvtN2DsjyUUc+M14g
+	AWrZHVkf7++EZNeAk6a8SI95KpJ/HNoWiEp/fF+UuL6au6a1XwRN6zkx0wXckppjHksuNJpbEMcqF
+	aIBg6WMO0JQOVfzOb54oRPOZ2V0TyKF4rQg3pAXAXuhvPHeVILmb98dFzhDvjHZEdi21Yq6Q+sA4H
+	HMj/zHE3Z2ezc4g91x15HLmVRVDK7Bmu/BRtsu++ib/Mck8td4lqA+T/m4zdHNxa5Zy40k0aVZcp0
+	B6oCBhH729gofJd+Do5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1piBKr-006kQo-26;
-	Fri, 31 Mar 2023 09:46:17 +0000
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+	id 1piBKy-006kVq-1N;
+	Fri, 31 Mar 2023 09:46:24 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1piADi-006QL1-0u
+	id 1piADz-006QO1-0a
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Mar 2023 08:34:53 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id e18so21583155wra.9
-        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 01:34:46 -0700 (PDT)
+	Fri, 31 Mar 2023 08:35:09 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id h17so21571271wrt.8
+        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 01:35:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680251686;
+        d=linaro.org; s=google; t=1680251706;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Sf6KyOp54IZ6KSki6wgUoMQZzYRETdVFViOkVQG+I2Q=;
-        b=pxuNHKP9pTA2uPyUlGV2el6dG9WO+DEln06OwoMJNNmHWyxQyuReSIC0yzUq9aLY4z
-         Tz/vT7gxzty9OXiJ2qToPfC2g4lsxEGsuUmll8XlEDt7qaqUfRr8lKR0nGmDFlBFKdup
-         6M2A/RzgHexyBEjgeH+9tRFfGs+HXcMAvqShjY5/JwIsarv7xNs7ZAxK2V+ZhoecYpy/
-         Cmtsa8aJL1iwVsspjpFL0aXVYqLQuqgoUH/FZPNtRV2LKOh6UcRmMU2owOzSyGEeCHy1
-         BnXnI7Y1Hi3k3zp8Hlsdr5alR7QWzGsblNyGFIqv50cSDXee45odwyHmt9RYiMPBi76a
-         AiRA==
+        bh=sR14Pzk1ZWPhY5OD69Rj27prrk3LKbGiHay2FBxMcv4=;
+        b=Fty/aJcYkFZEKr2metM5EqkEKq17l5gJGQix+tZCxMOlAKB1AMO/oIkTZt9URAowwf
+         RWICJqsjkouqcMT9vmE8IfKQP/DHvv9UkXQRhxf1Q+mimQtH5cxG/PhbPnk9w1TLrlYA
+         AT8hUgqpZZAhjexFXTVWXk7iDen88KQTq1xUn9G6YnJTv4noraV6PymxxUwt1fBqooou
+         HQcSuX+pCi41nBC6SYZ0CEIxhTt/9F6IwxjYEtO3fybv47zKTSc43Sy/DwIzgnv6/5km
+         N5ydK4H27c9gO2NPO/42s0zygtKswLo05pSB9tKxjIogSH3waXuYQbnc4SyFxThsFPss
+         UMTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680251686;
+        d=1e100.net; s=20210112; t=1680251706;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Sf6KyOp54IZ6KSki6wgUoMQZzYRETdVFViOkVQG+I2Q=;
-        b=pajfI7/3S4MImPZKBd75o0caWMIKR4HcNAUEv4Nn6LLoeSmdkzyfHjVpEtny3Y+j5G
-         r8vjNxMDhoXVqFGnwWGEudXae6vSFB+Gh5d6fQ/2Q8PjUgkLgyAvX4Xhd7uZE3pef9jG
-         R83i5V97LJGIRudHsL/FCoFD64CXT2sY6PrTGjmVYHl3wL5T5u8NbdiwLltacqudILWv
-         uIpiL0+N9jfxpm8p6RHsCdy7+21z03tJXlj4l9KyuGjqmYR2vwwgOfVLG0xmHmzXBOZP
-         83GIy5CVLS8bHeEBS9890VucnGomxAEwY0Wa0hFncNSikI0gW6V8Q1T2vscODXsptrHu
-         id3A==
-X-Gm-Message-State: AAQBX9c+r9EHPUSdjk2RCwQPMq6QeHh6xdksptDt0RTGR/0I0qd7hALy
-	pH6BGcMh4drE0n1G7CAGlXSfcw==
-X-Google-Smtp-Source: AKy350aCFp/HQTIUTPb6zGhAuez2F1qrUha31MEPEF5VgeB0rGs8iPAwkIAQ6PGDHLOf1ZWFy48VDQ==
-X-Received: by 2002:a5d:4b47:0:b0:2d7:9d46:37ff with SMTP id w7-20020a5d4b47000000b002d79d4637ffmr20098527wrs.39.1680251685611;
-        Fri, 31 Mar 2023 01:34:45 -0700 (PDT)
+        bh=sR14Pzk1ZWPhY5OD69Rj27prrk3LKbGiHay2FBxMcv4=;
+        b=6vQM5fFVxgD1laYy7Rtr5KH10oZWjzrEItP4Kadjwa/yA2X1I+xUifY4YOkj1t+b22
+         smBtg92KASlcMw4BVEQtAsMRqm9ktoB9FzzifftqPbqlF9A/a6aVP1jk8xhKSuA3q9T+
+         wzf1t0vhShWWu6zTRHrhnVlMc1+gXQWfEZNt22icHzvQyWUfeGXEtuZAEUQXjk4WA+xa
+         JODGCp6mo8aQKGN6w9zozKZs7StqpK3nPpDDIrcZ5Ro4Da86NyY0eIVF2l1oBJW0Jh73
+         2d0sqSmL3iYjKSOl048Amo6WXvUaLtCBFSP6l2h/l4fxGhfQ2/tVJ7Vva6ESzTlPjjtF
+         lxNQ==
+X-Gm-Message-State: AAQBX9evu98hRAVBlztyZ/LF7sfhYwSuySjJetgMjxPbZgN6PnVAY6Ol
+	uAuYpFIcLHgz42Kr1JoyfolS4A==
+X-Google-Smtp-Source: AKy350YkNKUXMSjTTKKpy6c26g6vAz/W5xiVHdg7Pfywz18Z1jB2OllrAaU4jJjzL55BSkouJUd0zA==
+X-Received: by 2002:adf:ed8c:0:b0:2cf:e868:f781 with SMTP id c12-20020adfed8c000000b002cfe868f781mr18949949wro.42.1680251706543;
+        Fri, 31 Mar 2023 01:35:06 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id e11-20020a5d4e8b000000b002cde626cd96sm1563153wru.65.2023.03.31.01.34.44
+        by smtp.gmail.com with ESMTPSA id e11-20020a5d4e8b000000b002cde626cd96sm1563153wru.65.2023.03.31.01.35.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 01:34:45 -0700 (PDT)
+        Fri, 31 Mar 2023 01:35:06 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Fri, 31 Mar 2023 10:34:39 +0200
-Subject: [PATCH RFC 01/20] ARM: dts: oxnas: remove obsolete device tree
- files
+Date: Fri, 31 Mar 2023 10:34:54 +0200
+Subject: [PATCH RFC 16/20] power: reset: oxnas-restart: remove obsolete
+ restart driver
 MIME-Version: 1.0
-Message-Id: <20230331-topic-oxnas-upstream-remove-v1-1-5bd58fd1dd1f@linaro.org>
+Message-Id: <20230331-topic-oxnas-upstream-remove-v1-16-5bd58fd1dd1f@linaro.org>
 References: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
 In-Reply-To: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
 To: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, 
@@ -95,8 +95,8 @@ Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-pm@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230331_013450_349338_64A4795F 
-X-CRM114-Status: GOOD (  13.24  )
+X-CRM114-CacheID: sfid-20230331_013507_246404_A174A3BE 
+X-CRM114-Status: GOOD (  21.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,919 +115,284 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Due to lack of maintainance and stall of development for a few years now,
 and since no new features will ever be added upstream, remove support
-for OX810 and OX820 devices.
+for OX810 and OX820 restart feature.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- arch/arm/boot/dts/Makefile                         |   3 -
- arch/arm/boot/dts/ox810se-wd-mbwe.dts              | 115 -------
- arch/arm/boot/dts/ox810se.dtsi                     | 357 ---------------------
- .../dts/ox820-cloudengines-pogoplug-series-3.dts   |  93 ------
- arch/arm/boot/dts/ox820.dtsi                       | 299 -----------------
- 5 files changed, 867 deletions(-)
+ drivers/power/reset/Kconfig         |   7 --
+ drivers/power/reset/Makefile        |   1 -
+ drivers/power/reset/oxnas-restart.c | 233 ------------------------------------
+ 3 files changed, 241 deletions(-)
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index efe4152e5846..ad83faecfdc6 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1033,9 +1033,6 @@ dtb-$(CONFIG_ARCH_PXA) += \
- 	pxa300-raumfeld-speaker-m.dtb \
- 	pxa300-raumfeld-speaker-one.dtb \
- 	pxa300-raumfeld-speaker-s.dtb
--dtb-$(CONFIG_ARCH_OXNAS) += \
--	ox810se-wd-mbwe.dtb \
--	ox820-cloudengines-pogoplug-series-3.dtb
- dtb-$(CONFIG_ARCH_QCOM) += \
- 	qcom-apq8016-sbc.dtb \
- 	qcom-apq8026-asus-sparrow.dtb \
-diff --git a/arch/arm/boot/dts/ox810se-wd-mbwe.dts b/arch/arm/boot/dts/ox810se-wd-mbwe.dts
+diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+index 8c87eeda0fec..cc734c1fe4c0 100644
+--- a/drivers/power/reset/Kconfig
++++ b/drivers/power/reset/Kconfig
+@@ -148,13 +148,6 @@ config POWER_RESET_ODROID_GO_ULTRA_POWEROFF
+ 	help
+ 	  This driver supports Power off for Odroid Go Ultra device.
+ 
+-config POWER_RESET_OXNAS
+-	bool "OXNAS SoC restart driver"
+-	depends on ARCH_OXNAS
+-	default MACH_OX820
+-	help
+-	  Restart support for OXNAS/PLXTECH OX820 SoC.
+-
+ config POWER_RESET_PIIX4_POWEROFF
+ 	tristate "Intel PIIX4 power-off driver"
+ 	depends on PCI
+diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+index d763e6735ee3..a95d1bd275d1 100644
+--- a/drivers/power/reset/Makefile
++++ b/drivers/power/reset/Makefile
+@@ -14,7 +14,6 @@ obj-$(CONFIG_POWER_RESET_HISI) += hisi-reboot.o
+ obj-$(CONFIG_POWER_RESET_LINKSTATION) += linkstation-poweroff.o
+ obj-$(CONFIG_POWER_RESET_MSM) += msm-poweroff.o
+ obj-$(CONFIG_POWER_RESET_MT6323) += mt6323-poweroff.o
+-obj-$(CONFIG_POWER_RESET_OXNAS) += oxnas-restart.o
+ obj-$(CONFIG_POWER_RESET_QCOM_PON) += qcom-pon.o
+ obj-$(CONFIG_POWER_RESET_OCELOT_RESET) += ocelot-reset.o
+ obj-$(CONFIG_POWER_RESET_ODROID_GO_ULTRA_POWEROFF) += odroid-go-ultra-poweroff.o
+diff --git a/drivers/power/reset/oxnas-restart.c b/drivers/power/reset/oxnas-restart.c
 deleted file mode 100644
-index c59e06ff2423..000000000000
---- a/arch/arm/boot/dts/ox810se-wd-mbwe.dts
+index 13090bec058a..000000000000
+--- a/drivers/power/reset/oxnas-restart.c
 +++ /dev/null
-@@ -1,115 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
+@@ -1,233 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0)
 -/*
-- * wd-mbwe.dtsi - Device tree file for Western Digital My Book World Edition
+- * oxnas SoC reset driver
+- * based on:
+- * Microsemi MIPS SoC reset driver
+- * and ox820_assert_system_reset() written by Ma Hajun <mahaijuns@gmail.com>
 - *
-- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
+- * Copyright (c) 2013 Ma Hajun <mahaijuns@gmail.com>
+- * Copyright (c) 2017 Microsemi Corporation
+- * Copyright (c) 2020 Daniel Golle <daniel@makrotopia.org>
 - */
+-#include <linux/delay.h>
+-#include <linux/io.h>
+-#include <linux/notifier.h>
+-#include <linux/mfd/syscon.h>
+-#include <linux/of_address.h>
+-#include <linux/of_device.h>
+-#include <linux/platform_device.h>
+-#include <linux/reboot.h>
+-#include <linux/regmap.h>
 -
--/dts-v1/;
--#include "ox810se.dtsi"
+-/* bit numbers of reset control register */
+-#define OX820_SYS_CTRL_RST_SCU                0
+-#define OX820_SYS_CTRL_RST_COPRO              1
+-#define OX820_SYS_CTRL_RST_ARM0               2
+-#define OX820_SYS_CTRL_RST_ARM1               3
+-#define OX820_SYS_CTRL_RST_USBHS              4
+-#define OX820_SYS_CTRL_RST_USBHSPHYA          5
+-#define OX820_SYS_CTRL_RST_MACA               6
+-#define OX820_SYS_CTRL_RST_MAC                OX820_SYS_CTRL_RST_MACA
+-#define OX820_SYS_CTRL_RST_PCIEA              7
+-#define OX820_SYS_CTRL_RST_SGDMA              8
+-#define OX820_SYS_CTRL_RST_CIPHER             9
+-#define OX820_SYS_CTRL_RST_DDR                10
+-#define OX820_SYS_CTRL_RST_SATA               11
+-#define OX820_SYS_CTRL_RST_SATA_LINK          12
+-#define OX820_SYS_CTRL_RST_SATA_PHY           13
+-#define OX820_SYS_CTRL_RST_PCIEPHY            14
+-#define OX820_SYS_CTRL_RST_STATIC             15
+-#define OX820_SYS_CTRL_RST_GPIO               16
+-#define OX820_SYS_CTRL_RST_UART1              17
+-#define OX820_SYS_CTRL_RST_UART2              18
+-#define OX820_SYS_CTRL_RST_MISC               19
+-#define OX820_SYS_CTRL_RST_I2S                20
+-#define OX820_SYS_CTRL_RST_SD                 21
+-#define OX820_SYS_CTRL_RST_MACB               22
+-#define OX820_SYS_CTRL_RST_PCIEB              23
+-#define OX820_SYS_CTRL_RST_VIDEO              24
+-#define OX820_SYS_CTRL_RST_DDR_PHY            25
+-#define OX820_SYS_CTRL_RST_USBHSPHYB          26
+-#define OX820_SYS_CTRL_RST_USBDEV             27
+-#define OX820_SYS_CTRL_RST_ARMDBG             29
+-#define OX820_SYS_CTRL_RST_PLLA               30
+-#define OX820_SYS_CTRL_RST_PLLB               31
 -
--/ {
--	model = "Western Digital My Book World Edition";
+-/* bit numbers of clock control register */
+-#define OX820_SYS_CTRL_CLK_COPRO              0
+-#define OX820_SYS_CTRL_CLK_DMA                1
+-#define OX820_SYS_CTRL_CLK_CIPHER             2
+-#define OX820_SYS_CTRL_CLK_SD                 3
+-#define OX820_SYS_CTRL_CLK_SATA               4
+-#define OX820_SYS_CTRL_CLK_I2S                5
+-#define OX820_SYS_CTRL_CLK_USBHS              6
+-#define OX820_SYS_CTRL_CLK_MACA               7
+-#define OX820_SYS_CTRL_CLK_MAC                OX820_SYS_CTRL_CLK_MACA
+-#define OX820_SYS_CTRL_CLK_PCIEA              8
+-#define OX820_SYS_CTRL_CLK_STATIC             9
+-#define OX820_SYS_CTRL_CLK_MACB               10
+-#define OX820_SYS_CTRL_CLK_PCIEB              11
+-#define OX820_SYS_CTRL_CLK_REF600             12
+-#define OX820_SYS_CTRL_CLK_USBDEV             13
+-#define OX820_SYS_CTRL_CLK_DDR                14
+-#define OX820_SYS_CTRL_CLK_DDRPHY             15
+-#define OX820_SYS_CTRL_CLK_DDRCK              16
 -
--	compatible = "wd,mbwe", "oxsemi,ox810se";
+-/* Regmap offsets */
+-#define OX820_CLK_SET_REGOFFSET               0x2c
+-#define OX820_CLK_CLR_REGOFFSET               0x30
+-#define OX820_RST_SET_REGOFFSET               0x34
+-#define OX820_RST_CLR_REGOFFSET               0x38
+-#define OX820_SECONDARY_SEL_REGOFFSET         0x14
+-#define OX820_TERTIARY_SEL_REGOFFSET          0x8c
+-#define OX820_QUATERNARY_SEL_REGOFFSET        0x94
+-#define OX820_DEBUG_SEL_REGOFFSET             0x9c
+-#define OX820_ALTERNATIVE_SEL_REGOFFSET       0xa4
+-#define OX820_PULLUP_SEL_REGOFFSET            0xac
+-#define OX820_SEC_SECONDARY_SEL_REGOFFSET     0x100014
+-#define OX820_SEC_TERTIARY_SEL_REGOFFSET      0x10008c
+-#define OX820_SEC_QUATERNARY_SEL_REGOFFSET    0x100094
+-#define OX820_SEC_DEBUG_SEL_REGOFFSET         0x10009c
+-#define OX820_SEC_ALTERNATIVE_SEL_REGOFFSET   0x1000a4
+-#define OX820_SEC_PULLUP_SEL_REGOFFSET        0x1000ac
 -
--	chosen {
--		bootargs = "console=ttyS1,115200n8 earlyprintk=serial";
--	};
--
--	memory {
--		/* 128Mbytes DDR */
--		reg = <0x48000000 0x8000000>;
--	};
--
--	aliases {
--		serial1 = &uart1;
--		gpio0 = &gpio0;
--		gpio1 = &gpio1;
--	};
--
--	gpio-keys-polled {
--		compatible = "gpio-keys-polled";
--		#address-cells = <1>;
--		#size-cells = <0>;
--		poll-interval = <100>;
--
--		power {
--			label = "power";
--			gpios = <&gpio0 0 1>;
--			linux,code = <0x198>;
--		};
--
--		recovery {
--			label = "recovery";
--			gpios = <&gpio0 4 1>;
--			linux,code = <0xab>;
--		};
--	};
--
--	leds {
--		compatible = "gpio-leds";
--
--		a0 {
--			label = "activity0";
--			gpios = <&gpio0 25 0>;
--			default-state = "keep";
--		};
--
--		a1 {
--			label = "activity1";
--			gpios = <&gpio0 26 0>;
--			default-state = "keep";
--		};
--
--		a2 {
--			label = "activity2";
--			gpios = <&gpio0 5 0>;
--			default-state = "keep";
--		};
--
--		a3 {
--			label = "activity3";
--			gpios = <&gpio0 6 0>;
--			default-state = "keep";
--		};
--
--		a4 {
--			label = "activity4";
--			gpios = <&gpio0 7 0>;
--			default-state = "keep";
--		};
--
--		a5 {
--			label = "activity5";
--			gpios = <&gpio1 2 0>;
--			default-state = "keep";
--		};
--	};
--
--	i2c-gpio {
--		compatible = "i2c-gpio";
--		gpios = <&gpio0 3 0 /* sda */
--			 &gpio0 2 0 /* scl */
--			 >;
--		i2c-gpio,delay-us = <2>;        /* ~100 kHz */
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		rtc0: rtc@48 {
--			compatible = "st,m41t00";
--			reg = <0x68>;
--		};
--	};
+-struct oxnas_restart_context {
+-	struct regmap *sys_ctrl;
+-	struct notifier_block restart_handler;
 -};
 -
--&etha {
--	status = "okay";
+-static int ox820_restart_handle(struct notifier_block *this,
+-				 unsigned long mode, void *cmd)
+-{
+-	struct oxnas_restart_context *ctx = container_of(this, struct
+-							oxnas_restart_context,
+-							restart_handler);
+-	u32 value;
+-
+-	/*
+-	 * Assert reset to cores as per power on defaults
+-	 * Don't touch the DDR interface as things will come to an impromptu
+-	 * stop NB Possibly should be asserting reset for PLLB, but there are
+-	 * timing concerns here according to the docs
+-	 */
+-	value = BIT(OX820_SYS_CTRL_RST_COPRO)		|
+-		BIT(OX820_SYS_CTRL_RST_USBHS)		|
+-		BIT(OX820_SYS_CTRL_RST_USBHSPHYA)	|
+-		BIT(OX820_SYS_CTRL_RST_MACA)		|
+-		BIT(OX820_SYS_CTRL_RST_PCIEA)		|
+-		BIT(OX820_SYS_CTRL_RST_SGDMA)		|
+-		BIT(OX820_SYS_CTRL_RST_CIPHER)		|
+-		BIT(OX820_SYS_CTRL_RST_SATA)		|
+-		BIT(OX820_SYS_CTRL_RST_SATA_LINK)	|
+-		BIT(OX820_SYS_CTRL_RST_SATA_PHY)	|
+-		BIT(OX820_SYS_CTRL_RST_PCIEPHY)		|
+-		BIT(OX820_SYS_CTRL_RST_STATIC)		|
+-		BIT(OX820_SYS_CTRL_RST_UART1)		|
+-		BIT(OX820_SYS_CTRL_RST_UART2)		|
+-		BIT(OX820_SYS_CTRL_RST_MISC)		|
+-		BIT(OX820_SYS_CTRL_RST_I2S)		|
+-		BIT(OX820_SYS_CTRL_RST_SD)		|
+-		BIT(OX820_SYS_CTRL_RST_MACB)		|
+-		BIT(OX820_SYS_CTRL_RST_PCIEB)		|
+-		BIT(OX820_SYS_CTRL_RST_VIDEO)		|
+-		BIT(OX820_SYS_CTRL_RST_USBHSPHYB)	|
+-		BIT(OX820_SYS_CTRL_RST_USBDEV);
+-
+-	regmap_write(ctx->sys_ctrl, OX820_RST_SET_REGOFFSET, value);
+-
+-	/* Release reset to cores as per power on defaults */
+-	regmap_write(ctx->sys_ctrl, OX820_RST_CLR_REGOFFSET,
+-			BIT(OX820_SYS_CTRL_RST_GPIO));
+-
+-	/*
+-	 * Disable clocks to cores as per power-on defaults - must leave DDR
+-	 * related clocks enabled otherwise we'll stop rather abruptly.
+-	 */
+-	value = BIT(OX820_SYS_CTRL_CLK_COPRO)		|
+-		BIT(OX820_SYS_CTRL_CLK_DMA)		|
+-		BIT(OX820_SYS_CTRL_CLK_CIPHER)		|
+-		BIT(OX820_SYS_CTRL_CLK_SD)		|
+-		BIT(OX820_SYS_CTRL_CLK_SATA)		|
+-		BIT(OX820_SYS_CTRL_CLK_I2S)		|
+-		BIT(OX820_SYS_CTRL_CLK_USBHS)		|
+-		BIT(OX820_SYS_CTRL_CLK_MAC)		|
+-		BIT(OX820_SYS_CTRL_CLK_PCIEA)		|
+-		BIT(OX820_SYS_CTRL_CLK_STATIC)		|
+-		BIT(OX820_SYS_CTRL_CLK_MACB)		|
+-		BIT(OX820_SYS_CTRL_CLK_PCIEB)		|
+-		BIT(OX820_SYS_CTRL_CLK_REF600)		|
+-		BIT(OX820_SYS_CTRL_CLK_USBDEV);
+-
+-	regmap_write(ctx->sys_ctrl, OX820_CLK_CLR_REGOFFSET, value);
+-
+-	/* Enable clocks to cores as per power-on defaults */
+-
+-	/* Set sys-control pin mux'ing as per power-on defaults */
+-	regmap_write(ctx->sys_ctrl, OX820_SECONDARY_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_TERTIARY_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_QUATERNARY_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_DEBUG_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_ALTERNATIVE_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_PULLUP_SEL_REGOFFSET, 0);
+-
+-	regmap_write(ctx->sys_ctrl, OX820_SEC_SECONDARY_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_SEC_TERTIARY_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_SEC_QUATERNARY_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_SEC_DEBUG_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_SEC_ALTERNATIVE_SEL_REGOFFSET, 0);
+-	regmap_write(ctx->sys_ctrl, OX820_SEC_PULLUP_SEL_REGOFFSET, 0);
+-
+-	/*
+-	 * No need to save any state, as the ROM loader can determine whether
+-	 * reset is due to power cycling or programatic action, just hit the
+-	 * (self-clearing) CPU reset bit of the block reset register
+-	 */
+-	value =
+-		BIT(OX820_SYS_CTRL_RST_SCU) |
+-		BIT(OX820_SYS_CTRL_RST_ARM0) |
+-		BIT(OX820_SYS_CTRL_RST_ARM1);
+-
+-	regmap_write(ctx->sys_ctrl, OX820_RST_SET_REGOFFSET, value);
+-
+-	pr_emerg("Unable to restart system\n");
+-	return NOTIFY_DONE;
+-}
+-
+-static int ox820_restart_probe(struct platform_device *pdev)
+-{
+-	struct oxnas_restart_context *ctx;
+-	struct regmap *sys_ctrl;
+-	struct device *dev = &pdev->dev;
+-	int err = 0;
+-
+-	sys_ctrl = syscon_node_to_regmap(pdev->dev.of_node);
+-	if (IS_ERR(sys_ctrl))
+-		return PTR_ERR(sys_ctrl);
+-
+-	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+-	if (!ctx)
+-		return -ENOMEM;
+-
+-	ctx->sys_ctrl = sys_ctrl;
+-	ctx->restart_handler.notifier_call = ox820_restart_handle;
+-	ctx->restart_handler.priority = 192;
+-	err = register_restart_handler(&ctx->restart_handler);
+-	if (err)
+-		dev_err(dev, "can't register restart notifier (err=%d)\n", err);
+-
+-	return err;
+-}
+-
+-static const struct of_device_id ox820_restart_of_match[] = {
+-	{ .compatible = "oxsemi,ox820-sys-ctrl" },
+-	{}
 -};
 -
--&uart1 {
--	status = "okay";
--
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_uart1>;
+-static struct platform_driver ox820_restart_driver = {
+-	.probe = ox820_restart_probe,
+-	.driver = {
+-		.name = "ox820-chip-reset",
+-		.of_match_table = ox820_restart_of_match,
+-	},
 -};
-diff --git a/arch/arm/boot/dts/ox810se.dtsi b/arch/arm/boot/dts/ox810se.dtsi
-deleted file mode 100644
-index 96c0745f7b70..000000000000
---- a/arch/arm/boot/dts/ox810se.dtsi
-+++ /dev/null
-@@ -1,357 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * ox810se.dtsi - Device tree file for Oxford Semiconductor OX810SE SoC
-- *
-- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
-- */
--
--#include <dt-bindings/clock/oxsemi,ox810se.h>
--#include <dt-bindings/reset/oxsemi,ox810se.h>
--
--/ {
--	#address-cells = <1>;
--	#size-cells = <1>;
--	compatible = "oxsemi,ox810se";
--
--	cpus {
--		#address-cells = <0>;
--		#size-cells = <0>;
--
--		cpu {
--			device_type = "cpu";
--			compatible = "arm,arm926ej-s";
--			clocks = <&armclk>;
--		};
--	};
--
--	memory {
--		device_type = "memory";
--		/* Max 256MB @ 0x48000000 */
--		reg = <0x48000000 0x10000000>;
--	};
--
--	clocks {
--		osc: oscillator {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--			clock-frequency = <25000000>;
--		};
--
--		gmacclk: gmacclk {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--			clock-frequency = <125000000>;
--		};
--
--		rpsclk: rpsclk {
--			compatible = "fixed-factor-clock";
--			#clock-cells = <0>;
--			clock-div = <1>;
--			clock-mult = <1>;
--			clocks = <&osc>;
--		};
--
--		pll400: pll400 {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--			clock-frequency = <733333333>;
--		};
--
--		sysclk: sysclk {
--			compatible = "fixed-factor-clock";
--			#clock-cells = <0>;
--			clock-div = <4>;
--			clock-mult = <1>;
--			clocks = <&pll400>;
--		};
--
--		armclk: armclk {
--			compatible = "fixed-factor-clock";
--			#clock-cells = <0>;
--			clock-div = <2>;
--			clock-mult = <1>;
--			clocks = <&pll400>;
--		};
--	};
--
--	soc {
--		#address-cells = <1>;
--		#size-cells = <1>;
--		compatible = "simple-bus";
--		ranges;
--		interrupt-parent = <&intc>;
--
--		etha: ethernet@40400000 {
--			compatible = "oxsemi,ox810se-dwmac", "snps,dwmac";
--			reg = <0x40400000 0x2000>;
--			interrupts = <8>;
--			interrupt-names = "macirq";
--			mac-address = [000000000000]; /* Filled in by U-Boot */
--			phy-mode = "rgmii";
--
--			clocks = <&stdclk 6>, <&gmacclk>;
--			clock-names = "gmac", "stmmaceth";
--			resets = <&reset 6>;
--
--			/* Regmap for sys registers */
--			oxsemi,sys-ctrl = <&sys>;
--
--			status = "disabled";
--		};
--
--		apb-bridge@44000000 {
--			#address-cells = <1>;
--			#size-cells = <1>;
--			compatible = "simple-bus";
--			ranges = <0 0x44000000 0x1000000>;
--
--			pinctrl: pinctrl {
--				compatible = "oxsemi,ox810se-pinctrl";
--
--				/* Regmap for sys registers */
--				oxsemi,sys-ctrl = <&sys>;
--
--				pinctrl_uart0: uart0 {
--					uart0a {
--						pins = "gpio31";
--						function = "fct3";
--					};
--					uart0b {
--						pins = "gpio32";
--						function = "fct3";
--					};
--				};
--
--				pinctrl_uart0_modem: uart0_modem {
--					uart0c {
--						pins = "gpio27";
--						function = "fct3";
--					};
--					uart0d {
--						pins = "gpio28";
--						function = "fct3";
--					};
--					uart0e {
--						pins = "gpio29";
--						function = "fct3";
--					};
--					uart0f {
--						pins = "gpio30";
--						function = "fct3";
--					};
--					uart0g {
--						pins = "gpio33";
--						function = "fct3";
--					};
--					uart0h {
--						pins = "gpio34";
--						function = "fct3";
--					};
--				};
--
--				pinctrl_uart1: uart1 {
--					uart1a {
--						pins = "gpio20";
--						function = "fct3";
--					};
--					uart1b {
--						pins = "gpio22";
--						function = "fct3";
--					};
--				};
--
--				pinctrl_uart1_modem: uart1_modem {
--					uart1c {
--						pins = "gpio8";
--						function = "fct3";
--					};
--					uart1d {
--						pins = "gpio9";
--						function = "fct3";
--					};
--					uart1e {
--						pins = "gpio23";
--						function = "fct3";
--					};
--					uart1f {
--						pins = "gpio24";
--						function = "fct3";
--					};
--					uart1g {
--						pins = "gpio25";
--						function = "fct3";
--					};
--					uart1h {
--						pins = "gpio26";
--						function = "fct3";
--					};
--				};
--
--				pinctrl_uart2: uart2 {
--					uart2a {
--						pins = "gpio6";
--						function = "fct3";
--					};
--					uart2b {
--						pins = "gpio7";
--						function = "fct3";
--					};
--				};
--
--				pinctrl_uart2_modem: uart2_modem {
--					uart2c {
--						pins = "gpio0";
--						function = "fct3";
--					};
--					uart2d {
--						pins = "gpio1";
--						function = "fct3";
--					};
--					uart2e {
--						pins = "gpio2";
--						function = "fct3";
--					};
--					uart2f {
--						pins = "gpio3";
--						function = "fct3";
--					};
--					uart2g {
--						pins = "gpio4";
--						function = "fct3";
--					};
--					uart2h {
--						pins = "gpio5";
--						function = "fct3";
--					};
--				};
--			};
--
--			gpio0: gpio@0 {
--				compatible = "oxsemi,ox810se-gpio";
--				reg = <0x000000 0x100000>;
--				interrupts = <21>;
--				#gpio-cells = <2>;
--				gpio-controller;
--				interrupt-controller;
--				#interrupt-cells = <2>;
--				ngpios = <32>;
--				oxsemi,gpio-bank = <0>;
--				gpio-ranges = <&pinctrl 0 0 32>;
--			};
--
--			gpio1: gpio@100000 {
--				compatible = "oxsemi,ox810se-gpio";
--				reg = <0x100000 0x100000>;
--				interrupts = <22>;
--				#gpio-cells = <2>;
--				gpio-controller;
--				interrupt-controller;
--				#interrupt-cells = <2>;
--				ngpios = <3>;
--				oxsemi,gpio-bank = <1>;
--				gpio-ranges = <&pinctrl 0 32 3>;
--			};
--
--			uart0: serial@200000 {
--			       compatible = "ns16550a";
--			       reg = <0x200000 0x100000>;
--			       clocks = <&sysclk>;
--			       interrupts = <23>;
--			       reg-shift = <0>;
--			       fifo-size = <16>;
--			       reg-io-width = <1>;
--			       current-speed = <115200>;
--			       no-loopback-test;
--			       status = "disabled";
--			       resets = <&reset RESET_UART1>;
--			};
--
--			uart1: serial@300000 {
--			       compatible = "ns16550a";
--			       reg = <0x300000 0x100000>;
--			       clocks = <&sysclk>;
--			       interrupts = <24>;
--			       reg-shift = <0>;
--			       fifo-size = <16>;
--			       reg-io-width = <1>;
--			       current-speed = <115200>;
--			       no-loopback-test;
--			       status = "disabled";
--			       resets = <&reset RESET_UART2>;
--			};
--
--			uart2: serial@900000 {
--			       compatible = "ns16550a";
--			       reg = <0x900000 0x100000>;
--			       clocks = <&sysclk>;
--			       interrupts = <29>;
--			       reg-shift = <0>;
--			       fifo-size = <16>;
--			       reg-io-width = <1>;
--			       current-speed = <115200>;
--			       no-loopback-test;
--			       status = "disabled";
--			       resets = <&reset RESET_UART3>;
--			};
--
--			uart3: serial@a00000 {
--			       compatible = "ns16550a";
--			       reg = <0xa00000 0x100000>;
--			       clocks = <&sysclk>;
--			       interrupts = <30>;
--			       reg-shift = <0>;
--			       fifo-size = <16>;
--			       reg-io-width = <1>;
--			       current-speed = <115200>;
--			       no-loopback-test;
--			       status = "disabled";
--			       resets = <&reset RESET_UART4>;
--			};
--		};
--
--		apb-bridge@45000000 {
--			#address-cells = <1>;
--			#size-cells = <1>;
--			compatible = "simple-bus";
--			ranges = <0 0x45000000 0x1000000>;
--
--			sys: sys-ctrl@0 {
--				compatible = "oxsemi,ox810se-sys-ctrl", "syscon", "simple-mfd";
--				reg = <0x000000 0x100000>;
--
--				reset: reset-controller {
--					compatible = "oxsemi,ox810se-reset";
--					#reset-cells = <1>;
--				};
--
--				stdclk: stdclk {
--					compatible = "oxsemi,ox810se-stdclk";
--					#clock-cells = <1>;
--				};
--			};
--
--			rps@300000 {
--				#address-cells = <1>;
--				#size-cells = <1>;
--				compatible = "simple-bus";
--				ranges = <0 0x300000 0x100000>;
--
--				intc: interrupt-controller@0 {
--					compatible = "oxsemi,ox810se-rps-irq";
--					interrupt-controller;
--					reg = <0 0x200>;
--					#interrupt-cells = <1>;
--					valid-mask = <0xffffffff>;
--					clear-mask = <0xffffffff>;
--				};
--
--				timer0: timer@200 {
--					compatible = "oxsemi,ox810se-rps-timer";
--					reg = <0x200 0x40>;
--					clocks = <&rpsclk>;
--					interrupts = <4 5>;
--				};
--			};
--		};
--	};
--};
-diff --git a/arch/arm/boot/dts/ox820-cloudengines-pogoplug-series-3.dts b/arch/arm/boot/dts/ox820-cloudengines-pogoplug-series-3.dts
-deleted file mode 100644
-index c3daceccde55..000000000000
---- a/arch/arm/boot/dts/ox820-cloudengines-pogoplug-series-3.dts
-+++ /dev/null
-@@ -1,93 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * cloudengines-pogoplug-series-3.dtsi - Device tree file for Cloud Engines PogoPlug Series 3
-- *
-- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
-- */
--
--/dts-v1/;
--#include "ox820.dtsi"
--
--/ {
--	model = "Cloud Engines PogoPlug Series 3";
--
--	compatible = "cloudengines,pogoplugv3", "oxsemi,ox820";
--
--	chosen {
--		bootargs = "earlyprintk";
--		stdout-path = "serial0:115200n8";
--	};
--
--	memory {
--		/* 128Mbytes DDR */
--		reg = <0x60000000 0x8000000>;
--	};
--
--	aliases {
--		serial0 = &uart0;
--		gpio0 = &gpio0;
--		gpio1 = &gpio1;
--	};
--
--	leds {
--		compatible = "gpio-leds";
--
--		blue {
--			label = "pogoplug:blue";
--			gpios = <&gpio0 2 0>;
--			default-state = "keep";
--		};
--
--		orange {
--			label = "pogoplug:orange";
--			gpios = <&gpio1 16 1>;
--			default-state = "keep";
--		};
--
--		green {
--			label = "pogoplug:green";
--			gpios = <&gpio1 17 1>;
--			default-state = "keep";
--		};
--	};
--};
--
--&uart0 {
--	status = "okay";
--
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_uart0>;
--};
--
--&nandc {
--	status = "okay";
--
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_nand>;
--
--	nand@0 {
--		reg = <0>;
--		#address-cells = <1>;
--		#size-cells = <1>;
--		nand-ecc-mode = "soft";
--		nand-ecc-algo = "hamming";
--
--		partition@0 {
--			label = "boot";
--			reg = <0x00000000 0x00e00000>;
--			read-only;
--		};
--
--		partition@e00000 {
--			label = "ubi";
--			reg = <0x00e00000 0x07200000>;
--		};
--	};
--};
--
--&etha {
--	status = "okay";
--
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_etha_mdio>;
--};
-diff --git a/arch/arm/boot/dts/ox820.dtsi b/arch/arm/boot/dts/ox820.dtsi
-deleted file mode 100644
-index dde4364892bf..000000000000
---- a/arch/arm/boot/dts/ox820.dtsi
-+++ /dev/null
-@@ -1,299 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * ox820.dtsi - Device tree file for Oxford Semiconductor OX820 SoC
-- *
-- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
-- */
--
--#include <dt-bindings/interrupt-controller/arm-gic.h>
--#include <dt-bindings/clock/oxsemi,ox820.h>
--#include <dt-bindings/reset/oxsemi,ox820.h>
--
--/ {
--	#address-cells = <1>;
--	#size-cells = <1>;
--	compatible = "oxsemi,ox820";
--
--	cpus {
--		#address-cells = <1>;
--		#size-cells = <0>;
--		enable-method = "oxsemi,ox820-smp";
--
--		cpu@0 {
--			device_type = "cpu";
--			compatible = "arm,arm11mpcore";
--			clocks = <&armclk>;
--			reg = <0>;
--		};
--
--		cpu@1 {
--			device_type = "cpu";
--			compatible = "arm,arm11mpcore";
--			clocks = <&armclk>;
--			reg = <1>;
--		};
--	};
--
--	memory {
--		device_type = "memory";
--		/* Max 512MB @ 0x60000000 */
--		reg = <0x60000000 0x20000000>;
--	};
--
--	clocks {
--		osc: oscillator {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--			clock-frequency = <25000000>;
--		};
--
--		gmacclk: gmacclk {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--			clock-frequency = <125000000>;
--		};
--
--		sysclk: sysclk {
--			compatible = "fixed-factor-clock";
--			#clock-cells = <0>;
--			clock-div = <4>;
--			clock-mult = <1>;
--			clocks = <&osc>;
--		};
--
--		plla: plla {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--			clock-frequency = <850000000>;
--		};
--
--		armclk: armclk {
--			compatible = "fixed-factor-clock";
--			#clock-cells = <0>;
--			clock-div = <2>;
--			clock-mult = <1>;
--			clocks = <&plla>;
--		};
--	};
--
--	soc {
--		#address-cells = <1>;
--		#size-cells = <1>;
--		compatible = "simple-bus";
--		ranges;
--		interrupt-parent = <&gic>;
--
--		nandc: nand-controller@41000000 {
--			compatible = "oxsemi,ox820-nand";
--			reg = <0x41000000 0x100000>;
--			clocks = <&stdclk CLK_820_NAND>;
--			resets = <&reset RESET_NAND>;
--			#address-cells = <1>;
--			#size-cells = <0>;
--			status = "disabled";
--		};
--
--		etha: ethernet@40400000 {
--			compatible = "oxsemi,ox820-dwmac", "snps,dwmac";
--			reg = <0x40400000 0x2000>;
--			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "macirq", "eth_wake_irq";
--			mac-address = [000000000000]; /* Filled in by U-Boot */
--			phy-mode = "rgmii";
--
--			clocks = <&stdclk CLK_820_ETHA>, <&gmacclk>;
--			clock-names = "gmac", "stmmaceth";
--			resets = <&reset RESET_MAC>;
--
--			/* Regmap for sys registers */
--			oxsemi,sys-ctrl = <&sys>;
--
--			status = "disabled";
--		};
--
--		apb-bridge@44000000 {
--			#address-cells = <1>;
--			#size-cells = <1>;
--			compatible = "simple-bus";
--			ranges = <0 0x44000000 0x1000000>;
--
--			pinctrl: pinctrl {
--				compatible = "oxsemi,ox820-pinctrl";
--
--				/* Regmap for sys registers */
--				oxsemi,sys-ctrl = <&sys>;
--
--				pinctrl_uart0: uart0 {
--					uart0 {
--						pins = "gpio30", "gpio31";
--						function = "fct5";
--					};
--				};
--
--				pinctrl_uart0_modem: uart0_modem {
--					uart0_modem_a {
--						pins = "gpio24", "gpio24", "gpio26", "gpio27";
--						function = "fct4";
--					};
--					uart0_modem_b {
--						pins = "gpio28", "gpio29";
--						function = "fct5";
--					};
--				};
--
--				pinctrl_uart1: uart1 {
--					uart1 {
--						pins = "gpio7", "gpio8";
--						function = "fct4";
--					};
--				};
--
--				pinctrl_uart1_modem: uart1_modem {
--					uart1_modem {
--						pins = "gpio5", "gpio6", "gpio40", "gpio41", "gpio42", "gpio43";
--						function = "fct4";
--					};
--				};
--
--				pinctrl_etha_mdio: etha_mdio {
--					etha_mdio {
--						pins = "gpio3", "gpio4";
--						function = "fct1";
--					};
--				};
--
--				pinctrl_nand: nand {
--					nand {
--						pins = "gpio12", "gpio13", "gpio14", "gpio15",
--						     "gpio16", "gpio17", "gpio18", "gpio19",
--						     "gpio20", "gpio21", "gpio22", "gpio23",
--						     "gpio24";
--						function = "fct1";
--					};
--				};
--			};
--
--			gpio0: gpio@0 {
--				compatible = "oxsemi,ox820-gpio";
--				reg = <0x000000 0x100000>;
--				interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
--				#gpio-cells = <2>;
--				gpio-controller;
--				interrupt-controller;
--				#interrupt-cells = <2>;
--				ngpios = <32>;
--				oxsemi,gpio-bank = <0>;
--				gpio-ranges = <&pinctrl 0 0 32>;
--			};
--
--			gpio1: gpio@100000 {
--				compatible = "oxsemi,ox820-gpio";
--				reg = <0x100000 0x100000>;
--				interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
--				#gpio-cells = <2>;
--				gpio-controller;
--				interrupt-controller;
--				#interrupt-cells = <2>;
--				ngpios = <18>;
--				oxsemi,gpio-bank = <1>;
--				gpio-ranges = <&pinctrl 0 32 18>;
--			};
--
--			uart0: serial@200000 {
--			       compatible = "ns16550a";
--			       reg = <0x200000 0x100000>;
--			       interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
--			       reg-shift = <0>;
--			       fifo-size = <16>;
--			       reg-io-width = <1>;
--			       current-speed = <115200>;
--			       no-loopback-test;
--			       status = "disabled";
--			       clocks = <&sysclk>;
--			       resets = <&reset RESET_UART1>;
--			};
--
--			uart1: serial@300000 {
--			       compatible = "ns16550a";
--			       reg = <0x200000 0x100000>;
--			       interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
--			       reg-shift = <0>;
--			       fifo-size = <16>;
--			       reg-io-width = <1>;
--			       current-speed = <115200>;
--			       no-loopback-test;
--			       status = "disabled";
--			       clocks = <&sysclk>;
--			       resets = <&reset RESET_UART2>;
--			};
--
--			rps@400000 {
--				#address-cells = <1>;
--				#size-cells = <1>;
--				compatible = "simple-bus";
--				ranges = <0 0x400000 0x100000>;
--
--				intc: interrupt-controller@0 {
--					compatible = "oxsemi,ox820-rps-irq", "oxsemi,ox810se-rps-irq";
--					interrupt-controller;
--					reg = <0 0x200>;
--					interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
--					#interrupt-cells = <1>;
--					valid-mask = <0xffffffff>;
--					clear-mask = <0xffffffff>;
--				};
--
--				timer0: timer@200 {
--					compatible = "oxsemi,ox820-rps-timer";
--					reg = <0x200 0x40>;
--					clocks = <&sysclk>;
--					interrupt-parent = <&intc>;
--					interrupts = <4>;
--				};
--			};
--
--			sys: sys-ctrl@e00000 {
--				compatible = "oxsemi,ox820-sys-ctrl", "syscon", "simple-mfd";
--				reg = <0xe00000 0x200000>;
--
--				reset: reset-controller {
--					compatible = "oxsemi,ox820-reset", "oxsemi,ox810se-reset";
--					#reset-cells = <1>;
--				};
--
--				stdclk: stdclk {
--					compatible = "oxsemi,ox820-stdclk", "oxsemi,ox810se-stdclk";
--					#clock-cells = <1>;
--				};
--			};
--		};
--
--		apb-bridge@47000000 {
--			#address-cells = <1>;
--			#size-cells = <1>;
--			compatible = "simple-bus";
--			ranges = <0 0x47000000 0x1000000>;
--
--			scu: scu@0 {
--				compatible = "arm,arm11mp-scu";
--				reg = <0x0 0x100>;
--			};
--
--			local-timer@600 {
--				compatible = "arm,arm11mp-twd-timer";
--				reg = <0x600 0x20>;
--				interrupts = <GIC_PPI 13 (GIC_CPU_MASK_RAW(3)|IRQ_TYPE_LEVEL_HIGH)>;
--				clocks = <&armclk>;
--			};
--
--			gic: interrupt-controller@1000 {
--				compatible = "arm,arm11mp-gic";
--				interrupt-controller;
--				#interrupt-cells = <3>;
--				reg = <0x1000 0x1000>,
--				      <0x100 0x500>;
--			};
--		};
--	};
--};
+-builtin_platform_driver(ox820_restart_driver);
 
 -- 
 2.34.1
