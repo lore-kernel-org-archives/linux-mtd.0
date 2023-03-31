@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B845C77B62
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 09:01:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F504C77B6D
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Mar 2023 09:01:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BZR4M2rVhGVoYoyZXBzB7SISiN07zA1Xf9s7rW0JIgA=; b=W6oWmSFTY7F9lr
-	Z1eZeUuRvbdv3tzZubbL/M8zRyDMYxQa1EskM59WQOrEUP11x+b8mnOj5sKDfbYyopslq6h9X6XeY
-	gjqyJtq+dqoHB9mfc1jyg04YU5rIugV72g0CNvO5gRDz/8MHLD1hLKaEQ6HhhTPZ+KBLLfHxd1D3A
-	eSaEDbFQkTg9ob5mqO2qaTutxs4Ph6FBTMA7rDNT/hk6VkLJyVot8G0SO1iERszk6FtJWy4+xAXtn
-	brXyaml0jINdgq3Fr60Oqhbw3oIjzy5Dc3OawBMLLYFuyJZg1sL6FKeoutWAB1gO65IFK68eZOMbT
-	qKhroDWF0JwE0dMgGl7w==;
+	List-Owner; bh=bjj1WL1597dg7Znm927qIdC3fz8b3/39uqX7cP8Ujd8=; b=yZrWbnRj6X1F6h
+	rweWGf9NUifMMZlFqNwvWT0QHx34l+4LF39o22htPgkonqBaJKbzHZEbSGjmzc4HaYPdolkY+0g91
+	pew2Gbm/ydMec//mmIPCQbpDEim5tkGwbfsT+igHI8qWqvvAQhqx5pNzJVZ1TfG/sCcTzBuU22q1B
+	TQdQLS5KRvkmj47I/NvW4I6Jz6z/vRpRVp/gmAjEz+ORxSE5Lo1aoW+0PH+Br3xGXG3aliob4iC1l
+	vrpwwGlaeP9Wq74tE3qvoFJOPQt25A3dz26iaFo/8spUSrH9yboVID94JKkW7wsaQ2faXf9QGX64w
+	/Vd4iVH5pNUKbL8qMpeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1piAdA-006YSd-39;
-	Fri, 31 Mar 2023 09:01:09 +0000
-Received: from mail-lf1-x132.google.com ([2a00:1450:4864:20::132])
+	id 1piAdF-006YW2-1P;
+	Fri, 31 Mar 2023 09:01:13 +0000
+Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pi9Sl-006Cs9-1v
+	id 1pi9Sl-006Ctw-1w
 	for linux-mtd@lists.infradead.org;
-	Fri, 31 Mar 2023 07:46:21 +0000
-Received: by mail-lf1-x132.google.com with SMTP id c29so27810956lfv.3
-        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 00:46:15 -0700 (PDT)
+	Fri, 31 Mar 2023 07:46:22 +0000
+Received: by mail-lj1-x231.google.com with SMTP id z42so22110245ljq.13
+        for <linux-mtd@lists.infradead.org>; Fri, 31 Mar 2023 00:46:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680248773;
+        d=linaro.org; s=google; t=1680248777;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8vyY0YqKS1SLB05+MmKNy/QrEH8YuBL5xLp1nkmp3M0=;
-        b=CCefbeXgqsEJBMHGQDT4yv5/UyPJoy/+zWC5qH5dvQGDNUsF6mMtXAz5wZiYkN5BQo
-         MCWdl/GhEBk2ItYSonQc2Lp35kV9kAmogwuqZWYfVrC4OoF8+pPeiRPCV/qOutLflMyf
-         CNj8daBkbeQObZrLDrEs/zYlfw3FrCvzJr0R33a7+Z7BiKilj4X3mYeHFKgm5mO71JIu
-         ZGcOH32VIh3zW55zqkyMrsIn0kh8hmdg/6WE0kJZkQcCmowkFsdNJ4dVJX3yOKPs7If/
-         wwpMlF9cge5OO+O6Daj2pHBWtsOaY+WRMzo8KOGlx8Vqo9cmgrznLeIlFdifPpdzpBYK
-         r0Tw==
+        bh=z0sigra06UdM0F1urZc+vocV5eG5WzPi+hGexEngKTU=;
+        b=X1ikQu7cdVcNDirIDWCbHY2Av890uHn1f8iauR36T1CANNByjkJ1iiwjbcMyepMkhy
+         3zHuugsWwW1UD5blKh/Y6ow0NvoRRAFjhxte2PhIYV9od2DIPk1RnShAaB5yQhJtTuun
+         Jqx4AhYxg9AeQ5RZ3SY1+XlHMcvxszYR2H4+4+sH4vK4RHEoLeV1WSd7m305olcjd8de
+         QAO0EloURtLBc8lM9d42gTGYGsL45Jqo/5fdHRTh0yhWdb4QAn4dC0bn5Ul4050sKEmy
+         3/xkSRbzi/v2OJF1rY4drkWQ2AYkBiZ1b0roO/GJtoA7RBhCYLBW9oENWCxJH8mjpiyY
+         6BRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680248773;
+        d=1e100.net; s=20210112; t=1680248777;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8vyY0YqKS1SLB05+MmKNy/QrEH8YuBL5xLp1nkmp3M0=;
-        b=oGoIVU1UZl4WV2w/nBps98LmrziXoshAvdmFny6pVwWBolqqXf4tnyMuDR8QqDcLqw
-         d5lG2aKLShOxm9YZ7AxZeA/2Kn9WRPBw1tbKbV7knxEf7Jj8O2kdOXAl7NK1KQmDmVl7
-         3ZbNsQ9NrQrz/AU5XLTsUP8ctSqpvWIBxwOEi7BzWle6OfrQ0Bd87/dSjL9S7S08FuWN
-         iCggp9hS0Qokpn2W13QwFIfn69hqQz3bTmxQtBucbTIf0IP0p4dwb2TjDnP5ep9RdjeD
-         K3gNQiY4/EG9XBKjg1K6gMl6Dfg7qo3p04hRQSPcTKuVPIZHDxP3glSLt3rKOSMBQ4k9
-         IvqQ==
-X-Gm-Message-State: AAQBX9f5nAJc7jDJilWTB70IR0kXZdwZEvbBE9UfEfaKL3hwezNtfowe
-	V+gHVSdfXRJorppbfnHFazV+9w==
-X-Google-Smtp-Source: AKy350b4xxIBOgaXMB9NOFPWS1tARj7J6oK3qK1H7J7KhoMM8z2ZImNHVkPe7Cq0Z6so7UmQvFwV+A==
-X-Received: by 2002:ac2:5699:0:b0:4e8:3bac:4e32 with SMTP id 25-20020ac25699000000b004e83bac4e32mr6767504lfr.53.1680248773602;
-        Fri, 31 Mar 2023 00:46:13 -0700 (PDT)
+        bh=z0sigra06UdM0F1urZc+vocV5eG5WzPi+hGexEngKTU=;
+        b=PJkqTl45sts5lcdO+HwxGNKJ68EGwxZT4GPABb/+eXAJKn54m2kL9uSeAc642F8GOW
+         4EUvMOqE80Usb+a8JK4Zm6fZ3AxYuGGoZSuo2l/l6RNJMVFcRMtxtva1OtM3FP8DSRev
+         RpkGVa9FJLrzrw635lBYmS+61vJNIT09EVKp1UQS46GtOi+Kh+lDQbc/6E8Zfyl8Hypy
+         gTmA6Ha0ld5ITDlRm9PEMjA8f4ttAh9g6NA56j75l298KalBlnB3X6FddgGybI1NQqKp
+         I/kNuBB1CILaghpBBDTIgfxZME5W/GgaT94NMsEd2zMjfM/Oy/eqSqtTXuG8wNwArPhj
+         JoxA==
+X-Gm-Message-State: AAQBX9d989QuYTMtLOu8e+h9mZf9dsgFeMz4KkgxafQ3ei1XnvdmVPm8
+	K2TIlrxVg+AphnckgBmkxefQjg==
+X-Google-Smtp-Source: AKy350b8r2jFMVrBia6qxne7eebOupqk+Y/4dq1+p1jUD2XO6Xp/Gssupf4yzEwsAJP4WCXH7pslYA==
+X-Received: by 2002:a2e:9cd2:0:b0:29d:76c9:9803 with SMTP id g18-20020a2e9cd2000000b0029d76c99803mr8500974ljj.37.1680248777441;
+        Fri, 31 Mar 2023 00:46:17 -0700 (PDT)
 Received: from ta1.c.googlers.com.com (61.215.228.35.bc.googleusercontent.com. [35.228.215.61])
-        by smtp.gmail.com with ESMTPSA id n20-20020a2e8794000000b0029573844d03sm241201lji.109.2023.03.31.00.46.12
+        by smtp.gmail.com with ESMTPSA id n20-20020a2e8794000000b0029573844d03sm241201lji.109.2023.03.31.00.46.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 00:46:13 -0700 (PDT)
+        Fri, 31 Mar 2023 00:46:17 -0700 (PDT)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: michael@walle.cc,
 	pratyush@kernel.org
@@ -72,16 +72,16 @@ Cc: miquel.raynal@bootlin.com,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v5 01/10] mtd: spi-nor: core: Move generic method to core - micron_st_nor_set_4byte_addr_mode
-Date: Fri, 31 Mar 2023 07:45:57 +0000
-Message-Id: <20230331074606.3559258-2-tudor.ambarus@linaro.org>
+Subject: [PATCH v5 06/10] mtd: spi-nor: Set the 4-Byte Address Mode method based on SFDP data
+Date: Fri, 31 Mar 2023 07:46:02 +0000
+Message-Id: <20230331074606.3559258-7-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.40.0.348.gf938b09366-goog
 In-Reply-To: <20230331074606.3559258-1-tudor.ambarus@linaro.org>
 References: <20230331074606.3559258-1-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230331_004619_661031_C5B841D1 
-X-CRM114-Status: GOOD (  11.90  )
+X-CRM114-CacheID: sfid-20230331_004619_658684_7BEA10A0 
+X-CRM114-Status: GOOD (  20.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,98 +98,221 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This method is described in JESD216 BFPT[SFDP_DWORD(16)], BIT(30) and
-BIT(22). Move the method to core.
+JESD216 SFDP defines in BFPT methods to enter and exit the
+4-Byte Address Mode. The flash parameters and settings that are
+retrieved from SFDP have higher precedence than the static
+initialized ones, because they should be more accurate and less
+error prone than those initialized statically. Parse and favor the
+BFPT-parsed set_4byte_addr_mode methods.
+
+Some regressions may be introduced by this patch, because the
+params->set_4byte_addr_mode method that was set either in
+spi_nor_init_default_params() or later overwritten in default_init()
+hooks, are now be overwritten with a different value based on the
+BFPT data. If that's the case, the fix is to introduce a post_bfpt
+fixup hook where one should fix the wrong BFPT info.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/core.c      | 24 ++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.h      |  1 +
- drivers/mtd/spi-nor/micron-st.c | 24 ------------------------
- 3 files changed, 25 insertions(+), 24 deletions(-)
+ drivers/mtd/spi-nor/core.c      |  7 ++++++-
+ drivers/mtd/spi-nor/macronix.c  |  8 +++++++-
+ drivers/mtd/spi-nor/micron-st.c |  8 ++++++--
+ drivers/mtd/spi-nor/sfdp.c      | 11 +++++++++++
+ drivers/mtd/spi-nor/sfdp.h      | 27 +++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/winbond.c   | 22 ++++++++++++++--------
+ 6 files changed, 71 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 9e6a0730cdb8..d104c81f22c5 100644
+index 75d28224ec62..50297be98d1b 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -538,6 +538,30 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	return ret;
- }
+@@ -2898,6 +2898,8 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
+  */
+ static void spi_nor_late_init_params(struct spi_nor *nor)
+ {
++	struct spi_nor_flash_parameter *params = nor->params;
++
+ 	if (nor->manufacturer && nor->manufacturer->fixups &&
+ 	    nor->manufacturer->fixups->late_init)
+ 		nor->manufacturer->fixups->late_init(nor);
+@@ -2905,6 +2907,10 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
+ 	if (nor->info->fixups && nor->info->fixups->late_init)
+ 		nor->info->fixups->late_init(nor);
  
-+/**
-+ * micron_st_nor_set_4byte_addr_mode() - Set 4-byte address mode for ST and
-+ * Micron flashes.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-+ *		address mode.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int micron_st_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+{
-+	int ret;
++	/* Default method kept for backward compatibility. */
++	if (!params->set_4byte_addr_mode)
++		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_brwr;
 +
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_set_4byte_addr_mode(nor, enable);
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_write_disable(nor);
+ 	spi_nor_init_flags(nor);
+ 	spi_nor_init_fixup_flags(nor);
+ 
+@@ -2971,7 +2977,6 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+ 	struct device_node *np = spi_nor_get_flash_node(nor);
+ 
+ 	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+-	params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_brwr;
+ 	params->otp.org = &info->otp_org;
+ 
+ 	/* Default to 16-bit Write Status (01h) Command */
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 91a8fa7d4512..075a26945f2d 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -105,11 +105,17 @@ static const struct flash_info macronix_nor_parts[] = {
+ static void macronix_nor_default_init(struct spi_nor *nor)
+ {
+ 	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+-	nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
 +}
 +
- /**
-  * spansion_set_4byte_addr_mode() - Set 4-byte address mode for Spansion
-  * flashes.
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index de31e430f77e..d5cb42245820 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -648,6 +648,7 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- int spi_nor_write_enable(struct spi_nor *nor);
- int spi_nor_write_disable(struct spi_nor *nor);
- int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
-+int micron_st_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
- int spi_nor_wait_till_ready(struct spi_nor *nor);
- int spi_nor_global_block_unlock(struct spi_nor *nor);
- int spi_nor_prep_and_lock(struct spi_nor *nor);
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 7bb86df52f0b..3bbf65234ebd 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -301,30 +301,6 @@ static const struct flash_info st_nor_parts[] = {
- 	{ "m25px80",    INFO(0x207114,  0, 64 * 1024, 16) },
++static void macronix_nor_late_init(struct spi_nor *nor)
++{
++	if (!nor->params->set_4byte_addr_mode)
++		nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
+ }
+ 
+ static const struct spi_nor_fixups macronix_nor_fixups = {
+ 	.default_init = macronix_nor_default_init,
++	.late_init = macronix_nor_late_init,
  };
  
--/**
-- * micron_st_nor_set_4byte_addr_mode() - Set 4-byte address mode for ST and
-- * Micron flashes.
-- * @nor:	pointer to 'struct spi_nor'.
-- * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-- *		address mode.
-- *
-- * Return: 0 on success, -errno otherwise.
-- */
--static int micron_st_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ const struct spi_nor_manufacturer spi_nor_macronix = {
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index a75f0f4e1c38..a6f080112a51 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -425,13 +425,17 @@ static void micron_st_nor_default_init(struct spi_nor *nor)
+ 	nor->flags |= SNOR_F_HAS_LOCK;
+ 	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
+ 	nor->params->quad_enable = NULL;
+-	nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_wren_en4b_ex4b;
+ }
+ 
+ static void micron_st_nor_late_init(struct spi_nor *nor)
+ {
++	struct spi_nor_flash_parameter *params = nor->params;
++
+ 	if (nor->info->mfr_flags & USE_FSR)
+-		nor->params->ready = micron_st_nor_ready;
++		params->ready = micron_st_nor_ready;
++
++	if (!params->set_4byte_addr_mode)
++		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_wren_en4b_ex4b;
+ }
+ 
+ static const struct spi_nor_fixups micron_st_nor_fixups = {
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index 298ab5e53a8c..69e47c9778a2 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -438,6 +438,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 	size_t len;
+ 	int i, cmd, err;
+ 	u32 addr, val;
++	u32 dword;
+ 	u16 half;
+ 	u8 erase_mask;
+ 
+@@ -607,6 +608,16 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		break;
+ 	}
+ 
++	dword = bfpt.dwords[SFDP_DWORD(16)] & BFPT_DWORD16_4B_ADDR_MODE_MASK;
++	if (SFDP_MASK_CHECK(dword, BFPT_DWORD16_4B_ADDR_MODE_BRWR))
++		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_brwr;
++	else if (SFDP_MASK_CHECK(dword, BFPT_DWORD16_4B_ADDR_MODE_WREN_EN4B_EX4B))
++		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_wren_en4b_ex4b;
++	else if (SFDP_MASK_CHECK(dword, BFPT_DWORD16_4B_ADDR_MODE_EN4B_EX4B))
++		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_en4b_ex4b;
++	else
++		dev_dbg(nor->dev, "BFPT: 4-Byte Address Mode method is not recognized or not implemented\n");
++
+ 	/* Soft Reset support. */
+ 	if (bfpt.dwords[SFDP_DWORD(16)] & BFPT_DWORD16_SWRST_EN_RST)
+ 		nor->flags |= SNOR_F_SOFT_RESET;
+diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
+index 500659b35655..6eb99e1cdd61 100644
+--- a/drivers/mtd/spi-nor/sfdp.h
++++ b/drivers/mtd/spi-nor/sfdp.h
+@@ -15,6 +15,7 @@
+ 
+ /* SFDP DWORDS are indexed from 1 but C arrays are indexed from 0. */
+ #define SFDP_DWORD(i)		((i) - 1)
++#define SFDP_MASK_CHECK(dword, mask)		(((dword) & (mask)) == (mask))
+ 
+ /* Basic Flash Parameter Table */
+ 
+@@ -89,6 +90,32 @@ struct sfdp_bfpt {
+ #define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
+ #define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
+ 
++#define BFPT_DWORD16_EN4B_MASK			GENMASK(31, 24)
++#define BFPT_DWORD16_EN4B_ALWAYS_4B		BIT(30)
++#define BFPT_DWORD16_EN4B_4B_OPCODES		BIT(29)
++#define BFPT_DWORD16_EN4B_16BIT_NV_CR		BIT(28)
++#define BFPT_DWORD16_EN4B_BRWR			BIT(27)
++#define BFPT_DWORD16_EN4B_WREAR			BIT(26)
++#define BFPT_DWORD16_EN4B_WREN_EN4B		BIT(25)
++#define BFPT_DWORD16_EN4B_EN4B			BIT(24)
++#define BFPT_DWORD16_EX4B_MASK			GENMASK(18, 14)
++#define BFPT_DWORD16_EX4B_16BIT_NV_CR		BIT(18)
++#define BFPT_DWORD16_EX4B_BRWR			BIT(17)
++#define BFPT_DWORD16_EX4B_WREAR			BIT(16)
++#define BFPT_DWORD16_EX4B_WREN_EX4B		BIT(15)
++#define BFPT_DWORD16_EX4B_EX4B			BIT(14)
++#define BFPT_DWORD16_4B_ADDR_MODE_MASK			\
++	(BFPT_DWORD16_EN4B_MASK | BFPT_DWORD16_EX4B_MASK)
++#define BFPT_DWORD16_4B_ADDR_MODE_16BIT_NV_CR		\
++	(BFPT_DWORD16_EN4B_16BIT_NV_CR | BFPT_DWORD16_EX4B_16BIT_NV_CR)
++#define BFPT_DWORD16_4B_ADDR_MODE_BRWR			\
++	(BFPT_DWORD16_EN4B_BRWR | BFPT_DWORD16_EX4B_BRWR)
++#define BFPT_DWORD16_4B_ADDR_MODE_WREAR			\
++	(BFPT_DWORD16_EN4B_WREAR | BFPT_DWORD16_EX4B_WREAR)
++#define BFPT_DWORD16_4B_ADDR_MODE_WREN_EN4B_EX4B	\
++	(BFPT_DWORD16_EN4B_WREN_EN4B | BFPT_DWORD16_EX4B_WREN_EX4B)
++#define BFPT_DWORD16_4B_ADDR_MODE_EN4B_EX4B		\
++	(BFPT_DWORD16_EN4B_EN4B | BFPT_DWORD16_EX4B_EX4B)
+ #define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
+ 
+ #define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 9cea241c204b..834d6ba5ce70 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -216,19 +216,25 @@ static const struct spi_nor_otp_ops winbond_nor_otp_ops = {
+ 	.is_locked = spi_nor_otp_is_locked_sr2,
+ };
+ 
+-static void winbond_nor_default_init(struct spi_nor *nor)
 -{
--	int ret;
--
--	ret = spi_nor_write_enable(nor);
--	if (ret)
--		return ret;
--
--	ret = spi_nor_set_4byte_addr_mode(nor, enable);
--	if (ret)
--		return ret;
--
--	return spi_nor_write_disable(nor);
+-	nor->params->set_4byte_addr_mode = winbond_nor_set_4byte_addr_mode;
 -}
 -
- /**
-  * micron_st_nor_read_fsr() - Read the Flag Status Register.
-  * @nor:	pointer to 'struct spi_nor'
+ static void winbond_nor_late_init(struct spi_nor *nor)
+ {
+-	if (nor->params->otp.org->n_regions)
+-		nor->params->otp.ops = &winbond_nor_otp_ops;
++	struct spi_nor_flash_parameter *params = nor->params;
++
++	if (params->otp.org->n_regions)
++		params->otp.ops = &winbond_nor_otp_ops;
++
++	/*
++	 * Winbond seems to require that the Extended Address Register to be set
++	 * to zero when exiting the 4-Byte Address Mode, at least for W25Q256FV.
++	 * This requirement is not described in the JESD216 SFDP standard, thus
++	 * it is Winbond specific. Since we do not know if other Winbond flashes
++	 * have the same requirement, play safe and overwrite the method parsed
++	 * from BFPT, if any.
++	 */
++	params->set_4byte_addr_mode = winbond_nor_set_4byte_addr_mode;
+ }
+ 
+ static const struct spi_nor_fixups winbond_nor_fixups = {
+-	.default_init = winbond_nor_default_init,
+ 	.late_init = winbond_nor_late_init,
+ };
+ 
 -- 
 2.40.0.348.gf938b09366-goog
 
