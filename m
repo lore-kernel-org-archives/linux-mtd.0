@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A92F0C761A6
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Apr 2023 10:56:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7870C76196
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Apr 2023 12:44:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nk5A5i2X1HchPyfZtposV8sdpmC8X0AmfVBLVEFlTV0=; b=o5ExU7ouPNERZK
-	jeTVBAh8nnq0VE2QJfcf9gyFHUfW5Pl2oR1ivrNNoxrqlzzyzDowt01MabfhFL5gZUqzr8o4SjMKE
-	ImrrAj1bcqis0oxRJJpDVCb1sQg/XDJ5O0TcIxIGJByB6+vvmhpgDwtp4Oc93pU8DT8VfgM8rNjvo
-	KEc90vsM5nQzQ5Y9QFarDAc3GKH7t6HG1t9+fIw5wvOXdASqR4YX0AXd5XoE8pH5tQNVbzJNgRt7k
-	MG+rfKidPMZ9JwkH0ocBrJmK5BzMmJQd/EmvV0Bla1VBQvUyqavOn1oU4/Wc4QV/st6JWfGse3sug
-	odUHnh9tq62mo4NGZDhA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=KGHH7jmcJtMRI0yfS+zcaHB0BjJcKTuEgWp2tWNFEdE=; b=rUkPNF+Nyny5friZuoCWt6y8jr
+	e9pL0uyU5Sktygy6+Y5kWBD6ZdmNkJUnReU7dQDnRlPa12Sqe47rrD3LhV31WgUKjatPKvm7Klgko
+	tBBWOb0UeOrbFRlRaCj/umE8K7oDxo+DqijGGg1GaspfbQ8sQ5cYIyVix37/HtEQIprUzTR4EeFVJ
+	G+F835/6V6TD90X6W++WYAy8sbdEh6BMaXkxgKvz2y0/D9N8O9uTCOCuqCugOWG8/8mlPBE306oFW
+	KaciLD8LbTaArqAZqLMT/VjGyqwY30VT3Y94zDl0c5+OiDJKlEr4BK9NUljvHdWtzZaUnbXLKZAOV
+	SI/E/LEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pjHqn-00F1TW-2o;
-	Mon, 03 Apr 2023 10:55:49 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pjJX9-00FJo8-2Q;
+	Mon, 03 Apr 2023 12:43:39 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pjHql-00F1Su-1i
+	id 1pjJX6-00FJmj-2r
 	for linux-mtd@lists.infradead.org;
-	Mon, 03 Apr 2023 10:55:48 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	Mon, 03 Apr 2023 12:43:38 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 13F3C618F2;
-	Mon,  3 Apr 2023 10:55:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F32C5C433EF;
-	Mon,  3 Apr 2023 10:55:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1680519346;
-	bh=2vE4vlhMu9H5hV4YHMR14O334Ulhx+CY2eWbaB8BslY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ghPiXUXpx++ZmAyuH32115yPJut8Qev1Z6qri0H49HFazTZ5ZFb1GBKwpCUXN0H7c
-	 2AP43U47P4kSh2XHAdeM6XnCUUtnmSn2MndRmZN8TYOF7YwF+VRENR88DbSXzTkkCV
-	 mcpwzulzct9tQ3e9orLDVUjJya8KAVWtUqJW8COSxM82FQFKiyGlpJyJcFWZoinKst
-	 2EshTg0IL1o5xpK8Wmffbiwi0tbmVgQ0e/etq0IAxoh0p52ojE6pc0/psJzHvIxVVN
-	 srffRucIDwgeBoAqsVctVFsW+be3efGi5eRQfaEo0lXKb7oQddRjdCz0bPIQog4QW3
-	 ETzYKkH5KvSSQ==
-Message-ID: <82f8f5b6-49a9-0eb3-c542-3260f58fe2b0@kernel.org>
-Date: Mon, 3 Apr 2023 13:55:42 +0300
+	by mail.3ffe.de (Postfix) with ESMTPSA id 66D17124;
+	Mon,  3 Apr 2023 14:43:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1680525810;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SYJViz/4N8t4+5Nr3/NhnXJXAfSKnQcLVADtXN8P48w=;
+	b=ANttNXQG44x5Lkium/ohFLGpqpx8IiwF8YqUbGDtEMecMjsz/eauOOkCjF+4vn36LeeT4Q
+	rZHO4DC18tYBLtwudcZDqGQafJOG1Ry7zfq45yg/QdXoiQxmW24zfrGbTWpc7n4cEgYYHQ
+	0FlaIi+inBilF4F1c1L81aKAyEUpOLcvsYshlM/ZQ8w4cbXgNYT0fRd1/ugomXhaNZXro3
+	IF6oxFQasTfr0ye/9XOASI95jbNHHOWxkyzEyVvfJSB7hfk2EaxPndwAYdc+BtkZf32Erw
+	gZ2tIgEjsnVQ15/PMnu0SNHaY5VniNt8mkHQMX3do44fyyZkiCEH28jCL0AQdA==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 32/49] mtd: rawnand: omap_elm: Convert to platform remove
- callback returning void
-Content-Language: en-US
-To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de
-References: <20230401161938.2503204-1-u.kleine-koenig@pengutronix.de>
- <20230401161938.2503204-33-u.kleine-koenig@pengutronix.de>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20230401161938.2503204-33-u.kleine-koenig@pengutronix.de>
+Date: Mon, 03 Apr 2023 14:43:30 +0200
+From: Michael Walle <michael@walle.cc>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ Takahiro.Kuwano@infineon.com, bacem.daassi@infineon.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 01/10] mtd: spi-nor: core: Move generic method to core
+ - micron_st_nor_set_4byte_addr_mode
+In-Reply-To: <20230331074606.3559258-2-tudor.ambarus@linaro.org>
+References: <20230331074606.3559258-1-tudor.ambarus@linaro.org>
+ <20230331074606.3559258-2-tudor.ambarus@linaro.org>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <4543c6475a6e2852435a1707ee70ebe9@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230403_035547_606419_9D7FDFC6 
-X-CRM114-Status: GOOD (  13.72  )
+X-CRM114-CacheID: sfid-20230403_054337_400357_611D9E25 
+X-CRM114-Status: UNSURE (   4.29  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,24 +75,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAwMS8wNC8yMDIzIDE5OjE5LCBVd2UgS2xlaW5lLUvDtm5pZyB3cm90ZToKPiBUaGUgLnJl
-bW92ZSgpIGNhbGxiYWNrIGZvciBhIHBsYXRmb3JtIGRyaXZlciByZXR1cm5zIGFuIGludCB3aGlj
-aCBtYWtlcwo+IG1hbnkgZHJpdmVyIGF1dGhvcnMgd3JvbmdseSBhc3N1bWUgaXQncyBwb3NzaWJs
-ZSB0byBkbyBlcnJvciBoYW5kbGluZyBieQo+IHJldHVybmluZyBhbiBlcnJvciBjb2RlLiBIb3dl
-dmVyIHRoZSB2YWx1ZSByZXR1cm5lZCBpcyAobW9zdGx5KSBpZ25vcmVkCj4gYW5kIHRoaXMgdHlw
-aWNhbGx5IHJlc3VsdHMgaW4gcmVzb3VyY2UgbGVha3MuIFRvIGltcHJvdmUgaGVyZSB0aGVyZSBp
-cyBhCj4gcXVlc3QgdG8gbWFrZSB0aGUgcmVtb3ZlIGNhbGxiYWNrIHJldHVybiB2b2lkLiBJbiB0
-aGUgZmlyc3Qgc3RlcCBvZiB0aGlzCj4gcXVlc3QgYWxsIGRyaXZlcnMgYXJlIGNvbnZlcnRlZCB0
-byAucmVtb3ZlX25ldygpIHdoaWNoIGFscmVhZHkgcmV0dXJucwo+IHZvaWQuCj4gCj4gVHJpdmlh
-bGx5IGNvbnZlcnQgdGhpcyBkcml2ZXIgZnJvbSBhbHdheXMgcmV0dXJuaW5nIHplcm8gaW4gdGhl
-IHJlbW92ZQo+IGNhbGxiYWNrIHRvIHRoZSB2b2lkIHJldHVybmluZyB2YXJpYW50Lgo+IAo+IFNp
-Z25lZC1vZmYtYnk6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9u
-aXguZGU+CgpBY2tlZC1ieTogUm9nZXIgUXVhZHJvcyA8cm9nZXJxQGtlcm5lbC5vcmc+CgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Am 2023-03-31 09:45, schrieb Tudor Ambarus:
+> This method is described in JESD216 BFPT[SFDP_DWORD(16)], BIT(30) and
+> BIT(22). Move the method to core.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
+Reviewed-by: Michael Walle <michael@walle.cc>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
