@@ -4,83 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA919C76196
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Apr 2023 18:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11678C76196
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Apr 2023 18:38:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Vad0rTDD5ro97JfcxH1ERQHw2om2ZEM93tSBINvuvFE=; b=41WWxz1ccjf1XE
-	wQmdw3sgO1F0mxAheiy/bEEpD5DsJLSRnta8uGa7a/tngIGRn/RSzj2HuMPlq0eLgamw1vS8WpJV4
-	k30tFNIPE/LznIosRxxd3HUudM5KzCd1/xuNLutkQ8V4lopwMm0WxlgOLH/1bv2HTPPlNuuWnVjnY
-	YI9rPSs/SCS84xSSE78T813nadmZCvFSNuYyf/VQir1k0SZG8ewgzITfhQITm5S4e/aqi+QWSlKd2
-	Vaj/FlG+g/xiMAHO1evNFm0KPwR0TBdxIfscSTI/wqv9gYZzLjnnywJdxw4fO/toj8szHcZhOsx1E
-	f6HLlpLwFoDb7LepXFSA==;
+	List-Owner; bh=9Z+tXBWIxhY8h+BKwkH4afFbnxpT4If13H//OkkgT+0=; b=iq3BiQa8pb8ER/
+	yLwR04aog6bXzT+UeWioAeGZqdMVBililABXp/sR+gMtdP6b8ePqsxApQ2IaztkKyKpA77FmDILSY
+	U4E78yaa/H3tTovlD7x+eH1JQGUvXa1MJnEhPP+JVIcRlizbRrjvNhmSEXXVUmgTGajlcxLoksA7F
+	I/bxInQy5WBzpmOzFlc2LQHdUnHUPhChg2P4O+OZMIs8UYwEqmqyqYbJOfF3Gu5BAd06M57ggRANM
+	/Xp0tsoMT8HAe858SaA+3AvohZ91Op5XLCXhq/3Kpd/Z4iRLz6JUoJu/shVFOWvf8lcWFyzgMyPAl
+	8iXEJy2WdPoXXjTahTZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pjOUW-00G8c3-36;
-	Mon, 03 Apr 2023 18:01:16 +0000
-Received: from mail-ot1-f43.google.com ([209.85.210.43])
+	id 1pjP3v-00GFdz-2l;
+	Mon, 03 Apr 2023 18:37:51 +0000
+Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pjOUU-00G8aS-14;
-	Mon, 03 Apr 2023 18:01:15 +0000
-Received: by mail-ot1-f43.google.com with SMTP id a30-20020a9d3e1e000000b006a13f728172so12907195otd.3;
-        Mon, 03 Apr 2023 11:01:12 -0700 (PDT)
+	id 1pjP3s-00GFb7-2N
+	for linux-mtd@lists.infradead.org;
+	Mon, 03 Apr 2023 18:37:50 +0000
+Received: by mail-ed1-x529.google.com with SMTP id i5so121298463eda.0
+        for <linux-mtd@lists.infradead.org>; Mon, 03 Apr 2023 11:37:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680547064;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=woHQBzslpxQn8sWqqC0TN46wIMWpqjyxk4syqknSbnU=;
+        b=bFvBbagm8aL0eG1WpkUMpZ7aBLUx6PKp4lseK3TKYNSJLKFTvbdAL/UOpVLQNG7W80
+         6+T9nAIO+CFbrpm+FWmXGLv3iRlsx77POHfwFU7a9hg24cauINgniJsEiBKhlm45+9Zt
+         jdiSe4FQmK1ZDt9moJ7wCgte6na7VoYwXmxWvsdvyoUvAbqvjIPbDOZoIrfa+thb2oen
+         pJKuwQuT1MPNg+BYN/L+ZUa0yIcZL3V7ad9X2JSCYn+GbtBET4ExYrhzv/dGLWNKMrX0
+         aY8Wq8zP6tmnwHk2JvG3m5+v2BlZ5wTQPHX9GIHg7/lCDDWcpU5ePfRmEIyP882gWeQr
+         nULA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680544871;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n+2HyVBZpgIAk4A8UQ7TPXHjOeuEm1wa0e7V0v5arzY=;
-        b=AZ1ZXSP09566mjPnna9xKmngSoCzmLgssZNrsv+py2T+siFBSUAARN8W2Ga2uycsIN
-         Ky5/znZ4eWsQtIEvJOj+6QIyFXnJr1dSBXDIf310dfu8X7KA51i2pRnz7uAoTKdoF6dU
-         GOaOtdI22ueRqnWRfALtZuH+Lb2cyt4xqbQVSyJcfBHyb7GX/63VxawZYTqrXLpE7t5E
-         ZVPQsg48Wbew+ogA8rkBq2zdbV9nvsA6lmvIUD7oOmVuLEzEHxFBfdQkaiMKEZyVBnY4
-         a7vLp2XI8v/BI92Jq1WQhelmVDDTQ/51OeVg/izc0vWgSePVc98TCSnivL/pjnx8w1UI
-         wb/Q==
-X-Gm-Message-State: AAQBX9cC5zn3ALkjY2PvLkpAwvKmJDwNNwDKOmeC9Jzyw3nAnzfGQQzp
-	cptyQX5He1o/++elGOlUEw==
-X-Google-Smtp-Source: AKy350YbposOHjUqSKPLp1r0c5pZmS2vrYBOO8PRSBJMRbIsZ8g5xLashYmoygD9IWOODdA8MPrzFQ==
-X-Received: by 2002:a9d:63c5:0:b0:697:a381:a8f8 with SMTP id e5-20020a9d63c5000000b00697a381a8f8mr41722otl.3.1680544871315;
-        Mon, 03 Apr 2023 11:01:11 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id d11-20020a9d5e0b000000b006a3170fe3efsm2707835oti.27.2023.04.03.10.59.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Apr 2023 10:59:56 -0700 (PDT)
-Received: (nullmailer pid 1164679 invoked by uid 1000);
-	Mon, 03 Apr 2023 17:59:39 -0000
-Date: Mon, 3 Apr 2023 12:59:39 -0500
-From: Rob Herring <robh@kernel.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, soc@kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Russell King <linux@armlinux.org.uk>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	Bartosz Golaszewski <brgl@bgdev.pl>, Sebastian Reichel <sre@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
-	Marc Zyngier <maz@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH RFC 06/20] dt-bindings: clk: oxnas: remove obsolete
- bindings
-Message-ID: <20230403175939.GA1162106-robh@kernel.org>
-References: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
- <20230331-topic-oxnas-upstream-remove-v1-6-5bd58fd1dd1f@linaro.org>
+        d=1e100.net; s=20210112; t=1680547064;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=woHQBzslpxQn8sWqqC0TN46wIMWpqjyxk4syqknSbnU=;
+        b=OqAR8JD2c2w2Lm/HOKDpxbntvNkSnuBlvR94+n9z+UusqlASHECm081JX01ZCvHpiO
+         +7e4d+iKj6U9UWO1zHKXXpOI5Rt8NBPh99VosYYV8eAauC4Vmf5vrcL9dCqgd5ZoboJu
+         MVt1av8+0nMrgVHXcjKVWhHTTHi33zjEpyuQU529pCyAYdIe7r8IHjwYW/qwfRhDOrH9
+         w6xz5jF/P47TrmE5XVA79j1E03OI92ZF2PhQ4YThyNbOZmJBKHbE6uBXx+NtfZsO/1Kb
+         BtiZXB2uoT0yJa4lV+oc4gYJoFGMAUZRhZ+ZGf96EUvoLiEQjRCLymrISJ+H2jYkm9Bk
+         xAlw==
+X-Gm-Message-State: AAQBX9eWGCZsbSYJLl6JEPoqFkI9K7rWpw1EOMVaYhdWKTD3sJQoVxsV
+	RIovPKrlSKfhRUUcHovAWwxwcw==
+X-Google-Smtp-Source: AKy350aGwqQCodZpb/gzcGe1S8OGxNbhVHt1iC2+Dk0P5OGvd+2PK7IQlx/UQ3iZewsFT9iUWIorCA==
+X-Received: by 2002:a17:906:1c19:b0:92b:f118:ef32 with SMTP id k25-20020a1709061c1900b0092bf118ef32mr36754487ejg.48.1680547064210;
+        Mon, 03 Apr 2023 11:37:44 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:ae90:d80:1069:4805? ([2a02:810d:15c0:828:ae90:d80:1069:4805])
+        by smtp.gmail.com with ESMTPSA id b17-20020a170906491100b008e57b5e0ce9sm4826642ejq.108.2023.04.03.11.37.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Apr 2023 11:37:43 -0700 (PDT)
+Message-ID: <ba5cf9c5-50b2-b31b-eba4-d22eda2de0f3@linaro.org>
+Date: Mon, 3 Apr 2023 20:37:42 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230331-topic-oxnas-upstream-remove-v1-6-5bd58fd1dd1f@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH RFC 19/20] dt-bindings: interrupt-controller:
+ arm,versatile-fpga-irq: mark oxnas compatible as deprecated
+Content-Language: en-US
+To: Neil Armstrong <neil.armstrong@linaro.org>, Arnd Bergmann
+ <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, soc@kernel.org,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Russell King <linux@armlinux.org.uk>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Sebastian Reichel <sre@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Marc Zyngier <maz@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-gpio@vger.kernel.org,
+ linux-pm@vger.kernel.org
+References: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
+ <20230331-topic-oxnas-upstream-remove-v1-19-5bd58fd1dd1f@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230331-topic-oxnas-upstream-remove-v1-19-5bd58fd1dd1f@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230403_110114_367720_97366A15 
-X-CRM114-Status: GOOD (  11.02  )
+X-CRM114-CacheID: sfid-20230403_113748_769685_47E935F7 
+X-CRM114-Status: GOOD (  10.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,22 +116,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 31, 2023 at 10:34:44AM +0200, Neil Armstrong wrote:
+On 31/03/2023 10:34, Neil Armstrong wrote:
 > Due to lack of maintainance and stall of development for a few years now,
-
-I can't spell it either, but checkpatch tells me it is: maintenance
-
-> and since no new features will ever be added upstream, remove the
-> OX810 and OX820 clock bindings.
+> and since no new features will ever be added upstream, mark the
+> OX810 and OX820 IRQ compatible as deprecated.
 > 
 > Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 > ---
->  .../devicetree/bindings/clock/oxnas,stdclk.txt     | 28 ----------------------
->  1 file changed, 28 deletions(-)
 
-Always great to see fewer bindings. 
 
-Rob
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
