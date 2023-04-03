@@ -4,102 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AFC0C7619A
-	for <linux-mtd@archiver.kernel.org>; Sun,  2 Apr 2023 10:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D17CC7619A
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Apr 2023 02:04:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0NOCx0jQKhWREGHYC1yUZscqW52Y6vgBMrFGYgj1Jpk=; b=1odNblvn2kB7iW
-	DI1Mr1COAUoyVrnY3jOnW1+KvrqLHEHTrjRnnF73zeKfAvaKbi1hQU+mkitqRu5wXAv3c9eq9MLui
-	54K/rHfxBc+vXPjUnsS96SSidDHRr1XD7qRx8yKr1/tHyWtVN4fWMuJqAi36Lfz4J8vHwkfpHwRn3
-	zvSty6w0QYrivuWpbuKvSyzY+NbxGrNcYnLvYfj12NpCKF6d1hyvAr/XMQpo0LJKsc3YBPMDDRRcu
-	P0Q6+HgiDgfp0mj/336eA1slZwk40kTM2HnlsDnRlskte/2g3Sn0XdSNcZhOkoB/cBCUrRd4Xfoni
-	P/0D4+sAvOet/N/hiUOQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=On4/n/QdGozMZiG7KnaHQ5dBGO9gL8azGdWlOUwrLug=; b=Lv2QvKN2IpsfLp
+	sFdzyjegu2NRqsFnT6kDgi7/MTT5VdR5rBEr4Cg5dRT0mPXIcZgsfyIwIy90sXpgMbDUDstz6I9Qn
+	DbSsVVCMFz8/HIK4B1wIHeND1vCEiX4uFx1KfM3+vCuwiTPq9NdvHQzqKAphT/h/iEdHaw7eiIE1Y
+	NStibOK8FRF9fnN4H8JDXCT7TwswtX9izCVeLmji7LHR3IGsUoUIgL+h53MItYE1+d+PsfUSyOCuk
+	lwtHMWBfcO9wcWuEokZnI3x1C4L0ZtrgfyGKW4tF54FZIn5HarYgRbimz47t/1NeHiXbc/AV8GWA1
+	+F2WRfIG9JANPHBeq4Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1piuq3-00CGBi-0W;
-	Sun, 02 Apr 2023 10:21:31 +0000
-Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
+	id 1pj9Yl-00Du5N-1S;
+	Mon, 03 Apr 2023 02:04:39 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1piupz-00CGAF-24
+	id 1pj9Yh-00Du4G-0Z
 	for linux-mtd@lists.infradead.org;
-	Sun, 02 Apr 2023 10:21:28 +0000
-Received: by mail-ed1-x52c.google.com with SMTP id x3so106342583edb.10
-        for <linux-mtd@lists.infradead.org>; Sun, 02 Apr 2023 03:21:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680430886;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0dHtm6rEwdmIURaK6uwg13/SivrIWW9+hRVkQN5p4kM=;
-        b=hWRZFnUzy/AO/MrrHGptqieSYv8r5ivl++6jYZxkWvmMxEye8miSsugXiCJBi5sqvL
-         s719hTzx6xAsRH6O+8+R9ZEN4ZJOlMD6r2NdJ32bzEnaZmYynk5Oc2nlmJmRHXdUSkfQ
-         qsbxUVvKFP7ACEIsS4RBi2a3SONFntKaxPE5/QMz4WxQD3+uAHQJO6pFs4XTeMC3pSGT
-         onjtT+bDjrtAZx9GKQ5NBHQZEDwIaZRLJaOvD/2SIFP+Dhx0u02i4Uvx3y4spp4V8PRL
-         g2AylIyMAALt7BOVeMXKB/5gE8oSD9J36tN636+e0ps1uHv2/DxBdfi/DCpIQ6LBfhEC
-         B+Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680430886;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0dHtm6rEwdmIURaK6uwg13/SivrIWW9+hRVkQN5p4kM=;
-        b=AYQECw5AoPct0tg0+2QR/K4UK8va9gnk9xbGFy3SThVbx3uw8gEBpdtRHuuqZoZC7A
-         M7vi5eJdqHVzOpL1CxwqOyvefjCaRlLmSycC0V4SrQfKC5VL8McDDyDdfQnyJ7s26Ryw
-         N1DdKzuM+kISB0y8p4wWMsiNKAm4NgIIHwkH5FZg067saBFfEzFZZOSbRkBXTsXv9yKb
-         spmWG1lkinh7C+nIAZiR8eADcm/O/G/29Dz2Za5X7SNT30gfxXwb+hPfm+on6hxKjgyp
-         GcMZSynhnM18rFSC/NL0uMzbFphaC+Pj7fMwWKNvQz/GZ+p+fzdRbkuyDiHIe0kuFgPj
-         HNTg==
-X-Gm-Message-State: AAQBX9cNf7U81n9/JmfUeM9PjAXjR2q6lnbiSwJjgvUOS4WM8IJFaE4X
-	G2rYEBlPXyI7h/Ur7Q265oVbjg==
-X-Google-Smtp-Source: AKy350b7C1SmwO8vWgBCIzK+/qLm6HfLt8cxKJ4Flko7Ti/4JiMy1EgB0vrkdSSZLLB43zm7wiLJkQ==
-X-Received: by 2002:a17:906:3da:b0:931:95a1:a05a with SMTP id c26-20020a17090603da00b0093195a1a05amr33727013eja.62.1680430885727;
-        Sun, 02 Apr 2023 03:21:25 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:7f7f:6a30:7a20:94d5? ([2a02:810d:15c0:828:7f7f:6a30:7a20:94d5])
-        by smtp.gmail.com with ESMTPSA id cw1-20020a170906c78100b0093de5b42856sm3055582ejb.119.2023.04.02.03.21.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Apr 2023 03:21:25 -0700 (PDT)
-Message-ID: <b207a77f-18ac-0da5-e95f-bd38fc1f0d11@linaro.org>
-Date: Sun, 2 Apr 2023 12:21:23 +0200
+	Mon, 03 Apr 2023 02:04:37 +0000
+Received: from dggpemm100009.china.huawei.com (unknown [172.30.72.56])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4PqYyP1jsMzSq72
+	for <linux-mtd@lists.infradead.org>; Mon,  3 Apr 2023 10:00:45 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpemm100009.china.huawei.com
+ (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 3 Apr
+ 2023 10:04:27 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Two bug fix commit fixes in the ubi_resize_volume() were fixed by a patch in the mailing list
+Date: Mon, 3 Apr 2023 10:04:02 +0800
+Message-ID: <20230403020402.2261218-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH RFC 01/20] ARM: dts: oxnas: remove obsolete device tree
- files
-Content-Language: en-US
-To: Neil Armstrong <neil.armstrong@linaro.org>, Arnd Bergmann
- <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, soc@kernel.org,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Russell King <linux@armlinux.org.uk>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Sebastian Reichel <sre@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Marc Zyngier <maz@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-gpio@vger.kernel.org,
- linux-pm@vger.kernel.org
-References: <20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org>
- <20230331-topic-oxnas-upstream-remove-v1-1-5bd58fd1dd1f@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230331-topic-oxnas-upstream-remove-v1-1-5bd58fd1dd1f@linaro.org>
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm100009.china.huawei.com (7.185.36.113)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230402_032127_679649_80B03FA5 
-X-CRM114-Status: GOOD (  11.70  )
+X-CRM114-CacheID: sfid-20230402_190435_398236_A5E7086C 
+X-CRM114-Status: UNSURE (   6.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,22 +65,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 31/03/2023 10:34, Neil Armstrong wrote:
-> Due to lack of maintainance and stall of development for a few years now,
-> and since no new features will ever be added upstream, remove support
-> for OX810 and OX820 devices.
+Hi
 
-Lack of development and new features are not really a reasons for
-platform removal. Platform can stay in decent shape for many years,
-without new features.
+    Mainline fix commit 1e591ea072df ("ubi: Fix unreferenced object reported by kmemleak in ubi_resize_volume()")
 
-Lack of maintenance could be a reason, but first we usually make
-platform orphaned to give community a chance. The best reason is lack of
-users and any relevance, but your commit msg does not focus on that.
+and 9af31d6ec1a4 ("ubi: Fix use-after-free when volume resizing failed")  involve fixing memory security issues, which
 
-Best regards,
-Krzysztof
+were fixed by a patch [1] ("ubi: fix slab-out-of-bounds in ubi_eba_get_ldesc+0xfb/0x130") that was on the mailing list
 
+in 2022. In addition to fixing the race issue, I think this fix keeping old_eba_tbl might be a better solution to the UAF
+
+problem.
+
+
+    I'd like to know why patch[1] didn't get into the mainline.
+
+[1] http://patchwork.ozlabs.org/project/linux-mtd/patch/20220124024056.1996763-1-guoxuenan@huawei.com/
+
+Best Regards,
+
+ZhaoLong Wang
 
 ______________________________________________________
 Linux MTD discussion mailing list
