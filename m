@@ -4,121 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 799C6C7618D
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 09:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 746C0C76196
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 10:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PP7XuhBNGHaQy1T+6aNTiXf/ZiP9UkpOyBhPOK8hphU=; b=NN9ilKLJe27ud3
-	HIMKUy78BdxHUSsq7U1f5D5ya+YbpzqqyEH5u5Bo3O3mIs6PtVpJs/qs+VRmxICnUZKjemivBAv7Q
-	f80Jg010gzk9VvuZ3ckx73WB65nkUsYFLNQDZlC1vQ5iW2SZyydH0yBcp9Gm4+l51h3YRjjBZUfb2
-	iwEP8Wyg2JGbR1xEUwrD1sO73f4zWl8hAS0Cj9UF2P1bh0qDcM1xKWpaA9ZdRfN+OvmIsqL1qfpEi
-	ahjN5vaijg7TWJspzp/5VxD4Gk/Rsehl1b9ZboSJtwTfv+ejRPveDo0GnPVaQ4F/POHBgTG3yIraI
-	2EQhuv8F4ld6VukBuEqg==;
+	List-Owner; bh=6Xr5FPZHMl6UAXCqqboHXofGWJminIKCsLcQge7e1Xo=; b=qhzleohjE45oMR
+	MlLHbgYdEfStJEG3Wyd4kgLw2KEXgM1Y/KYF9A+vBezYFDccGteeNaUSFuLuHZycwSIyYv0OQQfqy
+	kmeS8+E4PkZsI8cGXvP+0VOKUswswJeWlG4c2Ll+Ru3bDtHGkBd39wukoi5PRP8dCIRycUFL1dZtp
+	Dbxl+AAO2fGr+CttfnnlXNguuvM/1vbNi2kNgUJqW6tsDivg9yWOIgo3/sXmvX3ii+3fN/Nsc7dAe
+	FgFLpe66xRfht20NSX6lW6obj3ypY8ZTU6sZE3azQ4p991X1wa9b13DVeECPWqPAf+DVWT5ATooyE
+	QZmoU/0nS+XaX/8DSzNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkLbh-006pSz-1N;
-	Thu, 06 Apr 2023 09:08:37 +0000
-Received: from mail-tyzapc01on2071b.outbound.protection.outlook.com ([2a01:111:f403:704b::71b] helo=APC01-TYZ-obe.outbound.protection.outlook.com)
+	id 1pkN6p-0075cs-3D;
+	Thu, 06 Apr 2023 10:44:52 +0000
+Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkLbe-006pQZ-1h
+	id 1pkN6n-0075cY-1y
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Apr 2023 09:08:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U9YyCxr4m8wvaNz2aMqzg164bWqcxVUmJUrt56gw+zH2g9DCVR0se7bhTo1woVboiG+buqCPjm+kWi+D4PoMjcrbY1SUBJqSEo2mHa8FjB6eW/hUvKew+xEpmegQpGWZGvBuzIVEPVTvYOdtwaH0HqFC1S6DJXSSJANeW2BO51+LuDPVJ9tbE/QyB7zbpR1rVOm1Kwed902vZm1+7FINlKiL6tOd3p71e1PZjgTpJhy390SZJ02vEBLtJFy+pZpbXF4HvMI4LHp6As/+zmMkrlMoalwo3X/yb/B4Dvit21HHo1ka6rtmQCftGg4RYwCBZ+SXhdWwnxC1k0qw9G2QsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3gNkgn5Dhn7nDeVCPPldJ99/DwNjrqWATiDop0xHxys=;
- b=cuT6yrFhCX7l8kASxCEFbY8ZpmZm1umKONvQwweYH9Xe2OXboSHskj+hnewoXFq14a2gZy4puvw070/l+QjfiqHNBTmKZrHuOtO52p0FLaZD6rDuifVzhc6E/ptqafEtwch9a7A+9fttF6qu+ebP6A6IkEuBvp5ASuP5Eh4dnE7gr9IgwDsmdDeSM5OetZvs3VFIKW2Y+W6aTrd8JVkAErhlV9DNdpBFixhGCEEaMAEjQdGD81DMhwmkMURlCR+gXgYp3URbwoZMQ3Do7APX2jQLcoIoRFc4mllmpAKFrCp3vLDgjbfu1XK8SKWpC1es6L54QNLpv+zQOX8IV469FQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3gNkgn5Dhn7nDeVCPPldJ99/DwNjrqWATiDop0xHxys=;
- b=evLyFQiRLvL4RMjh54MV/g0Nby27FNXQ+yWK0BUxjQqYmxBEaw8CyMHZ85EHfTIGYOn85d/WG9WDyuRCPGQGg6QCSeJQMekB1+tIQXp0w4s//zkj0LTYscQS5erQseJfJV7ZVpUomaZlR9Q9mybsU6WAs5OgpaIyL0N28jfexdSWPRRWwT64v41g6pWwCLZ2d8/jwyE0ukcqw7+penFLOAcIGQSe4soeni64tqhzt+k1EbvDG2W6ELwm7AtT+HwNkymW3ZZHAwzduc6fjmIldSrbsSuE5zeGkI9Jbf7TQxo4bbawC1m2vKERCQ0VgOmkubeV8Q/BKvYfx3+phQ1kiA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB5275.apcprd06.prod.outlook.com (2603:1096:400:1f5::6)
- by SEYPR06MB5086.apcprd06.prod.outlook.com (2603:1096:101:56::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.33; Thu, 6 Apr
- 2023 09:08:23 +0000
-Received: from TYZPR06MB5275.apcprd06.prod.outlook.com
- ([fe80::16db:8a6e:6861:4bb]) by TYZPR06MB5275.apcprd06.prod.outlook.com
- ([fe80::16db:8a6e:6861:4bb%5]) with mapi id 15.20.6277.031; Thu, 6 Apr 2023
- 09:08:23 +0000
-From: Yangtao Li <frank.li@vivo.com>
-To: frank.li@vivo.com,
-	chengzhihao1@huawei.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	richard@nod.at
-Subject: Re: [PATCH] ubifs: remove unnecessary kobject_del()
-Date: Thu,  6 Apr 2023 17:08:13 +0800
-Message-Id: <20230406090813.24111-1-frank.li@vivo.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230405130747.66006-1-frank.li@vivo.com>
-References: <20230405130747.66006-1-frank.li@vivo.com>
-X-ClientProxiedBy: SG2PR04CA0180.apcprd04.prod.outlook.com
- (2603:1096:4:14::18) To TYZPR06MB5275.apcprd06.prod.outlook.com
- (2603:1096:400:1f5::6)
+	Thu, 06 Apr 2023 10:44:51 +0000
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5047074939fso501739a12.1
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2023 03:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680777887;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7aUiM3lYhDJiWtiEdv+rzgumPlUye3+RKV3tDFGDAKw=;
+        b=KQBEg4lhfx7OHDmdBaUrSMbBDjAd+SG9jal6g5dnyCSGTAspIll33rp/qUdCOwOMM2
+         VT2wVchjaj2MhGMvjEJL0Z7Gykff3ec6wU3MU9oaXrxIoBTkSmiiEd56Bt7Qfc0NqZJ3
+         uRv1nfcO9FUWb7+lKf2ROtwCjakyKn0gu/5E2DPlrJdr/uhNXr2aCWpU4bJnG+mQcEPS
+         Nkot3gjVORZzvBpGQvw5Mo41fCX+4cg8DKQCvpSfYpS+s0ydCdmaFROEaxt6gTgmvDcS
+         Gej39H/dUHh2y8RtZTLXjvntULgBGRJUWBpb5GkVcqUy6HqZfB+1eRQuu3QC619LVMeK
+         ephQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680777887;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7aUiM3lYhDJiWtiEdv+rzgumPlUye3+RKV3tDFGDAKw=;
+        b=eOCd5dQD3n2K2OyoOnIeLaxt7GZ7h+zFXgefgQC4jPq06HjezhFxM4tdBJM7C9HVUG
+         KGEbMqCz7X68sqQcxLGzbMkJA3F0fr80ldcOftH5DqilfMV/+Cfhaz+V+bosbrIxYNGk
+         GUidSw3uvTWwsFyhBg3vfZ+MQ9mlRCAl3ms1CAtE/0doRuV92iZ1yL6Vog59ezy1bJll
+         giWjdPlU16thkZypFIVpt3Ah9bkpMfqG76MjW5jnYqYON44zcAMsEtAJpDKpo14x/QiL
+         xXQ89B1+rMIz3bJM9d0ThRxA69AIN00JrJdy/n9NaurrazqWrNFkBY1DV7I6qPdMjsNF
+         OpJw==
+X-Gm-Message-State: AAQBX9coCHCfqOSlGj5mSQBgc3U4E8QsvsELlKGdLl3EKGX/oZdda1Vr
+	/qQLxFnTOc6yMz76oyDbWZe35w==
+X-Google-Smtp-Source: AKy350ab+tV41l14U4n4Yiz8sGq4yTSdd7dj650K9gvRXYDRCrODoBJEo50F5p5PVSoOdyEb/REijA==
+X-Received: by 2002:a05:6402:3586:b0:504:7082:8abe with SMTP id y6-20020a056402358600b0050470828abemr438472edc.2.1680777886947;
+        Thu, 06 Apr 2023 03:44:46 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.91])
+        by smtp.gmail.com with ESMTPSA id 24-20020a508e18000000b005023a4b20dfsm595357edw.2.2023.04.06.03.44.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Apr 2023 03:44:46 -0700 (PDT)
+Message-ID: <248c1367-b561-1caa-431c-fdf1ebd78d36@linaro.org>
+Date: Thu, 6 Apr 2023 11:44:45 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR06MB5275:EE_|SEYPR06MB5086:EE_
-X-MS-Office365-Filtering-Correlation-Id: 29561f3c-c3ea-4f55-9b4c-08db367e791f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	zOkRkxB5XqRAhPVr7YMZuV7woj8S5CMzJ4clY1ZRuTHu91LpnBj1eGMbjkxS7nVn+Vc47O8kTvu7FIzlBYNqwWsnU1Ya17ekp3Ia6QH54z1VgtdaD7mMU84qJjSG428Q9pDTKvYCOJNPjl5Pzs3gAfQ2ARTYlgin2nO7iRvSgFNpGHiRvnK9BVl8rVbxf/DoZcFVpb7Mw5b35a3JdFeY9PUROhooqB+ZW4u2lwi9FRxgjqq6VoE9/VsUKwilvuY8G+j+Uyeud1gZKhah7p/3syZN2+865tuwRrcn2jMgt3yuGFX8+PgEQ5X+KXJ2ailbEKcjyU5jxIuWBScW/JoKJ0dM8pKdmKON99R7UyVDvAt0bHy0JOjF/QW1/Ds8eFNPoeZQMsgJl8/2zsNnmfBcEdm/zDl8yQzoM0BkSPiVxCmeGBISIBPFXgxcjH8JVFEtnCVD8PjQ4Xk+jmSzA4+5Qy9ZLwFzZe8Q9q9e0FgRuxlICFHTLkwKe7K/j9D/GKuxo4rkkAYl6TbdvrtKHTK6PRntC1tM6GpAhjXjR1S+Kmk2+uQy9vwXORzbFFSuaTTv29uw1j2fWHpe5LbwhMYuijwZeLD2CY+01KZAEaAh2LsYRljjMfrxVG9Je+cTZQPU
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB5275.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(396003)(346002)(136003)(366004)(451199021)(52116002)(26005)(6666004)(66946007)(36756003)(6506007)(2616005)(316002)(1076003)(4326008)(41300700001)(478600001)(8676002)(38100700002)(6486002)(66556008)(66476007)(38350700002)(6512007)(558084003)(2906002)(86362001)(5660300002)(8936002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?I50nUcYcR3uomZdTsop5yG8/PdVvs1Qz1CbGjw5VGH5dioqZl5sEpZ81ds2X?=
- =?us-ascii?Q?IaUzb/BTEF8Mr/P6UGi03ZVzjkYMzPZtwKEhBjDbCHXrmac42F8w+j433l4K?=
- =?us-ascii?Q?5dEKltSc3gMvwv+4uwX/Ubkjbvjmax3/3X73RDptBvWVvycURrRfRQdL3H0v?=
- =?us-ascii?Q?a9UGJzmDkc1g1PD7Mf1lTggFRP6Zsz+hnRUmhxlFJI4MEoEHQkNJbF3NUpdc?=
- =?us-ascii?Q?dMHhgU/ItUic1OwegAbdn6Ru4gUPW0xBjqoW1TSOd863KgoFw1E0g4IAjC6B?=
- =?us-ascii?Q?lOLkny6hF9YRCGyUQEXSQu32GjKybsEs1HmN9JVjrDsTkjr/LZjjREMtU/Z9?=
- =?us-ascii?Q?RrC9IM8viPk5MuPmzsUiSF4o4q21uHjVs/QFB64d0NAWGqeRx63mn8d1vEo7?=
- =?us-ascii?Q?/yZGeZFl+nVXiw59MqwLkMCIUcPmxhLsymYt4mFFNVMEJNDQhgTpFA4gUUjl?=
- =?us-ascii?Q?mL4rm28H+OVdhXMwWgyo83+9kcjzHa4Cc9cZQcGTotiEbeAqI0dU5wpKp04f?=
- =?us-ascii?Q?sH7yGYlyXK0EQQBnLrzJpNOgVOw6FLFTsHmnr6BM5DUGXtp5NCDt7rvDbgHR?=
- =?us-ascii?Q?aXLTRiET7ZGV6xK2gQwA7/kuATZOR2rylz2o37OG3cPkGdYg7fmL/5m2MnJQ?=
- =?us-ascii?Q?YGbLxpJdSzjEwYGcDqW68O+HqATi966mXTeQdObtH2LeG6USdXVUSrGAVWJC?=
- =?us-ascii?Q?lWZFzL2SsSX4P0ArXrQsbTA3nhIoiFgfIVlDWvh58GcJAjaVmIWKJYU7UHsw?=
- =?us-ascii?Q?IG/WEGHLESAo2KwApFvUX3guh1xuTnMxMDjnKa4E5utNa0u1z4HUwuXXBXdB?=
- =?us-ascii?Q?FpXxQWAbaWYbwDIrctKsLGWuS+fg7PtWn5nhaxsBVu4hS8+D7cXz71zSK1Cc?=
- =?us-ascii?Q?JCsZ9n1KGgC7+Nj3YkvROu75qMt1JDdvAy/kluVemkORYpkAy90miZFq+fYU?=
- =?us-ascii?Q?5F577QrQ1FhEc52J0MA3tf10zqw0kHk64q6Dm6ebDrI7N13bPyr9nAhSjPHh?=
- =?us-ascii?Q?FwXqLM0vsbBKzyNoQN/PwK9MtpnMa8NSpWADlj0wdbYskFLubfIbs4LE5AuG?=
- =?us-ascii?Q?SH9pYAH5avr1As/qKiJanlEHM6PEMNrx1B9kuRiyv3lIQPXhDU2UPQV7VTaV?=
- =?us-ascii?Q?jpjMEnL83Hhcu1AMCST5gRy/CPpd2bQDx/Z0I3BTxnMVBR4txgFtNPtxEHBn?=
- =?us-ascii?Q?WH4iZHoF2TGMbJ/LUzrBIdtzFMVRtI62DyosmQjt/QoD9cNm61o6abjzffnT?=
- =?us-ascii?Q?jNjkM97mYwVo6y4ohbNF5K2qIsNX8QTxyn8nZGnjYn85UYpDcJmk3+iNRFGv?=
- =?us-ascii?Q?UId0KGxYN9+0R9GAer3o7ecYrrC1GSVeBpt1XGzMNfT9pKmsteW4B70BJKRk?=
- =?us-ascii?Q?jVRh3AWWS9vZ4X5MKQ55d6ohjna39EN831eYpxaPGPRpqZgQ5IandTOjSINx?=
- =?us-ascii?Q?yko+zg4focpv900Idr3y/BMCc/tBv5mUHCqzmgfLzHrpjVt+ij3Z6yTeq6zD?=
- =?us-ascii?Q?5esZiVNaBCrg12DCicHUFsXgm6c1GY4K3C9zJawmFb/xnmpOPZm9Wglqcvv8?=
- =?us-ascii?Q?Ge7HU0zy87At4Jg15PDfPe/UdTK8gIJxLCoAL+bY?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29561f3c-c3ea-4f55-9b4c-08db367e791f
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB5275.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2023 09:08:23.2170
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Pj5fkt9bMB2z9423ukN4/NQtOkCeCy69bcGabkFvsi3JRkxbWtvLdHxgBC/5UtS6HjcQ7UblIPWC+DufTCgQ4Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB5086
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v3 4/8] mtd: spi-nor: sfdp: Add support for SCCR map for
+ multi-chip device
+Content-Language: en-US
+To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
+Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, d-gole@ti.com, Bacem.Daassi@infineon.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <cover.1680749577.git.Takahiro.Kuwano@infineon.com>
+ <89b7eb9508b28a48c4d0a8b1ef46983202a0d360.1680749578.git.Takahiro.Kuwano@infineon.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <89b7eb9508b28a48c4d0a8b1ef46983202a0d360.1680749578.git.Takahiro.Kuwano@infineon.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230406_020834_571309_FD3C4CD9 
-X-CRM114-Status: UNSURE (   5.03  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230406_034449_720218_E0F9147F 
+X-CRM114-Status: GOOD (  24.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -135,13 +97,113 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-> I think we should still reserve the 'redundant' kobject_del(),
-> removing it won't bring any performance improvement.
 
-Since it's redundant, why not to remove it.
 
-Thx,
-Yangtao
+On 4/6/23 07:18, tkuw584924@gmail.com wrote:
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> 
+> SCCR map for multi-chip devices contains the number of additional dice in
+> the device and register offset values for each additional dice.
+> 
+> spi_nor_parse_sccr_mc() is added to determine the number of dice and
+> volatile register offset for each die. The volatile register offset table
+> may already be allocated and contains offset value for die-0 via SCCR map
+> parse. So, we should use devm_krealloc() to expand the table with
+> preserving die-0 offset.
+> 
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> ---
+>  drivers/mtd/spi-nor/sfdp.c | 73 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> index 9d43e18d3770..00a40bd8aa1e 100644
+> --- a/drivers/mtd/spi-nor/sfdp.c
+> +++ b/drivers/mtd/spi-nor/sfdp.c
+> @@ -26,6 +26,11 @@
+>  					 * Status, Control and Configuration
+>  					 * Register Map.
+>  					 */
+> +#define SFDP_SCCR_MAP_MC_ID	0xff88	/*
+> +					 * Status, Control and Configuration
+> +					 * Register Map Offsets for Multi-Chip
+> +					 * SPI Memory Devices.
+> +					 */
+>  
+>  #define SFDP_SIGNATURE		0x50444653U
+>  
+> @@ -1264,6 +1269,70 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
+>  	return ret;
+>  }
+>  
+> +#define SCCR_MC_MAX_DICE		255
+> +
+> +/**
+> + * spi_nor_parse_sccr_mc() - Parse the Status, Control and Configuration
+> + *                           Register Map Offsets for Multi-Chip SPI Memory
+> + *                           Devices.
+> + * @nor:		pointer to a 'struct spi_nor'
+> + * @sccr_mc_header:	pointer to the 'struct sfdp_parameter_header' describing
+> + *			the SCCR Map offsets table length and version.
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +static int spi_nor_parse_sccr_mc(struct spi_nor *nor,
+> +				 const struct sfdp_parameter_header *sccr_mc_header)
+> +{
+> +	struct spi_nor_flash_parameter *params = nor->params;
+> +	u32 *dwords, addr;
+> +	u8 i, n_dice;
+> +	size_t len;
+> +	int ret;
+> +
+> +	len = sccr_mc_header->length * sizeof(*dwords);
+> +	dwords = kmalloc(len, GFP_KERNEL);
+> +	if (!dwords)
+> +		return -ENOMEM;
+> +
+> +	addr = SFDP_PARAM_HEADER_PTP(sccr_mc_header);
+> +	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
+> +	if (ret)
+> +		goto out;
+> +
+> +	le32_to_cpu_array(dwords, sccr_mc_header->length);
+> +
+> +	/*
+> +	 * Pair of DOWRDs (volatile and non-volatile register offsets) per
+> +	 * additional die. Hence, length = 2 * (number of additional dice).
+> +	 */
+> +	n_dice = 1 + sccr_mc_header->length / 2;
+> +	if (params->n_dice > SCCR_MC_MAX_DICE) {
+
+smatch warnings:
+drivers/mtd/spi-nor/sfdp.c:1310 spi_nor_parse_sccr_mc() warn: impossible
+condition '(params->n_dice > 255) => (0-255 > 255)'
+
+declaring the local variable n_dice as unsigned int should solve the
+problem.
+
+> +		dev_dbg(nor->dev, "Improbable number of dice defined in SCCR MC table, use one die.\n");
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	/* Address offset for volatile registers of additional dice */
+> +	params->vreg_offset =
+> +			devm_krealloc(nor->dev, params->vreg_offset,
+> +				      n_dice * sizeof(*dwords),
+> +				      GFP_KERNEL);
+> +	if (!params->vreg_offset) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	for (i = 1; i < n_dice; i++)
+> +		params->vreg_offset[i] = dwords[SFDP_DWORD(i) * 2];
+> +
+> +	params->n_dice = n_dice;
+
+we then truncate it to u8, which is fine.
 
 ______________________________________________________
 Linux MTD discussion mailing list
