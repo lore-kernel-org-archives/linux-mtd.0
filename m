@@ -4,87 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2583C76196
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 07:33:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF3EC77B6C
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 07:57:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZOPYeFL1qPk03hiVYCuYJPqQ1gwJm38I+b+OG3qH+mM=; b=r3Erp49wnh7QJs
-	sH71bkhBm3hJ+uUwpMKVqS3HPQuDszPp3pFUisQ/tF1BoRB65VN56U/DW4ZGRMRPCbLg8sPu3ObTW
-	8gjF56GH4L1Xxe/Exo2Wt87Cw5iLdxqAovqp2ImYeqGMmBP16vmA1Ave1X1h2kjf+Rp11GYbsNncM
-	V3ClnEAR/fGkwPDmfjJqYIV15bEIqxJ03DW1WOPpPP4XOA0s9vQBrfVeuZiOgPWqIl3GDKmCvqqlU
-	+4s2lAeGpLWY95mTe9EI2DK4IHM3vvVlHykVhg1oEBgIRfvk5e2yK2/Y6NuhLPaWZG8wA2u/xHF1m
-	8RY/G2U9lBVoajJe6R1g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3y8mZ0DfO2MFGMLjkax7C+bAQL34K3zkMOIG2r1quCU=; b=lR1Wb6sbu5cy2P
+	2etvp4g2VI8UxDum3zYWQG10lfHAUKR/+cybcSY6rebmLWUmkOoDnCJjjjw5b1iFChrDB6/roqy9o
+	N9woDUCXJktQMyyMMfe6zfOA1hejF2bwmmZtErh2YERp8oWU1dGNrR2DxYf8yju0mkl9g57oR6g5r
+	tZJo1FftUTCx3egIMu969Rook7V7LwsXodNYRelHaNTX0H3EBpACcuAFdH5rwpYtgk+CBsMlh/E2n
+	IvlqidXXZPdEUOnkLi2i+D2HnAyByu3rUpFxH/sek4OR5dkCT+brs+Jt7Rl8CxGRCiJJTbMHOexvX
+	LFS3GczB9hE2LCSJQtsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkK6n-006dX1-2G;
-	Thu, 06 Apr 2023 07:32:37 +0000
-Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
+	id 1pkKTu-006g5v-2d;
+	Thu, 06 Apr 2023 07:56:30 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkIy9-006T5c-1G
+	id 1pkKTt-006g5l-3C
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 06 Apr 2023 07:56:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:Subject:To:From:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=hFxZwVw4rIL+JwfEOGI47p+fdoVOAeqVswP6NWoHSHQ=; b=F5/B0vpYwiehx1ZNNVzaqvlAQ4
+	gsyxRSv8vrmr907PN7mqzM5LxIt1TW8um7cfVa2X46JSrfaVt9/FRghthpib495dQ+0DM1AB0d8cT
+	4LF5ed/kdA03AKM/aCCteL8bA2wwQ4ux4XXkrPKYhc9yVCTb+XMIoDzl+5Og5vtm/E0JPn2tIpMhY
+	kIhqW5mQpSdQG1t7zTBO6r3nYg9FghcNo3l9jx2EoUMqUgn+N20byk8w2Ygr0EL/m0ftWo1aT2wFP
+	aGyRXIOYzbYJ3A6MQzInt3Y35NqG1vL2BRTFDPWsqIG3caTFQMupvVNflNt2KSGwSA7no0trRjnMC
+	iJayho1g==;
+Received: from mail.feshiecree.pl ([89.40.114.103])
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1pkKTp-00ASla-1U
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Apr 2023 06:19:40 +0000
-Received: by mail-pf1-x435.google.com with SMTP id q20so13967101pfs.2
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Apr 2023 23:19:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680761974;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oSP3he235YJq+sebkYxRm/FPH06fgXP7LoGZfMYU9z0=;
-        b=dK7WMfOwD/Ws1ShwtnMKsOqkfQmtyFzz/w7xq5Imd2bhA/50H0A7//HThofQIavf5u
-         xKZeVsSQ8RdNG75/KioWwPnkcva3h/6cW4vGHuXQYYVRN8D0WP4Bm199BzH/ZwBgimif
-         A5mMa8axs6QHoHpzmPQI++DGvWKbxd6TtcdEFkZomxWphUKtwyJtCJcadUG91R3gvw8c
-         Aa/oKVKfQhQi3ZsrCnxx1iwrMANLh+IdAGqwC+sakqNXRbcx1oPH3qFxPbmXbOLJus9c
-         Xe/RSre3sBy8JaC+QNlLBs3RbznKNMLh+4f406t3WrxeGmQ7SXU1Q9LAqwypAih3cKD7
-         Rd0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680761974;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oSP3he235YJq+sebkYxRm/FPH06fgXP7LoGZfMYU9z0=;
-        b=UxYTe/FtwwEt7a9LLFbK1TjbJzNWZdjVYyb3U2HTqiV5z5/lBtfwFNt9oU70r5Na3S
-         QZ456OnfJPRP8lLXtqLoaiEobLO/96dHz0dvnsmizYEZSE02dkxYPDvAPF8OVGvKDDAh
-         2BWmRqUYhbIM+eBpPX2jt03uabMyBo4Y+kezVfQWcMmftp6GV8cLlz7lTHTSSiv0slGh
-         0qNWzSrVgp78LL633YmEru8gEsirh+F+ZOS27UV9S7Z8BzAK8vHEwn+qnsX9CGMLJbRJ
-         m3f+GCdDWjDIPc+3f8y9mNPseOCiulb7f8IcInfzDkNJbcKKJ51soBXDW3WvhFH8+9D8
-         0VTg==
-X-Gm-Message-State: AAQBX9fajKrG9YESx8cuJ7cZpS/Janydmq6JbmiCsoRL3YmKGgkKsDKY
-	xLo7RbGDCGWQtrNp9lgb/HMw4M6hkrICSg==
-X-Google-Smtp-Source: AKy350aTipPoOBW87vZd+xBXbeoJ0yOxvDx71criMrHisXLHooVKS3xJvEGJ3NsQFrGxIUeqO+5ULA==
-X-Received: by 2002:a62:1bc3:0:b0:61d:e10f:4e70 with SMTP id b186-20020a621bc3000000b0061de10f4e70mr7795400pfb.0.1680761974297;
-        Wed, 05 Apr 2023 23:19:34 -0700 (PDT)
-Received: from ISCN5CG2520RPD.infineon.com (sp49-98-38-119.msd.spmode.ne.jp. [49.98.38.119])
-        by smtp.gmail.com with ESMTPSA id 18-20020aa79152000000b0062dbafd2980sm450542pfi.65.2023.04.05.23.19.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 23:19:34 -0700 (PDT)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	d-gole@ti.com,
-	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v3 4/8] mtd: spi-nor: sfdp: Add support for SCCR map for multi-chip device
-Date: Thu,  6 Apr 2023 15:18:55 +0900
-Message-Id: <89b7eb9508b28a48c4d0a8b1ef46983202a0d360.1680749578.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1680749577.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1680749577.git.Takahiro.Kuwano@infineon.com>
+	Thu, 06 Apr 2023 07:56:27 +0000
+Received: by mail.feshiecree.pl (Postfix, from userid 1001)
+	id 2660087F2A; Thu,  6 Apr 2023 08:51:34 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=feshiecree.pl;
+	s=mail; t=1680767561;
+	bh=hFxZwVw4rIL+JwfEOGI47p+fdoVOAeqVswP6NWoHSHQ=;
+	h=Date:From:To:Subject:From;
+	b=XHgNi3KvyaERlyat0j4SH31KywuvvcUwZ7mNnb020hHAWM/1Goe8gQpKCYRkoX14j
+	 LvneFVsSu1RodNdScVOQ5TVgXF5b1xWsJS9nWb+I3iltNgj/+MCmhToKNVdJqbh2RI
+	 h23+znRz23BEhUu0L73vb612o+3k4EFG/uxEQxg9my8iFQ9AkHQinx7FR9j3Y3vNxr
+	 njIfBVM7/eF7T/yaTmzU0N5UQT1sLnFvYHUHFO890GhDfqij+efMGvTc4/gJWCkZWp
+	 JFR8Lw/aPCtMaZFR85rQIgxSsPW9ViCTpPDd+pil4NysR24K9lmfAzlZA8RpixDW+L
+	 EhJzFVvqN25VQ==
+Received: by mail.feshiecree.pl for <linux-mtd@lists.infradead.org>; Thu,  6 Apr 2023 07:50:28 GMT
+Message-ID: <20230406074501-0.1.1v.6uyr.0.52nr3qo8jp@feshiecree.pl>
+Date: Thu,  6 Apr 2023 07:50:28 GMT
+From: "Krystian Wieczorek" <krystian.wieczorek@feshiecree.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: W sprawie samochodu
+X-Mailer: mail.feshiecree.pl
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230405_231937_428586_0D42C5A4 
-X-CRM114-Status: GOOD (  16.60  )
+X-CRM114-CacheID: sfid-20230406_085625_838504_F33120E1 
+X-CRM114-Status: UNSURE (   1.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,129 +77,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-
-SCCR map for multi-chip devices contains the number of additional dice in
-the device and register offset values for each additional dice.
-
-spi_nor_parse_sccr_mc() is added to determine the number of dice and
-volatile register offset for each die. The volatile register offset table
-may already be allocated and contains offset value for die-0 via SCCR map
-parse. So, we should use devm_krealloc() to expand the table with
-preserving die-0 offset.
-
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
----
- drivers/mtd/spi-nor/sfdp.c | 73 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 9d43e18d3770..00a40bd8aa1e 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -26,6 +26,11 @@
- 					 * Status, Control and Configuration
- 					 * Register Map.
- 					 */
-+#define SFDP_SCCR_MAP_MC_ID	0xff88	/*
-+					 * Status, Control and Configuration
-+					 * Register Map Offsets for Multi-Chip
-+					 * SPI Memory Devices.
-+					 */
- 
- #define SFDP_SIGNATURE		0x50444653U
- 
-@@ -1264,6 +1269,70 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
- 	return ret;
- }
- 
-+#define SCCR_MC_MAX_DICE		255
-+
-+/**
-+ * spi_nor_parse_sccr_mc() - Parse the Status, Control and Configuration
-+ *                           Register Map Offsets for Multi-Chip SPI Memory
-+ *                           Devices.
-+ * @nor:		pointer to a 'struct spi_nor'
-+ * @sccr_mc_header:	pointer to the 'struct sfdp_parameter_header' describing
-+ *			the SCCR Map offsets table length and version.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int spi_nor_parse_sccr_mc(struct spi_nor *nor,
-+				 const struct sfdp_parameter_header *sccr_mc_header)
-+{
-+	struct spi_nor_flash_parameter *params = nor->params;
-+	u32 *dwords, addr;
-+	u8 i, n_dice;
-+	size_t len;
-+	int ret;
-+
-+	len = sccr_mc_header->length * sizeof(*dwords);
-+	dwords = kmalloc(len, GFP_KERNEL);
-+	if (!dwords)
-+		return -ENOMEM;
-+
-+	addr = SFDP_PARAM_HEADER_PTP(sccr_mc_header);
-+	ret = spi_nor_read_sfdp(nor, addr, len, dwords);
-+	if (ret)
-+		goto out;
-+
-+	le32_to_cpu_array(dwords, sccr_mc_header->length);
-+
-+	/*
-+	 * Pair of DOWRDs (volatile and non-volatile register offsets) per
-+	 * additional die. Hence, length = 2 * (number of additional dice).
-+	 */
-+	n_dice = 1 + sccr_mc_header->length / 2;
-+	if (params->n_dice > SCCR_MC_MAX_DICE) {
-+		dev_dbg(nor->dev, "Improbable number of dice defined in SCCR MC table, use one die.\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	/* Address offset for volatile registers of additional dice */
-+	params->vreg_offset =
-+			devm_krealloc(nor->dev, params->vreg_offset,
-+				      n_dice * sizeof(*dwords),
-+				      GFP_KERNEL);
-+	if (!params->vreg_offset) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	for (i = 1; i < n_dice; i++)
-+		params->vreg_offset[i] = dwords[SFDP_DWORD(i) * 2];
-+
-+	params->n_dice = n_dice;
-+
-+out:
-+	kfree(dwords);
-+	return ret;
-+}
-+
- /**
-  * spi_nor_post_sfdp_fixups() - Updates the flash's parameters and settings
-  * after SFDP has been parsed. Called only for flashes that define JESD216 SFDP
-@@ -1480,6 +1549,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
- 			err = spi_nor_parse_sccr(nor, param_header);
- 			break;
- 
-+		case SFDP_SCCR_MAP_MC_ID:
-+			err = spi_nor_parse_sccr_mc(nor, param_header);
-+			break;
-+
- 		default:
- 			break;
- 		}
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKY2hjaWVsaWJ5xZtteSB6YXBld25pxIcgUGHFhHN0d3Uga29tcGxla3Nv
+d2Ugcm96d2nEhXphbmlhLCBqZcWbbGkgY2hvZHppIG8gc3lzdGVtIG1vbml0b3Jpbmd1IEdQUy4K
+ClByZWN5enlqbmUgbW9uaXRvcm93YW5pZSBwb2phemTDs3cgbmEgbWFwYWNoIGN5ZnJvd3ljaCwg
+xZtsZWR6ZW5pZSBpY2ggcGFyYW1ldHLDs3cgZWtzcGxvYXRhY3lqbnljaCB3IGN6YXNpZSByemVj
+enl3aXN0eW0gb3JheiBrb250cm9sYSBwYWxpd2EgdG8ga2x1Y3pvd2UgZnVua2Nqb25hbG5vxZtj
+aSBuYXN6ZWdvIHN5c3RlbXUuIAoKT3JnYW5pem93YW5pZSBwcmFjeSBwcmFjb3duaWvDs3cgamVz
+dCBkemnEmWtpIHRlbXUgcHJvc3RzemUgaSBiYXJkemllaiBlZmVrdHl3bmUsIGEgb3N6Y3rEmWRu
+b8WbY2kgaSBvcHR5bWFsaXphY2phIHcgemFrcmVzaWUgcG9ub3N6b255Y2gga29zenTDs3csIG1h
+asSFIGRsYSBrYcW8ZGVnbyBwcnplZHNpxJliaW9yY3kgb2dyb21uZSB6bmFjemVuaWUuCgpEb3Bh
+c3VqZW15IG5hc3rEhSBvZmVydMSZIGRvIFBhxYRzdHdhIG9jemVraXdhxYQgaSBwb3RyemViIG9y
+Z2FuaXphY2ppLiBDenkgbW9nbGliecWbbXkgcG9yb3ptYXdpYcSHIG8gbmFzemVqIHByb3Bvenlj
+amk/CgoKUG96ZHJhd2lhbQpLcnlzdGlhbiBXaWVjem9yZWsKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
