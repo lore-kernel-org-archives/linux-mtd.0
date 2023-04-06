@@ -4,102 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10610C76196
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 06:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE1B9C76196
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 06:54:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7FUWdRwSusR4Me4CSCs4U5lM+7ildSrvTJL2Gct6SEw=; b=FlqhHC25L0HPKY
-	x1HIHenQWcFDd9hlJyh2no2YDUnTSnNMj5tjQyfssV0ngY1HFJIeQ9ozq48rOmTptwRsFxLOL4J0o
-	Hp218UK+nQHyr5S/Aevr3AcfnWAPAQewjKEVsRCTaO4wdMqwvw3dMnkp5sR5bptlArh9BqvGHBVeZ
-	yT5gCFz6S/fFJJ7VqYJsXDxEJl1no5X9a+uSFWba9p6ekBxGDOfpyOv1IXd9O+CYzAPHpUun1N7Ks
-	pDKRmNfdTMVAeFx/wh5Cj8IM3IbEsChyoZx4lCEIvgx6/RDIQYfpsuG4x0v44srNGzrTNI/q6QP4L
-	/ZlShxaP04FRN1KgJXFA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=XjZabyI8mmWdKgoeylJnE/AKIyCAfNpWZb9fL8Yz6gk=; b=KSu6gNhskXJ1qU
+	soutOinqGAN3um5/IX1DXFPM7CH87XXaFWMhn7XLKFBWzI7o4Dht7FtLgGOB3Y8LUsbQQ0nR84u7y
+	5rrDmmut57DkyAUFljtrnmVa3ygBoxXIL1e2R+xZN66oZHqsvX2CdfVt8QQua9k601nmq8RaNgUuw
+	lbZGMBAfSNu8ajcrmlm5ANMn9xl4iPuGID7fek7QLTTSPS47CziGXSLiM7Ga52TAioqM5tC+fRZtS
+	sMoRqDFdKdP/i/C6u4U8ve8YKJvmDCxP/bI4Y4K9A9neELtYOPXShl53rzljMXhT4wsPhqKZsFXds
+	I0XwXpDSK+GpSkB+Bz7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkJN9-006WZx-12;
-	Thu, 06 Apr 2023 06:45:27 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1pkJVK-006X91-1g;
+	Thu, 06 Apr 2023 06:53:54 +0000
+Received: from mail-dm6nam11on2062f.outbound.protection.outlook.com ([2a01:111:f400:7eaa::62f] helo=NAM11-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkJN8-006WZj-0N
-	for linux-mtd@bombadil.infradead.org;
-	Thu, 06 Apr 2023 06:45:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=6WsaAzMK7NsfVaQbDoNPOvf2AK+4muKRB7TYhUL83ko=; b=dm/h/SXAi4maQDKlfjjUcX9U3u
-	AovtL0eI5HW3VgQ1oBxvgrY+60jxcj5eE+FaFt/orf4xghfKAgSRFTJuspS1zh3TU3lcQH0lpylmX
-	gUq9vGXDOU8YTtJ+TkNVP+geRidCT+Av4y1U+OosZ0k3O+nbUELWNi4xgTP13zN8metvCakxAhddI
-	/wIeDiYDOmIoBLMZhOeJrLk/OFVl+DBp+C+CRCp8fCdCVMKEtpYF6sqnFLf/sJ7Goq1aR7GzgI92E
-	LMosFiQJJ6St6BK0xw1x/0kO/15fch/dma5jlYg6NIhROlW112bsq4pVptWCoGIMuGu93zIiALI2J
-	jEm28kuQ==;
-Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkIyL-00ARK0-1R
-	for linux-mtd@lists.infradead.org;
-	Thu, 06 Apr 2023 06:19:52 +0000
-Received: by mail-pj1-x1033.google.com with SMTP id om3-20020a17090b3a8300b0023efab0e3bfso41916393pjb.3
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Apr 2023 23:19:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680761984;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6WsaAzMK7NsfVaQbDoNPOvf2AK+4muKRB7TYhUL83ko=;
-        b=Sghkqw9vEDGT8GmdBHwNcLbJb/szTywUqRYSQAQZtqg17Ny3YoxTh5bMLMqBTXBR7Q
-         UjUG+dW2PhQZ73KgZLR6HA14x/3X0PvPOmc2MV4tTMWSXr2OKFjxrOY/+z2s5Dht2kbS
-         9X9FV/wjFaFi0tqEb/QTumeXhYmIcvRqPrCjtnI6EjvhRD1CccOyjAwRq3C12OAOnmKr
-         gecV8e9ZPF3gmb2bo4DVKqRonmMPj9xKQqizzhnhhXCKia5I4uvP1J2srscpNs6WXYi7
-         dG4kJUwmJZ21mcCsUoQ6MGPO3KgnP2y6p2hec0rVuCX81l+ATouhn4Hc8SiKdQtmm2iK
-         S8Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680761984;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6WsaAzMK7NsfVaQbDoNPOvf2AK+4muKRB7TYhUL83ko=;
-        b=kWq03iLc8QLZGHxKQIkEzWS46gjtI1qqIdyGCXpHkUURhQCW/NHMgmdw6m5Z/JQqnM
-         H7U9fR0GpGVIZrED/sPCgRTgh0nG9ouOrIWcFdlD/bOLsO/jZ9u+WvEuBf3DMT5HRQcH
-         L0xyLzCVlauTIb9B/BJhDb0TL0Eirkuiv8B0dj0t7rbYUwww/TSlNh/X3+MFV1QqJRhf
-         c/R5K3bNyvevS1Xng0rdPqPCFlttUuAvjLrUpAUyz2CXn8Ic3e6J4ZK5RSioFF2NVl8S
-         //GMbTfC+D1simD5KSXt87j2fJSeNl9S67TKK7R0V10N2gkui0gskf9Xw01DT/M9u1u1
-         IO2A==
-X-Gm-Message-State: AAQBX9dq2E3yKe2d33Qa9+HzGaXKk2FLhA9JMrQedx+5/0iT5+9tuCPh
-	8t6LDn5GIPKUp1cBTlkydZy1LgzK+kwlXw==
-X-Google-Smtp-Source: AKy350YpHY2mDXnA2eDUvRAHbPhXNQ8vYj8RbCUn7W0b3BXyBGRCyxJKvufHXV0PTdU75FyWyB5oFg==
-X-Received: by 2002:a05:6a20:4b05:b0:cc:eb3b:56e9 with SMTP id fp5-20020a056a204b0500b000cceb3b56e9mr1994664pzb.1.1680761984112;
-        Wed, 05 Apr 2023 23:19:44 -0700 (PDT)
-Received: from ISCN5CG2520RPD.infineon.com (sp49-98-38-119.msd.spmode.ne.jp. [49.98.38.119])
-        by smtp.gmail.com with ESMTPSA id 18-20020aa79152000000b0062dbafd2980sm450542pfi.65.2023.04.05.23.19.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 23:19:43 -0700 (PDT)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	d-gole@ti.com,
-	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v3 6/8] mtd: spi-nor: spansion: Rework cypress_nor_quad_enable_volatile() for multi-chip device support
-Date: Thu,  6 Apr 2023 15:18:57 +0900
-Message-Id: <fbdfc011fae770ab2d1e97f0e981bd59030a7360.1680749578.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1680749577.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1680749577.git.Takahiro.Kuwano@infineon.com>
+	id 1pkJVG-006X7M-0q;
+	Thu, 06 Apr 2023 06:53:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DmRyyAde0VeVqIROsr7HMyLtabE+CWzTSaWNf/KNndPmdhs9vBpjgu6fhiENfX1H0WrHBInOCdPFZ+28VsLAfkcysqzI1sPkku9SwE/Iuwv54byHBt03Qnv0eQynGpgn1K5rFJ43GTy09+L85c5dFqa90cYxXaFiCh8hxakKfA8gAHSNCOQK03koQUSc/84n/XJqDsJSAqXBhuZdIeJKRmhX0fGMwddOuiK+FPMUB+11puT0mr8CBmPbiAVst0Ylg3bkF4OBWbM1/gtWf5k6bvSBGSqvfDkU5Q6hhIAsBvDkLcuVn9g6eFpN8mbhNXwHUXFG95419Jd7xebNUMB/rA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pqxe1mY0VPB1zr2Ju23AT2Mr5dYX/Wc8tAnWrDFGQTw=;
+ b=FYMNyIzPcYmD60wbuOtqdiR0Y2t1MATOln7i4LX2uFWXqfLU7J1axrQsCvHVargOjS/PaAMHWqlHkFwTuvuotbpJIf8x7yVhqhhE7bKpURV0bOaEpxujIYAUxI3LpszjCQcG+h576mm1EnOsMLAjga67nLsY6dUR1YHa+HF8IHrHlOQrMpCNm49ZJUObuZVJEjyb9ZjPVWwXljMx+YD/4FzkcPDz/MtWkat25mmHmrDMfd0T5ajQZ5BVR9gTj+W/H4yy05XnuUiRk13ADRnLEtHGEs1zgVAYvZA3IR06GZbbZngLSYk/82Olrs3rZOEo+UAxSc50Tk2DNyyQWbr7Cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pqxe1mY0VPB1zr2Ju23AT2Mr5dYX/Wc8tAnWrDFGQTw=;
+ b=BWQGhJg8LiBffKOmTpvl0+0aSRGSwCP+uriswRUAhc/bF09fkf2hWdhUTtj4zCs0zHPTWtKwRtn93G5REO+W9D5uvZhio6BZc17frjQltUpMEcyRAigFZZyPFhKtTQpvOWlzHzG4yDBzhR2IbT/kcom7VLOnYmzrkES4Cvp8WQs=
+Received: from DM6PR03CA0068.namprd03.prod.outlook.com (2603:10b6:5:100::45)
+ by MW4PR12MB7031.namprd12.prod.outlook.com (2603:10b6:303:1ef::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.33; Thu, 6 Apr
+ 2023 06:53:44 +0000
+Received: from DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:100:cafe::de) by DM6PR03CA0068.outlook.office365.com
+ (2603:10b6:5:100::45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6277.30 via Frontend
+ Transport; Thu, 6 Apr 2023 06:53:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ DM6NAM11FT034.mail.protection.outlook.com (10.13.173.47) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6277.30 via Frontend Transport; Thu, 6 Apr 2023 06:53:43 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 6 Apr
+ 2023 01:53:43 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Wed, 5 Apr
+ 2023 23:53:42 -0700
+Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34
+ via Frontend Transport; Thu, 6 Apr 2023 01:53:38 -0500
+From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+To: <broonie@kernel.org>, <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+	<michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<vigneshr@ti.com>
+CC: <git@amd.com>, <sbinding@opensource.cirrus.com>,
+	<linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@microchip.com>,
+	<michal.simek@amd.com>, <linux-arm-kernel@lists.infradead.org>,
+	<amitrkcian2002@gmail.com>, Amit Kumar Mahapatra
+	<amit.kumar-mahapatra@amd.com>
+Subject: [PATCH V7 0/7] spi: Add support for stacked/parallel memories
+Date: Thu, 6 Apr 2023 12:23:29 +0530
+Message-ID: <20230406065336.10980-1-amit.kumar-mahapatra@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT034:EE_|MW4PR12MB7031:EE_
+X-MS-Office365-Filtering-Correlation-Id: 83987639-49d9-4567-ed36-08db366ba9ba
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	zfaAMtN5jJ9ExS6KwNNoIA/WKdvFwA2So9fKD3kXnLEw/A6oEBQkJtFAko2tusMnUXaLM9bh94M3veuk+UbrYF8qQLvfWeff7pqQyJGQqLMrvROTJ9D8mmOr6XTaYEsiDh19e5e/rqbxPobL+tQwTlvEGWkMK66kA5LnO+jI3aKjKZDw3GmfJA4VsZGn109D3pczlYblJouQ5idB9NBot84gi88JWPLZY3Ta3Ju1gQZCuKYfn/zJ41YZJxFkOIs1IrlPdAMP3V1C696jhTV8Iea8GPZ8FdGuT2cFFkvQgqJTjxKYO8RVpyFRfw6XnCSBVuvL9twrTxMwXg9WBkNt3rSU5iiiFVqfK2LjKI2UgS6FVndiWw6hRiSRCzWndc0vbu7W+EhnlcmCWhkbiazCjn/K+m5LuMQZUs2B1sYBy9WNhGcgsSffZdaRwGP8bIhisduMtoVhTn103JhrOjFB1FdqBP3fg5ZW8TQRnqScoZitotgro11WRa1W0R4mAAwpfVSUDRWu3Sk5jMKBUxtmKQMZglYZQNeQbf6OZaCwmLG3RgHhBce6QNFhxGYM+oZEUbgprFSkDdYPhIiySY40TBR8M9U6PUuOo8XFH424IVMEyPZkfE+FOEBl/71yEOnBJiVGxDQnl3aNdBOo8Biti1xI0TPwikQWMbGyngxyrwqbeX+s2skIt/jcPNkjieEBxgwc5v2gsFhDBgb2+ttuzNXVePjOxpfIO3b/2+XY86ugt9a2ksAjncd8NXGx6BszvwiWVVhuGFoM6hGKWAWPFTsHkjU8DmrCy1HNtTquwZQ=
+X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(39860400002)(396003)(376002)(451199021)(46966006)(40470700004)(36840700001)(356005)(86362001)(966005)(82740400003)(82310400005)(83380400001)(81166007)(6666004)(36756003)(2906002)(478600001)(7416002)(1076003)(26005)(47076005)(8936002)(316002)(5660300002)(110136005)(54906003)(40480700001)(41300700001)(40460700003)(186003)(426003)(336012)(4326008)(70586007)(70206006)(36860700001)(8676002)(2616005)(36900700001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2023 06:53:43.9276
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83987639-49d9-4567-ed36-08db366ba9ba
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 	DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7031
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230406_071949_846549_D8FB1582 
-X-CRM114-Status: GOOD (  16.51  )
+X-CRM114-CacheID: sfid-20230405_235350_439594_8014C6BF 
+X-CRM114-Status: GOOD (  18.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,117 +126,110 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+This patch is in the continuation to the discussions which happened on
+'commit f89504300e94 ("spi: Stacked/parallel memories bindings")' for
+adding dt-binding support for stacked/parallel memories.
 
-Rework quad method for multi-chip devices by updating CFR1V in all
-dice in the device.
+This patch series updated the spi-nor, spi core and the AMD-Xilinx GQSPI 
+driver to add stacked and parallel memories support.
 
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+The first nine patches
+https://lore.kernel.org/all/20230119185342.2093323-1-amit.kumar-mahapatra@amd.com/
+https://lore.kernel.org/all/20230310173217.3429788-2-amit.kumar-mahapatra@amd.com/
+https://lore.kernel.org/all/20230310173217.3429788-3-amit.kumar-mahapatra@amd.com/
+https://lore.kernel.org/all/20230310173217.3429788-4-amit.kumar-mahapatra@amd.com/
+https://lore.kernel.org/all/20230310173217.3429788-5-amit.kumar-mahapatra@amd.com/
+https://lore.kernel.org/all/20230310173217.3429788-6-amit.kumar-mahapatra@amd.com/
+https://lore.kernel.org/all/20230310173217.3429788-7-amit.kumar-mahapatra@amd.com/
+https://lore.kernel.org/all/20230310173217.3429788-8-amit.kumar-mahapatra@amd.com/
+https://lore.kernel.org/all/20230310173217.3429788-9-amit.kumar-mahapatra@amd.com/
+of the previous series got applied to
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+But the rest of the patches in the series did not get applied as failure 
+was reported for spi driver with GPIO CS, so send the remaining patches 
+in the series after rebasing it on top of for-next branch and fixing the 
+issue.
+
 ---
- drivers/mtd/spi-nor/spansion.c | 60 ++++++++++++++++++++++------------
- 1 file changed, 39 insertions(+), 21 deletions(-)
+BRANCH: for-next
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 5e021e20497b..91bc0aace516 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -139,21 +139,7 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
- 	return 0;
- }
- 
--/**
-- * cypress_nor_quad_enable_volatile() - enable Quad I/O mode in volatile
-- *                                      register.
-- * @nor:	pointer to a 'struct spi_nor'
-- *
-- * It is recommended to update volatile registers in the field application due
-- * to a risk of the non-volatile registers corruption by power interrupt. This
-- * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
-- * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
-- * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
-- * also set during Flash power-up.
-- *
-- * Return: 0 on success, -errno otherwise.
-- */
--static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
-+static int cypress_nor_quad_enable_volatile_reg(struct spi_nor *nor, u64 addr)
- {
- 	struct spi_mem_op op;
- 	u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
-@@ -161,8 +147,7 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
- 	int ret;
- 
- 	op = (struct spi_mem_op)
--		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR1V, 0,
-+		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes, addr, 0,
- 					  nor->bouncebuf);
- 
- 	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-@@ -175,8 +160,7 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
- 	/* Update the Quad Enable bit. */
- 	nor->bouncebuf[0] |= SPINOR_REG_CYPRESS_CFR1_QUAD_EN;
- 	op = (struct spi_mem_op)
--		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR1V, 1,
-+		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes, addr, 1,
- 					  nor->bouncebuf);
- 	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
- 	if (ret)
-@@ -186,8 +170,7 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
- 
- 	/* Read back and check it. */
- 	op = (struct spi_mem_op)
--		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR1V, 0,
-+		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes, addr, 0,
- 					  nor->bouncebuf);
- 	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
- 	if (ret)
-@@ -201,6 +184,41 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
- 	return 0;
- }
- 
-+/**
-+ * cypress_nor_quad_enable_volatile() - enable Quad I/O mode in volatile
-+ *                                      register.
-+ * @nor:	pointer to a 'struct spi_nor'
-+ *
-+ * It is recommended to update volatile registers in the field application due
-+ * to a risk of the non-volatile registers corruption by power interrupt. This
-+ * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
-+ * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
-+ * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
-+ * also set during Flash power-up.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
-+{
-+	struct spi_nor_flash_parameter *params = nor->params;
-+	u64 addr;
-+	u8 i;
-+	int ret;
-+
-+	if (!params->n_dice)
-+		return cypress_nor_quad_enable_volatile_reg(nor,
-+						SPINOR_REG_CYPRESS_CFR1V);
-+
-+	for (i = 0; i < params->n_dice; i++) {
-+		addr = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR1;
-+		ret = cypress_nor_quad_enable_volatile_reg(nor, addr);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * cypress_nor_determine_addr_mode_by_sr1() - Determine current address mode
-  *                                            (3 or 4-byte) by querying status
+Changes in v7:
+- Updated spi_dev_check() to avoid failures for spi driver GPIO CS and
+  moved the error message from __spi_add_device() to spi_dev_check().
+- Resolved code indentation issue in spi_set_cs().
+- In spi_set_cs() call spi_delay_exec( ) once if the controller supports 
+  multi cs with both the CS backed by GPIO.
+- Updated __spi_validate()to add checks for both the GPIO CS.
+- Replaced cs_index_mask bit mask magic number with SPI_CS_CNT_MAX.
+- Updated struct spi_controller to represent multi CS capability of the
+  spi controller through a flag bit SPI_CONTROLLER_MULTI_CS instead of 
+  a boolen structure member "multi_cs_cap".
+- Updated 1/7 & 7/7 patch description .
+
+Changes in v6:
+- Rebased on top of latest v6.3-rc1 and fixed merge conflicts in
+  spi-mpc512x-psc.c, sfdp.c, spansion.c files and removed spi-omap-100k.c.
+- Updated spi_dev_check( ) to reject new devices if any one of the
+  chipselect is used by another device.
+
+Changes in v5:
+- Rebased the patches on top of v6.3-rc1 and fixed the merge conflicts.
+- Fixed compilation warnings in spi-sh-msiof.c with shmobile_defconfig
+
+Changes in v4:
+- Fixed build error in spi-pl022.c file - reported by Mark.
+- Fixed build error in spi-sn-f-ospi.c file.
+- Added Reviewed-by: Serge Semin <fancer.lancer@gmail.com> tag.
+- Added two more patches to replace spi->chip_select with API calls in
+  mpc832x_rdb.c & cs35l41_hda_spi.c files.
+
+Changes in v3:
+- Rebased the patches on top of
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+- Added a patch to convert spi_nor_otp_region_len(nor) &
+  spi_nor_otp_n_regions(nor) macros into inline functions
+- Added Reviewed-by & Acked-by tags
+
+Changes in v2:
+- Rebased the patches on top of v6.2-rc1
+- Created separate patch to add get & set APIs for spi->chip_select &
+  spi->cs_gpiod, and replaced all spi->chip_select and spi->cs_gpiod
+  references with the API calls.
+- Created separate patch to add get & set APIs for nor->params.
+---
+
+Amit Kumar Mahapatra (7):
+  spi: Add stacked and parallel memories support in SPI core
+  mtd: spi-nor: Convert macros with inline functions
+  mtd: spi-nor: Add APIs to set/get nor->params
+  mtd: spi-nor: Add stacked memories support in spi-nor
+  spi: spi-zynqmp-gqspi: Add stacked memories support in GQSPI driver
+  mtd: spi-nor: Add parallel memories support in spi-nor
+  spi: spi-zynqmp-gqspi: Add parallel memories support in GQSPI driver
+
+ drivers/mtd/spi-nor/atmel.c      |  17 +-
+ drivers/mtd/spi-nor/core.c       | 665 ++++++++++++++++++++++++++-----
+ drivers/mtd/spi-nor/core.h       |   8 +
+ drivers/mtd/spi-nor/debugfs.c    |   4 +-
+ drivers/mtd/spi-nor/gigadevice.c |   4 +-
+ drivers/mtd/spi-nor/issi.c       |  11 +-
+ drivers/mtd/spi-nor/macronix.c   |   6 +-
+ drivers/mtd/spi-nor/micron-st.c  |  39 +-
+ drivers/mtd/spi-nor/otp.c        |  48 ++-
+ drivers/mtd/spi-nor/sfdp.c       |  29 +-
+ drivers/mtd/spi-nor/spansion.c   |  50 ++-
+ drivers/mtd/spi-nor/sst.c        |   7 +-
+ drivers/mtd/spi-nor/swp.c        |  22 +-
+ drivers/mtd/spi-nor/winbond.c    |  10 +-
+ drivers/mtd/spi-nor/xilinx.c     |  18 +-
+ drivers/spi/spi-zynqmp-gqspi.c   |  58 ++-
+ drivers/spi/spi.c                | 226 +++++++----
+ include/linux/mtd/spi-nor.h      |  18 +-
+ include/linux/spi/spi.h          |  32 +-
+ 19 files changed, 1002 insertions(+), 270 deletions(-)
+
 -- 
-2.34.1
+2.17.1
 
 
 ______________________________________________________
