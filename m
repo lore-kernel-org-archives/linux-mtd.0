@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 806DFC77B6E
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 06:18:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89DD6C7618D
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 06:19:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=bPzMtkjBjlxtN0DHm45jwvFBenwEH1CcIhXvAH/07ho=; b=OHB7UUHP9Jn28g
-	vl3f9I7x4GEj/eCd+CeI4H45BSHOAdqFHqb/6IJkrakgtcbOzG34XqGg95smXYvsNZRS6W1hoWTk+
-	vLWnMedVExKtd2vf14mXO/KTzVfR59zgt09GUpIPswOoTXrUzvLFjr+/SCkpI1xk47gjxMFwQy0Cq
-	zvhlsRLAOh51gmfKVAAf39TgDoFrTvwK5ktFEB1e/4wQy5Q64YLkOfZI6GeGOLuv/NJx4m9l6FAfJ
-	ShqR00SryoUpmp5TNQmqvhOXFDyRFkGzCP7flXO29xph6fF5fIgMn8bbYBjATo1vwDxAfK8Xa2gvg
-	uQGDpNIgZnDEC4CSxamA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sr9uiQQdZOtGzKJQYM9A6URG4YbcgaHj91yzGxvW+dM=; b=tDtsryTbKBtG/E
+	IxZHx6dSVQwbjRNhVRYN/TuW0SLLQ+Z3Orhf9qAR2anwV/QfQ4HIHpe5fuwAIEGMHsYa9ER5clE3n
+	Zuk8fRyKZwJbvBKCrfDCaSyl5Wr/+XF19us6Y5DaQBx5r/7k1duSRzT7VggZkUH0QbMogwOGPxEnC
+	kj2wDCQxl5LNnwe+pYZAeod+BGTV3UnbiMgctQ0B6T7bysRPURBKllMAzY3VeSjqeJP+gfVpUBJ1X
+	FQbpQFQsC/TOeDH8jITdw0TVnZ7BcbzgNWV4CdyPFN3ZS1F6A0ErJ5duiv6oJgkgSz1NV2r94RZX9
+	UVyEqv2jYu2v4uFRQucA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkIwh-006SWv-1t;
-	Thu, 06 Apr 2023 06:18:07 +0000
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	id 1pkIxx-006T1I-0M;
+	Thu, 06 Apr 2023 06:19:25 +0000
+Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkIwd-006SVG-27
+	id 1pkIxv-006Syz-0R
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Apr 2023 06:18:04 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id fy10-20020a17090b020a00b0023b4bcf0727so39715507pjb.0
-        for <linux-mtd@lists.infradead.org>; Wed, 05 Apr 2023 23:17:59 -0700 (PDT)
+	Thu, 06 Apr 2023 06:19:24 +0000
+Received: by mail-pl1-x62d.google.com with SMTP id q2so536483pll.7
+        for <linux-mtd@lists.infradead.org>; Wed, 05 Apr 2023 23:19:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680761878;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=F0fiXKpYKNu2MAhebyIE17ggjHkWO10SE8hj8DKRRWA=;
-        b=Ni0+WRjkT9VOWlsSBkGO0CDvc5vpWY3GqExde8VNrpj1V1kfYnDJNbxlDNxVjLxoCl
-         YfXKbwysW53hhwUBW685d63NFuGTzieaVSaiX+9NW86e2STJg134QJnkTpWB+taKsLNp
-         ZBNWev9XuL8Ah3uDQ91nJpSbKL2aetc8Mu26k0YeRsk8ptUmua9FKuKY3VoHka/ywMn9
-         fN132xCYaIP5DZFPn2SemxEI3fCevCe1iL3VsewTFozMJzncXAb8d68K5wng1Sbsttvp
-         TyxSv480DpA5Bi9p0+y6Jfoi1zW+GEkXx8q03gTOZoPek9O8HutqdKPmxF0GkY4ihKkH
-         o8fA==
+        d=gmail.com; s=20210112; t=1680761960;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sty9Vva/GZquwXe+pkd6Nxrz8bwsIEDg04w2eW4GIY4=;
+        b=PzZpfsU05I+yIXdyZ7fWa7xta9KGc9oRQ4jahd9ohMKKTIxrAVuyJ+ECtFOo3vY1AQ
+         e3TQ+lyqEr9pk0e78nenNwDaq3HTgkxI04HFSoBzWYEOleTk/lZDsIQhTevS7Berac6M
+         Gm+tUDuKncGHZhJfMFa/YD1XTrI2MuXaw7rvDxYVvnmnRxMFW3TPcK+N/MMNrjNDP8o1
+         2ide2uHM62MDMf9Wa1XxWCg0Oh4MbTN/YYI+SHyZH9a8ruZfnxWG690RZg82Os15UmIn
+         j+ObSdTTP6GRoTd/KFj1SKP/J+DEQ3vPUDakq6pj8jW27V1XKH4XQZH8muA/HEtduaio
+         NPBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680761878;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F0fiXKpYKNu2MAhebyIE17ggjHkWO10SE8hj8DKRRWA=;
-        b=I/eQgc+km9Kz1u56vnYY3MV20DpOGq3yHxO1JRl6NGoIUeks+S1sGDY1mLvvMJTLgb
-         3bieilIrC8FaRDYwR2zpwAgdgqkvaKM1Nc8GmbGImtURDpD+jRP0Z4hMt3P21/SZCZ1d
-         Oh13y/ftgnxEt3kKxEWn2k/+dUYbeMSBP2uju30DHYx8heYR1O+2kvVylXoqfAuiCNdx
-         +QZJRUjxZd5HldQi7p8tRGE5bLprA0VssQatxbv/YNwtgtEhTsYBvp9hxN3VA1tsgyJt
-         N4rt5NOV5R4Msm9m8BRMdpDIkjklzhNS/CHgR6FsgtQ4O1jbKyFnn+fYDRSBRMZE4pj8
-         Vcsw==
-X-Gm-Message-State: AAQBX9dip3ORKMosgTxWFzrWUWA8PNIbuTxhKFhHT1lFYeEVgYkDfcGl
-	1jxKcMO5VK/UudWhMnlJ3KE4qDmXE1zjOQ==
-X-Google-Smtp-Source: AKy350ZYAvMRLTUcsfZFMhxyTbpdwKg9/D3SGmeeVrwTQfFsQe3hDUG3xQLQ3gWi4lpktYiZUtdv+w==
-X-Received: by 2002:a17:903:41c1:b0:19a:aa0e:2d67 with SMTP id u1-20020a17090341c100b0019aaa0e2d67mr4975689ple.32.1680761878562;
-        Wed, 05 Apr 2023 23:17:58 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1680761960;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sty9Vva/GZquwXe+pkd6Nxrz8bwsIEDg04w2eW4GIY4=;
+        b=mn5rQe3ilYYP0zuhlznd0x3scoaZXgzgFV/ZFuEEaCFiwOvmNHfj4kYUEEymuvJF2x
+         sVtJnrCxp+tfkJ80R6fyI9IenrhrKbY9giPNrFtyTxFhJscwSlWpwsN8VXVJJE6oW/Fp
+         qVQy1CTZb0XBVaH+9ykg0xR8szCSeYSwmc/R9yvdg5B3akRALneNhuLj8dJHxN9OHJp3
+         zSERNFGwMXoB9AJbPcRe7XwFlns2Q5rqr0jeHA4pYZRD2zVoFcB+nVCSLJilSITyqkRh
+         x7ecp22m+iUMMdLk5qyQTkrh41RUORZpstXum+NKUXuOdA4neqO8kyv7Es0S/MXIMqoV
+         /o3w==
+X-Gm-Message-State: AAQBX9dEgPGGDG7fzM6LwtcXadybI1YZ1M3QJLk3Ce6Pr/BQ02HNIisx
+	XUyv6iDFh5dYbdF8RRjJHAjXeUMbKOTDIA==
+X-Google-Smtp-Source: AKy350a5PmVYGieRzdbmwQIwu59hYwSdWrCJncTeD+IL3ETanYlqqZwNSr9YSJ0iVkF4Yhz+Rd9xVA==
+X-Received: by 2002:a05:6a20:c101:b0:de:5082:c9ec with SMTP id bh1-20020a056a20c10100b000de5082c9ecmr2101260pzb.2.1680761960242;
+        Wed, 05 Apr 2023 23:19:20 -0700 (PDT)
 Received: from ISCN5CG2520RPD.infineon.com (sp49-98-38-119.msd.spmode.ne.jp. [49.98.38.119])
-        by smtp.gmail.com with ESMTPSA id y11-20020a1709027c8b00b0019c919bccf8sm567622pll.86.2023.04.05.23.17.53
+        by smtp.gmail.com with ESMTPSA id 18-20020aa79152000000b0062dbafd2980sm450542pfi.65.2023.04.05.23.19.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 23:17:58 -0700 (PDT)
+        Wed, 05 Apr 2023 23:19:19 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -72,17 +73,17 @@ Cc: tudor.ambarus@linaro.org,
 	vigneshr@ti.com,
 	d-gole@ti.com,
 	tkuw584924@gmail.com,
-	Bacem.Daassi@infineon.com,
-	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v3 0/3] mtd: spi-nor: spansion: Enable JFFS2 write buffer for Infineon SEMPER flash
-Date: Thu,  6 Apr 2023 15:17:43 +0900
-Message-Id: <cover.1680760742.git.Takahiro.Kuwano@infineon.com>
+	Bacem.Daassi@infineon.com
+Subject: [PATCH v3 1/8] mtd: spi-nor: spansion: Rename method to cypress_nor_get_page_size
+Date: Thu,  6 Apr 2023 15:18:52 +0900
+Message-Id: <1dda9f6c85468e1af10b60d8be365efaf9c4f297.1680749577.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1680749577.git.Takahiro.Kuwano@infineon.com>
+References: <cover.1680749577.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230405_231803_710111_5506EDBF 
-X-CRM114-Status: UNSURE (   8.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230405_231923_173297_59D28DB6 
+X-CRM114-Status: GOOD (  11.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,34 +100,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-Infineon(Cypress) SEMPER NOR flash family has on-die ECC and its program
-granularity is 16-byte ECC data unit size. JFFS2 supports write buffer
-mode for ECC'd NOR flash. To activate it, MTD_BIT_WRITEABLE needs to be
-unset in mtd->flags. In this series, a new SNOR_F_ECC flag is introduced
-and fixups for SEMPER flash pats set it.
+The method queries SPINOR_REG_CYPRESS_CFR3V to determine the page size.
+Rename the method accordingly, s/set/get.
 
-Changes in v3
-  - Split to three patches
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ drivers/mtd/spi-nor/spansion.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-Changes in v2
-  - Introduce SNOR_F_ECC flag
-  - Add fixes tag and Cc stable
-
-Takahiro Kuwano (3):
-  mtd: spi-nor: spansion: Enable JFFS2 write buffer for Infineon s28hx
-    SEMPER flash
-  mtd: spi-nor: spansion: Enable JFFS2 write buffer for Infineon s25hx
-    SEMPER flash
-  mtd: spi-nor: spansion: Enable JFFS2 write buffer for S25FS256T
-
- drivers/mtd/spi-nor/core.c     |  3 +++
- drivers/mtd/spi-nor/core.h     |  1 +
- drivers/mtd/spi-nor/debugfs.c  |  1 +
- drivers/mtd/spi-nor/spansion.c | 28 +++++++++++++++-------------
- 4 files changed, 20 insertions(+), 13 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index ffeede78700d..c937f0ac61de 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -302,8 +302,7 @@ static int cypress_nor_set_addr_mode_nbytes(struct spi_nor *nor)
+ }
+ 
+ /**
+- * cypress_nor_set_page_size() - Set page size which corresponds to the flash
+- *                               configuration.
++ * cypress_nor_get_page_size() - Get flash page size configuration.
+  * @nor:	pointer to a 'struct spi_nor'
+  *
+  * The BFPT table advertises a 512B or 256B page size depending on part but the
+@@ -312,7 +311,7 @@ static int cypress_nor_set_addr_mode_nbytes(struct spi_nor *nor)
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int cypress_nor_set_page_size(struct spi_nor *nor)
++static int cypress_nor_get_page_size(struct spi_nor *nor)
+ {
+ 	struct spi_mem_op op =
+ 		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
+@@ -368,7 +367,7 @@ s25fs256t_post_bfpt_fixup(struct spi_nor *nor,
+ 	if (nor->bouncebuf[0])
+ 		return -ENODEV;
+ 
+-	return cypress_nor_set_page_size(nor);
++	return cypress_nor_get_page_size(nor);
+ }
+ 
+ static void s25fs256t_post_sfdp_fixup(struct spi_nor *nor)
+@@ -407,7 +406,7 @@ s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
+ 	/* Replace Quad Enable with volatile version */
+ 	nor->params->quad_enable = cypress_nor_quad_enable_volatile;
+ 
+-	return cypress_nor_set_page_size(nor);
++	return cypress_nor_get_page_size(nor);
+ }
+ 
+ static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
+@@ -502,7 +501,7 @@ static int s28hx_t_post_bfpt_fixup(struct spi_nor *nor,
+ 	if (ret)
+ 		return ret;
+ 
+-	return cypress_nor_set_page_size(nor);
++	return cypress_nor_get_page_size(nor);
+ }
+ 
+ static void s28hx_t_late_init(struct spi_nor *nor)
 -- 
 2.34.1
 
