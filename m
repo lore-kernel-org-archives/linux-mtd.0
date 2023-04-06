@@ -4,67 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF3EC77B6C
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 07:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 799C6C7618D
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Apr 2023 09:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3y8mZ0DfO2MFGMLjkax7C+bAQL34K3zkMOIG2r1quCU=; b=lR1Wb6sbu5cy2P
-	2etvp4g2VI8UxDum3zYWQG10lfHAUKR/+cybcSY6rebmLWUmkOoDnCJjjjw5b1iFChrDB6/roqy9o
-	N9woDUCXJktQMyyMMfe6zfOA1hejF2bwmmZtErh2YERp8oWU1dGNrR2DxYf8yju0mkl9g57oR6g5r
-	tZJo1FftUTCx3egIMu969Rook7V7LwsXodNYRelHaNTX0H3EBpACcuAFdH5rwpYtgk+CBsMlh/E2n
-	IvlqidXXZPdEUOnkLi2i+D2HnAyByu3rUpFxH/sek4OR5dkCT+brs+Jt7Rl8CxGRCiJJTbMHOexvX
-	LFS3GczB9hE2LCSJQtsA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=PP7XuhBNGHaQy1T+6aNTiXf/ZiP9UkpOyBhPOK8hphU=; b=NN9ilKLJe27ud3
+	HIMKUy78BdxHUSsq7U1f5D5ya+YbpzqqyEH5u5Bo3O3mIs6PtVpJs/qs+VRmxICnUZKjemivBAv7Q
+	f80Jg010gzk9VvuZ3ckx73WB65nkUsYFLNQDZlC1vQ5iW2SZyydH0yBcp9Gm4+l51h3YRjjBZUfb2
+	iwEP8Wyg2JGbR1xEUwrD1sO73f4zWl8hAS0Cj9UF2P1bh0qDcM1xKWpaA9ZdRfN+OvmIsqL1qfpEi
+	ahjN5vaijg7TWJspzp/5VxD4Gk/Rsehl1b9ZboSJtwTfv+ejRPveDo0GnPVaQ4F/POHBgTG3yIraI
+	2EQhuv8F4ld6VukBuEqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkKTu-006g5v-2d;
-	Thu, 06 Apr 2023 07:56:30 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1pkLbh-006pSz-1N;
+	Thu, 06 Apr 2023 09:08:37 +0000
+Received: from mail-tyzapc01on2071b.outbound.protection.outlook.com ([2a01:111:f403:704b::71b] helo=APC01-TYZ-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkKTt-006g5l-3C
-	for linux-mtd@bombadil.infradead.org;
-	Thu, 06 Apr 2023 07:56:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Subject:To:From:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=hFxZwVw4rIL+JwfEOGI47p+fdoVOAeqVswP6NWoHSHQ=; b=F5/B0vpYwiehx1ZNNVzaqvlAQ4
-	gsyxRSv8vrmr907PN7mqzM5LxIt1TW8um7cfVa2X46JSrfaVt9/FRghthpib495dQ+0DM1AB0d8cT
-	4LF5ed/kdA03AKM/aCCteL8bA2wwQ4ux4XXkrPKYhc9yVCTb+XMIoDzl+5Og5vtm/E0JPn2tIpMhY
-	kIhqW5mQpSdQG1t7zTBO6r3nYg9FghcNo3l9jx2EoUMqUgn+N20byk8w2Ygr0EL/m0ftWo1aT2wFP
-	aGyRXIOYzbYJ3A6MQzInt3Y35NqG1vL2BRTFDPWsqIG3caTFQMupvVNflNt2KSGwSA7no0trRjnMC
-	iJayho1g==;
-Received: from mail.feshiecree.pl ([89.40.114.103])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkKTp-00ASla-1U
+	id 1pkLbe-006pQZ-1h
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Apr 2023 07:56:27 +0000
-Received: by mail.feshiecree.pl (Postfix, from userid 1001)
-	id 2660087F2A; Thu,  6 Apr 2023 08:51:34 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=feshiecree.pl;
-	s=mail; t=1680767561;
-	bh=hFxZwVw4rIL+JwfEOGI47p+fdoVOAeqVswP6NWoHSHQ=;
-	h=Date:From:To:Subject:From;
-	b=XHgNi3KvyaERlyat0j4SH31KywuvvcUwZ7mNnb020hHAWM/1Goe8gQpKCYRkoX14j
-	 LvneFVsSu1RodNdScVOQ5TVgXF5b1xWsJS9nWb+I3iltNgj/+MCmhToKNVdJqbh2RI
-	 h23+znRz23BEhUu0L73vb612o+3k4EFG/uxEQxg9my8iFQ9AkHQinx7FR9j3Y3vNxr
-	 njIfBVM7/eF7T/yaTmzU0N5UQT1sLnFvYHUHFO890GhDfqij+efMGvTc4/gJWCkZWp
-	 JFR8Lw/aPCtMaZFR85rQIgxSsPW9ViCTpPDd+pil4NysR24K9lmfAzlZA8RpixDW+L
-	 EhJzFVvqN25VQ==
-Received: by mail.feshiecree.pl for <linux-mtd@lists.infradead.org>; Thu,  6 Apr 2023 07:50:28 GMT
-Message-ID: <20230406074501-0.1.1v.6uyr.0.52nr3qo8jp@feshiecree.pl>
-Date: Thu,  6 Apr 2023 07:50:28 GMT
-From: "Krystian Wieczorek" <krystian.wieczorek@feshiecree.pl>
-To: <linux-mtd@lists.infradead.org>
-Subject: W sprawie samochodu
-X-Mailer: mail.feshiecree.pl
+	Thu, 06 Apr 2023 09:08:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U9YyCxr4m8wvaNz2aMqzg164bWqcxVUmJUrt56gw+zH2g9DCVR0se7bhTo1woVboiG+buqCPjm+kWi+D4PoMjcrbY1SUBJqSEo2mHa8FjB6eW/hUvKew+xEpmegQpGWZGvBuzIVEPVTvYOdtwaH0HqFC1S6DJXSSJANeW2BO51+LuDPVJ9tbE/QyB7zbpR1rVOm1Kwed902vZm1+7FINlKiL6tOd3p71e1PZjgTpJhy390SZJ02vEBLtJFy+pZpbXF4HvMI4LHp6As/+zmMkrlMoalwo3X/yb/B4Dvit21HHo1ka6rtmQCftGg4RYwCBZ+SXhdWwnxC1k0qw9G2QsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3gNkgn5Dhn7nDeVCPPldJ99/DwNjrqWATiDop0xHxys=;
+ b=cuT6yrFhCX7l8kASxCEFbY8ZpmZm1umKONvQwweYH9Xe2OXboSHskj+hnewoXFq14a2gZy4puvw070/l+QjfiqHNBTmKZrHuOtO52p0FLaZD6rDuifVzhc6E/ptqafEtwch9a7A+9fttF6qu+ebP6A6IkEuBvp5ASuP5Eh4dnE7gr9IgwDsmdDeSM5OetZvs3VFIKW2Y+W6aTrd8JVkAErhlV9DNdpBFixhGCEEaMAEjQdGD81DMhwmkMURlCR+gXgYp3URbwoZMQ3Do7APX2jQLcoIoRFc4mllmpAKFrCp3vLDgjbfu1XK8SKWpC1es6L54QNLpv+zQOX8IV469FQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3gNkgn5Dhn7nDeVCPPldJ99/DwNjrqWATiDop0xHxys=;
+ b=evLyFQiRLvL4RMjh54MV/g0Nby27FNXQ+yWK0BUxjQqYmxBEaw8CyMHZ85EHfTIGYOn85d/WG9WDyuRCPGQGg6QCSeJQMekB1+tIQXp0w4s//zkj0LTYscQS5erQseJfJV7ZVpUomaZlR9Q9mybsU6WAs5OgpaIyL0N28jfexdSWPRRWwT64v41g6pWwCLZ2d8/jwyE0ukcqw7+penFLOAcIGQSe4soeni64tqhzt+k1EbvDG2W6ELwm7AtT+HwNkymW3ZZHAwzduc6fjmIldSrbsSuE5zeGkI9Jbf7TQxo4bbawC1m2vKERCQ0VgOmkubeV8Q/BKvYfx3+phQ1kiA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from TYZPR06MB5275.apcprd06.prod.outlook.com (2603:1096:400:1f5::6)
+ by SEYPR06MB5086.apcprd06.prod.outlook.com (2603:1096:101:56::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.33; Thu, 6 Apr
+ 2023 09:08:23 +0000
+Received: from TYZPR06MB5275.apcprd06.prod.outlook.com
+ ([fe80::16db:8a6e:6861:4bb]) by TYZPR06MB5275.apcprd06.prod.outlook.com
+ ([fe80::16db:8a6e:6861:4bb%5]) with mapi id 15.20.6277.031; Thu, 6 Apr 2023
+ 09:08:23 +0000
+From: Yangtao Li <frank.li@vivo.com>
+To: frank.li@vivo.com,
+	chengzhihao1@huawei.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	richard@nod.at
+Subject: Re: [PATCH] ubifs: remove unnecessary kobject_del()
+Date: Thu,  6 Apr 2023 17:08:13 +0800
+Message-Id: <20230406090813.24111-1-frank.li@vivo.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20230405130747.66006-1-frank.li@vivo.com>
+References: <20230405130747.66006-1-frank.li@vivo.com>
+X-ClientProxiedBy: SG2PR04CA0180.apcprd04.prod.outlook.com
+ (2603:1096:4:14::18) To TYZPR06MB5275.apcprd06.prod.outlook.com
+ (2603:1096:400:1f5::6)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR06MB5275:EE_|SEYPR06MB5086:EE_
+X-MS-Office365-Filtering-Correlation-Id: 29561f3c-c3ea-4f55-9b4c-08db367e791f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	zOkRkxB5XqRAhPVr7YMZuV7woj8S5CMzJ4clY1ZRuTHu91LpnBj1eGMbjkxS7nVn+Vc47O8kTvu7FIzlBYNqwWsnU1Ya17ekp3Ia6QH54z1VgtdaD7mMU84qJjSG428Q9pDTKvYCOJNPjl5Pzs3gAfQ2ARTYlgin2nO7iRvSgFNpGHiRvnK9BVl8rVbxf/DoZcFVpb7Mw5b35a3JdFeY9PUROhooqB+ZW4u2lwi9FRxgjqq6VoE9/VsUKwilvuY8G+j+Uyeud1gZKhah7p/3syZN2+865tuwRrcn2jMgt3yuGFX8+PgEQ5X+KXJ2ailbEKcjyU5jxIuWBScW/JoKJ0dM8pKdmKON99R7UyVDvAt0bHy0JOjF/QW1/Ds8eFNPoeZQMsgJl8/2zsNnmfBcEdm/zDl8yQzoM0BkSPiVxCmeGBISIBPFXgxcjH8JVFEtnCVD8PjQ4Xk+jmSzA4+5Qy9ZLwFzZe8Q9q9e0FgRuxlICFHTLkwKe7K/j9D/GKuxo4rkkAYl6TbdvrtKHTK6PRntC1tM6GpAhjXjR1S+Kmk2+uQy9vwXORzbFFSuaTTv29uw1j2fWHpe5LbwhMYuijwZeLD2CY+01KZAEaAh2LsYRljjMfrxVG9Je+cTZQPU
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB5275.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(396003)(346002)(136003)(366004)(451199021)(52116002)(26005)(6666004)(66946007)(36756003)(6506007)(2616005)(316002)(1076003)(4326008)(41300700001)(478600001)(8676002)(38100700002)(6486002)(66556008)(66476007)(38350700002)(6512007)(558084003)(2906002)(86362001)(5660300002)(8936002)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?I50nUcYcR3uomZdTsop5yG8/PdVvs1Qz1CbGjw5VGH5dioqZl5sEpZ81ds2X?=
+ =?us-ascii?Q?IaUzb/BTEF8Mr/P6UGi03ZVzjkYMzPZtwKEhBjDbCHXrmac42F8w+j433l4K?=
+ =?us-ascii?Q?5dEKltSc3gMvwv+4uwX/Ubkjbvjmax3/3X73RDptBvWVvycURrRfRQdL3H0v?=
+ =?us-ascii?Q?a9UGJzmDkc1g1PD7Mf1lTggFRP6Zsz+hnRUmhxlFJI4MEoEHQkNJbF3NUpdc?=
+ =?us-ascii?Q?dMHhgU/ItUic1OwegAbdn6Ru4gUPW0xBjqoW1TSOd863KgoFw1E0g4IAjC6B?=
+ =?us-ascii?Q?lOLkny6hF9YRCGyUQEXSQu32GjKybsEs1HmN9JVjrDsTkjr/LZjjREMtU/Z9?=
+ =?us-ascii?Q?RrC9IM8viPk5MuPmzsUiSF4o4q21uHjVs/QFB64d0NAWGqeRx63mn8d1vEo7?=
+ =?us-ascii?Q?/yZGeZFl+nVXiw59MqwLkMCIUcPmxhLsymYt4mFFNVMEJNDQhgTpFA4gUUjl?=
+ =?us-ascii?Q?mL4rm28H+OVdhXMwWgyo83+9kcjzHa4Cc9cZQcGTotiEbeAqI0dU5wpKp04f?=
+ =?us-ascii?Q?sH7yGYlyXK0EQQBnLrzJpNOgVOw6FLFTsHmnr6BM5DUGXtp5NCDt7rvDbgHR?=
+ =?us-ascii?Q?aXLTRiET7ZGV6xK2gQwA7/kuATZOR2rylz2o37OG3cPkGdYg7fmL/5m2MnJQ?=
+ =?us-ascii?Q?YGbLxpJdSzjEwYGcDqW68O+HqATi966mXTeQdObtH2LeG6USdXVUSrGAVWJC?=
+ =?us-ascii?Q?lWZFzL2SsSX4P0ArXrQsbTA3nhIoiFgfIVlDWvh58GcJAjaVmIWKJYU7UHsw?=
+ =?us-ascii?Q?IG/WEGHLESAo2KwApFvUX3guh1xuTnMxMDjnKa4E5utNa0u1z4HUwuXXBXdB?=
+ =?us-ascii?Q?FpXxQWAbaWYbwDIrctKsLGWuS+fg7PtWn5nhaxsBVu4hS8+D7cXz71zSK1Cc?=
+ =?us-ascii?Q?JCsZ9n1KGgC7+Nj3YkvROu75qMt1JDdvAy/kluVemkORYpkAy90miZFq+fYU?=
+ =?us-ascii?Q?5F577QrQ1FhEc52J0MA3tf10zqw0kHk64q6Dm6ebDrI7N13bPyr9nAhSjPHh?=
+ =?us-ascii?Q?FwXqLM0vsbBKzyNoQN/PwK9MtpnMa8NSpWADlj0wdbYskFLubfIbs4LE5AuG?=
+ =?us-ascii?Q?SH9pYAH5avr1As/qKiJanlEHM6PEMNrx1B9kuRiyv3lIQPXhDU2UPQV7VTaV?=
+ =?us-ascii?Q?jpjMEnL83Hhcu1AMCST5gRy/CPpd2bQDx/Z0I3BTxnMVBR4txgFtNPtxEHBn?=
+ =?us-ascii?Q?WH4iZHoF2TGMbJ/LUzrBIdtzFMVRtI62DyosmQjt/QoD9cNm61o6abjzffnT?=
+ =?us-ascii?Q?jNjkM97mYwVo6y4ohbNF5K2qIsNX8QTxyn8nZGnjYn85UYpDcJmk3+iNRFGv?=
+ =?us-ascii?Q?UId0KGxYN9+0R9GAer3o7ecYrrC1GSVeBpt1XGzMNfT9pKmsteW4B70BJKRk?=
+ =?us-ascii?Q?jVRh3AWWS9vZ4X5MKQ55d6ohjna39EN831eYpxaPGPRpqZgQ5IandTOjSINx?=
+ =?us-ascii?Q?yko+zg4focpv900Idr3y/BMCc/tBv5mUHCqzmgfLzHrpjVt+ij3Z6yTeq6zD?=
+ =?us-ascii?Q?5esZiVNaBCrg12DCicHUFsXgm6c1GY4K3C9zJawmFb/xnmpOPZm9Wglqcvv8?=
+ =?us-ascii?Q?Ge7HU0zy87At4Jg15PDfPe/UdTK8gIJxLCoAL+bY?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29561f3c-c3ea-4f55-9b4c-08db367e791f
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB5275.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2023 09:08:23.2170
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Pj5fkt9bMB2z9423ukN4/NQtOkCeCy69bcGabkFvsi3JRkxbWtvLdHxgBC/5UtS6HjcQ7UblIPWC+DufTCgQ4Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB5086
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230406_085625_838504_F33120E1 
-X-CRM114-Status: UNSURE (   1.75  )
+X-CRM114-CacheID: sfid-20230406_020834_571309_FD3C4CD9 
+X-CRM114-Status: UNSURE (   5.03  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -77,23 +130,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RHppZcWEIGRvYnJ5LAoKY2hjaWVsaWJ5xZtteSB6YXBld25pxIcgUGHFhHN0d3Uga29tcGxla3Nv
-d2Ugcm96d2nEhXphbmlhLCBqZcWbbGkgY2hvZHppIG8gc3lzdGVtIG1vbml0b3Jpbmd1IEdQUy4K
-ClByZWN5enlqbmUgbW9uaXRvcm93YW5pZSBwb2phemTDs3cgbmEgbWFwYWNoIGN5ZnJvd3ljaCwg
-xZtsZWR6ZW5pZSBpY2ggcGFyYW1ldHLDs3cgZWtzcGxvYXRhY3lqbnljaCB3IGN6YXNpZSByemVj
-enl3aXN0eW0gb3JheiBrb250cm9sYSBwYWxpd2EgdG8ga2x1Y3pvd2UgZnVua2Nqb25hbG5vxZtj
-aSBuYXN6ZWdvIHN5c3RlbXUuIAoKT3JnYW5pem93YW5pZSBwcmFjeSBwcmFjb3duaWvDs3cgamVz
-dCBkemnEmWtpIHRlbXUgcHJvc3RzemUgaSBiYXJkemllaiBlZmVrdHl3bmUsIGEgb3N6Y3rEmWRu
-b8WbY2kgaSBvcHR5bWFsaXphY2phIHcgemFrcmVzaWUgcG9ub3N6b255Y2gga29zenTDs3csIG1h
-asSFIGRsYSBrYcW8ZGVnbyBwcnplZHNpxJliaW9yY3kgb2dyb21uZSB6bmFjemVuaWUuCgpEb3Bh
-c3VqZW15IG5hc3rEhSBvZmVydMSZIGRvIFBhxYRzdHdhIG9jemVraXdhxYQgaSBwb3RyemViIG9y
-Z2FuaXphY2ppLiBDenkgbW9nbGliecWbbXkgcG9yb3ptYXdpYcSHIG8gbmFzemVqIHByb3Bvenlj
-amk/CgoKUG96ZHJhd2lhbQpLcnlzdGlhbiBXaWVjem9yZWsKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+> I think we should still reserve the 'redundant' kobject_del(),
+> removing it won't bring any performance improvement.
+
+Since it's redundant, why not to remove it.
+
+Thx,
+Yangtao
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
