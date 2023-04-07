@@ -4,96 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 524D7C76196
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Apr 2023 08:11:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BFE1C77B61
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Apr 2023 17:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wkD08yUVHfitBGfpZHpElv/DCwxNSSDVx/A3xxvOuYQ=; b=dY6ZgzPLV7jdCA
-	ZT+XADcL/f93Q9TJwrVIbvX4xaIeaqA9uV6cNPJnzSXJDmFbAU+Fn2Cvt7pg341LfLLnDEHGSaYnJ
-	mR/arMHz+oRQmZ/Ou2Wr1lipEF8LPyzlfHylAzgP5uBntpZkggJBSmHEhJL2mlJizosCBXxiKgMgY
-	IRpuiPfCWIw1Uwjmep0sxWsWIlwjLqplNk16uMk1ENEV/jFc+Ev+kYv/n5oIrIxVxs75HFKRvEIur
-	JeI+VTOqi1fkHTr9JvSRUvNpu2GOcyB/wkP22wA9OTHKHX7DyYwakfeaSKxrYCSeGAptXFz3uBdq0
-	ZfjhcG215dfUCll5m+nw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7nCaIK+7Il2w+8PpjrHxwEXPMBmRb5+kXUj2ArwJdug=; b=U06lNsBycmu4yF
+	E0ZtIFh0TJklrOYaINTxtDd7d6JvIU2Rbq4hqCeQm8IGTRwHX2VloNJT6ij80MGtdLq4m2EPLRSWu
+	5BWk8XAQ+zo9S4yQy9aFnXVFMNC5aPuSDN+03XyRlDgR44DjIXD2axXA5CzZI+jJZI/na17CDer+P
+	Vst/XAAiaSbztHiTwMKcrVYw0gcJlvf2hZPkvcQubLVrYwj+evOC5tSwJuzxstRvXJtms6dt0K8qF
+	fJ+vdD08tHuyEWopMcRpfzcGM27L4LFvJsYjnNRwM9kKVFQcDnttUcM/1US0wxI1U7KYy5ZNXpUFq
+	buxKM/ufLyhDI5pNHu9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkhBf-009SBD-13;
-	Fri, 07 Apr 2023 08:11:11 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1pkpWH-00Am2Q-1T;
+	Fri, 07 Apr 2023 17:05:01 +0000
+Received: from smtp-out1.suse.de ([195.135.220.28])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkhBZ-009S8w-2Y;
-	Fri, 07 Apr 2023 08:11:08 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id D70776000C;
-	Fri,  7 Apr 2023 08:10:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1680855059;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k62lE0Z84brwUbN0RTewMQPHSeeiOVUlnJEgkCzQsvo=;
-	b=R9CLiy5G5LdE9BO36N204fuspyAxiiF7TmcabLrbwrQPeoEl5Pn0pcw2pa9LFURAj+yhqS
-	Ku6ulo+yoPDqo0ywa6hZxIhfMa2hfrKY6oIoCe+v26HM6BlIqcgn8p8u0WJDFU+gYVyAOT
-	iWOVTokLobBTMlDhc5L2oqSRq3pJIdqQ+s5IqSFwu1iEWL1rH1J0xX63ZpwsrUgxYtF5VC
-	JMA7zniKULdwaW97f/g6p4Ec2AzETlg0EBYuF+OIU67+xs5aqnBUa8bo0FWsfGskdfArda
-	sO7wxwa4nSLUU/oHmfv/0zUTbea+upPaTGkKYKQ1Sq0BSBr1Ah5yUIuIzPRbHA==
-Date: Fri, 7 Apr 2023 10:10:43 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Kyungmin Park
- <kyungmin.park@samsung.com>, Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Tudor Ambarus <tudor.ambarus@linaro.org>, Nicolas Ferre
- <nicolas.ferre@microchip.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Claudiu Beznea
- <claudiu.beznea@microchip.com>, Yang Yingliang <yangyingliang@huawei.com>,
- ye xingchen <ye.xingchen@zte.com.cn>, Valentin Korenblit
- <vkorenblit@sequans.com>, Wang Weiyang <wangweiyang2@huawei.com>, Pali
- =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>, Marek =?UTF-8?B?QmVow7pu?=
- <kabel@kernel.org>, Han Xu <han.xu@nxp.com>, Harvey Hunt
- <harveyhuntnexus@gmail.com>, Paul Cercueil <paul@crapouillou.net>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, Vladimir Zapolskiy
- <vz@mleia.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Dmitry Torokhov
- <dmitry.torokhov@gmail.com>, Liang Yang <liang.yang@amlogic.com>, Neil
- Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Phil Edworthy
- <phil.edworthy@renesas.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- Chuanhong Guo <gch981213@gmail.com>, Roger Quadros <rogerq@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Manivannan Sadhasivam
- <mani@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Linus
- Walleij <linus.walleij@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- Miaoqian Lin <linmq006@gmail.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Christophe Kerello
- <christophe.kerello@foss.st.com>, Jack Wang <jinpu.wang@ionos.com>, Chen-Yu
- Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel
- Holland <samuel@sholland.org>, Stefan Agner <stefan@agner.ch>, Lucas Stach
- <dev@lynxeye.de>, Thierry Reding <thierry.reding@gmail.com>, Jonathan
- Hunter <jonathanh@nvidia.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, Jerome
- Brunet <jbrunet@baylibre.com>, linux-amlogic@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-mediatek@lists.infradead.org, linux-oxnas@groups.io,
- linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-rockchip@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev,
- linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 00/49] mtd: nand: Convert to platform remove callback
- returning void
-Message-ID: <20230407101043.299f5e22@xps-13>
-In-Reply-To: <20230401161938.2503204-1-u.kleine-koenig@pengutronix.de>
-References: <20230401161938.2503204-1-u.kleine-koenig@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1pkpWF-00Am1p-0U
+	for linux-mtd@lists.infradead.org;
+	Fri, 07 Apr 2023 17:05:00 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 55AEC21D72;
+	Fri,  7 Apr 2023 17:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1680887095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OP+WQoqp5N6LD5bTBcxYrhZCAveaV/0KikGNAEyK220=;
+	b=Rl5rPqtWZskhI9Ty3Bk7hN3/0M3GBUF9uKToD4wVcKEd0o0uUr9rnL7alvC7FZoYg3J73r
+	65nuOW38/cVxkB7kI9TsXHA/xAcLQ3cFCd2U4brzPx1P2s/GaxcX/d3s0HT5HjW97LaFIm
+	RJNyNvr0NMtui5s0b4cOHc57dp98NqQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1680887095;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OP+WQoqp5N6LD5bTBcxYrhZCAveaV/0KikGNAEyK220=;
+	b=akaAwtwzT4XP6KUz0DCzUUe08sh+JE8HKAjMiuke0R2hFKA2vmj6S7tj3cWabWyxZ4Uorc
+	wxtiUUhpCbQChBCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B2ED133FE;
+	Fri,  7 Apr 2023 17:04:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id hOzGBDdNMGR4PAAAMHmgww
+	(envelope-from <jdelvare@suse.de>); Fri, 07 Apr 2023 17:04:55 +0000
+Date: Fri, 7 Apr 2023 19:04:53 +0200
+From: Jean Delvare <jdelvare@suse.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH RESEND] mtd: onenand: omap2: Drop obsolete dependency on
+ COMPILE_TEST
+Message-ID: <20230407190453.66efdf9d@endymion.delvare>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.34; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230407_011106_135204_BF8CB17C 
-X-CRM114-Status: GOOD (  15.19  )
+X-CRM114-CacheID: sfid-20230407_100459_355837_0B96B413 
+X-CRM114-Status: GOOD (  13.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,44 +85,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVXdlLAoKdS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlIHdyb3RlIG9uIFNhdCwgIDEg
-QXByIDIwMjMgMTg6MTg6NDkgKzAyMDA6Cgo+IEhlbGxvLAo+IAo+IHRoaXMgc2VyaWVzIGFkYXB0
-cyB0aGUgcGxhdGZvcm0gZHJpdmVycyBiZWxvdyBkcml2ZXJzL210ZC9uYW5kIHRvIHVzZSB0aGUK
-PiAucmVtb3ZlX25ldygpIGNhbGxiYWNrLiBDb21wYXJlZCB0byB0aGUgdHJhZGl0aW9uYWwgLnJl
-bW92ZSgpIGNhbGxiYWNrCj4gLnJlbW92ZV9uZXcoKSByZXR1cm5zIG5vIHZhbHVlLiBUaGlzIGlz
-IGEgZ29vZCB0aGluZyBiZWNhdXNlIHRoZSBkcml2ZXIgY29yZQo+IGRvZXNuJ3QgKGFuZCBjYW5u
-b3QpIGNvcGUgZm9yIGVycm9ycyBkdXJpbmcgcmVtb3ZlLiBUaGUgb25seSBlZmZlY3Qgb2YgYQo+
-IG5vbi16ZXJvIHJldHVybiB2YWx1ZSBpbiAucmVtb3ZlKCkgaXMgdGhhdCB0aGUgZHJpdmVyIGNv
-cmUgZW1pdHMgYSB3YXJuaW5nLiBUaGUKPiBkZXZpY2UgaXMgcmVtb3ZlZCBhbnlob3cgYW5kIGFu
-IGVhcmx5IHJldHVybiBmcm9tIC5yZW1vdmUoKSB1c3VhbGx5IHlpZWxkcyBhCj4gcmVzb3VyY2Ug
-bGVhay4KPiAKPiBCeSBjaGFuZ2luZyB0aGUgcmVtb3ZlIGNhbGxiYWNrIHRvIHJldHVybiB2b2lk
-IGRyaXZlciBhdXRob3JzIGNhbm5vdAo+IHJlYXNvbmFibHkgYXNzdW1lIGFueSBtb3JlIHRoYXQg
-dGhlcmUgaXMgc29tZSBraW5kIG9mIGNsZWFudXAgbGF0ZXIuCj4gCj4gQXMgYWxsIGRyaXZlcnMg
-YWxyZWFkeSByZXR1cm4gMCBpbiB0aGVpciAucmVtb3ZlIGNhbGxiYWNrLCB0aGV5IGNhbiBiZQo+
-IGNvbnZlcnRlZCB0cml2aWFsbHkuCgpJJ3ZlIGxvb2tlZCBhdCB0aGUgZGlmZmVyZW50IHBhdGNo
-ZXMsIHRoZXkgbG9vayBnb29kIHRvIG1lIGJ1dCBhcyB0aGV5CmFyZSBhbGwgdHJpdmlhbCBhbmQg
-ZXhhY3RseSBpZGVudGljYWwsIHdvdWxkIHlvdSBtaW5kIHNlbmRpbmcgdGhpcwphZ2FpbiBhbGwg
-c3F1YXNoZWQgaW4gYSBzaW5nbGUgcGF0Y2g/IEEgc3Vic3lzdGVtLXdpZGUgY29udmVyc2lvbiBz
-ZWVtcwphcHByb3ByaWF0ZS4gSW4gYWxsIGNhc2VzIEkgcGxhbiB0byB0YWtlIHRoaXMgZm9yIHRo
-ZSBuZXh0IG1lcmdlCndpbmRvdy4KCkkndmUgY29sbGVjdGVkIHRoZSB0YWdzIHJlY2VpdmVkIHNv
-IGZhciBpZiB5b3Ugd2FudDoKCkFja2VkLWJ5OiBOaWNvbGFzIEZlcnJlIDxuaWNvbGFzLmZlcnJl
-QG1pY3JvY2hpcC5jb20+ICMgYXRtZWwKUmV2aWV3ZWQtYnk6IFBhdWwgQ2VyY3VlaWwgPHBhdWxA
-Y3JhcG91aWxsb3UubmV0PiAjIGluZ2VuaWMKUmV2aWV3ZWQtYnk6IFBoaWxpcHBlIE1hdGhpZXUt
-RGF1ZMOpIDxwaGlsbWRAbGluYXJvLm9yZz4gIyBpbmdlbmljCkFja2VkLWJ5OiBNYXJ0aW4gQmx1
-bWVuc3RpbmdsIDxtYXJ0aW4uYmx1bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tPiAjIGludGVsClJl
-dmlld2VkLWJ5OiBNYXJ0aW4gQmx1bWVuc3RpbmdsIDxtYXJ0aW4uYmx1bWVuc3RpbmdsQGdvb2ds
-ZW1haWwuY29tPiAjIG1lc29uCkFja2VkLWJ5OiBSb2dlciBRdWFkcm9zIDxyb2dlcnFAa2VybmVs
-Lm9yZz4gIyBvbWFwClJldmlld2VkLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVz
-YXNAZ2xpZGVyLmJlPiAjIHJlbmVzYXMKUmV2aWV3ZWQtYnk6IEhlaWtvIFN0dWVibmVyIDxoZWlr
-b0BzbnRlY2guZGU+ICMgcm9ja2NoaXAKQWNrZWQtYnk6IEplcm5laiBTa3JhYmVjIDxqZXJuZWou
-c2tyYWJlY0BnbWFpbC5jb20+ICMgc3VueGkKQWNrZWQtYnk6IFRoaWVycnkgUmVkaW5nIDx0cmVk
-aW5nQG52aWRpYS5jb20+ICMgdGVncmEKCkJUVywgdGhhbmtzIHRvIGFsbCBvZiB5b3Ugd2hvIHJl
-dmlld2VkIGFuZCBhbnN3ZXJlZCB0byB0aGlzIHRocmVhZCEKVGhpcyBpcyBoaWdobHkgYXBwcmVj
-aWF0ZWQuIAoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Since commit 0166dc11be91 ("of: make CONFIG_OF user selectable"), it
+is possible to test-build any driver which depends on OF on any
+architecture by explicitly selecting OF. Therefore depending on
+COMPILE_TEST as an alternative is no longer needed.
+
+It is actually better to always build such drivers with OF enabled,
+so that the test builds are closer to how each driver will actually be
+built on its intended target. Building them without OF may not test
+much as the compiler will optimize out potentially large parts of the
+code. In the worst case, this could even pop false positive warnings.
+Dropping COMPILE_TEST here improves the quality of our testing and
+avoids wasting time on non-existent issues.
+
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+---
+Even though this was supposedly accepted a few months ago already, I
+can't find this commit, neither upstream nor in the nand/next,
+therefore resending.
+
+ drivers/mtd/nand/onenand/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-6.2.orig/drivers/mtd/nand/onenand/Kconfig
++++ linux-6.2/drivers/mtd/nand/onenand/Kconfig
+@@ -25,7 +25,7 @@ config MTD_ONENAND_GENERIC
+ config MTD_ONENAND_OMAP2
+ 	tristate "OneNAND on OMAP2/OMAP3 support"
+ 	depends on ARCH_OMAP2 || ARCH_OMAP3 || (COMPILE_TEST && ARM)
+-	depends on OF || COMPILE_TEST
++	depends on OF
+ 	depends on OMAP_GPMC
+ 	help
+ 	  Support for a OneNAND flash device connected to an OMAP2/OMAP3 SoC
+
+
+-- 
+Jean Delvare
+SUSE L3 Support
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
