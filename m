@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9BF8C76196
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE979C6FD1D
 	for <linux-mtd@archiver.kernel.org>; Fri,  7 Apr 2023 06:42:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,71 +12,71 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qEDsobKtN1ueBJP9+yI8TfgoSBuksAhHJfeIrnobEx4=; b=NtM4MkCtJT1T8v
-	iaZiO0DZXkJfMnEXsgKg11k+seejAGfIIRwaYazeZmaJOcTGIxdYg39F6pL1diFPo5p+4uXNMOsTF
-	cRtXrLSDRaJFJKx6p+4IkKu+I6vdPFe5cRnGozWdRVJfl/9tr6lA+yb5Ue0JQ+ZxtVjXf7+fTBh1I
-	uBs2WjyKNHi+1MEiu1Jo+mqSTaXQWKKRCYAWw82RIlOdNG95fss6eM9oVtAM7Ijcuj/a4WF++T8i9
-	rWqt7aW2Y0SUnSSdd4sOtQg6Wcy9ymzr2uA7oCBmxrEtlFaPyV4x7V2ym0gOF2MG7qbVVO6YnOMA8
-	b+/R5le4K5wXBKQVI7Qg==;
+	List-Owner; bh=zc+F1MlPDsp3nWQfAWJY6EO64r71F8b2wC7wY39XI1w=; b=WcKtbwngFplhfU
+	vIU8IRzdisizEfBhRUqeAcGThWi9xzDLsaP/25SePkONXATI1AU9mBTguK0wwCS9/p+IaVH+yQ9Tl
+	IZbRFY03+6LeU02T2eTVH/YK11t8C4qXSyG40/DKGfp/Tm5p+yOtmF6molwxZvbfMbiB2zhAHH5zE
+	vD7nr4Fm1GhmbwQO5MZduCQgw9Y9+TfphiXCCLHgDt64PAnZAFntJhHF/IeF5P633L7/S67dKYky/
+	ADlZFoDOsC3ky6alsMF8pWvwtmhuwjbOSRRnirnBE2x6gJq5zyOuQGYiye0b/pKtG7WxDEJ/eTgWl
+	TjxdRqU1WKs0G1UAoYZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkfna-009IKh-2h;
-	Fri, 07 Apr 2023 06:42:14 +0000
+	id 1pkfnZ-009IJo-0L;
+	Fri, 07 Apr 2023 06:42:13 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkfnY-009IJQ-2i
+	id 1pkfnX-009IJ3-2H
 	for linux-mtd@bombadil.infradead.org;
-	Fri, 07 Apr 2023 06:42:12 +0000
+	Fri, 07 Apr 2023 06:42:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=rvgjszv7qkNvEncCzwl0KVYudw8TWRShvYmCZby+Eo0=; b=bNoY8cFkN8MPcKVYGHCvF5TE43
-	bYCKdUTDQHDxu+PclZ0Zriz6QAx4bIsfKCk1KEOtyvR9CZpHUvOo6psHcUuZHvWdSmI2YQq0dplFO
-	3++syLRH9ksS3RVMRdCSUPaeWJp5gx/2eylO5qJU4P4bwdBoDdNlUGpqMlGVxztVZyxMqe3gnM1Wn
-	9s/5P+s7uwrJ4fnym1JvShStaFsXJntJjuOQWdiu+rsi9WvRftH5zAs/RqhGcqe5ivqH0mFWli3IC
-	u3/ScC/fIPTDgsMk+4QgTppWxvkcwtmxpnCcrfGHdu/SOxe4m9uljjtHKV4NKZiHjLlsMtwJ1lmOY
-	cE5mZD6Q==;
-Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	bh=l5qNLrlyHyG7Nplbz8tqvhzEVmTmr0S/5njiSbBjBAI=; b=F69Yfe6USFM1dd+NUnb9ZJK45r
+	WA78NpP7cW5f0vRjKpa54o2VUDi6CGy3lyK9AGYAUg3zvBqjUkh7qVNMBfBOs2I3IMoFb76to6fPo
+	fhNDyJERzhO4dS9zlUCoaLlxWc6D0OFdHZiN7xvH4KDyqWLife79DWRU1Tb1L5jEmr0RIeuWztx8L
+	j/rBlXwOosCQB55iZA+AhvG06ovnKR46G+Dwzk4Vl9+twjlievWEXoHGZ6UUVuxBz3xMwG2apukBp
+	i4tg4OCz0jcN/JyBe6DQv6MKAunWVC/lHhWrcyJBnJCVc6d6ADt7ELYOIZ5mRe0KQJfDYbwBoYeC6
+	31vL2WkA==;
+Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkfnQ-00AwYh-30
+	id 1pkfnO-00AwYU-2F
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Apr 2023 06:42:11 +0000
-Received: by mail-pj1-x102c.google.com with SMTP id x15so39097702pjk.2
-        for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2023 23:42:04 -0700 (PDT)
+	Fri, 07 Apr 2023 06:42:08 +0000
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1a4f88a0bd1so699685ad.0
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Apr 2023 23:41:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680849722;
+        d=gmail.com; s=20210112; t=1680849718;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rvgjszv7qkNvEncCzwl0KVYudw8TWRShvYmCZby+Eo0=;
-        b=TgKX1n6f2eE6VFWwZiWyFigsPERBtobVTGwZTG6stpKioFnsoBHEEeA5Jr76gYut8i
-         HxWh0k2W3ZHgMTppwLPef+nKqKPGul3ycCnehgVAUGda0JzFIZfCxuQe7JnzTqi7O/0Q
-         rRYJ2wgMRzy2HcylojSf1mCFl9OM2nAFjw/MxWMVtX9VYk9m9ylUPTC+s/T667oQrEhB
-         1vn3iMll5HmojZ46iz4FWo132iO1U18kJJCWRxAlneormFsa/QB6Bhfn2eQ7RtmlvTX3
-         9gU6eD0zUtM1fIJTv0JpfyZr9QkPRL+HLgkRpPJZvMnCeLuRUfvZPahPQ0yHgWMBInck
-         NVkw==
+        bh=l5qNLrlyHyG7Nplbz8tqvhzEVmTmr0S/5njiSbBjBAI=;
+        b=eH967IcP0kCn3LbEX97bILCMguuvFFk4zpdO5/4gHQi7lKDeqtV3lhmiUAv1HGJoDc
+         oJlsk0/4HK+nR7CPKNUHYNb9r5KuoK5I0pd1lQpnTkxjNDXQspPpNGqf4x0nO8FNs7MO
+         Yb7P0Y/fFsiHW+N0EDCoEsS9RTeQY6SNfJESK2YwbNLTApA2TflT4gaJFzr2YZiMNdvy
+         4V1aP0cLi4GqmkQI+F6EEsHsw2VN0vu0chSzMZGBll9zMoc2gLegi+ws4N3VsLwNsZu3
+         EMaO4ymUEA9PSWmEpBd3y596KKfkTAFh2ZZbgFhZhYOkI5HsyB0RJswx6R9755F25VAX
+         Ehbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680849722;
+        d=1e100.net; s=20210112; t=1680849718;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rvgjszv7qkNvEncCzwl0KVYudw8TWRShvYmCZby+Eo0=;
-        b=TIv6A9vkpsFECFjmfz1lNqP6i79CMifH/x12oDZe1Ct8YcIVmgC8bIU9d8YWmGXMy1
-         RS2zXyqS19xz8ssXAUc27zu21BVjjUsDKqQ5pPWeHxHfV/PL8x5I/0UY2semgi2vOO5E
-         6KTvxM0+BUR4Xm7b8xsMLp9idIHAFYgjUS8gzb0ix02bjIBl1sK4WXzBh2o3N9faU6R5
-         YyGRCwvtI0bOZ4u5r+zLmI97IghlD94Scop4mgXZE+DlZmLDSyvk+hWZYSiV4EShBab6
-         DDMT+sHhl/B+K16Z0ac3RBS1dJnHKWJiYgWxYl00YoGwtX/hvDyyVrxidzj28VNvX0nP
-         SMfg==
-X-Gm-Message-State: AAQBX9c9Kxb9/Uu1QG435A71hVX+d2W3H5zYf1R5eLgTTY1eTe9Crm8j
-	7/nWx3z4ktGbau4GyCn7+1EtJmYKRoA=
-X-Google-Smtp-Source: AKy350a216gW3xDDYCI/c2igrKKag8nSGh67GofKcJ+F82uQxSbKTLilx2qaLkhc5a5HZrVvHapzsg==
-X-Received: by 2002:a05:6a20:4687:b0:d9:a544:e4a1 with SMTP id el7-20020a056a20468700b000d9a544e4a1mr912003pzb.9.1680849722628;
-        Thu, 06 Apr 2023 23:42:02 -0700 (PDT)
+        bh=l5qNLrlyHyG7Nplbz8tqvhzEVmTmr0S/5njiSbBjBAI=;
+        b=oqIkDczHWTuvmK/AC6rtI/75DnUMimDW0WqN4x4Bl/SE3hOIRRcyzZEnq3dKDtD/FU
+         d02+JEVZzttn/KYGWdc4ls233/vIhviTHYZCEpUL64pDmpmr1a+1Jkjij/2IJ2HPzB2H
+         zhWMqXGn8BgAbHUSAFnpWORT5/ehZwYFJmzQxbCrNq2J5VtQVMS+2XhnL+CxZtg8GBq6
+         KUO1iL5ekSJaQA7t2BYMIYh0feI3iFqcc8a7yXWdYPv/4jg8VGH5UURO7SorW2GWtJB+
+         NgIj033bfQEyhsmqPzxTPC9o7KfGYS0iKD6uywMWTt0Ct0wpyrScTXY02Zix2ZQsY3Ko
+         wrig==
+X-Gm-Message-State: AAQBX9cOhMwQquEM1XQIUJx7gHEWav1ndNRlu0qESPUoDnzAEPeG7fOV
+	Br1Fbkhi/G8U248HfPRjie6J/Zowq7Y=
+X-Google-Smtp-Source: AKy350bILaDuF971jA6XTcbQDZYyupeSDQJUOOgwnD3Hvgag3g8ICOLASG5Fbi0vDiFSmrv8zVEpQQ==
+X-Received: by 2002:a62:844e:0:b0:626:658:c998 with SMTP id k75-20020a62844e000000b006260658c998mr1629746pfd.10.1680849717832;
+        Thu, 06 Apr 2023 23:41:57 -0700 (PDT)
 Received: from ISCN5CG2520RPD.infineon.com (sp49-98-220-119.msd.spmode.ne.jp. [49.98.220.119])
-        by smtp.gmail.com with ESMTPSA id k14-20020aa790ce000000b005abc0d426c4sm2309806pfk.54.2023.04.06.23.41.58
+        by smtp.gmail.com with ESMTPSA id k14-20020aa790ce000000b005abc0d426c4sm2309806pfk.54.2023.04.06.23.41.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Apr 2023 23:42:02 -0700 (PDT)
+        Thu, 06 Apr 2023 23:41:57 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -90,16 +90,16 @@ Cc: tudor.ambarus@linaro.org,
 	tkuw584924@gmail.com,
 	Bacem.Daassi@infineon.com,
 	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v4 8/8] mtd: spi-nor: spansion: Add support for Infineon
-Date: Fri,  7 Apr 2023 15:41:04 +0900
-Message-Id: <55021d2409bf310692db0ac1c55e71ba406438a7.1680849425.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v4 7/8] mtd: spi-nor: spansion: Add a new ->ready() hook for multi-chip device
+Date: Fri,  7 Apr 2023 15:41:03 +0900
+Message-Id: <3e4a64613ee733e002279349c75083433be45bf5.1680849425.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1680849425.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1680849425.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230407_074209_128677_9CACA6FF 
-X-CRM114-Status: GOOD (  12.09  )
+X-CRM114-CacheID: sfid-20230407_074205_765675_4683B7D3 
+X-CRM114-Status: GOOD (  22.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,57 +118,154 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-s25hl02gt and s25hs02gt
-
-Add ID, flags, and fixup for s25hl02gt and s25hs02gt.
-These parts are
-  - Dual-die package parts
-  - Not support chip erase
-  - 4-byte addressing mode by default
-  - Wrong param in SCCR map that needs to be fixed
+For multi-chip devices, we need to make sure the all dice in the device
+are ready. The cypress_nor_sr_ready_and_clear() reads SR in each die and
+returns true only when all dice are ready. This function also takes care
+for program or erase error handling by reusing spansion_nor_clear_sr().
+To do that, spansion_nor_clear_sr() is moved to top.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/spi-nor/spansion.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/mtd/spi-nor/spansion.c | 109 +++++++++++++++++++++++++--------
+ 1 file changed, 85 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index deb93ab6fe98..15f9a80c10b9 100644
+index 91bc0aace516..deb93ab6fe98 100644
 --- a/drivers/mtd/spi-nor/spansion.c
 +++ b/drivers/mtd/spi-nor/spansion.c
-@@ -579,6 +579,10 @@ static int s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
- 		}
- 	}
+@@ -63,6 +63,84 @@
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_NO_DATA)
  
-+	/* The 2 Gb parts duplicate info and advertise 4 dice instead of 2. */
-+	if (nor->params->size == SZ_256M)
-+		nor->params->n_dice = 2;
++/**
++ * spansion_nor_clear_sr() - Clear the Status Register.
++ * @nor:	pointer to 'struct spi_nor'.
++ */
++static void spansion_nor_clear_sr(struct spi_nor *nor)
++{
++	int ret;
 +
- 	return cypress_nor_get_page_size(nor);
++	if (nor->spimem) {
++		struct spi_mem_op op = SPANSION_CLSR_OP;
++
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
++						       NULL, 0);
++	}
++
++	if (ret)
++		dev_dbg(nor->dev, "error %d clearing SR\n", ret);
++}
++
++static int cypress_nor_sr_ready_and_clear_reg(struct spi_nor *nor, u64 addr)
++{
++	struct spi_mem_op op =
++		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes, addr,
++					  0, nor->bouncebuf);
++	int ret;
++
++	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
++	if (ret)
++		return ret;
++
++	if (nor->bouncebuf[0] & (SR_E_ERR | SR_P_ERR)) {
++		if (nor->bouncebuf[0] & SR_E_ERR)
++			dev_err(nor->dev, "Erase Error occurred\n");
++		else
++			dev_err(nor->dev, "Programming Error occurred\n");
++
++		spansion_nor_clear_sr(nor);
++
++		ret = spi_nor_write_disable(nor);
++		if (ret)
++			return ret;
++
++		return -EIO;
++	}
++
++	return !(nor->bouncebuf[0] & SR_WIP);
++}
++/**
++ * cypress_nor_sr_ready_and_clear() - Query the Status Register of each die by
++ * using Read Any Register command to see if the whole flash is ready for new
++ * commands and clear it if there are any errors.
++ * @nor:	pointer to 'struct spi_nor'.
++ *
++ * Return: 1 if ready, 0 if not ready, -errno on errors.
++ */
++static int cypress_nor_sr_ready_and_clear(struct spi_nor *nor)
++{
++	struct spi_nor_flash_parameter *params = nor->params;
++	u64 addr;
++	int ret;
++	u8 i;
++
++	for (i = 0; i < params->n_dice; i++) {
++		addr = params->vreg_offset[i] + SPINOR_REG_CYPRESS_STR1;
++		ret = cypress_nor_sr_ready_and_clear_reg(nor, addr);
++		if (ret < 0)
++			return ret;
++		else if (ret == 0)
++			return 0;
++	}
++
++	return 1;
++}
++
+ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
+ {
+ 	struct spi_mem_op op;
+@@ -506,10 +584,16 @@ static int s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
+ 
+ static void s25hx_t_late_init(struct spi_nor *nor)
+ {
++	struct spi_nor_flash_parameter *params = nor->params;
++
+ 	/* Fast Read 4B requires mode cycles */
+-	nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
++	params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
+ 
+ 	cypress_nor_ecc_init(nor);
++
++	/* Replace ready() with multi die version */
++	if (params->n_dice)
++		params->ready = cypress_nor_sr_ready_and_clear;
  }
  
-@@ -797,6 +801,10 @@ static const struct flash_info spansion_nor_parts[] = {
- 		PARSE_SFDP
- 		MFR_FLAGS(USE_CLSR)
- 		.fixups = &s25hx_t_fixups },
-+	{ "s25hl02gt",  INFO6(0x342a1c, 0x0f0090, 0, 0)
-+		PARSE_SFDP
-+		FLAGS(NO_CHIP_ERASE)
-+		.fixups = &s25hx_t_fixups },
- 	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
- 		PARSE_SFDP
- 		MFR_FLAGS(USE_CLSR)
-@@ -805,6 +813,10 @@ static const struct flash_info spansion_nor_parts[] = {
- 		PARSE_SFDP
- 		MFR_FLAGS(USE_CLSR)
- 		.fixups = &s25hx_t_fixups },
-+	{ "s25hs02gt",  INFO6(0x342b1c, 0x0f0090, 0, 0)
-+		PARSE_SFDP
-+		FLAGS(NO_CHIP_ERASE)
-+		.fixups = &s25hx_t_fixups },
- 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
- 		FLAGS(SPI_NOR_NO_ERASE) },
- 	{ "s28hl512t",   INFO(0x345a1a,      0, 256 * 1024, 256)
+ static struct spi_nor_fixups s25hx_t_fixups = {
+@@ -741,29 +825,6 @@ static const struct flash_info spansion_nor_parts[] = {
+ 	},
+ };
+ 
+-/**
+- * spansion_nor_clear_sr() - Clear the Status Register.
+- * @nor:	pointer to 'struct spi_nor'.
+- */
+-static void spansion_nor_clear_sr(struct spi_nor *nor)
+-{
+-	int ret;
+-
+-	if (nor->spimem) {
+-		struct spi_mem_op op = SPANSION_CLSR_OP;
+-
+-		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+-
+-		ret = spi_mem_exec_op(nor->spimem, &op);
+-	} else {
+-		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
+-						       NULL, 0);
+-	}
+-
+-	if (ret)
+-		dev_dbg(nor->dev, "error %d clearing SR\n", ret);
+-}
+-
+ /**
+  * spansion_nor_sr_ready_and_clear() - Query the Status Register to see if the
+  * flash is ready for new commands and clear it if there are any errors.
 -- 
 2.34.1
 
