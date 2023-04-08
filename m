@@ -4,76 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BFE1C77B61
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Apr 2023 17:05:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA969C77B61
+	for <linux-mtd@archiver.kernel.org>; Sat,  8 Apr 2023 06:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=7nCaIK+7Il2w+8PpjrHxwEXPMBmRb5+kXUj2ArwJdug=; b=U06lNsBycmu4yF
-	E0ZtIFh0TJklrOYaINTxtDd7d6JvIU2Rbq4hqCeQm8IGTRwHX2VloNJT6ij80MGtdLq4m2EPLRSWu
-	5BWk8XAQ+zo9S4yQy9aFnXVFMNC5aPuSDN+03XyRlDgR44DjIXD2axXA5CzZI+jJZI/na17CDer+P
-	Vst/XAAiaSbztHiTwMKcrVYw0gcJlvf2hZPkvcQubLVrYwj+evOC5tSwJuzxstRvXJtms6dt0K8qF
-	fJ+vdD08tHuyEWopMcRpfzcGM27L4LFvJsYjnNRwM9kKVFQcDnttUcM/1US0wxI1U7KYy5ZNXpUFq
-	buxKM/ufLyhDI5pNHu9w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lnO0H31mRXEaxZGTwRkeS4ShACDsyWWx3XAgs00DJ+g=; b=trIi2Ti32DdVzk
+	TWuKF93xBgmdaoW8fbXdwRYtslgP3OVi+XAhKsQSksOM8+YWpnC/w9YQ4YKVK1abnKbOH4nIK4MK3
+	hDImIvqqkCDjVVEWhBZ+h0WwV8OKUb6jfDnAR/qTwL+YJqDrrAyKitVpURHAjWQRYXuNYzb1yX+Eo
+	Gmd4FJyM4TKVMYB8ZVIOyaDbhBb6EpQimd2pQAq6oMmIaBEpFC5NWBMuOsIfBXvKFPqIZow8clIeE
+	kk+NWQhKGqSAkW/VfE70fp+gPKb1vWMnkqIal/pdkbiqyZb7bFxcSXTmWIrujaYMzG10BJqvAgNNC
+	24ns4dbuo4xVCg0WT+Rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkpWH-00Am2Q-1T;
-	Fri, 07 Apr 2023 17:05:01 +0000
-Received: from smtp-out1.suse.de ([195.135.220.28])
+	id 1pl2Hb-00BpiC-2t;
+	Sat, 08 Apr 2023 06:42:43 +0000
+Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pkpWF-00Am1p-0U
+	id 1pl2HX-00BphN-0V
 	for linux-mtd@lists.infradead.org;
-	Fri, 07 Apr 2023 17:05:00 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 55AEC21D72;
-	Fri,  7 Apr 2023 17:04:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1680887095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=OP+WQoqp5N6LD5bTBcxYrhZCAveaV/0KikGNAEyK220=;
-	b=Rl5rPqtWZskhI9Ty3Bk7hN3/0M3GBUF9uKToD4wVcKEd0o0uUr9rnL7alvC7FZoYg3J73r
-	65nuOW38/cVxkB7kI9TsXHA/xAcLQ3cFCd2U4brzPx1P2s/GaxcX/d3s0HT5HjW97LaFIm
-	RJNyNvr0NMtui5s0b4cOHc57dp98NqQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1680887095;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=OP+WQoqp5N6LD5bTBcxYrhZCAveaV/0KikGNAEyK220=;
-	b=akaAwtwzT4XP6KUz0DCzUUe08sh+JE8HKAjMiuke0R2hFKA2vmj6S7tj3cWabWyxZ4Uorc
-	wxtiUUhpCbQChBCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B2ED133FE;
-	Fri,  7 Apr 2023 17:04:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id hOzGBDdNMGR4PAAAMHmgww
-	(envelope-from <jdelvare@suse.de>); Fri, 07 Apr 2023 17:04:55 +0000
-Date: Fri, 7 Apr 2023 19:04:53 +0200
-From: Jean Delvare <jdelvare@suse.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Kyungmin Park
- <kyungmin.park@samsung.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH RESEND] mtd: onenand: omap2: Drop obsolete dependency on
- COMPILE_TEST
-Message-ID: <20230407190453.66efdf9d@endymion.delvare>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.34; x86_64-suse-linux-gnu)
+	Sat, 08 Apr 2023 06:42:40 +0000
+Received: by mail-wr1-x434.google.com with SMTP id e2so380027wrc.10
+        for <linux-mtd@lists.infradead.org>; Fri, 07 Apr 2023 23:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680936156;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lO4lTAJ+r6rYSY7aBPTgFXojkUd0HTpIQju56oP+SMY=;
+        b=GsmpByu6dGoctK/jQGXgdU/se1/ZgH6CvmZyiruBoVrGQRs1kmFm/dlyruR+2WuIyj
+         cU2NIZmJH2jcoO7/eM0f7/PFpIg7J8o5zM6f5maYzp+V4PeYO4rZ2Awd776X/ZAUXN+K
+         uLMiQ7khDvHYfOCfBOafPkxKcd48uq8QLs2x3a1V+cJSQmvv8bsNoAFyLDk14SGLDw4X
+         HgCJM5OKbu+fwSVN8t/OKqbKwxE2Sr93+EqecNHN2cVpVUo5iv8goiX5SvcuHddC1neq
+         jT/MPoR4YREZ3sRm/tHbBpe1KW5Uzd+ckYJfbSz6kiBZ1f2TDR+oJcxzUYlQIix2fWxD
+         U8ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680936156;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lO4lTAJ+r6rYSY7aBPTgFXojkUd0HTpIQju56oP+SMY=;
+        b=UE407oLLK/D4mVhXP0AmcI0DD8GIFbPAI7zRu23EPWG9kNV13p5ItBVCFcUh3xYmhS
+         l1cJ1JbksoPoVFzMRvDttH4e6yefAgLv77hmvqIrgb7BdumevW0Kx3i7o15Enmw9su9F
+         /H8E84QiWuVn6cEeeUAdcoPzOF5SfjuoSX9noKam9k+8tbDtqKmTmZ/kmziiUp7c4iW/
+         /OiWqnuCzfa7bVm86HVUP08bZNyySkVDCiDh9mo3GfjRYiM2T3zugABwg3B2UAIhs1E6
+         qKADi0uRP/y6BkFlhHCbyoraFRunfxLYKpKgvCYwAIO1Ggn6F9wbYWcO4XBGvrf3iA0x
+         1LDQ==
+X-Gm-Message-State: AAQBX9el56Yj6ysKI7uGkI+QhAfGBZx/g4QIJt7Lz7qtDNOdD0Q9IhIO
+	p41aLqt1DHjVl2VEsWfPKkLrLJI8d7vRhlS3NLg=
+X-Google-Smtp-Source: AKy350bJfqHkXSOeW8P8hU2iNOIJs1JyS2Vl3fxKCwQjVOTvkx6WqSjPg1c9/4MOqh9lDqzvTkslog==
+X-Received: by 2002:adf:fd81:0:b0:2ef:1088:1100 with SMTP id d1-20020adffd81000000b002ef10881100mr557613wrr.52.1680936155723;
+        Fri, 07 Apr 2023 23:42:35 -0700 (PDT)
+Received: from 1.. ([79.115.63.91])
+        by smtp.gmail.com with ESMTPSA id k13-20020a5d66cd000000b002c707785da4sm6113045wrw.107.2023.04.07.23.42.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Apr 2023 23:42:34 -0700 (PDT)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: linux-mtd@lists.infradead.org,
+	tkuw584924@gmail.com
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	d-gole@ti.com,
+	Bacem.Daassi@infineon.com,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH v3 0/3] mtd: spi-nor: spansion: Enable JFFS2 write buffer for Infineon SEMPER flash
+Date: Sat,  8 Apr 2023 09:42:29 +0300
+Message-Id: <168093614108.51189.18186049343123725945.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1680760742.git.Takahiro.Kuwano@infineon.com>
+References: <cover.1680760742.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1035; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=Iv8u+9L0Oo7TCw+rCY+1xEknAzM64BJR8itn10hKJSI=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkMQzUF6g0SkPXeNIhVKGAeDbZoonTYGoGyQyZn boOG9JOlluJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZDEM1AAKCRBLVU9HpY0U 6RnaB/oC6HhLT5s9K+50MWaBXVlGBegxFEi58ORnsXJiA6kjSYXGivarbPrbS9xPfOLbdIP6uE5 9JLw3UV4QIJoVW73XTqepbGxK9seMQXCAsgAACW7nozhDaPXSV0G32vTMJSaSHmkPD9i/H0O+Kp JkRAM5oS7JwpZ64/GGhl2Ovqq9wwMMF8v6lSBzcdUgCVRgwp3ivHmF56u4jSHQPGQDOQ+Q4gCIC N+vB6KaBs2Tu+XNFosSFgKc3b7lGnHnM2EoOSjEG5/91WCiHG5bKdlPWQYM8S6e9JBQaRgq605t 1nXEecm2aVD/mBwg6eFWIDiZnejHyExdrJVdZ+uUSz4iiL8V
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230407_100459_355837_0B96B413 
-X-CRM114-Status: GOOD (  13.86  )
+X-CRM114-CacheID: sfid-20230407_234239_349708_5488C838 
+X-CRM114-Status: UNSURE (   8.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,48 +103,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since commit 0166dc11be91 ("of: make CONFIG_OF user selectable"), it
-is possible to test-build any driver which depends on OF on any
-architecture by explicitly selecting OF. Therefore depending on
-COMPILE_TEST as an alternative is no longer needed.
+On Thu, 06 Apr 2023 15:17:43 +0900, tkuw584924@gmail.com wrote:
+> Infineon(Cypress) SEMPER NOR flash family has on-die ECC and its program
+> granularity is 16-byte ECC data unit size. JFFS2 supports write buffer
+> mode for ECC'd NOR flash. To activate it, MTD_BIT_WRITEABLE needs to be
+> unset in mtd->flags. In this series, a new SNOR_F_ECC flag is introduced
+> and fixups for SEMPER flash pats set it.
+> 
+> Changes in v3
+>   - Split to three patches
+> 
+> [...]
 
-It is actually better to always build such drivers with OF enabled,
-so that the test builds are closer to how each driver will actually be
-built on its intended target. Building them without OF may not test
-much as the compiler will optimize out potentially large parts of the
-code. In the worst case, this could even pop false positive warnings.
-Dropping COMPILE_TEST here improves the quality of our testing and
-avoids wasting time on non-existent issues.
+Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
+spi-nor/next branch. Thanks!
 
-Signed-off-by: Jean Delvare <jdelvare@suse.de>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
----
-Even though this was supposedly accepted a few months ago already, I
-can't find this commit, neither upstream nor in the nand/next,
-therefore resending.
+[1/3] mtd: spi-nor: spansion: Enable JFFS2 write buffer for Infineon s28hx SEMPER flash
+      https://git.kernel.org/mtd/c/9fd0945fe6fa
+[2/3] mtd: spi-nor: spansion: Enable JFFS2 write buffer for Infineon s25hx SEMPER flash
+      https://git.kernel.org/mtd/c/4199c1719e24
+[3/3] mtd: spi-nor: spansion: Enable JFFS2 write buffer for S25FS256T
+      https://git.kernel.org/mtd/c/a9180c298d35
 
- drivers/mtd/nand/onenand/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-6.2.orig/drivers/mtd/nand/onenand/Kconfig
-+++ linux-6.2/drivers/mtd/nand/onenand/Kconfig
-@@ -25,7 +25,7 @@ config MTD_ONENAND_GENERIC
- config MTD_ONENAND_OMAP2
- 	tristate "OneNAND on OMAP2/OMAP3 support"
- 	depends on ARCH_OMAP2 || ARCH_OMAP3 || (COMPILE_TEST && ARM)
--	depends on OF || COMPILE_TEST
-+	depends on OF
- 	depends on OMAP_GPMC
- 	help
- 	  Support for a OneNAND flash device connected to an OMAP2/OMAP3 SoC
-
-
+Cheers,
 -- 
-Jean Delvare
-SUSE L3 Support
+Tudor Ambarus <tudor.ambarus@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
