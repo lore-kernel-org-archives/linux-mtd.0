@@ -4,60 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7327C77B6F
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Apr 2023 14:12:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7191FC77B6F
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Apr 2023 15:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=j7fwYppwozA3RoR8dz8UIMPqqnHOVbVD4GxpmE/F5iY=; b=yqeo0UyvyBNtT3
-	yVG/AwZAE75CFiwNVGJ6bKz6RjYGqp114JVVZta/f7lSTmrwvTZtH7Pyo+VM5dFL0kEehRuHbbTs8
-	ZmlPk/OS7nbvcOyyoLtNnJHV7remOESlQMZgIOGt5SOtcho5tDmdTKF13uzTzYMbPRmOPdC0+9Nvg
-	OsocHu/2Xusgky0EY3pqa4nM/v9mmFmlArjVe6fPUnR9U3AMOSqO6SzMGtB0QYGM12z4Nf+4xG5TB
-	RN+Iug7bvZjgPel1DIKDZ3g7Jbmdx78xq73cXOZ8uVIwekMsccdMHOGIoPxNTy1NrUBkXYHh5V4C2
-	RKMg0pQnyCBzqf7s5tJg==;
+	List-Owner; bh=W2BDg1ixU3vdzUCdRc2S3hP5KaDsgyHKmC/3o8CRNf8=; b=MqWMX5GGs94evL
+	h/5HVc4NviiEaK8JfAfXlMEGTKroB+Gg88KQQMLhRtckvo175yT7jOyd+Uk6fMkQ9WY7YL2gUaDxe
+	mpQBmvE+yPCz0MRg5vhrCra2DvPBotiqqoZCFDhgHArexhjaLvMH/j/FG9+OtXkk8258/K0fZg3O7
+	nubAwTZvw8W5uJgfoRBZl0rzFF+EXGOoaBVXKVkeV5aeutqZDxg4L76/Ye/heVGvne7FEQmOj3Fl3
+	AqkGja8q+l71hu4y3i3lLaK8TZ9CQfYVqEZ+tjGtWg/Vrm6Vrcayf+A9D1RC2kTBYZV2Qq9sRKhca
+	unE2V/plUht19EzgUfEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmEjJ-000DVH-2L;
-	Tue, 11 Apr 2023 14:12:17 +0000
-Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
+	id 1pmGIl-000UA2-1f;
+	Tue, 11 Apr 2023 15:52:59 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmEjG-000DR2-2E
-	for linux-mtd@lists.infradead.org;
-	Tue, 11 Apr 2023 14:12:16 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 6E0384000B;
-	Tue, 11 Apr 2023 14:11:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1681222315;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=XZe8xYC1xbEnhgYDBod/OpyA9Fw0CldqYg1lJS8s6AY=;
-	b=Fl054psGHyMkXjkn4/ugFrMsQoBuW+Nt5sXCoxPtDZV8Xj/sohwf2DxZYvWbRT1gP3Roax
-	/4xhfYf+sBgX3MjYuwr290tzJwlbxrxdoBk7Ej84KoUyoS3uvjhQRoPe7r+HXzOj+pInhH
-	q/7SLwRIBWGVQFhSYWeUdH6pSQuSfTQvCaqAtyUr5HlUK6dUqXNuXoQFFBUDcSi0WxJgN/
-	DqOQXcnIE6hJ12DYrbMaP2IMrsKKhJ8qKRGCNchQOwQ9+1SzktgEaS8SMEsfPu75cU2PVR
-	m9ONUKaThe3XYjdPvJZqndcikTxb+TGyX1uwKfI4g+4yb8HRG9Rb+tRIF3X6ew==
-Date: Tue, 11 Apr 2023 16:11:53 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra
- <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael
- Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] mtd: Fixes for 6.3-rc7
-Message-ID: <20230411161153.60998465@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1pmGIi-000U9I-2L;
+	Tue, 11 Apr 2023 15:52:58 +0000
+Received: by mail-pl1-x633.google.com with SMTP id y6so7183308plp.2;
+        Tue, 11 Apr 2023 08:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1681228373;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/oG+epnuD83PJFUb1t02t41ha4irl9qgnZRV9WS+FJU=;
+        b=LsSi16s2QaAhnD5StmBi3qTbTfu6k5otTIp04Kgepy4OBb/g3EV75jjw2fZ4qPtK4J
+         6IWcwGzEMkbVCNc4GZJ1Cxn5YbdAChFrvivl1t1n0YwzFBCvTj6DQfh3H3zCElqbbRqG
+         yrngWHTv3NUJp9du0NHTNGxPyIxCOTVzfY0PQatHPH2RDfxl24kq2036Du9OU44/6Ia0
+         aNGBIFFhfAo1MwMBdlJqTq35nVZIDHE9FLZuZip9A/6Q7urdq9FMRXrsvZpb1+ReO4kO
+         vKBQEfLc3aF3btYS4rqRTyBD+dbMdSgx3XG9NLfD7vs5/Q4abLA867CPbVe9wTxOmgxL
+         espA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681228373;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/oG+epnuD83PJFUb1t02t41ha4irl9qgnZRV9WS+FJU=;
+        b=RUGZKGQGmWwV4aaIDT9XIJI2xrR/06qi7oEpMytWIoTso3eVGRfZYGc2ClFmMxhQXL
+         Yg3bmCsIj0gt36WyL8Y1Pn6dTv5YZQxaGefb60vqHq/4Yjz0sSTAzzczydt+vqevfa0M
+         SAHuG+A6KAbq1tJQiXYM+zQogyq9EYG3m8eDT0BGgpyHIuzJtWD59eXbmHY8vQdIiyE2
+         Gr5ho+c/RaVNrnbC2fA++SdqE3YJ76e9O3ivCx6TafPFSgdn16V17asUhpglFUYHauAd
+         snL69HaM39G7MLphGdDyHtgncll3rmRlbbLApgAB1LGb8OPEpDC0WPBYQY8UxR+W/6v1
+         OCzQ==
+X-Gm-Message-State: AAQBX9fJqN0KxISB6VntAFxY9rTCTc3gJa+LomVqxII6OBEFH93hFEzV
+	WOHFTKC2RCy+5YvbfIr33JA=
+X-Google-Smtp-Source: AKy350bP4ymDA4siTeWNM3hYExZR4vah/5d51CIzH8d82fybAJuDqzPeiRRg5VWjKUeDoSbGI8uAvA==
+X-Received: by 2002:a17:902:f9c5:b0:1a5:f36:ae09 with SMTP id kz5-20020a170902f9c500b001a50f36ae09mr12465163plb.7.1681228373132;
+        Tue, 11 Apr 2023 08:52:53 -0700 (PDT)
+Received: from arm4c24g.vcn09251619.oraclevcn.com ([144.24.45.176])
+        by smtp.gmail.com with ESMTPSA id jw23-20020a170903279700b0019e60c645b1sm3940765plb.305.2023.04.11.08.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Apr 2023 08:52:52 -0700 (PDT)
+From: Xiaobing Luo <luoxiaobing0926@gmail.com>
+To: richard@nod.at,
+	miquel.raynal@bootlin.com,
+	vigneshr@ti.com,
+	mcoquelin.stm32@gmail.com,
+	alexandre.torgue@foss.st.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-kernel@vger.kernel.org,
+	Xiaobing Luo <luoxiaobing0926@gmail.com>
+Subject: [PATCH] ubi: fastmap: Reserve PEBs and init fm_work when fastmap is used.
+Date: Tue, 11 Apr 2023 15:46:34 +0000
+Message-Id: <20230411154634.149350-1-luoxiaobing0926@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230411_071214_879396_87FAF864 
-X-CRM114-Status: UNSURE (   9.25  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230411_085256_804904_761C874E 
+X-CRM114-Status: GOOD (  11.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,41 +90,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTGludXMsCgpUaGlzIGlzIGEgc2Vjb25kIGZpeGVzIE1URCBQUiBmb3IgdGhlIG5leHQg
-cmVsZWFzZS9yZWxlYXNlLWNhbmRpZGF0ZS4KClRoYW5rcywKTWlxdcOobAoKVGhlIGZvbGxvd2lu
-ZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCA3ZTM2NGU1NjI5M2JiOThjYWUxYjU1ZmQ4MzVmNTk5MWM0
-ZTk2ZTdkOgoKICBMaW51eCA2LjMtcmM1ICgyMDIzLTA0LTAyIDE0OjI5OjI5IC0wNzAwKQoKYXJl
-IGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9zaXRvcnkgYXQ6CgogIGdpdDovL2dpdC5rZXJuZWwu
-b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9tdGQvbGludXguZ2l0IHRhZ3MvbXRkL2ZpeGVz
-LWZvci02LjMtcmM3Cgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8gOTM5NDJiNzA0NjE1
-NzRjYTdmYzNkOTE0OTRjYTg5YjE2YTRjNjRjNzoKCiAgbXRkOiByYXduYW5kOiBtZXNvbjogZml4
-IGJpdG1hc2sgZm9yIGxlbmd0aCBpbiBjb21tYW5kIHdvcmQgKDIwMjMtMDQtMDMgMTc6NTg6MDEg
-KzAyMDApCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tCkNvcmUgTVREIGZpeDoKKiBtdGRibG9jazogVG9sZXJhdGUgY29ycmVj
-dGVkIGJpdC1mbGlwcwoKUmF3IE5BTkQgZml4ZXM6CiogbWVzb246IEZpeCBiaXRtYXNrIGZvciBs
-ZW5ndGggaW4gY29tbWFuZCB3b3JkCiogc3RtMzJfZm1jMjoKICAtIFJlbW92ZSB1bnN1cHBvcnRl
-ZCBFRE8gbW9kZQogIC0gVXNlIHRpbWluZ3MubW9kZSBpbnN0ZWFkIG9mIGNoZWNraW5nIHRSQ19t
-aW4KICBUaGUgZmlyc3QgcGF0Y2ggaXMgdGhlIHJlYWwgZml4IGJ1dCBub3dhZGF5cyB3ZSB1c2Ug
-dGltaW5ncy5tb2RlCiAgaW5zdGVhZCBvZiBiYXJlIHRpbWluZ3MsIHNvIGluIG9yZGVyIHRvIGVh
-c2UgdGhlIGJhY2twb3J0cywgdGhlIGZpeAogIHdhcyBzcGxpdCBpbnRvIHR3byBzdGVwcywgdGhl
-IGZpcnN0IG9uZSBlYXN5IHRvIGJhY2twb3J0IG9uIG9sZGVyCiAga2VybmVscywgdGhlIHNlY29u
-ZCBvbmUganVzdCBhcyBhIGZvbGxvdy11cCBzbyByZWNlbnQgc3RhYmxlIGtlcm5lbHMKICB3b3Vs
-ZCBsb29rIGxpa2UgdGhlIG1haW5saW5lLgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBcnNlbml5IEtyYXNub3YgKDEpOgog
-ICAgICBtdGQ6IHJhd25hbmQ6IG1lc29uOiBmaXggYml0bWFzayBmb3IgbGVuZ3RoIGluIGNvbW1h
-bmQgd29yZAoKQmFuZyBMaSAoMSk6CiAgICAgIG10ZGJsb2NrOiB0b2xlcmF0ZSBjb3JyZWN0ZWQg
-Yml0LWZsaXBzCgpDaHJpc3RvcGhlIEtlcmVsbG8gKDIpOgogICAgICBtdGQ6IHJhd25hbmQ6IHN0
-bTMyX2ZtYzI6IHJlbW92ZSB1bnN1cHBvcnRlZCBFRE8gbW9kZQogICAgICBtdGQ6IHJhd25hbmQ6
-IHN0bTMyX2ZtYzI6IHVzZSB0aW1pbmdzLm1vZGUgaW5zdGVhZCBvZiBjaGVja2luZyB0UkNfbWlu
-CgogZHJpdmVycy9tdGQvbXRkYmxvY2suYyAgICAgICAgICAgICAgICAgfCAxMiArKysrKysrKy0t
-LS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYyAgICAgIHwgIDYgKysrLS0tCiBk
-cml2ZXJzL210ZC9uYW5kL3Jhdy9zdG0zMl9mbWMyX25hbmQuYyB8ICAzICsrKwogMyBmaWxlcyBj
-aGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Don't reserve the two fastmap PEBs when fastmap is disabled, then we can
+use the two PEBs in small ubi device.
+And don't init the fm_work when fastmap is disabled.
+
+Signed-off-by: Xiaobing Luo <luoxiaobing0926@gmail.com>
+---
+ drivers/mtd/ubi/build.c      | 3 ++-
+ drivers/mtd/ubi/fastmap-wl.c | 2 +-
+ drivers/mtd/ubi/wl.c         | 6 +++++-
+ 3 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index ad025b2ee417..a98a717b0e66 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1120,7 +1120,8 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ 		kthread_stop(ubi->bgt_thread);
+ 
+ #ifdef CONFIG_MTD_UBI_FASTMAP
+-	cancel_work_sync(&ubi->fm_work);
++	if (!ubi->fm_disabled)
++		cancel_work_sync(&ubi->fm_work);
+ #endif
+ 	ubi_debugfs_exit_dev(ubi);
+ 	uif_close(ubi);
+diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
+index 863f571f1adb..b3df17a782c7 100644
+--- a/drivers/mtd/ubi/fastmap-wl.c
++++ b/drivers/mtd/ubi/fastmap-wl.c
+@@ -344,7 +344,7 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
+ 		/* We cannot update the fastmap here because this
+ 		 * function is called in atomic context.
+ 		 * Let's fail here and refill/update it as soon as possible. */
+-		if (!ubi->fm_work_scheduled) {
++		if (!ubi->fm_work_scheduled && !ubi->fm_disabled) {
+ 			ubi->fm_work_scheduled = 1;
+ 			schedule_work(&ubi->fm_work);
+ 		}
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 26a214f016c1..8906db89808f 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1908,7 +1908,11 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 	ubi_assert(ubi->good_peb_count == found_pebs);
+ 
+ 	reserved_pebs = WL_RESERVED_PEBS;
+-	ubi_fastmap_init(ubi, &reserved_pebs);
++
++#ifdef CONFIG_MTD_UBI_FASTMAP
++	if (!ubi->fm_disabled)
++		ubi_fastmap_init(ubi, &reserved_pebs);
++#endif
+ 
+ 	if (ubi->avail_pebs < reserved_pebs) {
+ 		ubi_err(ubi, "no enough physical eraseblocks (%d, need %d)",
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
