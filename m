@@ -4,57 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11E27C7619A
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Apr 2023 01:54:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7BECC77B78
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Apr 2023 06:21:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KzU1nVgrM0B+8174OqsZ/DXx5NSZlopBX1GTcoUjD+I=; b=V52E/FKPwkQnm0s6Ve5M8Si3i4
-	/5F0LrJimzcKGxbIZ3hHawnfUr6XxPIDH9j2pH8wiposl/5T1zjJ7kKLIvePQLzTog6d7PpP45Q3y
-	9ZRCBlben2iCwwfvY6ELGehG+X7Ams40IWwpbaHTfru5w1gt7aHpUNMHcjKaB2/JOAnSeHsd1AwxD
-	7U4Gb9gOHNXZ0M/Zu678N0dunCR2RkVnHVYbUGFCsfrgcjFHXIe1n0m98cleFaH6Bsp3ZFNrtLiQQ
-	JeHqyX5FUbX9+YGpnw5M3lwd2rUq2lBa6DwM9zSZi0RngITfzUT3eulQNgoDvdwWhSYql1my8VzQ7
-	q1VCUhaw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ZFZd86RAmUCX8P8gYLO4BVxAgK6iRFn50piKNqtJpJI=; b=Av9NcPyXNCYdOL
+	V23VYW0eEPtA5EQFZYzXlJa4vKL/zfujAI5BGuJEE9czVnteHPb9uQMjla1KqEuxLGruJiMAVov+b
+	M4ZuvDdRKWLNz9ieauxHhqeN1+DfcAGFOoVKV2pfSW2lv/Z9Cb5qpV6Y5h3d/bpAMVzif/dbieiXg
+	O0T6jFA95QnceD6MVuWMzl3rZFzv7zBShgTMlb/luZ9hJ0kvKVzKvPUilxvkQ8FQqnj2gl9imjcdX
+	vbTM5ASQUUzPdnmfCMtPDi8R8hCearLR/GJpctNb3xbrnyX8gUlcAi1JuY9cA2kgUFrulTHmKZEf8
+	iN8UeAosIX0dYj9T12Tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmPg6-001ZeN-03;
-	Wed, 12 Apr 2023 01:53:42 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1pmTrF-001vpj-2x;
+	Wed, 12 Apr 2023 06:21:29 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmPfz-001Zbw-2I;
-	Wed, 12 Apr 2023 01:53:39 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.56])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Px5Lw0DbCzDsg4;
-	Wed, 12 Apr 2023 09:52:40 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 12 Apr 2023 09:53:22 +0800
-Subject: Re: [PATCH] ubi: fastmap: Reserve PEBs and init fm_work when fastmap
- is used.
-To: Xiaobing Luo <luoxiaobing0926@gmail.com>, <richard@nod.at>,
-	<miquel.raynal@bootlin.com>, <vigneshr@ti.com>, <mcoquelin.stm32@gmail.com>,
-	<alexandre.torgue@foss.st.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-stm32@st-md-mailman.stormreply.com>, <linux-kernel@vger.kernel.org>
-References: <20230411154634.149350-1-luoxiaobing0926@gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <cc9f9239-22b8-a00b-c46f-1b9ea8cd7395@huawei.com>
-Date: Wed, 12 Apr 2023 09:53:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	id 1pmTr8-001vks-0L;
+	Wed, 12 Apr 2023 06:21:24 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id B13835FD61;
+	Wed, 12 Apr 2023 09:21:18 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1681280478;
+	bh=Y/eHmQmhsT9LVvYGckzElMjsdyU8uNoVK685QSt2va4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=QJZ3f3x5ssA86aHvq/VV7bMRBW5rB4ErigDHPJ2d6T+cJ8hv+Z+nkz3Ogu+NXHtS0
+	 rTn0nr2hmkY79UMmCHF5cwaeh5Q2ZErJ/HrPaw40dlDbYqjn+2BiPStVG3Wn0Q+P7W
+	 d6LWPZvfUSCSCV9EzSMUbDhTFHxJbDtFlNYlqZK4QhHRzoJrHXLlc9htE0wlVJqByD
+	 MsCv3RScLlUh+PMCosHsnL2L06PLiQ+vFbN1KY5xPi4Ys7937k8U030/UsG0M2gEND
+	 VZd6kAU0eP81v+Njuoqma19DrpV4UD4gqucJVdlgwb+8Euc+2hP/2LkzWHKsQLwUIE
+	 LKrZ9JtHlQ/Lw==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Wed, 12 Apr 2023 09:21:18 +0300 (MSK)
+From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Yixun Lan
+	<yixun.lan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>
+CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
+	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 2/5] mtd: rawnand: meson: replace GENMASK() macro with define
+Date: Wed, 12 Apr 2023 09:16:56 +0300
+Message-ID: <20230412061700.1492474-3-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
+In-Reply-To: <20230412061700.1492474-1-AVKrasnov@sberdevices.ru>
+References: <20230412061700.1492474-1-AVKrasnov@sberdevices.ru>
 MIME-Version: 1.0
-In-Reply-To: <20230411154634.149350-1-luoxiaobing0926@gmail.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/04/12 04:12:00 #21090163
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230411_185336_099284_AC152767 
-X-CRM114-Status: GOOD (  18.66  )
+X-CRM114-CacheID: sfid-20230411_232122_629943_81F5A24B 
+X-CRM114-Status: GOOD (  11.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,81 +84,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Xiaobing
-> Don't reserve the two fastmap PEBs when fastmap is disabled, then we can
-> use the two PEBs in small ubi device.
-> And don't init the fm_work when fastmap is disabled.
-> 
-> Signed-off-by: Xiaobing Luo <luoxiaobing0926@gmail.com>
-> ---
->   drivers/mtd/ubi/build.c      | 3 ++-
->   drivers/mtd/ubi/fastmap-wl.c | 2 +-
->   drivers/mtd/ubi/wl.c         | 6 +++++-
->   3 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> index ad025b2ee417..a98a717b0e66 100644
-> --- a/drivers/mtd/ubi/build.c
-> +++ b/drivers/mtd/ubi/build.c
-> @@ -1120,7 +1120,8 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
->   		kthread_stop(ubi->bgt_thread);
->   
->   #ifdef CONFIG_MTD_UBI_FASTMAP
-> -	cancel_work_sync(&ubi->fm_work);
-> +	if (!ubi->fm_disabled)
-> +		cancel_work_sync(&ubi->fm_work);
->   #endif
->   	ubi_debugfs_exit_dev(ubi);
->   	uif_close(ubi);
-> diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
-> index 863f571f1adb..b3df17a782c7 100644
-> --- a/drivers/mtd/ubi/fastmap-wl.c
-> +++ b/drivers/mtd/ubi/fastmap-wl.c
-> @@ -344,7 +344,7 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
->   		/* We cannot update the fastmap here because this
->   		 * function is called in atomic context.
->   		 * Let's fail here and refill/update it as soon as possible. */
-> -		if (!ubi->fm_work_scheduled) {
-> +		if (!ubi->fm_work_scheduled && !ubi->fm_disabled) {
->   			ubi->fm_work_scheduled = 1;
->   			schedule_work(&ubi->fm_work);
->   		}
+Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+---
+ drivers/mtd/nand/raw/meson_nand.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-I think we should keep the fm_work even fm_disabled is true. UBI is 
-running with fastmap scheme as long as CONFIG_MTD_UBI_FASTMAP is 
-enabled, 'ubi->fm_disabled' is just used to control whether to 
-persistence fastmap metadata on flash. Free wear-leveling pebs 
-consuming/producing model still depend on following process:
-Consuming: get_peb_for_wl -> pool->pebs[pool->used++]
-Producing: ubi->fm_work -> update_fastmap_work_fn -> ubi_refill_pools -> 
-wl_pool->used = 0
-If we disable 'ubi->fm_work' when ubi->fm_disabled becomes true, 
-wear-leveing work will fail to get free wl peb until someone try to get 
-free peb by ubi_wl_get_peb().
-
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 26a214f016c1..8906db89808f 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -1908,7 +1908,11 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
->   	ubi_assert(ubi->good_peb_count == found_pebs);
->   
->   	reserved_pebs = WL_RESERVED_PEBS;
-> -	ubi_fastmap_init(ubi, &reserved_pebs);
-> +
-> +#ifdef CONFIG_MTD_UBI_FASTMAP
-> +	if (!ubi->fm_disabled)
-> +		ubi_fastmap_init(ubi, &reserved_pebs);
-> +#endif
->   
->   	if (ubi->avail_pebs < reserved_pebs) {
->   		ubi_err(ubi, "no enough physical eraseblocks (%d, need %d)",
-> 
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index 256c37c76526..45b53d420aed 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -110,6 +110,8 @@
+ 
+ #define PER_INFO_BYTE		8
+ 
++#define NFC_CMD_RAW_LEN		(GENMASK(13, 0))
++
+ struct meson_nfc_nand_chip {
+ 	struct list_head node;
+ 	struct nand_chip nand;
+@@ -300,7 +302,7 @@ static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
+ 
+ 	if (raw) {
+ 		len = mtd->writesize + mtd->oobsize;
+-		cmd = (len & GENMASK(13, 0)) | scrambler | DMA_DIR(dir);
++		cmd = (len & NFC_CMD_RAW_LEN) | scrambler | DMA_DIR(dir);
+ 		writel(cmd, nfc->reg_base + NFC_REG_CMD);
+ 		return;
+ 	}
+@@ -550,7 +552,7 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
+ 	if (ret)
+ 		goto out;
+ 
+-	cmd = NFC_CMD_N2M | (len & GENMASK(13, 0));
++	cmd = NFC_CMD_N2M | (len & NFC_CMD_RAW_LEN);
+ 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+ 
+ 	meson_nfc_drain_cmd(nfc);
+@@ -574,7 +576,7 @@ static int meson_nfc_write_buf(struct nand_chip *nand, u8 *buf, int len)
+ 	if (ret)
+ 		return ret;
+ 
+-	cmd = NFC_CMD_M2N | (len & GENMASK(13, 0));
++	cmd = NFC_CMD_M2N | (len & NFC_CMD_RAW_LEN);
+ 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+ 
+ 	meson_nfc_drain_cmd(nfc);
+-- 
+2.35.0
 
 
 ______________________________________________________
