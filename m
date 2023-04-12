@@ -4,75 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3EAFC7619A
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Apr 2023 06:22:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EF5BC7619A
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Apr 2023 07:37:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3OHCetD4woNvQDdzD6WpCkNJzSFi291vUNDDZT0pLzo=; b=vlurxeEC+6iBDp
-	7a7FodJV2O2xXj6RHLO0fZcy1ub5YSaNm+dVc7YeSnPAmPcGyLRqiJh1KlmQHqf+yUMai30fTGzoU
-	XP7XwleER+Yls2H5/vP01zKZUaY3PCDH7XwKV92VZg9obJmtnE6DfUBm79fCbNUZu3NJDK41wJ2+J
-	+SzroF8dqlRND7VWXr9IziIw1sCA0jQGPU4f+3QpXoNPlcd+JjO1b67E2siaOk/B2e3e03YiqN4hh
-	+eGineqPG3M88ekhu43N7h7G12Tw3qJnIYiqRr1MCJUyIoJjhKqUirNF6qkE5JMiSQZs2lRHTUMm3
-	a8iqKsKuyuZcwqNyKSdw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Reply-To:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:
+	From:MIME-Version:Date:Message-ID:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=VgLvqvEewqpouq9Re8YvaOPNoXbGIwxBjKiSI/alj7M=; b=PMkP2ryl70up1aFykWuGCMVIpL
+	V8bUGijlh0IacewB+bA91owG3YmpajhJnxArEKfdnrQg+L08dbnRRSrnPNIkkmnW2QQqZilyocytF
+	/Zd+K0/0sEStGDT775wALJt3Ix03FygBuCyGnCMFEaeWYXHqKdOmwh6WuRdTNaKkBZ0WITu5ir05p
+	DTMZr3EsK5GvHFg+ZMfAUK1T6MUh0uRGzZQqIoKUsPMXYXvorxZYJ70YFRyUSsYFsardEsNucJyGD
+	ngxxaOAFgEPwvH9AaOC0Pp1uFD467229EyCyiVJNsmtEPzYTWMDjTPp8BOdflKZAdE3N+2pa4On3u
+	ZTT6+YNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmTrJ-001vrw-1y;
-	Wed, 12 Apr 2023 06:21:33 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1pmV34-0026ud-0C;
+	Wed, 12 Apr 2023 07:37:46 +0000
+Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmTr8-001vl6-1S;
-	Wed, 12 Apr 2023 06:21:25 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 0E3E35FD62;
-	Wed, 12 Apr 2023 09:21:21 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1681280481;
-	bh=ijR0GjfEvDOCR18/yaVWHDk9s/uQwtd45e8HbVoRBEQ=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=PfZzkCq9CfP69XL505bFICG6fQTHQzkN70Rkt6pEOLy6eMuNbijDMoHHDAOY49mQo
-	 q1cXnKYiwWKg2qrhAHi2oC4sHDDazFy2C7SO+2qlfiiuBMjh7uJqfRu1jI+84xxHF3
-	 RF4PLF+/2LCXHbjA6gFaB408oiHijSXmao+vbdqEvGulBHdb/RSVLuv54sEjRLZ9Lv
-	 tw8a/fB/sM9YPQQbl/x2Q0HNBBDLq0gNraT/NUC8T+NVAmscMoSkGh/ZWaCsZurxau
-	 CQBrljvgymE+ZEguk0nVtlfO62vqMQIdoETUXJR+hQI4RahO7T1cBjLn0uwEbsp9Fu
-	 ix43OXeg9E9Wg==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Wed, 12 Apr 2023 09:21:21 +0300 (MSK)
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Yixun Lan
-	<yixun.lan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
-	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 3/5] mtd: rawnand: meson: check buffer length
-Date: Wed, 12 Apr 2023 09:16:57 +0300
-Message-ID: <20230412061700.1492474-4-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20230412061700.1492474-1-AVKrasnov@sberdevices.ru>
-References: <20230412061700.1492474-1-AVKrasnov@sberdevices.ru>
+	id 1pmV30-0026s5-11
+	for linux-mtd@lists.infradead.org;
+	Wed, 12 Apr 2023 07:37:43 +0000
+Received: by mail-wr1-x42b.google.com with SMTP id d9so9984341wrb.11
+        for <linux-mtd@lists.infradead.org>; Wed, 12 Apr 2023 00:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1681285057; x=1683877057;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=CiF0mgU3/wD4pOn8H8hIqODLGj9JpvM6ISvsGRm0Re8=;
+        b=RLM3qCOQYqUPqVlPl8GisAhq+i+qQ/Sf6zrRu4Pzx1bd/n3BJi/0ckvwQwk4bRa48w
+         EcGKdZaG4z1jPm+MlRHSKOBx8bpnGjDp/8N/ZAk3GSw4g6wn4Ts2ljabxfXI5QDykNIS
+         h8iGcPEcpbvavlZlNimUXGW5ELFvoglmIoWIYZRw5ZufVm4s83F18DZLfAoHwM1o6xSU
+         m2aiAQ3oV8zRIRZczC7FTx7Ea2+K+vkGcmRgSewLxkQ81SanMCH36vPICKebxCuzDP2K
+         dsiqSZ1H2GQ540pr5YimAwwEUhvgXRDzjyFWwPHAzwW2soKFcgc6yNdqXBszFobtNeAr
+         BLpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681285057; x=1683877057;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CiF0mgU3/wD4pOn8H8hIqODLGj9JpvM6ISvsGRm0Re8=;
+        b=1Io2Rlcml/RrpY3nJwyDwVOFX7sdFVMIOVxNSSbTVrYaFNRRPrkCL1YV6DCns6mZMf
+         hUWDXsQGskTqBrt6N/dye+Cx8wqzrDLqhrgwWoor7jzJWxr/XxvlC8DDTBKfXETwLVKH
+         Z7BEuYjQdHltnN+uw2NoYxO9beXCuDkxa6yA0TxnV6ZUUP/77j7THfImFr3k2LtqIRx1
+         5logw+tHBrpphSDQp/13uNhYBBeD2bxtc0qRpa+HVRNEDTNjFzktNNVAlPyQlMtZUfcS
+         BvBOjikb/4RC3a2Vw3tmNeliVQ4f+kftuPtdtxOwgnbcNHzf8L8dVVQa0Pa1YupCnAVP
+         n2PQ==
+X-Gm-Message-State: AAQBX9c2nJPdXHPwFYShKzYCLOgGoxHMlQ9eprfK1yi2IqAAwkVjbDWL
+	sCMkRTVaRJkS1pnhXhXOowfF2g==
+X-Google-Smtp-Source: AKy350Z/SLp317LxYEPlad+keulW3xjgxVXR1yy97XsOkHvy0kkKdPqlBPYhSQtIfSkn6yBlVfwwXg==
+X-Received: by 2002:a05:6000:c:b0:2f4:f2c9:171b with SMTP id h12-20020a056000000c00b002f4f2c9171bmr59898wrx.17.1681285057178;
+        Wed, 12 Apr 2023 00:37:37 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:b777:4c24:cbcf:795f? ([2a01:e0a:982:cbb0:b777:4c24:cbcf:795f])
+        by smtp.gmail.com with ESMTPSA id l1-20020adfe581000000b002f22c44e974sm6598619wrm.102.2023.04.12.00.37.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Apr 2023 00:37:36 -0700 (PDT)
+Message-ID: <055a9886-ea3f-6df2-f4a0-a3eff47e6b69@linaro.org>
+Date: Wed, 12 Apr 2023 09:37:35 +0200
 MIME-Version: 1.0
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/04/12 04:12:00 #21090163
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH v1 2/5] mtd: rawnand: meson: replace GENMASK() macro with
+ define
+Content-Language: en-US
+To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+ Liang Yang <liang.yang@amlogic.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Yixun Lan <yixun.lan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>
+Cc: oxffffaa@gmail.com, kernel@sberdevices.ru, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20230412061700.1492474-1-AVKrasnov@sberdevices.ru>
+ <20230412061700.1492474-3-AVKrasnov@sberdevices.ru>
+Organization: Linaro Developer Services
+In-Reply-To: <20230412061700.1492474-3-AVKrasnov@sberdevices.ru>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230411_232122_829754_352E180F 
-X-CRM114-Status: GOOD (  10.53  )
+X-CRM114-CacheID: sfid-20230412_003742_352313_B269ACDA 
+X-CRM114-Status: GOOD (  15.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,68 +100,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Reply-To: neil.armstrong@linaro.org
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-With this chip, buffer length is limited by hardware, so check it before
-command execution to avoid length trim.
+Hi,
 
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
----
- drivers/mtd/nand/raw/meson_nand.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+On 12/04/2023 08:16, Arseniy Krasnov wrote:
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 45b53d420aed..f84a10238e4d 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -543,6 +543,9 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
- 	u32 cmd;
- 	u8 *info;
- 
-+	if (len > NFC_CMD_RAW_LEN)
-+		return -EINVAL;
-+
- 	info = kzalloc(PER_INFO_BYTE, GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
-@@ -571,6 +574,9 @@ static int meson_nfc_write_buf(struct nand_chip *nand, u8 *buf, int len)
- 	int ret = 0;
- 	u32 cmd;
- 
-+	if (len > NFC_CMD_RAW_LEN)
-+		return -EINVAL;
-+
- 	ret = meson_nfc_dma_buffer_setup(nand, buf, len, NULL,
- 					 0, DMA_TO_DEVICE);
- 	if (ret)
-@@ -1269,6 +1275,7 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
- 	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
- 	struct mtd_info *mtd = nand_to_mtd(nand);
- 	int nsectors = mtd->writesize / 1024;
-+	int raw_writesize;
- 	int ret;
- 
- 	if (!mtd->name) {
-@@ -1280,6 +1287,13 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
- 			return -ENOMEM;
- 	}
- 
-+	raw_writesize = mtd->writesize + mtd->oobsize;
-+	if (raw_writesize > NFC_CMD_RAW_LEN) {
-+		dev_err(nfc->dev, "too big write size in raw mode: %d > %ld\n",
-+			raw_writesize, NFC_CMD_RAW_LEN);
-+		return -EINVAL;
-+	}
-+
- 	if (nand->bbt_options & NAND_BBT_USE_FLASH)
- 		nand->bbt_options |= NAND_BBT_NO_OOB;
- 
--- 
-2.35.0
+Please add a commit message
 
+> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> ---
+>   drivers/mtd/nand/raw/meson_nand.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+> index 256c37c76526..45b53d420aed 100644
+> --- a/drivers/mtd/nand/raw/meson_nand.c
+> +++ b/drivers/mtd/nand/raw/meson_nand.c
+> @@ -110,6 +110,8 @@
+>   
+>   #define PER_INFO_BYTE		8
+>   
+> +#define NFC_CMD_RAW_LEN		(GENMASK(13, 0))
+
+Drop the () around GENMASK(13, 0)
+
+> +
+>   struct meson_nfc_nand_chip {
+>   	struct list_head node;
+>   	struct nand_chip nand;
+> @@ -300,7 +302,7 @@ static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
+>   
+>   	if (raw) {
+>   		len = mtd->writesize + mtd->oobsize;
+> -		cmd = (len & GENMASK(13, 0)) | scrambler | DMA_DIR(dir);
+> +		cmd = (len & NFC_CMD_RAW_LEN) | scrambler | DMA_DIR(dir);
+>   		writel(cmd, nfc->reg_base + NFC_REG_CMD);
+>   		return;
+>   	}
+> @@ -550,7 +552,7 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
+>   	if (ret)
+>   		goto out;
+>   
+> -	cmd = NFC_CMD_N2M | (len & GENMASK(13, 0));
+> +	cmd = NFC_CMD_N2M | (len & NFC_CMD_RAW_LEN);
+>   	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+>   
+>   	meson_nfc_drain_cmd(nfc);
+> @@ -574,7 +576,7 @@ static int meson_nfc_write_buf(struct nand_chip *nand, u8 *buf, int len)
+>   	if (ret)
+>   		return ret;
+>   
+> -	cmd = NFC_CMD_M2N | (len & GENMASK(13, 0));
+> +	cmd = NFC_CMD_M2N | (len & NFC_CMD_RAW_LEN);
+>   	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+>   
+>   	meson_nfc_drain_cmd(nfc);
+
+Thanks,
+Neil
 
 ______________________________________________________
 Linux MTD discussion mailing list
