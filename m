@@ -4,91 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EF5BC7619A
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Apr 2023 07:37:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 405B3C7619A
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Apr 2023 07:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Reply-To:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:
-	From:MIME-Version:Date:Message-ID:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VgLvqvEewqpouq9Re8YvaOPNoXbGIwxBjKiSI/alj7M=; b=PMkP2ryl70up1aFykWuGCMVIpL
-	V8bUGijlh0IacewB+bA91owG3YmpajhJnxArEKfdnrQg+L08dbnRRSrnPNIkkmnW2QQqZilyocytF
-	/Zd+K0/0sEStGDT775wALJt3Ix03FygBuCyGnCMFEaeWYXHqKdOmwh6WuRdTNaKkBZ0WITu5ir05p
-	DTMZr3EsK5GvHFg+ZMfAUK1T6MUh0uRGzZQqIoKUsPMXYXvorxZYJ70YFRyUSsYFsardEsNucJyGD
-	ngxxaOAFgEPwvH9AaOC0Pp1uFD467229EyCyiVJNsmtEPzYTWMDjTPp8BOdflKZAdE3N+2pa4On3u
-	ZTT6+YNg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6PelKavs9DRD1vAp1zS4bQIYUOD/weXM+OlYW14wyMA=; b=DyYCrv4/gpCK5S
+	m3VYzFrFd3gbjcpu4JZ55jdf218TWS1dECix8hiUKlnAevggxUmMdAlw4f2IlHaAuAH6GLW1U9u6v
+	uZeOlfMVJhEcmr3rED/cwGdjWuinebg5cLlbwW7kcT7l2CteJYZYFSh+UaMqHcXWHhLNkWd0Ajoul
+	ZXQ+bFm95RwXwl2NuQ+ez03qBobBuxx+bCAgkwEDd1hzibOgi0qk8qEbSwplaLFSGJQFr+7t14e94
+	Li/cb6PrbF0mvmJmg9JY31B/iAxxD1oGfGAawW/ek9Shu4eRPGNQGg8JIvnYyB7STMIPpILYPx1SE
+	XptHlqFz5ApGUsvh90uQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmV34-0026ud-0C;
-	Wed, 12 Apr 2023 07:37:46 +0000
-Received: from mail-wr1-x42b.google.com ([2a00:1450:4864:20::42b])
+	id 1pmV4z-0027Ia-0E;
+	Wed, 12 Apr 2023 07:39:45 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmV30-0026s5-11
-	for linux-mtd@lists.infradead.org;
-	Wed, 12 Apr 2023 07:37:43 +0000
-Received: by mail-wr1-x42b.google.com with SMTP id d9so9984341wrb.11
-        for <linux-mtd@lists.infradead.org>; Wed, 12 Apr 2023 00:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1681285057; x=1683877057;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=CiF0mgU3/wD4pOn8H8hIqODLGj9JpvM6ISvsGRm0Re8=;
-        b=RLM3qCOQYqUPqVlPl8GisAhq+i+qQ/Sf6zrRu4Pzx1bd/n3BJi/0ckvwQwk4bRa48w
-         EcGKdZaG4z1jPm+MlRHSKOBx8bpnGjDp/8N/ZAk3GSw4g6wn4Ts2ljabxfXI5QDykNIS
-         h8iGcPEcpbvavlZlNimUXGW5ELFvoglmIoWIYZRw5ZufVm4s83F18DZLfAoHwM1o6xSU
-         m2aiAQ3oV8zRIRZczC7FTx7Ea2+K+vkGcmRgSewLxkQ81SanMCH36vPICKebxCuzDP2K
-         dsiqSZ1H2GQ540pr5YimAwwEUhvgXRDzjyFWwPHAzwW2soKFcgc6yNdqXBszFobtNeAr
-         BLpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681285057; x=1683877057;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CiF0mgU3/wD4pOn8H8hIqODLGj9JpvM6ISvsGRm0Re8=;
-        b=1Io2Rlcml/RrpY3nJwyDwVOFX7sdFVMIOVxNSSbTVrYaFNRRPrkCL1YV6DCns6mZMf
-         hUWDXsQGskTqBrt6N/dye+Cx8wqzrDLqhrgwWoor7jzJWxr/XxvlC8DDTBKfXETwLVKH
-         Z7BEuYjQdHltnN+uw2NoYxO9beXCuDkxa6yA0TxnV6ZUUP/77j7THfImFr3k2LtqIRx1
-         5logw+tHBrpphSDQp/13uNhYBBeD2bxtc0qRpa+HVRNEDTNjFzktNNVAlPyQlMtZUfcS
-         BvBOjikb/4RC3a2Vw3tmNeliVQ4f+kftuPtdtxOwgnbcNHzf8L8dVVQa0Pa1YupCnAVP
-         n2PQ==
-X-Gm-Message-State: AAQBX9c2nJPdXHPwFYShKzYCLOgGoxHMlQ9eprfK1yi2IqAAwkVjbDWL
-	sCMkRTVaRJkS1pnhXhXOowfF2g==
-X-Google-Smtp-Source: AKy350Z/SLp317LxYEPlad+keulW3xjgxVXR1yy97XsOkHvy0kkKdPqlBPYhSQtIfSkn6yBlVfwwXg==
-X-Received: by 2002:a05:6000:c:b0:2f4:f2c9:171b with SMTP id h12-20020a056000000c00b002f4f2c9171bmr59898wrx.17.1681285057178;
-        Wed, 12 Apr 2023 00:37:37 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:b777:4c24:cbcf:795f? ([2a01:e0a:982:cbb0:b777:4c24:cbcf:795f])
-        by smtp.gmail.com with ESMTPSA id l1-20020adfe581000000b002f22c44e974sm6598619wrm.102.2023.04.12.00.37.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Apr 2023 00:37:36 -0700 (PDT)
-Message-ID: <055a9886-ea3f-6df2-f4a0-a3eff47e6b69@linaro.org>
-Date: Wed, 12 Apr 2023 09:37:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH v1 2/5] mtd: rawnand: meson: replace GENMASK() macro with
- define
-Content-Language: en-US
-To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
- Liang Yang <liang.yang@amlogic.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Yixun Lan <yixun.lan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>
-Cc: oxffffaa@gmail.com, kernel@sberdevices.ru, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-kernel@vger.kernel.org
+	id 1pmV4u-0027FL-1e;
+	Wed, 12 Apr 2023 07:39:42 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id C7053100018;
+	Wed, 12 Apr 2023 07:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1681285168;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=17BPQPrbGfoG/9Y+BnpABrCjBoUgqhojyRjXMZSD+8c=;
+	b=PfRltgJ1Ic+5NX5hMrhg2PjLHxVBR8qIDRKeEQUmT9+oRHTMJXbAourYqKl0z5uG6K6TuD
+	DcbxHoMVNnY3Jaol01OwcUCkcakHD+Glp6SQ22R2TPCE/9hINgQfScuE3msXJb6Oh7Xp4P
+	owEbhQEurMr67d639FR00rh9BlpPievAzMuoB08vtA3/wG/Fzy4Cs3uW1hTpo0kSe5Jyw7
+	s5zTNYiRtFxhVC9GlMqR0idX7pLB09VCPy9d06roQ5swBkAHoUb2jJARoVWH4n8elGKeFh
+	WT7MW9yG9I2DFhK9bjqwgwms9dnr1Zx+Y1XIcGWbqYGXb+jR7fC+eIl9mO/n6g==
+Date: Wed, 12 Apr 2023 09:39:25 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Cc: Liang Yang <liang.yang@amlogic.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
+ Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Yixun Lan <yixun.lan@amlogic.com>,
+ Jianxin Pan <jianxin.pan@amlogic.com>, <oxffffaa@gmail.com>,
+ <kernel@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 3/5] mtd: rawnand: meson: check buffer length
+Message-ID: <20230412093925.4718ac6f@xps-13>
+In-Reply-To: <20230412061700.1492474-4-AVKrasnov@sberdevices.ru>
 References: <20230412061700.1492474-1-AVKrasnov@sberdevices.ru>
- <20230412061700.1492474-3-AVKrasnov@sberdevices.ru>
-Organization: Linaro Developer Services
-In-Reply-To: <20230412061700.1492474-3-AVKrasnov@sberdevices.ru>
+ <20230412061700.1492474-4-AVKrasnov@sberdevices.ru>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230412_003742_352313_B269ACDA 
-X-CRM114-Status: GOOD (  15.47  )
+X-CRM114-CacheID: sfid-20230412_003940_831232_B5999EA7 
+X-CRM114-Status: GOOD (  14.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,70 +75,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: neil.armstrong@linaro.org
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On 12/04/2023 08:16, Arseniy Krasnov wrote:
-
-Please add a commit message
-
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-> ---
->   drivers/mtd/nand/raw/meson_nand.c | 8 +++++---
->   1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-> index 256c37c76526..45b53d420aed 100644
-> --- a/drivers/mtd/nand/raw/meson_nand.c
-> +++ b/drivers/mtd/nand/raw/meson_nand.c
-> @@ -110,6 +110,8 @@
->   
->   #define PER_INFO_BYTE		8
->   
-> +#define NFC_CMD_RAW_LEN		(GENMASK(13, 0))
-
-Drop the () around GENMASK(13, 0)
-
-> +
->   struct meson_nfc_nand_chip {
->   	struct list_head node;
->   	struct nand_chip nand;
-> @@ -300,7 +302,7 @@ static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
->   
->   	if (raw) {
->   		len = mtd->writesize + mtd->oobsize;
-> -		cmd = (len & GENMASK(13, 0)) | scrambler | DMA_DIR(dir);
-> +		cmd = (len & NFC_CMD_RAW_LEN) | scrambler | DMA_DIR(dir);
->   		writel(cmd, nfc->reg_base + NFC_REG_CMD);
->   		return;
->   	}
-> @@ -550,7 +552,7 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
->   	if (ret)
->   		goto out;
->   
-> -	cmd = NFC_CMD_N2M | (len & GENMASK(13, 0));
-> +	cmd = NFC_CMD_N2M | (len & NFC_CMD_RAW_LEN);
->   	writel(cmd, nfc->reg_base + NFC_REG_CMD);
->   
->   	meson_nfc_drain_cmd(nfc);
-> @@ -574,7 +576,7 @@ static int meson_nfc_write_buf(struct nand_chip *nand, u8 *buf, int len)
->   	if (ret)
->   		return ret;
->   
-> -	cmd = NFC_CMD_M2N | (len & GENMASK(13, 0));
-> +	cmd = NFC_CMD_M2N | (len & NFC_CMD_RAW_LEN);
->   	writel(cmd, nfc->reg_base + NFC_REG_CMD);
->   
->   	meson_nfc_drain_cmd(nfc);
-
-Thanks,
-Neil
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQXJzZW5peSwKCkFWS3Jhc25vdkBzYmVyZGV2aWNlcy5ydSB3cm90ZSBvbiBXZWQsIDEyIEFw
+ciAyMDIzIDA5OjE2OjU3ICswMzAwOgoKPiBXaXRoIHRoaXMgY2hpcCwgYnVmZmVyIGxlbmd0aCBp
+cyBsaW1pdGVkIGJ5IGhhcmR3YXJlLCBzbyBjaGVjayBpdCBiZWZvcmUKPiBjb21tYW5kIGV4ZWN1
+dGlvbiB0byBhdm9pZCBsZW5ndGggdHJpbS4KCldoYXQgaXMgInRoaXMgY2hpcCI/IEFyZSB5b3Ug
+dGFsa2luZyBhYm91dCB0aGUgY29udHJvbGxlciBpdHNlbGY/IElzCnRoZXJlIGFueSBzcGVjaWZp
+YyBTb0MgdmVyc2lvbiB0YXJnZXRlZD8KCj4gCj4gU2lnbmVkLW9mZi1ieTogQXJzZW5peSBLcmFz
+bm92IDxBVktyYXNub3ZAc2JlcmRldmljZXMucnU+Cj4gLS0tCj4gIGRyaXZlcnMvbXRkL25hbmQv
+cmF3L21lc29uX25hbmQuYyB8IDE0ICsrKysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCAx
+NCBpbnNlcnRpb25zKCspCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L21l
+c29uX25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQuYwo+IGluZGV4IDQ1
+YjUzZDQyMGFlZC4uZjg0YTEwMjM4ZTRkIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQv
+cmF3L21lc29uX25hbmQuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L21lc29uX25hbmQu
+Ywo+IEBAIC01NDMsNiArNTQzLDkgQEAgc3RhdGljIGludCBtZXNvbl9uZmNfcmVhZF9idWYoc3Ry
+dWN0IG5hbmRfY2hpcCAqbmFuZCwgdTggKmJ1ZiwgaW50IGxlbikKPiAgCXUzMiBjbWQ7Cj4gIAl1
+OCAqaW5mbzsKPiAgCj4gKwlpZiAobGVuID4gTkZDX0NNRF9SQVdfTEVOKQo+ICsJCXJldHVybiAt
+RUlOVkFMOwo+ICsKPiAgCWluZm8gPSBremFsbG9jKFBFUl9JTkZPX0JZVEUsIEdGUF9LRVJORUwp
+Owo+ICAJaWYgKCFpbmZvKQo+ICAJCXJldHVybiAtRU5PTUVNOwo+IEBAIC01NzEsNiArNTc0LDkg
+QEAgc3RhdGljIGludCBtZXNvbl9uZmNfd3JpdGVfYnVmKHN0cnVjdCBuYW5kX2NoaXAgKm5hbmQs
+IHU4ICpidWYsIGludCBsZW4pCj4gIAlpbnQgcmV0ID0gMDsKPiAgCXUzMiBjbWQ7Cj4gIAo+ICsJ
+aWYgKGxlbiA+IE5GQ19DTURfUkFXX0xFTikKPiArCQlyZXR1cm4gLUVJTlZBTDsKPiArCj4gIAly
+ZXQgPSBtZXNvbl9uZmNfZG1hX2J1ZmZlcl9zZXR1cChuYW5kLCBidWYsIGxlbiwgTlVMTCwKPiAg
+CQkJCQkgMCwgRE1BX1RPX0RFVklDRSk7Cj4gIAlpZiAocmV0KQo+IEBAIC0xMjY5LDYgKzEyNzUs
+NyBAQCBzdGF0aWMgaW50IG1lc29uX25hbmRfYXR0YWNoX2NoaXAoc3RydWN0IG5hbmRfY2hpcCAq
+bmFuZCkKPiAgCXN0cnVjdCBtZXNvbl9uZmNfbmFuZF9jaGlwICptZXNvbl9jaGlwID0gdG9fbWVz
+b25fbmFuZChuYW5kKTsKPiAgCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0gbmFuZF90b19tdGQobmFu
+ZCk7Cj4gIAlpbnQgbnNlY3RvcnMgPSBtdGQtPndyaXRlc2l6ZSAvIDEwMjQ7Cj4gKwlpbnQgcmF3
+X3dyaXRlc2l6ZTsKPiAgCWludCByZXQ7Cj4gIAo+ICAJaWYgKCFtdGQtPm5hbWUpIHsKPiBAQCAt
+MTI4MCw2ICsxMjg3LDEzIEBAIHN0YXRpYyBpbnQgbWVzb25fbmFuZF9hdHRhY2hfY2hpcChzdHJ1
+Y3QgbmFuZF9jaGlwICpuYW5kKQo+ICAJCQlyZXR1cm4gLUVOT01FTTsKPiAgCX0KPiAgCj4gKwly
+YXdfd3JpdGVzaXplID0gbXRkLT53cml0ZXNpemUgKyBtdGQtPm9vYnNpemU7Cj4gKwlpZiAocmF3
+X3dyaXRlc2l6ZSA+IE5GQ19DTURfUkFXX0xFTikgewo+ICsJCWRldl9lcnIobmZjLT5kZXYsICJ0
+b28gYmlnIHdyaXRlIHNpemUgaW4gcmF3IG1vZGU6ICVkID4gJWxkXG4iLAo+ICsJCQlyYXdfd3Jp
+dGVzaXplLCBORkNfQ01EX1JBV19MRU4pOwo+ICsJCXJldHVybiAtRUlOVkFMOwo+ICsJfQo+ICsK
+PiAgCWlmIChuYW5kLT5iYnRfb3B0aW9ucyAmIE5BTkRfQkJUX1VTRV9GTEFTSCkKPiAgCQluYW5k
+LT5iYnRfb3B0aW9ucyB8PSBOQU5EX0JCVF9OT19PT0I7Cj4gIAoKClRoYW5rcywKTWlxdcOobAoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
+bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
