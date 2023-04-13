@@ -4,77 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECB14C77B61
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Apr 2023 08:23:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BBE8C77B6C
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Apr 2023 09:27:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nVOB2tdN80b0yYCRG6TOt+YhSnrwSbUUhxYBOA2ZlI4=; b=R3Wp2HQON4SLn1
-	Nyf6FTgxdpvSmvZEz3vxM1kP5VuBwE0tgAZcKcAxxqkZP8Y+YI3A+/sTxBSdKaMcnxAe70x9HhY9Y
-	TwITSiMAqV/BfJYn15JiV98XFxb/uv5InsAJa64wcABZxaDAmUJ6yfPNBllRh4bBjVyZjji+mz59E
-	V6p9fWwMGWbrudLuq8XgX2UL46NVE3fag3rcOltgADF0li5IddROLzBvCEC2NAQqDC+f4XXBO8qZ+
-	Yy8YswhnCKYZLAZZms27HzbBGgJgaCx/HTnZ6eEjKWJJpgH40FFoW/NcOV03qR21neyL37SlfPo4r
-	mlIQcpnYw9vJyfg3JTjQ==;
+	List-Owner; bh=pIzbDpmxJ2VFsj5CUf4ZQTWLraIKyV7m5a7X20DT6nM=; b=CZ0YmLaIQF6zN0
+	zIOqctsGaXy6Yh5S6NZGfW0fGk9H2X1LQzI0IJbvd22koiBzz/t+IsXICP57WgWhoWtSqlqFHM7+1
+	i7NGHpyNTKhVD09zfbgUXASEcmvrxq5f00VTOPy2HvnWsRMCsx8qiMw67pHxKjfdbj98xOGvkFsNE
+	pvuHKDt+07upVGLjVAR64zrvK1daZUXtjnCBcmMTXjO8+tgHW/m5oJMZ6nheVo9uaWV2vYC0gV4Ws
+	q7ENLpcWux++cHsbqiMb+3aQKTCbi9w/Vyn5IPuTAgR4zPapkG+55xgJFG8C2brCct6XLgzBycTA3
+	rSzaDijcxwqseSyGE7Ow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmsER-005OwB-2J;
-	Thu, 13 Apr 2023 08:23:03 +0000
-Received: from relay10.mail.gandi.net ([2001:4b98:dc4:8::230])
+	id 1pmtEe-005cSX-1U;
+	Thu, 13 Apr 2023 09:27:20 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmsEM-005Otw-30;
-	Thu, 13 Apr 2023 08:23:00 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 6464424000A;
-	Thu, 13 Apr 2023 08:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1681374176;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ciag85mAmF6PS4e2a/+yCh2UQDbtdxy+oAzmgl6ZOwY=;
-	b=XVLz1VEi8sbuAHXlIGv24JjCyZBV7wOiY3rPkDej9VhCaJyjmppyFWq9FrQ4uvDiNAbTsh
-	BomeLjiGd2coZifqVaoEk75tlc7HjTN/sXsMSRdicSglQA3L9ozgoDRH2w7GpvGElJf/wD
-	yWZeD6/mteB3R3fG4M8PfioM2PASX86g7aAiutruu4+v7zH43e/7K3AKzmJMJvUuvjkpiN
-	+RqkKT7PFpqBCs1zrqEt422Pj8hdyNBFSpN3WGRi8vM7kIs8QkhpMS49jK0yOUln7gOodd
-	8/aJ7aKZvdtqgnmMgtTLGsWVogZgkpUikiUEzlTkzAy3PU2u8/RRUH2nVmoykw==
-Date: Thu, 13 Apr 2023 10:22:53 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Liang Yang <liang.yang@amlogic.com>
-Cc: Arseniy Krasnov <avkrasnov@sberdevices.ru>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Neil Armstrong
- <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
- Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Jianxin Pan
- <jianxin.pan@amlogic.com>, Yixun Lan <yixun.lan@amlogic.com>,
- oxffffaa@gmail.com, kernel@sberdevices.ru, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-kernel@vger.kernel.org, "yonghui.yu" <yonghui.yu@amlogic.com>
-Subject: Re: [PATCH v1 4/5] mtd: rawnand: meson: clear OOB buffer before
- read
-Message-ID: <20230413102253.2ee6bae4@xps-13>
-In-Reply-To: <0c61eaae-053e-5768-a533-70b2ff0cc95d@amlogic.com>
-References: <20230412061700.1492474-1-AVKrasnov@sberdevices.ru>
-	<20230412061700.1492474-5-AVKrasnov@sberdevices.ru>
-	<20230412094400.3c82f631@xps-13>
-	<ac4b66da-6a76-c2ec-7e21-31632f3448d5@sberdevices.ru>
-	<20230412113654.183350d0@xps-13>
-	<4eace0a0-f6af-7d99-a52f-7913a2139330@sberdevices.ru>
-	<20230412141824.755b2bca@xps-13>
-	<eedaaed9-0a41-2c18-9eb2-792613566986@sberdevices.ru>
-	<20230412145715.58c2be4a@xps-13>
-	<7c996832-258f-001c-56bd-87bbdf23eeaa@amlogic.com>
-	<20230412163214.0c764bb3@xps-13>
-	<0c61eaae-053e-5768-a533-70b2ff0cc95d@amlogic.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1pmtEZ-005cPd-1r;
+	Thu, 13 Apr 2023 09:27:17 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id 29ED85FD08;
+	Thu, 13 Apr 2023 12:27:07 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1681378027;
+	bh=UPszp2OFslVfFwAvzppwKty8Ue+mKSOF7e8ZAshB5Po=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	b=sHqHMmIj7lSBOCLj5u2JmiqPTfQ5hL8vVVjVkoEp+f2+Viw46+yc0CWLoFnZKho+v
+	 ToB8ZA8kNgJjATvS6gbe2JZQ2xnmd6s099W7B9PN+GN3FncW+q1pQTuqwDsQtO+T+Y
+	 6Jyho/giCySUB7XfF4PyEwxeMVeKgB5a4aCGm2zKtUKjI5YacQmKJvrFN4DFtrqwIL
+	 +uUk4ptfMNDfuQO/q6jyzMkVt4p6/d6Z+valLgjLi8gInqzHVzGc1VYcjVrsxYcOY5
+	 nMsJMjQ1ad3CQlAUWaDIJ9oehI+biHYHIjipfmTjrMJBOq/WbEGmMWaEh8NwdL3rAv
+	 VHgjuacUe0tPQ==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Thu, 13 Apr 2023 12:27:06 +0300 (MSK)
+Date: Thu, 13 Apr 2023 12:27:06 +0300
+From: Dmitry Rokosov <ddrokosov@sberdevices.ru>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Liang Yang <liang.yang@amlogic.com>, Arseniy Krasnov
+	<avkrasnov@sberdevices.ru>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Jianxin Pan
+	<jianxin.pan@amlogic.com>, Yixun Lan <yixun.lan@amlogic.com>,
+	<oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 4/5] mtd: rawnand: meson: clear OOB buffer before read
+Message-ID: <20230413092706.mzopdszyirnwnjnl@CAB-WSD-L081021>
+References: <20230412094400.3c82f631@xps-13>
+ <ac4b66da-6a76-c2ec-7e21-31632f3448d5@sberdevices.ru>
+ <20230412113654.183350d0@xps-13>
+ <4eace0a0-f6af-7d99-a52f-7913a2139330@sberdevices.ru>
+ <20230412141824.755b2bca@xps-13>
+ <eedaaed9-0a41-2c18-9eb2-792613566986@sberdevices.ru>
+ <20230412145715.58c2be4a@xps-13>
+ <7c996832-258f-001c-56bd-87bbdf23eeaa@amlogic.com>
+ <20230412191548.ov5fufxkwqvdgrz2@CAB-WSD-L081021>
+ <20230412225603.5fba1a9e@xps-13>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230412225603.5fba1a9e@xps-13>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/04/12 22:40:00 #21096401
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230413_012259_266363_5808E21E 
-X-CRM114-Status: GOOD (  34.91  )
+X-CRM114-CacheID: sfid-20230413_022715_963876_6A361F6A 
+X-CRM114-Status: GOOD (  53.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,121 +94,157 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTGlhbmcsCgpsaWFuZy55YW5nQGFtbG9naWMuY29tIHdyb3RlIG9uIFRodSwgMTMgQXByIDIw
-MjMgMTM6MzI6MDMgKzA4MDA6Cgo+IEhpIE1pcXVlbCwKPiAKPiBPbiAyMDIzLzQvMTIgMjI6MzIs
-IE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gPiBbIEVYVEVSTkFMIEVNQUlMIF0KPiA+IAo+ID4gSGVs
-bG8sCj4gPiAKPiA+IGxpYW5nLnlhbmdAYW1sb2dpYy5jb20gd3JvdGUgb24gV2VkLCAxMiBBcHIg
-MjAyMyAyMjowNDoyOCArMDgwMDoKPiA+ICAgCj4gPj4gSGkgTWlxdWVsIGFuZCBBcnNlbml5LAo+
-ID4+Cj4gPj4gT24gMjAyMy80LzEyIDIwOjU3LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAgCj4gPj4+
-IFsgRVhURVJOQUwgRU1BSUwgXQo+ID4+Pgo+ID4+PiBIaSBBcnNlbml5LAo+ID4+Pgo+ID4+PiBh
-dmtyYXNub3ZAc2JlcmRldmljZXMucnUgd3JvdGUgb24gV2VkLCAxMiBBcHIgMjAyMyAxNToyMjoy
-NiArMDMwMDogIAo+ID4+PiAgICA+Pj4+IE9uIDEyLjA0LjIwMjMgMTU6MTgsIE1pcXVlbCBSYXlu
-YWwgd3JvdGU6ICAKPiA+Pj4+PiBIaSBBcnNlbml5LAo+ID4+Pj4+Cj4gPj4+Pj4gYXZrcmFzbm92
-QHNiZXJkZXZpY2VzLnJ1IHdyb3RlIG9uIFdlZCwgMTIgQXByIDIwMjMgMTM6MTQ6NTIgKzAzMDA6
-ICAKPiA+Pj4+PiAgICAgPj4+PiBPbiAxMi4wNC4yMDIzIDEyOjM2LCBNaXF1ZWwgUmF5bmFsIHdy
-b3RlOiAgCj4gPj4+Pj4+PiBIaSBBcnNlbml5LAo+ID4+Pj4+Pj4KPiA+Pj4+Pj4+IGF2a3Jhc25v
-dkBzYmVyZGV2aWNlcy5ydSB3cm90ZSBvbiBXZWQsIDEyIEFwciAyMDIzIDEyOjIwOjU1ICswMzAw
-OiAgCj4gPj4+Pj4+PiAgICAgICA+Pj4+Pj4gT24gMTIuMDQuMjAyMyAxMDo0NCwgTWlxdWVsIFJh
-eW5hbCB3cm90ZTogIAo+ID4+Pj4+Pj4+PiBIaSBBcnNlbml5LAo+ID4+Pj4+Pj4+Pgo+ID4+Pj4+
-Pj4+PiBBVktyYXNub3ZAc2JlcmRldmljZXMucnUgd3JvdGUgb24gV2VkLCAxMiBBcHIgMjAyMyAw
-OToxNjo1OCArMDMwMDogIAo+ID4+Pj4+Pj4+PiAgICAgICAgID4+Pj4+Pj4+IFRoaXMgTkFORCBy
-ZWFkcyBvbmx5IGZldyB1c2VyJ3MgYnl0ZXMgaW4gRUNDIG1vZGUgKG5vdCBmdWxsIE9PQiksIHNv
-ICAKPiA+Pj4+Pj4+Pj4KPiA+Pj4+Pj4+Pj4gIlRoaXMgTkFORCByZWFkcyIgZG9lcyBub3QgbG9v
-ayByaWdodCwgZG8geW91IG1lYW4gIlN1YnBhZ2UgcmVhZHMgZG8KPiA+Pj4+Pj4+Pj4gbm90IHJl
-dHJpZXZlIGFsbCB0aGUgT09CIGJ5dGVzLCI/ICAKPiA+Pj4+Pj4+Pj4gICAgICAgICA+Pj4+Pj4+
-PiBmaWxsIE9PQiBidWZmZXIgd2l0aCB6ZXJvZXMgdG8gbm90IHJldHVybiBnYXJiYWdlIGZyb20g
-cHJldmlvdXMgcmVhZHMgIAo+ID4+Pj4+Pj4+Pj4gdG8gdXNlci4KPiA+Pj4+Pj4+Pj4+IE90aGVy
-d2lzZSAnbmFuZGR1bXAnIHV0aWxpdHkgcHJpbnRzIHNvbWV0aGluZyBsaWtlIHRoaXMgZm9yIGp1
-c3QgZXJhc2VkCj4gPj4+Pj4+Pj4+PiBwYWdlOgo+ID4+Pj4+Pj4+Pj4KPiA+Pj4+Pj4+Pj4+IC4u
-Lgo+ID4+Pj4+Pj4+Pj4gMHgwMDAwMDdmMDogZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgZmYgZmYgZmYKPiA+Pj4+Pj4+Pj4+ICAgICBPT0IgRGF0YTogZmYgZmYgZmYgZmYg
-MDAgMDAgZmYgZmYgODAgY2YgMjIgOTkgY2IgYWQgZDMgYmUKPiA+Pj4+Pj4+Pj4+ICAgICBPT0Ig
-RGF0YTogNjMgMjcgYWUgMDYgMTYgMGEgMmYgZWIgYmIgZGQgNDYgNzQgNDEgOGUgODggNmUKPiA+
-Pj4+Pj4+Pj4+ICAgICBPT0IgRGF0YTogMzggYTEgMmQgZTYgNzcgZDQgMDUgMDYgZjIgYTUgN2Ug
-MjUgZWIgMzQgN2MgZmYKPiA+Pj4+Pj4+Pj4+ICAgICBPT0IgRGF0YTogMzggZWEgZGUgMTQgMTAg
-ZGUgOWIgNDAgMzMgMTYgNmEgY2MgOWQgYWEgMmYgNWUKPiA+Pj4+Pj4+Pj4+Cj4gPj4+Pj4+Pj4+
-PiBTaWduZWQtb2ZmLWJ5OiBBcnNlbml5IEtyYXNub3YgPEFWS3Jhc25vdkBzYmVyZGV2aWNlcy5y
-dT4KPiA+Pj4+Pj4+Pj4+IC0tLQo+ID4+Pj4+Pj4+Pj4gICAgZHJpdmVycy9tdGQvbmFuZC9yYXcv
-bWVzb25fbmFuZC5jIHwgNSArKysrKwo+ID4+Pj4+Pj4+Pj4gICAgMSBmaWxlIGNoYW5nZWQsIDUg
-aW5zZXJ0aW9ucygrKQo+ID4+Pj4+Pj4+Pj4KPiA+Pj4+Pj4+Pj4+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNv
-bl9uYW5kLmMKPiA+Pj4+Pj4+Pj4+IGluZGV4IGY4NGExMDIzOGU0ZC4uZjJmMjQ3MmNiNTExIDEw
-MDY0NAo+ID4+Pj4+Pj4+Pj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWVzb25fbmFuZC5j
-Cj4gPj4+Pj4+Pj4+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMKPiA+
-Pj4+Pj4+Pj4+IEBAIC04NTgsOSArODU4LDEyIEBAIHN0YXRpYyBpbnQgbWVzb25fbmZjX3JlYWRf
-cGFnZV9zdWIoc3RydWN0IG5hbmRfY2hpcCAqbmFuZCwKPiA+Pj4+Pj4+Pj4+ICAgIHN0YXRpYyBp
-bnQgbWVzb25fbmZjX3JlYWRfcGFnZV9yYXcoc3RydWN0IG5hbmRfY2hpcCAqbmFuZCwgdTggKmJ1
-ZiwKPiA+Pj4+Pj4+Pj4+ICAgIAkJCQkgICBpbnQgb29iX3JlcXVpcmVkLCBpbnQgcGFnZSkKPiA+
-Pj4+Pj4+Pj4+ICAgIHsKPiA+Pj4+Pj4+Pj4+ICsJc3RydWN0IG10ZF9pbmZvICptdGQgPSBuYW5k
-X3RvX210ZChuYW5kKTsKPiA+Pj4+Pj4+Pj4+ICAgIAl1OCAqb29iX2J1ZiA9IG5hbmQtPm9vYl9w
-b2k7Cj4gPj4+Pj4+Pj4+PiAgICAJaW50IHJldDsgIAo+ID4+Pj4+Pj4+Pj4gICAgPj4+Pj4+Pj4g
-KwltZW1zZXQob29iX2J1ZiwgMCwgbXRkLT5vb2JzaXplKTsgIAo+ID4+Pj4+Pj4+Pgo+ID4+Pj4+
-Pj4+PiBJJ20gc3VycHJpc2VkIHJhdyByZWFkcyBkbyBub3QgcmVhZCB0aGUgZW50aXJlIE9PQj8g
-IAo+ID4+Pj4+Pj4+Cj4gPj4+Pj4+Pj4gWWVzISBTZWVtcyBpbiBjYXNlIG9mIHJhdyBhY2Nlc3Mg
-KHdoYXQgaSBzZWUgaW4gdGhpcyBkcml2ZXIpIG51bWJlciBvZiBPT0IgYnl0ZXMgcmVhZAo+ID4+
-Pj4+Pj4+IHN0aWxsIGRlcGVuZHMgb24gRUNDIHBhcmFtZXRlcnM6IGZvciBlYWNoIHBvcnRpb24g
-b2YgZGF0YSBjb3ZlcmVkIHdpdGggRUNDIGNvZGUgd2UgY2FuCj4gPj4+Pj4+Pj4gcmVhZCBpdCdz
-IEVDQyBjb2RlIGFuZCAidXNlciBieXRlcyIgZnJvbSBPT0IgLSBpdCBpcyB3aGF0IGkgc2VlIGJ5
-IGR1bXBpbmcgRE1BIGJ1ZmZlciBieQo+ID4+Pj4+Pj4+IHByaW50aygpLiBGb3IgZXhhbXBsZSBJ
-J20gd29ya2luZyB3aXRoIDJLIE5BTkQgcGFnZXMsIGVhY2ggcGFnZSBoYXMgMiB4IDFLIEVDQyBi
-bG9ja3MuCj4gPj4+Pj4+Pj4gRm9yIGVhY2ggRUNDIGJsb2NrIEkgaGF2ZSAxNiBPT0IgYnl0ZXMg
-d2hpY2ggSSBjYW4gYWNjZXNzIGJ5IHJlYWQvd3JpdGUuIEVhY2ggMTYgYnl0ZXMKPiA+Pj4+Pj4+
-PiBjb250YWlucyAyIGJ5dGVzIG9mIHVzZXIncyBkYXRhIGFuZCAxNCBieXRlcyBFQ0MgY29kZXMu
-IFNvIHdoZW4gSSByZWFkIHBhZ2UgaW4gcmF3IG1vZGUKPiA+Pj4+Pj4+PiBjb250cm9sbGVyIHJl
-dHVybnMgMzIgYnl0ZXMgKDIgeCAoMiArIDE0KSkgb2YgT09CLiBXaGlsZSBPT0IgaXMgcmVwb3J0
-ZWQgYXMgNjQgYnl0ZXMuICAKPiA+Pj4+Pj4+Cj4gPj4+Pj4+PiBJbiBhbGwgbW9kZXMsIHdoZW4g
-eW91IHJlYWQgT09CLCB5b3Ugc2hvdWxkIGdldCB0aGUgZnVsbCBPT0IuIFRoZSBmYWN0Cj4gPj4+
-Pj4+PiB0aGF0IEVDQyBjb3JyZWN0aW9uIGlzIGVuYWJsZWQgb3IgZGlzYWJsZWQgZG9lcyBub3Qg
-bWF0dGVyLiBJZiB0aGUgTkFORAo+ID4+Pj4+Pj4gZmVhdHVyZXMgT09CIHNlY3Rpb25zIG9mIDY0
-IGJ5dGVzLCB5b3Ugc2hvdWxkIGdldCB0aGUgNjQgYnl0ZXMuCj4gPj4+Pj4+Pgo+ID4+Pj4+Pj4g
-V2hhdCBoYXBwZW5zIHNvbWV0aW1lcywgaXMgdGhhdCBzb21lIG9mIHRoZSBieXRlcyBhcmUgbm90
-IHByb3RlY3RlZAo+ID4+Pj4+Pj4gYWdhaW5zdCBiaXRmbGlwcywgYnV0IHRoZSBwb2xpY3kgaXMg
-dG8gcmV0dXJuIHRoZSBmdWxsIGJ1ZmZlci4gIAo+ID4+Pj4+Pgo+ID4+Pj4+PiBPaywgc28gdG8g
-Y2xhcmlmeSBjYXNlIGZvciB0aGlzIE5BTkQgY29udHJvbGxlcjoKPiA+Pj4+Pj4gMSkgSW4gYm90
-aCBFQ0MgYW5kIHJhdyBtb2RlcyBpIG5lZWQgdG8gcmV0dXJuIHRoZSBzYW1lIHJhdyBPT0IgZGF0
-YSAoZS5nLiB1c2VyIGJ5dGVzCj4gPj4+Pj4+ICAgICAgKyBFQ0MgY29kZXMpPyAgCj4gPj4+Pj4K
-PiA+Pj4+PiBXZWxsLCB5b3UgbmVlZCB0byBjb3ZlciB0aGUgc2FtZSBhbW91bnQgb2YgZGF0YSwg
-eWVzLiBCdXQgaW4gdGhlIEVDQwo+ID4+Pj4+IGNhc2UgdGhlIGRhdGEgd29uJ3QgYmUgcmF3IChh
-dCBsZWFzdCBub3QgYWxsIG9mIGl0KS4gIAo+ID4+Pj4KPiA+Pj4+IFNvICJzYW1lIGFtb3VudCBv
-ZiBkYXRhIiwgaW4gRUNDIG1vZGUgY3VycmVudCBpbXBsZW1lbnRhdGlvbiByZXR1cm5zIG9ubHkg
-dXNlciBPT0IgYnl0ZXMgKGUuZy4KPiA+Pj4+IE9PQiBkYXRhIGV4Y2x1ZGluZyBFQ0MgY29kZXMp
-LCBpbiByYXcgaXQgcmV0dXJucyB1c2VyIGJ5dGVzICsgRUNDIGNvZGVzLiBJSVVDIGNvcnJlY3QK
-PiA+Pj4+IGJlaGF2aW91ciBpcyB0byBhbHdheXMgcmV0dXJuIHVzZXIgYnl0ZXMgKyBFQ0MgY29k
-ZXMgYXMgT09CIGRhdGEgZXZlbiBpbiBFQ0MgbW9kZSA/ICAKPiA+Pj4KPiA+Pj4gSWYgdGhlIHBh
-Z2UgYXJlIDJrKzY0QiB5b3Ugc2hvdWxkIHJlYWQgMmsrNjRCIHdoZW4gT09CIGFyZSByZXF1ZXN0
-ZWQuCj4gPj4+Cj4gPj4+IElmIHRoZSBjb250cm9sbGVyIG9ubHkgcmV0dXJucyAyayszMkIsIHRo
-ZW4gcGVyZm9ybSBhIHJhbmRvbSByZWFkIHRvCj4gPj4+IGp1c3QgbW92ZSB0aGUgcmVhZCBwb2lu
-dGVyIHRvIG10ZC0+c2l6ZSArIG10ZC0+b29ic2l6ZSAtIDMyIGFuZAo+ID4+PiByZXRyaWV2ZSB0
-aGUgbWlzc2luZyAzMiBieXRlcz8gIAo+ID4+Cj4gPj4gMSkgcmF3IHJlYWQgY2FuIHJlYWQgb3V0
-IHRoZSB3aG9sZSBwYWdlIGRhdGEgMmsrNjRCLCBkZWNpZGVkIGJ5IHRoZSBsZW4gaW4gdGhlIGNv
-bnRyb2xsZXIgcmF3IHJlYWQgY29tbWFuZDoKPiA+PiAJY21kID0gKGxlbiAmIEdFTk1BU0soNSwg
-MCkpIHwgc2NyYW1ibGVyIHwgRE1BX0RJUihkaXIpOwo+ID4+IGFmdGVyIHRoYXQsIHRoZSBtaXNz
-aW5nIG9vYiBieXRlcyhub3QgdXNlZCkgY2FuIGJlIGNvcGllZCBmcm9tIG1lc29uX2NoaXAtPmRh
-dGFfYnVmLiBzbyB0aGUgaW1wbGVtZW50YXRpb24gb2YgbWVzb25fbmZjX3JlYWRfcGFnZV9yYXco
-KSBpcyBsaWtlIHRoaXMgaWYgbmVlZC4KPiA+PiAJewo+ID4+IAkJLi4uLi4uCj4gPj4gCQltZXNv
-bl9uZmNfcmVhZF9wYWdlX3N1YihuYW5kLCBwYWdlLCAxKTsKPiA+PiAJCW1lc29uX25mY19nZXRf
-ZGF0YV9vb2IobmFuZCwgYnVmLCBvb2JfYnVmKTsKPiA+PiAJCW9vYl9sZW4gPSAobmFuZC0+ZWNj
-LmJ5dGVzICsgMikgKiBuYW5kLT5lY2Muc3RlcHM7Cj4gPj4gCQltZW1jcHkob29iX2J1ZiArIG9v
-Yl9sZW4sIG1lc29uX2NoaXAtPmRhdGFfYnVmICsgb29iX2xlbiwgbXRkLT5vb2JzaXplIC0gb29i
-X2xlbik7Cj4gPj4KPiA+PiAJfQo+ID4+IDIpIEluIEVDQyBtb2RlLCB0aGUgY29udHJvbGxlciBj
-YW4ndCBicmluZyBiYWNrIHRoZSBtaXNzaW5nIE9PQiBieXRlcy4gaXQgY2FuIHJlYWQgb3V0IHRo
-ZSB1c2VyIGJ5dGVzIGFuZCBlY2MgYnl0ZXMgcGVyIG1lc29uX29vYmxheW91dF9vcHMgZGVmaW5l
-LiAgCj4gPiAKPiA+IEFuZCB0aGVuIChpZiBvb2JfcmVxdWlyZWQpIHlvdSBjYW4gYnJpbmcgdGhl
-IG1pc3NpbmcgYnl0ZXMgd2l0aAo+ID4gc29tZXRoaW5nIGFsb25nOgo+ID4gbmFuZF9jaGFuZ2Vf
-cmVhZF9jb2x1bW5fb3AoY2hpcCwgbXRkLT53cml0ZXNpemUgKyBvb2JfbGVuLAo+ID4gCQkJICAg
-b29iX2J1ZiArIG9vYl9sZW4sCj4gPiAJCQkgICBtdGQtPm9vYnNpemUgLSBvb2JfbGVuLAo+ID4g
-CQkJICAgZmFsc2UpOwo+ID4gU2hvdWxkIG5vdCBiZSBhIGh1Z2UgcGVyZm9ybWFuY2UgaGl0LiAg
-Cj4gCj4gQWZ0ZXIgZmluaXNoaW5nIEVDQyBtb2RlIHJlYWRpbmcsIHRoZSBjb2x1bW4gYWRkcmVz
-cyBpbnRlcm5hbCBpbiBOQU5EIGRldmljZSBzaG91bGQgYmUgdGhlIHJpZ2h0IHBvczsgaXQgZG9l
-c24ndCBuZWVkIHRvIGNoYW5nZSB0aGUgY29sdW1uIGFnYWluLiBzbyBhZGRpbmcgY29udHJvbGxl
-ciByYXcgcmVhZCBmb3IgdGhlIG1pc3NpbmcgYnl0ZXMgYWZ0ZXIgRUNDIHJlYWRpbmcgbWF5IHdv
-cmtzLgoKWWVzLCBpZiB0aGUgbGFzdCBieXRlIHJlYWQgaXMgdGhlIG9uZSByaWdodCBiZWZvcmUg
-dGhlICJtaXNzaW5nIiBieXRlcywKdGhlbiB0aGF0IHdpbGwgd29yay4KClRoYW5rcywKTWlxdcOo
-bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Wed, Apr 12, 2023 at 10:56:03PM +0200, Miquel Raynal wrote:
+> Hi Dmitry,
+> 
+> ddrokosov@sberdevices.ru wrote on Wed, 12 Apr 2023 22:15:48 +0300:
+> 
+> > On Wed, Apr 12, 2023 at 10:04:28PM +0800, Liang Yang wrote:
+> > > Hi Miquel and Arseniy,
+> > > 
+> > > On 2023/4/12 20:57, Miquel Raynal wrote:  
+> > > > [ EXTERNAL EMAIL ]
+> > > > 
+> > > > Hi Arseniy,
+> > > > 
+> > > > avkrasnov@sberdevices.ru wrote on Wed, 12 Apr 2023 15:22:26 +0300:
+> > > >   
+> > > > > On 12.04.2023 15:18, Miquel Raynal wrote:  
+> > > > > > Hi Arseniy,
+> > > > > > 
+> > > > > > avkrasnov@sberdevices.ru wrote on Wed, 12 Apr 2023 13:14:52 +0300:  
+> > > > > > > On 12.04.2023 12:36, Miquel Raynal wrote:  
+> > > > > > > > Hi Arseniy,
+> > > > > > > > 
+> > > > > > > > avkrasnov@sberdevices.ru wrote on Wed, 12 Apr 2023 12:20:55 +0300:  
+> > > > > > > > > On 12.04.2023 10:44, Miquel Raynal wrote:  
+> > > > > > > > > > Hi Arseniy,
+> > > > > > > > > > 
+> > > > > > > > > > AVKrasnov@sberdevices.ru wrote on Wed, 12 Apr 2023 09:16:58 +0300:  
+> > > > > > > > > > > This NAND reads only few user's bytes in ECC mode (not full OOB), so  
+> > > > > > > > > > 
+> > > > > > > > > > "This NAND reads" does not look right, do you mean "Subpage reads do
+> > > > > > > > > > not retrieve all the OOB bytes,"?  
+> > > > > > > > > > > fill OOB buffer with zeroes to not return garbage from previous reads
+> > > > > > > > > > > to user.
+> > > > > > > > > > > Otherwise 'nanddump' utility prints something like this for just erased
+> > > > > > > > > > > page:
+> > > > > > > > > > > 
+> > > > > > > > > > > ...
+> > > > > > > > > > > 0x000007f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> > > > > > > > > > >    OOB Data: ff ff ff ff 00 00 ff ff 80 cf 22 99 cb ad d3 be
+> > > > > > > > > > >    OOB Data: 63 27 ae 06 16 0a 2f eb bb dd 46 74 41 8e 88 6e
+> > > > > > > > > > >    OOB Data: 38 a1 2d e6 77 d4 05 06 f2 a5 7e 25 eb 34 7c ff
+> > > > > > > > > > >    OOB Data: 38 ea de 14 10 de 9b 40 33 16 6a cc 9d aa 2f 5e
+> > > > > > > > > > > 
+> > > > > > > > > > > Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> > > > > > > > > > > ---
+> > > > > > > > > > >   drivers/mtd/nand/raw/meson_nand.c | 5 +++++
+> > > > > > > > > > >   1 file changed, 5 insertions(+)
+> > > > > > > > > > > 
+> > > > > > > > > > > diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+> > > > > > > > > > > index f84a10238e4d..f2f2472cb511 100644
+> > > > > > > > > > > --- a/drivers/mtd/nand/raw/meson_nand.c
+> > > > > > > > > > > +++ b/drivers/mtd/nand/raw/meson_nand.c
+> > > > > > > > > > > @@ -858,9 +858,12 @@ static int meson_nfc_read_page_sub(struct nand_chip *nand,
+> > > > > > > > > > >   static int meson_nfc_read_page_raw(struct nand_chip *nand, u8 *buf,
+> > > > > > > > > > >   				   int oob_required, int page)
+> > > > > > > > > > >   {
+> > > > > > > > > > > +	struct mtd_info *mtd = nand_to_mtd(nand);
+> > > > > > > > > > >   	u8 *oob_buf = nand->oob_poi;
+> > > > > > > > > > >   	int ret;
+> > > > > > > > > > > +	memset(oob_buf, 0, mtd->oobsize);  
+> > > > > > > > > > 
+> > > > > > > > > > I'm surprised raw reads do not read the entire OOB?  
+> > > > > > > > > 
+> > > > > > > > > Yes! Seems in case of raw access (what i see in this driver) number of OOB bytes read
+> > > > > > > > > still depends on ECC parameters: for each portion of data covered with ECC code we can
+> > > > > > > > > read it's ECC code and "user bytes" from OOB - it is what i see by dumping DMA buffer by
+> > > > > > > > > printk(). For example I'm working with 2K NAND pages, each page has 2 x 1K ECC blocks.
+> > > > > > > > > For each ECC block I have 16 OOB bytes which I can access by read/write. Each 16 bytes
+> > > > > > > > > contains 2 bytes of user's data and 14 bytes ECC codes. So when I read page in raw mode
+> > > > > > > > > controller returns 32 bytes (2 x (2 + 14)) of OOB. While OOB is reported as 64 bytes.  
+> > > > > > > > 
+> > > > > > > > In all modes, when you read OOB, you should get the full OOB. The fact
+> > > > > > > > that ECC correction is enabled or disabled does not matter. If the NAND
+> > > > > > > > features OOB sections of 64 bytes, you should get the 64 bytes.
+> > > > > > > > 
+> > > > > > > > What happens sometimes, is that some of the bytes are not protected
+> > > > > > > > against bitflips, but the policy is to return the full buffer.  
+> > > > > > > 
+> > > > > > > Ok, so to clarify case for this NAND controller:
+> > > > > > > 1) In both ECC and raw modes i need to return the same raw OOB data (e.g. user bytes
+> > > > > > >     + ECC codes)?  
+> > > > > > 
+> > > > > > Well, you need to cover the same amount of data, yes. But in the ECC
+> > > > > > case the data won't be raw (at least not all of it).  
+> > > > > 
+> > > > > So "same amount of data", in ECC mode current implementation returns only user OOB bytes (e.g.
+> > > > > OOB data excluding ECC codes), in raw it returns user bytes + ECC codes. IIUC correct
+> > > > > behaviour is to always return user bytes + ECC codes as OOB data even in ECC mode ?  
+> > > > 
+> > > > If the page are 2k+64B you should read 2k+64B when OOB are requested.
+> > > > 
+> > > > If the controller only returns 2k+32B, then perform a random read to
+> > > > just move the read pointer to mtd->size + mtd->oobsize - 32 and
+> > > > retrieve the missing 32 bytes?  
+> > > 
+> > > 1) raw read can read out the whole page data 2k+64B, decided by the len in
+> > > the controller raw read command:
+> > > 	cmd = (len & GENMASK(5, 0)) | scrambler | DMA_DIR(dir);
+> > > after that, the missing oob bytes(not used) can be copied from
+> > > meson_chip->data_buf. so the implementation of meson_nfc_read_page_raw() is
+> > > like this if need.
+> > > 	{
+> > > 		......
+> > > 		meson_nfc_read_page_sub(nand, page, 1);
+> > > 		meson_nfc_get_data_oob(nand, buf, oob_buf);
+> > > 		oob_len = (nand->ecc.bytes + 2) * nand->ecc.steps;
+> > > 		memcpy(oob_buf + oob_len, meson_chip->data_buf + oob_len, mtd->oobsize -
+> > > oob_len);
+> > > 
+> > > 	}
+> > > 2) In ECC mode, the controller can't bring back the missing OOB bytes. it
+> > > can read out the user bytes and ecc bytes per meson_ooblayout_ops define.
+> > >   
+> > 
+> > How does the Meson controller know the actual NAND flash layout when the
+> > OOB is split into protected and unprotected areas, such as Free and ECC
+> > areas? If the controller has a static OOB layout, where is the mapping
+> > located?
+> 
+> It's usually a set of values hardcoded in the driver. It's a per
+> geometry set.
+> 
+
+Sorry, I'm still confused. Before I developed spinand drivers, the OOB layout
+was located on the flash driver side.
+Do you mean if the OOB geometry in the rawnand subsystem is under the
+responsibility of the controller driver?
+
+> > 
+> > > > 
+> > > > This applies to the two modes, the only difference is:
+> > > > - with correction (commonly named "ECC mode"): the user bytes and ECC
+> > > >    bytes should be fixed if there are any bitflips
+> > > > - without correction (commonly referred as "raw mode"): no correction
+> > > >    applies, if there are bitflips, give them
+> > > > 
+> > > > Please mind the raw mode can be slow, it's meant for debugging and
+> > > > testing, mainly. Page reads however should be fast, so if just moving
+> > > > the column pointer works, then do it, otherwise we'll consider
+> > > > returning FFs.  
+> > 
+
+-- 
+Thank you,
+Dmitry
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
