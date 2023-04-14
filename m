@@ -4,85 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68C31C77B6E
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Apr 2023 14:04:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AB02C77B6E
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Apr 2023 14:57:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KnkGMazwiuL3ch/Xsg6ldq7HlUM5upVwR1MS578lrl4=; b=eLTOHMM/TUZq9E
-	CgD3DGQUXL5dzxoAR6um6lBODnvlFbk/6rKZq/4vaoMq042T1HjwkxxYB4KOn3qM71WkVib4gsqTY
-	9ZrBU1bp5YU2ICXunoVN3YhZc9XA7GPHCtG1dej7IlBYm5viwps+T5pIOqR/PLlujN8itPel+lNO9
-	EfTnUDJlwPHCxKJv31VRgo/oilYZc/UmvsfjE59Uo/FErUI6NCJ//rS+F38siBwpfCXpQx+Tk2DiP
-	ogJUMWeYdSn+gEsV2w4i2VOCZMnjYVawBP+Md79uMumlPkmOOOEDC6ymUARmze78IpCluJoDbq4VK
-	oB2SHgNERxyTRBLcKY5g==;
+	List-Archive:List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=hJUtWsSVePRWFUUkedS+BIYx9zulwRP8vdlb9ui8hJw=; b=e2awITx6kMDdip
+	OILiOhn5xd40RjKo9dkv/ev0O+/2CYRJZowu6MaEQ+mXVKGbWkmJTLzn+mSJ6bVo6GdmmtyXwY73O
+	c6YbPRNYzOVkKTtchOalozHK9EGDK+h/GVRvqgcy0qgVsU4ofjcpHiaeD7FP1DGT+leqGl+qhWZBg
+	4SLtKUHq5PAtraDoF08+kRjc0jE0gr2qu116alJx+wHNTQyf+W/PNK4HGnQ0l7IXeL5gWuPU+D4GC
+	ZfEY3cuNeh/WY+pPx45A943JQasscTisEZZTMeAeQN6IcA/cNzTV9r4nqZB5vzpKyD2+zO8pKlY0z
+	t/st18YeP2+G9+IUdEFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmxXs-006LFf-3B;
-	Thu, 13 Apr 2023 14:03:28 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1pnKrN-009tGJ-2Z;
+	Fri, 14 Apr 2023 14:57:09 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pmxXn-006LCL-0u;
-	Thu, 13 Apr 2023 14:03:26 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id D451B5FD06;
-	Thu, 13 Apr 2023 17:03:15 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1681394595;
-	bh=JyPFmAWsU5fcaW4SOSM2aGm8oGz8c50g/Tz9uqmbquM=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	b=ijhyK1ujBg3i/wvTteHNPPdNP2MvyeK4UFEMteCNpAySMrQmaPBRQbDOkcWxuy+P/
-	 ldCO0TcLVFVdvl9keZGWMsLcYAGl8zIFZ9eso50zOg0vHCSbWzB2YpvDMyoG8Dx5ov
-	 APv4L5HJcZ1dEGBYuYY9XtvXex3vQjAtkk7EA8fdY2gt2AZYZ3fa/8/Pod7mm4NET4
-	 OG9xksnVNWdCujOeTsAqpS8PgLyfhVQBR8lQGOKRq+P8g4nf5SCFLx63oyTSCe9pmL
-	 j0uowC2C8G4W8M9Rpka5QVSeFMTH3EHO6CtYtZANiXHRZf6aKpjryKaNhKMs60hayM
-	 hS+5UViqPHg6w==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Thu, 13 Apr 2023 17:03:14 +0300 (MSK)
-Date: Thu, 13 Apr 2023 17:03:14 +0300
-From: Dmitry Rokosov <ddrokosov@sberdevices.ru>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Liang Yang <liang.yang@amlogic.com>, Arseniy Krasnov
-	<avkrasnov@sberdevices.ru>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Jianxin Pan
-	<jianxin.pan@amlogic.com>, Yixun Lan <yixun.lan@amlogic.com>,
-	<oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 4/5] mtd: rawnand: meson: clear OOB buffer before read
-Message-ID: <20230413140314.qioyvmzvmcv43kzk@CAB-WSD-L081021>
-References: <20230412113654.183350d0@xps-13>
- <4eace0a0-f6af-7d99-a52f-7913a2139330@sberdevices.ru>
- <20230412141824.755b2bca@xps-13>
- <eedaaed9-0a41-2c18-9eb2-792613566986@sberdevices.ru>
- <20230412145715.58c2be4a@xps-13>
- <7c996832-258f-001c-56bd-87bbdf23eeaa@amlogic.com>
- <20230412191548.ov5fufxkwqvdgrz2@CAB-WSD-L081021>
- <20230412225603.5fba1a9e@xps-13>
- <20230413092706.mzopdszyirnwnjnl@CAB-WSD-L081021>
- <20230413122916.365269f0@xps-13>
+	id 1pnKrJ-009tFV-16
+	for linux-mtd@lists.infradead.org;
+	Fri, 14 Apr 2023 14:57:06 +0000
+Received: by mail-ej1-x629.google.com with SMTP id gc14so1143999ejc.5
+        for <linux-mtd@lists.infradead.org>; Fri, 14 Apr 2023 07:57:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1681484221; x=1684076221;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rZ4HieBFKjhdRzMzhLO1ii3SoQyXphIf82V8c6jN+uQ=;
+        b=ee43yfChg6G58w5WQQmQEvoPPsKAcHm/rfSu+p2Ak3S8Mqjmun7zb0YcD5N/exxBUS
+         aobxxPjtZ82+1C1MVD6a6Aky4NS9KB4oeBD7ZIySyY3ibWCB8n4cNeLmfwiAzNdib0bn
+         EipB6jR5Vq5qMwkrT80msfVaUzbRHg8+PsnGhtPhc/0yXaAE3TAOcLoqVvTXZWqROwqX
+         oXG5jBAUzD7uUQctxxnOpTpxrBKl86TPYLAMBTTCbt0f/ODTLj62cuvDTI9WTOFoq7de
+         ovQAj8LIjqeZnPZ9vDoKi3I1X/03/ZXw85kQYP5mnfosDFkgH5JFxlEHX46YOleh8jms
+         PMvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681484221; x=1684076221;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rZ4HieBFKjhdRzMzhLO1ii3SoQyXphIf82V8c6jN+uQ=;
+        b=M40P5sfF+OzcTBxgos5NKr8q/aoTM2X5bFkoWsWKEQsQS5ljWCRwgwXNa3tKRYPAPM
+         vo9a1tH3J2mZt2cxAxtgZ2sS2tE6uLVNZU729AcPyLkYFWRKHcIh2ncPaUKsri1IFPQ2
+         k4+9ETd72H51sqGIicgBZ6lqFt7ETpdjDuSMblr7aQSO3VrNRgLck9zddaSWhNU+J6VD
+         7Zw1ZrGer3OVTwK32wsX7vLPvXqSWRf6nZzRQ7TSZdI3Zge0MF8w1zQh2dA7VYzygrLp
+         zXBCDYhwfTrCJg4Ki3kEj3JDNRe99aJSGP2D85xqki6iuYUZc3jX4mgZeRj08VltaS5h
+         H+4g==
+X-Gm-Message-State: AAQBX9dBOtQNWWNTE6KF6AbUCKZcykuCir2nsLsU9W6XpGR66Gq/H4ug
+	54i5Gh/Su/8657araNZf4xxFZCCy2T7H8iZygjM=
+X-Google-Smtp-Source: AKy350aahf9OuHVcTbCzrBp3H8I3qCzElfwJmERKwy6bQDqXhCNon0xSRFgWl4NeKDaQ20fJgYQmfg==
+X-Received: by 2002:a17:906:e82:b0:94e:68a5:b7b8 with SMTP id p2-20020a1709060e8200b0094e68a5b7b8mr6228358ejf.76.1681484220906;
+        Fri, 14 Apr 2023 07:57:00 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.230])
+        by smtp.gmail.com with ESMTPSA id q16-20020a1709060f9000b0094e954fd015sm2585381ejj.175.2023.04.14.07.57.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Apr 2023 07:57:00 -0700 (PDT)
+Message-ID: <294afd6f-9e3b-0bbb-dda0-ad8d8c02c3b1@linaro.org>
+Date: Fri, 14 Apr 2023 15:56:59 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230413122916.365269f0@xps-13>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/04/12 22:40:00 #21096401
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [GIT PULL] mtd: spi-nor: Changes for 6.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230413_070324_025263_3B1B5B13 
-X-CRM114-Status: GOOD (  58.86  )
+X-CRM114-CacheID: sfid-20230414_075705_393022_BAC9A6EF 
+X-CRM114-Status: GOOD (  12.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,173 +93,112 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Apr 13, 2023 at 12:29:16PM +0200, Miquel Raynal wrote:
-> Hi Dmitry,
-> 
-> ddrokosov@sberdevices.ru wrote on Thu, 13 Apr 2023 12:27:06 +0300:
-> 
-> > On Wed, Apr 12, 2023 at 10:56:03PM +0200, Miquel Raynal wrote:
-> > > Hi Dmitry,
-> > > 
-> > > ddrokosov@sberdevices.ru wrote on Wed, 12 Apr 2023 22:15:48 +0300:
-> > >   
-> > > > On Wed, Apr 12, 2023 at 10:04:28PM +0800, Liang Yang wrote:  
-> > > > > Hi Miquel and Arseniy,
-> > > > > 
-> > > > > On 2023/4/12 20:57, Miquel Raynal wrote:    
-> > > > > > [ EXTERNAL EMAIL ]
-> > > > > > 
-> > > > > > Hi Arseniy,
-> > > > > > 
-> > > > > > avkrasnov@sberdevices.ru wrote on Wed, 12 Apr 2023 15:22:26 +0300:
-> > > > > >     
-> > > > > > > On 12.04.2023 15:18, Miquel Raynal wrote:    
-> > > > > > > > Hi Arseniy,
-> > > > > > > > 
-> > > > > > > > avkrasnov@sberdevices.ru wrote on Wed, 12 Apr 2023 13:14:52 +0300:    
-> > > > > > > > > On 12.04.2023 12:36, Miquel Raynal wrote:    
-> > > > > > > > > > Hi Arseniy,
-> > > > > > > > > > 
-> > > > > > > > > > avkrasnov@sberdevices.ru wrote on Wed, 12 Apr 2023 12:20:55 +0300:    
-> > > > > > > > > > > On 12.04.2023 10:44, Miquel Raynal wrote:    
-> > > > > > > > > > > > Hi Arseniy,
-> > > > > > > > > > > > 
-> > > > > > > > > > > > AVKrasnov@sberdevices.ru wrote on Wed, 12 Apr 2023 09:16:58 +0300:    
-> > > > > > > > > > > > > This NAND reads only few user's bytes in ECC mode (not full OOB), so    
-> > > > > > > > > > > > 
-> > > > > > > > > > > > "This NAND reads" does not look right, do you mean "Subpage reads do
-> > > > > > > > > > > > not retrieve all the OOB bytes,"?    
-> > > > > > > > > > > > > fill OOB buffer with zeroes to not return garbage from previous reads
-> > > > > > > > > > > > > to user.
-> > > > > > > > > > > > > Otherwise 'nanddump' utility prints something like this for just erased
-> > > > > > > > > > > > > page:
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > ...
-> > > > > > > > > > > > > 0x000007f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> > > > > > > > > > > > >    OOB Data: ff ff ff ff 00 00 ff ff 80 cf 22 99 cb ad d3 be
-> > > > > > > > > > > > >    OOB Data: 63 27 ae 06 16 0a 2f eb bb dd 46 74 41 8e 88 6e
-> > > > > > > > > > > > >    OOB Data: 38 a1 2d e6 77 d4 05 06 f2 a5 7e 25 eb 34 7c ff
-> > > > > > > > > > > > >    OOB Data: 38 ea de 14 10 de 9b 40 33 16 6a cc 9d aa 2f 5e
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-> > > > > > > > > > > > > ---
-> > > > > > > > > > > > >   drivers/mtd/nand/raw/meson_nand.c | 5 +++++
-> > > > > > > > > > > > >   1 file changed, 5 insertions(+)
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-> > > > > > > > > > > > > index f84a10238e4d..f2f2472cb511 100644
-> > > > > > > > > > > > > --- a/drivers/mtd/nand/raw/meson_nand.c
-> > > > > > > > > > > > > +++ b/drivers/mtd/nand/raw/meson_nand.c
-> > > > > > > > > > > > > @@ -858,9 +858,12 @@ static int meson_nfc_read_page_sub(struct nand_chip *nand,
-> > > > > > > > > > > > >   static int meson_nfc_read_page_raw(struct nand_chip *nand, u8 *buf,
-> > > > > > > > > > > > >   				   int oob_required, int page)
-> > > > > > > > > > > > >   {
-> > > > > > > > > > > > > +	struct mtd_info *mtd = nand_to_mtd(nand);
-> > > > > > > > > > > > >   	u8 *oob_buf = nand->oob_poi;
-> > > > > > > > > > > > >   	int ret;
-> > > > > > > > > > > > > +	memset(oob_buf, 0, mtd->oobsize);    
-> > > > > > > > > > > > 
-> > > > > > > > > > > > I'm surprised raw reads do not read the entire OOB?    
-> > > > > > > > > > > 
-> > > > > > > > > > > Yes! Seems in case of raw access (what i see in this driver) number of OOB bytes read
-> > > > > > > > > > > still depends on ECC parameters: for each portion of data covered with ECC code we can
-> > > > > > > > > > > read it's ECC code and "user bytes" from OOB - it is what i see by dumping DMA buffer by
-> > > > > > > > > > > printk(). For example I'm working with 2K NAND pages, each page has 2 x 1K ECC blocks.
-> > > > > > > > > > > For each ECC block I have 16 OOB bytes which I can access by read/write. Each 16 bytes
-> > > > > > > > > > > contains 2 bytes of user's data and 14 bytes ECC codes. So when I read page in raw mode
-> > > > > > > > > > > controller returns 32 bytes (2 x (2 + 14)) of OOB. While OOB is reported as 64 bytes.    
-> > > > > > > > > > 
-> > > > > > > > > > In all modes, when you read OOB, you should get the full OOB. The fact
-> > > > > > > > > > that ECC correction is enabled or disabled does not matter. If the NAND
-> > > > > > > > > > features OOB sections of 64 bytes, you should get the 64 bytes.
-> > > > > > > > > > 
-> > > > > > > > > > What happens sometimes, is that some of the bytes are not protected
-> > > > > > > > > > against bitflips, but the policy is to return the full buffer.    
-> > > > > > > > > 
-> > > > > > > > > Ok, so to clarify case for this NAND controller:
-> > > > > > > > > 1) In both ECC and raw modes i need to return the same raw OOB data (e.g. user bytes
-> > > > > > > > >     + ECC codes)?    
-> > > > > > > > 
-> > > > > > > > Well, you need to cover the same amount of data, yes. But in the ECC
-> > > > > > > > case the data won't be raw (at least not all of it).    
-> > > > > > > 
-> > > > > > > So "same amount of data", in ECC mode current implementation returns only user OOB bytes (e.g.
-> > > > > > > OOB data excluding ECC codes), in raw it returns user bytes + ECC codes. IIUC correct
-> > > > > > > behaviour is to always return user bytes + ECC codes as OOB data even in ECC mode ?    
-> > > > > > 
-> > > > > > If the page are 2k+64B you should read 2k+64B when OOB are requested.
-> > > > > > 
-> > > > > > If the controller only returns 2k+32B, then perform a random read to
-> > > > > > just move the read pointer to mtd->size + mtd->oobsize - 32 and
-> > > > > > retrieve the missing 32 bytes?    
-> > > > > 
-> > > > > 1) raw read can read out the whole page data 2k+64B, decided by the len in
-> > > > > the controller raw read command:
-> > > > > 	cmd = (len & GENMASK(5, 0)) | scrambler | DMA_DIR(dir);
-> > > > > after that, the missing oob bytes(not used) can be copied from
-> > > > > meson_chip->data_buf. so the implementation of meson_nfc_read_page_raw() is
-> > > > > like this if need.
-> > > > > 	{
-> > > > > 		......
-> > > > > 		meson_nfc_read_page_sub(nand, page, 1);
-> > > > > 		meson_nfc_get_data_oob(nand, buf, oob_buf);
-> > > > > 		oob_len = (nand->ecc.bytes + 2) * nand->ecc.steps;
-> > > > > 		memcpy(oob_buf + oob_len, meson_chip->data_buf + oob_len, mtd->oobsize -
-> > > > > oob_len);
-> > > > > 
-> > > > > 	}
-> > > > > 2) In ECC mode, the controller can't bring back the missing OOB bytes. it
-> > > > > can read out the user bytes and ecc bytes per meson_ooblayout_ops define.
-> > > > >     
-> > > > 
-> > > > How does the Meson controller know the actual NAND flash layout when the
-> > > > OOB is split into protected and unprotected areas, such as Free and ECC
-> > > > areas? If the controller has a static OOB layout, where is the mapping
-> > > > located?  
-> > > 
-> > > It's usually a set of values hardcoded in the driver. It's a per
-> > > geometry set.
-> > >   
-> > 
-> > Sorry, I'm still confused. Before I developed spinand drivers, the OOB layout
-> > was located on the flash driver side.
-> 
-> The spinand subsystem is different, most of the chips have on-die ECC,
-> which means the ECC layout is most of the time per-chip.
-> 
-> In the raw NAND layer, most of the time the ECC engine is merged with
-> the NAND controller and thus the list of available layouts depend on
-> the controller. But these layouts often adapt to the NAND chip
-> geometry, so you can only now which layout to use after identifying the
-> chip (there is an ->attach_chip() hook to handle things related to
-> geometry after controller base initialization.
-> 
-> > Do you mean if the OOB geometry in the rawnand subsystem is under the
-> > responsibility of the controller driver?
-> 
-> The geometry is NAND chip specific.
-> The OOB layout depends on the chip geometry, the ECC engine
-> capabilities and configuration (like the strength).
-> The discovery of the geometry is performed by the core (using raw NAND
-> controller driver callbacks of course).
-> If on-host ECC engine is picked (the default in the raw NAND
-> subsystem), then the controller driver picks the correct OOB layout and
-> refuses to probe otherwise.
-> 
-> Hope its clearer now :)
+Hello,
 
-Yeah, pretty clear!
+This is the SPI NOR PR for 6.4.
 
-I wanted to express my special thanks to you for sharing such detailed
-information about the raw NAND layer! Your insights will be incredibly
-helpful for me and will provide valuable context that I would not have
-otherwise had.
+Cheers,
+ta
 
-Thank you so much for taking the time to share your expertise with me!
+The following changes since commit eeac8ede17557680855031c6f305ece2378af326:
 
--- 
-Thank you,
-Dmitry
+  Linux 6.3-rc2 (2023-03-12 16:36:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
+tags/spi-nor/for-6.4
+
+for you to fetch changes up to df6def86b9dcbc3e8ed4964c7b79b70c9b0c3040:
+
+  mtd: spi-nor: spansion: Add support for s25hl02gt and s25hs02gt
+(2023-04-08 09:41:13 +0300)
+
+----------------------------------------------------------------
+SPI NOR core changes:
+* introduce Read While Write support for flashes featuring several banks
+* set the 4-Byte Address Mode method based on SFDP data
+* allow post_sfdp hook to return errors
+* parse SCCR MC table and introduce support for multi-chip devices
+
+SPI NOR manufacturer drivers changes:
+* macronix: add support for mx25uw51245g with RWW
+* spansion:
+  - determine current address mode at runtime as it can be changed in a
+    non-volatile way and differ from factory defaults or from what SFDP
+    advertises.
+  - enable JFFS2 write buffer mode for few ECC'd NOR flashes: S25FS256T,
+    s25hx and s28hx
+  - add support for s25hl02gt and s25hs02gt
+
+----------------------------------------------------------------
+Miquel Raynal (10):
+      mtd: spi-nor: Introduce the concept of bank
+      mtd: spi-nor: Add a macro to define more banks
+      mtd: spi-nor: Reorder the preparation vs. locking steps
+      mtd: spi-nor: Separate preparation and locking
+      mtd: spi-nor: Prepare the introduction of a new locking mechanism
+      mtd: spi-nor: Add a RWW flag
+      mtd: spi-nor: Enhance locking to support reads while writes
+      mtd: spi-nor: Fix a trivial typo
+      mtd: spi-nor: Delay the initialization of bank_size
+      mtd: spi-nor: macronix: Add support for mx25uw51245g with RWW
+
+Takahiro Kuwano (12):
+      mtd: spi-nor: spansion: Make RD_ANY_REG_OP macro take number of
+dummy bytes
+      mtd: spi-nor: spansion: Add support for Infineon S25FS256T
+      mtd: spi-nor: spansion: Determine current address mode
+      mtd: spi-nor: spansion: Enable JFFS2 write buffer for Infineon
+s28hx SEMPER flash
+      mtd: spi-nor: spansion: Enable JFFS2 write buffer for Infineon
+s25hx SEMPER flash
+      mtd: spi-nor: spansion: Enable JFFS2 write buffer for S25FS256T
+      mtd: spi-nor: Extract volatile register offset from SCCR map
+      mtd: spi-nor: sfdp: Add support for SCCR map for multi-chip device
+      mtd: spi-nor: spansion: Rework cypress_nor_get_page_size() for
+multi-chip device support
+      mtd: spi-nor: spansion: Rework cypress_nor_quad_enable_volatile()
+for multi-chip device support
+      mtd: spi-nor: spansion: Add a new ->ready() hook for multi-chip device
+      mtd: spi-nor: spansion: Add support for s25hl02gt and s25hs02gt
+
+Tudor Ambarus (11):
+      mtd: spi-nor: core: Move generic method to core -
+micron_st_nor_set_4byte_addr_mode
+      mtd: spi-nor: core: Update name and description of
+micron_st_nor_set_4byte_addr_mode
+      mtd: spi-nor: core: Update name and description of
+spansion_set_4byte_addr_mode
+      mtd: spi-nor: core: Update name and description of
+spi_nor_set_4byte_addr_mode
+      mtd: spi-nor: core: Make spi_nor_set_4byte_addr_mode_brwr public
+      mtd: spi-nor: Set the 4-Byte Address Mode method based on SFDP data
+      mtd: spi-nor: Stop exporting spi_nor_restore()
+      mtd: spi-nor: core: Update flash's current address mode when
+changing address mode
+      mtd: spi-nor: core: Introduce spi_nor_set_4byte_addr_mode()
+      mtd: spi-nor: spansion: Rename method to cypress_nor_get_page_size
+      mtd: spi-nor: Allow post_sfdp hook to return errors
+
+ Documentation/driver-api/mtd/spi-nor.rst |   3 -
+ drivers/mtd/spi-nor/core.c               | 502
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ drivers/mtd/spi-nor/core.h               |  36 ++++--
+ drivers/mtd/spi-nor/debugfs.c            |   2 +
+ drivers/mtd/spi-nor/macronix.c           |  11 +-
+ drivers/mtd/spi-nor/micron-st.c          |  36 ++----
+ drivers/mtd/spi-nor/otp.c                |   8 +-
+ drivers/mtd/spi-nor/sfdp.c               | 107 +++++++++++++++-
+ drivers/mtd/spi-nor/sfdp.h               |  27 ++++
+ drivers/mtd/spi-nor/spansion.c           | 460
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------
+ drivers/mtd/spi-nor/sst.c                |   2 +-
+ drivers/mtd/spi-nor/swp.c                |   6 +-
+ drivers/mtd/spi-nor/winbond.c            |  24 ++--
+ drivers/mtd/spi-nor/xilinx.c             |   1 +
+ include/linux/mtd/spi-nor.h              |  19 ++-
+ 15 files changed, 1081 insertions(+), 163 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
