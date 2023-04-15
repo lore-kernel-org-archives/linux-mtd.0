@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 508B3C77B70
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Apr 2023 18:26:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E66BC77B70
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Apr 2023 18:35:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=D4uXHNnQgbDcsrZSWlcHL7Hrc8f8swbaX3Si4xB+ytY=; b=Y2ecn9zkK6YRWt0FOLlLblYWJB
-	bWWZcOYNDiI68YQlvNe4YynTeBLigBr0wvVyAueLQVhyCxw/1kWsQxffXuSSjQUMtJN7r9YGdKQyC
-	J8oiEPISB49G3g8BXXZdNhKfBx6tVPmUb4+cyAoCqXWXhN7BSzCG7BYo7WhUKOpU2FQFjXefztlJK
-	tbdYqULz/pJ2lPOGKESykui7XQl4O6ngzPFPIujT4nLr9UuCUeN+gDRTCQuCb+ghvSanGpdAzhujB
-	Rjk0TheoL8Osus/nC/iSIesfl5o59GLF4tq5m7NNkqvfzbIVXq2xeeSSPIhb9WnlQ2FnISTlNh276
-	CS3M3Paw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hLm97HDeCE3vks8jWfyvWlSL2lwr3bQnsniVjWYDXb8=; b=yjtmzMX0G6OQx6
+	DuLCX5xhMffItGBibf7RsKYakcMCneE4eiVtOoX3ZBDFPBvqNCQjGK8aeR18AQXznSNsJO4s0JylP
+	s/pd8gud1jn1pAiJgWr0AGBA08q210mReKCxLDzzIZSmengxAh1KkN7aPCmxtSXBBun6xj8YayGLx
+	GRuqZqd9RWKqOfA8tGxuqB6kqXRMYuvBh84RngM/E51cOQvuBpnYjRHQOO2sxlG3OfMm9yXJhHLBu
+	0WhslVhC467gWINy5Ktbgj7JMQHn2P7U3/GedfM0pMHXp8wRCrVkXKcpLzhMrJtHgya7WBbh+YIS8
+	v8Gwba3oU0YISYanTrGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pnkbO-00CbAX-1r;
-	Sat, 15 Apr 2023 18:26:22 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1pnkk2-00CbfZ-1B;
+	Sat, 15 Apr 2023 18:35:18 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pnkbL-00Cb9R-2g
+	id 1pnkjy-00Cbf4-3A
 	for linux-mtd@lists.infradead.org;
-	Sat, 15 Apr 2023 18:26:21 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 8535161989EA;
-	Sat, 15 Apr 2023 20:26:18 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id q3nyYnnlJoWP; Sat, 15 Apr 2023 20:26:18 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id E8363622623A;
-	Sat, 15 Apr 2023 20:26:17 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id h6de7diMJ8hx; Sat, 15 Apr 2023 20:26:17 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id C803161989EA;
-	Sat, 15 Apr 2023 20:26:17 +0200 (CEST)
-Date: Sat, 15 Apr 2023 20:26:17 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: stable <stable@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>, 
-	Hauke Mehrtens <hauke@hauke-m.de>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, 
-	chengzhihao1 <chengzhihao1@huawei.com>, 
-	Nicolas Schichan <nschichan@freebox.fr>, 
-	George Kennedy <george.kennedy@oracle.com>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, 
+	Sat, 15 Apr 2023 18:35:16 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3372660919;
+	Sat, 15 Apr 2023 18:35:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40650C433EF;
+	Sat, 15 Apr 2023 18:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1681583712;
+	bh=s6DtTj1DrMd0tN2/E2PvAPkgoaCLFuSXLjxP2BgPvwo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=toy5hTogmFa158ceZQGhUyj83ts0RU3KnO1cNqTSVRe0/TJ/6ZNYZt7KVdNNqf6Iw
+	 YBXLkEbFe8T7K5aovnKYPx/5lqnU6ujzcXM3OFVVCCiy2QvNLfJbkl4uLPOESmH5Xc
+	 o5N256EJXSe37ZW7OtBNTpbdG5Y5awO37Pfz6xUw=
+Date: Sat, 15 Apr 2023 20:35:10 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: Daniel Golle <daniel@makrotopia.org>, stable <stable@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Hauke Mehrtens <hauke@hauke-m.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	chengzhihao1 <chengzhihao1@huawei.com>,
+	Nicolas Schichan <nschichan@freebox.fr>,
+	George Kennedy <george.kennedy@oracle.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
 	yi zhang <yi.zhang@huawei.com>
-Message-ID: <288240559.69421.1681583177740.JavaMail.zimbra@nod.at>
-In-Reply-To: <ZDrmsnX5BHxtBNwf@makrotopia.org>
-References: <ZDrmsnX5BHxtBNwf@makrotopia.org>
 Subject: Re: Request to pick "ubi: Fix failure attaching when vid_hdr offset
  equals to (sub)page size"
+Message-ID: <2023041544-unending-glowing-e5ce@gregkh>
+References: <ZDrmsnX5BHxtBNwf@makrotopia.org>
+ <288240559.69421.1681583177740.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: Request to pick "ubi: Fix failure attaching when vid_hdr offset equals to (sub)page size"
-Thread-Index: /+luI1lt6eV/ynqKJ8vb6eB8RV7kaA==
+Content-Disposition: inline
+In-Reply-To: <288240559.69421.1681583177740.JavaMail.zimbra@nod.at>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230415_112620_025303_D84ED21A 
-X-CRM114-Status: UNSURE (   4.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230415_113515_084303_937B6B56 
+X-CRM114-Status: GOOD (  11.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,27 +75,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkRhbmllbCBHb2xsZSIgPGRh
-bmllbEBtYWtyb3RvcGlhLm9yZz4KPiBBbjogInN0YWJsZSIgPHN0YWJsZUB2Z2VyLmtlcm5lbC5v
-cmc+LCAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+Cj4gQ0M6ICJI
-YXVrZSBNZWhydGVucyIgPGhhdWtlQGhhdWtlLW0uZGU+LCAicmljaGFyZCIgPHJpY2hhcmRAbm9k
-LmF0PiwgIk1pcXVlbCBSYXluYWwiIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiwKPiAiY2hl
-bmd6aGloYW8xIiA8Y2hlbmd6aGloYW8xQGh1YXdlaS5jb20+LCAiTmljb2xhcyBTY2hpY2hhbiIg
-PG5zY2hpY2hhbkBmcmVlYm94LmZyPiwgIkdlb3JnZSBLZW5uZWR5Igo+IDxnZW9yZ2Uua2VubmVk
-eUBvcmFjbGUuY29tPiwgIlNhc2NoYSBIYXVlciIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+LCAi
-eWkgemhhbmciIDx5aS56aGFuZ0BodWF3ZWkuY29tPgo+IEdlc2VuZGV0OiBTYW1zdGFnLCAxNS4g
-QXByaWwgMjAyMyAyMDowMjoyNgo+IEJldHJlZmY6IFJlcXVlc3QgdG8gcGljayAidWJpOiBGaXgg
-ZmFpbHVyZSBhdHRhY2hpbmcgd2hlbiB2aWRfaGRyIG9mZnNldCBlcXVhbHMgdG8gKHN1YilwYWdl
-IHNpemUiCgo+IEhpLAo+IAo+IHBsZWFzZSBwaWNrCj4gCj4gMWUwMjBlMWI5NmFmZCAoInViaTog
-Rml4IGZhaWx1cmUgYXR0YWNoaW5nIHdoZW4gdmlkX2hkciBvZmZzZXQgZXF1YWxzIHRvCj4gKHN1
-YilwYWdlIHNpemUiKQo+IAo+IGZyb20gbGludXgtbmV4dCB0byBzdGFibGUgdHJlZXMuCgpGWUks
-IHRoZSBmaXggaXMgbm90IHlldCBpbiBMaW51cycgbWFzdGVyLiBCdXQgSSBndWVzcyBpdCB3aWxs
-IGJlIHZlcnkgc29vbi4KVGhlIHB1bGwgcmVxdWVzdCBpcyBvbiB0aGUgbWFpbGluZ2xpc3QuCgpU
-aGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Sat, Apr 15, 2023 at 08:26:17PM +0200, Richard Weinberger wrote:
+> ----- Urspr=FCngliche Mail -----
+> > Von: "Daniel Golle" <daniel@makrotopia.org>
+> > An: "stable" <stable@vger.kernel.org>, "linux-mtd" <linux-mtd@lists.inf=
+radead.org>
+> > CC: "Hauke Mehrtens" <hauke@hauke-m.de>, "richard" <richard@nod.at>, "M=
+iquel Raynal" <miquel.raynal@bootlin.com>,
+> > "chengzhihao1" <chengzhihao1@huawei.com>, "Nicolas Schichan" <nschichan=
+@freebox.fr>, "George Kennedy"
+> > <george.kennedy@oracle.com>, "Sascha Hauer" <s.hauer@pengutronix.de>, "=
+yi zhang" <yi.zhang@huawei.com>
+> > Gesendet: Samstag, 15. April 2023 20:02:26
+> > Betreff: Request to pick "ubi: Fix failure attaching when vid_hdr offse=
+t equals to (sub)page size"
+> =
+
+> > Hi,
+> > =
+
+> > please pick
+> > =
+
+> > 1e020e1b96afd ("ubi: Fix failure attaching when vid_hdr offset equals to
+> > (sub)page size")
+> > =
+
+> > from linux-next to stable trees.
+> =
+
+> FYI, the fix is not yet in Linus' master. But I guess it will be very soo=
+n.
+> The pull request is on the mailinglist.
+
+Any specific reason why it wasn't tagged cc: stable@ if it was known to
+be fixing a regression so that we would pick it up automatically?
+
+thanks,
+
+greg k-h
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
