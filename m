@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A9D5C7619A
-	for <linux-mtd@archiver.kernel.org>; Sun, 16 Apr 2023 09:00:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD40DC7619A
+	for <linux-mtd@archiver.kernel.org>; Sun, 16 Apr 2023 09:17:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:From:Date:
-	Subject:To:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=uq1O30UlBr7tGyE0kmA640D0FOWquY8CS7cXVUpt5Xo=; b=oMGFmvD/PB585I
-	kqxQiPOcQkuWLSFpCZG3eC9UaNDNhBOc83u8Y/ISNYjVxgIZ5CPjMyfRjbmgWwqawWAmqYrEGtZVT
-	6CXa6C9VLgDO0D8/Z7JI4C4w/9Irn34qx5fQ5E1LSc54SJeYbcoT48ipFjugo3vocAlQy7PheDOh0
-	B4dMSNyXWnqu7wGVFZX1r3HY45zGP/++w6Ayssg20gLldDsPs9BM0j5rsyQLePLBHraxxuFIdZ+ge
-	Q0mlQTwOO3siNMYXgw2tY86kOFblAues2w3COq8d0f+oSP15Eevs3AVcCzUxcBbfMIqI+Wr5Z7gnp
-	rkfSGUAYPjRPZxU+Hdkg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VTaD2BjFca3D5UtO9DL5qCZ6v8OFbFHjrSgxCYKLklY=; b=VdeaJorUXIC0eI
+	xtgQzKb6Jli7KH2+eMVfBOZ+pt/P5esqiWDqlRZKmUeteCXGkuknn8wtkyNYTXb/029G1PhDp9aNi
+	3ThFAlwCcc1NSE2PxuBZkUyusx3SEwkVDsKTOYegNbXXaUr0ki3MbvVlmkfQfAnt5Yx8a8v7tQLsk
+	mfRxlhsNb/hSazfBH4fsU3v5NEm6ywksPBZ/IMqOIjJNiCuEDoWYsBlF80a1mCCTIDgAyc+cXoVzf
+	sk1KEPiginohOLbphsG6yFa7VboYdKaIErHUaJ/li2W29reuBw3Qy1l9GvXda06jdTP9NL1Flc8jm
+	/aEhWq8m/4gS/l2W9K3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pnyEF-00DOkM-05;
-	Sun, 16 Apr 2023 08:59:23 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1pnyV7-00DQqn-1Z;
+	Sun, 16 Apr 2023 09:16:49 +0000
+Received: from smtp-20.smtpout.orange.fr ([80.12.242.20] helo=smtp.smtpout.orange.fr)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pnyED-00DOk2-0v
-	for linux-mtd@bombadil.infradead.org;
-	Sun, 16 Apr 2023 08:59:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:From:Date:Subject:To:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=hPILDKGQDGyM/nJa1tFDpJokoFzxNyejJONqhkzHxBk=; b=nrpf3znQXNPZGrxLxQ+PRpfHoI
-	dOTi2q9F5KHPMxO0SuTy2Hf0femqgRFLghpajQsK3bgTGBQT/9fGVvrXymdnrxcVReNcgT2KVejNm
-	gi7HKRh6ycjcdbDa1x+MbWNiBmz00WdJ+ABaqs93TT048ZLgu3fj5X9PaVdLRESglKc3Li8mVXjns
-	TR2TKphdz75t/FsVVdP0CKcUb9SG49c3tuBMY9cKVvahqow6h9zIR2hKHx8ZJO8BCe98uFKRqb35V
-	IMFQgSLz5fZVCrdPtvbh21t/0wqkAVVV51Y4j5F/0wwwsAl9biIAosr7V9gdNUj52u3uknJL2HtzJ
-	bwiou9Gg==;
-Received: from www3475.sakura.ne.jp ([49.212.235.215])
-	by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pnyE7-00AGs4-9L
-	for linux-mtd@lists.infradead.org; Sun, 16 Apr 2023 08:59:18 +0000
-Received: from www3475.sakura.ne.jp (localhost [127.0.0.1])
-	by www3475.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 33G8wE4D077524
-	for <linux-mtd@lists.infradead.org>; Sun, 16 Apr 2023 17:58:14 +0900 (JST)
-	(envelope-from tsubasa-ent@www3475.sakura.ne.jp)
-Received: (from tsubasa-ent@localhost)
-	by www3475.sakura.ne.jp (8.15.2/8.15.2/Submit) id 33G8wERM077523;
-	Sun, 16 Apr 2023 17:58:14 +0900 (JST)
-	(envelope-from tsubasa-ent)
-To: MichaelSek <linux-mtd@lists.infradead.org>
-Subject: =?UTF-8?B?44Oh44OD44K744O844K444GC44KK44GM44Go44GG44GU44GW44GE44G+44GZ?=  =?UTF-8?B?44CC44CQ5bed5baL44GC44GETXlSb29t44CR?=
-Date: Sun, 16 Apr 2023 08:58:14 +0000
-From: =?UTF-8?B?5bed5baL44GC44GETXlSb29t?= <info@kawashimaai.com>
-Message-ID: <b207eb962146da8cbf17b19e7ada736e@kawashimaai.com>
-X-Mailer: PHPMailer 5.2.22 (https://github.com/PHPMailer/PHPMailer)
+	id 1pnyV3-00DQoz-12
+	for linux-mtd@lists.infradead.org;
+	Sun, 16 Apr 2023 09:16:47 +0000
+Received: from pop-os.home ([86.243.2.178])
+	by smtp.orange.fr with ESMTPA
+	id nyUwp2vt5Vj4inyUxptm50; Sun, 16 Apr 2023 11:16:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orange.fr;
+	s=t20230301; t=1681636601;
+	bh=34R78RzbMExczZJuYkzgabitAT4xEBq8BMfJDrQnJw0=;
+	h=From:To:Cc:Subject:Date;
+	b=Y02O6fSLZ1OStPi3lYi2MwFNS7+N45Is2KC4Lw/JujtlFX0tH/K1484EKHJ4tPkCK
+	 4/5MpAxubdix6f5fRmS9RjFQUZm5k7FmUw8ZKWz6S+4cGQcYCy7w5fYKb55an0S9Bd
+	 EadVzTi5wIWHW2+5CQoUOSVprmD6R7FBSsmi9PEjljj9bSlOpLJ7n895dvPh8uz7ev
+	 IPMHGFozHUg0nMi/dw0z/uTqQyjQUUMpG1WEBjmQHDqtsxUHRMrCTr59OdrPRDtpzE
+	 gahhRNTWS4j6Ktfq1RyX+UwsDfJlIH2DB5Sp5jkJgh5+R2ah+k7qEoLlxVqRkx32M4
+	 6O6vGGtW5UegQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 16 Apr 2023 11:16:41 +0200
+X-ME-IP: 86.243.2.178
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: st_spi_fsm: Use the devm_clk_get_enabled() helper function
+Date: Sun, 16 Apr 2023 11:16:36 +0200
+Message-Id: <4025ec3980a956b0e776024e88ec960afc457501.1681636580.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230416_095915_908395_A31848A9 
-X-CRM114-Status: UNSURE (   0.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230416_021645_774363_E6E770F7 
+X-CRM114-Status: GOOD (  11.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,19 +71,99 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-44GT44Gu44Oh44O844Or44Gv44CQ5bed5baL44GC44GETXlSb29t44CR44KI44KK6Ieq5YuV44Gn
-6YCB5L+h44GV44KM44Gm44GE44G+44GZ44CCCuOBk+OBruW6puOBr+ODoeODg+OCu+ODvOOCuOOC
-kuOBiumAgeOCiuOBhOOBn+OBoOOBjeOBguOCiuOBjOOBqOOBhuOBlOOBluOBhOOBvuOBmeOAggoK
-44Oh44OD44K744O844K45pys5paHOgpHZXQgRXhwZXJ0IFNvY2lhbCBNZWRpYSBTZXJ2aWNlcyBm
-b3IgWW91ciBCdXNpbmVzcyBodHRwczovL3NtbS1lbGl0ZS1zZXJ2aWNlLmljc2lnZXdhbmdtaXIu
-dGsvaW52aXRlLTU5NzkKCi0tCuOBk+OBruODoeODvOODq+OBryDlt53ltovjgYLjgYQgTXkgUm9v
-bSAoaHR0cDovL2thd2FzaGltYWFpLmplZXouanApIOOBruOBiuWVj+OBhOWQiOOCj+OBm+ODleOC
-qeODvOODoOOBi+OCiemAgeS/oeOBleOCjOOBvuOBl+OBnwoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+Use the devm_clk_get_enabled() helper function instead of hand-writing it.
+It saves some line of codes.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/mtd/devices/st_spi_fsm.c | 28 ++++++----------------------
+ 1 file changed, 6 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index 54861d889c30..3dbb1aa80bfa 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -2046,34 +2046,26 @@ static int stfsm_probe(struct platform_device *pdev)
+ 		return PTR_ERR(fsm->base);
+ 	}
+ 
+-	fsm->clk = devm_clk_get(&pdev->dev, NULL);
++	fsm->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+ 	if (IS_ERR(fsm->clk)) {
+ 		dev_err(fsm->dev, "Couldn't find EMI clock.\n");
+ 		return PTR_ERR(fsm->clk);
+ 	}
+ 
+-	ret = clk_prepare_enable(fsm->clk);
+-	if (ret) {
+-		dev_err(fsm->dev, "Failed to enable EMI clock.\n");
+-		return ret;
+-	}
+-
+ 	mutex_init(&fsm->lock);
+ 
+ 	ret = stfsm_init(fsm);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to initialise FSM Controller\n");
+-		goto err_clk_unprepare;
++		return ret;
+ 	}
+ 
+ 	stfsm_fetch_platform_configs(pdev);
+ 
+ 	/* Detect SPI FLASH device */
+ 	info = stfsm_jedec_probe(fsm);
+-	if (!info) {
+-		ret = -ENODEV;
+-		goto err_clk_unprepare;
+-	}
++	if (!info)
++		return -ENODEV;
+ 	fsm->info = info;
+ 
+ 	/* Use device size to determine address width */
+@@ -2089,7 +2081,7 @@ static int stfsm_probe(struct platform_device *pdev)
+ 	else
+ 		ret = stfsm_prepare_rwe_seqs_default(fsm);
+ 	if (ret)
+-		goto err_clk_unprepare;
++		return ret;
+ 
+ 	fsm->mtd.name		= info->name;
+ 	fsm->mtd.dev.parent	= &pdev->dev;
+@@ -2112,13 +2104,7 @@ static int stfsm_probe(struct platform_device *pdev)
+ 		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
+ 		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
+ 
+-	ret = mtd_device_register(&fsm->mtd, NULL, 0);
+-	if (ret) {
+-err_clk_unprepare:
+-		clk_disable_unprepare(fsm->clk);
+-	}
+-
+-	return ret;
++	return mtd_device_register(&fsm->mtd, NULL, 0);
+ }
+ 
+ static int stfsm_remove(struct platform_device *pdev)
+@@ -2127,8 +2113,6 @@ static int stfsm_remove(struct platform_device *pdev)
+ 
+ 	WARN_ON(mtd_device_unregister(&fsm->mtd));
+ 
+-	clk_disable_unprepare(fsm->clk);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
