@@ -4,62 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63E82C77B76
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Apr 2023 20:57:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC37EC77B72
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Apr 2023 21:21:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Vds3JGYkAjgmT+Zdw2ngRJ+qWMiYYSQQgjg7g1/R2lo=; b=TRQF1guEcUFsJj
-	3d3mhir+82eIT0y2NFPoA0q3VPSL30dm/gxPrwI7R9hkAX5R2WyWpCaUF4fJZGtFv+6Vt/dx55RgW
-	MouuFwped2xEIWCC3hMGEmCc5Qp8/MgORht0LQR7lE/aIVylHI+VF6FlA2HSVY846kbKc09oRIsCY
-	OUHOHGF9OKb7Di+zOR0+N29FnGSe+wVc9LT9tC1Im2PFBG3j2xIA1wfpCcQv36xTZinsqKmiWdHj8
-	vOnaonJWsOzptQ8v9apbqjqZEWNzFjaRvk5Pe8fkjcHZvcRQTdePRss/d6MMNSDav/liSNsb0vxsi
-	eN4p3VvkvxkJqlEempig==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=rTcWztVBBtWKpT8WUja/hQL+qVHux/2Uvf5856T9pQ8=; b=LJTvYNCwM3LaHYPFdvhB04NCHg
+	LMeNEuwnKM0rkZ5d0v2fvbhkSYDLqhHrM02xAx2WPKiygtFoBWW9coIgwuxHWA70uU5YU/8DyfCbU
+	r2LlE2+N9QuiI/WyS6G6esf0yBJFjszuP+Z2gS0TATBBvNBv/Xl0NpCQ99x2TkHC0Vq+qPIxwi1HF
+	mU4OYnkUXnLo6mS6I2Kp1ok/S7XffNs46jlfKmDWwD95j5osO2dLPdzZcJ/UlLpA6ANNtkSGqHWrj
+	A2taGYOhp1zfXLAZ64Eygie0BjQ8BK3ba21uiICeO5tkLcgWwLp3X1IC0xNBqNSdrme1zfmEsrEcq
+	Q+AOFY3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1poVuK-00Haic-2X;
-	Mon, 17 Apr 2023 20:57:04 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1poWHc-0004iv-0O;
+	Mon, 17 Apr 2023 21:21:08 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1poVuG-00Hai6-1r
+	id 1poWHY-0004gF-2r
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Apr 2023 20:57:01 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D2AE562A68;
-	Mon, 17 Apr 2023 20:56:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A0F9C4339B;
-	Mon, 17 Apr 2023 20:56:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681765019;
-	bh=GsJ+PxyTSnYDGmLARig0264/+VJ67ApwAzYJ119+iSo=;
-	h=From:To:Cc:Subject:Date:From;
-	b=nNatzqFHmOQ057sTK5UQ0wFqiCQjllH8w0mjnxyxRPlfJsHBhuPXHefHqjInEH4AF
-	 nulbc2rGyqnAWGzjW6V0YKevxeCLXOL8eAXvgSNhRb+ukhcMvfqKY1urg0P2VRvXWg
-	 3hxjk0TJmgcsKe++pVJcahc2qD9SjKYg2jhlP5UGERc8J3BodkS2nHWW9YKCAMKsdU
-	 nj6Z486FHooltVb23ucWjyx4fcaOFIl0c6m6X0u7FI4sP5lYW+cIbC/uFhbhkM1k1N
-	 lyN4WUD9hNmoI/z2V2LQnnlAuMuMII3zGoxtafcFjdpbESky0FBzIz/httvFFSFlaX
-	 2U9g4u1Uci3Cg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	=?UTF-8?q?Micha=C5=82=20K=C4=99pie=C5=84?= <kernel@kempniu.pl>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtdchar: mark bits of ioctl handler noinline
-Date: Mon, 17 Apr 2023 22:56:50 +0200
-Message-Id: <20230417205654.1982368-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	Mon, 17 Apr 2023 21:21:06 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 165506382F0C;
+	Mon, 17 Apr 2023 23:21:00 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id zP6gpvDkZfuZ; Mon, 17 Apr 2023 23:20:59 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 9F0B563CC166;
+	Mon, 17 Apr 2023 23:20:59 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id brjCZ1XPEVNV; Mon, 17 Apr 2023 23:20:59 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 7C2806382F0C;
+	Mon, 17 Apr 2023 23:20:59 +0200 (CEST)
+Date: Mon, 17 Apr 2023 23:20:59 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	=?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, 
+	Arnd Bergmann <arnd@arndb.de>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <645805930.114012.1681766459273.JavaMail.zimbra@nod.at>
+In-Reply-To: <20230417205654.1982368-1-arnd@kernel.org>
+References: <20230417205654.1982368-1-arnd@kernel.org>
+Subject: Re: [PATCH] mtdchar: mark bits of ioctl handler noinline
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: mtdchar: mark bits of ioctl handler noinline
+Thread-Index: nwC/Hc1rDi+z5tkPO5cWLU+7DfHq+w==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230417_135700_653599_A16FEEB3 
-X-CRM114-Status: GOOD (  13.95  )
+X-CRM114-CacheID: sfid-20230417_142105_074885_F843F6D0 
+X-CRM114-Status: UNSURE (   7.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,61 +76,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Arnd Bergmann <arnd@arndb.de>
-
-The addition of the mtdchar_read_ioctl() function caused the stack usage
-of mtdchar_ioctl() to grow beyond the warning limit on 32-bit architectures
-with gcc-13:
-
-drivers/mtd/mtdchar.c: In function 'mtdchar_ioctl':
-drivers/mtd/mtdchar.c:1229:1: error: the frame size of 1488 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
-
-Mark both the read and write portions as noinline_for_stack to ensure
-they don't get inlined and use separate stack slots to reduce the
-maximum usage, both in the mtdchar_ioctl() and combined with any
-of its callees.
-
-Fixes: 095bb6e44eb1 ("mtdchar: add MEMREAD ioctl")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/mtdchar.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 01f1c6792df9..8dc4f5c493fc 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -590,8 +590,8 @@ static void adjust_oob_length(struct mtd_info *mtd, uint64_t start,
- 			    (end_page - start_page + 1) * oob_per_page);
- }
- 
--static int mtdchar_write_ioctl(struct mtd_info *mtd,
--		struct mtd_write_req __user *argp)
-+static noinline_for_stack int
-+mtdchar_write_ioctl(struct mtd_info *mtd, struct mtd_write_req __user *argp)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
- 	struct mtd_write_req req;
-@@ -688,8 +688,8 @@ static int mtdchar_write_ioctl(struct mtd_info *mtd,
- 	return ret;
- }
- 
--static int mtdchar_read_ioctl(struct mtd_info *mtd,
--		struct mtd_read_req __user *argp)
-+static noinline_for_stack int
-+mtdchar_read_ioctl(struct mtd_info *mtd, struct mtd_read_req __user *argp)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
- 	struct mtd_read_req req;
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkFybmQgQmVyZ21hbm4iIDxh
+cm5kQGtlcm5lbC5vcmc+Cj4gVGhlIGFkZGl0aW9uIG9mIHRoZSBtdGRjaGFyX3JlYWRfaW9jdGwo
+KSBmdW5jdGlvbiBjYXVzZWQgdGhlIHN0YWNrIHVzYWdlCj4gb2YgbXRkY2hhcl9pb2N0bCgpIHRv
+IGdyb3cgYmV5b25kIHRoZSB3YXJuaW5nIGxpbWl0IG9uIDMyLWJpdCBhcmNoaXRlY3R1cmVzCj4g
+d2l0aCBnY2MtMTM6Cj4gCj4gZHJpdmVycy9tdGQvbXRkY2hhci5jOiBJbiBmdW5jdGlvbiAnbXRk
+Y2hhcl9pb2N0bCc6Cj4gZHJpdmVycy9tdGQvbXRkY2hhci5jOjEyMjk6MTogZXJyb3I6IHRoZSBm
+cmFtZSBzaXplIG9mIDE0ODggYnl0ZXMgaXMgbGFyZ2VyIHRoYW4KPiAxMDI0IGJ5dGVzIFstV2Vy
+cm9yPWZyYW1lLWxhcmdlci10aGFuPV0KPiAKPiBNYXJrIGJvdGggdGhlIHJlYWQgYW5kIHdyaXRl
+IHBvcnRpb25zIGFzIG5vaW5saW5lX2Zvcl9zdGFjayB0byBlbnN1cmUKPiB0aGV5IGRvbid0IGdl
+dCBpbmxpbmVkIGFuZCB1c2Ugc2VwYXJhdGUgc3RhY2sgc2xvdHMgdG8gcmVkdWNlIHRoZQo+IG1h
+eGltdW0gdXNhZ2UsIGJvdGggaW4gdGhlIG10ZGNoYXJfaW9jdGwoKSBhbmQgY29tYmluZWQgd2l0
+aCBhbnkKPiBvZiBpdHMgY2FsbGVlcy4KPiAKPiBGaXhlczogMDk1YmI2ZTQ0ZWIxICgibXRkY2hh
+cjogYWRkIE1FTVJFQUQgaW9jdGwiKQo+IFNpZ25lZC1vZmYtYnk6IEFybmQgQmVyZ21hbm4gPGFy
+bmRAYXJuZGIuZGU+CgpSZXZpZXdlZC1ieTogUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5v
+ZC5hdD4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
