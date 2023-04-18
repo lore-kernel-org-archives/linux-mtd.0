@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8960C77B75
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Apr 2023 10:21:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56134C77B71
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Apr 2023 10:25:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5+W6IV5Cj+HCGJ2ddEGATHMP8nFDyAANfoTk92IH4nI=; b=BPO+nySG1ObHCR
-	V20RiNe8b0Zbg1nKeEmLYneFisJyFNM+bKBDggnmRgJe8XdchNdV2zKflU7rDbEevAI38wxreka8J
-	Hyd9SsnOJNZouwCtiBxQzJ+FR/61YmSE5Zvy47mxeQQhsMWt7RIcnyvs6pb+I4XpSLWyvst5owVS1
-	us7Q0Z7aJ38tH/gH5EG4urJ4mLnklsBzUIxM4jjJftjQ/RRsXztDAL8reiArwRseeZLo8DmhHjXEw
-	THkt+KgMK9Cv5t5qcX4JEslB8WmgginmrJqC6EMQoEOc9w9aNC/ebsuseKBIiPdFINPNxt5KEiLot
-	ijWFQu0Ui9wJiaCAz4nQ==;
+	List-Owner; bh=OjHA4OeKFCJzYy1CLlwKMrk1Oe/WlvnraCns82zfGEs=; b=uooLB+Y8Q6aTb8
+	FY6IeTUkdwroYRxU9D79Clk5MULek5OkSSy28eJ1HyoaMPWXrpeeT0K52YyApXpw0obr/k1cPIWRA
+	7UXAwN4lZidUEjZKW3RvT3j660ZjoDVIi9cTDlJJoK04FkeSXt82sK2uyVcwV/rRIoz8upfeR2U+2
+	+fUAVUG9LbZuKuxkPSIGdl/KucDz9ak5h8EeAtwPV+mNhdgMRiH0DMHlKBMA1HyzqDncKiUmnGEqG
+	+c24zmr9uGWKCjMxAATk4KjHtF3mDXQe7LI2Cy5dVBFl7xEeLZPkcYnaWEnZ+kbOKo/FBVz1cAqgw
+	92ljJ5WBUqetv+Izke3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1poiRj-001cjN-2S;
-	Tue, 18 Apr 2023 10:20:23 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1poiWb-001eGx-18;
+	Tue, 18 Apr 2023 10:25:25 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1poiRh-001chV-08
+	id 1poiWY-001eEO-0R
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Apr 2023 10:20:22 +0000
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3f0a80b686eso14478255e9.1
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2023 03:20:18 -0700 (PDT)
+	Tue, 18 Apr 2023 10:25:23 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id o6-20020a05600c4fc600b003ef6e6754c5so13248198wmq.5
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Apr 2023 03:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1681813217; x=1684405217;
+        d=linaro.org; s=google; t=1681813517; x=1684405517;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JFy5WUTawpPS84CigK11q6oOeCpJyryq3ERZuBnJrUs=;
-        b=a8LydxlGHrJWMKU50xI/W3Xk81UmwhEGdJkB7+kg+gujJh8c/k4LtoPzNi7Dz5RCTo
-         oIzXMqOPqjpkxOQJJoX3KFBFhelQQPbIwGYwuS9TvRFjpmI8xYMLeJ7L86rUVQjNACyB
-         S1huQyE1S0CHqJZ7qIv41zfQC4EAFiSKagbiQRJlMj5hzVDLDZFBQnnoG0I4VxhSK2db
-         uhNEYmsrd5j1a7blk3MC//6c7OHRYcaXqBKemIpfUWuwJ9uAL6kr/Cz+5JZz2ksuPGCm
-         khZzjOqUNvKcUWAVNioWyxL87OkKXTlaOfQYoeDRtHB1ENAuAnEzmGk3FwRLYQ7BKk5o
-         s98g==
+        bh=HRqUGTAUT3kQ+E6yNjWLD4fpiwu8oVq8M4urP2QVpno=;
+        b=o2vFL8/ONjowdEfYbIyg6ASxTZ8DpDZrhA56l/nuCEIaWBSnH8fFn5Ar867nK4DrIS
+         poVNqXS5Ib0b4eiCogZ5qviwEKwXDxNcVLXgNWgjgwroUN1ILZl6T3OyKrJba6JDTPWk
+         QQhUb3Ta+zN/NVn19mrhREL7cOFEuNJkb69t1LIFCJUAWuzn7qv6A8e0ChA3xNiiNhTC
+         RqAGa1ZhsQbuK/InYOAjMQI5IgOAL4UGRyb3g2M0mHXDhlKI3LDPpg82N4rls0rgP8RO
+         ez3Uem+kWUMuWNkzCK6rYeb89rgM6X3thHmh3ggIXRn/jJHcoF+XfZJRr+nRyLoBLj2H
+         qZ3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681813217; x=1684405217;
+        d=1e100.net; s=20221208; t=1681813517; x=1684405517;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JFy5WUTawpPS84CigK11q6oOeCpJyryq3ERZuBnJrUs=;
-        b=iEbM5b45gVJ3NXHtpELjny+iBy23pizme9b2IEEr27XihIaUh66e3sl2lFPX2ApArM
-         UokqgKLuRHxIcKxs/3BA7oLDFl5TjexmUPGKPCTITrSokHgmfkeBq88u+H3hrIEqXHz8
-         Jju5Bb9jeRkn9IyICeHk4HNjf6URFXRvP24e8HWaC+Gr/F7x9I2ban9jaYqoT00FdpGE
-         zOB0iqLGD8PSeeBiUXYEQQURVSly/MI12jxsgwb67NBTalXWc7e8C/ocUiB+VpvEia+S
-         qDo6ca3sZgNUtxBTDNgdBmLzdjMj/3dMc4yE0e4coGiuqWCqynA4INrU6NKbO7/1F2St
-         vJNQ==
-X-Gm-Message-State: AAQBX9dQuaglK07DSHXKVyZPxOr+aiyeWyHyDzW4Ccm5coDB2gRQCBLE
-	FnXFqkwyfeUH1wRiRUkxc0Umjw==
-X-Google-Smtp-Source: AKy350YlowlrrTynudc7nk7kkuzgJxvGxXqG3PfUaCRPYgnOyUgGJQMw+X4Nu7m24+QGZeVut8vhWQ==
-X-Received: by 2002:a5d:4089:0:b0:2f7:363e:7f5 with SMTP id o9-20020a5d4089000000b002f7363e07f5mr1464835wrp.24.1681813216802;
-        Tue, 18 Apr 2023 03:20:16 -0700 (PDT)
+        bh=HRqUGTAUT3kQ+E6yNjWLD4fpiwu8oVq8M4urP2QVpno=;
+        b=dFPkSQAmnZ7ZFfMgVM+3bOB62tf7Qax//bDy0i4nbOvmJ2WqjN/l35TP1NP/QXhvlr
+         UJ3GaUiS8OHUYnH5VOVbo4l9hlvcxy/kKVjMlTw9o03SKbNN2C+powslECp9z0NxKL68
+         nlEbNAyZFJgETNQvq4QcbhQ7CP5EOQDL3Q+MIEaxRPMf/a9Gb18evd2W04yxeJSm+a6g
+         ShgncnD0qj3Oj+wuxOrSfNmlBZ1yMLeAB6Q2CJLmixkqKZkj7aZCkeKs+Wm/N8rGzWnD
+         1kLwxzSJU9Nm6lqrgSnl1KOifG8/wAUCnIvIbDEQ5AFLGWdUa8+ZE/Zm9iW4nm9gSOo0
+         2gbA==
+X-Gm-Message-State: AAQBX9ej5t/TNXGXVa2h8Q1MteKl2ao7rq3Gb6PiM4Pxq84btJ6EVW4G
+	C++4d81Y0G+n5OxZKV0JUc01Hw==
+X-Google-Smtp-Source: AKy350bDXZYjCfKhVSKYmNNuhmjzU+SC1gQXyto6PuTk5yAclQsn9JdMOQN+bjGZbtBsW3b3Vkhpmg==
+X-Received: by 2002:a05:600c:364a:b0:3f1:7bb5:9d77 with SMTP id y10-20020a05600c364a00b003f17bb59d77mr248059wmq.38.1681813517389;
+        Tue, 18 Apr 2023 03:25:17 -0700 (PDT)
 Received: from [192.168.2.107] ([79.115.63.230])
-        by smtp.gmail.com with ESMTPSA id d14-20020a5d538e000000b002f81b4227cesm8810291wrv.19.2023.04.18.03.20.15
+        by smtp.gmail.com with ESMTPSA id f16-20020a05600c155000b003f177cda5ebsm2423589wmg.33.2023.04.18.03.25.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Apr 2023 03:20:16 -0700 (PDT)
-Message-ID: <61926f94-a4ad-92c7-f2b0-036f76080968@linaro.org>
-Date: Tue, 18 Apr 2023 11:20:15 +0100
+        Tue, 18 Apr 2023 03:25:16 -0700 (PDT)
+Message-ID: <0f769bb7-ed66-8399-657a-b0dd39334722@linaro.org>
+Date: Tue, 18 Apr 2023 11:25:15 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.1
-Subject: Re: [PATCH v2] mtd: spi-nor: Allow post_sfdp hook to return errors
+Subject: Re: [PATCH] mtd: spi-nor: spansion: Rename method to
+ cypress_nor_get_page_size
 Content-Language: en-US
 To: Michael Walle <michael@walle.cc>
 Cc: tkuw584924@gmail.com, Takahiro.Kuwano@infineon.com, pratyush@kernel.org,
  bacem.daassi@infineon.com, miquel.raynal@bootlin.com, richard@nod.at,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230405062106.49594-1-tudor.ambarus@linaro.org>
- <ce297db930bab7ed3d72637dc911436a@walle.cc>
+References: <20230405060456.48986-1-tudor.ambarus@linaro.org>
+ <736b881c4dd3d0fb0522ab0d385798f5@walle.cc>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <ce297db930bab7ed3d72637dc911436a@walle.cc>
+In-Reply-To: <736b881c4dd3d0fb0522ab0d385798f5@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230418_032021_083249_A47CD3D5 
-X-CRM114-Status: UNSURE (   9.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230418_032522_177959_39AA696A 
+X-CRM114-Status: GOOD (  14.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,27 +99,31 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 4/18/23 10:25, Michael Walle wrote:
-> Am 2023-04-05 08:21, schrieb Tudor Ambarus:
->> Multi die flashes like s25hl02gt need to determine the page_size at
->> run-time by querying a configuration register for each die. Since the
->> number of dice is determined in an optional SFDP table, SCCR MC, the
->> page size configuration must be done in the post_sfdp hook. Allow
->> post_sfdp to return errors, as reading the configuration register might
->> return errors.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+On 4/18/23 10:29, Michael Walle wrote:
+> Am 2023-04-05 08:04, schrieb Tudor Ambarus:
+>> The method queries SPINOR_REG_CYPRESS_CFR3V to determine the page size.
+>> Rename the method accordingly, s/set/get.
 > 
-> Reviewed-by: Michael Walle <michael@walle.cc>
+> I'm not sure about this one. There is also a
+> cypress_nor_set_addr_mode_nbytes() which queries the flash and
+> set the params->addr_nbytes and params->addr_mode_nbytes.
+> 
+> cypress_nor_set_page_size() also queries the flash and set
+> params->page_size.
+> 
+> Secondly, if this function is called get_page_size() I'd assume it
+> doesn't modify anything. But thats not true.
+> 
 
-thanks, but I already applied the patch as part of:
+Indeed. Maybe I should have returned the page_size instead or don't
+change the name at all. I applied this patch as part of
 https://lore.kernel.org/linux-mtd/168093614108.51189.3153773628255664983.b4-ty@linaro.org/
 
-You can find patches that require action at:
-https://patchwork.ozlabs.org/project/linux-mtd/list/?series=&submitter=&state=&q=spi-nor&archive=&delegate=
+Feel free to send a patch on top of latest spi-nor branch, otherwise
+I'll handle it after the merge window.
 
 Cheers,
-ta
+ta.
 
 ______________________________________________________
 Linux MTD discussion mailing list
