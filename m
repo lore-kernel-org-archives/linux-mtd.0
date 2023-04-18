@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08C9BC77B75
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Apr 2023 12:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E643C77B76
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Apr 2023 12:32:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1xOJTqzSNsP51wRKN5QFXgrBaWVevo4uWL9egaEL94I=; b=45RUi8F/UTA3Nq
-	bhajQeoYf+51Ww4iU28xFDrLR7OHrT4KD9fjkTJ557atByO35t+7MQomeLKM9KC/9EDSdgy/dcLCW
-	L0ZbI+k2W57qAj82OpbtYsPhYi362OqOnp7RifxOhpi8b/63tFByWNskjdte8VSoTrmHbGtvTvX1j
-	SShtg/hBcwp/x+IFuQpf6+Ty0jRXTuZcqpjRJ1libclNIv9qbl3TV6/N2PZLUhR24Ymq8z/1fUzmE
-	A4Rwi7BxS/QZwoY3wR3YitM688jwxwe0W3ehLBgOWSoWnxRKpE+glHrFY9woKdmfuuvZCpa3mG0bb
-	XJ261XNmvtwloXi3QbvQ==;
+	List-Owner; bh=iHSfva1AivdVnjE+51WBDm1/CpTiagj3wEOZ4YzqMGY=; b=fmvslL+Xj73G5O
+	AEvslBe42C4QRs1H0PwtgD4LHJ6CbslJxtuqW6YiyNSFbuAbLCWeW0/NgimpZ1iZQNQ8raRblnNV2
+	FM8wkKSZ6QxozKfAuAnU3nOBJohwy/r3BEurfSTae76VgsUP8lpV3u4bicYnRP5225GmO9UAo2/lH
+	ezW8LxalpK574D4/+i0ldH+VWuShh6fmd7VGmohXRwm9L0fjP854FsJFgmWOCj8IEPv9Zr+4UHllD
+	XugUTKSMSRaHUqiC79JE3uP4pNMrac3rY467/pAhvgem5yn1VRneE25AxnDrAo1fN/Durhf4u3SEL
+	sPPoqL07DRybEI5kAq2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pokQX-00280a-2T;
-	Tue, 18 Apr 2023 12:27:17 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pokV5-0028bi-2Y;
+	Tue, 18 Apr 2023 12:31:59 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pokQU-0027zb-1n
+	id 1pokV3-0028b2-21
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Apr 2023 12:27:16 +0000
+	Tue, 18 Apr 2023 12:31:59 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 219C963196;
-	Tue, 18 Apr 2023 12:27:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 303BEC433D2;
-	Tue, 18 Apr 2023 12:27:13 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3CBB2631D9;
+	Tue, 18 Apr 2023 12:31:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53940C433D2;
+	Tue, 18 Apr 2023 12:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1681820833;
-	bh=cEzvS5up4NWFY3Crm0XGyRgtbdIq0JCQAgVI7KcWIdk=;
+	s=korg; t=1681821116;
+	bh=xxPPVyH6s9wCTCL3GZDsVhvVc90miaXiyq9H9Iu7jeQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=0LTMrLoiBb1dKQh5brsnJ4nD9+cpWoCw6sp45gcD+4V/jUWjel191Te0yYRNkEqG4
-	 rg/HIBpowZsl8NfA7UlFH6A0HsG1Mi/BaBbt1MVeMaeGUkmfDNIlCJJRyWJnpBnan5
-	 EUuRmzCqtQrq2m7KZp5SsOQ9eZyJ1BYLbTkGMEiE=
+	b=iO3lcqF+CxFK5eqh/bvK7qyqkG7ZoxQd7q/H5bUP8hSYnQG8QaZoZPr+7Xa0iuGDH
+	 p6jnCivCtUa1KW4+1yBKvekwMoOhVAWSce/cL50jSHXdQighb6pjwf262m57VwGi/2
+	 9ITLazuZ4jJu5esEsSj64OEa4As0C4nPFlwh2lGk=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -51,17 +51,17 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-mtd@lists.infradead.org,
 	Lee Jones <lee.jones@linaro.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 49/57] mtd: ubi: wl: Fix a couple of kernel-doc issues
-Date: Tue, 18 Apr 2023 14:21:49 +0200
-Message-Id: <20230418120300.454570089@linuxfoundation.org>
+Subject: [PATCH 5.4 71/92] mtd: ubi: wl: Fix a couple of kernel-doc issues
+Date: Tue, 18 Apr 2023 14:21:46 +0200
+Message-Id: <20230418120307.289191497@linuxfoundation.org>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230418120258.713853188@linuxfoundation.org>
-References: <20230418120258.713853188@linuxfoundation.org>
+In-Reply-To: <20230418120304.658273364@linuxfoundation.org>
+References: <20230418120304.658273364@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230418_052714_629937_FE4EB435 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20230418_053157_700213_7C53BE0C 
+X-CRM114-Status: GOOD (  15.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,10 +101,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 7f0847ee53f28..210866614f492 100644
+index 4f88433d4adc7..28110cd4400b5 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -568,6 +568,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+@@ -576,6 +576,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
   * @vol_id: the volume ID that last used this PEB
   * @lnum: the last used logical eraseblock number for the PEB
   * @torture: if the physical eraseblock has to be tortured
@@ -112,7 +112,7 @@ index 7f0847ee53f28..210866614f492 100644
   *
   * This function returns zero in case of success and a %-ENOMEM in case of
   * failure.
-@@ -1046,8 +1047,6 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
+@@ -1060,8 +1061,6 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
   * __erase_worker - physical eraseblock erase worker function.
   * @ubi: UBI device description object
   * @wl_wrk: the work object
