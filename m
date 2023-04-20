@@ -4,74 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F84AC77B75
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Apr 2023 03:06:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64D6CC77B72
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Apr 2023 04:50:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=n9kkM4Rb6Sqww69BF6I6JvuBsLURzIOlL+TVmKcMgdM=; b=vuQVgCQyUO10Nq
-	+wns5FW873Sq8CE4kZk5GVTF5PWsOqgXljQrxRjgtzxcrtlKFNIg8GNFBDqBgCAe5hJakZAYV3TgZ
-	TeAUJf0LbfeZl5cuSt43rUulTXUSDxxw++FEmz/jKFqAtVjLR8Rt82A5nESpckNvUDcNz4Wbr8Yp/
-	QRWPbfbT9aA+2wgVJpnbuV1FGBVHkIIOAP3GNbIs7UkP5MvS2+x7IijognGZ1dl7NiL1lbbY+j+Q5
-	Tcd1HqpnUxGc9TqpDHRvt4ThLf/F5giSyiLt6jK3HJSyn6O8MRQuyUq2HLyRn7KXSoLrX6Nwf568G
-	sO/XPKRPV1YSIRe8kuKw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=pZufJpJr1yjM6LCQVFkGikJ8C23zrl3N8Kzf1hhQp5g=; b=yxpbEKwWd8FqUSXEZYxYXs61O8
+	8+rO6NJ5W7/AFdSx9ItqC+4gWwm6Uc9P2SDwKwC2qUYa62t8Lx5pYIm6bv3nWmqpvRN6/oKJNHK+/
+	88ADa4kzNX5WNiMNa0qyvq/guUa2BOvLGBk774sUrFVEFH3olLZdZN5H8YBt8jnF9/epOkMWzaUCE
+	/UH8aC2yVNNu5BFouyzekhD5nvdPrB1aZEhAvJboFIqg0Vs3Dp65QDRXaKxqI8GEsm4lz1InTakqG
+	IMIo0VcYiEhMAfpgHjqDVynt3OEct7uixFLyJ8Z3leYjpMDl03UN20hkl65y4NBI1AYFTPWIPkOAs
+	9Dn3md/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1ppKcp-006vW3-2N;
-	Thu, 20 Apr 2023 03:06:23 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1ppMEk-0072tt-2F;
+	Thu, 20 Apr 2023 04:49:38 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1ppKck-006vVU-2P
+	id 1ppMEi-0072sT-0C
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Apr 2023 03:06:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681959977; x=1713495977;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Vrqpja8Z1hSqrZRC7tQPIr/La29qW5DFqZCbyUZi4Kk=;
-  b=f5EbLBArDfNQHBagH96q5JVnHOtxGsKe+I9WTMlzM8J2b2ewa+UZQoKK
-   2Gqe4+FhKPKANpG//k9ZNXEEOQiytiMfbFlg0UJ/msHWMhGVfJomLh73I
-   zDFkoE2pPuFftkOYXbg9jyKGTI2XX3nI+g9D6JY+y56Q64TPb0EdjEzei
-   PoFZ7cEHmu2gB9VNnmQAPNSNlAAVZndHQZuw2/nxv5XfYCPY2KFcLxbfl
-   gUI4nsOTc8iUXT192w2DFpn4qOJdsqP4usoeDhgNyagaS/BMVOrqVX16p
-   LIPFv2kT0vJP/Th44jK/HAI4pohXLVrPUsT8KOGloOQ8bQjXOI4mIp3w6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="431896674"
-X-IronPort-AV: E=Sophos;i="5.99,211,1677571200"; 
-   d="scan'208";a="431896674"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2023 20:06:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="760978836"
-X-IronPort-AV: E=Sophos;i="5.99,211,1677571200"; 
-   d="scan'208";a="760978836"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Apr 2023 20:06:13 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ppKcf-000fPU-0A;
-	Thu, 20 Apr 2023 03:06:13 +0000
-Date: Thu, 20 Apr 2023 11:05:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, mani@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	quic_srichara@quicinc.com, quic_mdalam@quicinc.com
-Subject: Re: [PATCH V2] mtd: rawnand: qcom: Implement exec_op()
-Message-ID: <202304201013.6bradWxp-lkp@intel.com>
-References: <20230419093617.27134-1-quic_mdalam@quicinc.com>
+	Thu, 20 Apr 2023 04:49:38 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Q24t53Py4z8xD1;
+	Thu, 20 Apr 2023 12:48:29 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Thu, 20 Apr 2023 12:49:21 +0800
+Subject: Re: BUG: divide error in ubi_attach_mtd_dev
+To: Richard Weinberger <richard@nod.at>, Yu Hao <yhao016@ucr.edu>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
+	<vigneshr@ti.com>, linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel
+	<linux-kernel@vger.kernel.org>
+References: <CA+UBctD_w=75wChmePZHp7KsBSNPWYGDBtzHPRPPtaFoqhGvXA@mail.gmail.com>
+ <CA+UBctDsHRpkLG5ppdiuV8Msn4Dx-ZJ2xDrxfa48VMb7ZE+xBA@mail.gmail.com>
+ <687864524.118195.1681799447034.JavaMail.zimbra@nod.at>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <ff419c45-7d76-0219-a598-f6f4d081e29c@huawei.com>
+Date: Thu, 20 Apr 2023 12:49:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230419093617.27134-1-quic_mdalam@quicinc.com>
+In-Reply-To: <687864524.118195.1681799447034.JavaMail.zimbra@nod.at>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230419_200618_839626_4E23E681 
-X-CRM114-Status: GOOD (  13.45  )
+X-CRM114-CacheID: sfid-20230419_214936_283868_89158AE1 
+X-CRM114-Status: UNSURE (   8.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,161 +68,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Md,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on linus/master v6.3-rc7 next-20230419]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/mtd-rawnand-qcom-Implement-exec_op/20230419-173849
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20230419093617.27134-1-quic_mdalam%40quicinc.com
-patch subject: [PATCH V2] mtd: rawnand: qcom: Implement exec_op()
-config: s390-randconfig-r034-20230418 (https://download.01.org/0day-ci/archive/20230420/202304201013.6bradWxp-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project 437b7602e4a998220871de78afcb020b9c14a661)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install s390 cross compiling tool for clang build
-        # apt-get install binutils-s390x-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/a2d1599a63e93bde90166287021663cfc13c91b2
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Md-Sadre-Alam/mtd-rawnand-qcom-Implement-exec_op/20230419-173849
-        git checkout a2d1599a63e93bde90166287021663cfc13c91b2
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=s390 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash drivers/mtd/nand/raw/
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304201013.6bradWxp-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/mtd/nand/raw/qcom_nandc.c:9:
-   In file included from include/linux/dma-mapping.h:10:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:75:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-                                                             ^
-   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
-   #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-                                                        ^
-   In file included from drivers/mtd/nand/raw/qcom_nandc.c:9:
-   In file included from include/linux/dma-mapping.h:10:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:75:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-                                                             ^
-   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
-   #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
-                                                        ^
-   In file included from drivers/mtd/nand/raw/qcom_nandc.c:9:
-   In file included from include/linux/dma-mapping.h:10:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:75:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsb(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsw(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsl(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesb(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesw(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesl(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
->> drivers/mtd/nand/raw/qcom_nandc.c:2617:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-           default:
-           ^
-   drivers/mtd/nand/raw/qcom_nandc.c:2617:2: note: insert 'break;' to avoid fall-through
-           default:
-           ^
-           break; 
-   13 warnings generated.
-
-
-vim +2617 drivers/mtd/nand/raw/qcom_nandc.c
-
-  2587	
-  2588	static int qcom_op_cmd_mapping(struct qcom_nand_controller *nandc, u8 cmd,
-  2589				       struct qcom_op *q_op)
-  2590	{
-  2591		int ret = 0;
-  2592	
-  2593		switch (cmd) {
-  2594		case NAND_CMD_RESET:
-  2595			ret = OP_RESET_DEVICE;
-  2596			break;
-  2597		case NAND_CMD_READID:
-  2598			ret = OP_FETCH_ID;
-  2599			break;
-  2600		case NAND_CMD_PARAM:
-  2601			if (nandc->props->qpic_v2)
-  2602				ret = OP_PAGE_READ_ONFI_READ;
-  2603			else
-  2604				ret = OP_PAGE_READ;
-  2605			break;
-  2606		case NAND_CMD_ERASE1:
-  2607		case NAND_CMD_ERASE2:
-  2608			ret = OP_BLOCK_ERASE;
-  2609			break;
-  2610		case NAND_CMD_STATUS:
-  2611			ret = OP_CHECK_STATUS;
-  2612			break;
-  2613		case NAND_CMD_PAGEPROG:
-  2614			ret = OP_PROGRAM_PAGE;
-  2615			q_op->flag = NAND_CMD_PAGEPROG;
-  2616			nandc->exec_opwrite = true;
-> 2617		default:
-  2618			break;
-  2619		}
-  2620	
-  2621		return ret;
-  2622	}
-  2623	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkKPiBZdSBIYW8sCj4gCj4gLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBWb246
+ICJZdSBIYW8iIDx5aGFvMDE2QHVjci5lZHU+Cj4+PiB1Ymk6IG10ZDAgaXMgYWxyZWFkeSBhdHRh
+Y2hlZCB0byB1YmkwCj4+PiB1Ymk3OiBhdHRhY2hpbmcgbXRkMTQ3Cj4+PiBkaXZpZGUgZXJyb3I6
+IDAwMDAgWyMxXSBQUkVFTVBUIFNNUCBLQVNBTgo+Pj4gQ1BVOiAwIFBJRDogMjAwMjMgQ29tbTog
+c3l6LWV4ZWN1dG9yLjAgTm90IHRhaW50ZWQgNi4yLjAgIzYKPj4+IEhhcmR3YXJlIG5hbWU6IFFF
+TVUgU3RhbmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9TCj4+PiAxLjEzLjAtMXVi
+dW50dTEuMSAwNC8wMS8yMDE0Cj4+PiBSSVA6IDAwMTA6bXRkX2Rpdl9ieV9lYiBpbmNsdWRlL2xp
+bnV4L210ZC9tdGQuaDo1ODAgW2lubGluZV0KPj4+IFJJUDogMDAxMDppb19pbml0IGRyaXZlcnMv
+bXRkL3ViaS9idWlsZC5jOjYyMCBbaW5saW5lXQo+Pj4gUklQOiAwMDEwOnViaV9hdHRhY2hfbXRk
+X2RldisweDc3Zi8weDJmZTAgZHJpdmVycy9tdGQvdWJpL2J1aWxkLmM6OTU1Cj4+PiBDb2RlOiBm
+YyBmZiBkZiA0OCBjMSBlYSAwMyAwZiBiNiAxNCAwMiA0YyA4OSBmMCA4MyBlMCAwNyA4MyBjMCAw
+MyAzOAo+Pj4gZDAgN2MgMDggODQgZDIgMGYgODUgMWYgMjUgMDAgMDAgNDEgOGIgNGMgMjQgMTAg
+NDggODkgZDggMzEgZDIgPDQ4PiBmNwo+Pj4gZjEgNDggODkgYzMgZTggYjYgZjMgMWIgZmMgNDgg
+OGQgODUgNDAgMTcgMDAgMDAgNDggODkgYzIgNDgKPj4+IFJTUDogMDAxODpmZmZmYzkwMDBiZTBm
+ZDMwIEVGTEFHUzogMDAwMTAyNDYKPj4+IFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAwMDAw
+MDAwMDAwMDAwMDAgUkNYOiAwMDAwMDAwMDAwMDAwMDAwCj4+PiBSRFg6IDAwMDAwMDAwMDAwMDAw
+MDAgUlNJOiBmZmZmODg4MDQ3YTQ5ZDQwIFJESTogMDAwMDAwMDAwMDAwMDAwMgo+Pj4gUkJQOiBm
+ZmZmODg4MDI0ZTFjMDAwIFIwODogMDAwMDAwMDAwMDAwMDAxNiBSMDk6IGZmZmZmNTIwMDE3YzFm
+NDcKPj4+IFIxMDogZmZmZmM5MDAwYmUwZmEzNyBSMTE6IGZmZmZmNTIwMDE3YzFmNDYgUjEyOiBm
+ZmZmODg4MDY1NDVhMDAwCj4+PiBSMTM6IDAwMDAwMDAwMDAwMDAwMDAgUjE0OiBmZmZmODg4MDY1
+NDVhMDEwIFIxNTogMDAwMDAwMDAwMDAwMDAwNwo+Pj4gRlM6ICAwMDAwN2ZkNDVlODVjNzAwKDAw
+MDApIEdTOmZmZmY4ODgwMmNhMDAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMAo+Pj4g
+Q1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMwo+Pj4gQ1Iy
+OiAwMDAwN2Y2NGFlZWY1M2E0IENSMzogMDAwMDAwMDA0ZjM5YTAwMCBDUjQ6IDAwMDAwMDAwMDAz
+NTBlZjAKPj4+IENhbGwgVHJhY2U6Cj4+PiAgIDxUQVNLPgo+Pj4gICBjdHJsX2NkZXZfaW9jdGwr
+MHgzMDMvMHgzYTAgZHJpdmVycy9tdGQvdWJpL2NkZXYuYzoxMDQzCj4gCj4gV2hhdCBraW5kIG9m
+IE1URCB5b3UgYXR0YWNoaW5nPwo+IEhhcyBpdCBlcmFzZXNpemUgMD8KPiAKClllcywgSSBhZ3Jl
+ZSB3aXRoIFJpY2hhcmQncyBwb2ludCwgSSBndWVzcyBVQkkgZ290IGFuIG10ZCBkZXZpY2Ugd2l0
+aCAKemVybyBlcmFzZXNpemUuCgoKICA1Njggc3RhdGljIGlubGluZSB1aW50MzJfdCBtdGRfZGl2
+X2J5X2ViKHVpbnQ2NF90IHN6LCBzdHJ1Y3QgbXRkX2luZm8gCiptdGQpCiAgNTY5IHsKICA1NzAg
+ICAgICAgICBpZiAobXRkLT5lcmFzZXNpemVfc2hpZnQpICAgICAgIC8vIGVyYXNlc2l6ZV9zaGlm
+dCBpcyAwCiAgNTcxICAgICAgICAgICAgICAgICByZXR1cm4gc3ogPj4gbXRkLT5lcmFzZXNpemVf
+c2hpZnQ7CiAgNTcyICAgICAgICAgZG9fZGl2KHN6LCBtdGQtPmVyYXNlc2l6ZSk7ICAgIC8vIGVy
+YXNlc2l6ZSBpcyAwIHRvbwogIDU3MyAgICAgICAgIHJldHVybiBzejsKICA1NzQgfQoKWXUgSGFv
+LCBob3cgZG8geW91IGZpbmQgdGhlIHByb2JsZW0sIGJ5IHN5emthbGxlcj8gQ2FuIHlvdSBwcm92
+aWRlIHRoZSAKcmVwcm9kdWNpbmcgcHJvZ3JhbSBvciByZXByb2R1Y2luZyBsb2c/CgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
+IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
