@@ -4,82 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDB5EC7618E
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 07:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDA31C77B61
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 07:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=X4yLKP8nV1MWHh/4KtPOg+w1mcMDFKZJ3Z2VBVAwBbw=; b=CXABbdgZ/c59ok
-	JM8GTHaNHKa4M0Y9M/aavP540rx8PzHfIDavGUWyp45SQfoxaAb5fAWKESPy/osp0JvemhOKTliCU
-	nRMJXFluL6z7PhWkj820bGOXURQDC75hF4kR2d9txKsW85allnXWQyXBF6XrtSnHMBZG+maV0Fj9d
-	JKzx9oYGKKkdMtiRdoG4evnljMcnEmd9RKtifDxWg/4/xl1F+NZMzVC49KYCgoY4AAE0FBswHDDHd
-	rKozCrcMQa6r51oJA3DI4CA15/JROs1kikWp+dYuhZeDeIgLparPby7awVrFtvH+vFvWMhDEWhkFf
-	drMkDHlRQG3tKwUhAUAA==;
+	List-Owner; bh=uxbngHtPsy/WSuvbWuU1KUPwuWzArH/LtEdMCJJreyg=; b=pUIOAyZaRHAHvQ
+	tjXY/Vxb9Ba9CeG6CAfbzikJ4b68aqXNn8JNGuhZjshdx4Ie9heoFWuC/e34zzWU+ilxnawUaf8fs
+	yYV76WItpG909x2WinUZjh7GrzzxgXiI4pxG6NxxpSbo0eu+uaes1nVAQRzp+bV2lqLNZ19hnHkFu
+	pn74N5pue+ILWXbSmAFNOZjXhUFmR+gnG/tb47D6sKTqIzgyJ5CyKuZajQBjQ7ROBIlXoCvjI+P5H
+	yTCRQXEaTHJona9b6cxyJsOaWtbE1aEhe4kWdaVw7Wo2JkMeJ4LeqQtf+Bbd1b38ny2CScuOWbwty
+	RYwc6UE7Zhc63GhSNSBA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqqFG-00FX99-0n;
-	Mon, 24 Apr 2023 07:04:18 +0000
-Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
+	id 1pqqjn-00Fah7-0y;
+	Mon, 24 Apr 2023 07:35:51 +0000
+Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqqFD-00FX75-0a
+	id 1pqqjk-00Fafk-0a
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Apr 2023 07:04:16 +0000
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-94f1a6e66c9so717664466b.2
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2023 00:04:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1682319852; x=1684911852;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
-        b=KxQfiX9Zg7YzTAvnf9iFHy4MA9CSh+6LUhdvWFRKXFqw6fhFILuZJ3KRC6TlwdZSGa
-         DUJOHX9aCRXIjRxmtx9sJxJlmzaWONqTCnv181r9L+wivC5tSUbgA+xiIZn4T7EW4/qz
-         VzexBXL3PkeHHUsqASAw4w+Qk91IUOE7LTwEBXQmDhX4RjPCZ6CmSbMrh+T3wNKOmQ8q
-         +wUVtIdq+351tASc+sy+8Oc6rrxD7dgn34kSs3KYQjFxLl+sRUhQ5ps+u43P/GIUqy7A
-         mM4fQsVEspkDou/+Pq63QKJVAxXgkUv7NaJbcSiLwn2No8r2sFnL1bxHLvaS3JFMJ05H
-         FNGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682319852; x=1684911852;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MqSNiwa/UAtmNvnHHz2pJKBZRyVaTikg4qj3JO/V5O0=;
-        b=DshS287IpZeC9it8PJv/9RaoBichCUBYqyZbzq6GCMAGWFDlBRmW8QMsBmwoufUuQl
-         dCGDGnQ53ZmZRwsiapjOtrmzq0q+O2PBNDjt8s8Ny6Sy5pDDxgOvtZ1OAuL6al2n80Po
-         mkDSx88O1+SV/FhQH+EGceiFT2xI1L1n2Tqp4KB9qGWumjGCIo5d34fGdTcexzrYLseV
-         POQECwE6tuAl5xmIoQCqPjqvZihEsUMQwK8l0rAqAEhglF4a6WychoMz7/Idm6h+P9cg
-         LRsqu+LAQsAp/ZKEmqlVTGoCNNjF0T6k9ahLWg3lf8J30k4xKiw7JWZz4Lcld73wujUT
-         rAsA==
-X-Gm-Message-State: AAQBX9d14z9lsZqvjI9LyHporw5LA7IQBscSfveGjI2WwNmQbPbC5FCP
-	IOB342I+ciGBFcf14aE63wjxFg==
-X-Google-Smtp-Source: AKy350a441sfK23JV9RXeQLqy3sKuWoRA8UXEdeEIdHLbG+o2WeBaNEklLo8geFNFgCX8Tt7ganqkg==
-X-Received: by 2002:a17:906:4a99:b0:959:af74:4cf7 with SMTP id x25-20020a1709064a9900b00959af744cf7mr1198122eju.70.1682319852698;
-        Mon, 24 Apr 2023 00:04:12 -0700 (PDT)
-Received: from [10.115.255.165] ([82.150.214.1])
-        by smtp.gmail.com with ESMTPSA id zu23-20020a17090708d700b0095807ab4b57sm2826513ejb.178.2023.04.24.00.04.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Apr 2023 00:04:12 -0700 (PDT)
-Message-ID: <59bf7edf-ffb7-9663-d584-05c4eccdcafe@sigma-star.at>
-Date: Mon, 24 Apr 2023 09:04:11 +0200
+	Mon, 24 Apr 2023 07:35:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1682321748; x=1713857748;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1AZevgGbr+OhBwy7Vz/7+7ZqgeucWBUr7uEJu+d9I1k=;
+  b=B1++P+GsWLlcWqO4fVC9lAhKywnR48BjKqo3PsiFisPdQA5ObDxMA1W1
+   gvb/uxwrj8jRjVFAx4IfuKxT08oGhlKGvcQ685MQT1oPC14jsbwXfvaYq
+   v4rwRxDDQ1e24H6BrIZJy31SM2M9vz2d4qboUm1hRYqVkG8aLuWhINIWy
+   EGsSi/yJptN/rpCkHJg4hjvmy6iF6o67kbrMW7upBMg/AdGpMAmorW9rB
+   NHB+/2I2r+VpMFqOGu5q2y9AO2y0Eo5pKJ8zMPUtpGiYopRQllEiWU3w/
+   UOre3IxElFo6BpbQhfQuhVPSgx+lFn6aHieLlHqpapzFWKHvqn5f7IqB5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="409318152"
+X-IronPort-AV: E=Sophos;i="5.99,222,1677571200"; 
+   d="scan'208";a="409318152"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2023 00:35:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="836859965"
+X-IronPort-AV: E=Sophos;i="5.99,222,1677571200"; 
+   d="scan'208";a="836859965"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Apr 2023 00:35:42 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1pqqjd-000iJs-1a;
+	Mon, 24 Apr 2023 07:35:41 +0000
+Date: Mon, 24 Apr 2023 15:35:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, mani@kernel.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, quic_srichara@quicinc.com,
+	quic_mdalam@quicinc.com
+Subject: Re: [PATCH V2] mtd: rawnand: qcom: Implement exec_op()
+Message-ID: <202304241556.fafzkLLk-lkp@intel.com>
+References: <20230419093617.27134-1-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH] misc-utils: flashcp: correct casting for percent display
-To: Zhihao Cheng <chengzhihao1@huawei.com>, cchoux <chou.cosmo@gmail.com>,
- linux-mtd@lists.infradead.org
-Cc: cosmo.chou@quantatw.com
-References: <20230422073115.3555981-1-chou.cosmo@gmail.com>
- <14dd246d-ef2b-2fd1-e874-a3ede1a6996c@huawei.com>
-Content-Language: en-US
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-In-Reply-To: <14dd246d-ef2b-2fd1-e874-a3ede1a6996c@huawei.com>
+Content-Disposition: inline
+In-Reply-To: <20230419093617.27134-1-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230424_000415_492031_A46E2F38 
-X-CRM114-Status: UNSURE (   4.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230424_003548_258845_0513F562 
+X-CRM114-Status: GOOD (  11.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,17 +83,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Applied to mtd-utils.git master.
+Hi Md,
 
-Thanks,
+kernel test robot noticed the following build warnings:
 
-David
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on linus/master v6.3 next-20230421]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/mtd-rawnand-qcom-Implement-exec_op/20230419-173849
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20230419093617.27134-1-quic_mdalam%40quicinc.com
+patch subject: [PATCH V2] mtd: rawnand: qcom: Implement exec_op()
+config: nios2-randconfig-m041-20230423 (https://download.01.org/0day-ci/archive/20230424/202304241556.fafzkLLk-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 12.1.0
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202304241556.fafzkLLk-lkp@intel.com/
+
+smatch warnings:
+drivers/mtd/nand/raw/qcom_nandc.c:2751 qcom_read_status_exec() warn: inconsistent indenting
+
+vim +2751 drivers/mtd/nand/raw/qcom_nandc.c
+
+  2708	
+  2709	static int qcom_read_status_exec(struct nand_chip *chip,
+  2710					 const struct nand_subop *subop)
+  2711	{
+  2712		struct qcom_nand_host *host = to_qcom_nand_host(chip);
+  2713		struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+  2714		struct nand_ecc_ctrl *ecc = &chip->ecc;
+  2715		struct qcom_op q_op;
+  2716		const struct nand_op_instr *instr = NULL;
+  2717		unsigned int op_id = 0;
+  2718		unsigned int len = 0;
+  2719		int ret = 0, num_cw = 1, i;
+  2720		u32 flash_status;
+  2721	
+  2722		host->status = NAND_STATUS_READY | NAND_STATUS_WP;
+  2723	
+  2724		qcom_parse_instructions(chip, subop, &q_op);
+  2725	
+  2726		if (nandc->exec_opwrite) {
+  2727			num_cw = ecc->steps;
+  2728			nandc->exec_opwrite = false;
+  2729		}
+  2730	
+  2731		pre_command(host, NAND_CMD_STATUS);
+  2732	
+  2733		nandc_set_reg(chip, NAND_FLASH_CMD, q_op.cmd_reg);
+  2734		nandc_set_reg(chip, NAND_EXEC_CMD, 1);
+  2735	
+  2736		write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+  2737		write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+  2738	
+  2739		read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+  2740	
+  2741		ret = submit_descs(nandc);
+  2742		if (ret)
+  2743			dev_err(nandc->dev, "failure in sbumitting status descriptor\n");
+  2744	
+  2745		free_descs(nandc);
+  2746	
+  2747		nandc_read_buffer_sync(nandc, true);
+  2748		for (i = 0; i < num_cw; i++) {
+  2749			flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
+  2750	
+> 2751		if (flash_status & FS_MPU_ERR)
+  2752			host->status &= ~NAND_STATUS_WP;
+  2753	
+  2754		if (flash_status & FS_OP_ERR || (i == (num_cw - 1) &&
+  2755						 (flash_status & FS_DEVICE_STS_ERR)))
+  2756			host->status |= NAND_STATUS_FAIL;
+  2757		}
+  2758	
+  2759		flash_status = host->status;
+  2760	
+  2761		instr = q_op.data_instr;
+  2762		op_id = q_op.data_instr_idx;
+  2763		len = nand_subop_get_data_len(subop, op_id);
+  2764		memcpy(instr->ctx.data.buf.in, &flash_status, len);
+  2765	
+  2766		return ret;
+  2767	}
+  2768	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
 
 ______________________________________________________
 Linux MTD discussion mailing list
