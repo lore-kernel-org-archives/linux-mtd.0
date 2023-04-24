@@ -4,68 +4,154 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2298C7618E
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 09:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 844CFC77B61
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 11:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
+	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wK/HrhIZE2y/Zm/aCpZtAio1qExiF5ub3ZaIBsoxCS8=; b=LEmN+4bWlA/b1s
-	xRmqQdMpH2BQDYvtNmQ46uuOyDFoCshIi2xxw10rR9Y15P8ryaK51yH59WA/dpNPXNcUb63Wgh8Xc
-	QgnkXXIMEppVuiBZExGKJ18PWbMqcj4PE8Ka69MEYPfGAUEvvVJ19Fze9wX6aqrBf8q0Hcp5t0voi
-	budDC7VvZs7Rj+W27onSyYMGBiVkF150KyUbpTd9wuAYscW/+c/7a+dDeau6UJ7AIAcAzB0Mt8XMG
-	RJNfu2Lh3MwabuAKXBcEEFTrJxMdy+WOQK66SPumsJ0BP1Q5Y0JSjydWy9cl+DuUj4wfuF3R1yRUH
-	jezBWFE9/WqfPLr3B7Qg==;
+	List-Owner; bh=GGI+qK/2O0+hsbgvWCpeeC/Jxk4o1+4+tVC0468bf34=; b=e5HsQT2Q1ysPly
+	obWmhMGwyZ3nwZWlOAWYXRYXuxQnpuyCW/13PjdhXj7oGD/cIWeu3T78uVqM8DI+aoP52DWeYLwGO
+	WCtgtBSv++jBmitb77uHh5i9XeSrR3IsoP2PKTfA9rBf/sTDlG1TN0+a5gxvtW0Lxrju/dtPC7U38
+	ty2meaazdz6VvvoJLIVq7lVpUQ5ivEH7KdK54rBtPMpozJal2yUHyozAdZRY4f7eozt9LBCREAVOK
+	gSXvaEp0ocYWKuKXNRFJR13rosBjanusTqdFGs1Xo29CkjPhwAui0enuwd3pvUR0WRz/uprcCLeK4
+	b89EBhYAT/EzlWTeQ5ZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqsc7-00FoPI-24;
-	Mon, 24 Apr 2023 09:36:03 +0000
-Received: from forward501c.mail.yandex.net ([2a02:6b8:c03:500:1:45:d181:d501])
+	id 1pquQG-00GD2X-2U;
+	Mon, 24 Apr 2023 11:31:56 +0000
+Received: from out3-smtp.messagingengine.com ([66.111.4.27])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqsc3-00FoLj-35
+	id 1pquQD-00GD0p-29
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Apr 2023 09:36:02 +0000
-Received: from mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:261e:0:640:2e3d:0])
-	by forward501c.mail.yandex.net (Yandex) with ESMTP id 8845C5EBF7;
-	Mon, 24 Apr 2023 12:35:58 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id JZBb1pbWwKo0-qs8Ysl2n;
-	Mon, 24 Apr 2023 12:35:57 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1682328957;
-	bh=26jP1z6kJxd8ER1tdQvbAbkoWyGDLjC4In1lvVJLLi0=;
-	h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=sG8MZrtDcSveu1AzqOtwAzYRoYdrobB5Ta8zWmDhb+TvBCgPhPXlAoI1ia0VWrbgP
-	 DKobaaCytaGR+RiMIBK+PWCikaBjg1Ckrh8ML7KhQbPBo6XIRK8od48iHIZlYjSjyB
-	 LEQj79fbsT2LZiyJz3r7ghpUMR22Eh97qB5XqjCQ=
-Authentication-Results: mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
-From: Nikita Shubin <nikita.shubin@maquefel.me>
-To: 
-Cc: Arnd Bergmann <arnd@kernel.org>,
-	Linus Walleij <linusw@kernel.org>,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Chuanhong Guo <gch981213@gmail.com>,
-	Liang Yang <liang.yang@amlogic.com>,
-	Jean Delvare <jdelvare@suse.de>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 23/43] mtd: ts72xx_nand: add platform helper
-Date: Mon, 24 Apr 2023 15:34:39 +0300
-Message-Id: <20230424123522.18302-24-nikita.shubin@maquefel.me>
-X-Mailer: git-send-email 2.39.2
+	Mon, 24 Apr 2023 11:31:55 +0000
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id C099C5C018B;
+	Mon, 24 Apr 2023 07:31:49 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 24 Apr 2023 07:31:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to; s=fm2; t=1682335909; x=1682422309; bh=Y9
+	FYoJaNOjxIXKXj5iVt3HG1MU0gziVJXHg42DuXBOg=; b=O1tJf0aYUL1Asq2G9I
+	v/WenhP5rGZyZB1SAL0Lr08oQeAEEUQrAp0socR3vEd9UgGnvByhJ755hJxV1qKU
+	E9ZSACMVc6ctw5IOj3YSxNtJjppCrcMnuo3EHDjmd3kHM8VJtKdkgvKL4DFoHOqz
+	+W+8IuX2hg35wSKwedvXKJ3PURDaQkrWjJM/7PMwj2nQ3bK1GDbl6lv178HZ/NA8
+	KDsO9MYDBoMlPNBh8aEl4RrLKv4OLsavscqSSR/heANCq8T/WVE0cVUSnj8QfSJQ
+	4u/teN+GVPZosLly+e7aCJHZfWx6MH3m9aFx+6kQZQbTUHFFn+RPDQoPPYxBW1gQ
+	IJSA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm3; t=1682335909; x=1682422309; bh=Y9FYoJaNOjxIX
+	KXj5iVt3HG1MU0gziVJXHg42DuXBOg=; b=iBdH6uvO/L8/zyujyEmeuLQ7lvT2x
+	GYZygrbZo05oxTN/Md/oDE0e8WW8qA02cbgVhsfFcZOI0ds8e+FbCtiiaOJvFiRx
+	+0cW8fxBsOTCzFHhmKeMdRGumvrSujG5VcT8IFLwY3h8/nMbzymQnlGomWQOWzQx
+	/oBTRzPHT38WBG1dSwXH+qEHrQrBjZbDngRgGtk3lDrZjamKW1iCCAmPUjNH4bVF
+	47At9lDjEDsPYhnN2768xyf3oBtpO2z2m/rKqeUCbiN4YmtGLmGGX3q1bMmxrG9I
+	36sN74EogbvFLVEbiiG9I3iKHbm4hY5BQztKKlqVi2e7UnWmYlN05agjA==
+X-ME-Sender: <xms:o2hGZE7zjv519ykLdrbAQGTLb_LGqm8C9gu0iv5LW_l5ijia9biY7A>
+    <xme:o2hGZF7IUwkhhPb4KXqxJ6jrGKB4g1CI7PypRKEHNaKZ-yKjsy2DgJ29sYcy-8ANi
+    L7P0836qypU8DsWz5I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedutddggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:o2hGZDccuXBCL3RAIdybA7rao9itrSh_uY8pqy72IR4RYUm3PNP66w>
+    <xmx:o2hGZJLZwUfDzeDL8noN8lkkCw-LNtlf4Vp39AIRXYTSMF4PksJThw>
+    <xmx:o2hGZIKT3iHKm9UvV7uZTvPOYuO2PbPXKewmqiqnd7-usVCISuMq0A>
+    <xmx:pWhGZAVObyMQbbUUBpdedORBxIIpPoWc5gLC07zOHsQjH_IqgL-nMw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 2684DB60086; Mon, 24 Apr 2023 07:31:47 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-372-g43825cb665-fm-20230411.003-g43825cb6
+Mime-Version: 1.0
+Message-Id: <8101c53e-e682-4dc3-95cc-a332b1822b8b@app.fastmail.com>
 In-Reply-To: <20230424123522.18302-1-nikita.shubin@maquefel.me>
 References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
-MIME-Version: 1.0
+Date: Mon, 24 Apr 2023 13:31:25 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Nikita Shubin" <nikita.shubin@maquefel.me>
+Cc: "Arnd Bergmann" <arnd@kernel.org>, "Linus Walleij" <linusw@kernel.org>,
+ "Alexander Sverdlin" <alexander.sverdlin@gmail.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+ "Russell King" <rmk+kernel@armlinux.org.uk>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ "Alessandro Zummo" <a.zummo@towertech.it>,
+ "Alexander Gordeev" <agordeev@linux.ibm.com>,
+ "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+ "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+ "Bartosz Golaszewski" <brgl@bgdev.pl>,
+ "Brian Norris" <briannorris@chromium.org>,
+ "Chuanhong Guo" <gch981213@gmail.com>,
+ "Conor.Dooley" <conor.dooley@microchip.com>,
+ "Damien Le Moal" <dlemoal@kernel.org>,
+ "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+ "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+ "Emil Renner Berthing" <kernel@esmil.dk>,
+ "Eric Dumazet" <edumazet@google.com>,
+ "Florian Fainelli" <f.fainelli@gmail.com>,
+ "Guenter Roeck" <linux@roeck-us.net>,
+ "Hartley Sweeten" <hsweeten@visionengravers.com>,
+ =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+ "Hitomi Hasegawa" <hasegawa-hitomi@fujitsu.com>,
+ "Jakub Kicinski" <kuba@kernel.org>, "Jaroslav Kysela" <perex@perex.cz>,
+ "Jean Delvare" <jdelvare@suse.de>, "Joel Stanley" <joel@jms.id.au>,
+ "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+ "Damien Le Moal" <damien.lemoal@opensource.wdc.com>,
+ "Liam Girdwood" <lgirdwood@gmail.com>,
+ "Liang Yang" <liang.yang@amlogic.com>,
+ "Linus Walleij" <linus.walleij@linaro.org>,
+ "Lukasz Majewski" <lukma@denx.de>, "Lv Ruyi" <lv.ruyi@zte.com.cn>,
+ "Mark Brown" <broonie@kernel.org>,
+ "Masahiro Yamada" <masahiroy@kernel.org>,
+ "Michael Turquette" <mturquette@baylibre.com>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Nathan Chancellor" <nathan@kernel.org>,
+ "Nick Desaulniers" <ndesaulniers@google.com>,
+ "Nicolas Saenz Julienne" <nsaenz@kernel.org>,
+ "Olof Johansson" <olof@lixom.net>, "Paolo Abeni" <pabeni@redhat.com>,
+ "Qin Jian" <qinjian@cqplus1.com>, "Richard Weinberger" <richard@nod.at>,
+ "Rob Herring" <robh+dt@kernel.org>,
+ "Robert Jarzmik" <robert.jarzmik@free.fr>,
+ "Russell King" <linux@armlinux.org.uk>,
+ "Sebastian Reichel" <sre@kernel.org>,
+ "Sergey Shtylyov" <s.shtylyov@omp.ru>, "Stephen Boyd" <sboyd@kernel.org>,
+ "Sumanth Korikkar" <sumanthk@linux.ibm.com>,
+ "Sven Peter" <sven@svenpeter.dev>, "Takashi Iwai" <tiwai@suse.com>,
+ "Thierry Reding" <thierry.reding@gmail.com>,
+ "Thomas Gleixner" <tglx@linutronix.de>,
+ "Ulf Hansson" <ulf.hansson@linaro.org>,
+ "Vasily Gorbik" <gor@linux.ibm.com>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Vinod Koul" <vkoul@kernel.org>,
+ "Walker Chen" <walker.chen@starfivetech.com>,
+ "Wim Van Sebroeck" <wim@linux-watchdog.org>,
+ "Yinbo Zhu" <zhuyinbo@loongson.cn>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+ soc@kernel.org
+Subject: Re: [PATCH 00/43] ep93xx device tree conversion
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230424_023600_166546_34029999 
-X-CRM114-Status: GOOD (  19.57  )
+X-CRM114-CacheID: sfid-20230424_043153_776185_E7F2F5BF 
+X-CRM114-Status: GOOD (  10.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,163 +168,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The only purpose of this code to provide platform_nand_data to gen_nand
-driver which requires .cmd_ctrl and .dev_ready.
+On Mon, Apr 24, 2023, at 14:34, Nikita Shubin wrote:
+> This series aims to convert ep93xx from platform to full device tree support.
+>
+> Tested on ts7250 64 RAM/128 MiB Nand flash, edb9302.
+>
+> Thank you Linus and Arnd for your support, review and comments, sorry 
+> if i missed something -
+> these series are quite big for me.
+>
+> Big thanks to Alexander Sverdlin for his testing, support, review, 
+> fixes and patches.
 
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
+Thanks a lot for your continued work. I can't merge any of this at
+the moment since the upstream merge window just opened, but I'm
+happy to take this all through the soc tree for 6.5, provided we
+get the sufficient Acks from the subsystem maintainers. Merging
+it through each individual tree would take a lot longer, so I
+hope we can avoid that.
 
-Notes:
-    rfc->v0
-    Alexander Sverdlin:
-    - platfrom -> platform
-    
-    Linus Walleij:
-    - __raw_read/write[w|l] -> readb/writeb
-    
-    Arnd Bergmann:
-    - name match node ts7250 instead of wildcard
-
- drivers/mtd/nand/raw/Kconfig       |  8 +++
- drivers/mtd/nand/raw/Makefile      |  1 +
- drivers/mtd/nand/raw/ts72xx_nand.c | 94 ++++++++++++++++++++++++++++++
- 3 files changed, 103 insertions(+)
- create mode 100644 drivers/mtd/nand/raw/ts72xx_nand.c
-
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 170f1185ddc4..08f88c34ce53 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -456,6 +456,14 @@ config MTD_NAND_RENESAS
- 	  Enables support for the NAND controller found on Renesas R-Car
- 	  Gen3 and RZ/N1 SoC families.
- 
-+config MTD_NAND_TS72XX
-+	bool "ts72xx NAND controller"
-+	depends on ARCH_EP93XX && HAS_IOMEM
-+	select MTD_NAND_PLATFORM
-+	help
-+	  Enables support for NAND controller on ts72xx SBCs.
-+	  These only set's platform data. The real driver is gen_nand.
-+
- comment "Misc"
- 
- config MTD_SM_COMMON
-diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-index 917cdfb815b9..b1d5cec84519 100644
---- a/drivers/mtd/nand/raw/Makefile
-+++ b/drivers/mtd/nand/raw/Makefile
-@@ -23,6 +23,7 @@ omap2_nand-objs := omap2.o
- obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
- obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
- obj-$(CONFIG_MTD_NAND_MARVELL)		+= marvell_nand.o
-+obj-$(CONFIG_MTD_NAND_TS72XX)		+= ts72xx_nand.o
- obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
- obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
- obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
-diff --git a/drivers/mtd/nand/raw/ts72xx_nand.c b/drivers/mtd/nand/raw/ts72xx_nand.c
-new file mode 100644
-index 000000000000..1c1c06c6e71a
---- /dev/null
-+++ b/drivers/mtd/nand/raw/ts72xx_nand.c
-@@ -0,0 +1,94 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Technologic Systems TS72xx NAND driver platform code
-+ * Copyright (C) 2021 Nikita Shubin <nikita.shubin@maquefel.me>
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/clk.h>
-+#include <linux/reset.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/rawnand.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/platnand.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+
-+#define TS72XX_NAND_CONTROL_ADDR_LINE	22	/* 0xN0400000 */
-+#define TS72XX_NAND_BUSY_ADDR_LINE	23	/* 0xN0800000 */
-+
-+static void ts72xx_nand_hwcontrol(struct nand_chip *chip,
-+				  int cmd, unsigned int ctrl)
-+{
-+	if (ctrl & NAND_CTRL_CHANGE) {
-+		void __iomem *addr = chip->legacy.IO_ADDR_R;
-+		unsigned char bits;
-+
-+		addr += (1 << TS72XX_NAND_CONTROL_ADDR_LINE);
-+
-+		bits = readb(addr) & ~0x07;
-+		bits |= (ctrl & NAND_NCE) << 2;	/* bit 0 -> bit 2 */
-+		bits |= (ctrl & NAND_CLE);	/* bit 1 -> bit 1 */
-+		bits |= (ctrl & NAND_ALE) >> 2;	/* bit 2 -> bit 0 */
-+
-+		writeb(bits, addr);
-+	}
-+
-+	if (cmd != NAND_CMD_NONE)
-+		writeb(cmd, chip->legacy.IO_ADDR_W);
-+}
-+
-+static int ts72xx_nand_device_ready(struct nand_chip *chip)
-+{
-+	void __iomem *addr = chip->legacy.IO_ADDR_R;
-+
-+	addr += (1 << TS72XX_NAND_BUSY_ADDR_LINE);
-+
-+	return !!(readb(addr) & 0x20);
-+}
-+
-+static struct platform_nand_data ts72xx_nand_data = {
-+	.chip = {
-+		.nr_chips	= 1,
-+		.chip_offset	= 0,
-+		.chip_delay	= 15,
-+	},
-+	.ctrl = {
-+		.cmd_ctrl	= ts72xx_nand_hwcontrol,
-+		.dev_ready	= ts72xx_nand_device_ready,
-+	},
-+};
-+
-+static int __init ts72xx_nand_setup(void)
-+{
-+	struct device_node *np;
-+	struct platform_device *pdev;
-+
-+	/* Multiplatform guard, only proceed on ts7250 */
-+	if (!of_machine_is_compatible("technologic,ts7250"))
-+		return 0;
-+
-+	np = of_find_compatible_node(NULL, NULL, "technologic,ts7200-nand");
-+	if (!np) {
-+		pr_err("%s : nand device tree node not found.\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	pdev = of_find_device_by_node(np);
-+	if (!pdev) {
-+		pr_err("%s : nand device not found.\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	pdev->dev.platform_data = &ts72xx_nand_data;
-+	put_device(&pdev->dev);
-+	of_node_put(np);
-+
-+	return 0;
-+}
-+
-+subsys_initcall(ts72xx_nand_setup);
--- 
-2.39.2
-
+      Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
