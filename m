@@ -4,74 +4,135 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDA31C77B61
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 07:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B483DC77B61
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 09:36:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uxbngHtPsy/WSuvbWuU1KUPwuWzArH/LtEdMCJJreyg=; b=pUIOAyZaRHAHvQ
-	tjXY/Vxb9Ba9CeG6CAfbzikJ4b68aqXNn8JNGuhZjshdx4Ie9heoFWuC/e34zzWU+ilxnawUaf8fs
-	yYV76WItpG909x2WinUZjh7GrzzxgXiI4pxG6NxxpSbo0eu+uaes1nVAQRzp+bV2lqLNZ19hnHkFu
-	pn74N5pue+ILWXbSmAFNOZjXhUFmR+gnG/tb47D6sKTqIzgyJ5CyKuZajQBjQ7ROBIlXoCvjI+P5H
-	yTCRQXEaTHJona9b6cxyJsOaWtbE1aEhe4kWdaVw7Wo2JkMeJ4LeqQtf+Bbd1b38ny2CScuOWbwty
-	RYwc6UE7Zhc63GhSNSBA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=/xKSqUstRESVQhQozs0QqbDUx4mRKd0SmKD2G/lB4Ow=; b=Vr/cMxq9tOoWzS
+	JCu39x+13mKRV5P3mk5XnObT5YrjnUQDTtyACKNK9X2pZbQmybrGP7KcBwkRO7HjjRDLZod4FOX7t
+	c7BmQv88l7XRjWu4EDvMZ7S13TXytFiYlmQ/zjvfB0O8ZEzmrgTFiH0swXmAJS9SkoZmmkqiQiurv
+	Ck0nxrodHoPVMmkeh3v0/w+Qqwz1r1IoD7BVpR8v6zuoEAwIXupj37YRs7/4Fm72b64oaGTZEKRcx
+	Rv7hDbN6clBvTyJNl8EM6cr5qsp+l4I6epOAwNTulTXfXXB4VFLZu3KNyT/KX4AUzs8miWYMKU2ka
+	M7hA9UFAB6F0LmmD27vg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqqjn-00Fah7-0y;
-	Mon, 24 Apr 2023 07:35:51 +0000
-Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
+	id 1pqsbo-00FoFD-0K;
+	Mon, 24 Apr 2023 09:35:44 +0000
+Received: from forward101b.mail.yandex.net ([2a02:6b8:c02:900:1:45:d181:d101])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqqjk-00Fafk-0a
-	for linux-mtd@lists.infradead.org;
-	Mon, 24 Apr 2023 07:35:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682321748; x=1713857748;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1AZevgGbr+OhBwy7Vz/7+7ZqgeucWBUr7uEJu+d9I1k=;
-  b=B1++P+GsWLlcWqO4fVC9lAhKywnR48BjKqo3PsiFisPdQA5ObDxMA1W1
-   gvb/uxwrj8jRjVFAx4IfuKxT08oGhlKGvcQ685MQT1oPC14jsbwXfvaYq
-   v4rwRxDDQ1e24H6BrIZJy31SM2M9vz2d4qboUm1hRYqVkG8aLuWhINIWy
-   EGsSi/yJptN/rpCkHJg4hjvmy6iF6o67kbrMW7upBMg/AdGpMAmorW9rB
-   NHB+/2I2r+VpMFqOGu5q2y9AO2y0Eo5pKJ8zMPUtpGiYopRQllEiWU3w/
-   UOre3IxElFo6BpbQhfQuhVPSgx+lFn6aHieLlHqpapzFWKHvqn5f7IqB5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="409318152"
-X-IronPort-AV: E=Sophos;i="5.99,222,1677571200"; 
-   d="scan'208";a="409318152"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Apr 2023 00:35:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10689"; a="836859965"
-X-IronPort-AV: E=Sophos;i="5.99,222,1677571200"; 
-   d="scan'208";a="836859965"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Apr 2023 00:35:42 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1pqqjd-000iJs-1a;
-	Mon, 24 Apr 2023 07:35:41 +0000
-Date: Mon, 24 Apr 2023 15:35:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, mani@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, quic_srichara@quicinc.com,
-	quic_mdalam@quicinc.com
-Subject: Re: [PATCH V2] mtd: rawnand: qcom: Implement exec_op()
-Message-ID: <202304241556.fafzkLLk-lkp@intel.com>
-References: <20230419093617.27134-1-quic_mdalam@quicinc.com>
+	id 1pqsbh-00FoBq-1p;
+	Mon, 24 Apr 2023 09:35:40 +0000
+Received: from mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:261e:0:640:2e3d:0])
+	by forward101b.mail.yandex.net (Yandex) with ESMTP id B34EC60119;
+	Mon, 24 Apr 2023 12:35:29 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id JZBb1pbWwKo0-gTOTU7I1;
+	Mon, 24 Apr 2023 12:35:27 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1682328927;
+	bh=1BUnzucVZIOur2ZqkDwi3tGjasPWJzQYz0Qjtg3w2ik=;
+	h=Message-Id:Date:Cc:Subject:To:From;
+	b=UgghrdamwAlliyfWMNgpgIf/GA2CaDnIf8J4N707ddvflunc8oYkhwckHZhBR6hJy
+	 fXHcpXI0SVojxzFFPeHKSa59FaYAQzj5QfnSgkXsyZJrYJL3ZPWStgaVY/FmuCCqhd
+	 giyDCppN4p4mDYomopXewIMVn6BrcHYAuV04xe30=
+Authentication-Results: mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: 
+Cc: Arnd Bergmann <arnd@kernel.org>,
+	Linus Walleij <linusw@kernel.org>,
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	=?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Brian Norris <briannorris@chromium.org>,
+	Chuanhong Guo <gch981213@gmail.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Eric Dumazet <edumazet@google.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Hartley Sweeten <hsweeten@visionengravers.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Jean Delvare <jdelvare@suse.de>,
+	Joel Stanley <joel@jms.id.au>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Le Moal <damien.lemoal@opensource.wdc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Liang Yang <liang.yang@amlogic.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Lukasz Majewski <lukma@denx.de>,
+	Lv Ruyi <lv.ruyi@zte.com.cn>,
+	Mark Brown <broonie@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Olof Johansson <olof@lixom.net>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Qin Jian <qinjian@cqplus1.com>,
+	Richard Weinberger <richard@nod.at>,
+	Rob Herring <robh+dt@kernel.org>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Russell King <linux@armlinux.org.uk>,
+	Sebastian Reichel <sre@kernel.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Sumanth Korikkar <sumanthk@linux.ibm.com>,
+	Sven Peter <sven@svenpeter.dev>,
+	Takashi Iwai <tiwai@suse.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Walker Chen <walker.chen@starfivetech.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Yinbo Zhu <zhuyinbo@loongson.cn>,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-clk@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-ide@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-pm@vger.kernel.org,
+	linux-pwm@vger.kernel.org,
+	linux-rtc@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	linux-watchdog@vger.kernel.org,
+	netdev@vger.kernel.org,
+	soc@kernel.org
+Subject: [PATCH 00/43] ep93xx device tree conversion
+Date: Mon, 24 Apr 2023 15:34:16 +0300
+Message-Id: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230419093617.27134-1-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230424_003548_258845_0513F562 
-X-CRM114-Status: GOOD (  11.35  )
+X-CRM114-CacheID: sfid-20230424_023538_353567_EF8031E0 
+X-CRM114-Status: GOOD (  18.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,97 +149,183 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Md,
+This series aims to convert ep93xx from platform to full device tree support.
 
-kernel test robot noticed the following build warnings:
+Tested on ts7250 64 RAM/128 MiB Nand flash, edb9302.
 
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on linus/master v6.3 next-20230421]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thank you Linus and Arnd for your support, review and comments, sorry if i missed something -
+these series are quite big for me.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/mtd-rawnand-qcom-Implement-exec_op/20230419-173849
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20230419093617.27134-1-quic_mdalam%40quicinc.com
-patch subject: [PATCH V2] mtd: rawnand: qcom: Implement exec_op()
-config: nios2-randconfig-m041-20230423 (https://download.01.org/0day-ci/archive/20230424/202304241556.fafzkLLk-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 12.1.0
+Big thanks to Alexander Sverdlin for his testing, support, review, fixes and patches.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304241556.fafzkLLk-lkp@intel.com/
+Alexander Sverdlin (4):
+  ARM: dts: ep93xx: Add ADC node
+  ARM: dts: ep93xx: Add I2S and AC97 nodes
+  ARM: dts: ep93xx: Add EDB9302 DT
+  ASoC: cirrus: edb93xx: Delete driver
 
-smatch warnings:
-drivers/mtd/nand/raw/qcom_nandc.c:2751 qcom_read_status_exec() warn: inconsistent indenting
+Nikita Shubin (39):
+  gpio: ep93xx: split device in multiple
+  soc: Add SoC driver for Cirrus ep93xx
+  dt-bindings: pinctrl: Add DT bindings ep93xx pinctrl
+  pinctrl: add a Cirrus ep93xx SoC pin controller
+  dt-bindings: timers: add DT bindings for Cirrus EP93xx
+  clocksource: ep93xx: Add driver for Cirrus Logic EP93xx
+  dt-bindings: rtc: add DT bindings for Cirrus EP93xx
+  rtc: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: watchdog: add DT bindings for Cirrus EP93x
+  watchdog: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: clock: add DT bindings for Cirrus EP93xx
+  clk: ep93xx: add DT support for Cirrus EP93xx
+  power: reset: Add a driver for the ep93xx reset
+  dt-bindings: pwm: Add DT bindings ep93xx PWM
+  pwm: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: spi: Add DT bindings ep93xx spi
+  spi: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: net: Add DT bindings ep93xx eth
+  net: cirrus: add DT support for Cirrus EP93xx
+  dt-bindings: dma: Add DT bindings ep93xx dma
+  dma: cirrus: add DT support for Cirrus EP93xx
+  dt-bindings: mtd: add DT bindings for ts7250 nand
+  mtd: ts72xx_nand: add platform helper
+  dt-bindings: ata: Add DT bindings ep93xx pata
+  pata: cirrus: add DT support for Cirrus EP93xx
+  dt-bindings: input: Add DT bindings ep93xx keypad
+  input: keypad: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: rtc: Add DT binding m48t86 rtc
+  rtc: m48t86: add DT support for m48t86
+  dt-bindings: wdt: Add DT binding ts72xx wdt
+  wdt: ts72xx: add DT support for ts72xx
+  dt-bindings: gpio: Add DT bindings ep93xx gpio
+  gpio: ep93xx: add DT support for gpio-ep93xx
+  ARM: dts: add device tree for ep93xx Soc
+  ARM: ep93xx: DT for the Cirrus ep93xx SoC platforms
+  pwm: ep93xx: drop legacy pinctrl
+  input: keypad: ep93xx: drop legacy pinctrl
+  ARM: ep93xx: soc: drop defines
+  ARM: ep93xx: delete all boardfiles
 
-vim +2751 drivers/mtd/nand/raw/qcom_nandc.c
-
-  2708	
-  2709	static int qcom_read_status_exec(struct nand_chip *chip,
-  2710					 const struct nand_subop *subop)
-  2711	{
-  2712		struct qcom_nand_host *host = to_qcom_nand_host(chip);
-  2713		struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-  2714		struct nand_ecc_ctrl *ecc = &chip->ecc;
-  2715		struct qcom_op q_op;
-  2716		const struct nand_op_instr *instr = NULL;
-  2717		unsigned int op_id = 0;
-  2718		unsigned int len = 0;
-  2719		int ret = 0, num_cw = 1, i;
-  2720		u32 flash_status;
-  2721	
-  2722		host->status = NAND_STATUS_READY | NAND_STATUS_WP;
-  2723	
-  2724		qcom_parse_instructions(chip, subop, &q_op);
-  2725	
-  2726		if (nandc->exec_opwrite) {
-  2727			num_cw = ecc->steps;
-  2728			nandc->exec_opwrite = false;
-  2729		}
-  2730	
-  2731		pre_command(host, NAND_CMD_STATUS);
-  2732	
-  2733		nandc_set_reg(chip, NAND_FLASH_CMD, q_op.cmd_reg);
-  2734		nandc_set_reg(chip, NAND_EXEC_CMD, 1);
-  2735	
-  2736		write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
-  2737		write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-  2738	
-  2739		read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
-  2740	
-  2741		ret = submit_descs(nandc);
-  2742		if (ret)
-  2743			dev_err(nandc->dev, "failure in sbumitting status descriptor\n");
-  2744	
-  2745		free_descs(nandc);
-  2746	
-  2747		nandc_read_buffer_sync(nandc, true);
-  2748		for (i = 0; i < num_cw; i++) {
-  2749			flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
-  2750	
-> 2751		if (flash_status & FS_MPU_ERR)
-  2752			host->status &= ~NAND_STATUS_WP;
-  2753	
-  2754		if (flash_status & FS_OP_ERR || (i == (num_cw - 1) &&
-  2755						 (flash_status & FS_DEVICE_STS_ERR)))
-  2756			host->status |= NAND_STATUS_FAIL;
-  2757		}
-  2758	
-  2759		flash_status = host->status;
-  2760	
-  2761		instr = q_op.data_instr;
-  2762		op_id = q_op.data_instr_idx;
-  2763		len = nand_subop_get_data_len(subop, op_id);
-  2764		memcpy(instr->ctx.data.buf.in, &flash_status, len);
-  2765	
-  2766		return ret;
-  2767	}
-  2768	
+ .../devicetree/bindings/arm/ep93xx.yaml       |   99 +
+ .../bindings/ata/cirrus,ep93xx-pata.yaml      |   40 +
+ .../bindings/dma/cirrus,ep93xx-dma-m2m.yaml   |   66 +
+ .../bindings/dma/cirrus,ep93xx-dma-m2p.yaml   |  102 +
+ .../devicetree/bindings/gpio/gpio-ep93xx.yaml |  161 ++
+ .../bindings/input/cirrus,ep93xx-keypad.yaml  |  123 ++
+ .../bindings/mtd/technologic,nand.yaml        |   56 +
+ .../bindings/net/cirrus,ep93xx_eth.yaml       |   51 +
+ .../pinctrl/cirrus,ep93xx-pinctrl.yaml        |   66 +
+ .../bindings/pwm/cirrus,ep93xx-pwm.yaml       |   45 +
+ .../bindings/rtc/cirrus,ep93xx-rtc.yaml       |   32 +
+ .../bindings/rtc/dallas,rtc-m48t86.yaml       |   33 +
+ .../devicetree/bindings/spi/spi-ep93xx.yaml   |   68 +
+ .../bindings/timer/cirrus,ep93xx-timer.yaml   |   41 +
+ .../bindings/watchdog/cirrus,ep93xx-wdt.yaml  |   38 +
+ .../watchdog/technologic,ts72xx-wdt.yaml      |   39 +
+ arch/arm/Makefile                             |    1 -
+ arch/arm/boot/dts/Makefile                    |    1 +
+ arch/arm/boot/dts/ep93xx-bk3.dts              |   96 +
+ arch/arm/boot/dts/ep93xx-edb9302.dts          |  150 ++
+ arch/arm/boot/dts/ep93xx-ts7250.dts           |  113 ++
+ arch/arm/boot/dts/ep93xx.dtsi                 |  466 +++++
+ arch/arm/mach-ep93xx/Kconfig                  |   20 +-
+ arch/arm/mach-ep93xx/Makefile                 |   11 -
+ arch/arm/mach-ep93xx/core.c                   | 1017 ----------
+ arch/arm/mach-ep93xx/dma.c                    |  114 --
+ arch/arm/mach-ep93xx/edb93xx.c                |  344 ----
+ arch/arm/mach-ep93xx/ep93xx-regs.h            |   38 -
+ arch/arm/mach-ep93xx/gpio-ep93xx.h            |  111 --
+ arch/arm/mach-ep93xx/hardware.h               |   25 -
+ arch/arm/mach-ep93xx/irqs.h                   |   76 -
+ arch/arm/mach-ep93xx/platform.h               |   42 -
+ arch/arm/mach-ep93xx/soc.h                    |  212 --
+ arch/arm/mach-ep93xx/ts72xx.c                 |  422 ----
+ arch/arm/mach-ep93xx/ts72xx.h                 |   94 -
+ arch/arm/mach-ep93xx/vision_ep9307.c          |  311 ---
+ drivers/ata/pata_ep93xx.c                     |    9 +
+ drivers/clk/Kconfig                           |    8 +
+ drivers/clk/Makefile                          |    1 +
+ .../clock.c => drivers/clk/clk-ep93xx.c       |  491 +++--
+ drivers/clocksource/Kconfig                   |   11 +
+ drivers/clocksource/Makefile                  |    1 +
+ .../clocksource}/timer-ep93xx.c               |  143 +-
+ drivers/dma/ep93xx_dma.c                      |  119 +-
+ drivers/gpio/gpio-ep93xx.c                    |  329 ++--
+ drivers/input/keyboard/ep93xx_keypad.c        |   25 +-
+ drivers/mtd/nand/raw/Kconfig                  |    8 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ drivers/mtd/nand/raw/ts72xx_nand.c            |   94 +
+ drivers/net/ethernet/cirrus/ep93xx_eth.c      |   49 +-
+ drivers/pinctrl/Kconfig                       |    7 +
+ drivers/pinctrl/Makefile                      |    1 +
+ drivers/pinctrl/pinctrl-ep93xx.c              | 1698 +++++++++++++++++
+ drivers/power/reset/Kconfig                   |   10 +
+ drivers/power/reset/Makefile                  |    1 +
+ drivers/power/reset/ep93xx-restart.c          |   65 +
+ drivers/pwm/pwm-ep93xx.c                      |   24 +-
+ drivers/rtc/rtc-ep93xx.c                      |    8 +
+ drivers/rtc/rtc-m48t86.c                      |   10 +
+ drivers/soc/Kconfig                           |    1 +
+ drivers/soc/Makefile                          |    1 +
+ drivers/soc/cirrus/Kconfig                    |   11 +
+ drivers/soc/cirrus/Makefile                   |    2 +
+ drivers/soc/cirrus/soc-ep93xx.c               |  134 ++
+ drivers/spi/spi-ep93xx.c                      |   31 +-
+ drivers/watchdog/ep93xx_wdt.c                 |    8 +
+ drivers/watchdog/ts72xx_wdt.c                 |    8 +
+ .../dt-bindings/clock/cirrus,ep93xx-clock.h   |   53 +
+ include/linux/platform_data/dma-ep93xx.h      |    3 +
+ include/linux/soc/cirrus/ep93xx.h             |   28 +-
+ sound/soc/cirrus/Kconfig                      |    9 -
+ sound/soc/cirrus/Makefile                     |    4 -
+ sound/soc/cirrus/edb93xx.c                    |  119 --
+ 73 files changed, 4796 insertions(+), 3453 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/ep93xx.yaml
+ create mode 100644 Documentation/devicetree/bindings/ata/cirrus,ep93xx-pata.yaml
+ create mode 100644 Documentation/devicetree/bindings/dma/cirrus,ep93xx-dma-m2m.yaml
+ create mode 100644 Documentation/devicetree/bindings/dma/cirrus,ep93xx-dma-m2p.yaml
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-ep93xx.yaml
+ create mode 100644 Documentation/devicetree/bindings/input/cirrus,ep93xx-keypad.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/cirrus,ep93xx_eth.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,ep93xx-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pwm/cirrus,ep93xx-pwm.yaml
+ create mode 100644 Documentation/devicetree/bindings/rtc/cirrus,ep93xx-rtc.yaml
+ create mode 100644 Documentation/devicetree/bindings/rtc/dallas,rtc-m48t86.yaml
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-ep93xx.yaml
+ create mode 100644 Documentation/devicetree/bindings/timer/cirrus,ep93xx-timer.yaml
+ create mode 100644 Documentation/devicetree/bindings/watchdog/cirrus,ep93xx-wdt.yaml
+ create mode 100644 Documentation/devicetree/bindings/watchdog/technologic,ts72xx-wdt.yaml
+ create mode 100644 arch/arm/boot/dts/ep93xx-bk3.dts
+ create mode 100644 arch/arm/boot/dts/ep93xx-edb9302.dts
+ create mode 100644 arch/arm/boot/dts/ep93xx-ts7250.dts
+ create mode 100644 arch/arm/boot/dts/ep93xx.dtsi
+ delete mode 100644 arch/arm/mach-ep93xx/Makefile
+ delete mode 100644 arch/arm/mach-ep93xx/core.c
+ delete mode 100644 arch/arm/mach-ep93xx/dma.c
+ delete mode 100644 arch/arm/mach-ep93xx/edb93xx.c
+ delete mode 100644 arch/arm/mach-ep93xx/ep93xx-regs.h
+ delete mode 100644 arch/arm/mach-ep93xx/gpio-ep93xx.h
+ delete mode 100644 arch/arm/mach-ep93xx/hardware.h
+ delete mode 100644 arch/arm/mach-ep93xx/irqs.h
+ delete mode 100644 arch/arm/mach-ep93xx/platform.h
+ delete mode 100644 arch/arm/mach-ep93xx/soc.h
+ delete mode 100644 arch/arm/mach-ep93xx/ts72xx.c
+ delete mode 100644 arch/arm/mach-ep93xx/ts72xx.h
+ delete mode 100644 arch/arm/mach-ep93xx/vision_ep9307.c
+ rename arch/arm/mach-ep93xx/clock.c => drivers/clk/clk-ep93xx.c (60%)
+ rename {arch/arm/mach-ep93xx => drivers/clocksource}/timer-ep93xx.c (51%)
+ create mode 100644 drivers/mtd/nand/raw/ts72xx_nand.c
+ create mode 100644 drivers/pinctrl/pinctrl-ep93xx.c
+ create mode 100644 drivers/power/reset/ep93xx-restart.c
+ create mode 100644 drivers/soc/cirrus/Kconfig
+ create mode 100644 drivers/soc/cirrus/Makefile
+ create mode 100644 drivers/soc/cirrus/soc-ep93xx.c
+ create mode 100644 include/dt-bindings/clock/cirrus,ep93xx-clock.h
+ delete mode 100644 sound/soc/cirrus/edb93xx.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.39.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
