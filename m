@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C156C77B61
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 13:27:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAD44C7618E
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 13:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cT/SMY3/BdsMq8hPSqhknDYQnsqjAS12GvSNAo/l/G8=; b=UJJEeSkQRGxdVo
-	uWLU6xbp3vVBJ2RqUaohhR4OD4gzQbtZAI0gBch+/KSr6+gJ0fZWXeg2V1ZN0L8zbaTkpms8EljGk
-	Jx+VrEa5nn8PTWKDubFhVdpnL4eQIRwU0uHXe91L6UARpYsaJ6dWgr/WG5X4bwAfCvYa0ou5z6NVb
-	8LMLmPKWfp57TjMP/deWyzsB9TSwl4Vx9sWa+QJ5DLatXAKhQTSmTe+o1E3/amE/laIEKijsB0xk6
-	Pz/qd9b+pnN7SiGglRlfJHEnbuMtUQFK7rqNV8h8sXGpKrgU90J3mPCX+p7xQHV30eFBX98XSlc5G
-	5xCFBkhq2aoUn8xdTTnw==;
+	List-Owner; bh=U2azpIj3xTYL/Q8Ym0DFSiudR2HIAamO8RSc2mnAoZI=; b=Kh8VLhPpEhDspc
+	Bnn6vuZZw+EMag8AakcuTavYIN7ftww8b3Op7W5L+I0gEfSzAcGZW5W6eSJ1+GoDyOILAlPUkRvdD
+	CVVYhutTQLHfRaD0VmqrgPRb/t1nVBEW0CcVYM77pkGQ48cu+c4GBkcWKddirzloeNmsVblcAz3ZA
+	UeOXhIeJkSounDDIteXSeBRzNjQFVDzJH4CJXtMhRIwOUCgHduJ4uIyu1M2szkO8IEWyaUXJqPsnv
+	2AkS4wsxKYXMlH42xa86X0n4Ajr5T4ojLZDJwKwwjE4gGUDRgdh1dPSciPDsZe13maRmzox3mjqhx
+	WvZobbw5ZSlxJV+W6RdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqwDW-00GPr6-00;
-	Mon, 24 Apr 2023 13:26:54 +0000
+	id 1pqwHC-00GQZZ-0t;
+	Mon, 24 Apr 2023 13:30:42 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqwDS-00GPqW-1b
+	id 1pqwH9-00GQYi-10
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Apr 2023 13:26:52 +0000
+	Mon, 24 Apr 2023 13:30:40 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 8CCC4622CD;
-	Mon, 24 Apr 2023 13:26:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E1FDC4339C;
-	Mon, 24 Apr 2023 13:26:48 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id DA66461F13;
+	Mon, 24 Apr 2023 13:30:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBBC3C433D2;
+	Mon, 24 Apr 2023 13:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1682342809;
-	bh=lSOBpUnFu9VK1D1fFEX3s0tqrCknH4atbNI6skVNVjY=;
+	s=korg; t=1682343038;
+	bh=6nVlqJwBRNC1O9r0E4RzWVTpTGevWx/EOmM2z249EZY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GbV9sC8tVtSg/qUFpAFNZnwLix9B5q82iOUYBoHIdPal4iNy9OXTZnuObLDj6ottR
-	 iGKsybOR4pwBhHBqMGocPNRjCdfDvM8k/UoYoe1v3cU3l3v3R6XdDhmnbl+NLO9PoM
-	 9mVEOpPjCjrw/C4u50w5Pp8nmBbngea5tnYHsspI=
+	b=N0vMkuip9vRXe4I6DrtKVPP8OpP4iwumDSGc5vY7zOGdAqkQpdT7qpxWdFAwyQrF1
+	 LrYAQZfpno6S+dvN9UfO5IaG7vvuGLXhHYU5flG69OBUC/PqsGaqYZ15kncB5sRj9w
+	 Kmb7e3k9W7p8Xi1rkPbw4mwwKtS9ymH1k18eagCQ=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -53,17 +53,17 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-mtd@lists.infradead.org,
 	Michael Walle <michael@walle.cc>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 48/98] mtd: spi-nor: fix memory leak when using debugfs_lookup()
-Date: Mon, 24 Apr 2023 15:17:11 +0200
-Message-Id: <20230424131135.738833650@linuxfoundation.org>
+Subject: [PATCH 6.2 053/110] mtd: spi-nor: fix memory leak when using debugfs_lookup()
+Date: Mon, 24 Apr 2023 15:17:15 +0200
+Message-Id: <20230424131138.254716253@linuxfoundation.org>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230424131133.829259077@linuxfoundation.org>
-References: <20230424131133.829259077@linuxfoundation.org>
+In-Reply-To: <20230424131136.142490414@linuxfoundation.org>
+References: <20230424131136.142490414@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230424_062650_617694_F7056F54 
-X-CRM114-Status: GOOD (  15.28  )
+X-CRM114-CacheID: sfid-20230424_063039_432076_F12D4CDA 
+X-CRM114-Status: GOOD (  15.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,10 +106,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 23 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index cda57cb863089..75e694791d8d9 100644
+index 2ef2660f58180..4244c6fd98111 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -3272,7 +3272,19 @@ static struct spi_mem_driver spi_nor_driver = {
+@@ -3344,7 +3344,19 @@ static struct spi_mem_driver spi_nor_driver = {
  	.remove = spi_nor_remove,
  	.shutdown = spi_nor_shutdown,
  };
@@ -131,10 +131,10 @@ index cda57cb863089..75e694791d8d9 100644
  MODULE_LICENSE("GPL v2");
  MODULE_AUTHOR("Huang Shijie <shijie8@gmail.com>");
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index d18dafeb020ab..00bf0d0e955a0 100644
+index 958cd143c9346..f4246c52a1def 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -709,8 +709,10 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+@@ -714,8 +714,10 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
  
  #ifdef CONFIG_DEBUG_FS
  void spi_nor_debugfs_register(struct spi_nor *nor);
@@ -146,7 +146,7 @@ index d18dafeb020ab..00bf0d0e955a0 100644
  
  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
 diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index df76cb5de3f93..5f56b23205d8b 100644
+index ff895f6758ea1..558ffecf8ae6d 100644
 --- a/drivers/mtd/spi-nor/debugfs.c
 +++ b/drivers/mtd/spi-nor/debugfs.c
 @@ -226,13 +226,13 @@ static void spi_nor_debugfs_unregister(void *data)
