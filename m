@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAD44C7618E
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 13:30:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B81BC7618E
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Apr 2023 16:18:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=U2azpIj3xTYL/Q8Ym0DFSiudR2HIAamO8RSc2mnAoZI=; b=Kh8VLhPpEhDspc
-	Bnn6vuZZw+EMag8AakcuTavYIN7ftww8b3Op7W5L+I0gEfSzAcGZW5W6eSJ1+GoDyOILAlPUkRvdD
-	CVVYhutTQLHfRaD0VmqrgPRb/t1nVBEW0CcVYM77pkGQ48cu+c4GBkcWKddirzloeNmsVblcAz3ZA
-	UeOXhIeJkSounDDIteXSeBRzNjQFVDzJH4CJXtMhRIwOUCgHduJ4uIyu1M2szkO8IEWyaUXJqPsnv
-	2AkS4wsxKYXMlH42xa86X0n4Ajr5T4ojLZDJwKwwjE4gGUDRgdh1dPSciPDsZe13maRmzox3mjqhx
-	WvZobbw5ZSlxJV+W6RdQ==;
+	List-Owner; bh=C+eHWD5hhHo9wpOsD62maivIsCQrR29HxBR9vG6A50o=; b=ALTemnjy/OeAmz
+	fg6imq4kNJG0LIvDxbruIOhKoUMlwovfOOcv1WQbiuhGQIEZu8coKvn+s3f34KcdzAT18KpLV2VaN
+	im8wOlBHruCWPxmNtGHAg5rruovTP4syWOHQuIB94KAhzWP15dnM69vOdkl7/VPkw5yUHjC1QsY+i
+	7vLCbZSsIsub1ks7+OPmLm8YN91jwSU5A+zk7aHQc+a8A8yukqV191NjB/0UNU7jtLOC0U9nQTB+M
+	eU91A0i85AroGRon6p+bt3CLkD3MLtqkhAHEyDg6c3OtJUswDu50Z/0ELEq0X6HVEhjkl2j0/9FZh
+	xmn4r/P0qjJwa8DXL9kA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqwHC-00GQZZ-0t;
-	Mon, 24 Apr 2023 13:30:42 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pqytA-00GmdE-2V;
+	Mon, 24 Apr 2023 16:18:04 +0000
+Received: from mail-oi1-f169.google.com ([209.85.167.169])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pqwH9-00GQYi-10
+	id 1pqyt7-00Gmcp-2n
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Apr 2023 13:30:40 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DA66461F13;
-	Mon, 24 Apr 2023 13:30:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBBC3C433D2;
-	Mon, 24 Apr 2023 13:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1682343038;
-	bh=6nVlqJwBRNC1O9r0E4RzWVTpTGevWx/EOmM2z249EZY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N0vMkuip9vRXe4I6DrtKVPP8OpP4iwumDSGc5vY7zOGdAqkQpdT7qpxWdFAwyQrF1
-	 LrYAQZfpno6S+dvN9UfO5IaG7vvuGLXhHYU5flG69OBUC/PqsGaqYZ15kncB5sRj9w
-	 Kmb7e3k9W7p8Xi1rkPbw4mwwKtS9ymH1k18eagCQ=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	Michael Walle <michael@walle.cc>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.2 053/110] mtd: spi-nor: fix memory leak when using debugfs_lookup()
-Date: Mon, 24 Apr 2023 15:17:15 +0200
-Message-Id: <20230424131138.254716253@linuxfoundation.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230424131136.142490414@linuxfoundation.org>
-References: <20230424131136.142490414@linuxfoundation.org>
-User-Agent: quilt/0.67
+	Mon, 24 Apr 2023 16:18:03 +0000
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-38e9dfa543bso1055796b6e.2
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2023 09:18:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682353079; x=1684945079;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7ef/nUWAo93ykxRt/lNEQT+96fr8F/oVSX+sFEFLjUo=;
+        b=Uoz0q8/4n+9B/FsYwS0Ugs1oUjSHsljd852FkpKyFUiga0iezRgjDGvBJMlzHT2XVM
+         wh5Xbs5WbfX5KQZs64er1YA/I2si+LDrwEK73/mF0uYpLyiuXZMlvCRp1F7CN4jnaI9I
+         TnXjPcvzxedtGsD+5oWQmQexcAk3iBla/t2EATm1fqN1OrgKyyt4tuRGGLSaUiLRiTd9
+         m2kZzQiNlpO5stbQGsUB+jBAU/1u8TtKaJP8baQR86nVM9rMuuGkVDMSCPXWNku9oQMv
+         fVQhmvl0M/iOju4R72LDLhuNa4Rigvjr16cn1fSkOdyC0WJcNb56Vov3Dys/tCtViuJq
+         7IOg==
+X-Gm-Message-State: AAQBX9eKBofdUcWqzUgutv7A2fA1BuZrxkYUZ4tjJe2cnjIzi1zy/2pU
+	HvAQWE/4grVdcDQ1hYR/zw==
+X-Google-Smtp-Source: AKy350bn6N/FuqwHS0N9uitfDp4zpaNUuskHXzrku67V02VC/o8cVZMjd+m40+pv8Qvhp8DC1RToVg==
+X-Received: by 2002:a05:6808:d46:b0:38c:ec:8b0f with SMTP id w6-20020a0568080d4600b0038c00ec8b0fmr8454350oik.16.1682353078268;
+        Mon, 24 Apr 2023 09:17:58 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id z8-20020aca3308000000b0038c35f512a2sm4730805oiz.56.2023.04.24.09.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Apr 2023 09:17:57 -0700 (PDT)
+Received: (nullmailer pid 2768718 invoked by uid 1000);
+	Mon, 24 Apr 2023 16:17:56 -0000
+Date: Mon, 24 Apr 2023 11:17:56 -0500
+From: Rob Herring <robh@kernel.org>
+To: Nikita Shubin <nikita.shubin@maquefel.me>
+Cc: Arnd Bergmann <arnd@kernel.org>, Linus Walleij <linusw@kernel.org>, Alexander Sverdlin <alexander.sverdlin@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Lukasz Majewski <lukma@denx.de>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 22/43] dt-bindings: mtd: add DT bindings for ts7250 nand
+Message-ID: <20230424161756.GG2701399-robh@kernel.org>
+References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+ <20230424123522.18302-23-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230424123522.18302-23-nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230424_063039_432076_F12D4CDA 
-X-CRM114-Status: GOOD (  15.17  )
+X-CRM114-CacheID: sfid-20230424_091801_920138_9111D200 
+X-CRM114-Status: GOOD (  16.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,106 +82,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Mon, Apr 24, 2023 at 03:34:38PM +0300, Nikita Shubin wrote:
+> Add YAML bindings for ts7250 NAND.
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> ---
+>  .../bindings/mtd/technologic,nand.yaml        | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/technologic,nand.yaml b/Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+> new file mode 100644
+> index 000000000000..3234d93a1c21
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/technologic,nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Technologic Systems NAND controller
+> +
+> +maintainers:
+> +  - Lukasz Majewski <lukma@denx.de>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: technologic,ts7200-nand
+> +      - const: gen_nand
 
-[ Upstream commit ec738ca127d07ecac6afae36e2880341ec89150e ]
+Not a useful compatible.
 
-When calling debugfs_lookup() the result must have dput() called on it,
-otherwise the memory will leak over time.  To solve this, remove the
-lookup and create the directory on the first device found, and then
-remove it when the module is unloaded.
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#address-cells': true
+> +  '#size-cells': true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +unevaluatedProperties: true
 
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: Pratyush Yadav <pratyush@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org
-Reviewed-by: Michael Walle <michael@walle.cc>
-Link: https://lore.kernel.org/r/20230208160230.2179905-1-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/mtd/spi-nor/core.c    | 14 +++++++++++++-
- drivers/mtd/spi-nor/core.h    |  2 ++
- drivers/mtd/spi-nor/debugfs.c | 11 ++++++++---
- 3 files changed, 23 insertions(+), 4 deletions(-)
+No, 'true' is not allowed here.
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 2ef2660f58180..4244c6fd98111 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3344,7 +3344,19 @@ static struct spi_mem_driver spi_nor_driver = {
- 	.remove = spi_nor_remove,
- 	.shutdown = spi_nor_shutdown,
- };
--module_spi_mem_driver(spi_nor_driver);
-+
-+static int __init spi_nor_module_init(void)
-+{
-+	return spi_mem_driver_register(&spi_nor_driver);
-+}
-+module_init(spi_nor_module_init);
-+
-+static void __exit spi_nor_module_exit(void)
-+{
-+	spi_mem_driver_unregister(&spi_nor_driver);
-+	spi_nor_debugfs_shutdown();
-+}
-+module_exit(spi_nor_module_exit);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Huang Shijie <shijie8@gmail.com>");
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 958cd143c9346..f4246c52a1def 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -714,8 +714,10 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
- 
- #ifdef CONFIG_DEBUG_FS
- void spi_nor_debugfs_register(struct spi_nor *nor);
-+void spi_nor_debugfs_shutdown(void);
- #else
- static inline void spi_nor_debugfs_register(struct spi_nor *nor) {}
-+static inline void spi_nor_debugfs_shutdown(void) {}
- #endif
- 
- #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
-diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index ff895f6758ea1..558ffecf8ae6d 100644
---- a/drivers/mtd/spi-nor/debugfs.c
-+++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -226,13 +226,13 @@ static void spi_nor_debugfs_unregister(void *data)
- 	nor->debugfs_root = NULL;
- }
- 
-+static struct dentry *rootdir;
-+
- void spi_nor_debugfs_register(struct spi_nor *nor)
- {
--	struct dentry *rootdir, *d;
-+	struct dentry *d;
- 	int ret;
- 
--	/* Create rootdir once. Will never be deleted again. */
--	rootdir = debugfs_lookup(SPI_NOR_DEBUGFS_ROOT, NULL);
- 	if (!rootdir)
- 		rootdir = debugfs_create_dir(SPI_NOR_DEBUGFS_ROOT, NULL);
- 
-@@ -247,3 +247,8 @@ void spi_nor_debugfs_register(struct spi_nor *nor)
- 	debugfs_create_file("capabilities", 0444, d, nor,
- 			    &spi_nor_capabilities_fops);
- }
-+
-+void spi_nor_debugfs_shutdown(void)
-+{
-+	debugfs_remove(rootdir);
-+}
--- 
-2.39.2
-
-
-
+> +
+> +examples:
+> +  - |
+> +    nand-parts@0 {
+> +      compatible = "technologic,ts7200-nand", "gen_nand";
+> +      reg = <0x60000000 0x8000000>;
+> +      #address-cells = <1>;
+> +      #size-cells = <1>;
+> +
+> +      partition@0 {
+> +        label = "TS-BOOTROM";
+> +        reg = <0x00000000 0x00020000>;
+> +        read-only;
+> +      };
+> +
+> +      partition@20000 {
+> +        label = "Linux";
+> +        reg = <0x00020000 0x07d00000>;
+> +      };
+> +
+> +      partition@7d20000 {
+> +        label = "RedBoot";
+> +        reg = <0x07d20000 0x002e0000>;
+> +        read-only;
+> +      };
+> +    };
+> +
+> +...
+> -- 
+> 2.39.2
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
