@@ -4,53 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6511DC77B61
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Apr 2023 08:01:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B17CC6FD18
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Apr 2023 09:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=OUzuB+vWWDieIbTmibLtbKX0S4+4cy+WnJPlYi6xvgQ=; b=Mx2R9WiRZGizNe
-	KbRaBBZez414t81UJBkPnMV7vfroaIehiwqWqIEc1VmbOYqDxGqGM4H1r1KqoL7RMmz0giaOLpwAn
-	23mVI63nTBBmFFe7y1T3xWJ+Nk7g5gZ+AUdcTAlI/+5dm9EOOGlH1RjDxtSwBZuxVff6c9eCNrNnz
-	N8M2sKhDH8j5r3VaI5G0Kj7AFXvnDT0IQCE7jgYQIk7xU3rKjnV0jgIYELt5zBEkyz7sXB7RDh4r1
-	ndjF0gMo/JQmW4+d0nm3TCqrr13yW6D26clfWWgU2XfCTVWdvC7WHcBC5OtMoxkDTeYf5c6E3VoEF
-	ieCh0bzI8hTLaxAmq4Cw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=GIiNNYseZMiW2XShirvEEzf69cN22ZTMcCK3lbA5BSM=; b=1sYQKcKXHN/oxc
+	7InAbthrCPYTLuDdA9NiJrwEODa7hxSWjA5HCx1jyTJRJxrYtxKoT7CdDyYu2YhOL8CpQfUDQpKVf
+	xbmPjowjzgMWHCXVXCFXcO2XvUetpeG5EFBb//dUW4pHBwjOtkWEA5anEN6Xd/fcUacFJnngoJeEn
+	8Ng97F1il8fsZgjMYfMkAPxrkhhqc5MGkPUKJ7cQ9niaDvA6QNj2e7Gro+ul0OqRHIrrESmD9vXip
+	2iJVRo/hLDsm2MfIPu0XbWhDfTv9iUldRJssKKtjkoyzRZHPvSTonDYfM5GsBB8gXFgzEBzuzEzbh
+	NoZttxj1boJTSouLh47g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1prDbU-000RGj-13;
-	Tue, 25 Apr 2023 08:00:48 +0000
-Received: from mail.tipvortexbiz.com ([51.254.102.79])
+	id 1prEr0-000dFG-19;
+	Tue, 25 Apr 2023 09:20:54 +0000
+Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1prDbQ-000RBf-2b
+	id 1prEqx-000dET-1g
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Apr 2023 08:00:47 +0000
-Received: by mail.tipvortexbiz.com (Postfix, from userid 1002)
-	id 2BC9845449; Tue, 25 Apr 2023 08:00:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tipvortexbiz.com;
-	s=mail; t=1682409635;
-	bh=P1Han34balTJAB06sltOuaQxWoVYtmotA0/1aw855g4=;
-	h=Date:From:To:Subject:From;
-	b=Qt1vTL6lYglAjgNtigvkl4O1cjtIeWufKltEFlyn/HqZyyTEHIJY+u7WLzU7n3ZIq
-	 SRMXPbUI58Z7gupinDCVTjN+UbcBja+NKz+s8AcZ5PsGEgVLeOYR3ZeXt2CouOp6g6
-	 N0+OVCbA56dUV20tfRcCkolOeAO2bJF2xrKa8gWBdcmjn9KxJn1qQnw0D+PW3RVvjS
-	 bXe8pAVvqHS4TJ5C8I+4WNUdwoM0CboD4pRkYtcxbXdv3FGQckaauvfKCB+6Mhgyk2
-	 SyUUUSMLo08Zo2ty7v1EIrthDLCMTOQpK8m6jRNMCZNzOEHmbR3WHP5Hax2QwwEC1x
-	 kYRohtZ7CKdFQ==
-Received: by mail.tipvortexbiz.com for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2023 08:00:31 GMT
-Message-ID: <20230425064500-0.1.1d.2h7i.0.hqddqcifd3@tipvortexbiz.com>
-Date: Tue, 25 Apr 2023 08:00:31 GMT
-From: "Victor Pollard" <victor.pollard@tipvortexbiz.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Wake up - Audit time
-X-Mailer: mail.tipvortexbiz.com
+	Tue, 25 Apr 2023 09:20:52 +0000
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9505214c47fso1024974966b.1
+        for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2023 02:20:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1682414449; x=1685006449;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WsdCNQzIoPz+lH63xj1YaKKNKo3iDm5pfw23qiYoBOQ=;
+        b=wOvkX2oC5ZHyFMdylx8IkrryNZeg23DU/Ch9AChLKbcB/sx0DFV8Yb/H7vUSsHm/ay
+         6vKeAhZHqi4KvKzBL9RsojhjUK4oU8lb+V+mupjRsr3d4Ozv9ezhvySx+DHEhqR+hjMA
+         gaiJOqLYT51c8eBo6o+cG8x82KOH/6WDLxVffZqZup0JrvMaRV4XDFiPQxHmTy81GMpM
+         QIfjcv/pPcyMi1TiLUVU+h31xU2FfOzqmTSR6PnZ45uP7vvaFC3j0EA3bBbvXBOdzaR3
+         fHRbyuMSy1Dp046zUXSSm/0Gjosdxp/aEC/NPYM4X7lNjpFDITb7o57bkR9W209v9XtR
+         w4rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682414449; x=1685006449;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WsdCNQzIoPz+lH63xj1YaKKNKo3iDm5pfw23qiYoBOQ=;
+        b=NejRKJDkw2+x0BTlkNz78eS9J+54GJ1OIJrSWfiLdGPdlfewGtqC8bVTVXVDAthQhw
+         mlUO9F3/Ove2SsIOTiZJ306tl22hxxTZrtl/FGhAjG5npTGnhFC1uIjp1mykeTonZZNJ
+         pDUBhS8l7UMv2WSiurbh4CAPG+8rQ7vQAfOYMbS4/1NYitWLzKwj5xeoHyZpSK5m/Syv
+         PBdsOryEuUJQHHUr9bWC0piUeGc8n1xtqj6jDUPn5OUccIYPvGm2zSnFRFIhcbDh+xzw
+         xiN42dZjCTDmNgnV6mWjHyuSdBH8IWoHVHN7izBbVahJbD+EtECWhIw6I3dXjdZqQO2Z
+         UEkA==
+X-Gm-Message-State: AAQBX9dE89O2O8urlxFRsb6irGInScwyLEhb3ciy+zjhNykHLuCyv6R4
+	A3VgpZrkvQCoW1IkEs6d/beNSw==
+X-Google-Smtp-Source: AKy350YuXymrw7So4UOjZjef+iEPyi/CshywTQ5AjTJZJr/4WaSMcccmVMSSXrgcRBO0CsBCTlwDVg==
+X-Received: by 2002:a17:907:b9d9:b0:94f:1a23:2f1c with SMTP id xa25-20020a170907b9d900b0094f1a232f1cmr14815686ejc.50.1682414449568;
+        Tue, 25 Apr 2023 02:20:49 -0700 (PDT)
+Received: from [192.168.9.102] ([195.167.132.10])
+        by smtp.gmail.com with ESMTPSA id h11-20020a170906828b00b0094f23480619sm6620286ejx.172.2023.04.25.02.20.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Apr 2023 02:20:48 -0700 (PDT)
+Message-ID: <0210316b-9e21-347c-ed15-ce8200aeeb94@linaro.org>
+Date: Tue, 25 Apr 2023 11:20:46 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 00/43] ep93xx device tree conversion
+Content-Language: en-US
+To: Jakub Kicinski <kuba@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: Nikita Shubin <nikita.shubin@maquefel.me>, Arnd Bergmann
+ <arnd@kernel.org>, Linus Walleij <linusw@kernel.org>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+ Russell King <rmk+kernel@armlinux.org.uk>,
+ =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Brian Norris
+ <briannorris@chromium.org>, Chuanhong Guo <gch981213@gmail.com>,
+ "Conor.Dooley" <conor.dooley@microchip.com>,
+ Damien Le Moal <dlemoal@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+ Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
+ Jaroslav Kysela <perex@perex.cz>, Jean Delvare <jdelvare@suse.de>,
+ Joel Stanley <joel@jms.id.au>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Liang Yang <liang.yang@amlogic.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Lukasz Majewski <lukma@denx.de>,
+ Lv Ruyi <lv.ruyi@zte.com.cn>, Mark Brown <broonie@kernel.org>,
+ Masahiro Yamada <masahiroy@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>, Olof Johansson <olof@lixom.net>,
+ Paolo Abeni <pabeni@redhat.com>, Qin Jian <qinjian@cqplus1.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Russell King
+ <linux@armlinux.org.uk>, Sebastian Reichel <sre@kernel.org>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, Stephen Boyd <sboyd@kernel.org>,
+ Sumanth Korikkar <sumanthk@linux.ibm.com>, Sven Peter <sven@svenpeter.dev>,
+ Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vasily Gorbik <gor@linux.ibm.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Vinod Koul <vkoul@kernel.org>, Walker Chen <walker.chen@starfivetech.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Yinbo Zhu <zhuyinbo@loongson.cn>,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-clk@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+ soc@kernel.org
+References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+ <8101c53e-e682-4dc3-95cc-a332b1822b8b@app.fastmail.com>
+ <20230424152933.48b2ede1@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230424152933.48b2ede1@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230425_010045_589836_9D17A11E 
-X-CRM114-Status: UNSURE (   2.14  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230425_022051_594834_6EB60EEB 
+X-CRM114-Status: GOOD (  16.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,24 +146,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-R29vZCBtb3JuaW5nLAoKd2UgcHJvdmlkZSBhIHNvbHV0aW9uIHRoYXQgc2lnbmlmaWNhbnRseSBz
-aG9ydGVucyB0aGUgYXVkaXQgdGltZSwgZW5hYmxlcyBzdGFuZGFyZHMgY29udHJvbCBhbmQgbm9u
-LWNvbXBsaWFuY2UgcmVwb3J0aW5nOgoK4pePIEF1ZGl0cyAtIHRvIGNoZWNrIHF1YWxpdHkgb3Ig
-cHJvY2VzcyBzdGFuZGFyZHMgKElTTywgNVMsIExQQSkK4pePIFNjaGVkdWxlciAtIGFsbCB3b3Jr
-IGNhbiBiZSBzY2hlZHVsZWQgYW5kIGxpbmtlZCB0byB0aGUgbm90aWZpY2F0aW9uIHN5c3RlbQri
-l48gQ2hlY2tsaXN0cyAtIGZvciBjYXJyeWluZyBvdXQgd29yayAicG9pbnQgYnkgcG9pbnQiIHdp
-dGggYSBkZXNjcmlwdGlvbiBpbGx1c3RyYXRlZCB3aXRoIGEgcGhvdG8gb3IgdmlkZW8K4pePIE5v
-bi1jb25mb3JtYW5jZXMgLSBpbW1lZGlhdGVseSByZXBvcnQgbm9uLWNvbmZvcm1hbmNlcyBhbmQg
-c2VuZCB0aGVtIHRvIHJlc3BvbnNpYmxlIHBlcnNvbnMK4pePIFRlc3RzIC0gdG8gY2hlY2sga25v
-d2xlZGdlIGFmdGVyIHRyYWluaW5nIG9yIChjdXN0b21lcidzKSBleHBlY3RhdGlvbnMK4pePIFN1
-bW1hcnkgb2YgUmVzdWx0cyBhbmQgUmVwb3J0cyAtIHByZXNlbnRlZCBvbiBkYXNoYm9hcmRzCgpB
-cmUgeW91IG9wZW4gdG8gYSBjb252ZXJzYXRpb24gYWJvdXQgdXNpbmcgc3VjaCBhIHRvb2wgaW4g
-eW91ciBjb21wYW55PwoKClJlZ2FyZHMKVmljdG9yIFBvbGxhcmQKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+On 25/04/2023 00:29, Jakub Kicinski wrote:
+> On Mon, 24 Apr 2023 13:31:25 +0200 Arnd Bergmann wrote:
+>> Thanks a lot for your continued work. I can't merge any of this at
+>> the moment since the upstream merge window just opened, but I'm
+>> happy to take this all through the soc tree for 6.5, provided we
+>> get the sufficient Acks from the subsystem maintainers. Merging
+>> it through each individual tree would take a lot longer, so I
+>> hope we can avoid that.
+> 
+> Is there a dependency between the patches?
+
+I didn't get entire patchset and cover letter does not mention
+dependencies, but usually there shouldn't be such. Maybe for the next
+versions this should be split per subsystem?
+
+Best regards,
+Krzysztof
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
