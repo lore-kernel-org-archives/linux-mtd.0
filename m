@@ -4,158 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92BB2C77B61
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Apr 2023 13:28:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95F96C77B7F
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Apr 2023 00:50:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ke8PhDZuAKAvzfeNVousNynqIBjP3t/ExQ/xM93pWJU=; b=lGti1d8JY3UN6M
-	o6VKhtbkV6cq/AeBlUJBfD5vJoknT7UQI5xiS7LQUrdgU/ND7xIbrKaR77RwkW3a+vJS0LPgivcuN
-	F7gevdzqQa/NqKIizH/rlqtsFdTcP6lYEdAtf/2x3gIwUJ0sX+4P/hbzVL9axm9wkPaSQ2IFj52re
-	hTEeXeMVAakVve4otSWV9sAifXIlxn7YOeEvxJHFpleT/IWZHM5PN/wvTJhMeHKAXUXopK0DKEoRV
-	sha7TVeIf4Te5iHaROHst/a/v90lm4LBjZqQKbGNls+LUVAw7CpgBdfErcjeLbB4DRAU9h+hMsiRt
-	+E+r2CRQ7EOEciBHks1Q==;
+	List-Owner; bh=SsXTkPImeGSXrigiSEHQ0/SZcfLOZAKu/cZi67M8AVo=; b=dtOJvfX6h9iJUP
+	l+2+fvKRt7UiagL4Ig2CjBT0Io0VWxnyGe76e3QmwObg9mXbXxmFE9994sXfpAD7ZbnQ5LrJsFOKL
+	iRxXuN32vXaTmotoXgbhfQeHnI1K8Tu1Izu26ysHT5t8uaDIUzRLd/lxL36Wv61LYR5x5eCE0scxA
+	PgH/vWlDxgCxFZflpqRcX/quyBK1AkG9zkQFyy2aP2G9zInRptxs1aOARSVTy/eTJRAV7VaCp71bA
+	A4GiQJQeHn7cSePA2rPKDjWyMdwOvHUtL0p4Na1Jb/MgXggD2U/6Qs1WUqBOfGSaI8kyfMfknwty3
+	EQ+UHM8zfD4P5WKd3TdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1prIi1-001DqL-06;
-	Tue, 25 Apr 2023 13:27:53 +0000
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20])
+	id 1prTLr-002VsF-0K;
+	Wed, 26 Apr 2023 00:49:43 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1prIhw-001DpS-2V;
-	Tue, 25 Apr 2023 13:27:50 +0000
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id ECAAA32008FA;
-	Tue, 25 Apr 2023 09:27:42 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 25 Apr 2023 09:27:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm2; t=1682429262; x=1682515662; bh=sh
-	lQTGWa7vUbJrf98fLKqQIz8VMZW6pYwyh6rr26DkQ=; b=LLq6zsCSRbDjBVqeoa
-	QdSyGzdFeRzi+y8dRC7yvod5SVHeKyFTIeuyfiTgHRDX9Awr81yDjU9y4QtxKrfo
-	cU1BJzuMeChVwfos+ZupiLK5693eur3Az9zQP0C6tP5leOBtsxoSVBo5BxcsGO7K
-	YnDEO3vBsGpNOdsMCfFNRkVF1sblVBXFoUUDMH3el3HzkP7EtTn6FoyExVTN+aTO
-	gqS5bRJpJLk/Y1ln6yHL7bGq9WDFROd44pG/rbGw6QlYGqAnZ/JWZp/0ZoV7Bn0L
-	vq7IJdZ4IHu4w03AFjEKqpLuEgPWaeUW+I/AyBGdPEay4Ph5wh032/s2qj/I9Wro
-	/8xQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1682429262; x=1682515662; bh=shlQTGWa7vUbJ
-	rf98fLKqQIz8VMZW6pYwyh6rr26DkQ=; b=Av/a0k3pjb1ufd4JifUVwkqmaE0xY
-	9CkoNy8ApgC/U0IKdRsJdeBSuhyHHZrHbLb2V34XnstlRhf8x06eo7Woi2Pmpwix
-	1FUDyWuVR25j7bcLCv0SZIqeCbOOzHJd6HjbetiNBz6VUkZQgqJbWjJlxJ8A/BpO
-	A212C1UV+wtke3Pc75MEe/ogcXY+s5a0ytb+7OOOZZFU2L6ynRwsUVp4XQ/s7+RJ
-	Fwj/Kr4OJOlir/HJ5H/UNNH9HZpNxgAqrg5KWHIyAHdoqAHF43/uajOj57iT4Jzl
-	X+HHwFW4rZzPdkC8YzfFnXBiw01B+vpVScnizIK5eGDgzxuBRbcgXd1yw==
-X-ME-Sender: <xms:S9VHZJl5ArBpbY5tqUCy32a43H-Jc6lVaBY-LZKcl_pJhl7n-s0_dQ>
-    <xme:S9VHZE1YTzlO84yHG36gWwGILapdSpSLopmyoWHKeOt_YpUc5zk_N5KDZkZzbByYb
-    B4T9orgHH0-6nfJ018>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeduvddgieegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:S9VHZPoeetQZs_3oaiKa85eO_ubUpz9vMKuiDxO2Xe7ZONIHAb3MkQ>
-    <xmx:S9VHZJk4L8-_hWSmPZAyBlv3pTZdFCFlZLIRfX2VBqLar6yCxaJTpA>
-    <xmx:S9VHZH1TRLt9JCYwgLou_9qePysK818dBIHcDHDLr1LJlHSsbq0KeA>
-    <xmx:TtVHZJsalndLD945CG4tBnqVxTIfpWnAMZDxIRKJWPLVcF1t9S-MXg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 91FC6B60086; Tue, 25 Apr 2023 09:27:39 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-374-g72c94f7a42-fm-20230417.001-g72c94f7a
-Mime-Version: 1.0
-Message-Id: <c3db2294-4fef-46be-a62a-11fc38884918@app.fastmail.com>
-In-Reply-To: <0210316b-9e21-347c-ed15-ce8200aeeb94@linaro.org>
-References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
- <8101c53e-e682-4dc3-95cc-a332b1822b8b@app.fastmail.com>
- <20230424152933.48b2ede1@kernel.org>
- <0210316b-9e21-347c-ed15-ce8200aeeb94@linaro.org>
-Date: Tue, 25 Apr 2023 14:27:26 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
- "Jakub Kicinski" <kuba@kernel.org>
-Cc: "Nikita Shubin" <nikita.shubin@maquefel.me>,
- "Arnd Bergmann" <arnd@kernel.org>, "Linus Walleij" <linusw@kernel.org>,
- "Alexander Sverdlin" <alexander.sverdlin@gmail.com>,
- "David S . Miller" <davem@davemloft.net>,
- =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
- "Russell King" <rmk+kernel@armlinux.org.uk>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- "Alessandro Zummo" <a.zummo@towertech.it>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
- "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
- "Bartosz Golaszewski" <brgl@bgdev.pl>,
- "Brian Norris" <briannorris@chromium.org>,
- "Chuanhong Guo" <gch981213@gmail.com>,
- "Conor.Dooley" <conor.dooley@microchip.com>,
- "Damien Le Moal" <dlemoal@kernel.org>,
- "Daniel Lezcano" <daniel.lezcano@linaro.org>,
- "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
- "Emil Renner Berthing" <kernel@esmil.dk>,
- "Eric Dumazet" <edumazet@google.com>,
- "Florian Fainelli" <f.fainelli@gmail.com>,
- "Guenter Roeck" <linux@roeck-us.net>,
- "Hartley Sweeten" <hsweeten@visionengravers.com>,
- =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
- "Hitomi Hasegawa" <hasegawa-hitomi@fujitsu.com>,
- "Jaroslav Kysela" <perex@perex.cz>, "Jean Delvare" <jdelvare@suse.de>,
- "Joel Stanley" <joel@jms.id.au>,
- "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
- "Damien Le Moal" <damien.lemoal@opensource.wdc.com>,
- "Liam Girdwood" <lgirdwood@gmail.com>,
- "Liang Yang" <liang.yang@amlogic.com>,
- "Linus Walleij" <linus.walleij@linaro.org>,
- "Lukasz Majewski" <lukma@denx.de>, "Lv Ruyi" <lv.ruyi@zte.com.cn>,
- "Mark Brown" <broonie@kernel.org>,
- "Masahiro Yamada" <masahiroy@kernel.org>,
- "Michael Turquette" <mturquette@baylibre.com>,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Nicolas Saenz Julienne" <nsaenz@kernel.org>,
- "Olof Johansson" <olof@lixom.net>, "Paolo Abeni" <pabeni@redhat.com>,
- "Qin Jian" <qinjian@cqplus1.com>, "Richard Weinberger" <richard@nod.at>,
- "Rob Herring" <robh+dt@kernel.org>,
- "Robert Jarzmik" <robert.jarzmik@free.fr>,
- "Russell King" <linux@armlinux.org.uk>,
- "Sebastian Reichel" <sre@kernel.org>,
- "Sergey Shtylyov" <s.shtylyov@omp.ru>, "Stephen Boyd" <sboyd@kernel.org>,
- "Sumanth Korikkar" <sumanthk@linux.ibm.com>,
- "Sven Peter" <sven@svenpeter.dev>, "Takashi Iwai" <tiwai@suse.com>,
- "Thierry Reding" <thierry.reding@gmail.com>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Ulf Hansson" <ulf.hansson@linaro.org>,
- "Vasily Gorbik" <gor@linux.ibm.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, "Vinod Koul" <vkoul@kernel.org>,
- "Walker Chen" <walker.chen@starfivetech.com>,
- "Wim Van Sebroeck" <wim@linux-watchdog.org>,
- "Yinbo Zhu" <zhuyinbo@loongson.cn>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-watchdog@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
- soc@kernel.org
-Subject: Re: [PATCH 00/43] ep93xx device tree conversion
+	id 1prTLo-002Vrm-1R
+	for linux-mtd@lists.infradead.org;
+	Wed, 26 Apr 2023 00:49:41 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 08DAB631FD;
+	Wed, 26 Apr 2023 00:49:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 669A0C433EF;
+	Wed, 26 Apr 2023 00:49:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1682470179;
+	bh=eCbfVqwNE0EJt2oBf6tZ+otxgY0IszuAIAtzqQEmGaY=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=tAgV3w5haxOc6S/kNbvUfHMMU1E1v50e22Ovfvi9h1tDHaHVfd+knXKcpqsjFFbvY
+	 MycjfwDQf4g85JUpQAqgveboMWe1XnkWyZYFKmvH+8DhFMNJiUIoRHix8xlSBL/bEb
+	 af7C/ueUuUQ/TxvFZ2dH3JyjQa3LQIbkorTX55M0E92Qdh4XdM7O+7azcgBj3D+02w
+	 EHuQHCsFAR9d/gyTLV6/bNf+q12NJnCLUF0ToDvf6R4AJsyVBZb4sXGpKXgJkfq6I6
+	 6Q3QHkgu9fId35Dt0b3t6RxMmZuJUzr/j7imb0vrvtb1gxqqWeQ4NeVelh45D9DdN2
+	 Kj2XDRI2PS3nA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 565DEE5FFC6;
+	Wed, 26 Apr 2023 00:49:39 +0000 (UTC)
+Subject: Re: [GIT PULL] mtd: Changes for 6.4-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20230420182923.0dabff59@xps-13>
+References: <20230420182923.0dabff59@xps-13>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230420182923.0dabff59@xps-13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-6.4
+X-PR-Tracked-Commit-Id: 7227aacb62aeb59b007a6d3489b11f78fa332696
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: eb8322d714ea98fdc620d682fb517b50ea282aa5
+Message-Id: <168247017934.10866.2461783282598090002.pr-tracker-bot@kernel.org>
+Date: Wed, 26 Apr 2023 00:49:39 +0000
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230425_062749_273463_F5A6C60A 
-X-CRM114-Status: GOOD (  14.23  )
+X-CRM114-CacheID: sfid-20230425_174940_526070_8AE3F561 
+X-CRM114-Status: UNSURE (   5.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -167,43 +77,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Apr 25, 2023, at 10:20, Krzysztof Kozlowski wrote:
-> On 25/04/2023 00:29, Jakub Kicinski wrote:
->> On Mon, 24 Apr 2023 13:31:25 +0200 Arnd Bergmann wrote:
->>> Thanks a lot for your continued work. I can't merge any of this at
->>> the moment since the upstream merge window just opened, but I'm
->>> happy to take this all through the soc tree for 6.5, provided we
->>> get the sufficient Acks from the subsystem maintainers. Merging
->>> it through each individual tree would take a lot longer, so I
->>> hope we can avoid that.
->> 
->> Is there a dependency between the patches?
->
-> I didn't get entire patchset and cover letter does not mention
-> dependencies, but usually there shouldn't be such. Maybe for the next
-> versions this should be split per subsystem?
+The pull request you sent on Thu, 20 Apr 2023 18:29:23 +0200:
 
-Clearly the last patch that removes the board files depends on
-all the previous patches, but I assume that the other ones
-are all independent.
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-6.4
 
-We don't do complete conversions from boardfiles to DT that often
-any more, but in the past we tended to do this through a cross-
-subsystem branch in the soc tree, which helps do it more quickly
-and is less work for Nikita. In this case, I would make it a
-separate top-level branch in the soc tree.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/eb8322d714ea98fdc620d682fb517b50ea282aa5
 
-If anyone strongly feels that the patches should go through
-the subsystem trees here, we'll take the longer path and
-do the changes separately, with the boardfile removal
-coming a release later.
+Thank you!
 
-     Arnd
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
