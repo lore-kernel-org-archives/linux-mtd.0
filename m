@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7A78C77B60
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Apr 2023 13:07:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB6CFC77B60
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Apr 2023 13:38:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KJ6mvTEdFTWECQi6WQDAcogWuIHALYI9X43MxwmIt3w=; b=CS92z80kgVlWz1
-	fNPzLFyA6CnNLoNtTEUqJnwGXXhH7kwuX6WEoFqMdw4Ed6EBqDuhqRvZk3st3Tr8ApHkCAbubZJRq
-	uWQsA8CMOyTWqvFgJN7zOWlVqEIhmLSsoxjcI4LYrtWMw1h62TZLGiY7blroEJ4XFJxfLfSGHX+7J
-	JobvpWLvlP639iio2Ljyi3Cj3n8U530x9LTNmaMI2x8JN0oQJo+cHPSiwbqBof4+j584mNH08qTZG
-	rb6jvFRqrRXnsluuLEcXqQUVUvfCUpPVxHCIQFVpWxh7jkFpRVjyowEazEWUP5PJusGmt8aH9UEKK
-	1h1nLIM6CZlIuwfnECoA==;
+	List-Owner; bh=MbWUDed/2QguIoDZskBG19itqMO5LQ0L6caDWt5Y2bc=; b=hQzCvaOCTDED3v
+	FPvENDq4+c/ycYskGsEu8BPMNn7bPX7xvQ3fuelmhfbHZGLSCm3N4/PrCfRa+TOs9a/WNwzxEhEnK
+	K6f7ts/4HMLMxwQHTyXHvepZ2z+J2uo8uY8r/rt/2CnJmmbjzRtJlFTnwpPNsXlzLv+Mq0QgGMG5n
+	l8mKsDFHeaDdw8dntXFTwBPuk5/+rMjdyB9YiF0JWbV1SKmyqTExSV1wd4bExcMNrS0EEOaAYPCDV
+	vboVxaRSLxUbjxD0hw8n8p8MFkk0IJ6p6P266W6o7phM1DrQ3vNoJ0Mo9UJfi6olnw9eWIOy4yx63
+	meRbqQKBzM24gvH4neIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1prer3-0041P6-2N;
-	Wed, 26 Apr 2023 13:06:41 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1prfLG-0046ac-2c;
+	Wed, 26 Apr 2023 13:37:54 +0000
+Received: from mga17.intel.com ([192.55.52.151])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1prer0-0041No-1O
+	id 1prfLD-0046Zq-0p
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Apr 2023 13:06:40 +0000
+	Wed, 26 Apr 2023 13:37:53 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682514398; x=1714050398;
+  t=1682516271; x=1714052271;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=oVxuTR4A/wrlt9G6C/zKK3j09fIf1TBLj219Iy+IWg4=;
-  b=cZ1CJFmmJ8Tt1hKvS6cEQc1IySVLcvIP8wh6e41qv/0X4X/pgeThcTz3
-   cAl+qwWKE4AuVCW8PPHQVhgfRKMZqSZeACKslaB4RN8Z5x64l7dso3zoQ
-   r7rv6ov9YiWvOP0SDb3QF34n1Zs8xnF9Tq5pcZBo1Pf8EMGhMb6EoEIyZ
-   h6mufUH3JtMTZu/lpkxZFxaXLA1M0VIrILq4ZIk081Em7rzgVdxbSoJna
-   23x+i1Z3yNpjc9r2CNmQrsdnEbkAfddTQ3kVD3hV8nCu/ycfYIdH6vQmR
-   cMXTumocwcVs/+eIl800bI7Zo0Gg6d/da+fv1kDmcUalWcW+h+T2uKfz3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10691"; a="349033782"
+  bh=mATRcWr0aXBkhLDJViNyss0Ax7HbjLO0ufWDkBE/ZRI=;
+  b=BDjhlDGiUV6M2StnSWQWWy4cA/V4wBmFeqrAA0Ddj+VZJj6n08cVd/KE
+   9WwIsTT/6qExYPEuylmifIBR/kfRUK1CTSo1oQLUa0n6tPze+uQSnVJE4
+   XXiVtaocTmxNpGw4VeEIB6RVaYexrAGlEdF2GVtgdVt/L59SyVzzvqoye
+   EyGlGez82J4lTFuX0b02ySR5PuawfD5bKYrukXUDFhyn/BbKJC6Sc8e6/
+   gB2arPDhI1IOfZXL1XnJGMDUEbM7BEeYIsVm98x+6G39Y/Ly0lhm2G0O/
+   03FwjaqIQc0nBbOvFbh36YIyw5NBnJWDhxKqBBj02KFf4kE/VAOiVlv7r
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10691"; a="327432225"
 X-IronPort-AV: E=Sophos;i="5.99,228,1677571200"; 
-   d="scan'208";a="349033782"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2023 06:06:37 -0700
+   d="scan'208";a="327432225"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2023 06:37:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10691"; a="783323577"
+X-IronPort-AV: E=McAfee;i="6600,9927,10691"; a="726524482"
 X-IronPort-AV: E=Sophos;i="5.99,228,1677571200"; 
-   d="scan'208";a="783323577"
+   d="scan'208";a="726524482"
 Received: from lkp-server01.sh.intel.com (HELO 041f065c1b1b) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 26 Apr 2023 06:06:33 -0700
+  by orsmga001.jf.intel.com with ESMTP; 26 Apr 2023 06:37:35 -0700
 Received: from kbuild by 041f065c1b1b with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1preqv-0000AU-0U;
-	Wed, 26 Apr 2023 13:06:33 +0000
-Date: Wed, 26 Apr 2023 21:06:23 +0800
+	id 1prfKx-0000EK-0h;
+	Wed, 26 Apr 2023 13:37:35 +0000
+Date: Wed, 26 Apr 2023 21:37:19 +0800
 From: kernel test robot <lkp@intel.com>
 To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -68,14 +68,14 @@ Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, oxffffaa@gmail.com,
 	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
 	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
 Subject: Re: [PATCH v1] mtd: rawnand: macronix: OTP access for MX30LFxG18AC
-Message-ID: <202304262003.Lzpyh2BA-lkp@intel.com>
+Message-ID: <202304262101.pP2ae1ol-lkp@intel.com>
 References: <20230426072455.3887717-1-AVKrasnov@sberdevices.ru>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20230426072455.3887717-1-AVKrasnov@sberdevices.ru>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230426_060638_514676_19795D70 
-X-CRM114-Status: GOOD (  15.54  )
+X-CRM114-CacheID: sfid-20230426_063751_304290_5AB94338 
+X-CRM114-Status: GOOD (  16.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,8 +106,8 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Arseniy-Krasnov/mtd-rawna
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
 patch link:    https://lore.kernel.org/r/20230426072455.3887717-1-AVKrasnov%40sberdevices.ru
 patch subject: [PATCH v1] mtd: rawnand: macronix: OTP access for MX30LFxG18AC
-config: i386-randconfig-a001-20230424 (https://download.01.org/0day-ci/archive/20230426/202304262003.Lzpyh2BA-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project f28c006a5895fc0e329fe15fead81e37457cb1d1)
+config: hexagon-randconfig-r041-20230425 (https://download.01.org/0day-ci/archive/20230426/202304262101.pP2ae1ol-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project 437b7602e4a998220871de78afcb020b9c14a661)
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
@@ -117,29 +117,57 @@ reproduce (this is a W=1 build):
         git checkout 3529f3465e99379489b59c035a8a0506c3756ef4
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash drivers/mtd/nand/raw/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash drivers/mtd/nand/raw/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304262003.Lzpyh2BA-lkp@intel.com/
+| Link: https://lore.kernel.org/oe-kbuild-all/202304262101.pP2ae1ol-lkp@intel.com/
 
 All error/warnings (new ones prefixed by >>):
 
->> drivers/mtd/nand/raw/nand_macronix.c:384:12: error: implicit declaration of function 'kmalloc' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+>> drivers/mtd/nand/raw/nand_macronix.c:384:12: error: call to undeclared function 'kmalloc'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
            dma_buf = kmalloc(MACRONIX_30LFXG18AC_OTP_PAGE_SIZE, GFP_KERNEL);
                      ^
    drivers/mtd/nand/raw/nand_macronix.c:384:12: note: did you mean 'mm_alloc'?
    include/linux/sched/mm.h:16:26: note: 'mm_alloc' declared here
    extern struct mm_struct *mm_alloc(void);
                             ^
->> drivers/mtd/nand/raw/nand_macronix.c:384:10: warning: incompatible integer to pointer conversion assigning to 'void *' from 'int' [-Wint-conversion]
+>> drivers/mtd/nand/raw/nand_macronix.c:384:10: error: incompatible integer to pointer conversion assigning to 'void *' from 'int' [-Wint-conversion]
            dma_buf = kmalloc(MACRONIX_30LFXG18AC_OTP_PAGE_SIZE, GFP_KERNEL);
                    ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/mtd/nand/raw/nand_macronix.c:437:2: error: implicit declaration of function 'kfree' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+>> drivers/mtd/nand/raw/nand_macronix.c:397:17: warning: comparison of distinct pointer types ('typeof ((page)) *' (aka 'unsigned long *') and 'uint64_t *' (aka 'unsigned long long *')) [-Wcompare-distinct-pointer-types]
+           offs_in_page = do_div(page, MACRONIX_30LFXG18AC_OTP_PAGE_SIZE);
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/asm-generic/div64.h:222:28: note: expanded from macro 'do_div'
+           (void)(((typeof((n)) *)0) == ((uint64_t *)0));  \
+                  ~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~
+>> drivers/mtd/nand/raw/nand_macronix.c:397:17: error: incompatible pointer types passing 'unsigned long *' to parameter of type 'uint64_t *' (aka 'unsigned long long *') [-Werror,-Wincompatible-pointer-types]
+           offs_in_page = do_div(page, MACRONIX_30LFXG18AC_OTP_PAGE_SIZE);
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/asm-generic/div64.h:238:22: note: expanded from macro 'do_div'
+                   __rem = __div64_32(&(n), __base);       \
+                                      ^~~~
+   include/asm-generic/div64.h:213:38: note: passing argument to parameter 'dividend' here
+   extern uint32_t __div64_32(uint64_t *dividend, uint32_t divisor);
+                                        ^
+>> drivers/mtd/nand/raw/nand_macronix.c:437:2: error: call to undeclared function 'kfree'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
            kfree(dma_buf);
            ^
-   1 warning and 2 errors generated.
+   drivers/mtd/nand/raw/nand_macronix.c:437:2: note: did you mean 'kvfree'?
+   include/linux/rcutiny.h:99:13: note: 'kvfree' declared here
+   extern void kvfree(const void *addr);
+               ^
+>> drivers/mtd/nand/raw/nand_macronix.c:397:17: warning: shift count >= width of type [-Wshift-count-overflow]
+           offs_in_page = do_div(page, MACRONIX_30LFXG18AC_OTP_PAGE_SIZE);
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/asm-generic/div64.h:234:25: note: expanded from macro 'do_div'
+           } else if (likely(((n) >> 32) == 0)) {          \
+                                  ^  ~~
+   include/linux/compiler.h:77:40: note: expanded from macro 'likely'
+   # define likely(x)      __builtin_expect(!!(x), 1)
+                                               ^
+   2 warnings and 4 errors generated.
 
 
 vim +/kmalloc +384 drivers/mtd/nand/raw/nand_macronix.c
@@ -175,7 +203,7 @@ vim +/kmalloc +384 drivers/mtd/nand/raw/nand_macronix.c
    394	
    395		page = offs_in_flash;
    396		/* 'page' will be result of division. */
-   397		offs_in_page = do_div(page, MACRONIX_30LFXG18AC_OTP_PAGE_SIZE);
+ > 397		offs_in_page = do_div(page, MACRONIX_30LFXG18AC_OTP_PAGE_SIZE);
    398		bytes_handled = 0;
    399	
    400		while (bytes_handled < len &&
