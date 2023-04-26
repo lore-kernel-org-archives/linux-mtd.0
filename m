@@ -4,72 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE46AC7EE20
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Apr 2023 17:30:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2588C77B60
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Apr 2023 20:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=u8qp3bWcXgNtOJZfpM6licYZ1sGjEZ4wloVrfxMUYhY=; b=aDssjt1SJ0QdVK
-	dqp2fqbyWhO/0rYJkv1oylkEH+fdxVaxzBxO7NDC23icZf24mHPO2IJygNKzBBmTpNzToVpNMpOXi
-	lC1c0O8Hwc6/+eHfmFkJu0ojKC4sf/4sQ9avBZ4t86nv3UcBi0OJFxn/a/Ttl01PYlHm5gaZ5FSMQ
-	mQpEoNhBwis21VSVpg+16y5IVke4fM2tWJpsRO0ObjEs5kD4PikT3trwtssmThLpdxkcZoBWLOIoT
-	U+NWQ5k0nCdM77IVyHEUSxeBCj7vN8uWHY6ZvWQabcxKfRjHodF0xqBk2FPRQfOTUVEL4xPSb2nij
-	5ADsbpQd5VxcIbYckYzg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=x1eXwsy5JFDvn1azSVEPPAnhVlIRYPrGlejJDPzKhCc=; b=PEBdv8BiS4aJfu
+	k9qNsPHBS9g4Ggca4aaYQ56C7+MG7NLzeUDzFbOGsUhXF+V+CHXmmYptde+g3PiSnX759o5NGkj7Y
+	Jvu2vBTiMhQ9zn6d2H1Ab2ZRty0HviHxYdKsltESsCi/z+fZEnGbFstmQOxuFScwcWyUkEHDf+94s
+	4y3az2Bi6R+EeVnUh4TfbRqFmTlsBznYPK5TLDQGW2Xb++aMbQsj3GkS4zpkXLDlxzqk8F5qPkmiI
+	VexGEBtHdATPkoroAXI8tvWVUNXqBJknR4QRrXe2WknSLlpMbrQqzorMfzKv/syt16kOpgDWHGDQN
+	sJYTXVebcjPWCXuzhmvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1priy2-004XB0-0b;
-	Wed, 26 Apr 2023 17:30:10 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1prmCQ-004r9c-2s;
+	Wed, 26 Apr 2023 20:57:14 +0000
+Received: from mail-yw1-x1130.google.com ([2607:f8b0:4864:20::1130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1prixx-004X9f-2l
+	id 1prmCM-004r8i-06
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Apr 2023 17:30:08 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 210FD5FD08;
-	Wed, 26 Apr 2023 20:29:58 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1682530198;
-	bh=yYMp0nqdQTnb85rhKLWY/qAY6uNIHIoPw8ISDzD6Ge4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=NxtU3kmzG0xQrV/kCSUJl/guJuYu3tMBEDN2qoCPt1sM+xJW1JhGIgBcGeBhdgjop
-	 6WCNBgl0UVGopZ56sLO0LMv4jZi0828auBX//djn0cox1ZfnGNn9baAKzUpGmVAxcB
-	 MYfMTY1iABQE3ytiRd03gb8TseFQQOmm8sGynmteN+K5MmZ6qByNnlVd78hi5CF/YD
-	 TsHv5nd9PFuuDra6pam7OC+YKDG/DSdIfnQB00lF1yb3IqCtYEVJVhWN1JnjZ+N6Wz
-	 kjSveKSce6jZSP4n5IuktcZeBticLb7YrXP6jpKWrfrdgjvouZ3yks91edjMKJU4AT
-	 6t9JCkGdHdLYg==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Wed, 26 Apr 2023 20:29:56 +0300 (MSK)
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Sumit Semwal
-	<sumit.semwal@linaro.org>, =?UTF-8?q?Christian=20K=C3=B6nig?=
-	<christian.koenig@amd.com>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-	<linaro-mm-sig@lists.linaro.org>
-Subject: [PATCH v2] mtd: rawnand: macronix: OTP access for MX30LFxG18AC
-Date: Wed, 26 Apr 2023 20:25:14 +0300
-Message-ID: <20230426172520.2004711-1-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
+	Wed, 26 Apr 2023 20:57:11 +0000
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-54f9e41dfa7so59596987b3.3
+        for <linux-mtd@lists.infradead.org>; Wed, 26 Apr 2023 13:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1682542625; x=1685134625;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PeyZTvE2qao9z3HUKls5t/zNMEefQNyhwIh3dGLQJIU=;
+        b=MLeMyFt/BrAb2CUUJZ7KmQTqlKOdl+nyYZc7PmyjnwYQvm0Yf7UbAGXqUUW6bmw5G8
+         d9v/M6N+1fVWgVUttzO6DbM8nQI6KJCXhAN7IozpaR9m8Bl7slG7VpsqTKwoquSQxGsD
+         jxjSQ3saNVE9cXwcQLcGF1jRtKLT/eEwI8kJvMSzxcIq2cDfiKWjYhMONbeUEU8V5mkj
+         6Wdd/04hTAUwScC/UEbqqr6+MnHBHQTixxYJ9LZKKkCtwlqFMN3MWW87ziN5fguiVzeh
+         4csevZGxcMK5tYzjndfSfWqBNcCl6Mif+sgasTPGERCLKwqXoxv35oil0C7Hw7NrwoqG
+         vwLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682542625; x=1685134625;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PeyZTvE2qao9z3HUKls5t/zNMEefQNyhwIh3dGLQJIU=;
+        b=F4IwzIEqgqA2P566kUaogS5jA7dS3n90bE4HzqU0in+AejDm3TfYPS4pnNOai6istv
+         9QAEODCKFzyF78J2riPLRfj2OL/fY0ORTJ7dwXBkWfO2aEzQZkJqjoJoPS310m1+wdXD
+         ApMGjzNIIvd/cMwdNuc0ccDPJPnxYi/U+MwMf3nN0uuO2/r8oFpemAHa+KRgILjO8CsQ
+         KWVXBhQ8QOt8v3fwW18bE/wGuN+gftZCZ4f0Z3ndmUzxJy8jPzRdJqTrjskeFwS1imKw
+         MfRa1bPck34qObhbgAS0ziJo85L5ipE4UyImTYiqDyeMpPkmU2NIXd7CKGX45ei+3+nz
+         oKjg==
+X-Gm-Message-State: AAQBX9faQ9s6GGEhVwfecfW4p7SAUh1+6ZUXsZqWPCfwU0T35EFGnsTi
+	Vc6scA3B/F7S8ffcP3MuCiWsYgzBZLCR/172QXV5CA==
+X-Google-Smtp-Source: AKy350ajEJHyhyynqyOl0isjddMpiNdULElT/xAxUEM8cmGuE9kOk2QPH86dypmLR0gOJToVISGwrFvJLTDtak1EsDI=
+X-Received: by 2002:a0d:ea0d:0:b0:552:a2e2:684e with SMTP id
+ t13-20020a0dea0d000000b00552a2e2684emr13680157ywe.52.1682542625695; Wed, 26
+ Apr 2023 13:57:05 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/04/26 14:03:00 #21167528
-X-KSMG-AntiVirus-Status: Clean, skipped
+References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+In-Reply-To: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 26 Apr 2023 22:56:53 +0200
+Message-ID: <CACRpkdarANFQ7-p=-Pi_iuk6L=PfSLDsD3_w4dEVqarwXkEGMQ@mail.gmail.com>
+Subject: Re: [PATCH 00/43] ep93xx device tree conversion
+To: Nikita Shubin <nikita.shubin@maquefel.me>
+Cc: Arnd Bergmann <arnd@kernel.org>, Linus Walleij <linusw@kernel.org>, 
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	=?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, 
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Alessandro Zummo <a.zummo@towertech.it>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Brian Norris <briannorris@chromium.org>, 
+	Chuanhong Guo <gch981213@gmail.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Damien Le Moal <dlemoal@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Emil Renner Berthing <kernel@esmil.dk>, 
+	Eric Dumazet <edumazet@google.com>, Florian Fainelli <f.fainelli@gmail.com>, 
+	Guenter Roeck <linux@roeck-us.net>, Hartley Sweeten <hsweeten@visionengravers.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Jean Delvare <jdelvare@suse.de>, 
+	Joel Stanley <joel@jms.id.au>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Le Moal <damien.lemoal@opensource.wdc.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Liang Yang <liang.yang@amlogic.com>, Lukasz Majewski <lukma@denx.de>, Lv Ruyi <lv.ruyi@zte.com.cn>, 
+	Mark Brown <broonie@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Nicolas Saenz Julienne <nsaenz@kernel.org>, Olof Johansson <olof@lixom.net>, Paolo Abeni <pabeni@redhat.com>, 
+	Qin Jian <qinjian@cqplus1.com>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, 
+	Robert Jarzmik <robert.jarzmik@free.fr>, Russell King <linux@armlinux.org.uk>, 
+	Sebastian Reichel <sre@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, Stephen Boyd <sboyd@kernel.org>, 
+	Sumanth Korikkar <sumanthk@linux.ibm.com>, Sven Peter <sven@svenpeter.dev>, 
+	Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Vignesh Raghavendra <vigneshr@ti.com>, Vinod Koul <vkoul@kernel.org>, 
+	Walker Chen <walker.chen@starfivetech.com>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
+	Yinbo Zhu <zhuyinbo@loongson.cn>, alsa-devel@alsa-project.org, 
+	devicetree@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-ide@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-pm@vger.kernel.org, 
+	linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org, 
+	linux-spi@vger.kernel.org, linux-watchdog@vger.kernel.org, 
+	netdev@vger.kernel.org, soc@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230426_103006_589764_32E4C08F 
-X-CRM114-Status: GOOD (  18.93  )
+X-CRM114-CacheID: sfid-20230426_135710_084995_34B21911 
+X-CRM114-Status: GOOD (  18.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,271 +122,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This adds support for OTP area access on MX30LFxG18AC chip series.
-
-Changelog:
-  v1 -> v2:
-  * Add slab.h include due to kernel test robot error.
-
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
----
- drivers/mtd/nand/raw/nand_macronix.c | 213 +++++++++++++++++++++++++++
- 1 file changed, 213 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-index 1472f925f386..5232cf48c350 100644
---- a/drivers/mtd/nand/raw/nand_macronix.c
-+++ b/drivers/mtd/nand/raw/nand_macronix.c
-@@ -6,6 +6,7 @@
-  * Author: Boris Brezillon <boris.brezillon@free-electrons.com>
-  */
- 
-+#include <linux/slab.h>
- #include "linux/delay.h"
- #include "internals.h"
- 
-@@ -31,6 +32,20 @@
- 
- #define MXIC_CMD_POWER_DOWN 0xB9
- 
-+#define ONFI_FEATURE_ADDR_30LFXG18AC_OTP	0x90
-+#define MACRONIX_30LFXG18AC_OTP_START_PAGE	0
-+#define MACRONIX_30LFXG18AC_OTP_PAGES		30
-+#define MACRONIX_30LFXG18AC_OTP_PAGE_SIZE	2112
-+#define MACRONIX_30LFXG18AC_OTP_START_BYTE	\
-+	(MACRONIX_30LFXG18AC_OTP_START_PAGE *	\
-+	 MACRONIX_30LFXG18AC_OTP_PAGE_SIZE)
-+#define MACRONIX_30LFXG18AC_OTP_SIZE_BYTES	\
-+	(MACRONIX_30LFXG18AC_OTP_PAGES *	\
-+	 MACRONIX_30LFXG18AC_OTP_PAGE_SIZE)
-+
-+#define MACRONIX_30LFXG18AC_OTP_EN		BIT(0)
-+#define MACRONIX_30LFXG18AC_OTP_LOCKED		BIT(1)
-+
- struct nand_onfi_vendor_macronix {
- 	u8 reserved;
- 	u8 reliability_func;
-@@ -316,6 +331,203 @@ static void macronix_nand_deep_power_down_support(struct nand_chip *chip)
- 	chip->ops.resume = mxic_nand_resume;
- }
- 
-+static int macronix_30lfxg18ac_get_otp_info(struct mtd_info *mtd, size_t len,
-+					    size_t *retlen,
-+					    struct otp_info *buf)
-+{
-+	if (len < sizeof(*buf))
-+		return -EINVAL;
-+
-+	/* Don't know how to check that OTP is locked. */
-+	buf->locked = 0;
-+	buf->start = MACRONIX_30LFXG18AC_OTP_START_BYTE;
-+	buf->length = MACRONIX_30LFXG18AC_OTP_SIZE_BYTES;
-+
-+	*retlen = sizeof(*buf);
-+
-+	return 0;
-+}
-+
-+static int macronix_30lfxg18ac_otp_enable(struct nand_chip *nand)
-+{
-+	uint8_t feature_buf[ONFI_SUBFEATURE_PARAM_LEN] = { 0 };
-+
-+	feature_buf[0] = MACRONIX_30LFXG18AC_OTP_EN;
-+	return nand_set_features(nand, ONFI_FEATURE_ADDR_30LFXG18AC_OTP,
-+				 feature_buf);
-+}
-+
-+static int macronix_30lfxg18ac_otp_disable(struct nand_chip *nand)
-+{
-+	uint8_t feature_buf[ONFI_SUBFEATURE_PARAM_LEN] = { 0 };
-+
-+	return nand_set_features(nand, ONFI_FEATURE_ADDR_30LFXG18AC_OTP,
-+				 feature_buf);
-+}
-+
-+static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
-+					loff_t offs_in_flash,
-+					size_t len, size_t *retlen,
-+					u_char *buf, bool write)
-+{
-+	struct nand_chip *nand;
-+	size_t bytes_handled;
-+	unsigned long page;
-+	off_t offs_in_page;
-+	void *dma_buf;
-+	int ret;
-+
-+	/* 'nand_prog/read_page_op()' may use 'buf' as DMA buffer,
-+	 * so allocate properly aligned memory for it. This is
-+	 * needed because cross page accesses may lead to unaligned
-+	 * buffer address for DMA.
-+	 */
-+	dma_buf = kmalloc(MACRONIX_30LFXG18AC_OTP_PAGE_SIZE, GFP_KERNEL);
-+	if (!dma_buf)
-+		return -ENOMEM;
-+
-+	nand = mtd_to_nand(mtd);
-+	nand_select_target(nand, 0);
-+
-+	ret = macronix_30lfxg18ac_otp_enable(nand);
-+	if (ret)
-+		goto out_otp;
-+
-+	page = offs_in_flash;
-+	/* 'page' will be result of division. */
-+	offs_in_page = do_div(page, MACRONIX_30LFXG18AC_OTP_PAGE_SIZE);
-+	bytes_handled = 0;
-+
-+	while (bytes_handled < len &&
-+	       page < MACRONIX_30LFXG18AC_OTP_PAGES) {
-+		size_t bytes_to_handle;
-+
-+		bytes_to_handle = min_t(size_t, len - bytes_handled,
-+					MACRONIX_30LFXG18AC_OTP_PAGE_SIZE -
-+					offs_in_page);
-+
-+		if (write) {
-+			memcpy(dma_buf, &buf[bytes_handled], bytes_to_handle);
-+			ret = nand_prog_page_op(nand, page, offs_in_page,
-+						dma_buf, bytes_to_handle);
-+		} else {
-+			ret = nand_read_page_op(nand, page, offs_in_page,
-+						dma_buf, bytes_to_handle);
-+			if (!ret)
-+				memcpy(&buf[bytes_handled], dma_buf,
-+				       bytes_to_handle);
-+		}
-+		if (ret)
-+			goto out_otp;
-+
-+		bytes_handled += bytes_to_handle;
-+		offs_in_page = 0;
-+		page++;
-+	}
-+
-+	*retlen = bytes_handled;
-+
-+out_otp:
-+	if (ret)
-+		dev_err(&mtd->dev, "failed to perform OTP IO: %i\n", ret);
-+
-+	ret = macronix_30lfxg18ac_otp_disable(nand);
-+	WARN(ret, "failed to leave OTP mode after %s\n",
-+	     write ? "write" : "read");
-+	nand_deselect_target(nand);
-+	kfree(dma_buf);
-+
-+	return ret;
-+}
-+
-+static int macronix_30lfxg18ac_write_otp(struct mtd_info *mtd, loff_t to,
-+					 size_t len, size_t *rlen,
-+					 const u_char *buf)
-+{
-+	return __macronix_30lfxg18ac_rw_otp(mtd, to, len, rlen, (u_char *)buf,
-+					    true);
-+}
-+
-+static int macronix_30lfxg18ac_read_otp(struct mtd_info *mtd, loff_t from,
-+					size_t len, size_t *rlen,
-+					u_char *buf)
-+{
-+	return __macronix_30lfxg18ac_rw_otp(mtd, from, len, rlen, buf, false);
-+}
-+
-+static int macronix_30lfxg18ac_lock_otp(struct mtd_info *mtd, loff_t from,
-+					size_t len)
-+{
-+	uint8_t feature_buf[ONFI_SUBFEATURE_PARAM_LEN] = { 0 };
-+	struct nand_chip *nand;
-+	int ret;
-+
-+	if (from != MACRONIX_30LFXG18AC_OTP_START_BYTE ||
-+	    len != MACRONIX_30LFXG18AC_OTP_SIZE_BYTES)
-+		return -EINVAL;
-+
-+	dev_dbg(&mtd->dev, "locking OTP\n");
-+
-+	nand = mtd_to_nand(mtd);
-+	nand_select_target(nand, 0);
-+
-+	feature_buf[0] = MACRONIX_30LFXG18AC_OTP_EN |
-+			 MACRONIX_30LFXG18AC_OTP_LOCKED;
-+	ret = nand_set_features(nand, ONFI_FEATURE_ADDR_30LFXG18AC_OTP,
-+				feature_buf);
-+	if (ret) {
-+		dev_err(&mtd->dev,
-+			"failed to lock OTP (set features): %i\n", ret);
-+		nand_deselect_target(nand);
-+		return ret;
-+	}
-+
-+	/* Do dummy page prog with zero address. */
-+	feature_buf[0] = 0;
-+	ret = nand_prog_page_op(nand, 0, 0, feature_buf, 1);
-+	if (ret)
-+		dev_err(&mtd->dev,
-+			"failed to lock OTP (page prog): %i\n", ret);
-+
-+	ret = macronix_30lfxg18ac_otp_disable(nand);
-+	WARN(ret, "failed to leave OTP mode after lock\n");
-+
-+	nand_deselect_target(nand);
-+
-+	return ret;
-+}
-+
-+static void macronix_nand_setup_otp(struct nand_chip *chip)
-+{
-+	static const char * const supported_otp_models[] = {
-+		"MX30LF1G18AC",
-+		"MX30LF2G18AC",
-+		"MX30LF4G18AC",
-+	};
-+	struct mtd_info *mtd;
-+
-+	if (!chip->parameters.supports_set_get_features)
-+		return;
-+
-+	if (match_string(supported_otp_models,
-+			 ARRAY_SIZE(supported_otp_models),
-+			 chip->parameters.model) < 0)
-+		return;
-+
-+	bitmap_set(chip->parameters.get_feature_list,
-+		   ONFI_FEATURE_ADDR_30LFXG18AC_OTP, 1);
-+	bitmap_set(chip->parameters.set_feature_list,
-+		   ONFI_FEATURE_ADDR_30LFXG18AC_OTP, 1);
-+
-+	mtd = nand_to_mtd(chip);
-+	mtd->_get_fact_prot_info = macronix_30lfxg18ac_get_otp_info;
-+	mtd->_read_fact_prot_reg = macronix_30lfxg18ac_read_otp;
-+	mtd->_get_user_prot_info = macronix_30lfxg18ac_get_otp_info;
-+	mtd->_read_user_prot_reg = macronix_30lfxg18ac_read_otp;
-+	mtd->_write_user_prot_reg = macronix_30lfxg18ac_write_otp;
-+	mtd->_lock_user_prot_reg = macronix_30lfxg18ac_lock_otp;
-+}
-+
- static int macronix_nand_init(struct nand_chip *chip)
- {
- 	if (nand_is_slc(chip))
-@@ -325,6 +537,7 @@ static int macronix_nand_init(struct nand_chip *chip)
- 	macronix_nand_onfi_init(chip);
- 	macronix_nand_block_protection_support(chip);
- 	macronix_nand_deep_power_down_support(chip);
-+	macronix_nand_setup_otp(chip);
- 
- 	return 0;
- }
--- 
-2.35.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCBBcHIgMjQsIDIwMjMgYXQgMTE6MzXigK9BTSBOaWtpdGEgU2h1YmluCjxuaWtpdGEu
+c2h1YmluQG1hcXVlZmVsLm1lPiB3cm90ZToKCj4gVGhpcyBzZXJpZXMgYWltcyB0byBjb252ZXJ0
+IGVwOTN4eCBmcm9tIHBsYXRmb3JtIHRvIGZ1bGwgZGV2aWNlIHRyZWUgc3VwcG9ydC4KPgo+IFRl
+c3RlZCBvbiB0czcyNTAgNjQgUkFNLzEyOCBNaUIgTmFuZCBmbGFzaCwgZWRiOTMwMi4KCk5lYXQs
+IEknZCBzYXkgbGV0J3MgbWVyZ2UgdGhpcyBmb3IgNi41IG9uY2UgdGhlIGZpbmFsIHJvdWdoIGVk
+Z2VzIGFyZQpvZmYuIFRoZSBEVCBiaW5kaW5ncyBzaG91bGQgYmUgZWFzeSB0byBmaXguCgpUaGlz
+IGlzIGEgYmlnIHBhdGNoIHNldCBhbmQgdGhlIGltcHJvdmVtZW50IHRvIHRoZSBBUk0ga2VybmVs
+IGl0CmJyaW5ncyBpcyBncmVhdCwgc28gSSBhbSBhIGJpdCB3b3JyaWVkIGFib3V0IG92ZXItcmV2
+aWV3IHN0YWxsaW5nIHRoZQptZXJnZWQuIElmIHRoZXJlIHN0YXJ0IHRvIGJlIG5pdHBpY2t5IGNv
+bW1lbnRzIEkgd291bGQgcHJlZmVyIHRoYXQKd2UgbWVyZ2UgaXQgYW5kIGxldCBtaW5vciBjb21t
+ZW50cyBhbmQgIm5pY2UtdG8taGF2ZXMiIGJlCmFkZHJlc3NlZCBpbi10cmVlIGR1cmluZyB0aGUg
+ZGV2ZWxvcG1lbnQgY3ljbGUuCgpJIGVuY291cmFnZSB5b3UgdG8gdXNlIGI0IHRvIG1hbmFnZSB0
+aGUgcGF0Y2ggc2VyaWVzIGlmIHlvdQpoYXZlIHRpbWUgdG8gbGVhcm4gaXQsIGl0IGNvdWxkIGhl
+bHAgeW91OgpodHRwczovL3Blb3BsZS5rZXJuZWwub3JnL21vbnNpZXVyaWNvbi9zZW5kaW5nLWEt
+a2VybmVsLXBhdGNoLXdpdGgtYjQtcGFydC0xCgpZb3VycywKTGludXMgV2FsbGVpagoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
