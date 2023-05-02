@@ -4,55 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29E0BC77B7E
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 May 2023 16:48:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 843F0C77B7E
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 May 2023 16:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eBXkUTLVRou5vO0sPcafb2PwLqYcvydwEwNb/+lPodA=; b=TN65QwAWEdhnFi
-	9QlpI8vSMhVLshz5UuWWKEYNdRx01Kv3PHps9/N/ltTLhJSMVrwue3mnc27TPFDmBIxZmXGO/XClh
-	YWvF0qotBN4iHHkxIM+jCT8qGiKFgM8/qtyafMKy6E7TuzZVRn0s0hosvxk4gXIPwO/Yf4sDPMwVm
-	qyYBvL4c4ej7zO934aI9zN1h4t2PC2CzJqISbuBTAV6PPKCrmzeFJhFZMqvU6/vzm8FAUUdPOlfOE
-	8p/VqZjITWC1cktchNWvCz4YWgpr9SyGc8JPAwNq3ZzZGX2NmqMVfWxlOKO0XvqiM7hJZ5S4tHhOO
-	gydqARWX/8XQXloarPKA==;
+	List-Owner; bh=x8iu/D4zk09rcPrcFbxIbE4bx9y5vlmguMu+MHolqXY=; b=SSahLYdcAOPa/8
+	2D85Rv0X6eScTGTCtpywxYWRvoDc/LuikRAgJuFTYUy2dDeh9FkFVht+MQqP59sNRYJyZnqUH6wbI
+	Gdc2Yd2UWw8K5lpcru460MeXx8By0z3AJloOo/9o06+yIHNPjVTqZKi7mQlSpB6qW9qmwD45XaUqe
+	iJ5mBPEm7jDGEc+fbuE3qlowIVf8hqfa0v+IhDBURpYxCDMCoXa/ma6DaD6SDFv4B7JEQfV59WRar
+	y69buB8bg1hx5+EQp1MdeqPbVoQxfiHDFXGFi/g9j/QaJWiFARb4CivB2YX7dj5Yg6kd/e7zk5AmC
+	jhfQ+nEQuBw2woieerOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pttBK-0028aD-3A;
-	Tue, 02 May 2023 16:48:51 +0000
+	id 1pttAy-0028Vq-0y;
+	Tue, 02 May 2023 16:48:28 +0000
 Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pttBI-0028Z6-0z
+	id 1pttAm-0028TY-2W
 	for linux-mtd@lists.infradead.org;
-	Tue, 02 May 2023 16:48:49 +0000
+	Tue, 02 May 2023 16:48:26 +0000
 Received: from local
 	by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1pttBH-0000VJ-06;
-	Tue, 02 May 2023 18:48:47 +0200
-Date: Tue, 2 May 2023 17:48:39 +0100
+	id 1pttAi-0000UW-1L;
+	Tue, 02 May 2023 18:48:12 +0200
+Date: Tue, 2 May 2023 17:48:07 +0100
 From: Daniel Golle <daniel@makrotopia.org>
-To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: [PATCH 3/4] dt-bindings: mtd: partitions: add linux,ubi compatible
-Message-ID: <faa0ceb4470f7160b05e892932d20b4a540c5955.1683043928.git.daniel@makrotopia.org>
+	Zhihao Cheng <chengzhihao1@huawei.com>
+Subject: [PATCH 1/4] mtd: ubi: block: don't return on error when removing
+Message-ID: <4bca8ffa66fa094da37625e66f3a2681058531d6.1683043928.git.daniel@makrotopia.org>
 References: <cover.1683043928.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <cover.1683043928.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230502_094848_345529_B4067793 
-X-CRM114-Status: GOOD (  12.79  )
+X-CRM114-CacheID: sfid-20230502_094816_821671_05D2DB39 
+X-CRM114-Status: GOOD (  17.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,69 +65,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add bindings for MTD partitions to be attached as UBI devices.
+There is no point on returning the error from ubiblock_remove in case
+it is being called due to a volume removal event -- the volume is gone,
+we should destroy and remove the ubiblock device no matter what.
+
+Introduce a new boolean parameter 'force' to tell ubiblock_remove to go
+on even in case the ubiblock device is still busy. Use that new option
+when calling ubiblock_remove due to a UBI_VOLUME_REMOVED event.
 
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- .../bindings/mtd/partitions/ubi.yaml          | 49 +++++++++++++++++++
- 1 file changed, 49 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi.yaml
+ drivers/mtd/ubi/block.c | 6 +++---
+ drivers/mtd/ubi/cdev.c  | 2 +-
+ drivers/mtd/ubi/ubi.h   | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/ubi.yaml b/Documentation/devicetree/bindings/mtd/partitions/ubi.yaml
-new file mode 100644
-index 0000000000000..aa02fbbd50716
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/ubi.yaml
-@@ -0,0 +1,49 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/ubi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Unsorted Block Images (UBI)
-+
-+description: |
-+ Unsorted Block Images (UBI) is a volume management system typically
-+ used on NAND flash providing bad block management as well as
-+ wear-leveling.
-+ Any partition containing the compatible "linux,ubi" will be attached
-+ as UBI device.
-+
-+maintainers:
-+  - Daniel Golle <daniel@makrotopia.org>
-+
-+allOf:
-+  - $ref: /schemas/mtd/partitions/partition.yaml#
-+
-+properties:
-+  compatible:
-+    const: linux,ubi
-+
-+required:
-+  - compatible
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    partitions {
-+        compatible = "fixed-partitions";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition@0 {
-+            label = "bootloader";
-+            reg = <0x000000 0x100000>;
-+            read-only;
-+        };
-+
-+        ubi@100000 {
-+            compatible = "linux,ubi";
-+            label = "ubi";
-+            reg = <0x100000 0x7f00000>;
-+        };
-+    };
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 3711d7f746003..6f5804f4b8f55 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -457,7 +457,7 @@ static void ubiblock_cleanup(struct ubiblock *dev)
+ 	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
+ }
+ 
+-int ubiblock_remove(struct ubi_volume_info *vi)
++int ubiblock_remove(struct ubi_volume_info *vi, bool force)
+ {
+ 	struct ubiblock *dev;
+ 	int ret;
+@@ -471,7 +471,7 @@ int ubiblock_remove(struct ubi_volume_info *vi)
+ 
+ 	/* Found a device, let's lock it so we can check if it's busy */
+ 	mutex_lock(&dev->dev_mutex);
+-	if (dev->refcnt > 0) {
++	if (dev->refcnt > 0 && !force) {
+ 		ret = -EBUSY;
+ 		goto out_unlock_dev;
+ 	}
+@@ -546,7 +546,7 @@ static int ubiblock_notify(struct notifier_block *nb,
+ 		 */
+ 		break;
+ 	case UBI_VOLUME_REMOVED:
+-		ubiblock_remove(&nt->vi);
++		ubiblock_remove(&nt->vi, true);
+ 		break;
+ 	case UBI_VOLUME_RESIZED:
+ 		ubiblock_resize(&nt->vi);
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index f43430b9c1e65..bb55e863dd296 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -572,7 +572,7 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
+ 		struct ubi_volume_info vi;
+ 
+ 		ubi_get_volume_info(desc, &vi);
+-		err = ubiblock_remove(&vi);
++		err = ubiblock_remove(&vi, false);
+ 		break;
+ 	}
+ 
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index c8f1bd4fa1008..44c0eeaf1e1b0 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -979,7 +979,7 @@ static inline void ubi_fastmap_destroy_checkmap(struct ubi_volume *vol) {}
+ int ubiblock_init(void);
+ void ubiblock_exit(void);
+ int ubiblock_create(struct ubi_volume_info *vi);
+-int ubiblock_remove(struct ubi_volume_info *vi);
++int ubiblock_remove(struct ubi_volume_info *vi, bool force);
+ #else
+ static inline int ubiblock_init(void) { return 0; }
+ static inline void ubiblock_exit(void) {}
+@@ -987,7 +987,7 @@ static inline int ubiblock_create(struct ubi_volume_info *vi)
+ {
+ 	return -ENOSYS;
+ }
+-static inline int ubiblock_remove(struct ubi_volume_info *vi)
++static inline int ubiblock_remove(struct ubi_volume_info *vi, bool force)
+ {
+ 	return -ENOSYS;
+ }
 -- 
 2.40.1
 
