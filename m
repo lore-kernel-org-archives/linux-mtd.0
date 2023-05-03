@@ -4,52 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C310C77B73
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 May 2023 16:49:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39437C7EE21
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 May 2023 02:27:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/HuGdyGGZzuQYjzYuIZoNR4vUHiE/ewkod+V8tBpnW8=; b=vjMfbzhZK6yItY
-	FXqv1/NyPPlf/qmXULqGhaMoi+6772koF3geVin/zIK/gyusiJVc3tTw05Mvpg/YS0zmDSvfsBKJy
-	fQ0wCn0Hk7YEy2Xw49oOsC6uQQpIZmhELwAlIjgYr7BMCSlkyBMLJ1anoBEe6nyxN//6TZeQ0qxGW
-	svJcVaQGwEZmU9G8VHl2nBR7YOB8yKeaJpxwixTFC8TA1OQHd6dewhFTPHcbdiAkWoibruC7vlLfC
-	Ny1cBTuKTKW5EV0FmIKf69e396vz/DDVOgVV63zW0vCK4QDvxNM7a/9pp9WfEdy0aNCHUJwA2Ket1
-	v5CLvTT1iQjcJ3H+akrg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=TV30z4f1pETWsNvZOtgYcf+1yRZ1EfV7X8PPyVfDNMI=; b=Y9SOdk93rVRSIiS1TIwNC410/w
+	g0qMvicK4WAkKic+BqyE+h+tbWQ9mR/lKg9Le35D+HODPNa+9iGK3tEw4dCtelu1ecpJ8GXQsLVP9
+	LIQGcCcoyKDwccJsakO3P38F3j0XNAHOlZylhIsbQ/6HyhiEerVh+7P/kYbZfsoRanvQQxngha5fv
+	PUNRySRXzmxKYJmaI7Y2eaI5CrrTwmiHwQPjyuFB82J/QTJ/aoZI5hPr8zi6yxxt6SAXqk7kmjm3p
+	3x4K0ArsfgwWWLm63+xQ5WrsXGmU89T8zcKneDjAYzJ2DU7Q1F3ae8hgmo1sJcCOPNQOxvA9tETu9
+	euWd9PgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pttBa-0028gJ-3D;
-	Tue, 02 May 2023 16:49:07 +0000
-Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
+	id 1pu2Cx-00392l-2M;
+	Wed, 03 May 2023 02:27:07 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pttBY-0028fE-1C
+	id 1pu2Cs-00391Y-1H
 	for linux-mtd@lists.infradead.org;
-	Tue, 02 May 2023 16:49:06 +0000
-Received: from local
-	by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1pttBW-0000Vf-34;
-	Tue, 02 May 2023 18:49:03 +0200
-Date: Tue, 2 May 2023 17:48:57 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: [PATCH 4/4] mtd: ubi: attach MTD partition from device-tree
-Message-ID: <db15df88648ace1cdd9ba6aa60c1ef418bb70a81.1683043928.git.daniel@makrotopia.org>
-References: <cover.1683043928.git.daniel@makrotopia.org>
+	Wed, 03 May 2023 02:27:05 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.54])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4QB11R0MBDzTkJ8;
+	Wed,  3 May 2023 10:22:19 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 3 May 2023 10:26:45 +0800
+Subject: Re: [PATCH] mtd: ubi: attach MTD partition from device-tree
+To: Daniel Golle <daniel@makrotopia.org>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Richard
+ Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+	<zajec5@gmail.com>
+References: <ZEA8hX9UjX9S0NUm@makrotopia.org>
+ <9c622f92-382d-8b0d-a438-c7eea0e89b80@huawei.com>
+ <ZEW8VS4Y-dVRcGGy@makrotopia.org>
+ <f50a0d60-356a-6206-3363-e0f80870c754@huawei.com>
+ <ZEZ-wLMxJvDAqrx6@makrotopia.org>
+ <6b8201ab-3350-e3f5-b915-b3e94582518d@huawei.com>
+ <ZFAHqMxcWZPOTFgs@makrotopia.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <9f10bef5-afa9-132e-3c61-323a2e56931d@huawei.com>
+Date: Wed, 3 May 2023 10:26:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <cover.1683043928.git.daniel@makrotopia.org>
+In-Reply-To: <ZFAHqMxcWZPOTFgs@makrotopia.org>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230502_094904_560418_BFD48FCE 
-X-CRM114-Status: GOOD (  29.41  )
+X-CRM114-CacheID: sfid-20230502_192702_875810_FABC3DB8 
+X-CRM114-Status: GOOD (  49.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,318 +72,173 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Split ubi_init() function into early function to be called by
-device_initcall() and keep cmdline attachment in late_initcall().
-(when building ubi as module, both is still done in a single
-module_init() call)
-
-Register MTD notifier and attach MTD devices which are marked as
-compatible with 'linux,ubi' in OF device-tree when being added, detach
-UBI device from MTD device when it is being removed.
-
-For existing users this should not change anything besides automatic
-removal of (dead) UBI devices when their underlying MTD devices are
-already gone, e.g. in case of MTD driver module or (SPI) bus driver
-module being removed.
-
-For new users this opens up the option to attach UBI using device-tree
-which then happens early and in parallel with other drivers being
-probed which slightly reduces the total boot time.
-
-Attachment no longer happening late is also a requirement for other
-drivers to make use of UBI, e.g. drivers/nvmem/u-boot-env.c can now
-be extended to support U-Boot environment stored in UBI volumes.
-
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/block.c |   2 +-
- drivers/mtd/ubi/build.c | 189 ++++++++++++++++++++++++++++------------
- drivers/mtd/ubi/cdev.c  |   2 +-
- drivers/mtd/ubi/ubi.h   |   2 +-
- 4 files changed, 134 insertions(+), 61 deletions(-)
-
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 7f3024bddf306..8754ed86eac3a 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -471,7 +471,7 @@ int ubiblock_remove(struct ubi_volume_info *vi, bool force)
- 	}
- 
- 	/* Found a device, let's lock it so we can check if it's busy */
--	mutex_lock(&dev->dev_mutex);
-+	mutex_lock_nested(&dev->dev_mutex, SINGLE_DEPTH_NESTING);
- 	if (dev->refcnt > 0 && !force) {
- 		ret = -EBUSY;
- 		goto out_unlock_dev;
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index bb1a90bbc8ffb..32422dcf1bf48 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -27,6 +27,7 @@
- #include <linux/log2.h>
- #include <linux/kthread.h>
- #include <linux/kernel.h>
-+#include <linux/of.h>
- #include <linux/slab.h>
- #include <linux/major.h>
- #include "ubi.h"
-@@ -1066,6 +1067,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
-  * ubi_detach_mtd_dev - detach an MTD device.
-  * @ubi_num: UBI device number to detach from
-  * @anyway: detach MTD even if device reference count is not zero
-+ * @have_lock: called by MTD notifier holding mtd_table_mutex
-  *
-  * This function destroys an UBI device number @ubi_num and detaches the
-  * underlying MTD device. Returns zero in case of success and %-EBUSY if the
-@@ -1075,7 +1077,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
-  * Note, the invocations of this function has to be serialized by the
-  * @ubi_devices_mutex.
-  */
--int ubi_detach_mtd_dev(int ubi_num, int anyway)
-+int ubi_detach_mtd_dev(int ubi_num, int anyway, bool have_lock)
- {
- 	struct ubi_device *ubi;
- 
-@@ -1131,7 +1136,11 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- 	vfree(ubi->peb_buf);
- 	vfree(ubi->fm_buf);
- 	ubi_msg(ubi, "mtd%d is detached", ubi->mtd->index);
--	put_mtd_device(ubi->mtd);
-+	if (have_lock)
-+		__put_mtd_device(ubi->mtd);
-+	else
-+		put_mtd_device(ubi->mtd);
-+
- 	put_device(&ubi->dev);
- 	return 0;
- }
-@@ -1208,43 +1217,51 @@ static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
- 	return mtd;
- }
- 
--static int __init ubi_init(void)
-+static void ubi_notify_add(struct mtd_info *mtd)
- {
--	int err, i, k;
-+	struct device_node *np = mtd_get_of_node(mtd);
-+	int err;
- 
--	/* Ensure that EC and VID headers have correct size */
--	BUILD_BUG_ON(sizeof(struct ubi_ec_hdr) != 64);
--	BUILD_BUG_ON(sizeof(struct ubi_vid_hdr) != 64);
-+	if (!of_device_is_compatible(np, "linux,ubi"))
-+		return;
- 
--	if (mtd_devs > UBI_MAX_DEVICES) {
--		pr_err("UBI error: too many MTD devices, maximum is %d\n",
--		       UBI_MAX_DEVICES);
--		return -EINVAL;
--	}
-+	/*
-+	 * we are already holding &mtd_table_mutex, but still need
-+	 * to bump refcount
-+	 */
-+	err = __get_mtd_device(mtd);
-+	if (err)
-+		return;
- 
--	/* Create base sysfs directory and sysfs files */
--	err = class_register(&ubi_class);
-+	/* called while holding mtd_table_mutex */
-+	mutex_lock_nested(&ubi_devices_mutex, SINGLE_DEPTH_NESTING);
-+	err = ubi_attach_mtd_dev(mtd, UBI_DEV_NUM_AUTO, 0, 0, false);
-+	mutex_unlock(&ubi_devices_mutex);
- 	if (err < 0)
--		return err;
-+		__put_mtd_device(mtd);
-+}
- 
--	err = misc_register(&ubi_ctrl_cdev);
--	if (err) {
--		pr_err("UBI error: cannot register device\n");
--		goto out;
--	}
-+static void ubi_notify_remove(struct mtd_info *mtd)
-+{
-+	int i;
- 
--	ubi_wl_entry_slab = kmem_cache_create("ubi_wl_entry_slab",
--					      sizeof(struct ubi_wl_entry),
--					      0, 0, NULL);
--	if (!ubi_wl_entry_slab) {
--		err = -ENOMEM;
--		goto out_dev_unreg;
--	}
-+	/* called while holding mtd_table_mutex */
-+	mutex_lock_nested(&ubi_devices_mutex, SINGLE_DEPTH_NESTING);
-+	for (i = 0; i < UBI_MAX_DEVICES; i++)
-+		if (ubi_devices[i] &&
-+		    ubi_devices[i]->mtd->index == mtd->index)
-+			ubi_detach_mtd_dev(ubi_devices[i]->ubi_num, 1, true);
-+	mutex_unlock(&ubi_devices_mutex);
-+}
- 
--	err = ubi_debugfs_init();
--	if (err)
--		goto out_slab;
-+static struct mtd_notifier ubi_mtd_notifier = {
-+	.add = ubi_notify_add,
-+	.remove = ubi_notify_remove,
-+};
- 
-+static int __init ubi_init_attach(void)
-+{
-+	int err, i, k;
- 
- 	/* Attach MTD devices */
- 	for (i = 0; i < mtd_devs; i++) {
-@@ -1292,25 +1309,79 @@ static int __init ubi_init(void)
- 		}
- 	}
- 
-+	return 0;
-+
-+out_detach:
-+	for (k = 0; k < i; k++)
-+		if (ubi_devices[k]) {
-+			mutex_lock(&ubi_devices_mutex);
-+			ubi_detach_mtd_dev(ubi_devices[k]->ubi_num, 1, false);
-+			mutex_unlock(&ubi_devices_mutex);
-+		}
-+	return err;
-+}
-+#ifndef CONFIG_MTD_UBI_MODULE
-+late_initcall(ubi_init_attach);
-+#endif
-+
-+static int __init ubi_init(void)
-+{
-+	int err;
-+
-+	/* Ensure that EC and VID headers have correct size */
-+	BUILD_BUG_ON(sizeof(struct ubi_ec_hdr) != 64);
-+	BUILD_BUG_ON(sizeof(struct ubi_vid_hdr) != 64);
-+
-+	if (mtd_devs > UBI_MAX_DEVICES) {
-+		pr_err("UBI error: too many MTD devices, maximum is %d\n",
-+		       UBI_MAX_DEVICES);
-+		return -EINVAL;
-+	}
-+
-+	/* Create base sysfs directory and sysfs files */
-+	err = class_register(&ubi_class);
-+	if (err < 0)
-+		return err;
-+
-+	err = misc_register(&ubi_ctrl_cdev);
-+	if (err) {
-+		pr_err("UBI error: cannot register device\n");
-+		goto out;
-+	}
-+
-+	ubi_wl_entry_slab = kmem_cache_create("ubi_wl_entry_slab",
-+					      sizeof(struct ubi_wl_entry),
-+					      0, 0, NULL);
-+	if (!ubi_wl_entry_slab) {
-+		err = -ENOMEM;
-+		goto out_dev_unreg;
-+	}
-+
-+	err = ubi_debugfs_init();
-+	if (err)
-+		goto out_slab;
-+
- 	err = ubiblock_init();
- 	if (err) {
- 		pr_err("UBI error: block: cannot initialize, error %d\n", err);
- 
- 		/* See comment above re-ubi_is_module(). */
- 		if (ubi_is_module())
--			goto out_detach;
-+			goto out_slab;
-+	}
-+
-+	register_mtd_user(&ubi_mtd_notifier);
-+
-+	if (ubi_is_module()) {
-+		err = ubi_init_attach();
-+		if (err)
-+			goto out_mtd_notifier;
- 	}
- 
- 	return 0;
- 
--out_detach:
--	for (k = 0; k < i; k++)
--		if (ubi_devices[k]) {
--			mutex_lock(&ubi_devices_mutex);
--			ubi_detach_mtd_dev(ubi_devices[k]->ubi_num, 1);
--			mutex_unlock(&ubi_devices_mutex);
--		}
--	ubi_debugfs_exit();
-+out_mtd_notifier:
-+	unregister_mtd_user(&ubi_mtd_notifier);
- out_slab:
- 	kmem_cache_destroy(ubi_wl_entry_slab);
- out_dev_unreg:
-@@ -1320,18 +1391,20 @@ static int __init ubi_init(void)
- 	pr_err("UBI error: cannot initialize UBI, error %d\n", err);
- 	return err;
- }
--late_initcall(ubi_init);
-+device_initcall(ubi_init);
-+
- 
- static void __exit ubi_exit(void)
- {
- 	int i;
- 
- 	ubiblock_exit();
-+	unregister_mtd_user(&ubi_mtd_notifier);
- 
- 	for (i = 0; i < UBI_MAX_DEVICES; i++)
- 		if (ubi_devices[i]) {
- 			mutex_lock(&ubi_devices_mutex);
--			ubi_detach_mtd_dev(ubi_devices[i]->ubi_num, 1);
-+			ubi_detach_mtd_dev(ubi_devices[i]->ubi_num, 1, false);
- 			mutex_unlock(&ubi_devices_mutex);
- 		}
- 	ubi_debugfs_exit();
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index bb55e863dd296..0ba6aa6a2e11d 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -1065,7 +1065,7 @@ static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
- 		}
- 
- 		mutex_lock(&ubi_devices_mutex);
--		err = ubi_detach_mtd_dev(ubi_num, 0);
-+		err = ubi_detach_mtd_dev(ubi_num, 0, false);
- 		mutex_unlock(&ubi_devices_mutex);
- 		break;
- 	}
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 44c0eeaf1e1b0..54093858f3385 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -939,7 +939,7 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
- int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
- 		       int vid_hdr_offset, int max_beb_per1024,
- 		       bool disable_fm);
--int ubi_detach_mtd_dev(int ubi_num, int anyway);
-+int ubi_detach_mtd_dev(int ubi_num, int anyway, bool have_lock);
- struct ubi_device *ubi_get_device(int ubi_num);
- void ubi_put_device(struct ubi_device *ubi);
- struct ubi_device *ubi_get_by_major(int major);
--- 
-2.40.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjMvNS8yIDI6NDAsIERhbmllbCBHb2xsZSDlhpnpgZM6Cj4gT24gVHVlLCBBcHIgMjUs
+IDIwMjMgYXQgMTE6MDE6NDFBTSArMDgwMCwgWmhpaGFvIENoZW5nIHdyb3RlOgo+PiDlnKggMjAy
+My80LzI0IDIxOjA2LCBEYW5pZWwgR29sbGUg5YaZ6YGTOgo+Pj4gT24gTW9uLCBBcHIgMjQsIDIw
+MjMgYXQgMTE6MjY6MTNBTSArMDgwMCwgWmhpaGFvIENoZW5nIHdyb3RlOgo+Pj4+PiBbLi4uXQo+
+Pj4+PiBPbmUgd2F5IHRvIHBhcnRpYWxseSByZXNvbHZlIHRoaXMgY291bGQgYmUgdG8gYWRkIGEg
+Ym9vbGVhbiBwYXJhbWV0ZXIgdG8KPj4+Pj4gdWJpYmxvY2tfY3JlYXRlX2Zyb21fcGFyYW0gd2hp
+Y2ggaW5kaWNhdGVzIGlmIC1FTk9FTlQgc2hvdWxkIGJlIHRyZWF0ZWQKPj4+Pj4gYXMgYW4gZXJy
+b3IsIGFuZCBzZXQgdGhhdCBwYXJhbWV0ZXIgb25seSB3aGVuIGNhbGxpbmcgZnJvbQo+Pj4+PiBs
+YXRlX2luaXRjYWxsLgo+Pj4+Pgo+Pj4+PiBCZWluZyBhYmxlIHRvIHdhcm4gdXNlcnMgaWYgdGhl
+eSBhZGRlZCB0aGUgc2FtZSB1YmlibG9jayBkZXZpY2UgbW9yZQo+Pj4+PiB0aGFuIG9uY2UgKipv
+biB0aGUgY21kbGluZSBvciBtb2R1bGUgcGFyYW1ldGVyKiogaXMgbW9yZSB0cmlja3kgYW5kCj4+
+Pj4+IHdvdWxkIHJlcXVpcmUgdHJhY2tpbmcgd2h5IGEgdWJpYmxvY2sgZGV2aWNlIGhhcyBwcmV2
+aW91c2x5IGJlZW4KPj4+Pj4gY3JlYXRlZC4gSG93ZXZlciwgSSBkb24ndCB0aGluayB0aGF0IGVt
+aXR0aW5nIGEgd2FybmluZyBpbiB0aGlzIGNhc2UKPj4+Pj4gaXMgY3J1Y2lhbCBhdCBhbGwsIHRo
+ZSB1c2VyIGRlZmluaXRlbHkgd2FudGVkIHRoZSB1YmlibG9jayBkZXZpY2UgdG8gYmUKPj4+Pj4g
+Y3JlYXRlZCBhbmQgc2F5aW5nIHRoYXQgbW9yZSB0aGFuIG9uY2UgaXMgdW5uZWNjZXNhcnkgYnV0
+IHlldCBhbHNvCj4+Pj4+IGRvZXNuJ3QgbGVhdmUgcm9vbSBmb3IgYW55IGludGVycHJldGF0aW9u
+IG90aGVyIHRoYW4ganVzdCB0aGF0IHRoZSB1c2VyCj4+Pj4+ICpyZWFsbHkqIHdhbnRzIHRoZSB1
+YmlibG9jayB0byBiZSBjcmVhdGVkLgo+Pj4+Cj4+Pj4gRW1tLCBJIHByZWZlciB0byBmaXggaXQs
+IGl0J3Mgd2VpcmQgdGhhdCB1YmlibG9ja19jcmVhdGVfZnJvbV9wYXJhbSgpIGJlaW5nCj4+Pj4g
+ZXhlY3V0ZWQgbXVsdGlwbGUgdGltZXMoRWFjaCB1Ymlfbm90aWZ5X2FkZCgpIHdpbGwgY2FsbCBv
+bmNlLCBsYXRlX2luaXRjYWxsCj4+Pj4gd2lsbCBjYWxsIGl0IGFnYWluKS4gVXNlciBjb3VsZCBz
+ZWUgbWFueSBmYWxzZSBwb3NpdGl2ZSBlcnJvciBtZXNzYWdlcy4KPj4+Cj4+PiBHaXZlbiBteSBz
+dWdnZXN0aW9uIGFib3ZlIChub3QgcHJpbnRpbmcgZXJyb3IgaW4gY2FzZSB0aGUgVUJJIGRldmlj
+ZSBvcgo+Pj4gdm9sdW1lIGRvZXNuJ3QgZXhpc3QgYXMgd2VsbCBhcyBpbiBjYXNlIGluIGNhc2Ug
+dGhlIHViaWJsb2NrIGRldmljZSBoYXMKPj4+IGFscmVhZHkgYmVlbiBjcmVhdGVkKSB0aGVyZSB3
+b24ndCBiZSBhbnkgZmFsc2UgcG9zaXRpdmVzLgo+Pj4gV2hhdCBpcyBzdGlsbCB0cnVlIGlzIHRo
+YXQgb3RoZXIgZXJyb3JzIChlZy4gaW52YWxpZCBzdHJpbmcgZm9ybWF0IG9mCj4+PiB0aGUgdWJp
+YmxvY2sgcGFyYW1ldGVyKSB3aWxsIGJlIHByaW50ZWQgbXVsdGlwbGUgdGltZXMuCj4+Pgo+Pj4g
+RG8geW91IHRoaW5rIGl0IGlzIHdvcnRoIHB1dHRpbmcgbXVjaCBlZmZvcnQgaW50byBhdm9pZGlu
+ZyB0aGF0Pwo+Pj4gSWYgc28sIGFueSBpZGVhIGhvdz8KPj4+Cj4+Cj4+IEN1cnJlbnRseSwgdGhl
+cmUgYXJlIHR3byB0aW1pbmdzIHRvIGxvYWQgdWJpYmxvY2s6Cj4+IDEuIGJvb3QgY21kbGluZTog
+T25lLXRpbWUgbG9hZGluZwo+PiAyLiBpb2N0bCBVQklfSU9DVk9MQ1JCTEs6IENhbiBiZSBjYWxs
+ZWQgbXVsdGlwbGUgdGltZXMgYXQgcnVudGltZQo+PiBQUzogdWJpYmxvY2sgY2Fubm90IGJlIGNv
+bXBpbGVkIGluIG1vZHVsZSwgdGhlcmUgYXJlIG9ubHkgdHdvIG9wdGlvbnM6IFkgYW5kCj4+IE4K
+PiAKPiBJdCdzIHRydWUgdGhhdCB1YmlibG9jayBpcyBhIGJvb2xlYW4gb3B0aW9uLCBob3dldmVy
+LCBZIG9yIE4gZGVjaWRlcwo+IHdoZXRoZXIgc3VwcG9ydCBmb3IgdWJpYmxvY2sgd2lsbCBiZSBp
+bmNsdWRlZCB3aXRoIHRoZSB1YmkgZHJpdmVyLCB3aGljaAo+IGNhbiB3ZWxsIGJlIGEga2VybmVs
+IG1vZHVsZS4gSW4gdGhhdCBjYXNlLCB1YmlibG9jayBpcyBsb2FkZWQgYW5kIHJlbW92ZWQKPiB0
+b2dldGhlciB3aXRoIHRoZSByZXN0IG9mIHRoZSB1YmkgZHJpdmVyLgoKWW91IGFyZSByaWdodCwg
+dWJpYmxvY2sgd2lsbCBiZSBsb2FkZWQgaW4gbW9kdWxlIHdheSBpZiBVQkkgZHJpdmVyIGlzIApj
+b21waWxlZCBpbiBtb2R1bGUgZm9ybWF0LCBteSBtaXN0YWtlLgoKPiAKPj4KPj4gSG93IGFib3V0
+IGRlbGV0aW5nICd1YmlibG9ja19jcmVhdGVfZnJvbV9wYXJhbScgZnJvbSB1Ymlfbm90aWZ5X2Fk
+ZCgpLCB3ZQo+PiBvbmx5IGNhbGwgdWJpYmxvY2tfY3JlYXRlX2Zyb21fcGFyYW0oKSBvbmNlIGlu
+IHViaV9pbml0X2F0dGFjaCgpLiBUaGlzIGNhbgo+PiBrZWVwIHRoZSB1YmlibG9jayBsb2FkaW5n
+IHRpbWluZ3MgYXJlIHVuY2hhbmdlZCwgYW5kIEVOT0RFViBhbmQgRUVYSVNUIHdvbid0Cj4+IGJl
+IGZhbHNlIHBvc2l0aXZlLgo+IAo+IEkgYWxzbyB0aG91Z2h0IHRoYXQgYW5kIGl0IHdvcmtzIHdl
+bGwgdW5kZXIgdGhlIGFzc3VtcHRpb24gdGhhdCBhbGwKPiBkcml2ZXJzIHByb3ZpZGluZyBNVEQg
+ZGV2aWNlcyBhcmUgYnVpbHQtaW4gb3IgaW5zZXJ0ZWQgYmVmb3JlIHRoZSB1YmkKPiBkcml2ZXIg
+aXMgaW5zZXJ0ZWQuIEhvd2V2ZXIsIHRoaXMgbWF5IG5vdCBhbHdheXMgYmUgdHJ1ZS4gVGhpbmsg
+b2YsCj4gZm9yIGV4YW1wbGUsIGFuIFNQSSBidXMgZHJpdmVyIHdoaWNoIGlzIGJ1aWx0IGFzIGEg
+bW9kdWxlIGFuZCBsb2FkZWQKPiBkdXJpbmcgYm9vdCAoZWcuIGZyb20gaW5pdHJhbWZzKS4gWW91
+ciBzdWdnZXN0aW9uIGJlbG93IHNvbHZlcyB0aGF0Lgo+IAo+Pgo+PiBJZiBzb21lb25lIGxhdGVy
+IHdhbnQgdG8gbG9hZGluZyB1YmlibG9jayBhdXRvbWljYWxseSwgVUJJX1ZPTFVNRV9BRERFRCBj
+YXNlCj4+IGluIHViaWJsb2NrX25vdGlmeSgpIGlzIHN1Z2dlc3RlZCB0byBiZSBpbXBsZW1lbnRl
+ZC4KPiAKPiBJJ3ZlIGltcGxlbWVudGVkIHlvdXIgc3VnZ2VzdGlvbiBhbmQgaXQgd29ya3MgZmlu
+ZSwgdG8gbWUgZXZlbiBsb29rcwo+IGJldHRlciB0aGFuIHRoZSBjdXJyZW50IGNvZGUgd2hpY2gg
+Z2V0cy9wdXRzIHRoZSBVQkkgdm9sdW1lIGp1c3QgdG8KPiBjb21wYXJlIGlmIGl0cyBpbmZvIG1h
+dGNoZXMgdGhlIGNtZGxpbmUgcGFyYW1ldGVyLiBJIHdpbGwgcG9zdCB0aGlzIGFzCj4gYSBwcmVs
+aW1pbmFyeSBwYXRjaCBpbiB0aGUgc2VyaWVzLCB0b2dldGhlciB3aXRoIGFuIG90aGVyIGZpeCBh
+bmQgYW4KPiB1cGRhdGVkIHZlcnNpb24gb2YgdGhpcyBwYXRjaC4KCkknbGwgdGFrZSBhIGxvb2sg
+YXQgdGhpcyBzZXJpZXMuCj4gCj4+Cj4+Pj4KPj4+Pj4KPj4+Pj4+Cj4+Pj4+Pj4gKwkJCQlwcl9l
+cnIoCj4+Pj4+Pj4gKwkJCQkgICAgICAgIlVCSTogYmxvY2s6IGNhbid0IGFkZCAnJXMnIHZvbHVt
+ZSBvbiB1YmklZF8lZCwgZXJyPSVkXG4iLAo+Pj4+Pj4+ICsJCQkJICAgICAgIHZpLm5hbWUsIHAt
+PnViaV9udW0sIHAtPnZvbF9pZCwgcmV0KTsKPj4+Pj4+PiAgICAgIAkJCWNvbnRpbnVlOwo+Pj4+
+Pj4+ICAgICAgCQl9Cj4+Pj4+Pj4gICAgICAJfQo+Pj4+Pj4+IEBAIC02NDQsMTMgKzY0NSw2IEBA
+IGludCBfX2luaXQgdWJpYmxvY2tfaW5pdCh2b2lkKQo+Pj4+Pj4+ICAgICAgCWlmICh1YmlibG9j
+a19tYWpvciA8IDApCj4+Pj4+Pj4gICAgICAJCXJldHVybiB1YmlibG9ja19tYWpvcjsKPj4+Pj4+
+PiAtCS8qCj4+Pj4+Pj4gLQkgKiBBdHRhY2ggYmxvY2sgZGV2aWNlcyBmcm9tICdibG9jaz0nIG1v
+ZHVsZSBwYXJhbS4KPj4+Pj4+PiAtCSAqIEV2ZW4gaWYgb25lIGJsb2NrIGRldmljZSBpbiB0aGUg
+cGFyYW0gbGlzdCBmYWlscyB0byBjb21lIHVwLAo+Pj4+Pj4+IC0JICogc3RpbGwgYWxsb3cgdGhl
+IG1vZHVsZSB0byBsb2FkIGFuZCBsZWF2ZSBhbnkgb3RoZXJzIHVwLgo+Pj4+Pj4+IC0JICovCj4+
+Pj4+Pj4gLQl1YmlibG9ja19jcmVhdGVfZnJvbV9wYXJhbSgpOwo+Pj4+Pj4+IC0KPj4+Pj4+PiAg
+ICAgIAkvKgo+Pj4+Pj4+ICAgICAgCSAqIEJsb2NrIGRldmljZXMgYXJlIG9ubHkgY3JlYXRlZCB1
+cG9uIHVzZXIgcmVxdWVzdHMsIHNvIHdlIGlnbm9yZQo+Pj4+Pj4+ICAgICAgCSAqIGV4aXN0aW5n
+IHZvbHVtZXMuCj4+Pj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jIGIv
+ZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPj4+Pj4+PiBpbmRleCA5Y2Q1NjVkYWFkMzY4Li5hNzY0
+Zjk3ZWVlNzkxIDEwMDY0NAo+Pj4+Pj4+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jCj4+
+Pj4+Pj4gKysrIGIvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMKPj4+Pj4+PiBAQCAtMjcsNiArMjcs
+NyBAQAo+Pj4+Pj4+ICAgICAgI2luY2x1ZGUgPGxpbnV4L2xvZzIuaD4KPj4+Pj4+PiAgICAgICNp
+bmNsdWRlIDxsaW51eC9rdGhyZWFkLmg+Cj4+Pj4+Pj4gICAgICAjaW5jbHVkZSA8bGludXgva2Vy
+bmVsLmg+Cj4+Pj4+Pj4gKyNpbmNsdWRlIDxsaW51eC9vZi5oPgo+Pj4+Pj4+ICAgICAgI2luY2x1
+ZGUgPGxpbnV4L3NsYWIuaD4KPj4+Pj4+PiAgICAgICNpbmNsdWRlIDxsaW51eC9tYWpvci5oPgo+
+Pj4+Pj4+ICAgICAgI2luY2x1ZGUgInViaS5oIgo+Pj4+Pj4+IEBAIC0xMDY1LDYgKzEwNjYsNyBA
+QCBpbnQgdWJpX2F0dGFjaF9tdGRfZGV2KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgdWJpX251
+bSwKPj4+Pj4+PiAgICAgICAqIHViaV9kZXRhY2hfbXRkX2RldiAtIGRldGFjaCBhbiBNVEQgZGV2
+aWNlLgo+Pj4+Pj4+ICAgICAgICogQHViaV9udW06IFVCSSBkZXZpY2UgbnVtYmVyIHRvIGRldGFj
+aCBmcm9tCj4+Pj4+Pj4gICAgICAgKiBAYW55d2F5OiBkZXRhY2ggTVREIGV2ZW4gaWYgZGV2aWNl
+IHJlZmVyZW5jZSBjb3VudCBpcyBub3QgemVybwo+Pj4+Pj4+ICsgKiBAaGF2ZV9sb2NrOiBjYWxs
+ZWQgYnkgTVREIG5vdGlmaWVyIGhvbGRpbmcgbXRkX3RhYmxlX211dGV4Cj4+Pj4+Pj4gICAgICAg
+Kgo+Pj4+Pj4+ICAgICAgICogVGhpcyBmdW5jdGlvbiBkZXN0cm95cyBhbiBVQkkgZGV2aWNlIG51
+bWJlciBAdWJpX251bSBhbmQgZGV0YWNoZXMgdGhlCj4+Pj4+Pj4gICAgICAgKiB1bmRlcmx5aW5n
+IE1URCBkZXZpY2UuIFJldHVybnMgemVybyBpbiBjYXNlIG9mIHN1Y2Nlc3MgYW5kICUtRUJVU1kg
+aWYgdGhlCj4+Pj4+Pj4gQEAgLTEwNzQsNyArMTA3Niw3IEBAIGludCB1YmlfYXR0YWNoX210ZF9k
+ZXYoc3RydWN0IG10ZF9pbmZvICptdGQsIGludCB1YmlfbnVtLAo+Pj4+Pj4+ICAgICAgICogTm90
+ZSwgdGhlIGludm9jYXRpb25zIG9mIHRoaXMgZnVuY3Rpb24gaGFzIHRvIGJlIHNlcmlhbGl6ZWQg
+YnkgdGhlCj4+Pj4+Pj4gICAgICAgKiBAdWJpX2RldmljZXNfbXV0ZXguCj4+Pj4+Pj4gICAgICAg
+Ki8KPj4+Pj4+PiAtaW50IHViaV9kZXRhY2hfbXRkX2RldihpbnQgdWJpX251bSwgaW50IGFueXdh
+eSkKPj4+Pj4+PiAraW50IHViaV9kZXRhY2hfbXRkX2RldihpbnQgdWJpX251bSwgaW50IGFueXdh
+eSwgYm9vbCBoYXZlX2xvY2spCj4+Pj4+Pj4gICAgICB7Cj4+Pj4+Pj4gICAgICAJc3RydWN0IHVi
+aV9kZXZpY2UgKnViaTsKPj4+Pj4+PiBAQCAtMTEwOCw3ICsxMTEwLDcgQEAgaW50IHViaV9kZXRh
+Y2hfbXRkX2RldihpbnQgdWJpX251bSwgaW50IGFueXdheSkKPj4+Pj4+PiAgICAgIAkgKiBFQyB1
+cGRhdGVzIHRoYXQgaGF2ZSBiZWVuIG1hZGUgc2luY2UgdGhlIGxhc3Qgd3JpdHRlbiBmYXN0bWFw
+Lgo+Pj4+Pj4+ICAgICAgCSAqIEluIGNhc2Ugb2YgZmFzdG1hcCBkZWJ1Z2dpbmcgd2Ugb21pdCB0
+aGUgdXBkYXRlIHRvIHNpbXVsYXRlIGFuCj4+Pj4+Pj4gICAgICAJICogdW5jbGVhbiBzaHV0ZG93
+bi4gKi8KPj4+Pj4+PiAtCWlmICghdWJpX2RiZ19jaGtfZmFzdG1hcCh1YmkpKQo+Pj4+Pj4+ICsJ
+aWYgKCFoYXZlX2xvY2sgJiYgIXViaV9kYmdfY2hrX2Zhc3RtYXAodWJpKSkKPj4+Pj4+PiAgICAg
+IAkJdWJpX3VwZGF0ZV9mYXN0bWFwKHViaSk7Cj4+Pj4+Pgo+Pj4+Pj4gV2h5IGRvIHlvdSBza2lw
+IHVwZGF0aW5nIGZhc3RtYXAgaWYgdWJpIGlzIGRldGFjaGVkIGluIG10ZCBub3RpZmljYXRpb24g
+d2F5Pwo+Pj4+Pgo+Pj4+PiBUaGUgcmVhc29uIGhlcmUgaXMgc2ltcGxlOiBPbmNlIHdlIHJlY2Vp
+dmUgYSBub3RpZmljYXRpb24gYWJvdXQgdGhlIE1URAo+Pj4+PiBkZXZpY2UgYmVpbmcgcmVtb3Zl
+ZCBpdCBpcyB0b28gbGF0ZSB0byB1cGRhdGUgZmFzdG1hcC4gVGhlIGRldmljZSBpcwo+Pj4+PiBn
+b25lLCBub3RoaW5nIHdlIGNhbiBkbyBhYm91dCB0aGF0IGFueSBtb3JlLiBKdXN0IGxpa2UgcmVt
+b3ZpbmcgYQo+Pj4+PiBkZXZpY2UgaG9sZGluZyBhIGZpbGVzeXN0ZW0gd2l0aG91dCBoYXZpbmcg
+cHJpb3JseSB1bm1vdW50ZWQgaXQsIGUuZy4KPj4+Pj4gaWYgeW91ICdybW1vZCB1c2Itc3RvcmFn
+ZScgKGp1c3QgdGhhdCBibG9jayBkZXZpY2VzIHVuZm9ydHVuYXRlbHkgc3RpbGwKPj4+Pj4gbGFj
+ayBub3RpZmljYXRpb25zIGFib3V0IHJlbW92YWwgb3Igc2l6ZSBjaGFuZ2VzLi4uKQo+Pj4+Pgo+
+Pj4+Cj4+Pj4gQW5vdGhlciBwYXRoIHN0aWxsIG9wZXJhdGUgbXRkIGRldmljZToKPj4+PiB1Ymlf
+ZGV0YWNoX210ZF9kZXYgLT4gdWJpX3dsX2Nsb3NlIC0+IHNodXRkb3duX3dvcmsgLT4gd3JrLT5m
+dW5jIC0+Cj4+Pj4gZXJhc2Vfd29ya2VyIC0+IHN5bmNfZXJhc2UgLT4gdWJpX2lvX3N5bmNfZXJh
+c2UvdWJpX2lvX3dyaXRlX2VjX2hkci4KPj4+Cj4+PiBUcnVlLCBidXQgSSBkaWRuJ3Qgc2VlIHRo
+aXMgYmVpbmcgYSBwcm9ibGVtLCBhdCBsZWFzdCBpbiB0aGUgc2Vuc2UKPj4+IHRoYXQgSSBkaWRu
+J3Qgc2VlIGEga2VybmVsIHBhbmljLiBXZSBjb3VsZCB0cnkgdG8gbWFrZQo+Pj4gdWJpX3VwZGF0
+ZV9mYXN0bWFwIG1vcmUgcm9idXN0IHRvIGdyYWNlZnVsbHkgcmV0dXJuIGluIGNhc2UgdGhlIGRl
+dmljZQo+Pj4gaXMgYWxyZWFkeSBnb25lLgo+Pj4KPj4KPj4gWW91IG1lYW4gdWJpX3VwZGF0ZV9m
+YXN0bWFwKCkgY291bGQgdHJpZ2dlciBwYW5pYyBpbiB1Ymlfbm90aWZ5X3JlbW92ZSgpCj4+IHdo
+ZW4geW91IHJlbW92ZSB0aGUgU1BJIGJ1cyBkaXJ2ZXI/IE1heSBJIGhhdmUgdGhlIGVycm9yIG1l
+c3NhZ2U/Cj4gCj4gSSBzcGVudCBhIGRheSBzdGFpcmluZyBhdCB0aGUga2VybmVsIE9vcHMgYW5k
+IGZvdW5kIHRoYXQgaXQgd2FzIHVucmVsYXRlZAo+IHRvIFVCSSwgYnV0IHJhdGhlciBhIGJ1ZyBp
+biB0aGUgU1BJIGRyaXZlci4gSSd2ZSBwb3N0ZWQgdGhlIGZpeDoKPiAKPiBodHRwczovL3BhdGNo
+d29yay5rZXJuZWwub3JnL3Byb2plY3Qvc3BpLWRldmVsLWdlbmVyYWwvcGF0Y2gvWkZBRjZwSnhN
+dTF6Nms0d0BtYWtyb3RvcGlhLm9yZy8KPiAKPj4gSSB0aG91Z2h0IGJvdGggdWJpX3VwZGF0ZV9m
+YXN0bWFwKCkgYW5kIHViaV93bF9jbG9zZSgpIGNvdWxkIG9wZXJhdGUgdGhlCj4+IHJlbW92ZWQg
+bXRkIGRldmljZSwgaXQgd2lsbCBiZSBiZXR0ZXIgdG8gbm90aWZ5IHVzZXIgZXJyb3IgbWVzc2Fn
+ZXMgb2YKPj4gdWJpX3VwZGF0ZV9mYXN0bWFwKCkgY2FzdWVkIGJ5IHJlbW92aW5nIHVuZGVyIGxh
+eWVyIGRldmljZS4KPiAKPiBZb3Ugd2VyZSByaWdodCwgdGhlcmUgaXMgbm8gcHJvYmxlbSB0aGVy
+ZSBhbmQgd2UgZG9uJ3QgbmVlZCB0byBza2lwCj4gdWJpX3VwZGF0ZV9mYXN0bWFwKCkgbm93IHRo
+YXQgdGhlIFNQSSBkcml2ZXIgbWFrZXMgc3VyZSB0byBjb21wbGV0ZQo+IGFueSBvbmdvaW5nIG9w
+ZXJhdGlvbiBiZWZvcmUgdW5sb2FkaW5nIChzZWUgYWJvdmUpLgo+IAoKR3JlYXQuCgo+Pgo+Pj4+
+Cj4+Pj4gQmVzaWRlcywgY2FuIHdlIHJlbW92ZSBhbnkgbXRkIHNwZWNpZmljIGRyaXZlcihlZy4g
+cGhyYW0vbmFuZHNpbSkgYnkgcm1tb2Q/Cj4+Pgo+Pj4gTXkgdGVzdC1jYXNlIHdhcyB0byByZW1v
+dmUgdGhlIFNQSSBidXMgZHJpdmVyIG9uIHdoaWNoIHRoZSBTUEktTkFORCBjaGlwCj4+PiBpcyBj
+b25uZWN0ZWQgdG8uIEFmYWlrIHRoZXJlIGlzIGFsc28gbm8gd2F5IHRvIHByZXZlbnQgdGhpcyBh
+dCB0aGlzCj4+PiBwb2ludCwgd2UnZCBoYXZlIHRvIHByb3BhZ2F0ZSB0aGUgdXNlY291bnQgb2Yg
+dGhlIE1URCBkZXZpY2UgZG93biB0bwo+Pj4gdGhlIFNQSSBidXMgaG9zdGluZyBpdC4KPj4+Cj4+
+Pj4gSSBub3RpY2UgdGhhdCBnZXRfbXRkX2RldmljZShjYWxsZWQgYmVmb3JlIHViaSBhdHRhY2hp
+bmcpIHdpbGwgaW5jcmVhc2UKPj4+PiBzcGVjaWZpYyBtdGQgZHJpdmVyJ3MgbW9kdWxlIHJlZmNu
+dC4KPj4+PiBJZiB3ZSBwaHlzaWNhbGx5IHJlbW92ZSB0aGUgbXRkIGRldmljZSwgd2lsbCBpdCB0
+cmlnZ2VyIGRlbF9tdGRfZGV2aWNlKCk/Cj4+Pgo+Pj4gWWVzLCBpbiBjYXNlIHdoYXQgeW91IG1l
+YW4gaXMgYW4gU1BJLU5BTkQgZmxhc2ggY29ubmVjdGVkIHRvIGFuIFNQSS1VU0IKPj4+IGFkYXB0
+ZXIsIGFuZCB0aGVuIHB1bGxpbmcgdGhlIFVTQiBkZXZpY2UuCj4+Pgo+Pj4+IEZvciBleGFtcGxl
+LCB3aGVuIGlzIHBocmFtX3JlbW92ZSgpIGNhbGxlZD8KPj4+Cj4+Pj4gIEZyb20gd2hhdCBJIGNh
+biBzZWU6Cj4+PiBwaHJhbV9yZW1vdmUgLT4gbXRkX2RldmljZV91bnJlZ2lzdGVyIC0+IGRlbF9t
+dGRfZGV2aWNlIC0+IFtmb3IgYWxsCj4+PiBlbGVtZW50cyBvZiBsaXN0IG10ZF9ub3RpZmllcnMg
+Y2FsbCB0aGVpciAncmVtb3ZlJyBmdW5jdGlvbl0KPj4+Cj4+PiBBZnRlciB0aGlzIHdlIHNob3Vs
+ZCBhbHdheXMgZW5kIHVwIHdpdGggbXRkLT51c2Vjb3VudCA9PSAwIGFuZCBoZW5jZQo+Pj4gcHJv
+Y2VlZC4gSWYgdXNlY291bnQgIT0gMCBhdCB0aGlzIHBvaW50IHRoZXJlIGlzIGN1cnJlbnRseSBu
+byBtZWFuaW5nZnVsCj4+PiBlcnJvciBoYW5kbGluZyBpbiBtdGRjb3JlLmMgYXMgZmFyIGFzIG15
+IGludGVycHJldGF0aW9uIGdvZXMuCj4gCj4gSSd2ZSBmb3VuZCBhIHNpbWlsYXIgaXNzdWUgd2l0
+aCAiZmFrZSBlcnJvciBoYW5kbGluZyIgb24gcmVtb3ZhbCB3aGljaAo+IHNob3VsZCByYXRoZXIg
+YmUgc2tpcHBlZCBpbiBkcml2ZXJzL210ZC91YmkvYmxvY2suYy4gSSB3aWxsIHBvc3QgdGhlCj4g
+Zml4IGFsc28gaW4gdGhlIHVwY29taW5nIHNlcmllcyB3aGljaCBJJ20gcHJlcGFyaW5nIHJpZ2h0
+IG5vdy4KPiAKPiAuCj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
