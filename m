@@ -4,86 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17BEEC77B75
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 May 2023 12:25:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC0C7C77B73
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 May 2023 13:12:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+K1rFBYTE39zIRfc+tbOjaBi+YMVjkknrvePMsq+Xzg=; b=W+U6c+8o7KZ2gc
-	nsNKwWnqWBTWpx6fh7Pgzw2qJv53Av2Mqsh5uF9m1EVku+z5dyJBQcY6T7PdswAJQi4ESyWCAdrkt
-	IkXqS6OUHe/geaWkyc9CiP20BHRv289RL5usDR+HwlgyZLfRDK3PE4daaG04NrGUMeXu1VU2gOoL+
-	Fpsj9VYhcltfQP0cuDq8ErO9ihMSGHCR5tDp1FAXx9F0lDL/RWHAZ0KHiObPBz3cX1/OZ7ODqkQaS
-	y37NnQigcE+PqS0hRXwHMshb820VW9ZoJfifI1u8PWUiFO/Z7H/TKe7vV3AgJuYfj2Isq2VJ7g+3R
-	8BmPF1R2MSuwO/hLvAYg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=CMU/i3+zBYGPXL9JFcZFmAO0TZBeIXzMkrgTJtt+C4w=; b=Zx7TGJgZ8oUfX5XBFpg/r02hOE
+	vrKTaDTQUCHGpZdUOBx9AggJw/AfF6yQ3/CPoDcS9Iza/qb6p3hbUuW5JjdHDe+ZU35xZh9eH0wgU
+	DnjbxLuX5BefBwlXZ6QD178juVAn1gXor4ZshCf5W7RXcfD+LWts17ESMROBpKS4IvU6IpZzqGOcA
+	d3jclvUCwO3tn2FHfwlndJolHHJp/lY7EVP9EATUzxlAHesaoQO0D/aIfSw3BFDB3RTiz+z/iPy+L
+	DzvYAfYm91ZTbDXHyJXqlQ0r0n2jmh+qSe0GAg3A6AMS/Cllog2hJImS1V9pFOwJfUcnm+RUxDhFV
+	I5Ev4zmA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvGxo-00DOA3-20;
-	Sat, 06 May 2023 12:24:36 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1pvHhG-00DVNH-21;
+	Sat, 06 May 2023 13:11:34 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvGxi-00DO9M-2l
+	id 1pvHhC-00DVK1-12
 	for linux-mtd@lists.infradead.org;
-	Sat, 06 May 2023 12:24:33 +0000
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3f19b9d5358so27903085e9.1
-        for <linux-mtd@lists.infradead.org>; Sat, 06 May 2023 05:24:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683375868; x=1685967868;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZXMu9XhyUgA5r3iTebqKjw72HhkdRp9Ey4llH49+JM0=;
-        b=W2b+Ywaawz6z8MAH/a2AOjPLUJ6jWy9pL6gIUHhAcxhI19CGysYfookylTFfB+/mui
-         5ykH+LAnxZPJWrGhVFZw+Re4s4Tvg027+Ev7WYMhFRr0K+1ca/+27ajTlMKd6skKIJIz
-         kVA2zagn7v6Z621aP7eJynCz8VYNDOiFCPABHCQM5hj6A5u5rUU4YVQ2asQnMh7kq0Oh
-         NNIfTzfLTnXez6+qIvT4RhTRmShQlZ9Q7ACJD+v0VQ6j3N/gfJTW+sG9zykqt0RqyRct
-         kk0+kbPEgplbEtt2g8xaBx2l0UZqMFtZoT5URpLz7AC0Mv3NvKCJ+0MUss4QBvYEgCeq
-         nSXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683375868; x=1685967868;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZXMu9XhyUgA5r3iTebqKjw72HhkdRp9Ey4llH49+JM0=;
-        b=ZXAOy6Z0P0sC9egw1ufHpyevkpaQclyzLEFbwN18lPK0267NFY8cTs25S+rqgfF0Ji
-         CxkRofRU2IWDW6OIKZBgU6n8AKdgXh39PA2y5v/XGTMVzsgJD3yRNzCtOrmwmiL8XgCY
-         RXxoMoA/exfXhxDvmu00eQJGvOKgrc4a42UY/sBw3W7R+Zc5KrxQaKgqtMyvuKWkufF7
-         hjTkzd4IgQIWU7EUREwZjDUVkJkawfBOOprUu5zY7K/5TXTmIziFZggDHQLqJ30WVkY8
-         4B47FJQ549iR/01htRjUM62k2/4KFmzKfqaWJGq/EFAgyUf7dzg5wjRr8ahqGLRemT1r
-         EhZQ==
-X-Gm-Message-State: AC+VfDxE6O5rDgxmhjGZkHjZ4EmfVninH1M97JAzAHkHLmQjhMm+lZi3
-	NL93NWCc5lmGGya9NtZO3pK/UEdVkp4=
-X-Google-Smtp-Source: ACHHUZ7lL8EH4fH1fY3FNvefzXrML8HRfgPHvYaPc2W9+3uw2WRmJW+RavMeJGer3IydXL41cytAxw==
-X-Received: by 2002:a7b:c30d:0:b0:3f1:745d:821 with SMTP id k13-20020a7bc30d000000b003f1745d0821mr3149884wmj.23.1683375868405;
-        Sat, 06 May 2023 05:24:28 -0700 (PDT)
-Received: from localhost.localdomain (93-34-93-173.ip49.fastwebnet.it. [93.34.93.173])
-        by smtp.googlemail.com with ESMTPSA id y24-20020a05600c365800b003f31da39b62sm10680788wmq.18.2023.05.06.05.24.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 May 2023 05:24:28 -0700 (PDT)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Fabian Frederick <fabf@skynet.be>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	KaiGai Kohei <kaigai@ak.jp.nec.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Tim Gardner <tim.gardner@canonical.com>,
-	kernel test robot <lkp@intel.com>,
-	Ron Economos <re@w6rz.net>,
-	Nathan Chancellor <nathan@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH] jffs2: reduce stack usage in jffs2_build_xattr_subsystem()
-Date: Sat,  6 May 2023 06:56:12 +0200
-Message-Id: <20230506045612.16616-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	Sat, 06 May 2023 13:11:32 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.54])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4QD7B73fNNz18KKh;
+	Sat,  6 May 2023 21:07:11 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Sat, 6 May 2023 21:11:16 +0800
+Subject: Re: [PATCH] jffs2: reduce stack usage in
+ jffs2_build_xattr_subsystem()
+To: Christian Marangi <ansuelsmth@gmail.com>, David Woodhouse
+	<dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Fabian Frederick
+	<fabf@skynet.be>, Nick Desaulniers <ndesaulniers@google.com>, Christian
+ Brauner <brauner@kernel.org>, KaiGai Kohei <kaigai@ak.jp.nec.com>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: Tim Gardner <tim.gardner@canonical.com>, kernel test robot
+	<lkp@intel.com>, Ron Economos <re@w6rz.net>, Nathan Chancellor
+	<nathan@kernel.org>, <stable@vger.kernel.org>
+References: <20230506045612.16616-1-ansuelsmth@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <e6f4327a-83f0-22dc-e186-9012912b25d9@huawei.com>
+Date: Sat, 6 May 2023 21:11:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20230506045612.16616-1-ansuelsmth@gmail.com>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230506_052430_918921_5F49CC01 
-X-CRM114-Status: GOOD (  16.86  )
+X-CRM114-CacheID: sfid-20230506_061131_233028_6E1CE2B7 
+X-CRM114-Status: GOOD (  22.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,139 +70,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Fabian Frederick <fabf@skynet.be>
-
-Use kcalloc() for allocation/flush of 128 pointers table to
-reduce stack usage.
-
-Function now returns -ENOMEM or 0 on success.
-
-stackusage
-Before:
-./fs/jffs2/xattr.c:775  jffs2_build_xattr_subsystem     1208
-dynamic,bounded
-
-After:
-./fs/jffs2/xattr.c:775  jffs2_build_xattr_subsystem     192
-dynamic,bounded
-
-Also update definition when CONFIG_JFFS2_FS_XATTR is not enabled
-
-Tested with an MTD mount point and some user set/getfattr.
-
-Many current target on OpenWRT also suffer from a compilation warning
-(that become an error with CONFIG_WERROR) with the following output:
-
-fs/jffs2/xattr.c: In function 'jffs2_build_xattr_subsystem':
-fs/jffs2/xattr.c:887:1: error: the frame size of 1088 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
-  887 | }
-      | ^
-
-Using dynamic allocation fix this compilation warning.
-
-Fixes: c9f700f840bd ("[JFFS2][XATTR] using 'delete marker' for xdatum/xref deletion")
-Reported-by: Tim Gardner <tim.gardner@canonical.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Ron Economos <re@w6rz.net>
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Cc: stable@vger.kernel.org
----
- fs/jffs2/build.c |  5 ++++-
- fs/jffs2/xattr.c | 13 +++++++++----
- fs/jffs2/xattr.h |  4 ++--
- 3 files changed, 15 insertions(+), 7 deletions(-)
-
-diff --git a/fs/jffs2/build.c b/fs/jffs2/build.c
-index 837cd55fd4c5..6ae9d6fefb86 100644
---- a/fs/jffs2/build.c
-+++ b/fs/jffs2/build.c
-@@ -211,7 +211,10 @@ static int jffs2_build_filesystem(struct jffs2_sb_info *c)
- 		ic->scan_dents = NULL;
- 		cond_resched();
- 	}
--	jffs2_build_xattr_subsystem(c);
-+	ret = jffs2_build_xattr_subsystem(c);
-+	if (ret)
-+		goto exit;
-+
- 	c->flags &= ~JFFS2_SB_FLAG_BUILDING;
- 
- 	dbg_fsbuild("FS build complete\n");
-diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-index aa4048a27f31..3b6bdc9a49e1 100644
---- a/fs/jffs2/xattr.c
-+++ b/fs/jffs2/xattr.c
-@@ -772,10 +772,10 @@ void jffs2_clear_xattr_subsystem(struct jffs2_sb_info *c)
- }
- 
- #define XREF_TMPHASH_SIZE	(128)
--void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
-+int jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
- {
- 	struct jffs2_xattr_ref *ref, *_ref;
--	struct jffs2_xattr_ref *xref_tmphash[XREF_TMPHASH_SIZE];
-+	struct jffs2_xattr_ref **xref_tmphash;
- 	struct jffs2_xattr_datum *xd, *_xd;
- 	struct jffs2_inode_cache *ic;
- 	struct jffs2_raw_node_ref *raw;
-@@ -784,9 +784,12 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
- 
- 	BUG_ON(!(c->flags & JFFS2_SB_FLAG_BUILDING));
- 
-+	xref_tmphash = kcalloc(XREF_TMPHASH_SIZE,
-+			       sizeof(struct jffs2_xattr_ref *), GFP_KERNEL);
-+	if (!xref_tmphash)
-+		return -ENOMEM;
-+
- 	/* Phase.1 : Merge same xref */
--	for (i=0; i < XREF_TMPHASH_SIZE; i++)
--		xref_tmphash[i] = NULL;
- 	for (ref=c->xref_temp; ref; ref=_ref) {
- 		struct jffs2_xattr_ref *tmp;
- 
-@@ -884,6 +887,8 @@ void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c)
- 		     "%u of xref (%u dead, %u orphan) found.\n",
- 		     xdatum_count, xdatum_unchecked_count, xdatum_orphan_count,
- 		     xref_count, xref_dead_count, xref_orphan_count);
-+	kfree(xref_tmphash);
-+	return 0;
- }
- 
- struct jffs2_xattr_datum *jffs2_setup_xattr_datum(struct jffs2_sb_info *c,
-diff --git a/fs/jffs2/xattr.h b/fs/jffs2/xattr.h
-index 720007b2fd65..1b5030a3349d 100644
---- a/fs/jffs2/xattr.h
-+++ b/fs/jffs2/xattr.h
-@@ -71,7 +71,7 @@ static inline int is_xattr_ref_dead(struct jffs2_xattr_ref *ref)
- #ifdef CONFIG_JFFS2_FS_XATTR
- 
- extern void jffs2_init_xattr_subsystem(struct jffs2_sb_info *c);
--extern void jffs2_build_xattr_subsystem(struct jffs2_sb_info *c);
-+extern int jffs2_build_xattr_subsystem(struct jffs2_sb_info *c);
- extern void jffs2_clear_xattr_subsystem(struct jffs2_sb_info *c);
- 
- extern struct jffs2_xattr_datum *jffs2_setup_xattr_datum(struct jffs2_sb_info *c,
-@@ -103,7 +103,7 @@ extern ssize_t jffs2_listxattr(struct dentry *, char *, size_t);
- #else
- 
- #define jffs2_init_xattr_subsystem(c)
--#define jffs2_build_xattr_subsystem(c)
-+#define jffs2_build_xattr_subsystem(c)		(0)
- #define jffs2_clear_xattr_subsystem(c)
- 
- #define jffs2_xattr_do_crccheck_inode(c, ic)
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMy81LzYgMTI6NTYsIENocmlzdGlhbiBNYXJhbmdpINC0tcA6Cj4gRnJvbTogRmFiaWFu
+IEZyZWRlcmljayA8ZmFiZkBza3luZXQuYmU+Cj4gCj4gVXNlIGtjYWxsb2MoKSBmb3IgYWxsb2Nh
+dGlvbi9mbHVzaCBvZiAxMjggcG9pbnRlcnMgdGFibGUgdG8KPiByZWR1Y2Ugc3RhY2sgdXNhZ2Uu
+Cj4gCj4gRnVuY3Rpb24gbm93IHJldHVybnMgLUVOT01FTSBvciAwIG9uIHN1Y2Nlc3MuCj4gCj4g
+c3RhY2t1c2FnZQo+IEJlZm9yZToKPiAuL2ZzL2pmZnMyL3hhdHRyLmM6Nzc1ICBqZmZzMl9idWls
+ZF94YXR0cl9zdWJzeXN0ZW0gICAgIDEyMDgKPiBkeW5hbWljLGJvdW5kZWQKPiAKPiBBZnRlcjoK
+PiAuL2ZzL2pmZnMyL3hhdHRyLmM6Nzc1ICBqZmZzMl9idWlsZF94YXR0cl9zdWJzeXN0ZW0gICAg
+IDE5Mgo+IGR5bmFtaWMsYm91bmRlZAo+IAo+IEFsc28gdXBkYXRlIGRlZmluaXRpb24gd2hlbiBD
+T05GSUdfSkZGUzJfRlNfWEFUVFIgaXMgbm90IGVuYWJsZWQKPiAKPiBUZXN0ZWQgd2l0aCBhbiBN
+VEQgbW91bnQgcG9pbnQgYW5kIHNvbWUgdXNlciBzZXQvZ2V0ZmF0dHIuCj4gCj4gTWFueSBjdXJy
+ZW50IHRhcmdldCBvbiBPcGVuV1JUIGFsc28gc3VmZmVyIGZyb20gYSBjb21waWxhdGlvbiB3YXJu
+aW5nCj4gKHRoYXQgYmVjb21lIGFuIGVycm9yIHdpdGggQ09ORklHX1dFUlJPUikgd2l0aCB0aGUg
+Zm9sbG93aW5nIG91dHB1dDoKPiAKPiBmcy9qZmZzMi94YXR0ci5jOiBJbiBmdW5jdGlvbiAnamZm
+czJfYnVpbGRfeGF0dHJfc3Vic3lzdGVtJzoKPiBmcy9qZmZzMi94YXR0ci5jOjg4NzoxOiBlcnJv
+cjogdGhlIGZyYW1lIHNpemUgb2YgMTA4OCBieXRlcyBpcyBsYXJnZXIgdGhhbiAxMDI0IGJ5dGVz
+IFstV2Vycm9yPWZyYW1lLWxhcmdlci10aGFuPV0KPiAgICA4ODcgfCB9Cj4gICAgICAgIHwgXgo+
+IAo+IFVzaW5nIGR5bmFtaWMgYWxsb2NhdGlvbiBmaXggdGhpcyBjb21waWxhdGlvbiB3YXJuaW5n
+Lgo+IAo+IEZpeGVzOiBjOWY3MDBmODQwYmQgKCJbSkZGUzJdW1hBVFRSXSB1c2luZyAnZGVsZXRl
+IG1hcmtlcicgZm9yIHhkYXR1bS94cmVmIGRlbGV0aW9uIikKPiBSZXBvcnRlZC1ieTogVGltIEdh
+cmRuZXIgPHRpbS5nYXJkbmVyQGNhbm9uaWNhbC5jb20+Cj4gUmVwb3J0ZWQtYnk6IGtlcm5lbCB0
+ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPgo+IFJlcG9ydGVkLWJ5OiBSb24gRWNvbm9tb3MgPHJl
+QHc2cnoubmV0Pgo+IFJlcG9ydGVkLWJ5OiBOYXRoYW4gQ2hhbmNlbGxvciA8bmF0aGFuQGtlcm5l
+bC5vcmc+Cj4gUmV2aWV3ZWQtYnk6IE5pY2sgRGVzYXVsbmllcnMgPG5kZXNhdWxuaWVyc0Bnb29n
+bGUuY29tPgo+IFNpZ25lZC1vZmYtYnk6IEZhYmlhbiBGcmVkZXJpY2sgPGZhYmZAc2t5bmV0LmJl
+Pgo+IFNpZ25lZC1vZmYtYnk6IENocmlzdGlhbiBNYXJhbmdpIDxhbnN1ZWxzbXRoQGdtYWlsLmNv
+bT4KPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwo+IC0tLQo+ICAgZnMvamZmczIvYnVpbGQu
+YyB8ICA1ICsrKystCj4gICBmcy9qZmZzMi94YXR0ci5jIHwgMTMgKysrKysrKysrLS0tLQo+ICAg
+ZnMvamZmczIveGF0dHIuaCB8ICA0ICsrLS0KPiAgIDMgZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0
+aW9ucygrKSwgNyBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZnMvamZmczIvYnVpbGQu
+YyBiL2ZzL2pmZnMyL2J1aWxkLmMKPiBpbmRleCA4MzdjZDU1ZmQ0YzUuLjZhZTlkNmZlZmI4NiAx
+MDA2NDQKPiAtLS0gYS9mcy9qZmZzMi9idWlsZC5jCj4gKysrIGIvZnMvamZmczIvYnVpbGQuYwo+
+IEBAIC0yMTEsNyArMjExLDEwIEBAIHN0YXRpYyBpbnQgamZmczJfYnVpbGRfZmlsZXN5c3RlbShz
+dHJ1Y3QgamZmczJfc2JfaW5mbyAqYykKPiAgIAkJaWMtPnNjYW5fZGVudHMgPSBOVUxMOwo+ICAg
+CQljb25kX3Jlc2NoZWQoKTsKPiAgIAl9Cj4gLQlqZmZzMl9idWlsZF94YXR0cl9zdWJzeXN0ZW0o
+Yyk7Cj4gKwlyZXQgPSBqZmZzMl9idWlsZF94YXR0cl9zdWJzeXN0ZW0oYyk7Cj4gKwlpZiAocmV0
+KQo+ICsJCWdvdG8gZXhpdDsKPiArCj4gICAJYy0+ZmxhZ3MgJj0gfkpGRlMyX1NCX0ZMQUdfQlVJ
+TERJTkc7Cj4gICAKPiAgIAlkYmdfZnNidWlsZCgiRlMgYnVpbGQgY29tcGxldGVcbiIpOwo+IGRp
+ZmYgLS1naXQgYS9mcy9qZmZzMi94YXR0ci5jIGIvZnMvamZmczIveGF0dHIuYwo+IGluZGV4IGFh
+NDA0OGEyN2YzMS4uM2I2YmRjOWE0OWUxIDEwMDY0NAo+IC0tLSBhL2ZzL2pmZnMyL3hhdHRyLmMK
+PiArKysgYi9mcy9qZmZzMi94YXR0ci5jCj4gQEAgLTc3MiwxMCArNzcyLDEwIEBAIHZvaWQgamZm
+czJfY2xlYXJfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjKQo+ICAgfQo+
+ICAgCj4gICAjZGVmaW5lIFhSRUZfVE1QSEFTSF9TSVpFCSgxMjgpCj4gLXZvaWQgamZmczJfYnVp
+bGRfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjKQo+ICtpbnQgamZmczJf
+YnVpbGRfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjKQo+ICAgewo+ICAg
+CXN0cnVjdCBqZmZzMl94YXR0cl9yZWYgKnJlZiwgKl9yZWY7Cj4gLQlzdHJ1Y3QgamZmczJfeGF0
+dHJfcmVmICp4cmVmX3RtcGhhc2hbWFJFRl9UTVBIQVNIX1NJWkVdOwo+ICsJc3RydWN0IGpmZnMy
+X3hhdHRyX3JlZiAqKnhyZWZfdG1waGFzaDsKPiAgIAlzdHJ1Y3QgamZmczJfeGF0dHJfZGF0dW0g
+KnhkLCAqX3hkOwo+ICAgCXN0cnVjdCBqZmZzMl9pbm9kZV9jYWNoZSAqaWM7Cj4gICAJc3RydWN0
+IGpmZnMyX3Jhd19ub2RlX3JlZiAqcmF3Owo+IEBAIC03ODQsOSArNzg0LDEyIEBAIHZvaWQgamZm
+czJfYnVpbGRfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjKQo+ICAgCj4g
+ICAJQlVHX09OKCEoYy0+ZmxhZ3MgJiBKRkZTMl9TQl9GTEFHX0JVSUxESU5HKSk7Cj4gICAKPiAr
+CXhyZWZfdG1waGFzaCA9IGtjYWxsb2MoWFJFRl9UTVBIQVNIX1NJWkUsCj4gKwkJCSAgICAgICBz
+aXplb2Yoc3RydWN0IGpmZnMyX3hhdHRyX3JlZiAqKSwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIXhy
+ZWZfdG1waGFzaCkKPiArCQlyZXR1cm4gLUVOT01FTTsKPiArCgpJIGhhdmUgbWFkZSBzb21lIGZh
+dWx0IGluamVjdGlvbiB0ZXN0cywgamZmczIgd29ya3MgZmluZSwgdGhpcyBwYXRjaCAKaW1wb3J0
+cyBubyBtZW1sZWFrIHByb2JsZW1zLiBJdCBzZWVtcyBva2F5LgoKPiAgIAkvKiBQaGFzZS4xIDog
+TWVyZ2Ugc2FtZSB4cmVmICovCj4gLQlmb3IgKGk9MDsgaSA8IFhSRUZfVE1QSEFTSF9TSVpFOyBp
+KyspCj4gLQkJeHJlZl90bXBoYXNoW2ldID0gTlVMTDsKPiAgIAlmb3IgKHJlZj1jLT54cmVmX3Rl
+bXA7IHJlZjsgcmVmPV9yZWYpIHsKPiAgIAkJc3RydWN0IGpmZnMyX3hhdHRyX3JlZiAqdG1wOwo+
+ICAgCj4gQEAgLTg4NCw2ICs4ODcsOCBAQCB2b2lkIGpmZnMyX2J1aWxkX3hhdHRyX3N1YnN5c3Rl
+bShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYykKPiAgIAkJICAgICAiJXUgb2YgeHJlZiAoJXUgZGVh
+ZCwgJXUgb3JwaGFuKSBmb3VuZC5cbiIsCj4gICAJCSAgICAgeGRhdHVtX2NvdW50LCB4ZGF0dW1f
+dW5jaGVja2VkX2NvdW50LCB4ZGF0dW1fb3JwaGFuX2NvdW50LAo+ICAgCQkgICAgIHhyZWZfY291
+bnQsIHhyZWZfZGVhZF9jb3VudCwgeHJlZl9vcnBoYW5fY291bnQpOwo+ICsJa2ZyZWUoeHJlZl90
+bXBoYXNoKTsKPiArCXJldHVybiAwOwo+ICAgfQo+ICAgCj4gICBzdHJ1Y3QgamZmczJfeGF0dHJf
+ZGF0dW0gKmpmZnMyX3NldHVwX3hhdHRyX2RhdHVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjLAo+
+IGRpZmYgLS1naXQgYS9mcy9qZmZzMi94YXR0ci5oIGIvZnMvamZmczIveGF0dHIuaAo+IGluZGV4
+IDcyMDAwN2IyZmQ2NS4uMWI1MDMwYTMzNDlkIDEwMDY0NAo+IC0tLSBhL2ZzL2pmZnMyL3hhdHRy
+LmgKPiArKysgYi9mcy9qZmZzMi94YXR0ci5oCj4gQEAgLTcxLDcgKzcxLDcgQEAgc3RhdGljIGlu
+bGluZSBpbnQgaXNfeGF0dHJfcmVmX2RlYWQoc3RydWN0IGpmZnMyX3hhdHRyX3JlZiAqcmVmKQo+
+ICAgI2lmZGVmIENPTkZJR19KRkZTMl9GU19YQVRUUgo+ICAgCj4gICBleHRlcm4gdm9pZCBqZmZz
+Ml9pbml0X3hhdHRyX3N1YnN5c3RlbShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYyk7Cj4gLWV4dGVy
+biB2b2lkIGpmZnMyX2J1aWxkX3hhdHRyX3N1YnN5c3RlbShzdHJ1Y3QgamZmczJfc2JfaW5mbyAq
+Yyk7Cj4gK2V4dGVybiBpbnQgamZmczJfYnVpbGRfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZz
+Ml9zYl9pbmZvICpjKTsKPiAgIGV4dGVybiB2b2lkIGpmZnMyX2NsZWFyX3hhdHRyX3N1YnN5c3Rl
+bShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYyk7Cj4gICAKPiAgIGV4dGVybiBzdHJ1Y3QgamZmczJf
+eGF0dHJfZGF0dW0gKmpmZnMyX3NldHVwX3hhdHRyX2RhdHVtKHN0cnVjdCBqZmZzMl9zYl9pbmZv
+ICpjLAo+IEBAIC0xMDMsNyArMTAzLDcgQEAgZXh0ZXJuIHNzaXplX3QgamZmczJfbGlzdHhhdHRy
+KHN0cnVjdCBkZW50cnkgKiwgY2hhciAqLCBzaXplX3QpOwo+ICAgI2Vsc2UKPiAgIAo+ICAgI2Rl
+ZmluZSBqZmZzMl9pbml0X3hhdHRyX3N1YnN5c3RlbShjKQo+IC0jZGVmaW5lIGpmZnMyX2J1aWxk
+X3hhdHRyX3N1YnN5c3RlbShjKQo+ICsjZGVmaW5lIGpmZnMyX2J1aWxkX3hhdHRyX3N1YnN5c3Rl
+bShjKQkJKDApCj4gICAjZGVmaW5lIGpmZnMyX2NsZWFyX3hhdHRyX3N1YnN5c3RlbShjKQo+ICAg
+Cj4gICAjZGVmaW5lIGpmZnMyX3hhdHRyX2RvX2NyY2NoZWNrX2lub2RlKGMsIGljKQo+IAoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
