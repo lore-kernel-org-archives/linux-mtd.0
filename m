@@ -4,61 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC0C7C77B73
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 May 2023 13:12:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72F5BC77B7F
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 May 2023 15:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CMU/i3+zBYGPXL9JFcZFmAO0TZBeIXzMkrgTJtt+C4w=; b=Zx7TGJgZ8oUfX5XBFpg/r02hOE
-	vrKTaDTQUCHGpZdUOBx9AggJw/AfF6yQ3/CPoDcS9Iza/qb6p3hbUuW5JjdHDe+ZU35xZh9eH0wgU
-	DnjbxLuX5BefBwlXZ6QD178juVAn1gXor4ZshCf5W7RXcfD+LWts17ESMROBpKS4IvU6IpZzqGOcA
-	d3jclvUCwO3tn2FHfwlndJolHHJp/lY7EVP9EATUzxlAHesaoQO0D/aIfSw3BFDB3RTiz+z/iPy+L
-	DzvYAfYm91ZTbDXHyJXqlQ0r0n2jmh+qSe0GAg3A6AMS/Cllog2hJImS1V9pFOwJfUcnm+RUxDhFV
-	I5Ev4zmA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3lrQVxqv5cWq3uUoTegmXMEPHjmPFSt4MQv7YaMxG8E=; b=I/f/IR3rUjndxx
+	49unw+7lRPpsWCZB8qeyPhK+WA+ZGV6humlrftc2ovSy1fBkOMS7fniVc0UCLEcT85Qww2iz07gOh
+	Ck/VL6ye91WfkuDPkWO6TuH7alLgR/I8P5mq5OXf72AtDPhJDugI/PfYksA9FMG/s9FeOFMZmjz65
+	NEMPlttDe4DCC4FVXuHxq8En0UfC6vYKtLSJQcAKRyF+SnFZ3aHPZpjSPdjhS8ylBRZ8E7MFa4bGM
+	LigbzzoB1PoPD8SwiYvClyQ7OUtP7LCrS/Ofnx467qTn2+JxLQTu5l8ANd8Ixjuf32Br0nOqxzW2T
+	1VIkONNylypCayXYO6Mw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvHhG-00DVNH-21;
-	Sat, 06 May 2023 13:11:34 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1pvJr8-00DuI5-00;
+	Sat, 06 May 2023 15:29:54 +0000
+Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvHhC-00DVK1-12
+	id 1pvJr3-00DuFO-2L
 	for linux-mtd@lists.infradead.org;
-	Sat, 06 May 2023 13:11:32 +0000
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.54])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4QD7B73fNNz18KKh;
-	Sat,  6 May 2023 21:07:11 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Sat, 6 May 2023 21:11:16 +0800
-Subject: Re: [PATCH] jffs2: reduce stack usage in
- jffs2_build_xattr_subsystem()
-To: Christian Marangi <ansuelsmth@gmail.com>, David Woodhouse
-	<dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Fabian Frederick
-	<fabf@skynet.be>, Nick Desaulniers <ndesaulniers@google.com>, Christian
- Brauner <brauner@kernel.org>, KaiGai Kohei <kaigai@ak.jp.nec.com>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: Tim Gardner <tim.gardner@canonical.com>, kernel test robot
-	<lkp@intel.com>, Ron Economos <re@w6rz.net>, Nathan Chancellor
-	<nathan@kernel.org>, <stable@vger.kernel.org>
-References: <20230506045612.16616-1-ansuelsmth@gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <e6f4327a-83f0-22dc-e186-9012912b25d9@huawei.com>
-Date: Sat, 6 May 2023 21:11:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	Sat, 06 May 2023 15:29:51 +0000
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4f1394cb0d1so3287209e87.3
+        for <linux-mtd@lists.infradead.org>; Sat, 06 May 2023 08:29:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1683386987; x=1685978987;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4qtQZvewa01bd3WNJlBR7VuLAaPubF3IprbkAp3R6jI=;
+        b=rhuQY7bo7jkXWsQzOXHpflGgCgLdqnVRcCihN51Y9WQwdrcHNtLEMKbqkNuARXYgi/
+         NcTP6lA8O/JTb+wbiiXPdeyw2r4vOVb4c/2oZz7oOvpvX7xszULlw2HX1O9sFU2A36n8
+         IQHdV/NcGoUKxnChKWA/OiaSOnxeMS5SuH8leoPO18dpv0pto3li4LFhpNP2QTu/OURc
+         jY93voIUXGtjUAp0WAR75xrNW4pkQFozS4OM0KWwTcGj2hLrvevxDLnuSWz7Dw5KMSHl
+         J3NhFjjRCU1rsuN6LcF7erX3lQIXqAl3uNGXuJzMIRbrJFcm5OjTPPsb/4/6phXQ9fNA
+         EhjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683386987; x=1685978987;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4qtQZvewa01bd3WNJlBR7VuLAaPubF3IprbkAp3R6jI=;
+        b=ND+Dm3EJGOngBLkbnRy2I2p1Zqi70FyTV7dGc7tqkr+YQe63TZ8EAF257tFWWWHRz5
+         daZDgdEaaLaGtzFp9jdrdlbCL/MYPE1IN09rx//PybXE1ld35T5gZ84OD6KDSZYoU/6q
+         RBkJrFlRlsM6H9cGvw8KruMpaZGpHMQArOlt4gsWTsIyiNgEi5S7Jzx4aGzvfpbB+K2X
+         BLEkvW+CNBvaGNtgVANBiBXzSEnS/KhB9o+NmLx+KjoaSlFpbRCUQCvR+nJxN4jf74dp
+         AFtXXSuuLjnTdfmzfDl+b/1GZldZ3JmW5gnvGFlkK+4YaiSv6BnfxWpecAo0V+gDtBy2
+         DZtQ==
+X-Gm-Message-State: AC+VfDzl3Ef68mpAj69A5xVbBzLglZADLQF+7DUac67KZPez+ZGPBM/N
+	dQR9EhPdo0dhvfpXz0E0Zgk6lg==
+X-Google-Smtp-Source: ACHHUZ4aE6ybHgPo+un8T6iOuQhf3zQ+v7vONYr//+SCABjwwSjCNAQ2+Qt3Fv5hsQU1ukHnWuA0/A==
+X-Received: by 2002:ac2:4470:0:b0:4ed:c3a1:752a with SMTP id y16-20020ac24470000000b004edc3a1752amr1189012lfl.45.1683386987504;
+        Sat, 06 May 2023 08:29:47 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id v5-20020a197405000000b004eff32d6a21sm680814lfe.121.2023.05.06.08.29.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 May 2023 08:29:47 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sat, 06 May 2023 17:29:45 +0200
+Subject: [PATCH 2/2] ARM: dts: bcm5301x: Add SEAMA compatibles
 MIME-Version: 1.0
-In-Reply-To: <20230506045612.16616-1-ansuelsmth@gmail.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+Message-Id: <20230506-seama-partitions-v1-2-5806af1e4ac7@linaro.org>
+References: <20230506-seama-partitions-v1-0-5806af1e4ac7@linaro.org>
+In-Reply-To: <20230506-seama-partitions-v1-0-5806af1e4ac7@linaro.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Florian Fainelli <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230506_061131_233028_6E1CE2B7 
-X-CRM114-Status: GOOD (  22.52  )
+X-CRM114-CacheID: sfid-20230506_082949_767780_B5B39575 
+X-CRM114-Status: GOOD (  11.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,94 +94,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="gbk"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-1NogMjAyMy81LzYgMTI6NTYsIENocmlzdGlhbiBNYXJhbmdpINC0tcA6Cj4gRnJvbTogRmFiaWFu
-IEZyZWRlcmljayA8ZmFiZkBza3luZXQuYmU+Cj4gCj4gVXNlIGtjYWxsb2MoKSBmb3IgYWxsb2Nh
-dGlvbi9mbHVzaCBvZiAxMjggcG9pbnRlcnMgdGFibGUgdG8KPiByZWR1Y2Ugc3RhY2sgdXNhZ2Uu
-Cj4gCj4gRnVuY3Rpb24gbm93IHJldHVybnMgLUVOT01FTSBvciAwIG9uIHN1Y2Nlc3MuCj4gCj4g
-c3RhY2t1c2FnZQo+IEJlZm9yZToKPiAuL2ZzL2pmZnMyL3hhdHRyLmM6Nzc1ICBqZmZzMl9idWls
-ZF94YXR0cl9zdWJzeXN0ZW0gICAgIDEyMDgKPiBkeW5hbWljLGJvdW5kZWQKPiAKPiBBZnRlcjoK
-PiAuL2ZzL2pmZnMyL3hhdHRyLmM6Nzc1ICBqZmZzMl9idWlsZF94YXR0cl9zdWJzeXN0ZW0gICAg
-IDE5Mgo+IGR5bmFtaWMsYm91bmRlZAo+IAo+IEFsc28gdXBkYXRlIGRlZmluaXRpb24gd2hlbiBD
-T05GSUdfSkZGUzJfRlNfWEFUVFIgaXMgbm90IGVuYWJsZWQKPiAKPiBUZXN0ZWQgd2l0aCBhbiBN
-VEQgbW91bnQgcG9pbnQgYW5kIHNvbWUgdXNlciBzZXQvZ2V0ZmF0dHIuCj4gCj4gTWFueSBjdXJy
-ZW50IHRhcmdldCBvbiBPcGVuV1JUIGFsc28gc3VmZmVyIGZyb20gYSBjb21waWxhdGlvbiB3YXJu
-aW5nCj4gKHRoYXQgYmVjb21lIGFuIGVycm9yIHdpdGggQ09ORklHX1dFUlJPUikgd2l0aCB0aGUg
-Zm9sbG93aW5nIG91dHB1dDoKPiAKPiBmcy9qZmZzMi94YXR0ci5jOiBJbiBmdW5jdGlvbiAnamZm
-czJfYnVpbGRfeGF0dHJfc3Vic3lzdGVtJzoKPiBmcy9qZmZzMi94YXR0ci5jOjg4NzoxOiBlcnJv
-cjogdGhlIGZyYW1lIHNpemUgb2YgMTA4OCBieXRlcyBpcyBsYXJnZXIgdGhhbiAxMDI0IGJ5dGVz
-IFstV2Vycm9yPWZyYW1lLWxhcmdlci10aGFuPV0KPiAgICA4ODcgfCB9Cj4gICAgICAgIHwgXgo+
-IAo+IFVzaW5nIGR5bmFtaWMgYWxsb2NhdGlvbiBmaXggdGhpcyBjb21waWxhdGlvbiB3YXJuaW5n
-Lgo+IAo+IEZpeGVzOiBjOWY3MDBmODQwYmQgKCJbSkZGUzJdW1hBVFRSXSB1c2luZyAnZGVsZXRl
-IG1hcmtlcicgZm9yIHhkYXR1bS94cmVmIGRlbGV0aW9uIikKPiBSZXBvcnRlZC1ieTogVGltIEdh
-cmRuZXIgPHRpbS5nYXJkbmVyQGNhbm9uaWNhbC5jb20+Cj4gUmVwb3J0ZWQtYnk6IGtlcm5lbCB0
-ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPgo+IFJlcG9ydGVkLWJ5OiBSb24gRWNvbm9tb3MgPHJl
-QHc2cnoubmV0Pgo+IFJlcG9ydGVkLWJ5OiBOYXRoYW4gQ2hhbmNlbGxvciA8bmF0aGFuQGtlcm5l
-bC5vcmc+Cj4gUmV2aWV3ZWQtYnk6IE5pY2sgRGVzYXVsbmllcnMgPG5kZXNhdWxuaWVyc0Bnb29n
-bGUuY29tPgo+IFNpZ25lZC1vZmYtYnk6IEZhYmlhbiBGcmVkZXJpY2sgPGZhYmZAc2t5bmV0LmJl
-Pgo+IFNpZ25lZC1vZmYtYnk6IENocmlzdGlhbiBNYXJhbmdpIDxhbnN1ZWxzbXRoQGdtYWlsLmNv
-bT4KPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZwo+IC0tLQo+ICAgZnMvamZmczIvYnVpbGQu
-YyB8ICA1ICsrKystCj4gICBmcy9qZmZzMi94YXR0ci5jIHwgMTMgKysrKysrKysrLS0tLQo+ICAg
-ZnMvamZmczIveGF0dHIuaCB8ICA0ICsrLS0KPiAgIDMgZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0
-aW9ucygrKSwgNyBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZnMvamZmczIvYnVpbGQu
-YyBiL2ZzL2pmZnMyL2J1aWxkLmMKPiBpbmRleCA4MzdjZDU1ZmQ0YzUuLjZhZTlkNmZlZmI4NiAx
-MDA2NDQKPiAtLS0gYS9mcy9qZmZzMi9idWlsZC5jCj4gKysrIGIvZnMvamZmczIvYnVpbGQuYwo+
-IEBAIC0yMTEsNyArMjExLDEwIEBAIHN0YXRpYyBpbnQgamZmczJfYnVpbGRfZmlsZXN5c3RlbShz
-dHJ1Y3QgamZmczJfc2JfaW5mbyAqYykKPiAgIAkJaWMtPnNjYW5fZGVudHMgPSBOVUxMOwo+ICAg
-CQljb25kX3Jlc2NoZWQoKTsKPiAgIAl9Cj4gLQlqZmZzMl9idWlsZF94YXR0cl9zdWJzeXN0ZW0o
-Yyk7Cj4gKwlyZXQgPSBqZmZzMl9idWlsZF94YXR0cl9zdWJzeXN0ZW0oYyk7Cj4gKwlpZiAocmV0
-KQo+ICsJCWdvdG8gZXhpdDsKPiArCj4gICAJYy0+ZmxhZ3MgJj0gfkpGRlMyX1NCX0ZMQUdfQlVJ
-TERJTkc7Cj4gICAKPiAgIAlkYmdfZnNidWlsZCgiRlMgYnVpbGQgY29tcGxldGVcbiIpOwo+IGRp
-ZmYgLS1naXQgYS9mcy9qZmZzMi94YXR0ci5jIGIvZnMvamZmczIveGF0dHIuYwo+IGluZGV4IGFh
-NDA0OGEyN2YzMS4uM2I2YmRjOWE0OWUxIDEwMDY0NAo+IC0tLSBhL2ZzL2pmZnMyL3hhdHRyLmMK
-PiArKysgYi9mcy9qZmZzMi94YXR0ci5jCj4gQEAgLTc3MiwxMCArNzcyLDEwIEBAIHZvaWQgamZm
-czJfY2xlYXJfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjKQo+ICAgfQo+
-ICAgCj4gICAjZGVmaW5lIFhSRUZfVE1QSEFTSF9TSVpFCSgxMjgpCj4gLXZvaWQgamZmczJfYnVp
-bGRfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjKQo+ICtpbnQgamZmczJf
-YnVpbGRfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjKQo+ICAgewo+ICAg
-CXN0cnVjdCBqZmZzMl94YXR0cl9yZWYgKnJlZiwgKl9yZWY7Cj4gLQlzdHJ1Y3QgamZmczJfeGF0
-dHJfcmVmICp4cmVmX3RtcGhhc2hbWFJFRl9UTVBIQVNIX1NJWkVdOwo+ICsJc3RydWN0IGpmZnMy
-X3hhdHRyX3JlZiAqKnhyZWZfdG1waGFzaDsKPiAgIAlzdHJ1Y3QgamZmczJfeGF0dHJfZGF0dW0g
-KnhkLCAqX3hkOwo+ICAgCXN0cnVjdCBqZmZzMl9pbm9kZV9jYWNoZSAqaWM7Cj4gICAJc3RydWN0
-IGpmZnMyX3Jhd19ub2RlX3JlZiAqcmF3Owo+IEBAIC03ODQsOSArNzg0LDEyIEBAIHZvaWQgamZm
-czJfYnVpbGRfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjKQo+ICAgCj4g
-ICAJQlVHX09OKCEoYy0+ZmxhZ3MgJiBKRkZTMl9TQl9GTEFHX0JVSUxESU5HKSk7Cj4gICAKPiAr
-CXhyZWZfdG1waGFzaCA9IGtjYWxsb2MoWFJFRl9UTVBIQVNIX1NJWkUsCj4gKwkJCSAgICAgICBz
-aXplb2Yoc3RydWN0IGpmZnMyX3hhdHRyX3JlZiAqKSwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIXhy
-ZWZfdG1waGFzaCkKPiArCQlyZXR1cm4gLUVOT01FTTsKPiArCgpJIGhhdmUgbWFkZSBzb21lIGZh
-dWx0IGluamVjdGlvbiB0ZXN0cywgamZmczIgd29ya3MgZmluZSwgdGhpcyBwYXRjaCAKaW1wb3J0
-cyBubyBtZW1sZWFrIHByb2JsZW1zLiBJdCBzZWVtcyBva2F5LgoKPiAgIAkvKiBQaGFzZS4xIDog
-TWVyZ2Ugc2FtZSB4cmVmICovCj4gLQlmb3IgKGk9MDsgaSA8IFhSRUZfVE1QSEFTSF9TSVpFOyBp
-KyspCj4gLQkJeHJlZl90bXBoYXNoW2ldID0gTlVMTDsKPiAgIAlmb3IgKHJlZj1jLT54cmVmX3Rl
-bXA7IHJlZjsgcmVmPV9yZWYpIHsKPiAgIAkJc3RydWN0IGpmZnMyX3hhdHRyX3JlZiAqdG1wOwo+
-ICAgCj4gQEAgLTg4NCw2ICs4ODcsOCBAQCB2b2lkIGpmZnMyX2J1aWxkX3hhdHRyX3N1YnN5c3Rl
-bShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYykKPiAgIAkJICAgICAiJXUgb2YgeHJlZiAoJXUgZGVh
-ZCwgJXUgb3JwaGFuKSBmb3VuZC5cbiIsCj4gICAJCSAgICAgeGRhdHVtX2NvdW50LCB4ZGF0dW1f
-dW5jaGVja2VkX2NvdW50LCB4ZGF0dW1fb3JwaGFuX2NvdW50LAo+ICAgCQkgICAgIHhyZWZfY291
-bnQsIHhyZWZfZGVhZF9jb3VudCwgeHJlZl9vcnBoYW5fY291bnQpOwo+ICsJa2ZyZWUoeHJlZl90
-bXBoYXNoKTsKPiArCXJldHVybiAwOwo+ICAgfQo+ICAgCj4gICBzdHJ1Y3QgamZmczJfeGF0dHJf
-ZGF0dW0gKmpmZnMyX3NldHVwX3hhdHRyX2RhdHVtKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjLAo+
-IGRpZmYgLS1naXQgYS9mcy9qZmZzMi94YXR0ci5oIGIvZnMvamZmczIveGF0dHIuaAo+IGluZGV4
-IDcyMDAwN2IyZmQ2NS4uMWI1MDMwYTMzNDlkIDEwMDY0NAo+IC0tLSBhL2ZzL2pmZnMyL3hhdHRy
-LmgKPiArKysgYi9mcy9qZmZzMi94YXR0ci5oCj4gQEAgLTcxLDcgKzcxLDcgQEAgc3RhdGljIGlu
-bGluZSBpbnQgaXNfeGF0dHJfcmVmX2RlYWQoc3RydWN0IGpmZnMyX3hhdHRyX3JlZiAqcmVmKQo+
-ICAgI2lmZGVmIENPTkZJR19KRkZTMl9GU19YQVRUUgo+ICAgCj4gICBleHRlcm4gdm9pZCBqZmZz
-Ml9pbml0X3hhdHRyX3N1YnN5c3RlbShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYyk7Cj4gLWV4dGVy
-biB2b2lkIGpmZnMyX2J1aWxkX3hhdHRyX3N1YnN5c3RlbShzdHJ1Y3QgamZmczJfc2JfaW5mbyAq
-Yyk7Cj4gK2V4dGVybiBpbnQgamZmczJfYnVpbGRfeGF0dHJfc3Vic3lzdGVtKHN0cnVjdCBqZmZz
-Ml9zYl9pbmZvICpjKTsKPiAgIGV4dGVybiB2b2lkIGpmZnMyX2NsZWFyX3hhdHRyX3N1YnN5c3Rl
-bShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYyk7Cj4gICAKPiAgIGV4dGVybiBzdHJ1Y3QgamZmczJf
-eGF0dHJfZGF0dW0gKmpmZnMyX3NldHVwX3hhdHRyX2RhdHVtKHN0cnVjdCBqZmZzMl9zYl9pbmZv
-ICpjLAo+IEBAIC0xMDMsNyArMTAzLDcgQEAgZXh0ZXJuIHNzaXplX3QgamZmczJfbGlzdHhhdHRy
-KHN0cnVjdCBkZW50cnkgKiwgY2hhciAqLCBzaXplX3QpOwo+ICAgI2Vsc2UKPiAgIAo+ICAgI2Rl
-ZmluZSBqZmZzMl9pbml0X3hhdHRyX3N1YnN5c3RlbShjKQo+IC0jZGVmaW5lIGpmZnMyX2J1aWxk
-X3hhdHRyX3N1YnN5c3RlbShjKQo+ICsjZGVmaW5lIGpmZnMyX2J1aWxkX3hhdHRyX3N1YnN5c3Rl
-bShjKQkJKDApCj4gICAjZGVmaW5lIGpmZnMyX2NsZWFyX3hhdHRyX3N1YnN5c3RlbShjKQo+ICAg
-Cj4gICAjZGVmaW5lIGpmZnMyX3hhdHRyX2RvX2NyY2NoZWNrX2lub2RlKGMsIGljKQo+IAoKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
-eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+This adds SEAMA compatibles to the firmware partition of these
+two D-Link devices.
+
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ arch/arm/boot/dts/bcm47094-dlink-dir-885l.dts | 1 +
+ arch/arm/boot/dts/bcm47094-dlink-dir-890l.dts | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/arm/boot/dts/bcm47094-dlink-dir-885l.dts b/arch/arm/boot/dts/bcm47094-dlink-dir-885l.dts
+index 555fbe41dd8f..cf3000b07eea 100644
+--- a/arch/arm/boot/dts/bcm47094-dlink-dir-885l.dts
++++ b/arch/arm/boot/dts/bcm47094-dlink-dir-885l.dts
+@@ -33,6 +33,7 @@ partitions {
+ 				#size-cells = <1>;
+ 
+ 				partition@0 {
++					compatible = "seama";
+ 					label = "firmware";
+ 					reg = <0x00000000 0x08000000>;
+ 				};
+diff --git a/arch/arm/boot/dts/bcm47094-dlink-dir-890l.dts b/arch/arm/boot/dts/bcm47094-dlink-dir-890l.dts
+index d945a20b06e0..3551f855ff20 100644
+--- a/arch/arm/boot/dts/bcm47094-dlink-dir-890l.dts
++++ b/arch/arm/boot/dts/bcm47094-dlink-dir-890l.dts
+@@ -149,6 +149,7 @@ partitions {
+ 		 * partitions: this device uses SEAMA.
+ 		 */
+ 		firmware@0 {
++			compatible = "seama";
+ 			label = "firmware";
+ 			reg = <0x00000000 0x08000000>;
+ 		};
+
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
