@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91180C7EE24
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 May 2023 15:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B488C7EE2A
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 May 2023 15:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BkGZu8h3Uue/PyuQPEpovrKIV47HkBoALBmvUis4MN0=; b=VETN+1QtPMSok1
-	jOFveoKKl7H5vsCc8/4gner8Lspwpq0bUEEM1ZrjsuqRupc07/8NKnaPjzD7S3lnmO/r9Tiwf6rXL
-	VZJjT7a7UqzL3duYwv6Zb//+ByNjEuuHcWfnwb7jJzx2/zEj3J9JYWKDdZQ5ccSz79KVtG13ZUWjp
-	5AiTSCLkk/IbkIJET9OfBfivM1vFKz4ardWzFn2j4eUZEJFibnxdV0KTe0DH8KurWbhrBwKmY2TAT
-	gZvIKngZTPf20b4LZI9AlSCmwX5p9tpYmK79ng5xY7iL/gL5WXt6MSO0f3f315y2B6mdYHpZTI7c/
-	/1aMQomzrQSS0FBsp2zg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+t0dpTl3odV7leTq5YJMny7XAKdDE+RHg7hFddrE1q0=; b=Oam7EaWlux4E3K
+	4cQybqIudzczoYann9f/ZD7oJTY1pMJXFhWN+r2TPmxptebz4NJ480MrTZEQ7jVKdHEpf90Z9zQyk
+	vfykbuP4+jZlOjs1JxgX/JMeldgsFK77WXb8pVymp9UE3z/E8xl2hS2MkhXi33i8p1rv5RiLX+8OC
+	AnU9X7pretLEJIKOvdVGwqIDBkqM23Q6o9MPGxrd5RBh4GdS/spz+i/fuWWh0M26zNEgTVXiCLMPi
+	tr21mqKzZf+V7OgHE0THZRGZ/cor1sKYf58o9jlLFjp1o2vcho7IL/kRr1fS9R5LWXe9imDjgLnIv
+	aa8FILgPW5oVNIaeDWqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvJrB-00DuKC-2S;
-	Sat, 06 May 2023 15:29:57 +0000
-Received: from mail-lf1-x129.google.com ([2a00:1450:4864:20::129])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvJr3-00DuFJ-0w
-	for linux-mtd@lists.infradead.org;
+	id 1pvJr6-00DuHb-1W;
 	Sat, 06 May 2023 15:29:52 +0000
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4f22908a082so225710e87.1
+Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1pvJr3-00DuFD-0n
+	for linux-mtd@lists.infradead.org;
+	Sat, 06 May 2023 15:29:50 +0000
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2ac7c59665bso33551771fa.3
         for <linux-mtd@lists.infradead.org>; Sat, 06 May 2023 08:29:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1683386986; x=1685978986;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kcFNxwZJjHoZpWKSHiKHs54BtGGOGq9ohvpv73Bd18I=;
-        b=dJfpUgM6CZ/H3KrBlF220za0DUnhwRNDMlR/kzl8wWqnFA4DgVnHkZwAbpOTDjAlkM
-         HigvIxMZShpDWvvX39CH3UhnaeyrkxB9KMsZSBuS9zMYMSri9QYJLfsZfG07MKxcBqRu
-         tk88mzSsbBDhFlIpKo2IjpWAhyk77MIJAg5fs9YHM82CPN9tqmHCpdEO8MiqUgsNI0wK
-         pxwqh9XbuJTIjHYJy4VLvBM29R+nBacy4GS1BojXQVGDimfGGYFPEmUNffHI2/inLPsJ
-         NskppM6iNqwJxHyq8qsokTsLy2oRx0n0nupYHkH2e2sT3MIqdlqufomzjIFmGczYU8XY
-         G53Q==
+        d=linaro.org; s=google; t=1683386985; x=1685978985;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T8hWHGuwmr5mvcRO9xWp0sVfGZwfYtl73f18uwHlJMc=;
+        b=mNiQ0UDS2BUcvU4LntQeVmsiQUODFkPh8PySaX6ucBq7F5zKYFGH5BIL21VYHsS/Rb
+         Ad5fGY92zFbpAHSC72PDkEukkm0w6dfI8dRd1g82wyUJu2Z3Kx7btxOZSpUfpiylCGi+
+         RKP2R1pTVir2VeqCumdztRmrt3CV4ui0t6GVMu7B4E6JDFYM7hRR85TjzWdaU154eopl
+         BrB4meyYy2XHysDZBB0CMAVgGR9NlI8G9v1faKidLOJqS48ZeD6SEXN2lD8SqHnBITJW
+         ddbCKpkw03apGuuPuM3UMWMQ+dX0CCi9WFyL0p/hM+g2uGpTzWAUQAt9MAAMPGKmk2Ja
+         CAaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683386986; x=1685978986;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kcFNxwZJjHoZpWKSHiKHs54BtGGOGq9ohvpv73Bd18I=;
-        b=ib5lxtLcQMYuIuT2icsBBKJHI/0nn2TTu5rSarmvHTObwzBJRWxd4hiIO4mpQaLZAl
-         903s07G+bRn2gR3bNiZtj+IfNNhQzK3jwd5aV71f3T56SL8Ya4RCibB7UBHXSb/BNYLh
-         mbFYqXb9PVOcVtSIICm+CHCwacF2NE9gn1Q4UZxoBjzihd5ey+yxhCAU3ollB4qsKDYr
-         aBookr8/TOC8CSzR+k+WsxlFwvXzKbuyVCwE5yrbRGsPHtFNH6pyD3IhdxNG6CLnWzR3
-         XPodJ3NQhBUusybKGOd9YdaUZM0oJs8VtfYfHf4YhGCRNYPliAd+qL3zjfOkl8Ez6eCm
-         D8xQ==
-X-Gm-Message-State: AC+VfDxmCoAYptkviGAuLWo/TF9rpquRyjkku8Dh0waQWYhLZTVsrG4e
-	5neHCJioHhH8lGng3dvyNRsFZw==
-X-Google-Smtp-Source: ACHHUZ6GtyMk+NQ6GhlKalLwusNPGRbxL5sJNgSk9QivSz+TC736wa6j9aBzMTZaA949wCMGrPiWQg==
-X-Received: by 2002:ac2:5298:0:b0:4ef:ec6a:198c with SMTP id q24-20020ac25298000000b004efec6a198cmr1448431lfm.26.1683386986519;
-        Sat, 06 May 2023 08:29:46 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683386985; x=1685978985;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T8hWHGuwmr5mvcRO9xWp0sVfGZwfYtl73f18uwHlJMc=;
+        b=AsjskA/smSFJQZTgvlBNU+4gvQuzHEavZOHBZcmFceM743fTW41EShtG4icHGYemwe
+         PZAyXQJI8c8MhywGE4BGlQGsNlxcozCuWpaIiECExK9cdYMKcIDcl9YygmD1FiUCyErA
+         j83oviuv9qu4Y1zJelgkxLE7VkkRD3B84z6pW+VPEc/ZqmT7uH1SCp9RlUna8yGfSg84
+         5XDfzbAfUXUAx51kj0L6S/u1ZziIRMLM51P00JWPYSSnjpNkNMqpsdK+Tt6kPwA24vwa
+         dJSqzk1Qe63ZE0cyEjtjx8QA7nydglA0ABxDQZnX9uF5ruQ/L17s8U48rBwe3flD0J67
+         Pq2w==
+X-Gm-Message-State: AC+VfDyvvypT5jF6/gCvTJqfDAaImndfZvVU/U1RrSwLV27bl8MISLS3
+	wzjowtf5/vMJa3gCxU4RkuXKew==
+X-Google-Smtp-Source: ACHHUZ6miK2s5Xpjs644BMeWUfktmkUFGbsUk9aP5jX14WBNbOM2Oc42j/yd+sDB4hGnBVdj/8QJVw==
+X-Received: by 2002:ac2:5dfb:0:b0:4f1:3ef5:35a6 with SMTP id z27-20020ac25dfb000000b004f13ef535a6mr1250503lfq.8.1683386985531;
+        Sat, 06 May 2023 08:29:45 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id v5-20020a197405000000b004eff32d6a21sm680814lfe.121.2023.05.06.08.29.45
+        by smtp.gmail.com with ESMTPSA id v5-20020a197405000000b004eff32d6a21sm680814lfe.121.2023.05.06.08.29.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 May 2023 08:29:46 -0700 (PDT)
+        Sat, 06 May 2023 08:29:45 -0700 (PDT)
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sat, 06 May 2023 17:29:44 +0200
-Subject: [PATCH 1/2] dt-bindings: mtd: Add SEAMA partition bindings
+Subject: [PATCH 0/2] Add SEAMA partition types
+Date: Sat, 06 May 2023 17:29:43 +0200
+Message-Id: <20230506-seama-partitions-v1-0-5806af1e4ac7@linaro.org>
 MIME-Version: 1.0
-Message-Id: <20230506-seama-partitions-v1-1-5806af1e4ac7@linaro.org>
-References: <20230506-seama-partitions-v1-0-5806af1e4ac7@linaro.org>
-In-Reply-To: <20230506-seama-partitions-v1-0-5806af1e4ac7@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAGdyVmQC/0WNQQqDQAxFryJZG5gZ0dZeRVxkNK1ZdCqJiCDe3
+ bEbl4//Hn8HYxU2eBU7KK9i8ksZfFnAMFH6MMqYGYILlatdg8b0JZxJF1myaxib4Lx/xLZ91pC
+ zSMYYldIwXeHtX+Os/Jbt/9f1x3ECx3j3K38AAAA=
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Rob Herring <robh+dt@kernel.org>, 
@@ -81,8 +81,9 @@ Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230506_082949_391027_B5116FE5 
-X-CRM114-Status: GOOD (  13.18  )
+X-CRM114-CacheID: sfid-20230506_082949_390708_26B8CB3F 
+X-CRM114-Status: UNSURE (   9.18  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,73 +100,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This types of NAND partitions appear in OpenWrt and
-U-Boot.
+This type of firmware partition appear in some devices in
+NAND flash, so we need to be able to tag the partitions
+with the appropriate type.
+
+The origin of the "SEAttle iMAge" is unknown.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
+Linus Walleij (2):
+      dt-bindings: mtd: Add SEAMA partition bindings
+      ARM: dts: bcm5301x: Add SEAMA compatibles
+
  .../devicetree/bindings/mtd/partitions/seama.yaml  | 50 ++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ arch/arm/boot/dts/bcm47094-dlink-dir-885l.dts      |  1 +
+ arch/arm/boot/dts/bcm47094-dlink-dir-890l.dts      |  1 +
+ 3 files changed, 52 insertions(+)
+---
+base-commit: caad71e7d226920623d78be2e6283516decdc502
+change-id: 20230506-seama-partitions-b620117b9985
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/seama.yaml b/Documentation/devicetree/bindings/mtd/partitions/seama.yaml
-new file mode 100644
-index 000000000000..352f008ffdb1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/seama.yaml
-@@ -0,0 +1,50 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/seama.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Seattle Image Partitions
-+
-+description: The SEAttle iMAge (SEAMA) partition is a type of partition
-+  used for NAND flash devices. This type of flash image is found in some
-+  D-Link routers such as DIR-645, DIR-842, DIR-859, DIR-860L, DIR-885L,
-+  DIR890L and DCH-M225, as well as in WD and NEC routers on the ath79
-+  (MIPS), Broadcom BCM53xx, and RAMIPS platforms.
-+
-+maintainers:
-+  - Linus Walleij <linus.walleij@linaro.org>
-+
-+select: false
-+
-+properties:
-+  compatible:
-+    const: seama
-+
-+  '#address-cells': false
-+
-+  '#size-cells': false
-+
-+patternProperties:
-+  "@[0-9a-f]+$":
-+    $ref: partition.yaml#
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    flash {
-+      partitions {
-+        compatible = "fixed-partitions";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        firmware@0 {
-+          compatible = "seama";
-+          label = "firmware";
-+          reg = <0x00000000 0x08000000>;
-+        };
-+      };
-+    };
-
+Best regards,
 -- 
-2.34.1
+Linus Walleij <linus.walleij@linaro.org>
 
 
 ______________________________________________________
