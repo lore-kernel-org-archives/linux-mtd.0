@@ -4,86 +4,156 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B488C7EE2A
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 May 2023 15:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2DFCC77B75
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 May 2023 01:41:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+t0dpTl3odV7leTq5YJMny7XAKdDE+RHg7hFddrE1q0=; b=Oam7EaWlux4E3K
-	4cQybqIudzczoYann9f/ZD7oJTY1pMJXFhWN+r2TPmxptebz4NJ480MrTZEQ7jVKdHEpf90Z9zQyk
-	vfykbuP4+jZlOjs1JxgX/JMeldgsFK77WXb8pVymp9UE3z/E8xl2hS2MkhXi33i8p1rv5RiLX+8OC
-	AnU9X7pretLEJIKOvdVGwqIDBkqM23Q6o9MPGxrd5RBh4GdS/spz+i/fuWWh0M26zNEgTVXiCLMPi
-	tr21mqKzZf+V7OgHE0THZRGZ/cor1sKYf58o9jlLFjp1o2vcho7IL/kRr1fS9R5LWXe9imDjgLnIv
-	aa8FILgPW5oVNIaeDWqw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=q/fJkSgcoIQ8bA4UekJzw+zkYiu9jmtrsj6oRMuTVt8=; b=DwZ2e7wlird7cj
+	ZrDJYMNWniQokjtDfebVIM1lDzQiMVvfjYfLk1CyPufKIWa46wo9n7o3dWhJmp2TKQN8o0iEFfabN
+	0IyAsuxPF2cM+0dZjjXgMnfiS6//KyeXB49NVHkf31JuNC8XDU2PjS7PRYtdKrNG61KQdtoM1GZMx
+	RXwS3IehWiGIyuxmDH7H8YOxJ89aZRwforwGLsbzlA99NGOVQUxZRk6bgYx+JzdRrEHuYf4v+MemD
+	aUeeeR0Lwbo9c9mnOuVlRIJ9UunHGHq2hsLnN6dYHB7a2dECmgMGI1dVRKpt7PEAGXl8TiQDrgZxa
+	+Vp2NhYu0ju8XskEmTcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvJr6-00DuHb-1W;
-	Sat, 06 May 2023 15:29:52 +0000
-Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+	id 1pvprk-00Gxrj-39;
+	Mon, 08 May 2023 01:40:41 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvJr3-00DuFD-0n
-	for linux-mtd@lists.infradead.org;
-	Sat, 06 May 2023 15:29:50 +0000
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2ac7c59665bso33551771fa.3
-        for <linux-mtd@lists.infradead.org>; Sat, 06 May 2023 08:29:47 -0700 (PDT)
+	id 1pvprh-00GxrT-2R;
+	Mon, 08 May 2023 01:40:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Transfer-Encoding
+	:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=SBjx701N6W9A0jI3mdc6Z90QNy5ooLXyUUk3SXB3Cw4=; b=bwqqxqIIpb04Lp7ZL7bpTfES5K
+	yjZqtPI0UmXs7uBxDYqgbY7RoVOxFiu89jwU6S6Q6/3B8+zJQlMqntln+7BO6E/SXkw0QICqXi7Ed
+	kN+okNuNyC1+WwpP43onXQ3qSxe+f0FVjglCdHBbba2VkdGwNraMR/PTO4KnU22fFJPzek4uek7UW
+	SQu7ZPXaSAjb4HDYKZnGDK4adRNYTejT57HM7GP9zlrym0zb+DDEvYXJuECayxQcEtknSmxkY9u1M
+	See/tIVICBJOganwiQzI0WRGPEgrrRDRcdvGSYlvUKP9Q9trIgG8cd/F744ZD4v2dHT5DtVjRc+ar
+	aklnVSrg==;
+Received: from mail-tycjpn01on20623.outbound.protection.outlook.com ([2a01:111:f403:7010::623] helo=JPN01-TYC-obe.outbound.protection.outlook.com)
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1pvorV-004e5t-0T;
+	Mon, 08 May 2023 00:36:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ENQD5aU9VmNq+6QbDbfvPAKDggMjSYwKMbD4nS6fuIZDfTh4WapKlqImLTMsw9ibc/oNw9VvegHZqcGd0F4evv8InCN4rZXxZiZQsL7MuzGJPvLg4wp/n9dVjfcV5hmIAK+Rnp1LefRpzaSwPhw+8lzDmMxL3KszDxpHCt8/zzM77psS9dsuCxR/t7fjSKA7vFhlKDp7GHJZH5rH/XDmvmOgr6U/9OZ/ZVwHWXZaTDFSWYI1DfczM9X4buaA8RtIGugNImpdSNjRAzGYj5cw+Fs1uOlBj/o+iYuPMJo10vOjq25Jv84yfVhSF0FJZ8BYU2LMf91XhvUk6hxb2eBTkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SBjx701N6W9A0jI3mdc6Z90QNy5ooLXyUUk3SXB3Cw4=;
+ b=Z36RveF+YTC+Cz1L6Cfh1BQtjxfjtmnFksK4dOH3eRUOrnpacSehf0A/LozkSgmOqKEMW+zGRiBRpYqnuM09E0ynP+Om3MqmK/ZkPMZFroBrHQuts4f0wCu8ak8wOSfgiFeXpGTMgnKvq8NLKMIGzlTe0oXYmEUkxxbRcI8XeZsrmwZz9U+OhyIeHKaMpj7Tafy+pvUPKiTZ/9Cc7BGJ9T8G+Su40VE+STjse46JoVoKiAEI3+GDnQ9bJKUgKGh7tNP/CQIYrVaQPHhk9S+w6YtbPdNbcBvPAamaelrskUcD37WvgR0sPwywBAGwvOpSPtuOvD6FwHHZEkUQ8TFqvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nskint.co.jp; dmarc=pass action=none header.from=nskint.co.jp;
+ dkim=pass header.d=nskint.co.jp; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1683386985; x=1685978985;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=T8hWHGuwmr5mvcRO9xWp0sVfGZwfYtl73f18uwHlJMc=;
-        b=mNiQ0UDS2BUcvU4LntQeVmsiQUODFkPh8PySaX6ucBq7F5zKYFGH5BIL21VYHsS/Rb
-         Ad5fGY92zFbpAHSC72PDkEukkm0w6dfI8dRd1g82wyUJu2Z3Kx7btxOZSpUfpiylCGi+
-         RKP2R1pTVir2VeqCumdztRmrt3CV4ui0t6GVMu7B4E6JDFYM7hRR85TjzWdaU154eopl
-         BrB4meyYy2XHysDZBB0CMAVgGR9NlI8G9v1faKidLOJqS48ZeD6SEXN2lD8SqHnBITJW
-         ddbCKpkw03apGuuPuM3UMWMQ+dX0CCi9WFyL0p/hM+g2uGpTzWAUQAt9MAAMPGKmk2Ja
-         CAaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683386985; x=1685978985;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T8hWHGuwmr5mvcRO9xWp0sVfGZwfYtl73f18uwHlJMc=;
-        b=AsjskA/smSFJQZTgvlBNU+4gvQuzHEavZOHBZcmFceM743fTW41EShtG4icHGYemwe
-         PZAyXQJI8c8MhywGE4BGlQGsNlxcozCuWpaIiECExK9cdYMKcIDcl9YygmD1FiUCyErA
-         j83oviuv9qu4Y1zJelgkxLE7VkkRD3B84z6pW+VPEc/ZqmT7uH1SCp9RlUna8yGfSg84
-         5XDfzbAfUXUAx51kj0L6S/u1ZziIRMLM51P00JWPYSSnjpNkNMqpsdK+Tt6kPwA24vwa
-         dJSqzk1Qe63ZE0cyEjtjx8QA7nydglA0ABxDQZnX9uF5ruQ/L17s8U48rBwe3flD0J67
-         Pq2w==
-X-Gm-Message-State: AC+VfDyvvypT5jF6/gCvTJqfDAaImndfZvVU/U1RrSwLV27bl8MISLS3
-	wzjowtf5/vMJa3gCxU4RkuXKew==
-X-Google-Smtp-Source: ACHHUZ6miK2s5Xpjs644BMeWUfktmkUFGbsUk9aP5jX14WBNbOM2Oc42j/yd+sDB4hGnBVdj/8QJVw==
-X-Received: by 2002:ac2:5dfb:0:b0:4f1:3ef5:35a6 with SMTP id z27-20020ac25dfb000000b004f13ef535a6mr1250503lfq.8.1683386985531;
-        Sat, 06 May 2023 08:29:45 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id v5-20020a197405000000b004eff32d6a21sm680814lfe.121.2023.05.06.08.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 May 2023 08:29:45 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 0/2] Add SEAMA partition types
-Date: Sat, 06 May 2023 17:29:43 +0200
-Message-Id: <20230506-seama-partitions-v1-0-5806af1e4ac7@linaro.org>
+ d=nskint.onmicrosoft.com; s=selector1-nskint-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SBjx701N6W9A0jI3mdc6Z90QNy5ooLXyUUk3SXB3Cw4=;
+ b=hnSucoTi/vP7njHzxyC//ZcYzZ4ISsYJe4Z2hA5LbeQdnoDPEHZHbbN0mqjNWaF+Znu9YTZ/fl3Tq1l/6JcBZlARERDb4Az3t4+NLqNRW4oPwebZFQI4AZlBVv37iVHK+NAMaupvCvxlYXrxL8RqWS4cIws5SHDbcSNVKMAdc8Q=
+Received: from OSZPR01MB7004.jpnprd01.prod.outlook.com (2603:1096:604:13c::9)
+ by OS7PR01MB11880.jpnprd01.prod.outlook.com (2603:1096:604:239::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6363.32; Mon, 8 May
+ 2023 00:36:07 +0000
+Received: from OSZPR01MB7004.jpnprd01.prod.outlook.com
+ ([fe80::148a:7cac:32d9:1c03]) by OSZPR01MB7004.jpnprd01.prod.outlook.com
+ ([fe80::148a:7cac:32d9:1c03%5]) with mapi id 15.20.6363.032; Mon, 8 May 2023
+ 00:36:07 +0000
+From: Yoshitaka Ikeda <ikeda@nskint.co.jp>
+To: Dhruva Gole <d-gole@ti.com>
+CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Vaishnav Achath <vaishnav.a@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "Takahiro.Kuwano@infineon.com"
+	<Takahiro.Kuwano@infineon.com>, Pratyush Yadav <ptyadav@amazon.de>, Mark
+ Brown <broonie@kernel.org>
+Subject: RE: [PATCH v2 4/4] spi: cadence-quadspi: use STIG mode for small
+ reads
+Thread-Topic: [PATCH v2 4/4] spi: cadence-quadspi: use STIG mode for small
+ reads
+Thread-Index: AQHZMJVBHgHXafuso0ywMCCxmHrW5689ZDXggABfGwCAARZ4MIAA3JcAgBBuwJA=
+Date: Mon, 8 May 2023 00:36:06 +0000
+Message-ID:  <OSZPR01MB7004907B2FB95F45E9B83FEC8B719@OSZPR01MB7004.jpnprd01.prod.outlook.com>
+References: <20230125081023.1573712-1-d-gole@ti.com>
+ <20230125081023.1573712-5-d-gole@ti.com>
+ <OSZPR01MB70048CE259A3D63C4179199A8B659@OSZPR01MB7004.jpnprd01.prod.outlook.com>
+ <044a723e-b81e-f6f2-8bf7-3680a10abc86@ti.com>
+ <OSZPR01MB7004D229048A950C93B40CC88B6A9@OSZPR01MB7004.jpnprd01.prod.outlook.com>
+ <b1d30948-ba3d-a4cc-e1ed-851a9dedba7c@ti.com>
+In-Reply-To: <b1d30948-ba3d-a4cc-e1ed-851a9dedba7c@ti.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nskint.co.jp;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OSZPR01MB7004:EE_|OS7PR01MB11880:EE_
+x-ms-office365-filtering-correlation-id: f46a438b-370d-4de2-1b14-08db4f5c365a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:  pmieUeMuznMDVJbSVcJgrSWB4ezzV4g6W/+U6krT1kr38J0iW/w60ZkFhxG4c/qfaNrVm74vmqueB9sk92v5RCTyRVLrQopjeuMkyMMDkRrOXN50NrJzW3vqpXLqOVapyuAK/AIVb6Vmp15txxiTqFjX6VokuFSmN6wmZf5ryaEy5hFYbDUn0Q3X5E0PrCfNcOmuMql5px/Af0kT2H5j/ICcxU8SLkqWQyZslfhw1DHUvXZ1NLXt0zCRGHij2KjI2e9b76U6Tnvn1fjzYnkiPk2vCy3pvLRvZaLne5rlXZO1hkql/gjJGEvMeBScQmuJ3vSI7pb3G/EMn8TokEA0bZy1EHi4daoDZWTkBu2Caex1ELSpBdFh+JXpKIEQSLifDLtdGw/hH4ov/AvUNvUd00muIp7qXqhvD2JVIxVTcYKBOfak4XAC6BB0+cIxU1a5mxqNCj9rsXJ9aw1OQd2L9wYG8F943AVFhVbxcu+rw+ixxy5Qi555r2KEYN9Jwy7OA/3LFzEFq6XB3UAqj8zh2R8ps+nstw6/aDaxFRmX0JWMU+a/9CDrbGGOGBQDhR/WIxSR5rMmTF3/KiADLOD7BKy7Mk+Y24wbYtsNBmZ3aYYcfYQ17WoKCLkDu/l+JHg0
+x-forefront-antispam-report:  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSZPR01MB7004.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(346002)(366004)(39830400003)(396003)(451199021)(83380400001)(478600001)(7696005)(71200400001)(54906003)(9686003)(6506007)(26005)(186003)(7416002)(2906002)(33656002)(52536014)(38100700002)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(6916009)(122000001)(4326008)(41300700001)(5660300002)(8676002)(8936002)(38070700005)(86362001)(55016003)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:  =?utf-8?B?dVVnTzNMUTh4bUxERFBmZ2hMcm81M0xwL0VZZFZ2dGdRRXIzUEM0c1NGelVI?=
+ =?utf-8?B?Ui8xcDUwc0sxQ0N6cHpXZTRUMXVWdlk1OTlnMkkzSFhreGthNzIrckkzK2R2?=
+ =?utf-8?B?K2gyTXdScit4dkdqQ2ZrZDVWUWVOdWVVbUlpTTJxOTZaazVhZG1QS3BzVHdu?=
+ =?utf-8?B?OXFVdUVuWTV0OEVDTC80SDFxOXZHZzlBNTk1YVdUMVBHbjNMa1A3ZUg1emFh?=
+ =?utf-8?B?bktrNHMvckp1VG5OYm1Ca1EyVmJoTy9zbTlPWU9uSnNRQmJ5U21ybW43ektH?=
+ =?utf-8?B?Skhkd3B5cUt0cHZkZFRBeEczdDJCY3h0Y1VlTHB1U01vSDlvRS83Mitmb1NM?=
+ =?utf-8?B?VkVFM01pSzkzYUxFTlQxUkVDMStyd2xyNms1L1gwZFFpamFPdi80azJNZXdP?=
+ =?utf-8?B?NXJMV1puNm1DRG5yWStEQ3BhaFZXNzU1VUtSSFhVUEljVStRdy9tZkprTEJj?=
+ =?utf-8?B?OXpYTkhGWjhIV2I5bVRCTjdaVlo3Q3g0dlpZVUxIb21EVVlZVlJSSGVmRUhK?=
+ =?utf-8?B?VWtlUGJtZ216MHFUd2toWms0NERDNkNnUnBZM05uWGx1SGkwNlF1SmhWUjhK?=
+ =?utf-8?B?MWlMdUZHOHF2NE5zSXdESlNvVHR3VGZQZ3VOdVZLTXFvQ3FtRU1NODJ4UHlP?=
+ =?utf-8?B?RDVoTVZlY1FuY25ZWGhwd2RjaEorc3RXYmpFSzVyTEJpMDZ5a3ZlYTgrSUs0?=
+ =?utf-8?B?V2hNT21QYU85OUdCWWJySzViMW9KMDdNSEVjSTdqQmt3TWdFMUpXZHZZc3VO?=
+ =?utf-8?B?aVlBQmxRayt0NytpQXVTN2R4ZEk2YlB1Z3dJbU4rM0djazdXSXZnd29kWUJN?=
+ =?utf-8?B?bitrLzlzL1BzTmQwek94VnMxV1ZKUUJxalJXZjg0SmJuUW5pNjJiOEJGbDdi?=
+ =?utf-8?B?cnJwekdpbTQvYkVKUGdPSUpMTlZQcVZYUEkybDZTcEFFQXVGb2V5SnVQb3F4?=
+ =?utf-8?B?QlZ6MktzZ3lta3JqNG9RS0tjcVR3N3UwVngwWW1xbWw2SFZteFZBUDJiUXUr?=
+ =?utf-8?B?SDhjUTB6bjZoLzNESHNsR3k5SW5xRTJOSi91SDVXYm9vbFBaZURqNTlUdkZx?=
+ =?utf-8?B?azJ0Y2czNmVPU0w0ZnJwbTVlT2Nveml5Y1BTZGd3YjkraUlxQkY3Ry9kbStv?=
+ =?utf-8?B?eWlKd052QVRPcTR1ZkxHNzFmZlk0ZUcwRnVadHlVbFhJVlhWOVZUVGxjeWVZ?=
+ =?utf-8?B?YXZrRmR1QzRkcmdZbE5LeTBOa0J0MGxwaEliak5SbVFZdmpURzJrRlNMazVa?=
+ =?utf-8?B?NXcyRm5Wc2RNeDYrTmVYSDVJd25XMjdlK3NyTmcvbGlMczhsVE1MMUFkR1k3?=
+ =?utf-8?B?QkYyNEhzaHl3Z1NWTC9VNkVSdW1ubGwzcWJUUnNkbXorL25QTE9oTGxLeE5m?=
+ =?utf-8?B?YU0yWTZXRzFza2o2aWdQcXBQOXQ0dnYwbWdGcEc5NUFCMko1VUdrSjRic0VP?=
+ =?utf-8?B?S2JDN0FnUTBXY2dlaGUvUk9VdExCb2tpV2xpczBmVEVNZHN6dXIvWStDYmZS?=
+ =?utf-8?B?VHM2QTAxOXJLajdBa0xHamo3RXZUUE1MNGlRdjVraVpsOGFjemJWQXc4eHZl?=
+ =?utf-8?B?bEZhcTNjOHZRaXgzVDdBN01rQ0QydkErQk0rUE1IN1NnSnA0ZkxzUVgzWi8w?=
+ =?utf-8?B?RXFYNW9jMmNkYWF0VlJ3ZkVMa3ZvQkRUb1cxMXBuekdVL3VLYUNKSjZidTY3?=
+ =?utf-8?B?UTh4OGdJL2JzWWt1UW02Z1V3Z3JTcElqRTRLY2pJVTVwZUFEZGxreXc5ZFhF?=
+ =?utf-8?B?NUlKb2dYdW5IelZjNzNzT1pFdGFFWUI5UmJ2NGhEeVRJMkd4Q2RIbk9YcHdP?=
+ =?utf-8?B?Q3FIN0JoU045SU9YSDhaSE12UDdIaW91bXovWUFOYjg1QlE3bVR4QW5rVWor?=
+ =?utf-8?B?WUxuTHoraUd0eEgxblVlalhHUlFyRTc2U3FJcFF2OVRaRUl4Q1k3c1p1d3BU?=
+ =?utf-8?B?a1BHQkVmZFFCNGVxZGUrUDV5OC9XZ0p3TGduaHB1QkNDc1FzbEpIYUlvdmha?=
+ =?utf-8?B?dzRucExYbTJWWmFzb0lJRDR2Yi91TzF4akRrbzVLZk1RQlA5Z0JXTm16L0Yy?=
+ =?utf-8?B?dm9SNzFwU1ZlSDlTWjZSUTAwVktrNnViZlNoNHJnSHBYNEwrRStjaTF5anZG?=
+ =?utf-8?Q?FVvuvWzJazPCX53dUshhRUEkj?=
 MIME-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAGdyVmQC/0WNQQqDQAxFryJZG5gZ0dZeRVxkNK1ZdCqJiCDe3
- bEbl4//Hn8HYxU2eBU7KK9i8ksZfFnAMFH6MMqYGYILlatdg8b0JZxJF1myaxib4Lx/xLZ91pC
- zSMYYldIwXeHtX+Os/Jbt/9f1x3ECx3j3K38AAAA=
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Florian Fainelli <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.1
+X-OriginatorOrg: nskint.co.jp
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSZPR01MB7004.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f46a438b-370d-4de2-1b14-08db4f5c365a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2023 00:36:07.0152
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 727455a2-9822-4451-819f-f03e059d1a55
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6b5IbwUJyLPpCd+G9kBgpMKC9XYqbYYQ+6VZ4hIj8R0ziLHtRkl6glvDeSIIbU80JokBBXjtcPDPmGwafLbwrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS7PR01MB11880
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230506_082949_390708_26B8CB3F 
-X-CRM114-Status: UNSURE (   9.18  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230508_013621_856787_9023C0E8 
+X-CRM114-Status: GOOD (  13.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,31 +170,96 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This type of firmware partition appear in some devices in
-NAND flash, so we need to be able to tag the partitions
-with the appropriate type.
+Hi Dhruva,
 
-The origin of the "SEAttle iMAge" is unknown.
+Sorry for the late reply as I was on a long vacation.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-Linus Walleij (2):
-      dt-bindings: mtd: Add SEAMA partition bindings
-      ARM: dts: bcm5301x: Add SEAMA compatibles
+> Thanks for sharing, I went through and couldn't really find any major changes
+> at the controller level.
+> So I am wondering if some specific sequence of flash operations on your
+> device is exposing some issues in the driver's STIG reads.
 
- .../devicetree/bindings/mtd/partitions/seama.yaml  | 50 ++++++++++++++++++++++
- arch/arm/boot/dts/bcm47094-dlink-dir-885l.dts      |  1 +
- arch/arm/boot/dts/bcm47094-dlink-dir-890l.dts      |  1 +
- 3 files changed, 52 insertions(+)
----
-base-commit: caad71e7d226920623d78be2e6283516decdc502
-change-id: 20230506-seama-partitions-b620117b9985
+Thank you for looking into this.
 
-Best regards,
+> Please can you share some logs with the following patch:
+> I am trying to see a pattern that may be causing issues.
+> I am unable to reproduce this on my end at the moment.
+
+The logs obtained with the patch applied are as follows:
+
+- Error at startup
+  - Kernel log
+[    0.980598] **********spi_mem_op dump**************
+[    0.980613] addr: nbytes:0x0 , buswidth 0x0, dtr 0x0, val 0x0
+[    0.984223] cmd: nbytes:0x1 , buswidth 0x1, dtr 0x0, opcode 0x9F
+[    0.988656] data: nbytes:0x6 , buswidth 0x1, dtr 0x0, data dir 0x1
+[    0.993362] ***************************************
+[    0.998329] spi-nor spi0.0: found mt25ql512a, expected n25q512a
+[    1.006574] **********spi_mem_op dump**************
+[    1.006583] addr: nbytes:0x3 , buswidth 0x1, dtr 0x0, val 0x0
+[    1.010150] cmd: nbytes:0x1 , buswidth 0x1, dtr 0x0, opcode 0x5A
+[    1.014596] data: nbytes:0x10 , buswidth 0x1, dtr 0x0, data dir 0x1
+[    1.019285] ***************************************
+[    1.524271] cadence-qspi ff705000.flash: Flash command execution timed out.
+[    1.533483] **********spi_mem_op dump**************
+[    1.533489] addr: nbytes:0x3 , buswidth 0x1, dtr 0x0, val 0x10
+[    1.537055] cmd: nbytes:0x1 , buswidth 0x1, dtr 0x0, opcode 0x5A
+[    1.541579] data: nbytes:0x8 , buswidth 0x1, dtr 0x0, data dir 0x1
+[    1.546266] ***************************************
+[    1.551123] spi-nor spi0.0: operation failed with -110
+[    1.558531] spi-nor spi0.0: mt25ql512a (65536 Kbytes)
+
+- Error at access
+  - Access command and log
+# hexdump -Cv /dev/mtdblock0
+hexdump: /dev/mtdblock0: Input/output error
+
+  - Kernel log
+[   75.401297] cadence-qspi ff705000.flash: QSPI is still busy after 500ms timeout.
+[   75.401337] **********spi_mem_op dump**************
+[   75.401343] addr: nbytes:0x4 , buswidth 0x1, dtr 0x0, val 0x0
+[   75.401354] cmd: nbytes:0x1 , buswidth 0x1, dtr 0x0, opcode 0xC
+[   75.401364] data: nbytes:0x200 , buswidth 0x1, dtr 0x0, data dir 0x1
+[   75.401373] ***************************************
+[   75.401382] spi-nor spi0.0: operation failed with -110
+[   75.401407] I/O error, dev mtdblock0, sector 0 op 0x0:(READ) flags 0x80700 phys_seg 4 prio class 2
+[   75.911339] cadence-qspi ff705000.flash: QSPI is still busy after 500ms timeout.
+[   75.911372] **********spi_mem_op dump**************
+[   75.911379] addr: nbytes:0x4 , buswidth 0x1, dtr 0x0, val 0x1000
+[   75.911390] cmd: nbytes:0x1 , buswidth 0x1, dtr 0x0, opcode 0xC
+[   75.911399] data: nbytes:0x200 , buswidth 0x1, dtr 0x0, data dir 0x1
+[   75.911409] ***************************************
+[   75.911417] spi-nor spi0.0: operation failed with -110
+[   75.911443] I/O error, dev mtdblock0, sector 8 op 0x0:(READ) flags 0x80700 phys_seg 3 prio class 2
+[   76.421333] cadence-qspi ff705000.flash: QSPI is still busy after 500ms timeout.
+[   76.421365] **********spi_mem_op dump**************
+[   76.421371] addr: nbytes:0x4 , buswidth 0x1, dtr 0x0, val 0x2000
+[   76.421383] cmd: nbytes:0x1 , buswidth 0x1, dtr 0x0, opcode 0xC
+[   76.421393] data: nbytes:0x200 , buswidth 0x1, dtr 0x0, data dir 0x1
+[   76.421403] ***************************************
+[   76.421411] spi-nor spi0.0: operation failed with -110
+[   76.421436] I/O error, dev mtdblock0, sector 16 op 0x0:(READ) flags 0x80700 phys_seg 2 prio class 2
+[   76.931330] cadence-qspi ff705000.flash: QSPI is still busy after 500ms timeout.
+[   76.931365] **********spi_mem_op dump**************
+[   76.931371] addr: nbytes:0x4 , buswidth 0x1, dtr 0x0, val 0x3000
+[   76.931382] cmd: nbytes:0x1 , buswidth 0x1, dtr 0x0, opcode 0xC
+[   76.931392] data: nbytes:0x200 , buswidth 0x1, dtr 0x0, data dir 0x1
+[   76.931401] ***************************************
+[   76.931410] spi-nor spi0.0: operation failed with -110
+[   76.931437] I/O error, dev mtdblock0, sector 24 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 2
+[   77.441297] cadence-qspi ff705000.flash: QSPI is still busy after 500ms timeout.
+[   77.441330] **********spi_mem_op dump**************
+[   77.441337] addr: nbytes:0x4 , buswidth 0x1, dtr 0x0, val 0x0
+[   77.441347] cmd: nbytes:0x1 , buswidth 0x1, dtr 0x0, opcode 0xC
+[   77.441357] data: nbytes:0x200 , buswidth 0x1, dtr 0x0, data dir 0x1
+[   77.441367] ***************************************
+[   77.441375] spi-nor spi0.0: operation failed with -110
+[   77.441401] I/O error, dev mtdblock0, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 2
+[   77.441423] Buffer I/O error on dev mtdblock0, logical block 0, async page read
+
 -- 
-Linus Walleij <linus.walleij@linaro.org>
-
-
+Thanks and Regards,
+Yoshitaka Ikeda
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
