@@ -4,92 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE1B8C77B7F
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 May 2023 15:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A237C77B75
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 May 2023 07:32:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i88roONg0v/2GHwcKlULgCDIZhoF9r3xZyNPxc0EJXw=; b=nSJi/DOEFfItBe
-	G8CowqSqLAJaGAkCOPqiXzZa0rxIZEzHpIL7x2oZNNMVbLKuJ4bl+10eaWi8cD2iPmNtUsbwMvirp
-	QKsyBO1RKXcYsb0D8YQg3Jm/KpdrcSxQqVMCYNwTXANIFIgZwrnwTK1VB0BBp/RESTkxteCtF7xjX
-	XNMkDrfl8fFaU050zQC3ts4I6wCN2tnhDNU9zvXeDCWnCpQtSUGZbKdOVjjF/0Xj6+LPdNhbW2eEC
-	u0mnrtW73nkHmN3NBNq0IyK+CfUcGRokDVNB2JdvjCR95UEVYPSkmoaBZcncW2l08R4kIltR0sF2o
-	mPz3HcamTi0kmburEU2Q==;
+	List-Owner; bh=Fw3X5edUzXHD9Y+BeflQs5yma3kTCFimUudnTSnlPcE=; b=jb6V/PQJ6j3lD8
+	m7iEneav53Jm9IXsD93RcURL7lQM98ovpTUwbQ5/8jdNvsphSR6/Va327ikDVe6hzWVTIuepkKNUK
+	xy3AdEdRzry1qIBP6ke+1ylyXSF9TNXU9CISsxyQ5s9OVYrBLVGxNJDHBa8UZRAHnxWxYlz8QJT5r
+	WB75o2ZDLBpeKPsVG3aDiDa7drQAUVRkMz9ychX/FZJsGpYlVFEsGFPYmBKz2FVgkTgjsugVbAf+y
+	XcNs1JeCmXjfy8oGZu/zMul/glgvtwDu4oRBW94CE6w9wR75wwv7+Pz+L9mJ+oIJyuvSa0w5voNte
+	2AlvO3tDYhyretabIBIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pw35B-000tLY-1w;
-	Mon, 08 May 2023 15:47:25 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1pwHp2-002WRI-0E;
+	Tue, 09 May 2023 07:31:44 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pw358-000tKW-0B;
-	Mon, 08 May 2023 15:47:23 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 348Fl3jg054523;
-	Mon, 8 May 2023 10:47:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1683560823;
-	bh=ThTMpPXBEPh4HdHzswHAKDf5fokfeMb5MpOdHcvdqgE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=cAwMBQtt+9p61ybgcF82DbpMQgD20dsGzxfdQiMdlKtBtnVK2UXR045dEAVRh0lw2
-	 sTOwAqMYxGlLQJ385l3l0Bl8nRyL358LToNs2y2d5uPVKZa1Lk3e+hQ4572pQfyh7L
-	 0GnxlXQCzr1YRXEg2m0XQFvatQYp7I0Uu4DaPNUU=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 348Fl3t3121784
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 8 May 2023 10:47:03 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 8
- May 2023 10:47:03 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 8 May 2023 10:47:03 -0500
-Received: from [10.250.149.252] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-	by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 348FkvEU003096;
-	Mon, 8 May 2023 10:46:58 -0500
-Message-ID: <a80f540a-492a-0585-9ed1-de3397535e07@ti.com>
-Date: Mon, 8 May 2023 21:16:56 +0530
+	id 1pwHox-002WPM-1J;
+	Tue, 09 May 2023 07:31:41 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id BA47D20003;
+	Tue,  9 May 2023 07:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1683617494;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=thBpxMdTvuKvVReNZXCUnuLFIZgJ3012Hq4MQ7xruTE=;
+	b=jnrKyy4p05PGCckAgNbRnBNkw0Vhzx7U5n6NKTWD1CHpwFh96TVqS5zeSI56jqu/jOLsKM
+	YSHaT5zzQMfuJWUJ27+DS1Q05Qc0W4epsxY4g9goiSTJyY4A+i/PZAKnEDOv1Yu6dvalsQ
+	KGTzAfQZGyW0Tv1TmCw0SAF3mafX5ralBv7hlYtLovCdcZDYF2ULz1SJuRihe9ex/DOhe0
+	BcU4cEA6oyambZ1C9x1t+OAcgl8Lcc1eVA3oqGsLFxlgI5UG2jPXu4Cy0EQxWKqXhOWr89
+	3RIYcFYDNpFXJMCJw43QW44yQK+WSRjvIQDXERbH7DT7bFQpoTQa1T5sN45Lfg==
+Date: Tue, 9 May 2023 09:31:29 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Florian Fainelli
+ <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFm?=
+ =?UTF-8?B?YcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Broadcom internal kernel
+ review list <bcm-kernel-feedback-list@broadcom.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/2] Add SEAMA partition types
+Message-ID: <20230509093129.40b30c7a@xps-13>
+In-Reply-To: <20230506-seama-partitions-v1-0-5806af1e4ac7@linaro.org>
+References: <20230506-seama-partitions-v1-0-5806af1e4ac7@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: Build regressions/improvements in v6.4-rc1
-Content-Language: en-US
-To: Pratyush Yadav <pratyush@kernel.org>,
-        Geert Uytterhoeven
-	<geert@linux-m68k.org>
-CC: <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab
-	<mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Richard Weinberger
-	<richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes
- Berg <johannes@sipsolutions.net>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel
-	<p.zabel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-um@lists.infradead.org>, <linux-media@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-xfs@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-phy@lists.infradead.org>,
-        <sparclinux@vger.kernel.org>
-References: <CAHk-=wiUxm-NZ1si8dXWVTTJ9n3c+1SRTC0V+Lk7hOE4bDVwJQ@mail.gmail.com>
- <20230508115727.2597864-1-geert@linux-m68k.org>
- <749c2fc2-93dc-585-3826-dea581602d6e@linux-m68k.org>
- <mafs035466ebk.fsf@amazon.de>
-From: "Raghavendra, Vignesh" <vigneshr@ti.com>
-In-Reply-To: <mafs035466ebk.fsf@amazon.de>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230508_084722_193721_D5859E81 
-X-CRM114-Status: GOOD (  15.42  )
+X-CRM114-CacheID: sfid-20230509_003139_738269_722D0CE5 
+X-CRM114-Status: GOOD (  14.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,71 +73,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 5/8/2023 8:49 PM, Pratyush Yadav wrote:
-> On Mon, May 08 2023, Geert Uytterhoeven wrote:
-> 
->> On Mon, 8 May 2023, Geert Uytterhoeven wrote:
->>> Below is the list of build error/warning regressions/improvements in
->>> v6.4-rc1[1] compared to v6.3[2].
->>>
->>> Summarized:
->>>  - build errors: +9/-16
->>>  - build warnings: +1/-1439
->>>
->>> Happy fixing! ;-)
->>>
->>> Thanks to the linux-next team for providing the build service.
->>>
->>> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ac9a78681b921877518763ba0e89202254349d1b/ (all 152 configs)
->>> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/457391b0380335d5e9a5babdec90ac53928b23b4/ (all 152 configs)
->>>
->>>
-> [...]
->>
->>>  + /kisskb/src/drivers/mtd/spi-nor/spansion.c: error: 'op' is used uninitialized [-Werror=uninitialized]:  => 495:27, 364:27
-> 
-> Hmm, I don't get why we get this warning. Line 495 is in
-> s25fs256t_post_bfpt_fixup(). It declares 'op' and then it does
-> 
->     op = (struct spi_mem_op)
->         CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
->                       SPINOR_REG_CYPRESS_ARCFN, 1,
->                       nor->bouncebuf);
->     ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-> 
-
-Not all the fields of struct get initialized if you assign later on in
-the function vs at the time of declaration... For example cmd.dtr isn't
-explicitly set to any value here and may have garbage?
-> 
-> which initializes 'op' before using it. Same with line 364 which is in
-> the function cypress_nor_set_addr_mode_nbytes().
-> 
-> Even the compiler warnings [0] don't seem to make much sense to me:
-> 
->     /kisskb/src/drivers/mtd/spi-nor/spansion.c: In function 's25fs256t_post_bfpt_fixup':
->     /kisskb/src/drivers/mtd/spi-nor/spansion.c:495:27: error: 'op' is used uninitialized [-Werror=uninitialized]
->     495 |         struct spi_mem_op op;
->         |                           ^~
->     /kisskb/src/drivers/mtd/spi-nor/spansion.c:495:27: note: 'op' declared here
->     495 |         struct spi_mem_op op;
->         |                           ^~
-> 
-> [0] http://kisskb.ellerman.id.au/kisskb/buildresult/14922057/
-> 
->>
->> um-x86_64-gcc12/um-allyesconfig
->>
-> [...]
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTGludXMsCgpsaW51cy53YWxsZWlqQGxpbmFyby5vcmcgd3JvdGUgb24gU2F0LCAwNiBNYXkg
+MjAyMyAxNzoyOTo0MyArMDIwMDoKCj4gVGhpcyB0eXBlIG9mIGZpcm13YXJlIHBhcnRpdGlvbiBh
+cHBlYXIgaW4gc29tZSBkZXZpY2VzIGluCj4gTkFORCBmbGFzaCwgc28gd2UgbmVlZCB0byBiZSBh
+YmxlIHRvIHRhZyB0aGUgcGFydGl0aW9ucwo+IHdpdGggdGhlIGFwcHJvcHJpYXRlIHR5cGUuCj4g
+Cj4gVGhlIG9yaWdpbiBvZiB0aGUgIlNFQXR0bGUgaU1BZ2UiIGlzIHVua25vd24uCgpJIGRvbid0
+IHNlZSBhbnkga2VybmVsIGNoYW5nZXMsIHdoeSBkbyB3ZSBuZWVkIGFuIGFkZGl0aW9uYWwgYmlu
+ZGluZz8KCj4gU2lnbmVkLW9mZi1ieTogTGludXMgV2FsbGVpaiA8bGludXMud2FsbGVpakBsaW5h
+cm8ub3JnPgo+IC0tLQo+IExpbnVzIFdhbGxlaWogKDIpOgo+ICAgICAgIGR0LWJpbmRpbmdzOiBt
+dGQ6IEFkZCBTRUFNQSBwYXJ0aXRpb24gYmluZGluZ3MKPiAgICAgICBBUk06IGR0czogYmNtNTMw
+MXg6IEFkZCBTRUFNQSBjb21wYXRpYmxlcwo+IAo+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9t
+dGQvcGFydGl0aW9ucy9zZWFtYS55YW1sICB8IDUwICsrKysrKysrKysrKysrKysrKysrKysKPiAg
+YXJjaC9hcm0vYm9vdC9kdHMvYmNtNDcwOTQtZGxpbmstZGlyLTg4NWwuZHRzICAgICAgfCAgMSAr
+Cj4gIGFyY2gvYXJtL2Jvb3QvZHRzL2JjbTQ3MDk0LWRsaW5rLWRpci04OTBsLmR0cyAgICAgIHwg
+IDEgKwo+ICAzIGZpbGVzIGNoYW5nZWQsIDUyIGluc2VydGlvbnMoKykKPiAtLS0KPiBiYXNlLWNv
+bW1pdDogY2FhZDcxZTdkMjI2OTIwNjIzZDc4YmUyZTYyODM1MTZkZWNkYzUwMgo+IGNoYW5nZS1p
+ZDogMjAyMzA1MDYtc2VhbWEtcGFydGl0aW9ucy1iNjIwMTE3Yjk5ODUKPiAKPiBCZXN0IHJlZ2Fy
+ZHMsCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
