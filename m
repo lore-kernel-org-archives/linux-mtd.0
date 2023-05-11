@@ -4,87 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84997C7EE22
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 May 2023 13:08:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E43CC7EE2A
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 May 2023 13:08:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gWBxNP2Fht9EffC/kXJWGOTdbGGmxmsH78wPbZVSdU4=; b=1hec4gOXOOgWQe
-	hZmD7+I33dzyC36fw5EeVXSR5QdzT9AOl7fzjadvm11E1giY1syo8qpKhRQji3FGbXs6IVxIlO0Ja
-	dnj1LK2givNNzgm+r5TdLD/7QTaa47Dcxm4Nda4I2AbRd3jLWk1dZd2Ybu3Gwv8ajdm8la0ZyjNSX
-	fPDNbCfgXnnKUdCKZy+jDFbWD85RqxnMx9GA9DFEnFUkLq+V242lb4x3TNj++K5pVMzYOOwZaDyiS
-	k6w39P2/oLfSx1LRZmck2DlLWFdaKMHM99eSM9WYBcpgDeC5kziGNVHx8J4XsazenBS5UZOYi71YV
-	oxal8JEuWgSRtWL7rowQ==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=j4GazXb1OdaPK8sbWAU4cngP+D4KW0AqCWzuEEgudr0=; b=0PlLJuayu++rLz
+	9e1jdaJfQgigLQm3KkEjGiU5j8kupCiQe2FnW7B+iQuUZrrnvTlyQqvZVvTNSUcwrGYQreUNts56I
+	RbmZe7ylntSZazt1oL6rcW9d4z2W2mQlXb4DXcQkvuDLi8ZudKGX6hz9e6jasRpUMgZAu8+uTxL9P
+	1dZy0W1MZTQJJ/AOH3E4Ay5JEyJHhFKMm9l9nTvBTDPFEhyrqe3j+qTirXcCIQTG+hrt4wfS2jA3B
+	0M81xvZcHHvpuZnRyeopSL/w1nOI3CS5TrNJUrqoTMUVIFDv6B3QOQAWV9CNWAzDHRpuH6sjKmaIh
+	O2VR2MS7rcuMoLomcUEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1px61U-008oRE-0E;
-	Thu, 11 May 2023 13:07:56 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1px61S-008oQo-2l;
+	Thu, 11 May 2023 13:07:54 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1px61P-008oOW-2c
+	id 1px61O-008oOH-0S
 	for linux-mtd@lists.infradead.org;
 	Thu, 11 May 2023 13:07:53 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34BAfl9O018068;
-	Thu, 11 May 2023 13:07:44 GMT
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34BAJCLb020252;
+	Thu, 11 May 2023 13:07:40 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=Ohk076nJXvCJZ0noGqzW5piJgnmJJuXjLyqjOC+dg44=;
- b=fnHBwcic7VctJUerU996mrqtVv0EEtfzxF+k7DO9xFI0FBfPMioEuupRGBsfnVgF6HvL
- sri3zZ9qid0Bx572L7MxRHA2F1GSfwb8Ta3S5XrpJ2GSxNskn/PFoGZYw2ogglqSYn0n
- iujniMz7jGE2O2iXoWpUDchvIa8wy6u6iC0b9lbrQ+lezf+aYy/68GewpFtSKS2XiTsW
- h5BEaSSHfk/V57OTWSR34h0vt4cNFHU9Ls854X8704Bq9uUfLLawMnKIT+O4hpFq3xN/
- 4FZCWPj/GC6TUijNGTJcyTI1Y0AMmu/UAtvE5PmChFwD95LVs2pUjcVKaH7lI4/FFF0a nA== 
+ subject : date : message-id; s=qcppdkim1;
+ bh=9PeeTgq03vVFK969qWl3xs+1WsXoKKbi0gI2EhENzdA=;
+ b=Q5iaTwASZQ9SQIbA9I+r0F/iJZ/2gLaRBIL/WME7yQWo71TAgVBxgHGgavh7WxSA2x+I
+ slwBr/ZeYLOssz3piNfgY7JkkVhni4Iv7Fme+NtwXeYtJtvGIpPsazKGmNW818m/UCDq
+ N1GT7vTAORZH8Wui+CBDWsTpJm9XYNlzZ57rXpG8OhVHIyFTjsgKsyysTlSnbtVRQLYL
+ 7P/TR9q5l3TRwMRjA6X67Ir9HQdypyZxVLuzd0HtvukI0Rb5lGpnTA5JoqjUo+ENRMAG
+ mL7zcOW5zQu62+3R6gsXIMv0uBmfA81E5bOAMCfER9v2OA9pBCH3UStR0hqSNwc8tWpR CA== 
 Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3qgdd9tfft-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3qgm5m1ntp-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 May 2023 13:07:43 +0000
+	Thu, 11 May 2023 13:07:39 +0000
 Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 34BD7eCR013660;
-	Thu, 11 May 2023 13:07:40 GMT
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 34BD7ZEX013394;
+	Thu, 11 May 2023 13:07:35 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3qdy5bq6rq-1;
-	Thu, 11 May 2023 13:07:40 +0000
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3qdy5bq6qy-1;
+	Thu, 11 May 2023 13:07:35 +0000
 Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34BD7dL0013446;
-	Thu, 11 May 2023 13:07:40 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34BD7YBC013387;
+	Thu, 11 May 2023 13:07:34 GMT
 Received: from mdalam-linux.qualcomm.com (mdalam-linux.qualcomm.com [10.201.2.71])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 34BD7eEv013468;
-	Thu, 11 May 2023 13:07:40 +0000
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 34BD7Yt6013386;
+	Thu, 11 May 2023 13:07:34 +0000
 Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-	id 56DD612010C1; Thu, 11 May 2023 18:37:39 +0530 (IST)
+	id BB29612010C1; Thu, 11 May 2023 18:37:33 +0530 (IST)
 From: Md Sadre Alam <quic_mdalam@quicinc.com>
 To: mani@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
         vigneshr@ti.com, linux-mtd@lists.infradead.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: quic_srichara@quicinc.com, quic_mdalam@quicinc.com,
         0000-cover-letter.patch@qualcomm.com
-Subject: [PATCH 5/5] mtd: rawnand: qcom: Remove legacy interface implementation.
-Date: Thu, 11 May 2023 18:37:30 +0530
-Message-Id: <20230511130730.28689-5-quic_mdalam@quicinc.com>
+Subject: [PATCH 1/5] mtd: rawnand: qcom: Implement exec_op()
+Date: Thu, 11 May 2023 18:37:26 +0530
+Message-Id: <20230511130730.28689-1-quic_mdalam@quicinc.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230511130730.28689-1-quic_mdalam@quicinc.com>
-References: <20230511130730.28689-1-quic_mdalam@quicinc.com>
 X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: X-uE6g_FULKMG_399Aik44nOur5YjbzX
-X-Proofpoint-ORIG-GUID: X-uE6g_FULKMG_399Aik44nOur5YjbzX
+X-Proofpoint-GUID: jCDqJlVfqWgBPE5pvVWn4K_YETHJxzK8
+X-Proofpoint-ORIG-GUID: jCDqJlVfqWgBPE5pvVWn4K_YETHJxzK8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-05-11_09,2023-05-05_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 clxscore=1015 malwarescore=0
- priorityscore=1501 phishscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ bulkscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 phishscore=0 spamscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2304280000 definitions=main-2305110113
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230511_060751_969103_0FDDF69C 
-X-CRM114-Status: GOOD (  24.93  )
+X-CRM114-CacheID: sfid-20230511_060750_182736_1CC7A98A 
+X-CRM114-Status: GOOD (  20.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,391 +100,271 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This change will remove legacy interface implementation
+Implement exec_op() so we can later get rid of the legacy interface
+implementation.
 
 Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
 Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
 Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 344 ------------------------------
- 1 file changed, 344 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 214 +++++++++++++++++++++++++++++-
+ 1 file changed, 213 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 14ab21a4771b..e689809cd4df 100644
+index 72d6168d8a1b..dae460e2aa0b 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1302,155 +1302,6 @@ static void config_nand_cw_write(struct nand_chip *chip)
- 	write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
- }
+@@ -157,6 +157,7 @@
+ #define	OP_PAGE_PROGRAM_WITH_ECC	0x7
+ #define	OP_PROGRAM_PAGE_SPARE		0x9
+ #define	OP_BLOCK_ERASE			0xa
++#define	OP_CHECK_STATUS			0xc
+ #define	OP_FETCH_ID			0xb
+ #define	OP_RESET_DEVICE			0xd
  
--/*
-- * the following functions are used within chip->legacy.cmdfunc() to
-- * perform different NAND_CMD_* commands
-- */
--
--/* sets up descriptors for NAND_CMD_PARAM */
--static int nandc_param(struct qcom_nand_host *host)
--{
--	struct nand_chip *chip = &host->chip;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--
--	/*
--	 * NAND_CMD_PARAM is called before we know much about the FLASH chip
--	 * in use. we configure the controller to perform a raw read of 512
--	 * bytes to read onfi params
--	 */
--	if (nandc->props->qpic_v2)
--		nandc_set_reg(chip, NAND_FLASH_CMD, OP_PAGE_READ_ONFI_READ |
--			      PAGE_ACC | LAST_PAGE);
--	else
--		nandc_set_reg(chip, NAND_FLASH_CMD, OP_PAGE_READ |
--			      PAGE_ACC | LAST_PAGE);
--
--	nandc_set_reg(chip, NAND_ADDR0, 0);
--	nandc_set_reg(chip, NAND_ADDR1, 0);
--	nandc_set_reg(chip, NAND_DEV0_CFG0, 0 << CW_PER_PAGE
--					| 512 << UD_SIZE_BYTES
--					| 5 << NUM_ADDR_CYCLES
--					| 0 << SPARE_SIZE_BYTES);
--	nandc_set_reg(chip, NAND_DEV0_CFG1, 7 << NAND_RECOVERY_CYCLES
--					| 0 << CS_ACTIVE_BSY
--					| 17 << BAD_BLOCK_BYTE_NUM
--					| 1 << BAD_BLOCK_IN_SPARE_AREA
--					| 2 << WR_RD_BSY_GAP
--					| 0 << WIDE_FLASH
--					| 1 << DEV0_CFG1_ECC_DISABLE);
--	if (!nandc->props->qpic_v2)
--		nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
--
--	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
--	if (!nandc->props->qpic_v2) {
--		nandc_set_reg(chip, NAND_DEV_CMD_VLD,
--			      (nandc->vld & ~READ_START_VLD));
--		nandc_set_reg(chip, NAND_DEV_CMD1,
--			      (nandc->cmd1 & ~(0xFF << READ_ADDR))
--			      | NAND_CMD_PARAM << READ_ADDR);
--	}
--
--	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
--
--	if (!nandc->props->qpic_v2) {
--		nandc_set_reg(chip, NAND_DEV_CMD1_RESTORE, nandc->cmd1);
--		nandc_set_reg(chip, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
--	}
--
--	nandc_set_read_loc(chip, 0, 0, 0, 512, 1);
--
--	if (!nandc->props->qpic_v2) {
--		write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
--		write_reg_dma(nandc, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
--	}
--
--	nandc->buf_count = 512;
--	memset(nandc->data_buffer, 0xff, nandc->buf_count);
--
--	config_nand_single_cw_page_read(chip, false, 0);
--
--	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
--		      nandc->buf_count, 0);
--
--	/* restore CMD1 and VLD regs */
--	if (!nandc->props->qpic_v2) {
--		write_reg_dma(nandc, NAND_DEV_CMD1_RESTORE, 1, 0);
--		write_reg_dma(nandc, NAND_DEV_CMD_VLD_RESTORE, 1, NAND_BAM_NEXT_SGL);
--	}
--
--	return 0;
--}
--
--/* sets up descriptors for NAND_CMD_ERASE1 */
--static int erase_block(struct qcom_nand_host *host, int page_addr)
--{
--	struct nand_chip *chip = &host->chip;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--
--	nandc_set_reg(chip, NAND_FLASH_CMD,
--		      OP_BLOCK_ERASE | PAGE_ACC | LAST_PAGE);
--	nandc_set_reg(chip, NAND_ADDR0, page_addr);
--	nandc_set_reg(chip, NAND_ADDR1, 0);
--	nandc_set_reg(chip, NAND_DEV0_CFG0,
--		      host->cfg0_raw & ~(7 << CW_PER_PAGE));
--	nandc_set_reg(chip, NAND_DEV0_CFG1, host->cfg1_raw);
--	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
--	nandc_set_reg(chip, NAND_FLASH_STATUS, host->clrflashstatus);
--	nandc_set_reg(chip, NAND_READ_STATUS, host->clrreadstatus);
--
--	write_reg_dma(nandc, NAND_FLASH_CMD, 3, NAND_BAM_NEXT_SGL);
--	write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
--
--	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
--
--	write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
--	write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
--
--	return 0;
--}
--
--/* sets up descriptors for NAND_CMD_READID */
--static int read_id(struct qcom_nand_host *host, int column)
--{
--	struct nand_chip *chip = &host->chip;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--
--	if (column == -1)
--		return 0;
--
--	nandc_set_reg(chip, NAND_FLASH_CMD, OP_FETCH_ID);
--	nandc_set_reg(chip, NAND_ADDR0, column);
--	nandc_set_reg(chip, NAND_ADDR1, 0);
--	nandc_set_reg(chip, NAND_FLASH_CHIP_SELECT,
--		      nandc->props->is_bam ? 0 : DM_EN);
--	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
--
--	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
--
--	read_reg_dma(nandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
--
--	return 0;
--}
--
--/* sets up descriptors for NAND_CMD_RESET */
--static int reset(struct qcom_nand_host *host)
--{
--	struct nand_chip *chip = &host->chip;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--
--	nandc_set_reg(chip, NAND_FLASH_CMD, OP_RESET_DEVICE);
--	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
--
--	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
--
--	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
--
--	return 0;
--}
--
- /* helpers to submit/free our list of dma descriptors */
- static int submit_descs(struct qcom_nand_controller *nandc)
- {
-@@ -1551,135 +1402,6 @@ static void pre_command(struct qcom_nand_host *host, int command)
+@@ -235,6 +236,7 @@ nandc_set_reg(chip, reg,			\
+  */
+ #define NAND_ERASED_CW_SET		BIT(4)
+ 
++#define MAX_ADDRESS_CYCLE		5
+ /*
+  * This data type corresponds to the BAM transaction which will be used for all
+  * NAND transfers.
+@@ -447,6 +449,29 @@ struct qcom_nand_boot_partition {
+ 	u32 page_size;
+ };
+ 
++/*
++ * Qcom op for each exec_op transfer
++ *
++ * @data_instr:			data instruction pointer
++ * @data_instr_idx:		data instruction index
++ * @rdy_timeout_ms:		wait ready timeout in ms
++ * @rdy_delay_ns:		Additional delay in ns
++ * @addr1_reg:			Address1 register value
++ * @addr2_reg:			Address2 register value
++ * @cmd_reg:			CMD register value
++ * @flag:			flag for misc instruction
++ */
++struct qcom_op {
++	const struct nand_op_instr *data_instr;
++	unsigned int data_instr_idx;
++	unsigned int rdy_timeout_ms;
++	unsigned int rdy_delay_ns;
++	u32 addr1_reg;
++	u32 addr2_reg;
++	u32 cmd_reg;
++	u8 flag;
++};
++
+ /*
+  * NAND chip structure
+  *
+@@ -1517,7 +1542,8 @@ static void pre_command(struct qcom_nand_host *host, int command)
+ 	clear_read_regs(nandc);
+ 
+ 	if (command == NAND_CMD_RESET || command == NAND_CMD_READID ||
+-	    command == NAND_CMD_PARAM || command == NAND_CMD_ERASE1)
++	    command == NAND_CMD_PARAM || command == NAND_CMD_ERASE1 ||
++	    command == NAND_CMD_STATUS)
  		clear_bam_transaction(nandc);
  }
  
--/*
-- * this is called after NAND_CMD_PAGEPROG and NAND_CMD_ERASE1 to set our
-- * privately maintained status byte, this status byte can be read after
-- * NAND_CMD_STATUS is called
-- */
--static void parse_erase_write_errors(struct qcom_nand_host *host, int command)
--{
--	struct nand_chip *chip = &host->chip;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	int num_cw;
--	int i;
--
--	num_cw = command == NAND_CMD_PAGEPROG ? ecc->steps : 1;
--	nandc_read_buffer_sync(nandc, true);
--
--	for (i = 0; i < num_cw; i++) {
--		u32 flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
--
--		if (flash_status & FS_MPU_ERR)
--			host->status &= ~NAND_STATUS_WP;
--
--		if (flash_status & FS_OP_ERR || (i == (num_cw - 1) &&
--						 (flash_status &
--						  FS_DEVICE_STS_ERR)))
--			host->status |= NAND_STATUS_FAIL;
--	}
--}
--
--static void post_command(struct qcom_nand_host *host, int command)
--{
--	struct nand_chip *chip = &host->chip;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--
--	switch (command) {
--	case NAND_CMD_READID:
--		nandc_read_buffer_sync(nandc, true);
--		memcpy(nandc->data_buffer, nandc->reg_read_buf,
--		       nandc->buf_count);
--		break;
--	case NAND_CMD_PAGEPROG:
--	case NAND_CMD_ERASE1:
--		parse_erase_write_errors(host, command);
--		break;
--	default:
--		break;
--	}
--}
--
--/*
-- * Implements chip->legacy.cmdfunc. It's  only used for a limited set of
-- * commands. The rest of the commands wouldn't be called by upper layers.
-- * For example, NAND_CMD_READOOB would never be called because we have our own
-- * versions of read_oob ops for nand_ecc_ctrl.
-- */
--static void qcom_nandc_command(struct nand_chip *chip, unsigned int command,
--			       int column, int page_addr)
--{
--	struct qcom_nand_host *host = to_qcom_nand_host(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	bool wait = false;
--	int ret = 0;
--
--	pre_command(host, command);
--
--	switch (command) {
--	case NAND_CMD_RESET:
--		ret = reset(host);
--		wait = true;
--		break;
--
--	case NAND_CMD_READID:
--		nandc->buf_count = 4;
--		ret = read_id(host, column);
--		wait = true;
--		break;
--
--	case NAND_CMD_PARAM:
--		ret = nandc_param(host);
--		wait = true;
--		break;
--
--	case NAND_CMD_ERASE1:
--		ret = erase_block(host, page_addr);
--		wait = true;
--		break;
--
--	case NAND_CMD_READ0:
--		/* we read the entire page for now */
--		WARN_ON(column != 0);
--
--		host->use_ecc = true;
--		set_address(host, 0, page_addr);
--		update_rw_regs(host, ecc->steps, true, 0);
--		break;
--
--	case NAND_CMD_SEQIN:
--		WARN_ON(column != 0);
--		set_address(host, 0, page_addr);
--		break;
--
--	case NAND_CMD_PAGEPROG:
--	case NAND_CMD_STATUS:
--	case NAND_CMD_NONE:
--	default:
--		break;
--	}
--
--	if (ret) {
--		dev_err(nandc->dev, "failure executing command %d\n",
--			command);
--		free_descs(nandc);
--		return;
--	}
--
--	if (wait) {
--		ret = submit_descs(nandc);
--		if (ret)
--			dev_err(nandc->dev,
--				"failure submitting descs for command %d\n",
--				command);
--	}
--
--	free_descs(nandc);
--
--	post_command(host, command);
--}
--
- /*
-  * when using BCH ECC, the HW flags an error in NAND_FLASH_STATUS if it read
-  * an erased CW, and reports an erased CW in NAND_ERASED_CW_DETECT_STATUS.
-@@ -2539,64 +2261,6 @@ static int qcom_nandc_block_markbad(struct nand_chip *chip, loff_t ofs)
- 	return nand_prog_page_end_op(chip);
+@@ -2867,8 +2893,194 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
+ 	return 0;
  }
  
--/*
-- * the three functions below implement chip->legacy.read_byte(),
-- * chip->legacy.read_buf() and chip->legacy.write_buf() respectively. these
-- * aren't used for reading/writing page data, they are used for smaller data
-- * like reading	id, status etc
-- */
--static uint8_t qcom_nandc_read_byte(struct nand_chip *chip)
--{
--	struct qcom_nand_host *host = to_qcom_nand_host(chip);
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	u8 *buf = nandc->data_buffer;
--	u8 ret = 0x0;
--
--	if (host->last_command == NAND_CMD_STATUS) {
--		ret = host->status;
--
--		host->status = NAND_STATUS_READY | NAND_STATUS_WP;
--
--		return ret;
--	}
--
--	if (nandc->buf_start < nandc->buf_count)
--		ret = buf[nandc->buf_start++];
--
--	return ret;
--}
--
--static void qcom_nandc_read_buf(struct nand_chip *chip, uint8_t *buf, int len)
--{
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	int real_len = min_t(size_t, len, nandc->buf_count - nandc->buf_start);
--
--	memcpy(buf, nandc->data_buffer + nandc->buf_start, real_len);
--	nandc->buf_start += real_len;
--}
--
--static void qcom_nandc_write_buf(struct nand_chip *chip, const uint8_t *buf,
--				 int len)
--{
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	int real_len = min_t(size_t, len, nandc->buf_count - nandc->buf_start);
--
--	memcpy(nandc->data_buffer + nandc->buf_start, buf, real_len);
--
--	nandc->buf_start += real_len;
--}
--
--/* we support only one external chip for now */
--static void qcom_nandc_select_chip(struct nand_chip *chip, int chipnr)
--{
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--
--	if (chipnr <= 0)
--		return;
--
--	dev_warn(nandc->dev, "invalid chip select\n");
--}
--
- /*
-  * NAND controller page layout info
-  *
-@@ -3642,14 +3306,6 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 	mtd->owner = THIS_MODULE;
- 	mtd->dev.parent = dev;
++static int qcom_op_cmd_mapping(struct qcom_nand_controller *nandc, u8 cmd,
++			       struct qcom_op *q_op)
++{
++	int ret = 0;
++
++	switch (cmd) {
++	case NAND_CMD_RESET:
++		ret = OP_RESET_DEVICE;
++		break;
++	case NAND_CMD_READID:
++		ret = OP_FETCH_ID;
++		break;
++	case NAND_CMD_PARAM:
++		if (nandc->props->qpic_v2)
++			ret = OP_PAGE_READ_ONFI_READ;
++		else
++			ret = OP_PAGE_READ;
++		break;
++	case NAND_CMD_ERASE1:
++	case NAND_CMD_ERASE2:
++		ret = OP_BLOCK_ERASE;
++		break;
++	case NAND_CMD_STATUS:
++		ret = OP_CHECK_STATUS;
++		break;
++	case NAND_CMD_PAGEPROG:
++		ret = OP_PROGRAM_PAGE;
++		break;
++	default:
++		break;
++	}
++
++	return ret;
++}
++
++/* NAND framework ->exec_op() hooks and related helpers */
++static void qcom_parse_instructions(struct nand_chip *chip,
++				    const struct nand_subop *subop,
++					struct qcom_op *q_op)
++{
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	const struct nand_op_instr *instr = NULL;
++	unsigned int op_id;
++	int i;
++
++	memset(q_op, 0, sizeof(*q_op));
++
++	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
++		unsigned int offset, naddrs;
++		const u8 *addrs;
++
++		instr = &subop->instrs[op_id];
++
++		switch (instr->type) {
++		case NAND_OP_CMD_INSTR:
++			q_op->cmd_reg = qcom_op_cmd_mapping(nandc, instr->ctx.cmd.opcode, q_op);
++			q_op->rdy_delay_ns = instr->delay_ns;
++			break;
++
++		case NAND_OP_ADDR_INSTR:
++			offset = nand_subop_get_addr_start_off(subop, op_id);
++			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
++			addrs = &instr->ctx.addr.addrs[offset];
++			for (i = 0; i < min(5U, naddrs); i++) {
++				if (i < 4)
++					q_op->addr1_reg |= (u32)addrs[i] << i * 8;
++				else
++					q_op->addr2_reg |= addrs[i];
++			}
++			q_op->rdy_delay_ns = instr->delay_ns;
++			break;
++
++		case NAND_OP_DATA_IN_INSTR:
++			q_op->data_instr = instr;
++			q_op->data_instr_idx = op_id;
++			q_op->rdy_delay_ns = instr->delay_ns;
++			fallthrough;
++		case NAND_OP_DATA_OUT_INSTR:
++			q_op->rdy_delay_ns = instr->delay_ns;
++			break;
++
++		case NAND_OP_WAITRDY_INSTR:
++			q_op->rdy_timeout_ms = instr->ctx.waitrdy.timeout_ms;
++			q_op->rdy_delay_ns = instr->delay_ns;
++			break;
++		}
++	}
++}
++
++static int qcom_read_status_exec(struct nand_chip *chip,
++				 const struct nand_subop *subop)
++{
++	return 0;
++}
++
++static int qcom_erase_cmd_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
++{
++	return 0;
++}
++
++static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_subop *subop)
++{
++	return 0;
++}
++
++static int qcom_read_id_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
++{
++	return 0;
++}
++
++static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
++{
++	return 0;
++}
++
++static int qcom_data_read_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
++{
++	/* currently read_exec_op() return 0 , and all the read operation handle in
++	 * actual API itself
++	 */
++	return 0;
++}
++
++static int qcom_data_write_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
++{
++	/* currently write_exec_op() return 0, and all the write operation handle in
++	 * actual API itself
++	 */
++	struct qcom_op q_op;
++
++	qcom_parse_instructions(chip, subop, &q_op);
++
++	return 0;
++}
++
++static const struct nand_op_parser qcom_op_parser = NAND_OP_PARSER(
++		NAND_OP_PARSER_PATTERN(
++			qcom_misc_cmd_type_exec,
++			NAND_OP_PARSER_PAT_CMD_ELEM(false),
++			NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
++		NAND_OP_PARSER_PATTERN(
++			qcom_read_id_type_exec,
++			NAND_OP_PARSER_PAT_CMD_ELEM(false),
++			NAND_OP_PARSER_PAT_ADDR_ELEM(false, MAX_ADDRESS_CYCLE),
++			NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 8)),
++		NAND_OP_PARSER_PATTERN(
++			qcom_param_page_type_exec,
++			NAND_OP_PARSER_PAT_CMD_ELEM(false),
++			NAND_OP_PARSER_PAT_ADDR_ELEM(false, MAX_ADDRESS_CYCLE),
++			NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
++			NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 512)),
++		NAND_OP_PARSER_PATTERN(
++			qcom_read_status_exec,
++			NAND_OP_PARSER_PAT_CMD_ELEM(false),
++			NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 1)),
++		NAND_OP_PARSER_PATTERN(
++			qcom_erase_cmd_type_exec,
++			NAND_OP_PARSER_PAT_CMD_ELEM(false),
++			NAND_OP_PARSER_PAT_ADDR_ELEM(false, MAX_ADDRESS_CYCLE),
++			NAND_OP_PARSER_PAT_CMD_ELEM(false),
++			NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
++		NAND_OP_PARSER_PATTERN(
++			qcom_data_read_type_exec,
++			NAND_OP_PARSER_PAT_CMD_ELEM(false),
++			NAND_OP_PARSER_PAT_ADDR_ELEM(false, MAX_ADDRESS_CYCLE),
++			NAND_OP_PARSER_PAT_CMD_ELEM(false),
++			NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
++			NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 2048)),
++		NAND_OP_PARSER_PATTERN(
++			qcom_data_write_type_exec,
++			NAND_OP_PARSER_PAT_CMD_ELEM(true),
++			NAND_OP_PARSER_PAT_ADDR_ELEM(true, MAX_ADDRESS_CYCLE)),
++		);
++
++static int qcom_nand_exec_op(struct nand_chip *chip,
++			     const struct nand_operation *op,
++			bool check_only)
++{
++	if (check_only)
++		return 0;
++
++	return nand_op_parser_exec_op(chip, &qcom_op_parser,
++			op, check_only);
++}
++
+ static const struct nand_controller_ops qcom_nandc_ops = {
+ 	.attach_chip = qcom_nand_attach_chip,
++	.exec_op = qcom_nand_exec_op,
+ };
  
--	chip->legacy.cmdfunc	= qcom_nandc_command;
--	chip->legacy.select_chip	= qcom_nandc_select_chip;
--	chip->legacy.read_byte	= qcom_nandc_read_byte;
--	chip->legacy.read_buf	= qcom_nandc_read_buf;
--	chip->legacy.write_buf	= qcom_nandc_write_buf;
--	chip->legacy.set_features	= nand_get_set_features_notsupp;
--	chip->legacy.get_features	= nand_get_set_features_notsupp;
--
- 	/*
- 	 * the bad block marker is readable only when we read the last codeword
- 	 * of a page with ECC disabled. currently, the nand_base and nand_bbt
+ static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
 -- 
 2.17.1
 
