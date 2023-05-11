@@ -4,74 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70156C77B7F
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 May 2023 07:33:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5899AC7EE24
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 May 2023 07:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ogeDRbt/+JoZPgvLt5eIzLQw7GXfrmDaJW9lsQAb7Rw=; b=wWinW3uitc377N
-	HD8VFLo0OmJRrOVsx4wJ5lCcTU2Wvn08QNcfHQV80HhFOMrc56QDW003mku6rGkgETrkCW2Gvsv1H
-	PNgf0cTxkOOBlMkkYg+4qI7ayl6CxNLi1EZauThb7fpf4KpEjg8BB65+eRKocTjMwXBV2HYk/Gj7O
-	1ER6hZxgOpVc3EmCiPmhzAzXgn0p125P7wVOU48SuXqUESy/hYPyjvHzYWeZgYJ8AqmaZfTfFc6aD
-	o4J63rD8c3R6zQ35bggiO7bvoV5IhU1JKLud3akfKCtMXeM433zJx3pkJAZn5Z2Z0nt/l2p7atqzT
-	4UXmmtO+j+0by1K0NA+w==;
+	List-Owner; bh=IN2Clte5/J77jnIBT5KrTaCx48PRU1Ys2xJ9Bb/qwHQ=; b=MRbAoN9eFLtoJP
+	FNO6U8unbTkDdyC7vQqcqPWoiqCq8UchEvp221px15byjEk/c+zt9/vWdmKFoJKhUAzpQl4TpR0xe
+	1lbafv3jR2mhZGDnceXyfjmE0wu4d8xtaQEO1ETZiu0S5AkhlDz8j4J/S0M7AgPRWYVFexCtW5u3D
+	6LEAzOhTrJhfVY/Yr4UJnLiezJJeGphy5XeyNxYHQdNpr7rOPpjpENmMSMFGc020FrMZDYsmmIzGr
+	alEjEmsrr8PqyzGagCwIJW6KUoXIG1GzLrODN0E1qPZ3eOxhL+xOn0rStxbUt5azb++m90YZABjPu
+	Tk7dUEkcPL/rfEHsbXdg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1px0o4-0089YD-1N;
-	Thu, 11 May 2023 07:33:44 +0000
-Received: from mail-mw2nam12on2062d.outbound.protection.outlook.com ([2a01:111:f400:fe5a::62d] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
+	id 1px0nw-0089S6-0y;
+	Thu, 11 May 2023 07:33:36 +0000
+Received: from mail-mw2nam04on20604.outbound.protection.outlook.com ([2a01:111:f400:7e8c::604] helo=NAM04-MW2-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1px0nx-0089SD-14;
-	Thu, 11 May 2023 07:33:38 +0000
+	id 1px0nt-0089Q3-1x;
+	Thu, 11 May 2023 07:33:35 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VQUXKX/WqGVm/IiCsQR9uWAFrF88W0OwZU+P9qKLRfwRVe1iBLZUw0i/rWDfUu8VvFpeoitNTO686vnJm6IztEtnorfO4nkxJXK+Ap9bJaifRWJSer9nb3QGnbOry0uPvfpp4lL0usMP+p/jH+oZWOU7SWEo7AbP0wxTKEsW0HNSVyknQtaVtVg8VkW8w1s0ErIxX3oRbDoVl1CZdASHRTn3feCrTShnmXXyAQRwf1ruKPms2N+c4GD7nBaTl0Xa30RZWhNgpV62K4yOSrjCU8BNaevbL+QWYUJ35VEM/m3yB2ehF4+dTWKzGQo/BdMvWbtmbWWTyqEWBqW5NTQ+FQ==
+ b=YG4gBRCwahp2ovMCGmYbqqxD1bVjoOLHA9lTjG/A1oxIbFqrZDI84LWs121fVkLYV8wrdw6I5t9WvR1R+7jcFr3tHxvm0AGDCOlgH+jUWIPYJuLauiQ+fdJHS32ldYT0jG475uAC7ft8M85+jX0R8cJIv3g0XRmRe49CA0OOfBfBf20D/Q0HGHcKhCp1OOWWgxVVADXbfNABMEsqk0StCjS6Nqtcj6LMPy5Z7/wRDM0B1ZCssSVv0nIzqwM+bENIhWkXD6sG5OAHMa38spTQ6+KKH0aOkonwoz9uBAHTkNTZ8kGnrxU7FuAmX6YMmsB64n16ruaDKT0Nev5Rs4Sp8Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v5KdSSDQ2nsI2TY2AaFPPmoyVvEQ1ALcxSgb22XsW3Y=;
- b=GpZ4F+Dyz4GF02U+73d5Gw+A20I04WpFqTAHWStPRJzG5IG5Vl4hIq2AjP7JkSSIRWSPNUlUpKpdCipP4lY+TyCjm6ui5GsW/x7pSoMjFaaii7wJzQxEHp0wGo4vUwGEUCOqk3gKXBRnREwF0D1bbICQsZpVbq9qPe++YmsJoAfEe2pENiGk07DzV5qJJ8uOJWkzgIYkO3Dx4Xz9GAXf0t2/HGfazqSEhOu1RT/hWKiyBCgi9WyC17Oe7FW3vb74TFwv1q1XCKs/IqXqXsDoEFdEiwpwZrqa0Ot50fuSF40kPM2hjSkvyycmOFX/dDYKwk5yhPX3uETTc023rg7eZQ==
+ bh=he65cIQQwqLcPUh0K7+4CXQr0jLidhcBa3blMtvOwsw=;
+ b=S+9PYvX9nLZPQ+Z/guIVpp40rOprqd+jQcVcbqRTOFEu5xTFW9zBSUoMnKmNUIIjCskh0Dp6NM+rCcWDEA6D+7uOEzihAjTDPCksjocTjg/7oy5TNrXPAkORRUt5cCv+ErBDvZDm9yD1l34Tp580LH6gs/LSU3aA5izdJS2YjRThIyB/YkwiA6CTqJN6901Pwa6rFYVi4RFtuiF03hTFcbN3/saCE2gGJZdbBTSQuPVoxUJNzhEHeNYpWaKvTbuh8azG/63btZsvJzcnFXcyt7NJdIJC+z4NJkVSecyDgbnFhFvAIF5j1P5/SJNZ2+TBtqycICNrLoOz5nHHm2/TPQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v5KdSSDQ2nsI2TY2AaFPPmoyVvEQ1ALcxSgb22XsW3Y=;
- b=l0FdDW5XzjncuZOfFQ9uXUfmnnPtrAJu7EtXueIjIJox4i/JNGjWqDier/fwtYEXzXcixrINWf8E+4vYghCQmof4vQF60ca602U2bxHaCCQ7wE3eRc5Cd4O1PY0Lqk1s5MOnvp4VLfIGIxdYXALpvaBMQGdN1QPp25N6mNn42vQ=
-Received: from BL1PR13CA0135.namprd13.prod.outlook.com (2603:10b6:208:2bb::20)
- by SN7PR12MB7978.namprd12.prod.outlook.com (2603:10b6:806:34b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.21; Thu, 11 May
- 2023 07:33:13 +0000
-Received: from BL02EPF000145B8.namprd05.prod.outlook.com
- (2603:10b6:208:2bb:cafe::bd) by BL1PR13CA0135.outlook.office365.com
- (2603:10b6:208:2bb::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.7 via Frontend
- Transport; Thu, 11 May 2023 07:33:13 +0000
+ bh=he65cIQQwqLcPUh0K7+4CXQr0jLidhcBa3blMtvOwsw=;
+ b=j7RrGtmVn+CwvDpExd74nZkuXT15lZcHaEeq2A6zS2jVfCr9BZjx1utzfPbRrTTOFkXfRC1DCQkarbK+x5R5/8EOl690Oh0J0zXNQNAZYZLKCWWcWfA0ur/h8BDzKRH8UTuSuw+WFGL9Yw5rz2mZ7KB5RLrKefTDbD0QGiqRXYA=
+Received: from MWH0EPF00056D11.namprd21.prod.outlook.com
+ (2603:10b6:30f:fff2:0:1:0:14) by BL1PR12MB5160.namprd12.prod.outlook.com
+ (2603:10b6:208:311::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6387.18; Thu, 11 May
+ 2023 07:33:23 +0000
+Received: from CO1NAM11FT115.eop-nam11.prod.protection.outlook.com
+ (2a01:111:f400:7eab::204) by MWH0EPF00056D11.outlook.office365.com
+ (2603:1036:d20::b) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6411.5 via Frontend
+ Transport; Thu, 11 May 2023 07:33:21 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BL02EPF000145B8.mail.protection.outlook.com (10.167.241.208) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6387.21 via Frontend Transport; Thu, 11 May 2023 07:33:13 +0000
-Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT115.mail.protection.outlook.com (10.13.174.211) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6387.22 via Frontend Transport; Thu, 11 May 2023 07:33:21 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 11 May
- 2023 02:33:11 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB07.amd.com
- (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 11 May
- 2023 00:32:28 -0700
+ 2023 02:33:20 -0500
 Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
  SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Thu, 11 May 2023 02:32:23 -0500
+ via Frontend Transport; Thu, 11 May 2023 02:33:16 -0500
 From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 To: <broonie@kernel.org>, <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
 	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
@@ -83,35 +79,35 @@ CC: <sbinding@opensource.cirrus.com>, <git@amd.com>,
 	<michal.simek@amd.com>, <linux-arm-kernel@lists.infradead.org>,
 	<amitrkcian2002@gmail.com>, Amit Kumar Mahapatra
 	<amit.kumar-mahapatra@amd.com>
-Subject: [PATCH V8 5/7] spi: spi-zynqmp-gqspi: Add stacked memories support in GQSPI driver
-Date: Thu, 11 May 2023 13:01:32 +0530
-Message-ID: <20230511073134.41180-6-amit.kumar-mahapatra@amd.com>
+Subject: [PATCH V8 7/7] spi: spi-zynqmp-gqspi: Add parallel memories support in GQSPI driver
+Date: Thu, 11 May 2023 13:01:34 +0530
+Message-ID: <20230511073134.41180-8-amit.kumar-mahapatra@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230511073134.41180-1-amit.kumar-mahapatra@amd.com>
 References: <20230511073134.41180-1-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF000145B8:EE_|SN7PR12MB7978:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6ec74146-3478-4d24-cf0c-08db51f1fa3f
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT115:EE_|BL1PR12MB5160:EE_
+X-MS-Office365-Filtering-Correlation-Id: c3a40346-e233-49da-e6b2-08db51f1ff72
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	1l6E8Z0QHmmKNIqn2/PT9ZmYtZceJvnhBgv4CDAk8isTnp9v/+w++V6njM/j0HrGDiJvO+T0xIhXu/WdOB5O3KdUdpU/08y5x8VYrabQrgXPTRmjEcYE4GsknmSsTJ0WyDgNLUa34oUvkhyYkCkM5R2HKk7POb/vh9Xl+S3yY3HwVNxzmCzUVYoEdpfYW7RG55YuIFvaUsu/odY6qCQO+cURgesTU08KEwi6CuCFN9YcbJVfeDprsDWjhCyrEpVXiB5QLDiJK7FMEyjUMfAmGQYAQ2hBQQD1pop0FlJuWhfYHTXESxbQQQCLEQIJEm44yiRz1AkCyGTVE3MUiPuFlydDFplfyVoc6hMXfQ5K8UtzvglF9EPDkOkFMtZWJSBe2aoBo02h9FJV9HJKqnWCl8fu3hp3ScEsoqbLW4mmZ/+DbFe51SGVW1MoQPhqZ04O5+waX0grmlc7zAaQM7nwXsI2QaSOJg5gcIHORIaBbUbnyUaz3sz8jBxc0foq/xJpq+Tup3Pp9thR01FxLQ4jm+WsIwew1or3wDjpzef24f2KTtMnZov1X3c142du6KjG4i20lwuYqRlc3p2BHTKBqoHwewj+S6MdnA2nqiKD3OHDpvPtZXxmaojD1HISuOiMIqFNu1VMvAGUv4BWL1mO5l50oe3ALJIkhftGXXQsJQlOvxr6sEz403mfIyDQ5aUmAB/XsLA1iDExAh5m4ZsGZCGzSTwz3dfCq0GJuWKrJMdvP9p+2t3K7/EjAu2/oxFJMSTiTqsF+EGLYGodnOS1KA==
-X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(136003)(39860400002)(396003)(451199021)(40470700004)(36840700001)(46966006)(40460700003)(6666004)(36860700001)(81166007)(41300700001)(82740400003)(356005)(47076005)(8936002)(26005)(1076003)(7416002)(8676002)(5660300002)(2616005)(336012)(426003)(83380400001)(186003)(2906002)(40480700001)(86362001)(82310400005)(70586007)(70206006)(4326008)(316002)(478600001)(36756003)(54906003)(110136005)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 	/d4LnYtR7TJG+UlbcJ8tUE4yGYLjOPi8iHBeo9OhbKCP8s9AZ7SPkM5cjYeUjj99afh/GwJhx8NWm6l0+thRSJfRb40fITGcDYiI/LfrHfRZAbOBMUipi9ZQfqapRzsRL+XP2/D9Aqw6ve5UgQJPsBiGs+Y8loseW7jF4aZW0iH6gLJxML1ZLIzhX4ePp7b7B8bYcJNSLiWMkMea4vTKmdOw7IDQWnEB28Mp8fsuKa5cMPZHAO5YiQ0Cz+9zEMDfA3d4XZ5roOoWcqF60BgR6x96Ziiq2VolWBSTtzZ17udLF8r5j//NGe26bquC6mLnwe5fzQFEJo2Mt7wmmaqWJtkGnNO9qZfosDxRuQwWwLviDcbE1h1FtZR2SP8N6LzZTvA5DrDWEGH7KuSAS+k2bi0tglxokgWzSXf72ziI3c9d5HNjNxgLyVSf8vLRxhr3TcxGsy784+mCToJXc46qqxggRZQ8wc9tIinpmlmWuT+q+c/OwWgHn0EEPZN14fNNGNYxptS0aTuleaCdcOM886LlO6xD8iyQ2m83u2pRcQTZbO3UB0nKVfETtFy52b7QLfG5R2H0n+ZDwM8JbPYPkGIKTedDMrXXmBmEKoDdUbLpeFRCD+VsiojjsE2vTj7JzV1s8feoicU2krlre1QCuEGYcBe/xrXZXuodsT6EWzVXQASN3iDoiMwqOky7OGxDuwmEXcj7/61G/dJ2o0RVwPpEBW3vWbuiic4Ba4aw3DMEW6+qrBMPbwxySFFHI/9ib5aUACEc9HZameOxvZPGeg==
+X-Forefront-Antispam-Report: 	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(376002)(346002)(136003)(451199021)(40470700004)(36840700001)(46966006)(40480700001)(70206006)(82310400005)(70586007)(41300700001)(336012)(4326008)(316002)(426003)(82740400003)(110136005)(36756003)(40460700003)(356005)(83380400001)(54906003)(2906002)(81166007)(8936002)(8676002)(86362001)(7416002)(5660300002)(26005)(1076003)(186003)(36860700001)(47076005)(2616005)(478600001)(6666004)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2023 07:33:13.0042
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2023 07:33:21.6026
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ec74146-3478-4d24-cf0c-08db51f1fa3f
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3a40346-e233-49da-e6b2-08db51f1ff72
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	BL02EPF000145B8.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 	CO1NAM11FT115.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7978
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5160
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230511_003337_382139_4504B6F9 
-X-CRM114-Status: GOOD (  12.56  )
+X-CRM114-CacheID: sfid-20230511_003333_651274_D4AD0D86 
+X-CRM114-Status: GOOD (  19.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,55 +124,107 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-GQSPI supports two chip select CS0 & CS1. Update the driver to
-assert/de-assert the appropriate chip select as per the bits set in
-qspi->cs_index_mask.
+During probe GQSPI driver sets SPI_CONTROLLER_MULTI_CS bit in ctlr->flags
+for notifying SPI core about multi CS capability of the controller.
+In parallel mode the controller can either split the data between both the
+flash or can send the same data to both the flashes, this is determined by
+the STRIPE bit. While sending commands to the flashes the GQSPI driver
+send the same command to both the flashes by resetting the STRIPE bit, but
+while writing/reading data to & from the flash the GQSPI driver splits the
+data evenly between both the flashes by setting the STRIPE bit.
 
 Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 ---
- drivers/spi/spi-zynqmp-gqspi.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ drivers/spi/spi-zynqmp-gqspi.c | 39 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 38 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index fb2ca9b90eab..3d2b92a88e8a 100644
+index 3d2b92a88e8a..2b2b5c0385fc 100644
 --- a/drivers/spi/spi-zynqmp-gqspi.c
 +++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -156,6 +156,9 @@
- #define GQSPI_FREQ_100MHZ	100000000
- #define GQSPI_FREQ_150MHZ	150000000
+@@ -23,6 +23,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/workqueue.h>
+ #include <linux/spi/spi-mem.h>
++#include <linux/mtd/spi-nor.h>
  
-+#define GQSPI_SELECT_LOWER_CS  BIT(0)
-+#define GQSPI_SELECT_UPPER_CS  BIT(1)
+ /* Generic QSPI register offsets */
+ #define GQSPI_CONFIG_OFST		0x00000100
+@@ -192,6 +193,7 @@ struct qspi_platform_data {
+  * @op_lock:		Operational lock
+  * @speed_hz:          Current SPI bus clock speed in hz
+  * @has_tapdelay:	Used for tapdelay register available in qspi
++ * @is_parallel:		Used for multi CS support
+  */
+ struct zynqmp_qspi {
+ 	struct spi_controller *ctlr;
+@@ -214,8 +216,33 @@ struct zynqmp_qspi {
+ 	struct mutex op_lock;
+ 	u32 speed_hz;
+ 	bool has_tapdelay;
++	bool is_parallel;
+ };
+ 
++/**
++ * zynqmp_gqspi_update_stripe - For GQSPI controller data stripe capabilities
++ * @op:	Pointer to mem ops
++ * Return:      Status of the data stripe
++ *
++ * Returns true if data stripe need to be enabled, else returns false
++ */
++bool zynqmp_gqspi_update_stripe(const struct spi_mem_op *op)
++{
++	if (op->cmd.opcode ==  SPINOR_OP_BE_4K ||
++	    op->cmd.opcode ==  SPINOR_OP_BE_32K ||
++	    op->cmd.opcode ==  SPINOR_OP_CHIP_ERASE ||
++	    op->cmd.opcode ==  SPINOR_OP_SE ||
++	    op->cmd.opcode ==  SPINOR_OP_BE_32K_4B ||
++	    op->cmd.opcode ==  SPINOR_OP_SE_4B ||
++	    op->cmd.opcode == SPINOR_OP_BE_4K_4B ||
++	    op->cmd.opcode ==  SPINOR_OP_WRSR ||
++	    op->cmd.opcode ==  SPINOR_OP_BRWR ||
++	    (op->cmd.opcode ==  SPINOR_OP_WRSR2 && !op->addr.nbytes))
++		return false;
 +
- #define SPI_AUTOSUSPEND_TIMEOUT		3000
- enum mode_type {GQSPI_MODE_IO, GQSPI_MODE_DMA};
- 
-@@ -467,15 +470,17 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
++	return true;
++}
++
+ /**
+  * zynqmp_gqspi_read - For GQSPI controller read operation
+  * @xqspi:	Pointer to the zynqmp_qspi structure
+@@ -470,7 +497,14 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
  
  	genfifoentry |= GQSPI_GENFIFO_MODE_SPI;
  
-+	if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
+-	if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
++	if ((qspi->cs_index_mask & GQSPI_SELECT_LOWER_CS) &&
++	    (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS)) {
 +		zynqmp_gqspi_selectslave(xqspi,
-+					 GQSPI_SELECT_FLASH_CS_UPPER,
-+					 GQSPI_SELECT_FLASH_BUS_LOWER);
-+	} else if (qspi->cs_index_mask & GQSPI_SELECT_LOWER_CS) {
-+		zynqmp_gqspi_selectslave(xqspi,
-+					 GQSPI_SELECT_FLASH_CS_LOWER,
-+					 GQSPI_SELECT_FLASH_BUS_LOWER);
-+	}
-+	genfifoentry |= xqspi->genfifobus;
- 	if (!is_high) {
--		if (!spi_get_chipselect(qspi, 0)) {
--			xqspi->genfifobus = GQSPI_GENFIFO_BUS_LOWER;
--			xqspi->genfifocs = GQSPI_GENFIFO_CS_LOWER;
--		} else {
--			xqspi->genfifobus = GQSPI_GENFIFO_BUS_UPPER;
--			xqspi->genfifocs = GQSPI_GENFIFO_CS_UPPER;
--		}
--		genfifoentry |= xqspi->genfifobus;
- 		genfifoentry |= xqspi->genfifocs;
- 		genfifoentry |= GQSPI_GENFIFO_CS_SETUP;
- 	} else {
++					 GQSPI_SELECT_FLASH_CS_BOTH,
++					 GQSPI_SELECT_FLASH_BUS_BOTH);
++		if (!xqspi->is_parallel)
++			xqspi->is_parallel = true;
++	} else if (qspi->cs_index_mask & GQSPI_SELECT_UPPER_CS) {
+ 		zynqmp_gqspi_selectslave(xqspi,
+ 					 GQSPI_SELECT_FLASH_CS_UPPER,
+ 					 GQSPI_SELECT_FLASH_BUS_LOWER);
+@@ -1139,6 +1173,8 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
+ 	}
+ 
+ 	if (op->data.nbytes) {
++		if (xqspi->is_parallel && zynqmp_gqspi_update_stripe(op))
++			genfifoentry |= GQSPI_GENFIFO_STRIPE;
+ 		reinit_completion(&xqspi->data_completion);
+ 		if (op->data.dir == SPI_MEM_DATA_OUT) {
+ 			xqspi->txbuf = (u8 *)op->data.buf.out;
+@@ -1334,6 +1370,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
+ 	ctlr->dev.of_node = np;
+ 	ctlr->auto_runtime_pm = true;
++	ctlr->flags |= SPI_CONTROLLER_MULTI_CS;
+ 
+ 	ret = devm_spi_register_controller(&pdev->dev, ctlr);
+ 	if (ret) {
 -- 
 2.17.1
 
