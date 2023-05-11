@@ -4,85 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2BF0C7EE23
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 May 2023 13:30:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E5BEC7EE22
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 May 2023 13:30:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=mwfG00G2mF43IuPdFswaoNVbCsKJwRuh0B6CrSHEHnY=; b=CVOK+4xjPFk7Ym
-	hjYRzCRzdBX3t/BlISYIzEX/AamF+WB1Hlkc1FWhjnY0KYqdjwbkw+7EHUCu5zqjfuGvzFIdTuhOW
-	hfComo3++0jBj+16jslA4ToyYnbKZNDw+42QJM6w36qh5VoQoyrHtx7jXOQV0Q/zPeCFvIZ4ZTakl
-	XiXuZKraHRRR2m9ffDLWlbeNyZs20H3JkuV79MNvMr72vzrZashF2aE0FGHBvdqACkMXZ9CVoiGwk
-	wZONyw8vzSwCB93rXLqDytW7UWvTy84LCznBCjhJ18YEyi/UHrRj0eUnvSdexIoGIp2SmSzrGxe9q
-	xn7BblAsgvMargQTna8A==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=p2VKsU8Hdg6NGhB62xCoeXBV0J/CG8QSXAgkkvYf7jw=; b=eBQs64LaSo/VuU
+	ngRlyeu/K7BdNeCNfOFP/P8uWgsaUgztq2qU3LX1lkKduKLoE+6S8iDpUxHfz8BvORaReGl3oNrC3
+	wsnu1qSfE4W0qpMvjR19qmTcoa871cpVD51Rz3RspK4b4NfreUAaRa/2DqABcQ7DHrZpU8PzscWZm
+	XFE0p8xgcJvrlnbBn9Bzw8yBqGngp1MiIWCr/t4RPfUlXqVMSOg991R3mVcRxIyI0ucirvdl+jvnS
+	+MzGaoEPxwb+7D6Ll940kKWr8lhQ7C10Wd0nGKArVdYKjJBy6ExeixjrHSdIxLZJbMP7uzkBxLPIU
+	fn5upDfU/ixLt0x1Wu6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1px6NO-008sGe-0q;
-	Thu, 11 May 2023 13:30:34 +0000
+	id 1px6NQ-008sHP-21;
+	Thu, 11 May 2023 13:30:36 +0000
 Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1px6NM-008sEo-0T
+	id 1px6NM-008sFi-1O
 	for linux-mtd@lists.infradead.org;
-	Thu, 11 May 2023 13:30:33 +0000
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34BDMVEo025180;
-	Thu, 11 May 2023 13:30:26 GMT
+	Thu, 11 May 2023 13:30:34 +0000
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34B9L7Xj029935;
+	Thu, 11 May 2023 13:30:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=4H6cg9/svGMCwZGXxTBtcYg0ozMTszd85OG5cGMvj7Q=;
- b=PlrJhQ3LqJhtTm+obYnYcWOaAmDaKKxjOZVmNnGu/Gx6mgie+8+Z33InbQsJB/aE19LM
- u0FfUtl8KcaVHgO/YQkTNj7hOxcycG+qwlACnnlgB1c8fLnQc+KJyvAE3hmfujNR9Csk
- GBsYkxywzNHmkMosl5Cy7034OZ54yr1yikGHv16X7vxkfkCmR1q1BTuA0bqeY4OooPrS
- C00WXDEt1YO+AYY7JsPrjFcN/svdlmuZnXuaOVI0fuUPz7pUAZHnI4yIqVWdfyaBg71y
- 1+oD3zDN4JxzlGs9Qc8bhB7Fk49fhWRRjIDY45zRtUCJojvEHXTlQa0Hyi7rTB+Xllce dw== 
+ subject : date : message-id : in-reply-to : references; s=qcppdkim1;
+ bh=2nwZloAPONHGg9zNs50n0kaQS9sy3eXZLg1kt9nZNpA=;
+ b=ou3Z4iIiCAqYqdP48Y7vl6U4d3rh5JKwDy9Yoo8DbETjduB2BWaVhkp1LVALwDvj/gz/
+ 0R0MihtO6VeRrn3uzLxlmXYB6T4FwuDT6RXXqLJpY7JFOsjkgi69YjO7vWB13FvSVz10
+ vqFwbRf5ChkHWrCLaHgtJUqlq/1cI/dKyYEb9yOgiMlLEvUg7FeWzWPiiYkoxtKd4EQN
+ lvmid+5WQxpioJLJb6cRrWObRg3LhzmdJuHqnP/LZaItZdz4FrWQgkMlDQW6WWCpSjQ6
+ H3vKue6cgCQRXQ2wG4XPEvkuJcm9FGXrFauRs/EjA3iGfPZlkryE85DTVgcwou3dhzWo 4g== 
 Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3qgv1t8v2e-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3qgpfk1h4c-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 May 2023 13:30:25 +0000
+	Thu, 11 May 2023 13:30:27 +0000
 Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 34BDULZx001532;
-	Thu, 11 May 2023 13:30:21 GMT
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 34BDUOEZ001584;
+	Thu, 11 May 2023 13:30:24 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3qdy5bq8kn-1;
-	Thu, 11 May 2023 13:30:21 +0000
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3qdy5bq8mc-1;
+	Thu, 11 May 2023 13:30:24 +0000
 Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34BDULeF001526;
-	Thu, 11 May 2023 13:30:21 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34BDUMMH001557;
+	Thu, 11 May 2023 13:30:24 GMT
 Received: from mdalam-linux.qualcomm.com (mdalam-linux.qualcomm.com [10.201.2.71])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 34BDUKuZ001525;
-	Thu, 11 May 2023 13:30:21 +0000
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 34BDUMQZ001555;
+	Thu, 11 May 2023 13:30:24 +0000
 Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-	id AC8B512010C1; Thu, 11 May 2023 19:00:19 +0530 (IST)
+	id 1204112010C1; Thu, 11 May 2023 19:00:23 +0530 (IST)
 From: Md Sadre Alam <quic_mdalam@quicinc.com>
 To: mani@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
         vigneshr@ti.com, linux-mtd@lists.infradead.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: quic_srichara@quicinc.com, quic_mdalam@quicinc.com
-Subject: [PATCH 0/5] mtd: rawnand: qcom: Implement exec_op()
-Date: Thu, 11 May 2023 19:00:12 +0530
-Message-Id: <20230511133017.6307-1-quic_mdalam@quicinc.com>
+Subject: [PATCH v2 4/5] mtd: rawnand: qcom: Add support for read, write, erase exec_ops
+Date: Thu, 11 May 2023 19:00:16 +0530
+Message-Id: <20230511133017.6307-5-quic_mdalam@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230511133017.6307-1-quic_mdalam@quicinc.com>
+References: <20230511133017.6307-1-quic_mdalam@quicinc.com>
 X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: nQB32vKZAAlEPhsVUHYMWHeqLZ43SzsH
-X-Proofpoint-GUID: nQB32vKZAAlEPhsVUHYMWHeqLZ43SzsH
+X-Proofpoint-ORIG-GUID: dmdnmvTNmgNV2epHNftCvRpxAP5JemU2
+X-Proofpoint-GUID: dmdnmvTNmgNV2epHNftCvRpxAP5JemU2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-05-11_10,2023-05-05_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=611 malwarescore=0 suspectscore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 adultscore=0 spamscore=0 phishscore=0
- bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2304280000 definitions=main-2305110116
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ suspectscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2304280000 definitions=main-2305110116
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230511_063032_190107_0C0A0B9B 
-X-CRM114-Status: UNSURE (   9.43  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230511_063032_474267_7F569103 
+X-CRM114-Status: GOOD (  17.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,22 +101,111 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-These series of patches will add exec_ops support in qpic nand
-driver. Earlier posted patches V1,V2 will be discontinued ,after
-addrissing Mani and Miquel comment. These all patches are split
-of single patche posted earlier for exec_ops.
+This change will add exec_ops support for READ, WRITE, and ERASE
+command.
 
+Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
+Change in [v2]
 
-Md Sadre Alam (5):
-  mtd: rawnand: qcom: Implement exec_op()
-  mtd: rawnand: qcom: Add support for reset, readid, status exec_op
-  mtd: rawnand: qcom: Add support for param_page read exec_ops
-  mtd: rawnand: qcom: Add support for read, write, erase exec_ops
-  mtd: rawnand: qcom: Remove legacy interface implementation.
+* Missed to post Cover-letter, so posting v2 patch with cover-letter
 
- drivers/mtd/nand/raw/qcom_nandc.c | 857 ++++++++++++++++++------------
- 1 file changed, 510 insertions(+), 347 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 52 +++++++++++++++++++++++++++++--
+ 1 file changed, 49 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 8717d5086f80..14ab21a4771b 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1765,7 +1765,8 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
+ 	int raw_cw = cw;
+ 
+-	nand_read_page_op(chip, page, 0, NULL, 0);
++	chip->cont_read.ongoing = false;
++	nand_read_page_op(chip, page, 0, data_buf, mtd->writesize);
+ 	host->use_ecc = false;
+ 
+ 	if (nandc->props->qpic_v2)
+@@ -2182,14 +2183,24 @@ static void qcom_nandc_codeword_fixup(struct qcom_nand_host *host, int page)
+ static int qcom_nandc_read_page(struct nand_chip *chip, uint8_t *buf,
+ 				int oob_required, int page)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	u8 *data_buf, *oob_buf = NULL;
+ 
+ 	if (host->nr_boot_partitions)
+ 		qcom_nandc_codeword_fixup(host, page);
+ 
+-	nand_read_page_op(chip, page, 0, NULL, 0);
++	chip->cont_read.ongoing = false;
++	nand_read_page_op(chip, page, 0, buf, mtd->writesize);
++	nandc->buf_count = 0;
++	nandc->buf_start = 0;
++	host->use_ecc = true;
++	clear_read_regs(nandc);
++	set_address(host, 0, page);
++	update_rw_regs(host, ecc->steps, true, 0);
++
+ 	data_buf = buf;
+ 	oob_buf = oob_required ? chip->oob_poi : NULL;
+ 
+@@ -2259,6 +2270,10 @@ static int qcom_nandc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 
+ 	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+ 
++	set_address(host, 0, page);
++	nandc->buf_count = 0;
++	nandc->buf_start = 0;
++
+ 	clear_read_regs(nandc);
+ 	clear_bam_transaction(nandc);
+ 
+@@ -3081,7 +3096,38 @@ static int qcom_read_status_exec(struct nand_chip *chip,
+ 
+ static int qcom_erase_cmd_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
+ {
+-	return 0;
++	struct qcom_nand_host *host = to_qcom_nand_host(chip);
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct qcom_op q_op;
++	int ret = 0;
++
++	qcom_parse_instructions(chip, subop, &q_op);
++
++	q_op.cmd_reg |= PAGE_ACC | LAST_PAGE;
++
++	pre_command(host, NAND_CMD_ERASE1);
++
++	nandc_set_reg(chip, NAND_FLASH_CMD, q_op.cmd_reg);
++	nandc_set_reg(chip, NAND_ADDR0, q_op.addr1_reg);
++	nandc_set_reg(chip, NAND_ADDR1, q_op.addr2_reg);
++	nandc_set_reg(chip, NAND_DEV0_CFG0,
++		      host->cfg0_raw & ~(7 << CW_PER_PAGE));
++	nandc_set_reg(chip, NAND_DEV0_CFG1, host->cfg1_raw);
++	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
++
++	write_reg_dma(nandc, NAND_FLASH_CMD, 3, NAND_BAM_NEXT_SGL);
++	write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
++	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
++
++	ret = submit_descs(nandc);
++	if (ret)
++		dev_err(nandc->dev, "failure in sbumitting reset descriptor\n");
++
++	free_descs(nandc);
++
++	ret = qcom_wait_rdy_poll(chip, q_op.rdy_timeout_ms);
++
++	return ret;
+ }
+ 
+ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_subop *subop)
 -- 
 2.17.1
 
