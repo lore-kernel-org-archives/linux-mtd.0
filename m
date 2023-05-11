@@ -4,71 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2EF3C77B7F
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 May 2023 12:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C034DC77B7C
+	for <linux-mtd@archiver.kernel.org>; Thu, 11 May 2023 13:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UhZSTru4z9WyKBTHXj8H+/pTI65TzSgSK2OZWtsnvrw=; b=ma1eWUsyfaYORh
-	6bovetRuoyKwoPtxGwazxuWv8yWUzgTCMJbkwXg/dELYD1KS/ATCaXH7D2utKHu4LpXSUbMA1nSdj
-	ULHT2ajXwWAuIos6v/b8zt3ZkhE3zO4O9H0145dw+705zGqdgKvk9KLBaFjbLQsxXpokBVJoPolbe
-	Rq2vLIBQAWONwVrN3o36gtU4w+rYzCBMy/94fEpCV1pfEvoYOLdrMt/G7MpQzGtlMCMJ6Eat0kekG
-	HpPWbvxT6eAtj3hfHk0zFpzxU/UHX49SdOJLLWKuOFrapLLaSTw9Mp0EM/Gj+tenzBJNiAPi8Smni
-	nlpWPBsGWV5MU7+q2OPg==;
+	List-Owner; bh=9sf9dH59ZNxPfnaYzJCcgmhuLMM27eaa629kodOFIdI=; b=Y3TS3rNneGCLt9
+	YODw43TehlQK57N1Sck6LvL7Beitz0KgzcsMUkPAJGDDnvQjl/i1Z0RejTgZXFVHdST/WaihhmKK2
+	RjsfYaRXJajObKTqDYYi3T24AijFBWgII3+8B2dVuexe6JHku4J8sJ+gIlrkz/ahREChrqAsEZG0i
+	RhYj8SkRM47cuumDk6M53EwAonjaCYjRtlfxAXYGZXvClnscIuH4DNCFrPV2Km/jjmBSF8cZxDZKW
+	NWltxhyOQUg1CETIMzYAuTTHdI48+baAr6HYnX7Dz3oKTzQwKp8Gq+ZGO9F/o/7t5XzORKEOv+Xj3
+	BgoA0SMNvS3zoyl7crOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1px58r-008icu-0J;
-	Thu, 11 May 2023 12:11:29 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1px61R-008oQF-0S;
+	Thu, 11 May 2023 13:07:53 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1px58m-008ibb-1B;
-	Thu, 11 May 2023 12:11:27 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 9AD8B1BF211;
-	Thu, 11 May 2023 12:11:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1683807077;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SHBJChe3M+z663zqQUKoIWUezcHT/WhhPyKWhZq8kK8=;
-	b=Cvi008fTvCN+pV2cmdBb3tKzr2RMNBBDdWN6CdrV0PXczQIED2zitR7xMITRwpKLzAyRE2
-	hduipi2MJQ8nMXirVterj1GmrbAn8iAbqFAsetmuhmQyXbLOxAYbfUh5EuAhQVVN4e+uHi
-	nv70owS3/P69wCS4Sn1zy86jeuQOXgZQ7FAndeBWGccsqDtwUWPylGwrMRBgU/Pz7pmuoc
-	CxiHMfIKfhlaTr27FL4xC9JI7g9as4jc8/BrxrUHaodA8SacHuVPhdAwsHJqWeqxiTBXnq
-	6XcHotTtlWCoPWstMeA8i1XqEW08aq4958cO72s7KXm+MCW//CgEc8Id6JgYSg==
-Date: Thu, 11 May 2023 14:11:14 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arseniy Krasnov <avkrasnov@sberdevices.ru>
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Liang Yang
- <liang.yang@amlogic.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Jianxin Pan <jianxin.pan@amlogic.com>, Yixun Lan <yixun.lan@amlogic.com>,
- <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
- <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 6/6] mtd: rawnand: meson: rename node for chip select
-Message-ID: <20230511141114.04cbd9f1@xps-13>
-In-Reply-To: <4561f558-1d34-a7a9-2a05-f6453b0ed9a9@sberdevices.ru>
-References: <20230510110835.26115-1-AVKrasnov@sberdevices.ru>
-	<20230510110835.26115-7-AVKrasnov@sberdevices.ru>
-	<CAFBinCAbTuNGEG13f71F8vhN3yGce+kkYJ7PHMpZbh8DzSapJg@mail.gmail.com>
-	<20230510225359.061c2df6@xps-13>
-	<6918ed54-3929-4832-1e93-6eb55b75c82b@sberdevices.ru>
-	<20230511111204.0b0b3d70@xps-13>
-	<dd25efa3-e46a-e857-d355-53330a8a4181@sberdevices.ru>
-	<4561f558-1d34-a7a9-2a05-f6453b0ed9a9@sberdevices.ru>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+	id 1px61O-008oOI-0R
+	for linux-mtd@lists.infradead.org;
+	Thu, 11 May 2023 13:07:51 +0000
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34BBZwAC018411;
+	Thu, 11 May 2023 13:07:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=qcppdkim1;
+ bh=3IcP6A3mNQLGkEjlvAYCnSeUmP/5QEqTIFvl2GxZxu8=;
+ b=N9zus8AjoW9oD6Vr2Vb+klmyvWigJbaKMlayF2TRC5V2U+lC3Am4Hy/cNaTYHLZvFqru
+ wJ/rus6N1Ann7zxzcyYkBZaRik4PSk3fqYQe1oABn/EDDVnF0JQrpAsGwSjKjihOD768
+ uKB7uT0imINNEkc399Vw3X7BkEXtSSwij3PgyE7LqiRoPo2XF54/ybA83lm8/C7jo/lJ
+ qxgNHuQZQ5bFkMJ18StuJfj7kCCcrtH0s9WUhFOqwUsGHVIejOMEmb8GoL2hDVnNmYC4
+ iSaHugrsEGPFzYSGstltOfp01a8dhD6Gx5qqijDaur9QUnR2eaEw0SeKSP5+IYgrDkFY 1g== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3qgm5m1ntq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 May 2023 13:07:39 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 34BD7a0B013416;
+	Thu, 11 May 2023 13:07:36 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3qdy5bq6r6-1;
+	Thu, 11 May 2023 13:07:36 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34BD7aJg013404;
+	Thu, 11 May 2023 13:07:36 GMT
+Received: from mdalam-linux.qualcomm.com (mdalam-linux.qualcomm.com [10.201.2.71])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 34BD7axR013403;
+	Thu, 11 May 2023 13:07:36 +0000
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+	id 879ED12010C1; Thu, 11 May 2023 18:37:35 +0530 (IST)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: mani@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: quic_srichara@quicinc.com, quic_mdalam@quicinc.com,
+        0000-cover-letter.patch@qualcomm.com
+Subject: [PATCH 2/5] mtd: rawnand: qcom: Add support for reset, readid, status exec_op
+Date: Thu, 11 May 2023 18:37:27 +0530
+Message-Id: <20230511130730.28689-2-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230511130730.28689-1-quic_mdalam@quicinc.com>
+References: <20230511130730.28689-1-quic_mdalam@quicinc.com>
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: pkMECg8ZAN4XkxzgiiZP3XXA4wvuI5D1
+X-Proofpoint-ORIG-GUID: pkMECg8ZAN4XkxzgiiZP3XXA4wvuI5D1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-05-11_09,2023-05-05_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ bulkscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 phishscore=0 spamscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2304280000 definitions=main-2305110113
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230511_051125_667499_7A4CA886 
-X-CRM114-Status: GOOD (  32.33  )
+X-CRM114-CacheID: sfid-20230511_060750_176734_F4795CD6 
+X-CRM114-Status: GOOD (  22.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,97 +96,238 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQXJzZW5peSwKCmF2a3Jhc25vdkBzYmVyZGV2aWNlcy5ydSB3cm90ZSBvbiBUaHUsIDExIE1h
-eSAyMDIzIDEzOjE2OjU5ICswMzAwOgoKPiBPbiAxMS4wNS4yMDIzIDEyOjE3LCBBcnNlbml5IEty
-YXNub3Ygd3JvdGU6Cj4gPiAKPiA+IAo+ID4gT24gMTEuMDUuMjAyMyAxMjoxMiwgTWlxdWVsIFJh
-eW5hbCB3cm90ZTogIAo+ID4+IEhpIEFyc2VuaXksCj4gPj4KPiA+PiBhdmtyYXNub3ZAc2JlcmRl
-dmljZXMucnUgd3JvdGUgb24gVGh1LCAxMSBNYXkgMjAyMyAxMTo1OTowNyArMDMwMDoKPiA+PiAg
-Cj4gPj4+IE9uIDEwLjA1LjIwMjMgMjM6NTMsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gPj4+Cj4g
-Pj4+IEhlbGxvIE1hcnRpbiwgTWlxdWVsCj4gPj4+ICAKPiA+Pj4+IEhpIE1hcnRpbiAmIEFyc2Vu
-aXksCj4gPj4+Pgo+ID4+Pj4gbWFydGluLmJsdW1lbnN0aW5nbEBnb29nbGVtYWlsLmNvbSB3cm90
-ZSBvbiBXZWQsIDEwIE1heSAyMDIzIDIyOjQwOjM3Cj4gPj4+PiArMDIwMDoKPiA+Pj4+ICAgICAK
-PiA+Pj4+PiBIZWxsbyBBcnNlbml5LAo+ID4+Pj4+Cj4gPj4+Pj4gT24gV2VkLCBNYXkgMTAsIDIw
-MjMgYXQgMToxM+KAr1BNIEFyc2VuaXkgS3Jhc25vdgo+ID4+Pj4+IDxBVktyYXNub3ZAc2JlcmRl
-dmljZXMucnU+IHdyb3RlOiAgICAKPiA+Pj4+Pj4KPiA+Pj4+Pj4gVGhpcyByZW5hbWVzIG5vZGUg
-d2l0aCB2YWx1ZXMgZm9yIGNoaXAgc2VsZWN0IGZyb20gInJlZyIgdG8gImNzIi4gSXQgaXMKPiA+
-Pj4+Pj4gbmVlZGVkIGJlY2F1c2Ugd2hlbiBPVFAgYWNjZXNzIGlzIGVuYWJsZWQgb24gdGhlIGF0
-dGFjaGVkIHN0b3JhZ2UsIE1URAo+ID4+Pj4+PiBzdWJzeXN0ZW0gcmVnaXN0ZXJzIHRoaXMgc3Rv
-cmFnZSBpbiB0aGUgTlZNRU0gc3Vic3lzdGVtLiBOVk1FTSBpbiB0dXJuCj4gPj4+Pj4+IHRyaWVz
-IHRvIHVzZSAicmVnIiBub2RlIGluIGl0cyBvd24gbWFubmVyLCBzdXBwb3NlcyB0aGF0IGl0IGhh
-cyBhbm90aGVyCj4gPj4+Pj4+IGxheW91dC4gQWxsIG9mIHRoaXMgbGVhZHMgdG8gZGV2aWNlIGlu
-aXRpYWxpemF0aW9uIGZhaWx1cmUuICAgICAgCj4gPj4+Pj4gSW4gZ2VuZXJhbDogaWYgd2UgY2hh
-bmdlIHRoZSBkZXZpY2UtdHJlZSBpbnRlcmZhY2UgKGluIHRoaXMgY2FzZToKPiA+Pj4+PiByZXBs
-YWNpbmcgYSAicmVnIiB3aXRoIGEgImNzIiBwcm9wZXJ0eSkgdGhlIGR0LWJpbmRpbmdzIGhhdmUg
-dG8gYmUKPiA+Pj4+PiB1cGRhdGVkIGFzIHdlbGwuICAgIAo+ID4+Pj4KPiA+Pj4+IFRydWUsIGFu
-ZCBJIHdvdWxkIGFkZCwgYmluZGluZ3Mgc2hvdWxkIG5vdCBiZSBicm9rZW4uICAgIAo+ID4+Pgo+
-ID4+PiBJIHNlZSwgdGhhdCdzIHRydWUuIFRoYXQgaXMgYmFkIHdheSB0byBjaGFuZ2UgYmluZGlu
-Z3MuCj4gPj4+ICAKPiA+Pj4+ICAgICAKPiA+Pj4+PiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvbXRkL25hbmQtY29udHJvbGxlci55YW1sIGFuZAo+ID4+Pj4+IERvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxtZXNvbi1uYW5kLnlhbWwgc2hvdwo+
-ID4+Pj4+IHRoYXQgdGhlIGNoaXAgc2VsZWN0IG9mIGEgTkFORCBjaGlwIGlzIHNwZWNpZmllZCB3
-aXRoIGEgInJlZyIKPiA+Pj4+PiBwcm9wZXJ0eS4gICAgCj4gPj4+Pgo+ID4+Pj4gQWxsIE5BTkQg
-Y29udHJvbGxlciBiaW5kaW5nIGV4cGVjdCB0aGUgY2hpcC1zZWxlY3QgdG8gYmUgaW4gdGhlCj4g
-Pj4+PiAncmVnJyBwcm9wZXJ0eSwgdmVyeSBtdWNoIGxpa2UgYSBzcGkgZGV2aWNlIHdvdWxkIHVz
-ZSByZWcgdG8gc3RvcmUgdGhlCj4gPj4+PiBjcyBhcyB3ZWxsOiB0aGUgcmVnIHByb3BlcnR5IHRl
-bGxzIHlvdSBob3cgeW91IGFkZHJlc3MgdGhlIGRldmljZS4KPiA+Pj4+Cj4gPj4+PiBJIGFsc28g
-ZnVsbHkgYWdyZWUgd2l0aCBNYXJ0aW4ncyBjb21tZW50cyBiZWxvdy4gQ2hhbmdpbmcgcmVnIGlz
-IGxpa2VseQo+ID4+Pj4gYSB3cm9uZyBhcHByb2FjaCA6KQo+ID4+Pj4gICAgIAo+ID4+Pj4+IEFs
-c28gdGhlIGNvZGUgaGFzIHRvIGJlIGJhY2t3YXJkcyBjb21wYXRpYmxlIHdpdGggb2xkIC5kdGJz
-Lgo+ID4+Pj4+ICAgIAo+ID4+Pj4+PiBFeGFtcGxlOgo+ID4+Pj4+Pgo+ID4+Pj4+PiBbLi4uXSBu
-dm1lbSBtdGQwLXVzZXItb3RwOiBudm1lbTogaW52YWxpZCByZWcgb24gL3NvYy9idXNAZmZlMDAw
-MDAvLi4uCj4gPj4+Pj4+IFsuLi5dIG10ZCBtdGQwOiBGYWlsZWQgdG8gcmVnaXN0ZXIgT1RQIE5W
-TUVNIGRldmljZQo+ID4+Pj4+PiBbLi4uXSBtZXNvbi1uYW5kIGZmZTA3ODAwLm5mYzogZmFpbGVk
-IHRvIHJlZ2lzdGVyIE1URCBkZXZpY2U6IC0yMgo+ID4+Pj4+PiBbLi4uXSBtZXNvbi1uYW5kIGZm
-ZTA3ODAwLm5mYzogZmFpbGVkIHRvIGluaXQgTkFORCBjaGlwcwo+ID4+Pj4+PiBbLi4uXSBtZXNv
-bi1uYW5kOiBwcm9iZSBvZiBmZmUwNzgwMC5uZmMgZmFpbGVkIHdpdGggZXJyb3IgLTIyICAgICAg
-Cj4gPj4+Pj4gVGhpcyBpcyBvZGQgLSBjYW4geW91IHBsZWFzZSBzaGFyZSB5b3VyIGRlZmluaXRp
-b24gb2YgdGhlICZuZmMgbm9kZT8gICAgCj4gPj4+Cj4gPj4+IFN1cmUsIGhlcmUgaXQgaXM6Cj4g
-Pj4+Cj4gPj4+IG10ZF9uYW5kOiBuZmNANzgwMCB7ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IAo+ID4+PiAJY29tcGF0aWJsZSA9ICJhbWxvZ2ljLG1lc29uLWF4Zy1uZmMiOwo+ID4+PiAJLi4u
-Cj4gPj4+IAluYW5kQDAgeyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCj4gPj4+ICAg
-ICAgICAgCXJlZyA9IDwwPjsKPiA+Pj4gICAgICAgICB9Owo+ID4+PiB9Cj4gPj4+Cj4gPj4+IEkg
-Y2hlY2tlZCwgdGhhdCAnbmFuZF9zZXRfZmxhc2hfbm9kZSgpJyBpcyBjYWxsZWQgd2l0aCAnbmFu
-ZEAwJyBhbmQgaSBzdXBwb3NlCj4gPj4+IHRoYXQgaXQgaXMgY29ycmVjdCAoYXMgWW91IG1lbnRp
-b25lZCBiZWxvdykuIEJ1dCwgJ252bWVtX2FkZF9jZWxsc19mcm9tX29mKCknIGlzIGNhbGxlZAo+
-ID4+PiB3aXRoIHBhcmVudDogJ25mY0A3ODAwJywgdGhlbiBpdCBpdGVyYXRlcyBvdmVyIGl0cyBj
-aGlsZHMsIGUuZy4gJ25hbmRAMCcgYW5kIHRodXMgaSBnZXQgc3VjaAo+ID4+PiBzaXR1YXRpb24u
-IEkgZ3Vlc3MsIHRoYXQgJ252bWVtX2FkZF9jZWxsc19mcm9tX29mKCknIG11c3QgYmUgY2FsbGVk
-IHdpdGggJ25hbmRAMCcgPyAgCj4gPj4KPiA+PiBXZSByZWNlbnRseSBoYWQgaXNzdWVzIHdpdGgg
-bnZtZW0gcGFyc2luZywgYnV0IEkgYmVsaWV2ZSBhIG1haW5saW5lCj4gPj4ga2VybmVsIHNob3Vs
-ZCBub3cgYmUgcGVyZmVjdGx5IHdvcmtpbmcgb24gdGhpcyByZWdhcmQuIFdoYXQgdmVyc2lvbiBv
-Zgo+ID4+IHRoZSBMaW51eCBrZXJuZWwgYXJlIHlvdSB1c2luZz8gIAo+ID4gCj4gPiBNeSBjdXJy
-ZW50IHZlcnNpb24gaXM6Cj4gPiAKPiA+IFZFUlNJT04gPSA2ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo+ID4gUEFUQ0hMRVZFTCA9
-IDIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgCj4gPiBTVUJMRVZFTCA9IDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAKPiA+IEVYVFJBVkVSU0lPTiA9IC1yYzggCj4gPiAKPiA+
-IEZpeCB3YXMgaW4gZHJpdmVycy9udm1lbS8qID8KPiA+IAo+ID4gVGhhbmtzLCBBcnNlbml5ICAK
-PiAKPiBVcGQ6IEkgcmVzb2x2ZWQgcHJvYmxlbSBpbiB0aGUgZm9sbG93aW5nIHdheToKPiAKPiBu
-YW5kQDAgeyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCj4gCXJlZyA9IDwwPjsvL2No
-aXAgc2VsZWN0Cj4gCglwYXJ0aXRpb25zIHsKCQljb21wYXRpYmxlID0gLi4uCgo+IAlvdHBAMCB7
-ICAgICAgICAgICAgICAgICAgICAgICAgIAo+IAkJI2FkZHJlc3MtY2VsbHMgPSA8Mj47ICAgCj4g
-CQkjc2l6ZS1jZWxscyA9IDwwPjsgICAgICAKCiNhZGRyZXNzL3NpemUtY2VsbHMgaXMgbm90IG5l
-ZWRlZCBoZXJlCgo+IAkJY29tcGF0aWJsZSA9ICJ1c2VyLW90cCI7Cj4gCQlyZWcgPSA8QSBCPjsg
-ICAgICAgICAgICAKPiAJfTsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKPiAJb3RwQDEg
-eyAgICAgICAgICAgICAgICAgICAgICAgICAKPiAJCSNhZGRyZXNzLWNlbGxzID0gPDI+OyAgIAo+
-IAkJI3NpemUtY2VsbHMgPSA8MD47ICAgICAgCgpEaXR0bwoKPiAJCWNvbXBhdGlibGUgPSAiZmFj
-dG9yeS1vdHAiOwo+IAkJcmVnID0gPEMgRD47ICAgICAgICAgICAgCj4gCX07ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgCgoJfTsKCj4gfTsKPiAKPiBOb3cgbnZtZW0gc3Vic3lzdGVtIHBh
-cnNlcyAnb3RwQDAnIGFuZCAnb3RwQDEnIGFuZCBlcnJvciBpcyBnb25lLiAnY29tcGF0aWJsZScg
-dmFsdWVzIGFyZQo+IHRoZSBzYW1lIGFzIGluIGRyaXZlcnMvbXRkL210ZGNvcmUuYzptdGRfb3Rw
-X252bWVtX2FkZCgpLiAncmVnJyBpbiAnbmFuZEAwJyBpcyB1c2VkIGFzCj4gY2hpcCBzZWxlY3Qg
-YXMgc3VwcG9zZWQuCgpJIGRvbid0IGZ1bGx5IGdldCBpdC4gVGhlIHBhcnNpbmcgb24gdGhlIG52
-bWVtIHNpZGUgc2hvdWxkIG5vdCBmYWlsIGlmCnRoZXJlIGlzIG5vIHN1YnBhcnRpdGlvbi9vdHAt
-cmVnaW9uIGRlZmluZWQuIENhbiB5b3UgY29uZmlybSBhbiBlbXB0eQpOQU5EIGRldmljZSBub2Rl
-IHdvcmtzPyBCZWNhdXNlIHlvdXIgbGFzdCBlLW1haWwgc3VnZ2VzdGVkIHRoZSBvcHBvc2l0ZS4K
-Cj4gCj4gSSB0aGluaywgdGhpcyBwYXRjaCBzaG91bGQgYmUgYWJhbmRvbmVkIGluIHRoZSBuZXh0
-IHZlcnNpb24uCj4gCj4gVGhhbmtzLCBBcnNlbml5Cj4gCj4gPiAgIAo+ID4+Cj4gPj4gVGhhbmtz
-LAo+ID4+IE1pcXXDqGwgIAoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+This change will add exec_ops support for RESET , READ_ID, STATUS
+command.
+
+Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 166 +++++++++++++++++++++++++++++-
+ 1 file changed, 163 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index dae460e2aa0b..d2f2a8971907 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -384,6 +384,9 @@ struct nandc_regs {
+  * @reg_read_pos:		marker for data read in reg_read_buf
+  *
+  * @cmd1/vld:			some fixed controller register values
++ *
++ * @exec_opwrite:		flag to select correct number of code word
++ *				while reading status
+  */
+ struct qcom_nand_controller {
+ 	struct device *dev;
+@@ -434,6 +437,7 @@ struct qcom_nand_controller {
+ 	int reg_read_pos;
+ 
+ 	u32 cmd1, vld;
++	bool exec_opwrite;
+ };
+ 
+ /*
+@@ -2920,6 +2924,8 @@ static int qcom_op_cmd_mapping(struct qcom_nand_controller *nandc, u8 cmd,
+ 		break;
+ 	case NAND_CMD_PAGEPROG:
+ 		ret = OP_PROGRAM_PAGE;
++		q_op->flag = NAND_CMD_PAGEPROG;
++		nandc->exec_opwrite = true;
+ 		break;
+ 	default:
+ 		break;
+@@ -2982,10 +2988,95 @@ static void qcom_parse_instructions(struct nand_chip *chip,
+ 	}
+ }
+ 
++static void qcom_delay_ns(unsigned int ns)
++{
++	if (!ns)
++		return;
++
++	if (ns < 10000)
++		ndelay(ns);
++	else
++		udelay(DIV_ROUND_UP(ns, 1000));
++}
++
++static int qcom_wait_rdy_poll(struct nand_chip *chip, unsigned int time_ms)
++{
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	unsigned long start = jiffies + msecs_to_jiffies(time_ms);
++	u32 flash;
++
++	nandc_read_buffer_sync(nandc, true);
++
++	do {
++		flash = le32_to_cpu(nandc->reg_read_buf[0]);
++		if (flash & FS_READY_BSY_N)
++			return 0;
++		cpu_relax();
++	} while (time_after(start, jiffies));
++
++	dev_err(nandc->dev, "Timeout waiting for device to be ready:0x%08x\n", flash);
++
++	return -ETIMEDOUT;
++}
++
+ static int qcom_read_status_exec(struct nand_chip *chip,
+ 				 const struct nand_subop *subop)
+ {
+-	return 0;
++	struct qcom_nand_host *host = to_qcom_nand_host(chip);
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
++	struct qcom_op q_op;
++	const struct nand_op_instr *instr = NULL;
++	unsigned int op_id = 0;
++	unsigned int len = 0;
++	int ret = 0, num_cw = 1, i;
++	u32 flash_status;
++
++	host->status = NAND_STATUS_READY | NAND_STATUS_WP;
++
++	qcom_parse_instructions(chip, subop, &q_op);
++
++	if (nandc->exec_opwrite) {
++		num_cw = ecc->steps;
++		nandc->exec_opwrite = false;
++	}
++
++	pre_command(host, NAND_CMD_STATUS);
++
++	nandc_set_reg(chip, NAND_FLASH_CMD, q_op.cmd_reg);
++	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
++
++	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
++	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
++
++	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
++
++	ret = submit_descs(nandc);
++	if (ret)
++		dev_err(nandc->dev, "failure in sbumitting status descriptor\n");
++
++	free_descs(nandc);
++
++	nandc_read_buffer_sync(nandc, true);
++	for (i = 0; i < num_cw; i++) {
++		flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
++
++	if (flash_status & FS_MPU_ERR)
++		host->status &= ~NAND_STATUS_WP;
++
++	if (flash_status & FS_OP_ERR || (i == (num_cw - 1) &&
++					 (flash_status & FS_DEVICE_STS_ERR)))
++		host->status |= NAND_STATUS_FAIL;
++	}
++
++	flash_status = host->status;
++
++	instr = q_op.data_instr;
++	op_id = q_op.data_instr_idx;
++	len = nand_subop_get_data_len(subop, op_id);
++	memcpy(instr->ctx.data.buf.in, &flash_status, len);
++
++	return ret;
+ }
+ 
+ static int qcom_erase_cmd_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
+@@ -3000,12 +3091,81 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
+ 
+ static int qcom_read_id_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
+ {
+-	return 0;
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct qcom_nand_host *host = to_qcom_nand_host(chip);
++	struct qcom_op q_op;
++	const struct nand_op_instr *instr = NULL;
++	unsigned int op_id = 0;
++	unsigned int len = 0;
++	int ret = 0;
++
++	qcom_parse_instructions(chip, subop, &q_op);
++
++	pre_command(host, NAND_CMD_READID);
++
++	nandc_set_reg(chip, NAND_FLASH_CMD, q_op.cmd_reg);
++	nandc_set_reg(chip, NAND_ADDR0, q_op.addr1_reg);
++	nandc_set_reg(chip, NAND_ADDR1, q_op.addr2_reg);
++	nandc_set_reg(chip, NAND_FLASH_CHIP_SELECT,
++		      nandc->props->is_bam ? 0 : DM_EN);
++
++	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
++
++	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
++	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
++
++	read_reg_dma(nandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
++
++	ret = submit_descs(nandc);
++	if (ret)
++		dev_err(nandc->dev, "failure in sbumitting read id descriptor\n");
++
++	free_descs(nandc);
++
++	instr = q_op.data_instr;
++	op_id = q_op.data_instr_idx;
++	len = nand_subop_get_data_len(subop, op_id);
++
++	nandc_read_buffer_sync(nandc, true);
++	memcpy(instr->ctx.data.buf.in, nandc->reg_read_buf, len);
++
++	return ret;
+ }
+ 
+ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
+ {
+-	return 0;
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct qcom_nand_host *host = to_qcom_nand_host(chip);
++	struct qcom_op q_op;
++	int ret = 0;
++
++	qcom_parse_instructions(chip, subop, &q_op);
++
++	if (q_op.flag == NAND_CMD_PAGEPROG)
++		goto wait_rdy;
++
++	pre_command(host, NAND_CMD_RESET);
++
++	nandc_set_reg(chip, NAND_FLASH_CMD, q_op.cmd_reg);
++	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
++
++	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
++	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
++
++	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
++
++	ret = submit_descs(nandc);
++	if (ret)
++		dev_err(nandc->dev, "failure in sbumitting misc descriptor\n");
++
++	free_descs(nandc);
++
++wait_rdy:
++	qcom_delay_ns(q_op.rdy_delay_ns);
++
++	ret = qcom_wait_rdy_poll(chip, q_op.rdy_timeout_ms);
++
++	return ret;
+ }
+ 
+ static int qcom_data_read_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
