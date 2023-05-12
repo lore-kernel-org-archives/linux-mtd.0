@@ -4,78 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B5B3C77B7F
-	for <linux-mtd@archiver.kernel.org>; Thu, 11 May 2023 18:26:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1041C77B7F
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 May 2023 14:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aRQqnxvKb42Fg24+CWAKI5nB3wx68LEfWlyLFlsmIvM=; b=z7JFuyw4u9ooMP
-	+uKfabTStt6woVzw3O/60NJxzHnJfo2eF8uYDCOCKYoNCKXMsftmDxhM57O0CNyl38H34HXB4ED4J
-	aK9lq0u4HOQSRWgVt5KmA6hQMFujAEfWfRb9tWaUb2XDIm7Lzx73RakVFOT0/HE5Not4/rMmXcufn
-	NNKpjZL718TV/79ECBjpAulXtrbW0th+FVy82+BeSpYMLKyPjNWEHc68Jit0KDRbNWBgMK8UztIdx
-	iPlf68Qpj2nUuc+eQZSYOWch8RzS+EzG3P+A1E809d/SoU/JGn0Dg+z4yXLzn29/BWdFMGiofl3MR
-	MQ+XR9wx4F7rbyH1GGcQ==;
+	List-Owner; bh=BQj6jlTE8OuApvaTQw3MprwQqFDqBYCJUVhRpVMrAzo=; b=0SLTgokPk4wfu+
+	yj8QnEIeUFudfcVrN1nePCwMguo6os1iwZOgpIPHaFM6Ebbk2aCllVLWpSgSKEr6Nvd34Ci/nlZqf
+	X1Tym85cmuPL4s4ZT9iBzGRLsYgGWjSLxaaSO0m33e4UMhIhnTT55L6j9Ai+m4z8PLvqpJxqmuZDT
+	FO051Y+9+IgKCOoFDl1fXEEOMAGkDtrJsecBc0hAE19XwkzJrrNM5TruLQcv0AuGzNS8eEI7Wrg1x
+	1VZ41injieF2AF80rwdp7F9+pHW/THElVfT6z31jTMn0zBvALvZWXLq6IvJY9JT7rAXcqxhaoJfFg
+	M9JMJZabQid7RL0d0Nyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pxAzq-009hrq-0O;
-	Thu, 11 May 2023 18:26:34 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1pxU5Q-00CE7s-1g;
+	Fri, 12 May 2023 14:49:36 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pxAzl-009hqe-09
-	for linux-mtd@lists.infradead.org;
-	Thu, 11 May 2023 18:26:31 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id D310E5FD0C;
-	Thu, 11 May 2023 21:26:20 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1683829580;
-	bh=5nTAfm/pvw11kHJn8DB2F1CXjcxkc985Z7SnZU2jNZw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	b=AgMOHm0+2/cEkhAS9xFjJ3Watg2imQsL3Nimrvhnksp0qHif0wmln6Iavj/w451dv
-	 jJNEdbOuhpuDfNa1h+S4SjZEazN2+v+NFJ+AB+7+0xl8zyBEhant2cu0l7G0SMO1Pz
-	 vNK9qbrNjnn+oRsju0bDj8J2hOgubkP1FMvLzTcLJuwEjHEywCroEAJzEg3J9DXWSp
-	 v24jfo6DMf/y+vvEs+nl2mF89lgsaEMMSyAF8tEeczWIpU4bTDuec6vWoFCxsFCvV+
-	 x3qIK3d163DzMdNrKTjKYSMegDJvg7NyXV7WlBnGXRqZwZgFgGcc1OK2fCpXDn26fd
-	 /AJM8X2VaQt7g==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Thu, 11 May 2023 21:26:16 +0300 (MSK)
-Message-ID: <c873b5a9-17ad-767c-5b20-35a49ab2bd40@sberdevices.ru>
-Date: Thu, 11 May 2023 21:21:34 +0300
+	id 1pxU5K-00CE5N-2u;
+	Fri, 12 May 2023 14:49:33 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id A7DD940004;
+	Fri, 12 May 2023 14:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1683902964;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T11KFjvYkfD8qqoG3QDNCPlKzoJSbUbz1uBV/ZOWT+k=;
+	b=aFy09QW+nnEe9aRPOo6NtinLBEPbG4iJcAVG6iWMokefz04jlcVltyqKb0AMmmzOAUdhh2
+	YMYqaZLPMxBslRIfP6WGa94g9FAaTBxkTqJn0sB/m8rU2GC4do6xfWJImPHlYqbOX+YQr0
+	5ocIh8v7WTyhKC7QMy6g5i11LczTUu8sWl1RdxprwA07GVwDJpb3Q14mJLEaP/BL1p7PlB
+	JP8pCV9Cpxfz9XPE6t3zwrW2j4NvKpZTbZ06uOeRXD/d9LdKOdKjaLzeiEvdC68f8G9uCq
+	2/rxm4pQJC8ixiX0RhrBqfadS3ELEl3Wef6ZBhBqCKFhOMql3E+nKoxqSa59ig==
+Date: Fri, 12 May 2023 16:49:18 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Arseniy Krasnov <avkrasnov@sberdevices.ru>
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Liang Yang
+ <liang.yang@amlogic.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Jianxin Pan <jianxin.pan@amlogic.com>, Yixun Lan <yixun.lan@amlogic.com>,
+ <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+ <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Michael Walle <michael@walle.cc>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH v3 6/6] mtd: rawnand: meson: rename node for chip select
+Message-ID: <20230512164918.59f8965f@xps-13>
+In-Reply-To: <0b0bb315-8e5c-fb30-7786-34824b8d385d@sberdevices.ru>
+References: <20230510110835.26115-1-AVKrasnov@sberdevices.ru>
+	<20230510110835.26115-7-AVKrasnov@sberdevices.ru>
+	<CAFBinCAbTuNGEG13f71F8vhN3yGce+kkYJ7PHMpZbh8DzSapJg@mail.gmail.com>
+	<20230510225359.061c2df6@xps-13>
+	<6918ed54-3929-4832-1e93-6eb55b75c82b@sberdevices.ru>
+	<20230511111204.0b0b3d70@xps-13>
+	<dd25efa3-e46a-e857-d355-53330a8a4181@sberdevices.ru>
+	<4561f558-1d34-a7a9-2a05-f6453b0ed9a9@sberdevices.ru>
+	<20230511141114.04cbd9f1@xps-13>
+	<0b0bb315-8e5c-fb30-7786-34824b8d385d@sberdevices.ru>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RESEND PATCH v3] mtd: rawnand: macronix: OTP access for
- MX30LFxG18AC
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Sumit Semwal
-	<sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=c3=b6nig?=
-	<christian.koenig@amd.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-	<linaro-mm-sig@lists.linaro.org>, Mason Yang <masonccyang@mxic.com.tw>, Boris
- Brezillon <boris.brezillon@collabora.com>
-References: <20230511152120.3297853-1-AVKrasnov@sberdevices.ru>
-From: Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <20230511152120.3297853-1-AVKrasnov@sberdevices.ru>
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/05/11 10:21:00 #21259776
-X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230511_112629_482500_4F215A3C 
-X-CRM114-Status: GOOD (  26.07  )
+X-CRM114-CacheID: sfid-20230512_074931_216552_47B36A15 
+X-CRM114-Status: GOOD (  38.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,274 +84,119 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Cc: Mason Yang <masonccyang@mxic.com.tw> and Boris Brezillon <boris.brezillon@collabora.com>
-
-On 11.05.2023 18:21, Arseniy Krasnov wrote:
-> This adds support for OTP area access on MX30LFxG18AC chip series.
-> 
-> Changelog:
->   v1 -> v2:
->   * Add slab.h include due to kernel test robot error.
->   v2 -> v3:
->   * Use 'uint64_t' as input argument for 'do_div()' instead
->     of 'unsigned long' due to kernel test robot error.
-> 
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-> ---
->  drivers/mtd/nand/raw/nand_macronix.c | 213 +++++++++++++++++++++++++++
->  1 file changed, 213 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-> index 1472f925f386..2301f990678e 100644
-> --- a/drivers/mtd/nand/raw/nand_macronix.c
-> +++ b/drivers/mtd/nand/raw/nand_macronix.c
-> @@ -6,6 +6,7 @@
->   * Author: Boris Brezillon <boris.brezillon@free-electrons.com>
->   */
->  
-> +#include <linux/slab.h>
->  #include "linux/delay.h"
->  #include "internals.h"
->  
-> @@ -31,6 +32,20 @@
->  
->  #define MXIC_CMD_POWER_DOWN 0xB9
->  
-> +#define ONFI_FEATURE_ADDR_30LFXG18AC_OTP	0x90
-> +#define MACRONIX_30LFXG18AC_OTP_START_PAGE	0
-> +#define MACRONIX_30LFXG18AC_OTP_PAGES		30
-> +#define MACRONIX_30LFXG18AC_OTP_PAGE_SIZE	2112
-> +#define MACRONIX_30LFXG18AC_OTP_START_BYTE	\
-> +	(MACRONIX_30LFXG18AC_OTP_START_PAGE *	\
-> +	 MACRONIX_30LFXG18AC_OTP_PAGE_SIZE)
-> +#define MACRONIX_30LFXG18AC_OTP_SIZE_BYTES	\
-> +	(MACRONIX_30LFXG18AC_OTP_PAGES *	\
-> +	 MACRONIX_30LFXG18AC_OTP_PAGE_SIZE)
-> +
-> +#define MACRONIX_30LFXG18AC_OTP_EN		BIT(0)
-> +#define MACRONIX_30LFXG18AC_OTP_LOCKED		BIT(1)
-> +
->  struct nand_onfi_vendor_macronix {
->  	u8 reserved;
->  	u8 reliability_func;
-> @@ -316,6 +331,203 @@ static void macronix_nand_deep_power_down_support(struct nand_chip *chip)
->  	chip->ops.resume = mxic_nand_resume;
->  }
->  
-> +static int macronix_30lfxg18ac_get_otp_info(struct mtd_info *mtd, size_t len,
-> +					    size_t *retlen,
-> +					    struct otp_info *buf)
-> +{
-> +	if (len < sizeof(*buf))
-> +		return -EINVAL;
-> +
-> +	/* Don't know how to check that OTP is locked. */
-> +	buf->locked = 0;
-> +	buf->start = MACRONIX_30LFXG18AC_OTP_START_BYTE;
-> +	buf->length = MACRONIX_30LFXG18AC_OTP_SIZE_BYTES;
-> +
-> +	*retlen = sizeof(*buf);
-> +
-> +	return 0;
-> +}
-> +
-> +static int macronix_30lfxg18ac_otp_enable(struct nand_chip *nand)
-> +{
-> +	uint8_t feature_buf[ONFI_SUBFEATURE_PARAM_LEN] = { 0 };
-> +
-> +	feature_buf[0] = MACRONIX_30LFXG18AC_OTP_EN;
-> +	return nand_set_features(nand, ONFI_FEATURE_ADDR_30LFXG18AC_OTP,
-> +				 feature_buf);
-> +}
-> +
-> +static int macronix_30lfxg18ac_otp_disable(struct nand_chip *nand)
-> +{
-> +	uint8_t feature_buf[ONFI_SUBFEATURE_PARAM_LEN] = { 0 };
-> +
-> +	return nand_set_features(nand, ONFI_FEATURE_ADDR_30LFXG18AC_OTP,
-> +				 feature_buf);
-> +}
-> +
-> +static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
-> +					loff_t offs_in_flash,
-> +					size_t len, size_t *retlen,
-> +					u_char *buf, bool write)
-> +{
-> +	struct nand_chip *nand;
-> +	size_t bytes_handled;
-> +	off_t offs_in_page;
-> +	uint64_t page;
-> +	void *dma_buf;
-> +	int ret;
-> +
-> +	/* 'nand_prog/read_page_op()' may use 'buf' as DMA buffer,
-> +	 * so allocate properly aligned memory for it. This is
-> +	 * needed because cross page accesses may lead to unaligned
-> +	 * buffer address for DMA.
-> +	 */
-> +	dma_buf = kmalloc(MACRONIX_30LFXG18AC_OTP_PAGE_SIZE, GFP_KERNEL);
-> +	if (!dma_buf)
-> +		return -ENOMEM;
-> +
-> +	nand = mtd_to_nand(mtd);
-> +	nand_select_target(nand, 0);
-> +
-> +	ret = macronix_30lfxg18ac_otp_enable(nand);
-> +	if (ret)
-> +		goto out_otp;
-> +
-> +	page = offs_in_flash;
-> +	/* 'page' will be result of division. */
-> +	offs_in_page = do_div(page, MACRONIX_30LFXG18AC_OTP_PAGE_SIZE);
-> +	bytes_handled = 0;
-> +
-> +	while (bytes_handled < len &&
-> +	       page < MACRONIX_30LFXG18AC_OTP_PAGES) {
-> +		size_t bytes_to_handle;
-> +
-> +		bytes_to_handle = min_t(size_t, len - bytes_handled,
-> +					MACRONIX_30LFXG18AC_OTP_PAGE_SIZE -
-> +					offs_in_page);
-> +
-> +		if (write) {
-> +			memcpy(dma_buf, &buf[bytes_handled], bytes_to_handle);
-> +			ret = nand_prog_page_op(nand, page, offs_in_page,
-> +						dma_buf, bytes_to_handle);
-> +		} else {
-> +			ret = nand_read_page_op(nand, page, offs_in_page,
-> +						dma_buf, bytes_to_handle);
-> +			if (!ret)
-> +				memcpy(&buf[bytes_handled], dma_buf,
-> +				       bytes_to_handle);
-> +		}
-> +		if (ret)
-> +			goto out_otp;
-> +
-> +		bytes_handled += bytes_to_handle;
-> +		offs_in_page = 0;
-> +		page++;
-> +	}
-> +
-> +	*retlen = bytes_handled;
-> +
-> +out_otp:
-> +	if (ret)
-> +		dev_err(&mtd->dev, "failed to perform OTP IO: %i\n", ret);
-> +
-> +	ret = macronix_30lfxg18ac_otp_disable(nand);
-> +	WARN(ret, "failed to leave OTP mode after %s\n",
-> +	     write ? "write" : "read");
-> +	nand_deselect_target(nand);
-> +	kfree(dma_buf);
-> +
-> +	return ret;
-> +}
-> +
-> +static int macronix_30lfxg18ac_write_otp(struct mtd_info *mtd, loff_t to,
-> +					 size_t len, size_t *rlen,
-> +					 const u_char *buf)
-> +{
-> +	return __macronix_30lfxg18ac_rw_otp(mtd, to, len, rlen, (u_char *)buf,
-> +					    true);
-> +}
-> +
-> +static int macronix_30lfxg18ac_read_otp(struct mtd_info *mtd, loff_t from,
-> +					size_t len, size_t *rlen,
-> +					u_char *buf)
-> +{
-> +	return __macronix_30lfxg18ac_rw_otp(mtd, from, len, rlen, buf, false);
-> +}
-> +
-> +static int macronix_30lfxg18ac_lock_otp(struct mtd_info *mtd, loff_t from,
-> +					size_t len)
-> +{
-> +	uint8_t feature_buf[ONFI_SUBFEATURE_PARAM_LEN] = { 0 };
-> +	struct nand_chip *nand;
-> +	int ret;
-> +
-> +	if (from != MACRONIX_30LFXG18AC_OTP_START_BYTE ||
-> +	    len != MACRONIX_30LFXG18AC_OTP_SIZE_BYTES)
-> +		return -EINVAL;
-> +
-> +	dev_dbg(&mtd->dev, "locking OTP\n");
-> +
-> +	nand = mtd_to_nand(mtd);
-> +	nand_select_target(nand, 0);
-> +
-> +	feature_buf[0] = MACRONIX_30LFXG18AC_OTP_EN |
-> +			 MACRONIX_30LFXG18AC_OTP_LOCKED;
-> +	ret = nand_set_features(nand, ONFI_FEATURE_ADDR_30LFXG18AC_OTP,
-> +				feature_buf);
-> +	if (ret) {
-> +		dev_err(&mtd->dev,
-> +			"failed to lock OTP (set features): %i\n", ret);
-> +		nand_deselect_target(nand);
-> +		return ret;
-> +	}
-> +
-> +	/* Do dummy page prog with zero address. */
-> +	feature_buf[0] = 0;
-> +	ret = nand_prog_page_op(nand, 0, 0, feature_buf, 1);
-> +	if (ret)
-> +		dev_err(&mtd->dev,
-> +			"failed to lock OTP (page prog): %i\n", ret);
-> +
-> +	ret = macronix_30lfxg18ac_otp_disable(nand);
-> +	WARN(ret, "failed to leave OTP mode after lock\n");
-> +
-> +	nand_deselect_target(nand);
-> +
-> +	return ret;
-> +}
-> +
-> +static void macronix_nand_setup_otp(struct nand_chip *chip)
-> +{
-> +	static const char * const supported_otp_models[] = {
-> +		"MX30LF1G18AC",
-> +		"MX30LF2G18AC",
-> +		"MX30LF4G18AC",
-> +	};
-> +	struct mtd_info *mtd;
-> +
-> +	if (!chip->parameters.supports_set_get_features)
-> +		return;
-> +
-> +	if (match_string(supported_otp_models,
-> +			 ARRAY_SIZE(supported_otp_models),
-> +			 chip->parameters.model) < 0)
-> +		return;
-> +
-> +	bitmap_set(chip->parameters.get_feature_list,
-> +		   ONFI_FEATURE_ADDR_30LFXG18AC_OTP, 1);
-> +	bitmap_set(chip->parameters.set_feature_list,
-> +		   ONFI_FEATURE_ADDR_30LFXG18AC_OTP, 1);
-> +
-> +	mtd = nand_to_mtd(chip);
-> +	mtd->_get_fact_prot_info = macronix_30lfxg18ac_get_otp_info;
-> +	mtd->_read_fact_prot_reg = macronix_30lfxg18ac_read_otp;
-> +	mtd->_get_user_prot_info = macronix_30lfxg18ac_get_otp_info;
-> +	mtd->_read_user_prot_reg = macronix_30lfxg18ac_read_otp;
-> +	mtd->_write_user_prot_reg = macronix_30lfxg18ac_write_otp;
-> +	mtd->_lock_user_prot_reg = macronix_30lfxg18ac_lock_otp;
-> +}
-> +
->  static int macronix_nand_init(struct nand_chip *chip)
->  {
->  	if (nand_is_slc(chip))
-> @@ -325,6 +537,7 @@ static int macronix_nand_init(struct nand_chip *chip)
->  	macronix_nand_onfi_init(chip);
->  	macronix_nand_block_protection_support(chip);
->  	macronix_nand_deep_power_down_support(chip);
-> +	macronix_nand_setup_otp(chip);
->  
->  	return 0;
->  }
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQXJzZW5peSwKCkknbSBhZGRpbmcgUmFmYcWCICYgTWljaGFlbDogYW55IGlkZWEgd2hhdCBj
+b3VsZCBiZSB3cm9uZz8gVGhlIGJlaGF2aW9yCmJlbG93IGRvZXMgbm90IGxvb2sgZXhwZWN0ZWQg
+YXQgYWxsLCBidXQgSSB0aG91Z2h0IHdlICg9IFJhZmHFgiwgbWFpbmx5KQphbHJlYWR5IHNvcnRl
+ZCB0aGlzIG91dD8KCj4gPj4+Pj4+PiBPbiBXZWQsIE1heSAxMCwgMjAyMyBhdCAxOjEz4oCvUE0g
+QXJzZW5peSBLcmFzbm92Cj4gPj4+Pj4+PiA8QVZLcmFzbm92QHNiZXJkZXZpY2VzLnJ1PiB3cm90
+ZTogICAgICAKPiA+Pj4+Pj4+Pgo+ID4+Pj4+Pj4+IFRoaXMgcmVuYW1lcyBub2RlIHdpdGggdmFs
+dWVzIGZvciBjaGlwIHNlbGVjdCBmcm9tICJyZWciIHRvICJjcyIuIEl0IGlzCj4gPj4+Pj4+Pj4g
+bmVlZGVkIGJlY2F1c2Ugd2hlbiBPVFAgYWNjZXNzIGlzIGVuYWJsZWQgb24gdGhlIGF0dGFjaGVk
+IHN0b3JhZ2UsIE1URAo+ID4+Pj4+Pj4+IHN1YnN5c3RlbSByZWdpc3RlcnMgdGhpcyBzdG9yYWdl
+IGluIHRoZSBOVk1FTSBzdWJzeXN0ZW0uIE5WTUVNIGluIHR1cm4KPiA+Pj4+Pj4+PiB0cmllcyB0
+byB1c2UgInJlZyIgbm9kZSBpbiBpdHMgb3duIG1hbm5lciwgc3VwcG9zZXMgdGhhdCBpdCBoYXMg
+YW5vdGhlcgo+ID4+Pj4+Pj4+IGxheW91dC4gQWxsIG9mIHRoaXMgbGVhZHMgdG8gZGV2aWNlIGlu
+aXRpYWxpemF0aW9uIGZhaWx1cmUuICAgICAgICAKPiA+Pj4+Pj4+IEluIGdlbmVyYWw6IGlmIHdl
+IGNoYW5nZSB0aGUgZGV2aWNlLXRyZWUgaW50ZXJmYWNlIChpbiB0aGlzIGNhc2U6Cj4gPj4+Pj4+
+PiByZXBsYWNpbmcgYSAicmVnIiB3aXRoIGEgImNzIiBwcm9wZXJ0eSkgdGhlIGR0LWJpbmRpbmdz
+IGhhdmUgdG8gYmUKPiA+Pj4+Pj4+IHVwZGF0ZWQgYXMgd2VsbC4gICAgICAKPiA+Pj4+Pj4KPiA+
+Pj4+Pj4gVHJ1ZSwgYW5kIEkgd291bGQgYWRkLCBiaW5kaW5ncyBzaG91bGQgbm90IGJlIGJyb2tl
+bi4gICAgICAKPiA+Pj4+Pgo+ID4+Pj4+IEkgc2VlLCB0aGF0J3MgdHJ1ZS4gVGhhdCBpcyBiYWQg
+d2F5IHRvIGNoYW5nZSBiaW5kaW5ncy4KPiA+Pj4+PiAgICAKPiA+Pj4+Pj4gICAgICAgCj4gPj4+
+Pj4+PiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL25hbmQtY29udHJvbGxl
+ci55YW1sIGFuZAo+ID4+Pj4+Pj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210
+ZC9hbWxvZ2ljLG1lc29uLW5hbmQueWFtbCBzaG93Cj4gPj4+Pj4+PiB0aGF0IHRoZSBjaGlwIHNl
+bGVjdCBvZiBhIE5BTkQgY2hpcCBpcyBzcGVjaWZpZWQgd2l0aCBhICJyZWciCj4gPj4+Pj4+PiBw
+cm9wZXJ0eS4gICAgICAKPiA+Pj4+Pj4KPiA+Pj4+Pj4gQWxsIE5BTkQgY29udHJvbGxlciBiaW5k
+aW5nIGV4cGVjdCB0aGUgY2hpcC1zZWxlY3QgdG8gYmUgaW4gdGhlCj4gPj4+Pj4+ICdyZWcnIHBy
+b3BlcnR5LCB2ZXJ5IG11Y2ggbGlrZSBhIHNwaSBkZXZpY2Ugd291bGQgdXNlIHJlZyB0byBzdG9y
+ZSB0aGUKPiA+Pj4+Pj4gY3MgYXMgd2VsbDogdGhlIHJlZyBwcm9wZXJ0eSB0ZWxscyB5b3UgaG93
+IHlvdSBhZGRyZXNzIHRoZSBkZXZpY2UuCj4gPj4+Pj4+Cj4gPj4+Pj4+IEkgYWxzbyBmdWxseSBh
+Z3JlZSB3aXRoIE1hcnRpbidzIGNvbW1lbnRzIGJlbG93LiBDaGFuZ2luZyByZWcgaXMgbGlrZWx5
+Cj4gPj4+Pj4+IGEgd3JvbmcgYXBwcm9hY2ggOikKPiA+Pj4+Pj4gICAgICAgCj4gPj4+Pj4+PiBB
+bHNvIHRoZSBjb2RlIGhhcyB0byBiZSBiYWNrd2FyZHMgY29tcGF0aWJsZSB3aXRoIG9sZCAuZHRi
+cy4KPiA+Pj4+Pj4+ICAgICAgCj4gPj4+Pj4+Pj4gRXhhbXBsZToKPiA+Pj4+Pj4+Pgo+ID4+Pj4+
+Pj4+IFsuLi5dIG52bWVtIG10ZDAtdXNlci1vdHA6IG52bWVtOiBpbnZhbGlkIHJlZyBvbiAvc29j
+L2J1c0BmZmUwMDAwMC8uLi4KPiA+Pj4+Pj4+PiBbLi4uXSBtdGQgbXRkMDogRmFpbGVkIHRvIHJl
+Z2lzdGVyIE9UUCBOVk1FTSBkZXZpY2UKPiA+Pj4+Pj4+PiBbLi4uXSBtZXNvbi1uYW5kIGZmZTA3
+ODAwLm5mYzogZmFpbGVkIHRvIHJlZ2lzdGVyIE1URCBkZXZpY2U6IC0yMgo+ID4+Pj4+Pj4+IFsu
+Li5dIG1lc29uLW5hbmQgZmZlMDc4MDAubmZjOiBmYWlsZWQgdG8gaW5pdCBOQU5EIGNoaXBzCj4g
+Pj4+Pj4+Pj4gWy4uLl0gbWVzb24tbmFuZDogcHJvYmUgb2YgZmZlMDc4MDAubmZjIGZhaWxlZCB3
+aXRoIGVycm9yIC0yMiAgICAgICAgCj4gPj4+Pj4+PiBUaGlzIGlzIG9kZCAtIGNhbiB5b3UgcGxl
+YXNlIHNoYXJlIHlvdXIgZGVmaW5pdGlvbiBvZiB0aGUgJm5mYyBub2RlPyAgICAgIAo+ID4+Pj4+
+Cj4gPj4+Pj4gU3VyZSwgaGVyZSBpdCBpczoKPiA+Pj4+Pgo+ID4+Pj4+IG10ZF9uYW5kOiBuZmNA
+NzgwMCB7ICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo+ID4+Pj4+IAljb21wYXRpYmxlID0g
+ImFtbG9naWMsbWVzb24tYXhnLW5mYyI7Cj4gPj4+Pj4gCS4uLgo+ID4+Pj4+IAluYW5kQDAgeyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCj4gPj4+Pj4gICAgICAgICAJcmVnID0gPDA+
+Owo+ID4+Pj4+ICAgICAgICAgfTsKPiA+Pj4+PiB9Cj4gPj4+Pj4KPiA+Pj4+PiBJIGNoZWNrZWQs
+IHRoYXQgJ25hbmRfc2V0X2ZsYXNoX25vZGUoKScgaXMgY2FsbGVkIHdpdGggJ25hbmRAMCcgYW5k
+IGkgc3VwcG9zZQo+ID4+Pj4+IHRoYXQgaXQgaXMgY29ycmVjdCAoYXMgWW91IG1lbnRpb25lZCBi
+ZWxvdykuIEJ1dCwgJ252bWVtX2FkZF9jZWxsc19mcm9tX29mKCknIGlzIGNhbGxlZAo+ID4+Pj4+
+IHdpdGggcGFyZW50OiAnbmZjQDc4MDAnLCB0aGVuIGl0IGl0ZXJhdGVzIG92ZXIgaXRzIGNoaWxk
+cywgZS5nLiAnbmFuZEAwJyBhbmQgdGh1cyBpIGdldCBzdWNoCj4gPj4+Pj4gc2l0dWF0aW9uLiBJ
+IGd1ZXNzLCB0aGF0ICdudm1lbV9hZGRfY2VsbHNfZnJvbV9vZigpJyBtdXN0IGJlIGNhbGxlZCB3
+aXRoICduYW5kQDAnID8gICAgCj4gPj4+Pgo+ID4+Pj4gV2UgcmVjZW50bHkgaGFkIGlzc3VlcyB3
+aXRoIG52bWVtIHBhcnNpbmcsIGJ1dCBJIGJlbGlldmUgYSBtYWlubGluZQo+ID4+Pj4ga2VybmVs
+IHNob3VsZCBub3cgYmUgcGVyZmVjdGx5IHdvcmtpbmcgb24gdGhpcyByZWdhcmQuIFdoYXQgdmVy
+c2lvbiBvZgo+ID4+Pj4gdGhlIExpbnV4IGtlcm5lbCBhcmUgeW91IHVzaW5nPyAgICAKPiA+Pj4K
+PiA+Pj4gTXkgY3VycmVudCB2ZXJzaW9uIGlzOgo+ID4+Pgo+ID4+PiBWRVJTSU9OID0gNiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
+PiA+Pj4gUEFUQ0hMRVZFTCA9IDIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgCj4gPj4+IFNVQkxFVkVMID0gMCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo+ID4+PiBFWFRSQVZF
+UlNJT04gPSAtcmM4IAo+ID4+Pgo+ID4+PiBGaXggd2FzIGluIGRyaXZlcnMvbnZtZW0vKiA/Cj4g
+Pj4+Cj4gPj4+IFRoYW5rcywgQXJzZW5peSAgICAKPiA+Pgo+ID4+IFVwZDogSSByZXNvbHZlZCBw
+cm9ibGVtIGluIHRoZSBmb2xsb3dpbmcgd2F5Ogo+ID4+Cj4gPj4gbmFuZEAwIHsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIAo+ID4+IAlyZWcgPSA8MD47Ly9jaGlwIHNlbGVjdAo+ID4+
+ICAKPiA+IAlwYXJ0aXRpb25zIHsKPiA+IAkJY29tcGF0aWJsZSA9IC4uLgo+ID4gICAKPiA+PiAJ
+b3RwQDAgeyAgICAgICAgICAgICAgICAgICAgICAgICAKPiA+PiAJCSNhZGRyZXNzLWNlbGxzID0g
+PDI+OyAgIAo+ID4+IAkJI3NpemUtY2VsbHMgPSA8MD47ICAgICAgICAKPiA+IAo+ID4gI2FkZHJl
+c3Mvc2l6ZS1jZWxscyBpcyBub3QgbmVlZGVkIGhlcmUKPiA+ICAgCj4gPj4gCQljb21wYXRpYmxl
+ID0gInVzZXItb3RwIjsKPiA+PiAJCXJlZyA9IDxBIEI+OyAgICAgICAgICAgIAo+ID4+IAl9OyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo+ID4+IAlvdHBAMSB7ICAgICAgICAgICAgICAg
+ICAgICAgICAgIAo+ID4+IAkJI2FkZHJlc3MtY2VsbHMgPSA8Mj47ICAgCj4gPj4gCQkjc2l6ZS1j
+ZWxscyA9IDwwPjsgICAgICAgIAo+ID4gCj4gPiBEaXR0bwo+ID4gICAKPiA+PiAJCWNvbXBhdGli
+bGUgPSAiZmFjdG9yeS1vdHAiOwo+ID4+IAkJcmVnID0gPEMgRD47ICAgICAgICAgICAgCj4gPj4g
+CX07ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKPiA+IAo+ID4gCX07Cj4gPiAgIAo+
+ID4+IH07Cj4gPj4KPiA+PiBOb3cgbnZtZW0gc3Vic3lzdGVtIHBhcnNlcyAnb3RwQDAnIGFuZCAn
+b3RwQDEnIGFuZCBlcnJvciBpcyBnb25lLiAnY29tcGF0aWJsZScgdmFsdWVzIGFyZQo+ID4+IHRo
+ZSBzYW1lIGFzIGluIGRyaXZlcnMvbXRkL210ZGNvcmUuYzptdGRfb3RwX252bWVtX2FkZCgpLiAn
+cmVnJyBpbiAnbmFuZEAwJyBpcyB1c2VkIGFzCj4gPj4gY2hpcCBzZWxlY3QgYXMgc3VwcG9zZWQu
+ICAKPiA+IAo+ID4gSSBkb24ndCBmdWxseSBnZXQgaXQuIFRoZSBwYXJzaW5nIG9uIHRoZSBudm1l
+bSBzaWRlIHNob3VsZCBub3QgZmFpbCBpZgo+ID4gdGhlcmUgaXMgbm8gc3VicGFydGl0aW9uL290
+cC1yZWdpb24gZGVmaW5lZC4gQ2FuIHlvdSBjb25maXJtIGFuIGVtcHR5Cj4gPiBOQU5EIGRldmlj
+ZSBub2RlIHdvcmtzPyBCZWNhdXNlIHlvdXIgbGFzdCBlLW1haWwgc3VnZ2VzdGVkIHRoZSBvcHBv
+c2l0ZS4gIAo+IAo+IE9rLCBzbyBpJ2xsIGRlc2NyaWJlIHdoYXQgaGFwcGVucyBpbiBteSBjYXNl
+LiBMZXQncyBOQU5EIG5vZGUgYmUgbGlrZSB0aGlzIChJSVVDIHRoaXMgaXMKPiBjb25zaWRlcmVk
+IGFzIGVtcHR5IE5BTkQgZGV2aWNlKToKPiAKPiBtdGRfbmFuZDogbmZjQDc4MDAgeyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAKPiAJY29tcGF0aWJsZSA9ICJhbWxvZ2ljLG1lc29uLWF4Zy1u
+ZmMiOwo+IAkuLi4KPiAJbmFuZEAwIHsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo+
+IAkgICAgICAgCXJlZyA9IDwwPjsKPiAJfTsKPiB9Cj4gCj4gSSBzZWUsIHRoYXQKPiAKPiAxKSAn
+bXRkX290cF9udm1lbV9hZGQoKScgY2FsbHMgJ210ZF9vdHBfbnZtZW1fcmVnaXN0ZXIoKScgdHdp
+Y2UgZm9yIHR3byB0eXBlcyBvZgo+ICAgIE9UUCBtZW1vcnkgInVzZXItb3RwIiBhbmQgImZhY3Rv
+cnktb3RwIi4gTGV0J3MgdGFrZSBhIGxvb2sgb25seSBvbiAidXNlci1vdHAiLgo+IDIpICdtdGRf
+b3RwX252bWVtX3JlZ2lzdGVyKCknIHRyaWVzIHRvIGxvb2t1cCBmb3Igbm9kZSBpbiAnbmFuZEAw
+JyB3aGljaCBpcyBjb21wYXRpYmxlIHdpdGgKPiAgICAidXNlci1vdHAiIGFuZCB0aGVuIHBhc3Nl
+cyBmb3VuZCAob3Igbm90IGZvdW5kLCBlLmcuIE5VTEwpIG5vZGUgdG8gICdudm1lbV9yZWdpc3Rl
+cigpJy4KPiAzKSAnbnZtZW1fcmVnaXN0ZXIoKScgdXNlcyB0aGlzIG5vZGUgaXRlcmF0aW5nIG92
+ZXIgaXRzIGNoaWxkcyBhbmQgc2VhcmNoaW5nIHZhbHVlICJyZWciIGluCj4gICAgZWFjaCBjaGls
+ZC4gSWYgInVzZXItb3RwIiBub2RlIGlzIG5vdCBmb3VuZCBpbiAyKSwgJ252bWVtX3JlZ2lzdGVy
+KCknIHVzZXMgbm9kZSAnbmZjQDc4MDAnCj4gICAgYWxzbyBsb29raW5nIGZvciAicmVnIiB2YWx1
+ZSBpbiBlYWNoIG9mIGl0cyBjaGlsZC4gSW4gdGhpcyBjYXNlIGl0IGZvdW5kICJyZWciIGluICdu
+YW5kQDAnCj4gICAgYW5kIGZhaWxzLgo+IAo+IE5vdywgaWYgaSBhZGQgImNvbXBhdGlibGUgPSAi
+dXNlci1vdHAiOyIgdG8gJ25hbmRAMCcsIGluIHN0ZXAgMikgc2VhcmNoIHdpbGwgYmUgc3VjY2Vz
+c2Z1bCwKPiBhbmQgInJlZyIgdmFsdWUgd2lsbCBiZSB1c2VkIGZyb20gdGhpcyBuZXcgbm9kZSAo
+b3Igd2UgcmVtb3ZlICJyZWciIGZyb20gaXQgLSBub3RoaW5nIGhhcHBlbnMKPiBhcyBZb3Ugd3Jv
+dGUpLiBTbywgcHJvYmxlbSBpcyB0aGF0IG52bWVtIHRyaWVzIHRvIHBhcnNlIG5vZGUgd2l0aCBp
+bnZhbGlkICJyZWciIHZhbHVlLgo+IAo+IEFsc28gSSBzZWUsIHRoYXQgJ252bWVtX3JlZ2lzdGVy
+KCknIGlzIGNhbGxlZCBlYXJsaWVyIGluICdtdGRfbnZtZW1fYWRkKCknLCBidXQgd2l0aCBubyBl
+ZmZlY3QuCj4gSSB0aGluaywgdGhhdCBpdCBpcyBub3QgcmVsYXRlZCB3aXRoIGVuYWJsZWQgT1RQ
+IGZlYXR1cmUuCj4gCj4gVGhhbmtzLCBBcnNlbml5CgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+bXRkLwo=
