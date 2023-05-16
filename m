@@ -4,131 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00567C77B75
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 May 2023 03:48:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9D54C77B7A
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 May 2023 04:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mNlhipZPKdmnqlkpKJzxS2BGvIl3KW7q6wjeVs0xSyg=; b=QnprnAN6V6g7sx
-	oLbgWkxvHBrWmpsn7p6nBbKgDH05wcYhg5UriUsVCBXTQ2ZOdOSLmA1kQf8/iAKS9AJ6PLkkLwnsJ
-	XVPCTCpbphMZOLLpBJ3hklILUMSJFXWTKHpQtgIPVJPsHSE9Csfaav7WREPzvxdlmcSxZL3i04YwM
-	t2FdifevZWMOrRowabjOOWCI+eOs1xiYqmJW2OVqzF7iV/XDTouWOtiXOlE3773wJ5ZmteopZOkAW
-	K7U1kR5iE/N4KtP3gqkKj+FbEooA9Wii+LqgJM3hB4aI0kZ+I+StcoEDKK6eCVOXOB31HcSxfLbGI
-	k4hhoTroaLePfN0S09VQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date
+	:Subject:CC:To:From:Reply-To:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HtYu9f9L0qo794LXZH2CdODAfrHdGqsukyvtptCSyos=; b=e951Km+RjyNyLt
+	1LfpC5pafR4VpRTOs+6GHNsd/TFb2+IvFKekmB+T7lxPQjN/3dcceYKrv1QQoCMnlQltUAL0Qr+KC
+	LCac+OxnqE4ZaSLdTeVY1T1KxN4h+gmQz2UsvcSW90qPBHS62EhcYvp5LI7j3EHUeJrwHFwLXTNCm
+	V8PExXR4zyhCl5r7B7eE/oitpFmpIycPWQp2+dcwdDsXo9klNF+8++TTjnz2VRw2vw5T8fSVqFGI1
+	bd3l5i/fvDmxN+yTHlWmDUNz6ZwxsXPh5BdjT7oA8dHD8+1eCLS3WKMmxVJ3Efw1tuIriITOQoXAq
+	vatp8rKRrR1zB3KBwHrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pyler-004GdP-1T;
-	Tue, 16 May 2023 03:47:29 +0000
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+	id 1pymaH-004M4v-2O;
+	Tue, 16 May 2023 04:46:49 +0000
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pylem-004GbU-0L;
-	Tue, 16 May 2023 03:47:27 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1ab1ce53ca6so97249665ad.0;
-        Mon, 15 May 2023 20:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684208840; x=1686800840;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PJkA0m3mLV3FScvH0VRdP/qwbPPh2FB8d0fW+TuWxR4=;
-        b=ApPSFRvnOtBS+Z/iKlnWcxMj6EFTaNcebWTAxUNqbr2V59bdCsI1CCGa7BSHqaDeQo
-         Y716hG4KkN0jkNJRqHDrjT+AwLp9OZhn4DGdlJ3osLyZeE9jrOxLkOIUjMJkvpo84CAq
-         nUTDHKlEa12CbYtD834uGpkePWIxfOzVkSxhCNiXiFb0yo2dh6eXGqhzdTiT1iPqmM5o
-         51Or2UyL9Qx+e5KfZ5LhYuXVvZSCPLsQ/mCaORrP9aCbUB2c2S/PnEh5FColWdomJPuP
-         SPspvw61zWv9jTS1y0MWuWQpPc6Zc2rkMxuDBflIpnO2zr1wz5G588YCFmWLp553g2yw
-         ki8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684208840; x=1686800840;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJkA0m3mLV3FScvH0VRdP/qwbPPh2FB8d0fW+TuWxR4=;
-        b=LR1pBy24/4fC5pOPoC26g2gzvwbigD1lloPVVvJk9qbrakoMqYssgb2ELz9rfOvqXq
-         5a0LzW1hPsYRqDezrf1qAaN4a/N85b57RT4HQIUc5o5683f8KrjmYINzQyjOylfzolfK
-         uOhwxdHIvBjtPVIvIDPEimRg9E7+9CDb+5TWxboL2Qy4hEDMzXiR6rmowVbJRnkJhKq9
-         hX6mgD/ZI+Hk/MQWuFolq/LlZpL4d0DOy8V2ftAOJzVe0WlC6bTSzkzaUHAMcjaVjTcP
-         8QyGLo7OcjQDUvM9GreH6p/rElrsMy+EvApuszsbtbQkTxyz5lJTKrQhtU7g63I0iqeS
-         huDA==
-X-Gm-Message-State: AC+VfDwiwGjjmEG4+z/hP0MRl+ve2xEggVG9pxor1Za+3wnI988pUYrK
-	UPSV1df6kvoStoMNzpW1etY=
-X-Google-Smtp-Source: ACHHUZ7e1MfX6kyZu2E4WmLGOzMJRaaqKuW9yru0MqXdpKhkdM51h0LCt+6AtwA0+6KM5psbnkf95w==
-X-Received: by 2002:a17:903:41cb:b0:1ad:f7d9:1ae0 with SMTP id u11-20020a17090341cb00b001adf7d91ae0mr12593543ple.38.1684208839868;
-        Mon, 15 May 2023 20:47:19 -0700 (PDT)
-Received: from [10.230.29.214] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k3-20020a170902ba8300b001a245b49731sm9786807pls.128.2023.05.15.20.47.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 May 2023 20:47:19 -0700 (PDT)
-Message-ID: <1ff2333a-8f78-c066-0158-9c8a1a17684f@gmail.com>
-Date: Mon, 15 May 2023 20:47:07 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH 00/43] ep93xx device tree conversion
+	id 1pymaD-004M3P-29
+	for linux-mtd@lists.infradead.org;
+	Tue, 16 May 2023 04:46:48 +0000
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 0EE1D2C0274;
+	Tue, 16 May 2023 16:46:39 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1684212399;
+	bh=x1xSqqcIQxo4yHnGi/aeTOVQvkwH8+dImv0jo+KukAs=;
+	h=From:To:CC:Subject:Date:From;
+	b=KDqrgq9avkC0r2u2Gc2EzTLJ2Daq9hQsE6aKszFQGoqbMginDxK5b2/zspwixSMvH
+	 zGpm769zCzmrKg/BLnQYz1h7/HGvZKL2WS9b/FcEqBOhsPNxLQRsEGAl+/TFFjFCOD
+	 2XMdqy+mSHht0DeQW/yJ+aWLYwoXmbR1S8Alut2uQRrTDC4VioMXsGjBrHzqYhDXGI
+	 atyvUDJeYKPrnVava8pr9+gvgqUxQLYfuS8iMhmnf/ZV44g15m6GqKK1UWY4z4Ozdy
+	 8VgFGG/1fPcYE3ha5+WpyTfaJUPflx53AAMlYUhur6k9seGkcwgAYsfiBkLAadIp/Y
+	 BwqHXfXz0qfUg==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B64630aae0000>; Tue, 16 May 2023 16:46:38 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.26; Tue, 16 May 2023 16:46:38 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
+ SMTP Server (TLS) id 15.0.1497.48; Tue, 16 May 2023 16:46:38 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.026; Tue, 16 May 2023 16:46:38 +1200
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Thomas Petazzoni
+	<thomas.petazzoni@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Marvell NFC timings on CN9130
+Thread-Topic: Marvell NFC timings on CN9130
+Thread-Index: AQHZh7FmJPDyhVgaf0OyIHAzbKJ+ow==
+Date: Tue, 16 May 2023 04:46:38 +0000
+Message-ID: <17a9eee2-d84f-549d-a5ff-da88d43393c1@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
 Content-Language: en-US
-To: Nikita Shubin <nikita.shubin@maquefel.me>
-Cc: Arnd Bergmann <arnd@kernel.org>, Linus Walleij <linusw@kernel.org>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- "David S. Miller" <davem@davemloft.net>,
- =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
- "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
- =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
- Alessandro Zummo <a.zummo@towertech.it>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Arnd Bergmann <arnd@arndb.de>, Bartosz Golaszewski <brgl@bgdev.pl>,
- Brian Norris <briannorris@chromium.org>, Chuanhong Guo
- <gch981213@gmail.com>, Conor Dooley <conor.dooley@microchip.com>,
- Damien Le Moal <dlemoal@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Emil Renner Berthing <kernel@esmil.dk>, Eric Dumazet <edumazet@google.com>,
- Guenter Roeck <linux@roeck-us.net>,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Heiko Stuebner <heiko@sntech.de>,
- Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
- Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Jean Delvare <jdelvare@suse.de>, Joel Stanley <joel@jms.id.au>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Le Moal <damien.lemoal@opensource.wdc.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Liang Yang <liang.yang@amlogic.com>,
- Linus Walleij <linus.walleij@linaro.org>, Lukasz Majewski <lukma@denx.de>,
- Lv Ruyi <lv.ruyi@zte.com.cn>, Mark Brown <broonie@kernel.org>,
- Masahiro Yamada <masahiroy@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>, Olof Johansson <olof@lixom.net>,
- Paolo Abeni <pabeni@redhat.com>, Qin Jian <qinjian@cqplus1.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Russell King
- <linux@armlinux.org.uk>, Sebastian Reichel <sre@kernel.org>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Stephen Boyd <sboyd@kernel.org>,
- Sumanth Korikkar <sumanthk@linux.ibm.com>, Sven Peter <sven@svenpeter.dev>,
- Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ulf Hansson <ulf.hansson@linaro.org>,
- Vasily Gorbik <gor@linux.ibm.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Vinod Koul <vkoul@kernel.org>, Walker Chen <walker.chen@starfivetech.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>, Yinbo Zhu <zhuyinbo@loongson.cn>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-watchdog@vger.kernel.org, netdev@vger.kernel.org, soc@kernel.org
-References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.33.22.30]
+Content-ID: <786D3EEAC51A214A804B27DB0F8E80E8@atlnz.lc>
+MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=cLieTWWN c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=P0xRbXHiH_UA:10 a=V49VWFFmnWFogDPQAP4A:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230515_204724_157738_1D489F8F 
-X-CRM114-Status: GOOD (  13.02  )
+X-CRM114-CacheID: sfid-20230515_214646_205953_EB3AF832 
+X-CRM114-Status: UNSURE (   9.07  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,30 +89,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Miquel, Thomas,
 
+A hardware colleague reported a concern to me about a new design we have 
+using the Marvell CN9130 SoC (which I think was called Armada-8K before 
+they rebranded).
 
-On 4/24/2023 5:34 AM, Nikita Shubin wrote:
-> This series aims to convert ep93xx from platform to full device tree support.
-> 
-> Tested on ts7250 64 RAM/128 MiB Nand flash, edb9302.
-> 
-> Thank you Linus and Arnd for your support, review and comments, sorry if i missed something -
-> these series are quite big for me.
-> 
-> Big thanks to Alexander Sverdlin for his testing, support, review, fixes and patches.
+Basically their concern is that the tWC timing they observe is faster 
+(~18ns) than the documented minimum in the hardware datasheet for the 
+CN9130 (25ns). Aside from not meeting the datasheet spec we've not 
+observed any other issue (yet).
 
-If anyone is interested I still have a TS-7300 board [1] that is fully 
-functional and could be sent out to a new home.
+I notice in the marvell_nand.c driver that marvell_nfc_init() sets the 
+NAND Clock Frequency Select bit (0xF2440700:0) to 1 which runs according 
+to the datasheet the NAND flash at 400MHz . But the calculations in 
+marvell_nfc_setup_interface() use the value from 
+clk_get_rate(nfc->core_clk) which is still 250MHz so I'm wondering if 
+maybe the fact that the NAND flash is being run faster is having an 
+impact on timings that are calculated around the core_clk frequency.
 
-https://www.embeddedts.com/products/TS-7300
--- 
-Florian
+Do you think that the timings calculations should take the NAND Clock 
+Frequency Select setting into account?
 
+Thanks,
+Chris
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
