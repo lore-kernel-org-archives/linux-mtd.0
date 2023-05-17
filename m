@@ -4,54 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DEAAC77B7F
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 May 2023 21:10:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 366A0C77B7A
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 May 2023 02:22:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vHl4JnEFtzLY9pjh746r/MADXmFwqDtSWO4CJExMiCo=; b=oTMOB5cq1hOE36
-	Oz3XmMt5+pbiPxOJ5Hr1TzIq5JRjb75tcDYOv/IWiCEw7zDK3XaHaGLSGnMVke1Wmh7Lu6gchdQQU
-	THRpfZuaWz6/gRZfYngIUU54TTOoGI05AdEfL/Xl+NdprmCe3ulOgTcvNVhgSAKBtKZgCvaisiIs1
-	q+wM8WJyKAjQcNzYAzVKkQL2OAwGcUBgJFyYRTB0qWaFYWurTmDxwDTGLNNgwkIlIb/exmVfKCqMw
-	lPICijGTsv/EYlTRyZzBI+DV939IAH0zVQzFhLJt92m9QrOqS3ttpR/FV4wV+UV1jOBFaI4uiLv6R
-	3Sl2LGKxsXc0ijBQ99ww==;
+	List-Owner; bh=TLKhW0Gy7MGJwKNZY8vkhUNSGwZoY7tMSIsDQsVEvoM=; b=bOikqQi9cFbPiL
+	RU8zWRtA6JMDCgwJ5ET/ab0duQR1cadgMS2UwWgOKgeIYL0z7Tryo+DTnUOfyNRcSr6ptulKnx4O5
+	gql1qYXgi2h+riHrTH51FZWhuLow622LXj1bnwUUqCYxMVxGx4R7hWDDpdqSxffG3lNxuAazjkyc+
+	tK1KnM71YbjYv5Bc5j3VaMkjjsZzY8DxnmpdkxNzUSYsXsrcNKri82+qFHgNvYGQrccYnOBNKdJ7E
+	jokFNnW1aLXoIOtgixJYxz1YIzpHOrxzj6DWQUc1S+eVCBJpmToehdPqQEWn7qVQj0nGx/8Yg4AK6
+	YWVvVXpWtBQbH56ONoBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pz1vD-0078W6-0x;
-	Tue, 16 May 2023 21:09:27 +0000
-Received: from aposti.net ([89.234.176.197])
+	id 1pz6oH-007ogE-0p;
+	Wed, 17 May 2023 02:22:37 +0000
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pz1v9-0078Us-1f
+	id 1pz6oD-007odv-2e
 	for linux-mtd@lists.infradead.org;
-	Tue, 16 May 2023 21:09:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1684271349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZotjqSno6mlnSCl5RmCgXDL7y9mTXfMTXPW1dTQHAV8=;
-	b=kzi9D6d8/kUP+OHe+02DGcYjw1n+dLg+P+bihL2p4w9Bm0iBJpGxEb/xoh13bTboropQLZ
-	ygJllG6vg94bilMDWjdq6r2OGvBBNEwDqsnGqbb0yPGXdL0O3BRncl5T1Xhdz3VgAJJwNw
-	qUhI8paElVeY3NuHvSgdkK8Cp8S3BXk=
-Message-ID: <7dc34b53bc464cdaae3aea75814625c60315f2ca.camel@crapouillou.net>
-Subject: Re: [PATCH] mtd: rawnand: ingenic: fix empty stub helper definitions
-From: Paul Cercueil <paul@crapouillou.net>
-To: Arnd Bergmann <arnd@kernel.org>, Harvey Hunt
- <harveyhuntnexus@gmail.com>,  Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Date: Tue, 16 May 2023 23:09:07 +0200
-In-Reply-To: <20230516202133.559488-1-arnd@kernel.org>
-References: <20230516202133.559488-1-arnd@kernel.org>
+	Wed, 17 May 2023 02:22:36 +0000
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 7DD172C03E9;
+	Wed, 17 May 2023 14:22:27 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1684290147;
+	bh=I1TRBeRFMd1p0Xy4qdKWmd+xZbTpy3cRbMviYdouafA=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=pdE4cKzGOqZ7A8qFDIXCJotRiRtuz+Q2HrJ2vDF9p25db9cj4HU4W8vGCVGiCVPOp
+	 mFzIUaGfERf+qZeeLY2lXDioTmDYPpkHnVw2ziofpVetzPuiN2oIkbz6QvDDZGfg+k
+	 BgBJHaJGLzrv7CJoJwBEbfArM4SgcE72qSP0aUwMqqrpQQm8gjT32hqxki4BCrJ2nx
+	 lDCOOgi0CHiQfSDHtMHIFps8CEQsv6pMINp5IDYURMw/Q8swZnZffpjHocddcIsAjB
+	 Z2P7MU3CbwEo88Igar1/KPUD/DVrddEY1I0LsxS2g9lEuGVx8qtqDn8eQYH9LKxC9w
+	 m/pFbWZJaN3Bw==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B64643a630000>; Wed, 17 May 2023 14:22:27 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.26; Wed, 17 May 2023 14:22:27 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.48; Wed, 17 May 2023 14:22:27 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.026; Wed, 17 May 2023 14:22:27 +1200
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Marvell NFC timings on CN9130
+Thread-Topic: Marvell NFC timings on CN9130
+Thread-Index: AQHZh7FmJPDyhVgaf0OyIHAzbKJ+o69cXk8AgACV+wA=
+Date: Wed, 17 May 2023 02:22:26 +0000
+Message-ID: <40c38662-221f-b9bb-9699-625dd788defd@alliedtelesis.co.nz>
+References: <17a9eee2-d84f-549d-a5ff-da88d43393c1@alliedtelesis.co.nz>
+ <20230516192538.45b35b6b@xps-13>
+In-Reply-To: <20230516192538.45b35b6b@xps-13>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.33.22.30]
+Content-ID: <516FDD8E619228409D55A0DF82E4278B@atlnz.lc>
 MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=cLieTWWN c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=P0xRbXHiH_UA:10 a=ZyLz09ez2SdZ2DKszXAA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230516_140923_731778_C730622E 
-X-CRM114-Status: GOOD (  11.80  )
+X-CRM114-CacheID: sfid-20230516_192234_373165_517E3F83 
+X-CRM114-Status: GOOD (  32.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,57 +91,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpMZSBtYXJkaSAxNiBtYWkgMjAyMyDDoCAyMjoyMSArMDIwMCwgQXJuZCBCZXJnbWFubiBh
-IMOpY3JpdMKgOgo+IEZyb206IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+Cj4gCj4gQSBm
-ZXcgZnVuY3Rpb25zIHByb3ZpZGUgYW4gZW1wdHkgaW50ZXJmYWNlIGRlZmluaXRpb24gd2hlbgo+
-IENPTkZJR19NVERfTkFORF9JTkdFTklDX0VDQyBpcyBkaXNhYmxlZCwgYnV0IHRoZXkgYXJlIGFj
-Y2lkZW50YWxseQo+IGRlZmluZWQgYXMgZ2xvYmFsIGZ1bmN0aW9ucyBpbiB0aGUgaGVhZGVyOgo+
-IAo+IGRyaXZlcnMvbXRkL25hbmQvcmF3L2luZ2VuaWMvaW5nZW5pY19lY2MuaDozOTo1OiBlcnJv
-cjogbm8gcHJldmlvdXMKPiBwcm90b3R5cGUgZm9yICdpbmdlbmljX2VjY19jYWxjdWxhdGUnCj4g
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvaW5nZW5pYy9pbmdlbmljX2VjYy5oOjQ2OjU6IGVycm9yOiBu
-byBwcmV2aW91cwo+IHByb3RvdHlwZSBmb3IgJ2luZ2VuaWNfZWNjX2NvcnJlY3QnCj4gZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvaW5nZW5pYy9pbmdlbmljX2VjYy5oOjUzOjY6IGVycm9yOiBubyBwcmV2
-aW91cwo+IHByb3RvdHlwZSBmb3IgJ2luZ2VuaWNfZWNjX3JlbGVhc2UnCj4gZHJpdmVycy9tdGQv
-bmFuZC9yYXcvaW5nZW5pYy9pbmdlbmljX2VjYy5oOjU3OjIxOiBlcnJvcjogbm8gcHJldmlvdXMK
-PiBwcm90b3R5cGUgZm9yICdvZl9pbmdlbmljX2VjY19nZXQnCj4gCj4gVHVybiB0aGVtIGludG8g
-J3N0YXRpYyBpbmxpbmUnIGRlZmluaXRpb25zIGluc3RlYWQuCj4gCj4gRml4ZXM6IDE1ZGU4YzZl
-ZmQwZSAoIm10ZDogcmF3bmFuZDogaW5nZW5pYzogU2VwYXJhdGUgdG9wLWxldmVsIGFuZAo+IFNv
-QyBzcGVjaWZpYyBjb2RlIikKPiBTaWduZWQtb2ZmLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFy
-bmRiLmRlPgoKR29vZCBjYXRjaC4KClJldmlld2VkLWJ5OiBQYXVsIENlcmN1ZWlsIDxwYXVsQGNy
-YXBvdWlsbG91Lm5ldD4KCkNoZWVycywKLVBhdWwKCj4gLS0tCj4gwqBkcml2ZXJzL210ZC9uYW5k
-L3Jhdy9pbmdlbmljL2luZ2VuaWNfZWNjLmggfCA4ICsrKystLS0tCj4gwqAxIGZpbGUgY2hhbmdl
-ZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL210ZC9uYW5kL3Jhdy9pbmdlbmljL2luZ2VuaWNfZWNjLmgKPiBiL2RyaXZlcnMvbXRkL25h
-bmQvcmF3L2luZ2VuaWMvaW5nZW5pY19lY2MuaAo+IGluZGV4IDJjZGE0MzliNWUxMS4uMDE3ODY4
-ZjU5ZjIyIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2luZ2VuaWMvaW5nZW5p
-Y19lY2MuaAo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2luZ2VuaWMvaW5nZW5pY19lY2Mu
-aAo+IEBAIC0zNiwyNSArMzYsMjUgQEAgaW50IGluZ2VuaWNfZWNjX2NvcnJlY3Qoc3RydWN0IGlu
-Z2VuaWNfZWNjICplY2MsCj4gwqB2b2lkIGluZ2VuaWNfZWNjX3JlbGVhc2Uoc3RydWN0IGluZ2Vu
-aWNfZWNjICplY2MpOwo+IMKgc3RydWN0IGluZ2VuaWNfZWNjICpvZl9pbmdlbmljX2VjY19nZXQo
-c3RydWN0IGRldmljZV9ub2RlICpucCk7Cj4gwqAjZWxzZSAvKiBDT05GSUdfTVREX05BTkRfSU5H
-RU5JQ19FQ0MgKi8KPiAtaW50IGluZ2VuaWNfZWNjX2NhbGN1bGF0ZShzdHJ1Y3QgaW5nZW5pY19l
-Y2MgKmVjYywKPiArc3RhdGljIGlubGluZSBpbnQgaW5nZW5pY19lY2NfY2FsY3VsYXRlKHN0cnVj
-dCBpbmdlbmljX2VjYyAqZWNjLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIHN0cnVjdCBpbmdlbmljX2VjY19wYXJhbXMgKnBhcmFtcywKPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb25zdCB1OCAq
-YnVmLCB1OCAqZWNjX2NvZGUpCj4gwqB7Cj4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRU5PREVW
-Owo+IMKgfQo+IMKgCj4gLWludCBpbmdlbmljX2VjY19jb3JyZWN0KHN0cnVjdCBpbmdlbmljX2Vj
-YyAqZWNjLAo+ICtzdGF0aWMgaW5saW5lIGludCBpbmdlbmljX2VjY19jb3JyZWN0KHN0cnVjdCBp
-bmdlbmljX2VjYyAqZWNjLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoHN0cnVjdCBpbmdlbmljX2VjY19wYXJhbXMgKnBhcmFtcywgdTggKmJ1ZiwKPiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB1OCAqZWNjX2Nv
-ZGUpCj4gwqB7Cj4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRU5PREVWOwo+IMKgfQo+IMKgCj4g
-LXZvaWQgaW5nZW5pY19lY2NfcmVsZWFzZShzdHJ1Y3QgaW5nZW5pY19lY2MgKmVjYykKPiArc3Rh
-dGljIGlubGluZSB2b2lkIGluZ2VuaWNfZWNjX3JlbGVhc2Uoc3RydWN0IGluZ2VuaWNfZWNjICpl
-Y2MpCj4gwqB7Cj4gwqB9Cj4gwqAKPiAtc3RydWN0IGluZ2VuaWNfZWNjICpvZl9pbmdlbmljX2Vj
-Y19nZXQoc3RydWN0IGRldmljZV9ub2RlICpucCkKPiArc3RhdGljIGlubGluZSBzdHJ1Y3QgaW5n
-ZW5pY19lY2MgKm9mX2luZ2VuaWNfZWNjX2dldChzdHJ1Y3QKPiBkZXZpY2Vfbm9kZSAqbnApCj4g
-wqB7Cj4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiBFUlJfUFRSKC1FTk9ERVYpOwo+IMKgfQoKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
-eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+
+On 17/05/23 05:25, Miquel Raynal wrote:
+> Hi Chris!
+>
+> Chris.Packham@alliedtelesis.co.nz wrote on Tue, 16 May 2023 04:46:38
+> +0000:
+>
+>> Hi Miquel, Thomas,
+>>
+>> A hardware colleague reported a concern to me about a new design we have
+>> using the Marvell CN9130 SoC (which I think was called Armada-8K before
+>> they rebranded).
+>>
+>> Basically their concern is that the tWC timing they observe is faster
+>> (~18ns) than the documented minimum in the hardware datasheet for the
+>> CN9130 (25ns). Aside from not meeting the datasheet spec we've not
+>> observed any other issue (yet).
+> I would have expected the controller to support almost any kind of
+> timings, including SDR EDO mode 5. tWC is 25ns with mode 4, but 20 on
+> mode 5 (ONFI). So I believe you're running a system with a chip that is
+> not compatible with the fastest mode. If that is the case, it may
+> explain why you don't see errors with this chip: it may support
+> slightly faster timings than it advertises.
+>
+> Anyway, if your findings are true, it means the current implementation
+> is slightly out of spec and the timing calculation might require to be
+> tweaked a little bit to reduce tWC.
+>
+>> I notice in the marvell_nand.c driver that marvell_nfc_init() sets the
+>> NAND Clock Frequency Select bit (0xF2440700:0) to 1 which runs according
+>> to the datasheet the NAND flash at 400MHz . But the calculations in
+>> marvell_nfc_setup_interface() use the value from
+>> clk_get_rate(nfc->core_clk) which is still 250MHz so I'm wondering if
+>> maybe the fact that the NAND flash is being run faster is having an
+>> impact on timings that are calculated around the core_clk frequency.
+> What if you reset this bit? Do you observe different timings? I hope
+> you do, otherwise this is a dead-end.
+Yes if we clear the bit the timings go from ~18ns to about 30ns.
+> The timings are derived from this clock but I remember seeing different
+> rates than the ones I expected with no obvious explanation (see the "*
+> 2" in the calculation of period_ns and the comment right below). So
+> maybe this is due to the 400MHz vs. 250MHz issue you are reporting, or
+> there is an undocumented pre-scaler in-between (this is my original
+> guess).
+
+I wondered if the * 2 was because of this or because of the comment that 
+the ECC_CLK is 2*NF_CLK. That probably also means that a number of SoCs 
+are running with an extra *2 that don't need to be (e.g. Armada-385).
+
+>> Do you think that the timings calculations should take the NAND Clock
+>> Frequency Select setting into account?
+> There is not much about this clock in the manual, so if the clock is
+> feeding the logic of the controller generating the signals on the bus,
+> then yes. You can verify this with the test mentioned above.
+>
+> Could you check the values set to tWP and tWH with and without the bit
+> and probe the signals in both cases? Maybe the "* 2" in the
+> period_ns calculation will vanish if we use 400MHz as input clock rather
+> than clk_get_rate() (or better, expose the bit as a mux-clock and use
+> it to tell the CCF the right frequency) and you'll get a sharper tWC in
+> the end, which hopefully should match the spec this time.
+
+I was going to have a look to see if I can get the NAND clock to 
+correctly reflect the value when the NAND Clock Frequency Select bit is 
+set. In the meantime I'll also do some experiments removing the * 2 and 
+hard-coding the frequency at 400MHz.
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
