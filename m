@@ -4,81 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC408C77B7D
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 May 2023 13:57:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5391DC77B7D
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 May 2023 15:04:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6nms/kVxIOdjL4O+ZJWZvqNURIvMT6JR8XhW0NCMByw=; b=xG5nMJFgXvKes+
-	rDEqD0/Dk6UArsLJLVwyxEA5xctIA8KC5uREP2DmVlwLOKoaGT1c2/eS9ak3pFYsDCC46Hpz/HcSt
-	crcR3WR+H8EjZwVWq3Mnwh8swB5xwJR4dTDz6xI7bnb9H1EhBCBjLyPr/a1E5EHx7cA0q6RW9RHN6
-	z0hqda/mdSOQokmZz/GOee4y1Vn2W8A4XoLWmmINhnZY6VHJmfimhilqVc0to7WnvndZNAoJwEAPC
-	fq8Ye4SEMeD8p0el2/XdoVJnNOyoMNWF/1RTdqyDwEQeydmUTdFQ7A+w1onQgs4rTzKA3RJPj5nBT
-	Ak7bVikKOM10UtZ0vNrQ==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:
+	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=12X2XLbP1c0UGXOzG0hqY7l7sGwM2PekT1H0/SAj1jY=; b=NzDcjmiz1DVecr
+	hBIze94uLucPU59eZCRS9Fqsq6h+FwJ5ULaFQKj2YpJc2N5ouuq9og0XPpY6P1k4QjCs8AMkyqfLP
+	oGi8eYVIEpwj6mRv+ZtVfq0U9PHJyoX8OuCBF5LxVvRl7j3VXVzvOY1Pt5sAYP+M42K1MK8te6YxX
+	HjYvZVHigFSOGWhB2qpjW7An5qh2igzmbZGjCgxxYkRZrtoJF5Co5bYmbBYr0wMuglwI+Vnz0KJmQ
+	9aJFme8jFInp1Jk2zuKqmPojLR9SXkDdLxL2nnhh+bI6xaFdMoAia7hpmwgT4fpiEOfVOIsrfCJ2R
+	XpOlmIs4YIi8JyCbfXXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pzHeb-00A3A0-1x;
-	Wed, 17 May 2023 13:57:21 +0000
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+	id 1pzIgr-00AErr-1L;
+	Wed, 17 May 2023 15:03:45 +0000
+Received: from mga09.intel.com ([134.134.136.24])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pzHeZ-00A39M-0e
+	id 1pzIgo-00AEqt-08
 	for linux-mtd@lists.infradead.org;
-	Wed, 17 May 2023 13:57:20 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3078aa0b152so557830f8f.3
-        for <linux-mtd@lists.infradead.org>; Wed, 17 May 2023 06:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1684331836; x=1686923836;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OKRMs4xBwcxe6pbrM4TISDziAjRrtGY3u+ik+E6ctaM=;
-        b=Jrl3kxtJk/HLFSWty/jNmLRxKSgUJN0qDbaj9XxYlaqB38hMUgQp3PwnW3cKe85Tne
-         5EDCUJFYCPLvAZgA5sMIJVmtiHobkoO7GM812sUXiZOqF9F5nmyR2pJ9Rmw9Qp5pzlEf
-         iQ+hHQCCOpDzdITu1HpWEaBT6wIBD2fuIaQGpp8dtndCM2Ymcf7INpxu18JS6j2dI60p
-         mKc/xttuSQPz7W6ry84ic3Mphr5AGPoAWyE4d45VjFef/8/qkgXUpDnu8GklUS3aCjsp
-         gVQmPfUM9Ge1cT28KuhyjrntTgh2FjTKCH3/WewcIXkfHbbH1n0mTgudXhkHewwFSEja
-         FIMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684331836; x=1686923836;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OKRMs4xBwcxe6pbrM4TISDziAjRrtGY3u+ik+E6ctaM=;
-        b=JSzW33cBsbuPpgHxTXcIOoQNtewwDwQK/JVqJIwVRst6LpAXkvMOlRJTkZ6lx2kZ1h
-         hs1gZJpKS3tzylSL+5GI9MaBn4t0DXzFnUnMzBcK5qQz/YrvLp3NuPWh103ZvLZQJtKK
-         qJch2vb56iG1RgxF2OU7kFuIeztpqWYjE53Oc0mIfoQ99pvNqEb4Te3ngJgMt2LeLVHE
-         mWFxKxqeQS2/u+LeifsG2iQ8Io2lNXfnxprMIs7JAU/OT3apJgCETLak3JRydi4ZsDgE
-         Oto4PEPYfayIBdiI3J2qg5nUFwsUbkdpKsQifVPqC9ffsxWPneCkdS7wql5NCoU1iL+q
-         eqhw==
-X-Gm-Message-State: AC+VfDz8M3qTWE2hfLNQzaA3vwe8AqO0FXSZVrhHz/GyhFDsn17yjFCd
-	clFpVGSSlpK/r+bSs5YahXBwmQ==
-X-Google-Smtp-Source: ACHHUZ49RqRDuEpyHmdcdHEBROOkpHaQjVQTM1CuYDI9M7EujogAiu6ABXMnTGhKbQaA6p8Sza/JdQ==
-X-Received: by 2002:adf:f490:0:b0:307:8691:1ea5 with SMTP id l16-20020adff490000000b0030786911ea5mr998841wro.26.1684331836430;
-        Wed, 17 May 2023 06:57:16 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.230])
-        by smtp.gmail.com with ESMTPSA id s5-20020adfdb05000000b00307a83ea722sm2867056wri.58.2023.05.17.06.57.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 May 2023 06:57:15 -0700 (PDT)
-Message-ID: <43e2069b-83fe-4fb1-ceb8-b55c3e30fbfd@linaro.org>
-Date: Wed, 17 May 2023 14:57:14 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH] jffs2: mark __jffs2_dbg_superblock_counts() static
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Richard Weinberger <richard@nod.at>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20230517132725.938292-1-arnd@kernel.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230517132725.938292-1-arnd@kernel.org>
+	Wed, 17 May 2023 15:03:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684335822; x=1715871822;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=N1BSP4Ia8BM8HI0rdakyWqbYxRwvAQiEFATJFkkYIKE=;
+  b=fPkxED1Uq4+QX/ZVJS9oNi/6ZW0OgDpjQeI6wmiPiffjObWxaIKZLaJD
+   QBN3AftVMv9ADQ+Z1ex0pCaKj+AdT4yYqCXEH+Nyu2CFTITOfoCVewyeH
+   5a4xPARiWRUFA4iaXwgoOqU4frqd8xGSyr99PG8JTwow/mCoofVpNB1rp
+   hQhy6XprnFPIwJKJ5aUqSitBkDxaqsAR7e8Ky+ls4jRzEOEDp3wBC69Ed
+   nT/WJLYVcfeZcBSX1xlPGgSybMRDEsULoHlDG3IN2OTDzUBDb1KuaUIHA
+   amrKJ86JxenyBq8YWsZ585fOLkgPRwTOAxcbVKQ6xo6kFktKufxmH+Std
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="354081701"
+X-IronPort-AV: E=Sophos;i="5.99,282,1677571200"; 
+   d="scan'208";a="354081701"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2023 08:03:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="652277172"
+X-IronPort-AV: E=Sophos;i="5.99,282,1677571200"; 
+   d="scan'208";a="652277172"
+Received: from wopr.jf.intel.com ([10.54.75.136])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2023 08:03:23 -0700
+Message-ID: <38bf4bce7961c674b7ac798a8413cb1256eea8f4.camel@linux.intel.com>
+Subject: Re: [PATCH] MTD SPI-NOR: BUG FIX of divide by zero in new n_banks
+ value
+From: Todd Brandt <todd.e.brandt@linux.intel.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, Todd Brandt
+	 <todd.e.brandt@intel.com>, miquel.raynal@bootlin.com, 
+	linux-kernel@vger.kernel.org
+Cc: pratyush@kernel.org, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Thorsten Leemhuis
+ <regressions@leemhuis.info>
+Date: Wed, 17 May 2023 08:03:23 -0700
+In-Reply-To: <3ab922a4-255a-5aef-86ba-d906819f0f3a@linaro.org>
+References: <20230516225108.29194-1-todd.e.brandt@intel.com>
+	 <3ab922a4-255a-5aef-86ba-d906819f0f3a@linaro.org>
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230517_065719_260172_76DBC474 
-X-CRM114-Status: GOOD (  17.20  )
+X-CRM114-CacheID: sfid-20230517_080342_223247_3C960C57 
+X-CRM114-Status: GOOD (  30.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,42 +81,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: todd.e.brandt@linux.intel.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Wed, 2023-05-17 at 08:10 +0100, Tudor Ambarus wrote:
+> Hi, Todd,
+> 
+> On 5/16/23 23:51, Todd Brandt wrote:
+> > While testing 6.4-rc1 on our Lenovo Thinkpad X1 I discovered
+> > that freeze, suspend, and shutdown, all hang the system. I bisected
+> > it to an addition made to the MTD spi-nor code.
+> > 
+> > The new "n_banks" value is being divided into without a proper
+> > check..
+> > Thus on certain systems this causes a divide by zero hang.
+> > 
+> > Reported-and-tested-by: Todd Brandt <todd.e.brandt@linux.intel.com>
+> > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217448
+> > Fixes: 9d6c5d64f028 ("mtd: spi-nor: Introduce the concept of bank")
+> > Signed-off-by: Todd Brandt <todd.e.brandt@intel.com>
+> > ---
+> >  drivers/mtd/spi-nor/core.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-
+> > nor/core.c
+> > index 0bb0ad14a2fc..084117959be4 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -2921,7 +2921,10 @@ static void spi_nor_late_init_params(struct
+> > spi_nor *nor)
+> >  	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params->locking_ops)
+> >  		spi_nor_init_default_locking_ops(nor);
+> >  
+> > -	nor->params->bank_size = div64_u64(nor->params->size, nor-
+> > >info->n_banks);
+> > +	if (nor->info->n_banks > 0)
+> > +		nor->params->bank_size = div64_u64(nor->params->size,
+> > nor->info->n_banks);
+> > +	else
+> > +		nor->params->bank_size = 0;
+> >  }
+> >  
+> >  /**
+> 
+> Indeed, thanks for the report and patch. You probably use the
+> spi-nor-generic driver, don't you?
+> 
+> Can you try the following change instead?
 
+Yes, this also seems to fix things on the Lenovo Thinkpad X1, but the
+solution should be this AND the "if (nor->info->n_banks > 0)" patch. It
+doesn't hurt to check even if it's a very unlikely border case. It
+guarantees that the issue won't occur again even if somehow a struct
+instance is created uninitialized.
 
-On 5/17/23 14:27, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> This function is only called locally and does not need to be
-> global. Since there is no external prototype, gcc warns about
-> the non-static definition:
-> 
-> fs/jffs2/debug.c:160:6: error: no previous prototype for '__jffs2_dbg_superblock_counts' [-Werror=missing-prototypes]
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+You could probably just slim it down to a single if line instead of
+if/else since the default bank_size is zero by default:
 
-> ---
->  fs/jffs2/debug.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
++   if (nor->info->n_banks > 0)
++       nor->params->bank_size = div64_u64(nor->params->size, nor-
+>info->n_banks);
+
 > 
-> diff --git a/fs/jffs2/debug.c b/fs/jffs2/debug.c
-> index 9d26b1b9fc01..0925caab23c4 100644
-> --- a/fs/jffs2/debug.c
-> +++ b/fs/jffs2/debug.c
-> @@ -157,7 +157,7 @@ __jffs2_dbg_prewrite_paranoia_check(struct jffs2_sb_info *c,
->  	kfree(buf);
->  }
->  
-> -void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
-> +static void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
->  {
->  	struct jffs2_eraseblock *jeb;
->  	uint32_t free = 0, dirty = 0, used = 0, wasted = 0,
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>                       index 0bb0ad14a2fc..37f750bd7bfb 100644
+> --- a/drivers/mtd/spi-nor/core.cdrivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.cdrivers/mtd/spi-nor/core.c
+> @@ -2018,6 +2018,7 @@ static const struct spi_nor_manufacturer
+> *manufacturers[] = {
+> 
+>  static const struct flash_info spi_nor_generic_flash = {
+>         .name = "spi-nor-generic",
+> +       .n_banks = 1,
+>         /*
+>          * JESD216 rev A doesn't specify the page size, therefore we
+> need a
+>          * sane default.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
