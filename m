@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A369C7EE26
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:45:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22690C7EE32
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vvvaTfymumVzxelrd6qbvKkT/FZ/Y/cqbDvXJb/y2wk=; b=oPYppZHFDISyCc
-	Oicxhga8dsPYteJjuUz/uOKuOktX+VGjYX60fNNNuoUsGmVKMWFRy+Jp1Cfg0QjWJ255zEncM2A0f
-	xJqlk0A0tX3UXr5uiTSqyuIwaAWuM9cTbsJkrOMkzrkOls2ptPtlrt1YhV3psPb37swcTMVWNTiMi
-	EJruiqH08FDJFfRPqWFn3g2iDZ7PxjHparuIqLP2ydTmnv/e0Cgro9O2bT8ndOEmuC/0rOvc0tKTk
-	n5vOllcrkLsUVHlhd0+ZFd7lGp+PWLh7boN/5tgyumWJEquFrkJDEVQKruHmHJhTR7EMf7KgnUKHO
-	lJmw1SxF42YKcRu08yEA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7rp3EJZ8bvWTlyBzmX2UW2gS+2GsdlaxxldrQTVi90o=; b=YopUXZ4RKoyRuo
+	CALqR//Pz0WETZVuan90G2JcNSPwPwtCV9XZRfPN7EBIdXnXP5GhhBJs0TsxdfF7iYKHkfgeqE8Ss
+	YpJ1B/DzZPHWMsU7Q1J3bxAfuxa9GpSkqO5wCMEWU3JHUTFXslZTp66yiFApcnN47SACyr7sdxthS
+	vaUo/TeGrcHsX4mZd4yVfsx1J+Fcs8P+EhI0yOof6cejYZ8PlVFcQU/vWGF01RE5pnlA9kr0DgjlI
+	vZ3ndOJjfBLVzSb0r0I2elMZa5eOYrb5GYUGBM7bRHd/rvfJeV3rXe8p2bLYyFHF9WifwzFNOK8IS
+	sP65cvEE3N6IBmrDGIOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1MiE-009GUx-32;
-	Tue, 23 May 2023 07:45:42 +0000
+	id 1q1MiM-009GY8-2c;
+	Tue, 23 May 2023 07:45:50 +0000
 Received: from [2001:4bb8:188:23b2:6ade:85c9:530f:6eb0] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1Mi9-009GTZ-27;
-	Tue, 23 May 2023 07:45:38 +0000
+	id 1q1MiK-009GWl-20;
+	Tue, 23 May 2023 07:45:49 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -41,10 +41,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: fix the name_to_dev_t mess
-Date: Tue, 23 May 2023 09:45:11 +0200
-Message-Id: <20230523074535.249802-1-hch@lst.de>
+Subject: [PATCH 04/24] PM: hibernate: move finding the resume device out of software_resume
+Date: Tue, 23 May 2023 09:45:15 +0200
+Message-Id: <20230523074535.249802-5-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230523074535.249802-1-hch@lst.de>
+References: <20230523074535.249802-1-hch@lst.de>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -62,60 +64,144 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+software_resume can be called either from an init call in the boot code,
+or from sysfs once the system has finished booting, and the two
+invocation methods this can't race with each other.
 
-this series tries to sort out accumulated mess around the name_to_dev_t
-function.  This function is intended to allow looking up the dev_t of a
-block device based on a name string before the root file systems is
-mounted and thus the normal path based lookup is available.
+For the latter case we did just parse the suspend device manually, while
+the former might not have one.  Split software_resume so that the search
+only happens for the boot case, which also means the special lockdep
+nesting annotation can go away as the system transition mutex can be
+taken a little later and doesn't have the sysfs locking nest inside it.
 
-Unfortunately a few years ago it managed to get exported and used in
-non-init contexts, leading to the something looking like a path name
-also beeing lookuped up by a different and potential dangerous
-algorithm.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ kernel/power/hibernate.c | 80 ++++++++++++++++++++--------------------
+ 1 file changed, 39 insertions(+), 41 deletions(-)
 
-This series does a fair amount of refactoring and finally ends up with
-the renamed and improved name_to_dev_t only beeing available for the
-early init code again.
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index 78696aa04f5ca3..45e24b02cd50b6 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -907,7 +907,7 @@ int hibernate_quiet_exec(int (*func)(void *data), void *data)
+ }
+ EXPORT_SYMBOL_GPL(hibernate_quiet_exec);
+ 
+-static int find_resume_device(void)
++static int __init find_resume_device(void)
+ {
+ 	if (!strlen(resume_file))
+ 		return -ENOENT;
+@@ -942,53 +942,16 @@ static int find_resume_device(void)
+ 	return 0;
+ }
+ 
+-/**
+- * software_resume - Resume from a saved hibernation image.
+- *
+- * This routine is called as a late initcall, when all devices have been
+- * discovered and initialized already.
+- *
+- * The image reading code is called to see if there is a hibernation image
+- * available for reading.  If that is the case, devices are quiesced and the
+- * contents of memory is restored from the saved image.
+- *
+- * If this is successful, control reappears in the restored target kernel in
+- * hibernation_snapshot() which returns to hibernate().  Otherwise, the routine
+- * attempts to recover gracefully and make the kernel return to the normal mode
+- * of operation.
+- */
+ static int software_resume(void)
+ {
+ 	int error;
+ 
+-	/*
+-	 * If the user said "noresume".. bail out early.
+-	 */
+-	if (noresume || !hibernation_available())
+-		return 0;
+-
+-	/*
+-	 * name_to_dev_t() below takes a sysfs buffer mutex when sysfs
+-	 * is configured into the kernel. Since the regular hibernate
+-	 * trigger path is via sysfs which takes a buffer mutex before
+-	 * calling hibernate functions (which take system_transition_mutex)
+-	 * this can cause lockdep to complain about a possible ABBA deadlock
+-	 * which cannot happen since we're in the boot code here and
+-	 * sysfs can't be invoked yet. Therefore, we use a subclass
+-	 * here to avoid lockdep complaining.
+-	 */
+-	mutex_lock_nested(&system_transition_mutex, SINGLE_DEPTH_NESTING);
+-
+-	if (!swsusp_resume_device) {
+-		error = find_resume_device();
+-		if (error)
+-			goto Unlock;
+-	}
+-
+ 	pm_pr_dbg("Hibernation image partition %d:%d present\n",
+ 		MAJOR(swsusp_resume_device), MINOR(swsusp_resume_device));
+ 
+ 	pm_pr_dbg("Looking for hibernation image.\n");
++
++	mutex_lock(&system_transition_mutex);
+ 	error = swsusp_check(false);
+ 	if (error)
+ 		goto Unlock;
+@@ -1035,7 +998,39 @@ static int software_resume(void)
+ 	goto Finish;
+ }
+ 
+-late_initcall_sync(software_resume);
++/**
++ * software_resume_initcall - Resume from a saved hibernation image.
++ *
++ * This routine is called as a late initcall, when all devices have been
++ * discovered and initialized already.
++ *
++ * The image reading code is called to see if there is a hibernation image
++ * available for reading.  If that is the case, devices are quiesced and the
++ * contents of memory is restored from the saved image.
++ *
++ * If this is successful, control reappears in the restored target kernel in
++ * hibernation_snapshot() which returns to hibernate().  Otherwise, the routine
++ * attempts to recover gracefully and make the kernel return to the normal mode
++ * of operation.
++ */
++static int __init software_resume_initcall(void)
++{
++	/*
++	 * If the user said "noresume".. bail out early.
++	 */
++	if (noresume || !hibernation_available())
++		return 0;
++
++	if (!swsusp_resume_device) {
++		int error = find_resume_device();
++
++		if (error)
++			return error;
++	}
++
++	return software_resume();
++}
++late_initcall_sync(software_resume_initcall);
+ 
+ 
+ static const char * const hibernation_modes[] = {
+@@ -1176,6 +1171,9 @@ static ssize_t resume_store(struct kobject *kobj, struct kobj_attribute *attr,
+ 	char *name;
+ 	dev_t res;
+ 
++	if (!hibernation_available())
++		return 0;
++
+ 	if (len && buf[len-1] == '\n')
+ 		len--;
+ 	name = kstrndup(buf, len, GFP_KERNEL);
+-- 
+2.39.2
 
-The series is against Jens' for-6.5/block tree but probably applies
-against current mainline just fine as well.
-
-A git tree is also available here:
-
-    git://git.infradead.org/users/hch/block.git blk-init-cleanup
-
-Gitweb:
-
-    http://git.infradead.org/users/hch/block.git/shortlog/refs/heads/blk-init-cleanup
-
-Diffstat:
- Documentation/admin-guide/kernel-parameters.txt |    2 
- arch/alpha/kernel/setup.c                       |    2 
- arch/ia64/kernel/setup.c                        |    2 
- arch/powerpc/platforms/powermac/setup.c         |    3 
- block/Makefile                                  |    2 
- block/early-lookup.c                            |  315 ++++++++++++++++++
- block/genhd.c                                   |   92 -----
- drivers/base/dd.c                               |    6 
- drivers/md/dm-init.c                            |    4 
- drivers/md/dm-snap.c                            |   14 
- drivers/md/dm-table.c                           |   26 -
- drivers/md/md-autodetect.c                      |    3 
- drivers/mtd/devices/block2mtd.c                 |   62 ++-
- fs/pstore/blk.c                                 |    4 
- include/linux/blkdev.h                          |    6 
- include/linux/device-mapper.h                   |    2 
- include/linux/device/driver.h                   |    2 
- include/linux/mount.h                           |    1 
- include/linux/root_dev.h                        |    9 
- init/do_mounts.c                                |  416 ++++++------------------
- init/do_mounts.h                                |   14 
- init/do_mounts_initrd.c                         |   11 
- kernel/power/hibernate.c                        |  167 +++++----
- kernel/power/power.h                            |    3 
- kernel/power/swap.c                             |    2 
- 25 files changed, 603 insertions(+), 567 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
