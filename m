@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5260FC7EE23
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:47:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25B0EC7EE26
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zoRPozZ+IemGMSl8sqaLW6v4DPrhWIrh+nNz7xqUpQc=; b=IRFPpu2clBk/al
-	61lzFHGdM5OGvEozFVz66oEhixOTn1LIvBo+tH78MeaeUBRh2RYZrkgF9BJG9u2rCkn8LnOOrlGZz
-	ueXv7KNJdtLgwDSpLBZnkXC6z9fEmQo7eERrBzp7JgCCmcHnFw7ZqJ5ETifKWU1F6VUak3QlT15gX
-	IM1DkgvZE4XvRaUq0lkPM/xA78Z7NW6WK1leZJXWQOgIKRLbnLMXEhe3M3E5KriTqWBBgSm2lnMFd
-	K1F4BUEzICrIT4/FW2DdahbcV5fVo5tK6k3HP8nDpSGi0EJYWrjsgYVfvP2tUCKkvSyIqM9fOxAv9
-	0dmXemcNJjHKivjIGVWQ==;
+	List-Owner; bh=LkfnY1TCXQqoAFFs1nd5RoMYeaeaXn2XrIODb4mqUyM=; b=ccpdCeeDBVpVzv
+	mFD7hhHXU7Z3cvPyfAlcqgGOuCkC57RBDP/tUZFrkItTfZ/md4t8eo9W4a8abNyZLoW+CmurLwich
+	cxjkaNpcwMs+0Ft9yYR7mwUDWsafY17TJj2+GEcCAXmyStgnECzMebWiA02A6LQm/ta3UYlZT3Va9
+	HDa0zB/9dWLkJcMT2Ee89sJD8PJZP9luSQI1Ajs8y6GT3sJpKjGJTZbhyXRLAUaWQPIed+grYh29B
+	nzL138XPgJE6J2h7cGe5GYCfu1O0BCH13p5Roerv2w1D6rDE+SDrUobI47eTiBOGdWzrkiZnY28lr
+	BGTMl/wZN5Q+QfaLI2Pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1Miz-009HAb-0J;
-	Tue, 23 May 2023 07:46:29 +0000
+	id 1q1Mj8-009HKv-2m;
+	Tue, 23 May 2023 07:46:38 +0000
 Received: from [2001:4bb8:188:23b2:6ade:85c9:530f:6eb0] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1Miu-009H5F-2p;
-	Tue, 23 May 2023 07:46:26 +0000
+	id 1q1Mj4-009HEh-16;
+	Tue, 23 May 2023 07:46:34 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -41,9 +41,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 17/24] dm-snap: simplify the origin_dev == cow_dev check in snapshot_ctr
-Date: Tue, 23 May 2023 09:45:28 +0200
-Message-Id: <20230523074535.249802-18-hch@lst.de>
+Subject: [PATCH 20/24] dm: only call early_lookup_bdev from early boot context
+Date: Tue, 23 May 2023 09:45:31 +0200
+Message-Id: <20230523074535.249802-21-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230523074535.249802-1-hch@lst.de>
 References: <20230523074535.249802-1-hch@lst.de>
@@ -64,56 +64,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use the block_device acquired in dm_get_device for the check instead
-of doing an extra lookup.
+early_lookup_bdev is supposed to only be called from the early boot
+code, but dm_get_device calls it as a general fallback when lookup_bdev
+fails, which is problematic because early_lookup_bdev bypasses all normal
+path based permission checking, and might cause problems with certain
+container environments renaming devices.
+
+Switch to only call early_lookup_bdev when dm is built-in and the system
+state in not running yet.  This means it is still available when tables
+are constructed by dm-init.c from the kernel command line, but not
+otherwise.
+
+Note that this strictly speaking changes the kernel ABI as the PARTUUID=
+and PARTLABEL= style syntax is now not available during a running
+systems.  They never were intended for that, but this breaks things
+we'll have to figure out a way to make them available again.  But if
+avoidable in any way I'd rather avoid that.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/md/dm-snap.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ drivers/md/dm-table.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/dm-snap.c b/drivers/md/dm-snap.c
-index 9c49f53760d066..7832974b73eb03 100644
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -1241,7 +1241,6 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	int i;
- 	int r = -EINVAL;
- 	char *origin_path, *cow_path;
--	dev_t origin_dev, cow_dev;
- 	unsigned int args_used, num_flush_bios = 1;
- 	fmode_t origin_mode = FMODE_READ;
- 
-@@ -1279,24 +1278,21 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 		ti->error = "Cannot get origin device";
- 		goto bad_origin;
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index e997f4322a9967..c230241a76b374 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -326,8 +326,11 @@ static int upgrade_mode(struct dm_dev_internal *dd, fmode_t new_mode,
+ /*
+  * Add a device to the list, or just increment the usage count if
+  * it's already present.
++ *
++ * Note: the __ref annotation is because this function can call the __init
++ * marked early_lookup_bdev when called during early boot code from dm-init.c.
+  */
+-int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
++int __ref dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
+ 		  struct dm_dev **result)
+ {
+ 	int r;
+@@ -346,8 +349,10 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
+ 			return -EOVERFLOW;
+ 	} else {
+ 		r = lookup_bdev(path, &dev);
+-		if (r)
++#ifndef MODULE
++		if (r && system_state < SYSTEM_RUNNING)
+ 			r = early_lookup_bdev(path, &dev);
++#endif
+ 		if (r)
+ 			return -ENODEV;
  	}
--	origin_dev = s->origin->bdev->bd_dev;
- 
- 	cow_path = argv[0];
- 	argv++;
- 	argc--;
- 
--	cow_dev = dm_get_dev_t(cow_path);
--	if (cow_dev && cow_dev == origin_dev) {
--		ti->error = "COW device cannot be the same as origin device";
--		r = -EINVAL;
--		goto bad_cow;
--	}
--
- 	r = dm_get_device(ti, cow_path, dm_table_get_mode(ti->table), &s->cow);
- 	if (r) {
- 		ti->error = "Cannot get COW device";
- 		goto bad_cow;
- 	}
-+	if (s->cow->bdev && s->cow->bdev == s->origin->bdev) {
-+		ti->error = "COW device cannot be the same as origin device";
-+		r = -EINVAL;
-+		goto bad_store;
-+	}
- 
- 	r = dm_exception_store_create(ti, argc, argv, s, &args_used, &s->store);
- 	if (r) {
 -- 
 2.39.2
 
