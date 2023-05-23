@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3677DC7EE23
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E71C7EE39
 	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,20 +12,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3cf6z6xnKyJMmub1njuWbIXsSZ+LKQ0sFT7PTxQHsHw=; b=nBruhn+3FYShFZ
-	+kaCt7qr/4M19b/8BnMVAq33MfcgPNV2ikRxVLYYhdIs7Q/4j2psmNKiD5gzeoHgHZSwMFCo/IUVu
-	nZXRbw1vBqLzofB+RNz6u5PxoZ3riomQI9RC54CWlSxKiZDusv6r7fmp13lCDGozasUaX+Z9WASwJ
-	t2pUP6IBkpBdtZl3MhiRt85aTIytFE9CJqoukYeBoK24EvP4vYllh7LSIGQL9S6U4hxA0PdnVnA/e
-	47qcS3V//Ujf3xdk3JvcpXycAAqlqZ9PkRG9kpT8ttiJaAMhGSyvGXtnqn1HXLuoKOViaauhKPnlp
-	FGPO6statm3YclRltfUg==;
+	List-Owner; bh=CdrN9h9AFOvJJz5nKxnqWUQFmAWw+J5aX3Zgo1xkCwA=; b=lZeIXdcDCpQaeV
+	E885vSiXi35BrSVGxuW758qlU9bAmj8Q6XaqNcLV9PoUF3s+eQPrW5cfKq32yKxZ8rbSxe4ovnnhx
+	za4Qmn6kTxrJUh2FmGpB3MC4DY4OrzmojOShqDj3IOhpsqjS3CGYOJg13BzIg0ZLJxYv1gHxiI8h3
+	1PhQBEifUFuLTrtKJh4DNhOtqSVCgviJRJxRzPw8TSOHaxw2eVZXqLtjaPu7pkh0s7DNSRRi0G/Hl
+	1vGMmEw2G6pfedPQxHJhK0xnfeek5oVMQbB8qnSn3rh5+GNh0nwwH5jRK/qs8Ng+GMenAOh4W5HW9
+	8Y8/qYdekfC8Uwna5f1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1MiK-009GXA-0T;
-	Tue, 23 May 2023 07:45:48 +0000
+	id 1q1MiE-009GUj-1A;
+	Tue, 23 May 2023 07:45:42 +0000
 Received: from [2001:4bb8:188:23b2:6ade:85c9:530f:6eb0] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1MiH-009GVg-31;
-	Tue, 23 May 2023 07:45:46 +0000
+	id 1q1MiC-009GTv-0t;
+	Tue, 23 May 2023 07:45:40 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -41,9 +41,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 03/24] PM: hibernate: remove the global snapshot_test variable
-Date: Tue, 23 May 2023 09:45:14 +0200
-Message-Id: <20230523074535.249802-4-hch@lst.de>
+Subject: [PATCH 01/24] driver core: return bool from driver_probe_done
+Date: Tue, 23 May 2023 09:45:12 +0200
+Message-Id: <20230523074535.249802-2-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230523074535.249802-1-hch@lst.de>
 References: <20230523074535.249802-1-hch@lst.de>
@@ -64,128 +64,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Passing call dependent variable in global variables is a huge
-antipattern.  Fix it up.
+bool is the most sensible return value for a yes/no return.  Also
+add __init as this funtion is only called from the early boot code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- kernel/power/hibernate.c | 17 ++++++-----------
- kernel/power/power.h     |  3 +--
- kernel/power/swap.c      |  2 +-
- 3 files changed, 8 insertions(+), 14 deletions(-)
+ drivers/base/dd.c             | 6 ++----
+ include/linux/device/driver.h | 2 +-
+ init/do_mounts.c              | 2 +-
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 07279506366255..78696aa04f5ca3 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -64,7 +64,6 @@ enum {
- static int hibernation_mode = HIBERNATION_SHUTDOWN;
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 9c09ca5c4ab68e..878aa7646b37e4 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -751,14 +751,12 @@ static int really_probe_debug(struct device *dev, struct device_driver *drv)
+  *
+  * Should somehow figure out how to use a semaphore, not an atomic variable...
+  */
+-int driver_probe_done(void)
++bool __init driver_probe_done(void)
+ {
+ 	int local_probe_count = atomic_read(&probe_count);
  
- bool freezer_test_done;
--bool snapshot_test;
- 
- static const struct platform_hibernation_ops *hibernation_ops;
- 
-@@ -684,7 +683,7 @@ static void power_down(void)
- 		cpu_relax();
+ 	pr_debug("%s: probe_count = %d\n", __func__, local_probe_count);
+-	if (local_probe_count)
+-		return -EBUSY;
+-	return 0;
++	return !local_probe_count;
  }
  
--static int load_image_and_restore(void)
-+static int load_image_and_restore(bool snapshot_test)
- {
- 	int error;
- 	unsigned int flags;
-@@ -721,6 +720,7 @@ static int load_image_and_restore(void)
-  */
- int hibernate(void)
- {
-+	bool snapshot_test = false;
- 	unsigned int sleep_flags;
- 	int error;
+ /**
+diff --git a/include/linux/device/driver.h b/include/linux/device/driver.h
+index c244267a67443e..7738f458995fba 100644
+--- a/include/linux/device/driver.h
++++ b/include/linux/device/driver.h
+@@ -126,7 +126,7 @@ int __must_check driver_register(struct device_driver *drv);
+ void driver_unregister(struct device_driver *drv);
  
-@@ -748,9 +748,6 @@ int hibernate(void)
- 	if (error)
- 		goto Exit;
+ struct device_driver *driver_find(const char *name, const struct bus_type *bus);
+-int driver_probe_done(void);
++bool __init driver_probe_done(void);
+ void wait_for_device_probe(void);
+ void __init wait_for_init_devices_probe(void);
  
--	/* protected by system_transition_mutex */
--	snapshot_test = false;
--
- 	lock_device_hotplug();
- 	/* Allocate memory management structures */
- 	error = create_basic_memory_bitmaps();
-@@ -792,9 +789,9 @@ int hibernate(void)
- 	unlock_device_hotplug();
- 	if (snapshot_test) {
- 		pm_pr_dbg("Checking hibernation image\n");
--		error = swsusp_check();
-+		error = swsusp_check(snapshot_test);
- 		if (!error)
--			error = load_image_and_restore();
-+			error = load_image_and_restore(snapshot_test);
- 	}
- 	thaw_processes();
- 
-@@ -982,8 +979,6 @@ static int software_resume(void)
- 	 */
- 	mutex_lock_nested(&system_transition_mutex, SINGLE_DEPTH_NESTING);
- 
--	snapshot_test = false;
--
- 	if (!swsusp_resume_device) {
- 		error = find_resume_device();
- 		if (error)
-@@ -994,7 +989,7 @@ static int software_resume(void)
- 		MAJOR(swsusp_resume_device), MINOR(swsusp_resume_device));
- 
- 	pm_pr_dbg("Looking for hibernation image.\n");
--	error = swsusp_check();
-+	error = swsusp_check(false);
- 	if (error)
- 		goto Unlock;
- 
-@@ -1022,7 +1017,7 @@ static int software_resume(void)
- 		goto Close_Finish;
- 	}
- 
--	error = load_image_and_restore();
-+	error = load_image_and_restore(false);
- 	thaw_processes();
-  Finish:
- 	pm_notifier_call_chain(PM_POST_RESTORE);
-diff --git a/kernel/power/power.h b/kernel/power/power.h
-index b83c8d5e188dec..978189fcafd124 100644
---- a/kernel/power/power.h
-+++ b/kernel/power/power.h
-@@ -59,7 +59,6 @@ asmlinkage int swsusp_save(void);
- 
- /* kernel/power/hibernate.c */
- extern bool freezer_test_done;
--extern bool snapshot_test;
- 
- extern int hibernation_snapshot(int platform_mode);
- extern int hibernation_restore(int platform_mode);
-@@ -174,7 +173,7 @@ extern int swsusp_swap_in_use(void);
- #define SF_HW_SIG		8
- 
- /* kernel/power/hibernate.c */
--extern int swsusp_check(void);
-+int swsusp_check(bool snapshot_test);
- extern void swsusp_free(void);
- extern int swsusp_read(unsigned int *flags_p);
- extern int swsusp_write(unsigned int flags);
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index 92e41ed292ada8..efed11568bfc72 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -1514,7 +1514,7 @@ int swsusp_read(unsigned int *flags_p)
-  *      swsusp_check - Check for swsusp signature in the resume device
-  */
- 
--int swsusp_check(void)
-+int swsusp_check(bool snapshot_test)
- {
- 	int error;
- 	void *holder;
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index 811e94daf0a84a..2fe7901b5bcfaf 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -635,7 +635,7 @@ void __init prepare_namespace(void)
+ 	if ((ROOT_DEV == 0) && root_wait) {
+ 		printk(KERN_INFO "Waiting for root device %s...\n",
+ 			saved_root_name);
+-		while (driver_probe_done() != 0 ||
++		while (!driver_probe_done() ||
+ 			(ROOT_DEV = name_to_dev_t(saved_root_name)) == 0)
+ 			msleep(5);
+ 		async_synchronize_full();
 -- 
 2.39.2
 
