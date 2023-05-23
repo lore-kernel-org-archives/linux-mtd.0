@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F03FC77B75
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:47:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81A5AC7EE39
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:47:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BmbtmLptXVLpyvaQp1+OZ730h9X0lXPTKL0KIH7V0VQ=; b=IZc7WZsN7cTedM
-	kLzxtAglW7cwjr9SDZxgDmGIuFmTDiT3sUME0o3pghnu2QELXaQr4fZj2XRK0d8njyUmhMki3FNMU
-	uR4rUUMldnDTo6nfTaN0/fJkTr7tgyTmItFgWNQvVrlL9j4VEC9AEumuF0vwPMOwCztEzTNjgU+Iq
-	JMItT0i+SS1r3kohd0qfrL19Pf75eFBY7hebqDehMyxU9PYac5kwtt/QXMVNqVj3k2lpwI9rM0J+w
-	ADvHvVF+kftpB7I+Pvr4FkiRJciy/Q0CH/lrAawEJDdwM+qAqzVGX4rdbevLTHcSI4FyPnV2JEtPR
-	1CEL81NIqt/20YfaJCog==;
+	List-Owner; bh=dhyv+voajTLBMsZiX1cA7xuAq6Ys1+RmcJ3Cemv8OFc=; b=gUVtRpKOeLKfRi
+	sW/9iMkBtgO5Fz6p5m0euAuKbti6c0tLclIEeG13ME0p9LV2hIxXjmWnl78Vxp0l9fyvxis/q7GfU
+	eJ1591tZ8ZIqjHQmaKAZrVkroLt7qWfxjb7kSTJuUwC/wnaMEDjlWiV3WCgKkCZwVOchzRv7odN2G
+	2GUugRc7/pSgpFdh4W/IQQbtReqJ30nZVUmCKFLTe+8NyC5ZJxLXfHYr8juWNwb/rYAPkQtLeOLpV
+	xp64oEL+3YTdEShrRAPFrifb4cIixjHrZJgcHpJDmRWs/7TWF74Bp2jxl0SGjYLTL/2vjsGEWwEtR
+	kMggBRt8fPymKA5S8Hsw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1MjC-009HPf-2l;
-	Tue, 23 May 2023 07:46:42 +0000
+	id 1q1MjK-009HYL-06;
+	Tue, 23 May 2023 07:46:50 +0000
 Received: from [2001:4bb8:188:23b2:6ade:85c9:530f:6eb0] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1Mj7-009HHx-1N;
-	Tue, 23 May 2023 07:46:37 +0000
+	id 1q1MjD-009HOR-0Y;
+	Tue, 23 May 2023 07:46:43 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -41,9 +41,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 21/24] PM: hibernate: don't use early_lookup_bdev in resume_store
-Date: Tue, 23 May 2023 09:45:32 +0200
-Message-Id: <20230523074535.249802-22-hch@lst.de>
+Subject: [PATCH 23/24] mtd: block2mtd: don't call early_lookup_bdev after the system is running
+Date: Tue, 23 May 2023 09:45:34 +0200
+Message-Id: <20230523074535.249802-24-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230523074535.249802-1-hch@lst.de>
 References: <20230523074535.249802-1-hch@lst.de>
@@ -64,13 +64,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-resume_store is a sysfs attribute written during normal kernel runtime,
-and it should not use the early_lookup_bdev API that bypasses all normal
-path based permission checking, and might cause problems with certain
-container environments renaming devices.
+early_lookup_bdev is supposed to only be called from the early boot
+code, but mdtblock_early_get_bdev is called as a general fallback when
+lookup_bdev fails, which is problematic because early_lookup_bdev
+bypasses all normal path based permission checking, and might cause
+problems with certain container environments renaming devices.
 
-Switch to lookup_bdev, which does a normal path lookup instead, and fall
-back to trying to parse a numeric dev_t just like early_lookup_bdev did.
+Switch to only call early_lookup_bdev when dm is built-in and the system
+state in not running yet.
 
 Note that this strictly speaking changes the kernel ABI as the PARTUUID=
 and PARTLABEL= style syntax is now not available during a running
@@ -79,40 +80,39 @@ we'll have to figure out a way to make them available again.  But if
 avoidable in any way I'd rather avoid that.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Fixes: 421a5fa1a6cf ("PM / hibernate: use name_to_dev_t to parse resume")
 ---
- kernel/power/hibernate.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/block2mtd.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index c52dedb9f7c8e8..7ae95ec72f9902 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -1178,7 +1178,23 @@ static ssize_t resume_store(struct kobject *kobj, struct kobj_attribute *attr,
- 	if (!name)
- 		return -ENOMEM;
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index 182eed68c75634..59e4c71cfc6f53 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -215,13 +215,23 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
+ 	kfree(dev);
+ }
  
--	error = early_lookup_bdev(name, &dev);
-+	error = lookup_bdev(name, &dev);
-+	if (error) {
-+		unsigned maj, min, offset;
-+		char *p, dummy;
+-static struct block_device *mdtblock_early_get_bdev(const char *devname,
++/*
++ * This function is marked __ref because it calls the __init marked
++ * early_lookup_bdev when called from the early boot code.
++ */
++static struct block_device __ref *mdtblock_early_get_bdev(const char *devname,
+ 		fmode_t mode, int timeout, struct block2mtd_dev *dev)
+ {
+ 	struct block_device *bdev = ERR_PTR(-ENODEV);
+ #ifndef MODULE
+ 	int i;
+ 
++	/*
++	 * We can't use early_lookup_bdev from a running system.
++	 */
++	if (system_state >= SYSTEM_RUNNING)
++		return bdev;
 +
-+		if (sscanf(name, "%u:%u%c", &maj, &min, &dummy) == 2 ||
-+		    sscanf(name, "%u:%u:%u:%c", &maj, &min, &offset,
-+				&dummy) == 3) {
-+			dev = MKDEV(maj, min);
-+			if (maj != MAJOR(dev) || min != MINOR(dev))
-+				error = -EINVAL;
-+		} else {
-+			dev = new_decode_dev(simple_strtoul(name, &p, 16));
-+			if (*p)
-+				error = -EINVAL;
-+		}
-+	}
- 	kfree(name);
- 	if (error)
- 		return error;
+ 	/*
+ 	 * We might not have the root device mounted at this point.
+ 	 * Try to resolve the device name by other means.
 -- 
 2.39.2
 
