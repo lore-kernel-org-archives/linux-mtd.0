@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25B0EC7EE26
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F03FC77B75
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LkfnY1TCXQqoAFFs1nd5RoMYeaeaXn2XrIODb4mqUyM=; b=ccpdCeeDBVpVzv
-	mFD7hhHXU7Z3cvPyfAlcqgGOuCkC57RBDP/tUZFrkItTfZ/md4t8eo9W4a8abNyZLoW+CmurLwich
-	cxjkaNpcwMs+0Ft9yYR7mwUDWsafY17TJj2+GEcCAXmyStgnECzMebWiA02A6LQm/ta3UYlZT3Va9
-	HDa0zB/9dWLkJcMT2Ee89sJD8PJZP9luSQI1Ajs8y6GT3sJpKjGJTZbhyXRLAUaWQPIed+grYh29B
-	nzL138XPgJE6J2h7cGe5GYCfu1O0BCH13p5Roerv2w1D6rDE+SDrUobI47eTiBOGdWzrkiZnY28lr
-	BGTMl/wZN5Q+QfaLI2Pw==;
+	List-Owner; bh=BmbtmLptXVLpyvaQp1+OZ730h9X0lXPTKL0KIH7V0VQ=; b=IZc7WZsN7cTedM
+	kLzxtAglW7cwjr9SDZxgDmGIuFmTDiT3sUME0o3pghnu2QELXaQr4fZj2XRK0d8njyUmhMki3FNMU
+	uR4rUUMldnDTo6nfTaN0/fJkTr7tgyTmItFgWNQvVrlL9j4VEC9AEumuF0vwPMOwCztEzTNjgU+Iq
+	JMItT0i+SS1r3kohd0qfrL19Pf75eFBY7hebqDehMyxU9PYac5kwtt/QXMVNqVj3k2lpwI9rM0J+w
+	ADvHvVF+kftpB7I+Pvr4FkiRJciy/Q0CH/lrAawEJDdwM+qAqzVGX4rdbevLTHcSI4FyPnV2JEtPR
+	1CEL81NIqt/20YfaJCog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1Mj8-009HKv-2m;
-	Tue, 23 May 2023 07:46:38 +0000
+	id 1q1MjC-009HPf-2l;
+	Tue, 23 May 2023 07:46:42 +0000
 Received: from [2001:4bb8:188:23b2:6ade:85c9:530f:6eb0] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1Mj4-009HEh-16;
-	Tue, 23 May 2023 07:46:34 +0000
+	id 1q1Mj7-009HHx-1N;
+	Tue, 23 May 2023 07:46:37 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -41,9 +41,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 20/24] dm: only call early_lookup_bdev from early boot context
-Date: Tue, 23 May 2023 09:45:31 +0200
-Message-Id: <20230523074535.249802-21-hch@lst.de>
+Subject: [PATCH 21/24] PM: hibernate: don't use early_lookup_bdev in resume_store
+Date: Tue, 23 May 2023 09:45:32 +0200
+Message-Id: <20230523074535.249802-22-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230523074535.249802-1-hch@lst.de>
 References: <20230523074535.249802-1-hch@lst.de>
@@ -64,16 +64,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-early_lookup_bdev is supposed to only be called from the early boot
-code, but dm_get_device calls it as a general fallback when lookup_bdev
-fails, which is problematic because early_lookup_bdev bypasses all normal
+resume_store is a sysfs attribute written during normal kernel runtime,
+and it should not use the early_lookup_bdev API that bypasses all normal
 path based permission checking, and might cause problems with certain
 container environments renaming devices.
 
-Switch to only call early_lookup_bdev when dm is built-in and the system
-state in not running yet.  This means it is still available when tables
-are constructed by dm-init.c from the kernel command line, but not
-otherwise.
+Switch to lookup_bdev, which does a normal path lookup instead, and fall
+back to trying to parse a numeric dev_t just like early_lookup_bdev did.
 
 Note that this strictly speaking changes the kernel ABI as the PARTUUID=
 and PARTLABEL= style syntax is now not available during a running
@@ -82,39 +79,40 @@ we'll have to figure out a way to make them available again.  But if
 avoidable in any way I'd rather avoid that.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 421a5fa1a6cf ("PM / hibernate: use name_to_dev_t to parse resume")
 ---
- drivers/md/dm-table.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ kernel/power/hibernate.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index e997f4322a9967..c230241a76b374 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -326,8 +326,11 @@ static int upgrade_mode(struct dm_dev_internal *dd, fmode_t new_mode,
- /*
-  * Add a device to the list, or just increment the usage count if
-  * it's already present.
-+ *
-+ * Note: the __ref annotation is because this function can call the __init
-+ * marked early_lookup_bdev when called during early boot code from dm-init.c.
-  */
--int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
-+int __ref dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
- 		  struct dm_dev **result)
- {
- 	int r;
-@@ -346,8 +349,10 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
- 			return -EOVERFLOW;
- 	} else {
- 		r = lookup_bdev(path, &dev);
--		if (r)
-+#ifndef MODULE
-+		if (r && system_state < SYSTEM_RUNNING)
- 			r = early_lookup_bdev(path, &dev);
-+#endif
- 		if (r)
- 			return -ENODEV;
- 	}
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index c52dedb9f7c8e8..7ae95ec72f9902 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -1178,7 +1178,23 @@ static ssize_t resume_store(struct kobject *kobj, struct kobj_attribute *attr,
+ 	if (!name)
+ 		return -ENOMEM;
+ 
+-	error = early_lookup_bdev(name, &dev);
++	error = lookup_bdev(name, &dev);
++	if (error) {
++		unsigned maj, min, offset;
++		char *p, dummy;
++
++		if (sscanf(name, "%u:%u%c", &maj, &min, &dummy) == 2 ||
++		    sscanf(name, "%u:%u:%u:%c", &maj, &min, &offset,
++				&dummy) == 3) {
++			dev = MKDEV(maj, min);
++			if (maj != MAJOR(dev) || min != MINOR(dev))
++				error = -EINVAL;
++		} else {
++			dev = new_decode_dev(simple_strtoul(name, &p, 16));
++			if (*p)
++				error = -EINVAL;
++		}
++	}
+ 	kfree(name);
+ 	if (error)
+ 		return error;
 -- 
 2.39.2
 
