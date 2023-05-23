@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC691C87FDE
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 07:47:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83B81C7EE23
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 08:50:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+tNsG8LfBBaSseGeslqYl18g2aPC0xJ8JiKjJjxHcYw=; b=izdZFXRMcr5UUK
-	E2pkSfyRM0LhIVEbmjPU9dn1IvjDxo1f3GwNGkY6IWwez9HPbY+WNqlducwA3AkkHoB2Bx9Tg4Len
-	K4JI1ijHOuA4838lhXEjLAvwz/hDJcxbt/RLP4sInUmKwcVp+usPZpsUBCHt1RFd57gG2oFshUjUi
-	JEEK5Z5qglqzr0tA0oiIav2nfwB3f8rhrvdVCO45+jJ3B5gy/ULDANNkBT+F/4Fv3s0R4J7bGth7N
-	ECl5va+Xch2l8KmZPpL65pZqwQzG14Rsxf4n3p8G/kji7CaA7hfP8T6H+Os0Sdhw5/aS6/O2OmLWx
-	TuN1hRlbkc3tEAxufodQ==;
+	List-Owner; bh=puXazqhRypjHUB/0NdfCgcxwb3MpZgtL458KUstIE5k=; b=tDgjQFulj40Wr/
+	iqLNqlZRM6u+1UIYdgtqluEWOcnlrDPwhqEY0AXFLV5V8foAPWVYbzBBqZH40GmDkvq9DwrO3Bhqe
+	cE9CJPZ8TlYwAjzaxeZ3/sQDXmHToQpjRq31Og21h02vaZXMx2CMYfcYg/xTekAppNYvGakHOpkOU
+	4LK9Q3Qu6Kl81Qn5sCvtpVZxswSJCTnbGfTFTOdkAq9iGRRkXcbTqTVZMFUSIVxyJg6+MFEhyyu+L
+	d5zhiB2teY+defxiY1wjr3AqJ9yHlS0Y5VjTQhiykiUhnVn8xLG9IBLH+qUEyaY2JLy2ry3GlbnHt
+	qjTsxCU8HPP0VE8VdTgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1Mj4-009HGJ-2f;
-	Tue, 23 May 2023 07:46:34 +0000
+	id 1q1NiQ-009VGQ-0U;
+	Tue, 23 May 2023 08:49:58 +0000
 Received: from [2001:4bb8:188:23b2:6ade:85c9:530f:6eb0] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1Mj1-009HBv-1X;
-	Tue, 23 May 2023 07:46:31 +0000
+	id 1q1Mim-009GvU-0T;
+	Tue, 23 May 2023 07:46:16 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -41,9 +41,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 19/24] dm: remove dm_get_dev_t
-Date: Tue, 23 May 2023 09:45:30 +0200
-Message-Id: <20230523074535.249802-20-hch@lst.de>
+Subject: [PATCH 14/24] init: clear root_wait on all invalid root= strings
+Date: Tue, 23 May 2023 09:45:25 +0200
+Message-Id: <20230523074535.249802-15-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230523074535.249802-1-hch@lst.de>
 References: <20230523074535.249802-1-hch@lst.de>
@@ -64,66 +64,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Open code dm_get_dev_t in the only remaining caller, and propagate the
-exact error code from lookup_bdev and early_lookup_bdev.
+Instead of only clearing root_wait in devt_from_partuuid when the UUID
+format was invalid, do that in parse_root_device for all strings that
+failed to parse.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/md/dm-table.c         | 20 ++++----------------
- include/linux/device-mapper.h |  2 --
- 2 files changed, 4 insertions(+), 18 deletions(-)
+ init/do_mounts.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 05aa16da43b0d5..e997f4322a9967 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -323,20 +323,6 @@ static int upgrade_mode(struct dm_dev_internal *dd, fmode_t new_mode,
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index f1953aeb321978..0b36a5f39ee8e2 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -112,14 +112,14 @@ static int devt_from_partuuid(const char *uuid_str, dev_t *devt)
+ 
+ 		/* Explicitly fail on poor PARTUUID syntax. */
+ 		if (sscanf(slash + 1, "PARTNROFF=%d%c", &offset, &c) != 1)
+-			goto clear_root_wait;
++			goto out_invalid;
+ 		cmp.len = slash - uuid_str;
+ 	} else {
+ 		cmp.len = strlen(uuid_str);
+ 	}
+ 
+ 	if (!cmp.len)
+-		goto clear_root_wait;
++		goto out_invalid;
+ 
+ 	dev = class_find_device(&block_class, NULL, &cmp, &match_dev_by_uuid);
+ 	if (!dev)
+@@ -139,12 +139,9 @@ static int devt_from_partuuid(const char *uuid_str, dev_t *devt)
+ 	put_device(dev);
  	return 0;
+ 
+-clear_root_wait:
++out_invalid:
+ 	pr_err("VFS: PARTUUID= is invalid.\n"
+ 	       "Expected PARTUUID=<valid-uuid-id>[/PARTNROFF=%%d]\n");
+-	if (root_wait)
+-		pr_err("Disabling rootwait; root= is invalid.\n");
+-	root_wait = 0;
+ 	return -EINVAL;
  }
  
--/*
-- * Convert the path to a device
-- */
--dev_t dm_get_dev_t(const char *path)
--{
--	dev_t dev;
--
--	if (lookup_bdev(path, &dev) &&
--	    early_lookup_bdev(path, &dev))
--		return 0;
--	return dev;
--}
--EXPORT_SYMBOL_GPL(dm_get_dev_t);
--
- /*
-  * Add a device to the list, or just increment the usage count if
-  * it's already present.
-@@ -359,8 +345,10 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
- 		if (MAJOR(dev) != major || MINOR(dev) != minor)
- 			return -EOVERFLOW;
- 	} else {
--		dev = dm_get_dev_t(path);
--		if (!dev)
-+		r = lookup_bdev(path, &dev);
-+		if (r)
-+			r = early_lookup_bdev(path, &dev);
-+		if (r)
- 			return -ENODEV;
- 	}
- 	if (dev == disk_devt(t->md->disk))
-diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
-index a52d2b9a68460a..c27b84002d8382 100644
---- a/include/linux/device-mapper.h
-+++ b/include/linux/device-mapper.h
-@@ -170,8 +170,6 @@ struct dm_dev {
- 	char name[16];
- };
+@@ -611,6 +608,7 @@ static void __init wait_for_root(char *root_device_name)
  
--dev_t dm_get_dev_t(const char *path);
--
- /*
-  * Constructors should call these functions to ensure destination devices
-  * are opened/closed correctly.
+ static dev_t __init parse_root_device(char *root_device_name)
+ {
++	int error;
+ 	dev_t dev;
+ 
+ 	if (!strncmp(root_device_name, "mtd", 3) ||
+@@ -623,8 +621,14 @@ static dev_t __init parse_root_device(char *root_device_name)
+ 	if (strcmp(root_device_name, "/dev/ram") == 0)
+ 		return Root_RAM0;
+ 
+-	if (early_lookup_bdev(root_device_name, &dev))
++	error = early_lookup_bdev(root_device_name, &dev);
++	if (error) {
++		if (error == -EINVAL && root_wait) {
++			pr_err("Disabling rootwait; root= is invalid.\n");
++			root_wait = 0;
++		}
+ 		return 0;
++	}
+ 	return dev;
+ }
+ 
 -- 
 2.39.2
 
