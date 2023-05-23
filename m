@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06DAEC7EE23
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 09:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1555FC77B75
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 May 2023 09:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rbdiIZ11kq1lv00ru3wE13cTneIVOpZZoP6MkZ3nXiA=; b=HFLHYwvK9l24R4
-	vEVzu9DyA+roYO/uq1UhepdTkWgquHSKtcS+rJ0KXkcjTV9LRCCJ3qOO7MPKogRyPXQaCELAKrxRF
-	EZ2vaSSCylIUJJabj1yVVr9PTvT+iLKQHxm5yjJUWqhzyYv2QBC/5ZbT5P1CqG9XRp+5Ic16mtb/k
-	FXDWjW7tgvJueQbOthHmvKxwWhSBGEaqhw2fVEJIC1GdJm2r5b+G/rTzll8PdyDDI2gGO2S/vXHPL
-	fI/gBeUFuFht+q9zGzWuXRbkQjzI9RFihzxMkC+CAn+YbobeitGQ5d3ZWpAtWBlQCBvz77fMwIU6T
-	s56kYus/cW42vBw+gKvQ==;
+	List-Owner; bh=kmWYoFkVIC/alyTFdKB1+cGvECmWcJuKgjmr63VcOwE=; b=UrN0mbIsJa9vlb
+	s532nL/5IWjlT4nBbCFB5BswCl0kHXvh3xqxzQvzvNP6NIPhu+2ZM5hz21Aj0Vq8FimvWTQu3jlb/
+	qYWfXCwYVutxN+B0fPsH34xOtfgZIqwnDoQ0KXqFict19+dr9kTkddOObwaMIq7vlrJkIVl9lG/JA
+	TXlsGVC3WPdHtOBzLSJzTcRh8rk9xFI/ic+977S4eLvTZW+sbcwV3GX7x+Dz5PSJfa6RcWq/jmK6T
+	dvjHVV3WD7BxrhSHzX3LxTStxNBaWMe1BOrTVOheCvmHP+VQHe8wTt8cWTYSQQK0fh2zQcnOL1E8w
+	FvVlKgGlwIzKueklckaA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1ONz-009cf9-22;
-	Tue, 23 May 2023 09:32:55 +0000
-Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
+	id 1q1OPH-009cto-2W;
+	Tue, 23 May 2023 09:34:15 +0000
+Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1ONw-009cdT-1a
+	id 1q1OPE-009crM-2t
 	for linux-mtd@lists.infradead.org;
-	Tue, 23 May 2023 09:32:54 +0000
+	Tue, 23 May 2023 09:34:14 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 692C81BF208;
-	Tue, 23 May 2023 09:32:37 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 9C42B1C000B;
+	Tue, 23 May 2023 09:34:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1684834363;
+	t=1684834449;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=X9Qn8AqTo/sXg8jlDCBz4izis3PpHn0GZ9QSR6MiR2o=;
-	b=nDLTR3vUfrTOLo3EM5MuxyetQ0aQdZJM+Ho1A4w2GfIirH7p4eH4c2TDG/3OEXvma9vKPC
-	obbBH7nmZo1SiIwLKlU/noxPyVUnR1SsgXwrP5iRZCGDyCaU7xO/Vk7vWlbnLit0NmV8kV
-	m02z5NwwFnxYe40ugcnK7LQmb5c+jb8MwLtLJfdcoV5cUZMb2QnzyuzEauviQLaTcLqw6m
-	2ya4z3/LN47E29vcHLvs21LUmJ/zNFLig5VUwQni0fOM8/6P94Hx0DxoYg7aecPc0wmLND
-	6dqjmGBlVobsq2X/SZb7YaYswGocBo6i9e+marQku6QRSGtv5Ak72OaDQiwxew==
-Date: Tue, 23 May 2023 11:32:36 +0200
+	bh=irbxTtFMj36QTztSinqx+K6zvjiLXjiZS7Tr5vGVeQA=;
+	b=MQH74+mtNlOf4mUA+OQUVAFl8W+eC7RN11ueU2RMGlh+Uwq1wcbbyomCcUxSlkAI5NyNG3
+	2TMaEiXyqLQolV9rwaPYpsE7eB6oq9qRgjQ7lXGv9e5Fkqy8eud0VjNM1Bd3o3RQCcqQLZ
+	vikDp7RYUdmVy46Cv2NGjbr3pvHIDJNW4A6cX6ZD//6P8rdQyWozGOFmTEtNE+bl6sFbi5
+	SRNppfd8ppRl7dBbbP6XTyvLL1K1FwSlmvyDZVICHBlkJjNG+Z+ux/uEvVGchQGOIWBi3a
+	eOuUZbU5hKu1s5WmPVeQhF9hEE29NCLi5+s57dwJShnlXv/oGEnNobOwXkW7dw==
+Date: Tue, 23 May 2023 11:34:02 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, Greg Kroah-Hartman
@@ -52,18 +52,18 @@ Cc: Jens Axboe <axboe@kernel.dk>, Greg Kroah-Hartman
  Machek <pavel@ucw.cz>, dm-devel@redhat.com, linux-kernel@vger.kernel.org,
  linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-pm@vger.kernel.org
-Subject: Re: [PATCH 22/24] mtd: block2mtd: factor the early block device
- open logic into a helper
-Message-ID: <20230523113236.7003c303@xps-13>
-In-Reply-To: <20230523074535.249802-23-hch@lst.de>
+Subject: Re: [PATCH 23/24] mtd: block2mtd: don't call early_lookup_bdev
+ after the system is running
+Message-ID: <20230523113402.32fa86ba@xps-13>
+In-Reply-To: <20230523074535.249802-24-hch@lst.de>
 References: <20230523074535.249802-1-hch@lst.de>
-	<20230523074535.249802-23-hch@lst.de>
+	<20230523074535.249802-24-hch@lst.de>
 Organization: Bootlin
 X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230523_023252_697018_4580B002 
-X-CRM114-Status: GOOD (  10.85  )
+X-CRM114-CacheID: sfid-20230523_023413_087492_6BB7329D 
+X-CRM114-Status: GOOD (  13.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,14 +81,22 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 SGkgQ2hyaXN0b3BoLAoKaGNoQGxzdC5kZSB3cm90ZSBvbiBUdWUsIDIzIE1heSAyMDIzIDA5OjQ1
-OjMzICswMjAwOgoKPiBTaW1wbHkgYWRkX2RldmljZSBhIGJpdCBieSBzcGxpdHRpbmcgb3V0IHRo
-ZSBjdW1iZXJzb21lIGVhcmx5IGJvb3QgbG9naWMKCkkgZ3Vlc3MgeW91IG1lYW50ICJTaW1wbGlm
-eS4uLiIKCk90aGVyd2lzZSBsZ3RtIHNvLAoKUmV2aWV3ZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1p
-cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cgo+IGludG8gYSBzZXBhcmF0ZSBoZWxwZXIuCj4gCj4g
-U2lnbmVkLW9mZi1ieTogQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBsc3QuZGU+Cj4gLS0tCj4gIGRy
-aXZlcnMvbXRkL2RldmljZXMvYmxvY2sybXRkLmMgfCA1MyArKysrKysrKysrKysrKysrKysrLS0t
-LS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDMwIGluc2VydGlvbnMoKyksIDIzIGRlbGV0
-aW9ucygtKQo+IAoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+OjM0ICswMjAwOgoKPiBlYXJseV9sb29rdXBfYmRldiBpcyBzdXBwb3NlZCB0byBvbmx5IGJlIGNh
+bGxlZCBmcm9tIHRoZSBlYXJseSBib290Cj4gY29kZSwgYnV0IG1kdGJsb2NrX2Vhcmx5X2dldF9i
+ZGV2IGlzIGNhbGxlZCBhcyBhIGdlbmVyYWwgZmFsbGJhY2sgd2hlbgo+IGxvb2t1cF9iZGV2IGZh
+aWxzLCB3aGljaCBpcyBwcm9ibGVtYXRpYyBiZWNhdXNlIGVhcmx5X2xvb2t1cF9iZGV2Cj4gYnlw
+YXNzZXMgYWxsIG5vcm1hbCBwYXRoIGJhc2VkIHBlcm1pc3Npb24gY2hlY2tpbmcsIGFuZCBtaWdo
+dCBjYXVzZQo+IHByb2JsZW1zIHdpdGggY2VydGFpbiBjb250YWluZXIgZW52aXJvbm1lbnRzIHJl
+bmFtaW5nIGRldmljZXMuCj4gCj4gU3dpdGNoIHRvIG9ubHkgY2FsbCBlYXJseV9sb29rdXBfYmRl
+diB3aGVuIGRtIGlzIGJ1aWx0LWluIGFuZCB0aGUgc3lzdGVtCj4gc3RhdGUgaW4gbm90IHJ1bm5p
+bmcgeWV0Lgo+IAo+IE5vdGUgdGhhdCB0aGlzIHN0cmljdGx5IHNwZWFraW5nIGNoYW5nZXMgdGhl
+IGtlcm5lbCBBQkkgYXMgdGhlIFBBUlRVVUlEPQo+IGFuZCBQQVJUTEFCRUw9IHN0eWxlIHN5bnRh
+eCBpcyBub3cgbm90IGF2YWlsYWJsZSBkdXJpbmcgYSBydW5uaW5nCj4gc3lzdGVtcy4gIFRoZXkg
+bmV2ZXIgd2VyZSBpbnRlbmRlZCBmb3IgdGhhdCwgYnV0IHRoaXMgYnJlYWtzIHRoaW5ncwo+IHdl
+J2xsIGhhdmUgdG8gZmlndXJlIG91dCBhIHdheSB0byBtYWtlIHRoZW0gYXZhaWxhYmxlIGFnYWlu
+LiAgQnV0IGlmCj4gYXZvaWRhYmxlIGluIGFueSB3YXkgSSdkIHJhdGhlciBhdm9pZCB0aGF0LgoK
+U291bmRzIHJlYXNvbmFibGUgdG8gbWUuIFJpY2hhcmQ/CgpSZXZpZXdlZC1ieTogTWlxdWVsIFJh
+eW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KClRoYW5rcywKTWlxdcOobAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
