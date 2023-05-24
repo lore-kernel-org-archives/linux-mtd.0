@@ -4,143 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C1EEC77B7A
-	for <linux-mtd@archiver.kernel.org>; Wed, 24 May 2023 13:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CC23C77B73
+	for <linux-mtd@archiver.kernel.org>; Wed, 24 May 2023 23:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
 	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i5plJgXVf8lRPC5z9h1mtUhUoTdR1OTTQizwSASZH5Y=; b=3xfgC3RHdZ649C
-	YfORXJZ1W6++np7sVAceEt8tpM0BrOc6z9oKAj/8//s6NRxOitjOX3Ww8nv47kfAV7MJy4VVYE/ah
-	wzkl1JS8gsd0MR836PQT5uxEtNvmUxi0XdorpNL7pB+AmwcWsqsGLeWTv/SpO8Zpm7Y3WAQ/nuPGY
-	zDkPPOwFql7wZgtVxi1Ciz2mpSXykzy6cDVl179hBrXH05t1yLpFt4JVmjG6wG2yrVjiHvAW9sm4A
-	Vkm1srkGhgRi4Lii/sYh185rWPG/uZse1IZrtD0qTGSgw/+S7v7aO7ROjNZiM0l0pCZFf9sgYgtI8
-	wLgbWk+8Z9ZA08mepTZg==;
+	List-Owner; bh=W23RiGHR5+gHfmw8mzSN1cFfU42FPNIn7kyyEtAynWI=; b=PtTWEVcWo1n0o6
+	PzWUXytV3Af+MJ72yY7GvfhfnXA7sjFEILRutJGzDO8j7tXiD96FA6EUwmmWfArQDRScAaCNRIW9u
+	NLeqFhtAaK41tlawsKvKe1OQcUIfd3CuHs5TUu963I3Kee84jxhHefVqCpaKlxXqRNSCElePTDfII
+	Zr4dbkATpyP71Ic7RYJGtFQySAzlHCBST6/7mwbOinikd7I8RX9yvOx3cD3spYoQMPqF8913d4IwW
+	LGhrijlHBufim+drg6xKtbrakcv9y3+Vf96cfSSErNj8xHvahrcrq2EY4237e6uo96r2PKpDMgM5k
+	ZSeXmO6l6ynFfffAQG8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1ofc-00DaN0-1s;
-	Wed, 24 May 2023 13:36:52 +0000
-Received: from smtp2.axis.com ([195.60.68.18])
+	id 1q1yEz-00F13v-2B;
+	Wed, 24 May 2023 23:50:01 +0000
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1ofZ-00DaL8-13
+	id 1q1yEv-00F11k-1H
 	for linux-mtd@lists.infradead.org;
-	Wed, 24 May 2023 13:36:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1684935409;
-  x=1716471409;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=cs3emPG+Yg5AMQMg559PfmI0Bjzn66YG/6uHiH4QWiY=;
-  b=iciJX/pH/8ZyAnyD6LhXlPcwAaT/1dUfSp7Nfruszj6BOxiLmK4aB/BR
-   kWISLz1vAuuZXv5dlZEQ5A4AkJTzCO68cpRv1eLnrGUhycM57+JqALqK9
-   3sVivckIFXAJRQpoAl7WP2N3A+lgMLml/MPPg5yagVrCU9GkGGZ360DsQ
-   NqWDr1gGA9MQ6NPKKLmRJh8wEz4kZNv36+DicPPHkCBK6ZVxYOOo7Wjmj
-   53nTs5IGJnVgyAVauheWolCuScwKJsuU87DPp80liFZdvidqoUVNrMYkk
-   e/kZvnkQs0dMgtsvT3WxC3bilU+o2eZ/f4w0OTdVQ1aat4C8id5C5cEje
-   g==;
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e8fni44w06Tj719AlxarjtTFMgkAtUCF+JBNtEQL66oQLHQaXTv2xFRpC2PkqRzKp6xYL/tXJquEdqO4qQFvhRei3RukvX3MRLBxMq5QhgTpfUXj00SgGpZvMe1yZUi3gUWv+h+nezABjp46UYu17+UVv5tyGzuJk1CWyM6fDvEUJPNd+/QB+OqDed1QTjJWIMBd/BiMW9moIsxVogjNu2o2hT7NsSWGC5mnGuDaC1m0w3x+f+JLbAp5GXzdS2rxJ8gQrLWCrZm0PiyxTNqp/HZp+6W9sz9tQzaOYG8INgFjeZgI9sRF/H5KihoJqXuZ5fxvJzoHxotpMfiw6n8OVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cs3emPG+Yg5AMQMg559PfmI0Bjzn66YG/6uHiH4QWiY=;
- b=NhdgbGMbtrzp+0wggCc2FozJPjOtJmS/pLc+UEiFwJ4Ui5tqWKatcCUHqbJkBkbbAYTqe8xJky//f5iKAopxl7ezRAKovprESmdmHIwO096XDLTmLWZCLSiA3zlOtqEzF208TNx+UZXTWzHb4EjOfOWI4jfaT/tak7GiDqm8L0hEjALcDwxnnqResl57286aTHLg3UBcBCcieOgqQ3SKQ8FKJ+vaCezpecV+OLTYSD9fDzjRLdes/jsxBcS8sGTRpF/chSN3maMCYii7eBpsFYAlpgx7/pPdqHhiO6S7cEWTWdusJ4x2oURUhtIUDYsUNqBgpzA39aUREBA+eL0OrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axis.com; dmarc=pass action=none header.from=axis.com;
- dkim=pass header.d=axis.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis365.onmicrosoft.com; s=selector2-axis365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cs3emPG+Yg5AMQMg559PfmI0Bjzn66YG/6uHiH4QWiY=;
- b=tVc7YbJQL+CRMfulOF2qfwGoZdZACLvruTg0ItadoQHAB9Yym1+UGZtPDmHW0uaPwqLXkRH+t3oh5ED6rk5PVTMWyaSQGuyXEm/mXxcTk2sqlcAWkc6yd41ufK4uTAXgLRsYRG+8l39/JEA9O58y5fA29m9Y6VbTLXhNxeWWsUA=
-From: Vincent Whitchurch <Vincent.Whitchurch@axis.com>
-To: Vincent Whitchurch <Vincent.Whitchurch@axis.com>, "hch@infradead.org"
-	<hch@infradead.org>
-CC: kernel <kernel@axis.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
-	<richard@nod.at>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 2/2] ubi: block: Fix deadlock on remove
-Thread-Topic: [PATCH 2/2] ubi: block: Fix deadlock on remove
-Thread-Index: AQHZjXg3+vjJPDC7yk2iD6NuhjsXV69o8DYAgAB+YQA=
-Date: Wed, 24 May 2023 13:36:39 +0000
-Message-ID: <fa2a06491cf2d90eb35c95042f888cd49df119fe.camel@axis.com>
-References: <20230523-ubiblock-remove-v1-0-240bed75849b@axis.com>
-	 <20230523-ubiblock-remove-v1-2-240bed75849b@axis.com>
-	 <ZG2o4rrfqWGbYziq@infradead.org>
-In-Reply-To: <ZG2o4rrfqWGbYziq@infradead.org>
-Accept-Language: en-US
+	Wed, 24 May 2023 23:49:59 +0000
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 32FAA2C0288;
+	Thu, 25 May 2023 11:49:47 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1684972187;
+	bh=4a27tZpGUeVAxwbKAxTrxpyuPQrRyNv6hwKJVC39hRU=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=fnWb9dxs2Y/WJyV8dK/t5Ogo1L0uvd9MOaeY/oyMOG8rKpqL2222aPCU3dqccjWhm
+	 WmStHOAINnNHWI1K1v6ArXpYiyAJn6FIbka14mYkwLQm5piQKaJWVxsPIzonOIaief
+	 zGTyBhIuaNSQ5HKDqFoLdUdIYDUSU4L8qW0TnZYz5hoplBVSZg6G84+TaHW2ooKcc9
+	 rFEEQB/JVZRidJgAKZvnqvJ86YiIkCjUNUGfOrDSOeoUY6nFqcRPAs8VfUba2fDivF
+	 1vB4GRG+uwISfLS72w+P+8pobpMxYalYXnRKmFx0LEn7HpzVUKL98GzDIgs/ExVteR
+	 ncka8Fej8qCRw==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B646ea29b0000>; Thu, 25 May 2023 11:49:47 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 25 May 2023 11:49:46 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.026; Thu, 25 May 2023 11:49:46 +1200
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+	<richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+	"bbrezillon@kernel.org" <bbrezillon@kernel.org>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: rawnand: marvell: ensure timing values are
+ written
+Thread-Topic: [PATCH v2] mtd: rawnand: marvell: ensure timing values are
+ written
+Thread-Index: AQHZjdODNtokZcXnnEuLkFH94ISxpa9pUAUA
+Date: Wed, 24 May 2023 23:49:46 +0000
+Message-ID: <9372c8df-5604-0284-ba3a-74af4ca435e3@alliedtelesis.co.nz>
+References: <20230524000551.581491-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20230524000551.581491-1-chris.packham@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.38.3-1+deb11u1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=axis.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAWPR02MB10280:EE_|GV2PR02MB8920:EE_
-x-ms-office365-filtering-correlation-id: b4b0de22-3803-4ceb-e246-08db5c5be757
-x-ld-processed: 78703d3c-b907-432f-b066-88f7af9ca3af,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RYX+BAACHT1axJMezdEdNanYS0oEbrjmT39mC3s2GGVeLmnCXzsrNydZB7rAgvbQq/ASrzJ3MCitcLp3XeF//4wVEVqFKhp9CrAoyuVp3uAZG4jCdU8gUwL8+b4j6FaMo1KXS8Y7EvlOKpeD7IpeBN7NLWkWWNMzoZbh/gEefxSvgnCkNdSfv6/ZwKUi/GwFU6jtNX8AylLYFpbkZ5/TdBqi1/nFoIO94Bw9K3OFhEM6e0sbxLMg8JuozwN0tcPHrg3T+RKdyXLR2+upfq4/PXDTu3U7QpGvWq+sX1z+IkTzRVNpwHn1QX9C8gDiG0tnyGJ5DKvZB2JOoptdc86dFFuODWM/kqs2BvXeDqaYELDj3MNx2zUT0lbArZbnhz7pdCCpd+DQe8Vc2zx9rvoNrnk5ONk5Du1UrKWyIwmbxtpbqvFVPrgRP43gNpRS1p6vIlgxy/dUnIF8fPICxxgKBn7jINRlEzcFFiBD+1nayuLwXPUbbkjPAturqJdZWr0Gfx9bcrA0jzfPqT/GiKkVeIAzL5LWnDOpHrgnPWw/K0kPKjZF7zlfp9ZNA/4vfIWF4hFrEEYtbuDAYa38cqRNEJDGGlDdCrCaCwYKZT2oXnviOdhWDXk/d+kNVMn0kT8F
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAWPR02MB10280.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(451199021)(6512007)(122000001)(26005)(186003)(6506007)(38100700002)(4744005)(2616005)(36756003)(83380400001)(2906002)(6486002)(71200400001)(316002)(54906003)(110136005)(41300700001)(478600001)(66556008)(66446008)(66946007)(66476007)(76116006)(64756008)(91956017)(4326008)(38070700005)(86362001)(8936002)(8676002)(5660300002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RmhWVVl1Tld6bXo3STloelNYVjFrWEdSWHVZbGowSVlMbmJSbGhoT214U011?=
- =?utf-8?B?U0NZMWFSY2RCMmxBeDc1eEdlZzZNcWZnWTQxaEc3SERNUmdGUnNwTGpsc3lS?=
- =?utf-8?B?Nit3NHdvWGx1aG44VG85Y2hURjNxSm04MnZoTjlsaHdvOHBwdmc2eXIvR3lV?=
- =?utf-8?B?bmlsMXhuUThSQWpWek54K3ZETHI5aFZKazFOSmJGUlhaZGsrby90VFBKSFR5?=
- =?utf-8?B?NG1rKzFWMUwxbHhud3g5d2ZEUllDZ3I2eEdxTmI5dlpQeU8vSmtSeER4K1Zv?=
- =?utf-8?B?R00rdGpZRllDaDV4NFRaclJrVzgvMjZpdERFL0FhNmc3UjBHZitBVGlHcTd5?=
- =?utf-8?B?WDZPcmFaUGh5L1hUVkRYbkhobWYwNW5ZV1phcWRsSTQxZ0hkS1FnUGUrS2dF?=
- =?utf-8?B?UVZSWm9zVzNVaXoyUzRqbkl0MWVwSFVXdDZydUhUUU84Vi9Cdkx6Tlp0MzRk?=
- =?utf-8?B?UHoxK1dFYmlNWVhKbXJMZ200VDRjOXNpWENPSEhzeFhnNlIweXljdzZndjd0?=
- =?utf-8?B?UkR3SWhoT2Vycm5FRzJ6OGtmNlIzekk5aUllVk5RdVFYZVc3YmMxSHcvMGti?=
- =?utf-8?B?UXpnNW5jdE9tTmh0eWE5c2hDUTcrNVhKdEFZbTkzNHVOSTdUM0ZhSDNEQmJC?=
- =?utf-8?B?UGJCWjFrNmVVbnAvZDlsU2Q1Ky9nb1o0NHYwZmJ5WGdUbzdrTlZNTHlZK01o?=
- =?utf-8?B?R0hLWVFpQmRGYnNhRHFGVW9DZWNFeUQraFV2cmowV05uM3pSMFpvOFFwVEY4?=
- =?utf-8?B?cDhMVlN4MC9paUhIejN2cXRNVzZzN1NBdFMvejlFZndWS29UU0djcFk2bndP?=
- =?utf-8?B?dk9YcW0rc1ZSeStFWFdWUHJCSkJoK2c1QzNTYmEvV1pudUYvVGlua3ZZRUFK?=
- =?utf-8?B?dEkxaS8wclJVcno1QnZKeUlBaGRRMnJVQ1pobmVSd29Tdmp0UVR0U2Z2ZC8x?=
- =?utf-8?B?TTR0R2lKUE9wRDJlWjFiaTVoY294SENiRE5rZExITHJJSDB6RkgzZHZsOFEw?=
- =?utf-8?B?TjFwN2E3RDZiY1BtS2FqS0ZQck1kdVd4QmxhR1dOczZ6d3J6bDkyV2szeFR2?=
- =?utf-8?B?RTRXeGN6dTFTVGluUnV2dXdpWnpSbjhtajREN0ZvRnZCcU9IRG1nb3pCMzBZ?=
- =?utf-8?B?L2pYQTNSTkFrMndmOGlQeGh3bm02VnpncjVGaURZZmRVQTNJeGhUMUUydFJR?=
- =?utf-8?B?WVBTdzFRSTZnTjhXM2ZXM0J0RW5ma3BxbVNaRjdwWEZIL01FUWtHeEk2b3dP?=
- =?utf-8?B?akFkbjFxN3BjRXRrTGRLbElzOUVhYlgyQ3dwWnJQTEFEdGlUMGRKUzBnb2xW?=
- =?utf-8?B?ZHkwaDdXNExMTGM5czBOUWUyVlBCbEEwR0Q1NDEzV2F5RDg5dG05cTdLSWJu?=
- =?utf-8?B?S291TVRhZ0tvQWxSTDEzb1A0cFNFZXNkdmsvbk95elBSdEFuNzdFcVpoT2Na?=
- =?utf-8?B?UGU0bGp6ZGkxTGNZc1g5d21zMFhDdWdhTEFTVHVmMncvOVlCNndYM3Vpc05O?=
- =?utf-8?B?MXdhZE9BbzRPY0hjZ3VKZXNpci9JN09DWUhLaG5FZHhJdnpWUmpRREZjWDI3?=
- =?utf-8?B?QlFMMUZoTmFrajNoMFRtemowM2s0c2FUTHhmRTM3M2N5RXVpelJKc0ZUUHhx?=
- =?utf-8?B?cTl3M2xMS0k1QU1zNXN3azhnYlZ0QTYrT3pxTzV1WEp2Rm9OQTV6U2R1bFov?=
- =?utf-8?B?RWg3SS9JcjRLRUZVejBacVFWM25iMmg0cVNzQU1BWGRvV0hFMk8xWVBMZGxy?=
- =?utf-8?B?NUtIY1JQQ3Y1YnUwNlU0SFlhY3VJK1hWbUhsbVEyYmJUUTVTRm8rcUN1bkFm?=
- =?utf-8?B?TGNLOHQvRTdBYUtRd0lqaGIyZ0NMUE1SSUJBU2N3REJ2QWtFV2FMbTNoVm5C?=
- =?utf-8?B?dE01SzdEMy9ncXd1SnJGRTNzcXR6ck45T2hkRGV2NXppS3VXYzRHS2R1REox?=
- =?utf-8?B?Ym0vc0I3UXd5MzZlbTM3NmIydjNMZTV5VU9UVEQxempYK0p4bzJKL2g4U0FU?=
- =?utf-8?B?R0NWMHpYWVF4ZnNuWG5pYU1GK0paRGx2YzZqWjBQOFZ2d003MWYxditNMVR5?=
- =?utf-8?B?UWJnN0lMM3JaL0llZ21tOXBIOTNlKytISGc0ckdPeUpSZXV0MTRKN2Q0YVQz?=
- =?utf-8?Q?/TsrObpCX9QMBhLXFXfDVANKl?=
-Content-ID: <65D392C26286184E8FE0EC6ABAE20FF5@eurprd02.prod.outlook.com>
+x-originating-ip: [10.33.22.30]
+Content-ID: <0E716FB8D48E644196FB08B558227153@atlnz.lc>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAWPR02MB10280.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4b0de22-3803-4ceb-e246-08db5c5be757
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 May 2023 13:36:39.5810
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uxtpdo+nMibZpRTWFjm9kHgyDTKIhIJwYNx0hAtJujmGJ3Q6/6e8nyQ7MNh3AFHl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR02MB8920
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=cLieTWWN c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=P0xRbXHiH_UA:10 a=P-IC7800AAAA:8 a=CjQ7iZMe9_sfGYb6nLMA:9 a=QEXdDO2ut3YA:10 a=d3PnA9EDa4IxuAV0gXij:22
+X-SEG-SpamProfiler-Score: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230524_063649_835633_5B1F20D1 
-X-CRM114-Status: GOOD (  10.15  )
+X-CRM114-CacheID: sfid-20230524_164957_928941_A3FF488B 
+X-CRM114-Status: GOOD (  26.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,19 +95,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2023-05-23 at 23:04 -0700, Christoph Hellwig wrote:
-> If you imlement ->free_disk, the list_del and kfree can move into
-> that, and we don't really care if a new opener raced with the delete.
 
-Moving the kfree() to ->free_disk() works, but the list_del() still
-needs to be in ubiblock_remove() since otherwise ubiblock_remove() could
-attempt to remove the same device twice.
+On 24/05/23 12:05, Chris Packham wrote:
+> When new timing values are calculated in marvell_nfc_setup_interface()
+> ensure that they will be applied in marvell_nfc_select_target() by
+> clearing the selected_chip pointer.
+>
+> Fixes: b25251414f6e ("mtd: rawnand: marvell: Stop implementing ->select_chip()")
+> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+>
+> Notes:
+>      This at least gets me to a point where I can illustrated the problem
+>      reported to me. It appears that despite the chip correctly reporting
+>      support for SDR timing modes up to 4 the observed tWC is 20ns. I've not
+>      seen any actual problem running in this state the only complaint is that
+>      the datasheet says the minimum tWC is 25ns.
+>      
+>      If I make a change to my bootloader such that the NAND Clock Frequency
+>      Select bit (0xF2440700:0) to 1 before booting the kernel _and_ I remove
+>      the extra factor of 2 from the period_ns calculation I observe tWC of
+>      about 60ns. If I don't remove the factor of 2 the NAND interface doesn't
+>      work (can't write BBT).
+>      
+>      Changes in v2:
+>      - reword comment per suggestion from Miquel, add fixes tag
 
-I assumed the current code really wanted to prevent new openers racing
-with delete, but if that is not needed, yes, we don't need to add a
-->removing flag if we move the kfree() to ->free_disk().  I'll re-spin
-this based on your suggestions.  Thanks.
+Actually thinking about this I should probably also include a change to 
+drop the unconditional NAND Clock Frequency select. Some marvell_nand 
+users probably aren't getting the best timings without this change but 
+those with a system controller will probably end up with timings faster 
+than intended (which may work depending on design tolerances).
 
+>
+>   drivers/mtd/nand/raw/marvell_nand.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+> index afb424579f0b..f1fcf136ad03 100644
+> --- a/drivers/mtd/nand/raw/marvell_nand.c
+> +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> @@ -2457,6 +2457,12 @@ static int marvell_nfc_setup_interface(struct nand_chip *chip, int chipnr,
+>   			NDTR1_WAIT_MODE;
+>   	}
+>   
+> +	/*
+> +	 * Reset nfc->selected_chip so the next command will cause the timing
+> +	 * registers to be updated in marvell_nfc_select_target().
+> +	 */
+> +	nfc->selected_chip = NULL;
+> +
+>   	return 0;
+>   }
+>   
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
