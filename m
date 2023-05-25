@@ -4,73 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E1DDC77B7C
-	for <linux-mtd@archiver.kernel.org>; Thu, 25 May 2023 00:32:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFD88C77B7A
+	for <linux-mtd@archiver.kernel.org>; Thu, 25 May 2023 00:54:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7gZjAxm8zLH7vWMWrcKcwJVd9joy+OtfyYwRB5M53GI=; b=bWtTAZSYKDsIYR
-	4lzhliEZP8Dq3VenaiEVplcbTgKgsyvHblclsmpn+J2DxbYW+d4Y2zNYGXpddqBcKLlpzARUphb4o
-	gozSvhJhLZoyGv7cbd4+DAt+GHHbN2VN7MDWAECQiCKHWePPcWCvldlyQNQ6ePYCR8f2gKaMMe/lv
-	BMtL/DZuN0xypsl9GwqQaOrCWs1ZaZW+mRTToMq9vyA7i6ZiLip+kuErmyT8GXdtcXcMWjw6Lqc7Y
-	cVGfPi8Akk0nulmpAXvLbP24taNTMT3lbpYeNe9qApyX/esCceT76tugkrHGThHMrczSvU0qtjEsE
-	0zdW8RM8zSoa6RBl8nDw==;
+	List-Owner; bh=MovIyhrl7rHBZM53f7SXBDA6UgAQN2BZPwEhxQzsgQ0=; b=KY37FL4AlX4gg+
+	cvb9mfYWShbbjQYWAHrvGMa705zLmXfx1xJlenb2JMCsqL/rQdXpbs+LkM7bgykZIu1JIzuZzEzy4
+	QKh0HQLaanZooSDhvJLIxAn8x5zjM95cdeSFJON2+diAzyxAQqBmQfgxlMkKQ7iFhgZYIPJCOyb+0
+	60TVy+l7NCNVPC5SEuUPMNHvQvdoI+GhBpXwJEj9yZ/revUeBD+M2XyqPZunjLIblh10BdLJ3YH/S
+	9xrha+ioPFh5I4mTUyjtNN39VSh/HoQwqp2h3BCmxL/wfrf5hz3cASwMgvar3BnrzetPglgoEhXrM
+	dSG+4pAIjFceswjRh8xQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1yto-00F58w-2l;
-	Thu, 25 May 2023 00:32:12 +0000
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+	id 1q1zEP-00F7H7-0K;
+	Thu, 25 May 2023 00:53:29 +0000
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1ytl-00F57L-29
+	id 1q1zEL-00F7GE-1Z
 	for linux-mtd@lists.infradead.org;
-	Thu, 25 May 2023 00:32:11 +0000
+	Thu, 25 May 2023 00:53:27 +0000
 Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D03252C02E0;
-	Thu, 25 May 2023 12:31:57 +1200 (NZST)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id AE03B2C0288;
+	Thu, 25 May 2023 12:53:19 +1200 (NZST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1684974717;
-	bh=7T+puFU3hojItCezGhGdpSM/kFMnpHzOFNeluLJHh3g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pdYh/THsedCo1aXPzD0qB0J0YhFhlHOo/+1qq/nRiA/HI9y5gcD/kYhTkecp/cTAO
-	 jUZ4vGkWoXHuLhOSwqdCgF0gO1wRyK5GEG0tIZ3tg/YJ2sd/8NTvY2dskh7h52YIXC
-	 eBCuHS2ki3F0c9SqHC6rO48ZYyeKIiV8PHcx8DDgwd7EuEJ8kkWINI2TA4mbW++cRi
-	 EXYcxV91huo4hRMgfzMwwG+py/ibGsWyr855RL+Dpq57BiV9y+/fPbcZHosj+zY2Wx
-	 3y4v80GbEGwYWWu8vgixta/XuUyMkTbavzIyNbUogp2RFLI8tHrq83vQubtGZNu3DX
-	 FXsoSZLgjtp0w==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B646eac7d0001>; Thu, 25 May 2023 12:31:57 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 93CF613EE63;
-	Thu, 25 May 2023 12:31:57 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 902C3281CC0; Thu, 25 May 2023 12:31:57 +1200 (NZST)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	bbrezillon@kernel.org
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v3 2/2] mtd: rawnand: marvell: don't set the NAND frequency select
-Date: Thu, 25 May 2023 12:31:53 +1200
-Message-Id: <20230525003154.2303012-2-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230525003154.2303012-1-chris.packham@alliedtelesis.co.nz>
-References: <20230525003154.2303012-1-chris.packham@alliedtelesis.co.nz>
+	s=mail181024; t=1684975999;
+	bh=gakfYzajycWsBIRNP8cV6Mi5LfkKI00ALEVp/557AR0=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=opxRzPOMErYuaex5VKKtrEpdkwSwq0I/abh33hNMcE1bFwXayQdf7pizD/waWK64J
+	 NWbFvdSNQa3ndbqaG4wRuNGcd5y7JQwoiBm1lFcVWgiaAL2FOujUsZ4V4xu7YAtlo8
+	 eYRs7gdeyA76Ge48X0V2nWobvoTYSw5V4QSZ0Z3JQdWsPP8DiNoTpiBDXVXVBaSZ0x
+	 X2OSRrSJzW/X3rwgZZUq91ud8vkfkBtrcJroc71hBDyP8wnY58AIE5g5v7tqEcz2Ah
+	 N+Gzly+YvsTkYJt8qCJrtNn+4uDu66h/Ijc3ZUs6xERR8ClnrBx+ClhEUJNYgXHS5G
+	 Fnu/56z5cngqw==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B646eb17f0000>; Thu, 25 May 2023 12:53:19 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 25 May 2023 12:53:19 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.026; Thu, 25 May 2023 12:53:19 +1200
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Vadym Kochan <vadym.kochan@plvision.eu>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "Vignesh
+ Raghavendra" <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Roger Quadros
+	<rogerq@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, Wolfram Sang
+	<wsa+renesas@sang-engineering.com>, Liang Yang <liang.yang@amlogic.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Aviram Dali
+	<aviramd@marvell.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: Elad Nachman <enachman@marvell.com>
+Subject: Re: [PATCH 0/3] mtd: rawnand: marvell: add support for AC5 SoC
+Thread-Topic: [PATCH 0/3] mtd: rawnand: marvell: add support for AC5 SoC
+Thread-Index: AQHY45PTmnmHPuwW40yPMLrn8y8OYa9qtkQA
+Date: Thu, 25 May 2023 00:53:19 +0000
+Message-ID: <143fb1ff-b2d4-a6fe-e892-b55a7bbf56f8@alliedtelesis.co.nz>
+References: <20221019082046.30160-1-vadym.kochan@plvision.eu>
+In-Reply-To: <20221019082046.30160-1-vadym.kochan@plvision.eu>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.33.22.30]
+Content-ID: <BED105E491B8E142A82B3707E313028D@atlnz.lc>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=cLieTWWN c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=P0xRbXHiH_UA:10 a=RTQhOw_aHlkS9OJicTUA:9
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=cLieTWWN c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=P0xRbXHiH_UA:10 a=QG0ANWG3iu1Ceheqxc0A:9 a=QEXdDO2ut3YA:10
 X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230524_173209_877980_FC0BE48D 
-X-CRM114-Status: GOOD (  11.99  )
+X-CRM114-CacheID: sfid-20230524_175325_999274_878FE43D 
+X-CRM114-Status: GOOD (  16.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,51 +100,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-marvell_nfc_setup_interface() uses the frequency retrieved from the
-clock associated with the nand interface to determine the timings that
-will be used. By changing the NAND frequency select without reflecting
-this in the clock configuration this means that the timings calculated
-don't correctly meet the requirements of the NAND chip. This hasn't been
-an issue up to now because of a different bug that was stopping the
-timings being updated after they were initially set.
+Hi Vadym,
 
-Fixes: b25251414f6e ("mtd: rawnand: marvell: Stop implementing ->select_chip()")
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+On 19/10/22 21:20, Vadym Kochan wrote:
+> This series adds support for AC5 SoC.
+>
+> The following changes were made to add AC5 support:
+>
+>     1) Modify Marvell nand NFC timing set for mode 0
+>
+>     2) fix validation in AC5 Nand driver for ONFI timings values modes 1 and 3
+>
+>     3) remove unnecessary nand timing-mode in device tree of ac5.dtsi
+>
+>     4) add nand missing AC5X layouts , add option to use ndtr predefined values
+>
+>     5) Zero steps and total fields of ecc in ecc controller initialization so
+>        nand_scan_tail() will calculate these two fields, otherwise
+>        NAND initialization will fail with kernel 5.15 and above.
+>
+> Aviram Dali (2):
+>    dt-bindings: mtd: Add AC5 specific binding
+>    mtd: rawnand: marvell: add support for AC5 SoC
 
-Notes:
-    I've set the fixes tag to b25251414f6e. The problem probably existed
-    prior to that but without the other fix in this series it wouldn't be
-    noticeable.
-    
-    With the two fixes from this series in place I get a tWC of 32ns which
-    seems just about ideal.
-    
-    Changes in v3:
-    - new
+Are you still looking into this series? I see one part made it upstream 
+as commit 68c18dae6888 ("mtd: rawnand: marvell: add missing layouts") 
+and there was an off-shoot series around converting the DT binding.
 
- drivers/mtd/nand/raw/marvell_nand.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index f1fcf136ad03..30c15e4e1cc0 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2900,10 +2900,6 @@ static int marvell_nfc_init(struct marvell_nfc *nfc)
- 		regmap_update_bits(sysctrl_base, GENCONF_CLK_GATING_CTRL,
- 				   GENCONF_CLK_GATING_CTRL_ND_GATE,
- 				   GENCONF_CLK_GATING_CTRL_ND_GATE);
--
--		regmap_update_bits(sysctrl_base, GENCONF_ND_CLK_CTRL,
--				   GENCONF_ND_CLK_CTRL_EN,
--				   GENCONF_ND_CLK_CTRL_EN);
- 	}
- 
- 	/* Configure the DMA if appropriate */
--- 
-2.40.1
-
-
+> Vadym Kochan (1):
+>    mtd: rawnand: Partially revert 4114f97c41cd ("mtd: rawnand: Get rid of
+>      a few unused definitions")
+>
+>   .../devicetree/bindings/mtd/marvell-nand.txt  |   1 +
+>   drivers/mtd/nand/raw/Kconfig                  |   2 +-
+>   drivers/mtd/nand/raw/marvell_nand.c           | 277 ++++++++++++++++--
+>   drivers/mtd/nand/raw/nand_timings.c           |  14 +
+>   include/linux/mtd/rawnand.h                   |   3 +
+>   5 files changed, 264 insertions(+), 33 deletions(-)
+>
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
