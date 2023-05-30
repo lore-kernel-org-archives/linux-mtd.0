@@ -4,157 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F4B6C7EE31
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 May 2023 14:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9850BC7EE2E
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 May 2023 16:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MbMXqt8Cb0JmxncIAqWRNel5ZV1PbkWJq0eFGFL9s4w=; b=NDdQA8ujE5WFlC
-	vRNAIe6SE20xRRCwdapx8PsSCG8zbSWJ/4G8pbI45Q+L8w6RMF0JzRPR2nJtRM7H+lP0bTyjbrc51
-	rE16ikXqlXc0qa669FJ3Nvl2w8oXL/zM7DxlsLVIL2FH1H4fjIAs34XcFcluNAHupBRAknKJpxO9v
-	E7BOVWkNd5LWM9WUZHcXbf+6C/j6JYewyZqgc6qR3wIqabapdhzXC2mxJCAbI7qY4yel3plELafYo
-	4ADrABMmWCr/6iYk8mUn6TOspdPOqkwRQ+8HRk05lwA4MIKgw3jozp/iYApO6tNOSB2MnaTgH0eJg
-	QOPCku4Uk0Fz9+OO3Jvw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	List-Owner; bh=ibKUNLXIS+Jh8HdD7nVzk+1h8ylv6g4/xd2R6uL2NRY=; b=2qxC8ciDrJm+JF
+	zIc06F3VuLaOOYePayhJR5LURr9GdUvLTx/uk3VgfknpUjC69wDbFEiRoZkdX0u/dbiOzofToogUc
+	oyd0zyAIXEubk0OFJFekmpuhbpzpYz9f1ukbx6t8SJORGPLYExxdBpnn64olklSbkfvAie7RNqkGi
+	ON5jNCM9x/yYOEhPnu+eQ70gO8o4ma6efnlwdrP2OoxHsRG8My7xvzywTEp42yVhbUsbCYxT3A8Yq
+	BUxtLyAXQr/i6cQSr4ua8VHCBL8tpW/HjN0a2GOLLKL7nQDQXJU95beo32oQuUIX3jLiif9/bkRhk
+	ThCk3Mt0+GM5MFQn7uxw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q40fB-00EHZt-0l;
-	Tue, 30 May 2023 14:49:29 +0000
-Received: from mx0a-003b2802.pphosted.com ([205.220.168.83])
+	id 1q42AU-00EZ4R-0b;
+	Tue, 30 May 2023 16:25:54 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q40f8-00EHZD-0O
-	for linux-mtd@lists.infradead.org;
-	Tue, 30 May 2023 14:49:27 +0000
-Received: from pps.filterd (m0278964.ppops.net [127.0.0.1])
-	by mx0a-003b2802.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34UEl7GA030017;
-	Tue, 30 May 2023 08:49:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=I1Cgb+IehKRxHx6bvP6fq28YfUz07G1aj3HmexJnMPo=;
- b=f/yXtaQFUujFJJFFL2cZTszqIN2WaWiKswhm2byG5VDQAuqtVJHPbU0ZeQ1oY432s2b8
- wTMszH4fvVnQWuTl3+Pzm9lk9kpxWYie4/1zyMD2LEyR8oGbjKoewISbfFVgiBDGV0GH
- TPC7PB5EkHIOsgV+9Aek/vac4JWfEQHV2Dtc9I4j4iK2zTaR8FwfCe8aNxTzzTMAKZGD
- TRVFR/szPMhroH6mHj0wIhXbgE43Ygh2LFd6Kh+4nhrzkVz4Ft1GK9qY1nqdF8GWCwsG
- hBgtsNz6X4jsARpl/uEZjJscw7MK5J4dIi0eU17TeBBHIo5fTHpxtputknAGn1KvQVJy sg== 
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2043.outbound.protection.outlook.com [104.47.57.43])
-	by mx0a-003b2802.pphosted.com (PPS) with ESMTPS id 3qughnwgtm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 May 2023 08:49:20 -0600
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K2WMq5JXMX19WKTwJuMl0dxVuJ3wPr2oMyfSDKzeTt1ef4qli5XCzIMNMflDqIqiVx8M3ymt7F0PoAHItBDNzx8CYvCQm0J+J504DNhm1ar2vKPrsX8r1i9GL4yzenL5CyO4bVhCeSyoWoqUtdvWXDf7YGTyfpWYts1whZK9/J0JGengUOA10Brh0vKjfqMRbmfrk/pMaN9uChyUMoFGNm0DbR4v5/tQD2itxSBLz2B1wwyPZJihJ9Sg9IJxr8hx28P/s1eOSpjKKtDCmB0Z+vnvstOIB8Kx/EsxnEIGN03Bw5cJsWRfXuD7E01EZxrMAaw7aRdI169MJNMuTS6I/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I1Cgb+IehKRxHx6bvP6fq28YfUz07G1aj3HmexJnMPo=;
- b=RmzJ8EdCohL9k55aXrMjvss6BmoNTwFZ4wkOkpfaPBxF4hJ5IKRtuzVCKK5aEBczjgQYekVGGTWsZJWDedCQ4feUdPFbHMhUAOYz04FQKRWwOk+Awj/SmrDgT5OOZ36hrRuzYOfRffuYN7ekNVjGLdnfR/4lXwXHZXgPPjrIDMGpLqU+smw66rVavXJGciXjuplKzmaTyjgwDcu0XdlfxJ5tfO354gUCU+55sYvJnl+R10pDgzuVas6y34xJTQf5L/wQxhGNbNrShystU7Y+Vx++jIbCDiivHc9tGCkiD/K251CAZnRd/qnPwl2Rb0dHtpnAXPMi/RZMrvOaZAcdgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
- dkim=pass header.d=micron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I1Cgb+IehKRxHx6bvP6fq28YfUz07G1aj3HmexJnMPo=;
- b=QUCDIONrGe3+F2bj0OLmp7+xjO4OLgSvXDcWY8BDOupRgyO+xB1ZH8OmY4jHDVhlhgMgS/NWOj2aqHXYUA6DoC8Q2lD5zYlwU6N+8yjh+uEc3OFSMqTVdcyoMrGc3xVGLnlcICfUgqdVXQOFx9tbLKquBGEj3sT6eCS9bMU5mki1GqW4xvEVLc6jM4dAPLBSWLha7AP0pO3bkrul0K7NaddRpyNnxsKlXYQqm5ExktsBVf3RHXlbgm5vqPNBDt/ZlW6MVcOWRlq1np7T/8jUMUQoNo4al2HtAcN67Nf+GsGFupVqu9gTsP/aVBEaIMKIikzF3xcfbijshIX+SClYdw==
-Received: from PH0PR08MB7889.namprd08.prod.outlook.com (2603:10b6:510:114::11)
- by CO1PR08MB6820.namprd08.prod.outlook.com (2603:10b6:303:9b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.23; Tue, 30 May
- 2023 14:48:43 +0000
-Received: from PH0PR08MB7889.namprd08.prod.outlook.com
- ([fe80::838a:faaa:a6c:ce8b]) by PH0PR08MB7889.namprd08.prod.outlook.com
- ([fe80::838a:faaa:a6c:ce8b%3]) with mapi id 15.20.6433.022; Tue, 30 May 2023
- 14:48:42 +0000
-From: Bean Huo <beanhuo@micron.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-        Alexander Shiyan
-	<eagle.alexander923@gmail.com>
-CC: JaimeLiao <jaimeliao.tw@gmail.com>,
-        "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Subject: RE: [EXT] Re: Boot failed after patch "mtd: rawnand: Support for
- sequential cache reads"
-Thread-Topic: [EXT] Re: Boot failed after patch "mtd: rawnand: Support for
- sequential cache reads"
-Thread-Index: AQHZkiMzb3ovCmHk00i8y+AILspS+q9y4RPg
-Date: Tue, 30 May 2023 14:48:42 +0000
-Message-ID: <PH0PR08MB788936E00C0DD958BFB9B3F6DB4B9@PH0PR08MB7889.namprd08.prod.outlook.com>
-References: <CAP1tNvS=NVAm-vfvYWbc3k9Cx9YxMc2uZZkmXk8h1NhGX877Zg@mail.gmail.com>
-	<20230526201420.231092a0@xps-13>
-	<CAP1tNvQsmYKMHZ662f1yiLv2JmZZrnQsJr2Lf5xiafxJSkZfBQ@mail.gmail.com>
-	<20230529101240.53065e04@xps-13>
-	<CAP1tNvRTRkXMztGL=nxrd-Cv5xO58-R=A_M2r65d6cyidoVz0g@mail.gmail.com>
- <20230529134619.255d0b07@xps-13>
-In-Reply-To: <20230529134619.255d0b07@xps-13>
-Accept-Language: en-150, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_6fdea275-d6f3-438f-b8d8-013cab2023d3_ActionId=bc8d6cf4-7cd7-44c0-b3ff-69332d8116dc;MSIP_Label_6fdea275-d6f3-438f-b8d8-013cab2023d3_ContentBits=0;MSIP_Label_6fdea275-d6f3-438f-b8d8-013cab2023d3_Enabled=true;MSIP_Label_6fdea275-d6f3-438f-b8d8-013cab2023d3_Method=Privileged;MSIP_Label_6fdea275-d6f3-438f-b8d8-013cab2023d3_Name=Public;MSIP_Label_6fdea275-d6f3-438f-b8d8-013cab2023d3_SetDate=2023-05-30T14:26:42Z;MSIP_Label_6fdea275-d6f3-438f-b8d8-013cab2023d3_SiteId=f38a5ecd-2813-4862-b11b-ac1d563c806f;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR08MB7889:EE_|CO1PR08MB6820:EE_
-x-ms-office365-filtering-correlation-id: 761b1cca-24b0-4702-b197-08db611cf68a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: BiZzWCtqaVtyHfPV5C7jYRaSVDu629gt6zPBYhnvHy5cWS7vgHuma/60FKLY8tX4d7KfT4q3SZM1PIQ6vuxOnPMWw51aF7WLN8b155GzkQIPo7/5+pOxqiFQL8x5Incgv6BXdsCgomTzsxr1TYP3qjEjw/PMljBoESl8g9OnpWIdYacg27tWBx9Z1xXw1JBHnmcS/yrqpeaQQWuptQIFOQqVpOMeHXZzOA+g/WJRxPMElGcmNNHT6y/9wfyha3S7kg5vnvjj3BLpAV4NnJE9NvPkJfexm0bZONzS2hkZ/W8mAntol0SwueMTaEqM/3QfCDQAVGL3CvvlYIC1ufC1BYlAb4fpZi6AMaRPuOPEW6FDlMTEOSJWVs4NitkJvYaIiK+H7XWR3ixTkRySM8tWJa6O+Z9Nu9M+gowSxYFqMxlOnwD0DGZx3ZBPLm3/sJvmukIrJAGC5dkLTkEBS+c/pnWm5yXgpm705+vep1YUY23JkgCAKv02A3Ag4azN651gJgybNH5Oz6chtGHUUGNt+G3f7DD56psEzfZm0J9lLUJvmleTIX8xjIS7k5sTpm/w33yufPY2T8p8o29394Ae2TvalNmubEb6l1qKvvjsuVE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR08MB7889.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(396003)(366004)(376002)(39860400002)(451199021)(966005)(478600001)(83380400001)(55016003)(66574015)(5660300002)(186003)(33656002)(71200400001)(4326008)(7696005)(86362001)(8676002)(2906002)(8936002)(52536014)(41300700001)(316002)(122000001)(38100700002)(38070700005)(6506007)(26005)(66946007)(76116006)(54906003)(110136005)(9686003)(53546011)(66556008)(66446008)(66476007)(64756008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bmM2WnlxY0xzaklyaUdFU2t2V0JoalB1Z2QzTEJ6RktwQkpmbkVZMzBHL2Zj?=
- =?utf-8?B?MXhQQVprWFN6UGdRUTREdklxTXFnUHVZTXd1UzFnVllOSFc3TEtXbFFlbDJl?=
- =?utf-8?B?cW5WK1RKekVhdm9LbElpNEFkcU5wQmVJdW5GUEZWZG1IdTBwV1lmUjIrUVpy?=
- =?utf-8?B?eGFBa2JXL2JtdThXTGdVcUV5NW92MXBia29wRWtteCtOcDBpbGVqMEN5MjVE?=
- =?utf-8?B?elFmMDhxcG9LQzVLYnVYV1RRK280QVpCQ3RTaGVhcy9SQUMrRWNJdFJzenNp?=
- =?utf-8?B?NkkyOG9YZExXbjFtd21NMnhIMXgyWFkrZEFuSy9xT3MrKytKVXREU1JIRFFY?=
- =?utf-8?B?WFdyMStBakxtTEI3bUU1aFBoYkc2VTdRclo1b29tOVZ0ZU4rcWIwVWQ2aUNm?=
- =?utf-8?B?VDg5S0FWQ21ETzBWV2dTSnRIT2phRFVZRTFZNFhkaW1vQ3VkVnhvMEV1RFZX?=
- =?utf-8?B?NXltZm8rMnI4YzBPa1dOL29JVzlmdVNYMDFEVDhTYW54NGhsaGVYS0lnRU04?=
- =?utf-8?B?T1hJVTM2SnlWWHh5NzZMYVRwMUxkN0cvN2twQUZIZjNmNVZENWlSNHBxYktT?=
- =?utf-8?B?bjI4a0xvQ3BydFNENlQ1bjl0cXBSUnJ3UkZvZm15MmJydllwNlJFWGkwREti?=
- =?utf-8?B?dEFHT3Q5elo4UmJaU0FZYzd6SkI3anRGd1htZ1NGSGJneFd2Vlo2WDBLS2NX?=
- =?utf-8?B?Y0svOUV4RStPd2cvOGNLdjVMODJLZDdHaloxemE4eFIycjRQNGkyVnpNRDlE?=
- =?utf-8?B?Y1Z6QkZ3bXVYQVVtR0ZPdjcxdG9pQURKQVpnQjFhZHVaSU1PWGhoZFFKUHFE?=
- =?utf-8?B?alJ2VmxmOXZ6Q01BdUl6THR2dzdhdTJzWDAzYWoxb0hNZDVrZ2R2NEVPa0lE?=
- =?utf-8?B?V2VqaVRWOHZWWThiV2kxelRsZ05PbDRTamRGcUkrSlRVV1dFYUtZZm1nb2FX?=
- =?utf-8?B?RVlVeW5yQjFraFZNVWQvaVJHSzg0azcwbmttVm5WVVhlN0hFMHorVnVXNkZD?=
- =?utf-8?B?elFTYnFZNTdqeE9iVVRlV0VZdzVHVEJseHpGUEpNK1RuTmZSY01SYjlOODNI?=
- =?utf-8?B?RUpRc00wZThaRzk3UW5HMlpwT3VFakhacHhTZTZBY1lNcTBhK2c2OVJmVmUv?=
- =?utf-8?B?Z21DaFlhaStxeFhEbFI1eGhoVWQ0ZXNoc2Q4TzlYaVliVm5kVW45SE43cmZS?=
- =?utf-8?B?MnRTWS9BRStzOG9kUXZnNDAvQ3VLWXF0ZWl2ME1yU3orSkJiMytvWmh4ZHdX?=
- =?utf-8?B?TG9mdWFTcTNDemRmaWl1QTRyZzRhaHU3MS81YTQrbUZWem05TzFMSTlWeDVz?=
- =?utf-8?B?R3ZBTXE4TmVISEZ0QXY2dXBZUDFXZURYUXFsWnhXZUVmcjlNTXg2eE9XNDR0?=
- =?utf-8?B?OFNSbFRpWjgvOHozVmdFcDV2VThnWGl5Q0U5NVhnRmk3T3FUdmo1Qk00c3Iz?=
- =?utf-8?B?S2pVVFE4UkxrZTVQM2hGODdXRVlXZnI1enN5OHR5Q2YvbHczVGlHZGlaODRD?=
- =?utf-8?B?Wm9pdlJkMTVWajQxMm00V2dXT2dJdFBJZ1NDdVNpd2dFV1R3UVdoNUhMRjZW?=
- =?utf-8?B?RUZkdWZ3bHF6ejlVbFBpRUIwbG80N0VwYk9KbGNIWVhzWjYrckhGN2FwTndn?=
- =?utf-8?B?aWIrYjVncGJhdXlLd25VQnBwVEtzcDhxdDlmMzZxOFd2NWdveXRPZ3Z3RDV1?=
- =?utf-8?B?eEJ2RElyM3lseFJJQkpBOTBMWktkVFVTVld3R1ZzTk8yWmE2STN3UFJoNUkr?=
- =?utf-8?B?SW5BQnJvTERBM29wb1Y3TkdZamN3KzU0Y2NrZ0hxU204bzdGOHROdzIzZmZy?=
- =?utf-8?B?czVzVHFkSnEyQ2NSdUhiczM1QkMrNWUyb01QWFdUb3Z1U2xZdXlVaXlJcGVH?=
- =?utf-8?B?M2E4N3dyKzBmdG43YkVYZkYvaTh4MTBBY05DOW9RdW1JQjd2ck9VVUFZMnc5?=
- =?utf-8?B?WVh2RHptdDVITTNqVU11dFJyb0Q0ZVRtclZwbU9VTzdBUk8yeEJsNXZxOGNk?=
- =?utf-8?B?dTd4Qkovazl0ejJXcE1FRlNISmM2dlZOMDFsd1FZc0NQNVVibWpnQkdLbzB1?=
- =?utf-8?B?SDAzOFhKaFFjZkllc0tKeWdjRkhvNjhVdVhUWGI3V3krSmVkQXpaaWx5REQx?=
- =?utf-8?Q?I6SA4AeFGnNBXw09wKGYdEYU/?=
+	id 1q42AP-00EZ38-09;
+	Tue, 30 May 2023 16:25:52 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0A4F162D18;
+	Tue, 30 May 2023 16:25:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D76EC4339B;
+	Tue, 30 May 2023 16:25:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685463947;
+	bh=fL/fxkcSbE2WBgSh2PWCwsaLzxbnaI3bIl28lIQY5bE=;
+	h=From:To:Cc:Subject:References:Date:From;
+	b=bhy25DayRFhbTobWE70KgPRtN0CZdzu3y7heoUr9DLMSwNevRKUD8UClYEutMRIbG
+	 OO6TYZtEl2f3tXcMa1150+Q8sIwZFj7R0NWCJ3SjWILsU+AIikhrwM3VtMqxPlbCKn
+	 Zg3jBnRDPr6FP69umRnow7LP3rJKfJwLoaSQQ3NpOg1GzIQzX0kW0BqTZglXjtqFXj
+	 9t4gpLLGgqgFWWgkQ8C4TJAc1+LvXHnrFSQ0nQzGXHWs5QapdtEdBxKuTI+EnYUNJ8
+	 u7JkeYn5eqEumJEKZwIE5x+ug+EyNg7+qVR0hh2mlN6+5oL0KGxtGLxOcI4k4wAA/b
+	 J6BSe7SGOwxuQ==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: <broonie@kernel.org>,  <tudor.ambarus@linaro.org>,
+  <pratyush@kernel.org>,  <miquel.raynal@bootlin.com>,  <richard@nod.at>,
+  <vigneshr@ti.com>,  <michael@walle.cc>,
+  <sbinding@opensource.cirrus.com>,  <git@amd.com>,
+  <linux-spi@vger.kernel.org>,  <linux-kernel@vger.kernel.org>,
+  <linux-mtd@lists.infradead.org>,  <nicolas.ferre@microchip.com>,
+  <alexandre.belloni@bootlin.com>,  <claudiu.beznea@microchip.com>,
+  <michal.simek@amd.com>,  <linux-arm-kernel@lists.infradead.org>,
+  <amitrkcian2002@gmail.com>
+Subject: Re: [PATCH V8 1/7] spi: Add stacked and parallel memories support
+ in SPI core
+References: <20230511073134.41180-1-amit.kumar-mahapatra@amd.com>
+	<20230511073134.41180-2-amit.kumar-mahapatra@amd.com>
+Date: Tue, 30 May 2023 18:25:43 +0200
+Message-ID: <mafs0bki16b20.fsf@amazon.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR08MB7889.namprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 761b1cca-24b0-4702-b197-08db611cf68a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2023 14:48:42.5854
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eFTlGV6jtiEdxyLilKVWZ1y+CwTn5yqmymGF6BSW5ut0HxQ01i9Le2TCza0ZS8UaWmNH7k6G1XXnnDWnjkGZpw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR08MB6820
-X-Proofpoint-GUID: U3274C9HGRcCGE8pkUA3d9FdFNrhDvSt
-X-Proofpoint-ORIG-GUID: U3274C9HGRcCGE8pkUA3d9FdFNrhDvSt
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230530_074926_255932_087E7DD3 
-X-CRM114-Status: GOOD (  36.51  )
+X-CRM114-CacheID: sfid-20230530_092549_189548_47C602EB 
+X-CRM114-Status: GOOD (  48.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -166,97 +76,581 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLCANCg0KVGhhbmtzIGZvciByZWFjaGluZyBvdXQgbWUsIGhlcmUgaGFzIGEgVE4t
-MjktMDE6IEluY3JlYXNpbmcgTkFORCBGbGFzaCBQZXJmb3JtYW5jZS4NCmh0dHBzOi8vbWVkaWEt
-d3d3Lm1pY3Jvbi5jb20vLS9tZWRpYS9jbGllbnQvZ2xvYmFsL2RvY3VtZW50cy9wcm9kdWN0cy90
-ZWNobmljYWwtbm90ZS9uYW5kLWZsYXNoL3RuMjkwMS5wZGY/cmV2PWEyMjhmZDE1NGMyNzRlZjc4
-NjY5YjY3ZWEwOTdlY2RhDQoNCg0KSWYgQWxleGFuZGVyIGNhbiBkbyB0cmFjaW5nIHdpdGggb3Nj
-aWxsb3Njb3BlIG9uIHRoZSBwYXJhbGxlbCBOQU5EIGJ1cywgdGhhdCB3b3VsZCBiZSBoZWxwIHRv
-IGNoZWNrIGlmIHRoaXMgaXMgdGhlIHRpbWluZyBpc3N1ZS4gDQoNCktpbmQgcmVnYXJkcywNCkJl
-YW4NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaXF1ZWwgUmF5bmFs
-IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPg0KPiBTZW50OiBNb25kYXksIE1heSAyOSwgMjAy
-MyAxOjQ2IFBNDQo+IFRvOiBBbGV4YW5kZXIgU2hpeWFuIDxlYWdsZS5hbGV4YW5kZXI5MjNAZ21h
-aWwuY29tPg0KPiBDYzogSmFpbWVMaWFvIDxqYWltZWxpYW8udHdAZ21haWwuY29tPjsgbGludXgt
-bXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IEJlYW4gSHVvDQo+IDxiZWFuaHVvQG1pY3Jvbi5jb20+
-DQo+IFN1YmplY3Q6IFtFWFRdIFJlOiBCb290IGZhaWxlZCBhZnRlciBwYXRjaCAibXRkOiByYXdu
-YW5kOiBTdXBwb3J0IGZvciBzZXF1ZW50aWFsDQo+IGNhY2hlIHJlYWRzIg0KPiANCj4gQ0FVVElP
-TjogRVhURVJOQUwgRU1BSUwuIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRz
-IHVubGVzcyB5b3UNCj4gcmVjb2duaXplIHRoZSBzZW5kZXIgYW5kIHdlcmUgZXhwZWN0aW5nIHRo
-aXMgbWVzc2FnZS4NCj4gDQo+IA0KPiBIaSBCZWFuLA0KPiANCj4gSSdtIGFkZGluZyB5b3UgdG8g
-dGhpcyB0aHJlYWQgYmVjYXVzZSBJJ20gY2x1ZWxlc3MgcmVnYXJkaW5nIHdoYXQncyBoYXBwZW5p
-bmcgdG8NCj4gQWxleGFuZGVyLg0KPiANCj4gU2hvcnQgcmVjYXA6IHNlcXVlbnRpYWwgcGFnZSBy
-ZWFkcyBzZWVtIHRvIGZhaWwgd2l0aCBhbiBNVDI5RiBNaWNyb24gY2hpcC4NCj4gQWxleGFuZGVy
-IGlzIHVzaW5nIGEgZ3BtYyBjb250cm9sbGVyIHdpdGhvdXQgb24tZGllIEVDQywgSSBkb3VidCB0
-aGUgZXJyb3IgY29tZXMNCj4gZnJvbSB0aGUgY29udHJvbGxlciwgc28gSSB3b3VsZCBsaWtlIHRv
-IGtub3cgaWYgdGhlcmUgaXMgYW55dGhpbmcga25vd24gdG8gZmFpbCB3aXRoDQo+IHRoZXNlIGNo
-aXBzIHJlZ2FyZGluZyB0aGUgdXNlIG9mIHNlcXVlbnRpYWwgcmVhZHMuIFdlIGNhbiBlYXNpbHkg
-d29yayBhcm91bmQgdGhhdA0KPiBzaXR1YXRpb24gaWYgd2UgaWRlbnRpZnkgdGhlIHByb2JsZW0u
-DQo+IA0KPiBUaGFua3MgYSBsb3QsDQo+IE1pcXXDqGwNCj4gDQo+IGVhZ2xlLmFsZXhhbmRlcjky
-M0BnbWFpbC5jb20gd3JvdGUgb24gTW9uLCAyOSBNYXkgMjAyMw0KPiAxMzozMzowNCArMDMwMDoN
-Cj4gDQo+ID4g0L/QvSwgMjkg0LzQsNGPIDIwMjPigK/Qsy4g0LIgMTE6MTIsIE1pcXVlbCBSYXlu
-YWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Og0KPiA+IC4uLg0KPiA+IEFjY29yZGluZyB0
-byB0aGUgTVQyOUYyRzA4QUJBRUFXUCBkYXRhc2hlZXQsIHRoZSBjaGlwIHN1cHBvcnRzDQo+ID4g
-PiA+IHRoZSBSRUFEIFBBR0UgQ0FDSEUgU0VRVUVOVElBTCBvcGNvZGUsIGJ1dCB3aXRoIHR3byBj
-YXZlYXRzOg0KPiA+ID4gPiAgNC4gVGhlc2UgY29tbWFuZHMgc3VwcG9ydGVkIG9ubHkgd2l0aCBF
-Q0MgZGlzYWJsZWQuDQo+ID4gPiA+ICA1LiBJc3N1aW5nIGEgUkVBRCBQQUdFIENBQ0hFIHNlcmll
-cyAoMzFoLCAwMGgtMzFoLCAzRmgpIGNvbW1hbmQNCj4gPiA+ID4gICB3aGVuIHRoZSBhcnJheSBp
-cyBidXN5IChSRFkgPSAxLCBBUkRZID0gMCkgaXMgc3VwcG9ydGVkIGlmIHRoZSBwcmV2aW91cw0K
-PiA+ID4gPiAgIGNvbW1hbmQgd2FzIGEgUkVBRCBQQUdFICgwMGgtMzBoKSBvciBSRUFEIFBBR0Ug
-Q0FDSEUgc2VyaWVzDQo+ID4gPiA+ICAgY29tbWFuZDsgb3RoZXJ3aXNlLCBpdCBpcyBwcm9oaWJp
-dGVkLg0KPiA+ID4gPg0KPiA+ID4gPiBBcyBmYXIgYXMgSSB1bmRlcnN0YW5kLCB0aGUgc2Vjb25k
-IHJlbWFyayBzdWl0cyB1cywgc2luY2Ugd2UNCj4gPiA+ID4gY3JlYXRlIHRoZSBjb3JyZWN0IHNl
-cXVlbmNlLg0KPiA+ID4NCj4gPiA+IEV4YWN0bHksIHdlIGRvOg0KPiA+ID4NCj4gPiA+ICAgICAg
-ICAgUkVBRDAgKDApLCBSRUFEU1RBUlQgKDMwKSwNCj4gPiA+ICAgICAgICAgUkVBRENBQ0hFU0VR
-ICgzMSksIGRhdGEsDQo+ID4gPiAgICAgICAgIFJFQURDQUNIRVNFUSAoMzEpLCBkYXRhLA0KPiA+
-ID4gICAgICAgICAuLi4NCj4gPiA+ICAgICAgICAgUkVBRENBQ0hFRU5EICgzZiksIGRhdGEuDQo+
-ID4gPg0KPiA+ID4gd2hpY2ggaXMgd2hhdCB0aGUgZGF0YXNoZWV0IHRlbGxzIHVzIEkgYmVsaWV2
-ZS4NCj4gPiA+DQo+ID4gPiA+IEJ1dCB0aGUgZmlyc3QgcmVtYXJrIGNhbiBiZSBhIHByb2JsZW0g
-aW4gdGhpcyBjYXNlLg0KPiA+ID4NCj4gPiA+IEkgd2FzIG5vdCBhd2FyZSBvZiB0aGlzIGxpbWl0
-YXRpb24sIGl0J3Mgb25seSB3cml0dGVuIGluIHRoZQ0KPiA+ID4gc3VtbWFyeSwgbm90IGluIHRo
-ZSBkZXRhaWxzIGFib3V0IHRoZSBjb21tYW5kcywgbmljZSBmaW5kaW5nLiBXZQ0KPiA+ID4gbmVl
-ZCB0byBwcmV2ZW50IG9uLWRpZSBFQ0MgdXNlcnMgZnJvbSBlbmFibGluZyB0aGlzIGZlYXR1cmUu
-DQo+ID4gPg0KPiA+ID4gQnV0IGdpdmVuIHRoZSBiZWxvdyB0cmFjZSwgeW91J3JlIG5vdCB1c2lu
-ZyB0aGUgb24tZGllIEVDQyBlbmdpbmUsDQo+ID4gPiByaWdodD8gSXQgbG9va3MgbGlrZSB5b3Un
-cmUgdXNpbmcgdGhlIGNvbnRyb2xsZXIncyBFTE0gZW5naW5lIHRvDQo+ID4gPiBwZXJmb3JtIEVD
-QyBjb3JyZWN0aW9uLCBzbyBJIGRvbid0IHNlZSB3aHkgdGhpcyBzcGVjaWZpYyBsaW1pdGF0aW9u
-DQo+ID4gPiB3b3VsZCBoaXQgdXMuIENhbiB5b3UgY29uZmlybSB0aGUgRUNDIGVuZ2luZSBvZiB0
-aGUgY2hpcCBpcyBkaXNhYmxlZD8NCj4gPg0KPiA+IFllcywgb24tZGllIEVDQyBpcyBkaXNhYmxl
-ZC4NCj4gPiBQbGVhc2UgYWR2aXNlIHdoZXJlIEkgY2FuIGluc2VydCBzb21lIGRlYnVnIG1lc3Nh
-Z2VzIHRvIGNsZWFyIHRoaW5ncyB1cC4NCj4gPg0KPiA+ID4gPiA+ID4gb21hcC1ncG1jIDUwMDAw
-MDAwLmdwbWM6IEdQTUMgcmV2aXNpb24gNi4wIC4uLg0KPiA+ID4gPiA+ID4gbmFuZDogZGV2aWNl
-IGZvdW5kLCBNYW51ZmFjdHVyZXIgSUQ6IDB4MmMsIENoaXAgSUQ6IDB4ZGENCj4gPiA+ID4gPiA+
-IG5hbmQ6IE1pY3JvbiBNVDI5RjJHMDhBQkFFQVdQDQo+ID4gPiA+ID4gPiBuYW5kOiAyNTYgTWlC
-LCBTTEMsIGVyYXNlIHNpemU6IDEyOCBLaUIsIHBhZ2Ugc2l6ZTogMjA0OCwgT09CDQo+ID4gPiA+
-ID4gPiBzaXplOiA2NA0KPiA+ID4gPiA+ID4gbmFuZDogdXNpbmcgT01BUF9FQ0NfQkNIOF9DT0RF
-X0hXIEVDQyBzY2hlbWUgLi4uDQo+ID4gPiA+ID4gPiBWRlM6IE1vdW50ZWQgcm9vdCAoc3F1YXNo
-ZnMgZmlsZXN5c3RlbSkgcmVhZG9ubHkgb24gZGV2aWNlIDI1NDowLg0KPiA+ID4gPiA+ID4gZGV2
-dG1wZnM6IG1vdW50ZWQNCj4gPiA+ID4gPiA+IEZyZWVpbmcgdW51c2VkIGtlcm5lbCBpbWFnZSAo
-aW5pdG1lbSkgbWVtb3J5OiAxMDI0SyBSdW4NCj4gPiA+ID4gPiA+IC9zYmluL2luaXQgYXMgaW5p
-dCBwcm9jZXNzIFNRVUFTSEZTIGVycm9yOiBsem8gZGVjb21wcmVzc2lvbg0KPiA+ID4gPiA+ID4g
-ZmFpbGVkLCBkYXRhIHByb2JhYmx5IGNvcnJ1cHQgU1FVQVNIRlMgZXJyb3I6IEZhaWxlZCB0byBy
-ZWFkDQo+ID4gPiA+ID4gPiBibG9jayAweGQyOTFjMjogLTUgU1FVQVNIRlMgZXJyb3I6IGx6byBk
-ZWNvbXByZXNzaW9uIGZhaWxlZCwNCj4gPiA+ID4gPiA+IGRhdGEgcHJvYmFibHkgY29ycnVwdCBT
-UVVBU0hGUyBlcnJvcjogRmFpbGVkIHRvIHJlYWQgYmxvY2sNCj4gPiA+ID4gPiA+IDB4ZDI5MWMy
-OiAtNSBTUVVBU0hGUyBlcnJvcjogVW5hYmxlIHRvIHJlYWQgZGF0YSBjYWNoZSBlbnRyeQ0KPiA+
-ID4gPiA+ID4gW2QyOTFjMl0gU1FVQVNIRlMgZXJyb3I6IFVuYWJsZSB0byByZWFkIHBhZ2UsIGJs
-b2NrIGQyOTFjMiwNCj4gPiA+ID4gPiA+IHNpemUgMTQzMDcgU1FVQVNIRlMgZXJyb3I6IFVuYWJs
-ZSB0byByZWFkIGRhdGEgY2FjaGUgZW50cnkNCj4gPiA+ID4gPiA+IFtkMjkxYzJdIFNRVUFTSEZT
-IGVycm9yOiBVbmFibGUgdG8gcmVhZCBwYWdlLCBibG9jayBkMjkxYzIsDQo+ID4gPiA+ID4gPiBz
-aXplIDE0MzA3IEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiBBdHRlbXB0ZWQgdG8ga2lsbCBp
-bml0IQ0KPiA+ID4gPiA+ID4gZXhpdGNvZGU9MHgwMDAwMDAwNyBDUFU6IDAgUElEOiAxIENvbW06
-IGluaXQgTm90IHRhaW50ZWQNCj4gPiA+ID4gPiA+IDYuMy4wKyAjMTA1IEhhcmR3YXJlIG5hbWU6
-IEdlbmVyaWMgQU0zM1hYIChGbGF0dGVuZWQgRGV2aWNlDQo+ID4gPiA+ID4gPiBUcmVlKSAgdW53
-aW5kX2JhY2t0cmFjZSBmcm9tIHNob3dfc3RhY2srMHhiLzB4YyAgc2hvd19zdGFjaw0KPiA+ID4g
-PiA+ID4gZnJvbSBkdW1wX3N0YWNrX2x2bCsweDJiLzB4MzQgIGR1bXBfc3RhY2tfbHZsIGZyb20N
-Cj4gPiA+ID4gPiA+IHBhbmljKzB4YmQvMHgyMzAgIHBhbmljIGZyb20gbWFrZV90YXNrX2RlYWQr
-MHgxLzB4MTIwDQo+ID4gPiA+ID4gPiBtYWtlX3Rhc2tfZGVhZCBmcm9tIDB4YzEwMmNhODAgLS0t
-WyBlbmQgS2VybmVsIHBhbmljIC0gbm90DQo+ID4gPiA+ID4gPiBzeW5jaW5nOiBBdHRlbXB0ZWQg
-dG8ga2lsbCBpbml0IQ0KPiA+ID4gPiA+ID4gZXhpdGNvZGU9MHgwMDAwMDAwNyBdLS0tDQpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Amit,
+
+I did not get a chance to look at all the old comments in the previous
+versions. So apologies in advance if I comment something that has
+already been mentioned before.
+
+On Thu, May 11 2023, Amit Kumar Mahapatra wrote:
+
+> For supporting multiple CS the SPI device need to be aware of all the CS
+> values. So, the "chip_select" member in the spi_device structure is now an
+> array that holds all the CS values.
+>
+> spi_device structure now has a "cs_index_mask" member. This acts as an
+> index to the chip_select array. If nth bit of spi->cs_index_mask is set
+> then the driver would assert spi->chip_select[n].
+>
+> In parallel mode all the chip selects are asserted/de-asserted
+> simultaneously and each byte of data is stored in both devices, the even
+> bits in one, the odd bits in the other. The split is automatically handled
+> by the GQSPI controller. The GQSPI controller supports a maximum of two
+> flashes connected in parallel mode. A SPI_CONTROLLER_MULTI_CS flag bit is
+> added in the spi controntroller flags, through ctlr->flags the spi core
+
+Typo: s/controntroller/controller/
+
+> will make sure that the controller is capable of handling multiple chip
+> selects at once.
+>
+> For supporting multiple CS via GPIO the cs_gpiod member of the spi_device
+> structure is now an array that holds the gpio descriptor for each
+> chipselect.
+
+General comment: For large changes, it is useful to describe a
+high-level overview of your new design so reviewers and future readers
+can get a mental model of what is going on. I did not see anything of
+that sort in this series.
+
+>
+> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+> ---
+> CS GPIO is not tested on our hardware but it has been tested by @Stefan
+> https://lore.kernel.org/all/3f148a0c-8885-0425-28f4-2a53937a388f@opensource.cirrus.com/
+> Stefan, could you please provide your Tested-by tag for this patch
+> ---
+>  drivers/spi/spi.c       | 231 ++++++++++++++++++++++++++++------------
+>  include/linux/spi/spi.h |  32 ++++--
+>  2 files changed, 189 insertions(+), 74 deletions(-)
+>
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+>
+> index 9291b2a0e887..a793e56f6a21 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -612,10 +612,24 @@ static int spi_dev_check(struct device *dev, void *data)
+>  {
+>  	struct spi_device *spi = to_spi_device(dev);
+>  	struct spi_device *new_spi = data;
+> +	int idx, nw_idx;
+>
+> -	if (spi->controller == new_spi->controller &&
+> -	    spi_get_chipselect(spi, 0) == spi_get_chipselect(new_spi, 0))
+> -		return -EBUSY;
+> +	if (spi->controller == new_spi->controller) {
+> +		for (idx = 0; idx < SPI_CS_CNT_MAX; idx++) {
+> +			for (nw_idx = 0; nw_idx < SPI_CS_CNT_MAX; nw_idx++) {
+> +				if ((idx != 0 && !spi_get_chipselect(spi, idx)) ||
+> +				    (nw_idx != 0 && !spi_get_chipselect(spi, nw_idx))) {
+
+Hmm, from what I can understand, spi->chipselect[i] gives the
+corresponding physical CS for logical CS i. So for example, if both old
+and new devices map logical CS 1 to physical CS 0, this would not detect
+the conflict.
+
+What exactly are you trying to do here?
+
+> +					continue;
+> +				} else if (spi_get_chipselect(spi, idx) ==
+> +				    spi_get_chipselect(new_spi, nw_idx)) {
+> +					dev_err(dev,
+> +						"chipselect %d already in use\n",
+> +						spi_get_chipselect(new_spi, nw_idx));
+> +					return -EBUSY;
+> +				}
+> +			}
+> +		}
+> +	}
+>  	return 0;
+>  }
+>
+> @@ -629,7 +643,7 @@ static int __spi_add_device(struct spi_device *spi)
+>  {
+>  	struct spi_controller *ctlr = spi->controller;
+>  	struct device *dev = ctlr->dev.parent;
+> -	int status;
+> +	int status, idx;
+>
+>  	/*
+>  	 * We need to make sure there's no other device with this
+> @@ -638,8 +652,6 @@ static int __spi_add_device(struct spi_device *spi)
+>  	 */
+>  	status = bus_for_each_dev(&spi_bus_type, NULL, spi, spi_dev_check);
+>  	if (status) {
+> -		dev_err(dev, "chipselect %d already in use\n",
+> -				spi_get_chipselect(spi, 0));
+
+Nitpick: No need for the braces around if anymore.
+
+>  		return status;
+>  	}
+>
+> @@ -649,8 +661,13 @@ static int __spi_add_device(struct spi_device *spi)
+>  		return -ENODEV;
+>  	}
+>
+> -	if (ctlr->cs_gpiods)
+> -		spi_set_csgpiod(spi, 0, ctlr->cs_gpiods[spi_get_chipselect(spi, 0)]);
+> +	if (ctlr->cs_gpiods) {
+> +		for (idx = 0; idx < SPI_CS_CNT_MAX; idx++) {
+> +			if (!(idx != 0 && !spi_get_chipselect(spi, idx)))
+
+Again, I don't get why you do this. This would simply fail for any
+device that maps logical CS 1 to physical CS 0.
+
+> +				spi_set_csgpiod(spi, idx,
+> +						ctlr->cs_gpiods[spi_get_chipselect(spi, idx)]);
+> +		}
+> +	}
+>
+>  	/*
+>  	 * Drivers may modify this initial i/o setup, but will
+> @@ -690,13 +707,15 @@ int spi_add_device(struct spi_device *spi)
+>  {
+>  	struct spi_controller *ctlr = spi->controller;
+>  	struct device *dev = ctlr->dev.parent;
+> -	int status;
+> +	int status, idx;
+>
+> -	/* Chipselects are numbered 0..max; validate. */
+> -	if (spi_get_chipselect(spi, 0) >= ctlr->num_chipselect) {
+> -		dev_err(dev, "cs%d >= max %d\n", spi_get_chipselect(spi, 0),
+> -			ctlr->num_chipselect);
+> -		return -EINVAL;
+> +	for (idx = 0; idx < SPI_CS_CNT_MAX; idx++) {
+> +		/* Chipselects are numbered 0..max; validate. */
+> +		if (spi_get_chipselect(spi, idx) >= ctlr->num_chipselect) {
+> +			dev_err(dev, "cs%d >= max %d\n", spi_get_chipselect(spi, idx),
+> +				ctlr->num_chipselect);
+> +			return -EINVAL;
+> +		}
+
+Since this function is doing a bunch of sanity checks, I think you
+should also make sure multiple logical CS don't map to the same physical
+CS. For example, make sure that spi->chip_select[0] !=
+spi->chip_select[1] and so on.
+
+>  	}
+>
+>  	/* Set the bus ID string */
+> @@ -713,12 +732,15 @@ static int spi_add_device_locked(struct spi_device *spi)
+>  {
+>  	struct spi_controller *ctlr = spi->controller;
+>  	struct device *dev = ctlr->dev.parent;
+> +	int idx;
+>
+> -	/* Chipselects are numbered 0..max; validate. */
+> -	if (spi_get_chipselect(spi, 0) >= ctlr->num_chipselect) {
+> -		dev_err(dev, "cs%d >= max %d\n", spi_get_chipselect(spi, 0),
+> -			ctlr->num_chipselect);
+> -		return -EINVAL;
+> +	for (idx = 0; idx < SPI_CS_CNT_MAX; idx++) {
+> +		/* Chipselects are numbered 0..max; validate. */
+> +		if (spi_get_chipselect(spi, idx) >= ctlr->num_chipselect) {
+> +			dev_err(dev, "cs%d >= max %d\n", spi_get_chipselect(spi, idx),
+> +				ctlr->num_chipselect);
+> +			return -EINVAL;
+> +		}
+
+As adding a new device gets more complex, we should stop duplicating
+code between here and spi_add_device(). So you should either move this
+code to another function and call it from both places or add a new
+parameter called "locked" and merge spi_add_device() and
+spi_add_device_locked(). I do not have string preferences for either,
+but I do like the latter a bit more.
+
+>  	}
+>
+>  	/* Set the bus ID string */
+> @@ -966,58 +988,122 @@ static void spi_res_release(struct spi_controller *ctlr, struct spi_message *mes
+>  static void spi_set_cs(struct spi_device *spi, bool enable, bool force)
+>  {
+>  	bool activate = enable;
+> +	u32 cs_num = 0;
+> +	int idx;
+>
+>  	/*
+> -	 * Avoid calling into the driver (or doing delays) if the chip select
+> -	 * isn't actually changing from the last time this was called.
+> +	 * In parallel mode all the chip selects are asserted/de-asserted
+> +	 * at once
+>  	 */
+> -	if (!force && ((enable && spi->controller->last_cs == spi_get_chipselect(spi, 0)) ||
+> -		       (!enable && spi->controller->last_cs != spi_get_chipselect(spi, 0))) &&
+> -	    (spi->controller->last_cs_mode_high == (spi->mode & SPI_CS_HIGH)))
+> -		return;
+> -
+> -	trace_spi_set_cs(spi, activate);
+> +	if ((spi->cs_index_mask & SPI_PARALLEL_CS_MASK) == SPI_PARALLEL_CS_MASK) {
+
+This check only works if you support a maximum of 2 CS in parallel. If
+you support up to, say, 4 then a chip which sets only CS 0 and 2 would
+not fall under this check.
+
+I think your code in general should treat SPI_CS_CNT_MAX as an arbitrary
+value and should be able to handle changing it to any reasonable value.
+
+> +		spi->controller->last_cs_mode_high = spi->mode & SPI_CS_HIGH;
+> +
+> +		if ((spi_get_csgpiod(spi, 0) || !spi->controller->set_cs_timing) && !activate)
+> +			spi_delay_exec(&spi->cs_hold, NULL);
+> +
+> +		if (spi->mode & SPI_CS_HIGH)
+> +			enable = !enable;
+> +
+> +		if (spi_get_csgpiod(spi, 0) && spi_get_csgpiod(spi, 1)) {
+> +			if (!(spi->mode & SPI_NO_CS)) {
+> +				/*
+> +				 * Historically ACPI has no means of the GPIO polarity and
+> +				 * thus the SPISerialBus() resource defines it on the per-chip
+> +				 * basis. In order to avoid a chain of negations, the GPIO
+> +				 * polarity is considered being Active High. Even for the cases
+> +				 * when _DSD() is involved (in the updated versions of ACPI)
+> +				 * the GPIO CS polarity must be defined Active High to avoid
+> +				 * ambiguity. That's why we use enable, that takes SPI_CS_HIGH
+> +				 * into account.
+> +				 */
+> +				if (has_acpi_companion(&spi->dev)) {
+> +					for (idx = 0; idx < SPI_CS_CNT_MAX; idx++)
+> +						gpiod_set_value_cansleep(spi_get_csgpiod(spi, idx),
+> +									 !enable);
+> +				} else {
+> +					for (idx = 0; idx < SPI_CS_CNT_MAX; idx++)
+> +						/* Polarity handled by GPIO library */
+> +						gpiod_set_value_cansleep(spi_get_csgpiod(spi, idx),
+> +									 activate);
+> +				}
+> +			}
+> +			/* Some SPI masters need both GPIO CS & slave_select */
+> +			if ((spi->controller->flags & SPI_MASTER_GPIO_SS) &&
+> +			    spi->controller->set_cs)
+> +				spi->controller->set_cs(spi, !enable);
+> +		} else if (spi->controller->set_cs) {
+> +			spi->controller->set_cs(spi, !enable);
+> +		}
+>
+> -	spi->controller->last_cs = enable ? spi_get_chipselect(spi, 0) : -1;
+> -	spi->controller->last_cs_mode_high = spi->mode & SPI_CS_HIGH;
+> +		if (spi_get_csgpiod(spi, 0) || spi_get_csgpiod(spi, 1) ||
+> +		    !spi->controller->set_cs_timing) {
+> +			if (activate)
+> +				spi_delay_exec(&spi->cs_setup, NULL);
+> +			else
+> +				spi_delay_exec(&spi->cs_inactive, NULL);
+> +		}
+> +	} else {
+>
+> -	if ((spi_get_csgpiod(spi, 0) || !spi->controller->set_cs_timing) && !activate)
+> -		spi_delay_exec(&spi->cs_hold, NULL);
+> +		if (spi->cs_index_mask)
+> +			cs_num = ffs(spi->cs_index_mask) - 1;
+>
+> -	if (spi->mode & SPI_CS_HIGH)
+> -		enable = !enable;
+> +		/*
+> +		 * Avoid calling into the driver (or doing delays) if the chip select
+> +		 * isn't actually changing from the last time this was called.
+> +		 */
+> +		if (!force && ((enable && spi->controller->last_cs ==
+> +				spi_get_chipselect(spi, cs_num)) ||
+> +				(!enable && spi->controller->last_cs !=
+> +				 spi_get_chipselect(spi, cs_num))) &&
+> +		    (spi->controller->last_cs_mode_high ==
+> +		     (spi->mode & SPI_CS_HIGH)))
+> +			return;
+> +
+> +		trace_spi_set_cs(spi, activate);
+> +
+> +		spi->controller->last_cs = enable ? spi_get_chipselect(spi, cs_num) : -1;
+> +		spi->controller->last_cs_mode_high = spi->mode & SPI_CS_HIGH;
+> +
+> +		if ((spi_get_csgpiod(spi, cs_num) || !spi->controller->set_cs_timing) && !activate)
+> +			spi_delay_exec(&spi->cs_hold, NULL);
+> +
+> +		if (spi->mode & SPI_CS_HIGH)
+> +			enable = !enable;
+> +
+> +		if (spi_get_csgpiod(spi, cs_num)) {
+> +			if (!(spi->mode & SPI_NO_CS)) {
+> +				/*
+> +				 * Historically ACPI has no means of the GPIO polarity and
+> +				 * thus the SPISerialBus() resource defines it on the per-chip
+> +				 * basis. In order to avoid a chain of negations, the GPIO
+> +				 * polarity is considered being Active High. Even for the cases
+> +				 * when _DSD() is involved (in the updated versions of ACPI)
+> +				 * the GPIO CS polarity must be defined Active High to avoid
+> +				 * ambiguity. That's why we use enable, that takes SPI_CS_HIGH
+> +				 * into account.
+> +				 */
+> +				if (has_acpi_companion(&spi->dev))
+> +					gpiod_set_value_cansleep(spi_get_csgpiod(spi, cs_num),
+> +								 !enable);
+> +				else
+> +					/* Polarity handled by GPIO library */
+> +					gpiod_set_value_cansleep(spi_get_csgpiod(spi, cs_num),
+> +								 activate);
+> +			}
+> +			/* Some SPI masters need both GPIO CS & slave_select */
+> +			if ((spi->controller->flags & SPI_MASTER_GPIO_SS) &&
+> +			    spi->controller->set_cs)
+> +				spi->controller->set_cs(spi, !enable);
+> +		} else if (spi->controller->set_cs) {
+> +			spi->controller->set_cs(spi, !enable);
+> +		}
+>
+> -	if (spi_get_csgpiod(spi, 0)) {
+> -		if (!(spi->mode & SPI_NO_CS)) {
+> -			/*
+> -			 * Historically ACPI has no means of the GPIO polarity and
+> -			 * thus the SPISerialBus() resource defines it on the per-chip
+> -			 * basis. In order to avoid a chain of negations, the GPIO
+> -			 * polarity is considered being Active High. Even for the cases
+> -			 * when _DSD() is involved (in the updated versions of ACPI)
+> -			 * the GPIO CS polarity must be defined Active High to avoid
+> -			 * ambiguity. That's why we use enable, that takes SPI_CS_HIGH
+> -			 * into account.
+> -			 */
+> -			if (has_acpi_companion(&spi->dev))
+> -				gpiod_set_value_cansleep(spi_get_csgpiod(spi, 0), !enable);
+> +		if (spi_get_csgpiod(spi, cs_num) || !spi->controller->set_cs_timing) {
+> +			if (activate)
+> +				spi_delay_exec(&spi->cs_setup, NULL);
+>  			else
+> -				/* Polarity handled by GPIO library */
+> -				gpiod_set_value_cansleep(spi_get_csgpiod(spi, 0), activate);
+> +				spi_delay_exec(&spi->cs_inactive, NULL);
+>  		}
+> -		/* Some SPI masters need both GPIO CS & slave_select */
+> -		if ((spi->controller->flags & SPI_MASTER_GPIO_SS) &&
+> -		    spi->controller->set_cs)
+> -			spi->controller->set_cs(spi, !enable);
+> -	} else if (spi->controller->set_cs) {
+> -		spi->controller->set_cs(spi, !enable);
+> -	}
+> -
+> -	if (spi_get_csgpiod(spi, 0) || !spi->controller->set_cs_timing) {
+> -		if (activate)
+> -			spi_delay_exec(&spi->cs_setup, NULL);
+> -		else
+> -			spi_delay_exec(&spi->cs_inactive, NULL);
+
+I did not read this blob of code in detail yet. A couple of general
+comments though. You seem to be special-casing the multi-CS path. I do
+not think that is a good idea in general. Can you refactor it in such a
+way that the same bit of code handles an arbitrary number of chip
+selects being asserted at the same time?
+
+>  	}
+>  }
+>
+> @@ -2246,8 +2332,8 @@ static void of_spi_parse_dt_cs_delay(struct device_node *nc,
+>  static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
+>  			   struct device_node *nc)
+>  {
+> -	u32 value;
+> -	int rc;
+> +	u32 value, cs[SPI_CS_CNT_MAX] = {0};
+> +	int rc, idx;
+>
+>  	/* Mode (clock phase/polarity/etc.) */
+>  	if (of_property_read_bool(nc, "spi-cpha"))
+> @@ -2320,13 +2406,21 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
+>  	}
+>
+>  	/* Device address */
+> -	rc = of_property_read_u32(nc, "reg", &value);
+> -	if (rc) {
+> +	rc = of_property_read_variable_u32_array(nc, "reg", &cs[0], 1,
+> +						 SPI_CS_CNT_MAX);
+> +	if (rc < 0 || rc > ctlr->num_chipselect) {
+>  		dev_err(&ctlr->dev, "%pOF has no valid 'reg' property (%d)\n",
+>  			nc, rc);
+
+This error message is not very helpful for the rc > ctlr->num_chipselect
+case. I think you should make them separate checks and error messages.
+
+>  		return rc;
+> +	} else if ((of_property_read_bool(nc, "parallel-memories")) &&
+
+Nitpick: Why make it an else-if chain? Independent if statements would
+be better since these are not directly related.
+
+> +		   (!(ctlr->flags & SPI_CONTROLLER_MULTI_CS))) {
+> +		dev_err(&ctlr->dev, "SPI controller doesn't support multi CS\n");
+> +		return -EINVAL;
+>  	}
+
+You should also make sure that no cs[idx] is greater than
+ctlr->num_chipselect. Perhaps also check for multple cs[idx] pointing to the
+same physical CS? It might be better to check that in spi_add_device()
+though. Not sure...
+
+> -	spi_set_chipselect(spi, 0, value);
+> +	for (idx = 0; idx < rc; idx++)
+> +		spi_set_chipselect(spi, idx, cs[idx]);
+> +	/* By default set the spi->cs_index_mask as 1 */
+
+Nitpick: We can infer this fact quite easily by reading the code. The
+comment should instead explain _why_ it is doing so.
+
+> +	spi->cs_index_mask = 0x01;
+>
+>  	/* Device speed */
+>  	if (!of_property_read_u32(nc, "spi-max-frequency", &value))
+> @@ -3905,7 +3999,8 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
+>  	 * cs_change is set for each transfer.
+>  	 */
+>  	if ((spi->mode & SPI_CS_WORD) && (!(ctlr->mode_bits & SPI_CS_WORD) ||
+> -					  spi_get_csgpiod(spi, 0))) {
+> +					  spi_get_csgpiod(spi, 0) ||
+> +					  spi_get_csgpiod(spi, 1))) {
+
+Again, you hard-code this to only ever supporting 2 CS in parallel.
+Please make it generic.
+
+>  		size_t maxsize;
+>  		int ret;
+>
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index cfe42f8cd7a4..d0f9a9a8b6d8 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -19,6 +19,11 @@
+>  #include <linux/acpi.h>
+>  #include <linux/u64_stats_sync.h>
+>
+> +/* Max no. of CS supported per spi device */
+> +#define SPI_CS_CNT_MAX 2
+
+This is fine, but...
+
+> +
+> +/* chip select mask */
+> +#define SPI_PARALLEL_CS_MASK	(BIT(0) | BIT(1))
+
+... as I mentioned above, the way you write this patch you makes it
+difficult to change the limit in the future. Please refactor it so that
+if you just change SPI_CS_CNT_MAX to any arbitrary value, the core is
+able to handle it.
+
+I also think calling it "parallel" can be a bit confusing. Perhaps use
+"Multi CS" everywhere?
+
+>  struct dma_chan;
+>  struct software_node;
+>  struct ptp_system_timestamp;
+> @@ -166,6 +171,7 @@ extern void spi_transfer_cs_change_delay_exec(struct spi_message *msg,
+>   *	deasserted. If @cs_change_delay is used from @spi_transfer, then the
+>   *	two delays will be added up.
+>   * @pcpu_statistics: statistics for the spi_device
+> + * @cs_index_mask: Bit mask of the active chipselect(s) in the chipselect array
+>   *
+>   * A @spi_device is used to interchange data between an SPI slave
+>   * (usually a discrete chip) and CPU memory.
+> @@ -181,7 +187,7 @@ struct spi_device {
+>  	struct spi_controller	*controller;
+>  	struct spi_controller	*master;	/* Compatibility layer */
+>  	u32			max_speed_hz;
+> -	u8			chip_select;
+> +	u8			chip_select[SPI_CS_CNT_MAX];
+
+Should also update documentation for chip_select.
+
+>  	u8			bits_per_word;
+>  	bool			rt;
+>  #define SPI_NO_TX		BIT(31)		/* No transmit wire */
+> @@ -212,7 +218,7 @@ struct spi_device {
+>  	void			*controller_data;
+>  	char			modalias[SPI_NAME_SIZE];
+>  	const char		*driver_override;
+> -	struct gpio_desc	*cs_gpiod;	/* Chip select gpio desc */
+> +	struct gpio_desc	*cs_gpiod[SPI_CS_CNT_MAX];	/* Chip select gpio desc */
+>  	struct spi_delay	word_delay; /* Inter-word delay */
+>  	/* CS delays */
+>  	struct spi_delay	cs_setup;
+> @@ -222,6 +228,13 @@ struct spi_device {
+>  	/* The statistics */
+>  	struct spi_statistics __percpu	*pcpu_statistics;
+>
+> +	/* Bit mask of the chipselect(s) that the driver need to use from
+> +	 * the chipselect array.When the controller is capable to handle
+> +	 * multiple chip selects & memories are connected in parallel
+> +	 * then more than one bit need to be set in cs_index_mask.
+> +	 */
+> +	u32			cs_index_mask : SPI_CS_CNT_MAX;
+> +
+>  	/*
+>  	 * likely need more hooks for more protocol options affecting how
+>  	 * the controller talks to each chip, like:
+> @@ -278,22 +291,22 @@ static inline void *spi_get_drvdata(const struct spi_device *spi)
+>
+>  static inline u8 spi_get_chipselect(const struct spi_device *spi, u8 idx)
+>  {
+> -	return spi->chip_select;
+> +	return spi->chip_select[idx];
+>  }
+>
+>  static inline void spi_set_chipselect(struct spi_device *spi, u8 idx, u8 chipselect)
+>  {
+> -	spi->chip_select = chipselect;
+> +	spi->chip_select[idx] = chipselect;
+>  }
+>
+>  static inline struct gpio_desc *spi_get_csgpiod(const struct spi_device *spi, u8 idx)
+>  {
+> -	return spi->cs_gpiod;
+> +	return spi->cs_gpiod[idx];
+>  }
+>
+>  static inline void spi_set_csgpiod(struct spi_device *spi, u8 idx, struct gpio_desc *csgpiod)
+>  {
+> -	spi->cs_gpiod = csgpiod;
+> +	spi->cs_gpiod[idx] = csgpiod;
+>  }
+>
+>  /**
+> @@ -398,6 +411,8 @@ extern struct spi_device *spi_new_ancillary_device(struct spi_device *spi, u8 ch
+>   * @bus_lock_spinlock: spinlock for SPI bus locking
+>   * @bus_lock_mutex: mutex for exclusion of multiple callers
+>   * @bus_lock_flag: indicates that the SPI bus is locked for exclusive use
+> + * @multi_cs_cap: indicates that the SPI Controller can assert/de-assert
+> + *	more than one chip select at once.
+>   * @setup: updates the device mode and clocking records used by a
+>   *	device's SPI controller; protocol code may call this.  This
+>   *	must fail if an unrecognized or unsupported mode is requested.
+> @@ -564,6 +579,11 @@ struct spi_controller {
+>  #define SPI_CONTROLLER_MUST_TX		BIT(4)	/* Requires tx */
+>
+>  #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
+> +	/*
+> +	 * The spi-controller has multi chip select capability and can
+> +	 * assert/de-assert more than one chip select at once.
+> +	 */
+> +#define SPI_CONTROLLER_MULTI_CS		BIT(6)
+>
+>  	/* Flag indicating if the allocation of this struct is devres-managed */
+>  	bool			devm_allocated;
+
+I only took a high level overview of this patch and I think it needs
+some reworking. I will take another look later when it gets in better
+shape. I am especially worried about interactions with SPI MEM (not sure
+if there need to be any, but still I should take a look) and ACPI
+support. But I think you have your work cut out for you for the next
+version :-)
+
+I also want to look at the SPI NOR parts, let's see if I can find some
+more time this week.
+
+--
+Regards,
+Pratyush Yadav
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
