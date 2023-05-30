@@ -4,83 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5B05C7EE2C
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 May 2023 11:24:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58EF6C7EE23
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 May 2023 12:24:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6r+JJFgP+0s4EZcE8GtxErkFc+63xP5V8WrNRHgN7H8=; b=GY+9jyDE/l9MG8
-	T+UccIM+LbZL4lwKJMgi5FIyVf9O9WV0qYmR2qDKlhLNDUOpfFFN+h/xdmRfSawL2JlgUq7k/747f
-	WmiCRIdmlfq2Mb36fqLTCcGfJWjJrlBUl69A6ztepmVV8rt8T5xi+EHqfHhoyRPoAE6NvvldpEg6j
-	2hjjmxLjSdUmLMZ7al6Sn8vWKXW7GLH+jQv2CNHB342feA+Yf241ePjrEOfCZcJAXkF9Fba3k4DN8
-	6g91CIWNyExtoNXY0kiJlrhGQ8EC+17Yj3VyTy/PGj28CocIa7nf086oCi5lfSvV82+FhaWrmkU+o
-	9hRNDPcOi4BEm/aXUoJw==;
+	List-Owner; bh=5PFow3FQ/ryokDP1En01I6FqjVCTGNhJroIMIp87Klg=; b=kBMkjH4HRCzpfR
+	9ADthaUHAqr0rkJXEzbUrHdOMo7eq+t7ROSqqSK22x34hQceYEnF+Y/PH54CNqcAkLN/9sZDSZ2Pi
+	LXgf7XnkYG9MTdxQm6V2Ba9XH7SqsocsH6MLztHoRZynf0/WshH4gvSeXztpvkPriT1YeKsENui8F
+	FocNnH+a8NPCcHHiu7QLn5GUj6Q3W6iZHiWzfh7ui0dWb32CBMCGnTUqbKBo7uQphaqRFxp0eEd1w
+	P771+QrpbT54mgAyXE87q5sBUXuTEKkn1vmFdg7h/t082KCSxY5Y8f6tX2rMOJP/Xlf3M44q2gMZB
+	xEc4EeXbU3zHfpucF68Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q3xSI-00DdXZ-0K;
-	Tue, 30 May 2023 11:23:58 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1q3yOs-00DpoI-2S;
+	Tue, 30 May 2023 12:24:30 +0000
+Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q3xSD-00DdV3-1O;
-	Tue, 30 May 2023 11:23:56 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 9B7155FD2C;
-	Tue, 30 May 2023 14:23:46 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1685445826;
-	bh=/2VvlUBuwK951x+75yuFgWs7gQ9TMyja2/uS8g7dZvs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	b=W3vlx6ZsnwPU8yTJla34qUgzxmWVw3GHjtFLYJeTmn1ZwWy6rqXivAOeD0YEsHzz0
-	 16kcIJqfHZD0n+HscQR7PMJ3d553RfRaY0m+ZZkRPWYf7nUjbM2rgKd6XYCRAkhES+
-	 c81/4FFLwFwg8P6QaWYgrXuMrh53sF/3u2FXi/QVWdxYH5t+JVQWPS+Hd68ieCZ4pa
-	 xgW9XTYBTJmviIJAsHwSNxKePg3r5IGCJUX+ef3BIkdYCjapZy3O1fotL5YzEBXH7C
-	 ymdNTq4Hug4Vl/Sc6CnRHw3DG9fp4NeHsZB6viaF+6riGJuzzmtbr33Q4mEaayeaJ/
-	 Bv7AwCH9RK6WQ==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Tue, 30 May 2023 14:23:45 +0300 (MSK)
-Message-ID: <6077c959-f566-d399-d2be-8460eb063415@sberdevices.ru>
-Date: Tue, 30 May 2023 14:19:08 +0300
+	id 1q3yOq-00Dpmy-1R
+	for linux-mtd@lists.infradead.org;
+	Tue, 30 May 2023 12:24:30 +0000
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4f4f3ac389eso3423870e87.1
+        for <linux-mtd@lists.infradead.org>; Tue, 30 May 2023 05:24:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1685449465; x=1688041465;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZmqQHgK2oKvKJ3i0nTHh0YlYTqhPDZR13cQC7G3a/Wc=;
+        b=neDF1O85irLnlpQlEk3xwFJ6/dRh2Lk/naodpd1tWmi8+Rkux1bpS1OaHOxIRJ8dZK
+         5Lx7nMR2heXiZNF8u45DgA+VwhsypvXUpEHzoP1In724lhQz1XL6dHSjSpa8QzAjH8TN
+         DVng16gq6g8jAz2tAolpRfCgyywARcF33pax4pwo57JWvQNz9MPoTo9ElP9xyT1ZPJ0Q
+         5EZovNDF55vrJhdryAWhLGtGLUJzILX0qF5TwqkQiELhE3da1hEUx/LqTTA1XSFt6Gpl
+         zLd80C5RwHaDzgFdagi9FRjdn55HkWelgtLnTu1ZGeqkZ2KHpbPJXIlv8LZRzuxoOjt9
+         7DuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685449465; x=1688041465;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZmqQHgK2oKvKJ3i0nTHh0YlYTqhPDZR13cQC7G3a/Wc=;
+        b=Pj/3Ge2D+wxlDDMfO/vnhKMS84Szk/Ra0SCm7Hbg+lHEKwT/+nqZ5vxeX5/I1PD3f1
+         5p50Fb5sxuyFqGF9WvoM3n9sVe7ukV+ncidDYseFSqWBinIMD/lw8rRfS+hh4nDThL5x
+         6ItGP36E4ckId6V6jjLOrrnFUs4NsQ8MZfNfQfSMyfsNU/5MxzcTKIBj31ky6qVd1JLR
+         w7OQ1NZJK/rWM4uKoZSn78DpwEhPdkertH2Og7nyANYXZrmzE3buorqSV06RZiuufMLg
+         jfl8E+Wgbew2FDU8Zysppp/bCjkJdvv9toKCZEF9hbuiVx+RYciOQHsdyRg4t5z/vcn7
+         basg==
+X-Gm-Message-State: AC+VfDwpkHNxKDs2JaQxSSAUEOg+UI6kEEPMUsYu7q4Xhio/ZrDXHy2t
+	VizRTYvoH9mhyUSTtgSV9lUgOQ==
+X-Google-Smtp-Source: ACHHUZ5UukllPljPGioGEYuGWV3HvwCEG8DF0RQC5VFx0310+KYgEGpJmmLACvniUVfkFDx3rdK4xQ==
+X-Received: by 2002:ac2:59dc:0:b0:4f1:4040:8143 with SMTP id x28-20020ac259dc000000b004f140408143mr729871lfn.60.1685449465306;
+        Tue, 30 May 2023 05:24:25 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.199.204])
+        by smtp.gmail.com with ESMTPSA id w5-20020aa7da45000000b005148e981bd3sm4101904eds.12.2023.05.30.05.24.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 May 2023 05:24:24 -0700 (PDT)
+Message-ID: <a1b2caed-b314-59db-ee00-92fc983150f6@linaro.org>
+Date: Tue, 30 May 2023 14:24:22 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v4 1/5] mtd: rawnand: meson: fix command sequence for
- read/write
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v6 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
+ scheme
 Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Liang Yang <liang.yang@amlogic.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Neil Armstrong
-	<neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
- Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>, Yixun Lan <yixun.lan@amlogic.com>,
-	Jianxin Pan <jianxin.pan@amlogic.com>, <oxffffaa@gmail.com>,
-	<kernel@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20230515094440.3552094-1-AVKrasnov@sberdevices.ru>
- <20230515094440.3552094-2-AVKrasnov@sberdevices.ru>
- <20230522170526.6486755a@xps-13>
- <9013b0e2-c923-43f8-0bd6-979bf0c23ebc@sberdevices.ru>
- <abeadc03-a69c-be1c-3c6a-6ce492a5e4f6@sberdevices.ru>
- <20230526192205.4a69ca79@xps-13>
-From: Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <20230526192205.4a69ca79@xps-13>
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/05/30 07:59:00 #21376339
-X-KSMG-AntiVirus-Status: Clean, skipped
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ andrew@lunn.ch, gregory.clement@bootlin.com,
+ sebastian.hesselbarth@gmail.com, vadym.kochan@plvision.eu
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ enachman@marvell.com
+References: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
+ <20230530005337.3687938-2-chris.packham@alliedtelesis.co.nz>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230530005337.3687938-2-chris.packham@alliedtelesis.co.nz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230530_042354_156727_D22A46E1 
-X-CRM114-Status: GOOD (  28.65  )
+X-CRM114-CacheID: sfid-20230530_052428_485282_F327D681 
+X-CRM114-Status: GOOD (  33.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,68 +96,262 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAyNi4wNS4yMDIzIDIwOjIyLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+IEhpIEFyc2VuaXks
-Cj4gCj4gYXZrcmFzbm92QHNiZXJkZXZpY2VzLnJ1IHdyb3RlIG9uIFdlZCwgMjQgTWF5IDIwMjMg
-MTI6MDU6NDcgKzAzMDA6Cj4gCj4+IE9uIDIzLjA1LjIwMjMgMTI6MTIsIEFyc2VuaXkgS3Jhc25v
-diB3cm90ZToKPj4+IEhlbGxvIE1pcXVlbCwgTGlhbmcKPj4+Cj4+PiBPbiAyMi4wNS4yMDIzIDE4
-OjA1LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAgCj4+Pj4gSGkgQXJzZW5peSwKPj4+Pgo+Pj4+IEFW
-S3Jhc25vdkBzYmVyZGV2aWNlcy5ydSB3cm90ZSBvbiBNb24sIDE1IE1heSAyMDIzIDEyOjQ0OjM1
-ICswMzAwOgo+Pj4+ICAKPj4+Pj4gVGhpcyBmaXhlcyByZWFkL3dyaXRlIGZ1bmN0aW9uYWxpdHkg
-Ynk6Cj4+Pj4+IDEpIENoYW5naW5nIE5GQ19DTURfUkJfSU5UIGJpdCB2YWx1ZS4gIAo+Pj4+Cj4+
-Pj4gSSBndWVzcyB0aGlzIGlzIGEgc2VwYXJhdGUgZml4Cj4+Pj4gIAo+Pj4KPj4+IE9rLCBJJ2xs
-IG1vdmUgaXQgdG8gc2VwYXJhdGUgcGF0Y2gKPj4+ICAgCj4+Pj4+IDIpIEFkZGluZyBleHRyYSBO
-QU5EX0NNRF9TVEFUVVMgY29tbWFuZCBvbiBlYWNoIHIvdyByZXF1ZXN0LiAgCj4+Pj4KPj4+PiBJ
-cyB0aGlzIHJlYWxseSBuZWVkZWQ/IExvb2tzIGxpa2UgeW91J3JlIGRlbGF5aW5nIHRoZSBuZXh0
-IG9wIG9ubHkuIElzCj4+Pj4gdXNpbmcgYSBkZWxheSBlbm91Z2g/IElmIHllcywgdGhlbiBpdCdz
-IHByb2JhYmx5IHRoZSB3cm9uZyBhcHByb2FjaC4gIAo+Pgo+PiBIaSBNaXF1ZWwsIHNtYWxsIHVw
-ZGF0ZSwgSSBmb3VuZCBzb21lIGRldGFpbHMgZnJvbSBATGlhbmcncyBtZXNzYWdlIGluIHYxIHRh
-bGtzIGZyb20gdGhlIGxhc3QgbW9udGg6Cj4+Cj4+ICoKPj4gQWZ0ZXIgc2VuZGluZyBOQU5EX0NN
-RF9SRUFEMCwgYWRkcmVzcywgTkFORF9DTURfUkVBRFNUQVJUIGFuZCByZWFkIHN0YXR1cyhOQU5E
-X0NNRF9TVEFUVVMgPSAweDcwKSBjb21tYW5kcywgaXQgc2hvdWxkIHNlbmQKPj4gTkFORF9DTURf
-UkVBRDAgY29tbWFuZCBmb3IgZXhpdGluZyB0aGUgcmVhZCBzdGF0dXMgbW9kZSBmcm9tIHRoZSBk
-YXRhc2hlZXQgZnJvbSBOQU5EIGRldmljZS4KPiAKPiBUaGF0IGlzIHRydWUuCj4gCj4+IGJ1dCBw
-cmV2aW91cyBtZXNvbl9uZmNfcXVldWVfcmIoKQo+PiBvbmx5IGNoZWNrcyB0aGUgUmVhZHkvQnVz
-eSBwaW4gYW5kIGl0IGRvZXNuJ3Qgc2VuZCByZWFkIHN0YXR1cyhOQU5EX0NNRF9TVEFUVVMgPSAw
-eDcwKSBjb21tYW5kLgo+PiBpIHRoaW5rIHRoZXJlIGlzIHNvbWV0aGluZyB3cm9uZyB3aXRoIHRo
-ZSBSZWFkeS9CdXN5IHBpbihwbGVhc2UgY2hlY2sgdGhlIGhhcmR3YXJlIHdoZXRoZXIgdGhpcwo+
-PiBSZWFkeS9CdXN5IHBpbiBpcyBjb25uZWN0ZWQgd2l0aCBTT0MpIG9yIHRoZSBzb3VyY2UgY29k
-ZS4gaSBoYXZlIHRoZSBib2FyZCB3aXRob3V0IFJlYWR5L0J1c3kgcGluIGFuZCBwcmVmZXIgdG8g
-dXNlIHRoZQo+PiBuZmMgY29tbWFuZCBjYWxsZWQgUkJfSU82LiBpdCBzZW5kcyBOQU5EX0NNRF9T
-VEFUVVMgY29tbWFuZCBhbmQgY2hlY2tzIGJpdDYgb2YgdGhlIHN0YXR1cyByZWdpc3RlciBvZiBO
-QU5EIGRldmljZSBmcm9tIHRoZQo+PiBkYXRhIGJ1cyBhbmQgZ2VuZXJhdGUgSVJRIGlmIHJlYWR5
-Lgo+PiAqCj4+Cj4+IEkgZ3Vlc3MsIHRoYXQgc2VxdWVuY2Ugb2YgY29tbWFuZHMgZnJvbSB0aGlz
-IHBhdGNoIGlzIGRlc2NyaWJlZCBpbiBkYXRhc2hlZXQgKHVuZm9ydHVuYXRlbHkgSSBkb24ndCBo
-YXZlIGl0IGFuZCByZWxpZWQgb24gdGhlIG9sZCBkcml2ZXIpLgo+PiBZZXN0ZXJkYXkgSSB0cmll
-ZCB0byByZW1vdmUgc2VuZGluZyBvZiBOQU5EX0NNRF9TVEFUVVMgZnJvbSB0aGlzIHBhdGNoLCBi
-dXQgaXQgYnJva2UgY3VycmVudCBkcml2ZXIgLSBpIGhhZCBFQ0MgZXJyb3JzLCBzbyBpdCBsb29r
-cyBsaWtlCj4+ICJzaG90IGluIHRoZSBkYXJrIiBzaXR1YXRpb24sIHRvIHVuZGVyc3RhbmQgdGhp
-cyBsb2dpYy4KPiAKPiBXaGVuIGFuIG9wZXJhdGlvbiBvbiB0aGUgTkFORCBhcnJheSBoYXBwZW5z
-IChlZy4gcmVhZCwgcHJvZywgZXJhc2UpLAo+IHlvdSBuZWVkIHRvIHdhaXQgInNvbWUgdGltZSIg
-YmVmb3JlIGFjY2Vzc2luZyB0aGUgaW50ZXJuYWwgc3JhbSBvciBldmVuCj4gdGhlIGNoaXAgd2hp
-Y2ggaXMgImJ1c3kiIHVudGlsIGl0IGdldHMgInJlYWR5IiBhZ2Fpbi4gWW91IGNhbiBwcm9iZSB0
-aGUKPiByZWFkeS9idXN5IHBpbiAodGhhdCdzIHRoZSBoYXJkd2FyZSB3YXksIGZhc3QgYW5kIHJl
-bGlhYmxlKSBvciB5b3UgY2FuCj4gcG9sbCBhIHN0YXR1cyB3aXRoIE5BTkRfQ01EX1NUQVRVUy4g
-VGhlIGNoaXBzIGFyZSBkZXNpZ25lZCBzbyB0aGV5IGNhbgo+IGFjdHVhbGx5IHByb2Nlc3MgdGhh
-dCBjb21tYW5kIHdoaWxlIHRoZXkgYXJlIGRvaW5nIHRpbWUgY29uc3VtaW5nIHRhc2tzCj4gdG8g
-dXBkYXRlIHRoZSBob3N0LiBCdXQgSUlSQyBldmVyeSBieXRlIHJlYWQgd2lsbCByZXR1cm4gdGhl
-IHN0YXR1cwo+IHVudGlsIHlvdSBzZW5kIFJFQUQwIGFnYWluLCB3aGljaCBtZWFucyAiSSdtIGRv
-bmUgd2l0aCB0aGUgc3RhdHVzCj4gcmVhZCIgc29tZWhvdy4KPiAKPiBQbGVhc2Ugc2VlIG5hbmRf
-c29mdF93YWl0cmR5KCkgaW4gb3JkZXIgdG8gdW5kZXJzdGFuZCBob3cgdGhpcyBpcwo+IHN1cHBv
-c2VkIHRvIHdvcmsuIFlvdSBjYW4gZXZlbiB1c2UgdGhhdCBoZWxwZXIgKHdoaWNoIGlzIGV4cG9y
-dGVkKQo+IGluc3RlYWQgb2Ygb3Blbi1jb2RpbmcgaXQgaW4geW91ciBkcml2ZXIuIFNlZSBhdG1l
-bCBvciBzdW54aQo+IGltcGxlbWVudGF0aW9ucyBmb3IgaW5zdGFuY2UuCj4gCj4gQXMgdXNpbmcg
-dGhlIG5hdGl2ZSBSQiBwaW4gaXMgYmV0dGVyLCB5b3Ugd291bGQgbmVlZCB0byBpZGVudGlmeQo+
-IHdoZXRoZXIgeW91IGhhdmUgb25lIG9yIG5vdCBhdCBwcm9iZSB0aW1lIGFuZCB0aGVuIGVpdGhl
-ciBwb2xsIHRoZQo+IHJlbGV2YW50IGJpdCBvZiB5b3VyIGNvbnRyb2xsZXIgaWYgdGhlcmUgaXMg
-b25lLCBvciBmYWxsYmFjayB0byB0aGUKPiBzb2Z0IHJlYWQgKHdoaWNoIHNob3VsZCBmYWxsYmFj
-ayBvbiBleGVjX29wIGluIHRoZSBlbmQpLgoKVGhhbmtzIGZvciB0aGlzIGluZm9ybWF0aW9uISBJ
-J2xsIHVzZSAnbmFuZF9zb2Z0X3dhaXRyZHkoKScgYXQgbGVhc3QsIGJlY2F1c2UgaSBndWVzcyB0
-aGF0CnRoZXJlIGlzIG5vIFJCIHBpbiBvbiBteSBkZXZpY2UuCgpUaGFua3MsIEFyc2VuaXkKCj4g
-Cj4gVGhhbmtzLAo+IE1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 30/05/2023 02:53, Chris Packham wrote:
+> From: Vadym Kochan <vadym.kochan@plvision.eu>
+> 
+> Switch the DT binding to a YAML schema to enable the DT validation.
+> 
+> Dropped deprecated compatibles and properties described in txt file.
+> 
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> Notes:
+>     Changes in v6:
+>     - remove properties covered by nand-controller.yaml
+>     - add example using armada-8k compatible
+>     
+>     earlier changes:
+>     
+>     v5:
+>        1) Get back "label" and "partitions" properties but without
+
+Where are they? Did you drop them in v6?
+
+
+>           ref to the "partition.yaml" which was wrongly used.
+
+
+>     
+>        2) Add "additionalProperties: false" for nand@ because all possible
+>           properties are described.
+
+Where? This cannot be silently dropped!
+
+>     
+>     v4:
+>        1) Remove "label" and "partitions" properties
+>     
+>        2) Use 2 clocks for A7K/8K platform which is a requirement
+>     
+>     v3:
+>       1) Remove txt version from the MAINTAINERS list
+>     
+>       2) Use enum for some of compatible strings
+>     
+>       3) Drop:
+>             #address-cells
+>             #size-cells:
+>     
+>          as they are inherited from the nand-controller.yaml
+>     
+>       4) Add restriction to use 2 clocks for A8K SoC
+>     
+>       5) Dropped description for clock-names and extend it with
+>          minItems: 1
+>     
+>       6) Drop description for "dmas"
+>     
+>       7) Use "unevalautedProperties: false"
+>     
+>       8) Drop quites from yaml refs.
+>     
+>       9) Use 4-space indentation for the example section
+>     
+>     v2:
+>       1) Fixed warning by yamllint with incorrect indentation for compatible list
+> 
+>  .../bindings/mtd/marvell,nand-controller.yaml | 190 ++++++++++++++++++
+>  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ------------
+>  MAINTAINERS                                   |   1 -
+>  3 files changed, 190 insertions(+), 127 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+> new file mode 100644
+> index 000000000000..c4b003f5fa9f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+> @@ -0,0 +1,190 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/marvell,nand-controller.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell NAND Flash Controller (NFC)
+> +
+> +maintainers:
+> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+
+Is it correct person for Marvell NAND? This should be not a subsystem
+maintainer, but a device maintainer.
+
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: marvell,armada-8k-nand-controller
+> +          - const: marvell,armada370-nand-controller
+> +      - enum:
+> +          - marvell,armada370-nand-controller
+> +          - marvell,pxa3xx-nand-controller
+
+You miss here deprecated compatibles, which are BTW still used. Don't
+drop properties and compatibles during conversion.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description:
+> +      Shall reference the NAND controller clocks, the second one is
+> +      is only needed for the Armada 7K/8K SoCs
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  clock-names:
+
+Missing minItems: 1
+
+> +    items:
+> +      - const: core
+> +      - const: reg
+> +
+> +  dmas:
+> +    maxItems: 1
+> +
+> +  dma-names:
+> +    items:
+> +      - const: rxtx
+> +
+> +  marvell,system-controller:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Syscon node that handles NAND controller related registers
+> +
+> +patternProperties:
+> +  "^nand@[0-3]$":
+> +    type: object
+
+Missing unevaluatedProperties: false on this level.
+
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 3
+> +
+> +      nand-rb:
+> +        minimum: 0
+> +        maximum: 1
+
+It's an array, so this does not sound right. You might want to put it
+under items:.  Then you also miss min/maxItems.
+
+> +
+> +      nand-ecc-step-size:
+> +        const: 512
+> +
+> +      nand-ecc-strength:
+> +        enum: [1, 4, 8]
+> +
+> +      marvell,nand-keep-config:
+> +        description: |
+> +          Orders the driver not to take the timings from the core and
+> +          leaving them completely untouched. Bootloader timings will then
+> +          be used.
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +
+> +      marvell,nand-enable-arbiter:
+> +        description: |
+> +          To enable the arbiter, all boards blindly used it,
+> +          this bit was set by the bootloader for many boards and even if
+> +          it is marked reserved in several datasheets, it might be needed to set
+> +          it (otherwise it is harmless) so whether or not this property is set,
+> +          the bit is selected by the driver.
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +        deprecated: true
+> +
+> +    required:
+> +      - reg
+> +      - nand-rb
+> +
+> +allOf:
+> +  - $ref: nand-controller.yaml
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: marvell,pxa3xx-nand-controller
+> +    then:
+> +      required:
+> +        - dmas
+> +        - dma-names
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: marvell,armada-8k-nand-controller
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 2
+> +          maxItems: 2
+
+Drop maxItems. You don't have it in clock-names.
+
+> +
+> +        clock-names:
+> +          minItems: 2
+> +
+> +      required:
+> +        - marvell,system-controller
+> +    else:
+> +      properties:
+> +        clocks:
+> +          maxItems: 1
+> +
+> +        clock-names:
+> +          maxItems: 1
+
+I doubt that you tested it in above variant...
+
+> +
+> +unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    nand_controller: nand-controller@d0000 {
+> +        compatible = "marvell,armada370-nand-controller";
+> +        reg = <0xd0000 0x54>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+
+
+Best regards,
+Krzysztof
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
