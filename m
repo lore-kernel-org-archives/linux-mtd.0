@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76184C7EE23
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 May 2023 19:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7452C7EE23
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 May 2023 00:54:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wgawXwPumMOn2L/v8sAwzM6OiyfHLGSoykZwJwS6IsM=; b=Kop3h0CZHQwRha
-	pxF3HUlJyz41tMcuGnZ7gDqNh47WtS4ObFql1xlcJvdC15K3EoAtX+EEHFF/mHR4s/rP4lDgZVLmy
-	BWPMJDNq1KoVoZYw6d8dv4kqn9C99DxROofJABcKtY7X/2RzGmBgbFtfh5jiuHIuKczY1YOxsOHRW
-	MwsmiqHsiun52OBkOw28X8B1/na00z/ew0WwgUTdItYaqO5Lz6vUDdUigedwEmUZVG93pX9am/n5+
-	cffJH2SnMg2MrVDUNPnjkhTQ1CN1hbLZ7rzrEenzU/L1xbd9GnbdUSbdWXzf+QasYbwVbvXbo5YJU
-	iS37RpvXe4YtxSC8Uoyw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=G2KVPSHok1YQuyv2hDhsznPmgG9KbOlVumAz3AN2WEI=; b=Y0ukMafjvnwZFv
+	SxgD1VWHaUQklBzsFcb2ClqDubnvKtIjbjnem+Aw7CfAZItshpIsr8LQoTIBCHYY8snjQ6jYhGT96
+	VenKK+5sQXjxpah+1NnOVg4/ltMioeNpLFtx1GZ2Wmgue6847A90DCO8xkLzY0US/PaLs0nFlnaBw
+	m7qWwxhvRiZo2tlKYIl2iQqfeOhJKufxoc7zgqVdZxJdjAlrTbQJ18XD6JVdg/p2+BkQ8u6B+mBat
+	aX8zpIsQm7KHrzSoUbXtaRI8URotl4lRh2N8TGZ9G6WiDVmcL3h8uUAz7oBKVmlJ9sp/aY/MF/Fls
+	l87SQuolFQhPh3SpaVTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q3iu5-00BYT0-2m;
-	Mon, 29 May 2023 19:51:41 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1q3ncd-00C2cr-1g;
+	Tue, 30 May 2023 00:53:59 +0000
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q3iu1-00BYRn-27;
-	Mon, 29 May 2023 19:51:39 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 5F1165FD1A;
-	Mon, 29 May 2023 22:51:35 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1685389895;
-	bh=3d6U0HghAzN5LgdrsysRgTv1ZTeSOPS8yDHMndRcRb4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	b=fYlo62nD/OyjWWBooBcikbstYg73KtRuFpPjLKl+qfAJ32gGYj+WrVzW94ZKb50Vj
-	 2Rom3xRokEEIqTXMjrfhGTjGZkBqTzrACtHRenVortQbYxYw0ch/5kqn1x6WrVxf8f
-	 GZ8OchM8DbMsZP1fLbdVjB+2tG3BG0FKA6287E+dEKwjnwweppRHs5kuXWSMagp+8v
-	 2PB6S+MpewAwOpLqsB/0hipOi0fdmN6ZL4EA5EnLdCHEnYOfO6cb8VPV0iOjCGTTzs
-	 Aam3MMlutg4PkEnOfjK/ajHYeUEPiDGZyznmoHYNxGi0pVK2fbkuHkKlz/oiNljgmD
-	 z2aU8RjZC0cJg==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Mon, 29 May 2023 22:51:35 +0300 (MSK)
-Message-ID: <ae791be4-1c44-240d-2559-37523b654506@sberdevices.ru>
-Date: Mon, 29 May 2023 22:46:59 +0300
+	id 1q3nca-00C2aN-1P
+	for linux-mtd@lists.infradead.org;
+	Tue, 30 May 2023 00:53:57 +0000
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 7073C2C0274;
+	Tue, 30 May 2023 12:53:44 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1685408024;
+	bh=9oONG5DFPFlhzS1QB858urQ+CpfCihmaDd33W3cYZy8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=e76VX0Oa5F2rjWhxJ9xKbie3DpqXYr0+taEfAv0B2s07Wo5aFmXkUSZPaE0nVwwJ5
+	 FAwm2qYgqW3AmS4RjJi5+178eyhPe2b6wtOCEPr3LMQdRl7WkrILIvmpcgCZGZVzy8
+	 csNWT0X9tPTiHAkXnE/GcZqoFoO29e3jMxIFQd7ycMjwqpYZpRO1pflC9Bz3vEjt+m
+	 we/wbwzlUSgnb+rHHn6pv138f1zgDX8HGF8S3crc/C0t1gs89mP1XzimiSbBAW/t+z
+	 aO31k8XI3HozoiurgLKxBn+NA2Zf6dbxx/jcJOllm0aO2H5PqPE+xVx6nIqOMdL25q
+	 9M9g+iGBo7sDQ==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B647549180000>; Tue, 30 May 2023 12:53:44 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id 3AAD813EE41;
+	Tue, 30 May 2023 12:53:44 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id 38E2E283D16; Tue, 30 May 2023 12:53:44 +1200 (NZST)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	andrew@lunn.ch,
+	gregory.clement@bootlin.com,
+	sebastian.hesselbarth@gmail.com,
+	vadym.kochan@plvision.eu
+Cc: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	enachman@marvell.com,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v6 0/2] dt-bindings: mtd: marvell-nand: Add YAML scheme
+Date: Tue, 30 May 2023 12:53:35 +1200
+Message-Id: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v4 3/5] mtd: rawnand: meson: always read whole OOB bytes
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Liang Yang <liang.yang@amlogic.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Neil Armstrong
-	<neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
- Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
-	Yixun Lan <yixun.lan@amlogic.com>, <oxffffaa@gmail.com>,
-	<kernel@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20230515094440.3552094-1-AVKrasnov@sberdevices.ru>
- <20230515094440.3552094-4-AVKrasnov@sberdevices.ru>
- <20230522173813.08afe6b8@xps-13>
- <84a2e0c4-cc6f-1743-ee93-c13bc8bf09f1@sberdevices.ru>
- <20230526190905.1d5a3821@xps-13>
-From: Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <20230526190905.1d5a3821@xps-13>
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/05/29 07:59:00 #21367693
-X-KSMG-AntiVirus-Status: Clean, skipped
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=cLieTWWN c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=P0xRbXHiH_UA:10 a=YqPRQZ2WnNP4KUIKbxQA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230529_125138_047788_04DA3DA9 
-X-CRM114-Status: GOOD (  24.59  )
+X-CRM114-CacheID: sfid-20230529_175356_637520_79351841 
+X-CRM114-Status: UNSURE (   8.42  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,72 +90,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAyNi4wNS4yMDIzIDIwOjA5LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+IEhpIEFyc2VuaXks
-Cj4gCj4gYXZrcmFzbm92QHNiZXJkZXZpY2VzLnJ1IHdyb3RlIG9uIFR1ZSwgMjMgTWF5IDIwMjMg
-MjA6Mjc6MzUgKzAzMDA6Cj4gCj4+IE9uIDIyLjA1LjIwMjMgMTg6MzgsIE1pcXVlbCBSYXluYWwg
-d3JvdGU6Cj4+PiBIaSBBcnNlbml5LAo+Pj4KPj4+IEFWS3Jhc25vdkBzYmVyZGV2aWNlcy5ydSB3
-cm90ZSBvbiBNb24sIDE1IE1heSAyMDIzIDEyOjQ0OjM3ICswMzAwOgo+Pj4gICAKPj4+PiBUaGlz
-IGNoYW5nZXMgc2l6ZSBvZiByZWFkIGFjY2VzcyB0byBPT0IgYXJlYSBieSByZWFkaW5nIGFsbCBi
-eXRlcyBvZgo+Pj4+IE9PQiAoZnJlZSBieXRlcyArIEVDQyBlbmdpbmUgYnl0ZXMpLiAgCj4+Pgo+
-Pj4gVGhpcyBpcyBub3JtYWxseSB1cCB0byB0aGUgdXNlciAodXNlciBpbiB5b3VyIGNhc2UgPT0g
-amZmczIpLiBUaGUKPj4+IGNvbnRyb2xsZXIgZHJpdmVyIHNob3VsZCBleHBvc2UgYSBudW1iZXIg
-b2YgdXNlciBhY2Nlc3NpYmxlIGJ5dGVzIGFuZAo+Pj4gdGhlbiB3aGVuIHVzZXJzIHdhbnQgdGhl
-IE9PQiBhcmVhLCB0aGV5IHNob3VsZCBhY2Nlc3MgaXQgZW50aXJlbHkuIE9uCj4+PiB0b3Agb2Yg
-dGhhdCByZWFkLCB0aGV5IGNhbiBleHRyYWN0IChvciAid3JpdGUgb25seSIpIHRoZSB1c2VyIGJ5
-dGVzLiAgCj4+Cj4+IFNvcnJ5LCBJIGRpZG4ndCBnZXQgaXQuIElmIGRyaXZlciBleHBvc2VzIE4g
-Ynl0ZXMgb2YgdXNlciBhY2Nlc3NpYmxlIGJ5dGVzLAo+PiBJIG11c3QgYWx3YXlzIHJldHVybiB3
-aG9sZSBPT0IgeWVzPyBFLmcuIE4gKyByZXN0IG9mIE9PQgo+IAo+IFllcy4gQXQgdGhlIE5BTkQg
-Y29udHJvbGxlciBsZXZlbCwgeW91IGdldCBhc2tlZCBmb3IgZWl0aGVyIGEgcGFnZSBvZgo+IGRh
-dGEgKHNvbWV0aW1lcyBhIHN1YnBhZ2UsIGJ1dCB3aGF0ZXZlciksIGFuZC9vciB0aGUgb29iIGFy
-ZWEuIFlvdSBuZWVkCj4gdG8gcHJvdmlkZSB3aGF0IGlzIHJlcXVlc3RlZCwgbm8gbW9yZSwgbm8g
-bGVzcy4gVGhlIHVwcGVyIGxheWVycyB3aWxsCj4gdHJpbSBkb3duIHdoYXQncyB1bmVlZGVkIGFu
-ZCBleHRyYWN0IHRoZSBieXRlcyB0aGV5IHdhbnQuCgpJIHNlZSwgc28gaW4gdGhpcyBjYXNlIEkg
-dGhpbmsgdGhpcyBwYXRjaCBjb3VsZCBiZSBtZXJnZWQgdG8gdGhlIHBhdGNoIHdoaWNoCmNoYW5n
-ZXMgT09CIGxheW91dCBiZSBtb3ZpbmcgaXQgb3V0IG9mIEVDQyBhcmVhPyBCZWNhdXNlIGRyaXZl
-ciBNVVNUIHJldHVybiBhbGwKYnl0ZXMgb2YgT09CIGFyZWEuCgo+IAo+Pj4+IFNpZ25lZC1vZmYt
-Ynk6IEFyc2VuaXkgS3Jhc25vdiA8QVZLcmFzbm92QHNiZXJkZXZpY2VzLnJ1Pgo+Pj4+IC0tLQo+
-Pj4+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMgfCAyNCArKysrKysrKysrKysr
-KysrKysrKysrKysKPj4+PiAgMSBmaWxlIGNoYW5nZWQsIDI0IGluc2VydGlvbnMoKykKPj4+Pgo+
-Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMgYi9kcml2
-ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMKPj4+PiBpbmRleCA4NTI2YTZiODc3MjAuLmEz
-MTEwNmM5NDNkNyAxMDA2NDQKPj4+PiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9u
-YW5kLmMKPj4+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMKPj4+PiBA
-QCAtNzU1LDYgKzc1NSwzMCBAQCBzdGF0aWMgaW50IF9fbWVzb25fbmZjX3JlYWRfb29iKHN0cnVj
-dCBuYW5kX2NoaXAgKm5hbmQsIGludCBwYWdlLAo+Pj4+ICAJdTMyIG9vYl9ieXRlczsKPj4+PiAg
-CXUzMiBwYWdlX3NpemU7Cj4+Pj4gIAlpbnQgcmV0Owo+Pj4+ICsJaW50IGk7Cj4+Pj4gKwo+Pj4+
-ICsJLyogUmVhZCBFQ0MgY29kZXMgYW5kIHVzZXIgYnl0ZXMuICovCj4+Pj4gKwlmb3IgKGkgPSAw
-OyBpIDwgbmFuZC0+ZWNjLnN0ZXBzOyBpKyspIHsKPj4+PiArCQl1MzIgZWNjX29mZnMgPSBuYW5k
-LT5lY2Muc2l6ZSAqIChpICsgMSkgKwo+Pj4+ICsJCQkgICAgICAgTkZDX09PQl9QRVJfRUNDKG5h
-bmQpICogaTsKPj4+PiArCj4+Pj4gKwkJcmV0ID0gbmFuZF9yZWFkX3BhZ2Vfb3AobmFuZCwgcGFn
-ZSwgMCwgTlVMTCwgMCk7Cj4+Pj4gKwkJaWYgKHJldCkKPj4+PiArCQkJcmV0dXJuIHJldDsKPj4+
-PiArCj4+Pj4gKwkJLyogVXNlIHRlbXBvcmFyeSBidWZmZXIsIGJlY2F1c2UgJ25hbmRfY2hhbmdl
-X3JlYWRfY29sdW1uX29wKCknCj4+Pj4gKwkJICogc2VlbXMgd29yayB3aXRoIHNvbWUgYWxpZ25t
-ZW50LCBzbyB3ZSBjYW4ndCByZWFkIGRhdGEgdG8KPj4+PiArCQkgKiAnb29iX2J1ZicgZGlyZWN0
-bHkuICAKPj4+Cj4+PiBETUE/ICAKPj4KPj4gWWVzIEkgZ3Vlc3MsIHRoaXMgYWRkcmVzcyBwYXNz
-ZWQgdG8gZXhlY19vcCBjb2RlIGFuZCB1c2VkIGFzIERNQS4KPiAKPiBJZiB5b3VyIGNvbnRyb2xs
-ZXIgdXNlcyBETUEgb24gZXhlY19vcCBhY2Nlc3NlcywgdGhlbiB5ZXMuIEV4ZWNfb3AKPiByZWFk
-cy93cml0ZXMgYXJlIHVzdWFsbHkgc21hbGwgZW5vdWdoIChvciBub3QgdGltZSBzZW5zaXRpdmUg
-YXQgYWxsIGlmCj4gdGhleSBhcmUgYmlnZ2VyKSBzbyBpdCdzIG5vdCByZXF1aXJlZCB0byB1c2Ug
-RE1BIHRoZXJlLiBBbnlob3csIG9vYl9idWYKPiBpcyBzdWl0YWJsZSBmb3IgRE1BIHB1cnBvc2Vz
-LCBzbyBJJ20gYSBiaXQgc3VycHJpc2VkIHlvdSBuZWVkIGEgYm91bmNlCj4gYnVmZmVyLCBpZiB0
-aGF0J3MgdGhlIG9ubHkgcmVhc29uLiBNYXliZSB5b3UgbmVlZCBhIGJvdW5jZSBidWZmZXIgdG8K
-PiByZW9yZ2FuaXplIHRoZSBkYXRhLiBUaGF0IHdvdWxkIGJlIGEgbXVjaCBiZXR0ZXIgZXhwbGFu
-YXRpb24uCgpZZXMhIEkgcmVtb3ZlIHRoaXMgdGVtcG9yYXJ5IGJ1ZmZlciwgc2VlbXMgbXkgbWlz
-dGFrZSEgV2l0aG91dCBpdCBldmVyeXRoaW5nIHdvcmtzCmdvb2QsIEknbGwgcmVtb3ZlIGl0IGZy
-b20gdGhlIG5leHQgdmVyc2lvbiEKClRoYW5rcywgQXJzZW5peQoKPiAKPj4+PiArCQkgKi8KPj4+
-PiArCQlyZXQgPSBuYW5kX2NoYW5nZV9yZWFkX2NvbHVtbl9vcChuYW5kLCBlY2Nfb2ZmcywgbWVz
-b25fY2hpcC0+b29iX2J1ZiwKPj4+PiArCQkJCQkJIE5GQ19PT0JfUEVSX0VDQyhuYW5kKSwgZmFs
-c2UpOwo+Pj4+ICsJCWlmIChyZXQpCj4+Pj4gKwkJCXJldHVybiByZXQ7Cj4+Pj4gKwo+Pj4+ICsJ
-CW1lbWNweShvb2JfYnVmICsgaSAqIE5GQ19PT0JfUEVSX0VDQyhuYW5kKSwKPj4+PiArCQkgICAg
-ICAgbWVzb25fY2hpcC0+b29iX2J1ZiwKPj4+PiArCQkgICAgICAgTkZDX09PQl9QRVJfRUNDKG5h
-bmQpKTsKPj4+PiArCX0KPj4+PiAgCj4+Pj4gIAlvb2JfYnl0ZXMgPSBtZXNvbl9uZmNfZ2V0X29v
-Yl9ieXRlcyhuYW5kKTsKPj4+PiAgICAKPj4+Cj4+Pgo+Pj4gVGhhbmtzLAo+Pj4gTWlxdcOobCAg
-Cj4+Cj4+IFRoYW5rcywgQXJzZW5peQo+IAo+IAo+IFRoYW5rcywKPiBNaXF1w6hsCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Add YAML scheme for the Marvell's NAND controller
+to validate it's DT bindings. Old txt file is deleted,
+not included the compatibles and properties which were marked as
+deprecated.
+
+Also fix node name in cp11x DTSI acording to nand-controller.yaml
+
+I've picked up this series to hopefully get it over the line. I think I've
+addressed all the feedback from the last round of review.
+
+Vadym Kochan (2):
+  dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
+  arm64: dts: marvell: cp11x: Fix nand_controller node name according to
+    YAML
+
+ .../bindings/mtd/marvell,nand-controller.yaml | 190 ++++++++++++++++++
+ .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ------------
+ MAINTAINERS                                   |   1 -
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |   2 +-
+ 4 files changed, 191 insertions(+), 128 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+
+-- 
+2.40.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
