@@ -4,97 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B15C7EE24
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 May 2023 23:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A08DC7EE23
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 May 2023 23:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EJvJ//YWjTOSyA5vX+3fbJjPuJN/OoPtDQspnDlqabs=; b=guU+QXUZSdslEj
-	X89iSRcMz3c+RfY5RH+wy7M4HerbpyWJLc5m3jAYMjNDGdPliZyXXOKfa4z8HGEtcJWsCGnsOmnpC
-	Ni3M6oneBQXhZ39CST1FMDKFoqePxisTUxB0ZaT3prmw9CbCeykd7DIGNQdHU19q9ukOzG5gh9wn+
-	4JKksVGqOkvxhvHVjvTowjb5W5M6Cd+uU4+i/mA7Iv3Y+mwWAdtQMJ2mFyovpXI+cmSKO05oGJLut
-	75SCnsDDHTFt++tf4NYjsBLWM++1ExM+bpd2qpLTli2GpP/gE0yA3xv3/F35as2m4fav/WMiYW6zn
-	g2r8Sh9iNRtiG5KuDMZA==;
+	List-Owner; bh=2cZ/kuxLPuswR/+ZwSAplFyb3H1nKntso3Rauujzfng=; b=nBNE3rLm62lWBB
+	5spRUgN5su1cABDb0mINDylfn6Kebr4rZF8kj86c2KvUmzGzA9f7pmnak2isECWYWwKLIthIfsbXl
+	SB13pE4bB1+L7Nxo9rAFUIZvVmCIDMRupfaJRFZnHywgvQFEQ1Or8NV8X7jwqGQAR59l+TDaj90pm
+	Un9w3hP6RWdBfoV+GITlaC+nxRjpYWObG+2Mjoa7aZlv0rCmj1oyanuXgsbpsdGEoupiVW5Tlowc6
+	6OCH8WZSPTKXjvGEXaLWPVaQrW4mfAaYjFu4qkmeTnt9O6uE6c4WsqY9FiN/Ze6wtqaCo1cSo7RJn
+	HRMaLMq1dCThmCfkF6Sw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q48do-00FSf7-1K;
-	Tue, 30 May 2023 23:20:36 +0000
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+	id 1q49BI-00FX65-1p;
+	Tue, 30 May 2023 23:55:12 +0000
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q48dl-00FSd9-2D
+	id 1q49BD-00FX24-2o
 	for linux-mtd@lists.infradead.org;
-	Tue, 30 May 2023 23:20:35 +0000
+	Tue, 30 May 2023 23:55:09 +0000
 Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 7182C2C02A9;
-	Wed, 31 May 2023 11:20:26 +1200 (NZST)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 934BC2C0596;
+	Wed, 31 May 2023 11:55:04 +1200 (NZST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1685488826;
-	bh=pBukmPQ3it++bc32Xj8MsVYzyzLTR0p/rymwPyFTAGs=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=BYjlzXQYNAH+TTZndsi3Omsk4q6jlYGG9kp5bOIZWJZES36RecojF+CndtM+n25gG
-	 j0zqQw1itQ5Jo3/yk6rjWLj8uRu+Ul5wdCyXeBzIYHrg9NSntophgYpmJDIYJVBTd0
-	 MQkPZze968IAHvgBfqNDoDzacGCWFCwiHAbpbx7wUua/QJphwQwkzcbKsthAFokBMR
-	 +O9AJkLitZrU0btKCt+sHwSoiIJTKDqBSotwyqaXhpDeBzqR4IPRXjqh7JLQx595dY
-	 rr/QVem53M8zH8X1FY/XkqNgOIK+ERtUisSpVUzvPCUfKT+FyIb79kq1+kthtvJjTt
-	 R6D5vsK1bn3Og==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B647684ba0000>; Wed, 31 May 2023 11:20:26 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.26; Wed, 31 May 2023 11:20:26 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
- SMTP Server (TLS) id 15.0.1497.48; Wed, 31 May 2023 11:20:26 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.026; Wed, 31 May 2023 11:20:25 +1200
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
-	<richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>, "robh+dt@kernel.org"
-	<robh+dt@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org"
-	<conor+dt@kernel.org>, "andrew@lunn.ch" <andrew@lunn.ch>,
-	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-	"sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-	"vadym.kochan@plvision.eu" <vadym.kochan@plvision.eu>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "enachman@marvell.com"
-	<enachman@marvell.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
- scheme
-Thread-Topic: [PATCH v6 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML
- DT scheme
-Thread-Index: AQHZkpEvY3k2XQch4kKrVAHkTx0+pa9x9QcAgAC3TIA=
-Date: Tue, 30 May 2023 23:20:25 +0000
-Message-ID: <bc538264-20f5-03e1-a4a6-6f9f076f15eb@alliedtelesis.co.nz>
-References: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
- <20230530005337.3687938-2-chris.packham@alliedtelesis.co.nz>
- <a1b2caed-b314-59db-ee00-92fc983150f6@linaro.org>
-In-Reply-To: <a1b2caed-b314-59db-ee00-92fc983150f6@linaro.org>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.33.22.30]
-Content-ID: <11A8F379D8E7434AA6EEC968A66617F4@atlnz.lc>
+	s=mail181024; t=1685490904;
+	bh=CXHc14wOkGFB3ru5MP+zwp9GpkkiRXC27fcKcbXH3uA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZuAL0brIATL26Ys4fXAZbB+sIC/jNDbJDsvK2c9Z29oqBfl16waWYUU28Q4zH5Lcq
+	 SVQEL4wsrXGZA1t/mM117gMQGTBK9r4fE8O4deZS9GytfmOy3L72MV5D5m3/YrLN5n
+	 TVKZ+pM7b2JS66aHfpat+Jd+2nqVfFoNoyv6YAWr99rM8rbS9LjUcqA+EWQiQw+mJ6
+	 W5wzO90sncBjLrxYdqq5RW3PAft0eRUU5fnfWpiMzpcfNvy+PwhcvdbgGGy7PFvQe/
+	 0SA5H7AFllX7pD8578u3MbZyHRAbLBLFx1JgBhBb2vro3PD60r2SUPj7f5J4xzaCw9
+	 wxbQU/Pwngp/Q==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B64768cd80001>; Wed, 31 May 2023 11:55:04 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id 6F3C013EDD5;
+	Wed, 31 May 2023 11:55:04 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id 6DF1D280AFE; Wed, 31 May 2023 11:55:04 +1200 (NZST)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	andrew@lunn.ch,
+	gregory.clement@bootlin.com,
+	sebastian.hesselbarth@gmail.com
+Cc: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	enachman@marvell.com,
+	Vadym Kochan <vadym.kochan@plvision.eu>,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v7 1/4] arm64: dts: marvell: cp11x: Fix nand_controller node name according to YAML
+Date: Wed, 31 May 2023 11:54:53 +1200
+Message-Id: <20230530235456.1009082-2-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230530235456.1009082-1-chris.packham@alliedtelesis.co.nz>
+References: <20230530235456.1009082-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=cLieTWWN c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=P0xRbXHiH_UA:10 a=jWhIqavZLoxoapoUxmoA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=cLieTWWN c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=P0xRbXHiH_UA:10 a=g8kJ_gb0AAAA:8 a=GKaKEI1dGHIjLaXU8GMA:9 a=ecSNLfPMzbq-p5zXJZOg:22
 X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230530_162034_208888_78122187 
-X-CRM114-Status: UNSURE (   8.66  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230530_165508_426215_CC53B549 
+X-CRM114-Status: GOOD (  10.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,22 +96,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 31/05/23 00:24, Krzysztof Kozlowski wrote:
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - items:
->> +          - const: marvell,armada-8k-nand-controller
->> +          - const: marvell,armada370-nand-controller
->> +      - enum:
->> +          - marvell,armada370-nand-controller
->> +          - marvell,pxa3xx-nand-controller
-> You miss here deprecated compatibles, which are BTW still used. Don't
-> drop properties and compatibles during conversion.
-Is there any way to indicate that a compatible value is deprecated? I 
-know how to mark a property as deprecated but how do I indicate this for 
-specific compatible values?
+From: Vadym Kochan <vadym.kochan@plvision.eu>
+
+Marvell NAND controller has now YAML to validate it's DT bindings, so
+change the node name of cp11x DTSI as it is required by nand-controller.yaml
+
+Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+index 0cc9ee9871e7..4ec1aae0a3a9 100644
+--- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+@@ -468,7 +468,7 @@ CP11X_LABEL(uart3): serial@702300 {
+ 			status = "disabled";
+ 		};
+ 
+-		CP11X_LABEL(nand_controller): nand@720000 {
++		CP11X_LABEL(nand_controller): nand-controller@720000 {
+ 			/*
+ 			 * Due to the limitation of the pins available
+ 			 * this controller is only usable on the CPM
+-- 
+2.40.1
+
+
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
