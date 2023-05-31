@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3D92C7EE31
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A465CC77B7A
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:56:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qLL+CH4NvqYEt82z44niJ6CL7uAjtcHbILIIBfrmO2E=; b=OVfFTNouS51WXm
-	PMYqKHP37OnbCeXqiDuq59x6tbt7uGOgpfVj7rwP4ZgPGa9c46c7umqTXE/dnFVz7Mm1IBOdmofpy
-	UxFwns1G9JUk+gQZGCc8065Q2tidLpSEhUJzin3uaW2tUI75vOWypLXAMJB+bRHnvpGMi4yBPlfEN
-	71FIG8td5pA00FhswHsBnXdQhEx7F1j+dU7pENOFxSDnbgUvKDQGyx+nETLbHong06jmeTb0MhTfP
-	q//932ObhgsRgWog6DItZCupDTf9ieH2kEbO0BNVe/XoMXVlUgPgDgl1BUQB4vKPj6h2FScu5Z2tW
-	dEzHuvUKskoDYH4TtAEg==;
+	List-Owner; bh=AHQ4xLmC7IA1o0P6jZ97XRYRlWJj1XBQdgAvmHVYA9o=; b=ewXF1gDI11KKVm
+	pDJwuemqQh74WYbaPq+H5iPLmXuqSRWpI+9CTmnpi1+Cdl3Y3UAuBimtYZClD0W0Uo5PVkqjJ6ZCA
+	/XQxqvMRtMJRQ4FbbImzEda8sostSoSFG0AqCgq9vMHmIPdyShoUQXDglaQJi9/a425MigoN61WXz
+	IgScZcwr6LQF4P9NIb1fNYIaDH1sJPHIBGiAabKbsIeZq+xL/9lA4kOk671iZgSJ7DlXZ7wCbMB97
+	vdyWvOP+kwzQ1TsTf3A2HapzAlCLjPi/B4ADP8Ubp7B4kmBGn2m69mECf2XF1BWaDPRtRFz1qG0e5
+	z9D3/UYJEyZok3e0m4zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LMm-00HQxy-2B;
-	Wed, 31 May 2023 12:55:52 +0000
+	id 1q4LMs-00HR16-1f;
+	Wed, 31 May 2023 12:55:58 +0000
 Received: from [2001:4bb8:182:6d06:2e49:a56:513a:92ee] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LMk-00HQwo-2V;
-	Wed, 31 May 2023 12:55:51 +0000
+	id 1q4LMq-00HQy6-2x;
+	Wed, 31 May 2023 12:55:57 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,9 +42,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 02/24] PM: hibernate: factor out a helper to find the resume device
-Date: Wed, 31 May 2023 14:55:13 +0200
-Message-Id: <20230531125535.676098-3-hch@lst.de>
+Subject: [PATCH 03/24] PM: hibernate: remove the global snapshot_test variable
+Date: Wed, 31 May 2023 14:55:14 +0200
+Message-Id: <20230531125535.676098-4-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531125535.676098-1-hch@lst.de>
 References: <20230531125535.676098-1-hch@lst.de>
@@ -65,109 +65,129 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Split the logic to find the resume device out software_resume and into
-a separate helper to start unwindig the convoluted goto logic.
+Passing call dependent variable in global variables is a huge
+antipattern.  Fix it up.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 ---
- kernel/power/hibernate.c | 72 +++++++++++++++++++++-------------------
- 1 file changed, 37 insertions(+), 35 deletions(-)
+ kernel/power/hibernate.c | 17 ++++++-----------
+ kernel/power/power.h     |  3 +--
+ kernel/power/swap.c      |  2 +-
+ 3 files changed, 8 insertions(+), 14 deletions(-)
 
 diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 30d1274f03f625..07279506366255 100644
+index 07279506366255..78696aa04f5ca3 100644
 --- a/kernel/power/hibernate.c
 +++ b/kernel/power/hibernate.c
-@@ -910,6 +910,41 @@ int hibernate_quiet_exec(int (*func)(void *data), void *data)
+@@ -64,7 +64,6 @@ enum {
+ static int hibernation_mode = HIBERNATION_SHUTDOWN;
+ 
+ bool freezer_test_done;
+-bool snapshot_test;
+ 
+ static const struct platform_hibernation_ops *hibernation_ops;
+ 
+@@ -684,7 +683,7 @@ static void power_down(void)
+ 		cpu_relax();
  }
- EXPORT_SYMBOL_GPL(hibernate_quiet_exec);
  
-+static int find_resume_device(void)
-+{
-+	if (!strlen(resume_file))
-+		return -ENOENT;
-+
-+	pm_pr_dbg("Checking hibernation image partition %s\n", resume_file);
-+
-+	if (resume_delay) {
-+		pr_info("Waiting %dsec before reading resume device ...\n",
-+			resume_delay);
-+		ssleep(resume_delay);
-+	}
-+
-+	/* Check if the device is there */
-+	swsusp_resume_device = name_to_dev_t(resume_file);
-+	if (swsusp_resume_device)
-+		return 0;
-+
-+	/*
-+	 * Some device discovery might still be in progress; we need to wait for
-+	 * this to finish.
-+	 */
-+	wait_for_device_probe();
-+	if (resume_wait) {
-+		while (!(swsusp_resume_device = name_to_dev_t(resume_file)))
-+			msleep(10);
-+		async_synchronize_full();
-+	}
-+
-+	swsusp_resume_device = name_to_dev_t(resume_file);
-+	if (!swsusp_resume_device)
-+		return -ENODEV;
-+	return 0;
-+}
-+
- /**
-  * software_resume - Resume from a saved hibernation image.
-  *
-@@ -949,45 +984,12 @@ static int software_resume(void)
+-static int load_image_and_restore(void)
++static int load_image_and_restore(bool snapshot_test)
+ {
+ 	int error;
+ 	unsigned int flags;
+@@ -721,6 +720,7 @@ static int load_image_and_restore(void)
+  */
+ int hibernate(void)
+ {
++	bool snapshot_test = false;
+ 	unsigned int sleep_flags;
+ 	int error;
  
- 	snapshot_test = false;
+@@ -748,9 +748,6 @@ int hibernate(void)
+ 	if (error)
+ 		goto Exit;
  
--	if (swsusp_resume_device)
--		goto Check_image;
+-	/* protected by system_transition_mutex */
+-	snapshot_test = false;
 -
--	if (!strlen(resume_file)) {
--		error = -ENOENT;
--		goto Unlock;
--	}
--
--	pm_pr_dbg("Checking hibernation image partition %s\n", resume_file);
--
--	if (resume_delay) {
--		pr_info("Waiting %dsec before reading resume device ...\n",
--			resume_delay);
--		ssleep(resume_delay);
--	}
--
--	/* Check if the device is there */
--	swsusp_resume_device = name_to_dev_t(resume_file);
- 	if (!swsusp_resume_device) {
--		/*
--		 * Some device discovery might still be in progress; we need
--		 * to wait for this to finish.
--		 */
--		wait_for_device_probe();
--
--		if (resume_wait) {
--			while ((swsusp_resume_device = name_to_dev_t(resume_file)) == 0)
--				msleep(10);
--			async_synchronize_full();
--		}
--
--		swsusp_resume_device = name_to_dev_t(resume_file);
--		if (!swsusp_resume_device) {
--			error = -ENODEV;
-+		error = find_resume_device();
-+		if (error)
- 			goto Unlock;
--		}
+ 	lock_device_hotplug();
+ 	/* Allocate memory management structures */
+ 	error = create_basic_memory_bitmaps();
+@@ -792,9 +789,9 @@ int hibernate(void)
+ 	unlock_device_hotplug();
+ 	if (snapshot_test) {
+ 		pm_pr_dbg("Checking hibernation image\n");
+-		error = swsusp_check();
++		error = swsusp_check(snapshot_test);
+ 		if (!error)
+-			error = load_image_and_restore();
++			error = load_image_and_restore(snapshot_test);
  	}
+ 	thaw_processes();
  
-- Check_image:
- 	pm_pr_dbg("Hibernation image partition %d:%d present\n",
+@@ -982,8 +979,6 @@ static int software_resume(void)
+ 	 */
+ 	mutex_lock_nested(&system_transition_mutex, SINGLE_DEPTH_NESTING);
+ 
+-	snapshot_test = false;
+-
+ 	if (!swsusp_resume_device) {
+ 		error = find_resume_device();
+ 		if (error)
+@@ -994,7 +989,7 @@ static int software_resume(void)
  		MAJOR(swsusp_resume_device), MINOR(swsusp_resume_device));
  
+ 	pm_pr_dbg("Looking for hibernation image.\n");
+-	error = swsusp_check();
++	error = swsusp_check(false);
+ 	if (error)
+ 		goto Unlock;
+ 
+@@ -1022,7 +1017,7 @@ static int software_resume(void)
+ 		goto Close_Finish;
+ 	}
+ 
+-	error = load_image_and_restore();
++	error = load_image_and_restore(false);
+ 	thaw_processes();
+  Finish:
+ 	pm_notifier_call_chain(PM_POST_RESTORE);
+diff --git a/kernel/power/power.h b/kernel/power/power.h
+index b83c8d5e188dec..978189fcafd124 100644
+--- a/kernel/power/power.h
++++ b/kernel/power/power.h
+@@ -59,7 +59,6 @@ asmlinkage int swsusp_save(void);
+ 
+ /* kernel/power/hibernate.c */
+ extern bool freezer_test_done;
+-extern bool snapshot_test;
+ 
+ extern int hibernation_snapshot(int platform_mode);
+ extern int hibernation_restore(int platform_mode);
+@@ -174,7 +173,7 @@ extern int swsusp_swap_in_use(void);
+ #define SF_HW_SIG		8
+ 
+ /* kernel/power/hibernate.c */
+-extern int swsusp_check(void);
++int swsusp_check(bool snapshot_test);
+ extern void swsusp_free(void);
+ extern int swsusp_read(unsigned int *flags_p);
+ extern int swsusp_write(unsigned int flags);
+diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+index 92e41ed292ada8..efed11568bfc72 100644
+--- a/kernel/power/swap.c
++++ b/kernel/power/swap.c
+@@ -1514,7 +1514,7 @@ int swsusp_read(unsigned int *flags_p)
+  *      swsusp_check - Check for swsusp signature in the resume device
+  */
+ 
+-int swsusp_check(void)
++int swsusp_check(bool snapshot_test)
+ {
+ 	int error;
+ 	void *holder;
 -- 
 2.39.2
 
