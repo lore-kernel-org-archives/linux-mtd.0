@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9F0DC7EE32
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:57:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5FCFC77B7A
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mylusPi4IBkpPDVee8vCyFz9gkNNdWldoz0SmnaHuW0=; b=nrHltgK84wQ9mI
-	aLa7cAeAP/eQNp9w28pRerUTLSBlcLxbLwygF7gZ+QnQx9mbFo0ZuPyaYeS79Y9cGCmNL/ZDVu1mY
-	S03xx0vayHjYFpU8ke0bOCMYzMGnwEfsIiKT2O3E/p4Dsd+IhRjCBDYSqIf6jeElmQecExwI2NoSr
-	R0rBh3eUyMwV1/t9Bz5J83tEoVicKTq7n3sy5WqUwE06S2lfHHbh9hlBCO2/z5hquQdl6fEEMG1Ou
-	n4d8R5+ZWnao1wzztkpGRgOVDeWnzpmUOBSmV4JxVPOhfM/UwHfESSKcMwa39J+tuEwY6CZtpfI+J
-	9OlfM8JwJWXP85cWCNgg==;
+	List-Owner; bh=73lGuympB3AHXZkhPuChTN3JHnW5OoWuW/GH08uUHv8=; b=cVTrDS+KsFECcn
+	3VXy/SGW0qtjbOpbBzqzx8UAVpLCJI/dwlQ2teP9BIsl8kyr5VVWlJBDSkE6poP7nlQ1PuHoRt4wc
+	+Dqn7oB9JJvdJ0+gAqZbkSVMeEJBOR874RYJPewrdEwMMemWW2nPpcxkuS3KH5ETBuXQkXwk5b1JF
+	8fNL6mNvMxcV45fpCVtCj1U7OTCGG4lHfolT1s6gCzy7SDiiXSlP5Y5e/a+PiMaLf0ziwTRmu+76U
+	fj98UqhEeS1n9eyKMUqR7B7e5/WEbvB7dYFG4rG/wKJklFDbTnEGvhzQY/sw+5nvzikLXWEKN5/Ak
+	pNwcACKH/XijZbkZHP+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LOY-00HSO5-1S;
-	Wed, 31 May 2023 12:57:42 +0000
+	id 1q4LOF-00HS5v-2P;
+	Wed, 31 May 2023 12:57:23 +0000
 Received: from [2001:4bb8:182:6d06:2e49:a56:513a:92ee] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LOV-00HSJ1-14;
-	Wed, 31 May 2023 12:57:40 +0000
+	id 1q4LOC-00HS1f-0T;
+	Wed, 31 May 2023 12:57:20 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,9 +42,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 24/24] block: mark early_lookup_bdev as __init
-Date: Wed, 31 May 2023 14:55:35 +0200
-Message-Id: <20230531125535.676098-25-hch@lst.de>
+Subject: [PATCH 20/24] dm: only call early_lookup_bdev from early boot context
+Date: Wed, 31 May 2023 14:55:31 +0200
+Message-Id: <20230531125535.676098-21-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531125535.676098-1-hch@lst.de>
 References: <20230531125535.676098-1-hch@lst.de>
@@ -65,121 +65,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-early_lookup_bdev is now only used during the early boot code as it
-should, so mark it __init to not waste run time memory on it.
+early_lookup_bdev is supposed to only be called from the early boot
+code, but dm_get_device calls it as a general fallback when lookup_bdev
+fails, which is problematic because early_lookup_bdev bypasses all normal
+path based permission checking, and might cause problems with certain
+container environments renaming devices.
+
+Switch to only call early_lookup_bdev when dm is built-in and the system
+state in not running yet.  This means it is still available when tables
+are constructed by dm-init.c from the kernel command line, but not
+otherwise.
+
+Note that this strictly speaking changes the kernel ABI as the PARTUUID=
+and PARTLABEL= style syntax is now not available during a running
+systems.  They never were intended for that, but this breaks things
+we'll have to figure out a way to make them available again.  But if
+avoidable in any way I'd rather avoid that.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Mike Snitzer <snitzer@kernel.org>
 ---
- block/early-lookup.c   | 19 +++++++++----------
- include/linux/blkdev.h |  2 +-
- 2 files changed, 10 insertions(+), 11 deletions(-)
+ drivers/md/dm-table.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/block/early-lookup.c b/block/early-lookup.c
-index 6016e781b6a0e2..3ff0d2e4dcbfb8 100644
---- a/block/early-lookup.c
-+++ b/block/early-lookup.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 1576b408768d4b..2fd5826bfce175 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -326,8 +326,11 @@ static int upgrade_mode(struct dm_dev_internal *dd, fmode_t new_mode,
  /*
-  * Code for looking up block devices in the early boot code before mounting the
-- * root file system.  Unfortunately currently also abused in a few other places.
-+ * root file system.
+  * Add a device to the list, or just increment the usage count if
+  * it's already present.
++ *
++ * Note: the __ref annotation is because this function can call the __init
++ * marked early_lookup_bdev when called during early boot code from dm-init.c.
   */
- #include <linux/blkdev.h>
- #include <linux/ctype.h>
-@@ -18,7 +18,7 @@ struct uuidcmp {
-  *
-  * Returns 1 if the device matches, and 0 otherwise.
-  */
--static int match_dev_by_uuid(struct device *dev, const void *data)
-+static int __init match_dev_by_uuid(struct device *dev, const void *data)
+-int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
++int __ref dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
+ 		  struct dm_dev **result)
  {
- 	struct block_device *bdev = dev_to_bdev(dev);
- 	const struct uuidcmp *cmp = data;
-@@ -42,7 +42,7 @@ static int match_dev_by_uuid(struct device *dev, const void *data)
-  *
-  * Returns the matching dev_t on success or 0 on failure.
-  */
--static int devt_from_partuuid(const char *uuid_str, dev_t *devt)
-+static int __init devt_from_partuuid(const char *uuid_str, dev_t *devt)
- {
- 	struct uuidcmp cmp;
- 	struct device *dev = NULL;
-@@ -98,7 +98,7 @@ static int devt_from_partuuid(const char *uuid_str, dev_t *devt)
-  *
-  * Returns 1 if the device matches, and 0 otherwise.
-  */
--static int match_dev_by_label(struct device *dev, const void *data)
-+static int __init match_dev_by_label(struct device *dev, const void *data)
- {
- 	struct block_device *bdev = dev_to_bdev(dev);
- 	const char *label = data;
-@@ -108,7 +108,7 @@ static int match_dev_by_label(struct device *dev, const void *data)
- 	return 1;
- }
- 
--static int devt_from_partlabel(const char *label, dev_t *devt)
-+static int __init devt_from_partlabel(const char *label, dev_t *devt)
- {
- 	struct device *dev;
- 
-@@ -120,7 +120,7 @@ static int devt_from_partlabel(const char *label, dev_t *devt)
- 	return 0;
- }
- 
--static dev_t blk_lookup_devt(const char *name, int partno)
-+static dev_t __init blk_lookup_devt(const char *name, int partno)
- {
- 	dev_t devt = MKDEV(0, 0);
- 	struct class_dev_iter iter;
-@@ -149,7 +149,7 @@ static dev_t blk_lookup_devt(const char *name, int partno)
- 	return devt;
- }
- 
--static int devt_from_devname(const char *name, dev_t *devt)
-+static int __init devt_from_devname(const char *name, dev_t *devt)
- {
- 	int part;
- 	char s[32];
-@@ -193,7 +193,7 @@ static int devt_from_devname(const char *name, dev_t *devt)
- 	return -EINVAL;
- }
- 
--static int devt_from_devnum(const char *name, dev_t *devt)
-+static int __init devt_from_devnum(const char *name, dev_t *devt)
- {
- 	unsigned maj, min, offset;
- 	char *p, dummy;
-@@ -240,7 +240,7 @@ static int devt_from_devnum(const char *name, dev_t *devt)
-  *	name contains slashes, the device name has them replaced with
-  *	bangs.
-  */
--int early_lookup_bdev(const char *name, dev_t *devt)
-+int __init early_lookup_bdev(const char *name, dev_t *devt)
- {
- 	if (strncmp(name, "PARTUUID=", 9) == 0)
- 		return devt_from_partuuid(name + 9, devt);
-@@ -250,7 +250,6 @@ int early_lookup_bdev(const char *name, dev_t *devt)
- 		return devt_from_devname(name + 5, devt);
- 	return devt_from_devnum(name, devt);
- }
--EXPORT_SYMBOL_GPL(early_lookup_bdev);
- 
- static char __init *bdevt_str(dev_t devt, char *buf)
- {
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 0ce09ecfa3a7af..ca84a135ddc80f 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1494,7 +1494,7 @@ int sync_blockdev_nowait(struct block_device *bdev);
- void sync_bdevs(bool wait);
- void bdev_statx_dioalign(struct inode *inode, struct kstat *stat);
- void printk_all_partitions(void);
--int early_lookup_bdev(const char *pathname, dev_t *dev);
-+int __init early_lookup_bdev(const char *pathname, dev_t *dev);
- #else
- static inline void invalidate_bdev(struct block_device *bdev)
- {
+ 	int r;
+@@ -346,8 +349,10 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
+ 			return -EOVERFLOW;
+ 	} else {
+ 		r = lookup_bdev(path, &dev);
+-		if (r)
++#ifndef MODULE
++		if (r && system_state < SYSTEM_RUNNING)
+ 			r = early_lookup_bdev(path, &dev);
++#endif
+ 		if (r)
+ 			return r;
+ 	}
 -- 
 2.39.2
 
