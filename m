@@ -4,81 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1B4EC7EE23
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 03:00:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 368FBC77B7A
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 07:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Sw7JhEgSOecTg/nZE1RizahK16fLFfyLFChQgemSYeI=; b=DCClbo1ZrdEmIv
-	t+bwlSHVbEAfY/ZDA5mmhzJGxbUEsGI69QgQb9tKWVr2W4EFgpt/Q3fuzeM/s5JovpjFaeDatD+hM
-	knLO00K+ZcMUVYjT1nVCfBH/f9ANYa7+zo/+9fvaQiMfgRlReL1NBzvxBnmb0jX3QFOZhmWZSqfsa
-	B2BpO1pgq4ptPKgguNt21LjhdXEXe5dOiC1TCyzVnhR4J2svZK1ujimuLjawPLhHR+i31YO3jtcdq
-	CScFOusVsTHhUl+ExlM6S45VJrLD179qdIsZ4o5PXzdVEZCasbl3Sb5j1msqBTVYpL/XWvDKW3NUp
-	gyKLFALggTU6yFbUgUUg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Dg0Kz+Sc+RNIuPh2Cdd9AQWKrE4WQ9CorzpuqwR7sdk=; b=kkRk9qr068ICBA
+	pdORdeyQ97BpVJoh29B/ORhk1qiWY2IWiesIICevB8lgyP1+W2Cc8w8V41hUXzQgOBt2ShUzzclTV
+	RkTZwIcXRC/L2fP6SnHiiNKo42sJEOTHOUd1DY4RJrLYUERMsqZwlA1q2N7LQcJnhTSyKFD7ES5Gr
+	eXltnm51UWcuTKeOeIHcYYg2hJ1sQYwRhG26ratddL93nw+X+QCUEpe/0aO0+UzYgj8cVo+ZFEFw8
+	Q0iuqrCJPO+Uqcvqwl59kO6kx7/OdUUJVJILpnXVrNUEUSE7KMXYbq1Ayc+qAjgD8u3QlUgvlbcUa
+	Gn/O6U68yAeGakoms87A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4C3M-00Fr4R-2h;
-	Wed, 31 May 2023 02:59:12 +0000
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	id 1q4Fp8-00GMub-07;
+	Wed, 31 May 2023 07:00:46 +0000
+Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4C3H-00Fr1F-09
+	id 1q4Fp3-00GMrN-1h
 	for linux-mtd@lists.infradead.org;
-	Wed, 31 May 2023 02:59:10 +0000
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 97ECF2C0596;
-	Wed, 31 May 2023 14:58:59 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1685501939;
-	bh=OMlElmdtZdi259PjJVmy6JwGQG2VyhDI2nE8htIQ6Rk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=vdY6KV83oo+1h8uD9l7V5YlhyVrD9ZtyKeL41WG5ZP/LfRTinVMZIsoDbWJ+G9t6T
-	 Zx8dvWLQhIPtFFxeeA/YCkt3rEzzQoVMp6esiT1KpzV+bfUmO1ivpmWRPhsJw58BoF
-	 s7o8tGUuyb8nygG+m9hDnsD02D90gM6/rOsYqNWYCWMNVOzXHFksCESwXnR74yfL3H
-	 avoEcQFXF4moOYFDrL8aauwhdqDBMbwk72BQZeK4HzImCOaiLdqu3ILsjqGiFL4MbM
-	 tqzlcLOFl+AMqEuAqxeqGTYJWA9OPU89cp6jOUYVlkPC0ACgy5xfEVcbH8m6S0hZ15
-	 dRpjOCloOgo1w==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B6476b7f30000>; Wed, 31 May 2023 14:58:59 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 6949113EDD5;
-	Wed, 31 May 2023 14:58:59 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 632ED280AFE; Wed, 31 May 2023 14:58:59 +1200 (NZST)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	arnd@arndb.de,
-	daniel.lezcano@linaro.org,
-	neil.armstrong@linaro.org,
-	f.fainelli@gmail.com,
-	christophe.kerello@foss.st.com,
-	liang.yang@amlogic.com,
-	jdelvare@suse.de
-Cc: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH 0/2] mtd: rawnand: marvell: add support for AC5 SoC
-Date: Wed, 31 May 2023 14:58:45 +1200
-Message-Id: <20230531025847.1284862-1-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.40.1
+	Wed, 31 May 2023 07:00:42 +0000
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9741a0fd134so323405966b.0
+        for <linux-mtd@lists.infradead.org>; Wed, 31 May 2023 00:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1685516436; x=1688108436;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hg0EUtzmiBB3xghUWgjyE0VeSwIKbDYvDD8loEwycbU=;
+        b=xmNDQX5s+SO9QvIEjz7wvotCwDjE1/DWqSM0urOY8Jp6F4rit0SSDrGeXssANQQNd1
+         ZXqw8ZNeIcCT3Lxe3+XYTWyVpG9YSRUZFmF8/vjve6PFXaMA/uuouoI2rf92gRZoRpYB
+         Rxs29PpDYdoLvtkFXBCUgqxwXVr1bbjXCBr4OfER8lETDdRTGzg6or82BYs0hmgsndj1
+         mEoPbYvIg34WTRa6lzkoFJzTPjVWiTjJM9240eBfe89UiHt7i1JaE1jnQeotgBtTNCTS
+         ZmebRn88ZkYWj0vWAOssDvhbH8yJ+Slpn32t5ZG0ZaLtzOGGchuTq9NJZt/3DkKyj15C
+         Wb8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685516436; x=1688108436;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hg0EUtzmiBB3xghUWgjyE0VeSwIKbDYvDD8loEwycbU=;
+        b=C7ck0bt5tpcRVRsyGtoNGipXB0qJypnZ/IcAtXFb9khRcN9V8Fw7I9gyI/vDcCxnQ1
+         40pctLTBCHTMv9Q18uPAhmuw9tAbOamdYmsyMwirsOPFdAgzwHk7mGMzR6L6RWmm96qQ
+         GMX5Kl7H9hjwxQKAiL4Tnz4xQN7qFcOO4hreL0jbid1uHAI/qSYtHO1yzhZYNejubEIK
+         pWSyHIi0tl9uUimA743W+gxTNANiC1bP3chqLn8VHIyWoEGIWo0JK5/QWMFv3SOwbKIe
+         Bol6C1ZMVZSD4PHK8H18kvuo73+oKGbD3/evNGl/DgmmUmvFhjz+VVw1u8N3Oyw+EMjL
+         pt+Q==
+X-Gm-Message-State: AC+VfDzvTlkXTapq7lNlo9R4F+vmmeJK3GJfS0Rgr8PB+MUQUXwIWjGe
+	N22gasqTaf8e7rLI9uMMkzvjYQ==
+X-Google-Smtp-Source: ACHHUZ6pOdpCN4WUvtvY0dlMQfZ7EoNYd7R0TNUotYT8Qi0DGSq9fNojwn2+H9QyjEJ2gKlV6YxheQ==
+X-Received: by 2002:a17:907:72d4:b0:973:fe33:3622 with SMTP id du20-20020a17090772d400b00973fe333622mr5027241ejc.29.1685516436227;
+        Wed, 31 May 2023 00:00:36 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.199.204])
+        by smtp.gmail.com with ESMTPSA id k3-20020a17090627c300b0096a1ba4e0d1sm8434832ejc.32.2023.05.31.00.00.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 May 2023 00:00:35 -0700 (PDT)
+Message-ID: <579dc9ff-e0a7-e3de-bb2c-a268bfa7fdeb@linaro.org>
+Date: Wed, 31 May 2023 09:00:33 +0200
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=cLieTWWN c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=P0xRbXHiH_UA:10 a=VwQbUJbxAAAA:8 a=BTILRwyEkoqLbeD1fBkA:9 a=AjGcO6oz07-iQ99wixmX:22
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v6 1/2] dt-bindings: mtd: marvell-nand: Convert to YAML DT
+ scheme
+Content-Language: en-US
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>, "andrew@lunn.ch"
+ <andrew@lunn.ch>, "gregory.clement@bootlin.com"
+ <gregory.clement@bootlin.com>,
+ "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
+ "vadym.kochan@plvision.eu" <vadym.kochan@plvision.eu>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "enachman@marvell.com" <enachman@marvell.com>
+References: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
+ <20230530005337.3687938-2-chris.packham@alliedtelesis.co.nz>
+ <a1b2caed-b314-59db-ee00-92fc983150f6@linaro.org>
+ <bc538264-20f5-03e1-a4a6-6f9f076f15eb@alliedtelesis.co.nz>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <bc538264-20f5-03e1-a4a6-6f9f076f15eb@alliedtelesis.co.nz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230530_195907_579753_0D118780 
-X-CRM114-Status: GOOD (  10.74  )
+X-CRM114-CacheID: sfid-20230531_000041_562651_846D43CA 
+X-CRM114-Status: GOOD (  10.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,28 +111,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This series adds support for the NAND Flash Controller on the AC5/AC5X SOC. It
-needs to be applied on top of two other recent series [1] (applied to
-mtd/fixes, not yet in mainline) [2] (v7 out for review).
+On 31/05/2023 01:20, Chris Packham wrote:
+> On 31/05/23 00:24, Krzysztof Kozlowski wrote:
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    oneOf:
+>>> +      - items:
+>>> +          - const: marvell,armada-8k-nand-controller
+>>> +          - const: marvell,armada370-nand-controller
+>>> +      - enum:
+>>> +          - marvell,armada370-nand-controller
+>>> +          - marvell,pxa3xx-nand-controller
+>> You miss here deprecated compatibles, which are BTW still used. Don't
+>> drop properties and compatibles during conversion.
+> Is there any way to indicate that a compatible value is deprecated? I 
+> know how to mark a property as deprecated but how do I indicate this for 
+> specific compatible values?
 
-I've tried to stick to the minimal changes required to get the NFC working on
-the board I have (AC5X + S34ML02G2). Marvell's SDK has hard coded tables of
-ndtr values for the different timing modes but so far that seems unnecessary.
+The same way. git grep -C 5 compatible. First result in the DT bindings...
 
-[1] - https://lore.kernel.org/linux-mtd/20230525003154.2303012-1-chris.packham@alliedtelesis.co.nz/raw
-[2] - https://lore.kernel.org/linux-mtd/20230530235456.1009082-1-chris.packham@alliedtelesis.co.nz/raw
-
-Chris Packham (2):
-  dt-bindings: mtd: Add AC5 specific binding
-  mtd: rawnand: marvell: add support for AC5 SoC
-
- .../bindings/mtd/marvell,nand-controller.yaml    |  1 +
- drivers/mtd/nand/raw/Kconfig                     |  2 +-
- drivers/mtd/nand/raw/marvell_nand.c              | 16 ++++++++++++++++
- 3 files changed, 18 insertions(+), 1 deletion(-)
-
--- 
-2.40.1
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
