@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9619C77B7A
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:56:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3D92C7EE31
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:56:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZPOp0p5OjADsO7I53aTLD2yt0qirDdTqEkfrSfYpfIw=; b=WgxYuq2AjyOMzx
-	Ql0eugDmfQ7qsDfXErgTZf7LiRBFjbin4sUKTDlWRjUZDcKBzYoLBEPFqGieOngKMjmNHWJmxyF8I
-	HZxhBgPx6uIVbcQGrXH/mcikDjGgUsTGgkwhyj/z97tVDeXmQd1YE7DTf3X+MEbHt/aWOApqGF8q9
-	fGnj9g1oz9VpDFPu/zPJaf0wnN83zZ59hgIkZ6eiF5NbKW1/hlBysyWsCz9uNW2JKKyR1+8E00GBZ
-	0hU0jNg4CtPU3tn+MSToqy1LnxXvVkoRo8q/jlcv2Nx075WPpi3QVtzZBcHLkB6oL6LdLqkcRikOC
-	I2m4hl4FLU065/V6z4cQ==;
+	List-Owner; bh=qLL+CH4NvqYEt82z44niJ6CL7uAjtcHbILIIBfrmO2E=; b=OVfFTNouS51WXm
+	PMYqKHP37OnbCeXqiDuq59x6tbt7uGOgpfVj7rwP4ZgPGa9c46c7umqTXE/dnFVz7Mm1IBOdmofpy
+	UxFwns1G9JUk+gQZGCc8065Q2tidLpSEhUJzin3uaW2tUI75vOWypLXAMJB+bRHnvpGMi4yBPlfEN
+	71FIG8td5pA00FhswHsBnXdQhEx7F1j+dU7pENOFxSDnbgUvKDQGyx+nETLbHong06jmeTb0MhTfP
+	q//932ObhgsRgWog6DItZCupDTf9ieH2kEbO0BNVe/XoMXVlUgPgDgl1BUQB4vKPj6h2FScu5Z2tW
+	dEzHuvUKskoDYH4TtAEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LMh-00HQwq-34;
-	Wed, 31 May 2023 12:55:47 +0000
+	id 1q4LMm-00HQxy-2B;
+	Wed, 31 May 2023 12:55:52 +0000
 Received: from [2001:4bb8:182:6d06:2e49:a56:513a:92ee] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LMf-00HQvA-0T;
-	Wed, 31 May 2023 12:55:46 +0000
+	id 1q4LMk-00HQwo-2V;
+	Wed, 31 May 2023 12:55:51 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,9 +42,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 01/24] driver core: return bool from driver_probe_done
-Date: Wed, 31 May 2023 14:55:12 +0200
-Message-Id: <20230531125535.676098-2-hch@lst.de>
+Subject: [PATCH 02/24] PM: hibernate: factor out a helper to find the resume device
+Date: Wed, 31 May 2023 14:55:13 +0200
+Message-Id: <20230531125535.676098-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531125535.676098-1-hch@lst.de>
 References: <20230531125535.676098-1-hch@lst.de>
@@ -65,64 +65,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-bool is the most sensible return value for a yes/no return.  Also
-add __init as this funtion is only called from the early boot code.
+Split the logic to find the resume device out software_resume and into
+a separate helper to start unwindig the convoluted goto logic.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 ---
- drivers/base/dd.c             | 6 ++----
- include/linux/device/driver.h | 2 +-
- init/do_mounts.c              | 2 +-
- 3 files changed, 4 insertions(+), 6 deletions(-)
+ kernel/power/hibernate.c | 72 +++++++++++++++++++++-------------------
+ 1 file changed, 37 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 9c09ca5c4ab68e..878aa7646b37e4 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -751,14 +751,12 @@ static int really_probe_debug(struct device *dev, struct device_driver *drv)
-  *
-  * Should somehow figure out how to use a semaphore, not an atomic variable...
-  */
--int driver_probe_done(void)
-+bool __init driver_probe_done(void)
- {
- 	int local_probe_count = atomic_read(&probe_count);
- 
- 	pr_debug("%s: probe_count = %d\n", __func__, local_probe_count);
--	if (local_probe_count)
--		return -EBUSY;
--	return 0;
-+	return !local_probe_count;
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index 30d1274f03f625..07279506366255 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -910,6 +910,41 @@ int hibernate_quiet_exec(int (*func)(void *data), void *data)
  }
+ EXPORT_SYMBOL_GPL(hibernate_quiet_exec);
  
++static int find_resume_device(void)
++{
++	if (!strlen(resume_file))
++		return -ENOENT;
++
++	pm_pr_dbg("Checking hibernation image partition %s\n", resume_file);
++
++	if (resume_delay) {
++		pr_info("Waiting %dsec before reading resume device ...\n",
++			resume_delay);
++		ssleep(resume_delay);
++	}
++
++	/* Check if the device is there */
++	swsusp_resume_device = name_to_dev_t(resume_file);
++	if (swsusp_resume_device)
++		return 0;
++
++	/*
++	 * Some device discovery might still be in progress; we need to wait for
++	 * this to finish.
++	 */
++	wait_for_device_probe();
++	if (resume_wait) {
++		while (!(swsusp_resume_device = name_to_dev_t(resume_file)))
++			msleep(10);
++		async_synchronize_full();
++	}
++
++	swsusp_resume_device = name_to_dev_t(resume_file);
++	if (!swsusp_resume_device)
++		return -ENODEV;
++	return 0;
++}
++
  /**
-diff --git a/include/linux/device/driver.h b/include/linux/device/driver.h
-index c244267a67443e..7738f458995fba 100644
---- a/include/linux/device/driver.h
-+++ b/include/linux/device/driver.h
-@@ -126,7 +126,7 @@ int __must_check driver_register(struct device_driver *drv);
- void driver_unregister(struct device_driver *drv);
+  * software_resume - Resume from a saved hibernation image.
+  *
+@@ -949,45 +984,12 @@ static int software_resume(void)
  
- struct device_driver *driver_find(const char *name, const struct bus_type *bus);
--int driver_probe_done(void);
-+bool __init driver_probe_done(void);
- void wait_for_device_probe(void);
- void __init wait_for_init_devices_probe(void);
+ 	snapshot_test = false;
  
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 811e94daf0a84a..2fe7901b5bcfaf 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -635,7 +635,7 @@ void __init prepare_namespace(void)
- 	if ((ROOT_DEV == 0) && root_wait) {
- 		printk(KERN_INFO "Waiting for root device %s...\n",
- 			saved_root_name);
--		while (driver_probe_done() != 0 ||
-+		while (!driver_probe_done() ||
- 			(ROOT_DEV = name_to_dev_t(saved_root_name)) == 0)
- 			msleep(5);
- 		async_synchronize_full();
+-	if (swsusp_resume_device)
+-		goto Check_image;
+-
+-	if (!strlen(resume_file)) {
+-		error = -ENOENT;
+-		goto Unlock;
+-	}
+-
+-	pm_pr_dbg("Checking hibernation image partition %s\n", resume_file);
+-
+-	if (resume_delay) {
+-		pr_info("Waiting %dsec before reading resume device ...\n",
+-			resume_delay);
+-		ssleep(resume_delay);
+-	}
+-
+-	/* Check if the device is there */
+-	swsusp_resume_device = name_to_dev_t(resume_file);
+ 	if (!swsusp_resume_device) {
+-		/*
+-		 * Some device discovery might still be in progress; we need
+-		 * to wait for this to finish.
+-		 */
+-		wait_for_device_probe();
+-
+-		if (resume_wait) {
+-			while ((swsusp_resume_device = name_to_dev_t(resume_file)) == 0)
+-				msleep(10);
+-			async_synchronize_full();
+-		}
+-
+-		swsusp_resume_device = name_to_dev_t(resume_file);
+-		if (!swsusp_resume_device) {
+-			error = -ENODEV;
++		error = find_resume_device();
++		if (error)
+ 			goto Unlock;
+-		}
+ 	}
+ 
+- Check_image:
+ 	pm_pr_dbg("Hibernation image partition %d:%d present\n",
+ 		MAJOR(swsusp_resume_device), MINOR(swsusp_resume_device));
+ 
 -- 
 2.39.2
 
