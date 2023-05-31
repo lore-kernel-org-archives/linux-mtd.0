@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3663C77B73
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:57:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1292EC7EE2E
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:57:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z8d0fYv5GHOSjeIAqimHEPpN8Wl1WsirZ6T9RznxMAo=; b=LCBZdwQick/s34
-	pnkJ/8PCSeEhf3qJQT8Y3tAjvn55J3yKUQ9G2RWIqm2XtvjI7Uqkpq57iOfADw+unuCthjdV+uxzZ
-	wHXwoIZnPt1X6nKtwwM5q9z3rikd1AmF9fvDByNKU5BBnZdX1lwfH5lS77bcQUhsDSL3bNADpK13C
-	YeSnf5dxn2Yy7+ItCoIBM8DbX/Y2bwkUhUZK30K4DtY7ABDu8ivEV/e3feYaByDKujP1b1Yz7VjVv
-	/yfzSuG5aEsJ9qL6xYRSaqucvdgqGPS3osCnXhBvS3vwpd+NOm8cg2E+uwcXy99dcd36GZFsV/2mX
-	e2IoY2zs8AWKS9iqVwdw==;
+	List-Owner; bh=K31EKj9BpjT6hhtIHFp0Ztn7m6aQIm9Dxh12AFmYye8=; b=z35lEnPlpFFZeE
+	sM9zNUjG6XeGWcrq76X6JDlR48GZGeE82GJ8ASLiYHwqFqbRvq6npwQ/AG5bQDvml+bQPiBnEsvHR
+	oU50x3Oa3RBIOpsKUDlESHERuaeXiCkyCSbkpgBhhAyM2f5+71Jqa3gHkgt+sngZ7iyPC58Af5WrC
+	snFmP4VsBpLZtwofouht51fWAaGt0rE/ezfsFqiHxwGBQRF2f8uvhtuHTIkXjCUvU0eX3kJ/e0edS
+	l5KqwOyry9FCMX3wgo4OF4HibJqvkqm1LAx0XrTTmdy4GiBpIvm4uciNGJAK1z85SC29W7ZaKWipw
+	XFaqrNa0OK4ajR7/y4DQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LOA-00HS12-0X;
-	Wed, 31 May 2023 12:57:18 +0000
+	id 1q4LOC-00HS3I-15;
+	Wed, 31 May 2023 12:57:20 +0000
 Received: from [2001:4bb8:182:6d06:2e49:a56:513a:92ee] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LO6-00HRx9-1J;
-	Wed, 31 May 2023 12:57:14 +0000
+	id 1q4LO9-00HRzk-0U;
+	Wed, 31 May 2023 12:57:17 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,9 +42,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 18/24] dm: open code dm_get_dev_t in dm_init_init
-Date: Wed, 31 May 2023 14:55:29 +0200
-Message-Id: <20230531125535.676098-19-hch@lst.de>
+Subject: [PATCH 19/24] dm: remove dm_get_dev_t
+Date: Wed, 31 May 2023 14:55:30 +0200
+Message-Id: <20230531125535.676098-20-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531125535.676098-1-hch@lst.de>
 References: <20230531125535.676098-1-hch@lst.de>
@@ -65,32 +65,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-dm_init_init is called from early boot code, and thus lookup_bdev
-will never succeed.  Just open code that call to early_lookup_bdev
-instead.
+Open code dm_get_dev_t in the only remaining caller, and propagate the
+exact error code from lookup_bdev and early_lookup_bdev.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Mike Snitzer <snitzer@kernel.org>
 ---
- drivers/md/dm-init.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/md/dm-table.c         | 22 +++++-----------------
+ include/linux/device-mapper.h |  2 --
+ 2 files changed, 5 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/md/dm-init.c b/drivers/md/dm-init.c
-index d369457dbed0ed..2a71bcdba92d14 100644
---- a/drivers/md/dm-init.c
-+++ b/drivers/md/dm-init.c
-@@ -293,8 +293,10 @@ static int __init dm_init_init(void)
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 05aa16da43b0d5..1576b408768d4b 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -323,20 +323,6 @@ static int upgrade_mode(struct dm_dev_internal *dd, fmode_t new_mode,
+ 	return 0;
+ }
  
- 	for (i = 0; i < ARRAY_SIZE(waitfor); i++) {
- 		if (waitfor[i]) {
-+			dev_t dev;
-+
- 			DMINFO("waiting for device %s ...", waitfor[i]);
--			while (!dm_get_dev_t(waitfor[i]))
-+			while (early_lookup_bdev(waitfor[i], &dev))
- 				fsleep(5000);
- 		}
+-/*
+- * Convert the path to a device
+- */
+-dev_t dm_get_dev_t(const char *path)
+-{
+-	dev_t dev;
+-
+-	if (lookup_bdev(path, &dev) &&
+-	    early_lookup_bdev(path, &dev))
+-		return 0;
+-	return dev;
+-}
+-EXPORT_SYMBOL_GPL(dm_get_dev_t);
+-
+ /*
+  * Add a device to the list, or just increment the usage count if
+  * it's already present.
+@@ -359,9 +345,11 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
+ 		if (MAJOR(dev) != major || MINOR(dev) != minor)
+ 			return -EOVERFLOW;
+ 	} else {
+-		dev = dm_get_dev_t(path);
+-		if (!dev)
+-			return -ENODEV;
++		r = lookup_bdev(path, &dev);
++		if (r)
++			r = early_lookup_bdev(path, &dev);
++		if (r)
++			return r;
  	}
+ 	if (dev == disk_devt(t->md->disk))
+ 		return -EINVAL;
+diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
+index a52d2b9a68460a..c27b84002d8382 100644
+--- a/include/linux/device-mapper.h
++++ b/include/linux/device-mapper.h
+@@ -170,8 +170,6 @@ struct dm_dev {
+ 	char name[16];
+ };
+ 
+-dev_t dm_get_dev_t(const char *path);
+-
+ /*
+  * Constructors should call these functions to ensure destination devices
+  * are opened/closed correctly.
 -- 
 2.39.2
 
