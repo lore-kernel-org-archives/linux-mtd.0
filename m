@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D9D9C77B7A
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3663C77B73
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WeeE55ZYGdlCXj8F9oWvkYl8Wouuil9BBIgZJ46xVqk=; b=2mcFF5AzErybnJ
-	nw87DtqmcvvVFOsOe/oPvDZ9yV9No9bVA6EthWdF0D5Z0PYfz1uCenNA0a8KXsYGGgcH9NTHsYJCf
-	LwGmmNyA749/u6XQicgqBqx2qxRcWCiTxVqHK13x+T0+OqFAaP+AvozuZ5QqJF8gOP40p+LpQOwKJ
-	cmhlIeJZfE3Sou0hwfQXfG2C3MqfGcDKbBa/qx/ET4Ug9QoZeUeVrTuwhEDg/rDo3sA6PQEilSwqd
-	qTrPeWpBfc827vedEgoKe32fhqA0pOyi3mG/ByhPLdgBNXB/JKvgNG9J3h6/SVwTBKbBeot9kOEdr
-	7AMresgKXI3bMp9vjoeA==;
+	List-Owner; bh=Z8d0fYv5GHOSjeIAqimHEPpN8Wl1WsirZ6T9RznxMAo=; b=LCBZdwQick/s34
+	pnkJ/8PCSeEhf3qJQT8Y3tAjvn55J3yKUQ9G2RWIqm2XtvjI7Uqkpq57iOfADw+unuCthjdV+uxzZ
+	wHXwoIZnPt1X6nKtwwM5q9z3rikd1AmF9fvDByNKU5BBnZdX1lwfH5lS77bcQUhsDSL3bNADpK13C
+	YeSnf5dxn2Yy7+ItCoIBM8DbX/Y2bwkUhUZK30K4DtY7ABDu8ivEV/e3feYaByDKujP1b1Yz7VjVv
+	/yfzSuG5aEsJ9qL6xYRSaqucvdgqGPS3osCnXhBvS3vwpd+NOm8cg2E+uwcXy99dcd36GZFsV/2mX
+	e2IoY2zs8AWKS9iqVwdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LON-00HSDD-12;
-	Wed, 31 May 2023 12:57:31 +0000
+	id 1q4LOA-00HS12-0X;
+	Wed, 31 May 2023 12:57:18 +0000
 Received: from [2001:4bb8:182:6d06:2e49:a56:513a:92ee] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LOK-00HS6f-0D;
-	Wed, 31 May 2023 12:57:29 +0000
+	id 1q4LO6-00HRx9-1J;
+	Wed, 31 May 2023 12:57:14 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,9 +42,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 22/24] mtd: block2mtd: factor the early block device open logic into a helper
-Date: Wed, 31 May 2023 14:55:33 +0200
-Message-Id: <20230531125535.676098-23-hch@lst.de>
+Subject: [PATCH 18/24] dm: open code dm_get_dev_t in dm_init_init
+Date: Wed, 31 May 2023 14:55:29 +0200
+Message-Id: <20230531125535.676098-19-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531125535.676098-1-hch@lst.de>
 References: <20230531125535.676098-1-hch@lst.de>
@@ -65,97 +65,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Simplify add_device a bit by splitting out the cumbersome early boot logic
-into a separate helper.
+dm_init_init is called from early boot code, and thus lookup_bdev
+will never succeed.  Just open code that call to early_lookup_bdev
+instead.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Mike Snitzer <snitzer@kernel.org>
 ---
- drivers/mtd/devices/block2mtd.c | 53 +++++++++++++++++++--------------
- 1 file changed, 30 insertions(+), 23 deletions(-)
+ drivers/md/dm-init.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index 4c21e9f13bead5..182eed68c75634 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -215,34 +215,18 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
- 	kfree(dev);
- }
+diff --git a/drivers/md/dm-init.c b/drivers/md/dm-init.c
+index d369457dbed0ed..2a71bcdba92d14 100644
+--- a/drivers/md/dm-init.c
++++ b/drivers/md/dm-init.c
+@@ -293,8 +293,10 @@ static int __init dm_init_init(void)
  
--
--static struct block2mtd_dev *add_device(char *devname, int erase_size,
--		char *label, int timeout)
-+static struct block_device *mdtblock_early_get_bdev(const char *devname,
-+		fmode_t mode, int timeout, struct block2mtd_dev *dev)
- {
-+	struct block_device *bdev = ERR_PTR(-ENODEV);
- #ifndef MODULE
- 	int i;
--#endif
--	const fmode_t mode = FMODE_READ | FMODE_WRITE | FMODE_EXCL;
--	struct block_device *bdev;
--	struct block2mtd_dev *dev;
--	char *name;
--
--	if (!devname)
--		return NULL;
--
--	dev = kzalloc(sizeof(struct block2mtd_dev), GFP_KERNEL);
--	if (!dev)
--		return NULL;
- 
--	/* Get a handle on the device */
--	bdev = blkdev_get_by_path(devname, mode, dev);
--
--#ifndef MODULE
- 	/*
- 	 * We might not have the root device mounted at this point.
- 	 * Try to resolve the device name by other means.
- 	 */
--	for (i = 0; IS_ERR(bdev) && i <= timeout; i++) {
-+	for (i = 0; i <= timeout; i++) {
- 		dev_t devt;
- 
- 		if (i)
-@@ -254,12 +238,35 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 			msleep(1000);
- 		wait_for_device_probe();
- 
--		if (early_lookup_bdev(devname, &devt))
--			continue;
--		bdev = blkdev_get_by_dev(devt, mode, dev);
-+		if (!early_lookup_bdev(devname, &devt)) {
-+			bdev = blkdev_get_by_dev(devt, mode, dev);
-+			if (!IS_ERR(bdev))
-+				break;
-+		}
+ 	for (i = 0; i < ARRAY_SIZE(waitfor); i++) {
+ 		if (waitfor[i]) {
++			dev_t dev;
++
+ 			DMINFO("waiting for device %s ...", waitfor[i]);
+-			while (!dm_get_dev_t(waitfor[i]))
++			while (early_lookup_bdev(waitfor[i], &dev))
+ 				fsleep(5000);
+ 		}
  	}
- #endif
-+	return bdev;
-+}
-+
-+static struct block2mtd_dev *add_device(char *devname, int erase_size,
-+		char *label, int timeout)
-+{
-+	const fmode_t mode = FMODE_READ | FMODE_WRITE | FMODE_EXCL;
-+	struct block_device *bdev;
-+	struct block2mtd_dev *dev;
-+	char *name;
- 
-+	if (!devname)
-+		return NULL;
-+
-+	dev = kzalloc(sizeof(struct block2mtd_dev), GFP_KERNEL);
-+	if (!dev)
-+		return NULL;
-+
-+	/* Get a handle on the device */
-+	bdev = blkdev_get_by_path(devname, mode, dev);
-+	if (IS_ERR(bdev))
-+		bdev = mdtblock_early_get_bdev(devname, mode, timeout, dev);
- 	if (IS_ERR(bdev)) {
- 		pr_err("error: cannot open device %s\n", devname);
- 		goto err_free_block2mtd;
 -- 
 2.39.2
 
