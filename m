@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A465CC77B7A
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58AEAC7EE2E
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 12:56:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AHQ4xLmC7IA1o0P6jZ97XRYRlWJj1XBQdgAvmHVYA9o=; b=ewXF1gDI11KKVm
-	pDJwuemqQh74WYbaPq+H5iPLmXuqSRWpI+9CTmnpi1+Cdl3Y3UAuBimtYZClD0W0Uo5PVkqjJ6ZCA
-	/XQxqvMRtMJRQ4FbbImzEda8sostSoSFG0AqCgq9vMHmIPdyShoUQXDglaQJi9/a425MigoN61WXz
-	IgScZcwr6LQF4P9NIb1fNYIaDH1sJPHIBGiAabKbsIeZq+xL/9lA4kOk671iZgSJ7DlXZ7wCbMB97
-	vdyWvOP+kwzQ1TsTf3A2HapzAlCLjPi/B4ADP8Ubp7B4kmBGn2m69mECf2XF1BWaDPRtRFz1qG0e5
-	z9D3/UYJEyZok3e0m4zg==;
+	List-Owner; bh=jnj6sixAp13zN/zzNVdR6eKwu6fRAcqFfX77iICwqhs=; b=IzSCJcEpj+ge4w
+	r0QVZKi2arLKhEgZL7mkKGPIAMkueYCvtOnzwR3KXyz7X4ZockOufMX5XD9fsvrGbBQ/0UeUCbkce
+	3dkwK/b07TOO2WU6vCBbGiRrpTReLpa1WGEQk1Va5w01lsAdRMIdHW2+z0Njk8yEJ0u7yGZfNutcH
+	AFee7KO8Izc4kKJKCN4qgULJorobWKSlblDCNgiVsWOJ+DJsrd8Xdb5GCEG9qxH0qiz7+3FKCzX0L
+	wR7oRnWvYdO2SPVwUIDQfJ9KwQPrEJlOycTIfbgnHTJdqA4z4alsCVDIwJwFtF2sIwYQY8h1yTIdf
+	TfNcQ9H6y78yzU/Is9cQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LMs-00HR16-1f;
-	Wed, 31 May 2023 12:55:58 +0000
+	id 1q4LN3-00HR6i-1Q;
+	Wed, 31 May 2023 12:56:09 +0000
 Received: from [2001:4bb8:182:6d06:2e49:a56:513a:92ee] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LMq-00HQy6-2x;
-	Wed, 31 May 2023 12:55:57 +0000
+	id 1q4LN0-00HR49-2P;
+	Wed, 31 May 2023 12:56:07 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,9 +42,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-block@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 03/24] PM: hibernate: remove the global snapshot_test variable
-Date: Wed, 31 May 2023 14:55:14 +0200
-Message-Id: <20230531125535.676098-4-hch@lst.de>
+Subject: [PATCH 05/24] init: remove pointless Root_* values
+Date: Wed, 31 May 2023 14:55:16 +0200
+Message-Id: <20230531125535.676098-6-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531125535.676098-1-hch@lst.de>
 References: <20230531125535.676098-1-hch@lst.de>
@@ -65,129 +65,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Passing call dependent variable in global variables is a huge
-antipattern.  Fix it up.
+Remove all unused defines, and just use the expanded versions for
+the SCSI disk majors.
+
+I've decided to keep Root_RAM0 even if it could be expanded as there
+is a lot of special casing for it in the init code.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 ---
- kernel/power/hibernate.c | 17 ++++++-----------
- kernel/power/power.h     |  3 +--
- kernel/power/swap.c      |  2 +-
- 3 files changed, 8 insertions(+), 14 deletions(-)
+ arch/alpha/kernel/setup.c               | 2 +-
+ arch/ia64/kernel/setup.c                | 2 +-
+ arch/powerpc/platforms/powermac/setup.c | 3 ++-
+ include/linux/root_dev.h                | 8 --------
+ 4 files changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 07279506366255..78696aa04f5ca3 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -64,7 +64,6 @@ enum {
- static int hibernation_mode = HIBERNATION_SHUTDOWN;
+diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
+index 33bf3a62700270..b650ff1cb022ee 100644
+--- a/arch/alpha/kernel/setup.c
++++ b/arch/alpha/kernel/setup.c
+@@ -658,7 +658,7 @@ setup_arch(char **cmdline_p)
+ #endif
  
- bool freezer_test_done;
--bool snapshot_test;
+ 	/* Default root filesystem to sda2.  */
+-	ROOT_DEV = Root_SDA2;
++	ROOT_DEV = MKDEV(SCSI_DISK0_MAJOR, 2);
  
- static const struct platform_hibernation_ops *hibernation_ops;
- 
-@@ -684,7 +683,7 @@ static void power_down(void)
- 		cpu_relax();
- }
- 
--static int load_image_and_restore(void)
-+static int load_image_and_restore(bool snapshot_test)
- {
- 	int error;
- 	unsigned int flags;
-@@ -721,6 +720,7 @@ static int load_image_and_restore(void)
-  */
- int hibernate(void)
- {
-+	bool snapshot_test = false;
- 	unsigned int sleep_flags;
- 	int error;
- 
-@@ -748,9 +748,6 @@ int hibernate(void)
- 	if (error)
- 		goto Exit;
- 
--	/* protected by system_transition_mutex */
--	snapshot_test = false;
--
- 	lock_device_hotplug();
- 	/* Allocate memory management structures */
- 	error = create_basic_memory_bitmaps();
-@@ -792,9 +789,9 @@ int hibernate(void)
- 	unlock_device_hotplug();
- 	if (snapshot_test) {
- 		pm_pr_dbg("Checking hibernation image\n");
--		error = swsusp_check();
-+		error = swsusp_check(snapshot_test);
- 		if (!error)
--			error = load_image_and_restore();
-+			error = load_image_and_restore(snapshot_test);
- 	}
- 	thaw_processes();
- 
-@@ -982,8 +979,6 @@ static int software_resume(void)
+ #ifdef CONFIG_EISA
+ 	/* FIXME:  only set this when we actually have EISA in this box? */
+diff --git a/arch/ia64/kernel/setup.c b/arch/ia64/kernel/setup.c
+index c0572804427275..becdb4f33c2195 100644
+--- a/arch/ia64/kernel/setup.c
++++ b/arch/ia64/kernel/setup.c
+@@ -627,7 +627,7 @@ setup_arch (char **cmdline_p)
+ 	 * is physical disk 1 partition 1 and the Linux root disk is
+ 	 * physical disk 1 partition 2.
  	 */
- 	mutex_lock_nested(&system_transition_mutex, SINGLE_DEPTH_NESTING);
+-	ROOT_DEV = Root_SDA2;		/* default to second partition on first drive */
++	ROOT_DEV = MKDEV(SCSI_DISK0_MAJOR, 2);
  
--	snapshot_test = false;
--
- 	if (!swsusp_resume_device) {
- 		error = find_resume_device();
- 		if (error)
-@@ -994,7 +989,7 @@ static int software_resume(void)
- 		MAJOR(swsusp_resume_device), MINOR(swsusp_resume_device));
+ 	if (is_uv_system())
+ 		uv_setup(cmdline_p);
+diff --git a/arch/powerpc/platforms/powermac/setup.c b/arch/powerpc/platforms/powermac/setup.c
+index 193cc9c394221b..0c41f4b005bcf3 100644
+--- a/arch/powerpc/platforms/powermac/setup.c
++++ b/arch/powerpc/platforms/powermac/setup.c
+@@ -76,7 +76,8 @@ int pmac_newworld;
  
- 	pm_pr_dbg("Looking for hibernation image.\n");
--	error = swsusp_check();
-+	error = swsusp_check(false);
- 	if (error)
- 		goto Unlock;
+ static int current_root_goodness = -1;
  
-@@ -1022,7 +1017,7 @@ static int software_resume(void)
- 		goto Close_Finish;
- 	}
+-#define DEFAULT_ROOT_DEVICE Root_SDA1	/* sda1 - slightly silly choice */
++/* sda1 - slightly silly choice */
++#define DEFAULT_ROOT_DEVICE	MKDEV(SCSI_DISK0_MAJOR, 1)
  
--	error = load_image_and_restore();
-+	error = load_image_and_restore(false);
- 	thaw_processes();
-  Finish:
- 	pm_notifier_call_chain(PM_POST_RESTORE);
-diff --git a/kernel/power/power.h b/kernel/power/power.h
-index b83c8d5e188dec..978189fcafd124 100644
---- a/kernel/power/power.h
-+++ b/kernel/power/power.h
-@@ -59,7 +59,6 @@ asmlinkage int swsusp_save(void);
+ sys_ctrler_t sys_ctrler = SYS_CTRLER_UNKNOWN;
+ EXPORT_SYMBOL(sys_ctrler);
+diff --git a/include/linux/root_dev.h b/include/linux/root_dev.h
+index 4e78651371ba92..ed3ea8da642972 100644
+--- a/include/linux/root_dev.h
++++ b/include/linux/root_dev.h
+@@ -10,14 +10,6 @@ enum {
+ 	Root_NFS = MKDEV(UNNAMED_MAJOR, 255),
+ 	Root_CIFS = MKDEV(UNNAMED_MAJOR, 254),
+ 	Root_RAM0 = MKDEV(RAMDISK_MAJOR, 0),
+-	Root_RAM1 = MKDEV(RAMDISK_MAJOR, 1),
+-	Root_FD0 = MKDEV(FLOPPY_MAJOR, 0),
+-	Root_HDA1 = MKDEV(IDE0_MAJOR, 1),
+-	Root_HDA2 = MKDEV(IDE0_MAJOR, 2),
+-	Root_SDA1 = MKDEV(SCSI_DISK0_MAJOR, 1),
+-	Root_SDA2 = MKDEV(SCSI_DISK0_MAJOR, 2),
+-	Root_HDC1 = MKDEV(IDE1_MAJOR, 1),
+-	Root_SR0 = MKDEV(SCSI_CDROM_MAJOR, 0),
+ };
  
- /* kernel/power/hibernate.c */
- extern bool freezer_test_done;
--extern bool snapshot_test;
- 
- extern int hibernation_snapshot(int platform_mode);
- extern int hibernation_restore(int platform_mode);
-@@ -174,7 +173,7 @@ extern int swsusp_swap_in_use(void);
- #define SF_HW_SIG		8
- 
- /* kernel/power/hibernate.c */
--extern int swsusp_check(void);
-+int swsusp_check(bool snapshot_test);
- extern void swsusp_free(void);
- extern int swsusp_read(unsigned int *flags_p);
- extern int swsusp_write(unsigned int flags);
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index 92e41ed292ada8..efed11568bfc72 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -1514,7 +1514,7 @@ int swsusp_read(unsigned int *flags_p)
-  *      swsusp_check - Check for swsusp signature in the resume device
-  */
- 
--int swsusp_check(void)
-+int swsusp_check(bool snapshot_test)
- {
- 	int error;
- 	void *holder;
+ extern dev_t ROOT_DEV;
 -- 
 2.39.2
 
