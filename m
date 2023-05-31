@@ -4,51 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7C97C7EE2F
-	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 14:01:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A90FC77B7A
+	for <linux-mtd@archiver.kernel.org>; Wed, 31 May 2023 16:23:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
+	In-Reply-To:Subject:cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uRSw4RUhJrXTQlTTbTEN8BB65TolG9chcBxwgGfUM+E=; b=rIXxPtngDTWyGA
-	lWty1oYo8SgnuXCaaQTepCV79MSCjmIbiq6vSedfxcRWak6/7w5C96SmnZwMN/kOkmqxnK0DNrhD2
-	0uj+eTswf+utnehP1Ln/EeiR/knz1G3k/WBHIwi6navjViwrz6hBhXZxjQIHcfHw6zBj69aGUiKAU
-	Z9/ob5KV70ItPP+GmwfSZiJ4LZJgojOpseTI2jnhcsl83yornYGcUW7hT6OEFT8fmCb7pQNGgA3Fu
-	nUBSp1nfk6xJaQbznBDzvqyDIc3/3y0OqrIkTid75+G+ROOyfgIkP6fWtDlQdAPaRx1vxJs9EE+6B
-	cdt1zg08DQN2lIzofinA==;
+	List-Owner; bh=C/SLoyAw5njSsVyTB2m9Sg4CGdgiNy1MdNeEwXiXwPU=; b=LjMt7mbWduarSl
+	OoeaDb3LGgAheSA4mSMgi0rubvbOOLHSFdH6H57BnbGC2gy2EvFMM7NXbaeGzAxWiuL/ke+Mq+UGv
+	TElLTB92ul2gjVIQxRUDBaQmf2CCIeAIKWgmvGmOPubppfCpFrtgzYlO4tdRbzo/evWGutjqt6/yV
+	myFYEl/UniL//kLBNCqw+AdTdrL5XntZxt3FeSmVl+9yy2nx6qREQWxObk4eaWvdPhp0fIK3Tfd/l
+	DwuIbjBDQv++RH/8+HSAA+fKdQionw38aggtSJ3arvPBoa6G7/vY4u5bPxZ9XH7BZRugxEpLlW+7d
+	Ck/n5KSdeRMQVUmzPeig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4MNN-0004A2-1U;
-	Wed, 31 May 2023 14:00:33 +0000
-Received: from [2001:4bb8:182:6d06:2e49:a56:513a:92ee] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4LNh-00HRaM-09;
-	Wed, 31 May 2023 12:56:49 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Joern Engel <joern@lazybastard.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Loic Poulain <loic.poulain@linaro.org>,
-	dm-devel@redhat.com,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH 13/24] init: improve the name_to_dev_t interface
-Date: Wed, 31 May 2023 14:55:24 +0200
-Message-Id: <20230531125535.676098-14-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230531125535.676098-1-hch@lst.de>
-References: <20230531125535.676098-1-hch@lst.de>
+	id 1q4Obb-000SLk-0E;
+	Wed, 31 May 2023 16:23:23 +0000
+Received: from pb-smtp21.pobox.com ([173.228.157.53])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1q4ObX-000SKi-10
+	for linux-mtd@lists.infradead.org;
+	Wed, 31 May 2023 16:23:20 +0000
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+	by pb-smtp21.pobox.com (Postfix) with ESMTP id E99C824CEF;
+	Wed, 31 May 2023 12:23:12 -0400 (EDT)
+	(envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+	:to:cc:subject:in-reply-to:message-id:references:mime-version
+	:content-type; s=sasl; bh=dNwCIwme9KBD1mWufS5y3c01KDxL685FUJh+d+
+	qk3m4=; b=YiFI2vten4gNti2tTacIM2M11kLi+9Q1KHqpHMbAr3KXlYu/1RE/sq
+	456iUc/lLgwJk6LFBFWRz/MF/Z8TyA+FzqtgieWT5ihGQDA0x6bIo0vgMVHDPxud
+	zePcrz7Kzwf/cfY/vz+sL4K1+muj5R5TJB8VatqBD31fBGwF3UJ4o=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+	by pb-smtp21.pobox.com (Postfix) with ESMTP id E23B324CEE;
+	Wed, 31 May 2023 12:23:12 -0400 (EDT)
+	(envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=dNwCIwme9KBD1mWufS5y3c01KDxL685FUJh+d+qk3m4=; b=jUwXe/UImPUuriF+nUPJ32jUC4pddsRFChZqbwvWKm5+yFgTxab+yleMErVOU8BBHtUm/HC3eVj2khioxDg+kIWOvykQkM0VTYOAsA5hV9IH+ba4Td4p+IGyz88Gp23K10CmQQcM6hnhY68rxXMOAgPtVSsIKO2OcLLvLdeyiac=
+Received: from yoda.home (unknown [184.162.17.228])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by pb-smtp21.pobox.com (Postfix) with ESMTPSA id 6CC8C24CED;
+	Wed, 31 May 2023 12:23:09 -0400 (EDT)
+	(envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu [10.0.0.101])
+	by yoda.home (Postfix) with ESMTPSA id 52C6C7C9599;
+	Wed, 31 May 2023 12:23:07 -0400 (EDT)
+Date: Wed, 31 May 2023 12:23:07 -0400 (EDT)
+From: Nicolas Pitre <nico@fluxnic.net>
+To: Linus Walleij <linus.walleij@linaro.org>
+cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+    Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+    linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: cfi_cmdset_0001: Do not check for OTP outside
+ device
+In-Reply-To: <20230530205146.3200321-1-linus.walleij@linaro.org>
+Message-ID: <34n3r14p-1q7p-n074-p9os-sqsp11n3n1p4@syhkavp.arg>
+References: <20230530205146.3200321-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
+X-Pobox-Relay-ID: 6E7187CA-FFCF-11ED-B27A-B31D44D1D7AA-78420484!pb-smtp21.pobox.com
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20230531_092319_495404_45CF1F7F 
+X-CRM114-Status: GOOD (  26.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,436 +84,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-name_to_dev_t has a very misleading name, that doesn't make clear
-it should only be used by the early init code, and also has a bad
-calling convention that doesn't allow returning different kinds of
-errors.  Rename it to early_lookup_bdev to make the use case clear,
-and return an errno, where -EINVAL means the string could not be
-parsed, and -ENODEV means it the string was valid, but there was
-no device found for it.
+On Tue, 30 May 2023, Linus Walleij wrote:
 
-Also stub out the whole call for !CONFIG_BLOCK as all the non-block
-root cases are always covered in the caller.
+> Currently the offset into the device when looking for OTP
+> bits can go outside of the address of the MTD NOR devices,
+> and if that memory isn't readable, bad things happen
+> on the IXP4xx (added prints that illustrate the problem before
+> the crash):
+> 
+> cfi_intelext_otp_walk walk OTP on chip 0 start at reg_prot_offset 0x00000100
+> ixp4xx_copy_from copy from 0x00000100 to 0xc880dd78
+> cfi_intelext_otp_walk walk OTP on chip 0 start at reg_prot_offset 0x12000000
+> ixp4xx_copy_from copy from 0x12000000 to 0xc880dd78
+> 8<--- cut here ---
+> Unable to handle kernel paging request at virtual address db000000
+> [db000000] *pgd=00000000
+> (...)
+> 
+> This happens in this case because the flash memory ends at
+> 0x11ffffff, so 0x12000000 is outside the range of the MTD
+> device.
+> 
+> Breaking the while loop of we offset outside the size of the
+> MTD device fixes the issue.
+> 
+> Cc: Nicolas Pitre <npitre@baylibre.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- .../admin-guide/kernel-parameters.txt         |   4 +-
- drivers/md/dm-table.c                         |   5 +-
- drivers/md/md-autodetect.c                    |   3 +-
- drivers/mtd/devices/block2mtd.c               |   3 +-
- fs/pstore/blk.c                               |   4 +-
- include/linux/blkdev.h                        |   5 +
- include/linux/mount.h                         |   1 -
- init/do_mounts.c                              | 102 +++++++++---------
- kernel/power/hibernate.c                      |  22 ++--
- 9 files changed, 74 insertions(+), 75 deletions(-)
+Well well... I apparently wrote that code... 23 years ago! Dang!
+Obviously I barely remember the details.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 457c342d15977e..a6bc31349cbb76 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5453,8 +5453,8 @@
- 
- 	root=		[KNL] Root filesystem
- 			Usually this a a block device specifier of some kind,
--			see the name_to_dev_t comment in init/do_mounts.c for
--			details.
-+			see the early_lookup_bdev comment in init/do_mounts.c
-+			for details.
- 			Alternatively this can be "ram" for the legacy initial
- 			ramdisk, "nfs" and "cifs" for root on a network file
- 			system, or "mtd" and "ubi" for mounting from raw flash.
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 1398f1d6e83e7f..05aa16da43b0d5 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -330,8 +330,9 @@ dev_t dm_get_dev_t(const char *path)
- {
- 	dev_t dev;
- 
--	if (lookup_bdev(path, &dev))
--		dev = name_to_dev_t(path);
-+	if (lookup_bdev(path, &dev) &&
-+	    early_lookup_bdev(path, &dev))
-+		return 0;
- 	return dev;
- }
- EXPORT_SYMBOL_GPL(dm_get_dev_t);
-diff --git a/drivers/md/md-autodetect.c b/drivers/md/md-autodetect.c
-index 91836e6de3260f..6eaa0eab40f962 100644
---- a/drivers/md/md-autodetect.c
-+++ b/drivers/md/md-autodetect.c
-@@ -147,7 +147,8 @@ static void __init md_setup_drive(struct md_setup_args *args)
- 		if (p)
- 			*p++ = 0;
- 
--		dev = name_to_dev_t(devname);
-+		if (early_lookup_bdev(devname, &dev))
-+			dev = 0;
- 		if (strncmp(devname, "/dev/", 5) == 0)
- 			devname += 5;
- 		snprintf(comp_name, 63, "/dev/%s", devname);
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index 4cd37ec45762b6..4c21e9f13bead5 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -254,8 +254,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 			msleep(1000);
- 		wait_for_device_probe();
- 
--		devt = name_to_dev_t(devname);
--		if (!devt)
-+		if (early_lookup_bdev(devname, &devt))
- 			continue;
- 		bdev = blkdev_get_by_dev(devt, mode, dev);
- 	}
-diff --git a/fs/pstore/blk.c b/fs/pstore/blk.c
-index 4ae0cfcd15f20b..de8cf5d75f34d5 100644
---- a/fs/pstore/blk.c
-+++ b/fs/pstore/blk.c
-@@ -263,9 +263,9 @@ static __init const char *early_boot_devpath(const char *initial_devname)
- 	 * same scheme to find the device that we use for mounting
- 	 * the root file system.
- 	 */
--	dev_t dev = name_to_dev_t(initial_devname);
-+	dev_t dev;
- 
--	if (!dev) {
-+	if (early_lookup_bdev(initial_devname, &dev)) {
- 		pr_err("failed to resolve '%s'!\n", initial_devname);
- 		return initial_devname;
- 	}
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index d89c2da1469872..0bda6cb98d7eb8 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1495,6 +1495,7 @@ int sync_blockdev_nowait(struct block_device *bdev);
- void sync_bdevs(bool wait);
- void bdev_statx_dioalign(struct inode *inode, struct kstat *stat);
- void printk_all_partitions(void);
-+int early_lookup_bdev(const char *pathname, dev_t *dev);
- #else
- static inline void invalidate_bdev(struct block_device *bdev)
- {
-@@ -1516,6 +1517,10 @@ static inline void bdev_statx_dioalign(struct inode *inode, struct kstat *stat)
- static inline void printk_all_partitions(void)
- {
- }
-+static inline int early_lookup_bdev(const char *pathname, dev_t *dev)
-+{
-+	return -EINVAL;
-+}
- #endif /* CONFIG_BLOCK */
- 
- int fsync_bdev(struct block_device *bdev);
-diff --git a/include/linux/mount.h b/include/linux/mount.h
-index 1ea326c368f726..4b81ea90440e45 100644
---- a/include/linux/mount.h
-+++ b/include/linux/mount.h
-@@ -107,7 +107,6 @@ extern struct vfsmount *vfs_submount(const struct dentry *mountpoint,
- extern void mnt_set_expiry(struct vfsmount *mnt, struct list_head *expiry_list);
- extern void mark_mounts_for_expiry(struct list_head *mounts);
- 
--extern dev_t name_to_dev_t(const char *name);
- extern bool path_is_mountpoint(const struct path *path);
- 
- extern bool our_mnt(struct vfsmount *mnt);
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 86599faf2bf8a1..f1953aeb321978 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -96,11 +96,10 @@ static int match_dev_by_uuid(struct device *dev, const void *data)
-  *
-  * Returns the matching dev_t on success or 0 on failure.
-  */
--static dev_t devt_from_partuuid(const char *uuid_str)
-+static int devt_from_partuuid(const char *uuid_str, dev_t *devt)
- {
- 	struct uuidcmp cmp;
- 	struct device *dev = NULL;
--	dev_t devt = 0;
- 	int offset = 0;
- 	char *slash;
- 
-@@ -124,21 +123,21 @@ static dev_t devt_from_partuuid(const char *uuid_str)
- 
- 	dev = class_find_device(&block_class, NULL, &cmp, &match_dev_by_uuid);
- 	if (!dev)
--		return 0;
-+		return -ENODEV;
- 
- 	if (offset) {
- 		/*
- 		 * Attempt to find the requested partition by adding an offset
- 		 * to the partition number found by UUID.
- 		 */
--		devt = part_devt(dev_to_disk(dev),
--				 dev_to_bdev(dev)->bd_partno + offset);
-+		*devt = part_devt(dev_to_disk(dev),
-+				  dev_to_bdev(dev)->bd_partno + offset);
- 	} else {
--		devt = dev->devt;
-+		*devt = dev->devt;
- 	}
- 
- 	put_device(dev);
--	return devt;
-+	return 0;
- 
- clear_root_wait:
- 	pr_err("VFS: PARTUUID= is invalid.\n"
-@@ -146,7 +145,7 @@ static dev_t devt_from_partuuid(const char *uuid_str)
- 	if (root_wait)
- 		pr_err("Disabling rootwait; root= is invalid.\n");
- 	root_wait = 0;
--	return 0;
-+	return -EINVAL;
- }
- 
- /**
-@@ -166,38 +165,35 @@ static int match_dev_by_label(struct device *dev, const void *data)
- 	return 1;
- }
- 
--static dev_t devt_from_partlabel(const char *label)
-+static int devt_from_partlabel(const char *label, dev_t *devt)
- {
- 	struct device *dev;
--	dev_t devt = 0;
- 
- 	dev = class_find_device(&block_class, NULL, label, &match_dev_by_label);
--	if (dev) {
--		devt = dev->devt;
--		put_device(dev);
--	}
--
--	return devt;
-+	if (!dev)
-+		return -ENODEV;
-+	*devt = dev->devt;
-+	put_device(dev);
-+	return 0;
- }
- 
--static dev_t devt_from_devname(const char *name)
-+static int devt_from_devname(const char *name, dev_t *devt)
- {
--	dev_t devt = 0;
- 	int part;
- 	char s[32];
- 	char *p;
- 
- 	if (strlen(name) > 31)
--		return 0;
-+		return -EINVAL;
- 	strcpy(s, name);
- 	for (p = s; *p; p++) {
- 		if (*p == '/')
- 			*p = '!';
- 	}
- 
--	devt = blk_lookup_devt(s, 0);
--	if (devt)
--		return devt;
-+	*devt = blk_lookup_devt(s, 0);
-+	if (*devt)
-+		return 0;
- 
- 	/*
- 	 * Try non-existent, but valid partition, which may only exist after
-@@ -206,41 +202,42 @@ static dev_t devt_from_devname(const char *name)
- 	while (p > s && isdigit(p[-1]))
- 		p--;
- 	if (p == s || !*p || *p == '0')
--		return 0;
-+		return -EINVAL;
- 
- 	/* try disk name without <part number> */
- 	part = simple_strtoul(p, NULL, 10);
- 	*p = '\0';
--	devt = blk_lookup_devt(s, part);
--	if (devt)
--		return devt;
-+	*devt = blk_lookup_devt(s, part);
-+	if (*devt)
-+		return 0;
- 
- 	/* try disk name without p<part number> */
- 	if (p < s + 2 || !isdigit(p[-2]) || p[-1] != 'p')
--		return 0;
-+		return -EINVAL;
- 	p[-1] = '\0';
--	return blk_lookup_devt(s, part);
-+	*devt = blk_lookup_devt(s, part);
-+	if (*devt)
-+		return 0;
-+	return -EINVAL;
- }
--#endif /* CONFIG_BLOCK */
- 
--static dev_t devt_from_devnum(const char *name)
-+static int devt_from_devnum(const char *name, dev_t *devt)
- {
- 	unsigned maj, min, offset;
--	dev_t devt = 0;
- 	char *p, dummy;
- 
- 	if (sscanf(name, "%u:%u%c", &maj, &min, &dummy) == 2 ||
- 	    sscanf(name, "%u:%u:%u:%c", &maj, &min, &offset, &dummy) == 3) {
--		devt = MKDEV(maj, min);
--		if (maj != MAJOR(devt) || min != MINOR(devt))
--			return 0;
-+		*devt = MKDEV(maj, min);
-+		if (maj != MAJOR(*devt) || min != MINOR(*devt))
-+			return -EINVAL;
- 	} else {
--		devt = new_decode_dev(simple_strtoul(name, &p, 16));
-+		*devt = new_decode_dev(simple_strtoul(name, &p, 16));
- 		if (*p)
--			return 0;
-+			return -EINVAL;
- 	}
- 
--	return devt;
-+	return 0;
- }
- 
- /*
-@@ -271,19 +268,18 @@ static dev_t devt_from_devnum(const char *name)
-  *	name contains slashes, the device name has them replaced with
-  *	bangs.
-  */
--dev_t name_to_dev_t(const char *name)
-+int early_lookup_bdev(const char *name, dev_t *devt)
- {
--#ifdef CONFIG_BLOCK
- 	if (strncmp(name, "PARTUUID=", 9) == 0)
--		return devt_from_partuuid(name + 9);
-+		return devt_from_partuuid(name + 9, devt);
- 	if (strncmp(name, "PARTLABEL=", 10) == 0)
--		return devt_from_partlabel(name + 10);
-+		return devt_from_partlabel(name + 10, devt);
- 	if (strncmp(name, "/dev/", 5) == 0)
--		return devt_from_devname(name + 5);
--#endif
--	return devt_from_devnum(name);
-+		return devt_from_devname(name + 5, devt);
-+	return devt_from_devnum(name, devt);
- }
--EXPORT_SYMBOL_GPL(name_to_dev_t);
-+EXPORT_SYMBOL_GPL(early_lookup_bdev);
-+#endif
- 
- static int __init root_dev_setup(char *line)
- {
-@@ -606,20 +602,17 @@ static void __init wait_for_root(char *root_device_name)
- 
- 	pr_info("Waiting for root device %s...\n", root_device_name);
- 
--	for (;;) {
--		if (driver_probe_done()) {
--			ROOT_DEV = name_to_dev_t(root_device_name);
--			if (ROOT_DEV)
--				break;
--		}
-+	while (!driver_probe_done() ||
-+	       early_lookup_bdev(root_device_name, &ROOT_DEV) < 0)
- 		msleep(5);
--	}
- 	async_synchronize_full();
- 
- }
- 
- static dev_t __init parse_root_device(char *root_device_name)
- {
-+	dev_t dev;
-+
- 	if (!strncmp(root_device_name, "mtd", 3) ||
- 	    !strncmp(root_device_name, "ubi", 3))
- 		return Root_Generic;
-@@ -629,7 +622,10 @@ static dev_t __init parse_root_device(char *root_device_name)
- 		return Root_CIFS;
- 	if (strcmp(root_device_name, "/dev/ram") == 0)
- 		return Root_RAM0;
--	return name_to_dev_t(root_device_name);
-+
-+	if (early_lookup_bdev(root_device_name, &dev))
-+		return 0;
-+	return dev;
- }
- 
- /*
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 45e24b02cd50b6..c52dedb9f7c8e8 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -11,6 +11,7 @@
- 
- #define pr_fmt(fmt) "PM: hibernation: " fmt
- 
-+#include <linux/blkdev.h>
- #include <linux/export.h>
- #include <linux/suspend.h>
- #include <linux/reboot.h>
-@@ -921,8 +922,7 @@ static int __init find_resume_device(void)
- 	}
- 
- 	/* Check if the device is there */
--	swsusp_resume_device = name_to_dev_t(resume_file);
--	if (swsusp_resume_device)
-+	if (!early_lookup_bdev(resume_file, &swsusp_resume_device))
- 		return 0;
- 
- 	/*
-@@ -931,15 +931,12 @@ static int __init find_resume_device(void)
- 	 */
- 	wait_for_device_probe();
- 	if (resume_wait) {
--		while (!(swsusp_resume_device = name_to_dev_t(resume_file)))
-+		while (early_lookup_bdev(resume_file, &swsusp_resume_device))
- 			msleep(10);
- 		async_synchronize_full();
- 	}
- 
--	swsusp_resume_device = name_to_dev_t(resume_file);
--	if (!swsusp_resume_device)
--		return -ENODEV;
--	return 0;
-+	return early_lookup_bdev(resume_file, &swsusp_resume_device);
- }
- 
- static int software_resume(void)
-@@ -1169,7 +1166,8 @@ static ssize_t resume_store(struct kobject *kobj, struct kobj_attribute *attr,
- 	unsigned int sleep_flags;
- 	int len = n;
- 	char *name;
--	dev_t res;
-+	dev_t dev;
-+	int error;
- 
- 	if (!hibernation_available())
- 		return 0;
-@@ -1180,13 +1178,13 @@ static ssize_t resume_store(struct kobject *kobj, struct kobj_attribute *attr,
- 	if (!name)
- 		return -ENOMEM;
- 
--	res = name_to_dev_t(name);
-+	error = early_lookup_bdev(name, &dev);
- 	kfree(name);
--	if (!res)
--		return -EINVAL;
-+	if (error)
-+		return error;
- 
- 	sleep_flags = lock_system_sleep();
--	swsusp_resume_device = res;
-+	swsusp_resume_device = dev;
- 	unlock_system_sleep(sleep_flags);
- 
- 	pm_pr_dbg("Configured hibernation resume from disk to %u\n",
--- 
-2.39.2
+Still, I have reservations about your fix which looks like it is 
+papering over the real issue. Looking at the original code, we can see 
+this from line 2418:
 
+                        /* next OTP region */
+                        if (++field == extp->NumProtectionFields)
+                                break;
+
+That's where the loop break should be happening. Why isn't it the case 
+for you? Especially given that 0x12000000 is completely bogus for sure, 
+which is likely random memory content outside the actual extp record. 
+Next time that random memory content may well be <= mtd->size and your 
+fix won't do anything.
+
+This needs more investigation.
+
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0001.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> index 54f92d09d9cf..a979e0316b31 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -2352,6 +2352,9 @@ static int cfi_intelext_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
+>  			reg_fact_size *= cfi->interleave;
+>  			reg_user_size *= cfi->interleave;
+>  
+> +			if (reg_prot_offset >= mtd->size)
+> +				break;
+> +
+>  			if (user_regs) {
+>  				groups = reg_user_groups;
+>  				groupsize = reg_user_size;
+> -- 
+> 2.40.1
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
