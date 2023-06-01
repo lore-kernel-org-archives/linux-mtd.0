@@ -4,106 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32ECFC7EE23
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Jun 2023 05:37:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C19AC77B7E
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Jun 2023 05:46:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=VMMLYbUEBk1IEXFxGh3ZMps2vqraxzbanra7HCCjyFI=; b=IjBIYE7b0ZSFCy
-	/USYag32cNP1CRCo90HRhe42SPs9d0YkZgEa0/pN5O87deIWXZBPU+WMAgi9h8vdle5lJwmJDXgzg
-	nj8MUe7sivfekjz5SwBxn0dMxPvwAbBWQcK5PFaLVd+8AuURVdFkA7zlfyoF8oAoplZ3RCVV6SIdN
-	cpAHvrDQlScN52uhEb4u/1XST8Rnc1X+JpqPSHPuENt/mC7VymVaObB/kbbNAONbOFDRiKy4j7xRo
-	EgrABg2k1GWI0c+vhZhPMBGrAlu0wf3L0l1F1eTiGmM98N/JHeZELUsZYOhq2cpE7ZjewCzIbJAEx
-	EU8Fof6lzLTrd4Rccytw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yuucNHRvYyKIFJoTdyiwNsmAFiUgDWSxOCfDplxAdV4=; b=eEeOh3NpknI55i
+	O1rnNjoqHLjaOHAYT2PFxLkdPczeYexO4+mUbu3y2bxUC/hffrrlB7hzdsSWb6N1INuoto8aJSNGe
+	YxnSTVBPbi3nwV0UfPyXVz7BVL/i6zuip5xagpZQWL12Kdvi3POTEyfA99gLoQU7vSmaIjpBTvdeh
+	febIM1X8NemB6XJTuCp9Tq5kJQ7YLBXBT1+1c4znMM6+kdbHQiVHIxwObYnqh+fraYZgQiAJr8VCf
+	fnY6Ty0u4hep/9+B63NvoZw+SV++cL6Tkg+jtge5qwOCh+w3W5Cm+zjfi9CO04M7FRbekhtrCmxW8
+	1xDTkUNluxEaJonwri4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4azT-0022oX-1V;
-	Thu, 01 Jun 2023 05:36:51 +0000
-Received: from forward103c.mail.yandex.net ([2a02:6b8:c03:500:1:45:d181:d103])
+	id 1q4b8g-0024I9-0x;
+	Thu, 01 Jun 2023 05:46:22 +0000
+Received: from forward103a.mail.yandex.net ([2a02:6b8:c0e:500:1:45:d181:d103])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4azG-0022mR-0f;
-	Thu, 01 Jun 2023 05:36:42 +0000
-Received: from mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net [IPv6:2a02:6b8:c14:c83:0:640:84f9:0])
-	by forward103c.mail.yandex.net (Yandex) with ESMTP id 876CE60034;
-	Thu,  1 Jun 2023 08:36:31 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id OaGNfZvWv8c0-rplx70Eu;
-	Thu, 01 Jun 2023 08:36:29 +0300
+	id 1q4b8c-0024EN-2A
+	for linux-mtd@lists.infradead.org;
+	Thu, 01 Jun 2023 05:46:20 +0000
+Received: from mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1f:5e51:0:640:23ee:0])
+	by forward103a.mail.yandex.net (Yandex) with ESMTP id 7E8E646D04;
+	Thu,  1 Jun 2023 08:46:11 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id pjGDMhnDduQ0-YQEzRG2A;
+	Thu, 01 Jun 2023 08:46:10 +0300
 X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1685597789;
-	bh=rKQamNImlHihihpCtMqa3NY6MH0zfAt9r9tz/gnwKhU=;
-	h=Message-Id:Date:Cc:Subject:To:From;
-	b=o7eo6GHX+CIkTm9XpERfV5KmgewSkfhAGjpH+qged8wI9HIvSeQK6CKQsunVh2WIS
-	 3darRHyfPqrLqK1akxKMExkio1no9yS55iTd0E1JNR6uK3ykW0XZNimKJxx1Xo0JfL
-	 qtH6YU9ygcZbO9L8bdSh8KaLkTD+keRMb44jcTrM=
-Authentication-Results: mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1685598370;
+	bh=zUol15piszy0DpHFh7aq9OsjbFQ/XdK+rX3Y5m5Tct8=;
+	h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
+	b=mNLMxmyvWOKZ1qbHS4LNUvJ9HpLHsCg2zDw9xBnBUM2prl7+02tLgazyiAj6qtR8W
+	 7QWjP3jqwoaGL1EoSjIym8BNdAWIWKPR2pUSN8bdVVxtCnXKiyZ9i0h7B1zS+fBwr6
+	 bMLabvG2S6I8UOuAk6y/SnBQtGjdPpiZKp+oAzvQ=
+Authentication-Results: mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 To: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Linus Walleij <linus.walleij@linaro.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Christophe Kerello <christophe.kerello@foss.st.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Hartley Sweeten <hsweeten@visionengravers.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
-	Jean Delvare <jdelvare@suse.de>,
-	Joel Stanley <joel@jms.id.au>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	=?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Le Moal <dlemoal@kernel.org>,
-	Liang Yang <liang.yang@amlogic.com>,
-	Mark Brown <broonie@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Nikita Shubin <nikita.shubin@maquefel.me>,
 	Richard Weinberger <richard@nod.at>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Walker Chen <walker.chen@starfivetech.com>,
-	Yinbo Zhu <zhuyinbo@loongson.cn>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Christophe Kerello <christophe.kerello@foss.st.com>,
+	Jean Delvare <jdelvare@suse.de>,
+	Nikita Shubin <nikita.shubin@maquefel.me>,
+	Liang Yang <liang.yang@amlogic.com>,
+	Florian Fainelli <f.fainelli@gmail.com>
 Cc: Michael Peters <mpeters@embeddedTS.com>,
 	Kris Bahnsen <kris@embeddedTS.com>,
-	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	dmaengine@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-clk@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-ide@vger.kernel.org,
-	linux-input@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-pm@vger.kernel.org,
-	linux-pwm@vger.kernel.org,
-	linux-rtc@vger.kernel.org,
-	linux-spi@vger.kernel.org,
-	linux-watchdog@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH v1 00/43] ep93xx device tree conversion
-Date: Thu,  1 Jun 2023 08:33:51 +0300
-Message-Id: <20230601053546.9574-1-nikita.shubin@maquefel.me>
+	linux-mtd@lists.infradead.org
+Subject: [PATCH v1 24/43] mtd: nand: add support for ts72xx
+Date: Thu,  1 Jun 2023 08:45:29 +0300
+Message-Id: <20230601054549.10843-6-nikita.shubin@maquefel.me>
 X-Mailer: git-send-email 2.37.4
+In-Reply-To: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230531_223639_366787_4C1C5A0D 
-X-CRM114-Status: GOOD (  22.23  )
+X-CRM114-CacheID: sfid-20230531_224618_887388_753A1A94 
+X-CRM114-Status: GOOD (  27.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,235 +84,205 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This series aims to convert ep93xx from platform to full device tree support.
+Technologic Systems has it's own nand controller implementation in CPLD.
 
-Alexander, Kris - there are some significant changes in clk and pinctrl so can i ask you to tests all once again.
+This patch adds support for TS-72XX boards family.
 
-So i am not applying:
-
-Tested-by: Michael Peters <mpeters@embeddedTS.com>
-Reviewed-by: Kris Bahnsen <kris@embeddedTS.com>
-
-Tags yet.
-
-Major changes from v0 to v1:
-
-- I totally forgot to include dts bindings for USB, they are working, including in this version
-- retinkered ep93xx keypad, the stange thing about it that it always used zeroed 
-  platform data from the very beginning - my first impulse was to remove it entirely, espesially 
-  it's ep9307+ variant, which Alexander and me doesn't have
-- major YAML bindings overhaul according to Krzysztof comments
-- nand helper converted to LEGACY nand controller
-- cleanup clk
-- cleanup pinctrl
-
-Sorry if i missed something, first time handling such a big (at least for me) chunk of patches.
-
-Next version should be much faster spin.
-
-Alexandre Belloni:
- st,m48t86 is totally trivial, but it has 2 regs instead of one, so dt_binding_check doesn't allow it in trivial.yaml,
- regs should be increased to "maxItems: 2"
-
-Miquel Raynal:
- Currently made it LEGACY as a more easier way for now, as this series will merge - it will be much 
- easier to cleanup the rest one by one, i hope it's ok.
- 
-Stephen Boyd:
- Majory of issues fixed, but:
-     - removing dma from init section requires converting it from half dt/platform monstrosity 
-       into fully dt compatible
-     - i would like to have ep93xx_clk_data and ep93xx_map global for now - they can be removed 
-       once dma subsys_initcall removed
-
-Andrew Lunn:
-  I've tinkered with the preferred way, however this involves turning on
-     - CONFIG_PHYLIB
-     - CONFIG_MDIO_DEVICE
-
-  And maybe CONFIG_MICREL_PHY (at least for me, unless i can use some
-  common phy driver) which implies a kernel size increase - which is
-  undesirable for us.
-  
-  Can we slip by getting phyid directly from device tree in ep93xx_eth ?
-
-Link: https://lore.kernel.org/all/20230424123522.18302-1-nikita.shubin@maquefel.me/
-  
-Cc: kris@embeddedTS.com
-
-Alexander Sverdlin (3):
-  ARM: dts: ep93xx: Add I2S and AC97 nodes
-  ARM: dts: ep93xx: Add EDB9302 DT
-  ASoC: cirrus: edb93xx: Delete driver
-
-Nikita Shubin (40):
-  gpio: ep93xx: split device in multiple
-  dt-bindings: soc: Add Cirrus EP93xx
-  soc: Add SoC driver for Cirrus ep93xx
-  dt-bindings: clock: Add Cirrus EP93xx
-  clk: ep93xx: add DT support for Cirrus EP93xx
-  dt-bindings: pinctrl: Add Cirrus EP93xx
-  pinctrl: add a Cirrus ep93xx SoC pin controller
-  dt-bindings: timers: Add Cirrus EP93xx
-  clocksource: ep93xx: Add driver for Cirrus Logic EP93xx
-  dt-bindings: rtc: Add Cirrus EP93xx
-  rtc: ep93xx: add DT support for Cirrus EP93xx
-  dt-bindings: watchdog: Add Cirrus EP93x
-  watchdog: ep93xx: add DT support for Cirrus EP93xx
-  power: reset: Add a driver for the ep93xx reset
-  dt-bindings: pwm: Add Cirrus EP93xx
-  pwm: ep93xx: add DT support for Cirrus EP93xx
-  dt-bindings: spi: Add Cirrus EP93xx
-  spi: ep93xx: add DT support for Cirrus EP93xx
-  dt-bindings: net: Add Cirrus EP93xx
-  net: cirrus: add DT support for Cirrus EP93xx
-  dt-bindings: dma: Add Cirrus EP93xx
-  dma: cirrus: add DT support for Cirrus EP93xx
-  dt-bindings: mtd: Add ts7250 nand-controller
-  mtd: nand: add support for ts72xx
-  dt-bindings: ata: Add Cirrus EP93xx
-  pata: cirrus: add DT support for Cirrus EP93xx
-  dt-bindings: input: Add Cirrus EP93xx keypad
-  input: keypad: ep93xx: add DT support for Cirrus EP93xx
-  dt-bindings: rtc: Add ST M48T86
-  rtc: m48t86: add DT support for m48t86
-  dt-bindings: wdt: Add ts72xx
-  wdt: ts72xx: add DT support for ts72xx
-  dt-bindings: gpio: Add Cirrus EP93xx
-  gpio: ep93xx: add DT support for gpio-ep93xx
-  ARM: dts: add device tree for ep93xx Soc
-  ARM: ep93xx: DT for the Cirrus ep93xx SoC platforms
-  pwm: ep93xx: drop legacy pinctrl
-  pata: cirrus: drop legacy pinctrl
-  ARM: ep93xx: delete all boardfiles
-  ARM: ep93xx: soc: drop defines
-
- .../devicetree/bindings/arm/ep93xx.yaml       |  107 ++
- .../bindings/ata/cirrus,ep9312-pata.yaml      |   44 +
- .../bindings/clock/cirrus,ep9301.yaml         |   64 +
- .../bindings/dma/cirrus,ep9301-dma-m2m.yaml   |   72 +
- .../bindings/dma/cirrus,ep9301-dma-m2p.yaml   |  124 ++
- .../devicetree/bindings/gpio/gpio-ep9301.yaml |  154 ++
- .../bindings/input/cirrus,ep9307-keypad.yaml  |   86 +
- .../bindings/mtd/technologic,nand.yaml        |   47 +
- .../bindings/net/cirrus,ep9301-eth.yaml       |   61 +
- .../pinctrl/cirrus,ep9301-pinctrl.yaml        |   66 +
- .../bindings/pwm/cirrus,ep9301-pwm.yaml       |   48 +
- .../bindings/rtc/cirrus,ep9301-rtc.yaml       |   40 +
- .../bindings/rtc/st,m48t86-rtc.yaml           |   38 +
- .../devicetree/bindings/spi/spi-ep9301.yaml   |   69 +
- .../bindings/timer/cirrus,ep9301-timer.yaml   |   49 +
- .../bindings/watchdog/cirrus,ep9301-wdt.yaml  |   46 +
- .../watchdog/technologic,ts7200-wdt.yaml      |   46 +
- arch/arm/Makefile                             |    1 -
- arch/arm/boot/dts/Makefile                    |    1 +
- arch/arm/boot/dts/ep93xx-bk3.dts              |  119 ++
- arch/arm/boot/dts/ep93xx-edb9302.dts          |  160 ++
- arch/arm/boot/dts/ep93xx-ts7250.dts           |  132 ++
- arch/arm/boot/dts/ep93xx.dtsi                 |  477 +++++
- arch/arm/mach-ep93xx/Kconfig                  |   20 +-
- arch/arm/mach-ep93xx/Makefile                 |   11 -
- arch/arm/mach-ep93xx/clock.c                  |  733 --------
- arch/arm/mach-ep93xx/core.c                   | 1017 ----------
- arch/arm/mach-ep93xx/dma.c                    |  114 --
- arch/arm/mach-ep93xx/edb93xx.c                |  344 ----
- arch/arm/mach-ep93xx/ep93xx-regs.h            |   38 -
- arch/arm/mach-ep93xx/gpio-ep93xx.h            |  111 --
- arch/arm/mach-ep93xx/hardware.h               |   25 -
- arch/arm/mach-ep93xx/irqs.h                   |   76 -
- arch/arm/mach-ep93xx/platform.h               |   42 -
- arch/arm/mach-ep93xx/soc.h                    |  212 ---
- arch/arm/mach-ep93xx/ts72xx.c                 |  422 -----
- arch/arm/mach-ep93xx/ts72xx.h                 |   94 -
- arch/arm/mach-ep93xx/vision_ep9307.c          |  311 ---
- drivers/ata/pata_ep93xx.c                     |   33 +-
- drivers/clk/Kconfig                           |    8 +
- drivers/clk/Makefile                          |    1 +
- drivers/clk/clk-ep93xx.c                      |  850 +++++++++
- drivers/clocksource/Kconfig                   |   11 +
- drivers/clocksource/Makefile                  |    1 +
- .../clocksource}/timer-ep93xx.c               |  141 +-
- drivers/dma/ep93xx_dma.c                      |  136 +-
- drivers/gpio/gpio-ep93xx.c                    |  329 ++--
- drivers/input/keyboard/ep93xx_keypad.c        |   78 +-
- drivers/mtd/nand/raw/Kconfig                  |    7 +
- drivers/mtd/nand/raw/Makefile                 |    1 +
- .../nand/raw/technologic-nand-controller.c    |  151 ++
- drivers/net/ethernet/cirrus/ep93xx_eth.c      |   67 +-
- drivers/pinctrl/Kconfig                       |    7 +
- drivers/pinctrl/Makefile                      |    1 +
- drivers/pinctrl/pinctrl-ep93xx.c              | 1672 +++++++++++++++++
- drivers/power/reset/Kconfig                   |   10 +
- drivers/power/reset/Makefile                  |    1 +
- drivers/power/reset/ep93xx-restart.c          |   65 +
- drivers/pwm/pwm-ep93xx.c                      |   26 +-
- drivers/rtc/rtc-ep93xx.c                      |    8 +
- drivers/rtc/rtc-m48t86.c                      |    8 +
- drivers/soc/Kconfig                           |    1 +
- drivers/soc/Makefile                          |    1 +
- drivers/soc/cirrus/Kconfig                    |   11 +
- drivers/soc/cirrus/Makefile                   |    2 +
- drivers/soc/cirrus/soc-ep93xx.c               |  134 ++
- drivers/spi/spi-ep93xx.c                      |   31 +-
- drivers/watchdog/ep93xx_wdt.c                 |    8 +
- drivers/watchdog/ts72xx_wdt.c                 |    8 +
- .../dt-bindings/clock/cirrus,ep93xx-clock.h   |   53 +
- include/linux/platform_data/dma-ep93xx.h      |    3 +
- include/linux/platform_data/eth-ep93xx.h      |   10 -
- include/linux/platform_data/keypad-ep93xx.h   |   32 -
- include/linux/soc/cirrus/ep93xx.h             |   40 +-
- sound/soc/cirrus/Kconfig                      |    9 -
- sound/soc/cirrus/Makefile                     |    4 -
- sound/soc/cirrus/edb93xx.c                    |  117 --
- 77 files changed, 5575 insertions(+), 4122 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/arm/ep93xx.yaml
- create mode 100644 Documentation/devicetree/bindings/ata/cirrus,ep9312-pata.yaml
- create mode 100644 Documentation/devicetree/bindings/clock/cirrus,ep9301.yaml
- create mode 100644 Documentation/devicetree/bindings/dma/cirrus,ep9301-dma-m2m.yaml
- create mode 100644 Documentation/devicetree/bindings/dma/cirrus,ep9301-dma-m2p.yaml
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-ep9301.yaml
- create mode 100644 Documentation/devicetree/bindings/input/cirrus,ep9307-keypad.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/technologic,nand.yaml
- create mode 100644 Documentation/devicetree/bindings/net/cirrus,ep9301-eth.yaml
- create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
- create mode 100644 Documentation/devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml
- create mode 100644 Documentation/devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml
- create mode 100644 Documentation/devicetree/bindings/rtc/st,m48t86-rtc.yaml
- create mode 100644 Documentation/devicetree/bindings/spi/spi-ep9301.yaml
- create mode 100644 Documentation/devicetree/bindings/timer/cirrus,ep9301-timer.yaml
- create mode 100644 Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
- create mode 100644 Documentation/devicetree/bindings/watchdog/technologic,ts7200-wdt.yaml
- create mode 100644 arch/arm/boot/dts/ep93xx-bk3.dts
- create mode 100644 arch/arm/boot/dts/ep93xx-edb9302.dts
- create mode 100644 arch/arm/boot/dts/ep93xx-ts7250.dts
- create mode 100644 arch/arm/boot/dts/ep93xx.dtsi
- delete mode 100644 arch/arm/mach-ep93xx/Makefile
- delete mode 100644 arch/arm/mach-ep93xx/clock.c
- delete mode 100644 arch/arm/mach-ep93xx/core.c
- delete mode 100644 arch/arm/mach-ep93xx/dma.c
- delete mode 100644 arch/arm/mach-ep93xx/edb93xx.c
- delete mode 100644 arch/arm/mach-ep93xx/ep93xx-regs.h
- delete mode 100644 arch/arm/mach-ep93xx/gpio-ep93xx.h
- delete mode 100644 arch/arm/mach-ep93xx/hardware.h
- delete mode 100644 arch/arm/mach-ep93xx/irqs.h
- delete mode 100644 arch/arm/mach-ep93xx/platform.h
- delete mode 100644 arch/arm/mach-ep93xx/soc.h
- delete mode 100644 arch/arm/mach-ep93xx/ts72xx.c
- delete mode 100644 arch/arm/mach-ep93xx/ts72xx.h
- delete mode 100644 arch/arm/mach-ep93xx/vision_ep9307.c
- create mode 100644 drivers/clk/clk-ep93xx.c
- rename {arch/arm/mach-ep93xx => drivers/clocksource}/timer-ep93xx.c (52%)
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ drivers/mtd/nand/raw/Kconfig                  |   7 +
+ drivers/mtd/nand/raw/Makefile                 |   1 +
+ .../nand/raw/technologic-nand-controller.c    | 151 ++++++++++++++++++
+ 3 files changed, 159 insertions(+)
  create mode 100644 drivers/mtd/nand/raw/technologic-nand-controller.c
- create mode 100644 drivers/pinctrl/pinctrl-ep93xx.c
- create mode 100644 drivers/power/reset/ep93xx-restart.c
- create mode 100644 drivers/soc/cirrus/Kconfig
- create mode 100644 drivers/soc/cirrus/Makefile
- create mode 100644 drivers/soc/cirrus/soc-ep93xx.c
- create mode 100644 include/dt-bindings/clock/cirrus,ep93xx-clock.h
- delete mode 100644 include/linux/platform_data/eth-ep93xx.h
- delete mode 100644 include/linux/platform_data/keypad-ep93xx.h
- delete mode 100644 sound/soc/cirrus/edb93xx.c
 
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index b523354dfb00..94788da1a169 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -456,6 +456,13 @@ config MTD_NAND_RENESAS
+ 	  Enables support for the NAND controller found on Renesas R-Car
+ 	  Gen3 and RZ/N1 SoC families.
+ 
++config MTD_NAND_TS72XX
++	bool "ts72xx NAND controller"
++	depends on ARCH_EP93XX && HAS_IOMEM
++	help
++	  Enables support for NAND controller on ts72xx SBCs.
++	  This is a legacy driver based on gen_nand.
++
+ comment "Misc"
+ 
+ config MTD_SM_COMMON
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 917cdfb815b9..783e990a0078 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -23,6 +23,7 @@ omap2_nand-objs := omap2.o
+ obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
+ obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
+ obj-$(CONFIG_MTD_NAND_MARVELL)		+= marvell_nand.o
++obj-$(CONFIG_MTD_NAND_TS72XX)		+= technologic-nand-controller.o
+ obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
+ obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
+ obj-$(CONFIG_MTD_NAND_ORION)		+= orion_nand.o
+diff --git a/drivers/mtd/nand/raw/technologic-nand-controller.c b/drivers/mtd/nand/raw/technologic-nand-controller.c
+new file mode 100644
+index 000000000000..09aeada933a1
+--- /dev/null
++++ b/drivers/mtd/nand/raw/technologic-nand-controller.c
+@@ -0,0 +1,151 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Technologic Systems TS72xx NAND controller driver
++ *
++ * Copyright (C) 2023 Nikita Shubin <nikita.shubin@maquefel.me>
++ *
++ * derived: plat_nand.c
++ *  Author: Vitaly Wool <vitalywool@gmail.com>
++ */
++
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/platnand.h>
++
++#define TS72XX_NAND_CONTROL_ADDR_LINE	22	/* 0xN0400000 */
++#define TS72XX_NAND_BUSY_ADDR_LINE	23	/* 0xN0800000 */
++
++struct ts72xx_nand_data {
++	struct nand_controller	controller;
++	struct nand_chip	chip;
++	void __iomem		*io_base;
++};
++
++static int ts72xx_nand_attach_chip(struct nand_chip *chip)
++{
++	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
++	    chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
++		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
++
++	return 0;
++}
++
++static const struct nand_controller_ops ts72xx_nand_ops = {
++	.attach_chip = ts72xx_nand_attach_chip,
++};
++
++static void ts72xx_nand_hwcontrol(struct nand_chip *chip,
++				  int cmd, unsigned int ctrl)
++{
++	if (ctrl & NAND_CTRL_CHANGE) {
++		void __iomem *addr = chip->legacy.IO_ADDR_R;
++		unsigned char bits;
++
++		addr += (1 << TS72XX_NAND_CONTROL_ADDR_LINE);
++
++		bits = readb(addr) & ~0x07;
++		bits |= (ctrl & NAND_NCE) << 2;	/* bit 0 -> bit 2 */
++		bits |= (ctrl & NAND_CLE);	/* bit 1 -> bit 1 */
++		bits |= (ctrl & NAND_ALE) >> 2;	/* bit 2 -> bit 0 */
++
++		writeb(bits, addr);
++	}
++
++	if (cmd != NAND_CMD_NONE)
++		writeb(cmd, chip->legacy.IO_ADDR_W);
++}
++
++static int ts72xx_nand_device_ready(struct nand_chip *chip)
++{
++	void __iomem *addr = chip->legacy.IO_ADDR_R;
++
++	addr += (1 << TS72XX_NAND_BUSY_ADDR_LINE);
++
++	return !!(readb(addr) & 0x20);
++}
++
++static int ts72xx_nand_probe(struct platform_device *pdev)
++{
++	struct ts72xx_nand_data *data;
++	struct mtd_info *mtd;
++	int err = 0;
++
++	/* Allocate memory for the device structure (and zero it) */
++	data = devm_kzalloc(&pdev->dev, sizeof(struct ts72xx_nand_data),
++			    GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	data->controller.ops = &ts72xx_nand_ops;
++	nand_controller_init(&data->controller);
++	data->chip.controller = &data->controller;
++
++	data->io_base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(data->io_base))
++		return PTR_ERR(data->io_base);
++
++	nand_set_flash_node(&data->chip, pdev->dev.of_node);
++	mtd = nand_to_mtd(&data->chip);
++	mtd->dev.parent = &pdev->dev;
++
++	data->chip.legacy.IO_ADDR_R = data->io_base;
++	data->chip.legacy.IO_ADDR_W = data->io_base;
++	data->chip.legacy.cmd_ctrl = ts72xx_nand_hwcontrol;
++	data->chip.legacy.dev_ready = ts72xx_nand_device_ready;
++
++	platform_set_drvdata(pdev, data);
++
++	/*
++	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
++	 * Set ->engine_type before registering the NAND devices in order to
++	 * provide a driver specific default value.
++	 */
++	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++
++	/* Scan to find existence of the device */
++	err = nand_scan(&data->chip, 1);
++	if (err)
++		return err;
++
++	err = mtd_device_parse_register(mtd, NULL, NULL,
++					NULL, 0);
++
++	if (!err)
++		return err;
++
++	nand_cleanup(&data->chip);
++
++	return 0;
++}
++
++static void ts72xx_nand_remove(struct platform_device *pdev)
++{
++	struct ts72xx_nand_data *data = platform_get_drvdata(pdev);
++	struct nand_chip *chip = &data->chip;
++	int ret;
++
++	ret = mtd_device_unregister(nand_to_mtd(chip));
++	WARN_ON(ret);
++	nand_cleanup(chip);
++}
++
++static const struct of_device_id ts72xx_id_table[] = {
++	{ .compatible = "technologic,ts7200-nand" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, ts72xx_id_table);
++
++static struct platform_driver ts72xx_nand_driver = {
++	.driver = {
++		.name = "ts72xx-nand",
++		.of_match_table = ts72xx_id_table,
++	},
++	.probe = ts72xx_nand_probe,
++	.remove_new = ts72xx_nand_remove,
++};
++module_platform_driver(ts72xx_nand_driver);
++
 -- 
 2.37.4
 
