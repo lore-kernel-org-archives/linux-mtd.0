@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 923D3C7EE23
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Jun 2023 09:55:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42F34C77B7A
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Jun 2023 10:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=oJUEKNWSUuJGEnysOYq+P4aLIKAp976OSHr/6PNNC3M=; b=XBO0f7UZbhGMXr
-	ozFoUpjVkfkHPDvruMHm5ivzhCeLp5rgg/Eg5H8Gtkn+fTnNCIOHhYey4trmdS6Wl51O8IKkPdtva
-	BK4YoqOyLikiE4XVSbVaLs45RxXy60lbPayR8aNLhxh0Ia5ZobXFckNrM/eOZyp80TsLEDbFIXh3y
-	OX5CcGHi5gVSFyjdDmjtCI4r9wMoq3169DasZQ4aQ32f1MfnIh4bPob9XpyCeZ36zqxd++Zl4mAsQ
-	0W5puQq8WlUDz+Znw3dyFxpsAEwlgElO4xN4k+ISP8OrvgLIE96l7TPBV8y7e/Oo8MBrGnQzDDFUX
-	NftunilSWByBYTD7nmdw==;
+	List-Owner; bh=oJUEKNWSUuJGEnysOYq+P4aLIKAp976OSHr/6PNNC3M=; b=ThDq+C/KS2S3ye
+	6JI2Y23dDAu0kk0bjN66lOjH3xWtItZwLfR5AHg2wMfhzX41UXrVJ1S8ynylixLyiMf305AU0U9Kb
+	J+KA4ZSBgDQo5b9nn0QEpb7X0xDxuMIPqQN7eCTOn8m06tY0ngiE/jyldvGIzsnXkL2RaXFqibM9W
+	Dsd872/tUGkrFFMFS+HCwMI7FYZrQqOoYiAtd7Qojeo6BS9I8rJTyrD7QHvad+dn1xVMj7F+LEDJJ
+	ysqwl4ujPJxZ5Nq2IlQj7TbtJubyZlLTL2kmZ2ajPTUoQEAG4bk6T8rwvKB3VckiO5ID+0uF98e26
+	MTEmNZWrJhfCCjfcbYWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4f1n-002nwv-2U;
-	Thu, 01 Jun 2023 09:55:31 +0000
-Received: from m12.mail.163.com ([220.181.12.198])
+	id 1q4fST-002wxg-3D;
+	Thu, 01 Jun 2023 10:23:06 +0000
+Received: from m12.mail.163.com ([220.181.12.216])
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4f1k-002nv0-0E
+	id 1q4fSP-002wts-31
 	for linux-mtd@lists.infradead.org;
-	Thu, 01 Jun 2023 09:55:30 +0000
+	Thu, 01 Jun 2023 10:23:03 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
 	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=MT/s1
-	vsQ/Vrzbt4JN42eY6a+97DLqkg7G8/6dfdT5AE=; b=H/H5/DECPD/skJlOLzxPz
-	K9JdWMaEYJcfmvw+9aKF3CKOmPrZaUDPwPRt+205+aK5EZXk0ifIbJQ409XUicWp
-	EEcYkWAhYMNEusZsKk9miyGeKc2t2Xt+AqNDHn3nPHqILh1CRCRKh+jgcf9TmP0o
-	FLjVgFPFyuNMC5BNUgD1xQ=
+	vsQ/Vrzbt4JN42eY6a+97DLqkg7G8/6dfdT5AE=; b=LF6qnDzKplRGw0Ww0WCAC
+	eEklSjPpiB2JWyNEzvpzwis6hWOqNiRtBSmuFzHOJ8hUaOa9q+rytk6yaOFnUz9a
+	RJGiSliSPR28mLjnnSaVRwsDdvMc74NgDXK3T3IG+Q+KlYhzQoLrI4QPEYnW0+5T
+	1GaOfjpnxRe5bNDLUycNZQ=
 Received: from localhost.localdomain (unknown [113.87.166.247])
-	by zwqz-smtp-mta-g5-3 (Coremail) with SMTP id _____wAXXbL2anhkg5HCBA--.2096S4;
-	Thu, 01 Jun 2023 17:55:03 +0800 (CST)
+	by zwqz-smtp-mta-g0-3 (Coremail) with SMTP id _____wB33S1wcXhkdOLQBA--.28410S4;
+	Thu, 01 Jun 2023 18:22:41 +0800 (CST)
 From: Bruce Suen <bruce_suen@163.com>
 To: tudor.ambarus@linaro.org,
 	pratyush@kernel.org,
@@ -44,23 +44,22 @@ To: tudor.ambarus@linaro.org,
 	richard@nod.at,
 	vigneshr@ti.com
 Cc: linux-mtd@lists.infradead.org,
-	bruce.sun@xtxtech.com,
 	Bruce Suen <bruce_suen@163.com>
-Subject: [PATCH] Add support for xtx flash
-Date: Thu,  1 Jun 2023 05:54:59 -0400
-Message-Id: <20230601095459.947036-1-bruce_suen@163.com>
+Subject: [PATCH] mtd:spi-nor:Add support for xtx flash
+Date: Thu,  1 Jun 2023 06:22:38 -0400
+Message-Id: <20230601102238.948177-1-bruce_suen@163.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-CM-TRANSID: _____wAXXbL2anhkg5HCBA--.2096S4
+X-CM-TRANSID: _____wB33S1wcXhkdOLQBA--.28410S4
 X-Coremail-Antispam: 1Uf129KBjvJXoWxAFWkCr17Xw4fJF4xur4xtFb_yoWrGr18pa
 	1kurW5ArykC3y3W392kasruFy5Jw1xW3yYy3W2k39avwn5XFyUXrZIyFyftr1DGFnrJayF
-	vasrZryUCF1rZF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zMCJmUUUUUU=
+	vasrZryUCF1rZF7anT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0z_5l1DUUUUU=
 X-Originating-IP: [113.87.166.247]
-X-CM-SenderInfo: 5euxuvpbvxv0i6rwjhhfrp/1tbiWQqBKFWBzwjg3gABsW
+X-CM-SenderInfo: 5euxuvpbvxv0i6rwjhhfrp/1tbiJhCBKFv2rYkCCgAAse
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230601_025528_529276_ED8E2620 
-X-CRM114-Status: GOOD (  14.19  )
+X-CRM114-CacheID: sfid-20230601_032302_354427_A8F791E1 
+X-CRM114-Status: GOOD (  13.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
