@@ -4,74 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53723C77B7E
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Jun 2023 06:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC773C7EE23
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Jun 2023 07:06:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G0U74t37ZtxHO+u+Fuo7o0Dv+j2EccyNVtdClJJMffI=; b=Z88GNrOmNMGUGT
-	jEBChS7EaSNKWj4+4/Oz41uJmOKpnWzEgYrko0sHC8KRTY+B2r2gtt387cDZ7YW46V/yeNEm2lPS+
-	5xIqpsJ5F1pbb+/oJfcFz8oicfuBhQlN5pcPmUro9Yl24TGBEFyw72Werhd9aW/i5vNrTS/5cy0LL
-	H41qbDLPMdslBRG35axhRbOF2878XdyfGj4rA6X9iZO1Bj2O2O0l6YTUQesBSC6SwK0oMpv0rndFa
-	WX2bgoY5RX9pNXhIkz5oZPAet19aZlswv0ih/qDDBD1sxaQDFW/l7JW27pbzKajbDOpnlg9fUs/Vo
-	Fp7wOfnZG5qydFXDHePQ==;
+	List-Owner; bh=3kOeCCCgABOt7CQCGCv+QGKYviBasJ9QncZHWOHskp4=; b=sk/zSJwrnPlU8L
+	hCMNzPpVnF/isNCp1nm408GrycE0PFUkJEhWgzD3uZvXXVK8qetgQ/UzpESAIx5Qf/yuETwMU5FkR
+	rqTrq5ZvkHfYY7IuXFOz9vNm0wUZD8pShV+l1hZXhJeN5O7myVooNwx66+EMw7VrGqo9LHNTbNPCC
+	5W52CWdmbJ9TtP9PH0yZ9yzYv0op7S58KZtFwhPV1yS7N4Xb09ze3xTE6GdHXhrG/XBurwZArDA77
+	OYzevGW4UYSOGRfpgIYPFc2ivQhLEBjHtcjM+IVDhpRnB0pUEOiZJMySc7MUbAUK6pLkEHkIE5Qfy
+	Bhz4kTlMgII7SLKfxMKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4bjW-002B8J-2x;
-	Thu, 01 Jun 2023 06:24:26 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1q4cNg-002Iq7-2V;
+	Thu, 01 Jun 2023 07:05:56 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4bj4-002Afu-0h;
-	Thu, 01 Jun 2023 06:24:00 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id B6D9A5FD73;
-	Thu,  1 Jun 2023 09:23:53 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1685600633;
-	bh=kSvrNV01pYKxwurCvddI8AqxMVYMKQLY/eHlqyiGjSc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=fApJxuo1I+DhpC4BGUSekoYjDmIMVAAy0hnnT/WsPI5i7lcRfV1pmAe0GaaiLcxef
-	 EU83Ar7jcpkqXBZ3bqxtWN2Hu8rGnGnlj3tzkZDkaEIZ7TLEM81GRm5Qa1F2GUJ2gI
-	 ifkpXX4PmPrMdxpganpJ2dDbnkAmym/c46VakgtVUDSsdIJzoPFsfWyTbejOCagyF4
-	 Mkwi5sl9l4ER2dEvFT2Wy6JJpCiY9N/hKnE2+UjdpJu7UpCEAqPr1bOGVVKhU+a3Rx
-	 vIWiS54iPrTSj/pI5uQDPP8A/rpVRhH0LruM93gFH8nJO+qC5vbXgIXkrSmA94Epih
-	 RfGtZOkZZhlqQ==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Thu,  1 Jun 2023 09:23:53 +0300 (MSK)
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
-	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH v5 5/6] mtd: rawnand: meson: check buffer length
-Date: Thu, 1 Jun 2023 09:18:48 +0300
-Message-ID: <20230601061850.3907800-6-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20230601061850.3907800-1-AVKrasnov@sberdevices.ru>
-References: <20230601061850.3907800-1-AVKrasnov@sberdevices.ru>
+	id 1q4cNc-002Iob-2u
+	for linux-mtd@lists.infradead.org;
+	Thu, 01 Jun 2023 07:05:54 +0000
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-96f53c06babso53034566b.3
+        for <linux-mtd@lists.infradead.org>; Thu, 01 Jun 2023 00:05:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1685603150; x=1688195150;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UdPKQt7YQaevMe9FaRHRErHd01W/8ZdQxg/qvlil77I=;
+        b=qtaGX++9GCHkMv1VgHE/tZQElSx0TTN3LmL8o0IZxcGJCInYcIHzqZpkvAggonVCa4
+         PjnMONDjQsfripiXcycIs7ObADAtw7dfR7kvy//i6d0GLMg+lF312wQk7UOhvJRdmTaO
+         iBOt/g0HeMNWaE1e79rEsvW1SESF4AbNLoqpVzQCEK7S5tU1goK1tAtFQZzN5mxiYMiP
+         M1GZApwLuxsLRUCInZFA//S5x5/zsZm/u9/V/9jenaWF7+mAdhi9aSFjnZfRIAX3Xkxp
+         ZOCG+TFA8zzNOtqVp5Psfvz4G2+eQ30OURdKdfhOOzTly+mZgj9sSWPT1hH9QNhekRYZ
+         Qs/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685603150; x=1688195150;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UdPKQt7YQaevMe9FaRHRErHd01W/8ZdQxg/qvlil77I=;
+        b=eCILLPcu1+FQxad+l0WsSzrfPbSyBlozgHpui5YEw6lBclaLRx0lzqN/Fi8rZfXEGa
+         E6c7vSjccCxo+DM91roLLJdigeB2AM0laFx1+q/XkokTQR7l9Gwzp+/Jeg+m04OTte84
+         b0q0S9zTMD6E6DcUaTaBaSYJ1XXQTtxvtrlYUkT0AMps8ea+qC0g70h8vcSLqXGFu+q7
+         /F0JrjtNf7kCLYQPrXe7uSngrkj/HsSaxX6Hn+DTR2JaURDskoGkjCPFwvFwq9BvtAKX
+         XvP1Xvv4UN+idOIezUR/ua5Iy6mdE3+Gt9ykkj9fJL2aiYplPRSsptIhCoRcimyrMfzU
+         tI9A==
+X-Gm-Message-State: AC+VfDwJ17I+KuU+V+jep5McMI4OnnzwJxFBH9rvH3ME8hgQDQBvvP11
+	7PHq3+4vKUnoHuPDHcBjoqDBzQ==
+X-Google-Smtp-Source: ACHHUZ7iCqwfChtskRugaSiWPwtUsEfNufe1cDLS6IIi4UAtoXgXwGHYluWVhiAWfiMWS4S9mYmtEQ==
+X-Received: by 2002:a17:907:3e12:b0:973:943e:2308 with SMTP id hp18-20020a1709073e1200b00973943e2308mr8349376ejc.76.1685603150290;
+        Thu, 01 Jun 2023 00:05:50 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.199.204])
+        by smtp.gmail.com with ESMTPSA id c22-20020a170906695600b0094f3b18044bsm10004515ejs.218.2023.06.01.00.05.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jun 2023 00:05:49 -0700 (PDT)
+Message-ID: <a23dd485-a3d9-e31f-be3e-0ab293fcfc4a@linaro.org>
+Date: Thu, 1 Jun 2023 09:05:47 +0200
 MIME-Version: 1.0
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/01 03:13:00 #21393813
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v8 3/3] dt-bindings: mtd: marvell-nand: Convert to YAML DT
+ scheme
+Content-Language: en-US
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ andrew@lunn.ch, gregory.clement@bootlin.com,
+ sebastian.hesselbarth@gmail.com, conor@kernel.org
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ enachman@marvell.com, Vadym Kochan <vadym.kochan@plvision.eu>
+References: <20230531234923.2307013-1-chris.packham@alliedtelesis.co.nz>
+ <20230531234923.2307013-4-chris.packham@alliedtelesis.co.nz>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230531234923.2307013-4-chris.packham@alliedtelesis.co.nz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230531_232358_634954_E700D071 
-X-CRM114-Status: GOOD (  13.78  )
+X-CRM114-CacheID: sfid-20230601_000552_946127_75FCD76D 
+X-CRM114-Status: GOOD (  35.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,103 +101,268 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This NAND controller has limited buffer length, so check it before
-command execution to avoid length trim. Also check MTD write size on
-chip attach.
+On 01/06/2023 01:49, Chris Packham wrote:
+> From: Vadym Kochan <vadym.kochan@plvision.eu>
+> 
+> Switch the DT binding to a YAML schema to enable the DT validation.
+> 
+> The text binding didn't mention it as a requirement but existing usage
+> has
+> 
+>    compatible = "marvell,armada-8k-nand-controller",
+>                 "marvell,armada370-nand-controller";
+> 
+> so the YAML allows this in addition to the individual compatible values.
+> 
+> There was also an incorrect reference to dma-names being "rxtx" where
+> the driver and existing device trees actually use dma-names = "data" so
+> this is corrected in the conversion.
+> 
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> Notes:
+>     Changes in v8:
+>     - Mark deprecated compatible values as such
+>     - Allow "marvell,armada-8k-nand-controller" without
+>       "marvell,armada370-nand-controller"
+>     - Make dma-names usage reflect reality
+>     - Update commit message
+>     
+>     Changes in v7:
+>     - Restore "label" and "partitions" properties (should be picked up via
+>       nand-controller.yaml but aren't)
 
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
----
- Changelog v4->v5:
- * Move length checks from functions 'meson_nfc_read/write_buf()' to
-   'meson_nfc_exec_op()'.
+What do you mean by "aren't"? They are not needed.
 
- drivers/mtd/nand/raw/meson_nand.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+>     - Add/restore nand-on-flash-bbt and nand-ecc-mode which aren't covered
+>       by nand-controller.yaml.
+>     - Use "unevalautedProperties: false"
+>     - Corrections for clock-names, dma-names, nand-rb and nand-ecc-strength
+>     - Add pxa3xx-nand-controller example
+>     
+>     Changes in v6:
+>     - remove properties covered by nand-controller.yaml
+>     - add example using armada-8k compatible
+>     
+>     earlier changes:
+>     
+>     v5:
+>        1) Get back "label" and "partitions" properties but without
+>           ref to the "partition.yaml" which was wrongly used.
+>     
+>        2) Add "additionalProperties: false" for nand@ because all possible
+>           properties are described.
+>     
+>     v4:
+>        1) Remove "label" and "partitions" properties
+>     
+>        2) Use 2 clocks for A7K/8K platform which is a requirement
+>     
+>     v3:
+>       1) Remove txt version from the MAINTAINERS list
+>     
+>       2) Use enum for some of compatible strings
+>     
+>       3) Drop:
+>             #address-cells
+>             #size-cells:
+>     
+>          as they are inherited from the nand-controller.yaml
+>     
+>       4) Add restriction to use 2 clocks for A8K SoC
+>     
+>       5) Dropped description for clock-names and extend it with
+>          minItems: 1
+>     
+>       6) Drop description for "dmas"
+>     
+>       7) Use "unevalautedProperties: false"
+>     
+>       8) Drop quites from yaml refs.
+>     
+>       9) Use 4-space indentation for the example section
+>     
+>     v2:
+>       1) Fixed warning by yamllint with incorrect indentation for compatible list
+> 
+>  .../bindings/mtd/marvell,nand-controller.yaml | 223 ++++++++++++++++++
+>  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ----------
+>  MAINTAINERS                                   |   1 -
+>  3 files changed, 223 insertions(+), 127 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+> new file mode 100644
+> index 000000000000..433feb430555
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+> @@ -0,0 +1,223 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/marvell,nand-controller.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell NAND Flash Controller (NFC)
+> +
+> +maintainers:
+> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: marvell,armada-8k-nand-controller
+> +          - const: marvell,armada370-nand-controller
+> +      - enum:
+> +          - marvell,armada-8k-nand-controller
+> +          - marvell,armada370-nand-controller
+> +          - marvell,pxa3xx-nand-controller
+> +      - description: legacy bindings
+> +        deprecated: true
+> +        enum:
+> +          - marvell,armada-8k-nand
+> +          - marvell,armada370-nand
+> +          - marvell,pxa3xx-nand
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description:
+> +      Shall reference the NAND controller clocks, the second one is
+> +      is only needed for the Armada 7K/8K SoCs
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    items:
+> +      - const: core
+> +      - const: reg
+> +
+> +  dmas:
+> +    maxItems: 1
+> +
+> +  dma-names:
+> +    items:
+> +      - const: data
+> +
+> +  marvell,system-controller:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Syscon node that handles NAND controller related registers
+> +
+> +patternProperties:
+> +  "^nand@[0-3]$":
+> +    type: object
+> +    unevaluatedProperties: false
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 3
+> +
+> +      nand-rb:
+> +        minItems: 1
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 23a73268421b..2a91916566f4 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -111,6 +111,8 @@
- #define NFC_USER_BYTES		2
- #define NFC_OOB_PER_ECC(nand)	((nand)->ecc.bytes + NFC_USER_BYTES)
- 
-+#define NFC_CMD_RAW_LEN		GENMASK(13, 0)
-+
- struct meson_nfc_nand_chip {
- 	struct list_head node;
- 	struct nand_chip nand;
-@@ -284,7 +286,7 @@ static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
- 
- 	if (raw) {
- 		len = mtd->writesize + mtd->oobsize;
--		cmd = (len & GENMASK(13, 0)) | scrambler | DMA_DIR(dir);
-+		cmd = len | scrambler | DMA_DIR(dir);
- 		writel(cmd, nfc->reg_base + NFC_REG_CMD);
- 		return;
- 	}
-@@ -573,7 +575,7 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
- 	if (ret)
- 		goto out;
- 
--	cmd = NFC_CMD_N2M | (len & GENMASK(13, 0));
-+	cmd = NFC_CMD_N2M | len;
- 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
- 
- 	meson_nfc_drain_cmd(nfc);
-@@ -597,7 +599,7 @@ static int meson_nfc_write_buf(struct nand_chip *nand, u8 *buf, int len)
- 	if (ret)
- 		return ret;
- 
--	cmd = NFC_CMD_M2N | (len & GENMASK(13, 0));
-+	cmd = NFC_CMD_M2N | len;
- 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
- 
- 	meson_nfc_drain_cmd(nfc);
-@@ -1044,6 +1046,9 @@ static int meson_nfc_exec_op(struct nand_chip *nand,
- 			break;
- 
- 		case NAND_OP_DATA_IN_INSTR:
-+			if (instr->ctx.data.len > NFC_CMD_RAW_LEN)
-+				return -EINVAL;
-+
- 			buf = meson_nand_op_get_dma_safe_input_buf(instr);
- 			if (!buf)
- 				return -ENOMEM;
-@@ -1052,6 +1057,9 @@ static int meson_nfc_exec_op(struct nand_chip *nand,
- 			break;
- 
- 		case NAND_OP_DATA_OUT_INSTR:
-+			if (instr->ctx.data.len > NFC_CMD_RAW_LEN)
-+				return -EINVAL;
-+
- 			buf = meson_nand_op_get_dma_safe_output_buf(instr);
- 			if (!buf)
- 				return -ENOMEM;
-@@ -1293,6 +1301,7 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
- 	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
- 	struct mtd_info *mtd = nand_to_mtd(nand);
- 	int nsectors = mtd->writesize / 1024;
-+	int raw_writesize;
- 	int ret;
- 
- 	if (!mtd->name) {
-@@ -1304,6 +1313,13 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
- 			return -ENOMEM;
- 	}
- 
-+	raw_writesize = mtd->writesize + mtd->oobsize;
-+	if (raw_writesize > NFC_CMD_RAW_LEN) {
-+		dev_err(nfc->dev, "too big write size in raw mode: %d > %ld\n",
-+			raw_writesize, NFC_CMD_RAW_LEN);
-+		return -EINVAL;
-+	}
-+
- 	if (nand->bbt_options & NAND_BBT_USE_FLASH)
- 		nand->bbt_options |= NAND_BBT_NO_OOB;
- 
--- 
-2.35.0
+Drop minItems.
+
+> +        maxItems: 1
+
+Didn't you have here minimum and maximum? I think I did not ask to
+remove them.
+
+> +
+> +      nand-ecc-step-size:
+> +        const: 512
+> +
+> +      nand-ecc-strength:
+> +        enum: [1, 4, 8, 12, 16]
+> +
+> +      nand-on-flash-bbt:
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +
+> +      nand-ecc-mode:
+> +        const: hw
+> +
+> +      label:
+> +        $ref: /schemas/types.yaml#/definitions/string
+
+Drop label
+
+> +
+> +      partitions:
+> +        type: object
+
+Drop partitions.
+
+> +
+> +      marvell,nand-keep-config:
+> +        description: |
+> +          Orders the driver not to take the timings from the core and
+> +          leaving them completely untouched. Bootloader timings will then
+> +          be used.
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +
+> +      marvell,nand-enable-arbiter:
+> +        description: |
+> +          To enable the arbiter, all boards blindly used it,
+> +          this bit was set by the bootloader for many boards and even if
+> +          it is marked reserved in several datasheets, it might be needed to set
+> +          it (otherwise it is harmless).
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +        deprecated: true
+> +
+> +    additionalProperties: false
+
+unevaluatedProperties: false
+
+> +
+> +    required:
+> +      - reg
+> +      - nand-rb
+> +
+
+required: block goes here
+
+> +allOf:
+> +  - $ref: nand-controller.yaml
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: marvell,pxa3xx-nand-controller
+> +    then:
+> +      required:
+> +        - dmas
+> +        - dma-names
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: marvell,armada-8k-nand-controller
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 2
+> +
+> +        clock-names:
+> +          minItems: 2
+> +
+> +      required:
+> +        - marvell,system-controller
+> +
+
+
+Best regards,
+Krzysztof
 
 
 ______________________________________________________
