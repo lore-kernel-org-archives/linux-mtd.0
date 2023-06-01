@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AA43C7EE2E
-	for <linux-mtd@archiver.kernel.org>; Thu,  1 Jun 2023 06:24:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00E69C7EE2F
+	for <linux-mtd@archiver.kernel.org>; Thu,  1 Jun 2023 06:24:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FjqeU9Wcl5fkZxnVgvxrIuYvoH6mQevxZwmF1V6DTP8=; b=4isub6EvCqmlzj
-	Ea5HPgg4uIl87gyoSt8v36pnM7zAJXh/ep96IJwfHnIHN8DpsJULCfQEBRSzQ9lU/kxJnIGxGHW+O
-	u1dry+IN9MZ6rAmlrRdMajT8SLG3XX7C3Wr8PUh6oR4LqQhnZH0a165l7CFmanev4de/rZUEumja7
-	Z0rToY3UxA9R7wtKD6T15lyS+qo7zkVcLMnV1u6f7aPLJPjpYltCybAwz77QoS16HZb/4lKYNP7Fd
-	gwallghYSu5/W9GKz7t+gzvXTr2owpVVjHBik+2RNLGa0cwqFcs6CbETtUXHm1pnIII2iBRlg5s0P
-	1ctR2zyMeeKurdC4rwvg==;
+	List-Owner; bh=nQL3ODv91I2cGynXs7zsZk7iEE6Jzg4dBLP6AkKrOX8=; b=x3oH6efY+E8Vy6
+	l83g00ygF7vT4f4/1MyJyw8g/KoTNedjd/7tj8SH3idn8w5VDhUS79bDJvP5AR1DuxTL/vBL8BYw7
+	7oljlfVaQuFPqCYELYIwiQgwY89sfVhx4/lrX8yXAsd20uL3wjoryU3WLrf2PGYRTTxX9EgzznYpg
+	LKfqWl09j0lnGKZSvskQX4KQnq2SzJg83BuvKKgpemc+l3LnunIjne4m8MlKtLyAkjN/Jg0Qcr3+u
+	9VRJjQlXhzewXcWhELLjsDkG2rFtFOyk37mCaRtCr9RtE5k/CtMqoxrnX6S108XrKnzRkxQ6/yw68
+	9y7fQT2PceIbT5XUx99w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4bjT-002B61-2p;
-	Thu, 01 Jun 2023 06:24:23 +0000
+	id 1q4bj9-002AkO-1P;
+	Thu, 01 Jun 2023 06:24:03 +0000
 Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4bj4-002Aft-0f;
-	Thu, 01 Jun 2023 06:23:59 +0000
+	id 1q4bj0-002Acr-1C;
+	Thu, 01 Jun 2023 06:23:56 +0000
 Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id D00845FD74;
-	Thu,  1 Jun 2023 09:23:54 +0300 (MSK)
+	by mx.sberdevices.ru (Postfix) with ESMTP id 29B5A5FD6F;
+	Thu,  1 Jun 2023 09:23:48 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1685600634;
-	bh=6FX/oDhV3UArFeFozJZTELPsj5XEanV7an9T0MKnXa0=;
+	s=mail; t=1685600628;
+	bh=unyDr4AoLaNFBTKehsIrMcbFVhUU0qEanot3FjFAzts=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=j9W+l5s+BZrwcotRo28gMX6RXqEkq5D9k/kIRuYPog9sgetx5bJ+AWNQHDKK5Ui55
-	 OhxgVoHTIWtqz47Q4J0Vr0cMIt7g4YpeR2qxj0duCA4A0m/+aVukmeRD75nRmzphzL
-	 VztAbMb4blmdU1arX3QrHNrYYxKNGu57vCBjw5oGfqWMTDKGLxpN8xfkusf9X3be9s
-	 a8RMCLuZIMpD48OlnCSKxCHiNM9Ls89j+GsFSyZFtsHkCgkyezcp48gIerMtI1nEY4
-	 r13++/1CepWAi+isP5fV6T15I43mhIEylc9mOSbrogWFYYHp2wc3rF47DN2QQUd4CZ
-	 MLycIbZ9iCoww==
+	b=qeaYzJ+v7OBkUlYBUCbg8q/5RryEpMEchdwjGUQ+PBD3P0kpJsGlTS9TgnDrV5+Lq
+	 kdEUuO/vWvD4lwNZQezZ46usLB0qh7ysXigcVeQfyA8NoyjxjPimC1aypjLaR4I283
+	 JzarDXuEKWfO7vfugvxb6kgi8EhEfAr5WnU8e16Lke5HZsPY5xUVaM+3/rlG1cIf9K
+	 ga1tgusZDGKDykHH7VgBWlbUyF7h17xt3eog0Ff7ArD38oCVjeE+WoyTBGFYYNW6Ky
+	 zSRwyYg960hQidQpON8xG5iCGg/jk1U5VTm9CwuO+oqGddMK5H7BhVTepg5GHs/R6+
+	 wdx6/XjDn6EDg==
 Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
 	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Thu,  1 Jun 2023 09:23:54 +0300 (MSK)
+	Thu,  1 Jun 2023 09:23:48 +0300 (MSK)
 From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
 To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
 	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
@@ -52,9 +52,9 @@ CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
 	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH v5 6/6] mtd: rawnand: meson: remove unneeded bitwise OR with zeroes
-Date: Thu, 1 Jun 2023 09:18:49 +0300
-Message-ID: <20230601061850.3907800-7-AVKrasnov@sberdevices.ru>
+Subject: [RFC PATCH v5 1/6] mtd: rawnand: meson: fix ready/busy command
+Date: Thu, 1 Jun 2023 09:18:44 +0300
+Message-ID: <20230601061850.3907800-2-AVKrasnov@sberdevices.ru>
 X-Mailer: git-send-email 2.35.0
 In-Reply-To: <20230601061850.3907800-1-AVKrasnov@sberdevices.ru>
 References: <20230601061850.3907800-1-AVKrasnov@sberdevices.ru>
@@ -70,8 +70,8 @@ X-KSMG-AntiPhishing: not scanned, disabled by settings
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/01 03:13:00 #21393813
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230531_232358_451305_4F7FA79D 
-X-CRM114-Status: GOOD (  11.00  )
+X-CRM114-CacheID: sfid-20230531_232354_923743_C9D8BBCB 
+X-CRM114-Status: GOOD (  10.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,31 +88,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Both operations have no effect.
+This fixes ready/busy command value.
 
 Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
 ---
- drivers/mtd/nand/raw/meson_nand.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/meson_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 2a91916566f4..e78912bd3b4d 100644
+index 074e14225c06..9dd4a676497b 100644
 --- a/drivers/mtd/nand/raw/meson_nand.c
 +++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -626,12 +626,12 @@ static int meson_nfc_rw_cmd_prepare_and_execute(struct nand_chip *nand,
- 	cmd0 = in ? NAND_CMD_READ0 : NAND_CMD_SEQIN;
- 	nfc->cmdfifo.rw.cmd0 = cs | NFC_CMD_CLE | cmd0;
+@@ -37,7 +37,7 @@
+ #define NFC_CMD_SCRAMBLER_ENABLE	BIT(19)
+ #define NFC_CMD_SCRAMBLER_DISABLE	0
+ #define NFC_CMD_SHORTMODE_DISABLE	0
+-#define NFC_CMD_RB_INT		BIT(14)
++#define NFC_CMD_RB_INT		((0xb << 10) | BIT(18) | BIT(16))
  
--	addrs[0] = cs | NFC_CMD_ALE | 0;
-+	addrs[0] = cs | NFC_CMD_ALE;
- 	if (mtd->writesize <= 512) {
- 		cmd_num--;
- 		row_start = 1;
- 	} else {
--		addrs[1] = cs | NFC_CMD_ALE | 0;
-+		addrs[1] = cs | NFC_CMD_ALE;
- 		row_start = 2;
- 	}
+ #define NFC_CMD_GET_SIZE(x)	(((x) >> 22) & GENMASK(4, 0))
  
 -- 
 2.35.0
