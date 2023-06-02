@@ -4,79 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7861C77B7A
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jun 2023 20:44:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3915FC77B7A
+	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jun 2023 21:11:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Shg5e9so0DXANsId9+xzOg4a5l+woAHxEEJRPTdKUqQ=; b=QOWqIq82lzi4nI
-	hXp3NN8kCA1L8T7T3LS2qhHSfDp1qYlfaGzDlMQSJ7NohPKz39xOU7xAu2QwUISuiG8Cu6+/tulDh
-	E/YwLogyBsUPnhd0vmH2WzwrPEjq3SWgrn0xj4hThGh4aHGp5Q8TdfloCgcKZfvMV1ha1EUgiur54
-	dTcFHRTO3WuUwWfkASnVHobnrRZg7/NpKrik0R53NwhJdr558jjvtJ9sGMWBu8I8hL40imbnvth5P
-	7Dc+6YjtQoy7eH+kCCrw7YmEPOHQSikG5oodi4Q7/oBDarp5jfJIi+q0V2wWixn7XUXgwLn/8m3ID
-	1WM1Z/vubkXljca0NkDg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
+	In-Reply-To:Subject:cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nOcTchtNw8/CsZnpR/RX2+PV3fBj2XAq7pH1Cm3ExS4=; b=YSzSXUjWdiWygA
+	+wbeZIrN8fTDiT4E3XUALSPH0lwjFdmw96uPVJFWQ/KWPmj0yGugDLqwR2zpwbNwv0VBdXn2ww1kP
+	51JdVqAGRrDPwddWSX//Z8OSVpEjbBiJPVypu2T7Q5W76NfNDDdlespKrCvHt1luSZXYyiyb3/Dz9
+	Hve8RFH/spvB2OhzQiNNv+ibp6EB9e1TMEOutHNPlqgPB5AG2g57tv+ogn0W/TWj26ABxlNeWukt8
+	Bj/vFl+u83VnHrE54Mz9E4wOdMbFOoh+8r/OVSI9tu64iCr2ec4GjXRyf00FiMpvLUaHr13KY5qzt
+	lppP6sSRkTr6iFaNMGmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q5BdA-007rRN-0F;
-	Fri, 02 Jun 2023 20:44:16 +0000
-Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
+	id 1q5C3c-007uTb-3A;
+	Fri, 02 Jun 2023 21:11:36 +0000
+Received: from pb-smtp2.pobox.com ([64.147.108.71])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q5Bd6-007rQd-2Q
+	id 1q5C3Z-007uSc-2C
 	for linux-mtd@lists.infradead.org;
-	Fri, 02 Jun 2023 20:44:14 +0000
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4f3ba703b67so3341904e87.1
-        for <linux-mtd@lists.infradead.org>; Fri, 02 Jun 2023 13:44:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685738649; x=1688330649;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9rd/H5LZeGNsQjBkz2Gf2rkXX/hq9GYqk6eLCuVnnQA=;
-        b=nG5UYi/mikn09iRuvFsoU3axTq++gJa9uQGMbbBl2cIRTh/lJ7AIE+T6fD0V1LUUGs
-         iptGj/HlY/R67KyYJDwgIL05PLU09MjakPB2FcgV2Rqd2tY9oQV9r+l801jNvsFtHKTO
-         gQnYcSxjXMdT/5ePn4G84oS/lp5tX9+EkkqNiH2Me6D3chPGLBG6Ok0kl1YZbes5AvFZ
-         J5xaDG/oE4ywJ4+8y+ZsEIgmntDX4SE4IMRDeGuEUu2zSpJXWQEJtyEUcVpoDcr+DVL7
-         w302w73B2qsNeCVSj1ra+QuomHhxq+HjNT8eOVmcAujv9LHFPqDj3vdvRMcpoe/7BQ6r
-         1kjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685738649; x=1688330649;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9rd/H5LZeGNsQjBkz2Gf2rkXX/hq9GYqk6eLCuVnnQA=;
-        b=g4AJiGjQ2/Lly9JCdpfYyth6HxwQ6NO3dZvbzdiVWRi8LtikY8v2rQssTvYks8cB9i
-         oc8CLKyR+dWQiqnvm3MrTw5reyTvaNKGtAJBNzkjxe6G4wrpp5Svw68bTVb5rhnUAhcf
-         a52/sRvaOaL1RMgSaINPDr706TAUErwDtAWF5xGocLkt0tr78nWdmS1h+E8hofvbx/Ar
-         b9RAUDrcYDZ57bDZLx9haBHWD3ZUuyzN2NfiH4bYyCALV/6IfX8E3z+0xJNZb+5PoiwZ
-         dSYIvH6lA4BNHIR1aK2E/7Z1pwJb/QywIT1ac75IrsSTo8ktcpHFK8yGUKEhhNaGJRSQ
-         AWfQ==
-X-Gm-Message-State: AC+VfDyaYjATtvO3hu4nXVsgGz+fJWs+3oiofTSgoq18gnSwNih2V26o
-	j1k236IECEHwnaWIjJzRqwZjdQ==
-X-Google-Smtp-Source: ACHHUZ7xcEylBm0OQcCuvh7XXsAb0Db+nkjBoXlqxM3eXd731dBOMKRh0zdbidlqsrt7QJpZMQ7f3g==
-X-Received: by 2002:a05:6512:98b:b0:4f5:a17f:4897 with SMTP id w11-20020a056512098b00b004f5a17f4897mr2403404lft.43.1685738648691;
-        Fri, 02 Jun 2023 13:44:08 -0700 (PDT)
-Received: from Fecusia.lan (c-05d8225c.014-348-6c756e10.bbcust.telenor.se. [92.34.216.5])
-        by smtp.gmail.com with ESMTPSA id o2-20020a056512050200b004f122a378d4sm268473lfb.163.2023.06.02.13.44.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Jun 2023 13:44:07 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Nicolas Pitre <npitre@baylibre.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v3] mtd: cfi_cmdset_0001: Byte swap OTP info
-Date: Fri,  2 Jun 2023 22:43:59 +0200
-Message-Id: <20230602204359.3493320-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.40.1
+	Fri, 02 Jun 2023 21:11:35 +0000
+Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
+	by pb-smtp2.pobox.com (Postfix) with ESMTP id 9755A18640D;
+	Fri,  2 Jun 2023 17:11:26 -0400 (EDT)
+	(envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+	:to:cc:subject:in-reply-to:message-id:references:mime-version
+	:content-type; s=sasl; bh=f8ShItLV8CgghuGuwOojfc7jC2wXuOhPcJdUrt
+	uYthc=; b=i2a/7j0RFUPfdHun3yYctOWxM3IPxNuh0kYkSPfYUwcOTzbciZg6/l
+	sxMeuF5wO50gvvK/4qQZcgZ/dYFWG3vcD9DeWJvLZyiz+SifjACHe8EZJ4DwT0N+
+	EDihUHmGMjw2dZNPT+vraLKQsNKWOndGKK2qYRRQj3Rn1sjm/dL5k=
+Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
+	by pb-smtp2.pobox.com (Postfix) with ESMTP id 8E42418640C;
+	Fri,  2 Jun 2023 17:11:26 -0400 (EDT)
+	(envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=f8ShItLV8CgghuGuwOojfc7jC2wXuOhPcJdUrtuYthc=; b=Z0kC22iHVruWmbGvcO7AF/5+zSBH27jOjNdFasgRVZ5ktnLP3AkcFYW20fJKHuwV1FWBVP20hRQbLhUbNqny2Lu3x1tAol1ZunYmi5DPDCcq44IXCg4FKS0XI5MJ3I3qxMEjIDkk5pqXi2vaO3pp6oxliHaAM8FfCEN5YQLvt18=
+Received: from yoda.home (unknown [184.162.17.228])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by pb-smtp2.pobox.com (Postfix) with ESMTPSA id 03FA818640B;
+	Fri,  2 Jun 2023 17:11:26 -0400 (EDT)
+	(envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu [10.0.0.101])
+	by yoda.home (Postfix) with ESMTPSA id B3F3C7CF1F3;
+	Fri,  2 Jun 2023 17:11:24 -0400 (EDT)
+Date: Fri, 2 Jun 2023 17:11:24 -0400 (EDT)
+From: Nicolas Pitre <nico@fluxnic.net>
+To: Linus Walleij <linus.walleij@linaro.org>
+cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+    Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+    linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: cfi_cmdset_0001: Byte swap OTP info
+In-Reply-To: <20230602204359.3493320-1-linus.walleij@linaro.org>
+Message-ID: <1nqsp3n7-n82r-698p-sn82-0231n75p7216@syhkavp.arg>
+References: <20230602204359.3493320-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
+X-Pobox-Relay-ID: 08D51708-018A-11EE-96D9-307A8E0A682E-78420484!pb-smtp2.pobox.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230602_134412_828601_5D459EF8 
-X-CRM114-Status: GOOD (  17.63  )
+X-CRM114-CacheID: sfid-20230602_141133_939241_8C2C2C64 
+X-CRM114-Status: GOOD (  29.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,80 +83,86 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently the offset into the device when looking for OTP
-bits can go outside of the address of the MTD NOR devices,
-and if that memory isn't readable, bad things happen
-on the IXP4xx (added prints that illustrate the problem before
-the crash):
+On Fri, 2 Jun 2023, Linus Walleij wrote:
 
-cfi_intelext_otp_walk walk OTP on chip 0 start at reg_prot_offset 0x00000100
-ixp4xx_copy_from copy from 0x00000100 to 0xc880dd78
-cfi_intelext_otp_walk walk OTP on chip 0 start at reg_prot_offset 0x12000000
-ixp4xx_copy_from copy from 0x12000000 to 0xc880dd78
-8<--- cut here ---
-Unable to handle kernel paging request at virtual address db000000
-[db000000] *pgd=00000000
-(...)
+> Currently the offset into the device when looking for OTP
+> bits can go outside of the address of the MTD NOR devices,
+> and if that memory isn't readable, bad things happen
+> on the IXP4xx (added prints that illustrate the problem before
+> the crash):
+> 
+> cfi_intelext_otp_walk walk OTP on chip 0 start at reg_prot_offset 0x00000100
+> ixp4xx_copy_from copy from 0x00000100 to 0xc880dd78
+> cfi_intelext_otp_walk walk OTP on chip 0 start at reg_prot_offset 0x12000000
+> ixp4xx_copy_from copy from 0x12000000 to 0xc880dd78
+> 8<--- cut here ---
+> Unable to handle kernel paging request at virtual address db000000
+> [db000000] *pgd=00000000
+> (...)
+> 
+> This happens in this case because the IXP4xx is big endian and
+> the 32- and 16-bit fields in the struct cfi_intelext_otpinfo are not
+> properly byteswapped. Compare to how the code in read_pri_intelext()
+> byteswaps the fields in struct cfi_pri_intelext.
+> 
+> Adding a small byte swapping loop for the OTP in read_pri_intelext()
+> and the crash goes away.
+> 
+> The problem went unnoticed for many years until I enabled
+> CONFIG_MTD_OTP on the IXP4xx as well, triggering the bug.
+> 
+> Cc: Nicolas Pitre <npitre@baylibre.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-This happens in this case because the IXP4xx is big endian and
-the 32- and 16-bit fields in the struct cfi_intelext_otpinfo are not
-properly byteswapped. Compare to how the code in read_pri_intelext()
-byteswaps the fields in struct cfi_pri_intelext.
+Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
 
-Adding a small byte swapping loop for the OTP in read_pri_intelext()
-and the crash goes away.
-
-The problem went unnoticed for many years until I enabled
-CONFIG_MTD_OTP on the IXP4xx as well, triggering the bug.
-
-Cc: Nicolas Pitre <npitre@baylibre.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v2->v3:
-- Move the byte swapping to a small loop in read_pri_intelext()
-  so all bytes are swapped as we reach cfi_intelext_otp_walk().
-ChangeLog v1->v2:
-- Drill deeper and discover a big endian compatibility issue.
----
- drivers/mtd/chips/cfi_cmdset_0001.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 54f92d09d9cf..02aaf09d6f5c 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -421,9 +421,25 @@ read_pri_intelext(struct map_info *map, __u16 adr)
- 		extra_size = 0;
- 
- 		/* Protection Register info */
--		if (extp->NumProtectionFields)
-+		if (extp->NumProtectionFields) {
-+			struct cfi_intelext_otpinfo *otp =
-+				(struct cfi_intelext_otpinfo *)&extp->extra[0];
-+
- 			extra_size += (extp->NumProtectionFields - 1) *
--				      sizeof(struct cfi_intelext_otpinfo);
-+				sizeof(struct cfi_intelext_otpinfo);
-+
-+			if (extp_size >= sizeof(*extp) + extra_size) {
-+				int i;
-+
-+				/* Do some byteswapping if necessary */
-+				for (i = 0; i < extp->NumProtectionFields - 1; i++) {
-+					otp->ProtRegAddr = le32_to_cpu(otp->ProtRegAddr);
-+					otp->FactGroups = le16_to_cpu(otp->FactGroups);
-+					otp->UserGroups = le16_to_cpu(otp->UserGroups);
-+					otp++;
-+				}
-+			}
-+		}
- 	}
- 
- 	if (extp->MinorVersion >= '1') {
--- 
-2.40.1
-
+> ---
+> ChangeLog v2->v3:
+> - Move the byte swapping to a small loop in read_pri_intelext()
+>   so all bytes are swapped as we reach cfi_intelext_otp_walk().
+> ChangeLog v1->v2:
+> - Drill deeper and discover a big endian compatibility issue.
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0001.c | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> index 54f92d09d9cf..02aaf09d6f5c 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -421,9 +421,25 @@ read_pri_intelext(struct map_info *map, __u16 adr)
+>  		extra_size = 0;
+>  
+>  		/* Protection Register info */
+> -		if (extp->NumProtectionFields)
+> +		if (extp->NumProtectionFields) {
+> +			struct cfi_intelext_otpinfo *otp =
+> +				(struct cfi_intelext_otpinfo *)&extp->extra[0];
+> +
+>  			extra_size += (extp->NumProtectionFields - 1) *
+> -				      sizeof(struct cfi_intelext_otpinfo);
+> +				sizeof(struct cfi_intelext_otpinfo);
+> +
+> +			if (extp_size >= sizeof(*extp) + extra_size) {
+> +				int i;
+> +
+> +				/* Do some byteswapping if necessary */
+> +				for (i = 0; i < extp->NumProtectionFields - 1; i++) {
+> +					otp->ProtRegAddr = le32_to_cpu(otp->ProtRegAddr);
+> +					otp->FactGroups = le16_to_cpu(otp->FactGroups);
+> +					otp->UserGroups = le16_to_cpu(otp->UserGroups);
+> +					otp++;
+> +				}
+> +			}
+> +		}
+>  	}
+>  
+>  	if (extp->MinorVersion >= '1') {
+> -- 
+> 2.40.1
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
