@@ -4,80 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1AC3C77B7A
-	for <linux-mtd@archiver.kernel.org>; Fri,  2 Jun 2023 23:25:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00556C7EE29
+	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jun 2023 00:15:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
+	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zVONIokJz35XAnE4rshsU4Ia0wlJ7R7nL6YsgyVq/Nc=; b=h6UXknwUT6V86c
-	qy2bbG4l3Ya6aLQqqBVpEOFJE4sZmc4TytE4dkKK0thGD+MpdO8baEeG31OirnufE/9nQ2k7aLO3l
-	onbskRsnha7FSjgVjgQ2xVBBOkMcitYj3oLcg37cAk3EszPvY7jlJLK+7GZDRdXv8LuS9HrcrF6gy
-	7gIA4Nq1hbNBEDLBbCKKel1wE/NxqNsvPrgI/O/ktrFnkwN9A9smRiGeof7KJppQo5NTfeiHYRv02
-	POYgC67gA01DJaAIQZGLVNknkYkG2LU1u1NVMBvlZ4lcz2VSt2UKcrnKYR1mzPMkvcTS3bH2rGieP
-	lKETQiokdfcXbb0qWeZw==;
+	List-Owner; bh=kEtXeCp1vdPHplR/G/QaHQk47uOV2BWwjfbWqxJWFLk=; b=t+X63up55meVcH
+	AgdyhFY+wbqhVoHEVWNAq3ztW9B0FAQLD4UlsCRfETNdZSoaqAXgXi4pn+bWY8pjZTcV9ZkBtzJiM
+	261aAxxw64IiC5IhVzcSe4xEXZkim3TywHLhkjld3tfE+U5EkjTGo0TfUxoLkok74l4KNata6p2dU
+	++dJim5wI9gUBK0tRiGJH3Wk4QG1mOTcYquA2Qcj7OJYp4y1LBL1Lk49/edykIjxLBWVT0UWMyuTy
+	UY2xv3ixVHltaoveWFbU/GN8YCuO4lpr24Lpxr9YVL/L8Jxhh2oIxIhj71+7dkMQhfkGhdcLVFH4W
+	sxeVAt+YjM/+fnxZW1nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q5E8g-0089v0-1d;
-	Fri, 02 Jun 2023 23:24:58 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1q5EvW-008FO5-1M;
+	Sat, 03 Jun 2023 00:15:26 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q5E8d-0089uV-29
-	for linux-mtd@bombadil.infradead.org;
-	Fri, 02 Jun 2023 23:24:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=3XSUlErwSJjbRpAY7CWY7PZr9eQ9mGrmKgBtPJTl17s=; b=qP02yCXTFB2NcPA/bi2dG8YfJu
-	1PiNrFwVDKdXmeGT0Ybddplzwq3qbDPG4mp8r9S9CLqC8qg/R/s4VohAZ91WmeIxCvHCzH8qHXl0r
-	wThItvD8YMZUgfVQYJwWOHwC7R7Ua/+NXHeUAp1sYZKzyhVu/sr3pBSsrSru655LflXlBeu9DdwEp
-	xfJKsD3Tc38Oh9YBrAt+EuCMdrb273u1/bEYn6vMujNG98jJH5smarpXZI2R7wmpO4/Y5SzjtgnRI
-	71hrPTK6fuwqyi7MVVmZf16zxR/NiTeT1MOmYi5nxwZGx24wui+ZkweXRQkAjlYQvaFZUk1yXO6Nj
-	tiNU+3yA==;
-Received: from dfw.source.kernel.org ([139.178.84.217])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q5E8Z-001UAT-0i
+	id 1q5EvS-008FMS-2y
 	for linux-mtd@lists.infradead.org;
-	Fri, 02 Jun 2023 23:24:53 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	Sat, 03 Jun 2023 00:15:24 +0000
+Received: from [127.0.0.1] (nyx.walle.cc [158.255.213.36])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5F3FF60EA5;
-	Fri,  2 Jun 2023 23:24:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FDDFC433EF;
-	Fri,  2 Jun 2023 23:24:42 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="KVUNmB26"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1685748280;
+	by mail.3ffe.de (Postfix) with ESMTPSA id 122A2102;
+	Sat,  3 Jun 2023 02:15:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1685751315;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3XSUlErwSJjbRpAY7CWY7PZr9eQ9mGrmKgBtPJTl17s=;
-	b=KVUNmB26QTymlcTuPPbMPkDb4Y+B45qVW68BlrLfktKdMwa0nONQOq39YIyQpju/xlp3wo
-	p+WPQ0aL5BZXCT9xpwTFkn0Dv2siWeWE5663AzWRp4hFRaYzMlAydi8IH47dZHYwgpEaO7
-	ddCFWxvREbMSpVccnnOByiCtvhYgYHI=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id b8a3e245 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Fri, 2 Jun 2023 23:24:39 +0000 (UTC)
-Date: Sat, 3 Jun 2023 01:24:36 +0200
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, Michael Walle <michael@walle.cc>
+	bh=Dse3uBwknFWk6pPKL4cxQOJ3Qeh0WqW0rpY9QEi+cjg=;
+	b=L9XkY24PzEJ6XOJBYkyez+8seHdJVyeu7Ce1FawojyDGUGDBOt7A7b2EENrG6ZfdZAcv/g
+	vQbB+y8tXSAf/e2I7EC5An3zhgRQTqUMfwynPXJTYl3ci/uXTuEA3cZj+UZIbcrVcDBt/1
+	yR/r7jX+EincIVPYMH5xitFxgvxK9H5M2ZiXc2TVq5WkdyGJ4gpduFo3xj2jDfWQbLUJai
+	ty+1a/cQQbgHEr7FZoFGpPfSw3arFxYocBhTRFI5Jv43R/2JyGTvDJmEb6Z4nxsd7rY3VJ
+	4u041kNMEoyzSuV7PEsFiZNx2e+EE5WDJDocEhqLQFoSw6Ycbg7+WAo6PRGclQ==
+Date: Sat, 03 Jun 2023 08:14:59 +0800
+From: Michael Walle <michael@walle.cc>
+To: Linus Walleij <linus.walleij@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+CC: linux-mtd@lists.infradead.org, "Jason A . Donenfeld" <Jason@zx2c4.com>
 Subject: Re: [PATCH] mtd: otp: Put factory OTP/NVRAM into the entropy pool
-Message-ID: <ZHp6NM-6Gtd68qlQ@zx2c4.com>
-References: <20230602212318.3524782-1-linus.walleij@linaro.org>
-MIME-Version: 1.0
-Content-Disposition: inline
+User-Agent: K-9 Mail for Android
 In-Reply-To: <20230602212318.3524782-1-linus.walleij@linaro.org>
+References: <20230602212318.3524782-1-linus.walleij@linaro.org>
+Message-ID: <E8B5CEB9-C5BD-44D7-8F55-DFA6FD1BC91E@walle.cc>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230603_002452_022810_4541F9BC 
-X-CRM114-Status: GOOD (  29.25  )
+X-CRM114-CacheID: sfid-20230602_171523_354934_04852123 
+X-CRM114-Status: UNSURE (   7.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,76 +77,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 02, 2023 at 11:23:18PM +0200, Linus Walleij wrote:
-> The factory OTP, if supported, contains factory-programmed
-> information such as typically the serial number or production
-> week for the chip.
-> 
-> As this is device-unique information, submit it into the
-> system entropy pool.
-> 
-> This does not count as improvement of the entropy as such
-> but in practice it makes it a bit more random to mix in these
-> numbers.
-> 
-> Cc: Jason A. Donenfeld <Jason@zx2c4.com>
-> Cc: Michael Walle <michael@walle.cc>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Am 3. Juni 2023 05:23:18 GMT+08:00 schrieb Linus Walleij <linus.walleij@linaro.org>:
+>The factory OTP, if supported, contains factory-programmed
+>information such as typically the serial number or production
+>week for the chip.
+>
+>As this is device-unique information, submit it into the
+>system entropy pool.
+>
+>This does not count as improvement of the entropy as such
+>but in practice it makes it a bit more random to mix in these
+>numbers.
 
-Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Please note, that not every flash will have some kind of unique identifier, some won't have that section populated at all or some OEM stuff in it. But I guess that's alright.
 
-Great idea!
-
-Just one question below. Feel free to disregard if it's silly.
-
-> ---
-> This is similar to the patch I made to add MMC/SD-card serial
-> numbers to randomness, just with raw NOR flash.
-> ---
->  drivers/mtd/mtdcore.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 60670b2f70b9..efc8cf76dc60 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -23,6 +23,7 @@
->  #include <linux/idr.h>
->  #include <linux/backing-dev.h>
->  #include <linux/gfp.h>
-> +#include <linux/random.h>
->  #include <linux/slab.h>
->  #include <linux/reboot.h>
->  #include <linux/leds.h>
-> @@ -966,6 +967,25 @@ static int mtd_otp_nvmem_add(struct mtd_info *mtd)
->  		}
->  
->  		if (size > 0) {
-> +			/*
-> +			 * The factory OTP contains thing such as a unique serial
-> +			 * number and is small, so let's read it out and put it
-> +			 * into the entropy pool.
-> +			 */
-> +			void *otp;
-> +
-> +			otp = kmalloc(size, GFP_KERNEL);
-> +			if (!otp)
-> +				return -ENOMEM;
-> +			err = mtd_nvmem_fact_otp_reg_read(mtd, 0, otp, size);
-> +			if (err < 0) {
-> +				kfree(otp);
-> +				return err;
-> +			}
-> +			if (err == size)
-> +				add_device_randomness(otp, size);
-
-What if instead you just did `add_device_randomness(otp, err)`, without
-the conditional checking that `err == size`? You check for the actual
-error case above (`err < 0`), and so in the case that
-mtd_nvmem_fact_otp_reg_read() returns less than you thought it should,
-it can't hurt to still add it to the rng.
-
-Jason
+-michael 
+[I'm still on vacation and just have access to a mobile phone, so sorry for any incorrect formatting] 
 
 ______________________________________________________
 Linux MTD discussion mailing list
