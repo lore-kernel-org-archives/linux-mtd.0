@@ -4,61 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D93ACC77B7A
-	for <linux-mtd@archiver.kernel.org>; Sat,  3 Jun 2023 20:21:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29533C7EE2A
+	for <linux-mtd@archiver.kernel.org>; Sun,  4 Jun 2023 04:42:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W5nRZCvaKDWZAVoJUPf3UP2JSCJO8axvvnlSlx9yFaM=; b=xQFy3skV+uZPX8
-	7czR4MJW3Pn6ozSa4mER7WZJyxErOsF5FILkZniz3LZLP2JfDNcdAIJgxhMGfTlo9nRT8Ekpgz2pr
-	z/g0pTqAer7ceZBUWpJIqgOq3vh3gBBAwKVN1DUt95nQGslN0pmhoTeJtujI/3sh6IiZSiqO3g+D6
-	i2+Vu/VouAGmkAq8NgMx1ucmzO1by+bWBWDf9yrqy8ADVH1lvltGgm3dMJjw6dAysXiWHyg3XSAvM
-	NznVqFZpVBEcJ2FviOPaTERuaFoqU11gjlE/AV84h7HHE42jhrKYLoJfjlrYz8CdWv4H6/u6jrad3
-	g+BcZT0MI6naSdYmO7NA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=oYNtNqehdVZ09PHU9WAi3ucV8ML39zIOwPAhuCr7Ph4=; b=ADzoqNPckamS9f
+	fjO+koaFyoJk3Hhgs0Z7gYyUujyUBKUC0I9GRZA9KGjZlhbTbRTkrJ0fCLblPSUrc+hB9yrcaeIVi
+	FolBg/ufRJq96f+vf9uFNNNLnqBok4ZEAU7/SfnDR960yYloCybFkkF46xrnG3a5ErIBsetmYlxPZ
+	gxORCCHnHKoSrFXrdRAWiaojjlYkcLfKpTdDyvLPqJJZYbP9RnTWS5ATgEK+D3ssq+PJ398zNq+mf
+	DHvviQ8XW/rvNsje7RhaxXq8nWHEpJYzSTSqZeqxcU7Y2DKar3/TmppXCH17lkAfG0rl8MSQj5lGe
+	AG4EADSn2Q+5W8v06Zng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q5XkI-00AVrQ-2T;
-	Sat, 03 Jun 2023 20:21:06 +0000
-Received: from fgw23-7.mail.saunalahti.fi ([62.142.5.84])
+	id 1q5fZM-00BI67-0f;
+	Sun, 04 Jun 2023 04:42:20 +0000
+Received: from smtp-26.smtpout.orange.fr ([80.12.242.26] helo=smtp.smtpout.orange.fr)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q5XkF-00AVqd-0m
+	id 1q5fZH-00BI4J-1g
 	for linux-mtd@lists.infradead.org;
-	Sat, 03 Jun 2023 20:21:04 +0000
-Received: from localhost (88-113-26-95.elisa-laajakaista.fi [88.113.26.95])
-	by fgw23.mail.saunalahti.fi (Halon) with ESMTP
-	id 25f5af74-024c-11ee-b972-005056bdfda7;
-	Sat, 03 Jun 2023 23:20:58 +0300 (EEST)
-From: andy.shevchenko@gmail.com
-Date: Sat, 3 Jun 2023 23:20:57 +0300
-To: Nikita Shubin <nikita.shubin@maquefel.me>
-Cc: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Sun, 04 Jun 2023 04:42:17 +0000
+Received: from pop-os.home ([86.243.2.178])
+	by smtp.orange.fr with ESMTPA
+	id 5fZ4q5cPPbOsk5fZ4qqpwK; Sun, 04 Jun 2023 06:42:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1685853723;
+	bh=/V3bb2t3S9ERy4bkX7WFDcRfY60GVE2pPffF3L5h38c=;
+	h=From:To:Cc:Subject:Date;
+	b=CfFUQY2teH7AsnaLHJL4lU6kx8XHXzOginGc3EugTHKqGjSBqn6frzcO2Ow4Oxq5N
+	 u+MrEJcvu5TLU8KvNlRI/F3YR22pjozCHyQyF7xGZgy52CFqWTzLfrcdyxsTlAwewu
+	 rfJ8QFZmH3oKkgsOkBkrcjBS3qE++cL9UuFQ9nO51UaoVxGio2Sgw483VEWPQRxOuC
+	 bvQxV2Hp8AOU8SGgAiozPUWTIw71aYBGBU5NKp4PmDGK/Ww3de9LxfiKdklRNSvPnJ
+	 kM4B2ySerIGcJl3bt02cQhgLgXdNyAAjF0WTA+KcU+0p40cqUyS+0JRIeSEQcpd0xt
+	 0Cf2NTYAD05Gw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 04 Jun 2023 06:42:03 +0200
+X-ME-IP: 86.243.2.178
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Christophe Kerello <christophe.kerello@foss.st.com>,
-	Jean Delvare <jdelvare@suse.de>,
-	Liang Yang <liang.yang@amlogic.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Michael Peters <mpeters@embeddedts.com>,
-	Kris Bahnsen <kris@embeddedts.com>, linux-kernel@vger.kernel.org,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v1 24/43] mtd: nand: add support for ts72xx
-Message-ID: <ZHugqa697eGqHnr4@surfacebook>
-References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
- <20230601054549.10843-6-nikita.shubin@maquefel.me>
+Subject: [PATCH] mtd: mtdpart: Drop useless LIST_HEAD
+Date: Sun,  4 Jun 2023 06:42:01 +0200
+Message-Id: <547248195d87d1240d6126d13eb1364b1a0b634d.1685853690.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230601054549.10843-6-nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230603_132103_462737_954ABBB6 
-X-CRM114-Status: GOOD (  16.38  )
+X-CRM114-CacheID: sfid-20230603_214215_815518_29A4971D 
+X-CRM114-Status: UNSURE (   8.49  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,127 +77,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Thu, Jun 01, 2023 at 08:45:29AM +0300, Nikita Shubin kirjoitti:
-> Technologic Systems has it's own nand controller implementation in CPLD.
-> 
-> This patch adds support for TS-72XX boards family.
+'tmp_list' is unused, so drop it.
 
-Use imperative mode, this is documented in the Submitting Patches,
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This was introduced in commit 46b5889cc2c5 ("mtd: implement proper partition handling")
+---
+ drivers/mtd/mtdpart.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-...
-
-> +/*
-> + * Technologic Systems TS72xx NAND controller driver
-> + *
-> + * Copyright (C) 2023 Nikita Shubin <nikita.shubin@maquefel.me>
-> + *
-> + * derived: plat_nand.c
-
-Derived from:
-
-> + *  Author: Vitaly Wool <vitalywool@gmail.com>
-> + */
-
-...
-
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-
-+ Blank line?
-
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/platnand.h>
-
-...
-
-> +		bits = readb(addr) & ~0x07;
-
-GENMASK()?
-
-...
-
-> +	addr += (1 << TS72XX_NAND_BUSY_ADDR_LINE);
-
-BIT() ?
-
-...
-
-> +	return !!(readb(addr) & 0x20);
-
-BIT() ?
-
-...
-
-> +	struct ts72xx_nand_data *data;
-> +	struct mtd_info *mtd;
-> +	int err = 0;
-
-Redundant assignment.
-
-> +	/* Allocate memory for the device structure (and zero it) */
-> +	data = devm_kzalloc(&pdev->dev, sizeof(struct ts72xx_nand_data),
-
-sizeof(*data) and make it a single line.
-
-> +			    GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-
-...
-
-> +	nand_set_flash_node(&data->chip, pdev->dev.of_node);
-
-Hmm... wondering why this uses OF node instead of fwnode... But okay, this is
-question to the subsystem maintaners.
-
-
-> +	err = mtd_device_parse_register(mtd, NULL, NULL,
-> +					NULL, 0);
-
-There is plenty of space on the previous line.
-
-> +
-
-Redundant blank line.
-
-> +	if (!err)
-> +		return err;
-> +
-> +	nand_cleanup(&data->chip);
-> +
-> +	return 0;
-
-This seems at least weird and rather broken.
-To me it looks like
-
-	if (err) {
-		nand_cleanup(&data->chip);
-		return err;
-	}
-
-	return 0;
-
-has to be here.
-
-> +}
-
-...
-
-> +	ret = mtd_device_unregister(nand_to_mtd(chip));
-> +	WARN_ON(ret);
-
-WARN_ON()?! Why?
-
-> +	nand_cleanup(chip);
-> +}
-
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 85f5ee6f06fc..a46affbb037d 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -326,7 +326,6 @@ static int __mtd_del_partition(struct mtd_info *mtd)
+ static int __del_mtd_partitions(struct mtd_info *mtd)
+ {
+ 	struct mtd_info *child, *next;
+-	LIST_HEAD(tmp_list);
+ 	int ret, err = 0;
+ 
+ 	list_for_each_entry_safe(child, next, &mtd->partitions, part.node) {
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
 
 ______________________________________________________
