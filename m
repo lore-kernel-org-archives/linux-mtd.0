@@ -4,108 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5179C7EE23
-	for <linux-mtd@archiver.kernel.org>; Sun,  4 Jun 2023 15:54:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC965C77B73
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jun 2023 06:16:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XDEkfo+tPGvJAYdMZqCIpbGN1necIAoH2gRfLLUN7ZU=; b=K1ZVol160xGShM
-	x+kW7QGPKZqQqU4dCmY6gQ/lABbVr6LYGxD3/w7hjJwVQP4UmUJ8MklnOwcgjrfIQCdrv2RiiXvcc
-	kPvZ+wA5p6XQHSollGKGgLIle+T/+7Hc73dHp8E6a1sZ3YOzP4SAC9qYiCkKZ32G/hf3HU3O9W6Jg
-	lY4ZAzwCv6QnkFKx2KVHg6/duO5GsTRnu/LaGd5CCDeiaECt8BEHj9ryffh5YB4xGSxZ2+i1z+8ip
-	01eqTarLwZHmCxac/1XifQIJBIEm7yh4YkFdHPS+RPxYy8PXNk60yqBlQZ0sDLI80pM/iXDiJtxCB
-	RoAcFAGlPGAT+b10sAcQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=AC79ajFacdeW0X3EZ/kNzB69+JypiiEsfSGf4UW8HX4=; b=0nGXJZxmTWts0U
+	p+ouUbvMG2QyEsPM6k0+9mShysbpg6272AAdfgZQFAeCQvxee1gsHlp3wy0wdQOcqiKgjXa7jGduV
+	Eh+nhGUYR6MfwjscjGZ9z3+rf0nvYag/Ci0wfssDRC5WFc4LwHkQrBvbntzI2sw/E2pJVyy8CS7vO
+	9WK5LQ7+jF3VT+mXevFIfmgOaJFrekVJQhQofJHZQSzBO/GuSUDmCfsBe6ivq7QYswwx3mUn7nw1u
+	5es+zKPrteEwBzB2DqGcs2+SBmQEdaF5r4nvoLsIVXvaOJsuqdy8eK2fhuYSEwjv2KS3yWz6dm0uO
+	PplfNPWeNsOBU2TqHlKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q5q40-00CPDr-0i;
-	Sun, 04 Jun 2023 15:54:40 +0000
-Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
+	id 1q63Vt-00EIkR-1c;
+	Mon, 05 Jun 2023 06:16:21 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q5q3w-00CPCl-2G;
-	Sun, 04 Jun 2023 15:54:37 +0000
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-97467e06511so393723866b.2;
-        Sun, 04 Jun 2023 08:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685894070; x=1688486070;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TsvcyukdSS1lKPeAFb0MO21Iif9mAo0wy8+BZHk6XCA=;
-        b=r9RnHmU6Pa0FtsM/qHVFqFiCYlBYyvtIkLeKoNPRIk8smrMsqYFJGWCQjT7VU72eDe
-         BlragftM9BcqClhhfhrjXu+KMSBuqSe+KNwPFU0KBNJlL713GE9o6QJnGFo2MVVjPP+P
-         tQT4bqbQqIIjRH39Ls+d3YC1mLwWHW3tHKnUmfhzbMfPeeq5TIZAMtwSAuYi3ZYPbltW
-         zBx3Pm7HZhbXZBrcB4iAF+MkhkDQusDxPerLMNjJ9M9evb0iQB/WGEScO2q3pwVkwkGJ
-         xiks1hYnTowy+2gYSWDJ+qp4ig7OfRGINcmiTLnuJchPscxcbqDF/ro1Gt8cNoeiUHiy
-         SK0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685894070; x=1688486070;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TsvcyukdSS1lKPeAFb0MO21Iif9mAo0wy8+BZHk6XCA=;
-        b=d9VX8tlDds/oGcCUDWonAu+s3yIohRbA8B2Td2MqqTStgUoFYfbs6l9hOcVNoTF1cI
-         rfMm6Pgm9TUVuIifw+0qCtWGzyJ6wD0rDlVSYfoAHXdJuCy9M6IwmV/fTNOy7FJp4uA0
-         EkR+Ni3bNnQvsvZPOE8dnBzf54t45DxigZgDsorcb5Tv7QzX2c8p1iV5o3ql+yqCvh2D
-         X6B8dVtt14LAVT36pEVasVUJLaX3PhomW0KJNERCV4plqWFnHWjD8/DXLi7Lfrw0HXVu
-         Hmvx420KOePiXycTpNEjSGO0Myxj/Qhy1mseBnTi5W77zLutuKssDmNtnjCzDny4crcA
-         rFtQ==
-X-Gm-Message-State: AC+VfDwuinsRB28u8hVibIQNQLSR6KKS7iMMFj2UbbHhQOwUIf+/BIbu
-	S9mVw7ZSTGgL88ThjT0SkMo=
-X-Google-Smtp-Source: ACHHUZ6AHXuZcLeVYAiKN3Lakw7/5eyPw2g9gXmYKU2Z87ULJVZcNauonQPfi8yZtMpFNZvTXucpWg==
-X-Received: by 2002:a17:907:6d08:b0:974:5e2c:8721 with SMTP id sa8-20020a1709076d0800b009745e2c8721mr4687955ejc.38.1685894070095;
-        Sun, 04 Jun 2023 08:54:30 -0700 (PDT)
-Received: from giga-mm.home ([2a02:1210:8629:800:82ee:73ff:feb8:99e3])
-        by smtp.gmail.com with ESMTPSA id h21-20020a170906111500b00974530bd213sm3241020eja.143.2023.06.04.08.54.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jun 2023 08:54:29 -0700 (PDT)
-Message-ID: <1492a131cd474c47e2a2b14defd46284f695b0ef.camel@gmail.com>
-Subject: Re: [PATCH v1 00/43] ep93xx device tree conversion
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To: Nikita Shubin <nikita.shubin@maquefel.me>, Arnd Bergmann
- <arnd@arndb.de>,  Linus Walleij <linus.walleij@linaro.org>, Alexander
- Gordeev <agordeev@linux.ibm.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Bartosz Golaszewski <brgl@bgdev.pl>, 
- Christophe Kerello <christophe.kerello@foss.st.com>, Conor Dooley
- <conor.dooley@microchip.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Emil Renner Berthing <kernel@esmil.dk>, Florian Fainelli
- <f.fainelli@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>,
- Heiko Stuebner <heiko@sntech.de>, Hitomi Hasegawa
- <hasegawa-hitomi@fujitsu.com>, Jean Delvare <jdelvare@suse.de>, Joel
- Stanley <joel@jms.id.au>, Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Jonathan =?ISO-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>, Krzysztof
- Kozlowski <krzysztof.kozlowski@linaro.org>,  Le Moal <dlemoal@kernel.org>,
- Liang Yang <liang.yang@amlogic.com>, Mark Brown <broonie@kernel.org>, 
- Masahiro Yamada <masahiroy@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Nathan Chancellor <nathan@kernel.org>, Neil
- Armstrong <neil.armstrong@linaro.org>, Nick Desaulniers
- <ndesaulniers@google.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>, Richard Weinberger
- <richard@nod.at>, "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
- <u.kleine-koenig@pengutronix.de>, Vasily Gorbik <gor@linux.ibm.com>, Walker
- Chen <walker.chen@starfivetech.com>, Yinbo Zhu <zhuyinbo@loongson.cn>
-Cc: Michael Peters <mpeters@embeddedTS.com>, Kris Bahnsen
- <kris@embeddedTS.com>,  alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org,  dmaengine@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,  linux-clk@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-ide@vger.kernel.org, 
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org, linux-pm@vger.kernel.org, 
- linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org,  linux-watchdog@vger.kernel.org,
- netdev@vger.kernel.org
-Date: Sun, 04 Jun 2023 17:54:27 +0200
-In-Reply-To: <20230601053546.9574-1-nikita.shubin@maquefel.me>
-References: <20230601053546.9574-1-nikita.shubin@maquefel.me>
-User-Agent: Evolution 3.48.2 
+	id 1q63Vn-00EIhs-2e;
+	Mon, 05 Jun 2023 06:16:18 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id 716BD5FD15;
+	Mon,  5 Jun 2023 09:16:06 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1685945766;
+	bh=knbIn8sgeJrLUQJlKWQNrWneQ8bifk2QzuAqk/RVJh0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=JcrASE0H46Hg6zUOeQKL8OGaNW6C5/blcsv+FXm/0orAfzL4Co6JQZsDmH95mHV55
+	 QiueNtCAh8IT6wDWOz5MxaaMFUq5B13ufyRz62Xivgbx4CVmndKfTc9/72mSbAqevu
+	 VTV2O5QaWc4MLBSa5kCDp/N5dihr986GalRAGaHCCayZDV+uDNxlqRL9q4Zyaaej17
+	 NuId1zDeY8dVWJ4glHsATaMZW1mIz5Y+G1qZMrDAgkrNbO6zIeba/CqVpgJhtsPbHY
+	 BqNVClLkpuKgbekKWOcmnQ2UV4gEhFCFeTVbL1Lh872eHhXODsHmvljX3+ucr6KAUI
+	 K99vpzVuit6ow==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Mon,  5 Jun 2023 09:16:03 +0300 (MSK)
+From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Yixun Lan
+	<yixun.lan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>
+CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
+	<AVKrasnov@sberdevices.ru>, <stable@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] mtd: rawnand: meson: fix ready/busy command
+Date: Mon, 5 Jun 2023 09:10:48 +0300
+Message-ID: <20230605061048.485622-1-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/05 01:06:00 #21433300
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230604_085436_776662_BD882698 
-X-CRM114-Status: GOOD (  10.72  )
+X-CRM114-CacheID: sfid-20230604_231616_852355_34A389C2 
+X-CRM114-Status: GOOD (  10.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,19 +87,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Nikita,
+Fix the ready/busy command value.
 
-On Thu, 2023-06-01 at 08:33 +0300, Nikita Shubin wrote:
-> This series aims to convert ep93xx from platform to full device tree support.
-> 
-> Alexander, Kris - there are some significant changes in clk and pinctrl so can i ask you to tests all once again.
+Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
+Cc: stable@vger.kernel.org
+Suggested-by: Liang Yang <liang.yang@amlogic.com>
+Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+---
+ drivers/mtd/nand/raw/meson_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I have quickly tested network and sound on EDB9302 and I neither have problems with
-these functions, nor did I spot any new error messages, overall looks good to me,
-thanks for your efforts!
-
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index 074e14225c06..9dd4a676497b 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -37,7 +37,7 @@
+ #define NFC_CMD_SCRAMBLER_ENABLE	BIT(19)
+ #define NFC_CMD_SCRAMBLER_DISABLE	0
+ #define NFC_CMD_SHORTMODE_DISABLE	0
+-#define NFC_CMD_RB_INT		BIT(14)
++#define NFC_CMD_RB_INT		((0xb << 10) | BIT(18) | BIT(16))
+ 
+ #define NFC_CMD_GET_SIZE(x)	(((x) >> 22) & GENMASK(4, 0))
+ 
 -- 
-Alexander Sverdlin.
+2.35.0
 
 
 ______________________________________________________
