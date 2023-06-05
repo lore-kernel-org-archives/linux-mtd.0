@@ -4,63 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6920FC77B73
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jun 2023 21:37:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B4F4C7EE2C
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jun 2023 23:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=0K1BorfUCID0gf1CQOXlOEuVCPS8QZpRyU4zOne/VP8=; b=qJ7qwxteztOkbVC6JDw30T3xAb
-	fv3b6j2142pTZ0dw/c4s3bwu/ghSZG7vZ7WQeUFtncxOzlwq6P4k+BJvwxVMcgoNVyL20KKEgD1iy
-	jBc5DLDplIK7VjCEE7kkyfRyq+QwspAouvtIBjxUSnZZWG04IlFkJ1hLzpAtT4wB/pMIsjfKvtkjO
-	7QnYhLYH+gYlKL8L2P3I2Te/ONJ/r48KNeGOHGfmuZ9zPuLGaQUBjpzhyriyW9lTSd4nj8VA8BX/y
-	xUm7O3g8mHfpzAnDl92z2KUyZXVzpANqURa0mw/PbUXF+gqHtd5+f2l3lDmENyl9nuEsAjc33f/Ho
-	TTwQzO5Q==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zfHMsQW8uBlW34ssiz+tZQTxbpdlVfPUxh/IeLOAgSE=; b=0eDcE7qhbq9fbR
+	1OyOFgWV+Hgbgjte1XslDCNC89R0NTssh5GCtNmMc8k+Aw/ntX72pjbA/dU2oUSucv9Yy7C2vEaRE
+	Y7qUn7zteQR2EH+YMdnUwYlwzZxPid22x4EZ9cAhHiDgELCQKAGGJkVbFc2COPZhxHOuJ2RLzK93U
+	CYjuSiMyODgoIhC0197hj5rLDW6WyVF+0VXorK7vxHYNdB5EA69N1WrieN+ayLLbambkGO9bpVoV+
+	QMKjGR8hFdN0a2Xf1rucbTi1NgzUvFeCy/LG7zrtSJDPGzR0yiksXfJihciQQiT8Aut+56K7bySFo
+	E/FTIEUV5EFll3UJCp6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6Ht2-00GsVo-2M;
-	Mon, 05 Jun 2023 21:37:12 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1q6Jem-00H8nn-2o;
+	Mon, 05 Jun 2023 23:30:36 +0000
+Received: from mga03.intel.com ([134.134.136.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6Hsv-00GsSU-2x
+	id 1q6Jej-00H8md-27
 	for linux-mtd@lists.infradead.org;
-	Mon, 05 Jun 2023 21:37:11 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id CF5486081100;
-	Mon,  5 Jun 2023 23:37:00 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id o2Z4OgpbQyJk; Mon,  5 Jun 2023 23:37:00 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 6443D63CC10C;
-	Mon,  5 Jun 2023 23:37:00 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id dphcjNX2YtIR; Mon,  5 Jun 2023 23:37:00 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 41445609D2C4;
-	Mon,  5 Jun 2023 23:37:00 +0200 (CEST)
-Date: Mon, 5 Jun 2023 23:37:00 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Message-ID: <2059298337.3685966.1686001020185.JavaMail.zimbra@nod.at>
-In-Reply-To: <20230605165029.2908304-5-willy@infradead.org>
-References: <20230605165029.2908304-1-willy@infradead.org> <20230605165029.2908304-5-willy@infradead.org>
+	Mon, 05 Jun 2023 23:30:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686007833; x=1717543833;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LQ/YmNHaOqxHB3zFE5Dw/U8hbSjvEZuD9JaXPGLULFQ=;
+  b=fjiEdZa+BtXKJ8VDe+bFOsm3UJY7LUWVWEctdy0eXkjmm0VVkI/bI9Mi
+   XFXJZbR6wx8Uv8x/RnL929IuOfVuSmGMF2wToQ+bVDi49dNMoKJc2kLo0
+   o33kMX0IubkCMZyCTHUM2VmMvDASEpMeWGni4TGQUrsCHaO04X4f5GItl
+   AW31Xxq+481UoAyps9Oc/2qp+O7vJRlLF2/vP1SoQq2+bvOrRIIeWY/C0
+   DNzWotzaLN70Fz60Vk/RLKwZz/Zt+XcMhUVEe/81apCf79pnlXICxE/7m
+   ifIZWMC2/rFWQ2Xgwsu7Og8TLjql/Y3ttHaM0NixGbj8EUMxYL6aNNLdD
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="359826345"
+X-IronPort-AV: E=Sophos;i="6.00,218,1681196400"; 
+   d="scan'208";a="359826345"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2023 16:30:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="738531797"
+X-IronPort-AV: E=Sophos;i="6.00,218,1681196400"; 
+   d="scan'208";a="738531797"
+Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 05 Jun 2023 16:30:31 -0700
+Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1q6Jeg-0004Xx-1a;
+	Mon, 05 Jun 2023 23:30:30 +0000
+Date: Tue, 6 Jun 2023 07:29:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Richard Weinberger <richard@nod.at>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH 4/4] ubifs: Convert do_writepage() to take a folio
+Message-ID: <202306060727.jUL92Co4-lkp@intel.com>
+References: <20230605165029.2908304-5-willy@infradead.org>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: Convert do_writepage() to take a folio
-Thread-Index: dsWwczfD853kFS6dMFwnonvyX+Bcrw==
+Content-Disposition: inline
+In-Reply-To: <20230605165029.2908304-5-willy@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230605_143706_101929_0B1BA095 
-X-CRM114-Status: UNSURE (   5.82  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230605_163033_759992_652650CF 
+X-CRM114-Status: GOOD (  12.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,34 +82,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TWF0dGhldywKCi0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPiBWb246ICJNYXR0aGV3
-IFdpbGNveCIgPHdpbGx5QGluZnJhZGVhZC5vcmc+Cj4gLXN0YXRpYyBpbnQgZG9fd3JpdGVwYWdl
-KHN0cnVjdCBwYWdlICpwYWdlLCBpbnQgbGVuKQo+ICtzdGF0aWMgaW50IGRvX3dyaXRlcGFnZShz
-dHJ1Y3QgZm9saW8gKmZvbGlvLCBzaXplX3QgbGVuKQo+IHsKPiAJaW50IGVyciA9IDAsIGksIGJs
-ZW47Cj4gCXVuc2lnbmVkIGludCBibG9jazsKPiAJdm9pZCAqYWRkcjsKPiArCXNpemVfdCBvZmZz
-ZXQgPSAwOwo+IAl1bmlvbiB1Ymlmc19rZXkga2V5Owo+IC0Jc3RydWN0IGlub2RlICppbm9kZSA9
-IHBhZ2UtPm1hcHBpbmctPmhvc3Q7Cj4gKwlzdHJ1Y3QgaW5vZGUgKmlub2RlID0gZm9saW8tPm1h
-cHBpbmctPmhvc3Q7Cj4gCXN0cnVjdCB1Ymlmc19pbmZvICpjID0gaW5vZGUtPmlfc2ItPnNfZnNf
-aW5mbzsKPiAKPiAjaWZkZWYgVUJJRlNfREVCVUcKPiAJc3RydWN0IHViaWZzX2lub2RlICp1aSA9
-IHViaWZzX2lub2RlKGlub2RlKTsKPiAJc3Bpbl9sb2NrKCZ1aS0+dWlfbG9jayk7Cj4gLQl1Ymlm
-c19hc3NlcnQoYywgcGFnZS0+aW5kZXggPD0gdWktPnN5bmNlZF9pX3NpemUgPj4gUEFHRV9TSElG
-VCk7Cj4gKwl1Ymlmc19hc3NlcnQoYywgZm9saW8tPmluZGV4IDw9IHVpLT5zeW5jZWRfaV9zaXpl
-ID4+IFBBR0VfU0hJRlQpOwo+IAlzcGluX3VubG9jaygmdWktPnVpX2xvY2spOwo+ICNlbmRpZgo+
-IAo+IC0JLyogVXBkYXRlIHJhZGl4IHRyZWUgdGFncyAqLwo+IC0Jc2V0X3BhZ2Vfd3JpdGViYWNr
-KHBhZ2UpOwo+ICsJZm9saW9fc3RhcnRfd3JpdGViYWNrKGZvbGlvKTsKPiAKPiAtCWFkZHIgPSBr
-bWFwKHBhZ2UpOwo+IC0JYmxvY2sgPSBwYWdlLT5pbmRleCA8PCBVQklGU19CTE9DS1NfUEVSX1BB
-R0VfU0hJRlQ7Cj4gKwlhZGRyID0ga21hcF9sb2NhbF9mb2xpbyhmb2xpbywgb2Zmc2V0KTsKPiAr
-CWJsb2NrID0gZm9saW8tPmluZGV4IDw8IFVCSUZTX0JMT0NLU19QRVJfUEFHRV9TSElGVDsKPiAJ
-aSA9IDA7Cj4gLQl3aGlsZSAobGVuKSB7Cj4gLQkJYmxlbiA9IG1pbl90KGludCwgbGVuLCBVQklG
-U19CTE9DS19TSVpFKTsKPiArCWZvciAoOzspIHsKClRoaXMgY2hhbmdlIHdpbGwgY2F1c2UgYSBm
-aWxlIHN5c3RlbSBjb3JydXB0aW9uLgpJZiBsZW4gaXMgemVybyAoaXQgY2FuIGJlKSB0aGVuIGEg
-emVybyBsZW5ndGggZGF0YSBub2RlIHdpbGwgYmUgd3JpdHRlbi4KVGhlIHdoaWxlKGxlbikgbWFk
-ZSBzdXJlIHRoYXQgdXBvbiB6ZXJvIGxlbmd0aCBub3RoaW5nIGlzIHdyaXR0ZW4uCgpUaGFua3Ms
-Ci8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Matthew,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on rw-ubifs/next]
+[also build test WARNING on linus/master v6.4-rc5 next-20230605]
+[cannot apply to rw-ubifs/fixes]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/ubifs-Convert-from-writepage-to-writepages/20230606-005309
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git next
+patch link:    https://lore.kernel.org/r/20230605165029.2908304-5-willy%40infradead.org
+patch subject: [PATCH 4/4] ubifs: Convert do_writepage() to take a folio
+config: i386-randconfig-i001-20230605 (https://download.01.org/0day-ci/archive/20230606/202306060727.jUL92Co4-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce (this is a W=1 build):
+        mkdir -p ~/bin
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/4f6ac0962f61cc07c95177f78cf1f3b03e79d822
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Matthew-Wilcox-Oracle/ubifs-Convert-from-writepage-to-writepages/20230606-005309
+        git checkout 4f6ac0962f61cc07c95177f78cf1f3b03e79d822
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=i386 olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash fs/ubifs/
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306060727.jUL92Co4-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> fs/ubifs/file.c:905:15: warning: variable 'i' set but not used [-Wunused-but-set-variable]
+           int err = 0, i, blen;
+                        ^
+   1 warning generated.
+
+
+vim +/i +905 fs/ubifs/file.c
+
+1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  902  
+4f6ac0962f61cc Matthew Wilcox (Oracle  2023-06-05  903) static int do_writepage(struct folio *folio, size_t len)
+1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  904  {
+1e51764a3c2ac0 Artem Bityutskiy        2008-07-14 @905  	int err = 0, i, blen;
+1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  906  	unsigned int block;
+1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  907  	void *addr;
+4f6ac0962f61cc Matthew Wilcox (Oracle  2023-06-05  908) 	size_t offset = 0;
+1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  909  	union ubifs_key key;
+4f6ac0962f61cc Matthew Wilcox (Oracle  2023-06-05  910) 	struct inode *inode = folio->mapping->host;
+1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  911  	struct ubifs_info *c = inode->i_sb->s_fs_info;
+1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  912  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
