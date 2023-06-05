@@ -4,86 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD878C7EE23
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jun 2023 17:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B1DEC77B73
+	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jun 2023 19:16:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=v4hup01V2eMo0SQyTWE0dQArZya7zJdzvGYYpXnBwNc=; b=NEO+1KTtX9NXog
-	ydaQ35tS7kEJCaKQHX5EbCpRSsxtCAkOT3EVdaJdGABo0UMu/fVNnAdnzvK5Kj2k1f6SKMzhVb1J3
-	BY//pifvThnJOGhvAUkcPzJejNCQlBerAUyFmj9b9go4HrWG24d6lDJk77EnRlLJNX25h2G7JPd9s
-	zDIhXD5KN9ChmPEeJIzEVXKA81eMVHcGJ/hPjug4CzwVwV0Pc9nUJuKUcY4xk7kEa5u7eVLZ+gOFz
-	HNsZPgPYK/ZRXMtlv2YaJOFV1UIeaXNQRbFf4Bee54Mc7152aGqThoenqyA1G0rZoVyOVDQeROBFm
-	7dBUepmRsisQbvG5q9UQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=2FC0h5Fbx5Y83oAIJzMI54WnzbxM6ghHerDsBzq9dOk=; b=x0X3waXuNhBEc8
+	8tHD1pS9qwKBn+QVM+Xq3X0a7yJjnDQukNyEVHZXQMx5jMCqz424dTNqcecugZhIcQqMZfnfMynxp
+	Rj/BkmhXO/z1g0O8LRYmTzF+PXpgH+K0MPt2Nroq36lV4pqJCKbDMGo2Vi2kCqJctq+M2ZzQ4UkAp
+	vGDpF/r/EOqvpikIHkKNelCjpQmjuus7HqpJiiRqVi2bRT4Bh1nQeJpGjKAHDrNX0l5wyC9F59r9p
+	XLmW11sj41DlWu9i6jKWg107mrb454gU6VfK7ZXLPVF+OONCnRwbIDfyg6iKD8nAHNaaptKvdd57p
+	sOxvHQ8MdJhu6THksNIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6DuM-00GGHP-0s;
-	Mon, 05 Jun 2023 17:22:18 +0000
-Received: from mail-oi1-x22a.google.com ([2607:f8b0:4864:20::22a])
+	id 1q6Fge-00GWOr-2w;
+	Mon, 05 Jun 2023 19:16:16 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6DuI-00GGDu-0Y
-	for linux-mtd@lists.infradead.org;
-	Mon, 05 Jun 2023 17:22:16 +0000
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-39b349405d9so69721b6e.1
-        for <linux-mtd@lists.infradead.org>; Mon, 05 Jun 2023 10:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1685985725; x=1688577725;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6XZ3PYFTW8wBOrcxa44gmTJZRL7p9p613s1N10mZMVY=;
-        b=ycFVn/L/naAjRsAnEqR9ysNncUv/HbQfjetBqXx4erHA+VIlFcLYsCCYZpKwYV2LfY
-         KG9fKbgqWBtjwwWULsEPR4hELvi+OZ1caxlR7XcilK6EroWpiY6H/p7eKLSZ+XxaHD3z
-         Np995JYCblZZVyD3K7OFjrqfChq6ClFMXNni2e95MICclPFh9tYtD96AnJBnDqL0e5h3
-         gNQx/XCZtwcC6ZUYiuGd7rF+gU4oSsIdadeHa4vlVuCgI+cVs0ugq+AgzEMh9VhTYA88
-         lKTzoHiM5hZHwFCpR2aBwpBWlk5yBK2tuS/6r6Rh0flFXVi7X0z9nkLjh+5izffZ0SFk
-         gqwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685985725; x=1688577725;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6XZ3PYFTW8wBOrcxa44gmTJZRL7p9p613s1N10mZMVY=;
-        b=WNHhLrlb/X6JgVleiRXjuO5ehb1j7nry2kGXZnmkeiXDHOW1c+okklG3KISAP10TVL
-         jwEF0OES6Tx6/WiX9jF3PQhFDuvoqyONq8AJl5vfLxVShAq3vnOlYR1SUOWAWQYFqGup
-         xhZs4qg8vlDXG/MK5eA5XTmoa6YzPW0/MqGaXhaKTB2cWcjWb55YjVUkXR3XbPweXsHJ
-         GOfgRkmDuO6IZV1jm2gr10ZGPgYlkGZIEvFNc0KchGeGNw30DNTUyDaX6d61ovMtrChG
-         Ivix92wnaKYv4msZVTCu81/3XksICh1neZ6yVbYMTXfj1pSbBkooAKARbfrkN7YY4Tqg
-         i5qQ==
-X-Gm-Message-State: AC+VfDxw5/o4eYDETaCexrqFBz1gd/8UqeOkWSkw6k/lHrMleUBDqQID
-	53PHYah40vMB67ivUclWo5ekPQ==
-X-Google-Smtp-Source: ACHHUZ55ijmtRxUtr2PJeE7u8S0QvWcKyGSmOe2wfBtgxRK6mvg8iopMfucIMuRB5AN9ZmOkwUXzHA==
-X-Received: by 2002:a05:6358:c401:b0:127:6a3c:2280 with SMTP id ff1-20020a056358c40100b001276a3c2280mr4551121rwb.2.1685985724648;
-        Mon, 05 Jun 2023 10:22:04 -0700 (PDT)
-Received: from [127.0.0.1] ([2600:380:c01c:32f0:eff8:7692:bf8a:abc6])
-        by smtp.gmail.com with ESMTPSA id cl9-20020a17090af68900b0025643e5da99sm7993666pjb.37.2023.06.05.10.22.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jun 2023 10:22:03 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Mike Snitzer <snitzer@kernel.org>, 
- Joern Engel <joern@lazybastard.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Pavel Machek <pavel@ucw.cz>, Loic Poulain <loic.poulain@linaro.org>, 
- dm-devel@redhat.com, linux-kernel@vger.kernel.org, 
- linux-block@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-pm@vger.kernel.org
-In-Reply-To: <20230531125535.676098-2-hch@lst.de>
-References: <20230531125535.676098-1-hch@lst.de>
- <20230531125535.676098-2-hch@lst.de>
-Subject: Re: [PATCH 01/24] driver core: return bool from driver_probe_done
-Message-Id: <168598572280.2504.3952473013804137907.b4-ty@kernel.dk>
-Date: Mon, 05 Jun 2023 11:22:02 -0600
+	id 1q6FgZ-00GWLu-2z;
+	Mon, 05 Jun 2023 19:16:14 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id D666F5FD20;
+	Mon,  5 Jun 2023 22:16:02 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1685992562;
+	bh=G6c6j8iAcdDSpK0GLScKOrdhbGc4x8WhHl8LdEBggUo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=ph1/Z7289OW3MlYDjIPY3ymnd754+Fc+LM4w90GVoZvQt50+TOLtGQQCJhmum0Jtr
+	 Yw2tCnJGI1BTqEK+c2w8WNipSIchj4D+GB4st9OfZ3jQzseRWAcpxJoV8Zl2rpGBlF
+	 gnahOoM81pABGHi4HKKNYIhNBovbrN+LeTKq0s6dmi+lVLf5NHsCwXjBABDrxvs5IO
+	 KsVgogDJPRNz7UmGP+Q7+f+PccfLxpOF0zVd4ZWO3wTPyFzfI5KreTXAg35NqSb8br
+	 1JwQ7QJGe3KDsjvIwRe8bYsEeAJbTFqxdLK3r1NxmRrSganbZ/fRRvED6Wa6VpZF3r
+	 EJkoJi5xyvUGg==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Mon,  5 Jun 2023 22:16:00 +0300 (MSK)
+From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
+	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] mtd: rawnand: meson: check buffer length
+Date: Mon, 5 Jun 2023 22:10:46 +0300
+Message-ID: <20230605191047.1820016-1-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-X-Mailer: b4 0.13-dev-c6835
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/05 13:50:00 #21435193
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230605_102214_210700_ADB6B96E 
-X-CRM114-Status: GOOD (  12.33  )
+X-CRM114-CacheID: sfid-20230605_121612_672472_9206849B 
+X-CRM114-Status: GOOD (  12.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,69 +86,99 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Meson NAND controller has limited buffer length, so check it before
+command execution to avoid length trim. Also check MTD write size on
+chip attach.
 
-On Wed, 31 May 2023 14:55:12 +0200, Christoph Hellwig wrote:
-> bool is the most sensible return value for a yes/no return.  Also
-> add __init as this funtion is only called from the early boot code.
-> 
-> 
+Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+---
+ drivers/mtd/nand/raw/meson_nand.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-Applied, thanks!
-
-[01/24] driver core: return bool from driver_probe_done
-        commit: aa5f6ed8c21ec1aa5fd688118d8d5cd87c5ffc1d
-[02/24] PM: hibernate: factor out a helper to find the resume device
-        commit: 02b42d58f3898134b900ff3030561099e38adb32
-[03/24] PM: hibernate: remove the global snapshot_test variable
-        commit: d6545e687271ab27472eebff770f2de6a5f1a464
-[04/24] PM: hibernate: move finding the resume device out of software_resume
-        commit: cc89c63e2fe37d476357c82390dfb12edcd41cdd
-[05/24] init: remove pointless Root_* values
-        commit: f5524c3fadba35c075a5131bad74e3041507a694
-[06/24] init: rename mount_block_root to mount_root_generic
-        commit: e3102722ffe77094ba9e7e46380792b3dd8a7abd
-[07/24] init: refactor mount_root
-        commit: a6a41d39c2d91ff2543d31b6cc6070f3957e3aea
-[08/24] init: pass root_device_name explicitly
-        commit: c8643c72bc42781fc169c6498a3902bec447099e
-[09/24] init: don't remove the /dev/ prefix from error messages
-        commit: 73231b58b1b496d631fa0ecf9fa7f64f5a07c6e3
-[10/24] init: handle ubi/mtd root mounting like all other root types
-        commit: 07d63cbb67cdb5e2a7720fdd8579b3be979c2d66
-[11/24] init: factor the root_wait logic in prepare_namespace into a helper
-        commit: 3701c600a3e735b9fbac6f7a73e4c086090c97ca
-[12/24] init: move the nfs/cifs/ram special cases out of name_to_dev_t
-        commit: c0c1a7dcb6f5db4500e6574294674213bc24940c
-[13/24] init: improve the name_to_dev_t interface
-        commit: cf056a43121559d3642419917d405c3237ded90a
-[14/24] init: clear root_wait on all invalid root= strings
-        commit: 079caa35f7863cd9958b4555ae873ea4d352a502
-[15/24] block: move the code to do early boot lookup of block devices to block/
-        commit: 702f3189e454b3c3c2f3c99dbf30acf41aab707c
-[16/24] block: move more code to early-lookup.c
-        commit: 7cadcaf1d82618852745e7206fffa2c72c17ce4b
-[17/24] dm-snap: simplify the origin_dev == cow_dev check in snapshot_ctr
-        commit: 26110d5afe8117d1b505fe735ac709bdf063f4da
-[18/24] dm: open code dm_get_dev_t in dm_init_init
-        commit: 49177377e910a8fd5cd1388c966d8fbb51075c3c
-[19/24] dm: remove dm_get_dev_t
-        commit: d4a28d7defe79006e59293a4b43d518ba8483fb0
-[20/24] dm: only call early_lookup_bdev from early boot context
-        commit: 7a126d5bf975f082281fb9b45d110cd49b7c3ee4
-[21/24] PM: hibernate: don't use early_lookup_bdev in resume_store
-        commit: 1e8c813b083c4122dfeaa5c3b11028331026e85d
-[22/24] mtd: block2mtd: factor the early block device open logic into a helper
-        commit: b2baa57475e3a24bb9ad27bb9047ea3be94627f5
-[23/24] mtd: block2mtd: don't call early_lookup_bdev after the system is running
-        commit: 8d03187ee7328af8e18ef1782289e0b034e75485
-[24/24] block: mark early_lookup_bdev as __init
-        commit: 2577f53f42947d8ca01666e3444bb7307319ea38
-
-Best regards,
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index 074e14225c06..bfb5363cac23 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -108,6 +108,8 @@
+ 
+ #define PER_INFO_BYTE		8
+ 
++#define NFC_CMD_RAW_LEN	GENMASK(13, 0)
++
+ struct meson_nfc_nand_chip {
+ 	struct list_head node;
+ 	struct nand_chip nand;
+@@ -280,7 +282,7 @@ static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
+ 
+ 	if (raw) {
+ 		len = mtd->writesize + mtd->oobsize;
+-		cmd = (len & GENMASK(13, 0)) | scrambler | DMA_DIR(dir);
++		cmd = len | scrambler | DMA_DIR(dir);
+ 		writel(cmd, nfc->reg_base + NFC_REG_CMD);
+ 		return;
+ 	}
+@@ -544,7 +546,7 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
+ 	if (ret)
+ 		goto out;
+ 
+-	cmd = NFC_CMD_N2M | (len & GENMASK(13, 0));
++	cmd = NFC_CMD_N2M | len;
+ 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+ 
+ 	meson_nfc_drain_cmd(nfc);
+@@ -568,7 +570,7 @@ static int meson_nfc_write_buf(struct nand_chip *nand, u8 *buf, int len)
+ 	if (ret)
+ 		return ret;
+ 
+-	cmd = NFC_CMD_M2N | (len & GENMASK(13, 0));
++	cmd = NFC_CMD_M2N | len;
+ 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+ 
+ 	meson_nfc_drain_cmd(nfc);
+@@ -936,6 +938,9 @@ static int meson_nfc_exec_op(struct nand_chip *nand,
+ 			break;
+ 
+ 		case NAND_OP_DATA_IN_INSTR:
++			if (instr->ctx.data.len > NFC_CMD_RAW_LEN)
++				return -EINVAL;
++
+ 			buf = meson_nand_op_get_dma_safe_input_buf(instr);
+ 			if (!buf)
+ 				return -ENOMEM;
+@@ -944,6 +949,9 @@ static int meson_nfc_exec_op(struct nand_chip *nand,
+ 			break;
+ 
+ 		case NAND_OP_DATA_OUT_INSTR:
++			if (instr->ctx.data.len > NFC_CMD_RAW_LEN)
++				return -EINVAL;
++
+ 			buf = meson_nand_op_get_dma_safe_output_buf(instr);
+ 			if (!buf)
+ 				return -ENOMEM;
+@@ -1181,6 +1189,7 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
+ 	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
+ 	struct mtd_info *mtd = nand_to_mtd(nand);
+ 	int nsectors = mtd->writesize / 1024;
++	int raw_writesize;
+ 	int ret;
+ 
+ 	if (!mtd->name) {
+@@ -1192,6 +1201,13 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
+ 			return -ENOMEM;
+ 	}
+ 
++	raw_writesize = mtd->writesize + mtd->oobsize;
++	if (raw_writesize > NFC_CMD_RAW_LEN) {
++		dev_err(nfc->dev, "too big write size in raw mode: %d > %ld\n",
++			raw_writesize, NFC_CMD_RAW_LEN);
++		return -EINVAL;
++	}
++
+ 	if (nand->bbt_options & NAND_BBT_USE_FLASH)
+ 		nand->bbt_options |= NAND_BBT_NO_OOB;
+ 
 -- 
-Jens Axboe
-
-
+2.35.0
 
 
 ______________________________________________________
