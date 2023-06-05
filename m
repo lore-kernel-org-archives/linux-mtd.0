@@ -4,52 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2249C7EE24
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B73FC7EE23
 	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jun 2023 16:50:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9C/eywYasHt9enjmyEsfLTiwBOnyGzGwxdQm1jD3YDE=; b=B3LdqlVUiTd5fp
-	vElprEWEDDCU677qKSp0a0ZW+yu13J4P3Lp70njBDKQin9pU5e7La1+10f6dAhXGPsfBj08Lv/DzT
-	a5bGh2BrNVRVbQrvG+EjT7qolN69BortyDY7DXu6q7kdj3wp0PJbb6JShF6m5kUFKymQO6Bd8pbz4
-	qbORmr1GEamHWZPidlqYMCOueg/s+TavuAxhcrTHQYW9bJk+QZPg0JNF2aaYHBrjWE5Ny8+csqjJk
-	zkLqCIDD+7dNPXJDn8ZaDPZSwHzcaqypNVcvqChTmQ491G0IyyQu6gAfYvdBqSPekUayyfCJjX1tR
-	6Eu6kWTJTmchKQ/vWDWA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=qF65exNzeXlI2+s8AexURFlFIc7lwJuX31tkzsnVlK4=; b=M+eh7ZEmnEmgo8
+	/Q+gFGzpgjcKo1mydqBnbF2CM+50LBHMw4SXrXCL24prrUemQQUa3874cbWJpgmpenMQsfKTW2SP7
+	IOYk7xrrfa6e8iF6Nyk164Tu42nRZWwuIzMHdlZhMlA3HZQZueeMF1sGtcIDqt2XeL2B6B0yM7b/K
+	mxjscpav3bxWSQWf1dKCIOWfcNssmCHFVPfxMg+qV2vISDj7DDHcmrjWz7in1Pn7Zj/8nJTwOHHb0
+	qdSrDIgdipru70n9HLLcBlz0q7+AkIvrsnFuh/nlSswZo9guVO1/+zVnNYoL1XcrvTWFrX1LDj2uR
+	hMQF6sAjJJ4WZMRTqeqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6DPg-00GBoK-1r;
-	Mon, 05 Jun 2023 16:50:36 +0000
+	id 1q6DPj-00GBp2-0i;
+	Mon, 05 Jun 2023 16:50:39 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6DPe-00GBnT-38
+	id 1q6DPh-00GBoZ-31
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 05 Jun 2023 16:50:34 +0000
+	Mon, 05 Jun 2023 16:50:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=INGvXmo1gpJ39BTW0aMzLO0L7xz1NqirMG8wRqMY0Xg=; b=SjKnNlbbfDgSTZbjRYUuZMRFRj
-	bx0VNvdKNZSBxuqJLptI/2KmEBqT++kTYyYTNR1Ohu2VxdrSjzmjMJoi8o8h16KM3H9/zqqLWe7zU
-	DZx0qWHFQPGYzwwdeDXlMQ5pRAV9QSWwO8QQ4oaaEzJmoKxoqpYcO7/aV8HX0cD/8hyL5SJNkV0K2
-	GXICloYAmak4djBbPC9HZh4o6fjroCJ+jOTNi9NGDSYPt4WvofkI1a8mfUdM+sRzkCxgegkNR7giB
-	ccC8y0zLEXdDvLRcMnGNc6uK94CDDtNrLlwirSPsWh7oh+S+kLPQyrfREUEYS4UVcBBlMQ4kDo0Xe
-	dhtds5/w==;
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=dDFNBT6dk3Yum/aueh1v8IKbB6wtwNZVtVYiiNiWPFo=; b=ajYCn9CXjbYAeVcbDOwXA7qBdc
+	u7Vt9kAmaC0s5vU6oO6ODdAtVwn3vugYMT4iYKUWTl8mk41ygxR5VBHR44ShG28XZj+rKWcGeqw8c
+	i0hIO74RYJ5QLO4BM7E3PbFK9FTcGHF45a68XKb/vKj9IAOVsuS65zbKGXDuZc/k7xE5KPIyYkDLE
+	yuc/0wT+gGwcQX1ofDGeQRJfZxHcf/jq4UwLgzw6jYiHEPLoBAFSLAPf9Gnhf3qo3CaCIWOtcZ7rf
+	8NV6QffFWsMpS2hmd3ffOrULv3sr30E13M77sTNDIZvrQo5tn2yrbj+Q729PR7frVU7nsJ+r/hm5b
+	84o6itKQ==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1q6DPa-00CCar-Gy; Mon, 05 Jun 2023 16:50:30 +0000
+	id 1q6DPa-00CCap-DP; Mon, 05 Jun 2023 16:50:30 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: Richard Weinberger <richard@nod.at>
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-mtd@lists.infradead.org,
 	linux-fsdevel@vger.kernel.org
-Subject: [PATCH 1/4] ubifs: Convert from writepage to writepages
-Date: Mon,  5 Jun 2023 17:50:26 +0100
-Message-Id: <20230605165029.2908304-2-willy@infradead.org>
+Subject: [PATCH 0/4] ubifs: Convert writeback to use folios
+Date: Mon,  5 Jun 2023 17:50:25 +0100
+Message-Id: <20230605165029.2908304-1-willy@infradead.org>
 X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20230605165029.2908304-1-willy@infradead.org>
-References: <20230605165029.2908304-1-willy@infradead.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -67,52 +65,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is a simplistic conversion to separate out any effects of
-no longer having a writepage method.
+There are a few transitions going on in the VFS right now.  One is that
+we're deprecating and removing ->writepage; all filesystems need to be
+converted to ->writepages.  The other is that we're switching filesystems
+from using pages to folios so they can support large folios and we can
+shrink the size of memmap.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/ubifs/file.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+This completely untested series updates ubifs to the current APIs.
+You might be able to improve things; for example, it's common for
+filesystems to batch up the results of the writepage call and submit
+them at the end of the writepages method.  But that would be suitable
+for a later patchset.
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 979ab1d9d0c3..8bb4cb9d528f 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1003,8 +1003,10 @@ static int do_writepage(struct page *page, int len)
-  * on the page lock and it would not write the truncated inode node to the
-  * journal before we have finished.
-  */
--static int ubifs_writepage(struct page *page, struct writeback_control *wbc)
-+static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc,
-+		void *data)
- {
-+	struct page *page = &folio->page;
- 	struct inode *inode = page->mapping->host;
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 	struct ubifs_inode *ui = ubifs_inode(inode);
-@@ -1076,6 +1078,12 @@ static int ubifs_writepage(struct page *page, struct writeback_control *wbc)
- 	return err;
- }
- 
-+static int ubifs_writepages(struct address_space *mapping,
-+		struct writeback_control *wbc)
-+{
-+	return write_cache_pages(mapping, wbc, ubifs_writepage, NULL);
-+}
-+
- /**
-  * do_attr_changes - change inode attributes.
-  * @inode: inode to change attributes for
-@@ -1636,7 +1644,7 @@ static int ubifs_symlink_getattr(struct mnt_idmap *idmap,
- 
- const struct address_space_operations ubifs_file_address_operations = {
- 	.read_folio     = ubifs_read_folio,
--	.writepage      = ubifs_writepage,
-+	.writepages     = ubifs_writepages,
- 	.write_begin    = ubifs_write_begin,
- 	.write_end      = ubifs_write_end,
- 	.invalidate_folio = ubifs_invalidate_folio,
+Matthew Wilcox (Oracle) (4):
+  ubifs: Convert from writepage to writepages
+  ubifs: Convert ubifs_writepage to use a folio
+  ubifs: Use a folio in do_truncation()
+  ubifs: Convert do_writepage() to take a folio
+
+ fs/ubifs/file.c | 120 ++++++++++++++++++++++++++----------------------
+ 1 file changed, 64 insertions(+), 56 deletions(-)
+
 -- 
 2.39.2
 
