@@ -4,102 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADD0AC77B7A
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 08:45:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 155C5C77B73
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 08:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8zmKg84HHeJs1x+KQYUw6S0GigV8n7fiQpzHFRUNo5w=; b=o2/WWecMR5h/zt
-	Nkz9mQn8ew5iBxIylmUM6cp3E2e4qLuPmQMqGWPfEtbRPY6/Y0k7oE2vcS2v9xGqse/sX9YH8fPz5
-	TMTrLngzVfIjiWRgLGcaINd9eRCaT3opfpyOd+bRthsZPrNjokfuCxgShGnB35CFrO3L2DBPSkxSw
-	Fhe/4eF8ARNc5pBo7+RVwsajAoOQFe1vywaCqPbhcN47s5BUlVumxagzxeFjk2sVQLxYz+nWB0CsS
-	GrqO4bfGVuKoXl7OzZu6YzINu5jyXLC5koVCUDLYj0wK8iuZk8lA2ztuRx+mZr27fqFCQzDsSHEGb
-	n8MZZwjBEvYp6fizZrXQ==;
+	List-Owner; bh=N4qqPWAT8iVU48yxlKtCyR5TblnMtT/8Wa+PwihDwPM=; b=CvkzSua4XnDaK7
+	ed7Fs7YovH5bevKCdMbAFxN6jeGiQ9uCE8Z9Lq74DVKVCiwdstpVQREDCTaxR0LWQMZPHhpXweJU+
+	PAzCb8WJQGa3zOc8EfqQeCWnFZWgSmegSTg04mOeXA+us0ujn/g6NMV7EReNRArXejKiyXM+L6h4F
+	KcBT7uDjmC5mEcou6L1X99z8Lcag8zNby5mmyuvnXPzjxF8j9ZQMrNhL8nlY2I9gqDAmcFOzQpTRl
+	m6MEPTvqyMCzkj6ve693/EyDULcb9wzg/7r1fr2o0OEcb7iv30vzXxPIuaaw1oq3Fmj4dO9j3vgGt
+	L2tMf6W9sWdABabJYYng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6SJ1-000qnA-19;
-	Tue, 06 Jun 2023 08:44:43 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6SIy-000qlX-1D
-	for linux-mtd@lists.infradead.org;
-	Tue, 06 Jun 2023 08:44:41 +0000
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-977d0288fd2so374800566b.1
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2023 01:44:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686041077; x=1688633077;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XDg6FhswbLnxmS80mCt2IqXJuf8NCtYRpgYnIYW/CqI=;
-        b=D+o10JAiGV/K8Dk8o+sTomnICPqQiKXQqiasLdnFHwrRq8AdmQ2PfydvWTEeDP84N/
-         dStB8WQGQgAtmYa8scNzeiqDHoprVOcygCaYiDK3wjFU78QB4eHxEmyNDsCakwGUWDQR
-         B6p/fW+n3tOogKlmTpCCJTZb4iQzwuOMP4Qluuma4aIBAm/OkXE9Jru0pAomBhb1ZPXJ
-         LJb1uYH90Qw4T14XSm0AGDG0+QJl4b+ZCwjJXmEg4VaxZlg65OPOsGT29y29qv2D0xz5
-         3rDYnN2DY4C0kwM//FLiQ7UcJFFThl78c6JoWIZWYUvlZI0+xtbnz20IdvLB5ucl+8GT
-         te9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686041077; x=1688633077;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XDg6FhswbLnxmS80mCt2IqXJuf8NCtYRpgYnIYW/CqI=;
-        b=OTyUIi0i2mp1RVOnQEMzjSaojOeapR5CidhrOPw3a1naNSM+NFeTvxmunhy+qjEC0S
-         agaXAea+o9Qje06F1YpwfegVu+oNnXwXRX8o6idm+Sq+SL00drsw9RnSysAI1VWjwCJd
-         LB/gTupYkxF3S6BnvdGD6ADerzG3kvwqeVNxMFoIHPndXCXJ6oDk0eIs3o5HnAJ9v4mX
-         xIthGy7skGUYI+UOh/bBdgyCB9yJaAGPE1VQmIEa7O76kMdXQ+Rz6sJaZnhVW3LVioFz
-         s0CylXGHJkLgf+mpYjgXmljS37lhT9/y/VKWSUxsAui9Z1xUf+mAXgLfp+k3NqqMMeCz
-         MYBA==
-X-Gm-Message-State: AC+VfDyi4n2Gj2hByTF2Sz6G3y9n3J3Ec1sD1zDnYRtw6vPHcF87SpIr
-	22Xuz+xHx8E/hGWbHaUyox1ciQ==
-X-Google-Smtp-Source: ACHHUZ6wAfRnXikBVJbGi1CsiXd+lwR0OYsSoSocIDBbbRBkyIdkfClvyjFYznjWuYv6kxmoRkeiFA==
-X-Received: by 2002:a17:907:3ea5:b0:973:9f60:c57e with SMTP id hs37-20020a1709073ea500b009739f60c57emr2012710ejc.2.1686041077566;
-        Tue, 06 Jun 2023 01:44:37 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id d4-20020a17090694c400b0096f67b55b0csm5265406ejy.115.2023.06.06.01.44.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Jun 2023 01:44:37 -0700 (PDT)
-Message-ID: <845924ba-d9bf-d0ec-e1f2-f721366f43c0@linaro.org>
-Date: Tue, 6 Jun 2023 10:44:34 +0200
+	id 1q6SJl-000qyj-19;
+	Tue, 06 Jun 2023 08:45:29 +0000
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1q6RJ4-000ZMJ-0X;
+	Tue, 06 Jun 2023 07:40:42 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>,
+	Josef Bacik <josef@toxicpanda.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Phillip Potter <phil@philpotter.co.uk>,
+	Coly Li <colyli@suse.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>,
+	dm-devel@redhat.com,
+	linux-block@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-scsi@vger.kernel.org,
+	linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-nvme@lists.infradead.org,
+	linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-nilfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-pm@vger.kernel.org
+Subject: [PATCH 15/31] btrfs: don't pass a holder for non-exclusive blkdev_get_by_path
+Date: Tue,  6 Jun 2023 09:39:34 +0200
+Message-Id: <20230606073950.225178-16-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230606073950.225178-1-hch@lst.de>
+References: <20230606073950.225178-1-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH v8 3/3] dt-bindings: mtd: marvell-nand: Convert to YAML DT
- scheme
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>, "andrew@lunn.ch"
- <andrew@lunn.ch>, "gregory.clement@bootlin.com"
- <gregory.clement@bootlin.com>,
- "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
- "conor@kernel.org" <conor@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "enachman@marvell.com" <enachman@marvell.com>,
- Vadym Kochan <vadym.kochan@plvision.eu>
-References: <20230531234923.2307013-1-chris.packham@alliedtelesis.co.nz>
- <20230531234923.2307013-4-chris.packham@alliedtelesis.co.nz>
- <a23dd485-a3d9-e31f-be3e-0ab293fcfc4a@linaro.org>
- <785368df-1881-e62e-6172-d902cee814a8@alliedtelesis.co.nz>
- <eaf9d7cf-c9f5-a5d5-67af-c43761c3c6cf@linaro.org>
- <4ea0b16e-0cec-00db-c598-e0364a7edef8@alliedtelesis.co.nz>
- <9fc57052-5049-ed50-ca95-cfd1d0420dd9@alliedtelesis.co.nz>
- <20230606094855.1ab005eb@xps-13>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230606094855.1ab005eb@xps-13>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230606_014440_423140_F7B981A8 
-X-CRM114-Status: GOOD (  20.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,56 +73,146 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMDYvMDYvMjAyMyAwOTo0OCwgTWlxdWVsIFJheW5hbCB3cm90ZToKPj4+Pj4+PiArwqDCoMKg
-wqDCoMKgwqDCoMKgIGl0IChvdGhlcndpc2UgaXQgaXMgaGFybWxlc3MpLgo+Pj4+Pj4+ICvCoMKg
-wqDCoMKgwqDCoCAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9mbGFnCj4+
-Pj4+Pj4gK8KgwqDCoMKgwqDCoMKgIGRlcHJlY2F0ZWQ6IHRydWUKPj4+Pj4+PiArCj4+Pj4+Pj4g
-K8KgwqDCoCBhZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UgIAo+Pj4+Pj4gdW5ldmFsdWF0ZWRQ
-cm9wZXJ0aWVzOiBmYWxzZSAgCj4+Pj4+IEl0IHdhcyBoaWRpbmcgYnkgJyJebmFuZEBbMC0zXSQi
-OicuIFNob3VsZCBJIG1vdmUgaXQgaGVyZT8gIAo+Pj4+IFlvdSBjYW5ub3QgaGF2ZSBib3RoIGFk
-ZGl0aW9uYWxQcm9wcyBhbmQgdW5ldmFsdWF0ZWRQcm9wcyBhdCB0aGUgc2FtZQo+Pj4+IHRpbWUs
-IHNvIHdlIGRvIG5vdCB0YWxrIGFib3V0IHNhbWUgdGhpbmcgb3IgdGhpcyB3YXMgbmV2ZXIgd29y
-a2luZz8gIAo+Pj4KPj4+IEhtbSwgSSdtIGEgbGl0dGxlIGNvbmZ1c2VkIHRoZW4uIEF0IHZhcmlv
-dXMgdGltZXMgSSd2ZSBiZWVuIHRvbGQgdG8gCj4+PiBwdXQgJ2FkZGl0aW9uYWxQcm9wZXJ0aWVz
-OiBmYWxzZScgb3IgJ3VuZXZhbHVhdGVkUHJvcGVydGllczogZmFsc2UnIAo+Pj4gKGFsdGhvdWdo
-IG5ldmVyIGF0IHRoZSBzYW1lIHRpbWUpLiBJJ20gbm90IHN1cmUgd2hlbiB0byB1c2Ugb25lIG9y
-IHRoZSAKPj4+IG90aGVyLgo+Pj4KPj4+IEZyb20gd2hhdCBJJ3ZlIGJlZW4gYWJsZSB0byBnbGVh
-biAnYWRkaXRpb25hbFByb3BlcnRpZXM6IHRydWUnIAo+Pj4gaW5kaWNhdGVzIHRoYXQgdGhlIG5v
-ZGUgaXMgZXhwZWN0ZWQgdG8gaGF2ZSBjaGlsZCBub2RlcyBkZWZpbmVkIGluIGEgCj4+PiBkaWZm
-ZXJlbnQgc2NoZW1hIHNvIEkgd291bGQgaGF2ZSB0aG91Z2h0ICdhZGRpdGlvbmFsUHJvcGVydGll
-czogZmFsc2UnIAo+Pj4gd291bGQgYmUgYXBwcm9wcmlhdGUgZm9yIGEgc2NoZW1hIGNvdmVyaW5n
-IGEgbGVhZiBub2RlLiAKPj4+ICd1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlJyBzZWVtcyB0
-byBlbmFibGUgc3RyaWN0ZXIgY2hlY2tpbmcgd2hpY2ggCj4+PiBtYWtlcyBzZW5zZSB3aGVuIGFs
-bCB0aGUgcHJvcGVydGllcyBhcmUgZGVzY3JpYmVkIGluIHRoZSBzY2hlbWEuICAKPj4KPj4gU28g
-SSB0aGluayB0aGlzIG1pZ2h0IGJlIHRoZSBwcm9ibGVtLiBJZiBJIGxvb2sgYXQgcWNvbSxuYW5k
-Yy55YW1sIG9yIAo+PiBpbmdlbmljLG5hbmQueWFtbCB3aGljaCBib3RoIGhhdmUgYSBwYXJ0aXRp
-b25zIHByb3BlcnR5IGluIHRoZWlyIAo+PiBleGFtcGxlLiBOZWl0aGVyIGhhdmUgJ3VuZXZhbHVh
-dGVkUHJvcGVydGllczogZmFsc2UnIG9uIHRoZSBuYW5kQC4uLiAKPj4gc3Vibm9kZS4gSWYgSSBh
-ZGQgaXQgc3VyZSBlbm91Z2ggSSBzdGFydCBnZXR0aW5nIGNvbXBsYWludHMgYWJvdXQgdGhlIAo+
-PiAncGFydGl0aW9ucycgbm9kZSBiZWluZyB1bmV4cGVjdGVkLgo+IAo+IFNvcnJ5IGlmIHRoYXQg
-d2FzIHVuY2xlYXIsIEkgdGhpbmsgdGhlIHdob2xlIGxvZ2ljIGFyb3VuZCB0aGUgeWFtbAo+IGZp
-bGVzIGlzIHRvIHByb2dyZXNzaXZlbHkgY29uc3RyYWluIHRoZSBkZXNjcmlwdGlvbnMsIHNjaGVt
-YSBhZnRlcgo+IHNjaGVtYS4gSU9XLCBpbiB0aGUgbWFydmVsbCBiaW5kaW5nIHlvdSBzaG91bGQg
-c2V0Cj4gdW5ldmFsdWF0ZWRQcm9wZXJ0aWVzOiBmYWxzZSBmb3IgdGhlIE5BTkQgY29udHJvbGxl
-ci4gV2hhdCBpcyBpbnNpZGUKPiAoTkFORCBjaGlwcywgcGFydGl0aW9uIGNvbnRhaW5lciwgcGFy
-dGl0aW9uIHBhcnNlcnMsICJtdGQiIHByb3BlcnRpZXMsCj4gZXRjKSB3aWxsIGJlIGhhbmRsZWQg
-Ynkgb3RoZXIgZmlsZXMuIE9mIGNvdXJzZSB5b3UgY2FuIGNvbnN0cmFpbiBhIGJpdAo+IHdoYXQg
-Y2FuL2Nhbm5vdCBiZSB1c2VkIGluc2lkZSB0aGVzZSBzdWJub2RlcywgYnV0IEkgdGhpbmsgeW91
-IGRvbid0Cj4gbmVlZCB0byBzZXQgdW5ldmFsdWF0ZWRQcm9wZXJ0aWVzIGluIHRoZXNlIHN1Ym5v
-ZGVzICh0aGUgTkFORCBjaGlwIGluCj4gdGhpcyBjYXNlLCBvciBldmVuIHRoZSBwYXJ0aXRpb25z
-KSBiZWNhdXNlIHlvdSBhbHJlYWR5IHJlZmVyZW5jZQo+IG5hbmQtY29udHJvbGxlci55YW1sIHdo
-aWNoIHJlZmVyZW5jZXMgbmFuZC1jaGlwLnlhbWwsIG10ZC55YW1sLAo+IHBhcnRpdGlvbnMueWFt
-bCwgZXRjLiAqdGhleSogd2lsbCBtYWtlIHRoZSBnZW5lcmljIGNoZWNrcyBhbmQgaG9wZWZ1bGx5
-Cj4gYXBwbHkgc3RyaWN0ZXIgY2hlY2tzLCB3aGVuIGRlZW1lZCByZWxldmFudC4KCk5vLCBuZWl0
-aGVyIG5hbmQtY29udHJvbGxlci55YW1sIG5vciBuYW5kLWNoaXAueWFtbCBsaW1pdCB0aGUgcHJv
-cGVydGllcwppbiB0aGlzIGNvbnRleHQsIHNvIGVhY2ggZGV2aWNlIHNjaGVtYSBtdXN0IGhhdmUg
-dW5ldmFsdWF0ZWRQcm9wZXJ0aWVzOgpmYWxzZSwgZm9yIHdoaWNoIEkgYXNrZWQgZmV3IGVtYWls
-cyBhZ28uCgpCZXN0IHJlZ2FyZHMsCktyenlzenRvZgoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+Passing a holder to blkdev_get_by_path when FMODE_EXCL isn't set doesn't
+make sense, so pass NULL instead and remove the holder argument from the
+call chains the only end up in non-FMODE_EXCL blkdev_get_by_path calls.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/btrfs/super.c   | 16 ++++++----------
+ fs/btrfs/volumes.c | 17 ++++++++---------
+ fs/btrfs/volumes.h |  3 +--
+ 3 files changed, 15 insertions(+), 21 deletions(-)
+
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index ec18e22106023b..1a2ee9407f5414 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -849,8 +849,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+  * All other options will be parsed on much later in the mount process and
+  * only when we need to allocate a new super block.
+  */
+-static int btrfs_parse_device_options(const char *options, fmode_t flags,
+-				      void *holder)
++static int btrfs_parse_device_options(const char *options, fmode_t flags)
+ {
+ 	substring_t args[MAX_OPT_ARGS];
+ 	char *device_name, *opts, *orig, *p;
+@@ -884,8 +883,7 @@ static int btrfs_parse_device_options(const char *options, fmode_t flags,
+ 				error = -ENOMEM;
+ 				goto out;
+ 			}
+-			device = btrfs_scan_one_device(device_name, flags,
+-					holder);
++			device = btrfs_scan_one_device(device_name, flags);
+ 			kfree(device_name);
+ 			if (IS_ERR(device)) {
+ 				error = PTR_ERR(device);
+@@ -1477,13 +1475,13 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+ 	}
+ 
+ 	mutex_lock(&uuid_mutex);
+-	error = btrfs_parse_device_options(data, mode, fs_type);
++	error = btrfs_parse_device_options(data, mode);
+ 	if (error) {
+ 		mutex_unlock(&uuid_mutex);
+ 		goto error_fs_info;
+ 	}
+ 
+-	device = btrfs_scan_one_device(device_name, mode, fs_type);
++	device = btrfs_scan_one_device(device_name, mode);
+ 	if (IS_ERR(device)) {
+ 		mutex_unlock(&uuid_mutex);
+ 		error = PTR_ERR(device);
+@@ -2190,8 +2188,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
+ 	switch (cmd) {
+ 	case BTRFS_IOC_SCAN_DEV:
+ 		mutex_lock(&uuid_mutex);
+-		device = btrfs_scan_one_device(vol->name, FMODE_READ,
+-					       &btrfs_root_fs_type);
++		device = btrfs_scan_one_device(vol->name, FMODE_READ);
+ 		ret = PTR_ERR_OR_ZERO(device);
+ 		mutex_unlock(&uuid_mutex);
+ 		break;
+@@ -2205,8 +2202,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
+ 		break;
+ 	case BTRFS_IOC_DEVICES_READY:
+ 		mutex_lock(&uuid_mutex);
+-		device = btrfs_scan_one_device(vol->name, FMODE_READ,
+-					       &btrfs_root_fs_type);
++		device = btrfs_scan_one_device(vol->name, FMODE_READ);
+ 		if (IS_ERR(device)) {
+ 			mutex_unlock(&uuid_mutex);
+ 			ret = PTR_ERR(device);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 784ccc8f6c69c1..035868cee3ddc3 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1348,8 +1348,7 @@ int btrfs_forget_devices(dev_t devt)
+  * and we are not allowed to call set_blocksize during the scan. The superblock
+  * is read via pagecache
+  */
+-struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags,
+-					   void *holder)
++struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags)
+ {
+ 	struct btrfs_super_block *disk_super;
+ 	bool new_device_added = false;
+@@ -1368,16 +1367,16 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags,
+ 	 */
+ 
+ 	/*
+-	 * Avoid using flag |= FMODE_EXCL here, as the systemd-udev may
+-	 * initiate the device scan which may race with the user's mount
+-	 * or mkfs command, resulting in failure.
+-	 * Since the device scan is solely for reading purposes, there is
+-	 * no need for FMODE_EXCL. Additionally, the devices are read again
++	 * Avoid an exclusive open here, as the systemd-udev may initiate the
++	 * device scan which may race with the user's mount or mkfs command,
++	 * resulting in failure.
++	 * Since the device scan is solely for reading purposes, there is no
++	 * need for an exclusive open. Additionally, the devices are read again
+ 	 * during the mount process. It is ok to get some inconsistent
+ 	 * values temporarily, as the device paths of the fsid are the only
+ 	 * required information for assembling the volume.
+ 	 */
+-	bdev = blkdev_get_by_path(path, flags, holder, NULL);
++	bdev = blkdev_get_by_path(path, flags, NULL, NULL);
+ 	if (IS_ERR(bdev))
+ 		return ERR_CAST(bdev);
+ 
+@@ -2381,7 +2380,7 @@ int btrfs_get_dev_args_from_path(struct btrfs_fs_info *fs_info,
+ 		return -ENOMEM;
+ 	}
+ 
+-	ret = btrfs_get_bdev_and_sb(path, FMODE_READ, fs_info->bdev_holder, 0,
++	ret = btrfs_get_bdev_and_sb(path, FMODE_READ, NULL, 0,
+ 				    &bdev, &disk_super);
+ 	if (ret) {
+ 		btrfs_put_dev_args_from_path(args);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index bf47a1a70813ba..eb97a397b3c3fb 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -600,8 +600,7 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
+ void btrfs_mapping_tree_free(struct extent_map_tree *tree);
+ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+ 		       fmode_t flags, void *holder);
+-struct btrfs_device *btrfs_scan_one_device(const char *path,
+-					   fmode_t flags, void *holder);
++struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags);
+ int btrfs_forget_devices(dev_t devt);
+ void btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
+ void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices);
+-- 
+2.39.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
