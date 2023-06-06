@@ -4,74 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26560C7EE45
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 23:50:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3823C7EE29
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 00:16:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=D1jGb7pjb2p015M57TDeRb5pXuB0DNt337Ljo006Wco=; b=RzQrXs0iI9oFF4+Cs1+folUnpN
-	owAzef9u/G2OcUAlz9MFcinTlOZxojSh6M+lCCI630OM5IHf6deW+SEOmVY3qB5IH4EGxzIv1YfYd
-	Sb/TQs7pBG0QONxpvpCR/SO5ksu5SIPDcr4nj6dNjAdyqSxIkBmLXd71EMgIivRyq9q8c7sooXnBq
-	gF2wmpA0wW3PwHLXXf++0dUyDOjvTAOzUQzWUFeMSaXvoaRCOyLVDBknDdDinMR91ZYdXwEii8XnB
-	2Op0pjhMmI2qGyGlEKbTqHI4x5FtLKVj3BjQvt7H4i5r3c67DrhSIuYh7UXXrso9VLRove5EuzykB
-	wb8phfSQ==;
+	bh=ZnJ6LlSnpAqMC/6UebIJ83Ahq97sUPv7Byo+1KQzXLQ=; b=JX1NrKCCuQmOy5p6OfxRH8UGqz
+	+zZXaDvvVcqEWfBwolTqN3ufTNkKEAiptXkr1ya4wzP7pf/hJjZ4iMO9bx1Gq3hez9J9uttSe2PKf
+	pxzqm14AvU6JEXGBM34wBFfpqTB6TMtLHCRzF0yV1MlTVwHGGLd51e9C3MjXPX1Q/YWke7GrU2LfI
+	CZKILviQSql0qUgXqaI+hWy11CiaWbvcmEzkHljXxENE0iEZ+2zwfj924eMrlaz9BSjyA7R15Uo5N
+	fw6yztXzV4Y43CEI2Lq1BaTsTrJxrh+VEH0htJ/1vIXx3FJ+bu//5+HqAPm2tN7hPWs/ADBfHh3wm
+	tDEABaDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6gR0-003gxO-1y;
-	Tue, 06 Jun 2023 23:49:54 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1q6gpq-003kJD-1X;
+	Wed, 07 Jun 2023 00:15:34 +0000
+Received: from mail-qk1-x729.google.com ([2607:f8b0:4864:20::729])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6gQy-003gwv-0D
-	for linux-mtd@bombadil.infradead.org;
-	Tue, 06 Jun 2023 23:49:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-	In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=rqCnguMrTGKtQ2boBl7pm6a0EtK3iZvnp6krzET3ShI=; b=RzmtPbwvVgv4hSybKYvL8c8790
-	y1GsnEjWjJ7Tz6kckM2j7uJ0yTJGm050Kp9AjaChhOszBU5cHwnXyGEuSqpAPgA9B5vYkxxpNtC4n
-	EhDjlzKA4DUavDQJYMQiat/Wp9YGu6ij2yCjc+OFuIt79jtMEfvg8+kpa4ESyuQqAyoNQfGm1DR4J
-	J9cU/J9Nt6h6Rk2votudV/aXyKn8ypIgXQfMZDTalt/ERuQ4GLUjOWdyAUhTjPUkzDKmc1QG1/YTv
-	akLTgeyRKNR5gFRITZwROHi+oMs3nU+lWLW9PfygtiacvaUIq7+fUwGG+FkNvGNbXORl0FVsYHXZz
-	JN0DaFwA==;
-Received: from mail-qk1-x733.google.com ([2607:f8b0:4864:20::733])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6fsV-004DAM-2R
+	id 1q6fss-003b1f-32
 	for linux-mtd@lists.infradead.org;
-	Tue, 06 Jun 2023 23:16:07 +0000
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-75eba89e373so2194485a.0
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2023 16:14:10 -0700 (PDT)
+	Tue, 06 Jun 2023 23:14:40 +0000
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-75d536afa43so1869785a.1
+        for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2023 16:14:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686093249; x=1688685249;
+        d=broadcom.com; s=google; t=1686093278; x=1688685278;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rqCnguMrTGKtQ2boBl7pm6a0EtK3iZvnp6krzET3ShI=;
-        b=Qp7su012nW/S+0glpELz3lXcE7psIPUWwS1MFfjuX69d5YcHM2Q/UzWMaOB2w1h8HY
-         pamtAww2KfzBV060dnyI0z46ncE0NChV308qL2dQ12oUeAGQSLhJJgLAYGWL/u4EBNOw
-         R67M13qkpCvJM9H1mTGt6fnbFu9VcoWvP2ayQ=
+        bh=apjYLW0+dCwZM2BovwDH1RfjNhYdFItHKfJMocDzjoQ=;
+        b=VBXpeiurzfEuq5CYfW+jBqKHAG9zVg96BiyJlMp327s+O23yVDMg5a7qeMCRowMqJe
+         UCo5H1fBO3dpEBLgWpRZAaKFzI711N0iOQ2gu9IVUQwGR/u6FehTBZqEgSjIVWBKrC87
+         UMBQyyHNytu/sKKtpDh9zhrcOSyXKlzKu5prI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686093249; x=1688685249;
+        d=1e100.net; s=20221208; t=1686093278; x=1688685278;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rqCnguMrTGKtQ2boBl7pm6a0EtK3iZvnp6krzET3ShI=;
-        b=Ky3sIQd/UAlegWrFNjGr+7W18w0PNm6RrrZnwiV3zrI2iKXhIzpIcFmJZEu9gzJQl2
-         LD9WTK153AXfyxcODK+Qgt+E0r0k9Y7wP52x4L0Pf4a1X0Jr5SeFcTfNPBHnNds7rHOY
-         f26cofXlQ//0X3SY87AB90YflpgSAZfpWJvU3Ego8SE7RdpV/Hk02sbK+AGxLOMUce2c
-         ATax9iJaRLCGGiwtuUzWnbotIEJWMpktakrcjDcn/v5IigMP9u388iIlnuktFHJxqGZQ
-         ygI9VY9m/YQG97+zlbTooYFpY0kdjkem1PEj93L+6DE7v9TJYDRcxFDlVZBvR3fywMij
-         cvCg==
-X-Gm-Message-State: AC+VfDwKcDwTn1FNOckWc/4yRH7nwlWgIbTwy2r+MspcBa3rnSgw4JtU
-	3fox7tb+4V9cqkSl8v8eaEb6iA==
-X-Google-Smtp-Source: ACHHUZ79wjt9rTqt4QZtEV5LWw/NgzV7fzn4PM1e7DeOiA1bfULBRCNghnKi7wo67EnwLgMmEzZVBA==
-X-Received: by 2002:a05:620a:3a41:b0:75e:ca48:51c8 with SMTP id sk1-20020a05620a3a4100b0075eca4851c8mr99401qkn.4.1686093249233;
-        Tue, 06 Jun 2023 16:14:09 -0700 (PDT)
+        bh=apjYLW0+dCwZM2BovwDH1RfjNhYdFItHKfJMocDzjoQ=;
+        b=AHtQnqpEb7Pz2ZRXAJWkc7BxEksv/WKo+b4t6M/romwS3G2b/Y2ftFYAe7dGeoQ9FX
+         O7rAyt+G7lwkcNYmyQqGdUaBcL+fDUwwnAZ+sFeotjUdohAwRpXXtb7cSeYgsSLbWFcL
+         Tr/rp2DqNHk9BsKzSXqbu9jeM90sAgmsuo5wgFumRzL+JUkF00ArfBeZFe1WA1ACyxDp
+         PGQYRUeFuVnvtPsjVkwuw1le4xh49kYn0S2j9PiNDD1Ce1rHEBFMakpr04cNyMh/oVDT
+         Bkm5dlw0O+dFiz3viXBKYM+tR6kbDTTOM49UcZrMgcQmdOkzw3RPB7OvlKz0pD0+gQGF
+         4CDQ==
+X-Gm-Message-State: AC+VfDzExD/otJ54tizd4BKPMo6auusOnL4RxDJVqfKLLsZVo+nbHEUQ
+	qfP/pY5OAiFsX7nsPm5dSpw2Hg==
+X-Google-Smtp-Source: ACHHUZ7bYFLN1a5ufcqbE9UB68Hw5d0exaHSRtYM74Csd+WVyPQL4c5ckOiMe6trlx22UB4miZDl5A==
+X-Received: by 2002:a05:620a:6186:b0:75e:c7cb:d75d with SMTP id or6-20020a05620a618600b0075ec7cbd75dmr62038qkn.17.1686093278518;
+        Tue, 06 Jun 2023 16:14:38 -0700 (PDT)
 Received: from ubuntu-22.localdomain ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id x9-20020ae9e909000000b0075b23e55640sm5221519qkf.123.2023.06.06.16.14.06
+        by smtp.gmail.com with ESMTPSA id x9-20020ae9e909000000b0075b23e55640sm5221519qkf.123.2023.06.06.16.14.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 16:14:08 -0700 (PDT)
+        Tue, 06 Jun 2023 16:14:37 -0700 (PDT)
 From: William Zhang <william.zhang@broadcom.com>
 To: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
 	Linux MTD List <linux-mtd@lists.infradead.org>
@@ -91,18 +76,18 @@ Cc: f.fainelli@gmail.com,
 	linux-kernel@vger.kernel.org,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Richard Weinberger <richard@nod.at>,
-	Boris Brezillon <bbrezillon@kernel.org>,
-	Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH 02/12] mtd: rawnand: brcmnand: Fix potential false time out warning
-Date: Tue,  6 Jun 2023 16:12:42 -0700
-Message-Id: <20230606231252.94838-3-william.zhang@broadcom.com>
+	Kamal Dasu <kdasu.kdev@gmail.com>,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 08/12] mtd: rawnand: brcmnand: Rename bcm63138 nand driver
+Date: Tue,  6 Jun 2023 16:12:48 -0700
+Message-Id: <20230606231252.94838-9-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230606231252.94838-1-william.zhang@broadcom.com>
 References: <20230606231252.94838-1-william.zhang@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_001420_064930_3DAA45F9 
-X-CRM114-Status: GOOD (  13.25  )
+X-CRM114-CacheID: sfid-20230606_161438_991953_5C67099D 
+X-CRM114-Status: GOOD (  21.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,54 +99,264 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3276500151687225078=="
+Content-Type: multipart/mixed; boundary="===============0674588309382296724=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============3276500151687225078==
+--===============0674588309382296724==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000031969705fd7e2d40"
+	boundary="000000000000f11ce605fd7e2e92"
 
---00000000000031969705fd7e2d40
+--000000000000f11ce605fd7e2e92
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-If system is busy during the command status polling function, the driver
-may not get the chance to poll the status register till the end of time
-out and return the premature status.  Do a final check after time out
-happens to ensure reading the correct status.
+In preparing to support multiple BCMBCA SoCs, rename bcm63138 to bcmbca
+in the driver code and driver file name.
 
-Fixes: 9d2ee0a60b8b ("mtd: nand: brcmnand: Check flash #WP pin status before nand erase/program")
 Signed-off-by: William Zhang <william.zhang@broadcom.com>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
 
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/mtd/nand/raw/brcmnand/Makefile        |   2 +-
+ drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c | 101 ------------------
+ drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c   | 101 ++++++++++++++++++
+ 3 files changed, 102 insertions(+), 102 deletions(-)
+ delete mode 100644 drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
+ create mode 100644 drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index b2cde1082b3b..b6346a8b9833 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1080,6 +1080,14 @@ static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
- 		cpu_relax();
- 	} while (time_after(limit, jiffies));
- 
-+	/*
-+	 * do a final check after time out in case CPU is busy and driver does
-+	 * not get the enough time to poll to avoid false alarm
-+	 */
-+	val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
-+	if ((val & mask) == expected_val)
-+		return 0;
+diff --git a/drivers/mtd/nand/raw/brcmnand/Makefile b/drivers/mtd/nand/raw/brcmnand/Makefile
+index 9907e3ec4bb2..0536568c6467 100644
+--- a/drivers/mtd/nand/raw/brcmnand/Makefile
++++ b/drivers/mtd/nand/raw/brcmnand/Makefile
+@@ -2,7 +2,7 @@
+ # link order matters; don't link the more generic brcmstb_nand.o before the
+ # more specific iproc_nand.o, for instance
+ obj-$(CONFIG_MTD_NAND_BRCMNAND_IPROC)	+= iproc_nand.o
+-obj-$(CONFIG_MTD_NAND_BRCMNAND_BCMBCA)	+= bcm63138_nand.o
++obj-$(CONFIG_MTD_NAND_BRCMNAND_BCMBCA)	+= bcmbca_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND_BCM63XX)	+= bcm6368_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND_BRCMSTB)	+= brcmstb_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
+diff --git a/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c b/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
+deleted file mode 100644
+index 71ddcc611f6e..000000000000
+--- a/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
++++ /dev/null
+@@ -1,101 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright © 2015 Broadcom Corporation
+- */
+-
+-#include <linux/device.h>
+-#include <linux/io.h>
+-#include <linux/ioport.h>
+-#include <linux/module.h>
+-#include <linux/of.h>
+-#include <linux/of_address.h>
+-#include <linux/platform_device.h>
+-#include <linux/slab.h>
+-
+-#include "brcmnand.h"
+-
+-struct bcm63138_nand_soc {
+-	struct brcmnand_soc soc;
+-	void __iomem *base;
+-};
+-
+-#define BCM63138_NAND_INT_STATUS		0x00
+-#define BCM63138_NAND_INT_EN			0x04
+-
+-enum {
+-	BCM63138_CTLRDY		= BIT(4),
+-};
+-
+-static bool bcm63138_nand_intc_ack(struct brcmnand_soc *soc)
+-{
+-	struct bcm63138_nand_soc *priv =
+-			container_of(soc, struct bcm63138_nand_soc, soc);
+-	void __iomem *mmio = priv->base + BCM63138_NAND_INT_STATUS;
+-	u32 val = brcmnand_readl(mmio);
+-
+-	if (val & BCM63138_CTLRDY) {
+-		brcmnand_writel(val & ~BCM63138_CTLRDY, mmio);
+-		return true;
+-	}
+-
+-	return false;
+-}
+-
+-static void bcm63138_nand_intc_set(struct brcmnand_soc *soc, bool en)
+-{
+-	struct bcm63138_nand_soc *priv =
+-			container_of(soc, struct bcm63138_nand_soc, soc);
+-	void __iomem *mmio = priv->base + BCM63138_NAND_INT_EN;
+-	u32 val = brcmnand_readl(mmio);
+-
+-	if (en)
+-		val |= BCM63138_CTLRDY;
+-	else
+-		val &= ~BCM63138_CTLRDY;
+-
+-	brcmnand_writel(val, mmio);
+-}
+-
+-static int bcm63138_nand_probe(struct platform_device *pdev)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct bcm63138_nand_soc *priv;
+-	struct brcmnand_soc *soc;
+-	struct resource *res;
+-
+-	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		return -ENOMEM;
+-	soc = &priv->soc;
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand-int-base");
+-	priv->base = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(priv->base))
+-		return PTR_ERR(priv->base);
+-
+-	soc->ctlrdy_ack = bcm63138_nand_intc_ack;
+-	soc->ctlrdy_set_enabled = bcm63138_nand_intc_set;
+-
+-	return brcmnand_probe(pdev, soc);
+-}
+-
+-static const struct of_device_id bcm63138_nand_of_match[] = {
+-	{ .compatible = "brcm,nand-bcm63138" },
+-	{},
+-};
+-MODULE_DEVICE_TABLE(of, bcm63138_nand_of_match);
+-
+-static struct platform_driver bcm63138_nand_driver = {
+-	.probe			= bcm63138_nand_probe,
+-	.remove			= brcmnand_remove,
+-	.driver = {
+-		.name		= "bcm63138_nand",
+-		.pm		= &brcmnand_pm_ops,
+-		.of_match_table	= bcm63138_nand_of_match,
+-	}
+-};
+-module_platform_driver(bcm63138_nand_driver);
+-
+-MODULE_LICENSE("GPL v2");
+-MODULE_AUTHOR("Brian Norris");
+-MODULE_DESCRIPTION("NAND driver for BCM63138");
+diff --git a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+new file mode 100644
+index 000000000000..f51f857eeea6
+--- /dev/null
++++ b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+@@ -0,0 +1,101 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright © 2015 Broadcom Corporation
++ */
 +
- 	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
- 		 expected_val, val & mask);
- 
++#include <linux/device.h>
++#include <linux/io.h>
++#include <linux/ioport.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++#include "brcmnand.h"
++
++struct bcmbca_nand_soc {
++	struct brcmnand_soc soc;
++	void __iomem *base;
++};
++
++#define BCMBCA_NAND_INT_STATUS		0x00
++#define BCMBCA_NAND_INT_EN			0x04
++
++enum {
++	BCMBCA_CTLRDY		= BIT(4),
++};
++
++static bool bcmbca_nand_intc_ack(struct brcmnand_soc *soc)
++{
++	struct bcmbca_nand_soc *priv =
++			container_of(soc, struct bcmbca_nand_soc, soc);
++	void __iomem *mmio = priv->base + BCMBCA_NAND_INT_STATUS;
++	u32 val = brcmnand_readl(mmio);
++
++	if (val & BCMBCA_CTLRDY) {
++		brcmnand_writel(val & ~BCMBCA_CTLRDY, mmio);
++		return true;
++	}
++
++	return false;
++}
++
++static void bcmbca_nand_intc_set(struct brcmnand_soc *soc, bool en)
++{
++	struct bcmbca_nand_soc *priv =
++			container_of(soc, struct bcmbca_nand_soc, soc);
++	void __iomem *mmio = priv->base + BCMBCA_NAND_INT_EN;
++	u32 val = brcmnand_readl(mmio);
++
++	if (en)
++		val |= BCMBCA_CTLRDY;
++	else
++		val &= ~BCMBCA_CTLRDY;
++
++	brcmnand_writel(val, mmio);
++}
++
++static int bcmbca_nand_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct bcmbca_nand_soc *priv;
++	struct brcmnand_soc *soc;
++	struct resource *res;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++	soc = &priv->soc;
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand-int-base");
++	priv->base = devm_ioremap_resource(dev, res);
++	if (IS_ERR(priv->base))
++		return PTR_ERR(priv->base);
++
++	soc->ctlrdy_ack = bcmbca_nand_intc_ack;
++	soc->ctlrdy_set_enabled = bcmbca_nand_intc_set;
++
++	return brcmnand_probe(pdev, soc);
++}
++
++static const struct of_device_id bcmbca_nand_of_match[] = {
++	{ .compatible = "brcm,nand-bcm63138" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, bcmbca_nand_of_match);
++
++static struct platform_driver bcmbca_nand_driver = {
++	.probe			= bcmbca_nand_probe,
++	.remove			= brcmnand_remove,
++	.driver = {
++		.name		= "bcmbca_nand",
++		.pm		= &brcmnand_pm_ops,
++		.of_match_table	= bcmbca_nand_of_match,
++	}
++};
++module_platform_driver(bcmbca_nand_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Brian Norris");
++MODULE_DESCRIPTION("NAND driver for BCMBCA");
 -- 
 2.37.3
 
 
---00000000000031969705fd7e2d40
+--000000000000f11ce605fd7e2e92
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -232,19 +427,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHhd1OJb39+CkDygpL6+uiGAqKTP
-JHr0v6z3mI9VAk2IMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDYwNjIzMTQwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBfBGk9sKODxWrTIl0ZNcRrTBKEB
+L33aMEuUB6FmKUVOMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDYwNjIzMTQzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQA3OUw6pFJ+Z0AAAaKK8MTdk7A6I40hviQML/ZQwxfNQGsR
-J7Qbqpq1qzDvDOgW8L0AVPcbbroQNCMcXP2i7kbNWAm91lSG2K6M45UyYDZMTc45+gmvuHdgHD5/
-ALq7fFZyHFNqpyt4NSp/VyZGHpus9OisUQDAY1RZvTjdcxhjNMmBnYNDA3BWm8t1R6s8TDSYa8XL
-QRqYI0dx+a5Wig4j4CWcH0oVWnO8saFPBtNiFPCWlGWEjE9wffI6t1RTtj5MvexjmjDxXIrxYXi2
-D+o6smVx2Yh+VtljjGTz51WX5gnvmcO/GO4tYPbH5Os1iq+uysxxbTfAIawui0j4Xguy
---00000000000031969705fd7e2d40--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCdX/cZTPOd21OABCXjLJoenyyj4SPxe+cWn5bCSzM3Guhw
+Z7aJaPc+u4yA9IAiGFnkVPOihOdmdFtu9T4eoRfVdbOlBawkVIWGZRoS5dWcS2DVEftx6A67LcQ9
+4wEWvJiGCgTGdHj3y7eiHu8bw73VARkLrzbObllycFHrWcj3OHFG835FyTBKg+IjrD1B2Y2KYYqj
+ZQ2tjw8sklT2JZ/eHDR2RALKQ4cfT0DQrGwJTCSORCdHoz/UDJvAs/Pz5sXCeRIoZAmnBnEnAIRO
+w/XnA8cGVa2iaMeE6d9UaC4tG5P7N5f7V/jFaykFxg44ZLwYu9wb8I19B4xbmyggihGW
+--000000000000f11ce605fd7e2e92--
 
 
---===============3276500151687225078==
+--===============0674588309382296724==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -254,5 +449,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============3276500151687225078==--
+--===============0674588309382296724==--
 
