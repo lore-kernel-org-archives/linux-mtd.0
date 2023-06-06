@@ -4,79 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 994BCC7EE24
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 14:30:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ABA6C77B7A
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 14:38:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cdze7MuvBgdtHduZhoG9zzFkDlLSeLpuelJ7bvfceeQ=; b=Je6bal6275T/HN
-	WIdjlhkvL9idjgCX2LWCJOF4hPkkNyHH6QmCzuyvnjVyyo6CSpDfR29KknkUE5oCUFINKj7IHwZeh
-	le/L4CrDNZl0LpvO5Jw5ZZXWqJ3w+igPOc8Nl7oIJQQHVnQ2K9oa45WIGbR2A2b8cH5n+hjscZBXi
-	XEvmdAnatbdPLDP4TVyrjLgvPJdeBb/jsAk9VYotslPOze2ZgLk6k0Jkn7d+CTf8iGLP0NPC2Qvgx
-	t8Ax3yIynEDyNP/qAfNjVUec8/GLeZABu00OSrVYNAyQYz8pl51GemSw5aVWTrMPaHpfJJL5+HooB
-	cySO/f1dKcoVhF7kee4Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FIVpB7sb7IS2lppLF2hzFw7eOXBq9UtBSVbY49JGibY=; b=Ep08USACnXOjV8JYoRrXMZae94
+	ipH7R4EMlhsCBYsibmycqtT3L/sVLGkGKymu9Iscpv15BaPZfi0VxF9ZXW91CaHzMeXTqn+tlx29L
+	gNxgWr3ymcII6w8PRHOlmrPff/1Q11usXShKEqbHxYs8rvuuE32gr3HpC3BYS0JP3DEMmf0kRKhPm
+	eIgCacK11he9jD6Dz6bEsMiiTpgnUQ9KQSE8aYp/bbk9eTWwVM02aDpqFOp+8cAv7MYe4vby+d215
+	05fVe6/5CnhWjgL9hcf08PaEb9n6wc2892iqMHfBSuPTNMYgjPaomlfs7sJhptRQGZMKeVLKn2MvH
+	TZy1QX4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6Xgq-0021Ia-1j;
-	Tue, 06 Jun 2023 14:29:40 +0000
-Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
+	id 1q6Xp8-0023Vy-23;
+	Tue, 06 Jun 2023 14:38:14 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6Xgo-0021HR-0T
+	id 1q6Xp4-0023OO-2z
 	for linux-mtd@lists.infradead.org;
-	Tue, 06 Jun 2023 14:29:39 +0000
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4f4bdcde899so7631716e87.0
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2023 07:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686061775; x=1688653775;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jT6hSAAsbUjx2Cyf4kC7RBU5Bm/m1+UuuRRxQOJbexo=;
-        b=Spl0K8l8EB/yE+DZnhzjdIaK0fRb74Zxz9z8J657WqrjygEfHpuyuwPS1gU4rM27iL
-         8W50FVw7k780eL3gfvcoJmbfZcvJpTZYCp9MN/7LrmlMwHGSELLW2pyYOb204LEQtMoz
-         keiF3d3Fs7prDHvvsjw9jLTcARpDuykfTn6BoPddIexdIUwRijLEjQOqgedkyUY+pq8m
-         vZTTX3NWMQNJEAav7pYdR470BlWv9Wo5IfTPM/wkN1YGhEeQSvHW1736bXc5uoA62yf6
-         gOMNz2gwLOxmcbI19R0aAV+6MDONmQpxnzJaQdItd4LExEyROln2X2t6RcE1sYLcGWMh
-         RvPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686061775; x=1688653775;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jT6hSAAsbUjx2Cyf4kC7RBU5Bm/m1+UuuRRxQOJbexo=;
-        b=lgvWl3euQZXPvLnn5Q9+EH+Q0x8MgCdAonHzZgIZ8hYxQqME34vJLwoTXuhfaoGCjj
-         sdiSmnlhpV0ZD+HnMnrTfGanBF3AcCiTUdT/S4KQKrQdRSoHxRxHiGcq++JhFcncQRHb
-         AzvpD2qEsBLw/lOHEOBO1+0JsI4+OunRCzc1Tv/tiZ0IrguNoIm8Km9SOrFykpcqSGJk
-         8v1sgVsadW4ySXOrisCDyg+qpv7axAFmEenZFbaDGXJhdWYTUgJ2iGvynolRFGJqR/hA
-         0jmpM3GH2WfGE3Wmmxf3t3FyUsS4jtFbCm3l02Lb/3FHYXjnzRp/IxjVVdPsWFTT5Ntg
-         uQXg==
-X-Gm-Message-State: AC+VfDzG/8qIbHgcWWXU3h9GHkG8mjuKwfhEhSewDyHp7Uuwva8oQNsc
-	wsaVFRdgp72Sn9RXkoSH6SGtjoWESnKDaWMcotY=
-X-Google-Smtp-Source: ACHHUZ6Cj5wjGQm4Dfcu/Y++O91caR2A7shmtGGpl+DqhQ4PUQKPk4QKwJyme4ZwiPMJhmLp40Gs3A==
-X-Received: by 2002:a05:6512:3c9:b0:4f6:145b:e334 with SMTP id w9-20020a05651203c900b004f6145be334mr931424lfp.16.1686061775309;
-        Tue, 06 Jun 2023 07:29:35 -0700 (PDT)
-Received: from Fecusia.lan (c-05d8225c.014-348-6c756e10.bbcust.telenor.se. [92.34.216.5])
-        by smtp.gmail.com with ESMTPSA id v15-20020a19740f000000b004e8508899basm1484254lfe.86.2023.06.06.07.29.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 07:29:34 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Michael Walle <michael@walle.cc>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v3] mtd: otp: Put factory OTP/NVRAM into the entropy pool
-Date: Tue,  6 Jun 2023 16:29:31 +0200
-Message-Id: <20230606142931.3721374-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.40.1
+	Tue, 06 Jun 2023 14:38:13 +0000
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.53])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4QbCgr3KGNztQbW;
+	Tue,  6 Jun 2023 22:35:36 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Tue, 6 Jun 2023 22:37:57 +0800
+Subject: Re: [PATCH 1/4] ubifs: Convert from writepage to writepages
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Richard Weinberger
+	<richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
+References: <20230605165029.2908304-1-willy@infradead.org>
+ <20230605165029.2908304-2-willy@infradead.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <be9f30d1-d840-fb76-f185-5ebc70a7b72b@huawei.com>
+Date: Tue, 6 Jun 2023 22:37:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20230605165029.2908304-2-willy@infradead.org>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230606_072938_217886_655105D0 
-X-CRM114-Status: GOOD (  18.09  )
+X-CRM114-CacheID: sfid-20230606_073811_221131_9AD575A4 
+X-CRM114-Status: GOOD (  18.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,82 +65,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gbk"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The factory OTP, if supported, contains factory-programmed
-information such as typically the serial number or production
-week for the chip.
-
-As this is device-unique information, submit it into the
-system entropy pool.
-
-This does not count as improvement of the entropy as such
-but in practice it makes it a bit more random to mix in these
-numbers.
-
-Cc: Michael Walle <michael@walle.cc>
-Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-ChangeLog v2->v3:
-- Contribute the number of bytes actually read back from
-  OTP to the entropy shuffle.
-ChangeLog v1->v2:
-- Drop the conditional to return as many bytes as requested
-  to add the OTP to the entropy pool: it doesn't matter
-  whatsoever in this case.
-- Collected Jason's ACK.
-
-This is similar to the patch I made to add MMC/SD-card serial
-numbers to randomness, just with raw NOR flash.
----
- drivers/mtd/mtdcore.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 60670b2f70b9..abf4cb58a8ab 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -23,6 +23,7 @@
- #include <linux/idr.h>
- #include <linux/backing-dev.h>
- #include <linux/gfp.h>
-+#include <linux/random.h>
- #include <linux/slab.h>
- #include <linux/reboot.h>
- #include <linux/leds.h>
-@@ -966,6 +967,24 @@ static int mtd_otp_nvmem_add(struct mtd_info *mtd)
- 		}
- 
- 		if (size > 0) {
-+			/*
-+			 * The factory OTP contains thing such as a unique serial
-+			 * number and is small, so let's read it out and put it
-+			 * into the entropy pool.
-+			 */
-+			void *otp;
-+
-+			otp = kmalloc(size, GFP_KERNEL);
-+			if (!otp)
-+				return -ENOMEM;
-+			err = mtd_nvmem_fact_otp_reg_read(mtd, 0, otp, size);
-+			if (err < 0) {
-+				kfree(otp);
-+				return err;
-+			}
-+			add_device_randomness(otp, err);
-+			kfree(otp);
-+
- 			nvmem = mtd_otp_nvmem_register(mtd, "factory-otp", size,
- 						       mtd_nvmem_fact_otp_reg_read);
- 			if (IS_ERR(nvmem)) {
--- 
-2.40.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+1NogMjAyMy82LzYgMDo1MCwgTWF0dGhldyBXaWxjb3ggKE9yYWNsZSkg0LS1wDoKSGksCj4gVGhp
+cyBpcyBhIHNpbXBsaXN0aWMgY29udmVyc2lvbiB0byBzZXBhcmF0ZSBvdXQgYW55IGVmZmVjdHMg
+b2YKPiBubyBsb25nZXIgaGF2aW5nIGEgd3JpdGVwYWdlIG1ldGhvZC4KPiAKPiBTaWduZWQtb2Zm
+LWJ5OiBNYXR0aGV3IFdpbGNveCAoT3JhY2xlKSA8d2lsbHlAaW5mcmFkZWFkLm9yZz4KPiAtLS0K
+PiAgIGZzL3ViaWZzL2ZpbGUuYyB8IDEyICsrKysrKysrKystLQo+ICAgMSBmaWxlIGNoYW5nZWQs
+IDEwIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2ZzL3Vi
+aWZzL2ZpbGUuYyBiL2ZzL3ViaWZzL2ZpbGUuYwo+IGluZGV4IDk3OWFiMWQ5ZDBjMy4uOGJiNGNi
+OWQ1MjhmIDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL2ZpbGUuYwo+ICsrKyBiL2ZzL3ViaWZzL2Zp
+bGUuYwo+IEBAIC0xMDAzLDggKzEwMDMsMTAgQEAgc3RhdGljIGludCBkb193cml0ZXBhZ2Uoc3Ry
+dWN0IHBhZ2UgKnBhZ2UsIGludCBsZW4pCj4gICAgKiBvbiB0aGUgcGFnZSBsb2NrIGFuZCBpdCB3
+b3VsZCBub3Qgd3JpdGUgdGhlIHRydW5jYXRlZCBpbm9kZSBub2RlIHRvIHRoZQo+ICAgICogam91
+cm5hbCBiZWZvcmUgd2UgaGF2ZSBmaW5pc2hlZC4KPiAgICAqLwo+IC1zdGF0aWMgaW50IHViaWZz
+X3dyaXRlcGFnZShzdHJ1Y3QgcGFnZSAqcGFnZSwgc3RydWN0IHdyaXRlYmFja19jb250cm9sICp3
+YmMpCj4gK3N0YXRpYyBpbnQgdWJpZnNfd3JpdGVwYWdlKHN0cnVjdCBmb2xpbyAqZm9saW8sIHN0
+cnVjdCB3cml0ZWJhY2tfY29udHJvbCAqd2JjLAo+ICsJCXZvaWQgKmRhdGEpCj4gICB7Cj4gKwlz
+dHJ1Y3QgcGFnZSAqcGFnZSA9ICZmb2xpby0+cGFnZTsKPiAgIAlzdHJ1Y3QgaW5vZGUgKmlub2Rl
+ID0gcGFnZS0+bWFwcGluZy0+aG9zdDsKPiAgIAlzdHJ1Y3QgdWJpZnNfaW5mbyAqYyA9IGlub2Rl
+LT5pX3NiLT5zX2ZzX2luZm87Cj4gICAJc3RydWN0IHViaWZzX2lub2RlICp1aSA9IHViaWZzX2lu
+b2RlKGlub2RlKTsKPiBAQCAtMTA3Niw2ICsxMDc4LDEyIEBAIHN0YXRpYyBpbnQgdWJpZnNfd3Jp
+dGVwYWdlKHN0cnVjdCBwYWdlICpwYWdlLCBzdHJ1Y3Qgd3JpdGViYWNrX2NvbnRyb2wgKndiYykK
+PiAgIAlyZXR1cm4gZXJyOwo+ICAgfQo+ICAgCj4gK3N0YXRpYyBpbnQgdWJpZnNfd3JpdGVwYWdl
+cyhzdHJ1Y3QgYWRkcmVzc19zcGFjZSAqbWFwcGluZywKPiArCQlzdHJ1Y3Qgd3JpdGViYWNrX2Nv
+bnRyb2wgKndiYykKPiArewo+ICsJcmV0dXJuIHdyaXRlX2NhY2hlX3BhZ2VzKG1hcHBpbmcsIHdi
+YywgdWJpZnNfd3JpdGVwYWdlLCBOVUxMKTsKPiArfQo+ICsKClRoZXJlIGlzIGEgc21hbGwgZGlm
+ZmVyZW5jZS4KYmVmb3JlIHBhdGNoIGFwcGxpZWQ6CmRvX3dyaXRlcGFnZXMgLT4gd3JpdGVfY2Fj
+aGVfcGFnZXMgLT4gd3JpdGVwYWdlX2NiOgogIHViaWZzX3dyaXRlcGFnZQogIG1hcHBpbmdfc2V0
+X2Vycm9yKG1hcHBpbmcsIHJldCkKClNvLCB3ZSBjYW4gZ2V0IGVycm9yIHJldHVybmVkIGZyb20g
+ZXJyc2VxX2NoZWNrX2FuZF9hZHZhbmNlIGluIHN5bmNmcyAKc3lzY2FsbCBpZiB1Ymlmc193cml0
+ZXBhZ2Ugb2NjdXJzIEVJTy4KCmFmdGVyIHBhdGNoIGFwcGxpZWQ6Cgpkb193cml0ZXBhZ2VzIC0+
+IHViaWZzX3dyaXRlcGFnZXMgLT4gd3JpdGVfY2FjaGVfcGFnZXMgLT4gCnViaWZzX3dyaXRlcGFn
+ZSwgbWFwcGluZyB3b24ndCBiZSBzZXQgZXJyb3IgaWYgdWJpZnNfd3JpdGVwYWdlIGZhaWxlZC4g
+ClVuZm9ydHVuYXRlbHksIHViaWZzIGlzIG5vdCBhIGJsb2NrIGZpbGVzeXN0ZW0sIHNvIApzeW5j
+X2ZpbGVzeXN0ZW0tPnN5bmNfYmxvY2tkZXZfbm93YWl0IHdpbGwgcmV0dXJuIDAuIEZpbmFsbHks
+IHN5bmNmcyAKc3lzY2FsbCB3aWxsIHJldHVybiAwLgoKCj4gICAvKioKPiAgICAqIGRvX2F0dHJf
+Y2hhbmdlcyAtIGNoYW5nZSBpbm9kZSBhdHRyaWJ1dGVzLgo+ICAgICogQGlub2RlOiBpbm9kZSB0
+byBjaGFuZ2UgYXR0cmlidXRlcyBmb3IKPiBAQCAtMTYzNiw3ICsxNjQ0LDcgQEAgc3RhdGljIGlu
+dCB1Ymlmc19zeW1saW5rX2dldGF0dHIoc3RydWN0IG1udF9pZG1hcCAqaWRtYXAsCj4gICAKPiAg
+IGNvbnN0IHN0cnVjdCBhZGRyZXNzX3NwYWNlX29wZXJhdGlvbnMgdWJpZnNfZmlsZV9hZGRyZXNz
+X29wZXJhdGlvbnMgPSB7Cj4gICAJLnJlYWRfZm9saW8gICAgID0gdWJpZnNfcmVhZF9mb2xpbywK
+PiAtCS53cml0ZXBhZ2UgICAgICA9IHViaWZzX3dyaXRlcGFnZSwKPiArCS53cml0ZXBhZ2VzICAg
+ICA9IHViaWZzX3dyaXRlcGFnZXMsCj4gICAJLndyaXRlX2JlZ2luICAgID0gdWJpZnNfd3JpdGVf
+YmVnaW4sCj4gICAJLndyaXRlX2VuZCAgICAgID0gdWJpZnNfd3JpdGVfZW5kLAo+ICAgCS5pbnZh
+bGlkYXRlX2ZvbGlvID0gdWJpZnNfaW52YWxpZGF0ZV9mb2xpbywKPiAKCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
