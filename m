@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 321C0C7EE2C
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 18:52:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 880EDC77B7A
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 18:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
 	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NBSskbzUddGR2WYV2A2vIcex9K4Bebv7+N/TtyXN7TI=; b=EId3WYr0OTC/xC
-	Wpaw8bCppqdRswLDhpiAsSru35yGE4p0kf2BCz/DF12omcBBq9o2sf3QP4ISv5mRWvlqaAkcEoprb
-	hIDeFb358RZBGiXe6vd3T7BvnfiQAsCIzgcnDjGL+sbvI8Q655WgetWJQHWVg6Felo95Cz1a+wP+P
-	KwkiiJJ6rMsI/5XZAu1vY14yiWOVwqvv7aTU4jEsYs4wGgnI9iTq8R85gU0Kbuf5+3eIga6Jxh218
-	JLPQpBJY/7MLhTzg4k6dKhkBLOQB/IlUPzS22nbtx9FAB+jb/hDSxEBcstLSFzy3nMe0FNAgv881c
-	aXRpxdhADReqdTWzYw3Q==;
+	List-Owner; bh=UZmGZFB0fxnAGH05o/JgYz9oX8l51Moa738ZEwprZBs=; b=gGX5orUOLcenQS
+	N3AVpG7F40SWPr6mI2RG2d8RotEinw9r0jiB/zllayGQppUPNKkzdxmvEdVjaLJtx5vEfwpFEfDUz
+	lgsroVI8WHnUfHRbsh5JW+uIUAIn8UuGwaeDGkSr/fhWodZHJPRub7AGVQtd+bYBU0hnnE+WJvbr/
+	LQZ2CZrrtmXzt/MlFnf2WD26d6lUczCNwybf81KaqVDlVcxl8mMecftKKoRVW4D7/UXnsegG2f9Jm
+	IG+yTBjmiGOZGoWD+/C7UH9q0Ag8Td1bzxwzrI87CZPDPf+rxfKA11KkXGC3mAyp1pdc4/gJf5iGh
+	XxdugbNZrPbvt6tYBmLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6bmw-002p7n-37;
-	Tue, 06 Jun 2023 18:52:14 +0000
-Received: from mail-io1-f53.google.com ([209.85.166.53])
+	id 1q6bmz-002p8q-11;
+	Tue, 06 Jun 2023 18:52:17 +0000
+Received: from mail-io1-f43.google.com ([209.85.166.43])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6bmu-002p5V-1F
+	id 1q6bmv-002p61-0h
 	for linux-mtd@lists.infradead.org;
-	Tue, 06 Jun 2023 18:52:13 +0000
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-777b4c9e341so108589939f.0
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2023 11:52:06 -0700 (PDT)
+	Tue, 06 Jun 2023 18:52:14 +0000
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-77a62a84855so18313439f.1
+        for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2023 11:52:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686077526; x=1688669526;
+        d=1e100.net; s=20221208; t=1686077528; x=1688669528;
         h=date:subject:message-id:references:in-reply-to:cc:to:from
          :mime-version:content-transfer-encoding:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=mbTz3L0KOieu2PiZ8/3f4rcShzBA+Lhe0vv5LvOZlFQ=;
-        b=cLoCIQ0FlFV2G6IK2LSrnyIuwMPCliersPjFEZy0U2qy1IXxrXQI5m3ir4ZTVuCKUt
-         VnhZq07nu/uxkfmTOcdBngnP+pAFVW1UQhxnn9rnYk6yDLtMGtPvQ57zegZx1putlsIp
-         YZBJVQwR0dETSHC99v7VJVCLPPj8MGcO4GcCoOaFE+zgcWADV+AHy3u9JO36E8jfybaJ
-         Hu/chXs+PbQDyRz3V5Xgkhk5c3vng/3wE/j9SNk1lJAlSo8A6SJktNYorJZwTkiKJfqY
-         Q6E8V2Gtnpi1FBtYnGtSx1yiXsEOVTFtLkDn3vYoU+Du1Gh4ZHm9cTXFXhKDLa636oA7
-         iaHw==
-X-Gm-Message-State: AC+VfDw4nmQ3g+/VCQSV3vwLapE2Ia7hgu2sFmo1RrSPlg5Ce9dp8zUa
-	HiGD0mgXq7OtFE6LoJ69BQ==
-X-Google-Smtp-Source: ACHHUZ5Sq/LO+6kNTTuEb8BcXJe7Qx8KdEQpo/fTTTmeNTLsvky/8jqy90OxORpqg+yw44P6jflFTg==
-X-Received: by 2002:a05:6602:1859:b0:766:48cf:6ca9 with SMTP id d25-20020a056602185900b0076648cf6ca9mr4506499ioi.12.1686077526284;
-        Tue, 06 Jun 2023 11:52:06 -0700 (PDT)
+        bh=4EqDUqkk2l6bGo2T3M69+gamDexLSphWtgXxcDch4NU=;
+        b=gIu0X+NtnUKwPkFYo2ZoPyc604Ziw1IqZj6kmslWiOhO9iZLGBYGHewatLiF+e8ioi
+         cSqEDdY10CZAjfuwRZsYBPZE2sKOikhas1Pi8v/VPjpLhXklqcxak7v+ZsuBiqXv6JW3
+         Yg/AFJbcc2lyYfdn91tMVXPLo3IusGtkNQFxgHtX5ccvy5TFiTcemrYY7zI5ghaXFoON
+         POXUbqf5xLJ/K+Vec1OStM4UBbgTadpHUmp03yDxdT/Ru5tLr/yelzQqbsbNPv0Y5Lts
+         ui56GOYjww9gE2MFD/FbyeHKRS01z4L3VQeTuHkVkpiC9O/Xw5wigpNVX5jvNkHkwWaX
+         D8Vw==
+X-Gm-Message-State: AC+VfDxPwGUxRUd24qxM+6LxnSy7TlZgUD4usB15pfKzQu9i2hCuLTrJ
+	EZcstwiWduLfbbenAB6TJA==
+X-Google-Smtp-Source: ACHHUZ661zHGE6oRFcgUHmGNq91eQinUuro8ZmtYkorwRJYMt7m9nHU1wERKDVKXj6qjeQYFNJU4jg==
+X-Received: by 2002:a6b:ea0a:0:b0:777:b107:dd4d with SMTP id m10-20020a6bea0a000000b00777b107dd4dmr2668534ioc.16.1686077528672;
+        Tue, 06 Jun 2023 11:52:08 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id t2-20020a05663801e200b0041643b78cbesm3045952jaq.120.2023.06.06.11.52.04
+        by smtp.gmail.com with ESMTPSA id r18-20020a6bd912000000b007749b2d1a6fsm3377076ioc.32.2023.06.06.11.52.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 11:52:05 -0700 (PDT)
-Received: (nullmailer pid 1468451 invoked by uid 1000);
+        Tue, 06 Jun 2023 11:52:08 -0700 (PDT)
+Received: (nullmailer pid 1468441 invoked by uid 1000);
 	Tue, 06 Jun 2023 18:52:00 -0000
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Pratyush Yadav <pratyush@kernel.org>, Richard Weinberger <richard@nod.at>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Chris Packham <Chris.Packham@alliedtelesis.co.nz>, Vignesh Raghavendra <vigneshr@ti.com>, Xiangsheng Hou <xiangsheng.hou@mediatek.com>, linux-mtd@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Michael Walle <michael@walle.cc>
-In-Reply-To: <20230606175246.190465-16-miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Pratyush Yadav <pratyush@kernel.org>, Liang Yang <liang.yang@amlogic.com>, Krzysztof Kozlowski <krzk+dt@kernel.org>, linux-mtd@lists.infradead.org, Michael Walle <michael@walle.cc>, Chris Packham <Chris.Packham@alliedtelesis.co.nz>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230606175246.190465-10-miquel.raynal@bootlin.com>
 References: <20230606175246.190465-1-miquel.raynal@bootlin.com>
- <20230606175246.190465-16-miquel.raynal@bootlin.com>
-Message-Id: <168607751913.1468392.4718392727141734461.robh@kernel.org>
-Subject: Re: [PATCH v2 15/17] dt-bindings: mtd: mediatek: Reference
- raw-nand-chip.yaml
+ <20230606175246.190465-10-miquel.raynal@bootlin.com>
+Message-Id: <168607751220.1468277.13727658433890186184.robh@kernel.org>
+Subject: Re: [PATCH v2 09/17] dt-bindings: mtd: meson: Prevent NAND chip
+ unevaluated properties
 Date: Tue, 06 Jun 2023 12:52:00 -0600
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230606_115212_429764_9FAF40F0 
-X-CRM114-Status: GOOD (  14.36  )
+X-CRM114-CacheID: sfid-20230606_115213_257969_A7B23B8E 
+X-CRM114-Status: GOOD (  13.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,20 +83,16 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-On Tue, 06 Jun 2023 19:52:44 +0200, Miquel Raynal wrote:
-> The mediatek NAND controller should reference the new raw-nand-chip.yaml
-> binding instead of the original nand-chip.yaml which does not contain
-> *all* the properties that may be used to fully describe the NAND
-> devices, certain properties being actually described under
-> nand-controller.yaml.
+On Tue, 06 Jun 2023 19:52:38 +0200, Miquel Raynal wrote:
+> Ensure all raw NAND chip properties are valid by referencing the
+> relevant schema and set unevaluatedProperties to false in the NAND chip
+> section to avoid spurious additions of random properties.
 > 
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Cc: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+> Cc: Liang Yang <liang.yang@amlogic.com>
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -105,15 +101,13 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-./Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml: Unable to find schema file matching $id: http://devicetree.org/schemas/mtd/raw-nand-chip.yaml
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.example.dtb: nand-controller@1100d000: nand@0: False schema does not allow {'reg': [[0]], 'nand-on-flash-bbt': True, 'nand-ecc-mode': ['hw'], 'nand-ecc-step-size': [[1024]], 'nand-ecc-strength': [[24]], 'partitions': {'compatible': ['fixed-partitions'], '#address-cells': [[1]], '#size-cells': [[1]], 'preloader@0': {'label': ['pl'], 'read-only': True, 'reg': [[0, 4194304]]}, 'android@400000': {'label': ['android'], 'reg': [[4194304, 314572800]]}}}
-	From schema: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.example.dtb: nand-controller@1100d000: nand@0: Unevaluated properties are not allowed ('nand-ecc-step-size', 'nand-ecc-strength', 'partitions' were unexpected)
-	From schema: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
+./Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml: Unable to find schema file matching $id: http://devicetree.org/schemas/mtd/raw-nand-chip.yaml
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.example.dtb: nand-controller@ffe07800: nand@0: False schema does not allow {'reg': [[0]]}
+	From schema: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230606175246.190465-16-miquel.raynal@bootlin.com
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230606175246.190465-10-miquel.raynal@bootlin.com
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
