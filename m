@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A73DAC77B7A
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 07:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3483C77B7A
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 07:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=v+fxruaGPfHwt82Wh4X3ifXLHzqoc+pmWPB9G5p2C+s=; b=oeVtMeFpmWN2X0
-	5KPwuRQ3/QivCugWKqePe5/RKvrirUFXRQ1VrWbKBT6F/xUtifMO6eP6Njnwtj9ZBJegESnModgwB
-	gcBCrqMZhXg0X1IZ0wDEMGn0KUBfGUilhXwJr7xyMYWwN9yRqYk23uMInSwcrSJGwcOidBrlNJdRn
-	5F714/sGANBEUVo/Zy6+U94khVGg0AG3nu4SzWao7yvWHSyBhU34pw2GsZa64mj5kIrxpgFrasvYW
-	7pgGYx2nLh/MZODviy6o4OplQxY5VnyeEC/L1F2pHvqUz6eDr+o0ZqmzIYlWXvHyL6IW4yKGXQBau
-	MlH0nsAdw/F5N0Ljz8bg==;
+	List-Owner; bh=tmh2dtxdB4eBaB3bfeeNcKE9cLH/7hX70Fq8KsLd344=; b=FcrLSLjI9MwCjM
+	52puj5TK9e6Mxb6ycLvLJRcfE4kbNZEJEknT+G/HCq5AV06zjCeAQRCjudB1LCEoPxkY7PzeZYkA8
+	YsJHMkoty2zkkDTaUgPiZN3YoMePM0gI3Kz/GbFHFK4r6DPFBmT+P/9g288KF6iK+97/vBWLgoNod
+	hSlmXw8ht6KUOUzOv4dvbNFhOQTlpV/ErzfKVNOXpgi2JXeld1Rkq1xW/3UWiaWR/Ta2oEPBIUqGZ
+	bt86UGCjivj2J3xjDK7aREW7c7qj9if5MaGpbGG6Ymo4+qrUBh5RLbSrx9y3iyK1+q5OREe317iRi
+	QdYI7S5suCeiiE9sdcNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RLM-000bpM-2p;
-	Tue, 06 Jun 2023 07:43:04 +0000
+	id 1q6RLf-000cAK-0H;
+	Tue, 06 Jun 2023 07:43:23 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RJR-000Zlq-1O;
-	Tue, 06 Jun 2023 07:41:05 +0000
+	id 1q6RJX-000Zqu-1D;
+	Tue, 06 Jun 2023 07:41:11 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -55,9 +55,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-nilfs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 22/31] nvme: replace the fmode_t argument to the nvme ioctl handlers with a simple bool
-Date: Tue,  6 Jun 2023 09:39:41 +0200
-Message-Id: <20230606073950.225178-23-hch@lst.de>
+Subject: [PATCH 24/31] rnbd-srv: replace sess->open_flags with a "bool readonly"
+Date: Tue,  6 Jun 2023 09:39:43 +0200
+Message-Id: <20230606073950.225178-25-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230606073950.225178-1-hch@lst.de>
 References: <20230606073950.225178-1-hch@lst.de>
@@ -78,255 +78,102 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Instead of passing a fmode_t and only checking it fo0r FMODE_WRITE, pass
-a bool open_for_write to prepare for callers that won't have the fmode_t.
+Stop passing the fmode_t around and just use a simple bool to track if
+an export is read-only.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/nvme/host/ioctl.c | 62 +++++++++++++++++++++------------------
- 1 file changed, 34 insertions(+), 28 deletions(-)
+ drivers/block/rnbd/rnbd-srv-sysfs.c |  3 +--
+ drivers/block/rnbd/rnbd-srv.c       | 15 +++++++--------
+ drivers/block/rnbd/rnbd-srv.h       |  2 +-
+ 3 files changed, 9 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/nvme/host/ioctl.c b/drivers/nvme/host/ioctl.c
-index 81c5c9e3847747..8bf09047348ee9 100644
---- a/drivers/nvme/host/ioctl.c
-+++ b/drivers/nvme/host/ioctl.c
-@@ -14,7 +14,7 @@ enum {
- };
+diff --git a/drivers/block/rnbd/rnbd-srv-sysfs.c b/drivers/block/rnbd/rnbd-srv-sysfs.c
+index d5d9267e1fa5e4..ebd95771c85ec7 100644
+--- a/drivers/block/rnbd/rnbd-srv-sysfs.c
++++ b/drivers/block/rnbd/rnbd-srv-sysfs.c
+@@ -88,8 +88,7 @@ static ssize_t read_only_show(struct kobject *kobj, struct kobj_attribute *attr,
  
- static bool nvme_cmd_allowed(struct nvme_ns *ns, struct nvme_command *c,
--		unsigned int flags, fmode_t mode)
-+		unsigned int flags, bool open_for_write)
- {
- 	u32 effects;
+ 	sess_dev = container_of(kobj, struct rnbd_srv_sess_dev, kobj);
  
-@@ -80,7 +80,7 @@ static bool nvme_cmd_allowed(struct nvme_ns *ns, struct nvme_command *c,
- 	 * writing.
- 	 */
- 	if (nvme_is_write(c) || (effects & NVME_CMD_EFFECTS_LBCC))
--		return mode & FMODE_WRITE;
-+		return open_for_write;
- 	return true;
+-	return sysfs_emit(page, "%d\n",
+-			  !(sess_dev->open_flags & FMODE_WRITE));
++	return sysfs_emit(page, "%d\n", sess_dev->readonly);
  }
  
-@@ -337,7 +337,7 @@ static bool nvme_validate_passthru_nsid(struct nvme_ctrl *ctrl,
+ static struct kobj_attribute rnbd_srv_dev_session_ro_attr =
+diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+index 29d560472d05ba..b680071342b898 100644
+--- a/drivers/block/rnbd/rnbd-srv.c
++++ b/drivers/block/rnbd/rnbd-srv.c
+@@ -222,7 +222,7 @@ void rnbd_destroy_sess_dev(struct rnbd_srv_sess_dev *sess_dev, bool keep_id)
+ 	blkdev_put(sess_dev->bdev, NULL);
+ 	mutex_lock(&sess_dev->dev->lock);
+ 	list_del(&sess_dev->dev_list);
+-	if (sess_dev->open_flags & FMODE_WRITE)
++	if (!sess_dev->readonly)
+ 		sess_dev->dev->open_write_cnt--;
+ 	mutex_unlock(&sess_dev->dev->lock);
  
- static int nvme_user_cmd(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
- 		struct nvme_passthru_cmd __user *ucmd, unsigned int flags,
--		fmode_t mode)
-+		bool open_for_write)
+@@ -561,7 +561,7 @@ static void rnbd_srv_fill_msg_open_rsp(struct rnbd_msg_open_rsp *rsp,
+ static struct rnbd_srv_sess_dev *
+ rnbd_srv_create_set_sess_dev(struct rnbd_srv_session *srv_sess,
+ 			      const struct rnbd_msg_open *open_msg,
+-			      struct block_device *bdev, fmode_t open_flags,
++			      struct block_device *bdev, bool readonly,
+ 			      struct rnbd_srv_dev *srv_dev)
  {
- 	struct nvme_passthru_cmd cmd;
- 	struct nvme_command c;
-@@ -365,7 +365,7 @@ static int nvme_user_cmd(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
- 	c.common.cdw14 = cpu_to_le32(cmd.cdw14);
- 	c.common.cdw15 = cpu_to_le32(cmd.cdw15);
+ 	struct rnbd_srv_sess_dev *sdev = rnbd_sess_dev_alloc(srv_sess);
+@@ -576,7 +576,7 @@ rnbd_srv_create_set_sess_dev(struct rnbd_srv_session *srv_sess,
+ 	sdev->bdev		= bdev;
+ 	sdev->sess		= srv_sess;
+ 	sdev->dev		= srv_dev;
+-	sdev->open_flags	= open_flags;
++	sdev->readonly		= readonly;
+ 	sdev->access_mode	= open_msg->access_mode;
  
--	if (!nvme_cmd_allowed(ns, &c, 0, mode))
-+	if (!nvme_cmd_allowed(ns, &c, 0, open_for_write))
- 		return -EACCES;
+ 	return sdev;
+@@ -681,13 +681,12 @@ static int process_msg_open(struct rnbd_srv_session *srv_sess,
+ 	struct rnbd_srv_sess_dev *srv_sess_dev;
+ 	const struct rnbd_msg_open *open_msg = msg;
+ 	struct block_device *bdev;
+-	fmode_t open_flags;
++	fmode_t open_flags = FMODE_READ;
+ 	char *full_path;
+ 	struct rnbd_msg_open_rsp *rsp = data;
  
- 	if (cmd.timeout_ms)
-@@ -385,7 +385,7 @@ static int nvme_user_cmd(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
+ 	trace_process_msg_open(srv_sess, open_msg);
  
- static int nvme_user_cmd64(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
- 		struct nvme_passthru_cmd64 __user *ucmd, unsigned int flags,
--		fmode_t mode)
-+		bool open_for_write)
- {
- 	struct nvme_passthru_cmd64 cmd;
- 	struct nvme_command c;
-@@ -412,7 +412,7 @@ static int nvme_user_cmd64(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
- 	c.common.cdw14 = cpu_to_le32(cmd.cdw14);
- 	c.common.cdw15 = cpu_to_le32(cmd.cdw15);
+-	open_flags = FMODE_READ;
+ 	if (open_msg->access_mode != RNBD_ACCESS_RO)
+ 		open_flags |= FMODE_WRITE;
  
--	if (!nvme_cmd_allowed(ns, &c, flags, mode))
-+	if (!nvme_cmd_allowed(ns, &c, flags, open_for_write))
- 		return -EACCES;
- 
- 	if (cmd.timeout_ms)
-@@ -583,7 +583,7 @@ static int nvme_uring_cmd_io(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
- 	c.common.cdw14 = cpu_to_le32(READ_ONCE(cmd->cdw14));
- 	c.common.cdw15 = cpu_to_le32(READ_ONCE(cmd->cdw15));
- 
--	if (!nvme_cmd_allowed(ns, &c, 0, ioucmd->file->f_mode))
-+	if (!nvme_cmd_allowed(ns, &c, 0, ioucmd->file->f_mode & FMODE_WRITE))
- 		return -EACCES;
- 
- 	d.metadata = READ_ONCE(cmd->metadata);
-@@ -649,13 +649,13 @@ static bool is_ctrl_ioctl(unsigned int cmd)
- }
- 
- static int nvme_ctrl_ioctl(struct nvme_ctrl *ctrl, unsigned int cmd,
--		void __user *argp, fmode_t mode)
-+		void __user *argp, bool open_for_write)
- {
- 	switch (cmd) {
- 	case NVME_IOCTL_ADMIN_CMD:
--		return nvme_user_cmd(ctrl, NULL, argp, 0, mode);
-+		return nvme_user_cmd(ctrl, NULL, argp, 0, open_for_write);
- 	case NVME_IOCTL_ADMIN64_CMD:
--		return nvme_user_cmd64(ctrl, NULL, argp, 0, mode);
-+		return nvme_user_cmd64(ctrl, NULL, argp, 0, open_for_write);
- 	default:
- 		return sed_ioctl(ctrl->opal_dev, cmd, argp);
+@@ -736,9 +735,9 @@ static int process_msg_open(struct rnbd_srv_session *srv_sess,
+ 		goto blkdev_put;
  	}
-@@ -680,14 +680,14 @@ struct nvme_user_io32 {
- #endif /* COMPAT_FOR_U64_ALIGNMENT */
  
- static int nvme_ns_ioctl(struct nvme_ns *ns, unsigned int cmd,
--		void __user *argp, unsigned int flags, fmode_t mode)
-+		void __user *argp, unsigned int flags, bool open_for_write)
- {
- 	switch (cmd) {
- 	case NVME_IOCTL_ID:
- 		force_successful_syscall_return();
- 		return ns->head->ns_id;
- 	case NVME_IOCTL_IO_CMD:
--		return nvme_user_cmd(ns->ctrl, ns, argp, flags, mode);
-+		return nvme_user_cmd(ns->ctrl, ns, argp, flags, open_for_write);
- 	/*
- 	 * struct nvme_user_io can have different padding on some 32-bit ABIs.
- 	 * Just accept the compat version as all fields that are used are the
-@@ -702,7 +702,8 @@ static int nvme_ns_ioctl(struct nvme_ns *ns, unsigned int cmd,
- 		flags |= NVME_IOCTL_VEC;
- 		fallthrough;
- 	case NVME_IOCTL_IO64_CMD:
--		return nvme_user_cmd64(ns->ctrl, ns, argp, flags, mode);
-+		return nvme_user_cmd64(ns->ctrl, ns, argp, flags,
-+				       open_for_write);
- 	default:
- 		return -ENOTTY;
- 	}
-@@ -712,6 +713,7 @@ int nvme_ioctl(struct block_device *bdev, fmode_t mode,
- 		unsigned int cmd, unsigned long arg)
- {
- 	struct nvme_ns *ns = bdev->bd_disk->private_data;
-+	bool open_for_write = mode & FMODE_WRITE;
- 	void __user *argp = (void __user *)arg;
- 	unsigned int flags = 0;
- 
-@@ -719,19 +721,20 @@ int nvme_ioctl(struct block_device *bdev, fmode_t mode,
- 		flags |= NVME_IOCTL_PARTITION;
- 
- 	if (is_ctrl_ioctl(cmd))
--		return nvme_ctrl_ioctl(ns->ctrl, cmd, argp, mode);
--	return nvme_ns_ioctl(ns, cmd, argp, flags, mode);
-+		return nvme_ctrl_ioctl(ns->ctrl, cmd, argp, open_for_write);
-+	return nvme_ns_ioctl(ns, cmd, argp, flags, open_for_write);
- }
- 
- long nvme_ns_chr_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
- 	struct nvme_ns *ns =
- 		container_of(file_inode(file)->i_cdev, struct nvme_ns, cdev);
-+	bool open_for_write = file->f_mode & FMODE_WRITE;
- 	void __user *argp = (void __user *)arg;
- 
- 	if (is_ctrl_ioctl(cmd))
--		return nvme_ctrl_ioctl(ns->ctrl, cmd, argp, file->f_mode);
--	return nvme_ns_ioctl(ns, cmd, argp, 0, file->f_mode);
-+		return nvme_ctrl_ioctl(ns->ctrl, cmd, argp, open_for_write);
-+	return nvme_ns_ioctl(ns, cmd, argp, 0, open_for_write);
- }
- 
- static int nvme_uring_cmd_checks(unsigned int issue_flags)
-@@ -800,7 +803,7 @@ int nvme_ns_chr_uring_cmd_iopoll(struct io_uring_cmd *ioucmd,
- #ifdef CONFIG_NVME_MULTIPATH
- static int nvme_ns_head_ctrl_ioctl(struct nvme_ns *ns, unsigned int cmd,
- 		void __user *argp, struct nvme_ns_head *head, int srcu_idx,
--		fmode_t mode)
-+		bool open_for_write)
- 	__releases(&head->srcu)
- {
- 	struct nvme_ctrl *ctrl = ns->ctrl;
-@@ -808,7 +811,7 @@ static int nvme_ns_head_ctrl_ioctl(struct nvme_ns *ns, unsigned int cmd,
- 
- 	nvme_get_ctrl(ns->ctrl);
- 	srcu_read_unlock(&head->srcu, srcu_idx);
--	ret = nvme_ctrl_ioctl(ns->ctrl, cmd, argp, mode);
-+	ret = nvme_ctrl_ioctl(ns->ctrl, cmd, argp, open_for_write);
- 
- 	nvme_put_ctrl(ctrl);
- 	return ret;
-@@ -818,6 +821,7 @@ int nvme_ns_head_ioctl(struct block_device *bdev, fmode_t mode,
- 		unsigned int cmd, unsigned long arg)
- {
- 	struct nvme_ns_head *head = bdev->bd_disk->private_data;
-+	bool open_for_write = mode & FMODE_WRITE;
- 	void __user *argp = (void __user *)arg;
- 	struct nvme_ns *ns;
- 	int srcu_idx, ret = -EWOULDBLOCK;
-@@ -838,9 +842,9 @@ int nvme_ns_head_ioctl(struct block_device *bdev, fmode_t mode,
- 	 */
- 	if (is_ctrl_ioctl(cmd))
- 		return nvme_ns_head_ctrl_ioctl(ns, cmd, argp, head, srcu_idx,
--					mode);
-+					       open_for_write);
- 
--	ret = nvme_ns_ioctl(ns, cmd, argp, flags, mode);
-+	ret = nvme_ns_ioctl(ns, cmd, argp, flags, open_for_write);
- out_unlock:
- 	srcu_read_unlock(&head->srcu, srcu_idx);
- 	return ret;
-@@ -849,6 +853,7 @@ int nvme_ns_head_ioctl(struct block_device *bdev, fmode_t mode,
- long nvme_ns_head_chr_ioctl(struct file *file, unsigned int cmd,
- 		unsigned long arg)
- {
-+	bool open_for_write = file->f_mode & FMODE_WRITE;
- 	struct cdev *cdev = file_inode(file)->i_cdev;
- 	struct nvme_ns_head *head =
- 		container_of(cdev, struct nvme_ns_head, cdev);
-@@ -863,9 +868,9 @@ long nvme_ns_head_chr_ioctl(struct file *file, unsigned int cmd,
- 
- 	if (is_ctrl_ioctl(cmd))
- 		return nvme_ns_head_ctrl_ioctl(ns, cmd, argp, head, srcu_idx,
--				file->f_mode);
-+				open_for_write);
- 
--	ret = nvme_ns_ioctl(ns, cmd, argp, 0, file->f_mode);
-+	ret = nvme_ns_ioctl(ns, cmd, argp, 0, open_for_write);
- out_unlock:
- 	srcu_read_unlock(&head->srcu, srcu_idx);
- 	return ret;
-@@ -940,7 +945,7 @@ int nvme_dev_uring_cmd(struct io_uring_cmd *ioucmd, unsigned int issue_flags)
- }
- 
- static int nvme_dev_user_cmd(struct nvme_ctrl *ctrl, void __user *argp,
--		fmode_t mode)
-+		bool open_for_write)
- {
- 	struct nvme_ns *ns;
- 	int ret;
-@@ -964,7 +969,7 @@ static int nvme_dev_user_cmd(struct nvme_ctrl *ctrl, void __user *argp,
- 	kref_get(&ns->kref);
- 	up_read(&ctrl->namespaces_rwsem);
- 
--	ret = nvme_user_cmd(ctrl, ns, argp, 0, mode);
-+	ret = nvme_user_cmd(ctrl, ns, argp, 0, open_for_write);
- 	nvme_put_ns(ns);
- 	return ret;
- 
-@@ -976,16 +981,17 @@ static int nvme_dev_user_cmd(struct nvme_ctrl *ctrl, void __user *argp,
- long nvme_dev_ioctl(struct file *file, unsigned int cmd,
- 		unsigned long arg)
- {
-+	bool open_for_write = file->f_mode & FMODE_WRITE;
- 	struct nvme_ctrl *ctrl = file->private_data;
- 	void __user *argp = (void __user *)arg;
- 
- 	switch (cmd) {
- 	case NVME_IOCTL_ADMIN_CMD:
--		return nvme_user_cmd(ctrl, NULL, argp, 0, file->f_mode);
-+		return nvme_user_cmd(ctrl, NULL, argp, 0, open_for_write);
- 	case NVME_IOCTL_ADMIN64_CMD:
--		return nvme_user_cmd64(ctrl, NULL, argp, 0, file->f_mode);
-+		return nvme_user_cmd64(ctrl, NULL, argp, 0, open_for_write);
- 	case NVME_IOCTL_IO_CMD:
--		return nvme_dev_user_cmd(ctrl, argp, file->f_mode);
-+		return nvme_dev_user_cmd(ctrl, argp, open_for_write);
- 	case NVME_IOCTL_RESET:
- 		if (!capable(CAP_SYS_ADMIN))
- 			return -EACCES;
+-	srv_sess_dev = rnbd_srv_create_set_sess_dev(srv_sess, open_msg,
+-						     bdev, open_flags,
+-						     srv_dev);
++	srv_sess_dev = rnbd_srv_create_set_sess_dev(srv_sess, open_msg, bdev,
++				open_msg->access_mode == RNBD_ACCESS_RO,
++				srv_dev);
+ 	if (IS_ERR(srv_sess_dev)) {
+ 		pr_err("Opening device '%s' on session %s failed, creating sess_dev failed, err: %ld\n",
+ 		       full_path, srv_sess->sessname, PTR_ERR(srv_sess_dev));
+diff --git a/drivers/block/rnbd/rnbd-srv.h b/drivers/block/rnbd/rnbd-srv.h
+index f5962fd31d62e4..76077a9db3dd55 100644
+--- a/drivers/block/rnbd/rnbd-srv.h
++++ b/drivers/block/rnbd/rnbd-srv.h
+@@ -52,7 +52,7 @@ struct rnbd_srv_sess_dev {
+ 	struct kobject                  kobj;
+ 	u32                             device_id;
+ 	bool				keep_id;
+-	fmode_t                         open_flags;
++	bool				readonly;
+ 	struct kref			kref;
+ 	struct completion               *destroy_comp;
+ 	char				pathname[NAME_MAX];
 -- 
 2.39.2
 
