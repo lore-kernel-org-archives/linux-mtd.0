@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1278C7EE37
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 07:42:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6992C7EE24
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 07:42:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aRGizW5y/RNWK3lvXzDUJufJUk3Wqe6vMmwoo4PQutc=; b=SjN3H1pUf17gGb
-	8jut33pPJQlHE2iCjPrgHNf/UgNdZsNuyjecXZVg81pylwR3V+J55eANbImDSnH+z2i8FofKQb7at
-	Z3jUNObvNqoqNxnM/LYaHDawf1smjwWX7BPErivgxqwxRVwRoTfXgJM/m/k5ZIXCCBOLGCdaQDioH
-	9UhpGY7v/hFXriVi/XbFT2X5wEwk119RTAovL+a9ybd2dcKZp+OdUSYR/JM0mBRwPJuSXD2efheBY
-	NOQ2rbdSSghuqLdO3k3BKF62s7VMDKtwFgFCxM4+XaTqpNopIT50RXg1J2V69B8byLQ8bpBLyaJ/E
-	j+3DDfuPYCWyNaKz7+UQ==;
+	List-Owner; bh=I7udtOaTMifDztCDZ5bimZN14xoJUJP9swtatO/DybU=; b=ajCDlnerUtoEmF
+	Kxb0v4FVdJIVS3L0/FUrZ7Or+4tZUrej59D+2ezV9JBiAi9cVhYh/U6KdJHMUdXDEkYyYHsyInJf7
+	HEL/aUmKhUfTToiDpea+fAl5TSNSM37yqJGSpSl8zhjNtWPpmn2WqdfVBeWTXFQ2apn/U9zYbLejM
+	YPZjSZasnIXWodb1hxjbMmIE17iLutA4gRIrG9qEbK/jiAFyZiYc4v4WthBXH8W9bS7H993JO/pzm
+	8Zyz6MWBeUgtTaUfAuIibQwvTiRzE4aknkGX6RapvRaxl6Rlhu2umbgBmFixLBtBeLaKxPjYn0N7L
+	qfENdC58vryMF91aJ5Hg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RKF-000aat-1T;
-	Tue, 06 Jun 2023 07:41:55 +0000
+	id 1q6RKw-000bOb-25;
+	Tue, 06 Jun 2023 07:42:38 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RJ1-000ZIe-1I;
-	Tue, 06 Jun 2023 07:40:39 +0000
+	id 1q6RJH-000Zcn-32;
+	Tue, 06 Jun 2023 07:40:56 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -55,9 +55,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-nilfs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 14/31] rnbd-srv: don't pass a holder for non-exclusive blkdev_get_by_path
-Date: Tue,  6 Jun 2023 09:39:33 +0200
-Message-Id: <20230606073950.225178-15-hch@lst.de>
+Subject: [PATCH 19/31] scsi: replace the fmode_t argument to scsi_cmd_allowed with a simple bool
+Date: Tue,  6 Jun 2023 09:39:38 +0200
+Message-Id: <20230606073950.225178-20-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230606073950.225178-1-hch@lst.de>
 References: <20230606073950.225178-1-hch@lst.de>
@@ -78,27 +78,96 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Passing a holder to blkdev_get_by_path when FMODE_EXCL isn't set doesn't
-make sense, so pass NULL instead.
+Instead of passing a fmode_t and only checking it for FMODE_WRITE, pass
+a bool open_for_write to prepare for callers that won't have the fmode_t.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/rnbd/rnbd-srv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/scsi_bsg.c   | 2 +-
+ drivers/scsi/scsi_ioctl.c | 8 ++++----
+ drivers/scsi/sg.c         | 2 +-
+ include/scsi/scsi_ioctl.h | 2 +-
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-index cec22bbae2f9a5..ce505e552f4d50 100644
---- a/drivers/block/rnbd/rnbd-srv.c
-+++ b/drivers/block/rnbd/rnbd-srv.c
-@@ -719,7 +719,7 @@ static int process_msg_open(struct rnbd_srv_session *srv_sess,
- 		goto reject;
- 	}
+diff --git a/drivers/scsi/scsi_bsg.c b/drivers/scsi/scsi_bsg.c
+index 96ee35256a168f..12431f35f861e1 100644
+--- a/drivers/scsi/scsi_bsg.c
++++ b/drivers/scsi/scsi_bsg.c
+@@ -42,7 +42,7 @@ static int scsi_bsg_sg_io_fn(struct request_queue *q, struct sg_io_v4 *hdr,
+ 	if (copy_from_user(scmd->cmnd, uptr64(hdr->request), scmd->cmd_len))
+ 		goto out_put_request;
+ 	ret = -EPERM;
+-	if (!scsi_cmd_allowed(scmd->cmnd, mode))
++	if (!scsi_cmd_allowed(scmd->cmnd, mode & FMODE_WRITE))
+ 		goto out_put_request;
  
--	bdev = blkdev_get_by_path(full_path, open_flags, THIS_MODULE, NULL);
-+	bdev = blkdev_get_by_path(full_path, open_flags, NULL, NULL);
- 	if (IS_ERR(bdev)) {
- 		ret = PTR_ERR(bdev);
- 		pr_err("Opening device '%s' on session %s failed, failed to open the block device, err: %d\n",
+ 	ret = 0;
+diff --git a/drivers/scsi/scsi_ioctl.c b/drivers/scsi/scsi_ioctl.c
+index e3b31d32b6a92e..dda5468ca97f90 100644
+--- a/drivers/scsi/scsi_ioctl.c
++++ b/drivers/scsi/scsi_ioctl.c
+@@ -248,7 +248,7 @@ static int scsi_send_start_stop(struct scsi_device *sdev, int data)
+  * Only a subset of commands are allowed for unprivileged users. Commands used
+  * to format the media, update the firmware, etc. are not permitted.
+  */
+-bool scsi_cmd_allowed(unsigned char *cmd, fmode_t mode)
++bool scsi_cmd_allowed(unsigned char *cmd, bool open_for_write)
+ {
+ 	/* root can do any command. */
+ 	if (capable(CAP_SYS_RAWIO))
+@@ -338,7 +338,7 @@ bool scsi_cmd_allowed(unsigned char *cmd, fmode_t mode)
+ 	case GPCMD_SET_READ_AHEAD:
+ 	/* ZBC */
+ 	case ZBC_OUT:
+-		return (mode & FMODE_WRITE);
++		return open_for_write;
+ 	default:
+ 		return false;
+ 	}
+@@ -354,7 +354,7 @@ static int scsi_fill_sghdr_rq(struct scsi_device *sdev, struct request *rq,
+ 		return -EMSGSIZE;
+ 	if (copy_from_user(scmd->cmnd, hdr->cmdp, hdr->cmd_len))
+ 		return -EFAULT;
+-	if (!scsi_cmd_allowed(scmd->cmnd, mode))
++	if (!scsi_cmd_allowed(scmd->cmnd, mode & FMODE_WRITE))
+ 		return -EPERM;
+ 	scmd->cmd_len = hdr->cmd_len;
+ 
+@@ -554,7 +554,7 @@ static int sg_scsi_ioctl(struct request_queue *q, fmode_t mode,
+ 		goto error;
+ 
+ 	err = -EPERM;
+-	if (!scsi_cmd_allowed(scmd->cmnd, mode))
++	if (!scsi_cmd_allowed(scmd->cmnd, mode & FMODE_WRITE))
+ 		goto error;
+ 
+ 	/* default.  possible overridden later */
+diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
+index 037f8c98a6d364..e49ea693d0b656 100644
+--- a/drivers/scsi/sg.c
++++ b/drivers/scsi/sg.c
+@@ -237,7 +237,7 @@ static int sg_allow_access(struct file *filp, unsigned char *cmd)
+ 
+ 	if (sfp->parentdp->device->type == TYPE_SCANNER)
+ 		return 0;
+-	if (!scsi_cmd_allowed(cmd, filp->f_mode))
++	if (!scsi_cmd_allowed(cmd, filp->f_mode & FMODE_WRITE))
+ 		return -EPERM;
+ 	return 0;
+ }
+diff --git a/include/scsi/scsi_ioctl.h b/include/scsi/scsi_ioctl.h
+index beac64e38b8746..914201a8cb947c 100644
+--- a/include/scsi/scsi_ioctl.h
++++ b/include/scsi/scsi_ioctl.h
+@@ -49,7 +49,7 @@ int scsi_ioctl(struct scsi_device *sdev, fmode_t mode, int cmd,
+ 		void __user *arg);
+ int get_sg_io_hdr(struct sg_io_hdr *hdr, const void __user *argp);
+ int put_sg_io_hdr(const struct sg_io_hdr *hdr, void __user *argp);
+-bool scsi_cmd_allowed(unsigned char *cmd, fmode_t mode);
++bool scsi_cmd_allowed(unsigned char *cmd, bool open_for_write);
+ 
+ #endif /* __KERNEL__ */
+ #endif /* _SCSI_IOCTL_H */
 -- 
 2.39.2
 
