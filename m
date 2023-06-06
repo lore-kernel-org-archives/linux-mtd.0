@@ -4,75 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5789C77B7A
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 19:59:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5839C83003
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 20:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:Subject:Message-Id:References:
+	In-Reply-To:Cc:To:From:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J0yAH9bkqf7lw9J5Oad/1P7qU3D72XUQVc/97QFcHzw=; b=Y8KMe8ZjBTHQkT
-	JRmuWTxVXc2+DA1ww92i2toRwDdZXFxVvhC7SvkueMs78ya+aZ3Kf8JDgxlvOSkokbOtlQ+hA+V4G
-	uISsSAYxnydde3zndabSgmGE2GxQ/73xANpmL/c0gxi7vf5RyvgmU9wvVLpYNLyqqkpI9IJ3iYIbS
-	MUw/BrEnIVddt/pyeAUXxkNs32Cjux14/IxJDuQv+2jx46tzio2EkKhqhP5ziazFyeV7WCQEb2b6i
-	PctUR0CzFXSx+BfnCwbhhr2ySaqvsN7oVihX6XOfW3FYz6xNh0RHVAAtk2wheJTAdGLghUhNhapHO
-	xqwfAEIVsKeqLrJb+zpA==;
+	List-Owner; bh=W8n6duxpXMoJ12UwwGhMtK8zErsCkaDXd6t7NGr1Xc8=; b=R1CLT7HnQ4P7mq
+	7/DSRKnZqdLyGs0V6fmsGNHmlUpF+KzOkOiU/nkrXklIVfPJSqT3nGpvZV8PojbNjEyKPLhelnMOh
+	atMJXHCnaHFuIlbf0A5298e9uiq9ClKpigCUsfNkvfQ1Nspwo76slmf2HQ88lu7U13YJy3Ku93Wl6
+	wV1uFbN4OyXBHuRLH/5LwPRvqZyoZJvv5RVgUD+KyflAmH3fKhoH5ajTYtKwOe/StELdj5D7GqRTj
+	ub2G82VAXj4pev2crYRTkfZOouJjcoKHI1B2m9s6uU+1m87BVrIxmrywzoMqpcC+/ejGrEVyseHgF
+	1LKKs+A2ub2YL2T/nfkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6cq3-0034En-38;
-	Tue, 06 Jun 2023 19:59:31 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1q6d2X-0036D3-1y;
+	Tue, 06 Jun 2023 20:12:25 +0000
+Received: from mail-il1-f174.google.com ([209.85.166.174])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6cq0-0034Cz-0H;
-	Tue, 06 Jun 2023 19:59:30 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id BDEFB5FD0C;
-	Tue,  6 Jun 2023 22:59:25 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1686081565;
-	bh=HsbilSNXGprd3byyDOvNssmOWdlSZHdBWqrnSufFSSw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	b=ZZU7Z6raDP6idx0UdSOQZRgPB1iO0AILrTTyExr92YK5bHZfxEpVbtSiu4qliHENJ
-	 hmGzSGX2dnvidjfQyZhyDZkfIqciZLiliur0qlw+FpyIZrMPGmaY3JFscc0Yue3NZc
-	 cO1rVDziwSPv7p50EkhIWA7jl+j9CeE/U3hGfzb9xpRcMiWeKQBb4Jb8xr9i+nr4yx
-	 cvcD/P3/c313g/4NMHlEyjT8c1j6ozzvvCJI8Je4gj3pahH+Ca2k1p/qZom5fwS2vp
-	 JJxYUUc0bl3pZJY/T2vZiPjGz5HVFqf1qELQlqx3JivNkzkYBVHxY/iRLfiPFRyJ9V
-	 c4GC7fklO9sAg==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Tue,  6 Jun 2023 22:59:25 +0300 (MSK)
-Message-ID: <2ed06841-6c9f-46c9-2d2d-2daffb0a9010@sberdevices.ru>
-Date: Tue, 6 Jun 2023 22:54:32 +0300
+	id 1q6d2T-0036Bp-0A;
+	Tue, 06 Jun 2023 20:12:22 +0000
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-33b22221da6so483455ab.1;
+        Tue, 06 Jun 2023 13:12:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686082339; x=1688674339;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oTi+J4/KlqfIRDKD6li2U1FfODcCfumrK5ycv6/faOA=;
+        b=POkR6UpG4PcGyWtHPjL+eIMOd2ucpVbBoo6aF9kQ7KsFfMuo5Fz8+7vGjoVAJfot4p
+         PlL9/p+wd3NfVI6Y5Ui/D8TlJInXITQCCCs6Mo5GjmPSeA4WOkanqkycGu9bkN7ei1Jk
+         jN/JfwS3sUcPaaeHn4Umiu/vyPPlx8BaRZzlJB5FvnvnJ39jblFfLgr1eN1wziwADX6a
+         NvRTJ/R6UsebYX1g+S48SojR0Yb6PC89sWVig4nX7Lt4y3t0ijYZpZ80eAWIF5Jzal+V
+         95rL++VVpIv0vZA8yEw/2vvtgfRFXu/ImkiG34htGjCxaoPRWyS/ku8fOHmxAPL9gfxX
+         mGkA==
+X-Gm-Message-State: AC+VfDz8KF2QJwLcIElWfgL4QJexfcJE2lNkYJo+OMs/varrFv1SxC1g
+	iAhkpscGn7jsCYYHGlrtbp9F3ZP6zw==
+X-Google-Smtp-Source: ACHHUZ4/dvwbcy01BSUtuPxen2FdLAX+HOYoKuxbwugA8+RyXNtv6V1MfDRHfuJMMh2dINX0gXQ+sQ==
+X-Received: by 2002:a92:dac5:0:b0:335:908b:8f5 with SMTP id o5-20020a92dac5000000b00335908b08f5mr4291681ilq.10.1686082338996;
+        Tue, 06 Jun 2023 13:12:18 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id m11-20020a924a0b000000b0033d2eba1800sm3283987ilf.15.2023.06.06.13.12.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jun 2023 13:12:18 -0700 (PDT)
+Received: (nullmailer pid 1540120 invoked by uid 1000);
+	Tue, 06 Jun 2023 20:12:16 -0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v1] mtd: rawnand: meson: waiting w/o wired ready/busy pin
-Content-Language: en-US
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20230606195128.83432-1-AVKrasnov@sberdevices.ru>
-From: Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <20230606195128.83432-1-AVKrasnov@sberdevices.ru>
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/06 14:43:00 #21444531
-X-KSMG-AntiVirus-Status: Clean, skipped
+From: Rob Herring <robh@kernel.org>
+To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Cc: Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, linux-amlogic@lists.infradead.org, kernel@sberdevices.ru, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>, oxffffaa@gmail.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Liang Yang <liang.yang@amlogic.com>
+In-Reply-To: <20230606193507.35024-1-AVKrasnov@sberdevices.ru>
+References: <20230606193507.35024-1-AVKrasnov@sberdevices.ru>
+Message-Id: <168608233614.1540103.8185199247808319074.robh@kernel.org>
+Subject: Re: [PATCH v1] dt-bindings: nand: meson: Fix 'nand-rb' property
+Date: Tue, 06 Jun 2023 14:12:16 -0600
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230606_125928_483544_CC99C73C 
-X-CRM114-Status: GOOD (  29.12  )
+X-CRM114-CacheID: sfid-20230606_131221_088283_6423BB0A 
+X-CRM114-Status: GOOD (  13.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,137 +80,46 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
-
-On 06.06.2023 22:51, Arseniy Krasnov wrote:
-> If there is no wired ready/busy pin, classic way to wait for command
-> completion is to use function 'nand_soft_waitrdy()'. Meson NAND has
-> special command which allows to wait for NAND_STATUS_READY bit without
-> reading status in a software loop (as 'nand_soft_waitrdy()' does). To
-> use it send this command along with NAND_CMD_STATUS, then wait for an
-> interrupt, and after interrupt send NAND_CMD_READ0. So this feature
-> allows to use interrupt driven waiting without wired ready/busy pin.
+On Tue, 06 Jun 2023 22:35:07 +0300, Arseniy Krasnov wrote:
+> Add description of 'nand-rb' property. Use "Fixes" because this property
+> must be supported since the beginning. For this controller 'nand-rb' is
+> stored in the controller node (not in chip), because it has only single
+> r/b wire for all chips.
 > 
-> Suggested-by: Liang Yang <liang.yang@amlogic.com>
+> Fixes: fbc00b5e746f ("dt-bindings: nand: meson: convert txt to yaml")
 > Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
 > ---
->  drivers/mtd/nand/raw/meson_nand.c | 58 ++++++++++++++++++++++++++++++-
->  1 file changed, 57 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-> index 074e14225c06..f4c5309a9527 100644
-> --- a/drivers/mtd/nand/raw/meson_nand.c
-> +++ b/drivers/mtd/nand/raw/meson_nand.c
-> @@ -38,6 +38,7 @@
->  #define NFC_CMD_SCRAMBLER_DISABLE	0
->  #define NFC_CMD_SHORTMODE_DISABLE	0
->  #define NFC_CMD_RB_INT		BIT(14)
-> +#define NFC_CMD_RB_INT_NO_PIN	((0xb << 10) | BIT(18) | BIT(16))
->  
->  #define NFC_CMD_GET_SIZE(x)	(((x) >> 22) & GENMASK(4, 0))
->  
-> @@ -94,6 +95,7 @@
->  
->  /* nand flash controller delay 3 ns */
->  #define NFC_DEFAULT_DELAY	3000
-> +#define NFC_NO_RB_PIN_DELAY	5
->  
->  #define ROW_ADDER(page, index)	(((page) >> (8 * (index))) & 0xff)
->  #define MAX_CYCLE_ADDRS		5
-> @@ -179,6 +181,7 @@ struct meson_nfc {
->  	u32 info_bytes;
->  
->  	unsigned long assigned_cs;
-> +	bool no_rb_pin;
->  };
->  
->  enum {
-> @@ -392,7 +395,41 @@ static void meson_nfc_set_data_oob(struct nand_chip *nand,
->  	}
->  }
->  
-> -static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
-> +static int meson_nfc_wait_no_rb_pin(struct meson_nfc *nfc, int timeout_ms)
-> +{
-> +	u32 cmd, cfg;
-> +
-> +	meson_nfc_cmd_idle(nfc, nfc->timing.twb);
-> +	meson_nfc_drain_cmd(nfc);
-> +	meson_nfc_wait_cmd_finish(nfc, CMD_FIFO_EMPTY_TIMEOUT);
-> +
-> +	cfg = readl(nfc->reg_base + NFC_REG_CFG);
-> +	cfg |= NFC_RB_IRQ_EN;
-> +	writel(cfg, nfc->reg_base + NFC_REG_CFG);
-> +
-> +	reinit_completion(&nfc->completion);
-> +	cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_STATUS;
-> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
-> +	meson_nfc_cmd_idle(nfc, NFC_NO_RB_PIN_DELAY);
 
-^^^
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> +
-> +	/* use the max erase time as the maximum clock for waiting R/B */
-> +	cmd = NFC_CMD_RB | NFC_CMD_RB_INT_NO_PIN | nfc->timing.tbers_max;
-> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
-> +	meson_nfc_cmd_idle(nfc, NFC_NO_RB_PIN_DELAY);
+yamllint warnings/errors:
 
-^^^
-Liang, I've implemented "new RB_INT" way instead of 'nand_soft_waitrdy()'. There were two numbers
-2 and 5 in 'meson_nfc_cmd_idle()' as time argument (here and above). I've replaced both with
-define of 5 == NFC_NO_RB_PIN_DELAY. Is it correct? 2 and 5 were from doc?
+dtschema/dtc warnings/errors:
+nand-rb: size (5) error for type uint32-array
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.example.dtb: nand-controller@ffe07800: nand-rb: b'true\x00' is not of type 'object', 'array', 'boolean', 'null'
+	From schema: /usr/local/lib/python3.10/dist-packages/dtschema/schemas/dt-core.yaml
 
-Thanks, Arseniy
+doc reference errors (make refcheckdocs):
 
-> +
-> +	if (!wait_for_completion_timeout(&nfc->completion,
-> +					 msecs_to_jiffies(timeout_ms)))
-> +		return -ETIMEDOUT;
-> +
-> +	cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_READ0;
-> +	writel(cmd, nfc->reg_base + NFC_REG_CMD);
-> +	meson_nfc_drain_cmd(nfc);
-> +	meson_nfc_wait_cmd_finish(nfc, CMD_FIFO_EMPTY_TIMEOUT);
-> +
-> +	return 0;
-> +}
-> +
-> +static int meson_nfc_wait_rb_pin(struct meson_nfc *nfc, int timeout_ms)
->  {
->  	u32 cmd, cfg;
->  	int ret = 0;
-> @@ -420,6 +457,23 @@ static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
->  	return ret;
->  }
->  
-> +static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
-> +{
-> +	if (nfc->no_rb_pin) {
-> +		/* This mode is used when there is no wired R/B pin.
-> +		 * It works like 'nand_soft_waitrdy()', but instead of
-> +		 * polling NAND_CMD_STATUS bit in the software loop,
-> +		 * it will wait for interrupt - controllers checks IO
-> +		 * bus and when it detects NAND_CMD_STATUS on it, it
-> +		 * raises interrupt. After interrupt, NAND_CMD_READ0 is
-> +		 * sent as terminator of the ready waiting procedure.
-> +		 */
-> +		return meson_nfc_wait_no_rb_pin(nfc, timeout_ms);
-> +	} else {
-> +		return meson_nfc_wait_rb_pin(nfc, timeout_ms);
-> +	}
-> +}
-> +
->  static void meson_nfc_set_user_byte(struct nand_chip *nand, u8 *oob_buf)
->  {
->  	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
-> @@ -1412,6 +1466,8 @@ static int meson_nfc_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> +	nfc->no_rb_pin = !of_property_read_bool(dev->of_node, "nand-rb");
-> +
->  	writel(0, nfc->reg_base + NFC_REG_CFG);
->  	ret = devm_request_irq(dev, irq, meson_nfc_irq, 0, dev_name(dev), nfc);
->  	if (ret) {
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230606193507.35024-1-AVKrasnov@sberdevices.ru
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
