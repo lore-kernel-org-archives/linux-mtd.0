@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A6E5C77B7A
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 00:16:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A00CC7EE45
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 00:16:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RJbSoGN38aeLN55aXxhPAJY6rJj19ViGlSsrYGIWrQY=; b=Bsl+m7zJfPRBR9pIpk1/r+oJjT
-	XQF0ZgHq0sJzd7NU9xvbX3VLKCNiGGiOcg7sfDrOAzEv3HyPjg8LoMxqL85ceRd1ODzNWRiyBf8+b
-	EpigbRGM7Z52gtri02c4GuRn6WYbgBkteHUmxdD9r+eGHZBXyPZZNT0SWbTo4L0Ac8VLIdZsdKnDR
-	/k+OGwHuW0IXFuSVQfV2ESEt8VjRHNPuUip6jrd0ljeo+TKW52z1rpG/GBBVOYRWUPwCn4uOrqYzi
-	9FcDxg5Gp3z0tqme5tYSs0ajGhggMjDQ45IpFrtfgeoDO4oEZ5Sh2hE7BCROglS2g/bf5Qet87yJ/
-	1afWJMfA==;
+	bh=hhVLqpOJvLa8gYFwWmeukrCabinL5jexY2yy3C2efnw=; b=R8/FklYPoQgx4hrsx1pv9Ye/nj
+	oJppnfN801iTx8Niui7xJGlJDggRmlTFbCEVuxqmGEflJ22WX05MClGpWm43Fzohg5rXQNcfDMevH
+	xAQDjXm6RJh5b/KUuCLA8bZ/XwLYwqWpituJWaxbVmyksVBM4vXKm8qRi7GfSlghgYu/SwlAiCWmK
+	uMe9LD3WPWj6Puzlz5j8eIQhDz+JT1G6mwDddZO3ca+6Wzr5aJXq1/CtnxBLOd4WUM+yTk1FYbHE7
+	16GVQOpPNcgH8x93AAggatCMd5WG1Z7bNoJtEtmborWYaqxL/Xs2EASEEYMndyLsI2YFRhjTylK3d
+	FeKQ40yQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6gpp-003kIh-0k;
-	Wed, 07 Jun 2023 00:15:33 +0000
-Received: from mail-qk1-x729.google.com ([2607:f8b0:4864:20::729])
+	id 1q6gpo-003kIY-2F;
+	Wed, 07 Jun 2023 00:15:32 +0000
+Received: from mail-qk1-x72e.google.com ([2607:f8b0:4864:20::72e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6fsn-003b1f-1D
+	id 1q6fsk-003b05-0n
 	for linux-mtd@lists.infradead.org;
-	Tue, 06 Jun 2023 23:14:35 +0000
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-75d536afa43so1864685a.1
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2023 16:14:32 -0700 (PDT)
+	Tue, 06 Jun 2023 23:14:32 +0000
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-75d518f6f74so300480885a.1
+        for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2023 16:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686093272; x=1688685272;
+        d=broadcom.com; s=google; t=1686093269; x=1688685269;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eUq8Z/QuM4K+hDCOBjpLpgcyP4PWxPQ9sdp/mQx+YJ4=;
-        b=UXtijV9hDTc/lvf9OxC2hl1AR+BzJP+0Dgi2fiEi7TQbEYPInGPrPxMr26AHidhOWL
-         4XBP/0JitrdXHHd2D5OdgNchRE2pYyZt6qVQz2QITwYQjwAHmxMD9GPiea+OZ+a4W4Dw
-         UL9vW85GN3RZSGwHsv6XMRU0vlE3oND2o7oI0=
+        bh=7eUJfyDc2nbghKoW4fZre8YKzIR0OyVD26hdRsm+6V0=;
+        b=E9gaaZba7giSTG36V6lP4lkpeF44gcZebDszx606EynutoGxb4iZqP9Vq0gJ8i5Myr
+         9ToNuZBrQfk/ueGGmSe59Ke9heSCOdhJEIYhEbVkpTun8w769+BhJKmvRPZHQYJtO2XJ
+         motQcLmPqzSWq7Ju1om9jbnV1nqTc8iVLql5I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686093272; x=1688685272;
+        d=1e100.net; s=20221208; t=1686093269; x=1688685269;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eUq8Z/QuM4K+hDCOBjpLpgcyP4PWxPQ9sdp/mQx+YJ4=;
-        b=IclaLsU+82p0E1tDT3BKKacj1APjOfQ+KSt/Qoxw/SK8lK6fxXsCjjDHXFCb56BE0p
-         e60RiFC0G/IF12BRqr26SJa8/wQpAd79PHjMnwS1Luzbio4k9Art+L7kzXinQaRSJ8TA
-         1jpF40CE4Op3D4mTTnE2MhVCV7+t/Yqjq40zVrkv9p+l7eUgBRPsO24Ns+EkOYlIYOMi
-         F3yuNv3oR3Su1cps/i+EWlsBBRsVIP5CS9nE/XM573Es5JK87lxxKVNFCFVoMyFoMk1N
-         56J8uuOABdHpKbZ1xoeJpbpNNQBLJKrwIKSKHIHrTFyfHLxGpk3k4Y0zLgIRsHluxgC2
-         3+iQ==
-X-Gm-Message-State: AC+VfDzDIIla94xnBK/gU03aUr72dUFnYTy+aIweJhZt3+SaoYTHAvKg
-	fxZx8YbU0q0SnTpxcJU8GIiWmg==
-X-Google-Smtp-Source: ACHHUZ7UPhvmRNMHcXdrkJqI8JS17E1EEsrRMwwmJCIryUsTnOQU0RQbScDemOX+9Ivbl/J8K8IKbg==
-X-Received: by 2002:a37:e112:0:b0:75e:5141:f403 with SMTP id c18-20020a37e112000000b0075e5141f403mr12459qkm.23.1686093271889;
-        Tue, 06 Jun 2023 16:14:31 -0700 (PDT)
+        bh=7eUJfyDc2nbghKoW4fZre8YKzIR0OyVD26hdRsm+6V0=;
+        b=PKpk/aBywmRdl+m2QbSjPnznnfJ++NbNYs0jpFS5vmkfpGHezXrS/+qbMEVppZQns9
+         nazvPvU94NGA//1t0cEgPnsrn8Y8XCKSpFDKGs/zTfQnAcCzkk1hAn8p9M1Ga/gWqHxa
+         9OBjQq78KbkZFR8/dW2zF6ZraV/hCCuk/I8zZ1uW613wv0bvrWwo10u6edPLvUt+rMIN
+         r1UfhExMpWdanNdhlUVlg40YCx3Nat+SQGU1o+/3+dJsYarLO/GMr3bXRhbxxGw6nKUj
+         Bb3ilynC6EmXatsBYVXFx/DwGOx6mjC64GcFIoUezwnMcwKAJd+ge7gCN2RwOBW0BtHE
+         AThw==
+X-Gm-Message-State: AC+VfDx6AXUn5ovybdxcARrikBCYKo8JpJNB4rr6wzQsUSZi6pO6zu/W
+	wkosyGeD+QwwwuvVB17YghRDmg==
+X-Google-Smtp-Source: ACHHUZ5FYUXf7lTExAvus8qv96Z3egC2p1tISXFfmC/HZ4mJeBRRDw17VTtW+DJ5DfdN9vrwJE3fog==
+X-Received: by 2002:a05:620a:2995:b0:75e:b8b2:3373 with SMTP id r21-20020a05620a299500b0075eb8b23373mr337281qkp.12.1686093269378;
+        Tue, 06 Jun 2023 16:14:29 -0700 (PDT)
 Received: from ubuntu-22.localdomain ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id x9-20020ae9e909000000b0075b23e55640sm5221519qkf.123.2023.06.06.16.14.29
+        by smtp.gmail.com with ESMTPSA id x9-20020ae9e909000000b0075b23e55640sm5221519qkf.123.2023.06.06.16.14.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 16:14:31 -0700 (PDT)
+        Tue, 06 Jun 2023 16:14:28 -0700 (PDT)
 From: William Zhang <william.zhang@broadcom.com>
 To: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
 	Linux MTD List <linux-mtd@lists.infradead.org>
@@ -74,18 +74,21 @@ Cc: f.fainelli@gmail.com,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 06/12] ARM: dts: broadcom: bcmbca: Add NAND controller node
-Date: Tue,  6 Jun 2023 16:12:46 -0700
-Message-Id: <20230606231252.94838-7-william.zhang@broadcom.com>
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Kamal Dasu <kdasu.kdev@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH 05/12] dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
+Date: Tue,  6 Jun 2023 16:12:45 -0700
+Message-Id: <20230606231252.94838-6-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230606231252.94838-1-william.zhang@broadcom.com>
 References: <20230606231252.94838-1-william.zhang@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230606_161433_421466_3430B78F 
-X-CRM114-Status: GOOD (  13.65  )
+X-CRM114-CacheID: sfid-20230606_161430_317821_03190138 
+X-CRM114-Status: GOOD (  20.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,388 +100,189 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8730619291948442849=="
+Content-Type: multipart/mixed; boundary="===============2004113784918026365=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============8730619291948442849==
+--===============2004113784918026365==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000008d121e05fd7e2e01"
+	boundary="00000000000065a9d605fd7e2e58"
 
---0000000000008d121e05fd7e2e01
+--00000000000065a9d605fd7e2e58
 Content-Transfer-Encoding: 8bit
 
-Add support for Broadcom STB NAND controller in BCMBCA ARMv7 chip dts 
-files.
+Use new compatiable brcm,nand-bcmbca to support BCMBCA broadband
+product. The old compatible string is still kept in the driver so old
+dtb can still work.
+
+Add brcm,nand-use-wp property to have an option for disabling this
+feature on broadband board design that does not use write protection.
+Add brcm,nand-ecc-use-strap to get ecc setting from board strap for
+broadband board designs because they do not specify ecc setting in dts
+but rather using the strap setting.
+
+Remove the requirement of interrupts and interrupt-names properties to
+reflect the driver code.
+
+This patch also includes a few minor fixes to the BCM63xx compatibles
+and add myself to the list of maintainers.
 
 Signed-off-by: William Zhang <william.zhang@broadcom.com>
 ---
 
- arch/arm/boot/dts/bcm47622.dtsi    | 17 +++++++++++++++++
- arch/arm/boot/dts/bcm63138.dtsi    | 12 ++++++++++--
- arch/arm/boot/dts/bcm63148.dtsi    | 17 +++++++++++++++++
- arch/arm/boot/dts/bcm63178.dtsi    | 17 +++++++++++++++++
- arch/arm/boot/dts/bcm6756.dtsi     | 17 +++++++++++++++++
- arch/arm/boot/dts/bcm6846.dtsi     | 17 +++++++++++++++++
- arch/arm/boot/dts/bcm6855.dtsi     | 17 +++++++++++++++++
- arch/arm/boot/dts/bcm6878.dtsi     | 17 +++++++++++++++++
- arch/arm/boot/dts/bcm947622.dts    |  4 ++++
- arch/arm/boot/dts/bcm963138.dts    |  4 ++++
- arch/arm/boot/dts/bcm963138dvt.dts | 12 +++++-------
- arch/arm/boot/dts/bcm963148.dts    |  4 ++++
- arch/arm/boot/dts/bcm963178.dts    |  4 ++++
- arch/arm/boot/dts/bcm96756.dts     |  4 ++++
- arch/arm/boot/dts/bcm96846.dts     |  4 ++++
- arch/arm/boot/dts/bcm96855.dts     |  4 ++++
- arch/arm/boot/dts/bcm96878.dts     |  4 ++++
- 17 files changed, 166 insertions(+), 9 deletions(-)
+ .../bindings/mtd/brcm,brcmnand.yaml           | 64 +++++++++++++------
+ 1 file changed, 43 insertions(+), 21 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm47622.dtsi b/arch/arm/boot/dts/bcm47622.dtsi
-index cd25ed2757b7..401e1ce1da6d 100644
---- a/arch/arm/boot/dts/bcm47622.dtsi
-+++ b/arch/arm/boot/dts/bcm47622.dtsi
-@@ -137,6 +137,23 @@ hsspi: spi@1000 {
- 			status = "disabled";
- 		};
+diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+index 1571024aa119..1fe1c166a9db 100644
+--- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
++++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+@@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
+ maintainers:
+   - Brian Norris <computersforpeace@gmail.com>
+   - Kamal Dasu <kdasu.kdev@gmail.com>
++  - William Zhang <william.zhang@broadcom.com>
  
-+		nand_controller: nand-controller@1800 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,nand-bcmbca", "brcm,brcmnand-v7.1", "brcm,brcmnand";
-+			reg = <0x1800 0x600>, <0x2000 0x10>;
-+			reg-names = "nand", "nand-int-base";
-+			brcm,nand-use-wp = <0>;
-+			status = "disabled";
-+
-+			nandcs: nand@0 {
-+				compatible = "brcm,nandcs";
-+				reg = <0>;
-+				nand-on-flash-bbt;
-+				brcm,nand-ecc-use-strap;
-+			};
-+		};
-+
- 		uart0: serial@12000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12000 0x1000>;
-diff --git a/arch/arm/boot/dts/bcm63138.dtsi b/arch/arm/boot/dts/bcm63138.dtsi
-index 93281c47c9ba..2c9939e775fb 100644
---- a/arch/arm/boot/dts/bcm63138.dtsi
-+++ b/arch/arm/boot/dts/bcm63138.dtsi
-@@ -224,12 +224,20 @@ hsspi: spi@1000 {
- 		nand_controller: nand-controller@2000 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			compatible = "brcm,nand-bcm63138", "brcm,brcmnand-v7.0", "brcm,brcmnand";
-+			compatible = "brcm,nand-bcmbca", "brcm,brcmnand-v7.0", "brcm,brcmnand";
- 			reg = <0x2000 0x600>, <0xf0 0x10>;
- 			reg-names = "nand", "nand-int-base";
- 			status = "disabled";
- 			interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "nand";
-+			interrupt-names = "nand_ctlrdy";
-+			brcm,nand-use-wp = <0>;
-+
-+			nandcs: nand@0 {
-+				compatible = "brcm,nandcs";
-+				reg = <0>;
-+				nand-on-flash-bbt;
-+				brcm,nand-ecc-use-strap;
-+			};
- 		};
+ description: |
+   The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
+@@ -18,9 +19,10 @@ description: |
+   supports basic PROGRAM and READ functions, among other features.
  
- 		bootlut: bootlut@8000 {
-diff --git a/arch/arm/boot/dts/bcm63148.dtsi b/arch/arm/boot/dts/bcm63148.dtsi
-index ba7f265db121..de14d4564b14 100644
---- a/arch/arm/boot/dts/bcm63148.dtsi
-+++ b/arch/arm/boot/dts/bcm63148.dtsi
-@@ -118,5 +118,22 @@ hsspi: spi@1000 {
- 			num-cs = <8>;
- 			status = "disabled";
- 		};
-+
-+		nand_controller: nand-controller@2000 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,nand-bcmbca", "brcm,brcmnand-v7.1", "brcm,brcmnand";
-+			reg = <0x2000 0x600>, <0xf0 0x10>;
-+			reg-names = "nand", "nand-int-base";
-+			brcm,nand-use-wp = <0>;
-+			status = "disabled";
-+
-+			nandcs: nand@0 {
-+				compatible = "brcm,nandcs";
-+				reg = <0>;
-+				nand-on-flash-bbt;
-+				brcm,nand-ecc-use-strap;
-+			};
-+		};
- 	};
- };
-diff --git a/arch/arm/boot/dts/bcm63178.dtsi b/arch/arm/boot/dts/bcm63178.dtsi
-index d8268a1e889b..ae205408c5cd 100644
---- a/arch/arm/boot/dts/bcm63178.dtsi
-+++ b/arch/arm/boot/dts/bcm63178.dtsi
-@@ -128,6 +128,23 @@ hsspi: spi@1000 {
- 			status = "disabled";
- 		};
+   This controller was originally designed for STB SoCs (BCM7xxx) but is now
+-  available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
+-  iProc/Cygnus. Its history includes several similar (but not fully register
+-  compatible) versions.
++  available on a variety of Broadcom SoCs, including some BCM3xxx, MIPS based
++  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iProc/Cygnus.
++  Its history includes several similar (but not fully register compatible)
++  versions.
  
-+		nand_controller: nand-controller@1800 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,nand-bcmbca", "brcm,brcmnand-v7.1", "brcm,brcmnand";
-+			reg = <0x1800 0x600>, <0x2000 0x10>;
-+			reg-names = "nand", "nand-int-base";
-+			brcm,nand-use-wp = <0>;
-+			status = "disabled";
-+
-+			nandcs: nand@0 {
-+				compatible = "brcm,nandcs";
-+				reg = <0>;
-+				nand-on-flash-bbt;
-+				brcm,nand-ecc-use-strap;
-+			};
-+		};
-+
- 		uart0: serial@12000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12000 0x1000>;
-diff --git a/arch/arm/boot/dts/bcm6756.dtsi b/arch/arm/boot/dts/bcm6756.dtsi
-index 49ecc1f0c18c..bbff47172dc1 100644
---- a/arch/arm/boot/dts/bcm6756.dtsi
-+++ b/arch/arm/boot/dts/bcm6756.dtsi
-@@ -138,6 +138,23 @@ hsspi: spi@1000 {
- 			status = "disabled";
- 		};
+   -- Additional SoC-specific NAND controller properties --
  
-+		nand_controller: nand-controller@1800 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,nand-bcmbca", "brcm,brcmnand-v7.1", "brcm,brcmnand";
-+			reg = <0x1800 0x600>, <0x2000 0x10>;
-+			reg-names = "nand", "nand-int-base";
-+			brcm,nand-use-wp = <0>;
-+			status = "disabled";
-+
-+			nandcs: nand@0 {
-+				compatible = "brcm,nandcs";
-+				reg = <0>;
-+				nand-on-flash-bbt;
-+				brcm,nand-ecc-use-strap;
-+			};
-+		};
-+
- 		uart0: serial@12000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12000 0x1000>;
-diff --git a/arch/arm/boot/dts/bcm6846.dtsi b/arch/arm/boot/dts/bcm6846.dtsi
-index fbc7d3a5dc5f..26a36a577b44 100644
---- a/arch/arm/boot/dts/bcm6846.dtsi
-+++ b/arch/arm/boot/dts/bcm6846.dtsi
-@@ -118,5 +118,22 @@ hsspi: spi@1000 {
- 			num-cs = <8>;
- 			status = "disabled";
- 		};
-+
-+		nand_controller: nand-controller@1800 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,nand-bcmbca", "brcm,brcmnand-v7.1", "brcm,brcmnand";
-+			reg = <0x1800 0x600>, <0x2000 0x10>;
-+			reg-names = "nand", "nand-int-base";
-+			brcm,nand-use-wp = <0>;
-+			status = "disabled";
-+
-+			nandcs: nand@0 {
-+				compatible = "brcm,nandcs";
-+				reg = <0>;
-+				nand-on-flash-bbt;
-+				brcm,nand-ecc-use-strap;
-+			};
-+		};
- 	};
- };
-diff --git a/arch/arm/boot/dts/bcm6855.dtsi b/arch/arm/boot/dts/bcm6855.dtsi
-index 5e0fe26530f1..0defcc10ca8a 100644
---- a/arch/arm/boot/dts/bcm6855.dtsi
-+++ b/arch/arm/boot/dts/bcm6855.dtsi
-@@ -128,6 +128,23 @@ hsspi: spi@1000 {
- 			status = "disabled";
- 		};
+@@ -53,9 +55,9 @@ properties:
+               - brcm,brcmnand-v7.2
+               - brcm,brcmnand-v7.3
+           - const: brcm,brcmnand
+-      - description: BCM63138 SoC-specific NAND controller
++      - description: BCMBCA SoC-specific NAND controller
+         items:
+-          - const: brcm,nand-bcm63138
++          - const: brcm,nand-bcmbca
+           - enum:
+               - brcm,brcmnand-v7.0
+               - brcm,brcmnand-v7.1
+@@ -65,11 +67,15 @@ properties:
+           - const: brcm,nand-iproc
+           - const: brcm,brcmnand-v6.1
+           - const: brcm,brcmnand
+-      - description: BCM63168 SoC-specific NAND controller
++      - description: BCM63xx SoC-specific NAND controller
+         items:
+-          - const: brcm,nand-bcm63168
+-          - const: brcm,nand-bcm6368
+-          - const: brcm,brcmnand-v4.0
++          - enum:
++              - brcm,nand-bcm63168
++              - brcm,nand-bcm6368
++          - enum:
++              - brcm,brcmnand-v2.1
++              - brcm,brcmnand-v2.2
++              - brcm,brcmnand-v4.0
+           - const: brcm,brcmnand
  
-+		nand_controller: nand-controller@1800 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,nand-bcmbca", "brcm,brcmnand-v7.1", "brcm,brcmnand";
-+			reg = <0x1800 0x600>, <0x2000 0x10>;
-+			reg-names = "nand", "nand-int-base";
-+			brcm,nand-use-wp = <0>;
-+			status = "disabled";
-+
-+			nandcs: nand@0 {
-+				compatible = "brcm,nandcs";
-+				reg = <0>;
-+				nand-on-flash-bbt;
-+				brcm,nand-ecc-use-strap;
-+			};
-+		};
-+
- 		uart0: serial@12000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12000 0x1000>;
-diff --git a/arch/arm/boot/dts/bcm6878.dtsi b/arch/arm/boot/dts/bcm6878.dtsi
-index 96529d3d4dc2..f6ae07fe1b44 100644
---- a/arch/arm/boot/dts/bcm6878.dtsi
-+++ b/arch/arm/boot/dts/bcm6878.dtsi
-@@ -119,6 +119,23 @@ hsspi: spi@1000 {
- 			status = "disabled";
- 		};
+   reg:
+@@ -111,6 +117,19 @@ properties:
+       earlier versions of this core that include WP
+     type: boolean
  
-+		nand_controller: nand-controller@1800 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			compatible = "brcm,nand-bcmbca", "brcm,brcmnand-v7.1", "brcm,brcmnand";
-+			reg = <0x1800 0x600>, <0x2000 0x10>;
-+			reg-names = "nand", "nand-int-base";
-+			brcm,nand-use-wp = <0>;
-+			status = "disabled";
++  brcm,nand-use-wp:
++    description:
++      Use this integer to indicate if board design uses
++      controller's write protection feature and connects its
++      NAND_WPb pin to nand chip's WP_L pin. Driver defaults to
++      use this feature when this property does not exist.
++      Set to 0 if WP pins are not connected and feature is not
++      used. Set to 1 if WP pins are connected and feature is used.
++      Set to 2 if WP pins are connected but disable this feature
++      through driver that sets controller to output high on NAND_WPb.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0, 1, 2]
 +
-+			nandcs: nand@0 {
-+				compatible = "brcm,nandcs";
-+				reg = <0>;
-+				nand-on-flash-bbt;
-+				brcm,nand-ecc-use-strap;
-+			};
-+		};
-+
- 		uart0: serial@12000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12000 0x1000>;
-diff --git a/arch/arm/boot/dts/bcm947622.dts b/arch/arm/boot/dts/bcm947622.dts
-index 93b8ce22678d..22e3c4508e1a 100644
---- a/arch/arm/boot/dts/bcm947622.dts
-+++ b/arch/arm/boot/dts/bcm947622.dts
-@@ -32,3 +32,7 @@ &uart0 {
- &hsspi {
- 	status = "okay";
- };
-+
-+&nand_controller {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/bcm963138.dts b/arch/arm/boot/dts/bcm963138.dts
-index 1b405c249213..450289d47dc7 100644
---- a/arch/arm/boot/dts/bcm963138.dts
-+++ b/arch/arm/boot/dts/bcm963138.dts
-@@ -29,3 +29,7 @@ &serial0 {
- &hsspi {
- 	status = "okay";
- };
-+
-+&nand_controller {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/bcm963138dvt.dts b/arch/arm/boot/dts/bcm963138dvt.dts
-index b5af61853a07..f2140e512070 100644
---- a/arch/arm/boot/dts/bcm963138dvt.dts
-+++ b/arch/arm/boot/dts/bcm963138dvt.dts
-@@ -33,14 +33,12 @@ &serial1 {
+ patternProperties:
+   "^nand@[a-f0-9]$":
+     type: object
+@@ -136,13 +155,23 @@ patternProperties:
+           layout.
+         $ref: /schemas/types.yaml#/definitions/uint32
  
- &nand_controller {
- 	status = "okay";
-+};
++      brcm,nand-ecc-use-strap:
++        description:
++          This flag is used by the driver to get the ecc strength and
++          spare area size from the SoC NAND boot strap setting. This
++          is commonly used by the BCMBCA SoC board design. If ecc
++          strength and spare area size are set by nand-ecc-strength
++          and brcm,nand-oob-sector-size in the dts, these settings
++          have precedence and override this flag.
++        $ref: /schemas/types.yaml#/definitions/flag
++
+ allOf:
+   - $ref: nand-controller.yaml#
+   - if:
+       properties:
+         compatible:
+           contains:
+-            const: brcm,nand-bcm63138
++            const: brcm,nand-bcmbca
+     then:
+       properties:
+         reg-names:
+@@ -153,7 +182,9 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            const: brcm,nand-bcm6368
++            enum:
++              - brcm,nand-bcm63168
++              - brcm,nand-bcm6368
+     then:
+       properties:
+         reg-names:
+@@ -173,20 +204,12 @@ allOf:
+             - const: nand
+             - const: iproc-idm
+             - const: iproc-ext
+-  - if:
+-      properties:
+-        interrupts:
+-          minItems: 2
+-    then:
+-      required:
+-        - interrupt-names
  
--	nand@0 {
--		compatible = "brcm,nandcs";
--		reg = <0>;
--		nand-ecc-strength = <4>;
--		nand-ecc-step-size = <512>;
--		brcm,nand-oob-sectors-size = <16>;
--	};
-+&nandcs {
-+	nand-ecc-strength = <4>;
-+	nand-ecc-step-size = <512>;
-+	brcm,nand-oob-sectors-size = <16>;
- };
+ unevaluatedProperties: false
  
- &ahci {
-diff --git a/arch/arm/boot/dts/bcm963148.dts b/arch/arm/boot/dts/bcm963148.dts
-index 1f5d6d783f09..aa08b473c7cd 100644
---- a/arch/arm/boot/dts/bcm963148.dts
-+++ b/arch/arm/boot/dts/bcm963148.dts
-@@ -32,3 +32,7 @@ &uart0 {
- &hsspi {
- 	status = "okay";
- };
-+
-+&nand_controller {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/bcm963178.dts b/arch/arm/boot/dts/bcm963178.dts
-index d036e99dd8d1..c0f504ac43a4 100644
---- a/arch/arm/boot/dts/bcm963178.dts
-+++ b/arch/arm/boot/dts/bcm963178.dts
-@@ -32,3 +32,7 @@ &uart0 {
- &hsspi {
- 	status = "okay";
- };
-+
-+&nand_controller {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/bcm96756.dts b/arch/arm/boot/dts/bcm96756.dts
-index 8b104f3fb14a..2ce998f2b84f 100644
---- a/arch/arm/boot/dts/bcm96756.dts
-+++ b/arch/arm/boot/dts/bcm96756.dts
-@@ -32,3 +32,7 @@ &uart0 {
- &hsspi {
- 	status = "okay";
- };
-+
-+&nand_controller {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/bcm96846.dts b/arch/arm/boot/dts/bcm96846.dts
-index 55852c229608..f4b9a07370ee 100644
---- a/arch/arm/boot/dts/bcm96846.dts
-+++ b/arch/arm/boot/dts/bcm96846.dts
-@@ -32,3 +32,7 @@ &uart0 {
- &hsspi {
- 	status = "okay";
- };
-+
-+&nand_controller {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/bcm96855.dts b/arch/arm/boot/dts/bcm96855.dts
-index 2ad880af2104..5c94063bceaf 100644
---- a/arch/arm/boot/dts/bcm96855.dts
-+++ b/arch/arm/boot/dts/bcm96855.dts
-@@ -32,3 +32,7 @@ &uart0 {
- &hsspi {
- 	status = "okay";
- };
-+
-+&nand_controller {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/bcm96878.dts b/arch/arm/boot/dts/bcm96878.dts
-index b7af8ade7a9d..910f7e125bad 100644
---- a/arch/arm/boot/dts/bcm96878.dts
-+++ b/arch/arm/boot/dts/bcm96878.dts
-@@ -32,3 +32,7 @@ &uart0 {
- &hsspi {
- 	status = "okay";
- };
-+
-+&nand_controller {
-+	status = "okay";
-+};
+ required:
+   - reg
+   - reg-names
+-  - interrupts
+ 
+ examples:
+   - |
+@@ -215,8 +238,7 @@ examples:
+     };
+   - |
+     nand-controller@10000200 {
+-        compatible = "brcm,nand-bcm63168", "brcm,nand-bcm6368",
+-                     "brcm,brcmnand-v4.0", "brcm,brcmnand";
++        compatible = "brcm,nand-bcm6368", "brcm,brcmnand-v2.1", "brcm,brcmnand";
+         reg = <0x10000200 0x180>,
+               <0x100000b0 0x10>,
+               <0x10000600 0x200>;
 -- 
 2.37.3
 
 
---0000000000008d121e05fd7e2e01
+--00000000000065a9d605fd7e2e58
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -549,19 +353,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHvLUr7m3a7ujemODYth3Zk1Q5uY
-phzn6A3TyzBhnKSQMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDYwNjIzMTQzMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEnNDl9n46pJhQ7skHKSa/89KV3g
+vpBnwgZHrpvVzWXAMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDYwNjIzMTQyOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQAUBfEQQmQRILv4FX6d6m786w8q+gtxfPMrVsNuI9rvXCSy
-H77cFw1E/oT/V3ssto0CO7Oqm2IwBgDefWzUZoqPwogx+ZpTprJXcMsKuyuoLnC7elfmNKUrN4wO
-ZpM2vA3hki272JkbXO2JRzweYbgNJLVEPLJlWRK+e3WkYkh8LPRUJUkRlL9sNITViSX8wHsHFmSU
-6RCYC+VWl+szzM27qYaX3+DWFfE7GtXsfIQtVggmT8/8Nz9kFO+8tCjjTKD+6ad2dk3ndtz55fQH
-zTXlLeKWdaGUEHApBSRI0B0Vjc+zSm6RF+HE4lSdLFeeHy9Y2iEyKcm9ckDt4CbseRxT
---0000000000008d121e05fd7e2e01--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBSWP+vk1+I4W6+onzBx1i7WXodPVN5uAHuSA6HxYIm0c8l
+mPnRzgGbTrG5Czq493a4zM7lfO4wMuaVJoXLQ1TmtRQT8V/2Y38EjpCG8/RFCBT+6fdthT+pTDxI
+X4hSgTOwmCq0U6h404+18DRaDL4Ys6qBSC9qoXXLJUHuwE0oralxHHS7a1aFq7VgUIZyLUBEFusv
+b6Pmu8oVYfmvSA357C/akopzaqSTxyXi5D6+Sc92IZLiYcLasyivxlW1Bkg8riBCu2BkTXZITnup
++4ViqEqiYl3tYqsx07IEkPfk2oVd/3O9ktuZ9Uqb/wXCg+BwagDGH8gYlJDVyVZ1/l4w
+--00000000000065a9d605fd7e2e58--
 
 
---===============8730619291948442849==
+--===============2004113784918026365==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -571,5 +375,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============8730619291948442849==--
+--===============2004113784918026365==--
 
