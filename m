@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDEF9C7EE32
-	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 07:42:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1278C7EE37
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 07:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3Qo2bRqcHbRoYTtdhahmd5c6cah0Un2S67k7/JEKe5A=; b=1NGCBs1wpSxtS6
-	hoJ1+Pgk6fJkwv/RoBov68Tq3QyTVntEquCfH7bNg8YQQLF5W0bvDY6m6eGhGCMwhx0pcQ3+CJp+Q
-	92csbG7BJBofdOSseaIhJu4YZQHiUJI4iY4gyemkLqgAqhU2CaZyydyeZ5Q9kFZhma+cj0wu8/o9H
-	vU0XBdOJwqTJWb9ehlM3B45mindz3Cs2k07MT41jbrzWZwkFOp8h8Fd6iS+SNRjIdgyZIOrdO0aY4
-	vabn6GVDmbD8rVHLPh8sEjGAx+yP0xZdWMiHklybzylsP33ewQr4XqOCwMUpbBSQXPfiKkigYPMY2
-	2PtUQ/XMuezUou64QKzA==;
+	List-Owner; bh=aRGizW5y/RNWK3lvXzDUJufJUk3Wqe6vMmwoo4PQutc=; b=SjN3H1pUf17gGb
+	8jut33pPJQlHE2iCjPrgHNf/UgNdZsNuyjecXZVg81pylwR3V+J55eANbImDSnH+z2i8FofKQb7at
+	Z3jUNObvNqoqNxnM/LYaHDawf1smjwWX7BPErivgxqwxRVwRoTfXgJM/m/k5ZIXCCBOLGCdaQDioH
+	9UhpGY7v/hFXriVi/XbFT2X5wEwk119RTAovL+a9ybd2dcKZp+OdUSYR/JM0mBRwPJuSXD2efheBY
+	NOQ2rbdSSghuqLdO3k3BKF62s7VMDKtwFgFCxM4+XaTqpNopIT50RXg1J2V69B8byLQ8bpBLyaJ/E
+	j+3DDfuPYCWyNaKz7+UQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RK5-000aOd-0P;
-	Tue, 06 Jun 2023 07:41:45 +0000
+	id 1q6RKF-000aat-1T;
+	Tue, 06 Jun 2023 07:41:55 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RIy-000ZEq-1z;
-	Tue, 06 Jun 2023 07:40:37 +0000
+	id 1q6RJ1-000ZIe-1I;
+	Tue, 06 Jun 2023 07:40:39 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -55,9 +55,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-nilfs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 13/31] bcache: don't pass a stack address to blkdev_get_by_path
-Date: Tue,  6 Jun 2023 09:39:32 +0200
-Message-Id: <20230606073950.225178-14-hch@lst.de>
+Subject: [PATCH 14/31] rnbd-srv: don't pass a holder for non-exclusive blkdev_get_by_path
+Date: Tue,  6 Jun 2023 09:39:33 +0200
+Message-Id: <20230606073950.225178-15-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230606073950.225178-1-hch@lst.de>
 References: <20230606073950.225178-1-hch@lst.de>
@@ -78,28 +78,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-sb is just an on-stack pointer that can easily be reused by other calls.
-Switch to use the bcache-wide bcache_kobj instead as there is no need to
-claim per-bcache device anyway.
+Passing a holder to blkdev_get_by_path when FMODE_EXCL isn't set doesn't
+make sense, so pass NULL instead.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/md/bcache/super.c | 2 +-
+ drivers/block/rnbd/rnbd-srv.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 94b91c45c9e2a9..4a2aed047aec12 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -2560,7 +2560,7 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
- 	err = "failed to open device";
- 	bdev = blkdev_get_by_path(strim(path),
- 				  FMODE_READ|FMODE_WRITE|FMODE_EXCL,
--				  sb, NULL);
-+				  bcache_kobj, NULL);
+diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+index cec22bbae2f9a5..ce505e552f4d50 100644
+--- a/drivers/block/rnbd/rnbd-srv.c
++++ b/drivers/block/rnbd/rnbd-srv.c
+@@ -719,7 +719,7 @@ static int process_msg_open(struct rnbd_srv_session *srv_sess,
+ 		goto reject;
+ 	}
+ 
+-	bdev = blkdev_get_by_path(full_path, open_flags, THIS_MODULE, NULL);
++	bdev = blkdev_get_by_path(full_path, open_flags, NULL, NULL);
  	if (IS_ERR(bdev)) {
- 		if (bdev == ERR_PTR(-EBUSY)) {
- 			dev_t dev;
+ 		ret = PTR_ERR(bdev);
+ 		pr_err("Opening device '%s' on session %s failed, failed to open the block device, err: %d\n",
 -- 
 2.39.2
 
