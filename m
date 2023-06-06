@@ -4,73 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B4F4C7EE2C
-	for <linux-mtd@archiver.kernel.org>; Mon,  5 Jun 2023 23:31:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59F90C7EE24
+	for <linux-mtd@archiver.kernel.org>; Tue,  6 Jun 2023 03:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zfHMsQW8uBlW34ssiz+tZQTxbpdlVfPUxh/IeLOAgSE=; b=0eDcE7qhbq9fbR
-	1OyOFgWV+Hgbgjte1XslDCNC89R0NTssh5GCtNmMc8k+Aw/ntX72pjbA/dU2oUSucv9Yy7C2vEaRE
-	Y7qUn7zteQR2EH+YMdnUwYlwzZxPid22x4EZ9cAhHiDgELCQKAGGJkVbFc2COPZhxHOuJ2RLzK93U
-	CYjuSiMyODgoIhC0197hj5rLDW6WyVF+0VXorK7vxHYNdB5EA69N1WrieN+ayLLbambkGO9bpVoV+
-	QMKjGR8hFdN0a2Xf1rucbTi1NgzUvFeCy/LG7zrtSJDPGzR0yiksXfJihciQQiT8Aut+56K7bySFo
-	E/FTIEUV5EFll3UJCp6A==;
+	List-Owner; bh=E6YhE3jgUcjYZDqZPEDn2MMnf/UcKXzUykTHG/go80A=; b=VxojTQXEx1cK92
+	yFic7GXPX2rHqRRyvWru6h1J4N4JQk/kbpmEt9srlaoz3RI69siBjDSfEXrlX2Pq/r+XpdxFUvlXk
+	LyG9P8k2mD7nk5d90P5QYsp+1lOkGHJCFuxsTY4yseBorvi7d/hWmw8yDTBjav8t5QmhN0+B+1Fbv
+	s1YFD/PHwraEJongzeqPYXyNZWfzm1kOd0vOTFjaOriKDg7oM7Gt8zKtN8SXneb3hx6Mmja1mOgA4
+	tk9v00Lfwu49tWsSX9J0wr01Mo3SXXaceZIESlHgr9KSlsUrB5t0nu+jEfIORPgLJMHbaWWoHu06S
+	dQDxWJ5PTN5957/UIKxw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6Jem-00H8nn-2o;
-	Mon, 05 Jun 2023 23:30:36 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1q6NHd-00HY81-13;
+	Tue, 06 Jun 2023 03:22:57 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6Jej-00H8md-27
-	for linux-mtd@lists.infradead.org;
-	Mon, 05 Jun 2023 23:30:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686007833; x=1717543833;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LQ/YmNHaOqxHB3zFE5Dw/U8hbSjvEZuD9JaXPGLULFQ=;
-  b=fjiEdZa+BtXKJ8VDe+bFOsm3UJY7LUWVWEctdy0eXkjmm0VVkI/bI9Mi
-   XFXJZbR6wx8Uv8x/RnL929IuOfVuSmGMF2wToQ+bVDi49dNMoKJc2kLo0
-   o33kMX0IubkCMZyCTHUM2VmMvDASEpMeWGni4TGQUrsCHaO04X4f5GItl
-   AW31Xxq+481UoAyps9Oc/2qp+O7vJRlLF2/vP1SoQq2+bvOrRIIeWY/C0
-   DNzWotzaLN70Fz60Vk/RLKwZz/Zt+XcMhUVEe/81apCf79pnlXICxE/7m
-   ifIZWMC2/rFWQ2Xgwsu7Og8TLjql/Y3ttHaM0NixGbj8EUMxYL6aNNLdD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="359826345"
-X-IronPort-AV: E=Sophos;i="6.00,218,1681196400"; 
-   d="scan'208";a="359826345"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2023 16:30:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="738531797"
-X-IronPort-AV: E=Sophos;i="6.00,218,1681196400"; 
-   d="scan'208";a="738531797"
-Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 05 Jun 2023 16:30:31 -0700
-Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1q6Jeg-0004Xx-1a;
-	Mon, 05 Jun 2023 23:30:30 +0000
-Date: Tue, 6 Jun 2023 07:29:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Richard Weinberger <richard@nod.at>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+	id 1q6NHb-00HY6n-0q
+	for linux-mtd@bombadil.infradead.org;
+	Tue, 06 Jun 2023 03:22:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=bgQl2HcDSX0CQG5MtHS5EcgGmE+fwx2fMW6fGk5Fo9s=; b=r8SM0Hez73vG3zZ5Qt/3Z7ELWO
+	krNzTksNO63lUwn/bCphcv3Ps1oD7ACXalF2JOMCHCFNsdt+DDgtJBiqxft6JMVxr7apoqfmPfwsy
+	CfzQnTqkFuFUyUBFYVGejW1boJxGZ22oCYlW+3iSd009UVF/3bmviCuM02MUnGn4rS1dbSAgvFaEK
+	DZCyZWQPqdhOO+TG5pwQr9V2JTxsrhNW7Uq87SJzHOO7EAJtMsjGuLVkwcNPo/yF8BXclo8yMs46U
+	94oIf7XGULfMkTmiRKwJQdSZfiWOXQjY5NQRb+ZCKPeNb/c21bB8xR/dz6euPtVRZruHmR3HDavlb
+	UFRHM+vw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1q6NHX-00ChDl-GY; Tue, 06 Jun 2023 03:22:51 +0000
+Date: Tue, 6 Jun 2023 04:22:51 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Subject: Re: [PATCH 4/4] ubifs: Convert do_writepage() to take a folio
-Message-ID: <202306060727.jUL92Co4-lkp@intel.com>
-References: <20230605165029.2908304-5-willy@infradead.org>
+Message-ID: <ZH6mixCMHce1S+vK@casper.infradead.org>
+References: <20230605165029.2908304-1-willy@infradead.org>
+ <20230605165029.2908304-5-willy@infradead.org>
+ <2059298337.3685966.1686001020185.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230605165029.2908304-5-willy@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230605_163033_759992_652650CF 
-X-CRM114-Status: GOOD (  12.44  )
+In-Reply-To: <2059298337.3685966.1686001020185.JavaMail.zimbra@nod.at>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,65 +68,59 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Matthew,
+On Mon, Jun 05, 2023 at 11:37:00PM +0200, Richard Weinberger wrote:
+> > -	addr = kmap(page);
+> > -	block = page->index << UBIFS_BLOCKS_PER_PAGE_SHIFT;
+> > +	addr = kmap_local_folio(folio, offset);
+> > +	block = folio->index << UBIFS_BLOCKS_PER_PAGE_SHIFT;
+> > 	i = 0;
+> > -	while (len) {
+> > -		blen = min_t(int, len, UBIFS_BLOCK_SIZE);
+> > +	for (;;) {
+> 
+> This change will cause a file system corruption.
+> If len is zero (it can be) then a zero length data node will be written.
+> The while(len) made sure that upon zero length nothing is written.
 
-kernel test robot noticed the following build warnings:
+I don't see how 'len' can be 0.  len is modified each time around the
+loop, and if it's decremented to 0, we break.  So you must be referring
+to a case where the caller of do_writepage passes 0.
 
-[auto build test WARNING on rw-ubifs/next]
-[also build test WARNING on linus/master v6.4-rc5 next-20230605]
-[cannot apply to rw-ubifs/fixes]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+There are three callers of do_writepage, two in ubifs_writepage():
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/ubifs-Convert-from-writepage-to-writepages/20230606-005309
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git next
-patch link:    https://lore.kernel.org/r/20230605165029.2908304-5-willy%40infradead.org
-patch subject: [PATCH 4/4] ubifs: Convert do_writepage() to take a folio
-config: i386-randconfig-i001-20230605 (https://download.01.org/0day-ci/archive/20230606/202306060727.jUL92Co4-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce (this is a W=1 build):
-        mkdir -p ~/bin
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/4f6ac0962f61cc07c95177f78cf1f3b03e79d822
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Matthew-Wilcox-Oracle/ubifs-Convert-from-writepage-to-writepages/20230606-005309
-        git checkout 4f6ac0962f61cc07c95177f78cf1f3b03e79d822
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=i386 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash fs/ubifs/
+        int err, len = folio_size(folio);
+...
+        if (folio_pos(folio) + len < i_size) {
+...
+                return do_writepage(folio, len);
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306060727.jUL92Co4-lkp@intel.com/
+len is folio_size(), which is not 0.
 
-All warnings (new ones prefixed by >>):
+        len = offset_in_folio(folio, i_size);
 
->> fs/ubifs/file.c:905:15: warning: variable 'i' set but not used [-Wunused-but-set-variable]
-           int err = 0, i, blen;
-                        ^
-   1 warning generated.
+Here, we know that len is not 0.  We already tested earlier:
+        if (folio_pos(folio) >= i_size) {
 
+so we know that i_size > folio_pos() and i_size < folio_pos() +
+folio_size().  Actually, I should make this more explicit:
 
-vim +/i +905 fs/ubifs/file.c
+	len = i_size - folio_pos(folio);
 
-1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  902  
-4f6ac0962f61cc Matthew Wilcox (Oracle  2023-06-05  903) static int do_writepage(struct folio *folio, size_t len)
-1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  904  {
-1e51764a3c2ac0 Artem Bityutskiy        2008-07-14 @905  	int err = 0, i, blen;
-1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  906  	unsigned int block;
-1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  907  	void *addr;
-4f6ac0962f61cc Matthew Wilcox (Oracle  2023-06-05  908) 	size_t offset = 0;
-1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  909  	union ubifs_key key;
-4f6ac0962f61cc Matthew Wilcox (Oracle  2023-06-05  910) 	struct inode *inode = folio->mapping->host;
-1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  911  	struct ubifs_info *c = inode->i_sb->s_fs_info;
-1e51764a3c2ac0 Artem Bityutskiy        2008-07-14  912  
+Now it should be clear that len cannot be zero.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The third caller is do_truncation():
+
+        loff_t old_size = inode->i_size, new_size = attr->ia_size;
+        int offset = new_size & (UBIFS_BLOCK_SIZE - 1), budgeted = 1;
+        if (offset) {
+                pgoff_t index = new_size >> PAGE_SHIFT;
+                                       offset = offset_in_folio(folio,
+                                                        new_size);
+                                err = do_writepage(folio, offset);
+
+It's not large-folio-safe, but it's definitely not 0.
+
+Did I miss something?
 
 ______________________________________________________
 Linux MTD discussion mailing list
