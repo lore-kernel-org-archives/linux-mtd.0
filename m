@@ -4,49 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA9EDC77B7A
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 08:27:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64A67C7EE29
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 08:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pIrz6Y15Yc5Pd0DHv8cp7+1Dcwray2L88hrCRDbu2qQ=; b=uNmEr9AEomnfu9
-	6aWwHOchwWglARzw/nrzT7pFrEQ02rkDJx0Hba3ckAyzzY+YRMxer06j1Ukuv6kAoL4MY+ECLh3bs
-	gnjvS10Q14F5/4XCCnPKbV5yun7WUrSkMBTce0o3tQfSKS93jZ5a1nr5mbjfXbyhvAP7nG2nbW2oj
-	qtvuoNsx81o3N4AK+cyPKjHqW8pekL76hR3feUUnd5DMMleiVMZ+bq0zoOSgg2BrD9aUzHEgBIlXy
-	ts5LFvttQvtzBpljpW7UP1ObE133B5mHCfyPDMfSNxo+w6ZxgDvnXCp+XlGsyEBQnG2Iuinll7gs9
-	LvCCxPsO5ompjY8gg82g==;
+	List-Owner; bh=QuXprJezD5YbucKDDUl9XoLAEGmas5o/njLCwJSUGeE=; b=vAAMoPPdbKpu4q
+	M62LX5sj0UbCKV6yodo9GyQ7kYRbYa0y/SiekwmDX3D0rVc4tIUxT+izOon1py5ZqrfpCm+fTB6d7
+	HhAv+M7vJf+up1wUxJtkm2wRsg7Sl5ZUnXAl72ATbdDBiuE9Sb0MSn+AOQv43QOA/7UcZjnMKiYgs
+	XQ+MiWp9wTQC3oQgkhg9pml7qUrgteRkeXpcufGtaix8TFl4EdTzWIQLuqmWiHrJcO8QVRyecnmbE
+	68pFEKpQBSgBKqX4xuDoOag+RMVXSsfpFrhNZM9n0Ui8qsJBXhvj6TIqwZJHqGW0r5OF4+JEdyfYH
+	0Ci1n2irtimcmmYZxgfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oVS-004xhn-1v;
-	Wed, 07 Jun 2023 08:27:02 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1q6obM-004ysc-0X;
+	Wed, 07 Jun 2023 08:33:08 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oVQ-004xgp-0M;
-	Wed, 07 Jun 2023 08:27:01 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A02AE63C27;
-	Wed,  7 Jun 2023 08:26:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CDFCC433D2;
-	Wed,  7 Jun 2023 08:26:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686126419;
-	bh=Kl3XQ9PoGp9pTvNWEYEaCMqRkYInB2avmNbeu92C6zU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rgcywzP+1oCMwlq0k2fRCPBZXdUZRn9J8LrJASSZ5i8ERKpLVi1lgtd0pJwqJB0W7
-	 D8wlIL49yepvEx4+n2MmT7Ru/Aj5siKdB0jHacl1CtCKl9pO0JR5AlsMNcP4+CHinp
-	 OPR0Amz34//UXpE4vCzXPXEgPCrc/4r0Ykl5ORkARbmB44ULuK5TjPuzNOZ8nQxJja
-	 fGuUjMxzGMLdLJSXdYGCnhXt1cV/9zOntJTs1hNqR0nhjGSgxERqeRaqheqynMWt/A
-	 ac1PW1JzvY8VShzgVMk8msTfO/mSWVq1Eb6Oegl+HSBogzogFDyzAMws4bWaCKrm0L
-	 32r0fwv3mAedA==
-Date: Wed, 7 Jun 2023 10:26:50 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
+	id 1q6obI-004ynr-0C;
+	Wed, 07 Jun 2023 08:33:06 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id E15E86732D; Wed,  7 Jun 2023 10:32:53 +0200 (CEST)
+Date: Wed, 7 Jun 2023 10:32:53 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	Richard Weinberger <richard@nod.at>,
 	Josef Bacik <josef@toxicpanda.com>,
 	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
 	Jack Wang <jinpu.wang@ionos.com>,
@@ -64,17 +50,17 @@ Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
 	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
 	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 08/31] block: share code between disk_check_media_change
- and disk_force_media_change
-Message-ID: <20230607-abhielt-kirschen-288e7a9a9fe4@brauner>
-References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-9-hch@lst.de>
+Subject: Re: [PATCH 01/31] block: also call ->open for incremental
+ partition opens
+Message-ID: <20230607083253.GA29653@lst.de>
+References: <20230606073950.225178-1-hch@lst.de> <20230606073950.225178-2-hch@lst.de> <20230607-behelfen-abnormal-8ccf8e1e99c9@brauner>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-9-hch@lst.de>
+In-Reply-To: <20230607-behelfen-abnormal-8ccf8e1e99c9@brauner>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_012700_187917_77A4C10B 
-X-CRM114-Status: GOOD (  11.10  )
+X-CRM114-CacheID: sfid-20230607_013304_263358_5AB5A308 
+X-CRM114-Status: GOOD (  10.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,15 +77,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 06, 2023 at 09:39:27AM +0200, Christoph Hellwig wrote:
-> Factor the common logic between disk_check_media_change and
-> disk_force_media_change into a helper.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
+On Wed, Jun 07, 2023 at 10:14:22AM +0200, Christian Brauner wrote:
+> This assumes that all drivers deal with additional ->open() calls for
+> each partition correctly which I assumed you checked so,
 
-Looks good to me,
-Acked-by: Christian Brauner <brauner@kernel.org>
+They have to, because they already get the additional open for
+extra opens of the whole device.  The current behavior is:
+
+open("/dev/vdb", ...)
+  ->open called
+
+open("/dev/vdb", ...)
+  ->open called
+
+----
+
+open("/dev/vdb", ...)
+  ->open called
+
+open("/dev/vdb1", ...)
+  ->open called
+
+----
+
+open("/dev/vdb1", ...)
+  ->open called
+
+open("/dev/vdb1", ...)
+  ->open NOT called
+
+which is very inconsistent.
 
 ______________________________________________________
 Linux MTD discussion mailing list
