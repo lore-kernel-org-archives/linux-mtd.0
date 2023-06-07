@@ -4,76 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AC45C7EE2E
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 09:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2522FC7EE29
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 09:25:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MlvUSNDbz5l+qmQhbgm6stuj/nAgXtN8pqP6gpzESh4=; b=0QGCVEKouq8VNr
-	hMX+0bENLUX6Lzfz8QeJPUdPW9cQRIaEhZSb2BtBX6Zdg2rDT2VMD4H4G8ORIwaCE53lzJkefbKl5
-	MMMW91hGlnm0ge4hTzkQP3yFd0H+Z7CJRp5EaAx9owq2etRrSq1hKaGXrI+XwbnlLpopzr2JJ7EDQ
-	u7qSOehMaYaBuw9cDh/f9YkG4enXLOsdlK2r6eE8UDupqJFBx5LmkLmicJObTwOFy93UYL80MYcBF
-	0CWOyy2RJCKEFSx2EQdWbXQeCH3IvfrzaQw8ThEZvSavJxKc7nY9C010srQsGiN1rvMOCdglwS0ZA
-	2zz6EGF4A9iYPWN3g+Dw==;
+	List-Archive:List-Unsubscribe:List-Id:CC:To:Message-ID:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=LQ1kHYocJYKvTwMeBbFPdTwtyFcsQZ+cvpmAmBcs+Gc=; b=MX0WW393u2Flw8
+	ZcYgeq8k583M6hrACY+SDGE50ybSL8/JZg6CYwcFjDMcDtj4roW18N2ZWDSbWRwLKVj9Uv+57KKRR
+	MGVXA7BMWvsBEaN83H+u7TR+6BO2u6OeByrAUEyPimLxtXBpcUHOs6qSBaWp42ZzoCTKPtXj0ZsSU
+	UI0yFu+F1rrVrDsvkXd3FuDEW2YBXwAqXhCp4GVZURcaH2Wi5y5FrmM9ZSNq7A4ey4BMuZokvLRQa
+	q0QV662+ch0NJzv23q9dbgUUd68zItLzz4iqF376OwoAgY1mj69nqYbU4Q5eg0YouAh3p7VKOsDqq
+	cowOWmp+Qh0Dj6qzsgow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6pPg-005EJy-0J;
-	Wed, 07 Jun 2023 09:25:08 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1q6pQ2-005EU5-0L;
+	Wed, 07 Jun 2023 09:25:30 +0000
+Received: from smtp2.axis.com ([195.60.68.18])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6pPd-005EIT-0R;
-	Wed, 07 Jun 2023 09:25:06 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A27A160EF2;
-	Wed,  7 Jun 2023 09:25:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CA78C433EF;
-	Wed,  7 Jun 2023 09:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686129904;
-	bh=PVPEiqQnbOrHGRENvLEdaR/nzeey8b8ZshNSuWbTzrk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ALdNOSLUKbyG4MtN9g4NY65h2phNBq7vkw8myPQgpJG2PzaM8f/SVslVCmF/QOc3T
-	 Bwp8JuH17KAppuZAf9ArpxZTmb2lgZ7cED8j2ebPZYTj2IOo1Pq/kE6GkpjP2srCxN
-	 XuLDkhy5x7omz7gFdxwTAPV7lc6Gdyrkd5NATTyExP7JIaWtEnHvRju/P8W1jwC/ZQ
-	 pgr661S3TGnNa0/R8XJs7I9augkFB3fO/k2xICj9Rw66l5DVIPYSNCIJVnNMEfjw+Z
-	 gguliFEjC8Gq4dp0LyuKCQZnO9AA7rkPsqLnWoRqyaIZ4YpfwuJwZivsVp2KmUYvZJ
-	 O4+xhtnOR9qOw==
-Date: Wed, 7 Jun 2023 11:24:55 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
-	Josef Bacik <josef@toxicpanda.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Phillip Potter <phil@philpotter.co.uk>, Coly Li <colyli@suse.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
-	linux-block@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 30/31] block: store the holder in file->private_data
-Message-ID: <20230607-verjagen-weise-4fb3d76a6313@brauner>
-References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-31-hch@lst.de>
+	id 1q6pPy-005EQS-30
+	for linux-mtd@lists.infradead.org;
+	Wed, 07 Jun 2023 09:25:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1686129927;
+  x=1717665927;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=+hz7OrzMbUMcAoXtMSvTQCl5KtJyw3Bih09dQpX7TTs=;
+  b=KIemTgpJFVeI6Xq7xhPviiBo/MuV5tDw6Hv9dlspiXzizFh/HHpcZ6Hx
+   9L6hBUqfiI8vyOyyuvLyRuhHEQnUs/MpO0bBnJJEnW0hHWmdJZPftrtcM
+   yAVhsNJlPAGP0iJg0fOnjcIXNkomM/DmiIgKSNspWHm1qa3IUgcTxikb0
+   rCGHt1Rn2chXaMAydOxGHIQb8DGMqiz+4I+fONQfi5p82kFexwyeHJc0c
+   Bjc2zByUmX9xrzDafgJvfsbckoOSyjn/tGa37M1j8uGvjMM1zEbQvNqh1
+   LwRJgY1ow8sQiIm9xAdbzqP+xfB4s5WFCQCoCleAuWRBLKlxrbZewNykt
+   Q==;
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Date: Wed, 7 Jun 2023 11:25:06 +0200
+Subject: [PATCH v2] ubi: block: Fix cleanup handling
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-31-hch@lst.de>
+Message-ID: <20230523-ubiblock-remove-v2-1-7671fc60ba49@axis.com>
+X-B4-Tracking: v=1; b=H4sIAPFMgGQC/3WNyw6CMBBFf4V0bU0pD9GV/2FYdMpUJkrHtNpgC
+ P9uYe/y3JuTs4iIgTCKS7GIgIkisc+gD4Wwo/F3lDRkFlrpSjW6kh8geLJ9yIATJ5RooC2ta7v
+ KKZEtMBElBOPtuHmOGUzQ2/MK6GjeW7c+80jxzeG7p1O5rf8rqZRK6loBDqemq89wNTPFo+VJ9
+ Ou6/gBYruakxwAAAA==
+To: Richard Weinberger <richard@nod.at>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>
+CC: <hch@infradead.org>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <kernel@axis.com>, Vincent Whitchurch
+	<vincent.whitchurch@axis.com>
+X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_022505_211683_CBCD547F 
-X-CRM114-Status: GOOD (  13.85  )
+X-CRM114-CacheID: sfid-20230607_022527_444355_FD6934BE 
+X-CRM114-Status: GOOD (  11.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,16 +74,111 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 06, 2023 at 09:39:49AM +0200, Christoph Hellwig wrote:
-> Store the file struct used as the holder in file->private_data as an
-> indicator that this file descriptor was opened exclusively to  remove
-> the last use of FMODE_EXCL.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
+ubiblock's remove handling has a couple of problems:
 
-Feels a bit odd to store the object itself but anyway,
-Acked-by: Christian Brauner <brauner@kernel.org>
+ - It uses the gendisk after put_disk(), resulting in a use-after-free.
+
+ - There is a circular locking dependency between disk->open_mutex (used
+   from del_gendisk() and blkdev_open()) and dev->dev_mutex (used from
+   ubiblock_open() and ubiblock_remove()).
+
+Fix these by implementing ->free_disk() and moving the final cleanup
+there.
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+Changes in v2:
+- Combine and rework patches to implement and use ->free_disk().
+- Link to v1: https://lore.kernel.org/r/20230523-ubiblock-remove-v1-0-240bed75849b@axis.com
+---
+ drivers/mtd/ubi/block.c | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 3711d7f74600..570e660673ad 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -293,11 +293,23 @@ static int ubiblock_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+ 	return 0;
+ }
+ 
++static void ubiblock_free_disk(struct gendisk *disk)
++{
++	struct ubiblock *dev = disk->private_data;
++
++	mutex_lock(&devices_mutex);
++	idr_remove(&ubiblock_minor_idr, disk->first_minor);
++	mutex_unlock(&devices_mutex);
++
++	kfree(dev);
++}
++
+ static const struct block_device_operations ubiblock_ops = {
+ 	.owner = THIS_MODULE,
+ 	.open = ubiblock_open,
+ 	.release = ubiblock_release,
+ 	.getgeo	= ubiblock_getgeo,
++	.free_disk = ubiblock_free_disk,
+ };
+ 
+ static blk_status_t ubiblock_queue_rq(struct blk_mq_hw_ctx *hctx,
+@@ -452,9 +464,8 @@ static void ubiblock_cleanup(struct ubiblock *dev)
+ 	del_gendisk(dev->gd);
+ 	/* Finally destroy the blk queue */
+ 	dev_info(disk_to_dev(dev->gd), "released");
+-	put_disk(dev->gd);
+ 	blk_mq_free_tag_set(&dev->tag_set);
+-	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
++	put_disk(dev->gd);
+ }
+ 
+ int ubiblock_remove(struct ubi_volume_info *vi)
+@@ -478,11 +489,11 @@ int ubiblock_remove(struct ubi_volume_info *vi)
+ 
+ 	/* Remove from device list */
+ 	list_del(&dev->list);
+-	ubiblock_cleanup(dev);
+ 	mutex_unlock(&dev->dev_mutex);
+ 	mutex_unlock(&devices_mutex);
+ 
+-	kfree(dev);
++	ubiblock_cleanup(dev);
++
+ 	return 0;
+ 
+ out_unlock_dev:
+@@ -623,17 +634,19 @@ static void ubiblock_remove_all(void)
+ {
+ 	struct ubiblock *next;
+ 	struct ubiblock *dev;
++	LIST_HEAD(list);
+ 
+ 	mutex_lock(&devices_mutex);
+-	list_for_each_entry_safe(dev, next, &ubiblock_devices, list) {
++	list_splice_init(&ubiblock_devices, &list);
++	mutex_unlock(&devices_mutex);
++
++	list_for_each_entry_safe(dev, next, &list, list) {
+ 		/* The module is being forcefully removed */
+ 		WARN_ON(dev->desc);
+ 		/* Remove from device list */
+ 		list_del(&dev->list);
+ 		ubiblock_cleanup(dev);
+-		kfree(dev);
+ 	}
+-	mutex_unlock(&devices_mutex);
+ }
+ 
+ int __init ubiblock_init(void)
+
+---
+base-commit: 44c026a73be8038f03dbdeef028b642880cf1511
+change-id: 20230523-ubiblock-remove-eab61cf683f0
+
+Best regards,
+-- 
+Vincent Whitchurch <vincent.whitchurch@axis.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
