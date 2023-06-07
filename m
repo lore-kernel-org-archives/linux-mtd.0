@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4459C77B7A
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 08:56:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 381BDC7EE23
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 08:58:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/PFkAMcI4REgZQECqWgH/nigaTPFmIS9hODJy1FIbd4=; b=1tS0fBqgvuD7uO
-	K6zwn295paam2wTEMQLj4DGLC7Og4z3DfAapkyPmilPl4sGuCnIMiuCvgg6Y8NWUNtbEtK8fThaPG
-	1Os39fX0aHT+GOdtbvZPGgoipZv6LmFZc1F0V6RRBqkdiAVbYmgGmEGQfth/+SJLXkFs9ebSa3dF0
-	rWBfAgTxUHwjhGaCDDrEUKZM9lQQ/l6AE3ndnB9YhNST+rgB2MZqaI9XUFC8eEQTQGx2aokoaZbm5
-	ZBoBYYFZ5J7qIUyCXg6A7RG2Ul/BrCHCRHnrkqTfOcAlA3f4tEs+pqDkPq4DujARxwG4JcTAGmS67
-	SSP0G154aQj+S3seuJ5g==;
+	List-Owner; bh=1saeoxtcDWuwUZxWrje613DEfhT/e0OGqRHQYnfOtxI=; b=XzN4U3kIX1dqYR
+	Ki/NHZgu1ThUSZd9Sxo0uF1uZ4sS0Sk53DGGnqGAtONm7MrgLQdJs4tdjiHL9wHQSZ6rIG4f41APE
+	d/8mjQjhKcq2AW8S9SDQ89KdVdy3tdmoz+huSc5Ced3sCY4XLRsk9MM48ztn1Air9v4tdqal3zoJB
+	/h4Oxa0seMbAMim88WKtY/rNU440vxoyy7qon0VVNr8NeCIZcroapwOj8If+Tj/0fwEwIMMzkUpyv
+	Xi3WfXXGmiINA1tpLU0UVkHugic8MHnPZHSe/At0NwinmfB1lg8lzNoqbfFWIT3niWIfvi87aUkWx
+	eNub04Yd2RMgcEKwTXbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oy9-0056DN-2C;
-	Wed, 07 Jun 2023 08:56:41 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1q6ozZ-0056p3-2n;
+	Wed, 07 Jun 2023 08:58:09 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oy7-0056Bq-0l;
-	Wed, 07 Jun 2023 08:56:40 +0000
+	id 1q6ozX-0056nY-0j;
+	Wed, 07 Jun 2023 08:58:08 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id BDFE163429;
-	Wed,  7 Jun 2023 08:56:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1335C433EF;
-	Wed,  7 Jun 2023 08:56:32 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B784863C9E;
+	Wed,  7 Jun 2023 08:58:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D982C433EF;
+	Wed,  7 Jun 2023 08:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686128198;
-	bh=XuHwZ7uaJVjyv+iO/vUQkX77q29hjzoGO5w56uvjEOo=;
+	s=k20201202; t=1686128285;
+	bh=SIZ+eCgOkog+Q4s3tUge5LH3sx300bb23Eun6BFPrew=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DeEXqe9gjxY57lITqd/lXcoE1Ca1KQPvngcywi2EuF55EYz48E3pBAh+rBHch2qBA
-	 ypy5YdNuEogegS0vPCR+mV99Mk5TjM1rLBF97+R9HX9ukYW6ykKDq2gqNInuZMB6Ay
-	 XHzbm7kvaBLnWy14BEPIjrerESWXdSFPaBlrm0swncJDI/92I5eylBFX/moeEz7CG1
-	 vaPZG0fzC0csi3IKOuDwjj7N745wxtG3agr3NgG0FuEl8trHhZ//gdGhKV06s6qy39
-	 mpg9F8OAP6YYyEg/4+2k3U5GSd1wxRxtUnh4mR7ZFx9c5gnEAxwjVBNp5aPITn0SFx
-	 tka8Sp1jBTEXw==
-Date: Wed, 7 Jun 2023 10:56:29 +0200
+	b=LYAEqX6oV7TKK7FpSkgUsEVya9xhUy/JPhJiRGLYoOYHWT1I2ULOK7XHs64TXfoFn
+	 mK0rDwRkYd2/GYZAlZLwNyS+CJKOhsomUkO8JCiKie8dl/BRiOTeonBmS4PvPu6ieF
+	 sVIi5srBClDyYqHINc4pZYt7suQ3BTKRABwS7pHU3VKKSKaLzQS0g/VYlh9aDEEczz
+	 eubVSLgoReF59GWwxGcQxODeBBcSFZ44sZs5+J+yLbcDPSbVuucJrs8YJ3B1hEkc9m
+	 wEFyAXRiqWDpxiHtJcXt54WBqY8AcSWZsAoORertZk2ph2t6aW4EyYiUKsHKNUhrA8
+	 yd5W3CUGhJ54A==
+Date: Wed, 7 Jun 2023 10:57:57 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
@@ -64,16 +64,17 @@ Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
 	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
 	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 18/31] fs: remove sb->s_mode
-Message-ID: <20230607-fliehen-abwurf-56e4abb8cc2a@brauner>
+Subject: Re: [PATCH 19/31] scsi: replace the fmode_t argument to
+ scsi_cmd_allowed with a simple bool
+Message-ID: <20230607-lider-beilegen-479e8cf3bf53@brauner>
 References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-19-hch@lst.de>
+ <20230606073950.225178-20-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-19-hch@lst.de>
+In-Reply-To: <20230606073950.225178-20-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_015639_310929_5770203C 
-X-CRM114-Status: GOOD (  12.48  )
+X-CRM114-CacheID: sfid-20230607_015807_310560_91B88167 
+X-CRM114-Status: GOOD (  11.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,9 +91,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 06, 2023 at 09:39:37AM +0200, Christoph Hellwig wrote:
-> There is no real need to store the open mode in the super_block now.
-> It is only used by f2fs, which can easily recalculate it.
+On Tue, Jun 06, 2023 at 09:39:38AM +0200, Christoph Hellwig wrote:
+> Instead of passing a fmode_t and only checking it for FMODE_WRITE, pass
+> a bool open_for_write to prepare for callers that won't have the fmode_t.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
