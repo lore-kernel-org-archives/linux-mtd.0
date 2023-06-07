@@ -4,90 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB8E1C7EE25
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 20:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A183C77B7A
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 21:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:CC:To:From:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HjReNZK+rj2F1RdZYjFUCaEjI4+cNLgeQykb66iAbtc=; b=HPPbgb3Q0foTfj
-	wPTpFmWD4vdbaxuEjyhpWuRa6iIKHFmOyDPYmseylNnoQ0X6oMsKTQaHAGvj9BsUn5KSesWdwZDHH
-	47zGybtbc3Wt0jhMaEASxreXmaBhXIVfVCoUkQnqMWL00Q+enztgL9OU2P8t7EDErb5pLUXOTtSet
-	+zxBXHwg94WrbI5DuvqSjxqyElWq0sJJqfaGSGwRR6hyVsFNFeOzl4L1RE6fz1POp1h7xlF1rhKrz
-	W6V76qtEyla/WfvByEE9tJga5KOLfcf/Eyy7gY8KqUoR/lbJmx+GixtKGgbOIhsz8Rrw0faNb9nUm
-	rL8vSi/YIpu5AKtYyD/Q==;
+	List-Owner; bh=gjYzHZrjsHErfi6Ux39zeeGeo4l5ct2P0k1RK1RTeEg=; b=kmU+VN7MPsOOHu
+	hsfcLVFGsPhyHSO7wSH0L0KzTfEyLGpRiQ0qkMrPUKkSuohj7C0BcPqW2akjoHkx5X79Rv67C1imu
+	j7u9mmPxwD+zPS+XsGxx9M8D68Z69xfnZj7Php1gZCFC+38WlmnOrF4R1tKiKmkOvLwXxhLah44Sb
+	aR8FGSLE0ViXZFZd0ai+LLQ/ke+nHjhq7Bz3vrM/aIo/nKbXWItjCiV7SCMyJtD/TWKvAjWKAkoOJ
+	sjcDFSbC8YYTNzownLgj2NOBN5e55HeALZIrMU2wTm9izoOOxA/95GK5ZcRIIrCtxKgHiXpQghsnF
+	PEtdxcNxV+CKyhLz1RJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q704J-007BMj-2E;
-	Wed, 07 Jun 2023 20:47:47 +0000
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	id 1q70c7-007HgC-24;
+	Wed, 07 Jun 2023 21:22:43 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q704G-007BLQ-0k
-	for linux-mtd@lists.infradead.org;
-	Wed, 07 Jun 2023 20:47:46 +0000
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 5A3652C04C8;
-	Thu,  8 Jun 2023 08:47:36 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1686170856;
-	bh=/cQkkegflgFQqm5C+G5vQB+gTiP1JumRvCSkO2eCGRM=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=tqZAxdZBa/qzNcvYcxD2xYqYNhfe1WM1eoglk69yE/FLSrRR0uTR5UdzGMkngS0NU
-	 pq72/ZNh8Kn4K4mjoj0vNwG3xI4IQoviH0FX0PB4pRonGFUDPn2IagVOzGpPTNIQRO
-	 QQhYURH37vE9x3QjDf6ykdEYS62VhTv4X+cz/q1hPdUnnY0MoEZVjQ1C5Mnw+Bp69s
-	 9VUPQr1bVPBE7xzynmtIl8ULHz7RgR+vfg72MFLO9yPDNpHsjE9dhOydvlzbPCS6cb
-	 nlogIkx2lgpG2luIpMS4CHWySH/JPcywwnRwOnf/wqAw2+4PuDfovoKuoaT72kWkif
-	 nhzeafxGG16CA==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B6480ece80000>; Thu, 08 Jun 2023 08:47:36 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.26; Thu, 8 Jun 2023 08:47:36 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
- SMTP Server (TLS) id 15.0.1497.48; Thu, 8 Jun 2023 08:47:35 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.026; Thu, 8 Jun 2023 08:47:35 +1200
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
-	<vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
-	<pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>, Manivannan Sadhasivam <mani@kernel.org>
-Subject: Re: [PATCH v2 06/17] dt-bindings: mtd: qcom: Prevent NAND chip
- unevaluated properties
-Thread-Topic: [PATCH v2 06/17] dt-bindings: mtd: qcom: Prevent NAND chip
- unevaluated properties
-Thread-Index: AQHZmJ/A/7DdJqfjnkKBhDDDwtPlhq99kbaAgACeJoCAANhNgA==
-Date: Wed, 7 Jun 2023 20:47:35 +0000
-Message-ID: <7421ed33-25bf-7af1-fa95-5e12d91e23b1@alliedtelesis.co.nz>
-References: <20230606175246.190465-1-miquel.raynal@bootlin.com>
- <20230606175246.190465-7-miquel.raynal@bootlin.com>
- <6bfc7652-ab2b-3a22-8ef7-7ba421eb4d93@alliedtelesis.co.nz>
- <20230607095325.36cacdc1@xps-13>
-In-Reply-To: <20230607095325.36cacdc1@xps-13>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.33.22.30]
-Content-ID: <036C59F09C59A1478C2CFA497517EF30@atlnz.lc>
+	id 1q70c2-007Hew-1J;
+	Wed, 07 Jun 2023 21:22:41 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id 9701F5FD05;
+	Thu,  8 Jun 2023 00:22:32 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1686172952;
+	bh=2kpvDvXcy/GUjx0LW3DrSZwkIGJ4jEn4ghaSBZUiAic=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
+	b=j4hW/iUMium6JbncOhcHrHg59ffsdYCvh27CJ94lveABIQpnfHtL+qqv6U27cekkx
+	 SwJC+txiewhKBcXR8IMMzcUjw4a8PQUtx+i2DPCu1gcQ7j0AnyaxEsFL5WCBG2M+y8
+	 BeFRAiBIJKH0UCJ1zTHz1CqUg2/sXvqWrtz3aCjHyr/gLuuUuPishFDVpe1g5J/kvQ
+	 QZSFBO2jx57ZKSjfW7BkPoecBuPul5W+qWelVO0o9m8Ovbj6QT8w1JaUIvUxmjsZq4
+	 x8rE7OK5e2FKT6qjfDPc6LgEVo78aMWl2hww1f04odFPF1CPcXAQF4cpbSXJWKGJiA
+	 h2ZKWP4TG1uFw==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Thu,  8 Jun 2023 00:22:30 +0300 (MSK)
+Message-ID: <3a9470ed-d7ad-6cae-0d58-732399590272@sberdevices.ru>
+Date: Thu, 8 Jun 2023 00:17:35 +0300
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=CMhUoijD c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=of4jigFt-DYA:10 a=VwQbUJbxAAAA:8 a=P-IC7800AAAA:8 a=9vaUkKApdVHAHW6FauQA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=d3PnA9EDa4IxuAV0gXij:22
-X-SEG-SpamProfiler-Score: 0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v2] mtd: rawnand: meson: check buffer length
+Content-Language: en-US
+From: Arseniy Krasnov <avkrasnov@sberdevices.ru>
+To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230606101644.3297859-1-AVKrasnov@sberdevices.ru>
+ <9adef6da-5930-dcaa-f148-e4a398d39f2d@sberdevices.ru>
+In-Reply-To: <9adef6da-5930-dcaa-f148-e4a398d39f2d@sberdevices.ru>
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/07 16:55:00 #21454472
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_134744_753525_CE5E54F7 
-X-CRM114-Status: GOOD (  19.74  )
+X-CRM114-CacheID: sfid-20230607_142239_160898_F99B5716 
+X-CRM114-Status: GOOD (  18.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,60 +85,143 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-DQpPbiA3LzA2LzIzIDE5OjUzLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOg0KPiBIaSBDaHJpcywNCj4N
-Cj4gQ2hyaXMuUGFja2hhbUBhbGxpZWR0ZWxlc2lzLmNvLm56IHdyb3RlIG9uIFR1ZSwgNiBKdW4g
-MjAyMyAyMjoyNzoyMw0KPiArMDAwMDoNCj4NCj4+IE9uIDcvMDYvMjMgMDU6NTIsIE1pcXVlbCBS
-YXluYWwgd3JvdGU6DQo+Pj4gTGlzdCBhbGwgdGhlIHBvc3NpYmxlIHByb3BlcnRpZXMgaW4gdGhl
-IE5BTkQgY2hpcCBhcyBwZXIgdGhlIGV4YW1wbGUgYW5kDQo+Pj4gc2V0IHVuZXZhbHVhdGVkUHJv
-cGVydGllcyB0byBmYWxzZSBpbiB0aGUgTkFORCBjaGlwIHNlY3Rpb24uDQo+Pj4NCj4+PiBDYzog
-TWFuaXZhbm5hbiBTYWRoYXNpdmFtIDxtYW5pQGtlcm5lbC5vcmc+DQo+Pj4gU2lnbmVkLW9mZi1i
-eTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4NCj4+PiAtLS0NCj4+
-PiAgICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Fjb20sbmFuZGMueWFt
-bCB8IDQgKysrKw0KPj4+ICAgIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykNCj4+Pg0K
-Pj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Fj
-b20sbmFuZGMueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcWNv
-bSxuYW5kYy55YW1sDQo+Pj4gaW5kZXggNzIxN2Q4YTY0ZDE0Li41ODE5NzNmNDUyZmYgMTAwNjQ0
-DQo+Pj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29tLG5h
-bmRjLnlhbWwNCj4+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
-L3Fjb20sbmFuZGMueWFtbA0KPj4+IEBAIC0zNCw3ICszNCw5IEBAIHByb3BlcnRpZXM6DQo+Pj4g
-ICAgcGF0dGVyblByb3BlcnRpZXM6DQo+Pj4gICAgICAiXm5hbmRAW2EtZjAtOV0kIjoNCj4+PiAg
-ICAgICAgdHlwZTogb2JqZWN0DQo+Pj4gKyAgICAkcmVmOiByYXctbmFuZC1jaGlwLnlhbWwNCj4+
-PiAgICAgICAgcHJvcGVydGllczoNCj4+PiArDQo+Pj4gICAgICAgICAgbmFuZC1idXMtd2lkdGg6
-DQo+Pj4gICAgICAgICAgICBjb25zdDogOA0KPj4+ICAgIA0KPj4+IEBAIC02MSw2ICs2Myw4IEBA
-IHBhdHRlcm5Qcm9wZXJ0aWVzOg0KPj4+ICAgIA0KPj4+ICAgICAgICAgICAgICBSZWZlciB0byB0
-aGUgaXBxODA2NCBleGFtcGxlIG9uIGhvdyB0byB1c2UgdGhpcyBzcGVjaWFsIGJpbmRpbmcuDQo+
-Pj4gICAgDQo+Pj4gKyAgICB1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlDQo+Pj4gKw0KPj4+
-ICAgIGFsbE9mOg0KPj4+ICAgICAgLSAkcmVmOiAibmFuZC1jb250cm9sbGVyLnlhbWwjIg0KPj4+
-ICAgICAgDQo+PiBUaGlzIGRvZXNuJ3QgYXBwZWFyIHRvIGJlIHdvcmtpbmcgYXMgaW50ZW5kZWQu
-IElmIEkgYWRkIHRoZSBmb2xsb3dpbmcNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29tLG5hbmRjLnlhbWwNCj4+IGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29tLG5hbmRjLnlhbWwNCj4+IGluZGV4IDU4
-MTk3M2Y0NTJmZi4uN2E5MTBhNjJjN2I4IDEwMDY0NA0KPj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29tLG5hbmRjLnlhbWwNCj4+ICsrKyBiL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcWNvbSxuYW5kYy55YW1sDQo+PiBAQCAtMjIw
-LDYgKzIyMCw3IEBAIGV4YW1wbGVzOg0KPj4gICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBwYXJ0aXRpb25AMCB7DQo+PiAgIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgbGFiZWwgPSAiYm9vdC1uYW5kIjsNCj4+ICAgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MCAweDU4YTAwMDA+Ow0KPj4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG5vbnNlbnNlOw0KPj4gICDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCB9Ow0KPj4NCj4+ICAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgcGFydGl0aW9uQDU4YTAwMDAgew0KPj4NCj4+DQo+PiBUaGVuIEknZCBleHBlY3Qg
-dG8gZ2V0IGEgY29tcGxhaW50IGZyb20gYG1ha2UgbXJwcm9wZXI7IG1ha2UNCj4+IERUX0NIRUNL
-RVJfRkxBR1M9LW0gZHRfYmluZGluZ19jaGVjayBEVF9TQ0hFTUFfRklMRVM9cWNvbSxuYW5kYy55
-YW1sYA0KPj4gYnV0IGl0IHNlZW1zIHRvIGxldCB0aGlzIHRocm91Z2guDQo+IEkgYW0ganVzdCBm
-aXhpbmcgdGhlIE5BTkQgY2hpcCBub2RlIHdoaWxlIHRoaXMgaXMgYSBwYXJ0aXRpb24gbm9kZS4g
-V2UNCj4gbmVlZCB0byBjb25zdHJhaW4gbW9yZSBhbGwgdGhlIHNjaGVtYXMsIGxldCdzIHN0YXJ0
-IHdpdGggdGhlIGJlZ2lubmluZw0KPiA6KQ0KDQpBaCBPSy4gSSBqdXN0IHdhc24ndCBzdXJlIHdo
-ZXRoZXIgdG8gd2FpdCBmb3IgdGhpcyB0byBsYW5kIG9yIHBpbGUgbXkgDQpjb252ZXJzaW9uIG9u
-IHRvcC4NCg0KV2hhdCBJIHJlYWxseSB3YW50IHRvIGdldCB0byBpcyB0aGUgZHJpdmVyIGNoYW5n
-ZXMgZm9yIHRoZSBBQzUgU29DLiANCkNvbnZlcnRpbmcgdGhlIHNjaGVtYSBzdGFydGVkIGFzICJJ
-IHNob3VsZCBiZSBhYmxlIHRvIGtub2NrIHRoYXQgb3V0IGluIA0KMzAgbWlucyBvbiBhIEZyaWRh
-eSBhZnRlcm5vb24iIGJ1dCBoYXMgc25vd2JhbGxlZCBzaWduaWZpY2FudGx5Lg0KDQo+DQo+IFRo
-YW5rcywNCj4gTWlxdcOobApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi again Miquel, Liang!
+
+What do You think about this patch?
+
+Thanks, Arseniy
+
+On 06.06.2023 19:29, Arseniy Krasnov wrote:
+> Sorry, here is changelog:
+> v1 -> v2:
+> * Move checks from 'switch/case' which executes commands in 'meson_nfc_exec_op()' to a special
+>   separated function 'meson_nfc_check_op()' which is called before commands processing.
+> 
+> On 06.06.2023 13:16, Arseniy Krasnov wrote:
+>> Meson NAND controller has limited buffer length, so check it before
+>> command execution to avoid length trim. Also check MTD write size on
+>> chip attach.
+>>
+>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>> ---
+>>  drivers/mtd/nand/raw/meson_nand.c | 47 +++++++++++++++++++++++++++----
+>>  1 file changed, 42 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+>> index 23a73268421b..db6b18753071 100644
+>> --- a/drivers/mtd/nand/raw/meson_nand.c
+>> +++ b/drivers/mtd/nand/raw/meson_nand.c
+>> @@ -111,6 +111,8 @@
+>>  
+>>  #define PER_INFO_BYTE		8
+>>  
+>> +#define NFC_CMD_RAW_LEN	GENMASK(13, 0)
+>> +
+>>  struct meson_nfc_nand_chip {
+>>  	struct list_head node;
+>>  	struct nand_chip nand;
+>> @@ -284,7 +286,7 @@ static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
+>>  
+>>  	if (raw) {
+>>  		len = mtd->writesize + mtd->oobsize;
+>> -		cmd = (len & GENMASK(13, 0)) | scrambler | DMA_DIR(dir);
+>> +		cmd = len | scrambler | DMA_DIR(dir);
+>>  		writel(cmd, nfc->reg_base + NFC_REG_CMD);
+>>  		return;
+>>  	}
+>> @@ -573,7 +575,7 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
+>>  	if (ret)
+>>  		goto out;
+>>  
+>> -	cmd = NFC_CMD_N2M | (len & GENMASK(13, 0));
+>> +	cmd = NFC_CMD_N2M | len;
+>>  	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+>>  
+>>  	meson_nfc_drain_cmd(nfc);
+>> @@ -597,7 +599,7 @@ static int meson_nfc_write_buf(struct nand_chip *nand, u8 *buf, int len)
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> -	cmd = NFC_CMD_M2N | (len & GENMASK(13, 0));
+>> +	cmd = NFC_CMD_M2N | len;
+>>  	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+>>  
+>>  	meson_nfc_drain_cmd(nfc);
+>> @@ -1007,6 +1009,31 @@ meson_nand_op_put_dma_safe_output_buf(const struct nand_op_instr *instr,
+>>  		kfree(buf);
+>>  }
+>>  
+>> +static int meson_nfc_check_op(struct nand_chip *chip,
+>> +			      const struct nand_operation *op)
+>> +{
+>> +	int op_id;
+>> +
+>> +	for (op_id = 0; op_id < op->ninstrs; op_id++) {
+>> +		const struct nand_op_instr *instr;
+>> +
+>> +		instr = &op->instrs[op_id];
+>> +
+>> +		switch (instr->type) {
+>> +		case NAND_OP_DATA_IN_INSTR:
+>> +		case NAND_OP_DATA_OUT_INSTR:
+>> +			if (instr->ctx.data.len > NFC_CMD_RAW_LEN)
+>> +				return -ENOTSUPP;
+>> +
+>> +			break;
+>> +		default:
+>> +			break;
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int meson_nfc_exec_op(struct nand_chip *nand,
+>>  			     const struct nand_operation *op, bool check_only)
+>>  {
+>> @@ -1015,10 +1042,12 @@ static int meson_nfc_exec_op(struct nand_chip *nand,
+>>  	const struct nand_op_instr *instr = NULL;
+>>  	void *buf;
+>>  	u32 op_id, delay_idle, cmd;
+>> +	int err;
+>>  	int i;
+>>  
+>> -	if (check_only)
+>> -		return 0;
+>> +	err = meson_nfc_check_op(nand, op);
+>> +	if (err || check_only)
+>> +		return err;
+>>  
+>>  	meson_nfc_select_chip(nand, op->cs);
+>>  	for (op_id = 0; op_id < op->ninstrs; op_id++) {
+>> @@ -1293,6 +1322,7 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
+>>  	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
+>>  	struct mtd_info *mtd = nand_to_mtd(nand);
+>>  	int nsectors = mtd->writesize / 1024;
+>> +	int raw_writesize;
+>>  	int ret;
+>>  
+>>  	if (!mtd->name) {
+>> @@ -1304,6 +1334,13 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
+>>  			return -ENOMEM;
+>>  	}
+>>  
+>> +	raw_writesize = mtd->writesize + mtd->oobsize;
+>> +	if (raw_writesize > NFC_CMD_RAW_LEN) {
+>> +		dev_err(nfc->dev, "too big write size in raw mode: %d > %ld\n",
+>> +			raw_writesize, NFC_CMD_RAW_LEN);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>>  	if (nand->bbt_options & NAND_BBT_USE_FLASH)
+>>  		nand->bbt_options |= NAND_BBT_NO_OOB;
+>>  
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
