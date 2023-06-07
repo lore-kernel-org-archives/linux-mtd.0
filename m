@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACD38C7EE29
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 09:32:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C31EC77B7A
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 09:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oj2IACnyjFqJqD7/ofZYxsP9wRNvFkPXkCbXu8YT6rw=; b=mdSCx8oQf7qyft
-	9iCgiOH3iZH1j68dFQPK+GksGHNj+PmStqVHIe9lcgB92PTn6/NbK+QBq2eNLr24zDecyP14gJBQZ
-	LBoDjPvdRWD177Z/eBFjyb5WM4DwtdUt30OUDsb2VHHYKkBwtJvZ7XKyX5D6AVNKcal2XRjysdWCg
-	2FfFfaDVWJ5x8y6AS8/ZrQaLuRWJJn1W/7PsRptnXTac4GK5XtAVY+Gnnw6kW+zSUx6u4nLmyW7wI
-	mwPGJK4GnnKex8p0m9yvtL94k5copeaBaWdLZ20b237equp1XSAuUq+/nJLs9b8muMnSiHdlf7pz2
-	B+WhutEw4bblfrn36mAg==;
+	List-Owner; bh=7dfdirxZkCwt8orIBTHHb74RzSw3RNofm56U2E/Hibc=; b=agdegvJgkoo+C5
+	h+hNcoD8m1RZQ2PUL74oQJ6Q4sWVgugT2vUbZ6+hLJf9lHiBCCkXK1vPWez7CeK9phJS3hWjka0BM
+	wopBaOXDyKSJir1ML+sua0u4jiiqMmKSLB7KJKRjg6gwJgTN6tOIPYXocn6/pO36Xy19f/OyV6bzQ
+	g5kr5gGxB2hpvrOSG4uQ1bMwqBDfnwerWZWpklPmLt8SGcxVVq3o5Ns6PrS6I5YyQPqvOEG2v4L+4
+	n8Kv63s3AIVdtviu88npEs1erNFbu3GhQa6b73ycNMv/Gs7koLYf86qM/5de82jIOqOL6/AAtzpKq
+	0LpWUQPJzoBWz7/sNksQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6pWk-005G3X-27;
-	Wed, 07 Jun 2023 09:32:26 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1q6pXi-005GR5-2g;
+	Wed, 07 Jun 2023 09:33:26 +0000
+Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6pWg-005G2r-0e;
-	Wed, 07 Jun 2023 09:32:24 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 933B460C35;
-	Wed,  7 Jun 2023 09:32:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B105C433EF;
-	Wed,  7 Jun 2023 09:32:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686130341;
-	bh=P2TbWDdnS6A27W2pvNAVdYWJ6PiEt0PFrdobn1khprg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lff1di21tlpc2TrlC6fB6GnxVmkkugxSPyMtNWFrqW8OzrkZmr8ZUOI5WhgJ1Eadg
-	 7EBphe55y3ehk2L6VBwt2beVbGssCVgpJWl5iVhb5J+z0WJapAbrV+9QXz/+Od3elD
-	 9hT/ud2KMYDeZxMYmTbw9ihSf3zWIGYXgS60+OgSspMDvmfKZOhwYyMduvDWjNnDpV
-	 eyLryGwA1QvhphNqz7x1DiokW5Pje0HxZmls4Gw0WXQCZgZkIIEX9j+itfYBfvzyYw
-	 SgYG+Gvi6dSN85sGAEJL23ttLkafuCOdJjbC/a+rjBypxPK2cvTFCdy5hLdAhvqbAp
-	 lP92XuxSBVJFA==
-Date: Wed, 7 Jun 2023 11:32:12 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
-	Josef Bacik <josef@toxicpanda.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Phillip Potter <phil@philpotter.co.uk>, Coly Li <colyli@suse.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
-	linux-block@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 28/31] block: replace fmode_t with a block-specific type
- for block open flags
-Message-ID: <20230607-kribbeln-dilettanten-b901b57dd962@brauner>
-References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-29-hch@lst.de>
- <20230607-kocht-kornfeld-a249c6740e38@brauner>
+	id 1q6pXe-005GOB-2K
+	for linux-mtd@lists.infradead.org;
+	Wed, 07 Jun 2023 09:33:24 +0000
+X-GND-Sasl: miquel.raynal@bootlin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1686130397;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yq+u6KBIixoyRRSctbLzLzxRpq6stiZ8c6Ns65RSIuA=;
+	b=Q2Y+AHSyZBKNzlTG+6grWLT4eLbw6EXKMBRCq3tIWdwxpDsTeOkFfwFca4sK2tQwx9s07+
+	zDbpsRoG40WZCRtp/aFscYccumUovEDaKHCNRQx/lOouwjeOKBHwAlpeyqNVWZEEP2gcCE
+	hLG2nZiyhFSDdiLs0DeQUuduHW4+4gEDxPotjX84VOR12lwK2lIqZjju60dYMmUfSP2MPu
+	v1Q14VenbLFWgU3mUqvvgZSyIoKirqgvZTLu2AePmvg60gJHjIW7UG/7WjMw4SiTZRM0Kb
+	2KO7Wjgt43uwMG34to2ovhVF8LQDaBdPBHXbiqX9lt3QiVPlXVnVKFD5cqipMg==
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1227A24000F;
+	Wed,  7 Jun 2023 09:33:14 +0000 (UTC)
+Date: Wed, 7 Jun 2023 11:33:14 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Chris
+ Packham <Chris.Packham@alliedtelesis.co.nz>, Pratyush Yadav
+ <pratyush@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Michael Walle <michael@walle.cc>, Paul Cercueil
+ <paul@crapouillou.net>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2 07/17] dt-bindings: mtd: ingenic: Prevent NAND chip
+ unevaluated properties
+Message-ID: <20230607113314.5da62276@xps-13>
+In-Reply-To: <168607750937.1468225.8457774415279003681.robh@kernel.org>
+References: <20230606175246.190465-1-miquel.raynal@bootlin.com>
+	<20230606175246.190465-8-miquel.raynal@bootlin.com>
+	<168607750937.1468225.8457774415279003681.robh@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230607-kocht-kornfeld-a249c6740e38@brauner>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_023222_344054_54AB9672 
-X-CRM114-Status: GOOD (  36.95  )
+X-CRM114-CacheID: sfid-20230607_023323_067319_B2EE6BAC 
+X-CRM114-Status: GOOD (  22.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,410 +88,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 07, 2023 at 11:21:24AM +0200, Christian Brauner wrote:
-> On Tue, Jun 06, 2023 at 09:39:47AM +0200, Christoph Hellwig wrote:
-> > The only overlap between the block open flags mapped into the fmode_t and
-> > other uses of fmode_t are FMODE_READ and FMODE_WRITE.  Define a new
-> 
-> and FMODE_EXCL afaict
-> 
-> > blk_mode_t instead for use in blkdev_get_by_*, ->open and ->ioctl and
-> > stop abusing fmode_t.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  arch/um/drivers/ubd_kern.c          |  8 +++---
-> >  arch/xtensa/platforms/iss/simdisk.c |  2 +-
-> >  block/bdev.c                        | 32 +++++++++++-----------
-> >  block/blk-zoned.c                   |  8 +++---
-> >  block/blk.h                         | 11 ++++----
-> >  block/fops.c                        | 26 +++++++++++++-----
-> >  block/genhd.c                       |  8 +++---
-> >  block/ioctl.c                       | 42 +++++++++--------------------
-> >  drivers/block/amiflop.c             | 12 ++++-----
-> >  drivers/block/aoe/aoeblk.c          |  4 +--
-> >  drivers/block/ataflop.c             | 25 +++++++++--------
-> >  drivers/block/drbd/drbd_main.c      |  7 ++---
-> >  drivers/block/drbd/drbd_nl.c        |  2 +-
-> >  drivers/block/floppy.c              | 28 +++++++++----------
-> >  drivers/block/loop.c                | 22 +++++++--------
-> >  drivers/block/mtip32xx/mtip32xx.c   |  4 +--
-> >  drivers/block/nbd.c                 |  4 +--
-> >  drivers/block/pktcdvd.c             | 17 ++++++------
-> >  drivers/block/rbd.c                 |  2 +-
-> >  drivers/block/rnbd/rnbd-clt.c       |  4 +--
-> >  drivers/block/rnbd/rnbd-srv.c       |  4 +--
-> >  drivers/block/sunvdc.c              |  2 +-
-> >  drivers/block/swim.c                | 16 +++++------
-> >  drivers/block/swim3.c               | 24 ++++++++---------
-> >  drivers/block/ublk_drv.c            |  2 +-
-> >  drivers/block/xen-blkback/xenbus.c  |  2 +-
-> >  drivers/block/xen-blkfront.c        |  2 +-
-> >  drivers/block/z2ram.c               |  2 +-
-> >  drivers/block/zram/zram_drv.c       |  6 ++---
-> >  drivers/cdrom/cdrom.c               |  4 +--
-> >  drivers/cdrom/gdrom.c               |  4 +--
-> >  drivers/md/bcache/bcache.h          |  2 +-
-> >  drivers/md/bcache/request.c         |  4 +--
-> >  drivers/md/bcache/super.c           |  6 ++---
-> >  drivers/md/dm-cache-target.c        | 12 ++++-----
-> >  drivers/md/dm-clone-target.c        | 10 +++----
-> >  drivers/md/dm-core.h                |  7 +++--
-> >  drivers/md/dm-era-target.c          |  6 +++--
-> >  drivers/md/dm-ioctl.c               | 10 +++----
-> >  drivers/md/dm-snap.c                |  4 +--
-> >  drivers/md/dm-table.c               | 11 ++++----
-> >  drivers/md/dm-thin.c                |  9 ++++---
-> >  drivers/md/dm-verity-fec.c          |  2 +-
-> >  drivers/md/dm-verity-target.c       |  6 ++---
-> >  drivers/md/dm.c                     | 10 +++----
-> >  drivers/md/dm.h                     |  2 +-
-> >  drivers/md/md.c                     |  8 +++---
-> >  drivers/mmc/core/block.c            |  8 +++---
-> >  drivers/mtd/devices/block2mtd.c     |  4 +--
-> >  drivers/mtd/mtd_blkdevs.c           |  4 +--
-> >  drivers/mtd/ubi/block.c             |  5 ++--
-> >  drivers/nvme/host/core.c            |  2 +-
-> >  drivers/nvme/host/ioctl.c           |  8 +++---
-> >  drivers/nvme/host/multipath.c       |  2 +-
-> >  drivers/nvme/host/nvme.h            |  4 +--
-> >  drivers/nvme/target/io-cmd-bdev.c   |  2 +-
-> >  drivers/s390/block/dasd.c           |  6 ++---
-> >  drivers/s390/block/dasd_genhd.c     |  3 ++-
-> >  drivers/s390/block/dasd_int.h       |  3 ++-
-> >  drivers/s390/block/dasd_ioctl.c     |  2 +-
-> >  drivers/s390/block/dcssblk.c        |  4 +--
-> >  drivers/scsi/sd.c                   | 19 ++++++-------
-> >  drivers/scsi/sr.c                   | 10 +++----
-> >  drivers/target/target_core_iblock.c |  5 ++--
-> >  drivers/target/target_core_pscsi.c  |  4 +--
-> >  fs/btrfs/dev-replace.c              |  2 +-
-> >  fs/btrfs/super.c                    |  4 +--
-> >  fs/btrfs/volumes.c                  | 16 +++++------
-> >  fs/btrfs/volumes.h                  |  4 +--
-> >  fs/erofs/super.c                    |  2 +-
-> >  fs/ext4/super.c                     |  2 +-
-> >  fs/jfs/jfs_logmgr.c                 |  2 +-
-> >  fs/nfs/blocklayout/dev.c            |  5 ++--
-> >  fs/ocfs2/cluster/heartbeat.c        |  3 ++-
-> >  fs/reiserfs/journal.c               |  4 +--
-> >  fs/xfs/xfs_super.c                  |  2 +-
-> >  include/linux/blkdev.h              | 30 ++++++++++++++++-----
-> >  include/linux/cdrom.h               |  3 ++-
-> >  include/linux/device-mapper.h       |  8 +++---
-> >  kernel/power/swap.c                 |  6 ++---
-> >  mm/swapfile.c                       |  2 +-
-> >  81 files changed, 324 insertions(+), 311 deletions(-)
-> > 
-> > diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-> > index 20c1a16199c503..50206feac577d5 100644
-> > --- a/arch/um/drivers/ubd_kern.c
-> > +++ b/arch/um/drivers/ubd_kern.c
-> > @@ -108,9 +108,9 @@ static inline void ubd_set_bit(__u64 bit, unsigned char *data)
-> >  static DEFINE_MUTEX(ubd_lock);
-> >  static DEFINE_MUTEX(ubd_mutex); /* replaces BKL, might not be needed */
-> >  
-> > -static int ubd_open(struct gendisk *disk, fmode_t mode);
-> > +static int ubd_open(struct gendisk *disk, blk_mode_t mode);
-> >  static void ubd_release(struct gendisk *disk);
-> > -static int ubd_ioctl(struct block_device *bdev, fmode_t mode,
-> > +static int ubd_ioctl(struct block_device *bdev, blk_mode_t mode,
-> >  		     unsigned int cmd, unsigned long arg);
-> >  static int ubd_getgeo(struct block_device *bdev, struct hd_geometry *geo);
-> >  
-> > @@ -1154,7 +1154,7 @@ static int __init ubd_driver_init(void){
-> >  
-> >  device_initcall(ubd_driver_init);
-> >  
-> > -static int ubd_open(struct gendisk *disk, fmode_t mode)
-> > +static int ubd_open(struct gendisk *disk, blk_mode_t mode)
-> >  {
-> >  	struct ubd *ubd_dev = disk->private_data;
-> >  	int err = 0;
-> > @@ -1389,7 +1389,7 @@ static int ubd_getgeo(struct block_device *bdev, struct hd_geometry *geo)
-> >  	return 0;
-> >  }
-> >  
-> > -static int ubd_ioctl(struct block_device *bdev, fmode_t mode,
-> > +static int ubd_ioctl(struct block_device *bdev, blk_mode_t mode,
-> >  		     unsigned int cmd, unsigned long arg)
-> >  {
-> >  	struct ubd *ubd_dev = bdev->bd_disk->private_data;
-> > diff --git a/arch/xtensa/platforms/iss/simdisk.c b/arch/xtensa/platforms/iss/simdisk.c
-> > index 2ad9da3de0d90f..178cf96ca10acb 100644
-> > --- a/arch/xtensa/platforms/iss/simdisk.c
-> > +++ b/arch/xtensa/platforms/iss/simdisk.c
-> > @@ -120,7 +120,7 @@ static void simdisk_submit_bio(struct bio *bio)
-> >  	bio_endio(bio);
-> >  }
-> >  
-> > -static int simdisk_open(struct gendisk *disk, fmode_t mode)
-> > +static int simdisk_open(struct gendisk *disk, blk_mode_t mode)
-> >  {
-> >  	struct simdisk *dev = disk->private_data;
-> >  
-> > diff --git a/block/bdev.c b/block/bdev.c
-> > index db63e5bcc46ffa..bd558a9ba3cd97 100644
-> > --- a/block/bdev.c
-> > +++ b/block/bdev.c
-> > @@ -93,7 +93,7 @@ EXPORT_SYMBOL(invalidate_bdev);
-> >   * Drop all buffers & page cache for given bdev range. This function bails
-> >   * with error if bdev has other exclusive owner (such as filesystem).
-> >   */
-> > -int truncate_bdev_range(struct block_device *bdev, fmode_t mode,
-> > +int truncate_bdev_range(struct block_device *bdev, blk_mode_t mode,
-> >  			loff_t lstart, loff_t lend)
-> >  {
-> >  	/*
-> > @@ -101,14 +101,14 @@ int truncate_bdev_range(struct block_device *bdev, fmode_t mode,
-> >  	 * while we discard the buffer cache to avoid discarding buffers
-> >  	 * under live filesystem.
-> >  	 */
-> > -	if (!(mode & FMODE_EXCL)) {
-> > +	if (!(mode & BLK_OPEN_EXCL)) {
-> >  		int err = bd_prepare_to_claim(bdev, truncate_bdev_range, NULL);
-> >  		if (err)
-> >  			goto invalidate;
-> >  	}
-> >  
-> >  	truncate_inode_pages_range(bdev->bd_inode->i_mapping, lstart, lend);
-> > -	if (!(mode & FMODE_EXCL))
-> > +	if (!(mode & BLK_OPEN_EXCL))
-> >  		bd_abort_claiming(bdev, truncate_bdev_range);
-> >  	return 0;
-> >  
-> > @@ -647,7 +647,7 @@ static void blkdev_flush_mapping(struct block_device *bdev)
-> >  	bdev_write_inode(bdev);
-> >  }
-> >  
-> > -static int blkdev_get_whole(struct block_device *bdev, fmode_t mode)
-> > +static int blkdev_get_whole(struct block_device *bdev, blk_mode_t mode)
-> >  {
-> >  	struct gendisk *disk = bdev->bd_disk;
-> >  	int ret;
-> > @@ -679,7 +679,7 @@ static void blkdev_put_whole(struct block_device *bdev)
-> >  		bdev->bd_disk->fops->release(bdev->bd_disk);
-> >  }
-> >  
-> > -static int blkdev_get_part(struct block_device *part, fmode_t mode)
-> > +static int blkdev_get_part(struct block_device *part, blk_mode_t mode)
-> >  {
-> >  	struct gendisk *disk = part->bd_disk;
-> >  	int ret;
-> > @@ -743,11 +743,11 @@ void blkdev_put_no_open(struct block_device *bdev)
-> >  {
-> >  	put_device(&bdev->bd_device);
-> >  }
-> > -
-> > +	
-> 
-> nit: This is whitespace damage, I think. There's a trailing tab.
-> 
-> >  /**
-> >   * blkdev_get_by_dev - open a block device by device number
-> >   * @dev: device number of block device to open
-> > - * @mode: FMODE_* mask
-> > + * @mode: open mode (BLK_OPEN_*)
-> >   * @holder: exclusive holder identifier
-> >   * @hops: holder operations
-> >   *
-> > @@ -765,7 +765,7 @@ void blkdev_put_no_open(struct block_device *bdev)
-> >   * RETURNS:
-> >   * Reference to the block_device on success, ERR_PTR(-errno) on failure.
-> >   */
-> > -struct block_device *blkdev_get_by_dev(dev_t dev, fmode_t mode, void *holder,
-> > +struct block_device *blkdev_get_by_dev(dev_t dev, blk_mode_t mode, void *holder,
-> >  		const struct blk_holder_ops *hops)
-> >  {
-> >  	bool unblock_events = true;
-> > @@ -775,8 +775,8 @@ struct block_device *blkdev_get_by_dev(dev_t dev, fmode_t mode, void *holder,
-> >  
-> >  	ret = devcgroup_check_permission(DEVCG_DEV_BLOCK,
-> >  			MAJOR(dev), MINOR(dev),
-> > -			((mode & FMODE_READ) ? DEVCG_ACC_READ : 0) |
-> > -			((mode & FMODE_WRITE) ? DEVCG_ACC_WRITE : 0));
-> > +			((mode & BLK_OPEN_READ) ? DEVCG_ACC_READ : 0) |
-> > +			((mode & BLK_OPEN_WRITE) ? DEVCG_ACC_WRITE : 0));
-> >  	if (ret)
-> >  		return ERR_PTR(ret);
-> >  
-> > @@ -786,12 +786,12 @@ struct block_device *blkdev_get_by_dev(dev_t dev, fmode_t mode, void *holder,
-> >  	disk = bdev->bd_disk;
-> >  
-> >  	if (holder) {
-> > -		mode |= FMODE_EXCL;
-> > +		mode |= BLK_OPEN_EXCL;
-> >  		ret = bd_prepare_to_claim(bdev, holder, hops);
-> >  		if (ret)
-> >  			goto put_blkdev;
-> >  	} else {
-> > -		if (WARN_ON_ONCE(mode & FMODE_EXCL)) {
-> > +		if (WARN_ON_ONCE(mode & BLK_OPEN_EXCL)) {
-> >  			ret = -EIO;
-> >  			goto put_blkdev;
-> >  		}
-> > @@ -821,7 +821,7 @@ struct block_device *blkdev_get_by_dev(dev_t dev, fmode_t mode, void *holder,
-> >  		 * writeable reference is too fragile given the way @mode is
-> >  		 * used in blkdev_get/put().
-> >  		 */
-> > -		if ((mode & FMODE_WRITE) && !bdev->bd_write_holder &&
-> > +		if ((mode & BLK_OPEN_WRITE) && !bdev->bd_write_holder &&
-> >  		    (disk->event_flags & DISK_EVENT_FLAG_BLOCK_ON_EXCL_WRITE)) {
-> >  			bdev->bd_write_holder = true;
-> >  			unblock_events = false;
-> > @@ -848,7 +848,7 @@ EXPORT_SYMBOL(blkdev_get_by_dev);
-> >  /**
-> >   * blkdev_get_by_path - open a block device by name
-> >   * @path: path to the block device to open
-> > - * @mode: FMODE_* mask
-> > + * @mode: open mode (BLK_OPEN_*)
-> >   * @holder: exclusive holder identifier
-> >   *
-> >   * Open the block device described by the device file at @path.  If @holder is
-> > @@ -861,7 +861,7 @@ EXPORT_SYMBOL(blkdev_get_by_dev);
-> >   * RETURNS:
-> >   * Reference to the block_device on success, ERR_PTR(-errno) on failure.
-> >   */
-> > -struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
-> > +struct block_device *blkdev_get_by_path(const char *path, blk_mode_t mode,
-> >  		void *holder, const struct blk_holder_ops *hops)
-> >  {
-> >  	struct block_device *bdev;
-> > @@ -873,7 +873,7 @@ struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
-> >  		return ERR_PTR(error);
-> >  
-> >  	bdev = blkdev_get_by_dev(dev, mode, holder, hops);
-> > -	if (!IS_ERR(bdev) && (mode & FMODE_WRITE) && bdev_read_only(bdev)) {
-> > +	if (!IS_ERR(bdev) && (mode & BLK_OPEN_WRITE) && bdev_read_only(bdev)) {
-> >  		blkdev_put(bdev, holder);
-> >  		return ERR_PTR(-EACCES);
-> >  	}
-> > diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-> > index 02cc2c629ac9be..0f9f97cdddd99c 100644
-> > --- a/block/blk-zoned.c
-> > +++ b/block/blk-zoned.c
-> > @@ -356,8 +356,8 @@ int blkdev_report_zones_ioctl(struct block_device *bdev, unsigned int cmd,
-> >  	return 0;
-> >  }
-> >  
-> > -static int blkdev_truncate_zone_range(struct block_device *bdev, fmode_t mode,
-> > -				      const struct blk_zone_range *zrange)
-> > +static int blkdev_truncate_zone_range(struct block_device *bdev,
-> > +		blk_mode_t mode, const struct blk_zone_range *zrange)
-> >  {
-> >  	loff_t start, end;
-> >  
-> > @@ -376,7 +376,7 @@ static int blkdev_truncate_zone_range(struct block_device *bdev, fmode_t mode,
-> >   * BLKRESETZONE, BLKOPENZONE, BLKCLOSEZONE and BLKFINISHZONE ioctl processing.
-> >   * Called from blkdev_ioctl.
-> >   */
-> > -int blkdev_zone_mgmt_ioctl(struct block_device *bdev, fmode_t mode,
-> > +int blkdev_zone_mgmt_ioctl(struct block_device *bdev, blk_mode_t mode,
-> >  			   unsigned int cmd, unsigned long arg)
-> >  {
-> >  	void __user *argp = (void __user *)arg;
-> > @@ -390,7 +390,7 @@ int blkdev_zone_mgmt_ioctl(struct block_device *bdev, fmode_t mode,
-> >  	if (!bdev_is_zoned(bdev))
-> >  		return -ENOTTY;
-> >  
-> > -	if (!(mode & FMODE_WRITE))
-> > +	if (!(mode & BLK_OPEN_WRITE))
-> >  		return -EBADF;
-> >  
-> >  	if (copy_from_user(&zrange, argp, sizeof(struct blk_zone_range)))
-> > diff --git a/block/blk.h b/block/blk.h
-> > index e28d5d67d31a28..768852a84fefb3 100644
-> > --- a/block/blk.h
-> > +++ b/block/blk.h
-> > @@ -396,7 +396,7 @@ void disk_free_zone_bitmaps(struct gendisk *disk);
-> >  void disk_clear_zone_settings(struct gendisk *disk);
-> >  int blkdev_report_zones_ioctl(struct block_device *bdev, unsigned int cmd,
-> >  		unsigned long arg);
-> > -int blkdev_zone_mgmt_ioctl(struct block_device *bdev, fmode_t mode,
-> > +int blkdev_zone_mgmt_ioctl(struct block_device *bdev, blk_mode_t mode,
-> >  		unsigned int cmd, unsigned long arg);
-> >  #else /* CONFIG_BLK_DEV_ZONED */
-> >  static inline void disk_free_zone_bitmaps(struct gendisk *disk) {}
-> > @@ -407,7 +407,7 @@ static inline int blkdev_report_zones_ioctl(struct block_device *bdev,
-> >  	return -ENOTTY;
-> >  }
-> >  static inline int blkdev_zone_mgmt_ioctl(struct block_device *bdev,
-> > -		fmode_t mode, unsigned int cmd, unsigned long arg)
-> > +		blk_mode_t mode, unsigned int cmd, unsigned long arg)
-> >  {
-> >  	return -ENOTTY;
-> >  }
-> > @@ -451,7 +451,7 @@ static inline void bio_release_page(struct bio *bio, struct page *page)
-> >  
-> >  struct request_queue *blk_alloc_queue(int node_id);
-> >  
-> > -int disk_scan_partitions(struct gendisk *disk, fmode_t mode);
-> > +int disk_scan_partitions(struct gendisk *disk, blk_mode_t mode);
-> >  
-> >  int disk_alloc_events(struct gendisk *disk);
-> >  void disk_add_events(struct gendisk *disk);
-> > @@ -466,8 +466,9 @@ extern struct device_attribute dev_attr_events_poll_msecs;
-> >  
-> >  extern struct attribute_group blk_trace_attr_group;
-> >  
-> > -int truncate_bdev_range(struct block_device *bdev, fmode_t mode, loff_t lstart,
-> > -		loff_t lend);
-> > +blk_mode_t file_to_blk_mode(struct file *file);
-> > +int truncate_bdev_range(struct block_device *bdev, blk_mode_t mode,
-> > +		loff_t lstart, loff_t lend);
-> >  long blkdev_ioctl(struct file *file, unsigned cmd, unsigned long arg);
-> >  long compat_blkdev_ioctl(struct file *file, unsigned cmd, unsigned long arg);
-> >  
-> > diff --git a/block/fops.c b/block/fops.c
-> > index 9f26e25bafa172..928c37a214f785 100644
-> > --- a/block/fops.c
-> > +++ b/block/fops.c
-> > @@ -470,6 +470,24 @@ static int blkdev_fsync(struct file *filp, loff_t start, loff_t end,
-> >  	return error;
-> >  }
-> >  
-> > +blk_mode_t file_to_blk_mode(struct file *file)
-> > +{
-> > +	blk_mode_t mode = 0;
-> > +
-> > +	if (file->f_mode & FMODE_READ)
-> > +		mode |= BLK_OPEN_READ;
-> > +	if (file->f_mode & FMODE_WRITE)
-> > +		mode |= BLK_OPEN_WRITE;
-> > +	if (file->f_mode & FMODE_EXCL)
-> > +		mode |= BLK_OPEN_EXCL;
-> > +	if ((file->f_flags & O_ACCMODE) == 3)
-> 
-> I really don't like magic numbers like this.
-> 
-> Groan, O_RDONLY being defined as 0 strikes again...
-> Becuase of this quirk we internally map
-> 
-> O_RDONLY(0) -> FMODE_READ(1)
-> O_WRONLY(1) -> FMODE_WRITE(2)
-> O_RDWR(3)   -> (FMODE_READ | FMODE_WRITE)
-
-s/O_RDWR(3)/O_RDWR(2)/
-
-> 
-> so checking for the raw 3 here is confusing in addition to being a magic
-> number as it could give the impression that what's checked here is
-> (O_WRONLY | O_RDWR) which doesn't make sense...
-> 
-> So my perference would be in descending order of preference:
-> 
-> (file->f_flags & O_ACCMODE) == (FMODE_READ | FMODE_WRITE)
-> 
-> or while a little less clear but informative enough for people familiar
-> with the O_RDONLY quirk:
-> 
-> if ((file->f_flags & O_ACCMODE) == O_ACCMODE)
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUm9iLAoKcm9iaEBrZXJuZWwub3JnIHdyb3RlIG9uIFR1ZSwgMDYgSnVuIDIwMjMgMTI6NTI6
+MDAgLTA2MDA6Cgo+IE9uIFR1ZSwgMDYgSnVuIDIwMjMgMTk6NTI6MzYgKzAyMDAsIE1pcXVlbCBS
+YXluYWwgd3JvdGU6Cj4gPiBMaXN0IGFsbCB0aGUgcG9zc2libGUgcHJvcGVydGllcyBpbiB0aGUg
+TkFORCBjaGlwIGFzIHBlciB0aGUgZXhhbXBsZSBhbmQKPiA+IHNldCB1bmV2YWx1YXRlZFByb3Bl
+cnRpZXMgdG8gZmFsc2UgaW4gdGhlIE5BTkQgY2hpcCBzZWN0aW9uLgo+ID4gCj4gPiBDYzogUGF1
+bCBDZXJjdWVpbCA8cGF1bEBjcmFwb3VpbGxvdS5uZXQ+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBNaXF1
+ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+ID4gLS0tCj4gPiAgRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9pbmdlbmljLG5hbmQueWFtbCB8IDQgKysr
+Kwo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykKPiA+ICAgCj4gCj4gTXkgYm90
+IGZvdW5kIGVycm9ycyBydW5uaW5nICdtYWtlIERUX0NIRUNLRVJfRkxBR1M9LW0gZHRfYmluZGlu
+Z19jaGVjaycKPiBvbiB5b3VyIHBhdGNoIChEVF9DSEVDS0VSX0ZMQUdTIGlzIG5ldyBpbiB2NS4x
+Myk6Cj4gCj4geWFtbGxpbnQgd2FybmluZ3MvZXJyb3JzOgo+IAo+IGR0c2NoZW1hL2R0YyB3YXJu
+aW5ncy9lcnJvcnM6Cj4gLi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2lu
+Z2VuaWMsbmFuZC55YW1sOiBVbmFibGUgdG8gZmluZCBzY2hlbWEgZmlsZSBtYXRjaGluZyAkaWQ6
+IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL210ZC9yYXctbmFuZC1jaGlwLnlhbWwKCkl0
+IHNlZW1zIGxpa2UgeW91ciBhdXRvbWF0ZWQgdG9vbGluZyBmYWlsZWQgdG8gYXBwbHkgdGhlIHNl
+Y29uZCBwYXRjaAppbiB0aGlzIHNlcmllcyAoY3JlYXRpbmcgcmF3LW5hbmQtY2hpcC55YW1sKS4g
+SXQgc2F5cyAic2hhMSBpbmZvcm1hdGlvbgppcyBsYWNraW5nIG9yIHVzZWxlc3MiLiBUaGlzIHdv
+cmsgaXMgYmFzZWQgb24gYSByZWNlbnQgLXJjIHNvIEknbSBub3QKc3VyZSB3aGF0IGlzICJsYWNr
+aW5nIG9yIHVzZWxlc3MiIGluIHRoaXMgY2FzZS4KCkFueXdheSwgZG8geW91IHBsYW4gdG8gZ2l2
+ZSB0aGlzIHNlcmllcyBhIGxvb2sgYW55d2F5PyBPciBzaG91bGQgSQpyZWJhc2UgYWdhaW5zdCBh
+IHNwZWNpZmljIGJyYW5jaD8KClRoYW5rcywKTWlxdcOobAoKPiAvYnVpbGRzL3JvYmhlcnJpbmcv
+ZHQtcmV2aWV3LWNpL2xpbnV4L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQv
+aW5nZW5pYyxuYW5kLmV4YW1wbGUuZHRiOiBuYW5kLWNvbnRyb2xsZXJAMTogbmFuZEAxOiBGYWxz
+ZSBzY2hlbWEgZG9lcyBub3QgYWxsb3cgeydyZWcnOiBbWzFdXSwgJ25hbmQtZWNjLXN0ZXAtc2l6
+ZSc6IFtbMTAyNF1dLCAnbmFuZC1lY2Mtc3RyZW5ndGgnOiBbWzI0XV0sICduYW5kLWVjYy1tb2Rl
+JzogWydodyddLCAnbmFuZC1vbi1mbGFzaC1iYnQnOiBUcnVlLCAncGluY3RybC1uYW1lcyc6IFsn
+ZGVmYXVsdCddLCAncGluY3RybC0wJzogW1s0Mjk0OTY3Mjk1XV0sICdwYXJ0aXRpb25zJzogeydj
+b21wYXRpYmxlJzogWydmaXhlZC1wYXJ0aXRpb25zJ10sICcjYWRkcmVzcy1jZWxscyc6IFtbMl1d
+LCAnI3NpemUtY2VsbHMnOiBbWzJdXSwgJ3BhcnRpdGlvbkAwJzogeydsYWJlbCc6IFsndS1ib290
+LXNwbCddLCAncmVnJzogW1swLCAwLCAwLCA4Mzg4NjA4XV19LCAncGFydGl0aW9uQDgwMDAwMCc6
+IHsnbGFiZWwnOiBbJ3UtYm9vdCddLCAncmVnJzogW1swLCA4Mzg4NjA4LCAwLCAyMDk3MTUyXV19
+LCAncGFydGl0aW9uQGEwMDAwMCc6IHsnbGFiZWwnOiBbJ3UtYm9vdC1lbnYnXSwgJ3JlZyc6IFtb
+MCwgMTA0ODU3NjAsIDAsIDIwOTcxNTJdXX0sICdwYXJ0aXRpb25AYzAwMDAwJzogeydsYWJlbCc6
+IFsnYm9vdCddLCAncmVnJzogW1swLCAxMjU4MjkxMiwgMCwgNjcxMDg4NjRdXX0sICdwYXJ0aXRp
+b25ANGMwMDAwMCc6IHsnbGFiZWwnOiBbJ3N5c3RlbSddLCAncmVnJzogW1swLCA3OTY5MTc3Niwg
+MSwgNDIxNTI3NTUyMF1dfX19Cj4gCUZyb20gc2NoZW1hOiAvYnVpbGRzL3JvYmhlcnJpbmcvZHQt
+cmV2aWV3LWNpL2xpbnV4L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvaW5n
+ZW5pYyxuYW5kLnlhbWwKPiAvYnVpbGRzL3JvYmhlcnJpbmcvZHQtcmV2aWV3LWNpL2xpbnV4L0Rv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvaW5nZW5pYyxuYW5kLmV4YW1wbGUu
+ZHRiOiBuYW5kLWNvbnRyb2xsZXJAMTogbmFuZEAxOiBVbmV2YWx1YXRlZCBwcm9wZXJ0aWVzIGFy
+ZSBub3QgYWxsb3dlZCAoJ25hbmQtZWNjLW1vZGUnLCAnbmFuZC1lY2Mtc3RlcC1zaXplJywgJ25h
+bmQtZWNjLXN0cmVuZ3RoJywgJ25hbmQtb24tZmxhc2gtYmJ0JywgJ3BhcnRpdGlvbnMnLCAncmVn
+JyB3ZXJlIHVuZXhwZWN0ZWQpCj4gCUZyb20gc2NoZW1hOiAvYnVpbGRzL3JvYmhlcnJpbmcvZHQt
+cmV2aWV3LWNpL2xpbnV4L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvaW5n
+ZW5pYyxuYW5kLnlhbWwKPiAKPiBkb2MgcmVmZXJlbmNlIGVycm9ycyAobWFrZSByZWZjaGVja2Rv
+Y3MpOgo+IAo+IFNlZSBodHRwczovL3BhdGNod29yay5vemxhYnMub3JnL3Byb2plY3QvZGV2aWNl
+dHJlZS1iaW5kaW5ncy9wYXRjaC8yMDIzMDYwNjE3NTI0Ni4xOTA0NjUtOC1taXF1ZWwucmF5bmFs
+QGJvb3RsaW4uY29tCj4gCj4gVGhlIGJhc2UgZm9yIHRoZSBzZXJpZXMgaXMgZ2VuZXJhbGx5IHRo
+ZSBsYXRlc3QgcmMxLiBBIGRpZmZlcmVudCBkZXBlbmRlbmN5Cj4gc2hvdWxkIGJlIG5vdGVkIGlu
+ICp0aGlzKiBwYXRjaC4KPiAKPiBJZiB5b3UgYWxyZWFkeSByYW4gJ21ha2UgZHRfYmluZGluZ19j
+aGVjaycgYW5kIGRpZG4ndCBzZWUgdGhlIGFib3ZlCj4gZXJyb3IocyksIHRoZW4gbWFrZSBzdXJl
+ICd5YW1sbGludCcgaXMgaW5zdGFsbGVkIGFuZCBkdC1zY2hlbWEgaXMgdXAgdG8KPiBkYXRlOgo+
+IAo+IHBpcDMgaW5zdGFsbCBkdHNjaGVtYSAtLXVwZ3JhZGUKPiAKPiBQbGVhc2UgY2hlY2sgYW5k
+IHJlLXN1Ym1pdCBhZnRlciBydW5uaW5nIHRoZSBhYm92ZSBjb21tYW5kIHlvdXJzZWxmLiBOb3Rl
+Cj4gdGhhdCBEVF9TQ0hFTUFfRklMRVMgY2FuIGJlIHNldCB0byB5b3VyIHNjaGVtYSBmaWxlIHRv
+IHNwZWVkIHVwIGNoZWNraW5nCj4geW91ciBzY2hlbWEuIEhvd2V2ZXIsIGl0IG11c3QgYmUgdW5z
+ZXQgdG8gdGVzdCBhbGwgZXhhbXBsZXMgd2l0aCB5b3VyIHNjaGVtYS4KPiAKCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
