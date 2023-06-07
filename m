@@ -4,63 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8DF7C7EE25
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 14:56:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99C56C7EE25
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 14:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F4fg0288qbMs9hoBLuHdd2eeBB1cuDHt/mVzwRo1eYM=; b=kJT+Fp7LGGAGQw
-	WdizzgxB9AESWFUnto7+Px+JtsL12UKzngbuIRdwcAb1fvqw2+PyT8TuQtWXUfmwPQZzbwJA4cGfY
-	C9u9EB3edh1MjVGAXvHgxZqADri3Kkrl7LCySP2+iOHxf80wxQDbjcKJlr74+1tJcRLf5XP2sohct
-	2QPCKBCywgyUPPSVeyljBqfbxTHdS+1q1f75riM7N0+VQt+Bw1PaHaBZAxNAoDfMeDXSukn7V34SL
-	nHccsNam4lAinicEy3VsO/fNnwHK55FPQTHa0GraV/oGxE4m3vsn0L7rksWohhQiw/w7ZeI2HRvhn
-	a1+B0EwHRYmLMcjptnhw==;
+	List-Owner; bh=YrH8EVYvKSg1+8WfZC9g8rgXqSaHwRE1KhzWVCFjoQA=; b=rEQdGPLODy6NMR
+	zAh02H5ApQ8s29h3BgoEswyYEGt7qWAf1DJkTezUPcnrPw/h/1RpDiei54Nh33SLJXHGEwrZgd+t4
+	bLRroOesMV99Aav5qFjWqhGzngNHoSbdg9vr97cUfyNzlUaey0m248J24SRgtUDMoDBAI+6Cc7iZv
+	MOmQfXjsI0o7e27wqc6GBu9HP5Xti2r8uFGPdRzx9TkvjA3+zPghhK7Td4sFLPSmYAcU799+VWOjL
+	aARxwiJHUA6C4K4ZTWTZbQhlQQ0JtAnM5I/YKLhgT2pPMagirDezoy0humUMKMLKmCl8kPP2Yrr6I
+	TmNlKdbO0YdEEDtMLgPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6uZm-006JYQ-3A;
-	Wed, 07 Jun 2023 14:55:54 +0000
+	id 1q6ubO-006KAE-0f;
+	Wed, 07 Jun 2023 14:57:34 +0000
 Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6uZa-006JQy-0Y;
-	Wed, 07 Jun 2023 14:55:47 +0000
+	id 1q6ubJ-006K7a-2r;
+	Wed, 07 Jun 2023 14:57:31 +0000
 Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id DB3E95FD6F;
-	Wed,  7 Jun 2023 17:55:34 +0300 (MSK)
+	by mx.sberdevices.ru (Postfix) with ESMTP id AE6045FD6E;
+	Wed,  7 Jun 2023 17:57:27 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1686149734;
-	bh=rYTGCAplnRx/Dki6x4xZvyofri8ryJP0w/zMyn2mG9Y=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=bAY84eRzKe8qtQzKu8mPTth0pmPT05Zhwk5cK5fGc36EFk8FXXylD4Q4H/tbLQ2Qx
-	 e3fRfQ3Va9HCYbRCfuOsplfadTHCKX56CqY3YNM5UZ4U+OZC4NybXbwvc2fiA1qFuI
-	 g1kmb32YRw8sm32ElgjJ2ibSUWoa5REjrHx4NP/MTd0JNtNWHTlI8wTZFXf2/K0HVk
-	 2nIpunovUWxjbAfVpzB1mqgS82MDZXv/G781zbr7gBN0pWBE1DKXhXdmpdIw6bIXNs
-	 cDSJNaWvNYPuhSswzIF60nVxZrCkCQ93zEVPcZj1RxEfn1U0YlS09pyn6JW5ixvYay
-	 XfpiiZKCbMDzQ==
+	s=mail; t=1686149847;
+	bh=c5e9Hn2iWEoovV4OiRRedc1P1r4+v4qAhT08M7pHODc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	b=gAaEepNtKegJU7Wc0IZhBJxXUjdudfDS2bXbuTPi2rcMrWr4upfpX+yvwDlMlTdMG
+	 Newa/obL3r7plfg8OhFB7PwIcHtM1bnyZoKxCpHUDQggc0B/Nb4j0xL/ew1/A2Pyuq
+	 DbnyxuePczlzcMcz9Px0V4rBOhnoapxGEXO12SsfxNt2s55T0Xa3qf70AejXZTBm+B
+	 F7t1h9PUFWIQE+iAPINfqpNze08/oD3YeebSpID4U/atjAMZiqiZQ6skdKuB/qxc0f
+	 1cXBq6Ew3jLIX0Oc1R4E19jQVNzyQEgo+iDII+8fjiR9pGG0OtTFiJ0YH+VoOc0Atr
+	 pMCYg1N2lDF4Q==
 Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
 	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Wed,  7 Jun 2023 17:55:34 +0300 (MSK)
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+	Wed,  7 Jun 2023 17:57:27 +0300 (MSK)
+Message-ID: <6c1973d1-38c0-6048-90ad-da2f60df8238@sberdevices.ru>
+Date: Wed, 7 Jun 2023 17:52:32 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v1] dt-bindings: nand: meson: Fix 'nand-rb' property
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Liang Yang
+	<liang.yang@amlogic.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
  Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Neil Armstrong
 	<neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
  Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
-	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
+	<martin.blumenstingl@googlemail.com>, <oxffffaa@gmail.com>,
+	<kernel@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
 	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 2/2] mtd: rawnand: meson: waiting w/o wired ready/busy pin
-Date: Wed, 7 Jun 2023 17:50:25 +0300
-Message-ID: <20230607145026.2899547-3-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20230607145026.2899547-1-AVKrasnov@sberdevices.ru>
-References: <20230607145026.2899547-1-AVKrasnov@sberdevices.ru>
-MIME-Version: 1.0
+References: <20230606193507.35024-1-AVKrasnov@sberdevices.ru>
+ <20230607095802.3adcd4f9@xps-13>
+ <166bdc27-f77c-9076-f866-180cfa5bff76@sberdevices.ru>
+ <08da4e86-433a-7d2e-25ff-ffa24221abdf@linaro.org>
+ <835a3587-1e0f-64d7-1d1a-b639ae8b7307@sberdevices.ru>
+ <2ca6e619-1d57-8fff-6176-9ee890e0d167@linaro.org>
+ <5ca9eb2b-4bc8-5883-a029-3eeca905fe6e@sberdevices.ru>
+ <20230607113605.50a992bb@xps-13>
+From: Arseniy Krasnov <avkrasnov@sberdevices.ru>
+In-Reply-To: <20230607113605.50a992bb@xps-13>
 X-Originating-IP: [172.16.1.6]
 X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
  S-MS-EXCH01.sberdevices.ru (172.16.1.4)
@@ -72,8 +81,8 @@ X-KSMG-AntiPhishing: not scanned, disabled by settings
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/07 09:39:00 #21450961
 X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_075542_734373_786F43A3 
-X-CRM114-Status: GOOD (  19.95  )
+X-CRM114-CacheID: sfid-20230607_075730_276971_F873FA99 
+X-CRM114-Status: GOOD (  16.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,178 +94,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If there is no wired ready/busy pin, classic way to wait for command
-completion is to use function 'nand_soft_waitrdy()'. Meson NAND has
-special command which allows to wait for NAND_STATUS_READY bit without
-reading status in a software loop (as 'nand_soft_waitrdy()' does). To
-use it send this command along with NAND_CMD_STATUS, then wait for an
-interrupt, and after interrupt send NAND_CMD_READ0. So this feature
-allows to use interrupt driven waiting without wired ready/busy pin.
-
-Suggested-by: Liang Yang <liang.yang@amlogic.com>
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
----
- drivers/mtd/nand/raw/meson_nand.c | 82 +++++++++++++++++++++++++++++--
- 1 file changed, 78 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 074e14225c06..935de8e4934d 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -38,6 +38,7 @@
- #define NFC_CMD_SCRAMBLER_DISABLE	0
- #define NFC_CMD_SHORTMODE_DISABLE	0
- #define NFC_CMD_RB_INT		BIT(14)
-+#define NFC_CMD_RB_INT_NO_PIN	((0xb << 10) | BIT(18) | BIT(16))
- 
- #define NFC_CMD_GET_SIZE(x)	(((x) >> 22) & GENMASK(4, 0))
- 
-@@ -179,6 +180,7 @@ struct meson_nfc {
- 	u32 info_bytes;
- 
- 	unsigned long assigned_cs;
-+	bool no_rb_pin;
- };
- 
- enum {
-@@ -392,7 +394,42 @@ static void meson_nfc_set_data_oob(struct nand_chip *nand,
- 	}
- }
- 
--static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
-+static int meson_nfc_wait_no_rb_pin(struct meson_nfc *nfc, int timeout_ms,
-+				    bool need_cmd_read0)
-+{
-+	u32 cmd, cfg;
-+
-+	meson_nfc_cmd_idle(nfc, nfc->timing.twb);
-+	meson_nfc_drain_cmd(nfc);
-+	meson_nfc_wait_cmd_finish(nfc, CMD_FIFO_EMPTY_TIMEOUT);
-+
-+	cfg = readl(nfc->reg_base + NFC_REG_CFG);
-+	cfg |= NFC_RB_IRQ_EN;
-+	writel(cfg, nfc->reg_base + NFC_REG_CFG);
-+
-+	reinit_completion(&nfc->completion);
-+	cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_STATUS;
-+	writel(cmd, nfc->reg_base + NFC_REG_CMD);
-+
-+	/* use the max erase time as the maximum clock for waiting R/B */
-+	cmd = NFC_CMD_RB | NFC_CMD_RB_INT_NO_PIN | nfc->timing.tbers_max;
-+	writel(cmd, nfc->reg_base + NFC_REG_CMD);
-+
-+	if (!wait_for_completion_timeout(&nfc->completion,
-+					 msecs_to_jiffies(timeout_ms)))
-+		return -ETIMEDOUT;
-+
-+	if (need_cmd_read0) {
-+		cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_READ0;
-+		writel(cmd, nfc->reg_base + NFC_REG_CMD);
-+		meson_nfc_drain_cmd(nfc);
-+		meson_nfc_wait_cmd_finish(nfc, CMD_FIFO_EMPTY_TIMEOUT);
-+	}
-+
-+	return 0;
-+}
-+
-+static int meson_nfc_wait_rb_pin(struct meson_nfc *nfc, int timeout_ms)
- {
- 	u32 cmd, cfg;
- 	int ret = 0;
-@@ -420,6 +457,27 @@ static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
- 	return ret;
- }
- 
-+static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms,
-+			      bool need_cmd_read0)
-+{
-+	if (nfc->no_rb_pin) {
-+		/* This mode is used when there is no wired R/B pin.
-+		 * It works like 'nand_soft_waitrdy()', but instead of
-+		 * polling NAND_CMD_STATUS bit in the software loop,
-+		 * it will wait for interrupt - controllers checks IO
-+		 * bus and when it detects NAND_CMD_STATUS on it, it
-+		 * raises interrupt. After interrupt, NAND_CMD_READ0 is
-+		 * sent as terminator of the ready waiting procedure if
-+		 * needed (for all cases except page programming - this
-+		 * is reason of 'need_cmd_read0' flag).
-+		 */
-+		return meson_nfc_wait_no_rb_pin(nfc, timeout_ms,
-+						need_cmd_read0);
-+	} else {
-+		return meson_nfc_wait_rb_pin(nfc, timeout_ms);
-+	}
-+}
-+
- static void meson_nfc_set_user_byte(struct nand_chip *nand, u8 *oob_buf)
- {
- 	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
-@@ -623,7 +681,7 @@ static int meson_nfc_rw_cmd_prepare_and_execute(struct nand_chip *nand,
- 	if (in) {
- 		nfc->cmdfifo.rw.cmd1 = cs | NFC_CMD_CLE | NAND_CMD_READSTART;
- 		writel(nfc->cmdfifo.rw.cmd1, nfc->reg_base + NFC_REG_CMD);
--		meson_nfc_queue_rb(nfc, PSEC_TO_MSEC(sdr->tR_max));
-+		meson_nfc_queue_rb(nfc, PSEC_TO_MSEC(sdr->tR_max), true);
- 	} else {
- 		meson_nfc_cmd_idle(nfc, nfc->timing.tadl);
- 	}
-@@ -669,7 +727,7 @@ static int meson_nfc_write_page_sub(struct nand_chip *nand,
- 
- 	cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_PAGEPROG;
- 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
--	meson_nfc_queue_rb(nfc, PSEC_TO_MSEC(sdr->tPROG_max));
-+	meson_nfc_queue_rb(nfc, PSEC_TO_MSEC(sdr->tPROG_max), false);
- 
- 	meson_nfc_dma_buffer_release(nand, data_len, info_len, DMA_TO_DEVICE);
- 
-@@ -952,7 +1010,8 @@ static int meson_nfc_exec_op(struct nand_chip *nand,
- 			break;
- 
- 		case NAND_OP_WAITRDY_INSTR:
--			meson_nfc_queue_rb(nfc, instr->ctx.waitrdy.timeout_ms);
-+			meson_nfc_queue_rb(nfc, instr->ctx.waitrdy.timeout_ms,
-+					   true);
- 			if (instr->delay_ns)
- 				meson_nfc_cmd_idle(nfc, delay_idle);
- 			break;
-@@ -1248,6 +1307,7 @@ meson_nfc_nand_chip_init(struct device *dev,
- 	struct mtd_info *mtd;
- 	int ret, i;
- 	u32 tmp, nsels;
-+	u32 nand_rb_val;
- 
- 	nsels = of_property_count_elems_of_size(np, "reg", sizeof(u32));
- 	if (!nsels || nsels > MAX_CE_NUM) {
-@@ -1287,6 +1347,20 @@ meson_nfc_nand_chip_init(struct device *dev,
- 	mtd->owner = THIS_MODULE;
- 	mtd->dev.parent = dev;
- 
-+	ret = of_property_read_u32(np, "nand-rb", &nand_rb_val);
-+	if (ret) {
-+		/* If property was not found, don't use rb pin. */
-+		if (ret == -EINVAL)
-+			nfc->no_rb_pin = true;
-+		else
-+			return -EINVAL;
-+	} else {
-+		if (nand_rb_val)
-+			return -EINVAL;
-+
-+		nfc->no_rb_pin = false;
-+	}
-+
- 	ret = nand_scan(nand, nsels);
- 	if (ret)
- 		return ret;
--- 
-2.35.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiAwNy4wNi4yMDIzIDEyOjM2LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+IEhpIEFyc2VuaXks
+Cj4gCj4gYXZrcmFzbm92QHNiZXJkZXZpY2VzLnJ1IHdyb3RlIG9uIFdlZCwgNyBKdW4gMjAyMyAx
+MjowNDoyOSArMDMwMDoKPiAKPj4gT24gMDcuMDYuMjAyMyAxMjowOCwgS3J6eXN6dG9mIEtvemxv
+d3NraSB3cm90ZToKPj4+IE9uIDA3LzA2LzIwMjMgMTA6NTcsIEFyc2VuaXkgS3Jhc25vdiB3cm90
+ZTogIAo+Pj4+Cj4+Pj4KPj4+PiBPbiAwNy4wNi4yMDIzIDExOjUzLCBLcnp5c3p0b2YgS296bG93
+c2tpIHdyb3RlOiAgCj4+Pj4+IE9uIDA3LzA2LzIwMjMgMTA6NDAsIEFyc2VuaXkgS3Jhc25vdiB3
+cm90ZTogIAo+Pj4+Pj4gSGVsbG8gTWlxdWVsLCAKPj4+Pj4+Cj4+Pj4+PiBPbiAwNy4wNi4yMDIz
+IDEwOjU4LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+Pj4+Pj4gIAo+Pj4+Pj4+IEhpIEFyc2VuaXks
+Cj4+Pj4+Pj4KPj4+Pj4+PiBBVktyYXNub3ZAc2JlcmRldmljZXMucnUgd3JvdGUgb24gVHVlLCA2
+IEp1biAyMDIzIDIyOjM1OjA3ICswMzAwOgo+Pj4+Pj4+ICAKPj4+Pj4+Pj4gQWRkIGRlc2NyaXB0
+aW9uIG9mICduYW5kLXJiJyBwcm9wZXJ0eS4gVXNlICJGaXhlcyIgYmVjYXVzZSB0aGlzIHByb3Bl
+cnR5Cj4+Pj4+Pj4+IG11c3QgYmUgc3VwcG9ydGVkIHNpbmNlIHRoZSBiZWdpbm5pbmcuIEZvciB0
+aGlzIGNvbnRyb2xsZXIgJ25hbmQtcmInIGlzCj4+Pj4+Pj4+IHN0b3JlZCBpbiB0aGUgY29udHJv
+bGxlciBub2RlIChub3QgaW4gY2hpcCksIGJlY2F1c2UgaXQgaGFzIG9ubHkgc2luZ2xlCj4+Pj4+
+Pj4+IHIvYiB3aXJlIGZvciBhbGwgY2hpcHMuICAKPj4+Pj4+Pgo+Pj4+Pj4+IFNvcnJ5IGlmIEkg
+bWlzbGVhZCB5b3UgaW4gdGhlIGZpcnN0IHBsYWNlLCBidXQgeW91IGNvdWxkIGRlZmluaXRlbHkK
+Pj4+Pj4+PiBoYXZlIHR3byBjaGlwcyBhbmQgb25seSBvbmUgd2l0aCBSQiB3aXJlZC4gSXQgbmVl
+ZHMgdG8gYmUgZGVmaW5lZCBpbgo+Pj4+Pj4+IHRoZSBjaGlwcy4gIAo+Pj4+Pj4KPj4+Pj4+IE9r
+LCBzbyB0byBjbGFyaWZ5OiBpcyBpdCBvaywgdGhhdCBpbiBiaW5kaW5ncyB0aGlzIHByb3BlcnR5
+IHdpbGwgYmUgcGxhY2VkIGluIHRoZQo+Pj4+Pj4gY2hpcCwgYnV0IGluIGRyaXZlciwgaSdtIHRy
+eWluZyB0byByZWFkIGl0IGZyb20gdGhlIGNvbnRyb2xsZXIgbm9kZSAodGh1cyAgaW4KPj4+Pj4+
+IGR0cyBmaWxlIGl0IHdpbGwgYmUgYWxzbyBpbiBjb250cm9sbGVyIG5vZGUpPyAgCj4gCj4gVGhl
+IGJpbmRpbmdzIGFuZCB5b3VyIGRyaXZlciBpbnRlcm5hbCByZXByZXNlbnRhdGlvbiBhcmUgdHdv
+IGRpZmZlcmVudAo+IHRoaW5ncy4gQW55d2F5LCBhcyBtZW50aW9uZWQgYWJvdmUsIHdpcmluZyB0
+aGUgUkIgbGluZSB0byBvbmUgZGllIGFuZAo+IG5vdCB0aGUgb3RoZXIgd291bGQgYmUgdmFsaWQg
+aGFyZHdhcmUgZGVzaWduIGFuZCB3b3VsZCByZXF1aXJlIHRoZSByYgo+IHByb3BlcnR5IHRvIGJl
+IGluIHRoZSBjaGlwIG5vZGUuIFBsZWFzZSBwZXJmb3JtIGEgcGVyLWNoaXAgcHJvcGVydHkgcmVh
+ZAo+IGluIHRoZSBkcml2ZXIgYXMgd2VsbC4KCkRvbmUsIEkgcmVzZW5kIGJvdGggcGF0Y2hlcyAo
+YmluZGluZ3MgKyBkcml2ZXIgdXBkYXRlKSBhcyBhIHNpbmdsZSBwYXRjaHNldC4gWW91ciByZXZp
+ZXcgY29tbWVudHMKZm9yIGRyaXZlciBjb2RlIHdlcmUgYWxzbyBmaXhlZC4KCj4gCj4+Pj4+Cj4+
+Pj4+IE5vLCBiZWNhdXNlIGhvdyB3b3VsZCB5b3VyIERUUyBwYXNzIHZhbGlkYXRpb24/IEkgdW5k
+ZXJzdGFuZCB5b3UgZGlkIG5vdAo+Pj4+PiB0ZXN0IHRoZSBiaW5kaW5ncywgYnV0IHRoaXMgd2ls
+bCBpbXByb3ZlLCByaWdodD8gIAo+Pj4+Cj4+Pj4gT2ssIGknbGwgZm9sbG93IERUUyBsYXlvdXQg
+aW4gdGhlIGRyaXZlciwgInRlc3QgdGhlIGJpbmRpbmdzIiBZb3UgbWVhbiAibWFrZSBkdF9iaW5k
+aW5nX2NoZWNrIj8gIAo+Pj4KPj4+IFllcy4gVGhleSB3ZXJlIHNlbnQgd2l0aG91dCB0ZXN0aW5n
+Lgo+Pj4KPj4+IEJ1dCBwbGVhc2UgYWxzbyB0ZXN0IHlvdXIgRFRTIHdpdGggZHRic19jaGVjay4g
+CgpEb25lCgpUaGFua3MsIEFyc2VuaXkKCj4+Cj4+IEdvdCBpdCEKPj4KPj4gVGhhbmtzLCBBcnNl
+bml5Cj4+Cj4+Pgo+Pj4KPj4+IEJlc3QgcmVnYXJkcywKPj4+IEtyenlzenRvZgo+Pj4gICAKPiAK
+PiAKPiBUaGFua3MsCj4gTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
