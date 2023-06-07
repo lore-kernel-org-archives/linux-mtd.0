@@ -4,88 +4,135 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C9D2C87FDC
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 00:16:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D280BC77B7A
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 03:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ZEM8EiwuFfXCD2OAWHqJSK6ow5v8ADwJAOd0spQ3/fg=; b=WCgGdULdRZh/t387XlQaVbF95S
-	HiFnPB+K+p/OCDa/ydhmN1rEuHt9HG8rkYOeW3T7jBQMihDzs9Oed7s+oSy6fFLcEZtq6qZn5JSn1
-	0oYSln3h/d/vjCVWP0Nnd4CYfQ1j/b1pwPPjr6o/b1zn08psEM3sllwNct1jLVGL8l3Nx1U0Fi+JM
-	7+a0lXB5RONXQJwrsn7EaiDewxPNY/p45W7c0WrBifBbNuv6tGtFyMgJA469EeWiREWduOAHcCaaN
-	3JMLdhln5Gnwcp0hBaekyzqHST91FzR6uKuc2lP+5Y9BGCNPWmO6in23HE+XotwGt9NDn+YotKfxv
-	asXSZPkQ==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:Cc:To:
+	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=46N6e762cmADFyH5kWV+qpxxhgsOs/VQTyARbxb/38Y=; b=A6ywmA+1hdPorO9HUoHHolUTRi
+	wRu+7eON2PAbXwrEA/ZWdH/shEULbO7gdUvS5B1iz96pTQwCxCMVewhdcmj7YVsnxFs9lIH1LMGxX
+	ATI9zUW9wbF8nKTRtSJTylFJCY0Wn3/P9RjgZ2/9eR1gQCTOhsQnTQuLNLTqoFHD09z1lcXRyd4Gx
+	Gq4rYvizyMVzRkZBIpZUt2YcItzHtkCxoaYNiOUuJemMhwX+KuezEi/Syv6OmmwPFyepSetlMzD+Z
+	bH8XN+E4ldNsT7BDF91RNDFgNFmWDWpjPovB7gPI597Gkmfgh1dRLttdwsnp8xgpEO6339i7svzLo
+	50mrmHNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6gpt-003kL6-0s;
-	Wed, 07 Jun 2023 00:15:37 +0000
-Received: from mail-qk1-x72f.google.com ([2607:f8b0:4864:20::72f])
+	id 1q6jds-0047ri-0R;
+	Wed, 07 Jun 2023 03:15:24 +0000
+Received: from mail-tyzapc01on20725.outbound.protection.outlook.com ([2a01:111:f403:704b::725] helo=APC01-TYZ-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6ft2-003bA2-0X
-	for linux-mtd@lists.infradead.org;
-	Tue, 06 Jun 2023 23:14:49 +0000
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-75d4b85b3ccso445665585a.2
-        for <linux-mtd@lists.infradead.org>; Tue, 06 Jun 2023 16:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686093287; x=1688685287;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1JwuXvG38lJwOucAgYP6+6MJQB9QZBOeKPLw4I4UDW4=;
-        b=WOjkvnDb4etisltfigyMiggf10wgiKmnTPMx73GL07Yi+kHuThYLaZSxhrp7MSnqNd
-         PyS1fP1IBC1r/K9nZVVNtr2zGclPVs8ETFG13opkF3iGA+eB1m2ic+VwfIscBaf5Xm+m
-         WeWLDfOkIo4TfbYCCHaENiX6JElxdg4oU5Y5A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686093287; x=1688685287;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1JwuXvG38lJwOucAgYP6+6MJQB9QZBOeKPLw4I4UDW4=;
-        b=JWD36inn4ziHm7FxBJXbshmmVqby3vganKbTV0oP/9RvzV6rWa4+MGE6CkPpzGAVd8
-         eGco5dnJxNR1IOJf0XXS5CCR/SqY1+7fjWFinz7hrLDMjMTMtEdm6w7/wOUIj2zq76UI
-         rlvATg1iKV0UcQnHOOGwQZh7v0Z6c8DtBqRxyA9RCbHu5yPkVnoK6q3lE7Fkm5jbUEMn
-         tJzhE7y9OlG0rvAQEYw7uvutnidw0ezsNg97wHweeGEgFZOYKXchCYUkr1sVRY5PYE0t
-         CWvjuGmMmno6jvQHP9QKZmWLfyO4QXSglmydfv0FpWTZ7nomxSfCgJoI6VKdP+tTKRYj
-         R/Kg==
-X-Gm-Message-State: AC+VfDzdzmWs2ELBoGG15y/AUdnfWSlbFMNWOeDHXPAoyXrvplHbTUUZ
-	rJCOJ+Qo4FWhl6oP1nGfdsbF9Q==
-X-Google-Smtp-Source: ACHHUZ6ZFsQy5CRja97vDvyHczQ6NbfR6a9/XqHdgx5yN09JPHE4n+nhdH1OftBzrsfeOzW+ptjfHw==
-X-Received: by 2002:a05:620a:2541:b0:75b:23a1:3605 with SMTP id s1-20020a05620a254100b0075b23a13605mr221743qko.22.1686093287284;
-        Tue, 06 Jun 2023 16:14:47 -0700 (PDT)
-Received: from ubuntu-22.localdomain ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id x9-20020ae9e909000000b0075b23e55640sm5221519qkf.123.2023.06.06.16.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 16:14:46 -0700 (PDT)
-From: William Zhang <william.zhang@broadcom.com>
-To: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
-	Linux MTD List <linux-mtd@lists.infradead.org>
-Cc: f.fainelli@gmail.com,
-	rafal@milecki.pl,
-	kursad.oney@broadcom.com,
-	joel.peshkin@broadcom.com,
-	computersforpeace@gmail.com,
-	anand.gore@broadcom.com,
-	dregan@mail.com,
-	kamal.dasu@broadcom.com,
-	tomer.yacoby@broadcom.com,
-	dan.beygelman@broadcom.com,
-	William Zhang <william.zhang@broadcom.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-kernel@vger.kernel.org,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Weinberger <richard@nod.at>,
-	Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH 11/12] mtd: rawnand: brcmnand: Add support for getting ecc setting from strap
-Date: Tue,  6 Jun 2023 16:12:51 -0700
-Message-Id: <20230606231252.94838-12-william.zhang@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230606231252.94838-1-william.zhang@broadcom.com>
-References: <20230606231252.94838-1-william.zhang@broadcom.com>
+	id 1q6jdo-0047qV-14;
+	Wed, 07 Jun 2023 03:15:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HehXqP5eUfO0BmyfJrv409aaGvKacbGhtYYdKtn+VmRGejiU4iFNMGxGzKhI4DDPUquYOkxGf4Jczk44gQmZHZjrZ+6wk8skDYvHiql83s8TjMNEKSbuPjYM9nfmfS1MSBJ8+avNLG//rNjU5zNxilqMoz4eh/68PEhIba0+tGfE7TZm8EC7b1jwlIGfH0D+Ed28XN5cR+d1xG973ODHah8+DykHPoylJVdqOLD9xvVlwcGftt/R4q+m7AmI0e10A678ErmxyYmP/ZNRhN16Com91ZQDEJ+fh0DDgA8V1nd2vTrEIQpikygye2u6noUQWrrXdS4W52pBHpP7jb8yvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XLbeOhWSGwBN99fXTs3Ji/F8ultwWcEjWUPWyeCsmhA=;
+ b=cw2/qcHneIP2JzMhiULOZBYTxZbConzFdcEQCDhAw7ilMCJYGDeoZP8GVS4nD8BuJYcPaRmXw74RTphTfjv15AMc+bM0kAYEpP0cZHGeCiAVjluD2cybMzMKv44BnBOiu1a2AhQmoX/3zbz4lsol7PTb1lx/Sg2Wn5OD4w5vxhN2CTMqYIskexCgIA5BBpMcJ2MoISEQFZQkGTFZs8A0qHa+l3XQ8UsUjXo3IZiCHyLayH44Sl5u3BfB5vr3YyZibDu2L3/pXqFfqIs5MTUfxDAz7TsSdNK3NWaSjgHskgZvGk0QDKpYvssztTfKjCjoWIJT7256q/ogn2Mom+NoJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
+ dkim=pass header.d=amlogic.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XLbeOhWSGwBN99fXTs3Ji/F8ultwWcEjWUPWyeCsmhA=;
+ b=FicsbnBEXkq1CPSRyICpmGgt7lbqBMtMQKGQD54vh70wKIYcqJDno1zkkt6ntWgfTE0ralIQ+CAza9uRyPBk+XS4/CNezuu16Da2dQIHY7v92R317S7v0WV7OtGbn9dtXOhen0/j75CltgTH4iLxRZoExuuLBYB5oh2PmkX4XZ4nBQ1s2MeT5/Ycm6OnAISLoJm8XLFNS75lMEd28tCCzYAN6lQhbpxdnw2XxMY2KlTh/cTsBrnnCXNESzwZpb4di3h3quV3gM0StV0vMSp2Y5bhVZsI9i/vGKDKTqxlAhBzI+xnssdISlnrGadF7ar2j5cpNOdRQZqHSwAk9MJGoQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amlogic.com;
+Received: from SEYPR03MB7479.apcprd03.prod.outlook.com (2603:1096:101:146::13)
+ by SI2PR03MB6566.apcprd03.prod.outlook.com (2603:1096:4:1e1::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.27; Wed, 7 Jun
+ 2023 03:15:02 +0000
+Received: from SEYPR03MB7479.apcprd03.prod.outlook.com
+ ([fe80::45d7:8926:3640:a9a3]) by SEYPR03MB7479.apcprd03.prod.outlook.com
+ ([fe80::45d7:8926:3640:a9a3%6]) with mapi id 15.20.6455.030; Wed, 7 Jun 2023
+ 03:15:01 +0000
+Message-ID: <688909b3-fb0a-1001-d38e-57dba23d3bae@amlogic.com>
+Date: Wed, 7 Jun 2023 11:14:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v1] mtd: rawnand: meson: waiting w/o wired ready/busy pin
+To: Arseniy Krasnov <avkrasnov@sberdevices.ru>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: oxffffaa@gmail.com, kernel@sberdevices.ru, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20230606195128.83432-1-AVKrasnov@sberdevices.ru>
+ <2ed06841-6c9f-46c9-2d2d-2daffb0a9010@sberdevices.ru>
+From: Liang Yang <liang.yang@amlogic.com>
+In-Reply-To: <2ed06841-6c9f-46c9-2d2d-2daffb0a9010@sberdevices.ru>
+X-ClientProxiedBy: TYCP286CA0213.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:3c5::19) To SEYPR03MB7479.apcprd03.prod.outlook.com
+ (2603:1096:101:146::13)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEYPR03MB7479:EE_|SI2PR03MB6566:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3f728363-11e5-484d-3d00-08db67056122
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cbrKAAo9UUqtPhYlJ7KFBQ0M0jFQwyCB0C22bwv1FXusgMEdDZAWMRNltY49t+O5l9S5dFYdtbhGUCOJY1jiXfYzBuAdJIaRRWGKV5iq54RzANB3QTg4iaRKFyhyMzv95HvmB7DORvDmVgrgxI93VF4DHqD22ngzrSGLvwUchYKOC6/YqO5xJQhJ+WDcFcl8R+EvP7S/3djo1WTs9LnG6ZkU3sBEEZucS7pePCj7ArKEBvqUxv6oiYL0jkvavTsef3hJY62GzWJJTzpIddQBMoKFbSt3HKoUhFYrA4sYudeBL+bQ646MOpV7VkNZD5yABE1OMGFfWcypdm8HxfC/GbklcEQL+dqUPk9SsscLCPAhpiZfBzNj4Sw7gNNceHpR5lDTBIpCdFHEu9BrId/s4b1uBhZIPROIWIUEdyXybdl8Qzw4kqyJvznVT14KxCsXzPgR8+4q+d/Jy6pxXHfHh5qeMd8fVvxr1bmyjJMoynqmYlniRWmGJX9GnVrC4JCSPWAVDJq3demWjRE6BIFR0S2FDv2iJ2hvS3KWFfaXzDduwdVFvPKfmjbhK9vEzyn/oYVl0B4prsEVupinKRb8NrUvO2yuKHKJUVG5RGNHz++3apL6I88Lz8NCJgag6tVMBqix/teAYssuT0oDGjmJN9+0qmxWyn18K16f6m0X3tBddP08iKUXxUlb1fl9hKJO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR03MB7479.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(39850400004)(136003)(366004)(346002)(451199021)(36756003)(31696002)(86362001)(6512007)(41300700001)(6486002)(52116002)(38100700002)(38350700002)(478600001)(110136005)(66946007)(2616005)(66476007)(4326008)(316002)(6666004)(83380400001)(26005)(31686004)(53546011)(7416002)(44832011)(186003)(6506007)(2906002)(66556008)(8936002)(8676002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UmxPbVZzVlRSSitwNUNRZGdHTzNJZ3RoRmZ2bEFzUkJQV3dJSGVnT2xPVk9s?=
+ =?utf-8?B?MCswM0ZIRklhZUZJQUEwQy85TkdvN3ZTb1E0YnVMSUJYcFB5bXlySlpXb0RJ?=
+ =?utf-8?B?a0N3T2JiZHZNSUZwS3lmVzI5enZRMGR2ZkJLMUpyVXh4RHlOQ0hpZHBSRldN?=
+ =?utf-8?B?SXJSalNMMWZDKzBReWNmYVkwOUZhcDIvVmRpbWVRM0ZWNEVoQS9Bekp2N1Fq?=
+ =?utf-8?B?TC9Ic1hEL0ZvNkdyc3crSFA1RG14TXZIRkVZYW9yQ0JvNmJwV25iczNHM09X?=
+ =?utf-8?B?RE4yY1pYMEtzSCtXNHlpWFV3eGwwSkZUR1ZCU1FQaDhyQmN2cXJSZHQ2aEMr?=
+ =?utf-8?B?clg2S25iVFlDUHNnV3AzVGExNXNRRmtQYkZkZC81WmkzWkxBOWNwNXNPZ2t0?=
+ =?utf-8?B?NThFSXF3d3htK3Y1OURDSmI3L2gzcVZaOEU0UFNldHdCNEJzZ3lxRnpRMVhr?=
+ =?utf-8?B?S1ZvR01aOGE2bDhsalhmbEttT2RnNzkxWHN1L0Q1RmJ4eS9wSUlhdjlOU1I5?=
+ =?utf-8?B?Zng0eVVSdi9PZHNnK0FEdmRmK2JZTVl2WEwyQmhMdURUd0NKNG9uNnErd3A0?=
+ =?utf-8?B?VTkrMzNmRnVId0dpRFhZK3d2MzR3WWE2bEIvaC9KY01tdHFuRTd2dkMyYjdu?=
+ =?utf-8?B?d0MzNGNzOGxJWDNjV0VkM1FlKzVVWFdPTEczaWFJaW1uRW1OS1ZGdGFiajBF?=
+ =?utf-8?B?K1lCUmw2MjhQNTFTQlhyWGkzZkZRUFRnQldaTXRiTURQS2hoamZxVlNvQitC?=
+ =?utf-8?B?S09UQklsY29KTWhkM1YrUXV4NllyWGJwd1ZXeHNub0x6UUhIZGd3TXJ6YWxF?=
+ =?utf-8?B?bWFIMms2dDFiYWN4U2JlZ3RISEs3MEdwQ1F6L3NJRHFBUzZtSFcwSUp6WkxT?=
+ =?utf-8?B?RWIxRUlMRXNFbWl4NGg4RGttbk44dm43M1BMb1ZOeDJuNFJFVkxTOXJoTFBV?=
+ =?utf-8?B?cmhhbWVlQXJRbzVGVFE1c1A2c0NCQ2VBQzdkeHB2NG5uNFMwUzZVNEZCTFBO?=
+ =?utf-8?B?T0Vzc0hRd0Zma0NaUjBmV0d3eGJDNERWemM1bzQwRWVabG1XTHdjeDFqNjRE?=
+ =?utf-8?B?RjFZekpML3Q2MWR3ckpVRXJHTVl1L1ZVZ1BxVHpReXg0UFAxQ1cydGEvQnE2?=
+ =?utf-8?B?RklEN0RMd3pJTlIrN1RKaENzODF6UUw2c2RwTGl1cldTaXcrNzMrU0l1bU5R?=
+ =?utf-8?B?N0UvcDh3UVJGZkZzeEc2blJ4cG9VT21QNDZiNGx1SlEyY21Hb09RcEF6RFJv?=
+ =?utf-8?B?SWowMHczMEQ1dW54QlRFNG9FYzhHWU5HUmZkNzNBMmJISE5GSlR4bU1abXla?=
+ =?utf-8?B?RHZKWDloMkIyZ1JacGVMMEJVMVZVTmxLTE5lQjl2RXdLQlRsdzBiNlFwcXFN?=
+ =?utf-8?B?cEpyZVdEN2hqTjQ5NjdVb1VBeUg0SFZpMm1mdXczNHQxaG1WUmlWa3BWZHV6?=
+ =?utf-8?B?dVV6OWFOMkdEQk9PSHhublRaMzNyOURTYjFHRWdNMkJSSWV1UElML1I2bDlL?=
+ =?utf-8?B?S2xZQWQ4TGppSE9acndpNHc3dlh3cE9UWTd5bXpxTmtSNERWa1AxT1kwcm9u?=
+ =?utf-8?B?Y1c4VW5HNHVUREhyK1I2NkNJenBvNW5jK0ZnSXFSSHBKRlRrUDhWbEN5QWhO?=
+ =?utf-8?B?Y1ZQbGxNWnFnMS8wY3JlTEwyQit6U2E1WXRxTHRQOHp1WU8xZHRFV21PVnEz?=
+ =?utf-8?B?V0FOMHRkRll2dkRsL1NDMEtYSENhZ2NWdnljUk9NcS84NDhGaFdsY0s0Yml4?=
+ =?utf-8?B?QUkvSjRlZU4vaHo4TVZ0V3lqUW4wUGx3NFE4Rit0RThIejR4ZGQwSUhWR2ox?=
+ =?utf-8?B?d3FISE9JaThxK0tJNldFMEhwV1pVZXNRR084WFVmd0d4djh2anBKSUZuNXcv?=
+ =?utf-8?B?NjdlckxHLytKM1RCMEYyTnVnVUZpdmF4a0JQTUF5aFpudlFSUmlyd3lhTjdK?=
+ =?utf-8?B?dHBUdlVUU0hPcW1RMDRhUmo3OStKQlpEODR2VjJsQkpmYzF6a1pYRzRXSFRL?=
+ =?utf-8?B?STl3WTVMTFhJWjJ6SHloL1pORzR0OForanlwc2NrTk5Ja3dWcjYwMWF4OEpx?=
+ =?utf-8?B?YTV2M2dBSXUvOVcvOXZkd0svOHduRXFybDBqeUFRS24rTlpyT0RyV0VEa2Za?=
+ =?utf-8?Q?71FG9iq27gXrPpVVoSvVrXWxt?=
+X-OriginatorOrg: amlogic.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f728363-11e5-484d-3d00-08db67056122
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR03MB7479.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2023 03:15:00.9363
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HXk70/9B/A9uMvPPQB0uGxloCj1YI8+0YSNVWxzjemFXisSUY69nPErHr7v2pDMe9ze+jn2kcTj68STggS//Lw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR03MB6566
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230606_161448_206616_65A4E9FE 
-X-CRM114-Status: GOOD (  19.05  )
+X-CRM114-CacheID: sfid-20230606_201520_447253_83877D49 
+X-CRM114-Status: GOOD (  24.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,225 +144,152 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8775508762020584050=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============8775508762020584050==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000076e16c05fd7e2fd2"
+Hi Arseniy,
 
---00000000000076e16c05fd7e2fd2
-Content-Transfer-Encoding: 8bit
+On 2023/6/7 3:54, Arseniy Krasnov wrote:
+> [ EXTERNAL EMAIL ]
+> 
+> On 06.06.2023 22:51, Arseniy Krasnov wrote:
+>> If there is no wired ready/busy pin, classic way to wait for command
+>> completion is to use function 'nand_soft_waitrdy()'. Meson NAND has
+>> special command which allows to wait for NAND_STATUS_READY bit without
+>> reading status in a software loop (as 'nand_soft_waitrdy()' does). To
+>> use it send this command along with NAND_CMD_STATUS, then wait for an
+>> interrupt, and after interrupt send NAND_CMD_READ0. So this feature
+>> allows to use interrupt driven waiting without wired ready/busy pin.
+>>
+>> Suggested-by: Liang Yang <liang.yang@amlogic.com>
+>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>> ---
+>>   drivers/mtd/nand/raw/meson_nand.c | 58 ++++++++++++++++++++++++++++++-
+>>   1 file changed, 57 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+>> index 074e14225c06..f4c5309a9527 100644
+>> --- a/drivers/mtd/nand/raw/meson_nand.c
+>> +++ b/drivers/mtd/nand/raw/meson_nand.c
+>> @@ -38,6 +38,7 @@
+>>   #define NFC_CMD_SCRAMBLER_DISABLE    0
+>>   #define NFC_CMD_SHORTMODE_DISABLE    0
+>>   #define NFC_CMD_RB_INT               BIT(14)
+>> +#define NFC_CMD_RB_INT_NO_PIN        ((0xb << 10) | BIT(18) | BIT(16))
+>>
+>>   #define NFC_CMD_GET_SIZE(x)  (((x) >> 22) & GENMASK(4, 0))
+>>
+>> @@ -94,6 +95,7 @@
+>>
+>>   /* nand flash controller delay 3 ns */
+>>   #define NFC_DEFAULT_DELAY    3000
+>> +#define NFC_NO_RB_PIN_DELAY  5
+>>
+>>   #define ROW_ADDER(page, index)       (((page) >> (8 * (index))) & 0xff)
+>>   #define MAX_CYCLE_ADDRS              5
+>> @@ -179,6 +181,7 @@ struct meson_nfc {
+>>        u32 info_bytes;
+>>
+>>        unsigned long assigned_cs;
+>> +     bool no_rb_pin;
+>>   };
+>>
+>>   enum {
+>> @@ -392,7 +395,41 @@ static void meson_nfc_set_data_oob(struct nand_chip *nand,
+>>        }
+>>   }
+>>
+>> -static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
+>> +static int meson_nfc_wait_no_rb_pin(struct meson_nfc *nfc, int timeout_ms)
+>> +{
+>> +     u32 cmd, cfg;
+>> +
+>> +     meson_nfc_cmd_idle(nfc, nfc->timing.twb);
+>> +     meson_nfc_drain_cmd(nfc);
+>> +     meson_nfc_wait_cmd_finish(nfc, CMD_FIFO_EMPTY_TIMEOUT);
+>> +
+>> +     cfg = readl(nfc->reg_base + NFC_REG_CFG);
+>> +     cfg |= NFC_RB_IRQ_EN;
+>> +     writel(cfg, nfc->reg_base + NFC_REG_CFG);
+>> +
+>> +     reinit_completion(&nfc->completion);
+>> +     cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_STATUS;
+>> +     writel(cmd, nfc->reg_base + NFC_REG_CMD);
+>> +     meson_nfc_cmd_idle(nfc, NFC_NO_RB_PIN_DELAY);
+> 
+> ^^^
+> 
+>> +
+>> +     /* use the max erase time as the maximum clock for waiting R/B */
+>> +     cmd = NFC_CMD_RB | NFC_CMD_RB_INT_NO_PIN | nfc->timing.tbers_max;
+>> +     writel(cmd, nfc->reg_base + NFC_REG_CMD);
+>> +     meson_nfc_cmd_idle(nfc, NFC_NO_RB_PIN_DELAY);
+> 
+> ^^^
+> Liang, I've implemented "new RB_INT" way instead of 'nand_soft_waitrdy()'. There were two numbers
+> 2 and 5 in 'meson_nfc_cmd_idle()' as time argument (here and above). I've replaced both with
+> define of 5 == NFC_NO_RB_PIN_DELAY. Is it correct? 2 and 5 were from doc?
 
-BCMBCA broadband SoC based board design does not specify ecc setting in
-dts but rather use the SoC NAND strap info to obtain the ecc strength
-and spare area size setting. Add brcm,nand-ecc-use-strap dts propety for
-this purpose and update driver to support this option.
+You can do like that. as i know, bigger has no impact.
+yes, them come from the example code of the controller datasheet; but i 
+think we can delete them also.
 
-The generic nand ecc settings still take precedence over this flag. For
-example, if nand-ecc-strength is set in the dts, the driver ignores the
-strap setting and falls back to original behavior. This makes sure that
-the existing BCMBCA board dts still works the old way even the strap
-flag is set in the BCMBCA chip dtsi.
-
-Signed-off-by: William Zhang <william.zhang@broadcom.com>
----
-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 72 +++++++++++++++++++++---
- 1 file changed, 64 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 656be4d73016..8c7cea36ac71 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1076,6 +1076,38 @@ static void brcmnand_set_sector_size_1k(struct brcmnand_host *host, int val)
- 	nand_writereg(ctrl, acc_control_offs, tmp);
- }
- 
-+static int brcmnand_get_spare_size(struct brcmnand_host *host)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
-+						  BRCMNAND_CS_ACC_CONTROL);
-+	u32 acc = nand_readreg(ctrl, acc_control_offs);
-+
-+	return (acc&brcmnand_spare_area_mask(ctrl));
-+}
-+
-+static int brcmnand_get_ecc_strength(struct brcmnand_host *host)
-+{
-+	struct brcmnand_controller *ctrl = host->ctrl;
-+	u16 acc_control_offs = brcmnand_cs_offset(ctrl, host->cs,
-+						  BRCMNAND_CS_ACC_CONTROL);
-+	int sector_size_1k = brcmnand_get_sector_size_1k(host);
-+	int spare_area_size, ecc_level, ecc_strength;
-+	u32 acc;
-+
-+	spare_area_size = brcmnand_get_spare_size(host);
-+	acc = nand_readreg(ctrl, acc_control_offs);
-+	ecc_level = (acc & brcmnand_ecc_level_mask(ctrl)) >> brcmnand_ecc_level_shift(ctrl);
-+	if (sector_size_1k)
-+		ecc_strength = ecc_level<<1;
-+	else if (spare_area_size == 16 && ecc_level == 15)
-+		ecc_strength = 1; /* hamming */
-+	else
-+		ecc_strength = ecc_level;
-+
-+	return ecc_strength;
-+}
-+
- /***********************************************************************
-  * CS_NAND_SELECT
-  ***********************************************************************/
-@@ -2656,19 +2688,43 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
- 		nanddev_get_ecc_requirements(&chip->base);
- 	struct brcmnand_controller *ctrl = host->ctrl;
- 	struct brcmnand_cfg *cfg = &host->hwcfg;
--	char msg[128];
-+	struct device_node *np = nand_get_flash_node(chip);
- 	u32 offs, tmp, oob_sector;
--	int ret;
-+	int ret, sector_size_1k = 0;
-+	bool use_strap = false;
-+	char msg[128];
- 
- 	memset(cfg, 0, sizeof(*cfg));
-+	use_strap = of_property_read_bool(np, "brcm,nand-ecc-use-strap");
-+
-+	/*
-+	 * Set ECC size and strength based on hw configuration from strap
-+	 * if device tree does not specify them and use strap property is set
-+	 * If ecc strength is set in dts, don't use strap setting.
-+	 */
-+	if (chip->ecc.strength)
-+		use_strap = 0;
-+
-+	if (use_strap) {
-+		chip->ecc.strength = brcmnand_get_ecc_strength(host);
-+		sector_size_1k = brcmnand_get_sector_size_1k(host);
-+		if (chip->ecc.size == 0) {
-+			if (sector_size_1k < 0)
-+				chip->ecc.size = 512;
-+			else
-+				chip->ecc.size = 512<<sector_size_1k;
-+		}
-+	}
- 
--	ret = of_property_read_u32(nand_get_flash_node(chip),
--				   "brcm,nand-oob-sector-size",
--				   &oob_sector);
-+	ret = of_property_read_u32(np, "brcm,nand-oob-sector-size",
-+			   &oob_sector);
- 	if (ret) {
--		/* Use detected size */
--		cfg->spare_area_size = mtd->oobsize /
--					(mtd->writesize >> FC_SHIFT);
-+		if (use_strap)
-+			cfg->spare_area_size = brcmnand_get_spare_size(host);
-+		else
-+			/* Use detected size */
-+			cfg->spare_area_size = mtd->oobsize /
-+						(mtd->writesize >> FC_SHIFT);
- 	} else {
- 		cfg->spare_area_size = oob_sector;
- 	}
--- 
-2.37.3
-
-
---00000000000076e16c05fd7e2fd2
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-YDZuuBJwnyCzevMoPtVYPharioL5H3BRnQi8YoTXH7/uRo33dewYFm474yFjwwnt82TFtveVZkVq
-6h4WIQ4wTcwFfET8zMkELnGzS5SHCl8sPD+lNxxJ1JDZYwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRp3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUq65GzwZxydFHjjYEU/9h
-xHhPWlwwDQYJKoZIhvcNAQELBQADggEBAA2hGG3JPAdGPH0ZdohGUCIVjKz+U+EFuIDbS6A/5jqX
-VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
-/ppSz3WoflVyFFQ5YXniZ+eU+2/cdnYZg4aVUnFjimOF5o3NfMLzOkhQNxbaDjFUfUYD8hKmU6v4
-0vUBj8KZ9Gi1LIagLKUREn8jku0lcLsRbnJ5Ey5ScajC/FESPyYWasOW8j8/1EoJksmhbYGKNS6C
-urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIC5xEnY0j7JxoaOKrBji/W+4HhCi
-+ayhhgRc7BuuNzseMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDYwNjIzMTQ0N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQANrQTVUzcDjGiEqt8k3TKvq3qnBSwJUXRPHPaXZo8iVsEU
-uklVyURJFKYXWa1egzvyELbtncvdIzl4PwCUXXbwzLDvQoKXxPbRpAtvDg0GBkySRbiioPNGRtzJ
-t8Q9xbu1tT3pyRRB55MuY/JYLjk9vxZM56He6Vmg7UxlqVZ572Aw6tODXZWozcQnln6tpxkxNzsc
-ejaG3vZr3VyZ4aK95yzI8Ocrgrri0gcljZ2G8/OxAQBB6Wyxr1nHm2JEv2g73oDG+vnZcr4MrPbf
-iW5pUPR0oiei84ppdUtvfG0yAu0hYM7P+CRyfw1DasGUnD67/mWNT6zybtc0ZQS9vI1G
---00000000000076e16c05fd7e2fd2--
-
-
---===============8775508762020584050==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> 
+> Thanks, Arseniy
+> 
+>> +
+>> +     if (!wait_for_completion_timeout(&nfc->completion,
+>> +                                      msecs_to_jiffies(timeout_ms)))
+>> +             return -ETIMEDOUT;
+>> +
+>> +     cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_READ0;
+>> +     writel(cmd, nfc->reg_base + NFC_REG_CMD);
+>> +     meson_nfc_drain_cmd(nfc);
+>> +     meson_nfc_wait_cmd_finish(nfc, CMD_FIFO_EMPTY_TIMEOUT);
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static int meson_nfc_wait_rb_pin(struct meson_nfc *nfc, int timeout_ms)
+>>   {
+>>        u32 cmd, cfg;
+>>        int ret = 0;
+>> @@ -420,6 +457,23 @@ static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
+>>        return ret;
+>>   }
+>>
+>> +static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
+>> +{
+>> +     if (nfc->no_rb_pin) {
+>> +             /* This mode is used when there is no wired R/B pin.
+>> +              * It works like 'nand_soft_waitrdy()', but instead of
+>> +              * polling NAND_CMD_STATUS bit in the software loop,
+>> +              * it will wait for interrupt - controllers checks IO
+>> +              * bus and when it detects NAND_CMD_STATUS on it, it
+>> +              * raises interrupt. After interrupt, NAND_CMD_READ0 is
+>> +              * sent as terminator of the ready waiting procedure.
+>> +              */
+>> +             return meson_nfc_wait_no_rb_pin(nfc, timeout_ms);
+>> +     } else {
+>> +             return meson_nfc_wait_rb_pin(nfc, timeout_ms);
+>> +     }
+>> +}
+>> +
+>>   static void meson_nfc_set_user_byte(struct nand_chip *nand, u8 *oob_buf)
+>>   {
+>>        struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
+>> @@ -1412,6 +1466,8 @@ static int meson_nfc_probe(struct platform_device *pdev)
+>>                return ret;
+>>        }
+>>
+>> +     nfc->no_rb_pin = !of_property_read_bool(dev->of_node, "nand-rb");
+>> +
+>>        writel(0, nfc->reg_base + NFC_REG_CFG);
+>>        ret = devm_request_irq(dev, irq, meson_nfc_irq, 0, dev_name(dev), nfc);
+>>        if (ret) {
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8775508762020584050==--
-
