@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD923C7EE23
-	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 20:12:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABDF6C7EE2E
+	for <linux-mtd@archiver.kernel.org>; Wed,  7 Jun 2023 20:24:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5JF4/csmeFbcIuS27adOkjDc5R+clOCqPYh6sBQkW0g=; b=wqL4rWyrvAbbIWO50YG/T4IkBK
-	HJbJm7+RaaPDfiM1oWWkA6pmkWivb7bEKZNVErWoUOVEeTqMSi8iBxMeAwYXJaKh+gaHVO7SScgpD
-	JjjZYXL9cIoW76o3MbYRWcM3y6LcgX6crRSWcnTncnNVAtrvp/DygOxVh9aPurNJ+EDYV/rM1IViY
-	R5Ua0oqJrL1Ot4hgdWGqvlEjqcu0v/gF0Hiwwy3iqZmEGADQf1KP/uML/D/LzgsvJ7NhHypZGViRM
-	rqbIjsbCpwl2fdU4rp9+4HWYuy9GMn9yuMNcgfvIapWWdsfPvRqkLCT2hftZ3ZszfVRRCkpO2d1Zk
-	TnJHPIHA==;
+	bh=fiq9KX/ds4bn1n01q1OsmgzHGwrmIjz5mI6Edn3j1IU=; b=XfchF7/CFdxuQu4VuID6PLUKwo
+	jeAjM8uaf4JPSRcCUHskYhoIA7Zpn+ZnQzqQPpsx15eL4EIowdOVW6c9NsKM+jILjlQWpc8YVf1If
+	rpbJSqXLw6QwZEsi33+FeJCUPunZCyH3iWNgn9pY5eAXNxFjKoEUkCNoa4x74w4GFYhXz+egZvSwO
+	bC6fxZmplMjiZlcPuu1ky/80ZREKSCiYGdBpWYBmcQIqEpIxaHQqaWknJsFycdVbsdGnR0kZbM+X3
+	fMUK988qQBz8HwCoO57P9gZckP+mlFOGltIvXcx1KloYFiAVsmmnlgM+EVC7Qg5aIoqB4Bt2mICXT
+	cBC1gEsw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6zVs-0074LC-1b;
-	Wed, 07 Jun 2023 20:12:12 +0000
-Received: from mail-oi1-x229.google.com ([2607:f8b0:4864:20::229])
+	id 1q6zho-0076sb-0T;
+	Wed, 07 Jun 2023 20:24:32 +0000
+Received: from mail-qt1-x832.google.com ([2607:f8b0:4864:20::832])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6zVp-0074Jm-2G
+	id 1q6zhk-0076q7-0f
 	for linux-mtd@lists.infradead.org;
-	Wed, 07 Jun 2023 20:12:11 +0000
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-39a3f2668d5so5014270b6e.1
-        for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2023 13:12:08 -0700 (PDT)
+	Wed, 07 Jun 2023 20:24:30 +0000
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-3f6b9ad956cso58201001cf.1
+        for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2023 13:24:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686168727; x=1688760727;
+        d=broadcom.com; s=google; t=1686169466; x=1688761466;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :cc:to:subject:from:to:cc:subject:date:message-id:reply-to;
-        bh=xyMZ1GYSVRhcKvTpj2Qk3iSUPmPHBF3HOqL1lAgoQyI=;
-        b=PoG2GdHQZKz+j4b5CuFFSCX2pz/YDaX8dEBmavR+fB3lVR51XaPcoKMYZ6TqESUzZg
-         8PyMhqAYNBPbOEVJbHMmuBp/7+Db9h0vG9katvxXEzBk7ufZYseSKJMFVawSzeTkFOYp
-         tbLb+v8Rgsx1V/miQoKD7YRi2e/BfiG5EBGgI=
+        bh=Dy5J947A3YXcbQojwfwEqZ4j5a5p1xx2waW7mW761x0=;
+        b=MMhlxd9uGiPwCI3FpXBl5XqrMT8zbguCzfHyBj7Up5jJd0JGQTBNhoVZTnVqBUFc6L
+         5zsW95h9K6eA1tRWSobw8VBCRCEY05scMoBx+nI8GBCsVC9MOGTeunKGF/4u4gFKmIWk
+         0ChQH3rlrdI7syI97YmSfDHTkenN+e9cTL9us=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686168727; x=1688760727;
+        d=1e100.net; s=20221208; t=1686169466; x=1688761466;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :cc:to:subject:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xyMZ1GYSVRhcKvTpj2Qk3iSUPmPHBF3HOqL1lAgoQyI=;
-        b=ByAo8UCyowXExHn4BRTbgRSSeT0vMTZ0fWy/w00xIsrHlXzObrgREs6ZWwIDE4D2CJ
-         zhTgHci931Ymdt3wxL9lHxg4TnfS04awRSVgyX2x03KfyjOpfqieO7pvk89uuPBKQ2k/
-         lGvw6UWjI1j63DKGiKQJHSstD8/5cnWplp2MlmcUsB/JtqwIwUSUL2FA7zxsZKjmNMX6
-         OUVHxATkYGECQUSg3H5dcuL5Mu/JoG/VL04iWZOzeRhobrchXVVIISXw6Ltxxe5Zc0Gp
-         9CQF+MtXdFhdnrBJxyCTmeY2jkDcp5TWQjIfdweK7bsjG6I1FW+/bGJie5H5pf1EhS52
-         MM8Q==
-X-Gm-Message-State: AC+VfDy5xR1ymBbUXcpA9V88xIENNr87BG+n7jebhWv1vZZWC1SEDuHb
-	fwpxKi7kZhBBYdWYX9VDB6Gtkw==
-X-Google-Smtp-Source: ACHHUZ7IZkkq99dl7ed2XncHA8Z8mO1E7yBOzvEBNK9sFMPah469/LM37iu3yOSQq9Ki3ldr9uVGUQ==
-X-Received: by 2002:aca:2806:0:b0:39a:ba1d:899c with SMTP id 6-20020aca2806000000b0039aba1d899cmr4169297oix.30.1686168727169;
-        Wed, 07 Jun 2023 13:12:07 -0700 (PDT)
+        bh=Dy5J947A3YXcbQojwfwEqZ4j5a5p1xx2waW7mW761x0=;
+        b=ByG2pMHF7wzaImfhFnXBxSQYL5K/5DBVHL/1Q/xchYcqC7AhmFW4XlMCFKpZV4YGHe
+         2vALyBp+V/GJlCjzWmsGKmgWdcBfRl4lHZv9hDcsTtenS3ltl+iJK212K4odkeH0ucJA
+         QexLNhMP5/EGR/spMcR5V+1jQFbPJOgjb7PrBAofnhxJbYKy4NMuklsy0JjxykCthDyA
+         gDzZHNY1nD5egHlZwAM9U/KvN5KfziBuko2dkHeCwlSO5pn18ifjeVvmiS0kJUUZQ51j
+         5ZU9S4NhcJjFxQ2zI9Pkb3D4w+v/svJ+kvLLE+zDxFxgp63l2N4fgvZmHTq11aSVe0t1
+         Vh2Q==
+X-Gm-Message-State: AC+VfDyP59o1dlL1TwrvuUkdsDDNdHaIHKwUXpCh2/LcEEII/9V6hYb5
+	kaTfDaR83vA7x10Rccy5bmuWHQ==
+X-Google-Smtp-Source: ACHHUZ6m0ADpgY9nNOoJoSlR3objylTQFGYsfj1/eOXzZcp+/z6ZbvCT0CImnrJQsv4jfkW/5fHv6w==
+X-Received: by 2002:a05:622a:1394:b0:3f3:97c9:dff0 with SMTP id o20-20020a05622a139400b003f397c9dff0mr4878955qtk.12.1686169466457;
+        Wed, 07 Jun 2023 13:24:26 -0700 (PDT)
 Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id k23-20020a0cb257000000b0062627f71b07sm144392qve.125.2023.06.07.13.12.03
+        by smtp.gmail.com with ESMTPSA id s14-20020ac8758e000000b003f27719c179sm163716qtq.69.2023.06.07.13.24.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Jun 2023 13:12:05 -0700 (PDT)
+        Wed, 07 Jun 2023 13:24:25 -0700 (PDT)
 Subject: Re: [PATCH 10/12] mtd: rawnand: brcmnand: Add BCMBCA read data bus
  interface
 To: Miquel Raynal <miquel.raynal@bootlin.com>
@@ -71,17 +71,17 @@ Cc: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
  Kamal Dasu <kdasu.kdev@gmail.com>, linux-arm-kernel@lists.infradead.org
 References: <20230606231252.94838-1-william.zhang@broadcom.com>
  <20230606231252.94838-11-william.zhang@broadcom.com>
- <20230607102056.5b1bfa5b@xps-13>
+ <20230607102232.17c4a27b@xps-13>
 From: William Zhang <william.zhang@broadcom.com>
-Message-ID: <11a7132c-7f10-ee47-0a23-d444ed29d980@broadcom.com>
-Date: Wed, 7 Jun 2023 13:12:02 -0700
+Message-ID: <7b393f47-4053-a8c7-f32e-3881d8130d80@broadcom.com>
+Date: Wed, 7 Jun 2023 13:24:23 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.4.0
 MIME-Version: 1.0
-In-Reply-To: <20230607102056.5b1bfa5b@xps-13>
+In-Reply-To: <20230607102232.17c4a27b@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_131209_748199_532B120B 
-X-CRM114-Status: GOOD (  37.50  )
+X-CRM114-CacheID: sfid-20230607_132428_246875_D24DCCA4 
+X-CRM114-Status: GOOD (  33.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,22 +93,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0008832296249282855=="
+Content-Type: multipart/mixed; boundary="===============0051593487006339357=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============0008832296249282855==
+--===============0051593487006339357==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000000adb1505fd8fc00a"
+	boundary="00000000000019afe805fd8fec77"
 
---0000000000000adb1505fd8fc00a
+--00000000000019afe805fd8fec77
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 
 Hi Miquel,
 
-On 06/07/2023 01:20 AM, Miquel Raynal wrote:
+On 06/07/2023 01:22 AM, Miquel Raynal wrote:
 > Hi William,
 > 
 > william.zhang@broadcom.com wrote on Tue,  6 Jun 2023 16:12:50 -0700:
@@ -201,27 +201,6 @@ On 06/07/2023 01:20 AM, Miquel Raynal wrote:
 >> +static inline void brcmnand_read_data_bus(struct brcmnand_controller *ctrl,
 >> +					   void __iomem *flash_cache, u32 *buffer,
 >> +					   int fc_words, bool is_param)
-> 
-> I strongly dislike this "is_param" boolean.
-> 
-> When is the data in host endianness? When is it not?
-This is little bit complicated.  We have two type data read from nand 
-cache. One for page read and the other for parameter and onfi data read 
-from the controller side. But it depends on how SoC integrate the nand 
-cache to system. In broadband SoC, both page and parameter data are in 
-host endianess but other SoCs is not the same.
-
-I am open to suggestion for is_param function argument but to factor out 
-this common code in more structured way, I don't see other way around.
-
-> 
-> If we think about an exec_op() conversion and drop cmdfunc(), what
-> would be the discriminant?
-> 
-If we need to implement exec_op in the future,  the data is not coming 
-from nand cache but some other low level data register which may not 
-subject to the endianess issue.
-
 >> +{
 >> +	struct brcmnand_soc *soc = ctrl->soc;
 >> +	int i;
@@ -241,6 +220,20 @@ subject to the endianess issue.
 >> +				buffer[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
 >> +		}
 >> +	}
+> 
+> Perhaps we could have a single function that is statically assigned at
+> probe time instead of a first helper with two conditions which calls in
+> one case another hook... This can be simplified I guess.
+> 
+Well this will need to be done at the SoC specific implementation level 
+(bcm<xxx>_nand.c) and each SoC will need to have either general data bus 
+read func with is_param option or data_bus_read_page, 
+data_bus_read_param.  Not sure how much this can be simplified... Or we 
+have default implementation in brcmnand.c but then there is one 
+condition check too. Page read is done at 512 bytes burst. One or two 
+conditions check outside of the per 512 bytes read loop does not sounds 
+too bad if performance is concern.
+
 >> +}
 >> +
 >>   static void brcmnand_clear_ecc_addr(struct brcmnand_controller *ctrl)
@@ -309,7 +302,7 @@ subject to the endianess issue.
 > Miquèl
 > 
 
---0000000000000adb1505fd8fc00a
+--00000000000019afe805fd8fec77
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -380,19 +373,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJUmmdJ6ohyJ7L/gB9judhriJeu7
-JDGUS/jG7yyU6BXGMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDYwNzIwMTIwN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILXYe+WQjDiRHOFen3ZXWKd0zolu
+6w3a3p4t/mwDWbLYMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDYwNzIwMjQyNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCnOrPtVG1vpF9Bu2GtmUgd0awj555Sm5URHr+45e37NUQC
-CxskcDBEeQf2Hpu1dtrRrs5eDX3o++z1OClU84EJijldikkGEdKAsno2RjWL82Z/AJPNxAf3YCCD
-4JcUu0eROYOpsF2H/XyzVfyXnXDn2vt3xtowjV4BJbgJc9NeykXfyLXJ/5VOwNJGFnpgfCmKPl58
-9sw3RLvNp9qGvyZfFVPZzbWMAEXQoymWitCFRS75yuX59vshFCrxApsAaBWXxWWzagkMhDeQb9Gz
-ZdWLSbzn9OIHhjo9/uAUZ0FM8+1MZRQOugV9z/dFYzkzx1CMo1/5jjMtZMf3W76zyU2B
---0000000000000adb1505fd8fc00a--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQACVghAdH1mjmfScJtgv1tLNbyX0l0ohSoZ/2yum2VJH4qQ
+gilGE91aIvmhN2/160VF5mN5gctygfwTNttFgWbQ2tXemXYDFCWoVOfCFQTlT9wJWNb4XqqxinFb
+9bK7TAZpyyIoi7qWCZLHK2STJCmuBX3XHOwGggXtjEJHUKKEKVsnmpk0nNmaLSegC+Qe4WXt5yR3
+Qs/nlvlpwSNusV1I9cA1qJ4ygD57uOBsEbRGKLafs6TmRHmZb+Q7QghcCKTR/WPfnww3hmditRf1
+VRhrUnICeF5WfP7NhGbqKKrghoz9E6GH/TkNIXKB6fMdlnia2mKDTXm6x1ltbnlwrovl
+--00000000000019afe805fd8fec77--
 
 
---===============0008832296249282855==
+--===============0051593487006339357==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -402,5 +395,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============0008832296249282855==--
+--===============0051593487006339357==--
 
