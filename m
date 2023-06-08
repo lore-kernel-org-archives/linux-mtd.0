@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44545C87FE2
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:05:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B84AEC7EE43
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:05:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ca9gMsFnTzI/R1822mcGLGBBlt5zXsYVqseg+n4BmA8=; b=4rSFXi3wm55koX
-	8epLirCYSeKD6ffSVrBxUWSLbuqHQQZrxMO7X5adkE5GbT3DSVdt9bXSgfreO5yMH6/Uj0l5m5qVY
-	QkmVce59jwsC6KObuCDSmWGQeF+pJerkn4h0mHScuYwkya/Jwrdnl5SF9WP6GhJoykz4v75QAgE7f
-	ex55rp5dT7xSqvnFCftY/Bdg1E2Vq1ah2Q1Ci6NRp9rllKCtO2iy2Ey9kN2M5W2Cyy5kpGmCi4bVW
-	3CSl1HiVAEZ/32N1bKknt5ZZ3j+IH6Tl5ApTNfvZM0VvBiLHuntd2XaEKCIbm1OvhKY9JDjGmO4Ze
-	20Iek6mKnYQ/ODvmo6zw==;
+	List-Owner; bh=HTkzy7apyywWbDzpjrg9WNxSdGvx/plbXjZcbTvD/38=; b=NBtmBCoi3gN1Rp
+	kSzjpMJi565Kkv+AXjESOsLAkt04HMu53Zrp5vinYdDg/bnzE2UPuFWOyXi0D/l5hRX8W4OuQHBTR
+	Jk0AnWSx7K62KlwW2ewTkGlG9epSHJ/6qRGM66FMRBqRVKElwbs1s3VRDK/PYdfGzYWbX1dTMmOYT
+	KN83QJudS9bo/l1c3mOEantCLomBm5K/HXeG1OKORhsOLOHHq1zms90bUNRiTc2lJdaym63iEtmez
+	4KTs/l2/2KenrUuthDwFeIkUeBf6ZaMc1W1P5Fv54LSGIL6/DJQ4UHEXvSOB+vbLmbYn8JmuNQYM8
+	nZ2Hu0D9BhBHMQJaZ6YA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DRr-0093Vv-0R;
-	Thu, 08 Jun 2023 11:04:59 +0000
+	id 1q7DSO-00949G-1I;
+	Thu, 08 Jun 2023 11:05:32 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DQe-0092IK-25;
-	Thu, 08 Jun 2023 11:03:45 +0000
+	id 1q7DQm-0092Rc-2c;
+	Thu, 08 Jun 2023 11:03:53 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -56,9 +56,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 16/30] block: add a sb_open_mode helper
-Date: Thu,  8 Jun 2023 13:02:44 +0200
-Message-Id: <20230608110258.189493-17-hch@lst.de>
+Subject: [PATCH 19/30] scsi: replace the fmode_t argument to scsi_ioctl with a simple bool
+Date: Thu,  8 Jun 2023 13:02:47 +0200
+Message-Id: <20230608110258.189493-20-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230608110258.189493-1-hch@lst.de>
 References: <20230608110258.189493-1-hch@lst.de>
@@ -79,116 +79,250 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a helper to return the open flags for blkdev_get_by* for passed in
-super block flags instead of open coding the logic in many places.
+Instead of passing a fmode_t and only checking it for FMODE_WRITE, pass
+a bool open_for_write to prepare for callers that won't have the fmode_t.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 Acked-by: Christian Brauner <brauner@kernel.org>
 ---
- fs/btrfs/super.c       |  5 +----
- fs/nilfs2/super.c      |  7 ++-----
- fs/super.c             | 15 ++++-----------
- include/linux/blkdev.h |  7 +++++++
- 4 files changed, 14 insertions(+), 20 deletions(-)
+ drivers/scsi/ch.c         |  3 ++-
+ drivers/scsi/scsi_ioctl.c | 34 +++++++++++++++++-----------------
+ drivers/scsi/sd.c         |  2 +-
+ drivers/scsi/sg.c         |  5 +++--
+ drivers/scsi/sr.c         |  2 +-
+ drivers/scsi/st.c         |  2 +-
+ include/scsi/scsi_ioctl.h |  2 +-
+ 7 files changed, 26 insertions(+), 24 deletions(-)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 1a2ee9407f5414..fd02b92e39106a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1440,12 +1440,9 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
- 	struct btrfs_fs_devices *fs_devices = NULL;
- 	struct btrfs_fs_info *fs_info = NULL;
- 	void *new_sec_opts = NULL;
--	fmode_t mode = FMODE_READ;
-+	fmode_t mode = sb_open_mode(flags);
- 	int error = 0;
+diff --git a/drivers/scsi/ch.c b/drivers/scsi/ch.c
+index ac648bb8f7e7f4..cb0a399be1ccee 100644
+--- a/drivers/scsi/ch.c
++++ b/drivers/scsi/ch.c
+@@ -877,7 +877,8 @@ static long ch_ioctl(struct file *file,
+ 	}
  
--	if (!(flags & SB_RDONLY))
--		mode |= FMODE_WRITE;
--
- 	if (data) {
- 		error = security_sb_eat_lsm_opts(data, &new_sec_opts);
- 		if (error)
-diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
-index 61d5e79a5e81df..a41fd84d4e28ab 100644
---- a/fs/nilfs2/super.c
-+++ b/fs/nilfs2/super.c
-@@ -1278,14 +1278,11 @@ nilfs_mount(struct file_system_type *fs_type, int flags,
+ 	default:
+-		return scsi_ioctl(ch->device, file->f_mode, cmd, argp);
++		return scsi_ioctl(ch->device, file->f_mode & FMODE_WRITE, cmd,
++				  argp);
+ 
+ 	}
+ }
+diff --git a/drivers/scsi/scsi_ioctl.c b/drivers/scsi/scsi_ioctl.c
+index dda5468ca97f90..6f6c5973c3ea95 100644
+--- a/drivers/scsi/scsi_ioctl.c
++++ b/drivers/scsi/scsi_ioctl.c
+@@ -346,7 +346,7 @@ bool scsi_cmd_allowed(unsigned char *cmd, bool open_for_write)
+ EXPORT_SYMBOL(scsi_cmd_allowed);
+ 
+ static int scsi_fill_sghdr_rq(struct scsi_device *sdev, struct request *rq,
+-		struct sg_io_hdr *hdr, fmode_t mode)
++		struct sg_io_hdr *hdr, bool open_for_write)
  {
- 	struct nilfs_super_data sd;
- 	struct super_block *s;
--	fmode_t mode = FMODE_READ;
- 	struct dentry *root_dentry;
- 	int err, s_new = false;
+ 	struct scsi_cmnd *scmd = blk_mq_rq_to_pdu(rq);
  
--	if (!(flags & SB_RDONLY))
--		mode |= FMODE_WRITE;
--
--	sd.bdev = blkdev_get_by_path(dev_name, mode, fs_type, NULL);
-+	sd.bdev = blkdev_get_by_path(dev_name, sb_open_mode(flags), fs_type,
-+				     NULL);
- 	if (IS_ERR(sd.bdev))
- 		return ERR_CAST(sd.bdev);
+@@ -354,7 +354,7 @@ static int scsi_fill_sghdr_rq(struct scsi_device *sdev, struct request *rq,
+ 		return -EMSGSIZE;
+ 	if (copy_from_user(scmd->cmnd, hdr->cmdp, hdr->cmd_len))
+ 		return -EFAULT;
+-	if (!scsi_cmd_allowed(scmd->cmnd, mode & FMODE_WRITE))
++	if (!scsi_cmd_allowed(scmd->cmnd, open_for_write))
+ 		return -EPERM;
+ 	scmd->cmd_len = hdr->cmd_len;
  
-diff --git a/fs/super.c b/fs/super.c
-index 8563794a8bc462..dc7f328398339d 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1255,17 +1255,13 @@ int get_tree_bdev(struct fs_context *fc,
+@@ -407,7 +407,8 @@ static int scsi_complete_sghdr_rq(struct request *rq, struct sg_io_hdr *hdr,
+ 	return ret;
+ }
+ 
+-static int sg_io(struct scsi_device *sdev, struct sg_io_hdr *hdr, fmode_t mode)
++static int sg_io(struct scsi_device *sdev, struct sg_io_hdr *hdr,
++		bool open_for_write)
  {
- 	struct block_device *bdev;
- 	struct super_block *s;
--	fmode_t mode = FMODE_READ;
- 	int error = 0;
+ 	unsigned long start_time;
+ 	ssize_t ret = 0;
+@@ -448,7 +449,7 @@ static int sg_io(struct scsi_device *sdev, struct sg_io_hdr *hdr, fmode_t mode)
+ 		goto out_put_request;
+ 	}
  
--	if (!(fc->sb_flags & SB_RDONLY))
--		mode |= FMODE_WRITE;
--
- 	if (!fc->source)
- 		return invalf(fc, "No source specified");
+-	ret = scsi_fill_sghdr_rq(sdev, rq, hdr, mode);
++	ret = scsi_fill_sghdr_rq(sdev, rq, hdr, open_for_write);
+ 	if (ret < 0)
+ 		goto out_put_request;
  
--	bdev = blkdev_get_by_path(fc->source, mode, fc->fs_type,
--				  &fs_holder_ops);
-+	bdev = blkdev_get_by_path(fc->source, sb_open_mode(fc->sb_flags),
-+				  fc->fs_type, &fs_holder_ops);
- 	if (IS_ERR(bdev)) {
- 		errorf(fc, "%s: Can't open blockdev", fc->source);
- 		return PTR_ERR(bdev);
-@@ -1344,13 +1340,10 @@ struct dentry *mount_bdev(struct file_system_type *fs_type,
+@@ -477,8 +478,7 @@ static int sg_io(struct scsi_device *sdev, struct sg_io_hdr *hdr, fmode_t mode)
+ /**
+  * sg_scsi_ioctl  --  handle deprecated SCSI_IOCTL_SEND_COMMAND ioctl
+  * @q:		request queue to send scsi commands down
+- * @mode:	mode used to open the file through which the ioctl has been
+- *		submitted
++ * @open_for_write: is the file / block device opened for writing?
+  * @sic:	userspace structure describing the command to perform
+  *
+  * Send down the scsi command described by @sic to the device below
+@@ -501,7 +501,7 @@ static int sg_io(struct scsi_device *sdev, struct sg_io_hdr *hdr, fmode_t mode)
+  *      Positive numbers returned are the compacted SCSI error codes (4
+  *      bytes in one int) where the lowest byte is the SCSI status.
+  */
+-static int sg_scsi_ioctl(struct request_queue *q, fmode_t mode,
++static int sg_scsi_ioctl(struct request_queue *q, bool open_for_write,
+ 		struct scsi_ioctl_command __user *sic)
  {
- 	struct block_device *bdev;
- 	struct super_block *s;
--	fmode_t mode = FMODE_READ;
- 	int error = 0;
+ 	struct request *rq;
+@@ -554,7 +554,7 @@ static int sg_scsi_ioctl(struct request_queue *q, fmode_t mode,
+ 		goto error;
  
--	if (!(flags & SB_RDONLY))
--		mode |= FMODE_WRITE;
--
--	bdev = blkdev_get_by_path(dev_name, mode, fs_type, &fs_holder_ops);
-+	bdev = blkdev_get_by_path(dev_name, sb_open_mode(flags), fs_type,
-+				  &fs_holder_ops);
- 	if (IS_ERR(bdev))
- 		return ERR_CAST(bdev);
+ 	err = -EPERM;
+-	if (!scsi_cmd_allowed(scmd->cmnd, mode & FMODE_WRITE))
++	if (!scsi_cmd_allowed(scmd->cmnd, open_for_write))
+ 		goto error;
  
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index d5b99796f12c11..97803603902076 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1473,6 +1473,13 @@ struct blk_holder_ops {
- 	void (*mark_dead)(struct block_device *bdev);
- };
+ 	/* default.  possible overridden later */
+@@ -776,7 +776,7 @@ static int scsi_put_cdrom_generic_arg(const struct cdrom_generic_command *cgc,
+ 	return 0;
+ }
  
-+/*
-+ * Return the correct open flags for blkdev_get_by_* for super block flags
-+ * as stored in sb->s_flags.
-+ */
-+#define sb_open_mode(flags) \
-+	(FMODE_READ | (((flags) & SB_RDONLY) ? 0 : FMODE_WRITE))
-+
- struct block_device *blkdev_get_by_dev(dev_t dev, fmode_t mode, void *holder,
- 		const struct blk_holder_ops *hops);
- struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
+-static int scsi_cdrom_send_packet(struct scsi_device *sdev, fmode_t mode,
++static int scsi_cdrom_send_packet(struct scsi_device *sdev, bool open_for_write,
+ 		void __user *arg)
+ {
+ 	struct cdrom_generic_command cgc;
+@@ -817,7 +817,7 @@ static int scsi_cdrom_send_packet(struct scsi_device *sdev, fmode_t mode,
+ 	hdr.cmdp = ((struct cdrom_generic_command __user *) arg)->cmd;
+ 	hdr.cmd_len = sizeof(cgc.cmd);
+ 
+-	err = sg_io(sdev, &hdr, mode);
++	err = sg_io(sdev, &hdr, open_for_write);
+ 	if (err == -EFAULT)
+ 		return -EFAULT;
+ 
+@@ -832,7 +832,7 @@ static int scsi_cdrom_send_packet(struct scsi_device *sdev, fmode_t mode,
+ 	return err;
+ }
+ 
+-static int scsi_ioctl_sg_io(struct scsi_device *sdev, fmode_t mode,
++static int scsi_ioctl_sg_io(struct scsi_device *sdev, bool open_for_write,
+ 		void __user *argp)
+ {
+ 	struct sg_io_hdr hdr;
+@@ -841,7 +841,7 @@ static int scsi_ioctl_sg_io(struct scsi_device *sdev, fmode_t mode,
+ 	error = get_sg_io_hdr(&hdr, argp);
+ 	if (error)
+ 		return error;
+-	error = sg_io(sdev, &hdr, mode);
++	error = sg_io(sdev, &hdr, open_for_write);
+ 	if (error == -EFAULT)
+ 		return error;
+ 	if (put_sg_io_hdr(&hdr, argp))
+@@ -852,7 +852,7 @@ static int scsi_ioctl_sg_io(struct scsi_device *sdev, fmode_t mode,
+ /**
+  * scsi_ioctl - Dispatch ioctl to scsi device
+  * @sdev: scsi device receiving ioctl
+- * @mode: mode the block/char device is opened with
++ * @open_for_write: is the file / block device opened for writing?
+  * @cmd: which ioctl is it
+  * @arg: data associated with ioctl
+  *
+@@ -860,7 +860,7 @@ static int scsi_ioctl_sg_io(struct scsi_device *sdev, fmode_t mode,
+  * does not take a major/minor number as the dev field.  Rather, it takes
+  * a pointer to a &struct scsi_device.
+  */
+-int scsi_ioctl(struct scsi_device *sdev, fmode_t mode, int cmd,
++int scsi_ioctl(struct scsi_device *sdev, bool open_for_write, int cmd,
+ 		void __user *arg)
+ {
+ 	struct request_queue *q = sdev->request_queue;
+@@ -896,11 +896,11 @@ int scsi_ioctl(struct scsi_device *sdev, fmode_t mode, int cmd,
+ 	case SG_EMULATED_HOST:
+ 		return sg_emulated_host(q, arg);
+ 	case SG_IO:
+-		return scsi_ioctl_sg_io(sdev, mode, arg);
++		return scsi_ioctl_sg_io(sdev, open_for_write, arg);
+ 	case SCSI_IOCTL_SEND_COMMAND:
+-		return sg_scsi_ioctl(q, mode, arg);
++		return sg_scsi_ioctl(q, open_for_write, arg);
+ 	case CDROM_SEND_PACKET:
+-		return scsi_cdrom_send_packet(sdev, mode, arg);
++		return scsi_cdrom_send_packet(sdev, open_for_write, arg);
+ 	case CDROMCLOSETRAY:
+ 		return scsi_send_start_stop(sdev, 3);
+ 	case CDROMEJECT:
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index c67c84f6ba6178..02b6704ec2b401 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -1463,7 +1463,7 @@ static int sd_ioctl(struct block_device *bdev, fmode_t mode,
+ 
+ 	if (is_sed_ioctl(cmd))
+ 		return sed_ioctl(sdkp->opal_dev, cmd, p);
+-	return scsi_ioctl(sdp, mode, cmd, p);
++	return scsi_ioctl(sdp, mode & FMODE_WRITE, cmd, p);
+ }
+ 
+ static void set_media_not_present(struct scsi_disk *sdkp)
+diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
+index e49ea693d0b656..138e28bb76b749 100644
+--- a/drivers/scsi/sg.c
++++ b/drivers/scsi/sg.c
+@@ -1103,7 +1103,8 @@ sg_ioctl_common(struct file *filp, Sg_device *sdp, Sg_fd *sfp,
+ 	case SCSI_IOCTL_SEND_COMMAND:
+ 		if (atomic_read(&sdp->detaching))
+ 			return -ENODEV;
+-		return scsi_ioctl(sdp->device, filp->f_mode, cmd_in, p);
++		return scsi_ioctl(sdp->device, filp->f_mode & FMODE_WRITE,
++				  cmd_in, p);
+ 	case SG_SET_DEBUG:
+ 		result = get_user(val, ip);
+ 		if (result)
+@@ -1159,7 +1160,7 @@ sg_ioctl(struct file *filp, unsigned int cmd_in, unsigned long arg)
+ 	ret = sg_ioctl_common(filp, sdp, sfp, cmd_in, p);
+ 	if (ret != -ENOIOCTLCMD)
+ 		return ret;
+-	return scsi_ioctl(sdp->device, filp->f_mode, cmd_in, p);
++	return scsi_ioctl(sdp->device, filp->f_mode & FMODE_WRITE, cmd_in, p);
+ }
+ 
+ static __poll_t
+diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
+index 55082acb59bcaa..00aaafc8dd78f8 100644
+--- a/drivers/scsi/sr.c
++++ b/drivers/scsi/sr.c
+@@ -543,7 +543,7 @@ static int sr_block_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
+ 		if (ret != -ENOSYS)
+ 			goto put;
+ 	}
+-	ret = scsi_ioctl(sdev, mode, cmd, argp);
++	ret = scsi_ioctl(sdev, mode & FMODE_WRITE, cmd, argp);
+ 
+ put:
+ 	scsi_autopm_put_device(sdev);
+diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
+index b90a440e135dc4..14d7981ddcdd19 100644
+--- a/drivers/scsi/st.c
++++ b/drivers/scsi/st.c
+@@ -3832,7 +3832,7 @@ static long st_ioctl(struct file *file, unsigned int cmd_in, unsigned long arg)
+ 		break;
+ 	}
+ 
+-	retval = scsi_ioctl(STp->device, file->f_mode, cmd_in, p);
++	retval = scsi_ioctl(STp->device, file->f_mode & FMODE_WRITE, cmd_in, p);
+ 	if (!retval && cmd_in == SCSI_IOCTL_STOP_UNIT) {
+ 		/* unload */
+ 		STp->rew_at_close = 0;
+diff --git a/include/scsi/scsi_ioctl.h b/include/scsi/scsi_ioctl.h
+index 914201a8cb947c..a207c07da9d20c 100644
+--- a/include/scsi/scsi_ioctl.h
++++ b/include/scsi/scsi_ioctl.h
+@@ -45,7 +45,7 @@ typedef struct scsi_fctargaddress {
+ 
+ int scsi_ioctl_block_when_processing_errors(struct scsi_device *sdev,
+ 		int cmd, bool ndelay);
+-int scsi_ioctl(struct scsi_device *sdev, fmode_t mode, int cmd,
++int scsi_ioctl(struct scsi_device *sdev, bool open_for_write, int cmd,
+ 		void __user *arg);
+ int get_sg_io_hdr(struct sg_io_hdr *hdr, const void __user *argp);
+ int put_sg_io_hdr(const struct sg_io_hdr *hdr, void __user *argp);
 -- 
 2.39.2
 
