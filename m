@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 839C2C83003
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:06:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B51DC7EE23
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:06:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=36aLwYM22GAKouD+1vmYAyd9Th60Yt7TnXHc18d2nDU=; b=hTP8yH2nfOF2QZ
-	jELcAsjSx7eDJ8f6lwTTekxd0nlbODeSfh+oEsOuqS8GnrvuiXwpoJz66upTm6fh4+IxRoAoHR7s7
-	/mjwE0e39M9uFJ5kTJTBuobXACQV95lZIF0mtZB8pXWRxOVaNn+sIfOckb8scLk0VGPqSQ2OYdsn4
-	XljE9SeY/ORhZszGDTnqF6OGkJY0yZPfJdt/e+C2Whz9hzYoO7EQguF4cCmSCVHHssdBm+9RedhwU
-	q6Kr27h1E1FkqcGSo2odvQpIuCxx40hGnsg6iASnJAQBesZhvII3iXvvfT+BmZtnB/LcHn74wILdB
-	/OCdiCLWfaRjzxpzu2Ww==;
+	List-Owner; bh=1QLPl+6ZbP69EFLK9Sc+CxrB8Me7nZBBBoHmCtBioj8=; b=4mwse2FGt1x+Cq
+	x84ofjfwwDw8gmEeoqsv9dBp28rwkIt6ieu03O1QdzB9mvKrHhLWpf+Kll3XiAwMSveZkbWXJOmyU
+	8LLzwuXZ7Dl4JwunscM3DlM/9D9kb4B35r/nlpcl4yQQh/vqgsGxnIg/0foYV8A8lMZAOLQsXA6jI
+	qLFzGc745ItUFAlmDQQPuvWyBbxzEcMWI/URcXINAogk4ElKbkgBFMSrff9uw+Xf7mR0wsRb3xVW5
+	t6fQZcSDXregId7GEqblj551RXaxQInI+hGY2ahiz90RbZsepybmP9/FxI7sFrDyx4+Kk7SPNi53G
+	Y53b2AcZ+sY69EL6HKkw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DSa-0094Mw-1v;
-	Thu, 08 Jun 2023 11:05:44 +0000
+	id 1q7DSx-0094mY-31;
+	Thu, 08 Jun 2023 11:06:07 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DR0-0092dV-19;
-	Thu, 08 Jun 2023 11:04:06 +0000
+	id 1q7DR7-0092nK-2n;
+	Thu, 08 Jun 2023 11:04:14 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -56,9 +56,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 22/30] mtd: block: use a simple bool to track open for write
-Date: Thu,  8 Jun 2023 13:02:50 +0200
-Message-Id: <20230608110258.189493-23-hch@lst.de>
+Subject: [PATCH 25/30] block: move a few internal definitions out of blkdev.h
+Date: Thu,  8 Jun 2023 13:02:53 +0200
+Message-Id: <20230608110258.189493-26-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230608110258.189493-1-hch@lst.de>
 References: <20230608110258.189493-1-hch@lst.de>
@@ -79,58 +79,118 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Instead of propagating the fmode_t, just use a bool to track if a mtd
-block device was opened for writing.
+All these helpers are only used in core block code, so move them out of
+the public header.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 Acked-by: Christian Brauner <brauner@kernel.org>
-Acked-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/mtd_blkdevs.c    | 2 +-
- drivers/mtd/mtdblock.c       | 2 +-
- include/linux/mtd/blktrans.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ block/blk.h            | 23 +++++++++++++++++++++--
+ include/linux/blkdev.h | 27 ---------------------------
+ 2 files changed, 21 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index f0bb09fde95e3a..bd0b7545364349 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -208,7 +208,7 @@ static int blktrans_open(struct gendisk *disk, fmode_t mode)
- 	ret = __get_mtd_device(dev->mtd);
- 	if (ret)
- 		goto error_release;
--	dev->file_mode = mode;
-+	dev->writable = mode & FMODE_WRITE;
+diff --git a/block/blk.h b/block/blk.h
+index 9582fcd0df4123..6910220aa030f1 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -394,10 +394,27 @@ static inline struct bio *blk_queue_bounce(struct bio *bio,
+ #ifdef CONFIG_BLK_DEV_ZONED
+ void disk_free_zone_bitmaps(struct gendisk *disk);
+ void disk_clear_zone_settings(struct gendisk *disk);
+-#else
++int blkdev_report_zones_ioctl(struct block_device *bdev, fmode_t mode,
++		unsigned int cmd, unsigned long arg);
++int blkdev_zone_mgmt_ioctl(struct block_device *bdev, fmode_t mode,
++		unsigned int cmd, unsigned long arg);
++#else /* CONFIG_BLK_DEV_ZONED */
+ static inline void disk_free_zone_bitmaps(struct gendisk *disk) {}
+ static inline void disk_clear_zone_settings(struct gendisk *disk) {}
+-#endif
++static inline int blkdev_report_zones_ioctl(struct block_device *bdev,
++		fmode_t mode, unsigned int cmd, unsigned long arg)
++{
++	return -ENOTTY;
++}
++static inline int blkdev_zone_mgmt_ioctl(struct block_device *bdev,
++		fmode_t mode, unsigned int cmd, unsigned long arg)
++{
++	return -ENOTTY;
++}
++#endif /* CONFIG_BLK_DEV_ZONED */
++
++struct block_device *bdev_alloc(struct gendisk *disk, u8 partno);
++void bdev_add(struct block_device *bdev, dev_t dev);
  
- unlock:
- 	dev->open++;
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index a0a1194dc1d902..fa476fb4dffb6c 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -294,7 +294,7 @@ static void mtdblock_release(struct mtd_blktrans_dev *mbd)
- 		 * It was the last usage. Free the cache, but only sync if
- 		 * opened for writing.
- 		 */
--		if (mbd->file_mode & FMODE_WRITE)
-+		if (mbd->writable)
- 			mtd_sync(mbd->mtd);
- 		vfree(mtdblk->cache_data);
- 	}
-diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
-index 15cc9b95e32b52..6e471436bba556 100644
---- a/include/linux/mtd/blktrans.h
-+++ b/include/linux/mtd/blktrans.h
-@@ -34,7 +34,7 @@ struct mtd_blktrans_dev {
- 	struct blk_mq_tag_set *tag_set;
- 	spinlock_t queue_lock;
- 	void *priv;
--	fmode_t file_mode;
-+	bool writable;
- };
+ int blk_alloc_ext_minor(void);
+ void blk_free_ext_minor(unsigned int minor);
+@@ -449,6 +466,8 @@ extern struct device_attribute dev_attr_events_poll_msecs;
  
- struct mtd_blktrans_ops {
+ extern struct attribute_group blk_trace_attr_group;
+ 
++int truncate_bdev_range(struct block_device *bdev, fmode_t mode, loff_t lstart,
++		loff_t lend);
+ long blkdev_ioctl(struct file *file, unsigned cmd, unsigned long arg);
+ long compat_blkdev_ioctl(struct file *file, unsigned cmd, unsigned long arg);
+ 
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 97803603902076..6b65623e447c02 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -318,7 +318,6 @@ typedef int (*report_zones_cb)(struct blk_zone *zone, unsigned int idx,
+ void disk_set_zoned(struct gendisk *disk, enum blk_zoned_model model);
+ 
+ #ifdef CONFIG_BLK_DEV_ZONED
+-
+ #define BLK_ALL_ZONES  ((unsigned int)-1)
+ int blkdev_report_zones(struct block_device *bdev, sector_t sector,
+ 			unsigned int nr_zones, report_zones_cb cb, void *data);
+@@ -328,33 +327,11 @@ extern int blkdev_zone_mgmt(struct block_device *bdev, enum req_op op,
+ 			    gfp_t gfp_mask);
+ int blk_revalidate_disk_zones(struct gendisk *disk,
+ 			      void (*update_driver_data)(struct gendisk *disk));
+-
+-extern int blkdev_report_zones_ioctl(struct block_device *bdev, fmode_t mode,
+-				     unsigned int cmd, unsigned long arg);
+-extern int blkdev_zone_mgmt_ioctl(struct block_device *bdev, fmode_t mode,
+-				  unsigned int cmd, unsigned long arg);
+-
+ #else /* CONFIG_BLK_DEV_ZONED */
+-
+ static inline unsigned int bdev_nr_zones(struct block_device *bdev)
+ {
+ 	return 0;
+ }
+-
+-static inline int blkdev_report_zones_ioctl(struct block_device *bdev,
+-					    fmode_t mode, unsigned int cmd,
+-					    unsigned long arg)
+-{
+-	return -ENOTTY;
+-}
+-
+-static inline int blkdev_zone_mgmt_ioctl(struct block_device *bdev,
+-					 fmode_t mode, unsigned int cmd,
+-					 unsigned long arg)
+-{
+-	return -ENOTTY;
+-}
+-
+ #endif /* CONFIG_BLK_DEV_ZONED */
+ 
+ /*
+@@ -1493,11 +1470,7 @@ void blkdev_put(struct block_device *bdev, void *holder);
+ struct block_device *blkdev_get_no_open(dev_t dev);
+ void blkdev_put_no_open(struct block_device *bdev);
+ 
+-struct block_device *bdev_alloc(struct gendisk *disk, u8 partno);
+-void bdev_add(struct block_device *bdev, dev_t dev);
+ struct block_device *I_BDEV(struct inode *inode);
+-int truncate_bdev_range(struct block_device *bdev, fmode_t mode, loff_t lstart,
+-		loff_t lend);
+ 
+ #ifdef CONFIG_BLOCK
+ void invalidate_bdev(struct block_device *bdev);
 -- 
 2.39.2
 
