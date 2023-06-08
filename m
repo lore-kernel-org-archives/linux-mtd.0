@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01FF3C7EE45
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 12:16:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CB2CC83003
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 12:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q/pHvY0WNrMKu3RZCIIvLu7lotTBh3XZ+cjvAjKH0PA=; b=Tc+aonkotESSfz
-	7jQgy3uk3lsjgwDG7CCcDF4/atIzBEEffsmoLsL2h122WRFXcTQcFnVasbVCI8CljAN0qZzdd6soG
-	UB2wW+YvuMOgWY3OK0sDmTnyWQSMAUkpDdW0nY+0lKdH3p1C8je7KQ/jIzOh/QkP0IYkWE42i8lYv
-	SKQLZ1dxXUulLnwXbE2q6fHBh6eJ325MSRxr2EaMVBYE20+ITK+9spevsdbgrNoaY/1NOmzgRMCk5
-	Lz72Qu0rIdy8V8liNq838UQJ6m4jdCs7AigrvPnasfN/nwWJb4ebA4/8RGG17c8Ov2zZTN+2RM9AU
-	AQNC/A0szEB608f8uVQA==;
+	List-Owner; bh=uLs26fgdBTkUCe7fuqZUlpyPgDbWHLfzfa9zmmJPA2U=; b=hnLMxcHKZltehU
+	0tq4rnCpKsBh6P5b0OkUUBs47VqnX7c4KYsyhnCMHjemDZglObbsQwA5aG4YNY7Bt9q4EIU7+tsCg
+	povOKUD4qS1Y0RMjVNmr5JyDMNLr49r5K0bKz+VCW42/4Z3ImeTXeKESBWrwH8A8jtawBMMwVAoJx
+	tk1zxwF+q9TI0q2mNKsFhIXsTtpOXKMFJqRC5EID9ifU5ZMBl+Isy6faQYv0K6uSFD2MGzXdeSRk5
+	KokwDeLfFjOGLxGPIbauYUh2r3IDWObodf1E7QjJ33CBeSF84T8e3wZ+978ZVnnyP5+fHIJOiXHdQ
+	iMv8ryu9O6x/09MgRwHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7EYQ-009HPL-0V;
-	Thu, 08 Jun 2023 12:15:50 +0000
+	id 1q7EYU-009HSS-0t;
+	Thu, 08 Jun 2023 12:15:54 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DQR-00921s-1m;
-	Thu, 08 Jun 2023 11:03:31 +0000
+	id 1q7DQq-0092W2-2a;
+	Thu, 08 Jun 2023 11:03:57 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -56,9 +56,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 11/30] swsusp: don't pass a stack address to blkdev_get_by_path
-Date: Thu,  8 Jun 2023 13:02:39 +0200
-Message-Id: <20230608110258.189493-12-hch@lst.de>
+Subject: [PATCH 20/30] scsi: replace the fmode_t argument to ->sg_io_fn with a simple bool
+Date: Thu,  8 Jun 2023 13:02:48 +0200
+Message-Id: <20230608110258.189493-21-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230608110258.189493-1-hch@lst.de>
 References: <20230608110258.189493-1-hch@lst.de>
@@ -79,44 +79,101 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-holder is just an on-stack pointer that can easily be reused by other calls,
-replace it with a static variable that doesn't change.
+Instead of passing a fmode_t and only checking it for FMODE_WRITE, pass
+a bool open_for_write to prepare for callers that won't have the fmode_t.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 Reviewed-by: Hannes Reinecke <hare@suse.de>
+Acked-by: Christian Brauner <brauner@kernel.org>
 ---
- kernel/power/swap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ block/bsg-lib.c         | 2 +-
+ block/bsg.c             | 8 +++++---
+ drivers/scsi/scsi_bsg.c | 4 ++--
+ include/linux/bsg.h     | 2 +-
+ 4 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index 81aec3b2c60510..b03ff1a33c7f68 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -1510,6 +1510,8 @@ int swsusp_read(unsigned int *flags_p)
- 	return error;
+diff --git a/block/bsg-lib.c b/block/bsg-lib.c
+index 435c32373cd68f..b3acdbdb6e7ea8 100644
+--- a/block/bsg-lib.c
++++ b/block/bsg-lib.c
+@@ -26,7 +26,7 @@ struct bsg_set {
+ };
+ 
+ static int bsg_transport_sg_io_fn(struct request_queue *q, struct sg_io_v4 *hdr,
+-		fmode_t mode, unsigned int timeout)
++		bool open_for_write, unsigned int timeout)
+ {
+ 	struct bsg_job *job;
+ 	struct request *rq;
+diff --git a/block/bsg.c b/block/bsg.c
+index 7eca43f33d7ff8..bec4027842b31e 100644
+--- a/block/bsg.c
++++ b/block/bsg.c
+@@ -54,7 +54,8 @@ static unsigned int bsg_timeout(struct bsg_device *bd, struct sg_io_v4 *hdr)
+ 	return max_t(unsigned int, timeout, BLK_MIN_SG_TIMEOUT);
  }
  
-+static void *swsusp_holder;
-+
- /**
-  *      swsusp_check - Check for swsusp signature in the resume device
-  */
-@@ -1517,14 +1519,13 @@ int swsusp_read(unsigned int *flags_p)
- int swsusp_check(bool snapshot_test)
+-static int bsg_sg_io(struct bsg_device *bd, fmode_t mode, void __user *uarg)
++static int bsg_sg_io(struct bsg_device *bd, bool open_for_write,
++		     void __user *uarg)
  {
- 	int error;
--	void *holder;
- 	fmode_t mode = FMODE_READ;
+ 	struct sg_io_v4 hdr;
+ 	int ret;
+@@ -63,7 +64,8 @@ static int bsg_sg_io(struct bsg_device *bd, fmode_t mode, void __user *uarg)
+ 		return -EFAULT;
+ 	if (hdr.guard != 'Q')
+ 		return -EINVAL;
+-	ret = bd->sg_io_fn(bd->queue, &hdr, mode, bsg_timeout(bd, &hdr));
++	ret = bd->sg_io_fn(bd->queue, &hdr, open_for_write,
++			   bsg_timeout(bd, &hdr));
+ 	if (!ret && copy_to_user(uarg, &hdr, sizeof(hdr)))
+ 		return -EFAULT;
+ 	return ret;
+@@ -146,7 +148,7 @@ static long bsg_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case SG_EMULATED_HOST:
+ 		return put_user(1, intp);
+ 	case SG_IO:
+-		return bsg_sg_io(bd, file->f_mode, uarg);
++		return bsg_sg_io(bd, file->f_mode & FMODE_WRITE, uarg);
+ 	case SCSI_IOCTL_SEND_COMMAND:
+ 		pr_warn_ratelimited("%s: calling unsupported SCSI_IOCTL_SEND_COMMAND\n",
+ 				current->comm);
+diff --git a/drivers/scsi/scsi_bsg.c b/drivers/scsi/scsi_bsg.c
+index 12431f35f861e1..a9a9ec086a7e3f 100644
+--- a/drivers/scsi/scsi_bsg.c
++++ b/drivers/scsi/scsi_bsg.c
+@@ -10,7 +10,7 @@
+ #define uptr64(val) ((void __user *)(uintptr_t)(val))
  
- 	if (snapshot_test)
- 		mode |= FMODE_EXCL;
+ static int scsi_bsg_sg_io_fn(struct request_queue *q, struct sg_io_v4 *hdr,
+-		fmode_t mode, unsigned int timeout)
++		bool open_for_write, unsigned int timeout)
+ {
+ 	struct scsi_cmnd *scmd;
+ 	struct request *rq;
+@@ -42,7 +42,7 @@ static int scsi_bsg_sg_io_fn(struct request_queue *q, struct sg_io_v4 *hdr,
+ 	if (copy_from_user(scmd->cmnd, uptr64(hdr->request), scmd->cmd_len))
+ 		goto out_put_request;
+ 	ret = -EPERM;
+-	if (!scsi_cmd_allowed(scmd->cmnd, mode & FMODE_WRITE))
++	if (!scsi_cmd_allowed(scmd->cmnd, open_for_write))
+ 		goto out_put_request;
  
- 	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
--					    mode, &holder, NULL);
-+					    mode, &swsusp_holder, NULL);
- 	if (!IS_ERR(hib_resume_bdev)) {
- 		set_blocksize(hib_resume_bdev, PAGE_SIZE);
- 		clear_page(swsusp_header);
+ 	ret = 0;
+diff --git a/include/linux/bsg.h b/include/linux/bsg.h
+index 1ac81c809da9b3..ee2df73edf83f8 100644
+--- a/include/linux/bsg.h
++++ b/include/linux/bsg.h
+@@ -9,7 +9,7 @@ struct device;
+ struct request_queue;
+ 
+ typedef int (bsg_sg_io_fn)(struct request_queue *, struct sg_io_v4 *hdr,
+-		fmode_t mode, unsigned int timeout);
++		bool open_for_write, unsigned int timeout);
+ 
+ struct bsg_device *bsg_register_queue(struct request_queue *q,
+ 		struct device *parent, const char *name,
 -- 
 2.39.2
 
