@@ -4,136 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C33BC77B7A
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 03:24:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAA51C7EE2E
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 04:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:Cc:To:
-	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Mg86UEEeDipBkDta/imtIooaTZ79BZwdzy3TXfaWatc=; b=AHd9ns6SBH/XbW9ZsE+aMCmiZH
-	eiBebyoQiUUlIu6RdIhMd6Ss3WTqQTLY5C2RAWsv2wUFf93HzQzIO2iERdykejFKd/UbUYXXyE4jG
-	X7GsFxn2KD+Mc9rmgyiA19g/erZVdTivDKZwiVkUvTPb80n+GwvJOmRKPwxufzz2mLgmQHvgQjq+4
-	hrai5vbgJ8pHNUbtBn9AZTLF/m7TOZhNCAojyEMfSGHDG8gDb/HNURI10wuiB67slQ62CRldhAV7Q
-	RSCKx0doNnUJY+QrsIMY+MxhEI9+INh1ZgJ8B1ofVarF1c/Dgo/396CtCVp+TJA4qhDGVUnZwhpGI
-	EVuXl3+w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=8k3uNoufCMb4B0cAwkYqSn6IAWeCVN4V3qWB/vWp+oo=; b=gQ/K7bSbwWN3f/
+	OgbkOgyPlsPQHL7dpNxHZQWniE3t6/FfQI7IS9jAG4FyNLZbTEcQZyMObhMwCZte4kht7c/5ajqE6
+	nTKZc9pKhUa3kW3NkusZht228fVISfXTqW1ZreLgrZGQNkj+zHj/hMNsivnXukRP6DCh2dpwIF4K+
+	/O1axpyLJLX53h0+UwVnLuxYA5V18r2YeB3eiYjO6QITFjjuxU1jckFNvhcZua29K+a75DEeGG7hv
+	jgC36ZdjlhFq2K/7i0P7Kndu4e38YDwssfNMaPSqk/MC2pyhsrGLmZ/qj8DCqo9YPDMyW9qf1HToW
+	I+nQ9jsOfVFJuoSHCHLw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q76GI-007v3C-1V;
-	Thu, 08 Jun 2023 03:24:34 +0000
-Received: from mail-tyzapc01on20701.outbound.protection.outlook.com ([2a01:111:f403:704b::701] helo=APC01-TYZ-obe.outbound.protection.outlook.com)
+	id 1q77TI-0083vC-0N;
+	Thu, 08 Jun 2023 04:42:04 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q76GF-007v22-30;
-	Thu, 08 Jun 2023 03:24:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QTknaFa7HYlHGIb+EedA1FKgWq0iYn6aRFtWCpA8H3QnpXx2/zSBqpWOXRdqWGK20W/qCBqytkc2u48NdWcV2BlJ2bxQ3Gr3j+YvX4Ami1ogL1ka/+3RXAM4ef056mzQGs9k5bOgsmwYW13vbUM4y2r8uSvf+0rX/0M74ZciuF0F2Dv8brSQ6hVloP6HRx+2E6DeN/GbwcCX7WDUut4dE+46hZ9hDilByqF0ib9XrcBqR5/Z7OndA26ZlfGGFFeqUW1GcFs4yU6+gvhLT6O3qHEKnyTaHTm6jv7EFRiScPXfOHGP1G5HsDX76JUmh3G5FKincKJO4Xd4Upj9Nt2TeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Bdt/dKhqWJQAgn5qm38Uj7ugmYkk3SqFSiUH+lHl/bI=;
- b=jt/V/Kny0vZhmXo64QCSqH6m9CMRKyFw4kA7JfT6/Jizmc9LknrKviu4EzkvWGoN/yeKrltF/k6/Dv9FjpR6UcoheKeSIY1Mmz3+DZFmgQ6wKOCrnoFXA+Ys+dXx6I0iMKxXJ0xeLgrC6F8O9+N53QwqPHO4O1ZRc9VHkpXHqhxufjq1hXHhcx1td5EvQWfweg2gQ5UF4J0zV2UI5o0BRMUtqcuXYxHfiXq3udU1p+4v6Ju0rT5yIgIXSZXh9BaYFG6plgOxDB/euRnLLSz70DKQEGqWtk1gtWYfT6vVSJs2Fo5d9x30rYtZ1ki3NZRe4iyOKqVaWPrjlE2kEaBzeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
- dkim=pass header.d=amlogic.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Bdt/dKhqWJQAgn5qm38Uj7ugmYkk3SqFSiUH+lHl/bI=;
- b=oORVS5nvhJ1yB1NIyDUBQMS3BHgehOiYh19F5BEBjft/zpx1fLmDn0ed3diF+fM9CxumwMS5M50YyR9IuzRL0uxBAMc32q9jjf8EchejV91neGRGkgAN/GOrt1SUXIUc5SSa9B2/oYS1pxtIKdzMqn9shJG22DfZrku+LTzFvHyvBv8L7B05ooUNdN/bT5XU49gsDo25D9vnBkwj6Qc+xcIwP/DXIFTUtKnnuoG1XFqEPEGVblQk53YfGDKTRrvm/wpln82+2SAKKbzs2PksCEqro7+7pPg8M7b2NIGVMZMyCjGskTy7EAzZf70nh05rcn2H64Rq+uwtnie4dQrUYA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amlogic.com;
-Received: from JH0PR03MB7495.apcprd03.prod.outlook.com (2603:1096:990:9::6) by
- TY0PR03MB6451.apcprd03.prod.outlook.com (2603:1096:400:1ac::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.32; Thu, 8 Jun
- 2023 03:24:19 +0000
-Received: from JH0PR03MB7495.apcprd03.prod.outlook.com
- ([fe80::5e9e:bcd4:e9d8:548a]) by JH0PR03MB7495.apcprd03.prod.outlook.com
- ([fe80::5e9e:bcd4:e9d8:548a%6]) with mapi id 15.20.6455.028; Thu, 8 Jun 2023
- 03:24:19 +0000
-Message-ID: <429589f6-d946-9bc9-d54e-e892d513a91b@amlogic.com>
-Date: Thu, 8 Jun 2023 11:23:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH v1] mtd: rawnand: meson: remove unneeded bitwise OR with
- zeroes
-To: Arseniy Krasnov <avkrasnov@sberdevices.ru>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: oxffffaa@gmail.com, kernel@sberdevices.ru, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20230605191508.1826853-1-AVKrasnov@sberdevices.ru>
- <9319a8f6-3774-0dc8-2262-8033f8016a50@sberdevices.ru>
-From: Liang Yang <liang.yang@amlogic.com>
-In-Reply-To: <9319a8f6-3774-0dc8-2262-8033f8016a50@sberdevices.ru>
-X-ClientProxiedBy: TYAPR01CA0144.jpnprd01.prod.outlook.com
- (2603:1096:404:2d::36) To JH0PR03MB7495.apcprd03.prod.outlook.com
- (2603:1096:990:9::6)
+	id 1q77TD-0083tk-0k;
+	Thu, 08 Jun 2023 04:42:01 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id 468AC5FD71;
+	Thu,  8 Jun 2023 07:41:52 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1686199312;
+	bh=LpIzyCBJY6jE9pEgPEdaViRUSV3QsiKuyw4HBlkJGNg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=K+vdAbFe62te0cvVfiaxQ/F8O3UQzpWgy3aFtkskuue+TN5L6Wpe1gmkhD/aDUJOR
+	 2CPi/5IXb0zfcB8UdnRjqQqyE8cJvOmW6NTKfCAOlZDv09BUox3frgMOFaklC3drOZ
+	 7a/gxiXcTaK7IdD8R3XlTDsPY5iNZe03FfPVVTnFluXZXZE+xKZOVcWiuEptqiMyh1
+	 jCNX5gcvaZWz6UZNJnF0OdhxRl76EqbEs8sI++4R8Svaqkmy668toXwB56AsIvDLeZ
+	 +HWSoTXNQ14a65XAp73+v25KUgTE5ABlBYSxXPyhh8U2RTvlqM89SOlHLKfXGPGGR8
+	 VV72eBcdllxGw==
+Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Thu,  8 Jun 2023 07:41:50 +0300 (MSK)
+From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
+	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] mtd: rawnand: meson: replace integer consts with proper defines
+Date: Thu, 8 Jun 2023 07:36:44 +0300
+Message-ID: <20230608043644.1271186-1-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: JH0PR03MB7495:EE_|TY0PR03MB6451:EE_
-X-MS-Office365-Filtering-Correlation-Id: 441669c6-aa3e-4536-37eb-08db67cfd823
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XondJik08RRrWiHvVgArCPYzp3ouDchXifhiRwjSFXxWfaNcd0u6CqvpRc1YRH2NrFTkAINO+cPa+lgv4EruuzNLGpVdyoINF6UHa69CntVGX61Qg8QTUtZG0QK1Pum4ThfxXcRHfg4zS5KC717YlF+xfL4FSLNpFpOQjnzhow14Np41qGQwfgXclQzhlZBXUXFfYpqD/FStpKHFSY3bYv9o+hM0K7OGg+zE7yepJJC2RXhL91OZ2AOHdZTZIo264w3CZgHll6RIbwAvkasB00ucCuB2H1qp2ybw/YrcG/R3GkCn11cmdXjw/uuJQlwy9Z1sw30P4EY18hD+CudBSpRtNPFqyGzlXX7O0RzRFwNanOkcru6CVPSlUXfUXaQtX8BnbXuSvA/gceZCUJu1MkrDtKMox91IBJn6Dzi3wCupnJeRjiHrVMhA5UC3Jtc7qorv5Li1LY0xDFOE+ICcfBYRyfAxxn18FxORa4d+gMsME2xSJHc1W/N2ryrhvjK6DE7oiDmRwUWvbFFQEYK8nrqL3BqVoYy3X62NDEnOlkoTUEf23rEfSSNfgy3iZ50usxcUI907oQgB54UENywcmGOOjxNQ0n/eDN/VDxJuweRLglKUfBP6HNRfoJU6qbAYlQW8zvVD9nwl8SfhNTwaQOgSYmiUakO7v83XxQDUNN6lmp6NYhxWonA6GpxPdyPUq+mrr+8zEGGcc7Y9x0hyVyfio8demhDT/HtgCIBXNnI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR03MB7495.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(136003)(366004)(346002)(39850400004)(451199021)(2906002)(478600001)(6486002)(52116002)(36756003)(2616005)(6666004)(86362001)(31696002)(26005)(53546011)(6512007)(38100700002)(38350700002)(186003)(6506007)(5660300002)(316002)(31686004)(7416002)(8936002)(8676002)(83380400001)(66946007)(4326008)(66556008)(66476007)(44832011)(41300700001)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UmNET2YvQjczUHJ2TWczbGFkallnZmlIU1ZKamdKM1VyWThKVlJpRG43aU1K?=
- =?utf-8?B?UURhWnFRMkYyRlk5RTdyUk5zRUZ2eHFUT29uQ0VDdjEySHM4RmRGN2VuMnBv?=
- =?utf-8?B?TkMzSU1xUjRXL2NqZm1jZjErTnVWUVoxMnJ5TW9Ha1cvSmhPL3dBY3NRMS8x?=
- =?utf-8?B?SUh0M0oyRHhWSzFJdG5YSHpsNkJTVnN2ZURmWVVJR2hydGtaeTRDcnI0SzFT?=
- =?utf-8?B?eW84eXJiMyttZzBXQWdoR0J6QXhwaTB6bWFBczU3dzZkaS9VNmNiZHErWjRC?=
- =?utf-8?B?ZzNGMnFJY1RxREJFUy91alZuemZKZ3haMkFCUXc3S3U4Wkhacjc5dEwrMUlD?=
- =?utf-8?B?aHdwOEwrQUJUa0VveG1OQXlBU3VWdnVvRmhaejBaOVM3TGxJZ1FNYStoMmpt?=
- =?utf-8?B?eGxlbG13ZnpMelZOUXRxVGNOQnB1TlpRLzZlMFU5dE5jbnZ6cDJpN002Y0I3?=
- =?utf-8?B?YXNaQTBJaDJ3K3lYalI5TUdGM05OVmRVZWZHUStWM1hXTmFjR2NRdnhIV3RG?=
- =?utf-8?B?QjdXSXJGeTlDN0JPS2NmaTA4Yk5qQWlTYi9yYU9DQTRLWWxhcTFKbGNMOE0r?=
- =?utf-8?B?ZU1aem9LOVRpRW1YcURpcHNWVGxwSm5JVmNoeDBGc3l6T2xkWE1kd2JpQWVO?=
- =?utf-8?B?Qm80YnNOWFphb3RHdGlONlZmMUVWR1VPa1hPRUpUdFgrTFV3RjlxOEZ5bzBW?=
- =?utf-8?B?NHNrMlR2L3dwQ1ZGWUl2S25oeDZ3bkRYRm8rcFFiYVpYSHhDeVE4Wlo0Ukti?=
- =?utf-8?B?ZDF3a3UzYk12TU12Q1gzV1NydzVFYitYZUthQXlWVjc1MmJtMTdubmFvcUt5?=
- =?utf-8?B?RTEwMFh6MUIwUVQ5UVdWei8veWpta2I4UDFBSXpiM1RIa1Q4TnlZcnlFZFR6?=
- =?utf-8?B?VklVQUV5aTgyMmNoUE1oZTlSZXlPVWE4c1h4Q3JJbWZ2SERtMlFvL3JGc2Vo?=
- =?utf-8?B?dDhZVVdNVG03NW5aTTl6SUMxUDUxSDZQeVRpeUduSWpuT1dCRUFNd3BtL2cy?=
- =?utf-8?B?dWR5MjJZM2N5cHhXc1dqRWlhN2t3UEdVNDZ6MldlTzM1RExtK3ZuZ2hnZ0NK?=
- =?utf-8?B?VEh5eDV4OXY0MllFY3RobDNYOTFhY0IrY25vYm8wbzVCUnEwMG5JMWZiRTdB?=
- =?utf-8?B?eTE3eU9QOGNuc3NENnM2a0ttYlV5RVNwNDhFVlBqRjcrd1hIdWtSZG5ldzBx?=
- =?utf-8?B?RXNheFpmZmxibWhKYVE0dUJxWGFlMDV5azlFZVpXblQ3RjBoTUdQWFQ0ckhE?=
- =?utf-8?B?bXQ4Tk5LRythaUpwNlV1R0pWa1ZXaFh1MU9nSFJVMVVnRW01K2FIYkNHeWJF?=
- =?utf-8?B?aENjSEJMRXBsNHdiMTYxOEhvYW9hNHVPSWpvblIxUW1SdHRORDMwT25TYXR0?=
- =?utf-8?B?cnQwSjVYMDdzUlBhRmRJcnArSnJXY1lqRkp6MjBIREJNVE9TVDJYdXR2ZHZE?=
- =?utf-8?B?Q3d6Znpxa2tVM3pjejRxaWt4ZXFWL3F2RGt3TzhxNHlHaFpWRWdSbmdHVUw5?=
- =?utf-8?B?TWJ6NEUxWUcwaEhqVFVrUm1PY0huVWErUXRqYVhyUzI0ZGR2bkxLM2ZLQ2Jh?=
- =?utf-8?B?cDZCNGFSN3A3MGdxQjRJMlhQOWJLRUxZSldYWWJFM2l5RXg1Nnp1aDdyS2JB?=
- =?utf-8?B?SWtsUExJci9wcnZDQmpJSVpKVFNzV1RwUklraFFack5uMjhvNWlxODdSbWtS?=
- =?utf-8?B?V1NSNkhUMVBuK2ZYYTFvTUxJWlVaZjhUSHkvSThWdFJBTXpKc2NVLzZhMUM0?=
- =?utf-8?B?NWFGeFVhUjVOcWUvRGlOeEZNU2JCRnVZZnhhVHIvYnVhdmRTU1d3WXRGVGx2?=
- =?utf-8?B?UnNWY1NBQXByLzF1VkJ6VFJ6WGdkODR3enROalhPMDMxNjVHRDJLR21zVkhk?=
- =?utf-8?B?SVZ3ZDZ1SjliN0R2R0FRa040dmNacVRsTXc2dFE4TVZNUXhHSnc0b0g4Slgy?=
- =?utf-8?B?QndLUGdVOFBQK1ZqcXY1NWViZmttVjkzSTc3a0luMEg2dHM4VjBHRnMwM1Fa?=
- =?utf-8?B?WVdNcFIxUS8wVlRhTm1JL2lJRXEyWVVDS1AxT2M2SXhrUXg4ZW5LTGNqaDNQ?=
- =?utf-8?B?WlQxUENYaFdONEI3UkVrU0hGczZaN245WWV6Y1E3WmZncVBQNWZkMkFHV29J?=
- =?utf-8?Q?sdO46fdDNdXt+5968Z0RqaVl1?=
-X-OriginatorOrg: amlogic.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 441669c6-aa3e-4536-37eb-08db67cfd823
-X-MS-Exchange-CrossTenant-AuthSource: JH0PR03MB7495.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2023 03:24:18.8429
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZQPVrSFOeWzra7SVwxgFKLXxtcgmJKyno4fKiuBBeoPQXBrkZvweXVeUAPVCI917sRdPPGxEdst+bMqVPEJElw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR03MB6451
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
+ S-MS-EXCH01.sberdevices.ru (172.16.1.4)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/08 00:23:00 #21457426
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_202432_001786_216507C8 
-X-CRM114-Status: GOOD (  14.15  )
+X-CRM114-CacheID: sfid-20230607_214159_816591_78849C2F 
+X-CRM114-Status: GOOD (  10.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,59 +81,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Add defines for column address. It makes driver more readable, because
+bitwise OR with 0 looks useless.
 
+Suggested-by: Liang Yang <liang.yang@amlogic.com>
+Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+---
+ Changelog:
+  v1 -> v2:
+   * Use defines with zero values instead of dropping both operations in
+     v1.
 
-On 2023/6/8 5:18, Arseniy Krasnov wrote:
-> [ EXTERNAL EMAIL ]
-> 
-> Hi again Miquel, Liang!
-> 
-> What do You think about this patch?
-> 
-> Thanks, Arseniy
-> 
-> On 05.06.2023 22:15, Arseniy Krasnov wrote:
->> Both operations have no effect.
->>
->> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
->> ---
->>   drivers/mtd/nand/raw/meson_nand.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
->> index 074e14225c06..50d3110ad321 100644
->> --- a/drivers/mtd/nand/raw/meson_nand.c
->> +++ b/drivers/mtd/nand/raw/meson_nand.c
->> @@ -595,12 +595,12 @@ static int meson_nfc_rw_cmd_prepare_and_execute(struct nand_chip *nand,
->>        cmd0 = in ? NAND_CMD_READ0 : NAND_CMD_SEQIN;
->>        nfc->cmdfifo.rw.cmd0 = cs | NFC_CMD_CLE | cmd0;
->>
->> -     addrs[0] = cs | NFC_CMD_ALE | 0;
->> +     addrs[0] = cs | NFC_CMD_ALE;
->>        if (mtd->writesize <= 512) {
->>                cmd_num--;
->>                row_start = 1;
->>        } else {
->> -             addrs[1] = cs | NFC_CMD_ALE | 0;
->> +             addrs[1] = cs | NFC_CMD_ALE;
->>                row_start = 2;
->>        }
-Hi Arseniy and Miquel,
+ drivers/mtd/nand/raw/meson_nand.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-The two zeros indcates two column address. maybe we could use the micro 
-"COLUMN_ADDR_0" and "COLUMN_ADDR_1" to keep the nfc command format "CE | 
-ALE | addr" consistency and also let function 
-"meson_nfc_rw_cmd_prepare_and_execute" be more readable.
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index 0154131e1d54..9034b3ca9e5b 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -109,6 +109,9 @@
+ 
+ #define PER_INFO_BYTE		8
+ 
++#define NFC_COLUMN_ADDR_0	0
++#define NFC_COLUMN_ADDR_1	0
++
+ struct meson_nfc_nand_chip {
+ 	struct list_head node;
+ 	struct nand_chip nand;
+@@ -672,12 +675,12 @@ static int meson_nfc_rw_cmd_prepare_and_execute(struct nand_chip *nand,
+ 	cmd0 = in ? NAND_CMD_READ0 : NAND_CMD_SEQIN;
+ 	nfc->cmdfifo.rw.cmd0 = cs | NFC_CMD_CLE | cmd0;
+ 
+-	addrs[0] = cs | NFC_CMD_ALE | 0;
++	addrs[0] = cs | NFC_CMD_ALE | NFC_COLUMN_ADDR_0;
+ 	if (mtd->writesize <= 512) {
+ 		cmd_num--;
+ 		row_start = 1;
+ 	} else {
+-		addrs[1] = cs | NFC_CMD_ALE | 0;
++		addrs[1] = cs | NFC_CMD_ALE | NFC_COLUMN_ADDR_1;
+ 		row_start = 2;
+ 	}
+ 
+-- 
+2.35.0
 
-Thanks,
-Liang
-
->>
 
 ______________________________________________________
 Linux MTD discussion mailing list
