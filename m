@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2018FC7EE29
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:05:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77741C87FE1
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:05:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oMcWn8MLDn8qLwl18D8X69y9Zn9ssXo9SsFD+8ToLYg=; b=KceuZs09JDJRsL
-	aOq/M4a/0t0x28nvsGGgTdbU97JDEWh/ysdfzNFWEV84FVWaP6ucL+xt/a1y8//NzXXdwpO+CeGnU
-	/JHY5j0H0HlExL1tUnoZ/KuXBGDh4GVQFC7womJB5qp/JworVCzOFRWHpUAF8EAWh8kXh9DzkoMjO
-	cYlI6WJU62dNDENXBYeq/WqSKstncHenpbjUxDEom02Y0kpRwg9lwetTdCtMMOVL/nG/J9Wt+v5gd
-	DRKC/YZliYhhSZ2VpiDQs7t2KYqRvpfszd67hHiR1AvTBsfGn1p6Nx5H9V1KefKjPUc/MFWW63UFP
-	L/9y/HLLkTW3xyzV4xGw==;
+	List-Owner; bh=E+f2dGMfuKGvg/J9Z3irN28TF9BLjObLb1nhslGkwsk=; b=zZA1zLIlvRg+es
+	RJP2bpVikBh39CvtsR71qgRrDYZ0fTL2LgJ8baG3kpYzr6iAQSyw8agdntme7lW36Z+2f8zsfy6s+
+	HiOmY4ntgpeWvLldiqmii+FOK+ZcRgU0yCWpFHcYtJUCCXqoNVPf4ARdz0AwNe1cSwsViCow6Q4SH
+	fx9mwEiwtdvZoB1Njz+KZCswxd75yfmO0cFK+UA1aHgOWQ9rfXOHkb7StB5Tx8XcWAfNHYnxqEULP
+	LrKwOWQSXp1+DLl4pKRd0xDKnReRVUZ05hnHGck+Gvju/USmYZH1UubiIigTtNROfH69QBFqiBzas
+	0y99A86pHNbkINdz2MYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DRN-00931y-22;
-	Thu, 08 Jun 2023 11:04:29 +0000
+	id 1q7DS7-0093pq-2n;
+	Thu, 08 Jun 2023 11:05:15 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DQW-00929D-1d;
-	Thu, 08 Jun 2023 11:03:36 +0000
+	id 1q7DQh-0092Ka-0N;
+	Thu, 08 Jun 2023 11:03:47 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -56,9 +56,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 13/30] rnbd-srv: don't pass a holder for non-exclusive blkdev_get_by_path
-Date: Thu,  8 Jun 2023 13:02:41 +0200
-Message-Id: <20230608110258.189493-14-hch@lst.de>
+Subject: [PATCH 17/30] fs: remove sb->s_mode
+Date: Thu,  8 Jun 2023 13:02:45 +0200
+Message-Id: <20230608110258.189493-18-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230608110258.189493-1-hch@lst.de>
 References: <20230608110258.189493-1-hch@lst.de>
@@ -79,30 +79,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Passing a holder to blkdev_get_by_path when FMODE_EXCL isn't set doesn't
-make sense, so pass NULL instead.
+There is no real need to store the open mode in the super_block now.
+It is only used by f2fs, which can easily recalculate it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 Acked-by: Christian Brauner <brauner@kernel.org>
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- drivers/block/rnbd/rnbd-srv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/super.c    | 10 ++++++----
+ fs/nilfs2/super.c  |  1 -
+ fs/super.c         |  2 --
+ include/linux/fs.h |  1 -
+ 4 files changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
-index cec22bbae2f9a5..ce505e552f4d50 100644
---- a/drivers/block/rnbd/rnbd-srv.c
-+++ b/drivers/block/rnbd/rnbd-srv.c
-@@ -719,7 +719,7 @@ static int process_msg_open(struct rnbd_srv_session *srv_sess,
- 		goto reject;
- 	}
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index a5adb1d316e331..5a764fecd1c7ef 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3993,6 +3993,7 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ 	struct f2fs_super_block *raw_super = F2FS_RAW_SUPER(sbi);
+ 	unsigned int max_devices = MAX_DEVICES;
+ 	unsigned int logical_blksize;
++	fmode_t mode = sb_open_mode(sbi->sb->s_flags);
+ 	int i;
  
--	bdev = blkdev_get_by_path(full_path, open_flags, THIS_MODULE, NULL);
-+	bdev = blkdev_get_by_path(full_path, open_flags, NULL, NULL);
- 	if (IS_ERR(bdev)) {
- 		ret = PTR_ERR(bdev);
- 		pr_err("Opening device '%s' on session %s failed, failed to open the block device, err: %d\n",
+ 	/* Initialize single device information */
+@@ -4024,8 +4025,8 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ 		if (max_devices == 1) {
+ 			/* Single zoned block device mount */
+ 			FDEV(0).bdev =
+-				blkdev_get_by_dev(sbi->sb->s_bdev->bd_dev,
+-					sbi->sb->s_mode, sbi->sb->s_type, NULL);
++				blkdev_get_by_dev(sbi->sb->s_bdev->bd_dev, mode,
++						  sbi->sb->s_type, NULL);
+ 		} else {
+ 			/* Multi-device mount */
+ 			memcpy(FDEV(i).path, RDEV(i).path, MAX_PATH_LEN);
+@@ -4043,8 +4044,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ 					(FDEV(i).total_segments <<
+ 					sbi->log_blocks_per_seg) - 1;
+ 			}
+-			FDEV(i).bdev = blkdev_get_by_path(FDEV(i).path,
+-					sbi->sb->s_mode, sbi->sb->s_type, NULL);
++			FDEV(i).bdev = blkdev_get_by_path(FDEV(i).path, mode,
++							  sbi->sb->s_type,
++							  NULL);
+ 		}
+ 		if (IS_ERR(FDEV(i).bdev))
+ 			return PTR_ERR(FDEV(i).bdev);
+diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
+index a41fd84d4e28ab..15a5a1099427d8 100644
+--- a/fs/nilfs2/super.c
++++ b/fs/nilfs2/super.c
+@@ -1316,7 +1316,6 @@ nilfs_mount(struct file_system_type *fs_type, int flags,
+ 		s_new = true;
+ 
+ 		/* New superblock instance created */
+-		s->s_mode = mode;
+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg", sd.bdev);
+ 		sb_set_blocksize(s, block_size(sd.bdev));
+ 
+diff --git a/fs/super.c b/fs/super.c
+index dc7f328398339d..86f40f8981989d 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -1308,7 +1308,6 @@ int get_tree_bdev(struct fs_context *fc,
+ 		blkdev_put(bdev, fc->fs_type);
+ 		down_write(&s->s_umount);
+ 	} else {
+-		s->s_mode = mode;
+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
+ 		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s",
+ 					fc->fs_type->name, s->s_id);
+@@ -1382,7 +1381,6 @@ struct dentry *mount_bdev(struct file_system_type *fs_type,
+ 		blkdev_put(bdev, fs_type);
+ 		down_write(&s->s_umount);
+ 	} else {
+-		s->s_mode = mode;
+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
+ 		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s",
+ 					fs_type->name, s->s_id);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 7b2053649820cc..ad1d2c9afb3fa4 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1215,7 +1215,6 @@ struct super_block {
+ 	uuid_t			s_uuid;		/* UUID */
+ 
+ 	unsigned int		s_max_links;
+-	fmode_t			s_mode;
+ 
+ 	/*
+ 	 * The next field is for VFS *only*. No filesystems have any business
 -- 
 2.39.2
 
