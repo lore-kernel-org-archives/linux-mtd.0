@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 863ACC7EE45
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2018FC7EE29
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:05:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/vPjPoe3Jx8oPRFXOv3UaGkMjV/jp30G1Q/ZlYpv3fA=; b=gQZiefT+7N+05S
-	pm9oNJ8vQi2Ebl7Bht4Yh1wBiVcEBLpmQyTK7fXfi+oVoEC5e2YpS0L6ELin76If9HKyvrMBgoeT2
-	yoGbALRT1B24fvdvDv5zXCEwOWNZPOff4faP2G6QKvOTt7ZSKO8Qg64nkXn/lppxRCc/OOASoD0Ux
-	SOO78A0P/mmsfPkOKthXGcUCnyQ2nlHB+BvsAJNB0TaLfP8LeU8DQorE7J4P2jEUmYA8/e6vYJX9g
-	5NbMY2HKSMyPpAOW4YpzTqbucQmW2QHyi3rWKmbSSSuwBg5hESujalaReoF0p/0W707W31FknsOcO
-	eBUr1g/Q1ycm032Zrq/A==;
+	List-Owner; bh=oMcWn8MLDn8qLwl18D8X69y9Zn9ssXo9SsFD+8ToLYg=; b=KceuZs09JDJRsL
+	aOq/M4a/0t0x28nvsGGgTdbU97JDEWh/ysdfzNFWEV84FVWaP6ucL+xt/a1y8//NzXXdwpO+CeGnU
+	/JHY5j0H0HlExL1tUnoZ/KuXBGDh4GVQFC7womJB5qp/JworVCzOFRWHpUAF8EAWh8kXh9DzkoMjO
+	cYlI6WJU62dNDENXBYeq/WqSKstncHenpbjUxDEom02Y0kpRwg9lwetTdCtMMOVL/nG/J9Wt+v5gd
+	DRKC/YZliYhhSZ2VpiDQs7t2KYqRvpfszd67hHiR1AvTBsfGn1p6Nx5H9V1KefKjPUc/MFWW63UFP
+	L/9y/HLLkTW3xyzV4xGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DR7-0092o7-24;
-	Thu, 08 Jun 2023 11:04:13 +0000
+	id 1q7DRN-00931y-22;
+	Thu, 08 Jun 2023 11:04:29 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DQO-0091yH-2h;
-	Thu, 08 Jun 2023 11:03:29 +0000
+	id 1q7DQW-00929D-1d;
+	Thu, 08 Jun 2023 11:03:36 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -56,9 +56,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 10/30] block: rename blkdev_close to blkdev_release
-Date: Thu,  8 Jun 2023 13:02:38 +0200
-Message-Id: <20230608110258.189493-11-hch@lst.de>
+Subject: [PATCH 13/30] rnbd-srv: don't pass a holder for non-exclusive blkdev_get_by_path
+Date: Thu,  8 Jun 2023 13:02:41 +0200
+Message-Id: <20230608110258.189493-14-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230608110258.189493-1-hch@lst.de>
 References: <20230608110258.189493-1-hch@lst.de>
@@ -79,37 +79,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Make the function name match the method name.
+Passing a holder to blkdev_get_by_path when FMODE_EXCL isn't set doesn't
+make sense, so pass NULL instead.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 Acked-by: Christian Brauner <brauner@kernel.org>
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- block/fops.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/block/rnbd/rnbd-srv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/fops.c b/block/fops.c
-index 6a3087b750a6cd..26af2b39c758e1 100644
---- a/block/fops.c
-+++ b/block/fops.c
-@@ -500,7 +500,7 @@ static int blkdev_open(struct inode *inode, struct file *filp)
- 	return 0;
- }
+diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.c
+index cec22bbae2f9a5..ce505e552f4d50 100644
+--- a/drivers/block/rnbd/rnbd-srv.c
++++ b/drivers/block/rnbd/rnbd-srv.c
+@@ -719,7 +719,7 @@ static int process_msg_open(struct rnbd_srv_session *srv_sess,
+ 		goto reject;
+ 	}
  
--static int blkdev_close(struct inode *inode, struct file *filp)
-+static int blkdev_release(struct inode *inode, struct file *filp)
- {
- 	struct block_device *bdev = filp->private_data;
- 
-@@ -677,7 +677,7 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
- 
- const struct file_operations def_blk_fops = {
- 	.open		= blkdev_open,
--	.release	= blkdev_close,
-+	.release	= blkdev_release,
- 	.llseek		= blkdev_llseek,
- 	.read_iter	= blkdev_read_iter,
- 	.write_iter	= blkdev_write_iter,
+-	bdev = blkdev_get_by_path(full_path, open_flags, THIS_MODULE, NULL);
++	bdev = blkdev_get_by_path(full_path, open_flags, NULL, NULL);
+ 	if (IS_ERR(bdev)) {
+ 		ret = PTR_ERR(bdev);
+ 		pr_err("Opening device '%s' on session %s failed, failed to open the block device, err: %d\n",
 -- 
 2.39.2
 
