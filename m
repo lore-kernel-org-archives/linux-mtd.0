@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69D98C7EE29
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:06:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3C69C7EE23
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QwrM+oNotkV7ehmkPy+92gx+6eAOr09qWGu5Rx8I614=; b=Bb6w3jS9v4uRSd
-	Vl6/TVvqATIqRPMsr0mbU8ub4MCrFv6HXgmvqFMfB5mRMqkdx+/dAoCu9lFCY4BO0oYGDtrQRqzr8
-	Zdb5ntGTD6acQJM/WQbGmIXJtkrB/1GRyPOXwKNmg4uAvHAbspOGONUMtdPbFwdlrq/wBZWLXXfa4
-	duGvuIYBeN0VQEU2OxOQx+rXRbcC3hjwMS7bkRU3QkiXCLvrsQ4l2rzYPsoFRyYmMyRChg64bBeuo
-	dRFVFE3nbmp9/82ucOY0rbWT0Jp3nkwwURNK+VmAQRIm1J/kXJ5+bS7snEsWEUU9kwvJOyMlV511B
-	jv6MacLolE6gF+/LWZ8A==;
+	List-Owner; bh=0zwPF9VcluGg5rawUs50GjMYS/j03VSOcwJPD3u7qA4=; b=mgrOXbueUz19+5
+	rIEk3510318gQ0upPncvqzCJo2HbayGb0F7UT5us/0wwTuTc26pwUDp8kWOY4ecd+ic/uLFUSYnRF
+	ax0iztau8iiKJlnhLVWaQJJO+KclmZoqa6TBxSQp+Ff4onzEwdBZVAA+gC6/QbAFRLywVv0AF+2gD
+	mq8x6MPM7CtTYeiVen05FkFDNN2sOkS9643M0SJWirssduEQJl/qb076DqJUceozDSwtZMMjVAOA5
+	rsLLRpZfEvN5zafTrsN9JMTS685WfJqBHZRZHaoAVPtomdhh+gAlJHG1odI+0uf4s5RX1zDKPKyUH
+	gZscLXCu+ULm3UdKbHgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DSp-0094dX-2x;
-	Thu, 08 Jun 2023 11:05:59 +0000
+	id 1q7DTN-0095Fy-0v;
+	Thu, 08 Jun 2023 11:06:33 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DR5-0092kv-0m;
-	Thu, 08 Jun 2023 11:04:11 +0000
+	id 1q7DRF-0092vE-2z;
+	Thu, 08 Jun 2023 11:04:22 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -56,9 +56,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 24/30] ubd: remove commented out code in ubd_open
-Date: Thu,  8 Jun 2023 13:02:52 +0200
-Message-Id: <20230608110258.189493-25-hch@lst.de>
+Subject: [PATCH 28/30] block: always use I_BDEV on file->f_mapping->host to find the bdev
+Date: Thu,  8 Jun 2023 13:02:56 +0200
+Message-Id: <20230608110258.189493-29-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230608110258.189493-1-hch@lst.de>
 References: <20230608110258.189493-1-hch@lst.de>
@@ -79,35 +79,94 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This code has been dead forever, make sure it doesn't show up in code
-searches.
+Always use I_BDEV(file->f_mapping->host) to find the bdev for a file to
+free up file->private_data for other uses.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 Acked-by: Christian Brauner <brauner@kernel.org>
-Acked-by: Richard Weinberger <richard@nod.at>
 ---
- arch/um/drivers/ubd_kern.c | 7 -------
- 1 file changed, 7 deletions(-)
+ block/fops.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 8b79554968addb..20c1a16199c503 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1170,13 +1170,6 @@ static int ubd_open(struct gendisk *disk, fmode_t mode)
- 	}
- 	ubd_dev->count++;
- 	set_disk_ro(disk, !ubd_dev->openflags.w);
+diff --git a/block/fops.c b/block/fops.c
+index 086612103b9dd9..0d714d050a462c 100644
+--- a/block/fops.c
++++ b/block/fops.c
+@@ -54,7 +54,7 @@ static bool blkdev_dio_unaligned(struct block_device *bdev, loff_t pos,
+ static ssize_t __blkdev_direct_IO_simple(struct kiocb *iocb,
+ 		struct iov_iter *iter, unsigned int nr_pages)
+ {
+-	struct block_device *bdev = iocb->ki_filp->private_data;
++	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
+ 	struct bio_vec inline_vecs[DIO_INLINE_BIO_VECS], *vecs;
+ 	loff_t pos = iocb->ki_pos;
+ 	bool should_dirty = false;
+@@ -170,7 +170,7 @@ static void blkdev_bio_end_io(struct bio *bio)
+ static ssize_t __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter,
+ 		unsigned int nr_pages)
+ {
+-	struct block_device *bdev = iocb->ki_filp->private_data;
++	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
+ 	struct blk_plug plug;
+ 	struct blkdev_dio *dio;
+ 	struct bio *bio;
+@@ -310,7 +310,7 @@ static ssize_t __blkdev_direct_IO_async(struct kiocb *iocb,
+ 					struct iov_iter *iter,
+ 					unsigned int nr_pages)
+ {
+-	struct block_device *bdev = iocb->ki_filp->private_data;
++	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
+ 	bool is_read = iov_iter_rw(iter) == READ;
+ 	blk_opf_t opf = is_read ? REQ_OP_READ : dio_bio_write_op(iocb);
+ 	struct blkdev_dio *dio;
+@@ -451,7 +451,7 @@ static loff_t blkdev_llseek(struct file *file, loff_t offset, int whence)
+ static int blkdev_fsync(struct file *filp, loff_t start, loff_t end,
+ 		int datasync)
+ {
+-	struct block_device *bdev = filp->private_data;
++	struct block_device *bdev = I_BDEV(filp->f_mapping->host);
+ 	int error;
+ 
+ 	error = file_write_and_wait_range(filp, start, end);
+@@ -516,7 +516,6 @@ static int blkdev_open(struct inode *inode, struct file *filp)
+ 	if (IS_ERR(bdev))
+ 		return PTR_ERR(bdev);
+ 
+-	filp->private_data = bdev;
+ 	filp->f_mapping = bdev->bd_inode->i_mapping;
+ 	filp->f_wb_err = filemap_sample_wb_err(filp->f_mapping);
+ 	return 0;
+@@ -524,9 +523,8 @@ static int blkdev_open(struct inode *inode, struct file *filp)
+ 
+ static int blkdev_release(struct inode *inode, struct file *filp)
+ {
+-	struct block_device *bdev = filp->private_data;
 -
--	/* This should no more be needed. And it didn't work anyway to exclude
--	 * read-write remounting of filesystems.*/
--	/*if((mode & FMODE_WRITE) && !ubd_dev->openflags.w){
--	        if(--ubd_dev->count == 0) ubd_close_dev(ubd_dev);
--	        err = -EROFS;
--	}*/
- out:
- 	mutex_unlock(&ubd_mutex);
- 	return err;
+-	blkdev_put(bdev, (filp->f_mode & FMODE_EXCL) ? filp : NULL);
++	blkdev_put(I_BDEV(filp->f_mapping->host),
++		   (filp->f_mode & FMODE_EXCL) ? filp : NULL);
+ 	return 0;
+ }
+ 
+@@ -539,7 +537,7 @@ static int blkdev_release(struct inode *inode, struct file *filp)
+  */
+ static ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct block_device *bdev = iocb->ki_filp->private_data;
++	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
+ 	struct inode *bd_inode = bdev->bd_inode;
+ 	loff_t size = bdev_nr_bytes(bdev);
+ 	size_t shorted = 0;
+@@ -575,7 +573,7 @@ static ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 
+ static ssize_t blkdev_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct block_device *bdev = iocb->ki_filp->private_data;
++	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
+ 	loff_t size = bdev_nr_bytes(bdev);
+ 	loff_t pos = iocb->ki_pos;
+ 	size_t shorted = 0;
 -- 
 2.39.2
 
