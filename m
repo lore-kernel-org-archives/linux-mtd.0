@@ -4,76 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D9AFC7EE2E
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 04:53:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6857EC7EE37
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 05:21:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pFHD6bDm7X/++VPjwjRmAo+qlSDCR5K6x03FgybJ0ds=; b=yMO0KCOiBF5mlC
-	kdPr0USI3QdigfhC+mzYPKuQBiq8aUputQ35oyN1pHCV4p89tf7rTZWB+9AkbqrkBdfk+hQYs041F
-	hxm5qafnMK+G/nO7xh3l0KyJTT/XVuvj381n6WJsnS0lB0S71ZVdpLMKimv9pzAAJapYld5B/dhj5
-	VdpAMesPYGYiSFG0nB8eqWHgl0DDThPgcFcEOPxjAlhi6nhvgvzD7Gvu3s164EuMsBF4TTKTdCyXy
-	M+zm9dFyXEdy2I1ung9RbmbeU3eCQgkebkNEwdg8m1rz0imEWGDwNBJLkhlsJF4/9Y59erNYeW/7E
-	kVnib8hdUCk7w3twMw2Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=rjD0YanU9aq7cE7SXl4Fl5Zf/0xjRDbYRVXf1aATmzs=; b=NT+uoaWMnCHdDr
+	sFgk09Waiutes2ZLh2+tpfVyy3aQK5zTtO4zGDSRh7riL6tFYSHfpZWoIy8bgzmWlVisnB1z2Sagq
+	JvqPJ6iPWzfWIVx9yp8m7pqf5ZAdbKDOyfRCELGblitFRgiPqBLe+UfuDwjs/UpOZx54YZj4vFfEW
+	1ObZwRQoxqN5u577uuVy9nW4ANhwjO3fmODB6swSBzdv/IGFH/S4ZLnUKT86MyBfaLdlr3Eu+N20t
+	NN/jTa3VzOE3F65y9SfzKvuEa8fyDzi9rNe5VqeZwawa+S3BD+8Aa+zB+YKDSuTFRhZVKlGERqrLZ
+	my2pSwq5nEdfRaH+DSUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q77db-0085JB-2K;
-	Thu, 08 Jun 2023 04:52:43 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1q785O-0088UH-0r;
+	Thu, 08 Jun 2023 05:21:26 +0000
+Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q77dX-0085HR-0O;
-	Thu, 08 Jun 2023 04:52:40 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 5F0725FD73;
-	Thu,  8 Jun 2023 07:52:37 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1686199957;
-	bh=+mk6QMFbQKxezimmeq2ZZmLw+GO6C96cbN+kUV6t/iE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=YgQjyRS76ZvjsOutPDtCaVhfE20Wr3qL3BNEzD1ncTvBXGTbDVLzVbm0rlq/EqmOw
-	 Qkv1p95hubLVjGWdw3LVIJMgGNzI36/xIRs8nXJHLiJz4CVtY6d9CjGu2qMj69Nsfu
-	 bSVh6LA8jKd1lgLawpY1hS0BuW3g2nq7tmnAyamx+3IPDFKksquaHZKRutcOUE3sNQ
-	 yzLa+SCOhmrER4HDGl9lntE8ePandm4RAvEKgKRXgiFTpygkxsDZTAgnYrHh9twYXZ
-	 J6gA+vutkYarf2moNAQAQ4riNC7myuYqUUygDNf1aVudvxsbV8VAEGbX8DTNFbsa4a
-	 2hH8pI3YUggqA==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Thu,  8 Jun 2023 07:52:37 +0300 (MSK)
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Neil Armstrong
-	<neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, Jerome
- Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
-	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 1/2] dt-bindings: nand: meson: Fix 'nand-rb' property
-Date: Thu, 8 Jun 2023 07:47:27 +0300
-Message-ID: <20230608044728.1328506-2-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20230608044728.1328506-1-AVKrasnov@sberdevices.ru>
-References: <20230608044728.1328506-1-AVKrasnov@sberdevices.ru>
+	id 1q785K-0088TC-2K
+	for linux-mtd@lists.infradead.org;
+	Thu, 08 Jun 2023 05:21:24 +0000
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-53f70f7c2d2so33297a12.3
+        for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2023 22:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686201677; x=1688793677;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rUt8NeEe6LR4t38IyDncRwhCYXLB8ru0FVYCy7O9E7U=;
+        b=AOS1Ho4lL7CsMPbFTvOWwgwM2YRekgSBXFNXlVvpkLEB1D4mY/pCK+Ho+YQ+xoJMzF
+         NAkOXqaJJxWjG4yn6gVtqaF14jNUCIQqD5MsV/uHZLYTp+S2hDMa9xOmOyjtCQQoBUXj
+         3XoY3UnMEfSH1MiVbjt9G1ZE58weMfT02RcurTycg6b4/0eebR7KAYzWIjHjYU4lgRlJ
+         VM3bXewsIK09kAcUsaWirPGBQQb6KbgOcYVZ8VkrN1WFMsHxisntAI1gWCU57lO3x6qg
+         aKy1FX7YoP8bembafixPsrI66THucHArlbOrXn8XHCRNN8b60bcQB//x82pfuClXFo/+
+         cOJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686201677; x=1688793677;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rUt8NeEe6LR4t38IyDncRwhCYXLB8ru0FVYCy7O9E7U=;
+        b=lwimYUodpjL7uIJsIRHWjnoOdwXHlet7JOzI2BBYiBRMsDCetm7LsUF2eoJHiB2ObV
+         BGCbr7HD3OjU/pK8tgxlMkV//btyeASBvdnKbtuyQuIA7n/OyZ118Y+f+I9I+R6v96Pk
+         Lli8HGhNnKJ2BjmjbEFJsBpuyxUc07pQAJQDLk8vnceHP5s3TJisGoGjpe3an8jD82ZD
+         bmWYAf7c18nzg1XXFpmG4HPzr5GjIuLmG88WDNQAwRe1l/o+viZTD9gMjOAa5ihy1GCv
+         JUVvBYs/55r04YQvs1gE2yYrI+HZ8gcZjyXxdCuGb8bEVH1ZPwBMmYumQTuGPqWuEQvU
+         ZCkg==
+X-Gm-Message-State: AC+VfDxQEPCHgHemPQVzl/UOlDU6MpkjwNeykongKKorJjuZaPoMDlEf
+	xPzL3KXgJEfaLXNS0l4R+tC/03Ph1TA=
+X-Google-Smtp-Source: ACHHUZ4D7YwKnL/7L64iFGB18blymWVSjJB/qgNuUDz1zDwwoAb+w05x46mtB/NlP2Sig3xWLr/DUg==
+X-Received: by 2002:a05:6a20:9189:b0:10b:9dc1:c5e5 with SMTP id v9-20020a056a20918900b0010b9dc1c5e5mr2916331pzd.34.1686201676878;
+        Wed, 07 Jun 2023 22:21:16 -0700 (PDT)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id jg1-20020a17090326c100b001ab0b2dad2fsm415679plb.211.2023.06.07.22.21.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jun 2023 22:21:16 -0700 (PDT)
+Received: from linux-patcher.mp600.macronix.com (linux-patcher [172.17.236.35])
+	by twhmp6px (Postfix) with ESMTPS id 7D11A80671;
+	Thu,  8 Jun 2023 13:21:38 +0800 (CST)
+From: Jaime Liao <jaimeliao.tw@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	linux-mtd@lists.infradead.org
+Cc: alvinzhou@mxic.com.tw,
+	juliensu@mxic.com.tw,
+	liangyanyu13@gmail.com,
+	JaimeLiao <jaimeliao.tw@gmail.com>
+Subject: [PATCH] mtd: spinand: macronix: Add support for serial NAND flash
+Date: Thu,  8 Jun 2023 13:21:14 +0800
+Message-Id: <20230608052114.20454-1-jaimeliao.tw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/08 00:23:00 #21457426
-X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_215239_360536_00CB070B 
-X-CRM114-Status: UNSURE (   8.54  )
+X-CRM114-CacheID: sfid-20230607_222122_762125_B07A0E7F 
+X-CRM114-Status: UNSURE (   8.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -91,41 +97,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add description of 'nand-rb' property. Use "Fixes" because this property
-must be supported since the beginning.
+From: JaimeLiao <jaimeliao.tw@gmail.com>
 
-Fixes: fbc00b5e746f ("dt-bindings: nand: meson: convert txt to yaml")
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+MX31LF2GE4BC and MX31UF2GE4BC are Macroninx SPI NAND flash
+with 8-bit on-die ECC.
+
+Validated via normal(default) and QUAD mode by read ,read back,
+on Xilinx Zynq PicoZed FPGA which include Macronix
+SPI Host(drivers/spi/spi-mxic.c)
+
+Signed-off-by: JaimeLiao <jaimeliao.tw@gmail.com>
 ---
- .../devicetree/bindings/mtd/amlogic,meson-nand.yaml         | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/mtd/nand/spi/macronix.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-index 28fb9a7dd70f..3bec8af91bbb 100644
---- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-@@ -58,6 +58,11 @@ patternProperties:
-             meson-gxl-nfc 8, 16, 24, 30, 40, 50, 60
-             meson-axg-nfc 8
+diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
+index 722a9738ba37..3dfc7e1e5241 100644
+--- a/drivers/mtd/nand/spi/macronix.c
++++ b/drivers/mtd/nand/spi/macronix.c
+@@ -299,6 +299,26 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     mx35lf1ge4ab_ecc_get_status)),
  
-+      nand-rb:
-+        maxItems: 1
-+        items:
-+          maximum: 0
-+
- required:
-   - compatible
-   - reg
-@@ -87,6 +92,7 @@ examples:
++	SPINAND_INFO("MX31LF2GE4BC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x2e),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX3UF2GE4BC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xae),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
+ };
  
-       nand@0 {
-         reg = <0>;
-+        nand-rb = <0>;
-       };
-     };
- 
+ static const struct spinand_manufacturer_ops macronix_spinand_manuf_ops = {
 -- 
-2.35.0
+2.25.1
 
 
 ______________________________________________________
