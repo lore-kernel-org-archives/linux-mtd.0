@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B971C7EE43
-	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:03:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48F72C83003
+	for <linux-mtd@archiver.kernel.org>; Thu,  8 Jun 2023 11:03:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5f42fNdrVtyuVLWKsOn9+iNLpySDZd9Uo3aCShXvB9M=; b=TPysYM8AwCobDG
-	kVgoLD1APcrfjl4g+UTG7fpRjHY5h3XvEqLjc14HcpVJXgZiUDhrhi/3AcT1pi8Q8tMlj/LevHIN1
-	4NuhS7px43TXhoovPOI/T0pGKuX5go3Ysh/HzbbooP5wcUfaKeBL3xx+lYOTyt7YNQeFIyAEGsKMc
-	9zoxOOCQdrbHhQ6NdH3UICEt8pJ4aEsiQadAon56irxi81KqEN99O1dHvswCsfliCV3ptERCMgRYU
-	PxPg0Ebi3qxIPJ54n9GKO3YEmUVzJmiDVd71tEihjoYzFvz/B8+V6UUlqyOoQVaWf2X2prCX+TQ42
-	ALY02EEsiXx6XKb/ExVg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=z9fQv1RZ3VhPzIM7SnIYTHrk4g+YqmUdZEiJEVYK3pw=; b=pirzBqEDtaMUFe
+	SLMaMSHq+PhIv1Crdr4bhYXRJudSow3Ju5zKL9/OGRYCU0s5MEgo8JxRNLa8aB2SzGRha/jXaivLr
+	XHcuAWBkI5eQCEIm7QADYWnpFeHO2Fp6s5blYFq2AMn6By1hIGUF0MbPBiEaoWd+qGD4oL/JrCyuO
+	ktTLW5xEGZh+l7MU1A/tDE96AvfY9hplG+USNM+KnPDG49OLKtK1lHKtWUJsG804R6GL/auybPc0/
+	HZ31Zt1Tn+fti9jSVzikF35SqUGAy02dUASNIfO8dP1gVY6vX5cQbOTBKBkan60ZBEU43kPQll2j2
+	cv2M6wbKL6lnOApeQXtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DQ4-0091fF-2l;
-	Thu, 08 Jun 2023 11:03:08 +0000
+	id 1q7DQ9-0091if-1B;
+	Thu, 08 Jun 2023 11:03:13 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DPx-0091cI-1M;
-	Thu, 08 Jun 2023 11:03:01 +0000
+	id 1q7DQ4-0091eW-27;
+	Thu, 08 Jun 2023 11:03:09 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -54,11 +54,14 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-f2fs-devel@lists.sourceforge.net,
 	linux-nilfs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: decouple block open flags from fmode_t v2
-Date: Thu,  8 Jun 2023 13:02:28 +0200
-Message-Id: <20230608110258.189493-1-hch@lst.de>
+	linux-pm@vger.kernel.org,
+	Hannes Reinecke <hare@suse.de>
+Subject: [PATCH 03/30] cdrom: remove the unused mode argument to cdrom_ioctl
+Date: Thu,  8 Jun 2023 13:02:31 +0200
+Message-Id: <20230608110258.189493-4-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230608110258.189493-1-hch@lst.de>
+References: <20230608110258.189493-1-hch@lst.de>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,142 +79,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Phillip Potter <phil@philpotter.co.uk>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Acked-by: Christian Brauner <brauner@kernel.org>
+---
+ drivers/cdrom/cdrom.c | 2 +-
+ drivers/cdrom/gdrom.c | 2 +-
+ drivers/scsi/sr.c     | 2 +-
+ include/linux/cdrom.h | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-this series adds a new blk_mode_t for block open flags instead of abusing
-fmode_t.  The block open flags work very different from the normal use of
-fmode_t and only share the basic READ/WRITE flags with it.  None of the
-other normal FMODE_* flags is used, but instead there are three
-block-specific ones not used by anyone else, which can now be removed.
+diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
+index e3eab319cb0474..245e5bbb05d41c 100644
+--- a/drivers/cdrom/cdrom.c
++++ b/drivers/cdrom/cdrom.c
+@@ -3336,7 +3336,7 @@ static int mmc_ioctl(struct cdrom_device_info *cdi, unsigned int cmd,
+  * ATAPI / SCSI specific code now mainly resides in mmc_ioctl().
+  */
+ int cdrom_ioctl(struct cdrom_device_info *cdi, struct block_device *bdev,
+-		fmode_t mode, unsigned int cmd, unsigned long arg)
++		unsigned int cmd, unsigned long arg)
+ {
+ 	void __user *argp = (void __user *)arg;
+ 	int ret;
+diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
+index eaa2d5a90bc82f..14922403983e9e 100644
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -505,7 +505,7 @@ static int gdrom_bdops_ioctl(struct block_device *bdev, fmode_t mode,
+ 	int ret;
+ 
+ 	mutex_lock(&gdrom_mutex);
+-	ret = cdrom_ioctl(gd.cd_info, bdev, mode, cmd, arg);
++	ret = cdrom_ioctl(gd.cd_info, bdev, cmd, arg);
+ 	mutex_unlock(&gdrom_mutex);
+ 
+ 	return ret;
+diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
+index 61b83880e395a4..444c7efc14cba7 100644
+--- a/drivers/scsi/sr.c
++++ b/drivers/scsi/sr.c
+@@ -539,7 +539,7 @@ static int sr_block_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
+ 	scsi_autopm_get_device(sdev);
+ 
+ 	if (cmd != CDROMCLOSETRAY && cmd != CDROMEJECT) {
+-		ret = cdrom_ioctl(&cd->cdi, bdev, mode, cmd, arg);
++		ret = cdrom_ioctl(&cd->cdi, bdev, cmd, arg);
+ 		if (ret != -ENOSYS)
+ 			goto put;
+ 	}
+diff --git a/include/linux/cdrom.h b/include/linux/cdrom.h
+index cc5717cb0fa8a8..4aea8c82d16971 100644
+--- a/include/linux/cdrom.h
++++ b/include/linux/cdrom.h
+@@ -103,8 +103,8 @@ int cdrom_read_tocentry(struct cdrom_device_info *cdi,
+ /* the general block_device operations structure: */
+ int cdrom_open(struct cdrom_device_info *cdi, fmode_t mode);
+ extern void cdrom_release(struct cdrom_device_info *cdi, fmode_t mode);
+-extern int cdrom_ioctl(struct cdrom_device_info *cdi, struct block_device *bdev,
+-		       fmode_t mode, unsigned int cmd, unsigned long arg);
++int cdrom_ioctl(struct cdrom_device_info *cdi, struct block_device *bdev,
++		unsigned int cmd, unsigned long arg);
+ extern unsigned int cdrom_check_events(struct cdrom_device_info *cdi,
+ 				       unsigned int clearing);
+ 
+-- 
+2.39.2
 
-Note that I've only CCed maintainers and lists for drivers and file systems
-that have non-trivial changes, as otherwise the series would spam literally
-everyone in the block and file system world.
-
-A git tree is available here:
-
-    git://git.infradead.org/users/hch/block.git blk-open-release
-
-Gitweb:
-
-    http://git.infradead.org/users/hch/block.git/shortlog/refs/heads/blk-open-release
-
-Changes since v1:
- - drop "block: share code between disk_check_media_change and
-   disk_force_media_change" for now as it conflicts with a fix in
-   disk_force_media_change
- - add a few missing fmode_t -> blk_mode_t conversions
- - move the opened_for_data memeber in struct cdrom_device_info to a
-   place that creates less padding
- - better document the magic floppy O_ACCMODE == O_WRONLY | O_RDWR case
- - better document the new usage of file->private_data for block devices
- - improve a few commit messages
-
-Diffstat:
- arch/um/drivers/ubd_kern.c          |   20 ++-----
- arch/xtensa/platforms/iss/simdisk.c |    6 +-
- block/bdev.c                        |   99 ++++++++++++++++++------------------
- block/blk-zoned.c                   |   12 ++--
- block/blk.h                         |   26 ++++++++-
- block/bsg-lib.c                     |    2 
- block/bsg.c                         |    8 +-
- block/disk-events.c                 |   18 +++---
- block/fops.c                        |   60 ++++++++++++++-------
- block/genhd.c                       |   13 ++--
- block/ioctl.c                       |   61 +++++++---------------
- drivers/block/amiflop.c             |   20 +++----
- drivers/block/aoe/aoeblk.c          |    8 +-
- drivers/block/ataflop.c             |   43 +++++++--------
- drivers/block/drbd/drbd_main.c      |   13 ++--
- drivers/block/drbd/drbd_nl.c        |   23 +++++---
- drivers/block/floppy.c              |   72 +++++++++++++-------------
- drivers/block/loop.c                |   24 ++++----
- drivers/block/mtip32xx/mtip32xx.c   |    4 -
- drivers/block/nbd.c                 |   12 ++--
- drivers/block/pktcdvd.c             |   36 ++++++-------
- drivers/block/rbd.c                 |    6 +-
- drivers/block/rnbd/rnbd-clt.c       |    8 +-
- drivers/block/rnbd/rnbd-srv-sysfs.c |    3 -
- drivers/block/rnbd/rnbd-srv.c       |   23 ++++----
- drivers/block/rnbd/rnbd-srv.h       |    2 
- drivers/block/sunvdc.c              |    2 
- drivers/block/swim.c                |   24 ++++----
- drivers/block/swim3.c               |   33 +++++-------
- drivers/block/ublk_drv.c            |    4 -
- drivers/block/xen-blkback/xenbus.c  |    4 -
- drivers/block/xen-blkfront.c        |    2 
- drivers/block/z2ram.c               |    8 +-
- drivers/block/zram/zram_drv.c       |   21 +++----
- drivers/cdrom/cdrom.c               |   38 +++----------
- drivers/cdrom/gdrom.c               |   12 ++--
- drivers/md/bcache/bcache.h          |    2 
- drivers/md/bcache/request.c         |    4 -
- drivers/md/bcache/super.c           |   25 ++++-----
- drivers/md/dm-cache-target.c        |   12 ++--
- drivers/md/dm-clone-target.c        |   10 +--
- drivers/md/dm-core.h                |    7 +-
- drivers/md/dm-era-target.c          |    6 +-
- drivers/md/dm-ioctl.c               |   10 +--
- drivers/md/dm-snap.c                |    4 -
- drivers/md/dm-table.c               |   11 ++--
- drivers/md/dm-thin.c                |    9 +--
- drivers/md/dm-verity-fec.c          |    2 
- drivers/md/dm-verity-target.c       |    6 +-
- drivers/md/dm.c                     |   20 +++----
- drivers/md/dm.h                     |    2 
- drivers/md/md.c                     |   50 +++++++++---------
- drivers/mmc/core/block.c            |   12 ++--
- drivers/mtd/devices/block2mtd.c     |    6 +-
- drivers/mtd/mtd_blkdevs.c           |    8 +-
- drivers/mtd/mtdblock.c              |    2 
- drivers/mtd/ubi/block.c             |    9 +--
- drivers/nvme/host/core.c            |    6 +-
- drivers/nvme/host/ioctl.c           |   66 +++++++++++++-----------
- drivers/nvme/host/multipath.c       |    6 +-
- drivers/nvme/host/nvme.h            |    4 -
- drivers/nvme/target/io-cmd-bdev.c   |    4 -
- drivers/s390/block/dasd.c           |   10 +--
- drivers/s390/block/dasd_genhd.c     |    5 +
- drivers/s390/block/dasd_int.h       |    3 -
- drivers/s390/block/dasd_ioctl.c     |    2 
- drivers/s390/block/dcssblk.c        |   11 +---
- drivers/scsi/ch.c                   |    3 -
- drivers/scsi/scsi_bsg.c             |    4 -
- drivers/scsi/scsi_ioctl.c           |   38 ++++++-------
- drivers/scsi/sd.c                   |   39 ++++++--------
- drivers/scsi/sg.c                   |    7 +-
- drivers/scsi/sr.c                   |   22 ++++----
- drivers/scsi/st.c                   |    2 
- drivers/target/target_core_iblock.c |    9 +--
- drivers/target/target_core_pscsi.c  |   10 +--
- fs/btrfs/dev-replace.c              |    6 +-
- fs/btrfs/ioctl.c                    |   12 ++--
- fs/btrfs/super.c                    |   21 ++-----
- fs/btrfs/volumes.c                  |   55 +++++++++-----------
- fs/btrfs/volumes.h                  |   11 +---
- fs/erofs/super.c                    |    7 +-
- fs/ext4/super.c                     |   11 +---
- fs/f2fs/super.c                     |   12 ++--
- fs/jfs/jfs_logmgr.c                 |    6 +-
- fs/nfs/blocklayout/dev.c            |    9 +--
- fs/nilfs2/super.c                   |   12 +---
- fs/ocfs2/cluster/heartbeat.c        |    7 +-
- fs/reiserfs/journal.c               |   19 +++---
- fs/reiserfs/reiserfs.h              |    1 
- fs/super.c                          |   33 ++++--------
- fs/xfs/xfs_super.c                  |   15 ++---
- include/linux/blkdev.h              |   68 +++++++++++-------------
- include/linux/bsg.h                 |    2 
- include/linux/cdrom.h               |   12 ++--
- include/linux/device-mapper.h       |    8 +-
- include/linux/fs.h                  |    8 --
- include/linux/mtd/blktrans.h        |    2 
- include/scsi/scsi_ioctl.h           |    4 -
- kernel/power/hibernate.c            |   12 +---
- kernel/power/power.h                |    2 
- kernel/power/swap.c                 |   28 ++++------
- mm/swapfile.c                       |    7 +-
- 103 files changed, 791 insertions(+), 837 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
