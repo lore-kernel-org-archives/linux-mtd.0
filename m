@@ -4,42 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C313EC83005
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jun 2023 15:25:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA7F7C83005
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jun 2023 15:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=isaKceeET5ijePFI5+35pj9QAyOcWEfT4lEhoiBWeGI=; b=fR+6iVz6uyMyZd
-	X+ZEau6bxfSNgkdt7Tae63HQl4njDgl05uL10J+sDWSmppXq39RhE+gXpVt31ZCLRei+yn21z4Elo
-	0L0G+IalGaCZKrXhr1Mt9XrpGAku/Z5hoBFGa5lq+/tkGBYs4f8DHTytYcI17yvpojk9nmced+/TZ
-	eQLQcmtcLc8oUsKdN/hbrPY9fRVea4H5yQMr8n28w0eD2lxuJI2p8I8ZPWjVQnVYwH+IEJNG6Qab5
-	tyUyUH7+VEukVHJaJYxYF8Aln+Io7yuIzumIs5Kg/G1h1XEcXtHJbqPBtIgFEQ5qV8B54i09vXtP1
-	oGpHg/H9nfH7w4UPm0ig==;
+	List-Owner; bh=O1QPQlCmLwhYUsPowYD9fn3mKX9mKW5GenVWETjy1uY=; b=KGwSvc0ly/tz0n
+	guz4zo3OwjbgFxj61KSMtw6h3T/1shK7uhmkH+3w0P7JFxE0w90Cv0Li2JIxEDkz3dUHSMBtMf11u
+	lDRDa+mEOjqRvn2b4/GP7wwjZemhQuuYmTAwFdKm7jVg01PstDK1FX+x7LgXR6N/LkHtfSwn9S3Sl
+	9yZltNjOppiPczZx3O9Sp6CMwVv5EaFOw18KKzHNxB5RaNzfyqmks9O/sQ1lnNikmhySKnUzLtyTE
+	1SHHEfjhFiqBiuBMAywR8ESxOW0IdA4wEBl4STy9xLrOyM5AVgqeoRgB0hiZxbcY3TRk8herQQPIS
+	Y+Iruvk6/Fry8/LrmVFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7dzS-00DQR7-1N;
-	Fri, 09 Jun 2023 15:25:26 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1q7dzH-00DQHy-37;
+	Fri, 09 Jun 2023 15:25:15 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7dzN-00DQK7-02
-	for linux-mtd@lists.infradead.org;
-	Fri, 09 Jun 2023 15:25:23 +0000
+	id 1q7dzD-00DQDZ-1y;
+	Fri, 09 Jun 2023 15:25:13 +0000
 X-GND-Sasl: miquel.raynal@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686324318;
+	t=1686324307;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=306gdX49aWRqWTeObBTGrv9siCZ4NYBUNF2h3Edi8a8=;
-	b=UW5B1xcsQjBCPoDeLLyWxC/PK78c8UNY3/pR7Lq6fvrSlAA1M6p7iVb9brGZDl4kM5vlc6
-	CKJVV5euqlCbTF/RWIk1+XIG2z4PeA9MFVbmnvxYBpUdaQH3RmipHWEB3ApsOd14/7QMpS
-	SQx7r7iHAvkYi9w9ui2ax8ZO0+AVwYYBYFl6bx0l6s52Cwwgv9AFLLJTah8FBdgrpiPd73
-	rLvCSDOV+wkTqm1g7+1Qa7TDK66Wl1jngMmudthHZcJPgCMNnRyUyqjbvEhuIGMoITcvei
-	IglIZRZaFX/AIddA+kAA5XPzPN3pU+E3/OYAaOChHi+aNlGJ6R8fs1LOSI7FfQ==
+	bh=wHi7X7aAA8zTubfqvKuY/j0uPGYoVb4HVZekwL+kLeo=;
+	b=ikU5TyFHddS4bXVpQ9jLoW1oxZt8dfvCzStC3yGGx28A68PWOuKuOMyObQKuHi5bM4kMZA
+	taXg7EAF64VWa70dVM3JfWx3UWoTDSisWXhLUEb9K8K7JDsd1KZ7YY247P4VdabqT7JBW2
+	sF9PJxtQmZJ1uROmvjTb17I/AKgipdUUK46yhLvE2mAYY1OBSFVr+IgM2XvOlubh5+I+Zw
+	V4qIqxpkYbpPYSIEtV9bn42LP4oJKU3xUBfkTD1gzojObQ4J8MCKPqCqwMbCYBrzP5yjSp
+	2rd4/Flnu4HCsBygR7Zhav+ZoSeZQie4p1Io0vw5aJ3PVh10KSY7MA/Q7CCD0g==
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
@@ -47,29 +46,49 @@ X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D671FFF80D;
-	Fri,  9 Jun 2023 15:25:17 +0000 (UTC)
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2A7A6240005;
+	Fri,  9 Jun 2023 15:25:03 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-	miquel.raynal@bootlin.com,
-	vigneshr@ti.com
-Cc: richard@nod.at,
+To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+	Liang Yang <liang.yang@amlogic.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: oxffffaa@gmail.com,
+	kernel@sberdevices.ru,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	git@amd.com,
-	amitrkcian2002@gmail.com
-Subject: Re: [PATCH] Revert "mtd: rawnand: arasan: Prevent an unsupported configuration"
-Date: Fri,  9 Jun 2023 17:25:17 +0200
-Message-Id: <20230609152517.1187095-1-miquel.raynal@bootlin.com>
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-amlogic@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: nand: meson: Fix 'nand-rb' property
+Date: Fri,  9 Jun 2023 17:25:03 +0200
+Message-Id: <20230609152503.1186962-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230607053936.14306-1-amit.kumar-mahapatra@amd.com>
+In-Reply-To: <20230608044728.1328506-2-AVKrasnov@sberdevices.ru>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'21962132044653f42ff8bbb37127c2557d6c39c2'
+X-linux-mtd-patch-commit: b'262bc0096b7c9122f5f815f094b068a1496a20f6'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230609_082521_175535_FB03A434 
-X-CRM114-Status: UNSURE (   8.30  )
+X-CRM114-CacheID: sfid-20230609_082511_783426_9F9F518E 
+X-CRM114-Status: UNSURE (   5.93  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,20 +106,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2023-06-07 at 05:39:36 UTC, Amit Kumar Mahapatra wrote:
-> This reverts commit fc9e18f9e987ad46722dad53adab1c12148c213c.
+On Thu, 2023-06-08 at 04:47:27 UTC, Arseniy Krasnov wrote:
+> Add description of 'nand-rb' property. Use "Fixes" because this property
+> must be supported since the beginning.
 > 
-> This patch was a work around to fix timeout issue while operating in NVDDR
-> mode with software ECC engine. This patch prevents the Arasan NAND driver
-> from operating in NVDDR mode with software ECC engine resulting in a
-> significant performance degradation with SW-ECC.
-> 'commit 7499bfeedb47 ("mtd: rawnand: arasan: Update NAND bus clock instead
-> of system clock")' and 'commit e16eceea863b ("mtd: rawnand: arasan: Fix
-> clock rate in NV-DDR")'
-> fixes the timeout issue in NVDDR mode with SW-ECC so, reverting the changes
-> as this work around is no longer required.
-> 
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+> Fixes: fbc00b5e746f ("dt-bindings: nand: meson: convert txt to yaml")
+> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
