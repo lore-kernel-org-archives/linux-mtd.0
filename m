@@ -4,72 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 863A4C7EE2E
-	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jun 2023 11:34:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95308C7EE29
+	for <linux-mtd@archiver.kernel.org>; Fri,  9 Jun 2023 14:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xooMJE+mxo/sgadwsSPZEzsLGBpSDOtBm9Yhxi2v+RU=; b=lhw7WOJhgheIwh
-	w9e70IUJQzb00QZOEvEYC+8pzqMU+KeyT+IsvcFnLtuSfHpkjJmbnlFWzSkLHfaSSqZkBoJlz8S2X
-	dQZbDzJFqnOCx+zackLngX67jS6feNGaMJG5tlhQJYcUahJ0M4MRlxPiK1OB34tW69QbBE69oJUwM
-	jlzL6KbO0RSiR1wz7/Dfe+dVh4A0KCu5EwUv2hQ0mXLcHtq7J5XNpwXaBGMCFZM8GJ4FJbSrC4agT
-	crVnzogh7zFwd9VlviScZMoATZRziUOc2Sl6XVVHCuDnqJ80dbeXQ+JHM0Cxw4e9zb3LIiS7SoZ6v
-	Z3K2qNj+kNTEzBcB2uqQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gU7fDtna9k8tHlrDe3GKZahk6bZi3/zy3PNCjDie3lA=; b=qxQWAN+RDWkncH
+	6GYkjwfe8G0BKs9E5TST3zMnsPPPU7mkSGdYn4XKLEnfZd9S9mzAkSFEP+Y12yxOVZWlryPWwYhCK
+	+aoiWykk5baIvd/qPebJl6ebvDTjtoyBYp/zlUX15+ILcTdzLf7WZlBUa7GUMxWlKVnb8MK/hIvgp
+	cfOSsEANfBYS7mc1KtfGnbIxlkktI2BKdUquHndzeIOuYcIReUp0u8pItYOaw1cAAa7+cMfbg3f8Y
+	LyrErpG06AhGDDJFGk8eLsxJB0qJl+4CSC3FWfGyzC16zHMMjEsf6GmaUQZYso9rJTSq507yQo76p
+	O6fPPCNzuISMiVTrfxMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7aNV-00CnFM-0Y;
-	Fri, 09 Jun 2023 11:34:01 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1q7dL0-00DJ9V-26;
+	Fri, 09 Jun 2023 14:43:38 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7aNR-00CnEA-03;
-	Fri, 09 Jun 2023 11:33:58 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 7367A5FD8E;
-	Fri,  9 Jun 2023 14:33:53 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1686310433;
-	bh=qmsUUrKjh9rocfbKKmAgXks3LyDsbEzfMxmSKs8SSec=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=JNN0kYD2b7pB8HqD25tK7WRIPj/k8oy9ySUby84vB48sjGXvi9TWgh1aCNnKF+ssu
-	 rsYL78qY0DHIu4k4YgLErkoIIel47jiEb4KAlbRJwVeJY5E9cA57IieG/mPk1/y2BG
-	 5NL+Hr6eAOETPD5fhPQ9yDTZ58i3YQOGjzi2DpsQdFinres3zw8D+AP/U3vJzSUcda
-	 s66NowvQ5XsrRTV01DRJZS2v10EVtZaRW6pIlfdoiCi3TlrN3Wh9ALyW39LVyGt6wX
-	 2Dnas4zsFSxGGlxucpXPVxKdZwWIc8hnmrobvO6XBWZIjrEpqyLHjQ1713aF1QukE3
-	 hmpSGisy4vI2A==
-Received: from S-MS-EXCH01.sberdevices.ru (S-MS-EXCH01.sberdevices.ru [172.16.1.4])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Fri,  9 Jun 2023 14:33:52 +0300 (MSK)
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
-	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] mtd: rawnand: meson: check buffer length
-Date: Fri, 9 Jun 2023 14:28:39 +0300
-Message-ID: <20230609112840.2325455-1-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
+	id 1q7dKv-00DJ7n-2c
+	for linux-mtd@lists.infradead.org;
+	Fri, 09 Jun 2023 14:43:36 +0000
+X-GND-Sasl: miquel.raynal@bootlin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1686321810;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=o33vIw4Xmx5A95pP6lxVkupt7LaiXIAy8o80AfhiSIE=;
+	b=OsISw+A14XVltXEyH167tZTmEsx/+HRmf37hJi/mZ4ngpfwti7/SBMgvDIJSf9U8L19f4v
+	KpBOJGaSKS7nlYi+9HHlTKpooYoUkFvD7g8IntQHuwLHnxBtxpw5UFJddGBsABF1vsixTs
+	c2S0O1GRCYTXBGkY8So3SwVWPDjDmTPfKLNyARLSROAZyjKH6QtI1TvpjHN8sKr2MjWAhT
+	Y9NDUyHlJHOPOrjAUnCg7hMp7NqXzZ2KUsfnYf47HAzM/AkZwjrc6ngYsOM11MriBUoUpd
+	2ImvYjAU88VNuK72/i8cPHGDgNrb0NmKn+lGE4jLN+XEdtVv5NoESJJ+3fVKHw==
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D9E4CFF80F;
+	Fri,  9 Jun 2023 14:43:29 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 2/2] mtd: spi-nor: Add support for sst26vf032b flash
+Date: Fri,  9 Jun 2023 16:43:24 +0200
+Message-Id: <20230609144324.850617-3-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230609144324.850617-1-miquel.raynal@bootlin.com>
+References: <20230609144324.850617-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH01.sberdevices.ru (172.16.1.4) To
- S-MS-EXCH01.sberdevices.ru (172.16.1.4)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/09 07:08:00 #21465535
-X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230609_043357_439724_5721C9DC 
-X-CRM114-Status: GOOD (  14.99  )
+X-CRM114-CacheID: sfid-20230609_074334_139054_ECBC0CA5 
+X-CRM114-Status: GOOD (  12.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,135 +90,89 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Meson NAND controller has limited buffer length, so check it before
-command execution to avoid length trim. Also check MTD write size on
-chip attach.
+Describe this new part. I simply copy/pasted the entry for its cousins
+with twice more/less storage capacity. The datasheet is public:
+https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST26VF032B-SST26VF032BA-2.5V-3.0V-32-Mbit-Serial-Quad-IO-%28SQI%29-Flash-Memory-20005218K.pdf
+Without the NO_SFDP_FLAGs only partial erasures happen so I believe the
+4K sector flag is needed. I cannot test dual/quad reads, so I kept these
+to mimic the other entries, just in case.
 
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Here are the sfdp tables plus base testing to show it works.
+
+$ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+sst26vf032b
+$ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+bf2642
+$ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+sst
+$ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450060102ff00060110300000ff81000106000100ffbf0001180002
+0001fffffffffffffffffffffffffffffffffd20f1ffffffff0144eb086b
+083b80bbfeffffffffff00ffffff440b0c200dd80fd810d820914824806f
+1d81ed0f773830b030b0f7ffffff29c25cfff030c080ffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffff0004fff37f0000f57f0000f9ff
+3d00f57f0000f37f0000ffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffbf2642ffb95ffdff30f260f332ff0a122346ff0f19320f1919ffffff
+ffffffff00669938ff05013506040232b03072428de89888a585c09faf5a
+ffff06ec060c0003080bffffffffff07ffff0202ff060300fdfd040600fc
+0300fefe0202070e
+$ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+e7efddddb3d5ee89ca37bf6b6e789645  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+
+$ dd if=/dev/urandom of=./qspi_test bs=1M count=1
+1+0 records in
+1+0 records out
+$ mtd_debug write /dev/mtd0 0 1048576 qspi_test
+Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
+$ mtd_debug erase /dev/mtd0 0 1048576
+Erased 1048576 bytes from address 0x00000000 in flash
+$ mtd_debug read /dev/mtd0 0 1048576 qspi_read
+Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
+$ hexdump qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0100000
+$ mtd_debug write /dev/mtd0 0 1048576 qspi_test
+Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
+$ mtd_debug read /dev/mtd0 0 1048576 qspi_read
+Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
+$ sha1sum qspi_test qspi_read
+2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_test
+2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_read
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- Changelog:
+ drivers/mtd/spi-nor/sst.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- v1 -> v2:
- * Move checks from 'switch/case' which executes commands in 'meson_nfc_exec_op()'
-   to a special separated function 'meson_nfc_check_op()' which is called before
-   commands processing.
- v2 -> v3:
- * Check value returned from 'meson_nfc_check_op()' in separated 'if()', e.g.
-   without ORing it with 'check_only'.
-
- drivers/mtd/nand/raw/meson_nand.c | 46 +++++++++++++++++++++++++++++--
- 1 file changed, 43 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 074e14225c06..5c034988cd13 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -108,6 +108,8 @@
- 
- #define PER_INFO_BYTE		8
- 
-+#define NFC_CMD_RAW_LEN	GENMASK(13, 0)
-+
- struct meson_nfc_nand_chip {
- 	struct list_head node;
- 	struct nand_chip nand;
-@@ -280,7 +282,7 @@ static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
- 
- 	if (raw) {
- 		len = mtd->writesize + mtd->oobsize;
--		cmd = (len & GENMASK(13, 0)) | scrambler | DMA_DIR(dir);
-+		cmd = len | scrambler | DMA_DIR(dir);
- 		writel(cmd, nfc->reg_base + NFC_REG_CMD);
- 		return;
- 	}
-@@ -544,7 +546,7 @@ static int meson_nfc_read_buf(struct nand_chip *nand, u8 *buf, int len)
- 	if (ret)
- 		goto out;
- 
--	cmd = NFC_CMD_N2M | (len & GENMASK(13, 0));
-+	cmd = NFC_CMD_N2M | len;
- 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
- 
- 	meson_nfc_drain_cmd(nfc);
-@@ -568,7 +570,7 @@ static int meson_nfc_write_buf(struct nand_chip *nand, u8 *buf, int len)
- 	if (ret)
- 		return ret;
- 
--	cmd = NFC_CMD_M2N | (len & GENMASK(13, 0));
-+	cmd = NFC_CMD_M2N | len;
- 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
- 
- 	meson_nfc_drain_cmd(nfc);
-@@ -899,6 +901,31 @@ meson_nand_op_put_dma_safe_output_buf(const struct nand_op_instr *instr,
- 		kfree(buf);
- }
- 
-+static int meson_nfc_check_op(struct nand_chip *chip,
-+			      const struct nand_operation *op)
-+{
-+	int op_id;
-+
-+	for (op_id = 0; op_id < op->ninstrs; op_id++) {
-+		const struct nand_op_instr *instr;
-+
-+		instr = &op->instrs[op_id];
-+
-+		switch (instr->type) {
-+		case NAND_OP_DATA_IN_INSTR:
-+		case NAND_OP_DATA_OUT_INSTR:
-+			if (instr->ctx.data.len > NFC_CMD_RAW_LEN)
-+				return -ENOTSUPP;
-+
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int meson_nfc_exec_op(struct nand_chip *nand,
- 			     const struct nand_operation *op, bool check_only)
- {
-@@ -907,8 +934,13 @@ static int meson_nfc_exec_op(struct nand_chip *nand,
- 	const struct nand_op_instr *instr = NULL;
- 	void *buf;
- 	u32 op_id, delay_idle, cmd;
-+	int err;
- 	int i;
- 
-+	err = meson_nfc_check_op(nand, op);
-+	if (err)
-+		return err;
-+
- 	if (check_only)
- 		return 0;
- 
-@@ -1181,6 +1213,7 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
- 	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
- 	struct mtd_info *mtd = nand_to_mtd(nand);
- 	int nsectors = mtd->writesize / 1024;
-+	int raw_writesize;
- 	int ret;
- 
- 	if (!mtd->name) {
-@@ -1192,6 +1225,13 @@ static int meson_nand_attach_chip(struct nand_chip *nand)
- 			return -ENOMEM;
- 	}
- 
-+	raw_writesize = mtd->writesize + mtd->oobsize;
-+	if (raw_writesize > NFC_CMD_RAW_LEN) {
-+		dev_err(nfc->dev, "too big write size in raw mode: %d > %ld\n",
-+			raw_writesize, NFC_CMD_RAW_LEN);
-+		return -EINVAL;
-+	}
-+
- 	if (nand->bbt_options & NAND_BBT_USE_FLASH)
- 		nand->bbt_options |= NAND_BBT_NO_OOB;
- 
+diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+index 99c8a19493f5..43f37d66f73a 100644
+--- a/drivers/mtd/spi-nor/sst.c
++++ b/drivers/mtd/spi-nor/sst.c
+@@ -113,6 +113,10 @@ static const struct flash_info sst_nor_parts[] = {
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ)
+ 		.fixups = &sst26vf_nor_fixups },
++	{ "sst26vf032b", INFO(0xbf2642, 0, 64 * 1024, 64)
++		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
++		.fixups = &sst26vf_nor_fixups },
+ 	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
 -- 
-2.35.0
+2.34.1
 
 
 ______________________________________________________
