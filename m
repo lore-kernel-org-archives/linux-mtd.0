@@ -4,84 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8A6DC7EE2E
-	for <linux-mtd@archiver.kernel.org>; Sat, 10 Jun 2023 22:14:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C87CDC7EE23
+	for <linux-mtd@archiver.kernel.org>; Sun, 11 Jun 2023 09:55:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CxeEzfkK5OcRn7E1P+yIf+BBmYSi7JKh1dHy3PLFLoQ=; b=p4IXA1XuU3o4SA
-	FeNOjRG+8xSuSJzF9CxHYGiSKEWsDf9kAo87+gIFBKh8qQ7KrscAE/sT6Vp1Jzas2iJ269en20+sO
-	QgaARbTqGVj+mvX8sFI6YqaM56r11tCeThYpOSX3vihpnbGBXzkT4xV2sVpeo7+SXlhI3tzpL/IZm
-	Ztymc/q89Cw0NgUl55FecvnQ9y5UVTrh/m82Ub3Zc423Vv4S1XqsKWhmyFmEc39Fd6CJWTDasAvAY
-	2VSSTUNP+IKvzWxZJ3MmFo5tDlCCppmpbxVLeURplhdTVm81usUet+DOGxcSc4vJmkq2wGdkselhH
-	xxrBEtcMupu0RgIlDoPA==;
+	List-Owner; bh=JQVCLkr3Lkb9rmK9RUSqVE/KNnQjK06+o3qhcjTDsP0=; b=rK8ce2DFwUtAgD
+	CvkLPdnbCSRI7jwUHMJG8kk3GvpQ3EUUtcQ5Xs2h/9Dr5hOOb5RmqEBT194exo54rOX54QHyfdb3k
+	jvc7X6LSDNvDV+hNCp6fmBP57zAAirbvWiI8gH1Rp9vMS/nzrxN39hDppeCVDlVqxokjRFnysK/Nm
+	N3Dk9EXn90x4ptwIhjLJaXqsvuTSf1RoAubFFXnSfxlQv3qk0ZnDWTh+ZjaCzGUC5IqmdNMScK02M
+	rwY8+nWYH4lVThWBVq4kGtPSZZvZw3Bgv8+/cU8MNTiE4KCC0/+Q/0hqynx4YpasX34Jwioh8UM/v
+	kfPJWEAWysD+RWir35IA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q86q0-00HAQB-1s;
-	Sat, 10 Jun 2023 22:13:36 +0000
-Received: from mail-ed1-x52b.google.com ([2a00:1450:4864:20::52b])
+	id 1q8Hmu-000VPR-0s;
+	Sun, 11 Jun 2023 09:55:08 +0000
+Received: from mga05.intel.com ([192.55.52.43])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q86pu-00HAPH-1E;
-	Sat, 10 Jun 2023 22:13:32 +0000
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5149c76f4dbso5379155a12.1;
-        Sat, 10 Jun 2023 15:13:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686435203; x=1689027203;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0o0Yvc3c6FVV1VluGu/lqaqZRz1w2u2WvuBDLHSzGq8=;
-        b=IjFLu5Be4nnmTBiTHV1WJxs0jww/SeCu0YgQ4DhraObX4wPMy1MZrRNY0HTrPOMNhA
-         KZewv4qiAjVJe+ZSbUsMxrUb5b1Bb4uo/O5Q39z5DzqDO41jWo8mlys6kmwO4VZcumO0
-         /e7r6HbYXSQP4V4lZy8A/4a/D9++vjJg0qGEdkbJAr3ZPRR+jWfVHJ0ZRfQDxdFi9nVt
-         X8AFEIkgiHgEd0w2NQpVu5Uwwxc5XHrqBLwOafECS84vM7NOwokuteZxAqrjSlWHGLgv
-         3kV6EzU1Pl+A8ldEXm+gqAx5gCY+khHp+yBv0ZlfaPS6dzT3T3bMgCHBGfKw/9tHxbxO
-         IMtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686435203; x=1689027203;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0o0Yvc3c6FVV1VluGu/lqaqZRz1w2u2WvuBDLHSzGq8=;
-        b=fniM3N74CWYuKB5VwjmdMXbF75n7wsVIzBKeuTP4esjJrJ/WuizKvRq12I6FAhK+gy
-         MWXxU+BY5z75RaKWx2TvC463xJB94Sgv885tfRltJUkRmbky2s6oOSv0p17bExV5Xjez
-         bCaLxt1eXpMPh+ReAda3cnDswE9w6d7BOZbqXJTZWWmfMt4IY/tcmtWGJTKC0ooIrYxX
-         3zOkJF3OXLNlYjHjUxfMDEL1b2LCJCaNg1wkWogfVPQv1U2BdKrlDf8VGTnGyIm34ifa
-         RWkoDMpMtWFwUU1T2PEHJrcbQSh3bsS6p8KJ1vbm4GL9WCz/wFrEOYGVosk1JkmU3nQ8
-         jpog==
-X-Gm-Message-State: AC+VfDzB34gWWMIQls1nxDuP1jgmrf5pAkat2pQEeleqV9nLAIgYCHRI
-	4gPaSZqA2G/WelIqaKlTia0=
-X-Google-Smtp-Source: ACHHUZ72K8bKVnLgNDLVUH3TqR5tF036RDmlhZ8fjazxLDTxntBAuCbSCXvrptbdDOUCysKJJPX1Gw==
-X-Received: by 2002:aa7:df84:0:b0:514:a4c9:e43b with SMTP id b4-20020aa7df84000000b00514a4c9e43bmr2480758edy.5.1686435203461;
-        Sat, 10 Jun 2023 15:13:23 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id c7-20020a056402120700b00514b99afa57sm3265105edw.44.2023.06.10.15.13.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Jun 2023 15:13:22 -0700 (PDT)
-Message-ID: <78aa84a3-4080-2a50-dea9-4948f6b6a2d1@gmail.com>
-Date: Sun, 11 Jun 2023 00:13:21 +0200
+	id 1q8Hmq-000VOd-34;
+	Sun, 11 Jun 2023 09:55:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686477304; x=1718013304;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9xFoy8YY2bEQ2njjFFeAn0PsmVd441wz0nYBOh9GH98=;
+  b=Fskg9Oh2LIFL4+IXoo8J0JdJawwEzXrRrKblug215NH7QZ2SeU6it5aN
+   PyFKOy5myC14qYi8yoSriVWwVvPu2yZX3pHf6AITIKOfIlAedkHc0Pbvc
+   Ip9cVSZfwQ3EgvI6Bvx3rZVETplm/efvFV1f3JYTjzfGr3YQcmsvVxZI3
+   Qs93AoafhEg/c2lYN12+G0yOyOLv9TgGuOzPbXuNCI51UlAN40UshsSYf
+   K/R8WBDr32R24fVHuOMqzj3niX6TQ8tw09k7evk0vFrowHej0DoNGy+X9
+   ISx9Dy5hAzd+70IETQuqrOF6KLsfjGWqYpkppDfsTfKJskf8/HY0UlU0H
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10737"; a="444215442"
+X-IronPort-AV: E=Sophos;i="6.00,234,1681196400"; 
+   d="scan'208";a="444215442"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2023 02:55:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10737"; a="1040991129"
+X-IronPort-AV: E=Sophos;i="6.00,234,1681196400"; 
+   d="scan'208";a="1040991129"
+Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Jun 2023 02:54:57 -0700
+Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1q8Hmi-000An6-2x;
+	Sun, 11 Jun 2023 09:54:56 +0000
+Date: Sun, 11 Jun 2023 17:54:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: William Zhang <william.zhang@broadcom.com>,
+	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
+	Linux MTD List <linux-mtd@lists.infradead.org>
+Cc: oe-kbuild-all@lists.linux.dev, f.fainelli@gmail.com, rafal@milecki.pl,
+	kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+	computersforpeace@gmail.com, anand.gore@broadcom.com,
+	dregan@mail.com, kamal.dasu@broadcom.com, tomer.yacoby@broadcom.com,
+	dan.beygelman@broadcom.com,
+	William Zhang <william.zhang@broadcom.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Weinberger <richard@nod.at>,
+	Kamal Dasu <kdasu.kdev@gmail.com>,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 10/12] mtd: rawnand: brcmnand: Add BCMBCA read data bus
+ interface
+Message-ID: <202306111741.1Hs0TVE4-lkp@intel.com>
+References: <20230606231252.94838-11-william.zhang@broadcom.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1 2/5] mtd: nand: raw: rockchip-nand-controller: add
- skipbbt option
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: richard@nod.at, vigneshr@ti.com, heiko@sntech.de,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- yifeng.zhao@rock-chips.com
-References: <19bf714a-43f9-c30a-8197-91aaaf4a6e5d@gmail.com>
- <4d9473ce-c167-47d7-e37a-7b39915a724c@gmail.com>
- <20230609104426.3901df54@xps-13>
-Content-Language: en-US
-From: Johan Jonker <jbx6244@gmail.com>
-In-Reply-To: <20230609104426.3901df54@xps-13>
+Content-Disposition: inline
+In-Reply-To: <20230606231252.94838-11-william.zhang@broadcom.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230610_151330_425469_2C752B8C 
-X-CRM114-Status: GOOD (  31.60  )
+X-CRM114-CacheID: sfid-20230611_025505_063104_F5CF3F5A 
+X-CRM114-Status: GOOD (  14.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,87 +91,91 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgoKCgpPbiA2LzkvMjMgMTA6NDQsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gSGkgSm9oYW4sCj4g
-Cj4gamJ4NjI0NEBnbWFpbC5jb20gd3JvdGUgb24gVGh1LCA4IEp1biAyMDIzIDE4OjMwOjI3ICsw
-MjAwOgo+IAo+PiBPbiBSb2NrY2hpcCBTb0NzIHRoZSBmaXJzdCBib290IHN0YWdlcyBhcmUgd3Jp
-dHRlbiBvbiBOQU5ECj4+IHdpdGggaGVscCBvZiBtYW51ZmFjdHVyZXIgc29mdHdhcmUgdGhhdCB1
-c2VzIGEgZGlmZmVyZW50IGZvcm1hdAo+PiB0aGVuIHRoZSBNVEQgZnJhbWV3b3JrLiBTa2lwIHRo
-ZSBhdXRvbWF0aWMgQkJUIHNjYW4gd2l0aCB0aGUKPj4gTkFORF9TS0lQX0JCVFNDQU4gb3B0aW9u
-IHNvIHdlIGNhbiBydW4gaXQgbWFudWFsbHkuCj4gCgo+IEhvdyBkbyB5b3UgcnVuIGl0IG1hbnVh
-bGx5Pwo+IAo+PiBUaGUgTkFORF9OT19CQk1fUVVJUksgb3B0aW9uIGFsbG93cyB1cyB0byBlcmFz
-ZSBiYWQgYmxvY2tzIHdpdGgKPj4gdGhlIG5hbmRfZXJhc2VfbmFuZCgpIGZ1bmN0aW9uIGFuZCB0
-aGUgZmxhc2hfZXJhc2UgY29tbWFuZC4KPiAKPiBGb3IgZXJhc3VyZSB5b3Ugbm93IGhhdmUgYWNj
-ZXNzIHRvIGEgZGVidWdmcyBlbnRyeSBmb3IKCkhpIE1pcXVlbCwKClRoYW5rIGZvciB5b3VyIGNv
-bW1lbnRzLgpJdCdzIG5vdCBhYm91dCBlcmFzdXJlIGFsb25lLiAKCj4gZXhwZXJ0cy9mb3JlbnNp
-Y3Mgd2hpY2ggYWxsb3dzIHlvdSB0byBieXBhc3MgYWxsIGJhZCBibG9jayBjaGVja3MuCgoKSXQg
-d291bGQgYmUgbmljZSBpZiBhbGwgbWFudWZhY3R1cmVycyB3b3VsZCBoYXZlIHRha2VuIHRoZSBN
-VEQgZnJhbWV3b3JrIGFzIGNlbnRlciBmb3IgdGhlcmUgTkFORCBhY3Rpdml0eS4KSW4gdGhlIHJl
-YWwgd29ybGQgUm9ja2NoaXAgaGFzIGRvbmUgaXQgdGhlcmUgb3duIHdheS4KRm9yIHRoZSBSb2Nr
-Y2hpcCByazMwNjYgU29DIHdlIHN0aWxsIGRlcGVuZCBvbiBhIGNsb3NlZCBzb3VyY2UgbG9hZGVy
-L3VzYnBsdWcgdG8gZWl0aGVyICgxKSBsb2FkIFUtQm9vdC9MaW51eCBmcm9tIE1NQyBvciAoMikg
-d3JpdGUgTGludXggdG8gTkFORCB3aXRoIGhlbHAgb2YgYSBjbG9zZWQgc291cmNlIEZUTC4KCldl
-IGN1cnJlbnRseSBlbmQgdXAgaW4gdGhlc2Ugc2NlbmFyaW9zOgoKKDEpCkZ1bGwgTkFORCBzdXBw
-b3J0IGluIFUtQm9vdCB0aGF0IHdvcmtzIHdpdGggYWxsIGV4aXN0aW5nIHRvb2xzIGlzIHN0aWxs
-IFdJUC4KSSd2ZSBkb25lIHNvbWUgd29yayB0aGVyZSwgYnV0IHN0aWxsIGluY29tcGxldGU6CgpG
-aXhlcyBmb3IgUm9ja2NoaXAgTkZDIGRyaXZlciBwYXJ0IDEKaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
-cmcvdS1ib290L2JlM2M1ZjEyLTlkZjQtMGE1Mi00ODU4LWM0NGQ4NDhlOTE0N0BnbWFpbC5jb20v
-CgpQcm9vZiBvZiBjb25jZXB0OgpbUEFUQ0ggdjIgMDAvMTFdIEFkZCBSb2NrY2hpcCBJREIgZGV2
-aWNlCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3UtYm9vdC9hMTQ1OGE3Yi0yMDQzLTYzOTctMzEw
-Ny0yZDFmZGYwOGM4ZTFAZ21haWwuY29tLwoKU28gaWYgdXNlcnMgYWxyZWFkeSBtYW5hZ2UgdG8g
-dXNlIFUtQm9vdCB0aGV5IHByb2JhYmx5IHNraXAgZm9ybWF0dGluZyBkdWUgdG8gdGhlIGxhY2sg
-b2Ygc3VwcG9ydCBvciBub3QgYXQgYWxsIGlmIHRoZXkgZG9uJ3QgbWFuYWdlIHRvIHNvbGRlciB0
-aGUgbWlzc2luZyBzZXJpYWwgZGVidWcgcG9ydCBpbiB0aGUgYm94LgpCZXN0IGNoYW5jZSBpcyBt
-b3N0IHVzZXJzIHNlZSBhbGwgYmxvY2tzIG1hcmtlZCBhcyBiYWQgZHVlIHRvIHRoZSBkaWZmZXJl
-bnQgZm9ybWF0IHdoZW4gdGhpcyBtb2R1bGUgaXMgYnVpbHQgaW4uCk9uIHRvcCBvZiB0aGF0IHRo
-ZSBNVEQgZnJhbWV3b3JrIGFsc28gc3RhcnRzIGEgYmxvY2sgc2VhcmNoIGxvb3AgYW5kIGEgbWVz
-cyB3aXRoIHRoZSBvcmlnaW5hbCBjb250ZW50IGluIHBhcnRpY3VsYXIgYXQgdGhlIEJCVCBsb2Nh
-dGlvbiBpbiB0aGUgbGFzdCBibG9ja3Mgd2hpY2ggaXMgIm5vdCBkb25lIiBpZiBub3QgTVREIGZv
-cm1hdHRlZCB5ZXQhCklmIGEgdXNlciBvbmx5IHdhbnRzIHRvIHJlYWQvd3JpdGUvZXJhc2UgYm9v
-dCBibG9ja3MgaGUvc2hlIG11c3QgZG8gc28gd2l0aG91dCBlZmZlY3Qgb24gb3RoZXIgY29udGVu
-dC4KQSBmaXhlZCBtb2R1bGUgcGFyYW1ldGVyIGlzIHRoZW4gdGhlIGJldHRlciBvcHRpb24gZWl0
-aGVyIGFzIGJ1aWx0LWluIG9yIGFzIHNlcGFyYXRlIG1vZHVsZSB0aGVuIHlvdXIgZGVidWdmcyBz
-dWdnZXN0aW9uIHRoYXQgaXMgbm90IGdvaW5nIHRvIHdvcmsgZm9yIHRoZSBhdmVyYWdlIHVzZXIu
-CgooMikKV2hlbiBMaW51eCBpcyBsb2FkZWQgZnJvbSBOQU5EIHdpdGggaGVscCBvZiBhIEZUTCAi
-d2hhdCBtb3N0IHVzZXJzIHN0aWxsIGRvIi4gSXQgc2hvdWxkIG5vdCBzdGFydCB0byBvdmVyd3Jp
-dGUgaXQncyBvd24gYmxvY2tzIG9mIHRoYXQganVzdCBoYXBwZW5zIHRvIGJlIE1URCBCQlQgYmxv
-Y2tzLgoKPT09CgpCb3RoIGNhc2VzIHJlcXVpcmUgYSBtb3JlIG5ldXRyYWwgcHJvYmUgYmVzaWRl
-IHRoZSBvcHRpbWFsIG5vcm1hbCBMaW51eCBib290IGZsb3cgd2l0aCBhbHJlYWR5IE1URCBmb3Jt
-YXR0ZWQuCgpKb2hhbgoKCj09PQoKRXhhbXBsZSBza2lwYmJ0IGZ1bmN0aW9uIGluIGV4aXN0aW5n
-IGRyaXZlcjoKaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQv
-dG9ydmFsZHMvbGludXguZ2l0L3RyZWUvZHJpdmVycy9tdGQvbmFuZC9yYXcvY2FmZV9uYW5kLmMj
-bjgwCgoKPiAKPj4KPj4gU2lnbmVkLW9mZi1ieTogSm9oYW4gSm9ua2VyIDxqYng2MjQ0QGdtYWls
-LmNvbT4KPj4gLS0tCj4+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9yb2NrY2hpcC1uYW5kLWNvbnRy
-b2xsZXIuYyB8IDggKysrKysrKysKPj4gIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKykK
-Pj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3JvY2tjaGlwLW5hbmQtY29u
-dHJvbGxlci5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvcm9ja2NoaXAtbmFuZC1jb250cm9sbGVy
-LmMKPj4gaW5kZXggY2FmY2NjMzI0Li5mNTY0MzBmNmMgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMv
-bXRkL25hbmQvcmF3L3JvY2tjaGlwLW5hbmQtY29udHJvbGxlci5jCj4+ICsrKyBiL2RyaXZlcnMv
-bXRkL25hbmQvcmF3L3JvY2tjaGlwLW5hbmQtY29udHJvbGxlci5jCj4+IEBAIC0xODgsNiArMTg4
-LDEwIEBAIHN0cnVjdCBya19uZmMgewo+PiAgCXVuc2lnbmVkIGxvbmcgYXNzaWduZWRfY3M7Cj4+
-ICB9Owo+Pgo+PiArc3RhdGljIGludCBza2lwYmJ0Owo+PiArbW9kdWxlX3BhcmFtKHNraXBiYnQs
-IGludCwgMDY0NCk7Cj4+ICtNT0RVTEVfUEFSTV9ERVNDKHNraXBiYnQsICJTa2lwIEJCVCBzY2Fu
-IGlmIHRoZSBOQU5EIGNoaXAgY29udGFpbnMgZGF0YSBub3QgaW4gTVREIGZvcm1hdC4iKTsKPiAK
-Cj4gSSBoaWdobHkgZGlzbGlrZSB0aGlzLgoKV2hlbiBidWlsZCBpbiBob3cgdG8gY2hhbmdlIHBy
-b2JlIGJlaGF2aW9yIGluIGEgbW9yZSBuZXV0cmFsIHdheT8KTm8gc2Nhbm5pbmcsIGVyYXNpbmcg
-YWxsb3dlZCBldmVyeXdoZXJlIGFuZCBubyBjaGFuZ2VzIHRvIG9yaWdpbmFsIGNvbnRlbnQhCgo+
-IAo+IEl0J3Mgbm90IGEgbW9kdWxlIHBhcmFtZXRlciB0aGF0IHlvdSBuZWVkLCBpdCBpcyByZWxh
-dGVkIHRvIGEgcGFydGl0aW9uLgoKUGxlYXNlIGFkdmlzZSB3aGF0IHRleHQgY291bGQgYmUgYmV0
-dGVyIGluIHRoaXMgY2FzZS4KCj4gCj4+ICsKPj4gIHN0YXRpYyBpbmxpbmUgc3RydWN0IHJrX25m
-Y19uYW5kX2NoaXAgKnJrX25mY190b19ya25hbmQoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPj4g
-IHsKPj4gIAlyZXR1cm4gY29udGFpbmVyX29mKGNoaXAsIHN0cnVjdCBya19uZmNfbmFuZF9jaGlw
-LCBjaGlwKTsKPj4gQEAgLTExNTYsNiArMTE2MCwxMCBAQCBzdGF0aWMgaW50IHJrX25mY19uYW5k
-X2NoaXBfaW5pdChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBya19uZmMgKm5mYywKPj4KPj4g
-IAluYW5kX3NldF9jb250cm9sbGVyX2RhdGEoY2hpcCwgbmZjKTsKPj4KPj4gKwkvKiBTa2lwIHRo
-ZSBhdXRvbWF0aWMgQkJUIHNjYW4gc28gd2UgY2FuIHJ1biBpdCBtYW51YWxseS4gKi8KPj4gKwlp
-ZiAoc2tpcGJidCkKPj4gKwkJY2hpcC0+b3B0aW9ucyB8PSBOQU5EX1NLSVBfQkJUU0NBTiB8IE5B
-TkRfTk9fQkJNX1FVSVJLOwo+PiArCj4+ICAJY2hpcC0+b3B0aW9ucyB8PSBOQU5EX1VTRVNfRE1B
-IHwgTkFORF9OT19TVUJQQUdFX1dSSVRFOwo+PiAgCWNoaXAtPmJidF9vcHRpb25zID0gTkFORF9C
-QlRfVVNFX0ZMQVNIIHwgTkFORF9CQlRfTk9fT09COwo+Pgo+PiAtLQo+PiAyLjMwLjIKPj4KPiAK
-PiAKPiBUaGFua3MsCj4gTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi William,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on mtd/mtd/next mtd/mtd/fixes linus/master v6.4-rc5 next-20230609]
+[cannot apply to robh/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/William-Zhang/mtd-rawnand-brcmnand-Fix-ECC-level-field-setting-for-v7-2-controller/20230607-071834
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20230606231252.94838-11-william.zhang%40broadcom.com
+patch subject: [PATCH 10/12] mtd: rawnand: brcmnand: Add BCMBCA read data bus interface
+config: arm-randconfig-s052-20230611 (https://download.01.org/0day-ci/archive/20230611/202306111741.1Hs0TVE4-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce:
+        mkdir -p ~/bin
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-39-gce1a6720-dirty
+        # https://github.com/intel-lab-lkp/linux/commit/2fce7300f3e21ad0cb55442e1acfeaf60f41bf7d
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review William-Zhang/mtd-rawnand-brcmnand-Fix-ECC-level-field-setting-for-v7-2-controller/20230607-071834
+        git checkout 2fce7300f3e21ad0cb55442e1acfeaf60f41bf7d
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=arm olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=arm SHELL=/bin/bash drivers/mtd/nand/raw/brcmnand/
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306111741.1Hs0TVE4-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:83:48: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *flash_cache @@     got void [noderef] __iomem *flash_cache @@
+   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:83:48: sparse:     expected void *flash_cache
+   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:83:48: sparse:     got void [noderef] __iomem *flash_cache
+   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:84:25: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:84:25: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:84:25: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:86:25: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:86:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem *from @@     got void * @@
+   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:86:25: sparse:     expected void const volatile [noderef] __iomem *from
+   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:86:25: sparse:     got void *
+
+vim +86 drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
+
+    70	
+    71	static void bcmbca_read_data_bus(struct brcmnand_soc *soc,
+    72					 void __iomem *flash_cache,  u32 *buffer,
+    73					 int fc_words, bool is_param)
+    74	{
+    75		int i;
+    76	
+    77		if (!is_param) {
+    78			/*
+    79			 * memcpy can do unaligned aligned access depending on source
+    80			 * and dest address, which is incompatible with nand cache. Fallback
+    81			 * to the memcpy for io version
+    82			 */
+  > 83			if (bcmbca_nand_is_buf_aligned(flash_cache, buffer))
+    84				memcpy((void *)buffer, (void *)flash_cache, fc_words * 4);
+    85			else
+  > 86				memcpy_fromio((void *)buffer, (void *)flash_cache, fc_words * 4);
+    87		} else {
+    88			/* Flash cache has same endian as the host for parameter pages */
+    89			for (i = 0; i < fc_words; i++, buffer++)
+    90				*buffer = __raw_readl(flash_cache + i * 4);
+    91		}
+    92	}
+    93	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
