@@ -4,82 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C87CDC7EE23
-	for <linux-mtd@archiver.kernel.org>; Sun, 11 Jun 2023 09:55:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDEFDC7EE23
+	for <linux-mtd@archiver.kernel.org>; Sun, 11 Jun 2023 20:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JQVCLkr3Lkb9rmK9RUSqVE/KNnQjK06+o3qhcjTDsP0=; b=rK8ce2DFwUtAgD
-	CvkLPdnbCSRI7jwUHMJG8kk3GvpQ3EUUtcQ5Xs2h/9Dr5hOOb5RmqEBT194exo54rOX54QHyfdb3k
-	jvc7X6LSDNvDV+hNCp6fmBP57zAAirbvWiI8gH1Rp9vMS/nzrxN39hDppeCVDlVqxokjRFnysK/Nm
-	N3Dk9EXn90x4ptwIhjLJaXqsvuTSf1RoAubFFXnSfxlQv3qk0ZnDWTh+ZjaCzGUC5IqmdNMScK02M
-	rwY8+nWYH4lVThWBVq4kGtPSZZvZw3Bgv8+/cU8MNTiE4KCC0/+Q/0hqynx4YpasX34Jwioh8UM/v
-	kfPJWEAWysD+RWir35IA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=h/LsWI+BAOMwpf/z3k3TZcyEUGmhI92i/aYoaF8pULE=; b=fJZWCRG24LgU2I
+	Pd3JmHviUSto5hKIrlkBUAxSwkok8vJf0PskGy42DemFR/ABO+FKWNjW1f3gfBSusTut4e7+wndCU
+	+hDR4WbyOdpeoJSJFIuGon4mlTSrsewJUHNsTM9XbkevmKtOzZISM7mSWa4Gje4h30/ggwtnftpU1
+	sIn0VsxEkNsNO5riHncl7z7jzHI1L17Hb+MbFqkC0A6j/50V3fw1tN/8kk/Qw4BWBjAA3X1XIwFOa
+	dO1ZC3U7roba8dgejKB+RASAPC6Wq/ZFlj74KFwHfcnuC3wbs69EKhHPqYQCuR98jNow58HsLnjzx
+	SyON78j1Iu6HmNijDapw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8Hmu-000VPR-0s;
-	Sun, 11 Jun 2023 09:55:08 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1q8Rud-001jTy-2u;
+	Sun, 11 Jun 2023 20:43:47 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8Hmq-000VOd-34;
-	Sun, 11 Jun 2023 09:55:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686477304; x=1718013304;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9xFoy8YY2bEQ2njjFFeAn0PsmVd441wz0nYBOh9GH98=;
-  b=Fskg9Oh2LIFL4+IXoo8J0JdJawwEzXrRrKblug215NH7QZ2SeU6it5aN
-   PyFKOy5myC14qYi8yoSriVWwVvPu2yZX3pHf6AITIKOfIlAedkHc0Pbvc
-   Ip9cVSZfwQ3EgvI6Bvx3rZVETplm/efvFV1f3JYTjzfGr3YQcmsvVxZI3
-   Qs93AoafhEg/c2lYN12+G0yOyOLv9TgGuOzPbXuNCI51UlAN40UshsSYf
-   K/R8WBDr32R24fVHuOMqzj3niX6TQ8tw09k7evk0vFrowHej0DoNGy+X9
-   ISx9Dy5hAzd+70IETQuqrOF6KLsfjGWqYpkppDfsTfKJskf8/HY0UlU0H
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10737"; a="444215442"
-X-IronPort-AV: E=Sophos;i="6.00,234,1681196400"; 
-   d="scan'208";a="444215442"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2023 02:55:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10737"; a="1040991129"
-X-IronPort-AV: E=Sophos;i="6.00,234,1681196400"; 
-   d="scan'208";a="1040991129"
-Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Jun 2023 02:54:57 -0700
-Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1q8Hmi-000An6-2x;
-	Sun, 11 Jun 2023 09:54:56 +0000
-Date: Sun, 11 Jun 2023 17:54:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: William Zhang <william.zhang@broadcom.com>,
-	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
-	Linux MTD List <linux-mtd@lists.infradead.org>
-Cc: oe-kbuild-all@lists.linux.dev, f.fainelli@gmail.com, rafal@milecki.pl,
-	kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
-	computersforpeace@gmail.com, anand.gore@broadcom.com,
-	dregan@mail.com, kamal.dasu@broadcom.com, tomer.yacoby@broadcom.com,
-	dan.beygelman@broadcom.com,
-	William Zhang <william.zhang@broadcom.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+	id 1q8RuZ-001jRl-2w
+	for linux-mtd@lists.infradead.org;
+	Sun, 11 Jun 2023 20:43:45 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1q8RuR-0001Y7-8f; Sun, 11 Jun 2023 22:43:35 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1q8RuP-006jQB-HQ; Sun, 11 Jun 2023 22:43:33 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1q8RuO-00DIJQ-Qe; Sun, 11 Jun 2023 22:43:32 +0200
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Kamal Dasu <kdasu.kdev@gmail.com>,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 10/12] mtd: rawnand: brcmnand: Add BCMBCA read data bus
- interface
-Message-ID: <202306111741.1Hs0TVE4-lkp@intel.com>
-References: <20230606231252.94838-11-william.zhang@broadcom.com>
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	kernel@pengutronix.de
+Subject: [PATCH] mtd: maps: pismo: Switch back to use i2c_driver's .probe()
+Date: Sun, 11 Jun 2023 22:43:27 +0200
+Message-Id: <20230611204327.828122-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230606231252.94838-11-william.zhang@broadcom.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=934; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=eV1upzG3BHqeyAZP1Dmv/RvxHBmR41WU7xQXGTwVZg8=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkhjHuSp+Eo/brVJdj73xqwS593HF3S50CyW7kA BcW3ojN4e2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZIYx7gAKCRCPgPtYfRL+ Ttn0B/0cdI/znDbdVUMTtWnYEkcYN7PxHgVd/9QhR5GHa/xvQqTqEhlfIJpNsR8q4NGmOGS4XEQ cWXlGhrz/xOXmF+hB4qTP2z4W8NZhOUQlIUD95yLK4S/Vaq/BsMJ4xlhi/BkJrOghAfmT8YIFb/ gmbVAs47pulO5YkoN+M8skSHT9X7nZc+ebY8EgsSBncabIBcsIPCzlopiTFD2X/XDE+UWjVmdSi m9rQVLk/aoexl4L4+eI7I82HK+Kq+pe5lEVnaYQHx+IGEIasHbDYWD3zt2880nrD4FHuDFdfLAe CnXcOx5avOH0NBqecQAVlvzTABcNr2YxjYv9C8ayWzGVNUUK
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230611_025505_063104_F5CF3F5A 
-X-CRM114-Status: GOOD (  14.82  )
+X-CRM114-CacheID: sfid-20230611_134343_945407_2ABF91BE 
+X-CRM114-Status: GOOD (  12.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,91 +70,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi William,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on mtd/mtd/next mtd/mtd/fixes linus/master v6.4-rc5 next-20230609]
-[cannot apply to robh/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/William-Zhang/mtd-rawnand-brcmnand-Fix-ECC-level-field-setting-for-v7-2-controller/20230607-071834
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-patch link:    https://lore.kernel.org/r/20230606231252.94838-11-william.zhang%40broadcom.com
-patch subject: [PATCH 10/12] mtd: rawnand: brcmnand: Add BCMBCA read data bus interface
-config: arm-randconfig-s052-20230611 (https://download.01.org/0day-ci/archive/20230611/202306111741.1Hs0TVE4-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-reproduce:
-        mkdir -p ~/bin
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-39-gce1a6720-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/2fce7300f3e21ad0cb55442e1acfeaf60f41bf7d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review William-Zhang/mtd-rawnand-brcmnand-Fix-ECC-level-field-setting-for-v7-2-controller/20230607-071834
-        git checkout 2fce7300f3e21ad0cb55442e1acfeaf60f41bf7d
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=arm olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=arm SHELL=/bin/bash drivers/mtd/nand/raw/brcmnand/
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306111741.1Hs0TVE4-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:83:48: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *flash_cache @@     got void [noderef] __iomem *flash_cache @@
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:83:48: sparse:     expected void *flash_cache
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:83:48: sparse:     got void [noderef] __iomem *flash_cache
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:84:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:84:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:84:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:86:25: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:86:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem *from @@     got void * @@
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:86:25: sparse:     expected void const volatile [noderef] __iomem *from
-   drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c:86:25: sparse:     got void *
-
-vim +86 drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
-
-    70	
-    71	static void bcmbca_read_data_bus(struct brcmnand_soc *soc,
-    72					 void __iomem *flash_cache,  u32 *buffer,
-    73					 int fc_words, bool is_param)
-    74	{
-    75		int i;
-    76	
-    77		if (!is_param) {
-    78			/*
-    79			 * memcpy can do unaligned aligned access depending on source
-    80			 * and dest address, which is incompatible with nand cache. Fallback
-    81			 * to the memcpy for io version
-    82			 */
-  > 83			if (bcmbca_nand_is_buf_aligned(flash_cache, buffer))
-    84				memcpy((void *)buffer, (void *)flash_cache, fc_words * 4);
-    85			else
-  > 86				memcpy_fromio((void *)buffer, (void *)flash_cache, fc_words * 4);
-    87		} else {
-    88			/* Flash cache has same endian as the host for parameter pages */
-    89			for (i = 0; i < fc_words; i++, buffer++)
-    90				*buffer = __raw_readl(flash_cache + i * 4);
-    91		}
-    92	}
-    93	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QWZ0ZXIgY29tbWl0IGI4YTFhNGNkNWE5OCAoImkyYzogUHJvdmlkZSBhIHRlbXBvcmFyeSAucHJv
+YmVfbmV3KCkKY2FsbC1iYWNrIHR5cGUiKSwgYWxsIGRyaXZlcnMgYmVpbmcgY29udmVydGVkIHRv
+IC5wcm9iZV9uZXcoKSBhbmQgdGhlbgpjb21taXQgMDNjODM1ZjQ5OGI1ICgiaTJjOiBTd2l0Y2gg
+LnByb2JlKCkgdG8gbm90IHRha2UgYW4gaWQgcGFyYW1ldGVyIikKY29udmVydCBiYWNrIHRvICh0
+aGUgbmV3KSAucHJvYmUoKSB0byBiZSBhYmxlIHRvIGV2ZW50dWFsbHkgZHJvcAoucHJvYmVfbmV3
+KCkgZnJvbSBzdHJ1Y3QgaTJjX2RyaXZlci4KClNpZ25lZC1vZmYtYnk6IFV3ZSBLbGVpbmUtS8O2
+bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGU+Ci0tLQogZHJpdmVycy9tdGQvbWFw
+cy9waXNtby5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0
+aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbWFwcy9waXNtby5jIGIvZHJpdmVycy9t
+dGQvbWFwcy9waXNtby5jCmluZGV4IDNlMGZmZjNmMTI5ZS4uZWNmNjg5MjJkYTczIDEwMDY0NAot
+LS0gYS9kcml2ZXJzL210ZC9tYXBzL3Bpc21vLmMKKysrIGIvZHJpdmVycy9tdGQvbWFwcy9waXNt
+by5jCkBAIC0yNTksNyArMjU5LDcgQEAgc3RhdGljIHN0cnVjdCBpMmNfZHJpdmVyIHBpc21vX2Ry
+aXZlciA9IHsKIAkuZHJpdmVyCT0gewogCQkubmFtZQk9ICJwaXNtbyIsCiAJfSwKLQkucHJvYmVf
+bmV3CT0gcGlzbW9fcHJvYmUsCisJLnByb2JlCQk9IHBpc21vX3Byb2JlLAogCS5yZW1vdmUJCT0g
+cGlzbW9fcmVtb3ZlLAogCS5pZF90YWJsZQk9IHBpc21vX2lkLAogfTsKCmJhc2UtY29tbWl0OiA1
+M2FiNjk3NWMxMmQxYWQ4NmM1OTlhODkyN2U4YzY5OGIxNDRkNjY5Ci0tIAoyLjM5LjIKCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
