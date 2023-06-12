@@ -4,91 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E16BC88CB2
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Jun 2023 14:12:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90E12C7EE2F
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Jun 2023 15:01:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QWxPBW1M9XneANuldfKtT94a03Ih+7MjqsYLYl1QbyE=; b=WqTB3n/FuUEF0W
-	6i/5zsruDwI/iwpWXb+lyr91LvIS5CPby+YNQaXih3+Xn45XYPXPn7Q3seh//cLZtymHrVw+0z4YK
-	DUBFRwIOYDqrC5n51t+yEpdDk/oW40rgWRcjuL1TnXIEs3ZlovTznnWcDyjA8yDCzqaNIVGzNfX7s
-	9huRAhFAvPN/ZnZOJR0kgXgFxcLHktdn/8IdJGOmciuujyknPRvfo+GBt/l1BhVj2kJNtWhJRb4Jc
-	0MAeTkAJeOlHMlrPgDMlH0ge/hUvtkbvTpx2pa5lfp9SSbKkTrdddQS7PcRvv3nAJrebKtG0zoruj
-	EqsUzx88TTYNfR7xVexg==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=u2vQeALVMc7nTxfY5MV8BGJox8Uv9tq1TTORj++khPo=; b=3BJRPC6rD7gpd4
+	iwLa35f3DaOXoBBko+8w2/tXloKNU/Jtk32zF30moOjz5K0PMnlC9aHN05KpKY5F78Xj4AI00mYrT
+	kDSDdRu9WOHaDF6sRU+X3Mpxdp5xR1PGsVGDfkEYNyuQY4Wro8qROo+TsX0whxDKSDmpvSy1df5Kd
+	BBWP6jduA4r5rh8JgPkS8PZ19XYloF5U4PTPYQP+Yc8JME7kiefUcdj4VegybwyA8ql5oW9HdMNti
+	A8xZ5hKmXUoiQwpdbou23JVgy9lRFQBMPowHx7XOkRx3DpiVGIeaSR96feaDHgNJsM0IIZBTvZChs
+	RXk5sA3S0doFiTnKua1g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8iHA-004FZP-2n;
-	Mon, 12 Jun 2023 14:12:08 +0000
-Received: from mail-io1-xd35.google.com ([2607:f8b0:4864:20::d35])
+	id 1q8j2Y-004O9g-1G;
+	Mon, 12 Jun 2023 15:01:06 +0000
+Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8iH7-004FT0-2D
-	for linux-mtd@lists.infradead.org;
-	Mon, 12 Jun 2023 14:12:07 +0000
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7747cc8bea0so36866739f.1
-        for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2023 07:11:50 -0700 (PDT)
+	id 1q8j2V-004O7p-2j;
+	Mon, 12 Jun 2023 15:01:05 +0000
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-977d6aa3758so814067066b.0;
+        Mon, 12 Jun 2023 08:01:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1686579108; x=1689171108;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1686582061; x=1689174061;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4muTChvfXbyFleywXuJztp663UoDJyd/b1njxzLhqy8=;
-        b=sLZGHozVNiyKe7ZdVW/Izn1P7sgaQShCFq8nFxDEUw2HPGtUJB2+ZAyPMlipviAeTp
-         k3uQ8FI/e0eQenGUZnHNrzUL6Ik3G0IXm+GRBayvvLbMzgaY+UXyhfCpD4GOrVPEdTJv
-         IcIkIA09lG9xzyFYUO5JzJkmOBfAprST6Rp9IHrO/jxkuWSRx8pvHMOooqILGwgI/Lo6
-         1VEW0UpTP7V9T32ew0hLYFEC4JqpDUjaCB9j68pNjawpUBhqZ7JS8ocpEabGbvX3LMxh
-         84vjMA0Z3WUKqubPW8wvoXypai5o3n5GNzihnbK3f7nqUGYlTvpK/lKsx4hWnhA+HiQE
-         ZgZQ==
+        bh=mrjIaSswtTyEY7Z8qdbgtXftw/wW1klcn/CpxmtkX3c=;
+        b=MoV2QEdO3zATE97Mvg8ltny6qdqArDowpHJ8EY5BBTGq7VSxNV6B3GamkBWpiZS+8t
+         stSc29yAUb4awRgsYYXV7YSTR9hZCQD9ak5fZVowQfL1PPN/nzvARWjoQBLbcSqAS6LG
+         67fANOGUc/tNyL1WvzgzdIxUewkgq8pDTwkQagZ06TTqPTUQeLLTEbgI3I5hZlipXo42
+         3yziw4GhShnQ6Lg/Cv/jlwjurvWNKnQgJhKXqym7acLF+NVH4fhZ7vSJ9nkhFjRdoRtY
+         aj/DHXiXC0YDv7IPBdRpIWqujinu9a/yU4SzLooRU+h6TXBi8fqoC9fB53TWBjwSlXYJ
+         zgWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686579108; x=1689171108;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4muTChvfXbyFleywXuJztp663UoDJyd/b1njxzLhqy8=;
-        b=ljeFh2dsnuxenPNv4ayNrznFXz1hRC0wwzYgQeSObG88g1eMZhznzn6J30q0UlyDTb
-         v35sQEqPbWZDfvEfd30YA0eca73qgjcQCzMOQEbzgizDBn5rY16vKfuL+omjCw4gYj28
-         2K9if+3R1OTIVW1CremQP7T2smgEjoyv++fZRhi16Eyw4ReSoTQeDX+bMewwRkxjJEAL
-         /5ZthQaGZ8c140pl3HwoFh3+mrQM+pAhWdp0QwmZoAKzsD3gQLZa2xOZOf6ao4msz/tD
-         cgFitFm9V0HZsSJPeqtZ8agnP0RD57t6I5etK3pH6owMp390zsl2jNGwffZVvETqCkFe
-         Fv3Q==
-X-Gm-Message-State: AC+VfDzNixQlFpTBeWVjsOzkjafHEhdoGvFfC7hGoSeezkJZFRpCZpbD
-	OW3lBzBlZ7DIuIbjuOZBl02/Pg==
-X-Google-Smtp-Source: ACHHUZ7oss5Q4qEAESR1LIaLJkD7ZwONVfsRpFehVo9Ss1V9OTMOTrOh14yI7Krm7Ivy+/EbDcrm4g==
-X-Received: by 2002:a6b:690a:0:b0:77a:ee79:652 with SMTP id e10-20020a6b690a000000b0077aee790652mr4231482ioc.1.1686579107952;
-        Mon, 12 Jun 2023 07:11:47 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id i19-20020a02cc53000000b0041408b79f1esm2793007jaq.111.2023.06.12.07.11.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jun 2023 07:11:47 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Richard Weinberger <richard@nod.at>, Josef Bacik <josef@toxicpanda.com>, 
- "Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, 
- Phillip Potter <phil@philpotter.co.uk>, Coly Li <colyli@suse.de>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, 
- "Martin K. Petersen" <martin.petersen@oracle.com>, Chris Mason <clm@fb.com>, 
- David Sterba <dsterba@suse.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, 
- dm-devel@redhat.com, linux-block@vger.kernel.org, 
- linux-um@lists.infradead.org, linux-scsi@vger.kernel.org, 
- linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-nvme@lists.infradead.org, linux-btrfs@vger.kernel.org, 
- linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
- linux-fsdevel@vger.kernel.org, linux-pm@vger.kernel.org
-In-Reply-To: <20230608110258.189493-1-hch@lst.de>
-References: <20230608110258.189493-1-hch@lst.de>
-Subject: Re: decouple block open flags from fmode_t v2
-Message-Id: <168657910650.933808.4041515037046679285.b4-ty@kernel.dk>
-Date: Mon, 12 Jun 2023 08:11:46 -0600
+        d=1e100.net; s=20221208; t=1686582061; x=1689174061;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mrjIaSswtTyEY7Z8qdbgtXftw/wW1klcn/CpxmtkX3c=;
+        b=QabSoLwXGtMgZ9IbieadQsXD0RRQYC3WeHv0aYL7diXNX+mKiwJkr3nTIxLO6VcJK8
+         RUqtxIGa7aCSPg3xCeIsTlY3Yt5/EH79PdtjfBDOZQoiTEMX9biYp3BB4o3y9PcggEsi
+         /F3W18SV46R/dGKsRQ28ic4nNjBKx5vqxDx1RAAFBwHgqxc6vdjGC55ezMS69j+8wUFA
+         NxEFrqXGibg627Auc1f8N50FGmxCpnzfr6sqj7NBcQM5LhmFjrvoOhBO1rzX0b4GHIEP
+         b8+qJLhyOR/Qfv6YUTR0PnR/2hjN1QjbKZoIjIUX0E7IakScwkBvnpeX/9cRpsfLUUYB
+         tuBA==
+X-Gm-Message-State: AC+VfDycn8qB48Cj9PCn7xXR3knWboP/foFPB81/S/fbSoVplTiQW7DS
+	VPmi3bT4CjPgBqYq9Li790/Hkgd38Gw=
+X-Google-Smtp-Source: ACHHUZ5blwfhznY7HEehsUI5LMmuOJwU7N2BdDI1xQ2Y0yJXTUUc4FAlxBZNIkv7qM1VODcBabS/9w==
+X-Received: by 2002:a17:906:730b:b0:973:bcf6:1d4 with SMTP id di11-20020a170906730b00b00973bcf601d4mr11632209ejc.76.1686582060941;
+        Mon, 12 Jun 2023 08:01:00 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id m3-20020a1709061ec300b00973f1cd586fsm5420857ejj.1.2023.06.12.08.00.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jun 2023 08:01:00 -0700 (PDT)
+Message-ID: <11e16c3b-6f7b-a6a9-b0ed-b7ac0cd703e3@gmail.com>
+Date: Mon, 12 Jun 2023 17:00:59 +0200
 MIME-Version: 1.0
-X-Mailer: b4 0.13-dev-c6835
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+From: Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v2 0/5] Fixes for Rockchip NAND controller driver
+To: miquel.raynal@bootlin.com
+Cc: richard@nod.at, vigneshr@ti.com, heiko@sntech.de,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ yifeng.zhao@rock-chips.com
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230612_071205_720686_B9AB1643 
-X-CRM114-Status: GOOD (  14.86  )
+X-CRM114-CacheID: sfid-20230612_080103_888221_26DD7B1F 
+X-CRM114-Status: GOOD (  10.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,95 +88,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Thu, 08 Jun 2023 13:02:28 +0200, Christoph Hellwig wrote:
-> this series adds a new blk_mode_t for block open flags instead of abusing
-> fmode_t.  The block open flags work very different from the normal use of
-> fmode_t and only share the basic READ/WRITE flags with it.  None of the
-> other normal FMODE_* flags is used, but instead there are three
-> block-specific ones not used by anyone else, which can now be removed.
-> 
-> Note that I've only CCed maintainers and lists for drivers and file systems
-> that have non-trivial changes, as otherwise the series would spam literally
-> everyone in the block and file system world.
-> 
-> [...]
-
-Applied, thanks!
-
-[01/30] block: also call ->open for incremental partition opens
-        commit: 9d1c92872e7082f100f629a58b32fa0214aa1aec
-[02/30] cdrom: remove the unused bdev argument to cdrom_open
-        commit: 764b83100b9aff52f950e408539c22a37cdedae8
-[03/30] cdrom: remove the unused mode argument to cdrom_ioctl
-        commit: 473399b50de1fdc12606254351273c71d1786251
-[04/30] cdrom: remove the unused cdrom_close_write release code
-        commit: a4cec8bc14c02e15006a71f02b0e1bbc72b9f796
-[05/30] cdrom: track if a cdrom_device_info was opened for data
-        commit: 8cdf433e2b8e4fc6c7b4393deb93fb258175d537
-[06/30] cdrom: remove the unused mode argument to cdrom_release
-        commit: 7ae24fcee9929f9002b84d8121144b2b3590b58c
-[07/30] block: pass a gendisk on bdev_check_media_change
-        commit: 444aa2c58cb3b6cfe3b7cc7db6c294d73393a894
-[08/30] block: pass a gendisk to ->open
-        commit: d32e2bf83791727a84ad5d3e3d713e82f9adbe30
-[09/30] block: remove the unused mode argument to ->release
-        commit: ae220766d87cd6799dbf918fea10613ae14c0654
-[10/30] block: rename blkdev_close to blkdev_release
-        commit: 7ee34cbc291a28134b60683b246ba58b4b676ec3
-[11/30] swsusp: don't pass a stack address to blkdev_get_by_path
-        commit: c889d0793d9dc07e94a5fddcc05356157fab00b7
-[12/30] bcache: don't pass a stack address to blkdev_get_by_path
-        commit: 29499ab060fec044161be73fb0e448eab97b4813
-[13/30] rnbd-srv: don't pass a holder for non-exclusive blkdev_get_by_path
-        commit: 5ee607675debef509946f8a251d4c30a21493ec2
-[14/30] btrfs: don't pass a holder for non-exclusive blkdev_get_by_path
-        commit: 2ef789288afd365f4245ba97e56189062de5148e
-[15/30] block: use the holder as indication for exclusive opens
-        commit: 2736e8eeb0ccdc71d1f4256c9c9a28f58cc43307
-[16/30] block: add a sb_open_mode helper
-        commit: 3f0b3e785e8b54a40c530fa77b7ab37bec925c57
-[17/30] fs: remove sb->s_mode
-        commit: 81b1fb7d17c0110df839e13468ada9e99bb6e5f4
-[18/30] scsi: replace the fmode_t argument to scsi_cmd_allowed with a simple bool
-        commit: 5f4eb9d5413fdfc779c099fdaf0ff417eb163145
-[19/30] scsi: replace the fmode_t argument to scsi_ioctl with a simple bool
-        commit: 2e80089c18241699c41d0af0669cb93844ff0dc1
-[20/30] scsi: replace the fmode_t argument to ->sg_io_fn with a simple bool
-        commit: 1991299e49fa58c3ba7e91599932f84bf537d592
-[21/30] nvme: replace the fmode_t argument to the nvme ioctl handlers with a simple bool
-        commit: 7d9d7d59d44b7e9236d168472aa222b6543fae25
-[22/30] mtd: block: use a simple bool to track open for write
-        commit: 658afed19ceed54a52b9e9e69c0791c8868ff55d
-[23/30] rnbd-srv: replace sess->open_flags with a "bool readonly"
-        commit: 99b07780814e89f16bec2773c237eb25121f8502
-[24/30] ubd: remove commented out code in ubd_open
-        commit: bd6abfc8e7898ce2163a1ffdbb9ec71a0a081267
-[25/30] block: move a few internal definitions out of blkdev.h
-        commit: cfb425761c79b6056ae5bb73f8d400f03b513959
-[26/30] block: remove unused fmode_t arguments from ioctl handlers
-        commit: 5e4ea834676e3b8965344ca61d36e1ae236249eb
-[27/30] block: replace fmode_t with a block-specific type for block open flags
-        commit: 05bdb9965305bbfdae79b31d22df03d1e2cfcb22
-[28/30] block: always use I_BDEV on file->f_mapping->host to find the bdev
-        commit: 4e762d8623448bb9d32711832ce977a65ff7636a
-[29/30] block: store the holder in file->private_data
-        commit: ee3249a8ce78ef014a71b05157a43fba8dc764e3
-[30/30] fs: remove the now unused FMODE_* flags
-        commit: 0733ad8002916b9dbbbcfe6e92ad44d2657de1c1
-
-Best regards,
--- 
-Jens Axboe
-
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhpcyBzZXJpZSBjb250YWlucyB2YXJpb3VzIGZpeGVzIGZvciB0aGUgUm9ja2NoaXAgTkFORCBj
+b250cm9sbGVyCmRyaXZlciB0aGF0IHNob3dlZCB1cCB3aGlsZSB0ZXN0aW5nIGJvb3QgYmxvY2sg
+d3JpdGluZy4KCkZpeGVkIGFyZToKICBBbHdheXMgY29weSBod2VjYyBQQSBkYXRhIHRvL2Zyb20g
+b29iX3BvaSBidWZmZXIgaW4gb3JkZXIgdG8gYmUgYWJsZQogIHRvIHJlYWQvd3JpdGUgdGhlIHZh
+cmlvdXMgYm9vdCBibG9jayBsYXlvdXRzLgogIEFkZCBvcHRpb24gdG8gc2FmZWx5IHByb2JlIHRo
+ZSBkcml2ZXIgb24gYSBOQU5EIHdpdGggdW5rbm93biBkYXRhIGxheW91dC4KICBGaXggZGVmYXVs
+dCB0aW1pbmcuCiAgRml4IG9vYmZyZWUgbGF5b3V0LgogIEFkZCBtaXNzaW5nIGNoaXAgSUQuCgpD
+aGFuZ2VkIFYyOgogIEFkZCB0YWcKICBBZGQgbWFudWZhY3R1cmVyIG9wcwogIFJld29yZAoKSm9o
+YW4gSm9ua2VyICg0KToKICBtdGQ6IG5hbmQ6IHJhdzogcm9ja2NoaXAtbmFuZC1jb250cm9sbGVy
+OiBjb3B5IGh3ZWNjIFBBIGRhdGEgdG8KICAgIG9vYl9wb2kgYnVmZmVyCiAgbXRkOiBuYW5kOiBy
+YXc6IHJvY2tjaGlwLW5hbmQtY29udHJvbGxlcjogYWRkIHNraXBiYnQgb3B0aW9uCiAgbXRkOiBu
+YW5kOiByYXc6IHJvY2tjaGlwLW5hbmQtY29udHJvbGxlcjogZml4IG9vYmZyZWUgb2Zmc2V0IGFu
+ZAogICAgZGVzY3JpcHRpb24KICBtdGQ6IG5hbmQ6IHJhdzogYWRkIGJhc2ljIHNhbmRpc2sgbWFu
+dWZhY3R1cmVyIG9wcwoKUGF3ZcWCIEphcm9zeiAoMSk6CiAgbXRkOiBuYW5kOiBhZGQgc3VwcG9y
+dCBmb3IgdGhlIFNhbmRpc2sgU0RUTlFHQU1BIGNoaXAKCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9N
+YWtlZmlsZSAgICAgICAgICAgICAgICAgfCAgMSArCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9pbnRl
+cm5hbHMuaCAgICAgICAgICAgICAgfCAgMSArCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2lk
+cy5jICAgICAgICAgICAgICAgfCAgNSArLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9zYW5k
+aXNrLmMgICAgICAgICAgIHwgMjYgKysrKysrKysrKwogLi4uL210ZC9uYW5kL3Jhdy9yb2NrY2hp
+cC1uYW5kLWNvbnRyb2xsZXIuYyAgIHwgNTIgKysrKysrKysrKysrLS0tLS0tLQogNSBmaWxlcyBj
+aGFuZ2VkLCA2NCBpbnNlcnRpb25zKCspLCAyMSBkZWxldGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEw
+MDY0NCBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX3NhbmRpc2suYwoKLS0KMi4zMC4yCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
