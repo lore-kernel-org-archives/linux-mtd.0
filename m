@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7252BC7EE2E
-	for <linux-mtd@archiver.kernel.org>; Mon, 12 Jun 2023 19:04:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BB56C7EE43
+	for <linux-mtd@archiver.kernel.org>; Mon, 12 Jun 2023 19:19:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/uWeQvD/vnVE4TpfeLdsj4Ec6oJMVHYPNj1w8QlQq5E=; b=2wZliWq1EscanVMdYiUU2jXP/o
-	Opcm66sKoU2Rs1PAmydxJvEmKj3j1vLY7kQ3/kWT0nZJ9y4H1zOmIDpvVfODwMfpOgxZq9Mcr/lTx
-	qb08H02RILhOtXLOe481RFPpmWH6jYvPIEthjlT5Ie/blobVBxNzvAxA2vovRpKdP00z7dOxoE60q
-	cHXMRAdM+Z+lecYeCowlfUwSij3ZgvpqfrwVqMNQdhLMONkVbtoaUJzSb1wTAwkb1/1Rf9yQb7sQJ
-	FmzqNOYlArU2ZMvd3N/YQUsYS38ow6JlEST9gLBKE5Gq2JFluiCEVI1787mkmjGRtnDxKaY4ONQd9
-	BSz3hTQw==;
+	bh=yOuEKTIFBMZ3CtwNEM83lsCTtSJg35Ka3vrfJFTxAL4=; b=CqY65g8F8ObnXzjId5TP88iRZH
+	xdgW53VkUzn99w7eaT3occQyNdEGKzp5efydhT1hqU8/aekat4P1unz4uzkaB7OuxrseQYAWl1Rri
+	7367J7lglYNHKJXD2ow97Ql8LRS7+taz+YduU6mFL4Y80quXp7643IUmqGsiAj8NxaFpgObRzA6LO
+	JyzLq+yiMOY9OSLuEjJvELX6igOtQm6P/4fShJ6gb718LbNWUu1Tx2VpW0Mm0BDQOS/+wJi+w9nw3
+	t3ea9UUotJxqIJHDS1vxYz5sJo+BHtZXnwBJdGpv7JNYRECVJXFl0xKxyZP6bDCyE7lwdXW2yWBus
+	eO146zAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8mpj-0052di-1y;
-	Mon, 12 Jun 2023 19:04:07 +0000
-Received: from mail-qt1-x834.google.com ([2607:f8b0:4864:20::834])
+	id 1q8n4G-0055Nk-3B;
+	Mon, 12 Jun 2023 19:19:08 +0000
+Received: from mail-qk1-x731.google.com ([2607:f8b0:4864:20::731])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8mpf-0052bA-2C
+	id 1q8n4C-0055Lt-1K
 	for linux-mtd@lists.infradead.org;
-	Mon, 12 Jun 2023 19:04:06 +0000
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-3f9f523c70bso1788061cf.0
-        for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2023 12:04:01 -0700 (PDT)
+	Mon, 12 Jun 2023 19:19:06 +0000
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-75d54faa03eso22223785a.1
+        for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2023 12:19:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686596641; x=1689188641;
+        d=broadcom.com; s=google; t=1686597542; x=1689189542;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :cc:to:subject:from:to:cc:subject:date:message-id:reply-to;
-        bh=kgNUv/qI/SmJSCbB4j0tDb0BsM2YaEK5O/rJChxjyU8=;
-        b=LCIFwgAUR2DAUS5Uf2d+0Ays532++bcyvWqL95oNvYJUxup9u8K2Zuk5b4qtXueLzT
-         nx1R5WeEQLr3xRJOiO9PZZACXJ71eVeNhPd0kDWhpIdicAh3+qLtbju6iySX1r1Ve1Cr
-         YDV1hpL2UE4pFibmhZkHLhU8wlQ8MvhEo9C/Q=
+        bh=s0QOcsACGfYMyoaVEspfR/ioN4EVO1kkjEpEU15klb4=;
+        b=XQ4kO1R3P/5hkh+BvRDvYzSQ9i3K4RFBe6845I9mZMdkjjcqw7pecPmDcVtoYKi2YX
+         ejmhzAT7ecAkTQ+x8HHhW19HVydkBRpn7otUvRVmDxuWmQutOvnx25o7NTxXgO13bppc
+         Lp3SutYUDMzOngszgr9XY53xG1Kg7J73Z60TI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686596641; x=1689188641;
+        d=1e100.net; s=20221208; t=1686597542; x=1689189542;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :cc:to:subject:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kgNUv/qI/SmJSCbB4j0tDb0BsM2YaEK5O/rJChxjyU8=;
-        b=OfuMbOOVeKniEwwfzitfeS1RUUvVmkJNsHmXQ3D/flh5o0ewCn64gitxHBhYLIZcBV
-         d9gLlqDh4n6GzeLxKeHa1A8J5OMp4xh5OJHlmPdClYNw55m1s2w13eBMxYiUY0+cpcHY
-         tZFMg4cT6ouqEKHkazah0B+bWmj3Gy9MjjhHfuIWb6sum4Dm+FoXE687aTq6k2KaTzt4
-         rPownVOgDH7tIRQaBeOo0mHKxvnQ+fUBxClwW6Ul8N7BHp37C3bm4yRn+1R9DjINnfBo
-         lX7j4DwxLdib1Nw1fDA2TYxScQh9V0EUfda4gs8mvnxmHVgl7ue+BS49p+4ab8cx7oZ8
-         qoIw==
-X-Gm-Message-State: AC+VfDzsIm5ElmrUcF55b6V4YTMt1kNwqv4ujXqWB86SeHI5XwIUzMpp
-	6FKPGnrn8UKvOq4nz2ide6v6fA==
-X-Google-Smtp-Source: ACHHUZ7dbJXyPTOU8g73A6GtndyP7+Fk4YpLSwfN3xY/TAvcQYHTksSEE/z0Emsn83dxUtp+5m88Nw==
-X-Received: by 2002:a05:622a:184:b0:3fb:42cb:1c85 with SMTP id s4-20020a05622a018400b003fb42cb1c85mr47217qtw.15.1686596640814;
-        Mon, 12 Jun 2023 12:04:00 -0700 (PDT)
+        bh=s0QOcsACGfYMyoaVEspfR/ioN4EVO1kkjEpEU15klb4=;
+        b=WgUlqM+Fer3af6MCuq3mWDMDazAEfeCqjUGF0DhpaXknfyveWNeOyWzJFshzefuGL9
+         Ng7MurFQBwBLMrk2mFrLjD21//3ISOp3bwBJkJhjbAymbVjkd2IZEQ7HcIL54BASoOFd
+         UGh/DuGXdQeD12jdkddwmt8qx5aXjrykNnX0154tNAxYInJw8ZpNiC8NBJSB9hZd/I+6
+         /CJEvIOVliNPSzmGQoXH38p1KEAQIBbECQf1tmV08FEDYRP5ZQzDKYwcuLTet3uv3vCX
+         15DBSszTOgncdPgoMbxT1L2v4WcfiyL6oY+12t0AeZNUsJffCYJG3SJImccfTZDzdvLA
+         hugg==
+X-Gm-Message-State: AC+VfDzyTHkhpMST9dwyLA4FNnPT2/INy5lVhFUkMdY8iFtMUiOpvGvL
+	HaEDl1F9CgjZNV4Ar1AIsa1NFw==
+X-Google-Smtp-Source: ACHHUZ7wHVg85VB5aDCqc6FINLuHDpJBbpgJe577f3y5yDgx1BV7L1KCQVR2S8bzyZyT0sPjX6o+7g==
+X-Received: by 2002:a05:620a:28c4:b0:760:97ef:cf5b with SMTP id l4-20020a05620a28c400b0076097efcf5bmr2523039qkp.49.1686597542116;
+        Mon, 12 Jun 2023 12:19:02 -0700 (PDT)
 Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id cr17-20020a05622a429100b003f0a79e6a8bsm3616492qtb.28.2023.06.12.12.03.57
+        by smtp.gmail.com with ESMTPSA id g10-20020a05620a13ca00b007606a26988dsm1435515qkl.73.2023.06.12.12.18.59
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Jun 2023 12:03:59 -0700 (PDT)
+        Mon, 12 Jun 2023 12:19:00 -0700 (PDT)
 Subject: Re: [PATCH 10/12] mtd: rawnand: brcmnand: Add BCMBCA read data bus
  interface
 To: Miquel Raynal <miquel.raynal@bootlin.com>
@@ -77,17 +77,17 @@ References: <20230606231252.94838-1-william.zhang@broadcom.com>
  <4ab08e3e-3be4-8b8b-6eb8-03a62337f46f@broadcom.com>
  <20230609103544.0f00f799@xps-13>
  <3d3b471b-c555-ee1c-96d6-c04d76979e76@broadcom.com>
- <20230612194908.5465bc56@xps-13>
+ <20230612194908.5465bc56@xps-13> <20230612195305.4b097c46@xps-13>
 From: William Zhang <william.zhang@broadcom.com>
-Message-ID: <cd4878e1-c8bf-813e-3a0f-697df364fa24@broadcom.com>
-Date: Mon, 12 Jun 2023 12:03:56 -0700
+Message-ID: <da4cb6a6-aa7d-3747-3f64-19b5582b15e8@broadcom.com>
+Date: Mon, 12 Jun 2023 12:18:58 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.4.0
 MIME-Version: 1.0
-In-Reply-To: <20230612194908.5465bc56@xps-13>
+In-Reply-To: <20230612195305.4b097c46@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230612_120403_784860_B5D4E963 
-X-CRM114-Status: GOOD (  52.93  )
+X-CRM114-CacheID: sfid-20230612_121904_471064_62F4786B 
+X-CRM114-Status: GOOD (  35.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,281 +99,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3665719377462012464=="
+Content-Type: multipart/mixed; boundary="===============7539769476132679395=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============3665719377462012464==
+--===============7539769476132679395==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000ae0a3a05fdf36144"
+	boundary="00000000000065767805fdf39749"
 
---000000000000ae0a3a05fdf36144
+--00000000000065767805fdf39749
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 
 
 
-On 06/12/2023 10:49 AM, Miquel Raynal wrote:
-> Hi William,
+On 06/12/2023 10:53 AM, Miquel Raynal wrote:
+> Hello again,
 > 
-> william.zhang@broadcom.com wrote on Fri, 9 Jun 2023 12:16:27 -0700:
-> 
->> Hi Miquel,
->>
->> On 06/09/2023 01:35 AM, Miquel Raynal wrote:
->>> Hi William,
->>>
->>> william.zhang@broadcom.com wrote on Thu, 8 Jun 2023 12:10:06 -0700:
->>>    
->>>> On 06/07/2023 11:18 PM, Miquel Raynal wrote:
->>>>> Hi William,
->>>>>
->>>>> william.zhang@broadcom.com wrote on Wed, 7 Jun 2023 13:24:23 -0700:
->>>>>     >>>> Hi Miquel,
+>>>>>>>> Perhaps we could have a single function that is statically assigned at
+>>>>>>>> probe time instead of a first helper with two conditions which calls in
+>>>>>>>> one case another hook... This can be simplified I guess.
+>>>>>>>>      >> Well this will need to be done at the SoC specific implementation level (bcm<xxx>_nand.c) and each SoC will need to have either general data bus read func with is_param option or data_bus_read_page, data_bus_read_param.
 >>>>>>
->>>>>> On 06/07/2023 01:22 AM, Miquel Raynal wrote:
->>>>>>> Hi William,
->>>>>>>
->>>>>>> william.zhang@broadcom.com wrote on Tue,  6 Jun 2023 16:12:50 -0700:
->>>>>>>      >>>> The BCMBCA broadband SoC integrates the NAND controller differently than
->>>>>>>> STB, iProc and other SoCs.  It has different endianness for NAND cache
->>>>>>>> data and ONFI parameter data.
->>>>>>>>
->>>>>>>> Add a SoC read data bus shim for BCMBCA to meet the specific SoC need
->>>>>>>> and performance improvement using the optimized memcpy function on NAND
->>>>>>>> cache memory.
->>>>>>>>
->>>>>>>> Signed-off-by: William Zhang <william.zhang@broadcom.com>
->>>>>>>> ---
->>>>>>>>
->>>>>>>>      drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c | 36 +++++++++++++++++
->>>>>>>>      drivers/mtd/nand/raw/brcmnand/brcmnand.c    | 44 ++++++++++++++-------
->>>>>>>>      drivers/mtd/nand/raw/brcmnand/brcmnand.h    |  2 +
->>>>>>>>      3 files changed, 68 insertions(+), 14 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
->>>>>>>> index 7e48b6a0bfa2..899103a62c98 100644
->>>>>>>> --- a/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
->>>>>>>> +++ b/drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
->>>>>>>> @@ -26,6 +26,18 @@ enum {
->>>>>>>>      	BCMBCA_CTLRDY		= BIT(4),
->>>>>>>>      };
->>>>>>>>      >> +#if defined(CONFIG_ARM64)
->>>>>>>> +#define ALIGN_REQ		8
->>>>>>>> +#else
->>>>>>>> +#define ALIGN_REQ		4
->>>>>>>> +#endif
->>>>>>>> +
->>>>>>>> +static inline bool bcmbca_nand_is_buf_aligned(void *flash_cache,  void *buffer)
->>>>>>>> +{
->>>>>>>> +	return IS_ALIGNED((uintptr_t)buffer, ALIGN_REQ) &&
->>>>>>>> +				IS_ALIGNED((uintptr_t)flash_cache, ALIGN_REQ);
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>      static bool bcmbca_nand_intc_ack(struct brcmnand_soc *soc)
->>>>>>>>      {
->>>>>>>>      	struct bcmbca_nand_soc *priv =
->>>>>>>> @@ -56,6 +68,29 @@ static void bcmbca_nand_intc_set(struct brcmnand_soc *soc, bool en)
->>>>>>>>      	brcmnand_writel(val, mmio);
->>>>>>>>      }
->>>>>>>>      >> +static void bcmbca_read_data_bus(struct brcmnand_soc *soc,
->>>>>>>> +				 void __iomem *flash_cache,  u32 *buffer,
->>>>>>>> +				 int fc_words, bool is_param)
->>>>>>>> +{
->>>>>>>> +	int i;
->>>>>>>> +
->>>>>>>> +	if (!is_param) {
->>>>>>>> +		/*
->>>>>>>> +		 * memcpy can do unaligned aligned access depending on source
->>>>>>>> +		 * and dest address, which is incompatible with nand cache. Fallback
->>>>>>>> +		 * to the memcpy for io version
->>>>>>>> +		 */
->>>>>>>> +		if (bcmbca_nand_is_buf_aligned(flash_cache, buffer))
->>>>>>>> +			memcpy((void *)buffer, (void *)flash_cache, fc_words * 4);
->>>>>>>> +		else
->>>>>>>> +			memcpy_fromio((void *)buffer, (void *)flash_cache, fc_words * 4);
->>>>>>>> +	} else {
->>>>>>>> +		/* Flash cache has same endian as the host for parameter pages */
->>>>>>>> +		for (i = 0; i < fc_words; i++, buffer++)
->>>>>>>> +			*buffer = __raw_readl(flash_cache + i * 4);
->>>>>>>> +	}
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>      static int bcmbca_nand_probe(struct platform_device *pdev)
->>>>>>>>      {
->>>>>>>>      	struct device *dev = &pdev->dev;
->>>>>>>> @@ -75,6 +110,7 @@ static int bcmbca_nand_probe(struct platform_device *pdev)
->>>>>>>>      >>   	soc->ctlrdy_ack = bcmbca_nand_intc_ack;
->>>>>>>>      	soc->ctlrdy_set_enabled = bcmbca_nand_intc_set;
->>>>>>>> +	soc->read_data_bus = bcmbca_read_data_bus;
->>>>>>>>      >>   	return brcmnand_probe(pdev, soc);
->>>>>>>>      }
->>>>>>>> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
->>>>>>>> index d920e88c7f5b..656be4d73016 100644
->>>>>>>> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
->>>>>>>> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
->>>>>>>> @@ -814,6 +814,30 @@ static inline u32 edu_readl(struct brcmnand_controller *ctrl,
->>>>>>>>      	return brcmnand_readl(ctrl->edu_base + offs);
->>>>>>>>      }
->>>>>>>>      >> +static inline void brcmnand_read_data_bus(struct brcmnand_controller *ctrl,
->>>>>>>> +					   void __iomem *flash_cache, u32 *buffer,
->>>>>>>> +					   int fc_words, bool is_param)
->>>>>>>> +{
->>>>>>>> +	struct brcmnand_soc *soc = ctrl->soc;
->>>>>>>> +	int i;
->>>>>>>> +
->>>>>>>> +	if (soc->read_data_bus) {
->>>>>>>> +		soc->read_data_bus(soc, flash_cache, buffer, fc_words, is_param);
->>>>>>>> +	} else {
->>>>>>>> +		if (!is_param) {
->>>>>>>> +			for (i = 0; i < fc_words; i++, buffer++)
->>>>>>>> +				*buffer = brcmnand_read_fc(ctrl, i);
->>>>>>>> +		} else {
->>>>>>>> +			for (i = 0; i < fc_words; i++)
->>>>>>>> +				/*
->>>>>>>> +				 * Flash cache is big endian for parameter pages, at
->>>>>>>> +				 * least on STB SoCs
->>>>>>>> +				 */
->>>>>>>> +				buffer[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
->>>>>>>> +		}
->>>>>>>> +	}
->>>>>>>
->>>>>>> Perhaps we could have a single function that is statically assigned at
->>>>>>> probe time instead of a first helper with two conditions which calls in
->>>>>>> one case another hook... This can be simplified I guess.
->>>>>>>      >> Well this will need to be done at the SoC specific implementation level (bcm<xxx>_nand.c) and each SoC will need to have either general data bus read func with is_param option or data_bus_read_page, data_bus_read_param.
+>>>>>> You told me in case we would use exec_op we could avoid the param
+>>>>>> cache. If that's true then the whole support can be simplified.
+>>>>>>     >> Correct we may possibly unified the parameter data read but exec_op is long shot and we are not fully ready for that yet. It also depends on if the low level data register has endianess difference for the parameter data between difference SoCs.
 >>>>>
->>>>> You told me in case we would use exec_op we could avoid the param
->>>>> cache. If that's true then the whole support can be simplified.
->>>>>     >> Correct we may possibly unified the parameter data read but exec_op is long shot and we are not fully ready for that yet. It also depends on if the low level data register has endianess difference for the parameter data between difference SoCs.
+>>>>> So I would like to push the current implementation and we can explore the exec_op option late which will be a much big and complete different implementation.
 >>>>
->>>> So I would like to push the current implementation and we can explore the exec_op option late which will be a much big and complete different implementation.
->>>
->>> I am sorry but this series is totally backwards, you're trying to guess
->>> what comes next with the 'is_param' thing, it's exactly what we are
->>> fighting against since 2017. There are plenty of ->exec_op()
->>> conversions out there, I don't believe this one will be harder. You
->>> need to convert the driver to this new API and get rid of this whole
->>> endianness non-sense to simplify a lot the driver.
->>>    
->> I am not guessing anything but just factor out the existing common nand cache read logic into the single default function(or one for page read and another for parameter read as I mentioned in another thread) and allow SoC to overrides the implementation when needed.
-> 
-> No, you are trying to guess what type of read the core is performing,
-> either a regular data page read or a parameter page read.
-> 
-Okay this is what you mean by guessing. I didn't realize that ;)
-
->> I agree ->exec_op can possibly get rid of the parameter page read function and is the way to go. But it won't help on the page read for endianess.
-> 
-> You told me there is no endianess issue with the data pages, so why it
-> won't help on the page read?
-> 
-Even with exec_op, the page read path for brcmand(chip->ecc.read_page) 
-will still need brcmnand_read_page function which eventually I need per 
-SoC implementation at least for bcmbca for now besides different 
-endianess between SoC. For bcmbca, I also use the memcpy in the patch as 
-the nand cache in bcmbca chip can handled the optimized copy code as 
-long as the buffer is aligned for better performance.
-
->> It's not that I am against exec_op but I want to take one step a time
->> and I'd like to get these fixes
-> 
-> I don't see any fix here? Let me know if I am missing something but
-> right now I see a new version of the controller being supported with
-> its own constraints. If you are fixing existing code for already
-> supported platform, then make it clear and we can discuss this. But if
-> you just want to support the bcmbca flavor, then there is no risk
-> mitigation involved here, and a conversion is the right step :)
-> 
-I mean the patch 1 to 4 in this series.
-
-The exec_op will apply to all the five SoCs under brcmnand folder, not 
-just bcmbca. It will take lot of time even just find people to 
-test/debug all of them as I don't have access to other SoC and boards, 
-on top of the nature of this big change.
-
->> and support for bcmbca soc first and
->> then work on the exec_op API to minimize the change and reduce the
->> risk.
+>>>> I am sorry but this series is totally backwards, you're trying to guess
+>>>> what comes next with the 'is_param' thing, it's exactly what we are
+>>>> fighting against since 2017. There are plenty of ->exec_op()
+>>>> conversions out there, I don't believe this one will be harder. You
+>>>> need to convert the driver to this new API and get rid of this whole
+>>>> endianness non-sense to simplify a lot the driver.
+>>>>    
+>>> I am not guessing anything but just factor out the existing common nand cache read logic into the single default function(or one for page read and another for parameter read as I mentioned in another thread) and allow SoC to overrides the implementation when needed.
 >>
->>>>   
->>>>>>     Not sure how much this can be simplified... Or we have default
->>>>>> implementation in brcmnand.c but then there is one condition check
->>>>>> too. Page read is done at 512 bytes burst. One or two conditions
->>>>>> check outside of the per 512 bytes read loop does not sounds too bad
->>>>>> if performance is concern.
->>>>>
->>>>> It is unreadable. That is my main concern.
->>>>>     >>>>   >>>>>> +}
->>>>>>>> +
->>>>>>>>      static void brcmnand_clear_ecc_addr(struct brcmnand_controller *ctrl)
->>>>>>>>      {
->>>>>>>>      >> @@ -1811,20 +1835,11 @@ static void brcmnand_cmdfunc(struct nand_chip *chip, unsigned command,
->>>>>>>>      			native_cmd == CMD_PARAMETER_CHANGE_COL) {
->>>>>>>>      		/* Copy flash cache word-wise */
->>>>>>>>      		u32 *flash_cache = (u32 *)ctrl->flash_cache;
->>>>>>>> -		int i;
->>>>>>>>      >>   		brcmnand_soc_data_bus_prepare(ctrl->soc, true);
->>>>>>>>      >> -		/*
->>>>>>>> -		 * Must cache the FLASH_CACHE now, since changes in
->>>>>>>> -		 * SECTOR_SIZE_1K may invalidate it
->>>>>>>> -		 */
->>>>>>>> -		for (i = 0; i < FC_WORDS; i++)
->>>>>>>> -			/*
->>>>>>>> -			 * Flash cache is big endian for parameter pages, at
->>>>>>>> -			 * least on STB SoCs
->>>>>>>> -			 */
->>>>>>>> -			flash_cache[i] = be32_to_cpu(brcmnand_read_fc(ctrl, i));
->>>>>>>> +		brcmnand_read_data_bus(ctrl, ctrl->nand_fc, flash_cache,
->>>>>>>> +				   FC_WORDS, true);
->>>>>>>>      >>   		brcmnand_soc_data_bus_unprepare(ctrl->soc, true);
->>>>>>>>      >> @@ -2137,7 +2152,7 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
->>>>>>>>      {
->>>>>>>>      	struct brcmnand_host *host = nand_get_controller_data(chip);
->>>>>>>>      	struct brcmnand_controller *ctrl = host->ctrl;
->>>>>>>> -	int i, j, ret = 0;
->>>>>>>> +	int i, ret = 0;
->>>>>>>>      >>   	brcmnand_clear_ecc_addr(ctrl);
->>>>>>>>      >> @@ -2150,8 +2165,9 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
->>>>>>>>      		if (likely(buf)) {
->>>>>>>>      			brcmnand_soc_data_bus_prepare(ctrl->soc, false);
->>>>>>>>      >> -			for (j = 0; j < FC_WORDS; j++, buf++)
->>>>>>>> -				*buf = brcmnand_read_fc(ctrl, j);
->>>>>>>> +			brcmnand_read_data_bus(ctrl, ctrl->nand_fc, buf,
->>>>>>>> +					FC_WORDS, false);
->>>>>>>> +			buf += FC_WORDS;
->>>>>>>>      >>   			brcmnand_soc_data_bus_unprepare(ctrl->soc, false);
->>>>>>>>      		}
->>>>>>>> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.h b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
->>>>>>>> index f1f93d85f50d..88819bc395f8 100644
->>>>>>>> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.h
->>>>>>>> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
->>>>>>>> @@ -24,6 +24,8 @@ struct brcmnand_soc {
->>>>>>>>      	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
->>>>>>>>      	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
->>>>>>>>      				 bool is_param);
->>>>>>>> +	void (*read_data_bus)(struct brcmnand_soc *soc, void __iomem *flash_cache,
->>>>>>>> +				 u32 *buffer, int fc_words, bool is_param);
->>>>>>>>      	const struct brcmnand_io_ops *ops;
->>>>>>>>      };
->>>>>>>>      > >
->>>>>>> Thanks,
->>>>>>> Miquèl
->>>>>>>      > >
->>>>> Thanks,
->>>>> Miquèl
->>>>>     > >
->>> Thanks,
->>> Miquèl
->>>    
+>> No, you are trying to guess what type of read the core is performing,
+>> either a regular data page read or a parameter page read.
+>>
+>>> I agree ->exec_op can possibly get rid of the parameter page read function and is the way to go. But it won't help on the page read for endianess.
+>>
+>> You told me there is no endianess issue with the data pages, so why it
+>> won't help on the page read?
+>>
+>>> It's not that I am against exec_op but I want to take one step a time
+>>> and I'd like to get these fixes
+>>
+>> I don't see any fix here? Let me know if I am missing something but
+>> right now I see a new version of the controller being supported with
+>> its own constraints. If you are fixing existing code for already
+>> supported platform, then make it clear and we can discuss this. But if
+>> you just want to support the bcmbca flavor, then there is no risk
+>> mitigation involved here, and a conversion is the right step :)
+>>
 > 
+> I forgot to mention: the exec_op conversion is almost ready, Boris
+> worked on it but he lacked the hardware so maybe you'll just need to
+> revive the few patches which target your platform and do a little bit of
+> debugging?
 > 
-> Thanks,
+> https://github.com/bbrezillon/linux/commits/nand/exec-op-conversion?after=8a3cf6fd25d5e15c6667f9e95c1fc86e4cb735e6+34&branch=nand%2Fexec-op-conversion&qualified_name=refs%2Fheads%2Fnand%2Fexec-op-conversion
+> 
+Yes this is the patch what our exec_op work is based on. Thanks Boris! 
+The issue with patch is that performance is very slow for anything that 
+rely on nand_read_page_op as the patch implementing it using the low 
+level cmd and data register to transfer the data byte by byte.  I 
+actually sent out email regarding this to Boris and he cc'ed you in sept 
+last year. We have to use the nand parser to match the page read from 
+exec_op so we can actually match and use the brcmnand_page_read fast 
+path. But there are many situations that we need to match so the project 
+to migrate exce_op are still work in progress just on our bcmbca chip as 
+of now.  Just forward that email again to you and I appreciate it if you 
+have any inputs there.  So IMHO it is just too risky and too big of 
+scope to have the exec_op added to this patch series and definitively 
+better to do it afterwards with a dedicated patch.
+
+> Cheers,
 > Miquèl
 > 
 
---000000000000ae0a3a05fdf36144
+--00000000000065767805fdf39749
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -444,19 +252,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIuZ3SZiEfB+1oZttp90nQgwOUEz
-96rFKgvI2vyrpdvpMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDYxMjE5MDQwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHjpJHrFpuSVUzg0KUw/8m4dC2Hz
+BxTc+WQbCGekYiRWMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDYxMjE5MTkwMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBuknoPQiT7y5hvW9t7kB5eLLrC8Thc5i8QjjFL4R5QZMGv
-xF+lOM8+xjyqjSTCPzd31K1pWSwds31nuI1md5mudawZZOBliiqf1uYG6tUjcpDnw9uVn2y0IkJV
-vawgIx9D+bVOco4ef8LhR1HMGB6mOdNbmDb0ikPPIHhnWLZONEVbH4bhwJoQxxfGena05eB7fZyt
-QG1ECXtWr/r/5X6Nlq6Ns0hIg22DTJupf/HbDzB5PuPUz647epCbtTNtn+Pod9jJpBBQdQbOD8E5
-rLAJgrxAtDg+7pXbK7jvqHeqmMOUIDEKVknS16G03HOy2CmLCHZXoKmMjca7eGYho2fv
---000000000000ae0a3a05fdf36144--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCxMwY4891HUYjMjVz1mJh+SvNmRBq3rrbRUrPBQyjA5hVK
+vnyF0wgTCbcxlNSqNzGI3rSFv4MFaojdtQPF72U3cpaVTEP3ckCgDLAxDGS1Y4TvjcMD8C5Ia/1b
+XDdsDk+9+6FmQYx57dZ6Jxure25/UDrvnLHFgx4aIELSq5x0nDiuMh2D6Zu6MPejBVP63+LvMo9N
+1RqK9hg0zsQss+EQCmNudcSv/OuCFcBnDQ/NXbrLh5wMHEu06m7HT98agn9AXYOEve8TNq6tmZtp
+d82hbaeuz3Pth69eqA9+nbM6Gy69mf2/F21fn3qf9X3O9HXXYnQiXh1Dgx8sKwh60fhd
+--00000000000065767805fdf39749--
 
 
---===============3665719377462012464==
+--===============7539769476132679395==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -466,5 +274,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============3665719377462012464==--
+--===============7539769476132679395==--
 
