@@ -4,94 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D51BEB64D9
-	for <linux-mtd@archiver.kernel.org>; Wed, 14 Jun 2023 23:52:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C0C6EB64D8
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 00:29:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YjChizjqKJQQOG30I3l5s0jyoNBhQIat/SjenJYoA78=; b=YEMdFNXTS7hx39OiIKhhVJm6Eq
-	sNqIQNJHgrDLKcHFUogoYuLuClubOoH6jLTPK3NDO6MzH/XAbLRwCvg8QkEhrWW+Vc/lwfDbGuJYj
-	Ad6Krx1cnIcwRvUXjOCpjcqKdG4+aM0aSeaRwW3rexnxEiHz+RrhI/eQVLAPFzI8l5KiRq48Yp5TZ
-	JlpWZPRTA9sNBWq0+nuVONM3RDl/ChIVFA+qw3SXlhDml6LuD9nvaXoBM1dUVcj4p1uF56xeCLyGU
-	V4C1v3GYJ996c6VBmgqXGRhZ7KOIIv76HlCSRI3J66AWt5q3+WI5+KhYQ5ay/2cBj3cIawIEq4WKU
-	OwDcodbA==;
+	bh=JEXiFy/L4xnCe/2YdJxsNOBZjHrMyGzIC4IeG1WVvyo=; b=G1s5u+ZwUVa0Mu+VpvkWFN/sVP
+	eRIckHadt2SomQf5O0xToTnniUSIh7LWzuIfXwSpuxTzfHSH7SSnIjq5uOYGEI25WObEzUsonzz7p
+	Ac5jov2UWALbLNXSrHsIASByiSHHDIInKrYRserYXjIopR32t4RWoRKuObg8FMLwa/Zi1QrFpo/hi
+	X65cu5LtQIM0jshR0FJGEHcKlGAt0HW7vzD6VjeHYpNjQ4nTN7aTRUUnOisx2DIzGYrKBZVzU/1o1
+	dEYp2WwwEz8gtbBeBLd2YMpB7FEv02vtFGyfIcJaxpn9UHix5p/pKJqVLJ6ErwRJLgxC49Pqanz4r
+	inEH80GA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9aHl-00D4sL-0B;
-	Wed, 14 Jun 2023 23:52:21 +0000
-Received: from mail-qt1-x834.google.com ([2607:f8b0:4864:20::834])
+	id 1q9arA-00D97U-1v;
+	Thu, 15 Jun 2023 00:28:56 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9aHg-00D4qk-38
+	id 1q9ar7-00D96Y-1A
 	for linux-mtd@lists.infradead.org;
-	Wed, 14 Jun 2023 23:52:19 +0000
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-3f9c1735984so24645951cf.1
-        for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2023 16:52:15 -0700 (PDT)
+	Thu, 15 Jun 2023 00:28:55 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b51780c1b3so979115ad.1
+        for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2023 17:28:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1686786734; x=1689378734;
+        d=broadcom.com; s=google; t=1686788932; x=1689380932;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :cc:to:subject:from:to:cc:subject:date:message-id:reply-to;
-        bh=QA9cIno+hadMJZhtXgApHDnZ7ycG1CKzLkRjTjLbbS8=;
-        b=hSnI7Imz5jq7uVwtQl+3qoQa3trksdF0myNbwqASnU78UVW1piObCT1rpLJaHk6sG6
-         czck+oFaJa6+xUHcu+dTenx98XT8nc6AcM+AM8bNUUUT6YkHVo6+c+hGd15AyL4WAKie
-         ybF5aI47CJXCL5fzTrMnYN7mWnoaeEbPI0P1Q=
+        bh=1mTJUkRqcHnQJMaweYJMYR3kGSWTm7W46ClxV3cJiRg=;
+        b=XWrqbPc7O1xqfpb0Fnue/+RlGrrOW58GdtrqqfNk+8JWeQMUCdc6dHF6Un0m7abEvP
+         8y7XJ4oPH78mD2PFSxomMe+T167z0pYiqAIVCUkVqymdHQNIPtcjgh0Wv5jW04+AcuSJ
+         bi+Mgt4NrdRYwoOn9SPgdi7JyLRPx13pWNsUc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686786734; x=1689378734;
+        d=1e100.net; s=20221208; t=1686788932; x=1689380932;
         h=in-reply-to:mime-version:user-agent:date:message-id:from:references
          :cc:to:subject:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QA9cIno+hadMJZhtXgApHDnZ7ycG1CKzLkRjTjLbbS8=;
-        b=TeSwTMr5RZYxZFd/uEYy73ZgIZ7oXMdoU7Pei0kTNDHU8+HZlPEU43D0x67qJGhFjd
-         ECNaMF1FNqO6k/Orb4ANjxM1hyp7nxfwLJQbvJ8l9Wx/tm/qBs5KrE0QjFatoOPSdPZW
-         A3b8mOJZ7Cq783M9+z1H7lovd+/Wlhs83TOSv9MyAoG0XRf7IQ3/whiN4T3huHDMPQyl
-         NE6h861f7Q1KCShzS3SS6A2vymPRi1JJFB18aI+ywrOHUaUepuI/xK4YTZ4Ii32SOoJK
-         ETMuO5dk3XhoBu5xRirgsRqCot0pVMWv4/tLmkV0nexEarmGXTI3eXOpiB1zuJKZMVmr
-         A8Yg==
-X-Gm-Message-State: AC+VfDxQ2IPNRioKor5O0W7FcAhpQjV3MUNT5fODld75AD5vMzKhpMoo
-	b8cvo1A4UBBL1Z+PWzjIljVrEA==
-X-Google-Smtp-Source: ACHHUZ4SOX+6kCept2oYuaB0UWwuwrflVpd2DU+hxA6SxDZYfsRgx1lWvUSpWZUEvrb8JyU1sUuo/w==
-X-Received: by 2002:ac8:59c7:0:b0:3f9:efa3:9e6f with SMTP id f7-20020ac859c7000000b003f9efa39e6fmr4702568qtf.27.1686786733155;
-        Wed, 14 Jun 2023 16:52:13 -0700 (PDT)
+        bh=1mTJUkRqcHnQJMaweYJMYR3kGSWTm7W46ClxV3cJiRg=;
+        b=LY3iafCIVeMb3pUGkz6TR4sDWVyYXpFpEhw3mQG4zxMFG/t902lmzAkeFInsokcJId
+         nKANiSAfrMyV/1HxrAhk3fhrLFHFu+hZrylhwwO3P4HZgUhyIkZR5Psz34uHy0rkMyHH
+         6kzUC1A1fg0KcnNkSzCVFWIbdOoI2P7MplCnTZAzadXXkOLAisT6L4+zFz+Qyrcq5raM
+         I4iwYvOWExLZVIBeJG7mNYAJvzaJUyxbCT8X1IUaU0a/po/eeCyUYuJBTgjCLxt/0w5Q
+         /MgVv/CfpA3Sd9NsKYVCj+PYvR7k1ales0nsJq2M5IoGjETSeQfdu7zRzLXjfSYP9Prd
+         Gr2A==
+X-Gm-Message-State: AC+VfDy/gZZBwSvQN+0Gcyu4a/xeDIb59wTtDy6Fuqoh+If9ihMQ7ZYc
+	OcsQwl+zRunZq07iycfPJ+B9Ig==
+X-Google-Smtp-Source: ACHHUZ4X/OpqVPk19E1DCCiWdHGNRkQt0u3V7KtqJ+q9fU+A2cl4jdN+svizZg1gRdZT1o5UxCWrMw==
+X-Received: by 2002:a17:903:41ce:b0:1a6:a405:f714 with SMTP id u14-20020a17090341ce00b001a6a405f714mr17335462ple.63.1686788931935;
+        Wed, 14 Jun 2023 17:28:51 -0700 (PDT)
 Received: from bcacpedev-irv-3.lvn.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id i6-20020ac84886000000b003f6bbd7863csm5495055qtq.86.2023.06.14.16.52.10
+        by smtp.gmail.com with ESMTPSA id n9-20020a170902968900b001b3c7e5ed8csm2240602plp.74.2023.06.14.17.28.49
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Jun 2023 16:52:12 -0700 (PDT)
-Subject: Re: [PATCH 10/12] mtd: rawnand: brcmnand: Add BCMBCA read data bus
- interface
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+        Wed, 14 Jun 2023 17:28:50 -0700 (PDT)
+Subject: Re: [PATCH 05/12] dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
+To: Rob Herring <robh@kernel.org>
 Cc: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
  Linux MTD List <linux-mtd@lists.infradead.org>, f.fainelli@gmail.com,
  rafal@milecki.pl, kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
  computersforpeace@gmail.com, anand.gore@broadcom.com, dregan@mail.com,
  kamal.dasu@broadcom.com, tomer.yacoby@broadcom.com,
- dan.beygelman@broadcom.com, linux-kernel@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Kamal Dasu <kdasu.kdev@gmail.com>, linux-arm-kernel@lists.infradead.org
+ dan.beygelman@broadcom.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Kamal Dasu <kdasu.kdev@gmail.com>
 References: <20230606231252.94838-1-william.zhang@broadcom.com>
- <20230606231252.94838-11-william.zhang@broadcom.com>
- <20230607102232.17c4a27b@xps-13>
- <7b393f47-4053-a8c7-f32e-3881d8130d80@broadcom.com>
- <20230608081821.1de5a50b@xps-13>
- <4ab08e3e-3be4-8b8b-6eb8-03a62337f46f@broadcom.com>
- <20230609103544.0f00f799@xps-13>
- <3d3b471b-c555-ee1c-96d6-c04d76979e76@broadcom.com>
- <20230612194908.5465bc56@xps-13> <20230612195305.4b097c46@xps-13>
- <da4cb6a6-aa7d-3747-3f64-19b5582b15e8@broadcom.com>
- <20230613084218.65a6da15@xps-13>
- <b4ceff9c-0126-99ba-6015-9ea9ec735dfc@broadcom.com>
- <20230614082205.74a04de1@xps-13>
+ <20230606231252.94838-6-william.zhang@broadcom.com>
+ <20230614224338.GA2990941-robh@kernel.org>
 From: William Zhang <william.zhang@broadcom.com>
-Message-ID: <4f77131e-391a-16e0-5de3-cbed41360f2d@broadcom.com>
-Date: Wed, 14 Jun 2023 16:52:09 -0700
+Message-ID: <78b0a8e7-63aa-c3a1-3798-fd66ae181ac9@broadcom.com>
+Date: Wed, 14 Jun 2023 17:28:49 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
  Thunderbird/52.4.0
 MIME-Version: 1.0
-In-Reply-To: <20230614082205.74a04de1@xps-13>
+In-Reply-To: <20230614224338.GA2990941-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230614_165217_215366_DEB45CFE 
-X-CRM114-Status: GOOD (  50.72  )
+X-CRM114-CacheID: sfid-20230614_172853_425787_ED28E62E 
+X-CRM114-Status: GOOD (  29.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,138 +95,134 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4268409221846993452=="
+Content-Type: multipart/mixed; boundary="===============9200216478242608016=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============4268409221846993452==
+--===============9200216478242608016==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000025897005fe1fa4f2"
+	boundary="0000000000001f737505fe2027e6"
 
---00000000000025897005fe1fa4f2
+--0000000000001f737505fe2027e6
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
+Hi Rob,
 
-
-On 06/13/2023 11:22 PM, Miquel Raynal wrote:
-> Hi William,
+On 06/14/2023 03:43 PM, Rob Herring wrote:
+> On Tue, Jun 06, 2023 at 04:12:45PM -0700, William Zhang wrote:
+>> Use new compatiable brcm,nand-bcmbca to support BCMBCA broadband
+>> product. The old compatible string is still kept in the driver so old
+>> dtb can still work.
 > 
-> william.zhang@broadcom.com wrote on Tue, 13 Jun 2023 17:00:19 -0700:
+> I don't understand why you need to change this.
 > 
->> Hi Miquel,
+> 
+Same as the iProc SoC NAND controller flavor for our BCMBCA SoC 
+controller. And the existing binding is wrong. It shows 
+brcm,nand-bcm63138 can be backward compatible to either v7.0 and v7.1 
+controller. But in fact 63138 only use v7.0.
+
+I understand we had discussion before and chip specific name is the 
+preferred method but the nand controller here is different and it has 
+well defined and documented version control and our bcmbca SoCs 
+integrate the controller exactly the same way so no chip specific 
+compatible is needed.  In the unlikely event that a future bcmbca SoC 
+has a different implementation,  we can always add new chip specific 
+compatible.
+
+If you are concerned about ABI breakage on the 63138 compatible, I can 
+add it back, although I  find only a few 63138 and 4908 boards use it 
+and I did keep it in the driver so they can still bind.
+
+>> Add brcm,nand-use-wp property to have an option for disabling this
+>> feature on broadband board design that does not use write protection.
+>> Add brcm,nand-ecc-use-strap to get ecc setting from board strap for
+>> broadband board designs because they do not specify ecc setting in dts
+>> but rather using the strap setting.
 >>
->> On 06/12/2023 11:42 PM, Miquel Raynal wrote:
->>> Hi William,
->>>
->>> william.zhang@broadcom.com wrote on Mon, 12 Jun 2023 12:18:58 -0700:
->>>    
->>>> On 06/12/2023 10:53 AM, Miquel Raynal wrote:
->>>>> Hello again,
->>>>>     >>>>>>>>>> Perhaps we could have a single function that is statically assigned at
->>>>>>>>>>>> probe time instead of a first helper with two conditions which calls in
->>>>>>>>>>>> one case another hook... This can be simplified I guess.
->>>>>>>>>>>>        >> Well this will need to be done at the SoC specific implementation level (bcm<xxx>_nand.c) and each SoC will need to have either general data bus read func with is_param option or data_bus_read_page, data_bus_read_param.
->>>>>>>>>>
->>>>>>>>>> You told me in case we would use exec_op we could avoid the param
->>>>>>>>>> cache. If that's true then the whole support can be simplified.
->>>>>>>>>>       >> Correct we may possibly unified the parameter data read but exec_op is long shot and we are not fully ready for that yet. It also depends on if the low level data register has endianess difference for the parameter data between difference SoCs.
->>>>>>>>>
->>>>>>>>> So I would like to push the current implementation and we can explore the exec_op option late which will be a much big and complete different implementation.
->>>>>>>>
->>>>>>>> I am sorry but this series is totally backwards, you're trying to guess
->>>>>>>> what comes next with the 'is_param' thing, it's exactly what we are
->>>>>>>> fighting against since 2017. There are plenty of ->exec_op()
->>>>>>>> conversions out there, I don't believe this one will be harder. You
->>>>>>>> need to convert the driver to this new API and get rid of this whole
->>>>>>>> endianness non-sense to simplify a lot the driver.
->>>>>>>>      >>> I am not guessing anything but just factor out the existing common nand cache read logic into the single default function(or one for page read and another for parameter read as I mentioned in another thread) and allow SoC to overrides the implementation when needed.
->>>>>>
->>>>>> No, you are trying to guess what type of read the core is performing,
->>>>>> either a regular data page read or a parameter page read.
->>>>>>    >>>>> I agree ->exec_op can possibly get rid of the parameter page read function and is the way to go. But it won't help on the page read for endianess.
->>>>>>
->>>>>> You told me there is no endianess issue with the data pages, so why it
->>>>>> won't help on the page read?
->>>>>>    >>>>> It's not that I am against exec_op but I want to take one step a time
->>>>>>> and I'd like to get these fixes
->>>>>>
->>>>>> I don't see any fix here? Let me know if I am missing something but
->>>>>> right now I see a new version of the controller being supported with
->>>>>> its own constraints. If you are fixing existing code for already
->>>>>> supported platform, then make it clear and we can discuss this. But if
->>>>>> you just want to support the bcmbca flavor, then there is no risk
->>>>>> mitigation involved here, and a conversion is the right step :)
->>>>>>    >>>
->>>>> I forgot to mention: the exec_op conversion is almost ready, Boris
->>>>> worked on it but he lacked the hardware so maybe you'll just need to
->>>>> revive the few patches which target your platform and do a little bit of
->>>>> debugging?
->>>>>
->>>>> https://github.com/bbrezillon/linux/commits/nand/exec-op-conversion?after=8a3cf6fd25d5e15c6667f9e95c1fc86e4cb735e6+34&branch=nand%2Fexec-op-conversion&qualified_name=refs%2Fheads%2Fnand%2Fexec-op-conversion
->>>>>     >> Yes this is the patch what our exec_op work is based on. Thanks Boris! The issue with patch is that performance is very slow for anything that rely on nand_read_page_op as the patch implementing it using the low level cmd and data register to transfer the data byte by byte.
->>>
->>> You don't need to use exec_op for your read_page/write_page hooks,
->>> quite the opposite actually. exec_op is not meant for high throughput.
->>> exec_op is meant to be simple. You can have fast I/Os with a different
->>> mechanism in your read/write_page hooks.
->>>    
->> Right it does not impact our fast path: controller based ecc read/write. But things like on-chip ecc nand driver that uses exec_op API get impacted badly. We need to add nand op parser, several matching rules and other logics to use fast path page read/write instead of the low level data register read/write.
+>> Remove the requirement of interrupts and interrupt-names properties to
+>> reflect the driver code.
 >>
->>>>    I actually sent out email regarding this to Boris and he cc'ed you in
->>>>    sept last year. We have to use the nand parser to match the page read
->>>>    from exec_op so we can actually match and use the brcmnand_page_read
->>>>    fast path. But there are many situations that we need to match so the
->>>>    project to migrate exce_op are still work in progress just on our
->>>>    bcmbca chip as of now.  Just forward that email again to you and I
->>>>    appreciate it if you have any inputs there. So IMHO it is just too
->>>>    risky and too big of scope to have the exec_op added to this patch
->>>>    series and definitively better to do it afterwards with a dedicated
->>>>    patch.
->>>
->>> As long as you add small and orthogonal changes to cmd_ctrl/cmd_func
->>> I don't mind, but what you want now is to force me to pull dirty
->>> changes "first", the type of change we are refusing since 2018, making
->>> me expect you'll perform the conversion after. It would have been
->>> terribly less dirty and you would have all your code already upstreamed
->>> if you had performed the exec_op conversion since September.
->>>    
->> I didn't work on open source 5 years ago. I am sorry that I missed the background of the rejected changes since then but I do not agree that this change is dirty change just because I factor out the code with is_param argument(and I offered an alternative to remove is_param with two data read functions).
+>> This patch also includes a few minor fixes to the BCM63xx compatibles
+>> and add myself to the list of maintainers.
+>>
+>> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+>> ---
+>>
+>>   .../bindings/mtd/brcm,brcmnand.yaml           | 64 +++++++++++++------
+>>   1 file changed, 43 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+>> index 1571024aa119..1fe1c166a9db 100644
+>> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+>> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
+>> @@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
+>>   maintainers:
+>>     - Brian Norris <computersforpeace@gmail.com>
+>>     - Kamal Dasu <kdasu.kdev@gmail.com>
+>> +  - William Zhang <william.zhang@broadcom.com>
+>>   
+>>   description: |
+>>     The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
+>> @@ -18,9 +19,10 @@ description: |
+>>     supports basic PROGRAM and READ functions, among other features.
+>>   
+>>     This controller was originally designed for STB SoCs (BCM7xxx) but is now
+>> -  available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
+>> -  iProc/Cygnus. Its history includes several similar (but not fully register
+>> -  compatible) versions.
+>> +  available on a variety of Broadcom SoCs, including some BCM3xxx, MIPS based
+>> +  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iProc/Cygnus.
+>> +  Its history includes several similar (but not fully register compatible)
+>> +  versions.
+>>   
+>>     -- Additional SoC-specific NAND controller properties --
+>>   
+>> @@ -53,9 +55,9 @@ properties:
+>>                 - brcm,brcmnand-v7.2
+>>                 - brcm,brcmnand-v7.3
+>>             - const: brcm,brcmnand
+>> -      - description: BCM63138 SoC-specific NAND controller
+>> +      - description: BCMBCA SoC-specific NAND controller
+>>           items:
+>> -          - const: brcm,nand-bcm63138
+>> +          - const: brcm,nand-bcmbca
+>>             - enum:
+>>                 - brcm,brcmnand-v7.0
+>>                 - brcm,brcmnand-v7.1
+>> @@ -65,11 +67,15 @@ properties:
+>>             - const: brcm,nand-iproc
+>>             - const: brcm,brcmnand-v6.1
+>>             - const: brcm,brcmnand
+>> -      - description: BCM63168 SoC-specific NAND controller
+>> +      - description: BCM63xx SoC-specific NAND controller
+>>           items:
+>> -          - const: brcm,nand-bcm63168
+>> -          - const: brcm,nand-bcm6368
+>> -          - const: brcm,brcmnand-v4.0
+>> +          - enum:
+>> +              - brcm,nand-bcm63168
+>> +              - brcm,nand-bcm6368
+>> +          - enum:
+>> +              - brcm,brcmnand-v2.1
+>> +              - brcm,brcmnand-v2.2
+>> +              - brcm,brcmnand-v4.0
+>>             - const: brcm,brcmnand
 > 
-> This _is_ dirty because you cannot know with the cmd_ctrl/cmdfunc
-> API whether we read a parameter page or a page of data. So your are
-> _guessing_. There are plenty ways of reading one of the others, the
-> heuristics on the controller side will _always_ be wrong. That is why
-> exec_op() was introduced.
+> Completely changing what's valid here too. You're breaking the ABI.
 > 
-alright we have different definition of dirty ;) Understand it is not a 
-preferred way to update the code in controller cmdfunc path especially 
-for large change that can be done in exec_op.
+This binding is wrong, 63168 is not backward compatible to 6368. They 
+should backward compatible to their specific controller version. If you 
+looks arch/mips/boot/dts/brcm/bcm6328.dtsi, bcm6368.dtsi, bcm63268.dtsi 
+and bcm6362.dtsi, their compatible list is correct but the yaml was not 
+updated.
 
->> I see your point with exec_op and agree that is the way to go.  We had an initial look of the Borris exec_op patch last Sept and noticed the performance issue but we haven't got the chance to actively work on improving the performance and prepare for up-streaming until recently. What if we bring in the original exec_op patch in this series so we don't need to add the parameter data read function(if we verify it works on difference SoCs without endianess)?  Or better to have exec_op as separate patch first and then this series?
-> 
-> This one is my favorite:
-> 1/ Add exec_op support
-> 2/ Remove legacy hooks
-> 3/ Add support for the bcmbca SoC
-> 
-Sounds good.  We will send exec_op series for 1 and 2 then another 
-series for 3.   And I will send v2 of this series to just include the 
-fixes (patch 1 to patch 4) with updates based on the comments received.
-
-> Then you can improve the performance for on-die ECC situations, but to
-> be honest this improvement looks little a very little addition. You can
-> take example from the existing hooks, how they match specific
-> operations in the parser and then hook them to specific helpers.
-> Nothing terribly complex, there are dozens of conversions available
-> now.
-> 
-> Good luck :)
-> Miquèl
+> Rob
 > 
 
---00000000000025897005fe1fa4f2
+--0000000000001f737505fe2027e6
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -305,19 +293,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICDX3Ja/07fdQnSIxzFAXo6fGYgC
-CAZudKrlKxLKUCyHMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDYxNDIzNTIxNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFsvaRjBHwu2xe6voDr63SVQ+1fI
+P44Pu5PDRYNJMYyVMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDYxNTAwMjg1MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQA0ubhd10dbECovJt3+WfwpC73djYPvzKNvsqnYXPwb8Agz
-Xu+BlrtnsZNQl2ZzU8l56h2qdzl01PVqDOJ+GhU9myzYBtXnf1Iies2HXSPlm4aot4ErmjD8U6s4
-0AtwvWkeQYiAOKng7C5ckSEqPLTuKfS4DfNw/zsFeO8TnMtf/tPdI7bwK5wZCuCuDixjp39efTYA
-j9ov1eXdaRP4Rnt9DKM5MggWnOGtClxc72tSWph+mEnwuTgb/lnsLPTSbcb+DeGnsK/FoisOiZax
-YmDzp0EGl4cgvt1jjbwHuVmJw9kTsYqX4EFxfRgc5EAMO5eBIMYa6szaT1t8Zea2ky5P
---00000000000025897005fe1fa4f2--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBw1feLnscxV2nJY6NhMBiBuuJZPk/BTOdRMWaiRpeRYXMt
+dgUF76jed9QOD9qLttrtKybpQeJSOesIbaxPziovliIFoMbrwIwo0FIAeunM6g0G9jBceagL5Ah3
+u1H3x2sSWvZuVUuBC5tZof8moGx1eFaFG1WrMzeDPDuW4uKWmqDxCkC1tIJdQq08gIN8lDuieimL
+FBZypDpe27Gxw/UCZpl+XvwPG65c2B8WG3bnOx2C1Uy/iaMMO0LJIYoqx5HgcwdI32ZMveQX5udj
+tocKWsMFhPgAophLszl9gEIQhnnww+AJklXUpNEjNJJdLVBMPk+iDSbSeaierLACfAE0
+--0000000000001f737505fe2027e6--
 
 
---===============4268409221846993452==
+--===============9200216478242608016==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -327,5 +315,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============4268409221846993452==--
+--===============9200216478242608016==--
 
