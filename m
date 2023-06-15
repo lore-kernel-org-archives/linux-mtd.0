@@ -4,86 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B206EB64D9
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 07:45:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4F84EB64DC
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 08:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Y3wJCQz7UZ63TVXpOmInQ/e+k5AyKWyw1NlFSDgEfxk=; b=Jq8Qcv9WkEKxjP
-	OuQ2JdN+Qgf4rceNhHpNAOjJpzro3EjN2+OaUTbiFK9zmzn/9eSm/vXC3Faih7rFDRW9dv/I3IVTD
-	kurn+XBgWwA6CUvU6eHa+zOLC3ZxaFPJaqj7ujpi22aR7EXlM+wG48BoOlbdol4YFnxfrVCuyi03y
-	DKxVE3igm90IU/vmtW7GMCasaPEh4mRWWKgV1SDZefbGJL+pkiUwz/Ou7VG8ShwiY5ztkmbSr3G3/
-	Furw2HIjBfUZK8QJUw47p9VA+PUCZZ46Tvq3qcOuuPdOy05q9R+sPT3SdvEqp5lt+6h82dGqrWg7b
-	V6c9OlHPUgMcU+3lMu9w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=tsOADcLQO8M6kVtxi63z63UF378kg5hzxfEglJqdgJ8=; b=r6Ph2P6WaCei6H
+	LQdi62T7oYms+26gyIgpPJ2+1lDdi8+ewml3btvvnLQM+Q5dLNZlwPylAMg+1NoCIizQGJ1j1i/N3
+	SOox4p9N3tdlsGRbIzpwKFXhQPcDz8ApmU1cvANyyzQ2Pm6grwi9aHAk07X5sCRi3LjzB2Z4kWtZ5
+	gTgQDXnXlVnPEzLRuCNgsxKBX/Em7mPFZYnxv0dpkSEyOOg2nYCA9jBsnnAh4HWg+X5LPnUD4oHM9
+	WzQjfhqFoOkThcF/h+g4wlnpvqQlPDF/+Ryn1Ou7k57oPjhtuSSKaU2NGlEygV6uHmGdbQsFxSjlw
+	pmHe4kNXjU4rMNt/BvZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9hff-00E3yB-02;
-	Thu, 15 Jun 2023 07:45:31 +0000
-Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
+	id 1q9i6f-00E8E3-2x;
+	Thu, 15 Jun 2023 08:13:25 +0000
+Received: from mx.sberdevices.ru ([45.89.227.171])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9hfb-00E3wN-0a
-	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 07:45:28 +0000
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-97467e06511so232144266b.2
-        for <linux-mtd@lists.infradead.org>; Thu, 15 Jun 2023 00:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686815122; x=1689407122;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GShQN3aNeb/7szyOAsiAwnXDqLh1QR1gf41/K50luCM=;
-        b=SqSio0bSvHU9qKGsCc/ZYZRiw60stlxeWgphdgk06A11rBVv/rM5MDeiRuYtth2CV3
-         m2a01lcAf6P8y0X+eQ9pnNAjL8YtpHW3piO4T9dVixCuWuhO24pRvQIFtB7iJAHKwV7T
-         d2gigFLi0nqg/m7CQ8hgquYF6FlsdEn37vButF3jwbnQE7Y2vW+MDmIazSdSKft1/kh6
-         nS5j/9YiimTsBX3hfgyy9rD0K8aJEjg6+BAzqqZpUo3KAaUMjaPPnrluLuhDgf/IoJaq
-         DKY/fjwdv4lwvDdyRpCyUzlDys3OtUb/vRpuFfOLy7VxxZ07V95BOTsprxts/RQcE1lD
-         rsqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686815122; x=1689407122;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GShQN3aNeb/7szyOAsiAwnXDqLh1QR1gf41/K50luCM=;
-        b=A0ib7MhdUqFTfwSRdLOgE6dPZhRj2A/AxX56ktK8QaxB+S3ir+Os6wRv7ZL+x6ta6V
-         pgj9ximTBauZzGVHv6DL2DDMt9G6zFxUyEuUZ9ivm9XE1pWH6GyPjxUeRZ33bMUnmk6C
-         yO/Yh2/QZImBds/X2adVcrPor3Ow64ZEYKqmNr5nB3EqdiDbD6aB31Lj0dQdSlmsRyaB
-         NCHn8M2JIdc7EF84alt+NxMEfrAS7+KFmHkQV8QAGqv4KmSJuvLgD2F2VRocCZxacwaT
-         RI6y7CvO+6ACrZh8Eu9km4Q4PcGuvGydgnp7j83Ah7pnvVpK7/io6FWtnWJ86JKCUzNb
-         7uUg==
-X-Gm-Message-State: AC+VfDx6A1dHp0JcYGvzvM3oDePA5UJ2/Lfl2xGDZq5GPmvJBHzZVrPa
-	y57lgvc4sYj5+5G/NN2yyykx5g==
-X-Google-Smtp-Source: ACHHUZ4pJSvwAenolK+mWB2JCajqR5hFQLSmeiE6Bf/3XMsDiYfnIdxnsdy4W2q12qVAnyu1p3SRDw==
-X-Received: by 2002:a17:906:7308:b0:968:1e8:a754 with SMTP id di8-20020a170906730800b0096801e8a754mr18444931ejc.72.1686815122438;
-        Thu, 15 Jun 2023 00:45:22 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id bi9-20020a170906a24900b009745417ca38sm8967577ejb.21.2023.06.15.00.45.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jun 2023 00:45:22 -0700 (PDT)
-Message-ID: <f16e742f-e6f2-9761-e70d-e0e7cadcba4a@linaro.org>
-Date: Thu, 15 Jun 2023 09:45:20 +0200
+	id 1q9i6b-00E8Cu-1i;
+	Thu, 15 Jun 2023 08:13:23 +0000
+Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
+	by mx.sberdevices.ru (Postfix) with ESMTP id 68ED95FD03;
+	Thu, 15 Jun 2023 11:13:14 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1686816794;
+	bh=GBnQWGCpveCmHdPQY/TjNI8gfHlI0L3tYi9rnXILou8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=lBczXaDzv17chSATJKsingHks6742x8wGEMdGFVLG1XPOqD2wzQM+UE0FihDzmGeO
+	 2GXW74Fu4+8iiSzBljsiSMBrJUERZpllOOEErBkjx9fCw3DHAUqi+9ELe6399I2M2H
+	 1KfX/kb7gOIL6CkHyJo3U2gTa8XZfNjSBPGR0C+owxZu5vZpdhfJHiRGTFS/Yax/jh
+	 7XEidqMgNwSepry8OFLOrOjmDeCzJTtm5GzUpYpWg1RsIP3Le0RNyVc4LHceIQKtgb
+	 WAefYtGyjZsgmrRsK3VXyh0iCxa/tQ1s6NVOAbl89GLBRWd+WedkzLoWtmpXAPE7oS
+	 YOt2dSZRKV4EA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	by mx.sberdevices.ru (Postfix) with ESMTP;
+	Thu, 15 Jun 2023 11:13:12 +0300 (MSK)
+From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Yixun Lan
+	<yixun.lan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>
+CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
+	<AVKrasnov@sberdevices.ru>, <Stable@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] mtd: rawnand: meson: fix unaligned DMA buffers handling
+Date: Thu, 15 Jun 2023 11:08:15 +0300
+Message-ID: <20230615080815.3291006-1-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v9 3/3] dt-bindings: mtd: marvell-nand: Convert to YAML DT
- scheme
-Content-Language: en-US
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, andrew@lunn.ch,
- gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Vadym Kochan <vadym.kochan@plvision.eu>
-References: <20230615040447.3484564-1-chris.packham@alliedtelesis.co.nz>
- <20230615040447.3484564-4-chris.packham@alliedtelesis.co.nz>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230615040447.3484564-4-chris.packham@alliedtelesis.co.nz>
+X-Originating-IP: [172.16.1.6]
+X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 4
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Status: not scanned, disabled by settings
+X-KSMG-AntiSpam-Interceptor-Info: not scanned
+X-KSMG-AntiPhishing: not scanned, disabled by settings
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/15 01:19:00 #21506022
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230615_004527_265095_3B548C19 
-X-CRM114-Status: GOOD (  25.97  )
+X-CRM114-CacheID: sfid-20230615_011322_083522_FF73C9D1 
+X-CRM114-Status: GOOD (  10.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,191 +87,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 15/06/2023 06:04, Chris Packham wrote:
-> From: Vadym Kochan <vadym.kochan@plvision.eu>
-> 
-> Switch the DT binding to a YAML schema to enable the DT validation.
-> 
-> The text binding didn't mention it as a requirement but existing usage
-> has
-> 
->    compatible = "marvell,armada-8k-nand-controller",
->                 "marvell,armada370-nand-controller";
-> 
-> so the YAML allows this in addition to the individual compatible values.
-> 
-> There was also an incorrect reference to dma-names being "rxtx" where
-> the driver and existing device trees actually use dma-names = "data" so
-> this is corrected in the conversion.
-> 
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
-> 
-> Notes:
->     Changes in v9:
->     - depend on series from Miquel
->       https://lore.kernel.org/linux-mtd/20230606175246.190465-1-miquel.raynal@bootlin.com/
->     - enforce minimum/maximum for nand-rb
->     - move required: block for controller
->     - move unevaluatedProperties: for nand chip
->     - remove label, partitions and nand-on-flash-bbt which are covered by
->       generic schema
->     
->     Changes in v8:
->     - Mark deprecated compatible values as such
->     - Allow "marvell,armada-8k-nand-controller" without
->       "marvell,armada370-nand-controller"
+Meson NAND controller requires 8 bytes alignment for DMA addresses,
+otherwise it "aligns" passed address by itself thus accessing invalid
+location in the provided buffer. This patch makes unaligned buffers to
+be reallocated to become valid.
 
-???
+Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+---
+ drivers/mtd/nand/raw/meson_nand.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: marvell,armada-8k-nand-controller
-> +          - const: marvell,armada370-nand-controller
-> +      - enum:
-> +          - marvell,armada-8k-nand-controller
-
-This is wrong. 8k cannot be both: compatible and not compatible with
-370. It's not someone's cat to be in both states at the same time...
-
-> +          - marvell,armada370-nand-controller
-> +          - marvell,pxa3xx-nand-controller
-> +      - description: legacy bindings
-> +        deprecated: true
-> +        enum:
-> +          - marvell,armada-8k-nand
-> +          - marvell,armada370-nand
-> +          - marvell,pxa3xx-nand
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description:
-> +      Shall reference the NAND controller clocks, the second one is
-> +      is only needed for the Armada 7K/8K SoCs
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    items:
-> +      - const: core
-> +      - const: reg
-> +
-> +  dmas:
-> +    maxItems: 1
-> +
-> +  dma-names:
-> +    items:
-> +      - const: data
-> +
-> +  marvell,system-controller:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: Syscon node that handles NAND controller related registers
-> +
-> +patternProperties:
-> +  "^nand@[a-f0-9]$":
-> +    type: object
-> +    $ref: raw-nand-chip.yaml
-> +
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 3
-> +
-> +      nand-rb:
-> +        items:
-> +          - minimum: 0
-> +            maximum: 1
-> +
-> +      nand-ecc-step-size:
-> +        const: 512
-> +
-> +      nand-ecc-strength:
-> +        enum: [1, 4, 8, 12, 16]
-> +
-> +      nand-ecc-mode:
-> +        const: hw
-> +
-> +      marvell,nand-keep-config:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: |
-
-Do not need '|' unless you need to preserve formatting.
-
-> +          Orders the driver not to take the timings from the core and
-> +          leaving them completely untouched. Bootloader timings will then
-> +          be used.
-> +
-> +      marvell,nand-enable-arbiter:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: |
-
-Do not need '|' unless you need to preserve formatting.
-
-> +          To enable the arbiter, all boards blindly used it,
-> +          this bit was set by the bootloader for many boards and even if
-> +          it is marked reserved in several datasheets, it might be needed to set
-> +          it (otherwise it is harmless).
-> +        deprecated: true
-> +
-> +    required:
-> +      - reg
-> +      - nand-rb
-> +
-> +    unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +
-> +allOf:
-> +  - $ref: nand-controller.yaml#
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: marvell,pxa3xx-nand-controller
-> +    then:
-> +      required:
-> +        - dmas
-> +        - dma-names
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: marvell,armada-8k-nand-controller
-> +    then:
-> +      properties:
-> +        clocks:
-> +          minItems: 2
-> +
-> +        clock-names:
-> +          minItems: 2
-> +
-> +      required:
-> +        - marvell,system-controller
-
-else:
-narrow clocks to 1? Or is the second clod also valid for other variants?
-Does not look like from your example.
-
-
-Best regards,
-Krzysztof
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index c5628f7ac3b1..aa2b64dde74b 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -77,6 +77,7 @@
+ #define GENCMDIADDRH(aih, addr)		((aih) | (((addr) >> 16) & 0xffff))
+ 
+ #define DMA_DIR(dir)		((dir) ? NFC_CMD_N2M : NFC_CMD_M2N)
++#define DMA_ADDR_ALIGN		8
+ 
+ #define ECC_CHECK_RETURN_FF	(-1)
+ 
+@@ -1001,6 +1002,9 @@ static int meson_nfc_read_page_hwecc(struct nand_chip *nand, u8 *buf,
+ 
+ static bool meson_nfc_is_buffer_dma_safe(const void *buffer)
+ {
++	if ((uintptr_t)buffer % DMA_ADDR_ALIGN)
++		return false;
++
+ 	if (virt_addr_valid(buffer) && (!object_is_on_stack(buffer)))
+ 		return true;
+ 	return false;
+-- 
+2.35.0
 
 
 ______________________________________________________
