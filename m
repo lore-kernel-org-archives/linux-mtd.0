@@ -4,76 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C88EDEB64DC
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 06:33:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D509EB64D9
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 07:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HjQhAcMJKtUarnJ1eInr0W+LfQrKpOJBAkeTVeRLLa8=; b=JG0Y368FLPV+p6
-	G0MWpLJUrtJPTMZB8l4Eup4bMwlv2WSAH8lndDebKTmKww8E3rhQf2oqHsmCgVSGFhmmnhizFkEjj
-	UKVENioNvF/CdP7de+hdxhtA0injMVXEkBP3Qr5HNJqhMErhsNbeNK2w4KEFzVFneF2iGN9tlUm+b
-	/rAcRFWXhlCGVUC/0nN0+UXAJzBc50aVZoIaC83M+9ScSGn2jciLJnGb7Dygu9pwtmb+BAuTYXfWw
-	Q2mOBz4hmb7U4V7SNBugfyx0SUAZodXxKocFByS/j86cdJf1Hw6/ffPbhPwHRa2RN85tuSDckjDXx
-	SpUDt9FrGC8DtfWpw3JQ==;
+	List-Owner; bh=HelfSQuBXzAmx5EXv1P4icD5YJ23eVfXL/rIF8KlN2k=; b=D8/1MSIIUnpkGt
+	Jj+Y3oCBnJFfxyHQQCKqGqwHev+UgJulNTQwIeBcBh6ehjSv2e4xbbefJILoSo0QAA+R25ZVmA1dL
+	0nLpuWAGlqTsUDm69QyXU+iNCsdp6Iw4BfaqNTxH7D7KraJVZC6UvtSfSDKU0LpvG5BBXCUcYN8ww
+	ykCxYKU+AtuS4FPWnupaYimx12JHK+Tmahg/wgl0LADjdSn6CANWeIelZzS4mPzA3TQAppBhodcOI
+	MNBLBmQlsDWLTJT4fOmFVKwm37BLTBzPHAR/MCIUp1PKS7d7VcJuQR2TRrbGMYQK1aI5NJIXmGTcR
+	LRU3heXNkbxfwI5IzDTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9gYE-00Ds0v-1g;
-	Thu, 15 Jun 2023 06:33:46 +0000
-Received: from mail-yb1-xb2c.google.com ([2607:f8b0:4864:20::b2c])
+	id 1q9hSb-00E0P2-2g;
+	Thu, 15 Jun 2023 07:32:01 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9gYB-00Ds0Q-2J
+	id 1q9hSX-00E0NI-10
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 06:33:44 +0000
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-bcc29cdcdc9so1410183276.0
-        for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2023 23:33:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686810822; x=1689402822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VZ8sWmOrvIq8waWFLXgCuASTZeEJ+zlwoDAZjDpRLXY=;
-        b=sZwOdz+HYW1RyLBwJv5FpAqZ/3fHatoK9ha9qk0QYWSnb/RPSEgnPBWDxKpnO14Rku
-         c4u7D/jlOGpcdFumrjwUHL6wMD5ELePVg1QTvKB1QlW9Z08bX2REnMA2QxzE178q+0bk
-         Cy03GwkjOF0SFnkcfzJdV13dkMeilNTc/L1wuarWkI6v6gwHNRdAGi0knEDVltg41UHM
-         ObudbUHWQn1x1MQMTY8lYuAhkTknkgJDIENtkwnhNUg/Q9Si+/r9cBBp3XGOKRQJay3b
-         j5lzMtZ0+u3slEv+kHtyR9x2hbhZFegeMUet7Npik9wzwYwiA3irAwktA3K7+D9ZBUDX
-         Z+VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686810822; x=1689402822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VZ8sWmOrvIq8waWFLXgCuASTZeEJ+zlwoDAZjDpRLXY=;
-        b=KX3sZY8VR49ciLnKsgN/JfMNsNJWQrrjZI1rJwhOu+NKIXCWAjoDFkO0/1Nt6Zlf0q
-         Qb7xPSWrQUsouyV6UVbXCc07yuci6s9Jrdo0i8MHDR7c8wNY8+NMJ/wBF4jsrI0Dw+HE
-         DxUyxlsZPYQPEgxRwhsscsT9fkapzwBiTkIH+uFR7ZIbQKdiBnbhYciNSXSsOgY5/lCn
-         THFAMTjNl/Zz2xnU8oOfEDsAk3Du6giV13IkLmzg7zeXm+ctyyHisHsznUjp4pnd7HPU
-         +58Noq48rBUVxuG0jF0U0klK1ItbNF0BUt+lDoBBOE7R7IpMrmVEqaK3W4m7URANhMtP
-         +oWw==
-X-Gm-Message-State: AC+VfDwshrESSt6Y2+gCX1xJI/J4YhgqZbWSwh4EH2ndphGzeZbzKsE1
-	YYoEFc3nSMDHyK9MPCmmdjTlicK2M4lc3owDXXZhdg==
-X-Google-Smtp-Source: ACHHUZ6rMue4kNIamOiSY5UQYrDzI0yab9xvTCydCT7af7qsnesG+N6ZKe4g43aMAhhOI33yTrAKykH99CcrspzzhTU=
-X-Received: by 2002:a25:504b:0:b0:bd4:e6d6:2b8e with SMTP id
- e72-20020a25504b000000b00bd4e6d62b8emr3891532ybb.50.1686810822546; Wed, 14
- Jun 2023 23:33:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <fe7ef901-9571-4c6e-a40e-449046efe2c6@moroto.mountain>
-In-Reply-To: <fe7ef901-9571-4c6e-a40e-449046efe2c6@moroto.mountain>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 15 Jun 2023 08:33:31 +0200
-Message-ID: <CACRpkdYTcLKBq2s8_kBoM1PtzqNxxwK3wWZp6ORiY__pEkBgtQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: otp: clean up on error in mtd_otp_nvmem_add()
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-mtd@lists.infradead.org, 
-	kernel-janitors@vger.kernel.org
+	Thu, 15 Jun 2023 07:31:59 +0000
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35F3dbJ5021735;
+	Thu, 15 Jun 2023 07:31:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references; s=qcppdkim1;
+ bh=ShFctnkWuT0Zs9m17wa8kiqBDz6ax8ySsoISAoj8m4g=;
+ b=R23+40zmzatbo9yVJhRmAogHy8h17SRdEBCPnmTk4s+PypS7R+bd2Xp7OV9O/OKDY85P
+ ICi6q2lcldpp4Ds1QfuezrZJF/AS6dl2L3Ez+MBWZJff0bzQEVZB3pqdy0rWfxPnB5Cq
+ NyoIxqJF5pcRa2eD6scCHP9dJYvQvosu6uRERGVpXCkunJQqx4vaIXQm8VOpykhXhs3f
+ XeYUXzw+omGemROByU9UsPF1aqEV2plWOskSG6N16reLfbOZRk5+kOnRnAhHn2NyLNNl
+ SIbHH49bGxi/AxByEYBl0jikicC5BpUdMGlWFj2r1cSApYm62dzbm9GiYLZfYLJiPZyE BA== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3r7cka24p5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Jun 2023 07:31:52 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 35F7VnfY012761;
+	Thu, 15 Jun 2023 07:31:49 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3r4j8m6m6k-1;
+	Thu, 15 Jun 2023 07:31:49 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 35F7VnX2012755;
+	Thu, 15 Jun 2023 07:31:49 GMT
+Received: from mdalam-linux.qualcomm.com (mdalam-linux.qualcomm.com [10.201.2.71])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 35F7Vmfw012754;
+	Thu, 15 Jun 2023 07:31:49 +0000
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+	id DBEFB12010CD; Thu, 15 Jun 2023 13:01:47 +0530 (IST)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: mani@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: quic_srichara@quicinc.com, quic_mdalam@quicinc.com
+Subject: [PATCH v4 3/5] mtd: rawnand: qcom: Add support for param_page read exec_ops
+Date: Thu, 15 Jun 2023 13:01:41 +0530
+Message-Id: <20230615073143.25079-3-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230615073143.25079-1-quic_mdalam@quicinc.com>
+References: <20230615073143.25079-1-quic_mdalam@quicinc.com>
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: x2M7u0WBtElj1V41igZVJmQLp3lxso8F
+X-Proofpoint-ORIG-GUID: x2M7u0WBtElj1V41igZVJmQLp3lxso8F
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-15_03,2023-06-14_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 bulkscore=0 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306150062
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230614_233343_755141_FC27B45E 
-X-CRM114-Status: UNSURE (   9.27  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230615_003157_476532_BA343A16 
+X-CRM114-Status: GOOD (  18.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,21 +95,178 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBKdW4gMTUsIDIwMjMgYXQgODowOeKAr0FNIERhbiBDYXJwZW50ZXIgPGRhbi5jYXJw
-ZW50ZXJAbGluYXJvLm9yZz4gd3JvdGU6Cgo+IFNtYXRjaCBjb21wbGFpbnMgdGhhdCB0aGVzZSBl
-cnJvciBwYXRocyBhcmUgbWlzc2luZyBjbGVhbnVwOgo+Cj4gICAgIGRyaXZlcnMvbXRkL210ZGNv
-cmUuYzo5ODMgbXRkX290cF9udm1lbV9hZGQoKQo+ICAgICB3YXJuOiBtaXNzaW5nIHVud2luZCBn
-b3RvPwo+Cj4gVGhpcyBuZWVkcyB0byBjYWxsIG52bWVtX3VucmVnaXN0ZXIobXRkLT5vdHBfdXNl
-cl9udm1lbSkgYmVmb3JlCj4gcmV0dXJuaW5nLgo+Cj4gRml4ZXM6IDNiMjcwZmFjODQ0MyAoIm10
-ZDogb3RwOiBQdXQgZmFjdG9yeSBPVFAvTlZSQU0gaW50byB0aGUgZW50cm9weSBwb29sIikKPiBT
-aWduZWQtb2ZmLWJ5OiBEYW4gQ2FycGVudGVyIDxkYW4uY2FycGVudGVyQGxpbmFyby5vcmc+CgpP
-b29wcyBteSBiYWQuClJldmlld2VkLWJ5OiBMaW51cyBXYWxsZWlqIDxsaW51cy53YWxsZWlqQGxp
-bmFyby5vcmc+CgpZb3VycywKTGludXMgV2FsbGVpagoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+Add support for PARAM_PAGE_READ exec_ops.
+
+Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+---
+Change in [v4]
+
+* Updated commit message
+
+* Fix spelling mistake of sbumitting to submitting  
+
+Change in [v3]
+
+* Removed hard coded value in param_page exec_op API, and used whatever
+  passed by core.
+
+* Removed nandc->props->qpic_v2 condition , since its not needed at all.
+
+* Updated nandc->buf_count = len , len provided by core.
+
+Change in [v2]
+
+* Missed to post Cover-letter, so posting v2 patch with cover-letter
+
+Change in [v1]
+
+* Added initial support for exec_ops.
+
+ drivers/mtd/nand/raw/qcom_nandc.c | 105 +++++++++++++++++++++++++++++-
+ 1 file changed, 104 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 4d4b95117051..7b42b1e3cf33 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1546,7 +1546,7 @@ static void pre_command(struct qcom_nand_host *host, int command)
+ 
+ 	clear_read_regs(nandc);
+ 
+-	if (command == NAND_CMD_PARAM || command == NAND_CMD_ERASE1)
++	if (command == NAND_CMD_ERASE1)
+ 		clear_bam_transaction(nandc);
+ }
+ 
+@@ -3177,6 +3177,103 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
+ 	return ret;
+ }
+ 
++static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_subop *subop)
++{
++	struct qcom_nand_host *host = to_qcom_nand_host(chip);
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct qcom_op q_op;
++	const struct nand_op_instr *instr = NULL;
++	unsigned int op_id = 0;
++	unsigned int len = 0;
++	int ret = 0;
++
++	qcom_parse_instructions(chip, subop, &q_op);
++
++	q_op.cmd_reg |= PAGE_ACC | LAST_PAGE;
++
++	nandc->buf_count = 0;
++	nandc->buf_start = 0;
++	host->use_ecc = false;
++	clear_read_regs(nandc);
++	clear_bam_transaction(nandc);
++
++	nandc_set_reg(chip, NAND_FLASH_CMD, q_op.cmd_reg);
++
++	nandc_set_reg(chip, NAND_ADDR0, 0);
++	nandc_set_reg(chip, NAND_ADDR1, 0);
++	nandc_set_reg(chip, NAND_DEV0_CFG0, 0 << CW_PER_PAGE
++					| 512 << UD_SIZE_BYTES
++					| 5 << NUM_ADDR_CYCLES
++					| 0 << SPARE_SIZE_BYTES);
++	nandc_set_reg(chip, NAND_DEV0_CFG1, 7 << NAND_RECOVERY_CYCLES
++					| 0 << CS_ACTIVE_BSY
++					| 17 << BAD_BLOCK_BYTE_NUM
++					| 1 << BAD_BLOCK_IN_SPARE_AREA
++					| 2 << WR_RD_BSY_GAP
++					| 0 << WIDE_FLASH
++					| 1 << DEV0_CFG1_ECC_DISABLE);
++	if (!nandc->props->qpic_v2)
++		nandc_set_reg(chip, NAND_EBI2_ECC_BUF_CFG, 1 << ECC_CFG_ECC_DISABLE);
++
++	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
++	if (!nandc->props->qpic_v2) {
++		nandc_set_reg(chip, NAND_DEV_CMD_VLD,
++			      (nandc->vld & ~READ_START_VLD));
++		nandc_set_reg(chip, NAND_DEV_CMD1,
++			      (nandc->cmd1 & ~(0xFF << READ_ADDR))
++			      | NAND_CMD_PARAM << READ_ADDR);
++	}
++
++	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
++
++	if (!nandc->props->qpic_v2) {
++		nandc_set_reg(chip, NAND_DEV_CMD1_RESTORE, nandc->cmd1);
++		nandc_set_reg(chip, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
++	}
++
++	instr = q_op.data_instr;
++	op_id = q_op.data_instr_idx;
++	len = nand_subop_get_data_len(subop, op_id);
++
++	nandc_set_read_loc(chip, 0, 0, 0, len, 1);
++
++	if (!nandc->props->qpic_v2) {
++		write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
++		write_reg_dma(nandc, NAND_DEV_CMD1, 1, NAND_BAM_NEXT_SGL);
++	}
++
++	nandc->buf_count = len;
++	memset(nandc->data_buffer, 0xff, nandc->buf_count);
++
++	config_nand_single_cw_page_read(chip, false, 0);
++
++	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
++		      nandc->buf_count, 0);
++
++	/* restore CMD1 and VLD regs */
++	if (!nandc->props->qpic_v2) {
++		write_reg_dma(nandc, NAND_DEV_CMD1_RESTORE, 1, 0);
++		write_reg_dma(nandc, NAND_DEV_CMD_VLD_RESTORE, 1, NAND_BAM_NEXT_SGL);
++	}
++
++	ret = submit_descs(nandc);
++	if (ret) {
++		dev_err(nandc->dev, "failure in submitting param page descriptor\n");
++		free_descs(nandc);
++		goto err_out;
++	}
++	free_descs(nandc);
++
++	ret = qcom_wait_rdy_poll(chip, q_op.rdy_timeout_ms);
++	if (ret)
++		goto err_out;
++
++	memcpy(instr->ctx.data.buf.in, nandc->data_buffer, len);
++
++err_out:
++	return ret;
++}
++
+ static const struct nand_op_parser qcom_op_parser = NAND_OP_PARSER(
+ 		NAND_OP_PARSER_PATTERN(
+ 			qcom_misc_cmd_type_exec,
+@@ -3191,6 +3288,12 @@ static const struct nand_op_parser qcom_op_parser = NAND_OP_PARSER(
+ 			qcom_read_status_exec,
+ 			NAND_OP_PARSER_PAT_CMD_ELEM(false),
+ 			NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 1)),
++		NAND_OP_PARSER_PATTERN(
++			qcom_param_page_type_exec,
++			NAND_OP_PARSER_PAT_CMD_ELEM(false),
++			NAND_OP_PARSER_PAT_ADDR_ELEM(false, MAX_ADDRESS_CYCLE),
++			NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
++			NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 512)),
+ 		);
+ 
+ static int qcom_check_op(struct nand_chip *chip,
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
