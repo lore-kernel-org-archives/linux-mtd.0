@@ -4,80 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A257FEB64DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 17:32:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0F3EEB64DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 17:34:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=PLdVgLWmck8Bm7mtjzWHkMEvfLQMiEahBDkr+xzrEkw=; b=WZabxZSH949Z2i
-	BQURLZoJMY7sDM4/hdqeVLEbt8yflMwxKxuWPyexKcK5BfWSYEz0Av/s0VSNkZSJJzXVk+X3Ci0XA
-	FcMGGAM2nbPF0+8kyqw9DrRj8MjPKpcsTA0PPUFlQrNBnzqs7cP+u9C3+XMIS5rv9PL8Quiyl2IgY
-	dQyMC7lMXlXGp6PucJUIaxtVCoNNWAQxWuw4+fdbu19efKid10CZbeigYJJpubM5kto5vL9cjpr0b
-	Ytd4OTCh/e/X8569YtJwqSn+Kga3bEmUw4ivKF2m+VwC3VCOoP42dxlXrJ49YG7XG/UY1VpMjXQDZ
-	z0Taaya+yF2tO4QXQ5eQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:
+	From:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CnEi6xSUaOaeJGHC03BjPFfbJ2Y0CJgjJG+WKE7Ta8Y=; b=fi747xTdDDhKYB
+	P1aorRiGqKDK/GOUKuD8VpPWrsBppaLkfG6AFvi29nIaOvMNM0A256Oi8kMGLRf0PcduO7aK/QKEp
+	tNQnYfC1fx//gpcR/tL5NM49TXcoqU8Dkv1HTX/lJpcACh2i9MfBZDJBeFT1WZFh51s+k9OEj25DB
+	ebKO7mfh9t5h8H7KNeWNiH0KVJ+q598HTKZd0eWwX3F2Z86QvENivDUA4PivfFGBz4s6RdsDMadKf
+	eOBjEV/p/N/exJOudgIZ70P+UUl4iu6H755hqqpyU8glv4FJgQr5QidKfK2lMAeqCT33EZq7hIFhm
+	/jsdWSScgANd7yOm2xiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9qpm-00Fb1V-1I;
-	Thu, 15 Jun 2023 17:32:34 +0000
-Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
+	id 1q9qrK-00FbSF-36;
+	Thu, 15 Jun 2023 17:34:10 +0000
+Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9qpk-00Fazf-01;
-	Thu, 15 Jun 2023 17:32:33 +0000
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4f61b45ee0dso11050052e87.0;
-        Thu, 15 Jun 2023 10:32:30 -0700 (PDT)
+	id 1q9qrF-00FbQY-2o;
+	Thu, 15 Jun 2023 17:34:08 +0000
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5147e40bbbbso12047473a12.3;
+        Thu, 15 Jun 2023 10:34:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686850349; x=1689442349;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cJxuaJ5691h/k4UcTAuN0XDw63vuAh/dneyBNjCjVmY=;
-        b=mV/e0OUTEj46icDsVr+JRbtP4EPO9HzVPEwP6B2e4JDKoPWX3NXfgikVpy+7wg2NbD
-         8V28anN5XJveBeXd0RgY9vPuEF6TN0Cqam02EPVxvzB5pxFuLp3AbYeS76tZawInOIj9
-         KfctomLfGfGYOd2X/XsNVfPd+G8HUmPVxTxg0ImRuLMoRfGGJQ7j6WjP38I5BylB+A+V
-         LosWW2IqnTnrq3ogF/+DAYkkRxAm8QGNNJo1EdpLM6Cdg5oqwkbmtPwEt3Iy90YmWpVA
-         Zpr+3HkzSgtohniS0LFHzVhyvY91mzUP3v9ZMhqVHIC4cJnqsY7R3vwvI0FEjG6movI5
-         8PVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686850349; x=1689442349;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=gmail.com; s=20221208; t=1686850443; x=1689442443;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=cJxuaJ5691h/k4UcTAuN0XDw63vuAh/dneyBNjCjVmY=;
-        b=HHLUkWTGa0J1UvdsWWiuKl4j0lulK+KItn+cCZpzWEANvV0hM7/2D3O2c2XectlMR8
-         DYIeBdaLexFSAvPwPHXpTrq9cjma7rXGUA/JtD6XH1iOoD6xuXR8aimO1pgJfwWtQRn8
-         5fsvUR7gF4lthYsr6DL9i085OOdupav6BYVJiOQSbGN9uSnCDFbaBcn8DEBiJXGrbJTz
-         Qqdt2cx4pc7S+H/lndF3aebb28iLVtZtvDuyCl939kivQ37sYX0mM36ZTiqa6WgigoWX
-         wT7PgVsCxejx/E9a9KkaIeqwb8yP6OPikSMaZ5hrq3I17ExNk9Rfx2O4kkwd/iewhVMo
-         yy3w==
-X-Gm-Message-State: AC+VfDxtRcj8sUmMS+bm+AO9ogt8qSken7weRkxMtdaZZokbcUGx91Mp
-	1mmn+R4LdSvTdjrJ9dUOafg93zIouOs=
-X-Google-Smtp-Source: ACHHUZ6FZpgcNvW6Qi5ZSZdhqz1y/N8G1DHAib7CyXk9nmboV+EfYS5w6LkFk00Y5fDNCee33DChSA==
-X-Received: by 2002:a19:ca5a:0:b0:4f7:b640:fa43 with SMTP id h26-20020a19ca5a000000b004f7b640fa43mr2399794lfj.38.1686850348704;
-        Thu, 15 Jun 2023 10:32:28 -0700 (PDT)
+        bh=onV5CTTksC2Qd78lIixG0/dIqB3m8E1M6AA6FD8Jbs0=;
+        b=prWxaZ36pGTgPaazXWWLSZ/xe/uSXBNIHmD1xZ7n5pE3rJGVNhR0N9Zm23NkJFrUaX
+         23X1HZj+C9gLiF3S2wI4MyAWgNOYENKQhq1kaOcWW9A3n5U8qc2s3L4U+OiTGCDSZ+dl
+         Qwk4OmTavRtpKxzglgdJ3cCggklFJ/wLxLq5239yhVxe5zGikHCWEciVS+C1L/06GyVb
+         rJwug9nP3s50XCidh0wzVYY6HrVRZPHorWCfYqoyabW9o9fauqFnoK33z0+lP1KceyNI
+         HD4g9S/10dq66w1VFds9N1AyvSFP/qsDfpYJ2O37DLOOJ+xsvpIdME3n6vg7nx2kLdDd
+         OmlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686850443; x=1689442443;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=onV5CTTksC2Qd78lIixG0/dIqB3m8E1M6AA6FD8Jbs0=;
+        b=ARcJdESO+sd2KxZ7FU0aj/3NA9OM4736vRoZUsvHVwluoYXU/QHLgC6Nmy3bxuZF9V
+         s0Lw4a1aLIC0gHHN7aQ/QQxopVY71jh8QzzeWpA8Cv25Icn3vR3D8xaNx3pU3X4EmPHC
+         yBKLC9siZlnLxJKw7La47M6lX2fD1fvZ7OlmwuuK9yhqGD31DejKeBvn6CTMkxdP0ykB
+         k8/sSsMvCUhu2PRgC13FDjNPp5Q0F/XDutgokIeljgUIRL/jlvhWQkbwHke6zkGhxcbo
+         1sdQLb2myjUl3AgxQkVPK+mbST1qRUxLCMtPul4sf/CgaORraA53GIiy/ZCQagZAoyzD
+         2LFQ==
+X-Gm-Message-State: AC+VfDwq/cA14V3DU4ePSD63ieRA19ImtHhj1WYuo6TeI9w3hTXjHPbS
+	SawDfeOznOfrf4JaM2/DDQ8=
+X-Google-Smtp-Source: ACHHUZ7yVhTWxSx4Cm9ZHg7+/ypOKVReVuS22P2vQuoAqqVdJ5E27xkglGRuj9g2yRDFuFKhEgHSvg==
+X-Received: by 2002:aa7:c994:0:b0:518:7954:d082 with SMTP id c20-20020aa7c994000000b005187954d082mr5824467edt.10.1686850443301;
+        Thu, 15 Jun 2023 10:34:03 -0700 (PDT)
 Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id s24-20020a1709060c1800b00969f25b96basm9570398ejf.204.2023.06.15.10.32.27
+        by smtp.gmail.com with ESMTPSA id b20-20020aa7d494000000b00514a3c04646sm9172936edr.73.2023.06.15.10.34.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jun 2023 10:32:27 -0700 (PDT)
-Message-ID: <0047fc52-bc45-a768-8bdd-c0f12cddc17e@gmail.com>
-Date: Thu, 15 Jun 2023 19:32:26 +0200
+        Thu, 15 Jun 2023 10:34:02 -0700 (PDT)
+Message-ID: <dfb76ad5-b62a-3f1d-494e-cd17d57945ae@gmail.com>
+Date: Thu, 15 Jun 2023 19:34:01 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
 From: Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v3 0/3] Fixes for Rockchip NAND controller driver
+Subject: [PATCH v3 1/3] mtd: rawnand: rockchip-nand-controller: fix oobfree
+ offset and description
 To: miquel.raynal@bootlin.com
 Cc: richard@nod.at, vigneshr@ti.com, heiko@sntech.de,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
  yifeng.zhao@rock-chips.com
+References: <0047fc52-bc45-a768-8bdd-c0f12cddc17e@gmail.com>
 Content-Language: en-US
+In-Reply-To: <0047fc52-bc45-a768-8bdd-c0f12cddc17e@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230615_103232_049182_4830A77D 
-X-CRM114-Status: UNSURE (   8.50  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230615_103405_911970_95D6509C 
+X-CRM114-Status: GOOD (  17.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,36 +96,94 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This serie contains various fixes for the Rockchip NAND controller
-driver that showed up while testing boot block writing.
+The MTD framework reserves 1 or 2 bytes for the bad block marker
+depending on the bus size. The rockchip-nand-controller driver
+currently only supports a 8 bit bus, but reserves standard 2 bytes
+for the BBM in the chip->oob_poi buffer. The first free OOB byte is
+therefore OOB2 at offset 2. Page Address (PA) bytes are located at the
+last 4 positions before ECC. The current advertised free OOB area has
+an offset that starts at OOB6 and a length that overlaps with the space
+reserved for the PA bytes. Writing unrelated data to a reserved space
+with a specific task can corrupt our boot block page read order.
+Fix by changing the free OOB offset to 2.
 
-Fixed are:
-  Always copy hwecc PA data to/from oob_poi buffer in order to be able
-  to read/write the various boot block layouts.
-  Add option to safely probe the driver on a NAND with unknown data layout.
-  Fix oobfree layout.
+This change breaks existing jffs2 users.
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
 
 Changed V3:
-  Change patch order, layout fixes first
   Change prefixes
   Reword
-  State that patches break all existing jffs2 users
+  State break existing users.
 
-Changed V2:
-  Add tag
-  Add manufacturer ops
-  Reword
+---
 
-Johan Jonker (3):
-  mtd: rawnand: rockchip-nand-controller: fix oobfree offset and
-    description
-  mtd: rawnand: rockchip-nand-controller: copy hwecc PA data to oob_poi
-    buffer
-  mtd: rawnand: rockchip-nand-controller: add skipbbt option
+Example:
 
- .../mtd/nand/raw/rockchip-nand-controller.c   | 52 ++++++++++++-------
- 1 file changed, 32 insertions(+), 20 deletions(-)
+Wrong free OOB offset starts at OOB6:
+oob_region->offset = NFC_SYS_DATA_SIZE + 2;
+                   = 4 + 2
+                   = 6
 
+oob_region->length = rknand->metadata_size - NFC_SYS_DATA_SIZE - 2;
+                   = 32 - 4 - 2
+                   = 26
+
+Together with this length above it overlaps a reserved space for the
+boot blocks Page Address(PA)
+
+chip->oob_poi buffer layout for 8 steps:
+
+BBM0   BBM1  OOB2  OOB3  | OOB4  OOB5  OOB6  OOB7
+
+OOB8   OOB9  OOB10 OOB11 | OOB12 OOB13 OOB15 OOB15
+OOB16  OOB17 OOB18 OOB19 | OOB20 OOB21 OOB22 OOB23
+
+OOB24  OOB25 OOB26 OOB27 | PA0   PA1   PA2   PA3
+
+ECC0   ECC1  ECC2  ECC3  | ...   ...   ...   ...
+
+Fix by new offset at OOB2:
+oob_region->offset = 2;
+
+The full range of free OOB with 8 steps runs from OOB2
+till/including OOB27.
+---
+ drivers/mtd/nand/raw/rockchip-nand-controller.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+index 2312e2736..37fc07ba5 100644
+--- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
++++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
+@@ -562,9 +562,10 @@ static int rk_nfc_write_page_raw(struct nand_chip *chip, const u8 *buf,
+ 		 *    BBM  OOB1 OOB2 OOB3 |......|  PA0  PA1  PA2  PA3
+ 		 *
+ 		 * The rk_nfc_ooblayout_free() function already has reserved
+-		 * these 4 bytes with:
++		 * these 4 bytes together with 2 bytes for BBM
++		 * by reducing it's length:
+ 		 *
+-		 * oob_region->offset = NFC_SYS_DATA_SIZE + 2;
++		 * oob_region->length = rknand->metadata_size - NFC_SYS_DATA_SIZE - 2;
+ 		 */
+ 		if (!i)
+ 			memcpy(rk_nfc_oob_ptr(chip, i),
+@@ -933,12 +934,8 @@ static int rk_nfc_ooblayout_free(struct mtd_info *mtd, int section,
+ 	if (section)
+ 		return -ERANGE;
+
+-	/*
+-	 * The beginning of the OOB area stores the reserved data for the NFC,
+-	 * the size of the reserved data is NFC_SYS_DATA_SIZE bytes.
+-	 */
+ 	oob_region->length = rknand->metadata_size - NFC_SYS_DATA_SIZE - 2;
+-	oob_region->offset = NFC_SYS_DATA_SIZE + 2;
++	oob_region->offset = 2;
+
+ 	return 0;
+ }
 --
 2.30.2
 
