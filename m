@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B2D3EB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 14:43:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DE9BEB64D9
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 16:42:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fz1pX0yg/NvNGq8QSIdLhP2R30whSfmJqDiTrUJc8FI=; b=2FJUpRmQOTHEst
-	JVtYZ9TnOBTa4dD4U33RL0TYdR4ec1XkyF2Qldo5KNvxsVHeYTGrNAmOJG+rEatbhOIeL7wLJzUum
-	EecfQz/ZrFjvszAcreOJnhW8hyzIwSC7sdFLudjHoQoxq4apaxAZbq/JzwSDfEiqftVO0AMNkAqMq
-	m+YiGnhX7IATQvPttsEhVR8ubXbohSRlQ4orvv6P6SSXaWFSVuqj0r/aR4hV8enAgvirq0z11ZiGy
-	7CjX4YkrytcKKdcSjRhPWGjCVdGs+wnpGb+tpZYC2vNaN3g0Lh+xpi0ML/iwnPCYUxnLjzOSHGIId
-	jZNKH1YHyAJiVSPSoQGg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1QOO4SKU7yp4fkYtrOFZTXz6IRjukacHGtfkZTgHnpU=; b=HvgpJpk+vobeNH
+	1Mkh4psZoXt4CjKVRqDOUoVlgbWN+Y1zzTHSqeAQ9LVIYPM+af52qU2qYsiRXAHeYNEsZS7WJ1oj1
+	gaiCk/YwlTzgsht2j1gA8ILMv0k66RQ3Pp63J8WHpXWLpB/s0D7sPU/XNg0Lnqcv9faY+/b1LeDWG
+	VH7KpSP+8Q4X+UuF2sHNv1u9IxdBDVk3aOwSwQigHYvB04zbCp8Q/v++n2to2wsVgKdJOAKPAkJtC
+	OfroRDyjctgq7f7gEdnn84Ybwm5BfWrxZP3sHiGrs221bn52FV7YPBJ68xhNA9i39z722ZQQ1JfvE
+	UmpiOJ6wVxoWvSGbQaZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9oBQ-00FBZ3-1l;
-	Thu, 15 Jun 2023 14:42:44 +0000
-Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
+	id 1q9q2z-00FSqo-17;
+	Thu, 15 Jun 2023 16:42:09 +0000
+Received: from mga18.intel.com ([134.134.136.126])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9oBL-00FBXo-30
+	id 1q9q2v-00FSp2-2m
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 14:42:41 +0000
-X-GND-Sasl: miquel.raynal@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686840155;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0K8cXZkK+l8uDUs0DhDuBAI7qdSdHAj71GuwPplKllw=;
-	b=SIe55KkL2sWApd9Kwvy9AeiqaoHVMaaEZcll/41FnvbxxBxOdH6RVvgnVaHpXB/0VucUoH
-	eNN08KX7sgqQCi608l9D5qgHPQyz2bhle2YHXuh/WCvxQ87+y6Qw7R0Cst0CgewxAi24Tc
-	8UAHxby1F3LxzRqpc5/8KVBnUrfZQ7uy7rVOOe7QuV7RQvBQ0SPMwjt6Mm8ZPd66x80gAX
-	a92VuGhX+AzXuGGlrch05zXXfkV7mm8Kc9bNm/FaTLLZPjpzuGgSf/gUjFzcqbzn1fIS/1
-	yK8w0qYfhwrPigEaY1vUu+lILHto3MKTzzYM4x2CT+htBFzzcr99EKtwZD4ugQ==
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8B246C0009;
-	Thu, 15 Jun 2023 14:42:34 +0000 (UTC)
-Date: Thu, 15 Jun 2023 16:42:33 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>, Michael Walle
- <michael@walle.cc>, linux-mtd@lists.infradead.org, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- devicetree@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: spi-nor: Document sst26vf0xxb
- flash series
-Message-ID: <20230615164233.51a87cbd@xps-13>
-In-Reply-To: <d816499e-baab-6200-0780-17a8205b252e@linaro.org>
-References: <20230609144324.850617-1-miquel.raynal@bootlin.com>
-	<20230609144324.850617-2-miquel.raynal@bootlin.com>
-	<d816499e-baab-6200-0780-17a8205b252e@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Thu, 15 Jun 2023 16:42:07 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686847325; x=1718383325;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SjfkhPAqQ8PyzFqydNEFnaWjUK63HBu4s/AtSRqBNIk=;
+  b=Hvaz0Q7p0XIaxUydNFugAE9dQOWiGn9PuOJb3GyIgKSadpv7PhUhT8YD
+   YMebWk6R7sM5P3rSmClUff7CvaIsPgXPcQKShhNUSjVwYmTW+4F7PL4il
+   31Cdmf2M8h0cjT1tCbkAK1bvufr/j27AbzyhUa5iC3BZxIT1/5aO+ZZfj
+   1ldQQHyKW7bRBlD6OxvpNwkOBNHB1c6bNKGLvdtLWIL1XERfErRmCkFU+
+   u9j7XQz3p0SPzFL9cfotMv2+M0/u2LXBCGj2IqraBFBt/7tlvKHYXeNEE
+   CEXrht0KoBiXdj7ONWMoHNNloRpcZARwpNe2peiSVamhYJovf+WCWkz9e
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="343702877"
+X-IronPort-AV: E=Sophos;i="6.00,245,1681196400"; 
+   d="scan'208";a="343702877"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2023 09:42:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="777742128"
+X-IronPort-AV: E=Sophos;i="6.00,245,1681196400"; 
+   d="scan'208";a="777742128"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Jun 2023 09:42:02 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 624C5379; Thu, 15 Jun 2023 19:42:11 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	JaimeLiao <jaimeliao.tw@gmail.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] mtd: rawnand: Remove unused of_gpio.h inclusion
+Date: Thu, 15 Jun 2023 19:42:10 +0300
+Message-Id: <20230615164210.25515-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230615_074240_140666_3600270D 
-X-CRM114-Status: GOOD (  17.35  )
+X-CRM114-CacheID: sfid-20230615_094205_942410_F66B1A6C 
+X-CRM114-Status: GOOD (  11.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,36 +82,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVHVkb3IsCgp0dWRvci5hbWJhcnVzQGxpbmFyby5vcmcgd3JvdGUgb24gTW9uLCAxMiBKdW4g
-MjAyMyAxMTowMDowMyArMDEwMDoKCj4gT24gNi85LzIzIDE1OjQzLCBNaXF1ZWwgUmF5bmFsIHdy
-b3RlOgo+ID4gQWRkIGNvbXBhdGlibGVzIGZvciB0aGUgc3N0MjZ2ZjB7NDAsODAsMTYsMzIsNjR9
-YiBmbGFzaCBkZXZpY2VzLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxt
-aXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+ID4gLS0tCj4gPiAgRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL210ZC9qZWRlYyxzcGktbm9yLnlhbWwgfCAyICstCj4gPiAgMSBmaWxl
-IGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4gPiAKPiA+IGRpZmYgLS1n
-aXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2plZGVjLHNwaS1ub3Iu
-eWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvamVkZWMsc3BpLW5v
-ci55YW1sCj4gPiBpbmRleCA3MTQ5Nzg0YTM2YWMuLjVhNzg4YTQyOWIwZCAxMDA2NDQKPiA+IC0t
-LSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvamVkZWMsc3BpLW5vci55
-YW1sCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2plZGVj
-LHNwaS1ub3IueWFtbAo+ID4gQEAgLTI1LDcgKzI1LDcgQEAgcHJvcGVydGllczoKPiA+ICAgICAg
-ICAgICAgICAgIChteGljeXxtYWNyb25peCksbXgyNWwoNDAwNWF8MTYwNmV8NjQwNWR8ODAwNXwx
-MjgwNWR8MjU2MzVlKXxcCj4gPiAgICAgICAgICAgICAgICAobXhpY3l8bWFjcm9uaXgpLG14MjV1
-KDQwMzN8NDAzNSl8XAo+ID4gICAgICAgICAgICAgICAgKHNwYW5zaW9uLCk/czI1ZmwoMTI4c3wy
-NTZzMXw1MTJzfDAwOGt8MDY0a3wxNjRrKXxcCj4gPiAtICAgICAgICAgICAgICAoc3N0fG1pY3Jv
-Y2hpcCksc3N0MjV2ZigwMTZifDAzMmJ8MDQwYil8XAo+ID4gKyAgICAgICAgICAgICAgKHNzdHxt
-aWNyb2NoaXApLHNzdCgyNXwyNil2ZigwMDh8MDE2fDAzMnwwNDB8MDY0KWJ8XCAgCj4gCj4gV2Ug
-ZG9uJ3QgYWRkIG5ldyBjb21wYXRpYmxlcyB0byB0aGlzIGxpc3QsIG9uZSBzaG91bGQgaW5zdGVh
-ZCB1c2UgdGhlCj4gZ2VuZXJpYyBqZWRlYyxzcGktbm9yIGNvbXBhdGlibGUuIFBsZWFzZSBkcm9w
-IHRoaXMgcGF0Y2guCgpTdXJlLiBJJ2xsIHByb3Bvc2UgYSBwYXRjaCB0byBjbGFyaWZ5IHRoaXMg
-cG9pbnQgaW4gdGhlIGJpbmRpbmdzIHRvCmhlbHAgZnV0dXJlLW15c2VsZi4KCj4gCj4gPiAgICAg
-ICAgICAgICAgICAoc3N0LCk/c3N0MjZ3ZjAxNmJ8XAo+ID4gICAgICAgICAgICAgICAgKHNzdCwp
-P3NzdDI1d2YoMDQwYnwwODApfFwKPiA+ICAgICAgICAgICAgICAgIHdpbmJvbmQsdzI1eCg4MHwz
-Mil8XCAgCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+The of_gpio.h is not and shouldn't be used in the drivers. Remove it.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/mtd/nand/raw/nand_base.c | 1 -
+ drivers/mtd/nand/raw/xway_nand.c | 1 -
+ 2 files changed, 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index a6af521832aa..132e3bee8f5a 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -42,7 +42,6 @@
+ #include <linux/io.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/gpio/consumer.h>
+ 
+ #include "internals.h"
+diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
+index 6b1e2a2bba15..5a19b6b314b4 100644
+--- a/drivers/mtd/nand/raw/xway_nand.c
++++ b/drivers/mtd/nand/raw/xway_nand.c
+@@ -6,7 +6,6 @@
+  */
+ 
+ #include <linux/mtd/rawnand.h>
+-#include <linux/of_gpio.h>
+ #include <linux/of_platform.h>
+ 
+ #include <lantiq_soc.h>
+-- 
+2.40.0.1.gaa8946217a0b
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
