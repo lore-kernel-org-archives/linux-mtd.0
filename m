@@ -4,62 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE4ABEB64D9
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 07:39:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B206EB64D9
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 07:45:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hwXCyWvd9pR/a/gko2qRa87tbbrVrxe0LEs6jj0Sepo=; b=dPXVtSXvO6FKfD
-	p8ERKux/kLKIJMYYtyt76nvICYTZXPylH9fdfo+Dy/JKyYr7K0U6IbgfLHAGEkpJetG3NlFoGje2Z
-	61wIB/XH2K7plSpyhWDfBi9sIoghLtkvaD/GYySVRKnOyPYEU/wjurW4umfrwpWaTihvITwTgSynC
-	0MKWGMXQZSF+g8Iq7MEiDy0TIJjYAI0ssAKoERixjlFoFYmq06wNNfpFDYhOuAzYQ5xM5n+q/S4Mg
-	7B6Ar25sY56TEKtJw1blriAT1oTletyd86psGP15BXVV1dEbq7fSC9H5BqJ4QUYKYf/5mo3TRsrwO
-	JN4kmpx/zwiX6+uRHzMw==;
+	List-Owner; bh=Y3wJCQz7UZ63TVXpOmInQ/e+k5AyKWyw1NlFSDgEfxk=; b=Jq8Qcv9WkEKxjP
+	OuQ2JdN+Qgf4rceNhHpNAOjJpzro3EjN2+OaUTbiFK9zmzn/9eSm/vXC3Faih7rFDRW9dv/I3IVTD
+	kurn+XBgWwA6CUvU6eHa+zOLC3ZxaFPJaqj7ujpi22aR7EXlM+wG48BoOlbdol4YFnxfrVCuyi03y
+	DKxVE3igm90IU/vmtW7GMCasaPEh4mRWWKgV1SDZefbGJL+pkiUwz/Ou7VG8ShwiY5ztkmbSr3G3/
+	Furw2HIjBfUZK8QJUw47p9VA+PUCZZ46Tvq3qcOuuPdOy05q9R+sPT3SdvEqp5lt+6h82dGqrWg7b
+	V6c9OlHPUgMcU+3lMu9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9hZS-00E2wn-0G;
-	Thu, 15 Jun 2023 07:39:06 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1q9hff-00E3yB-02;
+	Thu, 15 Jun 2023 07:45:31 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9hZP-00E2tc-0L
+	id 1q9hfb-00E3wN-0a
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 07:39:04 +0000
-X-GND-Sasl: miquel.raynal@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686814737;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ypki8Q1FETy9cS5zGlCe51eb/DWUnch4Lfawodrm/+s=;
-	b=YUs71mcqT6OwKd+ufcUb74W4DitaZZwtcUXcMS6j9rU7FyvG74PVo+eABlXrENRRgOBQ7X
-	m/dTinqxC4jYAzUviAbBznh2w6zBYF4pHI7iTN/ioI0dZaI6MLAGRBvyJ/ffbhy2w5v0nj
-	HmENLgMbrCex+a4j2d6UBmeYzgcGz6tCl895yRp6iwZeBPQlZ9xNsRe+j6VhIc+QQk3PS2
-	Dd177PKqPe1vOQgOo0QwvRgaLE4uNpgqi1Pt3Rww5E011yRiDLKPavm7tOGCEp9vxlEnQh
-	yjOXXTdxp+4RmNvR0EABMWRxrJ0ZeJoh9LUQm9lCE7Tqkmv1PCjckwrhyCmRug==
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2D8B91C0010;
-	Thu, 15 Jun 2023 07:38:57 +0000 (UTC)
-Date: Thu, 15 Jun 2023 09:38:53 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mauro Lima <mauro.lima@eclypsium.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: mtd: spi-nor: parsers questions
-Message-ID: <20230615093853.4336862d@xps-13>
-In-Reply-To: <CAArk9MNJnu7zbXLYOh8HX5RQZA47Sdfx3GjUo5HfbeXYdY8WJg@mail.gmail.com>
-References: <CAArk9MNJnu7zbXLYOh8HX5RQZA47Sdfx3GjUo5HfbeXYdY8WJg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Thu, 15 Jun 2023 07:45:28 +0000
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-97467e06511so232144266b.2
+        for <linux-mtd@lists.infradead.org>; Thu, 15 Jun 2023 00:45:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1686815122; x=1689407122;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GShQN3aNeb/7szyOAsiAwnXDqLh1QR1gf41/K50luCM=;
+        b=SqSio0bSvHU9qKGsCc/ZYZRiw60stlxeWgphdgk06A11rBVv/rM5MDeiRuYtth2CV3
+         m2a01lcAf6P8y0X+eQ9pnNAjL8YtpHW3piO4T9dVixCuWuhO24pRvQIFtB7iJAHKwV7T
+         d2gigFLi0nqg/m7CQ8hgquYF6FlsdEn37vButF3jwbnQE7Y2vW+MDmIazSdSKft1/kh6
+         nS5j/9YiimTsBX3hfgyy9rD0K8aJEjg6+BAzqqZpUo3KAaUMjaPPnrluLuhDgf/IoJaq
+         DKY/fjwdv4lwvDdyRpCyUzlDys3OtUb/vRpuFfOLy7VxxZ07V95BOTsprxts/RQcE1lD
+         rsqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686815122; x=1689407122;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GShQN3aNeb/7szyOAsiAwnXDqLh1QR1gf41/K50luCM=;
+        b=A0ib7MhdUqFTfwSRdLOgE6dPZhRj2A/AxX56ktK8QaxB+S3ir+Os6wRv7ZL+x6ta6V
+         pgj9ximTBauZzGVHv6DL2DDMt9G6zFxUyEuUZ9ivm9XE1pWH6GyPjxUeRZ33bMUnmk6C
+         yO/Yh2/QZImBds/X2adVcrPor3Ow64ZEYKqmNr5nB3EqdiDbD6aB31Lj0dQdSlmsRyaB
+         NCHn8M2JIdc7EF84alt+NxMEfrAS7+KFmHkQV8QAGqv4KmSJuvLgD2F2VRocCZxacwaT
+         RI6y7CvO+6ACrZh8Eu9km4Q4PcGuvGydgnp7j83Ah7pnvVpK7/io6FWtnWJ86JKCUzNb
+         7uUg==
+X-Gm-Message-State: AC+VfDx6A1dHp0JcYGvzvM3oDePA5UJ2/Lfl2xGDZq5GPmvJBHzZVrPa
+	y57lgvc4sYj5+5G/NN2yyykx5g==
+X-Google-Smtp-Source: ACHHUZ4pJSvwAenolK+mWB2JCajqR5hFQLSmeiE6Bf/3XMsDiYfnIdxnsdy4W2q12qVAnyu1p3SRDw==
+X-Received: by 2002:a17:906:7308:b0:968:1e8:a754 with SMTP id di8-20020a170906730800b0096801e8a754mr18444931ejc.72.1686815122438;
+        Thu, 15 Jun 2023 00:45:22 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.219.26])
+        by smtp.gmail.com with ESMTPSA id bi9-20020a170906a24900b009745417ca38sm8967577ejb.21.2023.06.15.00.45.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jun 2023 00:45:22 -0700 (PDT)
+Message-ID: <f16e742f-e6f2-9761-e70d-e0e7cadcba4a@linaro.org>
+Date: Thu, 15 Jun 2023 09:45:20 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v9 3/3] dt-bindings: mtd: marvell-nand: Convert to YAML DT
+ scheme
+Content-Language: en-US
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, andrew@lunn.ch,
+ gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Vadym Kochan <vadym.kochan@plvision.eu>
+References: <20230615040447.3484564-1-chris.packham@alliedtelesis.co.nz>
+ <20230615040447.3484564-4-chris.packham@alliedtelesis.co.nz>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230615040447.3484564-4-chris.packham@alliedtelesis.co.nz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230615_003903_287105_7FAC235A 
-X-CRM114-Status: GOOD (  17.53  )
+X-CRM114-CacheID: sfid-20230615_004527_265095_3B548C19 
+X-CRM114-Status: GOOD (  25.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,34 +95,198 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWF1cm8sCgptYXVyby5saW1hQGVjbHlwc2l1bS5jb20gd3JvdGUgb24gV2VkLCAxNCBKdW4g
-MjAyMyAxODoxOTo0NSAtMDMwMDoKCj4gSGV5IGFsbCEKPiBMb29raW5nIGZvciBzb21lIGhlbHAg
-d2l0aCBtdGQuCj4gSSdtIHdvcmtpbmcgb24gc29tZSBjaGFuZ2VzIGZvciBJbnRlbCdzIHNwaSBj
-b250cm9sbGVyLiBXZSBoYXZlIGEKPiAiQklPUyIgcGFydGl0aW9uLCBjb21wb3NlZCBvZiBtYW55
-IHBhcnRzIHdpdGggZGlmZmVyZW50IG9mZnNldHMgYW5kCj4gY291bGQgYmUgc3ByZWFkIHdpdGhp
-biB0d28gY2hpcHMgaW4gc29tZSBjYXNlcyAobm90IG5lY2Vzc2FyaWx5IG9mIHRoZQo+IHNhbWUg
-c2l6ZSkuCj4gUmlnaHQgbm93IHRoZSBkcml2ZXIgdXNlcyBvbmUgcGFydGl0aW9uIHRoYXQsIGlu
-IG15IHN5c3RlbSwgaXMgYmlnZ2VyCj4gdGhhbiB0aGUgZmlyc3QgY2hpcCdzIHNpemUsIHNvIEkn
-bSBnZXR0aW5nIHRoZSAic2l6ZSB0cnVuY2F0ZWQgdG8KPiAweC4uLiIgbG9nLgo+IEFsbCBkcml2
-ZXJzIHVzaW5nIG10ZF9wYXJ0aXRpb25zIGtub3cgdGhlIHBhcnRpdGlvbiBpbmZvcm1hdGlvbiBh
-dAo+IGNvbXBpbGUgdGltZS4gVGhpcyBpcyBub3QgbXkgY2FzZSwgd2UgbmVlZCB0byByZWFkIHRo
-ZSBmaXJzdCBwb3J0aW9uCj4gb2YgdGhlIGNoaXAgdG8gZ2V0IHRoZSBwYXJ0aXRpb24gcGFydHMn
-IG9mZnNldHMuIFNvIEkgZm91bmQgcGFyc2VycywKPiBhbmQgdGhlIGRyaXZlcnMgdXNpbmcgcGFy
-c2VycyBtYWtlIHBhcnRpdGlvbnMgd2l0aGluIHRoZSBjaGlwJ3Mgc2l6ZS4KPiBTbyBteSBxdWVz
-dGlvbiBpcyB3aGV0aGVyIHBhcnNlcnMgY291bGQgc29sdmUgbXkgdHJ1bmNhdGlvbiBpc3N1ZSBh
-bmQKPiB3aGV0aGVyIHBhcnNlcnMgc3VwcG9ydCB0aGlzIGtpbmQgb2YgbXVsdGlwbGUgY2hpcCBj
-YXNlLgo+IFRoYW5rcyEKClRoZXJlIGlzIG10ZGNvbmNhdCBpbiB0aGUga2VybmVsIGJ1dCBJIGRv
-bid0IHRoaW5rIGl0IHdpbGwgZml0IHlvdXIKcHVycG9zZS4gRllJIEkgdHJpZWQgYSBmZXcgeWVh
-cnMgYWdvIHRvIGJyaW5nIHN1cHBvcnQgZm9yIHNvbWV0aGluZwpsaWtlIHRoaXMsIHVuc3VjY2Vz
-c2Z1bGx5LgoKTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtZGV2aWNldHJlZS8y
-MDE5MTEyNzEwNTUyMi4zMTQ0NS0xLW1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20vCgpZb3Ugd291
-bGQgbmVlZCBzb21ldGhpbmcgbGlrZSB0aGF0IGFuZCBvbiB0b3Agb2YgaXQgYSBkeW5hbWljIHBh
-cnRpdGlvbgpwYXJzZXIuCgpDaGVlcnMsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+On 15/06/2023 06:04, Chris Packham wrote:
+> From: Vadym Kochan <vadym.kochan@plvision.eu>
+> 
+> Switch the DT binding to a YAML schema to enable the DT validation.
+> 
+> The text binding didn't mention it as a requirement but existing usage
+> has
+> 
+>    compatible = "marvell,armada-8k-nand-controller",
+>                 "marvell,armada370-nand-controller";
+> 
+> so the YAML allows this in addition to the individual compatible values.
+> 
+> There was also an incorrect reference to dma-names being "rxtx" where
+> the driver and existing device trees actually use dma-names = "data" so
+> this is corrected in the conversion.
+> 
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> Notes:
+>     Changes in v9:
+>     - depend on series from Miquel
+>       https://lore.kernel.org/linux-mtd/20230606175246.190465-1-miquel.raynal@bootlin.com/
+>     - enforce minimum/maximum for nand-rb
+>     - move required: block for controller
+>     - move unevaluatedProperties: for nand chip
+>     - remove label, partitions and nand-on-flash-bbt which are covered by
+>       generic schema
+>     
+>     Changes in v8:
+>     - Mark deprecated compatible values as such
+>     - Allow "marvell,armada-8k-nand-controller" without
+>       "marvell,armada370-nand-controller"
+
+???
+
+
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: marvell,armada-8k-nand-controller
+> +          - const: marvell,armada370-nand-controller
+> +      - enum:
+> +          - marvell,armada-8k-nand-controller
+
+This is wrong. 8k cannot be both: compatible and not compatible with
+370. It's not someone's cat to be in both states at the same time...
+
+> +          - marvell,armada370-nand-controller
+> +          - marvell,pxa3xx-nand-controller
+> +      - description: legacy bindings
+> +        deprecated: true
+> +        enum:
+> +          - marvell,armada-8k-nand
+> +          - marvell,armada370-nand
+> +          - marvell,pxa3xx-nand
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description:
+> +      Shall reference the NAND controller clocks, the second one is
+> +      is only needed for the Armada 7K/8K SoCs
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    items:
+> +      - const: core
+> +      - const: reg
+> +
+> +  dmas:
+> +    maxItems: 1
+> +
+> +  dma-names:
+> +    items:
+> +      - const: data
+> +
+> +  marvell,system-controller:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Syscon node that handles NAND controller related registers
+> +
+> +patternProperties:
+> +  "^nand@[a-f0-9]$":
+> +    type: object
+> +    $ref: raw-nand-chip.yaml
+> +
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 3
+> +
+> +      nand-rb:
+> +        items:
+> +          - minimum: 0
+> +            maximum: 1
+> +
+> +      nand-ecc-step-size:
+> +        const: 512
+> +
+> +      nand-ecc-strength:
+> +        enum: [1, 4, 8, 12, 16]
+> +
+> +      nand-ecc-mode:
+> +        const: hw
+> +
+> +      marvell,nand-keep-config:
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +        description: |
+
+Do not need '|' unless you need to preserve formatting.
+
+> +          Orders the driver not to take the timings from the core and
+> +          leaving them completely untouched. Bootloader timings will then
+> +          be used.
+> +
+> +      marvell,nand-enable-arbiter:
+> +        $ref: /schemas/types.yaml#/definitions/flag
+> +        description: |
+
+Do not need '|' unless you need to preserve formatting.
+
+> +          To enable the arbiter, all boards blindly used it,
+> +          this bit was set by the bootloader for many boards and even if
+> +          it is marked reserved in several datasheets, it might be needed to set
+> +          it (otherwise it is harmless).
+> +        deprecated: true
+> +
+> +    required:
+> +      - reg
+> +      - nand-rb
+> +
+> +    unevaluatedProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +
+> +allOf:
+> +  - $ref: nand-controller.yaml#
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: marvell,pxa3xx-nand-controller
+> +    then:
+> +      required:
+> +        - dmas
+> +        - dma-names
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: marvell,armada-8k-nand-controller
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 2
+> +
+> +        clock-names:
+> +          minItems: 2
+> +
+> +      required:
+> +        - marvell,system-controller
+
+else:
+narrow clocks to 1? Or is the second clod also valid for other variants?
+Does not look like from your example.
+
+
+Best regards,
+Krzysztof
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
