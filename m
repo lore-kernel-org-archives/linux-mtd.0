@@ -4,73 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4F84EB64DC
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 08:13:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3684EEB64DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 08:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=tsOADcLQO8M6kVtxi63z63UF378kg5hzxfEglJqdgJ8=; b=r6Ph2P6WaCei6H
-	LQdi62T7oYms+26gyIgpPJ2+1lDdi8+ewml3btvvnLQM+Q5dLNZlwPylAMg+1NoCIizQGJ1j1i/N3
-	SOox4p9N3tdlsGRbIzpwKFXhQPcDz8ApmU1cvANyyzQ2Pm6grwi9aHAk07X5sCRi3LjzB2Z4kWtZ5
-	gTgQDXnXlVnPEzLRuCNgsxKBX/Em7mPFZYnxv0dpkSEyOOg2nYCA9jBsnnAh4HWg+X5LPnUD4oHM9
-	WzQjfhqFoOkThcF/h+g4wlnpvqQlPDF/+Ryn1Ou7k57oPjhtuSSKaU2NGlEygV6uHmGdbQsFxSjlw
-	pmHe4kNXjU4rMNt/BvZA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sYxE0TFn98bRbNiuTaA7rf/GQUF5zLRVUYxMvB233EY=; b=XKeo2x9U4nlaPK
+	M2lBAUcG64JR3UE4NgyzHJQHy9fVg7PLpVsuAFziXf/HwXTGMGmbvZlfia7rwoEX74mv1fNu3N2tR
+	q42HBe8EJLPbKFUYbnxb6IjJz/zTDD5f/6uWkeSdmB36kCfo7zqjqM2fD+AAeE1ygFdJVurVyKddS
+	SUZcDY/QZZdut0yU4D8phyQz7bWnPvtjqoSNha4ey+r0IavwuLzZBG9SOwGIGKbz6ZNozdLa1sdqK
+	5cieM8ss4JvADR6BKKnmdN5f1q/Dps2GOeYTNYvxKAkG4Rts3qbGPkSHB7vb7KhK1mmq6XAY6gkf4
+	UwjHPrDhOfLaDYwYrPSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9i6f-00E8E3-2x;
-	Thu, 15 Jun 2023 08:13:25 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1q9iJC-00E9sn-0r;
+	Thu, 15 Jun 2023 08:26:22 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9i6b-00E8Cu-1i;
-	Thu, 15 Jun 2023 08:13:23 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 68ED95FD03;
-	Thu, 15 Jun 2023 11:13:14 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1686816794;
-	bh=GBnQWGCpveCmHdPQY/TjNI8gfHlI0L3tYi9rnXILou8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=lBczXaDzv17chSATJKsingHks6742x8wGEMdGFVLG1XPOqD2wzQM+UE0FihDzmGeO
-	 2GXW74Fu4+8iiSzBljsiSMBrJUERZpllOOEErBkjx9fCw3DHAUqi+9ELe6399I2M2H
-	 1KfX/kb7gOIL6CkHyJo3U2gTa8XZfNjSBPGR0C+owxZu5vZpdhfJHiRGTFS/Yax/jh
-	 7XEidqMgNwSepry8OFLOrOjmDeCzJTtm5GzUpYpWg1RsIP3Le0RNyVc4LHceIQKtgb
-	 WAefYtGyjZsgmrRsK3VXyh0iCxa/tQ1s6NVOAbl89GLBRWd+WedkzLoWtmpXAPE7oS
-	 YOt2dSZRKV4EA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Thu, 15 Jun 2023 11:13:12 +0300 (MSK)
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Yixun Lan
-	<yixun.lan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
-	<AVKrasnov@sberdevices.ru>, <Stable@vger.kernel.org>,
-	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1] mtd: rawnand: meson: fix unaligned DMA buffers handling
-Date: Thu, 15 Jun 2023 11:08:15 +0300
-Message-ID: <20230615080815.3291006-1-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
+	id 1q9iJ8-00E9s7-22
+	for linux-mtd@lists.infradead.org;
+	Thu, 15 Jun 2023 08:26:20 +0000
+X-GND-Sasl: miquel.raynal@bootlin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1686817575;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=369VxYvjbyWVGycDQfqUtVNy7bfv3AtTk5Fu4/mlMp4=;
+	b=TkjfIhXulIm0GjR2EXKACTtjO2pCq0em6cXj4inMyC9xo8p12JFVN+zYloCKFhYw/Ea2L4
+	Y+/FTb2wkvswsJVBrbj0s/yabCaVZO+wFhusPOUSON4JGiQg7GKkT8zzArNa1fCceGc7PK
+	FIWuCoBGVxq2ExpEURgKSHsbnHqhDz376NEqrJ/tNze0waAQhYc4BjweRS6dfzMUTKTylk
+	cTLQBGRjQmDfYc9VVqPz15cXTuREjcS6bxxlW5Sm1IyZE8oxuETrwQcWBYYBrhWhyLLvUK
+	DuD9XYUPsqkHrMFLaSdcESSr00FmVi8WfuCO8zPO49rioezXrFSM2fI3VSI4Kw==
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8CBA8E0008;
+	Thu, 15 Jun 2023 08:26:10 +0000 (UTC)
+Date: Thu, 15 Jun 2023 10:26:09 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzk+dt@kernel.org>, devicetree@vger.kernel.org, Chris Packham
+ <Chris.Packham@alliedtelesis.co.nz>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, Brian Norris
+ <computersforpeace@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Christophe
+ Kerello <christophe.kerello@foss.st.com>, Heiko Stuebner <heiko@sntech.de>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Liang Yang <liang.yang@amlogic.com>, Manivannan
+ Sadhasivam <mani@kernel.org>, Masahiro Yamada
+ <yamada.masahiro@socionext.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Maxime Ripard
+ <mripard@kernel.org>, Paul Cercueil <paul@crapouillou.net>, Samuel Holland
+ <samuel@sholland.org>, Vadivel Murugan
+ <vadivel.muruganx.ramuthevar@linux.intel.com>, Xiangsheng Hou
+ <xiangsheng.hou@mediatek.com>
+Subject: Re: [PATCH v2 00/17] Prevent NAND chip unevaluated properties
+Message-ID: <20230615102609.0aeea6ab@xps-13>
+In-Reply-To: <20230613134350.3cab6780@xps-13>
+References: <20230606175246.190465-1-miquel.raynal@bootlin.com>
+	<e886db25-dd5f-c8d9-83d4-77540fc3826e@kernel.org>
+	<20230613134350.3cab6780@xps-13>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/15 01:19:00 #21506022
-X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230615_011322_083522_FF73C9D1 
-X-CRM114-Status: GOOD (  10.04  )
+X-CRM114-CacheID: sfid-20230615_012618_937174_86DBC9DC 
+X-CRM114-Status: GOOD (  22.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,49 +117,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Meson NAND controller requires 8 bytes alignment for DMA addresses,
-otherwise it "aligns" passed address by itself thus accessing invalid
-location in the provided buffer. This patch makes unaligned buffers to
-be reallocated to become valid.
-
-Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
----
- drivers/mtd/nand/raw/meson_nand.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index c5628f7ac3b1..aa2b64dde74b 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -77,6 +77,7 @@
- #define GENCMDIADDRH(aih, addr)		((aih) | (((addr) >> 16) & 0xffff))
- 
- #define DMA_DIR(dir)		((dir) ? NFC_CMD_N2M : NFC_CMD_M2N)
-+#define DMA_ADDR_ALIGN		8
- 
- #define ECC_CHECK_RETURN_FF	(-1)
- 
-@@ -1001,6 +1002,9 @@ static int meson_nfc_read_page_hwecc(struct nand_chip *nand, u8 *buf,
- 
- static bool meson_nfc_is_buffer_dma_safe(const void *buffer)
- {
-+	if ((uintptr_t)buffer % DMA_ADDR_ALIGN)
-+		return false;
-+
- 	if (virt_addr_valid(buffer) && (!object_is_on_stack(buffer)))
- 		return true;
- 	return false;
--- 
-2.35.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgS3J6eXN6dG9mLAoKbWlxdWVsLnJheW5hbEBib290bGluLmNvbSB3cm90ZSBvbiBUdWUsIDEz
+IEp1biAyMDIzIDEzOjQzOjUwICswMjAwOgoKPiBIaSBLcnp5c3p0b2YsCj4gCj4ga3J6a0BrZXJu
+ZWwub3JnIHdyb3RlIG9uIFNhdCwgMTAgSnVuIDIwMjMgMTE6Mjc6NTUgKzAyMDA6Cj4gCj4gPiBP
+biAwNi8wNi8yMDIzIDE5OjUyLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAgCj4gPiA+IEFzIGRpc2N1
+c3NlZCB3aXRoIEtyenlzenRvZiBhbmQgQ2hyaXMsIGl0IHNlZW1zIGxpa2UgZWFjaCBOQU5ECj4g
+PiA+IGNvbnRyb2xsZXIgYmluZGluZyBzaG91bGQgYWN0dWFsbHkgcmVzdHJhaW4gdGhlIHByb3Bl
+cnRpZXMgYWxsb3dlZCBpbgo+ID4gPiB0aGUgTkFORCBjaGlwIG5vZGUgd2l0aCBpdHMgb3duICJ1
+bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlIi4gVGhpcwo+ID4gPiBvbmx5IHdvcmtzIGlmIHdl
+IHJlZmVyZW5jZSBhIHlhbWwgc2NoZW1hIHdoaWNoIGNvbnRhaW5zIGFsbCB0aGUgcG9zc2libGUK
+PiA+ID4gcHJvcGVydGllcyAqaW4gdGhlIE5BTkQgY2hpcCBub2RlKi4gSW5kZWVkLCB0aGUgTkFO
+RCBjb250cm9sbGVyIHlhbWwKPiA+ID4gc2NoZW1hIGNvbnRhaW5zIHByb3BlcnRpZXMgZm9yIHRo
+ZSBOQU5EIGNoaXAgd2hpY2ggYXJlIG5vdCBldmFsdWF0ZWQKPiA+ID4gd2l0aCB0aGlzIGNvbnN0
+cnVjdGlvbi4KPiA+ID4gCj4gPiA+IExpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC9h
+MjNkZDQ4NS1hM2Q5LWUzMWYtYmUzZS0wYWIyOTNmY2ZjNGFAbGluYXJvLm9yZy8gICAgCj4gPiAK
+PiA+IFBsZWFzZSByZWJhc2Ugb24gbGF0ZXN0IGtlcm5lbC4gVGhpcyBpcyBzb21lIHZlcnkgb2xk
+IHRyZWUgaWYgeW91IENDCj4gPiB0aGlzIGFkZHJlc3MuICAKPiAKPiBTb3JyeSBmb3IgdGhlIHRy
+b3VibGUsIGl0IHdhcyBhIGhhcmRjb2RlZCBhZGRyZXNzIG9uIG15IHNpZGUuIEkndmUKPiB1cGRh
+dGVkIHRoZSBhZGRyZXNzIHRvCj4gCj4gCUtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5r
+b3psb3dza2krZHRAbGluYXJvLm9yZz4KPiAKPiBUaGUgc2VyaWVzIGlzIGJhc2VkIG9uIHY2LjQt
+cmMxLiBBZ2FpbnN0IHdoYXQgYnJhbmNoL3RhZyBkbyB5b3Ugd2FudCBpdAo+IHRvIGJlIHJlYmFz
+ZWQ/CgpXaGVuIEkgYXNrZWQgdGhpcyBxdWVzdGlvbiBJIGZvcmdvdCBJIHVzdWFsbHkgYXBwbHkg
+bXRkIGJpbmRpbmdzIGluIG15Cm93biB0cmVlIDopIEkgdXN1YWxseSBkbyBpdCBhZnRlciByZWNl
+aXZpbmcgYXQgbGVhc3Qgb25lIFItYnkgb24gdGhlCndob2xlIHNlcmllcywgYnV0IGhlcmUgYXMg
+SSdtIHRoZSBhdXRob3IgSSB3b3VsZCBqdXN0IGxpa2UgdG8gZ2V0CmNvbmZpcm1hdGlvbiBmcm9t
+IHlvdSBLcnp5c3p0b2YgdGhhdCBJIGNhbiBnbyBhaGVhZCAob3IgaWYgeW91IHByZWZlcgp0byB0
+YWtlIGl0LCBvciBtYXliZSB3YW50IHRvIGdpdmUgdGhpcyBhbm90aGVyIGxvb2sgbGF0ZXIpLgoK
+VGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
