@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09D8EEB64DC
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 04:05:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7D31EB64DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 04:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KZ35bTcY26rA0/ECAS5HEpSdefOKhiUWwLcyLU7HP78=; b=EUIlv18JWlVO19
-	H/6JOficsWia/bxn8Zfx37pXIvn9vW08kbqv3pvHw3fjMSe6BxCFzfnJrahCqq2NaXmYgtaeHRVIm
-	yeC+/z/DdFl/tPj+2tQK7hZevqMP1U/h++VtQFp4KdAbf6e7bE1ALtmQIkzbJUtaajlLMR30iVhub
-	xfEQJXrA9R3LMuHU/CHOUkpHweQi0i3S1tq48qorvd8aHt1k48kLyKSnMva546NgA2M/2TXbpPBEH
-	2zj1CBx+agTJLqBySisw1LQbIf4F7qhz3voQ5lMvZ024sil2pJqRdoUu5V7CKfrw98a8j8whCMj+V
-	RyVoJhI+Nzvyh7elngZA==;
+	List-Owner; bh=sH0zkOCu2BhCtiGOls+nw44+UOqGTuKc2nK6yN1yHyU=; b=vbBwe4PIL+2R4L
+	sPHDmI0PHThsKJ/KdSDeNm+/LSkNqGh6pTtCNYI61A6BfwbcM3H0jZ+8Ob/Zaeit7/jDRs2fMO5La
+	hRoq6v7z7Oy82yyNvq47ejvBu1TadBH8XWU2wWGu+/acLH7KKLoxHN4K9h2IevkE82TC5Ex1g5HEj
+	vIomOdEBbxzMePAbVwvNt/Ai1N06nL+3zjk0MLw8q6TlG6EbSLulDePEO0GNHRMcrHm+Gssdj3Gzx
+	sBqtfVm41/+Egj2931QhSziTJDsg71Ebh9OznFTIwxKAcSs3enwwecKjCa3ybwH8ib/TuJAInc9Nx
+	FKoncICS+45XgxGU6W0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9eEM-00DXmU-3D;
-	Thu, 15 Jun 2023 04:05:07 +0000
+	id 1q9eEZ-00DXqT-16;
+	Thu, 15 Jun 2023 04:05:19 +0000
 Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9eEG-00DXjD-0G
+	id 1q9eEM-00DXm6-2b
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 04:05:03 +0000
+	Thu, 15 Jun 2023 04:05:08 +0000
 Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 055682C0594;
-	Thu, 15 Jun 2023 16:04:55 +1200 (NZST)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 4D0082C0301;
+	Thu, 15 Jun 2023 16:04:54 +1200 (NZST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1686801895;
-	bh=rLZ1zREIa+tXkZewaMWxEkrQPDep6XErf3mfjKbraZ4=;
+	s=mail181024; t=1686801894;
+	bh=6UwyZP/DLulVGE0G/SWUR+rzLZIItqQDkNcjzH/kgXY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=u242Sr64pro3dsSiSxHtooIMFB9/Pit9mc6Unjt/nsb4oxk+OAkytLJXLLyZjv7ey
-	 dujX6cGyWMU+G5j7el3oPrDd4DFrMhSZjdl+kyO5wQPLG14+IlwVLkEbCuN7jkNBuP
-	 1saoVnx/6Ox7icOcdhZdMhkIiWiuq9+qJ2PBlXmcAR4BpYybg6TFoMzvyVGJqlnrge
-	 BCsks7JWzGsWmMGkUUpQlObedz65Odc/m7e/o+6WhdPJLkKt+vZY5+S2bWVGWtkeL9
-	 sSauv7bVNQ1d4ra2JuoQtndU1femJay0Zm1wr/YNCd2X7Y6oc+U8YQ2Uf7NjHZkghA
-	 7gaMzvGMA/0eA==
+	b=oDdFYjOlYcPMxU7uWllLqPY//WHqEuBde5HvT2MgPiYtMoa3DKYYuol5clcDupbXn
+	 VkZ+kCpf9StvkWNocrS1qtYrGlFjYVFjduwVXq59TKXzhyq2RJO82SYgZx0iG9HXhs
+	 XxRK6e5DWai4xbLfVCufmUXTwHQsU6GS7QFRzcw2jdaanMNP6opoL5XSlWU+1UJa9D
+	 AGR0rR64GtkW27R2AHkN7vrE0WVM1an3goDCx4DJe14cpLJewrV3Fjs122XE/QBxbE
+	 /v30KuTkUjyicwyrmBFiyP4QGYRGXyJeia0QcQ744Ry3p/D+QN4stu3PwRKZzMjvTh
+	 DyvqN1j6d6I+Q==
 Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B648a8de60003>; Thu, 15 Jun 2023 16:04:54 +1200
+	id <B648a8de60001>; Thu, 15 Jun 2023 16:04:54 +1200
 Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 90D6B13ED5B;
+	by pat.atlnz.lc (Postfix) with ESMTP id 2CE4113ED5B;
 	Thu, 15 Jun 2023 16:04:54 +1200 (NZST)
 Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 8FC6A2815D4; Thu, 15 Jun 2023 16:04:54 +1200 (NZST)
+	id 2C1B32815D4; Thu, 15 Jun 2023 16:04:54 +1200 (NZST)
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: miquel.raynal@bootlin.com,
 	richard@nod.at,
@@ -65,20 +65,20 @@ Cc: linux-mtd@lists.infradead.org,
 	linux-arm-kernel@lists.infradead.org,
 	Vadym Kochan <vadym.kochan@plvision.eu>,
 	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v9 3/3] dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
-Date: Thu, 15 Jun 2023 16:04:47 +1200
-Message-Id: <20230615040447.3484564-4-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v9 1/3] arm64: dts: marvell: cp11x: Fix nand_controller node name according to YAML
+Date: Thu, 15 Jun 2023 16:04:45 +1200
+Message-Id: <20230615040447.3484564-2-chris.packham@alliedtelesis.co.nz>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230615040447.3484564-1-chris.packham@alliedtelesis.co.nz>
 References: <20230615040447.3484564-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 X-Patchwork-Bot: notify
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=NPqrBHyg c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=of4jigFt-DYA:10 a=g8kJ_gb0AAAA:8 a=VwQbUJbxAAAA:8 a=P-IC7800AAAA:8 a=gEfo2CItAAAA:8 a=JfrnYn6hAAAA:8 a=svvZceJcRGB84mKnZCYA:9 a=ecSNLfPMzbq-p5zXJZOg:22 a=AjGcO6oz07-iQ99wixmX:22 a=d3PnA9EDa4IxuAV0gXij:22 a=sptkURWiP4Gy88Gu7hUp:22 a=1CNFftbPRP8L7MoqJWF3:22
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=NPqrBHyg c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=of4jigFt-DYA:10 a=g8kJ_gb0AAAA:8 a=P-IC7800AAAA:8 a=meJC3iukd72GVYD95wIA:9 a=ecSNLfPMzbq-p5zXJZOg:22 a=d3PnA9EDa4IxuAV0gXij:22
 X-SEG-SpamProfiler-Score: 0
 x-atlnz-ls: pat
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230614_210500_638935_F67FCA15 
-X-CRM114-Status: GOOD (  26.33  )
+X-CRM114-CacheID: sfid-20230614_210507_014498_13134F8E 
+X-CRM114-Status: GOOD (  10.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,470 +97,36 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Vadym Kochan <vadym.kochan@plvision.eu>
 
-Switch the DT binding to a YAML schema to enable the DT validation.
-
-The text binding didn't mention it as a requirement but existing usage
-has
-
-   compatible = "marvell,armada-8k-nand-controller",
-                "marvell,armada370-nand-controller";
-
-so the YAML allows this in addition to the individual compatible values.
-
-There was also an incorrect reference to dma-names being "rxtx" where
-the driver and existing device trees actually use dma-names = "data" so
-this is corrected in the conversion.
+Marvell NAND controller has now YAML to validate it's DT bindings, so
+change the node name of cp11x DTSI as it is required by nand-controller.yaml
 
 Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
 
 Notes:
     Changes in v9:
-    - depend on series from Miquel
-      https://lore.kernel.org/linux-mtd/20230606175246.190465-1-miquel.raynal@bootlin.com/
-    - enforce minimum/maximum for nand-rb
-    - move required: block for controller
-    - move unevaluatedProperties: for nand chip
-    - remove label, partitions and nand-on-flash-bbt which are covered by
-      generic schema
-    
+    - None
     Changes in v8:
-    - Mark deprecated compatible values as such
-    - Allow "marvell,armada-8k-nand-controller" without
-      "marvell,armada370-nand-controller"
-    - Make dma-names usage reflect reality
-    - Update commit message
-    
-    Changes in v7:
-    - Restore "label" and "partitions" properties (should be picked up via
-      nand-controller.yaml but aren't)
-    - Add/restore nand-on-flash-bbt and nand-ecc-mode which aren't covered
-      by nand-controller.yaml.
-    - Use "unevalautedProperties: false"
-    - Corrections for clock-names, dma-names, nand-rb and nand-ecc-strength
-    - Add pxa3xx-nand-controller example
-    
-    Changes in v6:
-    - remove properties covered by nand-controller.yaml
-    - add example using armada-8k compatible
-    
-    earlier changes:
-    
-    v5:
-       1) Get back "label" and "partitions" properties but without
-          ref to the "partition.yaml" which was wrongly used.
-    
-       2) Add "additionalProperties: false" for nand@ because all possible
-          properties are described.
-    
-    v4:
-       1) Remove "label" and "partitions" properties
-    
-       2) Use 2 clocks for A7K/8K platform which is a requirement
-    
-    v3:
-      1) Remove txt version from the MAINTAINERS list
-    
-      2) Use enum for some of compatible strings
-    
-      3) Drop:
-            #address-cells
-            #size-cells:
-    
-         as they are inherited from the nand-controller.yaml
-    
-      4) Add restriction to use 2 clocks for A8K SoC
-    
-      5) Dropped description for clock-names and extend it with
-         minItems: 1
-    
-      6) Drop description for "dmas"
-    
-      7) Use "unevalautedProperties: false"
-    
-      8) Drop quites from yaml refs.
-    
-      9) Use 4-space indentation for the example section
-    
-    v2:
-      1) Fixed warning by yamllint with incorrect indentation for compatible list
+    - Add r-by from Miquel
 
- .../bindings/mtd/marvell,nand-controller.yaml | 218 ++++++++++++++++++
- .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ----------
- MAINTAINERS                                   |   1 -
- 3 files changed, 218 insertions(+), 127 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-new file mode 100644
-index 000000000000..252bd0f3e222
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-@@ -0,0 +1,218 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/marvell,nand-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Marvell NAND Flash Controller (NFC)
-+
-+maintainers:
-+  - Miquel Raynal <miquel.raynal@bootlin.com>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: marvell,armada-8k-nand-controller
-+          - const: marvell,armada370-nand-controller
-+      - enum:
-+          - marvell,armada-8k-nand-controller
-+          - marvell,armada370-nand-controller
-+          - marvell,pxa3xx-nand-controller
-+      - description: legacy bindings
-+        deprecated: true
-+        enum:
-+          - marvell,armada-8k-nand
-+          - marvell,armada370-nand
-+          - marvell,pxa3xx-nand
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    description:
-+      Shall reference the NAND controller clocks, the second one is
-+      is only needed for the Armada 7K/8K SoCs
-+    minItems: 1
-+    maxItems: 2
-+
-+  clock-names:
-+    minItems: 1
-+    items:
-+      - const: core
-+      - const: reg
-+
-+  dmas:
-+    maxItems: 1
-+
-+  dma-names:
-+    items:
-+      - const: data
-+
-+  marvell,system-controller:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: Syscon node that handles NAND controller related registers
-+
-+patternProperties:
-+  "^nand@[a-f0-9]$":
-+    type: object
-+    $ref: raw-nand-chip.yaml
-+
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 3
-+
-+      nand-rb:
-+        items:
-+          - minimum: 0
-+            maximum: 1
-+
-+      nand-ecc-step-size:
-+        const: 512
-+
-+      nand-ecc-strength:
-+        enum: [1, 4, 8, 12, 16]
-+
-+      nand-ecc-mode:
-+        const: hw
-+
-+      marvell,nand-keep-config:
-+        $ref: /schemas/types.yaml#/definitions/flag
-+        description: |
-+          Orders the driver not to take the timings from the core and
-+          leaving them completely untouched. Bootloader timings will then
-+          be used.
-+
-+      marvell,nand-enable-arbiter:
-+        $ref: /schemas/types.yaml#/definitions/flag
-+        description: |
-+          To enable the arbiter, all boards blindly used it,
-+          this bit was set by the bootloader for many boards and even if
-+          it is marked reserved in several datasheets, it might be needed to set
-+          it (otherwise it is harmless).
-+        deprecated: true
-+
-+    required:
-+      - reg
-+      - nand-rb
-+
-+    unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+
-+allOf:
-+  - $ref: nand-controller.yaml#
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: marvell,pxa3xx-nand-controller
-+    then:
-+      required:
-+        - dmas
-+        - dma-names
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: marvell,armada-8k-nand-controller
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 2
-+
-+        clock-names:
-+          minItems: 2
-+
-+      required:
-+        - marvell,system-controller
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    nand_controller: nand-controller@d0000 {
-+        compatible = "marvell,armada370-nand-controller";
-+        reg = <0xd0000 0x54>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&coredivclk 0>;
-+
-+        nand@0 {
-+            reg = <0>;
-+            label = "main-storage";
-+            nand-rb = <0>;
-+            nand-ecc-mode = "hw";
-+            marvell,nand-keep-config;
-+            nand-on-flash-bbt;
-+            nand-ecc-strength = <4>;
-+            nand-ecc-step-size = <512>;
-+
-+            partitions {
-+                compatible = "fixed-partitions";
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+
-+                partition@0 {
-+                    label = "Rootfs";
-+                    reg = <0x00000000 0x40000000>;
-+                };
-+            };
-+        };
-+    };
-+
-+  - |
-+    cp0_nand_controller: nand-controller@720000 {
-+        compatible = "marvell,armada-8k-nand-controller",
-+                "marvell,armada370-nand-controller";
-+        reg = <0x720000 0x54>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        interrupts = <115 IRQ_TYPE_LEVEL_HIGH>;
-+        clock-names = "core", "reg";
-+        clocks = <&cp0_clk 1 2>,
-+                 <&cp0_clk 1 17>;
-+        marvell,system-controller = <&cp0_syscon0>;
-+
-+        nand@0 {
-+            reg = <0>;
-+            label = "main-storage";
-+            nand-rb = <0>;
-+            nand-ecc-mode = "hw";
-+            nand-ecc-strength = <8>;
-+            nand-ecc-step-size = <512>;
-+        };
-+    };
-+
-+  - |
-+    nand-controller@43100000 {
-+        compatible = "marvell,pxa3xx-nand-controller";
-+        reg = <0x43100000 90>;
-+        interrupts = <45>;
-+        clocks = <&clks 1>;
-+        clock-names = "core";
-+        dmas = <&pdma 97 3>;
-+        dma-names = "data";
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        nand@0 {
-+            reg = <0>;
-+            nand-rb = <0>;
-+            nand-ecc-mode = "hw";
-+            marvell,nand-keep-config;
-+        };
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/mtd/marvell-nand.txt b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-deleted file mode 100644
-index a2d9a0f2b683..000000000000
---- a/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-+++ /dev/null
-@@ -1,126 +0,0 @@
--Marvell NAND Flash Controller (NFC)
--
--Required properties:
--- compatible: can be one of the following:
--    * "marvell,armada-8k-nand-controller"
--    * "marvell,armada370-nand-controller"
--    * "marvell,pxa3xx-nand-controller"
--    * "marvell,armada-8k-nand" (deprecated)
--    * "marvell,armada370-nand" (deprecated)
--    * "marvell,pxa3xx-nand" (deprecated)
--  Compatibles marked deprecated support only the old bindings described
--  at the bottom.
--- reg: NAND flash controller memory area.
--- #address-cells: shall be set to 1. Encode the NAND CS.
--- #size-cells: shall be set to 0.
--- interrupts: shall define the NAND controller interrupt.
--- clocks: shall reference the NAND controller clocks, the second one is
--  is only needed for the Armada 7K/8K SoCs
--- clock-names: mandatory if there is a second clock, in this case there
--  should be one clock named "core" and another one named "reg"
--- marvell,system-controller: Set to retrieve the syscon node that handles
--  NAND controller related registers (only required with the
--  "marvell,armada-8k-nand[-controller]" compatibles).
--
--Optional properties:
--- label: see partition.txt. New platforms shall omit this property.
--- dmas: shall reference DMA channel associated to the NAND controller.
--  This property is only used with "marvell,pxa3xx-nand[-controller]"
--  compatible strings.
--- dma-names: shall be "rxtx".
--  This property is only used with "marvell,pxa3xx-nand[-controller]"
--  compatible strings.
--
--Optional children nodes:
--Children nodes represent the available NAND chips.
--
--Required properties:
--- reg: shall contain the native Chip Select ids (0-3).
--- nand-rb: see nand-controller.yaml (0-1).
--
--Optional properties:
--- marvell,nand-keep-config: orders the driver not to take the timings
--  from the core and leaving them completely untouched. Bootloader
--  timings will then be used.
--- label: MTD name.
--- nand-on-flash-bbt: see nand-controller.yaml.
--- nand-ecc-mode: see nand-controller.yaml. Will use hardware ECC if not specified.
--- nand-ecc-algo: see nand-controller.yaml. This property is essentially useful when
--  not using hardware ECC. Howerver, it may be added when using hardware
--  ECC for clarification but will be ignored by the driver because ECC
--  mode is chosen depending on the page size and the strength required by
--  the NAND chip. This value may be overwritten with nand-ecc-strength
--  property.
--- nand-ecc-strength: see nand-controller.yaml.
--- nand-ecc-step-size: see nand-controller.yaml. Marvell's NAND flash controller does
--  use fixed strength (1-bit for Hamming, 16-bit for BCH), so the actual
--  step size will shrink or grow in order to fit the required strength.
--  Step sizes are not completely random for all and follow certain
--  patterns described in AN-379, "Marvell SoC NFC ECC".
--
--See Documentation/devicetree/bindings/mtd/nand-controller.yaml for more details on
--generic bindings.
--
--
--Example:
--nand_controller: nand-controller@d0000 {
--	compatible = "marvell,armada370-nand-controller";
--	reg = <0xd0000 0x54>;
--	#address-cells = <1>;
--	#size-cells = <0>;
--	interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
--	clocks = <&coredivclk 0>;
--
--	nand@0 {
--		reg = <0>;
--		label = "main-storage";
--		nand-rb = <0>;
--		nand-ecc-mode = "hw";
--		marvell,nand-keep-config;
--		nand-on-flash-bbt;
--		nand-ecc-strength = <4>;
--		nand-ecc-step-size = <512>;
--
--		partitions {
--			compatible = "fixed-partitions";
--			#address-cells = <1>;
--			#size-cells = <1>;
--
--			partition@0 {
--				label = "Rootfs";
--				reg = <0x00000000 0x40000000>;
--			};
--		};
--	};
--};
--
--
--Note on legacy bindings: One can find, in not-updated device trees,
--bindings slightly different than described above with other properties
--described below as well as the partitions node at the root of a so
--called "nand" node (without clear controller/chip separation).
--
--Legacy properties:
--- marvell,nand-enable-arbiter: To enable the arbiter, all boards blindly
--  used it, this bit was set by the bootloader for many boards and even if
--  it is marked reserved in several datasheets, it might be needed to set
--  it (otherwise it is harmless) so whether or not this property is set,
--  the bit is selected by the driver.
--- num-cs: Number of chip-select lines to use, all boards blindly set 1
--  to this and for a reason, other values would have failed. The value of
--  this property is ignored.
--
--Example:
--
--	nand0: nand@43100000 {
--		compatible = "marvell,pxa3xx-nand";
--		reg = <0x43100000 90>;
--		interrupts = <45>;
--		dmas = <&pdma 97 0>;
--		dma-names = "rxtx";
--		#address-cells = <1>;
--		marvell,nand-keep-config;
--		marvell,nand-enable-arbiter;
--		num-cs = <1>;
--		/* Partitions (optional) */
--       };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5d463f171c90..5342798d4e4f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12448,7 +12448,6 @@ MARVELL NAND CONTROLLER DRIVER
- M:	Miquel Raynal <miquel.raynal@bootlin.com>
- L:	linux-mtd@lists.infradead.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/mtd/marvell-nand.txt
- F:	drivers/mtd/nand/raw/marvell_nand.c
+diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+index 7d0043824f2a..982b180b33e6 100644
+--- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+@@ -468,7 +468,7 @@ CP11X_LABEL(uart3): serial@702300 {
+ 			status = "disabled";
+ 		};
  
- MARVELL OCTEONTX2 PHYSICAL FUNCTION DRIVER
+-		CP11X_LABEL(nand_controller): nand@720000 {
++		CP11X_LABEL(nand_controller): nand-controller@720000 {
+ 			/*
+ 			 * Due to the limitation of the pins available
+ 			 * this controller is only usable on the CPM
 -- 
 2.40.1
 
