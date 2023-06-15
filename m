@@ -4,71 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AAFDEB64DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 09:45:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63FDAEB64DB
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 11:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=BFIA6ZFXEIVXE+O78FU5S79/KboEYwAxuKrgjXkdhds=; b=bDBrJFFHddAeZK
-	jknIsemSnCA48hTBIsAR8RVY2ALki071B+XAojdswKaHHBmLPeLGj+ZfTT1nOPdinordYtYf7v7XC
-	OrEod9sPbQlFkfeKAF/Yhosrn2k50dsSy21ArhWkb0ksCzQwP73Za9ovzg1VBY+pXfc+e13n73xja
-	03mLnkYq3ojcUS/UfsJmmmSbhV4r4xRC/4imauWgDf7UOJMYYlFlohePTBBwBe+/FWWftt2rnecZz
-	speR3qgmUADozuSoleRs1djyY6dXfZf9EKatXnpzLtQGpXcAHZ9W1EDstGTmI2KXF89KMyv36rfLL
-	udgelbd0NmRv8neS8f3Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=UX249ICoLm0+qynSzUMLWkbH2oMMACrze2EWtwUQz+I=; b=AtKu9uaxYg+da6
+	pXoF6crGTOgIin3wRkeTzeHoNlcdO8OBVHy3hYAK+vjIlLpdyWz+4KP8lp6iNCZavAEz7I4nEswAB
+	4LC8nU7QH8Wxo3vrBcgRHmw+UjhDlFq1DdpbU9mKvzINuUray9OxpmIzLVw0YVOEC4KCx6JKZT2n2
+	YXyPZbFiW1tta1cMvnfR36BU2hb9IgYUzMZrQlJJj625bwXaBocsYbkssMSUwN9jkVfnOLTH76rZp
+	kzms9psRBWBavRBtQBsZbluaFfMbOr5ontuZH2Vg7HPQf17rR9+WwBxKgHNkzcJ29sDo0yrrKQu/R
+	84S87Vi6upGaTY1Hd8vg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9jXz-00ELld-0m;
-	Thu, 15 Jun 2023 09:45:43 +0000
-Received: from mx.sberdevices.ru ([45.89.227.171])
+	id 1q9kya-00EgRT-0n;
+	Thu, 15 Jun 2023 11:17:16 +0000
+Received: from mail-dm6nam11on20626.outbound.protection.outlook.com ([2a01:111:f400:7eaa::626] helo=NAM11-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9jXu-00ELjy-31
+	id 1q9kyX-00EgPp-18
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 09:45:41 +0000
-Received: from s-lin-edge02.sberdevices.ru (localhost [127.0.0.1])
-	by mx.sberdevices.ru (Postfix) with ESMTP id 105245FD08;
-	Thu, 15 Jun 2023 12:45:32 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1686822332;
-	bh=KY8MsO4bvb628kL7iIp0YQE4xIOo6DSZxFqLJtgyE0I=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=AcKOxgiKjiRGDox0dPZtopcpG8f8bbEUyZ2TkO5SQMdEOOR5vn+HahTx/Er2EWxWO
-	 8JJmBfwgVYwwZhdA2SX1O5FIr4nQc3GAKqCNPNkr1h/hf0jvON2NWcywfN1Qv3os1+
-	 uSRHhhW+8TMhlPF7L4/+nl7vpqQ2DbFtqSzRW/L0UBBav6NoNZSZsfyEWLPkxcI4gN
-	 ZuQzo8SDm+wEWtQTrsidHapGGG3qQVw3TpQo6qtujWyrqmBPFeDziq30lh5KpwlQJ0
-	 oZ3HkWiKsY7ICtxzSN+4fEKQphTGLLCjvZWLJowKLzY83fLvWSFxPNXnKlWZxIQ6ot
-	 eN95uXtZ0+NOQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	by mx.sberdevices.ru (Postfix) with ESMTP;
-	Thu, 15 Jun 2023 12:45:28 +0300 (MSK)
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
-	<robh@kernel.org>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Boris Brezillon
-	<boris.brezillon@collabora.com>, Jaime Liao <jaimeliao.tw@gmail.com>, Jaime
- Liao <jaimeliao@mxic.com.tw>, Mason Yang <masonccyang@mxic.com.tw>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5] mtd: rawnand: macronix: OTP access for MX30LFxG18AC
-Date: Thu, 15 Jun 2023 12:40:06 +0300
-Message-ID: <20230615094015.3780078-1-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
+	Thu, 15 Jun 2023 11:17:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aRNy4O6IhztfAWU+SPWEDeLtZN396dmE5r/cbh5SRApIh4CAWKIO8oUB3S69parplWQiF4eXZXSFyXEMxVjTzMVuKPyncbpwjztYSXXCYGglBEzTYgS+aWM4mxRExhhFTh4FZiomoMYlUqJsGwEIrwinBj0pKaLHo+NP8sp5lxvVvi2sv0tduGZZem77rxj9KD8nCmnzW/P0SYgaiRtjYzM2iYGAvICNdwd/ozSjTIh1oDSGWh4bcaJEzI90l+UYxd/kK61RMQEJa87UXzgxd0GBm3nbNr1uKsB9SpLX8q4M3fBBOJwQVYVPilcPbBw62RDVpsKC2EI/pSW8W0Frhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NwLpsJxkcH49sLPYetklM7Y60KSjKNFkRmtNfEo/TBI=;
+ b=CA/Ylz96Yx0AvZ52RdaBLgAppg7jm1hQfjdHM6NDvts554roB4TUA9y143lhQ0pVeh3SDg/hWEJhZekP9WhjExfi/YUCR3D7b7AlEHZ4OD1lAfwO0lcylIDbFvabIfeeO+/EpdX/s3J1IJegNtaYemWwaEy23/m5CzdLrXsf336vXHLPEXzSlBjO5xA1xfSNYb0VRfM5EZnhM0teV5wBAThqqUYavS8ncaaqJGPN9lO9mi3OBFMxZ1ycz7SuSt9XIkpkXZxAH1gBpgd64QDuyLDngUzBe0mKU/JzfcSoFyeCJw22D+gUxnV4qoH7SqzIBVjQf80cltXtLbBso8wvnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NwLpsJxkcH49sLPYetklM7Y60KSjKNFkRmtNfEo/TBI=;
+ b=heFT9ydZ2we9TViikrt71Re611OPsiJgcJL+IlEIuAspcDv2BWwo7HdK+ZO2tCPClekQWijbmedv0WSBDpAYyw95aZVetq+2tXjHTtgjE+uyACQi3fFGowHo6DO+AVLSX01U+nlpINVCyI7D3l1mvgXikr7iUkyAIzMisBE+Xf8=
+Received: from SJ0PR05CA0169.namprd05.prod.outlook.com (2603:10b6:a03:339::24)
+ by MN2PR12MB4568.namprd12.prod.outlook.com (2603:10b6:208:260::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.27; Thu, 15 Jun
+ 2023 11:17:01 +0000
+Received: from DM6NAM11FT054.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:a03:339:cafe::d7) by SJ0PR05CA0169.outlook.office365.com
+ (2603:10b6:a03:339::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.12 via Frontend
+ Transport; Thu, 15 Jun 2023 11:17:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ DM6NAM11FT054.mail.protection.outlook.com (10.13.173.95) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6500.27 via Frontend Transport; Thu, 15 Jun 2023 11:17:00 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 15 Jun
+ 2023 06:16:59 -0500
+Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.23
+ via Frontend Transport; Thu, 15 Jun 2023 06:16:55 -0500
+From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+To: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
+	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>
+CC: <git@amd.com>, <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<amitrkcian2002@gmail.com>, Amit Kumar Mahapatra
+	<amit.kumar-mahapatra@amd.com>
+Subject: [PATCH 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property to avoid setting SRWD bit in status register
+Date: Thu, 15 Jun 2023 16:46:48 +0530
+Message-ID: <20230615111649.36344-2-amit.kumar-mahapatra@amd.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230615111649.36344-1-amit.kumar-mahapatra@amd.com>
+References: <20230615111649.36344-1-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
-X-Originating-IP: [172.16.1.6]
-X-ClientProxiedBy: S-MS-EXCH02.sberdevices.ru (172.16.1.5) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Status: not scanned, disabled by settings
-X-KSMG-AntiSpam-Interceptor-Info: not scanned
-X-KSMG-AntiPhishing: not scanned, disabled by settings
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2023/06/15 07:01:00 #21506969
-X-KSMG-AntiVirus-Status: Clean, skipped
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT054:EE_|MN2PR12MB4568:EE_
+X-MS-Office365-Filtering-Correlation-Id: d3423403-08f0-452f-3db6-08db6d920a26
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: h2POhLPixx5SY4x7dmV3xDq9hqgT3jvFyRxu2gTLoWjLiaEXSPJ7KnGpz9ewdHe3lLAhaCaoA34sdzWe9hPhsNcBSajaZEABv4Vaz7xgizAL4secGY75vep2B7ModfAwfOyO4RgRKdDwIxjS7854hl5Mfftm1bY5+V1azVO/cOuyQu0meEcrlD/ZpFCM06Y40WymQ1QuJY/M3k0dtxfVdxRv5ukPTM8+im8Yj70F8mq3DFyvRCV8d+1B5k1DfcQvIXLdDwLjJEe5D4dfXJcp/IaU2Io6N2Cg88n8eOFFFcyRwtnFJsMV06lqjbtdyDmjGV2+Z0rFnzbBMFyxveLhCla/9bMosS/amiI6U/OH5ErbU9sRHqemquhmDeYutPHRV8bBWlxSf3L+yNWlHZIWzm6QMOqvsBJq5dTIKLjh73WbRTq3ApEwW3cDZ+c9bmAMKKVumbg5DMZku7f5zqW1xaSFL4qeGgWgCFndLzNqE0Zo/EIqZUaLxJePteP2MMpQTPjsIGSMirrbGJ64HUpBio7V40K/5AJhXUz+ITyYoZn7op10J5wLKu/2+8fVSghudlC8na0zP3GIJUGa7EI3POwBaTC3zwXUXhV5pGroUswoQRghWDFo1uo14E862pZA5N2hjDeN/SDF7W+wFoNS+R5CPn0c5icu7EWV4kACLM0/L8jZOPI1c6WggYKA4lNbWFzCz2kLE7XOBlMEUaNgW0+qNiqN8KBaZm0w3wl7ikijlYT5tcuLPw89dIZ/htItsg775vpsqrHtiee5ttztvQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(136003)(396003)(346002)(451199021)(40470700004)(36840700001)(46966006)(36860700001)(2906002)(26005)(186003)(40460700003)(336012)(426003)(40480700001)(47076005)(2616005)(70206006)(70586007)(356005)(81166007)(82740400003)(4326008)(41300700001)(8936002)(8676002)(316002)(6666004)(110136005)(54906003)(86362001)(82310400005)(36756003)(478600001)(7416002)(1076003)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2023 11:17:00.5207
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3423403-08f0-452f-3db6-08db6d920a26
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT054.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4568
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230615_024539_690277_D2E0F334 
-X-CRM114-Status: GOOD (  18.19  )
+X-CRM114-CacheID: sfid-20230615_041713_388100_57964B57 
+X-CRM114-Status: GOOD (  15.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,232 +123,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Support for OTP area access on MX30LFxG18AC chip series.
+If the WP signal of the flash device is not connected and the software sets
+the status register write disable (SRWD) bit in the status register then
+thestatus register permanently becomes read-only. To avoid this added a new
+boolean DT property "broken-wp". If WP signal is not connected, then this
+property should be set in the DT to avoid setting the SRWD during status
+register write operation.
 
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 ---
-  v1 -> v2:
-  * Add slab.h include due to kernel test robot error.
-  v2 -> v3:
-  * Use 'uint64_t' as input argument for 'do_div()' instead
-    of 'unsigned long' due to kernel test robot error.
-  v3 -> v4:
-  * Use 'dev_err()' instead of 'WARN()'.
-  * Call 'match_string()' before checking 'supports_set_get_features'
-    in 'macronix_nand_setup_otp().
-  * Use 'u8' instead of 'uint8_t' as ./checkpatch.pl wants.
-  v4 -> v5:
-  * OTP lock logic is disabled. Change locking callback to return
-    -EOPNOTSUPP. See comment 'macronix_30lfxg18ac_get_otp_info()'
-    for details.
-  * OTP factory callbacks are removed. Only user region is supported.
-  * Temporary DMA buffer in RW function is removed. There is no need
-    in it.
+ .../devicetree/bindings/mtd/jedec,spi-nor.yaml      | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
- drivers/mtd/nand/raw/nand_macronix.c | 167 +++++++++++++++++++++++++++
- 1 file changed, 167 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-index 385957eb6762..e229de32ff50 100644
---- a/drivers/mtd/nand/raw/nand_macronix.c
-+++ b/drivers/mtd/nand/raw/nand_macronix.c
-@@ -6,6 +6,7 @@
-  * Author: Boris Brezillon <boris.brezillon@free-electrons.com>
-  */
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+index 89959e5c47ba..a509d34f14b2 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+@@ -70,6 +70,19 @@ properties:
+       be used on such systems, to denote the absence of a reliable reset
+       mechanism.
  
-+#include <linux/slab.h>
- #include "linux/delay.h"
- #include "internals.h"
- 
-@@ -31,6 +32,16 @@
- 
- #define MXIC_CMD_POWER_DOWN 0xB9
- 
-+#define ONFI_FEATURE_ADDR_30LFXG18AC_OTP	0x90
-+#define MACRONIX_30LFXG18AC_OTP_START_PAGE	2
-+#define MACRONIX_30LFXG18AC_OTP_PAGES		30
-+#define MACRONIX_30LFXG18AC_OTP_PAGE_SIZE	2112
-+#define MACRONIX_30LFXG18AC_OTP_SIZE_BYTES	\
-+	(MACRONIX_30LFXG18AC_OTP_PAGES *	\
-+	 MACRONIX_30LFXG18AC_OTP_PAGE_SIZE)
++  broken-wp:
++    type: boolean
++    description:
++      The SRWD bit in status register, combined with the WP signal provides
++      hardware data protection for the device. When the SRWD bit is set to 1,
++      and the WP signal is driven LOW, the status register nonvolatile bits
++      become read-only and the WRITE STATUS REGISTER operation will not execute.
++      The only way to exit this hardware-protected mode is to drive WP HIGH. But
++      if the WP signal of the flash device is not connected then status register
++      permanently becomes read-only as the SRWD bit cannot be reset. This boolean
++      flag can be used on such systems in which WP signal is not connected, to
++      avoid setting the SRWD bit while writing the status register.
 +
-+#define MACRONIX_30LFXG18AC_OTP_EN		BIT(0)
-+
- struct nand_onfi_vendor_macronix {
- 	u8 reserved;
- 	u8 reliability_func;
-@@ -315,6 +326,161 @@ static void macronix_nand_deep_power_down_support(struct nand_chip *chip)
- 	chip->ops.resume = mxic_nand_resume;
- }
- 
-+static int macronix_30lfxg18ac_get_otp_info(struct mtd_info *mtd, size_t len,
-+					    size_t *retlen,
-+					    struct otp_info *buf)
-+{
-+	if (len < sizeof(*buf))
-+		return -EINVAL;
-+
-+	/* Always report that OTP is unlocked. Reason is that this
-+	 * type of flash chip doesn't provide way to check that OTP
-+	 * is locked or not: subfeature parameter is implemented as
-+	 * volatile register. Technically OTP region could be locked
-+	 * and become readonly, but as there is no way to check it,
-+	 * don't allow to lock it ('_lock_user_prot_reg' callback
-+	 * always returns -EOPNOTSUPP) and thus we report that OTP
-+	 * is unlocked.
-+	 */
-+	buf->locked = 0;
-+	buf->start = 0;
-+	buf->length = MACRONIX_30LFXG18AC_OTP_SIZE_BYTES;
-+
-+	*retlen = sizeof(*buf);
-+
-+	return 0;
-+}
-+
-+static int macronix_30lfxg18ac_otp_enable(struct nand_chip *nand)
-+{
-+	u8 feature_buf[ONFI_SUBFEATURE_PARAM_LEN] = { 0 };
-+
-+	feature_buf[0] = MACRONIX_30LFXG18AC_OTP_EN;
-+	return nand_set_features(nand, ONFI_FEATURE_ADDR_30LFXG18AC_OTP,
-+				 feature_buf);
-+}
-+
-+static int macronix_30lfxg18ac_otp_disable(struct nand_chip *nand)
-+{
-+	u8 feature_buf[ONFI_SUBFEATURE_PARAM_LEN] = { 0 };
-+
-+	return nand_set_features(nand, ONFI_FEATURE_ADDR_30LFXG18AC_OTP,
-+				 feature_buf);
-+}
-+
-+static int __macronix_30lfxg18ac_rw_otp(struct mtd_info *mtd,
-+					loff_t offs_in_flash,
-+					size_t len, size_t *retlen,
-+					u_char *buf, bool write)
-+{
-+	struct nand_chip *nand;
-+	size_t bytes_handled;
-+	off_t offs_in_page;
-+	u64 page;
-+	int ret;
-+
-+	nand = mtd_to_nand(mtd);
-+	nand_select_target(nand, 0);
-+
-+	ret = macronix_30lfxg18ac_otp_enable(nand);
-+	if (ret)
-+		goto out_otp;
-+
-+	page = offs_in_flash;
-+	/* 'page' will be result of division. */
-+	offs_in_page = do_div(page, MACRONIX_30LFXG18AC_OTP_PAGE_SIZE);
-+	bytes_handled = 0;
-+
-+	while (bytes_handled < len &&
-+	       page < MACRONIX_30LFXG18AC_OTP_PAGES) {
-+		size_t bytes_to_handle;
-+		u64 phys_page = page + MACRONIX_30LFXG18AC_OTP_START_PAGE;
-+
-+		bytes_to_handle = min_t(size_t, len - bytes_handled,
-+					MACRONIX_30LFXG18AC_OTP_PAGE_SIZE -
-+					offs_in_page);
-+
-+		if (write)
-+			ret = nand_prog_page_op(nand, phys_page, offs_in_page,
-+						&buf[bytes_handled], bytes_to_handle);
-+		else
-+			ret = nand_read_page_op(nand, phys_page, offs_in_page,
-+						&buf[bytes_handled], bytes_to_handle);
-+		if (ret)
-+			goto out_otp;
-+
-+		bytes_handled += bytes_to_handle;
-+		offs_in_page = 0;
-+		page++;
-+	}
-+
-+	*retlen = bytes_handled;
-+
-+out_otp:
-+	if (ret)
-+		dev_err(&mtd->dev, "failed to perform OTP IO: %i\n", ret);
-+
-+	ret = macronix_30lfxg18ac_otp_disable(nand);
-+	if (ret)
-+		dev_err(&mtd->dev, "failed to leave OTP mode after %s\n",
-+			write ? "write" : "read");
-+
-+	nand_deselect_target(nand);
-+
-+	return ret;
-+}
-+
-+static int macronix_30lfxg18ac_write_otp(struct mtd_info *mtd, loff_t to,
-+					 size_t len, size_t *rlen,
-+					 const u_char *buf)
-+{
-+	return __macronix_30lfxg18ac_rw_otp(mtd, to, len, rlen, (u_char *)buf,
-+					    true);
-+}
-+
-+static int macronix_30lfxg18ac_read_otp(struct mtd_info *mtd, loff_t from,
-+					size_t len, size_t *rlen,
-+					u_char *buf)
-+{
-+	return __macronix_30lfxg18ac_rw_otp(mtd, from, len, rlen, buf, false);
-+}
-+
-+static int macronix_30lfxg18ac_lock_otp(struct mtd_info *mtd, loff_t from,
-+					size_t len)
-+{
-+	/* See comment in 'macronix_30lfxg18ac_get_otp_info()'. */
-+	return -EOPNOTSUPP;
-+}
-+
-+static void macronix_nand_setup_otp(struct nand_chip *chip)
-+{
-+	static const char * const supported_otp_models[] = {
-+		"MX30LF1G18AC",
-+		"MX30LF2G18AC",
-+		"MX30LF4G18AC",
-+	};
-+	struct mtd_info *mtd;
-+
-+	if (match_string(supported_otp_models,
-+			 ARRAY_SIZE(supported_otp_models),
-+			 chip->parameters.model) < 0)
-+		return;
-+
-+	if (!chip->parameters.supports_set_get_features)
-+		return;
-+
-+	bitmap_set(chip->parameters.get_feature_list,
-+		   ONFI_FEATURE_ADDR_30LFXG18AC_OTP, 1);
-+	bitmap_set(chip->parameters.set_feature_list,
-+		   ONFI_FEATURE_ADDR_30LFXG18AC_OTP, 1);
-+
-+	mtd = nand_to_mtd(chip);
-+	mtd->_get_user_prot_info = macronix_30lfxg18ac_get_otp_info;
-+	mtd->_read_user_prot_reg = macronix_30lfxg18ac_read_otp;
-+	mtd->_write_user_prot_reg = macronix_30lfxg18ac_write_otp;
-+	mtd->_lock_user_prot_reg = macronix_30lfxg18ac_lock_otp;
-+}
-+
- static int macronix_nand_init(struct nand_chip *chip)
- {
- 	if (nand_is_slc(chip))
-@@ -324,6 +490,7 @@ static int macronix_nand_init(struct nand_chip *chip)
- 	macronix_nand_onfi_init(chip);
- 	macronix_nand_block_protection_support(chip);
- 	macronix_nand_deep_power_down_support(chip);
-+	macronix_nand_setup_otp(chip);
- 
- 	return 0;
- }
+   reset-gpios:
+     description:
+       A GPIO line connected to the RESET (active low) signal of the device.
 -- 
-2.35.0
+2.17.1
 
 
 ______________________________________________________
