@@ -4,66 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C3F2EB64D9
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 19:13:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6EE6EB64D9
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 21:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=nevpYC3W6/NAvacA5gtomPvHS3+kXOYI85Azj+OAcVw=; b=XmoQvdZdhxNbTspoViXZgWKqGl
-	f41xqoGHeR9rV90dMmxAXrAJ6tbqDc7tUJHwM74U/Dcfxa+r88Zeub9hu2qzON0RTQcJS/WpUhIMq
-	xSUT4AnSJZmjGFvIlNoIgdcTAZzLov8Vv9gQCmZgwelvUkqbdmiRcXaM8HviA7hoOuku72NSUNUDJ
-	08JeVWtYjWPoKtsk1Xp4d7vQnBsV+3GZaMTqizPUSOdbm4vTRff8fGXIKfA1nHK6NmWj0xjSEAYFz
-	Rs20axRe3MxFqQXHBsb+Sxg47m3F3jByPkIghEmpDhNmIvljVZzXmn+sdBqDTQab5cLSA2a5rIcXr
-	B1ytZzxQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Om2JjxMegqgaqDzRrAzR12cnNdhw2iP2OkObYwoqMeM=; b=hKj4SGnhLt9euO
+	oCTu9WBbmRXEMe4L5JKdaP7bV4honuql5lqrfXQi9/p1g8/dcbSlNLOAMguKyFNj0lOzCeNmkiHVC
+	S5L6trR7P0eD8ujabhvFkh2F/xN8c32nKLvj/K2LbcfQjWMTrT4A1WdYpKYanld48zktSxN6JizOv
+	6LKLNB0Mi+k0bXMwxkhEH0BY07pKQJa92h3AATtqdEv2Dcnqqv4OFttZmR+bjNjAEPpXpD6MzTEt3
+	CgmHxNnp1P7PZJTNCAHRcP/FAZnerokZMkWUsnQoEGOulbgR/8geFpZjWG+1MUGM5ecyJwUueZ3Ba
+	xU9LhX/lREg2LbnL4S2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9sP9-00FqrZ-11;
-	Thu, 15 Jun 2023 19:13:11 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1q9uAj-00G6Gz-0B;
+	Thu, 15 Jun 2023 21:06:25 +0000
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9sP6-00Fqql-14
+	id 1q9uAe-00G6Em-2u
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 19:13:09 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	Thu, 15 Jun 2023 21:06:23 +0000
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 54B736200D;
-	Thu, 15 Jun 2023 19:13:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97082C433C0;
-	Thu, 15 Jun 2023 19:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686856386;
-	bh=bPY0hq3FTUjUrTnaMbnQu9NxRr6DfEwHr0iFePqWsk4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oJ8PW6eF8QHjmGWOvHtcXHk8RrraM4DJqoyxkXRQBGOqMPxjBSMrzsMiVmqnTvLC0
-	 kaMSMQw5kqbrXaShP6qRk+5clbVB53UAJN/Mbcyv/pFFxJe8usimE/+WA/NOirnYIP
-	 93Z04NYoL2c5HBcMKVngPS6dbHUSxEkQ926yJq3gNI/jDJCohW5Fi5jjde+MMH29N/
-	 nVluf6QJbCnL3iA8LCKT4RS5Wk7bsGjkcuRlBZDZXKMs0EKUzGhQfR0gSnpgCqkEin
-	 uPliW2HQAKNp6tq32cc9wzeSh6Y4BRK91S4mvjtTnuRxFnQJjn7XMCHW3qV/nLX1Cr
-	 MpIIemRNouzaQ==
-Date: Thu, 15 Jun 2023 20:13:01 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, git@amd.com, michael@walle.cc,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, amitrkcian2002@gmail.com
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property to
- avoid setting SRWD bit in status register
-Message-ID: <20230615-bright-divided-2eb72872d7cc@spud>
-References: <20230615111649.36344-1-amit.kumar-mahapatra@amd.com>
- <20230615111649.36344-2-amit.kumar-mahapatra@amd.com>
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id CAF392C035B;
+	Fri, 16 Jun 2023 09:06:12 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1686863172;
+	bh=SJORa6w3ccYV408Vqt+utFhLfjPKwke9Ih59IiX92jo=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=H81Q23ZTJWdJVKBg0ixrut/RhVw+GgIkwNxQzV/0T4CfFFtBwWje5E8MZ9uCWI0Ah
+	 cUV/cRFFS8BLaQhqjkCWG2MWYJ1qZcc6xBbo0tN/CEvEQrOtMA9hv80BCAfct9Hoel
+	 CCBCFpVIoGXQCVQ2vYco0UjFw2d//jRbbVPnrIRgdTgWq8ChgNDnrKJNMRgRwGgK0O
+	 9dJPIVT8MVf88KJs5GatvbpZOZD2PEu6wuT5VHpwn6G/Sk4lpQF4+/zbzcYMXNpEat
+	 rCj64OR1oYCWc/Vsep0AbA3piS40pa0Cd3YJ+L+q8NL7C+2KWvz5bZObiyhb2exs0F
+	 n1f85fSqpLZ6g==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B648b7d440000>; Fri, 16 Jun 2023 09:06:12 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.30; Fri, 16 Jun 2023 09:06:12 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
+ SMTP Server (TLS) id 15.0.1497.48; Fri, 16 Jun 2023 09:06:12 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.030; Fri, 16 Jun 2023 09:06:12 +1200
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+	<richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>, "robh+dt@kernel.org"
+	<robh+dt@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, "andrew@lunn.ch" <andrew@lunn.ch>,
+	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+	"sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, Vadym Kochan
+	<vadym.kochan@plvision.eu>
+Subject: Re: [PATCH v9 3/3] dt-bindings: mtd: marvell-nand: Convert to YAML DT
+ scheme
+Thread-Topic: [PATCH v9 3/3] dt-bindings: mtd: marvell-nand: Convert to YAML
+ DT scheme
+Thread-Index: AQHZnz6KyypKHONfy0GlUm129g+x+6+KswMAgADfwYA=
+Date: Thu, 15 Jun 2023 21:06:12 +0000
+Message-ID: <1863cd53-9846-def2-ee5f-f4a51160ed8d@alliedtelesis.co.nz>
+References: <20230615040447.3484564-1-chris.packham@alliedtelesis.co.nz>
+ <20230615040447.3484564-4-chris.packham@alliedtelesis.co.nz>
+ <f16e742f-e6f2-9761-e70d-e0e7cadcba4a@linaro.org>
+In-Reply-To: <f16e742f-e6f2-9761-e70d-e0e7cadcba4a@linaro.org>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.33.22.30]
+Content-ID: <2D364D9AA48BCD4FA426D9C37648FD18@atlnz.lc>
 MIME-Version: 1.0
-In-Reply-To: <20230615111649.36344-2-amit.kumar-mahapatra@amd.com>
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=NPqrBHyg c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=of4jigFt-DYA:10 a=g8kJ_gb0AAAA:8 a=VwQbUJbxAAAA:8 a=P-IC7800AAAA:8 a=pr6tp4WARypXyZtOCmcA:9 a=QEXdDO2ut3YA:10 a=ecSNLfPMzbq-p5zXJZOg:22 a=AjGcO6oz07-iQ99wixmX:22 a=d3PnA9EDa4IxuAV0gXij:22
+X-SEG-SpamProfiler-Score: 0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230615_121308_470289_72EE5473 
-X-CRM114-Status: GOOD (  25.05  )
+X-CRM114-CacheID: sfid-20230615_140621_412121_B910AC4B 
+X-CRM114-Status: GOOD (  23.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,117 +103,111 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5227210003253057153=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============5227210003253057153==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="XOs+VD/Ifi0NGstF"
-Content-Disposition: inline
-
-
---XOs+VD/Ifi0NGstF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jun 15, 2023 at 04:46:48PM +0530, Amit Kumar Mahapatra wrote:
-> If the WP signal of the flash device is not connected and the software se=
-ts
-> the status register write disable (SRWD) bit in the status register then
-> thestatus register permanently becomes read-only. To avoid this added a n=
-ew
-> boolean DT property "broken-wp". If WP signal is not connected, then this
-> property should be set in the DT to avoid setting the SRWD during status
-> register write operation.
->=20
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-> ---
->  .../devicetree/bindings/mtd/jedec,spi-nor.yaml      | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/D=
-ocumentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 89959e5c47ba..a509d34f14b2 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -70,6 +70,19 @@ properties:
->        be used on such systems, to denote the absence of a reliable reset
->        mechanism.
-> =20
-> +  broken-wp:
-> +    type: boolean
-> +    description:
-> +      The SRWD bit in status register, combined with the WP signal provi=
-des
-
-Should the first use of SRWD be spelt out as you did in your commit
-message?
-
-> +      The SRWD bit in status register, combined with the WP signal provi=
-des
-                                                                     ^
-nit: missing a comma here I think.
-
-> +      hardware data protection for the device. When the SRWD bit is set =
-to 1,
-> +      and the WP signal is driven LOW, the status register nonvolatile b=
-its
-> +      become read-only and the WRITE STATUS REGISTER operation will not =
-execute.
-> +      The only way to exit this hardware-protected mode is to drive WP H=
-IGH. But
-> +      if the WP signal of the flash device is not connected then status =
-register
-> +      permanently becomes read-only as the SRWD bit cannot be reset. Thi=
-s boolean
-> +      flag can be used on such systems in which WP signal is not connect=
-ed, to
-
-nit: s/such//
-
-Otherwise, seems reasonable to me & the detail in the description is
-nice.
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> +      avoid setting the SRWD bit while writing the status register.
-> +
->    reset-gpios:
->      description:
->        A GPIO line connected to the RESET (active low) signal of the devi=
-ce.
-> --=20
-> 2.17.1
->=20
-
---XOs+VD/Ifi0NGstF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZItivQAKCRB4tDGHoIJi
-0n3lAQDYCPE7FzUWoRk/2NeBDx/xfJkho/o/GFZjMUnnb/0G/AEAqAmz6+IzA8ln
-bZ1D4QinLJJeMfUue9pnCokWv3csTQM=
-=O9sd
------END PGP SIGNATURE-----
-
---XOs+VD/Ifi0NGstF--
-
-
---===============5227210003253057153==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5227210003253057153==--
-
+SGkgS3J6eXN6dG9mLA0KDQpPbiAxNS8wNi8yMyAxOTo0NSwgS3J6eXN6dG9mIEtvemxvd3NraSB3
+cm90ZToNCj4gT24gMTUvMDYvMjAyMyAwNjowNCwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4+IEZy
+b206IFZhZHltIEtvY2hhbiA8dmFkeW0ua29jaGFuQHBsdmlzaW9uLmV1Pg0KPj4NCj4+IFN3aXRj
+aCB0aGUgRFQgYmluZGluZyB0byBhIFlBTUwgc2NoZW1hIHRvIGVuYWJsZSB0aGUgRFQgdmFsaWRh
+dGlvbi4NCj4+DQo+PiBUaGUgdGV4dCBiaW5kaW5nIGRpZG4ndCBtZW50aW9uIGl0IGFzIGEgcmVx
+dWlyZW1lbnQgYnV0IGV4aXN0aW5nIHVzYWdlDQo+PiBoYXMNCj4+DQo+PiAgICAgY29tcGF0aWJs
+ZSA9ICJtYXJ2ZWxsLGFybWFkYS04ay1uYW5kLWNvbnRyb2xsZXIiLA0KPj4gICAgICAgICAgICAg
+ICAgICAibWFydmVsbCxhcm1hZGEzNzAtbmFuZC1jb250cm9sbGVyIjsNCj4+DQo+PiBzbyB0aGUg
+WUFNTCBhbGxvd3MgdGhpcyBpbiBhZGRpdGlvbiB0byB0aGUgaW5kaXZpZHVhbCBjb21wYXRpYmxl
+IHZhbHVlcy4NCj4+DQo+PiBUaGVyZSB3YXMgYWxzbyBhbiBpbmNvcnJlY3QgcmVmZXJlbmNlIHRv
+IGRtYS1uYW1lcyBiZWluZyAicnh0eCIgd2hlcmUNCj4+IHRoZSBkcml2ZXIgYW5kIGV4aXN0aW5n
+IGRldmljZSB0cmVlcyBhY3R1YWxseSB1c2UgZG1hLW5hbWVzID0gImRhdGEiIHNvDQo+PiB0aGlz
+IGlzIGNvcnJlY3RlZCBpbiB0aGUgY29udmVyc2lvbi4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBW
+YWR5bSBLb2NoYW4gPHZhZHltLmtvY2hhbkBwbHZpc2lvbi5ldT4NCj4+IFNpZ25lZC1vZmYtYnk6
+IENocmlzIFBhY2toYW0gPGNocmlzLnBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4+IC0t
+LQ0KPj4NCj4+IE5vdGVzOg0KPj4gICAgICBDaGFuZ2VzIGluIHY5Og0KPj4gICAgICAtIGRlcGVu
+ZCBvbiBzZXJpZXMgZnJvbSBNaXF1ZWwgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtbXRk
+LzIwMjMwNjA2MTc1MjQ2LjE5MDQ2NS0xLW1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20vDQo+PiAg
+ICAgIC0gZW5mb3JjZSBtaW5pbXVtL21heGltdW0gZm9yIG5hbmQtcmINCj4+ICAgICAgLSBtb3Zl
+IHJlcXVpcmVkOiBibG9jayBmb3IgY29udHJvbGxlcg0KPj4gICAgICAtIG1vdmUgdW5ldmFsdWF0
+ZWRQcm9wZXJ0aWVzOiBmb3IgbmFuZCBjaGlwDQo+PiAgICAgIC0gcmVtb3ZlIGxhYmVsLCBwYXJ0
+aXRpb25zIGFuZCBuYW5kLW9uLWZsYXNoLWJidCB3aGljaCBhcmUgY292ZXJlZCBieQ0KPj4gICAg
+ICAgIGdlbmVyaWMgc2NoZW1hDQo+PiAgICAgIA0KPj4gICAgICBDaGFuZ2VzIGluIHY4Og0KPj4g
+ICAgICAtIE1hcmsgZGVwcmVjYXRlZCBjb21wYXRpYmxlIHZhbHVlcyBhcyBzdWNoDQo+PiAgICAg
+IC0gQWxsb3cgIm1hcnZlbGwsYXJtYWRhLThrLW5hbmQtY29udHJvbGxlciIgd2l0aG91dA0KPj4g
+ICAgICAgICJtYXJ2ZWxsLGFybWFkYTM3MC1uYW5kLWNvbnRyb2xsZXIiDQo+ID8/Pw0KPg0KPg0K
+Pj4gKw0KPj4gK3Byb3BlcnRpZXM6DQo+PiArICBjb21wYXRpYmxlOg0KPj4gKyAgICBvbmVPZjoN
+Cj4+ICsgICAgICAtIGl0ZW1zOg0KPj4gKyAgICAgICAgICAtIGNvbnN0OiBtYXJ2ZWxsLGFybWFk
+YS04ay1uYW5kLWNvbnRyb2xsZXINCj4+ICsgICAgICAgICAgLSBjb25zdDogbWFydmVsbCxhcm1h
+ZGEzNzAtbmFuZC1jb250cm9sbGVyDQo+PiArICAgICAgLSBlbnVtOg0KPj4gKyAgICAgICAgICAt
+IG1hcnZlbGwsYXJtYWRhLThrLW5hbmQtY29udHJvbGxlcg0KPiBUaGlzIGlzIHdyb25nLiA4ayBj
+YW5ub3QgYmUgYm90aDogY29tcGF0aWJsZSBhbmQgbm90IGNvbXBhdGlibGUgd2l0aA0KPiAzNzAu
+IEl0J3Mgbm90IHNvbWVvbmUncyBjYXQgdG8gYmUgaW4gYm90aCBzdGF0ZXMgYXQgdGhlIHNhbWUg
+dGltZS4uLg0KDQpUaGUgY29ycmVjdCBzdGF0ZSAoSU1ITywgTWlxdWVsIGNvcnJlY3QgbWUgaWYg
+SSdtIHdyb25nKSBpcyBgY29tcGF0aWJsZSANCj0gIm1hcnZlbGwsYXJtYWRhLThrLW5hbmQtY29u
+dHJvbGxlciI7YMKgIGFzIHRoZXJlIGFyZSBzb21lIDhLIHNwZWNpZmljIA0KcmVxdWlyZW1lbnRz
+IHRoYXQgYXJlbid0IHByZXNlbnQgb24gdGhlIDM3MCAoc3BlY2lmaWNhbGx5IHRoZSANCnN5c3Rl
+bS1jb250cm9sbGVyIGFuZCB0aGUgMm5kIGNsb2NrKS4gVGhlIG9ubHkgcmVhc29uIGBjb21wYXRp
+YmxlID0gDQoibWFydmVsbCxhcm1hZGEtOGstbmFuZC1jb250cm9sbGVyIiwgDQoibWFydmVsbCxh
+cm1hZGEzNzAtbmFuZC1jb250cm9sbGVyIjtgIGlzIHN1cHBvcnRlZCBpcyBiZWNhdXNlIHRoYXQg
+aXMgDQp3aGF0IGlzIGluIHVzZSBpbiB0aGUgZXhpc3RpbmcgZHRzZXMuDQoNCj4+ICsgICAgICAg
+ICAgLSBtYXJ2ZWxsLGFybWFkYTM3MC1uYW5kLWNvbnRyb2xsZXINCj4+ICsgICAgICAgICAgLSBt
+YXJ2ZWxsLHB4YTN4eC1uYW5kLWNvbnRyb2xsZXINCj4+ICsgICAgICAtIGRlc2NyaXB0aW9uOiBs
+ZWdhY3kgYmluZGluZ3MNCj4+ICsgICAgICAgIGRlcHJlY2F0ZWQ6IHRydWUNCj4+ICsgICAgICAg
+IGVudW06DQo+PiArICAgICAgICAgIC0gbWFydmVsbCxhcm1hZGEtOGstbmFuZA0KPj4gKyAgICAg
+ICAgICAtIG1hcnZlbGwsYXJtYWRhMzcwLW5hbmQNCj4+ICsgICAgICAgICAgLSBtYXJ2ZWxsLHB4
+YTN4eC1uYW5kDQo+PiArDQo+PiArICByZWc6DQo+PiArICAgIG1heEl0ZW1zOiAxDQo+PiArDQo+
+PiArICBpbnRlcnJ1cHRzOg0KPj4gKyAgICBtYXhJdGVtczogMQ0KPj4gKw0KPj4gKyAgY2xvY2tz
+Og0KPj4gKyAgICBkZXNjcmlwdGlvbjoNCj4+ICsgICAgICBTaGFsbCByZWZlcmVuY2UgdGhlIE5B
+TkQgY29udHJvbGxlciBjbG9ja3MsIHRoZSBzZWNvbmQgb25lIGlzDQo+PiArICAgICAgaXMgb25s
+eSBuZWVkZWQgZm9yIHRoZSBBcm1hZGEgN0svOEsgU29Dcw0KPj4gKyAgICBtaW5JdGVtczogMQ0K
+Pj4gKyAgICBtYXhJdGVtczogMg0KPj4gKw0KPj4gKyAgY2xvY2stbmFtZXM6DQo+PiArICAgIG1p
+bkl0ZW1zOiAxDQo+PiArICAgIGl0ZW1zOg0KPj4gKyAgICAgIC0gY29uc3Q6IGNvcmUNCj4+ICsg
+ICAgICAtIGNvbnN0OiByZWcNCj4+ICsNCj4+ICsgIGRtYXM6DQo+PiArICAgIG1heEl0ZW1zOiAx
+DQo+PiArDQo+PiArICBkbWEtbmFtZXM6DQo+PiArICAgIGl0ZW1zOg0KPj4gKyAgICAgIC0gY29u
+c3Q6IGRhdGENCj4+ICsNCj4+ICsgIG1hcnZlbGwsc3lzdGVtLWNvbnRyb2xsZXI6DQo+PiArICAg
+ICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3BoYW5kbGUNCj4+ICsgICAg
+ZGVzY3JpcHRpb246IFN5c2NvbiBub2RlIHRoYXQgaGFuZGxlcyBOQU5EIGNvbnRyb2xsZXIgcmVs
+YXRlZCByZWdpc3RlcnMNCj4+ICsNCj4+ICtwYXR0ZXJuUHJvcGVydGllczoNCj4+ICsgICJebmFu
+ZEBbYS1mMC05XSQiOg0KPj4gKyAgICB0eXBlOiBvYmplY3QNCj4+ICsgICAgJHJlZjogcmF3LW5h
+bmQtY2hpcC55YW1sDQo+PiArDQo+PiArICAgIHByb3BlcnRpZXM6DQo+PiArICAgICAgcmVnOg0K
+Pj4gKyAgICAgICAgbWluaW11bTogMA0KPj4gKyAgICAgICAgbWF4aW11bTogMw0KPj4gKw0KPj4g
+KyAgICAgIG5hbmQtcmI6DQo+PiArICAgICAgICBpdGVtczoNCj4+ICsgICAgICAgICAgLSBtaW5p
+bXVtOiAwDQo+PiArICAgICAgICAgICAgbWF4aW11bTogMQ0KPj4gKw0KPj4gKyAgICAgIG5hbmQt
+ZWNjLXN0ZXAtc2l6ZToNCj4+ICsgICAgICAgIGNvbnN0OiA1MTINCj4+ICsNCj4+ICsgICAgICBu
+YW5kLWVjYy1zdHJlbmd0aDoNCj4+ICsgICAgICAgIGVudW06IFsxLCA0LCA4LCAxMiwgMTZdDQo+
+PiArDQo+PiArICAgICAgbmFuZC1lY2MtbW9kZToNCj4+ICsgICAgICAgIGNvbnN0OiBodw0KPj4g
+Kw0KPj4gKyAgICAgIG1hcnZlbGwsbmFuZC1rZWVwLWNvbmZpZzoNCj4+ICsgICAgICAgICRyZWY6
+IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL2ZsYWcNCj4+ICsgICAgICAgIGRlc2Ny
+aXB0aW9uOiB8DQo+IERvIG5vdCBuZWVkICd8JyB1bmxlc3MgeW91IG5lZWQgdG8gcHJlc2VydmUg
+Zm9ybWF0dGluZy4NCkFjaw0KPj4gKyAgICAgICAgICBPcmRlcnMgdGhlIGRyaXZlciBub3QgdG8g
+dGFrZSB0aGUgdGltaW5ncyBmcm9tIHRoZSBjb3JlIGFuZA0KPj4gKyAgICAgICAgICBsZWF2aW5n
+IHRoZW0gY29tcGxldGVseSB1bnRvdWNoZWQuIEJvb3Rsb2FkZXIgdGltaW5ncyB3aWxsIHRoZW4N
+Cj4+ICsgICAgICAgICAgYmUgdXNlZC4NCj4+ICsNCj4+ICsgICAgICBtYXJ2ZWxsLG5hbmQtZW5h
+YmxlLWFyYml0ZXI6DQo+PiArICAgICAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZp
+bml0aW9ucy9mbGFnDQo+PiArICAgICAgICBkZXNjcmlwdGlvbjogfA0KPiBEbyBub3QgbmVlZCAn
+fCcgdW5sZXNzIHlvdSBuZWVkIHRvIHByZXNlcnZlIGZvcm1hdHRpbmcuDQo+DQo+PiArICAgICAg
+ICAgIFRvIGVuYWJsZSB0aGUgYXJiaXRlciwgYWxsIGJvYXJkcyBibGluZGx5IHVzZWQgaXQsDQo+
+PiArICAgICAgICAgIHRoaXMgYml0IHdhcyBzZXQgYnkgdGhlIGJvb3Rsb2FkZXIgZm9yIG1hbnkg
+Ym9hcmRzIGFuZCBldmVuIGlmDQo+PiArICAgICAgICAgIGl0IGlzIG1hcmtlZCByZXNlcnZlZCBp
+biBzZXZlcmFsIGRhdGFzaGVldHMsIGl0IG1pZ2h0IGJlIG5lZWRlZCB0byBzZXQNCj4+ICsgICAg
+ICAgICAgaXQgKG90aGVyd2lzZSBpdCBpcyBoYXJtbGVzcykuDQo+PiArICAgICAgICBkZXByZWNh
+dGVkOiB0cnVlDQo+PiArDQo+PiArICAgIHJlcXVpcmVkOg0KPj4gKyAgICAgIC0gcmVnDQo+PiAr
+ICAgICAgLSBuYW5kLXJiDQo+PiArDQo+PiArICAgIHVuZXZhbHVhdGVkUHJvcGVydGllczogZmFs
+c2UNCj4+ICsNCj4+ICtyZXF1aXJlZDoNCj4+ICsgIC0gY29tcGF0aWJsZQ0KPj4gKyAgLSByZWcN
+Cj4+ICsgIC0gaW50ZXJydXB0cw0KPj4gKyAgLSBjbG9ja3MNCj4+ICsNCj4+ICthbGxPZjoNCj4+
+ICsgIC0gJHJlZjogbmFuZC1jb250cm9sbGVyLnlhbWwjDQo+PiArDQo+PiArICAtIGlmOg0KPj4g
+KyAgICAgIHByb3BlcnRpZXM6DQo+PiArICAgICAgICBjb21wYXRpYmxlOg0KPj4gKyAgICAgICAg
+ICBjb250YWluczoNCj4+ICsgICAgICAgICAgICBjb25zdDogbWFydmVsbCxweGEzeHgtbmFuZC1j
+b250cm9sbGVyDQo+PiArICAgIHRoZW46DQo+PiArICAgICAgcmVxdWlyZWQ6DQo+PiArICAgICAg
+ICAtIGRtYXMNCj4+ICsgICAgICAgIC0gZG1hLW5hbWVzDQo+PiArDQo+PiArICAtIGlmOg0KPj4g
+KyAgICAgIHByb3BlcnRpZXM6DQo+PiArICAgICAgICBjb21wYXRpYmxlOg0KPj4gKyAgICAgICAg
+ICBjb250YWluczoNCj4+ICsgICAgICAgICAgICBjb25zdDogbWFydmVsbCxhcm1hZGEtOGstbmFu
+ZC1jb250cm9sbGVyDQo+PiArICAgIHRoZW46DQo+PiArICAgICAgcHJvcGVydGllczoNCj4+ICsg
+ICAgICAgIGNsb2NrczoNCj4+ICsgICAgICAgICAgbWluSXRlbXM6IDINCj4+ICsNCj4+ICsgICAg
+ICAgIGNsb2NrLW5hbWVzOg0KPj4gKyAgICAgICAgICBtaW5JdGVtczogMg0KPj4gKw0KPj4gKyAg
+ICAgIHJlcXVpcmVkOg0KPj4gKyAgICAgICAgLSBtYXJ2ZWxsLHN5c3RlbS1jb250cm9sbGVyDQo+
+IGVsc2U6DQo+IG5hcnJvdyBjbG9ja3MgdG8gMT8gT3IgaXMgdGhlIHNlY29uZCBjbG9kIGFsc28g
+dmFsaWQgZm9yIG90aGVyIHZhcmlhbnRzPw0KPiBEb2VzIG5vdCBsb29rIGxpa2UgZnJvbSB5b3Vy
+IGV4YW1wbGUuDQpDb3JyZWN0LiBXaWxsIHVwZGF0ZS4NCj4NCj4NCj4gQmVzdCByZWdhcmRzLA0K
+PiBLcnp5c3p0b2YNCj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
