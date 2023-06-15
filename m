@@ -4,86 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75C55EB64DB
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 07:32:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE4ABEB64D9
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 07:39:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nlVdETztBBy9QxLcWHQZA5x96tj5ZIkO1CJu2hrwHds=; b=SdvDXvmmD5XBYn
-	AQZTIBocTjLd7lwcxNivvyvHUUt/nfSYvqbLl8sfO5EOotk5nzIpNWMa13JtLUVsXWMrvCSn5OxrZ
-	4cLI1wBb9pLHJ91sGbIVz3I2FvqVefRRCYyuFf62gekSXeJ/1R3SZWaPPxMqu4fnH6N2XVKXPYCW8
-	FosuqnRQjMem0HekEovStinQ7MoXJPVvfmiJBloU3U3FxvOG+bySTCBNzPbPBsQhAoOGAsHFCVNH0
-	FnMmep2yA34ygAmAKE7qyczZ4A5wWrfl01y61WDZa0Rmg2f8o5EIg8MkaSoZ1lsE0OC8LnKRZxifx
-	dPYAGx+11nyQLe/lkJTg==;
+	List-Owner; bh=hwXCyWvd9pR/a/gko2qRa87tbbrVrxe0LEs6jj0Sepo=; b=dPXVtSXvO6FKfD
+	p8ERKux/kLKIJMYYtyt76nvICYTZXPylH9fdfo+Dy/JKyYr7K0U6IbgfLHAGEkpJetG3NlFoGje2Z
+	61wIB/XH2K7plSpyhWDfBi9sIoghLtkvaD/GYySVRKnOyPYEU/wjurW4umfrwpWaTihvITwTgSynC
+	0MKWGMXQZSF+g8Iq7MEiDy0TIJjYAI0ssAKoERixjlFoFYmq06wNNfpFDYhOuAzYQ5xM5n+q/S4Mg
+	7B6Ar25sY56TEKtJw1blriAT1oTletyd86psGP15BXVV1dEbq7fSC9H5BqJ4QUYKYf/5mo3TRsrwO
+	JN4kmpx/zwiX6+uRHzMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9hSm-00E0UI-2c;
-	Thu, 15 Jun 2023 07:32:12 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1q9hZS-00E2wn-0G;
+	Thu, 15 Jun 2023 07:39:06 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9hSk-00E0SI-0Y
+	id 1q9hZP-00E2tc-0L
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 07:32:11 +0000
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35F2lIYO011855;
-	Thu, 15 Jun 2023 07:32:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=yPrHxrlN0WJa/QTWfkGJdzP9ggTFaM8STVYRrYoTEAw=;
- b=AZCgXpPWK5q4U9eKrY3rTUb23kaoG2+p66xL7OTFrK2jkbfmjFOHB4JCcfDP7DUgzbg1
- PyljL0Bq3lu2rh2tjkThiYQFyE7hqGuH5/PaCp1BE0R6mu3cpYRZZcrnM2mOxk+PotbO
- 9MgcI79MFQhQ06wgpdSZ44oi1hDGXXKDqphs10TJnYS4hAFNKOepEq3JCwzgseYp4RDm
- RfwXnau62wc7ILUu8sD4ViObkBmaiJ5GfmD6MjV+0OibJtmlWQK1EqDjmKoZVQBj1Ltk
- 4be5M2cP7s7d7fM3gVY83R/CxX8en5FHGGrqrzjqXANohk8kanPkiQgutl6llxzuok1A +g== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3r7ecehvhb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 15 Jun 2023 07:32:05 +0000
-Received: from pps.filterd (NASANPPMTA02.qualcomm.com [127.0.0.1])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 35F7R5TX015935;
-	Thu, 15 Jun 2023 07:32:04 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by NASANPPMTA02.qualcomm.com (PPS) with ESMTP id 3r7g60gdgk-1;
-	Thu, 15 Jun 2023 07:32:04 +0000
-Received: from NASANPPMTA02.qualcomm.com (NASANPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 35F7W4Ij025205;
-	Thu, 15 Jun 2023 07:32:04 GMT
-Received: from mdalam-linux.qualcomm.com (mdalam-linux.qualcomm.com [10.201.2.71])
-	by NASANPPMTA02.qualcomm.com (PPS) with ESMTP id 35F7W3Yx025187;
-	Thu, 15 Jun 2023 07:32:04 +0000
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-	id 1CBB01200C5D; Thu, 15 Jun 2023 13:01:51 +0530 (IST)
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-To: mani@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: quic_srichara@quicinc.com, quic_mdalam@quicinc.com
-Subject: [PATCH v4 4/5] mtd: rawnand: qcom: Add support for erase exec_ops
-Date: Thu, 15 Jun 2023 13:01:42 +0530
-Message-Id: <20230615073143.25079-4-quic_mdalam@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230615073143.25079-1-quic_mdalam@quicinc.com>
-References: <20230615073143.25079-1-quic_mdalam@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 7v_-AuXM2_lYM-wK7gKGTWPA03np3PRe
-X-Proofpoint-ORIG-GUID: 7v_-AuXM2_lYM-wK7gKGTWPA03np3PRe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-15_04,2023-06-14_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- impostorscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 priorityscore=1501 bulkscore=0
- malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2305260000 definitions=main-2306150062
+	Thu, 15 Jun 2023 07:39:04 +0000
+X-GND-Sasl: miquel.raynal@bootlin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1686814737;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ypki8Q1FETy9cS5zGlCe51eb/DWUnch4Lfawodrm/+s=;
+	b=YUs71mcqT6OwKd+ufcUb74W4DitaZZwtcUXcMS6j9rU7FyvG74PVo+eABlXrENRRgOBQ7X
+	m/dTinqxC4jYAzUviAbBznh2w6zBYF4pHI7iTN/ioI0dZaI6MLAGRBvyJ/ffbhy2w5v0nj
+	HmENLgMbrCex+a4j2d6UBmeYzgcGz6tCl895yRp6iwZeBPQlZ9xNsRe+j6VhIc+QQk3PS2
+	Dd177PKqPe1vOQgOo0QwvRgaLE4uNpgqi1Pt3Rww5E011yRiDLKPavm7tOGCEp9vxlEnQh
+	yjOXXTdxp+4RmNvR0EABMWRxrJ0ZeJoh9LUQm9lCE7Tqkmv1PCjckwrhyCmRug==
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2D8B91C0010;
+	Thu, 15 Jun 2023 07:38:57 +0000 (UTC)
+Date: Thu, 15 Jun 2023 09:38:53 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Mauro Lima <mauro.lima@eclypsium.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: mtd: spi-nor: parsers questions
+Message-ID: <20230615093853.4336862d@xps-13>
+In-Reply-To: <CAArk9MNJnu7zbXLYOh8HX5RQZA47Sdfx3GjUo5HfbeXYdY8WJg@mail.gmail.com>
+References: <CAArk9MNJnu7zbXLYOh8HX5RQZA47Sdfx3GjUo5HfbeXYdY8WJg@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230615_003210_257992_9E2BFD2F 
-X-CRM114-Status: GOOD (  18.49  )
+X-CRM114-CacheID: sfid-20230615_003903_287105_7FAC235A 
+X-CRM114-Status: GOOD (  17.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,159 +71,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for ERASE exec_ops.
-
-Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
----
-Change in [v4]
-
-* Updated commit message
-
-* Fix spelling mistake of sbumitting to submitting
-
-* Remove Dummy function qcom_data_read_type_exec() and
-  qcom_data_write_type_exec() and corresponding exec_ops
-  pattern.
-
-Change in [v3]
-
-* Removed chip->cont_read.ongoing flag.
-
-* Removed pre_command from erase_etype_exec_ops.
-
-Change in [v2]
-
-* Missed to post Cover-letter, so posting v2 patch with cover-letter.
-
-Change in [v1]
-
-* Added initial support for exec_ops.
-
- drivers/mtd/nand/raw/qcom_nandc.c | 65 ++++++++++++++++++++++++++++++-
- 1 file changed, 63 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 7b42b1e3cf33..2afac4bca8b5 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1546,8 +1546,7 @@ static void pre_command(struct qcom_nand_host *host, int command)
- 
- 	clear_read_regs(nandc);
- 
--	if (command == NAND_CMD_ERASE1)
--		clear_bam_transaction(nandc);
-+	clear_bam_transaction(nandc);
- }
- 
- /*
-@@ -2183,12 +2182,20 @@ static int qcom_nandc_read_page(struct nand_chip *chip, uint8_t *buf,
- {
- 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	u8 *data_buf, *oob_buf = NULL;
- 
- 	if (host->nr_boot_partitions)
- 		qcom_nandc_codeword_fixup(host, page);
- 
- 	nand_read_page_op(chip, page, 0, NULL, 0);
-+	nandc->buf_count = 0;
-+	nandc->buf_start = 0;
-+	host->use_ecc = true;
-+	clear_read_regs(nandc);
-+	set_address(host, 0, page);
-+	update_rw_regs(host, ecc->steps, true, 0);
-+
- 	data_buf = buf;
- 	oob_buf = oob_required ? chip->oob_poi : NULL;
- 
-@@ -2258,6 +2265,9 @@ static int qcom_nandc_write_page(struct nand_chip *chip, const uint8_t *buf,
- 
- 	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
- 
-+	set_address(host, 0, page);
-+	nandc->buf_count = 0;
-+	nandc->buf_start = 0;
- 	clear_read_regs(nandc);
- 	clear_bam_transaction(nandc);
- 
-@@ -3274,6 +3284,51 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
- 	return ret;
- }
- 
-+static int qcom_erase_cmd_type_exec(struct nand_chip *chip, const struct nand_subop *subop)
-+{
-+	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	struct qcom_op q_op;
-+	int ret = 0;
-+
-+	qcom_parse_instructions(chip, subop, &q_op);
-+
-+	q_op.cmd_reg |= PAGE_ACC | LAST_PAGE;
-+
-+	nandc->buf_count = 0;
-+	nandc->buf_start = 0;
-+	host->use_ecc = false;
-+	clear_read_regs(nandc);
-+	clear_bam_transaction(nandc);
-+
-+	nandc_set_reg(chip, NAND_FLASH_CMD, q_op.cmd_reg);
-+	nandc_set_reg(chip, NAND_ADDR0, q_op.addr1_reg);
-+	nandc_set_reg(chip, NAND_ADDR1, q_op.addr2_reg);
-+	nandc_set_reg(chip, NAND_DEV0_CFG0,
-+		      host->cfg0_raw & ~(7 << CW_PER_PAGE));
-+	nandc_set_reg(chip, NAND_DEV0_CFG1, host->cfg1_raw);
-+	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
-+
-+	write_reg_dma(nandc, NAND_FLASH_CMD, 3, NAND_BAM_NEXT_SGL);
-+	write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
-+	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-+
-+	ret = submit_descs(nandc);
-+	if (ret) {
-+		dev_err(nandc->dev, "failure in submitting erase descriptor\n");
-+		free_descs(nandc);
-+		goto err_out;
-+	}
-+	free_descs(nandc);
-+
-+	ret = qcom_wait_rdy_poll(chip, q_op.rdy_timeout_ms);
-+	if (ret)
-+		goto err_out;
-+
-+err_out:
-+	return ret;
-+}
-+
- static const struct nand_op_parser qcom_op_parser = NAND_OP_PARSER(
- 		NAND_OP_PARSER_PATTERN(
- 			qcom_misc_cmd_type_exec,
-@@ -3294,6 +3349,12 @@ static const struct nand_op_parser qcom_op_parser = NAND_OP_PARSER(
- 			NAND_OP_PARSER_PAT_ADDR_ELEM(false, MAX_ADDRESS_CYCLE),
- 			NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
- 			NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 512)),
-+		NAND_OP_PARSER_PATTERN(
-+			qcom_erase_cmd_type_exec,
-+			NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+			NAND_OP_PARSER_PAT_ADDR_ELEM(false, MAX_ADDRESS_CYCLE),
-+			NAND_OP_PARSER_PAT_CMD_ELEM(false),
-+			NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
- 		);
- 
- static int qcom_check_op(struct nand_chip *chip,
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWF1cm8sCgptYXVyby5saW1hQGVjbHlwc2l1bS5jb20gd3JvdGUgb24gV2VkLCAxNCBKdW4g
+MjAyMyAxODoxOTo0NSAtMDMwMDoKCj4gSGV5IGFsbCEKPiBMb29raW5nIGZvciBzb21lIGhlbHAg
+d2l0aCBtdGQuCj4gSSdtIHdvcmtpbmcgb24gc29tZSBjaGFuZ2VzIGZvciBJbnRlbCdzIHNwaSBj
+b250cm9sbGVyLiBXZSBoYXZlIGEKPiAiQklPUyIgcGFydGl0aW9uLCBjb21wb3NlZCBvZiBtYW55
+IHBhcnRzIHdpdGggZGlmZmVyZW50IG9mZnNldHMgYW5kCj4gY291bGQgYmUgc3ByZWFkIHdpdGhp
+biB0d28gY2hpcHMgaW4gc29tZSBjYXNlcyAobm90IG5lY2Vzc2FyaWx5IG9mIHRoZQo+IHNhbWUg
+c2l6ZSkuCj4gUmlnaHQgbm93IHRoZSBkcml2ZXIgdXNlcyBvbmUgcGFydGl0aW9uIHRoYXQsIGlu
+IG15IHN5c3RlbSwgaXMgYmlnZ2VyCj4gdGhhbiB0aGUgZmlyc3QgY2hpcCdzIHNpemUsIHNvIEkn
+bSBnZXR0aW5nIHRoZSAic2l6ZSB0cnVuY2F0ZWQgdG8KPiAweC4uLiIgbG9nLgo+IEFsbCBkcml2
+ZXJzIHVzaW5nIG10ZF9wYXJ0aXRpb25zIGtub3cgdGhlIHBhcnRpdGlvbiBpbmZvcm1hdGlvbiBh
+dAo+IGNvbXBpbGUgdGltZS4gVGhpcyBpcyBub3QgbXkgY2FzZSwgd2UgbmVlZCB0byByZWFkIHRo
+ZSBmaXJzdCBwb3J0aW9uCj4gb2YgdGhlIGNoaXAgdG8gZ2V0IHRoZSBwYXJ0aXRpb24gcGFydHMn
+IG9mZnNldHMuIFNvIEkgZm91bmQgcGFyc2VycywKPiBhbmQgdGhlIGRyaXZlcnMgdXNpbmcgcGFy
+c2VycyBtYWtlIHBhcnRpdGlvbnMgd2l0aGluIHRoZSBjaGlwJ3Mgc2l6ZS4KPiBTbyBteSBxdWVz
+dGlvbiBpcyB3aGV0aGVyIHBhcnNlcnMgY291bGQgc29sdmUgbXkgdHJ1bmNhdGlvbiBpc3N1ZSBh
+bmQKPiB3aGV0aGVyIHBhcnNlcnMgc3VwcG9ydCB0aGlzIGtpbmQgb2YgbXVsdGlwbGUgY2hpcCBj
+YXNlLgo+IFRoYW5rcyEKClRoZXJlIGlzIG10ZGNvbmNhdCBpbiB0aGUga2VybmVsIGJ1dCBJIGRv
+bid0IHRoaW5rIGl0IHdpbGwgZml0IHlvdXIKcHVycG9zZS4gRllJIEkgdHJpZWQgYSBmZXcgeWVh
+cnMgYWdvIHRvIGJyaW5nIHN1cHBvcnQgZm9yIHNvbWV0aGluZwpsaWtlIHRoaXMsIHVuc3VjY2Vz
+c2Z1bGx5LgoKTGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtZGV2aWNldHJlZS8y
+MDE5MTEyNzEwNTUyMi4zMTQ0NS0xLW1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20vCgpZb3Ugd291
+bGQgbmVlZCBzb21ldGhpbmcgbGlrZSB0aGF0IGFuZCBvbiB0b3Agb2YgaXQgYSBkeW5hbWljIHBh
+cnRpdGlvbgpwYXJzZXIuCgpDaGVlcnMsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
