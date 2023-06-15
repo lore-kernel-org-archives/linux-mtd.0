@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21643EB64D9
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 06:09:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C88EDEB64DC
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 06:33:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NpzNO15XNnc8ChuW8q+TT+e+PvLU5BGrIzRteyRma8k=; b=CuusNHMcSXwlDi
-	+EqNWiUdIL40wngJGab/VzcLwn01L0HENe63vJwtqjYywi8VeukaKy8gjfco+tduhfjCZX5jhwvWh
-	ltx4aqu3HGa4D0TbI+0+GaFYnNAg3e0wWuBEuSG+MD4RDaKPhh8B9rlugFcuWz4MRhNi4sEMOUAUT
-	FiSdbO7ydM4aIIa2z6fn4zQIqn1+nG1OnUuGM+Fj3Em1/gRo+EAdU+GiOdGfhhCwp2VM4sFW+LlyJ
-	ZlxCySP1MZkk5/XbtZmVGDpUTDcxJDNL6QN4ayJdP+EGB1o1GWDTg7O3PZTM3kXJCq0BNli530LAk
-	5NrkJPbpJVHcEyh2xzwQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=HjQhAcMJKtUarnJ1eInr0W+LfQrKpOJBAkeTVeRLLa8=; b=JG0Y368FLPV+p6
+	G0MWpLJUrtJPTMZB8l4Eup4bMwlv2WSAH8lndDebKTmKww8E3rhQf2oqHsmCgVSGFhmmnhizFkEjj
+	UKVENioNvF/CdP7de+hdxhtA0injMVXEkBP3Qr5HNJqhMErhsNbeNK2w4KEFzVFneF2iGN9tlUm+b
+	/rAcRFWXhlCGVUC/0nN0+UXAJzBc50aVZoIaC83M+9ScSGn2jciLJnGb7Dygu9pwtmb+BAuTYXfWw
+	Q2mOBz4hmb7U4V7SNBugfyx0SUAZodXxKocFByS/j86cdJf1Hw6/ffPbhPwHRa2RN85tuSDckjDXx
+	SpUDt9FrGC8DtfWpw3JQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9gAo-00DoQl-1l;
-	Thu, 15 Jun 2023 06:09:34 +0000
-Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
+	id 1q9gYE-00Ds0v-1g;
+	Thu, 15 Jun 2023 06:33:46 +0000
+Received: from mail-yb1-xb2c.google.com ([2607:f8b0:4864:20::b2c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9gAl-00DoQH-2b
+	id 1q9gYB-00Ds0Q-2J
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 06:09:33 +0000
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4f6283d0d84so9973173e87.1
-        for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2023 23:09:31 -0700 (PDT)
+	Thu, 15 Jun 2023 06:33:44 +0000
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-bcc29cdcdc9so1410183276.0
+        for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2023 23:33:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686809369; x=1689401369;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=26mSNpaphFv3eMUK08mrfdveKcRFHGUm7SxBgwM7wKQ=;
-        b=Woo960oRlKIg2EO9OFoNW7FesqkkGf9xBhoIYZDNjt1dJxBNHuZnK+VLc/9VAKtIbB
-         MIFaaMQOJpbzRMvEKHC8M53sfUbr9V0GugVDxrsUf61dadkbPdYrsY4ryYsgisavXLuq
-         GVCLSVUM7A8owEn+P3cNKJj/Dp5sjsgSLfU2JQigNbfupI/XDJs7DPziKKeCBLhpnBc1
-         CQ6v+/OkzDVhboP/zhMjbogBp4fx1V/gYUe6dH1X7A2ak718xx8C3vBT5lcK44FFh03C
-         uB+wxQX+54xJXZHF6Gab1BN3VOHE9pRtlSwZutloZC9Yf15XqURADZgY/MMgfEyD57xV
-         zrYw==
+        d=linaro.org; s=google; t=1686810822; x=1689402822;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VZ8sWmOrvIq8waWFLXgCuASTZeEJ+zlwoDAZjDpRLXY=;
+        b=sZwOdz+HYW1RyLBwJv5FpAqZ/3fHatoK9ha9qk0QYWSnb/RPSEgnPBWDxKpnO14Rku
+         c4u7D/jlOGpcdFumrjwUHL6wMD5ELePVg1QTvKB1QlW9Z08bX2REnMA2QxzE178q+0bk
+         Cy03GwkjOF0SFnkcfzJdV13dkMeilNTc/L1wuarWkI6v6gwHNRdAGi0knEDVltg41UHM
+         ObudbUHWQn1x1MQMTY8lYuAhkTknkgJDIENtkwnhNUg/Q9Si+/r9cBBp3XGOKRQJay3b
+         j5lzMtZ0+u3slEv+kHtyR9x2hbhZFegeMUet7Npik9wzwYwiA3irAwktA3K7+D9ZBUDX
+         Z+VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686809369; x=1689401369;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=26mSNpaphFv3eMUK08mrfdveKcRFHGUm7SxBgwM7wKQ=;
-        b=LtR3YjPvERvBy3LyrZZh00H//0GZQl/wxwpYh1I4JXQKSumfDt5aBtbmHaVktGzXyE
-         lD1ocFThfzFmYk6yDb5++6nP+ZJ2OqTntf8i3S1GptT9Iud1KwjZyMyNzp5nzdtDmCWg
-         g7jx57sngArt0dp1BuPAMaKO13Du03Q9pIEIQQ1ZrnyBtK37EVaWmGwHRJ2CRAPn1XWv
-         /6hbrhUwP4f43K0uEU3pf2n6C+/LZF3BlkkgzDEBtzbvcJN8qsKylgvz6zFXaKGmkvVP
-         pHPWXv83B9mTNmLRF0lpH7+RJTHXvuVMQLpgw566NMRzTqPtaXLHQQw10Gg2kBkcEcwG
-         MDgg==
-X-Gm-Message-State: AC+VfDzhrsM+/MIEqvDASNPTKXHlw+IQUeJLxcBLKy2hNlzwEfqC073f
-	u0fOizXRADeYEZtzHE7jtW4ccA==
-X-Google-Smtp-Source: ACHHUZ5Shvz56GbCkrxmqunekg700y5QlXwXfz9Y+4BHSqVNQbdVIZx5EZrklFNOx9V5YkOPwD3XDQ==
-X-Received: by 2002:a05:6512:329c:b0:4f1:3ca4:926f with SMTP id p28-20020a056512329c00b004f13ca4926fmr9429156lfe.21.1686809369499;
-        Wed, 14 Jun 2023 23:09:29 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id u26-20020a05600c00da00b003eddc6aa5fasm19463608wmm.39.2023.06.14.23.09.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jun 2023 23:09:27 -0700 (PDT)
-Date: Thu, 15 Jun 2023 09:09:20 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] mtd: otp: clean up on error in mtd_otp_nvmem_add()
-Message-ID: <fe7ef901-9571-4c6e-a40e-449046efe2c6@moroto.mountain>
+        d=1e100.net; s=20221208; t=1686810822; x=1689402822;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VZ8sWmOrvIq8waWFLXgCuASTZeEJ+zlwoDAZjDpRLXY=;
+        b=KX3sZY8VR49ciLnKsgN/JfMNsNJWQrrjZI1rJwhOu+NKIXCWAjoDFkO0/1Nt6Zlf0q
+         Qb7xPSWrQUsouyV6UVbXCc07yuci6s9Jrdo0i8MHDR7c8wNY8+NMJ/wBF4jsrI0Dw+HE
+         DxUyxlsZPYQPEgxRwhsscsT9fkapzwBiTkIH+uFR7ZIbQKdiBnbhYciNSXSsOgY5/lCn
+         THFAMTjNl/Zz2xnU8oOfEDsAk3Du6giV13IkLmzg7zeXm+ctyyHisHsznUjp4pnd7HPU
+         +58Noq48rBUVxuG0jF0U0klK1ItbNF0BUt+lDoBBOE7R7IpMrmVEqaK3W4m7URANhMtP
+         +oWw==
+X-Gm-Message-State: AC+VfDwshrESSt6Y2+gCX1xJI/J4YhgqZbWSwh4EH2ndphGzeZbzKsE1
+	YYoEFc3nSMDHyK9MPCmmdjTlicK2M4lc3owDXXZhdg==
+X-Google-Smtp-Source: ACHHUZ6rMue4kNIamOiSY5UQYrDzI0yab9xvTCydCT7af7qsnesG+N6ZKe4g43aMAhhOI33yTrAKykH99CcrspzzhTU=
+X-Received: by 2002:a25:504b:0:b0:bd4:e6d6:2b8e with SMTP id
+ e72-20020a25504b000000b00bd4e6d62b8emr3891532ybb.50.1686810822546; Wed, 14
+ Jun 2023 23:33:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+References: <fe7ef901-9571-4c6e-a40e-449046efe2c6@moroto.mountain>
+In-Reply-To: <fe7ef901-9571-4c6e-a40e-449046efe2c6@moroto.mountain>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 15 Jun 2023 08:33:31 +0200
+Message-ID: <CACRpkdYTcLKBq2s8_kBoM1PtzqNxxwK3wWZp6ORiY__pEkBgtQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: otp: clean up on error in mtd_otp_nvmem_add()
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-mtd@lists.infradead.org, 
+	kernel-janitors@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230614_230931_847385_19839F80 
-X-CRM114-Status: GOOD (  12.64  )
+X-CRM114-CacheID: sfid-20230614_233343_755141_FC27B45E 
+X-CRM114-Status: UNSURE (   9.27  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,51 +85,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Smatch complains that these error paths are missing cleanup:
-
-    drivers/mtd/mtdcore.c:983 mtd_otp_nvmem_add()
-    warn: missing unwind goto?
-
-This needs to call nvmem_unregister(mtd->otp_user_nvmem) before
-returning.
-
-Fixes: 3b270fac8443 ("mtd: otp: Put factory OTP/NVRAM into the entropy pool")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/mtd/mtdcore.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index abf4cb58a8ab..ab77f8f858f0 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -975,12 +975,14 @@ static int mtd_otp_nvmem_add(struct mtd_info *mtd)
- 			void *otp;
- 
- 			otp = kmalloc(size, GFP_KERNEL);
--			if (!otp)
--				return -ENOMEM;
-+			if (!otp) {
-+				err = -ENOMEM;
-+				goto err;
-+			}
- 			err = mtd_nvmem_fact_otp_reg_read(mtd, 0, otp, size);
- 			if (err < 0) {
- 				kfree(otp);
--				return err;
-+				goto err;
- 			}
- 			add_device_randomness(otp, err);
- 			kfree(otp);
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVGh1LCBKdW4gMTUsIDIwMjMgYXQgODowOeKAr0FNIERhbiBDYXJwZW50ZXIgPGRhbi5jYXJw
+ZW50ZXJAbGluYXJvLm9yZz4gd3JvdGU6Cgo+IFNtYXRjaCBjb21wbGFpbnMgdGhhdCB0aGVzZSBl
+cnJvciBwYXRocyBhcmUgbWlzc2luZyBjbGVhbnVwOgo+Cj4gICAgIGRyaXZlcnMvbXRkL210ZGNv
+cmUuYzo5ODMgbXRkX290cF9udm1lbV9hZGQoKQo+ICAgICB3YXJuOiBtaXNzaW5nIHVud2luZCBn
+b3RvPwo+Cj4gVGhpcyBuZWVkcyB0byBjYWxsIG52bWVtX3VucmVnaXN0ZXIobXRkLT5vdHBfdXNl
+cl9udm1lbSkgYmVmb3JlCj4gcmV0dXJuaW5nLgo+Cj4gRml4ZXM6IDNiMjcwZmFjODQ0MyAoIm10
+ZDogb3RwOiBQdXQgZmFjdG9yeSBPVFAvTlZSQU0gaW50byB0aGUgZW50cm9weSBwb29sIikKPiBT
+aWduZWQtb2ZmLWJ5OiBEYW4gQ2FycGVudGVyIDxkYW4uY2FycGVudGVyQGxpbmFyby5vcmc+CgpP
+b29wcyBteSBiYWQuClJldmlld2VkLWJ5OiBMaW51cyBXYWxsZWlqIDxsaW51cy53YWxsZWlqQGxp
+bmFyby5vcmc+CgpZb3VycywKTGludXMgV2FsbGVpagoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
