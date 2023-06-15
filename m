@@ -4,62 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE9EEEB64D8
-	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 01:56:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83F29EB64D9
+	for <linux-mtd@archiver.kernel.org>; Thu, 15 Jun 2023 04:05:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7rO1dA3AvX2Po3vp0y429W7295nlQfsCA/GVywjxGoQ=; b=nrBlylx9zmfOyL
-	83j+xpfra630qxig1HU1/qnnjVjDLzDw6LbtEoypFxGx2vxak1q1j1PAxBcwfVRUEWTbH5nu2anyN
-	o0M6wdDgXMCoGEqG8LGU8e70lAmMr6xnscgTY/qHkrMC/cJMAziiXIT2RHuxGhtibo2Z0MBdrJzRV
-	gw3j+DSaaZxw6GqfkpujsXrNBj8jcUxmY9B6y5zvLbHmiGivZQjQvqaumhzxa4/QOwwGoM23NUGjx
-	DchYkCZ0OwT2gnNQ2ksnKHTRMOXreNif9+SDDzJ2ykRuLmvS27Lg0vjMiCDpfTIQcCnihrHmYAYks
-	Zky6KPHF7auNM+P6gD7Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=X+V27sGvYTY+uli8sooWguCsYdm3YB604XFqYNJmJXU=; b=ZnGXyGUW5F9Obb
+	c55MvsObnP5moR4i2rcCNJYUfehtCiyovykG8v2TDI3lZt1nsic9gZn5ffGzUp89n53MFtFgaKaGl
+	Ex1fi9Z2vYVAED64kXHXKZr6JEjkkCRA1ld+LwJpCshZydqD+wsvdGhkh195k2Ozgzdi7kXU47t2x
+	GJuTCpDebmgBLU/Bm9FtgiQlaGWIyJl5YTTcehYlicBfeHL2aGJKfGpk4MOP1UfcCHNtB5QjrPDzY
+	r2wRd9usExBV2BmmOpS6Di9Fhfjv6nSEy83if+LILT6XTlf4M24yN/xWWplnEJkuyd0i+VEfh272A
+	CX4QZ9t1UN0aonPMpdNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9cDx-00DInu-0k;
-	Thu, 15 Jun 2023 01:56:33 +0000
-Received: from m12.mail.163.com ([220.181.12.199])
-	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9cDt-00DImu-2D
+	id 1q9eEM-00DXmL-1Q;
+	Thu, 15 Jun 2023 04:05:06 +0000
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1q9eEG-00DXj7-0K
 	for linux-mtd@lists.infradead.org;
-	Thu, 15 Jun 2023 01:56:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-	Content-Type; bh=CCG05dD4INRPTANzctOkoiunfbfjsGyxE9kDgsOov3c=;
-	b=GDZQlqZARwUisqMrf21y83AcL0WJp0ej/tXCkpNaOMR1uv31G8vGVWRyqVv0uC
-	LcFGpjBBuJHG8lv9ah9vSfzlmz6zqaLzBiL1yxAUdTgOysPhgbNJ+W+3wMHLxyVA
-	wgGQ4ffwUH/kzqDO+QZlMPhU4eSCdU41ZXqW9gN7CAL6c=
-Received: from [192.168.49.70] (unknown [119.123.76.184])
-	by zwqz-smtp-mta-g3-1 (Coremail) with SMTP id _____wDHLdyrb4pkwyVSAg--.57803S2;
-	Thu, 15 Jun 2023 09:55:56 +0800 (CST)
-Message-ID: <5b092faf-2e06-baf8-d3d7-366054d5e0dd@163.com>
-Date: Wed, 14 Jun 2023 21:55:55 -0400
+	Thu, 15 Jun 2023 04:05:02 +0000
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3C4FD2C0295;
+	Thu, 15 Jun 2023 16:04:54 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1686801894;
+	bh=SUSkUWLnjDnM6Q1oJEeOM0aUpiPD5yy/VyS5vIjY4aY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=G2m16jUiT3PJFc1WNePThzY2fSHOUZuMC7YTahnqrmDYTKF/c8fBz7e75bxyrNZmk
+	 PyZxSlCPIsULxUj2QPRAgwHeCM95FXxSr6VhePS6q+vVYVJZXZTYBcbzqzMtiPWJkf
+	 BYZoMT+RLMVUOJBgMuAAiFUaCS7/x24NDbDI/1XlAHj3KCTtAYA12TQYTKvn7KXJTG
+	 JNqWFkgQ/u0kjvbC5RPMgqJ/YUZTw3IOA4bAbelXZ5qs2g/NbybVfftRLcmhZKI2hu
+	 4NPHAE6ENtLg+1htfyTh6BOoiEbKxbDBY1PlnjWrJTNtTQ8f2ge0cHoHWMkQw1t239
+	 DO7QDmXlk8EOA==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B648a8de60000>; Thu, 15 Jun 2023 16:04:54 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id 1573313ED5B;
+	Thu, 15 Jun 2023 16:04:54 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id 12C3D2815D4; Thu, 15 Jun 2023 16:04:54 +1200 (NZST)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	andrew@lunn.ch,
+	gregory.clement@bootlin.com,
+	sebastian.hesselbarth@gmail.com
+Cc: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v9 0/3] dt-bindings: mtd: marvell-nand: Add YAML scheme
+Date: Thu, 15 Jun 2023 16:04:44 +1200
+Message-Id: <20230615040447.3484564-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH] mtd:spi-nor:Add support for xtx flash
-Content-Language: en-US
-To: Michael Walle <michael@walle.cc>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org
-References: <20230601102238.948177-1-bruce_suen@163.com>
- <60cea62991520f98d80af0382e43bff0@walle.cc>
-From: Bruce Suen <bruce_suen@163.com>
-In-Reply-To: <60cea62991520f98d80af0382e43bff0@walle.cc>
-X-CM-TRANSID: _____wDHLdyrb4pkwyVSAg--.57803S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Xw1DZFyfWrWxJrW8WF47twb_yoW3AwcE9r
-	Z0qr9FqrWq9ryUWFs2vw4xAry5Gr4rXr1Uur1xK3sxJ345ZrnY9wsrCry5Grn5tr48CF92
-	va98XwsFy3y0kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbWCJJUUUUU==
-X-Originating-IP: [119.123.76.184]
-X-CM-SenderInfo: 5euxuvpbvxv0i6rwjhhfrp/1tbiWR+PKFWB0A89bwAAs4
+X-Patchwork-Bot: notify
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=NPqrBHyg c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=of4jigFt-DYA:10 a=L0yewt80EUckiTMxMrMA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230614_185630_122383_C01C1512 
-X-CRM114-Status: GOOD (  10.24  )
+X-CRM114-CacheID: sfid-20230614_210500_636037_F97A3E8F 
+X-CRM114-Status: GOOD (  10.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,41 +87,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Add YAML scheme for the Marvell's NAND controller
+to validate it's DT bindings. Old txt file is deleted.
 
-Thanks, I got it.
+Also fix node name in cp11x DTSI according to nand-controller.yaml
 
-I wonder what I should do if some parts need special bugfix ?
+I've picked up this series to hopefully get it over the line. I think I've
+addressed all the feedback from the earlier rounds of review.
 
-On 6/13/23 03:38, Michael Walle wrote:
-> Hi,
->
->> Dear Maintainers,
->>
->> This patch add support for XTX spi nor flash.
->> Dadasheet Link:
->> http://www.xtxtech.com/download/?AId=449
->> http://www.xtxtech.com/download/?AId=267
->> http://www.xtxtech.com/download/?AId=426
->> http://www.xtxtech.com/download/?AId=445
->> http://www.xtxtech.com/download/?AId=274
->
-> Link: tags
->
->> Signed-off-by: Bruce Suen <bruce_suen@163.com>
->
-> XTX parts seem to have SFDP tables and they should work out of the box
-> without any patches with the generic spi nor driver [1].
->
-> -michael
->
-> [1] 
-> https://elixir.bootlin.com/linux/v6.4-rc6/source/drivers/mtd/spi-nor/core.c#L2019
+As of v7 I've re-ordered the patches so the fixups for the device trees come
+before the schema so if the series is applied in order the various checkers
+should pass cleanly. This is reliant on a series from Miquel tightening up some
+of the requirements on mtd/nand chips so the checkers may complain unless those
+changes are picked up too.
+
+Chris Packham (1):
+  ARM: dts: mvebu: align MTD partition nodes to dtschema
+
+Vadym Kochan (2):
+  arm64: dts: marvell: cp11x: Fix nand_controller node name according to
+    YAML
+  dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
+
+ .../bindings/mtd/marvell,nand-controller.yaml | 218 ++++++++++++++++++
+ .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ----------
+ MAINTAINERS                                   |   1 -
+ arch/arm/boot/dts/armada-385-atl-x530.dts     |  14 +-
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |   2 +-
+ 5 files changed, 226 insertions(+), 135 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+
+-- 
+2.40.1
 
 
 ______________________________________________________
