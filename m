@@ -4,67 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 123C1EB64D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 09:51:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09FC8EB64DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 11:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WF5igIytiGG0xnNYouxJLqJVw5C/fVD6ZnPm+shPO6w=; b=iqR8OK77+F6nMqfH8zHy/Th0Dt
-	/TgWnoBhD1gaMz9OVHsacYzz7n3KDkuXXKDMIReKi1qq6THx6swmq4xy4ZS0nw6d+j7Lu2qJ9zqV8
-	mUNUvBl5qXBigSh+9Aa/iN3br6sHFSQlkhV6nZ28+CZ9tCBNxS0Q86YUOeTwlxKZq7MT/ghL85bye
-	XspuZZ+OjWgBh7D0CIHXVOcFVdlltTYrYv5rJjZf9kbJhKoD6wy/XDpjoNqg7CfncvcFTAterm04r
-	3dK+8MwGG0TJ5xkopWlChie/lQF5R4cmMGxWIia/Fue7kZ/shu3lkfAA/bdXKoJsK3OtA+Clsh6px
-	sBzsDH3Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TWMoqLVUyQ8LpPEmGc4B6SyFejFEXSGExAzuukp4JsE=; b=XFNJDpqWat1JJv
+	VsEC3KHW5BiEujJgkxLiIMUxa6R6jKWZyIITKWs2AOEQYpwaL9s0yMGXgtLZyv4hLVIqXNAhiXh4E
+	nNiHd5w/RRox/StgDRjWF9++1aR8CD3+CaCxVBwdcK0W5PngnO8yx9Ad8U5sy6GpyFkqsdPylg0t+
+	pQDqrnbynf75QCDVsJQCNDcobx1fCLcM6QbR8LUESOwnpY+uSfKPiSAgk4srdiDCoTW2YpJizSb7r
+	TTjQ0GG7BkEwLZlstaanQGaRa2G67fDjvjytxVydNGfBUECSe4JTyJIAf7xbETF9g5LPyc9whA6p7
+	9CCOfDt3CEzaL1QPR0ig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qA67J-00HVrz-2h;
-	Fri, 16 Jun 2023 09:51:41 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qA7tO-000RgS-07;
+	Fri, 16 Jun 2023 11:45:26 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qA67F-00HVoo-2r
-	for linux-mtd@lists.infradead.org;
-	Fri, 16 Jun 2023 09:51:40 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id E4FE21230;
-	Fri, 16 Jun 2023 11:51:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1686909088;
+	id 1qA7tK-000Rdh-0v;
+	Fri, 16 Jun 2023 11:45:23 +0000
+X-GND-Sasl: gregory.clement@bootlin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1686915916;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=W59P54ZQm4yLfNN4lYHed/UxX8Xd4Uj8ugKkX1f9adA=;
-	b=UdWowJ0ZfVpq05woisOR+GhHljah1MbXIyLobDSQb/sDahAnSmch4ntx11HZ4w/WCHL64R
-	soewo4QkKX9RIGkFt6yaHydt4hAT1zyml8RtYcd1CjyrKKjDXF4dCRnV5u/8xKso5sZcoF
-	BfaqGv4BjebsBMFHrcSwwteqV47H9TwsEKQ7yovH1HHtLlRucJy+x65pqho1D7CvIjP9lv
-	AtEzQk0z0iuGvdCW7SroaaF7EgPnNwsVVsYdS0Wh6B/9F4lyP8MsdmVWT0B8BttS7ZNTHx
-	w4bNoEOG1cD7c/TgJsHXhO6NDoniYqOupYpzCzysYeQK1CtPp896yoqmjrFISA==
-MIME-Version: 1.0
-Date: Fri, 16 Jun 2023 11:51:27 +0200
-From: Michael Walle <michael@walle.cc>
-To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
+	bh=T7vKXcoGnfHByIjNR4PPOnXfjMYez+Hmo6GodYExhsY=;
+	b=cTmBdZOVa7wbqWhmXSVD72Qc/Ds9ElgOdPoJLeG60uZz/X2FzpTaZBgUf1mTQnFiak3Wch
+	y+hC+XwNCaxkbWNKbk2ezoz5gB0yRlpXswJgj14U0bGZl7vDodc8DQjIPblmerD7LHmGm/
+	DENlhkG1c4RsTXxQpp1bEUB3j95R/VHXV4bsNsU8Eu8pplbVCBjNbe2g0vhz1hoTHP/uAF
+	97/ojRMbaSub3mqqC6wiv8hzCEWSjFvU5igE5MnJSjDtd9pTMR3mIjdT2DBBsYeOcT3h4y
+	5N1++kgT/+d/SGjUdsVFUDZgygac/sJlAsUbDYNENJKuz3DvXxFT9GLwfqQvfA==
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7EC8D20007;
+	Fri, 16 Jun 2023 11:45:14 +0000 (UTC)
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- git@amd.com, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, amitrkcian2002@gmail.com
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
- to avoid setting SRWD bit in status register
-In-Reply-To: <20230616085513.17632-2-amit.kumar-mahapatra@amd.com>
-References: <20230616085513.17632-1-amit.kumar-mahapatra@amd.com>
- <20230616085513.17632-2-amit.kumar-mahapatra@amd.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <f1d065e98d7b0d115e6a2a562a2a5c68@walle.cc>
-X-Sender: michael@walle.cc
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, andrew@lunn.ch, sebastian.hesselbarth@gmail.com,
+ vadym.kochan@plvision.eu
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ enachman@marvell.com, Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v6 0/2] dt-bindings: mtd: marvell-nand: Add YAML scheme
+In-Reply-To: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
+References: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
+Date: Fri, 16 Jun 2023 13:45:14 +0200
+Message-ID: <87r0qbhbqt.fsf@BL-laptop>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230616_025138_101228_B1D4073E 
-X-CRM114-Status: GOOD (  25.44  )
+X-CRM114-CacheID: sfid-20230616_044522_506178_DF0E55A5 
+X-CRM114-Status: GOOD (  11.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,85 +84,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2023-06-16 10:55, schrieb Amit Kumar Mahapatra:
-> If the WP signal of the flash device is not connected and the software 
-> sets
-> the status register write disable (SRWD) bit in the status register 
-> then
-> thestatus register permanently becomes read-only. To avoid this added a 
-> new
-> boolean DT property "broken-wp". If WP signal is not connected, then 
-> this
-> property should be set in the DT to avoid setting the SRWD during 
-> status
-> register write operation.
-> 
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->  .../devicetree/bindings/mtd/jedec,spi-nor.yaml    | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 89959e5c47ba..10a6df752f6f 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -70,6 +70,21 @@ properties:
->        be used on such systems, to denote the absence of a reliable 
-> reset
->        mechanism.
-> 
-> +  broken-wp:
-> +    type: boolean
-> +    description:
-> +      The status register write disable (SRWD) bit in status register, 
-> combined
-> +      with the WP signal, provides hardware data protection for the
-> device. When
-> +      the SRWD bit is set to 1, and the WP signal is either driven LOW 
-> or hard
-> +      strapped to LOW, the status register nonvolatile bits become
-> read-only and
-> +      the WRITE STATUS REGISTER operation will not execute. The only
-> way to exit
-> +      this hardware-protected mode is to drive WP HIGH. If the WP 
-> signal of the
-> +      flash device is not connected then status register permanently 
-> becomes
-> +      read-only as the SRWD bit cannot be reset. This boolean flag can 
-> be used
-> +      on systems in which WP signal is not connected, to avoid setting 
-> the SRWD
-> +      bit while writing the status register.
+Chris Packham <chris.packham@alliedtelesis.co.nz> writes:
 
-This is not true for all flashes, for example, Macronix flashes seem to 
-have
-an internal pull-up, so if the pin is unconnected H/W write protection 
-is
-disabled.
+> Add YAML scheme for the Marvell's NAND controller
+> to validate it's DT bindings. Old txt file is deleted,
+> not included the compatibles and properties which were marked as
+> deprecated.
+>
+> Also fix node name in cp11x DTSI acording to nand-controller.yaml
+>
+> I've picked up this series to hopefully get it over the line. I think I've
+> addressed all the feedback from the last round of review.
+>
+> Vadym Kochan (2):
+>   dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
+>   arm64: dts: marvell: cp11x: Fix nand_controller node name according to
+>     YAML
 
-So maybe only mention that "if the pin is wrongly tied to GND (that 
-includes
-internal pull-downs) or it is left floating".
 
-Same goes for your comment in the driver code. Sorry for nitpicking, but
-I fear some misuse of this property to disable the locking of the status
-register.
+Both patch applied on mvebu/dt64
 
-> If the WP signal is hard strapped
-> +      to LOW then it is not broken as it can be a valid use case.
-> +
+However if the first patch should be merged through another tree, let me
+know.
 
-I'm not sure it the bindings use negative notion of pins, because that
-signal is usually called WP#.
+Thanks,
 
--michael
+Gregory
+
+
+>
+>  .../bindings/mtd/marvell,nand-controller.yaml | 190 ++++++++++++++++++
+>  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ------------
+>  MAINTAINERS                                   |   1 -
+>  arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |   2 +-
+>  4 files changed, 191 insertions(+), 128 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+>
+> -- 
+> 2.40.1
+>
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
 
 ______________________________________________________
 Linux MTD discussion mailing list
