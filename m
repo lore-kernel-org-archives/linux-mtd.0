@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25197EB64D8
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 14:08:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 220E4EB64D8
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 15:26:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ipmoeJaJ1+UHWwKcMRQaBWoCGuDpWXZAVWQac4Dnj2Y=; b=ELvdIwQhMd2oyL
-	3ixeNxo34FVlfvRb+zVZOL/GXMKFA9IU7+ewWsz16QhTU+2NuBz7s3qrkuHbj8CyxeC6uy0ZeH78N
-	KWjBVyABKgNCoXC7WSVgll6Ne/raSvBlkAk9IwOnCvJbO7ReoyRnkOE1wewOF5HjizkPtU22jxuPk
-	WDR/yVisRJXGUCa972rToWIo9TV5FqPHpj0bW2lgOOWPJbFlHV+GbFU/tgF2kz7vtZQCZYPr45ejM
-	m8kKWDxi6sHNY7TizOb+zO2cRuf31XY9FCnkmFWQudnYxWNd5dzmsiQmUkFp+I8xwtONjwc70qdld
-	uox0JCUlO/kcxVKn0HaQ==;
+	List-Owner; bh=UEY1EtEPkSJkTYRH9VazTPitk/XMjvw2K+mJY8aRwV4=; b=YI1N6OLmTY6tBw
+	8hkng0TMgjklaawP7XVU7BCxoMhMDzSTWM3T16T2lFSeQZHTYpIVBb4QniBB/bScBJxDDKHa4TT/E
+	LhGVmAioMnAGX/r+ZkmdlzGfyfzsjBT/gxs6BZfRx7ofolOW1zgQbbt9wSaJq430wfISJ88yw/aiK
+	g2NUfqgLlFYpYrQUP6Nkbsz04gAxBI8CkvgMbwVuhQLQJfyQ7rx08d0uFsRBJ7qRwpLrj+Vt3Znfj
+	rR/uUb6U2mGMxq3PEegur6Yp9qmTQ+/2NB0z6c1t2tf14PbN5eDRTCdwlWsmjCi7PO1A2UXaCN0qy
+	vHRRDeR0YCOseZX/rb9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qAA7z-000lOW-0G;
-	Fri, 16 Jun 2023 14:08:39 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1qABL0-000woT-0f;
+	Fri, 16 Jun 2023 15:26:10 +0000
+Received: from mail-io1-f52.google.com ([209.85.166.52])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qAA7t-000lKj-02
+	id 1qABKs-000wmp-2H
 	for linux-mtd@lists.infradead.org;
-	Fri, 16 Jun 2023 14:08:35 +0000
-X-GND-Sasl: miquel.raynal@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686924505;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cFcxT/aNoenj1ayZItxhM3d2Zq0JIbTQyoNl2+ySG/k=;
-	b=bWyEPocFf8Kbo9L/dh2hj+RATx/D4+q98U3IPcxeFhSXeNySFX0oT5TizTtJK66jXa3UmV
-	Ns+cac1bC8qXUq0V9Nai0tNd5EbznVyQ6L1qF8tzxr5PXlnqAPOf6K0RcfIBvvohZkxiuT
-	MfiXQRFnd0ZY/7ShGdt/yFxSQMrHjoi2jyS9pY+y2+aDl24C8zSN2lQGidjZe+6Imd6/WB
-	5/y03xjt4g9iU5hzEpx5+I4Eso0roBGJnAazwwlctwkXXf2E8zvnkj6/rnDTzkViK2rIM5
-	qIgFaCs1fO3W9kr7G/Ra8alo1uJ6M1PPdgWc9YYoLdEGHwp4wlhXZ8pXoymm/A==
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 13B221BF209;
-	Fri, 16 Jun 2023 14:08:24 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 1/2] mtd: spi-nor: Add support for sst26vf032b flash
-Date: Fri, 16 Jun 2023 16:08:21 +0200
-Message-Id: <20230616140822.2789638-2-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230616140822.2789638-1-miquel.raynal@bootlin.com>
-References: <20230616140822.2789638-1-miquel.raynal@bootlin.com>
+	Fri, 16 Jun 2023 15:26:07 +0000
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-77b210292c5so30678639f.1
+        for <linux-mtd@lists.infradead.org>; Fri, 16 Jun 2023 08:26:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686929160; x=1689521160;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=igH/dcK7UCcdt51JQqBje+biMdflRhWO8VW1mIDbaBA=;
+        b=JYVJy8qRQjEIPFtIo61igQg/1jKiW4+lYBecvQj4M8JoTDzI7LgtP2Zi0/jgD+9/Ex
+         /02Gl7B0fCQ3wumslb+izel15cTMlZJV30wM5qbPS9X3lviZQ5lOv7iPnIt0A1pwZkNJ
+         1ABOzaTW6JuOd85g3EVLP49HBcSauMbNSr42ydPCYA0FKOo1Pxl//bFZkJ89C/TfXs53
+         uOPVXr9JesqbybRlctFTgaKVNponmXLyRAuj6FFxGC6D7jI04aGn8x25WjwLFzPclili
+         PcoS6roPjhiaXhtbInM1atTr4Zq5gfqrAEW4bvkofOHU+BAm/ZyYJIs/hUIf3qyv5Fnf
+         8fYA==
+X-Gm-Message-State: AC+VfDxqGgTNpe7tDJ65A9ZwkIByzrY3OoTMHk8RxOloCNIxMqNxo1zH
+	HtfZ3K4VF6CmMeJeBQppkA==
+X-Google-Smtp-Source: ACHHUZ48fTuGjPo4zir12/6NYrJyr89szhEMf/qHhpj1EgSvzOKpkzcISzefuE043NmgDCj+Lqk36g==
+X-Received: by 2002:a5d:8b99:0:b0:776:bfbe:a72b with SMTP id p25-20020a5d8b99000000b00776bfbea72bmr2873779iol.14.1686929159875;
+        Fri, 16 Jun 2023 08:25:59 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id r18-20020a02c6d2000000b003e8a17d7b1fsm6401676jan.27.2023.06.16.08.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jun 2023 08:25:59 -0700 (PDT)
+Received: (nullmailer pid 442105 invoked by uid 1000);
+	Fri, 16 Jun 2023 15:25:56 -0000
+Date: Fri, 16 Jun 2023 09:25:56 -0600
+From: Rob Herring <robh@kernel.org>
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: tudor.ambarus@linaro.org, pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, git@amd.com, michael@walle.cc, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, amitrkcian2002@gmail.com
+Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
+ to avoid setting SRWD bit in status register
+Message-ID: <20230616152556.GA440257-robh@kernel.org>
+References: <20230616085513.17632-1-amit.kumar-mahapatra@amd.com>
+ <20230616085513.17632-2-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230616085513.17632-2-amit.kumar-mahapatra@amd.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230616_070833_305512_EA88380E 
-X-CRM114-Status: GOOD (  11.92  )
+X-CRM114-CacheID: sfid-20230616_082602_768249_96EF95AE 
+X-CRM114-Status: GOOD (  26.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,87 +83,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Describe this new part. The datasheet is public.
+On Fri, Jun 16, 2023 at 02:25:12PM +0530, Amit Kumar Mahapatra wrote:
+> If the WP signal of the flash device is not connected and the software sets
+> the status register write disable (SRWD) bit in the status register then
+> thestatus register permanently becomes read-only. To avoid this added a new
+> boolean DT property "broken-wp". If WP signal is not connected, then this
+> property should be set in the DT to avoid setting the SRWD during status
+> register write operation.
+> 
+> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>  .../devicetree/bindings/mtd/jedec,spi-nor.yaml    | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> index 89959e5c47ba..10a6df752f6f 100644
+> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> @@ -70,6 +70,21 @@ properties:
+>        be used on such systems, to denote the absence of a reliable reset
+>        mechanism.
+>  
+> +  broken-wp:
 
-Link: https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST26VF032B-SST26VF032BA-2.5V-3.0V-32-Mbit-Serial-Quad-IO-%28SQI%29-Flash-Memory-20005218K.pdf
+In the tied low case, that's designed behavior rather than broken. The 
+name should reflect that.
 
-Here are the sfdp tables plus base testing to show it works.
-
-$ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-sst26vf032b
-$ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-bf2642
-$ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-sst
-$ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450060102ff00060110300000ff81000106000100ffbf0001180002
-0001fffffffffffffffffffffffffffffffffd20f1ffffffff0144eb086b
-083b80bbfeffffffffff00ffffff440b0c200dd80fd810d820914824806f
-1d81ed0f773830b030b0f7ffffff29c25cfff030c080ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffff0004fff37f0000f57f0000f9ff
-3d00f57f0000f37f0000ffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffbf2642ffb95ffdff30f260f332ff0a122346ff0f19320f1919ffffff
-ffffffff00669938ff05013506040232b03072428de89888a585c09faf5a
-ffff06ec060c0003080bffffffffff07ffff0202ff060300fdfd040600fc
-0300fefe0202070e
-$ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-e7efddddb3d5ee89ca37bf6b6e789645  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-
-$ dd if=/dev/urandom of=./qspi_test bs=1M count=1
-1+0 records in
-1+0 records out
-$ mtd_debug write /dev/mtd0 0 1048576 qspi_test
-Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
-$ mtd_debug erase /dev/mtd0 0 1048576
-Erased 1048576 bytes from address 0x00000000 in flash
-$ mtd_debug read /dev/mtd0 0 1048576 qspi_read
-Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
-$ hexdump qspi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0100000
-$ mtd_debug write /dev/mtd0 0 1048576 qspi_test
-Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
-$ mtd_debug read /dev/mtd0 0 1048576 qspi_read
-Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
-$ sha1sum qspi_test qspi_read
-2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_test
-2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_read
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/spi-nor/sst.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-index 99c8a19493f5..48970d2f78fa 100644
---- a/drivers/mtd/spi-nor/sst.c
-+++ b/drivers/mtd/spi-nor/sst.c
-@@ -113,6 +113,10 @@ static const struct flash_info sst_nor_parts[] = {
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ)
- 		.fixups = &sst26vf_nor_fixups },
-+	{ "sst26vf032b", INFO(0xbf2642, 0, 0, 0)
-+		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
-+		PARSE_SFDP
-+		.fixups = &sst26vf_nor_fixups },
- 	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128)
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
--- 
-2.34.1
-
+> +    type: boolean
+> +    description:
+> +      The status register write disable (SRWD) bit in status register, combined
+> +      with the WP signal, provides hardware data protection for the device. When
+> +      the SRWD bit is set to 1, and the WP signal is either driven LOW or hard
+> +      strapped to LOW, the status register nonvolatile bits become read-only and
+> +      the WRITE STATUS REGISTER operation will not execute. The only way to exit
+> +      this hardware-protected mode is to drive WP HIGH. If the WP signal of the
+> +      flash device is not connected then status register permanently becomes
+> +      read-only as the SRWD bit cannot be reset. This boolean flag can be used
+> +      on systems in which WP signal is not connected, to avoid setting the SRWD
+> +      bit while writing the status register. If the WP signal is hard strapped
+> +      to LOW then it is not broken as it can be a valid use case.
+> +
+>    reset-gpios:
+>      description:
+>        A GPIO line connected to the RESET (active low) signal of the device.
+> -- 
+> 2.17.1
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
