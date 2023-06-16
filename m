@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09FC8EB64DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 11:45:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31974EB64DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 11:56:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TWMoqLVUyQ8LpPEmGc4B6SyFejFEXSGExAzuukp4JsE=; b=XFNJDpqWat1JJv
-	VsEC3KHW5BiEujJgkxLiIMUxa6R6jKWZyIITKWs2AOEQYpwaL9s0yMGXgtLZyv4hLVIqXNAhiXh4E
-	nNiHd5w/RRox/StgDRjWF9++1aR8CD3+CaCxVBwdcK0W5PngnO8yx9Ad8U5sy6GpyFkqsdPylg0t+
-	pQDqrnbynf75QCDVsJQCNDcobx1fCLcM6QbR8LUESOwnpY+uSfKPiSAgk4srdiDCoTW2YpJizSb7r
-	TTjQ0GG7BkEwLZlstaanQGaRa2G67fDjvjytxVydNGfBUECSe4JTyJIAf7xbETF9g5LPyc9whA6p7
-	9CCOfDt3CEzaL1QPR0ig==;
+	List-Owner; bh=zqMHw/ZcC1b8lBKwIogGVwzVuf/cjUmkr0v0OBFcI7Y=; b=sbWfhwX803H+5c
+	ywFC13bOPbF7+EN23HXOqTmzOkQEf5oU1mEvzHD9r3thPNnnbD36FPvHB761+nC0dJ5NkjmpCkKmv
+	p4tLuWhyAHVZ70RkM6FmXy8DB8v3HI5gKVUipbNYvl9kQK3k9E48fkqH3glAC+xR2h2X+Jqi3jHVt
+	xThCDDc3X2wtXM0B2Zo+kVTMOxuGcIDKMWnXMa0hgWIC3UsZmD4JRDFMHcYEacQBaqr47EGVneiLZ
+	bjCitR29E6QmU8Cni/zoK/RNqbte+NE7fKwNwcgHUOPwo7Z9XJNOUKLMvAhLTaVBi8HEkTVddgXEl
+	T2RLaikYPw5//Qn7ATbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qA7tO-000RgS-07;
-	Fri, 16 Jun 2023 11:45:26 +0000
+	id 1qA83b-000Th4-1l;
+	Fri, 16 Jun 2023 11:55:59 +0000
 Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qA7tK-000Rdh-0v;
-	Fri, 16 Jun 2023 11:45:23 +0000
+	id 1qA83Y-000Tg0-24;
+	Fri, 16 Jun 2023 11:55:58 +0000
 X-GND-Sasl: gregory.clement@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686915916;
+	t=1686916554;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T7vKXcoGnfHByIjNR4PPOnXfjMYez+Hmo6GodYExhsY=;
-	b=cTmBdZOVa7wbqWhmXSVD72Qc/Ds9ElgOdPoJLeG60uZz/X2FzpTaZBgUf1mTQnFiak3Wch
-	y+hC+XwNCaxkbWNKbk2ezoz5gB0yRlpXswJgj14U0bGZl7vDodc8DQjIPblmerD7LHmGm/
-	DENlhkG1c4RsTXxQpp1bEUB3j95R/VHXV4bsNsU8Eu8pplbVCBjNbe2g0vhz1hoTHP/uAF
-	97/ojRMbaSub3mqqC6wiv8hzCEWSjFvU5igE5MnJSjDtd9pTMR3mIjdT2DBBsYeOcT3h4y
-	5N1++kgT/+d/SGjUdsVFUDZgygac/sJlAsUbDYNENJKuz3DvXxFT9GLwfqQvfA==
+	bh=v3VbCZZPj2MH0B0+AxaXEpesaRl2NPyrEf1VpNxwlIQ=;
+	b=j6qpC/T8VW1/ouaPpAkjq2VsAZfIQtkXFSdnWjuzAQS4RsC4Kw+gi590pUuYPb976fLsH1
+	3Q/+4HPwTOEjzQ1LXKm1DUDzc1JX6zs19JNVW1zg8wkXQZ1BTszQVJseVTdDvqQWuSKY+w
+	g7nO7Uw6b0YUF03aP6e3xYlUkkI46SZ52VVrfxDpqe27j7EPmfbJV6nS70ch8WCp5OOrwr
+	vg8dv3qpXhaakMbyfLaCvIdVfd5kapMes7HV7Ne3xneNVBXa8ie/FHATVuFKglJ6ZScQS0
+	/RqCVTJWZmi0U4x2FmA3w0E0YSqkIVqk5Rv6YvMkhfIN8xrhPf2rVGiLmy28cg==
 X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
@@ -51,28 +51,28 @@ X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7EC8D20007;
-	Fri, 16 Jun 2023 11:45:14 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2BFC12000B;
+	Fri, 16 Jun 2023 11:55:52 +0000 (UTC)
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, andrew@lunn.ch, sebastian.hesselbarth@gmail.com,
- vadym.kochan@plvision.eu
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, andrew@lunn.ch,
+ sebastian.hesselbarth@gmail.com
 Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- enachman@marvell.com, Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH v6 0/2] dt-bindings: mtd: marvell-nand: Add YAML scheme
-In-Reply-To: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
-References: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
-Date: Fri, 16 Jun 2023 13:45:14 +0200
-Message-ID: <87r0qbhbqt.fsf@BL-laptop>
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Vadym
+ Kochan <vadym.kochan@plvision.eu>, Chris Packham
+ <chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v9 1/3] arm64: dts: marvell: cp11x: Fix nand_controller
+ node name according to YAML
+In-Reply-To: <20230615040447.3484564-2-chris.packham@alliedtelesis.co.nz>
+References: <20230615040447.3484564-1-chris.packham@alliedtelesis.co.nz>
+ <20230615040447.3484564-2-chris.packham@alliedtelesis.co.nz>
+Date: Fri, 16 Jun 2023 13:55:52 +0200
+Message-ID: <87o7lfhb93.fsf@BL-laptop>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230616_044522_506178_DF0E55A5 
-X-CRM114-Status: GOOD (  11.77  )
+X-CRM114-CacheID: sfid-20230616_045556_830768_D96EB193 
+X-CRM114-Status: GOOD (  14.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,41 +91,46 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Chris Packham <chris.packham@alliedtelesis.co.nz> writes:
 
-> Add YAML scheme for the Marvell's NAND controller
-> to validate it's DT bindings. Old txt file is deleted,
-> not included the compatibles and properties which were marked as
-> deprecated.
+> From: Vadym Kochan <vadym.kochan@plvision.eu>
 >
-> Also fix node name in cp11x DTSI acording to nand-controller.yaml
+> Marvell NAND controller has now YAML to validate it's DT bindings, so
+> change the node name of cp11x DTSI as it is required by nand-controller.yaml
 >
-> I've picked up this series to hopefully get it over the line. I think I've
-> addressed all the feedback from the last round of review.
->
-> Vadym Kochan (2):
->   dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
->   arm64: dts: marvell: cp11x: Fix nand_controller node name according to
->     YAML
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-
-Both patch applied on mvebu/dt64
-
-However if the first patch should be merged through another tree, let me
-know.
+Applied on mvebu/dt64
 
 Thanks,
 
 Gregory
 
 
+> ---
 >
->  .../bindings/mtd/marvell,nand-controller.yaml | 190 ++++++++++++++++++
->  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ------------
->  MAINTAINERS                                   |   1 -
->  arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |   2 +-
->  4 files changed, 191 insertions(+), 128 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
->  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+> Notes:
+>     Changes in v9:
+>     - None
+>     Changes in v8:
+>     - Add r-by from Miquel
 >
+>  arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+> index 7d0043824f2a..982b180b33e6 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+> @@ -468,7 +468,7 @@ CP11X_LABEL(uart3): serial@702300 {
+>  			status = "disabled";
+>  		};
+>  
+> -		CP11X_LABEL(nand_controller): nand@720000 {
+> +		CP11X_LABEL(nand_controller): nand-controller@720000 {
+>  			/*
+>  			 * Due to the limitation of the pins available
+>  			 * this controller is only usable on the CPM
 > -- 
 > 2.40.1
 >
