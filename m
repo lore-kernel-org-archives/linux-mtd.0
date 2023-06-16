@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC17CEB64D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 11:56:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 345DFEB64D8
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 11:58:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
 	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dFSmpCPGI1KcyCOwzBjwIc+dtg5gMMRiFnqMBy7Sr3c=; b=VjnFgK2vg1E3uB
-	SvTYJ8biYiWaPhm7+b/mh2fDLpReNMqtgdZ+GluM8ZuaR8myFcyyZkRmbINCxQv1P4NpyJaBUoo1i
-	/aVIX/NasyaTZxvYHzAw60fgILF2Iyp5HO6qs7/iIYQBtN8ZY60KfKHkGw0+ZRZ2R1fMoDgc5rZQJ
-	GQzNNiVvuqSUgCuggPw9SBSPUKuECOveNPZSGT1IQ+X/ULyv3/TQi6c0MElMce7tUWG8KKRrVhf9L
-	WNF3aAvNjlBKVS9SQ1zYxplXSHoEC7d8v8AsEqZCkQgHrFOyksg5kkyzhTIRxLruIf4RYmWQ694ZQ
-	NiuXqjm1CsfvMPpmGMjg==;
+	List-Owner; bh=LoNUb5f9fCMjVWobK/KMLKLpIGEA/Kq9JxPiClR6NP4=; b=TmuxTFNbbcbpls
+	EC36r88r7L/7VSdGIC/4BCs+Dq8loH5BInRAIIDJjyErk69ih7nVZWXJMCvH+JmjiNQEN7czwsgi+
+	cecdcbBVTzZsOyZlgZ1TZM5Ext8V4JujCqkDBigraHEVPLSaRGuvEINanbOVCBp8jcBKjrPNXUqiI
+	piZHqS2c7IMLcSCGGDQz4jZelCXaS/FtLmev7k53cpu+zNk4g0DsVY4OYEXMtQrqd2mS1Vy9ioFk5
+	RWQBkjPWfXipa/ja/ZiMDLpeNX6kW9rmcZd0X8ytG6e83pmrwsxr3axR9AxbfHJtKdJLYLbDz3w1g
+	wlN70nkmUwguMAjsczHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qA83p-000TlF-2d;
-	Fri, 16 Jun 2023 11:56:13 +0000
-Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
+	id 1qA85j-000UFW-0L;
+	Fri, 16 Jun 2023 11:58:11 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qA83m-000Tj9-22;
-	Fri, 16 Jun 2023 11:56:12 +0000
+	id 1qA85f-000UDl-0Z;
+	Fri, 16 Jun 2023 11:58:09 +0000
 X-GND-Sasl: gregory.clement@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686916568;
+	t=1686916683;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6QaZnoro0oU0BUT67Qd+xO/fbwDMI8KTckqLRYFBC1A=;
-	b=F4yISwuao80Yq+BfiQHCmYOpMnGAeJxFSVfrWuqpY/P6HLjFFCoFhz0lo96y1NyGig0eWj
-	sDErek1g/skSmiysKMh7RQDKWRKllmMsl0byx0C4xXIa1v5Tby/m81i9EzeHKKo1KAI2Xh
-	jZ5tKuFuRxaWWQG453O6K/oKdgppll19PVojTDpxeFWSMErJZtnmraOglde5qpBlcMGWft
-	DNlCpRYwy6ADtML0ewRZrsx0fbSSdbXFbmPowV63AFelyzYBmgbci1OvpG92FVKlrxx6pC
-	6nEgNgBeuOGKW4E/ssMzNDlRlcW2bccMh4vCSvY54g+o1EJV9RgOFnY59bE7Ow==
+	bh=oopUZlUtuLZK+7zdDNuIoLpQDqrRtt6+LrJlqbPl+AI=;
+	b=htS+g7ijJc5qam38E8e1ZkE/HXVDeDZ+ba6SRIEWVePZUyKejAdMDewGRoVC/Nr8g8sc3F
+	ME/1ArWeIEkf4ymtm5tSbG7yn/XEYHxlt6GsrT6cIgbk7I6D43+uSG/76cT2UPYZJeodmR
+	b96q9hu9bkt9s5bVrp08fYqYVtIi+FpKhIwl8RlYGRdrdFHWXLE6rlUtAzLXyGN7wOegoF
+	sb1CwFK8RXhqbM2Ty+RISw7Rexiz0AH21PvekTxmJB/kWAUcMLMu4pCaHwmXn9GssgY687
+	TosXZ0/toRqZYHN5M72qgRIqvypo8OoeChBC599H0aQF/OaOLwCWdlCDCd6o4w==
 X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
@@ -50,27 +50,30 @@ X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
 X-GND-Sasl: gregory.clement@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 398F92000C;
-	Fri, 16 Jun 2023 11:56:08 +0000 (UTC)
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+X-GND-Sasl: gregory.clement@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 95F0160007;
+	Fri, 16 Jun 2023 11:58:00 +0000 (UTC)
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, andrew@lunn.ch,
- sebastian.hesselbarth@gmail.com
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, andrew@lunn.ch, sebastian.hesselbarth@gmail.com,
+ vadym.kochan@plvision.eu
 Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Chris
- Packham <chris.packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH v9 2/3] ARM: dts: mvebu: align MTD partition nodes to
- dtschema
-In-Reply-To: <20230615040447.3484564-3-chris.packham@alliedtelesis.co.nz>
-References: <20230615040447.3484564-1-chris.packham@alliedtelesis.co.nz>
- <20230615040447.3484564-3-chris.packham@alliedtelesis.co.nz>
-Date: Fri, 16 Jun 2023 13:56:07 +0200
-Message-ID: <87legjhb8o.fsf@BL-laptop>
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ enachman@marvell.com, Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v6 0/2] dt-bindings: mtd: marvell-nand: Add YAML scheme
+In-Reply-To: <87r0qbhbqt.fsf@BL-laptop>
+References: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
+ <87r0qbhbqt.fsf@BL-laptop>
+Date: Fri, 16 Jun 2023 13:58:00 +0200
+Message-ID: <87ilbnhb5j.fsf@BL-laptop>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230616_045610_964512_851CA960 
-X-CRM114-Status: GOOD (  12.65  )
+X-CRM114-CacheID: sfid-20230616_045807_372113_51C071D3 
+X-CRM114-Status: GOOD (  13.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,83 +90,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Chris Packham <chris.packham@alliedtelesis.co.nz> writes:
+Gregory CLEMENT <gregory.clement@bootlin.com> writes:
 
-> Update the node names for the SPI NOR and NAND partitions to conform to
-> the partition properties in the relevant dtschema.
+> Chris Packham <chris.packham@alliedtelesis.co.nz> writes:
 >
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>> Add YAML scheme for the Marvell's NAND controller
+>> to validate it's DT bindings. Old txt file is deleted,
+>> not included the compatibles and properties which were marked as
+>> deprecated.
+>>
+>> Also fix node name in cp11x DTSI acording to nand-controller.yaml
+>>
+>> I've picked up this series to hopefully get it over the line. I think I've
+>> addressed all the feedback from the last round of review.
+>>
+>> Vadym Kochan (2):
+>>   dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
+>>   arm64: dts: marvell: cp11x: Fix nand_controller node name according to
+>>     YAML
+>
+>
+> Both patch applied on mvebu/dt64
+>
+> However if the first patch should be merged through another tree, let me
+> know.
 
-Applied on mvebu/dt
+Finally I removed these both patches, I missed the version 9!
+
+I applied the 2 patches for the dts files from v9.
 
 Thanks,
 
 Gregory
-
-
-> ---
 >
-> Notes:
->     Changes in v9:
->     - None
->     Changes in v8:
->     - Add r-by from Miquel
 >
->  arch/arm/boot/dts/armada-385-atl-x530.dts | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+>>
+>>  .../bindings/mtd/marvell,nand-controller.yaml | 190 ++++++++++++++++++
+>>  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ------------
+>>  MAINTAINERS                                   |   1 -
+>>  arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |   2 +-
+>>  4 files changed, 191 insertions(+), 128 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+>>  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+>>
+>> -- 
+>> 2.40.1
+>>
 >
-> diff --git a/arch/arm/boot/dts/armada-385-atl-x530.dts b/arch/arm/boot/dts/armada-385-atl-x530.dts
-> index 241f5d7c80e9..5a9ab8410b7b 100644
-> --- a/arch/arm/boot/dts/armada-385-atl-x530.dts
-> +++ b/arch/arm/boot/dts/armada-385-atl-x530.dts
-> @@ -179,19 +179,19 @@ partitions {
->  			compatible = "fixed-partitions";
->  			#address-cells = <1>;
->  			#size-cells = <1>;
-> -			partition@u-boot {
-> +			partition@0 {
->  				reg = <0x00000000 0x00100000>;
->  				label = "u-boot";
->  			};
-> -			partition@u-boot-env {
-> +			partition@100000 {
->  				reg = <0x00100000 0x00040000>;
->  				label = "u-boot-env";
->  			};
-> -			partition@unused {
-> +			partition@140000 {
->  				reg = <0x00140000 0x00e80000>;
->  				label = "unused";
->  			};
-> -			partition@idprom {
-> +			partition@fc0000 {
->  				reg = <0x00fc0000 0x00040000>;
->  				label = "idprom";
->  			};
-> @@ -216,16 +216,16 @@ partitions {
->  			compatible = "fixed-partitions";
->  			#address-cells = <1>;
->  			#size-cells = <1>;
-> -			partition@user {
-> +			partition@0 {
->  				reg = <0x00000000 0x0f000000>;
->  				label = "user";
->  			};
-> -			partition@errlog {
-> +			partition@f000000 {
->  				/* Maximum mtdoops size is 8MB, so set to that. */
->  				reg = <0x0f000000 0x00800000>;
->  				label = "errlog";
->  			};
-> -			partition@nand-bbt {
-> +			partition@f800000 {
->  				reg = <0x0f800000 0x00800000>;
->  				label = "nand-bbt";
->  			};
 > -- 
-> 2.40.1
->
+> Gregory Clement, Bootlin
+> Embedded Linux and Kernel engineering
+> http://bootlin.com
 
 -- 
 Gregory Clement, Bootlin
