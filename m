@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 345DFEB64D8
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 11:58:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D11D4EB64D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 14:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LoNUb5f9fCMjVWobK/KMLKLpIGEA/Kq9JxPiClR6NP4=; b=TmuxTFNbbcbpls
-	EC36r88r7L/7VSdGIC/4BCs+Dq8loH5BInRAIIDJjyErk69ih7nVZWXJMCvH+JmjiNQEN7czwsgi+
-	cecdcbBVTzZsOyZlgZ1TZM5Ext8V4JujCqkDBigraHEVPLSaRGuvEINanbOVCBp8jcBKjrPNXUqiI
-	piZHqS2c7IMLcSCGGDQz4jZelCXaS/FtLmev7k53cpu+zNk4g0DsVY4OYEXMtQrqd2mS1Vy9ioFk5
-	RWQBkjPWfXipa/ja/ZiMDLpeNX6kW9rmcZd0X8ytG6e83pmrwsxr3axR9AxbfHJtKdJLYLbDz3w1g
-	wlN70nkmUwguMAjsczHA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=4BgY0zAVtV1MzVK6qqMHWsTiZ/9LX+gBfoN4dZswymQ=; b=qRToJQL/PpjhHm
+	Qc7MX7viNoDx/xtub6GCpOpn+jgKU6JYrcmRibgd97e2AUOy9L3lpBK0sO2BtGK1T+/UJGCjGYj6g
+	yerd1FIrqZqs76JR9+40D3lp6Fimlb03H0jytSnDWAdk4Jzz8Nmb7k9alri3AUkeuygrF0p3U8WFI
+	nn6JIiZ4T2+WBU3g0Bm5TG3IHw1hJQljePlR8I5wKpXh2CF4YjDl6w0F3cl1psNS+eeoTpIeZb+lS
+	ogqC5FehEDZEW0mcHrS+V63B4or7SDnxgzKMEeC54zwCu+NXI/z9B7WBaUi1sM7zRQl4i8mWyZEBN
+	aHwgxBy1wbr3xteGLytw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qA85j-000UFW-0L;
-	Fri, 16 Jun 2023 11:58:11 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1qAA0e-000k8I-24;
+	Fri, 16 Jun 2023 14:01:04 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qA85f-000UDl-0Z;
-	Fri, 16 Jun 2023 11:58:09 +0000
-X-GND-Sasl: gregory.clement@bootlin.com
+	id 1qAA0Z-000k72-0D
+	for linux-mtd@lists.infradead.org;
+	Fri, 16 Jun 2023 14:01:00 +0000
+X-GND-Sasl: miquel.raynal@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686916683;
+	t=1686924056;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oopUZlUtuLZK+7zdDNuIoLpQDqrRtt6+LrJlqbPl+AI=;
-	b=htS+g7ijJc5qam38E8e1ZkE/HXVDeDZ+ba6SRIEWVePZUyKejAdMDewGRoVC/Nr8g8sc3F
-	ME/1ArWeIEkf4ymtm5tSbG7yn/XEYHxlt6GsrT6cIgbk7I6D43+uSG/76cT2UPYZJeodmR
-	b96q9hu9bkt9s5bVrp08fYqYVtIi+FpKhIwl8RlYGRdrdFHWXLE6rlUtAzLXyGN7wOegoF
-	sb1CwFK8RXhqbM2Ty+RISw7Rexiz0AH21PvekTxmJB/kWAUcMLMu4pCaHwmXn9GssgY687
-	TosXZ0/toRqZYHN5M72qgRIqvypo8OoeChBC599H0aQF/OaOLwCWdlCDCd6o4w==
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-X-GND-Sasl: gregory.clement@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 95F0160007;
-	Fri, 16 Jun 2023 11:58:00 +0000 (UTC)
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, andrew@lunn.ch, sebastian.hesselbarth@gmail.com,
- vadym.kochan@plvision.eu
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- enachman@marvell.com, Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH v6 0/2] dt-bindings: mtd: marvell-nand: Add YAML scheme
-In-Reply-To: <87r0qbhbqt.fsf@BL-laptop>
-References: <20230530005337.3687938-1-chris.packham@alliedtelesis.co.nz>
- <87r0qbhbqt.fsf@BL-laptop>
-Date: Fri, 16 Jun 2023 13:58:00 +0200
-Message-ID: <87ilbnhb5j.fsf@BL-laptop>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=vUuQah/jLut+5JCdepeOJ/jXlhpXt0heS9hreLKMNHo=;
+	b=I7NzJG0qWy+YP4gvzB4eyBw8PnR5wozl7o3Vr7pl1cbNo32TDit+ANwC/gie06z3BCa52c
+	YLqUlSBsKwpLCHeRXRgQF4TyTEMrFiz1ZS/Pm8E1TYA6ZEBbbqwtGef6Rtsat3lvVTehoV
+	Z0uGKeMWhElOny7aBsmo9heu6Rb6hxmIdglRJc+MYaWtrteuJ1Nnw3Ml50w9UQPX+YoDe6
+	nxdyxYb71nOA3OGV121NZEx2QlHbg0N8H1i0caMbNeW95wbb8vkdcmTo5sHQXOqrkueeoc
+	zDSVga4gO/+k+gQq54ChVSB6ELFekZFmsthZrsYuyrr4YA9dgr6X8+sjUS3E6g==
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3615340007;
+	Fri, 16 Jun 2023 14:00:55 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] dt-bindings: mtd: spi-nor: clarify the need for spi-nor compatibles
+Date: Fri, 16 Jun 2023 16:00:54 +0200
+Message-Id: <20230616140054.2788684-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230616_045807_372113_51C071D3 
-X-CRM114-Status: GOOD (  13.80  )
+X-CRM114-CacheID: sfid-20230616_070059_234091_7CAE4527 
+X-CRM114-Status: UNSURE (   7.85  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,62 +86,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Gregory CLEMENT <gregory.clement@bootlin.com> writes:
+Most SPI NOR devices do not require a specific compatible, their ID can
+in general be discovered with the JEDEC READ ID opcode. In this case,
+only the "jedec,spi-nor" generic compatible is expected. Clarify this
+information in the compatible description to (i) help device-tree
+writers and (ii) prevent further attempts to extend this list with
+useless information.
 
-> Chris Packham <chris.packham@alliedtelesis.co.nz> writes:
->
->> Add YAML scheme for the Marvell's NAND controller
->> to validate it's DT bindings. Old txt file is deleted,
->> not included the compatibles and properties which were marked as
->> deprecated.
->>
->> Also fix node name in cp11x DTSI acording to nand-controller.yaml
->>
->> I've picked up this series to hopefully get it over the line. I think I've
->> addressed all the feedback from the last round of review.
->>
->> Vadym Kochan (2):
->>   dt-bindings: mtd: marvell-nand: Convert to YAML DT scheme
->>   arm64: dts: marvell: cp11x: Fix nand_controller node name according to
->>     YAML
->
->
-> Both patch applied on mvebu/dt64
->
-> However if the first patch should be merged through another tree, let me
-> know.
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Finally I removed these both patches, I missed the version 9!
-
-I applied the 2 patches for the dts files from v9.
-
-Thanks,
-
-Gregory
->
->
->>
->>  .../bindings/mtd/marvell,nand-controller.yaml | 190 ++++++++++++++++++
->>  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ------------
->>  MAINTAINERS                                   |   1 -
->>  arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |   2 +-
->>  4 files changed, 191 insertions(+), 128 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
->>  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
->>
->> -- 
->> 2.40.1
->>
->
-> -- 
-> Gregory Clement, Bootlin
-> Embedded Linux and Kernel engineering
-> http://bootlin.com
-
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+index 7149784a36ac..bef071163e38 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+@@ -43,8 +43,10 @@ properties:
+           - const: jedec,spi-nor
+       - const: jedec,spi-nor
+     description:
+-      Must also include "jedec,spi-nor" for any SPI NOR flash that can be
+-      identified by the JEDEC READ ID opcode (0x9F).
++      SPI NOR flashes compatible with the JEDEC standard or which may be
++      identified with the JEDEC READ ID opcode (0x9F) do not deserve a
++      specific compatible. They should instead only be matched against
++      the generic "jedec,spi-nor" compatible.
+ 
+   reg:
+     minItems: 1
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
