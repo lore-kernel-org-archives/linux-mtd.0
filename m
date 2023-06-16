@@ -4,41 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15ACBEB64D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 14:08:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AE28EB64DA
+	for <linux-mtd@archiver.kernel.org>; Fri, 16 Jun 2023 14:08:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=pOSDPQIS10Gp+QlZwute87reUF0memcHwcAnVwwGLEU=; b=DphwIyPJTmKo0Z
-	dXNxl7TCeO0VBKUv1nB+R5817E7mGfph1Z66wI87fzbSB/D1G0r//hxWNuJzebIYRuyIjnh+sqX9g
-	v8GxynkUQim1OlEcggkGAd+rXJOQr0zb5UWeH6OEoHloNrFSDtFYxzIUs9vuwdwts5FKntDIscQLz
-	YnVTfNOMtUbyBtG6ORtjy4jFBIk6/7glpW6fXaMqMY3YO/32SkenDYARZp56yg7PEWSxUC4filKF1
-	Dwaewt9Ry5pXCS39zE4IcRlJ4JlTsFet47Ca5Kf390XJ8MtvWEqrKEuwKlCnKQjVWP2InZpa2mZZp
-	wS0M76AlmKWBz2FbZMGg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=A5ramVzd8/1Tw2vKo3lliJBWa+0+dgXRoNnJCpPoRUk=; b=MTudwXQq1aaK5x
+	YtL0Rtcb04wWTi5ifCaTn9IZppYrhu6EsBZJhWXQZmf+vQSruQomUq5nxdH+IloX9Fdgmv2U+hu/W
+	eDqR0iuS4giYUJ03Enb8/ZsmmThvnQeitWjG4qnapLRTpl8iMb+/CD27YpKPMMykMNxlf63jTt1Ry
+	p1zKriBdJ/jsLudR+RfJocSy2jbFK2r7zTZBRh4+fFj21EtFVJWLqYegmGspePk4sjmE6KiPqUCrf
+	DiTbE3L9zYmjcwUfGjtfkU14DH7HMV4CeyLHnUxRBRs6aD1bxZ2vxnrq1pc2gb7EBFUen7jOTSKkK
+	mtF9Y/YOAIpj5RvRuskg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qAA7w-000lNp-2h;
-	Fri, 16 Jun 2023 14:08:36 +0000
+	id 1qAA7y-000lOK-1i;
+	Fri, 16 Jun 2023 14:08:38 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qAA7t-000lKL-01
+	id 1qAA7t-000lKs-02
 	for linux-mtd@lists.infradead.org;
 	Fri, 16 Jun 2023 14:08:35 +0000
 X-GND-Sasl: miquel.raynal@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686924504;
+	t=1686924506;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=XqPdy0Yu+nuT4jg2E91rGvDEqXZ1edFysWeuQ4/RV6M=;
-	b=iWqXjfUct4DlU2YsM1pS3AtO6hxR1GYLm6rfiMy2e/24UfYl7pr/sBM0eRrvQ2ll9MTyBi
-	nY8FoPABqq/uMJ9KINPNtE5FncI5e+YC8YHRjxDIgz9Qs3m0Ozq9cSrek6JCMtEJkeKWS9
-	PQMcOV1WD952KbHf58GrvUGxVEA0ZNzSi1agkbPTKGVpF3HN/4xK8kjvCg4Z46Nja5ITOw
-	RSFriEeOuGektYL8csAccb+RIaZ7iaEoxUUc+WYOeT2h2KVMeFHmGRgtsmHjbLhy0VAbDB
-	+pSRBygFSiwnjjJy6S9ZnTgr9TI8PHAoMHMDoVochWN2XgqNYViBs8x0EYsFxQ==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=r3lnRPQng9Mg85UFpBlL4MOLQN12E1GUmndSSnfMvLI=;
+	b=fhL3S/jtwWqfVAvXWGSF3pZDcrqOeL5VQFLloDsqVL8T9GVbZmk5EszCklyLMJIlY3ZQzo
+	kQrPh/ng733Nsc3ExZcTjnMvTp+A4B+YYJphpNJv63WMhlw0P4NxIaVOc9l8WWyUU+R63R
+	/NZTwv1Nb9xtR2QhndbaEFZwLyyN6MVNUUE/nzzXBs6yy+GXwKcUt5gb0eVMu1wVwb9/zN
+	drtKW7faVe4EZPbytPsYGiX2xupLQQeAjSeuxjFIcG0dLR4r75L6K5Td+nyLgnSWg1sfP+
+	vWHputzQrkjS8iAnVR5eF6+uBcCysoY55hdyr4AwiJM08mrT2O6CE5x5KBxi/A==
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
@@ -46,8 +47,8 @@ X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7934E1BF204;
-	Fri, 16 Jun 2023 14:08:23 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 15BC71BF207;
+	Fri, 16 Jun 2023 14:08:25 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -57,15 +58,16 @@ To: Richard Weinberger <richard@nod.at>,
 	<linux-mtd@lists.infradead.org>
 Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 0/2] mtd: spi-nor: Support for another sst flash
-Date: Fri, 16 Jun 2023 16:08:20 +0200
-Message-Id: <20230616140822.2789638-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 2/2] mtd: spi-nor: Drop redundant information on the sst26vf flash series
+Date: Fri, 16 Jun 2023 16:08:22 +0200
+Message-Id: <20230616140822.2789638-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230616140822.2789638-1-miquel.raynal@bootlin.com>
+References: <20230616140822.2789638-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230616_070833_183306_B7FCE5B0 
-X-CRM114-Status: UNSURE (   9.74  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230616_070833_185379_EE1FED48 
+X-CRM114-Status: GOOD (  10.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,23 +79,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpIZXJlIGFyZSBhIGNvdXBsZSBvZiBwYXRjaGVzIGFkZGluZyBzdXBwb3J0IGZvciB0
-aGUgc3N0MjZ2ZjAzMmIgc3BpLW5vciwKSSBjb3VsZCBzdWNjZXNzZnVsbHkgdXNlIHRoZSBQQVJT
-RV9TRkRQIGZsYWcgYWN0dWFsbHksIHNvIGhlcmUgaXMgYQpzZWNvbmQgcGF0Y2ggYWN0dWFsbHkg
-c3dpdGNoaW5nIHRvIFNGRFAgcGFyc2luZyBmb3IgaXRzIGNvdXNpbnMgYXMKd2VsbC4KCkNoZWVy
-cywKTWlxdcOobAoKQ2hhbmdlcyBpbiB2MjoKKiBEcm9wIHRoZSB1c2VsZXNzIGJpbmRpbmcgY2hh
-bmdlLgoqIEFkZCBMaW5rIHRhZyBpbiBjb21taXQgbWVzc2FnZS4KKiBVc2UgdGhlIFBBUlNFX1NG
-RFAgZmxhZy4KKiBEcm9wIHJlZHVuZGFudCBpbmZvcm1hdGlvbiBmcm9tIHRoZSBrbm93biBwYXJ0
-cyBhbmQgaXRzIGNvdXNpbi4KCk1pcXVlbCBSYXluYWwgKDIpOgogIG10ZDogc3BpLW5vcjogQWRk
-IHN1cHBvcnQgZm9yIHNzdDI2dmYwMzJiIGZsYXNoCiAgbXRkOiBzcGktbm9yOiBEcm9wIHJlZHVu
-ZGFudCBpbmZvcm1hdGlvbiBvbiB0aGUgc3N0MjZ2ZiBmbGFzaCBzZXJpZXMKCiBkcml2ZXJzL210
-ZC9zcGktbm9yL3NzdC5jIHwgMTIgKysrKysrKystLS0tCiAxIGZpbGUgY2hhbmdlZCwgOCBpbnNl
-cnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKLS0gCjIuMzQuMQoKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+It seems like the whole sst26vf flash series share the exact same
+properties, beside the final size due to a lower/higher number of blocks
+in the final die. As the intermediate version fully supports SFDP
+parsing, we assume the others as well.
+
+Drop the redundant information and use the PARSE_SFDP flag instead.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/spi-nor/sst.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+index 48970d2f78fa..467154176dd6 100644
+--- a/drivers/mtd/spi-nor/sst.c
++++ b/drivers/mtd/spi-nor/sst.c
+@@ -109,17 +109,17 @@ static const struct flash_info sst_nor_parts[] = {
+ 	{ "sst26wf016b", INFO(0xbf2651, 0, 64 * 1024, 32)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ) },
+-	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32)
++	{ "sst26vf016b", INFO(0xbf2641, 0, 0, 0)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ)
++		PARSE_SFDP
+ 		.fixups = &sst26vf_nor_fixups },
+ 	{ "sst26vf032b", INFO(0xbf2642, 0, 0, 0)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+ 		PARSE_SFDP
+ 		.fixups = &sst26vf_nor_fixups },
+-	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128)
++	{ "sst26vf064b", INFO(0xbf2643, 0, 0, 0)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
++		PARSE_SFDP
+ 		.fixups = &sst26vf_nor_fixups },
+ };
+ 
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
