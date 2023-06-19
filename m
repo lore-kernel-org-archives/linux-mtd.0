@@ -4,83 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 161E9EB64DA
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 10:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D2E4EB64D9
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 11:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5yiYJusYB2/XiLckxIK3ADr+5S2aWkt6JgHEezNEMxY=; b=QZm/om/ObM9Rad
-	rBUt643kE4tsH9kID2GTbbR1SR+X/KZpWK8yBvhudH/7L/DLaaFpuujwhi3zrKtc6P4LcxJ1cv6sX
-	ikvZUhCxwDliOQKpUJsCGTwsO5ELApRdpkZRGSvDi4aHVEnskYLN1bUKLKbzNceiBBBo9u8tZcbDj
-	pcEOwbfwWPMGnawgCdctJHjxIEupDrci1UHyB8Z6LAvHEdTaOvACpKqRQq2La9lFqR2+d/yDhjbTL
-	Ba1LYdNrrAcW8A6KGIalFpOdIfO+4dDS2vlBZgLay5R2j0J8mY4Tvi4ZXoV7WQoJdMemXWBy59K3K
-	5TN/mtf6pn1TLbr1lvxA==;
+	List-Owner; bh=wFRM6R9jvILrFSRvEOA92KbDlTCEAy6FCQT6ZKSNJnI=; b=qk3S+HyXk33OmD
+	wZwg3a5X/+J31pbBKf9lVLypjHHFiKlW/1vJawrYe+o7HBzJXS2qDtYcugO4SFHCd8rLJ0uksHpRM
+	yOy5xh+VbAznqsDS3/tuiGEdbHVYA4X+fpS67+VCLEEI6bVDWmEr0axJItMa33qY8d5f83HUBuZUl
+	Zg4Ab8Z5yKSRWfe6K3iVviNWg8nuGoHmvN+Sd3taabMJ74ofzr9+yMA1KPh/O1xsaKc/ILP0nTHmA
+	qrGH0wP0OG6yI1Ja7YEPf9J7V5JL1CK9D3Ep+uRq8RKDlIJKFVZdKO1At6HR0+L6HY+JVUtwuL1W2
+	QNqA/VkpdjxSNjhsDQZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBC9K-008A3b-1L;
-	Mon, 19 Jun 2023 10:30:18 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1qBDNj-008P38-0A;
+	Mon, 19 Jun 2023 11:49:15 +0000
+Received: from mail-dm6nam10on20621.outbound.protection.outlook.com ([2a01:111:f400:7e88::621] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBBCa-0080Wu-1w
+	id 1qBDNg-008P2J-1W
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Jun 2023 09:29:38 +0000
-X-GND-Sasl: miquel.raynal@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687166975;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/v9Nw+ad/pHZp7Y5mz8kr0ga9+tHOOD3D8SdlSyfMhc=;
-	b=XcN+rxeA8gCjBIMRhUvlxZVUwv74jWyPpB6bgXWU8iNi8xzDU2XOPxlSMJWFu17MkTKMBR
-	w7ebYjVacWDRxxJpnVdb6nkV5deix/PKWKzLJ1MdidkTkRpnLKU5HBj0jOlaxWi16AUwp+
-	I+1bRxCm80u8hrbbMgFPyok8EffMJLa2FQoRcm1r7bo2rieK+y7NybyJH9W/fEbT3SBH2D
-	+yWE348SRHnm6m4bH/sILTnekC9cwsS5c5HHTCpyuhkrYJoaWGvmGHOnBD1EtCfzs3InbP
-	mNNg/4Lh6Hafs8BSuoq3ZMh4NzoYfy2k6JRJV4bwljT/da3Mi5TCxMnCUJlolg==
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 064061BF20E;
-	Mon, 19 Jun 2023 09:29:33 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>,
-	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Liang Yang <liang.yang@amlogic.com>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 09/17] dt-bindings: mtd: meson: Prevent NAND chip unevaluated properties
-Date: Mon, 19 Jun 2023 11:29:08 +0200
-Message-Id: <20230619092916.3028470-10-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
-References: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
+	Mon, 19 Jun 2023 11:49:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yu85ieOFtQfV/8UbQe5/xoKKqmSmSi62cehMrIiOchfSCeLd5MAmNluF8OPLC4Xl7Svq608B7NLSMYpKb44k5D7T1yI6dSMjS58TbZWNpO0LQ68vctC1pfazZG9CfPGtMyK9YNbr9EiRsEDwbxlPyuqiUmK1eDbFmzwz+886M+N4m6iUTzhxBkbpgOYnW4UmT29GVCaCq/zjGeawq6NmoijnyIRWsuCGjHB0CYabSSLw15s6562nZNLxyOztD7IAILRl4EVwltO+2I7MWrB5bk7AP+AcXvTafyC07w3waxKC0S0JBii+83aPhdU0f5nd1ZnYN+ilTUrm/oMSHOrr2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XsqN57bWN7gsZgwc19RiUP4V91KrUyZBvrTBSHf+Mh8=;
+ b=AsQepSJJwHkWjc0YfFXBmew4JbNq61sSz9X48V75WwrECzuSq5mSoOiW4ABR2U1J97Qwy4xmvdQrxMRF0bg1Im89edoEP0hNVhVsqpwveenhAlDgWdN2Ituxm7Eof/4hXXeDmSyvpJdkG374NsoWi0VVNKGpvbocvhul7eXBVQPzM0NOGsJqo0RdNMxfRiXOnjHX0CgjEfohQGd8iIfFup2RdWMLYRT8dLiVsKC4V5JkPHfW2qvSVbIoQUUYrYEhB4nlhKgcab2MWyP8CftTHA+2+gEJgoPigKg5EmiOjlZZ82NKKc229xlu8Hk3WiizWdbDXf5Ls/XqunCGX6jBGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XsqN57bWN7gsZgwc19RiUP4V91KrUyZBvrTBSHf+Mh8=;
+ b=gw84W0F8+pryqtxKTayGhFPKHKDv7zpN6i75xHOqiEMI1qMlecmStRFGeQeHElFDIq8M5MU1lsiHt5SAxXwLs64zJh9WCns8M7UyL9mgS+AKcL0VZ/YWg1QDLS87GVZlRUieciDklmg08lIKqVlsUXL6B+F6XOvks+qGTGWUHBI=
+Received: from BN7PR12MB2802.namprd12.prod.outlook.com (2603:10b6:408:25::33)
+ by IA1PR12MB6186.namprd12.prod.outlook.com (2603:10b6:208:3e6::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.36; Mon, 19 Jun
+ 2023 11:49:06 +0000
+Received: from BN7PR12MB2802.namprd12.prod.outlook.com
+ ([fe80::3087:7db7:f0eb:cb8f]) by BN7PR12MB2802.namprd12.prod.outlook.com
+ ([fe80::3087:7db7:f0eb:cb8f%2]) with mapi id 15.20.6500.036; Mon, 19 Jun 2023
+ 11:49:06 +0000
+From: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>
+To: Rob Herring <robh@kernel.org>
+CC: "tudor.ambarus@linaro.org" <tudor.ambarus@linaro.org>,
+	"pratyush@kernel.org" <pratyush@kernel.org>, "miquel.raynal@bootlin.com"
+	<miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
+	"vigneshr@ti.com" <vigneshr@ti.com>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org"
+	<conor+dt@kernel.org>, "git (AMD-Xilinx)" <git@amd.com>, "michael@walle.cc"
+	<michael@walle.cc>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "amitrkcian2002@gmail.com"
+	<amitrkcian2002@gmail.com>
+Subject: RE: [PATCH v2 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
+ to avoid setting SRWD bit in status register
+Thread-Topic: [PATCH v2 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
+ to avoid setting SRWD bit in status register
+Thread-Index: AQHZoDBTwnyTNgO+qkCGryL+tAH4MK+NjU8AgAR2XwA=
+Date: Mon, 19 Jun 2023 11:49:05 +0000
+Message-ID: <BN7PR12MB28020F62E196B98047E63FD8DC5FA@BN7PR12MB2802.namprd12.prod.outlook.com>
+References: <20230616085513.17632-1-amit.kumar-mahapatra@amd.com>
+ <20230616085513.17632-2-amit.kumar-mahapatra@amd.com>
+ <20230616152556.GA440257-robh@kernel.org>
+In-Reply-To: <20230616152556.GA440257-robh@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN7PR12MB2802:EE_|IA1PR12MB6186:EE_
+x-ms-office365-filtering-correlation-id: fd7ce7be-b494-461d-523f-08db70bb2f5b
+x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YqrluP7RKatQSz8tfbjPfm4YqNNRAKEirBDVpMhgmJvEbXldBnj1FGXuIJE2JgV0gfmqndsdHB7LI5QEnxCa8SLy6OhQxlFlb8SdpITmy+59pwy4PF7q62/XQ1kj94JASgyE/Tk7lOI3ZlT9TuCAT6O9mmeUFcEMJyvGriinuX2fWkIY/noyyn/qQhgtnhcxantVIk78BUJwwYEWqFSWIIkmHKO29PPsN5tAn17SpkMNO+qlpEvPC8JRouOhrvWa66N7hpB5Q7p+NCHW8dDGnAgz61hVAQ59GM1kFRD4qtpDc0T4EkDKa3YSbJOmLlsYB511NJ5DaOnWAFVad7PqpOSGEKGds0wRV48o8unru5VghkrWTILvd2ltQCyyG6v4eVpVQjzkexT8M5t+rc9QZ1CYshNsc9Wlxscg8AVbaNUJC46Pt7VOGt/uIHT3DGwN3+uPQKbe/rFKw5CyZEHn6UnpIJgba6/wwndasLF/G1UUYokoK3G/JVBGUDQ5ZcSX0Lug6zDkgXkdOYGdoT/h5HElrKd+jyoWCjV7ZQ1Xpsj1dVQqW0FgFKS9SHlQ311CmFnH44CPmVrCKTuFb9rufY/xuwluQAVen+ThLBXRJBALeuN/ArpmWp5ZwLZLgbWv
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR12MB2802.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(366004)(39860400002)(376002)(136003)(451199021)(71200400001)(478600001)(83380400001)(86362001)(7696005)(122000001)(66476007)(66556008)(76116006)(54906003)(64756008)(66446008)(66946007)(316002)(38100700002)(26005)(53546011)(9686003)(6506007)(186003)(4326008)(6916009)(8676002)(8936002)(5660300002)(2906002)(52536014)(7416002)(38070700005)(41300700001)(55016003)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?rkefeO1OxRyZnA88G6dlm8sOXt8MsaA787kcns+zzLptTSFINoxXVT+8Bq+m?=
+ =?us-ascii?Q?biFO/cMdn9JctDy5rtwxaoeUUvT2WMElUchXk85riP6T6ITEtRYm3O99tvSR?=
+ =?us-ascii?Q?GeNnKNzp1YufnnQTFsxfqB/HynhRqjFDuss2GyJwwtxgm9X/tDjtoBHl395i?=
+ =?us-ascii?Q?HNGW7vt/dB1ihZvdO0uBHMsgfzqZnxeWcATzF/Ss2ri4a9w0iQwsrGioL9NJ?=
+ =?us-ascii?Q?dp2BIZRnGX8TLHFT4nN2Skg040sgRIEt3SYQoXTrzpYUYRGtNgOgiTOzC6q9?=
+ =?us-ascii?Q?srwBsg04ATu8+fT7vfqr4kAaiapa3tXMb0VOb0buUynIZUzq9N2VWuVID+26?=
+ =?us-ascii?Q?noP7wPxNbfOPUKtCpnhdrVPxkib7wJ3C3aoOlkswH1WD2SfnClkvBuFbMSuj?=
+ =?us-ascii?Q?CCPaYSxu7SZED0wYUQZJwwKPGONYXGOQBZ3nn/tjdDL8QGTVgnA5sys6YOG5?=
+ =?us-ascii?Q?Yb7WPwPNxpo7o6N/l4Theu+AcpUT5bZPQIfL++CMjkFaTuT5PjBck4A9GrvI?=
+ =?us-ascii?Q?qlzFjrpWeErO5m2nGBcwpGXAIc+/NcfvBVJQroZwcKsW0RXilIzYZc9bAO1r?=
+ =?us-ascii?Q?uxo/r0LYzIzLWkeM4kLSj/aDUSOk3DFh7felWRg1dv9/bSR/4TNsmrMYyXsG?=
+ =?us-ascii?Q?WGuYt8FutfH2zpo0PR/FXKuBrBeEUQ+qnyPVqKB4Cc4BrYPWW+8p99y6mMky?=
+ =?us-ascii?Q?/YpyXmNnoO8tFM/cx1gv8dkvXVubpizzPflPlVmVLTMkQQex/umSeXWK8PPm?=
+ =?us-ascii?Q?t/iEbLKEoTSEfhrPWJe5NwFH6pjnf3Q4k+NLt6fJ4rxCyzzI1mFrmJlZQcyp?=
+ =?us-ascii?Q?GC9ocYKTnngI9+k5L3i4S0zY1+5xNmfhgDy4yUD8cboAaUoZumoGuvP1QY5q?=
+ =?us-ascii?Q?mIZW8RaiUApX/L3FWMqdpwFhZOZZGmb2gX8OXA8q6YdZX0QyG6tcpVsRmkOe?=
+ =?us-ascii?Q?Ux0xEzBEDCwv92N6H8UrW7PSMnAIOL+fiYR1Vt7Z0C9PIzJP7vPdapevMqOm?=
+ =?us-ascii?Q?tPPoueNcjPt6L2S9L90iKPj6+jqRlTbk3Qe1dF1vHaj6m5UU7SKF4P0g6yxw?=
+ =?us-ascii?Q?exHhp3X6EH4eTdLNWJnu6gQRR+G4H2PSGHZk24tpB8HAFs3LYDSl7jeoZpPx?=
+ =?us-ascii?Q?2z+fhM+84Hq9Ubl18JEJ2eDz9Nt9hUC7fer7cPBvP2cLtlFKEMC5qEb8iHrl?=
+ =?us-ascii?Q?Sleth7Q7WNTwZXEx/vwCSGk5qbBhlxti6LvMN6G1AZi8NRMWO0mkV+dhvALY?=
+ =?us-ascii?Q?x2ufqfWp5xFfWfanMCjZyXoHSk8W5/an8Wc71v9Grq7WlZnJEUyEMk0YkFZ9?=
+ =?us-ascii?Q?Fl1t4ey6AHsjDR78ceuXO5TpaJqMGxelqGWSC64hKXFdMLcusVRlSpQ+zwgo?=
+ =?us-ascii?Q?txl2QLU3MkjAc0aPrkkK2sxUpJ4qpzjr396TT5oVCLPwdgiCA8YJX8mEgcUj?=
+ =?us-ascii?Q?7bDR0BtdvL5MmveNdqTIQ4CQM2mhtQRB043RNhCDyyfN7wDWVuitb+MFSkoJ?=
+ =?us-ascii?Q?gB8EAVuQZcKqCji9BF/3tFERDb4hz7+MaL3GY8gfPyqtLNLilfcLHse/BBpu?=
+ =?us-ascii?Q?ziz19QIzgKwsS48POZw=3D?=
 MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN7PR12MB2802.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd7ce7be-b494-461d-523f-08db70bb2f5b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2023 11:49:05.8219
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kg3j4W4f1fzYIo16yKuGX5L9h8kv0Ja25p8ejgiPy5J5wPnDAJGN3qWF5bFFdiuZYKcgIUgYGE6IoeMbfLkcGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6186
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230619_022936_780309_B81A85C2 
-X-CRM114-Status: UNSURE (   8.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230619_044912_530004_BA03382A 
+X-CRM114-Status: GOOD (  30.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,41 +148,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ensure all raw NAND chip properties are valid by referencing the
-relevant schema and set unevaluatedProperties to false in the NAND chip
-section to avoid spurious additions of random properties.
+Hello Rob,
 
-Cc: Liang Yang <liang.yang@amlogic.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Friday, June 16, 2023 8:56 PM
+> To: Mahapatra, Amit Kumar <amit.kumar-mahapatra@amd.com>
+> Cc: tudor.ambarus@linaro.org; pratyush@kernel.org;
+> miquel.raynal@bootlin.com; richard@nod.at; vigneshr@ti.com;
+> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org; git (AMD-Xilinx)
+> <git@amd.com>; michael@walle.cc; linux-mtd@lists.infradead.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+> amitrkcian2002@gmail.com
+> Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
+> to avoid setting SRWD bit in status register
+> 
+> On Fri, Jun 16, 2023 at 02:25:12PM +0530, Amit Kumar Mahapatra wrote:
+> > If the WP signal of the flash device is not connected and the software
+> > sets the status register write disable (SRWD) bit in the status
+> > register then thestatus register permanently becomes read-only. To
+> > avoid this added a new boolean DT property "broken-wp". If WP signal
+> > is not connected, then this property should be set in the DT to avoid
+> > setting the SRWD during status register write operation.
+> >
+> > Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > ---
+> >  .../devicetree/bindings/mtd/jedec,spi-nor.yaml    | 15 +++++++++++++++
+> >  1 file changed, 15 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > index 89959e5c47ba..10a6df752f6f 100644
+> > --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> > @@ -70,6 +70,21 @@ properties:
+> >        be used on such systems, to denote the absence of a reliable reset
+> >        mechanism.
+> >
+> > +  broken-wp:
+> 
+> In the tied low case, that's designed behavior rather than broken. The name
+> should reflect that.
 
-diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-index 28fb9a7dd70f..00810b04dcde 100644
---- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-@@ -40,6 +40,7 @@ properties:
- patternProperties:
-   "^nand@[0-7]$":
-     type: object
-+    $ref: raw-nand-chip.yaml
-     properties:
-       reg:
-         minimum: 0
-@@ -58,6 +59,8 @@ patternProperties:
-             meson-gxl-nfc 8, 16, 24, 30, 40, 50, 60
-             meson-axg-nfc 8
- 
-+    unevaluatedProperties: false
-+
- required:
-   - compatible
-   - reg
--- 
-2.34.1
+In that case will it be ok to change it to "no-wp". Please let me know if
+you have any other suitable name.
 
+Regards,
+Amit
+> 
+> > +    type: boolean
+> > +    description:
+> > +      The status register write disable (SRWD) bit in status register, combined
+> > +      with the WP signal, provides hardware data protection for the device.
+> When
+> > +      the SRWD bit is set to 1, and the WP signal is either driven LOW or hard
+> > +      strapped to LOW, the status register nonvolatile bits become read-only
+> and
+> > +      the WRITE STATUS REGISTER operation will not execute. The only way
+> to exit
+> > +      this hardware-protected mode is to drive WP HIGH. If the WP signal of
+> the
+> > +      flash device is not connected then status register permanently becomes
+> > +      read-only as the SRWD bit cannot be reset. This boolean flag can be
+> used
+> > +      on systems in which WP signal is not connected, to avoid setting the
+> SRWD
+> > +      bit while writing the status register. If the WP signal is hard strapped
+> > +      to LOW then it is not broken as it can be a valid use case.
+> > +
+> >    reset-gpios:
+> >      description:
+> >        A GPIO line connected to the RESET (active low) signal of the device.
+> > --
+> > 2.17.1
+> >
 
 ______________________________________________________
 Linux MTD discussion mailing list
