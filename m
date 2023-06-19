@@ -4,87 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D454EB64DC
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 06:54:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 851ACEB64D9
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 06:59:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gSr1jTVcSFwYaLmiakOsdSZsM8eQgM/P0ITPVHnhXA8=; b=e6waozIPs1Gw5h
-	RU5snq4eawPe39/BNVutKy+w2xMHLG/dvyn7nuc4ub/ps78LJ+0LmcW85bwpHZZd9EowRzy/BURMV
-	7zELd12EWum+vgcMn+HXiRjYjKl9UKcj0r5cGzFXkn9oVabIN8hKOhlu4aifm7QoEY475Joj00u98
-	ML/CjmL63L8Z193Ww012dCzLFi/ZteimtM9UWoNp+Dw9etZrWajWPXKn8iHEMPzpYyw/N4ZtO8aid
-	GzIvUGADDfdASgF6XzY5ykLjVlUtt5tbAsUfD2mzC/naaEDi0kAZ+cUB7Z2FRp02bQ8A9nDzKbCLj
-	G5roDJo1kIfCbtpaZ1Gg==;
+	List-Owner; bh=RkVj193AFukAC2jyrgdGVfGPmiPzKnbWyJAtRQVzLAQ=; b=wy/o6upPHvFSb4
+	hxkakrPk/YHBM52jQazvlpCxUL+irAiHELnO19fKd/MdjmSAQdR397w8NFkUY6Lb6pFp8DKqpsgFp
+	0XtBVvvEv6QUJcs+yUzbwYBVwN8qV1JPTKWwOHt1Axlql+3IEB8QIIUcSSjZwqFjvHMB4ig7K5hAi
+	sQBiiQB5AEh5hO7J13l2gc8tniqBo/y88rEoRqF7L/z8ZzAMGzofp2q2o6uNk2RdJWTlbkhmCD2YC
+	eVkg4dPbxUGMj9uTJ3vqy0J9u9D++v4rAlW+hrKLu15/biZ+dmlnTxte9ZlhxsnzPmW0zCyUE9yfA
+	O2hEDsXv+Fs4gc8+8ctQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qB8mL-007dde-1S;
-	Mon, 19 Jun 2023 06:54:21 +0000
-Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
+	id 1qB8r9-007eHc-1D;
+	Mon, 19 Jun 2023 06:59:19 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qB8mH-007dd7-1z
+	id 1qB8r5-007eG7-2q
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Jun 2023 06:54:19 +0000
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51a20138617so4542065a12.2
-        for <linux-mtd@lists.infradead.org>; Sun, 18 Jun 2023 23:54:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687157655; x=1689749655;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RFA1s9sPOFLDHeM8JVLNOmdOT3KqlEJ+F62ywYBEaQ0=;
-        b=qX+5sH+TD7rVDXh9VU49bJ+fOR/OAYB60qZOHcjwrEvoakbWgtbKU5zb4Yq5x42kZb
-         lewccwmCTPQkmzp3Hxo6G9Py+Ofy0Kpo8gGkagg/SMlIAuxkNgLbopKVeTxZDgK30yJM
-         zVIBEBnlJjAWHT/pMCmsJU2tML1JlOcKBpc/c5KoGJug+QZrgRGCWtf9KdqR++lRy01S
-         CT6fKlswtrQzFqgAp3CxyWdRDCapoQX9tR+HmFBHcTkmVLJI7H1eOI0fMOr9WUlLu8bj
-         UDDGWqnZUWn8P6ZDM8yDCMag8AAUZXtKogXW1TTdgrjyk7NBE+R/dUFKTbHYYtXzwRI3
-         qHqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687157655; x=1689749655;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RFA1s9sPOFLDHeM8JVLNOmdOT3KqlEJ+F62ywYBEaQ0=;
-        b=WZHFQ2/ad6nSU+DpKgnfFXUx1UJgMXfVyGzVzMUaqOmPqYxqCMsLrQTEoz5E8uBsS2
-         m3K4JhwIKwFCXFrraizIsnpc4OHGmNZuwABg7CWmdV7fS1dfNydYiJVxU/r3anTEjli/
-         O7ES2YycGddT8YcVI5IAaY1b+8xRe7jWxWoAhoGxG5pPKG23cwycah+Vwwa2AmAtXgXm
-         tPvwnvMLOidjtlwjUAQBL6Veyh6bjxSo1F73O0Gw7iQxp1/rNynmDWadLtRxs8hWc1Ae
-         TXay52f/5s6nI+RKZN/WXU4gab++PgBc2dCKnYR65Q5INqhTaYYFvN6A4EmeyNIb2ckZ
-         41+Q==
-X-Gm-Message-State: AC+VfDy/AwaQ5K39AfGp2wykHRf/sTkBDsShEnSsYibKEPpzFf4qpO1o
-	gxhEg9o1uzo8qdx9uMtsTpA5lg==
-X-Google-Smtp-Source: ACHHUZ5n2hJSkj0ukICFCKD6/N41Jxo7jlDoQvCWYtTHsTcv+0CGrU9F2qFqs/Zmh+golRi+maGZwg==
-X-Received: by 2002:a50:ec8f:0:b0:514:a0a7:7e7f with SMTP id e15-20020a50ec8f000000b00514a0a77e7fmr6287357edr.2.1687157655554;
-        Sun, 18 Jun 2023 23:54:15 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id u3-20020aa7d543000000b00514bddcb87csm12966752edr.31.2023.06.18.23.54.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Jun 2023 23:54:15 -0700 (PDT)
-Message-ID: <3f4f4beb-4136-312a-be0b-5ec018b4329d@linaro.org>
-Date: Mon, 19 Jun 2023 08:54:13 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 05/17] dt-bindings: mtd: qcom: Fix a property position
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, devicetree@vger.kernel.org
-Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Manivannan Sadhasivam <mani@kernel.org>
+	Mon, 19 Jun 2023 06:59:17 +0000
+X-GND-Sasl: miquel.raynal@bootlin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1687157950;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y1KdaauZRk96Ps44rUmpp7eWpG6S5yUxJCxmfYf6qgM=;
+	b=ZzcjdfySthabM0zwwHRt1qjl5uHoBJyBFM3a9KGwn4wmcEgpXqz7RoiRfUc3aaoWzPKPLM
+	kYCaHQXaMTFzt+56IoAZJ2CIwyeQ8NnBwsm5nt3fxqMlnfJooKNiSkxa9DF2YQIwizBIkp
+	ElV4CwsedGEeLQtYM4DK22tQ/JeF8g8agIlgjxqIpaEHJ385URefEz09+mk+5sCg5/tiyG
+	KffZMbLAmIy1jrPns2MU3S4Fo61BHOcYDw4lIbRrVlvFnHZF91leRj5UzAAqrS+nK2QIhb
+	479hBJsQcBD3cpiGAf7ADVY8WyEEzcDO/dphmff7/pRV6rYIXyPgjerlDkwJbw==
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B0FA5E000D;
+	Mon, 19 Jun 2023 06:59:08 +0000 (UTC)
+Date: Mon, 19 Jun 2023 08:59:07 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzk+dt@kernel.org>, devicetree@vger.kernel.org, Chris Packham
+ <Chris.Packham@alliedtelesis.co.nz>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 02/17] dt-bindings: mtd: Create a file for raw NAND
+ chip properties
+Message-ID: <20230619085907.70218553@xps-13>
+In-Reply-To: <f7218445-77e7-7429-5d81-ee7380a3e045@kernel.org>
 References: <20230606175246.190465-1-miquel.raynal@bootlin.com>
- <20230606175246.190465-6-miquel.raynal@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230606175246.190465-6-miquel.raynal@bootlin.com>
+	<20230606175246.190465-3-miquel.raynal@bootlin.com>
+	<f7218445-77e7-7429-5d81-ee7380a3e045@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230618_235417_685930_AB29EE61 
-X-CRM114-Status: GOOD (  18.28  )
+X-CRM114-CacheID: sfid-20230618_235916_397462_EB3A7B4E 
+X-CRM114-Status: GOOD (  24.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,58 +87,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 06/06/2023 19:52, Miquel Raynal wrote:
-> qcom,boot-partitions is a NAND chip property, not a NAND controller
-> property. Move the description of the property into the NAND chip
-> section and just enable the property in the if/else block.
-> 
-> Fixes: 5278cc93a97f ("dt-bindings: mtd: qcom_nandc: document qcom,boot-partitions binding")
-> Cc: Manivannan Sadhasivam <mani@kernel.org>
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../devicetree/bindings/mtd/qcom,nandc.yaml   | 41 +++++++++++--------
->  1 file changed, 25 insertions(+), 16 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> index 07024ee45951..7217d8a64d14 100644
-> --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> @@ -45,6 +45,22 @@ patternProperties:
->          enum:
->            - 512
->  
-> +      qcom,boot-partitions:
-> +        $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +        items:
-> +          items:
-> +            - description: offset
-> +            - description: size
-> +        description:
-> +          Boot partition use a different layout where the 4 bytes of spare
-> +          data are not protected by ECC. Use this to declare these special
-> +          partitions by defining first the offset and then the size.
-> +
-> +          It's in the form of <offset1 size1 offset2 size2 offset3 ...>
-> +          and should be declared in ascending order.
-> +
-> +          Refer to the ipq8064 example on how to use this special binding.
-> +
->  allOf:
->    - $ref: "nand-controller.yaml#"
-
-Also based on some old tree.
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgS3J6eXN6dG9mLAoKa3J6a0BrZXJuZWwub3JnIHdyb3RlIG9uIE1vbiwgMTkgSnVuIDIwMjMg
+MDg6Mjg6MjggKzAyMDA6Cgo+IE9uIDA2LzA2LzIwMjMgMTk6NTIsIE1pcXVlbCBSYXluYWwgd3Jv
+dGU6Cj4gPiBJbiBhbiBlZmZvcnQgdG8gY29uc3RyYWluIGFzIG11Y2ggYXMgd2UgY2FuIHRoZSBl
+eGlzdGluZyBiaW5kaW5nLCB3ZQo+ID4gd2FudCB0byBhZGQgInVuZXZhbHVhdGVkUHJvcGVydGll
+czogZmFsc2UiIGluIGFsbCB0aGUgTkFORCBjaGlwCj4gPiBkZXNjcmlwdGlvbnMgcGFydCBvZiBO
+QU5EIGNvbnRyb2xsZXIgYmluZGluZ3MuIEJ1dCBpbiBvcmRlciB0byBkbyB0aGF0Cj4gPiBwcm9w
+ZXJseSwgd2UgYWxzbyBuZWVkIHRvIHJlZmVyZW5jZSBhIGZpbGUgd2hpY2ggY29udGFpbnMgYWxs
+IHRoZQo+ID4gImFsbG93ZWQiIHByb3BlcnRpZXMuIFJpZ2h0IG5vdyB0aGlzIGZpbGUgaXMgbmFu
+ZC1jaGlwLnlhbWwgYnV0IGluCj4gPiBwcmFjdGljZSByYXcgTkFORCBjb250cm9sbGVycyBtYXkg
+dXNlIGFkZGl0aW9uYWwgcHJvcGVydGllcyBpbiB0aGVpcgo+ID4gTkFORCBjaGlwIGNoaWxkcmVu
+IG5vZGUuIFRoZXNlIHByb3BlcnRpZXMgYXJlIGxpc3RlZCB1bmRlcgo+ID4gbmFuZC1jb250cm9s
+bGVyLnlhbWwsIHdoaWNoIG1ha2VzIHRoZSAidW5ldmFsdWF0ZWRQcm9wZXJ0aWVzIiBjaGVja3MK
+PiA+IGZhaWwgd2hpbGUgdGhlIGRlc2NyaXB0aW9uIGFyZSB2YWxpZC4gV2UgbmVlZCB0byBtb3Zl
+IHRoZXNlIE5BTkQgY2hpcAo+ID4gcmVsYXRlZCBwcm9wZXJ0aWVzIGludG8gYW5vdGhlciBmaWxl
+LCBiZWNhdXNlIHdlIGRvIG5vdCB3YW50IHRvIHBvbGx1dGUKPiA+IG5hbmQtY2hpcC55YW1sIHdo
+aWNoIGlzIGFsc28gcmVmZXJlbmNlZCBieSBlZy4gU1BJLU5BTkQgZGV2aWNlcy4KPiA+IAo+ID4g
+TGV0J3MgY3JlYXRlIGEgcmF3LW5hbmQtY2hpcC55YW1sIGZpbGUgdG8gcmVmZXJlbmNlIGFsbCB0
+aGUgcHJvcGVydGllcyBhCj4gPiByYXcgTkFORCBjaGlwIGRlc2NyaXB0aW9uIGNhbiBjb250YWlu
+LiBUaGUgY2hhaW4gb2YgaW5oZXJpdGFuY2UgYmVjb21lczoKPiA+ICAgbmFuZC1jb250cm9sbGVy
+LnlhbWwgPC0gcmF3LW5hbmQtY2hpcC55YW1sCj4gPiAgIHJhdy1uYW5kLWNoaXAueWFtbCAgIDwt
+IG5hbmQtY2hpcC55YW1sCj4gPiAgIHNwaS1uYW5kLnlhbWwgICAgICAgIDwtIG5hbmQtY2hpcC55
+YW1sICAKPiAKPiAuLi4KPiAKPiA+IC0gIFRoZSBpbnRlcnByZXRhdGlvbiBvZiB0aGVzZSBwYXJh
+bWV0ZXJzIGlzIGltcGxlbWVudGF0aW9uLWRlZmluZWQsIHNvCj4gPiAtICBub3QgYWxsIGltcGxl
+bWVudGF0aW9ucyBtdXN0IHN1cHBvcnQgYWxsIHBvc3NpYmxlCj4gPiAtICBjb21iaW5hdGlvbnMu
+IEhvd2V2ZXIsIGltcGxlbWVudGF0aW9ucyBhcmUgZW5jb3VyYWdlZCB0byBmdXJ0aGVyCj4gPiAt
+ICBzcGVjaWZ5IHRoZSB2YWx1ZShzKSB0aGV5IHN1cHBvcnQuCj4gPiAtCj4gPiAgcHJvcGVydGll
+czoKPiA+ICAgICRub2RlbmFtZToKPiA+ICAgICAgcGF0dGVybjogIl5uYW5kLWNvbnRyb2xsZXIo
+QC4qKT8iCj4gPiBAQCAtNTEsNzkgKzQxLDggQEAgcHJvcGVydGllczoKPiA+ICAKPiA+ICBwYXR0
+ZXJuUHJvcGVydGllczoKPiA+ICAgICJebmFuZEBbYS1mMC05XSQiOgo+ID4gLSAgICAkcmVmOiAi
+bmFuZC1jaGlwLnlhbWwjIiAgCj4gCj4gWW91IHdvcmsgb24gc29tZSBvbGQgdHJlZSwganVkZ2lu
+ZyBieSBlbWFpbCBhZGRyZXNzZXMgeW91IENDIGFuZCBieQo+IHRoaXMuIEkgd291bGQgZXhwZWN0
+IGhlcmUgY3VycmVudCBuZXh0LCBidXQgdGhpcyBpcyBldmVuIHByZSB2Ni40LXJjMSEKPiBXb3Jr
+aW5nIG9uIHNvbWV0aGluZyBvbGRlciB0aGFuIGN1cnJlbnQgbWFzdGVyIGJyYW5jaCBkb3NzIG5v
+dCBtYWtlIGFueQo+IHNlbnNlLgoKVGhpcyBpcyByZWFsbHkgYmFzZWQgb24gdjYuNC1yYzEsIEkg
+dGhpbmsgUm9iJ3MgdG9vbGluZyBpcyBhcHBseWluZyB0aGUKcGF0Y2hlcyBhZ2FpbnN0IC1yYzEg
+c28gSSB0cnkgdG8ga2VlcCB0aGUgcm9ib3RzIGhhcHB5IGJ5IHBpY2tpbmcgdGhhdAp0YWcgYXMg
+YmFzZS4gSSBrbm93IHlvdSBhcmUgcmVtb3ZpbmcgdGhlIHF1b3RlcyBzbyBJIHdlbnQgdGhyb3Vn
+aCBteQpzZXJpZXMgYW5kIGRyb3BwZWQgdGhlbSBmcm9tIGFsbCB0aGUgZmlsZXMgd2hpY2ggbm93
+IHJlZmVyZW5jZQpyYXctbmFuZC1jaGlwLnlhbWwsIGJ1dCBvZiBjb3Vyc2UgSSBtaXNzZWQgdGhh
+dCBvbmUsIEkgYW0gc29ycnksIEkgd2lsbApkcm9wIHRoZSBxdW90ZXMgaGVyZSBhcyB3ZWxsLgoK
+VGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
