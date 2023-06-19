@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92089EB64DB
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 09:29:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 761DEEB64DA
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 09:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=t9D4fjcygalFgZWpy8Ew4LVyfW+Bs54IgmZ2tvYpnM0=; b=qx4latgBEQz1Fg
-	3HeY3E+mUvmBLBoy4PvQfnKoVjE4b/Pr8t8OxMsl1Ndu2hydNECo2B4kbHTCw2kEm30VcOLzYacDH
-	YEl26T//qbDn2AQCmluqWDo7bax5ZOalNkQOFG3y+QxyzPQt7XV2Dvh6e5h6k9UI1xwIharvwuDfq
-	4QRFrE+YHkaU6T/qTbcW5TKQ5raFMLe/16NPrM3odl0gA4+Stnzi7ENRw1v0BM4k6AM90FkNBvOSv
-	vfZYja022q+TeZHT8UrCT9HUBL0V1uIT0WZB6Vv3y5DRAJIfF9zdKbDs0LCmZu2awVqDUIAil1pDp
-	juC/yK5dWdkHoQ7LNG6Q==;
+	List-Owner; bh=5IE4YK/2A85x/FywVAnCuXkEAgzg+/3owoJcwRxYpPA=; b=tSCPSJqhMOU6j4
+	e2wbdeB7QSW7nqheqF0o5W2sS1zUguLeDIvZ9s2+DvU2z2nX+gXP81eBjh4FEF8ARHU3zw5xxsYOU
+	+kZk9QPuLvTFW8mK/uM+albJo7vErr78iY1HiExSGd1HIHxQRBjV2kJfeFEKBFfk0kgtGO7Ne28QF
+	zznUdup1LYVCOt0ZY730C++Odi7M2hmvUptIn/JNqbjvofH2nNfTTbNkJ1m+kQxASr24nsGBRiCz0
+	ia9ubpDBa5Id2dUrkJRZPTO4KTVYrzA4QhMKxRvvfu3Hj5Q7mhcfN6yTWC2wZ6yotltvvFJnMAJHG
+	Crkn7k8t6MT4dABFdT/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBBCa-0080YK-25;
-	Mon, 19 Jun 2023 09:29:36 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1qBBCk-0080iI-0Y;
+	Mon, 19 Jun 2023 09:29:46 +0000
+Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBBCU-0080Ru-2o
+	id 1qBBCZ-0080Vi-0r
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Jun 2023 09:29:32 +0000
+	Mon, 19 Jun 2023 09:29:36 +0000
 X-GND-Sasl: miquel.raynal@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687166969;
+	t=1687166973;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QFNn7R3CCLELog5sCLD8kgMqopmVWyHvy7AjleYx/tM=;
-	b=QpznXL/FJ88qPbjryvLymATBxEG0I4hZwAPb5p7zFyvJ0BpnLKcX+NUA9h5ucAqaz1Mxui
-	8sgRATFZ7t8krSU/ZLzuo9tTT9BUQOX2PxMtcRDJlzWloLwygxFoULtC8eZbVk+oSCr5QU
-	Xv2kPbjnsk4NTW6B/AqO03cSeXMncQuxd2LRz7sqGbZA4FW6hGKEYcx1DPCCTUFnDjkyAV
-	csFN/kINKf41uicg1bkr7vGAM+l9q9k8Oq+JYXjSox0l7CiqVZ5NoCDzJ17l9UNcJSbw4I
-	aGHjh8ug4IYhAmah9qsBSbnHjs2EmLRuLmW/TZ4RjyUk97yDEFR0rg8nbst9LQ==
+	bh=ysOz0mZvazI92RKhh4J+2eW3anNjKtOdPFA10AGw6cA=;
+	b=bBF+XbkXK8wcfl0xDnT09GzHhyYuO9FsYkMCQEuRQM5uOrLutG7UTpHvW08rOLx66xW/8p
+	HKU7sHanxB8/Gmr8UTc0XAsakKOzx22xD51x2rOH6k9cWGwfwmDugMH1p2ZTp4yDdK5opm
+	5mIoKV48FhuB5k7n5QJtYb5Zk4gJvdrI1738RED4g+XlySI7pdOXPP7iPmBoOgt3FT66OD
+	qqstmcNc2NfHjdBoHZARY2XY8uBudS5A2GwrwmAx16GYSyK1mjjLyeCEKxjZEp8GaIezSh
+	LPw8N98HPSp2LmCEvmmJTI4ZXdnolMDSyX5ooB1gkynugPCmv6gVKugfSeU+3A==
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
@@ -54,8 +54,10 @@ X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 092A31BF213;
-	Mon, 19 Jun 2023 09:29:27 +0000 (UTC)
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 620621BF218;
+	Mon, 19 Jun 2023 09:29:32 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -69,19 +71,21 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 05/17] dt-bindings: mtd: qcom: Fix a property position
-Date: Mon, 19 Jun 2023 11:29:04 +0200
-Message-Id: <20230619092916.3028470-6-miquel.raynal@bootlin.com>
+	Maxime Ripard <mripard@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 08/17] dt-bindings: mtd: sunxi: Prevent NAND chip unevaluated properties
+Date: Mon, 19 Jun 2023 11:29:07 +0200
+Message-Id: <20230619092916.3028470-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
 References: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230619_022931_173439_BE6BF2B1 
-X-CRM114-Status: GOOD (  12.20  )
+X-CRM114-CacheID: sfid-20230619_022935_609194_06F95C68 
+X-CRM114-Status: GOOD (  10.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,75 +102,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-qcom,boot-partitions is a NAND chip property, not a NAND controller
-property. Move the description of the property into the NAND chip
-section and just enable the property in the if/else block.
+nand-ecc-mode is a generic property which may apply to any raw NAND
+chip, it does not need to be listed in each controller
+description. Instead, let's reference the raw NAND chip description file
+which contains the property. The description contained
+"additionalProperties: false" which is wrong as other properties such as
+partitions might very well be added in the final .dts, and anyway needs
+to be converted into "unexpectedProperties: false" to fit the property
+change new requirements.
 
-Fixes: 5278cc93a97f ("dt-bindings: mtd: qcom_nandc: document qcom,boot-partitions binding")
-Cc: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc: Samuel Holland <samuel@sholland.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../devicetree/bindings/mtd/qcom,nandc.yaml   | 41 +++++++++++--------
- 1 file changed, 25 insertions(+), 16 deletions(-)
+ .../devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml    | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-index 00c991ffa6c4..3d77922dfaef 100644
---- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-+++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-@@ -45,6 +45,22 @@ patternProperties:
-         enum:
-           - 512
+diff --git a/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
+index 9a88870cd865..054b6b8bf9b9 100644
+--- a/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/allwinner,sun4i-a10-nand.yaml
+@@ -49,13 +49,12 @@ properties:
+ patternProperties:
+   "^nand@[a-f0-9]$":
+     type: object
++    $ref: raw-nand-chip.yaml
+     properties:
+       reg:
+         minimum: 0
+         maximum: 7
  
-+      qcom,boot-partitions:
-+        $ref: /schemas/types.yaml#/definitions/uint32-matrix
-+        items:
-+          items:
-+            - description: offset
-+            - description: size
-+        description:
-+          Boot partition use a different layout where the 4 bytes of spare
-+          data are not protected by ECC. Use this to declare these special
-+          partitions by defining first the offset and then the size.
-+
-+          It's in the form of <offset1 size1 offset2 size2 offset3 ...>
-+          and should be declared in ascending order.
-+
-+          Refer to the ipq8064 example on how to use this special binding.
-+
- allOf:
-   - $ref: nand-controller.yaml#
- 
-@@ -107,22 +123,15 @@ allOf:
-               - qcom,ipq806x-nand
- 
-     then:
--      properties:
--        qcom,boot-partitions:
--          $ref: /schemas/types.yaml#/definitions/uint32-matrix
--          items:
--            items:
--              - description: offset
--              - description: size
--          description:
--            Boot partition use a different layout where the 4 bytes of spare
--            data are not protected by ECC. Use this to declare these special
--            partitions by defining first the offset and then the size.
+-      nand-ecc-mode: true
 -
--            It's in the form of <offset1 size1 offset2 size2 offset3 ...>
--            and should be declared in ascending order.
--
--            Refer to the ipq8064 example on how to use this special binding.
-+      patternProperties:
-+        "^nand@[a-f0-9]$":
-+          properties:
-+            qcom,boot-partitions: true
-+    else:
-+      patternProperties:
-+        "^nand@[a-f0-9]$":
-+          properties:
-+            qcom,boot-partitions: false
+       nand-ecc-algo:
+         const: bch
+ 
+@@ -75,7 +74,7 @@ patternProperties:
+           minimum: 0
+           maximum: 1
+ 
+-    additionalProperties: false
++    unevaluatedProperties: false
  
  required:
    - compatible
