@@ -4,134 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D2E4EB64D9
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 11:49:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01237EB64D9
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 22:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wFRM6R9jvILrFSRvEOA92KbDlTCEAy6FCQT6ZKSNJnI=; b=qk3S+HyXk33OmD
-	wZwg3a5X/+J31pbBKf9lVLypjHHFiKlW/1vJawrYe+o7HBzJXS2qDtYcugO4SFHCd8rLJ0uksHpRM
-	yOy5xh+VbAznqsDS3/tuiGEdbHVYA4X+fpS67+VCLEEI6bVDWmEr0axJItMa33qY8d5f83HUBuZUl
-	Zg4Ab8Z5yKSRWfe6K3iVviNWg8nuGoHmvN+Sd3taabMJ74ofzr9+yMA1KPh/O1xsaKc/ILP0nTHmA
-	qrGH0wP0OG6yI1Ja7YEPf9J7V5JL1CK9D3Ep+uRq8RKDlIJKFVZdKO1At6HR0+L6HY+JVUtwuL1W2
-	QNqA/VkpdjxSNjhsDQZA==;
+	List-Owner; bh=sX5yUCBYYU7nSTji/AGvqIASjAVkSexKI6O/zNsWDS4=; b=H+oLzp6HoXG94K
+	AtewHmYXcvbWD9ApAbgW4kh8DL/HttwMUO5pFxb7+om4QH0g1Jm8sPFiWXeb2a9i7q4esrNvi0vwi
+	VVVkMoZMpN9wllI6CzRgKylWb1v5VngccBOE9/xa42VBu0hLHg883TREkGsBi8Oi/+VR7oCz4N8/h
+	pTl8OlJ2JNV8nBzK3I73xwhNRwGD5d3gtgPFXusYJK8oG113TsQCyNx0InZSjuzhxID3ONPZWetA3
+	Ur7AUZ1/2NW6a6gj60cs2D0cJXuHaQZtsa14LED4KRTRr88kXV++0xB1y41YObaiCsUCqhnTnrnTs
+	D9c34BzYcvN76KLfm3Ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBDNj-008P38-0A;
-	Mon, 19 Jun 2023 11:49:15 +0000
-Received: from mail-dm6nam10on20621.outbound.protection.outlook.com ([2a01:111:f400:7e88::621] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
+	id 1qBNhu-009c9n-0b;
+	Mon, 19 Jun 2023 22:50:46 +0000
+Received: from mail-io1-f52.google.com ([209.85.166.52])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBDNg-008P2J-1W
+	id 1qBNhp-009c9I-23
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Jun 2023 11:49:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yu85ieOFtQfV/8UbQe5/xoKKqmSmSi62cehMrIiOchfSCeLd5MAmNluF8OPLC4Xl7Svq608B7NLSMYpKb44k5D7T1yI6dSMjS58TbZWNpO0LQ68vctC1pfazZG9CfPGtMyK9YNbr9EiRsEDwbxlPyuqiUmK1eDbFmzwz+886M+N4m6iUTzhxBkbpgOYnW4UmT29GVCaCq/zjGeawq6NmoijnyIRWsuCGjHB0CYabSSLw15s6562nZNLxyOztD7IAILRl4EVwltO+2I7MWrB5bk7AP+AcXvTafyC07w3waxKC0S0JBii+83aPhdU0f5nd1ZnYN+ilTUrm/oMSHOrr2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XsqN57bWN7gsZgwc19RiUP4V91KrUyZBvrTBSHf+Mh8=;
- b=AsQepSJJwHkWjc0YfFXBmew4JbNq61sSz9X48V75WwrECzuSq5mSoOiW4ABR2U1J97Qwy4xmvdQrxMRF0bg1Im89edoEP0hNVhVsqpwveenhAlDgWdN2Ituxm7Eof/4hXXeDmSyvpJdkG374NsoWi0VVNKGpvbocvhul7eXBVQPzM0NOGsJqo0RdNMxfRiXOnjHX0CgjEfohQGd8iIfFup2RdWMLYRT8dLiVsKC4V5JkPHfW2qvSVbIoQUUYrYEhB4nlhKgcab2MWyP8CftTHA+2+gEJgoPigKg5EmiOjlZZ82NKKc229xlu8Hk3WiizWdbDXf5Ls/XqunCGX6jBGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XsqN57bWN7gsZgwc19RiUP4V91KrUyZBvrTBSHf+Mh8=;
- b=gw84W0F8+pryqtxKTayGhFPKHKDv7zpN6i75xHOqiEMI1qMlecmStRFGeQeHElFDIq8M5MU1lsiHt5SAxXwLs64zJh9WCns8M7UyL9mgS+AKcL0VZ/YWg1QDLS87GVZlRUieciDklmg08lIKqVlsUXL6B+F6XOvks+qGTGWUHBI=
-Received: from BN7PR12MB2802.namprd12.prod.outlook.com (2603:10b6:408:25::33)
- by IA1PR12MB6186.namprd12.prod.outlook.com (2603:10b6:208:3e6::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.36; Mon, 19 Jun
- 2023 11:49:06 +0000
-Received: from BN7PR12MB2802.namprd12.prod.outlook.com
- ([fe80::3087:7db7:f0eb:cb8f]) by BN7PR12MB2802.namprd12.prod.outlook.com
- ([fe80::3087:7db7:f0eb:cb8f%2]) with mapi id 15.20.6500.036; Mon, 19 Jun 2023
- 11:49:06 +0000
-From: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>
-To: Rob Herring <robh@kernel.org>
-CC: "tudor.ambarus@linaro.org" <tudor.ambarus@linaro.org>,
-	"pratyush@kernel.org" <pratyush@kernel.org>, "miquel.raynal@bootlin.com"
-	<miquel.raynal@bootlin.com>, "richard@nod.at" <richard@nod.at>,
-	"vigneshr@ti.com" <vigneshr@ti.com>, "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org"
-	<conor+dt@kernel.org>, "git (AMD-Xilinx)" <git@amd.com>, "michael@walle.cc"
-	<michael@walle.cc>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "amitrkcian2002@gmail.com"
-	<amitrkcian2002@gmail.com>
-Subject: RE: [PATCH v2 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
- to avoid setting SRWD bit in status register
-Thread-Topic: [PATCH v2 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
- to avoid setting SRWD bit in status register
-Thread-Index: AQHZoDBTwnyTNgO+qkCGryL+tAH4MK+NjU8AgAR2XwA=
-Date: Mon, 19 Jun 2023 11:49:05 +0000
-Message-ID: <BN7PR12MB28020F62E196B98047E63FD8DC5FA@BN7PR12MB2802.namprd12.prod.outlook.com>
-References: <20230616085513.17632-1-amit.kumar-mahapatra@amd.com>
- <20230616085513.17632-2-amit.kumar-mahapatra@amd.com>
- <20230616152556.GA440257-robh@kernel.org>
-In-Reply-To: <20230616152556.GA440257-robh@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN7PR12MB2802:EE_|IA1PR12MB6186:EE_
-x-ms-office365-filtering-correlation-id: fd7ce7be-b494-461d-523f-08db70bb2f5b
-x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YqrluP7RKatQSz8tfbjPfm4YqNNRAKEirBDVpMhgmJvEbXldBnj1FGXuIJE2JgV0gfmqndsdHB7LI5QEnxCa8SLy6OhQxlFlb8SdpITmy+59pwy4PF7q62/XQ1kj94JASgyE/Tk7lOI3ZlT9TuCAT6O9mmeUFcEMJyvGriinuX2fWkIY/noyyn/qQhgtnhcxantVIk78BUJwwYEWqFSWIIkmHKO29PPsN5tAn17SpkMNO+qlpEvPC8JRouOhrvWa66N7hpB5Q7p+NCHW8dDGnAgz61hVAQ59GM1kFRD4qtpDc0T4EkDKa3YSbJOmLlsYB511NJ5DaOnWAFVad7PqpOSGEKGds0wRV48o8unru5VghkrWTILvd2ltQCyyG6v4eVpVQjzkexT8M5t+rc9QZ1CYshNsc9Wlxscg8AVbaNUJC46Pt7VOGt/uIHT3DGwN3+uPQKbe/rFKw5CyZEHn6UnpIJgba6/wwndasLF/G1UUYokoK3G/JVBGUDQ5ZcSX0Lug6zDkgXkdOYGdoT/h5HElrKd+jyoWCjV7ZQ1Xpsj1dVQqW0FgFKS9SHlQ311CmFnH44CPmVrCKTuFb9rufY/xuwluQAVen+ThLBXRJBALeuN/ArpmWp5ZwLZLgbWv
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR12MB2802.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(366004)(39860400002)(376002)(136003)(451199021)(71200400001)(478600001)(83380400001)(86362001)(7696005)(122000001)(66476007)(66556008)(76116006)(54906003)(64756008)(66446008)(66946007)(316002)(38100700002)(26005)(53546011)(9686003)(6506007)(186003)(4326008)(6916009)(8676002)(8936002)(5660300002)(2906002)(52536014)(7416002)(38070700005)(41300700001)(55016003)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?rkefeO1OxRyZnA88G6dlm8sOXt8MsaA787kcns+zzLptTSFINoxXVT+8Bq+m?=
- =?us-ascii?Q?biFO/cMdn9JctDy5rtwxaoeUUvT2WMElUchXk85riP6T6ITEtRYm3O99tvSR?=
- =?us-ascii?Q?GeNnKNzp1YufnnQTFsxfqB/HynhRqjFDuss2GyJwwtxgm9X/tDjtoBHl395i?=
- =?us-ascii?Q?HNGW7vt/dB1ihZvdO0uBHMsgfzqZnxeWcATzF/Ss2ri4a9w0iQwsrGioL9NJ?=
- =?us-ascii?Q?dp2BIZRnGX8TLHFT4nN2Skg040sgRIEt3SYQoXTrzpYUYRGtNgOgiTOzC6q9?=
- =?us-ascii?Q?srwBsg04ATu8+fT7vfqr4kAaiapa3tXMb0VOb0buUynIZUzq9N2VWuVID+26?=
- =?us-ascii?Q?noP7wPxNbfOPUKtCpnhdrVPxkib7wJ3C3aoOlkswH1WD2SfnClkvBuFbMSuj?=
- =?us-ascii?Q?CCPaYSxu7SZED0wYUQZJwwKPGONYXGOQBZ3nn/tjdDL8QGTVgnA5sys6YOG5?=
- =?us-ascii?Q?Yb7WPwPNxpo7o6N/l4Theu+AcpUT5bZPQIfL++CMjkFaTuT5PjBck4A9GrvI?=
- =?us-ascii?Q?qlzFjrpWeErO5m2nGBcwpGXAIc+/NcfvBVJQroZwcKsW0RXilIzYZc9bAO1r?=
- =?us-ascii?Q?uxo/r0LYzIzLWkeM4kLSj/aDUSOk3DFh7felWRg1dv9/bSR/4TNsmrMYyXsG?=
- =?us-ascii?Q?WGuYt8FutfH2zpo0PR/FXKuBrBeEUQ+qnyPVqKB4Cc4BrYPWW+8p99y6mMky?=
- =?us-ascii?Q?/YpyXmNnoO8tFM/cx1gv8dkvXVubpizzPflPlVmVLTMkQQex/umSeXWK8PPm?=
- =?us-ascii?Q?t/iEbLKEoTSEfhrPWJe5NwFH6pjnf3Q4k+NLt6fJ4rxCyzzI1mFrmJlZQcyp?=
- =?us-ascii?Q?GC9ocYKTnngI9+k5L3i4S0zY1+5xNmfhgDy4yUD8cboAaUoZumoGuvP1QY5q?=
- =?us-ascii?Q?mIZW8RaiUApX/L3FWMqdpwFhZOZZGmb2gX8OXA8q6YdZX0QyG6tcpVsRmkOe?=
- =?us-ascii?Q?Ux0xEzBEDCwv92N6H8UrW7PSMnAIOL+fiYR1Vt7Z0C9PIzJP7vPdapevMqOm?=
- =?us-ascii?Q?tPPoueNcjPt6L2S9L90iKPj6+jqRlTbk3Qe1dF1vHaj6m5UU7SKF4P0g6yxw?=
- =?us-ascii?Q?exHhp3X6EH4eTdLNWJnu6gQRR+G4H2PSGHZk24tpB8HAFs3LYDSl7jeoZpPx?=
- =?us-ascii?Q?2z+fhM+84Hq9Ubl18JEJ2eDz9Nt9hUC7fer7cPBvP2cLtlFKEMC5qEb8iHrl?=
- =?us-ascii?Q?Sleth7Q7WNTwZXEx/vwCSGk5qbBhlxti6LvMN6G1AZi8NRMWO0mkV+dhvALY?=
- =?us-ascii?Q?x2ufqfWp5xFfWfanMCjZyXoHSk8W5/an8Wc71v9Grq7WlZnJEUyEMk0YkFZ9?=
- =?us-ascii?Q?Fl1t4ey6AHsjDR78ceuXO5TpaJqMGxelqGWSC64hKXFdMLcusVRlSpQ+zwgo?=
- =?us-ascii?Q?txl2QLU3MkjAc0aPrkkK2sxUpJ4qpzjr396TT5oVCLPwdgiCA8YJX8mEgcUj?=
- =?us-ascii?Q?7bDR0BtdvL5MmveNdqTIQ4CQM2mhtQRB043RNhCDyyfN7wDWVuitb+MFSkoJ?=
- =?us-ascii?Q?gB8EAVuQZcKqCji9BF/3tFERDb4hz7+MaL3GY8gfPyqtLNLilfcLHse/BBpu?=
- =?us-ascii?Q?ziz19QIzgKwsS48POZw=3D?=
+	Mon, 19 Jun 2023 22:50:43 +0000
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-77e35b6b0c4so84164139f.1
+        for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2023 15:50:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687215040; x=1689807040;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bdmKEO8LetRwQhVmgte2Z1MHdDvvmR8biVbcp0wwjpI=;
+        b=CQ0lF8yh04+10hS6J/jr1V2j400RGbTdvE2TBjIVkJpLQGaLM6NQzqgHNms2K49kIf
+         CnwhkfBIVrhoJRHzvJJJ201t/JrJJ/F0N7SswgVADCEvn6s60h449FBDfso3pPS+Tasz
+         G/ri0FWt7IksTJdcEOI9T6LpBkKeMFJ2D25wDcqhh79lwaLJ/kEuzMR5niQ7EAAytZLo
+         z7Glvd6YxkhjkUWvchDByjGY+2W8qnBzL7nWk6YL070iEJD+0KrjU4Xn3142K+Byaq0T
+         7ecgXWA7+ajfXWmVlWDSq399PY952D3mLKHSM6BYY33WooNMIIt8k3+DUeYEfLEHarmW
+         i1Hg==
+X-Gm-Message-State: AC+VfDy+nRqSMEmTqyQFFcUT6ev7LKyIJ3NEEbXHJfLM22huyTzqRd7c
+	630LUTD/EJU3aV6DElz7pzoWr6fSaQ==
+X-Google-Smtp-Source: ACHHUZ7fc5zUOQFvyDbp88VM712kkIPAiP1BxKYiaRt5dJxgdfUoi+V70oW7sV1a7w2CPIe9+bA7Hg==
+X-Received: by 2002:a6b:a14:0:b0:777:aa2c:c2ab with SMTP id z20-20020a6b0a14000000b00777aa2cc2abmr7549381ioi.12.1687215040393;
+        Mon, 19 Jun 2023 15:50:40 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id n2-20020a6bf602000000b0077de452f071sm228829ioh.1.2023.06.19.15.50.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jun 2023 15:50:39 -0700 (PDT)
+Received: (nullmailer pid 1677662 invoked by uid 1000);
+	Mon, 19 Jun 2023 22:50:38 -0000
+Date: Mon, 19 Jun 2023 16:50:38 -0600
+From: Rob Herring <robh@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org, Chris Packham <Chris.Packham@alliedtelesis.co.nz>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v3 02/17] dt-bindings: mtd: Create a file for raw NAND
+ chip properties
+Message-ID: <20230619225038.GA1676165-robh@kernel.org>
+References: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
+ <20230619092916.3028470-3-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN7PR12MB2802.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd7ce7be-b494-461d-523f-08db70bb2f5b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jun 2023 11:49:05.8219
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kg3j4W4f1fzYIo16yKuGX5L9h8kv0Ja25p8ejgiPy5J5wPnDAJGN3qWF5bFFdiuZYKcgIUgYGE6IoeMbfLkcGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6186
+Content-Disposition: inline
+In-Reply-To: <20230619092916.3028470-3-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230619_044912_530004_BA03382A 
-X-CRM114-Status: GOOD (  30.14  )
+X-CRM114-CacheID: sfid-20230619_155041_681438_4AFAA078 
+X-CRM114-Status: GOOD (  40.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,81 +83,147 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Rob,
-
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Friday, June 16, 2023 8:56 PM
-> To: Mahapatra, Amit Kumar <amit.kumar-mahapatra@amd.com>
-> Cc: tudor.ambarus@linaro.org; pratyush@kernel.org;
-> miquel.raynal@bootlin.com; richard@nod.at; vigneshr@ti.com;
-> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org; git (AMD-Xilinx)
-> <git@amd.com>; michael@walle.cc; linux-mtd@lists.infradead.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
-> amitrkcian2002@gmail.com
-> Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
-> to avoid setting SRWD bit in status register
+On Mon, Jun 19, 2023 at 11:29:01AM +0200, Miquel Raynal wrote:
+> In an effort to constrain as much as we can the existing binding, we
+> want to add "unevaluatedProperties: false" in all the NAND chip
+> descriptions part of NAND controller bindings. But in order to do that
+> properly, we also need to reference a file which contains all the
+> "allowed" properties. Right now this file is nand-chip.yaml but in
+> practice raw NAND controllers may use additional properties in their
+> NAND chip children node. These properties are listed under
+> nand-controller.yaml, which makes the "unevaluatedProperties" checks
+> fail while the description are valid. We need to move these NAND chip
+> related properties into another file, because we do not want to pollute
+> nand-chip.yaml which is also referenced by eg. SPI-NAND devices.
 > 
-> On Fri, Jun 16, 2023 at 02:25:12PM +0530, Amit Kumar Mahapatra wrote:
-> > If the WP signal of the flash device is not connected and the software
-> > sets the status register write disable (SRWD) bit in the status
-> > register then thestatus register permanently becomes read-only. To
-> > avoid this added a new boolean DT property "broken-wp". If WP signal
-> > is not connected, then this property should be set in the DT to avoid
-> > setting the SRWD during status register write operation.
-> >
-> > Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> > ---
-> >  .../devicetree/bindings/mtd/jedec,spi-nor.yaml    | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > index 89959e5c47ba..10a6df752f6f 100644
-> > --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> > @@ -70,6 +70,21 @@ properties:
-> >        be used on such systems, to denote the absence of a reliable reset
-> >        mechanism.
-> >
-> > +  broken-wp:
+> Let's create a raw-nand-chip.yaml file to reference all the properties a
+> raw NAND chip description can contain. The chain of inheritance becomes:
+>   nand-controller.yaml <- raw-nand-chip.yaml
+>   raw-nand-chip.yaml   <- nand-chip.yaml
+>   spi-nand.yaml        <- nand-chip.yaml
 > 
-> In the tied low case, that's designed behavior rather than broken. The name
-> should reflect that.
-
-In that case will it be ok to change it to "no-wp". Please let me know if
-you have any other suitable name.
-
-Regards,
-Amit
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../bindings/mtd/nand-controller.yaml         |  85 +--------------
+>  .../bindings/mtd/raw-nand-chip.yaml           | 102 ++++++++++++++++++
+>  2 files changed, 104 insertions(+), 83 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml
 > 
-> > +    type: boolean
-> > +    description:
-> > +      The status register write disable (SRWD) bit in status register, combined
-> > +      with the WP signal, provides hardware data protection for the device.
-> When
-> > +      the SRWD bit is set to 1, and the WP signal is either driven LOW or hard
-> > +      strapped to LOW, the status register nonvolatile bits become read-only
-> and
-> > +      the WRITE STATUS REGISTER operation will not execute. The only way
-> to exit
-> > +      this hardware-protected mode is to drive WP HIGH. If the WP signal of
-> the
-> > +      flash device is not connected then status register permanently becomes
-> > +      read-only as the SRWD bit cannot be reset. This boolean flag can be
-> used
-> > +      on systems in which WP signal is not connected, to avoid setting the
-> SRWD
-> > +      bit while writing the status register. If the WP signal is hard strapped
-> > +      to LOW then it is not broken as it can be a valid use case.
-> > +
-> >    reset-gpios:
-> >      description:
-> >        A GPIO line connected to the RESET (active low) signal of the device.
-> > --
-> > 2.17.1
-> >
+> diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> index f70a32d2d9d4..83a4fe4cc29d 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> @@ -16,16 +16,6 @@ description: |
+>    children nodes of the NAND controller. This representation should be
+>    enforced even for simple controllers supporting only one chip.
+>  
+> -  The ECC strength and ECC step size properties define the user
+> -  desires in terms of correction capability of a controller. Together,
+> -  they request the ECC engine to correct {strength} bit errors per
+> -  {size} bytes.
+> -
+> -  The interpretation of these parameters is implementation-defined, so
+> -  not all implementations must support all possible
+> -  combinations. However, implementations are encouraged to further
+> -  specify the value(s) they support.
+> -
+>  properties:
+>    $nodename:
+>      pattern: "^nand-controller(@.*)?"
+> @@ -51,79 +41,8 @@ properties:
+>  
+>  patternProperties:
+>    "^nand@[a-f0-9]$":
+> -    $ref: nand-chip.yaml#
+> -
+> -    properties:
+> -      reg:
+> -        description:
+> -          Contains the chip-select IDs.
+> -
+> -      nand-ecc-placement:
+> -        description:
+> -          Location of the ECC bytes. This location is unknown by default
+> -          but can be explicitly set to "oob", if all ECC bytes are
+> -          known to be stored in the OOB area, or "interleaved" if ECC
+> -          bytes will be interleaved with regular data in the main area.
+> -        $ref: /schemas/types.yaml#/definitions/string
+> -        enum: [ oob, interleaved ]
+> -
+> -      nand-bus-width:
+> -        description:
+> -          Bus width to the NAND chip
+> -        $ref: /schemas/types.yaml#/definitions/uint32
+> -        enum: [8, 16]
+> -        default: 8
+> -
+> -      nand-on-flash-bbt:
+> -        description:
+> -          With this property, the OS will search the device for a Bad
+> -          Block Table (BBT). If not found, it will create one, reserve
+> -          a few blocks at the end of the device to store it and update
+> -          it as the device ages. Otherwise, the out-of-band area of a
+> -          few pages of all the blocks will be scanned at boot time to
+> -          find Bad Block Markers (BBM). These markers will help to
+> -          build a volatile BBT in RAM.
+> -        $ref: /schemas/types.yaml#/definitions/flag
+> -
+> -      nand-ecc-maximize:
+> -        description:
+> -          Whether or not the ECC strength should be maximized. The
+> -          maximum ECC strength is both controller and chip
+> -          dependent. The ECC engine has to select the ECC config
+> -          providing the best strength and taking the OOB area size
+> -          constraint into account. This is particularly useful when
+> -          only the in-band area is used by the upper layers, and you
+> -          want to make your NAND as reliable as possible.
+> -        $ref: /schemas/types.yaml#/definitions/flag
+> -
+> -      nand-is-boot-medium:
+> -        description:
+> -          Whether or not the NAND chip is a boot medium. Drivers might
+> -          use this information to select ECC algorithms supported by
+> -          the boot ROM or similar restrictions.
+> -        $ref: /schemas/types.yaml#/definitions/flag
+> -
+> -      nand-rb:
+> -        description:
+> -          Contains the native Ready/Busy IDs.
+> -        $ref: /schemas/types.yaml#/definitions/uint32-array
+> -
+> -      rb-gpios:
+> -        description:
+> -          Contains one or more GPIO descriptor (the numper of descriptor
+> -          depends on the number of R/B pins exposed by the flash) for the
+> -          Ready/Busy pins. Active state refers to the NAND ready state and
+> -          should be set to GPIOD_ACTIVE_HIGH unless the signal is inverted.
+> -
+> -      wp-gpios:
+> -        description:
+> -          Contains one GPIO descriptor for the Write Protect pin.
+> -          Active state refers to the NAND Write Protect state and should be
+> -          set to GPIOD_ACTIVE_LOW unless the signal is inverted.
+> -        maxItems: 1
+> -
+> -    required:
+> -      - reg
+> +    type: object
+> +    $ref: raw-nand-chip.yaml#
+>  
+>  required:
+>    - "#address-cells"
+> diff --git a/Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml b/Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml
+> new file mode 100644
+> index 000000000000..2caa6a9a73d3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/raw-nand-chip.yaml
+> @@ -0,0 +1,102 @@
+> +# SPDX-License-Identifier: GPL-2.0
+
+Should be dual licensed like the original.
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
