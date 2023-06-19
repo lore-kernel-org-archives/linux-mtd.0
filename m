@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83DCAEB64D9
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 09:30:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB481EB64DA
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 09:30:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SIJfd+zdLHYr1ey+5dl8j1QIXQCIvYHfGOK3+1iY1IU=; b=AWpem7GQKYHjlM
-	ZW4a8Imo3laThGjL8xM5Dqr5Jx4NHP/R2LoFhFZn89W0OsWGGaC+DkGCHpfaE5TOZDlIVzDfvw5q1
-	xJqP4LHqeG57690F/0OUVaWTFl6kvU3GkTyZHdjOQCDOpcSmiisy3rfv07zJDtsVDqW3aMqO9ZYIq
-	EOn3qgERjOhBz97VAXGZCC7khvlKwTbBEWLK5uPOe/so3+B4miZPBrZTZubkIF667k92uiLeyRfp8
-	FIgeBo0rYXat52vQT48Zb4A8ADsrbLWZHOhS3W1ZaKpPaMMJqU/Mag4NnO1j291xBxZe8njnPlSJQ
-	/fHPIo5tHokL9UbjNLrQ==;
+	List-Owner; bh=QHGGu2Fg/3OT0I8fjbtko9pDgpYQQ9CZBKarDXGJoKo=; b=Ftdd2PSYbCsZDC
+	dARf+ftHgKUSiMEeIkJAhbXY3XeKAVzyquHMAm/VAL1xr8ulU5dvp50WJnriQsATXnXH8nKZPHS64
+	X6ox6PlD/FXDkoZq+3qLvA/XuqaFjQiaL7CmMFNonTkKzbY6GTFu86KfQTpcMMYQOuAWQ7frKXZHc
+	DyyaWyBOoeAjifeBoZ1MJLL6p0Jgr/9PFxGa8uMmM+C+1URRhOdSiVxIyT9NmUb7Q4UADtuBpTSxq
+	i0YTDGzY92zNJYQCgMej2x0lzwMWIiExvsMQbKn05lGcgkh2BdenoAQS91gDV8T1kIkGKVEpWvF5R
+	1gS26DDTxD391M4zlWPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBBCp-0080oG-2i;
-	Mon, 19 Jun 2023 09:29:51 +0000
+	id 1qBBDA-00818R-30;
+	Mon, 19 Jun 2023 09:30:12 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBBCd-0080aB-1g
+	id 1qBBCk-0080j2-2f
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Jun 2023 09:29:42 +0000
+	Mon, 19 Jun 2023 09:29:59 +0000
 X-GND-Sasl: miquel.raynal@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687166978;
+	t=1687166985;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RFmCslVFz2CsswADyIjnNQmF72pKXiw6o6n+ThVMj7A=;
-	b=Xmn+KDShpLYN5LuORmG5+hp+80pxOYwTikAP/2in2yKo4E3FU5zBhN3q3/E2zy5EpAjL6C
-	iZLXftq+/uIXEVOzkaUGuGR0331MbV+15dk1B3foaceUJzlJ0arHh7NIPwQ2ecAIk/1kg9
-	bH6/HkhjUflEWkwRI9VuW+AYoYuw+BszHYFv5Qphu10j7uRTGToh03I46HWXWpn2brF1nP
-	Enw2TqSW8FDSlW6s9lWDU//xVxbATo3eeGcxox495i7tk/PQKJzJb8zXoAHtxJOTOVDUig
-	FOaJ7waX1O3s2gUkdCPWHcxsBlTCdm1dhGwPkdiTQiIhdXfLAWcEYWHt5dpMxw==
+	bh=jze5YN2aX7SgAa5p9hsCxpJKSKuW0V7/I82zaMTRyDI=;
+	b=LaHp4Tu38OFHxNLJMEK34dfKh0Ty9+dqAtEV8OB0Qjuc3AFy77OS/8wdJ/q2vQsBhhv/Pz
+	7HX0ytmTr0SyHdIsWg48nM/00S0ASgSp0/Dob90OZvWQc6MnZhuKDq4DLTMaid37CMjonZ
+	HCbNzYVcRcTpjExdF+cQdAQ+Xq3Y8cmliESoeviUo/YDzIvfqclZGPXMlgSm9hjsRXz5we
+	P9oM79cmq28a9FqC26a4Ai/nXnwTNOvTnne32iFXHTDst2pySgsWKR49WAL8Qyv6h1CbU+
+	0FQi93GMQIKWrFsb+iL4vAssBU1OOrokgxP73tgHpYovDqdX63MnEvHmFfZrdg==
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
@@ -53,8 +53,10 @@ X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C566B1BF204;
-	Mon, 19 Jun 2023 09:29:36 +0000 (UTC)
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6B45C1BF20D;
+	Mon, 19 Jun 2023 09:29:43 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -68,19 +70,20 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Masahiro Yamada <yamada.masahiro@socionext.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
 	Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 11/17] dt-bindings: mtd: denali: Prevent NAND chip unevaluated properties
-Date: Mon, 19 Jun 2023 11:29:10 +0200
-Message-Id: <20230619092916.3028470-12-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 15/17] dt-bindings: mtd: mediatek: Reference raw-nand-chip.yaml
+Date: Mon, 19 Jun 2023 11:29:14 +0200
+Message-Id: <20230619092916.3028470-16-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
 References: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230619_022939_848875_59E6BF19 
-X-CRM114-Status: UNSURE (   9.28  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230619_022947_038647_26CD5054 
+X-CRM114-Status: GOOD (  10.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,61 +100,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ensure all raw NAND chip properties are valid by referencing the
-relevant schema and set unevaluatedProperties to false in the NAND chip
-section to avoid spurious additions of random properties.
+The mediatek NAND controller should reference the new raw-nand-chip.yaml
+binding instead of the original nand-chip.yaml which does not contain
+*all* the properties that may be used to fully describe the NAND
+devices, certain properties being actually described under
+nand-controller.yaml.
 
-Doing this in one location also saves us from dupplicating the
-description of the NAND chip object.
-
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/mtd/denali,nand.yaml | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/denali,nand.yaml b/Documentation/devicetree/bindings/mtd/denali,nand.yaml
-index 0be83ad42970..81f95538d415 100644
---- a/Documentation/devicetree/bindings/mtd/denali,nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/denali,nand.yaml
-@@ -63,6 +63,12 @@ properties:
-     minItems: 1
-     maxItems: 2
+diff --git a/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml b/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
+index a6e7f123eda7..ab10b90077b6 100644
+--- a/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
++++ b/Documentation/devicetree/bindings/mtd/mediatek,mtk-nfc.yaml
+@@ -40,7 +40,7 @@ properties:
  
-+patternProperties:
-+  "^nand@[a-f0-9]$":
-+    type: object
-+    $ref: raw-nand-chip.yaml
-+    unevaluatedProperties: false
-+
- allOf:
-   - $ref: nand-controller.yaml
- 
-@@ -74,7 +80,6 @@ allOf:
-     then:
-       patternProperties:
-         "^nand@[a-f0-9]$":
--          type: object
-           properties:
-             nand-ecc-strength:
-               enum:
-@@ -92,7 +97,6 @@ allOf:
-     then:
-       patternProperties:
-         "^nand@[a-f0-9]$":
--          type: object
-           properties:
-             nand-ecc-strength:
-               enum:
-@@ -111,7 +115,6 @@ allOf:
-     then:
-       patternProperties:
-         "^nand@[a-f0-9]$":
--          type: object
-           properties:
-             nand-ecc-strength:
-               enum:
+ patternProperties:
+   "^nand@[a-f0-9]$":
+-    $ref: nand-chip.yaml#
++    $ref: raw-nand-chip.yaml#
+     unevaluatedProperties: false
+     properties:
+       reg:
 -- 
 2.34.1
 
