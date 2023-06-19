@@ -4,91 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2A7DEB64D9
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 08:40:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47991EB64DA
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 08:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JMOy3MISZZNLH/BZACE/0zZLiRWRpV/69J22JIicavk=; b=2MJY89MrByR3JB
-	JQebwvJPV111nhIBrJ9ghZ6neXgkJ3dHvsk+6rqw5he9kdZcv8u4yJSPn0Iux8zmVmS9PVbakb0Nn
-	W9tP8dtl8IArWd1SVFe0/3VyvWsrSUj4prXK0G9ADg1YI3208rbWJD+alBkATVsn6pmFwOCAm44ot
-	zyqwnmXNYoD7x1wqWCa2mKJppNij/lgstLCi52q+NOMaAJi6+UZ8z2tBktGwShh/E1OyfkQOQQSL3
-	heANNfOD+yKatMu6Fs0biHhgCfEAKwiZwgUB08a89uZ8oP/5OogDmQJFvopBwfYOlRzaZnr2aq8vZ
-	ZDl42SyIu0FStFs+eYxA==;
+	List-Owner; bh=081AE3R4CRVkBjEvl2Jt+pATSwG9DlSGG69iuwOWo1k=; b=VZtGpzqMznD6c2
+	RuJ8Sw5DTeLAXXuB7jq0hlTTGD3qHLbfbiYOWwETzTRwKSJEPRDmO6QPTG4VSLL1nwiziLPrqd/BI
+	Sb22oF59kFb2XFVBqD3mEx3YQuGNq+t0ocW5Ve51xZK3WaRPv4O/3q/XZneQP/HyYZHAprDOnOxoC
+	NW4Pvk+wC3aKWMMiZJMraRtXHws+qcf9SdPYT+cz/1DloDgHjNCqB1SAiLsSycfYt1W92K4gcknOy
+	Wyyt4JuruavaxIx9ZachELL1cTPu7+Dc6nMabenDeJ2DwWK8RsTHrWom83BSMVqCFBInZ1/KI0KLg
+	F4Jd8Uzg3P9ue1E9JDUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBAQf-007r5S-1r;
-	Mon, 19 Jun 2023 08:40:05 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1qBAQh-007r6b-0Q;
+	Mon, 19 Jun 2023 08:40:07 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBAQa-007qys-0o;
-	Mon, 19 Jun 2023 08:40:02 +0000
+	id 1qBAQd-007r2P-2j
+	for linux-mtd@lists.infradead.org;
+	Mon, 19 Jun 2023 08:40:05 +0000
 X-GND-Sasl: miquel.raynal@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687163993;
+	t=1687164000;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nv3/xuAVKSzt/+tarcsShtnLCZyTsdvcmajWRDjJsEE=;
-	b=fwhuxJgV6gTPYMdy6HPekjVKCaCdkhRw9P0iYnxA0xE2fmOZinHGAbGDHZZ9uq6RsooU71
-	T9u/5etMirGUEZiYjsytP4ZN4IqvvrzyNkP2EvklNFTqUlC015JTOQEvYHO2z0bF02d+t1
-	pbkyJAi1/w5wPEu1/R8KQ/+Db5eJbCfE7KJLXzaVE4hFzht/7kAel10GaCkJoT/Hl1aOIy
-	c2eLYf5okQifezH6VkoUwmeaEA+uCtLok2CJ/PLRdFiqh774VXiMaJyN16UYmMqUa6/+gz
-	8mHz7sgWVRZPmwLwDX/yOmmST8NBfSs2zpSQOddaDOgUjfM/d+bVF2kL9BHrrQ==
+	bh=OQcdAg+9N3g/DyKINT36JlTRkES83NJEq82KHSe5Lvk=;
+	b=EMcXEylTKwEflbWeK+AF+2aYNmR+/NaagE5XJMsNxCohYhwczhY/bxI1SpnOHOju8qyOhb
+	/l+vPaELW3N+8eoI9NnuIVGH06j+iqtRREtqLEfQObnNGF8KkaTxvMKpbsOR1t4oQ1Le6v
+	XAKFhm4jfag4aTKBiODVHJPOEmFwyXOpcPDR89A4/4EUZyMSqiJCWhV0YQ1FzV/qg/8t+B
+	XdK1l6UjIgwAY5i3mbkTHSYDaw6QmuW8B+B7yyd5gs9On9qnP7sB7v9kMIQD0uKdeMZeEo
+	1i09QAX34SxHPODhDgCcW4bY15Tpc77qFUIp6P8qkq+4adGyTKmZu410e5if0A==
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6A4756000C;
-	Mon, 19 Jun 2023 08:39:51 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9749120018;
+	Mon, 19 Jun 2023 08:39:59 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
-	Liang Yang <liang.yang@amlogic.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Yixun Lan <yixun.lan@amlogic.com>,
-	Jianxin Pan <jianxin.pan@amlogic.com>
-Cc: oxffffaa@gmail.com,
-	kernel@sberdevices.ru,
-	Stable@vger.kernel.org,
+To: Johan Jonker <jbx6244@gmail.com>,
+	miquel.raynal@bootlin.com
+Cc: richard@nod.at,
+	vigneshr@ti.com,
 	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: rawnand: meson: fix unaligned DMA buffers handling
-Date: Mon, 19 Jun 2023 10:39:50 +0200
-Message-Id: <20230619083951.2940531-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3 1/2] mtd: rawnand: add basic sandisk manufacturer ops
+Date: Mon, 19 Jun 2023 10:39:59 +0200
+Message-Id: <20230619083959.2943156-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230615080815.3291006-1-AVKrasnov@sberdevices.ru>
+In-Reply-To: <aaf4580a-a368-8f70-c9c4-21b5ed4dd599@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'98480a181a08ceeede417e5b28f6d0429d8ae156'
+X-linux-mtd-patch-commit: b'12ac188b9355618dbaa892eb795f48845cf7b1af'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230619_014000_439163_F1C0FB74 
-X-CRM114-Status: UNSURE (   6.62  )
+X-CRM114-CacheID: sfid-20230619_014004_088615_43E537BB 
+X-CRM114-Status: UNSURE (   5.24  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -106,15 +83,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2023-06-15 at 08:08:15 UTC, Arseniy Krasnov wrote:
-> Meson NAND controller requires 8 bytes alignment for DMA addresses,
-> otherwise it "aligns" passed address by itself thus accessing invalid
-> location in the provided buffer. This patch makes unaligned buffers to
-> be reallocated to become valid.
+On Tue, 2023-06-13 at 21:19:58 UTC, Johan Jonker wrote:
+> Add basic Sandisk manufacturer ops support to get
+> SDTNQGAMA timing data with the nand_get_sdr_timings()
+> function.
 > 
-> Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
-> Cc: <Stable@vger.kernel.org>
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
