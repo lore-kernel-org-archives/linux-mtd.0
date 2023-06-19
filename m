@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34FF8EB64DA
-	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 09:30:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A3C4EB64D9
+	for <linux-mtd@archiver.kernel.org>; Mon, 19 Jun 2023 09:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VPWnGu9YrsdUB4er9lEDMSdRofPiiCNyt14i9Rc7JDg=; b=AZiJEoaAuHwD8H
-	z1Qe3o+dDoJxdnLZxjFneUAPMuXuDmeZXqK+zqJZIGmO0hksFxGrXxlHAgQ7yQGPrgrYeMT6EQs3O
-	l7fuE5XaUexthh8D6XWLLyDN2HoadaTLOFwaD+irJEw/cUw0ixQaO99E0BUJNz6zMDeyQs5lXinfX
-	i79+uJLwZ8W9aVQUY6xdKbSVvL2Sy+UIfh9mStmH/fa6VDYQEQ3QOBtY2aBaA+j7G97++pekEvHEZ
-	Ezbr619v09GV2qx3+0J2IjspwXiJ4T5DEbnsonwZ2ZydyqU4hwp8u9xaS2ErEcSMxvEdgNAo6EdKQ
-	t8dPzU4MP/0Xw8GWxFPw==;
+	List-Owner; bh=yYsut7XlEugBBTM0wVFRu34kusUCiIogkEehf1pj8S4=; b=GOoYysODl4f4QN
+	8S2oNY/GuStpHC8D2Rcxw9v/R4IJwgcTfqJUDwSVvUx3EFE8onptlM0PLWAO3FmSFKrbgWMIXYbAe
+	HfU7viAd1n7HH3CMxAa+Bq00ZachCl7Ibz66L/5FcxvHdiZAwleW8Q7X8fJTSLY2bUnM6+4A6Ix0v
+	jP7LSxoGZUAte0qTOMVDOD+PUJfpupIjzWNTZ+Dp2CTHkwBQyvSNHa6Tp5FpNiv1q9+1akFyvwM+g
+	86tGXKJnwA/i8PCxlvKmPn8a3O7ykXBkIomklz3z8E+GEOv507y1rE8lFAopNMgbgJFD7ydDea2tb
+	0f0QCnA1FDSSS8HGHMAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBBCf-0080dq-2W;
-	Mon, 19 Jun 2023 09:29:41 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1qBBD3-00810d-33;
+	Mon, 19 Jun 2023 09:30:05 +0000
+Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBBCX-0080U7-1w
+	id 1qBBCh-0080f3-2C
 	for linux-mtd@lists.infradead.org;
-	Mon, 19 Jun 2023 09:29:34 +0000
+	Mon, 19 Jun 2023 09:29:55 +0000
 X-GND-Sasl: miquel.raynal@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687166972;
+	t=1687166981;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gQ5Zj4T+YQmeGzYu7MbhJ3MeD+33xm3HfrseEs9tbYY=;
-	b=PCOuQPoySwQ2Zl4YfeeVMMx/rf7a803XG5ovWw+MqKZ5FmPKVcV1j4+F/VRUA4w2oln2L2
-	3WCxyf1J9rDZBC1prw0nXL5bjY9b+VYEiGCgqXzKIvtzEsNaZMV+Av96mNK2kIhw2e2Pbl
-	yhA0WxHN7i+jubYt+EYvQ4VyZ9i7mhpaNSdrZ8XRF9bWjErrkX8HeV9q3ImJj7X7EHC6zW
-	LNX08n71L4isY9htLlrB1tjSQ95KPvTIkyn2OHmzaoO6pVKwHWCrzwfXyfQsoX++Buv7MH
-	yriJRHpadSso96OhLJ4Ngi1dbr8qjCXOA7hVHYOt+viqnCdDsNMXljH0V1S4Hg==
+	bh=paHx31E8jcNJg0VSKOZjmKvwKnVepcca3eu++LDKBlM=;
+	b=TEHQ2u7CjOWV9DaQ3M3i///G0L+ft2bYURxUry/dst6PBl1yCJswvt/lWPPI9GEc1iKnrc
+	xGiQEgdBw2jePsPKgh8mAg9R3wkDun8ilFwxSEhOshMvj6eEXjqCknn9o1alnBxDO/jtdu
+	zX1E8TRIOhY5Ggy5FgnJdNsICpURfr/nwXi2cJ1Zj6MJpzcrNvNZZiZPqiDg6nB0fdU1es
+	8FJJj1Xpxdz2uKZc3Jo4TCzg/cGBDHNU3iCaxXQZnxnIMt2phHX5UcS55TiCDuGX8JYMfU
+	UW46C+/Ilds48vj7KLz54UwjqyOJHPcEWDe6OhGweZf4mTSaPpTZNVCcIjRpnw==
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
@@ -53,8 +53,8 @@ X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 198941BF216;
-	Mon, 19 Jun 2023 09:29:31 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E1E471BF205;
+	Mon, 19 Jun 2023 09:29:39 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -68,18 +68,18 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Paul Cercueil <paul@crapouillou.net>,
+	Heiko Stuebner <heiko@sntech.de>,
 	Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 07/17] dt-bindings: mtd: ingenic: Prevent NAND chip unevaluated properties
-Date: Mon, 19 Jun 2023 11:29:06 +0200
-Message-Id: <20230619092916.3028470-8-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 13/17] dt-bindings: mtd: rockchip: Prevent NAND chip unevaluated properties
+Date: Mon, 19 Jun 2023 11:29:12 +0200
+Message-Id: <20230619092916.3028470-14-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
 References: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230619_022933_791349_1BEFF4FD 
-X-CRM114-Status: UNSURE (   8.97  )
+X-CRM114-CacheID: sfid-20230619_022943_900031_9470B2CA 
+X-CRM114-Status: UNSURE (   9.15  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -100,30 +100,28 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 List all the possible properties in the NAND chip as per the example and
 set unevaluatedProperties to false in the NAND chip section.
 
-Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/mtd/ingenic,nand.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../devicetree/bindings/mtd/rockchip,nand-controller.yaml      | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-index a7bdb5d3675c..b9312ebefeb9 100644
---- a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-@@ -39,7 +39,9 @@ properties:
+diff --git a/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+index 7eb1d0a38565..ee53715ffdca 100644
+--- a/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/rockchip,nand-controller.yaml
+@@ -57,6 +57,7 @@ properties:
  patternProperties:
-   "^nand@[a-f0-9]$":
+   "^nand@[0-7]$":
      type: object
 +    $ref: raw-nand-chip.yaml
      properties:
-+
-       rb-gpios:
-         description: GPIO specifier for the busy pin.
-         maxItems: 1
-@@ -48,6 +50,8 @@ patternProperties:
-         description: GPIO specifier for the write-protect pin.
-         maxItems: 1
+       reg:
+         minimum: 0
+@@ -116,6 +117,8 @@ patternProperties:
+ 
+           Only used in combination with 'nand-is-boot-medium'.
  
 +    unevaluatedProperties: false
 +
