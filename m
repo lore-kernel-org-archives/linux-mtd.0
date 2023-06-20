@@ -4,77 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09EB3EB64D8
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jun 2023 06:19:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12E4DEB64D7
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jun 2023 10:12:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=67R92tkr/3GN5EqWPb2q7j4J6MWaDDtEF0sEZSlS8ZQ=; b=ptAahWIO3Xg7Nu
-	ijZTUfcp8bbF+VXIE2haT/s+r7/5zYBHY5/zypLT2Vmdomf/41xfPNK5aaAKygCDJkcWd/koknTLC
-	VBKPuEkwcCpdwnGgIsnEgnxADDYn/P+0Gqk3cJquKjure0HMj9bL0u7tvkpnKUk7TvHRZnoiBEX46
-	sr0U15/f+Ao61g28AjcZvmlBMGJqYTvAwkZ8Ngjz35vYvUpqkQP4e8zsdo2nd9GvSXhcepIqBJ4rs
-	Egf6fHDdQgp6yB5wSwvhWChAouxIZi95ovXz7c6An8CRhA7psoTVhH/VBvWeWT2lI1A0IQmBIedpe
-	1Cd4g0EE0PoUyvVn9ZHg==;
+	List-Owner; bh=WMXHHsyHVSiiPXb+I5s3hLZuNeMx7opYOvLU4PVdhN4=; b=cDaCLFER+ZMnwO
+	LaicjH+JOKztTw5SG9bMiibjlzKiX5LBqEgAgbx/zFBGF2mPzAz92tzWt9HbWfJTBUl+hUK4RnU71
+	c+Tj7rXzSaBS6GzMLNNhdOsut+81AzhqR0fE7Nl6EsS2ltRsiSYFWjqAYv9Fp3jXcyH7vxOU3k9J3
+	Me0qjY+1U9XyHq1k5hO/CaQH/pEgdeC+nk86xn9xOi2/EtUXWy6/o/VxNd6W3sLRl5VQxl8/mBeqY
+	DRgX5nKcFbar4tbUAuNtKsKTK/vvPho76sJFMFCvDS4D3OLxhEy1BrjjALFye/FC2kg4SusSVaYuY
+	ovBbbGdnCWLTyFQ0X9aQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBUhb-00AGAO-0Y;
-	Tue, 20 Jun 2023 06:18:55 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1qBYKw-00Ap0W-2H;
+	Tue, 20 Jun 2023 10:11:46 +0000
+Received: from mga12.intel.com ([192.55.52.136])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBUhX-00AG95-1z
+	id 1qBYKt-00Aozp-0a
 	for linux-mtd@lists.infradead.org;
-	Tue, 20 Jun 2023 06:18:54 +0000
-X-GND-Sasl: miquel.raynal@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687241928;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=84YU6hSy3EdQpuYks2obK2XASPM2NVmk2oESPc8gRDU=;
-	b=KjfEx35GiGYR2oGYPOHgbVNgrrI1fl2nuc89ipgO3rvM8s99MZyopN64GojHg67rS1tMtf
-	9Yw7UhNA4dwNpki8h2//zeemSfuUTqoAFWxHtxsjR19ltgJX9Q+qp1bWp9BfgpSz5NslZZ
-	ISzr2GJbqhsnof7XwxjhSr0Lpz46ZD+Vgbu3skKfdYi+KzkhMKMR12vtrfXvUyuWVUhJV1
-	ytjmE2DyU8ZMoDX57mGKI/ZuKGVtvpbIEsKuw5b0UIQQBEcZReeHSS9kr0HD2IuGkBDE/l
-	dY/tQwQ+wnuP/mwmsGQDNhZEBwS1hyY31KW76YF7gGmkPz+dR4mesmUgz7LdZw==
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C8C7A4000A;
-	Tue, 20 Jun 2023 06:18:44 +0000 (UTC)
-Date: Tue, 20 Jun 2023 08:18:43 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org, Chris Packham
- <Chris.Packham@alliedtelesis.co.nz>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 02/17] dt-bindings: mtd: Create a file for raw NAND
- chip properties
-Message-ID: <20230620081843.78187721@xps-13>
-In-Reply-To: <20230619225038.GA1676165-robh@kernel.org>
-References: <20230619092916.3028470-1-miquel.raynal@bootlin.com>
-	<20230619092916.3028470-3-miquel.raynal@bootlin.com>
-	<20230619225038.GA1676165-robh@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Tue, 20 Jun 2023 10:11:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687255903; x=1718791903;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=t6aBv/t9yUrGliuBhpX5NCpuckz6oBkr9Qm3pAgcp78=;
+  b=O7OtUtAQNKyo54okGWgHEyS7HY0FfLHQm/ttBZn3Mt4NJZNAgd+gT3aw
+   DZ9aZ6SitzQv9KZ1/aMi0AaVJ5s9ZHKALPaCB4wIwjAYkNRIIo0ty0kIA
+   ppe3IUfm0Mep+ZW5lrEl12WGAGNNJPYUa87i9x/kaTgrsbgny2W6GwElC
+   QfOyKVhApI8hW4zWnVZElavAKvcU1P6IBKvmCwK2aXbLXlDIdTE6e50ed
+   sBq9vaG4l9nistvGk+ETv1WAD9HwbMw7Alja1e3+St0i/xmG1zcAkiEx8
+   0ZwevqxIRotly4UopszR/i6LXRXmQMLaF2yBlfp6MREA3D/LuJRfxPv0I
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="339431025"
+X-IronPort-AV: E=Sophos;i="6.00,256,1681196400"; 
+   d="scan'208";a="339431025"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2023 03:11:14 -0700
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="748013955"
+X-IronPort-AV: E=Sophos;i="6.00,256,1681196400"; 
+   d="scan'208";a="748013955"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 20 Jun 2023 03:11:11 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qBYKM-0005nY-20;
+	Tue, 20 Jun 2023 10:11:10 +0000
+Date: Tue, 20 Jun 2023 18:10:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, mani@kernel.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, quic_srichara@quicinc.com,
+	quic_mdalam@quicinc.com
+Subject: Re: [PATCH v4 1/5] mtd: rawnand: qcom: Implement exec_op()
+Message-ID: <202306201734.SmmrhWYJ-lkp@intel.com>
+References: <20230615073143.25079-1-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230615073143.25079-1-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230619_231851_924545_5F6FB2AB 
-X-CRM114-Status: GOOD (  44.73  )
+X-CRM114-CacheID: sfid-20230620_031143_251231_0CEC9B0E 
+X-CRM114-Status: GOOD (  13.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,129 +82,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUm9iLAoKcm9iaEBrZXJuZWwub3JnIHdyb3RlIG9uIE1vbiwgMTkgSnVuIDIwMjMgMTY6NTA6
-MzggLTA2MDA6Cgo+IE9uIE1vbiwgSnVuIDE5LCAyMDIzIGF0IDExOjI5OjAxQU0gKzAyMDAsIE1p
-cXVlbCBSYXluYWwgd3JvdGU6Cj4gPiBJbiBhbiBlZmZvcnQgdG8gY29uc3RyYWluIGFzIG11Y2gg
-YXMgd2UgY2FuIHRoZSBleGlzdGluZyBiaW5kaW5nLCB3ZQo+ID4gd2FudCB0byBhZGQgInVuZXZh
-bHVhdGVkUHJvcGVydGllczogZmFsc2UiIGluIGFsbCB0aGUgTkFORCBjaGlwCj4gPiBkZXNjcmlw
-dGlvbnMgcGFydCBvZiBOQU5EIGNvbnRyb2xsZXIgYmluZGluZ3MuIEJ1dCBpbiBvcmRlciB0byBk
-byB0aGF0Cj4gPiBwcm9wZXJseSwgd2UgYWxzbyBuZWVkIHRvIHJlZmVyZW5jZSBhIGZpbGUgd2hp
-Y2ggY29udGFpbnMgYWxsIHRoZQo+ID4gImFsbG93ZWQiIHByb3BlcnRpZXMuIFJpZ2h0IG5vdyB0
-aGlzIGZpbGUgaXMgbmFuZC1jaGlwLnlhbWwgYnV0IGluCj4gPiBwcmFjdGljZSByYXcgTkFORCBj
-b250cm9sbGVycyBtYXkgdXNlIGFkZGl0aW9uYWwgcHJvcGVydGllcyBpbiB0aGVpcgo+ID4gTkFO
-RCBjaGlwIGNoaWxkcmVuIG5vZGUuIFRoZXNlIHByb3BlcnRpZXMgYXJlIGxpc3RlZCB1bmRlcgo+
-ID4gbmFuZC1jb250cm9sbGVyLnlhbWwsIHdoaWNoIG1ha2VzIHRoZSAidW5ldmFsdWF0ZWRQcm9w
-ZXJ0aWVzIiBjaGVja3MKPiA+IGZhaWwgd2hpbGUgdGhlIGRlc2NyaXB0aW9uIGFyZSB2YWxpZC4g
-V2UgbmVlZCB0byBtb3ZlIHRoZXNlIE5BTkQgY2hpcAo+ID4gcmVsYXRlZCBwcm9wZXJ0aWVzIGlu
-dG8gYW5vdGhlciBmaWxlLCBiZWNhdXNlIHdlIGRvIG5vdCB3YW50IHRvIHBvbGx1dGUKPiA+IG5h
-bmQtY2hpcC55YW1sIHdoaWNoIGlzIGFsc28gcmVmZXJlbmNlZCBieSBlZy4gU1BJLU5BTkQgZGV2
-aWNlcy4KPiA+IAo+ID4gTGV0J3MgY3JlYXRlIGEgcmF3LW5hbmQtY2hpcC55YW1sIGZpbGUgdG8g
-cmVmZXJlbmNlIGFsbCB0aGUgcHJvcGVydGllcyBhCj4gPiByYXcgTkFORCBjaGlwIGRlc2NyaXB0
-aW9uIGNhbiBjb250YWluLiBUaGUgY2hhaW4gb2YgaW5oZXJpdGFuY2UgYmVjb21lczoKPiA+ICAg
-bmFuZC1jb250cm9sbGVyLnlhbWwgPC0gcmF3LW5hbmQtY2hpcC55YW1sCj4gPiAgIHJhdy1uYW5k
-LWNoaXAueWFtbCAgIDwtIG5hbmQtY2hpcC55YW1sCj4gPiAgIHNwaS1uYW5kLnlhbWwgICAgICAg
-IDwtIG5hbmQtY2hpcC55YW1sCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwg
-PG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gPiBSZXZpZXdlZC1ieTogUm9iIEhlcnJpbmcg
-PHJvYmhAa2VybmVsLm9yZz4KPiA+IC0tLQo+ID4gIC4uLi9iaW5kaW5ncy9tdGQvbmFuZC1jb250
-cm9sbGVyLnlhbWwgICAgICAgICB8ICA4NSArLS0tLS0tLS0tLS0tLS0KPiA+ICAuLi4vYmluZGlu
-Z3MvbXRkL3Jhdy1uYW5kLWNoaXAueWFtbCAgICAgICAgICAgfCAxMDIgKysrKysrKysrKysrKysr
-KysrCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAxMDQgaW5zZXJ0aW9ucygrKSwgODMgZGVsZXRpb25z
-KC0pCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9tdGQvcmF3LW5hbmQtY2hpcC55YW1sCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL25hbmQtY29udHJvbGxlci55YW1sIGIvRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9uYW5kLWNvbnRyb2xsZXIueWFtbAo+
-ID4gaW5kZXggZjcwYTMyZDJkOWQ0Li44M2E0ZmU0Y2MyOWQgMTAwNjQ0Cj4gPiAtLS0gYS9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL25hbmQtY29udHJvbGxlci55YW1sCj4g
-PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL25hbmQtY29udHJv
-bGxlci55YW1sCj4gPiBAQCAtMTYsMTYgKzE2LDYgQEAgZGVzY3JpcHRpb246IHwKPiA+ICAgIGNo
-aWxkcmVuIG5vZGVzIG9mIHRoZSBOQU5EIGNvbnRyb2xsZXIuIFRoaXMgcmVwcmVzZW50YXRpb24g
-c2hvdWxkIGJlCj4gPiAgICBlbmZvcmNlZCBldmVuIGZvciBzaW1wbGUgY29udHJvbGxlcnMgc3Vw
-cG9ydGluZyBvbmx5IG9uZSBjaGlwLgo+ID4gIAo+ID4gLSAgVGhlIEVDQyBzdHJlbmd0aCBhbmQg
-RUNDIHN0ZXAgc2l6ZSBwcm9wZXJ0aWVzIGRlZmluZSB0aGUgdXNlcgo+ID4gLSAgZGVzaXJlcyBp
-biB0ZXJtcyBvZiBjb3JyZWN0aW9uIGNhcGFiaWxpdHkgb2YgYSBjb250cm9sbGVyLiBUb2dldGhl
-ciwKPiA+IC0gIHRoZXkgcmVxdWVzdCB0aGUgRUNDIGVuZ2luZSB0byBjb3JyZWN0IHtzdHJlbmd0
-aH0gYml0IGVycm9ycyBwZXIKPiA+IC0gIHtzaXplfSBieXRlcy4KPiA+IC0KPiA+IC0gIFRoZSBp
-bnRlcnByZXRhdGlvbiBvZiB0aGVzZSBwYXJhbWV0ZXJzIGlzIGltcGxlbWVudGF0aW9uLWRlZmlu
-ZWQsIHNvCj4gPiAtICBub3QgYWxsIGltcGxlbWVudGF0aW9ucyBtdXN0IHN1cHBvcnQgYWxsIHBv
-c3NpYmxlCj4gPiAtICBjb21iaW5hdGlvbnMuIEhvd2V2ZXIsIGltcGxlbWVudGF0aW9ucyBhcmUg
-ZW5jb3VyYWdlZCB0byBmdXJ0aGVyCj4gPiAtICBzcGVjaWZ5IHRoZSB2YWx1ZShzKSB0aGV5IHN1
-cHBvcnQuCj4gPiAtCj4gPiAgcHJvcGVydGllczoKPiA+ICAgICRub2RlbmFtZToKPiA+ICAgICAg
-cGF0dGVybjogIl5uYW5kLWNvbnRyb2xsZXIoQC4qKT8iCj4gPiBAQCAtNTEsNzkgKzQxLDggQEAg
-cHJvcGVydGllczoKPiA+ICAKPiA+ICBwYXR0ZXJuUHJvcGVydGllczoKPiA+ICAgICJebmFuZEBb
-YS1mMC05XSQiOgo+ID4gLSAgICAkcmVmOiBuYW5kLWNoaXAueWFtbCMKPiA+IC0KPiA+IC0gICAg
-cHJvcGVydGllczoKPiA+IC0gICAgICByZWc6Cj4gPiAtICAgICAgICBkZXNjcmlwdGlvbjoKPiA+
-IC0gICAgICAgICAgQ29udGFpbnMgdGhlIGNoaXAtc2VsZWN0IElEcy4KPiA+IC0KPiA+IC0gICAg
-ICBuYW5kLWVjYy1wbGFjZW1lbnQ6Cj4gPiAtICAgICAgICBkZXNjcmlwdGlvbjoKPiA+IC0gICAg
-ICAgICAgTG9jYXRpb24gb2YgdGhlIEVDQyBieXRlcy4gVGhpcyBsb2NhdGlvbiBpcyB1bmtub3du
-IGJ5IGRlZmF1bHQKPiA+IC0gICAgICAgICAgYnV0IGNhbiBiZSBleHBsaWNpdGx5IHNldCB0byAi
-b29iIiwgaWYgYWxsIEVDQyBieXRlcyBhcmUKPiA+IC0gICAgICAgICAga25vd24gdG8gYmUgc3Rv
-cmVkIGluIHRoZSBPT0IgYXJlYSwgb3IgImludGVybGVhdmVkIiBpZiBFQ0MKPiA+IC0gICAgICAg
-ICAgYnl0ZXMgd2lsbCBiZSBpbnRlcmxlYXZlZCB3aXRoIHJlZ3VsYXIgZGF0YSBpbiB0aGUgbWFp
-biBhcmVhLgo+ID4gLSAgICAgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlv
-bnMvc3RyaW5nCj4gPiAtICAgICAgICBlbnVtOiBbIG9vYiwgaW50ZXJsZWF2ZWQgXQo+ID4gLQo+
-ID4gLSAgICAgIG5hbmQtYnVzLXdpZHRoOgo+ID4gLSAgICAgICAgZGVzY3JpcHRpb246Cj4gPiAt
-ICAgICAgICAgIEJ1cyB3aWR0aCB0byB0aGUgTkFORCBjaGlwCj4gPiAtICAgICAgICAkcmVmOiAv
-c2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzIKPiA+IC0gICAgICAgIGVudW06
-IFs4LCAxNl0KPiA+IC0gICAgICAgIGRlZmF1bHQ6IDgKPiA+IC0KPiA+IC0gICAgICBuYW5kLW9u
-LWZsYXNoLWJidDoKPiA+IC0gICAgICAgIGRlc2NyaXB0aW9uOgo+ID4gLSAgICAgICAgICBXaXRo
-IHRoaXMgcHJvcGVydHksIHRoZSBPUyB3aWxsIHNlYXJjaCB0aGUgZGV2aWNlIGZvciBhIEJhZAo+
-ID4gLSAgICAgICAgICBCbG9jayBUYWJsZSAoQkJUKS4gSWYgbm90IGZvdW5kLCBpdCB3aWxsIGNy
-ZWF0ZSBvbmUsIHJlc2VydmUKPiA+IC0gICAgICAgICAgYSBmZXcgYmxvY2tzIGF0IHRoZSBlbmQg
-b2YgdGhlIGRldmljZSB0byBzdG9yZSBpdCBhbmQgdXBkYXRlCj4gPiAtICAgICAgICAgIGl0IGFz
-IHRoZSBkZXZpY2UgYWdlcy4gT3RoZXJ3aXNlLCB0aGUgb3V0LW9mLWJhbmQgYXJlYSBvZiBhCj4g
-PiAtICAgICAgICAgIGZldyBwYWdlcyBvZiBhbGwgdGhlIGJsb2NrcyB3aWxsIGJlIHNjYW5uZWQg
-YXQgYm9vdCB0aW1lIHRvCj4gPiAtICAgICAgICAgIGZpbmQgQmFkIEJsb2NrIE1hcmtlcnMgKEJC
-TSkuIFRoZXNlIG1hcmtlcnMgd2lsbCBoZWxwIHRvCj4gPiAtICAgICAgICAgIGJ1aWxkIGEgdm9s
-YXRpbGUgQkJUIGluIFJBTS4KPiA+IC0gICAgICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwj
-L2RlZmluaXRpb25zL2ZsYWcKPiA+IC0KPiA+IC0gICAgICBuYW5kLWVjYy1tYXhpbWl6ZToKPiA+
-IC0gICAgICAgIGRlc2NyaXB0aW9uOgo+ID4gLSAgICAgICAgICBXaGV0aGVyIG9yIG5vdCB0aGUg
-RUNDIHN0cmVuZ3RoIHNob3VsZCBiZSBtYXhpbWl6ZWQuIFRoZQo+ID4gLSAgICAgICAgICBtYXhp
-bXVtIEVDQyBzdHJlbmd0aCBpcyBib3RoIGNvbnRyb2xsZXIgYW5kIGNoaXAKPiA+IC0gICAgICAg
-ICAgZGVwZW5kZW50LiBUaGUgRUNDIGVuZ2luZSBoYXMgdG8gc2VsZWN0IHRoZSBFQ0MgY29uZmln
-Cj4gPiAtICAgICAgICAgIHByb3ZpZGluZyB0aGUgYmVzdCBzdHJlbmd0aCBhbmQgdGFraW5nIHRo
-ZSBPT0IgYXJlYSBzaXplCj4gPiAtICAgICAgICAgIGNvbnN0cmFpbnQgaW50byBhY2NvdW50LiBU
-aGlzIGlzIHBhcnRpY3VsYXJseSB1c2VmdWwgd2hlbgo+ID4gLSAgICAgICAgICBvbmx5IHRoZSBp
-bi1iYW5kIGFyZWEgaXMgdXNlZCBieSB0aGUgdXBwZXIgbGF5ZXJzLCBhbmQgeW91Cj4gPiAtICAg
-ICAgICAgIHdhbnQgdG8gbWFrZSB5b3VyIE5BTkQgYXMgcmVsaWFibGUgYXMgcG9zc2libGUuCj4g
-PiAtICAgICAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9mbGFnCj4g
-PiAtCj4gPiAtICAgICAgbmFuZC1pcy1ib290LW1lZGl1bToKPiA+IC0gICAgICAgIGRlc2NyaXB0
-aW9uOgo+ID4gLSAgICAgICAgICBXaGV0aGVyIG9yIG5vdCB0aGUgTkFORCBjaGlwIGlzIGEgYm9v
-dCBtZWRpdW0uIERyaXZlcnMgbWlnaHQKPiA+IC0gICAgICAgICAgdXNlIHRoaXMgaW5mb3JtYXRp
-b24gdG8gc2VsZWN0IEVDQyBhbGdvcml0aG1zIHN1cHBvcnRlZCBieQo+ID4gLSAgICAgICAgICB0
-aGUgYm9vdCBST00gb3Igc2ltaWxhciByZXN0cmljdGlvbnMuCj4gPiAtICAgICAgICAkcmVmOiAv
-c2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9mbGFnCj4gPiAtCj4gPiAtICAgICAgbmFu
-ZC1yYjoKPiA+IC0gICAgICAgIGRlc2NyaXB0aW9uOgo+ID4gLSAgICAgICAgICBDb250YWlucyB0
-aGUgbmF0aXZlIFJlYWR5L0J1c3kgSURzLgo+ID4gLSAgICAgICAgJHJlZjogL3NjaGVtYXMvdHlw
-ZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyLWFycmF5Cj4gPiAtCj4gPiAtICAgICAgcmItZ3Bp
-b3M6Cj4gPiAtICAgICAgICBkZXNjcmlwdGlvbjoKPiA+IC0gICAgICAgICAgQ29udGFpbnMgb25l
-IG9yIG1vcmUgR1BJTyBkZXNjcmlwdG9yICh0aGUgbnVtcGVyIG9mIGRlc2NyaXB0b3IKPiA+IC0g
-ICAgICAgICAgZGVwZW5kcyBvbiB0aGUgbnVtYmVyIG9mIFIvQiBwaW5zIGV4cG9zZWQgYnkgdGhl
-IGZsYXNoKSBmb3IgdGhlCj4gPiAtICAgICAgICAgIFJlYWR5L0J1c3kgcGlucy4gQWN0aXZlIHN0
-YXRlIHJlZmVycyB0byB0aGUgTkFORCByZWFkeSBzdGF0ZSBhbmQKPiA+IC0gICAgICAgICAgc2hv
-dWxkIGJlIHNldCB0byBHUElPRF9BQ1RJVkVfSElHSCB1bmxlc3MgdGhlIHNpZ25hbCBpcyBpbnZl
-cnRlZC4KPiA+IC0KPiA+IC0gICAgICB3cC1ncGlvczoKPiA+IC0gICAgICAgIGRlc2NyaXB0aW9u
-Ogo+ID4gLSAgICAgICAgICBDb250YWlucyBvbmUgR1BJTyBkZXNjcmlwdG9yIGZvciB0aGUgV3Jp
-dGUgUHJvdGVjdCBwaW4uCj4gPiAtICAgICAgICAgIEFjdGl2ZSBzdGF0ZSByZWZlcnMgdG8gdGhl
-IE5BTkQgV3JpdGUgUHJvdGVjdCBzdGF0ZSBhbmQgc2hvdWxkIGJlCj4gPiAtICAgICAgICAgIHNl
-dCB0byBHUElPRF9BQ1RJVkVfTE9XIHVubGVzcyB0aGUgc2lnbmFsIGlzIGludmVydGVkLgo+ID4g
-LSAgICAgICAgbWF4SXRlbXM6IDEKPiA+IC0KPiA+IC0gICAgcmVxdWlyZWQ6Cj4gPiAtICAgICAg
-LSByZWcKPiA+ICsgICAgdHlwZTogb2JqZWN0Cj4gPiArICAgICRyZWY6IHJhdy1uYW5kLWNoaXAu
-eWFtbCMKPiA+ICAKPiA+ICByZXF1aXJlZDoKPiA+ICAgIC0gIiNhZGRyZXNzLWNlbGxzIgo+ID4g
-ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcmF3LW5h
-bmQtY2hpcC55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9yYXct
-bmFuZC1jaGlwLnlhbWwKPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gPiBpbmRleCAwMDAwMDAw
-MDAwMDAuLjJjYWE2YTlhNzNkMwo+ID4gLS0tIC9kZXYvbnVsbAo+ID4gKysrIGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9yYXctbmFuZC1jaGlwLnlhbWwKPiA+IEBAIC0w
-LDAgKzEsMTAyIEBACj4gPiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCAgCj4g
-Cj4gU2hvdWxkIGJlIGR1YWwgbGljZW5zZWQgbGlrZSB0aGUgb3JpZ2luYWwuCgpHb29kIGNhdGNo
-LiBJJ2xsIHdhaXQgYSBmZXcgbW9yZSBkYXlzLCBpbiBjYXNlIHRoZXJlIGlzIG5vIG90aGVyCmNv
-bW1lbnQgSSdsbCBjb3JyZWN0IHdoZW4gYXBwbHlpbmcuIE90aGVyd2lzZSBJJ2xsIGFkZHJlc3Mg
-dGhpcyBpbiB2NC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+Hi Md,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on linus/master v6.4-rc7 next-20230620]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/mtd-rawnand-qcom-Add-support-for-reset-readid-status-exec_op/20230615-153448
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20230615073143.25079-1-quic_mdalam%40quicinc.com
+patch subject: [PATCH v4 1/5] mtd: rawnand: qcom: Implement exec_op()
+config: arm-allmodconfig (https://download.01.org/0day-ci/archive/20230620/202306201734.SmmrhWYJ-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230620/202306201734.SmmrhWYJ-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306201734.SmmrhWYJ-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/mtd/nand/raw/qcom_nandc.c: In function 'qcom_parse_instructions':
+>> drivers/mtd/nand/raw/qcom_nandc.c:2944:38: warning: variable 'naddrs' set but not used [-Wunused-but-set-variable]
+    2944 |                 unsigned int offset, naddrs;
+         |                                      ^~~~~~
+   drivers/mtd/nand/raw/qcom_nandc.c: At top level:
+   drivers/mtd/nand/raw/qcom_nandc.c:2932:13: warning: 'qcom_parse_instructions' defined but not used [-Wunused-function]
+    2932 | static void qcom_parse_instructions(struct nand_chip *chip,
+         |             ^~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/naddrs +2944 drivers/mtd/nand/raw/qcom_nandc.c
+
+  2930	
+  2931	/* NAND framework ->exec_op() hooks and related helpers */
+  2932	static void qcom_parse_instructions(struct nand_chip *chip,
+  2933					    const struct nand_subop *subop,
+  2934						struct qcom_op *q_op)
+  2935	{
+  2936		struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+  2937		const struct nand_op_instr *instr = NULL;
+  2938		unsigned int op_id;
+  2939		int i;
+  2940	
+  2941		memset(q_op, 0, sizeof(*q_op));
+  2942	
+  2943		for (op_id = 0; op_id < subop->ninstrs; op_id++) {
+> 2944			unsigned int offset, naddrs;
+  2945			const u8 *addrs;
+  2946	
+  2947			instr = &subop->instrs[op_id];
+  2948	
+  2949			switch (instr->type) {
+  2950			case NAND_OP_CMD_INSTR:
+  2951				q_op->cmd_reg = qcom_op_cmd_mapping(nandc, instr->ctx.cmd.opcode, q_op);
+  2952				q_op->rdy_delay_ns = instr->delay_ns;
+  2953				break;
+  2954	
+  2955			case NAND_OP_ADDR_INSTR:
+  2956				offset = nand_subop_get_addr_start_off(subop, op_id);
+  2957				naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
+  2958				addrs = &instr->ctx.addr.addrs[offset];
+  2959				for (i = 0; i < MAX_ADDRESS_CYCLE; i++) {
+  2960					if (i < 4)
+  2961						q_op->addr1_reg |= (u32)addrs[i] << i * 8;
+  2962					else
+  2963						q_op->addr2_reg |= addrs[i];
+  2964				}
+  2965				q_op->rdy_delay_ns = instr->delay_ns;
+  2966				break;
+  2967	
+  2968			case NAND_OP_DATA_IN_INSTR:
+  2969				q_op->data_instr = instr;
+  2970				q_op->data_instr_idx = op_id;
+  2971				q_op->rdy_delay_ns = instr->delay_ns;
+  2972				fallthrough;
+  2973			case NAND_OP_DATA_OUT_INSTR:
+  2974				q_op->rdy_delay_ns = instr->delay_ns;
+  2975				break;
+  2976	
+  2977			case NAND_OP_WAITRDY_INSTR:
+  2978				q_op->rdy_timeout_ms = instr->ctx.waitrdy.timeout_ms;
+  2979				q_op->rdy_delay_ns = instr->delay_ns;
+  2980				break;
+  2981			}
+  2982		}
+  2983	}
+  2984	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
