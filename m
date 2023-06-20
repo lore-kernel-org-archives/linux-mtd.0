@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7842EB64D9
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jun 2023 02:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 264B6EB64D7
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jun 2023 06:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=PZWuzDJTVWOCThhHUVTLhGsZSwTMg7HjvHvuuzirVWE=; b=lpSWBv1cIxp/Zt
-	TzSMLo+isTCMVTwSb2FUsuqXAl/bpm2P/rVFw3oxHt9Cn5bsdvoTVA/oA00ucM5jjUYl+tsiZ56ms
-	zafeRQNhjozCQJHuyqHLmMHpfOVhxm6q+NcaeHuu1tyrpHTlI5s3Rs5UdGBnbl4Pp0ggEzeEu63lS
-	4vD1Ii2SDGg0xQ2dit5LJT06uLOP2o+YjVeh1cxTXq8kKXlBVgWHRi+dMRyc1VbYzo2NNtXEQDQ2h
-	wClCDJhXM7heu3iFoLj0COGwoPP4sW4iG2wEWEFLpjQbIT7WTjgu70vq7uthOWXEnSgjcabwOC2YR
-	4aUmK31ZppIdUD4mMKxA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=k46unzr3CA9tPE9WrFIVosE27WmkKE7U9r4hgcenJRk=; b=kqCHG3dGfFpiZq
+	kclzMDtmKm2LpB6JopT+0sHcdGDgxm9a5wZtDLP4c3Wh5f5egSLgpaEb/SHbdmk//sGSnPHxPTnNK
+	O4ACnc2g6SQRmmDe9/ZuvO4P14Jg7yJVo+CrvNc5IL5qH6JCN3/F0TyFRBXQQ0IdvYkPgA9KJQ57W
+	qu0zt6oaLvcncbZ62NdZ0asGrhwbLDZpHLEWog2STPVilhPiGuO8LyUd87Wjs46qo3YXQUpq/WhVw
+	nN36LEliqPzYS5pMQ9s4+a0+0w7Wd9AV3+KAN+FWeUL8QDW4aLF4wgpTNrwoS/tx7cctaGF2EJ8XB
+	SfRPeyLAZ9rp5t8WULJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBRVX-009zcM-2B;
-	Tue, 20 Jun 2023 02:54:15 +0000
-Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
+	id 1qBUWw-00AFHa-1w;
+	Tue, 20 Jun 2023 06:07:54 +0000
+Received: from mga05.intel.com ([192.55.52.43])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBRVU-009zbZ-1f
+	id 1qBUWt-00AFH6-1a
 	for linux-mtd@lists.infradead.org;
-	Tue, 20 Jun 2023 02:54:14 +0000
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-982a0232bdcso662823766b.1
-        for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2023 19:54:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687229645; x=1689821645;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lmF587LOwFqMXh1lttGiFMK5M+juNY2ypIJHnrwjuQg=;
-        b=L8RvGQJgSPQh2MjvS0dG00u6E7DNYSk1ytZtOlbI/7/in5hkIDYsTaFZN3EywkU2DZ
-         /AdtRXFQLFKwt9D1bwPgFsF/49f40T5HKNp/4WzP1cQID1/TMZ/HYU5Z55v2AK7KFLYa
-         cbs3KQOoBM3FTX86b8Ambg9msfsz/U7C9jbjoXGWllANzLGtP0CzNxn/oVp6NuaNWGLl
-         S4IY69cWYgfE5213BLznUfbr0VkPq2Bj+hSn9uPcfV+cqNdRjCA0UjD9yplyUyduIAcO
-         Jj3ABkQHlRVurmLPKF/WtyECmQItK2JuW3SR2QNXoWefvm+Jjd+zkIKelJA14Iewq05U
-         YkjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687229645; x=1689821645;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lmF587LOwFqMXh1lttGiFMK5M+juNY2ypIJHnrwjuQg=;
-        b=fodU45ipkqC3+n1Z1iZQYbBmHR61W8owfCfM3KziJgBmBW/M8CLi2XtP16mb9fnWy1
-         pzgra+ci9xSXgpJMkpFZIYiijPCEXHVcwVb8F1xJo+vsBSrVXnzx7zQij3eNDte3N8if
-         3B/XHGnOy8+ylV72F8QsK/tETVcoRSBLS3Tl2G4NmWFRv0FRPULJ2PgQSLwq4NWpdX2h
-         v9aliE84y44li0t6vCnXc61+d61u2ZLL0mleI6jNtb040511hH24Hvuhyk2FZUre3XyT
-         HYAcYqadrNHlSJ5gsCrTG3VnZdm2LwMkL7xFBOjJBvGKYRw6ktO+g8pT1tiCWnWfbsuj
-         hEZg==
-X-Gm-Message-State: AC+VfDwplAbYKUjRicBQkQUmE/u7QhMHN4Bd5tztZYzOYms3nVBM30UY
-	cErf8ELjQUClnUsZ27fc+CrRqA==
-X-Google-Smtp-Source: ACHHUZ6BIsToMSEqQ4dvOIf5zfmA+a04C7SrYjaNKqsZSNn6DvWooCO20zo0SSyH6w8yoZQHWjzL1Q==
-X-Received: by 2002:a17:907:5c8:b0:974:7713:293f with SMTP id wg8-20020a17090705c800b009747713293fmr10567932ejb.41.1687229645192;
-        Mon, 19 Jun 2023 19:54:05 -0700 (PDT)
-Received: from 1.. ([79.115.63.157])
-        by smtp.gmail.com with ESMTPSA id p1-20020a170906a00100b0098242730348sm510819ejy.72.2023.06.19.19.54.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jun 2023 19:54:03 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: vigneshr@ti.com,
-	miquel.raynal@bootlin.com,
-	richard@nod.at
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.or,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH] MAINTAINERS: Add myself as reviewer for HYPERBUS
-Date: Tue, 20 Jun 2023 05:53:59 +0300
-Message-Id: <20230620025359.33839-1-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	Tue, 20 Jun 2023 06:07:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687241271; x=1718777271;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dveNRvgnk0T7wEHMtgIvyEJb90QX++cVm6POy0ZjG+I=;
+  b=g0Xc2Pz1jK1rDW4QkNKEhnOYSHc3l3Xkw1uPdOKuy4sNYo/0Dor/Sy+3
+   pUzlsrJb9rVlHjQaM0rKer69e4bFiGIdlF/GxI0U1QbJ0dFitj0MFr9DQ
+   ZTXzi67WutCKQFC+pSgsCzMh5U8iN26F0fbXZCASe9o8Z6jaGr59TXWdj
+   yutsubDVlBU0XnzlvLg7gL1gZ1fF2p6ipGPYctAPNFkOxWeL1G9KucBtx
+   zw4ESX46YnqsJXUTW2/myuqed0VmnOR1bRM6SnIudFWYAI6k2pj2A/cuL
+   qcamLhk7qiXNSc4v1taYokvWgQW6dwBhg4D8e4JR3oOrK8L8cEXpZJeno
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="446154060"
+X-IronPort-AV: E=Sophos;i="6.00,256,1681196400"; 
+   d="scan'208";a="446154060"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2023 23:07:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="838092896"
+X-IronPort-AV: E=Sophos;i="6.00,256,1681196400"; 
+   d="scan'208";a="838092896"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 19 Jun 2023 23:06:58 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qBUW1-0005Zo-1Y;
+	Tue, 20 Jun 2023 06:06:57 +0000
+Date: Tue, 20 Jun 2023 14:06:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: William Zhang <william.zhang@broadcom.com>,
+	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
+	Linux MTD List <linux-mtd@lists.infradead.org>
+Cc: oe-kbuild-all@lists.linux.dev, f.fainelli@gmail.com, rafal@milecki.pl,
+	kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+	computersforpeace@gmail.com, anand.gore@broadcom.com,
+	dregan@mail.com, kamal.dasu@broadcom.com, tomer.yacoby@broadcom.com,
+	dan.beygelman@broadcom.com,
+	William Zhang <william.zhang@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Weinberger <richard@nod.at>,
+	Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH v2 4/4] mtd: rawnand: brcmnand: Fix potential
+ out-of-bounds access in oob write
+Message-ID: <202306201340.C2Y4kmFL-lkp@intel.com>
+References: <20230617022920.67173-5-william.zhang@broadcom.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=651; i=tudor.ambarus@linaro.org; h=from:subject; bh=MfsSdsyFNrv3ZaOzvhtgVW4EG/XKQ2SLcdx7pYEd4qA=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkkRTHezN/mpjZfsJDGHhqMAJ+hll0AcJsYHmKS FEBmbtgPBCJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZJEUxwAKCRBLVU9HpY0U 6aGuB/sECyIVCRA1K67BtTQSKbjyPuGwvkkqXmpXMiI9MIx+uVYbOaiRt6q4H2Md+WSvUDDDGIu gI/b20a0+CO7gEql8Gxr/x1YC8tf84SuQLw/lCzr+qgmDpzjxvEAsTwU1uDGRRxA1AKD/LOYWuG 00GLHXapaIX6+WY7QPpvJv9y9lboz2akjFwJh0hPtHER4BLq7QAdJHszcM+MRZY5Zt3RLlD22WN h7NAS2QlI8l7poX1r35P4MdMCdq0upwY9fX/AmGrdziQ/3J3aHUJNlc4vl2TWm+li4lx5DqYMuE ZSyumTNhgrubbfWSkQfGsovjk9YCHplfqb7dSV/xBQ/rj+dT
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+Content-Disposition: inline
+In-Reply-To: <20230617022920.67173-5-william.zhang@broadcom.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230619_195412_574332_513DC20F 
-X-CRM114-Status: UNSURE (   8.12  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230619_230751_584212_295F9A06 
+X-CRM114-Status: GOOD (  13.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,30 +97,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add myself as Designated Reviewer for Hyperbus support.
-I'm assessing the framework and I'd like to get involved
-in reviewing further patches.
+Hi William,
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+kernel test robot noticed the following build warnings:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6992b7cc7095..df5c039fc577 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9623,6 +9623,7 @@ F:	tools/hv/
- 
- HYPERBUS SUPPORT
- M:	Vignesh Raghavendra <vigneshr@ti.com>
-+R:	Tudor Ambarus <tudor.ambarus@linaro.org>
- L:	linux-mtd@lists.infradead.org
- S:	Supported
- Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on linus/master v6.4-rc7 next-20230619]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/William-Zhang/mtd-rawnand-brcmnand-Fix-ECC-level-field-setting-for-v7-2-controller/20230617-103050
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+patch link:    https://lore.kernel.org/r/20230617022920.67173-5-william.zhang%40broadcom.com
+patch subject: [PATCH v2 4/4] mtd: rawnand: brcmnand: Fix potential out-of-bounds access in oob write
+config: arm64-randconfig-s043-20230619 (https://download.01.org/0day-ci/archive/20230620/202306201340.C2Y4kmFL-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230620/202306201340.C2Y4kmFL-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306201340.C2Y4kmFL-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/mtd/nand/raw/brcmnand/brcmnand.c:1500:54: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int [usertype] data @@     got restricted __be32 [usertype] @@
+   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1500:54: sparse:     expected unsigned int [usertype] data
+   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1500:54: sparse:     got restricted __be32 [usertype]
+   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1836:42: sparse: sparse: cast to restricted __be32
+   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1836:42: sparse: sparse: cast to restricted __be32
+   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1836:42: sparse: sparse: cast to restricted __be32
+   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1836:42: sparse: sparse: cast to restricted __be32
+   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1836:42: sparse: sparse: cast to restricted __be32
+   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1836:42: sparse: sparse: cast to restricted __be32
+   drivers/mtd/nand/raw/brcmnand/brcmnand.c:2065:41: sparse: sparse: dubious: x | !y
+
+vim +1500 drivers/mtd/nand/raw/brcmnand/brcmnand.c
+
+  1468	
+  1469	/*
+  1470	 * write_oob_to_regs - write data to OOB registers
+  1471	 * @i: sub-page sector index
+  1472	 * @oob: buffer to write from
+  1473	 * @sas: spare area sector size (i.e., OOB size per FLASH_CACHE)
+  1474	 * @sector_1k: 1 for 1KiB sectors, 0 for 512B, other values are illegal
+  1475	 */
+  1476	static int write_oob_to_regs(struct brcmnand_controller *ctrl, int i,
+  1477				     const u8 *oob, int sas, int sector_1k)
+  1478	{
+  1479		int tbytes = sas << sector_1k;
+  1480		int j, k = 0;
+  1481		u32 last = 0xffffffff;
+  1482		u8 *plast = (u8 *)&last;
+  1483	
+  1484		/* Adjust OOB values for 1K sector size */
+  1485		if (sector_1k && (i & 0x01))
+  1486			tbytes = max(0, tbytes - (int)ctrl->max_oob);
+  1487		tbytes = min_t(int, tbytes, ctrl->max_oob);
+  1488	
+  1489		for (j = 0; (j + 3) < tbytes; j += 4)
+  1490			oob_reg_write(ctrl, j,
+  1491					(oob[j + 0] << 24) |
+  1492					(oob[j + 1] << 16) |
+  1493					(oob[j + 2] <<  8) |
+  1494					(oob[j + 3] <<  0));
+  1495	
+  1496		while (j < tbytes)
+  1497			plast[k++] = oob[j++];
+  1498	
+  1499		if (tbytes & 0x3)
+> 1500			oob_reg_write(ctrl, (tbytes & ~0x3), cpu_to_be32(last));
+  1501	
+  1502		return tbytes;
+  1503	}
+  1504	
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 ______________________________________________________
 Linux MTD discussion mailing list
