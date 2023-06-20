@@ -4,73 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4586FEB64DB
-	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jun 2023 13:20:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D29BEB64DC
+	for <linux-mtd@archiver.kernel.org>; Tue, 20 Jun 2023 17:25:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=s1IJMzPYd8KFjUk6TnFoxxTa8jsSNUt1I16uQHESK7Q=; b=k7xGj3Pt4tyP9N
-	pB+tzgfzWgXhwlpGTYUy8GwlWzKMFBqL0LFHv7xtFdGndAHbvsIyLkeTcH8b6ZAazRs3RYsqVUrE/
-	twZmA7ieZqG1asw5YnZ0JhectWuPPt21ZOu00Jk+cuZ2uFscs4T0tGl0/ARi70IF1UYsRhpuKd8aZ
-	wK06E0P+oarOLY9wF0cj9AJY8Jdn2yCqeJSTrvjk594vDeO7gtrwaHCqHv47UOvkoTyVDU6AGwJUY
-	wZchgV+bmDhd4BkPCul1xtqpj0IsbGPRGZF7HRcikHHucAXDnfP0y0gurRUFXaeN9KjPAnQL7TrW9
-	xxjIRs5oLVQCBJ102YgA==;
+	List-Owner; bh=ZOamQ7vPWKZi3FxjQay9puQFDraOaG3nmkrjtnEftCM=; b=iQ+7Tk87jMBc0N
+	7b0h7jDOHGE4yu1mTfYW7+cfJGzj4k50IGHjMQ8HG9SH/VbswnEgMWky7A7RmSl4pikJ9LqKfxmEn
+	c/LE2vaJVV6SeDvdVXsRXR7fNt7AA7weZbP0yfgZ86dADkIvTUV4/wkeCJT0heQsFRlkiH+At8dP0
+	Pt01WIiilJIJc6/g82daYk4wBLHC/Q550eJGQsHRGTVU2e13ZqAYcW8CefWA01gK66wTKYm0nYpou
+	tGMgiEZanlkWo7iNhvPgHn55LO39oAM+gFnWp8ENWOcEAScBHv97wH9MvFRPByH+pKqrqSkn10AhN
+	cf7qTzOVBlPklAQ/ci5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBbHD-00BMcy-0f;
-	Tue, 20 Jun 2023 13:20:07 +0000
-Received: from mga02.intel.com ([134.134.136.20])
+	id 1qBf6P-00Bvbn-32;
+	Tue, 20 Jun 2023 17:25:13 +0000
+Received: from mail-il1-f181.google.com ([209.85.166.181])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBbHA-00BMbd-22
+	id 1qBf6M-00BvaB-1s
 	for linux-mtd@lists.infradead.org;
-	Tue, 20 Jun 2023 13:20:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687267204; x=1718803204;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=N/5ArQUYGQfRH1L3tWdATWu4BWdx5d0l9hRBqqCWul4=;
-  b=cCfXkQNjTg6DqxeVbetI8/R8oP/2w1FiZs3eAAntSGp8vJ/cFPRMJxuT
-   R3fAm2G5FOWYWpavU5vfVqPNbBolHQ6xfAztaGHtagZuy0qb70UpdXUnD
-   gGiwHWnHtNFn7nkuXZH14NHGcK+riDLcJVWdTILRtndJarrF4x0/4Mbta
-   ZOqnso5dveOt3oDvYEaMePXSRWHnEm3b6XkTRX6oB7MOSmO8fsJ/u7oC4
-   HGXmy0dWqLCvuNJDDMhDSp8RwLV5s2LJ9kmO4+/0rdUGryTTmO2Ozemhx
-   9DrDA54SBDdxP4b7LyazjOtvXOlEbbgAiFJdvJyNOLZ0StvGAlBa/yeLM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="349588291"
-X-IronPort-AV: E=Sophos;i="6.00,257,1681196400"; 
-   d="scan'208";a="349588291"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2023 06:20:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="691426972"
-X-IronPort-AV: E=Sophos;i="6.00,257,1681196400"; 
-   d="scan'208";a="691426972"
-Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2023 06:20:01 -0700
-From: Alexander Usyskin <alexander.usyskin@intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Tomas Winkler <tomas.winkler@intel.com>,
-	Alexander Usyskin <alexander.usyskin@intel.com>,
-	Vitaly Lubart <vitaly.lubart@intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 1/2] mtd: use refcount to prevent corruption
-Date: Tue, 20 Jun 2023 16:19:04 +0300
-Message-Id: <20230620131905.648089-2-alexander.usyskin@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230620131905.648089-1-alexander.usyskin@intel.com>
-References: <20230620131905.648089-1-alexander.usyskin@intel.com>
+	Tue, 20 Jun 2023 17:25:12 +0000
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3422161e53bso10544685ab.1
+        for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2023 10:25:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687281908; x=1689873908;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eZJ+hfBpoF28qpVP1tAqIlMpScd7lp8C36ke23sPJp8=;
+        b=KQCJYL8AcgDpeC5DxhagjUt2Nc88mFY24qb+me/ufOhKnOfNefEoSvf+NX/qtll5tC
+         VhvrBmfJ9ro9zj0N9vrx+1UlF1vyuwsWcKZHA+9irur2oh+eRSU7TN3eiHFwdanJX4cV
+         yCd1yEmxpIg59mq7xp5V1/g8fw+673pCuu/xZIBmPmhX6Dk5ZO9WXeJ99H9Pwu1U15Y1
+         TbBpqMWjn3JRs2PCKjHiPt2NbO+xJFBgaR9ZS3KDB98c2RGXeR10DzHG2TYG9ma6Yn8u
+         eIpG8tOI0nyqc/p7zwyGDap8n1sSPEufzhra4GYeO2bjZRUu1O3uWl/4LgznkaVxLhmD
+         CMOA==
+X-Gm-Message-State: AC+VfDwmvgV4yXO8c3xCPT1F/GMmq6fg1dII7bOxidpGNQ4TJ4N7x6I6
+	hL2RuifSGY2LlJnnqckMUQ==
+X-Google-Smtp-Source: ACHHUZ4H/q0T8pya673w/shwpYZ9QN8Qh4OiR7wXve8GAzm2Vls6m0Ux1AK9FTWt+Wu0v+SRZI3bgg==
+X-Received: by 2002:a92:d3cb:0:b0:342:2b27:725c with SMTP id c11-20020a92d3cb000000b003422b27725cmr7398168ilh.6.1687281908194;
+        Tue, 20 Jun 2023 10:25:08 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id z12-20020a92cecc000000b003428aca64bdsm723883ilq.84.2023.06.20.10.25.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jun 2023 10:25:07 -0700 (PDT)
+Received: (nullmailer pid 3856420 invoked by uid 1000);
+	Tue, 20 Jun 2023 17:25:05 -0000
+Date: Tue, 20 Jun 2023 11:25:05 -0600
+From: Rob Herring <robh@kernel.org>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: miquel.raynal@bootlin.com, robh+dt@kernel.org, richard@nod.at, linux-mtd@lists.infradead.org, krzysztof.kozlowski+dt@linaro.org, vigneshr@ti.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Vadym Kochan <vadym.kochan@plvision.eu>
+Subject: Re: [PATCH v10 1/1] dt-bindings: mtd: marvell-nand: Convert to YAML
+ DT scheme
+Message-ID: <168728190550.3856357.9055862614036194300.robh@kernel.org>
+References: <20230619040742.1108172-1-chris.packham@alliedtelesis.co.nz>
+ <20230619040742.1108172-2-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230619040742.1108172-2-chris.packham@alliedtelesis.co.nz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230620_062004_709681_FD57D9C1 
-X-CRM114-Status: GOOD (  22.71  )
+X-CRM114-CacheID: sfid-20230620_102510_615867_AD666A98 
+X-CRM114-Status: GOOD (  24.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,237 +83,106 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tomas Winkler <tomas.winkler@intel.com>
 
-When underlying device is removed mtd core will crash
-in case user space is holding open handle.
-Need to use proper refcounting so device is release
-only when has no users.
+On Mon, 19 Jun 2023 16:07:42 +1200, Chris Packham wrote:
+> From: Vadym Kochan <vadym.kochan@plvision.eu>
+> 
+> Switch the DT binding to a YAML schema to enable the DT validation.
+> 
+> There was also an incorrect reference to dma-names being "rxtx" where
+> the driver and existing device trees actually use dma-names = "data" so
+> this is corrected in the conversion.
+> 
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> Notes:
+>     Changes in v10:
+>     - Formatting for description
+>     - Restrict clocks to 1 item for non-8K devices
+>     - Don't allow "marvell,armada-8k-nand-controller" without
+>       "marvell,armada370-nand-controller" (undoes a change from v8)
+> 
+>     Changes in v9:
+>     - depend on series from Miquel
+>       https://lore.kernel.org/linux-mtd/20230606175246.190465-1-miquel.raynal@bootlin.com/
+>     - enforce minimum/maximum for nand-rb
+>     - move required: block for controller
+>     - move unevaluatedProperties: for nand chip
+>     - remove label, partitions and nand-on-flash-bbt which are covered by
+>       generic schema
+> 
+>     Changes in v8:
+>     - Mark deprecated compatible values as such
+>     - Allow "marvell,armada-8k-nand-controller" without
+>       "marvell,armada370-nand-controller"
+>     - Make dma-names usage reflect reality
+>     - Update commit message
+> 
+>     Changes in v7:
+>     - Restore "label" and "partitions" properties (should be picked up via
+>       nand-controller.yaml but aren't)
+>     - Add/restore nand-on-flash-bbt and nand-ecc-mode which aren't covered
+>       by nand-controller.yaml.
+>     - Use "unevalautedProperties: false"
+>     - Corrections for clock-names, dma-names, nand-rb and nand-ecc-strength
+>     - Add pxa3xx-nand-controller example
+> 
+>     Changes in v6:
+>     - remove properties covered by nand-controller.yaml
+>     - add example using armada-8k compatible
+> 
+>     earlier changes:
+> 
+>     v5:
+>        1) Get back "label" and "partitions" properties but without
+>           ref to the "partition.yaml" which was wrongly used.
+> 
+>        2) Add "additionalProperties: false" for nand@ because all possible
+>           properties are described.
+> 
+>     v4:
+>        1) Remove "label" and "partitions" properties
+> 
+>        2) Use 2 clocks for A7K/8K platform which is a requirement
+> 
+>     v3:
+>       1) Remove txt version from the MAINTAINERS list
+> 
+>       2) Use enum for some of compatible strings
+> 
+>       3) Drop:
+>             #address-cells
+>             #size-cells:
+> 
+>          as they are inherited from the nand-controller.yaml
+> 
+>       4) Add restriction to use 2 clocks for A8K SoC
+> 
+>       5) Dropped description for clock-names and extend it with
+>          minItems: 1
+> 
+>       6) Drop description for "dmas"
+> 
+>       7) Use "unevalautedProperties: false"
+> 
+>       8) Drop quites from yaml refs.
+> 
+>       9) Use 4-space indentation for the example section
+> 
+>     v2:
+>       1) Fixed warning by yamllint with incorrect indentation for compatible list
+> 
+>  .../bindings/mtd/marvell,nand-controller.yaml | 226 ++++++++++++++++++
+>  .../devicetree/bindings/mtd/marvell-nand.txt  | 126 ----------
+>  MAINTAINERS                                   |   1 -
+>  3 files changed, 226 insertions(+), 127 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/marvell-nand.txt
+> 
 
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
----
- drivers/mtd/mtdcore.c   | 72 ++++++++++++++++++++++-------------------
- drivers/mtd/mtdcore.h   |  1 +
- drivers/mtd/mtdpart.c   | 14 ++++----
- include/linux/mtd/mtd.h |  2 +-
- 4 files changed, 49 insertions(+), 40 deletions(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index abf4cb58a8ab..84bd1878367d 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -93,10 +93,33 @@ static void mtd_release(struct device *dev)
- 	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	dev_t index = MTD_DEVT(mtd->index);
- 
-+	if (mtd_is_partition(mtd))
-+		release_mtd_partition(mtd);
-+
- 	/* remove /dev/mtdXro node */
- 	device_destroy(&mtd_class, index + 1);
- }
- 
-+static void mtd_device_release(struct kref *kref)
-+{
-+	struct mtd_info *mtd = container_of(kref, struct mtd_info, refcnt);
-+
-+	debugfs_remove_recursive(mtd->dbg.dfs_dir);
-+
-+	/* Try to remove the NVMEM provider */
-+	nvmem_unregister(mtd->nvmem);
-+
-+	device_unregister(&mtd->dev);
-+
-+	/* Clear dev so mtd can be safely re-registered later if desired */
-+	memset(&mtd->dev, 0, sizeof(mtd->dev));
-+
-+	idr_remove(&mtd_idr, mtd->index);
-+	of_node_put(mtd_get_of_node(mtd));
-+
-+	module_put(THIS_MODULE);
-+}
-+
- #define MTD_DEVICE_ATTR_RO(name) \
- static DEVICE_ATTR(name, 0444, mtd_##name##_show, NULL)
- 
-@@ -666,7 +689,7 @@ int add_mtd_device(struct mtd_info *mtd)
- 	}
- 
- 	mtd->index = i;
--	mtd->usecount = 0;
-+	kref_init(&mtd->refcnt);
- 
- 	/* default value if not set by driver */
- 	if (mtd->bitflip_threshold == 0)
-@@ -779,7 +802,6 @@ int del_mtd_device(struct mtd_info *mtd)
- {
- 	int ret;
- 	struct mtd_notifier *not;
--	struct device_node *mtd_of_node;
- 
- 	mutex_lock(&mtd_table_mutex);
- 
-@@ -793,28 +815,8 @@ int del_mtd_device(struct mtd_info *mtd)
- 	list_for_each_entry(not, &mtd_notifiers, list)
- 		not->remove(mtd);
- 
--	if (mtd->usecount) {
--		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
--		       mtd->index, mtd->name, mtd->usecount);
--		ret = -EBUSY;
--	} else {
--		mtd_of_node = mtd_get_of_node(mtd);
--		debugfs_remove_recursive(mtd->dbg.dfs_dir);
--
--		/* Try to remove the NVMEM provider */
--		nvmem_unregister(mtd->nvmem);
--
--		device_unregister(&mtd->dev);
--
--		/* Clear dev so mtd can be safely re-registered later if desired */
--		memset(&mtd->dev, 0, sizeof(mtd->dev));
--
--		idr_remove(&mtd_idr, mtd->index);
--		of_node_put(mtd_of_node);
--
--		module_put(THIS_MODULE);
--		ret = 0;
--	}
-+	kref_put(&mtd->refcnt, mtd_device_release);
-+	ret = 0;
- 
- out_error:
- 	mutex_unlock(&mtd_table_mutex);
-@@ -1228,19 +1230,21 @@ int __get_mtd_device(struct mtd_info *mtd)
- 	if (!try_module_get(master->owner))
- 		return -ENODEV;
- 
-+	kref_get(&mtd->refcnt);
-+
- 	if (master->_get_device) {
- 		err = master->_get_device(mtd);
- 
- 		if (err) {
-+			kref_put(&mtd->refcnt, mtd_device_release);
- 			module_put(master->owner);
- 			return err;
- 		}
- 	}
- 
--	master->usecount++;
--
- 	while (mtd->parent) {
--		mtd->usecount++;
-+		if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) || mtd->parent != master)
-+			kref_get(&mtd->parent->refcnt);
- 		mtd = mtd->parent;
- 	}
- 
-@@ -1327,18 +1331,20 @@ void __put_mtd_device(struct mtd_info *mtd)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
- 
--	while (mtd->parent) {
--		--mtd->usecount;
--		BUG_ON(mtd->usecount < 0);
--		mtd = mtd->parent;
--	}
-+	while (mtd != master) {
-+		struct mtd_info *parent = mtd->parent;
- 
--	master->usecount--;
-+		kref_put(&mtd->refcnt, mtd_device_release);
-+		mtd = parent;
-+	}
- 
- 	if (master->_put_device)
- 		master->_put_device(master);
- 
- 	module_put(master->owner);
-+
-+	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
-+		kref_put(&master->refcnt, mtd_device_release);
- }
- EXPORT_SYMBOL_GPL(__put_mtd_device);
- 
-diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
-index b5eefeabf310..b014861a06a6 100644
---- a/drivers/mtd/mtdcore.h
-+++ b/drivers/mtd/mtdcore.h
-@@ -12,6 +12,7 @@ int __must_check add_mtd_device(struct mtd_info *mtd);
- int del_mtd_device(struct mtd_info *mtd);
- int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *, int);
- int del_mtd_partitions(struct mtd_info *);
-+void release_mtd_partition(struct mtd_info *mtd);
- 
- struct mtd_partitions;
- 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index a46affbb037d..23483db8f30c 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -32,6 +32,12 @@ static inline void free_partition(struct mtd_info *mtd)
- 	kfree(mtd);
- }
- 
-+void release_mtd_partition(struct mtd_info *mtd)
-+{
-+	WARN_ON(!list_empty(&mtd->part.node));
-+	free_partition(mtd);
-+}
-+
- static struct mtd_info *allocate_partition(struct mtd_info *parent,
- 					   const struct mtd_partition *part,
- 					   int partno, uint64_t cur_offset)
-@@ -309,13 +315,11 @@ static int __mtd_del_partition(struct mtd_info *mtd)
- 
- 	sysfs_remove_files(&mtd->dev.kobj, mtd_partition_attrs);
- 
-+	list_del_init(&mtd->part.node);
- 	err = del_mtd_device(mtd);
- 	if (err)
- 		return err;
- 
--	list_del(&mtd->part.node);
--	free_partition(mtd);
--
- 	return 0;
- }
- 
-@@ -333,6 +337,7 @@ static int __del_mtd_partitions(struct mtd_info *mtd)
- 			__del_mtd_partitions(child);
- 
- 		pr_info("Deleting %s MTD partition\n", child->name);
-+		list_del_init(&child->part.node);
- 		ret = del_mtd_device(child);
- 		if (ret < 0) {
- 			pr_err("Error when deleting partition \"%s\" (%d)\n",
-@@ -340,9 +345,6 @@ static int __del_mtd_partitions(struct mtd_info *mtd)
- 			err = ret;
- 			continue;
- 		}
--
--		list_del(&child->part.node);
--		free_partition(child);
- 	}
- 
- 	return err;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 7c58c44662b8..914a9f974baa 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -379,7 +379,7 @@ struct mtd_info {
- 
- 	struct module *owner;
- 	struct device dev;
--	int usecount;
-+	struct kref refcnt;
- 	struct mtd_debug_info dbg;
- 	struct nvmem_device *nvmem;
- 	struct nvmem_device *otp_user_nvmem;
--- 
-2.34.1
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
 ______________________________________________________
