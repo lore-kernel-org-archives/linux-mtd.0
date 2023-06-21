@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90BDBEB64D7
-	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jun 2023 01:53:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF297EB64D7
+	for <linux-mtd@archiver.kernel.org>; Wed, 21 Jun 2023 02:04:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=2NQBBgyoy3Zo8Ql/EF2DgN2zcLx9OjtFQ5VF5AMxhE4=; b=gTi8dN/UZFEWBV
-	Z9cWdaAYW5vVWU99bPpFAn1G4VXtEc+F9m4BGpUhV4W9YTirtUIqH9eAQZfeIxtvmLw6kZULBOW0q
-	YUQUCTOwsONjIX1Hua8Zctjj/5ovlYtiAM272ZiDChr1nnzabY1lVxkdA5+msHzqpAr6d/X89UZ8L
-	AA0JG5ExQi7OXo2kuCcUluTkbUeoLKQq9igEoHkTsik9eUVnjilOe5a/6ulWigcMYW6deLkJd7Zr+
-	WmrkXsIsx8OGCyzeZ05OsCLonQ+UOgkffC9puOWU5hP+Ms/VfYsdevoExB1Ru2XUJv+oXDNBPUfjJ
-	WtB4rKT0/AGNgyAZKYSw==;
+	List-Owner; bh=2NQBBgyoy3Zo8Ql/EF2DgN2zcLx9OjtFQ5VF5AMxhE4=; b=CmWhrCqEfLLW8w
+	NljBdOFrwuuVBgiY+jAvfmh4idlDZVrL11D8Sq++TOs2A7Io0y+EAgfDdCSII+mJLcfO0s7RpiPao
+	e0m9rMsfkEXr5O4+2MkqV/h+9SDHNIrHRdtwjRwz3nSGjpilnEqFvocC3tcRW82AXnURySYCwoP3s
+	zCigrENbSudD97bE+8BLZxYUBmTY9+LMvyZTmJRNge8dpdCxiFcMlKthIaDay9pRZHyVcCi5R7Bs7
+	JTKDFSuTmTsqRvocpolBlqY97ROb/JPtnrxiEUxuuinra9sJbGcAhZFqvHWuv+XRcgIc/C0z6VJE0
+	KRem0axB6PRAu90MJbiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBn1n-00CsdD-05;
-	Wed, 21 Jun 2023 01:52:59 +0000
-Received: from unicom145.biz-email.net ([210.51.26.145])
+	id 1qBnCI-00Ctfe-31;
+	Wed, 21 Jun 2023 02:03:50 +0000
+Received: from ssh247.corpemail.net ([210.51.61.247])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qBn1h-00Csam-2A
+	id 1qBnCF-00CteR-1g
 	for linux-mtd@lists.infradead.org;
-	Wed, 21 Jun 2023 01:52:56 +0000
-Received: from unicom145.biz-email.net
-        by unicom145.biz-email.net ((D)) with ASMTP (SSL) id QXV00025;
-        Wed, 21 Jun 2023 09:52:25 +0800
+	Wed, 21 Jun 2023 02:03:49 +0000
+Received: from ssh247.corpemail.net
+        by ssh247.corpemail.net ((D)) with ASMTP (SSL) id QYY00037;
+        Wed, 21 Jun 2023 10:03:37 +0800
 Received: from localhost.localdomain (10.200.104.82) by
  jtjnmail201608.home.langchao.com (10.100.2.8) with Microsoft SMTP Server id
- 15.1.2507.23; Wed, 21 Jun 2023 09:52:23 +0800
+ 15.1.2507.23; Wed, 21 Jun 2023 10:03:34 +0800
 From: Deming Wang <wangdeming@inspur.com>
 To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Bo Liu
 	<liubo03@inspur.com>
 Subject: [PATCH] mtd: sm_ftl: Fix typos in comments
-Date: Tue, 20 Jun 2023 21:52:22 -0400
-Message-ID: <20230621015222.1601-1-wangdeming@inspur.com>
+Date: Tue, 20 Jun 2023 22:03:31 -0400
+Message-ID: <20230621020331.1508-1-wangdeming@inspur.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 X-Originating-IP: [10.200.104.82]
-tUid: 2023621095225baff5bacef925e274ee1b79a505c991a
+tUid: 2023621100338e7b17d446fcc507dc9532ed0c123fa0d
 X-Abuse-Reports-To: service@corp-email.com
 Abuse-Reports-To: service@corp-email.com
 X-Complaints-To: service@corp-email.com
 X-Report-Abuse-To: service@corp-email.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230620_185253_994255_3C48B741 
+X-CRM114-CacheID: sfid-20230620_190347_876170_EA0A5BF6 
 X-CRM114-Status: UNSURE (   9.92  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
