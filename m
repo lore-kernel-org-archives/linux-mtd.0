@@ -4,42 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E05ABEB64DD
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Jun 2023 21:16:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A4F5EB64DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Jun 2023 21:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lvJ+8GZXSPXenUe7OWbU+zrYLnvOsq8ROyATcqHud0w=; b=gFWImps2tHEhVC
-	nFl1PfmJb1wJ6RKdpEyFpk96oEszdYkuOK2fv1NMr2l4D4ER6kMQ4mMxXcAwQAXgji1DatdZT6Kql
-	TSVqONpVBlhp2UEZ3j7u1eyh08ZBUxSdKl24PO+j10tIi2SeXRSuwPAKM4PPgwL4VJ92HPY/vq4tW
-	g8nKkg6h2fqYX7Bu7epQAsMtGwjHjQ5JbkGjzMW4uAzuamTeaBIZhv9VI7+li7siQyrlmELy5Nyr1
-	ZgMRBmRHxFNXC0L5mTN9cF2wGIx1IO7uhMMNUJ90/a9biH1h1lvWhKmNKsIH94kRf8YRgjUw3svI2
-	NkuxPtDSEsiRe5ina3VQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=hGpjBEhGRuJXlXh+X9DEHCPFzy6jtOCGcayeWdAqRak=; b=YO3t3dr7fLVh8d
+	8jAfmVBZKNLxICZ7GtQVUQ/zqpkMswBVSybU6aIOB/gYzDLBxOafbKTHynZOzr620VNb36OwX1m9Z
+	/VGEh0E8TvpiwTQwqy21qc1C0A+Y7ZdAzlU9RPBwxPopbZYtgYnyw49PppfiDtSN1t67Cc/UuJAIj
+	hM7QkQR+ZdsaaYZuJX4G+mjifPhWIznIK+7Ry8E0OtDR+ZoWfrditR880gfhJH2FlBDQb4k6MuhXD
+	iSQw849MaTGyXxwmXfKQF1C6Bp7g1dmXeBYbOck6WfKuYKcvIAauUA8H+nFnbMlaPNqw7UGRe3SMT
+	HxzasaAwNA/hzg6ld/wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCRfR-001pZD-1w;
-	Thu, 22 Jun 2023 21:16:37 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1qCRn1-001r3B-0V;
+	Thu, 22 Jun 2023 21:24:27 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCRfI-001pNo-2i
+	id 1qCRmw-001r2O-2h
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Jun 2023 21:16:32 +0000
+	Thu, 22 Jun 2023 21:24:24 +0000
 X-GND-Sasl: miquel.raynal@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687468582;
+	t=1687469058;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=McJighaOCHb5rxDyKbDgKD22+j9SQIwBSAnPQLzMicg=;
-	b=f86jO6fOe5wlIw2g5AUB4B+K+VuH3Qos8+3KKfm5ZQxr7+aCIQ6i1dvp/10EPCLYZlW1xe
-	xMnGzWqvNvVhmzyusZESlzIwG75TbMrhc+OCLpUnIkWFb07fTuaTZDlftn5PFh6m+IEH6X
-	eeToMdkob+bdjg6XcdMh6cGzUJg5GlA/yScUzOyS6zJWcC+dp7PyexzWj0XCRxTHMJGlxX
-	mjHLiywkd+paTNCt11Z9UBCUu+9JRsVpSprHqTtMEQ9PdvvxGFVAIUqYbqkrHLzdcrOJqY
-	GZHNxbQLbTSC3+C9Dtq9x+fdIzmSTFz31hDflTXrw9d6VuWOR6KVoV9t+TkPIw==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=mezy1bg7+tal880bbvSbp01OokLFkCZLszHcc7Ojt4E=;
+	b=pjMnLfD0EKiP+rLHHHMXla0lkiuJnt0N/AILesDXSKWzTVlZJNIWtw5Pdi/utmZcgtzj+t
+	RIxX3zn0VTtAUbsWgpwa9Jr1+L4jclPqlcYDz627vt3PwFCjO87N5U0LpC4jF5EqTIssL7
+	rHe6KYxF9tDJKYhiYdomAsSZv+jpKKgeWGEOARWVeaNJszoc1D6wMGtVvM7cYAVcNoQLzd
+	N89Gc8s89ax1cv7pWL8uXe/B8Z76zsUiMkNrSTA0X8Wands8VMhoS98nRtfHA4+hg1OPvc
+	DoIYCGY+QyBxR/5jYJd4PNaeYxTeEHDK2WTdQ/8G+jnbwH6YPo8wNc8+/4Uc3A==
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
@@ -50,13 +49,10 @@ X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 91F5F60003;
-	Thu, 22 Jun 2023 21:16:19 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4803D60004;
+	Thu, 22 Jun 2023 21:24:17 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Rob Herring <robh+dt@kernel.org>,
+To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	devicetree@vger.kernel.org
 Cc: Richard Weinberger <richard@nod.at>,
@@ -64,22 +60,18 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
 	Michael Walle <michael@walle.cc>,
-	linux-mtd@lists.infradead.org,
-	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+	<linux-mtd@lists.infradead.org>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 02/17] dt-bindings: mtd: Create a file for raw NAND chip properties
-Date: Thu, 22 Jun 2023 23:16:17 +0200
-Message-Id: <20230622211618.3582389-1-miquel.raynal@bootlin.com>
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] dt-bindings: mtd: Fix nand-controller.yaml license
+Date: Thu, 22 Jun 2023 23:24:15 +0200
+Message-Id: <20230622212415.3583886-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230619092916.3028470-3-miquel.raynal@bootlin.com>
-References: 
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'46721a1c9f829fe934eb1ec03e19b9e2896b995a'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230622_141629_055654_6C40BEE8 
-X-CRM114-Status: GOOD (  12.29  )
+X-CRM114-CacheID: sfid-20230622_142423_004486_14857B3F 
+X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,31 +88,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2023-06-19 at 09:29:01 UTC, Miquel Raynal wrote:
-> In an effort to constrain as much as we can the existing binding, we
-> want to add "unevaluatedProperties: false" in all the NAND chip
-> descriptions part of NAND controller bindings. But in order to do that
-> properly, we also need to reference a file which contains all the
-> "allowed" properties. Right now this file is nand-chip.yaml but in
-> practice raw NAND controllers may use additional properties in their
-> NAND chip children node. These properties are listed under
-> nand-controller.yaml, which makes the "unevaluatedProperties" checks
-> fail while the description are valid. We need to move these NAND chip
-> related properties into another file, because we do not want to pollute
-> nand-chip.yaml which is also referenced by eg. SPI-NAND devices.
-> 
-> Let's create a raw-nand-chip.yaml file to reference all the properties a
-> raw NAND chip description can contain. The chain of inheritance becomes:
->   nand-controller.yaml <- raw-nand-chip.yaml
->   raw-nand-chip.yaml   <- nand-chip.yaml
->   spi-nand.yaml        <- nand-chip.yaml
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+Binding files should be dual licensed, this file was writtent with the
+idea in mind of following the rules, but the SPDX tag did not reflect
+that correctly. Fix the tag so we are sure this file is licensed
+correctly.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ Documentation/devicetree/bindings/mtd/nand-controller.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Miquel
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+index 83a4fe4cc29d..28167c0cf271 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+@@ -1,4 +1,4 @@
+-# SPDX-License-Identifier: GPL-2.0
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+ $id: http://devicetree.org/schemas/mtd/nand-controller.yaml#
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
