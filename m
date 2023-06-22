@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D646EB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Jun 2023 21:15:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81053EB64DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Jun 2023 21:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oxVDw9n96uZ9Eumy5eMIVOY2z37m5V30sHsrZNR+5+A=; b=DmCDdcLc8a8SPe
-	1yM1rASiA9hF3P//RAHuV7/g0e87T2NjVCpw3XYw5ll/Y6a3lsw58faomrUKVZFPyTy03lOty1MCm
-	hISYYSkBh7l1Y/02NhL8qnkL1J4Ig1gokzhejaR4zTOzgu7X4xKZ6UNysg8PncxLkzB7lh7Z2arTG
-	7yi68+XRwAgeA3a0J+Solq3kdoxSMNjHLaUJh6O+51STlgFxJYSyTdw4iaFOVVLHvPkuWHxnQDqyG
-	GzAvgXa/lmgbzjBlxcJ+4mydOHmm6ivGiYhHZjtRa/uAdlFPt9BHJ2kzAm8AYQ8uSe10kU6QH1Om9
-	74zUty55tCXu1NHucu8Q==;
+	List-Owner; bh=C02UCdMJfYQLiXsH3/J72ael3S1/WzOszVgmDOb2nJo=; b=nxYNEB4VufFFFF
+	HPfuPTRvs2fOKu7aazttj7uMNyjYNWJhTSlUcioI3SRz/oacaQ4DdTxWYIDEwdoo7HZGCf1ZeNSrd
+	ZrcINmGBnii1MSvWzsjKnPJ4jtQWViS0UU/SFrzIuuF9Sl1j3FzoeHQRlFasAG0HlZ9Na/W7ZK2Rv
+	MKc5FL3TtoNGtrfzarGXcmRGDCyvnJh2BIdXuueJChNGkBv1ufH+grfVkX2p1ldkifcLovStZaryH
+	jmSyz8ov2C34kbhKI0TV0Zpdqc1FwAwENIMyoGkzVSt0qoslL5i5AAU4nB7EwWc1TDHRjejjs5K3O
+	UzhWhz3OhqGo5GAMCECA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCReh-001ozb-1e;
-	Thu, 22 Jun 2023 21:15:51 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1qCRel-001p2O-1I;
+	Thu, 22 Jun 2023 21:15:55 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCRee-001ovl-07
+	id 1qCRei-001ozW-1L
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Jun 2023 21:15:49 +0000
+	Thu, 22 Jun 2023 21:15:53 +0000
 X-GND-Sasl: miquel.raynal@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687468545;
+	t=1687468551;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SkOf9c/PoHB2yWC0z1W+TBqKPUDWa4qIk0kkOXF33Qk=;
-	b=cBKMwf1i0k107/N2U6GBZn3/5Hwj7AxMmYtMoYURMgI81F74puYOo4fyoC325PiPb0E6nh
-	aMVlmfVvMRGsdFF7MfuP7yxrAEh2ZyRgffWRSkn/8iKfugP0YOYAcyTIYjjuiqcqc1aWJO
-	IrtvaGQzZQ7sCG3tt5NvirmaqkpZyO4PvdM+ACU9x0cbglFvDRKhaHuQ0eD9pOzqc0YRGm
-	bqqSeG2qoZa2KVSp9uUgiBRCDM5e3DxZgtueLMpJmLTYQ0M7u9huqr4WXdRXtzeDrPHXjs
-	GnKuimPx/fLKojrOKIi7LXTyMUpKKrtZ0vrppDdc4YuNUtFc1ASPH1Hr05HJFQ==
+	bh=ckfbFLVs/qlvzCpc2E3L/cTenqb3Fb8EmLb3r2UHp7k=;
+	b=gCP7Xlh8QdXaTu81fF2yTJwBTOvZeCZro+wVNOeYdhJgNnib9A4Rt8Kj/LSyvXpzA/jigg
+	OT99M9F/r4pZlfk4VgvF/PbNmsUAgDtaKnaMw09vz/+1UM/SaAv0cjDZ3AKE7kOxhXqW3J
+	XRemeNR7nonQ7mViG5czlPJIR2bdQ1+jqONsHH9bfuhxAlosqpFhXrS4bfoNQxkooVrcY2
+	lKdKz3yalt+y19DkPGZgF9NYdMQQIjGO1mximqkIXJ2ix1PnMoPHogpB96t+kGp1xPObzT
+	+q3XSxY/jNXKKC5F/28geuPU+1ayIb7DZYxMoiQwTsmgakzDNPbt1uY9CF/igw==
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
@@ -54,8 +54,10 @@ X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 85CB21BF205;
-	Thu, 22 Jun 2023 21:15:44 +0000 (UTC)
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 05D7AE0006;
+	Thu, 22 Jun 2023 21:15:48 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -69,21 +71,23 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-mtd@lists.infradead.org,
 	Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	Kamal Dasu <kdasu.kdev@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
 	Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 10/17] dt-bindings: mtd: brcmnand: Prevent NAND chip unevaluated properties
-Date: Thu, 22 Jun 2023 23:15:42 +0200
-Message-Id: <20230622211543.3581807-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3 08/17] dt-bindings: mtd: sunxi: Prevent NAND chip unevaluated properties
+Date: Thu, 22 Jun 2023 23:15:47 +0200
+Message-Id: <20230622211547.3581841-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230619092916.3028470-11-miquel.raynal@bootlin.com>
+In-Reply-To: <20230619092916.3028470-9-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'74b7e3bd289b02b80abcfc71f03dfac1f4fc937e'
+X-linux-mtd-patch-commit: b'd58d29623a8aa3f6b34f4c4fadf4c0de821fcbff'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230622_141548_215961_6E6D8590 
-X-CRM114-Status: UNSURE (   6.67  )
+X-CRM114-CacheID: sfid-20230622_141552_589870_20CDBDB6 
+X-CRM114-Status: UNSURE (   9.58  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -101,13 +105,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2023-06-19 at 09:29:09 UTC, Miquel Raynal wrote:
-> Ensure all raw NAND chip properties are valid by referencing the
-> relevant schema and set unevaluatedProperties to false in the NAND chip
-> section to avoid spurious additions of random properties.
+On Mon, 2023-06-19 at 09:29:07 UTC, Miquel Raynal wrote:
+> nand-ecc-mode is a generic property which may apply to any raw NAND
+> chip, it does not need to be listed in each controller
+> description. Instead, let's reference the raw NAND chip description file
+> which contains the property. The description contained
+> "additionalProperties: false" which is wrong as other properties such as
+> partitions might very well be added in the final .dts, and anyway needs
+> to be converted into "unexpectedProperties: false" to fit the property
+> change new requirements.
 > 
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
+> Cc: Samuel Holland <samuel@sholland.org>
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > Reviewed-by: Rob Herring <robh@kernel.org>
 
