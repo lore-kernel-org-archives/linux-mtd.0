@@ -4,55 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1B52EB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Jun 2023 14:59:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D43CEB64DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 22 Jun 2023 21:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q1cyQF1owxQ5W6aV4+3hSRVjnbW8pBvFuUKZYIVHRo8=; b=K4Nm7EpfSCJVfs
-	dzjPtJQOg5+myYww+a2gn7XICi3VziSjxkqMUmumoBMUhk9rbCoGqQVbxxxZbAS0qcXQ8ovBPgYed
-	sd1Ocsgw70rA/J+0tNDmwMaIhhdQnRQ9PdP9M6hbA5yXpwC7jE4dbyFu4gS9h92RK6y41ofL27Zpk
-	D4ihsjn3+cokKhpsZyZjzlIZypyYniiSH3BjJGXsS0q9VIdbX9oMXq6WEf7u/SWL+GF4PIykr4780
-	AhCzfwipQgWHdDIHpo2mr2eXHKPBu/2GClkjrrGYj1gYKVof3DJA451CqfQQLhnGZhruItdhpeBu+
-	bLK7y841crO2Ny6NMrxg==;
+	List-Owner; bh=tZYjIft2Vr4JQYzU46SL4PUyC/mcOd+5K3VfiHukTEc=; b=xVO7AffRmS7xQj
+	chOtYQN9ejehEjqzdqowgE1w2N1/5SttcVIeuv2Ym5s8Wv4al9lkc5IwxSPLlQYl4+39+nv0ggClG
+	4PhoNHd2ZEkSAkwLZT+FSOkY18A9DPeWrpVnUo7VB3mEjab7bNUc8rcC4+MMLgNwzziE0lZnKRbzZ
+	lgRltKrke5J1T/RSNfByQaQS9ZuEPCVuRkOOWSdLqhNjynIJzJv25YgkRr+fbPT+8XX8N3cepKpWx
+	UCipCzEl0hO28hqlr93MZplvJOmdGQtdWEqLACRdmFcsk9Q2cf5Ew6ufDeEcMnt7VfsJwP4MyH/I0
+	FPo98upc9aN/JzC9K7dQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCLmZ-00145c-0E;
-	Thu, 22 Jun 2023 14:59:35 +0000
-Received: from unicorn.mansr.com ([81.2.72.234])
+	id 1qCRSZ-001mXC-2p;
+	Thu, 22 Jun 2023 21:03:19 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCLmW-00143h-0p
+	id 1qCRRh-001liD-18
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Jun 2023 14:59:33 +0000
-Received: from raven.mansr.com (raven.mansr.com [81.2.72.235])
-	by unicorn.mansr.com (Postfix) with ESMTPS id 1544D15360;
-	Thu, 22 Jun 2023 15:59:26 +0100 (BST)
-Received: by raven.mansr.com (Postfix, from userid 51770)
-	id 940F921A4DD; Thu, 22 Jun 2023 15:59:25 +0100 (BST)
-From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+	Thu, 22 Jun 2023 21:02:28 +0000
+X-GND-Sasl: miquel.raynal@bootlin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1687467741;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kj+dlKjeE1HfsgeOJRrfqs43BHfThE4k0H3BZX195EU=;
+	b=ALMm54kKlsoAxrAjYQff4Ab0BklcIdnMkXohS2aMwFuaLrEquECzsa993/I4EUy/8ocnYB
+	zKATuuxnBj3C2OPGBNY6FOQ63pcMExlyFZAN331Ydunqk7uVZjUE/3zU4Y2uIXhxy/kQOa
+	pVVeh6WdREDFDDQINjteR9mhSnGTtsXU5EX8Q+bgr9Nv4xRGBXdgz86oIE5elztSZXx/cG
+	szSuCGlUcDujIK/+zbWZb+ubZolgovu/nH4log6DDQfkVRgLvgAkMwwt3RwUdzUBBpfVvi
+	wGj0IrEmwx/WVvdSmJG+aa9bj6oAg06h/lOHGLKQ9f4NogUQzfZmCisCYuqF7w==
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-GND-Sasl: miquel.raynal@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D388D20004;
+	Thu, 22 Jun 2023 21:02:19 +0000 (UTC)
+Date: Thu, 22 Jun 2023 23:02:17 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Yang Rong <yangrong@vivo.com>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
- Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>, Julien Su <juliensu@mxic.com.tw>, Jaime
- Liao <jaimeliao@mxic.com.tw>, Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, JaimeLiao
- <jaimeliao.tw@gmail.com>
-Subject: Re: [PATCH v2 3/3] mtd: rawnand: Support for sequential cache reads
-References: <20230112093637.987838-1-miquel.raynal@bootlin.com>
-	<20230112093637.987838-4-miquel.raynal@bootlin.com>
-Date: Thu, 22 Jun 2023 15:59:25 +0100
-In-Reply-To: <20230112093637.987838-4-miquel.raynal@bootlin.com> (Miquel
-	Raynal's message of "Thu, 12 Jan 2023 10:36:37 +0100")
-Message-ID: <yw1xfs6j4k6q.fsf@mansr.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org (open list:MEMORY
+ TECHNOLOGY DEVICES (MTD)), linux-kernel@vger.kernel.org (open list),
+ opensource.kernel@vivo.com, luhongfei@vivo.com
+Subject: Re: [PATCH] drivers: mtd: Fix potential memory leak in
+ mtd_check_of_node
+Message-ID: <20230622230217.793fe0c5@xps-13>
+In-Reply-To: <20230621024517.1155-1-yangrong@vivo.com>
+References: <20230621024517.1155-1-yangrong@vivo.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230622_075932_427891_6BE2A0C1 
-X-CRM114-Status: GOOD (  23.99  )
+X-CRM114-CacheID: sfid-20230622_140225_738781_C6DBD962 
+X-CRM114-Status: GOOD (  18.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,100 +77,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Miquel Raynal <miquel.raynal@bootlin.com> writes:
-
-> From: JaimeLiao <jaimeliao.tw@gmail.com>
->
-> Add support for sequential cache reads for controllers using the generic
-> core helpers for their fast read/write helpers.
->
-> Sequential reads may reduce the overhead when accessing physically
-> continuous data by loading in cache the next page while the previous
-> page gets sent out on the NAND bus.
->
-> The ONFI specification provides the following additional commands to
-> handle sequential cached reads:
->
-> * 0x31 - READ CACHE SEQUENTIAL:
->   Requires the NAND chip to load the next page into cache while keeping
->   the current cache available for host reads.
-> * 0x3F - READ CACHE END:
->   Tells the NAND chip this is the end of the sequential cache read, the
->   current cache shall remain accessible for the host but no more
->   internal cache loading operation is required.
->
-> On the bus, a multi page read operation is currently handled like this:
->
-> 	00 -- ADDR1 -- 30 -- WAIT_RDY (tR+tRR) -- DATA1_IN
-> 	00 -- ADDR2 -- 30 -- WAIT_RDY (tR+tRR) -- DATA2_IN
-> 	00 -- ADDR3 -- 30 -- WAIT_RDY (tR+tRR) -- DATA3_IN
->
-> Sequential cached reads may instead be achieved with:
->
-> 	00 -- ADDR1 -- 30 -- WAIT_RDY (tR) -- \
-> 		       31 -- WAIT_RDY (tRCBSY+tRR) -- DATA1_IN \
-> 		       31 -- WAIT_RDY (tRCBSY+tRR) -- DATA2_IN \
-> 		       3F -- WAIT_RDY (tRCBSY+tRR) -- DATA3_IN
->
-> Below are the read speed test results with regular reads and
-> sequential cached reads, on NXP i.MX6 VAR-SOM-SOLO in mapping mode with
-> a NAND chip characterized with the following timings:
-> * tR: 20 =B5s
-> * tRCBSY: 5 =B5s
-> * tRR: 20 ns
-> and the following geometry:
-> * device size: 2 MiB
-> * eraseblock size: 128 kiB
-> * page size: 2 kiB
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Normal read @ 33MHz =3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> mtd_speedtest: eraseblock read speed is 15633 KiB/s
-> mtd_speedtest: page read speed is 15515 KiB/s
-> mtd_speedtest: 2 page read speed is 15398 KiB/s
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D Sequential cache read @ 33MHz =3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> mtd_speedtest: eraseblock read speed is 18285 KiB/s
-> mtd_speedtest: page read speed is 15875 KiB/s
-> mtd_speedtest: 2 page read speed is 16253 KiB/s
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
->
-> We observe an overall speed improvement of about 5% when reading
-> 2 pages, up to 15% when reading an entire block. This is due to the
-> ~14us gain on each additional page read (tR - (tRCBSY + tRR)).
->
-> Co-developed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Signed-off-by: JaimeLiao <jaimeliao.tw@gmail.com>
-> ---
->  drivers/mtd/nand/raw/nand_base.c | 119 +++++++++++++++++++++++++++++--
->  include/linux/mtd/rawnand.h      |   9 +++
->  2 files changed, 124 insertions(+), 4 deletions(-)
-
-This change broke something on a TI AM3517 based system.  What I'm
-noticing is that the u-boot fw_setenv tool is failing due to the
-MEMGETBADBLOCK ioctl reporting some blocks as bad when they are not.
-Everything else is, somehow, working fine.  Reverting this commit fixes
-it, though I don't know why.  I'm seeing the same behaviour on multiple
-devices, so I doubt there is a problem with the flash memory.
-
-Is there anything I can test to get more information?
-
--- =
-
-M=E5ns Rullg=E5rd
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgp5YW5ncm9uZ0B2aXZvLmNvbSB3cm90ZSBvbiBXZWQsIDIxIEp1biAyMDIzIDEwOjQz
+OjIyICswODAwOgoKPiBUaGUgZm9yX2VhY2hfY2hpbGRfb2Zfbm9kZSBBUEkgaW50ZXJuYWxseSBp
+bmNyZWFzZXMgdGhlIHJlZmVyZW5jZSBjb3VudAo+IGZvciBlYWNoIGNoaWxkIG5vZGUgdHJhdmVy
+c2VkLiBJZiBhIGJyZWFrIHN0YXRlbWVudCBpcyBlbmNvdW50ZXJlZCBpbnNpZGUKPiB0aGUgbG9v
+cCwgaXQgbGVhdmVzIG9uZSByZWZlcmVuY2UgdW5iYWxhbmNlZCBsZWFkaW5nIHRvIGEgbWVtb3J5
+IGxlYWsuCj4gCj4gVGhlIGZ1bmN0aW9uIG10ZF9jaGVja19vZl9ub2RlIGluIGRyaXZlcnMvbXRk
+L210ZGNvcmUuYyB1c2VzIHN1Y2ggYSBsb29wCj4gYW5kIGEgYnJlYWsgc3RhdGVtZW50IHdpdGhv
+dXQgYSBjb3JyZXNwb25kaW5nIG9mX25vZGVfcHV0Lgo+IAo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhl
+IHBvdGVudGlhbCBtZW1vcnkgbGVhayBieSBhZGRpbmcgYSBjYWxsIHRvCj4gb2Zfbm9kZV9wdXQg
+YmVmb3JlIHRoZSBicmVhayBzdGF0ZW1lbnQgaW5zaWRlIHRoZSBmb3JfZWFjaF9jaGlsZF9vZl9u
+b2RlCj4gbG9vcCBpbiB0aGUgZnVuY3Rpb24gbXRkX2NoZWNrX29mX25vZGUuCgpJIHdhbnRlZCB0
+byB0YWtlIHRoaXMgcGF0Y2ggYnV0IGl0IGZhaWxlZCB0byBhcHBseSBjbGVhbmx5LiBQbGVhc2Ug
+bm93CndhaXQgZm9yIC1yYzEgYW5kIHNlbmQgYW4gdXBkYXRlZCB2Mi4KIAo+IAo+IFNpZ25lZC1v
+ZmYtYnk6IFlhbmcgUm9uZyA8eWFuZ3JvbmdAdml2by5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbXRk
+L210ZGNvcmUuYyB8IDEgKwo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykKPiAKPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbXRkY29yZS5jIGIvZHJpdmVycy9tdGQvbXRkY29yZS5j
+Cj4gaW5kZXggZTAwYjEyYWE1ZWM5Li5iMDJjYjhiMWEzOGQgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVy
+cy9tdGQvbXRkY29yZS5jCj4gKysrIGIvZHJpdmVycy9tdGQvbXRkY29yZS5jCj4gQEAgLTU5MSw2
+ICs1OTEsNyBAQCBzdGF0aWMgdm9pZCBtdGRfY2hlY2tfb2Zfbm9kZShzdHJ1Y3QgbXRkX2luZm8g
+Km10ZCkKPiAgICAgICAgICAgICAgICAgaWYgKHBsZW4gPT0gbXRkX25hbWVfbGVuICYmCj4gICAg
+ICAgICAgICAgICAgICAgICAhc3RybmNtcChtdGQtPm5hbWUsIHBuYW1lICsgb2Zmc2V0LCBwbGVu
+KSkgewo+ICAgICAgICAgICAgICAgICAgICAgICAgIG10ZF9zZXRfb2Zfbm9kZShtdGQsIG10ZF9k
+bik7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgb2Zfbm9kZV9wdXQobXRkX2RuKTsKPiAgICAg
+ICAgICAgICAgICAgICAgICAgICBicmVhazsKPiAgICAgICAgICAgICAgICAgfQo+ICAgICAgICAg
+fQo+IC0tCj4gMi4zNS4zCj4gCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+PiDmnKzpgq7ku7blj4rlhbbpmYTku7blhoXlrrnlj6/og73lkKvmnInmnLrlr4blkowv5oiW6ZqQ
+56eB5L+h5oGv77yM5LuF5L6b5oyH5a6a5Liq5Lq65oiW5py65p6E5L2/55So44CC6Iul5oKo6Z2e
+5Y+R5Lu25Lq65oyH5a6a5pS25Lu25Lq65oiW5YW25Luj55CG5Lq677yM6K+35Yu/5L2/55So44CB
+5Lyg5pKt44CB5aSN5Yi25oiW5a2Y5YKo5q2k6YKu5Lu25LmL5Lu75L2V5YaF5a655oiW5YW26ZmE
+5Lu244CC5aaC5oKo6K+v5pS25pys6YKu5Lu277yM6K+35Y2z5Lul5Zue5aSN5oiW55S16K+d5pa5
+5byP6YCa55+l5Y+R5Lu25Lq677yM5bm25bCG5Y6f5aeL6YKu5Lu244CB6ZmE5Lu25Y+K5YW25omA
+5pyJ5aSN5pys5Yig6Zmk44CC6LCi6LCi44CCCj4gVGhlIGNvbnRlbnRzIG9mIHRoaXMgbWVzc2Fn
+ZSBhbmQgYW55IGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBhbmQvb3IgcHJp
+dmlsZWdlZCBpbmZvcm1hdGlvbiBhbmQgYXJlIGludGVuZGVkIGV4Y2x1c2l2ZWx5IGZvciB0aGUg
+YWRkcmVzc2VlKHMpLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50IG9mIHRo
+aXMgbWVzc2FnZSBvciB0aGVpciBhZ2VudCwgcGxlYXNlIG5vdGUgdGhhdCBhbnkgdXNlLCBkaXNz
+ZW1pbmF0aW9uLCBjb3B5aW5nLCBvciBzdG9yYWdlIG9mIHRoaXMgbWVzc2FnZSBvciBpdHMgYXR0
+YWNobWVudHMgaXMgbm90IGFsbG93ZWQuIElmIHlvdSByZWNlaXZlIHRoaXMgbWVzc2FnZSBpbiBl
+cnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGJ5IHJlcGx5IHRoZSBtZXNzYWdlIG9yIHBo
+b25lIGFuZCBkZWxldGUgdGhpcyBtZXNzYWdlLCBhbnkgYXR0YWNobWVudHMgYW5kIGFueSBjb3Bp
+ZXMgaW1tZWRpYXRlbHkuCj4gVGhhbmsgeW91CgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtbXRkLwo=
