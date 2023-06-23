@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C28FFC00528
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 20:34:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A753AC0015E
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 20:35:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x3CIpBm352994XJHiLftKxVB3pCTitrvcXp/X1ugZwc=; b=xiepwMfIfJP5tv
-	+u/fVb4EK2+dYX5ucXeylxojpHe7NOsvFowRUGGTOSeoLoIG3DSmTazvJkipRWxFtq/zrrssuKlH2
-	jsyma/hMSkkvNjkdcpWB1j5zUBb1jf2XeRcNKkoB1oKndrgoe2kuQ4pwjjUVpLP726oUHHXeP0Ob2
-	D2S9z7UK495GmNFdXbXW5rOFj8Kp6VOQd1fd1ioioPbMh6D0I6kESRcB2tjvrPdY3vQwKWBdd9VQI
-	eSlfKHylODfnxR1MuJ9yXH6I/I4wEltPvpfhlHppWdtP/DZiNVr+Xw0R0QyJ37hXqZU81Ym8sDp9s
-	s0o2iCmgVEwfX5PCB21Q==;
+	List-Owner; bh=KfWWbemxG1iaCVoBKyCBTSXpt+0SDAg9ugBy/YiwGd8=; b=gwdwx/r+YOnXcO
+	Pq7vBH+s3qeicrPsUY3lBdKH0vG6C2IeJKLOw/nEO7pNatNydubO9lnn/3D6WiV7LyrrFZfSUDqT6
+	UtqqUdSyFNMDxYtd2Cac5C+wtfWsv0zJOkitw3b0qcBLn0DtpIXNEIO8KCgDZFZv6mGP2VM6O4cXb
+	qi91jpgkzwZ+tQwF2BoQO6nLxuj5gV1MB/P5WMRxyszSXOcBnUnrfhnJB/jUO0lv+6DMOSlBWahqd
+	lxFZrnc39XBwExSYFKi+klxPKSJvgeJSWvQtnXmLZdOHlV9D2SmEghiSo4uuV0XN/4ZtDCcYFZclm
+	6SpbQzuYGkBAkr5t69+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCnUL-004Usk-0O;
-	Fri, 23 Jun 2023 20:34:37 +0000
+	id 1qCnUs-004V2U-1F;
+	Fri, 23 Jun 2023 20:35:10 +0000
 Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCnUG-004UrE-1z;
-	Fri, 23 Jun 2023 20:34:33 +0000
+	id 1qCnUo-004V10-1v;
+	Fri, 23 Jun 2023 20:35:08 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1687552472; x=1719088472;
+  t=1687552506; x=1719088506;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Ig30gwYZkr/IoUPy5H3F0pxktm0wBBqBXGc48gOkR1U=;
-  b=N2Qn4hWcThcagXWxFSIMMhcLLpdSP0RusDOHVsUsrP10IpAyMK+BXGTG
-   /GwmdCj5mLn+8WWt7rjoS/E/nhKMxhe+t8ZojtHYabaaFLTLS4354sOWM
-   WxYXvrJosZu34GZDK15psnCCaVzghJJWUxvX9pJLN8JI3EWgDgHqp/tTW
-   H90G0ure5XBMIHaiudNNd0uNVOcV3Hz4BjElxbJRdSiZ+YPJQvraO84ca
-   XHL42h/uCaqojVIZE1IzpzuCKEj9XfwyhJZnn3U2Oa8DSGRSJOUg7yUPB
-   BSXpsn8mK4U3s1NgIapQdi/vyxPp9QrMkPOve88DmdRIMsxYHzZTTfwC4
-   g==;
+  bh=1QGyJHdsdEC9quDqT4s3WD8JMv5A9Y0t0yBquA/F1eg=;
+  b=j6smZqUU5NUgvmSq4FeCPGiNkxMD8eSKctK0p43uVtT3dRKA9/W6WAzH
+   7GEJxcBk3WXALpPWRNgWYLVFyWZabHgfz5FylSVU4PhFiR0bVYMWeP5bx
+   ag+gSZc+wtyFjDJZE2umg97LbkBByKqT+A7zxZ9vy1imw1mrNeg3H5OjX
+   pYaf+e6TEZG0T7jrXE/9Z28ZZumtUCBTiE2Nln0X/UVCMpJWUn0JI1Hbn
+   geYjb3UDi7AJb1+iqXvl/K2c74Qou+krGYOo6bvBXXtDg+mTHkAJHNBfR
+   N3swUA5TohaAuvroPJY1cLhlFpA4jijThAz4K4LC2r4QqftLUuklSpdLr
+   Q==;
 X-IronPort-AV: E=Sophos;i="6.01,153,1684825200"; 
-   d="scan'208";a="217418402"
+   d="scan'208";a="217418437"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 13:34:28 -0700
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 13:35:04 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 23 Jun 2023 13:34:27 -0700
+ 15.1.2507.21; Fri, 23 Jun 2023 13:34:56 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:33:58 -0700
+ 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:34:28 -0700
 From: Varshini Rajendran <varshini.rajendran@microchip.com>
 To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
@@ -83,16 +83,17 @@ CC: <Hari.PrasathGE@microchip.com>, <cristian.birsan@microchip.com>,
 	<balamanikandan.gunasundar@microchip.com>, <manikandan.m@microchip.com>,
 	<dharma.b@microchip.com>, <nayabbasha.sayed@microchip.com>,
 	<balakrishnan.s@microchip.com>
-Subject: [PATCH v2 06/45] ARM: at91: pm: add sam9x7 SoC init config
-Date: Sat, 24 Jun 2023 02:00:17 +0530
-Message-ID: <20230623203056.689705-7-varshini.rajendran@microchip.com>
+Subject: [PATCH v2 07/45] ARM: at91: add support in SoC driver for new sam9x7
+Date: Sat, 24 Jun 2023 02:00:18 +0530
+Message-ID: <20230623203056.689705-8-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230623_133432_755236_C3E6EE70 
-X-CRM114-Status: GOOD (  11.10  )
+X-CRM114-CacheID: sfid-20230623_133506_792092_49ED6B32 
+X-CRM114-Status: UNSURE (   7.91  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,67 +110,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add SoC init config for sam9x7 family.
+Add support for SAM9X7 SoC in the SoC driver.
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- arch/arm/mach-at91/Makefile |  1 +
- arch/arm/mach-at91/sam9x7.c | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+)
- create mode 100644 arch/arm/mach-at91/sam9x7.c
+ drivers/soc/atmel/soc.c | 23 +++++++++++++++++++++++
+ drivers/soc/atmel/soc.h |  9 +++++++++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
-index 794bd12ab0a8..7d8a7bc44e65 100644
---- a/arch/arm/mach-at91/Makefile
-+++ b/arch/arm/mach-at91/Makefile
-@@ -7,6 +7,7 @@
- obj-$(CONFIG_SOC_AT91RM9200)	+= at91rm9200.o
- obj-$(CONFIG_SOC_AT91SAM9)	+= at91sam9.o
- obj-$(CONFIG_SOC_SAM9X60)	+= sam9x60.o
-+obj-$(CONFIG_SOC_SAM9X7)	+= sam9x7.o
- obj-$(CONFIG_SOC_SAMA5)		+= sama5.o sam_secure.o
- obj-$(CONFIG_SOC_SAMA7)		+= sama7.o
- obj-$(CONFIG_SOC_SAMV7)		+= samv7.o
-diff --git a/arch/arm/mach-at91/sam9x7.c b/arch/arm/mach-at91/sam9x7.c
-new file mode 100644
-index 000000000000..d998fb327860
---- /dev/null
-+++ b/arch/arm/mach-at91/sam9x7.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Setup code for SAM9X7.
-+ *
-+ * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
-+ *
-+ * Author: Varshini Rajendran <varshini.rajendran@microchip.com>
-+ */
+diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
+index cc9a3e107479..cae3452cbc60 100644
+--- a/drivers/soc/atmel/soc.c
++++ b/drivers/soc/atmel/soc.c
+@@ -101,6 +101,29 @@ static const struct at91_soc socs[] __initconst = {
+ 		 AT91_CIDR_VERSION_MASK, SAM9X60_D6K_EXID_MATCH,
+ 		 "sam9x60 8MiB SDRAM SiP", "sam9x60"),
+ #endif
++#ifdef CONFIG_SOC_SAM9X7
++	AT91_SOC(SAM9X7_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
++		 "sam9x75", "sam9x7"),
++	AT91_SOC(SAM9X7_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAM9X72_EXID_MATCH,
++		 "sam9x72", "sam9x7"),
++	AT91_SOC(SAM9X7_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAM9X70_EXID_MATCH,
++		 "sam9x70", "sam9x7"),
++	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D1G_EXID_MATCH,
++		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
++		 "sam9x75 1Gb DDR3L SiP ", "sam9x7"),
++	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D5M_EXID_MATCH,
++		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
++		 "sam9x75 512Mb DDR2 SiP", "sam9x7"),
++	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D1M_EXID_MATCH,
++		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
++		 "sam9x75 128Mb DDR2 SiP", "sam9x7"),
++	AT91_SOC(SAM9X7_CIDR_MATCH, SAM9X75_D2G_EXID_MATCH,
++		 AT91_CIDR_VERSION_MASK, SAM9X75_EXID_MATCH,
++		 "sam9x75 2Gb DDR3L SiP", "sam9x7"),
++#endif
+ #ifdef CONFIG_SOC_SAMA5
+ 	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
+ 		 AT91_CIDR_VERSION_MASK, SAMA5D21CU_EXID_MATCH,
+diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
+index 7a9f47ce85fb..26dd26b4f179 100644
+--- a/drivers/soc/atmel/soc.h
++++ b/drivers/soc/atmel/soc.h
+@@ -45,6 +45,7 @@ at91_soc_init(const struct at91_soc *socs);
+ #define AT91SAM9N12_CIDR_MATCH		0x019a07a0
+ #define SAM9X60_CIDR_MATCH		0x019b35a0
+ #define SAMA7G5_CIDR_MATCH		0x00162100
++#define SAM9X7_CIDR_MATCH		0x09750020
+ 
+ #define AT91SAM9M11_EXID_MATCH		0x00000001
+ #define AT91SAM9M10_EXID_MATCH		0x00000002
+@@ -74,6 +75,14 @@ at91_soc_init(const struct at91_soc *socs);
+ #define SAMA7G54_D2G_EXID_MATCH		0x00000020
+ #define SAMA7G54_D4G_EXID_MATCH		0x00000028
+ 
++#define SAM9X75_EXID_MATCH		0x00000000
++#define SAM9X72_EXID_MATCH		0x00000004
++#define SAM9X70_EXID_MATCH		0x00000005
++#define SAM9X75_D1G_EXID_MATCH		0x00000001
++#define SAM9X75_D5M_EXID_MATCH		0x00000002
++#define SAM9X75_D1M_EXID_MATCH		0x00000003
++#define SAM9X75_D2G_EXID_MATCH		0x00000006
 +
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+
-+#include <asm/mach/arch.h>
-+#include <asm/system_misc.h>
-+
-+#include "generic.h"
-+
-+static void __init sam9x7_init(void)
-+{
-+	of_platform_default_populate(NULL, NULL, NULL);
-+
-+	sam9x7_pm_init();
-+}
-+
-+static const char *const sam9x7_dt_board_compat[] __initconst = {
-+	"microchip,sam9x7",
-+	NULL
-+};
-+
-+DT_MACHINE_START(sam9x7_dt, "Microchip SAM9X7")
-+	/* Maintainer: Microchip */
-+	.init_machine	= sam9x7_init,
-+	.dt_compat	= sam9x7_dt_board_compat,
-+MACHINE_END
+ #define AT91SAM9XE128_CIDR_MATCH	0x329973a0
+ #define AT91SAM9XE256_CIDR_MATCH	0x329a93a0
+ #define AT91SAM9XE512_CIDR_MATCH	0x329aa3a0
 -- 
 2.25.1
 
