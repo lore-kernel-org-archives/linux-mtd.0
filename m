@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6EF0EB64D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 20:32:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29859EB64DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 20:33:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S9ENGNvhMxfnz3Hdr2wBkKDuXshHXYN16Nrup/28hbU=; b=njJ690Unti+waO
-	vtFHdZDNY/EbhJRLvTYVhOKuu0lnp5+mmKnf1mpise04qMd4WTlyy4OGr2kaiTnjqlM7yinPBeSRn
-	huSkg1aN5DCnpx8kEETKIlvCF1VGWW1mEB04A42ITbfJigC7yBmV2Zh/lrI8C9NXlvEet9vOx11WN
-	dv08lmopkFK7sp7wbp3XXVFcDXiis6XVqHCe+PqvCbnxfBnXK6z/w4SznYjUzBVSs+mystP0wQYkE
-	IKwXReuP7JHddT2viVPmQiALdnpYm7ZN4y/XYonPST4H5pAYBZLlc7gIwyG3w38V1hs/m6R5gicKx
-	nN8V5tLL3K8sage5eVLw==;
+	List-Owner; bh=ZMFejeg/C4d8vNgxciRIBhz915ksvg592fEz05AZjgw=; b=wmrhRTklaLuBY6
+	YBOEg2Dl5ief7mViyvBRYsTE6tkUm/dpqTBaJM8vHL7sKu/EacTXfBJGUWYURE0B39J3DbQpunCDf
+	qxUaxG3P95mIia+tf5bt441dCwl21bwxBhYWo6i7k83nM2zXpJyVQBGCId/BeQln2sPX6Yh5/bF+j
+	ELiXWos3WJAfu+qEekcmrXIQL8sEObS+mbVEvVG6ty4/YZDYC22d89XRSt3idid9lIB8YLOP7xlOv
+	yDt0uuhjicdBBYFfsjbuLCGNKweQmzM8h2lLPWfIDrLwT8DE5aphGfuX9IKRyl3DT51Ei/mq10f9t
+	r6KH9ZVTU3QtNrUyg7ug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCnST-004UHp-2E;
-	Fri, 23 Jun 2023 20:32:41 +0000
+	id 1qCnSw-004UQF-2j;
+	Fri, 23 Jun 2023 20:33:10 +0000
 Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCnSQ-004UGf-12;
-	Fri, 23 Jun 2023 20:32:39 +0000
+	id 1qCnSt-004UPC-2s;
+	Fri, 23 Jun 2023 20:33:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1687552358; x=1719088358;
+  t=1687552387; x=1719088387;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7nhAGSQj8zuC4h0VCcRRvftj9ytkh4m3PuE266HinoA=;
-  b=frpIchLikOib8V/lb2V7iW4gDmojJxkKeGOSGg9pGpVnzitbPx76VX+T
-   jzw6IZs7TzgqaAt8dR/fBIsbp340yK+RqnhNNlhr/klvgaqaQrVTJZyYq
-   fAnUy9JEq62VZlIDgFd5ElAw3yxedQXIRlnAHKzgdJ/qm4N6MX79oJBC+
-   FIJ423WByquQr+M4LOKcsotLeAMFijNDc6dArApOb4Vf4JydPV1Xg6sBp
-   Uyemd4D7cU+9gK4Oxn3A0YUsOaMF3Zw2Hs8K5OygpDdeX8fqPwM6VUWtw
-   6y9WBf1y7HqnUjP3OFSZpaRQFRCpyK9r3lpRFHKzCBK/IVz/hpBhKzRkc
-   A==;
+  bh=8W6xQ5iOuEQjq/7qSBNFBQNslDYc9PSMT0e2N9sMZgY=;
+  b=CyB+kjgXmExsCLKt+AdzSMq/Qcgj/pqA1WNLcxHtZEOFI1eXI0xN8yHl
+   N58x+zy74ngYMjCBJsilaUQDyQT6hSKEaBzGU8s5qQS556cKxWhgh6QE7
+   CuFI1oX562ANvNoOjHlHs8Ofher5MInKIg/PjclnL8NMxmjayY7woGP7r
+   h3Czy2YwvZmXzkXUWbi6YwE/iuudUVUqqqG2mnkhpSLTV37Jykm0iKUS3
+   QsON3l6/mrMhs5PfTYQ7hCrKHmCG+vOb8hXqUsSXiORrveJmKIK3MXHPz
+   ih6hwvA6syo3saEb1va51LPlQ+1UBrpDLexqtF/4ZHwgjrL/Zir2rXwV4
+   w==;
 X-IronPort-AV: E=Sophos;i="6.01,153,1684825200"; 
-   d="scan'208";a="221701784"
+   d="scan'208";a="158361838"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 13:32:36 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 13:33:05 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 23 Jun 2023 13:32:28 -0700
+ 15.1.2507.21; Fri, 23 Jun 2023 13:32:59 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:31:57 -0700
+ 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:32:29 -0700
 From: Varshini Rajendran <varshini.rajendran@microchip.com>
 To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
@@ -83,16 +83,16 @@ CC: <Hari.PrasathGE@microchip.com>, <cristian.birsan@microchip.com>,
 	<balamanikandan.gunasundar@microchip.com>, <manikandan.m@microchip.com>,
 	<dharma.b@microchip.com>, <nayabbasha.sayed@microchip.com>,
 	<balakrishnan.s@microchip.com>
-Subject: [PATCH v2 02/45] dt-bindings: usb: ehci: Add atmel at91sam9g45-ehci compatible
-Date: Sat, 24 Jun 2023 02:00:13 +0530
-Message-ID: <20230623203056.689705-3-varshini.rajendran@microchip.com>
+Subject: [PATCH v2 03/45] dt-bindings: usb: generic-ehci: Document clock-names property
+Date: Sat, 24 Jun 2023 02:00:14 +0530
+Message-ID: <20230623203056.689705-4-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230623_133238_460131_7292BEAE 
-X-CRM114-Status: UNSURE (   6.07  )
+X-CRM114-CacheID: sfid-20230623_133308_033080_68B73924 
+X-CRM114-Status: UNSURE (   7.85  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -110,25 +110,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document at91sam9g45-ehci compatible for usb-ehci.
+Document the property clock-names in the schema.
+
+It fixes the dtbs_check warning,
+'clock-names' does not match any of the regexes: 'pinctrl-[0-9]+'
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- Documentation/devicetree/bindings/usb/generic-ehci.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/usb/generic-ehci.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-index 9445764bd8de..7e486cc6cfb8 100644
+index 7e486cc6cfb8..542ac26960fc 100644
 --- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
 +++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-@@ -66,6 +66,7 @@ properties:
-           - const: generic-ehci
-       - items:
-           - enum:
-+              - atmel,at91sam9g45-ehci
-               - cavium,octeon-6335-ehci
-               - ibm,usb-ehci-440epx
-               - ibm,usb-ehci-460ex
+@@ -102,6 +102,10 @@ properties:
+         - if a USB DRD channel: first clock should be host and second
+           one should be peripheral
+ 
++  clock-names:
++    minItems: 1
++    maxItems: 4
++
+   power-domains:
+     maxItems: 1
+ 
 -- 
 2.25.1
 
