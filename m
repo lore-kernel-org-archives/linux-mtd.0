@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39BDFC001DF
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 20:50:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C22AAC04FDF
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 20:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=duBxMeo1aoWmR8LJU5DJaO/ejeB9y2zz5qqxDuPjekU=; b=fIgAi/O9Gznw0F
-	At82RowCSDCPlMX2yj8OMFdGWp86DD/VpjuwfTRqSh56nwdGoFoWe2JY/cus9UE8aLRCV9cTc74+O
-	lAF4qdI2gvYrhMIOdX7q87fjX2Oh7Ey2bAKv3hF/EA0afzsFtSbGWTYR15feXdr+LcDQfMfxuDAhI
-	FHCHsuGz7NDLn770a8M5xSSpTtzTWn3F7b7sYMro+qk8fPKj6qd2Y6cOAg2/dX0ZgniFhlo6767SB
-	r6lFvlujNOrJI08EHi4xj3dVPuGizHqeDjy+gixJf3Zpzu040mb6bWccCrUx47gSikEXIlTuyP/2m
-	Xvg7dzOXiph08ADjNlyw==;
+	List-Owner; bh=MBks/TnfgC0fdkz8Y3FhPFruEseS7QNjTsCcIWwXRAA=; b=Eg7O90glKn/3XE
+	WrNmgQRnO1uk6zodT4BxTI3WPYc6WhXbhiG9d4ws5+oTH0gEUhkrq+DaIlS/5bOBTbr70jLQi6OzS
+	kCQUKeYRJHbZkE9wbnoXYvwIiAfTdLvM73goZxhgjuwKd5GI560scjk2cgOyT5U2YQlVrO55jwZaX
+	SJjISv4jZfSaQlWTLwwnVTmCkbpSI/np57k6PtMr0Q7e3srcxOfKUn2WIY1jQxMklyqIqdx573xtW
+	b4MxyOopQ2fUH41O+AIhPQtiQ7J2yNPoK154tTzs+G0eTmQPewwz5uQB9EBx/FPsbVrgBbwFxGSuR
+	15ptWtmqEn8dkmmNDYZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCnja-004Z5J-0p;
-	Fri, 23 Jun 2023 20:50:22 +0000
+	id 1qCnmA-004a4V-2h;
+	Fri, 23 Jun 2023 20:53:02 +0000
 Received: from esa.microchip.iphmx.com ([68.232.153.233])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCnjW-004Z4D-2a;
-	Fri, 23 Jun 2023 20:50:19 +0000
+	id 1qCnm6-004a2k-2z;
+	Fri, 23 Jun 2023 20:53:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1687553418; x=1719089418;
+  t=1687553578; x=1719089578;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FQaqOrc0da577LMZqP/Fi64MeTY0WzHny0EnnioIJsQ=;
-  b=WIHELECEmINR4ap9L1SJCwRax1lJY1+JdqZzEmapl+WJcSPkcJfcOTfK
-   T1DkgUqoQjXigQmGoB/QcQ8urwtxseGonSnIPC27lfkHr2lbQycAHoJK2
-   l2W41tWBWF8MURuY3OUoN+LaFTvprJUqsveRSKUd3Or1cuUOq5dg8DPjt
-   tVCStjxbZnRGo7mA3KEYZHnyRQFlV3NuWMq6WLxWRQEWO0u6VKNdwonVL
-   IJn/JdtSIVM1WdRMLJ5ogXCMqhpRBGftl0NvajDdLIPhf84T5y3yV3r+9
-   OLgJQAK2Dp6Iur11bO7Sv5IiMxy2/D0YWyFDshAGgNlADIxBzb+fSkNdR
-   Q==;
+  bh=1g44sE6+Od6SMEJPDEyOlmg+p5HZYIyXIwcF8EJ/S8U=;
+  b=A0wc+R7dyyGyZWzXPllhvqTxARy3vyKhTTDlUiQCbmmFcHBrucnX/u8O
+   b3Tgw+m5ZIHQnKBOO5rtppyf9gaIuL2KJzzMWNbgU+olhPcMCn/UnC/K1
+   p913ZSXlSlCU6v5Zta8zQHCnF+HbJz088YJoolBT4zL3zpcXpjLV03q/9
+   WiZXtbUBmkM13fMQUeLrY+S3TMTd8EFhCBWgtWNV3Tj/6b1b7XyyC0Eqt
+   Hs9w9O9j0c6bZBdu0zIwdzsHM5jXJ6u7DzecuWnRSkGATkBS+iBxlquAz
+   ecUqHTKMSCv4ZsZ7kJvC+hL5HU4pbgIdAhmAXOxrSpRq9rGqLfFcciOmT
+   w==;
 X-IronPort-AV: E=Sophos;i="6.01,153,1684825200"; 
-   d="scan'208";a="231891639"
+   d="scan'208";a="231891816"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 13:50:16 -0700
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 13:52:57 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 23 Jun 2023 13:49:59 -0700
+ 15.1.2507.21; Fri, 23 Jun 2023 13:52:56 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:49:30 -0700
+ 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:52:29 -0700
 From: Varshini Rajendran <varshini.rajendran@microchip.com>
 To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
@@ -83,16 +83,16 @@ CC: <Hari.PrasathGE@microchip.com>, <cristian.birsan@microchip.com>,
 	<balamanikandan.gunasundar@microchip.com>, <manikandan.m@microchip.com>,
 	<dharma.b@microchip.com>, <nayabbasha.sayed@microchip.com>,
 	<balakrishnan.s@microchip.com>
-Subject: [PATCH v2 38/45] power: reset: at91-poweroff: lookup for proper pmc dt node for sam9x7
-Date: Sat, 24 Jun 2023 02:00:49 +0530
-Message-ID: <20230623203056.689705-39-varshini.rajendran@microchip.com>
+Subject: [PATCH v2 44/45] dt-bindings: arm: add sam9x75 curiosity board
+Date: Sat, 24 Jun 2023 02:00:55 +0530
+Message-ID: <20230623203056.689705-45-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230623_135018_849426_A50114E7 
-X-CRM114-Status: UNSURE (   8.05  )
+X-CRM114-CacheID: sfid-20230623_135259_032682_70E13FB4 
+X-CRM114-Status: UNSURE (   5.86  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -110,25 +110,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use sam9x7 pmc's compatible to lookup for in the SHDWC driver.
+Add documentation for SAM9X75 Curiosity board.
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- drivers/power/reset/at91-sama5d2_shdwc.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/arm/atmel-at91.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/power/reset/at91-sama5d2_shdwc.c b/drivers/power/reset/at91-sama5d2_shdwc.c
-index d8ecffe72f16..d0f29b99f25e 100644
---- a/drivers/power/reset/at91-sama5d2_shdwc.c
-+++ b/drivers/power/reset/at91-sama5d2_shdwc.c
-@@ -326,6 +326,7 @@ static const struct of_device_id at91_pmc_ids[] = {
- 	{ .compatible = "atmel,sama5d2-pmc" },
- 	{ .compatible = "microchip,sam9x60-pmc" },
- 	{ .compatible = "microchip,sama7g5-pmc" },
-+	{ .compatible = "microchip,sam9x7-pmc" },
- 	{ /* Sentinel. */ }
- };
+diff --git a/Documentation/devicetree/bindings/arm/atmel-at91.yaml b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+index dfb8fd089197..15b11feae46a 100644
+--- a/Documentation/devicetree/bindings/arm/atmel-at91.yaml
++++ b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+@@ -99,6 +99,12 @@ properties:
+           - const: microchip,sam9x60
+           - const: atmel,at91sam9
  
++      - description: Microchip SAM9X7 Evaluation Boards
++        items:
++          - const: microchip,sam9x75-curiosity
++          - const: microchip,sam9x7
++          - const: atmel,at91sam9
++
+       - description: Nattis v2 board with Natte v2 power board
+         items:
+           - const: axentia,nattis-2
 -- 
 2.25.1
 
