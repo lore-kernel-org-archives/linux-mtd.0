@@ -4,74 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A4F5EB64DD
-	for <linux-mtd@archiver.kernel.org>; Thu, 22 Jun 2023 21:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66290EB64DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 04:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hGpjBEhGRuJXlXh+X9DEHCPFzy6jtOCGcayeWdAqRak=; b=YO3t3dr7fLVh8d
-	8jAfmVBZKNLxICZ7GtQVUQ/zqpkMswBVSybU6aIOB/gYzDLBxOafbKTHynZOzr620VNb36OwX1m9Z
-	/VGEh0E8TvpiwTQwqy21qc1C0A+Y7ZdAzlU9RPBwxPopbZYtgYnyw49PppfiDtSN1t67Cc/UuJAIj
-	hM7QkQR+ZdsaaYZuJX4G+mjifPhWIznIK+7Ry8E0OtDR+ZoWfrditR880gfhJH2FlBDQb4k6MuhXD
-	iSQw849MaTGyXxwmXfKQF1C6Bp7g1dmXeBYbOck6WfKuYKcvIAauUA8H+nFnbMlaPNqw7UGRe3SMT
-	HxzasaAwNA/hzg6ld/wg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=EGZHXMPR+zvOQn8YWUIduTYQvGSRqoFFnIxIxMCp/fI=; b=sK7QuhbpIG8cLl
+	QGSTwgD6RAMrp49txabwnlbhzdjmMT7dizuAI4mJd7u6twY1bzO3xzAsVbTPhrm51swC55fHV+xY5
+	255b8PfeRlNP89zHS+x13vPKl7gWII0MNeGybd7ktOGyBLGSdSLH3CnluX9mRpYOARZJg3YnNENfW
+	4S4l6s+G8qdGZd/IwNMkoliL38e3cIdpuTgAbvpaOEL/ryY2SUl3BPS4nTp1FG6ZFAxbamtDtw/zW
+	/NuknSflhguB0xPcGwjk7h8OMrDiK2WMiVv5O0a11KfFBWE4DKUt2rdvdHgBUGmUJCTpXP9Pw7A/W
+	+SCOvO5fM5KmofLVRQoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCRn1-001r3B-0V;
-	Thu, 22 Jun 2023 21:24:27 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1qCYt6-002YPt-0D;
+	Fri, 23 Jun 2023 04:59:12 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCRmw-001r2O-2h
+	id 1qCYt1-002YOV-0F
 	for linux-mtd@lists.infradead.org;
-	Thu, 22 Jun 2023 21:24:24 +0000
-X-GND-Sasl: miquel.raynal@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687469058;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=mezy1bg7+tal880bbvSbp01OokLFkCZLszHcc7Ojt4E=;
-	b=pjMnLfD0EKiP+rLHHHMXla0lkiuJnt0N/AILesDXSKWzTVlZJNIWtw5Pdi/utmZcgtzj+t
-	RIxX3zn0VTtAUbsWgpwa9Jr1+L4jclPqlcYDz627vt3PwFCjO87N5U0LpC4jF5EqTIssL7
-	rHe6KYxF9tDJKYhiYdomAsSZv+jpKKgeWGEOARWVeaNJszoc1D6wMGtVvM7cYAVcNoQLzd
-	N89Gc8s89ax1cv7pWL8uXe/B8Z76zsUiMkNrSTA0X8Wands8VMhoS98nRtfHA4+hg1OPvc
-	DoIYCGY+QyBxR/5jYJd4PNaeYxTeEHDK2WTdQ/8G+jnbwH6YPo8wNc8+/4Uc3A==
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4803D60004;
-	Thu, 22 Jun 2023 21:24:17 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] dt-bindings: mtd: Fix nand-controller.yaml license
-Date: Thu, 22 Jun 2023 23:24:15 +0200
-Message-Id: <20230622212415.3583886-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
+	Fri, 23 Jun 2023 04:59:08 +0000
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35N4mtCR027972;
+	Fri, 23 Jun 2023 04:59:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=/3XgKCtZ161ba96Waof74MfH/8X1sn2ax8UrP/JPmKM=;
+ b=gqy481mCv0X+k3RTo/+sgMxFO7wPXcodUKCI+xA3gxbc5Ps/ZNzmLaMEQh1ANGSM9hNR
+ 7ef7M9h2Gx914V+b0rjy2E0L7TbpRUb1avNIolfveadPRhrZGH+X3CulreCxta6lTEla
+ dpzRRcWxauirZMDJAWRanVD4rnv6L8R+7Rm60Igv6BAmVPJ3XVLq0419imVkLuxGpb3b
+ k39Xg3qFkEYyplFO3ByYpD0DzRE370hPpRezfuFExoOCMY2m1WiqHR12Dx6Umob3twgb
+ zkH2an/4cuffsQFQpUtlYJbUtA35dF4NW+4/dtDNQkYHq5N7s0QXYyHrR6VaCVOUsFt3 jg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rc6b2bv9x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Jun 2023 04:59:03 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 35N4x2kb009942
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Jun 2023 04:59:02 GMT
+Received: from sridsn-linux.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.42; Thu, 22 Jun 2023 21:58:59 -0700
+From: Sridharan S N <quic_sridsn@quicinc.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <quic_sridsn@quicinc.com>, <ddrokosov@sberdevices.ru>,
+        <gch981213@gmail.com>, <mmkurbanov@sberdevices.ru>,
+        <quic_mdalam@quicinc.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/3] mtd: spinand: gigadevice: add support for GD5F1GQ{4,5}RExxH
+Date: Fri, 23 Jun 2023 10:27:55 +0530
+Message-ID: <20230623045757.30055-2-quic_sridsn@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230623045757.30055-1-quic_sridsn@quicinc.com>
+References: <20230623045757.30055-1-quic_sridsn@quicinc.com>
 MIME-Version: 1.0
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: zCooSNMHE8pPOpUAC1q4M5T8lpfRhYgt
+X-Proofpoint-GUID: zCooSNMHE8pPOpUAC1q4M5T8lpfRhYgt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-23_02,2023-06-22_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ malwarescore=0 spamscore=0 phishscore=0 suspectscore=0 priorityscore=1501
+ mlxlogscore=892 lowpriorityscore=0 impostorscore=0 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
+ definitions=main-2306230043
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230622_142423_004486_14857B3F 
-X-CRM114-Status: UNSURE (   9.69  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230622_215907_256182_8913FE97 
+X-CRM114-Status: GOOD (  12.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,28 +98,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Binding files should be dual licensed, this file was writtent with the
-idea in mind of following the rules, but the SPDX tag did not reflect
-that correctly. Fix the tag so we are sure this file is licensed
-correctly.
+Add support for:
+	GD5F1GQ5RExxH
+	GD5F1GQ4RExxH
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Both are 1Gb SLC NAND flash with 4b/512b on-die ECC capability and has
+2K + 64B PageSize.
+
+Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 ---
- Documentation/devicetree/bindings/mtd/nand-controller.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/spi/gigadevice.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-index 83a4fe4cc29d..28167c0cf271 100644
---- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-+++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-@@ -1,4 +1,4 @@
--# SPDX-License-Identifier: GPL-2.0
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- %YAML 1.2
- ---
- $id: http://devicetree.org/schemas/mtd/nand-controller.yaml#
+diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
+index cfd7c3b26dc4..987710e09441 100644
+--- a/drivers/mtd/nand/spi/gigadevice.c
++++ b/drivers/mtd/nand/spi/gigadevice.c
+@@ -511,6 +511,26 @@ static const struct spinand_info gigadevice_spinand_table[] = {
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&gd5fxgqx_variant2_ooblayout,
+ 				     gd5fxgq4uexxg_ecc_get_status)),
++	SPINAND_INFO("GD5F1GQ5RExxH",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x21),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_1gq5,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&gd5fxgqx_variant2_ooblayout,
++				     gd5fxgq4uexxg_ecc_get_status)),
++	SPINAND_INFO("GD5F1GQ4RExxH",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xc9),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_1gq5,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&gd5fxgqx_variant2_ooblayout,
++				     gd5fxgq4uexxg_ecc_get_status)),
+ };
+ 
+ static const struct spinand_manufacturer_ops gigadevice_spinand_manuf_ops = {
 -- 
-2.34.1
+2.17.1
 
 
 ______________________________________________________
