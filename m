@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 749E6C04FDF
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 21:10:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7031AEB64DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 21:11:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H3FLb0OLDkH4qxM+/vxE9yY2zfmJCVMr8BnizYN+g+M=; b=mwheTWt0qmuqMf
-	weBiKswgAbWLoP3rtDyTSLQjZZLvtwpIFu89o2mMjd9jPsTXdG3kq0Ae4xvW3xrLHIAs9ONzDuD02
-	TWrctZ2j/OvAQanCj95QKoq2XYOPFSRXJC/FBa12StEDLFyBmth5MjQgDOSfENtqXrTz+cCaQBetN
-	I5//sTpiL9G46GSlqHaAqw0gQ57l9cbvJXWqr3oqJ4SMK359KKDD8/gkyZLYMtvw8/3RAaRVgEZfD
-	9hf5H415cRJtJVP1N2QMz1JOLZ/AxYgzVAq8VHEsjVQra94HkXs+GWFA2JuDtKv8WNHNxJsRgOK9r
-	h7Uvxf075L8O0Tl4Ykmg==;
+	List-Owner; bh=buL/Hien8A/PKIgkZcozjBikDMkRhRbXlcr5Dre42NU=; b=MlQNSb0RCKBpYU
+	uGrLFVK7cEYWPAbHwfUFhOqfw+E/LjRr499DLfU3SqjN9Qq9hwQrOKp8jGR2uWEuxhRqrx0fZg448
+	fXdKW4tbPpelrPYps8e9YtFPLi84lbWrt6iuKhdFz1YQ9GhObRYbHmu97Kcx1YovbO3qmf6ecL0YB
+	WRudTukYtQ0kDtyEw/kXcJGeZCNIc7gurXqTqxGlKK/1Z9F/9GYvevHD9/gtbDl4tn9IloCOnzn5q
+	jf9bbWrW2ejWQBYSmW0uZerj9Rtv+O1RVsT92hgRO/hZ2s8r9Loiw8mkrwze5tb1nrdhgvoPstthH
+	c7jhQ+GCdKTvigR92Qpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCo3P-004dGx-2K;
-	Fri, 23 Jun 2023 21:10:51 +0000
+	id 1qCo3m-004dML-1D;
+	Fri, 23 Jun 2023 21:11:14 +0000
 Received: from esa.microchip.iphmx.com ([68.232.153.233])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCo3L-004dGM-38;
-	Fri, 23 Jun 2023 21:10:49 +0000
+	id 1qCo3j-004dLe-06;
+	Fri, 23 Jun 2023 21:11:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1687554647; x=1719090647;
+  t=1687554670; x=1719090670;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=BdWVxRk/sfsAxZ1mW04Nt1w0W11icyyMsW/XnDjycFE=;
-  b=FL9oJH1zQjVoAEKmdeJhxATSf4dOAAsKYQRzJo8UyoKxhPB2YqQbWX/b
-   t2WP44MhGAdsOkCw6oCn72e1BBVo3igdtxL7hJXOp4LdpOK55xkdoK6Sb
-   4VjPJYy+S1JV/E1e6l+7t7q3iw+FxcRa9F0FyomViVW09jnP4zKwtRxLe
-   ker9ZUsy2fwl86IcBICc5T9d/xFuLQTWSETrzKOFGI6eJ4MeYj4s4sHJO
-   dST+/5V6GESUcZepC8Oda2u9eUGI8Jp/QaThNHB4tCja0Qy1x8Jr6Ra4H
-   ChD7/ivp3/BgwU81SLQ/8AeFIToJRAoKUyybfGXNy7aRgiyupkdaCH0CA
-   g==;
+  bh=hV1FRXb3qLJvqZh1S3u4vHSAls8N5oVFTQpst8jvzkw=;
+  b=wuTK3O/R83uIsLK5w59BvgTtjUwzRTeClwFx3oUMDSR/oZ0RNZQ8zJvZ
+   GrNa6EautS+5Ncuk08RHYGP7NWvfkuO1cB/0q/nLZ/u0xowLNqLR5S9b7
+   CDDfzxlItMwNy9rX0DHdYgdUxyT/42whhTf2zPp41DtAK0pEByZEmqZH6
+   e0GiPnetVpT46TJfT6h4kpeB6DqxTbDRdmMqwMzLbKt2UGKpiCaghYkrb
+   PDAEhm+L0bwxvveQrGuy0apNMW4tUTymQsSTeHbSipMbd55EHmg8reAA0
+   13kgCz/oc3FHJqqXFKaFJ5ZrYOL8rQPyOt67mkwnjEMiNAUt+MfSdhkwz
+   A==;
 X-IronPort-AV: E=Sophos;i="6.01,153,1684825200"; 
-   d="scan'208";a="231894496"
+   d="scan'208";a="231894633"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 14:10:46 -0700
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 14:11:09 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 23 Jun 2023 13:39:46 -0700
+ 15.1.2507.21; Fri, 23 Jun 2023 13:40:42 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:39:18 -0700
+ 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:40:15 -0700
 From: Varshini Rajendran <varshini.rajendran@microchip.com>
 To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
@@ -83,16 +83,16 @@ CC: <Hari.PrasathGE@microchip.com>, <cristian.birsan@microchip.com>,
 	<balamanikandan.gunasundar@microchip.com>, <manikandan.m@microchip.com>,
 	<dharma.b@microchip.com>, <nayabbasha.sayed@microchip.com>,
 	<balakrishnan.s@microchip.com>
-Subject: [PATCH v2 17/45] dt-bindings: dmaengine: at_xdmac: add compatible with microchip,sam9x7
-Date: Sat, 24 Jun 2023 02:00:28 +0530
-Message-ID: <20230623203056.689705-18-varshini.rajendran@microchip.com>
+Subject: [PATCH v2 19/45] dt-bindings: mfd: at91: Add SAM9X7 compatible string
+Date: Sat, 24 Jun 2023 02:00:30 +0530
+Message-ID: <20230623203056.689705-20-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230623_141048_022578_4D4C804A 
-X-CRM114-Status: UNSURE (   7.89  )
+X-CRM114-CacheID: sfid-20230623_141111_114742_123B014B 
+X-CRM114-Status: UNSURE (   9.86  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -110,28 +110,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add compatible for sam9x7.
+Document sam9x7 DT for flexcom.
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- Documentation/devicetree/bindings/dma/atmel-xdma.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/mfd/atmel-flexcom.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-index 510b7f25ba24..f672556ea715 100644
---- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-+++ b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-@@ -2,8 +2,8 @@
+diff --git a/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt b/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt
+index 9d837535637b..449e0af93a13 100644
+--- a/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt
++++ b/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt
+@@ -5,7 +5,7 @@ controller and an USART. Only one function can be used at a time and is chosen
+ at boot time according to the device tree.
  
- * XDMA Controller
  Required properties:
--- compatible: Should be "atmel,sama5d4-dma", "microchip,sam9x60-dma" or
--  "microchip,sama7g5-dma".
-+- compatible: Should be "atmel,sama5d4-dma", "microchip,sam9x60-dma",
-+  "microchip,sam9x7-dma" or "microchip,sama7g5-dma".
- - reg: Should contain DMA registers location and length.
- - interrupts: Should contain DMA interrupt.
- - #dma-cells: Must be <1>, used to represent the number of integer cells in
+-- compatible:		Should be "atmel,sama5d2-flexcom"
++- compatible:		Should be "atmel,sama5d2-flexcom" or "microchip,sam9x7-flexcom"
+ - reg:			Should be the offset/length value for Flexcom dedicated
+ 			I/O registers (without USART, TWI or SPI registers).
+ - clocks:		Should be the Flexcom peripheral clock from PMC.
 -- 
 2.25.1
 
