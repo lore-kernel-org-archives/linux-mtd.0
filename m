@@ -4,64 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C123EB64DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 17:01:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FCC4EB64D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 20:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8QmqPwLiGjuDFHlKPkBZJT57TwimWK5l3EkgTfWmdcQ=; b=TcaewVKZZBNZBm
-	w4xNqHNIJzZpJfJhq2ysogrCV7TdonzbL7U+ZUc17f+aMSOgAhlQ5Zkp8kKChW89QNwRROqXujyfV
-	jCwoEZHPaXD9/0JLKn/Fqdq/DvjjP0OfOPMgLr/x8tAFqZ9cbTPZV+0Ao1ZR9uaBrBDi99qCNXzvj
-	LGCb0ZWl/p7VncvjJQ8W9pu7RQEawSHS5vaPksbiER+Ibg0yc6leEOcjPKb4uOPmZhJ+pQx7axB3q
-	CdXA3y7/Uf2LzH9ElFaN23oFk2TES+gAreZNcTZOxl2gB1/BjRtkQHBLNK753B7JTMZUkZND8R+dE
-	VWTKHdUvRwk5tHrh1ZGA==;
+	List-Owner; bh=Tj9m360rO4Yz12siBCZSHbDwAAQgAnOJ8okQ+5GVPEM=; b=2SXllLMVD64RJD
+	vIptsVaGeIIIcaQS6qT9KloUsBVJuvmT+X1TAb+X53Aq9BJ/2ZxLADGnGVy5ilx1xqnYX1H4lFbvO
+	6QLw895nrpzcPvMLWnKuoFH+/GvxP6eNwlKIqNdHY2tfJhTVtRLXE7Va8DcflAnsigVPp1LeVfkwR
+	00dtdyUqJbIWcQ7H5WJb6KARQyXManq2TFgijbX02pLooN8eoczMaod70xLPofU3xFiKeru1VkECE
+	kzqQbUoWDGJ1A0JCjSrQC99G+rE62pMabqE+6Iip8knhnHcCjjE1LzgyXVfxXGW/G0orYyErkMaBq
+	K1zzwgueClAf76c6mECg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCk9b-0049ek-20;
-	Fri, 23 Jun 2023 17:00:59 +0000
-Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
+	id 1qCnRe-004U6s-0X;
+	Fri, 23 Jun 2023 20:31:50 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCk9Y-0049d2-1x
-	for linux-mtd@lists.infradead.org;
-	Fri, 23 Jun 2023 17:00:58 +0000
-X-GND-Sasl: miquel.raynal@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687539651;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=F3YPGEPYPOHVCVqwz8avWRMyZ4db/BTsgdPxIp0U5BQ=;
-	b=KJ+5CfiSWQjqSQ+OmIGfkJ/rCHrrGP98eJnPqDwnRxN3/+U4VqZHowGfE8RCpNIvId9q34
-	HpHU+hfA194gKY5vMSIccFoEdZw35PYfOaHejKdX0pa3T/zO3dxpf1YUgE45iVt4UVcYpr
-	IwH8geJHAd0zXa0A4/b+JPFpX996gK2N1LJliWlhQ35LijiHrCt2KNSwDw/XosNjRISE42
-	IiQ+yp1FRJLaw3FOCDgW4sn3C1Q44dBwM+MOe4UK5C6PRWp6/2BkaLHYahp7/BfINAt6Bo
-	uPJ7pv07LyDd/ONByujLy7F/IGAVr4lrodwZWpjX4A+MpAxJM+ygYgGgkzeKzw==
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1F1ECE0004;
-	Fri, 23 Jun 2023 17:00:48 +0000 (UTC)
-Date: Fri, 23 Jun 2023 19:00:47 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus <Tudor.Ambarus@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, Frieder Schrempf
- <frieder.schrempf@kontron.de>, Michael Walle <michael@walle.cc>, Pratyush
- Yadav <pratyush@kernel.org>
-Subject: [GIT PULL] mtd: nand: Changes for 6.5-rc1
-Message-ID: <20230623190047.55adf49d@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1qCnRY-004U4G-0P;
+	Fri, 23 Jun 2023 20:31:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1687552303; x=1719088303;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=k09nEHCiSzbJsqqSNMTaSxW8jtMKfqLZrahLVUHWd9A=;
+  b=VCKiT97INMngvw3yPXc279DOjDI+97YtEk4iaMUbrWsaloTETthPSWR7
+   6/yRQbfYBG6sjx+5vNn8uRsiUIfsdo2VrcHI3jyhmfuGiqOzjzL0CvRvk
+   7uhGeTgRtir0OBv1ok0X1fxVssTRsO1HQVEkIYFiMCLgoNyKjrc3HB1/r
+   oM0TtXKUeTsGp2+PIOJJ1sFhhes0NJ7bgujJ1D8UEE4PRmscmQiqN50Lh
+   FZ6M0Z/pYmlRaAqJxYqqInSgGN0yBp293+o8or7sUZdpacWVrS4viXDlH
+   qFknK1vP4mYLPf1UzvIy6cVSpgTZB736BlqmB4N5k0JwH9ZZ4JHc0DEBl
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,153,1684825200"; 
+   d="scan'208";a="158361729"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 13:31:34 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 23 Jun 2023 13:31:29 -0700
+Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:30:59 -0700
+From: Varshini Rajendran <varshini.rajendran@microchip.com>
+To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@microchip.com>,
+	<mturquette@baylibre.com>, <sboyd@kernel.org>, <herbert@gondor.apana.org.au>,
+	<davem@davemloft.net>, <vkoul@kernel.org>, <tglx@linutronix.de>,
+	<maz@kernel.org>, <lee@kernel.org>, <ulf.hansson@linaro.org>,
+	<tudor.ambarus@linaro.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<vigneshr@ti.com>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <linus.walleij@linaro.org>, <p.zabel@pengutronix.de>,
+	<olivia@selenic.com>, <a.zummo@towertech.it>, <radu_nicolae.pirea@upb.ro>,
+	<richard.genoud@gmail.com>, <gregkh@linuxfoundation.org>,
+	<lgirdwood@gmail.com>, <broonie@kernel.org>, <wim@linux-watchdog.org>,
+	<linux@roeck-us.net>, <arnd@arndb.de>, <olof@lixom.net>, <soc@kernel.org>,
+	<linux@armlinux.org.uk>, <sre@kernel.org>, <jerry.ray@microchip.com>,
+	<horatiu.vultur@microchip.com>, <durai.manickamkr@microchip.com>,
+	<varshini.rajendran@microchip.com>, <andrew@lunn.ch>,
+	<alain.volmat@foss.st.com>, <neil.armstrong@linaro.org>,
+	<mihai.sain@microchip.com>, <eugen.hristev@collabora.com>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+	<linux-crypto@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+	<linux-i2c@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <netdev@vger.kernel.org>,
+	<linux-gpio@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+	<linux-spi@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>, <linux-usb@vger.kernel.org>,
+	<linux-watchdog@vger.kernel.org>, <linux-pm@vger.kernel.org>
+CC: <Hari.PrasathGE@microchip.com>, <cristian.birsan@microchip.com>,
+	<balamanikandan.gunasundar@microchip.com>, <manikandan.m@microchip.com>,
+	<dharma.b@microchip.com>, <nayabbasha.sayed@microchip.com>,
+	<balakrishnan.s@microchip.com>
+Subject: [PATCH v2 00/45] Add support for sam9x7 SoC family
+Date: Sat, 24 Jun 2023 02:00:11 +0530
+Message-ID: <20230623203056.689705-1-varshini.rajendran@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230623_100057_112751_F1541DBA 
-X-CRM114-Status: GOOD (  12.13  )
+X-CRM114-CacheID: sfid-20230623_133144_255255_07DABA12 
+X-CRM114-Status: GOOD (  19.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,124 +102,149 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgpUaGlzIGlzIHRoZSBOQU5EIFBSIGZvciB0aGUgbmV4dCBNVEQgUFIuCgpUaGFua3Ms
-Ck1pcXXDqGwKClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgYWM5YTc4NjgxYjky
-MTg3NzUxODc2M2JhMGU4OTIwMjI1NDM0OWQxYjoKCiAgTGludXggNi40LXJjMSAoMjAyMy0wNS0w
-NyAxMzozNDozNSAtMDcwMCkKCmFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdCByZXBvc2l0b3J5IGF0
-OgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbXRkL2xp
-bnV4LmdpdCB0YWdzL25hbmQvZm9yLTYuNQoKZm9yIHlvdSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRv
-IGFkNWMxOGM3NWQyYTFkZTllZWFlZDYwZTQxN2QzMDgyMTdmMzVlNzM6CgogIGR0LWJpbmRpbmdz
-OiBtdGQ6IG1hcnZlbGwtbmFuZDogQ29udmVydCB0byBZQU1MIERUIHNjaGVtZSAoMjAyMy0wNi0y
-MiAyMzowOTowNCArMDIwMCkKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRFQgYmluZGluZyBjaGFuZ2VzOgoqIEV4dGVuZCB0
-aGUgbmFuZCBub2RlIG5hbWVzIGZpbHRlcgoqIENyZWF0ZSBhIGZpbGUgZm9yIHJhdyBOQU5EIGNo
-aXAgcHJvcGVydGllcwoqIE1hcmsgbmFuZC1lY2MtcGxhY2VtZW50IGRlcHJlY2F0ZWQKKiBEZXNj
-cmliZSBuYW5kLWVjYy1tb2RlCiogUHJldmVudCBOQU5EIGNoaXAgdW5ldmFsdWF0ZWQgcHJvcGVy
-dGllcyBpbiBhbGwgTkFORCBiaW5kaW5ncyB3aXRoIGEgTkFORCBjaGlwCiAgcmVmZXJlbmNlLgoq
-IFFjb206IEZpeCBhIHByb3BlcnR5IHBvc2l0aW9uCiogTWFydmVsbDogQ29udmVydCB0byBZQU1M
-IERUIHNjaGVtYQoKUmF3IE5BTkQgY2hpcCBkcml2ZXJzIGNoYW5nZXM6CiogTWFjcm9uaXg6IE9U
-UCBhY2Nlc3MgZm9yIE1YMzBMRnhHMThBQwoqIEFkZCBiYXNpYyBTYW5kaXNrIG1hbnVmYWN0dXJl
-ciBvcHMKKiBBZGQgc3VwcG9ydCBmb3IgU2FuZGlzayBTRFROUUdBTUEKClJhdyBOQU5EIGNvbnRy
-b2xsZXIgZHJpdmVyIGNoYW5nZXM6CiogTWVzb246CiAgLSBSZXBsYWNlIGludGVnZXIgY29uc3Rz
-IHdpdGggcHJvcGVyIGRlZmluZXMKICAtIEFsbG93IHdhaXRpbmcgdy9vIHdpcmVkIHJlYWR5L2J1
-c3kgcGluCiAgLSBDaGVjayBidWZmZXIgbGVuZ3RoIHZhbGlkaXR5CiAgLSBGaXggdW5hbGlnbmVk
-IERNQSBidWZmZXJzIGhhbmRsaW5nCiAgLSBkdC1iaW5kaW5nczogRml4ICduYW5kLXJiJyBwcm9w
-ZXJ0eQoqIEFyYXNhbjogUmV2ZXJ0ICJtdGQ6IHJhd25hbmQ6IGFyYXNhbjogUHJldmVudCBhbiB1
-bnN1cHBvcnRlZCBjb25maWd1cmF0aW9uIgogIGFzIHRoaXMgbGltaXRhdGlvbiBpcyBubyBsb25n
-ZXIgdHJ1ZSB0aGFua3MgdG8gdGhlIHJlY2VudCBlZmZvcnRzIGluIGltcHJvdmluZwogIHRoZSBj
-bG9ja3Mgc3VwcG9ydCBpbiB0aGlzIGRyaXZlcgoKU1BJLU5BTkQgY2hhbmdlczoKKiBHaWdhZGV2
-aWNlOiBhZGQgc3VwcG9ydCBmb3IgR0Q1RjJHUTV4RXh4SAoqIE1hY3Jvbml4OiBBZGQgc3VwcG9y
-dCBmb3Igc2VyaWFsIE5BTkQgZmxhc2hlcwoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpBbWl0IEt1bWFyIE1haGFwYXRyYSAo
-MSk6CiAgICAgIFJldmVydCAibXRkOiByYXduYW5kOiBhcmFzYW46IFByZXZlbnQgYW4gdW5zdXBw
-b3J0ZWQgY29uZmlndXJhdGlvbiIKCkFyc2VuaXkgS3Jhc25vdiAoNik6CiAgICAgIG10ZDogcmF3
-bmFuZDogbWVzb246IHJlcGxhY2UgaW50ZWdlciBjb25zdHMgd2l0aCBwcm9wZXIgZGVmaW5lcwog
-ICAgICBkdC1iaW5kaW5nczogbmFuZDogbWVzb246IEZpeCAnbmFuZC1yYicgcHJvcGVydHkKICAg
-ICAgbXRkOiByYXduYW5kOiBtZXNvbjogd2FpdGluZyB3L28gd2lyZWQgcmVhZHkvYnVzeSBwaW4K
-ICAgICAgbXRkOiByYXduYW5kOiBtZXNvbjogY2hlY2sgYnVmZmVyIGxlbmd0aAogICAgICBtdGQ6
-IHJhd25hbmQ6IG1lc29uOiBmaXggdW5hbGlnbmVkIERNQSBidWZmZXJzIGhhbmRsaW5nCiAgICAg
-IG10ZDogcmF3bmFuZDogbWFjcm9uaXg6IE9UUCBhY2Nlc3MgZm9yIE1YMzBMRnhHMThBQwoKSmFp
-bWVMaWFvICgxKToKICAgICAgbXRkOiBzcGluYW5kOiBtYWNyb25peDogQWRkIHN1cHBvcnQgZm9y
-IHNlcmlhbCBOQU5EIGZsYXNoCgpKb2hhbiBKb25rZXIgKDIpOgogICAgICBtdGQ6IHJhd25hbmQ6
-IGFkZCBiYXNpYyBzYW5kaXNrIG1hbnVmYWN0dXJlciBvcHMKICAgICAgbXRkOiByYXduYW5kOiBh
-ZGQgc3VwcG9ydCBmb3IgdGhlIFNhbmRpc2sgU0RUTlFHQU1BIGNoaXAKCk1kIFNhZHJlIEFsYW0g
-KDEpOgogICAgICBtdGQ6IHNwaW5hbmQ6IGdpZ2FkZXZpY2U6IGFkZCBzdXBwb3J0IGZvciBHRDVG
-MkdRNXhFeHhICgpNaXF1ZWwgUmF5bmFsICgxNyk6CiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IEFj
-Y2VwdCBuYW5kIHJlbGF0ZWQgbm9kZSBuYW1lcwogICAgICBkdC1iaW5kaW5nczogbXRkOiBDcmVh
-dGUgYSBmaWxlIGZvciByYXcgTkFORCBjaGlwIHByb3BlcnRpZXMKICAgICAgZHQtYmluZGluZ3M6
-IG10ZDogTWFyayBuYW5kLWVjYy1wbGFjZW1lbnQgZGVwcmVjYXRlZAogICAgICBkdC1iaW5kaW5n
-czogbXRkOiBEZXNjcmliZSBuYW5kLWVjYy1tb2RlCiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IHFj
-b206IEZpeCBhIHByb3BlcnR5IHBvc2l0aW9uCiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IHFjb206
-IFByZXZlbnQgTkFORCBjaGlwIHVuZXZhbHVhdGVkIHByb3BlcnRpZXMKICAgICAgZHQtYmluZGlu
-Z3M6IG10ZDogaW5nZW5pYzogUHJldmVudCBOQU5EIGNoaXAgdW5ldmFsdWF0ZWQgcHJvcGVydGll
-cwogICAgICBkdC1iaW5kaW5nczogbXRkOiBzdW54aTogUHJldmVudCBOQU5EIGNoaXAgdW5ldmFs
-dWF0ZWQgcHJvcGVydGllcwogICAgICBkdC1iaW5kaW5nczogbXRkOiBtZXNvbjogUHJldmVudCBO
-QU5EIGNoaXAgdW5ldmFsdWF0ZWQgcHJvcGVydGllcwogICAgICBkdC1iaW5kaW5nczogbXRkOiBi
-cmNtbmFuZDogUHJldmVudCBOQU5EIGNoaXAgdW5ldmFsdWF0ZWQgcHJvcGVydGllcwogICAgICBk
-dC1iaW5kaW5nczogbXRkOiBkZW5hbGk6IFByZXZlbnQgTkFORCBjaGlwIHVuZXZhbHVhdGVkIHBy
-b3BlcnRpZXMKICAgICAgZHQtYmluZGluZ3M6IG10ZDogaW50ZWw6IFByZXZlbnQgTkFORCBjaGlw
-IHVuZXZhbHVhdGVkIHByb3BlcnRpZXMKICAgICAgZHQtYmluZGluZ3M6IG10ZDogcm9ja2NoaXA6
-IFByZXZlbnQgTkFORCBjaGlwIHVuZXZhbHVhdGVkIHByb3BlcnRpZXMKICAgICAgZHQtYmluZGlu
-Z3M6IG10ZDogc3RtMzI6IFByZXZlbnQgTkFORCBjaGlwIHVuZXZhbHVhdGVkIHByb3BlcnRpZXMK
-ICAgICAgZHQtYmluZGluZ3M6IG10ZDogbWVkaWF0ZWs6IFJlZmVyZW5jZSByYXctbmFuZC1jaGlw
-LnlhbWwKICAgICAgZHQtYmluZGluZ3M6IG10ZDogbWVkaWF0ZWs6IFByZXZlbnQgTkFORCBjaGlw
-IHVuZXZhbHVhdGVkIHByb3BlcnRpZXMKICAgICAgZHQtYmluZGluZ3M6IG10ZDogdGksYW02NTQ6
-IFByZXZlbnQgdW5ldmFsdWF0ZWQgcHJvcGVydGllcwoKVmFkeW0gS29jaGFuICgxKToKICAgICAg
-ZHQtYmluZGluZ3M6IG10ZDogbWFydmVsbC1uYW5kOiBDb252ZXJ0IHRvIFlBTUwgRFQgc2NoZW1l
-CgogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hbGx3aW5uZXIsc3VuNGkt
-YTEwLW5hbmQueWFtbCB8ICAgNSArLS0KIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9tdGQvYW1sb2dpYyxtZXNvbi1uYW5kLnlhbWwgICAgICAgfCAgMTAgKysrKysKIERvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYnJjbSxicmNtbmFuZC55YW1sICAgICAgICAg
-ICAgfCAgIDMgKysKIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvZGVuYWxp
-LG5hbmQueWFtbCAgICAgICAgICAgICAgfCAgIDkgKystLQogRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL210ZC9pbmdlbmljLG5hbmQueWFtbCAgICAgICAgICAgICB8ICAgNCArKwog
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9pbnRlbCxsZ20tZWJ1bmFuZC55
-YW1sICAgICAgICB8ICAgNSArLS0KIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9t
-dGQvbWFydmVsbCxuYW5kLWNvbnRyb2xsZXIueWFtbCAgfCAyMjYgKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKwogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL210ZC9tYXJ2ZWxsLW5hbmQudHh0ICAgICAgICAgICAgICB8IDEyNiAtLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tZWRpYXRlayxtdGstbmZjLnlhbWwgICAgICAgICB8
-ICAgMyArLQogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tdGQueWFtbCAg
-ICAgICAgICAgICAgICAgICAgICB8ICAgMiArLQogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL210ZC9uYW5kLWNvbnRyb2xsZXIueWFtbCAgICAgICAgICB8ICA4NSArLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL210ZC9xY29tLG5hbmRjLnlhbWwgICAgICAgICAgICAgICB8ICA0NSArKysrKysrKysr
-KystLS0tLS0tLQogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9yYXctbmFu
-ZC1jaGlwLnlhbWwgICAgICAgICAgICB8IDExMSArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-bXRkL3JvY2tjaGlwLG5hbmQtY29udHJvbGxlci55YW1sIHwgICAzICsrCiBEb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3N0LHN0bTMyLWZtYzItbmFuZC55YW1sICAgICAgIHwg
-ICAzICsrCiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3RpLGFtNjU0LWhi
-bWMueWFtbCAgICAgICAgICAgIHwgICAyICsKIE1BSU5UQUlORVJTICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgLQogZHJpdmVycy9t
-dGQvbmFuZC9yYXcvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAgMSArCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9sbGVyLmMg
-ICAgICAgICAgICAgICAgICAgICAgIHwgIDE1IC0tLS0tLS0KIGRyaXZlcnMvbXRkL25hbmQvcmF3
-L2ludGVybmFscy5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwog
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvbWVzb25fbmFuZC5jICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB8IDEzNCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrLS0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9pZHMuYyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNSArKy0KIGRyaXZlcnMvbXRkL25h
-bmQvcmF3L25hbmRfbWFjcm9uaXguYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAx
-NjcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysKIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfc2FuZGlzay5j
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMjYgKysrKysrKysrKysrCiBkcml2
-ZXJzL210ZC9uYW5kL3NwaS9naWdhZGV2aWNlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwgIDEwICsrKysrCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9tYWNyb25peC5jICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIwICsrKysrKysrKwogMjYgZmlsZXMg
-Y2hhbmdlZCwgNzU5IGluc2VydGlvbnMoKyksIDI2MyBkZWxldGlvbnMoLSkKIGNyZWF0ZSBtb2Rl
-IDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL21hcnZlbGwsbmFu
-ZC1jb250cm9sbGVyLnlhbWwKIGRlbGV0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvbXRkL21hcnZlbGwtbmFuZC50eHQKIGNyZWF0ZSBtb2RlIDEwMDY0NCBE
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Jhdy1uYW5kLWNoaXAueWFtbAog
-Y3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfc2FuZGlzay5jCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+This patch series adds support for the new SoC family - sam9x7.
+ - The device tree, configs and drivers are added
+ - Clock driver for sam9x7 is added
+ - Support for basic peripherals is added
+ - Target board SAM9X75 Curiosity is added
+
+ Changes in v2:
+ --------------
+
+ - Added sam9x7 specific compatibles in DT with fallbacks
+ - Documented all the newly added DT compatible strings
+ - Added device tree for the target board sam9x75 curiosity and
+   documented the same in the DT bindings documentation
+ - Removed the dt nodes that are not supported at the moment
+ - Removed the configs added by previous version that are not supported
+   at the moment
+ - Fixed all the corrections in the commit message
+ - Changed all the instances of copyright year to 2023
+ - Added sam9x7 flag in PIT64B configuration
+ - Moved macro definitions to header file
+ - Added another divider in mck characteristics in the pmc driver
+ - Fixed the memory leak in the pmc driver
+ - Dropped patches that are no longer needed
+ - Picked up Acked-by and Reviewed-by tags
+
+
+Hari Prasath (1):
+  irqchip/atmel-aic5: Add support for sam9x7 aic
+
+Varshini Rajendran (44):
+  dt-bindings: microchip: atmel,at91rm9200-tcb: add sam9x60, sam9x7
+    compatible
+  dt-bindings: usb: ehci: Add atmel at91sam9g45-ehci compatible
+  dt-bindings: usb: generic-ehci: Document clock-names property
+  dt-bindings: net: cdns,macb: add documentation for sam9x7 ethernet
+    interface
+  ARM: at91: pm: add support for sam9x7 SoC family
+  ARM: at91: pm: add sam9x7 SoC init config
+  ARM: at91: add support in SoC driver for new sam9x7
+  clk: at91: clk-sam9x60-pll: re-factor to support individual core freq
+    outputs
+  clk: at91: sam9x7: add support for HW PLL freq dividers
+  clk: at91: sama7g5: move mux table macros to header file
+  dt-bindings: clk: at91: add bindings for SAM9X7's clock controller
+  dt-bindings: reset: atmel,at91sam9260-reset: add sam9x7 binding
+  dt-bindings: atmel-sysreg: add bindings for sam9x7
+  dt-bindings: crypto: add bindings for sam9x7 in Atmel AES
+  dt-bindings: crypto: add bindings for sam9x7 in Atmel SHA
+  dt-bindings: crypto: add bindings for sam9x7 in Atmel TDES
+  dt-bindings: dmaengine: at_xdmac: add compatible with microchip,sam9x7
+  dt-bindings: i2c: at91: Add SAM9X7 compatible string
+  dt-bindings: mfd: at91: Add SAM9X7 compatible string
+  dt-bindings: atmel-gpbr: add microchip,sam9x7-gpbr
+  dt-bindings: atmel-matrix: add microchip,sam9x7-matrix
+  dt-bindings: atmel-smc: add microchip,sam9x7-smc
+  dt-bindings: atmel-ssc: add microchip,sam9x7-ssc
+  dt-bindings: sdhci-of-at91: add microchip,sam9x7-sdhci
+  dt-bindings: atmel-nand: add microchip,sam9x7-pmecc
+  dt-bindings: pinctrl: at91: add bindings for SAM9X7
+  dt-bindings: rng: atmel,at91-trng: document sam9x7 TRNG
+  dt-bindings: rtc: at91rm9200: add sam9x7 compatible
+  dt-bindings: rtt: at91rm9260: add sam9x7 compatible
+  dt-bindings: serial: atmel,at91-usart: add compatible for sam9x7
+  dt-bindings: atmel-classd: add sam9x7 compatible
+  spi: dt-bindings: atmel,at91rm9200-spi: add sam9x7 compatible
+  dt-bindings: usb: atmel: Update DT bindings documentation for sam9x7
+  dt-bindings: watchdog: sama5d4-wdt: add compatible for sam9x7-wdt
+  dt-bindings: irqchip/atmel-aic5: Add support for sam9x7 aic
+  clk: at91: sam9x7: add sam9x7 pmc driver
+  power: reset: at91-poweroff: lookup for proper pmc dt node for sam9x7
+  power: reset: at91-reset: add reset support for sam9x7 SoC
+  power: reset: at91-reset: add sdhwc support for sam9x7 SoC
+  ARM: at91: Kconfig: add config flag for SAM9X7 SoC
+  ARM: configs: at91: enable config flags for sam9x7 SoC family
+  ARM: dts: at91: sam9x7: add device tree for SoC
+  dt-bindings: arm: add sam9x75 curiosity board
+  ARM: dts: at91: sam9x75_curiosity: add device tree for sam9x75
+    curiosity board
+
+ .../devicetree/bindings/arm/atmel-at91.yaml   |    6 +
+ .../devicetree/bindings/arm/atmel-sysregs.txt |    7 +-
+ .../devicetree/bindings/clock/at91-clock.txt  |    7 +-
+ .../crypto/atmel,at91sam9g46-aes.yaml         |    5 +-
+ .../crypto/atmel,at91sam9g46-sha.yaml         |    5 +-
+ .../crypto/atmel,at91sam9g46-tdes.yaml        |    5 +-
+ .../devicetree/bindings/dma/atmel-xdma.txt    |    4 +-
+ .../bindings/i2c/atmel,at91sam-i2c.yaml       |    3 +
+ .../interrupt-controller/atmel,aic.txt        |    2 +-
+ .../devicetree/bindings/mfd/atmel-flexcom.txt |    2 +-
+ .../devicetree/bindings/mfd/atmel-gpbr.txt    |    1 +
+ .../devicetree/bindings/mfd/atmel-matrix.txt  |    1 +
+ .../devicetree/bindings/mfd/atmel-smc.txt     |    1 +
+ .../devicetree/bindings/misc/atmel-ssc.txt    |    1 +
+ .../devicetree/bindings/mmc/sdhci-atmel.txt   |    4 +-
+ .../devicetree/bindings/mtd/atmel-nand.txt    |    1 +
+ .../devicetree/bindings/net/cdns,macb.yaml    |    1 +
+ .../bindings/pinctrl/atmel,at91-pinctrl.txt   |    3 +-
+ .../reset/atmel,at91sam9260-reset.yaml        |    1 +
+ .../bindings/rng/atmel,at91-trng.yaml         |    1 +
+ .../bindings/rtc/atmel,at91rm9200-rtc.yaml    |    1 +
+ .../bindings/rtc/atmel,at91sam9260-rtt.yaml   |    1 +
+ .../bindings/serial/atmel,at91-usart.yaml     |    3 +
+ .../soc/microchip/atmel,at91rm9200-tcb.yaml   |    2 +
+ .../bindings/sound/atmel,sama5d2-classd.yaml  |    5 +-
+ .../bindings/spi/atmel,at91rm9200-spi.yaml    |    1 +
+ .../devicetree/bindings/usb/atmel-usb.txt     |    9 +-
+ .../devicetree/bindings/usb/generic-ehci.yaml |    5 +
+ .../bindings/watchdog/atmel,sama5d4-wdt.yaml  |    1 +
+ arch/arm/boot/dts/Makefile                    |    2 +
+ arch/arm/boot/dts/at91-sam9x75_curiosity.dts  |  336 +++++
+ arch/arm/boot/dts/sam9x7.dtsi                 | 1237 +++++++++++++++++
+ arch/arm/configs/at91_dt_defconfig            |    1 +
+ arch/arm/mach-at91/Kconfig                    |   23 +-
+ arch/arm/mach-at91/Makefile                   |    1 +
+ arch/arm/mach-at91/generic.h                  |    2 +
+ arch/arm/mach-at91/pm.c                       |   35 +
+ arch/arm/mach-at91/sam9x7.c                   |   34 +
+ drivers/clk/at91/Makefile                     |    1 +
+ drivers/clk/at91/clk-sam9x60-pll.c            |   50 +-
+ drivers/clk/at91/pmc.h                        |   18 +
+ drivers/clk/at91/sam9x60.c                    |    7 +
+ drivers/clk/at91/sam9x7.c                     |  942 +++++++++++++
+ drivers/clk/at91/sama7g5.c                    |   42 +-
+ drivers/irqchip/irq-atmel-aic5.c              |   10 +
+ drivers/power/reset/Kconfig                   |    4 +-
+ drivers/power/reset/at91-sama5d2_shdwc.c      |    1 +
+ drivers/soc/atmel/soc.c                       |   23 +
+ drivers/soc/atmel/soc.h                       |    9 +
+ 49 files changed, 2806 insertions(+), 61 deletions(-)
+ create mode 100644 arch/arm/boot/dts/at91-sam9x75_curiosity.dts
+ create mode 100644 arch/arm/boot/dts/sam9x7.dtsi
+ create mode 100644 arch/arm/mach-at91/sam9x7.c
+ create mode 100644 drivers/clk/at91/sam9x7.c
+
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
