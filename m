@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2067C04A94
-	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 20:32:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6EF0EB64D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 23 Jun 2023 20:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dqd9uTW85xH8StEOxaZnaoa5ZBkars0biRon7ba4Hm0=; b=RdOMyEJrFTco+7
-	SNiz1vXPvagrQVa1nqstzG1tNDdGQ31bzIfceGGUV9OZVAPaT/02nf9mjVnLnXfi7whExWPT1Kj+i
-	hmmWxqV7UE0rorSQScZuQ/gbZXh4Fc4mS3VQaCshrVFD45wObN3k2QvbkcqQVBIl56Cmfr83L8sef
-	dy3xKoZmQKKgbI0FFEu1JkSjyLHWed3yFC8z/vX6f9PcW+kqWyE5d/sgq/N0AFN5mXeTC3m86SSXs
-	v9VRiclDPImgPdb2a70x+3QKiybr+dGC1CzCvc17Ay/PkZcBqu0fXzr5tYoUUYOkTpmByq11LiFQh
-	k+S6n9IzBS9056o1k1zw==;
+	List-Owner; bh=S9ENGNvhMxfnz3Hdr2wBkKDuXshHXYN16Nrup/28hbU=; b=njJ690Unti+waO
+	vtFHdZDNY/EbhJRLvTYVhOKuu0lnp5+mmKnf1mpise04qMd4WTlyy4OGr2kaiTnjqlM7yinPBeSRn
+	huSkg1aN5DCnpx8kEETKIlvCF1VGWW1mEB04A42ITbfJigC7yBmV2Zh/lrI8C9NXlvEet9vOx11WN
+	dv08lmopkFK7sp7wbp3XXVFcDXiis6XVqHCe+PqvCbnxfBnXK6z/w4SznYjUzBVSs+mystP0wQYkE
+	IKwXReuP7JHddT2viVPmQiALdnpYm7ZN4y/XYonPST4H5pAYBZLlc7gIwyG3w38V1hs/m6R5gicKx
+	nN8V5tLL3K8sage5eVLw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCnRu-004U9I-2y;
-	Fri, 23 Jun 2023 20:32:06 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1qCnST-004UHp-2E;
+	Fri, 23 Jun 2023 20:32:41 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCnRq-004U8V-2S;
-	Fri, 23 Jun 2023 20:32:03 +0000
+	id 1qCnSQ-004UGf-12;
+	Fri, 23 Jun 2023 20:32:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1687552323; x=1719088323;
+  t=1687552358; x=1719088358;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=GsHjTGOIwG51l33j1RwStl2l2LqbNlmB/V7XSwlE9ew=;
-  b=ggbt1SDOpUa62xDivc02getq0eO2E0NxAOmEf3EcpGOScCbBpUsZun/h
-   aWvY20PjsT2JNPqRHggEBY82THfYpXU/7PXwpEV0XTxi7jFTq/0biENwu
-   qodnSjHTYModC1fsmqqNM42b5zVsv5pa5AaQdfrpHlJVpwlGVQ3POBma/
-   TQ3i9gd5eneENtrZWjYAnEUwW5Fy2R8O+k0BrZnEy3OkePa11IljIyAfs
-   GQPF1KgeL3EJ4SyKi24ZqmHVG2X0fPAFnmTUXdTwcViD6qlmd6kIol/rO
-   Zk7/KumTVvhHY/X8DjHS0jonNOKtkiqXGwW0fgMi8xCwD66DxNtcXCMGb
-   g==;
+  bh=7nhAGSQj8zuC4h0VCcRRvftj9ytkh4m3PuE266HinoA=;
+  b=frpIchLikOib8V/lb2V7iW4gDmojJxkKeGOSGg9pGpVnzitbPx76VX+T
+   jzw6IZs7TzgqaAt8dR/fBIsbp340yK+RqnhNNlhr/klvgaqaQrVTJZyYq
+   fAnUy9JEq62VZlIDgFd5ElAw3yxedQXIRlnAHKzgdJ/qm4N6MX79oJBC+
+   FIJ423WByquQr+M4LOKcsotLeAMFijNDc6dArApOb4Vf4JydPV1Xg6sBp
+   Uyemd4D7cU+9gK4Oxn3A0YUsOaMF3Zw2Hs8K5OygpDdeX8fqPwM6VUWtw
+   6y9WBf1y7HqnUjP3OFSZpaRQFRCpyK9r3lpRFHKzCBK/IVz/hpBhKzRkc
+   A==;
 X-IronPort-AV: E=Sophos;i="6.01,153,1684825200"; 
-   d="scan'208";a="220215600"
+   d="scan'208";a="221701784"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 13:31:59 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2023 13:32:36 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 23 Jun 2023 13:31:57 -0700
+ 15.1.2507.21; Fri, 23 Jun 2023 13:32:28 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:31:29 -0700
+ 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:31:57 -0700
 From: Varshini Rajendran <varshini.rajendran@microchip.com>
 To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
@@ -83,16 +83,16 @@ CC: <Hari.PrasathGE@microchip.com>, <cristian.birsan@microchip.com>,
 	<balamanikandan.gunasundar@microchip.com>, <manikandan.m@microchip.com>,
 	<dharma.b@microchip.com>, <nayabbasha.sayed@microchip.com>,
 	<balakrishnan.s@microchip.com>
-Subject: [PATCH v2 01/45] dt-bindings: microchip: atmel,at91rm9200-tcb: add sam9x60, sam9x7 compatible
-Date: Sat, 24 Jun 2023 02:00:12 +0530
-Message-ID: <20230623203056.689705-2-varshini.rajendran@microchip.com>
+Subject: [PATCH v2 02/45] dt-bindings: usb: ehci: Add atmel at91sam9g45-ehci compatible
+Date: Sat, 24 Jun 2023 02:00:13 +0530
+Message-ID: <20230623203056.689705-3-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230623_133202_803903_67D94F09 
-X-CRM114-Status: UNSURE (   6.73  )
+X-CRM114-CacheID: sfid-20230623_133238_460131_7292BEAE 
+X-CRM114-Status: UNSURE (   6.07  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -110,26 +110,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add sam9x60, sam9x7 compatible string support in the schema file.
+Document at91sam9g45-ehci compatible for usb-ehci.
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- .../devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/usb/generic-ehci.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
-index a46411149571..4a008d86085e 100644
---- a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
-+++ b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
-@@ -20,6 +20,8 @@ properties:
-           - atmel,at91rm9200-tcb
-           - atmel,at91sam9x5-tcb
-           - atmel,sama5d2-tcb
-+          - microchip,sam9x60-tcb
-+          - microchip,sam9x7-tcb
-       - const: simple-mfd
-       - const: syscon
- 
+diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+index 9445764bd8de..7e486cc6cfb8 100644
+--- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
++++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
+@@ -66,6 +66,7 @@ properties:
+           - const: generic-ehci
+       - items:
+           - enum:
++              - atmel,at91sam9g45-ehci
+               - cavium,octeon-6335-ehci
+               - ibm,usb-ehci-440epx
+               - ibm,usb-ehci-460ex
 -- 
 2.25.1
 
