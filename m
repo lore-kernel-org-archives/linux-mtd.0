@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F337EB64DC
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 07:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3170EB64DA
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 07:55:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QO0DSvDDijyCwpE7brkXAGrJRx0+8folHs+o5uGub08=; b=DIkxOoRwAGHWuh
-	XLl8hTx4eSs+dtV0rNeFLI28K7iR9PryrUsqa51nD5OiHROWB7wOocMKNccVW40iclu28cMZj6Pyi
-	zY2ndDmWFOfEuQlKMvXXTF244dOrfRLrtCFDgM4d8s6mIO4/yH70PrKfD8765j2F4xNaUKrqGHbRG
-	t0MdfCJnhqXsihwpX2t4oGU6fYXQ+mLA7sf/HOoe0BG4ZjMD31zPxIV+sdzLnH5yxGtvK2g/qFrRW
-	O7xHh+ZXaVO47O6dc6ZjIxaj2cz9Oi7PnR6nuYHrSrIhYD6OljMm1/U0Nbg8h0q2eowfLTqepjrfq
-	4DOyfhzewU3RtsLJjvPg==;
+	List-Owner; bh=GJ0HWvkEG4krx2i/WqIWEDD/aEDW6VKqdyUkbbAo8ZY=; b=0mmDMJALck5YTq
+	h1wBIRWUkzRUk/wdR+2TKM2uNvhsJWtxuKjTGSdF71KlNMKy58NOL8iDflcj3hjZ5C1h+ZogowdtE
+	7cPGrQqWC2P5ab5zGDLGN18ctWrFKB2sjmqWffQsW0p5Qp0kqG4lRaBRsha6St62K3mpDao2JVHyb
+	+gYEN3OykAnOUDlsgxiPMZlkNgnUs9s8SjlceeY9F110txafWzKGn1E88ZaeSevc/IzgHT5+CdkEw
+	O3VLNUh7KQRu2X0hJzTUmOkN36yUAusckyKmfvB+WzXC1MU4vs4VnM4GbQHoXePxfBf2uE2uylVpn
+	g+F/OLd75VDZ/r9ivFuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCy5z-005St5-3C;
-	Sat, 24 Jun 2023 07:54:11 +0000
-Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+	id 1qCy6n-005T7D-1J;
+	Sat, 24 Jun 2023 07:55:01 +0000
+Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCy5x-005Srr-0u
+	id 1qCy6l-005T66-01
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 Jun 2023 07:54:10 +0000
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-988a2715b8cso463731866b.0
-        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 00:54:07 -0700 (PDT)
+	Sat, 24 Jun 2023 07:55:00 +0000
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51be881b425so1505137a12.1
+        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 00:54:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687593246; x=1690185246;
+        d=linaro.org; s=google; t=1687593297; x=1690185297;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=0ItoFIh/55aB/e70WP466UAh+90Zeto+YBld1GOUDlc=;
-        b=DjI6EnIt0I30aO4+HTDU2Bee7J4vBxnKRd9UupAVeWwpXVR+/r44DC0Asz08Bbuogp
-         A3Aatz82DO8yHVMwWhn1gZCqEe6a2rWXkuiA6GfBUfoZTs2e6cwPHLJ+YuaeHPEUIAQJ
-         DJhwVAmDzSax0DlG6oJFsEy6UVQ/dIS8cQ+3QCTL9/CI0CL0ZoRWS02I2uBuEAJJk09M
-         Og5/SFPOzVmyQO9aVPrw3zuNNqm8+pzstsdw5EMvXLcY8o+3wfyYcS7e8fj+IvyDLk8l
-         BV2H6dDfJXmnGhqVtns8T1Mm5OFcAqbapX7uBCu2Qe31+yaUBaZBymo/wMUBAVDBKbPz
-         XF9w==
+        bh=soj7fUfKLSUMfNJRhcGNetkgOh1MYDCQh05RlBdkeN4=;
+        b=eD/q9ISsMCL47wOXs6De7fuRpet/07x40xn71+pyopNmpfC/leMOmohtiJNK9d+/0e
+         ILxksxb1fX6rwaa0PNl4dIKNWKQ0JE0p+6mC8Npy2RJ92zmvNc++lXF1Evombv7lLOhq
+         j0dEkeCidthf58IY6B/xewKh7UeXN34mH4Tn/G+1iZuhgJY19SkmNAEXnRUl+6Hr2Pkf
+         cSz2zRZiOrOsv0eavcQnSNRSp9hvrs6WsSE1JlocSaWw+8h6/lYnvjc7aqnaDQHYXfi2
+         MGVSEIum3iSzoq+S0mokQ5a3djEQN7ISokIkliin4UzR1LuGSZT4+Gyjp384W6jbO4Hx
+         53EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687593246; x=1690185246;
+        d=1e100.net; s=20221208; t=1687593297; x=1690185297;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0ItoFIh/55aB/e70WP466UAh+90Zeto+YBld1GOUDlc=;
-        b=Vnw9gWzgnvD52EEXSjg4A7e6do6bAltP37pMA2LMJGlGRF76+6Rl7mo7I+AEmXFcWd
-         bG4/5QEiD7Y14QfUh8QFRzu8ukkNrvFpmAhKbaoKY2vA+QGzTyu7OhQNnguv5U4HRpu6
-         2DBn46P33bcevbUf4BHDcQwm+rqGpQ4Z2uDIQuvtF4d/EeUrsgKqaF2XAXvmr9ynYEAg
-         werYxwn8c69yj6OaCOTNP+73eO5k5ohpFB3ZGhvZpAkFBk2DolA5A6Upe9vVoq3KhcdP
-         YM0+Mv4rW8PuSgBT2t4Juv0h6ufbtcdzPj2Pi1L3igKbz2b1ioudoBuFDmYQrU0hEGwJ
-         ch4A==
-X-Gm-Message-State: AC+VfDyKKUxbXpfT7IjDDGqgS0JpIVnkfTz3Hgedm+rHdvMFiY0DSA63
-	KLe6acqwvIZZ59OCrlF/qzAZGQ==
-X-Google-Smtp-Source: ACHHUZ49jFwiXxqnSCSn4kNoVnnSW/YdtiArnK3FxalPv2kaFMQNSvBgECWFO9OcGbSuOPMw0UOLPA==
-X-Received: by 2002:a17:906:58d2:b0:988:77f0:b671 with SMTP id e18-20020a17090658d200b0098877f0b671mr14792178ejs.38.1687593246753;
-        Sat, 24 Jun 2023 00:54:06 -0700 (PDT)
+        bh=soj7fUfKLSUMfNJRhcGNetkgOh1MYDCQh05RlBdkeN4=;
+        b=CrqZTq2a9f73m4FS8D56lOfXHAz0tW8AgSseJBd0fealMMWrCqP6tsqVJXiB8Adagg
+         dtgjlyOCZNcwDoY8LUzsO+rWJmA56JZhi/qieXubjochGty1xYGhreQ6mBNo2qO0CutD
+         DJptj4h73r1zzG0qbqpEyibkJXk/EKCNgaLiJUQlLNcRdiLr4g/5gIWV+eG8jg25TBad
+         7bo2MbK6VZcDyIkyhq1PmHIRQ55bJEJUjSpMoc0Z7/HFzrjMxXY/wOc32K/wzttp4/Fk
+         6hSjIzz6NTOGl8ow82Ci3B2FXdLJngLT91HbqsB0apBQpcZRBAfgJ0uKsGfsd5wOWdXA
+         uulQ==
+X-Gm-Message-State: AC+VfDxxqi9j9JYN+4Jh3lN1IXsShxtSOeiu3RhX45yRxWnaFl/zcTad
+	/1TtbqHeTrDnbUYqoHye9HLqQw==
+X-Google-Smtp-Source: ACHHUZ5vmH/wKISmL4HMBTOHg32GmJjKiHm7OZvesTfDEOfAm6Koe4Xv//vNxQvMZ5IiPxQ9Ro3PoQ==
+X-Received: by 2002:a17:907:320e:b0:96f:912e:5ec4 with SMTP id xg14-20020a170907320e00b0096f912e5ec4mr19710575ejb.16.1687593296802;
+        Sat, 24 Jun 2023 00:54:56 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id u12-20020a170906068c00b0098856d1470csm592132ejb.75.2023.06.24.00.54.01
+        by smtp.gmail.com with ESMTPSA id o6-20020aa7d3c6000000b0051a5177adeasm400813edr.21.2023.06.24.00.54.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jun 2023 00:54:06 -0700 (PDT)
-Message-ID: <4f1015bb-50d3-84c9-ca32-564a0fe204e1@linaro.org>
-Date: Sat, 24 Jun 2023 09:54:00 +0200
+        Sat, 24 Jun 2023 00:54:56 -0700 (PDT)
+Message-ID: <428a655e-8664-0e68-7eda-8edd47a4eee7@linaro.org>
+Date: Sat, 24 Jun 2023 09:54:50 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v2 03/45] dt-bindings: usb: generic-ehci: Document
- clock-names property
+Subject: Re: [PATCH v2 04/45] dt-bindings: net: cdns,macb: add documentation
+ for sam9x7 ethernet interface
 Content-Language: en-US
 To: Varshini Rajendran <varshini.rajendran@microchip.com>,
  robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -101,12 +101,13 @@ Cc: Hari.PrasathGE@microchip.com, cristian.birsan@microchip.com,
  dharma.b@microchip.com, nayabbasha.sayed@microchip.com,
  balakrishnan.s@microchip.com
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
- <20230623203056.689705-4-varshini.rajendran@microchip.com>
+ <20230623203056.689705-5-varshini.rajendran@microchip.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230623203056.689705-4-varshini.rajendran@microchip.com>
+In-Reply-To: <20230623203056.689705-5-varshini.rajendran@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230624_005409_318528_9C77AAFF 
-X-CRM114-Status: GOOD (  10.42  )
+X-CRM114-CacheID: sfid-20230624_005459_049216_43965152 
+X-CRM114-Status: UNSURE (   7.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,23 +125,13 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 23/06/2023 22:30, Varshini Rajendran wrote:
-> Document the property clock-names in the schema.
-> 
-> It fixes the dtbs_check warning,
-> 'clock-names' does not match any of the regexes: 'pinctrl-[0-9]+'
+> Add documentation for sam9x7 ethernet interface.
 > 
 > Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
->  Documentation/devicetree/bindings/usb/generic-ehci.yaml | 4 ++++
+>  Documentation/devicetree/bindings/net/cdns,macb.yaml | 1 +
 
-This is a friendly reminder during the review process.
-
-It seems my previous comments were not fully addressed. Maybe my
-feedback got lost between the quotes, maybe you just forgot to apply it.
-Please go back to the previous discussion and either implement all
-requested changes or keep discussing them.
-
-Thank you.
+So you ignored the comments and tags everywhere?
 
 Best regards,
 Krzysztof
