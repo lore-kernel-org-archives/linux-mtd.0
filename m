@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BB0BEB64DA
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 08:02:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CB89C19F4F
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 08:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=61/rbu5KWkAqmGxMBvndcRzQuqVJpmq2YflA4fkUKdY=; b=m7asyv9fpU+a5m
-	jL4dbZD/T0wg+go/2kexsjKSAThQGYubxuTZ60MOcMQiRgLdcVFjdHxDli2khph8/Kit/oywbodHi
-	P+OHibBn99OeU8X96qzHHqI3Y7NqbZGUuXqvQ+KhyvEd8CHBHl+LOSElCGeQFXJD/b6r7zmhYRi4t
-	jeEOy/41uYnEGC8iq76V39SFtGadWoIIVEUz6dvQgZ6o1nXlWDp7Ed0RU2BrgCj+L68iploGkuIbg
-	Uhd+5d23OArUczabDLUx6cVuQ6msT1CrBEnZbnQbgkBkNJT5iI39LmN0Ehy7ig9zHo32xrfARm8z3
-	W5pMCDvgAiKt9g+vMyIA==;
+	List-Owner; bh=QgpffcNb+/J3Ke6P32bn//nPMrwzANOL3Q04nDdlqmw=; b=X3nytOQcWONHIP
+	7Otk/CpS6a5kRbrW8MMGN9lvJptcXVtFg7vIHqQZLgrPk+z++2VaqQdonkMlBDbNNv99CBNrnYCTu
+	6FOgpxS8/qzEa3LS9TJ2wMq54EnVfb+QF/Z8CTxrucq5LJiMwWxldX2NduSh4FBFOKGTrQ5UGAfg6
+	1w1qJqq9aDaipbPMtM6G5P+SfbfgEUTeGx6Dre+sRdKWVdGX7rkCvTtZpFByTBY1eYVv2bDX+Afps
+	ow6MwlMBISYN/UED9jmrLRTHc6Jwl7nu5CKI6N2huPYsOZWlvUn0GyTGv7cTyg/y2dd4oJH8nkIPp
+	iAz5CgFnOWxFbIQjL3nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCyE5-005Ujt-3A;
-	Sat, 24 Jun 2023 08:02:33 +0000
-Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
+	id 1qCyEL-005Ure-2C;
+	Sat, 24 Jun 2023 08:02:49 +0000
+Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCyE2-005UiH-32
+	id 1qCyEH-005Uoj-2w
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 Jun 2023 08:02:32 +0000
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51d5569e4d1so403259a12.2
-        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 01:02:30 -0700 (PDT)
+	Sat, 24 Jun 2023 08:02:47 +0000
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-98e0c1d5289so2239266b.2
+        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 01:02:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687593749; x=1690185749;
+        d=linaro.org; s=google; t=1687593763; x=1690185763;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=L8LUDdIDqS/S81pzeykwMUjVd54i6Iidt8jcXJziYFU=;
-        b=IGISLJU8aL9N8mVg5tva0FYJZ4ypiF8eDRpd6Rn8HPZy48/jSbTIltoLQMlSeM3L7i
-         Gej8neMhutSWohQ24tzO80Lpn3kaLt9qqqRwOONjtjD/gRLklgEGqn2uq8r8WCnVjZU/
-         0lc99U58ylKcCJEJPP/lfFSYAUX12mhkOhQvyuZPdyou9/jz69f1vvrBPa+sEfa9ZPnr
-         OzxyhRY7ALK8r11IHXFwC/0P7k4XIkrn4WIr9sRXhRuL4JMOb+f4XV9bQ2F2Sun3Kdd+
-         RFW9JXqw22CUXQ81UiEc3zXhCcs0R+mF6aloRmSsO6/VuzfhI6dXXM3pwXPg/wwzOsi/
-         XO0w==
+        bh=jaGxY+NnkNtbiINqgZVIrn7LMLj+M5ushBYs/d6ygok=;
+        b=w8QQgONDomUOqDBoVh74CKpXdYrNhuFs41+qRLRJ7+fbvCMztxR2frYWC/83GW8hxQ
+         3999BqBWVkJkuE9zm1JY6YjkcJceD+QK8nJzyeaQCGD24DDH+0SG6712mcjzXHoAWzM5
+         m4ybyz1vjuPBLNw9H7DwOIngDiMWxYC6lTWMStgy4ra9SRYTJ1ld9vMzfpmrRabfHZ1W
+         l9EohQU41D2zbZS0eNatZtiDvIYHa4nIYO0iuwVzKFNi1KNiAwzY+VYQu99FV+fe4bhL
+         8f0QKWSQetVmrEASvd1LR7mIEihTpdS6wcmS7mAgyQ6/10XhHyEcYX3XwOqGChl7fY7J
+         VPcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687593749; x=1690185749;
+        d=1e100.net; s=20221208; t=1687593763; x=1690185763;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L8LUDdIDqS/S81pzeykwMUjVd54i6Iidt8jcXJziYFU=;
-        b=jQuzAXJ7FJ3xxB78y+ThD5rUDrN2lXOHjt3jBGelShSOWz0SghkUK6oyu+KzXsyknP
-         q3WF0xdn33ZP9qM0JPEQu5Pm3PQKBsVkC4vQHfgADAYx85xiJxR8yxBle/0lG/kt01Hq
-         7Hi1Hbr1Ee0wx2unaA5H4YrwxlMF7HW7CuY1KvR1a/KgtjrcOG+/IdgYl4vgxU+QvXGR
-         ZLR0/8WjscKNuBp6OBYWHlvz+lA/pH4M+ynjXRCAeescSskPzjQN/Wnxf82OJmKYaEDg
-         TbjqGWnizMDUQYNaXiqM+LlH25FdsHsElcQkJejb7R3c4SPuU30kMw1SpvDrZChjXtKn
-         LOng==
-X-Gm-Message-State: AC+VfDzoJq35xXzAguzgGIeca3Wr8us/5W/fIZnrXEUHEFPOmrDOJiiw
-	Xua30qpDv9BOyaj6VNr6Zc90LA==
-X-Google-Smtp-Source: ACHHUZ4K2H7+wCUg6ioqFCkyucKiFbP5cpiH1/A295WcgwuRd8qHBW0eTaeYJOTsq1BbRpdDIU7d9Q==
-X-Received: by 2002:aa7:d88c:0:b0:51b:e9a1:8831 with SMTP id u12-20020aa7d88c000000b0051be9a18831mr4249258edq.34.1687593749577;
-        Sat, 24 Jun 2023 01:02:29 -0700 (PDT)
+        bh=jaGxY+NnkNtbiINqgZVIrn7LMLj+M5ushBYs/d6ygok=;
+        b=hRK2Zt+DlQTwBYe/lVtxOYzHLujDOcilaN0Srcry5/XuFWyo8fhg6eKHLAsj/HLarb
+         gt8gkybLHHdrJOSjs/tKwfnjZIeSsQrRCN0D3x5m/GQIqfoxHVCbInv4uU8vA3RF9QUK
+         ggMR+CT90xoehft+7BCKNIqjlPsigbfz5TuPPg9+d0HeaFQmvOihcZlXaiYdJ1PFPZ9g
+         U5rFi3joeMCAquhOYhQQ+2DQoG5WBGQgOS6v+y4MwN5ih/ACwGYuf2kZ3VOJCUcLVcjz
+         EI7QhMJ6aZjcVHvsG5QfeUnPwhhykiFos8KNQSqLjIXQ52sCa4zL4RnHUb8Rs+5pAbC6
+         6WYg==
+X-Gm-Message-State: AC+VfDxgLm1N95LyrhV9cpQkrLV/pDeTkx6nXgIa2q3rwHjWdn4Jzd7I
+	ZkLzGXCdfjKzuZYK6sjWsKOhig==
+X-Google-Smtp-Source: ACHHUZ6vL+lt0p59DekkavEVRdH+VurtmvBUx/CDPLLIsizULEgMBaYfOxG9eWuvaLpHLjFTBqHNMQ==
+X-Received: by 2002:a17:906:5d0d:b0:988:cbf5:3a80 with SMTP id g13-20020a1709065d0d00b00988cbf53a80mr15099774ejt.62.1687593762629;
+        Sat, 24 Jun 2023 01:02:42 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id w15-20020a50fa8f000000b0051bfa07af4asm401283edr.93.2023.06.24.01.02.24
+        by smtp.gmail.com with ESMTPSA id a2-20020a1709065f8200b009878b0b5302sm619453eju.98.2023.06.24.01.02.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jun 2023 01:02:28 -0700 (PDT)
-Message-ID: <b49ec52f-094e-fe83-ba9f-cf03c01b782c@linaro.org>
-Date: Sat, 24 Jun 2023 10:02:23 +0200
+        Sat, 24 Jun 2023 01:02:40 -0700 (PDT)
+Message-ID: <2d3f27ba-62ce-b37f-3672-df8ee58cdcc0@linaro.org>
+Date: Sat, 24 Jun 2023 10:02:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v2 30/45] dt-bindings: serial: atmel,at91-usart: add
- compatible for sam9x7
+Subject: Re: [PATCH v2 31/45] dt-bindings: atmel-classd: add sam9x7 compatible
 Content-Language: en-US
 To: Varshini Rajendran <varshini.rajendran@microchip.com>,
  robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -101,12 +100,12 @@ Cc: Hari.PrasathGE@microchip.com, cristian.birsan@microchip.com,
  dharma.b@microchip.com, nayabbasha.sayed@microchip.com,
  balakrishnan.s@microchip.com
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
- <20230623203056.689705-31-varshini.rajendran@microchip.com>
+ <20230623203056.689705-32-varshini.rajendran@microchip.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230623203056.689705-31-varshini.rajendran@microchip.com>
+In-Reply-To: <20230623203056.689705-32-varshini.rajendran@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230624_010230_996954_9D7F010A 
-X-CRM114-Status: GOOD (  12.28  )
+X-CRM114-CacheID: sfid-20230624_010246_756797_9FE6C4C8 
+X-CRM114-Status: GOOD (  13.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,27 +127,22 @@ On 23/06/2023 22:30, Varshini Rajendran wrote:
 > 
 > Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
->  Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml | 3 +++
->  1 file changed, 3 insertions(+)
+>  .../devicetree/bindings/sound/atmel,sama5d2-classd.yaml      | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml b/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
-> index 30b2131b5860..d836224f99c6 100644
-> --- a/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
-> @@ -17,6 +17,7 @@ properties:
->            - atmel,at91rm9200-usart
->            - atmel,at91sam9260-usart
->            - microchip,sam9x60-usart
-> +          - microchip,sam9x7-usart
->        - items:
->            - const: atmel,at91rm9200-dbgu
->            - const: atmel,at91rm9200-usart
-> @@ -26,6 +27,8 @@ properties:
->        - items:
->            - const: microchip,sam9x60-dbgu
->            - const: microchip,sam9x60-usart
-> +          - const: microchip,sam9x7-dbgu
-> +          - const: microchip,sam9x7-usart
+> diff --git a/Documentation/devicetree/bindings/sound/atmel,sama5d2-classd.yaml b/Documentation/devicetree/bindings/sound/atmel,sama5d2-classd.yaml
+> index 43d04702ac2d..d53addbcd41b 100644
+> --- a/Documentation/devicetree/bindings/sound/atmel,sama5d2-classd.yaml
+> +++ b/Documentation/devicetree/bindings/sound/atmel,sama5d2-classd.yaml
+> @@ -18,7 +18,10 @@ description:
+>  
+>  properties:
+>    compatible:
+> -    const: atmel,sama5d2-classd
+> +    oneOf:
+> +      - items:
+> +          - const: atmel,sama5d2-classd
+> +          - const: microchip,sam9x7-classd
 
 Same as in other cases, so just to avoid applying by submaintainer: not
 tested, broken.
