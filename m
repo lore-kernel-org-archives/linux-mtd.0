@@ -4,88 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A86FEB64D7
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 00:09:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA039EB64D7
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 00:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XgsV1g2wYVBqyuoD7ih0nfhkHPjXhD8TsovqB9sCbXo=; b=HhMQwakP9Mnyd3
-	ODYjYwMVRjh7VuSqg0b1yrFwY3quEzHnXHoYfD7DT1w6jn8x+s805eA29JNmHIH88W1B/Z9vXnE/1
-	1dS/afad8mIGA5WWx6zs6+yT69YtKRBFmceUwDk1DnCnRHrLEbxZNr0BnIL0A9RnmYfJu4PDN5DsC
-	dJ3UvJGUBazfbpBBMgLiO3WvM2Iu2SgGjPIyfT8jB2pFmimfyjkqdp/VstPTZdk6wnI/B8iq9S/Ld
-	5eNzxyYjrYP4TAAZ+M2DABswlxBdwHjfr5AIy+g9BDCV0zOakmZQbAoJ7D/a1x6+NQYHLFxFmygbw
-	g73M/W8RRLT9mCJSlfEA==;
+	List-Owner; bh=VkRFKUGJWuMOeo4+qtmgF3xvq9OpxmSjuYt+YPZkyuE=; b=iZGeODjS1e4E37
+	ozV+8+j3jS1uCP/Vrb7SimsFVlw8fXPrATL45f+6L8gsY1YLSKca+xRBeAeNu/gQFH8g69U5SEJc+
+	Nu1/3nOO5BlZnQiJ7HyXGPkL0icU4DSXxV0wjDgB2qcjN5wseMrPI6Pnai2gxvW6yU+bHkD6Y83s9
+	JMyuqhMO6XF7cp+OCaVdxsokjeB+yXDdV1iGYSZPMsPQfeW/qyovCrY2oRxgkFq2ektjh45MfaOwM
+	apUaai1cTAxh+bFaJJpoPe2k6/ehMlorqNHw7rQ8lsNRJAgT+++M9OQsRhwIX57izRnT1fCnqK3GY
+	2gg+hn4uPW3A7sYtBwcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCqpz-004tEA-0V;
-	Sat, 24 Jun 2023 00:09:11 +0000
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+	id 1qCrWM-004xId-0q;
+	Sat, 24 Jun 2023 00:52:58 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCqpv-004tCW-17
-	for linux-mtd@lists.infradead.org;
-	Sat, 24 Jun 2023 00:09:08 +0000
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-666fb8b1bc8so1022718b3a.1
-        for <linux-mtd@lists.infradead.org>; Fri, 23 Jun 2023 17:09:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687565342; x=1690157342;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wbJYrnA9pnU+meP6XQ4kPeEwf/5w1AM0kN7wumRTQPk=;
-        b=PNtSvWLdn9xOWUkW+c/xisBSDCt4yIiRGsF9p+IVVWTxHksTX8GoGu+4bK9ObiNHdS
-         6nkRKXaZeOpZfl0YXRsSGGC11zmCYcuj1wb9sqSktGdWDxoAnWmA441nYZnikI90iq/M
-         uU+DCPS67i4GDBwiL1j/ZIRm4zeu/icq8P2m7jmPy+pOAZk/rj+8EA8/U7PkEQTUfyXX
-         f1wm9xWCYKJO3sjjiMInuykINkywjC9BVLZEY5OWqgz0X10/+wDgafPmFpZ16YHQteS+
-         TL8R4XaE3ALyzu9H7LB6bVnh43dxlBQy/BfQ7Z7SdmWSxssvI/YXa7EhP3URwBjI+H2R
-         S5RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687565342; x=1690157342;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wbJYrnA9pnU+meP6XQ4kPeEwf/5w1AM0kN7wumRTQPk=;
-        b=HrfSLP5QQZJ+smfKtaj/bngvPzgpHmANPMx4S9FrDpVcWEpU0HxOKp15pj4f+/dnJP
-         h9ASUD/AGGAy1fwDApTAfb0TUbGAjuj5VdGHnLX3f7sP1aE2BJNZh4i+uEWeOK0IYiu7
-         uRtaVUtWzhlXOxe/bPDveUBeDxEDiIUvyUDr3Dm1adqMhv2kJO6GAbUr4zf2LZ/H5NRx
-         7cdboV2N//6D3CLXITVXKMgqJvKduhFDWsXyann1kCPD5L4+KzQwsqXyAjqk0uYUco32
-         S+5MBgTeChLwy2c9zxUsG29ylR0TbsW/Fqo5X6ID268TbEZlQjBakHswA2eRsZ2T+MDP
-         CJHQ==
-X-Gm-Message-State: AC+VfDwvV0pnwtoRwX+nWR/lgOGU1oX7YtFy5YzebL/16pqWX/j+26hU
-	QoeEtt0rKUfvuj6GlpbyhP0=
-X-Google-Smtp-Source: ACHHUZ5UWmNb3hGeP/QCkeICkX9qJKsrvt0uGbMg739NNzwe0eHF70/k0NEUj6d2y5jm6EUom87PcA==
-X-Received: by 2002:a05:6a20:7f99:b0:10b:4539:fa0a with SMTP id d25-20020a056a207f9900b0010b4539fa0amr28469987pzj.1.1687565342232;
-        Fri, 23 Jun 2023 17:09:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o5-20020a656145000000b0052858b41008sm165159pgv.87.2023.06.23.17.09.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jun 2023 17:09:01 -0700 (PDT)
-Date: Fri, 23 Jun 2023 17:08:59 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Joern Engel <joern@lazybastard.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, Pavel Machek <pavel@ucw.cz>,
-	Loic Poulain <loic.poulain@linaro.org>, dm-devel@redhat.com,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 08/24] init: pass root_device_name explicitly
-Message-ID: <c1391658-d785-4b2f-ba7e-01e4668685d7@roeck-us.net>
-References: <20230531125535.676098-1-hch@lst.de>
- <20230531125535.676098-9-hch@lst.de>
+	id 1qCrWG-004xI9-2d;
+	Sat, 24 Jun 2023 00:52:54 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2B1E961230;
+	Sat, 24 Jun 2023 00:52:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 728B1C433C0;
+	Sat, 24 Jun 2023 00:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1687567970;
+	bh=r/EW6obxSAVNNGjwUGkGRU+SWh5nEHChw4jIkdrVMyk=;
+	h=From:List-Id:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=dSOKhy79sEB2zIN2c8ajaVofGMArO0Go+fWumUQL9gmmkAU3QnfwbPH7w9WAaAOOZ
+	 w2GYaOr0xjKNeW8QA4o905lF5G9oX5k83Z7NVNVK0BRDZOe0gr7KK1bn3S+/TZ4fA2
+	 utNavE4sqCzZkKo0lfmhyMQzNQjXWTcX5MAmp82m8t11shclN2Cy3B6Il2KRsjJqa1
+	 L6tvmcwX8j5bfsy21mp78UvjksdnPTlXaMUpDMhWKk+uAqGmyUEFF2mtf7Z8p2Q1XR
+	 bRoAQou336boKyaD+3RQxZDzBKli+QkQJk1AGEeapc1CUwRC7l8k9a+I5g79sPTr29
+	 PSjHxExxu4Q+w==
+From: Mark Brown <broonie@kernel.org>
+To: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+ conor+dt@kernel.org, nicolas.ferre@microchip.com, 
+ alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com, 
+ mturquette@baylibre.com, sboyd@kernel.org, herbert@gondor.apana.org.au, 
+ davem@davemloft.net, vkoul@kernel.org, tglx@linutronix.de, maz@kernel.org, 
+ lee@kernel.org, ulf.hansson@linaro.org, tudor.ambarus@linaro.org, 
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+ linus.walleij@linaro.org, p.zabel@pengutronix.de, olivia@selenic.com, 
+ a.zummo@towertech.it, radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com, 
+ gregkh@linuxfoundation.org, lgirdwood@gmail.com, wim@linux-watchdog.org, 
+ linux@roeck-us.net, arnd@arndb.de, olof@lixom.net, soc@kernel.org, 
+ linux@armlinux.org.uk, sre@kernel.org, jerry.ray@microchip.com, 
+ horatiu.vultur@microchip.com, durai.manickamkr@microchip.com, 
+ andrew@lunn.ch, alain.volmat@foss.st.com, neil.armstrong@linaro.org, 
+ mihai.sain@microchip.com, eugen.hristev@collabora.com, 
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
+ linux-i2c@vger.kernel.org, linux-mmc@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org, 
+ linux-spi@vger.kernel.org, linux-serial@vger.kernel.org, 
+ alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, 
+ linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org, 
+ Varshini Rajendran <varshini.rajendran@microchip.com>
+Cc: Hari.PrasathGE@microchip.com, cristian.birsan@microchip.com, 
+ balamanikandan.gunasundar@microchip.com, manikandan.m@microchip.com, 
+ dharma.b@microchip.com, nayabbasha.sayed@microchip.com, 
+ balakrishnan.s@microchip.com
+In-Reply-To: <20230623203056.689705-1-varshini.rajendran@microchip.com>
+References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
+Subject: Re: (subset) [PATCH v2 00/45] Add support for sam9x7 SoC family
+Message-Id: <168756794811.1155588.11719780333735420720.b4-ty@kernel.org>
+Date: Sat, 24 Jun 2023 01:52:28 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230531125535.676098-9-hch@lst.de>
+X-Mailer: b4 0.13-dev-c6835
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230623_170907_391723_3A786F31 
-X-CRM114-Status: GOOD (  13.75  )
+X-CRM114-CacheID: sfid-20230623_175252_954051_E5204D20 
+X-CRM114-Status: GOOD (  14.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,60 +101,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On Wed, May 31, 2023 at 02:55:19PM +0200, Christoph Hellwig wrote:
-> Instead of declaring root_device_name as a global variable pass it as an
-> argument to the functions using it.
+On Sat, 24 Jun 2023 02:00:11 +0530, Varshini Rajendran wrote:
+> This patch series adds support for the new SoC family - sam9x7.
+>  - The device tree, configs and drivers are added
+>  - Clock driver for sam9x7 is added
+>  - Support for basic peripherals is added
+>  - Target board SAM9X75 Curiosity is added
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+>  Changes in v2:
+>  --------------
+> 
+> [...]
 
-This patch results in the following build error when trying to build
-xtensa:tinyconfig.
+Applied to
 
-WARNING: modpost: vmlinux: section mismatch in reference: strcpy.isra.0+0x14 (section: .text.unlikely) -> initcall_level_names (section: .init.data)
-ERROR: modpost: Section mismatches detected.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Unfortunately, reverting it is not possible due to conflicts,
-so I can not confirm the bisect results.
+Thanks!
 
-Bisect log attached.
+[32/45] spi: dt-bindings: atmel,at91rm9200-spi: add sam9x7 compatible
+        commit: a3eb95484f276488e3d59cffa8eec29f79be416e
 
-Guenter
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
----
-# bad: [8d2be868b42c08290509c60515865f4de24ea704] Add linux-next specific files for 20230623
-# good: [45a3e24f65e90a047bef86f927ebdc4c710edaa1] Linux 6.4-rc7
-git bisect start 'HEAD' 'v6.4-rc7'
-# good: [a5838c78db6a3a02e8d221e588c948f792e7f256] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git
-git bisect good a5838c78db6a3a02e8d221e588c948f792e7f256
-# bad: [cca41cc0b5485a0ec20707316c1a00082c01a2af] Merge branch 'for-next' of git://git.kernel.dk/linux-block.git
-git bisect bad cca41cc0b5485a0ec20707316c1a00082c01a2af
-# good: [901bdf5ea1a836400ee69aa32b04e9c209271ec7] Merge tag 'amd-drm-next-6.5-2023-06-09' of https://gitlab.freedesktop.org/agd5f/linux into drm-next
-git bisect good 901bdf5ea1a836400ee69aa32b04e9c209271ec7
-# good: [b4666c320b8113d94b3f4624054562e7add57e4a] Merge branch 'for-next' of https://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git
-git bisect good b4666c320b8113d94b3f4624054562e7add57e4a
-# good: [b2c28785b125acb28a681462510297410cbbabd7] ASoC: dt-bindings: microchip,sama7g5-pdmc: Simplify "microchip,mic-pos" constraints
-git bisect good b2c28785b125acb28a681462510297410cbbabd7
-# bad: [9d217fb0e778d69b2e3988efbc441976c0fb29b5] nvme: reorder fields in 'struct nvme_ctrl'
-git bisect bad 9d217fb0e778d69b2e3988efbc441976c0fb29b5
-# good: [20d099756b98fa6b5b838448b1ffbce46f4f3283] block: Replace all non-returning strlcpy with strscpy
-git bisect good 20d099756b98fa6b5b838448b1ffbce46f4f3283
-# bad: [93c8f6f38be67e30adf8d8eb5e7e9ccb89326119] pktcdvd: Drop redundant castings for sector_t
-git bisect bad 93c8f6f38be67e30adf8d8eb5e7e9ccb89326119
-# bad: [c8643c72bc42781fc169c6498a3902bec447099e] init: pass root_device_name explicitly
-git bisect bad c8643c72bc42781fc169c6498a3902bec447099e
-# good: [87efb39075be6a288cd7f23858f15bd01c83028a] fs: add a method to shut down the file system
-git bisect good 87efb39075be6a288cd7f23858f15bd01c83028a
-# good: [aa5f6ed8c21ec1aa5fd688118d8d5cd87c5ffc1d] driver core: return bool from driver_probe_done
-git bisect good aa5f6ed8c21ec1aa5fd688118d8d5cd87c5ffc1d
-# good: [cc89c63e2fe37d476357c82390dfb12edcd41cdd] PM: hibernate: move finding the resume device out of software_resume
-git bisect good cc89c63e2fe37d476357c82390dfb12edcd41cdd
-# good: [e3102722ffe77094ba9e7e46380792b3dd8a7abd] init: rename mount_block_root to mount_root_generic
-git bisect good e3102722ffe77094ba9e7e46380792b3dd8a7abd
-# good: [a6a41d39c2d91ff2543d31b6cc6070f3957e3aea] init: refactor mount_root
-git bisect good a6a41d39c2d91ff2543d31b6cc6070f3957e3aea
-# first bad commit: [c8643c72bc42781fc169c6498a3902bec447099e] init: pass root_device_name explicitly
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
