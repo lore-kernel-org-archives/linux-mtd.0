@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06624EB64DA
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 08:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D56CEB64DD
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 08:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AsZULJ1VLbZs82+sD+CD53t0xcj1A7eh0FzGcJkFlUI=; b=WdyFHfXPkFT9qE
-	bMHwyE6Z1KJRMbwey6W8+t73W0duhLFbhWlfvAQyKCwqYWGLY6n9sDvPbi8f2Ro8Rg7zKx48i9Odc
-	t+InEZrL8h8x95gzH9AZzfmwXbPkXXDCd0NhSgeGeqyPpK6EngkY7oFouarPFoIUdXGZDsvUs0HnJ
-	qJ4P6kl0QAsQGQ3x/kZeB2wUsSm0uJfaMxl9syBIbmzpiCdrsXqXR1KZE8SHFGe+HnH8UuSL75J7E
-	4MBKy5Czu6yjMA9iqrmoLTz0vKpNNFzR/MYJ91MYB5H+IxPEuqfB092wVdsR/aV9GH5GdQpitd07/
-	XxzRyIu9mSl0Jm6YBpLA==;
+	List-Owner; bh=fvEou2/0n1gZUn6TlPwhoN7DhA9ceRH3pL1tDMPfJ9w=; b=S46BXQlghTmdCV
+	MKblmxI3Dg7yx1cnBc2Twjpg6h5yqtRem3J+N1iCN/0SyfRpyaMLQodvaAD4Hghb2ccZrLG+mMEWY
+	tWoNM3brAZIlwzeqpICpgCshqob5Ezu6ENX0hccxQDRhiuVDzjmZHg1cezoW5T/Qby5H96QCDLkKo
+	WKslgV8WCuhSnJgMxbVejbK997fdRUlKYgVPplKnCiN4Dz/+OJ1Wcae2ge3QL0PehnEuot59Z+hm2
+	9TW7HuNZD+TcFLUmj/QO65qEP0SD90MKV0M240/5P/JrjUcmy1mXVpONA+gvdYcBbd2AcJX6A90/Z
+	zECot8iOyTbqCJzsdHcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCyZe-005Y4n-1i;
-	Sat, 24 Jun 2023 08:24:50 +0000
-Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
+	id 1qCybz-005YjB-1h;
+	Sat, 24 Jun 2023 08:27:15 +0000
+Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCyZb-005Y23-0g
+	id 1qCybw-005YiR-1w
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 Jun 2023 08:24:48 +0000
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-98d2fb1bb23so190066366b.3
-        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 01:24:46 -0700 (PDT)
+	Sat, 24 Jun 2023 08:27:13 +0000
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51bee0c0acbso1385685a12.1
+        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 01:27:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687595085; x=1690187085;
+        d=linaro.org; s=google; t=1687595231; x=1690187231;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3/1MyAMnY+Za4p1Z3b6q8vQY3JjDEV6jQ0tLk7ro11c=;
-        b=vEp3OTxw3d1bxXmcrGbjPTZvGdATt4kPb7wTR8P+STWcYy+IGxBjmsrwXHlsdl+475
-         D3HkXaVWkfKkJd8Y1v8mJIJNd7MKu+DSOBpGH1R/wozFufpVZ4WggR5v+D40MBe1DSSC
-         xIxqP9drpnReATR6sXOtXazHadpPvVE4WXYIX8p8txCkuf3z8X9pyH76wlzCm+qOtyk4
-         gvPYv/GZefHyoz4e7fucZIFONAUje8+rTmDzHlmEROrBOi8nsQuF66lLuDZBLi0jIYoP
-         HsEXJZtaKyd0E+mlUCbFPj9PypWzwjLssl0KqaqVaVTXlEmAzs4cO8YEpP6UmKpo1O/B
-         OPRA==
+        bh=gJlPeAcJkflrsYHeqhAxG1xpnKkKctKx9VK4XOcUSNU=;
+        b=Kkt2tu0fZVyjdnIT+9aWz+2dC0xTVD3lu4yLwV0kQqZHuhz8Ro07GQdKqy6N1bU9f6
+         pQSHbTPMPW6t676hrqq5z5c4/jC1zAayJMvQIsQvygTbtQ1Ast7+Cs+Sp/qYXZDLJHWw
+         XBE4dYbEQtIeIRkumTncrrM+RY7bqG5QLJTYAogks8em7F36iQZDlMeHdRvWBibNfJyB
+         5GEQ4ZMC7udapD1WxMM6AWpT4cPZ2HWl0da/r/wrXgxUiY6gz4DHtTZ2kx7RHe9LGGjI
+         QKd+aWA5QHSnmV6Qgt2UIMZ5Ylb44sRp4CxcC3kLBCXNXnUnEVR8y9x1idlk9Lr31Gd9
+         XPIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687595085; x=1690187085;
+        d=1e100.net; s=20221208; t=1687595231; x=1690187231;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3/1MyAMnY+Za4p1Z3b6q8vQY3JjDEV6jQ0tLk7ro11c=;
-        b=Ce44qrRwmyXr25ZINO/oqFSFXPOP3beAWmFCFAJRl/pHo36M4O33PLOADvp0FYqAXc
-         JXEdtoiSRdTpjFgrEkVyOSChteLLcKULTYfi83CW3KbYxdlfr8rq9nQt3cD8WKvzPo/Z
-         MSLWb75SIkQTM+FWBZb9TT9wYAUi2+5DmfMFj6/zi9lvERqQLYroYIOcxvsU3IIwH8+g
-         iCAvzrgSCoWCG/DwaAiaLZqbY5nULoHBm1KCUBGmA25Wof/pgMWtCfhMOf4L29OzL/st
-         KkfJJhz8/q/I8YKDP6lH2Cd7lyvSwrYmtkBJLMUTrc7/2iy6RUbAxHNsx/XoODpdnfx/
-         3Fsg==
-X-Gm-Message-State: AC+VfDxSkwqXtgJxDasKtKJXeFgZd6H06r/ryytC5eC0ZLGJCaf97hS/
-	2kFTDvpv0b5lpn56L8TEi/6mYw==
-X-Google-Smtp-Source: ACHHUZ6cYsMw0LIHQWddUSwohWm7hR0wZwIOc//Ha6WVz0kylI9t5vWz4f/hmDOCHTFgPVqzAQ5yVQ==
-X-Received: by 2002:a17:907:3f87:b0:965:6075:d100 with SMTP id hr7-20020a1709073f8700b009656075d100mr20942422ejc.39.1687595085678;
-        Sat, 24 Jun 2023 01:24:45 -0700 (PDT)
+        bh=gJlPeAcJkflrsYHeqhAxG1xpnKkKctKx9VK4XOcUSNU=;
+        b=krfkzn6ZD+v8hM5g02dkORoIoNPstAsqxFSWnZdC8IA/Jke5iCQQXajUWsau8UEqA0
+         nax2b0+5C1t1rVyhuNNtcGzeWvxxqqEh6poc0AdRxzky9u0EGT/Pf912UwJKXUeGWMbB
+         cOstgXjv91mDXb+uyvU2qqNjt+kebrziLiEFGHf9oUSEt2a58Ps/k/GPHkKWuHf88Tmh
+         b5mro+h8Q5Nx+tu4GELi3MSnlr5Kqw/lpMe3ImhIZjBj3tlGveiXWaBlGmjRi53OTzu9
+         CB26Twcb+R5bilstNWlVbAys6O1is8IGphhv48bcissviAZUv8iku1tb3oejp5oY2w0S
+         eTCg==
+X-Gm-Message-State: AC+VfDz3q1EPrpAYvg5P+2yXtGFsUwq2bRGPkpUVH+zE52XwhpGTIqPw
+	Ibo/giaMdSJEcx8IlBkn+/N8Ew==
+X-Google-Smtp-Source: ACHHUZ5t7epZFC28S4hxtPyy+RCHfLvODV3nPC4aL8/psJFMdpVy5ABk2SDosvlu0zr3308+wJnq2w==
+X-Received: by 2002:a17:907:8a03:b0:988:acb4:f63 with SMTP id sc3-20020a1709078a0300b00988acb40f63mr12986422ejc.74.1687595230874;
+        Sat, 24 Jun 2023 01:27:10 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id re3-20020a170906d8c300b00977ca5de275sm639460ejb.13.2023.06.24.01.24.40
+        by smtp.gmail.com with ESMTPSA id t6-20020a1709060c4600b0098654d3c270sm635400ejf.52.2023.06.24.01.27.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jun 2023 01:24:45 -0700 (PDT)
-Message-ID: <c9cbac9c-40dd-bb40-0d92-e25e767f486c@linaro.org>
-Date: Sat, 24 Jun 2023 10:24:39 +0200
+        Sat, 24 Jun 2023 01:27:10 -0700 (PDT)
+Message-ID: <caff28bc-8824-f173-99ea-267dd26e5cbc@linaro.org>
+Date: Sat, 24 Jun 2023 10:27:04 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v2 26/45] dt-bindings: pinctrl: at91: add bindings for
- SAM9X7
+Subject: Re: [PATCH v2 17/45] dt-bindings: dmaengine: at_xdmac: add compatible
+ with microchip,sam9x7
 Content-Language: en-US
 To: Varshini Rajendran <varshini.rajendran@microchip.com>,
  robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -101,12 +101,12 @@ Cc: Hari.PrasathGE@microchip.com, cristian.birsan@microchip.com,
  dharma.b@microchip.com, nayabbasha.sayed@microchip.com,
  balakrishnan.s@microchip.com
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
- <20230623203056.689705-27-varshini.rajendran@microchip.com>
+ <20230623203056.689705-18-varshini.rajendran@microchip.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230623203056.689705-27-varshini.rajendran@microchip.com>
+In-Reply-To: <20230623203056.689705-18-varshini.rajendran@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230624_012447_253980_DA26FBCC 
-X-CRM114-Status: GOOD (  12.99  )
+X-CRM114-CacheID: sfid-20230624_012712_636582_DA06A603 
+X-CRM114-Status: GOOD (  13.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,22 +124,25 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 23/06/2023 22:30, Varshini Rajendran wrote:
-> Add device tree binding for SAM9X7 pin controller.
+> Add compatible for sam9x7.
 > 
 > Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
->  .../devicetree/bindings/pinctrl/atmel,at91-pinctrl.txt         | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/dma/atmel-xdma.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/atmel,at91-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/atmel,at91-pinctrl.txt
-> index e8abbdad7b5d..5a3be10dcbfb 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/atmel,at91-pinctrl.txt
-> +++ b/Documentation/devicetree/bindings/pinctrl/atmel,at91-pinctrl.txt
-> @@ -20,6 +20,7 @@ such as pull-up, multi drive, etc.
->  Required properties for iomux controller:
->  - compatible: "atmel,at91rm9200-pinctrl" or "atmel,at91sam9x5-pinctrl"
->  		or "atmel,sama5d3-pinctrl" or "microchip,sam9x60-pinctrl"
-> +		or "microchip,sam9x7-pinctrl"
+> diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
+> index 510b7f25ba24..f672556ea715 100644
+> --- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
+> +++ b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
+> @@ -2,8 +2,8 @@
+>  
+>  * XDMA Controller
+>  Required properties:
+> -- compatible: Should be "atmel,sama5d4-dma", "microchip,sam9x60-dma" or
+> -  "microchip,sama7g5-dma".
+> +- compatible: Should be "atmel,sama5d4-dma", "microchip,sam9x60-dma",
+> +  "microchip,sam9x7-dma" or "microchip,sama7g5-dma".
 
 That's not what your DTS is saying. NAK.
 
