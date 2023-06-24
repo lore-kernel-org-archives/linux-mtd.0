@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8735AEB64DD
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 08:02:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BB0BEB64DA
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 08:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/IE5pNv5DJPBtnaISl2TZmDUGhx1bsaNfzjIbdYWt1U=; b=oI/zfRhGNGmNQy
-	tgKqnXr3N8ZeqdURo4BtQBAp0eUD9XvDP4lJq8i3BO8ChyOchtr/epwE1gP5dMG/0SNTD1cMCGD8g
-	vBbxR7A5CcA7YqbqcpEFI8EETthLVeHZivQCZXS4riet0J+xPVXmDdwbBukhWgzO67MUf9RQeRG57
-	D3aqOzjL/9pd71O8sjCyvdQRHHE0POnI6L0JFisyVoNSaf5/7TeLbhdcIVr6IurUFTa3WM3PyktuS
-	USUNLXlxb4rHc5D8DZaKoxFqXz8ECPYgftxfLi/5NXCOy7z1o3k4h+zukUxaBeSsR+5vn11QmkE19
-	Q32dFuBH7Urgc6BY2lRA==;
+	List-Owner; bh=61/rbu5KWkAqmGxMBvndcRzQuqVJpmq2YflA4fkUKdY=; b=m7asyv9fpU+a5m
+	jL4dbZD/T0wg+go/2kexsjKSAThQGYubxuTZ60MOcMQiRgLdcVFjdHxDli2khph8/Kit/oywbodHi
+	P+OHibBn99OeU8X96qzHHqI3Y7NqbZGUuXqvQ+KhyvEd8CHBHl+LOSElCGeQFXJD/b6r7zmhYRi4t
+	jeEOy/41uYnEGC8iq76V39SFtGadWoIIVEUz6dvQgZ6o1nXlWDp7Ed0RU2BrgCj+L68iploGkuIbg
+	Uhd+5d23OArUczabDLUx6cVuQ6msT1CrBEnZbnQbgkBkNJT5iI39LmN0Ehy7ig9zHo32xrfARm8z3
+	W5pMCDvgAiKt9g+vMyIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCyDr-005Ues-0M;
-	Sat, 24 Jun 2023 08:02:19 +0000
-Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
+	id 1qCyE5-005Ujt-3A;
+	Sat, 24 Jun 2023 08:02:33 +0000
+Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCyDn-005UbV-2Y
+	id 1qCyE2-005UiH-32
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 Jun 2023 08:02:17 +0000
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b4619ef079so22886421fa.2
-        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 01:02:12 -0700 (PDT)
+	Sat, 24 Jun 2023 08:02:32 +0000
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51d5569e4d1so403259a12.2
+        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 01:02:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687593731; x=1690185731;
+        d=linaro.org; s=google; t=1687593749; x=1690185749;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=48cLWxnO4hI8zObsw227oEYYKk0Y5PALRubNPuDO6vc=;
-        b=LX7W+yoLVPlIwV1XGxBXwL2aJbtTMbGUVQFZjuzrXh0wV6QHjP/6CddCD/E2flMRhT
-         vztsT0AxCVeYXrgCMazYCdwatn1oodAQYgEbYryOhgT9SawgGTiTsh+csgQdP6kNUyxe
-         7+u8BPExqHZ7ZFyAJTcps4WTaIR9QoQUvOV8w9bGMoxE+6/N2/+adQYLXS0sGTiNN0KJ
-         gcAcX+MzinSjOAga9K0bDpv84dH0l28yQim8n3ipOwgzwqkd/hgTSXelx4MOAJGDwm1c
-         nahyrk+ER/vkBjbl1S6GBta/vg4KMt2zZaWLKqwbibfr91+e82MBHrvqwzlM62GfwzTs
-         ebBw==
+        bh=L8LUDdIDqS/S81pzeykwMUjVd54i6Iidt8jcXJziYFU=;
+        b=IGISLJU8aL9N8mVg5tva0FYJZ4ypiF8eDRpd6Rn8HPZy48/jSbTIltoLQMlSeM3L7i
+         Gej8neMhutSWohQ24tzO80Lpn3kaLt9qqqRwOONjtjD/gRLklgEGqn2uq8r8WCnVjZU/
+         0lc99U58ylKcCJEJPP/lfFSYAUX12mhkOhQvyuZPdyou9/jz69f1vvrBPa+sEfa9ZPnr
+         OzxyhRY7ALK8r11IHXFwC/0P7k4XIkrn4WIr9sRXhRuL4JMOb+f4XV9bQ2F2Sun3Kdd+
+         RFW9JXqw22CUXQ81UiEc3zXhCcs0R+mF6aloRmSsO6/VuzfhI6dXXM3pwXPg/wwzOsi/
+         XO0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687593731; x=1690185731;
+        d=1e100.net; s=20221208; t=1687593749; x=1690185749;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=48cLWxnO4hI8zObsw227oEYYKk0Y5PALRubNPuDO6vc=;
-        b=Jxbh8Jir8ya/HnkewxAJO/zconx85OAOwZDe9nEUshFTNwNm6CZcXjdau387eH5YYz
-         6DQu9rN24AcuJUyOZ1orFtYcO1YfJNBD4DHVhiPILxdZtdw2pHqd1zKMgAttW/BFyPjz
-         1mQtF8m4ZpklWuYouivFjBU+uPwTcLS1XVL6sXM9bA7xLI/0TceExWD5kQvgbWVpRgf0
-         AFalukHw5EfXutbVqC+BY1XuFMm/JjAIXiNJ3gc+KgZM2szZ+LKSKy1DluPkyFhChDlg
-         bIjXSjKFjUmlOSvfXhGBQSgbw2WV3KcK3Nmxc9KIeddDQg2MTnNRuiVuRncqnAmtDEN3
-         4iHw==
-X-Gm-Message-State: AC+VfDwQnVBjWChoUFOLI0Qw5mz8Ix9nU+F19mcTYWFt7Qoy6qBDafdN
-	ForDzeq3D5yN8HZFF7IOG3U3qQ==
-X-Google-Smtp-Source: ACHHUZ62t6tmUqM8Yzti6qrq+RSBqmnbfIcQEwHs80C3q6C7j1x32A4aVswUaxA77ONO0Q35Bn2RsQ==
-X-Received: by 2002:a2e:a0d8:0:b0:2b5:7f93:b3ad with SMTP id f24-20020a2ea0d8000000b002b57f93b3admr8673190ljm.16.1687593730934;
-        Sat, 24 Jun 2023 01:02:10 -0700 (PDT)
+        bh=L8LUDdIDqS/S81pzeykwMUjVd54i6Iidt8jcXJziYFU=;
+        b=jQuzAXJ7FJ3xxB78y+ThD5rUDrN2lXOHjt3jBGelShSOWz0SghkUK6oyu+KzXsyknP
+         q3WF0xdn33ZP9qM0JPEQu5Pm3PQKBsVkC4vQHfgADAYx85xiJxR8yxBle/0lG/kt01Hq
+         7Hi1Hbr1Ee0wx2unaA5H4YrwxlMF7HW7CuY1KvR1a/KgtjrcOG+/IdgYl4vgxU+QvXGR
+         ZLR0/8WjscKNuBp6OBYWHlvz+lA/pH4M+ynjXRCAeescSskPzjQN/Wnxf82OJmKYaEDg
+         TbjqGWnizMDUQYNaXiqM+LlH25FdsHsElcQkJejb7R3c4SPuU30kMw1SpvDrZChjXtKn
+         LOng==
+X-Gm-Message-State: AC+VfDzoJq35xXzAguzgGIeca3Wr8us/5W/fIZnrXEUHEFPOmrDOJiiw
+	Xua30qpDv9BOyaj6VNr6Zc90LA==
+X-Google-Smtp-Source: ACHHUZ4K2H7+wCUg6ioqFCkyucKiFbP5cpiH1/A295WcgwuRd8qHBW0eTaeYJOTsq1BbRpdDIU7d9Q==
+X-Received: by 2002:aa7:d88c:0:b0:51b:e9a1:8831 with SMTP id u12-20020aa7d88c000000b0051be9a18831mr4249258edq.34.1687593749577;
+        Sat, 24 Jun 2023 01:02:29 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id dv9-20020a170906b80900b00982a077599fsm590940ejb.110.2023.06.24.01.02.05
+        by smtp.gmail.com with ESMTPSA id w15-20020a50fa8f000000b0051bfa07af4asm401283edr.93.2023.06.24.01.02.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jun 2023 01:02:10 -0700 (PDT)
-Message-ID: <91773b0f-b337-c5d2-68e9-4d240920f659@linaro.org>
-Date: Sat, 24 Jun 2023 10:02:04 +0200
+        Sat, 24 Jun 2023 01:02:28 -0700 (PDT)
+Message-ID: <b49ec52f-094e-fe83-ba9f-cf03c01b782c@linaro.org>
+Date: Sat, 24 Jun 2023 10:02:23 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v2 29/45] dt-bindings: rtt: at91rm9260: add sam9x7
- compatible
+Subject: Re: [PATCH v2 30/45] dt-bindings: serial: atmel,at91-usart: add
+ compatible for sam9x7
 Content-Language: en-US
 To: Varshini Rajendran <varshini.rajendran@microchip.com>,
  robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -101,12 +101,12 @@ Cc: Hari.PrasathGE@microchip.com, cristian.birsan@microchip.com,
  dharma.b@microchip.com, nayabbasha.sayed@microchip.com,
  balakrishnan.s@microchip.com
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
- <20230623203056.689705-30-varshini.rajendran@microchip.com>
+ <20230623203056.689705-31-varshini.rajendran@microchip.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230623203056.689705-30-varshini.rajendran@microchip.com>
+In-Reply-To: <20230623203056.689705-31-varshini.rajendran@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230624_010215_872529_C0101963 
-X-CRM114-Status: GOOD (  11.86  )
+X-CRM114-CacheID: sfid-20230624_010230_996954_9D7F010A 
+X-CRM114-Status: GOOD (  12.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,23 +124,31 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 23/06/2023 22:30, Varshini Rajendran wrote:
-> Add compatible for SAM9X7 RTT.
+> Add sam9x7 compatible to DT bindings documentation.
 > 
 > Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
->  Documentation/devicetree/bindings/rtc/atmel,at91sam9260-rtt.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/rtc/atmel,at91sam9260-rtt.yaml b/Documentation/devicetree/bindings/rtc/atmel,at91sam9260-rtt.yaml
-> index b80b85c394ac..2d5cce1c1331 100644
-> --- a/Documentation/devicetree/bindings/rtc/atmel,at91sam9260-rtt.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/atmel,at91sam9260-rtt.yaml
-> @@ -20,6 +20,7 @@ properties:
->            - const: atmel,at91sam9260-rtt
+> diff --git a/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml b/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
+> index 30b2131b5860..d836224f99c6 100644
+> --- a/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
+> @@ -17,6 +17,7 @@ properties:
+>            - atmel,at91rm9200-usart
+>            - atmel,at91sam9260-usart
+>            - microchip,sam9x60-usart
+> +          - microchip,sam9x7-usart
 >        - items:
->            - const: microchip,sam9x60-rtt
-> +          - const: microchip,sam9x7-rtt
->            - const: atmel,at91sam9260-rtt
+>            - const: atmel,at91rm9200-dbgu
+>            - const: atmel,at91rm9200-usart
+> @@ -26,6 +27,8 @@ properties:
+>        - items:
+>            - const: microchip,sam9x60-dbgu
+>            - const: microchip,sam9x60-usart
+> +          - const: microchip,sam9x7-dbgu
+> +          - const: microchip,sam9x7-usart
 
 Same as in other cases, so just to avoid applying by submaintainer: not
 tested, broken.
