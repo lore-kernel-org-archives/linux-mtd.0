@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 421C7C001E0
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 07:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 157A6C04FDF
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 07:59:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=s1GFAXi2C05mbtPIWBH2Ln97FbrUo1JpJI/x2acHKDc=; b=DNksIXXwIwlb36
-	fDvJGZd4hlj/xq2aR9fyUkJOI0utb5oaJc5wNCSvdNG+QuBo7LxRrDvEFs6J68V6bRPuDan2iyDoE
-	mghiV+fojTP/LfcDC2h6Wo/gxVzXlzcl+r2XC/Ye//44OJKXUJEtDrClr71eV1Xe5C1hbX6KUWaCe
-	HRJIGHSycLbXA0316FWqKeuq9O0nrFdRCYYgmfhUeeh0UE3ZUZZdVWyel2EWoFOdemluRAIPW1LWZ
-	hXuoV0pabEN4lBgx8r630fYY1sIqoXKybuNOEEy4P6OlL3wCdISYM+EGf8H4Fg6/gzGnaYLZr9gTA
-	aisVM1R6ANBCai4KWW9g==;
+	List-Owner; bh=kK9yHd//yn93csotKkqbu3w1mJCIiyuNpAvG2kp14/U=; b=jMasFl9U9TA+t5
+	LGQHNm8za6twwdknzRTvKwu1uDhpbXnRLuCT33A3DISrvj2d3KOSETl6ER5C0ikprGfm801hjpzx3
+	Dan40zlsjxu5l7dtaAJw/XDZWDnKVPrcQ3Zb8KkItpgp+o3eXLRvamk0B8LEVJ/ATJSdra4iLk5tj
+	EyVhMaOcMMhsA65enBuzrOQKjr3TFnI8hG2BjixpDJRXEuR5wOuW1cIVNXBPrAnf7+g4jbZmtmsax
+	QnwERD3PQgQuiV0t330XrZwddB42wEgxPDdvnQDKrpbD57swTVOGEQvdNrFj5xf0umZRN8qVxmJLQ
+	fdbaamqGDCfD8nRIIUSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCy9C-005TWg-1X;
-	Sat, 24 Jun 2023 07:57:30 +0000
-Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
+	id 1qCyAi-005Tkr-1c;
+	Sat, 24 Jun 2023 07:59:04 +0000
+Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCy9A-005TVv-1l
+	id 1qCyAf-005Tjx-34
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 Jun 2023 07:57:30 +0000
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-988aefaa44eso178970566b.2
-        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 00:57:28 -0700 (PDT)
+	Sat, 24 Jun 2023 07:59:03 +0000
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51cb40f13f6so815118a12.2
+        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 00:59:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687593447; x=1690185447;
+        d=linaro.org; s=google; t=1687593540; x=1690185540;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=i6/OKE3tdUs5NzQDJgtLHSJJGNPHgdjozA0WirJWwVM=;
-        b=HnqNx/Ebwlv7O4a+MO53LVK8hUXaO2CscKgFVOdXu2ycnMg2hOS0E0CzugfJ3w99Sw
-         NTpfcO8m4fcFu7MQn1RVPozmqJTrSYnumv9XZ//sHZFfnfQn38R8rBKcX9/41fMUm++e
-         SMm77XYsnipU3YNETrH2NcLRyssL3zI6YmQzliflkWOFkjuhDWQKpw9oHLzSF4yxj1Zb
-         0WHuZofFw0RlYyr3v57UovyHHwgejt7TDVz8L41/QVTNC3ruqQIFr/BZIHDOI2RPurVq
-         m+m4zKhmQGGpjsiHNqKQ41IzwPemcQfTXtF/FSAXgnXXsxI/R+pb7QaK/NRZMzPQLBf8
-         wzzw==
+        bh=2RPXidMTrzBctnlI68UKYA3FxvKEi+gyM/+eAniSxHU=;
+        b=biIFt0+5HLIeQJNObq9fw50IfGs4F5DFXzw8WQaXnv6Hdp3USYZJNL8PssYy6o2vEe
+         uTNazxcXxlW9nYoOgc1ECAXqLXI0Fy6OTpXxKHrO5KBGlvJvfFS0T1Yy1tTOfdnYqT7s
+         cMkaa3hPEAmXD6ANC4ih3z1UVMiivHFKHKNCNhNRtq9hQ7bMkaNVdI+n4Hlx2BE7yzQO
+         jx50D2lQ67d60SVIUDBnCbxdMAAwJOdFf8iKs6wYFG3VWtA2pwPKLl5H6eldXBBdXINm
+         rY7xzFgOPvVvf6qqwYEsEXTKFvEIRltIXoBmYft7pQBxV4w1cue28E4Voq0fdjydEvEn
+         MpcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687593447; x=1690185447;
+        d=1e100.net; s=20221208; t=1687593540; x=1690185540;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i6/OKE3tdUs5NzQDJgtLHSJJGNPHgdjozA0WirJWwVM=;
-        b=dmSwvy1ClRssl5UhJLUhF0JIesgdjMKEF/SAUq+m3B1REv3sWLpkXwcOBhR8NOVhGd
-         x+dNWQTIoHkZ5nic3wPkaWyxHNUGx9W0E6ekhK72OQarmyvzlhIttKTUFhd33n+qeLBC
-         HxvtjugI4hk6/Pr7lyZS2J03Q4RbizVsQMJemE1OyrSY6Vb8DrK9QHEd9uoABXDhOREm
-         NJdI5MtreQoC1zOx7/GV4JSY+RxsPQu7QqprpkT+8R6PZs/hGEwCXYXLRVJgqxcKZuqx
-         P+zM46OSMGN5kj+xDUJo2LHtrxxN5wYslcJQKGjRzAG32gd0ZBJvdPNxRDSETiGJH/kR
-         tVyQ==
-X-Gm-Message-State: AC+VfDwC+CVTdCR7yolCWlKvkk08C9NdyYoxxk2mlJQ53ZRtkMVDiT+W
-	1UQkVubmxpLaam/KjJHe63JLFw==
-X-Google-Smtp-Source: ACHHUZ7hGHGwi7ptFp7dDRS6Z6+2UNRDyiR5qq+R0zKm3LPTmxEiM/1iXpaTmu/76o0ziH1heFA4BQ==
-X-Received: by 2002:a17:906:44c:b0:98e:a54:42e6 with SMTP id e12-20020a170906044c00b0098e0a5442e6mr75957eja.5.1687593447021;
-        Sat, 24 Jun 2023 00:57:27 -0700 (PDT)
+        bh=2RPXidMTrzBctnlI68UKYA3FxvKEi+gyM/+eAniSxHU=;
+        b=egB3n7cqocIdIhbM+BmqWH4bkz1oMZorVpWDP+Zh2X0F2UL2vZAYPSJ4zKr3EwOgFm
+         tP42lMdy9sSAZXhRbutk3zgQZlyp3zlhnKjTrl15RjmCDCpvZMe3K2GhRkpOKHyYz9j2
+         Af2TVTS7AyDrils7eLbc/KOvG2fnWBfnmQtf2AyxeZah+k0KqMfpimhcRHfe/W0korVI
+         QLPurNkOsquY9JWW/Gzh+pHFlnGMKLsHiFYvJchxEp2e8PhQJ+63SjaFgdG0T19DA6Ck
+         rAIDQ9NVLiyQqX4H5PsFck+k2gToLIFuEQL9IXlxEPpMawiirQ6uABrSfVjXYJC7Q/4O
+         jnxw==
+X-Gm-Message-State: AC+VfDxFVuDkFViN6mlGU37kND4GUXpzW1THl4MA15t9IkZe9oJyb8qT
+	qmwNcojFYrT3GG9DnUiqCihY1A==
+X-Google-Smtp-Source: ACHHUZ6KTEX3PoU0t4AzSkFJrRvYcc7s1C5vvyEb440YGE+szTSoYCbadoq/cw/0a/YYcc9DpVEdLg==
+X-Received: by 2002:a17:907:a06:b0:974:1e0e:9bd4 with SMTP id bb6-20020a1709070a0600b009741e0e9bd4mr20928031ejc.16.1687593539714;
+        Sat, 24 Jun 2023 00:58:59 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id q16-20020a170906361000b009893f268b92sm600124ejb.28.2023.06.24.00.57.21
+        by smtp.gmail.com with ESMTPSA id l24-20020a1709060e1800b009783791b1a1sm592525eji.121.2023.06.24.00.58.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jun 2023 00:57:26 -0700 (PDT)
-Message-ID: <703ed392-5607-446e-e59a-8b51b6cd0007@linaro.org>
-Date: Sat, 24 Jun 2023 09:57:20 +0200
+        Sat, 24 Jun 2023 00:58:59 -0700 (PDT)
+Message-ID: <28a5d2e7-d3bf-d373-10ad-73c7590924c4@linaro.org>
+Date: Sat, 24 Jun 2023 09:58:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v2 12/45] dt-bindings: reset: atmel,at91sam9260-reset: add
- sam9x7 binding
+Subject: Re: [PATCH v2 14/45] dt-bindings: crypto: add bindings for sam9x7 in
+ Atmel AES
 Content-Language: en-US
 To: Varshini Rajendran <varshini.rajendran@microchip.com>,
  robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -101,12 +101,12 @@ Cc: Hari.PrasathGE@microchip.com, cristian.birsan@microchip.com,
  dharma.b@microchip.com, nayabbasha.sayed@microchip.com,
  balakrishnan.s@microchip.com
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
- <20230623203056.689705-13-varshini.rajendran@microchip.com>
+ <20230623203056.689705-15-varshini.rajendran@microchip.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230623203056.689705-13-varshini.rajendran@microchip.com>
+In-Reply-To: <20230623203056.689705-15-varshini.rajendran@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230624_005728_590307_8FA1C83D 
-X-CRM114-Status: GOOD (  12.43  )
+X-CRM114-CacheID: sfid-20230624_005901_998878_0628A992 
+X-CRM114-Status: GOOD (  14.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,33 +124,34 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 23/06/2023 22:30, Varshini Rajendran wrote:
-> Add documentation for SAM9X7 reset controller.
+> Add DT bindings for atmel AES.
 > 
-
-
-A nit, subject: drop second/last, redundant "bindings". The
-"dt-bindings" prefix is already stating that these are bindings.
-
 > Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
->  .../devicetree/bindings/reset/atmel,at91sam9260-reset.yaml       | 1 +
->  1 file changed, 1 insertion(+)
+>  .../devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml    | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/reset/atmel,at91sam9260-reset.yaml b/Documentation/devicetree/bindings/reset/atmel,at91sam9260-reset.yaml
-> index 98465d26949e..593a13c277ab 100644
-> --- a/Documentation/devicetree/bindings/reset/atmel,at91sam9260-reset.yaml
-> +++ b/Documentation/devicetree/bindings/reset/atmel,at91sam9260-reset.yaml
-> @@ -22,6 +22,7 @@ properties:
->                - atmel,at91sam9g45-rstc
->                - atmel,sama5d3-rstc
->                - microchip,sam9x60-rstc
-> +              - microchip,sam9x7-rstc
+> diff --git a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
+> index 0b7383b3106b..f0736696c883 100644
+> --- a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
+> @@ -12,7 +12,10 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    const: atmel,at91sam9g46-aes
+> +    oneOf:
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+This is not oneOf.
+
+> +      - items:
+
+And these are not items. You just broke existing users, which points to
+the fact that you did not test the bindings nor the DTS. You didn't test
+anything here.
+
+This comment applies for entire patchset - please test everything. I
+expect v3, after testing.
 
 
 Best regards,
