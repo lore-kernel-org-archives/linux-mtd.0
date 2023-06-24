@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D3BDEB64DA
-	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 08:04:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54415C001DD
+	for <linux-mtd@archiver.kernel.org>; Sat, 24 Jun 2023 08:09:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DJV8hbiq0jzfGE1EB0AuXgs9ZksraOTDviBnVqUOm4g=; b=stDqXPtGhNiRXg
-	znV3dnqNLbZno1dVqoJdKPrAhnXbROZqqEWxtd+9i6m65S1WVssKg1d354uSf95Vds7hlZZgor9Jr
-	cy7CjZH4uC5V2dpbBGJ8pHE+Y3CGNvljkrdCEx0lTYVXkuJi6CktI1f4kPyJqddBnnL8wNFxYJDKU
-	Y/jCnIn0xKydex2T6S63cRuZiQ6fpr4g3X57SFiAUgcmc8rEg38xZdwKtdQDX9BPC43chNl+97PQZ
-	vyXk9oWggaxBVq0VoijyX271BAGZDvlYU4YZUNFQvK4cRsPYEaAE0oGDSo2MIRcFoqcipvFrKtSGx
-	/KW+L/b2RHciDT6B4Z7g==;
+	List-Owner; bh=3qEGvZDJl6B4gF2epp9YDgY/q02Jf+G+IDxrWr2NUmk=; b=UpWFZDMsUcM9Ya
+	wmQU13Qod04UCM3My04iKNdnfeeTg7SW2vrYM4NThLbbSoOM2ioEifXYPX/lrKSU66GegRx3z2gZt
+	2TS3NHbigWVTVuIxaCZLy82a0WcjeSokh6d2ZBWyA9mdtCP+1itkB3k3DuJb6Df4Tdic4zgdP9YqI
+	220gFIBXFHAiRFM77XbZ4WICfI+f762UPb65veRaaVbHe/ZMkcPdvNGD8NHXk+K1srJtSlrTVnxiL
+	55o+wSRu1C8jfaidX0yNdnpztClWd9F7qySiRTATz3kTlPEzWjvZwz0wXZ5K6DsdhW48ZJbl5yQ2l
+	hSL85kQrfzC1lBNOlfTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCyFT-005VLG-0T;
-	Sat, 24 Jun 2023 08:03:59 +0000
-Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
+	id 1qCyKc-005VzS-37;
+	Sat, 24 Jun 2023 08:09:18 +0000
+Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCyFR-005VJx-0K
+	id 1qCyKZ-005Vye-2M
 	for linux-mtd@lists.infradead.org;
-	Sat, 24 Jun 2023 08:03:58 +0000
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51cb40f13f6so819364a12.2
-        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 01:03:56 -0700 (PDT)
+	Sat, 24 Jun 2023 08:09:17 +0000
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51bde6a8c20so1530700a12.0
+        for <linux-mtd@lists.infradead.org>; Sat, 24 Jun 2023 01:09:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687593835; x=1690185835;
+        d=linaro.org; s=google; t=1687594154; x=1690186154;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2jxU1m/bl74A0iGu9LghKPO8HvECi5G5jZ9eqVP2K3E=;
-        b=SQ0F0qO5g/dUpqxHfRkqAYysEzXvOCArdnrhQsHQTlUpG7NayIMU6j1M2rIyjBDVya
-         x5px8eudLBvKa84lRJJJox+1RP1u6RG7I1xJ9FenVAaTLFcvXxgX7X5ih71vApTZLSbv
-         jPst2ohqwiY8Dhs65PTypQT3PU1VOdXW3gc/LGGAmf2aKmiwxKxPmvg/XQ3LmeShtkHn
-         TVnw0tPg8J0iFuIZ2T8pexQvID1xGMf6y37Y2M+HtoGRe+TKcwVt3TXz2RyCw4u5aGsC
-         ExNyGnCkujtDC5OUwFx3xqyNXKIGBCRZBf8fZD4pMy0kbJDPIdlgOlzISH7nDoHMFTw1
-         MrAw==
+        bh=FrxEKayi9Ds4WqdpCvHi8XbtwLnXpM6Lh+pSjtNNoSE=;
+        b=RFdbcGr759xG442r0gPy3b3305LjWwFoAyktcFZ899PSQeEF6hfntmDA0vlS0cgvFG
+         ox+hvodZsAIxheWINUcqWmBdAVUdLNTgEiBv+j+02pkZ+peZ9p5YmqzNwGosK5zDnjsl
+         BLtwgifUNJIic/pZuhkJGfeZh7cXmlqqE7KO+DpxT2BRXrEqUsNrcBFwgsuFrYVol/2H
+         Q3I6Qbd1emY/xCKF3pFfjTySVrBVrI13QbkuQthOBjzCGLL1ymopfw3tCVOUR+wzRLuS
+         D0FE3/S7KQ68SFlkXdPne+beGWelAuxdjkLgp1xRKoQU8ZZdNzYmb0lkDzKHQgL6SS9d
+         biWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687593835; x=1690185835;
+        d=1e100.net; s=20221208; t=1687594154; x=1690186154;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2jxU1m/bl74A0iGu9LghKPO8HvECi5G5jZ9eqVP2K3E=;
-        b=E/NE/CKN24tuJ97t7wmKSqqRHmuP1hNzaPQzb5afMSLdUvVY/DxhQtWgixrjAEfsNI
-         LxvQlxSvOv5IaaFvZIcio+YAk4s7US148JFKrNxSQsusMEYv1myM7nfLdNIy12iZfmc0
-         lky/3ZhfIctLky6gDTAILmnmg63f6vL9DtE0XzgO4LJy31A0pB/W9z6wKuF3kfhrERzr
-         hJr8X1utKMCS48cixD8XHkZYLU8N57PjbiY1XqVl+0qWrv7oxrFGoax8NZh4ewxy6aIS
-         Ryly2eDC4cqGm+MT2OamwVzwgY0Y3QnBO93FFqifPrOL1Spokgo6Voiev+QD6ESC3GmG
-         9BLg==
-X-Gm-Message-State: AC+VfDxNBhkCc2J58ADcT7T96ci8vANYDH8IBwpkRf6X71yNYLpy6LMC
-	4nn3cdDQKlxOuZt4uymnL6Rtkw==
-X-Google-Smtp-Source: ACHHUZ7SxDDSVPtNN64oZsP8HBukovPFIpinv/C1GfUthOVpQroM4LCwYJgVu5igdC2NaJUOIO0FXQ==
-X-Received: by 2002:aa7:dbd9:0:b0:518:7ad9:64bb with SMTP id v25-20020aa7dbd9000000b005187ad964bbmr15293063edt.19.1687593835490;
-        Sat, 24 Jun 2023 01:03:55 -0700 (PDT)
+        bh=FrxEKayi9Ds4WqdpCvHi8XbtwLnXpM6Lh+pSjtNNoSE=;
+        b=Sf3//gmdcVCCtkal1t2gnRSlXP9YkBvbp60K1JDLAKNdXue/8PJ2Ea+8C9AFvag//M
+         frda4lNv5b8Q5wRYEJDnWjY4yo6chDZ1DPE/EXTW5g7qz5M8Fms1/4O+UJJ/wk689z+/
+         jZT05fPu67RKCFKvFVbZYjE/zoV4t6q0t1nUe2NnNDmqs3ot8Dr30D0Wdk6JjmQpHnxf
+         tf8QJWTDWJvbqsRppxDgS5vTZtKMOvVX0Xel/6/4/zNpWiB61iyl+xcQ6virPHkQiGqs
+         38fbYfrslSdaLMpmwhh5beGDoRX6G2A+wPxI7L1i5LCt6PjugjFTwj6+aADmPsm+gHS8
+         AI5Q==
+X-Gm-Message-State: AC+VfDz7z5xV8HhPb34RGBmG9UJVonudLkPyHddRcbVCO/5xR/yE68h+
+	PaDJ2SZb1w5zrJTWhpQnUWpNIw==
+X-Google-Smtp-Source: ACHHUZ5pHm0w6pBzV6Tc7DEQEPXbl5rK4CCeKTEtwldM7kE+Zb+I+b3utK/UKpTx2HYJC+QsfjFV2Q==
+X-Received: by 2002:a05:6402:1248:b0:519:6f47:d1c9 with SMTP id l8-20020a056402124800b005196f47d1c9mr16636743edw.30.1687594153811;
+        Sat, 24 Jun 2023 01:09:13 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id c4-20020aa7d604000000b0051a4a1abdbbsm411437edr.49.2023.06.24.01.03.50
+        by smtp.gmail.com with ESMTPSA id u10-20020a056402064a00b00514b3dd8638sm406148edx.67.2023.06.24.01.09.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jun 2023 01:03:54 -0700 (PDT)
-Message-ID: <7ad81b90-0463-c660-d290-34ccfc1c2e5e@linaro.org>
-Date: Sat, 24 Jun 2023 10:03:49 +0200
+        Sat, 24 Jun 2023 01:09:13 -0700 (PDT)
+Message-ID: <717e4a53-c0a8-0b60-4502-a819cf2089a6@linaro.org>
+Date: Sat, 24 Jun 2023 10:09:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v2 44/45] dt-bindings: arm: add sam9x75 curiosity board
+Subject: Re: [PATCH v2 43/45] ARM: dts: at91: sam9x7: add device tree for SoC
 Content-Language: en-US
 To: Varshini Rajendran <varshini.rajendran@microchip.com>,
  robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -100,13 +100,12 @@ Cc: Hari.PrasathGE@microchip.com, cristian.birsan@microchip.com,
  dharma.b@microchip.com, nayabbasha.sayed@microchip.com,
  balakrishnan.s@microchip.com
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
- <20230623203056.689705-45-varshini.rajendran@microchip.com>
+ <20230623203056.689705-44-varshini.rajendran@microchip.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230623203056.689705-45-varshini.rajendran@microchip.com>
+In-Reply-To: <20230623203056.689705-44-varshini.rajendran@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230624_010357_144062_C7F71213 
-X-CRM114-Status: UNSURE (   6.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230624_010915_865524_A330B6C1 
+X-CRM114-Status: GOOD (  21.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,13 +123,318 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 23/06/2023 22:30, Varshini Rajendran wrote:
-> Add documentation for SAM9X75 Curiosity board.
+> Add device tree file for SAM9X7 SoC family.
 > 
+> Co-developed-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 > Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
->  Documentation/devicetree/bindings/arm/atmel-at91.yaml | 6 ++++++
+>  arch/arm/boot/dts/sam9x7.dtsi | 1237 +++++++++++++++++++++++++++++++++
+>  1 file changed, 1237 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/sam9x7.dtsi
+> 
+> diff --git a/arch/arm/boot/dts/sam9x7.dtsi b/arch/arm/boot/dts/sam9x7.dtsi
+> new file mode 100644
+> index 000000000000..535a55f13dd0
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/sam9x7.dtsi
+> @@ -0,0 +1,1237 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * sam9x7.dtsi - Device Tree Include file for Microchip SAM9X7 SoC family
+> + *
+> + * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
+> + *
+> + * Author: Varshini Rajendran <varshini.rajendran@microchip.com>
+> + */
+> +
+> +#include <dt-bindings/clock/at91.h>
+> +#include <dt-bindings/dma/at91.h>
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/mfd/atmel-flexcom.h>
+> +#include <dt-bindings/pinctrl/at91.h>
+> +
+> +/ {
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +	model = "Microchip SAM9X7 SoC";
+> +	compatible = "microchip,sam9x7";
+> +	interrupt-parent = <&aic>;
+> +
+> +	aliases {
+> +		serial0 = &dbgu;
 
-Did you receive here tags?
+serial alias is rarely property of SoC. Do you claim that absolutely all
+boards must use this serial and they cannot use anything else?
+
+> +		gpio0 = &pioA;
+> +		gpio1 = &pioB;
+> +		gpio2 = &pioC;
+> +		gpio3 = &pioD;
+
+GPIOs are discussible but sometimes we keep them in SoC DTSI.
+
+> +	};
+> +
+> +	cpus {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		cpu@0 {
+> +			compatible = "arm,arm926ej-s";
+> +			device_type = "cpu";
+> +			reg = <0>;
+> +		};
+> +	};
+> +
+> +	clocks {
+> +		slow_xtal: clock-slowxtal {
+> +			compatible = "fixed-clock";
+> +			#clock-cells = <0>;
+> +		};
+> +
+> +		main_xtal: clock-mainxtal {
+> +			compatible = "fixed-clock";
+> +			#clock-cells = <0>;
+> +		};
+> +	};
+> +
+> +	sram: sram@300000 {
+> +		compatible = "mmio-sram";
+> +		reg = <0x300000 0x10000>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0 0x300000 0x10000>;
+> +	};
+> +
+> +	ahb {
+> +		compatible = "simple-bus";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
+> +
+> +		usb0: gadget@500000 {
+> +			compatible = "microchip,sam9x7-udc", "microchip,sam9x60-udc";
+> +			reg = <0x500000 0x100000>,
+> +			      <0xf803c000 0x400>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			interrupts = <23 IRQ_TYPE_LEVEL_HIGH 2>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 23>, <&pmc PMC_TYPE_CORE PMC_UTMI>;
+> +			clock-names = "pclk", "hclk";
+> +			assigned-clocks = <&pmc PMC_TYPE_CORE PMC_UTMI>;
+> +			assigned-clock-rates = <480000000>;
+> +			status = "disabled";
+> +		};
+> +
+> +		ohci0: usb@600000 {
+> +			compatible = "microchip,sam9x7-ohci", "atmel,at91rm9200-ohci", "usb-ohci";
+> +			reg = <0x600000 0x100000>;
+> +			interrupts = <22 IRQ_TYPE_LEVEL_HIGH 2>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 22>, <&pmc PMC_TYPE_PERIPHERAL 22>, <&pmc PMC_TYPE_SYSTEM 6>;
+> +			clock-names = "ohci_clk", "hclk", "uhpck";
+> +			status = "disabled";
+> +		};
+> +
+> +		ehci0: usb@700000 {
+> +			compatible = "microchip,sam9x7-ehci", "atmel,at91sam9g45-ehci", "usb-ehci";
+> +			reg = <0x700000 0x100000>;
+> +			interrupts = <22 IRQ_TYPE_LEVEL_HIGH 2>;
+> +			clocks = <&pmc PMC_TYPE_CORE PMC_UTMI>, <&pmc PMC_TYPE_PERIPHERAL 22>;
+> +			clock-names = "usb_clk", "ehci_clk";
+> +			assigned-clocks = <&pmc PMC_TYPE_CORE PMC_UTMI>;
+> +			assigned-clock-rates = <480000000>;
+> +			status = "disabled";
+> +		};
+> +
+> +		sdmmc0: sdio-host@80000000 {
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+> +			compatible = "microchip,sam9x7-sdhci", "microchip,sam9x60-sdhci";
+
+So none of your DTS and bindings patches were tested... Limited review
+follows as there is little sense to use reviewers time if you can use
+machine.
+
+> +			reg = <0x80000000 0x300>;
+> +			interrupts = <12 IRQ_TYPE_LEVEL_HIGH 0>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 12>, <&pmc PMC_TYPE_GCK 12>;
+> +			clock-names = "hclock", "multclk";
+> +			assigned-clocks = <&pmc PMC_TYPE_GCK 12>;
+> +			assigned-clock-rates = <100000000>;
+> +			status = "disabled";
+> +		};
+> +
+> +		sdmmc1: sdio-host@90000000 {
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+> +			compatible = "microchip,sam9x7-sdhci", "microchip,sam9x60-sdhci";
+> +			reg = <0x90000000 0x300>;
+> +			interrupts = <26 IRQ_TYPE_LEVEL_HIGH 0>;
+> +			clocks = <&pmc PMC_TYPE_PERIPHERAL 26>, <&pmc PMC_TYPE_GCK 26>;
+> +			clock-names = "hclock", "multclk";
+> +			assigned-clocks = <&pmc PMC_TYPE_GCK 26>;
+> +			assigned-clock-rates = <100000000>;
+> +			status = "disabled";
+> +		};
+> +
+> +		apb {
+> +			compatible = "simple-bus";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges;
+> +
+> +			flx4: flexcom@f0000000 {
+> +				compatible = "microchip,sam9x7-flexcom", "atmel,sama5d2-flexcom";
+> +				reg = <0xf0000000 0x200>;
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 13>;
+> +				#address-cells = <1>;
+> +				#size-cells = <1>;
+> +				ranges = <0x0 0xf0000000 0x800>;
+> +				status = "disabled";
+> +
+> +				uart4: serial@200 {
+> +					compatible = "microchip,sam9x7-usart", "microchip,sam9x60-usart", "atmel,at91sam9260-usart";
+
+Please run scripts/checkpatch.pl and fix reported warnings. Some
+warnings can be ignored, but the code here looks like it needs a fix.
+Feel free to get in touch if the warning is not clear.
+
+> +					reg = <0x200 0x200>;
+> +					interrupts = <13 IRQ_TYPE_LEVEL_HIGH 7>;
+> +					dmas = <&dma0
+> +						(AT91_XDMAC_DT_ME
+
+...
+
+
+> +
+> +			dbgu: serial@fffff200 {
+> +				compatible = "microchip,sam9x7-dbgu", "microchip,sam9x60-dbgu", "microchip,sam9x60-usart", "atmel,at91sam9260-dbgu", "atmel,at91sam9260-usart";
+
+I wonder if we can make the line longer...
+
+> +				reg = <0xfffff200 0x200>;
+> +				interrupts = <47 IRQ_TYPE_LEVEL_HIGH 7>;
+> +				dmas = <&dma0
+> +					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
+> +					 AT91_XDMAC_DT_PERID(28))>,
+> +				       <&dma0
+> +					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
+> +					 AT91_XDMAC_DT_PERID(29))>;
+> +				dma-names = "tx", "rx";
+> +				clocks = <&pmc PMC_TYPE_PERIPHERAL 47>;
+> +				clock-names = "usart";
+> +				status = "disabled";
+> +			};
+> +
+> +			pinctrl: pinctrl@fffff400 {
+> +				#address-cells = <1>;
+> +				#size-cells = <1>;
+> +				compatible = "microchip,sam9x7-pinctrl", "microchip,sam9x60-pinctrl", "atmel,at91sam9x5-pinctrl", "simple-mfd";
+> +				ranges = <0xfffff400 0xfffff400 0x800>;
+> +
+> +				/* mux-mask corresponding to sam9x7 SoC in TFBGA228L package */
+> +				atmel,mux-mask = <
+> +						 /*  A		B	   C	      D	  */
+> +						 0xffffffff 0xffffefc0 0xc0ffd000 0x00000000	/* pioA */
+> +						 0x07ffffff 0x0805fe7f 0x01ff9f80 0x06078000	/* pioB */
+> +						 0xffffffff 0x07dfffff 0xfa3fffff 0x00000000	/* pioC */
+> +						 0x00003fff 0x00003fe0 0x0000003f 0x00000000	/* pioD */
+> +						 >;
+> +
+> +				pioA: gpio@fffff400 {
+> +					compatible = "microchip,sam9x7-gpio", "microchip,sam9x60-gpio", "atmel,at91sam9x5-gpio", "atmel,at91rm9200-gpio";
+> +					reg = <0xfffff400 0x200>;
+> +					interrupts = <2 IRQ_TYPE_LEVEL_HIGH 1>;
+> +					#gpio-cells = <2>;
+> +					gpio-controller;
+> +					interrupt-controller;
+> +					#interrupt-cells = <2>;
+> +					clocks = <&pmc PMC_TYPE_PERIPHERAL 2>;
+> +				};
+> +
+> +				pioB: gpio@fffff600 {
+> +					compatible = "microchip,sam9x7-gpio", "microchip,sam9x60-gpio", "atmel,at91sam9x5-gpio", "atmel,at91rm9200-gpio";
+> +					reg = <0xfffff600 0x200>;
+> +					interrupts = <3 IRQ_TYPE_LEVEL_HIGH 1>;
+> +					#gpio-cells = <2>;
+> +					gpio-controller;
+> +					#gpio-lines = <26>;
+> +					interrupt-controller;
+> +					#interrupt-cells = <2>;
+> +					clocks = <&pmc PMC_TYPE_PERIPHERAL 3>;
+> +				};
+> +
+> +				pioC: gpio@fffff800 {
+> +					compatible = "microchip,sam9x7-gpio", "microchip,sam9x60-gpio", "atmel,at91sam9x5-gpio", "atmel,at91rm9200-gpio";
+> +					reg = <0xfffff800 0x200>;
+> +					interrupts = <4 IRQ_TYPE_LEVEL_HIGH 1>;
+> +					#gpio-cells = <2>;
+> +					gpio-controller;
+> +					interrupt-controller;
+> +					#interrupt-cells = <2>;
+> +					clocks = <&pmc PMC_TYPE_PERIPHERAL 4>;
+> +				};
+> +
+> +				pioD: gpio@fffffa00 {
+> +					compatible = "microchip,sam9x7-gpio", "microchip,sam9x60-gpio", "atmel,at91sam9x5-gpio", "atmel,at91rm9200-gpio";
+> +					reg = <0xfffffa00 0x200>;
+> +					interrupts = <44 IRQ_TYPE_LEVEL_HIGH 1>;
+> +					#gpio-cells = <2>;
+> +					gpio-controller;
+> +					#gpio-lines = <22>;
+> +					interrupt-controller;
+> +					#interrupt-cells = <2>;
+> +					clocks = <&pmc PMC_TYPE_PERIPHERAL 44>;
+> +				};
+> +			};
+> +
+> +			pmc: pmc@fffffc00 {
+> +				compatible = "microchip,sam9x7-pmc", "syscon";
+> +				reg = <0xfffffc00 0x200>;
+> +				interrupts = <1 IRQ_TYPE_LEVEL_HIGH 7>;
+> +				#clock-cells = <2>;
+> +				clocks = <&clk32k 1>, <&clk32k 0>, <&main_xtal>;
+> +				clock-names = "td_slck", "md_slck", "main_xtal";
+> +			};
+> +
+> +			reset_controller: rstc@fffffe00 {
+
+reset-controller
+
+> +				compatible = "microchip,sam9x7-rstc", "microchip,sam9x60-rstc";
+> +				reg = <0xfffffe00 0x10>;
+> +				clocks = <&clk32k 0>;
+> +			};
+> +
+> +			shutdown_controller: shdwc@fffffe10 {
+
+Usually power-management or reset-controller or something like this.
+
+
+
+> +				compatible = "microchip,sam9x7-shdwc", "microchip,sam9x60-shdwc";
+> +				reg = <0xfffffe10 0x10>;
+> +				clocks = <&clk32k 0>;
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				atmel,wakeup-rtc-timer;
+> +				atmel,wakeup-rtt-timer;
+> +				status = "disabled";
+
 
 Best regards,
 Krzysztof
