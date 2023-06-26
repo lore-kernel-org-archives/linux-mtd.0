@@ -4,78 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E7C3EB64DC
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Jun 2023 01:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E1CCC0015E
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Jun 2023 03:12:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iuuAT2gIm6L8h+vC6zwXi24jXuUhZPD1W+w7rdoj56Q=; b=UCp01dMcGPRZzX
-	c2vWA9ylpjhIZfPrIaJYtRg6aBawe3YhxbnD5odCR+bieVfWsCLSYFMEFlTHi9R5wf0aWv3h5Hl9S
-	cfEzfvs2MfrxHXJlvZ69KJbvBlkm8iQXOQ+fP4LeAYBvaI49e1aZp7jqcHWZvQbS7wXQnj7J7RwWM
-	Z9/pCPMNvaN8xE25Xt9NBV55yTyvz8fM+7/4qUBHavWxUDQnU+XdvcJN8UEwAP/sltrIv8bPd8E6c
-	tG/ZAmHoVU0LHt+Z8VFhjK+Uing80mNsgzlZtRN032cRF+Vh8WEPFF+g31SRefNreMhIe6VcCnXxo
-	5edMepgegqmrReuXoDhg==;
+	List-Owner; bh=VFfjRztjfweHQmnZtUz+oNROi/BQnnF83+h/xVk91LE=; b=B4D9OzV61pE76P
+	VfvjuvWXmxsSkE3uxDB8yu7vfbHCbiFRwpewPdhIGhcTx9bEczY+LxAP5sg13V/PPHDholLouggeK
+	+zan919Vy3Xc/FDPNWtiO+FLkIUdqwCQ20akLGO+RGp35Jlw/7JF6hFDL9o6WF0vVxgOFIEQqSRgE
+	zwt65xYhR80RkBUakwKCAhtcnZejHMk9pyJl9JmmNCH5UWRuXjcsz7HsUyWv96dWwpBnec6AD+7Fp
+	yryYXFmgotS8C2f0Bv4lRVz/fZPMQ+CQX1vjrE91rIQXTn4kubkLWvQT460Obwwt3TzOtCV73JfkV
+	EOcFsDNH24jFw4RwdyBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDbUz-0096BG-2Y;
-	Mon, 26 Jun 2023 01:58:37 +0000
-Received: from mail-ot1-x330.google.com ([2607:f8b0:4864:20::330])
+	id 1qDceW-009DFd-30;
+	Mon, 26 Jun 2023 03:12:32 +0000
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDbUu-0096AG-0K;
-	Mon, 26 Jun 2023 01:58:34 +0000
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6b74e2d8c98so267036a34.2;
-        Sun, 25 Jun 2023 18:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dawes-za-net.20221208.gappssmtp.com; s=20221208; t=1687744706; x=1690336706;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cpd1DCIfGpvNSfdeEbs1vXO8F5LKqnoZEZn5IxdcDhs=;
-        b=XXEuWZKj/UkiyVVOX8x9wY61kouroWv++UO+PSrtnN7qVp7IS6cFyBv7xvGPiD0tob
-         25Z2Xq8Db0ZkiowL6bs03wCz/ZWEsk0P+G8Os4OaBMRIkriLeqLMZdg/zvjHetwMBbxL
-         9tg9PAkeDinxB0Pih0D927Vxwl20YKuf3QNKcv6mf1dsoA5hyf9u96HrM3ha6I6XnRp1
-         6Alzjvje6l1qW3r4yTcbh0esgWjpxj0QCPiHR6/oOFS4n3XgjucYfnhzvBqBTLd/VcZf
-         GJuVOGw8xVujURHwYroBqptq64vg0yQoNiB/xFFgXM1u/NIJJiEjETHE/dgsnwnhZ0E8
-         AsYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687744706; x=1690336706;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Cpd1DCIfGpvNSfdeEbs1vXO8F5LKqnoZEZn5IxdcDhs=;
-        b=SovwGl4qG7loDbpUCkFtBmfEY5gM5vXTceWQON+odMkd48SdXnJunTdthrWaaLD0nE
-         U9JKvo+f9Lj3iacDpoarga6zuzJm5I5VkUESI2LkoWxR7mIZ0tTQ0PVsvxJqgpQk4TB1
-         qTnV/VCgugwJtdLqZdwhGvuf+/ANS6/qcwgp8Oktu1jvjQ0sujHPFecvFPD+6+YKp8ri
-         znsK91Km+z0FWBUf+hT1R4vpJfa+G33RiBUvDa/QMXGkJ2AhbZPctANX4KvTzsY8t3vt
-         v7KwHqaRwfIQDbqyHBho3qz79EWYPnzOA4dSdu6luwp1Sx01EMnFY0gF0peq2VjmvcUH
-         v0Qg==
-X-Gm-Message-State: AC+VfDwMIivtQLWgTtQjDn0wuXIkXnK+3fFkYKh1x3Cm0FjJTNwhe3mC
-	/o0Wxb3Z7OwipcY+Kygl1ejA69qVTRk+UJ0nPBk=
-X-Google-Smtp-Source: ACHHUZ7/dQWIYR+MWCZ32GPrtmAI+HUBvAEjGZ+ojf1YmZ0CiADFsv8ASsmczFJDO2Z5yBInZUnPxm6WjWqhX35CV88=
-X-Received: by 2002:a9d:7cc9:0:b0:6b5:b654:6d52 with SMTP id
- r9-20020a9d7cc9000000b006b5b6546d52mr15885840otn.8.1687744706551; Sun, 25 Jun
- 2023 18:58:26 -0700 (PDT)
+	id 1qDceS-009DC4-0E
+	for linux-mtd@lists.infradead.org;
+	Mon, 26 Jun 2023 03:12:30 +0000
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 077602C0591;
+	Mon, 26 Jun 2023 15:12:21 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1687749141;
+	bh=T/cMMndfNf0ocqhn0QoQw6bUJBMlWygzKPKZTmLFFsw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=CTVr0opj8KePIWa9Q2JSSU2d7A6S+qQDuxZb2ekXGAgLNaskLMeJOioDIzHpCEiCM
+	 liIVfFrr5ANCddL1Fpfxb9w6Ht3Vrm5IhcKmG6h93HeG9os+bOQIHl6BqkuCt/p34x
+	 jdnIWqi1jlAFQgs81qUQIxrBx/hRZW3ptWeUPVrRjO4zE3l7HO3Gz1jpbM3xDsCtUd
+	 TEtMMoOFYNMCtycXtYUczNBwkEneqTEJlf8nvFK//qtWa6b4r+e3NqrAjtuq2A06IS
+	 0QxG/owF7Xp4pWDNO6ci8qmyfbrW/GL8ZcMU0LilHVxht2o6WecRHChya06A9Liatw
+	 UgTEDkJHJgyfg==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B649902140003>; Mon, 26 Jun 2023 15:12:20 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id A497313EE7B;
+	Mon, 26 Jun 2023 15:12:20 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id A590D283B1A; Mon, 26 Jun 2023 15:12:20 +1200 (NZST)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	gregory.clement@bootlin.com,
+	pierre.gondois@arm.com,
+	arnd@arndb.de,
+	f.fainelli@gmail.com
+Cc: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v2 3/3] mtd: rawnand: marvell: add support for AC5 SoC
+Date: Mon, 26 Jun 2023 15:12:17 +1200
+Message-ID: <20230626031217.870938-4-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230626031217.870938-1-chris.packham@alliedtelesis.co.nz>
+References: <20230626031217.870938-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <CAOYdKdhscu_NDetiWDgm7bqh-Tf7kqGMHYOvOE0sQh2dU3t64g@mail.gmail.com>
- <CAOMZO5AZQ1147K8tD5e0fJ680CtdDBWk1eMN7n9rVWtJX06W3A@mail.gmail.com>
- <CAOYdKdhuVbzavb9CJYqOLXX7PYCbOGzmeUg2eTgF1saTviCo-Q@mail.gmail.com>
- <f2570cf9-d01f-431b-832c-deae7a8f4c61@lunn.ch> <CAOYdKdiKxpk6sY7wWrrpW+ih6JziMyboRQO=2L3qov_DMhBmOA@mail.gmail.com>
- <CAOYdKdgrpQ9LQvjG7Eg40XtNPonYXmtRmwR=ZERatRJC6osZsA@mail.gmail.com> <ddb713dd-c8d5-4daa-a24f-64c8d213e0ae@lunn.ch>
-In-Reply-To: <ddb713dd-c8d5-4daa-a24f-64c8d213e0ae@lunn.ch>
-From: Rogan Dawes <rogan@dawes.za.net>
-Date: Mon, 26 Jun 2023 03:58:15 +0200
-Message-ID: <CAOYdKdiiXr73QVN+TEVH=0Sw_cOVkDWagXVNLT=PjPQF6cwoEg@mail.gmail.com>
-Subject: Re: Trying to boot mainline on Wink Hub v1
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-mtd <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	=?UTF-8?Q?Lothar_Wa=C3=9Fmann?= <LW@karo-electronics.de>, 
-	Marek Vasut <marex@denx.de>
+X-Patchwork-Bot: notify
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=NPqrBHyg c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=of4jigFt-DYA:10 a=FN2KoAgMzK-72ix3NDkA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230625_185832_387733_7489D802 
-X-CRM114-Status: GOOD (  13.97  )
+X-CRM114-CacheID: sfid-20230625_201228_263249_79A15D2E 
+X-CRM114-Status: GOOD (  15.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,35 +96,95 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fabio provided me with a working dts, and I was able to mount and run
-/sbin/init, etc from the original vendor filesystem. Obviously, there
-was still lots of breakage, like console names changing, and wifi
-drivers (from the 2.6.35 kernel) no longer loading.
+Add support for the AC5/AC5X SoC from Marvell. The NFC on this SoC only
+supports SDR modes up to 3.
 
-I'm going to apply that dtb to an OpenWrt image, I think, and see if I
-can get that booting.
+Marvell's SDK includes some predefined values for the ndtr registers.
+These haven't been incorporated as the existing code seems to get good
+values based on measurements taken with an oscilloscope.
 
-Thanks again for the help!
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
 
-Rogan
+Notes:
+    Changes in v2:
+    - None
 
-On Sun, 25 Jun 2023 at 23:38, Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Sun, Jun 25, 2023 at 11:09:21PM +0200, Rogan Dawes wrote:
-> > I tried adding a &nand block to my device tree, but I think it is not
-> > quite as simple as that, as I got an error message complaining about
-> > my additions:
-> >
-> > Error: arch/arm/boot/dts/imx28-wink-hub-v1.dts:40.6-11 syntax error
-> > FATAL ERROR: Unable to parse input tree
->
-> Looking at imx28.dtsi, it appears the nand controller is called gpmi,
-> not nand. So try replacing &namd with &gpmi.
->
-> Look at arch/arm/boot/dts/imx28-apf28.dts as an example.
->
->      Andrew
->
+ drivers/mtd/nand/raw/Kconfig        |  2 +-
+ drivers/mtd/nand/raw/marvell_nand.c | 16 ++++++++++++++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index b523354dfb00..0f4cbb497010 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -160,7 +160,7 @@ config MTD_NAND_MARVELL
+ 	  including:
+ 	  - PXA3xx processors (NFCv1)
+ 	  - 32-bit Armada platforms (XP, 37x, 38x, 39x) (NFCv2)
+-	  - 64-bit Aramda platforms (7k, 8k) (NFCv2)
++	  - 64-bit Aramda platforms (7k, 8k, ac5) (NFCv2)
+ 
+ config MTD_NAND_SLC_LPC32XX
+ 	tristate "NXP LPC32xx SLC NAND controller"
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 30c15e4e1cc0..b9a8dd324211 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -375,6 +375,7 @@ static inline struct marvell_nand_chip_sel *to_nand_sel(struct marvell_nand_chip
+  *			BCH error detection and correction algorithm,
+  *			NDCB3 register has been added
+  * @use_dma:		Use dma for data transfers
++ * @max_mode_number:	Maximum timing mode supported by the controller
+  */
+ struct marvell_nfc_caps {
+ 	unsigned int max_cs_nb;
+@@ -383,6 +384,7 @@ struct marvell_nfc_caps {
+ 	bool legacy_of_bindings;
+ 	bool is_nfcv2;
+ 	bool use_dma;
++	unsigned int max_mode_number;
+ };
+ 
+ /**
+@@ -2376,6 +2378,9 @@ static int marvell_nfc_setup_interface(struct nand_chip *chip, int chipnr,
+ 	if (IS_ERR(sdr))
+ 		return PTR_ERR(sdr);
+ 
++	if (nfc->caps->max_mode_number && nfc->caps->max_mode_number < conf->timings.mode)
++		return -EOPNOTSUPP;
++
+ 	/*
+ 	 * SDR timings are given in pico-seconds while NFC timings must be
+ 	 * expressed in NAND controller clock cycles, which is half of the
+@@ -3073,6 +3078,13 @@ static const struct marvell_nfc_caps marvell_armada_8k_nfc_caps = {
+ 	.is_nfcv2 = true,
+ };
+ 
++static const struct marvell_nfc_caps marvell_ac5_caps = {
++	.max_cs_nb = 2,
++	.max_rb_nb = 1,
++	.is_nfcv2 = true,
++	.max_mode_number = 3,
++};
++
+ static const struct marvell_nfc_caps marvell_armada370_nfc_caps = {
+ 	.max_cs_nb = 4,
+ 	.max_rb_nb = 2,
+@@ -3121,6 +3133,10 @@ static const struct of_device_id marvell_nfc_of_ids[] = {
+ 		.compatible = "marvell,armada-8k-nand-controller",
+ 		.data = &marvell_armada_8k_nfc_caps,
+ 	},
++	{
++		.compatible = "marvell,ac5-nand-controller",
++		.data = &marvell_ac5_caps,
++	},
+ 	{
+ 		.compatible = "marvell,armada370-nand-controller",
+ 		.data = &marvell_armada370_nfc_caps,
+-- 
+2.41.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
