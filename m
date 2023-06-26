@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02EA6EB64D7
-	for <linux-mtd@archiver.kernel.org>; Mon, 26 Jun 2023 17:18:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07E32EB64D9
+	for <linux-mtd@archiver.kernel.org>; Mon, 26 Jun 2023 17:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ieTexX2pkSZ4XsNJQcJzPl/iqlIP6hhxIGBTa3viwrM=; b=QMbeFs18+WWiQ/UQGhVKOQYnXD
-	U2MzI/nxPEPOtCBvf3NOQMHhoz1/ABToydfv42gJO/kcp16+2XJ01CNTyRftay59HtYQsk+xbi9EK
-	eU39jP0KmIm6T2fm66TOhvsFf3r44VkBcRgQ0zW9iBwjH01523us6RO3zvHUotbBkM0Cg/B3/UEyC
-	ype066vP+tZYbl6sMj6AAXa1Hs4pz2UWQhsy7cgJbw7Lq7Ew/5hluOAe09FbISCSrcs6IkdsYu1TV
-	tz96KGSL4RY0ZvcXpjKB601WUwCUiJc61BTUbeEcilY+K0m8PQuurTrFtzvOuZKCHwZ+2I2HwGR1A
-	dble9tPw==;
+	bh=w+KhZUgMSE3Sdk54rbGK+Nv2SZsKN39kv6ioBrcLKvE=; b=wXruabft/QKPDxrfQ92EPds862
+	qb1eplXwAqUn0eqONUqu5OxldAVSRLcmGHW2oS/Gze0s01PIMjRFFfZZ0fyCuw1SCbC04m+rjZ2fj
+	jImjfIIa6MOQyz5BQ45Askm25t0zDxEt03s3TxoWkgpnz3AEKuCF/Kr/JA7ftGFNQZEMi8lnfgrVx
+	kne43c/P8gq/FMDEVSacd7cHbN1cAU/QNFQBgg5TB+uhZbv6TvEp64jbFRmFOZjLNXsmQ+tamS79c
+	LYbFdHf1g+4Pn4OOmHPdPsJgaJAoUeSOhehFZElpESDcvdCZhFUk4Z7NAJbYu201o1JS5w4sZmccz
+	L5NqErGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDprK-00Ajjm-1t;
-	Mon, 26 Jun 2023 17:18:38 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qDpwb-00AkRA-18;
+	Mon, 26 Jun 2023 17:24:05 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDprH-00AjiC-0S;
-	Mon, 26 Jun 2023 17:18:36 +0000
+	id 1qDpwY-00AkQo-32
+	for linux-mtd@lists.infradead.org;
+	Mon, 26 Jun 2023 17:24:04 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4411B60ED6;
-	Mon, 26 Jun 2023 17:18:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59938C433C0;
-	Mon, 26 Jun 2023 17:18:30 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4DE9760EFA;
+	Mon, 26 Jun 2023 17:24:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C60BDC433C0;
+	Mon, 26 Jun 2023 17:23:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687799913;
-	bh=1aVA419Kc2rCasX63ROtSOVQwV4i2RV7ZXpObtGF3dA=;
+	s=k20201202; t=1687800241;
+	bh=J5IE0ZFd89PlUjMsyC5ZSSfbrAt4OkK3g5ZAb+NJ6cI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FxUujNhgccvZMZWccetFHuXeo/D0zbw55BOtACrmFsYVHx7YMat0MmSj4UtuVsh87
-	 sgdbL4QtyrpcwNfa6zUyYHQxoTygVXBBb2XBkP8RYTXAV6736s1OW0ASO6ejY5P2J7
-	 /X7Ll/dAWy37SwGIaboKHtGt3hJhMQfNmnsgjNdMrONigzMyXMGuXWW/ksupoFgLCb
-	 reFk7QZQgV6HONToyqBl4O/0PokwAEpFTtBHnyP2Z7NowlKFLTVJgOj/z2i0jdpjgM
-	 vmuk8sz+ftzQkMhx6I5rvV0MF/x8PtINWE1Nro89AFRQnFJduCv77lYh5Zwq8EZypK
-	 VJm7QMz1ThexA==
-Date: Mon, 26 Jun 2023 18:18:28 +0100
+	b=s+67EIwv9mAa2V7iEVLKwGUPMnb38s1xTCeeadi1GdFveWAGuua0K6aWOGajDM8As
+	 q+7TiNF4Hm5Yb+tgqpOXIzT8YDjIQiXMNi3fFmHg90gTplcy6mLes2qSQOp7exnhe1
+	 KIapOq4nn+uMK38lXA/4aszTTNZmJTukNnDNVaydmE3kVw8vWOnTfvnKX3/sy7dkrq
+	 G6JzqULi8qz6kgPd5gNIbxlMm3n1yLeXckEUR4Yxc7TXhbbUBJayXJZ6u9mpa2kG4U
+	 /5QvQLmoeIAfS2CJIxFPWVnamCFxgPwbLeevfpASqhXXy3jjIbF+kxeEjHnflzTpBR
+	 O4Wb5GrpJTfhg==
+Date: Mon, 26 Jun 2023 18:23:56 +0100
 From: Conor Dooley <conor@kernel.org>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
 	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, gregory.clement@bootlin.com,
-	pierre.gondois@arm.com, arnd@arndb.de, f.fainelli@gmail.com,
+	conor+dt@kernel.org, git@amd.com, michael@walle.cc,
 	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: Add AC5 specific binding
-Message-ID: <20230626-immunity-lagged-eaae0182ad0c@spud>
-References: <20230626031217.870938-1-chris.packham@alliedtelesis.co.nz>
- <20230626031217.870938-2-chris.packham@alliedtelesis.co.nz>
+	linux-kernel@vger.kernel.org, amitrkcian2002@gmail.com
+Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
+ to avoid setting SRWD bit in status register
+Message-ID: <20230626-stonework-freely-bec6f8bc83e6@spud>
+References: <20230625100251.31589-1-amit.kumar-mahapatra@amd.com>
+ <20230625100251.31589-2-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20230626031217.870938-2-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20230625100251.31589-2-amit.kumar-mahapatra@amd.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230626_101835_221625_18A0A3FB 
-X-CRM114-Status: GOOD (  15.55  )
+X-CRM114-CacheID: sfid-20230626_102403_057534_6B6F988D 
+X-CRM114-Status: GOOD (  26.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,75 +75,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2335122504743381742=="
+Content-Type: multipart/mixed; boundary="===============1447381336300516005=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============2335122504743381742==
+--===============1447381336300516005==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mLtStHEbV2AzfZjM"
+	protocol="application/pgp-signature"; boundary="qjgSjtDERNYXQ8hA"
 Content-Disposition: inline
 
 
---mLtStHEbV2AzfZjM
+--qjgSjtDERNYXQ8hA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 26, 2023 at 03:12:15PM +1200, Chris Packham wrote:
-> Add binding for AC5 SoC. This SoC only supports NAND SDR timings up to
-> mode 3 so a specific compatible value is needed.
+On Sun, Jun 25, 2023 at 03:32:50PM +0530, Amit Kumar Mahapatra wrote:
+> If the WP# signal of the flash device is either not connected or is wrong=
+ly
+> tied to GND (that includes internal pull-downs), and the software sets the
+> status register write disable (SRWD) bit in the status register then the
+> status register permanently becomes read-only. To avoid this added a new
+> boolean DT property "no-wp". If this property is set in the DT then the
+> software avoids setting the SRWD during status register write operation.
 >=20
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+> ---
+> As the DT property name has changed so, removed Reviewed-by tag.
+> @Cornor if possible, could you please review this updated patch.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Rob was the one who objected to the property name.
+Old & new names are fine by me, it was the text I think I cared about.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-Cheers,
+Thanks for actually explaining why you dropped the tag,
 Conor.
 
 > ---
+>  .../devicetree/bindings/mtd/jedec,spi-nor.yaml    | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
 >=20
-> Notes:
->     Changes in v2:
->     - Keep compatibles in alphabetical order
->     - Explain AC5 limitations in commit message
->=20
->  .../devicetree/bindings/mtd/marvell,nand-controller.yaml         | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controlle=
-r.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> index a10729bb1840..1ecea848e8b9 100644
-> --- a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-> @@ -16,6 +16,7 @@ properties:
->            - const: marvell,armada-8k-nand-controller
->            - const: marvell,armada370-nand-controller
->        - enum:
-> +          - marvell,ac5-nand-controller
->            - marvell,armada370-nand-controller
->            - marvell,pxa3xx-nand-controller
->        - description: legacy bindings
+> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/D=
+ocumentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> index 89959e5c47ba..97344969b02d 100644
+> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> @@ -70,6 +70,21 @@ properties:
+>        be used on such systems, to denote the absence of a reliable reset
+>        mechanism.
+> =20
+> +  no-wp:
+> +    type: boolean
+> +    description:
+> +      The status register write disable (SRWD) bit in status register, c=
+ombined
+> +      with the WP# signal, provides hardware data protection for the dev=
+ice. When
+> +      the SRWD bit is set to 1, and the WP# signal is either driven LOW =
+or hard
+> +      strapped to LOW, the status register nonvolatile bits become read-=
+only and
+> +      the WRITE STATUS REGISTER operation will not execute. The only way=
+ to exit
+> +      this hardware-protected mode is to drive WP# HIGH. If the WP# sign=
+al of the
+> +      flash device is not connected or is wrongly tied to GND (that incl=
+udes internal
+> +      pull-downs) then status register permanently becomes read-only as =
+the SRWD bit
+> +      cannot be reset. This boolean flag can be used on such systems to =
+avoid setting
+> +      the SRWD bit while writing the status register. WP# signal hard st=
+rapped to GND
+> +      can be a valid use case.
+> +
+>    reset-gpios:
+>      description:
+>        A GPIO line connected to the RESET (active low) signal of the devi=
+ce.
 > --=20
-> 2.41.0
+> 2.17.1
 >=20
 
---mLtStHEbV2AzfZjM
+--qjgSjtDERNYXQ8hA
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZJnIYwAKCRB4tDGHoIJi
-0vp2APoC4meY0myxHCxXUVoBUzE6hpFknz/7nb15OFZQ1HwLqgD/Rky+73wm6Dho
-QHLhMpJPdRSVdSpYAUROy/uJUSklOAU=
-=CTKY
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZJnJrAAKCRB4tDGHoIJi
+0ntuAQDVpae9PflF2Bc8e7EAKMWs4/x2R2zXS1I6cmwqsdqWJwD/SL5M96LQ13GW
+oDRx25XRP1+G6pAwWLHTEwIoub+Q9gc=
+=EFCF
 -----END PGP SIGNATURE-----
 
---mLtStHEbV2AzfZjM--
+--qjgSjtDERNYXQ8hA--
 
 
---===============2335122504743381742==
+--===============1447381336300516005==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -151,5 +182,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============2335122504743381742==--
+--===============1447381336300516005==--
 
