@@ -4,67 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ED33EB64DC
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jun 2023 06:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BA2CEB64D9
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jun 2023 10:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=L3lShIeoQrJvOgNqzD2l8JpgrFb929o9b7gL1Xs85+8=; b=zewd7dj8BAptiIAXUIVI0Ujkw7
-	AuZBxqSF1eyuDYdwhY969tSr4StKsNQ7MZZvkX/CutbVz/jeX5ZuSIzj8+mszFlALbnYwBk0vbLw7
-	izuTsqPXZTpS+PpoqYFiv9UuGTVPwDohmzjnJCCfYJ5FpHTFUQr2FZO4GPFMdS4+s/E6ssNSTbXT1
-	5RIQIle/4EH4rg873hQEa/RScVY65GXLXOR7pDn7KVQVdxzlLIV7E1gi0b26qo9cO5Kf0HEvuUPhN
-	0DZVkVz1TjwPq3CGbufhCiF4tY4M66ByCeMDjaTCd2KtX2YPZOg3pIzY9nBptXq/t9tof0IN2oOj5
-	zNw/i+nw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+Y/tF+gEKpO6J2rzVAt7g+f2NIeXC0552NkmE74Hu/o=; b=rmMpLV0AjdEhOM
+	mlYCUsxQ1EI09ei0mrN3HZ/x+Fyd+r1MsKsQf8LE1zT6nQ/QbOqCz5dw0x/E8LIi/oCsu8B/7csuo
+	HnBWiTGEO1aMcasqINqYjhicVDb9glmnHdXxg0rZOSdTwc+iQvb2UXgpxUJRxfhfRKc28S4pQ7HpD
+	MzMfJsyLHINQ4UWo0csvsyQjVcjoEApOnJwDLX2gT4xEH5cW5nponOurm4FdM4uPPTZftipj9Es18
+	VQBNJUubud/IRuMbi0xBE+HpdwAGGCnvclC0UeoMKZfFuvNJzpJ7hmHQGACKYqRQRmiBIPnPnBBzI
+	3SZCU2j/K4vUxsKt6mGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qE1yh-00C5gc-2f;
-	Tue, 27 Jun 2023 06:15:03 +0000
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	id 1qE66G-00CusJ-2s;
+	Tue, 27 Jun 2023 10:39:08 +0000
+Received: from mail-oi1-x232.google.com ([2607:f8b0:4864:20::232])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qE1ye-00C5eR-1M
+	id 1qE66D-00CuoZ-1d
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Jun 2023 06:15:01 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id E256850B;
-	Tue, 27 Jun 2023 08:14:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1687846497;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UvmboR1BMviOSQ7PsVkhSOxfTc1VG5c3nYyF5muyxD0=;
-	b=EE1kURunazGQ1GVYw9yAX4tHHZaKj/eZzng78T1g3a4vD2YUolfM6OgJSTUKGvG0iV+Urw
-	7YmVVweu87mPvKniop95Bec6euXwvGdTPaIwWiyPR6GMNPYVXuSobppkVnJLRfnhNUAcMB
-	wLraEhPRd68gTgv+9a4jNkQqU250fgAAPuh2GLdHe4qCEMGQEKiYWk94w5/iema9p7e//w
-	18HVbfKPfh2TEDtrFeqUYx6Z3S+sL3Z9EtR6J5CXc41fzytvUWCminuvAA9FFADiFMW4ET
-	JK86a0tu6gx7+GynYtX3/SlLvl8Y7A5SJl7aJnoi8q2Qa6F/In/POuEHUX05uQ==
+	Tue, 27 Jun 2023 10:39:06 +0000
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3a1c162cdfeso2503537b6e.2
+        for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2023 03:39:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687862341; x=1690454341;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rCgvLgi3BLx22tE+6LcdRjHHTXAUCqzO3DhXE5/At3c=;
+        b=j4V/TgPYZOOMjOgLDAi/Fq1Y8RqRGFE7b4qGJRTHhPIZyNGDGr5yqNQrewztFtf4+H
+         ad9pajr2f7m4EQWCIIZ7UZtZio4GJYgTjDdtTPHRGE4J1sMKSakHqDbNf898iQmg84X0
+         oZdd9dQqPDhhXjPDGdGXik6nfCbkAaHgghtffDg3ccxxkGJQf524luAiz9KkLkiLd579
+         lMYpgQWhUnJhY6/kXmGgYvSBMyPZsdHMrkRhn0njqEixyf3AQPrdjzrW8+zSLjuVEOu1
+         FIRpBegrkGSWtArlAliOUuhNUyJLd7Q/kZI1AwHQBoLKNwl9o8TL/uhfCE7FAt29AuY3
+         GNUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687862341; x=1690454341;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rCgvLgi3BLx22tE+6LcdRjHHTXAUCqzO3DhXE5/At3c=;
+        b=idSCb8fefWSypISbWv23HaH9wYIpSNYZmTiij5DAIvyBweF7xW7A8yqZ8+XDPgMelM
+         TzvKpFHNTjaKH8rYOikvuwkfUY1tyMvMbZCcXQfKO2vt5PlsfHg1AFqeJdu0KvHu/3GQ
+         7MjDnH9LNIRiaYa5do21A/yO7H2Nf7Iv29wXcisjz23lJDziRSt5FCUWBcdvBwK3VJ6h
+         rew0P5pZ55q+Npsdt6MuwGgUeHOFt7d/sfZitOWXoesNVNxQjw0FF3C/z1zUMoFrvgiQ
+         PXuazc48A80rrOvCIS2emsoy+7PKY7b1tZqzAW8GNnUnGmyeElOvpkEx9UgBLG9MoJfD
+         FjTQ==
+X-Gm-Message-State: AC+VfDxxLL5x9aFZHK0CanVs4Kr4l164uxlYTrDo+CKwjHyn0yBVfHO8
+	60ypH41aJni7YytFapSt1xa9c7SvqAyJBbLrpXk=
+X-Google-Smtp-Source: ACHHUZ5H3GRoBym0b9/SiurE+jEIsHMp41/GcQAaG06YOaSsX0tGI2WlPTg+w61l4Kgc2zfz1Xr4qbgyrRqgP6044mA=
+X-Received: by 2002:a05:6808:424d:b0:38e:a824:27d3 with SMTP id
+ dp13-20020a056808424d00b0038ea82427d3mr30392455oib.27.1687862341491; Tue, 27
+ Jun 2023 03:39:01 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 27 Jun 2023 08:14:57 +0200
-From: Michael Walle <michael@walle.cc>
-To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- git@amd.com, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, amitrkcian2002@gmail.com, Amit Kumar Mahapatra
- <amit.kumar-mahapatra@amd.com>
-Subject: Re: [PATCH v3 2/2] mtd: spi-nor: Avoid setting SRWD bit in SR if WP#
- signal not connected
-In-Reply-To: <20230625100251.31589-3-amit.kumar-mahapatra@amd.com>
-References: <20230625100251.31589-1-amit.kumar-mahapatra@amd.com>
- <20230625100251.31589-3-amit.kumar-mahapatra@amd.com>
-Message-ID: <5e5fe22aebe17da4f9ad2c4eaaa8985f@walle.cc>
-X-Sender: michael@walle.cc
+References: <20230531125535.676098-1-hch@lst.de> <20230531125535.676098-9-hch@lst.de>
+ <c1391658-d785-4b2f-ba7e-01e4668685d7@roeck-us.net> <20230626075325.GA26851@lst.de>
+ <7e708dfa-4019-fe28-afbd-91ad847fada0@roeck-us.net>
+In-Reply-To: <7e708dfa-4019-fe28-afbd-91ad847fada0@roeck-us.net>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Date: Tue, 27 Jun 2023 03:38:50 -0700
+Message-ID: <CAMo8BfLtEw2jdRC-pK4kYuqmgEy-0QgXDodiF+gZEMygNQQBbA@mail.gmail.com>
+Subject: Re: [PATCH 08/24] init: pass root_device_name explicitly
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Mike Snitzer <snitzer@kernel.org>, Joern Engel <joern@lazybastard.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Pavel Machek <pavel@ucw.cz>, Loic Poulain <loic.poulain@linaro.org>, 
+	dm-devel@redhat.com, linux-kernel@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-pm@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230626_231500_619710_BAAB8959 
-X-CRM114-Status: GOOD (  18.10  )
+X-CRM114-CacheID: sfid-20230627_033905_547972_46529887 
+X-CRM114-Status: GOOD (  24.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,92 +91,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2023-06-25 12:02, schrieb Amit Kumar Mahapatra:
-> Setting the status register write disable (SRWD) bit in the status
-> register (SR) with WP# signal of the flash left floating or wrongly 
-> tied to
-> GND (that includes internal pull-downs), will configure the SR 
-> permanently
-> as read-only. If WP# signal is left floating or wrongly tied to GND, 
-> avoid
-> setting SRWD bit while writing the SR during flash protection.
-> 
-> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 3 +++
->  drivers/mtd/spi-nor/core.h | 1 +
->  drivers/mtd/spi-nor/swp.c  | 9 +++++++--
->  3 files changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 0bb0ad14a2fc..520f5ab86d2b 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2864,6 +2864,9 @@ static void spi_nor_init_flags(struct spi_nor 
-> *nor)
->  	if (flags & NO_CHIP_ERASE)
->  		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
-> 
-> +	if (of_property_read_bool(np, "no-wp"))
-> +		nor->flags |= SNOR_F_NO_WP;
-> +
-
-Please put it below the of_property_read_bool() which is already
-there, just to keep things sorted.
-
->  	if (flags & SPI_NOR_RWW && nor->info->n_banks > 1 &&
->  	    !nor->controller_ops)
->  		nor->flags |= SNOR_F_RWW;
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 4fb5ff09c63a..55b5e7abce6e 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -132,6 +132,7 @@ enum spi_nor_option_flags {
->  	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
->  	SNOR_F_RWW		= BIT(14),
->  	SNOR_F_ECC		= BIT(15),
-> +	SNOR_F_NO_WP		= BIT(16),
-
-See the comment right above this enum :/
-
->  };
-> 
->  struct spi_nor_read_command {
-> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
-> index 0ba716e84377..cfaba41d74d6 100644
-> --- a/drivers/mtd/spi-nor/swp.c
-> +++ b/drivers/mtd/spi-nor/swp.c
-> @@ -214,8 +214,13 @@ static int spi_nor_sr_lock(struct spi_nor *nor, 
-> loff_t ofs, uint64_t len)
-> 
->  	status_new = (status_old & ~mask & ~tb_mask) | val;
-> 
-> -	/* Disallow further writes if WP pin is asserted */
-> -	status_new |= SR_SRWD;
-> +	/*
-> +	 * Disallow further writes if WP# pin is neither left floating nor
-> +	 * wrongly tied to GND(that includes internal pull-downs).
-
-nit: space missing
-
-Otherwise looks good.
-
-Thanks,
--michael
-
-> +	 * WP# pin hard strapped to GND can be a valid use case.
-> +	 */
-> +	if (!(nor->flags & SNOR_F_NO_WP))
-> +		status_new |= SR_SRWD;
-> 
->  	if (!use_top)
->  		status_new |= tb_mask;
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCBKdW4gMjYsIDIwMjMgYXQgODoxMOKAr0FNIEd1ZW50ZXIgUm9lY2sgPGxpbnV4QHJv
+ZWNrLXVzLm5ldD4gd3JvdGU6Cj4KPiBPbiA2LzI2LzIzIDAwOjUzLCBDaHJpc3RvcGggSGVsbHdp
+ZyB3cm90ZToKPiA+IE9uIEZyaSwgSnVuIDIzLCAyMDIzIGF0IDA1OjA4OjU5UE0gLTA3MDAsIEd1
+ZW50ZXIgUm9lY2sgd3JvdGU6Cj4gPj4gSGksCj4gPj4KPiA+PiBPbiBXZWQsIE1heSAzMSwgMjAy
+MyBhdCAwMjo1NToxOVBNICswMjAwLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90ZToKPiA+Pj4gSW5z
+dGVhZCBvZiBkZWNsYXJpbmcgcm9vdF9kZXZpY2VfbmFtZSBhcyBhIGdsb2JhbCB2YXJpYWJsZSBw
+YXNzIGl0IGFzIGFuCj4gPj4+IGFyZ3VtZW50IHRvIHRoZSBmdW5jdGlvbnMgdXNpbmcgaXQuCj4g
+Pj4+Cj4gPj4+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waCBIZWxsd2lnIDxoY2hAbHN0LmRlPgo+
+ID4+Cj4gPj4gVGhpcyBwYXRjaCByZXN1bHRzIGluIHRoZSBmb2xsb3dpbmcgYnVpbGQgZXJyb3Ig
+d2hlbiB0cnlpbmcgdG8gYnVpbGQKPiA+PiB4dGVuc2E6dGlueWNvbmZpZy4KPiA+Pgo+ID4+IFdB
+Uk5JTkc6IG1vZHBvc3Q6IHZtbGludXg6IHNlY3Rpb24gbWlzbWF0Y2ggaW4gcmVmZXJlbmNlOiBz
+dHJjcHkuaXNyYS4wKzB4MTQgKHNlY3Rpb246IC50ZXh0LnVubGlrZWx5KSAtPiBpbml0Y2FsbF9s
+ZXZlbF9uYW1lcyAoc2VjdGlvbjogLmluaXQuZGF0YSkKPiA+PiBFUlJPUjogbW9kcG9zdDogU2Vj
+dGlvbiBtaXNtYXRjaGVzIGRldGVjdGVkLgo+ID4KPiA+IEkgY2FuIHJlcHJvZHVjZSB0aGVzZSB3
+aXRoIGdjYyAxMy4xIG9uIHh0ZW5zYSwgYnV0IHRoZSByZXBvcnQgbWFrZXMKPiA+IG5vIHNlbnNl
+IHRvIG1lLiAgSWYgSSBkaXNhYmxlIENPTkZJR19DQ19PUFRJTUlaRV9GT1JfU0laRSBpdCBub3cg
+cmVwb3J0cwo+ID4gYSBzaW1pbGFyIHdhcm5pbmcgZm9yIHB1dF9wYWdlIGludGVhZCBvZiBzdHJj
+cHkgd2hpY2ggc2VlbXMganVzdCBhcwo+ID4gYXJjYW5jZS4KPiA+Cj4KPiBJIGRvbid0IHNlZSB0
+aGF0IChJIHRyaWVkIDExLjMsIDExLjQsIDEyLjMsIGFuZCAxMy4xKSwgYnV0IHRoZW4gSSBhbSBu
+b3Qgc3VyZQo+IGlmIHRoaXMgaXMgd29ydGggdHJhY2tpbmcgZG93bi4gSSBqdXN0IGZvcmNlIENP
+TkZJR19TRUNUSU9OX01JU01BVENIX1dBUk5fT05MWT15Cj4gZm9yIHh0ZW5zYSBidWlsZHMgaW5z
+dGVhZC4KCkkgYmVsaWV2ZSBpdCdzIHlldCBhbm90aGVyIG1hbmlmZXN0YXRpb24gb2YgdGhlIGZv
+bGxvd2luZyBpc3N1ZToKaHR0cHM6Ly9nY2MuZ251Lm9yZy9idWd6aWxsYS9zaG93X2J1Zy5jZ2k/
+aWQ9OTI5MzgKCkh1bnRpbmcgaXMgc3RpbGwgb24gbXkgdG9kbyBsaXN0LCBidXQgaXQncyBxdWl0
+ZSBsb3csIHNvIEkgZ3Vlc3MKZm9yY2luZyBDT05GSUdfU0VDVElPTl9NSVNNQVRDSF9XQVJOX09O
+TFk9eSBmb3IgeHRlbnNhCmlzIHRoZSByaWdodCB0aGluZyB0byBkbyBmb3Igbm93LgoKLS0gClRo
+YW5rcy4KLS0gTWF4CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
