@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37489EB64DC
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jun 2023 19:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26D08EB64D9
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jun 2023 19:38:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cqSB2PBozUSUHNDrBfvY73chNd2Altokw/0sslfpXSM=; b=MEXLq35C0Y4gyIYe3F1W2Y6RUu
-	QMFYfKUSwe5NTzb+don7zgo7nDVg0HtF6+dItRQLI7sfSn8DPWGLpUSqewOzjE4jqdaRfrYlhKHrQ
-	qCs6oFeU+EB+34383CTNz7oINWQeXCRjmjMqR9xPKgCTghTFMTIzsWAWVo461Jrk9oNywq3aXp8Nw
-	8uLmgahRMh4125kJtfWmLKCbrvhMKOtsp7rEQaMeeoEohFACu5LP7yNguA+h/W+GvGPNnvCDg2nQl
-	5C535+3+jlLuKdmHfalrbF1CnGjknCByDJUc0r7sz5KHXbglMKKOWjPURRPS847uv8YBxNhAFOs+P
-	4spuxHow==;
+	bh=JCL73tcxGtV8lvxKiw2e//HWlc/AyXtrNTzcFCKYSHg=; b=33cO5JtM9i4ScJyb5ZmEr90TTX
+	E2U7ou2mMFxga4RXIACxywi/HutLdfzZcmwdUc4m6qCicF2TaFKcwaxh2ggurCJG3485d7HO63mkS
+	5zDSJ2HSZB9i5Pc7VGL8kQUzBkRXmkNdqGXVTy4baHNMK71oWvb7JhPApGR7lxA9L10mBsRfjBK+L
+	/pTlXgKFosB7t37t1niNL4FdNyv2BaVAdyylttsME3ESusU3XUC/79EFAtTeLggaSO8ocGZGT9vQE
+	SIAQK0U4wLfKFuV5T1gF7B9f5AYF2yeTfJdJbn+3zRc/lPjNUydw6QiABJ6AS9DoYPGPMfSxTm9ge
+	lWhQCO3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qEEWA-00DxMo-30;
-	Tue, 27 Jun 2023 19:38:26 +0000
-Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
+	id 1qEEWD-00DxO7-26;
+	Tue, 27 Jun 2023 19:38:29 +0000
+Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qEEW6-00DxKg-1p
+	id 1qEEW8-00DxLQ-1z
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Jun 2023 19:38:24 +0000
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b80ba9326bso18651585ad.1
-        for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2023 12:38:22 -0700 (PDT)
+	Tue, 27 Jun 2023 19:38:26 +0000
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b8303cd32aso3961755ad.2
+        for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2023 12:38:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1687894702; x=1690486702;
+        d=broadcom.com; s=google; t=1687894704; x=1690486704;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e8f+3qbuPcV/Nupc2zc8V+WlQLNxxmPR96rST4X8IcE=;
-        b=gEBxhn4lkRplkOmSqt61SqzrGf413Hh9tR+KzZNECWfw272HoZR9hapHLrPJihsOFM
-         x3gMHNRm8YgCiOmhV48GTOzABI/h5fnXsji248HHvUjtPRw+p2Kopc1ibVj9GLvC4oTY
-         y188LuaJrnxicSFgor8wt+UjbtIjVeksKCMZs=
+        bh=Yg3loCtzaBm2fhZ/kev3sGoGkOTpLkYYMwnAtFH8alU=;
+        b=XV9H71Wyf7nvqScQLSaAvVuv1nwyY9n8TibcHuWFVnMP3mOcqWcCrmZhUTdDmoTI5j
+         vmM0N8oG7SeTrS8IKwds9+FqyHXtOz3eSO7A/dwOBfhTL+WyT/nggt2hFhiuKyRVFSy7
+         ZEeTsuilJXxbW4H0liSmq0H17efNjnH88o6o8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687894702; x=1690486702;
+        d=1e100.net; s=20221208; t=1687894704; x=1690486704;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e8f+3qbuPcV/Nupc2zc8V+WlQLNxxmPR96rST4X8IcE=;
-        b=dwMWnLNZ5lmMhgR1JEXfzXt5qyjhb37cdTnOZr2p7Xux8Nagl5oxTbC+zVdoFGBYZr
-         atkxIJu3VyMhygsSeC4J79P0+jCwu704SQc5vVVUx056OLB4BSrGyL4p11dxg2DcQVAQ
-         JZ1VfQq82P8kMqCNslP0YG2aF7NHdLzCv2bBXNex68E3vJ2wHaTZEQELq7FltXfvx8ll
-         G8sBj4KgJWKhymN0c3Ny/4GGKRZ86du/d9Bg/MhIMXqXcYuFtozMrniOvMhLl2viZGoV
-         HVC/5WZE/JISX4rELK/JiGbXQQ+SxYh5MrCSdvDI+BnmC3BI5/jD0RMaIqVkFNP8xJOE
-         9V5g==
-X-Gm-Message-State: AC+VfDzufeYEGtaZ9SZRDO+nz3FsydRe+M9J66AI+yP109hUBJA4jRGS
-	WoO+IB2rFKVE3bvkzvuQrkDkOw==
-X-Google-Smtp-Source: ACHHUZ6NyxgYQLqtldZYv7rAnb6xk6MCzhsSbzJfVmaG+krVdplmz//ix/nF7pWnpBt4G+123EAmTA==
-X-Received: by 2002:a17:902:7c06:b0:1b3:a928:18e8 with SMTP id x6-20020a1709027c0600b001b3a92818e8mr9757938pll.52.1687894702074;
-        Tue, 27 Jun 2023 12:38:22 -0700 (PDT)
+        bh=Yg3loCtzaBm2fhZ/kev3sGoGkOTpLkYYMwnAtFH8alU=;
+        b=WFyc3axCm47K8WA3fIMwQAw23la+i7i/uHjOfjK6oBUqodA1ulsi9I8oD9qEjaQJMk
+         jqCt/m/epev87wB7ZTt+n+25ay5hxR1cL8LgZ5ELJvXSZ42gJHxBIJOTg7ezEiHWeDtW
+         bziI6c2aXzkMNYSy/q4Mxu4m3XdS7Cg6KC8+8gD3KrWY7oL+MmU0b0aMQZODrIQRhZ3R
+         t3aJanQ1oOW00YA6jVe0KmAVEG+zrkEqsAOArA9rKucvPhaYfRsy4vgERoeDKRV/v5PO
+         uLrwbHhJTLOpDnT+0JG8tVGB1+r1Dde3U268bQ4jt7KrVl2vQySxGrNMzL504YV3+TNB
+         /Q+g==
+X-Gm-Message-State: AC+VfDxYbfltNEtBzq6ioOLR0m6GqvDtzbSrd+MNWjNcpzavHP/o9Dxl
+	PicMveu/bZCBX2fy/1rsqTOodQ==
+X-Google-Smtp-Source: ACHHUZ6BnGSwtD4/hRzx61L/PbQ8rot4QIgpZ9Fd04Q38KUoUxJyREFCRy2UdR3NgFKGdwU+VHMEZQ==
+X-Received: by 2002:a17:903:41c2:b0:1b7:c629:f110 with SMTP id u2-20020a17090341c200b001b7c629f110mr13071912ple.63.1687894704162;
+        Tue, 27 Jun 2023 12:38:24 -0700 (PDT)
 Received: from ubuntu-22.localdomain ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id g7-20020a1709026b4700b001b7f40a8959sm4986919plt.76.2023.06.27.12.38.19
+        by smtp.gmail.com with ESMTPSA id g7-20020a1709026b4700b001b7f40a8959sm4986919plt.76.2023.06.27.12.38.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jun 2023 12:38:20 -0700 (PDT)
+        Tue, 27 Jun 2023 12:38:23 -0700 (PDT)
 From: William Zhang <william.zhang@broadcom.com>
 To: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
 	Linux MTD List <linux-mtd@lists.infradead.org>
@@ -71,21 +71,22 @@ Cc: f.fainelli@gmail.com,
 	tomer.yacoby@broadcom.com,
 	dan.beygelman@broadcom.com,
 	William Zhang <william.zhang@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Frieder Schrempf <frieder.schrempf@kontron.de>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-kernel@vger.kernel.org,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Richard Weinberger <richard@nod.at>,
+	Boris Brezillon <bbrezillon@kernel.org>,
 	Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH v3 4/5] mtd: rawnand: brcmnand: Fix potential out-of-bounds access in oob write
-Date: Tue, 27 Jun 2023 12:37:37 -0700
-Message-Id: <20230627193738.19596-5-william.zhang@broadcom.com>
+Subject: [PATCH v3 5/5] mtd: rawnand: brcmnand: Fix mtd oobsize
+Date: Tue, 27 Jun 2023 12:37:38 -0700
+Message-Id: <20230627193738.19596-6-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230627193738.19596-1-william.zhang@broadcom.com>
 References: <20230627193738.19596-1-william.zhang@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230627_123822_608306_7B2E8FC7 
+X-CRM114-CacheID: sfid-20230627_123824_654543_79F230AF 
 X-CRM114-Status: GOOD (  16.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -98,80 +99,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4464848680821737418=="
+Content-Type: multipart/mixed; boundary="===============9212506609380833835=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============4464848680821737418==
+--===============9212506609380833835==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000027480705ff219c86"
+	boundary="0000000000004660de05ff219c2c"
 
---00000000000027480705ff219c86
+--0000000000004660de05ff219c2c
 Content-Transfer-Encoding: 8bit
 
-When the oob buffer length is not in multiple of words, the oob write
-function does out-of-bounds read on the oob source buffer at the last
-iteration. Fix that by always checking length limit on the oob buffer
-read and fill with 0xff when reaching the end of the buffer to the oob
-registers.
+brcmnand controller can only access the flash spare area up to certain
+bytes based on the ECC level. It can be less than the actual flash spare
+area size. For example, for many NAND chip supporting ECC BCH-8, it has
+226 bytes spare area. But controller can only uses 218 bytes. So brcmand
+driver overrides the mtd oobsize with the controller's accessible spare
+area size. When the nand base driver utilizes the nand_device object, it
+resets the oobsize back to the actual flash spare aprea size from
+nand_memory_organization structure and controller may not able to access
+all the oob area as mtd advises.
 
-Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+This change fixes the issue by overriding the oobsize in the
+nand_memory_organization structure to the controller's accessible spare
+area size.
+
+Fixes: a7ab085d7c16 ("mtd: rawnand: Initialize the nand_device object")
 Signed-off-by: William Zhang <william.zhang@broadcom.com>
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
 ---
 
-Changes in v3:
-- Fix kernel test robot sparse warning:
-   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1500:54: sparse: expected unsigned int [usertype] data
-   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1500:54: sparse: got restricted __be32 [usertype]
+Changes in v3: None
+Changes in v2: None
 
-Changes in v2:
-- Handle the remaining unaligned oob data after the oob data write loop
-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index ea03104692bf..407bf79cbaf4 100644
+index 407bf79cbaf4..39c7f547db1f 100644
 --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
 +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1477,19 +1477,28 @@ static int write_oob_to_regs(struct brcmnand_controller *ctrl, int i,
- 			     const u8 *oob, int sas, int sector_1k)
- {
- 	int tbytes = sas << sector_1k;
--	int j;
-+	int j, k = 0;
-+	u32 last = 0xffffffff;
-+	u8 *plast = (u8 *)&last;
+@@ -2647,6 +2647,8 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+ 	struct nand_chip *chip = &host->chip;
+ 	const struct nand_ecc_props *requirements =
+ 		nanddev_get_ecc_requirements(&chip->base);
++	struct nand_memory_organization *memorg =
++		nanddev_get_memorg(&chip->base);
+ 	struct brcmnand_controller *ctrl = host->ctrl;
+ 	struct brcmnand_cfg *cfg = &host->hwcfg;
+ 	char msg[128];
+@@ -2668,10 +2670,11 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+ 	if (cfg->spare_area_size > ctrl->max_oob)
+ 		cfg->spare_area_size = ctrl->max_oob;
+ 	/*
+-	 * Set oobsize to be consistent with controller's spare_area_size, as
+-	 * the rest is inaccessible.
++	 * Set mtd and memorg oobsize to be consistent with controller's
++	 * spare_area_size, as the rest is inaccessible.
+ 	 */
+ 	mtd->oobsize = cfg->spare_area_size * (mtd->writesize >> FC_SHIFT);
++	memorg->oobsize = mtd->oobsize;
  
- 	/* Adjust OOB values for 1K sector size */
- 	if (sector_1k && (i & 0x01))
- 		tbytes = max(0, tbytes - (int)ctrl->max_oob);
- 	tbytes = min_t(int, tbytes, ctrl->max_oob);
- 
--	for (j = 0; j < tbytes; j += 4)
-+	for (j = 0; (j + 3) < tbytes; j += 4)
- 		oob_reg_write(ctrl, j,
- 				(oob[j + 0] << 24) |
- 				(oob[j + 1] << 16) |
- 				(oob[j + 2] <<  8) |
- 				(oob[j + 3] <<  0));
-+
-+	while (j < tbytes)
-+		plast[k++] = oob[j++];
-+
-+	if (tbytes & 0x3)
-+		oob_reg_write(ctrl, (tbytes & ~0x3), (__force u32)cpu_to_be32(last));
-+
- 	return tbytes;
- }
- 
+ 	cfg->device_size = mtd->size;
+ 	cfg->block_size = mtd->erasesize;
 -- 
 2.37.3
 
 
---00000000000027480705ff219c86
+--0000000000004660de05ff219c2c
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -242,19 +237,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPids+fHBEwAv4AdCbTn12BkPC+h
-y5QAwRDs9N9bo7nzMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDYyNzE5MzgyMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEINVGm13P5vKX4BW00UQZYUnZmyDg
+7MEbAsTuEb0iONnjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDYyNzE5MzgyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQB2yz0IQ1i173x3NYWT2JUImVpcVINZVRegMJ2SwWJ+FdYt
-vJKJY9L/yzhwDc9tEO5Qu+wZx+MAZ7bkDIWC+SXIilovPF3TGd43adwS4NsiCl7wz2METeuS4JWQ
-yfxd8seU2Ef13kIDOimnda0DeooKRm7ZbEgMpek9o7un3fkClEyDP7X1wBZ3wQNMl/b0tHZwMwzK
-KII3PQRqA2DrWxJ+74fcJe6ZabbufxkGfs0+/s9oinHrF+fz86fRfBX0wbK0yh8cwuygpQVNoALY
-YP68vqI/h/5RGy3ezzhjm5b9sQaz258WFUz1zAVM7cSptY52UCtnh+N+VdxF9DmMbOZx
---00000000000027480705ff219c86--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCDTFiJRZ1xJO8N8QMQyMsawZ0g8QLCclp5ksLaG8rD4YMe
+H4mLPMWY84uxvH2QWBpFpaW5sTHMVxBtXAZFEM3Ju1Wzj100ys4T4z0paNQEEJwe1pIeZVnY5DMa
+A/PMSir8A51bP/zx1whzK/3s3SSt1DFhI/TQnQWZp+zXzwh4LUYOYk+NMogpEX021VhYyiiiL2g+
+Z1lvxsG3N5Afm74Oua3X94j9RxADd0qPbjGg6QxcZiZPXzt/A9wfMw5EKZrXzmeeNud+4uP2IOQM
+lF61ZVw9gsrWYvJKB0UbmW9sDiUB3hMp7Ha0oA+NIn8S9UJ5/dEU2utIthbzYrwNieeg
+--0000000000004660de05ff219c2c--
 
 
---===============4464848680821737418==
+--===============9212506609380833835==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -264,5 +259,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============4464848680821737418==--
+--===============9212506609380833835==--
 
