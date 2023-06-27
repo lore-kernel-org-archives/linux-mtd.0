@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76704EB64D9
-	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jun 2023 06:08:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ED33EB64DC
+	for <linux-mtd@archiver.kernel.org>; Tue, 27 Jun 2023 06:15:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MDs5pboqW6tPWFzKGXuWZPRbJPWWgrtXhvM6BxrqBrA=; b=D3rNOmT1/jSqEUaSuJX18pqOE+
-	Id/EWeeGbMZOXThqERTxCy/Mj6hC86hphRUpFxTY/kiPXJ8NL0OPNIAG48r5YxQgxa16h2EmRL928
-	qNxRgjBwY3HK0rXiyHnfZfO24rw7mqUYN6MXdbtWWI7MgiRJlE+Zow4FOVCk1l5f2WrDYmxC9fz1x
-	31o7Ksde7xc7wbznjmaszZYk1QaMjpMeRHusi6Uwzt7fMlHbZjwC03OHs1rtP3PbkJwPCWtjS8rLb
-	IVgUMxtIUTn8nBwCVx0UhMO+d+R7UttAlyAuS+rLr5ocY86asJ/KC/hUqAeEcyYIo88Giof4CjD3T
-	ZvRPXbuA==;
+	bh=L3lShIeoQrJvOgNqzD2l8JpgrFb929o9b7gL1Xs85+8=; b=zewd7dj8BAptiIAXUIVI0Ujkw7
+	AuZBxqSF1eyuDYdwhY969tSr4StKsNQ7MZZvkX/CutbVz/jeX5ZuSIzj8+mszFlALbnYwBk0vbLw7
+	izuTsqPXZTpS+PpoqYFiv9UuGTVPwDohmzjnJCCfYJ5FpHTFUQr2FZO4GPFMdS4+s/E6ssNSTbXT1
+	5RIQIle/4EH4rg873hQEa/RScVY65GXLXOR7pDn7KVQVdxzlLIV7E1gi0b26qo9cO5Kf0HEvuUPhN
+	0DZVkVz1TjwPq3CGbufhCiF4tY4M66ByCeMDjaTCd2KtX2YPZOg3pIzY9nBptXq/t9tof0IN2oOj5
+	zNw/i+nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qE1sH-00C43X-1J;
-	Tue, 27 Jun 2023 06:08:25 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qE1yh-00C5gc-2f;
+	Tue, 27 Jun 2023 06:15:03 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qE1sD-00C3w1-0Y
+	id 1qE1ye-00C5eR-1M
 	for linux-mtd@lists.infradead.org;
-	Tue, 27 Jun 2023 06:08:23 +0000
+	Tue, 27 Jun 2023 06:15:01 +0000
 Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id CA9BFBF3;
-	Tue, 27 Jun 2023 08:08:09 +0200 (CEST)
+	by mail.3ffe.de (Postfix) with ESMTPSA id E256850B;
+	Tue, 27 Jun 2023 08:14:57 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1687846089;
+	t=1687846497;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AZI7i8mJ6vzWRz8q5uNF1QNgSOG0ThKzt12UTgm9PcA=;
-	b=L3mZn4f2JH8rxdmXJX1Bz1uoCvsHRZd943LAmn3EvSI0Ydsk7RPFzNom2Tcp/7NwvUUt4g
-	qIV6Ri6QXBAe8hfdgdZD0D9L/mgBxCIAe2E0CZNYkfm9e3L/N3X+BHaZSCfNvv00fHNwPP
-	hd7NAZdNQO4YLhif+8qul7M2no3blLa2IDU8M+b0Ri5vPdKgVdmL3cfqQ07x7ekrmFTj2F
-	TPD5I/3rHyVaMq5u9b2zM/Vps3E8egvNoszEIQxnTylJ3liO1wiO9Kg80FMbUN41/xaGwk
-	rnSQ815ESwq35W70Aqj1NIMy6dgqnKI0v63Kh8Gj2rjuJ21Fzh5CZef5C6DUMA==
+	bh=UvmboR1BMviOSQ7PsVkhSOxfTc1VG5c3nYyF5muyxD0=;
+	b=EE1kURunazGQ1GVYw9yAX4tHHZaKj/eZzng78T1g3a4vD2YUolfM6OgJSTUKGvG0iV+Urw
+	7YmVVweu87mPvKniop95Bec6euXwvGdTPaIwWiyPR6GMNPYVXuSobppkVnJLRfnhNUAcMB
+	wLraEhPRd68gTgv+9a4jNkQqU250fgAAPuh2GLdHe4qCEMGQEKiYWk94w5/iema9p7e//w
+	18HVbfKPfh2TEDtrFeqUYx6Z3S+sL3Z9EtR6J5CXc41fzytvUWCminuvAA9FFADiFMW4ET
+	JK86a0tu6gx7+GynYtX3/SlLvl8Y7A5SJl7aJnoi8q2Qa6F/In/POuEHUX05uQ==
 MIME-Version: 1.0
-Date: Tue, 27 Jun 2023 08:08:09 +0200
+Date: Tue, 27 Jun 2023 08:14:57 +0200
 From: Michael Walle <michael@walle.cc>
 To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
@@ -55,16 +55,16 @@ Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
  git@amd.com, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, amitrkcian2002@gmail.com, Amit Kumar Mahapatra
  <amit.kumar-mahapatra@amd.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property
- to avoid setting SRWD bit in status register
-In-Reply-To: <20230625100251.31589-2-amit.kumar-mahapatra@amd.com>
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: Avoid setting SRWD bit in SR if WP#
+ signal not connected
+In-Reply-To: <20230625100251.31589-3-amit.kumar-mahapatra@amd.com>
 References: <20230625100251.31589-1-amit.kumar-mahapatra@amd.com>
- <20230625100251.31589-2-amit.kumar-mahapatra@amd.com>
-Message-ID: <0e76360e43c411424e361911adbe1e0c@walle.cc>
+ <20230625100251.31589-3-amit.kumar-mahapatra@amd.com>
+Message-ID: <5e5fe22aebe17da4f9ad2c4eaaa8985f@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230626_230821_784241_E7E4D71D 
-X-CRM114-Status: GOOD (  21.33  )
+X-CRM114-CacheID: sfid-20230626_231500_619710_BAAB8959 
+X-CRM114-Status: GOOD (  18.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,68 +82,85 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Am 2023-06-25 12:02, schrieb Amit Kumar Mahapatra:
-> If the WP# signal of the flash device is either not connected or is 
-> wrongly
-> tied to GND (that includes internal pull-downs), and the software sets 
-> the
-> status register write disable (SRWD) bit in the status register then 
-> the
-> status register permanently becomes read-only. To avoid this added a 
-> new
-> boolean DT property "no-wp". If this property is set in the DT then the
-> software avoids setting the SRWD during status register write 
-> operation.
+> Setting the status register write disable (SRWD) bit in the status
+> register (SR) with WP# signal of the flash left floating or wrongly 
+> tied to
+> GND (that includes internal pull-downs), will configure the SR 
+> permanently
+> as read-only. If WP# signal is left floating or wrongly tied to GND, 
+> avoid
+> setting SRWD bit while writing the SR during flash protection.
 > 
 > Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 > ---
-> As the DT property name has changed so, removed Reviewed-by tag.
-> @Cornor if possible, could you please review this updated patch.
-> ---
->  .../devicetree/bindings/mtd/jedec,spi-nor.yaml    | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+>  drivers/mtd/spi-nor/core.c | 3 +++
+>  drivers/mtd/spi-nor/core.h | 1 +
+>  drivers/mtd/spi-nor/swp.c  | 9 +++++++--
+>  3 files changed, 11 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml 
-> b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 89959e5c47ba..97344969b02d 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -70,6 +70,21 @@ properties:
->        be used on such systems, to denote the absence of a reliable 
-> reset
->        mechanism.
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 0bb0ad14a2fc..520f5ab86d2b 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2864,6 +2864,9 @@ static void spi_nor_init_flags(struct spi_nor 
+> *nor)
+>  	if (flags & NO_CHIP_ERASE)
+>  		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
 > 
-> +  no-wp:
-> +    type: boolean
-> +    description:
-> +      The status register write disable (SRWD) bit in status register, 
-> combined
-> +      with the WP# signal, provides hardware data protection for the 
-> device. When
-> +      the SRWD bit is set to 1, and the WP# signal is either driven 
-> LOW or hard
-> +      strapped to LOW, the status register nonvolatile bits become 
-> read-only and
-> +      the WRITE STATUS REGISTER operation will not execute. The only 
-> way to exit
-> +      this hardware-protected mode is to drive WP# HIGH. If the WP# 
-> signal of the
-> +      flash device is not connected or is wrongly tied to GND (that 
-> includes internal
-> +      pull-downs) then status register permanently becomes read-only 
-> as the SRWD bit
-> +      cannot be reset. This boolean flag can be used on such systems 
-> to avoid setting
-> +      the SRWD bit while writing the status register. WP# signal hard 
-> strapped to GND
-> +      can be a valid use case.
+> +	if (of_property_read_bool(np, "no-wp"))
+> +		nor->flags |= SNOR_F_NO_WP;
 > +
 
-Sounds good! Thank you.
+Please put it below the of_property_read_bool() which is already
+there, just to keep things sorted.
 
-Reviewed-by: Michael Walle <michael@walle.cc>
+>  	if (flags & SPI_NOR_RWW && nor->info->n_banks > 1 &&
+>  	    !nor->controller_ops)
+>  		nor->flags |= SNOR_F_RWW;
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 4fb5ff09c63a..55b5e7abce6e 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -132,6 +132,7 @@ enum spi_nor_option_flags {
+>  	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
+>  	SNOR_F_RWW		= BIT(14),
+>  	SNOR_F_ECC		= BIT(15),
+> +	SNOR_F_NO_WP		= BIT(16),
 
+See the comment right above this enum :/
+
+>  };
+> 
+>  struct spi_nor_read_command {
+> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+> index 0ba716e84377..cfaba41d74d6 100644
+> --- a/drivers/mtd/spi-nor/swp.c
+> +++ b/drivers/mtd/spi-nor/swp.c
+> @@ -214,8 +214,13 @@ static int spi_nor_sr_lock(struct spi_nor *nor, 
+> loff_t ofs, uint64_t len)
+> 
+>  	status_new = (status_old & ~mask & ~tb_mask) | val;
+> 
+> -	/* Disallow further writes if WP pin is asserted */
+> -	status_new |= SR_SRWD;
+> +	/*
+> +	 * Disallow further writes if WP# pin is neither left floating nor
+> +	 * wrongly tied to GND(that includes internal pull-downs).
+
+nit: space missing
+
+Otherwise looks good.
+
+Thanks,
 -michael
 
+> +	 * WP# pin hard strapped to GND can be a valid use case.
+> +	 */
+> +	if (!(nor->flags & SNOR_F_NO_WP))
+> +		status_new |= SR_SRWD;
+> 
+>  	if (!use_top)
+>  		status_new |= tb_mask;
 
 ______________________________________________________
 Linux MTD discussion mailing list
