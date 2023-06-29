@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03B83EB64D9
-	for <linux-mtd@archiver.kernel.org>; Thu, 29 Jun 2023 16:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90E98EB64DC
+	for <linux-mtd@archiver.kernel.org>; Thu, 29 Jun 2023 16:19:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G65zMQE7CAjoNyQYSj6UuYJDqM8aVFiG0YnjWBUQj0w=; b=UFOd2Kz8HzaivA
-	ppY6hgMJabyvS/EmQtcWV5jxWTDzTBS0XhsIbcKZnJWwTD7YsoXQULcRWPJD2wwxPpifrFbF95mTW
-	8GF7ytvovrkCL1oU87n9KHzDHV09NhMCnT4oXSIPrjVEFrYxt3WcbSQptwb9HLn4JzCOao4GFqlng
-	GgSJ+yIx4WbGeYgvC7o+eosGjs63cUUev2/CgXfocF+9sCp7sezU09ATMxXr0H/cLsoQPBRvXyVIv
-	Ts0FF022LrKNGZuOw7n/R57qOCueYpN+FyT1tLA6O6oyghO9GTvOtVNP+gA96Q81iEqKHfFGJ9ep4
-	UkT+sn/Y4ifM1EMuVbMA==;
+	List-Owner; bh=qv7XOBKrPo6PNIjaCu2Azje+vnxZ08PJCl95ckxatTc=; b=HKowEbwgDDSDrE
+	IRdFh+dS9HjxmAXF5U9xYeBUhUnhMQniNsn/EcqGLXOKDVi4n9T4i6k+O6ZKMcO2deONLCfnpaKdo
+	DJCJqND1tzw6e5m8+h3cLn7TQjiQd9LodhHW92DJx7OdyJGpUUtJ6E2Rv91s91gwaGF8gO0mgI/qh
+	P3EJdYYEMUCO6E66PUfaPXAJJIN9pByYRF8Xz6iNLlAC2V5S/Rb77ZjlNKEmlZv7zPZtCyWUwzA3+
+	Uv+/lIi/9fvfF5PiFCPWKilBG8u4FDoT09a2kTHsIfoFKs3gO3hHurNNoY45d4WaJwyX3rlb3/oKl
+	bm2QKMFih6kG86alsmdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qEuHL-001VNi-2D;
-	Thu, 29 Jun 2023 16:13:55 +0000
-Received: from mail-io1-f54.google.com ([209.85.166.54])
+	id 1qEuMU-001VvP-31;
+	Thu, 29 Jun 2023 16:19:14 +0000
+Received: from mail-io1-f50.google.com ([209.85.166.50])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qEuHJ-001VN1-0n;
-	Thu, 29 Jun 2023 16:13:54 +0000
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-783549ef058so35570539f.2;
-        Thu, 29 Jun 2023 09:13:50 -0700 (PDT)
+	id 1qEuMR-001Vug-1n;
+	Thu, 29 Jun 2023 16:19:12 +0000
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-785d738d3feso21666139f.0;
+        Thu, 29 Jun 2023 09:19:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688055230; x=1690647230;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VFdEMQN79kKvi2kqq2FWX13+T3/lc6iF08TGlcclIMM=;
-        b=Wos8kXnv3QKfwQmdc/nBtMKcNcsT1asmAk8ZXCmomc4WvpBENkPJ2ZbSFOm2I5lX2O
-         JdUvFJBkDF31FfnVDkDDSL5iWmEtalg/ASrLVuSq+S8UNBu6T2+WfugkMY0U2qCdLetL
-         jHXTvoNYleE9X/sg5gWI8qjzytJwui+N5ROJP9US+Gb+To/97ejctnkYQlCWxVgZsAFj
-         QmUyU5K4ilOMnXfxFnMV9iMKKWrR31SnGK252yYjJyxH88+p7kVCrX2vd96zquWB4yn2
-         nP+k9n0VL53kFQmU32Uws4TPwAphvUlwwAeyBqK7QaE5OzbgbzZjqRvK3VhRXZwrHA13
-         grhQ==
-X-Gm-Message-State: AC+VfDyqUrayiYTb2gGhs0IyiDN2zXDUI5eRlDU/lTNYLFZYru40Hs/3
-	FSsYCd0/O8cxgM0XZ9laJw==
-X-Google-Smtp-Source: ACHHUZ7L2K0rZJQWVeqYf2S62Sl0/yPlkbfb3EeaeI4ZoJX8fp5J5T7DRDWdMHB2JIzwO9Yj9chBGQ==
-X-Received: by 2002:a5e:c606:0:b0:785:cb8d:f1c5 with SMTP id f6-20020a5ec606000000b00785cb8df1c5mr15334iok.12.1688055230020;
-        Thu, 29 Jun 2023 09:13:50 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688055549; x=1690647549;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GzFF9iYtdArZX/WdIkxczovu3b9psWf4QpXmpxsWlSo=;
+        b=cb8Qr5MdjtdFisEZNbIFJfQvNyyiRPhVCSH3gaXG8rWN61PPYhGb7HtUlJnNPQ+82m
+         976w4FF0ID3cjRKhwJgFUVhcujhHaEkzkYzY9E3g9zJNNCynVhmggacfQ7espfS9uhVI
+         TDdV3f9woLldSjLlV3ht92UslTyoO3PMCmBnPrAdyJjdz957pIjJ8tqKOQYyjRH1E7Wk
+         iLAeklqmnAeIrCxMEBkKXgro6YjUvtyEUSCXtsSklpWe89ZDRM0FzQNMEpHlBFHMJfiv
+         sBRGcUPqueIPdVok0QGE4w4N8jeycWXI9ZDzemsPUx4vC6td24w7uvPOmxspoSe2rkck
+         FIWQ==
+X-Gm-Message-State: AC+VfDzB2tYw0Jr7gHcH+ZfVrmnzG52c6/wxzcsnFmWYNOQgCEhYJ0Ea
+	O9ZoCTkZmNJ8U9oIUAp8yQ==
+X-Google-Smtp-Source: ACHHUZ4Egtuwpgl/FjmgbZkIkLAoLebxcaeXSSJQrI05xRI+RigHebzty+j+IJ1GFKNXMDPF6py4fw==
+X-Received: by 2002:a6b:6106:0:b0:783:6c18:1e97 with SMTP id v6-20020a6b6106000000b007836c181e97mr302767iob.8.1688055548803;
+        Thu, 29 Jun 2023 09:19:08 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id k5-20020a02cb45000000b0040bbcee6b57sm1708532jap.133.2023.06.29.09.13.48
+        by smtp.gmail.com with ESMTPSA id v18-20020a02cbb2000000b0042acf389ac8sm2538540jap.130.2023.06.29.09.19.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jun 2023 09:13:49 -0700 (PDT)
-Received: (nullmailer pid 3129978 invoked by uid 1000);
-	Thu, 29 Jun 2023 16:13:47 -0000
-Date: Thu, 29 Jun 2023 10:13:47 -0600
+        Thu, 29 Jun 2023 09:19:08 -0700 (PDT)
+Received: (nullmailer pid 3137121 invoked by uid 1000);
+	Thu, 29 Jun 2023 16:19:06 -0000
+Date: Thu, 29 Jun 2023 10:19:06 -0600
 From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, netdev@vger.kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-mtd@lists.infradead.org, Christian Marangi <ansuelsmth@gmail.com>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH V4] dt-bindings: nvmem: fixed-cell: add compatible for
- MAC cells
-Message-ID: <168805522630.3129899.14135828731809373225.robh@kernel.org>
-References: <20230627204630.9476-1-zajec5@gmail.com>
+To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Cc: Richard Weinberger <richard@nod.at>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, Jerome Brunet <jbrunet@baylibre.com>, Rob Herring <robh+dt@kernel.org>, Liang Yang <liang.yang@amlogic.com>, kernel@sberdevices.ru, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, oxffffaa@gmail.com, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>
+Subject: Re: [RFC PATCH v1 1/2] dt-bindings: nand: meson: support for 512B
+ ECC step size
+Message-ID: <168805554569.3137064.405254444310669508.robh@kernel.org>
+References: <20230628092937.538683-1-AVKrasnov@sberdevices.ru>
+ <20230628092937.538683-2-AVKrasnov@sberdevices.ru>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230627204630.9476-1-zajec5@gmail.com>
+In-Reply-To: <20230628092937.538683-2-AVKrasnov@sberdevices.ru>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230629_091353_302501_FBA18609 
-X-CRM114-Status: GOOD (  21.45  )
+X-CRM114-CacheID: sfid-20230629_091911_613950_9437A46F 
+X-CRM114-Status: UNSURE (   9.43  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,48 +78,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ck9uIFR1ZSwgMjcgSnVuIDIwMjMgMjI6NDY6MzAgKzAyMDAsIFJhZmHFgiBNacWCZWNraSB3cm90
-ZToKPiBGcm9tOiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+Cj4gCj4gQSBsb3Qg
-b2YgaG9tZSByb3V0ZXJzIGhhdmUgTlZNRU0gZml4ZWQgY2VsbHMgY29udGFpbmluZyBNQUMgYWRk
-cmVzcyB0aGF0Cj4gbmVlZCBzb21lIGZ1cnRoZXIgcHJvY2Vzc2luZy4gSW4gfjk5JSBjYXNlcyBN
-QUMgbmVlZHMgdG8gYmU6Cj4gMS4gT3B0aW9uYWxseSBwYXJzZWQgZnJvbSBBU0NJSSBmb3JtYXQK
-PiAyLiBJbmNyZWFzZWQgYnkgYSB2ZW5kb3ItcGlja2VkIHZhbHVlCj4gCj4gVGhlcmUgd2FzIGFs
-cmVhZHkgYW4gYXR0ZW1wdCB0byBkZXNpZ24gYSBiaW5kaW5nIGZvciB0aGF0IGF0IE5WTUVNCj4g
-ZGV2aWNlIGxldmVsIGluIHRoZSBwYXN0LiBJdCB3YXNuJ3QgYWNjZXB0ZWQgdGhvdWdoIGFzIGl0
-IGRpZG4ndCByZWFsbHkKPiBmaXQgTlZNRU0gZGV2aWNlIGxheWVyLgo+IAo+IFRoZSBpbnRyb2R1
-Y3Rpb24gb2YgTlZNRU0gZml4ZWQtY2VsbHMgbGF5b3V0IHNlZW1zIHRvIGJlIGFuIG9wcG9ydHVu
-aXR5Cj4gdG8gcHJvdmlkZSBhIHJlbGV2YW50IGJpbmRpbmcgaW4gYSBjbGVhbiB3YXkuCj4gCj4g
-VGhpcyBjb21taXQgYWRkcyBhICpnZW5lcmljKiBjb21wYXRpYmxlIHN0cmluZzogIm1hYy1iYXNl
-Ii4gQXMgYWx3YXlzIGl0Cj4gbmVlZHMgdG8gYmUgY2FyZWZ1bGx5IHJldmlld2VkLgo+IAo+IE9w
-ZW5XcnQgcHJvamVjdCBjdXJyZW50bHkgc3VwcG9ydHMgfjMwMCBob21lIHJvdXRlcnMgdGhhdCBo
-YXZlIE5WTUVNCj4gY2VsbCB3aXRoIGJpbmFyeS1zdG9yZWQgYmFzZSBNQUMuVCBob3NlIGRldmlj
-ZXMgYXJlIG1hbnVmYWN0dXJlZCBieQo+IG11bHRpcGxlIHZlbmRvcnMuIFRoZXJlIGFyZSBUUC1M
-aW5rIGRldmljZXMgKDc2IG9mIHRoZW0pLCBOZXRnZWFyICgxOSksCj4gRC1MaW5rICgxMSksIE9w
-ZW5NZXNoICg5KSwgRW5HZW5pdXMgKDgpLCBHTC5pTmV0ICg4KSwgWlRFICg3KSwKPiBYaWFvbWkg
-KDUpLCBVYmlxdWl0aSAoNikgYW5kIG1vcmUuIFRob3NlIGRldmljZXMgZG9uJ3Qgc2hhcmUgYW4K
-PiBhcmNoaXRlY3R1cmUgb3IgU29DLgo+IAo+IEFub3RoZXIgMjAwIGRldmljZXMgaGF2ZSBiYXNl
-IE1BQyBzdG9yZWQgaW4gYW4gQVNDSUkgZm9ybWF0IChub3QgYWxsCj4gdGhvc2UgZGV2aWNlcyBo
-YXZlIGJlZW4gY29udmVydGVkIHRvIERUIHRob3VnaCkuCj4gCj4gSXQgd291bGQgYmUgaW1wcmFj
-dGljYWwgdG8gcHJvdmlkZSB1bmlxdWUgImNvbXBhdGlibGUiIHN0cmluZ3MgZm9yIE5WTUVNCj4g
-bGF5b3V0cyBvZiBhbGwgdGhvc2UgZGV2aWNlcy4gSXQgc2VlbXMgbGlrZSBhIHZhbGlkIGNhc2Ug
-Zm9yIGFsbG93aW5nIGEKPiBnZW5lcmljIGJpbmRpbmcgaW5zdGVhZC4gRXZlbiBpZiB0aGlzIGJp
-bmRpbmcgd2lsbCBub3QgYmUgc3VmZmljaWVudCBmb3IKPiBzb21lIGZ1cnRoZXIgZGV2aWNlcyBp
-dCBzZWVtcyB0byBiZSB1c2VmdWwgZW5vdWdoIGFzIGl0IGlzLgo+IAo+IFNpZ25lZC1vZmYtYnk6
-IFJhZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KPiAtLS0KPiBWMjogRHJvcCAibWFj
-LWFzY2lpIiBhcyBsZW5ndGggY2FuIGJlIGNoZWNrZWQgaW5zdGVhZAo+ICAgICBGaXggImFsbE9m
-IiBieSBhZGRpbmcgcmVxdWlyZWQ6IFsgY29tcGF0aWJsZSBdCj4gVjM6IEZpeCBjZWxsIGxlbmd0
-aCBpbiAiZGVzY3JpcHRpb24iICh0aGFuayB5b3UgUm9iISkKPiBWNDogRml4IGNlbGwgbGVuZ3Ro
-ICgxMiDihpIgNikgaW4gZml4ZWQtbGF5b3V0LnlhbWwgZXhhbXBsZSBhcyB3ZWxsCj4gLS0tCj4g
-IC4uLi9iaW5kaW5ncy9udm1lbS9sYXlvdXRzL2ZpeGVkLWNlbGwueWFtbCAgICB8IDI2ICsrKysr
-KysrKysrKysrKysrKysKPiAgLi4uL2JpbmRpbmdzL252bWVtL2xheW91dHMvZml4ZWQtbGF5b3V0
-LnlhbWwgIHwgMTIgKysrKysrKysrCj4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL252
-bWVtLnlhbWwgICAgICB8ICA1ICsrKy0KPiAgMyBmaWxlcyBjaGFuZ2VkLCA0MiBpbnNlcnRpb25z
-KCspLCAxIGRlbGV0aW9uKC0pCj4gCgpSZXZpZXdlZC1ieTogUm9iIEhlcnJpbmcgPHJvYmhAa2Vy
-bmVsLm9yZz4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+On Wed, 28 Jun 2023 12:29:35 +0300, Arseniy Krasnov wrote:
+> Meson NAND supports both 512B and 1024B ECC step size, so replace
+> 'const' for only 1024B step size with enum for both sizes.
+> 
+> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> ---
+>  Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+
+Acked-by: Rob Herring <robh@kernel.org>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
