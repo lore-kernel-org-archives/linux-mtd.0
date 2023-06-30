@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B67B2EB64DD
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02155C001B3
 	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 16:58:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,61 +12,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x1syzoteAhQnbrxgIMC4yuqE5qjfGDZFyCj39komFns=; b=inAErDsdYnYb3J
-	atHN4jUiX5cN1a7LUTIt+arRYqfz2FhuvO5vUEwcyM3VsAh54vVQLs5OY2EsK1hSTtiZpYILv+tEX
-	DzH7rTm/94IcuFN1AjQ5P8+z/LcuslEY6BPjHdWV+uFxvMu2+dkHqakJNp8CyZgzUdbi/xkMLBxhf
-	sB3Ez0b1i/kwCl2yASzH93+mP/yvZrl1O5MA4WyvvUWleZ2imHm3tHvSdzIjtTjiwX7DxXz7EvVah
-	+SmI87xnaxo/cv3gYCgywPNCsHi48iJWwkpRm3LySGG23wczvGsMvB3+6OME3ZhypHSuIAvTKmmor
-	pe05KOOd261bWdBf3peA==;
+	List-Owner; bh=UiFFP1sRCwBnKdcUoUvcQAZcecwkhyrF20fkvtn+vko=; b=UBryDWUyUyPCIt
+	OFBn2IO4KN0uwIQ68BYZJTixOKkJvM4Q8oC0sYIkael7r4ood2xH1WPmIraQHb806hEn/IquMdr3j
+	8x35YRVblBtciXuyYxZaf94MM+1cPb+/I0S8jbEyCeIauSjJ+m/RE1hfp2m0ewM4kJ4Vg0kcLVxrT
+	CdsEiFqIpotSIkdx9CQD1tkUiyi/0tgATljURvbMC/kuJx0W2gfwl5nXRj1CslRudmsfM3MQkG50a
+	gJpOb5HwbAdkqLVfJeWi27LnUCnsRenHnM6zsYi/ZRwXUZ4ljvNpfznXSNO135CnQyNR0Ep8KAZ89
+	qrvdeLUKNhFdAl/J8IYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFHSH-0046aJ-0N;
-	Fri, 30 Jun 2023 16:58:45 +0000
-Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFHSD-0046Xe-1N
-	for linux-mtd@lists.infradead.org;
+	id 1qFHSF-0046Zl-2r;
 	Fri, 30 Jun 2023 16:58:43 +0000
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3142860734aso182802f8f.1
-        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 09:58:38 -0700 (PDT)
+Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qFHSC-0046Xk-2M
+	for linux-mtd@lists.infradead.org;
+	Fri, 30 Jun 2023 16:58:42 +0000
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fb4146e8ceso23789675e9.0
+        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 09:58:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1688144317; x=1690736317;
+        d=linaro.org; s=google; t=1688144319; x=1690736319;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pvu4fKAQ0tzSA1HLZHWmdOfD3AhGAjrR/Ll1y4HIr3g=;
-        b=qr5+4nIwjldrvsGryhMYGLJ0OZ3YPZKjPv+OTuAp/4rNWzvkYiUv3O5yz/WzJXzRa6
-         KQv/gt2z+CkoeUbaGX1zpGiZIZDi3/KNJDfW5geRr9w8FUrgkurUI4dljqHYFb2HLzRA
-         bRkVvPlAnKyKccVD3felM+Q3xqIN+bmqcbjQ65eGbJQk+PyewF+8CU4wu2ZorlFWBrCT
-         Aqy0rV7RN/Qph8ZMgN5kVUry9zzQtd08pvcu4b1ITLE+bPCVs/OEiCRLqW4Iy88vxE39
-         ZbguzboHfYRuknRWQC8Wkmoy1NyAqglrkA9Xoe8FsTg5CQKTR6k99+zzk6ERh/USH1gy
-         Ti/A==
+        bh=j5VfCDku7PhFUhxNZL9RrxiZVdAXUGwMdzc9iuToxvY=;
+        b=fUKK6eN/ScDGy7o4nq6+yIdxkSMayAvigomaImI/5ndSFAERxgZD44tOEhSRiWAj0x
+         /I55SERez8tq5p33w6NSE0ZDrvBOrsucEjr9zIk/zm6A4tW8EBOzf7sFREGJeLPN8R2V
+         W0IO5zzcF/n+oXs3V0GlEIvEZ5qLcteJM6/Q0x6MU13+VTFsaJeibgV0p0xyJFwYBLX3
+         7qSM74Pnh0MwuDXM1ouLk9p+Yc8ZTC68/KU2LceIZ+dybuzDkPdAzQEABlXdeEyid3UU
+         gPW4+noy/ovR20GuN+4fPKHh9gamCrjUfJOibKmkF7jyJUW5yUGRovS262POuNg6XktU
+         XpMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688144317; x=1690736317;
+        d=1e100.net; s=20221208; t=1688144319; x=1690736319;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pvu4fKAQ0tzSA1HLZHWmdOfD3AhGAjrR/Ll1y4HIr3g=;
-        b=iRlSKJxXQuPLkpuNWX9XWDZApdLxFj4H0nj1a0zRViKodiZVI+aN37uObt/FaCU8U8
-         wcWA1Vxl4xFwFzy2HurLyRnRHI5NbFu2pmWk8oG+rY9qtw02kL2/nn9S5DnqxLE/bG+p
-         kxNDLESweelOoV36uk23c+RWc3UQHx4T73Ncm1JOcQ2+dVMv4UakLZ9YZV5fG2ax7gbu
-         Yh+kfzKmzHTgOxUv0K7uWjBIj1LlAlfFgNYqtbrPuf9mqkQ85r0K0MRju4D6t3m0MIMx
-         w7P98wnsEbm2T18lYSfR68aRSjQv9AvkVtLbbnGtmn9FKFnRQkoixC9JZlzwFuOulwTc
-         R+Kg==
-X-Gm-Message-State: AC+VfDzB80flR9eXJNv5YG4TmsPcvz0jsPWcZsBao/Dc83r0Za2moTez
-	Rcc/crfmEc1I7Tnk4WHurIaCsA==
-X-Google-Smtp-Source: ACHHUZ5fJLXkeHDlekS99srv8CaNw+1WybS+1I3eAvpIdoFsONKseLREnwiIE5G4NEju+Wz8e4zHNQ==
-X-Received: by 2002:a5d:4bc3:0:b0:314:99e:af46 with SMTP id l3-20020a5d4bc3000000b00314099eaf46mr8051304wrt.20.1688144317723;
-        Fri, 30 Jun 2023 09:58:37 -0700 (PDT)
+        bh=j5VfCDku7PhFUhxNZL9RrxiZVdAXUGwMdzc9iuToxvY=;
+        b=VJxwoI5cvxKAkAB0P94rtVl0lIAFa84laANqoSHKy2DVgVfSzeH94Fic4FBd5tfl+M
+         oud6ZsupgaefjvTsIMWgK5aisaNdpaMaH300cXmSiAxiKWP/2OCFgOoSgc1KnDh1L/dF
+         OrTsNQuQ1Qa+NcqIZgGhf97y0hoWWtbMawrvNWQrTo1WCq/yllDJyXWtqEkFVFnIhgKf
+         fw4t1x5YSrh23nHVkd80vQIOKIDZNFo+oGvOjUI+iaO/EL/G8GS3ulyPhVVUrAArHZMc
+         MJU14/mlBfioURHdDwa1Zh7bCNfs+m8U0yzfpcMXObHyx8fgsIL3KUk7KCqUiis4CgMx
+         wZBg==
+X-Gm-Message-State: AC+VfDzOe6ZK0CA7kZU4YSV3hWs3rytFm3Sdv+LDRJ8gcxiSnGsdwRGO
+	+dQOKD+AaB5b813WCaM0/FkmrQ==
+X-Google-Smtp-Source: ACHHUZ4jfOLP9DSUM8iQinRS8Vum9XKSxSLXf+7HjFdIRyfIkOHCYGoWFaqy2VXVGNXPMBo+xTlFUg==
+X-Received: by 2002:a1c:4b16:0:b0:3fb:be7c:d58a with SMTP id y22-20020a1c4b16000000b003fbbe7cd58amr2269200wma.26.1688144319230;
+        Fri, 30 Jun 2023 09:58:39 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id u14-20020adfdb8e000000b003112ab916cdsm18913772wri.73.2023.06.30.09.58.36
+        by smtp.gmail.com with ESMTPSA id u14-20020adfdb8e000000b003112ab916cdsm18913772wri.73.2023.06.30.09.58.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jun 2023 09:58:37 -0700 (PDT)
+        Fri, 30 Jun 2023 09:58:38 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Fri, 30 Jun 2023 18:58:26 +0200
-Subject: [PATCH v2 01/15] clk: oxnas: remove obsolete clock driver
+Date: Fri, 30 Jun 2023 18:58:27 +0200
+Subject: [PATCH v2 02/15] dt-bindings: clk: oxnas: remove obsolete bindings
 MIME-Version: 1.0
-Message-Id: <20230630-topic-oxnas-upstream-remove-v2-1-fb6ab3dea87c@linaro.org>
+Message-Id: <20230630-topic-oxnas-upstream-remove-v2-2-fb6ab3dea87c@linaro.org>
 References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
 In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
 To: Michael Turquette <mturquette@baylibre.com>, 
@@ -91,28 +91,29 @@ Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
  netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
  linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, 
  linux-pm@vger.kernel.org, linux-oxnas@groups.io, 
- Neil Armstrong <neil.armstrong@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
- Daniel Golle <daniel@makrotopia.org>
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Arnd Bergmann <arnd@arndb.de>, Daniel Golle <daniel@makrotopia.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9036;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1711;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=1hf999g5eEtxLqg8V04tUPdGH+Hq91QPzTw+uaq9mYk=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBknwm0FtQDp9YXTDLZeHYHxn9vyusAxAx2Z1sd8aTE
- pfEkqtCJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZJ8JtAAKCRB33NvayMhJ0SWoEA
- C1ki9NvMY6YAJTD7BcigSaZFUnNaU3bNIzzoTSAIyg+6TKBlDoXVdGwTbafVx6QhUhwNO3NhCK5A6a
- oyCqgHPD4lFTu9ROCWJ2CL278zqVx1VmcSa+uOlpzKK4YYEaWm3vsa7+U5iVGZ8UAOkHyXdnzO8s8w
- 1Dfqra3pX8U+bPlqDir97EjKWcfUDdAdzCU6sHYH2n3tQOnojyMSPnw0UwLguaknlzQjDPs029ARay
- XbH6olhY+PTxvnpFJw0Q5HqUuAv4X4Sq4cyUhfV2s/I9v+m0TAwMF+VVAVg1hmYOwWEhzkbiXYY1xg
- ehVEfeUKR3rsFfUMKYZsyfcHGfn9t+/OKBDm7Zr7tQ6x5e4WWB7R0DuWIdeMDAxJw7hkkP+i86lkor
- BKAR2oZiZpywLv+E9+kDhrys05V3s2hMWkjZcB54j5x75xihTEOkua+Wl3qE6PQIuvXbWzGychMmgA
- tBoNJApM2Rh8CFnosbeCabkduja6txGtKlOtxEoTmLmQIDe26HFznjp8yeBoqw9W5yUjj8W8GsTZZM
- EZ8nbLkV9nJjLOI47CzUJgQbQsZCHsILHByMA8g9mlLN9qs74x5fbf9RtEE9gwQqUTQbHb9eIKjXx7
- 3fMabs0tQEqq4OPYpGl4GAhLKjcbpCbtNATt6UR9Mu0l878Fs4XmAloBcWDw==
+ bh=bzno7XM9r0SNC/gStJcrLz6bOxC+B4tnBfXrQVc4AKA=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBknwm08GTlhXUvs7ni+2UnaR66va/P33VZvppd02s3
+ XjaYa9iJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZJ8JtAAKCRB33NvayMhJ0fEwD/
+ 0c8c0kdMcu9cAO6MW+kau0NON/fYuaafAI++DNEg4rOBcbZZ9RNE9EqK8ZG+ERzfrEi1n/fLjJS0x5
+ E6k5Fj2Q+rGH7PAw1HeAmuECHlLgX2IMHWVF4EDSLWIlzZPUS8XFNz5vIMGCCMLv7Y311cVfmzrTtr
+ IEwejNA/OmS0grIUXEClx8Sp1TinImZI9jHZh3AijGq8XiEW2E0rFGHrATPJHuA9Nx1BwEtrKMecSk
+ wFtJCh+PCDWqm1SNjVQcYLbX3RPFRz0aXKKjET4NB7kZvPtD7T5mNh6cjK1k/keUTjEVplgtjJwA/d
+ HZOrPOQNr1jKROsXy72AQ3XUs4WnPy8g31SX1EQNlXBl9j40MaU14ZEHPTtS5C/iIJrqxM4KNKGFWY
+ 5pBAzHw/vaYt7C5NcrI4LGTpWgGwFPrvhahxuXCgAPHeEaHOAxcdYt3wjfm3obKlDO4bVWFYmnwGYb
+ TFSxRTatfNcT/7G8e/fPR2InfUfImg9Q08gRNTvR0ls0t3P49CYiS1VwFL4cV9dT4CnQvNEWkmLNjf
+ l/K7qlaz1AtLH22wg9bT79EL/ud1qabQeYwF5uFQHItpwMH3bgcoREdJeHPSLbdL4ZTJOzKFoSGJz0
+ ir6/tIunoN+bjEYP4Voc/7R8Pq+IIgVJ/8ED+SCvmiwkzoJFptWW6NxwIHRg==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230630_095841_467966_1F97A936 
-X-CRM114-Status: GOOD (  19.65  )
+X-CRM114-CacheID: sfid-20230630_095840_775367_9D86AAC9 
+X-CRM114-Status: GOOD (  11.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,306 +131,52 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Due to lack of maintenance and stall of development for a few years now,
-and since no new features will ever be added upstream, remove support
-for OX810 and OX820 clock driver.
+and since no new features will ever be added upstream, remove the
+OX810 and OX820 clock bindings.
 
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
 Acked-by: Daniel Golle <daniel@makrotopia.org>
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/clk/Kconfig     |   7 --
- drivers/clk/Makefile    |   1 -
- drivers/clk/clk-oxnas.c | 251 ------------------------------------------------
- 3 files changed, 259 deletions(-)
+ .../devicetree/bindings/clock/oxnas,stdclk.txt     | 28 ----------------------
+ 1 file changed, 28 deletions(-)
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 93f38a8178ba..59a101e1cf65 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -360,13 +360,6 @@ config COMMON_CLK_PXA
- 	help
- 	  Support for the Marvell PXA SoC.
- 
--config COMMON_CLK_OXNAS
--	bool "Clock driver for the OXNAS SoC Family"
--	depends on ARCH_OXNAS || COMPILE_TEST
--	select MFD_SYSCON
--	help
--	  Support for the OXNAS SoC Family clocks.
--
- config COMMON_CLK_RS9_PCIE
- 	tristate "Clock driver for Renesas 9-series PCIe clock generators"
- 	depends on I2C
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index 7cb000549b61..94155999eba3 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -52,7 +52,6 @@ obj-$(CONFIG_ARCH_MOXART)		+= clk-moxart.o
- obj-$(CONFIG_ARCH_NOMADIK)		+= clk-nomadik.o
- obj-$(CONFIG_ARCH_NPCM7XX)	    	+= clk-npcm7xx.o
- obj-$(CONFIG_ARCH_NSPIRE)		+= clk-nspire.o
--obj-$(CONFIG_COMMON_CLK_OXNAS)		+= clk-oxnas.o
- obj-$(CONFIG_COMMON_CLK_PALMAS)		+= clk-palmas.o
- obj-$(CONFIG_CLK_LS1028A_PLLDIG)	+= clk-plldig.o
- obj-$(CONFIG_COMMON_CLK_PWM)		+= clk-pwm.o
-diff --git a/drivers/clk/clk-oxnas.c b/drivers/clk/clk-oxnas.c
+diff --git a/Documentation/devicetree/bindings/clock/oxnas,stdclk.txt b/Documentation/devicetree/bindings/clock/oxnas,stdclk.txt
 deleted file mode 100644
-index 584e293156ad..000000000000
---- a/drivers/clk/clk-oxnas.c
+index b652f3fb7796..000000000000
+--- a/Documentation/devicetree/bindings/clock/oxnas,stdclk.txt
 +++ /dev/null
-@@ -1,251 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Copyright (C) 2010 Broadcom
-- * Copyright (C) 2012 Stephen Warren
-- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
-- */
+@@ -1,28 +0,0 @@
+-Oxford Semiconductor OXNAS SoC Family Standard Clocks
+-================================================
 -
--#include <linux/clk-provider.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
--#include <linux/platform_device.h>
--#include <linux/stringify.h>
--#include <linux/regmap.h>
--#include <linux/mfd/syscon.h>
+-Please also refer to clock-bindings.txt in this directory for common clock
+-bindings usage.
 -
--#include <dt-bindings/clock/oxsemi,ox810se.h>
--#include <dt-bindings/clock/oxsemi,ox820.h>
+-Required properties:
+-- compatible: For OX810SE, should be "oxsemi,ox810se-stdclk"
+-	      For OX820, should be "oxsemi,ox820-stdclk"
+-- #clock-cells: 1, see below
 -
--/* Standard regmap gate clocks */
--struct clk_oxnas_gate {
--	struct clk_hw hw;
--	unsigned int bit;
--	struct regmap *regmap;
+-Parent node should have the following properties :
+-- compatible: For OX810SE, should be
+-		"oxsemi,ox810se-sys-ctrl", "syscon", "simple-mfd"
+-	      For OX820, should be
+-		"oxsemi,ox820-sys-ctrl", "syscon", "simple-mfd"
+-
+-example:
+-
+-sys: sys-ctrl@000000 {
+-	compatible = "oxsemi,ox810se-sys-ctrl", "syscon", "simple-mfd";
+-	reg = <0x000000 0x100000>;
+-
+-	stdclk: stdclk {
+-		compatible = "oxsemi,ox810se-stdclk";
+-		#clock-cells = <1>;
+-	};
 -};
--
--struct oxnas_stdclk_data {
--	struct clk_hw_onecell_data *onecell_data;
--	struct clk_oxnas_gate **gates;
--	unsigned int ngates;
--	struct clk_oxnas_pll **plls;
--	unsigned int nplls;
--};
--
--/* Regmap offsets */
--#define CLK_STAT_REGOFFSET	0x24
--#define CLK_SET_REGOFFSET	0x2c
--#define CLK_CLR_REGOFFSET	0x30
--
--static inline struct clk_oxnas_gate *to_clk_oxnas_gate(struct clk_hw *hw)
--{
--	return container_of(hw, struct clk_oxnas_gate, hw);
--}
--
--static int oxnas_clk_gate_is_enabled(struct clk_hw *hw)
--{
--	struct clk_oxnas_gate *std = to_clk_oxnas_gate(hw);
--	int ret;
--	unsigned int val;
--
--	ret = regmap_read(std->regmap, CLK_STAT_REGOFFSET, &val);
--	if (ret < 0)
--		return ret;
--
--	return val & BIT(std->bit);
--}
--
--static int oxnas_clk_gate_enable(struct clk_hw *hw)
--{
--	struct clk_oxnas_gate *std = to_clk_oxnas_gate(hw);
--
--	regmap_write(std->regmap, CLK_SET_REGOFFSET, BIT(std->bit));
--
--	return 0;
--}
--
--static void oxnas_clk_gate_disable(struct clk_hw *hw)
--{
--	struct clk_oxnas_gate *std = to_clk_oxnas_gate(hw);
--
--	regmap_write(std->regmap, CLK_CLR_REGOFFSET, BIT(std->bit));
--}
--
--static const struct clk_ops oxnas_clk_gate_ops = {
--	.enable = oxnas_clk_gate_enable,
--	.disable = oxnas_clk_gate_disable,
--	.is_enabled = oxnas_clk_gate_is_enabled,
--};
--
--static const char *const osc_parents[] = {
--	"oscillator",
--};
--
--static const char *const eth_parents[] = {
--	"gmacclk",
--};
--
--#define OXNAS_GATE(_name, _bit, _parents)				\
--struct clk_oxnas_gate _name = {						\
--	.bit = (_bit),							\
--	.hw.init = &(struct clk_init_data) {				\
--		.name = #_name,						\
--		.ops = &oxnas_clk_gate_ops,				\
--		.parent_names = _parents,				\
--		.num_parents = ARRAY_SIZE(_parents),			\
--		.flags = (CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED),	\
--	},								\
--}
--
--static OXNAS_GATE(ox810se_leon, 0, osc_parents);
--static OXNAS_GATE(ox810se_dma_sgdma, 1, osc_parents);
--static OXNAS_GATE(ox810se_cipher, 2, osc_parents);
--static OXNAS_GATE(ox810se_sata, 4, osc_parents);
--static OXNAS_GATE(ox810se_audio, 5, osc_parents);
--static OXNAS_GATE(ox810se_usbmph, 6, osc_parents);
--static OXNAS_GATE(ox810se_etha, 7, eth_parents);
--static OXNAS_GATE(ox810se_pciea, 8, osc_parents);
--static OXNAS_GATE(ox810se_nand, 9, osc_parents);
--
--static struct clk_oxnas_gate *ox810se_gates[] = {
--	&ox810se_leon,
--	&ox810se_dma_sgdma,
--	&ox810se_cipher,
--	&ox810se_sata,
--	&ox810se_audio,
--	&ox810se_usbmph,
--	&ox810se_etha,
--	&ox810se_pciea,
--	&ox810se_nand,
--};
--
--static OXNAS_GATE(ox820_leon, 0, osc_parents);
--static OXNAS_GATE(ox820_dma_sgdma, 1, osc_parents);
--static OXNAS_GATE(ox820_cipher, 2, osc_parents);
--static OXNAS_GATE(ox820_sd, 3, osc_parents);
--static OXNAS_GATE(ox820_sata, 4, osc_parents);
--static OXNAS_GATE(ox820_audio, 5, osc_parents);
--static OXNAS_GATE(ox820_usbmph, 6, osc_parents);
--static OXNAS_GATE(ox820_etha, 7, eth_parents);
--static OXNAS_GATE(ox820_pciea, 8, osc_parents);
--static OXNAS_GATE(ox820_nand, 9, osc_parents);
--static OXNAS_GATE(ox820_ethb, 10, eth_parents);
--static OXNAS_GATE(ox820_pcieb, 11, osc_parents);
--static OXNAS_GATE(ox820_ref600, 12, osc_parents);
--static OXNAS_GATE(ox820_usbdev, 13, osc_parents);
--
--static struct clk_oxnas_gate *ox820_gates[] = {
--	&ox820_leon,
--	&ox820_dma_sgdma,
--	&ox820_cipher,
--	&ox820_sd,
--	&ox820_sata,
--	&ox820_audio,
--	&ox820_usbmph,
--	&ox820_etha,
--	&ox820_pciea,
--	&ox820_nand,
--	&ox820_etha,
--	&ox820_pciea,
--	&ox820_ref600,
--	&ox820_usbdev,
--};
--
--static struct clk_hw_onecell_data ox810se_hw_onecell_data = {
--	.hws = {
--		[CLK_810_LEON]	= &ox810se_leon.hw,
--		[CLK_810_DMA_SGDMA]	= &ox810se_dma_sgdma.hw,
--		[CLK_810_CIPHER]	= &ox810se_cipher.hw,
--		[CLK_810_SATA]	= &ox810se_sata.hw,
--		[CLK_810_AUDIO]	= &ox810se_audio.hw,
--		[CLK_810_USBMPH]	= &ox810se_usbmph.hw,
--		[CLK_810_ETHA]	= &ox810se_etha.hw,
--		[CLK_810_PCIEA]	= &ox810se_pciea.hw,
--		[CLK_810_NAND]	= &ox810se_nand.hw,
--	},
--	.num = ARRAY_SIZE(ox810se_gates),
--};
--
--static struct clk_hw_onecell_data ox820_hw_onecell_data = {
--	.hws = {
--		[CLK_820_LEON]	= &ox820_leon.hw,
--		[CLK_820_DMA_SGDMA]	= &ox820_dma_sgdma.hw,
--		[CLK_820_CIPHER]	= &ox820_cipher.hw,
--		[CLK_820_SD]	= &ox820_sd.hw,
--		[CLK_820_SATA]	= &ox820_sata.hw,
--		[CLK_820_AUDIO]	= &ox820_audio.hw,
--		[CLK_820_USBMPH]	= &ox820_usbmph.hw,
--		[CLK_820_ETHA]	= &ox820_etha.hw,
--		[CLK_820_PCIEA]	= &ox820_pciea.hw,
--		[CLK_820_NAND]	= &ox820_nand.hw,
--		[CLK_820_ETHB]	= &ox820_ethb.hw,
--		[CLK_820_PCIEB]	= &ox820_pcieb.hw,
--		[CLK_820_REF600]	= &ox820_ref600.hw,
--		[CLK_820_USBDEV]	= &ox820_usbdev.hw,
--	},
--	.num = ARRAY_SIZE(ox820_gates),
--};
--
--static struct oxnas_stdclk_data ox810se_stdclk_data = {
--	.onecell_data = &ox810se_hw_onecell_data,
--	.gates = ox810se_gates,
--	.ngates = ARRAY_SIZE(ox810se_gates),
--};
--
--static struct oxnas_stdclk_data ox820_stdclk_data = {
--	.onecell_data = &ox820_hw_onecell_data,
--	.gates = ox820_gates,
--	.ngates = ARRAY_SIZE(ox820_gates),
--};
--
--static const struct of_device_id oxnas_stdclk_dt_ids[] = {
--	{ .compatible = "oxsemi,ox810se-stdclk", &ox810se_stdclk_data },
--	{ .compatible = "oxsemi,ox820-stdclk", &ox820_stdclk_data },
--	{ }
--};
--
--static int oxnas_stdclk_probe(struct platform_device *pdev)
--{
--	struct device_node *np = pdev->dev.of_node, *parent_np;
--	const struct oxnas_stdclk_data *data;
--	struct regmap *regmap;
--	int ret;
--	int i;
--
--	data = of_device_get_match_data(&pdev->dev);
--
--	parent_np = of_get_parent(np);
--	regmap = syscon_node_to_regmap(parent_np);
--	of_node_put(parent_np);
--	if (IS_ERR(regmap)) {
--		dev_err(&pdev->dev, "failed to have parent regmap\n");
--		return PTR_ERR(regmap);
--	}
--
--	for (i = 0 ; i < data->ngates ; ++i)
--		data->gates[i]->regmap = regmap;
--
--	for (i = 0; i < data->onecell_data->num; i++) {
--		if (!data->onecell_data->hws[i])
--			continue;
--
--		ret = devm_clk_hw_register(&pdev->dev,
--					   data->onecell_data->hws[i]);
--		if (ret)
--			return ret;
--	}
--
--	return of_clk_add_hw_provider(np, of_clk_hw_onecell_get,
--				      data->onecell_data);
--}
--
--static struct platform_driver oxnas_stdclk_driver = {
--	.probe = oxnas_stdclk_probe,
--	.driver	= {
--		.name = "oxnas-stdclk",
--		.suppress_bind_attrs = true,
--		.of_match_table = oxnas_stdclk_dt_ids,
--	},
--};
--builtin_platform_driver(oxnas_stdclk_driver);
 
 -- 
 2.34.1
