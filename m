@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC7D2EB64D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 17:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20145EB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 17:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2DNDGrLUKbM4sC/SuXUoBRt2o8xj6CZL6EgMDwMczk0=; b=dn+DUdv2KfKvm+
-	2NRWDnp1DuXOkfWJutbVNs9Fb77WlJEDHHu0j56RtohGCADkNKF1LQCdVPSjeOEHJmtk8yxUuqEbj
-	XtmFQLoyYBfx+MGeawsCWzZpcXreKp61xDUP37uzncewGecRWXzXVCpg5Nw6VMly+qb7z9aojH9Nr
-	IJzcZMBEpU5txtFKk0ItvzOWgitSYKdYsf+6/cS8KUGd1zSKmAXy0ImvHOw+pSu6wa9pAK5f7ZMFx
-	VELBm6hKFQNsLWibpSvobNAU1UwtDNtrI0WVZH+sTXpxLzmXyJzcJlJ3YmN3e0RsCSor8EIGGaNiL
-	AENVt+7XoktezimhU9IQ==;
+	List-Owner; bh=kFyOTxy2GrjiAqMS0PPBJOMlLSzNBePbLAduAI+5n1g=; b=cXSV5LvT4c+5cI
+	jyLC1ALzkvqW8UnZeXqWE5GsmQRcq1k4R/mBiAcmCKR6K5IuOye/D6KKEfKGXci4/SZFqpwkbkfPN
+	DP4sUvAGEz2TIXYmQmoUTzHbPyKGQ/JdeUEHUS1uaPZA49jld3utOcL0qAO9TCF4RE0iXZL4kC5HI
+	H5jrGFcS1RD8K2FbCqCsykAN0gPBxFf5oc8kKljAhxC8LaR6ICMnqJ+Pm8RMFvDricJcoWRlLI0Wr
+	kAIcgrJs3MPeXvb0SVgFv3x10lTJwKwH+a9ykYqBz1sAL3FSmE8K2dO7Tl9s+fUqhZ6NxeLQnKyAp
+	+8kxyBuz14J8b4Vm+67A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFHTn-0047jH-17;
-	Fri, 30 Jun 2023 17:00:19 +0000
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
+	id 1qFHUA-0047xB-1b;
+	Fri, 30 Jun 2023 17:00:42 +0000
+Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFHSU-0046lv-2z
+	id 1qFHSW-0046nz-1e
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Jun 2023 16:59:06 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-314172bb818so2325238f8f.1
-        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 09:58:58 -0700 (PDT)
+	Fri, 30 Jun 2023 16:59:07 +0000
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31297125334so1909756f8f.0
+        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 09:59:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1688144337; x=1690736337;
+        d=linaro.org; s=google; t=1688144339; x=1690736339;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=safrMj4vy3+0ORPoAOcHGXU9yJdkC+AfKJ9DByswV9U=;
-        b=lLnVdrw2EiSYW0TzS5oXpXUn00LFUe5uWezU6Knq3a+K5EfgjWi3VLLM93y7J4J8C+
-         M0pw6AKbbhMm4vPquXrsqqvMYa9nxJlrpAoxOGQGp3HZtNHqszxo4s9fctQz7IUO7mtM
-         Bd8yHsc9Iw7jFE7JQYq0uvCATVQ0ZT/KA1Fz2Qfc13038jdpksmKW4VyfbGLfT1oi62V
-         444cv4OU6WcOT2oDcWtibODh7coMduW5w+z+CO22s/94ex6kjrQ7fiWC0oTbuVD80o/y
-         VyRZaU6E5AAbCNhUr1B7dLPtMMF37+w5JppHPZspuG+mRwhXtKCoSUrXMnrrqe9xt4Rl
-         Q5Jw==
+        bh=7RE5534hcGxVn/KNo4nNaHNAogiNWte5Y38IgWgMeyE=;
+        b=gR6XOYdMaz4svBnafrAt8z5G3LWrxkXx+DHTJ3rnahYVDf05L/uW7OhXWeAWIqfQVo
+         edwrNpWAfmHD/o9eGOgjuDipftZKWa8FzAaHW58dpkijnk56ldCGxmyCK6cPs3guGGFG
+         s+8itEyQW84sAG5APGIGylBvPZKRmcrwxH0KM5ZIyKwbUsq0A7pSt4qK5PVnT04kSTbx
+         8SH3WgcUUyG2AGIiwSEzrlBfALSCgC+x36PgqYPgBFdktRGSShh5gO4yLrlJRvfmPbji
+         GbCP6PJZqhbajC2s8LN0ysfkZ67Cx07Wy20YrtJUyJ9WhQKPBLq2r88Z/kj7Auc6BBjE
+         GJfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688144337; x=1690736337;
+        d=1e100.net; s=20221208; t=1688144339; x=1690736339;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=safrMj4vy3+0ORPoAOcHGXU9yJdkC+AfKJ9DByswV9U=;
-        b=ajt+KSAiHq0DoLdVMBf41n4rkUeqc6RYuZ5IlmdofNkUwuSp4VS3V3ndi3jbDF8q0A
-         4w80+WMWVklTZeJSXNkOMpKEaZm32/k5mi2jyhTEoagsYodX0G1tArR4rtKF2jPlLHiv
-         +fzecghw7cz26pOBtPAN4ndMggHC42UNJea4+4AljGtZNP6zJeRKUvKPA9jFzB5G2Fw2
-         llK77l6MqD7Psxdc50CGitCTTpLbj8WcCfHw7eUzvPV+goZletgNNlQNcUUnzSI/Nq5A
-         qSjtMCb/j/rzIrurnkZHeq7pA2fSBRg60ell1VzVsHGDvclRa4h5CFgih5mxbpXSSeDx
-         w59g==
-X-Gm-Message-State: ABy/qLZjrv9HZsisPBC0XPhvWNNhvH5+x1H1PGPJmoHuQd3vcXGZ8pSy
-	AW/ALubUsPrmqaJklBRUATdx7A==
-X-Google-Smtp-Source: APBJJlEKyEGgCYGMVtZF4uOEb2+kQTTFHk1HYk7zoA+qJfRnhfllehuKYiRJedUqKHunCJKD/gD5YA==
-X-Received: by 2002:adf:ed0a:0:b0:314:13e2:2f6c with SMTP id a10-20020adfed0a000000b0031413e22f6cmr2444572wro.58.1688144337623;
-        Fri, 30 Jun 2023 09:58:57 -0700 (PDT)
+        bh=7RE5534hcGxVn/KNo4nNaHNAogiNWte5Y38IgWgMeyE=;
+        b=CNl01oyEAzZAxMuluTrDzuBsRhGgqjBofC5GmJ4j8Sq4AJAFyjgK4qBjyRUwWFU5Ap
+         kCotAdzu5j8zDD9ORGYYWdR8lNG2opHR1asmZKPdgCSMP3JXcRnOMtkF6kja7WlNdkql
+         ejfhiSy+0NaSeWGmodoeAmhbnGabOwj27z65QJOH+o8UdrzSJ2oDHhrM0eWTro2QLUcs
+         doPIj8u0Te91j2LzGVvWEaZgHr0kxRHhtjAaEzm8zKQClMMZUxU1Km2WnNR/i1ioYWAS
+         DarePD8ZbDDI4OzeeyCIi8nud4M8Kutlaz7qPKdwhnMAD7aAM2LuLPEM8fEw3FO5t7yN
+         WJyQ==
+X-Gm-Message-State: AC+VfDxLs7v4idK+4NevYwAHi+s/Q0AU0tWZnWQ6dAjQMptCbrXAFpaW
+	YjBv3QO+7WaBV4Eb8uHsW6eF2g==
+X-Google-Smtp-Source: ACHHUZ67VHZg4s+SYrTR6+84c/ufKS7Q01De9EVEy+1Ktnx9SqhFoXMa/ALr5i7wOY4YYAh12zGPEA==
+X-Received: by 2002:a05:6000:104d:b0:314:2c4:9fea with SMTP id c13-20020a056000104d00b0031402c49feamr7004552wrx.29.1688144339127;
+        Fri, 30 Jun 2023 09:58:59 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id u14-20020adfdb8e000000b003112ab916cdsm18913772wri.73.2023.06.30.09.58.56
+        by smtp.gmail.com with ESMTPSA id u14-20020adfdb8e000000b003112ab916cdsm18913772wri.73.2023.06.30.09.58.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jun 2023 09:58:57 -0700 (PDT)
+        Fri, 30 Jun 2023 09:58:58 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Fri, 30 Jun 2023 18:58:38 +0200
-Subject: [PATCH v2 13/15] irqchip: irq-versatile-fpga: remove obsolete
- oxnas compatible
+Date: Fri, 30 Jun 2023 18:58:39 +0200
+Subject: [PATCH v2 14/15] dt-bindings: interrupt-controller:
+ arm,versatile-fpga-irq: mark oxnas compatible as deprecated
 MIME-Version: 1.0
-Message-Id: <20230630-topic-oxnas-upstream-remove-v2-13-fb6ab3dea87c@linaro.org>
+Message-Id: <20230630-topic-oxnas-upstream-remove-v2-14-fb6ab3dea87c@linaro.org>
 References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
 In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
 To: Michael Turquette <mturquette@baylibre.com>, 
@@ -92,29 +92,28 @@ Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
  netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
  linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, 
  linux-pm@vger.kernel.org, linux-oxnas@groups.io, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Arnd Bergmann <arnd@arndb.de>, Daniel Golle <daniel@makrotopia.org>
+ Neil Armstrong <neil.armstrong@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+ Daniel Golle <daniel@makrotopia.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1082;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1659;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=Hwq/1nyBJbIaeaNsvFzhDu1oXx5gpF7OJ2azvf7yeno=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBknwm5eVilyz5juesTZ+I8YEmM7E2RHfvZxVYP1ZZV
- mwVWJPmJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZJ8JuQAKCRB33NvayMhJ0dq1EA
- Cn2KcT1QQ1o1T7+RYh3kPUyZMDiiOc1DSphO3W/uzuy17B2do61hFjY0ldTR9LVnga9ZpODHRUkIR7
- XY925yWYXfnrJgPmf02FEU37ju1/RJ424oSZMlsZ99qOyF0Gd4/pCCGcSwDiVhFH6+gx4ASuiOTZc9
- UNHnfQjGBOcD/HnhgwB38S+QSpueoaTYDT6Mjc5cX0SBcGXjGp9Bx+Md99BODkp4Hd9Y5mJ+CY/+8/
- w1GO8w/7Dmb7m79QwPWi6c/G5/i5MHFpAl9kc2QU/6ynyI5xPJUoJiFFLZAlNngwtVPWJENg0Q1UBw
- YN7jBh7yKomkrlxp6NW4WKFYSEFaKt4ybYtjmo+3DmpbQO/yc6r1k1bl46qufJJWzK1fE7phMItHf/
- 1EO6h4/9HG5YhAEmtw4VuXyotDSG7xHUX84iTUqisRFHtkh3aq+vcCh42Glx+/g9amw3FUDvIQw9lm
- B7w/d/CgDk94Qs0gp/nKv8v/o1/fZMhTgS2mZbSXar3CcvfJEaoG3oNjk0VIK8iHwEbgROuQgEGKbz
- evwteKmyZKDOO1c/lCrJmD/4h3CnxXB9HxUynW1SZXjBIpchVe5SetsPfmEo1WkJzkyQvNovTcLpaJ
- rjkszeLvxd0rHZrpvV22nNfMyHRdmt4uWeyFu7fIz0koHI40RGLbE+d44/5Q==
+ bh=KAyf/uprdG2/Uxev0fRE9woiE1KO/ssntpRa1SRTGCE=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBknwm5ebaeq5y28ag1NJPXsR2UMRtXo/2vvtxyaCAH
+ q7bNYGyJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZJ8JuQAKCRB33NvayMhJ0a00D/
+ 949YBvowHmFLhM/PIxv1RNwEMg/gXdoG/wZrUvr3PALas1Cu0FQTMj4xevGv3DdfS8uo3ctM9oWYV6
+ By90JIc1WSNQmG+KCH4hm+/qf5oE+Gw0Z3wEBD3rsvElYFEQ3fwuPrztim6PnbGy8QDBwms1IQIfzf
+ h7RLWvZ+E8qGp3eltGC12OHkBIePX0rXXrxjdedr/j5FIw6tA75yvupH2hOl4NrPRBMFysio3ZkDWc
+ 9M8CG8/5lKHq46Y0YQxGe33JYEliELgFeuQZ2F2wAa8691MAj/qQgGvNkK+p0d3QC8ffPUSwyr3VmH
+ 5Q25o0x6lw7sIETB+MEPAkNIHmB/T6nlcBZXSf8KPxekM9p89ERPpyZVYu6fgo7AgnHZ2ViAWfT0aK
+ vJMjzlAtrNbHtCUfuytjC+4kbC3bDd9vNFE29dLvMuhuZD+DnsX/UoP/WyAgt28L2k8BVEWwSbyCaQ
+ 2eYdh4Y+6SFl4s5/eClwjOvqKjGKgqEhW8aOec1A+m1QS5VYIk8pHdk0RSKLAMbNrghtIhbKMyQhU5
+ 860pnYTW31uqEHzSrRV62sO4Jd841tMmNAuImfY91tf2tLKDPYfECYF1tRp4lhsqUy9s8lxoRc4IJV
+ mozMYh/oDrg2/3lH8mszi0QhKB4BvSDNTDFh/hQrDLMyXPR5es8ILH2xAzcg==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230630_095858_988805_D60DFC5A 
-X-CRM114-Status: GOOD (  11.77  )
+X-CRM114-CacheID: sfid-20230630_095900_595060_2A825B21 
+X-CRM114-Status: GOOD (  13.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,28 +131,39 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Due to lack of maintenance and stall of development for a few years now,
-and since no new features will ever be added upstream, remove support
-for OX810 and OX820 IRQ controller.
+and since no new features will ever be added upstream, mark the
+OX810 and OX820 IRQ compatible as deprecated.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
 Acked-by: Daniel Golle <daniel@makrotopia.org>
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/irqchip/irq-versatile-fpga.c | 1 -
- 1 file changed, 1 deletion(-)
+ .../bindings/interrupt-controller/arm,versatile-fpga-irq.txt          | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-versatile-fpga.c b/drivers/irqchip/irq-versatile-fpga.c
-index ba543ed9c154..5018a06060e6 100644
---- a/drivers/irqchip/irq-versatile-fpga.c
-+++ b/drivers/irqchip/irq-versatile-fpga.c
-@@ -242,5 +242,4 @@ static int __init fpga_irq_of_init(struct device_node *node,
- }
- IRQCHIP_DECLARE(arm_fpga, "arm,versatile-fpga-irq", fpga_irq_of_init);
- IRQCHIP_DECLARE(arm_fpga_sic, "arm,versatile-sic", fpga_irq_of_init);
--IRQCHIP_DECLARE(ox810se_rps, "oxsemi,ox810se-rps-irq", fpga_irq_of_init);
- #endif
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt b/Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
+index 2a1d16bdf834..ea939f54c5eb 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
++++ b/Documentation/devicetree/bindings/interrupt-controller/arm,versatile-fpga-irq.txt
+@@ -6,7 +6,7 @@ controllers are OR:ed together and fed to the CPU tile's IRQ input. Each
+ instance can handle up to 32 interrupts.
+ 
+ Required properties:
+-- compatible: "arm,versatile-fpga-irq" or "oxsemi,ox810se-rps-irq"
++- compatible: "arm,versatile-fpga-irq"
+ - interrupt-controller: Identifies the node as an interrupt controller
+ - #interrupt-cells: The number of cells to define the interrupts.  Must be 1
+   as the FPGA IRQ controller has no configuration options for interrupt
+@@ -19,6 +19,8 @@ Required properties:
+   the system till not make it possible for devices to request these
+   interrupts.
+ 
++The "oxsemi,ox810se-rps-irq" compatible is deprecated.
++
+ Example:
+ 
+ pic: pic@14000000 {
 
 -- 
 2.34.1
