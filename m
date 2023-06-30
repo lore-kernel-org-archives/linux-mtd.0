@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59EFDEB64DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 18:07:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F12BEB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 18:07:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LK4K7HA4PKv68tqTjxDVL03QL/OarQUuQ051uvyBNJE=; b=J5nbG8LanDeEHFKutEvYONHiTe
-	AqQGgJ8mNx2TEWB8M8Dz68UQv7FombJmqzyOxW9+3HJHuuPbZpePrC6HOAuehInMMquDr/wvB0Lpk
-	YHduFkFoRyGOGoUvkQgOl/ykOgH8Hxhci4Qh+8hqor4zFiR7LGhZqXmR0YvlVvj77DkK1KpKdjB4c
-	kWamZhdIapKKo1GJhdoPqZDID3zPX36nMkuFeoHqtT7p0age3O+2/j88p71PzObnxoriGzsVI6n6C
-	2qDmyl1h7/GFgH8EKP/qlBY8ZEktRsTgd3edQsvGrG0tZ3Hd7W6uECbAlGcg7Oo9HAxNJrLmKb4Ea
-	bn5xl+mA==;
+	bh=FMlfkuvTvtSJ6hSslTPpbSucqJa1IhsGrJ87QKYAF1w=; b=0iAKKEAuC3gJxjdFd8BRh4aCtD
+	KR+JiBc9wgFYGi89xFyitALQ7bGsgcL+HkGNqIzj+v4T2SPSLfS36XoqYOMdHw+7RG/JmCZ5KfJyD
+	2fGYzwiH2dJm/mGV4mePFBlA+OWsea4uHD/Xp/G5T/tjpen9CnbrpkH8iQrzvf0AoB21XyKZuq4gU
+	VYr13cViwkgVIpWbRdQ1ywJS/udOCJcAQA/1wJMx34yjhJCNCsf1/vzfi7Ksd7hT8JQd9CEiKs9Wm
+	1b5zIi9leO5ZVl/w7YIW02gjGnwtjTXB9V8kFjL0UYdC/sJ0bBPNc2b4dvSC3igpua4vOADOG+i2C
+	QGMg0eKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFIWK-004GMQ-1L;
-	Fri, 30 Jun 2023 18:07:00 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qFIWp-004GV5-0N;
+	Fri, 30 Jun 2023 18:07:31 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFIWH-004GLp-04;
-	Fri, 30 Jun 2023 18:06:58 +0000
+	id 1qFIWl-004GTr-2q;
+	Fri, 30 Jun 2023 18:07:29 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5A87D617D2;
-	Fri, 30 Jun 2023 18:06:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44654C433CC;
-	Fri, 30 Jun 2023 18:06:49 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5978A616D7;
+	Fri, 30 Jun 2023 18:07:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EFB0C433C0;
+	Fri, 30 Jun 2023 18:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688148415;
-	bh=yz5t1GiipNFNh1NtxgqisnUQ1CD8Mwvmr2prkm+aqsw=;
+	s=k20201202; t=1688148446;
+	bh=t3UiunEO1jCFQO48ppNgdOs68jT6bdUCWvW91NbYvx4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h8BVS2sR9N6T9w9CrLbGEkLtZUN8hymR5Yfqq38a/aJIH/8+cN3LhWC1qe0ABBgYh
-	 +WqBRGYdoQU6Nt3Hxgu274LZGxuj3dXTjUFC0gpadKnR24KWnwNss6TUOYs5HzPAgL
-	 69DWTSkPmvlyIGijGGtVsdNgq93wlUFCgrMlNUyUbtwMMbYkbBTmdNaNRMd8a9wsOh
-	 HHDYDzKOmi2CTL7ac6HlH4x3ONaT6UQE/kzzOtQfsAzzW63ScznY5jFrNSUqpfzIhG
-	 AoZkWNd9IQDpbsm4pGf/Gu3vudY9yeH3x7B7zrg0vngrABIfRCyWMgg5e+S/ARWYIe
-	 MIrXoY3Cv3KjA==
-Date: Fri, 30 Jun 2023 19:06:46 +0100
+	b=YsolcNbxeIfKRUkDzAeIeP+FAczdcaxY7suAmHTs4REMOWIBxBCF1ivd6b5v67PKC
+	 O/ykE2B6j+McmLwMcrmFgCimdsbzDsuSnraDCFnFhFMN87wOOLonGq9O10xX2pl8xC
+	 i5tMXoVzZXj9ax33debb349/ap0Ppg7oOJbQFERZwLQRti73kS2cGvrPz5Vyy/2lDs
+	 xmhLejciKKgYKuhnSUs2LCYvoIzAA17feKPjczCju/s9nM0X4zvJZky1faL30feOaW
+	 ebCsLsWAyEhp6bvuZzyM0nJD6i4h6JmpfnuR2ct/P77xuKrMFV5WPUgWg0HGT4J9uf
+	 Wz+gtnuHXHwAA==
+Date: Fri, 30 Jun 2023 19:07:17 +0100
 From: Conor Dooley <conor@kernel.org>
 To: Neil Armstrong <neil.armstrong@linaro.org>
 Cc: Michael Turquette <mturquette@baylibre.com>,
@@ -73,16 +73,16 @@ Cc: Michael Turquette <mturquette@baylibre.com>,
 	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
 	linux-pm@vger.kernel.org, linux-oxnas@groups.io,
 	Arnd Bergmann <arnd@arndb.de>, Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v2 08/15] dt-bindings: net: oxnas-dwmac: remove obsolete
- bindings
-Message-ID: <20230630-oppressor-circulate-1a2e5631d0dc@spud>
+Subject: Re: [PATCH v2 14/15] dt-bindings: interrupt-controller:
+ arm,versatile-fpga-irq: mark oxnas compatible as deprecated
+Message-ID: <20230630-carmaker-tablet-da1516122b65@spud>
 References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
- <20230630-topic-oxnas-upstream-remove-v2-8-fb6ab3dea87c@linaro.org>
+ <20230630-topic-oxnas-upstream-remove-v2-14-fb6ab3dea87c@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-8-fb6ab3dea87c@linaro.org>
+In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-14-fb6ab3dea87c@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230630_110657_098267_CBA7B88B 
-X-CRM114-Status: GOOD (  12.46  )
+X-CRM114-CacheID: sfid-20230630_110727_959975_2B3AF9E2 
+X-CRM114-Status: GOOD (  12.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,26 +94,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5579710630494652370=="
+Content-Type: multipart/mixed; boundary="===============2276622370283456521=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============5579710630494652370==
+--===============2276622370283456521==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BvTA36mVIWDn/yrV"
+	protocol="application/pgp-signature"; boundary="FNR50n0ttdoybkYr"
 Content-Disposition: inline
 
 
---BvTA36mVIWDn/yrV
+--FNR50n0ttdoybkYr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 30, 2023 at 06:58:33PM +0200, Neil Armstrong wrote:
+On Fri, Jun 30, 2023 at 06:58:39PM +0200, Neil Armstrong wrote:
 > Due to lack of maintenance and stall of development for a few years now,
-> and since no new features will ever be added upstream, remove the
-> OX810 and OX820 dwmac glue.
+> and since no new features will ever be added upstream, mark the
+> OX810 and OX820 IRQ compatible as deprecated.
 >=20
 > Acked-by: Linus Walleij <linus.walleij@linaro.org>
 > Acked-by: Arnd Bergmann <arnd@arndb.de>
@@ -125,21 +125,21 @@ Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Cheers,
 Conor.
 
---BvTA36mVIWDn/yrV
+--FNR50n0ttdoybkYr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZJ8ZtgAKCRB4tDGHoIJi
-0n34AQCaqt+oiyrpU/1VK5nJptp1QM1CruwCYZ4Kyxm+cqFlRAEA/3ZXE+gSBEOw
-+/4RXjuoc0d0lEczRHPZqKqBpZdabgU=
-=8KMl
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZJ8Z1QAKCRB4tDGHoIJi
+0oi5AP0fOVGdDREXAChDzrubQUvnaUVdAhqsJYui9kW6ylPwiwEA3lkNSMv2oqP7
+pXh6Uo+fuIM4XtY3n9BAm0Wmeq+jOwI=
+=Bqlm
 -----END PGP SIGNATURE-----
 
---BvTA36mVIWDn/yrV--
+--FNR50n0ttdoybkYr--
 
 
---===============5579710630494652370==
+--===============2276622370283456521==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -149,5 +149,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============5579710630494652370==--
+--===============2276622370283456521==--
 
