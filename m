@@ -4,111 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C588EB64D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 14:23:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AE55EB64D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 14:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=t0vZuNmBbuYIRDKmhz0S4tyd0I/VH0Cg+7RsbU84JkA=; b=JYI2REmVjjqxWg
-	MKLbDrgNc1TxmucNNS9kEhnqKlK/Srf5yXCJuIU3WsQ/CPkdkza/wHaTu/+6qNuUKLzcHikaq31vV
-	HQGIVros1Aj7t/E1ghI+nBVxWsQAc1OdtihW5fWIni3kuk17ljHjSFpUB9gHXxGYsCh9fBNVLgf3v
-	aB8C+NQPl1zTBTyXizNC4ZHtw0uP6nQKYN68BXn7ailRnn5Dd4tuK+CgVWppvwbeapFAqOknWw+aU
-	pohC8ULqUwJfnopoGGqhi6jhu8TT4JF3LjglxL5+F25YQOPplAEuJZguzH7zp/n96iDRGKOqFXF0O
-	IDAV9RWnecZR2F/wCG6w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=IBO/PRUgRZyQWKQCoAK0eQAC8PZtprSBwuj08i0giEk=; b=CR5rmaZTLGedwXM8ylzEPVjmLZ
+	7x9vjVEL1Ges+yjFfD5jwhI/IVnLNtylOvEBPmZfLC/3DMjRdK3li2iN4uv5sNMZID6wOlpiL8bJp
+	kmwZIaS+ny3dxbvuoW66q0CoJyLh7UlTPX0qk1ypgEXUYw5G02QGMRnfYVpZC8vIDQsU6AtE/RL1A
+	Xetvh+gP21UHdXLCXu1rYNyHYJYiK08mtDTdNO+GuT7LJTE/u1rJ9CITdv9Rb01VUNAZWBxzZvhE/
+	S0KEEmlg6i8sGwzhtPyVC4TUwuAHd4T9AJ6+H4eTVuOcwy6Gcycf+6IuDa059ASvI7MDWb+/EboMe
+	uNljnfiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFF1S-003q81-2m;
-	Fri, 30 Jun 2023 14:22:54 +0000
-Received: from mail-bn1nam02on2060f.outbound.protection.outlook.com ([2a01:111:f400:7eb2::60f] helo=NAM02-BN1-obe.outbound.protection.outlook.com)
+	id 1qFFGj-003rZR-22;
+	Fri, 30 Jun 2023 14:38:41 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFF1P-003q7d-0J
+	id 1qFFGg-003rYb-22
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Jun 2023 14:22:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bl4Rtm4Wd+QpN3NRxLI0UH7hIX8/VYeJVZIFCgrBQXEmiZxW8mrNKl3d7fNjzqJw8ZTot7Zhw1Xe/10OFUOs8S3uxh/0gKokKkURKkW3Hjhmy5eAxgeoXhbUC/lEG/Bsx0agAyjVwQ8f3kOatYZiic9cwCsSgLq90ajyCbD2OOCqE0DunSZwVBUXm5MxE76p8aZQ4di+u+Z+uEDZdDQNitwiUcD2Y0U0QZF44T9mm4ynIhraE8fvU8aIJhlJYc3I942iuo/jxGhNWTxuyy5ZN+YxO6Lc0yUK+m/ir4xf3mtz/Bx3zZwi0dfZKOWWuwTvteCKNpMEF/c0PY/BiPS/bA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6b6/3GpG30PlTZVAlrUxPDc8takTyZhXdUVzlbrrR7A=;
- b=B6UfsELHm5TwRUfjyeVrqcEhSuE9KGTi9mWmGz4stfX+PEhEC8en2ugruiHEqx+F3nMGX7cnLzEdeUYMZfblNCRBzmWxMi2igIEchdMcN+V1yxwHqkcaWmUEWsJL9kBHboo3RSaLxaMEgl/Ai9OA42sGjzo0i5JhEJwrYMPh/xHZtDYgL+RrO2UCay8HehkzA8Z8seW/rGTmMLBlCNaEz1A1bAVMsw7ACUqrI6488fHaT7WXTNIGPXEbBEimDnKR4c719qg7izWOmUn4Rjje4mQl8BR5r3J4YfeO4HQfEKymTBv8gxy2Vpurfbby80hmkyX1UfQ9iCrrFrH0MyRBeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6b6/3GpG30PlTZVAlrUxPDc8takTyZhXdUVzlbrrR7A=;
- b=FIFaWct98lQAy5RBBMAHNzg9PVkapiclgw9e8PhwBoJhOB0KAy35SZjyM0lwiv+5WWD0ApigfnoXWs1c33Qkhlc5eRqWRkPZePP8OWLx1UCBiezpgRQMpgJI0sLu8lducmzBJg6OnXGyFs9tCRp5PmZ4M9XxgWiqTh4uV/7i2fA=
-Received: from DM6PR07CA0083.namprd07.prod.outlook.com (2603:10b6:5:337::16)
- by SJ0PR12MB7457.namprd12.prod.outlook.com (2603:10b6:a03:48d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.19; Fri, 30 Jun
- 2023 14:22:41 +0000
-Received: from DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:337:cafe::64) by DM6PR07CA0083.outlook.office365.com
- (2603:10b6:5:337::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.22 via Frontend
- Transport; Fri, 30 Jun 2023 14:22:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DM6NAM11FT053.mail.protection.outlook.com (10.13.173.74) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6521.43 via Frontend Transport; Fri, 30 Jun 2023 14:22:41 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 30 Jun
- 2023 09:22:40 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 30 Jun
- 2023 09:22:40 -0500
-Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
- SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.23
- via Frontend Transport; Fri, 30 Jun 2023 09:22:36 -0500
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-To: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
-	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>
-CC: <git@amd.com>, <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<amitrkcian2002@gmail.com>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@amd.com>
-Subject: [PATCH v4 0/2] mtd: spi-nor: Avoid setting SRWD bit in SR
-Date: Fri, 30 Jun 2023 19:52:31 +0530
-Message-ID: <20230630142233.63585-1-amit.kumar-mahapatra@amd.com>
-X-Mailer: git-send-email 2.17.1
+	Fri, 30 Jun 2023 14:38:40 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 6CBA161A;
+	Fri, 30 Jun 2023 16:38:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1688135912;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z3dNqsYdomU8JDWZFc7ypuImUApBhTKuCgR+jHSwU44=;
+	b=yVOQmT7E68fq2NuJt5AXkzK1y6OIwQbSIWa5NtHXnjsc1ITm571s0nfTDQqoBeXgkESZhC
+	LWzAhHKUTh2C1weBLzmM86uK0uv9WXB4nvd8gDjEOPIAWT0NrtzzXa7quCZKWH3m2t9UFh
+	FZmlDuQ/JQu5sdymIH0KBTEpjjHL/iQcgYuwqSWOduM6cOOwgLhFn4eWpTEd/+jVLT7w6p
+	4YlWe7Za7iKwtVPaF5ptAMHr0qhEaF45iYwIM1qc4LZ0fG25ub1YqlQwJ7UweY5SW05p9W
+	vbA4TgHvWUnfauT05g+g+Jg8PncW46Pi3uQi9BUN9ijNyazEobrri/LkvrI1bA==
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT053:EE_|SJ0PR12MB7457:EE_
-X-MS-Office365-Filtering-Correlation-Id: 56dba14e-eb7d-4ec6-240b-08db797576f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U6R3pDvtpJBRpQ8gAzaQsXLU+1Qv6/mwdQMi9WlXUeck1+KSV7UnbYxnDrEg4ZgH5F1Yl8mywdwyhyhFrVIoViJ6/qkwUBU5oJrrynDDYNbgnRIwP9cswtL/IFDqWU+U2puTGE7md9Hia1Es20Zrj7keQsBePTvPmWJE6tboKGHxpDyO7EBd/tswglXgLRzixua3dXzn3acxcMdaJNDcA2uD8t8+x84S1GFXt0QMu4gmfsEaZvoacbSa09OIVxh5TRUb5srygMe7z6RSWbArz0VGFkjiU/sCSkZ94SympKzcX/i4k2O890ulCth10BbGSMOcUBRlClrbWMmn5uB3sQDcfxqwHZdbIE52eEy+2NgGvQMfQbqLoJOlB6euMhB+AFKdXDA1Z8dOG5SOzNd0QUvgTkjQGSGzcjURF4Cikyh0sq/nfWFq6z/6Go5U/6QQBBvtyeEO5GSjPRUf/x8E2upQMpEVradLyqfChEaYCMOAOmeEO82aWOYyoPnVnaFdH7mlw8gFA2SWuJQ/vmDx9jY1kKKKAJVBT+67oQc0PRlLKnPC9LbnegHZ8qJQq2i1oHOEKxUolbyiSqIpJwPQ15TQE6eUL+UKxh6QFgMPGSdbhG8sebxqE4I3OSl25+f0NIt0b6Hp39wa3pgXa5yuCg/H67RQmd3/Gq70cznLM3CrpvDSHJza3dBEh2u/PFWOPyGhd8E3mo6mcLiVi/ZSxmRIXSwqf6uLH1nnZA+JpQvTk3fJ4LFVYxDDFXJraPgGBAUV9mWw0+6Dok0wknIVOQ==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(346002)(376002)(396003)(451199021)(46966006)(36840700001)(40470700004)(336012)(426003)(47076005)(40460700003)(83380400001)(2616005)(2906002)(81166007)(356005)(82740400003)(36860700001)(40480700001)(36756003)(8936002)(8676002)(82310400005)(110136005)(5660300002)(86362001)(54906003)(41300700001)(4326008)(70206006)(70586007)(6666004)(316002)(478600001)(186003)(1076003)(7416002)(26005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2023 14:22:41.6056
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56dba14e-eb7d-4ec6-240b-08db797576f3
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7457
+Date: Fri, 30 Jun 2023 16:38:32 +0200
+From: Michael Walle <michael@walle.cc>
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ git@amd.com, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, amitrkcian2002@gmail.com, Amit Kumar Mahapatra
+ <amit.kumar-mahapatra@amd.com>
+Subject: Re: [PATCH v4 2/2] mtd: spi-nor: Avoid setting SRWD bit in SR if WP#
+ signal not connected
+In-Reply-To: <20230630142233.63585-3-amit.kumar-mahapatra@amd.com>
+References: <20230630142233.63585-1-amit.kumar-mahapatra@amd.com>
+ <20230630142233.63585-3-amit.kumar-mahapatra@amd.com>
+Message-ID: <10ae0cdbaf4b080d337ab4945d335f25@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230630_072251_257727_C095A132 
-X-CRM114-Status: GOOD (  10.41  )
+X-CRM114-CacheID: sfid-20230630_073838_821058_3EABB577 
+X-CRM114-Status: GOOD (  18.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,56 +76,98 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Setting the status register write disable (SRWD) bit in the status
-register (SR) with WP# signal of the flash not connected or wrongly tied to
-GND (that includes internal pull-downs), will configure the SR permanently 
-as read-only. To avoid this a boolean type DT property "no-wp" is 
-introduced. If this property is defined, the spi-nor doesn't set the SRWD 
-bit in SR while performing flash protection operation.
----
-BRANCH: for-next
+Am 2023-06-30 16:22, schrieb Amit Kumar Mahapatra:
+> Setting the status register write disable (SRWD) bit in the status
+> register (SR) with WP# signal of the flash left floating or wrongly 
+> tied to
+> GND (that includes internal pull-downs), will configure the SR 
+> permanently
+> as read-only. If WP# signal is left floating or wrongly tied to GND, 
+> avoid
+> setting SRWD bit while writing the SR during flash protection.
+> 
+> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+> ---
+>  drivers/mtd/spi-nor/core.c    | 3 +++
+>  drivers/mtd/spi-nor/core.h    | 1 +
+>  drivers/mtd/spi-nor/debugfs.c | 1 +
+>  drivers/mtd/spi-nor/swp.c     | 9 +++++++--
+>  4 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 0bb0ad14a2fc..520f5ab86d2b 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2864,6 +2864,9 @@ static void spi_nor_init_flags(struct spi_nor 
+> *nor)
+>  	if (flags & NO_CHIP_ERASE)
+>  		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+> 
+> +	if (of_property_read_bool(np, "no-wp"))
+> +		nor->flags |= SNOR_F_NO_WP;
+> +
 
-Changes in v4:
-- Added SNOR_F_NO_WP flag info in debugfs.c file.
-- Updated comments in swp.c file. 
-- Added Reviewed-by tags in 1/2.
+Not moved below the first of_property_read_bool() in that function
+(as pointed out before). It's just a minor nit.
 
-Changes in v3:
-- Updated DT property name to "no-wp".
-- Removed Reviewed-by tag from 1/2 as the DT property name has changed.
-- Updated spi-nor flag name to SNOR_F_NO_WP.
-- Updated DT property description.
-- Updated patch description.
-- Updated comments in swp.c file.
-- Replaced WP with WP# in patch descriptions, comments & DT property 
-  description.
+But with or without that fixed:
 
-Changes in v2:
-- Modified DT property description to add information about a
-  valid use case.
-- Added Reviewed-by tag in 1/2.
-- Updated comment description in 2/2.
----
-Amit Kumar Mahapatra (2):
-  dt-bindings: mtd: jedec, spi-nor: Add DT property to avoid setting
-    SRWD bit in status register
-  mtd: spi-nor: Avoid setting SRWD bit in SR if WP# signal not connected
+Reviewed-by: Michael Walle <michael@walle.cc>
 
- .../devicetree/bindings/mtd/jedec,spi-nor.yaml    | 15 +++++++++++++++
- drivers/mtd/spi-nor/core.c                        |  3 +++
- drivers/mtd/spi-nor/core.h                        |  1 +
- drivers/mtd/spi-nor/debugfs.c                     |  1 +
- drivers/mtd/spi-nor/swp.c                         |  9 +++++++--
- 5 files changed, 27 insertions(+), 2 deletions(-)
-
--- 
-2.17.1
-
+>  	if (flags & SPI_NOR_RWW && nor->info->n_banks > 1 &&
+>  	    !nor->controller_ops)
+>  		nor->flags |= SNOR_F_RWW;
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 4fb5ff09c63a..55b5e7abce6e 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -132,6 +132,7 @@ enum spi_nor_option_flags {
+>  	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
+>  	SNOR_F_RWW		= BIT(14),
+>  	SNOR_F_ECC		= BIT(15),
+> +	SNOR_F_NO_WP		= BIT(16),
+>  };
+> 
+>  struct spi_nor_read_command {
+> diff --git a/drivers/mtd/spi-nor/debugfs.c 
+> b/drivers/mtd/spi-nor/debugfs.c
+> index e11536fffe0f..6e163cb5b478 100644
+> --- a/drivers/mtd/spi-nor/debugfs.c
+> +++ b/drivers/mtd/spi-nor/debugfs.c
+> @@ -27,6 +27,7 @@ static const char *const snor_f_names[] = {
+>  	SNOR_F_NAME(SWP_IS_VOLATILE),
+>  	SNOR_F_NAME(RWW),
+>  	SNOR_F_NAME(ECC),
+> +	SNOR_F_NAME(NO_WP),
+>  };
+>  #undef SNOR_F_NAME
+> 
+> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+> index 0ba716e84377..5ab9d5324860 100644
+> --- a/drivers/mtd/spi-nor/swp.c
+> +++ b/drivers/mtd/spi-nor/swp.c
+> @@ -214,8 +214,13 @@ static int spi_nor_sr_lock(struct spi_nor *nor, 
+> loff_t ofs, uint64_t len)
+> 
+>  	status_new = (status_old & ~mask & ~tb_mask) | val;
+> 
+> -	/* Disallow further writes if WP pin is asserted */
+> -	status_new |= SR_SRWD;
+> +	/*
+> +	 * Disallow further writes if WP# pin is neither left floating nor
+> +	 * wrongly tied to GND (that includes internal pull-downs).
+> +	 * WP# pin hard strapped to GND can be a valid use case.
+> +	 */
+> +	if (!(nor->flags & SNOR_F_NO_WP))
+> +		status_new |= SR_SRWD;
+> 
+>  	if (!use_top)
+>  		status_new |= tb_mask;
 
 ______________________________________________________
 Linux MTD discussion mailing list
