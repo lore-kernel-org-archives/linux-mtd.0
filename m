@@ -4,85 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B551DEB64DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 08:36:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB223EB64D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 08:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sNtSsnctcnr6minH8zpKCewHH/nd1+MhK9FQJoKfsiY=; b=G/ESV8RZeh5heA
-	l/RErf6y3EV08+Q1ObSt2qBhwU1BIHfO6YqbHOyhRmGOHeEO+mVLLMiGodXZmHVguoIc/jwsfNHkk
-	v8qIX33XBYy4F4V0JX0XMa33Kt72Zgu6HrgdaUH3uXoGA6WMC/76awm2ROSqVOU9MpfO2XI5GD3K9
-	r3s1qnn22DC/mBsr/Z5qokrmvJ1SRZUGXHp61GccqKAxjId46rvdAfS2jN5sXr8FMoac7uW4jF9sE
-	9/0zuS5V/ulmSAZHpjywtVPYpbXnM4j8fWLQzR+5vF34H3jsqj4+wdGTKj2Q/LqdktNTLFTgLErCW
-	rTvD7DLZRzVGX7KQUl0w==;
+	List-Owner; bh=AR2e2zV5D2KvXmUm68CxrG3+gRGoo/mxIEEfHzDD/x0=; b=hmpHL2VQ1bYyl5
+	tK+Rr4EhM8bkm9gyI20Q0eOH8UpvGgMaG9C3E2RH7la/v8E/cboMLFjKe1Gkgbtz6KYW9eG/9YYjd
+	CVSFcLHDZmpsG2AlSpHTiEMycUiAXlccucRO3+9UdyFn2EG0DKLmBI8dNvAzmXa8cZO065jY//7M+
+	w/WDoBzW4fy/wY+XNhNvBDMbM6H63yLs5yjEYgXK70QSqfNV78D80fCTiHyWBSjc7P9SPxM557E5p
+	TDGNE2FS9rTuDv/pkCvhytyRTRpAE6T0MrQd0/QfyxiQ86GymliKQ1B4A8ugY41I90t9el/eqo8gk
+	mLHmqYmLeMBAI/z9WwhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qF9c0-003BwD-1n;
-	Fri, 30 Jun 2023 08:36:16 +0000
-Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
+	id 1qF9nq-003Edr-2q;
+	Fri, 30 Jun 2023 08:48:30 +0000
+Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qF9by-003Bv2-0q
+	id 1qF9nn-003EdH-32
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Jun 2023 08:36:15 +0000
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbc54caad5so7317765e9.2
-        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 01:36:13 -0700 (PDT)
+	Fri, 30 Jun 2023 08:48:29 +0000
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-991c786369cso194030566b.1
+        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 01:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1688114172; x=1690706172;
+        d=linaro.org; s=google; t=1688114905; x=1690706905;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vYLmeNIa/qbq0KtAzV/Ey9lpEGHL4i7EOrsVCQLPj3A=;
-        b=A+sxzTewrp+4wWtq/DbqZ2PmzuwXHSL5d+QkgJIf/INdv9tJM6AL+Ql5b1Amu4UtfO
-         Vjm8RM6HWVcmHCB5QnVEIAj0w4VxuvAub5BJ9OILwaPraOTZ9gRxcYhIZKJSiPL73eRv
-         DJSAzIIT2WcwcZPHWwYGjs3RlzM+iHgycuiIV3PyH7BhYiDUNtUGt/sueuB0M6BxqcrF
-         YdSkz4d+5/XN39dPE19udl8Z37W2gmiO/6sRvMf1MMfTzhsZIl1NOopZwFUsp/B4N+jC
-         T0Eq9STbIySEa67sLPNzpyx2VFqkI0gzA9Ug391DoOfM8qkpye8ayVq+T5bkKr8ALyur
-         /R8w==
+        bh=7ND7dNyhnZmormo1qsszJJ6OCUF3X4qBa9aUSKAs9Fo=;
+        b=Nlop1p62Zh/45QHOahMCSK6OJcwNbUS62VDJ3r31xRt2FnsftZi2QO4R/NsyYDZa5e
+         1zvPGzveJSdE+ybzyfS33E+L5xlInvTspjfDA8z5AUCz7MPpqtqzNuSbwQvlVlAh/s0G
+         j0MsN5Z9ygKJyEuzKfccg/FlbUMjrP06pBmizZLbO2k7/lodJQmyVTVIXApbuKOhCa1c
+         m1YWjsZE2/1gTfl9AkGS9Ml31kryTbvVgk5VJCD0wtyqwiybaQNTFmFDTwZPzMADUjGV
+         WevQQI7HdEm6uiFz1X86+RpgaAC6rKZfsYkS0GEGQjMAw/fVJX2QXxYREi/NH2mhLiYm
+         5RtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688114172; x=1690706172;
+        d=1e100.net; s=20221208; t=1688114905; x=1690706905;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vYLmeNIa/qbq0KtAzV/Ey9lpEGHL4i7EOrsVCQLPj3A=;
-        b=esn9AM7Jldqmu6xnB+Ay/hl4dtBDAoPhgkWVcKi8Irq0ELef5nHQMB5rG7SwjGOnhw
-         6sYsOc8KRVscT61Sd/LcW1Dpi1X5llaW3tQXIgRSJPT+anjNG4tCwS2bvDngQleU2dzw
-         Xm2Yg5K+IgkRVBhUEMzxYd7NDRM3sqmciloxRhY1iJPF1wHSc6aKiUf01HZdabjgE0MM
-         o3UTIjhXU6ukui/7G6x0BQdNArEv4Pz1vy9Pznodgsn3B3LXWI7IisHZCk/RbEnUWNcm
-         G3Ft2UXzYOqcegDjYb7SlPTf0yRnSbGJLJ+9Y+Ltrq+/fVVIXgV7lXSiXh/YU/G5QLDb
-         ETbQ==
-X-Gm-Message-State: AC+VfDyVFRrmiJW37wjDjtf3MMsyXCpC8qEVqb6AzgHXib6xtml52aP+
-	Guaw55SRGDqb1r+avirGojRSZQ==
-X-Google-Smtp-Source: ACHHUZ7EZObFAaKzqiAF5KKdvIUKd3ODGlToOXtpArd4HfG1IV5jWmOGUZTY+v+gqbbS0+LUc2uoKg==
-X-Received: by 2002:a7b:c445:0:b0:3f9:b7cc:731 with SMTP id l5-20020a7bc445000000b003f9b7cc0731mr1457072wmi.15.1688114172525;
-        Fri, 30 Jun 2023 01:36:12 -0700 (PDT)
+        bh=7ND7dNyhnZmormo1qsszJJ6OCUF3X4qBa9aUSKAs9Fo=;
+        b=bugnBqFCSAqBcWndXHrGHGMIoM4MXb7VE+an8xSp+MdInoKdFGS8GKv8XXl22jJx+2
+         c8FeaIqQyy6DeisdqZfi5WJwHz4LJta4g2LuVEWRZjh7NvjPlvjBcR4isOty0orVIQwm
+         kVpAQw6m8qXOnlBjy9HneTokVsD1VVC9EoqQM36tPczaEjkQe0PzfBpe/6ySyGFxfVtF
+         EIX6sVQrb/l9jgvAToDPcjS+baPDaijoLelj9UNHF9LoPj98unh6pxkGS8FzOdfTYTh5
+         ryR8z4X5Chi+hPN8Ch6/m3VUcJwAHpf1rjUHylK0O2lVJfWBScoLmYWo9DzeL/3jhxBU
+         BxxQ==
+X-Gm-Message-State: AC+VfDyOHtJc8IX9b7YOHlkUYnz3AxfAZZ2nNsOF+LCmpEOjf+iHsuKS
+	ZObnLZbQcmrZCp9xZOywyY9BIA==
+X-Google-Smtp-Source: APBJJlH6NE+RJWp/uuJQSzzT7DyyRhteXkuogpPYaAVVGrddaQHIhsAoLXUO3RwlY41Mjc0+tAWgJw==
+X-Received: by 2002:a17:906:4dcb:b0:96f:8439:6143 with SMTP id f11-20020a1709064dcb00b0096f84396143mr1384083ejw.40.1688114905435;
+        Fri, 30 Jun 2023 01:48:25 -0700 (PDT)
 Received: from [192.168.2.107] ([79.115.63.171])
-        by smtp.gmail.com with ESMTPSA id n2-20020a05600c294200b003fa78d1055esm18320515wmd.21.2023.06.30.01.36.11
+        by smtp.gmail.com with ESMTPSA id s2-20020a170906960200b0098d2261d189sm7913892ejx.19.2023.06.30.01.48.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jun 2023 01:36:12 -0700 (PDT)
-Message-ID: <cba4c06c-65ed-141a-80e4-3731c3560ae9@linaro.org>
-Date: Fri, 30 Jun 2023 09:36:10 +0100
+        Fri, 30 Jun 2023 01:48:24 -0700 (PDT)
+Message-ID: <6190c9c4-6d6e-7577-f2a4-8fbede61b405@linaro.org>
+Date: Fri, 30 Jun 2023 09:48:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH] dt-bindings: mtd: spi-nor: clarify the need for spi-nor
- compatibles
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: Avoid setting SRWD bit in SR if WP#
+ signal not connected
 Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org
-References: <20230616140054.2788684-1-miquel.raynal@bootlin.com>
+To: Michael Walle <michael@walle.cc>,
+ Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, git@amd.com, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ amitrkcian2002@gmail.com
+References: <20230625100251.31589-1-amit.kumar-mahapatra@amd.com>
+ <20230625100251.31589-3-amit.kumar-mahapatra@amd.com>
+ <5e5fe22aebe17da4f9ad2c4eaaa8985f@walle.cc>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230616140054.2788684-1-miquel.raynal@bootlin.com>
+In-Reply-To: <5e5fe22aebe17da4f9ad2c4eaaa8985f@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230630_013614_297046_D54A4ED1 
-X-CRM114-Status: GOOD (  17.97  )
+X-CRM114-CacheID: sfid-20230630_014827_999024_3497192C 
+X-CRM114-Status: GOOD (  18.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,62 +96,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Miquel,
-
-On 6/16/23 15:00, Miquel Raynal wrote:
-> Most SPI NOR devices do not require a specific compatible, their ID can
-> in general be discovered with the JEDEC READ ID opcode. In this case,
-> only the "jedec,spi-nor" generic compatible is expected. Clarify this
-> information in the compatible description to (i) help device-tree
-> writers and (ii) prevent further attempts to extend this list with
-> useless information.
-
-Sounds good. If you don't mind I'll reword the description from below
-when applying.
-
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index 7149784a36ac..bef071163e38 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -43,8 +43,10 @@ properties:
->            - const: jedec,spi-nor
->        - const: jedec,spi-nor
->      description:
-> -      Must also include "jedec,spi-nor" for any SPI NOR flash that can be
-> -      identified by the JEDEC READ ID opcode (0x9F).
-> +      SPI NOR flashes compatible with the JEDEC standard or which may be
-
-s/JEDEC/JEDEC216, s/may/can
-
-> +      identified with the JEDEC READ ID opcode (0x9F) do not deserve a
-
-"deserve" is a little harsh. How about "must be matched against
-the generic ...".
-
-For future me: 0x9f is not a JEDEC216 opcode, it just happened
-that the industry agreed on a specific opcode for reading the
-ID of the flash. JEDEC216 doesn't care about the flash's ID.
-We care because of the fixup hooks.
-
-Cheers,
-ta
-> +      specific compatible. They should instead only be matched against
-> +      the generic "jedec,spi-nor" compatible.
->  
->    reg:
->      minItems: 1
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiA2LzI3LzIzIDA3OjE0LCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+IEFtIDIwMjMtMDYtMjUg
+MTI6MDIsIHNjaHJpZWIgQW1pdCBLdW1hciBNYWhhcGF0cmE6Cj4+IFNldHRpbmcgdGhlIHN0YXR1
+cyByZWdpc3RlciB3cml0ZSBkaXNhYmxlIChTUldEKSBiaXQgaW4gdGhlIHN0YXR1cwo+PiByZWdp
+c3RlciAoU1IpIHdpdGggV1AjIHNpZ25hbCBvZiB0aGUgZmxhc2ggbGVmdCBmbG9hdGluZyBvciB3
+cm9uZ2x5IHRpZWQgdG8KPj4gR05EICh0aGF0IGluY2x1ZGVzIGludGVybmFsIHB1bGwtZG93bnMp
+LCB3aWxsIGNvbmZpZ3VyZSB0aGUgU1IgcGVybWFuZW50bHkKPj4gYXMgcmVhZC1vbmx5LiBJZiBX
+UCMgc2lnbmFsIGlzIGxlZnQgZmxvYXRpbmcgb3Igd3JvbmdseSB0aWVkIHRvIEdORCwgYXZvaWQK
+Pj4gc2V0dGluZyBTUldEIGJpdCB3aGlsZSB3cml0aW5nIHRoZSBTUiBkdXJpbmcgZmxhc2ggcHJv
+dGVjdGlvbi4KPj4KPj4gU2lnbmVkLW9mZi1ieTogQW1pdCBLdW1hciBNYWhhcGF0cmEgPGFtaXQu
+a3VtYXItbWFoYXBhdHJhQGFtZC5jb20+Cj4+IC0tLQo+PiDCoGRyaXZlcnMvbXRkL3NwaS1ub3Iv
+Y29yZS5jIHwgMyArKysKPj4gwqBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaCB8IDEgKwo+PiDC
+oGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3dwLmPCoCB8IDkgKysrKysrKy0tCj4+IMKgMyBmaWxlcyBj
+aGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUu
+Ywo+PiBpbmRleCAwYmIwYWQxNGEyZmMuLjUyMGY1YWI4NmQyYiAxMDA2NDQKPj4gLS0tIGEvZHJp
+dmVycy9tdGQvc3BpLW5vci9jb3JlLmMKPj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3Jl
+LmMKPj4gQEAgLTI4NjQsNiArMjg2NCw5IEBAIHN0YXRpYyB2b2lkIHNwaV9ub3JfaW5pdF9mbGFn
+cyhzdHJ1Y3Qgc3BpX25vciAqbm9yKQo+PiDCoMKgwqDCoCBpZiAoZmxhZ3MgJiBOT19DSElQX0VS
+QVNFKQo+PiDCoMKgwqDCoMKgwqDCoMKgIG5vci0+ZmxhZ3MgfD0gU05PUl9GX05PX09QX0NISVBf
+RVJBU0U7Cj4+Cj4+ICvCoMKgwqAgaWYgKG9mX3Byb3BlcnR5X3JlYWRfYm9vbChucCwgIm5vLXdw
+IikpCj4+ICvCoMKgwqDCoMKgwqDCoCBub3ItPmZsYWdzIHw9IFNOT1JfRl9OT19XUDsKPj4gKwo+
+IAo+IFBsZWFzZSBwdXQgaXQgYmVsb3cgdGhlIG9mX3Byb3BlcnR5X3JlYWRfYm9vbCgpIHdoaWNo
+IGlzIGFscmVhZHkKPiB0aGVyZSwganVzdCB0byBrZWVwIHRoaW5ncyBzb3J0ZWQuCj4gCj4+IMKg
+wqDCoMKgIGlmIChmbGFncyAmIFNQSV9OT1JfUldXICYmIG5vci0+aW5mby0+bl9iYW5rcyA+IDEg
+JiYKPj4gwqDCoMKgwqDCoMKgwqDCoCAhbm9yLT5jb250cm9sbGVyX29wcykKPj4gwqDCoMKgwqDC
+oMKgwqDCoCBub3ItPmZsYWdzIHw9IFNOT1JfRl9SV1c7Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L210ZC9zcGktbm9yL2NvcmUuaCBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5oCj4+IGluZGV4
+IDRmYjVmZjA5YzYzYS4uNTViNWU3YWJjZTZlIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL210ZC9z
+cGktbm9yL2NvcmUuaAo+PiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaAo+PiBAQCAt
+MTMyLDYgKzEzMiw3IEBAIGVudW0gc3BpX25vcl9vcHRpb25fZmxhZ3Mgewo+PiDCoMKgwqDCoCBT
+Tk9SX0ZfU1dQX0lTX1ZPTEFUSUxFwqDCoMKgID0gQklUKDEzKSwKPj4gwqDCoMKgwqAgU05PUl9G
+X1JXV8KgwqDCoMKgwqDCoMKgID0gQklUKDE0KSwKPj4gwqDCoMKgwqAgU05PUl9GX0VDQ8KgwqDC
+oMKgwqDCoMKgID0gQklUKDE1KSwKPj4gK8KgwqDCoCBTTk9SX0ZfTk9fV1DCoMKgwqDCoMKgwqDC
+oCA9IEJJVCgxNiksCj4gCj4gU2VlIHRoZSBjb21tZW50IHJpZ2h0IGFib3ZlIHRoaXMgZW51bSA6
+Lwo+IAo+PiDCoH07Cj4+Cj4+IMKgc3RydWN0IHNwaV9ub3JfcmVhZF9jb21tYW5kIHsKPj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3dwLmMgYi9kcml2ZXJzL210ZC9zcGktbm9y
+L3N3cC5jCj4+IGluZGV4IDBiYTcxNmU4NDM3Ny4uY2ZhYmE0MWQ3NGQ2IDEwMDY0NAo+PiAtLS0g
+YS9kcml2ZXJzL210ZC9zcGktbm9yL3N3cC5jCj4+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
+c3dwLmMKPj4gQEAgLTIxNCw4ICsyMTQsMTMgQEAgc3RhdGljIGludCBzcGlfbm9yX3NyX2xvY2so
+c3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90IG9mcywgdWludDY0X3QgbGVuKQo+Pgo+PiDCoMKg
+wqDCoCBzdGF0dXNfbmV3ID0gKHN0YXR1c19vbGQgJiB+bWFzayAmIH50Yl9tYXNrKSB8IHZhbDsK
+Pj4KPj4gLcKgwqDCoCAvKiBEaXNhbGxvdyBmdXJ0aGVyIHdyaXRlcyBpZiBXUCBwaW4gaXMgYXNz
+ZXJ0ZWQgKi8KPj4gLcKgwqDCoCBzdGF0dXNfbmV3IHw9IFNSX1NSV0Q7Cj4+ICvCoMKgwqAgLyoK
+Pj4gK8KgwqDCoMKgICogRGlzYWxsb3cgZnVydGhlciB3cml0ZXMgaWYgV1AjIHBpbiBpcyBuZWl0
+aGVyIGxlZnQgZmxvYXRpbmcgbm9yCj4+ICvCoMKgwqDCoCAqIHdyb25nbHkgdGllZCB0byBHTkQo
+dGhhdCBpbmNsdWRlcyBpbnRlcm5hbCBwdWxsLWRvd25zKS4KPiAKPiBuaXQ6IHNwYWNlIG1pc3Np
+bmcKPiAKPiBPdGhlcndpc2UgbG9va3MgZ29vZC4KPiAKClRoYW5rcywgTWljaGFlbC4KCkFtaXQs
+IHdvdWxkIGJlIGdvb2QgaWYgeW91IGNhbiBhZGRyZXNzIE1pY2hhZWwncyBjb21tZW50cyBhbmQK
+cmVzdWJtaXQuIElmIG5vdCwgSSdsbCBhbWVuZCB0aGUgcGF0Y2ggYnkgbXlzZWxmIHdoZW4gYXBw
+bHlpbmcuCgpDaGVlcnMsCnRhCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
