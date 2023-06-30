@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03B94EB64DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 16:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13B0DEB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 16:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XRNNVcb5EuEOKclAioP/innWm+Aw+vq2XrcYFTYb+3U=; b=wBtzD8jycWxdKk
-	hhrHFwtOBpKfYT0ma8Y0g1DdUJklfapjcW1PnCrgp/aKb49TivBpy5ex7APvAI8HNFHmi+jOlZxEL
-	5Sst4hQRDrr+2AKT9wD2Ll5QNiKB2gBcSAnOcQGh8s0ck8AKSXXCyQyfjBEAutvK8wmCQXks1Brd4
-	8G36EX1A23wLchoTILnue/ce7Zt0bLasfROpTJC7dQiDe3CbKgwaYCFv3R2jVXPQZ7sw6a9Xllo7p
-	7f9WGuNgvsDlemHU65B75w9cmJTegIfu9RkPPZAQk5S1ZA/oAGBiDddehrilVGydXv0m4CJ/J3Kut
-	dsNCtjE+lOuQmQUVlHoQ==;
+	List-Owner; bh=b9JWYujkxqeRIT+FrsxS3vG+twZVDm2zqg6PkOepy8I=; b=w85HPxTEJ6bTkV
+	nVpsAh/qSBPz4gplkJj9Um4/sclDIEkqc35ziUMq6V5IZGuKWESOxwrhYLILvoN59bXAMTxxy/trV
+	Ay511wc4LSF9NTy2/WIfwuQZNLtJv17hpVNyi7K0tMrsWH0WxwZKa+beKxV7B2wHjutXJ+QymtbUn
+	DMSSzPvAareUYGPyWgukIu9FL5gvdMgVTXZmW+I3WfES/UMhjQM5fTbZe4Ge8hGlufUJ5Tyw0YRbt
+	xOP+OfHzskE+S1vp3j8mKMLsTm4TjAnjGeaxw4m4uP1Wv/IIE1EVCAg0+qW3CSHIjKMVwSXyZzdHE
+	y3JNx7Dc4/aOAUU/ITdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFHSq-00473m-2v;
-	Fri, 30 Jun 2023 16:59:20 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1qFHT1-0047Bv-0X;
+	Fri, 30 Jun 2023 16:59:31 +0000
+Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFHSN-0046f1-02
+	id 1qFHSL-0046dZ-1j
 	for linux-mtd@lists.infradead.org;
 	Fri, 30 Jun 2023 16:58:53 +0000
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc244d39dso17011355e9.3
-        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 09:58:50 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31297125334so1909628f8f.0
+        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 09:58:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1688144329; x=1690736329;
+        d=linaro.org; s=google; t=1688144328; x=1690736328;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mzdCRnaBwBQAhFPX1zVzW3RmN9xDM93pF5tFymWV6X8=;
-        b=KavE9YeYA5wyEkwsKN8Hnf0sIdOAps4fHdE44xnrjfDYsaNFZ8124fBGu1uB0AEopm
-         wz/339nO+tcqpPZuEY46HvcJcu9KSCk2AC7b+7TViuyfqsSJ8ho+JDbcGFOm3oW7dKN3
-         SECzM2vCmqFzXFXi8u0kONLRoqTjvKV3rsUiBRECzRpGsga4Q+tBZVu56PlKimo7jC8I
-         EgtSDrq1lFKkbtG8Ef5pbgaptxEoIJRDbCeUykQWBpkW01JTwqIew5LPXvv0XdGrukO5
-         bH04r9XzeIDtMaKiKiXwZ7hiuHFxkByADaKR8R801NZauvHoDjc8uEr4DyitjHQ4/uLs
-         fH8g==
+        bh=1hCA45HRWCawG6M+UrcKcJfcyL9bWow6mfzB7qY6kDQ=;
+        b=Oxst0RVHWlB9WQr9vkW9qYJ2MXzI1wXizVa9zA6UbPIT2b22eRu4Bdrty9+ypVsjAT
+         HufwRxeN+qSFgZb1HDxNa0Q4N44SsCnTD8tR1wcvjCL5/Ngt4URTFsH3uOxy4jDZgKh1
+         AO1QlnQd79FbAcqedS3WXT5iayc+X38jM92/5eljOcip92th1/JXMiW1YRJyvU/C3Kn8
+         S7NTziA8/RbNHM+mt5aIjoIIVVVuVBZKhgFuCWwh8x67qktMGaNioEzBvCUuhJZ1mJro
+         3A0Wcg8/EI4QfgI4/Yzw9TKFOP3H6GSk2H/JPgnXqUndMLV+uXMROGASqllwR7R0dTpb
+         F4sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688144329; x=1690736329;
+        d=1e100.net; s=20221208; t=1688144328; x=1690736328;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mzdCRnaBwBQAhFPX1zVzW3RmN9xDM93pF5tFymWV6X8=;
-        b=O4IMW1jR/oPeUpnW1bG5cyfY2EHHhWeGI5AK+rwz3Q2MAZeEmUnVb/peu9k9nRAfTf
-         rWS+nR70TzKzUArwAHqkcbNzXwXcVo9zYHQLzvHYnYEJFPU9lgrWASDnU2Qirb0aUDaB
-         +mwhqf9rE20L66JxiW1VQS+Vy/LQRkQaVa3L0UB9JCe82mplB5MVrPJyBAD1olM+r9fl
-         5fGtb5b5kxcoH+cjM/mRqZB8hwhwGl9/FujgbhI972ulfasskpA0/tvlzjDvPi97Z2tu
-         ygVZ6ZNXmHJhcRLIQAZVVhgjbBKdTBZGoIbfx72LddMYC0VxVhYmjRod+CKMp4tMbyAj
-         by9A==
-X-Gm-Message-State: ABy/qLbEd29mF3VSG3ivL2vJHQmD0+dAqGlP0YxpSizIYOKyUm8nStIP
-	QBbP0IOnxKNgWO0DFyP8BUqPRg==
-X-Google-Smtp-Source: APBJJlFzJ7gr49cK2EFetGNMd9/0U3UmpawqrBNoY08qj+GcUBgCTd+Ktz+AScGTGOpt8dI5w0r6GA==
-X-Received: by 2002:adf:f389:0:b0:314:1e3e:611d with SMTP id m9-20020adff389000000b003141e3e611dmr3218380wro.71.1688144329626;
-        Fri, 30 Jun 2023 09:58:49 -0700 (PDT)
+        bh=1hCA45HRWCawG6M+UrcKcJfcyL9bWow6mfzB7qY6kDQ=;
+        b=NJI7BCKPu5Wwv1CFauj7KxcOCCh1xDWNgolAA17M4/dX09TNG+71Hv5GJW/n7+/nej
+         Ms/0IHQRCMGGhc7tTlq5Uo2mglbRCPWbGc1ew+YcltabCFJn2LsvAd4CYJd3jyH35bwh
+         CX1LZ6XNpnPaV7UUNIW2I1i2S21bAym5g8PaNhkMeNWsvnunyRqlmn38KbMUmUCdRbNn
+         DZqd7KTdxeyNrBX9rdMFe2TLwUHkKw0jyD1IGb/DB1MuC/6nOi80MtA9/DZbwKhlXH8S
+         zEs9ZxtWUGfH/DWsqeUlD62nypsK2EMwko6CeszeI3teKl/iayzqJXJyTBl97c0pF2RA
+         qPBw==
+X-Gm-Message-State: ABy/qLbJer9h443dW/m7YR7yj4T13B1rYg2vh2CfHftJdY2ejdEUyaER
+	jtjzHI97SwSLJ89jn+dLN3zVGQ==
+X-Google-Smtp-Source: APBJJlGvfNvFW0jCjGvznY6HK+i+JgrFVqcRb7025tQ2yfPikbi7tpgq/sWhuqGevYLVCCnwbLd10A==
+X-Received: by 2002:adf:f84a:0:b0:314:140a:e629 with SMTP id d10-20020adff84a000000b00314140ae629mr5874134wrq.7.1688144327901;
+        Fri, 30 Jun 2023 09:58:47 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id u14-20020adfdb8e000000b003112ab916cdsm18913772wri.73.2023.06.30.09.58.48
+        by smtp.gmail.com with ESMTPSA id u14-20020adfdb8e000000b003112ab916cdsm18913772wri.73.2023.06.30.09.58.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jun 2023 09:58:49 -0700 (PDT)
+        Fri, 30 Jun 2023 09:58:47 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Fri, 30 Jun 2023 18:58:33 +0200
-Subject: [PATCH v2 08/15] dt-bindings: net: oxnas-dwmac: remove obsolete
- bindings
+Date: Fri, 30 Jun 2023 18:58:32 +0200
+Subject: [PATCH v2 07/15] net: stmmac: dwmac-oxnas: remove obsolete dwmac
+ glue driver
 MIME-Version: 1.0
-Message-Id: <20230630-topic-oxnas-upstream-remove-v2-8-fb6ab3dea87c@linaro.org>
+Message-Id: <20230630-topic-oxnas-upstream-remove-v2-7-fb6ab3dea87c@linaro.org>
 References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
 In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
 To: Michael Turquette <mturquette@baylibre.com>, 
@@ -95,25 +95,25 @@ Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
  Neil Armstrong <neil.armstrong@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
  Daniel Golle <daniel@makrotopia.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2150;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9143;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=TLDrcb0mzwLI06ByewFdMOz8nc1IDfSB9k98JAwmgYI=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBknwm3h8ExnMBya+L7ppxVXE2kolWWvQzXeql91gvK
- 3+FRKWOJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZJ8JtwAKCRB33NvayMhJ0TcTD/
- 49DmQNUye4umPLTMTCCVgbCtNVJnEqPD1yc38kQmygaiwUUL4p3pz0vbeCvj4ah6wu6WO+XRXqO0gQ
- 3k854on6XQUHo9WrsI6NjE6HooFs84KtwrRG00j4Q1eOa0jGdK0HBjP0Py8hGuEHOQlmE3k+HF40+T
- b+T0qeWwVShG9ulHY3KNZdNF4NaQxia8Hc6gD2wxvqa9v/0OQ5zeGclkMBLecEFnQ9fJWqbyK0Smil
- f+UYvCvqSZnJ+kJjTx/C4uMU3yKJAAN2ZBioc/NYQTfd9Ao7We+j131ZZdxzbbiPZk10JdshwTWIVw
- hHEBPbng8MZ+L+DixJfbqX1+7EOZJbtrFZQZ/nhXrV11IGac36jlbj6qx66dR4pKpR7gk4vTTlnrU+
- 5FYspLKqZwbP1JP4QcJzm4UI1moYpO/7HQTM7duxBYz05ojPgMch2OsmFWan4Vijea0dkux5MWOA3W
- k+D/2E1Rq7qy6FRLDZQpRs3mJyOv0xO3NUbrSxKol//M/yMsNBGEXZrZpWAUUfIrOee3adJp+CdL82
- P5q00RhvgockGnpC1hG5wKP0yRKgORY5nFDbWDIwuGhzUDBMhVT7MUujUqLyipH2e/Z8ZUMImThizb
- JOwoQ062na9BGzhuWa3S2u3m9KYCZD8xurvT7t19cdpUO0lWiIRLKh2RgE/w==
+ bh=ejAz1IAJoZ72AsGfMantZn1z4aUBu8ItOfmfHHeZV44=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBknwm2VumAiS88SMnmjtsiebP+hoRV9So6UYEBjYMz
+ JLbm4f6JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZJ8JtgAKCRB33NvayMhJ0fFoD/
+ 4923BNV/pVrdOwyik5/XtouR/Jlvt2gqmGEwEHrrLa9vkPleS9mo6rFBzrMKzub/3s8c0Nr8QGy9QX
+ +ITgdAz3hadwdg6WD+pKQmzwLr5SKeq4Ompojznza9M1D2ah0zwnaqriC16RPkG1RVd+yHb+vvad44
+ hEomE8lC0Fp8nJasBuzOIhGWqpmkdS4b2C+xrwoXbS1GGO2wMEX/1g1EoRXC+ntNgxjcL6pRnrYaZF
+ s8s/YQvObMyhIAxq3i7JOy9pGZqwN1tvk8Vbf0R5EqttAQXu2KCd5SELFBQ8wGQl/Byf3ffNsUi6sO
+ 5+QyzsJ8RAQXIBJl+0rkLowTnsVe8drEo+VvVZYq4XasdenxbljLuxYlBD0sDgTteI8waV+7lWfORa
+ wCLKAhLDXnOIGcCQSyhfia/noLqc3yJfrFgtgAG1DAdx89/WN2JJKXpxe0+hW3WDx8PzdfRmwW0HMe
+ 2ZnzPiJnTfeZUGsuw9gaKmmaPst2kgi1p9ap02/RB4dnRnRwSFVc8T/zWwPwFF5rT1ftWWLcRCo+TP
+ ZpDESoAgNFIdfafkjaFeyNwqnzIypqe54Fm12UQO0BeDNGH+nMauN2ZDkw1V47DNwcS4hqcB3rykP2
+ B8r4+4oRQfgq78z6eBgoDKvoxAxBrKjMsBceQDGiSyuaKHNNYRYR4VgR9deA==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230630_095851_071784_0AA1FB24 
-X-CRM114-Status: GOOD (  15.25  )
+X-CRM114-CacheID: sfid-20230630_095849_580262_5CFB84BA 
+X-CRM114-Status: GOOD (  19.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,64 +131,304 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Due to lack of maintenance and stall of development for a few years now,
-and since no new features will ever be added upstream, remove the
-OX810 and OX820 dwmac glue.
+and since no new features will ever be added upstream, remove support
+for OX810 and OX820 ethernet.
 
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
 Acked-by: Daniel Golle <daniel@makrotopia.org>
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- .../devicetree/bindings/net/oxnas-dwmac.txt        | 41 ----------------------
- 1 file changed, 41 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/Kconfig       |  11 -
+ drivers/net/ethernet/stmicro/stmmac/Makefile      |   1 -
+ drivers/net/ethernet/stmicro/stmmac/dwmac-oxnas.c | 245 ----------------------
+ 3 files changed, 257 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/oxnas-dwmac.txt b/Documentation/devicetree/bindings/net/oxnas-dwmac.txt
+diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+index 5583f0b055ec..06c6871f8788 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
++++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+@@ -121,17 +121,6 @@ config DWMAC_MESON
+ 	  the stmmac device driver. This driver is used for Meson6,
+ 	  Meson8, Meson8b and GXBB SoCs.
+ 
+-config DWMAC_OXNAS
+-	tristate "Oxford Semiconductor OXNAS dwmac support"
+-	default ARCH_OXNAS
+-	depends on OF && COMMON_CLK && (ARCH_OXNAS || COMPILE_TEST)
+-	select MFD_SYSCON
+-	help
+-	  Support for Ethernet controller on Oxford Semiconductor OXNAS SoCs.
+-
+-	  This selects the Oxford Semiconductor OXNASSoC glue layer support for
+-	  the stmmac device driver. This driver is used for OX820.
+-
+ config DWMAC_QCOM_ETHQOS
+ 	tristate "Qualcomm ETHQOS support"
+ 	default ARCH_QCOM
+diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
+index 7dd3d388068b..5b57aee19267 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/Makefile
++++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
+@@ -19,7 +19,6 @@ obj-$(CONFIG_DWMAC_IPQ806X)	+= dwmac-ipq806x.o
+ obj-$(CONFIG_DWMAC_LPC18XX)	+= dwmac-lpc18xx.o
+ obj-$(CONFIG_DWMAC_MEDIATEK)	+= dwmac-mediatek.o
+ obj-$(CONFIG_DWMAC_MESON)	+= dwmac-meson.o dwmac-meson8b.o
+-obj-$(CONFIG_DWMAC_OXNAS)	+= dwmac-oxnas.o
+ obj-$(CONFIG_DWMAC_QCOM_ETHQOS)	+= dwmac-qcom-ethqos.o
+ obj-$(CONFIG_DWMAC_ROCKCHIP)	+= dwmac-rk.o
+ obj-$(CONFIG_DWMAC_SOCFPGA)	+= dwmac-altr-socfpga.o
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-oxnas.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-oxnas.c
 deleted file mode 100644
-index 27db496f1ce8..000000000000
---- a/Documentation/devicetree/bindings/net/oxnas-dwmac.txt
+index 42954020de2c..000000000000
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-oxnas.c
 +++ /dev/null
-@@ -1,41 +0,0 @@
--* Oxford Semiconductor OXNAS DWMAC Ethernet controller
+@@ -1,245 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Oxford Semiconductor OXNAS DWMAC glue layer
+- *
+- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
+- * Copyright (C) 2014 Daniel Golle <daniel@makrotopia.org>
+- * Copyright (C) 2013 Ma Haijun <mahaijuns@gmail.com>
+- * Copyright (C) 2012 John Crispin <blogic@openwrt.org>
+- */
 -
--The device inherits all the properties of the dwmac/stmmac devices
--described in the file stmmac.txt in the current directory with the
--following changes.
+-#include <linux/device.h>
+-#include <linux/io.h>
+-#include <linux/module.h>
+-#include <linux/of.h>
+-#include <linux/of_device.h>
+-#include <linux/platform_device.h>
+-#include <linux/regmap.h>
+-#include <linux/mfd/syscon.h>
+-#include <linux/stmmac.h>
 -
--Required properties on all platforms:
+-#include "stmmac_platform.h"
 -
--- compatible:	For the OX820 SoC, it should be :
--		- "oxsemi,ox820-dwmac" to select glue
--		- "snps,dwmac-3.512" to select IP version.
--		For the OX810SE SoC, it should be :
--		- "oxsemi,ox810se-dwmac" to select glue
--		- "snps,dwmac-3.512" to select IP version.
+-/* System Control regmap offsets */
+-#define OXNAS_DWMAC_CTRL_REGOFFSET	0x78
+-#define OXNAS_DWMAC_DELAY_REGOFFSET	0x100
 -
--- clocks: Should contain phandles to the following clocks
--- clock-names:	Should contain the following:
--		- "stmmaceth" for the host clock - see stmmac.txt
--		- "gmac" for the peripheral gate clock
+-/* Control Register */
+-#define DWMAC_CKEN_RX_IN        14
+-#define DWMAC_CKEN_RXN_OUT      13
+-#define DWMAC_CKEN_RX_OUT       12
+-#define DWMAC_CKEN_TX_IN        10
+-#define DWMAC_CKEN_TXN_OUT      9
+-#define DWMAC_CKEN_TX_OUT       8
+-#define DWMAC_RX_SOURCE         7
+-#define DWMAC_TX_SOURCE         6
+-#define DWMAC_LOW_TX_SOURCE     4
+-#define DWMAC_AUTO_TX_SOURCE    3
+-#define DWMAC_RGMII             2
+-#define DWMAC_SIMPLE_MUX        1
+-#define DWMAC_CKEN_GTX          0
 -
--- oxsemi,sys-ctrl: a phandle to the system controller syscon node
+-/* Delay register */
+-#define DWMAC_TX_VARDELAY_SHIFT		0
+-#define DWMAC_TXN_VARDELAY_SHIFT	8
+-#define DWMAC_RX_VARDELAY_SHIFT		16
+-#define DWMAC_RXN_VARDELAY_SHIFT	24
+-#define DWMAC_TX_VARDELAY(d)		((d) << DWMAC_TX_VARDELAY_SHIFT)
+-#define DWMAC_TXN_VARDELAY(d)		((d) << DWMAC_TXN_VARDELAY_SHIFT)
+-#define DWMAC_RX_VARDELAY(d)		((d) << DWMAC_RX_VARDELAY_SHIFT)
+-#define DWMAC_RXN_VARDELAY(d)		((d) << DWMAC_RXN_VARDELAY_SHIFT)
 -
--Example :
+-struct oxnas_dwmac;
 -
--etha: ethernet@40400000 {
--	compatible = "oxsemi,ox820-dwmac", "snps,dwmac-3.512";
--	reg = <0x40400000 0x2000>;
--	interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
--		     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
--	interrupt-names = "macirq", "eth_wake_irq";
--	mac-address = [000000000000]; /* Filled in by U-Boot */
--	phy-mode = "rgmii";
--
--	clocks = <&stdclk CLK_820_ETHA>, <&gmacclk>;
--	clock-names = "gmac", "stmmaceth";
--	resets = <&reset RESET_MAC>;
--
--	/* Regmap for sys registers */
--	oxsemi,sys-ctrl = <&sys>;
--
+-struct oxnas_dwmac_data {
+-	int (*setup)(struct oxnas_dwmac *dwmac);
 -};
+-
+-struct oxnas_dwmac {
+-	struct device	*dev;
+-	struct clk	*clk;
+-	struct regmap	*regmap;
+-	const struct oxnas_dwmac_data	*data;
+-};
+-
+-static int oxnas_dwmac_setup_ox810se(struct oxnas_dwmac *dwmac)
+-{
+-	unsigned int value;
+-	int ret;
+-
+-	ret = regmap_read(dwmac->regmap, OXNAS_DWMAC_CTRL_REGOFFSET, &value);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* Enable GMII_GTXCLK to follow GMII_REFCLK, required for gigabit PHY */
+-	value |= BIT(DWMAC_CKEN_GTX)		|
+-		 /* Use simple mux for 25/125 Mhz clock switching */
+-		 BIT(DWMAC_SIMPLE_MUX);
+-
+-	regmap_write(dwmac->regmap, OXNAS_DWMAC_CTRL_REGOFFSET, value);
+-
+-	return 0;
+-}
+-
+-static int oxnas_dwmac_setup_ox820(struct oxnas_dwmac *dwmac)
+-{
+-	unsigned int value;
+-	int ret;
+-
+-	ret = regmap_read(dwmac->regmap, OXNAS_DWMAC_CTRL_REGOFFSET, &value);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* Enable GMII_GTXCLK to follow GMII_REFCLK, required for gigabit PHY */
+-	value |= BIT(DWMAC_CKEN_GTX)		|
+-		 /* Use simple mux for 25/125 Mhz clock switching */
+-		BIT(DWMAC_SIMPLE_MUX)		|
+-		/* set auto switch tx clock source */
+-		BIT(DWMAC_AUTO_TX_SOURCE)	|
+-		/* enable tx & rx vardelay */
+-		BIT(DWMAC_CKEN_TX_OUT)		|
+-		BIT(DWMAC_CKEN_TXN_OUT)	|
+-		BIT(DWMAC_CKEN_TX_IN)		|
+-		BIT(DWMAC_CKEN_RX_OUT)		|
+-		BIT(DWMAC_CKEN_RXN_OUT)	|
+-		BIT(DWMAC_CKEN_RX_IN);
+-	regmap_write(dwmac->regmap, OXNAS_DWMAC_CTRL_REGOFFSET, value);
+-
+-	/* set tx & rx vardelay */
+-	value = DWMAC_TX_VARDELAY(4)	|
+-		DWMAC_TXN_VARDELAY(2)	|
+-		DWMAC_RX_VARDELAY(10)	|
+-		DWMAC_RXN_VARDELAY(8);
+-	regmap_write(dwmac->regmap, OXNAS_DWMAC_DELAY_REGOFFSET, value);
+-
+-	return 0;
+-}
+-
+-static int oxnas_dwmac_init(struct platform_device *pdev, void *priv)
+-{
+-	struct oxnas_dwmac *dwmac = priv;
+-	int ret;
+-
+-	/* Reset HW here before changing the glue configuration */
+-	ret = device_reset(dwmac->dev);
+-	if (ret)
+-		return ret;
+-
+-	ret = clk_prepare_enable(dwmac->clk);
+-	if (ret)
+-		return ret;
+-
+-	ret = dwmac->data->setup(dwmac);
+-	if (ret)
+-		clk_disable_unprepare(dwmac->clk);
+-
+-	return ret;
+-}
+-
+-static void oxnas_dwmac_exit(struct platform_device *pdev, void *priv)
+-{
+-	struct oxnas_dwmac *dwmac = priv;
+-
+-	clk_disable_unprepare(dwmac->clk);
+-}
+-
+-static int oxnas_dwmac_probe(struct platform_device *pdev)
+-{
+-	struct plat_stmmacenet_data *plat_dat;
+-	struct stmmac_resources stmmac_res;
+-	struct oxnas_dwmac *dwmac;
+-	int ret;
+-
+-	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
+-	if (ret)
+-		return ret;
+-
+-	plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
+-	if (IS_ERR(plat_dat))
+-		return PTR_ERR(plat_dat);
+-
+-	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
+-	if (!dwmac) {
+-		ret = -ENOMEM;
+-		goto err_remove_config_dt;
+-	}
+-
+-	dwmac->data = (const struct oxnas_dwmac_data *)of_device_get_match_data(&pdev->dev);
+-	if (!dwmac->data) {
+-		ret = -EINVAL;
+-		goto err_remove_config_dt;
+-	}
+-
+-	dwmac->dev = &pdev->dev;
+-	plat_dat->bsp_priv = dwmac;
+-	plat_dat->init = oxnas_dwmac_init;
+-	plat_dat->exit = oxnas_dwmac_exit;
+-
+-	dwmac->regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+-							"oxsemi,sys-ctrl");
+-	if (IS_ERR(dwmac->regmap)) {
+-		dev_err(&pdev->dev, "failed to have sysctrl regmap\n");
+-		ret = PTR_ERR(dwmac->regmap);
+-		goto err_remove_config_dt;
+-	}
+-
+-	dwmac->clk = devm_clk_get(&pdev->dev, "gmac");
+-	if (IS_ERR(dwmac->clk)) {
+-		ret = PTR_ERR(dwmac->clk);
+-		goto err_remove_config_dt;
+-	}
+-
+-	ret = oxnas_dwmac_init(pdev, plat_dat->bsp_priv);
+-	if (ret)
+-		goto err_remove_config_dt;
+-
+-	ret = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
+-	if (ret)
+-		goto err_dwmac_exit;
+-
+-
+-	return 0;
+-
+-err_dwmac_exit:
+-	oxnas_dwmac_exit(pdev, plat_dat->bsp_priv);
+-err_remove_config_dt:
+-	stmmac_remove_config_dt(pdev, plat_dat);
+-
+-	return ret;
+-}
+-
+-static const struct oxnas_dwmac_data ox810se_dwmac_data = {
+-	.setup = oxnas_dwmac_setup_ox810se,
+-};
+-
+-static const struct oxnas_dwmac_data ox820_dwmac_data = {
+-	.setup = oxnas_dwmac_setup_ox820,
+-};
+-
+-static const struct of_device_id oxnas_dwmac_match[] = {
+-	{
+-		.compatible = "oxsemi,ox810se-dwmac",
+-		.data = &ox810se_dwmac_data,
+-	},
+-	{
+-		.compatible = "oxsemi,ox820-dwmac",
+-		.data = &ox820_dwmac_data,
+-	},
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, oxnas_dwmac_match);
+-
+-static struct platform_driver oxnas_dwmac_driver = {
+-	.probe  = oxnas_dwmac_probe,
+-	.remove_new = stmmac_pltfr_remove,
+-	.driver = {
+-		.name           = "oxnas-dwmac",
+-		.pm		= &stmmac_pltfr_pm_ops,
+-		.of_match_table = oxnas_dwmac_match,
+-	},
+-};
+-module_platform_driver(oxnas_dwmac_driver);
+-
+-MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
+-MODULE_DESCRIPTION("Oxford Semiconductor OXNAS DWMAC glue layer");
+-MODULE_LICENSE("GPL v2");
 
 -- 
 2.34.1
