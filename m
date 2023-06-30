@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8071CEB64DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 14:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C588EB64D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 14:23:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vhzx+qllfNR9B1o33C3yDWMZzdobgXNfrHHvr/2SsqY=; b=xJTe8ffKjOMdPz
-	RadGOEixNLRMVMbbTcQ3DOGn7K4GDIlyoU/8XZoewWXyJ6Ympfy6+Gh9BHGsS1CXn5cGyI3eoQEUy
-	2TiwpNlKHw2TYe4qDfS1t3O4X3Ezg7PcEjalsfNPdfMii2Y+nCpS5O4A7BCnM/c3RrBhlE/zOrlHC
-	v890YntYJAWB+WRsk/bmELvK1t5vFvVQeVhplLKYQKf1F7Epi9Qku0wlX4F4JdOHh5EZA6LmmXS7+
-	U/U8w/pc+3Tdprp8X1UOvGvfb0QReKBeBrzoUO4555eNCZ1XkRMwrTfdv4388qAHtwxhvDUdGOpv3
-	ZpSrvJ3hjYSce3BmqMBw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=t0vZuNmBbuYIRDKmhz0S4tyd0I/VH0Cg+7RsbU84JkA=; b=JYI2REmVjjqxWg
+	MKLbDrgNc1TxmucNNS9kEhnqKlK/Srf5yXCJuIU3WsQ/CPkdkza/wHaTu/+6qNuUKLzcHikaq31vV
+	HQGIVros1Aj7t/E1ghI+nBVxWsQAc1OdtihW5fWIni3kuk17ljHjSFpUB9gHXxGYsCh9fBNVLgf3v
+	aB8C+NQPl1zTBTyXizNC4ZHtw0uP6nQKYN68BXn7ailRnn5Dd4tuK+CgVWppvwbeapFAqOknWw+aU
+	pohC8ULqUwJfnopoGGqhi6jhu8TT4JF3LjglxL5+F25YQOPplAEuJZguzH7zp/n96iDRGKOqFXF0O
+	IDAV9RWnecZR2F/wCG6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFF1W-003q9M-1g;
-	Fri, 30 Jun 2023 14:22:58 +0000
-Received: from mail-bn1nam02on2061f.outbound.protection.outlook.com ([2a01:111:f400:7eb2::61f] helo=NAM02-BN1-obe.outbound.protection.outlook.com)
+	id 1qFF1S-003q81-2m;
+	Fri, 30 Jun 2023 14:22:54 +0000
+Received: from mail-bn1nam02on2060f.outbound.protection.outlook.com ([2a01:111:f400:7eb2::60f] helo=NAM02-BN1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFF1T-003q80-0z
+	id 1qFF1P-003q7d-0J
 	for linux-mtd@lists.infradead.org;
-	Fri, 30 Jun 2023 14:22:56 +0000
+	Fri, 30 Jun 2023 14:22:52 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nWN+FLnEPOj5WPChJuG0FFfBy4nt8XO4aNwZE7QBvEEKs0qPD/YRWsKs3bzSAT6NMzb/dcYWhWB13/9johzNIrE4jnLFb/+Axudd5DFiah7DHER0VVtFumT0/2D4Ib5FrannpbM1AHezjoIUIg29/kuC3is+Gqc95DCt3U/BBsrzTZXXwOxttG3WUzYK2sw0wM3NqyLJZTOzw66+xjlm390mLumQvH7zw4uiMpv9NxX2xUTVpOFnRcH7XjhgQvxlhC3foE6WM6+3NkqROHtWJrwgIolCj0tqGyjHra9XzxzVij84j72ULqUYdHQByU8VpV1s15VC+AYN/FDQksq+EA==
+ b=Bl4Rtm4Wd+QpN3NRxLI0UH7hIX8/VYeJVZIFCgrBQXEmiZxW8mrNKl3d7fNjzqJw8ZTot7Zhw1Xe/10OFUOs8S3uxh/0gKokKkURKkW3Hjhmy5eAxgeoXhbUC/lEG/Bsx0agAyjVwQ8f3kOatYZiic9cwCsSgLq90ajyCbD2OOCqE0DunSZwVBUXm5MxE76p8aZQ4di+u+Z+uEDZdDQNitwiUcD2Y0U0QZF44T9mm4ynIhraE8fvU8aIJhlJYc3I942iuo/jxGhNWTxuyy5ZN+YxO6Lc0yUK+m/ir4xf3mtz/Bx3zZwi0dfZKOWWuwTvteCKNpMEF/c0PY/BiPS/bA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RrJFtw4rh88Ab9JN5EtsjrEHKZR3L7R8/u+JfWzqBkw=;
- b=IqQA7v2JLGgHr3YtIaCmRWmbaRaWk+gUb1Ikfg48qrV4m3NP6ZixBoxLhUvzcwjSMI1e+V6J9hndxHyWNQ4lXVKSsDRil/clMSZS16osz8WpgF13KbHt0O0S7rvX2By7JAwzWJY55P5IIrogiYYThdos22immqVGD3t9pS2OPWeIJLZDF6Srd2utcVJyrZ9HMtq9KFEzi7NbzgKZzvrgb9IvsOx3mRSR+tBkrhxLec0QLqRP0u7ug0Mf9HpqM19/1bzScFLxoxCx8Hby64zwsjWcoGo+/mZIGe/RdofdwUxmDb0X22DpU5jyX7nkwfYUhOxVtkajIOyv6kQ5sVC11w==
+ bh=6b6/3GpG30PlTZVAlrUxPDc8takTyZhXdUVzlbrrR7A=;
+ b=B6UfsELHm5TwRUfjyeVrqcEhSuE9KGTi9mWmGz4stfX+PEhEC8en2ugruiHEqx+F3nMGX7cnLzEdeUYMZfblNCRBzmWxMi2igIEchdMcN+V1yxwHqkcaWmUEWsJL9kBHboo3RSaLxaMEgl/Ai9OA42sGjzo0i5JhEJwrYMPh/xHZtDYgL+RrO2UCay8HehkzA8Z8seW/rGTmMLBlCNaEz1A1bAVMsw7ACUqrI6488fHaT7WXTNIGPXEbBEimDnKR4c719qg7izWOmUn4Rjje4mQl8BR5r3J4YfeO4HQfEKymTBv8gxy2Vpurfbby80hmkyX1UfQ9iCrrFrH0MyRBeg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RrJFtw4rh88Ab9JN5EtsjrEHKZR3L7R8/u+JfWzqBkw=;
- b=k0VEBGa7jU3L2HzvbaOu7mcd8r2Vha/43lbx5BnnwPhgdxrQoW3in2fk8NgSxeRs1D9awWI1NzUe3A5V6+vI4ZpSC//4meM/yOdol88tv2Gfr9U6vuLHimSCjHljho0t8sMJNY3UV4t7B+xvYRf1DQ77KnbKqgJiBKnCQPbh2xs=
-Received: from DM6PR06CA0033.namprd06.prod.outlook.com (2603:10b6:5:120::46)
- by BL1PR12MB5969.namprd12.prod.outlook.com (2603:10b6:208:398::7) with
+ bh=6b6/3GpG30PlTZVAlrUxPDc8takTyZhXdUVzlbrrR7A=;
+ b=FIFaWct98lQAy5RBBMAHNzg9PVkapiclgw9e8PhwBoJhOB0KAy35SZjyM0lwiv+5WWD0ApigfnoXWs1c33Qkhlc5eRqWRkPZePP8OWLx1UCBiezpgRQMpgJI0sLu8lducmzBJg6OnXGyFs9tCRp5PmZ4M9XxgWiqTh4uV/7i2fA=
+Received: from DM6PR07CA0083.namprd07.prod.outlook.com (2603:10b6:5:337::16)
+ by SJ0PR12MB7457.namprd12.prod.outlook.com (2603:10b6:a03:48d::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.19; Fri, 30 Jun
- 2023 14:22:46 +0000
-Received: from DM6NAM11FT089.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:120:cafe::94) by DM6PR06CA0033.outlook.office365.com
- (2603:10b6:5:120::46) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 14:22:41 +0000
+Received: from DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:337:cafe::64) by DM6PR07CA0083.outlook.office365.com
+ (2603:10b6:5:337::16) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.22 via Frontend
- Transport; Fri, 30 Jun 2023 14:22:46 +0000
+ Transport; Fri, 30 Jun 2023 14:22:41 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT089.mail.protection.outlook.com (10.13.173.82) with Microsoft SMTP
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ DM6NAM11FT053.mail.protection.outlook.com (10.13.173.74) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6521.43 via Frontend Transport; Fri, 30 Jun 2023 14:22:46 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.6521.43 via Frontend Transport; Fri, 30 Jun 2023 14:22:41 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 30 Jun
- 2023 09:22:45 -0500
+ 2023 09:22:40 -0500
 Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
  (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 30 Jun
- 2023 09:22:44 -0500
+ 2023 09:22:40 -0500
 Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
  SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.23
- via Frontend Transport; Fri, 30 Jun 2023 09:22:40 -0500
+ via Frontend Transport; Fri, 30 Jun 2023 09:22:36 -0500
 From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 To: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
 	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
@@ -82,35 +82,33 @@ CC: <git@amd.com>, <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<amitrkcian2002@gmail.com>, Amit Kumar Mahapatra
 	<amit.kumar-mahapatra@amd.com>
-Subject: [PATCH v4 1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property to avoid setting SRWD bit in status register
-Date: Fri, 30 Jun 2023 19:52:32 +0530
-Message-ID: <20230630142233.63585-2-amit.kumar-mahapatra@amd.com>
+Subject: [PATCH v4 0/2] mtd: spi-nor: Avoid setting SRWD bit in SR
+Date: Fri, 30 Jun 2023 19:52:31 +0530
+Message-ID: <20230630142233.63585-1-amit.kumar-mahapatra@amd.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230630142233.63585-1-amit.kumar-mahapatra@amd.com>
-References: <20230630142233.63585-1-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT089:EE_|BL1PR12MB5969:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1b957189-6f40-4c9b-c363-08db797579b3
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT053:EE_|SJ0PR12MB7457:EE_
+X-MS-Office365-Filtering-Correlation-Id: 56dba14e-eb7d-4ec6-240b-08db797576f3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: blesDxf0birZDaj6mKuX++Tny7/Qs6DGjoXmTZfFEbCQ+O1diHsbyyY757sFAJXX2OEkSJKlnhXyGw6hUJAq3setclvIs337FWtUKtxLWhuyywsALSBt1OhXoxSIMr6OD6gv6juNtsnkzJQptlcAtXgKPHCiwio3GhjVFc0kPBGNrLDh3mXgATKWnizJAiORRr5S3HXWNqgMKLKaYeN8lgBFGLiQlIv2d05D+faA+4g725d9yr9IEG8XOZIY1lThuCerdxEtLGgT7pIjqcrpbO64tUNl5DE8Xy6DIp6aCe25P+G1t6rQmodHj+Zz6ZUpqZ9Yu+ylEy2jnmO+WsnOBSzekZpoUd+6ZBW7DFYzEysi0dahzOhBvKmwJxToGN7Qsk0X2vmlIZDieperaWQMLllP1U/vnAmiObEabdCdayJno3qKMpUWJK/eIS86ofEyFKGFmVeX1ftC+8QX4cGu5rGkbfUILvxPYHVTK+VRpZXcXF/8B9kZ2wAkhr2BJp00HXXhmxUH5CmOH7oOcq2zJ8CsX52y7ODEnvCJM2oEXv3GDyyNFVvADW9TEROABfYNf/XZRvzeinj+UZ7eum/yYy8qYnO8kUWSc2sCj0vXDNmYS3Xw3IgfU4YHvOyTnBlm49TGIBEaQnzcrDkTeHr6C5ZMujZK3Ar4NyFek7Elpj0m0ZbvKKsBmuSb/4PCR11GxQk1kGKQ5hdAdHEaTTukl5WyPIDE/mbURWuRj8/87cRtU/sJoi1h9D924tmSeFm4U2DoAi4dU/NSOG87DFatIA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(39860400002)(451199021)(40470700004)(46966006)(36840700001)(86362001)(54906003)(8936002)(8676002)(5660300002)(82310400005)(110136005)(7416002)(26005)(1076003)(478600001)(4326008)(70206006)(70586007)(41300700001)(316002)(6666004)(186003)(2616005)(2906002)(47076005)(40460700003)(336012)(426003)(36860700001)(40480700001)(36756003)(82740400003)(356005)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: U6R3pDvtpJBRpQ8gAzaQsXLU+1Qv6/mwdQMi9WlXUeck1+KSV7UnbYxnDrEg4ZgH5F1Yl8mywdwyhyhFrVIoViJ6/qkwUBU5oJrrynDDYNbgnRIwP9cswtL/IFDqWU+U2puTGE7md9Hia1Es20Zrj7keQsBePTvPmWJE6tboKGHxpDyO7EBd/tswglXgLRzixua3dXzn3acxcMdaJNDcA2uD8t8+x84S1GFXt0QMu4gmfsEaZvoacbSa09OIVxh5TRUb5srygMe7z6RSWbArz0VGFkjiU/sCSkZ94SympKzcX/i4k2O890ulCth10BbGSMOcUBRlClrbWMmn5uB3sQDcfxqwHZdbIE52eEy+2NgGvQMfQbqLoJOlB6euMhB+AFKdXDA1Z8dOG5SOzNd0QUvgTkjQGSGzcjURF4Cikyh0sq/nfWFq6z/6Go5U/6QQBBvtyeEO5GSjPRUf/x8E2upQMpEVradLyqfChEaYCMOAOmeEO82aWOYyoPnVnaFdH7mlw8gFA2SWuJQ/vmDx9jY1kKKKAJVBT+67oQc0PRlLKnPC9LbnegHZ8qJQq2i1oHOEKxUolbyiSqIpJwPQ15TQE6eUL+UKxh6QFgMPGSdbhG8sebxqE4I3OSl25+f0NIt0b6Hp39wa3pgXa5yuCg/H67RQmd3/Gq70cznLM3CrpvDSHJza3dBEh2u/PFWOPyGhd8E3mo6mcLiVi/ZSxmRIXSwqf6uLH1nnZA+JpQvTk3fJ4LFVYxDDFXJraPgGBAUV9mWw0+6Dok0wknIVOQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(346002)(376002)(396003)(451199021)(46966006)(36840700001)(40470700004)(336012)(426003)(47076005)(40460700003)(83380400001)(2616005)(2906002)(81166007)(356005)(82740400003)(36860700001)(40480700001)(36756003)(8936002)(8676002)(82310400005)(110136005)(5660300002)(86362001)(54906003)(41300700001)(4326008)(70206006)(70586007)(6666004)(316002)(478600001)(186003)(1076003)(7416002)(26005)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2023 14:22:46.2234
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2023 14:22:41.6056
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b957189-6f40-4c9b-c363-08db797579b3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56dba14e-eb7d-4ec6-240b-08db797576f3
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT089.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5969
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7457
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230630_072255_349678_0E5D5A7D 
-X-CRM114-Status: GOOD (  14.39  )
+X-CRM114-CacheID: sfid-20230630_072251_257727_C095A132 
+X-CRM114-Status: GOOD (  10.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,47 +125,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If the WP# signal of the flash device is either not connected or is wrongly
-tied to GND (that includes internal pull-downs), and the software sets the
-status register write disable (SRWD) bit in the status register then the
-status register permanently becomes read-only. To avoid this added a new
-boolean DT property "no-wp". If this property is set in the DT then the
-software avoids setting the SRWD during status register write operation.
-
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Michael Walle <michael@walle.cc>
+Setting the status register write disable (SRWD) bit in the status
+register (SR) with WP# signal of the flash not connected or wrongly tied to
+GND (that includes internal pull-downs), will configure the SR permanently 
+as read-only. To avoid this a boolean type DT property "no-wp" is 
+introduced. If this property is defined, the spi-nor doesn't set the SRWD 
+bit in SR while performing flash protection operation.
 ---
- .../devicetree/bindings/mtd/jedec,spi-nor.yaml    | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+BRANCH: for-next
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-index 89959e5c47ba..97344969b02d 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -70,6 +70,21 @@ properties:
-       be used on such systems, to denote the absence of a reliable reset
-       mechanism.
- 
-+  no-wp:
-+    type: boolean
-+    description:
-+      The status register write disable (SRWD) bit in status register, combined
-+      with the WP# signal, provides hardware data protection for the device. When
-+      the SRWD bit is set to 1, and the WP# signal is either driven LOW or hard
-+      strapped to LOW, the status register nonvolatile bits become read-only and
-+      the WRITE STATUS REGISTER operation will not execute. The only way to exit
-+      this hardware-protected mode is to drive WP# HIGH. If the WP# signal of the
-+      flash device is not connected or is wrongly tied to GND (that includes internal
-+      pull-downs) then status register permanently becomes read-only as the SRWD bit
-+      cannot be reset. This boolean flag can be used on such systems to avoid setting
-+      the SRWD bit while writing the status register. WP# signal hard strapped to GND
-+      can be a valid use case.
-+
-   reset-gpios:
-     description:
-       A GPIO line connected to the RESET (active low) signal of the device.
+Changes in v4:
+- Added SNOR_F_NO_WP flag info in debugfs.c file.
+- Updated comments in swp.c file. 
+- Added Reviewed-by tags in 1/2.
+
+Changes in v3:
+- Updated DT property name to "no-wp".
+- Removed Reviewed-by tag from 1/2 as the DT property name has changed.
+- Updated spi-nor flag name to SNOR_F_NO_WP.
+- Updated DT property description.
+- Updated patch description.
+- Updated comments in swp.c file.
+- Replaced WP with WP# in patch descriptions, comments & DT property 
+  description.
+
+Changes in v2:
+- Modified DT property description to add information about a
+  valid use case.
+- Added Reviewed-by tag in 1/2.
+- Updated comment description in 2/2.
+---
+Amit Kumar Mahapatra (2):
+  dt-bindings: mtd: jedec, spi-nor: Add DT property to avoid setting
+    SRWD bit in status register
+  mtd: spi-nor: Avoid setting SRWD bit in SR if WP# signal not connected
+
+ .../devicetree/bindings/mtd/jedec,spi-nor.yaml    | 15 +++++++++++++++
+ drivers/mtd/spi-nor/core.c                        |  3 +++
+ drivers/mtd/spi-nor/core.h                        |  1 +
+ drivers/mtd/spi-nor/debugfs.c                     |  1 +
+ drivers/mtd/spi-nor/swp.c                         |  9 +++++++--
+ 5 files changed, 27 insertions(+), 2 deletions(-)
+
 -- 
 2.17.1
 
