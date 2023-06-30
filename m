@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C137EB64D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 16:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A673BC001B0
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 16:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=il2jTR67sNM2zXZdsfqbuoT/QJAt7Zs8TQI6MPvKjAY=; b=xVF+UBQvdlAa6p
-	p0f+1I3iB4OqKvF/YDpmZb5vYalfRc/hr9VBS9SBLCzd2pe0I/2U3bfKpjYUTELDExNytyyb/7A8M
-	KVMH1JiVJVr363rgBsGPLEuaKYoniDAAiz4PD6eMseXViRGc2YVzQ8aVuhFd0fjRZAUBTdojAIABi
-	7K9dJlNSRyGinmN1YuBA6CrayxNRDNB/u1b2Cwb/5FP62iq7y6ZB7WA9yOyU+9TUooFdeaqxut0cg
-	oaELVCaN2AYWFgBSBHTHdNBUBlF24/7Pcn50poumxoCA58+hgfvVYzRbRKRwI7unJzTuu7YRRl3PY
-	tavzFvtlpKIjkiAN3Pjw==;
+	List-Owner; bh=OWowQcQgU7+Z2ekUn65m/GldHJ8FT4XZmQLWo1wtass=; b=2C6BdPF016HGeH
+	i7/jvC5JMV4OQO0BGZoAOEFWdrcxLySTR7Qh8QLweq7XvG1rFcXfAUkk3EpPbVPe24ziV56jYMZ+u
+	sma0qE8NcpnTFoBe76aYZFEee7cQdivSeL8BMki/KGNYZz91+IMz1uDyzgdnykPcpZC8tjmCpybol
+	pf/EEZ4julvdenKWCIP6aBuNGuV+1ztn0yydGCg2eZlox6yr+oFht0cwpflphx/x69v0c/WTFAyy0
+	vZOPelwo9xNOfAUMTg1/Xe4OWpArb0LW4FTFn37Yi9gc9sVJ4LpX+g2GHMfDuUUKTbeQX7I+bKcBe
+	8bwbVB5TUUE4TzEZrC1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFHSW-0046o6-0H;
-	Fri, 30 Jun 2023 16:59:00 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1qFHSX-0046pp-32;
+	Fri, 30 Jun 2023 16:59:01 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFHSI-0046ZL-0u
+	id 1qFHSJ-0046bp-2w
 	for linux-mtd@lists.infradead.org;
 	Fri, 30 Jun 2023 16:58:50 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbc244d384so15560595e9.0
-        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 09:58:43 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbc0981733so19151405e9.3
+        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 09:58:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1688144322; x=1690736322;
+        d=linaro.org; s=google; t=1688144326; x=1690736326;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JVDS79vqXqLudHPBY/MpaILvHVSubmD2fEfcAB2sjFc=;
-        b=UPVU3ZPQcXq/iTFVtsqWkRJ3qlCP1Lr3DcXI43nP7MUvB1rY0+diEUK+9euMC4QSh8
-         O4AN+hJ1KIRu7Gz/umY8jjhvU8idPbRIpPZlfibHkjhjTms9fOyO6yPTgnK9ZUpOS1aC
-         t7eAtUy06jebzeWnvF+vsPC55nJa0N7ZXhnaNm+Drho98P1t46mKYj34tuelVSQuMhoM
-         q28sZ9lxhhEe7WoMnKEQuEc94LDf9kD+sCUk0L/W47eDBZXx4wmlDF4moltjF7haHuES
-         KUncKbbV0xSika3wPQuZ2OdoU9Fx/twBy2UkxDqXwvuoUyCreVCCmP42eUGqj6kYwzOP
-         iMjg==
+        bh=YODS5EdidiMqfLgv+cP+/rbRFBcpTpOT0mtC9T2xjaQ=;
+        b=dA2yCv2NZ72e+wHH9SORhU04cJvJPzsV6as6SCcKplgrM/qbmCh0lwzaHw9dUXaL6b
+         mcGptOvELZ+aB8LWxO+IVF6U3kvxAWhsltw/B1PHXOVWpWLMcChUcBLLlhX5ljIP/duB
+         cUe3X89BZMnACgmde0D+xGTgdf4AgI+VX5eRY5lyG7AsR3BbJ+YHGSqpG4UX3tGEEmc3
+         PcTRBxHt9h40rEpd4f2UJi7bOF8MIHnl/X+u31AivrVCBh9urFQ7+UaQrZY07I8rFs9s
+         DuNjry4zxdY0x6eZNraAjT3GQqP6XTAoJ6rnCOHRWPhC3rRsCMZerfuBQlGKgmOViVP7
+         zGnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688144322; x=1690736322;
+        d=1e100.net; s=20221208; t=1688144326; x=1690736326;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JVDS79vqXqLudHPBY/MpaILvHVSubmD2fEfcAB2sjFc=;
-        b=YvvZrhuZm1vJlkeR2SNSTeSozMoA1nCHqwVKesgfz7QIM7Wv1ZPZ/hF7ZTS5x1FZUH
-         nRh1r6McN120lw4ZS/CQgTUGQfbnjcz3TyKichbCj9PIQkPRTEtmr3JKRuYTry/MZVqk
-         W7GFmEzwRaZQ9ApDeSzo1KxeiTE8sb0djqRaI6L8MRedgdRdUAqn6ki5jyuaQ8F+2Dp8
-         d1txMUbl8zDRPEQXRuQ854tgNd90FU2aIwHkv9xvoXqAvNjzWhUqmkFhfyh6tLbutLqP
-         jusv9j1ZWjZG2bjO1l/zxX/YkQ1gEF0lhqRZI047VQn3UuKCesqzhNn/CZp7Wqty9GER
-         SQgw==
-X-Gm-Message-State: AC+VfDzTYq08Zd0mC07sBaxrFAxqEAtrM+fq7LHD1P3jxyLYdqLH6pbS
-	+n5W8gIulrln2u2eVnfSsfA25g==
-X-Google-Smtp-Source: ACHHUZ4kb1V3frCsFczRLlLgyifNBy0GBwdYjOu0RRm8Jn7X375HH7LEfgN4UjwZK03/hf8LXBRCLQ==
-X-Received: by 2002:a1c:4b0d:0:b0:3fb:b3aa:1c89 with SMTP id y13-20020a1c4b0d000000b003fbb3aa1c89mr2480542wma.19.1688144322719;
-        Fri, 30 Jun 2023 09:58:42 -0700 (PDT)
+        bh=YODS5EdidiMqfLgv+cP+/rbRFBcpTpOT0mtC9T2xjaQ=;
+        b=aCc+zfw95wgbJsEeqQv8Y8MTXQs71Szigbs+92u+qAr/skgA0iQjp3F5ojiGNYCGZo
+         3Yxyzd4Bd/vph7O1yuzeASmHQAvBABUdMXemhWjDDyAhCO6+eKKaPjAzrlXR9XQMZmTB
+         1HDkQyXl4/54ETu41/0Y+0b6n3yRvx5aBigIJVAEZ77OaVw2kgu6Vi9k7nIyT+TpV0J9
+         SbH1a0PKRRzwtA5XOnxTKtcXf8Rdqt4IGK1y8YwDFnf6NbzXgubqwlk0NDzDutmgISBC
+         JJuSqHXsVTkx/ssQMXHjyhBBGZDBYJNYh/uYzTBGb7K0XiYI607hD0mGdz7QOjwex+dl
+         S7nQ==
+X-Gm-Message-State: AC+VfDwdAJhYa8zQV7W+wUg5BKeoyZK3LJlccSi8VxxqRMvYB913ayH+
+	YrzVTKv5AthM4W7UC7fOqWj9uw==
+X-Google-Smtp-Source: ACHHUZ7LMrMA78ocv3Tff31XW7n3ukSVcuxlhHrPo8yNKeKKvHDiMykie0NMER5g/1Kygz1grYs10w==
+X-Received: by 2002:a05:600c:2243:b0:3fa:9d0f:f1e1 with SMTP id a3-20020a05600c224300b003fa9d0ff1e1mr2902423wmm.35.1688144326214;
+        Fri, 30 Jun 2023 09:58:46 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id u14-20020adfdb8e000000b003112ab916cdsm18913772wri.73.2023.06.30.09.58.41
+        by smtp.gmail.com with ESMTPSA id u14-20020adfdb8e000000b003112ab916cdsm18913772wri.73.2023.06.30.09.58.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jun 2023 09:58:42 -0700 (PDT)
+        Fri, 30 Jun 2023 09:58:45 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Fri, 30 Jun 2023 18:58:29 +0200
-Subject: [PATCH v2 04/15] dt-bindings: timer: oxsemi,rps-timer: remove
- obsolete bindings
+Date: Fri, 30 Jun 2023 18:58:31 +0200
+Subject: [PATCH v2 06/15] dt-bindings: mtd: oxnas-nand: remove obsolete
+ bindings
 MIME-Version: 1.0
-Message-Id: <20230630-topic-oxnas-upstream-remove-v2-4-fb6ab3dea87c@linaro.org>
+Message-Id: <20230630-topic-oxnas-upstream-remove-v2-6-fb6ab3dea87c@linaro.org>
 References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
 In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
 To: Michael Turquette <mturquette@baylibre.com>, 
@@ -96,25 +96,25 @@ Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
  Arnd Bergmann <arnd@arndb.de>, Daniel Golle <daniel@makrotopia.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1412;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1834;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=qERiig5wSYeUoOI63YnahZ6nGdl82BedWKVtaXlIxWs=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBknwm16A/yr4DilaWEdtzFgOEAGl/phXffqIwaLSmt
- sPsOlVaJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZJ8JtQAKCRB33NvayMhJ0VDKD/
- 47nyBKDAl2AY31ET35jQBTsmpGScqftSs8OcPuDPcN3VCsaWRv6UtgqcnEPJQnrzelrje0S3YGxPwF
- QcW3X6EWl3afDg0NhSDkHRIoXrVRFWxVUBXS0N3S8LKjVAWZKVkF62qgsGKTGCqhnIXvrtFwkJ1lXm
- MraxYWnOzHeiIf8ys9fhtGURRlCdkPn5qq1x/ZNCCQ5AwjWVRPg/8aqcvWGK4YVS7fTZcmsG+swmUD
- /AxQrAUMrJITN3Fsd8amhU2ujq9+quGZY2ch+5l7277ZFDC8kxuuh9szLemh9V31xMCCVd3J3IGJwH
- 4cckGQPOijSnOTxHF7HwSAWxmnbMCQJqW/S3I79dtFD1/LL5lRZkHCDplu6cDNkNtX3WMwQN7FZdA1
- lZOacGLxkVnteC9JDXnxkGKG/NUWe8OPTD7SFm6dlXikbL+qcw3E65Aq2GILG2yK2w7wYTCz88WKT6
- Ca9MJTRkvLSpUGvWTVfkDnH3r2oZMZ/c7iyrrHrWcCt96/g4XvyDU81HEg2K69hTCjV6GFQbIcdEHA
- N35J/1Fc1TMzOTitNRKzN+cyw1K1gnbIDzLODWsLwLk89HSh+6vSzrYp0mDv05ZvqR0WTFMPfWT7FT
- zwf7ysaGzArnbrJ4b2hsre8VHA6zxuXtL8gxaGy79xMpYSwfDEy55y669tWw==
+ bh=38rvOQ5JzytmoL2e8XQMRnUMzYw1/Raq4YBpYNRm4dw=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBknwm2BW8UwSX3d9Pq718ni0310vOQ0HNcYv2IvLHm
+ CF9ZdzKJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZJ8JtgAKCRB33NvayMhJ0Z6yEA
+ DQB8ET5EMV67bFiwvw6CHMW/yDZltqA2FQRkT6U0VMXkLspqXbvM5YCSVAJhE0aCOEuSp86cn+sn6B
+ fWYyhHNqZR/5Y90GsYVlPN/uNgiwV7djdZJcv8Hr7dPiSDl9hpicmk/oMOjbbFk2/KsZEk4/D8hL52
+ m4IUWBoCJlfxhDkSxtZFzKva3EJAGRdSXqKgBs6YFkjMklmRCCde69vPew6/N3svQGqbofvbgY1pcx
+ qEn3jwLXNAv/R3f8+pMwEnhekYBxCSGhJZ0QKi2x1b4NC2YUnXjuF96hUl5KnjeNbekLihkL+Zixgl
+ qNIiEuLWuFXKNCqbzpVgy3DM+VAkjyQ42Hc3PG31OYbYWTnLSrdi9m4LOcuBUEcETWUuBEIdKz8qgn
+ uIIfwD/QwhkEqppN4NSnquwiHhfE/O0qsSOVji2MLteguNXuK2nFacu8zRElULaoSvez4BkfP3E0Hx
+ 6Qk6g08mNZi9io9R1ZtfGcNJ59QnSZPgbu/iCZpDuGGufzmA0BMF7Hv9Y/aDSO51z947Gg9kG8gxD6
+ 5/7/Li9DDTGcigSq41lgglOTJqSnGHn/8GoZIqTpQyxBSiJa/VRJv0Fp6XxxEee8EmIUwV12YGJgmk
+ xB17WN5EDw0VCkcayM+CD9hpDPnRn8ZJCsjJ3wabBHR4HQ8BcT8pvuxHAm5A==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230630_095846_339016_8CFE158F 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20230630_095847_964904_B0F581B2 
+X-CRM114-Status: GOOD (  11.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,7 +133,7 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Due to lack of maintenance and stall of development for a few years now,
 and since no new features will ever be added upstream, remove the
-OX810 and OX820 timer bindings.
+for OX810 and OX820 nand bindings.
 
 Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
@@ -141,31 +141,55 @@ Acked-by: Arnd Bergmann <arnd@arndb.de>
 Acked-by: Daniel Golle <daniel@makrotopia.org>
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- .../devicetree/bindings/timer/oxsemi,rps-timer.txt      | 17 -----------------
- 1 file changed, 17 deletions(-)
+ .../devicetree/bindings/mtd/oxnas-nand.txt         | 41 ----------------------
+ 1 file changed, 41 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/timer/oxsemi,rps-timer.txt b/Documentation/devicetree/bindings/timer/oxsemi,rps-timer.txt
+diff --git a/Documentation/devicetree/bindings/mtd/oxnas-nand.txt b/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
 deleted file mode 100644
-index d191612539e8..000000000000
---- a/Documentation/devicetree/bindings/timer/oxsemi,rps-timer.txt
+index 2ba07fc8b79c..000000000000
+--- a/Documentation/devicetree/bindings/mtd/oxnas-nand.txt
 +++ /dev/null
-@@ -1,17 +0,0 @@
--Oxford Semiconductor OXNAS SoCs Family RPS Timer
--================================================
+@@ -1,41 +0,0 @@
+-* Oxford Semiconductor OXNAS NAND Controller
+-
+-Please refer to nand-controller.yaml for generic information regarding MTD NAND bindings.
 -
 -Required properties:
--- compatible: Should be "oxsemi,ox810se-rps-timer" or "oxsemi,ox820-rps-timer"
--- reg : Specifies base physical address and size of the registers.
--- interrupts : The interrupts of the two timers
--- clocks : The phandle of the timer clock source
+- - compatible: "oxsemi,ox820-nand"
+- - reg: Base address and length for NAND mapped memory.
 -
--example:
+-Optional Properties:
+- - clocks: phandle to the NAND gate clock if needed.
+- - resets: phandle to the NAND reset control if needed.
 -
--timer0: timer@200 {
--	compatible = "oxsemi,ox810se-rps-timer";
--	reg = <0x200 0x40>;
--	clocks = <&rpsclk>;
--	interrupts = <4 5>;
+-Example:
+-
+-nandc: nand-controller@41000000 {
+-	compatible = "oxsemi,ox820-nand";
+-	reg = <0x41000000 0x100000>;
+-	clocks = <&stdclk CLK_820_NAND>;
+-	resets = <&reset RESET_NAND>;
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-
+-	nand@0 {
+-		reg = <0>;
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		nand-ecc-mode = "soft";
+-		nand-ecc-algo = "hamming";
+-
+-		partition@0 {
+-			label = "boot";
+-			reg = <0x00000000 0x00e00000>;
+-			read-only;
+-		};
+-
+-		partition@e00000 {
+-			label = "ubi";
+-			reg = <0x00e00000 0x07200000>;
+-		};
+-	};
 -};
 
 -- 
