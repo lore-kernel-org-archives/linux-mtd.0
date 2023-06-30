@@ -4,83 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 334D4EB64D7
-	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 17:48:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06DB9EB64D7
+	for <linux-mtd@archiver.kernel.org>; Fri, 30 Jun 2023 18:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
+	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LYwO3/dnEHYjFX9aL1fXtae6kkOCebz45v8UOAK07oE=; b=4igvwwA+dke1sm
-	Wja5GFw8xG2OHUOxXoAwtdt8GN0Rp6NiG/+FWFspYSB9HFmqZThAJLmYlpmNGQg82Z67xO+pr8zkQ
-	HaHWvvY6yL6G+gjopARkMf67ltutg005BB+hAwGkrXRq1SYgAbOz5SI5hVvE/D8XS0LcoFuA1VZTN
-	91wMdSSZB0rvm9qrBZWbAMIDuQNnxKzCAmU9sZ9QbZg0WAqRikAgHHZ8zNb/ygwBxEU2gYODpZmwx
-	i9q40OcvowlJOHIXDSIo+SEeRUIgKaEV0UyrloTTIGne70pLohCrvegpsIya9GDBal8KFJjtMhZQ0
-	Zcl0a6fy02L+Na/iXZPA==;
+	List-Owner; bh=okE9XQ2uRsbZ3M1guNFwyGnGILLRvlu408L8JkXQfjo=; b=dt2SPApQq16qGU
+	shRS3T1vJj3lMrtzqzvOGqOfVz+RL4dxiuXKvloGbaQSsjymJp4zT162BNhasqok3ss0C/O11cV9F
+	YilRFTRayoD5hw00oCK9Z5KMKFxtl8uVcJstqz/aDESQi2QIqyzOPJfdY1my+/og5vFsbtT2izrKH
+	dSH3yZ4yx71AuMRNhfolpl2WYotq1fnPaRWGMrYaIGDQwGWvFNMXL5pHLHcCZcEfFKlQKh7lyLwPy
+	yeRwg1P25ubFsic8gGELbhsgPvH4T1Crx/woBy/WzYbFfoeMZcdNLF1yyK/j3KabKUSKHTvkPAyOs
+	8beoqast/0Bv79xElXYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFIEj-004DgI-0J;
-	Fri, 30 Jun 2023 17:48:49 +0000
-Received: from mga02.intel.com ([134.134.136.20])
+	id 1qFIQU-004FFL-2J;
+	Fri, 30 Jun 2023 18:00:58 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFIEg-004Dfn-39;
-	Fri, 30 Jun 2023 17:48:48 +0000
-X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="352275064"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="352275064"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2023 10:48:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="787792137"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="787792137"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Jun 2023 10:48:36 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andy@kernel.org>)
-	id 1qFIET-001AaS-1x;
-	Fri, 30 Jun 2023 20:48:33 +0300
-Date: Fri, 30 Jun 2023 20:48:33 +0300
-From: Andy Shevchenko <andy@kernel.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Sebastian Reichel <sre@kernel.org>, Marc Zyngier <maz@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-oxnas@groups.io,
-	Arnd Bergmann <arnd@arndb.de>, Daniel Golle <daniel@makrotopia.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: Re: [PATCH v2 00/15] ARM: oxnas support removal
-Message-ID: <ZJ8VcZq2s5XrxJge@smile.fi.intel.com>
-References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
+	id 1qFHSR-0046iv-2d
+	for linux-mtd@lists.infradead.org;
+	Fri, 30 Jun 2023 16:59:02 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3141c3a7547so1935688f8f.2
+        for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2023 09:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1688144334; x=1690736334;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RLUKsP4vp/raKLTHtwvUFRJTqG/hdN77zosI8Yw2myw=;
+        b=sVa5c1v/DkueUOCsS+MIb0EGouW76eY2gyfiQAQ4dSKuCyWJeA3bmBrQGzimmySJuV
+         ZVoIoSrizM9pksB1Dl100COoWxOSVIdEUmsw3NH5eCfLyGUKi0XFhVF5U4lNd2oNuoGI
+         E1NNYCk5HgtBo5I1sDgcdZ+iHACj6rVf1u6Hb18pHJv1QWD4WP1P8yFeUJ1xExTJugXL
+         AUMNLcvs7hbekeaX5QrGQliSFPKvjFwhdHL0bQcwuSTxv2A7xsgHuDl2sBn8YtxqtlJv
+         sySMd6ET4xfwk3ENv5SaF2DyQm0jF+J4vjCXZC9c5IxmIZQG1kr28S74KPLOlSrPp8M0
+         uFVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688144334; x=1690736334;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RLUKsP4vp/raKLTHtwvUFRJTqG/hdN77zosI8Yw2myw=;
+        b=MgLPyeqfIFAzVAbMU/CIgJEqrhdArQYsaIGYjdDrFKxM0++kBA7Pj+nEbeAFaMcckj
+         kgOoQqnFZKXyO6tj0JPualGmzAejOr5GnwFbpiAwJugTGGduEJcnABOo8274EieIR54v
+         /G+Dwj1Qcu2dNsKyILUDzxJgMIBMMBko3stJo61HGYwa+5oDpiytI+6bcPICJOk+Cf96
+         UEH6zbRBJbxWDl0Hm0O9ZQ570N7yl3hdVSSZuKOCEkhLB2cM2NV0p03ApHEGnPcvQamM
+         /pvQpsHBVHwgXNLkq7i9dC5URXzs1nWDAwgNyOXHrQR6sSkbjX2pz94luHoWYAG9lI6v
+         58cw==
+X-Gm-Message-State: ABy/qLYu4k38liqKLQ3DcF0PK8i4xjSTWRBBd+orGuaLJgKHHVBiGk+q
+	6wzc9dSErogNZcOo7JaGk2YMRg==
+X-Google-Smtp-Source: APBJJlEza6koXpLRSzsJiwPWlR4i5LXfO4P/D0KmtkFikXar2B9xsTCDhnNIiFf4wc1a8fdVyS8ysQ==
+X-Received: by 2002:a5d:4fc4:0:b0:313:ebf3:f817 with SMTP id h4-20020a5d4fc4000000b00313ebf3f817mr2423330wrw.22.1688144334391;
+        Fri, 30 Jun 2023 09:58:54 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id u14-20020adfdb8e000000b003112ab916cdsm18913772wri.73.2023.06.30.09.58.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jun 2023 09:58:53 -0700 (PDT)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Date: Fri, 30 Jun 2023 18:58:36 +0200
+Subject: [PATCH v2 11/15] dt-bindings: gpio: gpio_oxnas: remove obsolete
+ bindings
 MIME-Version: 1.0
-Content-Disposition: inline
+Message-Id: <20230630-topic-oxnas-upstream-remove-v2-11-fb6ab3dea87c@linaro.org>
+References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
 In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+To: Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Daniel Lezcano <daniel.lezcano@linaro.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+ Sebastian Reichel <sre@kernel.org>, Marc Zyngier <maz@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, 
+ netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, 
+ linux-pm@vger.kernel.org, linux-oxnas@groups.io, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Arnd Bergmann <arnd@arndb.de>, Daniel Golle <daniel@makrotopia.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2380;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=Dz983lZEvCc6SwFVyqblurV6ZIa65HUG1Xc2A0bqn7M=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBknwm4wJTRSSerqNYfifwQ1Pt541qqx0tcBG6P43WV
+ xd4i9FuJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZJ8JuAAKCRB33NvayMhJ0XPgEA
+ DCjZvFC0V3ejPt1N0/o80mIHNA0zrhPM/j3UrO6bINU5AQsXNX1xP2zjlRpgKhTOC9Kry0IhDZCdD5
+ WL0T2vk+BI+Va3NzwJv213/b8bECOoXLNNE6WIquR51sKxTq3iexFaN7SAKORBYZWNzJpqTfu/41Nt
+ DliCF/6SErEstzu8aItxlKrfbuLYcgjaDIkLnrP9zxkcxTu21ZPLY1vD57YMLHZSxik4e/3FGMbWpp
+ 2Pg+BIVRh/IH00JwzMSdBgAzumU8ANPQGXe3ATTr+xDKPk+WJpNXQXOYpUhyYjLs1QNGZ3MPP7YZde
+ iUEmJ9HxUiOQaiyDcISadusL+ObaqjGz3rTFmir3Jexj5wGgO2FKcNgDcCAJCoxMMGrw1WKLpTUgH2
+ 8HVN1jqaV/0baqMaKlTovePXtHWdHYjASjVeY/bTjirRqJT4RPeGlIvE2FsUcTduyhLiw6IxTOWLhK
+ lva9N1TCBRTx3PwzlP1zZ7ufAI1cvHH9mCe9VRBdYBzijNZwC5jid2xpGyQ7npRA8Yycw1QIhlmgvM
+ JsNmLwe8dqD3EaBFMKqL/dcMmG6IQDXcKoGIqtYV43O9odb5ReKfMRJM81olt8ArfGto80z6Vsp8a7
+ 27w7UeMv8YbkcGD1lOGEjg0PMpq1jqZEhb47IOLUWfNsGXYGW1BOJamnxHXw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230630_104847_071699_227C6235 
-X-CRM114-Status: GOOD (  23.24  )
+X-CRM114-CacheID: sfid-20230630_095855_894549_75CC4F64 
+X-CRM114-Status: GOOD (  14.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,38 +131,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 30, 2023 at 06:58:25PM +0200, Neil Armstrong wrote:
-> With [1] removing MPCore SMP support, this makes the OX820 barely usable,
-> associated with a clear lack of maintainance, development and migration to
-> dt-schema it's clear that Linux support for OX810 and OX820 should be removed.
-> 
-> In addition, the OX810 hasn't been booted for years and isn't even present
-> in an ARM config file.
-> 
-> For the OX820, lack of USB and SATA support makes the platform not usable
-> in the current Linux support and relies on off-tree drivers hacked from the
-> vendor (defunct for years) sources.
-> 
-> The last users are in the OpenWRT distribution, and today's removal means
-> support will still be in stable 6.1 LTS kernel until end of 2026.
-> 
-> If someone wants to take over the development even with lack of SMP, I'll
-> be happy to hand off maintainance.
-> 
-> It has been a fun time adding support for this architecture, but it's time
-> to get over!
-> 
-> Now arch/arm parts are removed, now it's time to remove the remaining stuff.
+Due to lack of maintenance and stall of development for a few years now,
+and since no new features will ever be added upstream, remove the
+OX810 and OX820 gpio bindings.
 
-For all non-DT patches
-Acked-by: Andy Shevchenko <andy@kernel.org>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Daniel Golle <daniel@makrotopia.org>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ .../devicetree/bindings/gpio/gpio_oxnas.txt        | 47 ----------------------
+ 1 file changed, 47 deletions(-)
 
-I always like negative statistics of a magnitude order!
+diff --git a/Documentation/devicetree/bindings/gpio/gpio_oxnas.txt b/Documentation/devicetree/bindings/gpio/gpio_oxnas.txt
+deleted file mode 100644
+index 966514744df4..000000000000
+--- a/Documentation/devicetree/bindings/gpio/gpio_oxnas.txt
++++ /dev/null
+@@ -1,47 +0,0 @@
+-* Oxford Semiconductor OXNAS SoC GPIO Controller
+-
+-Please refer to gpio.txt for generic information regarding GPIO bindings.
+-
+-Required properties:
+- - compatible: "oxsemi,ox810se-gpio" or "oxsemi,ox820-gpio"
+- - reg: Base address and length for the device.
+- - interrupts: The port interrupt shared by all pins.
+- - gpio-controller: Marks the port as GPIO controller.
+- - #gpio-cells: Two. The first cell is the pin number and
+-   the second cell is used to specify the gpio polarity as defined in
+-   defined in <dt-bindings/gpio/gpio.h>:
+-      0 = GPIO_ACTIVE_HIGH
+-      1 = GPIO_ACTIVE_LOW
+- - interrupt-controller: Marks the device node as an interrupt controller.
+- - #interrupt-cells: Two. The first cell is the GPIO number and second cell
+-   is used to specify the trigger type as defined in
+-   <dt-bindings/interrupt-controller/irq.h>:
+-      IRQ_TYPE_EDGE_RISING
+-      IRQ_TYPE_EDGE_FALLING
+-      IRQ_TYPE_EDGE_BOTH
+- - gpio-ranges: Interaction with the PINCTRL subsystem, it also specifies the
+-   gpio base and count, should be in the format of numeric-gpio-range as
+-   specified in the gpio.txt file.
+-
+-Example:
+-
+-gpio0: gpio@0 {
+-	compatible = "oxsemi,ox810se-gpio";
+-	reg = <0x000000 0x100000>;
+-	interrupts = <21>;
+-	#gpio-cells = <2>;
+-	gpio-controller;
+-	interrupt-controller;
+-	#interrupt-cells = <2>;
+-	gpio-ranges = <&pinctrl 0 0 32>;
+-};
+-
+-keys {
+-	...
+-
+-	button-esc {
+-		label = "ESC";
+-		linux,code = <1>;
+-		gpios = <&gpio0 12 0>;
+-	};
+-};
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
 
 ______________________________________________________
