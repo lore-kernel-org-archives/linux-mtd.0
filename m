@@ -4,78 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9668EB64DD
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jul 2023 03:51:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA65CEB64DD
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jul 2023 08:06:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Subject:Cc:To:From:Message-ID:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Tj1hd57TkGdR6piqSZNq9uoIFU9EZnG3Oqbk29WfhNo=; b=xv2T5SXHfWO1DL
-	tVa3cJHx/G4oo+eIfhx/sRCaeYRC98FvlAFbVlbFDONggSrc8+NvhSB4DOFonbTX1/9Tw7G4O3VCw
-	+xruXI5R9Wfgtbew0n1wyCbiq9jGQriDb0ji5VIsXCSs6Jf3uUEZHSoIV7wSjhZuuAK1L8Uj/96BP
-	P/olrrKTUfh6HEsTTAnbUSNtu7ChWas4pVvVImEPMPRV5KA55YaQ+DVWE4n3UCfujZMow385XLz3+
-	BXZKJul0xLRBEsMC1DPts8rWF8Vzng1pI8qIgFQjwcIFsIwnNWNiaiUVdEwmk25rnlBHQ3rjvLTaY
-	EhCYZPbYoqEjCYpIAluw==;
+	List-Owner; bh=/AP3Bi2qCS9lmiCisCiS0lrHberi519YJXc/W/dScag=; b=YjKvP/PQGO2BpX
+	Ntr+SLgz+Ncl5z6hGgUL9phJA7MfRABJ36ql/jI2I02n5VPvqDXuPpuLYljIqVDVrkoS4/djnZC4E
+	6w2IOs6PZWEBzB3u1VowS1OBjyskYdu8POVTODRgcRJnh394CF16tgFmejENPlCaV0f8IbXw8nGnh
+	l7TJvB6A0lYe3ndNuY7HlH03VEdUn5lbjXnZtHZCOxcmkz0K029VtdKJzrx0Y4YPMEDWY3hLfmPha
+	gKULmZKS7wBtuQ4iZp489ju2g0iIpOOJQWcyiJMokdJMhIY58K4A/HoyOsBJBZBAmiFRBn7Ms1ES6
+	OpSV4ztE3g09y3OhMmNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGAac-009Ceo-11;
-	Mon, 03 Jul 2023 03:51:02 +0000
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	id 1qGEZN-009gym-1Y;
+	Mon, 03 Jul 2023 08:06:01 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGAaZ-009CdR-1S
-	for linux-mtd@lists.infradead.org;
-	Mon, 03 Jul 2023 03:51:01 +0000
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	id 1qGEZJ-009gxw-16;
+	Mon, 03 Jul 2023 08:05:58 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 0CDBC2C04A2;
-	Mon,  3 Jul 2023 15:50:49 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1688356249;
-	bh=V/moquzw94k+RD/17vle2ubXDMwNpgVNQy7Yswy0IyY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qHO2p0ily3m712nHX8LWyPpjiQlm23Fam3ARpukZt087eBjBNucFeF3VU2roiZ/S+
-	 0q8+47P+il/rzpiG/f2DpU12GpN43stuU7PiMPYuZlN8yoBp9FK3ARVU8mRbkUHCdP
-	 7jKce2+WN2/C9pTUDarOwRO0ly58tJA17owHlxm4/IOASpPdrCYGRJD7RkgoK8dpPP
-	 Te6chOyVzujhqdlvJmjE199l1y4sp8UHj+9zsgAk7jcELpArJMOizOTVMzSOnub8eP
-	 I72ElAxREHBQGugA4YgAmCRfauO4ziZCdpJgVO0MbJlrp0GmDkVdpYobGFUxXcBF5T
-	 Kk65muAFzUS0g==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B64a245980001>; Mon, 03 Jul 2023 15:50:48 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id A208413EE4C;
-	Mon,  3 Jul 2023 15:50:48 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id A13A5280011; Mon,  3 Jul 2023 15:50:48 +1200 (NZST)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	gregory.clement@bootlin.com
-Cc: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 553FF60DDB;
+	Mon,  3 Jul 2023 08:05:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B19BAC433C8;
+	Mon,  3 Jul 2023 08:05:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688371554;
+	bh=H5Ol2bCcQqFdyg09aatCLPI6rS9AzzMNSSBC2BX7O1I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=oIOJhIeWjUIxznyHbsEeDY5V8fSvW8F5I5Zbpq9mqcP+T9XMyqXGDJ6dnFtL+EpBE
+	 np9qw2ScLgM6bAjcqjJXKWwDm0NcSYh6kAwd3tjWQzihkTEC8PCC/wlM34zRiZ76fR
+	 IH1IfE8iJIfMYy63dWPg67elzEENbAfi73ipG9gU6GCYimHHRZ5bMbi3NScPVLVY5w
+	 cE2xhZG5eHjXKDxqe0iqx9hbVE1hByEZZAycdUD0Qwj32j6GACr3Opb5Kq0i1SMaUR
+	 nFuHse6zHojgdslFv3lrJ3tW767gbbXbcE1hXPdxFSbAuQg+xkjaqn/ISyMbad0I9F
+	 zPicWmzxLkokg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1qGEZD-00A68h-Sj;
+	Mon, 03 Jul 2023 09:05:52 +0100
+Date: Mon, 03 Jul 2023 09:05:52 +0100
+Message-ID: <875y71zafz.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>,
 	linux-kernel@vger.kernel.org,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v3 1/3] dt-bindings: mtd: Add AC5 specific binding
-Date: Mon,  3 Jul 2023 15:50:42 +1200
-Message-ID: <20230703035044.2063303-2-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230703035044.2063303-1-chris.packham@alliedtelesis.co.nz>
-References: <20230703035044.2063303-1-chris.packham@alliedtelesis.co.nz>
-MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=NPqrBHyg c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=ws7JD89P4LkA:10 a=XYAwZIGsAAAA:8 a=egi5vsMYxoiYnfbZUMcA:9 a=E8ToXWR_bxluHZ7gmE-Z:22
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-oxnas@groups.io,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Daniel Golle <daniel@makrotopia.org>
+Subject: Re: [PATCH v2 13/15] irqchip: irq-versatile-fpga: remove obsolete oxnas compatible
+In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-13-fb6ab3dea87c@linaro.org>
+References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
+	<20230630-topic-oxnas-upstream-remove-v2-13-fb6ab3dea87c@linaro.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: neil.armstrong@linaro.org, mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, daniel.lezcano@linaro.org, tglx@linutronix.de, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com, joabreu@synopsys.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, mcoquelin.stm32@gmail.com, linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org, sre@kernel.org, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org, linux-oxnas@groups.io, krzysztof.kozlowski@linaro.org, arnd@arndb.de, daniel@makrotopia.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230702_205059_987387_A669C50D 
-X-CRM114-Status: UNSURE (   7.68  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230703_010557_483714_84CC2568 
+X-CRM114-Status: GOOD (  21.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,38 +120,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add binding for AC5 SoC. This SoC only supports NAND SDR timings up to
-mode 3 so a specific compatible value is needed.
+On Fri, 30 Jun 2023 17:58:38 +0100,
+Neil Armstrong <neil.armstrong@linaro.org> wrote:
+> 
+> Due to lack of maintenance and stall of development for a few years now,
+> and since no new features will ever be added upstream, remove support
+> for OX810 and OX820 IRQ controller.
+> 
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Acked-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  drivers/irqchip/irq-versatile-fpga.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-versatile-fpga.c b/drivers/irqchip/irq-versatile-fpga.c
+> index ba543ed9c154..5018a06060e6 100644
+> --- a/drivers/irqchip/irq-versatile-fpga.c
+> +++ b/drivers/irqchip/irq-versatile-fpga.c
+> @@ -242,5 +242,4 @@ static int __init fpga_irq_of_init(struct device_node *node,
+>  }
+>  IRQCHIP_DECLARE(arm_fpga, "arm,versatile-fpga-irq", fpga_irq_of_init);
+>  IRQCHIP_DECLARE(arm_fpga_sic, "arm,versatile-sic", fpga_irq_of_init);
+> -IRQCHIP_DECLARE(ox810se_rps, "oxsemi,ox810se-rps-irq", fpga_irq_of_init);
+>  #endif
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
----
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-Notes:
-    Changes in v3:
-    - Collect ack from Conor
-    Changes in v2:
-    - Keep compatibles in alphabetical order
-    - Explain AC5 limitations in commit message
+Feel free to route this via the SoC tree as part of the removal
+series.
 
- .../devicetree/bindings/mtd/marvell,nand-controller.yaml         | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
 
-diff --git a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-index a10729bb1840..1ecea848e8b9 100644
---- a/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-+++ b/Documentation/devicetree/bindings/mtd/marvell,nand-controller.yaml
-@@ -16,6 +16,7 @@ properties:
-           - const: marvell,armada-8k-nand-controller
-           - const: marvell,armada370-nand-controller
-       - enum:
-+          - marvell,ac5-nand-controller
-           - marvell,armada370-nand-controller
-           - marvell,pxa3xx-nand-controller
-       - description: legacy bindings
+	M.
+
 -- 
-2.41.0
-
+Without deviation from the norm, progress is not possible.
 
 ______________________________________________________
 Linux MTD discussion mailing list
