@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D86DEB64DC
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jul 2023 09:16:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8B3EEB64DD
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jul 2023 09:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eEp8Bov8qbifMAML6soMlwOJR4FvBxLqihVoF3gLfmc=; b=JaW9tnWBhvvULW
-	nmPaIT4IEvNNUCZ0pij2lKTb1m1WZ0KEyd8s+KgrAuYY+csnH48XRMjQykPgy/+ltcG2m8yRzB2su
-	xxggxVml7fdBwwBsmFK2PxtlTuT1iO1LQ25AntCT1d/Vwc9pMi6/vQ5ttHe74r3Kb5RkzJCTkVfmf
-	Wd3J5cTKqPPOBDl8+7I3w1n5+1BE/R9pvNxxg2fEcZAExlUuGSkE6A0tgWGBi538QfXwUAEI7DbZW
-	fIkl84zSV2USExZ6PTWQqQiVsKVWz174M6y6f/hUQUT9NlmPtDDjQZmG2CLRAWFmt0pDJxy2M6zVQ
-	iNq9mJfJUcivKpT0OmCQ==;
+	List-Owner; bh=+Sd5tivhM2zx8yLYewnYF4h7ApwWda3Cm1XA6dDs+Fg=; b=JRvto00WFfalNv
+	Jh6YCtymL2deA1r7g7cles7nZMPkvco8TadBfxyWfl/7HZe8oIP8JxfU0Rmf7/2fA8wjTHflHtFbP
+	wUyvcN+5oupyOcZ20f6sQI709uGtkXc6+MU7H5+8jfHCaSismUM9q20d4JNbgQtOoVhBL43TYUErA
+	BHBjX7RhXpz1T+MVa5CDhrHMDZIsuPoyASkmGF6xwZJHhBtIZe5/cPKOMQ7ZIt3WGPdHRR4OicrCm
+	eXULpe5tFQdtyEzqdgUhC1mdJBKHpuGj7eJaN9jkYU/EtkFrRLliDioi/IX1V4NZ3+/sZhqcTXa/2
+	jOFGJnqOcg3dlGdW+C9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGFfW-009tPV-2T;
-	Mon, 03 Jul 2023 09:16:26 +0000
-Received: from mail-oi1-x234.google.com ([2607:f8b0:4864:20::234])
+	id 1qGG8H-009zC1-1i;
+	Mon, 03 Jul 2023 09:46:09 +0000
+Received: from mail-ot1-x336.google.com ([2607:f8b0:4864:20::336])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGFfU-009tOf-0B
+	id 1qGG8B-009z6u-1x
 	for linux-mtd@lists.infradead.org;
-	Mon, 03 Jul 2023 09:16:25 +0000
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a1ebb79579so2940849b6e.3
-        for <linux-mtd@lists.infradead.org>; Mon, 03 Jul 2023 02:16:22 -0700 (PDT)
+	Mon, 03 Jul 2023 09:46:06 +0000
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6b5d7e60015so3517970a34.0
+        for <linux-mtd@lists.infradead.org>; Mon, 03 Jul 2023 02:46:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688375782; x=1690967782;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rqdI2XQQ+EUNzF0Fdic8Am/4oVxGp9ySFAmwOiVSp0Y=;
-        b=oMQSVS617snIWivrlRE23hB11GHoJjP5xwhKVxmZhIcwtwg6h47gkIcaf9luibMpZ+
-         AT2BsqEsU0wrR0bBrzAzDmXg482kvRpHKEFRyJYCYtkdDTmT8bkl1Yh7HPIdHUYDfIb4
-         bPgIgPiYzNBGS2AfgXiCNWzfRFhXb2Jyzq7vWvn/yd5xwvQkMS30EjF3eNvDanWfcHtp
-         kybgTvUqiqQ7flrIRFenHqfQT5jUfDSb2JCn2Mad3XyAO1S546+CJmaM4Zd3BC5gVRFo
-         TXwkvK974q/B9ynoM5qeRLuo3wyYIBrMxaT2spdkAGzOFgqzcIDpvDqnVyR30hUtrjhy
-         kYiQ==
+        d=linaro.org; s=google; t=1688377561; x=1690969561;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TbmK849oZWBsIIXxzmxsrG4bxrPx0q2kPEKRNXqKLLA=;
+        b=FqaaBvfUvfBo3SBcsGzEMd1dvUZtm5NWEBpoBibAj65q9of6VirCq02/CPvzUE6J8M
+         Uhy5EVVpLr6ulJBY6fH/FRFZDHqELxw5AqluLllSTfRK8Ot+Y7fgK/B7fDdHTY0tDglk
+         aNBH29aK3CDBk7a+I6h5OtQDpqa2MgUlIAOY7TV32j+2bhe0Vnzs5nJl6906QtAMyUCT
+         GdDrC9klhyzRd3p1mIM0Q6JIf+MjdXHrTDOEwXZnZsJK+RVZA5+pBy+/iMeczLIiYMZL
+         T60ZrAExpo3e7Jl1THy4p7eU2ks0Ads/ozDYxk5B/CSAw2H6+lFHSWADkRkZd8aqZ38a
+         Dq/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688375782; x=1690967782;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rqdI2XQQ+EUNzF0Fdic8Am/4oVxGp9ySFAmwOiVSp0Y=;
-        b=WY6a5sEks07Cj6f9PBrR8zKJebkRoTEha0mOfz1IiPvaSnqzsX1xPGZqQ1d0bPqyWH
-         xGLmNkz5sfAHBzbPmw1YbyWdnlzcRNBXa5y4pALNYv4WHqlXOYYY94ZXx+gl5cS6q42B
-         r4q2CaLV/czDtYnVUwvjOoJ3S+UbmFZrN1o+GVaRfAcyrKFDU0S8lS4elPc2VwxGxcdT
-         AIyxoTclf4ZtbQv0JvpFgVIqdZdXqHmCB8JAxtEin+5J0CEVJwjHmxNFjmz/VR3JyJ9S
-         FiatTFsySikekt7CXuDv2WZFu2Ixjxl8tn1tBgAhxBPivXNFSX2wL+/IduWEP/LFbslI
-         JPsQ==
-X-Gm-Message-State: AC+VfDzyZbZzGJfiOJ4RxKUxn33RSHH/3h3wdpAL+2KDYpo5WdUhZN6H
-	QXwGjHjZ8UtRLENvbGRuU+gDDwUKfzLx6gGw/XOAbeeb8VcZOw==
-X-Google-Smtp-Source: ACHHUZ7cCams3eWXcwmpK2VV2qfZ8U8yLjTet0PO5LnFuW14hFW5HYitP+QPJCoozrmsTis0OjMYnCOXGXpY1cuhsdE=
-X-Received: by 2002:aca:1215:0:b0:3a1:e974:8643 with SMTP id
- 21-20020aca1215000000b003a1e9748643mr7966186ois.49.1688375781852; Mon, 03 Jul
- 2023 02:16:21 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688377561; x=1690969561;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TbmK849oZWBsIIXxzmxsrG4bxrPx0q2kPEKRNXqKLLA=;
+        b=i93lQV4ONEUzoYY1xwB9u7PG+4dbB9tS1KhA4k/YR5dKgI1g4cnMgZEPYtO6ocIprq
+         0mq3Aa9IkkinUryFHd4p0qqu/rdPUklILbwkuAxwRQIHu/FuZKJ5Fxwr4Sou3NHyYzpK
+         RuvbMKPLPGxeTT1+ihr+eP4nZBmzu7IWpoDY2Ri7F5tAUBFr7ZCtx1I+NQ8xwbbQ8TLr
+         TRvs7QQoQn8/5UvdH50I3HVrvnc+0HlSGZ9BhwQICzUBiFqzLRPq7jCrK/9ktHMTWWfe
+         YZa7ue/xIHqBgASjDF4/f8Aq/7yJ7KLXQcVH0nt0JD+UB8X8Wbcwwix+h3JhozRJyTuC
+         ojNg==
+X-Gm-Message-State: AC+VfDwrr4VqpirO56B2ypZ4THVFtxVchvfdynaHNeg1nQPFXVGVNXO5
+	5t0w3+Y2QWAPjLJsLBuf8P1wDXZYNIQx4aHuDUDUOw==
+X-Google-Smtp-Source: ACHHUZ7zcZZyp7iHEMoo1jOtwoGBPvK4/0F8HZmYDuVnyhpaegVixWOILIghS+RgeHmrQTN8C2D6HtJ1A50/NzsYIh8=
+X-Received: by 2002:a9d:6b19:0:b0:6b5:ee8f:73af with SMTP id
+ g25-20020a9d6b19000000b006b5ee8f73afmr10267752otp.5.1688377561413; Mon, 03
+ Jul 2023 02:46:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAP1tNvS=NVAm-vfvYWbc3k9Cx9YxMc2uZZkmXk8h1NhGX877Zg@mail.gmail.com>
- <20230526201420.231092a0@xps-13> <CAP1tNvQsmYKMHZ662f1yiLv2JmZZrnQsJr2Lf5xiafxJSkZfBQ@mail.gmail.com>
- <20230529101240.53065e04@xps-13> <CAP1tNvRTRkXMztGL=nxrd-Cv5xO58-R=A_M2r65d6cyidoVz0g@mail.gmail.com>
- <20230529134619.255d0b07@xps-13> <PH0PR08MB788936E00C0DD958BFB9B3F6DB4B9@PH0PR08MB7889.namprd08.prod.outlook.com>
- <CAP1tNvQg+3O6LOaAnAMXionvLUy2FkF7yWtjXUma-ZLL3EE7nQ@mail.gmail.com>
- <20230601093734.3c752d2f@xps-13> <PH0PR08MB7889C9577C6AD5BA2221B74DDB499@PH0PR08MB7889.namprd08.prod.outlook.com>
- <CAP1tNvTS=kW_pPM5Vn4COmCXR7L6wj+CXtKs_Tnf=UQk2i7=Bg@mail.gmail.com>
- <20230605103943.064d142e@xps-13> <PH0PR08MB7889A36C14C2229C3DA3CDB0DB4DA@PH0PR08MB7889.namprd08.prod.outlook.com>
- <PH0PR08MB7889328970694F570AD16E4FDB26A@PH0PR08MB7889.namprd08.prod.outlook.com>
-In-Reply-To: <PH0PR08MB7889328970694F570AD16E4FDB26A@PH0PR08MB7889.namprd08.prod.outlook.com>
-From: Alexander Shiyan <eagle.alexander923@gmail.com>
-Date: Mon, 3 Jul 2023 12:16:10 +0300
-Message-ID: <CAP1tNvSG-J4Yaq=o_5WX+TybM56AhAVg1Ub5yLoE73GjXj0Oig@mail.gmail.com>
-Subject: Re: [EXT] Re: Boot failed after patch "mtd: rawnand: Support for
- sequential cache reads"
-To: Bean Huo <beanhuo@micron.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, JaimeLiao <jaimeliao.tw@gmail.com>, 
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <20230702182308.7583-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230702182308.7583-1-krzysztof.kozlowski@linaro.org>
+From: Mike Leach <mike.leach@linaro.org>
+Date: Mon, 3 Jul 2023 10:45:50 +0100
+Message-ID: <CAJ9a7ViDdBeom-pBEOEySN7e78GYjPkqSXvS9Has1aA-egQdLA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: cleanup DTS example whitespaces
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Leo Yan <leo.yan@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, linux-rockchip@lists.infradead.org, 
+	linux-iio@vger.kernel.org, linux-media@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-amlogic@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	linux-phy@lists.infradead.org, linux-remoteproc@vger.kernel.org, 
+	linux-usb@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230703_021624_092353_6826605F 
-X-CRM114-Status: GOOD (  28.25  )
+X-CRM114-CacheID: sfid-20230703_024603_655633_0F6B94D4 
+X-CRM114-Status: GOOD (  15.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,58 +91,326 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8uCgpGb3Igbm93IEkganVzdCBjaGFuZ2VkIHJhd25hbmRfY2hlY2tfY29udF9yZWFkX3N1
-cHBvcnQoKSBmdW5jdGlvbiB0bwp0dXJuIG9mZiBzdXBwb3J0ZWRfb3AuY29udF9yZWFkIHZhcmlh
-YmxlLgpJIGhhdmVuJ3QgdHJpZWQgYW55dGhpbmcgbmV3LgoK0L/QvSwgMjYg0LjRjtC9LiAyMDIz
-4oCv0LMuINCyIDEyOjIyLCBCZWFuIEh1byA8YmVhbmh1b0BtaWNyb24uY29tPjoKPgo+IEhpIEFs
-ZXhhbmRlciwKPgo+IERvIHlvdSBoYXZlIGFueSB1cGRhdGUgb24gdGhpcyBpc3N1ZT8KPgo+Cj4g
-S2luZCByZWdhcmRzLAo+IEJlYW4KPgo+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiA+
-IEZyb206IEJlYW4gSHVvCj4gPiBTZW50OiBNb25kYXksIEp1bmUgNSwgMjAyMyA1OjQ2IFBNCj4g
-PiBUbzogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT47IEFsZXhhbmRl
-ciBTaGl5YW4KPiA+IDxlYWdsZS5hbGV4YW5kZXI5MjNAZ21haWwuY29tPgo+ID4gQ2M6IEphaW1l
-TGlhbyA8amFpbWVsaWFvLnR3QGdtYWlsLmNvbT47IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQu
-b3JnCj4gPiBTdWJqZWN0OiBSRTogW0VYVF0gUmU6IEJvb3QgZmFpbGVkIGFmdGVyIHBhdGNoICJt
-dGQ6IHJhd25hbmQ6IFN1cHBvcnQgZm9yIHNlcXVlbnRpYWwKPiA+IGNhY2hlIHJlYWRzIgo+ID4K
-PiA+IEhpIE1pcXVlbAo+ID4KPiA+IEkgb25seSBjYW4gc2F5LCB3ZSBoYXZlIG5vdCBleHBlcmll
-bmNlZCB0aGlzIGtpbmQgaXNzdWUgeWV0LiAgTXkgc3VnZ2VzdGlvbiBhcyB5b3VycywKPiA+IHBs
-ZWFzZSBmaXJzdGx5IExldCBBbGV4IGFkZCBkZWJ1ZyBwcmludCBpbiBtdGQsIGVzcGVjaWFsbHkg
-aW4gTkFORCBkcml2ZXIuIFRvIGNoZWNrCj4gPiB3aGF0IGV4YWN0bHkgZXJyb3IgY2F1c2VzIHRo
-aXMgU3F1YXNoRlMgY29tcGxhaW4sIGlzIGl0IElPIGVycm9yLCAgb3IgQ1JDLCAgb3IgRUNDCj4g
-PiBlcnJvciwgb3IgTkFORCBkZXZpY2Ugbm8gcmVzcG9uc2UgYW5kIHRpbWVvdXQ/Cj4gPgo+ID4g
-S2luZCByZWdhcmRzLAo+ID4gQmVhbgo+ID4KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
-LS0KPiA+ID4gRnJvbTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4K
-PiA+ID4gU2VudDogTW9uZGF5LCBKdW5lIDUsIDIwMjMgMTA6NDAgQU0KPiA+ID4gVG86IEFsZXhh
-bmRlciBTaGl5YW4gPGVhZ2xlLmFsZXhhbmRlcjkyM0BnbWFpbC5jb20+Cj4gPiA+IENjOiBCZWFu
-IEh1byA8YmVhbmh1b0BtaWNyb24uY29tPjsgSmFpbWVMaWFvIDxqYWltZWxpYW8udHdAZ21haWwu
-Y29tPjsKPiA+ID4gbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcKPiA+ID4gU3ViamVjdDog
-UmU6IFtFWFRdIFJlOiBCb290IGZhaWxlZCBhZnRlciBwYXRjaCAibXRkOiByYXduYW5kOiBTdXBw
-b3J0Cj4gPiA+IGZvciBzZXF1ZW50aWFsIGNhY2hlIHJlYWRzIgo+ID4gPgo+ID4gPiBDQVVUSU9O
-OiBFWFRFUk5BTCBFTUFJTC4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMg
-dW5sZXNzCj4gPiA+IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQgd2VyZSBleHBlY3Rpbmcg
-dGhpcyBtZXNzYWdlLgo+ID4gPgo+ID4gPgo+ID4gPiBIaSBBbGV4YW5kZXIsCj4gPiA+Cj4gPiA+
-IGVhZ2xlLmFsZXhhbmRlcjkyM0BnbWFpbC5jb20gd3JvdGUgb24gRnJpLCAyIEp1biAyMDIzIDEy
-OjUyOjA4ICswMzAwOgo+ID4gPgo+ID4gPiA+IEhlbGxvLgo+ID4gPiA+Cj4gPiA+ID4gPiBBcyB5
-b3UgbWVudGlvbmVkIG5vIEVDQyBlcnJvci4gIEFuZCBTcXVhc2hGUyBjb21wbGFpbnM6IFVuYWJs
-ZSB0bwo+ID4gPiA+ID4gcmVhZCBkYXRhCj4gPiA+IGNhY2hlLgo+ID4gPiA+ID4gV2Ugd2FudCB0
-byBzZWUgSS9PeCwgUkUjLCBXRSMgYW5kIFIvQiMsIHRvIGNoZWNrIGlmIGNvbW1hbmQgaW5wdXQK
-PiA+ID4gPiA+IGFuZCBkYXRhCj4gPiA+IG91dHB1dCBwcm9wZXJseS4KPiA+ID4gPiA+IEl0IGlz
-IGJldHRlciB0byBjYXB0dXJlIHRoZSBjb21tYW5kIDMxaCwgYW5kIGl0cyBmb2xsb3dpbmcgZGF0
-YS4KPiA+ID4gPgo+ID4gPiA+IEkgb25seSBoYXZlIGEgdHdvLWNoYW5uZWwgb3NjaWxsb3Njb3Bl
-IDopIEluIGFueSBjYXNlLCBpbiBvcmRlciB0bwo+ID4gPiA+IGNhcHR1cmUgdGhlIHJpZ2h0IG1v
-bWVudCwgSSBuZWVkIHRvIHNvbWVob3cgbG9vcCBjb21tYW5kIDB4MzEgd2hlbgo+ID4gPiA+IGFu
-IGVycm9yIG9jY3VycyBpbiBvcmRlciB0byB0YWtlIGEgcGljdHVyZS4gUmlnaHQ/Cj4gPiA+ID4K
-PiA+ID4gPiBQbGVhc2UsIHRlbGwgbWUgd2hlcmUgSSBjYW4gcGF0Y2ggdGhlIG5hbmRfYmFzZSB0
-byBnZXQgc3VjaCBhbgo+ID4gPiA+IGluZmluaXR5IGxvb3Agb24gZXJyb3I/Cj4gPiA+Cj4gPiA+
-IEFueXdoZXJlIGluIHRoZSBjb3JlIHlvdSBjb3VsZCBqdXN0IG1ha2UgeW91ciBvd24gZXhlY19v
-cCBzZXF1ZW5jZSBhbmQKPiA+ID4gY2FsbCBpdCBpbiBhIGxvb3AgSSBndWVzcz8KPiA+ID4KPiA+
-ID4gQmVhbiwgd2hhdCBhcmUgeW91IHRyeWluZyB0byBwaWN0dXJlIHByZWNpc2VseT8gSGF2ZSB5
-b3UgZXZlciBoYWQgYW55Cj4gPiA+IGlzc3VlcyB3aXRoIHRoZXNlIGNvbW1hbmRzPyBDYW4gQWxl
-eGFuZGVyIHRyeSB0byBhZGQgYSBzdXJnaWNhbCBkZWxheSBzb21ld2hlcmU/Cj4gPiA+Cj4gPiA+
-IFRoYW5rcywKPiA+ID4gTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Sun, 2 Jul 2023 at 19:23, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> The DTS code coding style expects spaces around '=' sign.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+> ---
+>
+> Rob,
+>
+> Maybe this could go via your tree? Rebased on your for-next:
+> v6.4-rc2-45-gf0ac35049606
+> ---
+>  .../bindings/arm/arm,coresight-cti.yaml        | 18 +++++++++---------
+>  .../bindings/arm/keystone/ti,sci.yaml          |  8 ++++----
+>  .../devicetree/bindings/display/msm/gmu.yaml   |  2 +-
+>  .../display/panel/samsung,s6e8aa0.yaml         |  2 +-
+>  .../display/rockchip/rockchip-vop.yaml         |  4 ++--
+>  .../bindings/iio/adc/ti,adc108s102.yaml        |  2 +-
+>  .../bindings/media/renesas,rzg2l-cru.yaml      |  4 ++--
+>  .../devicetree/bindings/media/renesas,vin.yaml |  4 ++--
+>  .../devicetree/bindings/mtd/mtd-physmap.yaml   |  2 +-
+>  .../bindings/net/mediatek-dwmac.yaml           |  2 +-
+>  .../bindings/perf/amlogic,g12-ddr-pmu.yaml     |  4 ++--
+>  .../bindings/phy/mediatek,dsi-phy.yaml         |  2 +-
+>  .../remoteproc/amlogic,meson-mx-ao-arc.yaml    |  2 +-
+>  .../devicetree/bindings/usb/mediatek,mtu3.yaml |  2 +-
+>  .../devicetree/bindings/usb/ti,am62-usb.yaml   |  2 +-
+>  15 files changed, 30 insertions(+), 30 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-cti.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-cti.yaml
+> index 0c5b875cb654..d6c84b6e7fe6 100644
+> --- a/Documentation/devicetree/bindings/arm/arm,coresight-cti.yaml
+> +++ b/Documentation/devicetree/bindings/arm/arm,coresight-cti.yaml
+> @@ -287,7 +287,7 @@ examples:
+>              arm,trig-in-sigs = <0 1>;
+>              arm,trig-in-types = <PE_DBGTRIGGER
+>                                   PE_PMUIRQ>;
+> -            arm,trig-out-sigs=<0 1 2 >;
+> +            arm,trig-out-sigs = <0 1 2 >;
+>              arm,trig-out-types = <PE_EDBGREQ
+>                                    PE_DBGRESTART
+>                                    PE_CTIIRQ>;
+> @@ -309,24 +309,24 @@ examples:
+>
+>        trig-conns@0 {
+>          reg = <0>;
+> -        arm,trig-in-sigs=<0>;
+> -        arm,trig-in-types=<GEN_INTREQ>;
+> -        arm,trig-out-sigs=<0>;
+> -        arm,trig-out-types=<GEN_HALTREQ>;
+> +        arm,trig-in-sigs = <0>;
+> +        arm,trig-in-types = <GEN_INTREQ>;
+> +        arm,trig-out-sigs = <0>;
+> +        arm,trig-out-types = <GEN_HALTREQ>;
+>          arm,trig-conn-name = "sys_profiler";
+>        };
+>
+>        trig-conns@1 {
+>          reg = <1>;
+> -        arm,trig-out-sigs=<2 3>;
+> -        arm,trig-out-types=<GEN_HALTREQ GEN_RESTARTREQ>;
+> +        arm,trig-out-sigs = <2 3>;
+> +        arm,trig-out-types = <GEN_HALTREQ GEN_RESTARTREQ>;
+>          arm,trig-conn-name = "watchdog";
+>        };
+>
+>        trig-conns@2 {
+>          reg = <2>;
+> -        arm,trig-in-sigs=<1 6>;
+> -        arm,trig-in-types=<GEN_HALTREQ GEN_RESTARTREQ>;
+> +        arm,trig-in-sigs = <1 6>;
+> +        arm,trig-in-types = <GEN_HALTREQ GEN_RESTARTREQ>;
+>          arm,trig-conn-name = "g_counter";
+>        };
+>      };
+
+for above CTI chagnes
+
+Acked-by: Mike Leach <mike.leach@linaro.org>
+
+
+> diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+> index 91b96065f7df..86b59de7707e 100644
+> --- a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+> +++ b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+> @@ -96,8 +96,8 @@ examples:
+>        compatible = "ti,k2g-sci";
+>        ti,system-reboot-controller;
+>        mbox-names = "rx", "tx";
+> -      mboxes= <&msgmgr 5 2>,
+> -              <&msgmgr 0 0>;
+> +      mboxes = <&msgmgr 5 2>,
+> +               <&msgmgr 0 0>;
+>        reg-names = "debug_messages";
+>        reg = <0x02921800 0x800>;
+>      };
+> @@ -107,8 +107,8 @@ examples:
+>        compatible = "ti,k2g-sci";
+>        ti,host-id = <12>;
+>        mbox-names = "rx", "tx";
+> -      mboxes= <&secure_proxy_main 11>,
+> -              <&secure_proxy_main 13>;
+> +      mboxes = <&secure_proxy_main 11>,
+> +               <&secure_proxy_main 13>;
+>        reg-names = "debug_messages";
+>        reg = <0x44083000 0x1000>;
+>
+> diff --git a/Documentation/devicetree/bindings/display/msm/gmu.yaml b/Documentation/devicetree/bindings/display/msm/gmu.yaml
+> index 029d72822d8b..65b02c7a1211 100644
+> --- a/Documentation/devicetree/bindings/display/msm/gmu.yaml
+> +++ b/Documentation/devicetree/bindings/display/msm/gmu.yaml
+> @@ -225,7 +225,7 @@ examples:
+>      #include <dt-bindings/interrupt-controller/arm-gic.h>
+>
+>      gmu: gmu@506a000 {
+> -        compatible="qcom,adreno-gmu-630.2", "qcom,adreno-gmu";
+> +        compatible = "qcom,adreno-gmu-630.2", "qcom,adreno-gmu";
+>
+>          reg = <0x506a000 0x30000>,
+>                <0xb280000 0x10000>,
+> diff --git a/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml b/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
+> index 1cdc91b3439f..200fbf1c74a0 100644
+> --- a/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
+> +++ b/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
+> @@ -74,7 +74,7 @@ examples:
+>              vdd3-supply = <&vcclcd_reg>;
+>              vci-supply = <&vlcd_reg>;
+>              reset-gpios = <&gpy4 5 0>;
+> -            power-on-delay= <50>;
+> +            power-on-delay = <50>;
+>              reset-delay = <100>;
+>              init-delay = <100>;
+>              panel-width-mm = <58>;
+> diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml
+> index 6f43d885c9b3..df61cb5f5c54 100644
+> --- a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml
+> +++ b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml
+> @@ -121,11 +121,11 @@ examples:
+>          #size-cells = <0>;
+>          vopb_out_edp: endpoint@0 {
+>            reg = <0>;
+> -          remote-endpoint=<&edp_in_vopb>;
+> +          remote-endpoint = <&edp_in_vopb>;
+>          };
+>          vopb_out_hdmi: endpoint@1 {
+>            reg = <1>;
+> -          remote-endpoint=<&hdmi_in_vopb>;
+> +          remote-endpoint = <&hdmi_in_vopb>;
+>          };
+>        };
+>      };
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml b/Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml
+> index 9b072b057f16..a60b1e100ee4 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml
+> @@ -35,7 +35,7 @@ unevaluatedProperties: false
+>  examples:
+>    - |
+>      spi {
+> -        #address-cells= <1>;
+> +        #address-cells = <1>;
+>          #size-cells = <0>;
+>
+>          adc@0 {
+> diff --git a/Documentation/devicetree/bindings/media/renesas,rzg2l-cru.yaml b/Documentation/devicetree/bindings/media/renesas,rzg2l-cru.yaml
+> index 7dde7967c886..1e72b8808d24 100644
+> --- a/Documentation/devicetree/bindings/media/renesas,rzg2l-cru.yaml
+> +++ b/Documentation/devicetree/bindings/media/renesas,rzg2l-cru.yaml
+> @@ -137,7 +137,7 @@ examples:
+>
+>                  cru_parallel_in: endpoint@0 {
+>                      reg = <0>;
+> -                    remote-endpoint= <&ov5642>;
+> +                    remote-endpoint = <&ov5642>;
+>                      hsync-active = <1>;
+>                      vsync-active = <1>;
+>                  };
+> @@ -150,7 +150,7 @@ examples:
+>
+>                  cru_csi_in: endpoint@0 {
+>                      reg = <0>;
+> -                    remote-endpoint= <&csi_cru_in>;
+> +                    remote-endpoint = <&csi_cru_in>;
+>                  };
+>              };
+>          };
+> diff --git a/Documentation/devicetree/bindings/media/renesas,vin.yaml b/Documentation/devicetree/bindings/media/renesas,vin.yaml
+> index 91e8f368fb52..324703bfb1bd 100644
+> --- a/Documentation/devicetree/bindings/media/renesas,vin.yaml
+> +++ b/Documentation/devicetree/bindings/media/renesas,vin.yaml
+> @@ -303,11 +303,11 @@ examples:
+>
+>                              vin0csi20: endpoint@0 {
+>                                      reg = <0>;
+> -                                    remote-endpoint= <&csi20vin0>;
+> +                                    remote-endpoint = <&csi20vin0>;
+>                              };
+>                              vin0csi40: endpoint@2 {
+>                                      reg = <2>;
+> -                                    remote-endpoint= <&csi40vin0>;
+> +                                    remote-endpoint = <&csi40vin0>;
+>                              };
+>                      };
+>              };
+> diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.yaml b/Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+> index f8c976898a95..18f6733408b4 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+> @@ -164,7 +164,7 @@ examples:
+>              reg = <0 0xf80000>;
+>          };
+>          firmware@f80000 {
+> -            label ="firmware";
+> +            label = "firmware";
+>              reg = <0xf80000 0x80000>;
+>              read-only;
+>          };
+> diff --git a/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml b/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
+> index 0fa2132fa4f4..400aedb58205 100644
+> --- a/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/mediatek-dwmac.yaml
+> @@ -156,7 +156,7 @@ examples:
+>          reg = <0x1101c000 0x1300>;
+>          interrupts = <GIC_SPI 237 IRQ_TYPE_LEVEL_LOW>;
+>          interrupt-names = "macirq";
+> -        phy-mode ="rgmii-rxid";
+> +        phy-mode = "rgmii-rxid";
+>          mac-address = [00 55 7b b5 7d f7];
+>          clock-names = "axi",
+>                        "apb",
+> diff --git a/Documentation/devicetree/bindings/perf/amlogic,g12-ddr-pmu.yaml b/Documentation/devicetree/bindings/perf/amlogic,g12-ddr-pmu.yaml
+> index 50f46a6898b1..4adab0149108 100644
+> --- a/Documentation/devicetree/bindings/perf/amlogic,g12-ddr-pmu.yaml
+> +++ b/Documentation/devicetree/bindings/perf/amlogic,g12-ddr-pmu.yaml
+> @@ -42,8 +42,8 @@ examples:
+>    - |
+>      #include <dt-bindings/interrupt-controller/arm-gic.h>
+>      pmu {
+> -        #address-cells=<2>;
+> -        #size-cells=<2>;
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+>
+>          pmu@ff638000 {
+>              compatible = "amlogic,g12a-ddr-pmu";
+> diff --git a/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml b/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
+> index 26f2b887cfc1..b8d77165c4a1 100644
+> --- a/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
+> @@ -83,7 +83,7 @@ examples:
+>          clocks = <&clk26m>;
+>          clock-output-names = "mipi_tx0_pll";
+>          drive-strength-microamp = <4000>;
+> -        nvmem-cells= <&mipi_tx_calibration>;
+> +        nvmem-cells = <&mipi_tx_calibration>;
+>          nvmem-cell-names = "calibration-data";
+>          #clock-cells = <0>;
+>          #phy-cells = <0>;
+> diff --git a/Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml b/Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+> index 3100cb870170..76e8ca44906a 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+> @@ -75,7 +75,7 @@ additionalProperties: false
+>  examples:
+>    - |
+>      remoteproc@1c {
+> -      compatible= "amlogic,meson8-ao-arc", "amlogic,meson-mx-ao-arc";
+> +      compatible = "amlogic,meson8-ao-arc", "amlogic,meson-mx-ao-arc";
+>        reg = <0x1c 0x8>, <0x38 0x8>;
+>        reg-names = "remap", "cpu";
+>        resets = <&media_cpu_reset>;
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
+> index 478214ab045e..a59d91243ac8 100644
+> --- a/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
+> @@ -304,7 +304,7 @@ examples:
+>    # Dual role switch with type-c
+>    - |
+>      usb@11201000 {
+> -        compatible ="mediatek,mt8183-mtu3", "mediatek,mtu3";
+> +        compatible = "mediatek,mt8183-mtu3", "mediatek,mtu3";
+>          reg = <0x11201000 0x2e00>, <0x11203e00 0x0100>;
+>          reg-names = "mac", "ippc";
+>          interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_LOW>;
+> diff --git a/Documentation/devicetree/bindings/usb/ti,am62-usb.yaml b/Documentation/devicetree/bindings/usb/ti,am62-usb.yaml
+> index d25fc708e32c..fec5651f5602 100644
+> --- a/Documentation/devicetree/bindings/usb/ti,am62-usb.yaml
+> +++ b/Documentation/devicetree/bindings/usb/ti,am62-usb.yaml
+> @@ -92,7 +92,7 @@ examples:
+>
+>          usb@31100000 {
+>            compatible = "snps,dwc3";
+> -          reg =<0x00 0x31100000 0x00 0x50000>;
+> +          reg = <0x00 0x31100000 0x00 0x50000>;
+>            interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
+>                         <GIC_SPI 226 IRQ_TYPE_LEVEL_HIGH>; /* irq.0 */
+>            interrupt-names = "host", "peripheral";
+> --
+> 2.34.1
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
