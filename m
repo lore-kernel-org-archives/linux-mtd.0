@@ -4,65 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 592A6EB64D9
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jul 2023 13:55:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2061EB64DA
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jul 2023 14:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FZinPiR4J9TLCNPj5/D5rmSC3ECpvObM0LQWWTAtLu0=; b=z4+doPonyskMek
-	VvpH8brlM4zGS+m2N2kTflxzixTbU10TqcVI6HS4p9HQjVLN+tCE+ZtBZfXcz8+KAIsbQQYEM0Xz0
-	IrO3dFQxmJgoPk41kYI+zY8dcVqYnusmFScK320s7e/wvX1NKI9vFrdj/cGs4oVHwnr6QK+nUM75h
-	jdSFkmHYcF/KxMju/b4nSpVJmIVUUB4EzF5xF+9J1RjHUeT+FA9AOGV8p6ckzb8MAKpUr7ey0utpp
-	2yxSQEzhyKpD0BKEgzW/OQXQqBmuOFW2CKElufPstarqLY89sMYw+HbfETbdsbme4ThkYpF5K51AS
-	RZq4XMj/TKLemHeJmHCw==;
+	List-Owner; bh=+CkNKcmTNOp6xNIjg/y+5r30kyhFH2jIZg2fuf5cI+M=; b=E47TMW0nvtXRz8
+	FJUhrTEnxFKT5+4lrfTcpK9l0YrxLMh2ZUW1vLWXi7qSjbKeuVljtHdcRMNkFxYyH1AoI7EfFA671
+	M+PEAwr6R8wZQZ1IIjMahoQ3Ub6BMUzJ/x/o+3XX6xnOiDJBK+qOzR9Coy+qgnmlMZEODPsE2h/O7
+	SxwVQ+8pwaLGVan6uP483K4HIm6I/riWw/iqVYLmk4/1GU5kbj8fkhmvIOpLomCYhBbemMvpzMl+w
+	0WZWKroOIxoVAguZxaf9bMfsyTLQgojOTOqkDJ9C/jV6dCnSB7ctOc1YB1pcwOgrEmNzm0E1YA2Gx
+	X83QGPUamYD+bRZQJ/fA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGgUx-00DRyt-2S;
-	Tue, 04 Jul 2023 13:55:19 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1qGgfr-00DTNh-1p;
+	Tue, 04 Jul 2023 14:06:35 +0000
+Received: from mail-pl1-f169.google.com ([209.85.214.169])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGgUt-00DRxI-2F
-	for linux-mtd@lists.infradead.org;
-	Tue, 04 Jul 2023 13:55:17 +0000
-X-GND-Sasl: miquel.raynal@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1688478909;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LiM73AlJxucWg3z48BYnYknSUwAWZ4Kmkn1Nr2ACD0A=;
-	b=IHfecc42WPCyTP/PnqTrZOs7N03YcFRFZJKCEFYdXufKv2oorUwKVv90kcwwrSH8eupA5j
-	J9IMYOK67moY3cu0UZZrC5WIA3eH+SzLYpTQoETAR2OKPiRGoXPiLF6OCzIDP+nhwl48GD
-	hQyHE29Sl3SyJ1JOMBNlgbgLrlYKynPFO5kzIOZBgGUPsQI24b9wkAinVfsttf2dpAfGw1
-	KkR9F+qzDqirxssUAs+KlAqhI1g1l0LM6leHN2Ht1mQ8xE8pUSIJeI2yIQuN70PFC+NHBk
-	OwnBMPh3GtF2vDNmt2+3YiQIny5Q/PLpLl//HsVQiMIxRdvaDND2Wi+cfkmWOQ==
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-GND-Sasl: miquel.raynal@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 59B4040009;
-	Tue,  4 Jul 2023 13:55:08 +0000 (UTC)
-Date: Tue, 4 Jul 2023 15:55:07 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-Cc: Felix Matouschek <felix@matouschek.org>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] Bad ecc layout in drivers/mtd/nand/spi/xtx.c
-Message-ID: <20230704155507.0643a856@xps-13>
-In-Reply-To: <20230704123743.7f4c87af@ipc1.ka-ro>
-References: <20230704123743.7f4c87af@ipc1.ka-ro>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1qGgfo-00DTLg-1L;
+	Tue, 04 Jul 2023 14:06:33 +0000
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1b7f2239bfdso44612395ad.1;
+        Tue, 04 Jul 2023 07:06:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688479590; x=1691071590;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JV2SCOEdB9t0w6tigDexjJMYhGF54ZwsLlYmJ1gE7wU=;
+        b=IVCEDDUHXHZWopFJZ953y2gRG75CZW4Qvex38u6h8/yC3EcXtZfJtluY8nABSYZrz1
+         N546IEIO0VuS+SjzGL8sWKIEJFjiqJCcjELFflyQG9SgTlxbxwN5Pr7f6uU87lBwY63n
+         /m/32nnPFFgtIJjXxd0V8Pkx6fQgZpxfNJQx107VO1wixUNAXfeBja8D1EOFrJyxpxye
+         XdI2I49u3lWaN/5Xd91lMBITOJ/SsbGxD0Zjt27kMmVtUdWn+esjquKJHOyO7kDiFSfg
+         FwoRzF6ZgXG7MgV7Ygr73nvDu1tYCHzsieafsaEYll3AZar7MaJxrsliUaVVuVM2sVgp
+         YJ+A==
+X-Gm-Message-State: ABy/qLZImSluOhE33/8pl3/nVB4rzAJ9HRNygyBroryHj8HaLfhupmMG
+	xroRW0d982288a6rIg8Rp1E=
+X-Google-Smtp-Source: APBJJlEESj5502hCCjnCrW5aNdhMviGxH5NXIz8SFwBF+614aVB6e0+1hJtWMTw8TJzZNuQy8olTNg==
+X-Received: by 2002:a17:903:447:b0:1b8:a31b:ac85 with SMTP id iw7-20020a170903044700b001b8a31bac85mr2719760plb.41.1688479589749;
+        Tue, 04 Jul 2023 07:06:29 -0700 (PDT)
+Received: from [192.168.50.14] ([98.51.102.78])
+        by smtp.gmail.com with ESMTPSA id jk4-20020a170903330400b001b672af624esm13083569plb.164.2023.07.04.07.06.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Jul 2023 07:06:29 -0700 (PDT)
+Message-ID: <bb91e76b-0bd8-a949-f8b9-868f919ebcb9@acm.org>
+Date: Tue, 4 Jul 2023 07:06:26 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+ Christoph Hellwig <hch@infradead.org>, Alasdair Kergon <agk@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Anna Schumaker <anna@kernel.org>,
+ Chao Yu <chao@kernel.org>, Christian Borntraeger
+ <borntraeger@linux.ibm.com>, "Darrick J. Wong" <djwong@kernel.org>,
+ Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
+ dm-devel@redhat.com, drbd-dev@lists.linbit.com, Gao Xiang
+ <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, jfs-discussion@lists.sourceforge.net,
+ Joern Engel <joern@lazybastard.org>, Joseph Qi
+ <joseph.qi@linux.alibaba.com>, Kent Overstreet <kent.overstreet@gmail.com>,
+ linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-xfs@vger.kernel.org, "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+ Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
+ ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
+ Sergey Senozhatsky <senozhatsky@chromium.org>, Song Liu <song@kernel.org>,
+ Sven Schnelle <svens@linux.ibm.com>, target-devel@vger.kernel.org,
+ Ted Tso <tytso@mit.edu>, Trond Myklebust <trond.myklebust@hammerspace.com>,
+ xen-devel@lists.xenproject.org
+References: <20230629165206.383-1-jack@suse.cz>
+ <20230704122224.16257-1-jack@suse.cz>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230704122224.16257-1-jack@suse.cz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230704_065515_998020_7AA60705 
-X-CRM114-Status: GOOD (  23.55  )
+X-CRM114-CacheID: sfid-20230704_070632_470150_775E7528 
+X-CRM114-Status: GOOD (  11.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,52 +100,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTG90aGFyLAoKVGhhbmtzIGZvciB0aGUgcmVwb3J0LgoKTFdAS0FSTy1lbGVjdHJvbmljcy5k
-ZSB3cm90ZSBvbiBUdWUsIDQgSnVsIDIwMjMgMTI6Mzc6NDMgKzAyMDA6Cgo+IEhpLAo+IAo+IHdo
-aWxlIHRyeWluZyB0byBhZGQgc3VwcG9ydCBmb3IgdGhlICdYVDI2RzAxQycgdmFyaWFudCBvZiB0
-aGUgWFRYCj4gU1BJLW5hbmQgY2hpcCBJIG5vdGljZWQgYSBmbGF3IGluIHRoZSBFQ0MgbGF5b3V0
-IG9mIHRoZSBleGlzdGluZwo+IGRyaXZlci4KPiBBY2NvcmRpbmcgdG8gdGhlICBYVDI2RzAxQSBk
-YXRhc2hlZXQgdGhlIGZpcnN0IGVpZ2h0IGJ5dGVzIG9mIHRoZSBPT0IKPiBhcmVhIGFyZSBub3Qg
-cHJvdGVjdGVkIGJ5IEVDQzoKPiBPZmZzZXQgICAgICBFQ0MgIEJ5dGVzICBBcmVhICAgICAgICAg
-ICAgICAgRGVzY3JpcHRpb24KPiA4MDBIIDgwN0ggICAgTm8gICAgICA4ICBTcGFyZSA0LCBHcm91
-cCBFICAgVGhpcyBBcmVhIGlzIG5vdCBjb3ZlcmVkIGJ5IGludGVybmFsIEVDQywKPiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgODAwSCBpcyByZXNlcnZlZCBmb3Ig
-YmFkIGJsb2NrIG1hcmsgICAgICAgIAo+IDgwOEggODJGSCAgIFllcyA0MCBTcGFyZSA1ICwgR3Jv
-dXAgRiAgICAgICBVc2VyIE1ldGEgRGF0YSBBcmVhIGNvdmVyZWQgYnkgaW50ZXJuYWwgRUNDLgo+
-IDgzMEggODNGSCAgICBObyAxNiBTcGFyZSA2ICwgR3JvdXAgRyAgICAgICBFQ0NfRU49MTogdGhp
-cyBhcmVhIGNvbnRhaW5zIEludGVybmFsIEVDQyBEYXRhLCBSZWFkLU9ubHksCj4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFByb2dyYW1taW5nIHRvIHRoaXMgYXJl
-YSB3aWxsIGJlIGlnbm9yZWQKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgRUNDX0VOPTA6IHRoaXMgYXJlYSBpcyB3cml0YWJsZSBmb3IgdXNlcgo+IAo+IEJ1dCB0
-aGUgZHJpdmVyIGRlZmluZXMgYnl0ZXMgMS4uNDcgYXMgdXNlciBPT0IgYXJlYToKPiB8c3RhdGlj
-IGludCB4dDI2ZzB4YV9vb2JsYXlvdXRfZnJlZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IHNl
-Y3Rpb24sCj4gfAkJCQkgICBzdHJ1Y3QgbXRkX29vYl9yZWdpb24gKnJlZ2lvbikKPiB8ewo+IHwJ
-aWYgKHNlY3Rpb24pCj4gfAkJcmV0dXJuIC1FUkFOR0U7Cj4gfAo+IHwJcmVnaW9uLT5vZmZzZXQg
-PSAxOwo+IHwJcmVnaW9uLT5sZW5ndGggPSA0NzsKPiB8Cj4gfAlyZXR1cm4gMDsKPiB8fQo+IAo+
-IElNTyB0aGlzIHNob3VsZCBiZToKPiB8CXJlZ2lvbi0+b2Zmc2V0ID0gODsKPiB8CXJlZ2lvbi0+
-bGVuZ3RoID0gNDA7Cj4gdG8gaGF2ZSB0aGUgd2hvbGUgdXNlciBvb2IgYXJlYSBwcm90ZWN0ZWQg
-YnkgRUNDLgo+IAo+IE9idmlvdXNseSB0aGlzIGNhbm5vdCBzaW1wbHkgYmUgY2hhbmdlZCBpbiB0
-aGUgZHJpdmVyIGJlY2F1c2UgaXQgd291bGQKPiBicmVhayBhY2Nlc3MgdG8gZmxhc2ggdGhhdCB3
-YXMgcHJvZ3JhbW1lZCB3aXRoIHRoZSBjdXJyZW50IHBhcmFtZXRlcnMuCj4gU2luY2UgdGhlIGRh
-dGEgc3RydWN0dXJlcyB0aGF0IHByb3ZpZGUgdGhlIG9vYiBsYXlvdXQgYXJlIGNvbXBsZXRlbHkK
-PiBzdGF0aWMgYW5kIGNhbm5vdCBiZSBtb2RpZmllZCBhdCBydW50aW1lIChlLmcuIGRlcGVuZGlu
-ZyBvbiBzb21lIERUQgo+IHByb3BlcnR5KSB0aGUgb25seSB3YXkgSSBzZWUgdG8gcHJvdmlkZSBh
-IGxheW91dCB3aXRoIEVDQyBwcm90ZWN0aW9uCj4gZm9yIHRoZSB3aG9sZSB1c2VyIG1ldGFkYXRh
-IHdvdWxkIGJlIGEgS2NvbmZpZyBvcHRpb24gdG8gc2VsZWN0IG9uZSBvcgo+IHRoZSBvdGhlciBs
-YXlvdXQgYXQgY29tcGlsZSB0aW1lLgo+IAo+IEFueSBjb21tZW50cyBvciBiZXR0ZXIgaWRlYXM/
-CgpUaGVzZSBvZmZzZXRzIGRvIG5vdCByZWZsZWN0IHRoZSBwcm90ZWN0ZWQgYXJlYSBidXQgdGhl
-IHVzZXIgYXJlYSwKd2hpY2ggY2FuIGJlIHVzZWQgKGF0IHRoZSB1c2VycyBvd24gcmlza3MpLiBT
-b21laG93IHRoZSBvbmx5IHJlYWwgdXNlcgppcyBqZmZzMiB1cHN0cmVhbSwgYW5kIGpmZnMyIHdh
-cyBtZWFudCB0byBiZSByZXBsYWNlZCBhIGxvbmcgdGltZSBhZ28KYnkgVUJJIHdoaWNoIGFjdHVh
-bGx5IHdvcmthcm91bmQtZWQgdGhpcyBsaW1pdGF0aW9uIGJ5IG5vdCB1c2luZyB0aGUKT09CIGFy
-ZWEgYXQgYWxsLiBXZSBkbyBub3QgaGF2ZSBhIHJlYWwgd2F5IHRvIGRpc3Rpbmd1aXNoIHdoYXQg
-aXMgRUNDCnByb3RlY3RlZCBvciBub3QgaW4gdGhlIE9PQiBhcmVhLgoKU28gdW5sZXNzIHlvdSB3
-YW50IHRvIHNvbHZlIGEgcmVhbCBwcm9ibGVtLCBJIHdvdWxkIGFkdmlzZSB0byBrZWVwIGl0CmFz
-IGl0IGlzLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 7/4/23 05:21, Jan Kara wrote:
+> +struct bdev_handle {
+> +	struct block_device *bdev;
+> +	void *holder;
+> +};
+
+Please explain in the patch description why a holder pointer is 
+introduced in struct bdev_handle and how it relates to the bd_holder 
+pointer in struct block_device. Is one of the purposes of this patch 
+series perhaps to add support for multiple holders per block device?
+
+Thanks,
+
+Bart.
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
