@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9DBBEB64DD
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jul 2023 19:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 810B9EB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jul 2023 19:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4gyVsTPCiaZ6TYmFSZgdN9D7pPy4cptKGZpQMOxVK+w=; b=PXl/fFZKrHYQBZ
-	DQKs9Ozik3oBpGU4np0n7bOMOCJm4vnyI/SqoqESWvoq8ItKVhoAW9Zz05pKlVSE2jAj5vBNglrPw
-	fpJ7TKJpCsuHPXfzKf4nAM6UvhsDCN8G+C7n+BviSSiXu9A2kMr3+QSAwdKYmMbIwtXhCu66CRke4
-	81cqCZGx7N1SDN099BfW1JkeFMJspW44FAmYyd0gQhYcID5z2MTBFcWvvg3C0JMybep1wbTtyhgy0
-	ZOyBSfgnGmE0r7OeMJ+MVIHiecuk3iLzPJFPf5O9pKceUU3CXSaAAC+DuC9lIBhDjcbXPhvNkaXjq
-	5OrNCirON9mhtox8RIGg==;
+	List-Owner; bh=qsEF406OgNVJtMxZ8vlf/rmpYL0LmaTsQ/twQ8yfo5U=; b=T7Qdeo8UDmQWYg
+	mmNkcj2h7SGE6hVTXdn9dNLxkSrUBD0afptLkdUESoEVX+qZJnL5L3coXsIJxqcM1GEMc7Qj9e3e+
+	kcuCJbxaDGyiVmMRSSL6ARyOab7V2HlckymS91n7RsS0Zko4LXAhcFKsHcgThOwD/L9vT+FVTqdBl
+	q5/p099RZtbeUjf7hgmqAP+w92wFic2Pcx+kVdn15f8s+saK088Rq1qiWucDqftm7dhH6qGhyAgMb
+	J4tIRp9kg2Jf2vx165U4bDiK2tki9ae1cqYRP84YDw0X96oFk0lS+ACd0EdQbTc3o44VJbL9JQGGy
+	jVMrNDd7qkazwMQlrDqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH7of-00Gqqn-2X;
-	Wed, 05 Jul 2023 19:05:29 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qH8Xh-00Gx3o-1r;
+	Wed, 05 Jul 2023 19:52:01 +0000
+Received: from mail-io1-f47.google.com ([209.85.166.47])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH7oc-00Gqq4-1n
-	for linux-mtd@lists.infradead.org;
-	Wed, 05 Jul 2023 19:05:28 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 07B29616F0;
-	Wed,  5 Jul 2023 19:05:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDCCDC433C8;
-	Wed,  5 Jul 2023 19:05:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688583925;
-	bh=+82KIEoO6oe3lt8wvhlCVrwz0sAgstySmhvyztkjhOg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uXlMgo7K0nLw9Zu5iobBzGnnFdymopJit67shC/TeLB3S3KsEA3BdpaNiy7at9SD6
-	 0nzunf+JDC4kaA38QyfG0bmYGYwT8bUOpDORVjD3D4d7DHnOljTBtDIVq4DOb73arQ
-	 J0Dl3A1qlbE1mFfUN1dgZDJNgML/Er95Zlc+6fhKrS2NXKCzAfRJqCHokajPe0aPa4
-	 N4FgxE916CmS/GIwsTLUpEB/J85F4VH6mNZXHegUI3qAuMs5hRMEYogsecPfhqNtxh
-	 X8Yv1jhm9AnwGKX50lA6wrIadRczrLXIeBoFGhU1OraASxEoud/YHwTCLVHCe6K4K8
-	 68vIgOM0qedsQ==
-From: Jeff Layton <jlayton@kernel.org>
-To: Christian Brauner <brauner@kernel.org>,
-	Richard Weinberger <richard@nod.at>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH v2 78/92] ubifs: convert to ctime accessor functions
-Date: Wed,  5 Jul 2023 15:01:43 -0400
-Message-ID: <20230705190309.579783-76-jlayton@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230705190309.579783-1-jlayton@kernel.org>
-References: <20230705185755.579053-1-jlayton@kernel.org>
- <20230705190309.579783-1-jlayton@kernel.org>
+	id 1qH8Xe-00Gx3H-0i;
+	Wed, 05 Jul 2023 19:51:59 +0000
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-77acb04309dso354062639f.2;
+        Wed, 05 Jul 2023 12:51:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688586717; x=1691178717;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OgxCgI0UhXaalrd8FtZ3lKHjbHQYR+CHqoq8oQgcBj8=;
+        b=EvuP3ga2tqxVMgx6y451lLZgza8cVYUL1SoyuMBrUXsR0iGIGBl46VwO7N3lKqAtlF
+         FMUmwfPsVP9ljVaenbflLbgkdqk3TlkxWLbRwvtgHGxNrf34/Mskqoh+H35T0AqLllf9
+         ZxyVuFwG+yP73OrmHfG3gQscaxmHs2l30koNNdyDbgu4ND4X/Zq4wNysYTPoqZwNZKbN
+         u5n8zQfzuLXXosyokDnO/2PbwXOstRHIvJNzPFzKurN725/Ke95Gq7W0fZPOh6S6x14m
+         2vuPBUBMm91APYuTenkjlvqFQvfTwYtGaYQaOAXrfGM7OVfr2NLrX9U8FFyux2knvtzM
+         RNbQ==
+X-Gm-Message-State: ABy/qLZlaBkP1+uhHG1SbvuZbrwj2CnEC8MNn21rvcwxKi6rhN+4o+eN
+	B4lMU9HDPpKZmjy51fErjg==
+X-Google-Smtp-Source: APBJJlFfE26pMmnc4X7bL1ZeGdt2/p9FLN9uM6KgYidS2YWs2WUaDK7eEf0pVgwqz52ouAz0T6SvXg==
+X-Received: by 2002:a5e:891a:0:b0:785:ff35:f340 with SMTP id k26-20020a5e891a000000b00785ff35f340mr118432ioj.14.1688586717448;
+        Wed, 05 Jul 2023 12:51:57 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id h2-20020a02c4c2000000b00411bdcdc488sm7729558jaj.173.2023.07.05.12.51.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jul 2023 12:51:56 -0700 (PDT)
+Received: (nullmailer pid 1730881 invoked by uid 1000);
+	Wed, 05 Jul 2023 19:51:54 -0000
+Date: Wed, 5 Jul 2023 13:51:54 -0600
+From: Rob Herring <robh@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Florian Fainelli <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: Add SEAMA partition bindings
+Message-ID: <20230705195154.GA1702900-robh@kernel.org>
+References: <20230705-seama-partitions-v2-0-9d349f0d5ab7@linaro.org>
+ <20230705-seama-partitions-v2-1-9d349f0d5ab7@linaro.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230705-seama-partitions-v2-1-9d349f0d5ab7@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230705_120526_669611_FFB66C61 
-X-CRM114-Status: GOOD (  19.00  )
+X-CRM114-CacheID: sfid-20230705_125158_258378_867B642B 
+X-CRM114-Status: GOOD (  26.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,283 +81,105 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In later patches, we're going to change how the inode's ctime field is
-used. Switch to using accessor functions instead of raw accesses of
-inode->i_ctime.
+On Wed, Jul 05, 2023 at 12:17:46PM +0200, Linus Walleij wrote:
+> This types of NAND partitions appear in OpenWrt and
+> U-Boot.
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> ChangeLog v1->v2:
+> - Fix up the binding to be childless
+> ---
+>  .../bindings/mtd/partitions/partitions.yaml        |  1 +
+>  .../devicetree/bindings/mtd/partitions/seama.yaml  | 50 ++++++++++++++++++++++
+>  2 files changed, 51 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+> index 2edc65e0e361..9bd0a8d800da 100644
+> --- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+> @@ -21,6 +21,7 @@ oneOf:
+>    - $ref: linksys,ns-partitions.yaml
+>    - $ref: qcom,smem-part.yaml
+>    - $ref: redboot-fis.yaml
+> +  - $ref: seama.yaml
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/ubifs/debug.c   |  4 ++--
- fs/ubifs/dir.c     | 24 +++++++++++-------------
- fs/ubifs/file.c    | 16 +++++++++-------
- fs/ubifs/ioctl.c   |  2 +-
- fs/ubifs/journal.c |  4 ++--
- fs/ubifs/super.c   |  4 ++--
- fs/ubifs/xattr.c   |  6 +++---
- 7 files changed, 30 insertions(+), 30 deletions(-)
+I think this is in the wrong place. These should be device level 
+partitioning schemas, not an individual partition type. (Though nesting 
+is possible)
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 9c9d3f0e36a4..eef9e527d9ff 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -243,8 +243,8 @@ void ubifs_dump_inode(struct ubifs_info *c, const struct inode *inode)
- 	       (unsigned int)inode->i_mtime.tv_sec,
- 	       (unsigned int)inode->i_mtime.tv_nsec);
- 	pr_err("\tctime          %u.%u\n",
--	       (unsigned int)inode->i_ctime.tv_sec,
--	       (unsigned int)inode->i_ctime.tv_nsec);
-+	       (unsigned int) inode_get_ctime(inode).tv_sec,
-+	       (unsigned int) inode_get_ctime(inode).tv_nsec);
- 	pr_err("\tcreat_sqnum    %llu\n", ui->creat_sqnum);
- 	pr_err("\txattr_size     %u\n", ui->xattr_size);
- 	pr_err("\txattr_cnt      %u\n", ui->xattr_cnt);
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 7ec25310bd8a..3a1ba8ba308a 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -96,8 +96,7 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, struct inode *dir,
- 	inode->i_flags |= S_NOCMTIME;
- 
- 	inode_init_owner(&nop_mnt_idmap, inode, dir, mode);
--	inode->i_mtime = inode->i_atime = inode->i_ctime =
--			 current_time(inode);
-+	inode->i_mtime = inode->i_atime = inode_set_ctime_current(inode);
- 	inode->i_mapping->nrpages = 0;
- 
- 	if (!is_xattr) {
-@@ -325,7 +324,7 @@ static int ubifs_create(struct mnt_idmap *idmap, struct inode *dir,
- 	mutex_lock(&dir_ui->ui_mutex);
- 	dir->i_size += sz_change;
- 	dir_ui->ui_size = dir->i_size;
--	dir->i_mtime = dir->i_ctime = inode->i_ctime;
-+	dir->i_mtime = inode_set_ctime_to_ts(dir, inode_get_ctime(inode));
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
- 	if (err)
- 		goto out_cancel;
-@@ -765,10 +764,10 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 
- 	inc_nlink(inode);
- 	ihold(inode);
--	inode->i_ctime = current_time(inode);
-+	inode_set_ctime_current(inode);
- 	dir->i_size += sz_change;
- 	dir_ui->ui_size = dir->i_size;
--	dir->i_mtime = dir->i_ctime = inode->i_ctime;
-+	dir->i_mtime = inode_set_ctime_to_ts(dir, inode_get_ctime(inode));
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
- 	if (err)
- 		goto out_cancel;
-@@ -838,11 +837,11 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
- 	}
- 
- 	lock_2_inodes(dir, inode);
--	inode->i_ctime = current_time(dir);
-+	inode_set_ctime_current(inode);
- 	drop_nlink(inode);
- 	dir->i_size -= sz_change;
- 	dir_ui->ui_size = dir->i_size;
--	dir->i_mtime = dir->i_ctime = inode->i_ctime;
-+	dir->i_mtime = inode_set_ctime_to_ts(dir, inode_get_ctime(inode));
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0);
- 	if (err)
- 		goto out_cancel;
-@@ -940,12 +939,12 @@ static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
- 	}
- 
- 	lock_2_inodes(dir, inode);
--	inode->i_ctime = current_time(dir);
-+	inode_set_ctime_current(inode);
- 	clear_nlink(inode);
- 	drop_nlink(dir);
- 	dir->i_size -= sz_change;
- 	dir_ui->ui_size = dir->i_size;
--	dir->i_mtime = dir->i_ctime = inode->i_ctime;
-+	dir->i_mtime = inode_set_ctime_to_ts(dir, inode_get_ctime(inode));
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0);
- 	if (err)
- 		goto out_cancel;
-@@ -1019,7 +1018,7 @@ static int ubifs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
- 	inc_nlink(dir);
- 	dir->i_size += sz_change;
- 	dir_ui->ui_size = dir->i_size;
--	dir->i_mtime = dir->i_ctime = inode->i_ctime;
-+	dir->i_mtime = inode_set_ctime_to_ts(dir, inode_get_ctime(inode));
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
- 	if (err) {
- 		ubifs_err(c, "cannot create directory, error %d", err);
-@@ -1110,7 +1109,7 @@ static int ubifs_mknod(struct mnt_idmap *idmap, struct inode *dir,
- 	mutex_lock(&dir_ui->ui_mutex);
- 	dir->i_size += sz_change;
- 	dir_ui->ui_size = dir->i_size;
--	dir->i_mtime = dir->i_ctime = inode->i_ctime;
-+	dir->i_mtime = inode_set_ctime_to_ts(dir, inode_get_ctime(inode));
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
- 	if (err)
- 		goto out_cancel;
-@@ -1210,7 +1209,7 @@ static int ubifs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	mutex_lock(&dir_ui->ui_mutex);
- 	dir->i_size += sz_change;
- 	dir_ui->ui_size = dir->i_size;
--	dir->i_mtime = dir->i_ctime = inode->i_ctime;
-+	dir->i_mtime = inode_set_ctime_to_ts(dir, inode_get_ctime(inode));
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 0, 0);
- 	if (err)
- 		goto out_cancel;
-@@ -1298,7 +1297,6 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
- 			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
- 	struct ubifs_budget_req wht_req;
--	struct timespec64 time;
- 	unsigned int saved_nlink;
- 	struct fscrypt_name old_nm, new_nm;
- 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 6738fe43040b..436b27d7c58f 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1092,7 +1092,7 @@ static void do_attr_changes(struct inode *inode, const struct iattr *attr)
- 	if (attr->ia_valid & ATTR_MTIME)
- 		inode->i_mtime = attr->ia_mtime;
- 	if (attr->ia_valid & ATTR_CTIME)
--		inode->i_ctime = attr->ia_ctime;
-+		inode_set_ctime_to_ts(inode, attr->ia_ctime);
- 	if (attr->ia_valid & ATTR_MODE) {
- 		umode_t mode = attr->ia_mode;
- 
-@@ -1192,7 +1192,7 @@ static int do_truncation(struct ubifs_info *c, struct inode *inode,
- 	mutex_lock(&ui->ui_mutex);
- 	ui->ui_size = inode->i_size;
- 	/* Truncation changes inode [mc]time */
--	inode->i_mtime = inode->i_ctime = current_time(inode);
-+	inode->i_mtime = inode_set_ctime_current(inode);
- 	/* Other attributes may be changed at the same time as well */
- 	do_attr_changes(inode, attr);
- 	err = ubifs_jnl_truncate(c, inode, old_size, new_size);
-@@ -1239,7 +1239,7 @@ static int do_setattr(struct ubifs_info *c, struct inode *inode,
- 	mutex_lock(&ui->ui_mutex);
- 	if (attr->ia_valid & ATTR_SIZE) {
- 		/* Truncation changes inode [mc]time */
--		inode->i_mtime = inode->i_ctime = current_time(inode);
-+		inode->i_mtime = inode_set_ctime_current(inode);
- 		/* 'truncate_setsize()' changed @i_size, update @ui_size */
- 		ui->ui_size = inode->i_size;
- 	}
-@@ -1364,8 +1364,10 @@ int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
- static inline int mctime_update_needed(const struct inode *inode,
- 				       const struct timespec64 *now)
- {
-+	struct timespec64 ctime = inode_get_ctime(inode);
-+
- 	if (!timespec64_equal(&inode->i_mtime, now) ||
--	    !timespec64_equal(&inode->i_ctime, now))
-+	    !timespec64_equal(&ctime, now))
- 		return 1;
- 	return 0;
- }
-@@ -1396,7 +1398,7 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
- 	if (flags & S_ATIME)
- 		inode->i_atime = *time;
- 	if (flags & S_CTIME)
--		inode->i_ctime = *time;
-+		inode_set_ctime_to_ts(inode, *time);
- 	if (flags & S_MTIME)
- 		inode->i_mtime = *time;
- 
-@@ -1432,7 +1434,7 @@ static int update_mctime(struct inode *inode)
- 			return err;
- 
- 		mutex_lock(&ui->ui_mutex);
--		inode->i_mtime = inode->i_ctime = current_time(inode);
-+		inode->i_mtime = inode_set_ctime_current(inode);
- 		release = ui->dirty;
- 		mark_inode_dirty_sync(inode);
- 		mutex_unlock(&ui->ui_mutex);
-@@ -1570,7 +1572,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
- 		struct ubifs_inode *ui = ubifs_inode(inode);
- 
- 		mutex_lock(&ui->ui_mutex);
--		inode->i_mtime = inode->i_ctime = current_time(inode);
-+		inode->i_mtime = inode_set_ctime_current(inode);
- 		release = ui->dirty;
- 		mark_inode_dirty_sync(inode);
- 		mutex_unlock(&ui->ui_mutex);
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 67c5108abd89..d79cabe193c3 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -118,7 +118,7 @@ static int setflags(struct inode *inode, int flags)
- 	ui->flags &= ~ioctl2ubifs(UBIFS_SETTABLE_IOCTL_FLAGS);
- 	ui->flags |= ioctl2ubifs(flags);
- 	ubifs_set_inode_flags(inode);
--	inode->i_ctime = current_time(inode);
-+	inode_set_ctime_current(inode);
- 	release = ui->dirty;
- 	mark_inode_dirty_sync(inode);
- 	mutex_unlock(&ui->ui_mutex);
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index dc52ac0f4a34..ffc9beee7be6 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -454,8 +454,8 @@ static void pack_inode(struct ubifs_info *c, struct ubifs_ino_node *ino,
- 	ino->creat_sqnum = cpu_to_le64(ui->creat_sqnum);
- 	ino->atime_sec  = cpu_to_le64(inode->i_atime.tv_sec);
- 	ino->atime_nsec = cpu_to_le32(inode->i_atime.tv_nsec);
--	ino->ctime_sec  = cpu_to_le64(inode->i_ctime.tv_sec);
--	ino->ctime_nsec = cpu_to_le32(inode->i_ctime.tv_nsec);
-+	ino->ctime_sec  = cpu_to_le64(inode_get_ctime(inode).tv_sec);
-+	ino->ctime_nsec = cpu_to_le32(inode_get_ctime(inode).tv_nsec);
- 	ino->mtime_sec  = cpu_to_le64(inode->i_mtime.tv_sec);
- 	ino->mtime_nsec = cpu_to_le32(inode->i_mtime.tv_nsec);
- 	ino->uid   = cpu_to_le32(i_uid_read(inode));
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 32cb14759796..b08fb28d16b5 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -146,8 +146,8 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
- 	inode->i_atime.tv_nsec = le32_to_cpu(ino->atime_nsec);
- 	inode->i_mtime.tv_sec  = (int64_t)le64_to_cpu(ino->mtime_sec);
- 	inode->i_mtime.tv_nsec = le32_to_cpu(ino->mtime_nsec);
--	inode->i_ctime.tv_sec  = (int64_t)le64_to_cpu(ino->ctime_sec);
--	inode->i_ctime.tv_nsec = le32_to_cpu(ino->ctime_nsec);
-+	inode_set_ctime(inode, (int64_t)le64_to_cpu(ino->ctime_sec),
-+			le32_to_cpu(ino->ctime_nsec));
- 	inode->i_mode = le32_to_cpu(ino->mode);
- 	inode->i_size = le64_to_cpu(ino->size);
- 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 349228dd1191..406c82eab513 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -134,7 +134,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
- 	ui->data_len = size;
- 
- 	mutex_lock(&host_ui->ui_mutex);
--	host->i_ctime = current_time(host);
-+	inode_set_ctime_current(host);
- 	host_ui->xattr_cnt += 1;
- 	host_ui->xattr_size += CALC_DENT_SIZE(fname_len(nm));
- 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
-@@ -215,7 +215,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 	ui->data_len = size;
- 
- 	mutex_lock(&host_ui->ui_mutex);
--	host->i_ctime = current_time(host);
-+	inode_set_ctime_current(host);
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(old_size);
- 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
- 
-@@ -474,7 +474,7 @@ static int remove_xattr(struct ubifs_info *c, struct inode *host,
- 		return err;
- 
- 	mutex_lock(&host_ui->ui_mutex);
--	host->i_ctime = current_time(host);
-+	inode_set_ctime_current(host);
- 	host_ui->xattr_cnt -= 1;
- 	host_ui->xattr_size -= CALC_DENT_SIZE(fname_len(nm));
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
--- 
-2.41.0
+>  
+>  properties:
+>    compatible: true
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/seama.yaml b/Documentation/devicetree/bindings/mtd/partitions/seama.yaml
+> new file mode 100644
+> index 000000000000..5ed7764bba69
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/seama.yaml
+> @@ -0,0 +1,50 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/partitions/seama.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Seattle Image Partitions
+> +
+> +description: The SEAttle iMAge (SEAMA) partition is a type of partition
+> +  used for NAND flash devices. This type of flash image is found in some
+> +  D-Link routers such as DIR-645, DIR-842, DIR-859, DIR-860L, DIR-885L,
+> +  DIR890L and DCH-M225, as well as in WD and NEC routers on the ath79
+> +  (MIPS), Broadcom BCM53xx, and RAMIPS platforms. This partition type
+> +  does not have children defined in the device tree, they need to be
+> +  detected by software.
+> +
+> +allOf:
+> +  - $ref: partition.yaml#
+> +
+> +maintainers:
+> +  - Linus Walleij <linus.walleij@linaro.org>
+> +
+> +select: false
 
+Remove this and your example will fail. You need unevaluatedProperties.
+
+There's a problem in partitions.yaml. It never gets applied, so this 
+schema never gets applied. The default 'select' is generated based on 
+$nodename or compatible, but it has neither. This needs some more 
+thought on how to fix given the variable way partitions can be combined. 
+Probably at a minimum, all the 'select: false' need to be removed. 
+
+> +
+> +properties:
+> +  compatible:
+> +    const: seama
+> +
+> +  '#address-cells': false
+> +
+> +  '#size-cells': false
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    partitions {
+> +        compatible = "fixed-partitions";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        partition@0 {
+> +            compatible = "seama";
+> +            reg = <0x0 0x800000>;
+> +            label = "firmware";
+> +        };
+> +    };
+> 
+> -- 
+> 2.34.1
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
