@@ -4,68 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BF6BC0015E
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jul 2023 16:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B30DDEB64DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jul 2023 16:12:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GLdjRonR/P5EEoMNmA0gjuN7piFX1zDE+/0J8r4gM2g=; b=ZISrJXe9zKA+Fs
-	LPRLmxfBGgonzXTeajvRYl511vdwmqXmiGZaO86fANF6e/9ieSPJDT7fl9b+OtRqBEQADjz9o4ROa
-	wMrnEyhc6CdQ97zBuObuZCj1i/vAlY903L412fhG2/iDAI35uDA4QG5r5KbJX/69PmJltYlp+owZD
-	3BuVX1qYrLT5lpoZPvaIZSOKA+vWqFBWMqcK9YiWEmGjUwodpxRJVkHa1Qg7NV1LUR733fXckNz1d
-	nXmk+hGpHPKXyvVnlkMa63yBpMakiF6WWnKX8Z4ysOykDwuaMMCAPF/EFNTgyt8DRQP9rrx8Ol2TQ
-	P/R5ouaJP9izQkIbKwUg==;
+	List-Owner; bh=3jNu/U4brPVcL18Z/eB8RFaaUJRc1mzAZZs6cnDe6pg=; b=TsPkHnh1cnxnMq
+	QO9rPYGMiZHMOA/rYAUcWWaRGnta3AbZKqflsQh86mJUSE0gkg4ubv2DCyR+xJ9lL7mL4RgsqI3f7
+	EnnAhaIfuvz2l9giF+q70/921x+dOAU2cu8755Nsx5pN4DEMiEmdk4dRBwcpclkUsypaM0ZgQ+eyk
+	06ZH82OeY5rMOS8mPWvJ3tOEA+tOtmVAmawM+5ZDC2MZ1Wzvr3kOC5kFypmXk/QHD612o4sdGaPPD
+	Bliyv+fc//i4SNSxQA4oxft60DYfsO5a1boPwFUCoHQPT8JJcGMZNcgrlnkBOFJJxCSBZ1/j7lYm9
+	X6GvzAYKE/hTmpjmAGbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH4yK-00GR24-1R;
-	Wed, 05 Jul 2023 16:03:16 +0000
-Received: from mail-io1-f51.google.com ([209.85.166.51])
+	id 1qH57K-00GSY4-2m;
+	Wed, 05 Jul 2023 16:12:34 +0000
+Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH4yH-00GR0I-1c;
-	Wed, 05 Jul 2023 16:03:14 +0000
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7836272f36eso262134839f.1;
-        Wed, 05 Jul 2023 09:03:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688572985; x=1691164985;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8KBpOFJZyS5xM9abNo2nJ57ufwQERCZ3x55i0T0eDUY=;
-        b=lzOcFfZhH+1xwHyK0c/ZODQupBUr4hLBl9gO6+1X5y9TDKvMRMANjBU51+t8yIzix/
-         J6hU9OC7zBH6AVWHoXVXX76kdKZ5OeXHtXGHz3WN+WYMa8ddckOCaG/+vuaToa64RQC9
-         6PCRYOAaf0ueQiNUt03D3po0fiFU3EFYQ2P5bnoB3A+Rd1R7UMoSOzW05G3OYMQaTCsO
-         tSvpQvOfXVckS80vma2JCCTsTbQYNB1rtuMO7r3vul3zbOhuDSWZpXiblAtBr8AGi9yr
-         yx0d2bZ2qmqVgEriZViJKT9jrn4RQITjzhnCxjz/AXpa/gAh8dBIColiD5ffnK4HmAAf
-         fIsA==
-X-Gm-Message-State: AC+VfDzRWgwW7cu7ljcOt9fmV/p2Nuj7qnOMgkBqYpuyi5VQoD0Nmhfx
-	fV5QeV2ENR9B+8/cnuAYpg==
-X-Google-Smtp-Source: ACHHUZ5Z8VqWZ/v/LomwEhPw2FxxUKwe6Z2nAX7VtpW4YDpUCLHgztTIHZAFe8baQtOy8AZBd0mglg==
-X-Received: by 2002:a5e:c910:0:b0:783:58f4:2e2e with SMTP id z16-20020a5ec910000000b0078358f42e2emr16821097iol.0.1688572984946;
-        Wed, 05 Jul 2023 09:03:04 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id k9-20020a02c769000000b0042b449ac66dsm2108515jao.56.2023.07.05.09.03.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jul 2023 09:03:04 -0700 (PDT)
-Received: (nullmailer pid 712513 invoked by uid 1000);
-	Wed, 05 Jul 2023 16:03:01 -0000
-Date: Wed, 5 Jul 2023 10:03:01 -0600
-From: Rob Herring <robh@kernel.org>
-To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Vignesh Raghavendra <vigneshr@ti.com>, kernel@sberdevices.ru, Richard Weinberger <richard@nod.at>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, linux-arm-kernel@lists.infradead.org, Liang Yang <liang.yang@amlogic.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh+dt@kernel.org>, oxffffaa@gmail.com, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/2] dt-bindings: nand: meson: support for 512B
- ECC step size
-Message-ID: <168857288612.706374.4421201197090184183.robh@kernel.org>
-References: <20230705065434.297040-1-AVKrasnov@sberdevices.ru>
- <20230705065434.297040-2-AVKrasnov@sberdevices.ru>
+	id 1qH57H-00GSTT-1M;
+	Wed, 05 Jul 2023 16:12:34 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CB46921E20;
+	Wed,  5 Jul 2023 16:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1688573545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=laJnl7HhQK/Tv/PqzUYoidR/wXDE+WAIJVPIFf2lcfQ=;
+	b=pVxtRSYxDum30xk4c2JQyuaRHFNvjqGI5pa+1l9TjK2H7ROMjo7EdIGdDlzQXwaIwGyi0D
+	MYHnvgKqRst/eyFC+Okrc961iU1V/Mr8qyrvjiZzwHXWReUpWSrhSFOpe79t3kyTfJeQAV
+	Hf2p1cnNnsYhDEREwuHH1JI7foWXj1M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1688573545;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=laJnl7HhQK/Tv/PqzUYoidR/wXDE+WAIJVPIFf2lcfQ=;
+	b=6GnGLv2MGHnmlspZbI9IPcwZjE0UgNGbJUyuJME/ujhWk8XPp6xGrnnDrvfBxv6bSto5fw
+	0j8hz2dNTzGg/WAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8D5D134F3;
+	Wed,  5 Jul 2023 16:12:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id p7ssKWmWpWRbQAAAMHmgww
+	(envelope-from <jack@suse.cz>); Wed, 05 Jul 2023 16:12:25 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1C3A6A0707; Wed,  5 Jul 2023 18:12:25 +0200 (CEST)
+Date: Wed, 5 Jul 2023 18:12:25 +0200
+From: Jan Kara <jack@suse.cz>
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@infradead.org>,
+	Alasdair Kergon <agk@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
+	dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+	Gao Xiang <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	jfs-discussion@lists.sourceforge.net,
+	Joern Engel <joern@lazybastard.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Kent Overstreet <kent.overstreet@gmail.com>,
+	linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+	linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
+	ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Song Liu <song@kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+	target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	xen-devel@lists.xenproject.org
+Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
+Message-ID: <20230705161225.cwig5a3mo6oz7lew@quack3>
+References: <20230629165206.383-1-jack@suse.cz>
+ <20230704122224.16257-1-jack@suse.cz>
+ <bb91e76b-0bd8-a949-f8b9-868f919ebcb9@acm.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230705065434.297040-2-AVKrasnov@sberdevices.ru>
+In-Reply-To: <bb91e76b-0bd8-a949-f8b9-868f919ebcb9@acm.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230705_090313_544638_9FAD2F48 
-X-CRM114-Status: GOOD (  12.58  )
+X-CRM114-CacheID: sfid-20230705_091231_614609_09CF33D1 
+X-CRM114-Status: GOOD (  18.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,30 +122,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On Wed, 05 Jul 2023 09:54:33 +0300, Arseniy Krasnov wrote:
-> Meson NAND supports both 512B and 1024B ECC step size, so replace
-> 'const' for only 1024B step size with enum for both sizes.
+On Tue 04-07-23 07:06:26, Bart Van Assche wrote:
+> On 7/4/23 05:21, Jan Kara wrote:
+> > +struct bdev_handle {
+> > +	struct block_device *bdev;
+> > +	void *holder;
+> > +};
 > 
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-> ---
->  Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+> Please explain in the patch description why a holder pointer is introduced
+> in struct bdev_handle and how it relates to the bd_holder pointer in struct
+> block_device. Is one of the purposes of this patch series perhaps to add
+> support for multiple holders per block device?
 
+No. The reason for adding holder to struct bdev_handle is that it is an
+argument blkdev_put() needs. Currently, every user of blkdev_put() has to
+remember what it has passed as 'holder' to blkdev_get_by_*() call and pass
+that to blkdev_put(). With struct bdev_handle this will happen
+automatically. This is already explained in the changelog of this patch:
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+"Create struct bdev_handle that contains all parameters that need to be
+passed to blkdev_put()..."
 
-If a tag was not added on purpose, please state why and what changed.
+If it was only about holder, the intrusive patches would not be warranted
+but as the description also says:
 
-Missing tags:
+"This will eventually allow us to pass one more argument to blkdev_put()
+without too much hassle."
 
-Acked-by: Rob Herring <robh@kernel.org>
+Because we will additionaly need to propagate the 'mode' argument used at
+open to blkdev_put().
 
+								Honza
 
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
