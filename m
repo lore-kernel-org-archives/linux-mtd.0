@@ -4,94 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E285EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jul 2023 15:19:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8BADEB64DD
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jul 2023 15:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H2oGfPK/+ONRjf+fSB0mZDe7Nfa60ezvXome0ZxjdX0=; b=GcpKX3wLGXYjHN
-	HVzTL+SRBIWOFojQ/290ir4dMLDAzT6avotGa4P3/OWKrWKlSl/hcNuIhIkt1O+ObFgBle2RUr8rm
-	blnAng9gkroHTI1/g4EnwDC/6SNU+Kp7ieZZEfxbTNndrxIxCyjp0SHBHYgU0tRlEM+tXzUcoppBO
-	XsnDiPa/8OGdHjaNKfvjSq0T/JoYb4I58AiMp/kguXQqTNSQPMYPJd/JtqeK2NAS8LF8FQvqXRQ6+
-	gYdeL5HN+eO1/ZCesJlU8EwZUczaTnm9JMLMGH/9KKRON7COo3TfJWEM6GYgM5Erox+4X3yEvVybK
-	amNTwvDcRe8NKN+pB5gg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=4uBLKkhdTnAaJgeuG5ary0Y0xXTV52rrFskwS3UzucQ=; b=fuAUe+xvuAIJjl
+	WkowICPxiXtyrz1nXDG449Ot/7AyMnJuxuwnCT4tHUU/kDaN07MAJ0ZQMv3JNFhOv2BV4bpqF/Gfo
+	hwW7DRcdpi+tlgMGdTBpCM4hD92SbIMnYG2ZX6mpiteAI898c4XhrglTbq+N5p3mhe3wqXsXoTFIL
+	0oM9hslLdjlkB6SlSqZcsvcsRtxxXm/7RInwOT6UYU5XLT3kw/HE5h6GNXjzJdBuXYgrc37LsYYk5
+	vZfVpntDWtO/Ik8qrD/jtLjGMUDbG8/uW1eiA7v01m/8m6fsPHooe1Guf44NTpa8qazz5B1zIa2gs
+	g0X+cTwwGsOOlqkKHrrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH4Hx-00GIln-21;
-	Wed, 05 Jul 2023 15:19:29 +0000
-Received: from mail-il1-f178.google.com ([209.85.166.178])
+	id 1qH4lW-00GNuV-0w;
+	Wed, 05 Jul 2023 15:50:02 +0000
+Received: from mail-am6eur05on20725.outbound.protection.outlook.com ([2a01:111:f400:7e1b::725] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH4Hu-00GIjx-1w;
-	Wed, 05 Jul 2023 15:19:27 +0000
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-345fcf8951fso15439105ab.1;
-        Wed, 05 Jul 2023 08:19:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688570364; x=1691162364;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vhOVd+fM39By6Neo4SNlvIwXWgDBhgramNmEhS79nFc=;
-        b=eM+zPN+QAu6ooo2JmyLGu4HKF/gHiQ+JiPTjiwUZDO+uy4iWfm7a1zEJ5fjFcr5DlJ
-         icxHDUs/7ZvhF61VBD1QNPC1Gy6mRb4pCusXgR7OvnTR0lPo+QDxiT1p1ew0fVmQ5hGm
-         tP0IA2IIRtVCbMIErVaMDDgO+5/Uvsaa3hN7U7nlg+yxZ8S35Y4oIy8E1H9JQ7deCsGB
-         56bxgsAnvfgsMAtm0f90kZxkrkXdCOHX6pAo9KVMuQSLEFHT4UyC1TgxxlHI1b/Z8jGw
-         bS0J1V0XV0i9daUbJnG/HFCUwoN+s0DBE5N4TujpOCU2DCNHd9w3EzK9PNVhuyidJWta
-         qOsg==
-X-Gm-Message-State: AC+VfDywvo54N5Lfs4sm2M/XEDZhlGPtWDMLHpMEe9Qn3wt+SNJS2lQy
-	5P3yXICLKecRAGkB2TELhSU=
-X-Google-Smtp-Source: ACHHUZ70uoI88DRVhGiNe4v8NMOn4CckRug5A25bO6UrnrhXn4O+oQb9CB+u9z1UucgpvIObIHjohw==
-X-Received: by 2002:a05:6602:2113:b0:784:314f:8d68 with SMTP id x19-20020a056602211300b00784314f8d68mr18093430iox.1.1688570364015;
-        Wed, 05 Jul 2023 08:19:24 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:c1f1:7d21:6172:cbd2? ([2620:15c:211:201:c1f1:7d21:6172:cbd2])
-        by smtp.gmail.com with ESMTPSA id l6-20020a656806000000b005579c73d209sm15456631pgt.1.2023.07.05.08.19.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Jul 2023 08:19:23 -0700 (PDT)
-Message-ID: <1ea08f84-f900-92f2-e32b-2db242a74559@acm.org>
-Date: Wed, 5 Jul 2023 08:19:16 -0700
+	id 1qH4lT-00GNtA-1q
+	for linux-mtd@lists.infradead.org;
+	Wed, 05 Jul 2023 15:50:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KJvYPv60stF+WNZuWyH8ooMICJTb9K8LS7svJKFQ01VpYdqn3b2A5n/ZkQPkIAJNiYjnQT9jafeKT/c2tkAmiEUkImW7xItcaZ6nhYXU4c+g/34HXoqFQmj9AXolK4Mbu9BRWltSp6uvsXtAlG697UAzP8J4HL83DfIf3l6odnc096kv3TpUh0Q5p38aBAJgnP60x5DY3GMGSrj1VzCgQPMwr/GvG4nCgtBuqLtVhjREz8SQZGCZDG2qjccW81BOlRE1xpOf4lZyZzm0Nel04uSPzFU3QiJIdi9iYa7UoNWmuBAWszJSpFbNuyqas+wTcXEeKtq4XzB9RANpIAcU0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XLSJlQQK40VNdYzvDUs5zvYM3zH81yG/vs/WLU+oWFA=;
+ b=FXujvFtjetyy3UuMYSOXHqCkD8+TnlmoQbNXcC00oqynJN26Mb1r8vGnFZQIeYeg9RRTN2/oYAR9o/grgPmi3FCAyhJuiCL2otfHLsFhY+xeTivtGtZjkTUDzYzsge5B2q2+DdXHPDGNtJSfgjUDoP0m5K2Fy9RTfFFvvV5SwbWNsXU+3CSMWxKt98UJsqpeYq8R+C46Atr+QmT16I1mm6zHdOFl71Q1VxfJkLsiJPO6ctFuqZ7KzzvXZEEQI/U++aLunRiwW5ujbKNvXZGa9Hgdu5Jo/0YSW5umPAFS/FBAWXSQ6ncinqkWlOM34em4aGW8cSeWlS7f9IoufaLbSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 193.8.40.94) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=leica-geosystems.com; dmarc=pass (p=reject sp=reject pct=100)
+ action=none header.from=leica-geosystems.com; dkim=none (message not signed);
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XLSJlQQK40VNdYzvDUs5zvYM3zH81yG/vs/WLU+oWFA=;
+ b=XszQhHltOO0ieFIWH0MO7rvzhxm7uKkkk0YKosVvHUjAFldQ3S17spSJfYzxPLNu10KaGMY9Q1hsbO0T6dnLVoT11SXIE6dFWY4cRMzLgSozCBvc7jxAwj+chFUlrm7H2KOYE3F4hK10bFiHVKkPpyxVYHH+iabzzP1+jGRkxZ4=
+Received: from AS8P189CA0051.EURP189.PROD.OUTLOOK.COM (2603:10a6:20b:458::34)
+ by AM8PR06MB7108.eurprd06.prod.outlook.com (2603:10a6:20b:1d0::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.17; Wed, 5 Jul
+ 2023 15:49:51 +0000
+Received: from AM0EUR02FT026.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:20b:458:cafe::69) by AS8P189CA0051.outlook.office365.com
+ (2603:10a6:20b:458::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.18 via Frontend
+ Transport; Wed, 5 Jul 2023 15:49:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.94)
+ smtp.mailfrom=leica-geosystems.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=leica-geosystems.com;
+Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com
+ designates 193.8.40.94 as permitted sender) receiver=protection.outlook.com;
+ client-ip=193.8.40.94; helo=hexagon.com; pr=C
+Received: from hexagon.com (193.8.40.94) by
+ AM0EUR02FT026.mail.protection.outlook.com (10.13.54.86) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6565.23 via Frontend Transport; Wed, 5 Jul 2023 15:49:51 +0000
+Received: from aherlnxbspsrv01.lgs-net.com ([10.60.34.116]) by hexagon.com with Microsoft SMTPSVC(10.0.17763.1697);
+	 Wed, 5 Jul 2023 17:49:50 +0200
+From: Mamta Shukla <mamta.shukla@leica-geosystems.com>
+To: tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: bsp-development.geo@leica-geosystems.com,
+	Mamta Shukla <mamta.shukla@leica-geosystems.com>
+Subject: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
+Date: Wed,  5 Jul 2023 17:49:42 +0200
+Message-Id: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
-Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
- Christoph Hellwig <hch@infradead.org>, Alasdair Kergon <agk@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, Anna Schumaker <anna@kernel.org>,
- Chao Yu <chao@kernel.org>, Christian Borntraeger
- <borntraeger@linux.ibm.com>, "Darrick J. Wong" <djwong@kernel.org>,
- Dave Kleikamp <shaggy@kernel.org>, David Sterba <dsterba@suse.com>,
- dm-devel@redhat.com, drbd-dev@lists.linbit.com, Gao Xiang
- <xiang@kernel.org>, Jack Wang <jinpu.wang@ionos.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>, jfs-discussion@lists.sourceforge.net,
- Joern Engel <joern@lazybastard.org>, Joseph Qi
- <joseph.qi@linux.alibaba.com>, Kent Overstreet <kent.overstreet@gmail.com>,
- linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
- linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-xfs@vger.kernel.org, "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
- Mike Snitzer <snitzer@kernel.org>, Minchan Kim <minchan@kernel.org>,
- ocfs2-devel@oss.oracle.com, reiserfs-devel@vger.kernel.org,
- Sergey Senozhatsky <senozhatsky@chromium.org>, Song Liu <song@kernel.org>,
- Sven Schnelle <svens@linux.ibm.com>, target-devel@vger.kernel.org,
- Ted Tso <tytso@mit.edu>, Trond Myklebust <trond.myklebust@hammerspace.com>,
- xen-devel@lists.xenproject.org
-References: <20230629165206.383-1-jack@suse.cz>
- <20230704122224.16257-1-jack@suse.cz>
- <bb91e76b-0bd8-a949-f8b9-868f919ebcb9@acm.org>
- <ZKRFSZQglwCba9/i@casper.infradead.org>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <ZKRFSZQglwCba9/i@casper.infradead.org>
+X-OriginalArrivalTime: 05 Jul 2023 15:49:50.0817 (UTC) FILETIME=[555B4D10:01D9AF58]
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0EUR02FT026:EE_|AM8PR06MB7108:EE_
+X-MS-Office365-Filtering-Correlation-Id: ded5f5ea-fbb6-4d57-3010-08db7d6f77f4
+X-SET-LOWER-SCL-SCANNER: YES
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Va4KRfL7tqovS+sMFsIwdh7Z1K3jsqqSDfDiDawn+0HfMdeZg7D2WQjnYXPi5gffjZJXskYudWYaXS4lcyh41WrsV7hpoUj+cpfkQO1I1kuuBzGbuDM8IqCOFgskUlDaZjVuIfu9J0YANFYS6a8SdtUykwznGwF2eD97jYIXAa06kqnzhSl1QyK0SXbRpbQXsQAUIi0oI+JDpPABo+u9lMuh4MTq0C0PVbn6rr9+7gx8K/j/2ca6PZQr0iJbxCbzf6nPhGfYSZONwu/dq+KpWaUuodVkpGFXz786Uee/gCXUfJeQRlxJ47KUXk6XPW8ptWyvirXZEh/cKE8hN0GF6LdH2B0MzEJt9apTj9QAw6iZgKdbnexEMHAsBl/61l7GmZj9R8wmPuFVW1LGyBQdZMAJnmVjLbVUeERq8OXKShvo/fvcjqGSkUNQSUKzgc31nwXm7bByG1ATWRJ1FzIg3D4kdS0Y1vqB1eo+HqO3sknS2FwgM6pbg8tTEFI1VNL9QJnPqSAWwYZeVpV33de5keBbj6QB/ijuBiKTqA2ZWkjpFppEGGmagA0+f3YAf6D3N4wsf51+JVrBJaALdWlbPWYBp9UYlHS8GjT2B0BqIicGrI4oqn7otMS+4UI00KLoiR1hjD+MFFoKmdUFEabQht4DdeA48z3iiA/yUCMExny6GnoDR8dxxgFABgDgHLZcFJ4jW324He0QHrmFEejm9vx7NC/XkbzFfkdRv3sLmO/EM8IwcWRVVY33OM2GDxP1
+X-Forefront-Antispam-Report: CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(376002)(346002)(39860400002)(451199021)(36840700001)(46966006)(40470700004)(4326008)(70586007)(70206006)(356005)(81166007)(2616005)(40480700001)(186003)(86362001)(966005)(36756003)(6666004)(1076003)(478600001)(26005)(107886003)(40460700003)(82310400005)(36860700001)(44832011)(8936002)(8676002)(5660300002)(316002)(82740400003)(2906002)(336012)(41300700001)(47076005)(83380400001)(138113003);DIR:OUT;SFP:1102;
+X-OriginatorOrg: leica-geosystems.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2023 15:49:51.0078
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ded5f5ea-fbb6-4d57-3010-08db7d6f77f4
+X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.94];Helo=[hexagon.com]
+X-MS-Exchange-CrossTenant-AuthSource: AM0EUR02FT026.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR06MB7108
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230705_081926_660072_AAC7A1FC 
-X-CRM114-Status: GOOD (  14.53  )
+X-CRM114-CacheID: sfid-20230705_084959_665496_FE570208 
+X-CRM114-Status: UNSURE (   8.12  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,32 +118,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 7/4/23 09:14, Matthew Wilcox wrote:
-> On Tue, Jul 04, 2023 at 07:06:26AM -0700, Bart Van Assche wrote:
->> On 7/4/23 05:21, Jan Kara wrote:
->>> +struct bdev_handle {
->>> +	struct block_device *bdev;
->>> +	void *holder;
->>> +};
->>
->> Please explain in the patch description why a holder pointer is introduced
->> in struct bdev_handle and how it relates to the bd_holder pointer in struct
->> block_device. Is one of the purposes of this patch series perhaps to add
->> support for multiple holders per block device?
-> 
-> That is all in patch 0/32.  Why repeat it?
+mt25qu512a[1] supports locking/unlocking through BP bits in SR.
 
-This cover letter: https://lore.kernel.org/linux-block/20230629165206.383-1-jack@suse.cz/T/#t?
+Tested using mtd-utils- flash_lock/flash_unlock for MT25QU512ABB8E12.
 
-The word "holder" doesn't even occur in that cover letter so how could the
-answer to my question be present in the cover letter?
+Link: https://media-www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25q/die-rev-b/mt25q_qlkt_u_512_abb_0.pdf?rev=b259aadc3bea49ea8210a41c9ad58211
+Signed-off-by: Mamta Shukla <mamta.shukla@leica-geosystems.com>
+---
+ Changes in v2:
+ - add Link tag
+ - fix chip part number mt25ql512a->mt25qu512a
 
-Bart.
+ drivers/mtd/spi-nor/micron-st.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 4b919756a205..08e94340ebaa 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -229,6 +229,8 @@ static const struct flash_info st_nor_parts[] = {
+ 		MFR_FLAGS(USE_FSR)
+ 	},
+ 	{ "mt25qu512a",  INFO6(0x20bb20, 0x104400, 64 * 1024, 1024)
++		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
++		      SPI_NOR_BP3_SR_BIT6)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+ 		MFR_FLAGS(USE_FSR)
+-- 
+2.25.1
 
 
 ______________________________________________________
