@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65369EB64DC
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 18:29:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5363EC3DA40
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 18:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=aEJhR6EdCZTHPya/+z1IJcMOVnHAA93aq4OovPMkwEA=; b=2q9xSuKvTQOB6ZVk0/dPtPgaEO
-	FoDKT1Sj8TzjUGf2IUhNHVUY1Ljq6HjgQD9qKT2VB/Ou10oerR3gxnW+/IoFFNkzIHP3wnA1iWSS2
-	nOMa1MhlryKXZpcznzR77uT5cUN2OPbDpMF5IRj/oJJuch9I/GIIrFvQxT5TfVp7ZNybwD9enu4HX
-	VPiHzX+1bMJsBvfahyYB/9ZAJ7LWa5DylbX5p8RcWmU4EbiZ96qe3ADu7xF4x3MWw+r0Ees78LVKn
-	erg/je0irESJZ1fgJuqWNAMUIHNPXBP3CsKnOC26xVLXYIb2Jeh9cuA7bVnF2kYTE4fdI+w2jDk0O
-	OB58gZ6Q==;
+	bh=4xR0HJTnvH1exFY1pv5LUGiOwaPScTbeyKzpCkHqk1c=; b=rq2UmQgAs1VxQAiq/bv3mfNqsV
+	Re0M3Wbr8lnXjfKE1xlcw2MZZpn1DxsUBzqusUE3HAc56GOXxZlRQYnk+4M3XWqbycbXe43WYtCOe
+	gSFILVDfAVjNMYtyakXdxUxJAUItsDpbTwOiBNMqSAcL44JQFUxe5/hIYC0Havm7FJ1DcOEImd8W/
+	RMqg+OTL2LiLYqmv60jQqrH7fK2ugj1lTr6bKXE10oTzl+Fhahz236/kWZatexC1uDF9hh03y1Iqy
+	HS1/Oe3p4oJ3eVbnwEF1TMcI12Ur2m23246gGuf1vu0jeVLvJVFudma5orwxLZMTkFK0KJIWIirSs
+	m3U5T/vw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHTjY-002OtN-1n;
-	Thu, 06 Jul 2023 18:29:40 +0000
-Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHTjV-002Orf-1L
-	for linux-mtd@lists.infradead.org;
+	id 1qHTjW-002Osl-30;
 	Thu, 06 Jul 2023 18:29:38 +0000
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-66f5faba829so672367b3a.3
-        for <linux-mtd@lists.infradead.org>; Thu, 06 Jul 2023 11:29:36 -0700 (PDT)
+Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qHTjT-002Oqm-0r
+	for linux-mtd@lists.infradead.org;
+	Thu, 06 Jul 2023 18:29:36 +0000
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-668711086f4so727612b3a.1
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Jul 2023 11:29:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1688668176; x=1691260176;
+        d=broadcom.com; s=google; t=1688668174; x=1691260174;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kdKGWUbGNZ0QO+JMSEBiLNbimzhoxUmAMXK12MHHg/M=;
-        b=TVJ3nLzTNgv6O4WJiB7UQ1RGjus7AUtVcHdzXu7qewI5MXkr6g2pSvaoJFVQJYhS66
-         ZYqAGOb8eRa2sbITvmrnhgXb8WBVklfGU/6ocrRtMiEBYbKESSFfqN4SQ2xqJEeNxKb0
-         aRwskoxljew4bUyqU/YlTEd4w4QzjBWVTA7To=
+        bh=dXUH7kT4U1xmplJucOyu58HeonfXHzrbjXey0hJYEFg=;
+        b=MQrCFdWp6cmk97oisggQFjsj35CdgYZJ8Ad2rzdB2DzW4CpW23HawuLYFXOuKAaa0j
+         iqbJUtqFg0wVrHNRJR5mKey1QCWphOTEyZuaWmeg1Z2HpylyvGmWwpvEGFZZmTJHdmAS
+         z4D3NFfZGWi+E++qleLo30fnOmlHabwKTHhPE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688668176; x=1691260176;
+        d=1e100.net; s=20221208; t=1688668174; x=1691260174;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kdKGWUbGNZ0QO+JMSEBiLNbimzhoxUmAMXK12MHHg/M=;
-        b=WRTHKvm9VzhW5e6ZaKwhyAc3vWHZBxpC/SM4l1TJKeEip5ljTpmj2d7IlaKTkdOg9x
-         kZy3wcAqGSacfyNItQq16FqKlGw+3Aw4rni1EYybHpAxrHlMDlO7/U02HCC8xXjs4Y0O
-         5jn+jSSDPuYt7nMwR3aCWH3K6HyEzcU6Ia6gnmkjU62Vo/WCJMMCb/jqB3vSPHpt4KTJ
-         veuq4uPTJoHTD9BwTAH6vjKa76i3rwLFwPyWHOQ0y3EJc8XgQHPEG7qTEfu1knBwu9Qn
-         o1zqQegjJnqioar5RVmkMdmxuAo3U0c4KtYnjy1JNfub81lOJAvqJlbq1HZOd6uqVpJq
-         vy9w==
-X-Gm-Message-State: ABy/qLZFz9SYlhb7ENE5RkUfedpkzc7AyI/9jb3ClrQZNafoSlycn9Or
-	mTpJ1xT+Vz+pBZs1uYmjW4O6PA==
-X-Google-Smtp-Source: APBJJlHeySiuxxq2R6Ai3jVV/fwkfMpSWlkHFx80dOBaKpwk/a+GxXItO74MPBe9ET2kvwqH5Kk/EA==
-X-Received: by 2002:a05:6a00:139b:b0:679:bc89:e5b with SMTP id t27-20020a056a00139b00b00679bc890e5bmr2741416pfg.19.1688668176150;
-        Thu, 06 Jul 2023 11:29:36 -0700 (PDT)
+        bh=dXUH7kT4U1xmplJucOyu58HeonfXHzrbjXey0hJYEFg=;
+        b=AtDvA0Wk52UAxCP3vRXljLvlb2YgF2ApujhFKmacfIHtC3gqNiezeR+MhDo9h5v2nN
+         CIz5NXuCi6X4Ehyc0LrtSBwkZ5g5e57s+BvGpwdnh1Oya4bPHvTh9+e6mxEzRwe67c+8
+         z4xMlGhD+c0NYs1F+xJqgrGDLPlFQ8hdykSAJi1f9ZytiQc22jQsqIA/j+ACKVWEj3AK
+         /txjtYeTbFMajuS5XqSVIrksghnsPHypj806YcA9LUMImPXhYa8R8YJowA047r8fkdpF
+         YbjILw6haYuaOFWK0XpTc0QN47fIVoe1HByJX8edgZAdQIiXv/2xokldXxDKC5t1rI1u
+         LHNw==
+X-Gm-Message-State: ABy/qLavjikRKIYne02GvdbxAwXlz7AdrdVjENS/UQvTm07SzfZ/CusN
+	9F1wUFB+enZR7De5TaaduZ44wQ==
+X-Google-Smtp-Source: APBJJlGf7BExXasnz++ZNdKGoBpfMyJKQ5EQW4c5G0X1qXqIIQRb619erBCZklQzYdi0EJ5PNubWIA==
+X-Received: by 2002:a05:6a00:d5d:b0:668:93e7:6800 with SMTP id n29-20020a056a000d5d00b0066893e76800mr7712593pfv.14.1688668174067;
+        Thu, 06 Jul 2023 11:29:34 -0700 (PDT)
 Received: from ubuntu-22.localdomain ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id y13-20020aa7804d000000b006826c9e4397sm1580871pfm.48.2023.07.06.11.29.34
+        by smtp.gmail.com with ESMTPSA id y13-20020aa7804d000000b006826c9e4397sm1580871pfm.48.2023.07.06.11.29.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jul 2023 11:29:35 -0700 (PDT)
+        Thu, 06 Jul 2023 11:29:33 -0700 (PDT)
 From: William Zhang <william.zhang@broadcom.com>
 To: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
 	Linux MTD List <linux-mtd@lists.infradead.org>
@@ -77,17 +77,18 @@ Cc: f.fainelli@gmail.com,
 	linux-kernel@vger.kernel.org,
 	Vignesh Raghavendra <vigneshr@ti.com>,
 	Richard Weinberger <richard@nod.at>,
+	Boris Brezillon <bbrezillon@kernel.org>,
 	Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH v4 3/5] mtd: rawnand: brcmnand: Fix crash during the panic_write
-Date: Thu,  6 Jul 2023 11:29:07 -0700
-Message-Id: <20230706182909.79151-4-william.zhang@broadcom.com>
+Subject: [PATCH v4 2/5] mtd: rawnand: brcmnand: Fix potential false time out warning
+Date: Thu,  6 Jul 2023 11:29:06 -0700
+Message-Id: <20230706182909.79151-3-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230706182909.79151-1-william.zhang@broadcom.com>
 References: <20230706182909.79151-1-william.zhang@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230706_112937_478094_16CD6578 
-X-CRM114-Status: GOOD (  14.11  )
+X-CRM114-CacheID: sfid-20230706_112935_308764_70404B21 
+X-CRM114-Status: GOOD (  14.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,68 +100,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6564992311457149011=="
+Content-Type: multipart/mixed; boundary="===============1834444652815210184=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============6564992311457149011==
+--===============1834444652815210184==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000cd995605ffd5b258"
+	boundary="000000000000ae501b05ffd5b21b"
 
---000000000000cd995605ffd5b258
+--000000000000ae501b05ffd5b21b
 Content-Transfer-Encoding: 8bit
 
-When executing a NAND command within the panic write path, wait for any
-pending command instead of calling BUG_ON to avoid crashing while
-already crashing.
+If system is busy during the command status polling function, the driver
+may not get the chance to poll the status register till the end of time
+out and return the premature status.  Do a final check after time out
+happens to ensure reading the correct status.
 
-Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+Fixes: 9d2ee0a60b8b ("mtd: nand: brcmnand: Check flash #WP pin status before nand erase/program")
 Signed-off-by: William Zhang <william.zhang@broadcom.com>
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Reviewed-by: Kursad Oney <kursad.oney@broadcom.com>
-Reviewed-by: Kamal Dasu <kamal.dasu@broadcom.com>
 Cc: stable@vger.kernel.org
 
 ---
 
 Changes in v4:
-- Update commit message
+- Update comment in the polling status function
 - Add cc stable tag
 
 Changes in v3: None
 Changes in v2: None
 
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 9a373a10304d..b2c6396060db 100644
+index 9ea96911d16b..9a373a10304d 100644
 --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
 +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1608,7 +1608,17 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
+@@ -1080,6 +1080,14 @@ static int bcmnand_ctrl_poll_status(struct brcmnand_controller *ctrl,
+ 		cpu_relax();
+ 	} while (time_after(limit, jiffies));
  
- 	dev_dbg(ctrl->dev, "send native cmd %d addr 0x%llx\n", cmd, cmd_addr);
- 
--	BUG_ON(ctrl->cmd_pending != 0);
 +	/*
-+	 * If we came here through _panic_write and there is a pending
-+	 * command, try to wait for it. If it times out, rather than
-+	 * hitting BUG_ON, just return so we don't crash while crashing.
++	 * do a final check after time out in case the CPU was busy and the driver
++	 * did not get enough time to perform the polling to avoid false alarms
 +	 */
-+	if (oops_in_progress) {
-+		if (ctrl->cmd_pending &&
-+			bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0))
-+			return;
-+	} else
-+		BUG_ON(ctrl->cmd_pending != 0);
- 	ctrl->cmd_pending = cmd;
++	val = brcmnand_read_reg(ctrl, BRCMNAND_INTFC_STATUS);
++	if ((val & mask) == expected_val)
++		return 0;
++
+ 	dev_warn(ctrl->dev, "timeout on status poll (expected %x got %x)\n",
+ 		 expected_val, val & mask);
  
- 	ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
 -- 
 2.37.3
 
 
---000000000000cd995605ffd5b258
+--000000000000ae501b05ffd5b21b
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -231,19 +227,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIChHeKDCnH9+qUjW45aIyaXs53Yk
-0mOWstzrupNse8axMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDcwNjE4MjkzNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEII61Faxgkm0E8E563uL9uvsmmhxT
+wSLfl8MBlzkky6VLMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDcwNjE4MjkzNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCcMCElsTKTpj0tDQBkoDaMpkQD8rDWAQ9x+gGb1udnd1+c
-dYXOVCst69zScFzC17X/87/mBJz4UIF639hJBB6AMgh8h2plsSIblNDyxLEG1lgODB4sw4kgqWby
-+1bldeQfzZmAFUTdZYpuytJnGJ6m/HjXY9tGrv4Hp7vT3732KF+KOW5dWOsmkgT8e8OCnWKmg5G2
-P4lGAKe8rwqIkOhD01pvQI5qvLGgkAZa608XlFWkDTueD8dlxiT3fLfehD+2BKEcqVPwFoJ6DwJz
-ZWX70gEQXGOnsNJ7Aa6o9d1kZJPCKI1cn+dD2JFVKpbJWeZQYaxdTN/nFsm/Rc+Ft8X3
---000000000000cd995605ffd5b258--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBhPvn911UyIfP0DMYHBPvNqbtXlW8Ekk5ukI/q3KngUEE7
+pt0UVnH81vSgbxAUrqLYq0HLYo9J55viC733wK680ByARRkudq6tH6XsVABGDh73BU5LkkNAD1Js
+o8XuKvzeDGq60t3G02zn8rf6jeL4k3hLOEOZQkMIqW0ZwoRGOa/tWmQIndXtrswuhNtiuXUfwJtq
+Eve8CgDHlVMAScD4tzImnyttVmeb/jFusxYXDOP9e4wOqv3RNEFivEBGDPlCeQWRZf0kDYyxmeM6
+YS9PWlbQ0PkEHlHz2npQSSLCttOsMzbeejJhe88ilXqhHsd/Z6sxIbQOBQlMOCt4YAlM
+--000000000000ae501b05ffd5b21b--
 
 
---===============6564992311457149011==
+--===============1834444652815210184==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -253,5 +249,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============6564992311457149011==--
+--===============1834444652815210184==--
 
