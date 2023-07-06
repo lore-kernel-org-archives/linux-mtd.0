@@ -4,86 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB9ADEB64D9
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 12:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2631EB64D9
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 13:25:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2lmFZ1VK+tTllaEavTIR1wjMGa6KtGm/b7JcLnoPdEc=; b=iymQSLl4QqTJMF
-	QB9ndNI4u8aMgCYLZdO9ci2DxPYlpQ7Z0VTdjhzrf7IBaI0t+CM/0wPunEWwwm7xa/qNoJHKSh8EO
-	LoAAZiFayU9ajn9iSSy5GM34m/1oZRlAk8+75bEnPEGJaUYa++KWPgHmuPPRZ3DVds6buk6kXagBk
-	aZjQZjscM6vulO40zbYOZIdhpVLn29DueuFCHmw+KS9xh2GyfIaZVMRlidxEN3ylVLS41LMmJzXrr
-	oSW69wZHZthQA/uzsuR6E0mYGyhceSdmBGkc7SMpRR3Sq+ZfAa476goiihfZOfKJLXSQqCTzZKcLS
-	pY/cuO5apOVFhStoXTAg==;
+	List-Owner; bh=9g0yv64sO9gynjbj3F2pyvAvxACDYaV3ahB7uAJ2lXg=; b=kMEliWvhKVpvlO
+	O0ChlIfH6J/I6YLF5WUHh53Chls2ieDMceWjQS1j7zZ/yA0JQ/EFCbYVP1cru76WiYitPYxu1hl9K
+	a9i79f64HxFXtuzHOcWDiAslzcuL2+zqg+NfdzHPLigYFJjBh/sDDSsWJ7MKx2fDxO+iKQTYk7Q2N
+	6yeNDfKQSmpKm6tyYHJI8Fp1IgiC/delyr9UB6lbsEgP0rqFcXLSPYBGfQ84+KDE4fPMfE0Bue7nc
+	CIDqSLwjZy/pfZzzHf0gcsiVyUjqHsuI5Q8vHeXOrWHVgzWM/dz+nDFR6zCv0DQmAbNFzKMH/I0wo
+	U1B7S6WKNK33vsJyifPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHNsD-001aL9-2T;
-	Thu, 06 Jul 2023 12:14:13 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1qHOzF-001lK8-2d;
+	Thu, 06 Jul 2023 13:25:33 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHNsA-001aJj-1O
+	id 1qHOzC-001lJP-1y
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Jul 2023 12:14:12 +0000
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3666iR97029904;
-	Thu, 6 Jul 2023 12:14:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=+Q/btflsW5TQzikZesZHZSlLRjcs2mb2WHp8QLYv/x0=;
- b=clFtVbtGy1eK3lB3Z/oPliWMvIwrqBMJgGjE7LyOtzfyMjtrpvyeQb3Gyt/CmwgXwHpm
- tTajittUnBSCVifl1jb+lFlTc9wrBuiS0KtWB8KEkhaOsWK7HysSplx/oZGQoT7FtHAX
- fAKv6B4S0nrqU9WSzj1NIGswPUl6Xmaq8rVohMQ1gv/QaXpJDavSdgLJwk5ZVz4/qBqM
- rGpWHrk5wet4mqtaaXF/a37mMHMXCGa96RUBX0gEsNPuYA9P2f4EfYLEcYeU87b/8zLB
- 9/QqS7884SRQh8EiwCYEOtXeVCIbVC7KXmdsPfUA147C529UB26hc6fMejKEPd8Qvoyl TQ== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rn2cpbbyw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 06 Jul 2023 12:14:00 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 366CE0Ml009684
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 6 Jul 2023 12:14:00 GMT
-Received: from [10.201.3.104] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 6 Jul
- 2023 05:13:57 -0700
-Message-ID: <06018677-79d9-788b-3583-390eaf08d301@quicinc.com>
-Date: Thu, 6 Jul 2023 17:43:54 +0530
+	Thu, 06 Jul 2023 13:25:32 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F1CDD1F747;
+	Thu,  6 Jul 2023 13:25:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1688649927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrUeEBIcYpuxv4Y9yvbW5ln5CEUDlLn3XNVZJeYvEJs=;
+	b=Iu0LwLMQPzdy2AFlACp4ndugY2UR7qABiRsBt9yo/zcgYK3mnVXjjMsgiRQR7Ji8G564Bv
+	IgzNoR4tR6MlJ5wDLQLznEXUtk8O9cez+Vl5dqSDJrHlEFDaUUPSJnOtn4on1AtgYQMLms
+	poJgacbYeuSA3ODF9K+2yj6jnSmSQWk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1688649927;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qrUeEBIcYpuxv4Y9yvbW5ln5CEUDlLn3XNVZJeYvEJs=;
+	b=kjc/CmwEwHTv0Lfs4iw1mnQod1YcAAXHPl4FgJeP+uliJ8Phee2SlA7nJSkCPwGBheoM29
+	xdBIK0ti8tUEFaBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0A01138EE;
+	Thu,  6 Jul 2023 13:25:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id HtPMNsbApmTBVQAAMHmgww
+	(envelope-from <jack@suse.cz>); Thu, 06 Jul 2023 13:25:26 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id E99D8A0707; Thu,  6 Jul 2023 15:25:25 +0200 (CEST)
+Date: Thu, 6 Jul 2023 15:25:25 +0200
+From: Jan Kara <jack@suse.cz>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 54/92] jffs2: convert to ctime accessor functions
+Message-ID: <20230706132525.xnaiyc7omafbxniy@quack3>
+References: <20230705185755.579053-1-jlayton@kernel.org>
+ <20230705190309.579783-1-jlayton@kernel.org>
+ <20230705190309.579783-52-jlayton@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v4 1/5] mtd: rawnand: qcom: Implement exec_op()
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <mani@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
-References: <20230615073143.25079-1-quic_mdalam@quicinc.com>
- <20230704165052.30039969@xps-13>
-Content-Language: en-US
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20230704165052.30039969@xps-13>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: xODK41afEoIanybAmu-QGJ-S9qqMAuMa
-X-Proofpoint-ORIG-GUID: xODK41afEoIanybAmu-QGJ-S9qqMAuMa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-06_07,2023-07-06_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 spamscore=0 clxscore=1011 bulkscore=0 mlxlogscore=999
- lowpriorityscore=0 suspectscore=0 impostorscore=0 mlxscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2305260000 definitions=main-2307060109
+Content-Disposition: inline
+In-Reply-To: <20230705190309.579783-52-jlayton@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230706_051410_479726_D1B8EFA0 
-X-CRM114-Status: GOOD (  35.01  )
+X-CRM114-CacheID: sfid-20230706_062530_817328_B09DFC78 
+X-CRM114-Status: GOOD (  23.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,149 +92,204 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiA3LzQvMjAyMyA4OjIwIFBNLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+IEhpLAo+IAo+IHF1
-aWNfbWRhbGFtQHF1aWNpbmMuY29tIHdyb3RlIG9uIFRodSwgMTUgSnVuIDIwMjMgMTM6MDE6Mzkg
-KzA1MzA6Cj4gCj4+IEltcGxlbWVudCBleGVjX29wKCkgc28gd2UgY2FuIGxhdGVyIGdldCByaWQg
-b2YgdGhlIGxlZ2FjeSBpbnRlcmZhY2UKPj4gaW1wbGVtZW50YXRpb24uCj4+Cj4+IENvLWRldmVs
-b3BlZC1ieTogU3JpY2hhcmFuIFJhbWFiYWRocmFuIDxxdWljX3NyaWNoYXJhQHF1aWNpbmMuY29t
-Pgo+PiBTaWduZWQtb2ZmLWJ5OiBTcmljaGFyYW4gUmFtYWJhZGhyYW4gPHF1aWNfc3JpY2hhcmFA
-cXVpY2luYy5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IE1kIFNhZHJlIEFsYW0gPHF1aWNfbWRhbGFt
-QHF1aWNpbmMuY29tPgo+PiAtLS0KPj4gQ2hhbmdlIGluIFt2NF0KPj4KPj4gKiBObyBjaGFuZ2Ug
-Zm9yIHRoaXMgcGF0Y2gsIHNpbmNlIHRoaXMgaXMgcGFydCBvZiBleGVjX29wCj4+ICAgIHNlcmll
-cyBwb3N0aW5nIG5ldyBwYXRjaC4KPj4KPj4gQ2hhbmdlIGluIFt2M10KPj4KPj4gKiBSZW1vdmVk
-IE5BTkRfQ01EX1NUQVRVUyBjaGVjayBpbiBwcmVfY29tbWFuZCBhbmQgbW92ZQo+PiAgICBpdCB0
-byBzdGF0dXMgZXhlY19vcC4KPj4KPj4gKiBSZW1vdmVkIG1pbigpICwgc2luY2UgdGhpcyBjaGVj
-ayBub3QgbmVlZGVkCj4+Cj4+ICogUmVtb3ZlZCBhbGwgdGhlIGR1bW15IEFQSXMgb2YgZXhlY19v
-cHMsIGFuZCBhZGRlZCBpdAo+PiAgICBpbnRvIHNhbWUgcGF0Y2ggd2hlcmUgaXRzIGdldHRpbmcg
-YWRkZWQuCj4+Cj4+ICogQWRkZWQgcWNvbV9jaGVja19vcCgpIEFQSSB0byBjaGVjayBmb3IgdW5z
-dXBwb3J0ZWQgZmVhdHVyZQo+PiAgICBieSBjb250cm9sbGVyIGluIGNoZWNrX29ubHkgcGF0aC4K
-Pj4KPj4gQ2hhbmdlIGluIFt2Ml0KPj4KPj4gKiBNaXNzZWQgdG8gcG9zdCBDb3Zlci1sZXR0ZXIs
-IHNvIHBvc3RpbmcgdjIgcGF0Y2ggd2l0aCBjb3Zlci1sZXR0ZXIKPj4KPj4gQ2hhbmdlIGluIFt2
-MV0KPj4KPj4gKiBBZGRlZCBpbml0aWFsIHN1cHBvcnQgZm9yIGV4ZWNfb3BzLgo+Pgo+PiAgIGRy
-aXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyB8IDE1OSArKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysKPj4gICAxIGZpbGUgY2hhbmdlZCwgMTU5IGluc2VydGlvbnMoKykKPj4KPj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyBiL2RyaXZlcnMv
-bXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+PiBpbmRleCA3MmQ2MTY4ZDhhMWIuLmQ5YzRjOWZl
-MmZlOCAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jCj4+
-ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+PiBAQCAtMTU3LDYgKzE1
-Nyw3IEBACj4+ICAgI2RlZmluZQlPUF9QQUdFX1BST0dSQU1fV0lUSF9FQ0MJMHg3Cj4+ICAgI2Rl
-ZmluZQlPUF9QUk9HUkFNX1BBR0VfU1BBUkUJCTB4OQo+PiAgICNkZWZpbmUJT1BfQkxPQ0tfRVJB
-U0UJCQkweGEKPj4gKyNkZWZpbmUJT1BfQ0hFQ0tfU1RBVFVTCQkJMHhjCj4+ICAgI2RlZmluZQlP
-UF9GRVRDSF9JRAkJCTB4Ygo+PiAgICNkZWZpbmUJT1BfUkVTRVRfREVWSUNFCQkJMHhkCj4+ICAg
-Cj4+IEBAIC0yMzUsNiArMjM2LDggQEAgbmFuZGNfc2V0X3JlZyhjaGlwLCByZWcsCQkJXAo+PiAg
-ICAqLwo+PiAgICNkZWZpbmUgTkFORF9FUkFTRURfQ1dfU0VUCQlCSVQoNCkKPj4gICAKPj4gKyNk
-ZWZpbmUgTUFYX0FERFJFU1NfQ1lDTEUJCTUKPj4gKyNkZWZpbmUgTUFYX0NIVU5LX1NJWkUJCQlT
-Wl84Swo+IAo+IE5ldyBsaW5lLgoKICAgIFdpbGwgZml4IGluIG5leHQgcGF0Y2ggdjUuCj4gCj4+
-ICAgLyoKPj4gICAgKiBUaGlzIGRhdGEgdHlwZSBjb3JyZXNwb25kcyB0byB0aGUgQkFNIHRyYW5z
-YWN0aW9uIHdoaWNoIHdpbGwgYmUgdXNlZCBmb3IgYWxsCj4+ICAgICogTkFORCB0cmFuc2ZlcnMu
-Cj4+IEBAIC00NDcsNiArNDUwLDI5IEBAIHN0cnVjdCBxY29tX25hbmRfYm9vdF9wYXJ0aXRpb24g
-ewo+PiAgIAl1MzIgcGFnZV9zaXplOwo+PiAgIH07Cj4+ICAgCj4+ICsvKgo+PiArICogUWNvbSBv
-cCBmb3IgZWFjaCBleGVjX29wIHRyYW5zZmVyCj4+ICsgKgo+PiArICogQGRhdGFfaW5zdHI6CQkJ
-ZGF0YSBpbnN0cnVjdGlvbiBwb2ludGVyCj4+ICsgKiBAZGF0YV9pbnN0cl9pZHg6CQlkYXRhIGlu
-c3RydWN0aW9uIGluZGV4Cj4+ICsgKiBAcmR5X3RpbWVvdXRfbXM6CQl3YWl0IHJlYWR5IHRpbWVv
-dXQgaW4gbXMKPj4gKyAqIEByZHlfZGVsYXlfbnM6CQlBZGRpdGlvbmFsIGRlbGF5IGluIG5zCj4+
-ICsgKiBAYWRkcjFfcmVnOgkJCUFkZHJlc3MxIHJlZ2lzdGVyIHZhbHVlCj4+ICsgKiBAYWRkcjJf
-cmVnOgkJCUFkZHJlc3MyIHJlZ2lzdGVyIHZhbHVlCj4+ICsgKiBAY21kX3JlZzoJCQlDTUQgcmVn
-aXN0ZXIgdmFsdWUKPj4gKyAqIEBmbGFnOgkJCWZsYWcgZm9yIG1pc2MgaW5zdHJ1Y3Rpb24KPj4g
-KyAqLwo+PiArc3RydWN0IHFjb21fb3Agewo+PiArCWNvbnN0IHN0cnVjdCBuYW5kX29wX2luc3Ry
-ICpkYXRhX2luc3RyOwo+PiArCXVuc2lnbmVkIGludCBkYXRhX2luc3RyX2lkeDsKPj4gKwl1bnNp
-Z25lZCBpbnQgcmR5X3RpbWVvdXRfbXM7Cj4+ICsJdW5zaWduZWQgaW50IHJkeV9kZWxheV9uczsK
-Pj4gKwl1MzIgYWRkcjFfcmVnOwo+PiArCXUzMiBhZGRyMl9yZWc7Cj4+ICsJdTMyIGNtZF9yZWc7
-Cj4+ICsJdTggZmxhZzsKPj4gK307Cj4+ICsKPj4gICAvKgo+PiAgICAqIE5BTkQgY2hpcCBzdHJ1
-Y3R1cmUKPj4gICAgKgo+PiBAQCAtMjg2Nyw4ICsyODkzLDE0MSBAQCBzdGF0aWMgaW50IHFjb21f
-bmFuZF9hdHRhY2hfY2hpcChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwKQo+PiAgIAlyZXR1cm4gMDsK
-Pj4gICB9Cj4+ICAgCj4+ICtzdGF0aWMgaW50IHFjb21fb3BfY21kX21hcHBpbmcoc3RydWN0IHFj
-b21fbmFuZF9jb250cm9sbGVyICpuYW5kYywgdTggY21kLAo+PiArCQkJICAgICAgIHN0cnVjdCBx
-Y29tX29wICpxX29wKQo+PiArewo+PiArCWludCByZXQ7Cj4+ICsKPj4gKwlzd2l0Y2ggKGNtZCkg
-ewo+PiArCWNhc2UgTkFORF9DTURfUkVTRVQ6Cj4+ICsJCXJldCA9IE9QX1JFU0VUX0RFVklDRTsK
-Pj4gKwkJYnJlYWs7Cj4+ICsJY2FzZSBOQU5EX0NNRF9SRUFESUQ6Cj4+ICsJCXJldCA9IE9QX0ZF
-VENIX0lEOwo+PiArCQlicmVhazsKPj4gKwljYXNlIE5BTkRfQ01EX1BBUkFNOgo+PiArCQlpZiAo
-bmFuZGMtPnByb3BzLT5xcGljX3YyKQo+PiArCQkJcmV0ID0gT1BfUEFHRV9SRUFEX09ORklfUkVB
-RDsKPj4gKwkJZWxzZQo+PiArCQkJcmV0ID0gT1BfUEFHRV9SRUFEOwo+PiArCQlicmVhazsKPj4g
-KwljYXNlIE5BTkRfQ01EX0VSQVNFMToKPj4gKwljYXNlIE5BTkRfQ01EX0VSQVNFMjoKPj4gKwkJ
-cmV0ID0gT1BfQkxPQ0tfRVJBU0U7Cj4+ICsJCWJyZWFrOwo+PiArCWNhc2UgTkFORF9DTURfU1RB
-VFVTOgo+PiArCQlyZXQgPSBPUF9DSEVDS19TVEFUVVM7Cj4+ICsJCWJyZWFrOwo+PiArCWNhc2Ug
-TkFORF9DTURfUEFHRVBST0c6Cj4+ICsJCXJldCA9IE9QX1BST0dSQU1fUEFHRTsKPj4gKwkJYnJl
-YWs7Cj4+ICsJZGVmYXVsdDoKPiAKPiBBZ2FpbiwgdGhpcyBpcyBub3QgYSBzdXBwb3J0ZWQgY2Fz
-ZSwgeW91IHNob3VsZCBoYW5kbGUgaXQuIEFuZCB0aGlzCj4gbXVzdCBiZSBjaGVja2VkIHVwb24g
-Y2hlY2tfb25seSBjb25kaXRpb25zIGFzIHdlbGwuCj4gCgogICAgIFllcyB1bmRlcnN0YW5kICwg
-V2lsbCBoYW5kbGUgdGhpcyBjYXNlIGluIG5leHQgcGF0Y2ggdjUuCgo+PiArCQlicmVhazsKPj4g
-Kwl9Cj4+ICsKPj4gKwlyZXR1cm4gcmV0Owo+PiArfQo+PiArCj4+ICsvKiBOQU5EIGZyYW1ld29y
-ayAtPmV4ZWNfb3AoKSBob29rcyBhbmQgcmVsYXRlZCBoZWxwZXJzICovCj4+ICtzdGF0aWMgdm9p
-ZCBxY29tX3BhcnNlX2luc3RydWN0aW9ucyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAo+PiArCQkJ
-CSAgICBjb25zdCBzdHJ1Y3QgbmFuZF9zdWJvcCAqc3Vib3AsCj4+ICsJCQkJCXN0cnVjdCBxY29t
-X29wICpxX29wKQo+PiArewo+PiArCXN0cnVjdCBxY29tX25hbmRfY29udHJvbGxlciAqbmFuZGMg
-PSBnZXRfcWNvbV9uYW5kX2NvbnRyb2xsZXIoY2hpcCk7Cj4+ICsJY29uc3Qgc3RydWN0IG5hbmRf
-b3BfaW5zdHIgKmluc3RyID0gTlVMTDsKPj4gKwl1bnNpZ25lZCBpbnQgb3BfaWQ7Cj4+ICsJaW50
-IGk7Cj4+ICsKPj4gKwltZW1zZXQocV9vcCwgMCwgc2l6ZW9mKCpxX29wKSk7Cj4+ICsKPj4gKwlm
-b3IgKG9wX2lkID0gMDsgb3BfaWQgPCBzdWJvcC0+bmluc3Ryczsgb3BfaWQrKykgewo+PiArCQl1
-bnNpZ25lZCBpbnQgb2Zmc2V0LCBuYWRkcnM7Cj4+ICsJCWNvbnN0IHU4ICphZGRyczsKPj4gKwo+
-PiArCQlpbnN0ciA9ICZzdWJvcC0+aW5zdHJzW29wX2lkXTsKPj4gKwo+PiArCQlzd2l0Y2ggKGlu
-c3RyLT50eXBlKSB7Cj4+ICsJCWNhc2UgTkFORF9PUF9DTURfSU5TVFI6Cj4+ICsJCQlxX29wLT5j
-bWRfcmVnID0gcWNvbV9vcF9jbWRfbWFwcGluZyhuYW5kYywgaW5zdHItPmN0eC5jbWQub3Bjb2Rl
-LCBxX29wKTsKPj4gKwkJCXFfb3AtPnJkeV9kZWxheV9ucyA9IGluc3RyLT5kZWxheV9uczsKPj4g
-KwkJCWJyZWFrOwo+PiArCj4+ICsJCWNhc2UgTkFORF9PUF9BRERSX0lOU1RSOgo+PiArCQkJb2Zm
-c2V0ID0gbmFuZF9zdWJvcF9nZXRfYWRkcl9zdGFydF9vZmYoc3Vib3AsIG9wX2lkKTsKPj4gKwkJ
-CW5hZGRycyA9IG5hbmRfc3Vib3BfZ2V0X251bV9hZGRyX2N5YyhzdWJvcCwgb3BfaWQpOwo+PiAr
-CQkJYWRkcnMgPSAmaW5zdHItPmN0eC5hZGRyLmFkZHJzW29mZnNldF07Cj4+ICsJCQlmb3IgKGkg
-PSAwOyBpIDwgTUFYX0FERFJFU1NfQ1lDTEU7IGkrKykgewo+PiArCQkJCWlmIChpIDwgNCkKPj4g
-KwkJCQkJcV9vcC0+YWRkcjFfcmVnIHw9ICh1MzIpYWRkcnNbaV0gPDwgaSAqIDg7Cj4+ICsJCQkJ
-ZWxzZQo+PiArCQkJCQlxX29wLT5hZGRyMl9yZWcgfD0gYWRkcnNbaV07Cj4+ICsJCQl9Cj4+ICsJ
-CQlxX29wLT5yZHlfZGVsYXlfbnMgPSBpbnN0ci0+ZGVsYXlfbnM7Cj4+ICsJCQlicmVhazsKPj4g
-Kwo+PiArCQljYXNlIE5BTkRfT1BfREFUQV9JTl9JTlNUUjoKPj4gKwkJCXFfb3AtPmRhdGFfaW5z
-dHIgPSBpbnN0cjsKPj4gKwkJCXFfb3AtPmRhdGFfaW5zdHJfaWR4ID0gb3BfaWQ7Cj4+ICsJCQlx
-X29wLT5yZHlfZGVsYXlfbnMgPSBpbnN0ci0+ZGVsYXlfbnM7Cj4+ICsJCQlmYWxsdGhyb3VnaDsK
-Pj4gKwkJY2FzZSBOQU5EX09QX0RBVEFfT1VUX0lOU1RSOgo+PiArCQkJcV9vcC0+cmR5X2RlbGF5
-X25zID0gaW5zdHItPmRlbGF5X25zOwo+PiArCQkJYnJlYWs7Cj4+ICsKPj4gKwkJY2FzZSBOQU5E
-X09QX1dBSVRSRFlfSU5TVFI6Cj4+ICsJCQlxX29wLT5yZHlfdGltZW91dF9tcyA9IGluc3RyLT5j
-dHgud2FpdHJkeS50aW1lb3V0X21zOwo+PiArCQkJcV9vcC0+cmR5X2RlbGF5X25zID0gaW5zdHIt
-PmRlbGF5X25zOwo+PiArCQkJYnJlYWs7Cj4+ICsJCX0KPj4gKwl9Cj4+ICt9Cj4+ICsKPj4gK3N0
-YXRpYyBpbnQgcWNvbV9jaGVja19vcChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAo+PiArCQkJIGNv
-bnN0IHN0cnVjdCBuYW5kX29wZXJhdGlvbiAqb3ApCj4+ICt7Cj4+ICsJY29uc3Qgc3RydWN0IG5h
-bmRfb3BfaW5zdHIgKmluc3RyOwo+PiArCWludCBvcF9pZDsKPj4gKwo+PiArCWZvciAob3BfaWQg
-PSAwOyBvcF9pZCA8IG9wLT5uaW5zdHJzOyBvcF9pZCsrKSB7Cj4+ICsJCWluc3RyID0gJm9wLT5p
-bnN0cnNbb3BfaWRdOwo+PiArCj4+ICsJCXN3aXRjaCAoaW5zdHItPnR5cGUpIHsKPj4gKwkJY2Fz
-ZSBOQU5EX09QX0NNRF9JTlNUUjoKPj4gKwkJCWlmIChpbnN0ci0+Y3R4LmNtZC5vcGNvZGUgPT0g
-TkFORF9DTURfUkVBRENBQ0hFU0VRIHx8Cj4+ICsJCQkgICAgaW5zdHItPmN0eC5jbWQub3Bjb2Rl
-ID09IE5BTkRfQ01EX1JFQURDQUNIRUVORCkKPj4gKwkJCQlyZXR1cm4gLUVOT1RTVVBQOwo+IAo+
-IERvIHlvdSByZWFsbHkgbmVlZCB0aGlzIGNoZWNrPyBUaGVzZSBvcGVyYXRpb25zIGhhdmUgc3Bl
-Y2lmaWMgcGF0dGVybiwKPiBubz8gSSBiZWxpZXZlIHlvdSBzaG91bGQgbm90IG5lZWQgdGhpcyBj
-aGVjay4KCiAgICBZZXMgeW91IGFyZSBjb3JyZWN0LCB0aGVzZSBjb21tYW5kIGFyZSBoYXZpbmcg
-c3BlY2lmaWMgcGF0dGVybi4KICAgIEl0cyBub3QgbmVlZGVkIGhlcmUgLCB3aWxsIHJlbW92ZSBp
-biBuZXh0IHBhdGNoIHY1Lgo+PiArCQkJYnJlYWs7Cj4+ICsJCWNhc2UgTkFORF9PUF9BRERSX0lO
-U1RSOgo+PiArCQkJaWYgKGluc3RyLT5jdHguYWRkci5uYWRkcnMgPiBNQVhfQUREUkVTU19DWUNM
-RSkKPj4gKwkJCQlyZXR1cm4gLUVOT1RTVVBQOwo+IAo+IFRoaXMgb25lIGlzIG5vdCBuZWVkZWQg
-ZWl0aGVyLCBhcyBsb25nIGFzIHlvdSBwcm9wZXJseSBkZWZpbmUgdGhlCj4gcGF0dGVybnMuCgog
-ICAgWWVzIHRoaXMgb25lIGFzIHdlbGwgbm90IG5lZWRlZC4gV2lsbCByZW1vdmUgaW4gbmV4dCBw
-YXRjaCB2NS4KPiAKPj4gKwo+PiArCQkJYnJlYWs7Cj4+ICsJCWNhc2UgTkFORF9PUF9EQVRBX0lO
-X0lOU1RSOgo+PiArCQljYXNlIE5BTkRfT1BfREFUQV9PVVRfSU5TVFI6Cj4+ICsJCQlpZiAoaW5z
-dHItPmN0eC5kYXRhLmxlbiA+IE1BWF9DSFVOS19TSVpFKQo+IAo+IFNhbWUuCgogICBXaWxsIHJl
-bW92ZSBpbiBuZXh0IHBhdGNoIHY1LgoKPj4gKwkJCQlyZXR1cm4gLUVOT1RTVVBQOwo+PiArCQkJ
-YnJlYWs7Cj4+ICsJCWRlZmF1bHQ6Cj4+ICsJCQlicmVhazsKPj4gKwkJfQo+PiArCX0KPj4gKwo+
-PiArCXJldHVybiAwOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgaW50IHFjb21fbmFuZF9leGVjX29w
-KHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCj4+ICsJCQkgICAgIGNvbnN0IHN0cnVjdCBuYW5kX29w
-ZXJhdGlvbiAqb3AsCj4+ICsJCQlib29sIGNoZWNrX29ubHkpCj4+ICt7Cj4+ICsJaWYgKGNoZWNr
-X29ubHkpCj4+ICsJCXJldHVybiBxY29tX2NoZWNrX29wKGNoaXAsIG9wKTsKPj4gKwo+PiArCXJl
-dHVybiAwOwo+PiArfQo+PiArCj4+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBuYW5kX2NvbnRyb2xs
-ZXJfb3BzIHFjb21fbmFuZGNfb3BzID0gewo+PiAgIAkuYXR0YWNoX2NoaXAgPSBxY29tX25hbmRf
-YXR0YWNoX2NoaXAsCj4+ICsJLmV4ZWNfb3AgPSBxY29tX25hbmRfZXhlY19vcCwKPiAKPiBJIHVu
-ZGVyc3RhbmQgdGhlIGlkZWEgb2YgbWFraW5nIHRoZSBzZXJpZXMgZWFzaWVyIHRvIHJldmlldywg
-YW5kIEkKPiB0aGFuayB5b3UgZm9yIHRoYXQsIGJ1dCBpbiBwcmFjdGljZSB0aGUgc2VyaWVzIGlz
-IG5vdCBiaXNlY3RhYmxlLiBJCj4gZG91YnQgdGhlIGRyaXZlciB3b3JrcyByaWdodCBhZnRlciBw
-YXRjaCAxLgoKICAgIFllcyB5b3UgYXJlIHJpZ2h0LiBUaGlzIHNlcmllcyBwYXRjaGVzIGFyZSBu
-b3QgYmlzZWN0YWJsZSwgYnV0IGdvdAogICAgY29tcGlsZWQgaW5kaXZpZHVhbGx5LiBCdXQgYm9v
-dCB1cCB3aWxsIG5vdCB3b3JrIGFmdGVyIHBhdGNoIDEuCj4gCj4gWW91IHdpbGwgbGlrZWx5IG5l
-ZWQgdHdvIHBhdGNoZXMsIG9uZSB0byBhZGQgZXhlY19vcCwgb25lIHRvIHJlbW92ZSB0aGUKPiBs
-ZWdhY3kgaW1wbGVtZW50YXRpb24uCgogICAgV2lsbCBjb21iaW5lIGFsbCB0aGUgcGF0Y2hlcyBp
-biB0d28gcGF0Y2hlcy4gT25lIGZvciBleGVjX29wKCkgaW1wbGVtZW50YXRpb24uCiAgICBhbm90
-aGVyIG9uZSBpcyBSZW1vdmUgbGVnYWN5IGltcGxlbWVudGF0aW9uLiBXaWxsIGRvIHRoaXMgaW4g
-bmV4dCBwYXRjaCB2NS4KPiAKPj4gICB9Owo+PiAgIAo+PiAgIHN0YXRpYyB2b2lkIHFjb21fbmFu
-ZGNfdW5hbGxvYyhzdHJ1Y3QgcWNvbV9uYW5kX2NvbnRyb2xsZXIgKm5hbmRjKQo+IAo+IAo+IFRo
-YW5rcywKPiBNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Wed 05-07-23 15:01:19, Jeff Layton wrote:
+> In later patches, we're going to change how the inode's ctime field is
+> used. Switch to using accessor functions instead of raw accesses of
+> inode->i_ctime.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/jffs2/dir.c      | 24 +++++++++++++++---------
+>  fs/jffs2/file.c     |  3 ++-
+>  fs/jffs2/fs.c       | 10 +++++-----
+>  fs/jffs2/os-linux.h |  2 +-
+>  4 files changed, 23 insertions(+), 16 deletions(-)
+> 
+> diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+> index 5075a0a6d594..091ab0eaabbe 100644
+> --- a/fs/jffs2/dir.c
+> +++ b/fs/jffs2/dir.c
+> @@ -204,7 +204,8 @@ static int jffs2_create(struct mnt_idmap *idmap, struct inode *dir_i,
+>  	if (ret)
+>  		goto fail;
+>  
+> -	dir_i->i_mtime = dir_i->i_ctime = ITIME(je32_to_cpu(ri->ctime));
+> +	dir_i->i_mtime = inode_set_ctime_to_ts(dir_i,
+> +					       ITIME(je32_to_cpu(ri->ctime)));
+>  
+>  	jffs2_free_raw_inode(ri);
+>  
+> @@ -237,7 +238,7 @@ static int jffs2_unlink(struct inode *dir_i, struct dentry *dentry)
+>  	if (dead_f->inocache)
+>  		set_nlink(d_inode(dentry), dead_f->inocache->pino_nlink);
+>  	if (!ret)
+> -		dir_i->i_mtime = dir_i->i_ctime = ITIME(now);
+> +		dir_i->i_mtime = inode_set_ctime_to_ts(dir_i, ITIME(now));
+>  	return ret;
+>  }
+>  /***********************************************************************/
+> @@ -271,7 +272,7 @@ static int jffs2_link (struct dentry *old_dentry, struct inode *dir_i, struct de
+>  		set_nlink(d_inode(old_dentry), ++f->inocache->pino_nlink);
+>  		mutex_unlock(&f->sem);
+>  		d_instantiate(dentry, d_inode(old_dentry));
+> -		dir_i->i_mtime = dir_i->i_ctime = ITIME(now);
+> +		dir_i->i_mtime = inode_set_ctime_to_ts(dir_i, ITIME(now));
+>  		ihold(d_inode(old_dentry));
+>  	}
+>  	return ret;
+> @@ -422,7 +423,8 @@ static int jffs2_symlink (struct mnt_idmap *idmap, struct inode *dir_i,
+>  		goto fail;
+>  	}
+>  
+> -	dir_i->i_mtime = dir_i->i_ctime = ITIME(je32_to_cpu(rd->mctime));
+> +	dir_i->i_mtime = inode_set_ctime_to_ts(dir_i,
+> +					       ITIME(je32_to_cpu(rd->mctime)));
+>  
+>  	jffs2_free_raw_dirent(rd);
+>  
+> @@ -566,7 +568,8 @@ static int jffs2_mkdir (struct mnt_idmap *idmap, struct inode *dir_i,
+>  		goto fail;
+>  	}
+>  
+> -	dir_i->i_mtime = dir_i->i_ctime = ITIME(je32_to_cpu(rd->mctime));
+> +	dir_i->i_mtime = inode_set_ctime_to_ts(dir_i,
+> +					       ITIME(je32_to_cpu(rd->mctime)));
+>  	inc_nlink(dir_i);
+>  
+>  	jffs2_free_raw_dirent(rd);
+> @@ -607,7 +610,7 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+>  	ret = jffs2_do_unlink(c, dir_f, dentry->d_name.name,
+>  			      dentry->d_name.len, f, now);
+>  	if (!ret) {
+> -		dir_i->i_mtime = dir_i->i_ctime = ITIME(now);
+> +		dir_i->i_mtime = inode_set_ctime_to_ts(dir_i, ITIME(now));
+>  		clear_nlink(d_inode(dentry));
+>  		drop_nlink(dir_i);
+>  	}
+> @@ -743,7 +746,8 @@ static int jffs2_mknod (struct mnt_idmap *idmap, struct inode *dir_i,
+>  		goto fail;
+>  	}
+>  
+> -	dir_i->i_mtime = dir_i->i_ctime = ITIME(je32_to_cpu(rd->mctime));
+> +	dir_i->i_mtime = inode_set_ctime_to_ts(dir_i,
+> +					       ITIME(je32_to_cpu(rd->mctime)));
+>  
+>  	jffs2_free_raw_dirent(rd);
+>  
+> @@ -864,14 +868,16 @@ static int jffs2_rename (struct mnt_idmap *idmap,
+>  		 * caller won't do it on its own since we are returning an error.
+>  		 */
+>  		d_invalidate(new_dentry);
+> -		new_dir_i->i_mtime = new_dir_i->i_ctime = ITIME(now);
+> +		new_dir_i->i_mtime = inode_set_ctime_to_ts(new_dir_i,
+> +							   ITIME(now));
+>  		return ret;
+>  	}
+>  
+>  	if (d_is_dir(old_dentry))
+>  		drop_nlink(old_dir_i);
+>  
+> -	new_dir_i->i_mtime = new_dir_i->i_ctime = old_dir_i->i_mtime = old_dir_i->i_ctime = ITIME(now);
+> +	old_dir_i->i_mtime = inode_set_ctime_to_ts(old_dir_i, ITIME(now));
+> +	new_dir_i->i_mtime = inode_set_ctime_to_ts(new_dir_i, ITIME(now));
+>  
+>  	return 0;
+>  }
+> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+> index 2345ca3f09ee..11c66793960e 100644
+> --- a/fs/jffs2/file.c
+> +++ b/fs/jffs2/file.c
+> @@ -317,7 +317,8 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
+>  			inode->i_size = pos + writtenlen;
+>  			inode->i_blocks = (inode->i_size + 511) >> 9;
+>  
+> -			inode->i_ctime = inode->i_mtime = ITIME(je32_to_cpu(ri->ctime));
+> +			inode->i_mtime = inode_set_ctime_to_ts(inode,
+> +							       ITIME(je32_to_cpu(ri->ctime)));
+>  		}
+>  	}
+>  
+> diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+> index 038516bee1ab..0403efab4089 100644
+> --- a/fs/jffs2/fs.c
+> +++ b/fs/jffs2/fs.c
+> @@ -115,7 +115,7 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
+>  	ri->isize = cpu_to_je32((ivalid & ATTR_SIZE)?iattr->ia_size:inode->i_size);
+>  	ri->atime = cpu_to_je32(I_SEC((ivalid & ATTR_ATIME)?iattr->ia_atime:inode->i_atime));
+>  	ri->mtime = cpu_to_je32(I_SEC((ivalid & ATTR_MTIME)?iattr->ia_mtime:inode->i_mtime));
+> -	ri->ctime = cpu_to_je32(I_SEC((ivalid & ATTR_CTIME)?iattr->ia_ctime:inode->i_ctime));
+> +	ri->ctime = cpu_to_je32(I_SEC((ivalid & ATTR_CTIME)?iattr->ia_ctime:inode_get_ctime(inode)));
+>  
+>  	ri->offset = cpu_to_je32(0);
+>  	ri->csize = ri->dsize = cpu_to_je32(mdatalen);
+> @@ -148,7 +148,7 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
+>  	}
+>  	/* It worked. Update the inode */
+>  	inode->i_atime = ITIME(je32_to_cpu(ri->atime));
+> -	inode->i_ctime = ITIME(je32_to_cpu(ri->ctime));
+> +	inode_set_ctime_to_ts(inode, ITIME(je32_to_cpu(ri->ctime)));
+>  	inode->i_mtime = ITIME(je32_to_cpu(ri->mtime));
+>  	inode->i_mode = jemode_to_cpu(ri->mode);
+>  	i_uid_write(inode, je16_to_cpu(ri->uid));
+> @@ -284,7 +284,7 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
+>  	inode->i_size = je32_to_cpu(latest_node.isize);
+>  	inode->i_atime = ITIME(je32_to_cpu(latest_node.atime));
+>  	inode->i_mtime = ITIME(je32_to_cpu(latest_node.mtime));
+> -	inode->i_ctime = ITIME(je32_to_cpu(latest_node.ctime));
+> +	inode_set_ctime_to_ts(inode, ITIME(je32_to_cpu(latest_node.ctime)));
+>  
+>  	set_nlink(inode, f->inocache->pino_nlink);
+>  
+> @@ -388,7 +388,7 @@ void jffs2_dirty_inode(struct inode *inode, int flags)
+>  	iattr.ia_gid = inode->i_gid;
+>  	iattr.ia_atime = inode->i_atime;
+>  	iattr.ia_mtime = inode->i_mtime;
+> -	iattr.ia_ctime = inode->i_ctime;
+> +	iattr.ia_ctime = inode_get_ctime(inode);
+>  
+>  	jffs2_do_setattr(inode, &iattr);
+>  }
+> @@ -475,7 +475,7 @@ struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_r
+>  	inode->i_mode = jemode_to_cpu(ri->mode);
+>  	i_gid_write(inode, je16_to_cpu(ri->gid));
+>  	i_uid_write(inode, je16_to_cpu(ri->uid));
+> -	inode->i_atime = inode->i_ctime = inode->i_mtime = current_time(inode);
+> +	inode->i_atime = inode->i_mtime = inode_set_ctime_current(inode);
+>  	ri->atime = ri->mtime = ri->ctime = cpu_to_je32(I_SEC(inode->i_mtime));
+>  
+>  	inode->i_blocks = 0;
+> diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+> index 8da19766c101..50727a1ff931 100644
+> --- a/fs/jffs2/os-linux.h
+> +++ b/fs/jffs2/os-linux.h
+> @@ -35,7 +35,7 @@ struct kvec;
+>  #define ITIME(sec) ((struct timespec64){sec, 0})
+>  #define JFFS2_NOW() JFFS2_CLAMP_TIME(ktime_get_real_seconds())
+>  #define I_SEC(tv) JFFS2_CLAMP_TIME((tv).tv_sec)
+> -#define JFFS2_F_I_CTIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_ctime)
+> +#define JFFS2_F_I_CTIME(f) I_SEC(inode_get_ctime(OFNI_EDONI_2SFFJ(f)))
+>  #define JFFS2_F_I_MTIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_mtime)
+>  #define JFFS2_F_I_ATIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_atime)
+>  #define sleep_on_spinunlock(wq, s)				\
+> -- 
+> 2.41.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
