@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DA00EB64DD
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 14:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F2E3C04A94
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 15:38:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hvvUa/cB5wHd25aw2XzWxjhXujUah40uoBci83149wY=; b=MBE5t0Mf5x9PDZ
-	11BccHT1mD5wBmMqDJERzCu545QKWnPfTpeAGkYauzpj8vHyvMq4icNfxg8/SIV02oUqrwMp+bu99
-	Dv8mjUYEg1Rgs/homwwmL/ivS1NS5tI6AEyA//1qynvh+Zvz+/hpunTPVGiV8GklXLV70EeQgS4Zj
-	zgKxW1OEV/ybVhos4FVKVamrYl6Rd4wxM9HbfTZZ2jzwNp6VdrHyfHZiR13EuDAl21Fq0l2Nv8k1W
-	Ppd1dsB9TJYb5Jg1WgoN/e7GpltvBtEi5YO9+Xah1n23ZrdDEwP6FqF+KDorjUyckGpl+c6ttPSUV
-	KKG4uWhiwcKOHVVqz5QA==;
+	List-Owner; bh=CBVS4NPFsRy7qHJrixmdxjNbacc7xgirRL+2jyu0YJI=; b=npZnC02cHebdFV
+	NQWBBfJHNyKWNkbb2vn92BuXPg90IA3PQKidenDgU/1q5oIPhpIujPda8Va2WUqHYnvS80r9wqHKY
+	ZB4S+hbsVNJOibtOpAncZJmrLOZpE74FF0dLK67E8E1XwWrkyu4W/VegDbo+Q/ZqPX5tCj6toDUum
+	XxoYwerxM5bOZO0lRrfAMKnvqVi7tnyDTVU69nPSGQWEBjIXV8etK8Gmkpd0p4/6qrE12dUESVCX9
+	PCWMYvEXy9msWdWSR4ycVNnikQd+1Cf47JGnQEUFUUJJeXUpL4GvfK1vDO1WG8+v3JhLYEX1C4psf
+	GbQ4+bBnw+09wrWkYk4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHQNk-001vvV-1L;
-	Thu, 06 Jul 2023 14:54:56 +0000
+	id 1qHR4B-0021zP-0v;
+	Thu, 06 Jul 2023 15:38:47 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHQNf-001vuf-2T;
-	Thu, 06 Jul 2023 14:54:51 +0000
-Date: Thu, 6 Jul 2023 07:54:51 -0700
+	id 1qHR44-0021w3-0C;
+	Thu, 06 Jul 2023 15:38:40 +0000
+Date: Thu, 6 Jul 2023 08:38:40 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: Jan Kara <jack@suse.cz>
 Cc: linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -59,12 +59,13 @@ Cc: linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
 	Trond Myklebust <trond.myklebust@hammerspace.com>,
 	xen-devel@lists.xenproject.org
-Subject: Re: [PATCH RFC 0/32] block: Make blkdev_get_by_*() return handle
-Message-ID: <ZKbVuyn0jELh8UDM@infradead.org>
+Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
+Message-ID: <ZKbgAG5OoHVyUKOG@infradead.org>
 References: <20230629165206.383-1-jack@suse.cz>
+ <20230704122224.16257-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230629165206.383-1-jack@suse.cz>
+In-Reply-To: <20230704122224.16257-1-jack@suse.cz>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,24 +82,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 04, 2023 at 02:21:27PM +0200, Jan Kara wrote:
-> Hello,
-> 
-> this patch series implements the idea of blkdev_get_by_*() calls returning
-> bdev_handle which is then passed to blkdev_put() [1]. This makes the get
-> and put calls for bdevs more obviously matching and allows us to propagate
-> context from get to put without having to modify all the users (again!).
-> In particular I need to propagate used open flags to blkdev_put() to be able
-> count writeable opens and add support for blocking writes to mounted block
-> devices. I'll send that series separately.
-> 
-> The series is based on Linus' tree as of yesterday + two bcache fixes which are
-> in the block tree. Patches have passed some basic testing, I plan to test more
-> users once we agree this is the right way to go.
+On Tue, Jul 04, 2023 at 02:21:28PM +0200, Jan Kara wrote:
+> Create struct bdev_handle that contains all parameters that need to be
+> passed to blkdev_put() and provide blkdev_get_handle_* functions that
+> return this structure instead of plain bdev pointer. This will
+> eventually allow us to pass one more argument to blkdev_put() without
+> too much hassle.
 
-Can you post a link to a git branch for this and the follow up series?
-Especially with a fairly unstable base it's kinda hard to look at the
-result otherwise.
+Can we use the opportunity to come up with better names?  blkdev_get_*
+was always a rather horrible naming convention for something that
+ends up calling into ->open.
+
+What about:
+
+struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+		const struct blk_holder_ops *hops);
+struct bdev_handle *bdev_open_by_path(dev_t dev, blk_mode_t mode,
+		void *holder, const struct blk_holder_ops *hops);
+void bdev_release(struct bdev_handle *handle);
+
+?
 
 ______________________________________________________
 Linux MTD discussion mailing list
