@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 509ACC001E0
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 18:29:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65369EB64DC
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 18:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=tZqIbTDERB2a0jG8m3jNt/3Qzw9+0kF5h5wrbj6ervI=; b=PAg
-	iSezG6wMConoAdr1hsUanpfyX3z4TL756RF2lJz4m8TleLd9LFmNt/sDTA+LScxGiwsLmktcX0JQA
-	wh6emoBvGmQorVAl0JZb6PWXl7lrH1C6BoiC9F3S0681r+m2C+XESdQ/2HnYHZzkQ12T0A+MgYrSZ
-	+FlCG0NUPT/lCYFGQbNQ34/bFC1zGxLzYvgyRmOOv9JLx70Pr1ASGZ/KVOW6ExOn9aXJRH4htM+Hz
-	piRsXKmEMESDIIhYgXdPuJ5j8WxHNGqqn+foLYcs+037aH9oTcr8T6GtPf7+NViwP8IkjNtN0rAhj
-	3FYX7ZVTB2HtpOOkdqatJs4fKNYtp1w==;
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=aEJhR6EdCZTHPya/+z1IJcMOVnHAA93aq4OovPMkwEA=; b=2q9xSuKvTQOB6ZVk0/dPtPgaEO
+	FoDKT1Sj8TzjUGf2IUhNHVUY1Ljq6HjgQD9qKT2VB/Ou10oerR3gxnW+/IoFFNkzIHP3wnA1iWSS2
+	nOMa1MhlryKXZpcznzR77uT5cUN2OPbDpMF5IRj/oJJuch9I/GIIrFvQxT5TfVp7ZNybwD9enu4HX
+	VPiHzX+1bMJsBvfahyYB/9ZAJ7LWa5DylbX5p8RcWmU4EbiZ96qe3ADu7xF4x3MWw+r0Ees78LVKn
+	erg/je0irESJZ1fgJuqWNAMUIHNPXBP3CsKnOC26xVLXYIb2Jeh9cuA7bVnF2kYTE4fdI+w2jDk0O
+	OB58gZ6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHTjS-002Oqo-2p;
-	Thu, 06 Jul 2023 18:29:34 +0000
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
+	id 1qHTjY-002OtN-1n;
+	Thu, 06 Jul 2023 18:29:40 +0000
+Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHTjQ-002Opv-0B
+	id 1qHTjV-002Orf-1L
 	for linux-mtd@lists.infradead.org;
-	Thu, 06 Jul 2023 18:29:33 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6687096c6ddso694287b3a.0
-        for <linux-mtd@lists.infradead.org>; Thu, 06 Jul 2023 11:29:30 -0700 (PDT)
+	Thu, 06 Jul 2023 18:29:38 +0000
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-66f5faba829so672367b3a.3
+        for <linux-mtd@lists.infradead.org>; Thu, 06 Jul 2023 11:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1688668170; x=1691260170;
-        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/ZV2zKJn+MgLcCKh5YRCUsqlyiHgInDXPlz3ms0CDbk=;
-        b=AzALlCf+aspr6eJl9lG+BXngNE5yXjHvl87GcmePZiqTwqbJSmz+8gCYDBNX10KQP1
-         cSJVBDcKer7/2gSwFfKQqoiR+Jz2PHA9gYy8VoYWi8mYke25h8McwJpdtlY1DwMtpr8h
-         dxZ85iy5nqrjDZKermt4WwosNmZl7X9Skyt8E=
+        d=broadcom.com; s=google; t=1688668176; x=1691260176;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kdKGWUbGNZ0QO+JMSEBiLNbimzhoxUmAMXK12MHHg/M=;
+        b=TVJ3nLzTNgv6O4WJiB7UQ1RGjus7AUtVcHdzXu7qewI5MXkr6g2pSvaoJFVQJYhS66
+         ZYqAGOb8eRa2sbITvmrnhgXb8WBVklfGU/6ocrRtMiEBYbKESSFfqN4SQ2xqJEeNxKb0
+         aRwskoxljew4bUyqU/YlTEd4w4QzjBWVTA7To=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688668170; x=1691260170;
-        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/ZV2zKJn+MgLcCKh5YRCUsqlyiHgInDXPlz3ms0CDbk=;
-        b=Xe+GPtXsWMbjR07tzW9sV8MrewfychgAau35wHle/aqhR5gq6JdKMn9uyZxnvYD8TP
-         i4M+Z5s+5XSPIhNofIIcCoi/6hiuybwBpI50m+eRyLbLfYCfOW1qk9wyeRJnGZTN1J9K
-         w4VjBqeDqOIi+GmOim4RZt9aYNzlF8sQE79xOoNGxonaqni1fVmmufbmUUF/Dzj3Z9RI
-         oFivmZ/ePnpVIajYitSbqujP+99OXosElz/TRhH2JGOGInR1xszXRGiMJhPrxDn1CJSn
-         3wHiJcfrk5YBbUGOa3fX9U77OtP6n6Y0b+ZsoRVO/N+a7ypi8HZmDBgVdYWtz0bwQSEC
-         sUgg==
-X-Gm-Message-State: ABy/qLZGQbeejYidQN/ST7AGYc8Rea/XJxt79l9TZclcN69q31So1pel
-	ODRZ78EeKBrI98gk6PVCnX7ww+cX1pXIL4gSy84=
-X-Google-Smtp-Source: APBJJlE61dCvpgmzRDlKP6v5TuSczVeTKOvhJiIynK/P4c8U+I4ZLPmQ+74AIOG0zxEhffiGPjowkg==
-X-Received: by 2002:a05:6a00:2446:b0:66a:3812:7eda with SMTP id d6-20020a056a00244600b0066a38127edamr1918742pfj.9.1688668169563;
-        Thu, 06 Jul 2023 11:29:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1688668176; x=1691260176;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kdKGWUbGNZ0QO+JMSEBiLNbimzhoxUmAMXK12MHHg/M=;
+        b=WRTHKvm9VzhW5e6ZaKwhyAc3vWHZBxpC/SM4l1TJKeEip5ljTpmj2d7IlaKTkdOg9x
+         kZy3wcAqGSacfyNItQq16FqKlGw+3Aw4rni1EYybHpAxrHlMDlO7/U02HCC8xXjs4Y0O
+         5jn+jSSDPuYt7nMwR3aCWH3K6HyEzcU6Ia6gnmkjU62Vo/WCJMMCb/jqB3vSPHpt4KTJ
+         veuq4uPTJoHTD9BwTAH6vjKa76i3rwLFwPyWHOQ0y3EJc8XgQHPEG7qTEfu1knBwu9Qn
+         o1zqQegjJnqioar5RVmkMdmxuAo3U0c4KtYnjy1JNfub81lOJAvqJlbq1HZOd6uqVpJq
+         vy9w==
+X-Gm-Message-State: ABy/qLZFz9SYlhb7ENE5RkUfedpkzc7AyI/9jb3ClrQZNafoSlycn9Or
+	mTpJ1xT+Vz+pBZs1uYmjW4O6PA==
+X-Google-Smtp-Source: APBJJlHeySiuxxq2R6Ai3jVV/fwkfMpSWlkHFx80dOBaKpwk/a+GxXItO74MPBe9ET2kvwqH5Kk/EA==
+X-Received: by 2002:a05:6a00:139b:b0:679:bc89:e5b with SMTP id t27-20020a056a00139b00b00679bc890e5bmr2741416pfg.19.1688668176150;
+        Thu, 06 Jul 2023 11:29:36 -0700 (PDT)
 Received: from ubuntu-22.localdomain ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id y13-20020aa7804d000000b006826c9e4397sm1580871pfm.48.2023.07.06.11.29.26
+        by smtp.gmail.com with ESMTPSA id y13-20020aa7804d000000b006826c9e4397sm1580871pfm.48.2023.07.06.11.29.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jul 2023 11:29:27 -0700 (PDT)
+        Thu, 06 Jul 2023 11:29:35 -0700 (PDT)
 From: William Zhang <william.zhang@broadcom.com>
 To: Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
 	Linux MTD List <linux-mtd@lists.infradead.org>
@@ -71,22 +71,23 @@ Cc: f.fainelli@gmail.com,
 	tomer.yacoby@broadcom.com,
 	dan.beygelman@broadcom.com,
 	William Zhang <william.zhang@broadcom.com>,
-	Frieder Schrempf <frieder.schrempf@kontron.de>,
-	Rob Herring <robh@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	stable@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	linux-kernel@vger.kernel.org,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Boris Brezillon <bbrezillon@kernel.org>,
 	Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: [PATCH v4 0/5] mtd: rawnand: brcmnand: driver and doc updates
-Date: Thu,  6 Jul 2023 11:29:04 -0700
-Message-Id: <20230706182909.79151-1-william.zhang@broadcom.com>
+Subject: [PATCH v4 3/5] mtd: rawnand: brcmnand: Fix crash during the panic_write
+Date: Thu,  6 Jul 2023 11:29:07 -0700
+Message-Id: <20230706182909.79151-4-william.zhang@broadcom.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230706182909.79151-1-william.zhang@broadcom.com>
+References: <20230706182909.79151-1-william.zhang@broadcom.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230706_112932_149694_DF9F68CC 
-X-CRM114-Status: GOOD (  11.47  )
+X-CRM114-CacheID: sfid-20230706_112937_478094_16CD6578 
+X-CRM114-Status: GOOD (  14.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,54 +99,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6983573287382975289=="
+Content-Type: multipart/mixed; boundary="===============6564992311457149011=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============6983573287382975289==
+--===============6564992311457149011==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000006bb70505ffd5b291"
+	boundary="000000000000cd995605ffd5b258"
 
---0000000000006bb70505ffd5b291
+--000000000000cd995605ffd5b258
 Content-Transfer-Encoding: 8bit
 
-This patch series include the accumulative updates and fixes for the
-brcmnand driver. The bcmbca SoC related updates are removed from v2 and
-will send separate patch series for that. v3 series adds a new patch for
-mtd oobsize fix.
+When executing a NAND command within the panic write path, wait for any
+pending command instead of calling BUG_ON to avoid crashing while
+already crashing.
+
+Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
+Signed-off-by: William Zhang <william.zhang@broadcom.com>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Reviewed-by: Kursad Oney <kursad.oney@broadcom.com>
+Reviewed-by: Kamal Dasu <kamal.dasu@broadcom.com>
+Cc: stable@vger.kernel.org
+
+---
 
 Changes in v4:
-- Move ACC_CONTROL_ECC*_SHIFT definitions out of the enum definition
-- Add cc stable tag
-- Update comment in the polling status and oob write function
 - Update commit message
+- Add cc stable tag
 
-Changes in v3:
-- Fix kernel test robot sparse warning:
-   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1500:54: sparse: expected unsigned int [usertype] data
-   drivers/mtd/nand/raw/brcmnand/brcmnand.c:1500:54: sparse: got restricted __be32 [usertype]
+Changes in v3: None
+Changes in v2: None
 
-Changes in v2:
-- Use driver static data for ECC level shift
-- Handle the remaining unaligned oob data after the oob data write loop
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-William Zhang (5):
-  mtd: rawnand: brcmnand: Fix ECC level field setting for v7.2
-    controller
-  mtd: rawnand: brcmnand: Fix potential false time out warning
-  mtd: rawnand: brcmnand: Fix crash during the panic_write
-  mtd: rawnand: brcmnand: Fix potential out-of-bounds access in oob
-    write
-  mtd: rawnand: brcmnand: Fix mtd oobsize
-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 119 +++++++++++++++--------
- 1 file changed, 81 insertions(+), 38 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index 9a373a10304d..b2c6396060db 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -1608,7 +1608,17 @@ static void brcmnand_send_cmd(struct brcmnand_host *host, int cmd)
+ 
+ 	dev_dbg(ctrl->dev, "send native cmd %d addr 0x%llx\n", cmd, cmd_addr);
+ 
+-	BUG_ON(ctrl->cmd_pending != 0);
++	/*
++	 * If we came here through _panic_write and there is a pending
++	 * command, try to wait for it. If it times out, rather than
++	 * hitting BUG_ON, just return so we don't crash while crashing.
++	 */
++	if (oops_in_progress) {
++		if (ctrl->cmd_pending &&
++			bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0))
++			return;
++	} else
++		BUG_ON(ctrl->cmd_pending != 0);
+ 	ctrl->cmd_pending = cmd;
+ 
+ 	ret = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY, NAND_CTRL_RDY, 0);
 -- 
 2.37.3
 
 
---0000000000006bb70505ffd5b291
+--000000000000cd995605ffd5b258
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -216,19 +231,19 @@ VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
 urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOtAj5+tLINZDM0+SF+/Zo866ikD
-bPlDEufKqzNMUI6WMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
-MDcwNjE4MjkzMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIChHeKDCnH9+qUjW45aIyaXs53Yk
+0mOWstzrupNse8axMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIz
+MDcwNjE4MjkzNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQAJrtySrgnHbJShOPb2Nrn/p3TIvqJhMQBPeYWmFyNShT4Z
-WrnNqhNFp8I1rtnfwMlTVfCLYoEpDsP8flDI4t7smd5/gtavT9WYiSdyTY9SKc7ktx3n6W7PU+xU
-Lo6CCswQJIIc+wF5YOL/vOphwidXfumadqBANwM9eqaw2B489PvWE9Co/XOcn/bWcAjV+7/oBay5
-EgHDahWylJs49FkL39lZu5gUQ69K8AviH8Lh6GNF0TbCUCYaaIea044T3IHLau3uxmj64zsM5fwg
-zMChE/ZXzfYW7kqJl+O/Mrgz4NKVwAXwflkRhzm/+JlwX66vfZ/6F0msMCscR8J317bQ
---0000000000006bb70505ffd5b291--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQCcMCElsTKTpj0tDQBkoDaMpkQD8rDWAQ9x+gGb1udnd1+c
+dYXOVCst69zScFzC17X/87/mBJz4UIF639hJBB6AMgh8h2plsSIblNDyxLEG1lgODB4sw4kgqWby
++1bldeQfzZmAFUTdZYpuytJnGJ6m/HjXY9tGrv4Hp7vT3732KF+KOW5dWOsmkgT8e8OCnWKmg5G2
+P4lGAKe8rwqIkOhD01pvQI5qvLGgkAZa608XlFWkDTueD8dlxiT3fLfehD+2BKEcqVPwFoJ6DwJz
+ZWX70gEQXGOnsNJ7Aa6o9d1kZJPCKI1cn+dD2JFVKpbJWeZQYaxdTN/nFsm/Rc+Ft8X3
+--000000000000cd995605ffd5b258--
 
 
---===============6983573287382975289==
+--===============6564992311457149011==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -238,5 +253,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============6983573287382975289==--
+--===============6564992311457149011==--
 
