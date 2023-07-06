@@ -4,67 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 810B9EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jul 2023 19:52:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BBBDC05052
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 00:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Date:
+	Message-Id:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qsEF406OgNVJtMxZ8vlf/rmpYL0LmaTsQ/twQ8yfo5U=; b=T7Qdeo8UDmQWYg
-	mmNkcj2h7SGE6hVTXdn9dNLxkSrUBD0afptLkdUESoEVX+qZJnL5L3coXsIJxqcM1GEMc7Qj9e3e+
-	kcuCJbxaDGyiVmMRSSL6ARyOab7V2HlckymS91n7RsS0Zko4LXAhcFKsHcgThOwD/L9vT+FVTqdBl
-	q5/p099RZtbeUjf7hgmqAP+w92wFic2Pcx+kVdn15f8s+saK088Rq1qiWucDqftm7dhH6qGhyAgMb
-	J4tIRp9kg2Jf2vx165U4bDiK2tki9ae1cqYRP84YDw0X96oFk0lS+ACd0EdQbTc3o44VJbL9JQGGy
-	jVMrNDd7qkazwMQlrDqA==;
+	List-Owner; bh=FcH6icVYENF25nL1BXEIS/PkND1Cf+WDgTIqQb+Akts=; b=MYStcMVEjBHIuh
+	/WHppijNCFNlCUOyxcTjOAbtZTyKzwKz6PNrqojkwmQG9BkrmjHa3GHc6+4dnDOu7AyPtC80sUU0U
+	5qpctIUqQ3OfDllli9L8bLjLFPDk611w7hf2dsgbqEGXyVgNOXOpli4kjyjDVtU0qCrABI9ppLRKh
+	h0Ctbg2T048Og9mO8ItYArfUqIDlsDU467t4zLeetxlfWydyp0GoieAliuwDeyIp5MgY5ByDfh8kQ
+	aCeWvLxf1YGZIrSn8ItsgDM3YM8BBMmugEvoxGnThXrmiqBAfhiupmV0DkphwLduk8ts0SCZyteaL
+	sUm2Cc95nO5sgdfTu+bA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH8Xh-00Gx3o-1r;
-	Wed, 05 Jul 2023 19:52:01 +0000
-Received: from mail-io1-f47.google.com ([209.85.166.47])
+	id 1qHChQ-00HSQf-0x;
+	Thu, 06 Jul 2023 00:18:20 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH8Xe-00Gx3H-0i;
-	Wed, 05 Jul 2023 19:51:59 +0000
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-77acb04309dso354062639f.2;
-        Wed, 05 Jul 2023 12:51:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688586717; x=1691178717;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OgxCgI0UhXaalrd8FtZ3lKHjbHQYR+CHqoq8oQgcBj8=;
-        b=EvuP3ga2tqxVMgx6y451lLZgza8cVYUL1SoyuMBrUXsR0iGIGBl46VwO7N3lKqAtlF
-         FMUmwfPsVP9ljVaenbflLbgkdqk3TlkxWLbRwvtgHGxNrf34/Mskqoh+H35T0AqLllf9
-         ZxyVuFwG+yP73OrmHfG3gQscaxmHs2l30koNNdyDbgu4ND4X/Zq4wNysYTPoqZwNZKbN
-         u5n8zQfzuLXXosyokDnO/2PbwXOstRHIvJNzPFzKurN725/Ke95Gq7W0fZPOh6S6x14m
-         2vuPBUBMm91APYuTenkjlvqFQvfTwYtGaYQaOAXrfGM7OVfr2NLrX9U8FFyux2knvtzM
-         RNbQ==
-X-Gm-Message-State: ABy/qLZlaBkP1+uhHG1SbvuZbrwj2CnEC8MNn21rvcwxKi6rhN+4o+eN
-	B4lMU9HDPpKZmjy51fErjg==
-X-Google-Smtp-Source: APBJJlFfE26pMmnc4X7bL1ZeGdt2/p9FLN9uM6KgYidS2YWs2WUaDK7eEf0pVgwqz52ouAz0T6SvXg==
-X-Received: by 2002:a5e:891a:0:b0:785:ff35:f340 with SMTP id k26-20020a5e891a000000b00785ff35f340mr118432ioj.14.1688586717448;
-        Wed, 05 Jul 2023 12:51:57 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id h2-20020a02c4c2000000b00411bdcdc488sm7729558jaj.173.2023.07.05.12.51.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jul 2023 12:51:56 -0700 (PDT)
-Received: (nullmailer pid 1730881 invoked by uid 1000);
-	Wed, 05 Jul 2023 19:51:54 -0000
-Date: Wed, 5 Jul 2023 13:51:54 -0600
-From: Rob Herring <robh@kernel.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Florian Fainelli <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: Add SEAMA partition bindings
-Message-ID: <20230705195154.GA1702900-robh@kernel.org>
-References: <20230705-seama-partitions-v2-0-9d349f0d5ab7@linaro.org>
- <20230705-seama-partitions-v2-1-9d349f0d5ab7@linaro.org>
+	id 1qHChN-00HSOc-02;
+	Thu, 06 Jul 2023 00:18:18 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 797AE617AA;
+	Thu,  6 Jul 2023 00:18:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C33B1C433C8;
+	Thu,  6 Jul 2023 00:18:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688602694;
+	bh=UCIqkh07H9RodI2FiYHSloPcTyNTNSp1TtLBvzeAlzY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=XD5s9qgQk+bezWq3JBvoy9wmXJ5ZRyDVTHkpXWgLVO3OxVcBH0YyZg8Gz6rb+KfwN
+	 /A+CNNvgWQMrDzOs56n2cEhwU0PkBRXiccPcVu64Aq1yBYBPWYZC4FuTB8N5QK1KQ+
+	 MdmDcn18RW7d50qJnG0uAgWsSoPksgnrlWtl7DDURyh0pmkik5uADq73uLJFx1EI+5
+	 TxJjuarqz28vf+B0YnRKEqs2EnBb9P4N1MwtPeCMbPEFDapDEj1dai8Lh/Uv6asayt
+	 1cEnsHDnrwJGGhdMLNNVih3y+j4HdKbkLcado1IWcst06dccj5qYciZqXhBkSg0rUM
+	 /tfAjpbujjdzA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A1405C64459;
+	Thu,  6 Jul 2023 00:18:14 +0000 (UTC)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230705-seama-partitions-v2-1-9d349f0d5ab7@linaro.org>
+Subject: Re: [f2fs-dev] [PATCH 01/30] block: also call ->open for incremental
+ partition opens
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: <168860269464.29151.2364164271547941172.git-patchwork-notify@kernel.org>
+Date: Thu, 06 Jul 2023 00:18:14 +0000
+References: <20230608110258.189493-2-hch@lst.de>
+In-Reply-To: <20230608110258.189493-2-hch@lst.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: axboe@kernel.dk, vigneshr@ti.com, rafael@kernel.org,
+ linux-nvme@lists.infradead.org, phil@philpotter.co.uk, clm@fb.com,
+ dm-devel@redhat.com, haris.iqbal@ionos.com, pavel@ucw.cz,
+ miquel.raynal@bootlin.com, jinpu.wang@ionos.com, linux-nilfs@vger.kernel.org,
+ linux-scsi@vger.kernel.org, richard@nod.at, linux-pm@vger.kernel.org,
+ linux-um@lists.infradead.org, josef@toxicpanda.com, colyli@suse.de,
+ linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+ viro@zeniv.linux.org.uk, dsterba@suse.com, brauner@kernel.org,
+ martin.petersen@oracle.com, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-btrfs@vger.kernel.org, hare@suse.de
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230705_125158_258378_867B642B 
-X-CRM114-Status: GOOD (  26.32  )
+X-CRM114-CacheID: sfid-20230705_171817_173958_0D3653A4 
+X-CRM114-Status: GOOD (  12.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,105 +86,89 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jul 05, 2023 at 12:17:46PM +0200, Linus Walleij wrote:
-> This types of NAND partitions appear in OpenWrt and
-> U-Boot.
+Hello:
+
+This series was applied to jaegeuk/f2fs.git (dev)
+by Jens Axboe <axboe@kernel.dk>:
+
+On Thu,  8 Jun 2023 13:02:29 +0200 you wrote:
+> For whole devices ->open is called for each open, but for partitions it
+> is only called on the first open of a partition, e.g.:
 > 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v1->v2:
-> - Fix up the binding to be childless
-> ---
->  .../bindings/mtd/partitions/partitions.yaml        |  1 +
->  .../devicetree/bindings/mtd/partitions/seama.yaml  | 50 ++++++++++++++++++++++
->  2 files changed, 51 insertions(+)
+>   open("/dev/vdb", ...)
+>   open("/dev/vdb", ...)
+>     - 2 call to ->open
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> index 2edc65e0e361..9bd0a8d800da 100644
-> --- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> @@ -21,6 +21,7 @@ oneOf:
->    - $ref: linksys,ns-partitions.yaml
->    - $ref: qcom,smem-part.yaml
->    - $ref: redboot-fis.yaml
-> +  - $ref: seama.yaml
+> [...]
 
-I think this is in the wrong place. These should be device level 
-partitioning schemas, not an individual partition type. (Though nesting 
-is possible)
+Here is the summary with links:
+  - [f2fs-dev,01/30] block: also call ->open for incremental partition opens
+    https://git.kernel.org/jaegeuk/f2fs/c/9d1c92872e70
+  - [f2fs-dev,02/30] cdrom: remove the unused bdev argument to cdrom_open
+    https://git.kernel.org/jaegeuk/f2fs/c/764b83100b9a
+  - [f2fs-dev,03/30] cdrom: remove the unused mode argument to cdrom_ioctl
+    https://git.kernel.org/jaegeuk/f2fs/c/473399b50de1
+  - [f2fs-dev,04/30] cdrom: remove the unused cdrom_close_write release code
+    https://git.kernel.org/jaegeuk/f2fs/c/a4cec8bc14c0
+  - [f2fs-dev,05/30] cdrom: track if a cdrom_device_info was opened for data
+    https://git.kernel.org/jaegeuk/f2fs/c/8cdf433e2b8e
+  - [f2fs-dev,06/30] cdrom: remove the unused mode argument to cdrom_release
+    https://git.kernel.org/jaegeuk/f2fs/c/7ae24fcee992
+  - [f2fs-dev,07/30] block: pass a gendisk on bdev_check_media_change
+    https://git.kernel.org/jaegeuk/f2fs/c/444aa2c58cb3
+  - [f2fs-dev,08/30] block: pass a gendisk to ->open
+    https://git.kernel.org/jaegeuk/f2fs/c/d32e2bf83791
+  - [f2fs-dev,09/30] block: remove the unused mode argument to ->release
+    https://git.kernel.org/jaegeuk/f2fs/c/ae220766d87c
+  - [f2fs-dev,10/30] block: rename blkdev_close to blkdev_release
+    https://git.kernel.org/jaegeuk/f2fs/c/7ee34cbc291a
+  - [f2fs-dev,11/30] swsusp: don't pass a stack address to blkdev_get_by_path
+    https://git.kernel.org/jaegeuk/f2fs/c/c889d0793d9d
+  - [f2fs-dev,12/30] bcache: don't pass a stack address to blkdev_get_by_path
+    https://git.kernel.org/jaegeuk/f2fs/c/29499ab060fe
+  - [f2fs-dev,13/30] rnbd-srv: don't pass a holder for non-exclusive blkdev_get_by_path
+    https://git.kernel.org/jaegeuk/f2fs/c/5ee607675deb
+  - [f2fs-dev,14/30] btrfs: don't pass a holder for non-exclusive blkdev_get_by_path
+    https://git.kernel.org/jaegeuk/f2fs/c/2ef789288afd
+  - [f2fs-dev,15/30] block: use the holder as indication for exclusive opens
+    https://git.kernel.org/jaegeuk/f2fs/c/2736e8eeb0cc
+  - [f2fs-dev,16/30] block: add a sb_open_mode helper
+    https://git.kernel.org/jaegeuk/f2fs/c/3f0b3e785e8b
+  - [f2fs-dev,17/30] fs: remove sb->s_mode
+    https://git.kernel.org/jaegeuk/f2fs/c/81b1fb7d17c0
+  - [f2fs-dev,18/30] scsi: replace the fmode_t argument to scsi_cmd_allowed with a simple bool
+    https://git.kernel.org/jaegeuk/f2fs/c/5f4eb9d5413f
+  - [f2fs-dev,19/30] scsi: replace the fmode_t argument to scsi_ioctl with a simple bool
+    https://git.kernel.org/jaegeuk/f2fs/c/2e80089c1824
+  - [f2fs-dev,20/30] scsi: replace the fmode_t argument to ->sg_io_fn with a simple bool
+    https://git.kernel.org/jaegeuk/f2fs/c/1991299e49fa
+  - [f2fs-dev,21/30] nvme: replace the fmode_t argument to the nvme ioctl handlers with a simple bool
+    https://git.kernel.org/jaegeuk/f2fs/c/7d9d7d59d44b
+  - [f2fs-dev,22/30] mtd: block: use a simple bool to track open for write
+    https://git.kernel.org/jaegeuk/f2fs/c/658afed19cee
+  - [f2fs-dev,23/30] rnbd-srv: replace sess->open_flags with a "bool readonly"
+    https://git.kernel.org/jaegeuk/f2fs/c/99b07780814e
+  - [f2fs-dev,24/30] ubd: remove commented out code in ubd_open
+    https://git.kernel.org/jaegeuk/f2fs/c/bd6abfc8e789
+  - [f2fs-dev,25/30] block: move a few internal definitions out of blkdev.h
+    https://git.kernel.org/jaegeuk/f2fs/c/cfb425761c79
+  - [f2fs-dev,26/30] block: remove unused fmode_t arguments from ioctl handlers
+    https://git.kernel.org/jaegeuk/f2fs/c/5e4ea834676e
+  - [f2fs-dev,27/30] block: replace fmode_t with a block-specific type for block open flags
+    https://git.kernel.org/jaegeuk/f2fs/c/05bdb9965305
+  - [f2fs-dev,28/30] block: always use I_BDEV on file->f_mapping->host to find the bdev
+    https://git.kernel.org/jaegeuk/f2fs/c/4e762d862344
+  - [f2fs-dev,29/30] block: store the holder in file->private_data
+    https://git.kernel.org/jaegeuk/f2fs/c/ee3249a8ce78
+  - [f2fs-dev,30/30] fs: remove the now unused FMODE_* flags
+    https://git.kernel.org/jaegeuk/f2fs/c/0733ad800291
 
->  
->  properties:
->    compatible: true
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/seama.yaml b/Documentation/devicetree/bindings/mtd/partitions/seama.yaml
-> new file mode 100644
-> index 000000000000..5ed7764bba69
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/seama.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/seama.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Seattle Image Partitions
-> +
-> +description: The SEAttle iMAge (SEAMA) partition is a type of partition
-> +  used for NAND flash devices. This type of flash image is found in some
-> +  D-Link routers such as DIR-645, DIR-842, DIR-859, DIR-860L, DIR-885L,
-> +  DIR890L and DCH-M225, as well as in WD and NEC routers on the ath79
-> +  (MIPS), Broadcom BCM53xx, and RAMIPS platforms. This partition type
-> +  does not have children defined in the device tree, they need to be
-> +  detected by software.
-> +
-> +allOf:
-> +  - $ref: partition.yaml#
-> +
-> +maintainers:
-> +  - Linus Walleij <linus.walleij@linaro.org>
-> +
-> +select: false
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Remove this and your example will fail. You need unevaluatedProperties.
 
-There's a problem in partitions.yaml. It never gets applied, so this 
-schema never gets applied. The default 'select' is generated based on 
-$nodename or compatible, but it has neither. This needs some more 
-thought on how to fix given the variable way partitions can be combined. 
-Probably at a minimum, all the 'select: false' need to be removed. 
-
-> +
-> +properties:
-> +  compatible:
-> +    const: seama
-> +
-> +  '#address-cells': false
-> +
-> +  '#size-cells': false
-> +
-> +required:
-> +  - compatible
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    partitions {
-> +        compatible = "fixed-partitions";
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        partition@0 {
-> +            compatible = "seama";
-> +            reg = <0x0 0x800000>;
-> +            label = "firmware";
-> +        };
-> +    };
-> 
-> -- 
-> 2.34.1
-> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
