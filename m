@@ -4,32 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F2E3C04A94
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 15:38:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 395A7EB64D9
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jul 2023 16:14:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CBVS4NPFsRy7qHJrixmdxjNbacc7xgirRL+2jyu0YJI=; b=npZnC02cHebdFV
-	NQWBBfJHNyKWNkbb2vn92BuXPg90IA3PQKidenDgU/1q5oIPhpIujPda8Va2WUqHYnvS80r9wqHKY
-	ZB4S+hbsVNJOibtOpAncZJmrLOZpE74FF0dLK67E8E1XwWrkyu4W/VegDbo+Q/ZqPX5tCj6toDUum
-	XxoYwerxM5bOZO0lRrfAMKnvqVi7tnyDTVU69nPSGQWEBjIXV8etK8Gmkpd0p4/6qrE12dUESVCX9
-	PCWMYvEXy9msWdWSR4ycVNnikQd+1Cf47JGnQEUFUUJJeXUpL4GvfK1vDO1WG8+v3JhLYEX1C4psf
-	GbQ4+bBnw+09wrWkYk4Q==;
+	List-Owner; bh=EGVDU+70yjE9t7utqeEJw7TxAgtEXnXrjNuDrRHjgnc=; b=lkw85vO8IV8haI
+	dGB6FPn74qh5jxL2/9MZ45uCn6oCFukon+loVxnLWSD1sa4YrTDdBcDdi6cqtH5ur1G0zqwMptDks
+	YHkvCZd9Vl352aUC985l16MuFiKoFZki89mI0vLXg8wCx/n9v311JApZBrs/CqpQ0gH01FBBSq/H7
+	E1PV0aMqSl97lX2UkXx4fAmiz+BJ370LwLja39MNhSgTY42Se/xafNyyw/fFlCAhPfPNzRCXmcCVh
+	+0VeKAlpJdp7QJVqDocG86vSQKka/bZ84QOGp8PT0ZpMpoyk4MG0o17/zTMQ3dqAlhLTArmM+hWsU
+	xLJ8rW/O7I5cfCr04R9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHR4B-0021zP-0v;
-	Thu, 06 Jul 2023 15:38:47 +0000
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHR44-0021w3-0C;
-	Thu, 06 Jul 2023 15:38:40 +0000
-Date: Thu, 6 Jul 2023 08:38:40 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Jan Kara <jack@suse.cz>
-Cc: linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@infradead.org>,
+	id 1qHRcv-0028C7-2a;
+	Thu, 06 Jul 2023 16:14:41 +0000
+Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qHRcs-0028B5-06;
+	Thu, 06 Jul 2023 16:14:40 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4E502223E8;
+	Thu,  6 Jul 2023 16:14:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1688660074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U3X2c4DZ7u1WJQoXTnnFA0EIrJReIsvKkxSR5ka0KIA=;
+	b=QmpkaGPRZaoHJzRo2a6TjndqPucrWh7f/FY2L3L/tkSmDEI1eMsM8wrizbEulyyCbALdKF
+	NAhJw22VD9dE7RV9U1X7QxEMrx2wMp7N4RocvtwIIP7j7sOckxmGngjpgD0K7UzZlI8BMj
+	7TaptoZ4hnlDaa+a0YvCourIJS7rkEc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1688660074;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U3X2c4DZ7u1WJQoXTnnFA0EIrJReIsvKkxSR5ka0KIA=;
+	b=BFZ9TyrydR/g+7ExWBaMGJWuaCnekgsDWt3QOA77tpx+pa0ab3V9kDQ7HgXi8ns77IxFLs
+	krph+7hPTygy6eCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2ADF1138EE;
+	Thu,  6 Jul 2023 16:14:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id +RN/CmropmTIKwAAMHmgww
+	(envelope-from <jack@suse.cz>); Thu, 06 Jul 2023 16:14:34 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id B00D6A0707; Thu,  6 Jul 2023 18:14:33 +0200 (CEST)
+Date: Thu, 6 Jul 2023 18:14:33 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
 	Alasdair Kergon <agk@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
@@ -60,12 +95,16 @@ Cc: linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	Trond Myklebust <trond.myklebust@hammerspace.com>,
 	xen-devel@lists.xenproject.org
 Subject: Re: [PATCH 01/32] block: Provide blkdev_get_handle_* functions
-Message-ID: <ZKbgAG5OoHVyUKOG@infradead.org>
+Message-ID: <20230706161433.lj4apushiwguzvdd@quack3>
 References: <20230629165206.383-1-jack@suse.cz>
  <20230704122224.16257-1-jack@suse.cz>
+ <ZKbgAG5OoHVyUKOG@infradead.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230704122224.16257-1-jack@suse.cz>
+In-Reply-To: <ZKbgAG5OoHVyUKOG@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20230706_091438_233367_0FB7C351 
+X-CRM114-Status: GOOD (  16.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,26 +121,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 04, 2023 at 02:21:28PM +0200, Jan Kara wrote:
-> Create struct bdev_handle that contains all parameters that need to be
-> passed to blkdev_put() and provide blkdev_get_handle_* functions that
-> return this structure instead of plain bdev pointer. This will
-> eventually allow us to pass one more argument to blkdev_put() without
-> too much hassle.
+On Thu 06-07-23 08:38:40, Christoph Hellwig wrote:
+> On Tue, Jul 04, 2023 at 02:21:28PM +0200, Jan Kara wrote:
+> > Create struct bdev_handle that contains all parameters that need to be
+> > passed to blkdev_put() and provide blkdev_get_handle_* functions that
+> > return this structure instead of plain bdev pointer. This will
+> > eventually allow us to pass one more argument to blkdev_put() without
+> > too much hassle.
+> 
+> Can we use the opportunity to come up with better names?  blkdev_get_*
+> was always a rather horrible naming convention for something that
+> ends up calling into ->open.
+> 
+> What about:
+> 
+> struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+> 		const struct blk_holder_ops *hops);
+> struct bdev_handle *bdev_open_by_path(dev_t dev, blk_mode_t mode,
+> 		void *holder, const struct blk_holder_ops *hops);
+> void bdev_release(struct bdev_handle *handle);
 
-Can we use the opportunity to come up with better names?  blkdev_get_*
-was always a rather horrible naming convention for something that
-ends up calling into ->open.
+I'd maybe use bdev_close() instead of bdev_release() but otherwise I like
+the new naming.
 
-What about:
-
-struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
-		const struct blk_holder_ops *hops);
-struct bdev_handle *bdev_open_by_path(dev_t dev, blk_mode_t mode,
-		void *holder, const struct blk_holder_ops *hops);
-void bdev_release(struct bdev_handle *handle);
-
-?
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
