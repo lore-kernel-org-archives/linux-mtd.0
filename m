@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0F4CEB64DC
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jul 2023 17:03:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 146BCEB64DC
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jul 2023 18:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:Subject:References:Cc:
-	To:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3b/jESMMXWsUOmxdPR0YP+LTf38YVuB1pFZBM0fmkF4=; b=Z/3Xkm7KBjH0/5
-	bA1xKEiAreADKabCupn2zuR8Up8N/Nis5SNcmkWu/lgQUGU+9mW1NurinTDGE+swUDclH4AVA/COW
-	m3cmXjJq2wd0R25kwZq9YlUBvVwfFfT1J0ARFpTU/x86cRzVVMYioXChp1cIXaEgYIfXph0oufq/M
-	vmVH0u05234tPDemCSwTNlHJL9e3GktP7b5CycEBxH0yX9m19vpfFBumsmTzibDVRpp+oO5nK6yNn
-	FN5VLhL9Du7C0xHbe45ecSBKvJOeM3qc8mpH4ztS7wjhF+DznUO7hDgxIAxYxOq2WtcNhZV0sQ3bY
-	WDjfmYDlVtD2KscL71pg==;
+	List-Owner; bh=UsnkBe8uU/6ABJwS2HVyLemKHt8ocjxGS9r/Vf3VvlM=; b=uVB4Y2e5F+BJLp
+	i3V5cEsD1CgcfBq5LFkKEtGPQLDHoSiSFuF+fqnOmT+zDMKrB32ajk4cxduUrO543FDpHXUAECw7i
+	l2DOxwoRRvtCqq3F0B8oamfqbRuoqGMQ914nXxcd8m6PlXS9fAajzBStOEGX2KzYGtNfaT3N6FTvF
+	GEGeRty7EM20M+QbeCd52LPvu7S00FR2KzGtxjc9m6njgcXyWASYjhQgmbwun+FDVg1CwwHFvPnd5
+	LquX9+9sZ9GY6ngYYxYulrSwJlxo8Pr6/eD9TLyMZreKHViOLotQsIitRNbTfRJP6tKwb2iObfI0p
+	4HfEOfzKLWMDqKHyJVrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJGmD-00FTEl-1m;
-	Tue, 11 Jul 2023 17:03:49 +0000
-Received: from mout.web.de ([212.227.15.14])
+	id 1qJI10-00FeDy-0V;
+	Tue, 11 Jul 2023 18:23:10 +0000
+Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJGm9-00FTEM-2W
-	for linux-mtd@lists.infradead.org;
-	Tue, 11 Jul 2023 17:03:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
- s=s29768273; t=1689095003; x=1689699803; i=markus.elfring@web.de;
- bh=zPw/6sBeU4GG0fjwIO6avkm9UYX13IMdVQkUiFeoQtI=;
- h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:In-Reply-To;
- b=c2HU1nENWr8p/vYsIRV54UCVmbvogsO5HgFO30xJdSre6VcAtwjMMf/SgTLPTOzj0I9tjZX
- YhpAGKy9CyASB5aab/aMQqkidJX+Jr4kYVzCnTqRtNGqGDhWd69hEZ2TVVpaUgLaGehfYQBvP
- bVHVT5EIOaoumLesUjqHcJRlTo2lcgR7UTK7SedecZctaNwnkr5vs4FPfwii+cMit/fVL56JL
- +YaPIUBzc8H/Ogs3Uqh0Ql8Ko/RJqS2I4xazIHM/k+H4bN1h1ibMRrswiSfDafAeDMu7ywdca
- 31ZywRzAfzwwT4rJdVfAu83UtvUm/pWzC2yJubcXJFlP4OS72ZQg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.83]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MkVwo-1pYPhd1C2A-00mEUS; Tue, 11
- Jul 2023 19:03:23 +0200
-Message-ID: <287e1e44-6fdf-3e9b-6fc0-a323706e3d2a@web.de>
-Date: Tue, 11 Jul 2023 19:03:22 +0200
+	id 1qJI0x-00FeDO-2M;
+	Tue, 11 Jul 2023 18:23:08 +0000
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso62892545e9.2;
+        Tue, 11 Jul 2023 11:23:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689099786; x=1691691786;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E7xPaNuGxjRVce9if/BkLrzBXCRANFyenyUfHAqEJI4=;
+        b=qw9DZGtJtiv5SMYXbeSqGBDE2tktVR1mtvGA18xXWNWGPUNx/4O/F7gqNn6XGZiAm7
+         M2CL+ZrNoWd1R7k64Mq8q1Xv2i2768qfiNBlh1TH9ZC0jWukI7o42iWHWtMo8rbpX5Fm
+         wmIUPZnHXq8KLJfiOyMXFMvNAIK9Zz532+cu5yi0xO9pqjsFHh5IZMF2UqjN6EIyd523
+         sUvML+62H3KBwK32NzOSmxkpjMLV2cy4FiEyxUUqK6uivBfTMHgU5mweSxqpXftBfdf+
+         yKhaBcTt0nyWcmMZa7kY2Jt7HS0N7rGFaarSg5NAoSvPuNF5ePoR1GrMcSej4rDVqx5w
+         FAng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689099786; x=1691691786;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E7xPaNuGxjRVce9if/BkLrzBXCRANFyenyUfHAqEJI4=;
+        b=jGSIbm4piVc5u/7gHxcoaud+wytEpI7MVSsIzPQboMht4y+nasIg1rwQT+4UgAsIkA
+         tFZigC3xNSsnNo/q7IkETx4w9+CpiknMA8sTEAxcXAGCoh8ugqQKN6gsf8105Kbs/nDq
+         eo1Y2JnyG0UczO2tRL0hrutOxNHifxMTzZdquV6JYuhvaxo3+E5OtD+bDCn97p+U31kt
+         dkyIT3+Pz88iL65XXk1S3G2WGHd/ByJDFt+/mZQTWf0h6yKhxZ+lF8SfY9QBrDoUr9Ex
+         WHNqCWXOpj8yHgH99DJFgehNYLs43Oziw3iTZPt8NxVyX0JqHJkOgnXEJq+PMEHlCvV9
+         U13A==
+X-Gm-Message-State: ABy/qLZSZjyMHU0YgfzMyLLkPKRAiwRfOc5dN7QfjsriTQS3kjepldr1
+	3FhD/WPCMvphV/DLY9MIBI4=
+X-Google-Smtp-Source: APBJJlHWLKu+Ss4FLYKlJKMc415q932H2IE9tLV4rBu9e7rP9nTkJGw1cSnX8i+/joaCcRGaRo4fJA==
+X-Received: by 2002:a5d:4582:0:b0:313:ede8:9f13 with SMTP id p2-20020a5d4582000000b00313ede89f13mr15134045wrq.32.1689099786086;
+        Tue, 11 Jul 2023 11:23:06 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
+        by smtp.gmail.com with ESMTPSA id d17-20020adfe891000000b003143cdc5949sm2967568wrm.9.2023.07.11.11.23.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jul 2023 11:23:05 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
+ Yangtao Li <frank.li@vivo.com>
+Cc: Yangtao Li <frank.li@vivo.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/18] mtd: rawnand: sunxi: Use
+ devm_platform_get_and_ioremap_resource()
+Date: Tue, 11 Jul 2023 20:23:03 +0200
+Message-ID: <2230707.iZASKD2KPV@jernej-laptop>
+In-Reply-To: <20230707040622.78174-1-frank.li@vivo.com>
+References: <20230707040622.78174-1-frank.li@vivo.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-To: Yang Rong <yangrong@vivo.com>, linux-mtd@lists.infradead.org,
- kernel-janitors@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: opensource.kernel@vivo.com, LKML <linux-kernel@vger.kernel.org>,
- Lu Hongfei <luhongfei@vivo.com>
-References: <20230711020752.2344-1-yangrong@vivo.com>
-Subject: Re: [PATCH v3] mtd: core: Fix resource leak in a
- for_each_child_of_node() loop
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20230711020752.2344-1-yangrong@vivo.com>
-X-Provags-ID: V03:K1:3+G0NIuKpPjrVOTQR8E1HgS9Wc6ZbN+bLueGA6nxvJTTIWZLo+U
- suAWTgCcokbcPCNAPogp7x/HWpVWYUv7iUfxOUzVBjgdOOTH9MWQxhGHfFh4QJYf6HD5rKn
- 1mvwexYYM2Sgrt8MHAodzlFDsycAudHvQ/hy/tLeSdZX/v5U4Y2VUveDUV1YY1wdgdMt6M8
- T8/ee0ebDjroxNl93xNxg==
-UI-OutboundReport: notjunk:1;M01:P0:+NWvolpzgl4=;csOyFsQDYCzQ46oklgdW/jrhaCD
- EPjuMtX1lQuxcucRCOZNhmWMCUV1FT1DPqtSFToib+3PTGR7XU9L1tsihy3b+pYoR6pyMYVA1
- k6WYtGE8cc+iFKFFrw4cply/ZFq9XjfBUuh2zxeY8Hdim5CVeT/EG9YiISWnBCpxCjJJESQLg
- sHy7A796YTeYgVm0UWZpXPCk0quWO3Vr0d1tHlrgDgZz//8SY9fkCgcBMf1MBPSDfXT7Dwn+q
- vBYKvbFEqpv1q7VkNSLXYQlQCtfFv/mJJXO3Oq/OxjlCjh3v6oaQRln+mFGEm45iLxLK3WaPO
- QWVmZ06CcUJdEd2VcG6d4d3ciiE43e7bmSfsaEjbng0GBdW+J7fzJwvgnzr2PIyhPBS7CgPf1
- eh+v8BQPFm0AcwmpadzejkcQoyDTIDD3PEwI2+nAx7MXi+fmsKxmjH9/H8orTacay43YTY6g9
- vuVZ2u9OlE3SCeu8x6+C71qop/PlyO1YIfpVqqRSgtoVSmfV0EN+z57J1BnpgvPWZ+jyh+Hn6
- 3cxYMseSYU853I4PWJ98OwNpeJDrIJBpToG5P4leR7LYTZzSg6b00qVB5zByRSCgNt3p9mh3Z
- 7KK0IbiY2wgYJz1nzI5KJSkclihbP7QJJohKAXIzCjbe3sPq2j8VNGMnle6H8ayMMfYLyI7iy
- v0/ESptTdcbICqgkbhisBv/X/Re0bYFo1nmVHP7KOG5K62Ye3UBLqvd0e8o19DaQ7AmWvtuq5
- vs77nyZC7rCalIHztrUJk/AFln4pq13VklQGo9ozlcU4aFJvtJbco4/AVUp5TxzOT5iXcfAjf
- r3qzt5WqjE+GIhotO1zQAzSDbaYrYmLLk+aR+rYMXucF/urlEpM69pbxbpB7KCbqgOXiHlDgE
- F6oGD2YLHZxJdTWYNR3KOYd2KhVkmKbY3ax6HLl4pysEsy9dpqdKZPZvCfEaU0b9X/rMiZd/u
- pqvF+A==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230711_100346_102554_33F75478 
-X-CRM114-Status: UNSURE (   6.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230711_112307_771852_851ADA48 
+X-CRM114-Status: GOOD (  13.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,14 +95,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
->  1 file changed, 1 insertion(+)
->  mode change 100644 => 100755 drivers/mtd/mtdcore.c
+Dne petek, 07. julij 2023 ob 06:06:05 CEST je Yangtao Li napisal(a):
+> Convert platform_get_resource(), devm_ioremap_resource() to a single
+> call to devm_platform_get_and_ioremap_resource(), as this is exactly
+> what this function does.
+> 
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
 
-I find this information suspicious.
-Is such a modification really required?
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-Regards,
-Markus
+Best regards,
+Jernej
+
+> ---
+>  drivers/mtd/nand/raw/sunxi_nand.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/sunxi_nand.c
+> b/drivers/mtd/nand/raw/sunxi_nand.c index 9884304634f6..db36bd755b8d 100644
+> --- a/drivers/mtd/nand/raw/sunxi_nand.c
+> +++ b/drivers/mtd/nand/raw/sunxi_nand.c
+> @@ -2087,8 +2087,7 @@ static int sunxi_nfc_probe(struct platform_device
+> *pdev) nand_controller_init(&nfc->controller);
+>  	INIT_LIST_HEAD(&nfc->chips);
+> 
+> -	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	nfc->regs = devm_ioremap_resource(dev, r);
+> +	nfc->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &r);
+>  	if (IS_ERR(nfc->regs))
+>  		return PTR_ERR(nfc->regs);
+
+
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
