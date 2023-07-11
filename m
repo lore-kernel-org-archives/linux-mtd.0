@@ -4,93 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B46FC001DD
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jul 2023 12:27:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00129EB64DC
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jul 2023 16:13:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:Subject:References:Cc:
+	To:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=I45v7zPhV2O9tUi/b9DWc9Ei8juy/Mwx2mNf71fbcLU=; b=ZOBpcHHYGTyc5N
-	6Vx/7FZcEyh44rf1vYRF2qo5xPc7E71Dk+pfUrvJS98L8eJSbna5Ti6hWdVgIRqluqUgo5JNtzmi6
-	sSuIKNCpWw7ZzTNvUz6sn7WOy0AWsjT5PG6psLmn3GTW45LcHlqtOCCcfa3Xdw/vIPgzqR7YOMnkS
-	Tc1czb2gUx4EIJiAgAddzAospdcgEpUQ5zxzqt0VDOgYs+8rUXlkCe0ihlooGCH0pV9FfHIoImzT0
-	Bj5u6zMzfjC9MkYqp1M7xUgXvzMkHWHzdoipM1UoNH/+pmeX58knHpGa7fcOs984+FoPejoZ3e/8G
-	xGO6oz92+jz5RXE3ReJw==;
+	List-Owner; bh=NY8Gj2juA14Q9Q2o/mczhYIAyhIq4X3lzc2CWsZYplg=; b=b/8z7vM+NifZCX
+	M4QZdKknBmevgijgD6cnEBZp1Fc6KHoHWxT3aCw/qzn+nMJwOATrMgSpVZXF0QthNkeWI5hNdQKSz
+	6GUMD3v5+dMm7ctUE3wKVjeaHOyroUxO34pjdzl6SE5zjecWQwiEsHoMvgeIgkrQM2R61l0DSQMOH
+	lLq7jbNBeX48sZIltEcyusNlgWdBmGzBCQDVK1izRxzM3660s5ej0R5kOr4FCk0uRvgNrOHyl+vKo
+	QpREMnurVWoY/yUFiYxRQnTdgMSsuvLs8PJI5jFXG71WtDVOOqqgLvY2kqoJhJ4v/ZbnWiG7Qa4L6
+	Va8vsofaXbXfOMoT2hKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJCSf-00ErhT-0w;
-	Tue, 11 Jul 2023 12:27:21 +0000
-Received: from mx1.sberdevices.ru ([37.18.73.165])
+	id 1qJFyu-00FLuJ-1v;
+	Tue, 11 Jul 2023 16:12:52 +0000
+Received: from mout.web.de ([212.227.15.3])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJCSX-00Erea-1C;
-	Tue, 11 Jul 2023 12:27:15 +0000
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 9415910000E;
-	Tue, 11 Jul 2023 15:27:08 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9415910000E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1689078428;
-	bh=uzOFkT1cmd7+H0v/RUcwZvHpwhwpjoY7e7YIY9mdlBc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=dK57yjTCLF8I1TG4Q+uAmzvX6s8b45y5386QmGn4iH+/g2e6/xjXdG1ql7owUUWyt
-	 uem3ykApd5mE/Q9fZABi9qYFbVMILxJnzaYf2ZIFKsirG0q6emvqnjsf2AvtSUHTEF
-	 8FsEInyuq1k6zb42iUUcVoWwfE5hF7YNcxC9Ywero3mhkaayXZ8UM79mC3+1rNtX1i
-	 TcWn3U6yjmzWgGTl7v331gkhWyuXxyckstoi5qXCHdC07xo6IqjVbgI3n9kndCcZT6
-	 pq2kmgGdAiNFn2TVb9y8+UdVIqVDAVU1NLf3N5AMy6UyptHwtPaC+L4Sr7nQj7eptA
-	 T1D02Yzbn1JKg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 11 Jul 2023 15:27:08 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 11 Jul 2023 15:26:59 +0300
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, Kevin
- Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
-	<AVKrasnov@sberdevices.ru>, Rob Herring <robh@kernel.org>,
-	<linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH v3 1/3] dt-bindings: nand: meson: support for 512B ECC step size
-Date: Tue, 11 Jul 2023 15:21:27 +0300
-Message-ID: <20230711122129.2635558-2-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
-References: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
+	id 1qJFyq-00FLsE-2U
+	for linux-mtd@lists.infradead.org;
+	Tue, 11 Jul 2023 16:12:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+ s=s29768273; t=1689091951; x=1689696751; i=markus.elfring@web.de;
+ bh=PU7KZ9CHDHb4Lhokiu8z2aAZLqdGM0mPweaH1uR583w=;
+ h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:In-Reply-To;
+ b=Az4lI0U7B5zd+wvdakHlSPLZv3JfShs3Jy/G0+Pk215NR2LhbGS8+q+hH7Tf0LUkkURcdAo
+ DU0HQcDo4h7egrBMvfW/R9JP9Pci9shRBQiHqp9yxIVMqjSxXcx2nRpKS1sVO2+K+xJGIRW7c
+ +JT8t6ielKm3mJARLdXJEDcm6fqjTubjwHZlx6sN0GkpMjyYGxQsF4rRnQ6H+6UZ0WVKYFOfw
+ aZmS4Xsalk6MbK+gRTF/9DtcRgGmR0aA+dzUJZp72iQX6fXGaREwvIzb3N/IQdnmmEPkMSBti
+ rX7mxla3MVLyI4xf/5rciR7hRFCB780jdRWhqWtEjoHKvYyz+3UA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.83]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MA4bO-1q8lJF1NBi-00BtSZ; Tue, 11
+ Jul 2023 18:12:31 +0200
+Message-ID: <743f4445-31a6-0e51-f432-08033bdcaf20@web.de>
+Date: Tue, 11 Jul 2023 18:12:30 +0200
 MIME-Version: 1.0
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178541 [Jul 11 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 521 521 0c3391dd6036774f2e1052158c81e48587b96e95, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/11 10:54:00 #21597245
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+To: Yang Rong <yangrong@vivo.com>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: opensource.kernel@vivo.com, LKML <linux-kernel@vger.kernel.org>,
+ Lu Hongfei <luhongfei@vivo.com>
+References: <20230711020752.2344-1-yangrong@vivo.com>
+Subject: Re: [PATCH v3] mtd: core: Fix resource leak in a
+ for_each_child_of_node() loop
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20230711020752.2344-1-yangrong@vivo.com>
+X-Provags-ID: V03:K1:B0v6cdaZODTit4Q3w7wlJ9oZJc2g7F0tgOUsB1DZg+xje/PuU/z
+ ACwsAWmL0CREy/J5uSlPwGdjRwPOeiZ1TIKzueRFNFHioXtVmRBh0+XzlIZ0I9lky/a2vk9
+ nz1RmRqEPAshatraCYCbeuWArZDPX+NpDL4Lb635g4aTgRF8ycklJuO3q2c6IhSUnOCqppD
+ C7HtQyekS7nCbvJvmH6wQ==
+UI-OutboundReport: notjunk:1;M01:P0:VOTOCMzYi7U=;Azcce+cJjxTU2kOGeXRTVvyY5Cs
+ OsfppYx4i9jJziKuJLqaweGr1XbThXGkig5fKKTSeB579ODYf9Im5Q9GiOfAVxm4kghARCWKG
+ mx+1/Jg/PPW8btajiHLLBBS6YawYyvKAE9gIxTLtAhzsjg8jVuYmB//k5GqSgVpfaZRPJSNrB
+ +X0uBDbFcHLmqn7pMhiLx9zDyVNcnrfMUPJZmNxllMkRPPmcI/CxbsHqrTurnWZLXHWm6cx+/
+ fQxIY9T68lMHC0zqDdynhyyF1cqo/47bPYzACrx8grpBmVZJLtr6pXeeNYZMa2HrKfkIWLcNV
+ vVFX65Ixi8SodwButo2DOKvi/lXCeyRwNbhfTGAtROPIMI2HXmGxS3Ki4KFdtJiWXVU2X7OZo
+ 9PVauPpx/3qdLUX5xVKc+mPj8fOsGUPRtKOub9E74biZCqEvWiAD4higZE3HKZsFbXd0Hf81r
+ uhyIkfEhqVPeEk9JAcysWSCO8jURIMxp/qfyGlo8Zarq65wg4Fn0qltI8gXKskMwEdMEE+PnI
+ KtvKzrZCUt7Vu92WgZJELxOerJ6h9T5BRA60zqgq3pk9k7asCAtJukZBU7sh/ZS6hVhNbLODC
+ F42zSmGvlEsOFGQQ8uqe5gPQm4Sx9gKKFmJ7EhHI8GBc0yYeMidxD/z+StQqJpvZinXeJf7DS
+ GPnpHDmtJyVA6FErez1q/GiPAWJmWCwxCaajyYbENMcfvA17yjNiaWjXERYc1uN83SP6Dl4pU
+ cYES+RtSmmm9nOv/mN23MH/cYcGpaVT+T9bt694zySXy5alYfz/P2slmpk2jsZTcvNmT3vHqw
+ JrR75skWbqq6HSgOkAZz9CQjxBBY/TK0gXRXftQIYkkkm1aIs+5xTGlu8Q7ORVu6KlJb/gm0P
+ lNMITLswpEnBJb9qTAbn3vV3v61/e+9EyYoKBqKn9l+tAqi01s6Mqm8ud4wY6vnSRhziuc/9O
+ dxAAavT4T07dlOgoaEK86ELrUeI=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230711_052714_093364_30F83FBA 
-X-CRM114-Status: GOOD (  12.34  )
+X-CRM114-CacheID: sfid-20230711_091249_273783_84D6F3BF 
+X-CRM114-Status: UNSURE (   6.77  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,37 +91,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Meson NAND supports both 512B and 1024B ECC step size, so replace
-'const' for only 1024B step size with enum for both sizes.
-
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Acked-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-index 28fb9a7dd70f..e81757c9e0ed 100644
---- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-@@ -49,7 +49,7 @@ patternProperties:
-         const: hw
- 
-       nand-ecc-step-size:
--        const: 1024
-+        enum: [512, 1024]
- 
-       nand-ecc-strength:
-         enum: [8, 16, 24, 30, 40, 50, 60]
--- 
-2.35.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+PiBFbnN1cmUgY2hpbGQgbm9kZSByZWZlcmVuY2VzIGFyZSBwcm9wZXJseSBkZWNyZW1lbnRlZCBp
+biB0aGUgZXJyb3IgcGF0aAo+ICAgb2YgdGhpcyBmdW5jdGlvbiBpbXBsZW1lbnRhdGlvbi4KCldp
+bGwgbGVhZGluZyBzcGFjZSBjaGFyYWN0ZXJzIGJlIG9taXR0ZWQgKGZyb20gbXkgd29yZGluZyB2
+YXJpYW50IHN1Z2dlc3Rpb24pCmZvciB0aGUgZmluYWwgY29tbWl0IG1lc3NhZ2U/CgoK4oCmCj4g
+LS0tCj4gdjI6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDIzMDcxMDA2MTQxMi4yMjcy
+LTEteWFuZ3JvbmdAdml2by5jb20vCj4gVGhlIG1vZGlmaWNhdGlvbnMgbWFkZSBjb3BhcmVkIHRv
+IHRoZSBwcmV2aW91cyB2ZXJzaW9uIGFyZSBhcyBmb2xsb3dzOgoKSG93IGRvIHlvdSB0aGluayBh
+Ym91dCB0aGUgb21pc3Npb24gb2YgYSBsaW5lIGhlcmUKKHNvIHRoYXQgYSByZXBlYXRlZCB0eXBv
+IGNhbiBiZSBhdm9pZGVkKT8KCldvdWxkIHRoZSBzdWJzZXF1ZW50IGVudW1lcmF0aW9uIGxvb2sg
+YSBiaXQgbmljZXIgaWYgZWFjaCB0ZXh0IGl0ZW0Kd2lsbCBiZSBkZWxpbWl0ZWQgYnkgYSBzcGFj
+ZSBjaGFyYWN0ZXI/CgpSZWdhcmRzLApNYXJrdXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
