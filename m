@@ -4,88 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EF24EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jul 2023 20:37:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69DFEEB64DD
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jul 2023 21:19:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F0Y8C5eh/BLMNiDWsABSceMfUBxfweOCWEGn61laySM=; b=XryIPJ2e/lrOPO
-	n7eh1U0Hb9833WFb6uKsQ3XZpL1wOP2RTXP7DBZPHXNP3iwgliDPrZpMnKpmM4/2h7roicBKESl22
-	dVLXcKxzCjiMQnpfyOaFM1G7WryPOvKoMmDGiPohI0l1kUApKvZ1W4UKzSYVf0kJcTsK1d3GCmoLx
-	7NcbPSEnAP7OEQeKFrJB3pVJ2+2wRx9dqGCy/g8ysy213/AG1QO19jcBoCJ1YsPGp5XcMe8ArQRL7
-	OBIwrPVJwfNZcxFbfxMphEcjsPAXSBAsJMyDjbWjIHjJPfo0RT3jpSvBBoIAjQUIvL1OGoeudtYJI
-	BsIeZzn9aSHvr9zuOdkA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=quEiFRlaeY8l7ErdOd0wZEjQbsoiVo7avuD/ItNUQ+I=; b=Ch8FWtZS3GlSm4L7B/89SdvqD0
+	GCClS0CzDn6lKe/tooJPVzIGIBepTjGDrWVJpN/l0mgoPeKrAlA0E5h1u1FPGe53+DPDQNmZJxI6I
+	svozUFSVquQVseMV2ldR7CNJwWzHxybXLYAqSznQmCXoTGSqkYlIrd+bOO0y07+uQUVfv/eM963yM
+	q+TaVx2DTwVG1UANOyQV6X0cEYab8RHye4CKZD9+UpYnk/7ir02BjyPEE4lTcbOu57IiFy2ja+1J+
+	zLPOm9v/Sr2yuuXUSSZcACeVebePPJnZpLR7ititZ9zzy4shglvzM1qOVz6v017rE+SEdwGta9LwM
+	BsYdGOaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJgZw-001BwR-2p;
-	Wed, 12 Jul 2023 20:36:52 +0000
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+	id 1qJhEn-001HUg-2I;
+	Wed, 12 Jul 2023 21:19:05 +0000
+Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJgZt-001Bu4-0G
+	id 1qJhEk-001HRs-0i
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Jul 2023 20:36:51 +0000
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	Wed, 12 Jul 2023 21:19:03 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id B32582C0108;
-	Thu, 13 Jul 2023 08:36:42 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1689194202;
-	bh=AS60128qFleQjW20PaEmveAPE8fT7xoNhkA4y1k5GD8=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=g7sJ/Ixhu5obcG2DhuSCchb/rPatvPchMlhiPjgVIAMKzlagbJdUhGk4eVX5BcCH5
-	 kW2t8EKenPRBHv8vDVL7v7Qp+v4QxV8nikefRKNhP4YZr4wnEDYSjj5sMcg+hpjxER
-	 Bxe5uyfkA62j0wE+Gd5BY15yzT1S2f/FA/Kje8S/VT9Sd1IjY3PasqQ787kUiB5Zdr
-	 SeFtG4ro+bsMYL/KJolwOKbXHO9B6dhypIF6QH3MuPfnb0fIbzSTKtZDuIax7OVmZL
-	 gBv8IyprGXb9tagX0aVKa9NQLXeh7kSF3nzuV+k4HWU2H59fK+waVm5+gchHNEDzbi
-	 WTyHIhTRgVncQ==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B64af0eda0000>; Thu, 13 Jul 2023 08:36:42 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.30; Thu, 13 Jul 2023 08:36:42 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
- SMTP Server (TLS) id 15.0.1497.48; Thu, 13 Jul 2023 08:36:42 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.030; Thu, 13 Jul 2023 08:36:42 +1200
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "gregory.clement@bootlin.com"
-	<gregory.clement@bootlin.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: mtd: Add AC5 specific binding
-Thread-Topic: [PATCH v3 1/3] dt-bindings: mtd: Add AC5 specific binding
-Thread-Index: AQHZrWGOJlokQC0VCkWPPyueyMwEwa+1Vd8AgACHVIA=
-Date: Wed, 12 Jul 2023 20:36:42 +0000
-Message-ID: <4b780ed6-4c77-f881-f332-fd728474cb4c@alliedtelesis.co.nz>
-References: <20230703035044.2063303-1-chris.packham@alliedtelesis.co.nz>
- <20230703035044.2063303-2-chris.packham@alliedtelesis.co.nz>
- <20230712143220.06a3d6eb@xps-13>
-In-Reply-To: <20230712143220.06a3d6eb@xps-13>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.33.22.30]
-Content-ID: <CA2E1168B846DA419BD7AF02A09A481F@atlnz.lc>
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 73A62962;
+	Wed, 12 Jul 2023 23:18:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1689196735;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=K27cjW3udlX8dQog0vCu0JICf9/56js13q7aTnJTf5o=;
+	b=L+Ge4sDadFkZCKxHkuTCNIe7k/UxoK3/Xw2mjlbCvxJ2bKTvXMov1wBjEH6cjfcow9MpGO
+	U9+8twM9t3RcvmdICpPukblFCN0aBW7B2RVL6P2ifYVrO04KGaLvBt4R57wErp8QpcO+26
+	LfgkuOskltMmyQDg1SVBbTLDrqLAnD7H5jHKQtYW//DGF+vZVCWHeY/AOO7WYf/8MbHa2E
+	1Az8DEs1+Qt400OFTvoI+oOE+rDznrzJ7CceShefK0KYJw4c62lwpBQ5jX0t1RKh4cT1iy
+	/kilRsImxSNYehxqRpgaziJsPoynOf6Qy71/f6wEDIGeu5L8XqMeunRe5Hi9ug==
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=OKtZIhSB c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=ws7JD89P4LkA:10 a=XYAwZIGsAAAA:8 a=VwQbUJbxAAAA:8 a=b3QAFjprZ98drIJmpsIA:9 a=QEXdDO2ut3YA:10 a=E8ToXWR_bxluHZ7gmE-Z:22 a=AjGcO6oz07-iQ99wixmX:22
-X-SEG-SpamProfiler-Score: 0
+Date: Wed, 12 Jul 2023 23:18:55 +0200
+From: Michael Walle <michael@walle.cc>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
+ <pratyush@kernel.org>, linux-mtd@lists.infradead.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v3] mtd: spi-nor: Add support for sst26vf032b flash
+In-Reply-To: <20230712161503.448024-1-miquel.raynal@bootlin.com>
+References: <20230712161503.448024-1-miquel.raynal@bootlin.com>
+Message-ID: <d479489736ee193609816dc2003bd0fb@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230712_133649_618323_7F652DF6 
-X-CRM114-Status: GOOD (  15.37  )
+X-CRM114-CacheID: sfid-20230712_141902_412635_DD2BE09A 
+X-CRM114-Status: UNSURE (   8.56  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,44 +73,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLA0KDQpPbiAxMy8wNy8yMyAwMDozMiwgTWlxdWVsIFJheW5hbCB3cm90ZToNCj4g
-SGkgQ2hyaXMsDQo+DQo+IGNocmlzLnBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5ueiB3cm90ZSBv
-biBNb24sICAzIEp1bCAyMDIzIDE1OjUwOjQyDQo+ICsxMjAwOg0KPg0KPj4gQWRkIGJpbmRpbmcg
-Zm9yIEFDNSBTb0MuIFRoaXMgU29DIG9ubHkgc3VwcG9ydHMgTkFORCBTRFIgdGltaW5ncyB1cCB0
-bw0KPj4gbW9kZSAzIHNvIGEgc3BlY2lmaWMgY29tcGF0aWJsZSB2YWx1ZSBpcyBuZWVkZWQuDQo+
-Pg0KPj4gU2lnbmVkLW9mZi1ieTogQ2hyaXMgUGFja2hhbSA8Y2hyaXMucGFja2hhbUBhbGxpZWR0
-ZWxlc2lzLmNvLm56Pg0KPj4gQWNrZWQtYnk6IENvbm9yIERvb2xleSA8Y29ub3IuZG9vbGV5QG1p
-Y3JvY2hpcC5jb20+DQo+IEkgbmVlZCBEVC1iaW5kaW5nIG1haW50YWluZXIncyBhY2sgdG8gdGFr
-ZSB0aGlzIHBhdGNoLCBidXQgdGhpcyBjb21taXQNCj4gZGlkIG5vdCByZWNlaXZlIGZlZWRiYWNr
-IChwb3NpdGl2ZSBvZiBuZWdhdGl2ZSkgZnJvbSB0aGVtIGFuZCBpcyBubw0KPiBsb25nZXIgaW4g
-dGhlaXIgcGF0Y2h3b3JrLiBDYW4geW91IHBsZWFzZSByZXNlbmQgdGhlIHNlcmllcz8NCg0KQ29u
-b3IncyBhY2sgd2FzIHByb3ZpZGVkIG9uDQoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4
-LW10ZC8yMDIzMDYyNi1pbW11bml0eS1sYWdnZWQtZWFhZTAxODJhZDBjQHNwdWQvDQoNCklzIHRo
-aXMgc3VmZmljaWVudD8gSSdtIGhhcHB5IHRvIHJlc2VuZCBpZiBuZWVkZWQuDQoNCj4NCj4gVGhl
-IG90aGVyIHBhdGNoZXMgTEdUTS4NCj4NCj4NCj4+IC0tLQ0KPj4NCj4+IE5vdGVzOg0KPj4gICAg
-ICBDaGFuZ2VzIGluIHYzOg0KPj4gICAgICAtIENvbGxlY3QgYWNrIGZyb20gQ29ub3INCj4+ICAg
-ICAgQ2hhbmdlcyBpbiB2MjoNCj4+ICAgICAgLSBLZWVwIGNvbXBhdGlibGVzIGluIGFscGhhYmV0
-aWNhbCBvcmRlcg0KPj4gICAgICAtIEV4cGxhaW4gQUM1IGxpbWl0YXRpb25zIGluIGNvbW1pdCBt
-ZXNzYWdlDQo+Pg0KPj4gICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbWFydmVsbCxuYW5k
-LWNvbnRyb2xsZXIueWFtbCAgICAgICAgIHwgMSArDQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
-c2VydGlvbigrKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvbXRkL21hcnZlbGwsbmFuZC1jb250cm9sbGVyLnlhbWwgYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvbXRkL21hcnZlbGwsbmFuZC1jb250cm9sbGVyLnlhbWwNCj4+
-IGluZGV4IGExMDcyOWJiMTg0MC4uMWVjZWE4NDhlOGI5IDEwMDY0NA0KPj4gLS0tIGEvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tYXJ2ZWxsLG5hbmQtY29udHJvbGxlci55
-YW1sDQo+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL21hcnZl
-bGwsbmFuZC1jb250cm9sbGVyLnlhbWwNCj4+IEBAIC0xNiw2ICsxNiw3IEBAIHByb3BlcnRpZXM6
-DQo+PiAgICAgICAgICAgICAtIGNvbnN0OiBtYXJ2ZWxsLGFybWFkYS04ay1uYW5kLWNvbnRyb2xs
-ZXINCj4+ICAgICAgICAgICAgIC0gY29uc3Q6IG1hcnZlbGwsYXJtYWRhMzcwLW5hbmQtY29udHJv
-bGxlcg0KPj4gICAgICAgICAtIGVudW06DQo+PiArICAgICAgICAgIC0gbWFydmVsbCxhYzUtbmFu
-ZC1jb250cm9sbGVyDQo+PiAgICAgICAgICAgICAtIG1hcnZlbGwsYXJtYWRhMzcwLW5hbmQtY29u
-dHJvbGxlcg0KPj4gICAgICAgICAgICAgLSBtYXJ2ZWxsLHB4YTN4eC1uYW5kLWNvbnRyb2xsZXIN
-Cj4+ICAgICAgICAgLSBkZXNjcmlwdGlvbjogbGVnYWN5IGJpbmRpbmdzDQo+DQo+IFRoYW5rcywN
-Cj4gTWlxdcOobApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Am 2023-07-12 18:15, schrieb Miquel Raynal:
+> Describe this new part. The datasheet is public.
+> 
+> Link: 
+> https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST26VF032B-SST26VF032BA-2.5V-3.0V-32-Mbit-Serial-Quad-IO-%28SQI%29-Flash-Memory-20005218K.pdf
+> 
+> Here are the sfdp tables plus base testing to show it works.
+> 
+> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+> sst26vf032b
+> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+> bf2642
+> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+> sst
+> $ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> 53464450060102ff00060110300000ff81000106000100ffbf0001180002
+> 0001fffffffffffffffffffffffffffffffffd20f1ffffffff0144eb086b
+> 083b80bbfeffffffffff00ffffff440b0c200dd80fd810d820914824806f
+> 1d81ed0f773830b030b0f7ffffff29c25cfff030c080ffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffff0004fff37f0000f57f0000f9ff
+> 3d00f57f0000f37f0000ffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffbf2642ffb95ffdff30f260f332ff0a122346ff0f19320f1919ffffff
+> ffffffff00669938ff05013506040232b03072428de89888a585c09faf5a
+> ffff06ec060c0003080bffffffffff07ffff0202ff060300fdfd040600fc
+> 0300fefe0202070e
+> $ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> e7efddddb3d5ee89ca37bf6b6e789645  
+> /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> 
+> $ dd if=/dev/urandom of=./qspi_test bs=1M count=1
+> 1+0 records in
+> 1+0 records out
+> $ mtd_debug write /dev/mtd0 0 1048576 qspi_test
+> Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
+> $ mtd_debug erase /dev/mtd0 0 1048576
+> Erased 1048576 bytes from address 0x00000000 in flash
+> $ mtd_debug read /dev/mtd0 0 1048576 qspi_read
+> Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
+> $ hexdump qspi_read
+> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+> *
+> 0100000
+> $ mtd_debug write /dev/mtd0 0 1048576 qspi_test
+> Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
+> $ mtd_debug read /dev/mtd0 0 1048576 qspi_read
+> Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
+> $ sha1sum qspi_test qspi_read
+> 2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_test
+> 2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_read
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Reviewed-by: Michael Walle <michael@walle.cc>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
