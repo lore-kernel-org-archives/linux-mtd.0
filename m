@@ -4,87 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE87CEB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jul 2023 17:54:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52AD1EB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jul 2023 18:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kWT4jOuaR7yWw9g/AosT1Om4LUjcLRdR6rFG86oj6GY=; b=vYwKdEAWtaPSvm
-	9VlfDm5qk6G6VPUBOfrPuzXBt+vb0O1ff7iIb68Dh2S01WIT1D6kFWuycC9Ri4n6f1vyzdVtN+Qi7
-	Ud8ytzckLxi1v1kIMx5fDC1qnDssC1UkeHvyoWSRgy+8BL9DgAhAp5JCPkK41PsvBkC82oFr6HqtI
-	86qv4QmXURU9vbRW+00cMtr6+8sr6Be0rD7jlYN+fs7lKCJBezGHq6sMSH/8F2k4TFrbg1LcJ0FP9
-	SQR9bArSVl0y5Y/Kac4zYd7lxLdgZ5JRq8dtroUd72xa4oE/D4tezAud5iWgHrh5KGsWIWBTxPdwQ
-	xaflkO3ohBO3EKrpSStQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=5QvQv5OynV0fCjrynlDxvxOUKiUSYN2F+ujs6CFGFoo=; b=COEuqXW2SmcWtYJc4NtJyTl+Dg
+	PuupoBH4L/p3PBSfSr4GtK4IvbljhF27OfdkaWEHVG69t443ok5qJ6qahihc4VAQquaqdd5wFwH5T
+	J82u+qE8/zKuJTlQSrse/jWQAdd+RA8n9d32gonrRVqYcoowThBeDK+iHx0lVbXw4XmP6wC4uNlSy
+	8rlMpwuBO5wOIGLMPAuWkBXxqjh0yRmDPlEPpQiroiwuNIxRkWezde8biN6d7QM7bmXCyYVU3PXtg
+	FKj0LAK3rgDWu2qsi8k5QSxIfc+lowoVrZ1hLrPINnELUOuMkExLJuEqNko2KiRnLesTRL+7W6kj9
+	OAw95m8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJe2h-000pTV-2q;
-	Wed, 12 Jul 2023 17:54:23 +0000
-Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
+	id 1qJeKs-000roC-1E;
+	Wed, 12 Jul 2023 18:13:10 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJe2f-000pRz-2u
+	id 1qJeKq-000rnc-1c
 	for linux-mtd@lists.infradead.org;
-	Wed, 12 Jul 2023 17:54:23 +0000
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f9fdb0ef35so11999365e87.0
-        for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2023 10:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689184457; x=1691776457;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fj8ThFvAfSG2X1fPBkE5ImF7649h6ECVdp5Ee3R5/zM=;
-        b=VBKTLpekU/54h5gI2PxhaZp9nQHMLfK/fzU9j8mCLtgUAHLG0J3J+rIa/dT9rit1fu
-         qOXCsJN5eFHz+5lRY+ovcTE/ul/byIZjEnJTvZC3A7t3Svs+PPqR8f+iAPhkxWqpqiSt
-         CoWqAIpZIPVhfYtVNEfH57EpZ0Ua4W2Iq4uXwomToaDi6y+x6h4L7pKHf9I4b5zW5hRk
-         MxbS0x7cLDAGt7hMq8RZ343/vDvm1hLukieVLhJk0dMSXVJNlOcwkoU++HZlMDXl4u2L
-         nOXeUFn3MXcAgRzn1jTGkY2MuG8dBd2uAqfjzB5IzlChmSOA/HUENuzIAIlCW0kuRQxO
-         atEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689184457; x=1691776457;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fj8ThFvAfSG2X1fPBkE5ImF7649h6ECVdp5Ee3R5/zM=;
-        b=ai6hnrAQJWlSP7IiUMzIPESC0AgcES+YUOJ8KnCSIqxw9b3ldqG9NN1AT1kL6+yFg3
-         bHgTkN48O4xREXegr8JjyDveQnwkFPLtcsEBzZ6UXpTwXlmCjuNyIM/4ptqjvI0Smlo6
-         qJNPjphgDbCjkwoCGpYWwGmnwlUck2SrlDkhqAIVcjQBI/CiUd7Sm5JfuU+gnUF9xSEI
-         pzT8LfXyjwH17nZpNHFO7+PeUU8M8kiANKL4A6f8Z1rVg6Lg3kFvS3N4QcDY0mbZf9Ow
-         ntjdyxp9CnyNPcNwoBHJCT6e/bIUobhR/1rcH/k4za1pLUz3cyzOiOmSE7NHzEMFuvFZ
-         RAgQ==
-X-Gm-Message-State: ABy/qLYsQHjpiTYvnYcZjqNlQTWU1kaxwqJrsidiUKFMLHi2ouPLKYki
-	BrrqcBvcY4bkNTrclHdk2vMbFg==
-X-Google-Smtp-Source: APBJJlEkXX+6u0lhKUCduM3ZhmYqLRlCbr/LEBz3MgN3+UblUPaidJLddRGjznw021vyO1vhYVeK0w==
-X-Received: by 2002:a05:6512:31cf:b0:4f6:2b25:194e with SMTP id j15-20020a05651231cf00b004f62b25194emr16971157lfe.58.1689184457350;
-        Wed, 12 Jul 2023 10:54:17 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id f22-20020a50ee96000000b0051debcb1fa2sm3047961edr.69.2023.07.12.10.54.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 10:54:16 -0700 (PDT)
-Message-ID: <8085ac44-80a5-e8b9-818b-c187676f71ae@linaro.org>
-Date: Wed, 12 Jul 2023 19:54:15 +0200
+	Wed, 12 Jul 2023 18:13:09 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id EBC47618B4;
+	Wed, 12 Jul 2023 18:13:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BA5DC433C7;
+	Wed, 12 Jul 2023 18:13:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689185587;
+	bh=ZucLRM+SG2KQmz14xWev1E70FP9NzsdW6kTgNIsDmhw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qiR8nSHat+j4uOTJf17/0KZKwcyLRakuRIEiR189smYHBIcJJbZE8k1ihRfVvGiR8
+	 /56CSxSunwZMx+db7a15WuJvd9oQdyC4f+prO/ms69yV8NTATC8uHEpCQwNu4Jr6Fq
+	 YrOBrmtvrImYUvtRKsBup5SoZYD438a5j0nuqbs66SQmDBxDo0g17R5nkT0luyM9+P
+	 qEvXH1Zy9N9MgOLr/prmZgJUqIiQS07RfuZJRdkazN0pFIoZUxlrIaY1PHHNC+zBc8
+	 z2gOeD/VIJn5mAuvxH36424gExw4T3CPUmqljXaihrPok3o3HAW00FzhLdCciNOHv2
+	 L5f8Sa3xkmNUA==
+Date: Wed, 12 Jul 2023 19:13:02 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, richard@nod.at,
+	vigneshr@ti.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	gregory.clement@bootlin.com, linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: mtd: Add AC5 specific binding
+Message-ID: <20230712-headway-unlikable-436a4533d540@spud>
+References: <20230703035044.2063303-1-chris.packham@alliedtelesis.co.nz>
+ <20230703035044.2063303-2-chris.packham@alliedtelesis.co.nz>
+ <20230712143220.06a3d6eb@xps-13>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] dt-bindings: mtd: Fix nand-controller.yaml license
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Maxime Ripard <mripard@kernel.org>
-References: <20230712151042.433593-1-miquel.raynal@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230712151042.433593-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20230712143220.06a3d6eb@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230712_105421_940187_B3ED24F6 
-X-CRM114-Status: GOOD (  10.22  )
+X-CRM114-CacheID: sfid-20230712_111308_576494_AC0B302B 
+X-CRM114-Status: GOOD (  13.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,28 +74,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2849465896322249191=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/07/2023 17:10, Miquel Raynal wrote:
-> Binding files should be dual licensed. This file was initially written
-> as a .txt file with no specific license, so was implicitely
-> GPLv2. Significant part of this file and its conversion into yaml were
-> written by Bootlin employees which agree to comply with the rules
-> regarding the dual licensing so let's fix the SPDX tag to reflect the
-> correct license by changing it from GPL to GPL + BSD-2-Clause.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Acked-by: Maxime Ripard <mripard@kernel.org>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+--===============2849465896322249191==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="T+DewEGyjGC/f8R2"
+Content-Disposition: inline
 
-Best regards,
-Krzysztof
 
+--T+DewEGyjGC/f8R2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jul 12, 2023 at 02:32:20PM +0200, Miquel Raynal wrote:
+> Hi Chris,
+>=20
+> chris.packham@alliedtelesis.co.nz wrote on Mon,  3 Jul 2023 15:50:42
+> +1200:
+>=20
+> > Add binding for AC5 SoC. This SoC only supports NAND SDR timings up to
+> > mode 3 so a specific compatible value is needed.
+> >=20
+> > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> I need DT-binding maintainer's ack to take this patch, but this commit
+> did not receive feedback (positive of negative) from them and is no
+> longer in their patchwork. Can you please resend the series?
+
+You have one ;)
+
+https://docs.kernel.org/process/maintainers.html?highlight=3Dconor+dooley#o=
+pen-firmware-and-flattened-device-tree-bindings
+
+--T+DewEGyjGC/f8R2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZK7tLgAKCRB4tDGHoIJi
+0hd0AP0RMbK0KMZS2UGNZaLDxhCWJH42WBPjqgWodDqNASY76wEAxKiJLDakIcvm
+6S92pmECkSIqdlzJ1TEfOJYjkVFcAQI=
+=eKhw
+-----END PGP SIGNATURE-----
+
+--T+DewEGyjGC/f8R2--
+
+
+--===============2849465896322249191==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2849465896322249191==--
+
