@@ -4,93 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36012EB64DD
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 07:59:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5A80EB64DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 07:59:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KPRqrB717WqZ0THmmkltziNKgih7LQI6Lz+2pusNJq0=; b=X29qZxvKhRmXDC
-	TzXSDanO/g3Rh3jIdQfLlLG9DLocxqZbyOUV3v/4ruf+6rPpLCK3hP2GC53VRFgPErRR057bYlpXD
-	s/MVKdaaP58Wc9VOQW9dX0Z6l+tKiKhORHXyTf43Ic+LiLI0OI/+HjxMaBzerErByCQslG5dI27uc
-	c+MpvhddxdPDayeRWnpVXoPydoXR0Ohb2hP5MWpgSL1D3J7NB/720X8bsY2YUQugaoscmwewN3tU5
-	xQZFBw05Wp5nwPU4BoMfW5V5QVqVq1FTlPwNVzZtoJEYr0HO1ldnc/ikPRKPzW2Eli+rzCOuL4Pvm
-	MS7bZp19KEFSfYGgmv9w==;
+	List-Owner; bh=EojCEZnjFikpcJiSm41UdrF9ln5tMx8jkLq41TscCKo=; b=lL4lNfLPn7Vcr1
+	o9Y/HS/PBN2c9Xrjpkor8M+47yEGPP4hmOonESgR5Isre9t8JJJ4N3dRZxjRJeA34VYm6mphEzOB5
+	oAYEB9sEUeUUsB5D4ugENUMcWm328PsVEXSbTjbTJ9wDcnn1p/nvgumGqsj0RMeiSQYunz86dQ8Er
+	nf/XY9LwRT3e7Ih5w9OumVG2FOSj0M1OrKLUQw9p45qkJCo7e4UJc/V/tVZR1nBi+MkKXrn7IIPEg
+	ks4RVVVGpxvrJ246Qiz2lgN8DrmKjCvfMc8fuETjchKGvremdP6f4DKhOI2Me/Om5n5a8JCxfoT7Y
+	8rPSFyWuumBSH8xuV6bg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJrEh-002Kyv-04;
-	Thu, 13 Jul 2023 07:59:39 +0000
-Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
+	id 1qJrEu-002LC5-2f;
+	Thu, 13 Jul 2023 07:59:52 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJrEK-002KaC-0Y;
-	Thu, 13 Jul 2023 07:59:19 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 47F8AC000C;
-	Thu, 13 Jul 2023 07:59:06 +0000 (UTC)
+	id 1qJrES-002Kku-1k
+	for linux-mtd@lists.infradead.org;
+	Thu, 13 Jul 2023 07:59:26 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F1ED72000F;
+	Thu, 13 Jul 2023 07:59:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1689235151;
+	t=1689235163;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0r7ogdmgCqQZyvfvesUVl72YF6nI4bT74X6FmO2pwNE=;
-	b=Tt6DqdaTIvYJ03V43HEvPKPDFqzSMtWdMKUop9m5dy5BbdUosmCowZL7y+hm+tjpr6UA4F
-	RSF6yw6aIowvCkb8PvT/ALygCJ3NxMH3pgtXwh/RAQ2Swq2lApbErshp8KEP9iHGXOmH7Q
-	G/ZQ1/Y105arzbg/4xwndgPZ4HKmuEfoxp565iGu9EamAwMe5pFmvfoPiqcVS30msNY/hv
-	li8GDHBRySKlEgbuz1c5g/UlXdZbC4BaSvhfE1BOuc7mJzKiiXNJAYzGjsX53i/Vj5yyF7
-	TMtcUyZz8uJ9mW63iWmmzkX1oDqfn92lioTTvV9yjWo10SqjdPJzXtzQI7tojg==
+	bh=lr8NnR15dZIZ9ezMU+VjtxkgNV7Zsb3wb9geDn/0N5U=;
+	b=OlR1ulMD9fMlMWYZMwlaTvlSSEsUeIIEtzJkKhbx6F9qSbX7BIwuP/7odoomEDJIbCkRiW
+	PxCEisuPHpjdjIi1WtRDuXS/yqhENQ4SKPYtkpOth8n6QwgGp/NEENiW8Mu4aYe///6H5T
+	67cqYDjc4IcKlu9E7BQMNyyi5aDv0B9U23UX6uem37rpY+go3LBgfbaiKeRwMZrXp6zBJF
+	4xpI6+LZtMxANw77MDJv1WhvWd0L/8+17KSjazZFtGugqhyEcDvFn7UXIMs8+wN/oKh616
+	CXsLBxMjmiSxPn1iNtwv7N5439uJUqH0Fprz8IGyJzRW6E8MeY8Rsy009rFAVw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Neil Armstrong <neil.armstrong@linaro.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andy Shevchenko <andy@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>,
-	Marc Zyngier <maz@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org,
+To: Sridharan S N <quic_sridsn@quicinc.com>,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	ddrokosov@sberdevices.ru,
+	gch981213@gmail.com,
+	mmkurbanov@sberdevices.ru,
+	quic_mdalam@quicinc.com,
 	linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	linux-oxnas@groups.io,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v2 06/15] dt-bindings: mtd: oxnas-nand: remove obsolete bindings
-Date: Thu, 13 Jul 2023 09:59:05 +0200
-Message-Id: <20230713075905.486684-1-miquel.raynal@bootlin.com>
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mtd: spinand: add support for Toshiba T{C,H}58NYG{0,2}S3HBAI4 and TH58NYG3S0HBAI6
+Date: Thu, 13 Jul 2023 09:59:21 +0200
+Message-Id: <20230713075921.486794-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-6-fb6ab3dea87c@linaro.org>
+In-Reply-To: <20230623045757.30055-4-quic_sridsn@quicinc.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'b7c9b576b5f61fe4b8705bf419a1fb09541e4be8'
+X-linux-mtd-patch-commit: b'dabd64be75ae38be09c35ea66037d410c68bc322'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230713_005916_370358_176E8392 
-X-CRM114-Status: UNSURE (   7.71  )
+X-CRM114-CacheID: sfid-20230713_005924_747105_A863A9CA 
+X-CRM114-Status: UNSURE (   5.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -108,17 +82,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2023-06-30 at 16:58:31 UTC, Neil Armstrong wrote:
-> Due to lack of maintenance and stall of development for a few years now,
-> and since no new features will ever be added upstream, remove the
-> for OX810 and OX820 nand bindings.
+On Fri, 2023-06-23 at 04:57:57 UTC, Sridharan S N wrote:
+> Add support for:
+>    TC58NYG0S3HBAI4 - 1Gb SLC NAND flash
+>    TH58NYG2S3HBAI4 - 4Gb SLC NAND flash
+>    TH58NYG3S0HBAI6 - 8Gb SLC NAND flash
 > 
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Daniel Golle <daniel@makrotopia.org>
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> All of these has 8b/512b on-die ECC capability
+> 
+> Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
+> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
