@@ -4,83 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54730EB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 03:32:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ACCDEB64DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 03:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kJG6ZT4ehhclJIrknuv08QcmDgur4hL+AdHiit2uFXw=; b=iA9gE5qXbfAqq0
-	R4VNQJWlhdBgFqZdO86mVKjdJnHd8+GO7xPnO9FqEFIT7c+/29jXtU43U++i9SjWX5qAWBA4bfIt5
-	YQW/KnJgxJK6mcPjF7jop7VbpkV5ifOnMRSEdwJnyZiqLt+M1of4H0/0B913c2JL3Iw+7TLj19RI+
-	pb2LCEX2e07754nvK/O/O/Qyj7sYeQxRryVk397Pw4kDg2F6zeM9S6Ypu/T46c0HzJDNsaRyesLP+
-	TA/SbKtJ6xvWxUnnXpCgYTwCF/fJiWPRAayNTbY8VbqnMIfG2JD0nd7c2gDPMoGAZxhKmAcsw8LfM
-	/MFoLw+DpJX5nPM8Ntxg==;
+	List-Owner; bh=gv9Ee7lrIJ3k0E5GXJw3TJ48gGgkxdhwszi4UdbtV4Q=; b=FtVXl9zhjEB7It
+	kIfyWPQPz1ldOgSDyaBNEw/eJzIlYGh+ndhotRUTLJi4zyG3H3vtlENghe7ljCXFz60FlEjVtSjGw
+	aynSk9kVvBBZWpw82rt7Ku+9fYlWprDYkDwQob/AOKbxPwKgyW8PpGYYK6yZKvRYIddWazPIa5X5L
+	XRFZLnr/u7TT4a1psJOS8JxKeedK13taaVe9HH2oVQuiKcfPclLPEzLNloGMvzklmy1+Z+072pXOU
+	D8u9s8x8iHLyqEhmQ6bOF9t/6JLcLMWpGgWR/CLddGQU4P80NjGjrFNJws2ph3RAp0FVHV37zCiw5
+	mD3UtloWyOspFF/hl3Cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJn4K-001p9N-1z;
-	Thu, 13 Jul 2023 03:32:40 +0000
-Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
+	id 1qJnFN-001qBC-2B;
+	Thu, 13 Jul 2023 03:44:05 +0000
+Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJn4G-001p8a-26
+	id 1qJnFK-001qAm-1U
 	for linux-mtd@lists.infradead.org;
-	Thu, 13 Jul 2023 03:32:38 +0000
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-992ace062f3so42023266b.2
-        for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2023 20:32:33 -0700 (PDT)
+	Thu, 13 Jul 2023 03:44:03 +0000
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b703d7ed3aso2504041fa.1
+        for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2023 20:44:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689219152; x=1691811152;
+        d=linaro.org; s=google; t=1689219840; x=1691811840;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=smbASMP1wavR2fxNdm/uJcjvjfKhnJ6qhTiLInOsKZE=;
-        b=I+h+HRvU9jKH5UKZ835EWs5+Pd4SyOvhdqz1nAw9eqcBgT+FCfbFG+uP3AEVnDi4+c
-         jM895zWJpaOYuilTDyaxMJ3QtkKVFSf6Zf7pkFLjx+3yD8lcv3+vRO3PSUcwg36nnIog
-         Uv8K8pVKv+GMsMiRD6IPb79gOYpiQFmhfbkVkH6zWmigDN0qmoffskuo0wnDesVQQ9gd
-         XRxv8nQQMeO+6V9XPGD5/NznFmzxdp0k+GRNI1NypAiqVczkwtTXfBfYBAw1wk4j5mhK
-         pQQdkyouAD+/YCgkzyEGhJ58y4yjBX1VW3QjQyAj7Tz+Pw6fkRFWBIclixiwJ9+NVXQN
-         IPbg==
+        bh=CTbP1J/nwSjcXc7oGaL+bm/G4DKvNXMu7J3uatvOts8=;
+        b=LzYjIz0eKJ+o/UWAmmsgfqVJOA1psg+NeklD99vZZrKysIsFzn7kvdqowRUo6DcKc8
+         edsE3s4ux7XOtFXCHe6iGNbPOQXOpviCYf9ba9gNOY3tjtTpIqAMk+0Yz9D4ZMtYGdHQ
+         3/3pFNYG7MN3Pp+HXRkwsmsnysEmH7DDCsNIOrR3E47JMQVoTsq92YbSeMfDKI+OvJDi
+         yOVMeld5zffDEKOToL+LPrbxrPKO7K1MwQWNdiYeAdm6/hlZTWPeb8Ie/in7iEwzcSjx
+         1+nyus0js/G7Y22WVKszxu/99xWQ1h0RAW2erUM7trr8mUQ4tdtE30h43TaKF2jPW8SY
+         Ro+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689219152; x=1691811152;
+        d=1e100.net; s=20221208; t=1689219840; x=1691811840;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=smbASMP1wavR2fxNdm/uJcjvjfKhnJ6qhTiLInOsKZE=;
-        b=OEEbfb7/3tIQpWZBwgMfBRrLJUyn/yV5a1mGxMSnZ6s3LQD3YRKhlvwgrVBms5KK7A
-         jMEfmrDY/t06M+sum6DMRViM0teVQqG3Yq3ch9d/C0J7xC5XzAlDe6rdkx0YZv5Xq0e5
-         A9AL20G14exfLThxSyaVzVrvHAHEhHaP+/CBlsynijzsZb60xOSKkkOlzNQogm0AqnXs
-         2S6aQtaqVT7qfs9Ol3UBKD0GdysTs6454fOVJjRGPdW8W5QWM7QRYRUWu7+aseXLS/Kc
-         8lddRbCD8rpjDi/Brg3iBkZTepT3rmSi8A1yXpjW/JOk4Tq2JEPHyakvzo9+wQMw+BXx
-         i5zg==
-X-Gm-Message-State: ABy/qLY8IjZVeLvvDfCR6WU+T5kAfuPxl4nzXO0FDsaVxGeQd3Q6Aawt
-	9uSEBzc/26eUrQLPJakTxA1dkMG8pJjl1khzj1Y=
-X-Google-Smtp-Source: APBJJlHyxuGfjJuxgNF5JFaeEz7+vEIs2LMJeBubz6BCjlUfNA27TKT62WBgzES8Y5w/sZZK7n0zhQ==
-X-Received: by 2002:a17:906:5dce:b0:992:aab0:533a with SMTP id p14-20020a1709065dce00b00992aab0533amr192001ejv.67.1689219151582;
-        Wed, 12 Jul 2023 20:32:31 -0700 (PDT)
+        bh=CTbP1J/nwSjcXc7oGaL+bm/G4DKvNXMu7J3uatvOts8=;
+        b=k71JdjgOr/9HG+zFm6JenqEbvnklYDA8cMi6WrMk5HGgt0YZFk/cxVHfnGFFmQ5kjl
+         Th2jwEjT8vDQOsL67vPHPnLuS4jMeFmQuMgx46yKG6gz4LB5mllUK40C1M3rdobi6tqm
+         wab6icezO2CY7S43KB14SBx2HHQ2xuECUmcbGOphxT8urPZEbXXKu4IEtlfBOjZTcqAO
+         4mzWj5krf9tyS8LllNnfOkAkM/W3ZXfVIVqcAqiKJ9hLVyd2sU7pthejnH0ScAs33Hd2
+         Qfm3qoHQvxel1CzXK+ObO49A/ZmRw2Rihe8A+PyI87YGvNTGfW3DrMhD4ZhfG4zUnolp
+         lsRQ==
+X-Gm-Message-State: ABy/qLaOb3rNBRAjcVVEBGz/HY/ONUnAnZrwK8z2fba9oMg2iyOXjtc5
+	jO/9esqHzETuBcDBn+AmA/70aw==
+X-Google-Smtp-Source: APBJJlGF7GVH8kjO6cwksonghpUEBQvgHWbMEBanqIT6DT7j1keMqjRkNlU4G/0MeBcxb7F0cr7aYg==
+X-Received: by 2002:a2e:9a8a:0:b0:2b4:765b:f6ee with SMTP id p10-20020a2e9a8a000000b002b4765bf6eemr200703lji.41.1689219839633;
+        Wed, 12 Jul 2023 20:43:59 -0700 (PDT)
 Received: from [192.168.0.173] ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id i7-20020a17090671c700b0098cf565d98asm3344544ejk.22.2023.07.12.20.32.30
+        by smtp.gmail.com with ESMTPSA id v6-20020aa7cd46000000b0051e3385a395sm3690688edw.3.2023.07.12.20.43.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 20:32:31 -0700 (PDT)
-Message-ID: <f00fa2ae-6d4a-90cb-3724-2bedb96cb4fb@linaro.org>
-Date: Thu, 13 Jul 2023 06:32:29 +0300
+        Wed, 12 Jul 2023 20:43:59 -0700 (PDT)
+Message-ID: <19800e51-a871-be9f-9eb5-5829237e2613@linaro.org>
+Date: Thu, 13 Jul 2023 06:43:57 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH v2] mtd: spi-nor: Correct flags for Winbond w25q128
+Subject: Re: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
 Content-Language: en-US
-To: Linus Walleij <linus.walleij@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org>
+To: Mamta Shukla <mamta.shukla@leica-geosystems.com>, pratyush@kernel.org,
+ michael@walle.cc, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: bsp-development.geo@leica-geosystems.com
+References: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org>
+In-Reply-To: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230712_203236_780985_FEA16697 
-X-CRM114-Status: GOOD (  29.15  )
+X-CRM114-CacheID: sfid-20230712_204402_529898_25BB1542 
+X-CRM114-Status: GOOD (  17.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,85 +95,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Linus,
 
-On 13.07.2023 00:59, Linus Walleij wrote:
-> The Winbond "w25q128" (actual vendor name W25Q128JV)
-> has exactly the same flags as the sibling device
-> "w25q128jv". The devices both require unlocking to
-> enable write access.
-> 
-> The actual product naming between devices vs the
-> Linux strings in winbond.c:
-> 
-> 0xef4018: "w25q128"   W25Q128JV-IM/JM
-> 0xef7018: "w25q128jv" W25Q128JV-IN/IQ/JQ
-> 
-> The latter device, "w25q128jv" supports features
-> named DTQ and QPI, otherwise it is the same.
-> 
-> Not having the right flags has the annoying side
-> effect that write access does not work.
 
-I guess you refer to the locking flags. Probably your flash has the non
-volatile block protection (BP) bits from the Status Register set, which
-means the entire flash is write protected. The factory default for these
-bits is 0/disabled on this flash so someone must have played with them.
-The reason why one may want write protection set is to avoid inadvertent
-writes during power-up.
-One can control whether to disable the software write protection at boot
-time with the MTD_SPI_NOR_SWP_ configs.
+On 05.07.2023 18:49, Mamta Shukla wrote:
+> mt25qu512a[1] supports locking/unlocking through BP bits in SR.
 > 
-> After this patch I can write to the flash on the
-> Inteno XG6846 router.
+> Tested using mtd-utils- flash_lock/flash_unlock for MT25QU512ABB8E12.
 > 
-> The flash memory also supports dual and quad SPI
-> modes. This does not currently manifest, but by
-
-The fasted mode is chosen after SFDP parsing, so you should use quad
-reads if your controller also supports 4 I/O lines.
-> turning on SFDP parsing, the right SPI modes are
-> emitted in
-> /sys/kernel/debug/spi-nor/spi1.0/capabilities
-> for this chip, so we also turn on this.
-> 
-> Cc: stable@vger.kernel.org
-> Suggested-by: Michael Walle <michael@walle.cc>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> Link: https://media-www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25q/die-rev-b/mt25q_qlkt_u_512_abb_0.pdf?rev=b259aadc3bea49ea8210a41c9ad58211
+> Signed-off-by: Mamta Shukla <mamta.shukla@leica-geosystems.com>
 > ---
-> Changes in v2:
-> - Only add the write access flags.
-> - Use SFDP parsing to properly detect the various
->   available SPI modes.
-> - Link to v1: https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v1-1-f78f3bb42a1c@linaro.org
-> ---
->  drivers/mtd/spi-nor/winbond.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  Changes in v2:
+>  - add Link tag
+>  - fix chip part number mt25ql512a->mt25qu512a
 > 
-> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-> index 834d6ba5ce70..6c82e525c801 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -121,7 +121,8 @@ static const struct flash_info winbond_nor_parts[] = {
->  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
->  		NO_SFDP_FLAGS(SECT_4K) },
->  	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
+>  drivers/mtd/spi-nor/micron-st.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+> index 4b919756a205..08e94340ebaa 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -229,6 +229,8 @@ static const struct flash_info st_nor_parts[] = {
+>  		MFR_FLAGS(USE_FSR)
+>  	},
+>  	{ "mt25qu512a",  INFO6(0x20bb20, 0x104400, 64 * 1024, 1024)
+> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
+> +		      SPI_NOR_BP3_SR_BIT6)
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+>  		MFR_FLAGS(USE_FSR)
 
-while here try, using INFO with INFO(0xef4018, 0, 0, 0), those
-parameters shall be discovered at run-time, so we prepare to get rid of
-explicitly setting them sooner or later.
+Can you try the following instead? We try to use SFDP parsing whenever
+possible.
+	{ "mt25qu512a",  INFO6(0x20bb20, 0x104400, 0, 0)
+		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
+		SPI_NOR_BP3_SR_BIT6)
+		PARSE_SFDP
+		MFR_FLAGS(USE_FSR)
 
-> -		NO_SFDP_FLAGS(SECT_4K) },
-> +		PARSE_SFDP
-> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-
-Looks good. Also I would like you to run a small sanity test, just to
-make sure the flash works after your changes. You can do that with
-mtd_debug utility, see an example on Miquel's commit message from:
-https://lore.kernel.org/linux-mtd/d479489736ee193609816dc2003bd0fb@walle.cc/T/#m3550973e0884ec4a288d344fabd4a9c3b64af46e
-
-Cheers,
-ta
+You then have to dump the SFDP tables and do a sanity check to make sure
+everything's fine after your changes. You can an example on how to do
+that on the commit message from
+https://lore.kernel.org/linux-mtd/8b7d2420-26b6-405b-8ef7-75e0a0201402@linaro.org/T/#m3550973e0884ec4a288d344fabd4a9c3b64af46e
 
 ______________________________________________________
 Linux MTD discussion mailing list
