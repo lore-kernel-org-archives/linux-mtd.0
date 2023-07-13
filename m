@@ -4,66 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 514C8C001B0
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 15:17:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CE9EC04FE0
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 23:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=K3fSYxGp1Iet60hW+2yfJ7NHG82jn6rQRtHIJOwF7EY=; b=ym3tOMZa47S1w9TiBgOJB7sLTH
-	eAP0v/qNncmwxWOQgt893Zdh5Byvj3fCcaYmd9GwUMwOGeX3Hgna4rOxJA9EXooJrQhEUOrDwgdUO
-	OQNbbVE2uWDmQWJ3uoXNt6iDVsvB7zwT3lDrH1cMmpyPOcKnYn/qrZZzF1caYchRAGjsG11t9DvYH
-	DZDCaizQr+fC6wEwRrYel0cTAThCLBqLZ+0Gmk5XhrzH8bVFPbL9fGDMV7CoJ0b0X+uIW+Aq5oGsS
-	sXzSVLcN1nJ1DNKPnYQN691et076tZK9CM7YqsA3BT6fU0ctJ8tM3FaA5qAgstdDrqOHTB32lMj9V
-	GAhuCRBA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:MIME-Version:Message-Id:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=uDjDJUJr1wiKzSnjBnpar13atc+/0TyhVxuL8VGFXKc=; b=BJe6DuEXYu7wRU
+	KftUCdGZFyNocpWuZsuKkzLlB89TlNClALV550enfg3PLblqLU4YKU9T+mr6RCpVm5Cri1bZLEvJu
+	SlBNiGO6aF1yffBDz58RtwM1EV8vqtHRlGdp9B24fYD/BmglqQWcFigdOW7lrPH4Nt1LkAZwoMlFV
+	BFz1sEGP8C0YR5wRf/6Svje/o97nj/YY/kfkZVOtnNZ830xeh0yMvVy0jTNf7WxxIRwUWs5NRIkNS
+	6vcwIDpLjvYsVUpqeTMFcUQ/U8JRgI3eAho2z25cFUuGzQ2XHRBFlX+u6R5CJBxKHvEIy4zSLC4vG
+	msJAuZdBaUDkNIAT+dhQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJy4M-003inG-1n;
-	Thu, 13 Jul 2023 15:17:26 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1qK5JC-004VCc-22;
+	Thu, 13 Jul 2023 23:01:14 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJy4I-003iim-06;
-	Thu, 13 Jul 2023 15:17:24 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 1A12B62F290F;
-	Thu, 13 Jul 2023 17:17:16 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id On-fwFvgGn7i; Thu, 13 Jul 2023 17:17:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 515CD62F2916;
-	Thu, 13 Jul 2023 17:17:15 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id wjzgm6220rwR; Thu, 13 Jul 2023 17:17:15 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 2B91F62F290F;
-	Thu, 13 Jul 2023 17:17:15 +0200 (CEST)
-Date: Thu, 13 Jul 2023 17:17:15 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Johan Jonker <jbx6244@gmail.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	heiko@sntech.de, linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
-	linux-rockchip@lists.infradead.org, 
-	yifeng zhao <yifeng.zhao@rock-chips.com>
-Message-ID: <1618382560.2326931.1689261435022.JavaMail.zimbra@nod.at>
-In-Reply-To: <20230712154142.3c49d782@xps-13>
-References: <0047fc52-bc45-a768-8bdd-c0f12cddc17e@gmail.com> <457c1da7-61dc-2a56-4f86-47413795138c@gmail.com> <20230704171348.5eee98f7@xps-13> <3af40582-d350-8eac-8639-10c285964c49@gmail.com> <20230712154142.3c49d782@xps-13>
-Subject: Re: [PATCH v3 3/3] mtd: rawnand: rockchip-nand-controller: add
- skipbbt option
+	id 1qK5J9-004VBQ-1b;
+	Thu, 13 Jul 2023 23:01:13 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id F065061AC4;
+	Thu, 13 Jul 2023 23:01:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61080C433C8;
+	Thu, 13 Jul 2023 23:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689289269;
+	bh=BvE/6xVatY3gzbwR0vDrqr3MzJ01oINoYu0cSNelaB8=;
+	h=From:Subject:Date:To:Cc:From;
+	b=j9LDsK+FDIrm6x6MxYyXms5zVTjaW1P6LxjzfQKg1pbSvAHLTtuNDrEBEAvQz7a59
+	 IEj5BzbSPgpyeqfAqbd+Re3r0d6jbIHKhpnRq3qprdKRfzdD9X103cXf3qX6JZft6A
+	 8K/RH8+CdgTcLHSepEL1YlNk2ZQmp4oagzqZSvVyVEd/d4TvlnBEIAX/8mUMo/DIpV
+	 2h3UVlHoa/Q76fgIu2dVBLs3sOHMs2qunAcM77C5kvmuuB2TAhiX7+yoiPjn4EbiL6
+	 oufcrYQQLmAklyR8BnHSjocZBlFXqdC5grfG/sCfx8gif0JU3ybUeAnX6i/lTGUMEc
+	 tKVmtuCgMrfHw==
+From: Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v5 0/8] fs: implement multigrain timestamps
+Date: Thu, 13 Jul 2023 19:00:49 -0400
+Message-Id: <20230713-mgctime-v5-0-9eb795d2ae37@kernel.org>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: rawnand: rockchip-nand-controller: add skipbbt option
-Thread-Index: ROgfjDoY10Wn2JoZkeBFpS1VV4xmgg==
+X-B4-Tracking: v=1; b=H4sIACGCsGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyTHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDc0Nj3dz05JLM3FTdNKNEy7RkYyMTS0MLJaDqgqLUtMwKsEnRsbW1AO6
+ XW1JZAAAA
+To: Eric Van Hensbergen <ericvh@kernel.org>, 
+ Latchesar Ionkov <lucho@ionkov.net>, 
+ Dominique Martinet <asmadeus@codewreck.org>, 
+ Christian Schoenebeck <linux_oss@crudebyte.com>, 
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>, 
+ Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, 
+ coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>, 
+ Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, 
+ Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, 
+ Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
+ Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>, 
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, 
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+ Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, 
+ Andreas Gruenbacher <agruenba@redhat.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Christian Brauner <brauner@kernel.org>, 
+ Trond Myklebust <trond.myklebust@hammerspace.com>, 
+ Anna Schumaker <anna@kernel.org>, 
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
+ Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
+ Joseph Qi <joseph.qi@linux.alibaba.com>, 
+ Mike Marshall <hubcap@omnibond.com>, 
+ Martin Brandenburg <martin@omnibond.com>, 
+ Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>, 
+ Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>, 
+ Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <lsahlber@redhat.com>, 
+ Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, 
+ Sergey Senozhatsky <senozhatsky@chromium.org>, 
+ Richard Weinberger <richard@nod.at>, Hans de Goede <hdegoede@redhat.com>, 
+ Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+ "Darrick J. Wong" <djwong@kernel.org>
+Cc: Dave Chinner <david@fromorbit.com>, v9fs@lists.linux.dev, 
+ linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org, 
+ linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
+ codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, 
+ linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, 
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev, 
+ ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+ linux-mtd@lists.infradead.org, linux-mm@kvack.org, 
+ linux-xfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4474; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=BvE/6xVatY3gzbwR0vDrqr3MzJ01oINoYu0cSNelaB8=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBksIIu4PKEKGnoDdi+GMLN5ufs2UB8ZsDTn9Oqp
+ SYtweP3skyJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZLCCLgAKCRAADmhBGVaC
+ FXJhEADW493xZyCYf/hlVo1POCOZGol0XDpJIN1EQK3h+61XPis26awGDTcXczc9yZK/JvZV7oC
+ VtVStL44kvzeqn7kh1AH/EuLmeazbYMEFTdl5PiizH53xrWmidL26fTjpjn01gvjb9Y5gGXTvuI
+ h0JLInpNr5Hn509RQU2T5/D8WBKVnLWeHB/itiDWCZ1CG8iFNWfgbgC/bpdW2+H0eIDHvr6bUcJ
+ m0mfxwAUL6lA/b/G8kmsdj0YEEWf2bOLzdxZcQPh/MEfkRuKwWqy9d5mFLJlJ5GiheG9qiqOwOA
+ wLz9M0J4e32Di/q+QL/HpihUZOB0jrZB+bRhKxqWD04cFRtTTwE15w/xGAgjvPLe2l+sNzEUxoq
+ nIscPnAScgiRW3Bzq6PUd7ljrtLvvU6Vcgd0HqFcyfn9APLCjnLCckVW7S0ofkRL7oksLIoSGDJ
+ qo/IpJl4X/Mu1LBY//fFZp6QVhp54iwAR+D7VJ3z7wtZSktaXJ9f1o0qcT1Bo254702FlLGvbxf
+ Bkj6FZDMZrSXrx81pjrLvUB8jCQQ13oz7O3kmOzVX4pLmnO9PRLcQLj14velupamDvwexZgudyW
+ jiqR3IwVXCTiN2WgmssqUyuQi+GQ1LKePEwVpDx8izF0VnbQshX6OqMvuRzVcDG29pzQBTc0dy+
+ lAVc/7Mp3vHZu0g==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230713_081722_218462_BB7EC497 
-X-CRM114-Status: GOOD (  10.10  )
+X-CRM114-CacheID: sfid-20230713_160111_636269_AFD9DDF5 
+X-CRM114-Status: GOOD (  15.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,28 +129,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IAo+PiA+IEZvciB0aGUgYm9vdCBJIHRo
-aW5rIEkgcHJvcG9zZWQgYSBEVCBwcm9wZXJ0eS4gSSBkb24ndCByZW1lbWJlciBob3cgZmFyCj4+
-ID4gdGhlIGRpc2N1c3Npb24gd2VudC4KPj4gCj4+IElzIHRoZXJlIGEgd2ViIGxpbmsgb2YgdGhh
-dCBkaXNjdXNzaW9uPwo+IAo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW10ZC8yMDIz
-MDYwOTEwNDQyNi4zOTAxZGY1NEB4cHMtMTMvCj4gCj4gTWF5YmUgdGhlIHRlcm0gIkRUIHByb3Bl
-cnR5IiBkaWQgbm90IGFwcGVhciBidXQgdGhhdCdzIHdoYXQgSSBoYWQgaW4KPiBtaW5kIDotKSBJ
-IGRvbid0IGtub3cgaWYgaXQgbXVzdCBiZSBhIGNoaXAgb3IgYSBwYXJ0aXRpb24gcHJvcGVydHku
-Cj4gCj4gUmljaGFyZCwgaGVyZSBpcyB3aGVyZSBJIHdvdWxkIGxpa2UgeW91ciBmZWVkYmFjaywg
-SSBhbSBraW5kIG9mIG9wcG9zZWQKPiB0byBhICJza2lwX2JidCIgbW9kdWxlIHBhcmFtZXRlci4g
-SXQncyBub3QgYSBzdHJvbmcgb3BpbmlvbiwgaWYgeW91Cj4gdGhpbmsgaXQncyBmaW5lIEknbSBv
-cGVuLgo+IAo+IEkgd291bGQgcmF0aGVyIHByZWZlciBhIERUIHByb3BlcnR5IHdoaWNoIHNheXMg
-ImRvIG5vdCB1c2UgdGhlCj4gc3RhbmRhcmQgcGF0dGVybiIuCgpZZXMsIHBsZWFzZSBubyBuZXcg
-bW9kdWxlIHBhcmFtZXRlcnMuIEEgbW9kdWxlIHBhcmFtZXRlciBzaG91bGQgb25seSBhZmZlY3QK
-dGhlIGJlaGF2aW9yIG9mIHRoZSBkcml2ZXIgaXRzZWxmIChlLmcuIGRlYnVnIG1vZGUpIGJ1dCBu
-b3QgYmUgZGV2aWNlIHNwZWNpZmljLgpXZSBtYWRlIHRoaXMgbWlzdGFrZSBpbiB0aGUgcGFzdCB0
-b28gb2Z0ZW4uIDotKApBIHNpbmdsZSBkcml2ZXIgY2FuIHNlcnZlIG1vcmUgZGV2aWNlcy4gVGhl
-cmVmb3JlIElNSE8gY29udHJvbGxpbmcgdGhpcyB2aWEgRFQKbWFrZXMgcGVyZmVjdGx5IHNlbnNl
-LgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+The VFS always uses coarse-grained timestamps when updating the
+ctime and mtime after a change. This has the benefit of allowing
+filesystems to optimize away a lot metadata updates, down to around 1
+per jiffy, even when a file is under heavy writes.
+
+Unfortunately, this coarseness has always been an issue when we're
+exporting via NFSv3, which relies on timestamps to validate caches. A
+lot of changes can happen in a jiffy, so timestamps aren't sufficient to
+help the client decide to invalidate the cache.
+
+Even with NFSv4, a lot of exported filesystems don't properly support a
+change attribute and are subject to the same problems with timestamp
+granularity. Other applications have similar issues with timestamps (e.g
+backup applications).
+
+If we were to always use fine-grained timestamps, that would improve the
+situation, but that becomes rather expensive, as the underlying
+filesystem would have to log a lot more metadata updates.
+
+What we need is a way to only use fine-grained timestamps when they are
+being actively queried. The idea is to use an unused bit in the ctime's
+tv_nsec field to mark when the mtime or ctime has been queried via
+getattr. Once that has been marked, the next m/ctime update will use a
+fine-grained timestamp.
+
+This patch series is based on top of Christian's vfs.all branch, which
+has the recent conversion to the new ctime accessors. It should apply
+cleanly on top of linux-next.
+
+While the patchset does work, I'm mostly looking for feedback on the
+core infrastructure API. Does this look reasonable? Am I missing any
+races?
+
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+base-commit: cf22d118b89a09a0160586412160d89098f7c4c7
+---
+Jeff Layton (8):
+      fs: pass the request_mask to generic_fillattr
+      fs: add infrastructure for multigrain timestamps
+      tmpfs: bump the mtime/ctime/iversion when page becomes writeable
+      tmpfs: add support for multigrain timestamps
+      xfs: XFS_ICHGTIME_CREATE is unused
+      xfs: switch to multigrain timestamps
+      ext4: switch to multigrain timestamps
+      btrfs: convert to multigrain timestamps
+
+ fs/9p/vfs_inode.c               |  4 +-
+ fs/9p/vfs_inode_dotl.c          |  4 +-
+ fs/afs/inode.c                  |  2 +-
+ fs/btrfs/file.c                 | 24 ++--------
+ fs/btrfs/inode.c                |  2 +-
+ fs/btrfs/super.c                |  5 ++-
+ fs/ceph/inode.c                 |  2 +-
+ fs/coda/inode.c                 |  3 +-
+ fs/ecryptfs/inode.c             |  5 ++-
+ fs/erofs/inode.c                |  2 +-
+ fs/exfat/file.c                 |  2 +-
+ fs/ext2/inode.c                 |  2 +-
+ fs/ext4/inode.c                 |  2 +-
+ fs/ext4/super.c                 |  2 +-
+ fs/f2fs/file.c                  |  2 +-
+ fs/fat/file.c                   |  2 +-
+ fs/fuse/dir.c                   |  2 +-
+ fs/gfs2/inode.c                 |  2 +-
+ fs/hfsplus/inode.c              |  2 +-
+ fs/inode.c                      | 98 +++++++++++++++++++++++++++++------------
+ fs/kernfs/inode.c               |  2 +-
+ fs/libfs.c                      |  4 +-
+ fs/minix/inode.c                |  2 +-
+ fs/nfs/inode.c                  |  2 +-
+ fs/nfs/namespace.c              |  3 +-
+ fs/ntfs3/file.c                 |  2 +-
+ fs/ocfs2/file.c                 |  2 +-
+ fs/orangefs/inode.c             |  2 +-
+ fs/proc/base.c                  |  4 +-
+ fs/proc/fd.c                    |  2 +-
+ fs/proc/generic.c               |  2 +-
+ fs/proc/proc_net.c              |  2 +-
+ fs/proc/proc_sysctl.c           |  2 +-
+ fs/proc/root.c                  |  3 +-
+ fs/smb/client/inode.c           |  2 +-
+ fs/smb/server/smb2pdu.c         | 22 ++++-----
+ fs/smb/server/vfs.c             |  3 +-
+ fs/stat.c                       | 59 ++++++++++++++++++++-----
+ fs/sysv/itree.c                 |  3 +-
+ fs/ubifs/dir.c                  |  2 +-
+ fs/udf/symlink.c                |  2 +-
+ fs/vboxsf/utils.c               |  2 +-
+ fs/xfs/libxfs/xfs_shared.h      |  2 -
+ fs/xfs/libxfs/xfs_trans_inode.c |  8 ++--
+ fs/xfs/xfs_iops.c               |  4 +-
+ fs/xfs/xfs_super.c              |  2 +-
+ include/linux/fs.h              | 47 ++++++++++++++++++--
+ mm/shmem.c                      | 16 ++++++-
+ 48 files changed, 248 insertions(+), 129 deletions(-)
+---
+base-commit: cf22d118b89a09a0160586412160d89098f7c4c7
+change-id: 20230713-mgctime-f2a9fc324918
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
