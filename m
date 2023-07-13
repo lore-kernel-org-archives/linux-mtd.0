@@ -4,61 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47374EB64DD
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 09:00:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C07DC001B0
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 09:00:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mOnKQx3fLeji66KXx2cYsyHV+sGhKLRXjdQ6dCU8s/o=; b=HviHvqZumi6MIW
-	7wzofBCb06ZrDStOfriMi5ZcYj35IWfuNdoSQz0hZBcIVyEYjPm0aHy94Sj09GlKLRdrR9FUuTO9s
-	FmHpcAKy1hKkMIEOTgMShgv8ahEemmtOJxRkaI4Es5CpY4Lw1CP6ctqFUjlBZ4d04ngufsiH5JidN
-	8YoWaFNASJo9yLNwsWEKPkQjtj1gws0ioHH0a5veMo+N1CEQdgNJbnTvkvPZ0ryHIMTYVxF0+54Ob
-	lp2Uyx2O3VHGZ4Ti5T9U4mh2GENS6Y/XZzC8IR68PeTk8yLZa9DMHizYV6gglP1z4lggMVar1YDBy
-	CJ0QOndBSsYYKSNgOoiQ==;
+	List-Owner; bh=KKPkNdPj5J0lXG+0ESYcmXAPuzhzg4Jsis2XhDy7rIA=; b=W7ije39ZnWp369
+	KihNCh4PkfxvfZnnO8gD46cSSqZb3cxsJIwsG6FVV+1Ixv2rtWJQhHt9xRNhjwp7alcAC2K9O/8wt
+	HPl7hp+k7bylUPN512mKuumiRayyKQuBEOVPgR+Wo3HPXJHmUTPBxzv2YtmjDZKctE5XNGL3lhpy1
+	LDc1XBTBI25W+/WgGOMlMG4SGci1cwkluMrYL7EmLui8LaBSZN0KzA7xLIEd4SJFGyHoDSWJUj2wn
+	k2wO7Jj3hzxPnT3Y8cL9E6enLIhiaQHh2SfphxrCuTF3zp/+9NdnYIMEK/teVwkcCdY/eoB/zTh+7
+	pdzCOdsWg2EXrx0kQXMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJsBC-002WQz-2q;
-	Thu, 13 Jul 2023 09:00:06 +0000
-Received: from relay2-d.mail.gandi.net ([2001:4b98:dc4:8::222])
+	id 1qJsBl-002WYi-0t;
+	Thu, 13 Jul 2023 09:00:41 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJsB5-002WPv-0X
+	id 1qJrDe-002Jub-19
 	for linux-mtd@lists.infradead.org;
-	Thu, 13 Jul 2023 09:00:00 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DF94E4000B;
-	Thu, 13 Jul 2023 08:59:52 +0000 (UTC)
+	Thu, 13 Jul 2023 07:58:36 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8B1142000F;
+	Thu, 13 Jul 2023 07:58:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1689238793;
+	t=1689235112;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Fp/T2auLWK8Fh3jBHDr22urRoZN6z4YaEPdbMmTfazs=;
-	b=SbSb0sexsiPU6to0djhloJ9Q46blZelElo9R8OOsyL1JJoNool3laht22HNcGTaN+X1oQ/
-	ABEVvuZlDh+rAtZR5TmJIRR1m3hgNeM4eamhXKT1NzCkZqlQEsqC51ED7qYR8ePoyPF7rB
-	pzR6CZNV8C3CNSClazlFDuDZzQ2hdPD3Pt383ouKqr9Sjf10clOc7E/b86dwLts9dQS4pz
-	KCmXSp9NzouXNAFqAkx2C6CO4O500HW8clabk9dtdnHkE1QktHlhzqurso5F+o/N7ZQZ6G
-	eikDmyNQzqeb10Z/VwAHk5CVpXUikGaPjj1ftndFA6/kV3dERjaeonkVhc+DaQ==
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Chris Packham
- <chris.packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH v3 2/3] arm64: dts: marvell: Add NAND flash controller
- to AC5
-In-Reply-To: <20230703035044.2063303-3-chris.packham@alliedtelesis.co.nz>
-References: <20230703035044.2063303-1-chris.packham@alliedtelesis.co.nz>
- <20230703035044.2063303-3-chris.packham@alliedtelesis.co.nz>
-Date: Thu, 13 Jul 2023 10:59:52 +0200
-Message-ID: <87h6q82nlj.fsf@BL-laptop>
+	bh=XgxUjxWYaES9J/u7KyH5WhMtdN6ljfnBaRxicp8S6UY=;
+	b=lz+a+PkGSLThvtWT9tWmOR0dk/jDrDCdJO+LZfme7Ee+yf38vGGi3+Y55nxcLFgzStjCRA
+	SAgU4ErCTN8XUEPG44r7QN4p7af0fmP38ErI4NqU42mj/ySFPWmQ0vC8BXrbMpBAaEeut9
+	2V4iNfjtjKoaLyIbJX6kPk/pere5nmRkN33T0SgockNaVlauTLy96mSA2E1c8unhFlec1Q
+	nJUiHrdoV62slBXN6lCqxKCKxvT3IxkXW2d4QrjNtHo9pZjMttopytAIFlniz7KdOPfU0g
+	zN0qhg6Hq4t/uL2rp9C/1F/qQKEiT2sv5IfauOMw0uOOKF7gRZLnZ86u0teraA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: William Zhang <william.zhang@broadcom.com>,
+	Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
+	Linux MTD List <linux-mtd@lists.infradead.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	f.fainelli@gmail.com,
+	rafal@milecki.pl,
+	kursad.oney@broadcom.com,
+	joel.peshkin@broadcom.com,
+	computersforpeace@gmail.com,
+	anand.gore@broadcom.com,
+	dregan@mail.com,
+	kamal.dasu@broadcom.com,
+	tomer.yacoby@broadcom.com,
+	dan.beygelman@broadcom.com,
+	Frieder Schrempf <frieder.schrempf@kontron.de>,
+	linux-kernel@vger.kernel.org,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Weinberger <richard@nod.at>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH v4 5/5] mtd: rawnand: brcmnand: Fix mtd oobsize
+Date: Thu, 13 Jul 2023 09:58:30 +0200
+Message-Id: <20230713075830.486450-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230706182909.79151-6-william.zhang@broadcom.com>
+References: 
 MIME-Version: 1.0
-X-GND-Sasl: gregory.clement@bootlin.com
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'60177390fa061c62d156f4a546e3efd90df3c183'
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230713_015959_375373_59ED12B7 
-X-CRM114-Status: GOOD (  13.97  )
+X-CRM114-CacheID: sfid-20230713_005834_563574_7FE3F657 
+X-CRM114-Status: GOOD (  10.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,74 +91,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Chris Packham <chris.packham@alliedtelesis.co.nz> writes:
+On Thu, 2023-07-06 at 18:29:09 UTC, William Zhang wrote:
+> brcmnand controller can only access the flash spare area up to certain
+> bytes based on the ECC level. It can be less than the actual flash spare
+> area size. For example, for many NAND chip supporting ECC BCH-8, it has
+> 226 bytes spare area. But controller can only uses 218 bytes. So brcmand
+> driver overrides the mtd oobsize with the controller's accessible spare
+> area size. When the nand base driver utilizes the nand_device object, it
+> resets the oobsize back to the actual flash spare aprea size from
+> nand_memory_organization structure and controller may not able to access
+> all the oob area as mtd advises.
+> 
+> This change fixes the issue by overriding the oobsize in the
+> nand_memory_organization structure to the controller's accessible spare
+> area size.
+> 
+> Fixes: a7ab085d7c16 ("mtd: rawnand: Initialize the nand_device object")
+> Signed-off-by: William Zhang <william.zhang@broadcom.com>
 
-> The AC5/AC5X SoC has a NAND flash controller (NFC). Add this to
-> the base SoC dtsi file as a disabled node. The NFC integration
-> on the AC5/AC5X only supports SDR timing modes up to 3 so requires a
-> dedicated compatible property so this limitation can be enforced.
->
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-Now that binding and code has beeen applied I can apply this one on
-mvebu/dt64
-
-Thanks,
-
-Gregory
-
-> ---
->
-> Notes:
->     Changes in v3:
->     - Use correct clock for NFC
->     Changes in v2:
->     - New.
->
->  arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi b/arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi
-> index c9ce1010c415..c64aaf51deb8 100644
-> --- a/arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi
-> @@ -297,6 +297,16 @@ spi1: spi@805a8000 {
->  			status = "disabled";
->  		};
->  
-> +		nand: nand-controller@805b0000 {
-> +			compatible = "marvell,ac5-nand-controller";
-> +			reg =  <0x0 0x805b0000 0x0 0x00000054>;
-> +			#address-cells = <0x1>;
-> +			#size-cells = <0x0>;
-> +			interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&nand_clock>;
-> +			status = "disabled";
-> +		};
-> +
->  		gic: interrupt-controller@80600000 {
->  			compatible = "arm,gic-v3";
->  			#interrupt-cells = <3>;
-> @@ -319,5 +329,11 @@ spi_clock: spi-clock {
->  			#clock-cells = <0>;
->  			clock-frequency = <200000000>;
->  		};
-> +
-> +		nand_clock: nand-clock {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <400000000>;
-> +		};
->  	};
->  };
-> -- 
-> 2.41.0
->
-
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
