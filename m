@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12A87C001B0
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5428EB64DD
 	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 07:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,60 +12,61 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CineyaFjK47DDJmXb63iPP0Func19NzJW4X4KP8Ld8g=; b=4Pn9fxv/SR0GJH
-	6q+nOtTbUtJ5Np+PPk5PR3Gy7CzeXjCTpQcAoEOwIvy1oLnKImQUD0NKcMxR+rEDa0Z6B9Vc1ERxE
-	/MiRPD0w9EIBvsZcrbYGzbVVf2Ixdw5YSazOQaR6IyEX/lzVCVykZV1FHo8h/H/gUNW5mabpdaqrt
-	dtJIZlkXNW9PoVRBs/1MbqNPelGfFvwd/TeOC8O5GW54f/3xglTsZJeK8HOGxYB2w67cepc4uWWHd
-	5/vzdAxOrl/HFJoQOSxuH9UN0aCTnFspD7YMT7bl6ri8KYkvPaQaJ/pz0ZWSmKqa2/6Jy03pS5fat
-	eN7YNaqEWlVKuf68xcWQ==;
+	List-Owner; bh=fL9GpXw2hmkfuTdUKOq3tlqrx0UGu3hTgNFAhC1uZNo=; b=xuZsW9jZndEJgj
+	gJ455lh2iFn3RxGCpuzw5X8PIn7kp5qhOAr/IJZjCSBUIbX8T4QRU+ON4bN636GuVns7Zdqc+benh
+	AVMOJNTegUyKxT+8yJ+ZQ+LtMxpnx66v2g2m2qJLN73MKyaQe9Cm5Va4mo0KKLApSL/qtVknLHUrV
+	tnQtNk8tRZnRjj8rcZ/5tsensTBgyOU+YqjipEOf/gpwCrUWhGGv5HJ43gvI4AMQnxfuXJAcwcaGN
+	zfbpi5+z/gAEnfej1G463UIHnrtV9HPiu/39Ybag1HJvtsRyRMpjGdtnMSsMHgMGwQXCIgC7SgsBz
+	GHMMwpKOq7QnV4SSo73A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJrCn-002JLi-2b;
-	Thu, 13 Jul 2023 07:57:41 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1qJrCl-002JKu-0a;
+	Thu, 13 Jul 2023 07:57:39 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJrCl-002JKb-1K
+	id 1qJrCh-002JJU-26
 	for linux-mtd@lists.infradead.org;
-	Thu, 13 Jul 2023 07:57:40 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D7CDAC0006;
-	Thu, 13 Jul 2023 07:57:35 +0000 (UTC)
+	Thu, 13 Jul 2023 07:57:37 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E680120003;
+	Thu, 13 Jul 2023 07:57:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1689235057;
+	t=1689235052;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=O91e1w6Iq4C7RGnZeF8oJ3LsJAQZj1iKYFvjsH6RaP4=;
-	b=iKYcGWdK82kH1t+evHPcN8+R3g2sn7/dp7bp4oJ0QqZx7fnZZY+DJOOR0CvL5CxD6UGxCM
-	Tr5LyKTkeUN6aYAOnDaJu3R9gKLCLucrEYcMkhkjoU1lcSLPX/kxWTJy5xFeH8sYxjBuYv
-	3gbPW1rd6eAI9Ncod53LbMKeZkCoUqrpUN/HlGW7cqxNBjU2viNS8NvOt528q+g9Raw3r4
-	k/4X8mM5/3vrYbUk7xYNAazebdDk4H6dIK5CUw0bZ4EbFQVJyT0Ji5yoQ8RetcFBLQ0+o1
-	3d7u105gujwoCHRN1XAG2Z/OrYdGJW/ZuruxpBv0LRPmuLnRvj8fqPMSMJw0pw==
+	bh=2F/bUME+pf0s7vBUvHy7WZs0ckzsbwRu5dNQlGBwthg=;
+	b=P8ftI59+SD0TPQod/rhciM+WFNJdIxxKI78PZ+JLD87iF4G1tAAG8gtr5QVEyEboB/3ZO8
+	3+ogFfV9VEIe1Qn1w4zB+gPnU1gFPPHC0/aKPfw61ikTeTdW/51WUeYFgVvNzUbavGmHJg
+	S1vKdTe5oUmRlhPbdV2gJ0N6CcqcaXfyUpRek8LM1m485q/LTcDqtdGz0fwi0Ttt6skgiL
+	q58R3IS2fdSkNCYeYHo3SX9B2nSF5eiWhqmVQHCc3sCXxhZNYQbWAOKL2kdpfoba1TmaXn
+	18VPEDPXf9YjbIdmqfDlKzgC4aapmc9yNV3KAYLCtbRH43Ie1Ww1qKdyxqqIDw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	gregory.clement@bootlin.com
-Cc: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] mtd: rawnand: marvell: add support for AC5 SoC
-Date: Thu, 13 Jul 2023 09:57:34 +0200
-Message-Id: <20230713075734.485960-1-miquel.raynal@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	linux-mtd@lists.infradead.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Maxime Ripard <mripard@kernel.org>
+Subject: Re: [PATCH v2] dt-bindings: mtd: Fix nand-controller.yaml license
+Date: Thu, 13 Jul 2023 09:57:29 +0200
+Message-Id: <20230713075729.485928-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230703035044.2063303-4-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20230712151042.433593-1-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'c7758249db25999ef01b054ed792c5e0be356668'
+X-linux-mtd-patch-commit: b'2b42d718c7d7f4269d45fb58b4f74d7b2bfb08bd'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230713_005739_579721_A204FBD9 
-X-CRM114-Status: UNSURE (   8.51  )
+X-CRM114-CacheID: sfid-20230713_005735_816268_433D9897 
+X-CRM114-Status: UNSURE (   7.58  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,17 +84,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2023-07-03 at 03:50:44 UTC, Chris Packham wrote:
-> Add support for the AC5/AC5X SoC from Marvell. The NFC on this SoC only
-> supports SDR modes up to 3.
+On Wed, 2023-07-12 at 15:10:42 UTC, Miquel Raynal wrote:
+> Binding files should be dual licensed. This file was initially written
+> as a .txt file with no specific license, so was implicitely
+> GPLv2. Significant part of this file and its conversion into yaml were
+> written by Bootlin employees which agree to comply with the rules
+> regarding the dual licensing so let's fix the SPDX tag to reflect the
+> correct license by changing it from GPL to GPL + BSD-2-Clause.
 > 
-> Marvell's SDK includes some predefined values for the ndtr registers.
-> These haven't been incorporated as the existing code seems to get good
-> values based on measurements taken with an oscilloscope.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
 Miquel
 
