@@ -4,62 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9274BEB64DD
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 07:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12A87C001B0
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 07:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9edSa8M0wHI2t6a6yDLcITm3Y2e+LxnmTTwv7huDfiY=; b=1f5CpI9X6xOStN
-	14emYFH6wKFhcYS5Pv5NLkhLyPzQCWcqFiXMiQ0G8c1oIoq8uoFp2gMwhMTsOOBfrKz0I3JSz9qv8
-	ZYMtGSQnYXbZOLDoSx7NEHEAHuBU3i2npw9ledxXSQ+y99CVsyRJU7vRRQEKZWcylgs1y+MbRgA7e
-	U4MJ/oWu3ExjVhcsWBCiHzc0n4BMGJVfCDiy6lKgQiV6q1MMZAmVzI4FOoK4wc7GgSKQfKv6X5QLy
-	/XA52Lyj5Md9b1KgQwOVS/S3uDcCy5aqAiWNxfKGVoSpsbRp+j2VpT1xitTBi3fY8il0SwvpcsWrU
-	9LpRzO+PvBqFjIiO10Dg==;
+	List-Owner; bh=CineyaFjK47DDJmXb63iPP0Func19NzJW4X4KP8Ld8g=; b=4Pn9fxv/SR0GJH
+	6q+nOtTbUtJ5Np+PPk5PR3Gy7CzeXjCTpQcAoEOwIvy1oLnKImQUD0NKcMxR+rEDa0Z6B9Vc1ERxE
+	/MiRPD0w9EIBvsZcrbYGzbVVf2Ixdw5YSazOQaR6IyEX/lzVCVykZV1FHo8h/H/gUNW5mabpdaqrt
+	dtJIZlkXNW9PoVRBs/1MbqNPelGfFvwd/TeOC8O5GW54f/3xglTsZJeK8HOGxYB2w67cepc4uWWHd
+	5/vzdAxOrl/HFJoQOSxuH9UN0aCTnFspD7YMT7bl6ri8KYkvPaQaJ/pz0ZWSmKqa2/6Jy03pS5fat
+	eN7YNaqEWlVKuf68xcWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJqqP-002FKA-38;
-	Thu, 13 Jul 2023 07:34:33 +0000
+	id 1qJrCn-002JLi-2b;
+	Thu, 13 Jul 2023 07:57:41 +0000
 Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJqqM-002FHe-0g
+	id 1qJrCl-002JKb-1K
 	for linux-mtd@lists.infradead.org;
-	Thu, 13 Jul 2023 07:34:32 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4DD83C0004;
-	Thu, 13 Jul 2023 07:34:26 +0000 (UTC)
+	Thu, 13 Jul 2023 07:57:40 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D7CDAC0006;
+	Thu, 13 Jul 2023 07:57:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1689233667;
+	t=1689235057;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5N+4CixS5DjDygTJ3mzMxGg1Cs9p5VZ16F72jTfMz3k=;
-	b=lZhdyCUurtUMbTwgEHYprzUOuWHDdYHbHhAi2tt1h4IlnhhIrkn/MoyIf0F5eDp8N5+U26
-	9dVLfig5HAj6LMP3KOwwQxAjmLV6oE6rKhv7BVVYu2aMH8lepi2Se7OpDWkT3rqcG+HfVv
-	0Tttvm02TQclRRvQO+ZLt776D9GKS1X2ylmFceHMlKKGAG6Oy8i9rx1RKsZAF9gCdbjhd/
-	SSh0/XjLoZoZ9+vDk7XUg/vOKfnbCNA7KCBaGF3hOMldrrsvSkj3cYWac5pGgmfWJXmwQA
-	5OSpieC4vc9G+dyXfYNWh1ZCuLYXJfah2oE074QGRlGDdGDIeuHELFys1SmerA==
-Date: Thu, 13 Jul 2023 09:34:25 +0200
+	bh=O91e1w6Iq4C7RGnZeF8oJ3LsJAQZj1iKYFvjsH6RaP4=;
+	b=iKYcGWdK82kH1t+evHPcN8+R3g2sn7/dp7bp4oJ0QqZx7fnZZY+DJOOR0CvL5CxD6UGxCM
+	Tr5LyKTkeUN6aYAOnDaJu3R9gKLCLucrEYcMkhkjoU1lcSLPX/kxWTJy5xFeH8sYxjBuYv
+	3gbPW1rd6eAI9Ncod53LbMKeZkCoUqrpUN/HlGW7cqxNBjU2viNS8NvOt528q+g9Raw3r4
+	k/4X8mM5/3vrYbUk7xYNAazebdDk4H6dIK5CUw0bZ4EbFQVJyT0Ji5yoQ8RetcFBLQ0+o1
+	3d7u105gujwoCHRN1XAG2Z/OrYdGJW/ZuruxpBv0LRPmuLnRvj8fqPMSMJw0pw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>, Michael Walle
- <michael@walle.cc>, linux-mtd@lists.infradead.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3] mtd: spi-nor: Add support for sst26vf032b flash
-Message-ID: <20230713093425.02188b71@xps-13>
-In-Reply-To: <8b7d2420-26b6-405b-8ef7-75e0a0201402@linaro.org>
-References: <20230712161503.448024-1-miquel.raynal@bootlin.com>
-	<8b7d2420-26b6-405b-8ef7-75e0a0201402@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	gregory.clement@bootlin.com
+Cc: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] mtd: rawnand: marvell: add support for AC5 SoC
+Date: Thu, 13 Jul 2023 09:57:34 +0200
+Message-Id: <20230713075734.485960-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230703035044.2063303-4-chris.packham@alliedtelesis.co.nz>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'c7758249db25999ef01b054ed792c5e0be356668'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230713_003430_510363_F489267E 
-X-CRM114-Status: GOOD (  30.62  )
+X-CRM114-CacheID: sfid-20230713_005739_579721_A204FBD9 
+X-CRM114-Status: UNSURE (   8.51  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,106 +78,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVHVkb3IsCgp0dWRvci5hbWJhcnVzQGxpbmFyby5vcmcgd3JvdGUgb24gVGh1LCAxMyBKdWwg
-MjAyMyAwNToyMDowMSArMDMwMDoKCj4gSGksIE1pcXVlbCwKPiAKPiBPbiAxMi4wNy4yMDIzIDE5
-OjE1LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gRGVzY3JpYmUgdGhpcyBuZXcgcGFydC4gVGhl
-IGRhdGFzaGVldCBpcyBwdWJsaWMuCj4gPiAKPiA+IExpbms6IGh0dHBzOi8vd3cxLm1pY3JvY2hp
-cC5jb20vZG93bmxvYWRzL2FlbURvY3VtZW50cy9kb2N1bWVudHMvTVBEL1Byb2R1Y3REb2N1bWVu
-dHMvRGF0YVNoZWV0cy9TU1QyNlZGMDMyQi1TU1QyNlZGMDMyQkEtMi41Vi0zLjBWLTMyLU1iaXQt
-U2VyaWFsLVF1YWQtSU8tJTI4U1FJJTI5LUZsYXNoLU1lbW9yeS0yMDAwNTIxOEsucGRmCj4gPiAK
-PiA+IEhlcmUgYXJlIHRoZSBzZmRwIHRhYmxlcyBwbHVzIGJhc2UgdGVzdGluZyB0byBzaG93IGl0
-IHdvcmtzLgo+ID4gCj4gPiAkIGNhdCAvc3lzL2J1cy9zcGkvZGV2aWNlcy9zcGkwLjAvc3BpLW5v
-ci9wYXJ0bmFtZQo+ID4gc3N0MjZ2ZjAzMmIKPiA+ICQgY2F0IC9zeXMvYnVzL3NwaS9kZXZpY2Vz
-L3NwaTAuMC9zcGktbm9yL2plZGVjX2lkCj4gPiBiZjI2NDIKPiA+ICQgY2F0IC9zeXMvYnVzL3Nw
-aS9kZXZpY2VzL3NwaTAuMC9zcGktbm9yL21hbnVmYWN0dXJlcgo+ID4gc3N0Cj4gPiAkIHh4ZCAt
-cCAvc3lzL2J1cy9zcGkvZGV2aWNlcy9zcGkwLjAvc3BpLW5vci9zZmRwCj4gPiA1MzQ2NDQ1MDA2
-MDEwMmZmMDAwNjAxMTAzMDAwMDBmZjgxMDAwMTA2MDAwMTAwZmZiZjAwMDExODAwMDIKPiA+IDAw
-MDFmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZkMjBmMWZmZmZmZmZmMDE0NGViMDg2
-Ygo+ID4gMDgzYjgwYmJmZWZmZmZmZmZmZmYwMGZmZmZmZjQ0MGIwYzIwMGRkODBmZDgxMGQ4MjA5
-MTQ4MjQ4MDZmCj4gPiAxZDgxZWQwZjc3MzgzMGIwMzBiMGY3ZmZmZmZmMjljMjVjZmZmMDMwYzA4
-MGZmZmZmZmZmZmZmZmZmZmYKPiA+IGZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZgo+ID4gZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmCj4gPiBmZmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmYKPiA+IGZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZgo+ID4gZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZjAwMDRmZmYzN2YwMDAwZjU3ZjAwMDBmOWZm
-Cj4gPiAzZDAwZjU3ZjAwMDBmMzdmMDAwMGZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZmYKPiA+IGZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZgo+ID4gZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmCj4gPiBmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmYKPiA+IGZmZmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZgo+ID4gZmZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmCj4gPiBmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmYK
-PiA+IGZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZgo+ID4gZmZmZmJmMjY0MmZmYjk1ZmZkZmYzMGYyNjBmMzMyZmYwYTEyMjM0NmZmMGYx
-OTMyMGYxOTE5ZmZmZmZmCj4gPiBmZmZmZmZmZjAwNjY5OTM4ZmYwNTAxMzUwNjA0MDIzMmIwMzA3
-MjQyOGRlODk4ODhhNTg1YzA5ZmFmNWEKPiA+IGZmZmYwNmVjMDYwYzAwMDMwODBiZmZmZmZmZmZm
-ZjA3ZmZmZjAyMDJmZjA2MDMwMGZkZmQwNDA2MDBmYwo+ID4gMDMwMGZlZmUwMjAyMDcwZQo+ID4g
-JCBtZDVzdW0gL3N5cy9idXMvc3BpL2RldmljZXMvc3BpMC4wL3NwaS1ub3Ivc2ZkcAo+ID4gZTdl
-ZmRkZGRiM2Q1ZWU4OWNhMzdiZjZiNmU3ODk2NDUgIC9zeXMvYnVzL3NwaS9kZXZpY2VzL3NwaTAu
-MC9zcGktbm9yL3NmZHAKPiA+IAo+ID4gJCBkZCBpZj0vZGV2L3VyYW5kb20gb2Y9Li9xc3BpX3Rl
-c3QgYnM9MU0gY291bnQ9MQo+ID4gMSswIHJlY29yZHMgaW4KPiA+IDErMCByZWNvcmRzIG91dAo+
-ID4gJCBtdGRfZGVidWcgd3JpdGUgL2Rldi9tdGQwIDAgMTA0ODU3NiBxc3BpX3Rlc3QKPiA+IENv
-cGllZCAxMDQ4NTc2IGJ5dGVzIGZyb20gcXNwaV90ZXN0IHRvIGFkZHJlc3MgMHgwMDAwMDAwMCBp
-biBmbGFzaAo+ID4gJCBtdGRfZGVidWcgZXJhc2UgL2Rldi9tdGQwIDAgMTA0ODU3Ngo+ID4gRXJh
-c2VkIDEwNDg1NzYgYnl0ZXMgZnJvbSBhZGRyZXNzIDB4MDAwMDAwMDAgaW4gZmxhc2gKPiA+ICQg
-bXRkX2RlYnVnIHJlYWQgL2Rldi9tdGQwIDAgMTA0ODU3NiBxc3BpX3JlYWQKPiA+IENvcGllZCAx
-MDQ4NTc2IGJ5dGVzIGZyb20gYWRkcmVzcyAweDAwMDAwMDAwIGluIGZsYXNoIHRvIHFzcGlfcmVh
-ZAo+ID4gJCBoZXhkdW1wIHFzcGlfcmVhZAo+ID4gMDAwMDAwMCBmZmZmIGZmZmYgZmZmZiBmZmZm
-IGZmZmYgZmZmZiBmZmZmIGZmZmYKPiA+ICoKPiA+IDAxMDAwMDAKPiA+ICQgbXRkX2RlYnVnIHdy
-aXRlIC9kZXYvbXRkMCAwIDEwNDg1NzYgcXNwaV90ZXN0Cj4gPiBDb3BpZWQgMTA0ODU3NiBieXRl
-cyBmcm9tIHFzcGlfdGVzdCB0byBhZGRyZXNzIDB4MDAwMDAwMDAgaW4gZmxhc2gKPiA+ICQgbXRk
-X2RlYnVnIHJlYWQgL2Rldi9tdGQwIDAgMTA0ODU3NiBxc3BpX3JlYWQKPiA+IENvcGllZCAxMDQ4
-NTc2IGJ5dGVzIGZyb20gYWRkcmVzcyAweDAwMDAwMDAwIGluIGZsYXNoIHRvIHFzcGlfcmVhZAo+
-ID4gJCBzaGExc3VtIHFzcGlfdGVzdCBxc3BpX3JlYWQKPiA+IDJmMmYxOTFjN2E5MzdlY2E1ZGIy
-MWExYzM5ZTc5ZTczMjc1ODdjYzEgIHFzcGlfdGVzdAo+ID4gMmYyZjE5MWM3YTkzN2VjYTVkYjIx
-YTFjMzllNzllNzMyNzU4N2NjMSAgcXNwaV9yZWFkCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IE1p
-cXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Cj4gPiAtLS0KPiA+IAo+ID4g
-Q2hhbmdlcyBpbiB2MzoKPiA+ICogRHJvcHBlZCB0aGUgc2Vjb25kIHBhdGNoICh1bnRlc3RlZCBj
-aGFuZ2VzIGFzIGFkdmlzZWQgYnkgVHVkb3IpLiAgCj4gCj4gdGhhbmtzCj4gPiAqIEF2b2lkZWQg
-cGxheWluZyB3aXRoIGxvY2tpbmcgYXMgSSBjYW5ub3QgdGVzdCBpdCBlaXRoZXI6IHNpbXBsaWZp
-ZWQKPiA+ICAgdGhlIGRpZmYgYnkganVzdCB1c2luZyB0aGUgUEFSU0VfU0ZEUCBmbGFnLj4gKiBS
-ZWJhc2VkIG9uIHRvcCBvZiAtcmMxIGFuZCBhZGFwdGVkIHRoZSBwYXRjaCB0byB0aGUgY3VycmVu
-dCBzdGF0ZS4KPiA+IAo+ID4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3N0LmMgfCAyICsrCj4gPiAg
-MSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tdGQvc3BpLW5vci9zc3QuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3N0LmMKPiA+IGlu
-ZGV4IDY4OGViMjBjNzYzZS4uNzU0ZTQ5ZjdhYzMzIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9t
-dGQvc3BpLW5vci9zc3QuYwo+ID4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zc3QuYwo+ID4g
-QEAgLTExMSw2ICsxMTEsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZsYXNoX2luZm8gc3N0X25v
-cl9wYXJ0c1tdID0gewo+ID4gIAkJCSAgICAgIFNQSV9OT1JfUVVBRF9SRUFEKSB9LAo+ID4gIAl7
-ICJzc3QyNnZmMDE2YiIsIElORk8oMHhiZjI2NDEsIDAsIDY0ICogMTAyNCwgMzIpCj4gPiAgCQlO
-T19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCkgfSwKPiA+ICsJeyAic3N0
-MjZ2ZjAzMmIiLCBJTkZPKDB4YmYyNjQyLCAwLCAwLCAwKQo+ID4gKwkJUEFSU0VfU0ZEUCAgCj4g
-Cj4gaWYgaXQncyBqdXN0IGEgbWF0dGVyIG9mIFBBUlNFX1NGRFAgZmxhZyB0aGVuIHRoaXMgZmxh
-c2ggaXMgYSBjYW5kaWRhdGUKPiBmb3IgdGhlIFNQSSBOT1IgZ2VuZXJpYyBkcml2ZXIsIHdlIGRv
-bid0IG5lZWQgYW4gZXhwbGljaXQgZmxhc2gKPiBkZWNsYXJhdGlvbiBmb3IgaXQuCj4gCj4gQnV0
-IEkgYXNzdW1lIHlvdSBuZWVkCj4gLmZpeHVwcyA9ICZzc3QyNnZmX25vcl9maXh1cHMKPiBvdGhl
-cndpc2UgdGhlIGZsYXNoIGNvbWVzIHdyaXRlIHByb3RlY3RlZCBieSBkZWZhdWx0IGF0IGJvb3Qs
-IHRodXMKPiBlcmFzZXMvd3JpdGVzIHdpbGwgYmUgaWdub3JlZC4gQXJlIHlvdSBwb3NpdGl2ZSB5
-b3UgcnVuIHRoZSB0ZXN0cyBhZ2Fpbgo+IGZvciB2Mz8KCkkgdGVzdGVkIHRoZSBpbml0aWFsIHN1
-Ym1pc3Npb25zIHdpdGggYSBsNG0ga2VybmVsLCBiZWNhdXNlIHRoZQpib2FyZCBkb2VzIG5vdCBi
-b290IHdlbGwgb24gYSB2YW5pbGxhIGtlcm5lbCwgSSBkaWQgcmViYXNlIG9uIHY2LjUtcmMxCmFu
-ZCBmaWd1cmVkIGEgbnVtYmVyIG9mIGZsYWdzIGdvdCByZW1vdmVkIG9uIG9uZSBwYXJ0LCBzbyBJ
-IGFsc28KcmVtb3ZlZCB0aGVtIGZyb20gbXkgc3VibWlzc2lvbiwgYW5kIG9uIHRoZSBvdGhlciBw
-YXJ0IEkgZmlndXJlZCB0aGUKbDRtIGtlcm5lbCB3YXMgY2FycnlpbmcgYWxvbmUgYSBjaGFuZ2Ug
-YWRkaW5nIHRoZSAuZml4dXAgZm9yIHRoZSAxNmIKdmFyaWFudCwgd2hpY2ggd2FzIG5vdCB1cHN0
-cmVhbS4gVGhlIGNvbW1pdCBsb2cgYmFzaWNhbGx5IHNheXMgIndlIG5lZWQKdGhlIGZpeHVwIGJl
-Y2F1c2Ugd2UgZW5hYmxlZCB0aGUgIkhBU19MT0NLIiBmbGFnLCBJSVJDLiBJIGRvbid0IHVzZQp0
-aGlzIGZlYXR1cmUsIEkgZG9uJ3QgdGhpbmsgdGhlIGZsYXNoIHVzZXMgaXQgb24gbXkgZGVzaWdu
-IChub3QgMTAwJQpzdXJlIGZvciB0aGF0LCBtYXliZSBhIHdyb25nIGludGVycHJldGF0aW9uIG9u
-IG15IHNpZGUpIHNvIGFzIHlvdQpwcmVmZXIgdG8gbm90IGhhdmUgdW50ZXN0ZWQgY2hhbmdlcyBJ
-IGRyb3BwZWQgdGhlIGZpeHVwIGFzIHdlbGwgYmVjYXVzZQpJIGNhbm5vdCBiZSBzdXJlIGl0IHNl
-cnZlcyBhIHB1cnBvc2UvaXMgdXNlZnVsLgoKSSB3aWxsIHRyeSB0byBjbGFyaWZ5IGFsbCB0aGF0
-LgoKPiAKPiBDaGVlcnMsCj4gdGEKPiA+ICAJeyAic3N0MjZ2ZjA2NGIiLCBJTkZPKDB4YmYyNjQz
-LCAwLCA2NCAqIDEwMjQsIDEyOCkKPiA+ICAJCUZMQUdTKFNQSV9OT1JfSEFTX0xPQ0sgfCBTUElf
-Tk9SX1NXUF9JU19WT0xBVElMRSkKPiA+ICAJCU5PX1NGRFBfRkxBR1MoU0VDVF80SyB8IFNQSV9O
-T1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpICAKCgpUaGFua3MsCk1pcXXDqGwKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
-eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Mon, 2023-07-03 at 03:50:44 UTC, Chris Packham wrote:
+> Add support for the AC5/AC5X SoC from Marvell. The NFC on this SoC only
+> supports SDR modes up to 3.
+> 
+> Marvell's SDK includes some predefined values for the ndtr registers.
+> These haven't been incorporated as the existing code seems to get good
+> values based on measurements taken with an oscilloscope.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
