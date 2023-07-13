@@ -4,82 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD60BEB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 02:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BED8C0015E
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jul 2023 02:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=29RJf3DKmHHLU//Nsbqa9g5x4XyeExC5WaRIQ0Wqn0U=; b=rQPbGGPhqHZjFR
-	V23GDnoNpiQItH80I3o/pDElDTwXxw/mCExVPzZHx9UDurv0OH22MHGSHW1xBI+FY5hvX6k2RLVRE
-	0IRqbRprCr7ljTY2sGFmihrRkgSlmBraczkQd3eRMp/gPxgfrSkb6hKRdhxUunrb88ftV9NVK9p3j
-	D+W66JGSvTsj1+8fS5g4BQ1PeBuVy9wHHudHunFip4h/wASLkzibjGIYCQpBYEVPmY3W5vbmWMsRp
-	0QPSbvJ5kM3DtR4ht20IK9IKve3RXOnxY9kd7M3lROETv2zAAAgmfZXt8BPHIQvjwrKPUQWbnejS7
-	AMO/yriVjBW86XmkQklg==;
+	List-Owner; bh=Jv9Josr48D2CcSa3RvFxgzhL715zn6DFqtsbktqDUo0=; b=D0dGnUfnkP4Ma9
+	KZuiv/6NYarM6zg/O0oywxYhNekEILXc5N+d38cQFnIOMhDoxCTUJzgaJWXESsl7mL3cFPc4Mi0Qt
+	PhsZCX0id5RnS6UoBTMJZ1ELMDuPbH2yHdsC2gneOV1c2Uwe/ABWtda0XJSZFB6KnA8+HmWFUfr/Q
+	xk/TBYjh3qjXeStCtq+mJUYYMrpwAGl1C219awUzhhNeKpPjcxL1I7zboNuHfOosIhuhyvTpAqwHs
+	rAx3JDSGk5Ip9yIHs/8Dx6kJ3tzqUS1AUdzzUBZ2H1ru+kBAxvK47eO4JU4acW+LQLv8EuubGd2Sk
+	b02ZnBHgZ5ePEuJTpEuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJlw9-001iZR-2X;
-	Thu, 13 Jul 2023 02:20:09 +0000
-Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
+	id 1qJmUe-001mN3-2x;
+	Thu, 13 Jul 2023 02:55:48 +0000
+Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qJlw6-001iX6-2H
+	id 1qJmUa-001mLu-1b
 	for linux-mtd@lists.infradead.org;
-	Thu, 13 Jul 2023 02:20:08 +0000
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991f956fb5aso35422466b.0
-        for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2023 19:20:05 -0700 (PDT)
+	Thu, 13 Jul 2023 02:55:45 +0000
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-992dcae74e0so39028866b.3
+        for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2023 19:55:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689214804; x=1691806804;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4n3p2X71+xdc4XAHpj3SJiUOwiTWi+d77tIPhmmUO2k=;
-        b=sH6izrWMpyX66iU3zZYV4UypiWXCZR0ZDt3aDuR18tcIYTltpdWE53RgUEom52YXt2
-         s2VhZbvpcPQQ1r7Ul0O2gE7+NFqGIOoWunjwiUdEVGWRnkx5tDRoCqeRjUTiO+4wrFs/
-         pgaNjXwuQe9hC2GaVd8uVFtrU9VdKgxYMpmvSnx4RPEKCKJdwiA0JGKVZ8qNf6KYdE/W
-         5AiAgRP0pBQ/z4hd0Kcy78kdkt1r8K+nHZqURw44dNPkYuH9PeI6ufv7DWJFOSnyQsZq
-         fJ0Z0X4jgidOOsT0tkRkp83cuyLLjLl10ja8CVl3V4GP4XMpHSuI5L82hMHkjjUD3Df8
-         3QJA==
+        d=linaro.org; s=google; t=1689216942; x=1691808942;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kLlU58c++ci0IwqSkjxaHTSUcPb1zdpAeIzC2kjdIKM=;
+        b=BUNTBaE6LZt5r73fzC3XCFuLsZgsOT1IAJcT9VjwDbN8snUUYP1sEUvu6Qt76HZ4Zg
+         OwxWqOeNsG6U2s2NSrdUBLL8xhsSIi34mEjlpNIxzyeQZp/ddXhG7KnOJkKKEs34qJBA
+         tcFMCzGn4MCLJNv9swwhnkLRPzhlwJ1jU7HovZeRp8hN9GN+b2lsgQ42plEUsrAp7XCx
+         eLTSJBaIqw7Vf8bhJDh3X0ZWQWuetlnIm7cMIY5cCM9P894BH9tVxNemcVkjiv2Wyy54
+         +Io3GWchFGtwM+KBX222G93mTED7UKSdo1E2LyrXVNCaRCpbGDK25FLPCCD/4XXe4Md/
+         6KmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689214804; x=1691806804;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4n3p2X71+xdc4XAHpj3SJiUOwiTWi+d77tIPhmmUO2k=;
-        b=WAyPvFQNr7hT7RK/32ipW8t98dGWa8aQhb003n6z/L3L9rUjVO/gNZ4o2Qu/UIn3un
-         Q1wj6Gxix4Aay7zpzYBon1khuOvBDo9S2Ginr6i5ST/i9+hsYPgOQsMjAEm0Z1+ncjxs
-         IT/u23h+SxIn2Itnatf8n/FwfQRHkKmGtdjpCrMV/GwDEdtWgJH3KDweMr4eDlhDtVnw
-         OxJG4PrDE8J4DwTA2EmOc0ETA9WwKeEHaaa8O+wvw8bJfdIHC1RFtplSENyA2BcFLxHG
-         b6weLg8ePCRYIoZOrJxWvmsfjH+maXgBxIJX8CYLobIYataE+9sVtF946tvrLi5ahFDF
-         TDBQ==
-X-Gm-Message-State: ABy/qLYEdznPxeTDuHSkOVseII5LyNs0AgcX3cQeV2me4K50scy4Neon
-	Pdhq+vxPCbU7igcNeGCeY6mbkQ==
-X-Google-Smtp-Source: APBJJlHedINiWwZfqKJgnsVB6Q//8myXXJ8uyAZwZ3JdryAEyhOOx5vJa75STHzSEt46z56vMV7opw==
-X-Received: by 2002:a17:907:7656:b0:993:c267:3612 with SMTP id kj22-20020a170907765600b00993c2673612mr111581ejc.12.1689214804125;
-        Wed, 12 Jul 2023 19:20:04 -0700 (PDT)
-Received: from [192.168.0.173] ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id mf12-20020a170906cb8c00b009893f268b92sm3328763ejb.28.2023.07.12.19.20.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 19:20:03 -0700 (PDT)
-Message-ID: <8b7d2420-26b6-405b-8ef7-75e0a0201402@linaro.org>
-Date: Thu, 13 Jul 2023 05:20:01 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3] mtd: spi-nor: Add support for sst26vf032b flash
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20230712161503.448024-1-miquel.raynal@bootlin.com>
+        d=1e100.net; s=20221208; t=1689216942; x=1691808942;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kLlU58c++ci0IwqSkjxaHTSUcPb1zdpAeIzC2kjdIKM=;
+        b=PBo+qMXC3wPyaomSwXqmCs7rxE22XOZPOT392nYV5qH+ac6qlTRHrQAFZkKCw1x7Jf
+         GjnQJ3zxwCOS2kk7zrLJAjAWJHaIoeBQJZBt4FK+bHhKDkzM1oid952cxxKuZUKmAPx/
+         P5jlzYCKgnLIzSqBoSCDI+aP4lj6r676XhJLmwqYh91belM274qrrTdXYAHoKlD56TPP
+         bOe58a+a79yZPX5KbLCVMogNlMtxv0hQKhmTHSKi66zyy41EFf0Bf/SL9M5+rF8/fFnm
+         eG95nDUEcwQspiJ8b1REbYYcM5hMVKDb14g0AtDEf3as/FdqCmWXsGSSMhRe2tDawvky
+         ekPg==
+X-Gm-Message-State: ABy/qLYlPTK2mdU0LlK2MybBpYAi3LNuqbpQ+byMLQeLpETpc9Zs29y5
+	ZXYdAOakASXcJq09M873cifwhg==
+X-Google-Smtp-Source: APBJJlFYMn/hMa04m/3HyPt1kQs3tR6WyEkeNn1QB7QSSGrd5pBpQej6DP/GuwOuNUdMOr5ZjXQoBA==
+X-Received: by 2002:a17:907:6025:b0:993:22a2:8158 with SMTP id fs37-20020a170907602500b0099322a28158mr120877ejc.61.1689216942405;
+        Wed, 12 Jul 2023 19:55:42 -0700 (PDT)
+Received: from 1.. ([79.115.63.146])
+        by smtp.gmail.com with ESMTPSA id gr19-20020a170906e2d300b0098e2eaec394sm3370236ejb.101.2023.07.12.19.55.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 19:55:42 -0700 (PDT)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-Content-Language: en-US
-In-Reply-To: <20230712161503.448024-1-miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: spi-nor: clarify the need for spi-nor compatibles
+Date: Thu, 13 Jul 2023 05:55:35 +0300
+Message-Id: <168921680625.27728.11240136618925333880.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230616140054.2788684-1-miquel.raynal@bootlin.com>
+References: <20230616140054.2788684-1-miquel.raynal@bootlin.com>
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=867; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=qQrf9UEl4mHPW7uYjAFEMB9b0BBwHqIyTsPDsR2h3mk=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkr2egyZ2R4+Mvk698dwEXY6GlaMZ18bERxOJDY aBqp0VccFqJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZK9noAAKCRBLVU9HpY0U 6QhUB/9DOWFpM/PMJBKdEZGXzpjOlBDEtQppakwcE6ftjqQtApQcSiF33NkMhQ2Ts3M7eVuoDZQ x3/Zk+xmukkwKeje3dbmsJP6GoNFR1Z5XY7yKc4rYrPAW0pAG/tgLpP9zSVlx1dwYP6tcfDQNJn HBVwmW+zpyVvyZm5vXJwnSmpuy2b+bNstx7oolPgUl2xjZhJ6OuwMK2sD4RzmBrkqwdkkGjt4/M qAsH0wKGBkGYOV1OACviGl4nLdjjc2UbzcLXUgMPkbdohpDLGGMqmAF4fnIw0BVvaCKp8NcebnR BHJB4By13mDtzZnsE02HiuBUD862MCrPLSefT7wa/+OjF0ZU
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230712_192006_770949_04D3643D 
-X-CRM114-Status: GOOD (  22.26  )
+X-CRM114-CacheID: sfid-20230712_195544_533107_3D9D0D17 
+X-CRM114-Status: UNSURE (   8.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,106 +102,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Miquel,
+On Fri, 16 Jun 2023 16:00:54 +0200, Miquel Raynal wrote:
+> Most SPI NOR devices do not require a specific compatible, their ID can
+> in general be discovered with the JEDEC READ ID opcode. In this case,
+> only the "jedec,spi-nor" generic compatible is expected. Clarify this
+> information in the compatible description to (i) help device-tree
+> writers and (ii) prevent further attempts to extend this list with
+> useless information.
+> 
+> [...]
 
-On 12.07.2023 19:15, Miquel Raynal wrote:
-> Describe this new part. The datasheet is public.
-> 
-> Link: https://ww1.microchip.com/downloads/aemDocuments/documents/MPD/ProductDocuments/DataSheets/SST26VF032B-SST26VF032BA-2.5V-3.0V-32-Mbit-Serial-Quad-IO-%28SQI%29-Flash-Memory-20005218K.pdf
-> 
-> Here are the sfdp tables plus base testing to show it works.
-> 
-> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-> sst26vf032b
-> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-> bf2642
-> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-> sst
-> $ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 53464450060102ff00060110300000ff81000106000100ffbf0001180002
-> 0001fffffffffffffffffffffffffffffffffd20f1ffffffff0144eb086b
-> 083b80bbfeffffffffff00ffffff440b0c200dd80fd810d820914824806f
-> 1d81ed0f773830b030b0f7ffffff29c25cfff030c080ffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffff0004fff37f0000f57f0000f9ff
-> 3d00f57f0000f37f0000ffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffbf2642ffb95ffdff30f260f332ff0a122346ff0f19320f1919ffffff
-> ffffffff00669938ff05013506040232b03072428de89888a585c09faf5a
-> ffff06ec060c0003080bffffffffff07ffff0202ff060300fdfd040600fc
-> 0300fefe0202070e
-> $ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> e7efddddb3d5ee89ca37bf6b6e789645  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 
-> $ dd if=/dev/urandom of=./qspi_test bs=1M count=1
-> 1+0 records in
-> 1+0 records out
-> $ mtd_debug write /dev/mtd0 0 1048576 qspi_test
-> Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
-> $ mtd_debug erase /dev/mtd0 0 1048576
-> Erased 1048576 bytes from address 0x00000000 in flash
-> $ mtd_debug read /dev/mtd0 0 1048576 qspi_read
-> Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
-> $ hexdump qspi_read
-> 0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-> *
-> 0100000
-> $ mtd_debug write /dev/mtd0 0 1048576 qspi_test
-> Copied 1048576 bytes from qspi_test to address 0x00000000 in flash
-> $ mtd_debug read /dev/mtd0 0 1048576 qspi_read
-> Copied 1048576 bytes from address 0x00000000 in flash to qspi_read
-> $ sha1sum qspi_test qspi_read
-> 2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_test
-> 2f2f191c7a937eca5db21a1c39e79e7327587cc1  qspi_read
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
-> 
-> Changes in v3:
-> * Dropped the second patch (untested changes as advised by Tudor).
+[ta: s/JEDEC/JEDEC SFDP for clarity and s/JEDEC READ ID/READ ID as
+the opcode is not part of the JEDEC SFDP standard.]
 
-thanks
-> * Avoided playing with locking as I cannot test it either: simplified
->   the diff by just using the PARSE_SFDP flag.> * Rebased on top of -rc1 and adapted the patch to the current state.
-> 
->  drivers/mtd/spi-nor/sst.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-> index 688eb20c763e..754e49f7ac33 100644
-> --- a/drivers/mtd/spi-nor/sst.c
-> +++ b/drivers/mtd/spi-nor/sst.c
-> @@ -111,6 +111,8 @@ static const struct flash_info sst_nor_parts[] = {
->  			      SPI_NOR_QUAD_READ) },
->  	{ "sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
-> +	{ "sst26vf032b", INFO(0xbf2642, 0, 0, 0)
-> +		PARSE_SFDP
+Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
+spi-nor/next branch. Thanks!
 
-if it's just a matter of PARSE_SFDP flag then this flash is a candidate
-for the SPI NOR generic driver, we don't need an explicit flash
-declaration for it.
-
-But I assume you need
-.fixups = &sst26vf_nor_fixups
-otherwise the flash comes write protected by default at boot, thus
-erases/writes will be ignored. Are you positive you run the tests again
-for v3?
+[1/1] dt-bindings: mtd: spi-nor: clarify the need for spi-nor compatibles
+      https://git.kernel.org/mtd/c/4b0cb4e7ab2f
 
 Cheers,
-ta
->  	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128)
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-- 
+Tudor Ambarus <tudor.ambarus@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
