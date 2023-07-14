@@ -4,82 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0004FEB64DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 18:29:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEAF9EB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 19:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XLENwJCGZOozZL0YyEQaqLlKd2120IcpTPlCXe/SyQ0=; b=PCIhqfKuKb/gU7
-	7LMtumMyQfDDUN8babIQT/xJcu9vnS42FfxcZTvj9aAvHm6kmAupbaAGN3dlZVH041USskyX4Xu6L
-	Q089dlTzkDJ0LFSUl0fH+PVmW5kTAkqbi1/G7Mmkq5VYl9Hor2bIfsa5W6jZGz5evfQcleUx+GhDF
-	+53M5BLkqofFMY/IUALUwGQUpA6JvsaOvxSvK5M65QHB4jmqb7C1n4DcShW1HeqCTNJlaBHKBZvL3
-	7v0DSCxZHtIF2exe6qK8Ee6y6qNoUBflH5vO0ClwSM/76v/JwY85V4keVaszwBNA/zdX5IFEVvjSB
-	K5gWaQq5LjqA3QvPefiQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=LUgDGgvVr3lfZ+/jb32MjBJQks1mEyGmTUlq8/rDwnY=; b=QZiRPJdDDgg+5k
+	mDVJwNSHGMOmech8MQvMsIUFc8jO2A/gGwfJ0Kw0fSYtavoPpKl3UC3WDoSowUU+0wV/SrHpQUw5e
+	pvidUj40vnv8CjlEKe94x6V8ujMDF4dQP+YLV2IzFkmIZOdHH462z7JksF3M+zxFBWTsOK22wVGQz
+	jruwZhTMOsv8lqf6d8S5CCrmdFEQ0DewqP0vIr4G/SaSy6YiqpVqlFuIjD77BXWcy5JikNzqaL/PS
+	/5/UvcTA/8lxy77dU4Op9L71aFaYLfY7ic0Xkf4McOcCOGss+ABn0INxxxMVGdGOpUzFxijW2y//l
+	Lpycc9BiVphnBZHdGBQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKNXT-006xsl-1B;
-	Fri, 14 Jul 2023 18:29:11 +0000
-Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
+	id 1qKOSl-0075aA-1l;
+	Fri, 14 Jul 2023 19:28:23 +0000
+Received: from mx1.sberdevices.ru ([37.18.73.165])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKNXQ-006xri-0h
-	for linux-mtd@lists.infradead.org;
-	Fri, 14 Jul 2023 18:29:09 +0000
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b6f0508f54so34176091fa.3
-        for <linux-mtd@lists.infradead.org>; Fri, 14 Jul 2023 11:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689359345; x=1691951345;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V8Wt8cMGCqy9CZq6012XBPM2kyz2Mn90yzkk5uGQWyU=;
-        b=mvajMGQNG+5AvAaKOl4BVvuCD4zs13l7V8u70iG64R7IMoL+YUkkqskXvWa83uZY/G
-         tU2iLxRoo/usmgBwqJQk4hnIuumPHp19LW+BiipO4d1rxi2u/CW7DEk8Yt9q13RhReES
-         2p//ZDhe8aHwjamAXl7mWylHty+53enF4TOZDB36PCmCe8ivLlh7OtkCMjTN7rzH+Gbm
-         YDFDQWE4OvKL1PwI3DpuPkZDOYfDT9tMiURUd6t+IOFsBp7ANcagPRbr84Wtyp46RDXV
-         jtSrCA7MfuO5SyUHaqx/HwpKeFeC69gB1NJpbjhEI6uEEppjTmShQZkt5zvClfZNim9b
-         zbdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689359345; x=1691951345;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V8Wt8cMGCqy9CZq6012XBPM2kyz2Mn90yzkk5uGQWyU=;
-        b=fnzOLuZhG/x8pOPwaJ5Nxp1PtbKkCgEnN3vAn2BnYurPLWqpAHEo6H5ArC1bD8Th2n
-         asi1gPYBDdJHpim97dGHZzP+ag2dfTjnijaFxXKbU17yTS5oca9o9sC3qpzB5g57zwO9
-         TdVwkMLcbjRCuB1G5xJk32U11dX4k1RQ+A/Qckb0WOwxvYk1EQ7gp/idrJXxKk034Pfq
-         BoHrZ6C2x1gK/TUZ9TqkOGFtQeNmdMwFqeYcRjLfthjkQZ8WWGF8OfsF4EwKAHd1PShw
-         Cen00HjH4+S7KHBbJy+jhzoIRBAYAHG4/u+UvdSd5CwdzvY3HAP24smgqbLHHbfbQN91
-         BwXA==
-X-Gm-Message-State: ABy/qLYwgK54u4X2xbk8Zcbu14OvIh3eTZw7O5TCL3YFr7MMn/Sklndp
-	5hnZ+V7Uboh/dKksoXoMF15OICSWGT9H5NKtvm4=
-X-Google-Smtp-Source: APBJJlHCw4a7udF2Olxu1CeYC6D6ejTjPUE0r4lNRWXVSMD4v6zAA/CEHUxPcOzwszw4xt6K9ozOZA==
-X-Received: by 2002:a2e:9c93:0:b0:2b6:e536:a2a9 with SMTP id x19-20020a2e9c93000000b002b6e536a2a9mr4728029lji.47.1689359345403;
-        Fri, 14 Jul 2023 11:29:05 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id f21-20020a2e9e95000000b002b1b92910c8sm2092229ljk.86.2023.07.14.11.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 11:29:05 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 14 Jul 2023 20:29:03 +0200
-Subject: [PATCH v3] mtd: spi-nor: Correct flags for Winbond w25q128
+	id 1qKOSh-0075Z1-0e;
+	Fri, 14 Jul 2023 19:28:21 +0000
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 52498100005;
+	Fri, 14 Jul 2023 22:28:13 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 52498100005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+	s=mail; t=1689362893;
+	bh=Y+EKy5Ok08NhyZskIXQaHaX4WP3np3p1O2H4uO0MI3M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=J3nT8QVlHEw0rbCHKaR0Wxo0ubAaFwxu9KdT3g8pPyTfqGPZbKJHwqXgl1DBcDL4B
+	 sPm6DJr7iHU7xpU7Qp2+1WC7/h/UZHNDQynAH3+xqvOwNihNt3pmSSN8FhhgwjeewV
+	 k3r0RzNOUeGokT3WXIK2e8882vb5JS55vAMaxGvVPNNQJquLDsUuzoG6OHJW4bFMj9
+	 vw14id/UjsvZ+B9OHGHOQOqfg0b0CnnWa1APRb8FFUfL3Zm+cvYDY+3FYm5/oI0FVa
+	 rhAvnb9LlxEtuLLTwDdKwXKgLWlRvFs+rYieiJ6fol88Rkjl3MoAFeOrAhGROlK9XD
+	 Dz6yUrF21FfpQ==
+Received: from p-i-exch-sc-m02.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Fri, 14 Jul 2023 22:28:13 +0300 (MSK)
+Received: from [192.168.0.12] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 14 Jul 2023 22:27:38 +0300
+Message-ID: <840a9364-352d-b79b-6e7a-c54912e2297a@sberdevices.ru>
+Date: Fri, 14 Jul 2023 22:22:53 +0300
 MIME-Version: 1.0
-Message-Id: <20230714-spi-nor-winbond-w25q128-v3-1-bdb2192f079b@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAO6TsWQC/43NTQrCMBCG4auUrI1kJvZHV95DXKRN0g5IUhNJl
- dK7mxZcuBBcvh/MMzOLJpCJ7FTMLJhEkbzLIXcF6wblesNJ52YoUIoagMeRuPOBT+Ra7zSfsLw
- DNlwiqEqgMVjVLF+PwVh6bvLlmnug+PDhtT1KsK4fE3+aCThwWzdWtu0BFXTnGzkV/N6Hnq1ow
- j8hzFApuqMFXTa6+oaWZXkD23C8bggBAAA=
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
- stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [RFC PATCH v3 2/3] dt-bindings: nand: meson: make ECC properties
+ dependent
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+CC: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Neil
+ Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, <oxffffaa@gmail.com>,
+	<kernel@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
+ <20230711122129.2635558-3-AVKrasnov@sberdevices.ru>
+ <20230714155553.GA3913802-robh@kernel.org>
+From: Arseniy Krasnov <avkrasnov@sberdevices.ru>
+In-Reply-To: <20230714155553.GA3913802-robh@kernel.org>
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178634 [Jul 14 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 523 523 523027ce26ed1d9067f7a52a4756a876e54db27c, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m02.sberdevices.ru:5.0.1,7.1.1;sberdevices.ru:5.0.1,7.1.1;lore.kernel.org:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/14 17:22:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/14 17:22:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/14 14:48:00 #21614190
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230714_112908_278615_3770914A 
-X-CRM114-Status: GOOD (  15.36  )
+X-CRM114-CacheID: sfid-20230714_122819_616273_D71C5219 
+X-CRM114-Status: GOOD (  15.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,95 +111,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Winbond "w25q128" (actual vendor name W25Q128JV) has
-exactly the same flags as the sibling device "w25q128jv".
-The devices both require unlocking to enable write access.
 
-The actual product naming between devices vs the Linux
-strings in winbond.c:
 
-0xef4018: "w25q128"   W25Q128JV-IM/JM
-0xef7018: "w25q128jv" W25Q128JV-IN/IQ/JQ
+On 14.07.2023 18:55, Rob Herring wrote:
+> On Tue, Jul 11, 2023 at 03:21:28PM +0300, Arseniy Krasnov wrote:
+>> ECC properties 'nand-ecc-strength' and 'nand-ecc-step-size' depends on
+>> each other, so they must be both either set or not set. 
+> 
+> Is that true for all drivers or just meson?
 
-The latter device, "w25q128jv" supports features named DTQ
-and QPI, otherwise it is the same.
+As Miquel Raynal suggested, this will be implemented only for Meson driver at this moment.
+Here is link with reply:
+https://lore.kernel.org/linux-mtd/20230705065434.297040-1-AVKrasnov@sberdevices.ru/T/#m88705a0039fb30c18a9bb2b03a1add5f7e212a3b
 
-Not having the right flags has the annoying side effect
-that write access does not work.
+Thanks, Arseniy
 
-After this patch I can write to the flash on the Inteno
-XG6846 router.
-
-The flash memory also supports dual and quad SPI modes.
-This does not currently manifest, but by turning on SFDP
-parsing, the right SPI modes are emitted in
-/sys/kernel/debug/spi-nor/spi1.0/capabilities
-for this chip, so we also turn on this.
-
-Since we suspect that older chips may be using the same
-device ID, we need to keep NO_SFDP_FLAGS(SECT_4K) as these
-older chips may not support SFDP.
-
-cat jedec_id
-ef4018
-cat manufacturer
-winbond
-cat partname
-w25q128
-hexdump -v -C sfdp
-00000000  53 46 44 50 05 01 00 ff  00 05 01 10 80 00 00 ff
-00000010  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000050  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000060  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000080  e5 20 f9 ff ff ff ff 07  44 eb 08 6b 08 3b 42 bb
-00000090  fe ff ff ff ff ff 00 00  ff ff 40 eb 0c 20 0f 52
-000000a0  10 d8 00 00 36 02 a6 00  82 ea 14 c9 e9 63 76 33
-000000b0  7a 75 7a 75 f7 a2 d5 5c  19 f7 4d ff e9 30 f8 80
-
-Cc: stable@vger.kernel.org
-Suggested-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-Changes in v3:
-- Keep NO_SFDP_FLAGS(SECT_4K) around.
-- Update commit message
-- Link to v2: https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org
-
-Changes in v2:
-- Only add the write access flags.
-- Use SFDP parsing to properly detect the various
-  available SPI modes.
-- Link to v1: https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v1-1-f78f3bb42a1c@linaro.org
----
- drivers/mtd/spi-nor/winbond.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 834d6ba5ce70..8f30a67cd27a 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -121,6 +121,8 @@ static const struct flash_info winbond_nor_parts[] = {
- 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
- 		NO_SFDP_FLAGS(SECT_4K) },
- 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
-+		PARSE_SFDP
-+		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 		NO_SFDP_FLAGS(SECT_4K) },
- 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-
----
-base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-change-id: 20230711-spi-nor-winbond-w25q128-321a602ee267
-
-Best regards,
--- 
-Linus Walleij <linus.walleij@linaro.org>
-
+> 
+>> In first case
+>> ECC core will try to use these values if possible (by checking ECC caps
+>> provided by driver), in second case ECC core will select most optimal
+>> values for both properties.
+>>
+>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>> ---
+>>  Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>> index e81757c9e0ed..4f6e56542a7e 100644
+>> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>> @@ -58,6 +58,10 @@ patternProperties:
+>>              meson-gxl-nfc 8, 16, 24, 30, 40, 50, 60
+>>              meson-axg-nfc 8
+>>  
+>> +    dependencies:
+>> +      nand-ecc-strength: ['nand-ecc-step-size']
+>> +      nand-ecc-step-size: ['nand-ecc-strength']
+>> +
+>>  required:
+>>    - compatible
+>>    - reg
+>> -- 
+>> 2.35.0
+>>
 
 ______________________________________________________
 Linux MTD discussion mailing list
