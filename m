@@ -4,77 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B57CCC001E0
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 17:48:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0004FEB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 18:29:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=RR/dkwYiyo+I3LEiup4SKqUstT/RoskOywkaH8SL9dQ=; b=dITcN8+05fGlWE
-	HkWOZj3YK7o08QnZXBbacC6Rod9Xo0uTTUNpU0yrfNRXh3GO3WQeKUqdguF4cDlJfu98+SYrCKlM8
-	tADHuOgOk54f+uKkHcpJJiHoyJ5SFAOGNmx7KjZEpd11g/FWMlTDiRQCe/d4eW/7Iuw/I1yeI3l0G
-	xCYs4A3txcJQnF9df6oZ2EFLjgnJH7LWb6rhfE+P3C2xKH5hY6aGkzLX7qt9i4uoBg5KRUtE1ej79
-	oUEQmeuCvTiaapozYV5dncf/G102Y+atvhahmywZ3yT8RsL93at4a6uH2e2jR5o0h9VVRHIpb/e3a
-	+uwQK3NfkLqAdzM/iVtQ==;
+	List-Owner; bh=XLENwJCGZOozZL0YyEQaqLlKd2120IcpTPlCXe/SyQ0=; b=PCIhqfKuKb/gU7
+	7LMtumMyQfDDUN8babIQT/xJcu9vnS42FfxcZTvj9aAvHm6kmAupbaAGN3dlZVH041USskyX4Xu6L
+	Q089dlTzkDJ0LFSUl0fH+PVmW5kTAkqbi1/G7Mmkq5VYl9Hor2bIfsa5W6jZGz5evfQcleUx+GhDF
+	+53M5BLkqofFMY/IUALUwGQUpA6JvsaOvxSvK5M65QHB4jmqb7C1n4DcShW1HeqCTNJlaBHKBZvL3
+	7v0DSCxZHtIF2exe6qK8Ee6y6qNoUBflH5vO0ClwSM/76v/JwY85V4keVaszwBNA/zdX5IFEVvjSB
+	K5gWaQq5LjqA3QvPefiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKMto-006p7D-1Z;
-	Fri, 14 Jul 2023 17:48:12 +0000
-Received: from mail-il1-f181.google.com ([209.85.166.181])
+	id 1qKNXT-006xsl-1B;
+	Fri, 14 Jul 2023 18:29:11 +0000
+Received: from mail-lj1-x229.google.com ([2a00:1450:4864:20::229])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKMtj-006p1y-18;
-	Fri, 14 Jul 2023 17:48:10 +0000
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-345ff33d286so9640765ab.3;
-        Fri, 14 Jul 2023 10:48:06 -0700 (PDT)
+	id 1qKNXQ-006xri-0h
+	for linux-mtd@lists.infradead.org;
+	Fri, 14 Jul 2023 18:29:09 +0000
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b6f0508f54so34176091fa.3
+        for <linux-mtd@lists.infradead.org>; Fri, 14 Jul 2023 11:29:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689359345; x=1691951345;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V8Wt8cMGCqy9CZq6012XBPM2kyz2Mn90yzkk5uGQWyU=;
+        b=mvajMGQNG+5AvAaKOl4BVvuCD4zs13l7V8u70iG64R7IMoL+YUkkqskXvWa83uZY/G
+         tU2iLxRoo/usmgBwqJQk4hnIuumPHp19LW+BiipO4d1rxi2u/CW7DEk8Yt9q13RhReES
+         2p//ZDhe8aHwjamAXl7mWylHty+53enF4TOZDB36PCmCe8ivLlh7OtkCMjTN7rzH+Gbm
+         YDFDQWE4OvKL1PwI3DpuPkZDOYfDT9tMiURUd6t+IOFsBp7ANcagPRbr84Wtyp46RDXV
+         jtSrCA7MfuO5SyUHaqx/HwpKeFeC69gB1NJpbjhEI6uEEppjTmShQZkt5zvClfZNim9b
+         zbdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689356885; x=1691948885;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1689359345; x=1691951345;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=R7MnX9EU5DUHE5XRnhL3IlecGwH7oD185TOyFZlX8UQ=;
-        b=KqiNObid3E856wReOp1c4qaoNUw0lkumApycPhVIB7iTsm7eAaB/UV4Z6Hotlcj24n
-         NCaYRDH5pdk1e7WDHT35OzDum51EnhXYR+iwU4/SO3vqsfO+5DSQDLlq11PAkBDe2OkC
-         nPRyshB5+/UvIt+q9i12dDpDXD+sneI82MdY+Upc/coes8cRQa8em6+fZg5YyBxpl7Mk
-         nZK2H4D46ePf6WcQgMgDAjG+NiQXb/AFY8vqUek3bpUvIDE+VVhA/U4RbF+jRgVtG7NQ
-         CS/bMUhTRRmD49CrzGWaN1dvCD+eaEz98dWiFO4TSJrOy2eSSsRFqHCEqwsL7rDkSUYt
-         M6nQ==
-X-Gm-Message-State: ABy/qLZI2e8ciD0rJHdEhD/GXP17J1N74LqjyPBDdag4Se6ZiZwJPBHR
-	Bv/ELITzS1fqknFGU70IYg==
-X-Google-Smtp-Source: APBJJlF4o1MgPuSLnn/Qb5HrydHiexRpoGJKh/EJm02M6MDOXHTh9K4jdGuB1CSsRAAQSRbmMkUHaA==
-X-Received: by 2002:a92:c506:0:b0:347:733c:a55a with SMTP id r6-20020a92c506000000b00347733ca55amr4527148ilg.18.1689356885560;
-        Fri, 14 Jul 2023 10:48:05 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id b25-20020a05663801b900b0042b3a328ee0sm2683036jaq.166.2023.07.14.10.48.02
+        bh=V8Wt8cMGCqy9CZq6012XBPM2kyz2Mn90yzkk5uGQWyU=;
+        b=fnzOLuZhG/x8pOPwaJ5Nxp1PtbKkCgEnN3vAn2BnYurPLWqpAHEo6H5ArC1bD8Th2n
+         asi1gPYBDdJHpim97dGHZzP+ag2dfTjnijaFxXKbU17yTS5oca9o9sC3qpzB5g57zwO9
+         TdVwkMLcbjRCuB1G5xJk32U11dX4k1RQ+A/Qckb0WOwxvYk1EQ7gp/idrJXxKk034Pfq
+         BoHrZ6C2x1gK/TUZ9TqkOGFtQeNmdMwFqeYcRjLfthjkQZ8WWGF8OfsF4EwKAHd1PShw
+         Cen00HjH4+S7KHBbJy+jhzoIRBAYAHG4/u+UvdSd5CwdzvY3HAP24smgqbLHHbfbQN91
+         BwXA==
+X-Gm-Message-State: ABy/qLYwgK54u4X2xbk8Zcbu14OvIh3eTZw7O5TCL3YFr7MMn/Sklndp
+	5hnZ+V7Uboh/dKksoXoMF15OICSWGT9H5NKtvm4=
+X-Google-Smtp-Source: APBJJlHCw4a7udF2Olxu1CeYC6D6ejTjPUE0r4lNRWXVSMD4v6zAA/CEHUxPcOzwszw4xt6K9ozOZA==
+X-Received: by 2002:a2e:9c93:0:b0:2b6:e536:a2a9 with SMTP id x19-20020a2e9c93000000b002b6e536a2a9mr4728029lji.47.1689359345403;
+        Fri, 14 Jul 2023 11:29:05 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id f21-20020a2e9e95000000b002b1b92910c8sm2092229ljk.86.2023.07.14.11.29.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:48:04 -0700 (PDT)
-Received: (nullmailer pid 4060565 invoked by uid 1000);
-	Fri, 14 Jul 2023 17:47:54 -0000
-From: Rob Herring <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	Kyungmin Park <kyungmin.park@samsung.com>, Han Xu <han.xu@nxp.com>, 
-	Harvey Hunt <harveyhuntnexus@gmail.com>, Paul Cercueil <paul@crapouillou.net>, 
-	Liang Yang <liang.yang@amlogic.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Michal Simek <michal.simek@amd.com>, Manivannan Sadhasivam <mani@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Vladimir Zapolskiy <vz@mleia.com>, 
-	Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
-	Michael Walle <michael@walle.cc>
-Cc: devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, linux-amlogic@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: [PATCH] mtd: Explicitly include correct DT includes
-Date: Fri, 14 Jul 2023 11:47:49 -0600
-Message-Id: <20230714174751.4060439-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Fri, 14 Jul 2023 11:29:05 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 14 Jul 2023 20:29:03 +0200
+Subject: [PATCH v3] mtd: spi-nor: Correct flags for Winbond w25q128
 MIME-Version: 1.0
+Message-Id: <20230714-spi-nor-winbond-w25q128-v3-1-bdb2192f079b@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAO6TsWQC/43NTQrCMBCG4auUrI1kJvZHV95DXKRN0g5IUhNJl
+ dK7mxZcuBBcvh/MMzOLJpCJ7FTMLJhEkbzLIXcF6wblesNJ52YoUIoagMeRuPOBT+Ra7zSfsLw
+ DNlwiqEqgMVjVLF+PwVh6bvLlmnug+PDhtT1KsK4fE3+aCThwWzdWtu0BFXTnGzkV/N6Hnq1ow
+ j8hzFApuqMFXTa6+oaWZXkD23C8bggBAAA=
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230714_104807_430936_C2E2289F 
-X-CRM114-Status: GOOD (  14.18  )
+X-CRM114-CacheID: sfid-20230714_112908_278615_3770914A 
+X-CRM114-Status: GOOD (  15.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,537 +96,94 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The DT of_device.h and of_platform.h date back to the separate
-of_platform_bus_type before it as merged into the regular platform bus.
-As part of that merge prepping Arm DT support 13 years ago, they
-"temporarily" include each other. They also include platform_device.h
-and of.h. As a result, there's a pretty much random mix of those include
-files used throughout the tree. In order to detangle these headers and
-replace the implicit includes with struct declarations, users need to
-explicitly include the correct includes.
+The Winbond "w25q128" (actual vendor name W25Q128JV) has
+exactly the same flags as the sibling device "w25q128jv".
+The devices both require unlocking to enable write access.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
+The actual product naming between devices vs the Linux
+strings in winbond.c:
+
+0xef4018: "w25q128"   W25Q128JV-IM/JM
+0xef7018: "w25q128jv" W25Q128JV-IN/IQ/JQ
+
+The latter device, "w25q128jv" supports features named DTQ
+and QPI, otherwise it is the same.
+
+Not having the right flags has the annoying side effect
+that write access does not work.
+
+After this patch I can write to the flash on the Inteno
+XG6846 router.
+
+The flash memory also supports dual and quad SPI modes.
+This does not currently manifest, but by turning on SFDP
+parsing, the right SPI modes are emitted in
+/sys/kernel/debug/spi-nor/spi1.0/capabilities
+for this chip, so we also turn on this.
+
+Since we suspect that older chips may be using the same
+device ID, we need to keep NO_SFDP_FLAGS(SECT_4K) as these
+older chips may not support SFDP.
+
+cat jedec_id
+ef4018
+cat manufacturer
+winbond
+cat partname
+w25q128
+hexdump -v -C sfdp
+00000000  53 46 44 50 05 01 00 ff  00 05 01 10 80 00 00 ff
+00000010  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000050  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000060  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000080  e5 20 f9 ff ff ff ff 07  44 eb 08 6b 08 3b 42 bb
+00000090  fe ff ff ff ff ff 00 00  ff ff 40 eb 0c 20 0f 52
+000000a0  10 d8 00 00 36 02 a6 00  82 ea 14 c9 e9 63 76 33
+000000b0  7a 75 7a 75 f7 a2 d5 5c  19 f7 4d ff e9 30 f8 80
+
+Cc: stable@vger.kernel.org
+Suggested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/mtd/devices/mchp23k256.c                | 2 +-
- drivers/mtd/devices/mchp48l640.c                | 2 +-
- drivers/mtd/devices/mtd_dataflash.c             | 1 -
- drivers/mtd/maps/physmap-bt1-rom.c              | 1 -
- drivers/mtd/maps/physmap-gemini.c               | 2 +-
- drivers/mtd/maps/physmap-ixp4xx.c               | 2 +-
- drivers/mtd/maps/physmap-ixp4xx.h               | 1 +
- drivers/mtd/maps/physmap-versatile.c            | 2 +-
- drivers/mtd/maps/sun_uflash.c                   | 2 +-
- drivers/mtd/nand/ecc-mxic.c                     | 2 +-
- drivers/mtd/nand/ecc.c                          | 2 +-
- drivers/mtd/nand/onenand/onenand_omap2.c        | 2 +-
- drivers/mtd/nand/raw/ams-delta.c                | 2 +-
- drivers/mtd/nand/raw/davinci_nand.c             | 1 -
- drivers/mtd/nand/raw/denali_dt.c                | 1 -
- drivers/mtd/nand/raw/fsl_ifc_nand.c             | 1 +
- drivers/mtd/nand/raw/fsl_upm.c                  | 3 ++-
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c      | 2 +-
- drivers/mtd/nand/raw/ingenic/ingenic_ecc.c      | 1 +
- drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 1 -
- drivers/mtd/nand/raw/marvell_nand.c             | 3 ++-
- drivers/mtd/nand/raw/meson_nand.c               | 1 -
- drivers/mtd/nand/raw/mpc5121_nfc.c              | 4 ++--
- drivers/mtd/nand/raw/mtk_nand.c                 | 1 -
- drivers/mtd/nand/raw/mxc_nand.c                 | 1 -
- drivers/mtd/nand/raw/ndfc.c                     | 3 ++-
- drivers/mtd/nand/raw/omap2.c                    | 2 +-
- drivers/mtd/nand/raw/pl35x-nand-controller.c    | 4 +---
- drivers/mtd/nand/raw/qcom_nandc.c               | 2 +-
- drivers/mtd/nand/raw/rockchip-nand-controller.c | 1 -
- drivers/mtd/nand/raw/s3c2410.c                  | 1 -
- drivers/mtd/nand/raw/sh_flctl.c                 | 1 -
- drivers/mtd/nand/raw/socrates_nand.c            | 3 ++-
- drivers/mtd/nand/raw/sunxi_nand.c               | 1 -
- drivers/mtd/nand/raw/xway_nand.c                | 3 ++-
- drivers/mtd/spi-nor/controllers/nxp-spifi.c     | 1 -
- 36 files changed, 29 insertions(+), 36 deletions(-)
+Changes in v3:
+- Keep NO_SFDP_FLAGS(SECT_4K) around.
+- Update commit message
+- Link to v2: https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org
 
-diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
-index 3a6ea7a6a30c..d533475fda15 100644
---- a/drivers/mtd/devices/mchp23k256.c
-+++ b/drivers/mtd/devices/mchp23k256.c
-@@ -15,7 +15,7 @@
- #include <linux/sizes.h>
- #include <linux/spi/flash.h>
- #include <linux/spi/spi.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- 
- #define MAX_CMD_SIZE		4
- 
-diff --git a/drivers/mtd/devices/mchp48l640.c b/drivers/mtd/devices/mchp48l640.c
-index 40cd5041174c..f576e6a890e8 100644
---- a/drivers/mtd/devices/mchp48l640.c
-+++ b/drivers/mtd/devices/mchp48l640.c
-@@ -22,7 +22,7 @@
- #include <linux/sizes.h>
- #include <linux/spi/flash.h>
- #include <linux/spi/spi.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- 
- struct mchp48_caps {
- 	unsigned int size;
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 1d3b2a94581f..0c1b93303618 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -13,7 +13,6 @@
- #include <linux/err.h>
- #include <linux/math64.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- 
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
-diff --git a/drivers/mtd/maps/physmap-bt1-rom.c b/drivers/mtd/maps/physmap-bt1-rom.c
-index 58782cfaf71c..60dccc48f99e 100644
---- a/drivers/mtd/maps/physmap-bt1-rom.c
-+++ b/drivers/mtd/maps/physmap-bt1-rom.c
-@@ -14,7 +14,6 @@
- #include <linux/mtd/xip.h>
- #include <linux/mux/consumer.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/string.h>
- #include <linux/types.h>
-diff --git a/drivers/mtd/maps/physmap-gemini.c b/drivers/mtd/maps/physmap-gemini.c
-index d4a46e159d38..9d3b4bf84a1a 100644
---- a/drivers/mtd/maps/physmap-gemini.c
-+++ b/drivers/mtd/maps/physmap-gemini.c
-@@ -8,10 +8,10 @@
-  */
- #include <linux/export.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/mtd/map.h>
- #include <linux/mtd/xip.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/bitops.h>
- #include <linux/pinctrl/consumer.h>
-diff --git a/drivers/mtd/maps/physmap-ixp4xx.c b/drivers/mtd/maps/physmap-ixp4xx.c
-index 6a054229a8a0..c561468f95f6 100644
---- a/drivers/mtd/maps/physmap-ixp4xx.c
-+++ b/drivers/mtd/maps/physmap-ixp4xx.c
-@@ -11,7 +11,7 @@
-  */
- #include <linux/export.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/mtd/map.h>
- #include <linux/mtd/xip.h>
- #include "physmap-ixp4xx.h"
-diff --git a/drivers/mtd/maps/physmap-ixp4xx.h b/drivers/mtd/maps/physmap-ixp4xx.h
-index b0fc49b7f3ed..46824c57e58a 100644
---- a/drivers/mtd/maps/physmap-ixp4xx.h
-+++ b/drivers/mtd/maps/physmap-ixp4xx.h
-@@ -1,5 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/mtd/map.h>
- 
- #ifdef CONFIG_MTD_PHYSMAP_IXP4XX
-diff --git a/drivers/mtd/maps/physmap-versatile.c b/drivers/mtd/maps/physmap-versatile.c
-index a1b8b7b25f88..8e15d514c82d 100644
---- a/drivers/mtd/maps/physmap-versatile.c
-+++ b/drivers/mtd/maps/physmap-versatile.c
-@@ -9,9 +9,9 @@
- #include <linux/io.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/mtd/map.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/bitops.h>
- #include "physmap-versatile.h"
-diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
-index 860b19f77090..2bfdf1b7e18a 100644
---- a/drivers/mtd/maps/sun_uflash.c
-+++ b/drivers/mtd/maps/sun_uflash.c
-@@ -14,7 +14,7 @@
- #include <linux/errno.h>
- #include <linux/ioport.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <asm/prom.h>
- #include <linux/uaccess.h>
-diff --git a/drivers/mtd/nand/ecc-mxic.c b/drivers/mtd/nand/ecc-mxic.c
-index 22a760e6024e..47e10945b8d2 100644
---- a/drivers/mtd/nand/ecc-mxic.c
-+++ b/drivers/mtd/nand/ecc-mxic.c
-@@ -18,7 +18,7 @@
- #include <linux/mtd/nand.h>
- #include <linux/mtd/nand-ecc-mxic.h>
- #include <linux/mutex.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-diff --git a/drivers/mtd/nand/ecc.c b/drivers/mtd/nand/ecc.c
-index 5250764cedee..8f996e8d61b8 100644
---- a/drivers/mtd/nand/ecc.c
-+++ b/drivers/mtd/nand/ecc.c
-@@ -95,9 +95,9 @@
- 
- #include <linux/module.h>
- #include <linux/mtd/nand.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_platform.h>
- 
- static LIST_HEAD(on_host_hw_engines);
-diff --git a/drivers/mtd/nand/onenand/onenand_omap2.c b/drivers/mtd/nand/onenand/onenand_omap2.c
-index ff7af98604df..7db53b59605d 100644
---- a/drivers/mtd/nand/onenand/onenand_omap2.c
-+++ b/drivers/mtd/nand/onenand/onenand_omap2.c
-@@ -13,7 +13,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/onenand.h>
- #include <linux/mtd/partitions.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/omap-gpmc.h>
- #include <linux/platform_device.h>
- #include <linux/interrupt.h>
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index fa621ffa6490..919816a7aca7 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -22,7 +22,7 @@
- #include <linux/mtd/nand-gpio.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/sizes.h>
- 
-diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index 415d6aaa8255..e75d81cf8c21 100644
---- a/drivers/mtd/nand/raw/davinci_nand.c
-+++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -18,7 +18,6 @@
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/slab.h>
--#include <linux/of_device.h>
- #include <linux/of.h>
- 
- #include <linux/platform_data/mtd-davinci.h>
-diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
-index 915047e3fbc2..edac8749bb93 100644
---- a/drivers/mtd/nand/raw/denali_dt.c
-+++ b/drivers/mtd/nand/raw/denali_dt.c
-@@ -13,7 +13,6 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
- 
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index fa537fee6701..20bb1e0cb5eb 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -8,6 +8,7 @@
-  */
- 
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/of_address.h>
-diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
-index 086426139173..5bf73efe42e7 100644
---- a/drivers/mtd/nand/raw/fsl_upm.c
-+++ b/drivers/mtd/nand/raw/fsl_upm.c
-@@ -13,7 +13,8 @@
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/mtd.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/slab.h>
- #include <asm/fsl_lbc.h>
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 500e7a28d2e4..e71ad2fcec23 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -13,7 +13,7 @@
- #include <linux/module.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/dma/mxs-dma.h>
- #include "gpmi-nand.h"
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-index 9054559e52dd..525c34c281b6 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-@@ -9,6 +9,7 @@
- #include <linux/clk.h>
- #include <linux/init.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
- 
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-index b9f135297aa0..6748226b8bd1 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-@@ -13,7 +13,6 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/gpio/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 30c15e4e1cc0..7d0204ea305b 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -77,9 +77,10 @@
- #include <linux/module.h>
- #include <linux/clk.h>
- #include <linux/mtd/rawnand.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/iopoll.h>
- #include <linux/interrupt.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index d3faf8086631..ef821b43b3d4 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -19,7 +19,6 @@
- #include <linux/module.h>
- #include <linux/iopoll.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/sched/task_stack.h>
- 
- #define NFC_REG_CMD		0x00
-diff --git a/drivers/mtd/nand/raw/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
-index ab05ee65702c..6e8e790f84e7 100644
---- a/drivers/mtd/nand/raw/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/raw/mpc5121_nfc.c
-@@ -21,10 +21,10 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/of_irq.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/mpc5121.h>
- 
-diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index b2fa6b2074ab..b6eb8cb6b5e9 100644
---- a/drivers/mtd/nand/raw/mtk_nand.c
-+++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -16,7 +16,6 @@
- #include <linux/module.h>
- #include <linux/iopoll.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/mtd/nand-ecc-mtk.h>
- 
- /* NAND controller register definition */
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 3d4b2e8294ea..0cd98d5714fc 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -20,7 +20,6 @@
- #include <linux/irq.h>
- #include <linux/completion.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- 
- #define DRIVER_NAME "mxc_nand"
- 
-diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
-index 57f3db32122d..3bb32a7c6d67 100644
---- a/drivers/mtd/nand/raw/ndfc.c
-+++ b/drivers/mtd/nand/raw/ndfc.c
-@@ -22,8 +22,9 @@
- #include <linux/mtd/ndfc.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <asm/io.h>
- 
- #define NDFC_MAX_CS    4
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index db22b3af16d8..e057c03a197d 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -22,7 +22,7 @@
- #include <linux/iopoll.h>
- #include <linux/slab.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/of_platform.h>
- 
- #include <linux/platform_data/elm.h>
- 
-diff --git a/drivers/mtd/nand/raw/pl35x-nand-controller.c b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-index 28b7bd7e22eb..8da5fee321b5 100644
---- a/drivers/mtd/nand/raw/pl35x-nand-controller.c
-+++ b/drivers/mtd/nand/raw/pl35x-nand-controller.c
-@@ -23,9 +23,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/clk.h>
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 72d6168d8a1b..df245353b12b 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -3,6 +3,7 @@
-  * Copyright (c) 2016, The Linux Foundation. All rights reserved.
-  */
- #include <linux/clk.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/bitops.h>
- #include <linux/dma/qcom_adm.h>
-@@ -12,7 +13,6 @@
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/delay.h>
- #include <linux/dma/qcom_bam_dma.h>
- 
-diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-index 2312e27362cb..0ec03ffb4846 100644
---- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
-+++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-@@ -15,7 +15,6 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-index ac80aaf5b4e3..3d3d5c9814ff 100644
---- a/drivers/mtd/nand/raw/s3c2410.c
-+++ b/drivers/mtd/nand/raw/s3c2410.c
-@@ -26,7 +26,6 @@
- #include <linux/clk.h>
- #include <linux/cpufreq.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index 63bf20c41719..08211e96ce64 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -17,7 +17,6 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/sh_dma.h>
-diff --git a/drivers/mtd/nand/raw/socrates_nand.c b/drivers/mtd/nand/raw/socrates_nand.c
-index a8b720ffe9e8..76d50eb9f1db 100644
---- a/drivers/mtd/nand/raw/socrates_nand.c
-+++ b/drivers/mtd/nand/raw/socrates_nand.c
-@@ -8,8 +8,9 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/io.h>
- 
- #define FPGA_NAND_CMD_MASK		(0x7 << 28)
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 9884304634f6..c6cd7713bee7 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -19,7 +19,6 @@
- #include <linux/moduleparam.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
-diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
-index 6b1e2a2bba15..51d802a165ed 100644
---- a/drivers/mtd/nand/raw/xway_nand.c
-+++ b/drivers/mtd/nand/raw/xway_nand.c
-@@ -7,7 +7,8 @@
- 
- #include <linux/mtd/rawnand.h>
- #include <linux/of_gpio.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- 
- #include <lantiq_soc.h>
- 
-diff --git a/drivers/mtd/spi-nor/controllers/nxp-spifi.c b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-index 794c7b7d5c92..337e83bf3362 100644
---- a/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-+++ b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-@@ -17,7 +17,6 @@
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/spi-nor.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
- 
+Changes in v2:
+- Only add the write access flags.
+- Use SFDP parsing to properly detect the various
+  available SPI modes.
+- Link to v1: https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v1-1-f78f3bb42a1c@linaro.org
+---
+ drivers/mtd/spi-nor/winbond.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 834d6ba5ce70..8f30a67cd27a 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -121,6 +121,8 @@ static const struct flash_info winbond_nor_parts[] = {
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+ 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230711-spi-nor-winbond-w25q128-321a602ee267
+
+Best regards,
 -- 
-2.40.1
+Linus Walleij <linus.walleij@linaro.org>
 
 
 ______________________________________________________
