@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63D7AEB64DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 15:21:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90AE0C001DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 15:21:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:
 	From:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FUatVMzXZdgRw/NPhc+AvkAY1hnySycijvFqrHiikIY=; b=Z13XeOlL0eAOes
-	faCmRsvjYt+wBcdKWWWN0GhXCcdtGIrDiiMuNMQqYuf63ZRIOXbmZ6BPHwscq1WozvSIucTUVtycQ
-	RMuXkR7Ed2MaoHd4iLa2M+x8MhN8c9JxRdgGJ4W3sOd50Y+q7rD3zHoDOUvnG3aZdHwkiKL8+ZfRS
-	aJi/05ChF/GxoRkJyGYZn4UI+s5sBaXj8tNyQUJj6aIHPuhc6OMTUNKvGl8d2TgFYnz4gAZjSVvM4
-	1wh4h4cBzTxP4w79UNpZEMWkztRMg/m4IOCsJkcJEfD/4kLJHp5mgKyl5kV7dtwmiz1v+a6qwowoM
-	SrcLXk4pjonYVh3c0CLQ==;
+	List-Owner; bh=v9Vh73IEcXGEKws78dqVB93QwNL0C0ZGhioJScU8oUQ=; b=BSUr3sgSYWnBdi
+	bVk3exCAHzW7ByQL03GRk8vbSHEwd2XeyG9mkhtccJ41tNorCC+aIg9qCHMgukfanr448BfoIvZC5
+	jzo/ITAJMKUxRWQOSwzpBSgUseso7rdtdokvSkwDGfcWnHRe3nKT1u2tyb6IGpJ8BqLqGIWwtkfzT
+	lUmxBj5NAnj1+qvkiWsdLOHVqK5hWtw9+SfHBIOvRTiXUpLNd+DpN+kNGN0elPXvLxJqlZ4DbWGzH
+	ZAOAVYolTG0eXGq1XsJ6m8No7+gJwUkccSOB+fLM8fO8exoAxj3z6+UsQMSl1d5h0cMg3Pfk5nNr0
+	N86CJ2nclM+a0LJrcbqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKKbU-006VXw-0e;
-	Fri, 14 Jul 2023 15:21:08 +0000
-Received: from mail-ej1-x62b.google.com ([2a00:1450:4864:20::62b])
+	id 1qKKbo-006Vgb-1K;
+	Fri, 14 Jul 2023 15:21:28 +0000
+Received: from mail-lj1-x22c.google.com ([2a00:1450:4864:20::22c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKKbR-006VX1-2Y;
-	Fri, 14 Jul 2023 15:21:07 +0000
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9891c73e0fbso408545966b.1;
-        Fri, 14 Jul 2023 08:21:04 -0700 (PDT)
+	id 1qKKbm-006Vek-0p;
+	Fri, 14 Jul 2023 15:21:27 +0000
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b70bfc8db5so31349851fa.2;
+        Fri, 14 Jul 2023 08:21:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689348063; x=1691940063;
+        d=gmail.com; s=20221208; t=1689348083; x=1691940083;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=pBd1Lu1Lca2z3up8dzZ0bUwRcOK91MQPeC1b10XMPe4=;
-        b=A/ccbJQG0mWqO3nDpiY+xh4xfkY0kga+DZl3nc3cBWumq4nGzT53Wb7qYroMNPoxPy
-         0CoG/+AoAlP6Gq1bU+/2/OQPqmm2y/xSP82/Yfycy55uI6VlbagidJ4/jh3KboVYEiEg
-         XWv/dbdZohM7ku2gJWtfyeKTpV+DNHZT4CyK9c6gUnBym9whu5JN9v+SdZ4Ltt4mzJLa
-         aPJhX7i4msQ1Uv4Ad2NqgN830ytwvXPffJWBlHBzeIlr+tmVB0r1O+njKrK0Wjc7LmCY
-         DgmQ21Dl7oKxmrYHJp5/SI1B0xMgLo8DUebKCOIEXu68j6mxro5f14oCj5Qhm/2WjGC5
-         O8OQ==
+        bh=gPMTtJDX93p+W2FMfeS5+8MLkFLKqGSV2IPU3Bw5eBc=;
+        b=Dx5hMByGBB/m9B2iGSmDZSWhmM8Ums69yPuNOxVHlFmd+0A09Oo3DyQyLh8Yistme2
+         lwVnQi4orsB+auNTwB8ssQ1jd5w/qSl78LrvaNQos4m0d0uxvu23/J9Q1XWB3J74uwb2
+         +qcryvpRQoRW5Rs5UCnavMVw0vEZa7coTmLVR7lcH07UoXyF93WIfZEzvU10MrMoAXcw
+         XLpZgFFlABrILlnQGzpUJBtuJz8X1NVWt7R1A8lsnCFw3JXkR9d9tbksjiGlYBidwSFw
+         FdvWellQG2Uu9bedikNNmkxch051mSDSOQrp+KGw5Oqiun386ImyiV5HPHgluoQcDatB
+         iA/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689348063; x=1691940063;
+        d=1e100.net; s=20221208; t=1689348083; x=1691940083;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:from:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pBd1Lu1Lca2z3up8dzZ0bUwRcOK91MQPeC1b10XMPe4=;
-        b=jI9pcCOQNJMQ8Sp+47ucFsFnLjKIueNFeWZOPOcFIEGLEGt6KaFBmxL7WScMdNky96
-         gAUThWQHQcsFxuMJ2obhflk6eHHrZWAuDkre7w2oreasjwzUlUWCKxrqMb4nlApGeHLF
-         W0J9FEEyiTx8/W0/UezGq0Gh5eCab+/C2TSd7OUY3fyWBQNh/ej57LRbFjBsOtctjvpr
-         MiwF/+d/9jdcYipa987YlQS8+ajyBtDpfkX1hfAz35e59Ahy/9GlqYLqpVKfKTlsrzoF
-         qbjzodFwuGYqsg5CL2hhoixGlaJAsaN0kR1yWkgtrkjbfSmSKTTvSQH8ZDMQwWhVNhxj
-         ZlXg==
-X-Gm-Message-State: ABy/qLZAWuihwxiwOJwAURNBX7kuIj5/JQYVvxwsW0CMT5/D0whc/e08
-	vFuKNlF6VBD+lrFvfEkfV0QsgaY0jCE=
-X-Google-Smtp-Source: APBJJlHFHvaFDcvkAw77w3uKJvNPDPy6uA2o4hJTamnYM6gRdFo3+dDRFZ8cjHJS7uHdyw7FmDCSUQ==
-X-Received: by 2002:a17:907:2d23:b0:988:565f:bf46 with SMTP id gs35-20020a1709072d2300b00988565fbf46mr3573681ejc.32.1689348062674;
-        Fri, 14 Jul 2023 08:21:02 -0700 (PDT)
+        bh=gPMTtJDX93p+W2FMfeS5+8MLkFLKqGSV2IPU3Bw5eBc=;
+        b=eqx1sJFOJOmWEhGllr71XNU+jMQx8S4cLybeRfzm4IYaZ1Rh9Cpuh/d3GNZDWTqgVl
+         MfVmf7Fb9MdN79qEU7VCneY2EsvZ7zycRQvWfQ6gWv/3rEiD280HYixanincgY45h0S5
+         UsMhPjxO0kh4FNorg5ldisgEK3i+tpHWOJi1NRe6Nk+G5D3PwdlhZ9l2rNAiY0ba/oaX
+         8kzdXamaGTQouKPLcmYjmuGXfmk1wem33ItMnK7+mnT4nLuJdoMsjKZFHrLhbUib1JCi
+         N4laMqw/7osVuE0uxubn9jhr1bXoUTLuIKHpp86JbmEqra3Q7wEZK9s+XgkLOcmyPCxC
+         Ki5w==
+X-Gm-Message-State: ABy/qLajtUeeTHXIKPG0+d6Z91TFU9/9ZVYK7ZE+Ig1UqXbMGehtXUty
+	1Ib6PmPZbTL1hjl5AADwx8Q=
+X-Google-Smtp-Source: APBJJlFqQ/SVKroJjMa1fZUCbpjfJrfXjWNcU9vIvwPdVdWNMyGwxyl9FyNl3vx/l6m4g01N4AVLRQ==
+X-Received: by 2002:a2e:321a:0:b0:2b6:9b2e:e352 with SMTP id y26-20020a2e321a000000b002b69b2ee352mr4122408ljy.9.1689348082785;
+        Fri, 14 Jul 2023 08:21:22 -0700 (PDT)
 Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id bm24-20020a0564020b1800b0051e069ebee3sm5820793edb.14.2023.07.14.08.21.01
+        by smtp.gmail.com with ESMTPSA id n25-20020a17090695d900b009927d4d7a6dsm5576536ejy.192.2023.07.14.08.21.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 08:21:02 -0700 (PDT)
-Message-ID: <d202f12d-188c-20e8-f2c2-9cc874ad4d22@gmail.com>
-Date: Fri, 14 Jul 2023 17:21:01 +0200
+        Fri, 14 Jul 2023 08:21:22 -0700 (PDT)
+Message-ID: <5e782c08-862b-51ae-47ff-3299940928ca@gmail.com>
+Date: Fri, 14 Jul 2023 17:21:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
 From: Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v5 1/2] mtd: rawnand: rockchip: fix oobfree offset and
- description
+Subject: [PATCH v5 2/2] mtd: rawnand: rockchip: Align hwecc vs. raw page
+ helper layouts
 To: miquel.raynal@bootlin.com
 Cc: richard@nod.at, vigneshr@ti.com, heiko@sntech.de,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -78,8 +78,8 @@ References: <273ad871-9050-7851-9973-5545b88bf43b@gmail.com>
 Content-Language: en-US
 In-Reply-To: <273ad871-9050-7851-9973-5545b88bf43b@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230714_082105_828081_EFD1D345 
-X-CRM114-Status: GOOD (  15.88  )
+X-CRM114-CacheID: sfid-20230714_082126_294587_E41480BF 
+X-CRM114-Status: GOOD (  18.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,100 +96,119 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Currently, read/write_page_hwecc() and read/write_page_raw() are not
+aligned: there is a mismatch in the OOB bytes which are not
+read/written at the same offset in both cases (raw vs. hwecc).
+
+This is a real problem when relying on the presence of the Page
+Addresses (PA) when using the NAND chip as a boot device, as the
+BootROM expects additional data in the OOB area at specific locations.
+
 Rockchip boot blocks are written per 4 x 512 byte sectors per page.
 Each page with boot blocks must have a page address (PA) pointer in OOB
-to the next page.
+to the next page. Pages are written in a pattern depending on the NAND chip ID.
 
-The currently advertised free OOB area starts at offset 6, like
-if 4 PA bytes were located right after the BBM. This is wrong as the
-PA bytes are located right before the ECC bytes.
+Generate boot block page address and pattern for hwecc in user space
+and copy PA data to/from the already reserved last 4 bytes before ECC
+in the chip->oob_poi data layout.
 
-Fix the layout by allowing access to all bytes between the BBM and the
-PA bytes instead of reserving 4 bytes right after the BBM.
-
-This change breaks existing jffs2 users.
+Align the different helpers. This change breaks existing jffs2 users.
 
 Fixes: 058e0e847d54 ("mtd: rawnand: rockchip: NFC driver for RK3308, RK2928 and others")
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
 
+Changed V5:
+  Reword
+
 Changed V4:
   Reduce subject size
   Add 'Fixes:' tag
+  Fix abbreviation
   Reword
 
 Changed V3:
   Change prefixes
   Reword
-  State break existing users.
-
 ---
-
-Example:
-
-Wrong free OOB offset starts at OOB6:
-oob_region->offset = NFC_SYS_DATA_SIZE + 2;
-                   = 4 + 2
-                   = 6
-
-oob_region->length = rknand->metadata_size - NFC_SYS_DATA_SIZE - 2;
-                   = 32 - 4 - 2
-                   = 26
-
-Together with this length above it overlaps a reserved space for the
-boot blocks Page Address(PA)
-
-chip->oob_poi buffer layout for 8 steps:
-
-BBM0   BBM1  OOB2  OOB3  | OOB4  OOB5  OOB6  OOB7
-
-OOB8   OOB9  OOB10 OOB11 | OOB12 OOB13 OOB15 OOB15
-OOB16  OOB17 OOB18 OOB19 | OOB20 OOB21 OOB22 OOB23
-
-OOB24  OOB25 OOB26 OOB27 | PA0   PA1   PA2   PA3
-
-ECC0   ECC1  ECC2  ECC3  | ...   ...   ...   ...
-
-Fix by new offset at OOB2:
-oob_region->offset = 2;
-
-The full range of free OOB with 8 steps runs from OOB2
-till/including OOB27.
----
- drivers/mtd/nand/raw/rockchip-nand-controller.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ .../mtd/nand/raw/rockchip-nand-controller.c   | 34 ++++++++++++-------
+ 1 file changed, 21 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-index 2312e27362cb..37fc07ba57aa 100644
+index 37fc07ba57aa..5a04680342c3 100644
 --- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
 +++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-@@ -562,9 +562,10 @@ static int rk_nfc_write_page_raw(struct nand_chip *chip, const u8 *buf,
- 		 *    BBM  OOB1 OOB2 OOB3 |......|  PA0  PA1  PA2  PA3
- 		 *
- 		 * The rk_nfc_ooblayout_free() function already has reserved
--		 * these 4 bytes with:
-+		 * these 4 bytes together with 2 bytes for BBM
-+		 * by reducing it's length:
- 		 *
--		 * oob_region->offset = NFC_SYS_DATA_SIZE + 2;
-+		 * oob_region->length = rknand->metadata_size - NFC_SYS_DATA_SIZE - 2;
- 		 */
- 		if (!i)
- 			memcpy(rk_nfc_oob_ptr(chip, i),
-@@ -933,12 +934,8 @@ static int rk_nfc_ooblayout_free(struct mtd_info *mtd, int section,
- 	if (section)
- 		return -ERANGE;
+@@ -598,7 +598,7 @@ static int rk_nfc_write_page_hwecc(struct nand_chip *chip, const u8 *buf,
+ 	int pages_per_blk = mtd->erasesize / mtd->writesize;
+ 	int ret = 0, i, boot_rom_mode = 0;
+ 	dma_addr_t dma_data, dma_oob;
+-	u32 reg;
++	u32 tmp;
+ 	u8 *oob;
 
--	/*
--	 * The beginning of the OOB area stores the reserved data for the NFC,
--	 * the size of the reserved data is NFC_SYS_DATA_SIZE bytes.
--	 */
- 	oob_region->length = rknand->metadata_size - NFC_SYS_DATA_SIZE - 2;
--	oob_region->offset = NFC_SYS_DATA_SIZE + 2;
-+	oob_region->offset = 2;
+ 	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+@@ -625,6 +625,13 @@ static int rk_nfc_write_page_hwecc(struct nand_chip *chip, const u8 *buf,
+ 	 *
+ 	 *   0xFF 0xFF 0xFF 0xFF | BBM OOB1 OOB2 OOB3 | ...
+ 	 *
++	 * The code here just swaps the first 4 bytes with the last
++	 * 4 bytes without losing any data.
++	 *
++	 * The chip->oob_poi data layout:
++	 *
++	 *    BBM  OOB1 OOB2 OOB3 |......|  PA0  PA1  PA2  PA3
++	 *
+ 	 * Configure the ECC algorithm supported by the boot ROM.
+ 	 */
+ 	if ((page < (pages_per_blk * rknand->boot_blks)) &&
+@@ -635,21 +642,17 @@ static int rk_nfc_write_page_hwecc(struct nand_chip *chip, const u8 *buf,
+ 	}
 
- 	return 0;
- }
+ 	for (i = 0; i < ecc->steps; i++) {
+-		if (!i) {
+-			reg = 0xFFFFFFFF;
+-		} else {
++		if (!i)
++			oob = chip->oob_poi + (ecc->steps - 1) * NFC_SYS_DATA_SIZE;
++		else
+ 			oob = chip->oob_poi + (i - 1) * NFC_SYS_DATA_SIZE;
+-			reg = oob[0] | oob[1] << 8 | oob[2] << 16 |
+-			      oob[3] << 24;
+-		}
+
+-		if (!i && boot_rom_mode)
+-			reg = (page & (pages_per_blk - 1)) * 4;
++		tmp = oob[0] | oob[1] << 8 | oob[2] << 16 | oob[3] << 24;
+
+ 		if (nfc->cfg->type == NFC_V9)
+-			nfc->oob_buf[i] = reg;
++			nfc->oob_buf[i] = tmp;
+ 		else
+-			nfc->oob_buf[i * (oob_step / 4)] = reg;
++			nfc->oob_buf[i * (oob_step / 4)] = tmp;
+ 	}
+
+ 	dma_data = dma_map_single(nfc->dev, (void *)nfc->page_buf,
+@@ -812,12 +815,17 @@ static int rk_nfc_read_page_hwecc(struct nand_chip *chip, u8 *buf, int oob_on,
+ 		goto timeout_err;
+ 	}
+
+-	for (i = 1; i < ecc->steps; i++) {
+-		oob = chip->oob_poi + (i - 1) * NFC_SYS_DATA_SIZE;
++	for (i = 0; i < ecc->steps; i++) {
++		if (!i)
++			oob = chip->oob_poi + (ecc->steps - 1) * NFC_SYS_DATA_SIZE;
++		else
++			oob = chip->oob_poi + (i - 1) * NFC_SYS_DATA_SIZE;
++
+ 		if (nfc->cfg->type == NFC_V9)
+ 			tmp = nfc->oob_buf[i];
+ 		else
+ 			tmp = nfc->oob_buf[i * (oob_step / 4)];
++
+ 		*oob++ = (u8)tmp;
+ 		*oob++ = (u8)(tmp >> 8);
+ 		*oob++ = (u8)(tmp >> 16);
 --
 2.30.2
 
