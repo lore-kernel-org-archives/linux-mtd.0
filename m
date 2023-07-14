@@ -4,138 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C86F7EB64DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 08:16:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4752EB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 15:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8fKoMPRyhidl3acly9sw9QHqIc4SR6Yctwi8spTll2Y=; b=ES5OsxI4gAkulU
-	RtiSm4Cy1AU3UY3gvnlHy61VgJZjNPo8qlvPxjUqTeO6NxzmnSHHcdAcIe2xTTtCwBHJzc2Ae6wmd
-	378rjeA7dQ3xt24Olw8s1FBX91X4EC+3tB0Siud2cJMlhXHSlJL0oGyGV9OVCKoqHyZPKJ16Asoa0
-	1TwdSv/P88IzEBVra/cNL3ZAH76FSe20EC3MXVMZkTshzj0PzGyM7D3BsAfaEKfAW+OVjD05P5M73
-	T9xPUKhvig8TyOhCC61zw3lUQma7zgFaMJvq9M3FtlfjukIP1IR7oVkp4xoqS7UKSbGsCclaY41IN
-	9DVD5/jh3QpbCy+0H7Yw==;
+	List-Owner; bh=UrKRkCTBXBDymQ2LV48F7t2hEf7Opdh0DTsj5xbG6aQ=; b=fWJ05Ed4UkY5RY
+	N6Hxyp6n+Du/etpbwLE+/7SctWZHXvlZ4ulicuC2btZc34VAtcg1u9AZ7B/dGu33icqHU2qH0DU1h
+	B3rFLrbIG3ZxqPEPDDRnCyyRNKDdaK0+9jBYhlJEtmqDB/MF4PTt6mbpLzQW5OqcU4CnO10bGuLqT
+	/ARDKYKNHOuliJ75ZrXDrQp8PWQqGiA4FIPyIQpllS3LwAk65zt96QS04pmVNFUA4WjJejlFR3JB9
+	TVdJu+ccR6kaswEBCIStRMZ6GKOzecMZT9lXBx9po9C825mpGxItmyN0XAqgt7kRmqFUwjY8u8uSF
+	XlUk5pdivLsITCxkaKNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKDxn-005UOZ-2f;
-	Fri, 14 Jul 2023 08:15:43 +0000
-Received: from mail-vi1eur02on20720.outbound.protection.outlook.com ([2a01:111:f400:fe16::720] helo=EUR02-VI1-obe.outbound.protection.outlook.com)
+	id 1qKKP1-006Ti6-2B;
+	Fri, 14 Jul 2023 15:08:15 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKDxj-005UMN-1f
+	id 1qKKOx-006TfZ-0d
 	for linux-mtd@lists.infradead.org;
-	Fri, 14 Jul 2023 08:15:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gqWRD0/WB6TlHXBfDG4MVVSb380KNt+6EO11FQ4YlSHSCO/XPVy2yI3md8T9DZMdTxbdDuq4svoOiYLVuGi1fR4vGES4tAp1PJqcFzOemSS7WqOBsmqQrv3LU+I6HhsUjiwW7jfNKQ191Id5SiViSVUcXzFTTjkaBcr/YYyI2Ed8/IaAAE/3Lo3dItJn+/KHvmMlGcH4u8dZAcshwzgsB8ss63ZOPCbr55CY6IpjiAt/o6DAalz7nJuYppvB+QyAKbSNZgioTMstTYO0JtLARh+ZdAxFFRecgdvw/97g4RDGv+F6FGivyqq885ZWdb8P7lq5UHNGMdU0C7jJQZTRhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r+9t/7Rt5DGGYLeDfFLW3EODeI6Yq93vxQp7buwv+Fg=;
- b=lefECVYSmeXwiMrpg4G2s2DsQPalhQC+C1TTuqyOTIZSviGcRaZ2ayD8ke95zcVSZEvb6TdIeE9oG1NoRp8nv2T3RPB+yHho9mqIszZbnKR85gOgxk+Or5Gufw1CNcC+FgUQkLobdfiG6xKbMuhJMl8cPYr8NYFfdE5cP4BvC7CXN2XbdV3cv2oYTw7LHoAPe0saSvvcsWVW8Z5csKSS+IMFpe3pyD+4xx5ly3V1piGa+AJTK8qzzCXgmiHjIU0MRjvwHkiME+nPxLspM/vptwlupEwL8EgxFZikMJZZgxJXjaLi7VsYkx+NsZuRHai0coq4PMaidunTAdmny8sMCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
- header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r+9t/7Rt5DGGYLeDfFLW3EODeI6Yq93vxQp7buwv+Fg=;
- b=hLBzoPiU0YW7Sho6El73W7Wouvk+dmIITkaz2SXfEcrQqTg5hNuZ2h6n4jpcGT5jCY1CgGxaNddpgFKQvr7AoN8sB8c1U3gnQQez/9OKkS0Kf6gh6xtCaHoOaxPEfPynbbD77U4Rie8+zIDnOGcarLH/ITOD56WCXdPvqbXPYb8=
-Received: from AM8PR06MB7137.eurprd06.prod.outlook.com (2603:10a6:20b:1da::16)
- by PAXPR06MB7789.eurprd06.prod.outlook.com (2603:10a6:102:de::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 08:15:24 +0000
-Received: from AM8PR06MB7137.eurprd06.prod.outlook.com
- ([fe80::700:c84f:2ba6:606b]) by AM8PR06MB7137.eurprd06.prod.outlook.com
- ([fe80::700:c84f:2ba6:606b%6]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
- 08:15:24 +0000
-From: SHUKLA Mamta Ramendra <mamta.shukla@leica-geosystems.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, "pratyush@kernel.org"
-	<pratyush@kernel.org>, "michael@walle.cc" <michael@walle.cc>,
-	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
-	<richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>
-Subject: Re: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
-Thread-Topic: [PATCH v2] mtd: micron-st: enable lock/unlock for mt25qu512a
-Thread-Index: AQHZr1hWPkDpy3UlU0qGBS67M1mV0q+3GdCAgAHeK4A=
-Date: Fri, 14 Jul 2023 08:15:24 +0000
-Message-ID: <a8271289-0611-4e37-cf37-0be19a85656b@leica-geosystems.com>
-References: <20230705154942.3936658-1-mamta.shukla@leica-geosystems.com>
- <19800e51-a871-be9f-9eb5-5829237e2613@linaro.org>
-In-Reply-To: <19800e51-a871-be9f-9eb5-5829237e2613@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=leica-geosystems.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM8PR06MB7137:EE_|PAXPR06MB7789:EE_
-x-ms-office365-filtering-correlation-id: 74807b11-4373-4b9c-f422-08db8442797f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YZtTcxEc8U/1KWXhEClJqGLOQwniNzTfqJNFrcE3THvtuEczN41SizgkJrfsaepUgUDyzk4Isf4nBQYo3e9qFuszMLr9UbOyr1h7NLnLRhBzoZoQ9ZUaT+X2GZGzHzYxOcwjqUmmEHDqqF4uV8jTN1wRGWGq/MJLrjz1dwjLJ/jKyHzxQS95v4/mpIzQgJJDTZBSkBCPekY/hv1xjTeDDGFIw0XQBKuc4Zmy0TJi5xX699tsL7N9IytPYgLR1QgCVUZb7Uv9shn/4/EiSF+ThFQDFSfVNhepBDSuA2cQySR3sHnRaXbvTlR1j16IAp20uL2YGWb2Q5yY8jOuw+U18uF+9GEg0QsQX2tfSHcskc+OsZ/upti8T5Jg0t5zvx5oXmNozVyLm2vc81emo6wjHJICpBNq8k2kLNMeAynecuJGHEco/HLJg1ICnZ0Gwx9XLlhmJRLcp91No3s9vcM7KlRAwwfaAbHk7Z2VpMmf23gl/3jyklEQL+QY4uLdYqU3Nh4Ebdqb/hLogFxH4vvVYJt3dvELra87whPiRM9Sa+tt/uwjG+DAZump7VYhZm45dKwVz5BszcUsopj1fuCb7v/1ZbdRrF5Sl3/OWqZx94z1vo3uvHkMwXr6QVDLxGb/UkkIw4tNL3N0aRV9vozQDI5/E1AaSivb/1xQamnhC/skReViFVSnR5RIYVm7E3Kk3opgiXN2k2j3kvPf5xZQh8xlrAQIKI1z5lJR/5MEvU0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR06MB7137.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(451199021)(86362001)(31696002)(36756003)(122000001)(38070700005)(38100700002)(45080400002)(478600001)(2906002)(6486002)(71200400001)(110136005)(107886003)(6506007)(53546011)(26005)(6512007)(966005)(8676002)(8936002)(316002)(41300700001)(66946007)(66556008)(76116006)(91956017)(5660300002)(4326008)(31686004)(66476007)(66446008)(64756008)(2616005)(186003)(83380400001)(138113003)(45980500001)(414714003)(473944003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eUNwSi9yZFoxOEw0ZktqYXFKOWo0Wk1GRDdET1RRL2Q0UFk2ajNKbE9HK2l5?=
- =?utf-8?B?YkI1alZXNWx0WkdHS0ZwM0ltUHFmYVZhTHJPR3JMQXFTYjZpdFAzMFNQaXJV?=
- =?utf-8?B?NXVDUldPY09TMTk5TTZ1elZBTTNhaE4wM0tBeFpzQnhKNGw0WTkyN2VOSkc2?=
- =?utf-8?B?eE1BR3YrSDNDaDRkWXo1cFY2ZEdNTkh5NVRXL2pleG9BTTVLUzVDTzBJMk5L?=
- =?utf-8?B?cnpic2d2bGdrTWhMaW1hNVFjVGp2K2d4RTFaWXJHeXRGZjgzVTRXd1JuWnEr?=
- =?utf-8?B?NUIza0gyaXEwcEpGSUppOVZvTGtQRGlsaGo4NjA0czl3eG5mQzJ2WndEUlNT?=
- =?utf-8?B?a3I0V3dQaWVzSDBYSVJuTTdCOFdZSG15YklML3VnRmNwaERoRUQyWk15ZFhD?=
- =?utf-8?B?bmRDMVlLVHY3aUVpMnJQQTcrWDFmb0Y2UFkyMFpPcFQ4SkQ4bW5hWEk5L05H?=
- =?utf-8?B?emVtbUowTFN1eHlOUnhjU29YVVpJa2owcUFsSWkzclc1WmdnYk5RTGtYTWRN?=
- =?utf-8?B?KzNYbWpwUFZIKy9mZlRIeWlrdUNEaXY0RnBOMjFHMEZYWFJydHM0YUNoMWlR?=
- =?utf-8?B?UFNkelRIU3JYUmlBYWxJeFhMZk9Oa0l5SVA2Q3NWNVdhVXRzYVVYbm10b2RL?=
- =?utf-8?B?Zzk3Q1FqVHJLTlRoQVFiajlUNmJRVVY5V2FLdGpPV2R2Z0hIOWxiOWxGdnYr?=
- =?utf-8?B?cC9pL1FVVWRFUGJ0OWpFckEvNmU2ekZaTm1SamdUNTB6aENNdVhQcGFtOGxR?=
- =?utf-8?B?NndDUlFnZE1tSFcrQXQvdzUrRFNuZVBrWnlUQ04zOS94dHpIQlJLQy8vaTVY?=
- =?utf-8?B?MzhZeUdCVGZITEtFeWs3Q0djQkJIZmJoTzl0N09LdXBMM0MxR00yQk5GTFpQ?=
- =?utf-8?B?aEhxZGUzdWFPeldGOXpxMTFsOW5saXlwTk5tWG16ZzNyL3ArbUU0bVkralhY?=
- =?utf-8?B?ZVNldy8vdHBjYVd5cGlCNVh5N1BwRlE3eWh6RmVZSlVVL3QxTzEvQVVwT1dY?=
- =?utf-8?B?WUlwMUllQ3lsdWs1ejg3aHorTG5zSlpSL1lqcUh6NDc5bE1JdXZCVzZ5K0lu?=
- =?utf-8?B?bG5CTytPS04ycVU2djlMTkcyazd3K0hTK2tQZFhLbEI4S0JkNWFmOG1TRGRa?=
- =?utf-8?B?Mk0rbU1KRlBsMDVpN0gyTGFXUzgzY2lPY2trSFB2NDZEQ3lpTjB1dHVtUG50?=
- =?utf-8?B?Umt6YU90VUZVS0xsNmw2N1FndmdDenV0RFgvajhhUnN4ZnBnMjRtejZHSTdZ?=
- =?utf-8?B?WmF2ekhFajZlcHNFZ3ZnSW1nMElUbGMycW1lY0Y2cU4zemVEQ3hodkQwUFlu?=
- =?utf-8?B?RStQNGFmU0kzeEtBQ3ZHVEZRQkt6UHF2T2J3SFlTS1l6VUw0VTc5RTkwcGtN?=
- =?utf-8?B?eUxCOW1sdndpSGQwQkc4VmFCeVREazZDTFBYeXhZaTRLaXFrOWlrN2xZU1Fv?=
- =?utf-8?B?bXBObHlLdmZWWHV2cE8wZVJkUkkzNEZkZ0xBNXpnOEF4YzJzdEtCSXlDNmFx?=
- =?utf-8?B?L0JoeGZoRDZQbmR0OXppMmFRVCsvVXJPMUFJRVFDSk02VVhVdmhrMHRRMzhw?=
- =?utf-8?B?L2ZlVmt1OTA3VU1iUmcxWTh0WDdwRkNQaU9aeHFPZ3ljVkxzR3NCSnIxTlJ6?=
- =?utf-8?B?OXVjZXdKMVl0T3Z2T0l0bkp6aE5jQTNTQ005YXBWc0ZRcWtYTHpGOU4xZTdk?=
- =?utf-8?B?aCtBenVyQVBnbS8zNHE3ekpDS2twNkxQVC9UY0VuWDdRRzhzWVlDVzlyVkxF?=
- =?utf-8?B?L3dKclByRmp0NnNmN0xxSmpuRThBQytJM2h4TTVwdGVzUnpsV0xLMEovZFhY?=
- =?utf-8?B?YklLRCtER1F1eGtNTmg2Vk9aK2ROeS83cHFUSndwMDN3Yy9kaTVERFlqeTlZ?=
- =?utf-8?B?bG8xVGNBV09HTWRycFpkSkNVNlh3Q3BTNzB5ZWNuUWJpRnNkQnZsNTlMUjUz?=
- =?utf-8?B?enY5WmVEc0laOG42NWRkcEJUZEx6Yjd1WXY2NnlWV2pZSXRyR0JqandvSnRt?=
- =?utf-8?B?TlRLS082bERzVi9sZEIzUFE4VG5QcHJWcUFNNFNVWUZtck1FL0VOanFtYkFZ?=
- =?utf-8?B?U1JDM0MvdTd3aUtFYmwyMTRsdkJtL09DbFVqbTZqbUtvR2YyQndnYTlxUlFL?=
- =?utf-8?B?MkV3K3MrbkhFcmZuY3NwLzB5YnQrWmh0M0lmNHVFWTJEdEhnU2toYjJiNW9l?=
- =?utf-8?B?anc9PQ==?=
-Content-ID: <3534570E81D6BB4183455DFF5E3DACAE@eurprd06.prod.outlook.com>
+	Fri, 14 Jul 2023 15:08:12 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fc04692e20so19090645e9.0
+        for <linux-mtd@lists.infradead.org>; Fri, 14 Jul 2023 08:08:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689347283; x=1691939283;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+25fSkkJ3LOx6seKX0QJU9kNSlEQwPNGN+WO1mhMvMI=;
+        b=Lf90t73uKJmeeFq5uN4YHnr9sJ71rIEIK/flZU3SzfncDcf5OwbX1IaNvEqwOAb0b4
+         xxBqFUEq3Uvnb+D3x4Cmp3x2N7XiE/ZXnI8W6ewz470ZtlQhqCrMmFr5mkPEBi4Zovuv
+         YyA6fYsteZdMYHNGRhOWZc3PGOLjbcPE6uA5sYy29ZuMIhjRnBhHi0I7HXtdhfS1WBRH
+         fwTfS2a842D87CKIquzHGJEyYYf8m4TMSD/8AZxD/T729gSgHZBJ4TCWookk3nD25VBr
+         HsmBlJlGLwXekkIBJJtgDtBsvxi14OrKIvSjJddff0QUOHO7TwMS9UYllSLjShIU3DAr
+         klVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689347283; x=1691939283;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+25fSkkJ3LOx6seKX0QJU9kNSlEQwPNGN+WO1mhMvMI=;
+        b=BbPlILy309xFdaPszmj+i1Eoewuj5ZV2ZRK7jLFo8REGSllepvopwXLQTt9eFKQoqU
+         HsPIT5xcfbQElY7hvyqydAfkZwYTjwYkH68ty3tcgscJ38bItugQQnXAnBewFdhT6zLv
+         SHmq+QeIclUbVv1OmcPcXBVtcEg8fsfVDRZLSdLRko8NDpyflFS4GkyvLQjOJmdqhtfS
+         /ESpNG//rNkRx6wr8KbdviKYaDzRaSYaDrulMG0gWd3tZCHBsmoGpHfnXFK1/ecoU15X
+         7gMhYeFjTtmgquzZE/omggV2TxVHsWAoa33hM7c2V3QNZ+r4HkwdUmUd6XE2gnrnvyug
+         JuRw==
+X-Gm-Message-State: ABy/qLa9FDglo62lYKDIKzTUabHcsNN8W2ViCYeSr6ecrkgyJ7eAqIZt
+	e4uZ9VEl6HbrbDO2AFPgiX+38A==
+X-Google-Smtp-Source: APBJJlENLcXufqPBumnSElb/7yqarWmZ3bKOHd1czA+a4aXqy+wlPkXkuyE3vtePDt+0cIIXJ8eC7w==
+X-Received: by 2002:a5d:458c:0:b0:313:fcea:db06 with SMTP id p12-20020a5d458c000000b00313fceadb06mr4289774wrq.12.1689347282918;
+        Fri, 14 Jul 2023 08:08:02 -0700 (PDT)
+Received: from 1.. ([37.251.220.221])
+        by smtp.gmail.com with ESMTPSA id k8-20020a5d5188000000b00314172ba213sm10977274wrv.108.2023.07.14.08.08.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 08:08:02 -0700 (PDT)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: tkuw584924@gmail.com,
+	takahiro.kuwano@infineon.com,
+	michael@walle.cc,
+	pratyush@kernel.org
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bacem.daassi@infineon.com,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH] mtd: spi-nor: rename method for enabling or disabling octal DTR
+Date: Fri, 14 Jul 2023 18:07:57 +0300
+Message-Id: <20230714150757.15372-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230616050600.8793-1-Takahiro.Kuwano@infineon.com>
+References: <20230616050600.8793-1-Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM8PR06MB7137.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74807b11-4373-4b9c-f422-08db8442797f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2023 08:15:24.3897
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3076ReAuGEEWHl0QFRa4vuwFlDvYZJGyWlqOEUXvqrU7zZKrK7n2ljdT8uz8LTLQ4oy1lGuzechcQ/PELuEQ7AQ2VOEj2X9zNA+EcktgwgMIIoG0kuaV9iUTFVWdXaue
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR06MB7789
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6006; i=tudor.ambarus@linaro.org; h=from:subject; bh=Rd74k6/QPhZmiMzGtR06LDfyT/mYAR29wo1NOzFjRio=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBksWTNz/EGzj0cHtiJIYyXZ4exREnj4SDl/Q9FT GGzygf5bVOJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZLFkzQAKCRBLVU9HpY0U 6WgmCACrK7IsyE77GiKfhN8ImYbHHgmWbi18hweYOW2aPSjKrtHkmWJwE+b/s2V2vZavXfhagXi u+zvw2Y5P0OXJJ+HNZ6xNZD+F5Io3DDJRVoKz0yGs+LQsdTC1rraNGMWlNDR91be+atg7TTP4We K1/GGVYbO/39Z4M8DOdA0O5HtKPxJFl6AbDAwHy+H4AH4qd5u2k2RH+4w44Lt2GzlkOMG5QW3OU tOWIfBPTs2utM+7jMf7QljZBxdiJlqT1aIlAr/MQCuOZiqtw0jJBj+2sHm1OkfPKUNeUGaeYavL Gn7VNmAPU5gKwscH0Jh84D7pajVOo/BnH7Kh6qx7hSMiNlDX
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230714_011539_824955_448A5495 
-X-CRM114-Status: GOOD (  20.90  )
+X-CRM114-CacheID: sfid-20230714_080811_299330_13402A34 
+X-CRM114-Status: GOOD (  16.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -147,90 +96,168 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gVHVkb3IsDQoNCk9uIDEzLjA3LjIzIDA1OjQzLCBUdWRvciBBbWJhcnVzIHdyb3RlOg0K
-PiBUaGlzIGVtYWlsIGlzIG5vdCBmcm9tIEhleGFnb27igJlzIE9mZmljZSAzNjUgaW5zdGFuY2Uu
-IFBsZWFzZSBiZSBjYXJlZnVsIHdoaWxlIGNsaWNraW5nIGxpbmtzLCBvcGVuaW5nIGF0dGFjaG1l
-bnRzLCBvciByZXBseWluZyB0byB0aGlzIGVtYWlsLg0KPiANCj4gDQo+IE9uIDA1LjA3LjIwMjMg
-MTg6NDksIE1hbXRhIFNodWtsYSB3cm90ZToNCj4+IG10MjVxdTUxMmFbMV0gc3VwcG9ydHMgbG9j
-a2luZy91bmxvY2tpbmcgdGhyb3VnaCBCUCBiaXRzIGluIFNSLg0KPj4NCj4+IFRlc3RlZCB1c2lu
-ZyBtdGQtdXRpbHMtIGZsYXNoX2xvY2svZmxhc2hfdW5sb2NrIGZvciBNVDI1UVU1MTJBQkI4RTEy
-Lg0KPj4NCj4+IExpbms6IGh0dHBzOi8vbWVkaWEtd3d3Lm1pY3Jvbi5jb20vLS9tZWRpYS9jbGll
-bnQvZ2xvYmFsL2RvY3VtZW50cy9wcm9kdWN0cy9kYXRhLXNoZWV0L25vci1mbGFzaC9zZXJpYWwt
-bm9yL210MjVxL2RpZS1yZXYtYi9tdDI1cV9xbGt0X3VfNTEyX2FiYl8wLnBkZj9yZXY9YjI1OWFh
-ZGMzYmVhNDllYTgyMTBhNDFjOWFkNTgyMTENCj4+IFNpZ25lZC1vZmYtYnk6IE1hbXRhIFNodWts
-YSA8bWFtdGEuc2h1a2xhQGxlaWNhLWdlb3N5c3RlbXMuY29tPg0KPj4gLS0tDQo+PiAgIENoYW5n
-ZXMgaW4gdjI6DQo+PiAgIC0gYWRkIExpbmsgdGFnDQo+PiAgIC0gZml4IGNoaXAgcGFydCBudW1i
-ZXIgbXQyNXFsNTEyYS0+bXQyNXF1NTEyYQ0KPj4NCj4+ICAgZHJpdmVycy9tdGQvc3BpLW5vci9t
-aWNyb24tc3QuYyB8IDIgKysNCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQ0K
-Pj4NCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL21pY3Jvbi1zdC5jIGIvZHJp
-dmVycy9tdGQvc3BpLW5vci9taWNyb24tc3QuYw0KPj4gaW5kZXggNGI5MTk3NTZhMjA1Li4wOGU5
-NDM0MGViYWEgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL21pY3Jvbi1zdC5j
-DQo+PiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL21pY3Jvbi1zdC5jDQo+PiBAQCAtMjI5LDYg
-KzIyOSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZmxhc2hfaW5mbyBzdF9ub3JfcGFydHNbXSA9
-IHsNCj4+ICAgICAgICAgICAgICAgIE1GUl9GTEFHUyhVU0VfRlNSKQ0KPj4gICAgICAgIH0sDQo+
-PiAgICAgICAgeyAibXQyNXF1NTEyYSIsICBJTkZPNigweDIwYmIyMCwgMHgxMDQ0MDAsIDY0ICog
-MTAyNCwgMTAyNCkNCj4+ICsgICAgICAgICAgICAgRkxBR1MoU1BJX05PUl9IQVNfTE9DSyB8IFNQ
-SV9OT1JfSEFTX1RCIHwgU1BJX05PUl80QklUX0JQIHwNCj4+ICsgICAgICAgICAgICAgICAgICAg
-U1BJX05PUl9CUDNfU1JfQklUNikNCj4+ICAgICAgICAgICAgICAgIE5PX1NGRFBfRkxBR1MoU0VD
-VF80SyB8IFNQSV9OT1JfRFVBTF9SRUFEIHwgU1BJX05PUl9RVUFEX1JFQUQpDQo+PiAgICAgICAg
-ICAgICAgICBGSVhVUF9GTEFHUyhTUElfTk9SXzRCX09QQ09ERVMpDQo+PiAgICAgICAgICAgICAg
-ICBNRlJfRkxBR1MoVVNFX0ZTUikNCj4gDQo+IENhbiB5b3UgdHJ5IHRoZSBmb2xsb3dpbmcgaW5z
-dGVhZD8gV2UgdHJ5IHRvIHVzZSBTRkRQIHBhcnNpbmcgd2hlbmV2ZXINCj4gcG9zc2libGUuDQo+
-ICAgICAgICAgIHsgIm10MjVxdTUxMmEiLCAgSU5GTzYoMHgyMGJiMjAsIDB4MTA0NDAwLCAwLCAw
-KQ0KPiAgICAgICAgICAgICAgICAgIEZMQUdTKFNQSV9OT1JfSEFTX0xPQ0sgfCBTUElfTk9SX0hB
-U19UQiB8IFNQSV9OT1JfNEJJVF9CUCB8DQo+ICAgICAgICAgICAgICAgICAgU1BJX05PUl9CUDNf
-U1JfQklUNikNCj4gICAgICAgICAgICAgICAgICBQQVJTRV9TRkRQDQo+ICAgICAgICAgICAgICAg
-ICAgTUZSX0ZMQUdTKFVTRV9GU1IpDQoNCg0KSSB0ZXN0ZWQgd2l0aCBTRkRQIFBhcnNpbmcgRmxh
-Zy4gSXQgd29ya3MgZmluZS4NCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpbICAyMTQuNzI2
-MDkwXSBBQ1BJOiBIb3N0LWRpcmVjdGVkIER5bmFtaWMgQUNQSSBUYWJsZSBMb2FkOg0KWyAgMjE0
-LjczMTQ4Ml0gQUNQSTogU1NEVCAweEZGRkY4OTI4ODJEODk4MDAgMDAwMEVDICh2MDIgQUxBU0tB
-IE1UMjVRVSANCjAwMDAxMDAwIElOVEwgMjAxOTA1MDkpDQpbICAyMTQuNzY2MDgyXSBzcGktbm9y
-IHNwaS1QUlAwMDAxOjAwOiBtdDI1cXU1MTJhICg2NTUzNiBLYnl0ZXMpDQoNCg0KY2F0IC9zeXMv
-YnVzL3NwaS9kZXZpY2VzL3NwaS1QUlAwMDAxOjAwL3NwaS1ub3IvamVkZWNfaWQNCjIwYmIyMDEw
-NDQwMA0KDQpjYXQgL3N5cy9idXMvc3BpL2RldmljZXMvc3BpLVBSUDAwMDE6MDAvc3BpLW5vci9t
-YW51ZmFjdHVyZXINCnN0DQoNCmNhdCAvc3lzL2J1cy9zcGkvZGV2aWNlcy9zcGktUFJQMDAwMTow
-MC9zcGktbm9yL3BhcnRuYW1lDQptdDI1cXU1MTJhDQoNCnh4ZCAtcCAgL3N5cy9idXMvc3BpL2Rl
-dmljZXMvc3BpLVBSUDAwMDE6MDAvc3BpLW5vci9zZmRwDQo1MzQ2NDQ1MDA2MDEwMWZmMDAwNjAx
-MTAzMDAwMDBmZjg0MDAwMTAyODAwMDAwZmZmZmZmZmZmZmZmZmYNCmZmZmZmZmZmZmZmZmZmZmZm
-ZmZmZmZmZmZmZmZmZmZmZmZmZmU1MjBmYmZmZmZmZmZmMWYyOWViMjc2Yg0KMjczYjI3YmJmZmZm
-ZmZmZmZmZmYyN2JiZmZmZjI5ZWIwYzIwMTBkODBmNTIwMDAwMjQ0YTk5MDA4YjhlDQowM2UxYWMw
-MTI3Mzg3YTc1N2E3NWZiYmRkNTVjNGEwZjgyZmY4MWJkM2QzNmZmZmZmZmZmZmZmZmZmZmYNCmZm
-ZmZmZmZmZmZmZmZmZmZmZmU3ZmZmZjIxZGNmZmZmDQoNCm1kNXN1bSAgL3N5cy9idXMvc3BpL2Rl
-dmljZXMvc3BpLVBSUDAwMDE6MDAvc3BpLW5vci9zZmRwDQo2MTBlZmJhMTY0N2UwMGFjNmRiMThi
-ZWIxMWU4NGMwNCANCi9zeXMvYnVzL3NwaS9kZXZpY2VzL3NwaS1QUlAwMDAxOjAwL3NwaS1ub3Iv
-c2ZkcA0KDQpkZCBpZj0vZGV2L3VyYW5kb20gb2Y9L3RtcC9xc3BpX3dyaXRlICBicz0xTSBjb3Vu
-dD0xDQoxKzAgcmVjb3JkcyBpbg0KMSswIHJlY29yZHMgb3V0DQoxMDQ4NTc2IGJ5dGVzICgxLjAg
-TUIsIDEuMCBNaUIpIGNvcGllZCwgMC4wMjIxMzkxIHMsIDQ3LjQgTUIvcw0KDQptdGRfZGVidWcg
-d3JpdGUgL2Rldi9tdGQwIDAgMTA0ODU3NiAvdG1wL3FzcGlfd3JpdGUNCkNvcGllZCAxMDQ4NTc2
-IGJ5dGVzIGZyb20gL3RtcC9xc3BpX3dyaXRlIHRvIGFkZHJlc3MgMHgwMDAwMDAwMCBpbiBmbGFz
-aA0KDQptdGRfZGVidWcgZXJhc2UgL2Rldi9tdGQwIDAgMTA0ODU3Ng0KRXJhc2VkIDEwNDg1NzYg
-Ynl0ZXMgZnJvbSBhZGRyZXNzIDB4MDAwMDAwMDAgaW4gZmxhc2gNCg0KbXRkX2RlYnVnIHJlYWQg
-L2Rldi9tdGQwIDAgMTA0ODU3NiAvdG1wL3FzcGlfcmVhZA0KQ29waWVkIDEwNDg1NzYgYnl0ZXMg
-ZnJvbSBhZGRyZXNzIDB4MDAwMDAwMDAgaW4gZmxhc2ggdG8gL3RtcC9xc3BpX3JlYWQNCg0KaGV4
-ZHVtcCAvdG1wL3FzcGlfcmVhZA0KMDAwMDAwMCBmZmZmIGZmZmYgZmZmZiBmZmZmIGZmZmYgZmZm
-ZiBmZmZmIGZmZmYNCioNCjAxMDAwMDANCg0KbXRkX2RlYnVnIHdyaXRlIC9kZXYvbXRkMCAwIDEw
-NDg1NzYgL3RtcC9xc3BpX3dyaXRlDQpDb3BpZWQgMTA0ODU3NiBieXRlcyBmcm9tIC90bXAvcXNw
-aV93cml0ZSB0byBhZGRyZXNzIDB4MDAwMDAwMDAgaW4gZmxhc2gNCg0KbXRkX2RlYnVnIHJlYWQg
-L2Rldi9tdGQwIDAgMTA0ODU3NiAvdG1wL3FzcGlfcmVhZA0KQ29waWVkIDEwNDg1NzYgYnl0ZXMg
-ZnJvbSBhZGRyZXNzIDB4MDAwMDAwMDAgaW4gZmxhc2ggdG8gL3RtcC9xc3BpX3JlYWQNCg0Kc2hh
-MXN1bSAvdG1wL3FzcGlfd3JpdGUgIC90bXAvcXNwaV9yZWFkDQo0ZmU0ZTcxYjExZjQ0ZTk2NzJi
-ZDQ5ZTJlMzJjMGZkOTRkYTRmZWI2ICAvdG1wL3FzcGlfd3JpdGUNCjRmZTRlNzFiMTFmNDRlOTY3
-MmJkNDllMmUzMmMwZmQ5NGRhNGZlYjYgIC90bXAvcXNwaV9yZWFkDQoNCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0NCg0KU2hhbGwgSSB3cml0ZSBhIG5ldyBjb21taXQgZm9yIFBBUlNFX1NGRFAg
-RmxhZyBvciB1cGRhdGUgdGhpcyBjb21taXQgYXMtDQoiTW9kaWZ5IG10MjVxdTUxMmEgRmxhZ3Mi
-ID8NCg0KPiANCj4gWW91IHRoZW4gaGF2ZSB0byBkdW1wIHRoZSBTRkRQIHRhYmxlcyBhbmQgZG8g
-YSBzYW5pdHkgY2hlY2sgdG8gbWFrZSBzdXJlDQo+IGV2ZXJ5dGhpbmcncyBmaW5lIGFmdGVyIHlv
-dXIgY2hhbmdlcy4gWW91IGNhbiBhbiBleGFtcGxlIG9uIGhvdyB0byBkbw0KPiB0aGF0IG9uIHRo
-ZSBjb21taXQgbWVzc2FnZSBmcm9tDQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW10
-ZC84YjdkMjQyMC0yNmI2LTQwNWItOGVmNy03NWUwYTAyMDE0MDJAbGluYXJvLm9yZy9ULyNtMzU1
-MDk3M2UwODg0ZWM0YTI4OGQzNDRmYWJkNGE5YzNiNjRhZjQ2ZQ0KDQpUaGFua3MsDQpNYW10YQ0K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxp
-bnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Having an *_enable(..., bool enable) definition was misleading
+as the method is used both to enable and to disable the octal DTR
+mode. Splitting the method in the core in two, one to enable and
+another to disable the octal DTR mode does not make sense as the
+method is straight forward and we'd introduce code duplication.
+
+Update the core to use:
+int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
+
+Manufacturer drivers use different sequences of commands to enable
+and disable the octal DTR mode, thus for clarity they shall
+implement it as:
+static int manufacturer_snor_set_octal_dtr(struct spi_nor *nor, bool enable)
+{
+	return enable ? manufacturer_snor_octal_dtr_enable() :
+			manufacturer_snor_octal_dtr_disable();
+}
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ drivers/mtd/spi-nor/core.c      | 12 ++++++------
+ drivers/mtd/spi-nor/core.h      |  4 ++--
+ drivers/mtd/spi-nor/micron-st.c |  4 ++--
+ drivers/mtd/spi-nor/spansion.c  |  6 +++---
+ 4 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 434c545c0ce4..273258f7e77f 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3090,17 +3090,17 @@ static int spi_nor_init_params(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
+-/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
++/** spi_nor_set_octal_dtr() - enable or disable Octal DTR I/O.
+  * @nor:                 pointer to a 'struct spi_nor'
+  * @enable:              whether to enable or disable Octal DTR
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
++static int spi_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
+ {
+ 	int ret;
+ 
+-	if (!nor->params->octal_dtr_enable)
++	if (!nor->params->set_octal_dtr)
+ 		return 0;
+ 
+ 	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
+@@ -3110,7 +3110,7 @@ static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
+ 	if (!(nor->flags & SNOR_F_IO_MODE_EN_VOLATILE))
+ 		return 0;
+ 
+-	ret = nor->params->octal_dtr_enable(nor, enable);
++	ret = nor->params->set_octal_dtr(nor, enable);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -3171,7 +3171,7 @@ static int spi_nor_init(struct spi_nor *nor)
+ {
+ 	int err;
+ 
+-	err = spi_nor_octal_dtr_enable(nor, true);
++	err = spi_nor_set_octal_dtr(nor, true);
+ 	if (err) {
+ 		dev_dbg(nor->dev, "octal mode not supported\n");
+ 		return err;
+@@ -3273,7 +3273,7 @@ static int spi_nor_suspend(struct mtd_info *mtd)
+ 	int ret;
+ 
+ 	/* Disable octal DTR mode if we enabled it. */
+-	ret = spi_nor_octal_dtr_enable(nor, false);
++	ret = spi_nor_set_octal_dtr(nor, false);
+ 	if (ret)
+ 		dev_err(nor->dev, "suspend() failed\n");
+ 
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 55b5e7abce6e..f2fc2cf78e55 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -364,7 +364,7 @@ struct spi_nor_otp {
+  * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
+  *                      Table.
+  * @otp:		SPI NOR OTP info.
+- * @octal_dtr_enable:	enables SPI NOR octal DTR mode.
++ * @set_octal_dtr:	enables or disables SPI NOR octal DTR mode.
+  * @quad_enable:	enables SPI NOR quad mode.
+  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
+  * @convert_addr:	converts an absolute address into something the flash
+@@ -398,7 +398,7 @@ struct spi_nor_flash_parameter {
+ 	struct spi_nor_erase_map        erase_map;
+ 	struct spi_nor_otp		otp;
+ 
+-	int (*octal_dtr_enable)(struct spi_nor *nor, bool enable);
++	int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
+ 	int (*quad_enable)(struct spi_nor *nor);
+ 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+ 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 4b919756a205..f79e71d99124 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -120,7 +120,7 @@ static int micron_st_nor_octal_dtr_dis(struct spi_nor *nor)
+ 	return 0;
+ }
+ 
+-static int micron_st_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
++static int micron_st_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
+ {
+ 	return enable ? micron_st_nor_octal_dtr_en(nor) :
+ 			micron_st_nor_octal_dtr_dis(nor);
+@@ -128,7 +128,7 @@ static int micron_st_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
+ 
+ static void mt35xu512aba_default_init(struct spi_nor *nor)
+ {
+-	nor->params->octal_dtr_enable = micron_st_nor_octal_dtr_enable;
++	nor->params->set_octal_dtr = micron_st_nor_set_octal_dtr;
+ }
+ 
+ static int mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 36876aa849ed..6d6466a3436e 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -607,7 +607,7 @@ static struct spi_nor_fixups s25hx_t_fixups = {
+ };
+ 
+ /**
+- * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
++ * cypress_nor_set_octal_dtr() - Enable or disable octal DTR on Cypress flashes.
+  * @nor:		pointer to a 'struct spi_nor'
+  * @enable:              whether to enable or disable Octal DTR
+  *
+@@ -616,7 +616,7 @@ static struct spi_nor_fixups s25hx_t_fixups = {
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int cypress_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
++static int cypress_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
+ {
+ 	return enable ? cypress_nor_octal_dtr_en(nor) :
+ 			cypress_nor_octal_dtr_dis(nor);
+@@ -667,7 +667,7 @@ static int s28hx_t_post_bfpt_fixup(struct spi_nor *nor,
+ 
+ static void s28hx_t_late_init(struct spi_nor *nor)
+ {
+-	nor->params->octal_dtr_enable = cypress_nor_octal_dtr_enable;
++	nor->params->set_octal_dtr = cypress_nor_set_octal_dtr;
+ 	cypress_nor_ecc_init(nor);
+ }
+ 
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
