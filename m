@@ -4,64 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6F35EB64DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 19:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ED25EB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 20:11:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=PaAHl+MmYLcgeQa3JtWsTdT6OAfQOVahbxUhDn9dJE4=; b=YO9YRx6KoS56YCLRl8v/Wl36Q1
-	MzrmB7L82NLEO/saoDgDDllVuJPUuk8EEMKDc3qU1HdpF3eRD6GvziH8hfNytKuPmh5B4dwKbgxQD
-	NMvBQNJckd9M/g52Gt/1V2uRJAq5nbqsS9/eOLIf/QUZYS0E18zjblGyxRdNvI5Vhr0XWRVNrd1tY
-	DzxPX2TRLuFVeb24r1NMhjc3CLch422Din3HwfN8o70U4aFcGYSdE60n88UryE5PfBwxXCLgdycJu
-	BUoKa3g5i5+Fwjoim2wRPVLN9txXdlKS3tQ0WziS68917v6mAxAlGYhVWqPsqhoGRb5TO2J5LGfyL
-	ur4uWTkA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6G02gL2sszEsdI6xeXmE8sdCaaxUmuBZfvDE2nRndUs=; b=xOUG7DTw4TRrm3
+	iGTbyntVM4sUUGkyWvBquQKopSvekuJfedOyuTeLFJXRSRt5i+juhJI8EnPr/4lwxKCqfVEqF04r9
+	Sjzu5QK/m3x9I9h5HqqOX3u47SiiuTn8ZoEorISel6vpGM8uW82eaqW5quddqiBDY2DN/vth/Q2KJ
+	wJld5w6t+p/dkaoWruZaFeccJ63aI25ekL3DTEnABAl4XR0uWo2CPbJMK6YtsBTSZ6u/Q3YSZU9Be
+	7BboKZVHXUV4RYhsMvA472IQ5xOFqrKKTtEGKgN/meQyOb1mrIUbJYRgGh5PbKiaXNJAYgqSlFoxA
+	YnqTePFGkvDTn8Ja+wCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKOUn-0075rf-1F;
-	Fri, 14 Jul 2023 19:30:29 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qKP8e-007Adi-1V;
+	Fri, 14 Jul 2023 20:11:40 +0000
+Received: from mail-oo1-xc32.google.com ([2607:f8b0:4864:20::c32])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKOUk-0075pq-2n
+	id 1qKP8b-007AdH-1u
 	for linux-mtd@lists.infradead.org;
-	Fri, 14 Jul 2023 19:30:28 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 8A5319E3;
-	Fri, 14 Jul 2023 21:30:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1689363017;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ENvKCLxq5zLf8E0WPSbrdFAwoJ7ACgVSNM/TRb9/0ho=;
-	b=bB46+QMRneEu+kWHHE4SYl42hgTuLLopI5X8xILyfg2/0iY9eJW6gn0yvBjYqqWMPD5xXm
-	9dCPYu7w3AFDiKF8wWxuJFcTEPr85jkp8L7HL9yAosWSlwkqUQj5WJxSeo3FXQ/krNIIVF
-	83m9/D6XJqTrTbylwuJUvMYsTelXmXomydZ9zylh6OXq1ASYkC1AurgP2np3G+IAzkARDC
-	WOhevo9HzkGV27zU0DS3TZ666ZxetLtRCpL1f2lyYHvT4AWN/EbtciaEFHnOPJYO+VLrd5
-	hQ9HDwWFQ4ByCiUkMj5pVn9nUJiBl6I0pZcbPjymlA3Bzn+vdVPe1tmNTcbtpw==
+	Fri, 14 Jul 2023 20:11:39 +0000
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-566e793e0a0so1539817eaf.2
+        for <linux-mtd@lists.infradead.org>; Fri, 14 Jul 2023 13:11:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689365495; x=1691957495;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r7W8NCwpSyklTkb4rETzDttOa2ACeTzVgjQgXJUjD0Q=;
+        b=v57yn+FXE2Ah3+xQYLvAp0FTCYt6xcStEOs9r6zqBFMCs7MjujiO2MnP7P+oXa954z
+         ByVU1A0ByxNhBElwQAd1JWNVKmIzI2U/h1MZSrQ7Z5kJyovB78rdAbHNMFrgh7uhp5Mu
+         WUqBJiF3d6y5nZQOIarkvzEs+LbHs2UCvavCtmoOxmqbdZJeQdstRJyOtfQ4ZEHjyytb
+         Rosqnp9vb17UhJoIP0HMpS9MVXM/HajFQ2jHAmh/TZ6+rgGRHCVU+y9/k6aHhpbAblOp
+         5QvjzR2+rhlUpJ21pdkjjlscdbc8LIZB07J6z70IpyrZpZan2vGX/3/1O21AenZxFZpB
+         f4dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689365495; x=1691957495;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r7W8NCwpSyklTkb4rETzDttOa2ACeTzVgjQgXJUjD0Q=;
+        b=fbQO9Alo0LeXwo+xVgbtO/2yq7Lux3LBUQIg/YEvta64ozrlBRmlDpk6PblhywtSEd
+         pQ2rrgfQc9352AW3vXRPskhkR9hKGTaLZMSmSQvygMJj9ny6faEfwuzCe0u0uetTN4k9
+         tGl+ELOenBY877fDHk27Stju0PMg1mYig7lgG02NJh/8EF8/oeVbQlznqfCAScjpW0F6
+         ZLpxvQHINg1ZQxKQdObInrwKTfcragOcKGLDmJPz607O86kaeZ9bJtqqA6xYFRxSEvd/
+         HbJ7ys8NQczqU25QQXP8DhQLszBl6lcHnyI6fv/hV4277le53l1aD7EscAOSG6PmL0Dl
+         4o/A==
+X-Gm-Message-State: ABy/qLYzXAEribpWDxGJbWwXTEmL/QfCOP/AIa9jjff6o+LzdXaYhZ2C
+	7AtAWn4WEvv4WjMDQ8njcWcY0njWuZkOk99Fdinl8g==
+X-Google-Smtp-Source: APBJJlGzqcXNYOaf26GWRDbgRF0BlYkN7nDSQ7PtfSGo4JNIEjflJS1TU/2UaziT3AZYvDKoN9YkFclH2J7R+a4MMpA=
+X-Received: by 2002:a05:6358:7f0e:b0:132:fcf6:f311 with SMTP id
+ p14-20020a0563587f0e00b00132fcf6f311mr6602950rwn.0.1689365493838; Fri, 14 Jul
+ 2023 13:11:33 -0700 (PDT)
 MIME-Version: 1.0
-Date: Fri, 14 Jul 2023 21:30:17 +0200
-From: Michael Walle <michael@walle.cc>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
- <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+References: <20230714-spi-nor-winbond-w25q128-v3-1-bdb2192f079b@linaro.org> <a5dd9f7d14c94c9be99c93b9475683bf@walle.cc>
+In-Reply-To: <a5dd9f7d14c94c9be99c93b9475683bf@walle.cc>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 14 Jul 2023 22:11:21 +0200
+Message-ID: <CACRpkdYWEtHsTRwCYNt7sNtMfs39wKgP8CeuW4cp6VZ+F_y6dQ@mail.gmail.com>
 Subject: Re: [PATCH v3] mtd: spi-nor: Correct flags for Winbond w25q128
-In-Reply-To: <20230714-spi-nor-winbond-w25q128-v3-1-bdb2192f079b@linaro.org>
-References: <20230714-spi-nor-winbond-w25q128-v3-1-bdb2192f079b@linaro.org>
-Message-ID: <a5dd9f7d14c94c9be99c93b9475683bf@walle.cc>
-X-Sender: michael@walle.cc
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav <pratyush@kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230714_123027_077174_77E53388 
-X-CRM114-Status: GOOD (  23.98  )
+X-CRM114-CacheID: sfid-20230714_131137_717161_753ABEC7 
+X-CRM114-Status: GOOD (  11.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,122 +85,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-Am 2023-07-14 20:29, schrieb Linus Walleij:
-> The Winbond "w25q128" (actual vendor name W25Q128JV) has
-> exactly the same flags as the sibling device "w25q128jv".
-> The devices both require unlocking to enable write access.
-> 
-> The actual product naming between devices vs the Linux
-> strings in winbond.c:
-> 
-> 0xef4018: "w25q128"   W25Q128JV-IM/JM
-> 0xef7018: "w25q128jv" W25Q128JV-IN/IQ/JQ
-
-This is still wrong btw. According to:
-https://www.winbond.com/resource-files/W25Q128JV%20RevI%2008232021%20Plus.pdf
-
-This should be
-0xef4018: "w25q128"   W25Q128JV-IN/IQ/JQ
-0xef7018: "w25q128jv" W25Q128JV-IM/JM
-
-Otherwise, looks good. Either Tudor can change that in
-place while picking up the patch or you could send a new
-version.
-
-Either way:
-Reviewed-by: Michael Walle <michael@walle.cc>
-
-Thanks!
--michael
-
-> The latter device, "w25q128jv" supports features named DTQ
-> and QPI, otherwise it is the same.
-> 
-> Not having the right flags has the annoying side effect
-> that write access does not work.
-> 
-> After this patch I can write to the flash on the Inteno
-> XG6846 router.
-> 
-> The flash memory also supports dual and quad SPI modes.
-> This does not currently manifest, but by turning on SFDP
-> parsing, the right SPI modes are emitted in
-> /sys/kernel/debug/spi-nor/spi1.0/capabilities
-> for this chip, so we also turn on this.
-> 
-> Since we suspect that older chips may be using the same
-> device ID, we need to keep NO_SFDP_FLAGS(SECT_4K) as these
-> older chips may not support SFDP.
-> 
-> cat jedec_id
-> ef4018
-> cat manufacturer
-> winbond
-> cat partname
-> w25q128
-> hexdump -v -C sfdp
-> 00000000  53 46 44 50 05 01 00 ff  00 05 01 10 80 00 00 ff
-> 00000010  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-> 00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-> 00000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-> 00000040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-> 00000050  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-> 00000060  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-> 00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-> 00000080  e5 20 f9 ff ff ff ff 07  44 eb 08 6b 08 3b 42 bb
-> 00000090  fe ff ff ff ff ff 00 00  ff ff 40 eb 0c 20 0f 52
-> 000000a0  10 d8 00 00 36 02 a6 00  82 ea 14 c9 e9 63 76 33
-> 000000b0  7a 75 7a 75 f7 a2 d5 5c  19 f7 4d ff e9 30 f8 80
-> 
-> Cc: stable@vger.kernel.org
-> Suggested-by: Michael Walle <michael@walle.cc>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> Changes in v3:
-> - Keep NO_SFDP_FLAGS(SECT_4K) around.
-> - Update commit message
-> - Link to v2: 
-> https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org
-> 
-> Changes in v2:
-> - Only add the write access flags.
-> - Use SFDP parsing to properly detect the various
->   available SPI modes.
-> - Link to v1: 
-> https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v1-1-f78f3bb42a1c@linaro.org
-> ---
->  drivers/mtd/spi-nor/winbond.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/winbond.c 
-> b/drivers/mtd/spi-nor/winbond.c
-> index 834d6ba5ce70..8f30a67cd27a 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -121,6 +121,8 @@ static const struct flash_info winbond_nor_parts[] 
-> = {
->  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
->  		NO_SFDP_FLAGS(SECT_4K) },
->  	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
-> +		PARSE_SFDP
-> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->  		NO_SFDP_FLAGS(SECT_4K) },
->  	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-> 
-> ---
-> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-> change-id: 20230711-spi-nor-winbond-w25q128-321a602ee267
-> 
-> Best regards,
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gRnJpLCBKdWwgMTQsIDIwMjMgYXQgOTozMOKAr1BNIE1pY2hhZWwgV2FsbGUgPG1pY2hhZWxA
+d2FsbGUuY2M+IHdyb3RlOgo+IEFtIDIwMjMtMDctMTQgMjA6MjksIHNjaHJpZWIgTGludXMgV2Fs
+bGVpajoKCj4gPiBUaGUgV2luYm9uZCAidzI1cTEyOCIgKGFjdHVhbCB2ZW5kb3IgbmFtZSBXMjVR
+MTI4SlYpIGhhcwo+ID4gZXhhY3RseSB0aGUgc2FtZSBmbGFncyBhcyB0aGUgc2libGluZyBkZXZp
+Y2UgIncyNXExMjhqdiIuCj4gPiBUaGUgZGV2aWNlcyBib3RoIHJlcXVpcmUgdW5sb2NraW5nIHRv
+IGVuYWJsZSB3cml0ZSBhY2Nlc3MuCj4gPgo+ID4gVGhlIGFjdHVhbCBwcm9kdWN0IG5hbWluZyBi
+ZXR3ZWVuIGRldmljZXMgdnMgdGhlIExpbnV4Cj4gPiBzdHJpbmdzIGluIHdpbmJvbmQuYzoKPiA+
+Cj4gPiAweGVmNDAxODogIncyNXExMjgiICAgVzI1UTEyOEpWLUlNL0pNCj4gPiAweGVmNzAxODog
+IncyNXExMjhqdiIgVzI1UTEyOEpWLUlOL0lRL0pRCj4KPiBUaGlzIGlzIHN0aWxsIHdyb25nIGJ0
+dy4gQWNjb3JkaW5nIHRvOgo+IGh0dHBzOi8vd3d3LndpbmJvbmQuY29tL3Jlc291cmNlLWZpbGVz
+L1cyNVExMjhKViUyMFJldkklMjAwODIzMjAyMSUyMFBsdXMucGRmCj4KPiBUaGlzIHNob3VsZCBi
+ZQo+IDB4ZWY0MDE4OiAidzI1cTEyOCIgICBXMjVRMTI4SlYtSU4vSVEvSlEKPiAweGVmNzAxODog
+IncyNXExMjhqdiIgVzI1UTEyOEpWLUlNL0pNCj4KPiBPdGhlcndpc2UsIGxvb2tzIGdvb2QuIEVp
+dGhlciBUdWRvciBjYW4gY2hhbmdlIHRoYXQgaW4KPiBwbGFjZSB3aGlsZSBwaWNraW5nIHVwIHRo
+ZSBwYXRjaCBvciB5b3UgY291bGQgc2VuZCBhIG5ldwo+IHZlcnNpb24uCgpPb29wcyB5b3UncmUg
+cmlnaHQsIEknbGwganVzdCBwaWNrIHVwIHlvdXIgdGFnIGFuZCByZS1zZW5kLApzb3JyeSEKCllv
+dXJzLApMaW51cyBXYWxsZWlqCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
