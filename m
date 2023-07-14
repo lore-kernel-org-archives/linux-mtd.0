@@ -4,87 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4752EB64DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 15:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF52AEB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 15:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UrKRkCTBXBDymQ2LV48F7t2hEf7Opdh0DTsj5xbG6aQ=; b=fWJ05Ed4UkY5RY
-	N6Hxyp6n+Du/etpbwLE+/7SctWZHXvlZ4ulicuC2btZc34VAtcg1u9AZ7B/dGu33icqHU2qH0DU1h
-	B3rFLrbIG3ZxqPEPDDRnCyyRNKDdaK0+9jBYhlJEtmqDB/MF4PTt6mbpLzQW5OqcU4CnO10bGuLqT
-	/ARDKYKNHOuliJ75ZrXDrQp8PWQqGiA4FIPyIQpllS3LwAk65zt96QS04pmVNFUA4WjJejlFR3JB9
-	TVdJu+ccR6kaswEBCIStRMZ6GKOzecMZT9lXBx9po9C825mpGxItmyN0XAqgt7kRmqFUwjY8u8uSF
-	XlUk5pdivLsITCxkaKNA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=B8Ib169J/hiqam12EtlHIubHIbSM2y4N/ar/FekbIDo=; b=DC48DV86kzxthJ
+	jqgs5zD8wz7XNubl59LjOBq3Pj4VA1mvWfYVC763QJZgUaeP5oGCThyBGAdBh3asX9fHilc+aKueP
+	LpI5cEiTOAJLPX72r7z/VUjrR5vUlH7KkbCvlRCJQxWEAHL61tVvb/zdrJsXmbVowf4buvB5W9+/R
+	znmlvGokR62hT4rsFBZPZmMlJWoa1v9d9VA680TGeeVqlzU2xcj7a+HLuyMD/Acf2GzRboQ36PDgH
+	1KISznDBJxdcaZdXepfDeV4T/Lv2F/LXhV2XX3D7y9cpdT33+x/9MJ+2PV6Gtrl/Xmrj8qrKFlBjp
+	F6hI8kdcTcExD7+FJjGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKKP1-006Ti6-2B;
-	Fri, 14 Jul 2023 15:08:15 +0000
-Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
+	id 1qKKaS-006VJo-11;
+	Fri, 14 Jul 2023 15:20:04 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKKOx-006TfZ-0d
-	for linux-mtd@lists.infradead.org;
-	Fri, 14 Jul 2023 15:08:12 +0000
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fc04692e20so19090645e9.0
-        for <linux-mtd@lists.infradead.org>; Fri, 14 Jul 2023 08:08:04 -0700 (PDT)
+	id 1qKKaP-006VI3-1j;
+	Fri, 14 Jul 2023 15:20:03 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99454855de1so57076766b.2;
+        Fri, 14 Jul 2023 08:19:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689347283; x=1691939283;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689347993; x=1691939993;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+25fSkkJ3LOx6seKX0QJU9kNSlEQwPNGN+WO1mhMvMI=;
-        b=Lf90t73uKJmeeFq5uN4YHnr9sJ71rIEIK/flZU3SzfncDcf5OwbX1IaNvEqwOAb0b4
-         xxBqFUEq3Uvnb+D3x4Cmp3x2N7XiE/ZXnI8W6ewz470ZtlQhqCrMmFr5mkPEBi4Zovuv
-         YyA6fYsteZdMYHNGRhOWZc3PGOLjbcPE6uA5sYy29ZuMIhjRnBhHi0I7HXtdhfS1WBRH
-         fwTfS2a842D87CKIquzHGJEyYYf8m4TMSD/8AZxD/T729gSgHZBJ4TCWookk3nD25VBr
-         HsmBlJlGLwXekkIBJJtgDtBsvxi14OrKIvSjJddff0QUOHO7TwMS9UYllSLjShIU3DAr
-         klVQ==
+        bh=uRxUFSZUV2W8ort0PSj9hJsHbd6feENt4NCd2S7baGM=;
+        b=kzPYOVXNMgXeOi1lmP8BNT3aG05tx9JwNSA93oBI+KA2rcVXavNhT42Py82GFw/dVx
+         xYzuz/L+jSOIt+EP6ZuhbjyNgs1QRfCBMk7Eda1ciaG0WdtjCZ7fXYOtove8c1qdWyc+
+         AoFNG0bOWYs9VyaqlEt1l0c44lS+SIjlmi3vgSCrkjzIPUjH3MZp3TaEJyO/sTIAFxWs
+         8DzSW+1LsfzQ8sHkVpVRpZwcirdnwz1ClyrnYUHte4ah1GPfHYo3B+T4KZ8xUXnGqPMs
+         6okwA3JsDmHSR4jKrnPKfZBRKSwKqq2jrCjaB9Xn5FWKS8yULHMRp2wDn9w9+HOopza1
+         8Pqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689347283; x=1691939283;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+25fSkkJ3LOx6seKX0QJU9kNSlEQwPNGN+WO1mhMvMI=;
-        b=BbPlILy309xFdaPszmj+i1Eoewuj5ZV2ZRK7jLFo8REGSllepvopwXLQTt9eFKQoqU
-         HsPIT5xcfbQElY7hvyqydAfkZwYTjwYkH68ty3tcgscJ38bItugQQnXAnBewFdhT6zLv
-         SHmq+QeIclUbVv1OmcPcXBVtcEg8fsfVDRZLSdLRko8NDpyflFS4GkyvLQjOJmdqhtfS
-         /ESpNG//rNkRx6wr8KbdviKYaDzRaSYaDrulMG0gWd3tZCHBsmoGpHfnXFK1/ecoU15X
-         7gMhYeFjTtmgquzZE/omggV2TxVHsWAoa33hM7c2V3QNZ+r4HkwdUmUd6XE2gnrnvyug
-         JuRw==
-X-Gm-Message-State: ABy/qLa9FDglo62lYKDIKzTUabHcsNN8W2ViCYeSr6ecrkgyJ7eAqIZt
-	e4uZ9VEl6HbrbDO2AFPgiX+38A==
-X-Google-Smtp-Source: APBJJlENLcXufqPBumnSElb/7yqarWmZ3bKOHd1czA+a4aXqy+wlPkXkuyE3vtePDt+0cIIXJ8eC7w==
-X-Received: by 2002:a5d:458c:0:b0:313:fcea:db06 with SMTP id p12-20020a5d458c000000b00313fceadb06mr4289774wrq.12.1689347282918;
-        Fri, 14 Jul 2023 08:08:02 -0700 (PDT)
-Received: from 1.. ([37.251.220.221])
-        by smtp.gmail.com with ESMTPSA id k8-20020a5d5188000000b00314172ba213sm10977274wrv.108.2023.07.14.08.08.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 08:08:02 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: tkuw584924@gmail.com,
-	takahiro.kuwano@infineon.com,
-	michael@walle.cc,
-	pratyush@kernel.org
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bacem.daassi@infineon.com,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH] mtd: spi-nor: rename method for enabling or disabling octal DTR
-Date: Fri, 14 Jul 2023 18:07:57 +0300
-Message-Id: <20230714150757.15372-1-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230616050600.8793-1-Takahiro.Kuwano@infineon.com>
-References: <20230616050600.8793-1-Takahiro.Kuwano@infineon.com>
+        d=1e100.net; s=20221208; t=1689347993; x=1691939993;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uRxUFSZUV2W8ort0PSj9hJsHbd6feENt4NCd2S7baGM=;
+        b=hV51oPidSYYoqlgsjtTv+ydJaduCYlF4qITiDmoXkUVkXFNuQzAtcKNCaXGHrqjsXN
+         KhVI8qj0wf8eeRG/Os7rNYDv44KjdnnfuhtHTDTJIVCYmyTLPZBR3wUb8M51dqo6YgrQ
+         AiGfUItHrle6Cfuij0xpt2GSbSQ1UBG1H8ar6Ve8Zt8fofisocRDb1iYPTWRiKTfxUT+
+         ClnQXSGyOL6jqfZizsQ/y7eB8OIFz3Yj7BUP45Epigobp2Euwim+7GpqyAh8wOTMIZTf
+         d5ViSnCvw07kEDl/FfQJCsMyUnNPl60tDFcrbLnZyy44R3+RntaVvyEPZwQOE6q2zbW6
+         wHAQ==
+X-Gm-Message-State: ABy/qLZhMUl6pOuzJSLCl9q8ArjQwlMxuNc3r3qqebvaXcvx18wzF7Ci
+	9EX+goJJA9m7u47VDXu24+I=
+X-Google-Smtp-Source: APBJJlH/63xAD4d8jqV9NnNG5NHdtTn3OTwFVR/uDJ9N36uzE9gs//IK4CRQnYm5FFxhU/bq+faEQg==
+X-Received: by 2002:a17:906:5194:b0:993:e9b8:90f5 with SMTP id y20-20020a170906519400b00993e9b890f5mr4483546ejk.8.1689347993197;
+        Fri, 14 Jul 2023 08:19:53 -0700 (PDT)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id e10-20020a170906080a00b00992d122af63sm5472518ejd.89.2023.07.14.08.19.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 08:19:52 -0700 (PDT)
+Message-ID: <273ad871-9050-7851-9973-5545b88bf43b@gmail.com>
+Date: Fri, 14 Jul 2023 17:19:51 +0200
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6006; i=tudor.ambarus@linaro.org; h=from:subject; bh=Rd74k6/QPhZmiMzGtR06LDfyT/mYAR29wo1NOzFjRio=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBksWTNz/EGzj0cHtiJIYyXZ4exREnj4SDl/Q9FT GGzygf5bVOJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZLFkzQAKCRBLVU9HpY0U 6WgmCACrK7IsyE77GiKfhN8ImYbHHgmWbi18hweYOW2aPSjKrtHkmWJwE+b/s2V2vZavXfhagXi u+zvw2Y5P0OXJJ+HNZ6xNZD+F5Io3DDJRVoKz0yGs+LQsdTC1rraNGMWlNDR91be+atg7TTP4We K1/GGVYbO/39Z4M8DOdA0O5HtKPxJFl6AbDAwHy+H4AH4qd5u2k2RH+4w44Lt2GzlkOMG5QW3OU tOWIfBPTs2utM+7jMf7QljZBxdiJlqT1aIlAr/MQCuOZiqtw0jJBj+2sHm1OkfPKUNeUGaeYavL Gn7VNmAPU5gKwscH0Jh84D7pajVOo/BnH7Kh6qx7hSMiNlDX
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+From: Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v5 0/2] Fixes for Rockchip NAND controller driver
+To: miquel.raynal@bootlin.com
+Cc: richard@nod.at, vigneshr@ti.com, heiko@sntech.de,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ yifeng.zhao@rock-chips.com
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230714_080811_299330_13402A34 
-X-CRM114-Status: GOOD (  16.21  )
+X-CRM114-CacheID: sfid-20230714_082001_579716_2DD6D264 
+X-CRM114-Status: UNSURE (   7.57  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,161 +94,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Having an *_enable(..., bool enable) definition was misleading
-as the method is used both to enable and to disable the octal DTR
-mode. Splitting the method in the core in two, one to enable and
-another to disable the octal DTR mode does not make sense as the
-method is straight forward and we'd introduce code duplication.
+This serie contains various fixes for the Rockchip NAND controller
+driver that showed up while testing boot block writing.
 
-Update the core to use:
-int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
+Fixed are:
+  Always copy hwecc PA data to/from oob_poi buffer in order to be able
+  to read/write the various boot block layouts.
+  Add option to safely probe the driver on a NAND with unknown data layout.
+  Fix oobfree layout.
 
-Manufacturer drivers use different sequences of commands to enable
-and disable the octal DTR mode, thus for clarity they shall
-implement it as:
-static int manufacturer_snor_set_octal_dtr(struct spi_nor *nor, bool enable)
-{
-	return enable ? manufacturer_snor_octal_dtr_enable() :
-			manufacturer_snor_octal_dtr_disable();
-}
+Changed V5:
+  Reword
+  Remove skipbbt patch
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/mtd/spi-nor/core.c      | 12 ++++++------
- drivers/mtd/spi-nor/core.h      |  4 ++--
- drivers/mtd/spi-nor/micron-st.c |  4 ++--
- drivers/mtd/spi-nor/spansion.c  |  6 +++---
- 4 files changed, 13 insertions(+), 13 deletions(-)
+Changed V4:
+  Reduce subject size
+  Add 'Fixes:' tag
+  Reword
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 434c545c0ce4..273258f7e77f 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3090,17 +3090,17 @@ static int spi_nor_init_params(struct spi_nor *nor)
- 	return 0;
- }
- 
--/** spi_nor_octal_dtr_enable() - enable Octal DTR I/O if needed
-+/** spi_nor_set_octal_dtr() - enable or disable Octal DTR I/O.
-  * @nor:                 pointer to a 'struct spi_nor'
-  * @enable:              whether to enable or disable Octal DTR
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+static int spi_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
- {
- 	int ret;
- 
--	if (!nor->params->octal_dtr_enable)
-+	if (!nor->params->set_octal_dtr)
- 		return 0;
- 
- 	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
-@@ -3110,7 +3110,7 @@ static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
- 	if (!(nor->flags & SNOR_F_IO_MODE_EN_VOLATILE))
- 		return 0;
- 
--	ret = nor->params->octal_dtr_enable(nor, enable);
-+	ret = nor->params->set_octal_dtr(nor, enable);
- 	if (ret)
- 		return ret;
- 
-@@ -3171,7 +3171,7 @@ static int spi_nor_init(struct spi_nor *nor)
- {
- 	int err;
- 
--	err = spi_nor_octal_dtr_enable(nor, true);
-+	err = spi_nor_set_octal_dtr(nor, true);
- 	if (err) {
- 		dev_dbg(nor->dev, "octal mode not supported\n");
- 		return err;
-@@ -3273,7 +3273,7 @@ static int spi_nor_suspend(struct mtd_info *mtd)
- 	int ret;
- 
- 	/* Disable octal DTR mode if we enabled it. */
--	ret = spi_nor_octal_dtr_enable(nor, false);
-+	ret = spi_nor_set_octal_dtr(nor, false);
- 	if (ret)
- 		dev_err(nor->dev, "suspend() failed\n");
- 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 55b5e7abce6e..f2fc2cf78e55 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -364,7 +364,7 @@ struct spi_nor_otp {
-  * @erase_map:		the erase map parsed from the SFDP Sector Map Parameter
-  *                      Table.
-  * @otp:		SPI NOR OTP info.
-- * @octal_dtr_enable:	enables SPI NOR octal DTR mode.
-+ * @set_octal_dtr:	enables or disables SPI NOR octal DTR mode.
-  * @quad_enable:	enables SPI NOR quad mode.
-  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
-  * @convert_addr:	converts an absolute address into something the flash
-@@ -398,7 +398,7 @@ struct spi_nor_flash_parameter {
- 	struct spi_nor_erase_map        erase_map;
- 	struct spi_nor_otp		otp;
- 
--	int (*octal_dtr_enable)(struct spi_nor *nor, bool enable);
-+	int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
- 	int (*quad_enable)(struct spi_nor *nor);
- 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
- 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 4b919756a205..f79e71d99124 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -120,7 +120,7 @@ static int micron_st_nor_octal_dtr_dis(struct spi_nor *nor)
- 	return 0;
- }
- 
--static int micron_st_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+static int micron_st_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
- {
- 	return enable ? micron_st_nor_octal_dtr_en(nor) :
- 			micron_st_nor_octal_dtr_dis(nor);
-@@ -128,7 +128,7 @@ static int micron_st_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
- 
- static void mt35xu512aba_default_init(struct spi_nor *nor)
- {
--	nor->params->octal_dtr_enable = micron_st_nor_octal_dtr_enable;
-+	nor->params->set_octal_dtr = micron_st_nor_set_octal_dtr;
- }
- 
- static int mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 36876aa849ed..6d6466a3436e 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -607,7 +607,7 @@ static struct spi_nor_fixups s25hx_t_fixups = {
- };
- 
- /**
-- * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-+ * cypress_nor_set_octal_dtr() - Enable or disable octal DTR on Cypress flashes.
-  * @nor:		pointer to a 'struct spi_nor'
-  * @enable:              whether to enable or disable Octal DTR
-  *
-@@ -616,7 +616,7 @@ static struct spi_nor_fixups s25hx_t_fixups = {
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int cypress_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+static int cypress_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
- {
- 	return enable ? cypress_nor_octal_dtr_en(nor) :
- 			cypress_nor_octal_dtr_dis(nor);
-@@ -667,7 +667,7 @@ static int s28hx_t_post_bfpt_fixup(struct spi_nor *nor,
- 
- static void s28hx_t_late_init(struct spi_nor *nor)
- {
--	nor->params->octal_dtr_enable = cypress_nor_octal_dtr_enable;
-+	nor->params->set_octal_dtr = cypress_nor_set_octal_dtr;
- 	cypress_nor_ecc_init(nor);
- }
- 
--- 
-2.34.1
+Changed V3:
+  Change patch order, layout fixes first
+  Change prefixes
+  Reword
+  State that patches break all existing jffs2 users
+
+Changed V2:
+  Add tag
+  Add manufacturer ops
+  Reword
+
+Johan Jonker (2):
+  mtd: rawnand: rockchip: fix oobfree offset and description
+  mtd: rawnand: rockchip: Align hwecc vs. raw page helper layouts
+
+ .../mtd/nand/raw/rockchip-nand-controller.c   | 45 ++++++++++---------
+ 1 file changed, 25 insertions(+), 20 deletions(-)
+
+--
+2.30.2
 
 
 ______________________________________________________
