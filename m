@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91B32EB64DC
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Jul 2023 10:48:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75A9DEB64DC
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Jul 2023 10:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vy/4fu3oGb6ucKAxv6Ewq1jfR/RRprZOloI7zBPbBRM=; b=IYrPeRzRJEpY6D
-	ntlLyTdiQkMGrwLZeXky9TY+hfGUaR2WML3L+PtJDMC7AGQOCo28m9ZG0C4JpfGfzGJcqP1cd1Kkr
-	MxNeRuIkJBDfkE/orO5nBeEBUzuIKySEi+BD6C2IPQ1lAWrRRk5SjOPKjje3Mjpk7SHq1KvkRarvH
-	fZXQWva6b7tr8l+EXGqZfB8zuYtnqaQ71rbiFkN0qfqaQPCogGUW3eCtnoaXi77hzCesynn5vH0Fs
-	1W/I3MCMfd+BaHu7XzhZLemyzfa4MjwIPDkAHbW1qqAEmjE70609UiHJJhqxR0zHVtw5e2bP48uWJ
-	FiDduLhGzvTn9Cg9ujbA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:Subject:
+	From:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bkUlRwk1C7lLzKyhKpMIrCqRVp2sETE3LVDeaSc+nRw=; b=XhdQS3tCk5GXWc
+	oGinBgu4d7Uez/YerM/bc/U1oXNwq8VKcTmIekcwuwqQQaRTGAO8m65f+JYRgDCwpRnKzj+8c2dfD
+	9PAtfUsE31aWPpG6mPhSvKGItSZdqqGwyNNwWKB1C4OD/kUvRYhjiwQEBsxUVnKkTJPWfV0ot4ATd
+	GzaYM/15/Hzff9dp6yJo5SYCO0ZaQ+SOmuPHZvpboSYVqt6fafmYR2ZOqwsC6uKA/4/TMhE4NZlWJ
+	gW4GM2+PLWbTxJ5JZjRFG8F9VrTUPwMfhdbWzBKACoWcDKb0vuy8qD0a7YIcUnPJyvtIVFD5L7rPZ
+	6X9X1AoMNYwkiA9dqIig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKcpE-008Q2V-11;
-	Sat, 15 Jul 2023 10:48:32 +0000
-Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
+	id 1qKcq4-008QbF-13;
+	Sat, 15 Jul 2023 10:49:24 +0000
+Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKcpA-008PyU-1a
+	id 1qKcq1-008QYC-2k
 	for linux-mtd@lists.infradead.org;
-	Sat, 15 Jul 2023 10:48:29 +0000
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-521662a6c9cso1676952a12.1
-        for <linux-mtd@lists.infradead.org>; Sat, 15 Jul 2023 03:48:26 -0700 (PDT)
+	Sat, 15 Jul 2023 10:49:23 +0000
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-993a37b79e2so383456866b.1
+        for <linux-mtd@lists.infradead.org>; Sat, 15 Jul 2023 03:49:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689418105; x=1692010105;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rn5C5YBsaSogUUgEp4dzGB5xBo5qBNnix/jnrz9gqkM=;
-        b=fDx9RWHqR3WdveXG/OlDdrTexq4fbNMPt2ZBSoL0Xwa6tCqLAuScCyfOnhhX1ac0ts
-         ysauNt9TuGVshmSJpp5FWmLJP1S7eZv3nO5o3BkKAlr9SWOY4qDMxuGQTwjL9Ne5lEZ3
-         vF2k0HrrOg5DSsIuQFpsnjMzvuJY1zJE1a95jfDi33rLE/Ohan1/JiD1h1Izom+IFNnc
-         pvuiC0DnrG/+ow/XT250CZBIS9DlpHVnyCHBKFn2fTETBQPFuWbs4sCGk3feLD/NENCw
-         Kh1Ms1RYHTE/kZLsebUXxFSmw9KEad17kJPeKU8q/wG1Xstw1s+uZjp1OXzZA6aTpAWp
-         JYcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689418105; x=1692010105;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=gmail.com; s=20221208; t=1689418159; x=1692010159;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=rn5C5YBsaSogUUgEp4dzGB5xBo5qBNnix/jnrz9gqkM=;
-        b=fJlI8t3deaJlCJXpw5cddnZjlMfMfWndVOeFRJJTI6SJ1OiG5trYXRG4bQGtBmZr/K
-         P2FRE6EjFzIfDy2S4enUIkJ9e6KGAQBV3C5ZAHzNCEYKxDwM2mv5OrRs8cA3WEdfR+to
-         GJgzm8ILBBhx41FB/x7RZV4crNXsP0SuaAfr2KEv1fvIFRwdoE8BMKRU3Byc3rsuzpW8
-         zNU08paKLVh2W13wB5SfQ7ZAQtOzjy26NcJn8c33EMZ6CPszefvFG9dxps3acfz7cK/B
-         xK10etG/b1uu0wEqd83acHKMo2cY42mSOIDHWlTyhVBmvQ/gI+zvsd7S1oPESgHszp/m
-         yanA==
-X-Gm-Message-State: ABy/qLbb4v4B41V0qZQ6wqMW+bxjf6K3HhTfVFyJAUlNL1NnVTCb4mnh
-	7WkhMP3SXnUB7NZcumgVbb4=
-X-Google-Smtp-Source: APBJJlFwpbjDxF/L0eWHgxk3zF1ODVea2/iA4Nkl2naDwD6iIjyL37Vd+GItE2wutNZVuketriyBRQ==
-X-Received: by 2002:a17:906:6884:b0:988:4dc:e3a3 with SMTP id n4-20020a170906688400b0098804dce3a3mr6496371ejr.31.1689418105356;
-        Sat, 15 Jul 2023 03:48:25 -0700 (PDT)
+        bh=2Msya+OeUKFjaaFNFKi9RZdmhf47ggR6awj7JcHGF44=;
+        b=TXA2VCYmB6a4U/vUInFYKG7TlY+AVtTjKuD+KP3zKcgdrzlp759XldO4vhbWti9UWi
+         /HJ1vqHtUbBIlFykt1kpf28dAcwALFxLGZOXiac+pqbqwiE3LFLQ3x7sNkhdRgHdH7rO
+         Cnm0BKEiiIGUcpq8CgQY6QK0xMpLKJ0U1KclbjIaNTTEb1XvEfrlndufTkVjcqVP8hHI
+         CiyYJ0kaZK02txAhkc12Sg1Zd/YY1REu/h8NishYTKioEKGcXwl71mutDjusNGeN5BaQ
+         I2OxLKolJyNR/wtx4W3jupK7TxyR+qB9vAQK9YnPXMiDWZYFpCJvyiCK1aPLkuSatrhm
+         JHNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689418159; x=1692010159;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Msya+OeUKFjaaFNFKi9RZdmhf47ggR6awj7JcHGF44=;
+        b=TtbmSWOfuSnWi9Q0dYXaHzliIxSC/ztOPfDfA0GGAYwtAeGuKJ1IaavJ23kL2yFpM2
+         shuFjmdQTVEnoQTk/rAn+VzMipWR4DhbMJO8hWDzrCUOyU7y57QIQ/x+i4ieq3AJBTNO
+         KHpOX/ekoBz38J0pAPT/zxa/fdlmUh5kNQAlhkDn5gGXGeNeP0mCLC3cSBFEKI6J7UM4
+         s1z3VQh4IeEHoVOtdd81r6iUQi6cuuD1HWWUEsjzmHJqCTAqKhCTt4xycM3BAFEqCIVR
+         yzkwMgeXIDYw1BxKlM1sah4ONcYbRL55eIZwz/BPo3I/3piFqpIPPzoe2kwE8lhPQzVq
+         sBPQ==
+X-Gm-Message-State: ABy/qLZiqHW/hSjNsXFDI8p1V7w0BSGxEGBJz7WbbryVt05vFVwe3noC
+	HXNw+G59B3aWS3OocwUx0wk=
+X-Google-Smtp-Source: APBJJlE0jCxwHJaDfSipFXMCIjpsixSBRfEfBBeX6dxD3uNE4NTXk/pNOu6Sss9sA4LNV8RKWntj1w==
+X-Received: by 2002:a17:907:2093:b0:991:b2a2:e424 with SMTP id pv19-20020a170907209300b00991b2a2e424mr6408079ejb.76.1689418159698;
+        Sat, 15 Jul 2023 03:49:19 -0700 (PDT)
 Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id d20-20020a17090648d400b00993feabdc6asm6642782ejt.157.2023.07.15.03.48.24
+        by smtp.gmail.com with ESMTPSA id a15-20020a17090680cf00b0099251a40184sm6685749ejx.99.2023.07.15.03.49.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Jul 2023 03:48:24 -0700 (PDT)
-Message-ID: <61c84262-cd98-1e60-d95b-9b0492083994@gmail.com>
-Date: Sat, 15 Jul 2023 12:48:16 +0200
+        Sat, 15 Jul 2023 03:49:19 -0700 (PDT)
+Message-ID: <2b0dc481-562f-c8df-545e-dcf6548adb07@gmail.com>
+Date: Sat, 15 Jul 2023 12:49:18 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
 From: Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v1 1/2] dt-bindings: mtd: nand-controller: add
- nand-skip-bbtscan and nand-no-bbm-quirk DT options
+Subject: [PATCH v1 2/2] mtd: rawnand: add nand-skip-bbtscan and
+ nand-no-bbm-quirk DT options
 To: miquel.raynal@bootlin.com
 Cc: richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
  krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  devicetree@vger.kernel.org
+References: <61c84262-cd98-1e60-d95b-9b0492083994@gmail.com>
 Content-Language: en-US
+In-Reply-To: <61c84262-cd98-1e60-d95b-9b0492083994@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230715_034828_551711_3C1AB47A 
-X-CRM114-Status: GOOD (  12.03  )
+X-CRM114-CacheID: sfid-20230715_034921_890338_AE0D0A59 
+X-CRM114-Status: GOOD (  10.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,33 +118,26 @@ Previous discussion:
 [PATCH v3 3/3] mtd: rawnand: rockchip-nand-controller: add skipbbt option
 https://lore.kernel.org/linux-mtd/1618382560.2326931.1689261435022.JavaMail.zimbra@nod.at/
 ---
- .../devicetree/bindings/mtd/nand-controller.yaml    | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/mtd/nand/raw/nand_base.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-index f70a32d2d9d4..ca04d06a0377 100644
---- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-+++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
-@@ -103,6 +103,19 @@ patternProperties:
-           the boot ROM or similar restrictions.
-         $ref: /schemas/types.yaml#/definitions/flag
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index a6af521832aa..f0fa5c3519b1 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5521,6 +5521,12 @@ static int rawnand_dt_init(struct nand_chip *chip)
+ 	if (of_property_read_bool(dn, "nand-is-boot-medium"))
+ 		chip->options |= NAND_IS_BOOT_MEDIUM;
 
-+      nand-no-bbm-quirk:
-+        description:
-+          Some controllers with pipelined ECC engines override the BBM marker with
-+          data or ECC bytes, thus making bad block detection through bad block marker
-+          impossible. Let's flag those chips so the core knows it shouldn't check the
-+          BBM and consider all blocks good.
-+        $ref: /schemas/types.yaml#/definitions/flag
++	if (of_property_read_bool(dn, "nand-no-bbm-quirk"))
++		chip->options |= NAND_NO_BBM_QUIRK;
 +
-+      nand-skip-bbtscan:
-+        description:
-+          This option skips the BBT scan during initialization.
-+        $ref: /schemas/types.yaml#/definitions/flag
++	if (of_property_read_bool(dn, "nand-skip-bbtscan"))
++		chip->options |= NAND_SKIP_BBTSCAN;
 +
-       nand-rb:
-         description:
-           Contains the native Ready/Busy IDs.
+ 	if (of_property_read_bool(dn, "nand-on-flash-bbt"))
+ 		chip->bbt_options |= NAND_BBT_USE_FLASH;
+
 --
 2.30.2
 
