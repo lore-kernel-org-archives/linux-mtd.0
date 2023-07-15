@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D129C001B0
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Jul 2023 16:16:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 633E3C001B0
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Jul 2023 16:19:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0LWqYR7S1fEaarea6eXx4AAOJlHKxzTywTtUxZ736cA=; b=bBBJ8oz9sjR966
-	KFsgnC+PvGt5kLLNzu9Kkjp0BTUViQyAJZMW8WWfuKi7ltZ1kfLz6Uy/VZSpB5aki0Rv7goOKGT/h
-	+EOLZkJon+qBI+SXO9plSOVSQmjoSVabCwVUQiWMk9A7HwfQd2lBS9FCjQcgIA0o5VJCyJsOiezO8
-	SH7ptKoyJ6pur+0cm9YXPwBlOI/K82e6wIo/v7hkcK5NSptY15UIMUZW0iJX4T8uJU9anwMGYhHhH
-	KwYspsj5TE0KyiPNjb/1kKdTxrzpjBWC9AmnYY/ExND7vwZd1E19C1MUz03JNNVGOFfSzNXvJOeoJ
-	oZk7ZTnxRAj3ko2ebuuQ==;
+	List-Owner; bh=R/O8YKkcI7jpr2jNaLu5ftIVAFFVWw6jKk3V1RJvqoc=; b=FT5ojFaVz/a/78
+	2IgW9Zlzbri96oLM+xDZECzizZfFpPGgs4Dfit+dswLkcNDz0JxzIyl/CY4fy0A+YcoU3n0MfXo+N
+	H+2XrpC7hpCgGBAb8a6JVetAv+jlypf5eN26Gyu3fFN6L++V/MudCJsXvYxI2UeaMEk1vk8fTETfA
+	JKL6kUU9loqQtEdXmmTnPdkZoB8Yho+hMiOK3DHVwDRwj2p5V2Rg/M/UtimG1Y37jK5W8M4BeZPIg
+	8PbEfuXB4UuwAdQ2rboGC4q88tJFuBJuJ9PUWiKcNo/RZZ61TVsenw6JlOS0q6gz7WTHmlDRD8VpD
+	ECXGj/FViPkcqzgsbi0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKhwJ-0096P1-1y;
-	Sat, 15 Jul 2023 16:16:11 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1qKhzX-0096v1-0t;
+	Sat, 15 Jul 2023 16:19:31 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKhwE-0096N1-1O;
-	Sat, 15 Jul 2023 16:16:09 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AD7BAC000A;
-	Sat, 15 Jul 2023 16:15:59 +0000 (UTC)
+	id 1qKhzS-0096tS-2f;
+	Sat, 15 Jul 2023 16:19:28 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2E23020002;
+	Sat, 15 Jul 2023 16:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1689437762;
+	t=1689437962;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rLvZjvyKtYjdqlbWdTcVIvaH5ulaFg7tfDn1cNGzLjk=;
-	b=duVRSGeKTPFmrl+NBpnM0ULc8COFL8Tq5toYfJ/mkhRQb9/blw/BI+uTD6n0/Aaqif4tOd
-	dVf2jhP+Gv5PbFyfFHhXUwcKlIyc5LUN2mqTcLOH3HYup9YQD8h2v3Eo3eceyV7UupedDO
-	8mnwyxoGv0KTGKx47VnrrEvKfNHUsVDO/zwUlbJzU+mG4sXPLjAwK7V9/6Q3neo8RuIEQA
-	Pd0Jn6rKYAq9hYWODN/bn1oMcmzJt8eZNeQvSwcF72iAHTffAZ58tQr+DtGbDTUjObtJnY
-	Vs4PC5+fHKlPZzXiHxp5e6rjPJiDQSg0pY1qPh5FuzTuHTx/ExQBIYAsB1YCLQ==
-Date: Sat, 15 Jul 2023 18:15:53 +0200
+	bh=dlIhZ9cfFkihaTXZUNHm8+GcslExR23+39+IT1xIDsc=;
+	b=d6ZJx5pKwMJZjAERl31AmymcOB9SMQ/+mBsarvOMWIosFMnzU/wBtwzC7q1t8TL3mzp5F4
+	JcBRBfeyJEtZxF8s84cErO6D8/S4talyv4OQgb2YyYiQiGw9CdmBaYvaRMzJHCLYON0Uum
+	Xopv28dxUjjw1v0Qsy6LTD45e6Z19EmSrqbhi7c4DWyEiGclhG+gD0nkx4or00tgrdvxdw
+	i2QewPVpUmOuZ2bhxYuRvDERtc9UtggGCm3w3oc1zOl7URj82rbZdlbDRw7oWBR5LKWH88
+	nPjWPZo8/s1jXpuVdnX3BEF+wwBSAPLyBkN4ueFajXZZc8rtGhZfvGnWgR87nQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Cc: Liang Yang <liang.yang@amlogic.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
- <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, <oxffffaa@gmail.com>,
- <kernel@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v3 0/3] support 512B ECC step size for Meson NAND
-Message-ID: <20230715181553.1d2b5637@xps-13>
-In-Reply-To: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
-References: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+To: Johan Jonker <jbx6244@gmail.com>,
+	miquel.raynal@bootlin.com
+Cc: richard@nod.at,
+	vigneshr@ti.com,
+	heiko@sntech.de,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	yifeng.zhao@rock-chips.com
+Subject: Re: [PATCH v5 2/2] mtd: rawnand: rockchip: Align hwecc vs. raw page helper layouts
+Date: Sat, 15 Jul 2023 18:19:18 +0200
+Message-Id: <20230715161918.20613-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <5e782c08-862b-51ae-47ff-3299940928ca@gmail.com>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'ea690ad78dd611e3906df5b948a516000b05c1cb'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230715_091606_624372_70C4AF2B 
-X-CRM114-Status: GOOD (  11.08  )
+X-CRM114-CacheID: sfid-20230715_091927_020199_A9AAD108 
+X-CRM114-Status: GOOD (  11.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,29 +75,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQXJzZW5peSwKCkFWS3Jhc25vdkBzYmVyZGV2aWNlcy5ydSB3cm90ZSBvbiBUdWUsIDExIEp1
-bCAyMDIzIDE1OjIxOjI2ICswMzAwOgoKPiBIZWxsbywKPiAKPiB0aGlzIHBhdGNoc2V0IGFkZHMg
-c3VwcG9ydCBmb3IgNTEyQiBFQ0Mgc3RlcCBzaXplIGZvciBNZXNvbiBOQU5ELiBDdXJyZW50Cj4g
-aW1wbGVtZW50YXRpb24gb25seSBzdXBwb3J0cyAxMDI0Qi4gVGhlcmUgYXJlIHRocmVlIHBhdGNo
-ZXM6Cj4gCj4gMSkgVXBkYXRlIGZvciBkZXZpY2UgdHJlZSBiaW5kaW5ncyB0byByZXBsYWNlICdj
-b25zdCcgdHlwZSBvZiBmaWVsZAo+ICAgICduYW5kLWVjYy1zdGVwLXNpemUnIHdpdGggJ2VudW0n
-IHdoaWNoIGNvbnRhaW5zIDUxMiBhbmQgMTAyNC4KPiAKPiAyKSBVcGRhdGUgZm9yIGRldmljZSB0
-cmVlIGJpbmRpbmdzIHRvIGFkZCBkZXBlbmRlbmN5IGJldHdlZW4gcHJvcGVydGllcwo+ICAgICdu
-YW5kLWVjYy1zdHJlbmd0aCcgYW5kICduYW5kLWVjYy1zdGVwLXNpemUnLgo+IAo+IDMpIFVwZGF0
-ZSBmb3IgTWVzb24gZHJpdmVyIC0gbmV3IGVudW0gdmFsdWUgZm9yIDUxMkIgRUNDIGFuZCByZXdv
-cmtlZAo+ICAgIEVDQyBjYXBhYmlsaXRpZXMgc3RydWN0dXJlIHRvIHN1cHBvcnQgYm90aCA1MTJC
-IGFuZCAxMDI0QiBFQ0MuIEJ5Cj4gICAgZGVmYXVsdCB0aGlzIGRyaXZlciB1c2VzIDEwMjRCIEVD
-QywgNTEyQiBjb3VsZCBiZSBlbmFibGVkIGluIGRldmljZQo+ICAgIHRyZWUuCgpUaGlzIHNlcmll
-cyBkb2VzIG5vdCBhcHBseSBjb3JyZWN0bHkgb24gbmFuZC9uZXh0LCB3b3VsZCB5b3UgbWluZApy
-ZWJhc2luZyAobmFuZC9uZXh0IG9uIGxpbnV4LW10ZCkgYW5kIHNlbmRpbmcgaXQgYWdhaW4/CgpC
-VFcgdGhlICJyZmMiIHByZWZpeCBpcyBvbmx5IG5lZWRlZCBmb3IgdGhlICJmaXJzdCIgc3VibWlz
-c2lvbiwgd2hlbgp5b3UgdHJ5IHNvbWV0aGluZyAibmV3Iiwgb3RoZXJ3aXNlIGl0IGlzIG5vIGxv
-bmdlciByZXF1aXJlZC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
-bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8K
+On Fri, 2023-07-14 at 15:21:21 UTC, Johan Jonker wrote:
+> Currently, read/write_page_hwecc() and read/write_page_raw() are not
+> aligned: there is a mismatch in the OOB bytes which are not
+> read/written at the same offset in both cases (raw vs. hwecc).
+> 
+> This is a real problem when relying on the presence of the Page
+> Addresses (PA) when using the NAND chip as a boot device, as the
+> BootROM expects additional data in the OOB area at specific locations.
+> 
+> Rockchip boot blocks are written per 4 x 512 byte sectors per page.
+> Each page with boot blocks must have a page address (PA) pointer in OOB
+> to the next page. Pages are written in a pattern depending on the NAND chip ID.
+> 
+> Generate boot block page address and pattern for hwecc in user space
+> and copy PA data to/from the already reserved last 4 bytes before ECC
+> in the chip->oob_poi data layout.
+> 
+> Align the different helpers. This change breaks existing jffs2 users.
+> 
+> Fixes: 058e0e847d54 ("mtd: rawnand: rockchip: NFC driver for RK3308, RK2928 and others")
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
