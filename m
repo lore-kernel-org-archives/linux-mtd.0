@@ -4,68 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4120C0015E
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jul 2023 20:45:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91B32EB64DC
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Jul 2023 10:48:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MiYL0MnG84UD9ZyTfoKizzxFY6+RVmWZQwVSJCVtvxA=; b=ZrWIxPsM2w2p0j
-	mpzI7hSjxeubZPbXIspVYMQIiuU4U5Z1uEpb998HJ6iCOJVt3e6Xn/wfuaziVyss08nH4WZZcX5Yv
-	HcMiCLDIW0YlMFh6lwdO1FW7T/jDQBmxCNRoYDeu8T0REzv6ApB5olP9tH0y+rdF2XETUmdqEk4ML
-	g2q4iJ0MAJUfp2aBnhkX0NlBIII92Db4vMkSzjVMx5U8oo41bN79gXvcE2/sr+CpGAqwCoeyAk36x
-	vO1xYcZfsJ1gs8T6IoXjvrELJL8QMiQkYxWKFa4bcerneJHbtcuQ9UiCSHOfs/5kjx+yjieTOeylB
-	/cYM+fwcVC6iQ3iGu40Q==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:From:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=vy/4fu3oGb6ucKAxv6Ewq1jfR/RRprZOloI7zBPbBRM=; b=IYrPeRzRJEpY6D
+	ntlLyTdiQkMGrwLZeXky9TY+hfGUaR2WML3L+PtJDMC7AGQOCo28m9ZG0C4JpfGfzGJcqP1cd1Kkr
+	MxNeRuIkJBDfkE/orO5nBeEBUzuIKySEi+BD6C2IPQ1lAWrRRk5SjOPKjje3Mjpk7SHq1KvkRarvH
+	fZXQWva6b7tr8l+EXGqZfB8zuYtnqaQ71rbiFkN0qfqaQPCogGUW3eCtnoaXi77hzCesynn5vH0Fs
+	1W/I3MCMfd+BaHu7XzhZLemyzfa4MjwIPDkAHbW1qqAEmjE70609UiHJJhqxR0zHVtw5e2bP48uWJ
+	FiDduLhGzvTn9Cg9ujbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKPf4-007DOJ-09;
-	Fri, 14 Jul 2023 20:45:10 +0000
-Received: from mail-il1-f170.google.com ([209.85.166.170])
+	id 1qKcpE-008Q2V-11;
+	Sat, 15 Jul 2023 10:48:32 +0000
+Received: from mail-ed1-x52a.google.com ([2a00:1450:4864:20::52a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKPf1-007DNG-01;
-	Fri, 14 Jul 2023 20:45:08 +0000
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-345a76c3a2eso10023775ab.2;
-        Fri, 14 Jul 2023 13:45:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689367505; x=1691959505;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	id 1qKcpA-008PyU-1a
+	for linux-mtd@lists.infradead.org;
+	Sat, 15 Jul 2023 10:48:29 +0000
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-521662a6c9cso1676952a12.1
+        for <linux-mtd@lists.infradead.org>; Sat, 15 Jul 2023 03:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689418105; x=1692010105;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kjp2goDmU3eZUaBvWIsYt7Ff9ugaAud6phFHMfCuKPk=;
-        b=G8MtgOZm6VVzBMwRqT/lt65SxygGCmr9oVql9VC7maDTx/tf49oxr9POioM/zKPgG5
-         RRhN2wPKlLc+N4aCmn5xd8bGXEY9ATfI3IZIexrZi25vSXFqmSXL7Z7RyYWmPSD/CXgz
-         nFhnxyy0Qtmcxlj86UBKxHL/PVS2zuS5BB08MaECjhAhZa6HQGg7KGHAtQWQmlULcgWc
-         WlCV5m8ME2EZ6QJp57meirhgaO7dWJDRbvRF249GwG/Kzdtt5PgaQrO8xGkSLHHRO+F1
-         5dh+8jMi2H2IRtVuHCKgeIpTEF0WifZiSDTdp6FB4xYrgbFLu166UHkHOcdDj7cjru9W
-         TIIw==
-X-Gm-Message-State: ABy/qLbeOjaIQHU3rGqCjlag4jIHY/YNAg6IJcFWeQTwSA5pAcwErPRy
-	DGfV53eJtv6PC8RUYtu8iwtxtY2x5NyS
-X-Google-Smtp-Source: APBJJlHYIZYxjmYxxwO8SeGpPnHJlVlcG1xS21FJsirLDGT6wdMnGUi4wUo4SySMRd5VSiQAB3oyzg==
-X-Received: by 2002:a92:da8f:0:b0:345:c72d:33a5 with SMTP id u15-20020a92da8f000000b00345c72d33a5mr5385994iln.19.1689367505374;
-        Fri, 14 Jul 2023 13:45:05 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id g11-20020a0566380bcb00b0042b48e5da4bsm2729732jad.134.2023.07.14.13.45.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 13:45:04 -0700 (PDT)
-Received: (nullmailer pid 189489 invoked by uid 1000);
-	Fri, 14 Jul 2023 20:44:50 -0000
-Date: Fri, 14 Jul 2023 14:44:50 -0600
-From: Rob Herring <robh@kernel.org>
-To: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Cc: Liang Yang <liang.yang@amlogic.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, kernel@sberdevices.ru, linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, oxffffaa@gmail.com, linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [RFC PATCH v3 2/3] dt-bindings: nand: meson: make ECC properties
- dependent
-Message-ID: <168936748954.189426.381778716587465848.robh@kernel.org>
-References: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
- <20230711122129.2635558-3-AVKrasnov@sberdevices.ru>
+        bh=rn5C5YBsaSogUUgEp4dzGB5xBo5qBNnix/jnrz9gqkM=;
+        b=fDx9RWHqR3WdveXG/OlDdrTexq4fbNMPt2ZBSoL0Xwa6tCqLAuScCyfOnhhX1ac0ts
+         ysauNt9TuGVshmSJpp5FWmLJP1S7eZv3nO5o3BkKAlr9SWOY4qDMxuGQTwjL9Ne5lEZ3
+         vF2k0HrrOg5DSsIuQFpsnjMzvuJY1zJE1a95jfDi33rLE/Ohan1/JiD1h1Izom+IFNnc
+         pvuiC0DnrG/+ow/XT250CZBIS9DlpHVnyCHBKFn2fTETBQPFuWbs4sCGk3feLD/NENCw
+         Kh1Ms1RYHTE/kZLsebUXxFSmw9KEad17kJPeKU8q/wG1Xstw1s+uZjp1OXzZA6aTpAWp
+         JYcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689418105; x=1692010105;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rn5C5YBsaSogUUgEp4dzGB5xBo5qBNnix/jnrz9gqkM=;
+        b=fJlI8t3deaJlCJXpw5cddnZjlMfMfWndVOeFRJJTI6SJ1OiG5trYXRG4bQGtBmZr/K
+         P2FRE6EjFzIfDy2S4enUIkJ9e6KGAQBV3C5ZAHzNCEYKxDwM2mv5OrRs8cA3WEdfR+to
+         GJgzm8ILBBhx41FB/x7RZV4crNXsP0SuaAfr2KEv1fvIFRwdoE8BMKRU3Byc3rsuzpW8
+         zNU08paKLVh2W13wB5SfQ7ZAQtOzjy26NcJn8c33EMZ6CPszefvFG9dxps3acfz7cK/B
+         xK10etG/b1uu0wEqd83acHKMo2cY42mSOIDHWlTyhVBmvQ/gI+zvsd7S1oPESgHszp/m
+         yanA==
+X-Gm-Message-State: ABy/qLbb4v4B41V0qZQ6wqMW+bxjf6K3HhTfVFyJAUlNL1NnVTCb4mnh
+	7WkhMP3SXnUB7NZcumgVbb4=
+X-Google-Smtp-Source: APBJJlFwpbjDxF/L0eWHgxk3zF1ODVea2/iA4Nkl2naDwD6iIjyL37Vd+GItE2wutNZVuketriyBRQ==
+X-Received: by 2002:a17:906:6884:b0:988:4dc:e3a3 with SMTP id n4-20020a170906688400b0098804dce3a3mr6496371ejr.31.1689418105356;
+        Sat, 15 Jul 2023 03:48:25 -0700 (PDT)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id d20-20020a17090648d400b00993feabdc6asm6642782ejt.157.2023.07.15.03.48.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Jul 2023 03:48:24 -0700 (PDT)
+Message-ID: <61c84262-cd98-1e60-d95b-9b0492083994@gmail.com>
+Date: Sat, 15 Jul 2023 12:48:16 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230711122129.2635558-3-AVKrasnov@sberdevices.ru>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+From: Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v1 1/2] dt-bindings: mtd: nand-controller: add
+ nand-skip-bbtscan and nand-no-bbm-quirk DT options
+To: miquel.raynal@bootlin.com
+Cc: richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230714_134507_048102_812174BF 
-X-CRM114-Status: GOOD (  11.50  )
+X-CRM114-CacheID: sfid-20230715_034828_551711_3C1AB47A 
+X-CRM114-Status: GOOD (  12.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,21 +95,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+A NAND chip can contain a different data format then the MTD framework
+expects in the erase blocks for the Bad Block Table(BBT).
+Result is a failed probe, while nothing wrong with the hardware.
+Some MTD flags need to be set to gain access again.
 
-On Tue, 11 Jul 2023 15:21:28 +0300, Arseniy Krasnov wrote:
-> ECC properties 'nand-ecc-strength' and 'nand-ecc-step-size' depends on
-> each other, so they must be both either set or not set. In first case
-> ECC core will try to use these values if possible (by checking ECC caps
-> provided by driver), in second case ECC core will select most optimal
-> values for both properties.
-> 
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-> ---
->  Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+Skip the automatic BBT scan with the NAND_SKIP_BBTSCAN option
+so that the original content is unchanged during the driver probe.
+The NAND_NO_BBM_QUIRK option allows us to erase bad blocks with
+the nand_erase_nand() function and the flash_erase command.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Add nand-skip-bbtscan and nand-no-bbm-quirk Device Tree options,
+so the user has the "freedom of choice" by neutral
+access mode to read and write in whatever format is needed.
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+
+Previous discussion:
+[PATCH v3 3/3] mtd: rawnand: rockchip-nand-controller: add skipbbt option
+https://lore.kernel.org/linux-mtd/1618382560.2326931.1689261435022.JavaMail.zimbra@nod.at/
+---
+ .../devicetree/bindings/mtd/nand-controller.yaml    | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+index f70a32d2d9d4..ca04d06a0377 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+@@ -103,6 +103,19 @@ patternProperties:
+           the boot ROM or similar restrictions.
+         $ref: /schemas/types.yaml#/definitions/flag
+
++      nand-no-bbm-quirk:
++        description:
++          Some controllers with pipelined ECC engines override the BBM marker with
++          data or ECC bytes, thus making bad block detection through bad block marker
++          impossible. Let's flag those chips so the core knows it shouldn't check the
++          BBM and consider all blocks good.
++        $ref: /schemas/types.yaml#/definitions/flag
++
++      nand-skip-bbtscan:
++        description:
++          This option skips the BBT scan during initialization.
++        $ref: /schemas/types.yaml#/definitions/flag
++
+       nand-rb:
+         description:
+           Contains the native Ready/Busy IDs.
+--
+2.30.2
 
 
 ______________________________________________________
