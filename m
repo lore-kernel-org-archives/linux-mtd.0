@@ -4,46 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 266ADEB64DD
-	for <linux-mtd@archiver.kernel.org>; Sun, 16 Jul 2023 15:50:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CF36EB64DD
+	for <linux-mtd@archiver.kernel.org>; Sun, 16 Jul 2023 17:46:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qnZnPvfvAvWL7d3h4UQ/ku6CDG7BF5+YqOqDlb7PwBI=; b=ASy+lpikjnEQ5q
-	B57wnYBTpdKrK0C/QBNSdoesLZznxAqwZr+K2l65oXeSN/YFs+TkkJkoVtkd8ZT7jRNuJxI3P1oAM
-	Zr7UVHwkkjmse+LoKMX8DTd/aSvFBByUGi33Radi1pdirk8Pp5l5IVtraafEtaAHiZApPTorxPN5G
-	Wzt5TwqCJ0ZPdzxHtgwH9ZyunlvSYAE16qj8n96167aJnnXgc/dFPBCiLG30WYNUEWD+jy9eU07+l
-	E1OZX+8q+6SeoxtWOrmiTmDiyGh2EaR5tEfnfzlRQXIlrbncN9QWW9xvP8z5UkYlse432RqNxmc3c
-	CFLj1IzWb8ekDEVy4eZQ==;
+	List-Owner; bh=RWcnfYpMn/oMO5L9g35ECmnD/AVJzH2pNI3YqwTRS2U=; b=bOXKkUth3vny61
+	eNdstZAbHFDtwDboNayl+4XRC0ssRnv00qpY5ikBPCq+CdmfyCoF4s5XO4BBQQnYRlizy+OPlBXTo
+	SfGvhz1/EJpGonZSJGdjDYU69a+5zIlakjgQK5lCSMgRA3BFYvUmyosnsdQkZdw8+rG1aS/5fugXO
+	JEa7ftytTmU+/fSeb+lPWbX3BV9SnOixZGpQBmTwehB/jbqfDtQFVu9wtzmMB8sWBnp3Nfgtt6aQo
+	BYTGj1vGmhIVfc4IeObWkRWl4KFfU952fjsvU7a5/RNoqDsPAkcs5CFd8ooQ2RuZ+9gAd42xa6cmf
+	AxQxc8CTPjhftTFxfUZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qL405-00CXlB-0M;
-	Sun, 16 Jul 2023 15:49:33 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1qL5pM-00DbDD-2Y;
+	Sun, 16 Jul 2023 17:46:36 +0000
+Received: from unicorn.mansr.com ([2001:8b0:ca0d:1::2])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qL3zy-00CXfN-28
+	id 1qL5pJ-00Db7p-0k
 	for linux-mtd@lists.infradead.org;
-	Sun, 16 Jul 2023 15:49:29 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 910911C0006;
-	Sun, 16 Jul 2023 15:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1689522561;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7zsSO9/h1OJ0OIhyzSMjUXCTCuMUsRc+LxIc1M02sYY=;
-	b=nJgmWQyUVk6DMxao2oLHiIMFgSgHQtdZ/hsT9Jz+FGJZgkSbM9ry436iyVmxSs08IOJU/O
-	EXILBpzzrfwhyxzBzH+eKthRtZscJiFqY2GWk69HpZAuwErN9y3b1YkQEo8sTylqeUd7BO
-	ybolFqsq0C8n6eilubbytP8u7QIJ7jl3mrxN3CMSVvr/LPMfHY6FngsaVx2e/ZdmMLwM/O
-	d18WcooWpj0jk672eJoBMo60Pxmc5Rt50R11ut7rJzOgxvKwV9GRNy2vZTRZIGEDRB3nqo
-	jjOGjHqXWcUcaCtW+FstZx0rcuDhlsBApSJ/MdrwRksUMNkCdm6M3le392mvlg==
-Date: Sun, 16 Jul 2023 17:49:17 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>
+	Sun, 16 Jul 2023 17:46:35 +0000
+Received: from raven.mansr.com (raven.mansr.com [81.2.72.235])
+	by unicorn.mansr.com (Postfix) with ESMTPS id B880715360;
+	Sun, 16 Jul 2023 18:46:26 +0100 (BST)
+Received: by raven.mansr.com (Postfix, from userid 51770)
+	id 67866219B40; Sun, 16 Jul 2023 18:46:26 +0100 (BST)
+From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
  Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
@@ -51,20 +41,20 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  Liao <jaimeliao@mxic.com.tw>, Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas
  Petazzoni <thomas.petazzoni@bootlin.com>, JaimeLiao
  <jaimeliao.tw@gmail.com>, Alexander Shiyan <eagle.alexander923@gmail.com>,
- Domenico Punzo <dpunzo@micron.com>, Bean Huo  <beanhuo@micron.com>
+ Domenico Punzo <dpunzo@micron.com>, Bean Huo <beanhuo@micron.com>
 Subject: Re: [PATCH v2 3/3] mtd: rawnand: Support for sequential cache reads
-Message-ID: <20230716174917.3a9ca7a7@xps-13>
-In-Reply-To: <yw1xfs6j4k6q.fsf@mansr.com>
 References: <20230112093637.987838-1-miquel.raynal@bootlin.com>
 	<20230112093637.987838-4-miquel.raynal@bootlin.com>
-	<yw1xfs6j4k6q.fsf@mansr.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	<yw1xfs6j4k6q.fsf@mansr.com> <20230716174917.3a9ca7a7@xps-13>
+Date: Sun, 16 Jul 2023 18:46:26 +0100
+In-Reply-To: <20230716174917.3a9ca7a7@xps-13> (Miquel Raynal's message of
+	"Sun, 16 Jul 2023 17:49:17 +0200")
+Message-ID: <yw1x7cqzzr4d.fsf@mansr.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230716_084927_164446_8BD7DA78 
-X-CRM114-Status: GOOD (  39.28  )
+X-CRM114-CacheID: sfid-20230716_104633_478846_981F34DD 
+X-CRM114-Status: GOOD (  28.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,111 +66,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gYWxsLAoKU28gaGVyZSBpcyBhIHN1bW1hcnkgb2YgdGhlIHNpdHVhdGlvbjoKLSB3ZSBo
-YXZlIHR3byBidWcgcmVwb3J0cyByZWdhcmRpbmcgdGhlIHVzZSBvZiBzZXF1ZW50aWFsIHBhZ2Ug
-cmVhZHMKLSBib3RoIGFyZSBvbiBUSSBPTUFQIHBsYXRmb3JtczogQU0zM1hYIGFuZCBBTTM1MTcu
-IEkgYmVsaWV2ZSBib3RoIGFyZQogIHVzaW5nIHRoZSBzYW1lIG9tYXAyLmMgZHJpdmVyCi0gdGhl
-eSB1c2UgYSBNaWNyb24gYW5kIGEgU2Ftc3VuZyBOQU5EIGNoaXAKCkFsbCB0aGVzZSBpbmZvcm1h
-dGlvbiBnaXZlcyBtZSB0aGUgaGludCB0aGF0IGl0IGlzIHJlbGF0ZWQgdG8gdGhlCmNvbnRyb2xs
-ZXIgZHJpdmVyIHdoaWNoIGRvZXMgc29tZXRoaW5nIHNpbGx5IGR1cmluZyB0aGUgZXhlY19vcCBw
-aGFzZS4KCkFsZXhhbmRlciBhbmQgTcOlbnMsIGNhbiB5b3UgcGxlYXNlIHRlbGwgbWU6Ci0gQXJl
-IHlvdSB1c2luZyBhIGdwaW8gZm9yIHRoZSB3YWl0cmR5IHRoaW5nIG9yIGRvIHlvdSBsZXZlcmFn
-ZQogIG5hbmRfc29mdF93YWl0cmR5KCk/IElmIHlvdSBhcmUgdXNpbmcgdGhlIGdwaW8sIGNhbiB5
-b3UgYm90aCB0cnkgd2l0aAogIHRoZSBzb2Z0IGltcGxlbWVudGF0aW9uIGFuZCBzZWUgaWYgaXQg
-Y2hhbmdlcyBzb21ldGhpbmc/Ci0gQXJlIHlvdSB1c2luZyBhbnkgUE9MTCBvciBETUEgcHJlZmV0
-Y2ggbW9kZT8gQ2FuIHlvdSBwbGVhc2UgZm9yY2UgdGhlCiAgZGVmYXVsdCBpbiBhbmQgb3V0IGhl
-bHBlcnMgYnkgdXNpbmcgb25seSBvbWFwX25hbmRfZGF0YV9pbigpIGFuZAogIG9tYXBfbmFuZF9k
-YXRhX291dCgpIHRvIHNlZSBpZiBpdCBjaGFuZ2VzIHNvbWV0aGluZz8KCkkgYmVsaWV2ZSB0aGVy
-ZSBpcyBzb21ldGhpbmcgd3JvbmcgaW4gdGhlIHRpbWluZ3MsIHdoaWxlIHByb3Blcmx5CmltcGxl
-bWVudGVkIGluIHRoZW9yeSB0aGVyZSBtaWdodCBiZSBzb21lIGNhc2VzIHdoZXJlIHdlIG1pc3Mg
-YSBiYXJyaWVyCm9yIHNvbWV0aGluZyBsaWtlIHRoYXQuIEkgd291bGQgbGlrZSB0byB0cnkgdGhl
-IGZvbGxvd2luZyB0d28gaGFja3MsCmFuZCBzZWUgaWYgd2UgY2FuIGZpbmQgd2hhdCBpcyB0aGUg
-dGltaW5nIHRoYXQgaXMgbm90IG9ic2VydmVkLCBkZXNwaXRlCnRoZSBsYWNrIG9mIHByb2Jpbmcu
-IFRoZSBmaXJzdCBvbmUgaXMgYSByZWFsIGhhY2ssIHRoZSBzZWNvbmQgb25lIG1pZ2h0CmFjdHVh
-bGx5IGxvb2sgbGlrZSBhIHJlYWwgZml4LiBQbGVhc2UgbGV0IG1lIGtub3csIGJvdGggb2YgeW91
-LCBpZiB5b3UKc2VlIGRpZmZlcmVudCBiZWhhdmlvcnMuCgoqKiogSEFDSyAjMSAqKioKCi0tLSBh
-L2RyaXZlcnMvbXRkL25hbmQvcmF3L29tYXAyLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcv
-b21hcDIuYwpAQCAtMjExMyw2ICsyMTEzLDkgQEAgc3RhdGljIGludCBvbWFwX25hbmRfZXhlY19p
-bnN0cihzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAogICAgICAgIGNhc2UgTkFORF9PUF9DTURfSU5T
-VFI6CiAgICAgICAgICAgICAgICBpb3dyaXRlOChpbnN0ci0+Y3R4LmNtZC5vcGNvZGUsCiAgICAg
-ICAgICAgICAgICAgICAgICAgICBpbmZvLT5yZWcuZ3BtY19uYW5kX2NvbW1hbmQpOworICAgICAg
-ICAgICAgICAgaWYgKGluc3RyLT5jdHguY21kLm9wY29kZSA9PSBOQU5EX0NNRF9SRUFEQ0FDSEVT
-RVEgfHwKKyAgICAgICAgICAgICAgICAgICBpbnN0ci0+Y3R4LmNtZC5vcGNvZGUgPT0gTkFORF9D
-TURfUkVBRENBQ0hFRU5EKQorICAgICAgICAgICAgICAgICAgICAgICB1ZGVsYXkoNTApOwogICAg
-ICAgICAgICAgICAgYnJlYWs7CiAKICAgICAgICBjYXNlIE5BTkRfT1BfQUREUl9JTlNUUjoKCioq
-KiBIQUNLICMyICoqKgoKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvb21hcDIuYworKysgYi9k
-cml2ZXJzL210ZC9uYW5kL3Jhdy9vbWFwMi5jCkBAIC0yMTQzLDggKzIxNDYsMTAgQEAgc3RhdGlj
-IGludCBvbWFwX25hbmRfZXhlY19pbnN0cihzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAogICAgICAg
-ICAgICAgICAgYnJlYWs7CiAgICAgICAgfQogCi0gICAgICAgaWYgKGluc3RyLT5kZWxheV9ucykK
-KyAgICAgICBpZiAoaW5zdHItPmRlbGF5X25zKSB7CisgICAgICAgICAgICAgICBtYigpOwogICAg
-ICAgICAgICAgICAgbmRlbGF5KGluc3RyLT5kZWxheV9ucyk7CisgICAgICAgfQogCiAgICAgICAg
-cmV0dXJuIDA7CiB9CgpUaGFua3MgYSBsb3QhCk1pcXXDqGwKCm1hbnNAbWFuc3IuY29tIHdyb3Rl
-IG9uIFRodSwgMjIgSnVuIDIwMjMgMTU6NTk6MjUrMDEwMDoKCj4gTWlxdWVsIFJheW5hbCA8bWlx
-dWVsLnJheW5hbEBib290bGluLmNvbT4gd3JpdGVzOgo+IAo+ID4gRnJvbTogSmFpbWVMaWFvIDxq
-YWltZWxpYW8udHdAZ21haWwuY29tPgo+ID4KPiA+IEFkZCBzdXBwb3J0IGZvciBzZXF1ZW50aWFs
-IGNhY2hlIHJlYWRzIGZvciBjb250cm9sbGVycyB1c2luZyB0aGUgZ2VuZXJpYwo+ID4gY29yZSBo
-ZWxwZXJzIGZvciB0aGVpciBmYXN0IHJlYWQvd3JpdGUgaGVscGVycy4KPiA+Cj4gPiBTZXF1ZW50
-aWFsIHJlYWRzIG1heSByZWR1Y2UgdGhlIG92ZXJoZWFkIHdoZW4gYWNjZXNzaW5nIHBoeXNpY2Fs
-bHkKPiA+IGNvbnRpbnVvdXMgZGF0YSBieSBsb2FkaW5nIGluIGNhY2hlIHRoZSBuZXh0IHBhZ2Ug
-d2hpbGUgdGhlIHByZXZpb3VzCj4gPiBwYWdlIGdldHMgc2VudCBvdXQgb24gdGhlIE5BTkQgYnVz
-Lgo+ID4KPiA+IFRoZSBPTkZJIHNwZWNpZmljYXRpb24gcHJvdmlkZXMgdGhlIGZvbGxvd2luZyBh
-ZGRpdGlvbmFsIGNvbW1hbmRzIHRvCj4gPiBoYW5kbGUgc2VxdWVudGlhbCBjYWNoZWQgcmVhZHM6
-Cj4gPgo+ID4gKiAweDMxIC0gUkVBRCBDQUNIRSBTRVFVRU5USUFMOgo+ID4gICBSZXF1aXJlcyB0
-aGUgTkFORCBjaGlwIHRvIGxvYWQgdGhlIG5leHQgcGFnZSBpbnRvIGNhY2hlIHdoaWxlIGtlZXBp
-bmcKPiA+ICAgdGhlIGN1cnJlbnQgY2FjaGUgYXZhaWxhYmxlIGZvciBob3N0IHJlYWRzLgo+ID4g
-KiAweDNGIC0gUkVBRCBDQUNIRSBFTkQ6Cj4gPiAgIFRlbGxzIHRoZSBOQU5EIGNoaXAgdGhpcyBp
-cyB0aGUgZW5kIG9mIHRoZSBzZXF1ZW50aWFsIGNhY2hlIHJlYWQsIHRoZQo+ID4gICBjdXJyZW50
-IGNhY2hlIHNoYWxsIHJlbWFpbiBhY2Nlc3NpYmxlIGZvciB0aGUgaG9zdCBidXQgbm8gbW9yZQo+
-ID4gICBpbnRlcm5hbCBjYWNoZSBsb2FkaW5nIG9wZXJhdGlvbiBpcyByZXF1aXJlZC4KPiA+Cj4g
-PiBPbiB0aGUgYnVzLCBhIG11bHRpIHBhZ2UgcmVhZCBvcGVyYXRpb24gaXMgY3VycmVudGx5IGhh
-bmRsZWQgbGlrZSB0aGlzOgo+ID4KPiA+IAkwMCAtLSBBRERSMSAtLSAzMCAtLSBXQUlUX1JEWSAo
-dFIrdFJSKSAtLSBEQVRBMV9JTgo+ID4gCTAwIC0tIEFERFIyIC0tIDMwIC0tIFdBSVRfUkRZICh0
-Uit0UlIpIC0tIERBVEEyX0lOCj4gPiAJMDAgLS0gQUREUjMgLS0gMzAgLS0gV0FJVF9SRFkgKHRS
-K3RSUikgLS0gREFUQTNfSU4KPiA+Cj4gPiBTZXF1ZW50aWFsIGNhY2hlZCByZWFkcyBtYXkgaW5z
-dGVhZCBiZSBhY2hpZXZlZCB3aXRoOgo+ID4KPiA+IAkwMCAtLSBBRERSMSAtLSAzMCAtLSBXQUlU
-X1JEWSAodFIpIC0tIFwKPiA+IAkJICAgICAgIDMxIC0tIFdBSVRfUkRZICh0UkNCU1krdFJSKSAt
-LSBEQVRBMV9JTiBcCj4gPiAJCSAgICAgICAzMSAtLSBXQUlUX1JEWSAodFJDQlNZK3RSUikgLS0g
-REFUQTJfSU4gXAo+ID4gCQkgICAgICAgM0YgLS0gV0FJVF9SRFkgKHRSQ0JTWSt0UlIpIC0tIERB
-VEEzX0lOCj4gPgo+ID4gQmVsb3cgYXJlIHRoZSByZWFkIHNwZWVkIHRlc3QgcmVzdWx0cyB3aXRo
-IHJlZ3VsYXIgcmVhZHMgYW5kCj4gPiBzZXF1ZW50aWFsIGNhY2hlZCByZWFkcywgb24gTlhQIGku
-TVg2IFZBUi1TT00tU09MTyBpbiBtYXBwaW5nIG1vZGUgd2l0aAo+ID4gYSBOQU5EIGNoaXAgY2hh
-cmFjdGVyaXplZCB3aXRoIHRoZSBmb2xsb3dpbmcgdGltaW5nczoKPiA+ICogdFI6IDIwIMK1cwo+
-ID4gKiB0UkNCU1k6IDUgwrVzCj4gPiAqIHRSUjogMjAgbnMKPiA+IGFuZCB0aGUgZm9sbG93aW5n
-IGdlb21ldHJ5Ogo+ID4gKiBkZXZpY2Ugc2l6ZTogMiBNaUIKPiA+ICogZXJhc2VibG9jayBzaXpl
-OiAxMjgga2lCCj4gPiAqIHBhZ2Ugc2l6ZTogMiBraUIKPiA+Cj4gPiA9PT09PT09PT09PT09IE5v
-cm1hbCByZWFkIEAgMzNNSHogPT09PT09PT09PT09PT09PT0KPiA+IG10ZF9zcGVlZHRlc3Q6IGVy
-YXNlYmxvY2sgcmVhZCBzcGVlZCBpcyAxNTYzMyBLaUIvcwo+ID4gbXRkX3NwZWVkdGVzdDogcGFn
-ZSByZWFkIHNwZWVkIGlzIDE1NTE1IEtpQi9zCj4gPiBtdGRfc3BlZWR0ZXN0OiAyIHBhZ2UgcmVh
-ZCBzcGVlZCBpcyAxNTM5OCBLaUIvcwo+ID4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09Cj4gPgo+ID4gPT09PT09PT09IFNlcXVlbnRpYWwgY2FjaGUg
-cmVhZCBAIDMzTUh6ID09PT09PT09PT09Cj4gPiBtdGRfc3BlZWR0ZXN0OiBlcmFzZWJsb2NrIHJl
-YWQgc3BlZWQgaXMgMTgyODUgS2lCL3MKPiA+IG10ZF9zcGVlZHRlc3Q6IHBhZ2UgcmVhZCBzcGVl
-ZCBpcyAxNTg3NSBLaUIvcwo+ID4gbXRkX3NwZWVkdGVzdDogMiBwYWdlIHJlYWQgc3BlZWQgaXMg
-MTYyNTMgS2lCL3MKPiA+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PQo+ID4KPiA+IFdlIG9ic2VydmUgYW4gb3ZlcmFsbCBzcGVlZCBpbXByb3ZlbWVu
-dCBvZiBhYm91dCA1JSB3aGVuIHJlYWRpbmcKPiA+IDIgcGFnZXMsIHVwIHRvIDE1JSB3aGVuIHJl
-YWRpbmcgYW4gZW50aXJlIGJsb2NrLiBUaGlzIGlzIGR1ZSB0byB0aGUKPiA+IH4xNHVzIGdhaW4g
-b24gZWFjaCBhZGRpdGlvbmFsIHBhZ2UgcmVhZCAodFIgLSAodFJDQlNZICsgdFJSKSkuCj4gPgo+
-ID4gQ28tZGV2ZWxvcGVkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4u
-Y29tPgo+ID4gU2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290
-bGluLmNvbT4KPiA+IFNpZ25lZC1vZmYtYnk6IEphaW1lTGlhbyA8amFpbWVsaWFvLnR3QGdtYWls
-LmNvbT4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jIHwgMTE5
-ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0KPiA+ICBpbmNsdWRlL2xpbnV4L210ZC9y
-YXduYW5kLmggICAgICB8ICAgOSArKysKPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDEyNCBpbnNlcnRp
-b25zKCspLCA0IGRlbGV0aW9ucygtKSAgCj4gCj4gVGhpcyBjaGFuZ2UgYnJva2Ugc29tZXRoaW5n
-IG9uIGEgVEkgQU0zNTE3IGJhc2VkIHN5c3RlbS4gIFdoYXQgSSdtCj4gbm90aWNpbmcgaXMgdGhh
-dCB0aGUgdS1ib290IGZ3X3NldGVudiB0b29sIGlzIGZhaWxpbmcgZHVlIHRvIHRoZQo+IE1FTUdF
-VEJBREJMT0NLIGlvY3RsIHJlcG9ydGluZyBzb21lIGJsb2NrcyBhcyBiYWQgd2hlbiB0aGV5IGFy
-ZSBub3QuCj4gRXZlcnl0aGluZyBlbHNlIGlzLCBzb21laG93LCB3b3JraW5nIGZpbmUuICBSZXZl
-cnRpbmcgdGhpcyBjb21taXQgZml4ZXMKPiBpdCwgdGhvdWdoIEkgZG9uJ3Qga25vdyB3aHkuICBJ
-J20gc2VlaW5nIHRoZSBzYW1lIGJlaGF2aW91ciBvbiBtdWx0aXBsZQo+IGRldmljZXMsIHNvIEkg
-ZG91YnQgdGhlcmUgaXMgYSBwcm9ibGVtIHdpdGggdGhlIGZsYXNoIG1lbW9yeS4KPiAKPiBJcyB0
-aGVyZSBhbnl0aGluZyBJIGNhbiB0ZXN0IHRvIGdldCBtb3JlIGluZm9ybWF0aW9uPwo+IAoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Miquel Raynal <miquel.raynal@bootlin.com> writes:
+
+> Hello all,
+>
+> So here is a summary of the situation:
+> - we have two bug reports regarding the use of sequential page reads
+> - both are on TI OMAP platforms: AM33XX and AM3517. I believe both are
+>   using the same omap2.c driver
+> - they use a Micron and a Samsung NAND chip
+>
+> All these information gives me the hint that it is related to the
+> controller driver which does something silly during the exec_op phase.
+>
+> Alexander and M=E5ns, can you please tell me:
+> - Are you using a gpio for the waitrdy thing or do you leverage
+>   nand_soft_waitrdy()? If you are using the gpio, can you both try with
+>   the soft implementation and see if it changes something?
+
+There's no gpio specified in the devicetree, so I guess it must be using
+nand_soft_waitrdy().
+
+> - Are you using any POLL or DMA prefetch mode? Can you please force the
+>   default in and out helpers by using only omap_nand_data_in() and
+>   omap_nand_data_out() to see if it changes something?
+
+It was using the default PREFETCH_POLLED mode.  Switching it to POLLED
+(and thus omap_nand_data_in/out()) doesn't change anything.
+
+> I believe there is something wrong in the timings, while properly
+> implemented in theory there might be some cases where we miss a barrier
+> or something like that. I would like to try the following two hacks,
+> and see if we can find what is the timing that is not observed, despite
+> the lack of probing. The first one is a real hack, the second one might
+> actually look like a real fix. Please let me know, both of you, if you
+> see different behaviors.
+>
+> *** HACK #1 ***
+>
+> --- a/drivers/mtd/nand/raw/omap2.c
+> +++ b/drivers/mtd/nand/raw/omap2.c
+> @@ -2113,6 +2113,9 @@ static int omap_nand_exec_instr(struct nand_chip *c=
+hip,
+>         case NAND_OP_CMD_INSTR:
+>                 iowrite8(instr->ctx.cmd.opcode,
+>                          info->reg.gpmc_nand_command);
+> +               if (instr->ctx.cmd.opcode =3D=3D NAND_CMD_READCACHESEQ ||
+> +                   instr->ctx.cmd.opcode =3D=3D NAND_CMD_READCACHEEND)
+> +                       udelay(50);
+>                 break;
+>
+>         case NAND_OP_ADDR_INSTR:
+>
+> *** HACK #2 ***
+>
+> --- a/drivers/mtd/nand/raw/omap2.c
+> +++ b/drivers/mtd/nand/raw/omap2.c
+> @@ -2143,8 +2146,10 @@ static int omap_nand_exec_instr(struct nand_chip *=
+chip,
+>                 break;
+>         }
+>
+> -       if (instr->delay_ns)
+> +       if (instr->delay_ns) {
+> +               mb();
+>                 ndelay(instr->delay_ns);
+> +       }
+>
+>         return 0;
+>  }
+
+Neither of these help.
+
+-- =
+
+M=E5ns Rullg=E5rd
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
