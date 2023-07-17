@@ -4,92 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C9D4C001B0
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 05:40:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A13EB64DC
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 06:39:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1h5AgjpGIDSy+PIHcYNZu2ZtC3MWOTGM01BB+c6LK1U=; b=fdgQ4AkJsV27/I
-	dgczzX9ROPTdmTJQDuuCkkbApmFP87vLKPtUfdJAPjeo0vhtWlFjt9Z82YojEqcppx19uv6Zm801x
-	6sJrkZ70d/Iw3vbSPOEJy/QfOBhCPSsxaey76/uSkglJ/MlbyZGw+VpAg9BjI1yIKTIbauoXXSh3J
-	+qcRdFSjjbSsWfy7e/LwnCW2c3/UoiB4Tb64ftKIXWvFEOBC0jfTKsAz2x76/+zmUOMxCrZth9eZ8
-	rP9GECGebxTbMtMTKMGFykDzybWdYVADxfyMI/2OD4ZYKKYOOiIm/Mdl0L25iyOM0ZwB5IN/Vi2JD
-	2THQ7af4sdBbnM/QzYgQ==;
+	List-Owner; bh=VRnFXyQTvpsWc6zR6VFYgTogfyXS9uGPE9a2Wge8wGw=; b=wG20DBIMHxiy3f
+	fRNp9ANv9j/SP0/mHkuUQumpzerQOoCDHmv5NpsYGixOYXYvTnvBTE29QwSmmJpGW8ddnP+SdkQzI
+	7EVzruH7/j3VAImnAEbcAkJYkXTQCPXxY8t2psI9Ry/vabyjbQs/hZzCFJjVos1vDmBCYUSjkaoat
+	Fpr/Sks45ypI3N8SUtumN7KlMN3hsY/2tUs6cS5AAX4ipQQlHsuvxEcS2tqI0LLODPbDPdminVlVB
+	We3SYqbWkZU+JkSbgIi5Vs5ETKS0kpwcjfWNeBJEDZrAyZb0IhDs+g5RykSvLtx3DWx+CkVa131RG
+	op+YojdWydA2CrxXiCiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLGxw-002fdc-2S;
-	Mon, 17 Jul 2023 05:40:12 +0000
-Received: from mx2.sberdevices.ru ([45.89.224.132] helo=mx1.sberdevices.ru)
+	id 1qLHst-003DlW-3B;
+	Mon, 17 Jul 2023 06:39:04 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLGxW-002fIg-1F;
-	Mon, 17 Jul 2023 05:39:50 +0000
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 8297112000F;
-	Mon, 17 Jul 2023 08:39:41 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8297112000F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-	s=mail; t=1689572381;
-	bh=ScCXR9HXhnFNVkOIKX8tcXBCrwrwJ57BZ2yHabgHWv4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=UFyEiHu12dn/4lkzf3Se8v8qAWntQPQCDHu4ABUAdUkPbToc16O1nkVOs/Wd49Y9Y
-	 lbwFX5qgkLIy//Y+7nB+n5s0aT2cOcqlp1eUXQQEONKdHbnAGvKtDzCq6uSd0vTlim
-	 3KeyL2sw+CH6FGf4Eee3wBJ1zz/R2CZjHu8nMhXJzHx5XSaz/qIylwNleXFOzD7OVN
-	 QUX8MUu59bv+wumBN45OmOWzMczeNJwiXEwF0aCHcADv5YTzdZkqpocRFz8gNDCYQE
-	 EOBOrKa1S3GVu2duEIqfJx+akqt8KWHoZ7cXwM6JZpgHnTCZwP8OLx4kze0gMRC1pv
-	 1YoyB7qYbz3Iw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1qLHsp-003DkM-0R;
+	Mon, 17 Jul 2023 06:39:00 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 17 Jul 2023 08:39:41 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 17 Jul 2023 08:38:46 +0300
-From: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-To: Liang Yang <liang.yang@amlogic.com>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, Kevin
- Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>
-CC: <oxffffaa@gmail.com>, <kernel@sberdevices.ru>, Arseniy Krasnov
-	<AVKrasnov@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 2/2] mtd: rawnand: meson: support for 512B ECC step size
-Date: Mon, 17 Jul 2023 08:34:01 +0300
-Message-ID: <20230717053402.1203724-3-AVKrasnov@sberdevices.ru>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20230717053402.1203724-1-AVKrasnov@sberdevices.ru>
-References: <20230717053402.1203724-1-AVKrasnov@sberdevices.ru>
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4287F60C68;
+	Mon, 17 Jul 2023 06:38:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B64C9C433C7;
+	Mon, 17 Jul 2023 06:38:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689575937;
+	bh=NEJNCaFWP/KhRZFf4qp4fe0DMtP2EiePkfLClMN2fxo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Bc3auWd8e70/3tvANwpZmOEu+QvF1/9vnF5wIKirY6BiBF5PAHrB9tfSgNm17XAId
+	 wrXVB9G4JvCrveF9paGlOBIpO6NKOSeky9veayMSnxeRNwl1znJNEDcLZMIN/hJmvI
+	 v0Y5jC9C+3NOcCpiSEe28ptmtAmj1jxAaa0dzWprLYENciVFnN5lvnGeG5lQmSZxHD
+	 fJyHopKTptExp7FWfssrUd3gwzJXJHWnaCNfRIQ1JNYBQtrzOp2P62AihEBT6rwfEo
+	 YOzuBVz1hQm/j+lM3etRPpDzr8mw+kf773bZuU5Mr2CP/0WVRdlXmDFMvMEJy7n1IJ
+	 vTgeGTqzfbqlg==
+Date: Mon, 17 Jul 2023 12:08:43 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Md Sadre Alam <quic_mdalam@quicinc.com>,
+	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 8/8] mtd: rawnand: qcom: Fix address parsing within
+ ->exec_op()
+Message-ID: <20230717063843.GA7062@thinkpad>
+References: <20230716144612.32132-1-miquel.raynal@bootlin.com>
+ <20230716144612.32132-9-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178635 [Jul 15 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 523 523 523027ce26ed1d9067f7a52a4756a876e54db27c, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/17 00:56:00 #21624503
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Disposition: inline
+In-Reply-To: <20230716144612.32132-9-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230716_223946_870872_2F73721A 
-X-CRM114-Status: GOOD (  15.50  )
+X-CRM114-CacheID: sfid-20230716_233859_287316_13B6A2B7 
+X-CRM114-Status: GOOD (  19.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,108 +78,46 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Meson NAND supports both 512B and 1024B ECC step size.
-
-Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
----
- drivers/mtd/nand/raw/meson_nand.c | 45 +++++++++++++++++++++++--------
- 1 file changed, 34 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 91eeac49d18f..9bdea97abe4c 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -135,6 +135,7 @@ struct meson_nfc_nand_chip {
- struct meson_nand_ecc {
- 	u32 bch;
- 	u32 strength;
-+	u32 size;
- };
- 
- struct meson_nfc_data {
-@@ -190,7 +191,8 @@ struct meson_nfc {
- };
- 
- enum {
--	NFC_ECC_BCH8_1K		= 2,
-+	NFC_ECC_BCH8_512	= 1,
-+	NFC_ECC_BCH8_1K,
- 	NFC_ECC_BCH24_1K,
- 	NFC_ECC_BCH30_1K,
- 	NFC_ECC_BCH40_1K,
-@@ -198,15 +200,16 @@ enum {
- 	NFC_ECC_BCH60_1K,
- };
- 
--#define MESON_ECC_DATA(b, s)	{ .bch = (b),	.strength = (s)}
-+#define MESON_ECC_DATA(b, s, sz)	{ .bch = (b), .strength = (s), .size = (sz) }
- 
- static struct meson_nand_ecc meson_ecc[] = {
--	MESON_ECC_DATA(NFC_ECC_BCH8_1K, 8),
--	MESON_ECC_DATA(NFC_ECC_BCH24_1K, 24),
--	MESON_ECC_DATA(NFC_ECC_BCH30_1K, 30),
--	MESON_ECC_DATA(NFC_ECC_BCH40_1K, 40),
--	MESON_ECC_DATA(NFC_ECC_BCH50_1K, 50),
--	MESON_ECC_DATA(NFC_ECC_BCH60_1K, 60),
-+	MESON_ECC_DATA(NFC_ECC_BCH8_512, 8,  512),
-+	MESON_ECC_DATA(NFC_ECC_BCH8_1K,  8,  1024),
-+	MESON_ECC_DATA(NFC_ECC_BCH24_1K, 24, 1024),
-+	MESON_ECC_DATA(NFC_ECC_BCH30_1K, 30, 1024),
-+	MESON_ECC_DATA(NFC_ECC_BCH40_1K, 40, 1024),
-+	MESON_ECC_DATA(NFC_ECC_BCH50_1K, 50, 1024),
-+	MESON_ECC_DATA(NFC_ECC_BCH60_1K, 60, 1024),
- };
- 
- static int meson_nand_calc_ecc_bytes(int step_size, int strength)
-@@ -224,8 +227,27 @@ static int meson_nand_calc_ecc_bytes(int step_size, int strength)
- 
- NAND_ECC_CAPS_SINGLE(meson_gxl_ecc_caps,
- 		     meson_nand_calc_ecc_bytes, 1024, 8, 24, 30, 40, 50, 60);
--NAND_ECC_CAPS_SINGLE(meson_axg_ecc_caps,
--		     meson_nand_calc_ecc_bytes, 1024, 8);
-+
-+static const int axg_stepinfo_strengths[] = { 8 };
-+static const struct nand_ecc_step_info axg_stepinfo_1024 = {
-+	.stepsize = 1024,
-+	.strengths = axg_stepinfo_strengths,
-+	.nstrengths = ARRAY_SIZE(axg_stepinfo_strengths)
-+};
-+
-+static const struct nand_ecc_step_info axg_stepinfo_512 = {
-+	.stepsize = 512,
-+	.strengths = axg_stepinfo_strengths,
-+	.nstrengths = ARRAY_SIZE(axg_stepinfo_strengths)
-+};
-+
-+static const struct nand_ecc_step_info axg_stepinfo[] = { axg_stepinfo_1024, axg_stepinfo_512 };
-+
-+static const struct nand_ecc_caps meson_axg_ecc_caps = {
-+	.stepinfos = axg_stepinfo,
-+	.nstepinfos = ARRAY_SIZE(axg_stepinfo),
-+	.calc_ecc_bytes = meson_nand_calc_ecc_bytes,
-+};
- 
- static struct meson_nfc_nand_chip *to_meson_nand(struct nand_chip *nand)
- {
-@@ -1257,7 +1279,8 @@ static int meson_nand_bch_mode(struct nand_chip *nand)
- 		return -EINVAL;
- 
- 	for (i = 0; i < ARRAY_SIZE(meson_ecc); i++) {
--		if (meson_ecc[i].strength == nand->ecc.strength) {
-+		if (meson_ecc[i].strength == nand->ecc.strength &&
-+		    meson_ecc[i].size == nand->ecc.size) {
- 			meson_chip->bch_mode = meson_ecc[i].bch;
- 			return 0;
- 		}
--- 
-2.35.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gU3VuLCBKdWwgMTYsIDIwMjMgYXQgMDQ6NDY6MTJQTSArMDIwMCwgTWlxdWVsIFJheW5hbCB3
+cm90ZToKPiBUaGUgbmFkZHJzIHZhcmlhYmxlIGlzIGluaXRpYWxpemVkIGJ1dCBub3QgdXNlZC4g
+Rml4aW5nIHRoaXMgY291bGQgaGF2ZQo+IGJlZW4gYSBtYXR0ZXIgb2YgZHJvcHBpbmcgdGhlIHZh
+cmlhYmxlLCBidXQgdGhlIHJpZ2h0IHdheSB0byBkbyBpdCBsb29rcwo+IGEgYml0IG1vcmUgY29t
+cGxleDogd2UgY2FuIGF2b2lkIHVzZWxlc3Mgd3JpdGVzIHRvIHRoZSBxX29wIHN0cnVjdHVyZSBi
+eQo+IHVzaW5nIGl0LiBJbiBwcmFjdGljZSB3ZSBjb3VsZCBldmVuIGhhdmUgcG9zc2libGUgb3V0
+LW9mLWJvdW5kIGJ1Z3Mgd2l0aAo+IHRoZSBleGlzdGluZyBpbXBsZW1lbnRhdGlvbi4gTGV0J3Mg
+Zml4IGFsbCB0aGF0IGJ5IGp1c3QgcGVyZm9ybWluZyB0aGUKPiByaWdodCBudW1iZXIgb2YgYXNz
+aWdubWVudHMgaW4gdGhlIGFkZHJ7MSwyfV9yZWcgZmllbGRzLgo+IAo+IEZpeGVzOiA4OTU1MGJl
+YjA5OGUgKCJtdGQ6IHJhd25hbmQ6IHFjb206IEltcGxlbWVudCBleGVjX29wKCkiKQo+IFJlcG9y
+dGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4KPiBDbG9zZXM6IGh0dHBz
+Oi8vbG9yZS5rZXJuZWwub3JnL29lLWtidWlsZC1hbGwvMjAyMzA3MTMxOTU5LlBkUFNDODZLLWxr
+cEBpbnRlbC5jb20vCj4gQ2xvc2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9vZS1rYnVpbGQt
+YWxsLzIwMjMwNzEzMTczMC5OT1liY2pCci1sa3BAaW50ZWwuY29tLwo+IFNpZ25lZC1vZmYtYnk6
+IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+CgpMR1RNISBCdXQgSSdt
+IHJlbHlpbmcgb24gU2FkcmUgdG8gdGVzdCBpdC4KCkFja2VkLWJ5OiBNYW5pdmFubmFuIFNhZGhh
+c2l2YW0gPG1hbmlAa2VybmVsLm9yZz4KCi0gTWFuaQoKPiAtLS0KPiAgZHJpdmVycy9tdGQvbmFu
+ZC9yYXcvcWNvbV9uYW5kYy5jIHwgMTMgKysrKysrKy0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwg
+NyBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25h
+bmRjLmMKPiBpbmRleCA0ZmM4ZGFmYThmMDMuLmRjOGNhNjBmYzJlMiAxMDA2NDQKPiAtLS0gYS9k
+cml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5k
+L3Jhdy9xY29tX25hbmRjLmMKPiBAQCAtMjYxNiwxMiArMjYxNiwxMyBAQCBzdGF0aWMgdm9pZCBx
+Y29tX3BhcnNlX2luc3RydWN0aW9ucyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAo+ICAJCQlvZmZz
+ZXQgPSBuYW5kX3N1Ym9wX2dldF9hZGRyX3N0YXJ0X29mZihzdWJvcCwgb3BfaWQpOwo+ICAJCQlu
+YWRkcnMgPSBuYW5kX3N1Ym9wX2dldF9udW1fYWRkcl9jeWMoc3Vib3AsIG9wX2lkKTsKPiAgCQkJ
+YWRkcnMgPSAmaW5zdHItPmN0eC5hZGRyLmFkZHJzW29mZnNldF07Cj4gLQkJCWZvciAoaSA9IDA7
+IGkgPCBNQVhfQUREUkVTU19DWUNMRTsgaSsrKSB7Cj4gLQkJCQlpZiAoaSA8IDQpCj4gLQkJCQkJ
+cV9vcC0+YWRkcjFfcmVnIHw9ICh1MzIpYWRkcnNbaV0gPDwgaSAqIDg7Cj4gLQkJCQllbHNlCj4g
+LQkJCQkJcV9vcC0+YWRkcjJfcmVnIHw9IGFkZHJzW2ldOwo+IC0JCQl9Cj4gKwo+ICsJCQlmb3Ig
+KGkgPSAwOyBpIDwgbWluX3QodW5zaWduZWQgaW50LCA0LCBuYWRkcnMpOyBpKyspCj4gKwkJCQlx
+X29wLT5hZGRyMV9yZWcgfD0gYWRkcnNbaV0gPDwgKGkgKiA4KTsKPiArCj4gKwkJCWlmIChuYWRk
+cnMgPiA0KQo+ICsJCQkJcV9vcC0+YWRkcjJfcmVnIHw9IGFkZHJzWzRdOwo+ICsKPiAgCQkJcV9v
+cC0+cmR5X2RlbGF5X25zID0gaW5zdHItPmRlbGF5X25zOwo+ICAJCQlicmVhazsKPiAgCj4gLS0g
+Cj4gMi4zNC4xCj4gCgotLSAK4K6u4K6j4K6/4K614K6j4K+N4K6j4K6p4K+NIOCumuCupOCuvuCu
+muCuv+CuteCuruCvjQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
