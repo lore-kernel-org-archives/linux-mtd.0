@@ -4,59 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D06CCC0015E
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 13:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70DD8EB64DC
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 14:56:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:Subject:Cc:To:From:Date:MIME-Version:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=RVvqGC0Utr9WClcgP/vpJmp8YnkOs+OiB+Gr/pMgbn0=; b=auKPR5QEtp1LxSlmpQPtGTZcfV
-	UDDpqivduEc1e9YfbWByUTJIIo6pGSVMS6j+h7W764xDJE7TeZzokDMk80Sy6pp+uiPjis53kjlPK
-	DI5FaVPocibdWCgM/Ni6NKrEZGGEYY6Zs2GmWEVoOOhNLhyzSWVzJyXHnWeyfc8DfJEQlDf0qlFwC
-	Qbg+GHTPrfvLInfrzt3Qy27R033N/eYwBuLWFOJLvm1Iiom/Xb1xU9c5emZvskTPrEnjc9AuHtCah
-	rkUw8XX5/zNLIrfUl7njGPjmiGXYCWpTDeAwUJVDJlO6VCN6iLVTRf0Q9dtk+OnayZpQzNoBaWsyc
-	RCcyhTSw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=g7Yv74zrGooj3mn1UdOgJaluy+WwdKaHwZ+D6WaGoSg=; b=CcVl8fZ6Bc3XUY
+	MUj3ZfQHiFrtwdxl7UWwGT/GLeLLa8D/aJuxIDwtkGHPV2FF2F62727/9BmZVQX4XvE0OYsWxipBd
+	KaZxDbVe2vq4amLUjRBBSXOz52IZfnKKTtmjwR06EOPeJZ8XtWDJpXVTGQ4I83F4ps85vxJ24jBje
+	T1dHBYIbax2DVv/ZPabYa6B9tIQIHKaef38iMKqkla/qSHiHZPyNGIZZoj8JCMDPWrV6xafMDIKk3
+	OQGYzaGAcgs2eD06bGVjHoPV5FMqKfJsM1d9xXhvyH0h1xqFsbEtDPYFeeMZmD/CA+76AhpI4jdfX
+	7dEuvJu+yzAACSFD86Cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLOeS-004AZA-1a;
-	Mon, 17 Jul 2023 13:52:36 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qLPdx-004K91-35;
+	Mon, 17 Jul 2023 14:56:09 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLOdp-004AV7-0K
+	id 1qLPdW-004K6V-0b
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jul 2023 13:52:33 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E039B61057;
-	Mon, 17 Jul 2023 13:51:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8109C433C7;
-	Mon, 17 Jul 2023 13:51:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689601915;
-	bh=+tSO894L4BHaW4iUVifFUEKppPkzwhF1L/DOWtPSdZ4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=nkSaMzi1IwBERHT26DJdxODkdMpNUUPWD5o5xtC+4wXv2a9tq1up1QMBwN0vO3Zya
-	 t2BUAZM7BZ3+Hwt/roAh6hyJZcBIRqrldUUrOtl5Jy7rBxo0BHtyq8YiijQXMzlNs4
-	 rogrhz7kLzUryfHwdZke3JSU200TvOawvx3IZwHjDkUKn253gYFQuIT3h+Zu/Rd0tT
-	 pFmEMVafZTxYxsuPpDGZDjnc+tkOPZYvKVw0YAsBHu23SNrIHURv7gF1iZ/AGEucbx
-	 A9iGeRBca968C2cq33S0f9IzhcXCrsZssI3mRL5XMstQw4GJOSkJPebmQWC/ufx3KV
-	 ns05cO0pjnp+w==
+	Mon, 17 Jul 2023 14:55:45 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbf1b82de7so28609545e9.1
+        for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2023 07:55:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689605740; x=1692197740;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gT2DYDTpnAFnNYyEQcqTiu2i3X3T+MGg0Z63l02++rg=;
+        b=PHdBt9yo+D08RNLarLzz/eUDPES9dhqrUDYOH2haLxPq+WPplKDEFuqstG0Vo69nmH
+         CJOIHW8b7VFoapcbxA/n1gxfg4YdwJ6zd+Qk31NwLNQD2umJ3XW9I3JNCA6hMnS39ewH
+         3aukdVH9slQpSCsGfxkA36K2l7jXZpvEeZmAeMhQNLtRtgSZ6pTERi30DZNLQznS2Meo
+         XBJqTaDL5/jJ51WoBO5tMFT3eV4sRH7GLiMFOzlZbyLOTO3UkW7Mcda5sqGFzzRpKIQ5
+         Sjem37zLs+frU8hu0DUL7Ms/2+Kfkzb8z4M3kinSv3z+IdX/uPjSH/MYMads9O3eoCzj
+         W4pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689605740; x=1692197740;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gT2DYDTpnAFnNYyEQcqTiu2i3X3T+MGg0Z63l02++rg=;
+        b=N9YE5ddLGM7fOQciVN4jzqUSCIAxpeaROHWd3CsVZAe4DktjBUky/8A8WFlzyYf5FX
+         CyupGUVhnimepHGBj0JYmHCSDrhXaDXsa6hopWK2GQ5hyTMhPOsBqgy3QPK72+FRxa3F
+         yEZL3TGJoLWde8IGRA64mJy1kK0Dza1Wl8LA2fsqGyOsq+24XAVz+B4AjLET/fO+WqF7
+         T9kIpDwDeeHrIxv88SqO80hNHMs+VrsTcM9/qisQnEYGA2Rnu4TAYSzrQB+iAi3kn5FI
+         fgQTqVkvbe1BCkRz6unjIvQxr3J/otDBFGjyhLqJJ1FRDN4ah3jllCgSrMB066508BT5
+         3hHQ==
+X-Gm-Message-State: ABy/qLYIzS6j/Lt6uvbKHqqdWmFtBpyNcbTitAhkET0XiTY3Zc5sVIh3
+	I47MmdleiBoUJHn8aKsB9M2K4w==
+X-Google-Smtp-Source: APBJJlEQ54Sjj9XLgH7wIfAJn3L7LkzPoqvEcn6oWOCmVaqCb51v8vPoshPaARK9S6v6/AYrCN9D+g==
+X-Received: by 2002:a05:600c:3c82:b0:3fa:821e:1fb5 with SMTP id bg2-20020a05600c3c8200b003fa821e1fb5mr8928242wmb.5.1689605739647;
+        Mon, 17 Jul 2023 07:55:39 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.146])
+        by smtp.gmail.com with ESMTPSA id y4-20020a1c4b04000000b003fbc0a49b57sm13007wma.6.2023.07.17.07.55.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 07:55:39 -0700 (PDT)
+Message-ID: <55cb3917-0d4d-c209-d2f6-b92e62312f2b@linaro.org>
+Date: Mon, 17 Jul 2023 15:55:38 +0100
 MIME-Version: 1.0
-Date: Mon, 17 Jul 2023 15:51:51 +0200
-From: Michael Walle <mwalle@kernel.org>
-To: tudor.ambarus@linaro.org, pratyush@kernel.org, michael@walle.cc,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: mtd: spi-nor: flash_info db overhaul
+Content-Language: en-US
+To: Michael Walle <mwalle@kernel.org>, pratyush@kernel.org, michael@walle.cc,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
 Cc: linux-mtd@lists.infradead.org
-Subject: mtd: spi-nor: flash_info db overhaul
-Message-ID: <28d2e2f6f607cc14419ef996d9b624bc@kernel.org>
-X-Sender: mwalle@kernel.org
+References: <28d2e2f6f607cc14419ef996d9b624bc@kernel.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <28d2e2f6f607cc14419ef996d9b624bc@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230717_065157_262527_F9DADFE7 
-X-CRM114-Status: GOOD (  18.92  )
+X-CRM114-CacheID: sfid-20230717_075543_088224_EB0E796D 
+X-CRM114-Status: GOOD (  38.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,147 +89,112 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-I'm planning to do a makeover of how the in-kernel flash database of
-the SPI-NOR parts are represented. It all started with the quest for
-dropping unneeded properties like size and sector_size for newer
-flashes which already contains self describing tables within the flash
-itself :)
-
-Soon additional drawbacks (or maybe legacy features :) were discovered:
-  * the SNOR_IDs are hardcoded to either 3 or 6 bytes. But with the dawn
-    of continuation codes, these IDs have a flexible length.
-    Fun fact, we have one flash with a correct continuation code,
-    "is25cd512" with id 0x7f9d20, 0x7f9d is the vendor id and 0x20 the
-    device id, which is just one byte for this flash. First, I though 
-that
-    was a mistake, but actually it is in line with the datasheet. 
-Apparently,
-    the vendor is afraid of spi code which only supports 3 id bytes :) 
-The
-    same is true for "pm25lq032".
-  * all the macros contain a trailing comma, and thus the trailing comma
-    is omitted in the flash db which makes is somewhat inconsistent if 
-you
-    also want to use non-macro entires, like ".fixups = fixup,"
-  * macros which just returns their argument, e.g.
-    #define NO_SFDP_FLAGS(x) .no_sfdp_flags = (x),
-  * newer flashes only need the id, a name and some flags, thus INFO()
-    has a lot of empty fields,
-  * newer flashes need to explicitly specify PARSE_SFDP.
-
-Goals I'd like to achieve:
-  * first and formost, new flash entries should be as slim as possible,
-  * the id should have a flexible length,
-  * same (consistent) format for legacy flash entries and newer ones,
-  * no overuse of macros
-
-
-Here are some old examples:
-{ "mt25ql256a",  INFO6(0x20ba19, 0x104400, 64 * 1024,  512)
-	NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-	FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
-	MFR_FLAGS(USE_FSR)
-},  // (1)
-{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512)
-	NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
-	MFR_FLAGS(USE_FSR)
-},  // (2)
-{ "w25q512nwq", INFO(0xef6020, 0, 0, 0)
-	PARSE_SFDP
-	OTP_INFO(256, 3, 0x1000, 0x1000)
-}, // (3)
-{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
-	PARSE_SFDP
-	FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-	NO_SFDP_FLAGS(SECT_4K)
-}, // (4)
-
-Here's the (idea of the) final version:
-{
-   .id = SNOR_ID(0x20, 0xba, 0x19, 0x10, 0x44, 0x00),
-   .name = "mt25ql256a",
-   .size = SZ_32M,
-   .no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-   .fixup_flags = SPI_NOR_4B_OPCODES,
-   .mfr_flags = USE_FSR,
-} (1)
-{
-   .id = SNOR_ID(0x20, 0xbb, 0x19),
-   .name = "n25q256ax1",
-   .size = SZ_32M,
-   .no_sfdp_flags = SECT_4K | SPI_NOR_QUAD_READ,
-   .mfr_flags = USE_FSR,
-} (2)
-{
-   .id = SNOR_ID(0xef, 0x60, 0x20),
-   .name = "w25q512nwq",
-   .otp_org = SNOR_OTP_ORG(256, 3, 0x1000, 0x1000),
-   // or maybe just .otp = SNOR_OTP(),
-} (3)
-{
-   .id = SNOR_ID(0xef, 0x40, 0x18),
-   .name = "w25q128",
-   .size = SZ_16M,
-   .force_sfdp = true,
-   .flags = SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB,
-   .no_sfdp_flags = SECT_4K,
-}, // (4)
-
-The full template would be:
-{
-  .id = SNOR_ID(),
-  .name = ,
-  .size = , // will replace n_sectors
-  .sector_size = , // if 0, SZ_64K is assumed, otherwise has to be set
-  .n_banks = , // if 0, 1 is assumed, otherwise has to be set
-  .page_size = , // if 0, 256 is assumed, otherwise has to be set
-  .addr_nbytes = , // addr_nbytes is already special, see 
-spi_nor_set_addr_nbytes()
-  .flags = ,
-  .no_sfdp_flags = ,
-  .mfr_flags = ,
-  .otp_org = SNOR_OTP_ORG()
-  .fixups = .
-  .fixup_flags = ,
-  .force_sfdp = , // see below!
-}
-
-The only mandatory field is .id because that is the key into
-the db entry. Of course, with the dawn of the generic spi flash
-driver, an entry with no additional flags doesn't make any sense.
-Therefore, I'd expect an entry to have at least .*flags or
-.otp_org set.
-
-Alternatively, the second key is the name for legacy flashes which
-are looked up by the name instead of the id. If we ever need to
-resort to individual DT compatibles, I'd use a new .compatible entry
-for that like everywhere else in the kernel.
-
-One word on .parse_sfdp (@Tudor this is new, so let me know). Because
-I want new entries as slim as possible and I expect that all new flashes
-will support SFDP, I'd like to get rid of the mandatory
-".parse_sfdp = true" line. The first idea was to just invert the logic
-and have a .no_sfdp which will need to be set to true for all the old
-flashes. But I think we can do better. We can assume that each entry
-with .size != 0 (or .n_sectors in the old format) will implicitly be
-".no_sfdp = true" (or parse_sfdp = false in the old format). There is
-of course one exception to this rule. Flashes with the same ID where
-one supports SFDP and one doesn't. In the end the outcome is the same,
-we need to force SFDP parsing even if .size non-zero. Thus for this
-case, we need a .force_sfdp = true entry. See also example (4) above.
-
-I've already had a talk with Tudor about that topic. Does anyone else
-have thoughts on it?
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CgpPbiA3LzE3LzIzIDE0OjUxLCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+IEhpLAo+IAo+IEknbSBw
+bGFubmluZyB0byBkbyBhIG1ha2VvdmVyIG9mIGhvdyB0aGUgaW4ta2VybmVsIGZsYXNoIGRhdGFi
+YXNlIG9mCj4gdGhlIFNQSS1OT1IgcGFydHMgYXJlIHJlcHJlc2VudGVkLiBJdCBhbGwgc3RhcnRl
+ZCB3aXRoIHRoZSBxdWVzdCBmb3IKPiBkcm9wcGluZyB1bm5lZWRlZCBwcm9wZXJ0aWVzIGxpa2Ug
+c2l6ZSBhbmQgc2VjdG9yX3NpemUgZm9yIG5ld2VyCj4gZmxhc2hlcyB3aGljaCBhbHJlYWR5IGNv
+bnRhaW5zIHNlbGYgZGVzY3JpYmluZyB0YWJsZXMgd2l0aGluIHRoZSBmbGFzaAo+IGl0c2VsZiA6
+KQo+IAo+IFNvb24gYWRkaXRpb25hbCBkcmF3YmFja3MgKG9yIG1heWJlIGxlZ2FjeSBmZWF0dXJl
+cyA6KSB3ZXJlIGRpc2NvdmVyZWQ6Cj4gwqAqIHRoZSBTTk9SX0lEcyBhcmUgaGFyZGNvZGVkIHRv
+IGVpdGhlciAzIG9yIDYgYnl0ZXMuIEJ1dCB3aXRoIHRoZSBkYXduCj4gwqDCoCBvZiBjb250aW51
+YXRpb24gY29kZXMsIHRoZXNlIElEcyBoYXZlIGEgZmxleGlibGUgbGVuZ3RoLgo+IMKgwqAgRnVu
+IGZhY3QsIHdlIGhhdmUgb25lIGZsYXNoIHdpdGggYSBjb3JyZWN0IGNvbnRpbnVhdGlvbiBjb2Rl
+LAo+IMKgwqAgImlzMjVjZDUxMiIgd2l0aCBpZCAweDdmOWQyMCwgMHg3ZjlkIGlzIHRoZSB2ZW5k
+b3IgaWQgYW5kIDB4MjAgdGhlCj4gwqDCoCBkZXZpY2UgaWQsIHdoaWNoIGlzIGp1c3Qgb25lIGJ5
+dGUgZm9yIHRoaXMgZmxhc2guIEZpcnN0LCBJIHRob3VnaCB0aGF0Cj4gwqDCoCB3YXMgYSBtaXN0
+YWtlLCBidXQgYWN0dWFsbHkgaXQgaXMgaW4gbGluZSB3aXRoIHRoZSBkYXRhc2hlZXQuIEFwcGFy
+ZW50bHksCj4gwqDCoCB0aGUgdmVuZG9yIGlzIGFmcmFpZCBvZiBzcGkgY29kZSB3aGljaCBvbmx5
+IHN1cHBvcnRzIDMgaWQgYnl0ZXMgOikgVGhlCj4gwqDCoCBzYW1lIGlzIHRydWUgZm9yICJwbTI1
+bHEwMzIiLgo+IMKgKiBhbGwgdGhlIG1hY3JvcyBjb250YWluIGEgdHJhaWxpbmcgY29tbWEsIGFu
+ZCB0aHVzIHRoZSB0cmFpbGluZyBjb21tYQo+IMKgwqAgaXMgb21pdHRlZCBpbiB0aGUgZmxhc2gg
+ZGIgd2hpY2ggbWFrZXMgaXMgc29tZXdoYXQgaW5jb25zaXN0ZW50IGlmIHlvdQo+IMKgwqAgYWxz
+byB3YW50IHRvIHVzZSBub24tbWFjcm8gZW50aXJlcywgbGlrZSAiLmZpeHVwcyA9IGZpeHVwLCIK
+PiDCoCogbWFjcm9zIHdoaWNoIGp1c3QgcmV0dXJucyB0aGVpciBhcmd1bWVudCwgZS5nLgo+IMKg
+wqAgI2RlZmluZSBOT19TRkRQX0ZMQUdTKHgpIC5ub19zZmRwX2ZsYWdzID0gKHgpLAo+IMKgKiBu
+ZXdlciBmbGFzaGVzIG9ubHkgbmVlZCB0aGUgaWQsIGEgbmFtZSBhbmQgc29tZSBmbGFncywgdGh1
+cyBJTkZPKCkKPiDCoMKgIGhhcyBhIGxvdCBvZiBlbXB0eSBmaWVsZHMsCj4gwqAqIG5ld2VyIGZs
+YXNoZXMgbmVlZCB0byBleHBsaWNpdGx5IHNwZWNpZnkgUEFSU0VfU0ZEUC4KPiAKPiBHb2FscyBJ
+J2QgbGlrZSB0byBhY2hpZXZlOgo+IMKgKiBmaXJzdCBhbmQgZm9ybW9zdCwgbmV3IGZsYXNoIGVu
+dHJpZXMgc2hvdWxkIGJlIGFzIHNsaW0gYXMgcG9zc2libGUsCj4gwqAqIHRoZSBpZCBzaG91bGQg
+aGF2ZSBhIGZsZXhpYmxlIGxlbmd0aCwKPiDCoCogc2FtZSAoY29uc2lzdGVudCkgZm9ybWF0IGZv
+ciBsZWdhY3kgZmxhc2ggZW50cmllcyBhbmQgbmV3ZXIgb25lcywKPiDCoCogbm8gb3ZlcnVzZSBv
+ZiBtYWNyb3MKPiAKPiAKPiBIZXJlIGFyZSBzb21lIG9sZCBleGFtcGxlczoKPiB7ICJtdDI1cWwy
+NTZhIizCoCBJTkZPNigweDIwYmExOSwgMHgxMDQ0MDAsIDY0ICogMTAyNCzCoCA1MTIpCj4gwqDC
+oMKgwqBOT19TRkRQX0ZMQUdTKFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1Jf
+UVVBRF9SRUFEKQo+IMKgwqDCoMKgRklYVVBfRkxBR1MoU1BJX05PUl80Ql9PUENPREVTKQo+IMKg
+wqDCoMKgTUZSX0ZMQUdTKFVTRV9GU1IpCj4gfSzCoCAvLyAoMSkKPiB7ICJuMjVxMjU2YXgxIizC
+oCBJTkZPKDB4MjBiYjE5LCAwLCA2NCAqIDEwMjQswqAgNTEyKQo+IMKgwqDCoMKgTk9fU0ZEUF9G
+TEFHUyhTRUNUXzRLIHwgU1BJX05PUl9RVUFEX1JFQUQpCj4gwqDCoMKgwqBNRlJfRkxBR1MoVVNF
+X0ZTUikKPiB9LMKgIC8vICgyKQo+IHsgIncyNXE1MTJud3EiLCBJTkZPKDB4ZWY2MDIwLCAwLCAw
+LCAwKQo+IMKgwqDCoMKgUEFSU0VfU0ZEUAo+IMKgwqDCoMKgT1RQX0lORk8oMjU2LCAzLCAweDEw
+MDAsIDB4MTAwMCkKPiB9LCAvLyAoMykKPiB7ICJ3MjVxMTI4IiwgSU5GTygweGVmNDAxOCwgMCwg
+NjQgKiAxMDI0LCAyNTYpCj4gwqDCoMKgwqBQQVJTRV9TRkRQCj4gwqDCoMKgwqBGTEFHUyhTUElf
+Tk9SX0hBU19MT0NLIHwgU1BJX05PUl9IQVNfVEIpCj4gwqDCoMKgwqBOT19TRkRQX0ZMQUdTKFNF
+Q1RfNEspCj4gfSwgLy8gKDQpCj4gCj4gSGVyZSdzIHRoZSAoaWRlYSBvZiB0aGUpIGZpbmFsIHZl
+cnNpb246Cj4gewo+IMKgIC5pZCA9IFNOT1JfSUQoMHgyMCwgMHhiYSwgMHgxOSwgMHgxMCwgMHg0
+NCwgMHgwMCksCj4gwqAgLm5hbWUgPSAibXQyNXFsMjU2YSIsCj4gwqAgLnNpemUgPSBTWl8zMk0s
+Cj4gwqAgLm5vX3NmZHBfZmxhZ3MgPSBTRUNUXzRLIHwgU1BJX05PUl9EVUFMX1JFQUQgfCBTUElf
+Tk9SX1FVQURfUkVBRCwKPiDCoCAuZml4dXBfZmxhZ3MgPSBTUElfTk9SXzRCX09QQ09ERVMsCj4g
+wqAgLm1mcl9mbGFncyA9IFVTRV9GU1IsCj4gfSAoMSkKPiB7Cj4gwqAgLmlkID0gU05PUl9JRCgw
+eDIwLCAweGJiLCAweDE5KSwKPiDCoCAubmFtZSA9ICJuMjVxMjU2YXgxIiwKPiDCoCAuc2l6ZSA9
+IFNaXzMyTSwKPiDCoCAubm9fc2ZkcF9mbGFncyA9IFNFQ1RfNEsgfCBTUElfTk9SX1FVQURfUkVB
+RCwKPiDCoCAubWZyX2ZsYWdzID0gVVNFX0ZTUiwKPiB9ICgyKQo+IHsKPiDCoCAuaWQgPSBTTk9S
+X0lEKDB4ZWYsIDB4NjAsIDB4MjApLAo+IMKgIC5uYW1lID0gIncyNXE1MTJud3EiLAo+IMKgIC5v
+dHBfb3JnID0gU05PUl9PVFBfT1JHKDI1NiwgMywgMHgxMDAwLCAweDEwMDApLAo+IMKgIC8vIG9y
+IG1heWJlIGp1c3QgLm90cCA9IFNOT1JfT1RQKCksCgpJIGxpa2UgU05PUl9PVFAuCgo+IH0gKDMp
+Cj4gewo+IMKgIC5pZCA9IFNOT1JfSUQoMHhlZiwgMHg0MCwgMHgxOCksCj4gwqAgLm5hbWUgPSAi
+dzI1cTEyOCIsCj4gwqAgLnNpemUgPSBTWl8xNk0sCj4gwqAgLmZvcmNlX3NmZHAgPSB0cnVlLAo+
+IMKgIC5mbGFncyA9IFNQSV9OT1JfSEFTX0xPQ0sgfCBTUElfTk9SX0hBU19UQiwKPiDCoCAubm9f
+c2ZkcF9mbGFncyA9IFNFQ1RfNEssCj4gfSwgLy8gKDQpCj4gCj4gVGhlIGZ1bGwgdGVtcGxhdGUg
+d291bGQgYmU6Cj4gewo+IMKgLmlkID0gU05PUl9JRCgpLAo+IMKgLm5hbWUgPSAsCj4gwqAuc2l6
+ZSA9ICwgLy8gd2lsbCByZXBsYWNlIG5fc2VjdG9ycwo+IMKgLnNlY3Rvcl9zaXplID0gLCAvLyBp
+ZiAwLCBTWl82NEsgaXMgYXNzdW1lZCwgb3RoZXJ3aXNlIGhhcyB0byBiZSBzZXQKPiDCoC5uX2Jh
+bmtzID0gLCAvLyBpZiAwLCAxIGlzIGFzc3VtZWQsIG90aGVyd2lzZSBoYXMgdG8gYmUgc2V0Cj4g
+wqAucGFnZV9zaXplID0gLCAvLyBpZiAwLCAyNTYgaXMgYXNzdW1lZCwgb3RoZXJ3aXNlIGhhcyB0
+byBiZSBzZXQKPiDCoC5hZGRyX25ieXRlcyA9ICwgLy8gYWRkcl9uYnl0ZXMgaXMgYWxyZWFkeSBz
+cGVjaWFsLCBzZWUgc3BpX25vcl9zZXRfYWRkcl9uYnl0ZXMoKQo+IMKgLmZsYWdzID0gLAo+IMKg
+Lm5vX3NmZHBfZmxhZ3MgPSAsCj4gwqAubWZyX2ZsYWdzID0gLAo+IMKgLm90cF9vcmcgPSBTTk9S
+X09UUF9PUkcoKQo+IMKgLmZpeHVwcyA9IC4KPiDCoC5maXh1cF9mbGFncyA9ICwKPiDCoC5mb3Jj
+ZV9zZmRwID0gLCAvLyBzZWUgYmVsb3chCj4gfQo+IAo+IFRoZSBvbmx5IG1hbmRhdG9yeSBmaWVs
+ZCBpcyAuaWQgYmVjYXVzZSB0aGF0IGlzIHRoZSBrZXkgaW50bwo+IHRoZSBkYiBlbnRyeS4gT2Yg
+Y291cnNlLCB3aXRoIHRoZSBkYXduIG9mIHRoZSBnZW5lcmljIHNwaSBmbGFzaAo+IGRyaXZlciwg
+YW4gZW50cnkgd2l0aCBubyBhZGRpdGlvbmFsIGZsYWdzIGRvZXNuJ3QgbWFrZSBhbnkgc2Vuc2Uu
+Cj4gVGhlcmVmb3JlLCBJJ2QgZXhwZWN0IGFuIGVudHJ5IHRvIGhhdmUgYXQgbGVhc3QgLipmbGFn
+cyBvcgo+IC5vdHBfb3JnIHNldC4KClJpZ2h0LCB0aGUgZ29hbCBpcyB0byBkZWZpbmUgYSBmbGFz
+aCBieSBuYW1lLCBpZCwgYW5kIGV2ZXJ5dGhpbmcgZWxzZSB0aGF0CmNhbid0IGJlIGRpc2NvdmVy
+ZWQgd2hlbiBwYXJzaW5nIFNGRFAuCgo+IAo+IEFsdGVybmF0aXZlbHksIHRoZSBzZWNvbmQga2V5
+IGlzIHRoZSBuYW1lIGZvciBsZWdhY3kgZmxhc2hlcyB3aGljaAo+IGFyZSBsb29rZWQgdXAgYnkg
+dGhlIG5hbWUgaW5zdGVhZCBvZiB0aGUgaWQuIElmIHdlIGV2ZXIgbmVlZCB0bwo+IHJlc29ydCB0
+byBpbmRpdmlkdWFsIERUIGNvbXBhdGlibGVzLCBJJ2QgdXNlIGEgbmV3IC5jb21wYXRpYmxlIGVu
+dHJ5Cj4gZm9yIHRoYXQgbGlrZSBldmVyeXdoZXJlIGVsc2UgaW4gdGhlIGtlcm5lbC4KPiAKPiBP
+bmUgd29yZCBvbiAucGFyc2Vfc2ZkcCAoQFR1ZG9yIHRoaXMgaXMgbmV3LCBzbyBsZXQgbWUga25v
+dykuIEJlY2F1c2UKPiBJIHdhbnQgbmV3IGVudHJpZXMgYXMgc2xpbSBhcyBwb3NzaWJsZSBhbmQg
+SSBleHBlY3QgdGhhdCBhbGwgbmV3IGZsYXNoZXMKPiB3aWxsIHN1cHBvcnQgU0ZEUCwgSSdkIGxp
+a2UgdG8gZ2V0IHJpZCBvZiB0aGUgbWFuZGF0b3J5Cj4gIi5wYXJzZV9zZmRwID0gdHJ1ZSIgbGlu
+ZS4gVGhlIGZpcnN0IGlkZWEgd2FzIHRvIGp1c3QgaW52ZXJ0IHRoZSBsb2dpYwo+IGFuZCBoYXZl
+IGEgLm5vX3NmZHAgd2hpY2ggd2lsbCBuZWVkIHRvIGJlIHNldCB0byB0cnVlIGZvciBhbGwgdGhl
+IG9sZAo+IGZsYXNoZXMuIEJ1dCBJIHRoaW5rIHdlIGNhbiBkbyBiZXR0ZXIuIFdlIGNhbiBhc3N1
+bWUgdGhhdCBlYWNoIGVudHJ5Cj4gd2l0aCAuc2l6ZSAhPSAwIChvciAubl9zZWN0b3JzIGluIHRo
+ZSBvbGQgZm9ybWF0KSB3aWxsIGltcGxpY2l0bHkgYmUKPiAiLm5vX3NmZHAgPSB0cnVlIiAob3Ig
+cGFyc2Vfc2ZkcCA9IGZhbHNlIGluIHRoZSBvbGQgZm9ybWF0KS4gVGhlcmUgaXMKCnRoZSBhc3N1
+bXB0aW9uIHdpbGwgd29yayBpbmRlZWQuCgo+IG9mIGNvdXJzZSBvbmUgZXhjZXB0aW9uIHRvIHRo
+aXMgcnVsZS4gRmxhc2hlcyB3aXRoIHRoZSBzYW1lIElEIHdoZXJlCj4gb25lIHN1cHBvcnRzIFNG
+RFAgYW5kIG9uZSBkb2Vzbid0LiBJbiB0aGUgZW5kIHRoZSBvdXRjb21lIGlzIHRoZSBzYW1lLAo+
+IHdlIG5lZWQgdG8gZm9yY2UgU0ZEUCBwYXJzaW5nIGV2ZW4gaWYgLnNpemUgbm9uLXplcm8uIFRo
+dXMgZm9yIHRoaXMKPiBjYXNlLCB3ZSBuZWVkIGEgLmZvcmNlX3NmZHAgPSB0cnVlIGVudHJ5LiBT
+ZWUgYWxzbyBleGFtcGxlICg0KSBhYm92ZS4KPiAKSSB3b3VsZG4ndCBpbnRyb2R1Y2UgYSBuZXcg
+bWVtYmVyIGp1c3QgZm9yIGV4Y2VwdGlvbnMuIEhvdyBhYm91dCBzZXR0aW5nCi5wYXJzZV9zZmRw
+ID0gdHJ1ZSBhdCBkZWZpbml0aW9uIG9ubHkgaW4gdGhpcyBjYXNlIGFuZCBhZGQgYSBjb21tZW50
+IG9uCnRvcCBvZiBpdCBzYXlpbmcgdGhhdCB3ZSBmb3JjZSBzZmRwIHBhcnNpbmcgdG8gZGlmZmVy
+ZW50aWF0ZSBiZXR3ZWVuIHRoZQpmbGFzaGVzLgoKPiBJJ3ZlIGFscmVhZHkgaGFkIGEgdGFsayB3
+aXRoIFR1ZG9yIGFib3V0IHRoYXQgdG9waWMuIERvZXMgYW55b25lIGVsc2UKPiBoYXZlIHRob3Vn
+aHRzIG9uIGl0Pwo+IAoKSSBjb25maXJtIHRoYXQgSSBhZ3JlZSB3aXRoIHRoZSBjaGFuZ2VzIHBy
+b3Bvc2VkLgoKQ2hlZXJzLAp0YQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
