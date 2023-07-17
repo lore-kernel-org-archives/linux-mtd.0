@@ -4,64 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DC25EB64DC
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 12:32:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 837EAEB64DC
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 13:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uf3Mcp+3Nb9oOI0TND3fOyH0gN74tkY7tnMj7hyaUxQ=; b=lUNuOdSDSybyt6aUAfB3uea2tX
-	kLrqzinqXBZx7a/utkxkLxQyhWyZI5ipeEeU07/Ws1YqmfZ0x/BsSJEk895rr2CME8pdbbWKuootR
-	MolWzgNh8LOGlLmdYAdwwXP1IzUgoSYJFCNGXSyBTdfDrzrEpYd4Y5xUurvhuA9a46k9W7G1de4jO
-	jyvCZfISgo+6NRb4JXWym8aO1idSTG1B4wt7lX6Ud1gpJ/XLyHg3fn5UqaNZVSvV+8N80qSfciF/g
-	kShWmxQ2SYZBaq3+8R+4BIt1rFnYqh5x5AYTgfqLZJI/EAHNy3SI5dxK29hZA8KqUmJlxg+SSLf1y
-	QboI7smw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hIWJA3KlIWPkaYQaB6UC0SOG6qeONOSxzxtjn7p1ZTw=; b=EsSJtCfpyiDQ+6
+	8VR2jMFhKNT1+BIi+0mYapHKIwArRPXOepjQc32n+7pRPNvBtHQ/rJmf5yV08wGAVy4mRb+Z4J4cn
+	zrt4ajhXoCjxzJCOUP7x1MpQKcix9McYRub9ACmSohuVYp5EIcSdpjy9xeKUdkoFBUwU3vBGJXET1
+	1JdjnlmePMHZmS8B5YQR5vVVOTF+6v67JE5Ne9J+9YT9mAvuXgVXtPa3e/mf4M6w9ODZjb/tkRgKB
+	AzZTDnuHw2fMXBQCVY6oqDv4M85BBUR9Z94tRLxj0nl7GiL8qePlIJKl/HK0cYD5eQIY9o2MRF6RT
+	utdknzoLhWVpbwThDt7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLNOV-003zgd-1O;
-	Mon, 17 Jul 2023 12:32:03 +0000
-Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
+	id 1qLO1W-0044iI-0z;
+	Mon, 17 Jul 2023 13:12:22 +0000
+Received: from unicorn.mansr.com ([2001:8b0:ca0d:1::2])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLNOB-003zbg-0Q
+	id 1qLO0m-0044be-1m
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jul 2023 12:32:01 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id AF02F968;
-	Mon, 17 Jul 2023 14:31:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1689597099;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jB2Vzy9Nk2D5WxMfnpRq96P+gZedJhoPX3lCcWj+beI=;
-	b=pENPrUWOV/sZNmDeoIWjLvEQZyQH+kJxomjQ4NdK2d07gvXYNBkCVcpyHv5Nlos2GRhQH4
-	gjePQQjvZmVpEbBAdh6aeu6gtfVTq/CL1H3Z2/X8rxhfhm+hkBoafK0LAL56qh2H65P2Ck
-	klYnx4ZRLgTSRP6FNDVCTX13aZxePl1vTNHg0V5y5clliYCGhf3fiEb7/RdxK8dHMD9Emy
-	epX1dBo5f5wC1RDbrCnxKKWbykuY3aSM/U4d+X1Xvj6De9HIjJnsDhxiDculO3jVXDnt6v
-	5PiRPzoXiPkoOmc3SPP/AtemRbUZb1EK5WzTE4yKO7VVJWBwQtVLFJ5jHoXuKA==
+	Mon, 17 Jul 2023 13:12:19 +0000
+Received: from raven.mansr.com (raven.mansr.com [81.2.72.235])
+	by unicorn.mansr.com (Postfix) with ESMTPS id D70AC15360;
+	Mon, 17 Jul 2023 14:11:31 +0100 (BST)
+Received: by raven.mansr.com (Postfix, from userid 51770)
+	id 8AA65219B40; Mon, 17 Jul 2023 14:11:31 +0100 (BST)
+From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
+ Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>, Julien Su <juliensu@mxic.com.tw>, Jaime
+ Liao <jaimeliao@mxic.com.tw>, Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, JaimeLiao
+ <jaimeliao.tw@gmail.com>, Alexander Shiyan <eagle.alexander923@gmail.com>,
+ Domenico Punzo <dpunzo@micron.com>, Bean Huo <beanhuo@micron.com>
+Subject: Re: [PATCH v2 3/3] mtd: rawnand: Support for sequential cache reads
+References: <20230112093637.987838-1-miquel.raynal@bootlin.com>
+	<20230112093637.987838-4-miquel.raynal@bootlin.com>
+	<yw1xfs6j4k6q.fsf@mansr.com> <20230716174917.3a9ca7a7@xps-13>
+	<yw1x7cqzzr4d.fsf@mansr.com> <20230717091900.52ed815a@xps-13>
+Date: Mon, 17 Jul 2023 14:11:31 +0100
+In-Reply-To: <20230717091900.52ed815a@xps-13> (Miquel Raynal's message of
+	"Mon, 17 Jul 2023 09:19:00 +0200")
+Message-ID: <yw1x351mznr0.fsf@mansr.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Date: Mon, 17 Jul 2023 14:31:39 +0200
-From: Michael Walle <michael@walle.cc>
-To: SSunk <ssunkkan@gmail.com>
-Cc: tudor.ambarus@linaro.org, pratyush@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, SSunk
- <ssunkkan@gmail.com>
-Subject: Re: [PATCH] Add support for XMC
- XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C
-In-Reply-To: <20230717110625.8844-1-ssunkkan@gmail.com>
-References: <20230717110625.8844-1-ssunkkan@gmail.com>
-Message-ID: <bfc85475bdcea46ea6c3ece98cc1e9cc@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230717_053143_319773_D3150A85 
-X-CRM114-Status: GOOD (  12.14  )
+X-CRM114-CacheID: sfid-20230717_061138_696487_AA5A4998 
+X-CRM114-Status: GOOD (  16.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,58 +67,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Miquel Raynal <miquel.raynal@bootlin.com> writes:
 
-> Add more XMC chip support
+> So, I should have done that earlier but, could you please slow the
+> whole operation down, just to see if there is something wrong with the
+> timings or if we should look in another direction.
+>
+> Maybe you could add a boolean to flag if the last CMD was a
+> READCACHESEQ, READCACHESTART or READCACHEEND, and if the flag is
+> true, please get the jiffies before and after each waitrdy and
+> delay_ns. Finally, please print the expected delay and the actual one
+> and compare to see if something was too fast compared to what we
+> expected.
 
-Please elaborate.
+Between which points exactly should the delay be measured?  Also, there
+is no command called READCACHESTART.  Did you mean READSTART or
+something else?
 
-> Signed-off-by: SSunk <ssunkkan@gmail.com>
+> In a second test, you could simply add a udelay(50); at the end of
+> omap_nand_exec_instr().
 
-We need a proper first and last name.
+That didn't help.
 
-> ---
->  drivers/mtd/spi-nor/xmc.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
-> index 051411e86339..b2374187ec4f 100644
-> --- a/drivers/mtd/spi-nor/xmc.c
-> +++ b/drivers/mtd/spi-nor/xmc.c
-> @@ -16,6 +16,22 @@ static const struct flash_info xmc_nor_parts[] = {
->  	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
-> +	{ "XM25QH128C", INFO(0x204018, 0, 64 * 1024, 256)
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ) },
-> +	{ "XM25QH256C", INFO(0x204019, 0, 64 * 1024, 512)
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "XM25QU256C", INFO(0x204119, 0, 64 * 1024, 512)
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "XM25QH512C", INFO(0x204020, 0, 64 * 1024, 1024)
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "XM25QU512C", INFO(0x204120, 0, 64 * 1024, 1024)
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +
+-- =
 
-XMC parts seem to have SFDP tables and they should work out of the box
-without any patches with the generic spi nor driver [1]. Therefore,
-you don't need any entry at all.
-
--michael
-
-[1] 
-https://elixir.bootlin.com/linux/v6.4-rc6/source/drivers/mtd/spi-nor/core.c#L2019
+M=E5ns Rullg=E5rd
 
 ______________________________________________________
 Linux MTD discussion mailing list
