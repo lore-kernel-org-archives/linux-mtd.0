@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07946EB64DC
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 07:51:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27880EB64DC
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 08:07:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:From
-	:Date:Reply-To:To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:CC:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vDF4hxl3Q8YAzgNP6IPvR7IAD5w8hKAg1bQoPHyj+FA=; b=BFevBWNKykhBNg
-	4S5EUhkKDHYLEr7ceTypbRjAZGDQyBV9IwBWnXoj0UMdzulNNwLQwwhqRr3b5ff6OcweuHTwCw/CR
-	56HVI1n4YD+cUkVfLreXKia41u864eLc658ZByK5iwhWwKTjJfRzqVMWVrLiwYTRx0ylWT1WX7LNg
-	O5J7nIeVL+lh+uholRm9LocXcUnIUITLbMz/Wyl6ZG6rVaNDvLuT/rl2xXHhs7Cyb2UU0OwQVclCD
-	X6TSaPjdJEk4ZBbs0kGazeIpbJCbx8pntIAhRUgkxIbzNYty6c3edKBppTMrlrIU4XkSwRbZad0qx
-	sWL07qSqqtcJxyrqwKYA==;
+	List-Owner; bh=EXZuhawjA/G9Pj0XQkmDHWEvnkLBUM9jkXrnn0kSjXo=; b=sddjlWroD+l1ch
+	82o2JPeiOer43VvN3IO/83tGE7YEH/qEx4Ifqe3NaO5ry0hI6cGNjl3tLBETetzuHxFh+VyPU+U7y
+	UbbJQiUt3Ch6rnXkiZq9oCHZtCgfwK0a/NtCY8DhakibXDQZxxObSJ31Wk9r51YX2rhMtGjdFgxud
+	qI7tppv/1xH/7VPGnJYKR73NIR5Yv/dL7D8wO/vU1adqy4qlP2dFPmInb7peOq39+bhzW+pjpTVWb
+	iwgZlt/VayO3IvEV9/CZs9SCpC0cc6QXiVJQPGaSPiGEhJtyy5uENJcYko1I1RB7WR7ODWvPxXH6I
+	SqJ+42zMjyRhhPEJdjRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLJ0m-003MZZ-1p;
-	Mon, 17 Jul 2023 07:51:16 +0000
-Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
+	id 1qLJGV-003Peu-1A;
+	Mon, 17 Jul 2023 08:07:31 +0000
+Received: from mail.a-eberle.de ([213.95.140.213])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLJ0j-003MY0-1J
+	id 1qLJGL-003PZK-1F
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jul 2023 07:51:14 +0000
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso41218795e9.1
-        for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2023 00:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689580270; x=1692172270;
-        h=content-disposition:mime-version:message-id:subject:cc:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jB21TKgLqLUivduUeAmZSmMmFlmKP474YJA/eKVbLmk=;
-        b=edc2w00ZtlGTePKF5MQm3j29ZV/vtbWJOa9ZELbwFK5dJUVdQFTKKkZlRICSi6Sj5Q
-         Ra0tfBaI+rDaWhICGbNDRDhQs7WwVqQtCROxvzN21SuvXgZlbTk0OrYty9BeiEeuMM+p
-         Ux1f9hbz7RKD8APT2UI1ZIzQ3q05hU1U3U9kJRbwMjjMI4Ak2XBV+guRUBzRa9rbHXNn
-         9UC9+FUxT+zzCdje6w2L/BvOflTHtQJXHPsz/8I/1vPgvwMi1v6oe+BEmkQjYAzLuIw2
-         +keptlZuFNk9VPvnIQy+rET6qqHZuCzigg9YClXPxSpbP/wQO8pJKbQ2D31UivsyWdia
-         kJ8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689580270; x=1692172270;
-        h=content-disposition:mime-version:message-id:subject:cc:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jB21TKgLqLUivduUeAmZSmMmFlmKP474YJA/eKVbLmk=;
-        b=bO+NXMc+bd+kPpkexWlpfLeUKfPpt8HCuEzWoL3i072O5r8DvQjE/RUCpk8rk1nm32
-         tkVOlYY8nCYbNdXMZfEKAGGVEyrXJMc4HZpuIvNHVqw2HYvcmXmvrZ9Yst8b32uJeBwS
-         zDe9VaWDJYDoY9Ui9xPuTg1cjU8J4Qdo3Ol0JXA7YIp4i1av8IV1ZdfnX+c990QrhV3/
-         Gmpv5M1U/sU+0h6Zc5Nc8z30vERyKxQsjyD4s6mKcOexS6+xkfm49iENsV/ZbJMR6M/c
-         YyX5682XVNwVb3vzsJ1gyIlcqIgHSpC8kFuiZS9rLCDa90iV2wHAgR3+r08HeuAkEOZ1
-         W8nA==
-X-Gm-Message-State: ABy/qLb3oLErdzixAvDDT1EapD1W0Uz96xtbct4qmbvmNT1ewzJ8feWK
-	dTZaePb13oy9EFZLSAWuZVDKRwUDOX0rdLBrDtQ=
-X-Google-Smtp-Source: APBJJlE13YRahKFVtN0OPpv3I34t+aIs0EyhxldAjB80eG1jopyRS3r8T7GGuOfcstI2+mtG+7KWgw==
-X-Received: by 2002:adf:fc4f:0:b0:314:2c7a:d100 with SMTP id e15-20020adffc4f000000b003142c7ad100mr11148563wrs.42.1689580270057;
-        Mon, 17 Jul 2023 00:51:10 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id w13-20020a5d4b4d000000b003143765e207sm18318383wrs.49.2023.07.17.00.51.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 00:51:08 -0700 (PDT)
-Date: Mon, 17 Jul 2023 10:51:04 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: [bug report] UBI: rename sv to av
-Message-ID: <7c5452bc-54e3-4274-96b6-78ba0e4c0643@moroto.mountain>
+	Mon, 17 Jul 2023 08:07:30 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mail.a-eberle.de (Postfix) with ESMTP id E0C7A38053A
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2023 10:07:11 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aeberle-mx.softwerk.noris.de
+Received: from mail.a-eberle.de ([127.0.0.1])
+	by localhost (ebl-mx-02.a-eberle.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ycMD5KQq47iw for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Jul 2023 10:07:10 +0200 (CEST)
+Received: from gateway.a-eberle.de (unknown [178.15.155.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "sg310.eberle.local", Issuer "A. Eberle GmbH & Co. KG WebAdmin CA" (not verified))
+	(Authenticated sender: postmaster@a-eberle.de)
+	by mail.a-eberle.de (Postfix) with ESMTPSA
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2023 10:07:08 +0200 (CEST)
+Received: from svr-exch2019.eberle.local ([192.168.1.17]:9494 helo=webmail.a-eberle.de)
+	by gateway.a-eberle.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <Stephan.Wurm@a-eberle.de>)
+	id 1qLJG5-0007xJ-2e;
+	Mon, 17 Jul 2023 10:07:05 +0200
+Received: from PC-LX-Wurm (10.10.30.11) by Svr-Exch2019.eberle.local
+ (192.168.1.17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42; Mon, 17 Jul
+ 2023 10:07:05 +0200
+Date: Mon, 17 Jul 2023 10:07:04 +0200
+From: Stephan Wurm <stephan.wurm@a-eberle.de>
+To: Richard Weinberger <richard@nod.at>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: Johannes Eigner <johannes.eigner@a-eberle.de>
+Subject: ubiblock: null pointer dereference using scatterlist in work_queue
+Message-ID: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm>
 MIME-Version: 1.0
 Content-Disposition: inline
+X-Originating-IP: [10.10.30.11]
+X-ClientProxiedBy: Svr-Exch2019.eberle.local (192.168.1.17) To
+ Svr-Exch2019.eberle.local (192.168.1.17)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A298E357D5B677565
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230717_005113_474904_AACAAA45 
-X-CRM114-Status: GOOD (  10.45  )
+X-CRM114-CacheID: sfid-20230717_010721_631694_71A4AE45 
+X-CRM114-Status: GOOD (  16.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,167 +85,150 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello MTD dev,
+Hello!
 
-I don't know why this warning is suddenly showing up for ancient code.
+We struggle with a weird problem accessing an ubiblock device for quite some
+time now. As we are running out of ideas, I reach out for your help.
 
-	drivers/mtd/ubi/attach.c:1790 self_check_ai()
-	warn: address of NULL pointer 'av'
+The device we develop has an i.MX6 Solo SoC equipped with gpmi-nand flash
+(Micron MT29F8G08ABACA, 1GB). The flash is partitioned into five UBI volumes,
+forming an A/B boot setup, consisting of two pairs with each a UBIFS volume
+holding a FIT image and a ubiblock volume containing a SQUASHFS root filesystem
+with dm-verity hashes attached, and the fifth UBIFS volume for common data.
+The bootloader (barebox 2022.06.0) is stored on an additional spi-nor flash.
 
-drivers/mtd/ubi/attach.c
-    1658 static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
-    1659 {
-    1660         struct ubi_vid_io_buf *vidb = ai->vidb;
-    1661         struct ubi_vid_hdr *vidh = ubi_get_vid_hdr(vidb);
-    1662         int pnum, err, vols_found = 0;
-    1663         struct rb_node *rb1, *rb2;
-    1664         struct ubi_ainf_volume *av;
-    1665         struct ubi_ainf_peb *aeb, *last_aeb;
-    1666         uint8_t *buf;
-    1667 
-    1668         if (!ubi_dbg_chk_gen(ubi))
-    1669                 return 0;
-    1670 
-    1671         /*
-    1672          * At first, check that attaching information is OK.
-    1673          */
-    1674         ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
-    1675                 int leb_count = 0;
-    1676 
-    1677                 cond_resched();
-    1678 
-    1679                 vols_found += 1;
-    1680 
-    1681                 if (ai->is_empty) {
-    1682                         ubi_err(ubi, "bad is_empty flag");
-    1683                         goto bad_av;
-    1684                 }
-    1685 
-    1686                 if (av->vol_id < 0 || av->highest_lnum < 0 ||
-    1687                     av->leb_count < 0 || av->vol_type < 0 || av->used_ebs < 0 ||
-    1688                     av->data_pad < 0 || av->last_data_size < 0) {
-    1689                         ubi_err(ubi, "negative values");
-    1690                         goto bad_av;
-    1691                 }
-    1692 
-    1693                 if (av->vol_id >= UBI_MAX_VOLUMES &&
-    1694                     av->vol_id < UBI_INTERNAL_VOL_START) {
-    1695                         ubi_err(ubi, "bad vol_id");
-    1696                         goto bad_av;
-    1697                 }
-    1698 
-    1699                 if (av->vol_id > ai->highest_vol_id) {
-    1700                         ubi_err(ubi, "highest_vol_id is %d, but vol_id %d is there",
-    1701                                 ai->highest_vol_id, av->vol_id);
-    1702                         goto out;
-    1703                 }
-    1704 
-    1705                 if (av->vol_type != UBI_DYNAMIC_VOLUME &&
-    1706                     av->vol_type != UBI_STATIC_VOLUME) {
-    1707                         ubi_err(ubi, "bad vol_type");
-    1708                         goto bad_av;
-    1709                 }
-    1710 
-    1711                 if (av->data_pad > ubi->leb_size / 2) {
-    1712                         ubi_err(ubi, "bad data_pad");
-    1713                         goto bad_av;
-    1714                 }
-    1715 
-    1716                 last_aeb = NULL;
-    1717                 ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb) {
-    1718                         cond_resched();
-    1719 
-    1720                         last_aeb = aeb;
-    1721                         leb_count += 1;
-    1722 
-    1723                         if (aeb->pnum < 0 || aeb->ec < 0) {
-    1724                                 ubi_err(ubi, "negative values");
-    1725                                 goto bad_aeb;
-    1726                         }
-    1727 
-    1728                         if (aeb->ec < ai->min_ec) {
-    1729                                 ubi_err(ubi, "bad ai->min_ec (%d), %d found",
-    1730                                         ai->min_ec, aeb->ec);
-    1731                                 goto bad_aeb;
-    1732                         }
-    1733 
-    1734                         if (aeb->ec > ai->max_ec) {
-    1735                                 ubi_err(ubi, "bad ai->max_ec (%d), %d found",
-    1736                                         ai->max_ec, aeb->ec);
-    1737                                 goto bad_aeb;
-    1738                         }
-    1739 
-    1740                         if (aeb->pnum >= ubi->peb_count) {
-    1741                                 ubi_err(ubi, "too high PEB number %d, total PEBs %d",
-    1742                                         aeb->pnum, ubi->peb_count);
-    1743                                 goto bad_aeb;
-    1744                         }
-    1745 
-    1746                         if (av->vol_type == UBI_STATIC_VOLUME) {
-    1747                                 if (aeb->lnum >= av->used_ebs) {
-    1748                                         ubi_err(ubi, "bad lnum or used_ebs");
-    1749                                         goto bad_aeb;
-    1750                                 }
-    1751                         } else {
-    1752                                 if (av->used_ebs != 0) {
-    1753                                         ubi_err(ubi, "non-zero used_ebs");
-    1754                                         goto bad_aeb;
-    1755                                 }
-    1756                         }
-    1757 
-    1758                         if (aeb->lnum > av->highest_lnum) {
-    1759                                 ubi_err(ubi, "incorrect highest_lnum or lnum");
-    1760                                 goto bad_aeb;
-    1761                         }
-    1762                 }
-    1763 
-    1764                 if (av->leb_count != leb_count) {
-    1765                         ubi_err(ubi, "bad leb_count, %d objects in the tree",
-    1766                                 leb_count);
-    1767                         goto bad_av;
-    1768                 }
-    1769 
-    1770                 if (!last_aeb)
-    1771                         continue;
-    1772 
-    1773                 aeb = last_aeb;
-    1774 
-    1775                 if (aeb->lnum != av->highest_lnum) {
-    1776                         ubi_err(ubi, "bad highest_lnum");
-    1777                         goto bad_aeb;
-    1778                 }
-    1779         }
-    1780 
-    1781         if (vols_found != ai->vols_found) {
-    1782                 ubi_err(ubi, "bad ai->vols_found %d, should be %d",
-    1783                         ai->vols_found, vols_found);
-    1784                 goto out;
-    1785         }
-    1786 
-    1787         /* Check that attaching information is correct */
-    1788         ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
+In order to mount the root filesystem, the FIT image contains an initramfs,
+calling cryptsetup (tried v2.4.3 and v2.6.1) on the ubiblock device,
+followed by mount of the root filesystem.
+MTD attach and creation of the ubiblock device is triggered by kernel
+arguments:
 
-"av" points to the next entry in the loop.  It's NULL if we are on the
-last entry.
+  commandline: console=ttymxc1,115200n8   ubi.block=0,root0 root=/dev/ubiblock0_2 rootfstype=squashfs ubi.mtd=nand
 
-    1789                 last_aeb = NULL;
---> 1790                 ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb) {
-                                                         ^^^^^^^^^
-So it's weird to talk about "&av->root" here.
+This fails to boot with a null pointer dereference when calling cryptsetup:
 
-    1791                         int vol_type;
-    1792 
-    1793                         cond_resched();
-    1794 
-    1795                         last_aeb = aeb;
-    1796 
-    1797                         err = ubi_io_read_vid_hdr(ubi, aeb->pnum, vidb, 1);
-    1798                         if (err && err != UBI_IO_BITFLIPS) {
-    1799                                 ubi_err(ubi, "VID header is not OK (%d)",
-    1800                                         err);
+  [    5.637207] ubi0: default fastmap pool size: 200
+  [    5.642020] ubi0: default fastmap WL pool size: 100
+  [    5.647000] ubi0: attaching mtd0
+  [    6.450307] ubi0: scanning is finished
+  [    6.472816] ubi0: attached mtd0 (name "nand", size 1024 MiB)
+  [    6.478561] ubi0: PEB size: 262144 bytes (256 KiB), LEB size: 253952 bytes
+  [    6.485508] ubi0: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
+  [    6.492395] ubi0: VID header offset: 4096 (aligned 4096), data offset: 8192
+  [    6.499378] ubi0: good PEBs: 4092, bad PEBs: 4, corrupted PEBs: 0
+  [    6.505518] ubi0: user volume: 5, internal volumes: 1, max. volumes count: 128
+  [    6.512810] ubi0: max/mean erase counter: 14/8, WL threshold: 4096, image sequence number: 228025450
+  [    6.521965] ubi0: available PEBs: 177, total reserved PEBs: 3915, PEBs reserved for bad PEB handling: 76
+  [    6.531750] ubi0: background thread "ubi_bgt0d" started, PID 163
+  [   12.919477] block ubiblock0_2: created from ubi0:2(root0)
+  [   12.929687] ALSA device list:
+  [   12.932750]   #0: sgtl5000
+  [   12.940024] Freeing unused kernel image (initmem) memory: 1024K
+  [   12.946926] Run /init as init process
+  Starting version 250.5+
+  [   15.601749] mtdblock: MTD device 'nand' is NAND, please consider using UBI block devices instead.
+  realpath: /dev/disk/by-partuuid//dev/ubiblock0_2: No such file or directory
+  [   26.127460] 8<--- cut here ---
+  [   26.130689] Unable to handle kernel NULL pointer dereference at virtual address 00000000
+  [   26.138886] [00000000] *pgd=00000000
+  [   26.142523] Internal error: Oops: 5 [#1] ARM
+  [   26.146804] Modules linked in:
+  [   26.149868] CPU: 0 PID: 18 Comm: kworker/0:3 Not tainted 6.1.38 #1
+  [   26.156060] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+  [   26.162592] Workqueue: ubiblock0_2 ubiblock_do_work
+  [   26.167498] PC is at ubi_io_read+0x78/0x2fc
+  [   26.171693] LR is at ubi_eba_read_leb+0xe8/0x4a4
+  [   26.176320] pc : [<c075f508>]    lr : [<c075cd0c>]    psr: 60070013
+  [   26.182591] sp : f0961dc8  ip : 00000000  fp : 00002000
+  [   26.187819] r10: c81c6000  r9 : 00000000  r8 : c81c7000
+  [   26.193046] r7 : 00000200  r6 : 000008e0  r5 : 00002000  r4 : 00000000
+  [   26.199578] r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : c81c6000
+  [   26.206108] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+  [   26.213250] Control: 10c53c7d  Table: 1824c059  DAC: 00000051
+  [   26.218998] Register r0 information: slab kmalloc-8k start c81c6000 pointer offset 0 size 8192
+  [   26.227638] Register r1 information: NULL pointer
+  [   26.232352] Register r2 information: NULL pointer
+  [   26.237062] Register r3 information: NULL pointer
+  [   26.241772] Register r4 information: NULL pointer
+  [   26.246481] Register r5 information: non-paged memory
+  [   26.251537] Register r6 information: non-paged memory
+  [   26.256594] Register r7 information: non-paged memory
+  [   26.261651] Register r8 information: slab kmalloc-8k start c81c6000 pointer offset 4096 size 8192
+  [   26.270545] Register r9 information: NULL pointer
+  [   26.275254] Register r10 information: slab kmalloc-8k start c81c6000 pointer offset 0 size 8192
+  [   26.283977] Register r11 information: non-paged memory
+  [   26.289120] Register r12 information: NULL pointer
+  [   26.293916] Process kworker/0:3 (pid: 18, stack limit = 0x1a047662)
+  [   26.300194] Stack: (0xf0961dc8 to 0xf0962000)
+  [   26.304559] 1dc0:                   c1d50ec0 c075cc64 00000001 00000000 00000000 c1d50ec0
+  [   26.312744] 1de0: 00000001 24c676fe c075cc64 00000000 000008e0 c81c6000 c80c4000 00000000
+  [   26.320928] 1e00: c1d50ec0 00000002 c81c7000 c075cd0c 00000200 c01d3930 60070013 00000000
+  [   26.329111] 1e20: 60070013 c1b43208 000008e0 24c676fe 00000000 c830f5cc c830f5cc 00000200
+  [   26.337294] 1e40: 00000000 00000001 00000200 c80c4000 00000000 c075d124 00000000 00000200
+  [   26.345477] 1e60: 00000000 c13e0ec0 c81c6000 c1d50ec0 00000000 00000000 00000000 c80c4000
+  [   26.353661] 1e80: c830f5cc c1e52c00 00000200 c81c6000 00000002 c075b748 00000000 00000200
+  [   26.361844] 1ea0: 00000000 c1312e58 ef7d3c00 0003e000 00000000 00000200 ef7d3c00 c1e52c00
+  [   26.370027] 1ec0: c830f5a8 c830f5cc 00000000 c076b228 00000200 00000000 c830f500 c1d50ec0
+  [   26.378211] 1ee0: c830f5d4 24c676fe c0c0e608 c830f5a8 c1ed3800 c1312e58 ef7d3c00 c1d50ec0
+  [   26.386394] 1f00: 00000000 c14e59c0 ef7d3c05 c013c06c 00000001 00000000 c013bff4 00000000
+  [   26.394577] 1f20: c1312e68 24c676fe c1b5f698 c19642b8 00000000 c101b390 00000000 24c676fe
+  [   26.402760] 1f40: c1d50ec0 c1ed3800 c1312e58 c1ed3818 c1312e94 c13dfc30 c1d50ec0 00000008
+  [   26.410944] 1f60: c1312e58 c013c3f0 00000000 c1f16880 c1d50ec0 c013c3b0 c1ed3800 c1ed3880
+  [   26.419126] 1f80: f095de9c 00000000 00000000 c0143654 c1f16880 c0143588 00000000 00000000
+  [   26.427309] 1fa0: 00000000 00000000 00000000 c0100128 00000000 00000000 00000000 00000000
+  [   26.435491] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+  [   26.443673] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+  [   26.451855]  ubi_io_read from ubi_eba_read_leb+0xe8/0x4a4
+  [   26.457277]  ubi_eba_read_leb from ubi_eba_read_leb_sg+0x5c/0x154
+  [   26.463390]  ubi_eba_read_leb_sg from ubi_leb_read_sg+0x70/0xb0
+  [   26.469325]  ubi_leb_read_sg from ubiblock_do_work+0x104/0x238
+  [   26.475180]  ubiblock_do_work from process_one_work+0x238/0x57c
+  [   26.481130]  process_one_work from worker_thread+0x40/0x4f8
+  [   26.486724]  worker_thread from kthread+0xcc/0xf0
+  [   26.491449]  kthread from ret_from_fork+0x14/0x2c
+  [   26.496168] Exception stack(0xf0961fb0 to 0xf0961ff8)
+  [   26.501225] 1fa0:                                     00000000 00000000 00000000 00000000
+  [   26.509410] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+  [   26.517592] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+  [   26.524215] Code: 1a000041 e59d2010 e1a09fc5 e1a0b005 (e5d23000)
+  [   26.530367] ---[ end trace 0000000000000000 ]---
 
-regards,
-dan carpenter
+This kernel Oops happens both on patched or vanilla kernels, of which we tried
+several releases in 5.15.y and 6.1.y branches. We also tried with several of
+our devices.
+Upgrading to the latest mainline kernel did not work out-of-the-box, hence we
+did not follow that track (yet).
+
+We tried with full debugging output for the whole ubi driver and used several
+additional printks. That way we were able to see, that the first scatterlist
+entry already pointed to virtual address zero when the first read request
+caused by cryptsetup was added to ubiblock's work_queue.
+
+  sg_virt(pdu->usgl.sg[0]) => page_address(sg) => 0x0000000
+
+We also tried to use hw_breakpoints to gather more information on (maybe)
+another module interfering, but did not succeed (yet).
+
+But we were not able to narrow down the root cause until now.
+
+
+As an additional twist, the system is able to boot when we mount the ubiblock
+root filesystem without calling cryptsetup, hence skipping the dm-verity hash
+verification. And we can verify the root filesystem with cryptsetup once the
+system boot is finished.
+
+It is also possible to boot the same system image, including dm-verity, when
+using a sdcard instead of the nand flash. Loading the FIT from sdcard but
+calling cryptsetup on the ubiblock device again leads to the described oops.
+
+
+Is there something we have overlooked?
+Do you have further ideas to get behind this issue?
+
+
+Thanks!
+--
+Stephan Wurm <stephan.wurm@a-eberle.de>
 
 ______________________________________________________
 Linux MTD discussion mailing list
