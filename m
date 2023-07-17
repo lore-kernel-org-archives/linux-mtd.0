@@ -4,98 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 901F4EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:19:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F141EEB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kNzwghZ8I1aivRuVFqXcZJea7H76wisr1lDnC9doqHc=; b=ruxktgO32jwCft
-	M3GK88AD5/jstxoBcoUkjM0baxBi8Skgfc7VPnGqb3EnBOuL67g45ZQVRJDwYnfDJtmQDIWdowMtV
-	iewMmzFJGZ1HrTH5mDFkqKHHRRKGSeAW/BzlaYjqSjMDT33i2I9c3YivWaSDHFN+Bfk6CVKhSHA1V
-	/5BeLLEzMU6IgktOIKUKkMb9JmeF9Q3xvI/iD6pf4O/dyt+V+wvM4hKLyG7IZTwt+FQVQl6x7z5O2
-	TYRvDsuMS2ktUUel1SLfTkhXB8/EoBbS8Cc9OUCaARUkUm3WPPzFLZGf6ieZFSF/4Pefx7FSu2J3r
-	IuB48mvl30pdkkjll09g==;
+	List-Owner; bh=1yYyEyfHGGrzP1WiefQPDlpM5BbyOOwpqxk1wFCBbXQ=; b=AZJsRTurUullv8
+	JqGrYkQ89oz+lc6uBkU0jqBKZiBDHsB9w10U7ldiAxcMjmsZgxMHrCcVT3jBmKzCXYm/YR5TqSscN
+	8PFRK6Emw+90U8afBjh0pzAxA7arBiSl+xGuKjQYAN/Vbz9Az4ZXutFT4YSSqv49+DKp0LTJ6Jb4S
+	JxPZm0jDCbJirplaBI7jwMLGUeRzUi+W6HS/fc0CGxqtnQO/an7fReATPJqPsDYB5HD2NxMuhK8Uv
+	WwCy/kUiWus1JYKT/211Ox+g8Y7sBX+x9e/B6UtCqw8VgWH+DWgCz4rseK61mScjkL21t5REvMJK6
+	YGtHQxiZEZLKyawbl4ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLzb8-005Dd1-0C;
-	Wed, 19 Jul 2023 05:19:38 +0000
+	id 1qLzgL-005HcG-07;
+	Wed, 19 Jul 2023 05:25:01 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLzb6-005DcG-1K
+	id 1qLzg5-005HQP-0o
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 05:19:36 +0000
+	Wed, 19 Jul 2023 05:24:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=VRkJIutGAQCy9V+Cnln/i2QHE7ZQe0Zo2jvJEyGa0Ng=; b=nQDF4V10Ls4HUskwf1uKdLr4ZI
-	j7GXrZ2A1kwrv0NGzRgIvnN8Fa0m0adhXAf45yvR3m2H8NUSElH/OQGTAkhLqhyImtxVcA9/lm8Gn
-	5TrtXRrGpYM29G4tj/HsylGoKBsQjFZlZHBJzuGTBJ49i/U+UZpCw5D6wE2FuyCWRa1d0uBQrVuqJ
-	X9kwhnJYWRlW6zTml8pk1X7aanT53lPkaiIbbk2AZ8DlextI62r8izMYNcBKZDlT3ar6Aab4BGhe1
-	f+21+/K4cvYyE5hHg/TeyJty+Fa06cTS0NdNtgEuQXMw7N+8F0DIPtc+yVnTbiozNf9oT2exqQ3sg
-	qwAaxVLQ==;
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=5gEUn549HX6Kut5VTQH3vbjTC7LCGLE2/fOFWaktOz4=; b=U4GTqOF5VCaj3I6Z4wBS0j8Olu
+	A+hhVFxDMarPjw9hgxGOKzQXaxn9nNL0Kz8Xe4geFpYGWPxaxUI1DmKD9F0dH5BCpql03Iekd6UU4
+	IAl0kkbK2Juo9zm7XZEMYrxna7OHYdp4Zs2rXBvN0gfdHo6bQeSsfSmigk6J+tCAfDb1etsZZjAW8
+	zo5k3iJ141NljFRol5eSr2I7A9c7iuIQRFUUxPlT0uAokjF113eDdWN/6johkkzyqhMy/A1dwCUqI
+	3/dEX6wlhC1fK2xbdN1Jgc7XpFBYyP4JK9rFJX8dg4KNsEXLxTaAjmDTkk0jwJK81RUvqLuI6/dfJ
+	kOiO/xmQ==;
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLkJV-00BYOH-0o
+	id 1qLU7k-009FWr-1I
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 13:00:28 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4EB4F6157C;
-	Tue, 18 Jul 2023 12:59:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D366C433CA;
-	Tue, 18 Jul 2023 12:59:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689685191;
-	bh=ODoi2e+vcqIb799pflsdMhm1nGdkubtWgbUegajrVfU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SDalzP/YaXdnw/eO5FhMttHT+uo4cUQ0HEfzV/eVDhjrh2vL2AqqxXcAqh13yqJn4
-	 AVbM5TSLu3q0pr2cIE2wClirkeGHzrnHwdeCo5pdmULzTvNEpku6b70jtE1ArlykWc
-	 iaLRyhhRjQiHzGqDFnFYCpXBS8sZnvAGylTxo/SCUEVIt3zDITwUPYFYeNX441iuA5
-	 UPvKWFmqWGmWjFjxj3GAvUxK0AMTKP3bw+ZiMK2blBchprVp/PM9vi8CkYksqH9lwv
-	 0KW/Y7eXnjmHRBPOokrRrf/vKW7znD2how5Rm7j4/YU0ipme/NjIaZ8mn9lIi/NwrT
-	 dtMt3ZU+yjBpQ==
-From: Ard Biesheuvel <ardb@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Haren Myneni <haren@us.ibm.com>,
-	Nick Terrell <terrelln@fb.com>,
-	Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	qat-linux@intel.com,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: [RFC PATCH 05/21] ubifs: Pass worst-case buffer size to compression routines
-Date: Tue, 18 Jul 2023 14:58:31 +0200
-Message-Id: <20230718125847.3869700-6-ardb@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
-References: <20230718125847.3869700-1-ardb@kernel.org>
+	Mon, 17 Jul 2023 19:43:14 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A3D871BF205;
+	Mon, 17 Jul 2023 19:42:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1689622947;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5gEUn549HX6Kut5VTQH3vbjTC7LCGLE2/fOFWaktOz4=;
+	b=fbQxt2fNLkhDxfzd7Vt8XwYtMdwJgL/QKaWkeSdLrmz0X5uQpYQIzRM+m2/a4bcTGRBsz7
+	ka/0eEzwcx2uKW6lFPovIDVYLpAYM7+Iho11pdvW0KM64QUkxOD9x59Aglgdr/V23gmK0V
+	VFqLWiM61he5e0hGSgjc4FYqXGg1670S/MvWBqYicIqyPwd/Mjqf+m/aCFoRcUvcy7b1yt
+	IHEaa6ajvEgFO8jtn/nPf2N0k9HD6f/Msuzg73pmdp4T1maWUs9tiX+VRFYlzX1OnTkeT0
+	8DmPB+k/zxJ6dMZYdrvgSd0/DKxpoaIyrz8QTWNDvyNIpXEGvN8s23lR1J7dhw==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <michael@walle.cc>,
+	<linux-mtd@lists.infradead.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Michal Simek <michal.simek@amd.com>,
+	stable@vger.kernel.org
+Subject: [PATCH 2/3] mtd: rawnand: arasan: Ensure program page operations are successful
+Date: Mon, 17 Jul 2023 21:42:20 +0200
+Message-Id: <20230717194221.229778-2-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230717194221.229778-1-miquel.raynal@bootlin.com>
+References: <20230717194221.229778-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1089; i=ardb@kernel.org; h=from:subject; bh=ODoi2e+vcqIb799pflsdMhm1nGdkubtWgbUegajrVfU=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT9FzF2aeyo1FL46LhUf9emTqUM1q5dWwJ2Dzr1cTG sRaswQ7SlkYxDgYZMUUWQRm/3238/REqVrnWbIwc1iZQIYwcHEKwETqRRgZriduT8+o3D0pY5fL upjHTB/UclQ3ycjOPOLy0+e+sqX/b4Z/Wgf3MzUs1I/L09XztZ/lvWNdMcPstI16pS5bDvIdeTO NGwA=
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_140025_445924_C44303E7 
-X-CRM114-Status: GOOD (  13.70  )
+X-CRM114-CacheID: sfid-20230717_204312_906470_F4A626DE 
+X-CRM114-Status: GOOD (  17.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,42 +89,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently, the ubifs code allocates a worst case buffer size to
-recompress a data node, but does not pass the size of that buffer to the
-compression code. This means that the compression code will never use
-the additional space, and might fail spuriously due to lack of space.
-
-So let's multiply out_len by WORST_COMPR_FACTOR after allocating the
-buffer. Doing so is guaranteed not to overflow, given that the preceding
-kmalloc_array() call would have failed otherwise.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- fs/ubifs/journal.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index dc52ac0f4a345f30..4e5961878f336033 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1493,6 +1493,8 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
- 	if (!buf)
- 		return -ENOMEM;
- 
-+	out_len *= WORST_COMPR_FACTOR;
-+
- 	dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
- 	data_size = dn_size - UBIFS_DATA_NODE_SZ;
- 	compr_type = le16_to_cpu(dn->compr_type);
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhlIE5BTkQgY29yZSBjb21wbGllcyB3aXRoIHRoZSBPTkZJIHNwZWNpZmljYXRpb24sIHdoaWNo
+IGl0c2VsZgptZW50aW9ucyB0aGF0IGFmdGVyIGFueSBwcm9ncmFtIG9yIGVyYXNlIG9wZXJhdGlv
+biwgYSBzdGF0dXMgY2hlY2sKc2hvdWxkIGJlIHBlcmZvcm1lZCB0byBzZWUgd2hldGhlciB0aGUg
+b3BlcmF0aW9uIHdhcyBmaW5pc2hlZCAqYW5kKgpzdWNjZXNzZnVsLgoKVGhlIE5BTkQgY29yZSBv
+ZmZlcnMgaGVscGVycyB0byBmaW5pc2ggYSBwYWdlIHdyaXRlIChzZW5kaW5nIHRoZQoiUEFHRSBQ
+Uk9HIiBjb21tYW5kLCB3YWl0aW5nIGZvciB0aGUgTkFORCBjaGlwIHRvIGJlIHJlYWR5IGFnYWlu
+LCBhbmQKY2hlY2tpbmcgdGhlIG9wZXJhdGlvbiBzdGF0dXMpLiBCdXQgaW4gc29tZSBjYXNlcywg
+YWR2YW5jZWQgY29udHJvbGxlcgpkcml2ZXJzIG1pZ2h0IHdhbnQgdG8gb3B0aW1pemUgdGhpcyBh
+bmQgY3JhZnQgdGhlaXIgb3duIHBhZ2Ugd3JpdGUKaGVscGVyIHRvIGxldmVyYWdlIGFkZGl0aW9u
+YWwgaGFyZHdhcmUgY2FwYWJpbGl0aWVzLCB0aHVzIG5vdCBhbHdheXMKdXNpbmcgdGhlIGNvcmUg
+ZmFjaWxpdGllcy4KClNvbWUgZHJpdmVycywgbGlrZSB0aGlzIG9uZSwgZG8gbm90IHVzZSB0aGUg
+Y29yZSBoZWxwZXIgdG8gZmluaXNoIGEgcGFnZQp3cml0ZSBiZWNhdXNlIHRoZSBmaW5hbCBjeWNs
+ZXMgYXJlIGF1dG9tYXRpY2FsbHkgbWFuYWdlZCBieSB0aGUKaGFyZHdhcmUuIEluIHRoaXMgY2Fz
+ZSwgdGhlIGFkZGl0aW9uYWwgY2FyZSBtdXN0IGJlIHRha2VuIHRvIG1hbnVhbGx5CnBlcmZvcm0g
+dGhlIGZpbmFsIHN0YXR1cyBjaGVjay4KCkxldCdzIHJlYWQgdGhlIE5BTkQgY2hpcCBzdGF0dXMg
+YXQgdGhlIGVuZCBvZiB0aGUgcGFnZSB3cml0ZSBoZWxwZXIgYW5kCnJldHVybiAtRUlPIHVwb24g
+ZXJyb3IuCgpDYzogTWljaGFsIFNpbWVrIDxtaWNoYWwuc2ltZWtAYW1kLmNvbT4KQ2M6IHN0YWJs
+ZUB2Z2VyLmtlcm5lbC5vcmcKRml4ZXM6IDg4ZmZlZjFiNjVjZiAoIm10ZDogcmF3bmFuZDogYXJh
+c2FuOiBTdXBwb3J0IHRoZSBoYXJkd2FyZSBCQ0ggRUNDIGVuZ2luZSIpClNpZ25lZC1vZmYtYnk6
+IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+CgotLS0KCkhlbGxvIE1p
+Y2hhbCwKCkkgaGF2ZSBub3QgdGVzdGVkIHRoaXMsIGJ1dCBiYXNlZCBvbiBhIHJlcG9ydCBvbiBh
+bm90aGVyIGRyaXZlciwgSQpiZWxpZXZlIHRoZSBzdGF0dXMgY2hlY2sgaXMgYWxzbyBtaXNzaW5n
+IGhlcmUgYW5kIGNvdWxkIHNvbWV0aW1lcwpsZWFkIHRvIHVubm90aWNlZCBwYXJ0aWFsIHdyaXRl
+cy4KClBsZWFzZSB0ZXN0IG9uIHlvdXIgc2lkZSB0aGF0IGV2ZXJ5dGhpbmcgc3RpbGwgd29ya3Mg
+YW5kIGxldCBtZQprbm93IGhvdyBpdCBnb2VzLgoKVGhhbmtzIGEgbG90LgpNaXF1w6hsCi0tLQog
+ZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jIHwgMTYgKysrKysr
+KysrKysrKystLQogMSBmaWxlIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25z
+KC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQtY29udHJv
+bGxlci5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jCmlu
+ZGV4IDkwNmVlZjcwY2I2ZC4uNDg3YzEzOTMxNmZlIDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9u
+YW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9sbGVyLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jCkBAIC01MTUsNiArNTE1LDcgQEAgc3RhdGljIGlu
+dCBhbmZjX3dyaXRlX3BhZ2VfaHdfZWNjKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGNvbnN0IHU4
+ICpidWYsCiAJc3RydWN0IG10ZF9pbmZvICptdGQgPSBuYW5kX3RvX210ZChjaGlwKTsKIAl1bnNp
+Z25lZCBpbnQgbGVuID0gbXRkLT53cml0ZXNpemUgKyAob29iX3JlcXVpcmVkID8gbXRkLT5vb2Jz
+aXplIDogMCk7CiAJZG1hX2FkZHJfdCBkbWFfYWRkcjsKKwl1OCBzdGF0dXM7CiAJaW50IHJldDsK
+IAlzdHJ1Y3QgYW5mY19vcCBuZmNfb3AgPSB7CiAJCS5wa3RfcmVnID0KQEAgLTU2MSwxMCArNTYy
+LDIxIEBAIHN0YXRpYyBpbnQgYW5mY193cml0ZV9wYWdlX2h3X2VjYyhzdHJ1Y3QgbmFuZF9jaGlw
+ICpjaGlwLCBjb25zdCB1OCAqYnVmLAogCX0KIAogCS8qIFNwYXJlIGRhdGEgaXMgbm90IHByb3Rl
+Y3RlZCAqLwotCWlmIChvb2JfcmVxdWlyZWQpCisJaWYgKG9vYl9yZXF1aXJlZCkgewogCQlyZXQg
+PSBuYW5kX3dyaXRlX29vYl9zdGQoY2hpcCwgcGFnZSk7CisJCWlmIChyZXQpCisJCQlyZXR1cm4g
+cmV0OworCX0KIAotCXJldHVybiByZXQ7CisJLyogQ2hlY2sgd3JpdGUgc3RhdHVzIG9uIHRoZSBj
+aGlwIHNpZGUgKi8KKwlyZXQgPSBuYW5kX3N0YXR1c19vcChjaGlwLCAmc3RhdHVzKTsKKwlpZiAo
+cmV0KQorCQlyZXR1cm4gcmV0OworCisJaWYgKHN0YXR1cyAmIE5BTkRfU1RBVFVTX0ZBSUwpCisJ
+CXJldHVybiAtRUlPOworCisJcmV0dXJuIDA7CiB9CiAKIHN0YXRpYyBpbnQgYW5mY19zZWxfd3Jp
+dGVfcGFnZV9od19lY2Moc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgY29uc3QgdTggKmJ1ZiwKLS0g
+CjIuMzQuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
