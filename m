@@ -4,86 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBEC6C04A6A
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 16:36:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 145AAEB64DC
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 16:37:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S7QsRLN/dLAGM2DIgSfI4MLW3K+atOw3Aq/lOURTr0Y=; b=sEoNpjNb2Vq7rz
-	udb9KTnnffm2Yt5BR7k1KUH3bbVNoie/OM9M6OQuSktq0/Q+Rf+akX+6RATCICSHD1kb11hPEkWaA
-	mhrKDcEqoSPj2Xr0ToelpuyACKPNs1JNvjHZYZTOkxna5kg6U+ONL/Vf0VdUcJDHdLgGIy9XFeBAd
-	C2mFKJ8EnJOsPjfuAcpzi+jfdwDWnX5TkEQGNHU9KEzOCjq2EWmEU14Dbnja4wOAHl8/1VvFzDotU
-	1KJ9Hx6QCTAe+nyjIWz672GT2DIhRFj63tJval3J0mQIydSHIcFoKeB3lkZxUHUq3FFpMao1Dg1/0
-	m3hdJvr+GuE0KwOvlgDA==;
+	List-Owner; bh=m3BLNsqvshENYQt/MOaZVlmDv1EhxnmJDYSlbpZfm6A=; b=Mvxu8tee+LSMeY
+	0lHO8x36q+MCBGgRGSCb6C7RtlQV+fDwbADYd5AxSIhBiEiUJQuA8w0rZnsszy6RAkysWVb0J+cPP
+	P6BreXj4PndwooMnchfVwYfJmG6Ta4/lv6jSWGLlPVZXUntDQcTfhsP1QyxGbbKFzjCl5c9s4cnaw
+	p3SGGheecrTqTqBAEgzZxM97pwf2vq1l/qbI0UY44JgmLnLxWzth6tMO0X8mqgPdAhVbTV6+pE+L9
+	MYMqKXm7PXq3/cdOqRZgrdqgeqOxlUQtY+FAofTYJXRO6i4gxr1mjs76MgtRYv2nHOCrK5JYk6ZbJ
+	Rmgk4gbW16SkphOaCsGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLRCo-004YgW-0r;
-	Mon, 17 Jul 2023 16:36:14 +0000
-Received: from mail-wm1-x334.google.com ([2a00:1450:4864:20::334])
+	id 1qLRDa-004Yu5-10;
+	Mon, 17 Jul 2023 16:37:02 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLRCi-004Ye8-2T
+	id 1qLRDW-004Yr9-0Q
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jul 2023 16:36:10 +0000
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fba8e2aa52so49905105e9.1
-        for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2023 09:36:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689611766; x=1692203766;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wxRhR0r73fCyJSfEpEtXqPaclv2CSQ/el9ad+l8akUs=;
-        b=l9WcVXC6HdDMB4tx7zgtYXUMLlfQ0AQz3HHM6OjZE+NsImHmb0d3d3VezU1cEsm4A1
-         ekmg6zBOuebenN+D5v7eZY76SanuwfIgCo/ckGXwRa1DkwODMC9hbNZnMM8E4KY7VsE3
-         qtI8uhCjsWu9LiVgGYGqiXn2bG7EFBL73AA8R9bNt7Vcb9pOw+yTFnTb8LRyUObYEwqG
-         h64elD2L0/C4tMWsopAENzzADUvT8JD8PjS5elXL0OjHAOGGdNiBsw3BrCj/YXKMGpEP
-         XKZg3qzVGwyuGWhXMFIuTjLMSyxuOPQyJXhlFDXcBp515tENzQ3DCOCH7oImFBhYpoJm
-         jNvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689611766; x=1692203766;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wxRhR0r73fCyJSfEpEtXqPaclv2CSQ/el9ad+l8akUs=;
-        b=T/lnUdS+vZnlMV0ai7SdYQVOHU98BZa4Vrwh6eS4O9mq5QhrzDl31qj9rlyNQkoTUo
-         q9h64D6kkcosd4edIeQEZ5jW3alOrOvoRH8J+n7EOuwkyIxHiI3eUXLNxvvq9plV4Fmc
-         GUzcDjbraFvkZLLKYsiWJLeZ/TKBr7jQfQULmpq8s5RrWzgtfTAkfogaBZvFrDhgz2jL
-         HF6NKPNygi/oC7ofUgr6IRkrd1nEzCQGYlqzg5o04jKMa5aPwNP1WfdF5NGAi00o+0Uj
-         AAdlxXPgul+KStzafqWGKIADY5MUvCFTXmXSqIyrh/PYTTu1Yeg7H7iBt6053V+dZ7MG
-         QvWQ==
-X-Gm-Message-State: ABy/qLZyL9vZX/LiaLlq45lb+VHfshoKTXsc5i2LyX8ICcrFpStuGkx2
-	9UtO4W1WZCC/7l0XvWjlN5f8+Q==
-X-Google-Smtp-Source: APBJJlFDDluHEyFjvvRLMvIDD+mFo545IE15sH1uF1huHfdDMOWSDiwOqi1dlJi7WOh0HamPx8XPXw==
-X-Received: by 2002:adf:ce09:0:b0:313:eadf:b82d with SMTP id p9-20020adfce09000000b00313eadfb82dmr10414459wrn.69.1689611766638;
-        Mon, 17 Jul 2023 09:36:06 -0700 (PDT)
-Received: from 1.. ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id t15-20020a1c770f000000b003fb40f5f553sm8401774wmi.31.2023.07.17.09.36.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 09:36:06 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: michael@walle.cc,
-	pratyush@kernel.org
-Cc: miquel.raynal@bootlin.com,
-	ichard@nod.at,
-	Takahiro.Kuwano@infineon.com,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	stable@vger.kernel.org
-Subject: [PATCH 3/4] mtd: spi-nor: spansion: make sure op does not contain garbage
-Date: Mon, 17 Jul 2023 19:35:59 +0300
-Message-Id: <20230717163600.29087-3-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230717163600.29087-1-tudor.ambarus@linaro.org>
-References: <20230717163600.29087-1-tudor.ambarus@linaro.org>
+	Mon, 17 Jul 2023 16:36:59 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2A76620004;
+	Mon, 17 Jul 2023 16:36:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1689611810;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/ixxmggQcHOQoObT0Q1aqAXVMahJLMMF50h5hpShqe0=;
+	b=puyqSvgz+Fa7II6HYjcwNPVuRuIcE1eEcI97oAfES2lGeePzdlCi8qAirL29UBIDoCMiTg
+	6wRRMXYNXnZPbWudb6Gqevf8UyjJ3lW/HF4U99mPUnLoaxJEOz+3p10UZ+K8n7AFLwJzcu
+	WnQf/5crhzlfne02P07ZQlS2NyPKx5tbgl6+FT/fVUj7a2tAfQp9blZTlLOrWsxJmu3v8+
+	Nt7ZaddxL9Z07E6L3jO2E/3mQwhmWXvqq5cpu20aK6SDj6RNDn0xYql41sLd+NN2F2Kk7L
+	Xar/PEokeE8dt7Dkj8k4p0Iif74DzCg6yf9eo5Af7GeNUUS/zCWewVZwiLlj4g==
+Date: Mon, 17 Jul 2023 18:36:45 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
+ Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>, Julien Su <juliensu@mxic.com.tw>, Jaime
+ Liao <jaimeliao@mxic.com.tw>, Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, JaimeLiao
+ <jaimeliao.tw@gmail.com>, Alexander Shiyan <eagle.alexander923@gmail.com>,
+ Domenico Punzo <dpunzo@micron.com>, Bean Huo <beanhuo@micron.com>
+Subject: Re: [PATCH v2 3/3] mtd: rawnand: Support for sequential cache reads
+Message-ID: <20230717183645.32ef90b0@xps-13>
+In-Reply-To: <yw1x351mznr0.fsf@mansr.com>
+References: <20230112093637.987838-1-miquel.raynal@bootlin.com>
+	<20230112093637.987838-4-miquel.raynal@bootlin.com>
+	<yw1xfs6j4k6q.fsf@mansr.com>
+	<20230716174917.3a9ca7a7@xps-13>
+	<yw1x7cqzzr4d.fsf@mansr.com>
+	<20230717091900.52ed815a@xps-13>
+	<yw1x351mznr0.fsf@mansr.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1525; i=tudor.ambarus@linaro.org; h=from:subject; bh=jK7G8/dGKpNjblyZNdcgsS29H7EUdtJKmDLXkFoMUK8=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBktW3wRZnBIKX7MJLwCSTRLiWTIyz0hXlIKgZMI bMr/T+s2NCJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZLVt8AAKCRBLVU9HpY0U 6bOqCACEhwiC1WelN0j1rCBwwmj6+cDXlWqgkMVMJAREFfkkAbllBqLEGEp495t/1wQnZNIffkb fv/fPXIjmSA+ekXchngSY0acafr4PMLytM0I+BSw0R7ynDT8r1OHiHQT66PptTl7iWoL7NyRQjf RxOdEExkfVuW2rC9TfULIiArJ0p8Y70fJ3yzLCuOkwRKYrcA9ItIuphooo3ia2ez1HAzRC1jJJi 0FpywB95NapP8ccOaium4t/2FPzaaVCth5hFrGtC4Ur1JFR9Vc9tv4JtPhI+X2HtFphpJUGb4/D m3u8O/ukd+EbTfKj5BmMaT2NUPggzGLer6xAiu12syD8qX2U
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230717_093608_929315_5C265B91 
-X-CRM114-Status: GOOD (  11.83  )
+X-CRM114-CacheID: sfid-20230717_093658_510110_3C69DAAD 
+X-CRM114-Status: GOOD (  19.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,56 +80,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Initialise local struct spi_mem_op with all zeros at declaration,
-or by memset before the second use, in order to avoid using garbage
-data for fields that are not explicitly set afterwards.
-
-Fixes: c3266af101f2 ("mtd: spi-nor: spansion: add support for Cypress Semper flash")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/mtd/spi-nor/spansion.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 6d6466a3436e..c03445e46d56 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -143,7 +143,7 @@ static int cypress_nor_sr_ready_and_clear(struct spi_nor *nor)
- 
- static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- {
--	struct spi_mem_op op;
-+	struct spi_mem_op op = {};
- 	u8 *buf = nor->bouncebuf;
- 	int ret;
- 	u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
-@@ -161,6 +161,7 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- 	nor->read_dummy = 24;
- 
- 	/* Set the octal and DTR enable bits. */
-+	memset(&op, 0, sizeof(op));
- 	buf[0] = SPINOR_REG_CYPRESS_CFR5_OCT_DTR_EN;
- 	op = (struct spi_mem_op)
- 		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
-@@ -186,7 +187,7 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- 
- static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
- {
--	struct spi_mem_op op;
-+	struct spi_mem_op op = {};
- 	u8 *buf = nor->bouncebuf;
- 	int ret;
- 
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTcOlbnMsCgptYW5zQG1hbnNyLmNvbSB3cm90ZSBvbiBNb24sIDE3IEp1bCAyMDIzIDE0OjEx
+OjMxICswMTAwOgoKPiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3
+cml0ZXM6Cj4gCj4gPiBTbywgSSBzaG91bGQgaGF2ZSBkb25lIHRoYXQgZWFybGllciBidXQsIGNv
+dWxkIHlvdSBwbGVhc2Ugc2xvdyB0aGUKPiA+IHdob2xlIG9wZXJhdGlvbiBkb3duLCBqdXN0IHRv
+IHNlZSBpZiB0aGVyZSBpcyBzb21ldGhpbmcgd3Jvbmcgd2l0aCB0aGUKPiA+IHRpbWluZ3Mgb3Ig
+aWYgd2Ugc2hvdWxkIGxvb2sgaW4gYW5vdGhlciBkaXJlY3Rpb24uCj4gPgo+ID4gTWF5YmUgeW91
+IGNvdWxkIGFkZCBhIGJvb2xlYW4gdG8gZmxhZyBpZiB0aGUgbGFzdCBDTUQgd2FzIGEKPiA+IFJF
+QURDQUNIRVNFUSwgUkVBRENBQ0hFU1RBUlQgb3IgUkVBRENBQ0hFRU5ELCBhbmQgaWYgdGhlIGZs
+YWcgaXMKPiA+IHRydWUsIHBsZWFzZSBnZXQgdGhlIGppZmZpZXMgYmVmb3JlIGFuZCBhZnRlciBl
+YWNoIHdhaXRyZHkgYW5kCj4gPiBkZWxheV9ucy4gRmluYWxseSwgcGxlYXNlIHByaW50IHRoZSBl
+eHBlY3RlZCBkZWxheSBhbmQgdGhlIGFjdHVhbCBvbmUKPiA+IGFuZCBjb21wYXJlIHRvIHNlZSBp
+ZiBzb21ldGhpbmcgd2FzIHRvbyBmYXN0IGNvbXBhcmVkIHRvIHdoYXQgd2UKPiA+IGV4cGVjdGVk
+LiAgCj4gCj4gQmV0d2VlbiB3aGljaCBwb2ludHMgZXhhY3RseSBzaG91bGQgdGhlIGRlbGF5IGJl
+IG1lYXN1cmVkPyAgQWxzbywgdGhlcmUKPiBpcyBubyBjb21tYW5kIGNhbGxlZCBSRUFEQ0FDSEVT
+VEFSVC4gIERpZCB5b3UgbWVhbiBSRUFEU1RBUlQgb3IKPiBzb21ldGhpbmcgZWxzZT8KClllYWgs
+IHdoYXRldmVyIGNvbW1hbmQgaXMgc3BlY2lmaWMgdG8gc2VxdWVudGlhbCBjYWNoZSByZWFkczoK
+aHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvbGF0ZXN0L3NvdXJjZS9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYyNMMTIxOApodHRwczovL2VsaXhpci5ib290bGluLmNvbS9s
+aW51eC9sYXRlc3Qvc291cmNlL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jI0wxMjI4
+Cgo+ID4gSW4gYSBzZWNvbmQgdGVzdCwgeW91IGNvdWxkIHNpbXBseSBhZGQgYSB1ZGVsYXkoNTAp
+OyBhdCB0aGUgZW5kIG9mCj4gPiBvbWFwX25hbmRfZXhlY19pbnN0cigpLiAgCj4gCj4gVGhhdCBk
+aWRuJ3QgaGVscC4KClJlYWxseT8gVGhhdCdzIGRpc2FwcG9pbnRpbmcgKHRoYW5rcyBhIGxvdCBm
+b3IgeW91ciBxdWljayBmZWVkYmFjaykuCgpMZXQncyBzZWUgd2hhdCB0aGUgbWVhc3VyZW1lbnRz
+IHdpbGwgcmV0dXJuLgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
+ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+bXRkLwo=
