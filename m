@@ -4,85 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51200C001DC
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 15:38:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E9BCEB64DC
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 16:04:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CZ2nAA4mNXBGV/Cr8eE0ZwTkToKkuwOQ+lWbX2yi6mM=; b=o25woPggNj9mZm
-	fCcW/xyEIu2i4ec5ImsWULUuPblRsJrJOrWi1kqb6fOeoMpfP37GEcTYZQoasSSkzoKL4GQmJGiXV
-	p87cFbGPQiterjNybY55AA7hnqQzTby1dAYuP4OlrJd4/ZJRpcqld+sm2m4UoJ5CgYtUytyhQZNzG
-	IKp6xZRJFR4tkN2MdXYGbPWXLasDAigklW/9c10Evc5Hk/Ts70e6/bMiNQ2mNeNMGRFsY+tkO/MUJ
-	VbEPCTlGeLs16xnj2lEcTKT8OubIiJUl7xZ3gPcs5NJZ6UG//kzI5vrix7m5Ta93vH65iB/tPr0b5
-	egPMmGaaEeCmkXwqvJyQ==;
+	List-Owner; bh=qUZmSL5mcbHW/1vF6iZChCLJAvlhT13H9FaQkvM7bnQ=; b=2wAmRsycwI08K3
+	/aERJ7rwpBp0zbsindogGnkKJwK7swInnTSxeDmEFk1deNdOjQGy2a6kTDy2IP8W6wCyCHcjD2wJr
+	ernzywGbdjvBa/8v3Y6rs0QTKn9pcZTVOku24k2D/H10uOApo3pLk9RH8SUUb+blYHBOnnG9qAQrV
+	zWkmT5WFJBCoiy20T6LsZg6/E7Y7K6+U0XNGjm1eMCBf8N91/VxZWmxAFoJm+EN6yvJ8uOifLozt8
+	huJOVPKJFa73WEZVQcukUJ13UBa2g0ajqVavx6ENyyrC+2e/+ddm7CoILY85yCS4Y5dNXD08XpWzY
+	0qdC32qmGc69il894bcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLQJ2-004Pys-0O;
-	Mon, 17 Jul 2023 15:38:36 +0000
-Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
+	id 1qLQhS-004Uic-1M;
+	Mon, 17 Jul 2023 16:03:50 +0000
+Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLQIy-004Pxg-2O
+	id 1qLQhN-004UhN-1K
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jul 2023 15:38:34 +0000
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36HDxRYq018806;
-	Mon, 17 Jul 2023 15:38:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=nyTOhvver3QN4jRNMwjMTTG5SDtoqZrJSaCtmkMi0Xk=;
- b=R+xksM8l4F0GKfLkjBqe1EXWCyLmkFoiaVKs0Y1e6kmVdkNDjS+dGZBkaeHt8LDixJJA
- /dvXZ0x8rE0+BloeJACXOvhzHGI+jETx5QgVR8bX46H2NLuLTultGBTpL1mocRwQcKxd
- 8DGXe0Ttz9exfR/tYQIo7vYP4Doi5jDhHwyospcSdoEF56iwIn2rrt+Ov1y6548+knz9
- 8IjPKTrm4n6wrc3YcjUeSvPt7IG5gBjxsNOKDLMz2nMS74wBUsPNGE8bzA3/couR+2s/
- ZatUktxraQjqzHoUlymm1KgpXPLIp8kH0Vv/So+IW0Ew1/ingNff1fIVSaLRS8KDSP+E PA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run1jkt1c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 17 Jul 2023 15:38:22 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36HFcLFI007683
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 17 Jul 2023 15:38:21 GMT
-Received: from sridsn-linux.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 17 Jul 2023 08:38:18 -0700
-From: Sridharan S N <quic_sridsn@quicinc.com>
-To: <tudor.ambarus@linaro.org>, <pratyush@kernel.org>, <michael@walle.cc>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: Sridharan S N <quic_sridsn@quicinc.com>,
-        Md Sadre Alam
-	<quic_mdalam@quicinc.com>
-Subject: [PATCH 2/2] mtd: spi-nor: macronix: Add support for mx66u1g45g
-Date: Mon, 17 Jul 2023 21:05:36 +0530
-Message-ID: <20230717153536.25700-3-quic_sridsn@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230717153536.25700-1-quic_sridsn@quicinc.com>
-References: <20230717153536.25700-1-quic_sridsn@quicinc.com>
+	Mon, 17 Jul 2023 16:03:46 +0000
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fc0aecf107so42206595e9.2
+        for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2023 09:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689609821; x=1692201821;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=xzMEPTz588E46vXxy5mUnzrAFOkBW/+dR4TsONpfgDs=;
+        b=hmC4JEUJ0yS2BhZmUzD1WFgoOgR+TL3jIxHmHWs+VaH1Eb/BudUEOgdcDRC2LyUWed
+         NvjydtuzNLSrMdNuQEeUvawFb4q/HDG4pvdQ3B+dOlri/6ZfW8Qut7dPTDXCvXuTFnBQ
+         5kRVmo/+wTHfUko6jftrEr7AyrRMwQMynSsVFb3I/eGrT5GJ2LYMCtBLZWYw/tixnwkD
+         nJEU4xVIkzCuGkn/uhfvb8ikvQU90pVog14exKwHj49OnpOQs+Ja/9Y23N5/bmQ5o+q/
+         b2zM1Bn/qcyJcvOjaVPeg80xhI2VaR+UMcZKX2WBx5xPNUhTtH85seIavgytdraOKIGT
+         00CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689609821; x=1692201821;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xzMEPTz588E46vXxy5mUnzrAFOkBW/+dR4TsONpfgDs=;
+        b=k/hjv1Z6MRIj1lpywbLJjg37N8PJ4T+yAe/KpeTkAjgI/EATQmCqGP83opOzcHwwE/
+         IU6Ec9psMonJKn3Al8PcqEo3KSSeQ/qvztAa8g7csoO44/eeEbbPwBhF/CuY2Yc0hXUF
+         yTkKbL05QfDYv10TMUpMjhj/Pywc6t9fT9VU97eCfyh3IKylXGfy8DBJPt4FgdMp+t/J
+         tvcO7kbNpTw/og1BnjHCTHVV0UmGBWf5X5TlImS7d/vXVKUGYczw5dxHq+a7sg8Cp2yH
+         zLd9py8ZDAK62/w0hUOVCCMdkVQ8vNboCEBn0cU8pohRBP6bvVvUuYuJvSMn55EM9UgN
+         gcnA==
+X-Gm-Message-State: ABy/qLYzSSE+PLv4Sy8Tb212lk6BslOvYdXhGzXXbcbD1l+pt6TLV0YT
+	zxDhbskxJass9TGN9ZUQgfniSw==
+X-Google-Smtp-Source: APBJJlF8TV7G64+zI7mZZ9hBeDEcGqA32zWkkv1pZqt8gCcGrSJQ4UJFGTuB0sf4JFEZ790mkXyj9g==
+X-Received: by 2002:a1c:7909:0:b0:3fb:fed9:1c7f with SMTP id l9-20020a1c7909000000b003fbfed91c7fmr9716416wme.8.1689609820868;
+        Mon, 17 Jul 2023 09:03:40 -0700 (PDT)
+Received: from [192.168.2.173] ([79.115.63.146])
+        by smtp.gmail.com with ESMTPSA id m19-20020a7bca53000000b003fa96fe2bebsm93407wml.41.2023.07.17.09.03.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 09:03:40 -0700 (PDT)
+Message-ID: <125a610b-b205-52ba-1fe6-e7e0add0f8b9@linaro.org>
+Date: Mon, 17 Jul 2023 19:03:39 +0300
 MIME-Version: 1.0
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Xzffg249V0n4cIq3NVgFB9b9K_qcxKuY
-X-Proofpoint-GUID: Xzffg249V0n4cIq3NVgFB9b9K_qcxKuY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_12,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- bulkscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 spamscore=0
- phishscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307170142
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/2] Add support for gigadevice and macronix SPI-NOR
+To: Sridharan S N <quic_sridsn@quicinc.com>, pratyush@kernel.org,
+ michael@walle.cc, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230717153536.25700-1-quic_sridsn@quicinc.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Content-Language: en-US
+In-Reply-To: <20230717153536.25700-1-quic_sridsn@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230717_083832_786365_08B8645C 
-X-CRM114-Status: GOOD (  14.98  )
+X-CRM114-CacheID: sfid-20230717_090345_451289_D1AC51CA 
+X-CRM114-Status: GOOD (  10.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,32 +94,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This chip supports stateless 4-byte opcodes, dual and quad read and
-uniform 4K-byte erase.
 
-Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
-Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
----
- drivers/mtd/spi-nor/macronix.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 04888258e891..ac057815ba00 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -103,6 +103,9 @@ static const struct flash_info macronix_nor_parts[] = {
- 	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+	{ "mx66u1g45g",	 INFO(0xc2253b, 0, 64 * 1024, 2048)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
- };
- 
- static void macronix_nor_default_init(struct spi_nor *nor)
--- 
-2.17.1
+On 17.07.2023 18:35, Sridharan S N wrote:
+> This series add support for SPI NOR devices mentioned below:
+> 
+> gigadevice:
+> gd25lb256e   - This supports quad read and uniform 4K-byte erase.
+> gd25d{2,4}0c - These supports dual read and uniform 4K-byte erase.
+> 
+> macronix:
+> mx66u1g45g - This chip supports stateless 4-byte opcodes, dual and quad
+>              read and uniform 4K-byte erase.
+> Sridharan S N (2):
+>   mtd: spi-nor: gigadevice: Add support for gd25lb256e and gd25d{2,4}0c
+>   mtd: spi-nor: macronix: Add support for mx66u1g45g
+> 
+>  drivers/mtd/spi-nor/gigadevice.c | 6 ++++++
+>  drivers/mtd/spi-nor/macronix.c   | 3 +++
+>  2 files changed, 9 insertions(+)
+> 
 
+All these flashes should support SFDP, thus you don't need to explicitly
+define them. See
+https://lore.kernel.org/linux-mtd/bfc85475bdcea46ea6c3ece98cc1e9cc@walle.cc/T/#mf79010e7031b03bda31690b4229a4f27f712f3a7
 
 ______________________________________________________
 Linux MTD discussion mailing list
