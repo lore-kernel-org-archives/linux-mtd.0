@@ -4,91 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93444EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:11:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA5DDEB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uQzWDJbfGjalqxKclMmX6++ScZsELNr4uMlnYzT6UZI=; b=r45SQOHjSpyhij
-	CaLag1Un4krgHM+jXtdAKIIBzU8p9GG1gFXtWXA6qN7aQIox0VNtLAQ8+2rpe0pFtwSKEdKlixgNP
-	+LZFT1VwFTbU1o8Jd4dbD5KjKKoL6MgC7uHwz56uYzahxHi3QImWA6TohBulF22bSn9z8UgQbxhVp
-	h85R0wadbpurYLc06ChNjLM7PM7QVgwq8MdUcKh75qUlDuPWv1K10p8qTju8EWd6G3tSohemNemuE
-	WdnxFwtbpCcjZt38x1WqBsbNkEzbC84kZM+GKvo3feKpMHri7IY/+oTZLW4+kbs+k1nsfWC26NfLU
-	we9r9qrak0mzhXzDqY7w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=YMAZlML16Akc8ZewYcd5dxrU+pGYxMePz2COmEpI3Gg=; b=Le83oO9XJ+UL2/p/pcGKWdC4iQ
+	qVdCmhd6ChOk2aXV5rO7BFpiigQNQUxesqQKq0fTVMd9HDTAiDigPF9Al4Gpt7NrhSSKYxVuOWyHm
+	xo5eFVc2Vy0BLV9AI/oIPKSmAZXRtmaVnE/gCkwYEMfL+gIak2S32CW6taUn/z7u49I3eM3lOi/Xq
+	n08qadVMd3sZe9p5noW3SoojMMWIroRrmaS7JPofFNzeJNEZ9GXkE/BWiaAuu5OpXvW0ZkblP8+B6
+	RDBe7GnPRXjpj3zvEPcfNUyx87b5A9SnoslxAMvdsFkjtujHgq5unW5pV3wbiVxR1uqrewMxcrj4y
+	4wXzyYsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLzTD-005Aux-2L;
-	Wed, 19 Jul 2023 05:11:27 +0000
+	id 1qLzVE-005BZ1-2C;
+	Wed, 19 Jul 2023 05:13:32 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLzT5-005ApN-0e
+	id 1qLzVC-005BXs-1P
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 05:11:19 +0000
+	Wed, 19 Jul 2023 05:13:30 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=hZolT1oKAvY3bdE2kPRKmoghnM8CM/kbHakDSPmzpjo=; b=M6gXt0U6mLEE9DyNzzepGbJvdn
-	AtAfyTa3cRwzL2GoFhZLYVhn0lWHa79OUI4dIayizqe17xRc2YGQFTStQdp29YafcPwBRJavWMLj5
-	Q/vTWUNEL/yP7fcT38XlV+IEHvNbqGj9HknS0b3KVDzTitQCveXxNiMeAJw1NoqDLsMy9CB9roAVh
-	rSwz0qsGZi9dKysacuR4PYWABFj2de1rBF7SPvsW2IaYb8Nag7iITh/uIp1CboLP7LrupwgMzqwZ9
-	0GRv2rKMzmZG3bOMU0g8nvplvzaSpq/BrWPj30vD1d0YkxYFSUW7jTK6SkMD4EJK9lUROSy44YXI+
-	hFb2au4w==;
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=SGVCm/ZC+AegIgdNdd06YmlPunJQ37cv7u2eYoDyKEg=; b=ZhLHtpYLbqNGXcFgKtU1LQbSgJ
+	ER5j/AIFWoTDPhNdJWoCKfVSBX9SVPQQpBcUV1aUE+0rdAsLPsYVTuBzYpFKO++/kcnxUr9U662KH
+	F838jeUnHAyrToadUUFoLfaTjtkpLGel9VbcDyLpNXpNbSpdneWuBudLSqAQl94J5LhdlV8rNKkNF
+	lWfi8K+Wy5JE71G0+bmXqVm25KKouizpv05RH8+oJ3H8gmuBkwEl2mdxpDI1YcQx9KDVgKwrNABZj
+	ZMY1MzvGeb1viJ6D4HyznbDfZCcN0S9uwIdjYUny0jBaxMLl8WWPocMMbA05ToZsZK+4oDTDJFaY8
+	/9yoWzug==;
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLtat-00CARF-0P
+	id 1qLVFD-009NBM-04
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 22:55:02 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 718EA61280;
-	Tue, 18 Jul 2023 22:54:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45BC9C433C8;
-	Tue, 18 Jul 2023 22:54:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689720892;
-	bh=1hPBVUZKx9DcSFz9qEiAQCMaCu6XICTp5tPsfBL3VTs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nZENGkevC8W/gj/0tZ9tVvAElZY3lwTUMr999oZl+jwvHVvtSMgDpH1KbGMEAU4qs
-	 GdpVYRatm0rSzVuAMU4XHsXzxbuISlJXTbyX6Ak0+tmkqQfllCv6T0ItKeE5MMHk1i
-	 p33MlEu6cwmh6M4Wxxhhb5pd4+W3wYK2dE/YtpA2o5B+XvJOMq1ia1u6cYxrdVIx0U
-	 mYPIoJrkuqKmEMSsiz1ZArYA01s/aryDGYYvNiRUoqAk6VAHtXJ1FOfnqL0xq3TBGo
-	 uBMtWz1SprpEJs7h1FI0mxBwReuRTZEjdlXn/cq6JQTFCphSKiIDvhQXXnaOHRyuA3
-	 6utEntLUgpgtg==
-Date: Tue, 18 Jul 2023 15:54:50 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-	Kees Cook <keescook@chromium.org>, Haren Myneni <haren@us.ibm.com>,
-	Nick Terrell <terrelln@fb.com>, Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 01/21] crypto: scomp - Revert "add support for
- deflate rfc1950 (zlib)"
-Message-ID: <20230718225450.GD1005@sol.localdomain>
-References: <20230718125847.3869700-1-ardb@kernel.org>
- <20230718125847.3869700-2-ardb@kernel.org>
- <20230718223239.GB1005@sol.localdomain>
+	Mon, 17 Jul 2023 20:55:01 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 15BB26342026;
+	Mon, 17 Jul 2023 22:54:19 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id oo5kc-E4XfjD; Mon, 17 Jul 2023 22:54:18 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id AB00D613AFCD;
+	Mon, 17 Jul 2023 22:54:18 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id a2qxEfyqq3k2; Mon, 17 Jul 2023 22:54:18 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 8B6EA6342026;
+	Mon, 17 Jul 2023 22:54:18 +0200 (CEST)
+Date: Mon, 17 Jul 2023 22:54:18 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Stephan Wurm <stephan.wurm@a-eberle.de>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	Johannes Eigner <johannes.eigner@a-eberle.de>
+Message-ID: <961736756.5775.1689627258484.JavaMail.zimbra@nod.at>
+In-Reply-To: <ZLVWfrlEOWT1twpr@PC-LX-Wurm>
+References: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm> <736980270.3262.1689586950735.JavaMail.zimbra@nod.at> <ZLUXruUkYMrPK+GQ@PC-LX-Wurm> <260741266.3681.1689591789332.JavaMail.zimbra@nod.at> <ZLVWfrlEOWT1twpr@PC-LX-Wurm>
+Subject: Re: ubiblock: null pointer dereference using scatterlist in
+ work_queue
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230718223239.GB1005@sol.localdomain>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubiblock: null pointer dereference using scatterlist in work_queue
+Thread-Index: 3MOm7rPMjutbsmQ5JwaPKkQjaUaJKw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_235459_904154_79A5869C 
-X-CRM114-Status: GOOD (  27.80  )
+X-CRM114-CacheID: sfid-20230717_215459_392855_A11ECB9C 
+X-CRM114-Status: UNSURE (   1.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,60 +91,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 18, 2023 at 03:32:39PM -0700, Eric Biggers wrote:
-> On Tue, Jul 18, 2023 at 02:58:27PM +0200, Ard Biesheuvel wrote:
-> > This reverts commit a368f43d6e3a001e684e9191a27df384fbff12f5.
-> > 
-> > "zlib-deflate" was introduced 6 years ago, but it does not have any
-> > users. So let's remove the generic implementation and the test vectors,
-> > but retain the "zlib-deflate" entry in the testmgr code to avoid
-> > introducing warning messages on systems that implement zlib-deflate in
-> > hardware.
-> > 
-> > Note that RFC 1950 which forms the basis of this algorithm dates back to
-> > 1996, and predates RFC 1951, on which the existing IPcomp is based and
-> > which we have supported in the kernel since 2003. So it seems rather
-> > unlikely that we will ever grow the need to support zlib-deflate.
-> > 
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >  crypto/deflate.c | 61 +++++-----------
-> >  crypto/testmgr.c |  8 +--
-> >  crypto/testmgr.h | 75 --------------------
-> >  3 files changed, 18 insertions(+), 126 deletions(-)
-> 
-> So if this is really unused, it's probably fair to remove it on that basis.
-> However, it's not correct to claim that DEFLATE is obsoleted by zlib (the data
-> format).  zlib is just DEFLATE plus a checksum, as is gzip.
-> 
-> Many users of zlib or gzip use an external checksum and therefore would be
-> better served by DEFLATE, avoiding a redundant builtin checksum.  Typically,
-> people have chosen zlib or gzip simply because their compression library
-> defaulted to it, they didn't understand the difference, and they overlooked that
-> they're paying the price for a redundant builtin checksum.
-> 
-> An example of someone doing it right is EROFS, which is working on adding
-> DEFLATE support (not zlib or gzip!):
-> https://lore.kernel.org/r/20230713001441.30462-1-hsiangkao@linux.alibaba.com
-> 
-> Of course, they are using the library API instead of the clumsy crypto API.
-> 
-
-Ah, I misread this patch, sorry.  It's actually removing support for zlib (the
-data format) from the scomp API, leaving just DEFLATE.  That's fine too; again,
-it ultimately just depends on what is actually being used via the scomp API.
-But similarly you can't really claim that zlib is obsoleted by DEFLATE just
-because of the RFC dates.  As I mentioned, many people do use zlib (the data
-format), often just because it's the default of zlib (the library) and they
-didn't know any better.  For example, btrfs compression supports zlib.
-
-- Eric
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlN0ZXBoYW4gV3VybSIgPHN0
+ZXBoYW4ud3VybUBhLWViZXJsZS5kZT4KPiBbICAgNTAuNTAyMzA5XSA1NW50aCBjYWxsIG9mIHVi
+aV9lYV9yZWFkX2xlYl9zZwo+IFsgICA2NC45Mzk5MTddIHNnbFswMDAwMDAwMF0gPT4gMDAwMDAw
+MDA6IHBhZ2VfbGluaz00MDI1NzY0MzIyLCBvZmZzZXQ9MCwKPiBsZW5ndGg9NTEyCgpIbW0sIGJs
+a19ycV9tYXBfc2coKSByZXR1cm5zIG5vbi16ZXJvLCAgc2dfbmVudHMoKSBpcyBhbHNvIG5vbi16
+ZXJvIGJ1dCB0aGUgdmVyeSBmaXJzdCBzZyBsaXN0IGVudHJ5IGlzCm5vdCB2aXJ0dWFsbHkgbWFw
+cGVkLgoKClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
