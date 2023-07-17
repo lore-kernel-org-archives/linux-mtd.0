@@ -4,71 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27880EB64DC
-	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 08:07:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF983C001DE
+	for <linux-mtd@archiver.kernel.org>; Mon, 17 Jul 2023 09:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:CC:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=EXZuhawjA/G9Pj0XQkmDHWEvnkLBUM9jkXrnn0kSjXo=; b=sddjlWroD+l1ch
-	82o2JPeiOer43VvN3IO/83tGE7YEH/qEx4Ifqe3NaO5ry0hI6cGNjl3tLBETetzuHxFh+VyPU+U7y
-	UbbJQiUt3Ch6rnXkiZq9oCHZtCgfwK0a/NtCY8DhakibXDQZxxObSJ31Wk9r51YX2rhMtGjdFgxud
-	qI7tppv/1xH/7VPGnJYKR73NIR5Yv/dL7D8wO/vU1adqy4qlP2dFPmInb7peOq39+bhzW+pjpTVWb
-	iwgZlt/VayO3IvEV9/CZs9SCpC0cc6QXiVJQPGaSPiGEhJtyy5uENJcYko1I1RB7WR7ODWvPxXH6I
-	SqJ+42zMjyRhhPEJdjRg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=Aw2vPZjQRQoW/SSNVK4e2GdeT9bd59Uq7nVc1/esk70=; b=mafAVBd10wQPZ2YJ+fB5dJKe7h
+	bTFV4Bbf2H0AbH88tZCGI2YYB+oQiAdvOL8KQb2cx+fEJiGm5csaEG5VgdU+qPaXosSYszPKBSMQm
+	hDuXhNoVOH/SFkkYPX1KXzFnf+nRKo0O58DEFYwu+NyyJDpjaUU8lId+Sxf6dZ/Cd4Hk7cm17W78D
+	EVw/KkVmh92VISgzpbtrSqozwxJV0DDmPMUS6GNXrfqJyM9GEuAUAZKpbrgEi0f24kJCnFwFSUE6+
+	xfNt162hdJs9YeXVKXg9mcfZJS0UaVWuZtLLM6csHmkhIqgbNsV6SdJfKdmwg/MXlPe1MiIr0m5tv
+	7ZrCZaWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLJGV-003Peu-1A;
-	Mon, 17 Jul 2023 08:07:31 +0000
-Received: from mail.a-eberle.de ([213.95.140.213])
+	id 1qLKkq-003fNv-09;
+	Mon, 17 Jul 2023 09:42:56 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLJGL-003PZK-1F
+	id 1qLKkg-003fKE-1H
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jul 2023 08:07:30 +0000
+	Mon, 17 Jul 2023 09:42:54 +0000
 Received: from localhost (localhost [127.0.0.1])
-	by mail.a-eberle.de (Postfix) with ESMTP id E0C7A38053A
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2023 10:07:11 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at aeberle-mx.softwerk.noris.de
-Received: from mail.a-eberle.de ([127.0.0.1])
-	by localhost (ebl-mx-02.a-eberle.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ycMD5KQq47iw for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Jul 2023 10:07:10 +0200 (CEST)
-Received: from gateway.a-eberle.de (unknown [178.15.155.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(Client CN "sg310.eberle.local", Issuer "A. Eberle GmbH & Co. KG WebAdmin CA" (not verified))
-	(Authenticated sender: postmaster@a-eberle.de)
-	by mail.a-eberle.de (Postfix) with ESMTPSA
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2023 10:07:08 +0200 (CEST)
-Received: from svr-exch2019.eberle.local ([192.168.1.17]:9494 helo=webmail.a-eberle.de)
-	by gateway.a-eberle.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <Stephan.Wurm@a-eberle.de>)
-	id 1qLJG5-0007xJ-2e;
-	Mon, 17 Jul 2023 10:07:05 +0200
-Received: from PC-LX-Wurm (10.10.30.11) by Svr-Exch2019.eberle.local
- (192.168.1.17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42; Mon, 17 Jul
- 2023 10:07:05 +0200
-Date: Mon, 17 Jul 2023 10:07:04 +0200
-From: Stephan Wurm <stephan.wurm@a-eberle.de>
-To: Richard Weinberger <richard@nod.at>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: Johannes Eigner <johannes.eigner@a-eberle.de>
-Subject: ubiblock: null pointer dereference using scatterlist in work_queue
-Message-ID: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm>
+	by lithops.sigma-star.at (Postfix) with ESMTP id B488D616B2E8;
+	Mon, 17 Jul 2023 11:42:31 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id HPnfUx2MTxpI; Mon, 17 Jul 2023 11:42:31 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 08E15634202B;
+	Mon, 17 Jul 2023 11:42:31 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id XleJAkaNmrIj; Mon, 17 Jul 2023 11:42:30 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id D5C67613AFCD;
+	Mon, 17 Jul 2023 11:42:30 +0200 (CEST)
+Date: Mon, 17 Jul 2023 11:42:30 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Stephan Wurm <stephan.wurm@a-eberle.de>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	Johannes Eigner <johannes.eigner@a-eberle.de>
+Message-ID: <736980270.3262.1689586950735.JavaMail.zimbra@nod.at>
+In-Reply-To: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm>
+References: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm>
+Subject: Re: ubiblock: null pointer dereference using scatterlist in
+ work_queue
 MIME-Version: 1.0
-Content-Disposition: inline
-X-Originating-IP: [10.10.30.11]
-X-ClientProxiedBy: Svr-Exch2019.eberle.local (192.168.1.17) To
- Svr-Exch2019.eberle.local (192.168.1.17)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A298E357D5B677565
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubiblock: null pointer dereference using scatterlist in work_queue
+Thread-Index: tNcc3p9ZHZOB0zRab8u9CVTUQRyacw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230717_010721_631694_71A4AE45 
-X-CRM114-Status: GOOD (  16.90  )
+X-CRM114-CacheID: sfid-20230717_024246_744729_4B1B31D1 
+X-CRM114-Status: GOOD (  18.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,156 +75,129 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
-
-We struggle with a weird problem accessing an ubiblock device for quite some
-time now. As we are running out of ideas, I reach out for your help.
-
-The device we develop has an i.MX6 Solo SoC equipped with gpmi-nand flash
-(Micron MT29F8G08ABACA, 1GB). The flash is partitioned into five UBI volumes,
-forming an A/B boot setup, consisting of two pairs with each a UBIFS volume
-holding a FIT image and a ubiblock volume containing a SQUASHFS root filesystem
-with dm-verity hashes attached, and the fifth UBIFS volume for common data.
-The bootloader (barebox 2022.06.0) is stored on an additional spi-nor flash.
-
-In order to mount the root filesystem, the FIT image contains an initramfs,
-calling cryptsetup (tried v2.4.3 and v2.6.1) on the ubiblock device,
-followed by mount of the root filesystem.
-MTD attach and creation of the ubiblock device is triggered by kernel
-arguments:
-
-  commandline: console=ttymxc1,115200n8   ubi.block=0,root0 root=/dev/ubiblock0_2 rootfstype=squashfs ubi.mtd=nand
-
-This fails to boot with a null pointer dereference when calling cryptsetup:
-
-  [    5.637207] ubi0: default fastmap pool size: 200
-  [    5.642020] ubi0: default fastmap WL pool size: 100
-  [    5.647000] ubi0: attaching mtd0
-  [    6.450307] ubi0: scanning is finished
-  [    6.472816] ubi0: attached mtd0 (name "nand", size 1024 MiB)
-  [    6.478561] ubi0: PEB size: 262144 bytes (256 KiB), LEB size: 253952 bytes
-  [    6.485508] ubi0: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
-  [    6.492395] ubi0: VID header offset: 4096 (aligned 4096), data offset: 8192
-  [    6.499378] ubi0: good PEBs: 4092, bad PEBs: 4, corrupted PEBs: 0
-  [    6.505518] ubi0: user volume: 5, internal volumes: 1, max. volumes count: 128
-  [    6.512810] ubi0: max/mean erase counter: 14/8, WL threshold: 4096, image sequence number: 228025450
-  [    6.521965] ubi0: available PEBs: 177, total reserved PEBs: 3915, PEBs reserved for bad PEB handling: 76
-  [    6.531750] ubi0: background thread "ubi_bgt0d" started, PID 163
-  [   12.919477] block ubiblock0_2: created from ubi0:2(root0)
-  [   12.929687] ALSA device list:
-  [   12.932750]   #0: sgtl5000
-  [   12.940024] Freeing unused kernel image (initmem) memory: 1024K
-  [   12.946926] Run /init as init process
-  Starting version 250.5+
-  [   15.601749] mtdblock: MTD device 'nand' is NAND, please consider using UBI block devices instead.
-  realpath: /dev/disk/by-partuuid//dev/ubiblock0_2: No such file or directory
-  [   26.127460] 8<--- cut here ---
-  [   26.130689] Unable to handle kernel NULL pointer dereference at virtual address 00000000
-  [   26.138886] [00000000] *pgd=00000000
-  [   26.142523] Internal error: Oops: 5 [#1] ARM
-  [   26.146804] Modules linked in:
-  [   26.149868] CPU: 0 PID: 18 Comm: kworker/0:3 Not tainted 6.1.38 #1
-  [   26.156060] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-  [   26.162592] Workqueue: ubiblock0_2 ubiblock_do_work
-  [   26.167498] PC is at ubi_io_read+0x78/0x2fc
-  [   26.171693] LR is at ubi_eba_read_leb+0xe8/0x4a4
-  [   26.176320] pc : [<c075f508>]    lr : [<c075cd0c>]    psr: 60070013
-  [   26.182591] sp : f0961dc8  ip : 00000000  fp : 00002000
-  [   26.187819] r10: c81c6000  r9 : 00000000  r8 : c81c7000
-  [   26.193046] r7 : 00000200  r6 : 000008e0  r5 : 00002000  r4 : 00000000
-  [   26.199578] r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : c81c6000
-  [   26.206108] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-  [   26.213250] Control: 10c53c7d  Table: 1824c059  DAC: 00000051
-  [   26.218998] Register r0 information: slab kmalloc-8k start c81c6000 pointer offset 0 size 8192
-  [   26.227638] Register r1 information: NULL pointer
-  [   26.232352] Register r2 information: NULL pointer
-  [   26.237062] Register r3 information: NULL pointer
-  [   26.241772] Register r4 information: NULL pointer
-  [   26.246481] Register r5 information: non-paged memory
-  [   26.251537] Register r6 information: non-paged memory
-  [   26.256594] Register r7 information: non-paged memory
-  [   26.261651] Register r8 information: slab kmalloc-8k start c81c6000 pointer offset 4096 size 8192
-  [   26.270545] Register r9 information: NULL pointer
-  [   26.275254] Register r10 information: slab kmalloc-8k start c81c6000 pointer offset 0 size 8192
-  [   26.283977] Register r11 information: non-paged memory
-  [   26.289120] Register r12 information: NULL pointer
-  [   26.293916] Process kworker/0:3 (pid: 18, stack limit = 0x1a047662)
-  [   26.300194] Stack: (0xf0961dc8 to 0xf0962000)
-  [   26.304559] 1dc0:                   c1d50ec0 c075cc64 00000001 00000000 00000000 c1d50ec0
-  [   26.312744] 1de0: 00000001 24c676fe c075cc64 00000000 000008e0 c81c6000 c80c4000 00000000
-  [   26.320928] 1e00: c1d50ec0 00000002 c81c7000 c075cd0c 00000200 c01d3930 60070013 00000000
-  [   26.329111] 1e20: 60070013 c1b43208 000008e0 24c676fe 00000000 c830f5cc c830f5cc 00000200
-  [   26.337294] 1e40: 00000000 00000001 00000200 c80c4000 00000000 c075d124 00000000 00000200
-  [   26.345477] 1e60: 00000000 c13e0ec0 c81c6000 c1d50ec0 00000000 00000000 00000000 c80c4000
-  [   26.353661] 1e80: c830f5cc c1e52c00 00000200 c81c6000 00000002 c075b748 00000000 00000200
-  [   26.361844] 1ea0: 00000000 c1312e58 ef7d3c00 0003e000 00000000 00000200 ef7d3c00 c1e52c00
-  [   26.370027] 1ec0: c830f5a8 c830f5cc 00000000 c076b228 00000200 00000000 c830f500 c1d50ec0
-  [   26.378211] 1ee0: c830f5d4 24c676fe c0c0e608 c830f5a8 c1ed3800 c1312e58 ef7d3c00 c1d50ec0
-  [   26.386394] 1f00: 00000000 c14e59c0 ef7d3c05 c013c06c 00000001 00000000 c013bff4 00000000
-  [   26.394577] 1f20: c1312e68 24c676fe c1b5f698 c19642b8 00000000 c101b390 00000000 24c676fe
-  [   26.402760] 1f40: c1d50ec0 c1ed3800 c1312e58 c1ed3818 c1312e94 c13dfc30 c1d50ec0 00000008
-  [   26.410944] 1f60: c1312e58 c013c3f0 00000000 c1f16880 c1d50ec0 c013c3b0 c1ed3800 c1ed3880
-  [   26.419126] 1f80: f095de9c 00000000 00000000 c0143654 c1f16880 c0143588 00000000 00000000
-  [   26.427309] 1fa0: 00000000 00000000 00000000 c0100128 00000000 00000000 00000000 00000000
-  [   26.435491] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-  [   26.443673] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-  [   26.451855]  ubi_io_read from ubi_eba_read_leb+0xe8/0x4a4
-  [   26.457277]  ubi_eba_read_leb from ubi_eba_read_leb_sg+0x5c/0x154
-  [   26.463390]  ubi_eba_read_leb_sg from ubi_leb_read_sg+0x70/0xb0
-  [   26.469325]  ubi_leb_read_sg from ubiblock_do_work+0x104/0x238
-  [   26.475180]  ubiblock_do_work from process_one_work+0x238/0x57c
-  [   26.481130]  process_one_work from worker_thread+0x40/0x4f8
-  [   26.486724]  worker_thread from kthread+0xcc/0xf0
-  [   26.491449]  kthread from ret_from_fork+0x14/0x2c
-  [   26.496168] Exception stack(0xf0961fb0 to 0xf0961ff8)
-  [   26.501225] 1fa0:                                     00000000 00000000 00000000 00000000
-  [   26.509410] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-  [   26.517592] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-  [   26.524215] Code: 1a000041 e59d2010 e1a09fc5 e1a0b005 (e5d23000)
-  [   26.530367] ---[ end trace 0000000000000000 ]---
-
-This kernel Oops happens both on patched or vanilla kernels, of which we tried
-several releases in 5.15.y and 6.1.y branches. We also tried with several of
-our devices.
-Upgrading to the latest mainline kernel did not work out-of-the-box, hence we
-did not follow that track (yet).
-
-We tried with full debugging output for the whole ubi driver and used several
-additional printks. That way we were able to see, that the first scatterlist
-entry already pointed to virtual address zero when the first read request
-caused by cryptsetup was added to ubiblock's work_queue.
-
-  sg_virt(pdu->usgl.sg[0]) => page_address(sg) => 0x0000000
-
-We also tried to use hw_breakpoints to gather more information on (maybe)
-another module interfering, but did not succeed (yet).
-
-But we were not able to narrow down the root cause until now.
-
-
-As an additional twist, the system is able to boot when we mount the ubiblock
-root filesystem without calling cryptsetup, hence skipping the dm-verity hash
-verification. And we can verify the root filesystem with cryptsetup once the
-system boot is finished.
-
-It is also possible to boot the same system image, including dm-verity, when
-using a sdcard instead of the nand flash. Loading the FIT from sdcard but
-calling cryptsetup on the ubiblock device again leads to the described oops.
-
-
-Is there something we have overlooked?
-Do you have further ideas to get behind this issue?
-
-
-Thanks!
---
-Stephan Wurm <stephan.wurm@a-eberle.de>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+U3RlcGhhbiwKCi0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPiBWb246ICJTdGVwaGFu
+IFd1cm0iIDxzdGVwaGFuLnd1cm1AYS1lYmVybGUuZGU+Cj4gIFsgICAyNi4xMjc0NjBdIDg8LS0t
+IGN1dCBoZXJlIC0tLQo+ICBbICAgMjYuMTMwNjg5XSBVbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBO
+VUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgYXQgdmlydHVhbAo+ICBhZGRyZXNzIDAwMDAwMDAwCj4g
+IFsgICAyNi4xMzg4ODZdIFswMDAwMDAwMF0gKnBnZD0wMDAwMDAwMAo+ICBbICAgMjYuMTQyNTIz
+XSBJbnRlcm5hbCBlcnJvcjogT29wczogNSBbIzFdIEFSTQo+ICBbICAgMjYuMTQ2ODA0XSBNb2R1
+bGVzIGxpbmtlZCBpbjoKPiAgWyAgIDI2LjE0OTg2OF0gQ1BVOiAwIFBJRDogMTggQ29tbToga3dv
+cmtlci8wOjMgTm90IHRhaW50ZWQgNi4xLjM4ICMxCj4gIFsgICAyNi4xNTYwNjBdIEhhcmR3YXJl
+IG5hbWU6IEZyZWVzY2FsZSBpLk1YNiBRdWFkL0R1YWxMaXRlIChEZXZpY2UgVHJlZSkKPiAgWyAg
+IDI2LjE2MjU5Ml0gV29ya3F1ZXVlOiB1YmlibG9jazBfMiB1YmlibG9ja19kb193b3JrCj4gIFsg
+ICAyNi4xNjc0OThdIFBDIGlzIGF0IHViaV9pb19yZWFkKzB4NzgvMHgyZmMKPiAgWyAgIDI2LjE3
+MTY5M10gTFIgaXMgYXQgdWJpX2ViYV9yZWFkX2xlYisweGU4LzB4NGE0Cj4gIFsgICAyNi4xNzYz
+MjBdIHBjIDogWzxjMDc1ZjUwOD5dICAgIGxyIDogWzxjMDc1Y2QwYz5dICAgIHBzcjogNjAwNzAw
+MTMKPiAgWyAgIDI2LjE4MjU5MV0gc3AgOiBmMDk2MWRjOCAgaXAgOiAwMDAwMDAwMCAgZnAgOiAw
+MDAwMjAwMAo+ICBbICAgMjYuMTg3ODE5XSByMTA6IGM4MWM2MDAwICByOSA6IDAwMDAwMDAwICBy
+OCA6IGM4MWM3MDAwCj4gIFsgICAyNi4xOTMwNDZdIHI3IDogMDAwMDAyMDAgIHI2IDogMDAwMDA4
+ZTAgIHI1IDogMDAwMDIwMDAgIHI0IDogMDAwMDAwMDAKPiAgWyAgIDI2LjE5OTU3OF0gcjMgOiAw
+MDAwMDAwMCAgcjIgOiAwMDAwMDAwMCAgcjEgOiAwMDAwMDAwMCAgcjAgOiBjODFjNjAwMAo+ICBb
+ICAgMjYuMjA2MTA4XSBGbGFnczogblpDdiAgSVJRcyBvbiAgRklRcyBvbiAgTW9kZSBTVkNfMzIg
+IElTQSBBUk0gIFNlZ21lbnQgbm9uZQo+ICBbICAgMjYuMjEzMjUwXSBDb250cm9sOiAxMGM1M2M3
+ZCAgVGFibGU6IDE4MjRjMDU5ICBEQUM6IDAwMDAwMDUxCj4gIFsgICAyNi4yMTg5OThdIFJlZ2lz
+dGVyIHIwIGluZm9ybWF0aW9uOiBzbGFiIGttYWxsb2MtOGsgc3RhcnQgYzgxYzYwMDAgcG9pbnRl
+cgo+ICBvZmZzZXQgMCBzaXplIDgxOTIKPiAgWyAgIDI2LjIyNzYzOF0gUmVnaXN0ZXIgcjEgaW5m
+b3JtYXRpb246IE5VTEwgcG9pbnRlcgo+ICBbICAgMjYuMjMyMzUyXSBSZWdpc3RlciByMiBpbmZv
+cm1hdGlvbjogTlVMTCBwb2ludGVyCj4gIFsgICAyNi4yMzcwNjJdIFJlZ2lzdGVyIHIzIGluZm9y
+bWF0aW9uOiBOVUxMIHBvaW50ZXIKPiAgWyAgIDI2LjI0MTc3Ml0gUmVnaXN0ZXIgcjQgaW5mb3Jt
+YXRpb246IE5VTEwgcG9pbnRlcgo+ICBbICAgMjYuMjQ2NDgxXSBSZWdpc3RlciByNSBpbmZvcm1h
+dGlvbjogbm9uLXBhZ2VkIG1lbW9yeQo+ICBbICAgMjYuMjUxNTM3XSBSZWdpc3RlciByNiBpbmZv
+cm1hdGlvbjogbm9uLXBhZ2VkIG1lbW9yeQo+ICBbICAgMjYuMjU2NTk0XSBSZWdpc3RlciByNyBp
+bmZvcm1hdGlvbjogbm9uLXBhZ2VkIG1lbW9yeQo+ICBbICAgMjYuMjYxNjUxXSBSZWdpc3RlciBy
+OCBpbmZvcm1hdGlvbjogc2xhYiBrbWFsbG9jLThrIHN0YXJ0IGM4MWM2MDAwIHBvaW50ZXIKPiAg
+b2Zmc2V0IDQwOTYgc2l6ZSA4MTkyCj4gIFsgICAyNi4yNzA1NDVdIFJlZ2lzdGVyIHI5IGluZm9y
+bWF0aW9uOiBOVUxMIHBvaW50ZXIKPiAgWyAgIDI2LjI3NTI1NF0gUmVnaXN0ZXIgcjEwIGluZm9y
+bWF0aW9uOiBzbGFiIGttYWxsb2MtOGsgc3RhcnQgYzgxYzYwMDAgcG9pbnRlcgo+ICBvZmZzZXQg
+MCBzaXplIDgxOTIKPiAgWyAgIDI2LjI4Mzk3N10gUmVnaXN0ZXIgcjExIGluZm9ybWF0aW9uOiBu
+b24tcGFnZWQgbWVtb3J5Cj4gIFsgICAyNi4yODkxMjBdIFJlZ2lzdGVyIHIxMiBpbmZvcm1hdGlv
+bjogTlVMTCBwb2ludGVyCj4gIFsgICAyNi4yOTM5MTZdIFByb2Nlc3Mga3dvcmtlci8wOjMgKHBp
+ZDogMTgsIHN0YWNrIGxpbWl0ID0gMHgxYTA0NzY2MikKPiAgWyAgIDI2LjMwMDE5NF0gU3RhY2s6
+ICgweGYwOTYxZGM4IHRvIDB4ZjA5NjIwMDApCj4gIFsgICAyNi4zMDQ1NTldIDFkYzA6ICAgICAg
+ICAgICAgICAgICAgIGMxZDUwZWMwIGMwNzVjYzY0IDAwMDAwMDAxIDAwMDAwMDAwCj4gIDAwMDAw
+MDAwIGMxZDUwZWMwCj4gIFsgICAyNi4zMTI3NDRdIDFkZTA6IDAwMDAwMDAxIDI0YzY3NmZlIGMw
+NzVjYzY0IDAwMDAwMDAwIDAwMDAwOGUwIGM4MWM2MDAwCj4gIGM4MGM0MDAwIDAwMDAwMDAwCj4g
+IFsgICAyNi4zMjA5MjhdIDFlMDA6IGMxZDUwZWMwIDAwMDAwMDAyIGM4MWM3MDAwIGMwNzVjZDBj
+IDAwMDAwMjAwIGMwMWQzOTMwCj4gIDYwMDcwMDEzIDAwMDAwMDAwCj4gIFsgICAyNi4zMjkxMTFd
+IDFlMjA6IDYwMDcwMDEzIGMxYjQzMjA4IDAwMDAwOGUwIDI0YzY3NmZlIDAwMDAwMDAwIGM4MzBm
+NWNjCj4gIGM4MzBmNWNjIDAwMDAwMjAwCj4gIFsgICAyNi4zMzcyOTRdIDFlNDA6IDAwMDAwMDAw
+IDAwMDAwMDAxIDAwMDAwMjAwIGM4MGM0MDAwIDAwMDAwMDAwIGMwNzVkMTI0Cj4gIDAwMDAwMDAw
+IDAwMDAwMjAwCj4gIFsgICAyNi4zNDU0NzddIDFlNjA6IDAwMDAwMDAwIGMxM2UwZWMwIGM4MWM2
+MDAwIGMxZDUwZWMwIDAwMDAwMDAwIDAwMDAwMDAwCj4gIDAwMDAwMDAwIGM4MGM0MDAwCj4gIFsg
+ICAyNi4zNTM2NjFdIDFlODA6IGM4MzBmNWNjIGMxZTUyYzAwIDAwMDAwMjAwIGM4MWM2MDAwIDAw
+MDAwMDAyIGMwNzViNzQ4Cj4gIDAwMDAwMDAwIDAwMDAwMjAwCj4gIFsgICAyNi4zNjE4NDRdIDFl
+YTA6IDAwMDAwMDAwIGMxMzEyZTU4IGVmN2QzYzAwIDAwMDNlMDAwIDAwMDAwMDAwIDAwMDAwMjAw
+Cj4gIGVmN2QzYzAwIGMxZTUyYzAwCj4gIFsgICAyNi4zNzAwMjddIDFlYzA6IGM4MzBmNWE4IGM4
+MzBmNWNjIDAwMDAwMDAwIGMwNzZiMjI4IDAwMDAwMjAwIDAwMDAwMDAwCj4gIGM4MzBmNTAwIGMx
+ZDUwZWMwCj4gIFsgICAyNi4zNzgyMTFdIDFlZTA6IGM4MzBmNWQ0IDI0YzY3NmZlIGMwYzBlNjA4
+IGM4MzBmNWE4IGMxZWQzODAwIGMxMzEyZTU4Cj4gIGVmN2QzYzAwIGMxZDUwZWMwCj4gIFsgICAy
+Ni4zODYzOTRdIDFmMDA6IDAwMDAwMDAwIGMxNGU1OWMwIGVmN2QzYzA1IGMwMTNjMDZjIDAwMDAw
+MDAxIDAwMDAwMDAwCj4gIGMwMTNiZmY0IDAwMDAwMDAwCj4gIFsgICAyNi4zOTQ1NzddIDFmMjA6
+IGMxMzEyZTY4IDI0YzY3NmZlIGMxYjVmNjk4IGMxOTY0MmI4IDAwMDAwMDAwIGMxMDFiMzkwCj4g
+IDAwMDAwMDAwIDI0YzY3NmZlCj4gIFsgICAyNi40MDI3NjBdIDFmNDA6IGMxZDUwZWMwIGMxZWQz
+ODAwIGMxMzEyZTU4IGMxZWQzODE4IGMxMzEyZTk0IGMxM2RmYzMwCj4gIGMxZDUwZWMwIDAwMDAw
+MDA4Cj4gIFsgICAyNi40MTA5NDRdIDFmNjA6IGMxMzEyZTU4IGMwMTNjM2YwIDAwMDAwMDAwIGMx
+ZjE2ODgwIGMxZDUwZWMwIGMwMTNjM2IwCj4gIGMxZWQzODAwIGMxZWQzODgwCj4gIFsgICAyNi40
+MTkxMjZdIDFmODA6IGYwOTVkZTljIDAwMDAwMDAwIDAwMDAwMDAwIGMwMTQzNjU0IGMxZjE2ODgw
+IGMwMTQzNTg4Cj4gIDAwMDAwMDAwIDAwMDAwMDAwCj4gIFsgICAyNi40MjczMDldIDFmYTA6IDAw
+MDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIGMwMTAwMTI4IDAwMDAwMDAwIDAwMDAwMDAwCj4gIDAw
+MDAwMDAwIDAwMDAwMDAwCj4gIFsgICAyNi40MzU0OTFdIDFmYzA6IDAwMDAwMDAwIDAwMDAwMDAw
+IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwCj4gIDAwMDAwMDAwIDAwMDAwMDAw
+Cj4gIFsgICAyNi40NDM2NzNdIDFmZTA6IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAw
+MDAwIDAwMDAwMDEzIDAwMDAwMDAwCj4gIDAwMDAwMDAwIDAwMDAwMDAwCj4gIFsgICAyNi40NTE4
+NTVdICB1YmlfaW9fcmVhZCBmcm9tIHViaV9lYmFfcmVhZF9sZWIrMHhlOC8weDRhNAo+ICBbICAg
+MjYuNDU3Mjc3XSAgdWJpX2ViYV9yZWFkX2xlYiBmcm9tIHViaV9lYmFfcmVhZF9sZWJfc2crMHg1
+Yy8weDE1NAo+ICBbICAgMjYuNDYzMzkwXSAgdWJpX2ViYV9yZWFkX2xlYl9zZyBmcm9tIHViaV9s
+ZWJfcmVhZF9zZysweDcwLzB4YjAKPiAgWyAgIDI2LjQ2OTMyNV0gIHViaV9sZWJfcmVhZF9zZyBm
+cm9tIHViaWJsb2NrX2RvX3dvcmsrMHgxMDQvMHgyMzgKPiAgWyAgIDI2LjQ3NTE4MF0gIHViaWJs
+b2NrX2RvX3dvcmsgZnJvbSBwcm9jZXNzX29uZV93b3JrKzB4MjM4LzB4NTdjCj4gIFsgICAyNi40
+ODExMzBdICBwcm9jZXNzX29uZV93b3JrIGZyb20gd29ya2VyX3RocmVhZCsweDQwLzB4NGY4Cj4g
+IFsgICAyNi40ODY3MjRdICB3b3JrZXJfdGhyZWFkIGZyb20ga3RocmVhZCsweGNjLzB4ZjAKPiAg
+WyAgIDI2LjQ5MTQ0OV0gIGt0aHJlYWQgZnJvbSByZXRfZnJvbV9mb3JrKzB4MTQvMHgyYwo+ICBb
+ICAgMjYuNDk2MTY4XSBFeGNlcHRpb24gc3RhY2soMHhmMDk2MWZiMCB0byAweGYwOTYxZmY4KQo+
+ICBbICAgMjYuNTAxMjI1XSAxZmEwOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAwMDAwMDAwMCAwMDAwMDAwMAo+ICAwMDAwMDAwMCAwMDAwMDAwMAo+ICBbICAgMjYuNTA5NDEw
+XSAxZmMwOiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAw
+MDAwMAo+ICAwMDAwMDAwMCAwMDAwMDAwMAo+ICBbICAgMjYuNTE3NTkyXSAxZmUwOiAwMDAwMDAw
+MCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAxMyAwMDAwMDAwMAo+ICBbICAgMjYu
+NTI0MjE1XSBDb2RlOiAxYTAwMDA0MSBlNTlkMjAxMCBlMWEwOWZjNSBlMWEwYjAwNSAoZTVkMjMw
+MDApCj4gIFsgICAyNi41MzAzNjddIC0tLVsgZW5kIHRyYWNlIDAwMDAwMDAwMDAwMDAwMDAgXS0t
+LQo+IAo+IFRoaXMga2VybmVsIE9vcHMgaGFwcGVucyBib3RoIG9uIHBhdGNoZWQgb3IgdmFuaWxs
+YSBrZXJuZWxzLCBvZiB3aGljaCB3ZSB0cmllZAo+IHNldmVyYWwgcmVsZWFzZXMgaW4gNS4xNS55
+IGFuZCA2LjEueSBicmFuY2hlcy4gV2UgYWxzbyB0cmllZCB3aXRoIHNldmVyYWwgb2YKPiBvdXIg
+ZGV2aWNlcy4KPiBVcGdyYWRpbmcgdG8gdGhlIGxhdGVzdCBtYWlubGluZSBrZXJuZWwgZGlkIG5v
+dCB3b3JrIG91dC1vZi10aGUtYm94LCBoZW5jZSB3ZQo+IGRpZCBub3QgZm9sbG93IHRoYXQgdHJh
+Y2sgKHlldCkuCj4gCj4gV2UgdHJpZWQgd2l0aCBmdWxsIGRlYnVnZ2luZyBvdXRwdXQgZm9yIHRo
+ZSB3aG9sZSB1YmkgZHJpdmVyIGFuZCB1c2VkIHNldmVyYWwKPiBhZGRpdGlvbmFsIHByaW50a3Mu
+IFRoYXQgd2F5IHdlIHdlcmUgYWJsZSB0byBzZWUsIHRoYXQgdGhlIGZpcnN0IHNjYXR0ZXJsaXN0
+Cj4gZW50cnkgYWxyZWFkeSBwb2ludGVkIHRvIHZpcnR1YWwgYWRkcmVzcyB6ZXJvIHdoZW4gdGhl
+IGZpcnN0IHJlYWQgcmVxdWVzdAo+IGNhdXNlZCBieSBjcnlwdHNldHVwIHdhcyBhZGRlZCB0byB1
+YmlibG9jaydzIHdvcmtfcXVldWUuCj4gCj4gIHNnX3ZpcnQocGR1LT51c2dsLnNnWzBdKSA9PiBw
+YWdlX2FkZHJlc3Moc2cpID0+IDB4MDAwMDAwMAo+IAo+IFdlIGFsc28gdHJpZWQgdG8gdXNlIGh3
+X2JyZWFrcG9pbnRzIHRvIGdhdGhlciBtb3JlIGluZm9ybWF0aW9uIG9uIChtYXliZSkKPiBhbm90
+aGVyIG1vZHVsZSBpbnRlcmZlcmluZywgYnV0IGRpZCBub3Qgc3VjY2VlZCAoeWV0KS4KPiAKPiBC
+dXQgd2Ugd2VyZSBub3QgYWJsZSB0byBuYXJyb3cgZG93biB0aGUgcm9vdCBjYXVzZSB1bnRpbCBu
+b3cuCj4gCj4gCj4gQXMgYW4gYWRkaXRpb25hbCB0d2lzdCwgdGhlIHN5c3RlbSBpcyBhYmxlIHRv
+IGJvb3Qgd2hlbiB3ZSBtb3VudCB0aGUgdWJpYmxvY2sKPiByb290IGZpbGVzeXN0ZW0gd2l0aG91
+dCBjYWxsaW5nIGNyeXB0c2V0dXAsIGhlbmNlIHNraXBwaW5nIHRoZSBkbS12ZXJpdHkgaGFzaAo+
+IHZlcmlmaWNhdGlvbi4gQW5kIHdlIGNhbiB2ZXJpZnkgdGhlIHJvb3QgZmlsZXN5c3RlbSB3aXRo
+IGNyeXB0c2V0dXAgb25jZSB0aGUKPiBzeXN0ZW0gYm9vdCBpcyBmaW5pc2hlZC4KPiAKPiBJdCBp
+cyBhbHNvIHBvc3NpYmxlIHRvIGJvb3QgdGhlIHNhbWUgc3lzdGVtIGltYWdlLCBpbmNsdWRpbmcg
+ZG0tdmVyaXR5LCB3aGVuCj4gdXNpbmcgYSBzZGNhcmQgaW5zdGVhZCBvZiB0aGUgbmFuZCBmbGFz
+aC4gTG9hZGluZyB0aGUgRklUIGZyb20gc2RjYXJkIGJ1dAo+IGNhbGxpbmcgY3J5cHRzZXR1cCBv
+biB0aGUgdWJpYmxvY2sgZGV2aWNlIGFnYWluIGxlYWRzIHRvIHRoZSBkZXNjcmliZWQgb29wcy4K
+PiAKPiAKPiBJcyB0aGVyZSBzb21ldGhpbmcgd2UgaGF2ZSBvdmVybG9va2VkPwo+IERvIHlvdSBo
+YXZlIGZ1cnRoZXIgaWRlYXMgdG8gZ2V0IGJlaGluZCB0aGlzIGlzc3VlPwoKU28gcmVhZGluZyBm
+cm9tIHViaWJsb2NrIHdvcmtzIGFzIGxvbmcgeW91IGRvbid0IGFjY2VzcyBpdCB2aWEgZG0tdmVy
+aXR5PwpIb3cgYWJvdXQgb3RoZXIgc3RhY2tlZCBkZXZpY2VzIHN1Y2ggYXMgZG1jcnlwdD8KCkRp
+ZCB5b3UgcHJpbnQgdGhlIExFQiBudW1iZXIsIHJlYWQgbGVuZ3RoIGFuZCBvZmZzZXQgaW4gdWJp
+YmxvY2tfcmVhZCgpPwpNYXliZSB0aGVyZSBpcyBhIGJ1ZyByZWxhdGVkIHRvIHNldHRpbmcgdXAg
+dGhlIGNvcnJlY3QgZGV2aWNlIGdlb21ldHJ5CmFuZCB0aGUgcmVhZCByZXF1ZXN0IGlzIG9mZi4K
+ClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
