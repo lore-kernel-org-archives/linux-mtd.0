@@ -4,97 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E518C001DC
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:54:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8560EB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:56:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=DvTVs8GD/jTd46+TRz66u3EL/sNzanTTF303Un16iY4=; b=wGTRqunYME4IpU
-	0egOnOKnl4xS+DFdnN3L51g4Z8aMMdWXnrJZck7ojjHTH3gi3daT6Eb281PIMUyY/NIv/Hq0P4TcQ
-	oLy8cHssaRB/W2DN7+1lL9egewCleHNcJhPjsn1upKQBzcMK6It8DXAsCJvKKt6qI3TQb42dZZhCG
-	aQXe9/ZIKVGB0QbIilsAekF8mqIbOhcAcuQJHcRrhDPRvtknFr1I42nc29cYvg9ZXjGkvWynlr9rO
-	8r8LJPJKOpNlxHJYbYoK1GSwx17LaiUbJtqIynXXWM+DA3RLVKrAUqKAU4ZN+/pBSK8/eqawKSoRc
-	HXTOefCVz+AcZqT2MnYA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=jV7MZZW8lr8yxoUGic2dt47tbzz7yF3lo4qUQVyVFdI=; b=DPF1pqFEFMjvUM
+	0Jj/DcVWrKHBx+162SpgvKbTwh+hI8rmmjPm9pYBVInTOoTFiLhrw2COk68twXgKgZWhoWeG7jlmc
+	vJlfH8tTh/BvrhZlMSnqfCX+YIOVGD/2+kfC2e2hPKvKNxNhlMuApTDDEJKm/8ReIa8uOIMXx3DDG
+	fv2goAGzxeunKJifWB25coUe8P/o6+u20wDPTEWomusVq1GuK2lIYkvqMaltZIGqzbnC5+w25D7o+
+	1JzTkirTeFV1QQFkEJ1I7Ttd1cad0sm23m3rtug2KGlALQmdTZpfKqWg3l3EpRu57kvUBwtOOY0RQ
+	yEt6IX2WIPbJZLA9SFiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM14X-005xNc-12;
-	Wed, 19 Jul 2023 06:54:05 +0000
+	id 1qM16n-005z8Z-3B;
+	Wed, 19 Jul 2023 06:56:25 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM14V-005xME-1j
+	id 1qM16m-005z7S-14
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 06:54:03 +0000
+	Wed, 19 Jul 2023 06:56:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=2GIqnnpdKb7I9nNR85AQsWNWcw2qSeUJtV+n6+XhZgY=; b=Xd3xfCKCNe/NeILF8SyI6vgwQE
-	iJbWPoUjRksXBiStoltTGJz39b/BLvh4hDGYLBzRmMb9rtNO+JDCb3jd0d7qh/ijXsn0qyCJ2MiEM
-	bP8CV0maYL/rzoeWfxFMZu0gytsWHKNY6bTpv2FRdXPutafN4PljnwJ8QfCmOdKeNT908auVCHHWg
-	mohlXnMxnv+potfkDy4hY4ejmYsx9Zl8AZUba/B5b9zBR0Ep2ZafA4VNJG6/aOd3NiX30/ocamMY3
-	Php7O8Lh9976q22mveB1ZdyIxu22XSMOMyv0JPuKqMF5+JUN+Psg/ddS+GFEj632Ift2rh9csDYQc
-	QQ8J1BUw==;
-Received: from mail-io1-xd36.google.com ([2607:f8b0:4864:20::d36])
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=odZRLqyWhTI+RBKweEfLBIe+YOiV+pzEDHF+kD1TAjs=; b=W/jDyKSqeOMhPzrmovWb8cuT23
+	0G/dvFqGVRxLRVqlkkYVARv0riderNjfIZmwa2+M8Yfu7Zj6Cr0l8knqZ/sbyYyneNCKTorWTMSA7
+	PkxzHHbo1bYV2yvUPL09A+30xzJhGFDS8bODzPUgBDEFXkRZFClZlxj4aDjGt6X/jtwjFBQ7fOa5+
+	SRQz41mS/lp87vUEYz9BcnOdR2K/7jWXiMyA2HH5udbMq36ExdIupOqtX9giKD/W4U0SdzD7lvAte
+	kzi6truMmuv5P0/AhQQABxrIQyD5nBQgkygxmAL7ZwUaB7vT6gajY1ykby9ocrU7QeSeg7c1olZA3
+	TbLR9bdQ==;
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLm4a-00BeSZ-27
+	id 1qLgU3-00BK2O-1W
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 14:53:10 +0000
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-77ac14ff51bso243334839f.3
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2023 07:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689691919; x=1692283919;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2GIqnnpdKb7I9nNR85AQsWNWcw2qSeUJtV+n6+XhZgY=;
-        b=FgiACD5bcvZA+6cd5ApfIEjwVfwqozr0Q2kG/sudwiMboo9Obq3PgIQ5kQm9EmAFWv
-         qNZYg+shgkYPyz7ogVTMOLKIi9OwRcFvlqNCluUuvaQUTLoB7R1GX8CUPbDywt/qKGDq
-         Y0DA98mNxKrMsoaiGj158YRgEWUB0wCQB8fIY0PSEUJZA5n5lWJJ0DN0GdYqwXjCrgty
-         D14g03A/8/lx5ediTE0yCfK1XXPMrqBD876GUt2CowZBA2HpzU7J3J5vz1jY3QQHxpss
-         GslAAeMeXYQ4JeCQNilrLYkUte373Qd7z5CkF89IAGNM+Ey/etyQl+JAaYXf1qGPZw1U
-         Pe1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689691919; x=1692283919;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2GIqnnpdKb7I9nNR85AQsWNWcw2qSeUJtV+n6+XhZgY=;
-        b=jU0fHZpDPuKcc/uFPkkP7jQmY7TmUBwuOuP+8JaZGqhASmp4LQ0bSrrX8XZNidoaMN
-         l1FZWIwb6mKUeSZdgsaRnuHMO0bk4PSLZXaGtDmmBqeHhyiHkIWMObn/52MoOpvUgkxF
-         hpX/6Ka0LBgTzzrDpGzCQjAIhPMhFbe6L2rEWr3IN/XnefM9DYQXIVPVXdiALmcZOrQ4
-         V6z+XyssDi/QbQkRlk9/pPBD6oky+GJz9LFZir3oP2uzFhstp0ZFkZZWhDub7rwee5Gl
-         Ssngx9wL8MWnsFZQyyycfkxJCUXl0IHz5G4vukyqhbwxRiS8fWBKH5xVjSpZPVNRPkeh
-         pXoA==
-X-Gm-Message-State: ABy/qLYyrKTj8GtqO0/l98udt1uXZ/v6jygANV8fF10N6RlIuiISQn1X
-	Zyug8328oJVLcdMnRzvKclU=
-X-Google-Smtp-Source: APBJJlECvO3EIaJ3EtRZb/2Cg7Zv8tKC1ifI6mf15CtrBD+LtSh97R9MErvVDrgsCD10vQ/acmV+8Q==
-X-Received: by 2002:a5e:c113:0:b0:786:26f0:3092 with SMTP id v19-20020a5ec113000000b0078626f03092mr2691239iol.3.1689691918977;
-        Tue, 18 Jul 2023 07:51:58 -0700 (PDT)
-Received: from sun-virtual-machine.localdomain ([103.149.144.245])
-        by smtp.gmail.com with ESMTPSA id o5-20020a02cc25000000b0042b4f9ddecasm589106jap.85.2023.07.18.07.51.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 07:51:58 -0700 (PDT)
-From: SSunk <ssunkkan@gmail.com>
-To: tudor.ambarus@linaro.org,
-	pratyush@kernel.org,
-	michael@walle.cc,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	SSunk <ssunkkan@gmail.com>
-Subject: [PATCH] Add support for XMC XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C
-Date: Tue, 18 Jul 2023 22:51:32 +0800
-Message-Id: <20230718145132.3811-1-ssunkkan@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	Tue, 18 Jul 2023 08:55:05 +0000
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.57])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4t503sJqzVjbd;
+	Tue, 18 Jul 2023 16:52:52 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
+ 2023 16:54:14 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH V2 5/5] mtd: Add several functions to the fail_function list
+Date: Tue, 18 Jul 2023 16:51:19 +0800
+Message-ID: <20230718085119.3885747-6-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
+References: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
 MIME-Version: 1.0
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_155308_826522_23DD4841 
-X-CRM114-Status: UNSURE (   9.27  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230718_095504_051968_7D966927 
+X-CRM114-Status: GOOD (  10.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,42 +83,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for XMC XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C and do not use the generic spi nor driver.
+add mtd_read(), mtd_write(), mtd_erase(), mtd_block_markbad() to
+fail_function list for testing purpose
 
-Signed-off-by: Kankan Sun <ssunkkan@gmail.com>
+Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
 ---
- drivers/mtd/spi-nor/xmc.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/mtd/mtdcore.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
-index 051411e86339..b2374187ec4f 100644
---- a/drivers/mtd/spi-nor/xmc.c
-+++ b/drivers/mtd/spi-nor/xmc.c
-@@ -16,6 +16,22 @@ static const struct flash_info xmc_nor_parts[] = {
- 	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ) },
-+	{ "XM25QH128C", INFO(0x204018, 0, 64 * 1024, 256)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-+			      SPI_NOR_QUAD_READ) },
-+	{ "XM25QH256C", INFO(0x204019, 0, 64 * 1024, 512)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+	{ "XM25QU256C", INFO(0x204119, 0, 64 * 1024, 512)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+	{ "XM25QH512C", INFO(0x204020, 0, 64 * 1024, 1024)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+	{ "XM25QU512C", INFO(0x204120, 0, 64 * 1024, 1024)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-+			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+
- };
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index e00b12aa5ec9..ecf1c5e68479 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -30,6 +30,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/nvmem-provider.h>
+ #include <linux/root_dev.h>
++#include <linux/error-injection.h>
  
- const struct spi_nor_manufacturer spi_nor_xmc = {
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -1396,6 +1397,7 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_erase);
++ALLOW_ERROR_INJECTION(mtd_erase, ERRNO);
+ 
+ /*
+  * This stuff for eXecute-In-Place. phys is optional and may be set to NULL.
+@@ -1493,6 +1495,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_read);
++ALLOW_ERROR_INJECTION(mtd_read, ERRNO);
+ 
+ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 	      const u_char *buf)
+@@ -1509,6 +1512,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_write);
++ALLOW_ERROR_INJECTION(mtd_write, ERRNO);
+ 
+ /*
+  * In blackbox flight recorder like scenarios we want to make successful writes
+@@ -2329,7 +2333,7 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(mtd_block_markbad);
+-
++ALLOW_ERROR_INJECTION(mtd_block_markbad, ERRNO);
+ /*
+  * default_mtd_writev - the default writev method
+  * @mtd: mtd device description object pointer
 -- 
-2.34.1
+2.31.1
 
 
 ______________________________________________________
