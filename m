@@ -4,97 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B653EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:38:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D11A8EB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=tSCmYFfjB7bg6Z3K/eJdIDEHKYHuD4mbwnUXyR/MWV8=; b=cDDksY9UvLNDyg
-	Bhh5Wv8n+W+a6sNHxTUXSxuFueD0DjEAgqV0HMviuvqwFEjH9tu+D1dOXHFQaXuVyLU9tRpn3CmvQ
-	DAzcvzfhP65xX6Fta1Q9UO9OHHVw3DO+6SNUYFg3sMD8rivXrEkUWXnJLzV1LxhS3X1yGmKCGNdjH
-	eo22/ucndwNIutp7krz5e/sgQxQS3Qvaii42DP8xrF7CF/g3ylGT64Mh8od+iYHDPjl2GmLVSU8kF
-	g9PobT7UiarYAJCNbTcWxoEqoMz2mR4NZ4Lll32AGYXvcsrE1G6QnZ9F6iXPL683JxPK4UB8BJRxc
-	I06TGpRITBSxq5lUGZkA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=YQTXSbhu2w9KJwkv9IeVJaZPEkvDizrXvO9RRmGGisA=; b=GX/NhM5wDfLIkz
+	CRmAA1YPso7HAJvH6Zik44fssV8NPeShGttAGXEzlwuXep/uhcB6H6qb9/YGtkm/ObWK/Rpt67iAT
+	1zkXKaRP0jzQ4Omba8JXLIWcbYxtvEUor4Fl3XAFcbbJWocIePfdCFK8HNM10+M6LnnPpu9BddRtU
+	Uu0ozNaGwX1DOXcBBnvUoyRuQmsOZx1thXSFresFjBRbfzJ63f9ji4YCfViXuGkUfHsbd3+lCqnus
+	R+5FtUFVmzYAekp9VqsTavOQ8Z5B47nkG4p1bzojZh9QF7YEUr+2pf82Rqo9fpVbc8TW1qGd7uaL8
+	iAwQrjh8hbRO8a30ybjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0p3-005owB-0D;
-	Wed, 19 Jul 2023 06:38:05 +0000
+	id 1qM0qv-005py5-1C;
+	Wed, 19 Jul 2023 06:40:01 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0p0-005ouN-10
+	id 1qM0qt-005pwE-0l
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 06:38:02 +0000
+	Wed, 19 Jul 2023 06:39:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=IKQrnAAXrxm+V/7/n+4Qloa2USS24OYRqHFta7qvgAQ=; b=Qc3k6kkya2z08JNLxVEYAdX+IL
-	yLO2gn7sTPMFare3GfKN3c6WtmetObZzmtgH8J8DvbKh+QF5ebnIgXJrTkFwg8b0sQGREqymJl1Fe
-	4PN+7aHRT8Ejqr1N2n2px+BhyPKLEHh6GatsrT49jJDDEwHbJEGaKrcp9vz1tiZISdiwbyu3u+Ido
-	7PTers1dmZqNSpQLmKYUBnhILWzZmMZrIlgi9x44sdvPyTlYPqgWF86YPZoV+vvMMmR//B8xhfuaz
-	oQ1nReI5mkYUdrINLMZeRkGWi6ouqcFcAckqWTcz1JgqA4xj8fcvUZEIVB/7eaT0y3vvpgzrGZ8kE
-	g/SfXePA==;
-Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=VrOg4AeIMt/G4A3FDe8u4FLDtQ24xrnoQeLLdNrF+AE=; b=aNgMALe85wKlXUrReZMsKjNgqq
+	7VwK5mvUm7LyYX8jlpZuNj+dj6Kxfst9EQre0zWgmBlREwzTNd2f2iKDkw9w19WQC+xKMnAyK4AIC
+	QKpn1RVXXYRXs1IqZJ0wyeYCAwly0VMl+TK94+4BStAI9uE7uIqPF33PkTu3VgCJxEkuEe6BtjLjY
+	cxntcmwzQT7E/otVb419J2lvB4KkFHvVmAQbH4UcZWGPm9LjWE4SsvqlTmMr8s1kTT9Yg+HbLsK8W
+	8lVgtNRAJIGCw7o9Wk/gjYW76x2JQnMed4AAUyJP4zVWD2IXi49l5toLowP+E2CXpl6LRAQpK/LD7
+	jBIDfHCA==;
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLgOT-00BJpu-1t
+	id 1qLkKP-00BYVX-0i
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 08:49:19 +0000
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso8866286e87.0
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2023 01:49:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689670090; x=1692262090;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IKQrnAAXrxm+V/7/n+4Qloa2USS24OYRqHFta7qvgAQ=;
-        b=AeVsisMeDdKDMuBy4M5Ao2mQiTv19RMdqCBe8cETcF3jf7dsgpNOWeHswgA5cAJXuA
-         n0lCzW9TLN7VFYDPpK0/ghORSyAZpNKOMAaPri84J9v6cpns3G0n+W2MToiOZc7lQR+G
-         AqlqA8fx3uZJShWIFkzAYUhM7qISpYN2mfqjgpBm6NyxUKfai5rpGcip/aX7BAUm6bdf
-         1Y1HeLl6CJyRJvoOBLI5RdZ6zgv3TuOFyZghIMH4atj3W7ZgH63MnoByoApnTrFSqcJT
-         zhe/DXazrYsDJxRSr19dFQFpwRW0ANPsRulC3HIjfYjdTaW0tnK5dPfJ1wC4Wn3kVYyD
-         0prA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689670090; x=1692262090;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IKQrnAAXrxm+V/7/n+4Qloa2USS24OYRqHFta7qvgAQ=;
-        b=hcZcx4GcYisu6NbhEE0X9JSLwP5z7WQFXtvuo05GzjNzN/EbtdmDO3KNUBR/YL2BUo
-         gBkc596afn0qTE5+YGMIxVyPta77ir/iW035/kD/V5tPgrQM+L+JnlAK79dGgp16D//N
-         JCcrKcJsJwtMegC/DitUOnOr76NJRSqqkyrgbfQ1OOXBtqOnxNKthRYCekTbRLQ/X49n
-         l6YP9KBtIy1ozxdwcp5p1MOzTkEsvVAzW/2X4rP+/JkS/CWtiWEb2aqzBE3xeKjKPkvq
-         P5PmG2jGb+3cVFAIXXYaixSgN10+MOV4XsVopxVaVZkFrfKCDhiXTva0ZK1EUOyC9nJ3
-         y3aQ==
-X-Gm-Message-State: ABy/qLYTD+vLxEEqiY5ND10f4dHebML9t6hLMi0anFkqcCcR559kHMJX
-	ngvaO5Tz1OOc0D6xrjvFfxc=
-X-Google-Smtp-Source: APBJJlGLMz1ucd/cArxQa8D7T8E7JyE0jbBpbHOfVBFkSY3iVue31sdUVun4qUGBLZL/AtmlKuRdCg==
-X-Received: by 2002:a05:6512:3b0a:b0:4fb:9595:15e9 with SMTP id f10-20020a0565123b0a00b004fb959515e9mr11844227lfv.22.1689670090272;
-        Tue, 18 Jul 2023 01:48:10 -0700 (PDT)
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id m15-20020a056512014f00b004fb85ffc82csm340944lfo.10.2023.07.18.01.48.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 01:48:09 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Tue, 18 Jul 2023 13:01:24 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 073026154D;
+	Tue, 18 Jul 2023 13:00:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19995C433C8;
+	Tue, 18 Jul 2023 13:00:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689685244;
+	bh=peXwgO2lyNmi+9SzG2/BdcMLN+f3eLd+y3jKWWgC8aQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=TdkMaJKDTq+zIO7n8GZ1p6h2kCkWyoQVZH6lj/cGZHSgU+hRHEGX2iJAp83rnSOSw
+	 7z9yGPVhvdymwCEL/bh89Q8SPgY4CGLXiUiwegZaO9RFiOtmVHD620zWrulzIqz5Fb
+	 oq/U8LcSSgYAhLAOktz0OpCjr70/kOCmzLQ6DxPxetv6QlNyKsHj+iXub0jCsLR1Sm
+	 IJDQqMIEunRPZAZFwtvCBglfCVX835YwoD6m9c1UhYZ7Kvl4djZ1iyX/sb4o3m+kkP
+	 je/3k07aXFsZyASrqrqqy4HUICL9jUliyuYYU7ZL7rFU5X0e1s0NlXXKEc8+v7E88r
+	 3gw+gyBOgIZzA==
+From: Ard Biesheuvel <ardb@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: Ard Biesheuvel <ardb@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Haren Myneni <haren@us.ibm.com>,
+	Nick Terrell <terrelln@fb.com>,
+	Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-	Alban Bedel <albeu@free.fr>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	linux-mtd@lists.infradead.org,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
 	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] Revert "nvmem: add new config option"
-Date: Tue, 18 Jul 2023 10:48:04 +0200
-Message-Id: <20230718084804.20139-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
+	linux-block@vger.kernel.org,
+	qat-linux@intel.com,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org
+Subject: [RFC PATCH 16/21] crypto: zstd - drop obsolete 'comp' implementation
+Date: Tue, 18 Jul 2023 14:58:42 +0200
+Message-Id: <20230718125847.3869700-17-ardb@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
+References: <20230718125847.3869700-1-ardb@kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3114; i=ardb@kernel.org; h=from:subject; bh=peXwgO2lyNmi+9SzG2/BdcMLN+f3eLd+y3jKWWgC8aQ=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT8NRrezVU4/VCR9T1G2en+U6PT268mNR7qltf/yWr W6dw1vRUcrCIMbBICumyCIw+++7nacnStU6z5KFmcPKBDKEgYtTACZysIDhD+duhXelu1kOWUzm bLrUfPHM98LuO2wvAxnCS2eFBF6LbGFkmFyxW636Xq/aoeVKTyexvWCOycrYJXNa+3NcRWVSweN 3LAA=
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_094917_848749_B33B77B5 
-X-CRM114-Status: GOOD (  16.08  )
+X-CRM114-CacheID: sfid-20230718_140122_489682_83889379 
+X-CRM114-Status: GOOD (  13.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,58 +107,129 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKVGhpcyByZXZlcnRzIGNv
-bW1pdCA1MTdmMTRkOWNmMzUzM2Q1YWI0ZmRlZDE5NWFiNmY4MGE5MmUzNzhmLgoKSXQgc2VlbXMg
-dGhhdCAibm9fb2Zfbm9kZSIgY29uZmlnIG9wdGlvbiB3YXMgYWRkZWQgdG8gaGVscCBtdGQncyBj
-YXNlLgoKRFQgbm9kZXMgb2YgTVREIHBhcnRpdGlvbnMgKHRoYXQgYXJlIGFsc28gTlZNRU0gZGV2
-aWNlcykgbWF5IGNvbnRhaW4Kc3Vibm9kZXMgdGhhdCBTSE9VTEQgTk9UIGJlIHRyZWF0ZWQgYXMg
-TlZNRU0gZml4ZWQgY2VsbHMuIFRvIHByZXZlbnQKTlZNRU0gY29yZSBjb2RlIGZyb20gcGFyc2lu
-ZyB0aGVtICJub19vZl9ub2RlIiB3YXMgc2V0IHRvIHRydWUgYW5kIHRoYXQKbWFkZSBmb3JfZWFj
-aF9jaGlsZF9vZl9ub2RlKCkgaW4gTlZNRU0gYSBuby1vcC4KCldpdGggdGhlIGludHJvZHVjdGlv
-biBvZiAiYWRkX2xlZ2FjeV9maXhlZF9vZl9jZWxscyIgY29uZmlnIG9wdGlvbgp0aGluZ3MgZ290
-IG1vcmUgZXhwbGljaXQuIE1URCBzdWJzeXN0ZW0gc2ltcGx5IHRlbGxzIE5WTUVNIHdoZW4gdG8g
-bG9vawpmb3IgZml4ZWQgY2VsbHMgYW5kIHRoZXJlIGlzIG5vIG5lZWQgdG8gaGFjayAib2Zfbm9k
-ZSIgcG9pbnRlciBhbnltb3JlLgoKU2lnbmVkLW9mZi1ieTogUmFmYcWCIE1pxYJlY2tpIDxyYWZh
-bEBtaWxlY2tpLnBsPgotLS0KSW1wb3J0YW50OiB0aGlzIGlzIGJhc2VkIG9uIHRvcCBvZiB0aGUK
-W1BBVENIIFY0XSBudm1lbTogYWRkIGV4cGxpY2l0IGNvbmZpZyBvcHRpb24gdG8gcmVhZCBvbGQg
-c3ludGF4IGZpeGVkIE9GIGNlbGxzCi0tLQogZHJpdmVycy9tdGQvbXRkY29yZS5jICAgICAgICAg
-IHwgMSAtCiBkcml2ZXJzL252bWVtL2NvcmUuYyAgICAgICAgICAgfCAyICstCiBpbmNsdWRlL2xp
-bnV4L252bWVtLXByb3ZpZGVyLmggfCAyIC0tCiAzIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
-KCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZGNvcmUuYyBi
-L2RyaXZlcnMvbXRkL210ZGNvcmUuYwppbmRleCA5ZGI4ZDc4NTM2MzkuLjNkNzgxZmZiOGMzMiAx
-MDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbXRkY29yZS5jCisrKyBiL2RyaXZlcnMvbXRkL210ZGNv
-cmUuYwpAQCAtNTU0LDcgKzU1NCw2IEBAIHN0YXRpYyBpbnQgbXRkX252bWVtX2FkZChzdHJ1Y3Qg
-bXRkX2luZm8gKm10ZCkKIAljb25maWcucmVhZF9vbmx5ID0gdHJ1ZTsKIAljb25maWcucm9vdF9v
-bmx5ID0gdHJ1ZTsKIAljb25maWcuaWdub3JlX3dwID0gdHJ1ZTsKLQljb25maWcubm9fb2Zfbm9k
-ZSA9ICFvZl9kZXZpY2VfaXNfY29tcGF0aWJsZShub2RlLCAibnZtZW0tY2VsbHMiKTsKIAljb25m
-aWcucHJpdiA9IG10ZDsKIAogCW10ZC0+bnZtZW0gPSBudm1lbV9yZWdpc3RlcigmY29uZmlnKTsK
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbnZtZW0vY29yZS5jIGIvZHJpdmVycy9udm1lbS9jb3JlLmMK
-aW5kZXggNThkODkxOWU2NjgyLi5hMGM5MTUzY2RhMjggMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbnZt
-ZW0vY29yZS5jCisrKyBiL2RyaXZlcnMvbnZtZW0vY29yZS5jCkBAIC0xMDI3LDcgKzEwMjcsNyBA
-QCBzdHJ1Y3QgbnZtZW1fZGV2aWNlICpudm1lbV9yZWdpc3Rlcihjb25zdCBzdHJ1Y3QgbnZtZW1f
-Y29uZmlnICpjb25maWcpCiAJbnZtZW0tPm5rZWVwb3V0ID0gY29uZmlnLT5ua2VlcG91dDsKIAlp
-ZiAoY29uZmlnLT5vZl9ub2RlKQogCQludm1lbS0+ZGV2Lm9mX25vZGUgPSBjb25maWctPm9mX25v
-ZGU7Ci0JZWxzZSBpZiAoIWNvbmZpZy0+bm9fb2Zfbm9kZSkKKwllbHNlCiAJCW52bWVtLT5kZXYu
-b2Zfbm9kZSA9IGNvbmZpZy0+ZGV2LT5vZl9ub2RlOwogCiAJc3dpdGNoIChjb25maWctPmlkKSB7
-CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L252bWVtLXByb3ZpZGVyLmggYi9pbmNsdWRlL2xp
-bnV4L252bWVtLXByb3ZpZGVyLmgKaW5kZXggMWI4MWFkZWJkYjhiLi5lMzkzMDgzNTIzNWIgMTAw
-NjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvbnZtZW0tcHJvdmlkZXIuaAorKysgYi9pbmNsdWRlL2xp
-bnV4L252bWVtLXByb3ZpZGVyLmgKQEAgLTg5LDcgKzg5LDYgQEAgc3RydWN0IG52bWVtX2NlbGxf
-aW5mbyB7CiAgKiBAcmVhZF9vbmx5OglEZXZpY2UgaXMgcmVhZC1vbmx5LgogICogQHJvb3Rfb25s
-eToJRGV2aWNlIGlzIGFjY2Vzc2libHkgdG8gcm9vdCBvbmx5LgogICogQG9mX25vZGU6CUlmIGdp
-dmVuLCB0aGlzIHdpbGwgYmUgdXNlZCBpbnN0ZWFkIG9mIHRoZSBwYXJlbnQncyBvZl9ub2RlLgot
-ICogQG5vX29mX25vZGU6CURldmljZSBzaG91bGQgbm90IHVzZSB0aGUgcGFyZW50J3Mgb2Zfbm9k
-ZSBldmVuIGlmIGl0J3MgIU5VTEwuCiAgKiBAcmVnX3JlYWQ6CUNhbGxiYWNrIHRvIHJlYWQgZGF0
-YS4KICAqIEByZWdfd3JpdGU6CUNhbGxiYWNrIHRvIHdyaXRlIGRhdGEuCiAgKiBAc2l6ZToJRGV2
-aWNlIHNpemUuCkBAIC0xMjIsNyArMTIxLDYgQEAgc3RydWN0IG52bWVtX2NvbmZpZyB7CiAJYm9v
-bAkJCWlnbm9yZV93cDsKIAlzdHJ1Y3QgbnZtZW1fbGF5b3V0CSpsYXlvdXQ7CiAJc3RydWN0IGRl
-dmljZV9ub2RlCSpvZl9ub2RlOwotCWJvb2wJCQlub19vZl9ub2RlOwogCW52bWVtX3JlZ19yZWFk
-X3QJcmVnX3JlYWQ7CiAJbnZtZW1fcmVnX3dyaXRlX3QJcmVnX3dyaXRlOwogCWludAlzaXplOwot
-LSAKMi4zNS4zCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+The 'comp' API is obsolete and will be removed, so remove this comp
+implementation.
+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ crypto/zstd.c | 56 +-------------------
+ 1 file changed, 1 insertion(+), 55 deletions(-)
+
+diff --git a/crypto/zstd.c b/crypto/zstd.c
+index 154a969c83a82277..c6e6f135c5812c9c 100644
+--- a/crypto/zstd.c
++++ b/crypto/zstd.c
+@@ -121,13 +121,6 @@ static void *zstd_alloc_ctx(struct crypto_scomp *tfm)
+ 	return ctx;
+ }
+ 
+-static int zstd_init(struct crypto_tfm *tfm)
+-{
+-	struct zstd_ctx *ctx = crypto_tfm_ctx(tfm);
+-
+-	return __zstd_init(ctx);
+-}
+-
+ static void __zstd_exit(void *ctx)
+ {
+ 	zstd_comp_exit(ctx);
+@@ -140,13 +133,6 @@ static void zstd_free_ctx(struct crypto_scomp *tfm, void *ctx)
+ 	kfree_sensitive(ctx);
+ }
+ 
+-static void zstd_exit(struct crypto_tfm *tfm)
+-{
+-	struct zstd_ctx *ctx = crypto_tfm_ctx(tfm);
+-
+-	__zstd_exit(ctx);
+-}
+-
+ static int __zstd_compress(const u8 *src, unsigned int slen,
+ 			   u8 *dst, unsigned int *dlen, void *ctx)
+ {
+@@ -161,14 +147,6 @@ static int __zstd_compress(const u8 *src, unsigned int slen,
+ 	return 0;
+ }
+ 
+-static int zstd_compress(struct crypto_tfm *tfm, const u8 *src,
+-			 unsigned int slen, u8 *dst, unsigned int *dlen)
+-{
+-	struct zstd_ctx *ctx = crypto_tfm_ctx(tfm);
+-
+-	return __zstd_compress(src, slen, dst, dlen, ctx);
+-}
+-
+ static int zstd_scompress(struct crypto_scomp *tfm, const u8 *src,
+ 			  unsigned int slen, u8 *dst, unsigned int *dlen,
+ 			  void *ctx)
+@@ -189,14 +167,6 @@ static int __zstd_decompress(const u8 *src, unsigned int slen,
+ 	return 0;
+ }
+ 
+-static int zstd_decompress(struct crypto_tfm *tfm, const u8 *src,
+-			   unsigned int slen, u8 *dst, unsigned int *dlen)
+-{
+-	struct zstd_ctx *ctx = crypto_tfm_ctx(tfm);
+-
+-	return __zstd_decompress(src, slen, dst, dlen, ctx);
+-}
+-
+ static int zstd_sdecompress(struct crypto_scomp *tfm, const u8 *src,
+ 			    unsigned int slen, u8 *dst, unsigned int *dlen,
+ 			    void *ctx)
+@@ -204,19 +174,6 @@ static int zstd_sdecompress(struct crypto_scomp *tfm, const u8 *src,
+ 	return __zstd_decompress(src, slen, dst, dlen, ctx);
+ }
+ 
+-static struct crypto_alg alg = {
+-	.cra_name		= "zstd",
+-	.cra_driver_name	= "zstd-generic",
+-	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
+-	.cra_ctxsize		= sizeof(struct zstd_ctx),
+-	.cra_module		= THIS_MODULE,
+-	.cra_init		= zstd_init,
+-	.cra_exit		= zstd_exit,
+-	.cra_u			= { .compress = {
+-	.coa_compress		= zstd_compress,
+-	.coa_decompress		= zstd_decompress } }
+-};
+-
+ static struct scomp_alg scomp = {
+ 	.alloc_ctx		= zstd_alloc_ctx,
+ 	.free_ctx		= zstd_free_ctx,
+@@ -231,22 +188,11 @@ static struct scomp_alg scomp = {
+ 
+ static int __init zstd_mod_init(void)
+ {
+-	int ret;
+-
+-	ret = crypto_register_alg(&alg);
+-	if (ret)
+-		return ret;
+-
+-	ret = crypto_register_scomp(&scomp);
+-	if (ret)
+-		crypto_unregister_alg(&alg);
+-
+-	return ret;
++	return crypto_register_scomp(&scomp);
+ }
+ 
+ static void __exit zstd_mod_fini(void)
+ {
+-	crypto_unregister_alg(&alg);
+ 	crypto_unregister_scomp(&scomp);
+ }
+ 
+-- 
+2.39.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
