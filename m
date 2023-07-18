@@ -4,98 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5514C001B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:47:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 163C9EB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ovGfcZubt6z59y+sNV3RDIY+jfO5cAGMBMINOO2guwg=; b=KNROO4oQXczqgF
-	FN441fgEAjnyYlqbF/mScdX+H44dCaQ0l1O19gBsBOXbMUZMDA9Sb2XN5sk4alylgfn19aPNGxvUJ
-	kzJ/UPWLr22bsxX6m9tI5QUv2UQixUp30tEggSS6eVhFA4TF78Erjao7OW6rLBDMFSrUioOaJK5bN
-	2R5YTd9gBh8ZFDzsG/LYBR8vtCm2oFrq1HeiD0GK8n6KRl8X17sRdllb2wNUnGg8JY9+UtnJjYkX8
-	bjAIq6N/50eJ1br4AmnoPUb3QhuJR1/CqjAINXxr4hvL2QNteAeljU9UthjlnnEoNtGO/g8rHy3g7
-	nTqvJB/8lvNvcedh2drA==;
+	List-Owner; bh=tTmssWjjmYizPBdjWhrkuGQpt9IbAp/us3YIeegNM2c=; b=x3C+3aOkUPxgiR
+	OfnjlR4kh1Cib0rv/gc5+OpPsIgxr3JS+RwRk6XCVtNIK0dV5NpcI5m4jFH8IHHo6V5vleuPTf+r4
+	UotzN3t/0HZ5416NWbhuAp8/8cM141iddPBYF9on3H32HIKY4bvXe3cWiUgVhU1xLHOcoaoVIkmKT
+	Cser+J/R4gFNWtxXcA0ITP7JeYcJQPEYjsx/EUwX4+9Atv0JN7MXscfHlY5D+W4yJ5WY4VsUEo+Of
+	TtgcUbLXZmXXBQMAHfS7HKVwZKfVRKdsCQThP2oeqExTrGBEi7gL03z3jeZH4Cq1r3238g0+Y1NUV
+	r2NLiOOgbcKcm5C1g92Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM02E-005Q3c-2x;
-	Wed, 19 Jul 2023 05:47:38 +0000
+	id 1qM07a-005Rk0-1h;
+	Wed, 19 Jul 2023 05:53:10 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM029-005PzL-0X
-	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 05:47:33 +0000
+	id 1qM07Z-005RjR-0X;
+	Wed, 19 Jul 2023 05:53:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=cwFGfeVoZskNWU8YcWmTG596ul0FU7z+qOxYKCib21Q=; b=BNDtCBBpZYKM5QFvBJYbEDrkSX
-	Yzs3kokCbMrdU333sJrPKxeT3w5oEBRErsvUWEncEj8zqCjArCC152HT18soYc0XgbmlbMxyiJF+7
-	ADxuJXvVWHHyyvVwzzHFBnSyHcrIq9itb8lw92asYi8Bm2FN0yQMu9XRzZLeOeK9G6Xs4MmpgEZDd
-	Y73K0qLqKCBBTBgfH1mP0hXnAGlGHrni3J7HTITGV4dybP8BUzdTLHcRAkIZOyZBtUEztolRwJqm8
-	HeOG+DjsfxwJKDPEU7ai83vp1MUflQ0Lwtjk6+5ex8z4qfXOZXWMIzYY11jbR/YPPwYCy6Tq1Pk05
-	6Ipj/LZg==;
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=Y1QDj1E+S2bjPPGCPFdmDsT3gCqQuKHXgAf2a6PrB3E=; b=dH7iKLdHxa3TJXLvWEUU+CCtHG
+	NU0kQOSIRYjL/DifW5bh3HMx/zzE3PaOEyE7lh/SwKtHHv7SRjJUm4oF1TGX8iZCiJi/Qww5YH/9e
+	kyk2+EgCh2aI2t/VO7VIfaZ7OgBFnzQ6hXk5otVRGqGc7/Xk4wdKfeY3sOKWiAcNABfcqMXlkvp9V
+	4pMMdIscLYDaAG89VOuFwLhQU9lOAqXonlQJQGrgb2Lv2qIzD/JTJy7iqXqaCgMBnSfjWjuXOpn2V
+	nOg6XjHnP9lMjYxnpDEPhqiH65A7+7v87CZ/UfsNGpXjPxGmiq2g/ofMrPK6riJ1sqipDBMLIAIer
+	/oBnkTEQ==;
+Received: from mail-lf1-x136.google.com ([2a00:1450:4864:20::136])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLkKR-00BYW8-2p
-	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 13:01:26 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 0BC1861582;
-	Tue, 18 Jul 2023 13:00:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 178C6C433CA;
-	Tue, 18 Jul 2023 13:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689685220;
-	bh=M7WgPUSIPoeRnhagLleZw11JZUjXzh7EjhC9ItdylhI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZiqeV+BnZp3cLfA0MbxVPtz12ltzOoRSGxIORn0Gi//Rft3vveQhu0SjmWQWBCr6y
-	 CimWcYY2BnWLFZOpS1dkdgCF5KhOgCmOumRRbE3tgC1vamXZSIUoCzOjWeBAuvHkoT
-	 bmlK9VgojWthOUgQshf1e6xPJkY34b9KQAf7cy1o1KkiB1KulcsBBCsvs+QENZM6tU
-	 WJdFfgfWftd+tcznULjDoG+tps1F3jrdnP95FxyqkRnzApk8jXjonDy+83onKlSagl
-	 gyS7vLkWPZ7ChOnN1uQz9FZv57FvLZY/5pbGnW1DEoxc/JNtoaCd0DVyc0khrwyZ3h
-	 Nq8L4k3r0uh1w==
-From: Ard Biesheuvel <ardb@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Haren Myneni <haren@us.ibm.com>,
-	Nick Terrell <terrelln@fb.com>,
-	Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	qat-linux@intel.com,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: [RFC PATCH 11/21] crypto: deflate - drop obsolete 'comp' implementation
-Date: Tue, 18 Jul 2023 14:58:37 +0200
-Message-Id: <20230718125847.3869700-12-ardb@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
-References: <20230718125847.3869700-1-ardb@kernel.org>
+	id 1qLf1K-00BFu5-37;
+	Tue, 18 Jul 2023 07:21:20 +0000
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fb5bcb9a28so8462817e87.3;
+        Tue, 18 Jul 2023 00:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689664809; x=1692256809;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y1QDj1E+S2bjPPGCPFdmDsT3gCqQuKHXgAf2a6PrB3E=;
+        b=XLpqkx/8N+f9aL66iAO4XAc89p9osxV7uu0ZqsyeRuMT4WOEnOlfUxj8GbFX4gEcY7
+         cmQ5fYgkyqNDpwovIzaJAE3TYH7aSiAY5VG0meewNNzbaAUu5EaM8jadqiG9ZIxt8WkH
+         Dz5Wa+qEBe6jQD09zPibdBeoGRnE/sTNzbn42rGQJ9PVOh1x5LzTEO4yedoXofgo5eFQ
+         KuGIkdKxeINxScrJFBi22nrBsED9IknOsqSFxrCgMqZxiUdu7WgZs1LJuL63IoOJJuPq
+         aH9XK5MpDV2L2h3Zd29U/vHUUcmr0Nb7ZNRI8TEZ+HH+Eak4QSPvsUrRq9Bx6pIjVCtR
+         di/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689664809; x=1692256809;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y1QDj1E+S2bjPPGCPFdmDsT3gCqQuKHXgAf2a6PrB3E=;
+        b=VDeS9l7MKjJXZr4gdlZR0xZipac4Jvfir4O6EUkQrM3x2zRsuPN0DnL2V9Wmjnxwe5
+         Kc85u+pqxWMNzxevGSI1brfRVG28hqTkd4Cx7isC/dAPlHzSV+HAqqFLXOgFDwv1QJRY
+         sI0ZgLfFnuJIzbgrpt9W/cACXUYldPt01A8gNCEXOmtVRYAOcuRp/C1eJVCRZ1MTc8An
+         WxeKnCGm4io+WD0X734blSlfIVu/BnaqkAZPGqMQ2Li6F5sM9VlLjDzWNvwmT9LJntv6
+         Mn/wlN1Bf3sCXw2++kKDeP1cPZ6v1Z9oX/rH8g7Z8ELCIfiUeDo2dwkH2r+uV23XJ9S3
+         QIEw==
+X-Gm-Message-State: ABy/qLYUvBL0KkWMTE2gd//buNNigB9PXE5bad228WiLVwTtUINdEPww
+	qwFUKzSWT/xbE0V8nFm84r8=
+X-Google-Smtp-Source: APBJJlH+TWJF5L0ovMggt0/CS2enPlkz+KJw4saqvvcdbjYHJU4i8zA1AJzt6j7rP+36JcEKeZhfYg==
+X-Received: by 2002:a05:6512:3a88:b0:4fb:925f:8be1 with SMTP id q8-20020a0565123a8800b004fb925f8be1mr11403669lfu.45.1689664808795;
+        Tue, 18 Jul 2023 00:20:08 -0700 (PDT)
+Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.googlemail.com with ESMTPSA id 22-20020ac24856000000b004fbb3e91a3fsm299048lfy.114.2023.07.18.00.20.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 00:20:08 -0700 (PDT)
+Message-ID: <b5124f4a-6a7a-3fd9-32d6-e0690a45c7e8@gmail.com>
+Date: Tue, 18 Jul 2023 09:20:05 +0200
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3314; i=ardb@kernel.org; h=from:subject; bh=M7WgPUSIPoeRnhagLleZw11JZUjXzh7EjhC9ItdylhI=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT9Vz0SiZCzNmlVRdnKSfvtS574N93b97iX832bmU3 QlKyPrVUcrCIMbBICumyCIw+++7nacnStU6z5KFmcPKBDKEgYtTACYivYGRoYGZ/d62qVNZEw5b bVxzpfjx1dxEiRczJu3OYWisXWV4xZKRof3PC46/975fuv+B+8HuefcX7pyd+fLPBHOJ5XPWmt0 6Ks8GAA==
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH V4] nvmem: add explicit config option to read old syntax
+ fixed OF cells
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+ Alyssa Rosenzweig <alyssa@rosenzweig.io>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Heiko Stuebner <heiko@sntech.de>,
+ Orson Zhai <orsonzhai@gmail.com>, Baolin Wang
+ <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Vincent Shih <vincent.sunplus@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Michal Simek <michal.simek@xilinx.com>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Evgeniy Polyakov <zbr@ioremap.net>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-rockchip@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev,
+ linux-rtc@vger.kernel.org, Michael Walle <michael@walle.cc>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20230403225540.1931-1-zajec5@gmail.com>
+Content-Language: en-US
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <20230403225540.1931-1-zajec5@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_140124_397833_64617B92 
-X-CRM114-Status: GOOD (  13.05  )
+X-CRM114-CacheID: sfid-20230718_082119_130455_1C3D8A4C 
+X-CRM114-Status: GOOD (  17.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,131 +136,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-No users of the obsolete 'comp' crypto compression API remain, so let's
-drop the software deflate version of it.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- crypto/deflate.c | 58 +-------------------
- 1 file changed, 1 insertion(+), 57 deletions(-)
-
-diff --git a/crypto/deflate.c b/crypto/deflate.c
-index f4f127078fe2a5aa..0955040ca9e64146 100644
---- a/crypto/deflate.c
-+++ b/crypto/deflate.c
-@@ -130,13 +130,6 @@ static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
- 	return ctx;
- }
- 
--static int deflate_init(struct crypto_tfm *tfm)
--{
--	struct deflate_ctx *ctx = crypto_tfm_ctx(tfm);
--
--	return __deflate_init(ctx);
--}
--
- static void __deflate_exit(void *ctx)
- {
- 	deflate_comp_exit(ctx);
-@@ -149,13 +142,6 @@ static void deflate_free_ctx(struct crypto_scomp *tfm, void *ctx)
- 	kfree_sensitive(ctx);
- }
- 
--static void deflate_exit(struct crypto_tfm *tfm)
--{
--	struct deflate_ctx *ctx = crypto_tfm_ctx(tfm);
--
--	__deflate_exit(ctx);
--}
--
- static int __deflate_compress(const u8 *src, unsigned int slen,
- 			      u8 *dst, unsigned int *dlen, void *ctx)
- {
-@@ -185,14 +171,6 @@ static int __deflate_compress(const u8 *src, unsigned int slen,
- 	return ret;
- }
- 
--static int deflate_compress(struct crypto_tfm *tfm, const u8 *src,
--			    unsigned int slen, u8 *dst, unsigned int *dlen)
--{
--	struct deflate_ctx *dctx = crypto_tfm_ctx(tfm);
--
--	return __deflate_compress(src, slen, dst, dlen, dctx);
--}
--
- static int deflate_scompress(struct crypto_scomp *tfm, const u8 *src,
- 			     unsigned int slen, u8 *dst, unsigned int *dlen,
- 			     void *ctx)
-@@ -241,14 +219,6 @@ static int __deflate_decompress(const u8 *src, unsigned int slen,
- 	return ret;
- }
- 
--static int deflate_decompress(struct crypto_tfm *tfm, const u8 *src,
--			      unsigned int slen, u8 *dst, unsigned int *dlen)
--{
--	struct deflate_ctx *dctx = crypto_tfm_ctx(tfm);
--
--	return __deflate_decompress(src, slen, dst, dlen, dctx);
--}
--
- static int deflate_sdecompress(struct crypto_scomp *tfm, const u8 *src,
- 			       unsigned int slen, u8 *dst, unsigned int *dlen,
- 			       void *ctx)
-@@ -256,19 +226,6 @@ static int deflate_sdecompress(struct crypto_scomp *tfm, const u8 *src,
- 	return __deflate_decompress(src, slen, dst, dlen, ctx);
- }
- 
--static struct crypto_alg alg = {
--	.cra_name		= "deflate",
--	.cra_driver_name	= "deflate-generic",
--	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
--	.cra_ctxsize		= sizeof(struct deflate_ctx),
--	.cra_module		= THIS_MODULE,
--	.cra_init		= deflate_init,
--	.cra_exit		= deflate_exit,
--	.cra_u			= { .compress = {
--	.coa_compress 		= deflate_compress,
--	.coa_decompress  	= deflate_decompress } }
--};
--
- static struct scomp_alg scomp = {
- 	.alloc_ctx		= deflate_alloc_ctx,
- 	.free_ctx		= deflate_free_ctx,
-@@ -283,24 +240,11 @@ static struct scomp_alg scomp = {
- 
- static int __init deflate_mod_init(void)
- {
--	int ret;
--
--	ret = crypto_register_alg(&alg);
--	if (ret)
--		return ret;
--
--	ret = crypto_register_scomp(&scomp);
--	if (ret) {
--		crypto_unregister_alg(&alg);
--		return ret;
--	}
--
--	return ret;
-+	return crypto_register_scomp(&scomp);
- }
- 
- static void __exit deflate_mod_fini(void)
- {
--	crypto_unregister_alg(&alg);
- 	crypto_unregister_scomp(&scomp);
- }
- 
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpPbiA0LjA0LjIwMjMgMDA6NTUsIFJhZmHFgiBNacWCZWNraSB3cm90ZToKPiBCaW5kaW5n
+IGZvciBmaXhlZCBOVk1FTSBjZWxscyBkZWZpbmVkIGRpcmVjdGx5IGFzIE5WTUVNIGRldmljZSBz
+dWJub2Rlcwo+IGhhcyBiZWVuIGRlcHJlY2F0ZWQuIEl0IGhhcyBiZWVuIHJlcGxhY2VkIGJ5IHRo
+ZSAiZml4ZWQtbGF5b3V0IiBOVk1FTQo+IGxheW91dCBiaW5kaW5nLgo+IAo+IE5ldyBzeW50YXgg
+aXMgbWVhbnQgdG8gYmUgY2xlYXJlciBhbmQgc2hvdWxkIGhlbHAgYXZvaWRpbmcgaW1wcmVjaXNl
+Cj4gYmluZGluZ3MuCj4gCj4gTlZNRU0gc3Vic3lzdGVtIGFscmVhZHkgc3VwcG9ydHMgdGhlIG5l
+dyBiaW5kaW5nLiBJdCBzaG91bGQgYmUgYSBnb29kCj4gaWRlYSB0byBsaW1pdCBzdXBwb3J0IGZv
+ciBvbGQgc3ludGF4IHRvIGV4aXN0aW5nIGRyaXZlcnMgdGhhdCBhY3R1YWxseQo+IHN1cHBvcnQg
+JiB1c2UgaXQgKHdlIGNhbid0IGJyZWFrIGJhY2t3YXJkIGNvbXBhdGliaWxpdHkhKS4gVGhhdCB3
+YXkgd2UKPiBhZGRpdGlvbmFsbHkgZW5jb3VyYWdlIG5ldyBiaW5kaW5ncyAmIGRyaXZlcnMgdG8g
+aWdub3JlIGRlcHJlY2F0ZWQKPiBiaW5kaW5nLgo+IAo+IEl0IHdhc24ndCBjbGVhciAodG8gbWUp
+IGlmIHJ0YyBhbmQgdzEgY29kZSBhY3R1YWxseSB1c2VzIG9sZCBzeW50YXgKPiBmaXhlZCBjZWxs
+cy4gSSBlbmFibGVkIHRoZW0gdG8gZG9uJ3QgcmlzayBhbnkgYnJlYWthZ2UuCgppcyB0aGVyZSBh
+bnkgY2hhbmNlIEkgY2FuIGhhdmUgdGhpcyBhY2NlcHRlZCAvIHB1c2hlZCwgcGxlYXNlPwoKSXQn
+cyBhIHRpbnkgb3B0aW1pemF0aW9uIGFuZCBpdCBtYWtlcyBzdXJlIHBlb3BsZSBkb24ndCB1c2Ug
+ZGVwcmVjYXRlZApzeW50YXggd2l0aCBuZXcgZHJpdmVycy4KCkkgYWxzbyBub3RpY2VkIHRoaXMg
+d2lsbCBwcm9iYWJseSBsZXQgbWUgZHJvcCBhbiB1bmNsZWFyIGFuZApub24taW50dWl0aXZlIG5v
+X29mX25vZGUgY29uZmlnIG9wdGlvbi4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
