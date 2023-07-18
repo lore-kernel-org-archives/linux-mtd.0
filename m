@@ -4,98 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87B0DC001DC
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:36:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80CF5C001B0
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EiQ1ks6DED0lX5lzEGg/yQ4Fu2usopQyM2QKSAhjIc4=; b=tGIFD64jITuKah
-	mg0ZuOzk2u8lqRICelIgfkZSnWrzZllK84X+2ciiDbnkyU9CfL59WVPvwVAsUrXANkJ50wGBe6nUM
-	gOPcHVDPZ8PKh48Pq6XHJwyCk93wqc8m6eS+0mGeV2PiVGzR8wY7HNfOsygI/jhpIAkaAljZsGJ1A
-	j8ZIFjF1mYmfb/UebqN4DyD2nDT9dRuxhQIgoDT5C395a+Yn9rz3fJEfgsX7PPQv2DLkEGWuX8QwF
-	Yxnfw8obArK8b/LUq0gW7U8IKOBKAPSuFoFWRw21HDAUVRbL21o2tEGnsduTg70L8LvORc8v0NDPQ
-	sKFwHNGvrcBJXIyfQ9JQ==;
+	List-Owner; bh=559DMqIrdORITUPBYCdHj8IV6h5lzurJELG9OqnwZC4=; b=rRJ4XrRC+z/HfY
+	3WXX0I4saF+Me8AgTRq0Qh5Mja1BK4vwiy03okTAA7yssvgB63dAo1qB72/RUII/edTfiNLFeKxgI
+	0U3/XsZ0y9+It9hni1pOzrqZmJQhTtG2uHes69h1pojPfLXKcwW+aeA0M0L0UuXO0BhbDRSOSPKYs
+	j2+FXWhBtZISAPcHZTfSWpOAOU48ncjwCNlPJ6FAXD3hcoXQN0q0YQDbbtTaJzXVaJJ1+jSK8B8SC
+	o50kb67LCNkgBXviOgOMZcvQfH42Fwh95SPvaYcuw5a4av1P/+aO1YvDrilq2dqxAXe+AtDNIlvdF
+	QsbGUF6Qr+tmFBnAnKEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0nm-005oBf-2y;
-	Wed, 19 Jul 2023 06:36:46 +0000
+	id 1qM0oN-005oUy-0a;
+	Wed, 19 Jul 2023 06:37:23 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0nl-005oAq-0i
+	id 1qM0oK-005oTh-0t
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 06:36:45 +0000
+	Wed, 19 Jul 2023 06:37:21 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=ipMvWUNO4WnC3bpCkEa2MV+7JMyScHZo49wId5JBTRM=; b=f2MmPI2y7LvxY7O9+PVMfnRTEU
-	LFEoPHhgGHZLvc1N6ymIe6/hbOMk/nQOiFEFYEDvORNV7vJvzltQXrKVtKgTGBpkNj7lcXJa4BRJF
-	4E9lOPrBEaXQtkw1TTfEIDn5VBQnONfLmi2t0KdNohVlocqYYp9ospv5JvqjK6nYtoy2vtJsMWAMp
-	ISAirVpnh44NRrluGce6De1a32F7+kUx0huMQb1KRSPSM6OykASu4MeHaZvq5crGvttBC1X+4kuvB
-	c5C3WNVT/qw114ERaRsR4K9J5BpE4vq3KoJwiQI5AdxvbDPUJo2t3LBuSaNFBHC1RfCi6MrFpUyKV
-	UkIjKDKQ==;
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=3A90GeWn+AfKh4ao9TzMgAUK4SZbz7F45pHw5gH/YEs=; b=bqTvepQSOT6MfhwpI7xToOkBkd
+	n5vgNW7qfY9LaYZfcmH8sAsoX9xpu7vr69o+IigfmxFv6vzkP6f4xVdrpJt56OTxXN+3IwsDS8gGY
+	3s258MENGlilsNMqN3SrWHAg0dn35F130CfddKv+pFJVcb5oDqj8O/ydlk4ws8Zbx/sozHAHGjyxX
+	TOVWK/DEzvRpU4vt74RkaZO2NnWcbIm9QSQKkExbaEEU5IPfu/M5G7l3ifXFEWMYHtoGccyfIOLKG
+	AgYV0zOXKArEEmWs4cpU2oRaPVvCi/eRVqau/eEG0zKU6cZfNLo6rol78p6esZt6RpbZBfSWh89er
+	plN9CSeA==;
+Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLkJY-00BYP2-2u
+	id 1qLffY-00BIIc-25
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 13:00:31 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 0B0736157D;
-	Tue, 18 Jul 2023 13:00:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60C00C433AD;
-	Tue, 18 Jul 2023 13:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689685210;
-	bh=Ln0aastSpcedVqwTHUVbrX3O0loZpzS07kCv9ju4Uqo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tfjve+K440HP9qYEXRju588QpE0GGJWWWRb52ntY3B5OwUyZ9uV2Tx00V6jbXSkRU
-	 6y8YbxPM4fNCwCH5Wd1xlZowJNK+Jd3pekJEnQwW3QUWmI+gNCQqObPGTKlVKDri/N
-	 BkwgUJwRsj5VzRMR/ZM+NvTgrJ7t8J04SjORvxjkq1u56Ty/AqN6+amGzDTV+j6rqW
-	 GrMrXM6KMaVsSUJldL8cRPTxDz5RNB+7xWVTwh5YaxFOR6rNU8YqjXgWLZNwl64ZcA
-	 w29uqRX2g3DqnKMUeBvv9TeZw+/OdZaEKoxYVPT4Ff0na33ZNItEL05ZKKZByEVIBo
-	 PI33ft5i/rk9Q==
-From: Ard Biesheuvel <ardb@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Haren Myneni <haren@us.ibm.com>,
-	Nick Terrell <terrelln@fb.com>,
-	Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	qat-linux@intel.com,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: [RFC PATCH 09/21] crypto: nx - Migrate to scomp API
-Date: Tue, 18 Jul 2023 14:58:35 +0200
-Message-Id: <20230718125847.3869700-10-ardb@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
-References: <20230718125847.3869700-1-ardb@kernel.org>
+	Tue, 18 Jul 2023 08:02:57 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 41D52240009;
+	Tue, 18 Jul 2023 08:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1689667362;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3A90GeWn+AfKh4ao9TzMgAUK4SZbz7F45pHw5gH/YEs=;
+	b=pJARHdXBzwLk9ZCYxxXe6kROKRsYWLUmIcgOM1WYaXH2ldRQR52zox/nQDxhJlaQ8cfhOv
+	ULW6s957zEmXfmY1f3WwROWcZnQOVdy51A3wn6PG3Hug7AwG7QpsD3MoXvijRIiq5NENY5
+	JIssrArvjJwAfmLWrM6vNOXP56+/CFgXYOnYYbPZ+iH7fcMmrYYlBYHMG0aSoJ08FyH6aS
+	8TOCODrqGMlsSyDq/uKThs9CEdbvfxzuUviZf9xDiGPm4S/YnEfAtruQbak8jr0C1+wADU
+	9GjwvqjFFzVe5SdbsPSXHwi/yZ4v10V3vUlWYXff5VXODz3Cmultl5HNGTqO5A==
+Date: Tue, 18 Jul 2023 10:02:37 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christopher Cordahi <christophercordahi@nanometrics.ca>
+Cc: linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: Question about Davinci NAND using 4 bit ECC
+Message-ID: <20230718100237.69545cde@xps-13>
+In-Reply-To: <CAF_O4JvYE8HPQDEmhesndwBsOTk134netTTSYNE-dc0o0ik59A@mail.gmail.com>
+References: <CAF_O4Js97E_MEK=jrFxUqd4yFOUk4wJg89-LhtDruA67=9_r1A@mail.gmail.com>
+	<CAF_O4JuesBTVT806SfMirk2tFG28T7kt5HWSjx9LPEbC9K5zBg@mail.gmail.com>
+	<CAF_O4JvYE8HPQDEmhesndwBsOTk134netTTSYNE-dc0o0ik59A@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9281; i=ardb@kernel.org; h=from:subject; bh=Ln0aastSpcedVqwTHUVbrX3O0loZpzS07kCv9ju4Uqo=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT3n6zm0Tjy549vRinltqWc7aNfElLO1X5Osmu/q/f 3M/6Kx3RykLgxgHg6yYIovA7L/vdp6eKFXrPEsWZg4rE8gQBi5OAZjI+bMM/5Nlu5nX3j530qXt 1V2/+Sxrk/5fMzueIHAp0/t3wlx+XkuGf2aeC7cfrdoruHSb88utx/78fW/7u4trV4n3iwbOxI9 XmXgB
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_140029_347773_BD994A8F 
-X-CRM114-Status: GOOD (  19.28  )
+X-CRM114-CacheID: sfid-20230718_090255_126667_41020106 
+X-CRM114-Status: GOOD (  26.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,271 +84,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The only remaining user of 842 compression has been migrated to the
-acomp compression API, and so the NX hardware driver has to follow suit,
-given that no users of the obsolete 'comp' API remain, and it is going
-to be removed.
-
-So migrate the NX driver code to scomp. These will be wrapped and
-exposed as acomp implementation via the crypto subsystem's
-acomp-to-scomp adaptation layer.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/crypto/nx/nx-842.c            | 34 ++++++++++++--------
- drivers/crypto/nx/nx-842.h            | 14 ++++----
- drivers/crypto/nx/nx-common-powernv.c | 30 ++++++++---------
- drivers/crypto/nx/nx-common-pseries.c | 32 +++++++++---------
- 4 files changed, 57 insertions(+), 53 deletions(-)
-
-diff --git a/drivers/crypto/nx/nx-842.c b/drivers/crypto/nx/nx-842.c
-index 2ab90ec10e61ebe8..331b9cdf85e27044 100644
---- a/drivers/crypto/nx/nx-842.c
-+++ b/drivers/crypto/nx/nx-842.c
-@@ -101,9 +101,14 @@ static int update_param(struct nx842_crypto_param *p,
- 	return 0;
- }
- 
--int nx842_crypto_init(struct crypto_tfm *tfm, struct nx842_driver *driver)
-+void *nx842_crypto_alloc_ctx(struct crypto_scomp *tfm,
-+			     struct nx842_driver *driver)
- {
--	struct nx842_crypto_ctx *ctx = crypto_tfm_ctx(tfm);
-+	struct nx842_crypto_ctx *ctx;
-+
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return ERR_PTR(-ENOMEM);
- 
- 	spin_lock_init(&ctx->lock);
- 	ctx->driver = driver;
-@@ -114,22 +119,23 @@ int nx842_crypto_init(struct crypto_tfm *tfm, struct nx842_driver *driver)
- 		kfree(ctx->wmem);
- 		free_page((unsigned long)ctx->sbounce);
- 		free_page((unsigned long)ctx->dbounce);
--		return -ENOMEM;
-+		kfree(ctx);
-+		return ERR_PTR(-ENOMEM);
- 	}
- 
--	return 0;
-+	return ctx;
- }
--EXPORT_SYMBOL_GPL(nx842_crypto_init);
-+EXPORT_SYMBOL_GPL(nx842_crypto_alloc_ctx);
- 
--void nx842_crypto_exit(struct crypto_tfm *tfm)
-+void nx842_crypto_free_ctx(struct crypto_scomp *tfm, void *p)
- {
--	struct nx842_crypto_ctx *ctx = crypto_tfm_ctx(tfm);
-+	struct nx842_crypto_ctx *ctx = p;
- 
- 	kfree(ctx->wmem);
- 	free_page((unsigned long)ctx->sbounce);
- 	free_page((unsigned long)ctx->dbounce);
- }
--EXPORT_SYMBOL_GPL(nx842_crypto_exit);
-+EXPORT_SYMBOL_GPL(nx842_crypto_free_ctx);
- 
- static void check_constraints(struct nx842_constraints *c)
- {
-@@ -246,11 +252,11 @@ static int compress(struct nx842_crypto_ctx *ctx,
- 	return update_param(p, slen, dskip + dlen);
- }
- 
--int nx842_crypto_compress(struct crypto_tfm *tfm,
-+int nx842_crypto_compress(struct crypto_scomp *tfm,
- 			  const u8 *src, unsigned int slen,
--			  u8 *dst, unsigned int *dlen)
-+			  u8 *dst, unsigned int *dlen, void *pctx)
- {
--	struct nx842_crypto_ctx *ctx = crypto_tfm_ctx(tfm);
-+	struct nx842_crypto_ctx *ctx = pctx;
- 	struct nx842_crypto_header *hdr = &ctx->header;
- 	struct nx842_crypto_param p;
- 	struct nx842_constraints c = *ctx->driver->constraints;
-@@ -429,11 +435,11 @@ static int decompress(struct nx842_crypto_ctx *ctx,
- 	return update_param(p, slen + padding, dlen);
- }
- 
--int nx842_crypto_decompress(struct crypto_tfm *tfm,
-+int nx842_crypto_decompress(struct crypto_scomp *tfm,
- 			    const u8 *src, unsigned int slen,
--			    u8 *dst, unsigned int *dlen)
-+			    u8 *dst, unsigned int *dlen, void *pctx)
- {
--	struct nx842_crypto_ctx *ctx = crypto_tfm_ctx(tfm);
-+	struct nx842_crypto_ctx *ctx = pctx;
- 	struct nx842_crypto_header *hdr;
- 	struct nx842_crypto_param p;
- 	struct nx842_constraints c = *ctx->driver->constraints;
-diff --git a/drivers/crypto/nx/nx-842.h b/drivers/crypto/nx/nx-842.h
-index 7590bfb24d79bf42..de9dc8df62ed9dcb 100644
---- a/drivers/crypto/nx/nx-842.h
-+++ b/drivers/crypto/nx/nx-842.h
-@@ -12,6 +12,7 @@
- #include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/ratelimit.h>
-+#include <crypto/internal/scompress.h>
- 
- /* Restrictions on Data Descriptor List (DDL) and Entry (DDE) buffers
-  *
-@@ -177,13 +178,14 @@ struct nx842_crypto_ctx {
- 	struct nx842_driver *driver;
- };
- 
--int nx842_crypto_init(struct crypto_tfm *tfm, struct nx842_driver *driver);
--void nx842_crypto_exit(struct crypto_tfm *tfm);
--int nx842_crypto_compress(struct crypto_tfm *tfm,
-+void *nx842_crypto_alloc_ctx(struct crypto_scomp *tfm,
-+			     struct nx842_driver *driver);
-+void nx842_crypto_free_ctx(struct crypto_scomp *tfm, void *ctx);
-+int nx842_crypto_compress(struct crypto_scomp *tfm,
- 			  const u8 *src, unsigned int slen,
--			  u8 *dst, unsigned int *dlen);
--int nx842_crypto_decompress(struct crypto_tfm *tfm,
-+			  u8 *dst, unsigned int *dlen, void *ctx);
-+int nx842_crypto_decompress(struct crypto_scomp *tfm,
- 			    const u8 *src, unsigned int slen,
--			    u8 *dst, unsigned int *dlen);
-+			    u8 *dst, unsigned int *dlen, void *ctx);
- 
- #endif /* __NX_842_H__ */
-diff --git a/drivers/crypto/nx/nx-common-powernv.c b/drivers/crypto/nx/nx-common-powernv.c
-index 8c859872c1839eca..80023686f3e21b72 100644
---- a/drivers/crypto/nx/nx-common-powernv.c
-+++ b/drivers/crypto/nx/nx-common-powernv.c
-@@ -1031,23 +1031,21 @@ static struct nx842_driver nx842_powernv_driver = {
- 	.decompress =	nx842_powernv_decompress,
- };
- 
--static int nx842_powernv_crypto_init(struct crypto_tfm *tfm)
-+static void *nx842_powernv_crypto_alloc_ctx(struct crypto_scomp *tfm)
- {
--	return nx842_crypto_init(tfm, &nx842_powernv_driver);
-+	return nx842_crypto_alloc_ctx(tfm, &nx842_powernv_driver);
- }
- 
--static struct crypto_alg nx842_powernv_alg = {
--	.cra_name		= "842",
--	.cra_driver_name	= "842-nx",
--	.cra_priority		= 300,
--	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
--	.cra_ctxsize		= sizeof(struct nx842_crypto_ctx),
--	.cra_module		= THIS_MODULE,
--	.cra_init		= nx842_powernv_crypto_init,
--	.cra_exit		= nx842_crypto_exit,
--	.cra_u			= { .compress = {
--	.coa_compress		= nx842_crypto_compress,
--	.coa_decompress		= nx842_crypto_decompress } }
-+static struct scomp_alg nx842_powernv_alg = {
-+	.base.cra_name		= "842",
-+	.base.cra_driver_name	= "842-nx",
-+	.base.cra_priority	= 300,
-+	.base.cra_module	= THIS_MODULE,
-+
-+	.alloc_ctx		= nx842_powernv_crypto_alloc_ctx,
-+	.free_ctx		= nx842_crypto_free_ctx,
-+	.compress		= nx842_crypto_compress,
-+	.decompress		= nx842_crypto_decompress,
- };
- 
- static __init int nx_compress_powernv_init(void)
-@@ -1107,7 +1105,7 @@ static __init int nx_compress_powernv_init(void)
- 		nx842_powernv_exec = nx842_exec_vas;
- 	}
- 
--	ret = crypto_register_alg(&nx842_powernv_alg);
-+	ret = crypto_register_scomp(&nx842_powernv_alg);
- 	if (ret) {
- 		nx_delete_coprocs();
- 		return ret;
-@@ -1128,7 +1126,7 @@ static void __exit nx_compress_powernv_exit(void)
- 	if (!nx842_ct)
- 		vas_unregister_api_powernv();
- 
--	crypto_unregister_alg(&nx842_powernv_alg);
-+	crypto_unregister_scomp(&nx842_powernv_alg);
- 
- 	nx_delete_coprocs();
- }
-diff --git a/drivers/crypto/nx/nx-common-pseries.c b/drivers/crypto/nx/nx-common-pseries.c
-index 35f2d0d8507ed774..6232901adc495ed3 100644
---- a/drivers/crypto/nx/nx-common-pseries.c
-+++ b/drivers/crypto/nx/nx-common-pseries.c
-@@ -1008,23 +1008,21 @@ static struct nx842_driver nx842_pseries_driver = {
- 	.decompress =	nx842_pseries_decompress,
- };
- 
--static int nx842_pseries_crypto_init(struct crypto_tfm *tfm)
-+static void *nx842_pseries_crypto_alloc_ctx(struct crypto_scomp *tfm)
- {
--	return nx842_crypto_init(tfm, &nx842_pseries_driver);
-+	return nx842_crypto_alloc_ctx(tfm, &nx842_pseries_driver);
- }
- 
--static struct crypto_alg nx842_pseries_alg = {
--	.cra_name		= "842",
--	.cra_driver_name	= "842-nx",
--	.cra_priority		= 300,
--	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
--	.cra_ctxsize		= sizeof(struct nx842_crypto_ctx),
--	.cra_module		= THIS_MODULE,
--	.cra_init		= nx842_pseries_crypto_init,
--	.cra_exit		= nx842_crypto_exit,
--	.cra_u			= { .compress = {
--	.coa_compress		= nx842_crypto_compress,
--	.coa_decompress		= nx842_crypto_decompress } }
-+static struct scomp_alg nx842_pseries_alg = {
-+	.base.cra_name		= "842",
-+	.base.cra_driver_name	= "842-nx",
-+	.base.cra_priority	= 300,
-+	.base.cra_module	= THIS_MODULE,
-+
-+	.alloc_ctx		= nx842_pseries_crypto_alloc_ctx,
-+	.free_ctx		= nx842_crypto_free_ctx,
-+	.compress		= nx842_crypto_compress,
-+	.decompress		= nx842_crypto_decompress,
- };
- 
- static int nx842_probe(struct vio_dev *viodev,
-@@ -1072,7 +1070,7 @@ static int nx842_probe(struct vio_dev *viodev,
- 	if (ret)
- 		goto error;
- 
--	ret = crypto_register_alg(&nx842_pseries_alg);
-+	ret = crypto_register_scomp(&nx842_pseries_alg);
- 	if (ret) {
- 		dev_err(&viodev->dev, "could not register comp alg: %d\n", ret);
- 		goto error;
-@@ -1120,7 +1118,7 @@ static void nx842_remove(struct vio_dev *viodev)
- 	if (caps_feat)
- 		sysfs_remove_group(&viodev->dev.kobj, &nxcop_caps_attr_group);
- 
--	crypto_unregister_alg(&nx842_pseries_alg);
-+	crypto_unregister_scomp(&nx842_pseries_alg);
- 
- 	spin_lock_irqsave(&devdata_mutex, flags);
- 	old_devdata = rcu_dereference_check(devdata,
-@@ -1255,7 +1253,7 @@ static void __exit nx842_pseries_exit(void)
- 
- 	vas_unregister_api_pseries();
- 
--	crypto_unregister_alg(&nx842_pseries_alg);
-+	crypto_unregister_scomp(&nx842_pseries_alg);
- 
- 	spin_lock_irqsave(&devdata_mutex, flags);
- 	old_devdata = rcu_dereference_check(devdata,
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ2hyaXN0b3BoZXIsCgpjaHJpc3RvcGhlcmNvcmRhaGlAbmFub21ldHJpY3MuY2Egd3JvdGUg
+b24gTW9uLCAxNyBKdWwgMjAyMyAyMTo0NjozNAotMDQwMDoKCj4gSGVsbG8gTGludXggVEkgTkFO
+RCBleHBlcnRzLAo+IAo+IEFuIGV4LWNvbGxlYWd1ZSBkaXNjb3ZlcmVkIGEgZGlzY3JlcGFuY3kg
+YmV0d2VlbiB0aGUgbmFuZF9kYXZpbmNpX2NvcnJlY3RfNGJpdCgpCj4gZnVuY3Rpb24gWzFdIGFu
+ZCB0aGUgc2VxdWVuY2Ugb2Ygc3RlcHMgcmVjb21tZW5kZWQgYnkgVEkuICBJJ20gdXNpbmcgYSBU
+SSBPTUFQCj4gTDEzOCBwcm9jZXNzb3IsIGJhc2VkIG9uIHRoZSBEQS04NTAgRVZNIGJvYXJkLiAg
+SWRlYWxseSB0aGUgY29kZSBzaG91bGQgbWF0Y2gKPiB0aGUgc2VxdWVuY2Ugb2Ygc3RlcHMgaW4g
+dGhlIE9NQVAtTDEzOCBUZWNobmljYWwgUmVmZXJlbmNlIE1hbnVhbCBzZWN0aW9uCj4gMjAuMi41
+LjYgTkFORCBGbGFzaCBNb2RlIFsyXS4gIFRoaXMgdmVyeSBvbGQgZHJpdmVyIHdhcyBpbml0aWFs
+bHkgd3JpdHRlbiBmb3IKPiB0aGUgRE0zNTUgcHJvY2Vzc29yIG9uIGEgRE0tMzU1IEVWTSBib2Fy
+ZC4gIFRoZSBkb2N1bWVudGF0aW9uIGluIHRoZSBvbGRlcgo+IFRNUzMyMERNMzV4IERpZ2l0YWwg
+TWVkaWEgU3lzdGVtLW9uLUNoaXAgKERNU29DKSBBc3luY2hyb25vdXMgRXh0ZXJuYWwgTWVtb3J5
+Cj4gSW50ZXJmYWNlIChFTUlGKSBbM10gaXMgc2ltaWxhciB0byB0aGUgbW9yZSByZWNlbnQgZG9j
+dW1lbnRhdGlvbiBmb3IgdGhlIE9NQVAKPiBMMTM4LCBidXQgbm90IGV4YWN0bHkgdGhlIHNhbWUu
+ICBJIHN1c3BlY3QgYm90aCBwcm9jZXNzb3JzIGhhdmUgdGhlIHNhbWUgRU1JRgo+IHBlcmlwaGVy
+YWwsIGFuZCB0aGUgTDEzOCBwcm9jZWR1cmUgaXMgc2ltcGx5IG1vcmUgdXAtdG8tZGF0ZSwgYnV0
+IEkgY2FuJ3QgYmUKPiBzdXJlLiAgQW5kIHRoZSBjb2RlIGRvZXNuJ3QgbWF0Y2ggZWl0aGVyIG9u
+ZS4KPiAKPiBUaGUgZmlyc3QgZGlmZmVyZW5jZSBpcyB0aGF0IHRoZSBjb2RlIGNvbnRhaW5zIHRo
+ZSBmb2xsb3dpbmcKPiAKPiAvKgo+ICogQ2xlYXIgYW55IHByZXZpb3VzIGFkZHJlc3MgY2FsY3Vs
+YXRpb24gYnkgZG9pbmcgYSBkdW1teSByZWFkIG9mIGFuCj4gKiBlcnJvciBhZGRyZXNzIHJlZ2lz
+dGVyLgo+ICovCj4gZGF2aW5jaV9uYW5kX3JlYWRsKGluZm8sIE5BTkRfRVJSX0FERDFfT0ZGU0VU
+KTsKPiAKPiAvKiBTdGFydCBhZGRyZXNzIGNhbGN1bGF0aW9uLCBhbmQgd2FpdCBmb3IgaXQgdG8g
+Y29tcGxldGUuCj4gKiBXZSBfY291bGRfIHN0YXJ0IHJlYWRpbmcgbW9yZSBkYXRhIHdoaWxlIHRo
+aXMgaXMgd29ya2luZywKPiAqIHRvIHNwZWVkIHVwIHRoZSBvdmVyYWxsIHBhZ2UgcmVhZC4KPiAq
+Lwo+IGRhdmluY2lfbmFuZF93cml0ZWwoaW5mbywgTkFOREZDUl9PRkZTRVQsCj4gICAgICAgICBk
+YXZpbmNpX25hbmRfcmVhZGwoaW5mbywgTkFOREZDUl9PRkZTRVQpIHwgQklUKDEzKSk7Cj4gCj4g
+VGhlIGR1bW15IHJlYWQgaXMgbm90IG1lbnRpb25lZCBpbiB0aGUgRE0tMzU1IGRvY3VtZW50YXRp
+b24uCj4gVGhlIGYxMmE5NDczMjgzZTY4YWU3MDhlOWFkYTM3Y2IzNTJlYTI2NTIzOTcgY29tbWl0
+IFs0XSBpbiB3aGljaCBpdCB3YXMgYWRkZWQKPiBkb2Vzbid0IHByb3ZpZGUgYW55IGRldGFpbHMu
+ICBUaGlzIGR1bW15IHJlYWQgaXMgbWVudGlvbmVkIGluIHN0ZXAgMTAgb2YgdGhlCj4gbmV3ZXIg
+TDEzOCBkb2N1bWVudGF0aW9uLCBidXQgaXQgc2hvdWxkIGJlIGFmdGVyIHRoZSAiU3RhcnQgYWRk
+cmVzcyBjYWxjdWxhdGlvbiIKPiB3cml0ZSBpbiBzdGVwIDkgYW5kIGl0IHNwZWNpZmljYWxseSBp
+bmRpY2F0ZXMgdG8gbm90IHVzZSB0aGF0IGVycm9yIGFkZHJlc3MKPiByZWdpc3Rlci4KPiAKPiA+
+IDEwLiBQZXJmb3JtIGEgZHVtbXkgcmVhZCB0byBhbnkgRU1JRkEgcmVnaXN0ZXJzIGV4Y2VwdCB0
+aGUgTkFORCBGbGFzaCBlcnJvcgo+ID4gYWRkcmVzcyAxLTIgcmVnaXN0ZXJzIChOQU5ERVJSQURE
+WzI6MV0pIG9yIHRoZSBOQU5EIEZsYXNoIGVycm9yIHZhbHVlIDEtMgo+ID4gcmVnaXN0ZXJzIChO
+QU5ERVJSVkFMWzI6MV0pLiAgCj4gCj4gVGhlIGNvZGUgdGhlbiBjb250aW51ZXMgd2l0aCBhbiBl
+eHRyYSBibG9jayBpbnRyb2R1Y2VkIGluIGNvbW1pdAo+IDFjMzI3NWI2NTYwNDVhZmY5YTc1YmIy
+YzlmMzI1MWFmMTA0M2ViYjMgWzVdIHRvIHdvcmstYXJvdW5kIHVuZXhwZWN0ZWQgYmVoYXZpb3Vy
+Cj4gYmVmb3JlIGNvbnRpbnVpbmcgd2l0aCB3aGF0IHNlZW1zIHRvIGJlIHRoZSBjb3JyZWN0IHBy
+b2NlZHVyZS4KPiAKPiAvKgo+ICogRUNDX1NUQVRFIGZpZWxkIHJlYWRzIDB4MyAoRXJyb3IgY29y
+cmVjdGlvbiBjb21wbGV0ZSkgaW1tZWRpYXRlbHkKPiAqIGFmdGVyIHNldHRpbmcgdGhlIDRCSVRF
+Q0NfQUREX0NBTENfU1RBUlQgYml0LiBTbyBpZiB5b3UgaW1tZWRpYXRlbHkKPiAqIGJlZ2luIHRy
+eWluZyB0byBwb2xsIGZvciB0aGUgc3RhdGUsIHlvdSBtYXkgZmFsbCByaWdodCBvdXQgb2YgeW91
+cgo+ICogbG9vcCB3aXRob3V0IGFueSBvZiB0aGUgY29ycmVjdGlvbiBjYWxjdWxhdGlvbnMgaGF2
+aW5nIHRha2VuIHBsYWNlLgo+ICogVGhlIHJlY29tbWVuZGF0aW9uIGZyb20gdGhlIGhhcmR3YXJl
+IHRlYW0gaXMgdG8gaW5pdGlhbGx5IGRlbGF5IGFzCj4gKiBsb25nIGFzIEVDQ19TVEFURSByZWFk
+cyBsZXNzIHRoYW4gNC4gQWZ0ZXIgdGhhdCwgRUNDIEhXIGhhcyBlbnRlcmVkCj4gKiBjb3JyZWN0
+aW9uIHN0YXRlLgo+ICovCj4gdGltZW8gPSBqaWZmaWVzICsgdXNlY3NfdG9famlmZmllcygxMDAp
+Owo+IGRvIHsKPiAgICAgZWNjX3N0YXRlID0gKGRhdmluY2lfbmFuZF9yZWFkbChpbmZvLAo+ICAg
+ICAgICAgICAgIE5BTkRGU1JfT0ZGU0VUKSA+PiA4KSAmIDB4MGY7Cj4gICAgIGNwdV9yZWxheCgp
+Owo+IH0gd2hpbGUgKChlY2Nfc3RhdGUgPCA0KSAmJiB0aW1lX2JlZm9yZShqaWZmaWVzLCB0aW1l
+bykpOwo+IAo+IENhbiBhbnlvbmUgcmF0aW9uYWxpemUgdGhlc2UgZGlzY3JlcGFuY2llcz8KPiBE
+byB0aGVzZSB0d28gZGlzY3JlcGFuY2llcyBvZmZzZXQgZWFjaCBvdGhlciByZXN1bHRpbmcgaW4g
+Y29ycmVjdCBiZWhhdmlvdXI/Cj4gSWYgdGhpcyBwcm9jZWR1cmUgaXMgaW4gZmFjdCBpbmNvcnJl
+Y3QsIHdoYXQgd291bGQgdGhlIHN5bXB0b21zIGJlPwo+IERvZXMgdGhpcyBtZWFuIHRoYXQgYW55
+dGhpbmcgcmVhZCBmcm9tIE5BTkQgRmxhc2ggY291bGQgYmUgY29ycnVwdGVkPwo+IAo+IEFueSBj
+bGFyaWZpY2F0aW9uIHdvdWxkIGJlIGdyZWF0bHkgYXBwcmVjaWF0ZWQuCgpJdCBpcyBoYXJkIHRv
+IHRlbGwgd2hldGhlciB0aGVzZSBjaGFuZ2VzIGFyZSBsZWdpdGltYXRlIG9yIG5vdCB3aXRob3V0
+CnByb3Blcmx5IHRlc3RpbmcuIElmIHlvdSBiZW5jaG1hcmsgeW91ciBjaGFuZ2VzIGFuZCBuZXZl
+ciBzZWUgYW55CmVycm9yLCBpdCBkb2VzIG5vdCBtZWFuIHlvdSBmYWxsIGludG8gdGhlIHBpdHMg
+ZHVyaW5nIHlvdXIgdGVzdHMuIElmCmhvd2V2ZXIsIGJ5IHJlbW92aW5nIG9uZSBvZiB0aGUgdHdv
+IGhhY2tzLCB5b3Ugb2JzZXJ2ZSBhIHdyb25nCmJlaGF2aW9yLCB0aGVuIHlvdSBjb3VsZCBwZXJo
+YXBzIHRlbGwgdGhhdCB0aGUgbGF0dGVyIG9mZnNldHMgdGhlCmZvcm1lci4gQnV0IFRCSCBJIGRv
+bid0IHRoaW5rIHRoZXkgYXJlIHJlbGF0ZWQsIG9uIG9uZSBzaWRlIHdlIHdhbnQgdG8KcmVzZXQg
+dGhlIG91dGNvbWUgb2YgdGhlIGZvcm1lciBjYWxjdWxhdGlvbnMsIG9uIHRoZSBvdGhlciBzaWRl
+IHdlIG5lZWQKdG8gd2FpdCBhIGJpdCBiZWZvcmUgYSBzdGF0dXMgcmVnaXN0ZXIgY2FuIGJlIHRy
+dXN0ZWQuCgpPYnNlcnZpbmcgYml0ZmxpcHMgaW4gdXNlcnNwYWNlIGFuZCBkZXRlY3RpbmcgdGhl
+bSBjYW4gYmUgYWNoaWV2ZWQKZWFzaWx5IHdpdGggdGhlIG5hbmRiaXRlcnJzIC1pIHRvb2wgZnJv
+bSB0aGUgbXRkLXV0aWxzIHRlc3Qgc3VpdGUuIFRoaXMKdG9vbCBtYW51YWxseSBpbnRyb2R1Y2Vz
+IGJpdGZsaXBzIGFuZCBleHBlY3RzIHRoZW0gdG8gYmUgY29ycmVjdGVkCih1bnRpbCBwcm9wZXIg
+ZmFpbHVyZSkgYnkgdGhlIEVDQyBlbmdpbmUuIEJlIGF3YXJlLCBpdCB3aWxsIHNtYXNoIHlvdXIK
+ZGF0YS4KCj4gWzFdIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
+Z2l0L3N0YWJsZS9saW51eC5naXQvdHJlZS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9kYXZpbmNpX25h
+bmQuYwo+IFsyXSBodHRwczovL3d3dy50aS5jb20vbGl0L3VnL3NwcnVoNzdjL3NwcnVoNzdjLnBk
+ZiNwYWdlPTg4NAo+IFszXSBodHRwczovL3d3dy50aS5jb20vbGl0L3VnL3NwcnVlZDFiL3NwcnVl
+ZDFiLnBkZj90cyNwYWdlPTI5Cj4gWzRdIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9s
+aW51eC9rZXJuZWwvZ2l0L3N0YWJsZS9saW51eC5naXQvY29tbWl0L2RyaXZlcnMvbXRkL25hbmQv
+ZGF2aW5jaV9uYW5kLmM/aWQ9ZjEyYTk0NzMyODNlNjhhZTcwOGU5YWRhMzdjYjM1MmVhMjY1MjM5
+Nwo+IFs1XSBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9z
+dGFibGUvbGludXguZ2l0L2NvbW1pdC9kcml2ZXJzL210ZC9uYW5kL2RhdmluY2lfbmFuZC5jP2lk
+PTFjMzI3NWI2NTYwNDVhZmY5YTc1YmIyYzlmMzI1MWFmMTA0M2ViYjMKPiAKCkdvb2QgbHVjaywK
+TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
