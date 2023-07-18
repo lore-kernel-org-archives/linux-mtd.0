@@ -4,90 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E668EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:38:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 093CDEB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:38:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7YgYMUmNc4ngxl2TbkRiURFXTDMxdgKUpHCaes/LWi4=; b=0e0ERmikx6LoEW
-	rNNOUE/5UW7U3oR+UfszIqNQCzy1KvTxnbmmyfHjkTPmBA+gZ5o0g5heecwTPACrZX6ipF1NrK9EX
-	nyw+ONJfDnIKMVNaaeylrWLrbuw7+4V3Q8WBA1avJ6knhyrs65yotfaJLygrkdfTAI6sKwfTKHIWe
-	Wyjg5sNkGg9+IEs/VuXKQ3742XhLS5ighLaG6Aj6SC05X3BeTgnWBQCJbBUdvMeVKH/cttzqiI8CN
-	3L6kUMnae2bDSu6LVcf+JDQf6NgKVYRUE3RAtUWBwFc2cI85CSiLm3cpV2+1wkjYRifWK9x1sN7Ms
-	UdrVUKVZd+LAZ7/ss+8Q==;
+	List-Archive:List-Unsubscribe:List-Id:CC:To:Message-ID:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=MRFa1ScxZTiQ67d8Q9Dsoo6CgnZVCQq4peQ6F7urcu4=; b=pb/SYMl7EJr9vk
+	rZ8s/NLdczkQkLUy7z8tOjPlwHFYnSr9CJuHMsJcXlzYhfDSyen8iS6KDqHjFYme4ub8O/XyAM6XS
+	2Faq2CS9Z9i0JzQFLYBNmH2DJO3wEnvD8vBGEjyFE0Z/NPPcdeDYl2rzcULD6oaIF6E6bOvCIl+Ns
+	qRN2aMa5EO5DxNBjlal936bWd2GF2ogaHp4t58195y6UCf8SNbGKcOCacXkWxZ/u9OKQS7d+txHXN
+	mf4uhgzNy4iphKt9pFnZNKCnNFT8E/E9OCTJ9zskjGt7uNEfO0WYXxEOipBYnArGQaJnbsnAatnPU
+	eAzLRCAknGTBi53VXtCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLztJ-005MWh-0u;
-	Wed, 19 Jul 2023 05:38:25 +0000
+	id 1qLzth-005Me7-38;
+	Wed, 19 Jul 2023 05:38:49 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLztH-005MWA-2K
+	id 1qLztf-005Mde-36
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 05:38:23 +0000
+	Wed, 19 Jul 2023 05:38:47 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=CN4IVdlkVfFNKX+jb4yzsRbLnWdBPE8Y8EfJwADNbVU=; b=HZc5p1M64xwqlZVFRveE+HfWKF
-	if87Z4D87vyAq8Cx9X+Gqyy5MH2I0KVK8Rb4LGSvwme4fkGNlTHxaP2GuHmeLUxPhzc7iYzgifsO6
-	j/nAqEdVSQ8VHGReA9m8+MGeptwRXdiHcbBt7aOOSgY3a/+Ux0jmsKwZP8B+8PwWiHJjy5obBszQj
-	jzQBNteT010utBFPesS8ncduy3jPuLWC9u1nNoKpBEVnSQExZPvu/ceZ3AYA3dFYTY0Z8aPABvyDY
-	CFaKSsuXVUssNhaLU+7TLRAit6lFrbEuPR2xYBBmSCv+Kqio8ID5f9RBM4i7Kbx2NwZnPGuNSabGg
-	lvMxslEQ==;
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	d=infradead.org; s=desiato.20200630; h=CC:To:Message-ID:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
+	Reply-To:Content-ID:Content-Description:In-Reply-To:References;
+	bh=MIg98QeotzlFKIUE1hpL5s/FiWR80QS6lSN9xynpoEQ=; b=EEKcG6Xc6toYwkow8BpLJcsXqp
+	BZAFuczAywyrgzLSb9mWtvbxCaz9E7Nrfm4vGoNxgxjLxAAwt0YECjvUTBP76iNz6cPl4dNYY7oe6
+	c3G2c/KVdXB6Sy6+JC7DHIQIjJ27o75WMgb9N4PNSnnCJCx9hgenxA9Q3G2pkZanWzaEFkQ70y0RN
+	1ZMgBCgwvbSYHd+gARnwZ7aqwvdPWyHJmwi+8mAx7liohgMFqBqJYBboeXIQ67EaFoD+fI0p/S5aV
+	/9rxulH6p4XJpQuEeeHLMt9SXHbFDett55kXuDYjaU1YJoMBicKv/PtMewSskfWWTROhXKr9/mig7
+	lcYgzo4A==;
+Received: from smtp2.axis.com ([195.60.68.18])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLtKo-00C9on-2F
+	id 1qLk1o-00BWOY-1Z
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 22:38:24 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A1710612CC;
-	Tue, 18 Jul 2023 22:38:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73162C433C7;
-	Tue, 18 Jul 2023 22:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689719896;
-	bh=RXO+gAcZm+MhRenqy65hhkLUzlwKRVhTNDHhFXVPjjc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WC8frNZQi3mlQRwzd/1B/o58REsGjVM4bTqKYDGfIE0sdXtSivhP2CyO9GHwyZmUh
-	 /fSMjJcqo48S1vnfEmmBEuLJHAJPEWExHLr/fGVg72zBItMXT5mcrGyyeTxbsSA84F
-	 6LENyGcMmgizG0XyhLIpTWGmW5LNVmvAW2H++ihnyl/GFL1ab+KbX6AQgQGzKV14bB
-	 C7ttE95UTAd7KsoYwEkaDtSAZr6mZGfIVkXp1QrwAzNbs+XmOJRAl2Qpf1itgUpGdz
-	 7Xh0infj6g0F2qtc/JkRPt1YQH30JhSn8B77F32PIysiR197GoqrB8XClTi6/Qu1MM
-	 4FL5RdcE/3Bqg==
-Date: Tue, 18 Jul 2023 15:38:13 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-	Kees Cook <keescook@chromium.org>, Haren Myneni <haren@us.ibm.com>,
-	Nick Terrell <terrelln@fb.com>, Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 05/21] ubifs: Pass worst-case buffer size to
- compression routines
-Message-ID: <20230718223813.GC1005@sol.localdomain>
-References: <20230718125847.3869700-1-ardb@kernel.org>
- <20230718125847.3869700-6-ardb@kernel.org>
+	Tue, 18 Jul 2023 12:42:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1689684128;
+  x=1721220128;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=MIg98QeotzlFKIUE1hpL5s/FiWR80QS6lSN9xynpoEQ=;
+  b=j4Ji5AVI/rzUflKaJe2MgzEc1lzWIlEC4UFOLlOG0FdvMXqr4oJF0pb1
+   R0cmaf98Zxkyes8aaimTOVmEVDtNZtcCITX+Qe6GUORZYNOwK442VtgA4
+   rg/l5j1E+Qf3Pl4oLsqm4f3oPhJon8IgPCEhqm7UoI4/PgxqbzdNONDGC
+   bgijq8r+NizUxVFfdYoJt2jjGOqnUi+HMf+ypedOyVaQV/qX3Sqfrz19M
+   Q18LdKJmocuM4qdnYyfvRHn8jU5g+b5tJo6LF8qVGcYffDQBtEcZtkyVG
+   v5vdEzG5bXzflePjU70fckAUXbBfDe/yGZsBfoPQF/VHMWGZpU2AVcQ4U
+   Q==;
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Date: Tue, 18 Jul 2023 14:41:45 +0200
+Subject: [PATCH] ubifs: Fix memory leak of bud->log_hash
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230718125847.3869700-6-ardb@kernel.org>
+Message-ID: <20230718-ubifs-replay-auth-leak-v1-1-2dd2e00e6dc6@axis.com>
+X-B4-Tracking: v=1; b=H4sIAIiItmQC/x3MTQ5AMBBA4avIrE2iGj91FbFomTIhSKtCxN01l
+ t/ivQc8OSYPTfKAo5M9b2uESBPoJ72OhDxEQ57lMqtEjcGw9ehoX/SNOhwTLqRnVEaqwtRSqNJ
+ CjHdHlq9/3Hbv+wEE8Ts0aAAAAA==
+To: Richard Weinberger <richard@nod.at>
+CC: Sascha Hauer <s.hauer@pengutronix.de>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <kernel@axis.com>, Vincent Whitchurch
+	<vincent.whitchurch@axis.com>
+X-Mailer: b4 0.12.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_233823_312197_D30ABC31 
-X-CRM114-Status: GOOD (  23.63  )
+X-CRM114-CacheID: sfid-20230718_134208_984131_E0722C4B 
+X-CRM114-Status: UNSURE (   9.74  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,50 +88,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 18, 2023 at 02:58:31PM +0200, Ard Biesheuvel wrote:
-> Currently, the ubifs code allocates a worst case buffer size to
-> recompress a data node, but does not pass the size of that buffer to the
-> compression code. This means that the compression code will never use
-> the additional space, and might fail spuriously due to lack of space.
-> 
-> So let's multiply out_len by WORST_COMPR_FACTOR after allocating the
-> buffer. Doing so is guaranteed not to overflow, given that the preceding
-> kmalloc_array() call would have failed otherwise.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  fs/ubifs/journal.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-> index dc52ac0f4a345f30..4e5961878f336033 100644
-> --- a/fs/ubifs/journal.c
-> +++ b/fs/ubifs/journal.c
-> @@ -1493,6 +1493,8 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
->  	if (!buf)
->  		return -ENOMEM;
->  
-> +	out_len *= WORST_COMPR_FACTOR;
-> +
->  	dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
->  	data_size = dn_size - UBIFS_DATA_NODE_SZ;
->  	compr_type = le16_to_cpu(dn->compr_type);
+Ensure that the allocated bud->log_hash (if any) is freed in all cases
+when the bud itself is freed, to fix this leak caught by kmemleak:
 
-This looks like another case where data that would be expanded by compression
-should just be stored uncompressed instead.
+ # keyctl add logon foo:bar data @s
+ # echo clear > /sys/kernel/debug/kmemleak
+ # mount -t ubifs /dev/ubi0_0 mnt -o auth_hash_name=sha256,auth_key=foo:bar
+ # echo a > mnt/x
+ # umount mnt
+ # mount -t ubifs /dev/ubi0_0 mnt -o auth_hash_name=sha256,auth_key=foo:bar
+ # umount mnt
+ # sleep 5
+ # echo scan > /sys/kernel/debug/kmemleak
+ # echo scan > /sys/kernel/debug/kmemleak
+ # cat /sys/kernel/debug/kmemleak
+ unreferenced object 0xff... (size 128):
+   comm "mount"
+   backtrace:
+     __kmalloc
+     __ubifs_hash_get_desc+0x5d/0xe0 ubifs
+     ubifs_replay_journal
+     ubifs_mount
+     ...
 
-In fact, it seems that UBIFS does that already.  ubifs_compress() has this:
+Fixes: da8ef65f9573 ("ubifs: Authenticate replayed journal")
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ fs/ubifs/super.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-        /*
-         * If the data compressed only slightly, it is better to leave it
-         * uncompressed to improve read speed.
-         */
-        if (in_len - *out_len < UBIFS_MIN_COMPRESS_DIFF)
-                goto no_compr;
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 32cb14759796..0ef8c1f3d760 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -923,8 +923,10 @@ static void free_buds(struct ubifs_info *c)
+ {
+ 	struct ubifs_bud *bud, *n;
+ 
+-	rbtree_postorder_for_each_entry_safe(bud, n, &c->buds, rb)
++	rbtree_postorder_for_each_entry_safe(bud, n, &c->buds, rb) {
++		kfree(bud->log_hash);
+ 		kfree(bud);
++	}
+ }
+ 
+ /**
+@@ -1193,6 +1195,7 @@ static void destroy_journal(struct ubifs_info *c)
+ 
+ 		bud = list_entry(c->old_buds.next, struct ubifs_bud, list);
+ 		list_del(&bud->list);
++		kfree(bud->log_hash);
+ 		kfree(bud);
+ 	}
+ 	ubifs_destroy_idx_gc(c);
 
-So it's unclear why the WORST_COMPR_FACTOR thing is needed at all.
+---
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
+change-id: 20230718-ubifs-replay-auth-leak-9b395b83196f
 
-- Eric
+Best regards,
+-- 
+Vincent Whitchurch <vincent.whitchurch@axis.com>
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
