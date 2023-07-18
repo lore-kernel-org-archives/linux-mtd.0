@@ -4,74 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58608EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:53:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C7CAEB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:58:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
-	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XKglwpR8O4912bz+RZUdOzzvoe7u/Y46ng2qsCSpH7U=; b=RLIbwgg0M1O0Q9
-	tvjus1U0Bu18z04PfFmGXfNISby+4KTtRDZpYUNNreB6oICKtAigRp2Q26KKHTjo3AbtcuhkVON7s
-	YZefGVWIytTj0bc7iC/rPBj+z+qstraTG13lJJt+yfZElZpK9Ik7OC9xlnreXWFm4wunCKkvduIu+
-	7SG3zGpIpCCWSxTHy/ixFfa9Thd8DuAneQ1xuKaeVHi2c9wD45rTisdTG+RGZ36fnSwA7RV+DTihR
-	ux2W9bO4sV+x3PhLQiNV4dFE1SAtIXzzMxl4YFREFBn8nuc0jKr3uucAP/9VuNgC0ko+1elcqnbJl
-	Aj4Fzz13Qn36485LmPzg==;
+	List-Owner; bh=B4L42jGeXkN8BU8sooR4YjE9bOwfZ76WZU4LnhAouis=; b=aofAz8wXe+mGQX
+	4XXnJCFnXBMga7f4diqEVnIOaFpZtOXa/8dDyV1f1fHE33enFiKKYPbC2cSI3mwP0fmeP3XdbvZYK
+	7z/nwuJUUlquCUsCfzmvOtnfpasB0xNuFHfCN32nxccWwZyJp008+iM/85jxnwWzb+b/E86NnxYDe
+	Gkzv/9d/io9KwAesaI15g2Meio4fdjn/jdSjGim7IzwOxUoByaseU7ZfH8krGVMXVikbxpv0KeLkw
+	aHhxv+GNxqEjey6of7lMz5zBbZ7uCWIDQbUE06a2tYt3LPkmnLlpsn5fvP9QK4+qVef94z+Lr1jzb
+	W0swJgFEpeBo6utMb/2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM08B-005S0Y-0J;
-	Wed, 19 Jul 2023 05:53:47 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1qM0Cv-005UKe-11;
+	Wed, 19 Jul 2023 05:58:41 +0000
+Received: from desiato.infradead.org ([90.155.92.199])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM089-005RzN-26
+	id 1qM0Ct-005UJd-29
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 05:53:45 +0000
+	Wed, 19 Jul 2023 05:58:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:Message-ID:In-Reply-To:Date:References:Subject:Cc:To:From:
+	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=dkrlL9aTk/ICSZp+TPV1qqdiTIXX408LSSXoMzvr7FA=; b=C4TPCDqWTUgqqJruUNYdX4ebZR
-	uwh88E/vOeGeiykKvs9pA+KyqIGvPhVC3V2nLpmWp5aVqqeJ/mjFSq4FGK5RAYKzP+K7fAt+c1R5f
-	avCnaDkWUAcS2wb/TChQysVuKwOy+8OP6JxL9w609VcV0BrvBcbqXesf1xv35TLPWH4N3rkIuC8VP
-	JOFzVasaBKpXNc7Q+CcyJE0lSUf67z6nZDxdFwFJDTa5xWdqf+6E9AnBbLPv32iO9oZ29GmmSmlmy
-	5bbg3SccW/UwNEjgrJZjbFV1nGAOC4M4kvbTaHzqBqYijQxAUY8ZPscTRI2fH7eOSrkK0ISQktCSx
-	SXEzKcHg==;
-Received: from unicorn.mansr.com ([2001:8b0:ca0d:1::2])
+	bh=jBt8e2EoBByeTlhxicuduXe+Nvw8aC1zutFw9j2lMYw=; b=eVWurHhyxJ+S/30F2pm/+TJDJr
+	V82PYpZltp65NjM+4zrK9nQnr+3sg82OEso0ePJoF6t2DtbFVKGr1+5Q9x1CkNi9WEG7FMGGzC9+8
+	3WGLFl5c/ZjhBxgQMANfRgUFY+srJXE7QFXOhHSIQ6o3ShTFToz8hqXdyzkXykgx5xrbmT1vBvaEL
+	mafEdz+koZkH7Rg1CMtmrmrrCkDdbABDGuerz9GYtRg2tGxI6X5MX/3w83jaeJJQba9w/NMDJe4fD
+	6DH2jndIx5F2W4NBC02L/7OABgMkuBRZy48zjQoxzXIFx2V+EXX09HSVza+D6UhFDYEuw6s5tSTYW
+	6b92Ic1g==;
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLlJK-00Bcn9-0N
+	id 1qLeoi-00BFe6-3D
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 14:04:20 +0000
-Received: from raven.mansr.com (raven.mansr.com [IPv6:2001:8b0:ca0d:1::3])
-	by unicorn.mansr.com (Postfix) with ESMTPS id 5B87715360;
-	Tue, 18 Jul 2023 15:03:14 +0100 (BST)
-Received: by raven.mansr.com (Postfix, from userid 51770)
-	id 4C992219B40; Tue, 18 Jul 2023 15:03:14 +0100 (BST)
-From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
- Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>, Julien Su <juliensu@mxic.com.tw>, Jaime
- Liao <jaimeliao@mxic.com.tw>, Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, JaimeLiao
- <jaimeliao.tw@gmail.com>, Alexander Shiyan <eagle.alexander923@gmail.com>,
- Domenico Punzo <dpunzo@micron.com>, Bean Huo <beanhuo@micron.com>
-Subject: Re: [PATCH v2 3/3] mtd: rawnand: Support for sequential cache reads
-References: <20230112093637.987838-1-miquel.raynal@bootlin.com>
-	<20230112093637.987838-4-miquel.raynal@bootlin.com>
-	<yw1xfs6j4k6q.fsf@mansr.com> <20230716174917.3a9ca7a7@xps-13>
-	<yw1x7cqzzr4d.fsf@mansr.com> <20230717091900.52ed815a@xps-13>
-	<yw1x351mznr0.fsf@mansr.com> <20230717183645.32ef90b0@xps-13>
-Date: Tue, 18 Jul 2023 15:03:14 +0100
-In-Reply-To: <20230717183645.32ef90b0@xps-13> (Miquel Raynal's message of
-	"Mon, 17 Jul 2023 18:36:45 +0200")
-Message-ID: <yw1xy1jdxqot.fsf@mansr.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	Tue, 18 Jul 2023 07:08:18 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b9cdef8619so33150745ad.0
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2023 00:08:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689664023; x=1692256023;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jBt8e2EoBByeTlhxicuduXe+Nvw8aC1zutFw9j2lMYw=;
+        b=dGzDMtwxytEmvygSwWdq92ftiEhR84yODnuXG58/jZasApqC87Aayt1MoYIwhllIZl
+         p7DEthRqpMRH7MHJ8A88PFc0abm23EmZU9L2bVZVuW7XINu6eZhpNA0aXfLgYciyA3a6
+         Z0t8pOnYfr33/E9Uq5BLh81Wl4ITFhO4vfmJlD6Hdnc30X9GgfMd/WO1jUuOBC49jJmt
+         eFyffklkqrhm2iAhni10q54F/Xs+nJyyU2P8BDbUf1/21eGEPyTmeF+z9NZX3SLZiFX4
+         IGBPqtQsnGB20r6dmAgPlNBTD1n7/0jaRWDuaXTBDBz/eleTVh0xojvlrT+Kn7IFg8Pq
+         MTKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689664023; x=1692256023;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jBt8e2EoBByeTlhxicuduXe+Nvw8aC1zutFw9j2lMYw=;
+        b=YotSFbK2rYssgq2rNh8Ewgd/juGPB+uifuBMIi9tQC/N3WDb3O72JPdZTjL7V4G2tw
+         ulxFipb8wl0HaweAE4bHU1i6BLcSeaANryr9vSfBroLNzjdZu7vsfyXuM7yoTEdOKg2u
+         wNvkIAXKuwkQifgYQyP2cLJiY5ipFnGnuyr37JnaNMGQSC20hTWWOTc4SHev8ZjAuCWA
+         5njHq/KQ7z5Zom3YWvK3uPmJShW244WAR8yJa5gdRf306C8PnYdXGxYPoVk7a6BMOQQ5
+         FVWXSXQxfdI27dZRp+lI4lX85N7EAIWQenuzel6MgjACqFwn3xTJ6etJu1DsvCLjPF2e
+         iitQ==
+X-Gm-Message-State: ABy/qLbNvk0vpMH1c8sITMhhDRXPNH6fCys7MyHDMYXQ3q9Z6QjB+sd7
+	y0gDrOuJ4umwR9OakGlTY8U=
+X-Google-Smtp-Source: APBJJlEstKXTaGRKqHbI98Wazq2AbF3p6PRW4bDUpA/kbmLGaoEnGBiQ7HwuIhEsegx41lhjZ/54bQ==
+X-Received: by 2002:a17:90b:1b49:b0:262:ec71:b88f with SMTP id nv9-20020a17090b1b4900b00262ec71b88fmr897198pjb.25.1689664023280;
+        Tue, 18 Jul 2023 00:07:03 -0700 (PDT)
+Received: from [192.168.0.11] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
+        by smtp.gmail.com with ESMTPSA id t3-20020a17090b018300b00266a21984b0sm783105pjs.31.2023.07.18.00.07.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Jul 2023 00:07:02 -0700 (PDT)
+Message-ID: <4917c61b-7f08-44f4-5a14-3443349e3277@gmail.com>
+Date: Tue, 18 Jul 2023 16:06:59 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 3/5] mtd: spi-nor: spansion: Add MCP support in
+ octal_dtr_enable()
+To: Michael Walle <michael@walle.cc>, miquel.raynal@bootlin.com
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
+ pratyush@kernel.org, richard@nod.at, vigneshr@ti.com, d-gole@ti.com,
+ Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <cover.1686557139.git.Takahiro.Kuwano@infineon.com>
+ <cac44f4d9ed06e250c2fa8aa900d8de3de4c4337.1686557139.git.Takahiro.Kuwano@infineon.com>
+ <d05156c981f0ddcdfb754c685530cd22@walle.cc>
+Content-Language: en-US
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+In-Reply-To: <d05156c981f0ddcdfb754c685530cd22@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_150418_275183_C6B31E40 
-X-CRM114-Status: GOOD (  18.90  )
+X-CRM114-CacheID: sfid-20230718_080817_115857_9FC75561 
+X-CRM114-Status: GOOD (  13.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,49 +108,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Miquel Raynal <miquel.raynal@bootlin.com> writes:
+Hi Michael,
 
-> Hi M=E5ns,
->
-> mans@mansr.com wrote on Mon, 17 Jul 2023 14:11:31 +0100:
->
->> Miquel Raynal <miquel.raynal@bootlin.com> writes:
->> =
+On 7/18/2023 7:49 AM, Michael Walle wrote:
+> Hi Takahiro, Hi Miquel,
+> 
+>> S28HS02GT is multi-chip package (MCP) device that requires Octal DTR
+>> configuraion for each die. We can access to configuration registers in each
+>> die by using params->n_dice and params->vreg_offset[] populated from SFDP.
+> 
+> I'm looking into cleaning up the flash db and come across the n_banks
+> and n_dice parameter. Which sounds like they seem to be similar, maybe
+> identical? Unfortunately, there is no public datasheet for the macronix
+> flash.. IIRC there is one for the Semperflashes but I'm not sure if there
+> is one for the MCP parts.
+> Could we somehow clarify if these are the same properties? I've looked at
+> the SFDP tables of the macronix flash and they don't have the SCCR map for
+> multi chip devices :/
+> 
+> -michael
 
->> > So, I should have done that earlier but, could you please slow the
->> > whole operation down, just to see if there is something wrong with the
->> > timings or if we should look in another direction.
->> >
->> > Maybe you could add a boolean to flag if the last CMD was a
->> > READCACHESEQ, READCACHESTART or READCACHEEND, and if the flag is
->> > true, please get the jiffies before and after each waitrdy and
->> > delay_ns. Finally, please print the expected delay and the actual one
->> > and compare to see if something was too fast compared to what we
->> > expected.  =
+The n_banks and n_dice are different properties. One die can contain multiple
+banks. Infineon does not have multi-bank parts that support RWW. The SEMPER
+MCP parts do not support RWW on different die.
 
->> =
-
->> Between which points exactly should the delay be measured?  Also, there
->> is no command called READCACHESTART.  Did you mean READSTART or
->> something else?
->
-> Yeah, whatever command is specific to sequential cache reads:
-> https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_=
-base.c#L1218
-> https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_=
-base.c#L1228
-
-I'm still not sure what exactly you want to me measure.  The waitrdy and
-ndelay combined, each separately, or something else?
-
--- =
-
-M=E5ns Rullg=E5rd
+Thanks,
+Takahiro
 
 ______________________________________________________
 Linux MTD discussion mailing list
