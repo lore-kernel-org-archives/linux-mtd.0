@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3A8FC001B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:43:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F591C001B0
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fXQeh6ttOKB9MHaqsv3JGPV2Lb1rg9A53Fcc8sapb14=; b=YVf2Ql7b9Xl1/a
-	lQY7aP/u3ur5uk0Ct8bHwE4dBxBrynTPmfCZjc7QCy5vjov0GgDZVOfHfMGJLLF91o3alGR7WvRt5
-	72ko8WJvLtFMQzO9QwUonfGcBhmXNZaMCv35J7dZyTcUkrfTLI7vill/rss3gX4OXDsFmSjqs1ucU
-	/uBe9wJEaDJIqZte1dvjrt/WwUHrpv9XpGJXl/aWVeRXp/F1UmTE8Eqaab/Agkt82jy6dOEgNqGpC
-	FdzWR+d/r/EQU4ZBhlNTgTHrDPCNuwN0oKuMOh3xNCxeHBA6JMHqEgS9jpY55s1ds+TYuk99ebiPD
-	nBW/mFiy1W4ZA2brzkjQ==;
+	List-Owner; bh=SAt+zNJCd7dwvvATYB7UOZlFhtj4NOYIFx/5RjXceDg=; b=pcM2T7KlV/Xc4u
+	cO2j1dTblaRumUaM2NVfAAA/UEEfEAvia7KsvUDq+98ssM4ceyHlCQNvMEZIRI/e2vDBRXittsaj9
+	LFq47s2ijLreKSF4M5zonHOukggKyNTX5Ee0uTcyJXxFQN1AV0pJYE6Jts8/UnIScjFLvlWYd1162
+	6mR0hwZZCtHflVJOWaVrfSlo3vDPfOo8YcvNKFvFLHKx0pqVLKOP1paz2WGN3wBf+xetXH5V1oCMY
+	2qK3O0+tLQ5QQZy/xtqnnDW4XdF+vZIYK0ELlNx37WtzFR9YkGB6O8XHM8dcnrXaPUgdmBtR8k0wT
+	0QsEHUbIHyyn6av+0xig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLzyJ-005OiW-2L;
-	Wed, 19 Jul 2023 05:43:35 +0000
+	id 1qM021-005Pv5-1W;
+	Wed, 19 Jul 2023 05:47:25 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLzyI-005OgE-0j
+	id 1qM01y-005PtS-13
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 05:43:34 +0000
+	Wed, 19 Jul 2023 05:47:22 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=j4nSmyg7UlapeaYcJwYhCgEPl0lBycgy1YX64o5LaBY=; b=MCvsPI1FicyhkryAKUthmszq96
-	mqWXNebJKWCkN5I2sDjgUKtClL2aiRczHS3eAPcOxeY7YA04rt/639WzH8xbH+GsHwSaByK7XxTtp
-	I4mu/1a7B2pHaI1IpvGN3yFHPsfa8K7SYoYC07GOjahAsTkZdC2QjxbrKEzJhEbXlnUvFqrtKwcGf
-	XP9cfa0enHZIvubmYdJiudJ9YbAwYviqSbfDQD5NzLu8593ExcijAl1+6l/w+XvshW1acbLc7q/hG
-	LjtnDkgVDGJYRNiFFvFYBZsnGjE2O8n5tOUpYhcvxI55eAtD1U2bJvmikuYy8TT1ZboDfLYnYsQhj
-	eGLGQWpw==;
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	bh=8Ay5QRSG9P4e+8ycP6kMvciFy9JjBGYtPWKpX8ebR9E=; b=CUAw3EAQu//PcJbGj2URq02ZmS
+	FcSxo2SmuD4oF7ENAJ/3PFlS+tWMU1ohN75Eyd1zr0pvHvDgdbN2rVM5jBgTTJfq/T6XrHGI4kJ+i
+	WNL1VqIYMb+NvOBbhPdq8+RKBpFZP8rFbTm49w9vQ3nCEWqZMZ4okAjnWpV8N+1f3tHSmb5f3J1hm
+	i06cVeQlLaXZOggpuj3SX79FhudIGGvmcNGDFySp7WXZxWfdQby5IaUxVil6W3h2SOBS7DtuE+aFK
+	coikRgrFw2eAKtaSMCB7z2Vra2C10LGkdd4RO3qYOUH+Nh9QxTmeO8RUnBIXu4k2KwE7i9LzDP4hR
+	YJ3PyaAw==;
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLkK5-00BYSe-1K
+	id 1qLkKR-00BYW3-12
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 13:01:04 +0000
+	Tue, 18 Jul 2023 13:01:25 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DCB0261591;
-	Tue, 18 Jul 2023 13:00:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB974C433C8;
-	Tue, 18 Jul 2023 13:00:20 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9B19161595;
+	Tue, 18 Jul 2023 13:01:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C1ECC433C7;
+	Tue, 18 Jul 2023 13:01:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689685225;
-	bh=re+UehvkeQHBK1wHhGnLcp2yWUgDT1GsozNrkQ2XFcw=;
+	s=k20201202; t=1689685268;
+	bh=pBS4evmuojvGZNpkpvZA6FWxaaRdlIHQ6sTGa/XNWCs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e2jq/7vFH+5SdEhwac2XpIYEi4F+E5PgxK5t3cUMlQUQCqTe1YvjyexPjPu11dL2c
-	 yA+xClzV0scHRHYaigqmMwGwO524EVduViwfjGbx5JZ/Md/8EykRqPS2KCqv+fjAg+
-	 OVZipEnxTXLcwE41PRm9YCd5p3Sy4LxJSOmeX0DCqvN/sCP1Y3ysHaCTT4H9xGNyTG
-	 PR81t1YkbjBc+0e4kc7x34mAlunxZCrAiJwbGXsiBYgfuNisFYP6+PTLhgYB2otZbr
-	 MPfNvkjFsrvou9y5c77Q3VziexDLzAOAt6FRUzMHZ8XXO2LdWHKBOClxYEHpj6XmGa
-	 3QKnSjw0+UlCw==
+	b=GAgLfbJOtr+4I7rn52XFmVGRiSEZGY7xOoxXJ1EQxCHe8l/oD5LehpTXCm3JdU8ET
+	 00euiRXw07Qk3I4eEEdfmMMjTsSPj2ml/HIpJxGiPqIQrY14+lOMg2eLmflyiEB6Dq
+	 375ucDgl6JZJKZwqAQOJ4H1ZjCdq7n20z4QrRVb0Pb3ms7M/rRB5Hq3VfKVdi2+QWD
+	 ygHX4ro1tUjT04KIb23Tj92+dxSmjILwUZng92A1L7nibXGC2cKf03Nwf+VJQCSna8
+	 2Of8CuSbkv+f6mVIZm433GfUcB2FXO3yZKza0xpOc1TWl8OJhk1XlMee6YU++ijUqC
+	 5L4T/+H8ExINw==
 From: Ard Biesheuvel <ardb@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: Ard Biesheuvel <ardb@kernel.org>,
@@ -84,18 +84,18 @@ Cc: Ard Biesheuvel <ardb@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-mtd@lists.infradead.org,
 	netdev@vger.kernel.org
-Subject: [RFC PATCH 12/21] crypto: lz4 - drop obsolete 'comp' implementation
-Date: Tue, 18 Jul 2023 14:58:38 +0200
-Message-Id: <20230718125847.3869700-13-ardb@kernel.org>
+Subject: [RFC PATCH 21/21] crypto: scompress - Drop the use of per-cpu scratch buffers
+Date: Tue, 18 Jul 2023 14:58:47 +0200
+Message-Id: <20230718125847.3869700-22-ardb@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
 References: <20230718125847.3869700-1-ardb@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2947; i=ardb@kernel.org; h=from:subject; bh=re+UehvkeQHBK1wHhGnLcp2yWUgDT1GsozNrkQ2XFcw=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT7X8homhprm68cwLX+9c9Fvx644lvpYK0uyVHXczL lbqRHF3lLIwiHEwyIopsgjM/vtu5+mJUrXOs2Rh5rAygQxh4OIUgIkI7GFk2Cf5/H/hil+rRD0Y V1qVzlx8uzDmVsz8teat3v8K3ANncjIybI19KFrZfilr2byAGx94Wn2OsHp9Uz7yMyRa5daj4F4 hbgA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7664; i=ardb@kernel.org; h=from:subject; bh=pBS4evmuojvGZNpkpvZA6FWxaaRdlIHQ6sTGa/XNWCs=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT3tLmkjv/s0bnUUz6+YWqHyfYPrt30PrH4wvXi9gu zB/Y2xYRykLgxgHg6yYIovA7L/vdp6eKFXrPEsWZg4rE8gQBi5OAZiIRz7DX9kVFbWr6oI67P7v F1mXlcX/zKa5g+2W38JQdYu2A2ZBpxkZrpf3PBfVDpm+YdPJA28zyi5tefKQvYLzLLfrcyn7Rsa DLAA=
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_140101_805714_C34730D5 
-X-CRM114-Status: GOOD (  13.48  )
+X-CRM114-CacheID: sfid-20230718_140123_719360_5F428EC4 
+X-CRM114-Status: GOOD (  26.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,116 +112,258 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The 'comp' API is obsolete and will be removed, so remove this comp
-implementation.
+The scomp to acomp adaptation layer allocates 256k of scratch buffers
+per CPU in order to be able to present the input provided by the caller
+via scatterlists as linear byte arrays to the underlying synchronous
+compression drivers, most of which are thin wrappers around the various
+compression algorithm library implementations we have in the kernel.
+
+This sucks. With high core counts and SMT, this easily adds up to
+multiple megabytes that are permanently tied up for this purpose, and
+given that all acomp users pass either single pages or contiguous
+buffers in lowmem, we can optimize for this pattern and just pass the
+buffer directly if we can. This removes the need for scratch buffers,
+and along with it, the arbitrary 128k upper bound on the input and
+output size of the acomp API when the implementation happens to be scomp
+based.
+
+So add a scomp_map_sg() helper to try and obtain the virtual addresses
+associated with the scatterlists, which is guaranteed to be successful
+100% of the time given the existing users, which all fit the prerequisite
+pattern. And as a fallback for other cases, use kvmalloc with GFP_KERNEL
+to allocate buffers on the fly and free them again right after.
+
+This puts the burden on future callers to either use a contiguous
+buffer, or deal with the potentially blocking nature of GFP_KERNEL.
+For IPcomp in particular, the only relevant compression algorithm is
+'deflate' which is no longer implemented as an scomp, and so this change
+will not affect it even if we decide to convert it to take advantage of
+the ability to pass discontiguous scatterlists.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- crypto/lz4.c | 61 +-------------------
- 1 file changed, 1 insertion(+), 60 deletions(-)
+ crypto/scompress.c                  | 159 ++++++++++----------
+ include/crypto/internal/scompress.h |   2 -
+ 2 files changed, 76 insertions(+), 85 deletions(-)
 
-diff --git a/crypto/lz4.c b/crypto/lz4.c
-index 0606f8862e7872ad..c46b6cbd91ce10c0 100644
---- a/crypto/lz4.c
-+++ b/crypto/lz4.c
-@@ -27,29 +27,11 @@ static void *lz4_alloc_ctx(struct crypto_scomp *tfm)
- 	return ctx;
- }
+diff --git a/crypto/scompress.c b/crypto/scompress.c
+index 3155cdce9116e092..1c050aa864bd604d 100644
+--- a/crypto/scompress.c
++++ b/crypto/scompress.c
+@@ -18,24 +18,11 @@
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+-#include <linux/vmalloc.h>
+ #include <net/netlink.h>
  
--static int lz4_init(struct crypto_tfm *tfm)
--{
--	struct lz4_ctx *ctx = crypto_tfm_ctx(tfm);
--
--	ctx->lz4_comp_mem = lz4_alloc_ctx(NULL);
--	if (IS_ERR(ctx->lz4_comp_mem))
--		return -ENOMEM;
--
--	return 0;
--}
--
- static void lz4_free_ctx(struct crypto_scomp *tfm, void *ctx)
- {
- 	vfree(ctx);
- }
+ #include "compress.h"
  
--static void lz4_exit(struct crypto_tfm *tfm)
--{
--	struct lz4_ctx *ctx = crypto_tfm_ctx(tfm);
--
--	lz4_free_ctx(NULL, ctx->lz4_comp_mem);
--}
--
- static int __lz4_compress_crypto(const u8 *src, unsigned int slen,
- 				 u8 *dst, unsigned int *dlen, void *ctx)
- {
-@@ -70,14 +52,6 @@ static int lz4_scompress(struct crypto_scomp *tfm, const u8 *src,
- 	return __lz4_compress_crypto(src, slen, dst, dlen, ctx);
- }
- 
--static int lz4_compress_crypto(struct crypto_tfm *tfm, const u8 *src,
--			       unsigned int slen, u8 *dst, unsigned int *dlen)
--{
--	struct lz4_ctx *ctx = crypto_tfm_ctx(tfm);
--
--	return __lz4_compress_crypto(src, slen, dst, dlen, ctx->lz4_comp_mem);
--}
--
- static int __lz4_decompress_crypto(const u8 *src, unsigned int slen,
- 				   u8 *dst, unsigned int *dlen, void *ctx)
- {
-@@ -97,26 +71,6 @@ static int lz4_sdecompress(struct crypto_scomp *tfm, const u8 *src,
- 	return __lz4_decompress_crypto(src, slen, dst, dlen, NULL);
- }
- 
--static int lz4_decompress_crypto(struct crypto_tfm *tfm, const u8 *src,
--				 unsigned int slen, u8 *dst,
--				 unsigned int *dlen)
--{
--	return __lz4_decompress_crypto(src, slen, dst, dlen, NULL);
--}
--
--static struct crypto_alg alg_lz4 = {
--	.cra_name		= "lz4",
--	.cra_driver_name	= "lz4-generic",
--	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
--	.cra_ctxsize		= sizeof(struct lz4_ctx),
--	.cra_module		= THIS_MODULE,
--	.cra_init		= lz4_init,
--	.cra_exit		= lz4_exit,
--	.cra_u			= { .compress = {
--	.coa_compress		= lz4_compress_crypto,
--	.coa_decompress		= lz4_decompress_crypto } }
+-struct scomp_scratch {
+-	spinlock_t	lock;
+-	void		*src;
+-	void		*dst;
 -};
 -
- static struct scomp_alg scomp = {
- 	.alloc_ctx		= lz4_alloc_ctx,
- 	.free_ctx		= lz4_free_ctx,
-@@ -131,24 +85,11 @@ static struct scomp_alg scomp = {
+-static DEFINE_PER_CPU(struct scomp_scratch, scomp_scratch) = {
+-	.lock = __SPIN_LOCK_UNLOCKED(scomp_scratch.lock),
+-};
+-
+ static const struct crypto_type crypto_scomp_type;
+-static int scomp_scratch_users;
+-static DEFINE_MUTEX(scomp_lock);
  
- static int __init lz4_mod_init(void)
- {
--	int ret;
+ static int __maybe_unused crypto_scomp_report(
+ 	struct sk_buff *skb, struct crypto_alg *alg)
+@@ -58,56 +45,45 @@ static void crypto_scomp_show(struct seq_file *m, struct crypto_alg *alg)
+ 	seq_puts(m, "type         : scomp\n");
+ }
+ 
+-static void crypto_scomp_free_scratches(void)
+-{
+-	struct scomp_scratch *scratch;
+-	int i;
 -
--	ret = crypto_register_alg(&alg_lz4);
--	if (ret)
--		return ret;
+-	for_each_possible_cpu(i) {
+-		scratch = per_cpu_ptr(&scomp_scratch, i);
 -
--	ret = crypto_register_scomp(&scomp);
--	if (ret) {
--		crypto_unregister_alg(&alg_lz4);
--		return ret;
+-		vfree(scratch->src);
+-		vfree(scratch->dst);
+-		scratch->src = NULL;
+-		scratch->dst = NULL;
 -	}
+-}
 -
--	return ret;
-+	return crypto_register_scomp(&scomp);
- }
- 
- static void __exit lz4_mod_fini(void)
+-static int crypto_scomp_alloc_scratches(void)
+-{
+-	struct scomp_scratch *scratch;
+-	int i;
+-
+-	for_each_possible_cpu(i) {
+-		void *mem;
+-
+-		scratch = per_cpu_ptr(&scomp_scratch, i);
+-
+-		mem = vmalloc_node(SCOMP_SCRATCH_SIZE, cpu_to_node(i));
+-		if (!mem)
+-			goto error;
+-		scratch->src = mem;
+-		mem = vmalloc_node(SCOMP_SCRATCH_SIZE, cpu_to_node(i));
+-		if (!mem)
+-			goto error;
+-		scratch->dst = mem;
+-	}
+-	return 0;
+-error:
+-	crypto_scomp_free_scratches();
+-	return -ENOMEM;
+-}
+-
+ static int crypto_scomp_init_tfm(struct crypto_tfm *tfm)
  {
--	crypto_unregister_alg(&alg_lz4);
- 	crypto_unregister_scomp(&scomp);
+-	int ret = 0;
++	return 0;
++}
+ 
+-	mutex_lock(&scomp_lock);
+-	if (!scomp_scratch_users++)
+-		ret = crypto_scomp_alloc_scratches();
+-	mutex_unlock(&scomp_lock);
++/**
++ * scomp_map_sg - Return virtual address of memory described by a scatterlist
++ *
++ * @sg:		The address of the scatterlist in memory
++ * @len:	The length of the buffer described by the scatterlist
++ *
++ * If the memory region described by scatterlist @sg consists of @len
++ * contiguous bytes in memory and is accessible via the linear mapping or via a
++ * single kmap(), return its virtual address.  Otherwise, return NULL.
++ */
++static void *scomp_map_sg(struct scatterlist *sg, unsigned int len)
++{
++	struct page *page;
++	unsigned int offset;
+ 
+-	return ret;
++	while (sg_is_chain(sg))
++		sg = sg_next(sg);
++
++	if (!sg || sg_nents_for_len(sg, len) != 1)
++		return NULL;
++
++	page   = sg_page(sg) + (sg->offset >> PAGE_SHIFT);
++	offset = offset_in_page(sg->offset);
++
++	if (PageHighMem(page) && (offset + sg->length) > PAGE_SIZE)
++		return NULL;
++
++	return kmap_local_page(page) + offset;
++}
++
++static void scomp_unmap_sg(const void *addr)
++{
++	if (is_kmap_addr(addr))
++		kunmap_local(addr);
  }
  
+ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+@@ -116,30 +92,52 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 	void **tfm_ctx = acomp_tfm_ctx(tfm);
+ 	struct crypto_scomp *scomp = *tfm_ctx;
+ 	void **ctx = acomp_request_ctx(req);
+-	struct scomp_scratch *scratch;
++	void *src_alloc = NULL;
++	void *dst_alloc = NULL;
++	const u8 *src;
++	u8 *dst;
+ 	int ret;
+ 
+-	if (!req->src || !req->slen || req->slen > SCOMP_SCRATCH_SIZE)
++	if (!req->src || !req->slen || !req->dst || !req->dlen)
+ 		return -EINVAL;
+ 
+-	if (!req->dst || !req->dlen || req->dlen > SCOMP_SCRATCH_SIZE)
+-		return -EINVAL;
+-
+-	scratch = raw_cpu_ptr(&scomp_scratch);
+-	spin_lock(&scratch->lock);
+-
+-	scatterwalk_map_and_copy(scratch->src, req->src, 0, req->slen, 0);
+-	if (dir)
+-		ret = crypto_scomp_compress(scomp, scratch->src, req->slen,
+-					    scratch->dst, &req->dlen, *ctx);
+-	else
+-		ret = crypto_scomp_decompress(scomp, scratch->src, req->slen,
+-					      scratch->dst, &req->dlen, *ctx);
+-	if (!ret) {
+-		scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req->dlen,
+-					 1);
++	dst = scomp_map_sg(req->dst, req->dlen);
++	if (!dst) {
++		dst = dst_alloc = kvmalloc(req->dlen, GFP_KERNEL);
++		if (!dst_alloc)
++			return -ENOMEM;
+ 	}
+-	spin_unlock(&scratch->lock);
++
++	src = scomp_map_sg(req->src, req->slen);
++	if (!src) {
++		src = src_alloc = kvmalloc(req->slen, GFP_KERNEL);
++		if (!src_alloc) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		scatterwalk_map_and_copy(src_alloc, req->src, 0, req->slen, 0);
++	}
++
++	if (dir)
++		ret = crypto_scomp_compress(scomp, src, req->slen, dst,
++					    &req->dlen, *ctx);
++	else
++		ret = crypto_scomp_decompress(scomp, src, req->slen, dst,
++					      &req->dlen, *ctx);
++
++	if (src_alloc)
++		kvfree(src_alloc);
++	else
++		scomp_unmap_sg(src);
++
++	if (!ret && dst == dst_alloc)
++		scatterwalk_map_and_copy(dst, req->dst, 0, req->dlen, 1);
++out:
++	if (dst_alloc)
++		kvfree(dst_alloc);
++	else
++		scomp_unmap_sg(dst);
++
+ 	return ret;
+ }
+ 
+@@ -158,11 +156,6 @@ static void crypto_exit_scomp_ops_async(struct crypto_tfm *tfm)
+ 	struct crypto_scomp **ctx = crypto_tfm_ctx(tfm);
+ 
+ 	crypto_free_scomp(*ctx);
+-
+-	mutex_lock(&scomp_lock);
+-	if (!--scomp_scratch_users)
+-		crypto_scomp_free_scratches();
+-	mutex_unlock(&scomp_lock);
+ }
+ 
+ int crypto_init_scomp_ops_async(struct crypto_tfm *tfm)
+diff --git a/include/crypto/internal/scompress.h b/include/crypto/internal/scompress.h
+index 858fe3965ae347ef..69e593d72cbdaa99 100644
+--- a/include/crypto/internal/scompress.h
++++ b/include/crypto/internal/scompress.h
+@@ -12,8 +12,6 @@
+ #include <crypto/acompress.h>
+ #include <crypto/algapi.h>
+ 
+-#define SCOMP_SCRATCH_SIZE	131072
+-
+ struct acomp_req;
+ 
+ struct crypto_scomp {
 -- 
 2.39.2
 
