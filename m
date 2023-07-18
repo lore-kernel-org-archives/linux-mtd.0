@@ -4,102 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95BBEEB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 08:29:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 288ECEB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 08:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w+33KumVpchQTzoRIL4QGb2ktnxvZeyjmzRt7v1Ye1k=; b=tc23B9sRCe3+Sb
-	qEE/IkZGE7/gR1N2GVXKFeS+RmIqK9BTYpnN4ijYwaHA8+FUJeW0Z3wo8rMzPsXScoog1F8pgroVR
-	pp1wveqbM9t4BuVwJygKu/1h14n80j2NhRcHHic+MpcgB5eHv3xN/eo4r+K+De6m4Gl1uNp6MlD6r
-	2zFZkoZ/bLUUa40Wtxe3w16KrcXckeSXPaUfS13LEKXMPFtZUYrWee0IyAlZoybZVKUbWmlTKVf4G
-	TiNfud3vz46bcDJyYkZsyr71e1+2hHCHrVYE5xEHMd3ntD9cCbdFshIqvfNjvoMJzit+v9jGU+lUo
-	9DwxNpUo3s9GCtIfM4NQ==;
+	List-Owner; bh=14+3+Lumfl9xTQRcR+lDukSdE6dmCTpSp9tK1KMyL2g=; b=mfuAEztb0zX/Jl
+	nmkvJaQZgEPR/x8yKeOn0d7/E+5FiaLtHZUsPqPusLX1ESuObu+2eX32CvlT959xO94ro0I4iHLht
+	MZFh8rs7wv1CBe1vyNw96lSOimg4J/g+HfPTq0CYq4ALrHTXaXUV4IhBpGgK1IwUH9LCxl9fQkIHw
+	3qi1YrJKVwO/HEU7CtOG0TxmDmCE5QRaDqG0ktUIUGPNX6HAlI1QgTfAkqa7fjS2ArvHJSWwvIV3U
+	0ECJqHFS0YABQ7lhhaQ+0cFcryiTvDFeopA+58p+CAmlwHb9TxH3TKOXOUW+p3Yj6hl1tRALWq8ci
+	X5sXibJq95OEY+GscAKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM2Z2-006MIq-2e;
-	Wed, 19 Jul 2023 08:29:40 +0000
+	id 1qM2ZM-006MP4-39;
+	Wed, 19 Jul 2023 08:30:01 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM2Z0-006MHd-1P
+	id 1qM2ZL-006MOT-2r
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 08:29:38 +0000
+	Wed, 19 Jul 2023 08:30:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=5WRSmD7p8kvsp7xa4uhAT4iCZu90Kz42k/8LjgP9Kbk=; b=N09FD90FWlyQc5d+670TOJsUgH
-	xzlPVDf+EFy2yxVDdaKRDwlJ7s8qN2m0ZLLlBK2cp7RfMWk42RkpIgzZOf5MVISO4QlCgWln9n6HU
-	Hn6v9YD9hUOsU6fTd+BJME1Uxa/rIQ99k9u/9SaV4mCfgiKCtrWvbGww9Wui49RiBAQL2OHjQ0XHy
-	6npWaBOK/sTVf5s09Oj5mzAwjofyXDiGnsZDDfwW0RqnfUX2HCHeWETS4vrUMwVxGWh2xefQF4OAB
-	zR8D1lhF2wfpDpbzBzO3nUpZNjKbkRxFoFfh5y1ePeoQSPwUxg9FjBJOtQVNREFZqMrP8adpxt1Po
-	9C6c9Pfw==;
-Received: from mail-lf1-x133.google.com ([2a00:1450:4864:20::133])
+	bh=Xx+B+/JS5iJKrFtMpTmi7o2r1Iae5mMIlVpmo5oMOLE=; b=rJLEcCeNAvUsqaELpDI3HfgX0R
+	9kP+nYxIuPKtiZrCsmTmxUoGQa0c6A14rzEWFro8aa8fJFgnD5LikFRANGnl9hPbf+UWS7zowhaIg
+	ziKY6wFeOfMXodbnkX5Jmz3MRmsAcQp0KObfrT2QMXMmPsFaweLzxTFei5N9gpLSMr4fmDZAqLfMv
+	6I2BIaw6gKaKT1c6LsWwlPVXKFk9QaDvHwSlVz3/5ciVYOhSfgBSa854vHu6TSDCcGEZ1ELRP0kXS
+	EUUZ9T3vzIDm4eiMLj8AB0X94c52waqsM46uyppzDpxHrWUuux5398EaCMP5dR7iDWiZfWFsPCBkm
+	8uXOZy2w==;
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLnFN-00BkNs-0t
+	id 1qLkJN-00BYNi-0P
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 16:08:23 +0000
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fb7373dd35so8803453e87.1
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2023 09:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689696422; x=1692288422;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5WRSmD7p8kvsp7xa4uhAT4iCZu90Kz42k/8LjgP9Kbk=;
-        b=MQUxkW5qHcrfmo1oCPvFyde/h/ABI8+EysvW9hs1WZ2Lu0PPMp9ZXeW73kiWnupMBb
-         CSxXmS0Mi2P2x1BrSsYvpDd7rTT/KuCy7VtjPhLgoupzK++Gq28fAiblgYA7022di4FF
-         V1+Uucnha7RyIyTJhk0dNSbc+j+et6sBqdkPCyLHhWNK7UabQcnVYLId75Kln+cD0CrD
-         vOIux3FIwac61j4RJIwrI2YR6b84DEGLcSJ+jsOP2a9XLFFwl8yc6our8w46Kh7ppngL
-         p64YTfukK5o+M7J1or/l0oteaim6X+uHA4oTBRS6yCFOORVY/TZIQ475JWPij1gmoB/i
-         CFaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689696422; x=1692288422;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5WRSmD7p8kvsp7xa4uhAT4iCZu90Kz42k/8LjgP9Kbk=;
-        b=Hsr/grMp7g8WLvnssvO/3+zMu2BoNI9f9oNfudtmfcccHoLBHZwQf3t6zGL6Uq6u6k
-         sFeHLsIcsNAaqLX3Tqt0ff+F0gF7cIQKj9fz4SNz/i3g6Hft5gLzwaF54jqJLwlf9yO5
-         UELenrcWADcTffXL1n2jxs8li64C0TkpCbmCkOwt1eJ4Y6RPtD6ChTDQ6wjEUJw8LtCG
-         9tB7sE+EaVgOTTolq3m/wjn5/eu9aEqZYdee6eFyoqnDplt3DOpcthcZYL61ZJpiR/a3
-         FrkHvFYDQ4qnHA8Fl+MBRRGi2ZJ1Bm+BejXb8r4eY0Ji8Qj3afZAiP6OET3h8xZ/vUsP
-         A1FA==
-X-Gm-Message-State: ABy/qLYNXLKhZ2Wc8UkipwIIQPmEbDYFSYom87H4ULkR24+M1d/8cyBV
-	p53OO+/GUUP/2oxZvSkuzXo=
-X-Google-Smtp-Source: APBJJlGfSw2ZUglSZJ6Wez+cgAdXqbVCaZGFDRFK6PO594dT9Unip9e1T3kGWlhz+2ufMy435M9gsw==
-X-Received: by 2002:a05:6512:3d2a:b0:4fb:7d09:ec75 with SMTP id d42-20020a0565123d2a00b004fb7d09ec75mr5949884lfv.4.1689696422069;
-        Tue, 18 Jul 2023 09:07:02 -0700 (PDT)
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id t14-20020ac24c0e000000b004f86aef886asm502295lfq.54.2023.07.18.09.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jul 2023 09:07:01 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Tue, 18 Jul 2023 13:00:21 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9281461524;
+	Tue, 18 Jul 2023 12:59:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BC7FC433A9;
+	Tue, 18 Jul 2023 12:59:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689685182;
+	bh=WHwz9/IerLZuAMcdxeFxF/xnqkGa8Udt+0cnPybEFbA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=XVg1yBawcsOWEcOzZms+CEOR9fHPLE7HVa0+cg/25hWlk3oZGj4hCF9Y5VExy5iZ8
+	 bAV3urUBiTlj231pQbsb8hWkRUHFZMnxwyoVx4IkyvMwwl455KuDE7mhvQ8cC+cjxV
+	 771+ImPUjmwoPJg1jv2AKFNBoPwts+Qam+NJH+0QfHPezWDSB0lM2k4hCWHPhfJXSN
+	 PUhBB2ppv3XF1L18IqbGeQqG3medjJxSo6D837YoLznf0mjS2FeozbcJKbUBz0sm23
+	 MGM0LAwfArD9hnsadorqPiFYlUK3skwIMvl8aeYTD/y7t67X33AQ1uTRETr+dseedO
+	 lvqIV6V5a7nwQ==
+From: Ard Biesheuvel <ardb@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: Ard Biesheuvel <ardb@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Haren Myneni <haren@us.ibm.com>,
+	Nick Terrell <terrelln@fb.com>,
+	Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Michael Walle <michael@walle.cc>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	devicetree@vger.kernel.org,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	qat-linux@intel.com,
+	linuxppc-dev@lists.ozlabs.org,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] nvmem: core: export nvmem device size
-Date: Tue, 18 Jul 2023 18:06:51 +0200
-Message-Id: <20230718160652.26756-2-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230718160652.26756-1-zajec5@gmail.com>
-References: <20230718160652.26756-1-zajec5@gmail.com>
+	netdev@vger.kernel.org
+Subject: [RFC PATCH 03/21] crypto: acompress - Drop destination scatterlist allocation feature
+Date: Tue, 18 Jul 2023 14:58:29 +0200
+Message-Id: <20230718125847.3869700-4-ardb@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
+References: <20230718125847.3869700-1-ardb@kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6259; i=ardb@kernel.org; h=from:subject; bh=WHwz9/IerLZuAMcdxeFxF/xnqkGa8Udt+0cnPybEFbA=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT4GvRLH/LEkjV81tn2oObnkfxfv3ra95U7VM4jzxV 9sMlr7vKGVhEONgkBVTZBGY/ffdztMTpWqdZ8nCzGFlAhnCwMUpABNxOcnI0JNvE8/+bpmSW14M y44lsq9WHbTVEA5NsljuK5jAfTnOlJFh657yZdMNtxc8ClR4vf+ZnOr6jWGmb+QOJvypXbOvUWE VFwA=
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_170821_530588_31CC5D41 
-X-CRM114-Status: GOOD (  12.66  )
+X-CRM114-CacheID: sfid-20230718_140019_863558_807BB6A3 
+X-CRM114-Status: GOOD (  19.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,68 +112,194 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Michael Walle <michael@walle.cc>
+The acomp crypto code will allocate a destination scatterlist and its
+backing pages on the fly if no destination is passed. This feature is
+not used, and given that the caller should own this memory, it is far
+better if the caller allocates it. This is especially true for
+decompression, where the output size is essentially unbounded, and so
+the caller already needs to provide the size for this feature to work
+reliably.
 
-Export the size of the nvmem device. NVMEM layout drivers might need it
-and might not have access to the device which is registering the NVMEM
-device.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/nvmem/core.c           | 13 +++++++++++++
- include/linux/nvmem-consumer.h |  6 ++++++
- 2 files changed, 19 insertions(+)
+ crypto/acompress.c         |  6 ----
+ crypto/scompress.c         | 14 +---------
+ crypto/testmgr.c           | 29 --------------------
+ include/crypto/acompress.h | 16 ++---------
+ 4 files changed, 4 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index a0c9153cda28..57ccd4422e01 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -2224,6 +2224,19 @@ const char *nvmem_dev_name(struct nvmem_device *nvmem)
+diff --git a/crypto/acompress.c b/crypto/acompress.c
+index 1c682810a484dcdf..431876b0ee2096fd 100644
+--- a/crypto/acompress.c
++++ b/crypto/acompress.c
+@@ -71,7 +71,6 @@ static int crypto_acomp_init_tfm(struct crypto_tfm *tfm)
+ 
+ 	acomp->compress = alg->compress;
+ 	acomp->decompress = alg->decompress;
+-	acomp->dst_free = alg->dst_free;
+ 	acomp->reqsize = alg->reqsize;
+ 
+ 	if (alg->exit)
+@@ -173,11 +172,6 @@ void acomp_request_free(struct acomp_req *req)
+ 	if (tfm->__crt_alg->cra_type != &crypto_acomp_type)
+ 		crypto_acomp_scomp_free_ctx(req);
+ 
+-	if (req->flags & CRYPTO_ACOMP_ALLOC_OUTPUT) {
+-		acomp->dst_free(req->dst);
+-		req->dst = NULL;
+-	}
+-
+ 	__acomp_request_free(req);
  }
- EXPORT_SYMBOL_GPL(nvmem_dev_name);
+ EXPORT_SYMBOL_GPL(acomp_request_free);
+diff --git a/crypto/scompress.c b/crypto/scompress.c
+index 442a82c9de7def1f..3155cdce9116e092 100644
+--- a/crypto/scompress.c
++++ b/crypto/scompress.c
+@@ -122,12 +122,9 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 	if (!req->src || !req->slen || req->slen > SCOMP_SCRATCH_SIZE)
+ 		return -EINVAL;
  
-+/**
-+ * nvmem_device_size() - Get the size of a given nvmem device.
-+ *
-+ * @nvmem: nvmem device.
-+ *
-+ * Return: size of the nvmem device.
-+ */
-+size_t nvmem_device_size(struct nvmem_device *nvmem)
-+{
-+	return nvmem->size;
-+}
-+EXPORT_SYMBOL_GPL(nvmem_device_size);
-+
- static int __init nvmem_init(void)
+-	if (req->dst && !req->dlen)
++	if (!req->dst || !req->dlen || req->dlen > SCOMP_SCRATCH_SIZE)
+ 		return -EINVAL;
+ 
+-	if (!req->dlen || req->dlen > SCOMP_SCRATCH_SIZE)
+-		req->dlen = SCOMP_SCRATCH_SIZE;
+-
+ 	scratch = raw_cpu_ptr(&scomp_scratch);
+ 	spin_lock(&scratch->lock);
+ 
+@@ -139,17 +136,9 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 		ret = crypto_scomp_decompress(scomp, scratch->src, req->slen,
+ 					      scratch->dst, &req->dlen, *ctx);
+ 	if (!ret) {
+-		if (!req->dst) {
+-			req->dst = sgl_alloc(req->dlen, GFP_ATOMIC, NULL);
+-			if (!req->dst) {
+-				ret = -ENOMEM;
+-				goto out;
+-			}
+-		}
+ 		scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req->dlen,
+ 					 1);
+ 	}
+-out:
+ 	spin_unlock(&scratch->lock);
+ 	return ret;
+ }
+@@ -197,7 +186,6 @@ int crypto_init_scomp_ops_async(struct crypto_tfm *tfm)
+ 
+ 	crt->compress = scomp_acomp_compress;
+ 	crt->decompress = scomp_acomp_decompress;
+-	crt->dst_free = sgl_free;
+ 	crt->reqsize = sizeof(void *);
+ 
+ 	return 0;
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index b41a8e8c1d1a1987..4971351f55dbabb9 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -3497,21 +3497,6 @@ static int test_acomp(struct crypto_acomp *tfm,
+ 			goto out;
+ 		}
+ 
+-#ifdef CONFIG_CRYPTO_MANAGER_EXTRA_TESTS
+-		crypto_init_wait(&wait);
+-		sg_init_one(&src, input_vec, ilen);
+-		acomp_request_set_params(req, &src, NULL, ilen, 0);
+-
+-		ret = crypto_wait_req(crypto_acomp_compress(req), &wait);
+-		if (ret) {
+-			pr_err("alg: acomp: compression failed on NULL dst buffer test %d for %s: ret=%d\n",
+-			       i + 1, algo, -ret);
+-			kfree(input_vec);
+-			acomp_request_free(req);
+-			goto out;
+-		}
+-#endif
+-
+ 		kfree(input_vec);
+ 		acomp_request_free(req);
+ 	}
+@@ -3573,20 +3558,6 @@ static int test_acomp(struct crypto_acomp *tfm,
+ 			goto out;
+ 		}
+ 
+-#ifdef CONFIG_CRYPTO_MANAGER_EXTRA_TESTS
+-		crypto_init_wait(&wait);
+-		acomp_request_set_params(req, &src, NULL, ilen, 0);
+-
+-		ret = crypto_wait_req(crypto_acomp_decompress(req), &wait);
+-		if (ret) {
+-			pr_err("alg: acomp: decompression failed on NULL dst buffer test %d for %s: ret=%d\n",
+-			       i + 1, algo, -ret);
+-			kfree(input_vec);
+-			acomp_request_free(req);
+-			goto out;
+-		}
+-#endif
+-
+ 		kfree(input_vec);
+ 		acomp_request_free(req);
+ 	}
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index 574cffc90730f5f3..ccb6f3279bc8b32e 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -43,15 +43,12 @@ struct acomp_req {
+  *
+  * @compress:		Function performs a compress operation
+  * @decompress:		Function performs a de-compress operation
+- * @dst_free:		Frees destination buffer if allocated inside the
+- *			algorithm
+  * @reqsize:		Context size for (de)compression requests
+  * @base:		Common crypto API algorithm data structure
+  */
+ struct crypto_acomp {
+ 	int (*compress)(struct acomp_req *req);
+ 	int (*decompress)(struct acomp_req *req);
+-	void (*dst_free)(struct scatterlist *dst);
+ 	unsigned int reqsize;
+ 	struct crypto_tfm base;
+ };
+@@ -222,8 +219,7 @@ static inline void acomp_request_set_callback(struct acomp_req *req,
  {
- 	return bus_register(&nvmem_bus_type);
-diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
-index fa030d93b768..3270ad81e140 100644
---- a/include/linux/nvmem-consumer.h
-+++ b/include/linux/nvmem-consumer.h
-@@ -77,6 +77,7 @@ ssize_t nvmem_device_cell_read(struct nvmem_device *nvmem,
- 			   struct nvmem_cell_info *info, void *buf);
- int nvmem_device_cell_write(struct nvmem_device *nvmem,
- 			    struct nvmem_cell_info *info, void *buf);
-+size_t nvmem_device_size(struct nvmem_device *nvmem);
- 
- const char *nvmem_dev_name(struct nvmem_device *nvmem);
- 
-@@ -206,6 +207,11 @@ static inline int nvmem_device_write(struct nvmem_device *nvmem,
- 	return -EOPNOTSUPP;
+ 	req->base.complete = cmpl;
+ 	req->base.data = data;
+-	req->base.flags &= CRYPTO_ACOMP_ALLOC_OUTPUT;
+-	req->base.flags |= flgs & ~CRYPTO_ACOMP_ALLOC_OUTPUT;
++	req->base.flags = flgs;
  }
  
-+static inline size_t nvmem_device_size(struct nvmem_device *nvmem)
-+{
-+	return 0;
-+}
-+
- static inline const char *nvmem_dev_name(struct nvmem_device *nvmem)
- {
- 	return NULL;
+ /**
+@@ -233,11 +229,9 @@ static inline void acomp_request_set_callback(struct acomp_req *req,
+  *
+  * @req:	asynchronous compress request
+  * @src:	pointer to input buffer scatterlist
+- * @dst:	pointer to output buffer scatterlist. If this is NULL, the
+- *		acomp layer will allocate the output memory
++ * @dst:	pointer to output buffer scatterlist
+  * @slen:	size of the input buffer
+- * @dlen:	size of the output buffer. If dst is NULL, this can be used by
+- *		the user to specify the maximum amount of memory to allocate
++ * @dlen:	size of the output buffer
+  */
+ static inline void acomp_request_set_params(struct acomp_req *req,
+ 					    struct scatterlist *src,
+@@ -249,10 +243,6 @@ static inline void acomp_request_set_params(struct acomp_req *req,
+ 	req->dst = dst;
+ 	req->slen = slen;
+ 	req->dlen = dlen;
+-
+-	req->flags &= ~CRYPTO_ACOMP_ALLOC_OUTPUT;
+-	if (!req->dst)
+-		req->flags |= CRYPTO_ACOMP_ALLOC_OUTPUT;
+ }
+ 
+ static inline struct crypto_istat_compress *comp_get_stat(
 -- 
-2.35.3
+2.39.2
 
 
 ______________________________________________________
