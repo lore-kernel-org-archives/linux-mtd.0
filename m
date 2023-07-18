@@ -4,82 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ED33C001DC
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:22:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E71CAEB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:25:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4hfX1O5UZsEQhNpnMZheAwDMcHEfKuTX618XtwzamjE=; b=LJ50RT+sR0QZ3F6Hw34+wxvMrf
-	U+cj39r++BZTaSw+HD1YAXU5ldur0u+kjGTVAXcYqJnjCAx+lzmoLCpU3tDVKDVanrRsI/N3rGYS8
-	sTv1q43zRy5Dp3hrqtDIGEgawWgvq3rXSbI/gNpWUH3qOnTgMzyCgcmj0Lqub4BbBeZZuWUl/a3+U
-	+4QwY/m4mSFfnVkxlTghFWOPbKV2ATBTIxoy3hTSPyJDBjCA7jQnSCrbUsSVKSz43Ahk3it2ESpDf
-	+YxRrRBbvC5MhvH05P971DnYnm+0KjGn9BwkvtfPGgPFBmQ/NxQNtoUEkXygIY0EmqsVtJJ1wliSU
-	4Z7+r1gA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=s5qyJBrY6VIoQtHib5j1Td8gUTSBfOdQTZ6lxDYZk8s=; b=O3UeadRgBUUig+
+	Mg4hUieWTlQ6QeWkj3scizon+l1NtrDvBj22toRJe/jWxteS4gVj2/98dc5JWY99Y3pZSfojRGczx
+	4KgFNi0RR3QXC9qTG4iy5/b3mohGIJo/xrxPcIRgzWUSWvrM5t9rR63TLNZkr383ane9RLDrrFweS
+	xWeHSvHK3SurX1aOo1hwnLGB0rpj9X42cNC1ML9n3rZ2O++ZLsmNARqrN9byZKUhYZ5S1TwfNifLK
+	D56ymyQnKMcbhqxfi1Eqt/KKdqg+I78ROsI3jl/7yYlOGzyq5wICU5bU9APbhv/5p8A4KtV0OP5Zt
+	riC5bC6Ji/mktNjrLduA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0a6-005gv0-1I;
-	Wed, 19 Jul 2023 06:22:38 +0000
+	id 1qM0cv-005iaD-11;
+	Wed, 19 Jul 2023 06:25:33 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0a5-005gtx-02
+	id 1qM0ct-005iZX-24
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 06:22:37 +0000
+	Wed, 19 Jul 2023 06:25:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=TliMGa/AjS5CE9Jf6SZ3Vzpj2EtgwzwZjg72TLl0zqM=; b=dihkeqBTdos8BaILsJ2hwzNOMi
-	VB+iwlK0YIVrFBh3NKdfr4x91RWOddLO6SG88XCNF6P8zk7vvrdjaBPSpl0M+5li8vZ230rqSUDrP
-	fEVO++v+u4IVKhZGk3pqPukxywKqZllz2Jt0SBGGSGcqZ1iy56shQP9cyHOkziJLdMD0bsM6Y/Adv
-	wRP0mwn47QV5ckMZ85z27UbPjgOZgY0ys+lN9XW7PBBF1DsHpkUUaOyA2sgW374Nb2fF3+SKI2Stv
-	+PmYdOTBs8e4SFM+L3fCMnF8UnQjsKsx6K9dpsxHw5jxvbt0AbfRssyWEUmMkb0X972DhjFvHC1dA
-	UdqTRryQ==;
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=aLC7t3CMDZ7VOXGMg9tZxQQGZ66gO6mRYQQcpnwKHxM=; b=dj6dW9Mff3irQzCnLRS0etQe69
+	Jaf964+T4wGp05ehug2voyIkaZ1pDoEkaA7oml1HMhROT3kOwc/OO00Au9KfP9IBOk2cLdwe1fgcW
+	wTYU05EJiIIDK47TYcV8YMOmNHaHPNjk6FEepZrysewqSbFzHIGbkE2wUgSWPuH1y6ph5cR3R9ji+
+	7SnVF6QiJf7fzjW4UyFPDUyq7IT6EwThOuSducawMKZbjXo0FFmXoDWh1KjjeEoFY2H1zWP3+QN1C
+	pGD9OVFxoxBhbxKJleXvX0dbAo4LkSwp/65ZgQdsxKYcE9yneR0sm8b9o+CVJugtw1HzX0IFbmiPp
+	m/WED2hQ==;
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLhWS-00BOay-1L
+	id 1qLtFQ-00C9aR-2M
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 10:01:38 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	Tue, 18 Jul 2023 22:32:52 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id 4A2363BE;
-	Tue, 18 Jul 2023 12:01:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1689674460;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TliMGa/AjS5CE9Jf6SZ3Vzpj2EtgwzwZjg72TLl0zqM=;
-	b=1tZ25vKAwvmo1bgrRHA025NmOefVDb6pIPqUrbYMERVCHhTLbGXhBFrA0BGs7RgMtOirHD
-	3zMKlXEtVvZGO/pQaKbZMrgkr5vfgduAnYedFZJXCCmfAvkNZlL3/aqxD1eEsBvZ/V9tHm
-	oWV1nY3Og16O8NvQ1K5Iycqnz4LoIRGM3LggtBwF8LDXzGYn/36SovjHQdsyqu4Nl4iLq3
-	DqYoTFqzSWS4Py5HODIvrWQkSGOEXd1fq2DB8OA3zZqN2O8koZKgNfUsAWSsfZsHOQ0RPq
-	Zo18n8Z3vl2RRYF2cwzIqxFq1yzoEBsZuM0V2vky8MIsGC+GKpiXXO5GcMZrAA==
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 777A861295;
+	Tue, 18 Jul 2023 22:32:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41861C433C7;
+	Tue, 18 Jul 2023 22:32:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689719561;
+	bh=7Gbf5E8xcaK5OEKWGb4CHdLczRMlJnuQEgylfRoJijU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ufuwLPWCK8dWV8FkCqtCEz1epizX5iOUu9r0pzjEB8rAo3vv70aUHG7DaVTyC0KRg
+	 9GffXUB6RPQfiH4Pwwly5QDNxRzp24n52b7+3LD9ARpF8rJiXrkrBeyyZXIPCRwCL3
+	 YnFduPkPfkN/Xgp87N8DLRjyb4cFcZH/W6xsrlYbCUBOsPO7LPaSINVyNCf7nN7z43
+	 VbtnrwxtgFI9aorRlk+A+3KII5/Vn0DPycSXnFotjqn6aFg9SWYv2fXiVGJgnhvXsX
+	 jEkhDeNqSzOymSxwFCvBFlJkeTEmz1CT/UJjdF6RKWm+b8SD1lfeb02J5lyYQ8cZJU
+	 KTXuktmKYxzVQ==
+Date: Tue, 18 Jul 2023 15:32:39 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+	Kees Cook <keescook@chromium.org>, Haren Myneni <haren@us.ibm.com>,
+	Nick Terrell <terrelln@fb.com>, Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
+	linux-mtd@lists.infradead.org, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH 01/21] crypto: scomp - Revert "add support for
+ deflate rfc1950 (zlib)"
+Message-ID: <20230718223239.GB1005@sol.localdomain>
+References: <20230718125847.3869700-1-ardb@kernel.org>
+ <20230718125847.3869700-2-ardb@kernel.org>
 MIME-Version: 1.0
-Date: Tue, 18 Jul 2023 12:01:00 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>, Mark Brown
- <broonie@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush
- Yadav <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org, saikrishna12468@gmail.com, git@amd.com
-Subject: Re: [PATCH 0/3] spi: spi-cadence-quadspi: Add Rx tuning support for
- DTR mode
-In-Reply-To: <67e1d3af-d106-bd5c-f8d8-3f43a58975a0@linaro.org>
-References: <20230207060924.265789-1-sai.krishna.potthuri@amd.com>
- <67e1d3af-d106-bd5c-f8d8-3f43a58975a0@linaro.org>
-Message-ID: <85d8e122a236818b162b64b473a3fdc4@walle.cc>
-X-Sender: michael@walle.cc
+Content-Disposition: inline
+In-Reply-To: <20230718125847.3869700-2-ardb@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_110136_973108_FB1A4324 
-X-CRM114-Status: GOOD (  23.30  )
+X-CRM114-CacheID: sfid-20230718_233250_080653_47A44018 
+X-CRM114-Status: GOOD (  21.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,82 +99,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2023-02-07 07:48, schrieb Tudor Ambarus:
-> On 2/7/23 06:09, Sai Krishna Potthuri wrote:
->> Enable PHY and DQS required for Xilinx Versal Octal SPI to operate in 
->> DTR
->> protocol.
->> Add and update device_id field in spi_mem structure with flash id
->> information. Xilinx Versal Octal SPI driver requires the device id
->> information to perform the Rx tuning operation. Since there is no 
->> common
->> Tuning Data Pattern defined across all vendors, controllers like 
->> Xilinx
->> Versal Octal SPI which requires Rx tuning to find out the optimal 
->> sampling
->> point for data lines, this device id information will be used as a 
->> golden
->> data.
+On Tue, Jul 18, 2023 at 02:58:27PM +0200, Ard Biesheuvel wrote:
+> This reverts commit a368f43d6e3a001e684e9191a27df384fbff12f5.
 > 
-> Using only 6 bytes as golden pattern seems fragile, but you are aware 
-> of
-> that, as I see that you chose to read the ID 10 times to make the
-> decision whether the tap is valid or not. Other option (which is not
-> perfect) is to use SFDP data as golden pattern. If I remember
-> correctly, JESD216 suggests to use the Read SFDP cmd at 50 MHz, so it
-> won't help you much. In practice SPI NOR uses the Read SFDP command at
-> the flash's maximum speed and we haven't seen problems. But better 
-> would
-> be to use some flash OTP data maybe? I remember Pratyush has submitted 
-> a
-> phy calibration series in the past, I haven't had the chance to read 
-> his
-> proposal. Did you? How's your proposal different than his?
+> "zlib-deflate" was introduced 6 years ago, but it does not have any
+> users. So let's remove the generic implementation and the test vectors,
+> but retain the "zlib-deflate" entry in the testmgr code to avoid
+> introducing warning messages on systems that implement zlib-deflate in
+> hardware.
+> 
+> Note that RFC 1950 which forms the basis of this algorithm dates back to
+> 1996, and predates RFC 1951, on which the existing IPcomp is based and
+> which we have supported in the kernel since 2003. So it seems rather
+> unlikely that we will ever grow the need to support zlib-deflate.
+> 
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  crypto/deflate.c | 61 +++++-----------
+>  crypto/testmgr.c |  8 +--
+>  crypto/testmgr.h | 75 --------------------
+>  3 files changed, 18 insertions(+), 126 deletions(-)
 
-And its not 6 bytes.. it's usually only three. The last three bytes will
-probably be undefined. So the might return ff or just wrap around and
-return the first three bytes again.
+So if this is really unused, it's probably fair to remove it on that basis.
+However, it's not correct to claim that DEFLATE is obsoleted by zlib (the data
+format).  zlib is just DEFLATE plus a checksum, as is gzip.
 
-Is there a datasheet where you can read how the calibration is done? Is 
-this
-the same for all i/o pads or individual per i/o pad?
+Many users of zlib or gzip use an external checksum and therefore would be
+better served by DEFLATE, avoiding a redundant builtin checksum.  Typically,
+people have chosen zlib or gzip simply because their compression library
+defaulted to it, they didn't understand the difference, and they overlooked that
+they're paying the price for a redundant builtin checksum.
 
-I cannot see where the op to read the id is coming from. Are you relying
-on the fact that a RDID is the first command which gets executed. If so,
-please don't.
+An example of someone doing it right is EROFS, which is working on adding
+DEFLATE support (not zlib or gzip!):
+https://lore.kernel.org/r/20230713001441.30462-1-hsiangkao@linux.alibaba.com
 
-Do you calibrate only one pad? RDID (9f) is  single bit i/o, right? And
-I guess you are calibrating with the highest frequency, are
-we sure that RDID will work with any frequency (on any flash).
+Of course, they are using the library API instead of the clumsy crypto API.
 
-
->> The reason behind choosing this approach instead of reading the ID 
->> again
->> in the controller driver is to make it generic solution.
->> - Other controller drivers which want to use similar tuning process, 
->> they
->> will make use of this ID instead of reading the ID again in the 
->> driver.
-
-Honestly, I'm not sure this is the way to go. Pratyush proposed solution
-to have a dedicated memory area within the flash array with a know 
-pattern
-seems to make more sense, because you are calibrating on the thing you 
-are going
-to use later, that is quad/ocal read with the fastest frequency.
-
->> - Also, we can avoid hardcoding the command information and initiating 
->> the
->> transfer in the controller driver as this should happen from spi-nor.
-
-So how you know that this is a RDID instruction?
-
--michael
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
