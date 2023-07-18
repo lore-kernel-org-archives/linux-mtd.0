@@ -4,81 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72F64EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:06:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 971A0EB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:07:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rKXCfPM6H5hkmhr1Z62XNsE1P84J6mUSnWnIO3aMPek=; b=AAw0xHBTEZl6Xs/iA3PI+pNsTU
-	wHZ1cpctTdE3ySOjPYzwdpt/qx7FNx3qxOvPvcPTEf8LMFYRBQYnJX9AQWKuGDg+9Dmuf9esSJa1D
-	11MsYIqjBPzWl2TXdxL7MhUYhjI8dG/KQJku9d/wmsfHwOG0KbwLcB9wz9p8eLMp33rb9+gZqMbDf
-	4Mb5yXqMocLf1EInNIvzS0wVREXssF1Z08MDtlqWbihPaQH5R8XVa1QR/jPSeIVt3hoT9H4qbFqpW
-	mUJ9xf3vYZu+5p7rfI5cFgqHrbFAnJ1s41f4tPwrLXkvz/9uvv9YgxoDPuFyiv1EaVbKzWuyILb6t
-	pioE6EpA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=TVMBowCtCn20/GqgW/0x4q0pEfM6xmMRC1t1dM3gfDA=; b=MjXOqACkS/C2jy
+	DA+fqVs/pBHPrNdb9x0JdyCpSEFurORZU999V/O8aBlPWaUvodjvvyQ9+86avHW/dKSz0EvEtq6bF
+	j1+jaQ0h1xgdd4IMyzld1CaBNBWT5j+UIamPST3wdOrOFJvSE2fPXkx3knH3/dd1BVLZ6n57AJRgt
+	DSdfe+C++DzfronhOGoXX8kZ7LfvNid9ncys7p2WkWNYX93uzz4lZhZELSnsCJ/XndmTZdP2Vs8PZ
+	sMiT+smV5JlkJvpkHwL5He/Ku5dkg6Nxn3w2V/2qTcU4PFihTpBlxRGVONWLs8PkUnLtlwZMTsP19
+	8I+PuENygwj0OHRM2l1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0KJ-005Xvx-1E;
-	Wed, 19 Jul 2023 06:06:19 +0000
+	id 1qM0Lp-005YkY-0z;
+	Wed, 19 Jul 2023 06:07:53 +0000
 Received: from desiato.infradead.org ([90.155.92.199])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0KH-005XuR-1k
+	id 1qM0Ln-005Yje-2E
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 06:06:17 +0000
+	Wed, 19 Jul 2023 06:07:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=5vU3VV+r7nUZ1dqeEIv+dK4fJYEqnyzGx0w1lUrG/KY=; b=Jvj3rrWyATGYjBmIZM+4OjD6TJ
-	ZP3Vh0VOP01pzxhbSJv22cRYXFc9sfkYZ/E5Aal2lYd6sRjsHP0zuSvj+VKnS9hvq/L00FbwkoZna
-	bfm5CPwT+r2pWLpCMcsChYKY47LpbFdCqIATSbeeMZRI8E04vJvSKiaFfslBhwlF9PoDbdhtBZvUH
-	5Nt7qbDfwuVJt03F5g13aifU/6Yvq00Hizrdq+dUwnchn4VNFDo7Y5mAzGibYh0HQVL4TNcWUXTJb
-	7oj/4xiy44zZ3NQagD17cIk5uG9vje5UwpM2Y33jk2laxdUceLohzV1kqM/c9sRHGCa1C7DWZ1xSl
-	UuLLE6GQ==;
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=eX/DMcdMvfV6aFitoS8bzyIs4Cduu6g6iZUf7R7QmpA=; b=jBBDBEG04trohWoYIEh5JNbdrQ
+	gqqG01OQaDY/0Fe5ZRZ5IQpjxYXTY/U12MRb9runXvw3yaejq93nN7f+UGQ0r0alQobBYpNm3M9fP
+	UG5LtFjAu31/Ts3R3oPH7CXOPWP1ZSc6Y0xp3QNSEJB4uY4rtUSsi6Uej6uoh+DkwuZarlhCvpChP
+	sISpFlkuZ3vkduBOCBF+s1+gCysQ6xN1KYoYm1DEkVnzkURNpwdA7rLCxcj0K4iNWB7JxVoK/logL
+	pgULvMbc1VU1bb8vCSwKqelL7HVifoKjet6Uts8OknPDv0XO6fZxALH3IYTt8+uOoDCw8DFOKj7a/
+	AmG2l8YQ==;
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLX3H-009Qps-0E
+	id 1qLkJC-00BYMb-0E
 	for linux-mtd@lists.infradead.org;
-	Mon, 17 Jul 2023 22:51:12 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	Tue, 18 Jul 2023 13:00:08 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id AFC923D5;
-	Tue, 18 Jul 2023 00:49:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1689634179;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5vU3VV+r7nUZ1dqeEIv+dK4fJYEqnyzGx0w1lUrG/KY=;
-	b=CFN1IBEsn6ZXJx8hV89aR2mDMYkjD+Ae3R0vuapNIfBs/iNLCd6B7NI1LvQq3evH5GodKj
-	FBVnHoYZZDKLPlUKbe5NNHRrtLX/WW2QcpKIQROwUQmCwVV8QM7n6ZWtCys5JZSD3RHzoR
-	OH7o+BBIYkrpTsF09v+DkxJp+NXuXMesEyKYFqZ+iaVxEZaCSoEVaXCHVlBrZHVoQb3mbK
-	Q3msVxobM0rkBsA4FCehM5eCiE4vNRAxComf8bxUjcX3ZrFEs8KaBGvXhMH5ceHFQ+sPKY
-	Sbm066ojM6Rgoffc/G3YpBBMof7UTSW+CTCXb0r1zyCJhhQRWMNzZYbOBMCpaA==
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6095D61576;
+	Tue, 18 Jul 2023 12:59:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F36D2C433C8;
+	Tue, 18 Jul 2023 12:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689685172;
+	bh=uQIEsSEi5AfZzsVkJmjn+QxN0t6yI2U4oKGRn0z/nPs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=AfZLZ7JTif4C3qePP7JKQHnnyh1u2hcqFZxGpPnYlOl2D4TtBUYrcF4X3CmBdU/wd
+	 MzdRX+BXp5+FZx0eCw9Ha+LGdh/RHkQneozHQYOQuhgOdZTIVYj23CcnUF4kdHkeTP
+	 7R28o0x8d7J43T83I/zGLHLggNxLs76wxONDkoUyl7+CexeTkV6wRVNluwXA1TjSXw
+	 zmmrxjtQ0fqYNl7R54NFrH3rZvwlbGfvlEgPAeBefe6lCsYfV3s6KZXu+lcAF8jPbE
+	 O4dBL8/SqK4Ni7fyrknc8hVH3eN7uQPh8Zt9jeKs7kgcEjFil+xRFwr4ibfViKwHrL
+	 xBBq+VXe1D3VA==
+From: Ard Biesheuvel <ardb@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: Ard Biesheuvel <ardb@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Haren Myneni <haren@us.ibm.com>,
+	Nick Terrell <terrelln@fb.com>,
+	Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	qat-linux@intel.com,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org
+Subject: [RFC PATCH 01/21] crypto: scomp - Revert "add support for deflate rfc1950 (zlib)"
+Date: Tue, 18 Jul 2023 14:58:27 +0200
+Message-Id: <20230718125847.3869700-2-ardb@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
+References: <20230718125847.3869700-1-ardb@kernel.org>
 MIME-Version: 1.0
-Date: Tue, 18 Jul 2023 00:49:39 +0200
-From: Michael Walle <michael@walle.cc>
-To: tkuw584924@gmail.com, miquel.raynal@bootlin.com
-Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
- pratyush@kernel.org, richard@nod.at, vigneshr@ti.com, d-gole@ti.com,
- tkuw584924@gmail.com, Bacem.Daassi@infineon.com, Takahiro Kuwano
- <Takahiro.Kuwano@infineon.com>
-Subject: Re: [PATCH 3/5] mtd: spi-nor: spansion: Add MCP support in
- octal_dtr_enable()
-In-Reply-To: <cac44f4d9ed06e250c2fa8aa900d8de3de4c4337.1686557139.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1686557139.git.Takahiro.Kuwano@infineon.com>
- <cac44f4d9ed06e250c2fa8aa900d8de3de4c4337.1686557139.git.Takahiro.Kuwano@infineon.com>
-Message-ID: <d05156c981f0ddcdfb754c685530cd22@walle.cc>
-X-Sender: michael@walle.cc
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9149; i=ardb@kernel.org; h=from:subject; bh=uQIEsSEi5AfZzsVkJmjn+QxN0t6yI2U4oKGRn0z/nPs=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT651eemDyIfbzsXYnz1Qw9vtZ5QSznB6X82sGpHXj z9PSeXvKGVhEONgkBVTZBGY/ffdztMTpWqdZ8nCzGFlAhnCwMUpABM5EcvIMG3+sxemk5o28ypZ tt+WTNPRVFp92uSjz+aph2/MWPhV9gfDH55nL6Y7hK7cErhrx8WSfxVt78N49XhVzDh0NP0Zebb /ZAMA
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230717_235050_426893_6C17FA19 
-X-CRM114-Status: UNSURE (   8.49  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230718_140006_446688_40438EEA 
+X-CRM114-Status: GOOD (  20.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,32 +107,299 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Takahiro, Hi Miquel,
+This reverts commit a368f43d6e3a001e684e9191a27df384fbff12f5.
 
-> S28HS02GT is multi-chip package (MCP) device that requires Octal DTR
-> configuraion for each die. We can access to configuration registers in 
-> each
-> die by using params->n_dice and params->vreg_offset[] populated from 
-> SFDP.
+"zlib-deflate" was introduced 6 years ago, but it does not have any
+users. So let's remove the generic implementation and the test vectors,
+but retain the "zlib-deflate" entry in the testmgr code to avoid
+introducing warning messages on systems that implement zlib-deflate in
+hardware.
 
-I'm looking into cleaning up the flash db and come across the n_banks
-and n_dice parameter. Which sounds like they seem to be similar, maybe
-identical? Unfortunately, there is no public datasheet for the macronix
-flash.. IIRC there is one for the Semperflashes but I'm not sure if 
-there
-is one for the MCP parts.
-Could we somehow clarify if these are the same properties? I've looked 
-at
-the SFDP tables of the macronix flash and they don't have the SCCR map 
-for
-multi chip devices :/
+Note that RFC 1950 which forms the basis of this algorithm dates back to
+1996, and predates RFC 1951, on which the existing IPcomp is based and
+which we have supported in the kernel since 2003. So it seems rather
+unlikely that we will ever grow the need to support zlib-deflate.
 
--michael
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ crypto/deflate.c | 61 +++++-----------
+ crypto/testmgr.c |  8 +--
+ crypto/testmgr.h | 75 --------------------
+ 3 files changed, 18 insertions(+), 126 deletions(-)
+
+diff --git a/crypto/deflate.c b/crypto/deflate.c
+index b2a46f6dc961e71d..f4f127078fe2a5aa 100644
+--- a/crypto/deflate.c
++++ b/crypto/deflate.c
+@@ -39,24 +39,20 @@ struct deflate_ctx {
+ 	struct z_stream_s decomp_stream;
+ };
+ 
+-static int deflate_comp_init(struct deflate_ctx *ctx, int format)
++static int deflate_comp_init(struct deflate_ctx *ctx)
+ {
+ 	int ret = 0;
+ 	struct z_stream_s *stream = &ctx->comp_stream;
+ 
+ 	stream->workspace = vzalloc(zlib_deflate_workspacesize(
+-				    MAX_WBITS, MAX_MEM_LEVEL));
++				-DEFLATE_DEF_WINBITS, DEFLATE_DEF_MEMLEVEL));
+ 	if (!stream->workspace) {
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+-	if (format)
+-		ret = zlib_deflateInit(stream, 3);
+-	else
+-		ret = zlib_deflateInit2(stream, DEFLATE_DEF_LEVEL, Z_DEFLATED,
+-					-DEFLATE_DEF_WINBITS,
+-					DEFLATE_DEF_MEMLEVEL,
+-					Z_DEFAULT_STRATEGY);
++	ret = zlib_deflateInit2(stream, DEFLATE_DEF_LEVEL, Z_DEFLATED,
++	                        -DEFLATE_DEF_WINBITS, DEFLATE_DEF_MEMLEVEL,
++	                        Z_DEFAULT_STRATEGY);
+ 	if (ret != Z_OK) {
+ 		ret = -EINVAL;
+ 		goto out_free;
+@@ -68,7 +64,7 @@ static int deflate_comp_init(struct deflate_ctx *ctx, int format)
+ 	goto out;
+ }
+ 
+-static int deflate_decomp_init(struct deflate_ctx *ctx, int format)
++static int deflate_decomp_init(struct deflate_ctx *ctx)
+ {
+ 	int ret = 0;
+ 	struct z_stream_s *stream = &ctx->decomp_stream;
+@@ -78,10 +74,7 @@ static int deflate_decomp_init(struct deflate_ctx *ctx, int format)
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+-	if (format)
+-		ret = zlib_inflateInit(stream);
+-	else
+-		ret = zlib_inflateInit2(stream, -DEFLATE_DEF_WINBITS);
++	ret = zlib_inflateInit2(stream, -DEFLATE_DEF_WINBITS);
+ 	if (ret != Z_OK) {
+ 		ret = -EINVAL;
+ 		goto out_free;
+@@ -105,21 +98,21 @@ static void deflate_decomp_exit(struct deflate_ctx *ctx)
+ 	vfree(ctx->decomp_stream.workspace);
+ }
+ 
+-static int __deflate_init(void *ctx, int format)
++static int __deflate_init(void *ctx)
+ {
+ 	int ret;
+ 
+-	ret = deflate_comp_init(ctx, format);
++	ret = deflate_comp_init(ctx);
+ 	if (ret)
+ 		goto out;
+-	ret = deflate_decomp_init(ctx, format);
++	ret = deflate_decomp_init(ctx);
+ 	if (ret)
+ 		deflate_comp_exit(ctx);
+ out:
+ 	return ret;
+ }
+ 
+-static void *gen_deflate_alloc_ctx(struct crypto_scomp *tfm, int format)
++static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
+ {
+ 	struct deflate_ctx *ctx;
+ 	int ret;
+@@ -128,7 +121,7 @@ static void *gen_deflate_alloc_ctx(struct crypto_scomp *tfm, int format)
+ 	if (!ctx)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	ret = __deflate_init(ctx, format);
++	ret = __deflate_init(ctx);
+ 	if (ret) {
+ 		kfree(ctx);
+ 		return ERR_PTR(ret);
+@@ -137,21 +130,11 @@ static void *gen_deflate_alloc_ctx(struct crypto_scomp *tfm, int format)
+ 	return ctx;
+ }
+ 
+-static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
+-{
+-	return gen_deflate_alloc_ctx(tfm, 0);
+-}
+-
+-static void *zlib_deflate_alloc_ctx(struct crypto_scomp *tfm)
+-{
+-	return gen_deflate_alloc_ctx(tfm, 1);
+-}
+-
+ static int deflate_init(struct crypto_tfm *tfm)
+ {
+ 	struct deflate_ctx *ctx = crypto_tfm_ctx(tfm);
+ 
+-	return __deflate_init(ctx, 0);
++	return __deflate_init(ctx);
+ }
+ 
+ static void __deflate_exit(void *ctx)
+@@ -286,7 +269,7 @@ static struct crypto_alg alg = {
+ 	.coa_decompress  	= deflate_decompress } }
+ };
+ 
+-static struct scomp_alg scomp[] = { {
++static struct scomp_alg scomp = {
+ 	.alloc_ctx		= deflate_alloc_ctx,
+ 	.free_ctx		= deflate_free_ctx,
+ 	.compress		= deflate_scompress,
+@@ -296,17 +279,7 @@ static struct scomp_alg scomp[] = { {
+ 		.cra_driver_name = "deflate-scomp",
+ 		.cra_module	 = THIS_MODULE,
+ 	}
+-}, {
+-	.alloc_ctx		= zlib_deflate_alloc_ctx,
+-	.free_ctx		= deflate_free_ctx,
+-	.compress		= deflate_scompress,
+-	.decompress		= deflate_sdecompress,
+-	.base			= {
+-		.cra_name	= "zlib-deflate",
+-		.cra_driver_name = "zlib-deflate-scomp",
+-		.cra_module	 = THIS_MODULE,
+-	}
+-} };
++};
+ 
+ static int __init deflate_mod_init(void)
+ {
+@@ -316,7 +289,7 @@ static int __init deflate_mod_init(void)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = crypto_register_scomps(scomp, ARRAY_SIZE(scomp));
++	ret = crypto_register_scomp(&scomp);
+ 	if (ret) {
+ 		crypto_unregister_alg(&alg);
+ 		return ret;
+@@ -328,7 +301,7 @@ static int __init deflate_mod_init(void)
+ static void __exit deflate_mod_fini(void)
+ {
+ 	crypto_unregister_alg(&alg);
+-	crypto_unregister_scomps(scomp, ARRAY_SIZE(scomp));
++	crypto_unregister_scomp(&scomp);
+ }
+ 
+ subsys_initcall(deflate_mod_init);
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index 216878c8bc3d62f8..b41a8e8c1d1a1987 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -5774,14 +5774,8 @@ static const struct alg_test_desc alg_test_descs[] = {
+ 		}
+ 	}, {
+ 		.alg = "zlib-deflate",
+-		.test = alg_test_comp,
++		.test = alg_test_null,
+ 		.fips_allowed = 1,
+-		.suite = {
+-			.comp = {
+-				.comp = __VECS(zlib_deflate_comp_tv_template),
+-				.decomp = __VECS(zlib_deflate_decomp_tv_template)
+-			}
+-		}
+ 	}, {
+ 		.alg = "zstd",
+ 		.test = alg_test_comp,
+diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+index 5ca7a412508fbfb2..0cd6e0600255aad9 100644
+--- a/crypto/testmgr.h
++++ b/crypto/testmgr.h
+@@ -35754,81 +35754,6 @@ static const struct comp_testvec deflate_decomp_tv_template[] = {
+ 	},
+ };
+ 
+-static const struct comp_testvec zlib_deflate_comp_tv_template[] = {
+-	{
+-		.inlen	= 70,
+-		.outlen	= 44,
+-		.input	= "Join us now and share the software "
+-			"Join us now and share the software ",
+-		.output	= "\x78\x5e\xf3\xca\xcf\xcc\x53\x28"
+-			  "\x2d\x56\xc8\xcb\x2f\x57\x48\xcc"
+-			  "\x4b\x51\x28\xce\x48\x2c\x4a\x55"
+-			  "\x28\xc9\x48\x55\x28\xce\x4f\x2b"
+-			  "\x29\x07\x71\xbc\x08\x2b\x01\x00"
+-			  "\x7c\x65\x19\x3d",
+-	}, {
+-		.inlen	= 191,
+-		.outlen	= 129,
+-		.input	= "This document describes a compression method based on the DEFLATE"
+-			"compression algorithm.  This document defines the application of "
+-			"the DEFLATE algorithm to the IP Payload Compression Protocol.",
+-		.output	= "\x78\x5e\x5d\xce\x41\x0a\xc3\x30"
+-			  "\x0c\x04\xc0\xaf\xec\x0b\xf2\x87"
+-			  "\xd2\xa6\x50\xe8\xc1\x07\x7f\x40"
+-			  "\xb1\x95\x5a\x60\x5b\xc6\x56\x0f"
+-			  "\xfd\x7d\x93\x1e\x42\xe8\x51\xec"
+-			  "\xee\x20\x9f\x64\x20\x6a\x78\x17"
+-			  "\xae\x86\xc8\x23\x74\x59\x78\x80"
+-			  "\x10\xb4\xb4\xce\x63\x88\x56\x14"
+-			  "\xb6\xa4\x11\x0b\x0d\x8e\xd8\x6e"
+-			  "\x4b\x8c\xdb\x7c\x7f\x5e\xfc\x7c"
+-			  "\xae\x51\x7e\x69\x17\x4b\x65\x02"
+-			  "\xfc\x1f\xbc\x4a\xdd\xd8\x7d\x48"
+-			  "\xad\x65\x09\x64\x3b\xac\xeb\xd9"
+-			  "\xc2\x01\xc0\xf4\x17\x3c\x1c\x1c"
+-			  "\x7d\xb2\x52\xc4\xf5\xf4\x8f\xeb"
+-			  "\x6a\x1a\x34\x4f\x5f\x2e\x32\x45"
+-			  "\x4e",
+-	},
+-};
+-
+-static const struct comp_testvec zlib_deflate_decomp_tv_template[] = {
+-	{
+-		.inlen	= 128,
+-		.outlen	= 191,
+-		.input	= "\x78\x9c\x5d\x8d\x31\x0e\xc2\x30"
+-			  "\x10\x04\xbf\xb2\x2f\xc8\x1f\x10"
+-			  "\x04\x09\x89\xc2\x85\x3f\x70\xb1"
+-			  "\x2f\xf8\x24\xdb\x67\xd9\x47\xc1"
+-			  "\xef\x49\x68\x12\x51\xae\x76\x67"
+-			  "\xd6\x27\x19\x88\x1a\xde\x85\xab"
+-			  "\x21\xf2\x08\x5d\x16\x1e\x20\x04"
+-			  "\x2d\xad\xf3\x18\xa2\x15\x85\x2d"
+-			  "\x69\xc4\x42\x83\x23\xb6\x6c\x89"
+-			  "\x71\x9b\xef\xcf\x8b\x9f\xcf\x33"
+-			  "\xca\x2f\xed\x62\xa9\x4c\x80\xff"
+-			  "\x13\xaf\x52\x37\xed\x0e\x52\x6b"
+-			  "\x59\x02\xd9\x4e\xe8\x7a\x76\x1d"
+-			  "\x02\x98\xfe\x8a\x87\x83\xa3\x4f"
+-			  "\x56\x8a\xb8\x9e\x8e\x5c\x57\xd3"
+-			  "\xa0\x79\xfa\x02\x2e\x32\x45\x4e",
+-		.output	= "This document describes a compression method based on the DEFLATE"
+-			"compression algorithm.  This document defines the application of "
+-			"the DEFLATE algorithm to the IP Payload Compression Protocol.",
+-	}, {
+-		.inlen	= 44,
+-		.outlen	= 70,
+-		.input	= "\x78\x9c\xf3\xca\xcf\xcc\x53\x28"
+-			  "\x2d\x56\xc8\xcb\x2f\x57\x48\xcc"
+-			  "\x4b\x51\x28\xce\x48\x2c\x4a\x55"
+-			  "\x28\xc9\x48\x55\x28\xce\x4f\x2b"
+-			  "\x29\x07\x71\xbc\x08\x2b\x01\x00"
+-			  "\x7c\x65\x19\x3d",
+-		.output	= "Join us now and share the software "
+-			"Join us now and share the software ",
+-	},
+-};
+-
+ /*
+  * LZO test vectors (null-terminated strings).
+  */
+-- 
+2.39.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
