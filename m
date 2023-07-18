@@ -4,80 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF53DC001DC
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:36:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E668EB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 05:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zrMa9M/UjbDysul0LP3xlB9DbHQhKL5fkdw4gW3T7MY=; b=UVtSWmr/3E8mf+2Ejb7eK0kd2c
-	lzOT052o8n75r6b7sp+LFqNeeG+BUjb6WoMSVWGEReZCPjdeVvEZZvetxb4J7RgNY0jo9RpcHUCL6
-	sIHNkQRmz+fYTX65d+jQY/C5boLUvQWuChrZp9aNJUmwqtRPJwYK3GTxJNV69oVRARaCbmEauhUQh
-	aB6kOOM5l61ZaTlyZ/JFqziz39RG3750QewiZ8Bgmlxyofz7DUb67qM8y/JCAgJMh6kHK6wTYi2cQ
-	c/J7++BTlKqmRZf12ahTR2DjNH8lg7mnCFbTLS8Y4DPgtdmDcSGmdkdvvOGSvC6eEPD3+gLEbi0Ua
-	IBsmLQGg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7YgYMUmNc4ngxl2TbkRiURFXTDMxdgKUpHCaes/LWi4=; b=0e0ERmikx6LoEW
+	rNNOUE/5UW7U3oR+UfszIqNQCzy1KvTxnbmmyfHjkTPmBA+gZ5o0g5heecwTPACrZX6ipF1NrK9EX
+	nyw+ONJfDnIKMVNaaeylrWLrbuw7+4V3Q8WBA1avJ6knhyrs65yotfaJLygrkdfTAI6sKwfTKHIWe
+	Wyjg5sNkGg9+IEs/VuXKQ3742XhLS5ighLaG6Aj6SC05X3BeTgnWBQCJbBUdvMeVKH/cttzqiI8CN
+	3L6kUMnae2bDSu6LVcf+JDQf6NgKVYRUE3RAtUWBwFc2cI85CSiLm3cpV2+1wkjYRifWK9x1sN7Ms
+	UdrVUKVZd+LAZ7/ss+8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLzrf-005LsF-2s;
-	Wed, 19 Jul 2023 05:36:43 +0000
+	id 1qLztJ-005MWh-0u;
+	Wed, 19 Jul 2023 05:38:25 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLzrb-005Lqb-0Q
+	id 1qLztH-005MWA-2K
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 05:36:39 +0000
+	Wed, 19 Jul 2023 05:38:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=g9UoT1kdI6Mgg8/d9aVYHcCgudZxBQNoa3KgIIea8gc=; b=bPxGuO75j9K5vE6eaZpkN58LVN
-	r2kuua8oYXalKsQGlcy0NGoLj7bcuXCSFr+to5TpRzn6YxVuLZRLM2hLIDVIMTvy0CDGMR8GidlaU
-	SOvyc0HX8qJKAX+69hkEl9B/g/rhG5FAFxCI/svHHtzYKKOUVDnnSYLENAWY+piWeXtFwfiHsdFNZ
-	wFVk2+pYOPXHrovySIUlVZQiM58WqcVBLbqMmP1E18IbBLks+2/Cv+walFCTcehl5gwKbPOnp9SeY
-	qCKAPvAQsNZutGR6/39fKOQFplDOtQEy1mU0pXMHit4osk2OD0bPHPq9dk3fRtuDVMocVNOUlj/kb
-	fc1anf5w==;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=CN4IVdlkVfFNKX+jb4yzsRbLnWdBPE8Y8EfJwADNbVU=; b=HZc5p1M64xwqlZVFRveE+HfWKF
+	if87Z4D87vyAq8Cx9X+Gqyy5MH2I0KVK8Rb4LGSvwme4fkGNlTHxaP2GuHmeLUxPhzc7iYzgifsO6
+	j/nAqEdVSQ8VHGReA9m8+MGeptwRXdiHcbBt7aOOSgY3a/+Ux0jmsKwZP8B+8PwWiHJjy5obBszQj
+	jzQBNteT010utBFPesS8ncduy3jPuLWC9u1nNoKpBEVnSQExZPvu/ceZ3AYA3dFYTY0Z8aPABvyDY
+	CFaKSsuXVUssNhaLU+7TLRAit6lFrbEuPR2xYBBmSCv+Kqio8ID5f9RBM4i7Kbx2NwZnPGuNSabGg
+	lvMxslEQ==;
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLh18-00BMQQ-0D
+	id 1qLtKo-00C9on-2F
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 09:29:16 +0000
+	Tue, 18 Jul 2023 22:38:24 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D86B1614E9;
-	Tue, 18 Jul 2023 09:28:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79E37C433C8;
-	Tue, 18 Jul 2023 09:28:55 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A1710612CC;
+	Tue, 18 Jul 2023 22:38:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73162C433C7;
+	Tue, 18 Jul 2023 22:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689672537;
-	bh=/cGfBekDmE+BR4ZDOyJIAZUw5e6tGf6HSK7pUmBl3oI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=azgiJ+0Ur8pGuAGjT6ILrF9o5NYoWyE/NERtLdI0upCbK62KaTC1hrwpPmBEs5TMK
-	 WNst5b5welfijI3kS54b+CP4W1asS3XSpp301vVdnCwbfr4Lhts41Z4YkfCavd8cmq
-	 6jaXSylHgqsSBLdbZ1Cehj28Enjr/j6Qt5WCAXMTbSkbfjiRZhK76E0mmMW3w+JIv7
-	 vmrhgQi8dVylgvcpqrGpV8k4rKV3mekpNemCtUzLATHrMDGuKHpWMmogUqCcT4Jhad
-	 tD42vWNI/Kjs1/N1P4t7T+CEWmSWGQB/WXfXFfgZovT2CrkWE2cARB+q67Ucz2rnaH
-	 9lH57D0nlbsvA==
+	s=k20201202; t=1689719896;
+	bh=RXO+gAcZm+MhRenqy65hhkLUzlwKRVhTNDHhFXVPjjc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WC8frNZQi3mlQRwzd/1B/o58REsGjVM4bTqKYDGfIE0sdXtSivhP2CyO9GHwyZmUh
+	 /fSMjJcqo48S1vnfEmmBEuLJHAJPEWExHLr/fGVg72zBItMXT5mcrGyyeTxbsSA84F
+	 6LENyGcMmgizG0XyhLIpTWGmW5LNVmvAW2H++ihnyl/GFL1ab+KbX6AQgQGzKV14bB
+	 C7ttE95UTAd7KsoYwEkaDtSAZr6mZGfIVkXp1QrwAzNbs+XmOJRAl2Qpf1itgUpGdz
+	 7Xh0infj6g0F2qtc/JkRPt1YQH30JhSn8B77F32PIysiR197GoqrB8XClTi6/Qu1MM
+	 4FL5RdcE/3Bqg==
+Date: Tue, 18 Jul 2023 15:38:13 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+	Kees Cook <keescook@chromium.org>, Haren Myneni <haren@us.ibm.com>,
+	Nick Terrell <terrelln@fb.com>, Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
+	linux-mtd@lists.infradead.org, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH 05/21] ubifs: Pass worst-case buffer size to
+ compression routines
+Message-ID: <20230718223813.GC1005@sol.localdomain>
+References: <20230718125847.3869700-1-ardb@kernel.org>
+ <20230718125847.3869700-6-ardb@kernel.org>
 MIME-Version: 1.0
-Date: Tue, 18 Jul 2023 11:28:53 +0200
-From: Michael Walle <mwalle@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: tkuw584924@gmail.com, takahiro.kuwano@infineon.com, pratyush@kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- bacem.daassi@infineon.com, miquel.raynal@bootlin.com, richard@nod.at, Tudor
- Ambarus <tudor.ambarus@linaro.org>
-Subject: Re: [PATCH] mtd: spi-nor: rename method for enabling or disabling
- octal DTR
-In-Reply-To: <20230714150757.15372-1-tudor.ambarus@linaro.org>
-References: <20230616050600.8793-1-Takahiro.Kuwano@infineon.com>
- <20230714150757.15372-1-tudor.ambarus@linaro.org>
-Message-ID: <b85368d2e3bf829809344406247193ea@kernel.org>
-X-Sender: mwalle@kernel.org
+Content-Disposition: inline
+In-Reply-To: <20230718125847.3869700-6-ardb@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_102914_443008_7535FBE2 
-X-CRM114-Status: GOOD (  12.02  )
+X-CRM114-CacheID: sfid-20230718_233823_312197_D30ABC31 
+X-CRM114-Status: GOOD (  23.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,43 +99,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Btw. this was threaded within another thread. At least on the
-netdev (and spi) ML this is discouraged.
-
-Am 2023-07-14 17:07, schrieb Tudor Ambarus:
-> Having an *_enable(..., bool enable) definition was misleading
-> as the method is used both to enable and to disable the octal DTR
-> mode. Splitting the method in the core in two, one to enable and
-> another to disable the octal DTR mode does not make sense as the
-> method is straight forward and we'd introduce code duplication.
+On Tue, Jul 18, 2023 at 02:58:31PM +0200, Ard Biesheuvel wrote:
+> Currently, the ubifs code allocates a worst case buffer size to
+> recompress a data node, but does not pass the size of that buffer to the
+> compression code. This means that the compression code will never use
+> the additional space, and might fail spuriously due to lack of space.
 > 
-> Update the core to use:
-> int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
+> So let's multiply out_len by WORST_COMPR_FACTOR after allocating the
+> buffer. Doing so is guaranteed not to overflow, given that the preceding
+> kmalloc_array() call would have failed otherwise.
 > 
-> Manufacturer drivers use different sequences of commands to enable
-> and disable the octal DTR mode, thus for clarity they shall
-> implement it as:
-> static int manufacturer_snor_set_octal_dtr(struct spi_nor *nor, bool 
-> enable)
-> {
-> 	return enable ? manufacturer_snor_octal_dtr_enable() :
-> 			manufacturer_snor_octal_dtr_disable();
-> }
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  fs/ubifs/journal.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
+> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+> index dc52ac0f4a345f30..4e5961878f336033 100644
+> --- a/fs/ubifs/journal.c
+> +++ b/fs/ubifs/journal.c
+> @@ -1493,6 +1493,8 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
+>  	if (!buf)
+>  		return -ENOMEM;
+>  
+> +	out_len *= WORST_COMPR_FACTOR;
+> +
+>  	dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
+>  	data_size = dn_size - UBIFS_DATA_NODE_SZ;
+>  	compr_type = le16_to_cpu(dn->compr_type);
 
-I don't care much for this naming. I've also seen _enable() functions
-which take a bool and then actually disable something in the kernel.
+This looks like another case where data that would be expanded by compression
+should just be stored uncompressed instead.
 
-So I'm fine either way:
+In fact, it seems that UBIFS does that already.  ubifs_compress() has this:
 
-Reviewed-by: Michael Walle <mwalle@kernel.org>
+        /*
+         * If the data compressed only slightly, it is better to leave it
+         * uncompressed to improve read speed.
+         */
+        if (in_len - *out_len < UBIFS_MIN_COMPRESS_DIFF)
+                goto no_compr;
 
--michael
+So it's unclear why the WORST_COMPR_FACTOR thing is needed at all.
+
+- Eric
 
 ______________________________________________________
 Linux MTD discussion mailing list
