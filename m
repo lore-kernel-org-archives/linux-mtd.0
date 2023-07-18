@@ -4,98 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26B7CEB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 292D4EB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0iWtj3K26fGR3wr/gtkipQizElZEkmtkx/SGgHnO0nU=; b=p64aGN+oExjZQE
-	rolusJgjRBydsYlwfz4jlA0VkPH3JM4LviIp+pZfl4XTGFlQIiAND8wSUjF8wwR03E+t934BVPJOc
-	Vf0VeYA5u6qHhUJXA2uQetRlQUM0Y21yqdNh6Wr/JHIUItvszPwlfSE61WuHVvJIhGfR1cFIA/kQv
-	XPnW8ksVleVj8s3soGxy0/IMF0g8CiHFbTlvO2jJ2log9LayYkX72hJSudLPbQqePcPo/+MnmfuF8
-	5vhr2zlQPT9sPToxkJSuvN1fPZTJbTJi2K6xKqX9qVNVTGNPTmFvSlvATXFxktIycxc+YlrQ37jDz
-	ZULq2gK9sNDCMmer33pw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=puV3luEn05v/olrI5LK4uhFnYZSPaCeVBH6RgKPoQ1E=; b=uJCana+g0pcl/1
+	Sy0ILOHqSnYs1+ssvUiUrYLrcfY8Z3Cueo2Hoq3kdBFsjogLbx2/u20rwNSu4liSB8btaUR2Du8Tj
+	RDxqe6y449tcri/yo1hOyVfEpeCQYRpPbMVMvJMSVjJL1kdZrgS+9YNmcA2DDRk/Nh9dKKuFKNprQ
+	81oHciakAtdkpLt5VTOmWYJ8yCvd29CmUP7AlwLj6BUNZnC3CIWSU+czRlK/h96tNs9k9H/iltjdp
+	61iPmTP0BMYtCOG9OQcfNJIZCE7mRnfPfqBIDDMGZwdJMEr/so5zw3iK11bpEG+H9jun4lWzuaiRP
+	5rpgR1G5EdN6QXbI1HJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM11z-005vus-1z;
-	Wed, 19 Jul 2023 06:51:27 +0000
+	id 1qM14N-005xGn-0Z;
+	Wed, 19 Jul 2023 06:53:55 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM11y-005vtd-0t
+	id 1qM14K-005xE9-1U
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 06:51:26 +0000
+	Wed, 19 Jul 2023 06:53:52 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=ZZXm4BQZOdQigOK/4e8g7t+tuxoopxluzezUpeoGAFo=; b=oh4NH78w/Ip739qTEH4qXq9JAC
-	Wv+E/3d33Chj01gFL0aEZ3rTLFMVgMZcolaivThKB++aBobX1wX9rjhToc1Z5Pv7taSzX5CQnMzt+
-	VsTduwJpXlb1HEjM8lvXOtfjt/VXKJ2OLSS+p7Fti87IoMVlO7zQC/cLluoBegy6amu8Ku+LRPPi5
-	S071P55XZFRpBdAoZK/AGH18OV0kRFcDeuVv/97RPDMuMYKJ9rmNH1YF4lCtJBFbrX/sYgjQs60uN
-	Xnt7aJB38zWXhA3zVWT8Yj8QXmX2NEGXANmmkGKfkL8XeUBptBbdKONkTbgknYyc22XI7rbiV3Uk2
-	5qRfMx7Q==;
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=YeCwq3NAvGKoLBdtM+ZqWilWIkfGP+nzxQkw03W43jw=; b=Bokgb0bLMcEz0IqRg0AJS8bJ1E
+	kAkj6A3v1Xtl5sCsNEG0D6cHEGYte49w6ugzyduJV/x8V/Y3BGdVzlX8IGjaF5RmDVJT2smZngcqM
+	FsvaRM/Aze9Z7CPqz3/sORES8AUdF3j7SFezUmn0JLxxchHTvkdlIeVNmaHYIhT5dxqc4Ye6ADMfQ
+	PpGf70TA18gEYWGqPjFfAqyllR+LWUVGAQ7ahP6vQVUq++QM0SFXVcB9igwLqdLncAgxBKKoo6eSK
+	XydR7+EtqtfVeiVC/AmSgM9xaZoI+FLLG0K4Vr2ygeTX83phDuFNkXehuxHWHTxuaSJFi0LSBbtyJ
+	ttTOb03g==;
+Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLkKs-00BYZ1-2n
+	id 1qLnFa-00BkOu-2v
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 13:01:54 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id CB57661584;
-	Tue, 18 Jul 2023 13:00:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB034C433D9;
-	Tue, 18 Jul 2023 13:00:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689685249;
-	bh=WuS8tfuWkadsvD2O2V7rKFd8MWT1OV3T8mJ+98LYJNo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KOZE5JKHBMLH4xqPAmknZzizKFbAuar0MPatAbTbxfzMgM5F5T2bWDuqhBqimvbvz
-	 lL8hhy704b+vsQ7ELuSTbnm0o+LG6XhaXxD2+jg3ZW5eKrVf8KmyHroHTD/A0WJi1T
-	 IO9OZ5y5F6F8zaIlybvZh8jj/PSBfYkamLIW9WAM9UbsrwUOh2UVDvpvxgoeo3FiO2
-	 PNREjtTL8co/91NVDg2fCgO9x/ldAFrNNClD995an4PNN8CKiRbviBGXGxB0yoMOdu
-	 eg/X244yURv0/5iP21yB3b2VC8M1/IQLwA0dUHEC3KFSc5FY/P23Iwzf+7Zv44j0vw
-	 +UtrZYwAMxGfw==
-From: Ard Biesheuvel <ardb@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Haren Myneni <haren@us.ibm.com>,
-	Nick Terrell <terrelln@fb.com>,
-	Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Tue, 18 Jul 2023 16:08:37 +0000
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fdd31bf179so309297e87.2
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2023 09:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689696419; x=1692288419;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YeCwq3NAvGKoLBdtM+ZqWilWIkfGP+nzxQkw03W43jw=;
+        b=py923FTwOMCDnC8JmqUXd3moipT/chxFwEuQOS01u03mcDZH+qM63VBPcE6kTHeR+e
+         Zbw6ldttWJTYJnoRJWtbN76grxXk9zv8FoV3CTN498ENNbKkdzg1485yC300ux/X0m0h
+         m3ChdyXUdR4UJeV7O/ZwT2sTeyNjvi02FIFhp8ipq2hyJPaKU9Ryx9OoBkXJ6trsCGwP
+         57kOg+608pEaaCZ6o4E1yBJYaLmUvuscPCnkwQs+SEPWZAfhr6UxUa1qVGKm4IblM9ol
+         ttJyO6vUDGl8ZPoveKyRKqEhf2+LGMohTbBrECAiHfwLqrzyzzQeiaB73PzlyXeIrhrN
+         OGMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689696419; x=1692288419;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YeCwq3NAvGKoLBdtM+ZqWilWIkfGP+nzxQkw03W43jw=;
+        b=VNrP+qgOyT5agQ+mm2P5TGxarGbuYLksDLA0UjEo/yLDjv0u5CLH/te6W6/0KOaNXu
+         A4I9cgJ9aRQSTw367vU3eSyz6tSc3Dfto5lREpPaDLUqXcMxOflRMKEdtb4khyLsD79K
+         hHLUu+J21R+U2/+IIsoLq/IXHIC9alUjZTEY7oAqR21A78rKsT2BBoBlKbXJ28moM6LH
+         GfTkfgqD6qf8SLOuhSn+GL8Qg1/5VNtHwpozgwmg+LMs3kdJIskaNAOUB9MdidN6tPBZ
+         jO2NOQnE8hjY/mMQnwPCwbGJBscIDHkFAhMIuGKeLNMeGhTby7Z3Bu/zuBOq74XPJNtY
+         QY4Q==
+X-Gm-Message-State: ABy/qLaRt8XyXTzJlYwOOKp+242w7smxtr+AM0iJ6wf70TOE38Cl6CkL
+	x8PX9ufT/fkOURmsTkWJchE=
+X-Google-Smtp-Source: APBJJlGwZIxXAsQCBhJaH60JYKMhPq73Lnu4wRDlLMiwDgHkggowOkoPweRz7w2RTlM4XaD52WJJbw==
+X-Received: by 2002:a05:6512:1ca:b0:4f8:70f8:d424 with SMTP id f10-20020a05651201ca00b004f870f8d424mr10354189lfp.65.1689696418378;
+        Tue, 18 Jul 2023 09:06:58 -0700 (PDT)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id t14-20020ac24c0e000000b004f86aef886asm502295lfq.54.2023.07.18.09.06.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 09:06:58 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	qat-linux@intel.com,
-	linuxppc-dev@lists.ozlabs.org,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Michael Walle <michael@walle.cc>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	devicetree@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: [RFC PATCH 17/21] crypto: cavium/zip - drop obsolete 'comp' implementation
-Date: Tue, 18 Jul 2023 14:58:43 +0200
-Message-Id: <20230718125847.3869700-18-ardb@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
-References: <20230718125847.3869700-1-ardb@kernel.org>
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH 1/3] dt-bindings: nvmem: convert U-Boot env to NVMEM layout
+Date: Tue, 18 Jul 2023 18:06:50 +0200
+Message-Id: <20230718160652.26756-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5435; i=ardb@kernel.org; h=from:subject; bh=WuS8tfuWkadsvD2O2V7rKFd8MWT1OV3T8mJ+98LYJNo=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT1PjcQb7M0e4sxP2uX86f9CqYGqijYXnfN2/hx5Zb lTb9qino5SFQYyDQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAEzEz5+R4U3W3HV3XrUuW1jP e89tUQxfqvjH+U5PWp5/XLB8+ZnPE7sY/nDf+Zybn1Z3+YrA3H0LbsTY3ZHcZ/ntd+PM41/jvux jWMUJAA==
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_140152_594390_06B91F54 
-X-CRM114-Status: GOOD (  14.45  )
+X-CRM114-CacheID: sfid-20230718_170835_866269_F4D927CE 
+X-CRM114-Status: GOOD (  10.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,181 +109,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The 'comp' API is obsolete and will be removed, so remove this comp
-implementation.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/crypto/cavium/zip/zip_crypto.c | 40 ----------------
- drivers/crypto/cavium/zip/zip_crypto.h | 10 ----
- drivers/crypto/cavium/zip/zip_main.c   | 50 +-------------------
- 3 files changed, 1 insertion(+), 99 deletions(-)
-
-diff --git a/drivers/crypto/cavium/zip/zip_crypto.c b/drivers/crypto/cavium/zip/zip_crypto.c
-index 1046a746d36f551c..5edad3b1d1dc8398 100644
---- a/drivers/crypto/cavium/zip/zip_crypto.c
-+++ b/drivers/crypto/cavium/zip/zip_crypto.c
-@@ -195,46 +195,6 @@ static int zip_decompress(const u8 *src, unsigned int slen,
- 	return ret;
- }
- 
--/* Legacy Compress framework start */
--int zip_alloc_comp_ctx_deflate(struct crypto_tfm *tfm)
--{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	return zip_ctx_init(zip_ctx, 0);
--}
--
--int zip_alloc_comp_ctx_lzs(struct crypto_tfm *tfm)
--{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	return zip_ctx_init(zip_ctx, 1);
--}
--
--void zip_free_comp_ctx(struct crypto_tfm *tfm)
--{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	zip_ctx_exit(zip_ctx);
--}
--
--int  zip_comp_compress(struct crypto_tfm *tfm,
--		       const u8 *src, unsigned int slen,
--		       u8 *dst, unsigned int *dlen)
--{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	return zip_compress(src, slen, dst, dlen, zip_ctx);
--}
--
--int  zip_comp_decompress(struct crypto_tfm *tfm,
--			 const u8 *src, unsigned int slen,
--			 u8 *dst, unsigned int *dlen)
--{
--	struct zip_kernel_ctx *zip_ctx = crypto_tfm_ctx(tfm);
--
--	return zip_decompress(src, slen, dst, dlen, zip_ctx);
--} /* Legacy compress framework end */
--
- /* SCOMP framework start */
- void *zip_alloc_scomp_ctx_deflate(struct crypto_scomp *tfm)
- {
-diff --git a/drivers/crypto/cavium/zip/zip_crypto.h b/drivers/crypto/cavium/zip/zip_crypto.h
-index b59ddfcacd34447e..a1ae3825fb65c3b6 100644
---- a/drivers/crypto/cavium/zip/zip_crypto.h
-+++ b/drivers/crypto/cavium/zip/zip_crypto.h
-@@ -57,16 +57,6 @@ struct zip_kernel_ctx {
- 	struct zip_operation zip_decomp;
- };
- 
--int  zip_alloc_comp_ctx_deflate(struct crypto_tfm *tfm);
--int  zip_alloc_comp_ctx_lzs(struct crypto_tfm *tfm);
--void zip_free_comp_ctx(struct crypto_tfm *tfm);
--int  zip_comp_compress(struct crypto_tfm *tfm,
--		       const u8 *src, unsigned int slen,
--		       u8 *dst, unsigned int *dlen);
--int  zip_comp_decompress(struct crypto_tfm *tfm,
--			 const u8 *src, unsigned int slen,
--			 u8 *dst, unsigned int *dlen);
--
- void *zip_alloc_scomp_ctx_deflate(struct crypto_scomp *tfm);
- void *zip_alloc_scomp_ctx_lzs(struct crypto_scomp *tfm);
- void  zip_free_scomp_ctx(struct crypto_scomp *tfm, void *zip_ctx);
-diff --git a/drivers/crypto/cavium/zip/zip_main.c b/drivers/crypto/cavium/zip/zip_main.c
-index dc5b7bf7e1fd9867..abd58de4343ddd8e 100644
---- a/drivers/crypto/cavium/zip/zip_main.c
-+++ b/drivers/crypto/cavium/zip/zip_main.c
-@@ -371,36 +371,6 @@ static struct pci_driver zip_driver = {
- 
- /* Kernel Crypto Subsystem Interface */
- 
--static struct crypto_alg zip_comp_deflate = {
--	.cra_name		= "deflate",
--	.cra_driver_name	= "deflate-cavium",
--	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
--	.cra_ctxsize		= sizeof(struct zip_kernel_ctx),
--	.cra_priority           = 300,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= zip_alloc_comp_ctx_deflate,
--	.cra_exit		= zip_free_comp_ctx,
--	.cra_u			= { .compress = {
--		.coa_compress	= zip_comp_compress,
--		.coa_decompress	= zip_comp_decompress
--		 } }
--};
--
--static struct crypto_alg zip_comp_lzs = {
--	.cra_name		= "lzs",
--	.cra_driver_name	= "lzs-cavium",
--	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
--	.cra_ctxsize		= sizeof(struct zip_kernel_ctx),
--	.cra_priority           = 300,
--	.cra_module		= THIS_MODULE,
--	.cra_init		= zip_alloc_comp_ctx_lzs,
--	.cra_exit		= zip_free_comp_ctx,
--	.cra_u			= { .compress = {
--		.coa_compress	= zip_comp_compress,
--		.coa_decompress	= zip_comp_decompress
--		 } }
--};
--
- static struct scomp_alg zip_scomp_deflate = {
- 	.alloc_ctx		= zip_alloc_scomp_ctx_deflate,
- 	.free_ctx		= zip_free_scomp_ctx,
-@@ -431,22 +401,10 @@ static int zip_register_compression_device(void)
- {
- 	int ret;
- 
--	ret = crypto_register_alg(&zip_comp_deflate);
--	if (ret < 0) {
--		zip_err("Deflate algorithm registration failed\n");
--		return ret;
--	}
--
--	ret = crypto_register_alg(&zip_comp_lzs);
--	if (ret < 0) {
--		zip_err("LZS algorithm registration failed\n");
--		goto err_unregister_alg_deflate;
--	}
--
- 	ret = crypto_register_scomp(&zip_scomp_deflate);
- 	if (ret < 0) {
- 		zip_err("Deflate scomp algorithm registration failed\n");
--		goto err_unregister_alg_lzs;
-+		return ret;
- 	}
- 
- 	ret = crypto_register_scomp(&zip_scomp_lzs);
-@@ -459,18 +417,12 @@ static int zip_register_compression_device(void)
- 
- err_unregister_scomp_deflate:
- 	crypto_unregister_scomp(&zip_scomp_deflate);
--err_unregister_alg_lzs:
--	crypto_unregister_alg(&zip_comp_lzs);
--err_unregister_alg_deflate:
--	crypto_unregister_alg(&zip_comp_deflate);
- 
- 	return ret;
- }
- 
- static void zip_unregister_compression_device(void)
- {
--	crypto_unregister_alg(&zip_comp_deflate);
--	crypto_unregister_alg(&zip_comp_lzs);
- 	crypto_unregister_scomp(&zip_scomp_deflate);
- 	crypto_unregister_scomp(&zip_scomp_lzs);
- }
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKVXNlICJudm1lbS1sYXlv
+dXQiIGFuZCBkcm9wIHVudXNlZCAibWFjIiBsYWJlbCB3aGlsZSBhdCBpdC4KClNpZ25lZC1vZmYt
+Ynk6IFJhZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KLS0tCiAuLi4vYmluZGluZ3Mv
+bnZtZW0vbGF5b3V0cy9udm1lbS1sYXlvdXQueWFtbCAgICB8ICAxICsKIC4uLi9udm1lbS97ID0+
+IGxheW91dHN9L3UtYm9vdCxlbnYueWFtbCAgICAgICAgIHwgMTcgKysrKysrKysrKystLS0tLS0K
+IDIgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKIHJlbmFt
+ZSBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbnZtZW0veyA9PiBsYXlvdXRzfS91
+LWJvb3QsZW52LnlhbWwgKDg3JSkKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvbnZtZW0vbGF5b3V0cy9udm1lbS1sYXlvdXQueWFtbCBiL0RvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9udm1lbS9sYXlvdXRzL252bWVtLWxheW91dC55YW1sCmlu
+ZGV4IDNiNDBmNzg4MDc3NC4uMzgyNTA3MDYwNjUxIDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvbnZtZW0vbGF5b3V0cy9udm1lbS1sYXlvdXQueWFtbAorKysg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbnZtZW0vbGF5b3V0cy9udm1lbS1s
+YXlvdXQueWFtbApAQCAtMjEsNiArMjEsNyBAQCBvbmVPZjoKICAgLSAkcmVmOiBmaXhlZC1sYXlv
+dXQueWFtbAogICAtICRyZWY6IGtvbnRyb24sc2wyOC12cGQueWFtbAogICAtICRyZWY6IG9uaWUs
+dGx2LWxheW91dC55YW1sCisgIC0gJHJlZjogdS1ib290LGVudi55YW1sCiAKIHByb3BlcnRpZXM6
+CiAgIGNvbXBhdGlibGU6IHRydWUKZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9udm1lbS91LWJvb3QsZW52LnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvbnZtZW0vbGF5b3V0cy91LWJvb3QsZW52LnlhbWwKc2ltaWxhcml0eSBpbmRl
+eCA4NyUKcmVuYW1lIGZyb20gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVt
+L3UtYm9vdCxlbnYueWFtbApyZW5hbWUgdG8gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL252bWVtL2xheW91dHMvdS1ib290LGVudi55YW1sCmluZGV4IDM2ZDk3ZmI4Nzg2NS4uZWJl
+M2I3MWJhMTU1IDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bnZtZW0vdS1ib290LGVudi55YW1sCisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9udm1lbS9sYXlvdXRzL3UtYm9vdCxlbnYueWFtbApAQCAtMSw3ICsxLDcgQEAKICMgU1BE
+WC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UKICVZQU1M
+IDEuMgogLS0tCi0kaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL252bWVtL3UtYm9v
+dCxlbnYueWFtbCMKKyRpZDogaHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvbnZtZW0vbGF5
+b3V0cy91LWJvb3QsZW52LnlhbWwjCiAkc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0
+YS1zY2hlbWFzL2NvcmUueWFtbCMKIAogdGl0bGU6IFUtQm9vdCBlbnZpcm9ubWVudCB2YXJpYWJs
+ZXMKQEAgLTcyLDExICs3MiwxNCBAQCBleGFtcGxlczoKICAgICAgICAgfTsKIAogICAgICAgICBl
+bnY6IHBhcnRpdGlvbkA0MDAwMCB7Ci0gICAgICAgICAgICBjb21wYXRpYmxlID0gInUtYm9vdCxl
+bnYiOwogICAgICAgICAgICAgcmVnID0gPDB4NDAwMDAgMHgxMDAwMD47CiAKLSAgICAgICAgICAg
+IG1hYzogZXRoYWRkciB7Ci0gICAgICAgICAgICAgICAgI252bWVtLWNlbGwtY2VsbHMgPSA8MT47
+CisgICAgICAgICAgICBudm1lbS1sYXlvdXQgeworICAgICAgICAgICAgICAgIGNvbXBhdGlibGUg
+PSAidS1ib290LGVudiI7CisKKyAgICAgICAgICAgICAgICBldGhhZGRyIHsKKyAgICAgICAgICAg
+ICAgICAgICAgI252bWVtLWNlbGwtY2VsbHMgPSA8MT47CisgICAgICAgICAgICAgICAgfTsKICAg
+ICAgICAgICAgIH07CiAgICAgICAgIH07CiAgICAgfTsKQEAgLTkyLDkgKzk1LDExIEBAIGV4YW1w
+bGVzOgogICAgICAgICAgICAgbGFiZWwgPSAidS1ib290IjsKIAogICAgICAgICAgICAgcGFydGl0
+aW9uLXUtYm9vdC1lbnYgewotICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAiYnJjbSxlbnYi
+OworICAgICAgICAgICAgICAgIG52bWVtLWxheW91dCB7CisgICAgICAgICAgICAgICAgICAgIGNv
+bXBhdGlibGUgPSAiYnJjbSxlbnYiOwogCi0gICAgICAgICAgICAgICAgZXRoYWRkciB7CisgICAg
+ICAgICAgICAgICAgICAgIGV0aGFkZHIgeworICAgICAgICAgICAgICAgICAgICB9OwogICAgICAg
+ICAgICAgICAgIH07CiAgICAgICAgICAgICB9OwogICAgICAgICB9OwotLSAKMi4zNS4zCgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
