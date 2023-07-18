@@ -4,69 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13B63C001DC
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 08:02:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E9AAEB64DA
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 08:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AEv6n+oEq6By5CFoVp4224pDPEg8lRyiPZbluZ8vNe4=; b=u7znvDKdiC0U+9
-	nXd2n3l5fnlIPTH3z3vn6DvYZnBkgTluDAdHhHlvU9pU4TKdkSoJ5cmp4DdT1kG4su4oRS1k2h0sk
-	obeIpL2sS4zMOtbHxalXlDf5YubofjWflJ474nrWC1/lxauXaf6TnY020M6G7pPE19CYzXtg2zy6X
-	Dx9151d6/5Rrdbxye6ynth1VLCSHOh8ydEAZ+yCwufY5Ot89Mitn/X/kBMPxWSi9AfXVv1pLlvs8k
-	nnWxhNXSFYKXeJz85+fG5YU/iylc+EzC3f4RBrx1pGVEyRPWbe/RNTqLlS+PUjeBQ8LxVXnJywito
-	69UmxrdMC7kH8RstcrqA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HSWAMLTFGus+x9gXsSTNOA+UoDKb1fyYH9xIX/2tk2E=; b=OJBWMd/3StTqiU
+	GbxHp7OTIO3QlVa7sb5TOjp+x0RMeHCMpK4mcut5Pcf3VFZ3QiEtassEXrnsOo2ifgRlkomNJ4QdV
+	PWRHicgT02tsCtrYv0nabnrZ4hUsl6DYgQ0ayuB5CNQsMsVDi1T2QwQaGL2cdmFaWNrudp/qy7NFF
+	t3jB4jtO2wwJbex1iJeV+qY0VN2T4qnvHQYzRgH2fvIKioCHKoprkC+udwcdyh8ocwLUus6ot7zQW
+	V046UqiTE948unu954MtJ6jdakEN0zF04JsHvJcphbr35B/oL7Lwoikk7eVIUPYgrWjfGtNN1N3iu
+	o7d3a8ewFUXw1EN+R4eA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM28W-006C8n-08;
-	Wed, 19 Jul 2023 08:02:16 +0000
+	id 1qM2Eb-006ENp-0L;
+	Wed, 19 Jul 2023 08:08:34 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM28U-006C7e-2K
+	id 1qM2EZ-006EMn-28
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 08:02:14 +0000
+	Wed, 19 Jul 2023 08:08:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
-	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=9miGdgCp1TbveYPxPF0D1zZ7IpwlN6ECNMZQjHLUjqI=; b=rOnXw2qxFEYp96ZAFXglMh8/zp
-	XxBspt4WXXS9qkkTRrNmAOyqxH3RghnarCCGwYIf+DFfDJMhEahvuzUp3kphbMEAju5FoNNFhLX91
-	nGp/F3wNU4IOClaRfI4Keo0An60Vkj5KgR0yjHP8ljq2AihtEladkrBW+DxEU9FMS+2/FnSJBTDt5
-	m6WrJSYJ5TTXYtJJDs5RnwI8GkhBonULJ0FJ2FwRMdA+hh5rykaH9pCwqTXJxilEiKN9EeAkVRfDw
-	i/hGNOjPkyHCiYjIk3utJc9P8P0whEz6c9oZ+eCcabgBMm8EKkcDi3VTglWZEAttOaJauS9TZ5xh0
-	+qmJzXAg==;
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=dms8vT3LbWV2xoMki+URj5TVToq0zQb0Wlc+IcwUy+w=; b=UCj/ztQpgizosHcLnbrwEqnY/k
+	iFYvP6idze3fKCKi0jpfW2dtSp37AMZMOdP7JTQnQVjUJ6+imSA/TPKGuP0LHqg/czNHXgQ712K6u
+	fzV6XsOC72v4XJa0t7G6ow7dS2YHhroRYIS3uqrq5nRjbDK2skPeRkYKjD9cCX6gwbFoFS2LvFewu
+	r0JwSLGxNR7d/IrAmNMJ1fn1YXB+ms4DW0Bdu33fspUsur/hVvNrt/sp5ud0HieEGIOxulk1n+7mm
+	wxcH9FXUBx/7nQHLufwyp36tRmVgTgYV3HniQMyi+h9ts0z/Ws6NzCIm2AgHb1Fp630Y5ZmOXXF8C
+	f/Y5qfDg==;
+Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLgTm-00BK3Y-0r
+	id 1qLnev-00Bl9Y-1y
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 08:54:50 +0000
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.56])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R4t5l1z9Hz18LXj;
-	Tue, 18 Jul 2023 16:53:31 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
- 2023 16:54:13 +0800
-From: ZhaoLong Wang <wangzhaolong1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH V2 3/5] ubi: Add six fault injection type for testing
-Date: Tue, 18 Jul 2023 16:51:17 +0800
-Message-ID: <20230718085119.3885747-4-wangzhaolong1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
-References: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
+	Tue, 18 Jul 2023 16:34:47 +0000
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fbaef9871cso9593836e87.0
+        for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2023 09:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689698023; x=1692290023;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dms8vT3LbWV2xoMki+URj5TVToq0zQb0Wlc+IcwUy+w=;
+        b=CkuKsoKGX6U9dWhthd/X2vSZOpFFtXLPq00VVLFxhcUd6BlzcFADtoD8A19IAApk1x
+         8QQlUNcEfH/pohBc01/4E7JDOy2PBBI17XaEWxLbHBuJ1EzJh0KxZ0c2T/jqYnUMUTuY
+         jFIOBRKBF3T7RJ78HzaMN6StHgs2Js3VoAgJnKwOHHiBws2fCKUw0cR8KLNsl+v/B1Sd
+         GfOj0RYUG1DB9svWzgYDk/MLzHL9npl8JGyqSSw1gieYW4yiRdztVCJG1IBDKKtJvHzC
+         ztBcVdtqyj+jtdUcTrW138jTEiCcTN5Vu2PNXJj4GNvI5wOhvdMl3aAZGbrJAUiSWu6L
+         aqFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689698023; x=1692290023;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dms8vT3LbWV2xoMki+URj5TVToq0zQb0Wlc+IcwUy+w=;
+        b=aZvEGKAWHRYIMSre+peS9zvqbEiPo7fXoLutX/d7LskdaCdzT45H/WqlOl+PGiYulB
+         RMFVsaaKR2+lcxAMxn5VZqFN9kTNfNt83BoC15owaR0K4j3sGPKkQyg6NnPMx9R8lQ0n
+         4ExiDDP50SiKw0ymr7pAFVy6EANoFUvxKGnIW7iIbYnuksIEr3kJaETh2ypTX2yLY/h/
+         gSJ5h0Pr7RQ1OXDmB/OB8ro3jV5JLV/ZkptKhRrrwWxJ+BBe2dmgO4VZVq3JJHiOg+Z0
+         lrrh04m2bOqLg8ogbEmbL/G63GYhCiG9tR32tVRhTY1AbbB2pPdXMwXRkyfANSJYMnG5
+         2/eQ==
+X-Gm-Message-State: ABy/qLaOKyTh2PRxizMlHf9J5Wn0KdUXnMaGQacrYTFpdv4wS7+KZpOv
+	K1D1JtMeE7j0XCkrGZGoRdE=
+X-Google-Smtp-Source: APBJJlGb4woUVSCroydLKZ8g8rJhad5FBI9Se4LpaN8EmrS121cPQMKA6pHwWWPHmxN0TKo62f6bDQ==
+X-Received: by 2002:a05:6512:210a:b0:4f6:6b:a43b with SMTP id q10-20020a056512210a00b004f6006ba43bmr9203838lfr.52.1689698022470;
+        Tue, 18 Jul 2023 09:33:42 -0700 (PDT)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id q26-20020ac2511a000000b004f76684329esm500480lfb.234.2023.07.18.09.33.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jul 2023 09:33:41 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+	Kamal Dasu <kamal.dasu@broadcom.com>,
+	linux-mtd@lists.infradead.org,
+	bcm-kernel-feedback-list@broadcom.com,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH] mtd: rawnand: brcmnand: propagate init error -EPROBE_DEFER up
+Date: Tue, 18 Jul 2023 18:33:31 +0200
+Message-Id: <20230718163331.9116-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_095448_152974_13202798 
-X-CRM114-Status: GOOD (  21.58  )
+X-CRM114-CacheID: sfid-20230718_173445_959568_33589087 
+X-CRM114-Status: GOOD (  11.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,420 +104,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This commit adds six fault injection type for testing to cover the
-abnormal path of the UBI driver.
-
-Inject the following faults when the UBI reads the LEB:
- +----------------------------+-----------------------------------+
- |    Interface name          |       emulate behavior            |
- +----------------------------+-----------------------------------+
- |  emulate_eccerr            | ECC error                         |
- +----------------------------+-----------------------------------+
- |  emulate_read_failure      | read failure                      |
- |----------------------------+-----------------------------------+
- |  emulate_io_ff             | read content as all FF            |
- |----------------------------+-----------------------------------+
- |  emulate_io_ff_bitflips    | content FF with MTD err reported  |
- +----------------------------+-----------------------------------+
- |  emulate_bad_hdr           | bad leb header                    |
- |----------------------------+-----------------------------------+
- |  emulate_bad_hdr_ebadmsg   | bad header with ECC err           |
- +----------------------------+-----------------------------------+
-
-Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
----
- drivers/mtd/ubi/debug.c |  30 +++++++++
- drivers/mtd/ubi/debug.h | 132 ++++++++++++++++++++++++++++++++++++++--
- drivers/mtd/ubi/io.c    |  75 ++++++++++++++++++++++-
- drivers/mtd/ubi/ubi.h   |  31 ++++++----
- 4 files changed, 248 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 7826bc8166e8..016a861c5029 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -13,10 +13,16 @@
- #include <linux/fault-inject.h>
- 
- #ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+static DECLARE_FAULT_ATTR(fault_eccerr_attr);
- static DECLARE_FAULT_ATTR(fault_bitflips_attr);
-+static DECLARE_FAULT_ATTR(fault_read_failure_attr);
- static DECLARE_FAULT_ATTR(fault_write_failure_attr);
- static DECLARE_FAULT_ATTR(fault_erase_failure_attr);
- static DECLARE_FAULT_ATTR(fault_power_cut_attr);
-+static DECLARE_FAULT_ATTR(fault_io_ff_attr);
-+static DECLARE_FAULT_ATTR(fault_io_ff_bitflips_attr);
-+static DECLARE_FAULT_ATTR(fault_bad_hdr_attr);
-+static DECLARE_FAULT_ATTR(fault_bad_hdr_ebadmsg_attr);
- 
- #define FAIL_ACTION(name, fault_attr)			\
- bool should_fail_##name(void)				\
-@@ -24,10 +30,16 @@ bool should_fail_##name(void)				\
- 	return should_fail(&fault_attr, 1);		\
- }
- 
-+FAIL_ACTION(eccerr,		fault_eccerr_attr)
- FAIL_ACTION(bitflips,		fault_bitflips_attr)
-+FAIL_ACTION(read_failure,	fault_read_failure_attr)
- FAIL_ACTION(write_failure,	fault_write_failure_attr)
- FAIL_ACTION(erase_failure,	fault_erase_failure_attr)
- FAIL_ACTION(power_cut,		fault_power_cut_attr)
-+FAIL_ACTION(io_ff,		fault_io_ff_attr)
-+FAIL_ACTION(io_ff_bitflips,	fault_io_ff_bitflips_attr)
-+FAIL_ACTION(bad_hdr,		fault_bad_hdr_attr)
-+FAIL_ACTION(bad_hdr_ebadmsg,	fault_bad_hdr_ebadmsg_attr)
- #endif
- 
- /**
-@@ -244,6 +256,12 @@ static void dfs_create_fault_entry(struct dentry *parent)
- 		return;
- 	}
- 
-+	fault_create_debugfs_attr("emulate_eccerr", dir,
-+				  &fault_eccerr_attr);
-+
-+	fault_create_debugfs_attr("emulate_read_failure", dir,
-+				  &fault_read_failure_attr);
-+
- 	fault_create_debugfs_attr("emulate_bitflips", dir,
- 				  &fault_bitflips_attr);
- 
-@@ -255,6 +273,18 @@ static void dfs_create_fault_entry(struct dentry *parent)
- 
- 	fault_create_debugfs_attr("emulate_power_cut", dir,
- 				  &fault_power_cut_attr);
-+
-+	fault_create_debugfs_attr("emulate_io_ff", dir,
-+				  &fault_io_ff_attr);
-+
-+	fault_create_debugfs_attr("emulate_io_ff_bitflips", dir,
-+				  &fault_io_ff_bitflips_attr);
-+
-+	fault_create_debugfs_attr("emulate_bad_hdr", dir,
-+				  &fault_bad_hdr_attr);
-+
-+	fault_create_debugfs_attr("emulate_bad_hdr_ebadmsg", dir,
-+				  &fault_bad_hdr_ebadmsg_attr);
- }
- #endif
- 
-diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index 6bc698b38e35..29fbd971964a 100644
---- a/drivers/mtd/ubi/debug.h
-+++ b/drivers/mtd/ubi/debug.h
-@@ -85,20 +85,47 @@ static inline int ubi_dbg_erase_failure(const struct ubi_device *ubi)
-  * precisely control the type and process of fault injection.
-  */
- /* Emulate a power cut when writing EC/VID header */
--#define MASK_POWER_CUT_EC	(1 << 1)
--#define MASK_POWER_CUT_VID	(1 << 2)
-+#define MASK_POWER_CUT_EC		(1 << 0)
-+#define MASK_POWER_CUT_VID		(1 << 1)
- 
- #ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+/* Emulate a power cut when writing data*/
-+#define MASK_POWER_CUT_DATA		(1 << 2)
- /* Emulate bit-flips */
--#define MASK_BITFLIPS		(1 << 3)
--/* Emulates -EIO during write/erase */
--#define MASK_WRITE_FAILURE	(1 << 4)
--#define MASK_ERASE_FAILURE	(1 << 5)
-+#define MASK_BITFLIPS			(1 << 3)
-+/* Emulate ecc error */
-+#define MASK_ECCERR			(1 << 4)
-+/* Emulates -EIO during data read */
-+#define MASK_READ_FAILURE		(1 << 5)
-+#define MASK_READ_FAILURE_EC		(1 << 6)
-+#define MASK_READ_FAILURE_VID		(1 << 7)
-+/* Emulates -EIO during data write */
-+#define MASK_WRITE_FAILURE		(1 << 8)
-+/* Emulates -EIO during erase a PEB*/
-+#define MASK_ERASE_FAILURE		(1 << 9)
-+/* Return UBI_IO_FF when reading EC/VID header */
-+#define MASK_IO_FF_EC			(1 << 10)
-+#define MASK_IO_FF_VID			(1 << 11)
-+/* Return UBI_IO_FF_BITFLIPS when reading EC/VID header */
-+#define MASK_IO_FF_BITFLIPS_EC		(1 << 12)
-+#define MASK_IO_FF_BITFLIPS_VID		(1 << 13)
-+/* Return UBI_IO_BAD_HDR when reading EC/VID header */
-+#define MASK_BAD_HDR_EC			(1 << 14)
-+#define MASK_BAD_HDR_VID		(1 << 15)
-+/* Return UBI_IO_BAD_HDR_EBADMSG when reading EC/VID header */
-+#define MASK_BAD_HDR_EBADMSG_EC		(1 << 16)
-+#define MASK_BAD_HDR_EBADMSG_VID	(1 << 17)
- 
-+extern bool should_fail_eccerr(void);
- extern bool should_fail_bitflips(void);
-+extern bool should_fail_read_failure(void);
- extern bool should_fail_write_failure(void);
- extern bool should_fail_erase_failure(void);
- extern bool should_fail_power_cut(void);
-+extern bool should_fail_io_ff(void);
-+extern bool should_fail_io_ff_bitflips(void);
-+extern bool should_fail_bad_hdr(void);
-+extern bool should_fail_bad_hdr_ebadmsg(void);
- 
- static inline bool ubi_dbg_fail_bitflip(const struct ubi_device *ubi)
- {
-@@ -192,6 +219,99 @@ static inline bool ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
- 	return ubi_dbg_fail_erase(ubi);
- }
- 
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+/**
-+ * ubi_dbg_is_eccerr - if it is time to emulate ECC error.
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if a ECC error should be emulated, otherwise returns false.
-+ */
-+static inline bool ubi_dbg_is_eccerr(const struct ubi_device *ubi)
-+{
-+	if (ubi->dbg.emulate_failures & MASK_ECCERR)
-+		return should_fail_eccerr();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_read_failure - if it is time to emulate a read failure.
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if a read failure should be emulated, otherwise returns
-+ * false.
-+ */
-+static inline bool ubi_dbg_is_read_failure(const struct ubi_device *ubi,
-+					   unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_read_failure();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_ff - if it is time to emulate that read region is only 0xFF.
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if read region should be emulated 0xFF, otherwise
-+ * returns false.
-+ */
-+static inline bool ubi_dbg_is_ff(const struct ubi_device *ubi,
-+				 unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_io_ff();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_ff_bitflips - if it is time to emulate that read region is only 0xFF
-+ * with error reported by the MTD driver
-+ *
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if read region should be emulated 0xFF and error
-+ * reported by the MTD driver, otherwise returns false.
-+ */
-+static inline bool ubi_dbg_is_ff_bitflips(const struct ubi_device *ubi,
-+					  unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_io_ff_bitflips();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_bad_hdr - if it is time to emulate a bad header
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if a bad header error should be emulated, otherwise
-+ * returns false.
-+ */
-+static inline bool ubi_dbg_is_bad_hdr(const struct ubi_device *ubi,
-+				      unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_bad_hdr();
-+	return false;
-+}
-+
-+/**
-+ * ubi_dbg_is_bad_hdr_ebadmsg - if it is time to emulate a bad header with
-+ * ECC error.
-+ *
-+ * @ubi: UBI device description object
-+ *
-+ * Returns true if a bad header with ECC error should be emulated, otherwise
-+ * returns false.
-+ */
-+static inline bool ubi_dbg_is_bad_hdr_ebadmsg(const struct ubi_device *ubi,
-+					      unsigned int caller)
-+{
-+	if (ubi->dbg.emulate_failures & caller)
-+		return should_fail_bad_hdr_ebadmsg();
-+	return false;
-+}
-+#endif
- /**
-  * ubi_dbg_is_bgt_disabled - if the background thread is disabled.
-  * @ubi: UBI device description object
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index ffa7bbf27bc2..059032132bdd 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -197,6 +197,19 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
- 			dbg_gen("bit-flip (emulated)");
- 			err = UBI_IO_BITFLIPS;
- 		}
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+		if (ubi_dbg_is_read_failure(ubi, MASK_READ_FAILURE)) {
-+			ubi_warn(ubi, "cannot read %d bytes from PEB %d:%d (emulated)",
-+				 len, pnum, offset);
-+			return -EIO;
-+		}
-+
-+		if (ubi_dbg_is_eccerr(ubi)) {
-+			ubi_warn(ubi, "ECC error (emulated) while reading %d bytes from PEB %d:%d, read %zd bytes",
-+				 len, pnum, offset, read);
-+			return -EBADMSG;
-+		}
-+#endif
- 	}
- 
- 	return err;
-@@ -782,7 +795,36 @@ int ubi_io_read_ec_hdr(struct ubi_device *ubi, int pnum,
- 	 * If there was %-EBADMSG, but the header CRC is still OK, report about
- 	 * a bit-flip to force scrubbing on this PEB.
- 	 */
--	return read_err ? UBI_IO_BITFLIPS : 0;
-+	if (read_err)
-+		return UBI_IO_BITFLIPS;
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+	if (ubi_dbg_is_read_failure(ubi, MASK_READ_FAILURE_EC)) {
-+		ubi_warn(ubi, "cannot read EC header from PEB %d(emulated)",
-+			 pnum);
-+		return -EIO;
-+	}
-+
-+	if (ubi_dbg_is_ff(ubi, MASK_IO_FF_EC)) {
-+		ubi_warn(ubi, "bit-all-ff (emulated)");
-+		return UBI_IO_FF;
-+	}
-+
-+	if (ubi_dbg_is_ff_bitflips(ubi, MASK_IO_FF_BITFLIPS_EC)) {
-+		ubi_warn(ubi, "bit-all-ff with error reported by MTD driver (emulated)");
-+		return UBI_IO_FF_BITFLIPS;
-+	}
-+
-+	if (ubi_dbg_is_bad_hdr(ubi, MASK_BAD_HDR_EC)) {
-+		ubi_warn(ubi, "bad_hdr (emulated)");
-+		return UBI_IO_BAD_HDR;
-+	}
-+
-+	if (ubi_dbg_is_bad_hdr_ebadmsg(ubi, MASK_BAD_HDR_EBADMSG_EC)) {
-+		ubi_warn(ubi, "bad_hdr with ECC error (emulated)");
-+		return UBI_IO_BAD_HDR_EBADMSG;
-+	}
-+#endif
-+	return 0;
- }
- 
- /**
-@@ -1032,7 +1074,36 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
- 		return -EINVAL;
- 	}
- 
--	return read_err ? UBI_IO_BITFLIPS : 0;
-+	if (read_err)
-+		return UBI_IO_BITFLIPS;
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+	if (ubi_dbg_is_read_failure(ubi, MASK_READ_FAILURE_VID)) {
-+		ubi_warn(ubi, "cannot read VID header from PEB %d(emulated)",
-+			 pnum);
-+		return -EIO;
-+	}
-+
-+	if (ubi_dbg_is_ff(ubi, MASK_IO_FF_VID)) {
-+		ubi_warn(ubi, "bit-all-ff (emulated)\n");
-+		return UBI_IO_FF;
-+	}
-+
-+	if (ubi_dbg_is_ff_bitflips(ubi, MASK_IO_FF_BITFLIPS_VID)) {
-+		ubi_warn(ubi, "bit-all-ff with error reported by MTD driver (emulated)\n");
-+		return UBI_IO_FF_BITFLIPS;
-+	}
-+
-+	if (ubi_dbg_is_bad_hdr(ubi, MASK_BAD_HDR_VID)) {
-+		ubi_warn(ubi, "bad_hdr (emulated)\n");
-+		return UBI_IO_BAD_HDR;
-+	}
-+
-+	if (ubi_dbg_is_bad_hdr_ebadmsg(ubi, MASK_BAD_HDR_EBADMSG_VID)) {
-+		ubi_warn(ubi, "bad_hdr with ECC error (emulated)\n");
-+		return UBI_IO_BAD_HDR_EBADMSG;
-+	}
-+#endif
-+	return 0;
- }
- 
- /**
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 41f57d5717b2..36d46425ed4c 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -1117,18 +1117,6 @@ static inline struct ubi_vid_hdr *ubi_get_vid_hdr(struct ubi_vid_io_buf *vidb)
- 	return vidb->hdr;
- }
- 
--/*
-- * This function is equivalent to 'ubi_io_read()', but @offset is relative to
-- * the beginning of the logical eraseblock, not to the beginning of the
-- * physical eraseblock.
-- */
--static inline int ubi_io_read_data(const struct ubi_device *ubi, void *buf,
--				   int pnum, int offset, int len)
--{
--	ubi_assert(offset >= 0);
--	return ubi_io_read(ubi, buf, pnum, offset + ubi->leb_start, len);
--}
--
- /*
-  * This function is equivalent to 'ubi_io_write()', but @offset is relative to
-  * the beginning of the logical eraseblock, not to the beginning of the
-@@ -1154,6 +1142,25 @@ static inline void ubi_ro_mode(struct ubi_device *ubi)
- 	}
- }
- 
-+/*
-+ * This function is equivalent to 'ubi_io_read()', but @offset is relative to
-+ * the beginning of the logical eraseblock, not to the beginning of the
-+ * physical eraseblock.
-+ */
-+static inline int ubi_io_read_data(struct ubi_device *ubi, void *buf,
-+				   int pnum, int offset, int len)
-+{
-+	ubi_assert(offset >= 0);
-+#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
-+	if (ubi_dbg_power_cut(ubi, MASK_POWER_CUT_DATA)) {
-+		ubi_warn(ubi, "XXXXX emulating a power cut when writing data XXXXX");
-+		ubi_ro_mode(ubi);
-+		return -EROFS;
-+	}
-+#endif
-+	return ubi_io_read(ubi, buf, pnum, offset + ubi->leb_start, len);
-+}
-+
- /**
-  * vol_id2idx - get table index by volume ID.
-  * @ubi: UBI device description object
--- 
-2.31.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKTVREIHN1YnN5c3RlbSBt
+YXkgcmV0dXJuIC1FUFJPQkVfREVGRVIgaWYgc29tZXRoaW5nIGlzbid0IHJlYWR5IHlldC4KSXQn
+cyBpbXBvcnRhbnQgdG8gcGFzcyB0aGF0IGVycm9yIHVwIHNvIGRldmljZSB3aWxsIGdldCBwcm9i
+ZWQgbGF0ZXIuCgpTaWduZWQtb2ZmLWJ5OiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2ku
+cGw+Ci0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYyB8IDIgKysK
+IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJj
+bW5hbmQvYnJjbW5hbmQuYwppbmRleCAzOTY2MWUyM2Q3ZDQuLmNjYTJiMTUzYWUyNiAxMDA2NDQK
+LS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYworKysgYi9kcml2
+ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCkBAIC0zMjQ1LDYgKzMyNDUsOCBA
+QCBpbnQgYnJjbW5hbmRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwgc3RydWN0
+IGJyY21uYW5kX3NvYyAqc29jKQogCiAJCQlyZXQgPSBicmNtbmFuZF9pbml0X2NzKGhvc3QsIE5V
+TEwpOwogCQkJaWYgKHJldCkgeworCQkJCWlmIChyZXQgPT0gLUVQUk9CRV9ERUZFUikKKwkJCQkJ
+Z290byBlcnI7CiAJCQkJZGV2bV9rZnJlZShkZXYsIGhvc3QpOwogCQkJCWNvbnRpbnVlOyAvKiBU
+cnkgYWxsIGNoaXAtc2VsZWN0cyAqLwogCQkJfQotLSAKMi4zNS4zCgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
