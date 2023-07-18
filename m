@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58812C001B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:33:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87B0DC001DC
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DngvdvpLGDtULhAHQjhGrC7zb6Z4LUpnvducj0flHTs=; b=1wRWipMOY0f3b3
-	utQXBvC06Da6hyIBgpy+5zCqI/UWcLstjZIbUpD8XHX7eOZ6WP5AzOuSlmTLwGcxIdjEwKCiNJdJM
-	UiHdtSKG7SM6Y9ydgH9V6+Pb1tRgAcGQOA6OFKyqP8ayfKI53/FzWczyJpEElKRYmNelBVHfH++ns
-	s5LCuZTCPMsB7F5KhQQXdLPB770Uan2dzPNwCi2BxltPbxz/o5cDc/N4mOqkGAnFOwHOCRaw+cb3s
-	8MAU77VM8h87yUtXS9iNFtDnur1enmzsnisbLPUlOqRayBsIID9xC3yxxba2V2QqJq0V0STrnC3e2
-	3prWGo42Fljf5PmzbQ8w==;
+	List-Owner; bh=EiQ1ks6DED0lX5lzEGg/yQ4Fu2usopQyM2QKSAhjIc4=; b=tGIFD64jITuKah
+	mg0ZuOzk2u8lqRICelIgfkZSnWrzZllK84X+2ciiDbnkyU9CfL59WVPvwVAsUrXANkJ50wGBe6nUM
+	gOPcHVDPZ8PKh48Pq6XHJwyCk93wqc8m6eS+0mGeV2PiVGzR8wY7HNfOsygI/jhpIAkaAljZsGJ1A
+	j8ZIFjF1mYmfb/UebqN4DyD2nDT9dRuxhQIgoDT5C395a+Yn9rz3fJEfgsX7PPQv2DLkEGWuX8QwF
+	Yxnfw8obArK8b/LUq0gW7U8IKOBKAPSuFoFWRw21HDAUVRbL21o2tEGnsduTg70L8LvORc8v0NDPQ
+	sKFwHNGvrcBJXIyfQ9JQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0kt-005mZi-2y;
-	Wed, 19 Jul 2023 06:33:47 +0000
+	id 1qM0nm-005oBf-2y;
+	Wed, 19 Jul 2023 06:36:46 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0kp-005mWE-2Z
+	id 1qM0nl-005oAq-0i
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 06:33:43 +0000
+	Wed, 19 Jul 2023 06:36:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=vpVeo/Wx9FaAnOs4Azt8JvM5KU8Zm3W5MLoASwyn1DI=; b=F5uaLb2/tLOHXogsZfJZ+X+GLT
-	f/tlKt4A9n/cZ63lY4e6rsABSaAjHX0Zlk3v+GYGHzfHqwrvU0XzCeBGGpDqQkpVFF8DcxRwuS9HG
-	CsIA0UorVjAwnt2eljZ1ZUZy67wRcRQ0NGIRoRw24yEIy5w6ffmt8PpDZM+xaArRtUxYBfxiYdrOI
-	G7Bw1fELgqtfDucSyOzhSabHXKTkGhrgZ4zd8BocbufHEd3LoI1GEXOyPddGh65Iv/L7PJvA2PxTf
-	RGLyz2KkXlkMev3GnRxabevG47YHH9ujt97kregoTQotuxA9zOnS4yKlC51ZgPvLH0WTeig46aGsL
-	mdXnYbOA==;
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	bh=ipMvWUNO4WnC3bpCkEa2MV+7JMyScHZo49wId5JBTRM=; b=f2MmPI2y7LvxY7O9+PVMfnRTEU
+	LFEoPHhgGHZLvc1N6ymIe6/hbOMk/nQOiFEFYEDvORNV7vJvzltQXrKVtKgTGBpkNj7lcXJa4BRJF
+	4E9lOPrBEaXQtkw1TTfEIDn5VBQnONfLmi2t0KdNohVlocqYYp9ospv5JvqjK6nYtoy2vtJsMWAMp
+	ISAirVpnh44NRrluGce6De1a32F7+kUx0huMQb1KRSPSM6OykASu4MeHaZvq5crGvttBC1X+4kuvB
+	c5C3WNVT/qw114ERaRsR4K9J5BpE4vq3KoJwiQI5AdxvbDPUJo2t3LBuSaNFBHC1RfCi6MrFpUyKV
+	UkIjKDKQ==;
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLkJU-00BYOF-0w
+	id 1qLkJY-00BYP2-2u
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 13:00:27 +0000
+	Tue, 18 Jul 2023 13:00:31 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5A1206154D;
-	Tue, 18 Jul 2023 12:59:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 723EDC433C7;
-	Tue, 18 Jul 2023 12:59:42 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0B0736157D;
+	Tue, 18 Jul 2023 13:00:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60C00C433AD;
+	Tue, 18 Jul 2023 13:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689685186;
-	bh=ZfST7iYgGSVxQXIKFUE8GGgJqk+8wO7TImnKkDtL050=;
+	s=k20201202; t=1689685210;
+	bh=Ln0aastSpcedVqwTHUVbrX3O0loZpzS07kCv9ju4Uqo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H0mfzMjyYZlQGPdszuRdu62VILS5CPejfVw/MXytLmRrMQv5PgNzwk2iwZpRZLXlp
-	 wru/nad4s0s5Y8Y6J5g6cJUHsSqL6eOQxn8Kaoxv/ZsjZxatbeJZmaHpRwaxh5Ky8v
-	 WvEssu2gesmXXPir1KAOU+yWW+ePAmnf2cwYZ+t8IxfxyoiqrQKSfM4b+BBnYOS+xP
-	 HOpccRxi/la0CSmPCVhMrJa1wIqMzVXkOL3gW6MLEIky062Mm2tkPFykfcM8ikTbDd
-	 wam1APZNK1a/7s0iTqlitrZ17hTIsNi9Ui1wk130bm5DrS6lYJSHS4otRr7YESTOse
-	 bOhzzTZjeySKg==
+	b=tfjve+K440HP9qYEXRju588QpE0GGJWWWRb52ntY3B5OwUyZ9uV2Tx00V6jbXSkRU
+	 6y8YbxPM4fNCwCH5Wd1xlZowJNK+Jd3pekJEnQwW3QUWmI+gNCQqObPGTKlVKDri/N
+	 BkwgUJwRsj5VzRMR/ZM+NvTgrJ7t8J04SjORvxjkq1u56Ty/AqN6+amGzDTV+j6rqW
+	 GrMrXM6KMaVsSUJldL8cRPTxDz5RNB+7xWVTwh5YaxFOR6rNU8YqjXgWLZNwl64ZcA
+	 w29uqRX2g3DqnKMUeBvv9TeZw+/OdZaEKoxYVPT4Ff0na33ZNItEL05ZKKZByEVIBo
+	 PI33ft5i/rk9Q==
 From: Ard Biesheuvel <ardb@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: Ard Biesheuvel <ardb@kernel.org>,
@@ -84,18 +84,18 @@ Cc: Ard Biesheuvel <ardb@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-mtd@lists.infradead.org,
 	netdev@vger.kernel.org
-Subject: [RFC PATCH 04/21] net: ipcomp: Migrate to acomp API from deprecated comp API
-Date: Tue, 18 Jul 2023 14:58:30 +0200
-Message-Id: <20230718125847.3869700-5-ardb@kernel.org>
+Subject: [RFC PATCH 09/21] crypto: nx - Migrate to scomp API
+Date: Tue, 18 Jul 2023 14:58:35 +0200
+Message-Id: <20230718125847.3869700-10-ardb@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
 References: <20230718125847.3869700-1-ardb@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9425; i=ardb@kernel.org; h=from:subject; bh=ZfST7iYgGSVxQXIKFUE8GGgJqk+8wO7TImnKkDtL050=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT+Hf0Dhvlkynp4s3BUtrTrj+KCuVuT/uwxau5T8en DPlvxTdUcrCIMbBICumyCIw+++7nacnStU6z5KFmcPKBDKEgYtTACayT4KRYa4fh+nN5tdlZ0uT 4xSs1jittGf/GJ/XZNeW9l7io8xmI0aGH2LSF9fJVrprqObcZz32V2uHbtz644cX9HerciXsnDC HFwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9281; i=ardb@kernel.org; h=from:subject; bh=Ln0aastSpcedVqwTHUVbrX3O0loZpzS07kCv9ju4Uqo=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT3n6zm0Tjy549vRinltqWc7aNfElLO1X5Osmu/q/f 3M/6Kx3RykLgxgHg6yYIovA7L/vdp6eKFXrPEsWZg4rE8gQBi5OAZjI+bMM/5Nlu5nX3j530qXt 1V2/+Sxrk/5fMzueIHAp0/t3wlx+XkuGf2aeC7cfrdoruHSb88utx/78fW/7u4trV4n3iwbOxI9 XmXgB
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_140025_084406_98DE1941 
-X-CRM114-Status: GOOD (  27.87  )
+X-CRM114-CacheID: sfid-20230718_140029_347773_BD994A8F 
+X-CRM114-Status: GOOD (  19.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,314 +112,262 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Migrate the IPcomp network compression code to the acomp API, in order
-to drop the dependency on the obsolete 'comp' API which is going away.
+The only remaining user of 842 compression has been migrated to the
+acomp compression API, and so the NX hardware driver has to follow suit,
+given that no users of the obsolete 'comp' API remain, and it is going
+to be removed.
 
-For the time being, this is a rather mechanical conversion replacing
-each comp TFM object with an acomp TFM/request object pair - this is
-necessary because, at this point, there is still a 1:1 relation between
-acomp tranforms and requests in the acomp-to-scomp adaptation layer, and
-this deviates from the model used by AEADs and skciphers where the TFM
-is fully reentrant, and operations using the same encryption keys can be
-issued in parallel using individual request objects but the same TFM.
-
-Also, this minimal conversion does not yet take advantage of the fact
-that the acomp API takes scatterlists as input and output descriptors,
-which in principle removes the need to linearize the SKBs. However,
-given that compression code generally requires in- and output buffers to
-be non-overlapping, scratch buffers will always be needed, and so
-whether this conversion is worth while is TBD.
+So migrate the NX driver code to scomp. These will be wrapped and
+exposed as acomp implementation via the crypto subsystem's
+acomp-to-scomp adaptation layer.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- include/crypto/acompress.h |   5 +
- include/net/ipcomp.h       |   4 +-
- net/xfrm/xfrm_algo.c       |   7 +-
- net/xfrm/xfrm_ipcomp.c     | 107 +++++++++++++-------
- 4 files changed, 79 insertions(+), 44 deletions(-)
+ drivers/crypto/nx/nx-842.c            | 34 ++++++++++++--------
+ drivers/crypto/nx/nx-842.h            | 14 ++++----
+ drivers/crypto/nx/nx-common-powernv.c | 30 ++++++++---------
+ drivers/crypto/nx/nx-common-pseries.c | 32 +++++++++---------
+ 4 files changed, 57 insertions(+), 53 deletions(-)
 
-diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
-index ccb6f3279bc8b32e..3f54e3d8815a9d0d 100644
---- a/include/crypto/acompress.h
-+++ b/include/crypto/acompress.h
-@@ -318,4 +318,9 @@ static inline int crypto_acomp_decompress(struct acomp_req *req)
- 	return crypto_comp_errstat(alg, tfm->decompress(req));
+diff --git a/drivers/crypto/nx/nx-842.c b/drivers/crypto/nx/nx-842.c
+index 2ab90ec10e61ebe8..331b9cdf85e27044 100644
+--- a/drivers/crypto/nx/nx-842.c
++++ b/drivers/crypto/nx/nx-842.c
+@@ -101,9 +101,14 @@ static int update_param(struct nx842_crypto_param *p,
+ 	return 0;
  }
  
-+static inline const char *crypto_acomp_name(struct crypto_acomp *acomp)
-+{
-+       return crypto_tfm_alg_name(crypto_acomp_tfm(acomp));
-+}
+-int nx842_crypto_init(struct crypto_tfm *tfm, struct nx842_driver *driver)
++void *nx842_crypto_alloc_ctx(struct crypto_scomp *tfm,
++			     struct nx842_driver *driver)
+ {
+-	struct nx842_crypto_ctx *ctx = crypto_tfm_ctx(tfm);
++	struct nx842_crypto_ctx *ctx;
 +
- #endif
-diff --git a/include/net/ipcomp.h b/include/net/ipcomp.h
-index 8660a2a6d1fc76a7..bf27ac7e3ca952e2 100644
---- a/include/net/ipcomp.h
-+++ b/include/net/ipcomp.h
-@@ -7,12 +7,12 @@
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return ERR_PTR(-ENOMEM);
  
- #define IPCOMP_SCRATCH_SIZE     65400
+ 	spin_lock_init(&ctx->lock);
+ 	ctx->driver = driver;
+@@ -114,22 +119,23 @@ int nx842_crypto_init(struct crypto_tfm *tfm, struct nx842_driver *driver)
+ 		kfree(ctx->wmem);
+ 		free_page((unsigned long)ctx->sbounce);
+ 		free_page((unsigned long)ctx->dbounce);
+-		return -ENOMEM;
++		kfree(ctx);
++		return ERR_PTR(-ENOMEM);
+ 	}
  
--struct crypto_comp;
-+struct acomp_req;
- struct ip_comp_hdr;
+-	return 0;
++	return ctx;
+ }
+-EXPORT_SYMBOL_GPL(nx842_crypto_init);
++EXPORT_SYMBOL_GPL(nx842_crypto_alloc_ctx);
  
- struct ipcomp_data {
- 	u16 threshold;
--	struct crypto_comp * __percpu *tfms;
-+	struct acomp_req * __percpu *reqs;
+-void nx842_crypto_exit(struct crypto_tfm *tfm)
++void nx842_crypto_free_ctx(struct crypto_scomp *tfm, void *p)
+ {
+-	struct nx842_crypto_ctx *ctx = crypto_tfm_ctx(tfm);
++	struct nx842_crypto_ctx *ctx = p;
+ 
+ 	kfree(ctx->wmem);
+ 	free_page((unsigned long)ctx->sbounce);
+ 	free_page((unsigned long)ctx->dbounce);
+ }
+-EXPORT_SYMBOL_GPL(nx842_crypto_exit);
++EXPORT_SYMBOL_GPL(nx842_crypto_free_ctx);
+ 
+ static void check_constraints(struct nx842_constraints *c)
+ {
+@@ -246,11 +252,11 @@ static int compress(struct nx842_crypto_ctx *ctx,
+ 	return update_param(p, slen, dskip + dlen);
+ }
+ 
+-int nx842_crypto_compress(struct crypto_tfm *tfm,
++int nx842_crypto_compress(struct crypto_scomp *tfm,
+ 			  const u8 *src, unsigned int slen,
+-			  u8 *dst, unsigned int *dlen)
++			  u8 *dst, unsigned int *dlen, void *pctx)
+ {
+-	struct nx842_crypto_ctx *ctx = crypto_tfm_ctx(tfm);
++	struct nx842_crypto_ctx *ctx = pctx;
+ 	struct nx842_crypto_header *hdr = &ctx->header;
+ 	struct nx842_crypto_param p;
+ 	struct nx842_constraints c = *ctx->driver->constraints;
+@@ -429,11 +435,11 @@ static int decompress(struct nx842_crypto_ctx *ctx,
+ 	return update_param(p, slen + padding, dlen);
+ }
+ 
+-int nx842_crypto_decompress(struct crypto_tfm *tfm,
++int nx842_crypto_decompress(struct crypto_scomp *tfm,
+ 			    const u8 *src, unsigned int slen,
+-			    u8 *dst, unsigned int *dlen)
++			    u8 *dst, unsigned int *dlen, void *pctx)
+ {
+-	struct nx842_crypto_ctx *ctx = crypto_tfm_ctx(tfm);
++	struct nx842_crypto_ctx *ctx = pctx;
+ 	struct nx842_crypto_header *hdr;
+ 	struct nx842_crypto_param p;
+ 	struct nx842_constraints c = *ctx->driver->constraints;
+diff --git a/drivers/crypto/nx/nx-842.h b/drivers/crypto/nx/nx-842.h
+index 7590bfb24d79bf42..de9dc8df62ed9dcb 100644
+--- a/drivers/crypto/nx/nx-842.h
++++ b/drivers/crypto/nx/nx-842.h
+@@ -12,6 +12,7 @@
+ #include <linux/io.h>
+ #include <linux/mm.h>
+ #include <linux/ratelimit.h>
++#include <crypto/internal/scompress.h>
+ 
+ /* Restrictions on Data Descriptor List (DDL) and Entry (DDE) buffers
+  *
+@@ -177,13 +178,14 @@ struct nx842_crypto_ctx {
+ 	struct nx842_driver *driver;
  };
  
- struct ip_comp_hdr;
-diff --git a/net/xfrm/xfrm_algo.c b/net/xfrm/xfrm_algo.c
-index 094734fbec967505..ca411bcebc53ad4f 100644
---- a/net/xfrm/xfrm_algo.c
-+++ b/net/xfrm/xfrm_algo.c
-@@ -5,6 +5,7 @@
-  * Copyright (c) 2002 James Morris <jmorris@intercode.com.au>
-  */
+-int nx842_crypto_init(struct crypto_tfm *tfm, struct nx842_driver *driver);
+-void nx842_crypto_exit(struct crypto_tfm *tfm);
+-int nx842_crypto_compress(struct crypto_tfm *tfm,
++void *nx842_crypto_alloc_ctx(struct crypto_scomp *tfm,
++			     struct nx842_driver *driver);
++void nx842_crypto_free_ctx(struct crypto_scomp *tfm, void *ctx);
++int nx842_crypto_compress(struct crypto_scomp *tfm,
+ 			  const u8 *src, unsigned int slen,
+-			  u8 *dst, unsigned int *dlen);
+-int nx842_crypto_decompress(struct crypto_tfm *tfm,
++			  u8 *dst, unsigned int *dlen, void *ctx);
++int nx842_crypto_decompress(struct crypto_scomp *tfm,
+ 			    const u8 *src, unsigned int slen,
+-			    u8 *dst, unsigned int *dlen);
++			    u8 *dst, unsigned int *dlen, void *ctx);
  
-+#include <crypto/acompress.h>
- #include <crypto/hash.h>
- #include <crypto/skcipher.h>
- #include <linux/module.h>
-@@ -674,7 +675,7 @@ static const struct xfrm_algo_list xfrm_ealg_list = {
- static const struct xfrm_algo_list xfrm_calg_list = {
- 	.algs = calg_list,
- 	.entries = ARRAY_SIZE(calg_list),
--	.type = CRYPTO_ALG_TYPE_COMPRESS,
-+	.type = CRYPTO_ALG_TYPE_ACOMPRESS,
- 	.mask = CRYPTO_ALG_TYPE_MASK,
+ #endif /* __NX_842_H__ */
+diff --git a/drivers/crypto/nx/nx-common-powernv.c b/drivers/crypto/nx/nx-common-powernv.c
+index 8c859872c1839eca..80023686f3e21b72 100644
+--- a/drivers/crypto/nx/nx-common-powernv.c
++++ b/drivers/crypto/nx/nx-common-powernv.c
+@@ -1031,23 +1031,21 @@ static struct nx842_driver nx842_powernv_driver = {
+ 	.decompress =	nx842_powernv_decompress,
  };
  
-@@ -833,8 +834,8 @@ void xfrm_probe_algs(void)
- 	}
+-static int nx842_powernv_crypto_init(struct crypto_tfm *tfm)
++static void *nx842_powernv_crypto_alloc_ctx(struct crypto_scomp *tfm)
+ {
+-	return nx842_crypto_init(tfm, &nx842_powernv_driver);
++	return nx842_crypto_alloc_ctx(tfm, &nx842_powernv_driver);
+ }
  
- 	for (i = 0; i < calg_entries(); i++) {
--		status = crypto_has_comp(calg_list[i].name, 0,
--					 CRYPTO_ALG_ASYNC);
-+		status = crypto_has_acomp(calg_list[i].name, 0,
-+					  CRYPTO_ALG_ASYNC);
- 		if (calg_list[i].available != status)
- 			calg_list[i].available = status;
- 	}
-diff --git a/net/xfrm/xfrm_ipcomp.c b/net/xfrm/xfrm_ipcomp.c
-index 9c0fa0e1786a2d42..e29ef55e0f01d144 100644
---- a/net/xfrm/xfrm_ipcomp.c
-+++ b/net/xfrm/xfrm_ipcomp.c
-@@ -20,20 +20,21 @@
- #include <linux/slab.h>
- #include <linux/smp.h>
- #include <linux/vmalloc.h>
-+#include <crypto/acompress.h>
- #include <net/ip.h>
- #include <net/ipcomp.h>
- #include <net/xfrm.h>
- 
--struct ipcomp_tfms {
-+struct ipcomp_reqs {
- 	struct list_head list;
--	struct crypto_comp * __percpu *tfms;
-+	struct acomp_req * __percpu *reqs;
- 	int users;
+-static struct crypto_alg nx842_powernv_alg = {
+-	.cra_name		= "842",
+-	.cra_driver_name	= "842-nx",
+-	.cra_priority		= 300,
+-	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
+-	.cra_ctxsize		= sizeof(struct nx842_crypto_ctx),
+-	.cra_module		= THIS_MODULE,
+-	.cra_init		= nx842_powernv_crypto_init,
+-	.cra_exit		= nx842_crypto_exit,
+-	.cra_u			= { .compress = {
+-	.coa_compress		= nx842_crypto_compress,
+-	.coa_decompress		= nx842_crypto_decompress } }
++static struct scomp_alg nx842_powernv_alg = {
++	.base.cra_name		= "842",
++	.base.cra_driver_name	= "842-nx",
++	.base.cra_priority	= 300,
++	.base.cra_module	= THIS_MODULE,
++
++	.alloc_ctx		= nx842_powernv_crypto_alloc_ctx,
++	.free_ctx		= nx842_crypto_free_ctx,
++	.compress		= nx842_crypto_compress,
++	.decompress		= nx842_crypto_decompress,
  };
  
- static DEFINE_MUTEX(ipcomp_resource_mutex);
- static void * __percpu *ipcomp_scratches;
- static int ipcomp_scratch_users;
--static LIST_HEAD(ipcomp_tfms_list);
-+static LIST_HEAD(ipcomp_reqs_list);
+ static __init int nx_compress_powernv_init(void)
+@@ -1107,7 +1105,7 @@ static __init int nx_compress_powernv_init(void)
+ 		nx842_powernv_exec = nx842_exec_vas;
+ 	}
  
- static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
+-	ret = crypto_register_alg(&nx842_powernv_alg);
++	ret = crypto_register_scomp(&nx842_powernv_alg);
+ 	if (ret) {
+ 		nx_delete_coprocs();
+ 		return ret;
+@@ -1128,7 +1126,7 @@ static void __exit nx_compress_powernv_exit(void)
+ 	if (!nx842_ct)
+ 		vas_unregister_api_powernv();
+ 
+-	crypto_unregister_alg(&nx842_powernv_alg);
++	crypto_unregister_scomp(&nx842_powernv_alg);
+ 
+ 	nx_delete_coprocs();
+ }
+diff --git a/drivers/crypto/nx/nx-common-pseries.c b/drivers/crypto/nx/nx-common-pseries.c
+index 35f2d0d8507ed774..6232901adc495ed3 100644
+--- a/drivers/crypto/nx/nx-common-pseries.c
++++ b/drivers/crypto/nx/nx-common-pseries.c
+@@ -1008,23 +1008,21 @@ static struct nx842_driver nx842_pseries_driver = {
+ 	.decompress =	nx842_pseries_decompress,
+ };
+ 
+-static int nx842_pseries_crypto_init(struct crypto_tfm *tfm)
++static void *nx842_pseries_crypto_alloc_ctx(struct crypto_scomp *tfm)
  {
-@@ -42,13 +43,19 @@ static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
- 	int dlen = IPCOMP_SCRATCH_SIZE;
- 	const u8 *start = skb->data;
- 	u8 *scratch = *this_cpu_ptr(ipcomp_scratches);
--	struct crypto_comp *tfm = *this_cpu_ptr(ipcd->tfms);
--	int err = crypto_comp_decompress(tfm, start, plen, scratch, &dlen);
--	int len;
-+	struct acomp_req *req = *this_cpu_ptr(ipcd->reqs);
-+	struct scatterlist sg_in, sg_out;
-+	int err, len;
- 
-+	sg_init_one(&sg_in, start, plen);
-+	sg_init_one(&sg_out, scratch, dlen);
-+	acomp_request_set_params(req, &sg_in, &sg_out, plen, dlen);
-+
-+	err = crypto_acomp_decompress(req);
- 	if (err)
- 		return err;
- 
-+	dlen = req->dlen;
- 	if (dlen < (plen + sizeof(struct ip_comp_hdr)))
- 		return -EINVAL;
- 
-@@ -125,17 +132,24 @@ static int ipcomp_compress(struct xfrm_state *x, struct sk_buff *skb)
- 	const int plen = skb->len;
- 	int dlen = IPCOMP_SCRATCH_SIZE;
- 	u8 *start = skb->data;
--	struct crypto_comp *tfm;
-+	struct acomp_req *req = *this_cpu_ptr(ipcd->reqs);
-+	struct scatterlist sg_in, sg_out;
- 	u8 *scratch;
- 	int err;
- 
- 	local_bh_disable();
- 	scratch = *this_cpu_ptr(ipcomp_scratches);
--	tfm = *this_cpu_ptr(ipcd->tfms);
--	err = crypto_comp_compress(tfm, start, plen, scratch, &dlen);
-+	req = *this_cpu_ptr(ipcd->reqs);
-+
-+	sg_init_one(&sg_in, start, plen);
-+	sg_init_one(&sg_out, scratch, dlen);
-+	acomp_request_set_params(req, &sg_in, &sg_out, plen, dlen);
-+
-+	err = crypto_acomp_compress(req);
- 	if (err)
- 		goto out;
- 
-+	dlen = req->dlen;
- 	if ((dlen + sizeof(struct ip_comp_hdr)) >= plen) {
- 		err = -EMSGSIZE;
- 		goto out;
-@@ -229,17 +243,17 @@ static void * __percpu *ipcomp_alloc_scratches(void)
- 	return scratches;
+-	return nx842_crypto_init(tfm, &nx842_pseries_driver);
++	return nx842_crypto_alloc_ctx(tfm, &nx842_pseries_driver);
  }
  
--static void ipcomp_free_tfms(struct crypto_comp * __percpu *tfms)
-+static void ipcomp_free_reqs(struct acomp_req * __percpu *reqs)
- {
--	struct ipcomp_tfms *pos;
-+	struct ipcomp_reqs *pos;
- 	int cpu;
- 
--	list_for_each_entry(pos, &ipcomp_tfms_list, list) {
--		if (pos->tfms == tfms)
-+	list_for_each_entry(pos, &ipcomp_reqs_list, list) {
-+		if (pos->reqs == reqs)
- 			break;
- 	}
- 
--	WARN_ON(list_entry_is_head(pos, &ipcomp_tfms_list, list));
-+	WARN_ON(list_entry_is_head(pos, &ipcomp_reqs_list, list));
- 
- 	if (--pos->users)
- 		return;
-@@ -247,32 +261,39 @@ static void ipcomp_free_tfms(struct crypto_comp * __percpu *tfms)
- 	list_del(&pos->list);
- 	kfree(pos);
- 
--	if (!tfms)
-+	if (!reqs)
- 		return;
- 
- 	for_each_possible_cpu(cpu) {
--		struct crypto_comp *tfm = *per_cpu_ptr(tfms, cpu);
--		crypto_free_comp(tfm);
-+		struct acomp_req *req = *per_cpu_ptr(reqs, cpu);
+-static struct crypto_alg nx842_pseries_alg = {
+-	.cra_name		= "842",
+-	.cra_driver_name	= "842-nx",
+-	.cra_priority		= 300,
+-	.cra_flags		= CRYPTO_ALG_TYPE_COMPRESS,
+-	.cra_ctxsize		= sizeof(struct nx842_crypto_ctx),
+-	.cra_module		= THIS_MODULE,
+-	.cra_init		= nx842_pseries_crypto_init,
+-	.cra_exit		= nx842_crypto_exit,
+-	.cra_u			= { .compress = {
+-	.coa_compress		= nx842_crypto_compress,
+-	.coa_decompress		= nx842_crypto_decompress } }
++static struct scomp_alg nx842_pseries_alg = {
++	.base.cra_name		= "842",
++	.base.cra_driver_name	= "842-nx",
++	.base.cra_priority	= 300,
++	.base.cra_module	= THIS_MODULE,
 +
-+		if (req) {
-+			struct crypto_acomp *acomp = crypto_acomp_reqtfm(req);
-+
-+			acomp_request_free(req);
-+			crypto_free_acomp(acomp);
-+		}
- 	}
--	free_percpu(tfms);
-+	free_percpu(reqs);
- }
++	.alloc_ctx		= nx842_pseries_crypto_alloc_ctx,
++	.free_ctx		= nx842_crypto_free_ctx,
++	.compress		= nx842_crypto_compress,
++	.decompress		= nx842_crypto_decompress,
+ };
  
--static struct crypto_comp * __percpu *ipcomp_alloc_tfms(const char *alg_name)
-+static struct acomp_req * __percpu *ipcomp_alloc_reqs(const char *alg_name)
- {
--	struct ipcomp_tfms *pos;
--	struct crypto_comp * __percpu *tfms;
-+	struct ipcomp_reqs *pos;
-+	struct crypto_acomp *acomp;
-+	struct acomp_req * __percpu *reqs;
- 	int cpu;
- 
- 
--	list_for_each_entry(pos, &ipcomp_tfms_list, list) {
--		struct crypto_comp *tfm;
-+	list_for_each_entry(pos, &ipcomp_reqs_list, list) {
-+		struct crypto_acomp *tfm;
- 
- 		/* This can be any valid CPU ID so we don't need locking. */
--		tfm = this_cpu_read(*pos->tfms);
-+		tfm = crypto_acomp_reqtfm(this_cpu_read(*pos->reqs));
- 
--		if (!strcmp(crypto_comp_name(tfm), alg_name)) {
-+		if (!strcmp(crypto_acomp_name(tfm), alg_name)) {
- 			pos->users++;
--			return pos->tfms;
-+			return pos->reqs;
- 		}
- 	}
- 
-@@ -282,31 +303,39 @@ static struct crypto_comp * __percpu *ipcomp_alloc_tfms(const char *alg_name)
- 
- 	pos->users = 1;
- 	INIT_LIST_HEAD(&pos->list);
--	list_add(&pos->list, &ipcomp_tfms_list);
-+	list_add(&pos->list, &ipcomp_reqs_list);
- 
--	pos->tfms = tfms = alloc_percpu(struct crypto_comp *);
--	if (!tfms)
-+	reqs = alloc_percpu_gfp(struct acomp_req *, GFP_KERNEL | __GFP_ZERO);
-+	if (!reqs)
+ static int nx842_probe(struct vio_dev *viodev,
+@@ -1072,7 +1070,7 @@ static int nx842_probe(struct vio_dev *viodev,
+ 	if (ret)
  		goto error;
  
- 	for_each_possible_cpu(cpu) {
--		struct crypto_comp *tfm = crypto_alloc_comp(alg_name, 0,
--							    CRYPTO_ALG_ASYNC);
--		if (IS_ERR(tfm))
-+		struct acomp_req *req;
-+
-+		acomp = crypto_alloc_acomp(alg_name, 0, CRYPTO_ALG_ASYNC);
-+		if (IS_ERR(acomp))
- 			goto error;
--		*per_cpu_ptr(tfms, cpu) = tfm;
-+
-+		req = acomp_request_alloc(acomp);
-+		if (!req) {
-+			crypto_free_acomp(acomp);
-+			goto error;
-+		}
-+		*per_cpu_ptr(reqs, cpu) = req;
- 	}
- 
--	return tfms;
-+	pos->reqs = reqs;
-+	return reqs;
- 
- error:
--	ipcomp_free_tfms(tfms);
-+	ipcomp_free_reqs(reqs);
- 	return NULL;
- }
- 
- static void ipcomp_free_data(struct ipcomp_data *ipcd)
- {
--	if (ipcd->tfms)
--		ipcomp_free_tfms(ipcd->tfms);
-+	if (ipcd->reqs)
-+		ipcomp_free_reqs(ipcd->reqs);
- 	ipcomp_free_scratches();
- }
- 
-@@ -349,8 +378,8 @@ int ipcomp_init_state(struct xfrm_state *x, struct netlink_ext_ack *extack)
- 	if (!ipcomp_alloc_scratches())
+-	ret = crypto_register_alg(&nx842_pseries_alg);
++	ret = crypto_register_scomp(&nx842_pseries_alg);
+ 	if (ret) {
+ 		dev_err(&viodev->dev, "could not register comp alg: %d\n", ret);
  		goto error;
+@@ -1120,7 +1118,7 @@ static void nx842_remove(struct vio_dev *viodev)
+ 	if (caps_feat)
+ 		sysfs_remove_group(&viodev->dev.kobj, &nxcop_caps_attr_group);
  
--	ipcd->tfms = ipcomp_alloc_tfms(x->calg->alg_name);
--	if (!ipcd->tfms)
-+	ipcd->reqs = ipcomp_alloc_reqs(x->calg->alg_name);
-+	if (!ipcd->reqs)
- 		goto error;
- 	mutex_unlock(&ipcomp_resource_mutex);
+-	crypto_unregister_alg(&nx842_pseries_alg);
++	crypto_unregister_scomp(&nx842_pseries_alg);
  
+ 	spin_lock_irqsave(&devdata_mutex, flags);
+ 	old_devdata = rcu_dereference_check(devdata,
+@@ -1255,7 +1253,7 @@ static void __exit nx842_pseries_exit(void)
+ 
+ 	vas_unregister_api_pseries();
+ 
+-	crypto_unregister_alg(&nx842_pseries_alg);
++	crypto_unregister_scomp(&nx842_pseries_alg);
+ 
+ 	spin_lock_irqsave(&devdata_mutex, flags);
+ 	old_devdata = rcu_dereference_check(devdata,
 -- 
 2.39.2
 
