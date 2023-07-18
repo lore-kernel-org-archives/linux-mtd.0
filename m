@@ -4,97 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E910EC0015E
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A066C0015E
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 06:12:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AQl/ltJZVNED05oDMevq7F2mL36s6HUFjBb3YPnJU5U=; b=XwyDR9sPXy44/9
-	m5lzpcGbOoK+vR+YH/cZKD06HB8DAjFJchL3eV4dPMeji4Py4ihRugGMVT9evc6+p985yxza3a44c
-	AJc4/5NhKpFQlpY7QgKkETBq08ikcLIh/7B8JEheeHlFftwx/gn34UFB3x1Y789i/Q74CJ5FImzvz
-	iBw7F3ov07i6RxMLjnLBhYB9igjuTrUmWdcZoev7SFfrFDBhgsth6WtDTaja/L0mrI8t2ka9iyPnT
-	NI9kWrR1QW64DFLL8aJGSP68HHwoBdvfGe//1MVz9EIyN6TschphVRcvEmhjxVG2flGE4FvKy0bZG
-	C7Ei9w/lwFydLQa4FtCg==;
+	List-Owner; bh=+CDWDMH8JgVcm7czay+qNctLiGEjmm2FowBnhrWbW04=; b=aTz/1iJ8TZNUeT
+	UPdARRTxg24tUNg5Itm5gRD33PLja09EusAH74UpJ+bHzlHsiwmKaA+WBVM00EkU6GuSJGdi13tbZ
+	gtBu+6nJJw+lYDeFXM0kM4HTjSeQgj2zpewUasqJuyF7Y/0J3TnMEhrtaKlUZYzwPZJ5rlgyu5j2r
+	pbMVzbiPJ6CeHMTRy5Vjk51T4l2EdoRih/Pqm/a+hOxxmlE/YSMwRSd8aQJDETJpWb4ymxJVDB58q
+	qewSSTYK4vIhVhmyYuys41PXN8iX0pWPVBuTwtOadBZTWWzB+yeeD0fA/af/mUQkvbwm1UHAihiD1
+	olfc0D47O6NGhbARxagA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0QC-005b0o-0h;
-	Wed, 19 Jul 2023 06:12:24 +0000
+	id 1qM0QE-005b2D-1E;
+	Wed, 19 Jul 2023 06:12:26 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM0QA-005azv-2K
+	id 1qM0QC-005b0h-1S
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 06:12:22 +0000
+	Wed, 19 Jul 2023 06:12:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=ofXBG0otArMnc0xQL0OFzIyI9NYt0Dof1HcC6jOBs8Y=; b=OkKYhjFWetws5DuhPWvJWjEEY2
-	fkDC6LVNwfnASrLFX2AyRiTDvaCnKN8td0KPvOnC8BMGZtvpmgpY9aEPYj2Ob8eQAx4xvAXnxZ5Ao
-	y5TUSUN+Di9SiKuqRxFQsVp7aSWqIuKKusVyAAOPsdpjTwaOVk4/yyy7psYbnzlQt2snpZhxnKOq4
-	r2/1fhrn0Ls1MeFaWhEqQ072qGt73lRdCxLai5EY+9zV2IzBY007jddrr7HVlzR7F9Ugc9B0iyCuE
-	hzjpq3kq8ilBtg4VXrzww/Z66QKYxaqsWiMo+518lWg3ki5HS0HJKabI4bM4po6JYvd+FM2f3PBEQ
-	e0s3bktA==;
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	bh=6yTJ/wGlEPZLPxnnC8jXW7P3km7/RHp5WjSYCx9JVfA=; b=oFxhVNxtBdcoAgDJzCD5jIxSGd
+	hUTkZ76pLIyDzCXfLeMaTjai0hIljYFWRZA4UBAmmBcXw+/SV8xTRwKNj8FeUGy4zFN4CEHtTdMba
+	aIiVQQCvuj9jSWAsHQcg/CBk7kGZgwXncWjkMU1tEj2sG8RioqsyqW5jf8LUph2OnB6Zug1BUbsih
+	uDgMUDS8R6XzfMYP+oXEcUdS32nOr+MOeev18biPDO7hSXKWHcyFYw1902NykgRCGEherxSUkD/Zp
+	Iw6B1pDGvtZPMxfH0wFNXJQV7t1k6HsiirOMB/DYUEQwNahE9JbRcnhS6LhjsxMXRg0EQk4bukr3b
+	fs24r6YA==;
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLoqd-00BpBd-1p
+	id 1qLgTd-00BK26-01
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 17:50:57 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fba8e2aa52so62506655e9.1
-        for <linux-mtd@lists.infradead.org>; Tue, 18 Jul 2023 10:50:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689702591; x=1692294591;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ofXBG0otArMnc0xQL0OFzIyI9NYt0Dof1HcC6jOBs8Y=;
-        b=RmdSF9nfYWZzYHJ21z0iaWahjaKyna5bsyQyHUvlIye253yvu2J9yg6nJv/Fb8jvmy
-         HsXhDXpkgUAGWMK3vrmDCUiH3GlWF3XgsochVvAN+RUAys2SgqPZL0dgWCd07tQtmUpr
-         SvJztgApBqrQ+tvZSNvvIchHyneQBW1T6z2/pPmNC69Kvx76sjslbuzRz5g8+Jnz/gBB
-         zRdcERfYIYR8pPiV2IOl/qNjrg4zgEXxHXFxpM2LJXYSeXNOn6Q4tM+bmiCIs0S+c7qS
-         gTQRyXH0Ph58bMg/Riod3Idp9zvdfDm9yc/4VPQ2A9M1+OsxlC5DmARbKzpcAQpyC28u
-         YDGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689702591; x=1692294591;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ofXBG0otArMnc0xQL0OFzIyI9NYt0Dof1HcC6jOBs8Y=;
-        b=Kj4ugx13hbDsSaLNoYgB55JeY6hAdR8xTVt7MPPCxvPy/6tIIDyVXh6fADy7oWeLPA
-         bFIAf0r67U6qSD/zbsV0wzjD3+muDSF6XJkwbIRdCGYkffnwAIOLM0jPfxy0wfberzMu
-         7KHopVLcIeF3F1QQ7BqU3wb7FYc4T12d/1foy5JBu7OL5JVs4NGUNqXq6vfGOkSZ0vcl
-         TtJ69jHVlmmh2e6Wtv3ktbo9+WkKq0cjZJuKwBIca2/cIkdow5E6/87d/8l4s6xULaPq
-         prisg3L680qY7QTnxk3ksqNqoKOj1TNW8Mmylkrez0XY1NGp6wbdq60vELARVrjviqEz
-         PNkw==
-X-Gm-Message-State: ABy/qLYDaC9dvWvWhwYksfKJ0J0BbPXNhJXSRvy0btt46Fhty0sYardC
-	VuwXb250VxIYs1BpvAMLIjUj+A==
-X-Google-Smtp-Source: APBJJlH6bu15zpd8KmGi1f4dcWUKy7fVGvqG5SkHl32pxLFEF7Ic/hK2AzT3FFt3fPEgsvfH0Ij9kQ==
-X-Received: by 2002:a05:600c:b54:b0:3fa:91d2:55b6 with SMTP id k20-20020a05600c0b5400b003fa91d255b6mr2669045wmr.9.1689702591411;
-        Tue, 18 Jul 2023 10:49:51 -0700 (PDT)
-Received: from [192.168.0.173] ([79.115.63.146])
-        by smtp.gmail.com with ESMTPSA id n16-20020a5d4850000000b00313e4d02be8sm2964713wrs.55.2023.07.18.10.49.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 10:49:50 -0700 (PDT)
-Message-ID: <23fd0aed-784d-85a8-1c45-15ac0f8afe91@linaro.org>
-Date: Tue, 18 Jul 2023 20:49:48 +0300
+	Tue, 18 Jul 2023 08:54:40 +0000
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.57])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R4t2j1p5VzCrJc;
+	Tue, 18 Jul 2023 16:50:53 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
+ 2023 16:54:12 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH V2 1/5] ubi: Use the fault injection framework to enhance the fault injection capability
+Date: Tue, 18 Jul 2023 16:51:15 +0800
+Message-ID: <20230718085119.3885747-2-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
+References: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] mtd: spi-nor: gigadevice: Add support for gd25lb256
-To: Hao Yao <hao.yao@intel.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Md Sadre Alam <mdalam@codeaurora.org>
-References: <1612869079-19593-1-git-send-email-mdalam@codeaurora.org>
- <20230613045313.2690342-1-hao.yao@intel.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-Content-Language: en-US
-In-Reply-To: <20230613045313.2690342-1-hao.yao@intel.com>
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_185055_943386_C1412864 
-X-CRM114-Status: GOOD (  14.84  )
+X-CRM114-CacheID: sfid-20230718_095437_931082_EF018130 
+X-CRM114-Status: GOOD (  28.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,48 +83,464 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
+To make debug parameters configurable at run time, use the
+fault injection framework to reconstruct the debugfs interface,
+and retain the legacy fault injection interface.
 
-On 13.06.2023 07:53, Hao Yao wrote:
+Now, the file emulate_failures and fault_attr files control whether
+to enable fault emmulation.
 
-You need some commit message here describing your changes. Please read
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-before submitting v3.
+The file emulate_failures receives a mask that controls type and
+process of fault injection. Generally, for ease of use, you can
+directly enter a mask with all 1s.
 
-We require contributors that submit flash additions or updates to dump
-the SFDP tables and do some sanity checks. Here's an example on how to
-do it:
-https://lore.kernel.org/linux-mtd/20230712161503.448024-1-miquel.raynal@bootlin.com/
+echo 0xffff > /sys/kernel/debug/ubi/ubi0/emulate_failures
 
-> Signed-off-by: Hao Yao <hao.yao@intel.com>
-> ---
->  drivers/mtd/spi-nor/gigadevice.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-> index d57ddaf1525b..d56c1876549f 100644
-> --- a/drivers/mtd/spi-nor/gigadevice.c
-> +++ b/drivers/mtd/spi-nor/gigadevice.c
-> @@ -62,6 +62,10 @@ static const struct flash_info gigadevice_nor_parts[] = {
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
-> +	{ "gd25lb256", INFO(0xc86719, 0, 64 * 1024, 512)
+And you need to configure other fault-injection capabilities for
+testing purpose:
 
-INFO(0xc86719, 0, 0, 0) please, those params can be retrieved at SFDP
-parsing time.
+echo 100 > /sys/kernel/debug/ubi/fault_inject/emulate_power_cut/probability
+echo 15 > /sys/kernel/debug/ubi/fault_inject/emulate_power_cut/space
+echo 2 > /sys/kernel/debug/ubi/fault_inject/emulate_power_cut/verbose
+echo -1 > /sys/kernel/debug/ubi/fault_inject/emulate_power_cut/times
 
+The CONFIG_MTD_UBI_FAULT_INJECTION to enable the Fault Injection is
+added to kconfig.
 
-> +		PARSE_SFDP
-> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
-> +		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+---
+V2: 
+  - Retain the original interface.
+  - When both the new and original interfaces are enabled, the original
+    interface takes precedence over the new interface.
+  - Adjusted the order of masks to be compatible with original interfaces.
 
-Is the SPI_NOR_4B_OPCODES really needed, isn't the support determined at
-SFDP parsing time?
+ drivers/mtd/ubi/Kconfig |   9 +++
+ drivers/mtd/ubi/debug.c |  68 +++++++++++++++++--
+ drivers/mtd/ubi/debug.h | 142 +++++++++++++++++++++++++++++++++-------
+ drivers/mtd/ubi/io.c    |  10 ++-
+ drivers/mtd/ubi/ubi.h   |  15 ++---
+ 5 files changed, 202 insertions(+), 42 deletions(-)
 
->  	{ "gd25q256", INFO(0xc84019, 0, 64 * 1024, 512)
->  		PARSE_SFDP
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 2ed77b7b3fcb..138fae7e8f96 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -104,4 +104,13 @@ config MTD_UBI_BLOCK
+ 
+ 	   If in doubt, say "N".
+ 
++config MTD_UBI_FAULT_INJECTION
++	bool "Fault injection capability of UBI device"
++	default n
++	depends on FAULT_INJECTION_DEBUG_FS
++	help
++	   this option enable fault-injection support for UBI devices for
++	   testing purposes.
++
++	   If in doubt, say "N".
+ endif # MTD_UBI
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 27168f511d6d..9ca584da32c6 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -10,7 +10,23 @@
+ #include <linux/uaccess.h>
+ #include <linux/module.h>
+ #include <linux/seq_file.h>
++#include <linux/fault-inject.h>
+ 
++#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
++static DECLARE_FAULT_ATTR(fault_bitflips_attr);
++static DECLARE_FAULT_ATTR(fault_io_failures_attr);
++static DECLARE_FAULT_ATTR(fault_power_cut_attr);
++
++#define FAIL_ACTION(name, fault_attr)			\
++bool should_fail_##name(void)				\
++{							\
++	return should_fail(&fault_attr, 1);		\
++}
++
++FAIL_ACTION(bitflips,		fault_bitflips_attr)
++FAIL_ACTION(io_failures,	fault_io_failures_attr)
++FAIL_ACTION(power_cut,		fault_power_cut_attr)
++#endif
+ 
+ /**
+  * ubi_dump_flash - dump a region of flash.
+@@ -212,6 +228,31 @@ void ubi_dump_mkvol_req(const struct ubi_mkvol_req *req)
+  */
+ static struct dentry *dfs_rootdir;
+ 
++#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
++static void dfs_create_fault_entry(struct dentry *parent)
++{
++	struct dentry *dir;
++
++	dir = debugfs_create_dir("fault_inject", parent);
++	if (IS_ERR_OR_NULL(dir)) {
++		int err = dir ? PTR_ERR(dir) : -ENODEV;
++
++		pr_warn("UBI error: cannot create \"fault_inject\" debugfs directory, error %d\n",
++			err);
++		return;
++	}
++
++	fault_create_debugfs_attr("emulate_bitflips", dir,
++				  &fault_bitflips_attr);
++
++	fault_create_debugfs_attr("emulate_io_failures", dir,
++				  &fault_io_failures_attr);
++
++	fault_create_debugfs_attr("emulate_power_cut", dir,
++				  &fault_power_cut_attr);
++}
++#endif
++
+ /**
+  * ubi_debugfs_init - create UBI debugfs directory.
+  *
+@@ -232,6 +273,10 @@ int ubi_debugfs_init(void)
+ 		return err;
+ 	}
+ 
++#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
++	dfs_create_fault_entry(dfs_rootdir);
++#endif
++
+ 	return 0;
+ }
+ 
+@@ -272,7 +317,12 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
+ 		val = d->emulate_bitflips;
+ 	else if (dent == d->dfs_emulate_io_failures)
+ 		val = d->emulate_io_failures;
+-	else if (dent == d->dfs_emulate_power_cut) {
++	else if (dent == d->dfs_emulate_failures) {
++		snprintf(buf, sizeof(buf), "%u\n", d->emulate_failures);
++		count = simple_read_from_buffer(user_buf, count, ppos,
++							buf, strlen(buf));
++		goto out;
++	} else if (dent == d->dfs_emulate_power_cut) {
+ 		snprintf(buf, sizeof(buf), "%u\n", d->emulate_power_cut);
+ 		count = simple_read_from_buffer(user_buf, count, ppos,
+ 						buf, strlen(buf));
+@@ -287,8 +337,7 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
+ 		count = simple_read_from_buffer(user_buf, count, ppos,
+ 						buf, strlen(buf));
+ 		goto out;
+-	}
+-	else {
++	} else {
+ 		count = -EINVAL;
+ 		goto out;
+ 	}
+@@ -330,7 +379,11 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+ 		goto out;
+ 	}
+ 
+-	if (dent == d->dfs_power_cut_min) {
++	if (dent == d->dfs_emulate_failures) {
++		if (kstrtouint(buf, 0, &d->emulate_failures) != 0)
++			count = -EINVAL;
++		goto out;
++	} else if (dent == d->dfs_power_cut_min) {
+ 		if (kstrtouint(buf, 0, &d->power_cut_min) != 0)
+ 			count = -EINVAL;
+ 		goto out;
+@@ -559,6 +612,11 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 	debugfs_create_file("detailed_erase_block_info", S_IRUSR, d->dfs_dir,
+ 			    (void *)ubi_num, &eraseblk_count_fops);
+ 
++#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
++	d->dfs_emulate_failures = debugfs_create_file("emulate_failures", mode,
++						      d->dfs_dir, (void *)ubi_num,
++						      &dfs_fops);
++#endif
+ 	return 0;
+ }
+ 
+@@ -600,7 +658,5 @@ int ubi_dbg_power_cut(struct ubi_device *ubi, int caller)
+ 	if (ubi->dbg.power_cut_counter)
+ 		return 0;
+ 
+-	ubi_msg(ubi, "XXXXXXXXXXXXXXX emulating a power cut XXXXXXXXXXXXXXXX");
+-	ubi_ro_mode(ubi);
+ 	return 1;
+ }
+diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+index 23676f32b681..fc4234c9a90a 100644
+--- a/drivers/mtd/ubi/debug.h
++++ b/drivers/mtd/ubi/debug.h
+@@ -53,56 +53,153 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi);
+ void ubi_debugfs_exit_dev(struct ubi_device *ubi);
+ 
+ /**
+- * ubi_dbg_is_bgt_disabled - if the background thread is disabled.
++ * The following function is a legacy implementation of UBI fault-injection
++ * hook. When using more powerful fault injection capabilities, the legacy
++ * fault injection interface should be retained.
++ */
++int ubi_dbg_power_cut(struct ubi_device *ubi, int caller);
++
++static inline int ubi_dbg_bitflip(const struct ubi_device *ubi)
++{
++	if (ubi->dbg.emulate_bitflips)
++		return !get_random_u32_below(200);
++	return 0;
++}
++
++static inline int ubi_dbg_write_failure(const struct ubi_device *ubi)
++{
++	if (ubi->dbg.emulate_io_failures)
++		return !get_random_u32_below(500);
++	return 0;
++}
++
++static inline int ubi_dbg_erase_failure(const struct ubi_device *ubi)
++{
++	if (ubi->dbg.emulate_io_failures)
++		return !get_random_u32_below(400);
++	return 0;
++}
++
++/**
++ * MASK_XXX: Mask for emulate_failures in ubi_debug_info.The mask is used to
++ * precisely control the type and process of fault injection.
++ */
++/* Emulate a power cut when writing EC/VID header */
++#define MASK_POWER_CUT_EC	(1 << 1)
++#define MASK_POWER_CUT_VID	(1 << 2)
++
++#ifdef CONFIG_MTD_UBI_FAULT_INJECTION
++/* Emulate bit-flips */
++#define MASK_BITFLIPS		(1 << 3)
++/* Emulates -EIO during write/erase */
++#define MASK_IO_FAILURE		(1 << 4)
++
++extern bool should_fail_bitflips(void);
++extern bool should_fail_io_failures(void);
++extern bool should_fail_power_cut(void);
++
++static inline bool ubi_dbg_fail_bitflip(const struct ubi_device *ubi)
++{
++	if (ubi->dbg.emulate_failures & MASK_BITFLIPS)
++		return should_fail_bitflips();
++	return false;
++}
++
++static inline bool ubi_dbg_fail_write(const struct ubi_device *ubi)
++{
++	if (ubi->dbg.emulate_failures & MASK_IO_FAILURE)
++		return should_fail_io_failures();
++	return false;
++}
++
++static inline bool ubi_dbg_fail_erase(const struct ubi_device *ubi)
++{
++	if (ubi->dbg.emulate_failures & MASK_IO_FAILURE)
++		return should_fail_io_failures();
++	return false;
++}
++
++static inline bool ubi_dbg_fail_power_cut(const struct ubi_device *ubi,
++					unsigned int caller)
++{
++	if (ubi->dbg.emulate_failures & caller)
++		return should_fail_power_cut();
++	return false;
++}
++
++#else /* CONFIG_MTD_UBI_FAULT_INJECTION */
++
++#define ubi_dbg_fail_bitflip(u)           false
++#define ubi_dbg_fail_write(u)             false
++#define ubi_dbg_fail_erase(u)             false
++#define ubi_dbg_fail_power_cut(u,c)       false
++#endif
++
++/**
++ * ubi_dbg_is_power_cut - if it is time to emulate power cut.
+  * @ubi: UBI device description object
+  *
+- * Returns non-zero if the UBI background thread is disabled for testing
+- * purposes.
++ * Returns true if power cut should be emulated, otherwise returns false.
+  */
+-static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
++static inline bool ubi_dbg_is_power_cut(struct ubi_device *ubi,
++					unsigned int caller)
+ {
+-	return ubi->dbg.disable_bgt;
++	if (ubi_dbg_power_cut(ubi, caller))
++		return true;
++	return ubi_dbg_fail_power_cut(ubi, caller);
+ }
+ 
+ /**
+  * ubi_dbg_is_bitflip - if it is time to emulate a bit-flip.
+  * @ubi: UBI device description object
+  *
+- * Returns non-zero if a bit-flip should be emulated, otherwise returns zero.
++ * Returns true if a bit-flip should be emulated, otherwise returns false.
+  */
+-static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi)
++static inline bool ubi_dbg_is_bitflip(const struct ubi_device *ubi)
+ {
+-	if (ubi->dbg.emulate_bitflips)
+-		return !get_random_u32_below(200);
+-	return 0;
++	if (ubi_dbg_bitflip(ubi))
++		return true;
++	return ubi_dbg_fail_bitflip(ubi);
+ }
+ 
+ /**
+  * ubi_dbg_is_write_failure - if it is time to emulate a write failure.
+  * @ubi: UBI device description object
+  *
+- * Returns non-zero if a write failure should be emulated, otherwise returns
+- * zero.
++ * Returns true if a write failure should be emulated, otherwise returns
++ * false.
+  */
+-static inline int ubi_dbg_is_write_failure(const struct ubi_device *ubi)
++static inline bool ubi_dbg_is_write_failure(const struct ubi_device *ubi)
+ {
+-	if (ubi->dbg.emulate_io_failures)
+-		return !get_random_u32_below(500);
+-	return 0;
++	if (ubi_dbg_write_failure(ubi))
++		return true;;
++	return ubi_dbg_fail_write(ubi);
+ }
+ 
+ /**
+  * ubi_dbg_is_erase_failure - if its time to emulate an erase failure.
+  * @ubi: UBI device description object
+  *
+- * Returns non-zero if an erase failure should be emulated, otherwise returns
+- * zero.
++ * Returns true if an erase failure should be emulated, otherwise returns
++ * false.
+  */
+-static inline int ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
++static inline bool ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
+ {
+-	if (ubi->dbg.emulate_io_failures)
+-		return !get_random_u32_below(400);
+-	return 0;
++	if (ubi_dbg_erase_failure(ubi))
++		return true;
++	return ubi_dbg_fail_erase(ubi);
++}
++
++/**
++ * ubi_dbg_is_bgt_disabled - if the background thread is disabled.
++ * @ubi: UBI device description object
++ *
++ * Returns non-zero if the UBI background thread is disabled for testing
++ * purposes.
++ */
++static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
++{
++	return ubi->dbg.disable_bgt;
+ }
+ 
+ static inline int ubi_dbg_chk_io(const struct ubi_device *ubi)
+@@ -125,5 +222,4 @@ static inline void ubi_enable_dbg_chk_fastmap(struct ubi_device *ubi)
+ 	ubi->dbg.chk_fastmap = 1;
+ }
+ 
+-int ubi_dbg_power_cut(struct ubi_device *ubi, int caller);
+ #endif /* !__UBI_DEBUG_H__ */
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index 01b644861253..ffa7bbf27bc2 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -821,8 +821,11 @@ int ubi_io_write_ec_hdr(struct ubi_device *ubi, int pnum,
+ 	if (err)
+ 		return err;
+ 
+-	if (ubi_dbg_power_cut(ubi, POWER_CUT_EC_WRITE))
++	if (ubi_dbg_is_power_cut(ubi, MASK_POWER_CUT_EC)) {
++		ubi_warn(ubi, "XXXXX emulating a power cut when writing EC header XXXXX");
++		ubi_ro_mode(ubi);
+ 		return -EROFS;
++	}
+ 
+ 	err = ubi_io_write(ubi, ec_hdr, pnum, 0, ubi->ec_hdr_alsize);
+ 	return err;
+@@ -1071,8 +1074,11 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
+ 	if (err)
+ 		return err;
+ 
+-	if (ubi_dbg_power_cut(ubi, POWER_CUT_VID_WRITE))
++	if (ubi_dbg_is_power_cut(ubi, MASK_POWER_CUT_VID)) {
++		ubi_warn(ubi, "XXXXX emulating a power cut when writing VID header XXXXX");
++		ubi_ro_mode(ubi);
+ 		return -EROFS;
++	}
+ 
+ 	err = ubi_io_write(ubi, p, pnum, ubi->vid_hdr_aloffset,
+ 			   ubi->vid_hdr_alsize);
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index c8f1bd4fa100..41f57d5717b2 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -142,17 +142,6 @@ enum {
+ 	UBI_BAD_FASTMAP,
+ };
+ 
+-/*
+- * Flags for emulate_power_cut in ubi_debug_info
+- *
+- * POWER_CUT_EC_WRITE: Emulate a power cut when writing an EC header
+- * POWER_CUT_VID_WRITE: Emulate a power cut when writing a VID header
+- */
+-enum {
+-	POWER_CUT_EC_WRITE = 0x01,
+-	POWER_CUT_VID_WRITE = 0x02,
+-};
+-
+ /**
+  * struct ubi_vid_io_buf - VID buffer used to read/write VID info to/from the
+  *			   flash.
+@@ -401,6 +390,7 @@ struct ubi_volume_desc {
+  * @power_cut_counter: count down for writes left until emulated power cut
+  * @power_cut_min: minimum number of writes before emulating a power cut
+  * @power_cut_max: maximum number of writes until emulating a power cut
++ * @emulate_failures: emulate failures for testing purposes
+  * @dfs_dir_name: name of debugfs directory containing files of this UBI device
+  * @dfs_dir: direntry object of the UBI device debugfs directory
+  * @dfs_chk_gen: debugfs knob to enable UBI general extra checks
+@@ -412,6 +402,7 @@ struct ubi_volume_desc {
+  * @dfs_emulate_power_cut: debugfs knob to emulate power cuts
+  * @dfs_power_cut_min: debugfs knob for minimum writes before power cut
+  * @dfs_power_cut_max: debugfs knob for maximum writes until power cut
++ * @dfs_emulate_failures: debugfs entry to control the fault injection type
+  */
+ struct ubi_debug_info {
+ 	unsigned int chk_gen:1;
+@@ -424,6 +415,7 @@ struct ubi_debug_info {
+ 	unsigned int power_cut_counter;
+ 	unsigned int power_cut_min;
+ 	unsigned int power_cut_max;
++	unsigned int emulate_failures;
+ 	char dfs_dir_name[UBI_DFS_DIR_LEN + 1];
+ 	struct dentry *dfs_dir;
+ 	struct dentry *dfs_chk_gen;
+@@ -435,6 +427,7 @@ struct ubi_debug_info {
+ 	struct dentry *dfs_emulate_power_cut;
+ 	struct dentry *dfs_power_cut_min;
+ 	struct dentry *dfs_power_cut_max;
++	struct dentry *dfs_emulate_failures;
+ };
+ 
+ /**
+-- 
+2.31.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
