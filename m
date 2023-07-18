@@ -4,82 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F36EC0015E
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 07:56:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BE1AC0015E
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 08:02:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=PuCIEoV1fjv2+mKPvqkXpBDRtYk/P4/OcE9LToWoIS8=; b=pQY0YgNdScWiY1KjHiZmZAfp0l
-	T6gM0CFll9fWqguuZtmGWIz69x9apVV9GhQSiWFdWDyI3pjnNhN0/MbJ8vyVLvh2ePg1AswJbkoHp
-	EqfeB/ntsms2Erba4QrNsJXoiswx/s3hd+okSwoyuwUP5e4NG9AJIj+RBWANn3zEqGLDn7QQHdmE9
-	x8iGn5USXLi/WAp6VEqBRuE436vkxWIov/QZBiaNsdScIfRZUsE4W2Y3JUTSvWz38e8o5JYsX62A6
-	8LzxL7kJRazNFkJxKsJ5cUAq6eY/uIw0GwaVwpcgkq1nQCvspdgTfxJqhNVivksKTbtOQ42HFSNU9
-	AWJa5P0w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=vZHQwXt8bcwQEzNeyJfD1239KmDMa4tH3ID+dgb94co=; b=gHAEeiPZ8SUc6r
+	LotAgWGEmF0qy1SY7l9gWGpQmrTJUWz9ALuC9hvlnxVDJ8qNdx+bGg6mbXpgWlYYwPDxSy8/6s1lg
+	RGXNtEp3u2FfEv4osLnXBRCNmX1yx+6XCyRRgQZOx2GHD8BwhI8RDJRqMISEqbQC5PRrvma9yzlRP
+	gKQI7AwX3xrIuhyBHgVEfePK6RiRc3xL5NBfLGVX3hdaTCBAg5zExkkLg9zjnMOHwM627fyFENcS5
+	PGyz+KrdQzYADKNiUHEBSpo2/pWOAEOkIuZ0zYtBd5vUMUDvzMXDjfEAl1iALep3lnTW8uN1RxDOu
+	DFJnHmE4PFvX8RZvtpbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM231-006AB2-0Y;
-	Wed, 19 Jul 2023 07:56:35 +0000
+	id 1qM28U-006C7g-0n;
+	Wed, 19 Jul 2023 08:02:14 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM22x-006A8y-11
+	id 1qM28T-006C74-0d
 	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 07:56:31 +0000
+	Wed, 19 Jul 2023 08:02:13 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+	:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
 	Sender:Reply-To:Content-ID:Content-Description;
-	bh=vwy+Rk+DpWgKqRl/5W9li4fim9nVcS+KSVDMqOOga0w=; b=TSAXVd3VdCISkwDcblH1k164D/
-	P0ALjf91FnlbM9M6j7O2HGK5Wpi0ssLmju/hPhi4XGVmJwF4F/SJih2fGts0jPe84Z6HAO2OJFZc3
-	fcFC+godjxfgXpVxaeuR4oU0TM5pmx6D7LTBfwswJ10txWVRqxR9+58RnCxu5XyEWR1pDhcDs6oEW
-	dg8irQKBAryUr9nvxbrLuNUoSdOXkEfL0XWsnvuuo9X78oND/4jPePSY83njIrrUgAGwEg0Pvt3ZU
-	hXcImwNH3+P5ubT/iOFuN8RQdZEL6CUMCxTdoEYmpGNvkv3mzSu10f1xQVofOPPy1KpdOaP+VAio+
-	SZGXsmjw==;
-Received: from 0001.3ffe.de ([159.69.201.130] helo=mail.3ffe.de)
+	bh=+CocNHPc8gi5vXSS1fBwkBjp6GFfLdMwNPCeqFndNxQ=; b=jcbAk8OEMuHV+ctLoX9rxKo0i+
+	MAEZ4Z1iDHlvaQAE1vwCejFr/w4rA9pnAMq1Unts3GQAtBj/DNIsJxFukv66b9gDQX0MgvCxUqrrA
+	NSGQKdlmMtYT94dcP3PNKiOLddBwzgW8SbjpagcaqE1HZrUBGLX6f81Gmhi59H4PaoxiwwdY6k+xg
+	0nNA2afJ8HSvRgpVaBRyWQRhWET955C1FedJXo3WsOpKib5PNOo18VfBwJKAOtFAAwM5ZVvYPi4YH
+	/+BtJ37yTRIMlJbV/c5m9kFq5PNr7FQ2Y1lXVICL8EBA0d2aK6j3mfLJyixiDNA1+97h3e3Xr5USX
+	zHnU6f0Q==;
+Received: from szxga08-in.huawei.com ([45.249.212.255])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLeA4-00BDOz-25
+	id 1qLgTm-00BK3X-0o
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 06:26:18 +0000
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.3ffe.de (Postfix) with ESMTPSA id C07D23C3;
-	Tue, 18 Jul 2023 08:25:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-	t=1689661539;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vwy+Rk+DpWgKqRl/5W9li4fim9nVcS+KSVDMqOOga0w=;
-	b=ZFlYDESTV91bDpjpp/nK4NchulbycORk27MdDVBlJYrImYDMQzO2LmWhfX9jveUYMvi+EZ
-	/hoPhwCsC9r6JH60O1UT2Un4xvhfiR66BznPTLZm/tjfVdtQtWKmEaIE3OceRqPoUlrh+N
-	Kyb/UsbP45UCgllP2HCzY1VouJ/0uN+4v/BiWNpdOzBFabBlYyWtNgHmvYIEWf4hSQPykG
-	ae9lPqXmd2FFFotC3p3qvyyPuw8deil5/guhRGKFtgEybwzP1SzKidgLiWCJ0xxVj6IefX
-	/TrnE9bVQKjbD/0GrSNEJD7n16e8oExEGD2RFaFbfnoWf9ah/bitQnJVjF4eTQ==
+	Tue, 18 Jul 2023 08:54:48 +0000
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.56])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R4t5k5gBlz18LZc;
+	Tue, 18 Jul 2023 16:53:30 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 18 Jul
+ 2023 16:54:12 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH V2 2/5] ubi: Split io_failures into write_failure and erase_failure
+Date: Tue, 18 Jul 2023 16:51:16 +0800
+Message-ID: <20230718085119.3885747-3-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
+References: <20230718085119.3885747-1-wangzhaolong1@huawei.com>
 MIME-Version: 1.0
-Date: Tue, 18 Jul 2023 08:25:39 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Pratyush Yadav
- <pratyush@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: spi-nor: Correct flags for Winbond w25q128
-In-Reply-To: <d99d87e7-47ba-d6fe-735f-16de2a2ec280@linaro.org>
-References: <20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org>
- <f00fa2ae-6d4a-90cb-3724-2bedb96cb4fb@linaro.org>
- <0525440a652854a2a575256cd07d3559@walle.cc>
- <d99d87e7-47ba-d6fe-735f-16de2a2ec280@linaro.org>
-Message-ID: <e642ff27fd0bc0f1f0e293972145f680@walle.cc>
-X-Sender: michael@walle.cc
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_072616_925187_DC169156 
-X-CRM114-Status: GOOD (  21.62  )
+X-CRM114-CacheID: sfid-20230718_095447_061273_BE0005FE 
+X-CRM114-Status: UNSURE (   9.24  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,58 +79,102 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgo+Pj4gd2hpbGUgaGVyZSB0cnksIHVzaW5nIElORk8gd2l0aCBJTkZPKDB4ZWY0MDE4LCAw
-LCAwLCAwKSwgdGhvc2UKPj4+IHBhcmFtZXRlcnMgc2hhbGwgYmUgZGlzY292ZXJlZCBhdCBydW4t
-dGltZSwgc28gd2UgcHJlcGFyZSB0byBnZXQgcmlkIAo+Pj4gb2YKPj4+IGV4cGxpY2l0bHkgc2V0
-dGluZyB0aGVtIHNvb25lciBvciBsYXRlci4KPj4gCj4+IFRoaXMgaXMgYW4gZW50cnkgbWF0Y2hp
-bmcgdmFyaW91cyBmbGFzaCBmYW1pbGllcyBmcm9tIFdpbmJvbmQsIHNlZSBteQo+PiByZXBseSBp
-biB2MS4gSSdtIG5vdCBzdXJlIHdlIHNob3VsZCByZW1vdmUgdGhlc2UgYXMgd2UgY291bGQgYnJl
-YWsgdGhlCj4+IG9sZGVyIG9uZXMsIHdoaWNoIG1pZ2h0IG9yIG1pZ2h0IG5vdCBoYXZlIFNGRFAg
-dGFibGVzLiBXZSBkb24ndCBrbm93Lgo+IAo+IEknZCB0YWtlIHRoZSByaXNrIGFuZCBicmVhayB0
-aGUgb2xkZXIgb25lcyBpZiB0aGVyZSBhcmUgc29tZSB0aGF0IGRvbid0Cj4gZGVmaW5lIFNGRFAg
-aW5kZWVkLCBqdXN0IHRvIGhhbmRsZSB0aGUgY29uZmxpY3QgcHJvcGVybHkuIFdlIGNhbid0Cj4g
-ZW5jb3VyYWdlIGNvZGUgYmFzZWQgb24gYXNzdW1wdGlvbnMgb3RoZXJ3aXNlIHdlJ2xsIGdldCBi
-YWNrIHRvIHRoZQo+IGtub3R0ZWQgc3BpLW5vciBjb2RlIHRoYXQgd2UgdHJpZWQgdG8gdW50aWUg
-aW4gdGhlIGxhc3QgeWVhcnMuCgpXYWl0IGEgbWludXRlLCBub3cgSSdtIHRoZSBtb3JlIGNvbnNl
-cnZhdGl2ZSBvbmUgb2YgdGhlIGJvdGggb2YKdXM/ICg6CgpKb2tlcyBhc2lkZSwgYmFzaWNhbGx5
-IHlvdSBhcmUgc2F5aW5nIHRoYXQgaWYgdGhlcmUgYXJlIHR3byBmbGFzaGVzCndpdGggdGhlIHNh
-bWUgaWQsIG9uZSBzdXBwb3J0cyBKRURFQyBvbmUgZG9lc24ndCwgd2UgY2FuIGJyYWtlIHRoZQps
-YXR0ZXIgb25lLgoKPj4+PiAtwqDCoMKgwqDCoMKgwqAgTk9fU0ZEUF9GTEFHUyhTRUNUXzRLKSB9
-LAo+PiAKPj4gVGh1cywgSSdkIGFsc28ga2VlcCB0aGlzIG9uZS4KPj4gCj4gCj4gS2VlcGluZyB0
-aGlzIG9uZSBkb2VzIG5vdCBoYXZlIHRoZSBlZmZlY3QgdGhhdCB5b3Ugd2FudCBhcyBTRUNUXzRL
-IGlzCj4gdXNlZCBpbiBzcGlfbm9yX25vX3NmZHBfaW5pdF9wYXJhbXMoKSB3aGljaCBpcyBub3Qg
-Y2FsbGVkIHdoZW4KPiBQQVJTRV9TRkRQIGlzIHNldCwgd2hpY2ggbWFrZXMgcGVyZmVjdGx5IHNl
-bnNlLiBMZXQncyBkcm9wIHRoaXMgYW5kIGlmCj4gYnVncyB3aWxsIGJlIHJlcG9ydGVkLCBJIGNv
-bW1pdCBJJ2xsIGZpeCB0aGVtIGluIHRoZSBzYW1lIHJlbGVhc2UgCj4gY3ljbGUuCgpNaGgsIEkg
-c2hvdWxkIGhhdmUgYmVlbiBtb3JlIGN1cmlvdXMgdG8gd2h5IExpbnVzIG5lZWRlZCB0aGUgUEFS
-U0VfU0ZEUApmbGFnIGluIHRoZSBmaXJzdCBwbGFjZS4gVGFraW5nIGEgY2xvc2VyIGxvb2ssIHRo
-YXQgaXMgYmVjYXVzZSBpbiB0aGUKbGVnYWN5IGJlaGF2aW9yLCB0aGUgU0ZEUCBpcyBvbmx5IHJl
-YWQgaWYgdGhlIGNoaXAgc3VwcG9ydHMgZHVhbCBvcgpxdWFkIHJlYWQgKHdoYXRldmVyIHRoZSBy
-YXRpb25hbGUgd2FzIGZvciB0aGF0KS4KCkFsc28sIGlmIFBBUlNFX1NGRFAgaXMgc2V0LCBub25l
-IG9mIHRoZSBub19zZmRwX2ZsYWdzIGFyZSBldmVyIGhhbmRsZWQuCklmIHRoZSBjaGlwIGRvZXNu
-J3Qgc3VwcG9ydCB0aGUgU0ZEUCBpcyB3aWxsIGp1c3QgZmFpbCBwcm9iaW5nLgoKQXMgSSdtIHJl
-YWRpbmcgdGhlIGNvZGUgcmlnaHQgbm93LCBmb3IgdGhlIG5ldyBiZWhhdmlvcgppdCBpcyBlaXRo
-ZXIKICAqIGV4cGVjdCB0aGUgZmxhc2ggc3VwcG9ydHMgU0ZEUCwgaWYgbm90LCBwcm9iZSBmYWls
-cwogICogZXhwZWN0IHRoZSBmbGFzaCB0byBkb24ndCBzdXBwb3J0IFNGRFAsIG5vIFNGRFAgaXMg
-ZXZlciByZWFkIGF0IGFsbAoKU2hvdWxkbid0IHdlIGhhbmRsZSB0aGUgdGhpcmQgY2FzZSBpbiB0
-aGUgbmV3IGJlaGF2aW9yLCB0b286CiAgKiBzdGFydCB3aXRoIHRoZSBzdGF0aWMgZGF0YSB3ZSBo
-YXZlIGFuZCB0cnkgcmVhZGluZyBTRkRQIHRvIAphbWVuZC9jb3JyZWN0IGl0LgoKSWYgbm90LCB3
-aWxsIHlvdSBhY2NlcHQgYnJlYWthZ2UgZm9yIGZ1dHVyZSBmbGFzaGVzLCB0b28/IExvb2tpbmcg
-YXQgCndpbmJvbmQuYwpmb3IgZXhhbXBsZSwgSSBndWVzcyBhbGwgY2hpcHMgd2l0aCAweGVmNDAu
-LiAweGVmNTAuLiBhbmQgMHhlZjYwLi4gCnN1cHBvcnRzClNGRFAgbm93YWRheXMgYW5kIG1vc3Qg
-b2YgdGhlbSBvbmx5IGhhdmUgU0VDVF80SyBzZXQuCgo+IElmIGJvdGggb2YgeW91IGFncmVlLCBJ
-J2xsIGFtZW5kIExpbnVzJ3MgdjQgcGF0Y2ggd2hlbiBhcHBseWluZy4KClNvIGl0IHdvdWxkIGJl
-IHRoZSBmaXJzdCBjaGlwIHdpdGhvdXQgZmxhZ3MgYXQgYWxsPyBUaGVuIHdlIGNvdWxkCmRyb3Ag
-dGhlIGVudHJ5IGVudGlyZWx5IDopIEFuZCBpZiB3ZSBkbyB0aGlzLCB0aGVuIHdlIHNob3VsZCBh
-bHNvCmRyb3AgYWxsIHRoZSBvdGhlciBlbnRyaWVzIGZvciB0aGUgbmV3ZXIgd2luYm9uZCBmbGFz
-aGVzLgoKSWYgeW91IGRlY2lkZSB0byBicmVhayBvbGRlciBmbGFzaGVzLCB0aGVuIEknZCBwcmVm
-ZXIgdG8gYWxzbyBkcm9wCnRoZSBuX3NlY3RvcnMgYW5kIHNlY3Rvcl9zaXplLCBpLmUuIElORk8o
-MHhlZi4uLi4sIDAsIDAsIDApLgoKLW1pY2hhZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+The emulate_io_failures debugfs entry controls both write
+failure and erase failure. This patch split io_failures
+to write_failure and erase_failure.
+
+Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+---
+ drivers/mtd/ubi/debug.c | 13 +++++++++----
+ drivers/mtd/ubi/debug.h | 14 ++++++++------
+ 2 files changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 9ca584da32c6..7826bc8166e8 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -14,7 +14,8 @@
+ 
+ #ifdef CONFIG_MTD_UBI_FAULT_INJECTION
+ static DECLARE_FAULT_ATTR(fault_bitflips_attr);
+-static DECLARE_FAULT_ATTR(fault_io_failures_attr);
++static DECLARE_FAULT_ATTR(fault_write_failure_attr);
++static DECLARE_FAULT_ATTR(fault_erase_failure_attr);
+ static DECLARE_FAULT_ATTR(fault_power_cut_attr);
+ 
+ #define FAIL_ACTION(name, fault_attr)			\
+@@ -24,7 +25,8 @@ bool should_fail_##name(void)				\
+ }
+ 
+ FAIL_ACTION(bitflips,		fault_bitflips_attr)
+-FAIL_ACTION(io_failures,	fault_io_failures_attr)
++FAIL_ACTION(write_failure,	fault_write_failure_attr)
++FAIL_ACTION(erase_failure,	fault_erase_failure_attr)
+ FAIL_ACTION(power_cut,		fault_power_cut_attr)
+ #endif
+ 
+@@ -245,8 +247,11 @@ static void dfs_create_fault_entry(struct dentry *parent)
+ 	fault_create_debugfs_attr("emulate_bitflips", dir,
+ 				  &fault_bitflips_attr);
+ 
+-	fault_create_debugfs_attr("emulate_io_failures", dir,
+-				  &fault_io_failures_attr);
++	fault_create_debugfs_attr("emulate_write_failure", dir,
++				  &fault_write_failure_attr);
++
++	fault_create_debugfs_attr("emulate_erase_failure", dir,
++				  &fault_erase_failure_attr);
+ 
+ 	fault_create_debugfs_attr("emulate_power_cut", dir,
+ 				  &fault_power_cut_attr);
+diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+index fc4234c9a90a..6bc698b38e35 100644
+--- a/drivers/mtd/ubi/debug.h
++++ b/drivers/mtd/ubi/debug.h
+@@ -92,10 +92,12 @@ static inline int ubi_dbg_erase_failure(const struct ubi_device *ubi)
+ /* Emulate bit-flips */
+ #define MASK_BITFLIPS		(1 << 3)
+ /* Emulates -EIO during write/erase */
+-#define MASK_IO_FAILURE		(1 << 4)
++#define MASK_WRITE_FAILURE	(1 << 4)
++#define MASK_ERASE_FAILURE	(1 << 5)
+ 
+ extern bool should_fail_bitflips(void);
+-extern bool should_fail_io_failures(void);
++extern bool should_fail_write_failure(void);
++extern bool should_fail_erase_failure(void);
+ extern bool should_fail_power_cut(void);
+ 
+ static inline bool ubi_dbg_fail_bitflip(const struct ubi_device *ubi)
+@@ -107,15 +109,15 @@ static inline bool ubi_dbg_fail_bitflip(const struct ubi_device *ubi)
+ 
+ static inline bool ubi_dbg_fail_write(const struct ubi_device *ubi)
+ {
+-	if (ubi->dbg.emulate_failures & MASK_IO_FAILURE)
+-		return should_fail_io_failures();
++	if (ubi->dbg.emulate_failures & MASK_WRITE_FAILURE)
++		return should_fail_write_failure();
+ 	return false;
+ }
+ 
+ static inline bool ubi_dbg_fail_erase(const struct ubi_device *ubi)
+ {
+-	if (ubi->dbg.emulate_failures & MASK_IO_FAILURE)
+-		return should_fail_io_failures();
++	if (ubi->dbg.emulate_failures & MASK_ERASE_FAILURE)
++		return should_fail_erase_failure();
+ 	return false;
+ }
+ 
+-- 
+2.31.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
