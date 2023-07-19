@@ -4,98 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2339EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 08:24:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4058BC0015E
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 08:24:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G08LERcN6vij7nIruepRlJdk9hsh/xg3YMwBbXq8KiU=; b=4D1fy18IqHvVqn
-	Erxo6sFSsHCB5p4Y/4pLL9nxBdcbKVOWzJeOhXMchSY4kxmE5wBwWv6QCQZf68ahFGEn2g+Sa9yc6
-	50I00agrKdACLkFM1cGpQnbNI7qPFRQxQmllSmEWH4DqKFzBHYdhoEA0Y4lKVkpsJwf0JMvtJrqkl
-	2YPIyNLrFq2HtEjtkMGG4wFalqFL9hH7NkU/O7QwXwRrCYOGK0vpg2ddiCTj+vk60m3ccd5Vwi/Ej
-	7mBw5CvQWwG+v3FPFAaMhiIk54kxW1ZEoxFjf0phxO4tLOtB9CUHLOBmUj2HKu5P+9w5vKjyOBXUi
-	dR+1wYH8iGGvdNh33I9g==;
+	List-Owner; bh=u2/GrcjWv3Q5o4f2K1rEcAna+2aQu6VZDdSUWoB2pWk=; b=2XTzij2T5ILwAV
+	5dPi26vMg2GZGMp10hVytWmAcPv0T+QeW+POdbYqxtseNeIU8a2J9nRa2GmcxwCsBgq65UIKg4TUi
+	Fi9PKm10dKx9K2f4cDuOP1Duj+WRcrDA2a5SDJdragcZUSTK4gJnaIkQ8pAAC3c5SQLgzvzEiPLOx
+	/jYdfiYSWeXiYdCISio9ymj22/n0sNbB2t8PYBtGlcNpAOfuch9TQ5iWa+s58wEuEtbDMJxZGStKq
+	E8Bo54hzBck5LsR0XAoJD5gO80orYupOHeb27OvCya7R4fv4/FWwPxZA3CFbE9F5cH/uDOhRnyKoj
+	ZvHkfbAj9CjJD401OIcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM2UC-006KUR-16;
-	Wed, 19 Jul 2023 08:24:40 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1qM2UM-006Kb6-0s;
+	Wed, 19 Jul 2023 08:24:50 +0000
+Received: from relay4-d.mail.gandi.net ([2001:4b98:dc4:8::224])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM2UB-006KTY-1Q
-	for linux-mtd@bombadil.infradead.org;
-	Wed, 19 Jul 2023 08:24:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=Ddt8mGGK6RdAWaQDXo7w6grNk+aXwpFVlDctMb9VeMM=; b=g2I5Rf5GHGzBcSm0h1AnTUx2HJ
-	qjY34A7jNfn5eBon80et46NBPua8LdtuLH7+PNnIe9fjY5v/pRqLnAlcEytRAY8VrbPWzXoSkNWiP
-	8cb4jMIkevdD9jaJYtQ2uvW/FfpUoIZXu+348cDmqBf98X0CJ1sXmhUd5B6IyNeTOQ2M/44k29ckt
-	TZjsYJfuCscCaOIBZPkDp1R/Eb25fG7lBtlpovzUpH79IKRalJTaUQnM8rf0S4SXWdw6M7hPlIb/3
-	tyYmZUOsqMYMVXZVNQ2APC3c/xCXdnc15dFF82/VttyOfycCj+vAZr/6k/19W79eq0SMtefwSX7Fq
-	I41hMavg==;
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLkKg-00BYXW-1O
+	id 1qM2UH-006KVn-0j
 	for linux-mtd@lists.infradead.org;
-	Tue, 18 Jul 2023 13:01:41 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5E2DC61579;
-	Tue, 18 Jul 2023 13:01:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E196C43391;
-	Tue, 18 Jul 2023 13:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689685263;
-	bh=m4l5ZQoIj7Re6eMR5Sl4bR7fm+Y5+NwLizkQOqwnLNc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UP0n7PK2DqJ2rYR+dFT1OVwzl3iGJxjJYr4DjdUXR5gKEww7gzV9N5NwfnmR3aMgu
-	 XjP51hne1Bd/cdZdQUBz1c5VKBVO9eqX12yQ7jERyAktlvIwmjtvvrvbdUSrl9TEPC
-	 UjLzPm4CX1XgyrbBoTNo+zsiKA06yhnhqCtVHyb8sNDNCF0aa53Zvr4Iihawiy/Mjq
-	 aZvj606amYLZxAdxA2K6HQ4CPkn1O4QalesB4YqqynUqW+pY23s4fU6/047rFptspf
-	 5YtY4Hho6JKXUnovcc/DX/wiij7dtuPho2diJdjL8S0NnPASs3bOM/UZ8BXNPsV95Y
-	 EniiH9ZFBtqUA==
-From: Ard Biesheuvel <ardb@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Haren Myneni <haren@us.ibm.com>,
-	Nick Terrell <terrelln@fb.com>,
-	Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	qat-linux@intel.com,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: [RFC PATCH 20/21] crypto: deflate - implement acomp API directly
-Date: Tue, 18 Jul 2023 14:58:46 +0200
-Message-Id: <20230718125847.3869700-21-ardb@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
-References: <20230718125847.3869700-1-ardb@kernel.org>
+	Wed, 19 Jul 2023 08:24:47 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 124F1E0002;
+	Wed, 19 Jul 2023 08:24:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1689755081;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EsnpzyS72dIuy3FSCQ5K5izLCdVfWbKWTbB/+AN5rrU=;
+	b=jzwqRz2IF+NuGGWLP3Np2+tR7UMt+htdi3mSC8hfZaGVQ4VVZsHjpLZYLe+iGpw3f7MAqB
+	3wQducze/UQZJEbKZxpjp7R2Va4vHYCBW4oBcOD6/MdIGQ4gh2MDihMfkuLds+5SrX3AHz
+	k33RKiUw9Da2RRKzDG7d+CsiKlH0p1q5cpVPj+Fayksnfy2y5MVI4oe44eUQ6ujoXgYfnY
+	GLuusF6BbuBjD4nq98NqU2QVHFBmUmzggwiUqviHBcd+BeRj4rawuBpdCb0Qy4HqiWP8xz
+	eiyNzbZQPUYOHdjG76Ntr2QPHNfRsQuAReYkCq3pS0bCAtI9OoLWeE1vIg8wMQ==
+Date: Wed, 19 Jul 2023 10:24:38 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>, Kamal Dasu
+ <kamal.dasu@broadcom.com>, linux-mtd@lists.infradead.org,
+ bcm-kernel-feedback-list@broadcom.com, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH] mtd: rawnand: brcmnand: propagate init error
+ -EPROBE_DEFER up
+Message-ID: <20230719102438.73f8f353@xps-13>
+In-Reply-To: <20230718163331.9116-1-zajec5@gmail.com>
+References: <20230718163331.9116-1-zajec5@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10915; i=ardb@kernel.org; h=from:subject; bh=m4l5ZQoIj7Re6eMR5Sl4bR7fm+Y5+NwLizkQOqwnLNc=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIWVbT+uu5R87mxPEwx8u5nZnSl7jtsnm1/lPazr8G+afm aTn/vFKRykLgxgHg6yYIovA7L/vdp6eKFXrPEsWZg4rE8gQBi5OAZjIrysMv1m9zq/T/r3hn01F Fgvv9CVvU5TPMzqurNt09032qeiMX3IM/5OirwUddDodvGTmlf56X19Rp6yFEaI5UyQ4zYPDBM4 2swMA
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230718_140138_929738_B7B11670 
-X-CRM114-Status: GOOD (  26.07  )
+X-CRM114-CacheID: sfid-20230719_012445_424904_D500FEEA 
+X-CRM114-Status: GOOD (  14.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,412 +72,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Drop the scomp implementation of deflate, which can only operate on
-contiguous in- and output buffer, and replace it with an implementation
-of acomp directly. This implementation walks the scatterlists, removing
-the need for the caller to use scratch buffers to present the input and
-output in a contiguous manner.
-
-This is intended for use by the IPcomp code, which currently needs to
-'linearize' SKBs in order for the compression to be able to consume the
-input in a single chunk.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- crypto/deflate.c             | 315 +++++++-------------
- include/crypto/scatterwalk.h |   2 +-
- 2 files changed, 113 insertions(+), 204 deletions(-)
-
-diff --git a/crypto/deflate.c b/crypto/deflate.c
-index 0955040ca9e64146..112683473df2b588 100644
---- a/crypto/deflate.c
-+++ b/crypto/deflate.c
-@@ -6,246 +6,154 @@
-  * by IPCOMP (RFC 3173 & RFC 2394).
-  *
-  * Copyright (c) 2003 James Morris <jmorris@intercode.com.au>
-- *
-- * FIXME: deflate transforms will require up to a total of about 436k of kernel
-- * memory on i386 (390k for compression, the rest for decompression), as the
-- * current zlib kernel code uses a worst case pre-allocation system by default.
-- * This needs to be fixed so that the amount of memory required is properly
-- * related to the  winbits and memlevel parameters.
-- *
-- * The default winbits of 11 should suit most packets, and it may be something
-- * to configure on a per-tfm basis in the future.
-- *
-- * Currently, compression history is not maintained between tfm calls, as
-- * it is not needed for IPCOMP and keeps the code simpler.  It can be
-- * implemented if someone wants it.
-+ * Copyright (c) 2023 Google, LLC. <ardb@kernel.org>
-  */
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/crypto.h>
- #include <linux/zlib.h>
--#include <linux/vmalloc.h>
--#include <linux/interrupt.h>
--#include <linux/mm.h>
- #include <linux/net.h>
--#include <crypto/internal/scompress.h>
-+#include <linux/scatterlist.h>
-+#include <crypto/scatterwalk.h>
-+#include <crypto/internal/acompress.h>
- 
- #define DEFLATE_DEF_LEVEL		Z_DEFAULT_COMPRESSION
- #define DEFLATE_DEF_WINBITS		11
- #define DEFLATE_DEF_MEMLEVEL		MAX_MEM_LEVEL
- 
--struct deflate_ctx {
--	struct z_stream_s comp_stream;
--	struct z_stream_s decomp_stream;
-+struct deflate_req_ctx {
-+	struct z_stream_s stream;
-+	u8 workspace[];
- };
- 
--static int deflate_comp_init(struct deflate_ctx *ctx)
-+static int deflate_process(struct acomp_req *req, struct z_stream_s *stream,
-+			   int (*process)(struct z_stream_s *, int))
- {
--	int ret = 0;
--	struct z_stream_s *stream = &ctx->comp_stream;
-+	unsigned int slen = req->slen;
-+	unsigned int dlen = req->dlen;
-+	struct scatter_walk src, dst;
-+	unsigned int scur, dcur;
-+	int ret;
- 
--	stream->workspace = vzalloc(zlib_deflate_workspacesize(
--				-DEFLATE_DEF_WINBITS, DEFLATE_DEF_MEMLEVEL));
--	if (!stream->workspace) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	stream->avail_in = stream->avail_out = 0;
-+
-+	scatterwalk_start(&src, req->src);
-+	scatterwalk_start(&dst, req->dst);
-+
-+	scur = dcur = 0;
-+
-+	do {
-+		if (stream->avail_in == 0) {
-+			if (scur) {
-+				slen -= scur;
-+
-+				scatterwalk_unmap(stream->next_in - scur);
-+				scatterwalk_advance(&src, scur);
-+				scatterwalk_done(&src, 0, slen);
-+			}
-+
-+			scur = scatterwalk_clamp(&src, slen);
-+			if (scur) {
-+				stream->next_in = scatterwalk_map(&src);
-+				stream->avail_in = scur;
-+			}
-+		}
-+
-+		if (stream->avail_out == 0) {
-+			if (dcur) {
-+				dlen -= dcur;
-+
-+				scatterwalk_unmap(stream->next_out - dcur);
-+				scatterwalk_advance(&dst, dcur);
-+				scatterwalk_done(&dst, 1, dlen);
-+			}
-+
-+			dcur = scatterwalk_clamp(&dst, dlen);
-+			if (!dcur)
-+				break;
-+
-+			stream->next_out = scatterwalk_map(&dst);
-+			stream->avail_out = dcur;
-+		}
-+
-+		ret = process(stream, (slen == scur) ? Z_FINISH : Z_SYNC_FLUSH);
-+	} while (ret == Z_OK);
-+
-+	if (scur)
-+		scatterwalk_unmap(stream->next_in - scur);
-+	if (dcur)
-+		scatterwalk_unmap(stream->next_out - dcur);
-+
-+	if (ret != Z_STREAM_END)
-+		return -EINVAL;
-+
-+	req->dlen = stream->total_out;
-+	return 0;
-+}
-+
-+static int deflate_compress(struct acomp_req *req)
-+{
-+	struct deflate_req_ctx *ctx = acomp_request_ctx(req);
-+	struct z_stream_s *stream = &ctx->stream;
-+	int ret;
-+
-+        if (!req->src || !req->slen || !req->dst || !req->dlen)
-+                return -EINVAL;
-+
-+	stream->workspace = ctx->workspace;
- 	ret = zlib_deflateInit2(stream, DEFLATE_DEF_LEVEL, Z_DEFLATED,
- 	                        -DEFLATE_DEF_WINBITS, DEFLATE_DEF_MEMLEVEL,
- 	                        Z_DEFAULT_STRATEGY);
--	if (ret != Z_OK) {
--		ret = -EINVAL;
--		goto out_free;
--	}
--out:
-+	if (ret != Z_OK)
-+		return -EINVAL;
-+
-+	ret = deflate_process(req, stream, zlib_deflate);
-+	zlib_deflateEnd(stream);
- 	return ret;
--out_free:
--	vfree(stream->workspace);
--	goto out;
- }
- 
--static int deflate_decomp_init(struct deflate_ctx *ctx)
-+static int deflate_decompress(struct acomp_req *req)
- {
--	int ret = 0;
--	struct z_stream_s *stream = &ctx->decomp_stream;
-+	struct deflate_req_ctx *ctx = acomp_request_ctx(req);
-+	struct z_stream_s *stream = &ctx->stream;
-+	int ret;
- 
--	stream->workspace = vzalloc(zlib_inflate_workspacesize());
--	if (!stream->workspace) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+        if (!req->src || !req->slen || !req->dst || !req->dlen)
-+                return -EINVAL;
-+
-+	stream->workspace = ctx->workspace;
- 	ret = zlib_inflateInit2(stream, -DEFLATE_DEF_WINBITS);
--	if (ret != Z_OK) {
--		ret = -EINVAL;
--		goto out_free;
--	}
--out:
--	return ret;
--out_free:
--	vfree(stream->workspace);
--	goto out;
--}
-+	if (ret != Z_OK)
-+		return -EINVAL;
- 
--static void deflate_comp_exit(struct deflate_ctx *ctx)
--{
--	zlib_deflateEnd(&ctx->comp_stream);
--	vfree(ctx->comp_stream.workspace);
--}
--
--static void deflate_decomp_exit(struct deflate_ctx *ctx)
--{
--	zlib_inflateEnd(&ctx->decomp_stream);
--	vfree(ctx->decomp_stream.workspace);
--}
--
--static int __deflate_init(void *ctx)
--{
--	int ret;
--
--	ret = deflate_comp_init(ctx);
--	if (ret)
--		goto out;
--	ret = deflate_decomp_init(ctx);
--	if (ret)
--		deflate_comp_exit(ctx);
--out:
-+	ret = deflate_process(req, stream, zlib_inflate);
-+	req->dlen = stream->total_out;
-+	zlib_inflateEnd(stream);
- 	return ret;
- }
- 
--static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
--{
--	struct deflate_ctx *ctx;
--	int ret;
-+static struct acomp_alg alg = {
-+	.compress		= deflate_compress,
-+	.decompress		= deflate_decompress,
- 
--	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
--	if (!ctx)
--		return ERR_PTR(-ENOMEM);
--
--	ret = __deflate_init(ctx);
--	if (ret) {
--		kfree(ctx);
--		return ERR_PTR(ret);
--	}
--
--	return ctx;
--}
--
--static void __deflate_exit(void *ctx)
--{
--	deflate_comp_exit(ctx);
--	deflate_decomp_exit(ctx);
--}
--
--static void deflate_free_ctx(struct crypto_scomp *tfm, void *ctx)
--{
--	__deflate_exit(ctx);
--	kfree_sensitive(ctx);
--}
--
--static int __deflate_compress(const u8 *src, unsigned int slen,
--			      u8 *dst, unsigned int *dlen, void *ctx)
--{
--	int ret = 0;
--	struct deflate_ctx *dctx = ctx;
--	struct z_stream_s *stream = &dctx->comp_stream;
--
--	ret = zlib_deflateReset(stream);
--	if (ret != Z_OK) {
--		ret = -EINVAL;
--		goto out;
--	}
--
--	stream->next_in = (u8 *)src;
--	stream->avail_in = slen;
--	stream->next_out = (u8 *)dst;
--	stream->avail_out = *dlen;
--
--	ret = zlib_deflate(stream, Z_FINISH);
--	if (ret != Z_STREAM_END) {
--		ret = -EINVAL;
--		goto out;
--	}
--	ret = 0;
--	*dlen = stream->total_out;
--out:
--	return ret;
--}
--
--static int deflate_scompress(struct crypto_scomp *tfm, const u8 *src,
--			     unsigned int slen, u8 *dst, unsigned int *dlen,
--			     void *ctx)
--{
--	return __deflate_compress(src, slen, dst, dlen, ctx);
--}
--
--static int __deflate_decompress(const u8 *src, unsigned int slen,
--				u8 *dst, unsigned int *dlen, void *ctx)
--{
--
--	int ret = 0;
--	struct deflate_ctx *dctx = ctx;
--	struct z_stream_s *stream = &dctx->decomp_stream;
--
--	ret = zlib_inflateReset(stream);
--	if (ret != Z_OK) {
--		ret = -EINVAL;
--		goto out;
--	}
--
--	stream->next_in = (u8 *)src;
--	stream->avail_in = slen;
--	stream->next_out = (u8 *)dst;
--	stream->avail_out = *dlen;
--
--	ret = zlib_inflate(stream, Z_SYNC_FLUSH);
--	/*
--	 * Work around a bug in zlib, which sometimes wants to taste an extra
--	 * byte when being used in the (undocumented) raw deflate mode.
--	 * (From USAGI).
--	 */
--	if (ret == Z_OK && !stream->avail_in && stream->avail_out) {
--		u8 zerostuff = 0;
--		stream->next_in = &zerostuff;
--		stream->avail_in = 1;
--		ret = zlib_inflate(stream, Z_FINISH);
--	}
--	if (ret != Z_STREAM_END) {
--		ret = -EINVAL;
--		goto out;
--	}
--	ret = 0;
--	*dlen = stream->total_out;
--out:
--	return ret;
--}
--
--static int deflate_sdecompress(struct crypto_scomp *tfm, const u8 *src,
--			       unsigned int slen, u8 *dst, unsigned int *dlen,
--			       void *ctx)
--{
--	return __deflate_decompress(src, slen, dst, dlen, ctx);
--}
--
--static struct scomp_alg scomp = {
--	.alloc_ctx		= deflate_alloc_ctx,
--	.free_ctx		= deflate_free_ctx,
--	.compress		= deflate_scompress,
--	.decompress		= deflate_sdecompress,
--	.base			= {
--		.cra_name	= "deflate",
--		.cra_driver_name = "deflate-scomp",
--		.cra_module	 = THIS_MODULE,
--	}
-+	.base.cra_name		= "deflate",
-+	.base.cra_driver_name	= "deflate-generic",
-+	.base.cra_module	= THIS_MODULE,
- };
- 
- static int __init deflate_mod_init(void)
- {
--	return crypto_register_scomp(&scomp);
-+	size_t size = max(zlib_inflate_workspacesize(),
-+			  zlib_deflate_workspacesize(-DEFLATE_DEF_WINBITS,
-+						     DEFLATE_DEF_MEMLEVEL));
-+
-+	alg.reqsize = struct_size_t(struct deflate_req_ctx, workspace, size);
-+	return crypto_register_acomp(&alg);
- }
- 
- static void __exit deflate_mod_fini(void)
- {
--	crypto_unregister_scomp(&scomp);
-+	crypto_unregister_acomp(&alg);
- }
- 
- subsys_initcall(deflate_mod_init);
-@@ -254,4 +162,5 @@ module_exit(deflate_mod_fini);
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Deflate Compression Algorithm for IPCOMP");
- MODULE_AUTHOR("James Morris <jmorris@intercode.com.au>");
-+MODULE_AUTHOR("Ard Biesheuvel <ardb@kernel.org>");
- MODULE_ALIAS_CRYPTO("deflate");
-diff --git a/include/crypto/scatterwalk.h b/include/crypto/scatterwalk.h
-index 32fc4473175b1d81..46dc7b21bf9ecbd0 100644
---- a/include/crypto/scatterwalk.h
-+++ b/include/crypto/scatterwalk.h
-@@ -51,7 +51,7 @@ static inline struct page *scatterwalk_page(struct scatter_walk *walk)
- 	return sg_page(walk->sg) + (walk->offset >> PAGE_SHIFT);
- }
- 
--static inline void scatterwalk_unmap(void *vaddr)
-+static inline void scatterwalk_unmap(const void *vaddr)
- {
- 	kunmap_local(vaddr);
- }
--- 
-2.39.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUmFmYcWCLAoKemFqZWM1QGdtYWlsLmNvbSB3cm90ZSBvbiBUdWUsIDE4IEp1bCAyMDIzIDE4
+OjMzOjMxICswMjAwOgoKPiBGcm9tOiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+
+Cj4gCj4gTVREIHN1YnN5c3RlbSBtYXkgcmV0dXJuIC1FUFJPQkVfREVGRVIgaWYgc29tZXRoaW5n
+IGlzbid0IHJlYWR5IHlldC4KPiBJdCdzIGltcG9ydGFudCB0byBwYXNzIHRoYXQgZXJyb3IgdXAg
+c28gZGV2aWNlIHdpbGwgZ2V0IHByb2JlZCBsYXRlci4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBSYWZh
+xYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+Cj4gLS0tCj4gIGRyaXZlcnMvbXRkL25hbmQv
+cmF3L2JyY21uYW5kL2JyY21uYW5kLmMgfCAyICsrCj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2Vy
+dGlvbnMoKykKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQv
+YnJjbW5hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMKPiBp
+bmRleCAzOTY2MWUyM2Q3ZDQuLmNjYTJiMTUzYWUyNiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvYnJjbW5hbmQvYnJjbW5hbmQuYwo+IEBAIC0zMjQ1LDYgKzMyNDUsOCBAQCBpbnQgYnJjbW5h
+bmRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwgc3RydWN0IGJyY21uYW5kX3Nv
+YyAqc29jKQo+ICAKPiAgCQkJcmV0ID0gYnJjbW5hbmRfaW5pdF9jcyhob3N0LCBOVUxMKTsKPiAg
+CQkJaWYgKHJldCkgewo+ICsJCQkJaWYgKHJldCA9PSAtRVBST0JFX0RFRkVSKQo+ICsJCQkJCWdv
+dG8gZXJyOwoKRG9uJ3Qgd2UgbmVlZCBhbiBvZl9ub2RlX3B1dChjaGlsZCkgaGVyZT8KCj4gIAkJ
+CQlkZXZtX2tmcmVlKGRldiwgaG9zdCk7Cj4gIAkJCQljb250aW51ZTsgLyogVHJ5IGFsbCBjaGlw
+LXNlbGVjdHMgKi8KPiAgCQkJfQoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
