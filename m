@@ -4,46 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20133EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 11:45:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4158DC001B0
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 13:16:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3DVCXMk7wgYqGgLxA8Nu1iCuk8kaUGXs3+qly0Ovpy4=; b=GWaHqt91HmgeJq
-	WBqtzxgH92LYTf1QaNHCa8TBJiAjtyOeExHlOJDoHgeFuZalS08OLKSUNNauP9FrBx0XvOtJb67kH
-	YMCpLaAljrnRFSHSy6O/eAQb9FQDrgNwGMV+mNJQeLr7z0kDAcZl5uMMCVUxN44oVWSmFhozSvVoc
-	UseqTVU0F7r/9XlFSG424lcjEHa0cDUawT4AT1yK5XeUh98/m+fySMjJALNT8WvFFm1PDhieTayaP
-	z2JIMo0taaodYkIi4sZbsZLblwy3aUYaYEiUoiR45ToDipxP8LySjqtagslCoRYu4uzmyo9rwRvmH
-	BJIpSSV0ApEgXWp8iKvg==;
+	List-Owner; bh=ooxlayT59gwEN0z8Ka7EDzv4KcCRlLNjK53IiscCwvI=; b=hkE6T1IR9dvzhL
+	nPj5uuVOULbfT4/RI71y9r4bxhHwhrApbYk07VZa5fY9zvwWz5HQly2lWlmirgT3jqownXA0l/J7X
+	ZowshiVTG8jFYt6dMFh/5XYNp5BAMI6PotiaL9rd4uTRD8EkqrfSasZL0gbpGjevZdMZtYzpMfYZm
+	a/2pKm5muY1Vr8la5ukcQ/TyTrVYZwTXF1ZqbSJkcaK+Rr3AGpPFsqiJYok2uhyGaEKvqYtpN9HrP
+	bMt0sRCRP9ftjXUDSlQc401woeohCpDrD29cCZheuz03GGxhYG47ks9mMj5K4rvda4VWV+lppjOBk
+	khBJ5BUVJL8XSrWbk02A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM5c2-007J3T-1x;
-	Wed, 19 Jul 2023 11:44:58 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1qM725-007X30-0Z;
+	Wed, 19 Jul 2023 13:15:57 +0000
+Received: from unicorn.mansr.com ([2001:8b0:ca0d:1::2])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM5by-007J2P-0r
+	id 1qM722-007X0M-0f
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Jul 2023 11:44:56 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 69ED920007;
-	Wed, 19 Jul 2023 11:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1689767090;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+1elfCls/87MTi+eYwm3wYorwbH6Ef6dJRi4wxk4Sh4=;
-	b=GWLtlTHcB0MozJzX5pZFkD4txrLFsy3qONC8X/ZqCUaqBnyYj/rgu/bcWM/aAF27TsgbSo
-	D9vtVN/9hSTnehCpAaoaAvjL4Ioesvw6HJivMj7QbjQvmpwmrpyBHTQjI3ol5DlUfxFHtb
-	7n91dWcl+TQEaNP4+/A2U/XVXxVGC66jdFfIb84HAoaUs2/2kHxq9V/056PebpB/S9XjxO
-	cyHYeOOL5+CqlHgT6mHPOQT2obXsG4JSfNSgHF1zWcnNIhnc7tzkNfj7NYQZ5pu0A6BnKO
-	B2x8jgDsjygXyD3MRL3vcsAlbnnfoFiArKGps4F1H1bwH5eGWFgMmZUAhtxf8A==
-Date: Wed, 19 Jul 2023 13:44:45 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>
+	Wed, 19 Jul 2023 13:15:55 +0000
+Received: from raven.mansr.com (raven.mansr.com [IPv6:2001:8b0:ca0d:1::3])
+	by unicorn.mansr.com (Postfix) with ESMTPS id 9594315360;
+	Wed, 19 Jul 2023 14:15:48 +0100 (BST)
+Received: by raven.mansr.com (Postfix, from userid 51770)
+	id 86BD1219B41; Wed, 19 Jul 2023 14:15:48 +0100 (BST)
+From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
  Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
@@ -53,26 +43,22 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <jaimeliao.tw@gmail.com>, Alexander Shiyan <eagle.alexander923@gmail.com>,
  Domenico Punzo <dpunzo@micron.com>, Bean Huo <beanhuo@micron.com>
 Subject: Re: [PATCH v2 3/3] mtd: rawnand: Support for sequential cache reads
-Message-ID: <20230719134445.08476f5c@xps-13>
-In-Reply-To: <yw1xttu0xnf2.fsf@mansr.com>
 References: <20230112093637.987838-1-miquel.raynal@bootlin.com>
 	<20230112093637.987838-4-miquel.raynal@bootlin.com>
-	<yw1xfs6j4k6q.fsf@mansr.com>
-	<20230716174917.3a9ca7a7@xps-13>
-	<yw1x7cqzzr4d.fsf@mansr.com>
-	<20230717091900.52ed815a@xps-13>
-	<yw1x351mznr0.fsf@mansr.com>
-	<20230717183645.32ef90b0@xps-13>
-	<yw1xy1jdxqot.fsf@mansr.com>
-	<20230719102153.2ef93cfe@xps-13>
-	<yw1xttu0xnf2.fsf@mansr.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	<yw1xfs6j4k6q.fsf@mansr.com> <20230716174917.3a9ca7a7@xps-13>
+	<yw1x7cqzzr4d.fsf@mansr.com> <20230717091900.52ed815a@xps-13>
+	<yw1x351mznr0.fsf@mansr.com> <20230717183645.32ef90b0@xps-13>
+	<yw1xy1jdxqot.fsf@mansr.com> <20230719102153.2ef93cfe@xps-13>
+	<yw1xttu0xnf2.fsf@mansr.com> <20230719134445.08476f5c@xps-13>
+Date: Wed, 19 Jul 2023 14:15:48 +0100
+In-Reply-To: <20230719134445.08476f5c@xps-13> (Miquel Raynal's message of
+	"Wed, 19 Jul 2023 13:44:45 +0200")
+Message-ID: <yw1xpm4oxcsb.fsf@mansr.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230719_044454_730827_C995C1DA 
-X-CRM114-Status: GOOD (  38.31  )
+X-CRM114-CacheID: sfid-20230719_061554_385085_4946AB0F 
+X-CRM114-Status: GOOD (  33.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,81 +70,118 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTcOlbnMsCgptYW5zQG1hbnNyLmNvbSB3cm90ZSBvbiBXZWQsIDE5IEp1bCAyMDIzIDEwOjI2
-OjA5ICswMTAwOgoKPiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3
-cml0ZXM6Cj4gCj4gPiBIaSBNw6VucywKPiA+Cj4gPiBtYW5zQG1hbnNyLmNvbSB3cm90ZSBvbiBU
-dWUsIDE4IEp1bCAyMDIzIDE1OjAzOjE0ICswMTAwOgo+ID4gIAo+ID4+IE1pcXVlbCBSYXluYWwg
-PG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyaXRlczoKPiA+PiAgIAo+ID4+ID4gSGkgTcOl
-bnMsCj4gPj4gPgo+ID4+ID4gbWFuc0BtYW5zci5jb20gd3JvdGUgb24gTW9uLCAxNyBKdWwgMjAy
-MyAxNDoxMTozMSArMDEwMDoKPiA+PiA+ICAgIAo+ID4+ID4+IE1pcXVlbCBSYXluYWwgPG1pcXVl
-bC5yYXluYWxAYm9vdGxpbi5jb20+IHdyaXRlczoKPiA+PiA+PiAgICAgCj4gPj4gPj4gPiBTbywg
-SSBzaG91bGQgaGF2ZSBkb25lIHRoYXQgZWFybGllciBidXQsIGNvdWxkIHlvdSBwbGVhc2Ugc2xv
-dyB0aGUKPiA+PiA+PiA+IHdob2xlIG9wZXJhdGlvbiBkb3duLCBqdXN0IHRvIHNlZSBpZiB0aGVy
-ZSBpcyBzb21ldGhpbmcgd3Jvbmcgd2l0aCB0aGUKPiA+PiA+PiA+IHRpbWluZ3Mgb3IgaWYgd2Ug
-c2hvdWxkIGxvb2sgaW4gYW5vdGhlciBkaXJlY3Rpb24uCj4gPj4gPj4gPgo+ID4+ID4+ID4gTWF5
-YmUgeW91IGNvdWxkIGFkZCBhIGJvb2xlYW4gdG8gZmxhZyBpZiB0aGUgbGFzdCBDTUQgd2FzIGEK
-PiA+PiA+PiA+IFJFQURDQUNIRVNFUSwgUkVBRENBQ0hFU1RBUlQgb3IgUkVBRENBQ0hFRU5ELCBh
-bmQgaWYgdGhlIGZsYWcgaXMKPiA+PiA+PiA+IHRydWUsIHBsZWFzZSBnZXQgdGhlIGppZmZpZXMg
-YmVmb3JlIGFuZCBhZnRlciBlYWNoIHdhaXRyZHkgYW5kCj4gPj4gPj4gPiBkZWxheV9ucy4gRmlu
-YWxseSwgcGxlYXNlIHByaW50IHRoZSBleHBlY3RlZCBkZWxheSBhbmQgdGhlIGFjdHVhbCBvbmUK
-PiA+PiA+PiA+IGFuZCBjb21wYXJlIHRvIHNlZSBpZiBzb21ldGhpbmcgd2FzIHRvbyBmYXN0IGNv
-bXBhcmVkIHRvIHdoYXQgd2UKPiA+PiA+PiA+IGV4cGVjdGVkLiAgICAgIAo+ID4+ID4+IAo+ID4+
-ID4+IEJldHdlZW4gd2hpY2ggcG9pbnRzIGV4YWN0bHkgc2hvdWxkIHRoZSBkZWxheSBiZSBtZWFz
-dXJlZD8gIEFsc28sIHRoZXJlCj4gPj4gPj4gaXMgbm8gY29tbWFuZCBjYWxsZWQgUkVBRENBQ0hF
-U1RBUlQuICBEaWQgeW91IG1lYW4gUkVBRFNUQVJUIG9yCj4gPj4gPj4gc29tZXRoaW5nIGVsc2U/
-ICAgIAo+ID4+ID4KPiA+PiA+IFllYWgsIHdoYXRldmVyIGNvbW1hbmQgaXMgc3BlY2lmaWMgdG8g
-c2VxdWVudGlhbCBjYWNoZSByZWFkczoKPiA+PiA+IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29t
-L2xpbnV4L2xhdGVzdC9zb3VyY2UvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMjTDEy
-MTgKPiA+PiA+IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2Uv
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMjTDEyMjggICAgCj4gPj4gCj4gPj4gSSdt
-IHN0aWxsIG5vdCBzdXJlIHdoYXQgZXhhY3RseSB5b3Ugd2FudCB0byBtZSBtZWFzdXJlLiAgVGhl
-IHdhaXRyZHkgYW5kCj4gPj4gbmRlbGF5IGNvbWJpbmVkLCBlYWNoIHNlcGFyYXRlbHksIG9yIHNv
-bWV0aGluZyBlbHNlPwo+ID4+ICAgCj4gPgo+ID4gSSB3b3VsZCBsaWtlIHRvIGtub3csIGhvdyBt
-dWNoIHRpbWUgd2Ugc3BlbmQgd2FpdGluZyBpbiBib3RoIGNhc2VzLiAgCj4gCj4gV2hpY2ggImJv
-dGgiIGNhc2VzPwoKbmRlbGF5IGFuZCBtb3JlIGltcG9ydGFudGx5LCB3YWl0cmR5OgoKLS0tIGEv
-ZHJpdmVycy9tdGQvbmFuZC9yYXcvb21hcDIuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9v
-bWFwMi5jCkBAIC0yMTExLDYgKzIxMTEsNyBAQCBzdGF0aWMgaW50IG9tYXBfbmFuZF9leGVjX2lu
-c3RyKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCiAKICAgICAgICBzd2l0Y2ggKGluc3RyLT50eXBl
-KSB7CiAgICAgICAgY2FzZSBOQU5EX09QX0NNRF9JTlNUUjoKKyAgICAgICAgICAgICAgIC8vIHRy
-YWNlIHRoZSBvcGNvZGUKICAgICAgICAgICAgICAgIGlvd3JpdGU4KGluc3RyLT5jdHguY21kLm9w
-Y29kZSwKICAgICAgICAgICAgICAgICAgICAgICAgIGluZm8tPnJlZy5ncG1jX25hbmRfY29tbWFu
-ZCk7CiAgICAgICAgICAgICAgICBicmVhazsKQEAgLTIxMzUsMTYgKzIxMzYsMjEgQEAgc3RhdGlj
-IGludCBvbWFwX25hbmRfZXhlY19pbnN0cihzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAogICAgICAg
-ICAgICAgICAgYnJlYWs7CiAKICAgICAgICBjYXNlIE5BTkRfT1BfV0FJVFJEWV9JTlNUUjoKKyAg
-ICAgICAgICAgICAgIC8vIHN0YXJ0IHdhaXRyZHkKICAgICAgICAgICAgICAgIHJldCA9IGluZm8t
-PnJlYWR5X2dwaW9kID8KICAgICAgICAgICAgICAgICAgICAgICAgbmFuZF9ncGlvX3dhaXRyZHko
-Y2hpcCwgaW5mby0+cmVhZHlfZ3Bpb2QsIGluc3RyLT5jdHgud2FpdHJkeS50aW1lb3V0X21zKSA6
-CiAgICAgICAgICAgICAgICAgICAgICAgIG5hbmRfc29mdF93YWl0cmR5KGNoaXAsIGluc3RyLT5j
-dHgud2FpdHJkeS50aW1lb3V0X21zKTsKKyAgICAgICAgICAgICAgIC8vIGVuZAogICAgICAgICAg
-ICAgICAgaWYgKHJldCkKICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHJldDsKICAgICAg
-ICAgICAgICAgIGJyZWFrOwogICAgICAgIH0KIAotICAgICAgIGlmIChpbnN0ci0+ZGVsYXlfbnMp
-CisgICAgICAgaWYgKGluc3RyLT5kZWxheV9ucykgeworICAgICAgICAgICAgICAgLy8gc3RhcnQg
-ZGVsYXkKICAgICAgICAgICAgICAgIG5kZWxheShpbnN0ci0+ZGVsYXlfbnMpOworICAgICAgICAg
-ICAgICAgLy8gZW5kCisgICAgICAgfQogCiAgICAgICAgcmV0dXJuIDA7CiB9Cgo+ID4gSXMgdGhl
-cmUgc29tZXRoaW5nIHdyb25nIHdpdGggdGhlICJ3YWl0IHJlYWR5Ij8gQXMgd2UgY2Fubm90IG9i
-c2VydmUKPiA+IHRoZSB0aW1pbmdzIHdpdGggYSBzY29wZSwgYmVjYXVzZSB3ZSBhcmUgdXNpbmcg
-YSAic29mdCIgY29udHJvbGxlcgo+ID4gaW1wbGVtZW50YXRpb24gc29tZWhvdywgd2UgY2FuIGVh
-c2lseSBtZWFzdXJlIGhvdyBtdWNoIHRpbWUgd2Ugc3BlbmQKPiA+IGluIGVhY2ggb3BlcmF0aW9u
-IGJ5IG1lYXN1cmluZyB0aGUgdGltZSBiZWZvcmUgYW5kIGFmdGVyLgo+ID4KPiA+IFRoZXNlIGlu
-Zm9ybWF0aW9uIGFyZSBvbmx5IHVzZWZ1bCB3aGVuIHdlIGFyZSBkb2luZyBvcGVyYXRpb25zIHJl
-bGF0ZWQKPiA+IHRvIHNlcXVlbnRpYWwgcmVhZHMuICAKPiAKPiBJIGhhdmUgaG9va2VkIHVwIHNv
-bWUgc3BhcmUgR1BJT3MgdG8gYSBzY29wZSwgd2hpY2ggc2hvdWxkIGJlIG1vcmUKPiBhY2N1cmF0
-ZSAobmFub3NlY29uZCkgdGhhbiBzb2Z0d2FyZSB0aW1lc3RhbXBzLiAgQWxsIEkgbmVlZCB0byBr
-bm93IGlzCj4gd2hhdCB0byBtZWFzdXJlIGFuZCB3aGF0IHRvIGxvb2sgZm9yIGluIHRob3NlIG1l
-YXN1cmVtZW50cy4KCkdyZWF0LiBUaGUgb25seSBpc3N1ZSB3aXRoIHRoZSBzY29wZSBpcyB0aGUg
-ZmFjdCB0aGF0IHdlIG1pZ2h0IGFjdHVhbGx5Cmxvb2sgYXQgc29tZXRoaW5nIHRoYXQgaXMgbm90
-IGEgZmF1bHR5IHNlcXVlbnRpYWwgcmVhZCBvcC4gVW5sZXNzIHlvdQpoYWNrIGludG8gdGhlIGNv
-cmUgdG8gcGVyZm9ybSB0aGVzZSBpbiBhIGxvb3AgKHdpdGggYSBicnV0YWwgIndoaWxlCigxKSIp
-LiBCdXQgSSBkb24ndCB0aGluayB3ZSByZXF1aXJlIGJpZyBwcmVjaXNpb24gaGVyZSwgYXQgbGVh
-c3QgYXMgYQpmaXJzdCBzdGVwLCBsb29raW5nIGF0IHNvZnR3YXJlIHRpbWVzdGFtcHMgbGlrZSBo
-aW50ZWQgYWJvdmUgaXMgZW5vdWdoCnNvIHdlIGNhbiBlYXNpbHkgaWRlbnRpZnkgdGhlIGRpZmZl
-cmVudCBkZWxheXMgYW5kIGNvbXBhcmUgdGhlbSB3aXRoCm5hbmRfdGltaW5ncy5jLgoKUGxlYXNl
-IHVzZSB3aGF0ZXZlciBtZXRob2QgaXMgZWFzaWVyIGZvciB5b3UuCgpUaGFua3MsCk1pcXXDqGwK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Miquel Raynal <miquel.raynal@bootlin.com> writes:
+
+> Hi M=E5ns,
+>
+> mans@mansr.com wrote on Wed, 19 Jul 2023 10:26:09 +0100:
+>
+>> Miquel Raynal <miquel.raynal@bootlin.com> writes:
+>> =
+
+>> > Hi M=E5ns,
+>> >
+>> > mans@mansr.com wrote on Tue, 18 Jul 2023 15:03:14 +0100:
+>> >  =
+
+>> >> Miquel Raynal <miquel.raynal@bootlin.com> writes:
+>> >>   =
+
+>> >> > Hi M=E5ns,
+>> >> >
+>> >> > mans@mansr.com wrote on Mon, 17 Jul 2023 14:11:31 +0100:
+>> >> >    =
+
+>> >> >> Miquel Raynal <miquel.raynal@bootlin.com> writes:
+>> >> >>     =
+
+>> >> >> > So, I should have done that earlier but, could you please slow t=
+he
+>> >> >> > whole operation down, just to see if there is something wrong wi=
+th the
+>> >> >> > timings or if we should look in another direction.
+>> >> >> >
+>> >> >> > Maybe you could add a boolean to flag if the last CMD was a
+>> >> >> > READCACHESEQ, READCACHESTART or READCACHEEND, and if the flag is
+>> >> >> > true, please get the jiffies before and after each waitrdy and
+>> >> >> > delay_ns. Finally, please print the expected delay and the actua=
+l one
+>> >> >> > and compare to see if something was too fast compared to what we
+>> >> >> > expected.      =
+
+>> >> >> =
+
+>> >> >> Between which points exactly should the delay be measured?  Also, =
+there
+>> >> >> is no command called READCACHESTART.  Did you mean READSTART or
+>> >> >> something else?    =
+
+>> >> >
+>> >> > Yeah, whatever command is specific to sequential cache reads:
+>> >> > https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw=
+/nand_base.c#L1218
+>> >> > https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw=
+/nand_base.c#L1228    =
+
+>> >> =
+
+>> >> I'm still not sure what exactly you want to me measure.  The waitrdy =
+and
+>> >> ndelay combined, each separately, or something else?
+>> >>   =
+
+>> >
+>> > I would like to know, how much time we spend waiting in both cases.  =
+
+>> =
+
+>> Which "both" cases?
+>
+> ndelay and more importantly, waitrdy:
+
+[...]
+
+>> > Is there something wrong with the "wait ready"? As we cannot observe
+>> > the timings with a scope, because we are using a "soft" controller
+>> > implementation somehow, we can easily measure how much time we spend
+>> > in each operation by measuring the time before and after.
+>> >
+>> > These information are only useful when we are doing operations related
+>> > to sequential reads.  =
+
+>> =
+
+>> I have hooked up some spare GPIOs to a scope, which should be more
+>> accurate (nanosecond) than software timestamps.  All I need to know is
+>> what to measure and what to look for in those measurements.
+>
+> Great. The only issue with the scope is the fact that we might actually
+> look at something that is not a faulty sequential read op.
+
+How exactly do I know which ones are faulty?
+
+> Unless you hack into the core to perform these in a loop (with a
+> brutal "while (1)"). But I don't think we require big precision here,
+> at least as a first step, looking at software timestamps like hinted
+> above is enough so we can easily identify the different delays and
+> compare them with nand_timings.c.
+>
+> Please use whatever method is easier for you.
+
+Which values should be compared?
+
+Sorry if I'm being obtuse, I don't normally have to deal with these
+things.
+
+-- =
+
+M=E5ns Rullg=E5rd
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
