@@ -4,66 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14DB2C0015E
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 22:05:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B008DC001B0
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 22:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7JFck8g3q34XZyA+6t6MI+gmKLstVxiH1HMdFNyMTuE=; b=ZtnuLV3rA9WYQa
-	hZYScQqCrKKd9iDKG6S93X2QYY9JgXSDOGP6M+67xOQGTXakYM09AYIN1LFmykLRQItD133e4Qxsf
-	B8oXwcfUdC+54dUOlC1K9hNHMNYzKGMMiem3OYAtCYew6oT0+C10/9AIVfA7eS2dSdFLqNMdmJSGe
-	AOPuSs4YCcx2M5+YhZFgtB9mQtFCKgGjrJye+HmrNio6QjxiPOQ47a6ZCdgmdjuB04WUetnebxVRd
-	RaTpcvjfYLQFgofhFWupabvlAfRy75iq+fRWLKys7Pvma9Ub2zplFKTO36fAdAgXNdB8ZTmSajViC
-	dZKYx1+quwEVCZlsaScQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=y/1p9diuaY8vcxri4quYPz/6FJm53o1jx+Tm9Fujzn4=; b=x6yrl9Wu8hCGt+xVOwBEEaNNk7
+	XiajFfGtmYgHwcenV2qskC3L+KzIjw+XTYy07GtU5VmoC2qjTjnZ5xnMqYnoNOhpBWODYXqh3GUxO
+	PhdTig5ytqBAlrM+cp4rHWx96TZZQ+QHYjATjMVuRrMSiCUUFoHDI6fMZ0VBZvEs7wZrLVMBD65rL
+	cfL1Q5KAMS51l/oH3q+sKpPjqXee6QLVnE6RXHYc7MY6KbN+e98YyUADBYV78gk8s8nMxMA76IYQH
+	3ZVPOb+zYWqzpO+9gDJssXrHE8gwX5eSHP5E9kcCD2PGbThgZGHsMkPeJGuy+RuHeD/MIUEtcd/A/
+	nT5Q2chg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMFI7-0093WS-2S;
-	Wed, 19 Jul 2023 22:05:03 +0000
-Received: from pidgin.makrotopia.org ([185.142.180.65])
+	id 1qMFgy-0096uU-0d;
+	Wed, 19 Jul 2023 22:30:44 +0000
+Received: from madras.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e5ab])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMFI4-0093TU-0x
-	for linux-mtd@lists.infradead.org;
-	Wed, 19 Jul 2023 22:05:02 +0000
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1qMFHW-0008Ns-0m;
-	Wed, 19 Jul 2023 22:04:26 +0000
-Date: Wed, 19 Jul 2023 23:04:17 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
+	id 1qMFgt-0096sz-1b;
+	Wed, 19 Jul 2023 22:30:41 +0000
+Received: from mercury (unknown [185.209.196.239])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id DF2DE6607058;
+	Wed, 19 Jul 2023 23:30:32 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1689805833;
+	bh=+kf7RoDivTxamgEcoW6Au+YH65J2a8+x+Q1W6naqTd0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Crowx33tiA1ZszqiIpnxygnHyfnjM68Sv6gGo3eOwU4048AtB6megzV41TdG7003e
+	 wK6g+4BoWKC3V6fz8J1mN50/vWgcq+FC+WV145TneGEdmHihPD4E3vQWqNhp3N8uLS
+	 3tmX4sRASjDNI7gOnI/KBhJd3UsAt5qEa2G0PL2yRPgOFBB1lUqS8ggsdFKMubHrKO
+	 jMHKtMUwaNSfUFncWG0xK2tE3g9izJveNslEGhU/MRTCKePlnTwXZDXmcr9jWpnBDY
+	 RRuEBFLDJAvcCoX4mXY6ZfpqhfcGn+3C1Pp1uGUlFfzRfz7o8p+WTSebgiayh/6n5E
+	 ZgmkB5sVNIlNg==
+Received: by mercury (Postfix, from userid 1000)
+	id D2FE31062877; Thu, 20 Jul 2023 00:30:30 +0200 (CEST)
+Date: Thu, 20 Jul 2023 00:30:30 +0200
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Dave Chinner <dchinner@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Jan Kara <jack@suse.cz>, Daniel Golle <daniel@makrotopia.org>,
-	Damien Le Moal <dlemoal@kernel.org>, Ming Lei <ming.lei@redhat.com>,
-	Min Li <min15.li@samsung.com>,
-	Christian Loehle <CLoehle@hyperstone.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Hannes Reinecke <hare@suse.de>, Jack Wang <jinpu.wang@ionos.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
-	Hans de Goede <hdegoede@redhat.com>, Ye Bin <yebin10@huawei.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 6/6] block: implement NVMEM provider
-Message-ID: <e5b709e15739dc0563e9497a2dbbe63050381db0.1689802933.git.daniel@makrotopia.org>
-References: <cover.1689802933.git.daniel@makrotopia.org>
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy@kernel.org>, Marc Zyngier <maz@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+	linux-pm@vger.kernel.org, linux-oxnas@groups.io,
+	Arnd Bergmann <arnd@arndb.de>, Daniel Golle <daniel@makrotopia.org>
+Subject: Re: [PATCH v2 12/15] power: reset: oxnas-restart: remove obsolete
+ restart driver
+Message-ID: <20230719223030.5yvdm3stj4lojlg6@mercury.elektranox.org>
+References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
+ <20230630-topic-oxnas-upstream-remove-v2-12-fb6ab3dea87c@linaro.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <cover.1689802933.git.daniel@makrotopia.org>
+In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-12-fb6ab3dea87c@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230719_150500_549549_1D3BDD15 
-X-CRM114-Status: GOOD (  28.45  )
+X-CRM114-CacheID: sfid-20230719_153039_804586_78FD22D1 
+X-CRM114-Status: GOOD (  32.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,309 +94,355 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6308628545088706820=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On embedded devices using an eMMC it is common that one or more partitions
-on the eMMC are used to store MAC addresses and Wi-Fi calibration EEPROM
-data. Allow referencing the partition in device tree for the kernel and
-Wi-Fi drivers accessing it via the NVMEM layer.
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- block/Kconfig           |   8 ++
- block/Makefile          |   1 +
- block/blk-nvmem.c       | 187 ++++++++++++++++++++++++++++++++++++++++
- block/blk.h             |  13 +++
- block/genhd.c           |   2 +
- block/partitions/core.c |   2 +
- 6 files changed, 213 insertions(+)
- create mode 100644 block/blk-nvmem.c
+--===============6308628545088706820==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lyw6wy7zr4wdlke6"
+Content-Disposition: inline
 
-diff --git a/block/Kconfig b/block/Kconfig
-index 86122e459fe04..185573877964d 100644
---- a/block/Kconfig
-+++ b/block/Kconfig
-@@ -218,6 +218,14 @@ config BLK_MQ_VIRTIO
- config BLK_PM
- 	def_bool PM
- 
-+config BLK_NVMEM
-+	bool "Block device NVMEM provider"
-+	depends on OF
-+	help
-+	  Allow block devices (or partitions) to act as NVMEM prodivers,
-+	  typically using if an eMMC is used to store MAC addresses or Wi-Fi
-+	  calibration data on embedded devices.
-+
- # do not use in new code
- config BLOCK_HOLDER_DEPRECATED
- 	bool
-diff --git a/block/Makefile b/block/Makefile
-index 46ada9dc8bbfe..03c0bfa8642df 100644
---- a/block/Makefile
-+++ b/block/Makefile
-@@ -34,6 +34,7 @@ obj-$(CONFIG_BLK_DEV_ZONED)	+= blk-zoned.o
- obj-$(CONFIG_BLK_WBT)		+= blk-wbt.o
- obj-$(CONFIG_BLK_DEBUG_FS)	+= blk-mq-debugfs.o
- obj-$(CONFIG_BLK_DEBUG_FS_ZONED)+= blk-mq-debugfs-zoned.o
-+obj-$(CONFIG_BLK_NVMEM)		+= blk-nvmem.o
- obj-$(CONFIG_BLK_SED_OPAL)	+= sed-opal.o
- obj-$(CONFIG_BLK_PM)		+= blk-pm.o
- obj-$(CONFIG_BLK_INLINE_ENCRYPTION)	+= blk-crypto.o blk-crypto-profile.o \
-diff --git a/block/blk-nvmem.c b/block/blk-nvmem.c
-new file mode 100644
-index 0000000000000..8238511049f56
---- /dev/null
-+++ b/block/blk-nvmem.c
-@@ -0,0 +1,187 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * block device NVMEM provider
-+ *
-+ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
-+ *
-+ * Useful on devices using a partition on an eMMC for MAC addresses or
-+ * Wi-Fi calibration EEPROM data.
-+ */
-+
-+#include "blk.h"
-+#include <linux/nvmem-provider.h>
-+#include <linux/of.h>
-+#include <linux/pagemap.h>
-+#include <linux/property.h>
-+
-+/* List of all NVMEM devices */
-+static LIST_HEAD(nvmem_devices);
-+static DEFINE_MUTEX(devices_mutex);
-+
-+struct blk_nvmem {
-+	struct nvmem_device *nvmem;
-+	struct block_device *bdev;
-+	struct list_head list;
-+};
-+
-+static int blk_nvmem_reg_read(void *priv, unsigned int from,
-+			      void *val, size_t bytes)
-+{
-+	pgoff_t f_index = from >> PAGE_SHIFT;
-+	struct address_space *mapping;
-+	struct blk_nvmem *bnv = priv;
-+	size_t bytes_left = bytes;
-+	struct folio *folio;
-+	unsigned long offs, to_read;
-+	void *p;
-+
-+	if (!bnv->bdev)
-+		return -ENODEV;
-+
-+	offs = from & ((1 << PAGE_SHIFT) - 1);
-+	mapping = bnv->bdev->bd_inode->i_mapping;
-+
-+	while (bytes_left) {
-+		folio = read_mapping_folio(mapping, f_index++, NULL);
-+		if (IS_ERR(folio))
-+			return PTR_ERR(folio);
-+
-+		to_read = min_t(unsigned long, bytes_left, PAGE_SIZE - offs);
-+		p = folio_address(folio) + offset_in_folio(folio, offs);
-+		memcpy(val, p, to_read);
-+		offs = 0;
-+		bytes_left -= to_read;
-+		val += to_read;
-+		folio_put(folio);
-+	}
-+
-+	return bytes_left == 0 ? 0 : -EIO;
-+}
-+
-+void blk_register_nvmem(struct block_device *bdev)
-+{
-+	struct fwnode_handle *fw_parts = NULL, *fw_part_c, *fw_part = NULL;
-+	struct nvmem_config config = {};
-+	const char *partname, *uuid;
-+	struct device *dev, *p0dev;
-+	struct blk_nvmem *bnv;
-+	u32 reg;
-+
-+	/*
-+	 * skip devices which set GENHD_FL_NO_NVMEM
-+	 *
-+	 * This flag is used for mtdblock and ubiblock devices because
-+	 * both, MTD and UBI already implement their own NVMEM provider.
-+	 * To avoid registering multiple NVMEM providers for the same
-+	 * device node, skip the block NVMEM provider.
-+	 */
-+	if (bdev->bd_disk->flags & GENHD_FL_NO_NVMEM)
-+		return;
-+
-+	/* skip too large devices */
-+	if (bdev_nr_bytes(bdev) > INT_MAX)
-+		return;
-+
-+	dev = &bdev->bd_device;
-+	if (!bdev_is_partition(bdev)) {
-+		fw_part = dev->fwnode;
-+
-+		if (!fw_part && dev->parent)
-+			fw_part = dev->parent->fwnode;
-+
-+		goto no_parts;
-+	}
-+
-+	p0dev = &bdev->bd_disk->part0->bd_device;
-+	fw_parts = device_get_named_child_node(p0dev, "partitions");
-+	if (!fw_parts)
-+		fw_parts = device_get_named_child_node(p0dev->parent, "partitions");
-+
-+	if (!fw_parts)
-+		return;
-+
-+	fwnode_for_each_child_node(fw_parts, fw_part_c) {
-+		if (!fwnode_property_read_string(fw_part_c, "uuid", &uuid) &&
-+		    (!bdev->bd_meta_info || strncmp(uuid,
-+						    bdev->bd_meta_info->uuid,
-+						    PARTITION_META_INFO_UUIDLTH)))
-+			continue;
-+
-+		if (!fwnode_property_read_string(fw_part_c, "partname", &partname) &&
-+		    (!bdev->bd_meta_info || strncmp(partname,
-+						    bdev->bd_meta_info->volname,
-+						    PARTITION_META_INFO_VOLNAMELTH)))
-+			continue;
-+
-+		/*
-+		 * partition addresses (reg) in device tree greater than
-+		 * DISK_MAX_PARTS can be used to match uuid or partname only
-+		 */
-+		if (!fwnode_property_read_u32(fw_part_c, "reg", &reg) &&
-+		    reg < DISK_MAX_PARTS && bdev->bd_partno != reg)
-+			continue;
-+
-+		fw_part = fw_part_c;
-+		break;
-+	}
-+
-+no_parts:
-+	if (!fwnode_device_is_compatible(fw_part, "nvmem-cells"))
-+		return;
-+
-+	bnv = kzalloc(sizeof(struct blk_nvmem), GFP_KERNEL);
-+	if (!bnv)
-+		return;
-+
-+	config.id = NVMEM_DEVID_NONE;
-+	config.dev = &bdev->bd_device;
-+	config.name = dev_name(&bdev->bd_device);
-+	config.owner = THIS_MODULE;
-+	config.priv = bnv;
-+	config.reg_read = blk_nvmem_reg_read;
-+	config.size = bdev_nr_bytes(bdev);
-+	config.word_size = 1;
-+	config.stride = 1;
-+	config.read_only = true;
-+	config.root_only = true;
-+	config.ignore_wp = true;
-+	config.of_node = to_of_node(fw_part);
-+
-+	bnv->bdev = bdev;
-+	bnv->nvmem = nvmem_register(&config);
-+	if (IS_ERR(bnv->nvmem)) {
-+		/* Just ignore if there is no NVMEM support in the kernel */
-+		if (PTR_ERR(bnv->nvmem) != -EOPNOTSUPP)
-+			dev_err_probe(&bdev->bd_device, PTR_ERR(bnv->nvmem),
-+				      "Failed to register NVMEM device\n");
-+
-+		kfree(bnv);
-+		return;
-+	}
-+
-+	mutex_lock(&devices_mutex);
-+	list_add_tail(&bnv->list, &nvmem_devices);
-+	mutex_unlock(&devices_mutex);
-+}
-+
-+void blk_unregister_nvmem(struct block_device *bdev)
-+{
-+	struct blk_nvmem *bnv_c, *bnv = NULL;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry(bnv_c, &nvmem_devices, list)
-+		if (bnv_c->bdev == bdev) {
-+			bnv = bnv_c;
-+			break;
-+		}
-+
-+	if (!bnv) {
-+		mutex_unlock(&devices_mutex);
-+		return;
-+	}
-+
-+	list_del(&bnv->list);
-+	mutex_unlock(&devices_mutex);
-+	nvmem_unregister(bnv->nvmem);
-+	kfree(bnv);
-+}
-diff --git a/block/blk.h b/block/blk.h
-index 686712e138352..7423d0d5494e9 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -515,4 +515,17 @@ static inline int req_ref_read(struct request *req)
- 	return atomic_read(&req->ref);
- }
- 
-+#ifdef CONFIG_BLK_NVMEM
-+void blk_register_nvmem(struct block_device *bdev);
-+void blk_unregister_nvmem(struct block_device *bdev);
-+#else
-+static inline void blk_register_nvmem(struct block_device *bdev)
-+{
-+}
-+
-+static inline void blk_unregister_nvmem(struct block_device *bdev)
-+{
-+}
-+#endif
-+
- #endif /* BLK_INTERNAL_H */
-diff --git a/block/genhd.c b/block/genhd.c
-index 3d287b32d50df..b306e0f407bb2 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -527,6 +527,7 @@ int __must_check device_add_disk(struct device *parent, struct gendisk *disk,
- 	disk_update_readahead(disk);
- 	disk_add_events(disk);
- 	set_bit(GD_ADDED, &disk->state);
-+	blk_register_nvmem(disk->part0);
- 	return 0;
- 
- out_unregister_bdi:
-@@ -569,6 +570,7 @@ static void blk_report_disk_dead(struct gendisk *disk)
- 		if (bdev->bd_holder_ops && bdev->bd_holder_ops->mark_dead)
- 			bdev->bd_holder_ops->mark_dead(bdev);
- 		mutex_unlock(&bdev->bd_holder_lock);
-+		blk_unregister_nvmem(bdev);
- 
- 		put_device(&bdev->bd_device);
- 		rcu_read_lock();
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index 13a7341299a91..68bd655f5e68e 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -404,6 +404,8 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
- 	/* suppress uevent if the disk suppresses it */
- 	if (!dev_get_uevent_suppress(ddev))
- 		kobject_uevent(&pdev->kobj, KOBJ_ADD);
-+
-+	blk_register_nvmem(bdev);
- 	return bdev;
- 
- out_del:
--- 
-2.41.0
+
+--lyw6wy7zr4wdlke6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, Jun 30, 2023 at 06:58:37PM +0200, Neil Armstrong wrote:
+> Due to lack of maintenance and stall of development for a few years now,
+> and since no new features will ever be added upstream, remove support
+> for OX810 and OX820 restart feature.
+>=20
+> Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Acked-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+
+Thanks, queued.
+
+-- Sebastian
+
+>  drivers/power/reset/Kconfig         |   7 --
+>  drivers/power/reset/Makefile        |   1 -
+>  drivers/power/reset/oxnas-restart.c | 233 ------------------------------=
+------
+>  3 files changed, 241 deletions(-)
+>=20
+> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+> index fff07b2bd77b..59e1ebb7842e 100644
+> --- a/drivers/power/reset/Kconfig
+> +++ b/drivers/power/reset/Kconfig
+> @@ -148,13 +148,6 @@ config POWER_RESET_ODROID_GO_ULTRA_POWEROFF
+>  	help
+>  	  This driver supports Power off for Odroid Go Ultra device.
+> =20
+> -config POWER_RESET_OXNAS
+> -	bool "OXNAS SoC restart driver"
+> -	depends on ARCH_OXNAS
+> -	default MACH_OX820
+> -	help
+> -	  Restart support for OXNAS/PLXTECH OX820 SoC.
+> -
+>  config POWER_RESET_PIIX4_POWEROFF
+>  	tristate "Intel PIIX4 power-off driver"
+>  	depends on PCI
+> diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+> index d763e6735ee3..a95d1bd275d1 100644
+> --- a/drivers/power/reset/Makefile
+> +++ b/drivers/power/reset/Makefile
+> @@ -14,7 +14,6 @@ obj-$(CONFIG_POWER_RESET_HISI) +=3D hisi-reboot.o
+>  obj-$(CONFIG_POWER_RESET_LINKSTATION) +=3D linkstation-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_MSM) +=3D msm-poweroff.o
+>  obj-$(CONFIG_POWER_RESET_MT6323) +=3D mt6323-poweroff.o
+> -obj-$(CONFIG_POWER_RESET_OXNAS) +=3D oxnas-restart.o
+>  obj-$(CONFIG_POWER_RESET_QCOM_PON) +=3D qcom-pon.o
+>  obj-$(CONFIG_POWER_RESET_OCELOT_RESET) +=3D ocelot-reset.o
+>  obj-$(CONFIG_POWER_RESET_ODROID_GO_ULTRA_POWEROFF) +=3D odroid-go-ultra-=
+poweroff.o
+> diff --git a/drivers/power/reset/oxnas-restart.c b/drivers/power/reset/ox=
+nas-restart.c
+> deleted file mode 100644
+> index 13090bec058a..000000000000
+> --- a/drivers/power/reset/oxnas-restart.c
+> +++ /dev/null
+> @@ -1,233 +0,0 @@
+> -// SPDX-License-Identifier: (GPL-2.0)
+> -/*
+> - * oxnas SoC reset driver
+> - * based on:
+> - * Microsemi MIPS SoC reset driver
+> - * and ox820_assert_system_reset() written by Ma Hajun <mahaijuns@gmail.=
+com>
+> - *
+> - * Copyright (c) 2013 Ma Hajun <mahaijuns@gmail.com>
+> - * Copyright (c) 2017 Microsemi Corporation
+> - * Copyright (c) 2020 Daniel Golle <daniel@makrotopia.org>
+> - */
+> -#include <linux/delay.h>
+> -#include <linux/io.h>
+> -#include <linux/notifier.h>
+> -#include <linux/mfd/syscon.h>
+> -#include <linux/of_address.h>
+> -#include <linux/of_device.h>
+> -#include <linux/platform_device.h>
+> -#include <linux/reboot.h>
+> -#include <linux/regmap.h>
+> -
+> -/* bit numbers of reset control register */
+> -#define OX820_SYS_CTRL_RST_SCU                0
+> -#define OX820_SYS_CTRL_RST_COPRO              1
+> -#define OX820_SYS_CTRL_RST_ARM0               2
+> -#define OX820_SYS_CTRL_RST_ARM1               3
+> -#define OX820_SYS_CTRL_RST_USBHS              4
+> -#define OX820_SYS_CTRL_RST_USBHSPHYA          5
+> -#define OX820_SYS_CTRL_RST_MACA               6
+> -#define OX820_SYS_CTRL_RST_MAC                OX820_SYS_CTRL_RST_MACA
+> -#define OX820_SYS_CTRL_RST_PCIEA              7
+> -#define OX820_SYS_CTRL_RST_SGDMA              8
+> -#define OX820_SYS_CTRL_RST_CIPHER             9
+> -#define OX820_SYS_CTRL_RST_DDR                10
+> -#define OX820_SYS_CTRL_RST_SATA               11
+> -#define OX820_SYS_CTRL_RST_SATA_LINK          12
+> -#define OX820_SYS_CTRL_RST_SATA_PHY           13
+> -#define OX820_SYS_CTRL_RST_PCIEPHY            14
+> -#define OX820_SYS_CTRL_RST_STATIC             15
+> -#define OX820_SYS_CTRL_RST_GPIO               16
+> -#define OX820_SYS_CTRL_RST_UART1              17
+> -#define OX820_SYS_CTRL_RST_UART2              18
+> -#define OX820_SYS_CTRL_RST_MISC               19
+> -#define OX820_SYS_CTRL_RST_I2S                20
+> -#define OX820_SYS_CTRL_RST_SD                 21
+> -#define OX820_SYS_CTRL_RST_MACB               22
+> -#define OX820_SYS_CTRL_RST_PCIEB              23
+> -#define OX820_SYS_CTRL_RST_VIDEO              24
+> -#define OX820_SYS_CTRL_RST_DDR_PHY            25
+> -#define OX820_SYS_CTRL_RST_USBHSPHYB          26
+> -#define OX820_SYS_CTRL_RST_USBDEV             27
+> -#define OX820_SYS_CTRL_RST_ARMDBG             29
+> -#define OX820_SYS_CTRL_RST_PLLA               30
+> -#define OX820_SYS_CTRL_RST_PLLB               31
+> -
+> -/* bit numbers of clock control register */
+> -#define OX820_SYS_CTRL_CLK_COPRO              0
+> -#define OX820_SYS_CTRL_CLK_DMA                1
+> -#define OX820_SYS_CTRL_CLK_CIPHER             2
+> -#define OX820_SYS_CTRL_CLK_SD                 3
+> -#define OX820_SYS_CTRL_CLK_SATA               4
+> -#define OX820_SYS_CTRL_CLK_I2S                5
+> -#define OX820_SYS_CTRL_CLK_USBHS              6
+> -#define OX820_SYS_CTRL_CLK_MACA               7
+> -#define OX820_SYS_CTRL_CLK_MAC                OX820_SYS_CTRL_CLK_MACA
+> -#define OX820_SYS_CTRL_CLK_PCIEA              8
+> -#define OX820_SYS_CTRL_CLK_STATIC             9
+> -#define OX820_SYS_CTRL_CLK_MACB               10
+> -#define OX820_SYS_CTRL_CLK_PCIEB              11
+> -#define OX820_SYS_CTRL_CLK_REF600             12
+> -#define OX820_SYS_CTRL_CLK_USBDEV             13
+> -#define OX820_SYS_CTRL_CLK_DDR                14
+> -#define OX820_SYS_CTRL_CLK_DDRPHY             15
+> -#define OX820_SYS_CTRL_CLK_DDRCK              16
+> -
+> -/* Regmap offsets */
+> -#define OX820_CLK_SET_REGOFFSET               0x2c
+> -#define OX820_CLK_CLR_REGOFFSET               0x30
+> -#define OX820_RST_SET_REGOFFSET               0x34
+> -#define OX820_RST_CLR_REGOFFSET               0x38
+> -#define OX820_SECONDARY_SEL_REGOFFSET         0x14
+> -#define OX820_TERTIARY_SEL_REGOFFSET          0x8c
+> -#define OX820_QUATERNARY_SEL_REGOFFSET        0x94
+> -#define OX820_DEBUG_SEL_REGOFFSET             0x9c
+> -#define OX820_ALTERNATIVE_SEL_REGOFFSET       0xa4
+> -#define OX820_PULLUP_SEL_REGOFFSET            0xac
+> -#define OX820_SEC_SECONDARY_SEL_REGOFFSET     0x100014
+> -#define OX820_SEC_TERTIARY_SEL_REGOFFSET      0x10008c
+> -#define OX820_SEC_QUATERNARY_SEL_REGOFFSET    0x100094
+> -#define OX820_SEC_DEBUG_SEL_REGOFFSET         0x10009c
+> -#define OX820_SEC_ALTERNATIVE_SEL_REGOFFSET   0x1000a4
+> -#define OX820_SEC_PULLUP_SEL_REGOFFSET        0x1000ac
+> -
+> -struct oxnas_restart_context {
+> -	struct regmap *sys_ctrl;
+> -	struct notifier_block restart_handler;
+> -};
+> -
+> -static int ox820_restart_handle(struct notifier_block *this,
+> -				 unsigned long mode, void *cmd)
+> -{
+> -	struct oxnas_restart_context *ctx =3D container_of(this, struct
+> -							oxnas_restart_context,
+> -							restart_handler);
+> -	u32 value;
+> -
+> -	/*
+> -	 * Assert reset to cores as per power on defaults
+> -	 * Don't touch the DDR interface as things will come to an impromptu
+> -	 * stop NB Possibly should be asserting reset for PLLB, but there are
+> -	 * timing concerns here according to the docs
+> -	 */
+> -	value =3D BIT(OX820_SYS_CTRL_RST_COPRO)		|
+> -		BIT(OX820_SYS_CTRL_RST_USBHS)		|
+> -		BIT(OX820_SYS_CTRL_RST_USBHSPHYA)	|
+> -		BIT(OX820_SYS_CTRL_RST_MACA)		|
+> -		BIT(OX820_SYS_CTRL_RST_PCIEA)		|
+> -		BIT(OX820_SYS_CTRL_RST_SGDMA)		|
+> -		BIT(OX820_SYS_CTRL_RST_CIPHER)		|
+> -		BIT(OX820_SYS_CTRL_RST_SATA)		|
+> -		BIT(OX820_SYS_CTRL_RST_SATA_LINK)	|
+> -		BIT(OX820_SYS_CTRL_RST_SATA_PHY)	|
+> -		BIT(OX820_SYS_CTRL_RST_PCIEPHY)		|
+> -		BIT(OX820_SYS_CTRL_RST_STATIC)		|
+> -		BIT(OX820_SYS_CTRL_RST_UART1)		|
+> -		BIT(OX820_SYS_CTRL_RST_UART2)		|
+> -		BIT(OX820_SYS_CTRL_RST_MISC)		|
+> -		BIT(OX820_SYS_CTRL_RST_I2S)		|
+> -		BIT(OX820_SYS_CTRL_RST_SD)		|
+> -		BIT(OX820_SYS_CTRL_RST_MACB)		|
+> -		BIT(OX820_SYS_CTRL_RST_PCIEB)		|
+> -		BIT(OX820_SYS_CTRL_RST_VIDEO)		|
+> -		BIT(OX820_SYS_CTRL_RST_USBHSPHYB)	|
+> -		BIT(OX820_SYS_CTRL_RST_USBDEV);
+> -
+> -	regmap_write(ctx->sys_ctrl, OX820_RST_SET_REGOFFSET, value);
+> -
+> -	/* Release reset to cores as per power on defaults */
+> -	regmap_write(ctx->sys_ctrl, OX820_RST_CLR_REGOFFSET,
+> -			BIT(OX820_SYS_CTRL_RST_GPIO));
+> -
+> -	/*
+> -	 * Disable clocks to cores as per power-on defaults - must leave DDR
+> -	 * related clocks enabled otherwise we'll stop rather abruptly.
+> -	 */
+> -	value =3D BIT(OX820_SYS_CTRL_CLK_COPRO)		|
+> -		BIT(OX820_SYS_CTRL_CLK_DMA)		|
+> -		BIT(OX820_SYS_CTRL_CLK_CIPHER)		|
+> -		BIT(OX820_SYS_CTRL_CLK_SD)		|
+> -		BIT(OX820_SYS_CTRL_CLK_SATA)		|
+> -		BIT(OX820_SYS_CTRL_CLK_I2S)		|
+> -		BIT(OX820_SYS_CTRL_CLK_USBHS)		|
+> -		BIT(OX820_SYS_CTRL_CLK_MAC)		|
+> -		BIT(OX820_SYS_CTRL_CLK_PCIEA)		|
+> -		BIT(OX820_SYS_CTRL_CLK_STATIC)		|
+> -		BIT(OX820_SYS_CTRL_CLK_MACB)		|
+> -		BIT(OX820_SYS_CTRL_CLK_PCIEB)		|
+> -		BIT(OX820_SYS_CTRL_CLK_REF600)		|
+> -		BIT(OX820_SYS_CTRL_CLK_USBDEV);
+> -
+> -	regmap_write(ctx->sys_ctrl, OX820_CLK_CLR_REGOFFSET, value);
+> -
+> -	/* Enable clocks to cores as per power-on defaults */
+> -
+> -	/* Set sys-control pin mux'ing as per power-on defaults */
+> -	regmap_write(ctx->sys_ctrl, OX820_SECONDARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_TERTIARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_QUATERNARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_DEBUG_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_ALTERNATIVE_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_PULLUP_SEL_REGOFFSET, 0);
+> -
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_SECONDARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_TERTIARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_QUATERNARY_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_DEBUG_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_ALTERNATIVE_SEL_REGOFFSET, 0);
+> -	regmap_write(ctx->sys_ctrl, OX820_SEC_PULLUP_SEL_REGOFFSET, 0);
+> -
+> -	/*
+> -	 * No need to save any state, as the ROM loader can determine whether
+> -	 * reset is due to power cycling or programatic action, just hit the
+> -	 * (self-clearing) CPU reset bit of the block reset register
+> -	 */
+> -	value =3D
+> -		BIT(OX820_SYS_CTRL_RST_SCU) |
+> -		BIT(OX820_SYS_CTRL_RST_ARM0) |
+> -		BIT(OX820_SYS_CTRL_RST_ARM1);
+> -
+> -	regmap_write(ctx->sys_ctrl, OX820_RST_SET_REGOFFSET, value);
+> -
+> -	pr_emerg("Unable to restart system\n");
+> -	return NOTIFY_DONE;
+> -}
+> -
+> -static int ox820_restart_probe(struct platform_device *pdev)
+> -{
+> -	struct oxnas_restart_context *ctx;
+> -	struct regmap *sys_ctrl;
+> -	struct device *dev =3D &pdev->dev;
+> -	int err =3D 0;
+> -
+> -	sys_ctrl =3D syscon_node_to_regmap(pdev->dev.of_node);
+> -	if (IS_ERR(sys_ctrl))
+> -		return PTR_ERR(sys_ctrl);
+> -
+> -	ctx =3D devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+> -	if (!ctx)
+> -		return -ENOMEM;
+> -
+> -	ctx->sys_ctrl =3D sys_ctrl;
+> -	ctx->restart_handler.notifier_call =3D ox820_restart_handle;
+> -	ctx->restart_handler.priority =3D 192;
+> -	err =3D register_restart_handler(&ctx->restart_handler);
+> -	if (err)
+> -		dev_err(dev, "can't register restart notifier (err=3D%d)\n", err);
+> -
+> -	return err;
+> -}
+> -
+> -static const struct of_device_id ox820_restart_of_match[] =3D {
+> -	{ .compatible =3D "oxsemi,ox820-sys-ctrl" },
+> -	{}
+> -};
+> -
+> -static struct platform_driver ox820_restart_driver =3D {
+> -	.probe =3D ox820_restart_probe,
+> -	.driver =3D {
+> -		.name =3D "ox820-chip-reset",
+> -		.of_match_table =3D ox820_restart_of_match,
+> -	},
+> -};
+> -builtin_platform_driver(ox820_restart_driver);
+>=20
+> --=20
+> 2.34.1
+>=20
+
+--lyw6wy7zr4wdlke6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmS4Y/sACgkQ2O7X88g7
++pqWORAAhnuSzBSgSarcodT3gxHpEZgAj/XnfVKr1PDfxOVhyV17RiZPStEXlbYU
+ODsrFEhVjIN9BuagUVjIWf0yRJ6NjhCQr9JuO9+y0MIlKRPZmVnlEzYiyReYPgPi
+EazV0/RhPRCoqUOUlrjrn0UYBXiISj+O6Ig/sbwZ76KLycaUEFVSqP9bJawa/T3a
+C/jNg2qVjDcwUJ22g/xidwXNNg7ie8kOggyA0uyp7y2MHm1eRL8O403sZh7v7wZZ
+MI2bXkQxg8iBnXLTWQ1g7Dbrt60LjO9PEqbe7bKsGkoIA5pVltMy0YKh+FeH8S3h
+VIXaCIbRA/uJXQPsolubLQOP6rQDrGOLyNLp7bjP8gRyvbE76poixd1/KGmXLNkV
+KRXq3cuBhDU8jtpXhh3E9IsLkaHwXS/xxcu7HXWRDF2e5kY3mQyyARkXpe4SUPkx
+CiGnUTg4TB+2z9Y7QbNrVNErzoMmNTFjr0ZQ/O72jRtrpNTnXmQSOeEQET7TgcXf
+Ywif3RIUkvt/uskyQogTpHd6gJHII4kQ1czwfQ8gMKXH/2r5yHx5u+KY2NpYB+7K
+lKMQVweY52wdFPat9xsqorHcHE+jE3PujNQD8ryr3IV8luVWh6ND5KjwFGXx5WHY
+/51coHqpHCKUvUTtlMkSdHChPpnHNW54ieSDwzrTvksDmd1nKSs=
+=rMk0
+-----END PGP SIGNATURE-----
+
+--lyw6wy7zr4wdlke6--
+
+
+--===============6308628545088706820==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6308628545088706820==--
+
