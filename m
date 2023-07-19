@@ -4,80 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 654F2EB64DA
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 08:43:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 590BDC0015E
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 09:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Ia5rXMFh7mVU0eQgo05xQYMaUKfxyU+74yJm/d41+CY=; b=a2RinQG/3DCv6M
-	mCF9kx9qW/92cKFAqhXW08U6moK2qe5ydjtuHR0x0UXoiT7tIiZJKxP3teZO7Qs9/Hh5CdWGPtGpr
-	GOab5VnZ0xR2Y/5cCJXtfV/rOIA+5trsH5Nqj+VMrlZVW/cneNR/PGf3tz9Ti+A2ekdXSDtjoj8br
-	BPF6PV1svlV6S8A74sU+ct7uHNmIzNYkuXeLpnh3R5zrUV4KD6wDXSYEtOyQss8Mi9cyeYckrovin
-	0WzLvfBhrtv04aeXSOGZrGb+pUVyNl8BWuxPCrGZppBC5klHAA3FktwkSaMOi1hkqksV1VqQ7yioM
-	zeAMpT1i9UMzIUBjqVGg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=FOWPoABlj+PTQH0F/KjYW9a9YsH9NEuxP6JYHl/DiA8=; b=Dw4lyWjLqXvTR8
+	NFOkTW5vlmTQJLpzh5q96lhUKVU4gaM5XfR5j/STfprpjbi3GG4cCITjC/Cds0g/4h4rqsvAEH0PE
+	iQJqWnGTxxzG0YqgPB/zCbEutWaPFHXoezdRVz2htNbv6Taf29VQ/C39KDFr3560zYwxzxKgQlufp
+	YHiY+vQxdK92Kt3YYBXCJ3HVSa11z4eSI3GODNzdbrlGIBslGouIhN0FJfq28rCNLcxXBF7YFZqwZ
+	lRKQ3XNnTAB6S+QVFuCzspiD0avMFfpOX/c6qIX3ekr6E4U3TQ8l/deiYMMSFTob537LmwcocdE6b
+	0a2Y7cQbV7l/T+7svm+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM2ma-006RFj-2j;
-	Wed, 19 Jul 2023 08:43:40 +0000
-Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
+	id 1qM3Rr-006XYM-25;
+	Wed, 19 Jul 2023 09:26:19 +0000
+Received: from unicorn.mansr.com ([81.2.72.234])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM2mW-006RDd-01
+	id 1qM3Ro-006XW0-28
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Jul 2023 08:43:38 +0000
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fb761efa7aso10790456e87.0
-        for <linux-mtd@lists.infradead.org>; Wed, 19 Jul 2023 01:43:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689756213; x=1692348213;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W5ddj1W5y2+i6mTn3M7drUHtyK+ci5gECjWGM0qKQwY=;
-        b=KeLe0tNwrtT/eNtiMfPRtD7Sf1Mp8v336SZYHwqDA99RIx/xYuUFe817g1zrq7RU4F
-         j+LtIoHZQccIw+2LLfUUvTbm6iCQc3akHJzJInJir95FprbM1gx35SX7zRbxKhWVt7/a
-         WJUwc/6igXqHqrxkygVsIYuGLDWr0ecngy/bRhugPLsHmtVBV7kIzx0FSrjCk4TTtxm2
-         6Im5dowkYZV/Ai8qjomuVXsBOBfA0HTm2HTWumfkUlyjzswmQWlHnSVb0GyO6ElzP9m3
-         +WUYMrE77ylMLQwZT1CnUvg+EWhkhv7C87ErVwRyuoJIVyfhy0fIXBjwlR+/QKh4PVHK
-         o0bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689756213; x=1692348213;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W5ddj1W5y2+i6mTn3M7drUHtyK+ci5gECjWGM0qKQwY=;
-        b=X+xsj4959QDytda4QREU8Lqlo9zFfRNV6h0NySLy6YfHTsFKY/N8VRiGPB7klx7md8
-         ByLDm/YM1Wjtr/ZFFe6XhbnxBvdqjlfx/i8BxEFwdnLH5hX+IdGqWtpW0ms4rjUcA051
-         C7P1Zi5ToblgWdFqH8mv/M+t2E2pNlCwyf0bfMsCCkd1MHLHvUrMaAkrSdfasieZR1Wp
-         Z4t/DvoZ+zmBrmYFEshV/SWMHF1YktsgPgBTKuHfrOZQ63S+DfOew8mjrODHfe4p/4Iw
-         VV2KbXVoDFmS/umcxdrzo94gJoMxfk7Xd9GyHfn2aoU0rbYkfACrb7EH1JFy77tvDh9K
-         LdJQ==
-X-Gm-Message-State: ABy/qLajnVB+H6t7ZcmL9uZ59yy/5vychSn+udinVAnR7m2Nu6kRhjr4
-	IG6yhBgRGTMUb85LxgERv38=
-X-Google-Smtp-Source: APBJJlFV6fQ9CrXqgJmoMYdMvkONCnphDRXSCFFa7f5kg5qb4qp6iLCA/wq/N+SJHL9KN5Pq54S+bA==
-X-Received: by 2002:a05:6512:348b:b0:4fb:8616:7a03 with SMTP id v11-20020a056512348b00b004fb86167a03mr10860772lfr.4.1689756212434;
-        Wed, 19 Jul 2023 01:43:32 -0700 (PDT)
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id h18-20020ac25972000000b004fdc0e37ecfsm837717lfp.227.2023.07.19.01.43.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 01:43:32 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
-	Kamal Dasu <kamal.dasu@broadcom.com>,
-	linux-mtd@lists.infradead.org,
-	bcm-kernel-feedback-list@broadcom.com,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2] mtd: rawnand: brcmnand: propagate init error -EPROBE_DEFER up
-Date: Wed, 19 Jul 2023 10:43:24 +0200
-Message-Id: <20230719084324.14799-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
+	Wed, 19 Jul 2023 09:26:18 +0000
+Received: from raven.mansr.com (raven.mansr.com [IPv6:2001:8b0:ca0d:1::3])
+	by unicorn.mansr.com (Postfix) with ESMTPS id 819F615360;
+	Wed, 19 Jul 2023 10:26:09 +0100 (BST)
+Received: by raven.mansr.com (Postfix, from userid 51770)
+	id 735E4219B40; Wed, 19 Jul 2023 10:26:09 +0100 (BST)
+From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
+ Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>, Julien Su <juliensu@mxic.com.tw>, Jaime
+ Liao <jaimeliao@mxic.com.tw>, Alvin Zhou <alvinzhou@mxic.com.tw>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, JaimeLiao
+ <jaimeliao.tw@gmail.com>, Alexander Shiyan <eagle.alexander923@gmail.com>,
+ Domenico Punzo <dpunzo@micron.com>, Bean Huo <beanhuo@micron.com>
+Subject: Re: [PATCH v2 3/3] mtd: rawnand: Support for sequential cache reads
+References: <20230112093637.987838-1-miquel.raynal@bootlin.com>
+	<20230112093637.987838-4-miquel.raynal@bootlin.com>
+	<yw1xfs6j4k6q.fsf@mansr.com> <20230716174917.3a9ca7a7@xps-13>
+	<yw1x7cqzzr4d.fsf@mansr.com> <20230717091900.52ed815a@xps-13>
+	<yw1x351mznr0.fsf@mansr.com> <20230717183645.32ef90b0@xps-13>
+	<yw1xy1jdxqot.fsf@mansr.com> <20230719102153.2ef93cfe@xps-13>
+Date: Wed, 19 Jul 2023 10:26:09 +0100
+In-Reply-To: <20230719102153.2ef93cfe@xps-13> (Miquel Raynal's message of
+	"Wed, 19 Jul 2023 10:21:53 +0200")
+Message-ID: <yw1xttu0xnf2.fsf@mansr.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230719_014336_066736_38BBD71E 
-X-CRM114-Status: GOOD (  12.65  )
+X-CRM114-CacheID: sfid-20230719_022616_849617_D7E038A9 
+X-CRM114-Status: GOOD (  26.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,27 +69,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKTVREIHN1YnN5c3RlbSBt
-YXkgcmV0dXJuIC1FUFJPQkVfREVGRVIgaWYgc29tZXRoaW5nIGlzbid0IHJlYWR5IHlldC4KSXQn
-cyBpbXBvcnRhbnQgdG8gcGFzcyB0aGF0IGVycm9yIHVwIHNvIGRldmljZSB3aWxsIGdldCBwcm9i
-ZWQgbGF0ZXIuCgpTaWduZWQtb2ZmLWJ5OiBSYWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2ku
-cGw+Ci0tLQpWMjogQWRkIG9mX25vZGVfcHV0KCkgLSB0aGFua3MgTWlxdWVsIQotLS0KIGRyaXZl
-cnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMgfCA0ICsrKysKIDEgZmlsZSBjaGFu
-Z2VkLCA0IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9i
-cmNtbmFuZC9icmNtbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5h
-bmQuYwppbmRleCAzOTY2MWUyM2Q3ZDQuLjAzNzY0YjU4OWVjNSAxMDA2NDQKLS0tIGEvZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYworKysgYi9kcml2ZXJzL210ZC9uYW5k
-L3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCkBAIC0zMjQ1LDYgKzMyNDUsMTAgQEAgaW50IGJyY21u
-YW5kX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYsIHN0cnVjdCBicmNtbmFuZF9z
-b2MgKnNvYykKIAogCQkJcmV0ID0gYnJjbW5hbmRfaW5pdF9jcyhob3N0LCBOVUxMKTsKIAkJCWlm
-IChyZXQpIHsKKwkJCQlpZiAocmV0ID09IC1FUFJPQkVfREVGRVIpIHsKKwkJCQkJb2Zfbm9kZV9w
-dXQoY2hpbGQpOworCQkJCQlnb3RvIGVycjsKKwkJCQl9CiAJCQkJZGV2bV9rZnJlZShkZXYsIGhv
-c3QpOwogCQkJCWNvbnRpbnVlOyAvKiBUcnkgYWxsIGNoaXAtc2VsZWN0cyAqLwogCQkJfQotLSAK
-Mi4zNS4zCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Miquel Raynal <miquel.raynal@bootlin.com> writes:
+
+> Hi M=E5ns,
+>
+> mans@mansr.com wrote on Tue, 18 Jul 2023 15:03:14 +0100:
+>
+>> Miquel Raynal <miquel.raynal@bootlin.com> writes:
+>> =
+
+>> > Hi M=E5ns,
+>> >
+>> > mans@mansr.com wrote on Mon, 17 Jul 2023 14:11:31 +0100:
+>> >  =
+
+>> >> Miquel Raynal <miquel.raynal@bootlin.com> writes:
+>> >>   =
+
+>> >> > So, I should have done that earlier but, could you please slow the
+>> >> > whole operation down, just to see if there is something wrong with =
+the
+>> >> > timings or if we should look in another direction.
+>> >> >
+>> >> > Maybe you could add a boolean to flag if the last CMD was a
+>> >> > READCACHESEQ, READCACHESTART or READCACHEEND, and if the flag is
+>> >> > true, please get the jiffies before and after each waitrdy and
+>> >> > delay_ns. Finally, please print the expected delay and the actual o=
+ne
+>> >> > and compare to see if something was too fast compared to what we
+>> >> > expected.    =
+
+>> >> =
+
+>> >> Between which points exactly should the delay be measured?  Also, the=
+re
+>> >> is no command called READCACHESTART.  Did you mean READSTART or
+>> >> something else?  =
+
+>> >
+>> > Yeah, whatever command is specific to sequential cache reads:
+>> > https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/na=
+nd_base.c#L1218
+>> > https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/na=
+nd_base.c#L1228  =
+
+>> =
+
+>> I'm still not sure what exactly you want to me measure.  The waitrdy and
+>> ndelay combined, each separately, or something else?
+>> =
+
+>
+> I would like to know, how much time we spend waiting in both cases.
+
+Which "both" cases?
+
+> Is there something wrong with the "wait ready"? As we cannot observe
+> the timings with a scope, because we are using a "soft" controller
+> implementation somehow, we can easily measure how much time we spend
+> in each operation by measuring the time before and after.
+>
+> These information are only useful when we are doing operations related
+> to sequential reads.
+
+I have hooked up some spare GPIOs to a scope, which should be more
+accurate (nanosecond) than software timestamps.  All I need to know is
+what to measure and what to look for in those measurements.
+
+-- =
+
+M=E5ns Rullg=E5rd
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
