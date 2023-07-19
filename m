@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7CC8C001B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 22:03:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 925D8C0015E
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 22:04:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QcAHuUS5ONwC0gEiMY0PDHCqKxCikUoR734xAVdN78U=; b=Tw6C1aoALB2/gG
-	/99fNKJ/axJ4+fIHTEdYj6wbxJPeaRAYDa3wkUfM8mhBw3j4i/kHwRaUgdq6xdfIWpCq3UnvcDg8C
-	/Wg4xjUY/m90KKUnSUgh69Dd+b6Jfwl7OG839Yok6LCEv7CBaldLy+dI+ien5FbbCncx1MFAZbUSC
-	r4AfLaHlRnmJcHdJhxUlqxBquoBB4QB9W6lM/svXc8qlvWAOEYGhvHnhXLgbncqHGQm6MmeI8Oyuz
-	On4E6OQGmR4/RMNtfipmzn1Ao47NqgN3odLI22xxJb5cEEDi+rQeKBhO9LxD0vyRo2+JIccoZ5FO3
-	fHYXrtEoAT+YKBND2RJg==;
+	List-Owner; bh=yRtr5udOMJ2NQS0tBkScCiUG3A5hwxOC9KfjoZMu8uk=; b=kE7z+gAQh2BMw5
+	Fcja7g+fJkvkuCdByfUOfI7q1xMx4BCVnxUL4Dj257HqzyySnMT9CdornKkhi8QaGTW3Dl/iBBhr1
+	4/GnW9zZyTAk3ZS8H9byimQT3pg29MDHc3RBctd7G9lc9gUbiRu4Ggdl4cufJp8E37b6a7OJjn164
+	N8LNyLNh0VykwUXWmzLqv0xCAX6K8PFASz4LB1NU890fveacAh0hQMR2BoJq8Nl0jpupxpBvMIDCC
+	cFccInx3xv/gHEhExVKwk5Yv3mCj4IYjQD7LsY6ltOmGTTyWsaxWPNovQh7B00275WBYF5hxP0FyH
+	4VDpqIEhilV2ELLR5RTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMFGg-0092xW-1K;
-	Wed, 19 Jul 2023 22:03:34 +0000
+	id 1qMFHW-0093D7-1u;
+	Wed, 19 Jul 2023 22:04:26 +0000
 Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMFGd-0092wG-1z
+	id 1qMFHU-0093Bu-0l
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Jul 2023 22:03:32 +0000
+	Wed, 19 Jul 2023 22:04:25 +0000
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1qMFGL-0008Kc-1x;
-	Wed, 19 Jul 2023 22:03:13 +0000
-Date: Wed, 19 Jul 2023 23:03:05 +0100
+	id 1qMFGe-0008Lk-2E;
+	Wed, 19 Jul 2023 22:03:32 +0000
+Date: Wed, 19 Jul 2023 23:03:24 +0100
 From: Daniel Golle <daniel@makrotopia.org>
 To: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -55,15 +55,15 @@ To: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
 	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
 	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 3/6] block: add new genhd flag GENHD_FL_NO_NVMEM
-Message-ID: <96510d925cb0ca1a3a132f8f8affd4bbdafd8fc9.1689802933.git.daniel@makrotopia.org>
+Subject: [RFC PATCH 4/6] mtd: blkdevs: set GENHD_FL_NO_NVMEM
+Message-ID: <65171d5da3daba24315ecdfef6727442baae5bbf.1689802933.git.daniel@makrotopia.org>
 References: <cover.1689802933.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <cover.1689802933.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230719_150331_657089_A5F647A9 
-X-CRM114-Status: GOOD (  13.12  )
+X-CRM114-CacheID: sfid-20230719_150424_279141_300D8156 
+X-CRM114-Status: GOOD (  10.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,34 +80,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add new flag to destinguish block devices which should not act as an
-NVMEM provider, such as for example an emulated block device on top of
-an MTD partition which already acts as an NVMEM provider itself.
+As the MTD subsystem already acts as an NVMEM provider, emulated mtdblock
+devices should not be considered NVMEM providers.
 
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- include/linux/blkdev.h | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mtd/mtd_blkdevs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 2f5371b8482c0..e853d1815be15 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -80,11 +80,14 @@ struct partition_meta_info {
-  * ``GENHD_FL_NO_PART``: partition support is disabled.  The kernel will not
-  * scan for partitions from add_disk, and users can't add partitions manually.
-  *
-+ * ``GENHD_FL_NO_NVMEM``: NVMEM emulation is disabled.  The kernel will not
-+ * emulate an NVMEM device on top of this disk.
-  */
- enum {
- 	GENHD_FL_REMOVABLE			= 1 << 0,
- 	GENHD_FL_HIDDEN				= 1 << 1,
- 	GENHD_FL_NO_PART			= 1 << 2,
-+	GENHD_FL_NO_NVMEM			= 1 << 3,
- };
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index ff18636e08897..82d5afba6a25a 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -362,6 +362,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 		gd->flags |= GENHD_FL_NO_PART;
+ 	}
  
- enum {
++	gd->flags |= GENHD_FL_NO_NVMEM;
+ 	set_capacity(gd, ((u64)new->size * tr->blksize) >> 9);
+ 
+ 	/* Create the request queue */
 -- 
 2.41.0
 
