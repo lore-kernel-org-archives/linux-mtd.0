@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D974AC001DE
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 16:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0788AC001E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jul 2023 16:35:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=2Tnwchhpheb2or1vP2DyaRyaNiHWgiwOnt8vYEZcjWQ=; b=2hKY+JGpY6rlRDA8sDJEny143V
-	K0YfSon+FyyQbuncJ3YmjZLKHE32jptFMKxQcdBZGAjUbXI5yd/+rrB1z5gXcBWflxPdig6+SEJSF
-	n9sxSCIaWiTi0tdWXr/NupKVDcTbhzLdLp/4OwXAKEFhRVSjHBVEuZOqB1zzjoHO9YWvWxvwixUaz
-	1+hmb1QKBUprNREkZSya3UfPO9eLrmPbCx3GVY0wJjIvcY1fLN1K3pYTpwg3ME/UxOdPpBhJib0LV
-	CQu7JWx6SaJAoCYPy+hE/XbvGBMxc+58gN6+o48XQdLm6mGfVP5VpYvU5Tkd7O0XafgUztT+CGzFe
-	SQW2TFag==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=kawEP18b5hNRBFadxcGFiF278hogLmOdHud67647Yuw=; b=2+7z780Cug5onm
+	1Dt3tsUG7N59fph5JT4mMuN7OfGLXVw/yW+Ws+4mMA11qd5AwQR3IJ8B3sB9HtPSmNYa5jHQjmcC+
+	wEQf8NXQqjyXh1ccUd3LUsTOV7gEI94i/5VLxFxfk8e7urbuTWsV2EAyuVZjCFyop/CBUN0gPTHY2
+	pS46kH291ffBmPXemNVWxcUodiWXvot6t2sH10wNxLTcpVxwnRdMyoFv639xZXrmUy9UfEgfDC5xo
+	J8NndDhfnG2NQPMXDaB2MRlDDVbC4+8mEQbNnIOYzgVTFWWwVFJdp55d/gNrV+hLMW4p9YXdzl5Vw
+	mofbjawGyEngnCdBFshQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM9tn-0086kj-2a;
-	Wed, 19 Jul 2023 16:19:35 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qMA8c-0089XQ-1S;
+	Wed, 19 Jul 2023 16:34:54 +0000
+Received: from mail-ot1-x331.google.com ([2607:f8b0:4864:20::331])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qM9tj-0086ii-2l
+	id 1qMA8Y-0089Un-2P
 	for linux-mtd@lists.infradead.org;
-	Wed, 19 Jul 2023 16:19:33 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 50D526171C;
-	Wed, 19 Jul 2023 16:19:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D65CDC433C7;
-	Wed, 19 Jul 2023 16:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689783570;
-	bh=ExPtoNyHUFeA29htWYi8hJzCPMxOdh9y0o8C7+6x1lc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OfTgyiTQhVxWaw755l10GClhg5+3b6Fp4FGzCfjaksK42v6g8fqT7ScwGk5/3hgfF
-	 DBSZ2GMM24bHrNcLaDxGwITGb7o/Ga0jGOOsjBp7Jf3o4Mwhz1auzwHyPGc4b3ycVS
-	 Zb3bXv8VtRDApWZg+oioE4IJY72NBKG+2Uo5bqwqiEBu1aqkRx2mK4vWihpgdpbq7Y
-	 jk4P/nlwgijz1hDCElZ3EUjkhoa192INmKvNtqigHkW/mIQnSC3tWzAcx4Kbf0p7hS
-	 10tQEjDtI4ytiTsTk6AuKJRwxzThXwaPmjBMP3XO4VmipcZ2UrNYlz5+1bj1SeAmpi
-	 eVC0qOD3uM8Mg==
-Date: Wed, 19 Jul 2023 17:19:25 +0100
-From: Conor Dooley <conor@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Michael Walle <michael@walle.cc>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH 1/3] dt-bindings: nvmem: convert U-Boot env to NVMEM
- layout
-Message-ID: <20230719-prelaunch-hatching-556f6fe97c43@spud>
-References: <20230718160652.26756-1-zajec5@gmail.com>
+	Wed, 19 Jul 2023 16:34:53 +0000
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6b9af1826b6so5412476a34.1
+        for <linux-mtd@lists.infradead.org>; Wed, 19 Jul 2023 09:34:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nanometrics.ca; s=google; t=1689784487; x=1692376487;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OHZmtj0tjbGb5GlrzhI193C4phlH86gSe8UN3gPcG9w=;
+        b=lR/VDWZek6Y4RFdfC3fACZY8gsp3errzTWyKc7KrhlKryVOXVOuGJRAy+ZJBgR/17D
+         D+8vCFSzhSXyQHoEeoeCVskWlVkxyt7wL5sQVg3pRAnP6MY36Hj1oM+n7uNH0McDiwdl
+         sBuBLzkUgoRwppxwd9DPUb61x47PQ4Exixf9w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689784487; x=1692376487;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OHZmtj0tjbGb5GlrzhI193C4phlH86gSe8UN3gPcG9w=;
+        b=GnAb1zfX5JsGrK63Rrhmzqsc3Mhenqgvk8xDvJX2lkEcLS9WYUR4q+6l+F4CyKfQ6V
+         BbHIXG0Q6HaYezHRELP3hMUJXdtxBVTrZE4bfBrrei94NPGABY/027qQAmZgwlK7DXVz
+         zAISr8zeHOU3Z0nByNC1V1uLcr2TA/pb4PQpgZ707s/0wf2DKadbKd/iA6s8a0S7ZmFI
+         DmMkA1q3lns20HyZUSySaNQUFW0JD0NaJQ9v2I6dMYyqwGqtdPwOs8rT47UgDuIW3CCE
+         e6wdbWfqiJspzEjKzp6NLPpyw9qiXZScg8PKTVAVqnpAz+pVWf2/o1f8iP/GlxLuc6hE
+         th9g==
+X-Gm-Message-State: ABy/qLZN9dN2hYbgBeFBejmWavOYgrW1IDSz1Mgd9N3B29gQkHkL/TO2
+	/eOGPLRqLXg6clm43kiQmdVnpa4y6m22+AgiIcBZQCdImPrKH8DAUeURQiB91ToKqtlwQ7Y3Zqp
+	C4VNiUrit/03d3RQmfhEU8XMhCszkvSOB1a6eCOcvVvPM/CM=
+X-Google-Smtp-Source: APBJJlF7XWddjAPyBxeIn9qwW6cptUCLgt7vmTPskjnMqQPDlr0EimygVcMHlTL1h6iGrSXhX4Yiy6il/uPX3O97pwU=
+X-Received: by 2002:a05:6870:a707:b0:1b7:15ac:ab9c with SMTP id
+ g7-20020a056870a70700b001b715acab9cmr3063215oam.36.1689784486954; Wed, 19 Jul
+ 2023 09:34:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230718160652.26756-1-zajec5@gmail.com>
+References: <CAF_O4Js97E_MEK=jrFxUqd4yFOUk4wJg89-LhtDruA67=9_r1A@mail.gmail.com>
+ <CAF_O4JuesBTVT806SfMirk2tFG28T7kt5HWSjx9LPEbC9K5zBg@mail.gmail.com>
+ <CAF_O4JvYE8HPQDEmhesndwBsOTk134netTTSYNE-dc0o0ik59A@mail.gmail.com> <20230718100237.69545cde@xps-13>
+In-Reply-To: <20230718100237.69545cde@xps-13>
+From: Christopher Cordahi <christophercordahi@nanometrics.ca>
+Date: Wed, 19 Jul 2023 12:34:36 -0400
+Message-ID: <CAF_O4Jt3MfYBwd0qF8vv1eHzApEZQOcGhthLCV4suetxYqVacA@mail.gmail.com>
+Subject: Re: Question about Davinci NAND using 4 bit ECC
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, Vignesh Raghavendra <vigneshr@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230719_091931_974145_59A6B7FB 
-X-CRM114-Status: GOOD (  18.97  )
+X-CRM114-CacheID: sfid-20230719_093451_763971_B9B16BA1 
+X-CRM114-Status: GOOD (  20.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,131 +81,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1762326605008443668=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Tue, 18 Jul 2023 at 04:02, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
---===============1762326605008443668==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BSVX58EKAjDZorw2"
-Content-Disposition: inline
+Thanks Miquel for the quick response
 
+And apologies for sending you the question 3 times.  My first attempt included
+an HTML copy which was rejected by the mailing list, and it took me an extra
+attempt to force my email client to use plain text.  And the third email is
+still awaiting approval by the mailing list moderator, I suspect due to how I
+forwarded and reformatted the original email back to the mailing list.
 
---BSVX58EKAjDZorw2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> It is hard to tell whether these changes are legitimate or not without
+> properly testing. If you benchmark your changes and never see any
+> error, it does not mean you fall into the pits during your tests.
 
-On Tue, Jul 18, 2023 at 06:06:50PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->=20
-> Use "nvmem-layout" and drop unused "mac" label while at it.
+OK, I was hoping to avoid my own testing because as you write, no errors
+doesn't mean it's better.  And I was overly optimistic in hoping for an
+explanation as to why this driver mostly written by TI 15 years ago doesn't
+match their documented procedure.
 
-Stupid question perhaps, does the "old" way of doing this still work
-after this series?
+> Observing bitflips in userspace and detecting them can be achieved
+> easily with the nandbiterrs -i tool from the mtd-utils test suite.
 
-Thanks
-Conor.
+Thanks for this tip, I'll look into extending the Yocto mtd-utils recipe [1]
+to install it.  I see the kernel also has a nandbiterrs mtd test driver[2].
+Can it be used? Is there any documentation on how to use this kernel test?
 
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> ---
->  .../bindings/nvmem/layouts/nvmem-layout.yaml    |  1 +
->  .../nvmem/{ =3D> layouts}/u-boot,env.yaml         | 17 +++++++++++------
->  2 files changed, 12 insertions(+), 6 deletions(-)
->  rename Documentation/devicetree/bindings/nvmem/{ =3D> layouts}/u-boot,en=
-v.yaml (87%)
->=20
-> diff --git a/Documentation/devicetree/bindings/nvmem/layouts/nvmem-layout=
-=2Eyaml b/Documentation/devicetree/bindings/nvmem/layouts/nvmem-layout.yaml
-> index 3b40f7880774..382507060651 100644
-> --- a/Documentation/devicetree/bindings/nvmem/layouts/nvmem-layout.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/layouts/nvmem-layout.yaml
-> @@ -21,6 +21,7 @@ oneOf:
->    - $ref: fixed-layout.yaml
->    - $ref: kontron,sl28-vpd.yaml
->    - $ref: onie,tlv-layout.yaml
-> +  - $ref: u-boot,env.yaml
-> =20
->  properties:
->    compatible: true
-> diff --git a/Documentation/devicetree/bindings/nvmem/u-boot,env.yaml b/Do=
-cumentation/devicetree/bindings/nvmem/layouts/u-boot,env.yaml
-> similarity index 87%
-> rename from Documentation/devicetree/bindings/nvmem/u-boot,env.yaml
-> rename to Documentation/devicetree/bindings/nvmem/layouts/u-boot,env.yaml
-> index 36d97fb87865..ebe3b71ba155 100644
-> --- a/Documentation/devicetree/bindings/nvmem/u-boot,env.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/layouts/u-boot,env.yaml
-> @@ -1,7 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->  %YAML 1.2
->  ---
-> -$id: http://devicetree.org/schemas/nvmem/u-boot,env.yaml#
-> +$id: http://devicetree.org/schemas/nvmem/layouts/u-boot,env.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
-> =20
->  title: U-Boot environment variables
-> @@ -72,11 +72,14 @@ examples:
->          };
-> =20
->          env: partition@40000 {
-> -            compatible =3D "u-boot,env";
->              reg =3D <0x40000 0x10000>;
-> =20
-> -            mac: ethaddr {
-> -                #nvmem-cell-cells =3D <1>;
-> +            nvmem-layout {
-> +                compatible =3D "u-boot,env";
-> +
-> +                ethaddr {
-> +                    #nvmem-cell-cells =3D <1>;
-> +                };
->              };
->          };
->      };
-> @@ -92,9 +95,11 @@ examples:
->              label =3D "u-boot";
-> =20
->              partition-u-boot-env {
-> -                compatible =3D "brcm,env";
-> +                nvmem-layout {
-> +                    compatible =3D "brcm,env";
-> =20
-> -                ethaddr {
-> +                    ethaddr {
-> +                    };
->                  };
->              };
->          };
-> --=20
-> 2.35.3
->=20
+[1] https://git.yoctoproject.org/poky/plain/meta/recipes-devtools/mtd/mtd-utils_git.bb
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/mtd/tests/nandbiterrs.c
 
---BSVX58EKAjDZorw2
-Content-Type: application/pgp-signature; name="signature.asc"
+--
+Chris
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLgNDQAKCRB4tDGHoIJi
-0hwUAP4j+zpbaVgSQrGuOwLm3aPVNHHJgVIEwIMMpon8jA4FeQD/b+UUjeXlLRus
-R4eNI7ua07EPpuM/RbOpElBPPSqdog8=
-=ON60
------END PGP SIGNATURE-----
-
---BSVX58EKAjDZorw2--
-
-
---===============1762326605008443668==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+This message is intended exclusively for the individual or entity to which 
+it is addressed. This communication may contain information that is 
+proprietary, privileged, confidential or otherwise legally exempt from 
+disclosure. If you are not the named addressee, or have been inadvertently 
+and erroneously referenced in the address line, you are not authorized to 
+read, print, retain, copy or disseminate this message or any part of it. If 
+you have received this message in error, please notify the sender 
+immediately by e-mail and delete all copies of the message.
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1762326605008443668==--
-
