@@ -4,74 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C810EB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 06:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1394EB64DC
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 06:50:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2eLjPtRcspKRU+FR5l83Sh7JvAtz7WIdbg4OdY50d3o=; b=XJ28OM+m6dDfe4
-	Vo3WLeo2UM+ar84iNim5rYlIh41AHpiFBeML/vRl80AXrzpbq2Mb8RPu2ZJvIRKjF0NWdSerxc02R
-	hxqw++mhWEO4EON4pJ0fmi82RRBxzHO8G/zPm5zE7zkCOQ6EmcXWmCPSlaoXWSNF7gjwpezohzyTV
-	674GSaCoWeJyWONiRw9Kx381PnyQEDGH/DpVAvr4LIxo/FSYlwgkl7Yx21fMZx3txzcEbpUPIAYBI
-	xJ7zs99hxLNxOLfz7LjMsg4GLR6bjyW0lcocQf0W3eKYHB6qPscbOoCexuhIwq52bTi+ryNIKjfXV
-	GGbiLbGxSILpU0wPI/pg==;
+	List-Owner; bh=T6QsfvRZF2OMTQcH7RSRk9lFb7HsBoJWS+YaqGoMDZs=; b=Ek0msglg+smYMp
+	pQC7jcjA8KPsoDDT97H4JAjo9azYfg/7k09Zgy3wsFpUcUynxfSk8mSKczls4reLrwjbmVOqSHsDH
+	Fov+6AfJB7xNbFFIhbBWkNsX9fKxg+OUU+YIEYrO9U7NJ8UlXMkE9NbmwMnkS9glHGEIgMK+hxBGK
+	MRM3NP5KVy+491W8Bpu2elL2MWQl0Y/hSEAKGijRvShZYpg1n3V52oBcq3v/uEExB3vFYdo05Qd5o
+	0OL1/yvNTWBuZReDq2v5ASNX3Zkpm6Mkyfsh6wUZOvbsm91CX5D8AIl+3tELNVHeEA8zJLphKJken
+	dLMQmYElL+hMBOXdUhEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMN7a-009w6B-1n;
-	Thu, 20 Jul 2023 06:26:42 +0000
-Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
+	id 1qMNUm-00A0AS-1z;
+	Thu, 20 Jul 2023 06:50:40 +0000
+Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMN7W-009w48-1J
+	id 1qMNUj-00A09F-3D
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Jul 2023 06:26:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689834398; x=1721370398;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ab9EpTq3kAxuQgLzIkGiqoqUu64VuJ68ylr/9K2+01M=;
-  b=jqlIFP+Ed++gCuXXn1bAKtc7INeCLqf1mHENVYdCqwhX1kou5xmK7mVE
-   +oXBViaBbjcZxZc5xje6ooBgh/13Qxd2QEWuRqBB30feyLon0puejLVwN
-   kR3HaDQlXoJ8rjg2Tdod9MX7ZhWn4V1rZgxeBf6euovTa0Ze1bJqKMR2Q
-   vV5JPqSFN9nkI4/PlbIBYh94/8iju2qxL2xG9CELMPvM+lrL0ib9IPtF0
-   ol487cHmwGCrTbc945NkaPOTTND39HJ/UC8j6FF0SGb8E1URo8RS0wWNZ
-   yxdwroWDVAznRqnyzXOveGUbK0XV8B2XOQL5xLoZoi+kraIdO6IIJveOq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="430412050"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="430412050"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2023 23:26:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="718256631"
-X-IronPort-AV: E=Sophos;i="6.01,218,1684825200"; 
-   d="scan'208";a="718256631"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 19 Jul 2023 23:26:31 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qMN7O-0005ob-1q;
-	Thu, 20 Jul 2023 06:26:30 +0000
-Date: Thu, 20 Jul 2023 14:25:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: Victor Lim <vlim@gigadevice.com>, tudor.ambarus@linaro.org,
-	pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
-	vigneshr@ti.com, akumarma@amd.com
-Cc: oe-kbuild-all@lists.linux.dev, michael@walle.cc,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	vikhyat.goyal@amd.com, Victor Lim <vlim@gigadevice.com>
-Subject: Re: [PATCH V1 1/1] linux: drivers: mtd: spi-nor: gigadevice.c
-Message-ID: <202307201459.rKBT7i1H-lkp@intel.com>
-References: <20230720042834.12296-1-vlim@gigadevice.com>
+	Thu, 20 Jul 2023 06:50:39 +0000
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-521dc8ae899so186426a12.3
+        for <linux-mtd@lists.infradead.org>; Wed, 19 Jul 2023 23:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689835836; x=1692427836;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=P0g/IBsPZGY5PxZfIKc7/6gIDE3jbSDKqZLxVCtbNmM=;
+        b=Oie91okDf4TmQaL1csHvGo+xD5lYbjqxP+Y/+z633ZjSv+gZcB9UuUtkVx48D2RSKW
+         IgISxlpeI2YmFSX8NauVibHdDy9iX4npnCgThkBlcEjqvjYX1/lRDXT4pvYnBxFtpQ8J
+         ko5Z4m6YgZ729LTBXrAru3IXv4D13BpEiEQbjrx8ig1l9m/qTGqCwDB7enDhHsOTurBf
+         mzLfr34aLHxiuytOFDb/LGWeBnGk07kvoyZAa57IOqpW5L2d9pkCIvsARkakeyWVXhmI
+         x1sM8YYJKGf+eAPBzgEiQMB3J36zBRXXWhOMSr/vXpNT5vGTErpFOpOE28bjOouV6wH5
+         gx7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689835836; x=1692427836;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P0g/IBsPZGY5PxZfIKc7/6gIDE3jbSDKqZLxVCtbNmM=;
+        b=VemKb40FCVVIpjLZmp/kM54CEtTeAFgsMNPW5Lws8qBsJ4a5Wt2YWSTPXqGzb4xZis
+         v8HiZ/7LHo3RMYLOS+gIkaBygwrHyXFe+bRxCcO4uJhu2YJhdbxHukAorxETqr2nra6F
+         tM617bxWiVrUC75fb0kjG7oj2XW+dISnHqCOQjL805eX2vt5850KQHFvHCJLE/fI3nSL
+         iJaTfEXM8JrM3FozrCw1WASGwDvvPNcbgJpbWA/Xc9OlG2TJ8vKNyYh8d958wBNrH8Bg
+         iaTcb8D9ChrMZRj2039EhqccfyVGkoMdrfdhD94xL1kdNj4dV8j/vqgAQeAU9yD6pVns
+         Z3hQ==
+X-Gm-Message-State: ABy/qLY5jrukoaitb3ugsENel14bvHtn6uYmU0F5D/8arUt/dKEJuthD
+	HL4xQ8bPyK7to7iBOcVGGA8xhA==
+X-Google-Smtp-Source: APBJJlG4RR2sqWSSMq1ocs/VfVSVQ/+Fb3rMHZ5K+E5BQzoA0+73UAaCItdftmgHvay9ZoHLh1P6lw==
+X-Received: by 2002:a17:907:779a:b0:99b:5689:1331 with SMTP id ky26-20020a170907779a00b0099b56891331mr575512ejc.59.1689835836589;
+        Wed, 19 Jul 2023 23:50:36 -0700 (PDT)
+Received: from [192.168.0.107] ([79.115.63.16])
+        by smtp.gmail.com with ESMTPSA id o23-20020a1709062e9700b009935aba3a9dsm225434eji.48.2023.07.19.23.50.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 23:50:36 -0700 (PDT)
+Message-ID: <598bd9d8-249e-125c-bde3-7a63ba6dc5f7@linaro.org>
+Date: Thu, 20 Jul 2023 07:50:33 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230720042834.12296-1-vlim@gigadevice.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] mtd: spi-nor: avoid holes in struct spi_mem_op
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Peter Foley <pefoley2@pefoley.com>,
+ Pedro Falcato <pedro.falcato@gmail.com>, Michael Walle <michael@walle.cc>,
+ Mark Brown <broonie@kernel.org>,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>, Dhruva Gole <d-gole@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org
+References: <20230719190045.4007391-1-arnd@kernel.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230719190045.4007391-1-arnd@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230719_232638_532004_E8784960 
-X-CRM114-Status: GOOD (  15.29  )
+X-CRM114-CacheID: sfid-20230719_235038_059056_D7C3CAE8 
+X-CRM114-Status: GOOD (  19.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,293 +100,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Victor,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on mtd/spi-nor/next]
-[also build test ERROR on linus/master v6.5-rc2 next-20230720]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Victor-Lim/linux-drivers-mtd-spi-nor-gigadevice-c/20230720-123114
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
-patch link:    https://lore.kernel.org/r/20230720042834.12296-1-vlim%40gigadevice.com
-patch subject: [PATCH V1 1/1] linux: drivers: mtd: spi-nor: gigadevice.c
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230720/202307201459.rKBT7i1H-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230720/202307201459.rKBT7i1H-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307201459.rKBT7i1H-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/mtd/spi-nor/gigadevice.c:75:58: error: macro "INFO" passed 5 arguments, but takes just 4
-      75 |                               SPI_NOR_IO_MODE_EN_VOLATILE)
-         |                                                          ^
-   In file included from drivers/mtd/spi-nor/gigadevice.c:9:
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
->> drivers/mtd/spi-nor/gigadevice.c:71:26: error: 'INFO' undeclared here (not in a function)
-      71 |         { "gd25lx256e",  INFO(0xc86819, 0, 64 * 1024, 512,
-         |                          ^~~~
->> drivers/mtd/spi-nor/gigadevice.c:76:28: error: 'gd25lx256e_fixups' undeclared here (not in a function); did you mean 'gd25q256_fixups'?
-      76 |                 .fixups = &gd25lx256e_fixups },
-         |                            ^~~~~~~~~~~~~~~~~
-         |                            gd25q256_fixups
-   drivers/mtd/spi-nor/gigadevice.c:78:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      78 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:80:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      80 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:82:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      82 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:84:65: error: macro "INFO" passed 5 arguments, but takes just 4
-      84 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:86:65: error: macro "INFO" passed 5 arguments, but takes just 4
-      86 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:88:86: error: macro "INFO" passed 5 arguments, but takes just 4
-      88 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                                      ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:90:86: error: macro "INFO" passed 5 arguments, but takes just 4
-      90 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                                      ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:92:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      92 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:94:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      94 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:96:66: error: macro "INFO" passed 5 arguments, but takes just 4
-      96 |         SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-         |                                                                  ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:98:48: error: macro "INFO" passed 5 arguments, but takes just 4
-      98 |         SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-         |                                                ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:100:48: error: macro "INFO" passed 5 arguments, but takes just 4
-     100 |         SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-         |                                                ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:102:48: error: macro "INFO" passed 5 arguments, but takes just 4
-     102 |         SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-         |                                                ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:104:65: error: macro "INFO" passed 5 arguments, but takes just 4
-     104 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:106:65: error: macro "INFO" passed 5 arguments, but takes just 4
-     106 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)       },
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:108:65: error: macro "INFO" passed 5 arguments, but takes just 4
-     108 |         SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)       },
-         |                                                                 ^
-   drivers/mtd/spi-nor/core.h:563: note: macro "INFO" defined here
-     563 | #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)              \
-         | 
-   drivers/mtd/spi-nor/gigadevice.c:110:65: error: macro "INFO" passed 5 arguments, but takes just 4
 
 
-vim +/INFO +75 drivers/mtd/spi-nor/gigadevice.c
+On 7/19/23 20:00, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> gcc gets confused when -ftrivial-auto-var-init=pattern is used on sparse
+> bit fields such as 'struct spi_mem_op', which caused the previous false
+> positive warning about an uninitialized variable:
+> 
+> drivers/mtd/spi-nor/spansion.c: error: 'op' is used uninitialized [-Werror=uninitialized]
+> 
+> In fact, the variable is fully initialized and gcc does not see it being
+> used, so the warning is entirely bogus. The problem appears to be
+> a misoptimization in the initialization of single bit fields when the
+> rest of the bytes are not initialized.
+> 
+> A previous workaround added another initialization, which ended up
+> shutting up the warning in spansion.c, though it apparently still happens
+> in other files as reported by Peter Foley in the gcc bugzilla. The
+> workaround of adding a fake initialization seems particularly bad
+> because it would set values that can never be correct but prevent the
+> compiler from warning about actually missing initializations.
+> 
+> Revert the broken workaround and instead pad the structure to only
+> have bitfields that add up to full bytes, which should avoid this
+> behavior in all drivers.
+> 
+> I also filed a new bug against gcc with what I found, so this can
+> hopefully be addressed in future gcc releases. At the moment, only
+> gcc-12 and gcc-13 are affected.
+> 
+> Cc: Peter Foley <pefoley2@pefoley.com>
+> Cc: Pedro Falcato <pedro.falcato@gmail.com>
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110743
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108402
+> Link: https://godbolt.org/z/efMMsG1Kx
+> Fixes: 420c4495b5e56 ("mtd: spi-nor: spansion: make sure local struct does not contain garbage")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-     8	
-   > 9	#include "core.h"
-    10	
-    11	static int
-    12	gd25q256_post_bfpt(struct spi_nor *nor,
-    13			   const struct sfdp_parameter_header *bfpt_header,
-    14			   const struct sfdp_bfpt *bfpt)
-    15	{
-    16		/*
-    17		 * GD25Q256C supports the first version of JESD216 which does not define
-    18		 * the Quad Enable methods. Overwrite the default Quad Enable method.
-    19		 *
-    20		 * GD25Q256 GENERATION | SFDP MAJOR VERSION | SFDP MINOR VERSION
-    21		 *      GD25Q256C      | SFDP_JESD216_MAJOR | SFDP_JESD216_MINOR
-    22		 *      GD25Q256D      | SFDP_JESD216_MAJOR | SFDP_JESD216B_MINOR
-    23		 *      GD25Q256E      | SFDP_JESD216_MAJOR | SFDP_JESD216B_MINOR
-    24		 */
-    25		if (bfpt_header->major == SFDP_JESD216_MAJOR &&
-    26		    bfpt_header->minor == SFDP_JESD216_MINOR)
-    27			nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
-    28	
-    29		return 0;
-    30	}
-    31	
-    32	static const struct spi_nor_fixups gd25q256_fixups = {
-    33		.post_bfpt = gd25q256_post_bfpt,
-    34	};
-    35	
-    36	static const struct flash_info gigadevice_nor_parts[] = {
-    37		{ "gd25q16", INFO(0xc84015, 0, 64 * 1024,  32)
-    38			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    39			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    40				      SPI_NOR_QUAD_READ) },
-    41		{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64)
-    42			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    43			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    44				      SPI_NOR_QUAD_READ) },
-    45		{ "gd25lq32", INFO(0xc86016, 0, 64 * 1024, 64)
-    46			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    47			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    48				      SPI_NOR_QUAD_READ) },
-    49		{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128)
-    50			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    51			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    52				      SPI_NOR_QUAD_READ) },
-    53		{ "gd25lq64c", INFO(0xc86017, 0, 64 * 1024, 128)
-    54			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    55			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    56				      SPI_NOR_QUAD_READ) },
-    57		{ "gd25lq128d", INFO(0xc86018, 0, 64 * 1024, 256)
-    58			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    59			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    60				      SPI_NOR_QUAD_READ) },
-    61		{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256)
-    62			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-    63			NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-    64				      SPI_NOR_QUAD_READ) },
-    65		{ "gd25q256", INFO(0xc84019, 0, 64 * 1024, 512)
-    66			PARSE_SFDP
-    67			FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
-    68			FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
-    69			.fixups = &gd25q256_fixups },
-    70	/* adding these parts */
-  > 71		{ "gd25lx256e",  INFO(0xc86819, 0, 64 * 1024, 512,
-    72				      SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
-    73				      SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ |
-    74				      SPI_NOR_OCTAL_DTR_PP |
-  > 75				      SPI_NOR_IO_MODE_EN_VOLATILE)
-  > 76			.fixups = &gd25lx256e_fixups },
-    77		{"gd25b512", INFO(0xc8471A, 0, 64 * 1024, 1024,	SECT_4K |
-    78		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    79		{"gd55b01g", INFO(0xc8471B, 0, 64 * 1024, 2048,	SECT_4K |
-    80		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    81		{"gd55b02g", INFO(0xc8471C, 0, 64 * 1024, 4096,	SECT_4K |
-    82		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    83		{"gd25f64", INFO(0xc84317, 0, 64 * 1024, 128,	SECT_4K |
-    84		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-    85		{"gd25f128", INFO(0xc84318, 0, 64 * 1024, 256,	SECT_4K	|
-    86		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-    87		{"gd25f256", INFO(0xc84319, 0, 64 * 1024, 512,	SECT_4K |
-    88		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    89		{"gd55f512", INFO(0xc8431A, 0, 64 * 1024, 1024,	SECT_4K |
-    90		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    91		{"gd25t512", INFO(0xc8461A, 0, 64 * 1024, 1024,	SECT_4K |
-    92		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    93		{"gd55t01g", INFO(0xc8461B, 0, 64 * 1024, 2048,	SECT_4K |
-    94		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    95		{"gd55t02ge", INFO(0xc8461C, 0, 64 * 1024, 4096,	SECT_4K |
-    96		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-    97		{"gd25x512", INFO(0xc8481A, 0, 64 * 1024, 1024,	SECT_4K |
-    98		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-    99		{"gd55x01g", INFO(0xc8481B, 0, 64 * 1024, 2048,	SECT_4K |
-   100		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   101		{"gd55x02g", INFO(0xc8481C, 0, 64 * 1024, 4096,	SECT_4K |
-   102		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   103		{"gd25lb16", INFO(0xc86015, 0, 64 * 1024, 32,	SECT_4K |
-   104		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-   105		{"gd25lb32", INFO(0xc86016, 0, 64 * 1024, 64,	SECT_4K |
-   106		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   107		{"gd25lb64", INFO(0xc86017, 0, 64 * 1024, 128,	SECT_4K |
-   108		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   109		{"gd25lb128", INFO(0xc86018, 0, 64 * 1024, 256,	SECT_4K |
-   110		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-   111		{"gd25lb256", INFO(0xc86019, 0, 64 * 1024, 512,	SECT_4K |
-   112		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   113		{"gd25lb256", INFO(0xc86719, 0, 64 * 1024, 512,	SECT_4K |
-   114		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   115		{"gd25lb512", INFO(0xc8671A, 0, 64 * 1024, 1024,	SECT_4K |
-   116		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   117		{"gd55lb01g", INFO(0xc8671B, 0, 64 * 1024, 2048,	SECT_4K |
-   118		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   119		{"gd55lb02g", INFO(0xc8671C, 0, 64 * 1024, 4096,	SECT_4K |
-   120		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   121		{"gd25lf80", INFO(0xc86314, 0, 64 * 1024, 16,	SECT_4K |
-   122		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-   123		{"gd25lf16", INFO(0xc86315, 0, 64 * 1024, 32,	SECT_4K |
-   124		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)},
-   125		{"gd25lf32", INFO(0xc86316, 0, 64 * 1024, 64,	SECT_4K |
-   126		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   127		{"gd25lf64", INFO(0xc86317, 0, 64 * 1024, 128,	SECT_4K |
-   128		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   129		{"gd25lf128", INFO(0xc86318, 0, 64 * 1024, 256,	SECT_4K |
-   130		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK)	},
-   131		{"gd25lf255", INFO(0xc86319, 0, 64 * 1024, 512,	SECT_4K |
-   132		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   133		{"gd25lf511", INFO(0xc8631A, 0, 64 * 1024, 1024,	SECT_4K |
-   134		SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   135		{"gd25lt256e", INFO(0xc86619, 0, 64 * 1024, 512,	SECT_4K |
-   136		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   137		{"gd25lt512", INFO(0xc8661A, 0, 64 * 1024, 1024,	SECT_4K |
-   138		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   139		{"gd55lt01g", INFO(0xc8661B, 0, 64 * 1024, 2048,	SECT_4K |
-   140		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   141		{"gd55lt02g", INFO(0xc8661C, 0, 64 * 1024, 4096,	SECT_4K |
-   142		SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES)},
-   143		{"gd25lx512", INFO(0xc8681A, 0, 64 * 1024, 1024,	SECT_4K |
-   144		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   145		{"gd55lx01g", INFO(0xc8681B, 0, 64 * 1024, 2048,	SECT_4K |
-   146		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   147		{"gd55lx02g", INFO(0xc8681C, 0, 64 * 1024, 4096,	SECT_4K |
-   148		SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES)},
-   149	};
-   150	
+Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Miquel, would you please take this through mtd/fixes?
+
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
