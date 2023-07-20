@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64B20EB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:30:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A75FCEB64DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:30:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
 	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qKBICCsWCqiuT1tfjeTQc9SwCsaYgilUyPd+hRj31yU=; b=36zJNjZYyHfrrU
-	aRB7H15AYZoYaMVbB40Rii2SmFr6RcyJPiQ0jVb/g3NrMx3RZ45YG98nGbY1Srzx7fVh1T+DWyFrs
-	fwR97f4JXExqJlvOGdqvm5f/bHGs6dhoYtlk734xtYHl4Da3D1G1kqMB7mx01sVfnqPxstJP0QZ4w
-	3zVgz56um1opXruGRi47ZMaGYaVeSXzLZmNF67Rkp36uqjTAe1YYql19y4/uiL1DW/ist49krG0Dv
-	0YkFKtPt86UkV498+wJ3bd2AV1+VKaHNmNFI2prW4aP4gSDg1e4NOsEWteGDLN2h4QAbrVzCg8wY4
-	AjpgFifExnU5awgivtwQ==;
+	List-Owner; bh=ziNMzOf9rx8pEERCRbS4/BlIiEwqT/GC5kBQH8F5GqE=; b=DypbZqXWpGfxQZ
+	rxYsswGJv+eMxhil1wjEQy0al7BS3THRlFhcaKhwlw7J/85nh5as///dWmWOqsBI7d6IoA39XJS4o
+	/GH8JXZWWpBZ+JCtu9Zs+GmNrHDiD/WYnUquWGoe4b8ZiyvIlwF95tjFTxzVpLUot+zO2dee7G1uX
+	kPZWgD8IuW2uai02LjiEPcGfluVxmUlJIPOTaYl8Zt4uMuzkCsKnxT+0cWw4TuSsVE3/VA3cgyxyf
+	/bExh33RZPfBDRN+xs88/87TdivfHLFqU+OjjGB4Yji8HeMknmen8pqP+nsaCGkh+n90usv7xSqBW
+	9stpzhuMmVah2+MIhcww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP2x-00AJOt-2f;
-	Thu, 20 Jul 2023 08:30:03 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qMP34-00AJTe-1h;
+	Thu, 20 Jul 2023 08:30:10 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP2t-00AJLh-1X;
-	Thu, 20 Jul 2023 08:30:01 +0000
+	id 1qMP2u-00AJMc-0C;
+	Thu, 20 Jul 2023 08:30:03 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E254C619E5;
-	Thu, 20 Jul 2023 08:29:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1DF26C4339A;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8874261A2B;
+	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 49576C43142;
 	Thu, 20 Jul 2023 08:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1689841796;
-	bh=xHFqGn/KVspE6DtaBu0kUVJymWNV6FzrvFMW+ty+9BM=;
+	bh=SWANImK5LyAGHfVz8OSVB+5O+0HC2M5GflJbDMWWmR8=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=BIw0xWSeECybeHoq3ZR62ODj4BOH5nEfFFBK6p3r1I+kYcyfrLMK3E3nnhTUNazId
-	 Y2BH5hsSQZZsL3oXSheXF2Rf/fJEKgpbUsl2BMDj4FOmFFMZn3mt3kYqZYjDxFaXfi
-	 cSwf/uXg4nNKX7uGlZvJgZR02hhIHJJw4MaUXzJcX7rdrIkMgiMzJYQRZkI3wqPVw0
-	 imNrpO/eF7fTW2h0nOGZpLHgeAIdbg1Ka+gYbCk6Ny1wuqjSl7m2EycXsCpr19oaOD
-	 K4KOtkpcTN+nqir9ovlZCbecc76qr1Zg8hJ/2+ypTS84otUuXRMXrC5rWiH7Cm2jIH
-	 eN2omeWWq743g==
+	b=r7uT+BHZ40PVmUkRuC08W8WpWIOVHdMQPPp05cPcNakY8/rITsW9AZYUyNhuB9PWD
+	 630MjJWPQ5rvNor1p066elR3NvdMIU96HvPy5bPmGDO9UZL+3GBWUs/C7Kb3beXiAL
+	 uwpEFgROUozQye4sZ0HZFEcv5kSO2ePwW7cztIS2WkwmMoCMOi0hv+Paq5FJqoQhPS
+	 hBSM3AdGk1TS7+qaflKqo21Ale7jv+4YvxjoW4598ETpuayjqgQyUw+zBe4fPI7FU9
+	 RsHxJaA+7I8voDTEFlAqrozVeBCjiv03H6q/ofNUgd6FpQsJcPTa6OMrC1MDQepBED
+	 WsThDZw65wFDA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8DB3C0015E;
-	Thu, 20 Jul 2023 08:29:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 302FCC001DF;
+	Thu, 20 Jul 2023 08:29:56 +0000 (UTC)
 From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:02 +0300
-Subject: [PATCH v3 02/42] dt-bindings: clock: Add Cirrus EP93xx
+Date: Thu, 20 Jul 2023 14:29:04 +0300
+Subject: [PATCH v3 04/42] dt-bindings: pinctrl: Add Cirrus EP93xx
 MIME-Version: 1.0
-Message-Id: <20230605-ep93xx-v3-2-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-4-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>, 
@@ -93,18 +93,18 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
  linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=2996;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=2118;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=EbpLLhgOdlzi42v0HhzMU4hUER0yYIZWVBtRqrAV9bg=; =?utf-8?q?b=3Diqo5fZDwNJlA?=
- =?utf-8?q?A5U8uQbmiq3VlhW6FowgUfUMH8tiN9OPFWWPQjy/q97IGg/0iNk1icOrmpvN3x/c?=
- LlTLhXYuCJx5Ns2GKg/5gzIgjixhquXqnGn7X9YLLA211F8eWFb5
+ bh=0bfilaQTlamAAN7q/pI3s+D7Hc6fTINJMbrfah67Qak=; =?utf-8?q?b=3DKkxhAu+U4VC3?=
+ =?utf-8?q?NDbwqu053PMpf3CGcyTfw1FFK32bsDAJYeHg4jgrNMF5yqUNA7+1cwQZ346f/xAg?=
+ AMJ1cJzjC/tp7Cb52Jo8cYoWTwMoKuGhZtD3olRkNBbQSPRMW5tl
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
 X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_012959_603201_9D5566F6 
-X-CRM114-Status: GOOD (  15.52  )
+X-CRM114-CacheID: sfid-20230720_013000_178538_E99FDC7E 
+X-CRM114-Status: GOOD (  14.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,28 +124,27 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-This adds device tree bindings for the Cirrus Logic EP93xx
-clock block used in these SoCs.
+Add YAML bindings for ep93xx SoC pinctrl.
 
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- .../bindings/clock/cirrus,ep9301-clk.yaml          | 46 ++++++++++++++++++++++
- include/dt-bindings/clock/cirrus,ep93xx-clock.h    | 41 +++++++++++++++++++
- 2 files changed, 87 insertions(+)
+ .../bindings/pinctrl/cirrus,ep9301-pinctrl.yaml    | 58 ++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
+diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
 new file mode 100644
-index 000000000000..111e016601fb
+index 000000000000..d5682531b0da
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++++ b/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
+@@ -0,0 +1,58 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/clock/cirrus,ep9301-clk.yaml#
++$id: http://devicetree.org/schemas/pinctrl/cirrus,ep9301-pinctrl.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Cirrus Logic ep93xx SoC's clock controller
++title: Cirrus ep93xx pins mux controller
 +
 +maintainers:
 +  - Nikita Shubin <nikita.shubin@maquefel.me>
@@ -154,84 +153,49 @@ index 000000000000..111e016601fb
 +properties:
 +  compatible:
 +    oneOf:
-+      - const: cirrus,ep9301-clk
++      - const: cirrus,ep9301-pinctrl
 +      - items:
 +          - enum:
-+              - cirrus,ep9302-clk
-+              - cirrus,ep9307-clk
-+              - cirrus,ep9312-clk
-+              - cirrus,ep9315-clk
-+          - const: cirrus,ep9301-clk
++              - cirrus,ep9302-pinctrl
++              - cirrus,ep9307-pinctrl
++              - cirrus,ep9312-pinctrl
++              - cirrus,ep9315-pinctrl
++          - const: cirrus,ep9301-pinctrl
 +
-+  "#clock-cells":
-+    const: 1
++patternProperties:
++  '^pins-':
++    type: object
++    description: pin node
++    $ref: pinmux-node.yaml#
 +
-+  clocks:
-+    items:
-+      - description: reference clock
++    properties:
++      function:
++        enum: [ spi, ac97, i2s, pwm, keypad, pata, lcd, gpio ]
++
++      groups:
++        enum: [ ssp, ac97, i2s_on_ssp, i2s_on_ac97, pwm1, gpio1agrp,
++                gpio2agrp, gpio3agrp, gpio4agrp, gpio6agrp, gpio7agrp,
++                rasteronsdram0grp, rasteronsdram3grp, keypadgrp, idegrp ]
++
++    required:
++      - function
++      - groups
 +
 +required:
 +  - compatible
-+  - "#clock-cells"
-+  - clocks
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    clock-controller {
-+      compatible = "cirrus,ep9301-clk";
-+      #clock-cells = <1>;
-+      clocks = <&xtali>;
++    pinctrl {
++      compatible = "cirrus,ep9312-pinctrl", "cirrus,ep9301-pinctrl";
++      spi_default_pins: pins-spi {
++        function = "spi";
++        groups = "ssp";
++      };
 +    };
-+...
-diff --git a/include/dt-bindings/clock/cirrus,ep93xx-clock.h b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
-new file mode 100644
-index 000000000000..3cd053c0fdea
---- /dev/null
-+++ b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-+#ifndef DT_BINDINGS_CIRRUS_EP93XX_CLOCK_H
-+#define DT_BINDINGS_CIRRUS_EP93XX_CLOCK_H
 +
-+#define EP93XX_CLK_UART1	0
-+#define EP93XX_CLK_UART2	1
-+#define EP93XX_CLK_UART3	2
-+
-+#define EP93XX_CLK_ADC		3
-+#define EP93XX_CLK_ADC_EN	4
-+
-+#define EP93XX_CLK_KEYPAD   5
-+
-+#define EP93XX_CLK_VIDEO	6
-+
-+#define EP93XX_CLK_I2S_MCLK	7
-+#define EP93XX_CLK_I2S_SCLK	8
-+#define EP93XX_CLK_I2S_LRCLK	9
-+
-+#define EP93XX_CLK_UART		10
-+#define EP93XX_CLK_SPI		11
-+#define EP93XX_CLK_PWM		12
-+#define EP93XX_CLK_USB		13
-+
-+#define EP93XX_CLK_M2M0		14
-+#define EP93XX_CLK_M2M1		15
-+
-+#define EP93XX_CLK_M2P0		16
-+#define EP93XX_CLK_M2P1		17
-+#define EP93XX_CLK_M2P2		18
-+#define EP93XX_CLK_M2P3		19
-+#define EP93XX_CLK_M2P4		20
-+#define EP93XX_CLK_M2P5		21
-+#define EP93XX_CLK_M2P6		22
-+#define EP93XX_CLK_M2P7		23
-+#define EP93XX_CLK_M2P8		24
-+#define EP93XX_CLK_M2P9		25
-+
-+#define EP93XX_CLK_END      26
-+
-+#endif /* DT_BINDINGS_CIRRUS_EP93XX_CLOCK_H */
 
 -- 
 2.39.2
