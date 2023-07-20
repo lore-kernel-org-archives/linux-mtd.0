@@ -4,117 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAADFEB64DC
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 09:46:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10D61EB64DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 09:47:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=8JiSlus3230YmEwP0cV9pyx+ALSLFvQSC3FRhypycao=; b=c3DVFsreGu49lCE+zN1vm8T8d4
-	C+jeKG0bCqlMnxm6C5gER9Dn2hZtn8vzv9NGSVrhiVczLGTZfpaVs944QEtMq3XoLQ0uTqn3JMusK
-	ERMpHE+MDHjze40G1d0Z/qqk+gH6bRJ/FShP/L1VcSy4fgm8CYztJW8cY3pqT4Cn/irjvEjJg9JTj
-	cwoJK89bFxLhrinWhiNsdzyF/K9inUY39y8YwikYOmGENdm+4PDeowIJitmKS1A7WVZHHSprey/fT
-	WlKjfpzWiez9hE1ONlLyrQR3+A3/nPZ+dkvBJzXf4U6zxFivs3XvAeOC5E15SPpXXGWeHXqE0JX0N
-	xuU1Q7xQ==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
+	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=VsRamh1UKOZ5HqOVwvXIjktFNvAR14dK07mripK0RMs=; b=xbYZDfZZOkzc/B
+	rySCVRbRC0ANCpYBw3mUAOwKpQlrE5wKevpFhet3BOF3MlJWhUdORs8PU8r0v73Bz1+W4ltNeOsu0
+	5mVcj12u2fXJtNcyBFxPAGViS/sJP1zdxY3bAwjOrj+N9LbdfUzKi49PJa0RYK2ho1u97bqbPYYYB
+	FPeJUkTnmj6nUuFoGrLdESqxH35pTxh2rKbBxGTsWNPbaaamCviVPbzncgftq9PpyqPjgzUZ57QHI
+	lGl8BZ/hgmA05BISY1C7kPdR0Tzzpb4diTyO86ORUpGPz5zQXLEiahY5ts0kqIfs3DyGoQheh0v3E
+	+dLyzgE/Whuwe33I5/fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMQEd-00AZrl-0e;
-	Thu, 20 Jul 2023 09:46:11 +0000
-Received: from mx01.omp.ru ([90.154.21.10])
+	id 1qMQFO-00Aa0z-0U;
+	Thu, 20 Jul 2023 09:46:58 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMQEa-00AZr3-03;
-	Thu, 20 Jul 2023 09:46:09 +0000
-Received: from [192.168.1.103] (178.176.74.113) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Thu, 20 Jul
- 2023 12:45:57 +0300
-Subject: Re: [PATCH v3 26/42] ata: pata_ep93xx: add device tree support
-To: <nikita.shubin@maquefel.me>, Hartley Sweeten
-	<hsweeten@visionengravers.com>, Lennert Buytenhek <kernel@wantstofly.org>,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King
-	<linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>, Linus Walleij
-	<linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner
-	<tglx@linutronix.de>, Alessandro Zummo <a.zummo@towertech.it>, Alexandre
- Belloni <alexandre.belloni@bootlin.com>, Wim Van Sebroeck
-	<wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, Sebastian
- Reichel <sre@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
-	=?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>, Mark
- Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, Dmitry
- Torokhov <dmitry.torokhov@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Olof
- Johansson <olof@lixom.net>, <soc@kernel.org>, Liam Girdwood
-	<lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
-	<tiwai@suse.com>, Andy Shevchenko <andy@kernel.org>, Michael Peters
-	<mpeters@embeddedTS.com>, Kris Bahnsen <kris@embeddedTS.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-clk@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-	<linux-watchdog@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<linux-pwm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-	<linux-mtd@lists.infradead.org>, <linux-ide@vger.kernel.org>,
-	<linux-input@vger.kernel.org>, <alsa-devel@alsa-project.org>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-26-3d63a5f1103e@maquefel.me>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <e7350d62-8dc2-8bae-e514-3b99c3abaf74@omp.ru>
-Date: Thu, 20 Jul 2023 12:45:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	id 1qMP3D-00AJRi-0K;
+	Thu, 20 Jul 2023 08:30:22 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8010A61C7A;
+	Thu, 20 Jul 2023 08:30:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BD826C0090E;
+	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689841798;
+	bh=PiiHVvGLQia5ORpjTltiUVKZ9Myn2hbz3kY8EcNaLHU=;
+	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
+	 From;
+	b=FCWW92X9tzvMJCVkcsLYdSYjYqUD3bnvnXZpVKpD3CUPNrOivOMwAosayV9FA+s1F
+	 Y12xMEDy4fpTHe+E8Jti5YcAXi7MmKv9+/L28EaFvRsRM9JXZXXG9bdHEN0XvyGAO0
+	 v8aeM4HRQfQ6CGjyAXYv87q2EGzytgc64ewhWPWOH6UA/QxmprI/mMF4Q82ysH4G5k
+	 qgy/4BoBJPpR6AV+8F/HDXXSUgUto1LI7ZzhUr0o8KmCcjJY7hfHeMWQJptAKm8aLj
+	 e3HJIudVmHam6WGZj7w9EqgRWNTjWrMqyc9soSU1zJNnrnYpvYrXhQWxFj64asqHKp
+	 MST5e5V3qtIfg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA39BC25B5F;
+	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
+From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
+Date: Thu, 20 Jul 2023 14:29:35 +0300
+Subject: [PATCH v3 35/42] ARM: dts: ep93xx: add ts7250 board
 MIME-Version: 1.0
-In-Reply-To: <20230605-ep93xx-v3-26-3d63a5f1103e@maquefel.me>
-Content-Language: en-US
-X-Originating-IP: [178.176.74.113]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 07/20/2023 09:27:01
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 178742 [Jul 20 2023]
-X-KSE-AntiSpam-Info: Version: 5.9.59.0
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 524 524 9753033d6953787301affc41bead8ed49c47b39d
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.113 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1;178.176.74.113:7.7.3,7.4.1,7.1.2
-X-KSE-AntiSpam-Info: {iprep_blacklist}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.113
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 07/20/2023 09:32:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 7/20/2023 4:32:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Message-Id: <20230605-ep93xx-v3-35-3d63a5f1103e@maquefel.me>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+To: Hartley Sweeten <hsweeten@visionengravers.com>, 
+ Lennert Buytenhek <kernel@wantstofly.org>, 
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Nikita Shubin <nikita.shubin@maquefel.me>, 
+ Daniel Lezcano <daniel.lezcano@linaro.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, 
+ Alessandro Zummo <a.zummo@towertech.it>, 
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Wim Van Sebroeck <wim@linux-watchdog.org>, 
+ Guenter Roeck <linux@roeck-us.net>, Sebastian Reichel <sre@kernel.org>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Damien Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
+ Olof Johansson <olof@lixom.net>, soc@kernel.org, 
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andy@kernel.org>, 
+ Michael Peters <mpeters@embeddedTS.com>, Kris Bahnsen <kris@embeddedTS.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org, 
+ linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org, 
+ linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org, 
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
+ linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=6188;
+ i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
+ bh=ha5ittSqqPfphW5CaHdpis/fQLU7CJDCkNuAv0g4BaA=; =?utf-8?q?b=3DQmSYbABUx60e?=
+ =?utf-8?q?GH/7OzXmpMZCEJ2vVIKzXtwvNv88OtTJ5ioQKGH3bz0TfpH+wkNkwvYH1nC/bjub?=
+ Y7QPRfoqC0ilRI3fMDaF9idHBkcMV2tZrtOdW6l5ZrgsyS9pER9y
+X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
+ pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
+X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
+X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_024608_060212_DBE4D456 
-X-CRM114-Status: GOOD (  25.71  )
+X-CRM114-CacheID: sfid-20230720_013019_267406_C3E2F78F 
+X-CRM114-Status: GOOD (  17.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,78 +116,323 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: nikita.shubin@maquefel.me
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 7/20/23 2:29 PM, Nikita Shubin via B4 Relay wrote:
+From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> - Add OF ID match table
-> - Drop ep93xx_chip_revision and use soc_device_match instead
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> ---
->  drivers/ata/pata_ep93xx.c | 26 ++++++++++++++++++++------
->  1 file changed, 20 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
-> index c6e043e05d43..a88824dfc5fa 100644
-> --- a/drivers/ata/pata_ep93xx.c
-> +++ b/drivers/ata/pata_ep93xx.c
-[...]
-> @@ -910,6 +912,12 @@ static struct ata_port_operations ep93xx_pata_port_ops = {
->  	.port_start		= ep93xx_pata_port_start,
->  };
->  
-> +static const struct soc_device_attribute ep93xx_soc_table[] = {
-> +	{ .revision = "E1", .data = (void *)ATA_UDMA3 },
-> +	{ .revision = "E2", .data = (void *)ATA_UDMA4 },
-> +	{ /* sentinel */ }
-> +};
-> +
->  static int ep93xx_pata_probe(struct platform_device *pdev)
->  {
->  	struct ep93xx_pata_data *drv_data;
-> @@ -939,7 +947,7 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
->  
->  	drv_data = devm_kzalloc(&pdev->dev, sizeof(*drv_data), GFP_KERNEL);
->  	if (!drv_data) {
-> -		err = -ENXIO;
-> +		err = -ENOMEM;
->  		goto err_rel_gpio;
->  	}
->  
+Add device tree file for Technologic Systems ts7250 board and
+Liebherr bk3 board which have many in common, both are based on
+ep9302 SoC variant.
 
-   Hm, deserves its own patch. And even for this one, you should've documented it
-in the patch secription...
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ arch/arm/boot/dts/cirrus/Makefile          |   3 +
+ arch/arm/boot/dts/cirrus/ep93xx-bk3.dts    | 126 +++++++++++++++++++++++++
+ arch/arm/boot/dts/cirrus/ep93xx-ts7250.dts | 145 +++++++++++++++++++++++++++++
+ 3 files changed, 274 insertions(+)
 
-> @@ -976,12 +984,11 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
->  	 * so this driver supports only UDMA modes.
->  	 */
->  	if (drv_data->dma_rx_channel && drv_data->dma_tx_channel) {
-> -		int chip_rev = ep93xx_chip_revision();
-> +		const struct soc_device_attribute *match;
->  
-> -		if (chip_rev == EP93XX_CHIP_REV_E1)
-> -			ap->udma_mask = ATA_UDMA3;
-> -		else if (chip_rev == EP93XX_CHIP_REV_E2)
-> -			ap->udma_mask = ATA_UDMA4;
-> +		match = soc_device_match(ep93xx_soc_table);
-> +		if (match)
-> +			ap->udma_mask = (unsigned int) match->data;
->  		else
->  			ap->udma_mask = ATA_UDMA2;
->  	}
+diff --git a/arch/arm/boot/dts/cirrus/Makefile b/arch/arm/boot/dts/cirrus/Makefile
+index e944d3e2129d..211a7e2f2115 100644
+--- a/arch/arm/boot/dts/cirrus/Makefile
++++ b/arch/arm/boot/dts/cirrus/Makefile
+@@ -3,3 +3,6 @@ dtb-$(CONFIG_ARCH_CLPS711X) += \
+ 	ep7211-edb7211.dtb
+ dtb-$(CONFIG_ARCH_CLPS711X) += \
+ 	ep7211-edb7211.dtb
++dtb-$(CONFIG_ARCH_EP93XX) += \
++	ep93xx-bk3.dtb \
++	ep93xx-ts7250.dtb
+diff --git a/arch/arm/boot/dts/cirrus/ep93xx-bk3.dts b/arch/arm/boot/dts/cirrus/ep93xx-bk3.dts
+new file mode 100644
+index 000000000000..91d76a1a8571
+--- /dev/null
++++ b/arch/arm/boot/dts/cirrus/ep93xx-bk3.dts
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree file for Liebherr controller BK3.1 based on Cirrus EP9302 SoC
++ */
++/dts-v1/;
++#include "ep93xx.dtsi"
++
++/ {
++	model = "Liebherr controller BK3.1";
++	compatible = "liebherr,bk3", "cirrus,ep9301";
++	#address-cells = <1>;
++	#size-cells = <1>;
++
++	chosen {
++	};
++
++	memory@0 {
++		device_type = "memory";
++		/* should be set from ATAGS */
++		reg = <0x00000000 0x02000000>,
++		      <0x000530c0 0x01fdd000>;
++	};
++
++	nand-controller@60000000 {
++		compatible = "technologic,ts7200-nand";
++		reg = <0x60000000 0x8000000>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		nand@0 {
++			reg = <0>;
++			partitions {
++				compatible = "fixed-partitions";
++				#address-cells = <1>;
++				#size-cells = <1>;
++
++				partition@0 {
++					label = "System";
++					reg = <0x00000000 0x01e00000>;
++					read-only;
++				};
++
++				partition@1e00000 {
++					label = "Data";
++					reg = <0x01e00000 0x05f20000>;
++				};
++
++				partition@7d20000 {
++					label = "RedBoot";
++					reg = <0x07d20000 0x002e0000>;
++					read-only;
++				};
++			};
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		led-0 {
++			label = "grled";
++			gpios = <&gpio4 0 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++			function = LED_FUNCTION_HEARTBEAT;
++		};
++
++		led-1 {
++			label = "rdled";
++			gpios = <&gpio4 1 GPIO_ACTIVE_HIGH>;
++			function = LED_FUNCTION_FAULT;
++		};
++	};
++};
++
++&eth0 {
++	phy-handle = <&phy0>;
++};
++
++&i2c0 {
++	status = "okay";
++};
++
++&i2s {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2s_on_ac97_pins>;
++	status = "okay";
++};
++
++&gpio1 {
++	/* PWM */
++	gpio-ranges = <&pinctrl 6 163 1>;
++};
++
++&gpio4 {
++	gpio-ranges = <&pinctrl 0 97 2>;
++	status = "okay";
++};
++
++&gpio6 {
++	gpio-ranges = <&pinctrl 0 87 2>;
++	status = "okay";
++};
++
++&gpio7 {
++	gpio-ranges = <&pinctrl 2 199 4>;
++	status = "okay";
++};
++
++&mdio0 {
++	phy0: ethernet-phy@1 {
++		reg = <1>;
++		device_type = "ethernet-phy";
++	};
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&uart1 {
++	status = "okay";
++};
++
++&usb0 {
++	status = "okay";
++};
++
+diff --git a/arch/arm/boot/dts/cirrus/ep93xx-ts7250.dts b/arch/arm/boot/dts/cirrus/ep93xx-ts7250.dts
+new file mode 100644
+index 000000000000..625202f8cd25
+--- /dev/null
++++ b/arch/arm/boot/dts/cirrus/ep93xx-ts7250.dts
+@@ -0,0 +1,145 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree file for Technologic Systems ts7250 board based on Cirrus EP9302 SoC
++ */
++/dts-v1/;
++#include "ep93xx.dtsi"
++#include <dt-bindings/dma/cirrus,ep93xx-dma.h>
++
++/ {
++	compatible = "technologic,ts7250", "cirrus,ep9301";
++	model = "TS-7250 SBC";
++	#address-cells = <1>;
++	#size-cells = <1>;
++
++	chosen {
++	};
++
++	memory@0 {
++		device_type = "memory";
++		/* should be set from ATAGS */
++		reg = <0x00000000 0x02000000>,
++		      <0x000530c0 0x01fdd000>;
++	};
++
++	nand-controller@60000000 {
++		compatible = "technologic,ts7200-nand";
++		reg = <0x60000000 0x8000000>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		nand@0 {
++			reg = <0>;
++			partitions {
++				compatible = "fixed-partitions";
++				#address-cells = <1>;
++				#size-cells = <1>;
++
++				partition@0 {
++					label = "TS-BOOTROM";
++					reg = <0x00000000 0x00020000>;
++					read-only;
++				};
++
++				partition@20000 {
++					label = "Linux";
++					reg = <0x00020000 0x07d00000>;
++				};
++
++				partition@7d20000 {
++					label = "RedBoot";
++					reg = <0x07d20000 0x002e0000>;
++					read-only;
++				};
++			};
++		};
++	};
++
++	rtc1: rtc@10800000 {
++		compatible = "st,m48t86";
++		reg = <0x10800000 0x1>,
++		      <0x11700000 0x1>;
++	};
++
++	watchdog1: watchdog@23800000 {
++		compatible = "technologic,ts7200-wdt";
++		reg = <0x23800000 0x01>,
++		      <0x23c00000 0x01>;
++		timeout-sec = <30>;
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		led-0 {
++			label = "grled";
++			gpios = <&gpio4 0 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++			function = LED_FUNCTION_HEARTBEAT;
++		};
++
++		led-1 {
++			label = "rdled";
++			gpios = <&gpio4 1 GPIO_ACTIVE_HIGH>;
++			function = LED_FUNCTION_FAULT;
++		};
++	};
++};
++
++&eth0 {
++	phy-handle = <&phy0>;
++};
++
++&gpio1 {
++	/* PWM */
++	gpio-ranges = <&pinctrl 6 163 1>;
++};
++
++&gpio4 {
++	gpio-ranges = <&pinctrl 0 97 2>;
++	status = "okay";
++};
++
++&gpio6 {
++	gpio-ranges = <&pinctrl 0 87 2>;
++	status = "okay";
++};
++
++&gpio7 {
++	gpio-ranges = <&pinctrl 2 199 4>;
++	status = "okay";
++};
++
++&i2c0 {
++	status = "okay";
++};
++
++&spi0 {
++	cs-gpios = <&gpio5 2 GPIO_ACTIVE_HIGH>;
++	dmas = <&dma1 EP93XX_DMA_SSP>;
++	status = "okay";
++
++	tmp122_spi: tmp122@0 {
++		compatible = "ti,tmp122";
++		reg = <0>;
++		spi-max-frequency = <2000000>;
++	};
++};
++
++&mdio0 {
++	phy0: ethernet-phy@1 {
++		reg = <1>;
++		device_type = "ethernet-phy";
++	};
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&uart1 {
++	status = "okay";
++};
++
++&usb0 {
++	status = "okay";
++};
 
-   This one also looks as it could have been done separately -- before the DT
-conversion?
+-- 
+2.39.2
 
-[...]
-
-MBR, Sergey
 
 ______________________________________________________
 Linux MTD discussion mailing list
