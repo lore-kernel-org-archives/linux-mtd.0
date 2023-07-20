@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BC79EB64DC
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 07:10:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 378A7EB64DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 07:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6JAd9D50Wd6ctvfm4H9xTE6j2qz3k9wpZ9kE/OLi4YI=; b=L3z0rBeKF2/BTI
-	xoGB+2tWYhWF30b8U1GFniu4HXg4UI3JQH0twmwrU30X4JUTIpo9sWvlHYmHZ/F2MI1+5emt81LYo
-	X6FQKyX2JdbFyhdXyg5F+RRaUPdk2kMptprSZMiB15unVlFlwXmJN9Oub2Wk4NN1CDO8YlO852yK9
-	PjZZGJLCB3P8i/pz/Zoj7Q5PLyKcmtTs4xysH9COGUs4nTDVRNN86Z+Blt2pSJUwfRGIz8+HyqqHI
-	LmeDMeH8j4/PdG4hm0iwYPZmG22rISXHJWqRAgvFddHEAgDqbaWrPDxyX5hQEI0U+q3O0lfb2pO9Z
-	TMPKN5mHaxquL5i4Qtuw==;
+	List-Owner; bh=V4hHHCZyoPu7/uJqjPKM/yv9AksuO2X7vxsqwMYMkzM=; b=tnZOX1f50LBm7R
+	DjoxJOW+qfjQqWQq4yJUXHg0dYj6XEuVdvKzjqfSHXGs6KMFqb10jfo7IHQZiIR8ygyUAL/BcxF6/
+	9vyb1T3zK4/ZW/8YBYEWjaoO2wBJuVJycQC95XtHlbcpDZsc6Ggd8o5P34xRTCiHXM8a9ywad3DKL
+	uhLIBvSLfLCk4B3tcKs8BQj10VcNBa0AQtaRUUrqrBfsRbx6gUcvt50mV40d5IjylJFXz2WitA9Xt
+	G14jlLTvME+mMt/rYkKVA4zwoDD0ILPdwB14zsuTEZYCkrZNGb0LY/AZviE3KQC9IWH1xDjdldUfK
+	Go+4ecvmuhdJsHnnq1sQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMNoH-00A4iY-0J;
-	Thu, 20 Jul 2023 07:10:49 +0000
-Received: from mail-pg1-x536.google.com ([2607:f8b0:4864:20::536])
+	id 1qMNoV-00A4v0-0X;
+	Thu, 20 Jul 2023 07:11:03 +0000
+Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMNoC-00A4cQ-0O
+	id 1qMNoI-00A4kL-2K
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Jul 2023 07:10:45 +0000
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5440e98616cso1144603a12.0
-        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 00:10:42 -0700 (PDT)
+	Thu, 20 Jul 2023 07:10:57 +0000
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b89bc52cd1so2457615ad.1
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 00:10:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689837042; x=1690441842;
+        d=gmail.com; s=20221208; t=1689837050; x=1690441850;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bsr95SM1EDDnPBPIsqw7OjWwW6AtPri8H9fxuNDvOLI=;
-        b=F6x3Jk5gFRntRlWOyoUFjJvbjidQr/VTpA+ea3s6Md+QznbEY6/GOJQszwM5Zo7FMI
-         Ac+yYB/EAP0qTPIZtbvmvbFr9fLFbFDBHo5fduo2XWmM+4xmsBNZDIkQ+aXjnXwB0N9u
-         XOuuwBsXhekuuCuWwJqwXmyzG+hyMFOEOsKiuLNF56JHC2QKOEdq8ePoZHWQyosI5D77
-         x7APc6542Ek+HkanUbHrIO6XQ2PvO99rnMsloshpIAa4oICeYetVarbfJTtqNlVIkBC+
-         Kxec3ZZlnWE4qI0E4iFZ55f+HcOfnLOEVMv9HGN2kukMRUOEnTDI2CFU36ADnu8WNiCU
-         pRbg==
+        bh=Vx+hmkgUTtUAGj4aPSGPmBvTnoo9eBPpr4nqnTlJT3s=;
+        b=pATHeI9IkYkKdTtaPszNzcx7KDvBqabTLAFXHwkGiqDRQPrCeybdfHK0btCd9A0rrp
+         V/HB/ngw/OpPxko51ak3INGgkPtIQYBHMvLTw8OOC3dwvPjAzACd9cANr+Vj+ipzZeRH
+         tEqHtc9aFoMuDELjL+0lMQ45+q1nX5nKGUCymNysncgKZkejj51GMh3BaIrdWZBFqI5X
+         FzhXZkQtAzM8Gu4rDhNwoEhQxVhXOi/YyoMAKfvqdIuvnvAyKxr9MHQXcFdht1OMRE3r
+         kSf4BBAe5gqUrP4X6KYi3FWXvCiemeLG7u7Z6rXPDM0epO/MBT62i27tEOr3x64For5m
+         1VWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689837042; x=1690441842;
+        d=1e100.net; s=20221208; t=1689837050; x=1690441850;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bsr95SM1EDDnPBPIsqw7OjWwW6AtPri8H9fxuNDvOLI=;
-        b=RzCUumpXlxQvGujAz0DvDg6vhXXsbcfLLiry6npNQxweMN6n3n0ZoUSpcJ099R0EdY
-         WZMMw+QUfGfYOKit9URjJ1ZqfuxJfPflMFwZywgT5R45WWeDXj6sYRObyhDN/sRVHadf
-         s0Arz36ofewuXjl8bHMRW3m6yVTshLUC6Q33UMPI1Yr250YdKVtOK9SGLsrv+3YjFwOq
-         WBJFIBNKYnNuGDyYcqQwOUrR8k+KvUytka2HWcXvAwEi1ykRsoV09tCkyENeNdKLw8Zj
-         myzHub8CvKAdQmg+EZf9IeblthpRtKnPxNuIkn9Cc7uEEuCB7QW+xaTfg+P6aQExPO8d
-         WtfA==
-X-Gm-Message-State: ABy/qLanqqxi4xofO3Q9a46d8gDh0/zqPuA/PCBiwGDz63zI8ZH95pZU
-	FnzcWxU812zWIGVssr72RWy/Kt8zllw=
-X-Google-Smtp-Source: APBJJlH5MgrdD4QE9Hj0gdBwocWEdtY2jdb64lKwtuf/BbTJN6r2P0uc5VPPm0QymeEwIc4Iv2WBvw==
-X-Received: by 2002:a17:90b:4a91:b0:253:3eb5:3ade with SMTP id lp17-20020a17090b4a9100b002533eb53ademr5909490pjb.8.1689837041904;
-        Thu, 20 Jul 2023 00:10:41 -0700 (PDT)
+        bh=Vx+hmkgUTtUAGj4aPSGPmBvTnoo9eBPpr4nqnTlJT3s=;
+        b=Tw4YiaYZh05DNzt5mA9dK+7E3YMDnu3gZBqwYAA2hY1tu9CZ0Mu38iyW4BVyW665x6
+         MPNF/emF/a4LP2UX/KRLDYXM5xOzVoUCWrSy0d+tAU0/pvEZmO7ql1f2d6J3jcL4YIeS
+         amsqM0NMyN4B0TNX0lYrRXz/Y73cVSF619UqlmjdSqxFRTYwc7hEqExmPZOAbxNJFvLO
+         NUE7unvhU26xqIPMSTOBX+qn0d+e+cx540WLNlsKZQKyRT1sDoHxJQldEijvq1+tzNHy
+         IRVVhxxXXpt6oMFT7tyFfodJWBWbmyfK2qIUC4KjnvOBS4GVY0h0ooF4Y8bqh15wEQ8k
+         INdQ==
+X-Gm-Message-State: ABy/qLbD6kDy+y7WOEMfQK9lhiHg6MXqSOuFvJM9HDwA386wnb3lUVda
+	b1hdMqypcdglLZAQ/5D7L4uF7Z6omvw=
+X-Google-Smtp-Source: APBJJlG7PcIaC5jJXj6TXDk+2UaY+2COoceyZbo/DglaUF9fXz9UJINmP56Tas4pw4U1jPZ7+1o4tA==
+X-Received: by 2002:a17:902:8d94:b0:1b8:94e9:e7cb with SMTP id v20-20020a1709028d9400b001b894e9e7cbmr15540632plo.21.1689837049835;
+        Thu, 20 Jul 2023 00:10:49 -0700 (PDT)
 Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm515821pld.13.2023.07.20.00.10.38
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm515821pld.13.2023.07.20.00.10.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 00:10:41 -0700 (PDT)
+        Thu, 20 Jul 2023 00:10:49 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -75,16 +75,16 @@ Cc: tudor.ambarus@linaro.org,
 	tkuw584924@gmail.com,
 	Bacem.Daassi@infineon.com,
 	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v2 6/8] mtd: spi-nor: spansion: add MCP support in set_octal_dtr()
-Date: Thu, 20 Jul 2023 16:10:01 +0900
-Message-Id: <da9b661abde00380071dd428b69aa00322d0efa2.1689836066.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v2 8/8] mtd: spi-nor: spansion: add support for S28HS02GT
+Date: Thu, 20 Jul 2023 16:10:03 +0900
+Message-Id: <8ec7e7728487db791a8e1a8a22c1d0802b3b572c.1689836066.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1689836065.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1689836065.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_001044_175541_20AC6C79 
-X-CRM114-Status: GOOD (  14.34  )
+X-CRM114-CacheID: sfid-20230720_001050_774888_15FCB76C 
+X-CRM114-Status: GOOD (  17.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,72 +103,72 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Infineon multi-chip package (MCP) devices require the Octal DTR
-configuraion to be set on each die. We can access to configuration
-registers in each die by using params->n_dice and params->vreg_offset[]
-populated from SFDP. Add MCP support in set_octal_dtr().
+Add support for S28HS02GT. Infineon S28HS02GT is a 2Gb,
+multi-chip package, Octal SPI Flash.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/mtd/spi-nor/spansion.c | 33 +++++++++++++++++++--------------
- 1 file changed, 19 insertions(+), 14 deletions(-)
+ drivers/mtd/spi-nor/spansion.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 00d8305e25f4..4e791f1b9044 100644
+index dbf19580c3c3..ae8f9fd766f3 100644
 --- a/drivers/mtd/spi-nor/spansion.c
 +++ b/drivers/mtd/spi-nor/spansion.c
-@@ -206,17 +206,19 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- 	const struct spi_nor_flash_parameter *params = nor->params;
- 	u8 *buf = nor->bouncebuf;
- 	u64 addr;
--	int ret;
-+	int i, ret;
+@@ -700,22 +700,23 @@ static int cypress_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
  
--	addr = params->vreg_offset[0] + SPINOR_REG_CYPRESS_CFR2;
--	ret = cypress_nor_set_memlat(nor, addr);
--	if (ret)
--		return ret;
-+	for (i = 0; i < params->n_dice; i++) {
-+		addr = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR2;
-+		ret = cypress_nor_set_memlat(nor, addr);
-+		if (ret)
-+			return ret;
- 
--	addr = params->vreg_offset[0] + SPINOR_REG_CYPRESS_CFR5;
--	ret = cypress_nor_set_octal_dtr_bits(nor, addr);
--	if (ret)
--		return ret;
-+		addr = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR5;
-+		ret = cypress_nor_set_octal_dtr_bits(nor, addr);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	/* Read flash ID to make sure the switch was successful. */
- 	ret = spi_nor_read_id(nor, nor->addr_nbytes, 3, buf,
-@@ -251,14 +253,17 @@ static int cypress_nor_set_single_spi_bits(struct spi_nor *nor, u64 addr)
- 
- static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
+ static int s28hx_t_post_sfdp_fixup(struct spi_nor *nor)
  {
-+	const struct spi_nor_flash_parameter *params = nor->params;
- 	u8 *buf = nor->bouncebuf;
- 	u64 addr;
--	int ret;
-+	int i, ret;
++	struct spi_nor_flash_parameter *params = nor->params;
+ 	/*
+ 	 * On older versions of the flash the xSPI Profile 1.0 table has the
+ 	 * 8D-8D-8D Fast Read opcode as 0x00. But it actually should be 0xEE.
+ 	 */
+-	if (nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode == 0)
+-		nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode =
++	if (params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode == 0)
++		params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode =
+ 			SPINOR_OP_CYPRESS_RD_FAST;
  
--	addr = nor->params->vreg_offset[0] + SPINOR_REG_CYPRESS_CFR5;
--	ret = cypress_nor_set_single_spi_bits(nor, addr);
--	if (ret)
--		return ret;
-+	for (i = 0; i < params->n_dice; i++) {
-+		addr = params->vreg_offset[i] + SPINOR_REG_CYPRESS_CFR5;
-+		ret = cypress_nor_set_single_spi_bits(nor, addr);
-+		if (ret)
-+			return ret;
-+	}
+ 	/* This flash is also missing the 4-byte Page Program opcode bit. */
+-	spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP],
++	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
+ 				SPINOR_OP_PP_4B, SNOR_PROTO_1_1_1);
+ 	/*
+ 	 * Since xSPI Page Program opcode is backward compatible with
+ 	 * Legacy SPI, use Legacy SPI opcode there as well.
+ 	 */
+-	spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP_8_8_8_DTR],
++	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8_8_8_DTR],
+ 				SPINOR_OP_PP_4B, SNOR_PROTO_8_8_8_DTR);
  
- 	/* Read flash ID to make sure the switch was successful. */
- 	ret = spi_nor_read_id(nor, 0, 0, buf, SNOR_PROTO_1_1_1);
+ 	/*
+@@ -723,7 +724,11 @@ static int s28hx_t_post_sfdp_fixup(struct spi_nor *nor)
+ 	 * address bytes needed for Read Status Register command as 0 but the
+ 	 * actual value for that is 4.
+ 	 */
+-	nor->params->rdsr_addr_nbytes = 4;
++	params->rdsr_addr_nbytes = 4;
++
++	/* The 2 Gb parts duplicate info and advertise 4 dice instead of 2. */
++	if (params->size == SZ_256M)
++		params->n_dice = 2;
+ 
+ 	return cypress_nor_get_page_size(nor);
+ }
+@@ -926,6 +931,11 @@ static const struct flash_info spansion_nor_parts[] = {
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
+ 	},
++	{ "s28hs02gt",   INFO(0x345b1c,      0, 0, 0)
++		PARSE_SFDP
++		MFR_FLAGS(USE_CLPEF)
++		.fixups = &s28hx_t_fixups,
++	},
+ };
+ 
+ /**
 -- 
 2.34.1
 
