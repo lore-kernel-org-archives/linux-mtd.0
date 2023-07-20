@@ -4,55 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E027EB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:31:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65B82EB64DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:32:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
 	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=W11wz3MDo/iAvOQdruMfJdqOAvJLbyYJDTWyOm1A/mE=; b=DHr8Cd0GCgKb2S
-	W7Qb+/3CJYNxR6MpOcBmUBSaI0yrXOkmW4Dg0/Pa4AejFDTyCzcKAt42oEngGLWMlH9fToITMCj4J
-	urEut42ZE6CTgWaW+atZMr14LjO0yYxju6QKHtdDIKBfCzejpIJpZwk8lG4qgFQ+pf9hoJqPziANR
-	YQ5eEoX7aF0GASuT2m6+fRq9nHcxyusT2alNFFq0qlpD7cvkWUi+g2733gOavTixIiYqgbYvgdUtl
-	M1nSgn739ndPJ1wOU/G9iQJD1MdFPh2Me+jjhkcxZ5u674MDzW2DDkZBkLHx+HOsi6kX9ER1D3dj9
-	aA5MfWsCIdvZ/3QVV/Og==;
+	List-Owner; bh=fEyy1/pv45YzAsuWTFF8KeReynj3PzGkivXsGpixGNA=; b=RCrI8ldBDoVKIH
+	c67Lq89cKTHgKGeUUWtsQpRSlLQRdnRABV+aU897n8ZtvG6Yl0gYCqL4TPb8Yv59tIO9DtyQ9MAKt
+	G4cHUzGQXqzPAioz78cEl5ucZDE5OEnAihJbjVb3XTIE2BzsHs7xqIaeIoq7lqIfqAEzjBQMjoisf
+	LG9hFZtb4T+ph8/+kNVPxg5sloH+qMee7jdy5PjQmiWi7LKsoYjknaf0kivnZ3tgYpdXd0ZYZsgyK
+	NfQj8gWRPJPt7VPD3RiBwLImmgW46vRYLibE+3V2Z6d96+zwYi7XWwGn+A0+KOpv/qQ93KfZV91TH
+	yE8Vznv1XDFD0PvuSTJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP4i-00AKn6-02;
-	Thu, 20 Jul 2023 08:31:52 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qMP4k-00AKov-1o;
+	Thu, 20 Jul 2023 08:31:54 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP3C-00AJYQ-1C;
-	Thu, 20 Jul 2023 08:30:20 +0000
+	id 1qMP3D-00AJNP-1E;
+	Thu, 20 Jul 2023 08:30:21 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 13BA261B05;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 853A161C81;
 	Thu, 20 Jul 2023 08:30:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9EB1EC4AF5D;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D4275C00915;
 	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1689841798;
-	bh=mut5BjLLGkXcmjw1Zj1CjKyOW+UVywRIx0Gr2sW+ML8=;
+	bh=x1b/Kn4xAh0mSF7S+pKuRE6+qHyJYw+n6Z+ETzmtY78=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=R4NxpLD50bY1oAwwVpqoLox8JHjvoap1LWt1cfW71dfNV6SmwqxsDMWfWAGVlUkVr
-	 Pf2J2h7yqjgtc0a4KaZ6zyvE/8ss6z1QzBPOwxftiaKUtFey29q8CFXdSEFg7keLpm
-	 BuApJDgTZt40Fyt75AC80ARXrKRyqaHCvsi54pc0S8X3kwGjpx1r3FuL1FAKBeQnhY
-	 CxFSSdtGhyX5jFBPaYAeGLHjfC7i2/IQg6r2IkJgK1+gqW7+K9xo4E3s2J50Q/vUhy
-	 UDJYZVL5yedzyfLC+MXJ5v7oyQMSEYNrObMIzPam2TCNWze7wKd96PC/+Ncu3Nndhw
-	 fpBeNr3Aj022A==
+	b=EvKIYlioIP68yzd/YxVZ7lnQDh1sIkxB+vWyAhqHxqVMCxQTmNIIUulu7PA3cSHB0
+	 mwSeq6gWqyLSy4vwIxOO8oQh7LKit1Uu+4elv/aIpk+Ppx15FN/YEpFKIIZV0nnQ3m
+	 2rj34f9tplCOcQQgAuUNoGi2crS6M5+QtlmwFAgbhH1pAuJZc/sBbhVSd7KqSr5xoo
+	 EEor9bMoZUtbI7wiu2+SML/n29ySCsufAggSzeBHDKmEKtR+x4WqevHq1lRXfhIlYk
+	 1EtmmYVxLetoLNJ2W7uLAbDTy2RU54NGDFWmcgaGMV29TYJOyjJl1ArsPH8bh24SGY
+	 wLbmhiryYBv1g==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C6C5C10F19;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9C90C25B74;
 	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
 From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:33 +0300
-Subject: [PATCH v3 33/42] gpio: ep93xx: add DT support for gpio-ep93xx
+Date: Thu, 20 Jul 2023 14:29:36 +0300
+Subject: [PATCH v3 36/42] ARM: ep93xx: DT for the Cirrus ep93xx SoC
+ platforms
 MIME-Version: 1.0
-Message-Id: <20230605-ep93xx-v3-33-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-36-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>, 
@@ -91,21 +92,20 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org, 
  netdev@vger.kernel.org, dmaengine@vger.kernel.org, 
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
- linux-input@vger.kernel.org, alsa-devel@alsa-project.org, 
- Andy Shevchenko <andy.shevchenko@gmail.com>
+ linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=929;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=3077;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=AIgxDPw6Du0WKxKzpJ2J6mJyCGWG+VkPvYnSwlxlDVo=; =?utf-8?q?b=3DP9tiL+QONUN9?=
- =?utf-8?q?Lf/JsaT+NThJ+mTaQiDZtRBxcubdV/wbrGKNPsXVmcOIgmYxj61qo448MUqF05E3?=
- lmPiq39GCeTCef2+gQpuc3Ps+fCGcy44ZIcYD31wcfDjpC1muJJc
+ bh=LUqUfEyd9NJUel2yKVUkZUKAloLn0lR2WIXsqjtamgw=; =?utf-8?q?b=3Dzjs1scrJJBZA?=
+ =?utf-8?q?VcanfJF1vglijajwtHzebC2iAdKdPKRDQVOGSj1v+asIrAwOuwDRiN/0IgMnnfjg?=
+ 7fD8dlz+CJh/ZtZzDAO6Qa8hRKLvPkvdTge59bPVyVJCCy/ZekCU
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
 X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_013018_511638_4A6DA3F2 
-X-CRM114-Status: GOOD (  16.11  )
+X-CRM114-CacheID: sfid-20230720_013019_546782_FC4311FA 
+X-CRM114-Status: GOOD (  18.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,35 +125,105 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Add OF ID match table.
+This adds compulsory device tree support to the Cirrus ep93xx ARMv4
+platform.
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+- We select PINCTRL_EP93xx
+- We select COMMON_CLK_EP93XX, as clock driver moved out of platform
+  code
+- We select ARCH_HAS_RESET_CONTROLLER
+
+And also we need ARM_ATAG_DTB_COMPAT to update device tree with
+information about memory passed from bootloader.
+
+We have to leave all MACH options as they are used for board checking
+before decomp, to turn off watchdog and ethernet DMA.
+
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- drivers/gpio/gpio-ep93xx.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm/Makefile             |  1 -
+ arch/arm/mach-ep93xx/Kconfig  | 20 ++++++++++----------
+ arch/arm/mach-ep93xx/Makefile | 11 -----------
+ 3 files changed, 10 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-index 9a25bb0caf17..c4e272a8773d 100644
---- a/drivers/gpio/gpio-ep93xx.c
-+++ b/drivers/gpio/gpio-ep93xx.c
-@@ -360,9 +360,15 @@ static int ep93xx_gpio_probe(struct platform_device *pdev)
- 	return devm_gpiochip_add_data(&pdev->dev, gc, egc);
- }
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 547e5856eaa0..0e3d637cae6c 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -179,7 +179,6 @@ machine-$(CONFIG_ARCH_CLPS711X)		+= clps711x
+ machine-$(CONFIG_ARCH_DAVINCI)		+= davinci
+ machine-$(CONFIG_ARCH_DIGICOLOR)	+= digicolor
+ machine-$(CONFIG_ARCH_DOVE)		+= dove
+-machine-$(CONFIG_ARCH_EP93XX)		+= ep93xx
+ machine-$(CONFIG_ARCH_EXYNOS)		+= exynos
+ machine-$(CONFIG_ARCH_FOOTBRIDGE)	+= footbridge
+ machine-$(CONFIG_ARCH_GEMINI)		+= gemini
+diff --git a/arch/arm/mach-ep93xx/Kconfig b/arch/arm/mach-ep93xx/Kconfig
+index 703f3d232a60..812b71dcf60e 100644
+--- a/arch/arm/mach-ep93xx/Kconfig
++++ b/arch/arm/mach-ep93xx/Kconfig
+@@ -3,27 +3,27 @@ menuconfig ARCH_EP93XX
+ 	bool "EP93xx-based"
+ 	depends on ATAGS
+ 	depends on ARCH_MULTI_V4T
++	# CONFIG_ARCH_MULTI_V7 is not set
+ 	depends on CPU_LITTLE_ENDIAN
++	select ARCH_HAS_RESET_CONTROLLER
+ 	select ARCH_SPARSEMEM_ENABLE
+ 	select ARM_AMBA
+ 	select ARM_VIC
++	select ARM_APPENDED_DTB # Old Redboot bootloaders deployed
++	select ARM_ATAG_DTB_COMPAT # we need this to update dt memory node
++	select COMMON_CLK_EP93XX
++	select EP93XX_TIMER
+ 	select CLKSRC_MMIO
+ 	select CPU_ARM920T
+ 	select GPIOLIB
++	select PINCTRL
++	select PINCTRL_EP93XX
+ 	help
+ 	  This enables support for the Cirrus EP93xx series of CPUs.
  
-+static const struct of_device_id ep93xx_gpio_match[] = {
-+	{ .compatible = "cirrus,ep9301-gpio" },
-+	{ /* sentinel */ }
-+};
-+
- static struct platform_driver ep93xx_gpio_driver = {
- 	.driver		= {
- 		.name	= "gpio-ep93xx",
-+		.of_match_table = ep93xx_gpio_match,
- 	},
- 	.probe		= ep93xx_gpio_probe,
- };
+ if ARCH_EP93XX
+ 
+-menu "Cirrus EP93xx Implementation Options"
+-
+-config EP93XX_SOC_COMMON
+-	bool
+-	default y
+-	select SOC_BUS
+-	select LEDS_GPIO_REGISTER
+-
+-comment "EP93xx Platforms"
++# menu "EP93xx Platforms"
+ 
+ config MACH_BK3
+ 	bool "Support Liebherr BK3.1"
+@@ -103,6 +103,6 @@ config MACH_VISION_EP9307
+ 	  Say 'Y' here if you want your kernel to support the
+ 	  Vision Engraving Systems EP9307 SoM.
+ 
+-endmenu
++# endmenu
+ 
+ endif
+diff --git a/arch/arm/mach-ep93xx/Makefile b/arch/arm/mach-ep93xx/Makefile
+deleted file mode 100644
+index 62e37403df14..000000000000
+--- a/arch/arm/mach-ep93xx/Makefile
++++ /dev/null
+@@ -1,11 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-#
+-# Makefile for the linux kernel.
+-#
+-obj-y			:= core.o clock.o timer-ep93xx.o
+-
+-obj-$(CONFIG_EP93XX_DMA)	+= dma.o
+-
+-obj-$(CONFIG_MACH_EDB93XX)	+= edb93xx.o
+-obj-$(CONFIG_MACH_TS72XX)	+= ts72xx.o
+-obj-$(CONFIG_MACH_VISION_EP9307)+= vision_ep9307.o
 
 -- 
 2.39.2
