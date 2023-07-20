@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F1D3C0015E
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:30:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C99B8EB64DC
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
 	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WzDU17BeDOtAPuofJKNDW4zny5YT3yuhvgunS0tB4hs=; b=s7sY1OGO8MzAMl
-	jcMcX57PrTk8wrSWgxKA2h+B8DpPHj/MArs3GUPjDsWyuLwEny8DYKcsSZll+r2ePpPnZ0kyeI4IM
-	PD4mL0phwRSp/ZGiIPq97W+kYB5t3Bjkacv/QqH1k4dDE1uouEw+nn+2qMP1mjYfc5RJJp9cshEq/
-	WKct2WWLX7tjP88YSHYuEoHz4eXmQhHKSiw0v1APPU1CvI+ChHVIq/MVW+sHe2UIIRaG3J8GOnPsm
-	y1u6iEdTRsoLKtgjGFE1kJQml5gVEBWE19/h/7Cc45B+BjHSt80+iy7jkwvg/IlSC7YvaY/JRkDCj
-	qZHkI2Ja+2IHg+RlsAmA==;
+	List-Owner; bh=K9oNJVOnU3tvtgTaATfLvje69HhnZPVFV6/4sGR+0Ts=; b=0s8W2dMPkjNOr7
+	Zp8fa/oinvohymnmCT/WFFA0shSrrOghVxBOCmh87JzdbEErS1IYNfbZ2Wx7SdJGDMpIj9bt88Tkc
+	vwxpB7tnE99K72FPaOe2JqF+G7vUjlGQS0a+1uadAGdnuxyd7V/OCovS6fegpbP2s1VGTIUexjuCc
+	J+il8TDooDFotCI9Pzgfe8jGLERHkbCA2EtbuZ0MHuz61AD0mVnXT7jbd++aaAHmLAkTxjdrZ7I+F
+	nkg09AyT/noEnQ4LaPxNBW/CDf0BD/nxyWc1uRj9CS4MIxzqXuD+9KRlA7qc0QLyYRV8ndUtTRwbe
+	7Pop9DQ4pKB6xWfKJY6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP37-00AJWh-1M;
-	Thu, 20 Jul 2023 08:30:13 +0000
+	id 1qMP3F-00AJem-2u;
+	Thu, 20 Jul 2023 08:30:21 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP2v-00AJNP-2W;
-	Thu, 20 Jul 2023 08:30:03 +0000
+	id 1qMP2w-00AJOZ-2p;
+	Thu, 20 Jul 2023 08:30:06 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 0648961A8B;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5B96061A01;
 	Thu, 20 Jul 2023 08:29:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 869FCC4AF7C;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D8C12C611B0;
 	Thu, 20 Jul 2023 08:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1689841796;
-	bh=H6C2TrU2IejdmwPIRyjNVqsg2WK5gX9egNFXm4Ppjug=;
+	bh=aU77H+NFqBJ65zWNkO4MZQ89gC5/i/NcxlnAPPiY4S0=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=QMJfbfxIx5OEatPCy9ODNf1qH8z7Y5yrckFJoJnQJL+1iWXQL/x5OLdMIdwK4XYGv
-	 vv234frJcvFy4WuNAJwtkzHn86K+y74OXHa9XIxk33HdNGSBuMRYqV7qU0XRyTu8pv
-	 M6zvZ4iKGtkJnaCClMmXPluFh88kC2GX8EVKI2fKrKTFGd0OnM4lkGpeZLuZmprlIc
-	 qEsI5sApbA9EnS0maAvknb7plownGLxQxt43v0QDx89oTv+ZpSXbycUB8fNbp93CKF
-	 5cuZ42Vg8VRxXaMkS4DGomiqDgWMzMDfJXMTH67OaTzHIgrcxGsPQmxyFUG/8/xT5M
-	 JUI4jGpOM+5DQ==
+	b=rdO9u+lao3MBzjwZAouroGX98qvkO9/uQb+nykk3PQH4YFLt7u5cgv9+mOTzRU3GD
+	 BQBQoZMBDU8tdRH8CQ4zLMohPEdju4QJqoxk5jJCN+0i4j6LNlwb3epQOiAaJwQwZK
+	 GnDYDzsKj3A3gYHB11HXuMj5yJs1XIEHgn+QwUnSEE1gF625oNIt6056973YJfwegS
+	 8o5U7ssbTZBVU7YAi1D8Z9NBD6gHXzpBo6unsAFYit7spBGyOnBKZpaL63Sbf2XnuY
+	 1mRbij3tmKpdmTaxT6U6K3EFjJyfwCMdz0hfKxDVO6HDP5mD6RYIv1r9eMwF4VtS5W
+	 O8pPaf+MniM1A==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F2AEB64DD;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7B25C04FDF;
 	Thu, 20 Jul 2023 08:29:56 +0000 (UTC)
 From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:06 +0300
-Subject: [PATCH v3 06/42] dt-bindings: soc: Add Cirrus EP93xx
+Date: Thu, 20 Jul 2023 14:29:08 +0300
+Subject: [PATCH v3 08/42] dt-bindings: timers: Add Cirrus EP93xx
 MIME-Version: 1.0
-Message-Id: <20230605-ep93xx-v3-6-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-8-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>, 
@@ -91,20 +91,21 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org, 
  netdev@vger.kernel.org, dmaengine@vger.kernel.org, 
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
- linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+ linux-input@vger.kernel.org, alsa-devel@alsa-project.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=3489;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=1736;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=OWJWPRWMvpS6HB+Cwu+1cfevgL3x5U4PGkX8U7MbL+I=; =?utf-8?q?b=3DoWGjSz6YzCMT?=
- =?utf-8?q?bvWsXhpEAVE2Jo0Zk8oEmFbE5aTNOWg69Zs4ajuy58LWNJK0b6tvbs+lK4O1cvhU?=
- KQ10AJFuBXBt3gDH/bJPVZtiAKChoE1b/exF2GqOMgewB//eQMGK
+ bh=ERcB/00oRoWqIGI8EmpdsPGmeP+HPJvciJobAwxbs2s=; =?utf-8?q?b=3Dbr3W4WGC3HVe?=
+ =?utf-8?q?din5oRK84JzdS6NFMeEdq38CDMAi8LUdzdiIzScHEKE1IqMe4U5OCV4VWwD/vILN?=
+ E5f5oEzlBMuJ5ipSHX8DoWtifb4tGVZ/Kzy/5BnUT8salnwpkO/X
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
 X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_013001_930444_CC9FF86A 
-X-CRM114-Status: GOOD (  15.73  )
+X-CRM114-CacheID: sfid-20230720_013003_007092_22A10778 
+X-CRM114-Status: GOOD (  15.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,27 +125,28 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-This adds device tree bindings for the Cirrus Logic EP93xx.
+This adds device tree bindings for the Cirrus Logic EP93xx
+timer block used in these SoCs.
 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- .../bindings/arm/cirrus/ep9301-syscon.yaml         | 59 ++++++++++++++++++++++
- .../devicetree/bindings/arm/cirrus/ep9301.yaml     | 39 ++++++++++++++
- 2 files changed, 98 insertions(+)
+ .../bindings/timer/cirrus,ep9301-timer.yaml        | 49 ++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/cirrus/ep9301-syscon.yaml b/Documentation/devicetree/bindings/arm/cirrus/ep9301-syscon.yaml
+diff --git a/Documentation/devicetree/bindings/timer/cirrus,ep9301-timer.yaml b/Documentation/devicetree/bindings/timer/cirrus,ep9301-timer.yaml
 new file mode 100644
-index 000000000000..77fbe1f006fd
+index 000000000000..e463e11e259d
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/cirrus/ep9301-syscon.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++++ b/Documentation/devicetree/bindings/timer/cirrus,ep9301-timer.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/arm/cirrus/ep9301-syscon.yaml#
++$id: http://devicetree.org/schemas/timer/cirrus,ep9301-timer.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Cirrus Logic EP93xx Platforms System Controller
++title: Cirrus Logic EP93xx timer
 +
 +maintainers:
 +  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
@@ -153,95 +155,40 @@ index 000000000000..77fbe1f006fd
 +properties:
 +  compatible:
 +    oneOf:
++      - const: cirrus,ep9301-timer
 +      - items:
 +          - enum:
-+              - cirrus,ep9302-syscon
-+              - cirrus,ep9307-syscon
-+              - cirrus,ep9312-syscon
-+              - cirrus,ep9315-syscon
-+          - const: cirrus,ep9301-syscon
-+          - const: syscon
-+          - const: simple-mfd
-+      - items:
-+          - const: cirrus,ep9301-syscon
-+          - const: syscon
-+          - const: simple-mfd
++              - cirrus,ep9302-timer
++              - cirrus,ep9307-timer
++              - cirrus,ep9312-timer
++              - cirrus,ep9315-timer
++          - const: cirrus,ep9301-timer
 +
 +  reg:
 +    maxItems: 1
 +
-+  reboot:
-+    type: object
-+    properties:
-+      compatible:
-+        const: cirrus,ep9301-reboot
++  interrupts:
++    maxItems: 1
 +
-+  clock-controller:
-+    type: object
-+    $ref: ../../clock/cirrus,ep9301-clk.yaml
-+
-+  pinctrl:
-+    type: object
-+    $ref: ../../pinctrl/cirrus,ep9301-pinctrl.yaml
++  resets:
++    maxItems: 1
 +
 +required:
 +  - compatible
 +  - reg
++  - interrupts
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    syscon@80930000 {
-+      compatible = "cirrus,ep9301-syscon",
-+                   "syscon", "simple-mfd";
-+      reg = <0x80930000 0x1000>;
++    timer@80810000 {
++      compatible = "cirrus,ep9301-timer";
++      reg = <0x80810000 0x100>;
++      interrupt-parent = <&vic1>;
++      interrupts = <19>;
 +    };
-diff --git a/Documentation/devicetree/bindings/arm/cirrus/ep9301.yaml b/Documentation/devicetree/bindings/arm/cirrus/ep9301.yaml
-new file mode 100644
-index 000000000000..6087784e93fb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/cirrus/ep9301.yaml
-@@ -0,0 +1,39 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/cirrus/ep9301.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Cirrus Logic EP93xx platforms
-+
-+description:
-+  The EP93xx SoC is a ARMv4T-based with 200 MHz ARM9 CPU.
-+
-+maintainers:
-+  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
-+  - Nikita Shubin <nikita.shubin@maquefel.me>
-+
-+properties:
-+  $nodename:
-+    const: '/'
-+  compatible:
-+    oneOf:
-+      - description: The TS-7250 is a compact, full-featured Single Board Computer (SBC)
-+          based upon the Cirrus EP9302 ARM9 CPU
-+        items:
-+          - const: technologic,ts7250
-+          - const: cirrus,ep9301
-+
-+      - description: The Liebherr BK3 is a derivate from ts7250 board
-+        items:
-+          - const: liebherr,bk3
-+          - const: cirrus,ep9301
-+
-+      - description: EDB302 is an evaluation board by Cirrus Logic,
-+          based on a Cirrus Logic EP9302 CPU
-+        items:
-+          - const: cirrus,edb9302
-+          - const: cirrus,ep9301
-+
-+additionalProperties: true
-+
++...
 
 -- 
 2.39.2
