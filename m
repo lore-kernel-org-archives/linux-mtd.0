@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25107EB64DC
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 07:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16356C001E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 07:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=b2Xlmr5E70T6swbrJkXr0OGb79rpY+PSqAvYSYSAmbU=; b=g0RfODNGZScOPM
-	50H9HF48M2DzKrEIo8OJ/wAvggrm1FY5cmCOr4ksuXHqpQrVeHoZH/oHacngHgXBJ3O0CTyhYhlYU
-	6MyUJvGyeezpMxF6pbHNsBguCppiVhNi8OqqrWM3CHo/L/AQ+Us7XbNK1BZV53uWZtOa4K4dwZ4fy
-	ic1jUYzqP/E3hfiqkAsaW9w9Q2U3sxcFuTUhfGdaq7sjCMwQffPp6TnNhVuoiIvesiyDRSg8wcKp9
-	9GVBLEj809+HQEYO3MtbSAJ68khxVH8dZzuIYDXhj4a60BRLzz5exzTDSjq2FcDT82LlHXnHtUpze
-	wW7hlIE7HNq3LnlmQoow==;
+	List-Owner; bh=1JKEWCI3Jz5zoBZ2iW2pTn1wCILuxIFM5Q13eiTzEOg=; b=k08YJ/2lfAtpcj
+	JZ9DeF/OAdw8wrhFL8Xo2sQ09hMy+XvYpFNJeRe5tBDiJD+kUo74KQSVT0McwvhzWhXEsiGET6pIm
+	xwjz33A0rDYS4iRbJeMdGWRpi38LR7mNQU1eg/c5nliwTncN0r+KZvW/hWxpamqGTbyiuc7RJtpdL
+	3zMalziqkfCyA6eoR36j5Wq9VtkCvk694/MnS1ujCm2dtVCxbfMJvE6+q6FOagI5jC9/yYIj47Rhi
+	H0ZzMJpJk4VuKoZaR2OnfzHA9kL2+kwY210Pd6u6s/+l+5AuBsBMW/yCjswIy1UwOkWiOyZ/Q/OKK
+	YrWdadiEXVsjl7p2+4ag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMNo6-00A4Xo-0d;
-	Thu, 20 Jul 2023 07:10:38 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1qMNo7-00A4Yr-32;
+	Thu, 20 Jul 2023 07:10:39 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMNo1-00A4Rn-1l
+	id 1qMNo2-00A4V8-2J
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Jul 2023 07:10:34 +0000
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1b8b4748fe4so2812775ad.1
-        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 00:10:30 -0700 (PDT)
+	Thu, 20 Jul 2023 07:10:36 +0000
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bb2468257fso2523725ad.0
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 00:10:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689837030; x=1690441830;
+        d=gmail.com; s=20221208; t=1689837034; x=1690441834;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lwcDiUdKk51zhKCTRMB/n0583jDIW9kWLD5I4PL3Ak4=;
-        b=fQbhyQv0HJvLlFrgiRp8KlexNxXvW13jIDWrRnO590Vxe9AvDPeSdb33zHUJRF9QjX
-         x9eXmCjWHsBYyptjh36U3ZFUcAgGnDEA3rX1WEjisSO3RAgBPC3hX2skxnhV2nsRsAeg
-         0qp0bOLMbYteUMve1mMuFGZ2FZu5nzevhFo3ujw2JRC+lKLrEp20wLN/Tl/XEvDgzNAC
-         qiragwMioPZ372H7dG+Lp60p2DrJK8JCV2msHgP3Vq0eZUGwUBDAza5pdBNKPuKK45fV
-         vxg2z8dXrajSlv9CfBdEWBD8AtlkWa4n8PM6yl+11Q3dAqM9n3nGCpaPLcmiWYEelVHm
-         0DBQ==
+        bh=Byo7YbjNt6CJiMVTDrfqn+OsLwNiuvAwsVMEPT9OHJY=;
+        b=enZ0zCsRaeB0jI8jwdD2rukYxL72nUKR4lk5Jej17a0T6k12DiU8BKigbBKlAsKhUh
+         mTeWfDqd4M5txZNUcmXjmOKyNDVQwfvSS+qQHVHVbkLxFdke0bUbSpjmYKZD9UM1LWX+
+         C4rLerBgl+sctFbvAA3F4o5XcixKWsV++6tQPWMdxMEhm0bmv9HKhNpw0xWT+EjVhPTX
+         JPcB7w7e7FUA++0cr4/jnN15tG613UaOWqpr0LysfFqtxiOQdZG8f3vg36xjzw5uZ1YE
+         q3A2ojhphJEV1K/TTLJfc+m0OoRUuZmOCmP+8VvzoGmCC3ik1AAUjsqzZHG/nnpotSuY
+         VlUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689837030; x=1690441830;
+        d=1e100.net; s=20221208; t=1689837034; x=1690441834;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lwcDiUdKk51zhKCTRMB/n0583jDIW9kWLD5I4PL3Ak4=;
-        b=UkXTW0B09HOPeVsof47QGC8fBWUFYBgg/qNBhG76Rbu6RhTMoyZioZ8lyrHg0dfvvi
-         K66FoyKd+gmF+9fgSvPhjkj1qolUkJO+1FzO4Y3B/rGJZoHVrqmAxr5gHhrPybFkfThb
-         l0J+yaTLIwURKno8FACGEn91KidklaN/Qty9sT5R2QTepRwIgXIfVoYT7Hi/WwWMlwE2
-         VesDcHZ9uBtQyiNr2FarO3qRG2dN4lxoT6y350+dWlWhkN6jDMFeBTek74LRSTNPi9fW
-         TeedlHxDFNif8AwFockdd0pySk/dA6CRhpIQqyj/6LPWsJgsuZRnANfIVPUf10uTZw/v
-         Fc+w==
-X-Gm-Message-State: ABy/qLaQcfUguNHwdSLjYtVLG3KejcOZn93oE9L0eyeOLEISwjIg8mcQ
-	KxWvJCFOb/SiiF1JNyseNXbvDUki/w4=
-X-Google-Smtp-Source: APBJJlGwwYK8xDWAKAN0gGTFIeVtbxaJn61NcAXd72jyVyscTYpFb/X6l8RxPHymnZL5fM3RWq+UHA==
-X-Received: by 2002:a17:902:d4c7:b0:1b1:76c2:296a with SMTP id o7-20020a170902d4c700b001b176c2296amr4845963plg.60.1689837030221;
-        Thu, 20 Jul 2023 00:10:30 -0700 (PDT)
+        bh=Byo7YbjNt6CJiMVTDrfqn+OsLwNiuvAwsVMEPT9OHJY=;
+        b=BK5yS+uSI8JXMi0JgIIjv723j4nk+DupQu28DzBtO3uJ39gwwpeg5Gz1soUuOJj13d
+         7TMrQGkJYJXWBGmCgwe+J0HSk/Jw3oHLTgiWatJWAphDcNPSIWYEiv4uyEMDXG1a6NLQ
+         o9GZrHll38ZhfZSKjD3U82YclpSXDPJCpg+dbdhBhXIpvb73+Sdt5cCXxCRdGUC3Olg8
+         vfmFxVe/LPQzdGkX6f24gJMvq3TW33Wfgg77hHwKIS9TSn4LscEsPobOU5/Os77yalAa
+         VFO0LorZT3okKx+Mcu3r0dbRvQjMN9j8amsJX7Nmf0V6b+A0PzSpzhhrwYC0haVeHw+y
+         HL0w==
+X-Gm-Message-State: ABy/qLab1CeVBLlGY6S8M0ZlCHm0o3Z61Ytdaq//0NJbtkDgOf8DmugE
+	86TfNy4WE6HoXHpmv8DqkCgpKSPafJM=
+X-Google-Smtp-Source: APBJJlHDsThCIYQLDmZELopAQaDjK/mo2gbVDvBnN8cYUuOv9Nl3B2pX4kxfvlu0AqES0VJk8YPAyg==
+X-Received: by 2002:a17:902:c406:b0:1b8:9ecd:8b86 with SMTP id k6-20020a170902c40600b001b89ecd8b86mr22476218plk.5.1689837034156;
+        Thu, 20 Jul 2023 00:10:34 -0700 (PDT)
 Received: from ISCN5CG2520RPD.infineon.com (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm515821pld.13.2023.07.20.00.10.26
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm515821pld.13.2023.07.20.00.10.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 00:10:29 -0700 (PDT)
+        Thu, 20 Jul 2023 00:10:33 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
@@ -75,16 +75,16 @@ Cc: tudor.ambarus@linaro.org,
 	tkuw584924@gmail.com,
 	Bacem.Daassi@infineon.com,
 	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v2 3/8] mtd: spi-nor: spansion: prepare octal dtr methods for multi chip support
-Date: Thu, 20 Jul 2023 16:09:58 +0900
-Message-Id: <dd2efed51e26fe74f4a0262f17d5ff779a493a53.1689836066.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v2 4/8] mtd: spi-nor: spansion: switch set_octal_dtr method to use vreg_offset
+Date: Thu, 20 Jul 2023 16:09:59 +0900
+Message-Id: <5c2fbc72d94c4f88bb4599c00c45fbaaf714b909.1689836066.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1689836065.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1689836065.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_001033_586055_890E5DF4 
-X-CRM114-Status: GOOD (  12.85  )
+X-CRM114-CacheID: sfid-20230720_001034_757698_F85BF516 
+X-CRM114-Status: GOOD (  14.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,118 +103,76 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Infineon's multi-chip package (MCP) devices require the octal DTR
-configuration to be set for each die. Split common code in
-dedicated methods to ease the octal DDR MCP support addition.
+All the Infineon flashes that currently support octal DTR mode
+define the optional SCCR SFDP table, thus all retrieve vreg_offset.
+Switch all the available octal DTR Infineon flashes to use the
+volatile register offset to set the configuration registers. The goal
+is to have a single pair of methods for both single/multi-chip package
+devices.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/spi-nor/spansion.c | 50 +++++++++++++++++++++++++---------
- 1 file changed, 37 insertions(+), 13 deletions(-)
+ drivers/mtd/spi-nor/spansion.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 8515f7e56715..b99ed088b377 100644
+index b99ed088b377..9150840e748a 100644
 --- a/drivers/mtd/spi-nor/spansion.c
 +++ b/drivers/mtd/spi-nor/spansion.c
-@@ -156,7 +156,7 @@ static int cypress_nor_sr_ready_and_clear(struct spi_nor *nor)
- 	return 1;
- }
+@@ -6,6 +6,7 @@
  
--static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
-+static int cypress_nor_set_memlat(struct spi_nor *nor, u64 addr)
+ #include <linux/bitfield.h>
+ #include <linux/device.h>
++#include <linux/errno.h>
+ #include <linux/mtd/spi-nor.h>
+ 
+ #include "core.h"
+@@ -202,14 +203,18 @@ static int cypress_nor_set_octal_dtr_bits(struct spi_nor *nor, u64 addr)
+ 
+ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
  {
- 	struct spi_mem_op op;
++	const struct spi_nor_flash_parameter *params = nor->params;
  	u8 *buf = nor->bouncebuf;
-@@ -164,8 +164,7 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- 	u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
++	u64 addr;
+ 	int ret;
  
- 	op = (struct spi_mem_op)
--		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR2V, 0, buf);
-+		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes, addr, 0, buf);
- 
- 	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
- 	if (ret)
-@@ -176,8 +175,7 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- 	*buf |= FIELD_PREP(SPINOR_REG_CYPRESS_CFR2_MEMLAT_MASK,
- 			   SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24);
- 	op = (struct spi_mem_op)
--		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR2V, 1, buf);
-+		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes, addr, 1, buf);
- 
- 	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
- 	if (ret)
-@@ -185,13 +183,33 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- 
- 	nor->read_dummy = 24;
- 
-+	return 0;
-+}
-+
-+static int cypress_nor_set_octal_dtr_bits(struct spi_nor *nor, u64 addr)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+
- 	/* Set the octal and DTR enable bits. */
- 	buf[0] = SPINOR_REG_CYPRESS_CFR5_OCT_DTR_EN;
- 	op = (struct spi_mem_op)
--		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR5V, 1, buf);
-+		CYPRESS_NOR_WR_ANY_REG_OP(nor->params->addr_mode_nbytes,
-+					  addr, 1, buf);
- 
--	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
-+	return spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
-+}
-+
-+static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
-+{
-+	u8 *buf = nor->bouncebuf;
-+	int ret;
-+
-+	ret = cypress_nor_set_memlat(nor, SPINOR_REG_CYPRESS_CFR2V);
-+	if (ret)
-+		return ret;
-+
-+	ret = cypress_nor_set_octal_dtr_bits(nor, SPINOR_REG_CYPRESS_CFR5V);
+-	ret = cypress_nor_set_memlat(nor, SPINOR_REG_CYPRESS_CFR2V);
++	addr = params->vreg_offset[0] + SPINOR_REG_CYPRESS_CFR2;
++	ret = cypress_nor_set_memlat(nor, addr);
  	if (ret)
  		return ret;
  
-@@ -209,11 +227,10 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- 	return 0;
- }
- 
--static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
-+static int cypress_nor_set_single_spi_bits(struct spi_nor *nor, u64 addr)
- {
- 	struct spi_mem_op op;
- 	u8 *buf = nor->bouncebuf;
--	int ret;
- 
- 	/*
- 	 * The register is 1-byte wide, but 1-byte transactions are not allowed
-@@ -223,9 +240,16 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
- 	buf[0] = SPINOR_REG_CYPRESS_CFR5_OCT_DTR_DS;
- 	buf[1] = 0;
- 	op = (struct spi_mem_op)
--		CYPRESS_NOR_WR_ANY_REG_OP(nor->addr_nbytes,
--					  SPINOR_REG_CYPRESS_CFR5V, 2, buf);
--	ret = spi_nor_write_any_volatile_reg(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+		CYPRESS_NOR_WR_ANY_REG_OP(nor->addr_nbytes, addr, 2, buf);
-+	return spi_nor_write_any_volatile_reg(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+}
-+
-+static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
-+{
-+	u8 *buf = nor->bouncebuf;
-+	int ret;
-+
-+	ret = cypress_nor_set_single_spi_bits(nor, SPINOR_REG_CYPRESS_CFR5V);
+-	ret = cypress_nor_set_octal_dtr_bits(nor, SPINOR_REG_CYPRESS_CFR5V);
++	addr = params->vreg_offset[0] + SPINOR_REG_CYPRESS_CFR5;
++	ret = cypress_nor_set_octal_dtr_bits(nor, addr);
  	if (ret)
  		return ret;
  
+@@ -247,9 +252,11 @@ static int cypress_nor_set_single_spi_bits(struct spi_nor *nor, u64 addr)
+ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
+ {
+ 	u8 *buf = nor->bouncebuf;
++	u64 addr;
+ 	int ret;
+ 
+-	ret = cypress_nor_set_single_spi_bits(nor, SPINOR_REG_CYPRESS_CFR5V);
++	addr = nor->params->vreg_offset[0] + SPINOR_REG_CYPRESS_CFR5;
++	ret = cypress_nor_set_single_spi_bits(nor, addr);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -671,6 +678,11 @@ static struct spi_nor_fixups s25hx_t_fixups = {
+  */
+ static int cypress_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
+ {
++	if (!nor->params->vreg_offset) {
++		dev_err(nor->dev, "Can not set octal DTR. The volatile register offset could not be retrieved from SFDP\n");
++		return -EOPNOTSUPP;
++	}
++
+ 	return enable ? cypress_nor_octal_dtr_en(nor) :
+ 			cypress_nor_octal_dtr_dis(nor);
+ }
 -- 
 2.34.1
 
