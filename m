@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 347C3C0015E
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 06:53:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A849EB64DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 07:04:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UWB4fJ6AFUF5F6SLAzKFsxvFOeiC80amlWZZeI+sUfs=; b=XXcZ0MzxM/GnSe
-	MKeTm0BRvST5E+QxqX96YsJWsp2dKGzIxau2DaD7zbRPtvMuZ9yq6drnr4kY5zXTUa2RuwgQ3YiSP
-	0euC8t6BDVzp6z0/BzGXHZ59VXQCAcFOTzmqgHwOz4VqKiI6JGYmVN1kPVyI6B63w5EzOiQ/5TY1n
-	wB8cvWZwOiK7lU8v42cChyZLxQ/urRyzzNI3R9Lg0wuD2b1f7gymbc+RIy074L2SxIkf0Py1yTdNH
-	7gI/9hMTYpsZEdFU8JLWPQVjSq+0mX2lQtVF64TfXGMURPsA4QJxIuApgRyhTav5fUEmaLJcKa+rL
-	YHKQuJS/xliYD/LXcpmw==;
+	List-Owner; bh=pqZylVULAWq2Fiwk3CHOHqf9bQbN7/Xv9v/MF3HgX2Y=; b=mO3fAVNk1MJWsV
+	r/ojc7m8unrtWtZOE5cy7ScQex9luFQXXbJltzGhwg9uNDTaVFFqVB5rVPIuh4MCXZKrLDVU1r89t
+	9R/hQsG4bQSwbNfszLW9vvmqwBxgSja13iYNE37XkaisoqkUxfgYwrQFsPl4Sim7JyE7aqwWmUhAG
+	gTFvzmg7bC5c3xbXBHiV5X2RDiiAuYHVw30utas7hkG7OQYFt0Cjms6Inntr7UC+dyNCBOmhG9mW7
+	gXwIb9C1od7SuOhwYkS9mRyTrX04NFvg9PjNZrplyizn+BFx05b4RCIrEVSUD2eL2wtUKBOnLD/P4
+	TcaLJma2j69ekPveX5tA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMNXu-00A0ao-1r;
-	Thu, 20 Jul 2023 06:53:54 +0000
-Received: from mail-lf1-x12f.google.com ([2a00:1450:4864:20::12f])
+	id 1qMNi4-00A2mr-0R;
+	Thu, 20 Jul 2023 07:04:24 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMNXr-00A0ZO-1m
+	id 1qMNi0-00A2m3-1u
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Jul 2023 06:53:52 +0000
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fdd31bf179so659279e87.2
-        for <linux-mtd@lists.infradead.org>; Wed, 19 Jul 2023 23:53:48 -0700 (PDT)
+	Thu, 20 Jul 2023 07:04:22 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fc0aecf107so3031675e9.2
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 00:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689836027; x=1692428027;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dTYti2msJuMkF2fFgZqBRwaKrMax7bGDLlfMmplPvvg=;
-        b=wJJ4ewUjsh7r6wUXj7VvA3lxXNye1xdJbhbWKFSZUQtqd4qMg7HxeHfrILhUhvjUyR
-         c8J78mKuixnMCo58ZCECxq52INslKpDiFcMUg9gpLc7Im8nP/ExdrLcdggVY907gVpqQ
-         zcWELNFYrPPyhH4v2ZL61dGCcFc2PjqfO8D1yvtBEhA+6ydMPmnTDpRBI001Dak1/nfG
-         6AmLTLnW34A4nv1lHozibXkwrCqLHpcfc7rbta/3/dZA2NWQT+EvXKtRIiMNluLYiJSh
-         475Aag7ZsW+s9atyLlsJDFfACg37JhJ3TutBl4AN6LNX+5TxGH082CZzJegvQk8yG/Xe
-         J1tQ==
+        d=linaro.org; s=google; t=1689836657; x=1690441457;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9AlU95qM4t9xHPBYL7DWAvT1cUkDalZV3dRJmbFdb9U=;
+        b=dU+ORkJC8RNWsmM5SVA/u5VDWKga3el11dXhQWod28uKQxqV27WsfA/tglMuF8ytal
+         oR9rHhg8Ffr8qjFOlQqJ2TP9mDjnM8aHh1J5JZ0M85wyO4MFq/InWjdqlvlmOCXT18oi
+         QjpSMQRBEYEVQB6VKcMyoKiOj/fWRc9bltCj1as7WQq4ikJK1y9pA9lypkyLy0PS/V31
+         fqTMXHOhDDccm9U/ddyDmuiSNegiYxGBV02zlmpbfcFhi+ia8+CoZbqjukiyT21EcZhf
+         bHGNBBO2nLGsAxMvkqHDWb8OMWWqLsO9IvKBYvV6AmrR7RC1LKD/Z8ux8r9zTLpiZhoR
+         IGrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689836027; x=1692428027;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dTYti2msJuMkF2fFgZqBRwaKrMax7bGDLlfMmplPvvg=;
-        b=IcsJ4q31LV3J6E2/H61lm20M4Auc0wbH9HDYhpNwIDhc6lRAsZeN1WluD46Rv39UUW
-         Fv7HtqMK+ZAgmBRNPRxfdogCFG0YlmW5NWJ8ve3ZaOE34OSg/TNImByS3uvxV8f70beR
-         UsWPVO4RVk2MG4Blb5GjKZFGRv3NQlrJ9Yo/grLEvaIgRoIi5zueYsGEnZHSh7cI9Ze/
-         o5ExecqES/AoLboY2JPiN6Rd7ydA7dPmWMyvAQva/ie6bBXC1bOpfrJsAF2Zx3pbKW72
-         r/uNAcglhz+hMSmuxK3R0v4jdgy0PQybZX3SYc2pDEJQzBsDcgf/AJAPjp888FQamA4q
-         +qyA==
-X-Gm-Message-State: ABy/qLZOxstfWHyYBOcxGuVGtWCwuwR8/2j/Z+si6/iZS6mM5/hG/cdz
-	xCQ2XjsrKtjbXSZGSjCBvNDaow==
-X-Google-Smtp-Source: APBJJlEbfLygNs+/rmSsrdJE9i65NUF2ppc8cecofdF2ORYAIysqb44pU112yXKT82GnEgHOdGNMBA==
-X-Received: by 2002:ac2:4bd2:0:b0:4fd:d0d5:8771 with SMTP id o18-20020ac24bd2000000b004fdd0d58771mr1917762lfq.18.1689836027458;
-        Wed, 19 Jul 2023 23:53:47 -0700 (PDT)
-Received: from [192.168.0.107] ([79.115.63.16])
-        by smtp.gmail.com with ESMTPSA id t8-20020a1c7708000000b003fa74bff02asm418605wmi.26.2023.07.19.23.53.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jul 2023 23:53:47 -0700 (PDT)
-Message-ID: <c88f0e23-124f-cd29-7ea3-bfe152291b69@linaro.org>
-Date: Thu, 20 Jul 2023 07:53:45 +0100
+        d=1e100.net; s=20221208; t=1689836657; x=1690441457;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9AlU95qM4t9xHPBYL7DWAvT1cUkDalZV3dRJmbFdb9U=;
+        b=IEIVrb92J77mQS2siEvo9/GkZ5c4wn5/+fkWfAlN8LDA6yTASwreMx0+bgDkYBJnRd
+         5oZKXZbY8WKsGvClfjLLEA/arL4ODivqg4cjTlgD/zzFNKcJVTcXL/T5VpbCbHl893h+
+         +MgGJcs5h4Dq2PGuNqUIkkWdPmL4CZ6LA7VbMrHqPMi8Xn98AKFmFH0MoK5SQ7tpZKBe
+         uilOUoZjIjb07/s4o8Dj1M6fwg+HYXDZtvdCCeQBrG/qq4Av+wYtFOn2pOyZO65zH1Fa
+         ZPAYFar2myOqYL+XaNyie+fbjLsOmL3nib9kkgH8q1D1arQof3ns3NHk/e8bQndfln1X
+         JkhA==
+X-Gm-Message-State: ABy/qLbVCq/Fcg8ohceoB7htneMzzy8m1Fo73aQYP3j9pK2ODPAYMgN3
+	T+Jx52PrUSDDAcdnHr/nlSq1fw==
+X-Google-Smtp-Source: APBJJlETKoi7x80wxBFFAxwsjGt5k10dYMeMuHD3TbDxOf+1dqUg2RtWoOiart0Ss3Mt2QyTH5e1AA==
+X-Received: by 2002:a7b:c390:0:b0:3fc:62c:8447 with SMTP id s16-20020a7bc390000000b003fc062c8447mr1061669wmj.9.1689836657174;
+        Thu, 20 Jul 2023 00:04:17 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id a5-20020a05600c224500b003fbc9b9699dsm419216wmm.45.2023.07.20.00.04.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 00:04:15 -0700 (PDT)
+Date: Thu, 20 Jul 2023 10:04:12 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: rawnand: fsl_upm: Fix an off-by one test in
+ fun_exec_op()
+Message-ID: <6f3c9139-cf68-4761-af06-462a72bda978@kadam.mountain>
+References: <cd01cba1c7eda58bdabaae174c78c067325803d2.1689803636.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH V1 1/1] linux: drivers: mtd: spi-nor: gigadevice.c
-Content-Language: en-US
-To: Victor Lim <vlim@gigadevice.com>, pratyush@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, akumarma@amd.com
-Cc: michael@walle.cc, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, vikhyat.goyal@amd.com
-References: <20230720042834.12296-1-vlim@gigadevice.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230720042834.12296-1-vlim@gigadevice.com>
+Content-Disposition: inline
+In-Reply-To: <cd01cba1c7eda58bdabaae174c78c067325803d2.1689803636.git.christophe.jaillet@wanadoo.fr>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230719_235351_592399_93CD9049 
-X-CRM114-Status: UNSURE (   6.61  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230720_000420_705679_9976BAD9 
+X-CRM114-Status: GOOD (  11.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,14 +96,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Does these flashes support SFDP tables? Here's how you can
-determine that:
-https://lore.kernel.org/linux-mtd/cover.1686557139.git.Takahiro.Kuwano@infineon.com/
+On Wed, Jul 19, 2023 at 11:55:01PM +0200, Christophe JAILLET wrote:
+> 'op-cs' is copied in 'fun->mchip_number' which is used to access the
+> 'mchip_offsets' and the 'rnb_gpio' arrays.
+> These arrays have NAND_MAX_CHIPS elements, so the index must be below this
+> limit.
+> 
+> Fix the sanity check in order to avoid the NAND_MAX_CHIPS value. This
+> would lead to out-of-bound accesses.
+> 
+> Fixes: 54309d657767 ("mtd: rawnand: fsl_upm: Implement exec_op()")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
 
-If yes, then you could use the generic spi-nor driver,
-thus you won't need to explicitly define flash entries.
-See:
-773bbe104497 mtd: spi-nor: add generic flash driver
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+
+Good eye.  I'm assuming you did something like this:
+
+#!/bin/bash
+
+FILE=$1
+WORDS=$(cat $FILE | perl -ne 'if ($_ =~ /\[([\w_]+)\];/) { print "$1\n" }' | sort -u)
+for i in $WORDS ; do
+    grep -Hn " > $i" $FILE
+done
+
+regards,
+dan carpenter
 
 ______________________________________________________
 Linux MTD discussion mailing list
