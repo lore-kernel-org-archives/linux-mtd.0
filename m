@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AE46EB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:32:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85BB7EB64DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 09:32:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
 	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YcObZc+JYa9g7DAs9wx0+KFGA+MUaEXvGKmv4oemz2M=; b=gev7be8Sxta5XE
-	afHhMg4/XRklr+FhukhIpJSd4g6sOvf/ErRZSArV9rTPpTlruh8d46c7gCkWHXeq8RhM+TyQSuu71
-	C6LXp9w1A0ngxl9ASoiUqD/MW5DcOA6mOi3RwjluyokNhX5IgXnIjj3awQ2FSPDnfPUpv33T5Ivzi
-	e411KUT49f8ahmLwieP6bfBans6zqBlHvM7CceMfTxgNrm4FLYayvVVCXzcfQFU8dyL/ZWD087llU
-	0ls94gLYqnQleVMCCnTDgzUx11omOEoQekofwF2FUz8UH+xigJSmjDGd4y6FYEuCGpdfcUOV93aKi
-	J9UfIwbxXFYvotn1zYiw==;
+	List-Owner; bh=3d+CXnAS3sKEVGbCxfHvaHmk18M6dPPm4qED+pmTx1s=; b=M5MURuexiJlCMU
+	CIaBphauf6OMaw8nngXC9rbZDdAGi1HuELDXrYtHSTL7r1EI4YrhVr2sq4bKwgISvTCrDYN6aH2tG
+	y/KVPunHXdQMzUI3dyaZ1McEwBPqUlcjqQ2l+g+SBA+2Nsw9T5Dl7yWWIGwgcosL3NWF/I2Cclpy0
+	v8VpnmeHGJ3ZCuvCyPZI7QDotMTuyW+m+19D4MM2Zmk/cg9qZeapRzbkuJHZULvaf8KCIWA3OEHjK
+	5njeNlLFW07jCF+W9OSwcJYP/tp9NX+JKuehtDEHK25uGkq+e8v2EAJ8YMElc+Lpe9Z6b2ruJpHtp
+	eK/3kxx9j43OVt2CUNjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP51-00AL5Y-0G;
-	Thu, 20 Jul 2023 08:32:11 +0000
+	id 1qMQ0v-00AXIr-2m;
+	Thu, 20 Jul 2023 09:32:01 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP3H-00AJRi-0v;
-	Thu, 20 Jul 2023 08:30:29 +0000
+	id 1qMP38-00AJY0-1Q;
+	Thu, 20 Jul 2023 08:30:17 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 240A561943;
-	Thu, 20 Jul 2023 08:30:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4C66EC00939;
-	Thu, 20 Jul 2023 08:29:59 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 89DF261BDC;
+	Thu, 20 Jul 2023 08:30:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3AA0EC3279E;
+	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689841799;
-	bh=D0zmWfpY4Zxds3pI9qoqO5QwtVSarYugW4yFNdti8Q0=;
+	s=k20201202; t=1689841798;
+	bh=zgjoCziI93ylFrk85C0R99RGg75O4VmK6LQcYMqhmCk=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=Jv7h+tlB1D4diowhIg135C6ImPqAa+Cmjeq4JsjWftAmW2n7sBmFcAmbXIzL8Ym9y
-	 BRnM7ZZ6DoiLmhbYWpNAmgW8KDDfclYLD8FRZj21ThtsS97ueB5/1HS8a03lP/0flN
-	 mIV9lxFJrOcvLZcjqMupIt/NaX7j/b8fkAoaSbJF1dRce6WMrKQfYEEQLi6XUHS1NQ
-	 3PndgRFBDmbaAJpM5FNo0MdpgiyoEmpErY/PUPUvcVTJmZS4qyrWGe3OMMXjPH8Z9a
-	 qGaMRvaJ3vGhiDYQGcKw/+g6ugY5B9zue42n4xvXXR+WkdxqFhCLfJaZO0Lu2PHSRu
-	 MyPrBlOv5m+dQ==
+	b=VH5x48KXIDOUCCq5btTiyFeTJnFXQRkbv3WIc7RvWixlETL0JTtWD7GYen9QOLWnm
+	 6c/FpWnx76nKCfhKCW4pv8BTZLhUrfZhAohlswuDLTzZGyhiLsH6PZ46fyizabATIo
+	 +OOu6c3a3jFi9nOi6oaj9IkWeFc1Sj5LLYiZGXrUrjYRhPvJHc4LnmCuV1vq1AYLIw
+	 25aAiOl+9haBrpj/psKdu3aZJxtMciwQ+vfmdmZfLKy5RiPH3TSxX0LD3X2GlQ9bzZ
+	 NlaaCUzQlse7WRdT4xgJuGvDzG7t54qC/sYCtn8xhAycFhxICPXwk4s6mz7g6rSWZV
+	 YqGlhs//LDgdg==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23C81C10F19;
-	Thu, 20 Jul 2023 08:29:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E184C3DA43;
+	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
 From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:42 +0300
-Subject: [PATCH v3 42/42] ASoC: cirrus: edb93xx: Delete driver
+Date: Thu, 20 Jul 2023 14:29:26 +0300
+Subject: [PATCH v3 26/42] ata: pata_ep93xx: add device tree support
 MIME-Version: 1.0
-Message-Id: <20230605-ep93xx-v3-42-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-26-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>, 
@@ -93,18 +93,18 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
  linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=4962;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=2575;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=K42b6S3Gkw/OZtsjmZjMwv/18r4+mbuwFRUMVcpcY+I=; =?utf-8?q?b=3DIGZ2FeCPE78X?=
- =?utf-8?q?cF95Zy3oR8xxaO6xwqnalDqB5TnbzsJf8QwYoyPEiTB3t8yvZZ1/Rzsu5n/5Wq+d?=
- NvVfE54nAYukLYe2jXVfWiK7KxIOWkgx8kBBnHCzn8co5COdM7XY
+ bh=k/Fzw6JdkE/3suqIiyO5Zhyi7BJas3Z1DAR17iWACYM=; =?utf-8?q?b=3Dk+ORk4S+LFBc?=
+ =?utf-8?q?P5CmCkp0oZYl98QLD0d1fLzPkLcanD+VxyScBfMYMDLH2SX/gub+L0/xrW3NXAvd?=
+ oDttOcshA50/3i3jd3h3wByJH3KV5lorfsUjlKEZR9ua8Z6c8eLB
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
 X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_013023_493447_21B3758B 
-X-CRM114-Status: GOOD (  20.92  )
+X-CRM114-CacheID: sfid-20230720_013014_579087_31C5FA66 
+X-CRM114-Status: GOOD (  20.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,171 +122,88 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Can be replaced with "simple-audio-card" for the rates up to 50kHz, refer
-to commit "ARM: dts: ep93xx: Add EDB9302 DT".
+- Add OF ID match table
+- Drop ep93xx_chip_revision and use soc_device_match instead
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- sound/soc/cirrus/Kconfig   |   9 ----
- sound/soc/cirrus/Makefile  |   4 --
- sound/soc/cirrus/edb93xx.c | 117 ---------------------------------------------
- 3 files changed, 130 deletions(-)
+ drivers/ata/pata_ep93xx.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
-index 38a83c4dcc2d..97def4e53fbc 100644
---- a/sound/soc/cirrus/Kconfig
-+++ b/sound/soc/cirrus/Kconfig
-@@ -31,12 +31,3 @@ config SND_EP93XX_SOC_I2S_WATCHDOG
+diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
+index c6e043e05d43..a88824dfc5fa 100644
+--- a/drivers/ata/pata_ep93xx.c
++++ b/drivers/ata/pata_ep93xx.c
+@@ -40,9 +40,11 @@
+ #include <linux/ata.h>
+ #include <linux/libata.h>
+ #include <linux/platform_device.h>
++#include <linux/sys_soc.h>
+ #include <linux/delay.h>
+ #include <linux/dmaengine.h>
+ #include <linux/ktime.h>
++#include <linux/mod_devicetable.h>
  
- endif # if SND_EP93XX_SOC_I2S
+ #include <linux/platform_data/dma-ep93xx.h>
+ #include <linux/soc/cirrus/ep93xx.h>
+@@ -910,6 +912,12 @@ static struct ata_port_operations ep93xx_pata_port_ops = {
+ 	.port_start		= ep93xx_pata_port_start,
+ };
  
--config SND_EP93XX_SOC_EDB93XX
--	tristate "SoC Audio support for Cirrus Logic EDB93xx boards"
--	depends on SND_EP93XX_SOC && (MACH_EDB9301 || MACH_EDB9302 || MACH_EDB9302A || MACH_EDB9307A || MACH_EDB9315A)
--	select SND_EP93XX_SOC_I2S
--	select SND_SOC_CS4271_I2C if I2C
--	select SND_SOC_CS4271_SPI if SPI_MASTER
--	help
--	  Say Y or M here if you want to add support for I2S audio on the
--	  Cirrus Logic EDB93xx boards.
-diff --git a/sound/soc/cirrus/Makefile b/sound/soc/cirrus/Makefile
-index 19a86daad660..5916c03888cb 100644
---- a/sound/soc/cirrus/Makefile
-+++ b/sound/soc/cirrus/Makefile
-@@ -6,7 +6,3 @@ snd-soc-ep93xx-i2s-objs	 			:= ep93xx-i2s.o
- obj-$(CONFIG_SND_EP93XX_SOC)			+= snd-soc-ep93xx.o
- obj-$(CONFIG_SND_EP93XX_SOC_I2S)		+= snd-soc-ep93xx-i2s.o
++static const struct soc_device_attribute ep93xx_soc_table[] = {
++	{ .revision = "E1", .data = (void *)ATA_UDMA3 },
++	{ .revision = "E2", .data = (void *)ATA_UDMA4 },
++	{ /* sentinel */ }
++};
++
+ static int ep93xx_pata_probe(struct platform_device *pdev)
+ {
+ 	struct ep93xx_pata_data *drv_data;
+@@ -939,7 +947,7 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
  
--# EP93XX Machine Support
--snd-soc-edb93xx-objs				:= edb93xx.o
--
--obj-$(CONFIG_SND_EP93XX_SOC_EDB93XX)		+= snd-soc-edb93xx.o
-diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
-deleted file mode 100644
-index f49caab21a25..000000000000
---- a/sound/soc/cirrus/edb93xx.c
-+++ /dev/null
-@@ -1,117 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * SoC audio for EDB93xx
-- *
-- * Copyright (c) 2010 Alexander Sverdlin <subaparts@yandex.ru>
-- *
-- * This driver support CS4271 codec being master or slave, working
-- * in control port mode, connected either via SPI or I2C.
-- * The data format accepted is I2S or left-justified.
-- * DAPM support not implemented.
-- */
--
--#include <linux/platform_device.h>
--#include <linux/gpio.h>
--#include <linux/module.h>
--#include <linux/soc/cirrus/ep93xx.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <asm/mach-types.h>
--
--static int edb93xx_hw_params(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
--	int err;
--	unsigned int mclk_rate;
--	unsigned int rate = params_rate(params);
--
--	/*
--	 * According to CS4271 datasheet we use MCLK/LRCK=256 for
--	 * rates below 50kHz and 128 for higher sample rates
--	 */
--	if (rate < 50000)
--		mclk_rate = rate * 64 * 4;
--	else
--		mclk_rate = rate * 64 * 2;
--
--	err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk_rate,
--				     SND_SOC_CLOCK_IN);
--	if (err)
--		return err;
--
--	return snd_soc_dai_set_sysclk(cpu_dai, 0, mclk_rate,
--				      SND_SOC_CLOCK_OUT);
--}
--
--static const struct snd_soc_ops edb93xx_ops = {
--	.hw_params	= edb93xx_hw_params,
--};
--
--SND_SOC_DAILINK_DEFS(hifi,
--	DAILINK_COMP_ARRAY(COMP_CPU("ep93xx-i2s")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("spi0.0", "cs4271-hifi")),
--	DAILINK_COMP_ARRAY(COMP_PLATFORM("ep93xx-i2s")));
--
--static struct snd_soc_dai_link edb93xx_dai = {
--	.name		= "CS4271",
--	.stream_name	= "CS4271 HiFi",
--	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--			  SND_SOC_DAIFMT_CBC_CFC,
--	.ops		= &edb93xx_ops,
--	SND_SOC_DAILINK_REG(hifi),
--};
--
--static struct snd_soc_card snd_soc_edb93xx = {
--	.name		= "EDB93XX",
--	.owner		= THIS_MODULE,
--	.dai_link	= &edb93xx_dai,
--	.num_links	= 1,
--};
--
--static int edb93xx_probe(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = &snd_soc_edb93xx;
--	int ret;
--
--	ret = ep93xx_i2s_acquire();
--	if (ret)
--		return ret;
--
--	card->dev = &pdev->dev;
--
--	ret = snd_soc_register_card(card);
--	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
--			ret);
--		ep93xx_i2s_release();
--	}
--
--	return ret;
--}
--
--static void edb93xx_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_card(card);
--	ep93xx_i2s_release();
--}
--
--static struct platform_driver edb93xx_driver = {
--	.driver		= {
--		.name	= "edb93xx-audio",
--	},
--	.probe		= edb93xx_probe,
--	.remove_new	= edb93xx_remove,
--};
--
--module_platform_driver(edb93xx_driver);
--
--MODULE_AUTHOR("Alexander Sverdlin <subaparts@yandex.ru>");
--MODULE_DESCRIPTION("ALSA SoC EDB93xx");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:edb93xx-audio");
+ 	drv_data = devm_kzalloc(&pdev->dev, sizeof(*drv_data), GFP_KERNEL);
+ 	if (!drv_data) {
+-		err = -ENXIO;
++		err = -ENOMEM;
+ 		goto err_rel_gpio;
+ 	}
+ 
+@@ -976,12 +984,11 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
+ 	 * so this driver supports only UDMA modes.
+ 	 */
+ 	if (drv_data->dma_rx_channel && drv_data->dma_tx_channel) {
+-		int chip_rev = ep93xx_chip_revision();
++		const struct soc_device_attribute *match;
+ 
+-		if (chip_rev == EP93XX_CHIP_REV_E1)
+-			ap->udma_mask = ATA_UDMA3;
+-		else if (chip_rev == EP93XX_CHIP_REV_E2)
+-			ap->udma_mask = ATA_UDMA4;
++		match = soc_device_match(ep93xx_soc_table);
++		if (match)
++			ap->udma_mask = (unsigned int) match->data;
+ 		else
+ 			ap->udma_mask = ATA_UDMA2;
+ 	}
+@@ -1016,9 +1023,16 @@ static int ep93xx_pata_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct of_device_id ep93xx_pata_of_ids[] = {
++	{ .compatible = "cirrus,ep9312-pata" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, ep93xx_pata_of_ids);
++
+ static struct platform_driver ep93xx_pata_platform_driver = {
+ 	.driver = {
+ 		.name = DRV_NAME,
++		.of_match_table = ep93xx_pata_of_ids,
+ 	},
+ 	.probe = ep93xx_pata_probe,
+ 	.remove = ep93xx_pata_remove,
 
 -- 
 2.39.2
