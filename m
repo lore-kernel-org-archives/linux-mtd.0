@@ -4,98 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4942AEB64DA
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 14:34:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2F82EB64DA
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 14:50:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wMDwMpFrKb6aUAtjvc1IDupKF2KlKhoqufHSdCqFBaE=; b=G1ceQDcuNzD2GZ
-	cWP+Wr/u21zkYHAWy/EhgFVQaLr0CPVp/2fybUoaE+UDG/vwloDKlAq4jKjUTZ6TgdXsE3Q0BAltg
-	9hZwbc9eLuVc2YtaO6ky4alhT4lNNKMmHRuffwqlWDFKRG1P+ITTQ3GU+MNX5rLUKKgTKEcq3UgcC
-	eD6k+QEoPm4gjKpKEDuR+39hY3sWlauQkzHogBVyipmdogpqslghS4OSeYfRAF5w00vIwLGKj96BM
-	uV310NbATHVpd8Z0Oj8LsLVfXXH42lKCvBNXqNVTlwFxGO1rEPY/P1WfoK59GJF2AkWIAWa3Z2LOh
-	n5cIlQk1qnQVKXiHQcvA==;
+	List-Owner; bh=lBiW+57ZPA0NwS29/MNeIkFIetupjZQjk9fmDyCninU=; b=2XGeiRZOhZ95rP
+	XbTL1nvQOvq883WM1DkVmgxXxYOV4/lvthKBMcNgXgiU4fDSbRDpl2ZWxEg297ZcUqZVzTpultyDv
+	BsPKnYoTKVHieBpgYhbXs9fE58+uSenYO6h08ZNJEKGjU8xzVpPjsWudKTk/BTi50l1t+K36GkIN+
+	ES30fFpOZdxxcV0McNf/KQ+uja7sAWbhtu4R3Jxj3TIA1VeidWXS+gvDJWfjiEtxQsL6foBZxR5w6
+	QyShhHQwNcfuEpIBigELPoAY9h7TABuB0enmO86wy2eD8gi2flwgNowzrvL5NnHb9ndrU6zvWsncQ
+	zg9/3HAd7kVhTV5tN6nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMUju-00BOpj-1C;
-	Thu, 20 Jul 2023 14:34:46 +0000
-Received: from smtp-out1.suse.de ([195.135.220.28])
+	id 1qMUys-00BR9y-1v;
+	Thu, 20 Jul 2023 14:50:14 +0000
+Received: from mail-vk1-xa2e.google.com ([2607:f8b0:4864:20::a2e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMUjq-00BOoH-21
+	id 1qMUyn-00BR7o-1m
 	for linux-mtd@lists.infradead.org;
-	Thu, 20 Jul 2023 14:34:44 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AF67B22BD9;
-	Thu, 20 Jul 2023 14:34:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1689863679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/6ff9/xbMepFzo0u5wSH1LXPdzZwFF8kXNP7KYOumW0=;
-	b=qJbxkSu+Z/pld8ZDnozSN6/06j3CWTxvtPLYu9WNVqVnQYD1RI5PVainHToQGk4VJlA8o9
-	08RqGEh7TmfWw0zpKdWPzd5NQgcsjDUdsX7EP9Afe96ZipgSN96XINuxW2H1O0lYVpjW6B
-	K1AfDAllBtV5XnZeo1WSkFqrE7Hl/g4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689863679;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/6ff9/xbMepFzo0u5wSH1LXPdzZwFF8kXNP7KYOumW0=;
-	b=BfGCMyGUKemTNPoT/D7uFthLN/z5ova38Nj3q++Mq22svLYcCfPNhIS17nOKCvDfTHV4Hr
-	d45COpmtTCV8NqDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71F49138EC;
-	Thu, 20 Jul 2023 14:34:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ZBd0G/9FuWTBdwAAMHmgww
-	(envelope-from <hare@suse.de>); Thu, 20 Jul 2023 14:34:39 +0000
-Message-ID: <944562e5-1923-5f7d-6a2d-5f648389cadf@suse.de>
-Date: Thu, 20 Jul 2023 16:34:39 +0200
+	Thu, 20 Jul 2023 14:50:12 +0000
+Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-483ad06a37aso1376454e0c.1
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 07:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689864607; x=1690469407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=44I4QTXSdpRlGQNX01aNu7Q8jYmgKrsVdvaz0FbrT9w=;
+        b=VHsv4k0q2otI210G2fx8UlqZVBouT1yhHPQeX4/iYKRduLbBfujemaFd84GC3ZVtWX
+         jIbCktQqByAp5iqMc/vfuiwpcDzR/b7VidjqvAa00eAxbSRDadKzFL7ftVkL0wpM8mY4
+         3nANvQf6LnRvO72e3X3PIZq6dwVKEuHJlUuToqWh59bGJFqRqqo0SosmrUxvzzRd1bBC
+         FBz8bvcUB7PznBNwhuRezNy3z5i/4TW+ggCxtW15DP+i0Lj50o4B9jSN9WUDe5Vyw8rc
+         EUeWyncBdaKXPsUBWXs360RXDU8t4kC/iicYJ16kjPZL2O0Kgs5iYg9GIm/a1AZfdPvo
+         1iNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689864607; x=1690469407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=44I4QTXSdpRlGQNX01aNu7Q8jYmgKrsVdvaz0FbrT9w=;
+        b=HDMgX95vEeYbWTnSVPglQS1zURcKv6zvvjwIh+2eUGNWOy9jq4tXbWpIxIXuUIMbD1
+         do6Z56sWArxNPQPnrvDMtEBx7QGwx7nytfKhfMPlIvzwooL1jkACTG44dbsU0PpdZxqB
+         rnVXN4QmWb0LcV5OIJvRXoA1uNaVuk67xMO2C9WwvOOiuOYZOJJeORS9kBCrbODnGlxO
+         uBFTplbQ8HTjXoj5Pzb/pgaxtZSvRcHp30p9M0ANT4q5faMZ+wvZlI2IMzHqfzeQJltE
+         pu6YdWbXf57SXzMh54fVIdFUjmgfMkfPqjptm3g2G0VDVW63l9toaVKenOF7C0t+QYQG
+         iVsQ==
+X-Gm-Message-State: ABy/qLbYRm6bol50yzt1PkmrWlzBAVruC720dEPA12N7FbaMSyMT4kjd
+	w5SXHYAv/EOLRjaXEloIap1BTcjG/mfafR5oVdKYsg==
+X-Google-Smtp-Source: APBJJlHcVbVjnQaUrT7V7jD6HpKLdUNhc+KcBHJVAgkGL82QQnDc268rPznkIAv5GUoMxsi+qdzT6lIi9u/QnbbIPgk=
+X-Received: by 2002:a05:6122:929:b0:481:5132:48c7 with SMTP id
+ j41-20020a056122092900b00481513248c7mr2136264vka.1.1689864607273; Thu, 20 Jul
+ 2023 07:50:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [RFC PATCH 3/6] block: add new genhd flag GENHD_FL_NO_NVMEM
-Content-Language: en-US
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Dave Chinner <dchinner@redhat.com>, Matthew Wilcox <willy@infradead.org>,
- =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
- Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
- Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
- Christian Loehle <CLoehle@hyperstone.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Jack Wang <jinpu.wang@ionos.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Yeqi Fu <asuk4.q@gmail.com>,
- Avri Altman <avri.altman@wdc.com>, Hans de Goede <hdegoede@redhat.com>,
- Ye Bin <yebin10@huawei.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org
-References: <cover.1689802933.git.daniel@makrotopia.org>
- <96510d925cb0ca1a3a132f8f8affd4bbdafd8fc9.1689802933.git.daniel@makrotopia.org>
- <0592e021-237d-6d41-7faf-e5b93aefbeea@suse.de>
- <ZLk6-aARrlAGenk3@makrotopia.org>
- <f6256c2c-0fd5-764b-92ec-343b99e79c36@suse.de>
- <ZLlEhxspjyMPl29b@makrotopia.org>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <ZLlEhxspjyMPl29b@makrotopia.org>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me> <20230605-ep93xx-v3-33-3d63a5f1103e@maquefel.me>
+In-Reply-To: <20230605-ep93xx-v3-33-3d63a5f1103e@maquefel.me>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 20 Jul 2023 16:49:56 +0200
+Message-ID: <CAMRc=McbD1w47GsfvY6p==jDiTQrwg96jFvVKO-9bPhNOBmapw@mail.gmail.com>
+Subject: Re: [PATCH v3 33/42] gpio: ep93xx: add DT support for gpio-ep93xx
+To: nikita.shubin@maquefel.me
+Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Lennert Buytenhek <kernel@wantstofly.org>, 
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	Lukasz Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+	Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Sebastian Reichel <sre@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Vinod Koul <vkoul@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, 
+	Sergey Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, soc@kernel.org, 
+	Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	Andy Shevchenko <andy@kernel.org>, Michael Peters <mpeters@embeddedts.com>, 
+	Kris Bahnsen <kris@embeddedts.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org, 
+	linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org, 
+	linux-spi@vger.kernel.org, netdev@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
+	linux-input@vger.kernel.org, alsa-devel@alsa-project.org, 
+	Andy Shevchenko <andy.shevchenko@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_073442_809436_6A265D14 
-X-CRM114-Status: GOOD (  31.54  )
+X-CRM114-CacheID: sfid-20230720_075009_741276_8A044C4E 
+X-CRM114-Status: GOOD (  22.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,97 +109,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 7/20/23 16:28, Daniel Golle wrote:
-> On Thu, Jul 20, 2023 at 04:03:22PM +0200, Hannes Reinecke wrote:
->> On 7/20/23 15:47, Daniel Golle wrote:
->>> On Thu, Jul 20, 2023 at 10:24:18AM +0200, Hannes Reinecke wrote:
->>>> On 7/20/23 00:03, Daniel Golle wrote:
->>>>> Add new flag to destinguish block devices which should not act as an
->>>>> NVMEM provider, such as for example an emulated block device on top of
->>>>> an MTD partition which already acts as an NVMEM provider itself.
->>>>>
->>>>> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
->>>>> ---
->>>>>     include/linux/blkdev.h | 3 +++
->>>>>     1 file changed, 3 insertions(+)
->>>>>
->>>>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
->>>>> index 2f5371b8482c0..e853d1815be15 100644
->>>>> --- a/include/linux/blkdev.h
->>>>> +++ b/include/linux/blkdev.h
->>>>> @@ -80,11 +80,14 @@ struct partition_meta_info {
->>>>>      * ``GENHD_FL_NO_PART``: partition support is disabled.  The kernel will not
->>>>>      * scan for partitions from add_disk, and users can't add partitions manually.
->>>>>      *
->>>>> + * ``GENHD_FL_NO_NVMEM``: NVMEM emulation is disabled.  The kernel will not
->>>>> + * emulate an NVMEM device on top of this disk.
->>>>>      */
->>>>>     enum {
->>>>>     	GENHD_FL_REMOVABLE			= 1 << 0,
->>>>>     	GENHD_FL_HIDDEN				= 1 << 1,
->>>>>     	GENHD_FL_NO_PART			= 1 << 2,
->>>>> +	GENHD_FL_NO_NVMEM			= 1 << 3,
->>>>>     };
->>>>>     enum {
->>>> Please reverse this flag. Most of the devices will not have an NVMEM
->>>> partition, and we shouldn't require each and every driver to tag their
->>>> devices.
->>>> So please use GENHD_FL_NVMEM and only set this flag on devices which really
->>>> have an NVMEM partition.
->>>
->>> The idea here was to exclude all those devices which already implement
->>> an NVMEM provider on a lower layer themselves, such as MTD.
->>> In this cases it would be ambigous if the OF node represents the
->>> NVMEM device registered by the MTD framework or if blk-nvmem should be
->>> used.
->>>
->> Hmm; not sure if I follow.
->> In the end, it doesn't really matter whether you check for
->> GENHD_FL_NO_NVMEM or !GENHD_FL_NVMEM.
->> With the difference being that in the former case you have to
->> tag 99% of all existing block devices, and in the latter you
->> have to tag 1%.
-> 
-> That's not exactly true. In the current case I only have to flag MTD
-> (and UBI in future, I'm working on a UBI NVMEM provider as well) with
-> GENHD_FL_NO_NVMEM, so a 'compatible = "nvmem-cells"' in the
-> corresponding device tree node should not result in blk-nvmem creating
-> an NVMEM device based on the (mtd/ubi)block device, simply because the
-> MTD framework (and UBI in future) will already have created their own
-> NVMEM device attached to the very same device tree node.
-> 
-> In all other cases of block devices, the compatible string can be used
-> to unambigously decide whether an NVMEM device should be created or
-> not. blk-nvmem is opt-in, so unless the device is flagged by
-> 'compatible = "nvmem-cells"' it will not do anything.
-> 
-> For all devices which anyway do not have any device tree representation
-> it won't do anything (think: loop, nbd, ...), we would not need to opt
-> them out using GENHD_FL_NO_NVMEM. Also all other drivers which do not
-> already bring their own NVMEM implementation won't need GENHD_FL_NO_NVMEM,
-> the absence of 'compatible = "nvmem-cells"' is enough to indicate that
-> they should not be considered as NVMEM providers.
-> 
-> The way you are suggesting will require that, in addition to selecting
-> the targetted block device in device tree, the block driver will also
-> have to set GENHD_FL_NVMEM. Hence we will need changes in MMC, NVMe
-> and potentially also SATA disk drivers setting GENHD_FL_NVMEM when
-> registering the disk.
-> 
-That is absolutely correct, and was my intention all along.
-Drivers which can (and do) supply an NVMEM partition should be required 
-to set this flag, yes.
-
-Cheers,
-
-Hannes
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVGh1LCBKdWwgMjAsIDIwMjMgYXQgMTA6MzDigK9BTSBOaWtpdGEgU2h1YmluIHZpYSBCNCBS
+ZWxheQo8ZGV2bnVsbCtuaWtpdGEuc2h1YmluLm1hcXVlZmVsLm1lQGtlcm5lbC5vcmc+IHdyb3Rl
+Ogo+Cj4gRnJvbTogTmlraXRhIFNodWJpbiA8bmlraXRhLnNodWJpbkBtYXF1ZWZlbC5tZT4KPgo+
+IEFkZCBPRiBJRCBtYXRjaCB0YWJsZS4KPgo+IFJldmlld2VkLWJ5OiBBbmR5IFNoZXZjaGVua28g
+PGFuZHkuc2hldmNoZW5rb0BnbWFpbC5jb20+Cj4gUmV2aWV3ZWQtYnk6IExpbnVzIFdhbGxlaWog
+PGxpbnVzLndhbGxlaWpAbGluYXJvLm9yZz4KPiBTaWduZWQtb2ZmLWJ5OiBOaWtpdGEgU2h1Ymlu
+IDxuaWtpdGEuc2h1YmluQG1hcXVlZmVsLm1lPgo+IC0tLQo+ICBkcml2ZXJzL2dwaW8vZ3Bpby1l
+cDkzeHguYyB8IDYgKysrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKykKPgo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwaW8vZ3Bpby1lcDkzeHguYyBiL2RyaXZlcnMvZ3Bpby9n
+cGlvLWVwOTN4eC5jCj4gaW5kZXggOWEyNWJiMGNhZjE3Li5jNGUyNzJhODc3M2QgMTAwNjQ0Cj4g
+LS0tIGEvZHJpdmVycy9ncGlvL2dwaW8tZXA5M3h4LmMKPiArKysgYi9kcml2ZXJzL2dwaW8vZ3Bp
+by1lcDkzeHguYwo+IEBAIC0zNjAsOSArMzYwLDE1IEBAIHN0YXRpYyBpbnQgZXA5M3h4X2dwaW9f
+cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAgICAgICAgIHJldHVybiBkZXZt
+X2dwaW9jaGlwX2FkZF9kYXRhKCZwZGV2LT5kZXYsIGdjLCBlZ2MpOwo+ICB9Cj4KPiArc3RhdGlj
+IGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgZXA5M3h4X2dwaW9fbWF0Y2hbXSA9IHsKPiArICAg
+ICAgIHsgLmNvbXBhdGlibGUgPSAiY2lycnVzLGVwOTMwMS1ncGlvIiB9LAo+ICsgICAgICAgeyAv
+KiBzZW50aW5lbCAqLyB9Cj4gK307Cj4gKwo+ICBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZl
+ciBlcDkzeHhfZ3Bpb19kcml2ZXIgPSB7Cj4gICAgICAgICAuZHJpdmVyICAgICAgICAgPSB7Cj4g
+ICAgICAgICAgICAgICAgIC5uYW1lICAgPSAiZ3Bpby1lcDkzeHgiLAo+ICsgICAgICAgICAgICAg
+ICAub2ZfbWF0Y2hfdGFibGUgPSBlcDkzeHhfZ3Bpb19tYXRjaCwKPiAgICAgICAgIH0sCj4gICAg
+ICAgICAucHJvYmUgICAgICAgICAgPSBlcDkzeHhfZ3Bpb19wcm9iZSwKPiAgfTsKPgo+IC0tCj4g
+Mi4zOS4yCj4KCkFja2VkLWJ5OiBCYXJ0b3N6IEdvbGFzemV3c2tpIDxiYXJ0b3N6LmdvbGFzemV3
+c2tpQGxpbmFyby5vcmc+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
