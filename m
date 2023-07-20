@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 892BEEB64DD
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 09:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 165C0C001DF
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 09:32:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
 	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=knlcghtfoAGvgmhTvAXMKSGXM6Gp7JZNMYpbZLGpiQo=; b=s+C+mMp5CU3xzQ
-	ytjovrL1UIevcYr9g+R5Icfre4/4Z0xUZtkCJpc8KyNBF8NhmEv0NP9DbrHs4PtmFr3izIxyxZWup
-	wmULvfZSTdgRFeRIMcPe/XARu101EoTGPwZWnB7BqDmVqqCN1E/A0BDZg7lM1ayd4wFMbJdr+JtST
-	VQHylg/hSnubz4q+PWWDsbkDysV6kTiXpQhFGZMr02FnYG5LyrhgXGQTqbDtOv90Qk13b1Q4AuqIZ
-	jNS9H7Mb8LOliaw6LGYXva+rl8C+/AuvQERRLZJ0keWX1jT9VDjrh78fIS5I4k/hYSYkDNQOXfKMj
-	LcIHciMLYnZqKVsDLuMw==;
+	List-Owner; bh=sDdWWMJ0sCjQA9rMiZP5J7SM3qGlKaUZoPQCpyPsitQ=; b=dw+RdOVcBdMvA9
+	IWfwHzcIlS3J35lPZe2BYA4pg2FzDtpGDJWLV0uI+kp3irt6inA+WiKIP/UfA6TGkUhD3cYoXFy+n
+	G2sFAYHTAu31vQl3Am/BNEXA5Rzfcu7O4VF231AGZRdtfou05/1SS0p9/n2ftiNJMF4oCETByu0/u
+	BiJVi7YNI9heA9qwNZRly9Ho/qaHFF6a983dcitsunn65505cU7t1hzdDTY9Ui4Rvt6Usit6dGXkX
+	3FQd3X5B9FMDtqJKK8y7j9PZlO2bx/YgexbkZS3/2MIFhaPRftchbE+x0/Z4Ib+W3cZK7d7IxS+nU
+	hWXUlAWQkdPjFgKxwlpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMQ0t-00AXIb-34;
-	Thu, 20 Jul 2023 09:31:59 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qMQ0x-00AXJr-2q;
+	Thu, 20 Jul 2023 09:32:03 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP37-00AJOG-1g;
-	Thu, 20 Jul 2023 08:30:16 +0000
+	id 1qMP39-00AJRi-2Y;
+	Thu, 20 Jul 2023 08:30:18 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 41ACA61BD1;
-	Thu, 20 Jul 2023 08:30:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 24491C4167D;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0A0F961C04;
+	Thu, 20 Jul 2023 08:30:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 63CB8C56895;
 	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1689841798;
-	bh=TcorzdBjcD/mSWyfdPk6mKKYgC4i7O1frgX2eCRMiZU=;
+	bh=8fCdzcn2VcvnUQp2D6Fuk/QxfB3MwobNYAHefW+j36I=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=ZqvjqYxn9Qtvo0te0zolwatJjBx+IewmQOE69L0zStszIPHzH2iwoTQU+7jYaaiDr
-	 PG7SkFaFiwvsW7s+zUI78vSSvH4Teaf6fk11yFJBd1HtD/wEXnBPZfsAaA+xsUiC/L
-	 7tn+TM0b3Q5FBT9AWRANI9hxqd1rD06iGhLmiaW7u6mlBTtJVyQQl6+xcUGcXuiHEY
-	 fvwzfe6LPT6UqQQughpNYDrYfBGzOSy7s8Otq3W8VkvDBugI0LBizd+olQE9kk30pG
-	 I/aNDWDLwBqHyNnPBh3PXCXjmjLx3BuIorUgbZJPeSlOy4mR896A+l5eoF1qaxto/5
-	 zScr3ldjPey2g==
+	b=cCUiEtuEjAhC1gslP/2FJwjBOyBVMor9USDpBJDX0Ov7V4PYMHAt0ZEjuBVmxFOAX
+	 vptZENz5foIh9iHUOEuxY4uYiN2deZSFtAblqcRStCy8Tq69pIkdvboorhOufpoBNj
+	 RRiCVNyQj6XTJKwOCLUkGcbdZ0H2ZF14BTU6pnwAcKe/ZSiRX6vEwBvJZfkkCe+7OC
+	 QwSodb5cvyQ6X0GIt/PJpt27MKAkj6QRdaXOFgJT1YAq6HjCk0jL24OXshkNnJqPyS
+	 kEXBzm4iOTubYqp+yylTekLxmXK/HiHGtrbsXQGBz2vtNlDp9JTFD7v0ykv4QXQTgi
+	 h6Q4ZUqsTxxjg==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D912C18E1B;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52FA9C25B5B;
 	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
 From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:25 +0300
-Subject: [PATCH v3 25/42] dt-bindings: ata: Add Cirrus EP93xx
+Date: Thu, 20 Jul 2023 14:29:29 +0300
+Subject: [PATCH v3 29/42] dt-bindings: rtc: Add ST M48T86
 MIME-Version: 1.0
-Message-Id: <20230605-ep93xx-v3-25-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-29-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>, 
@@ -93,18 +93,18 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
  linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=1506;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=1263;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=sw++fjoRfrvnDkvi9g+/LdfHzgiTS69YdTE8YdsIHTs=; =?utf-8?q?b=3DakNu8e8/FvwS?=
- =?utf-8?q?MZqQXZ7rPNmrzxnzDlVtUtH3OKYZTZRxK4+/MM7vS2ngT17LHi6kYq1lAGBuEt/r?=
- wHEjYzP1Bp3PaPp5Yq87N/XgfEQAxpb9S3Ux/MH/Lci3Rb9jUIUz
+ bh=y7M/fGH6tMQwq76PE+jI5ZilaSmr5fjvvIAr9uMS3jI=; =?utf-8?q?b=3DpOrhItnahdeM?=
+ =?utf-8?q?aLWqOwXnLm8LwSVShKictgleU6SoWB5mYdPYqvZhnJyD25dN0IUo0TMLoTXjT6Ws?=
+ fVhlzy5oA2QpnJidkzSuAnetdTtQ+E7HUleSOUEDY0eDhCDNHmrv
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
 X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_013013_681687_1FA08F99 
-X-CRM114-Status: GOOD (  14.80  )
+X-CRM114-CacheID: sfid-20230720_013015_958653_FD70C3A7 
+X-CRM114-Status: GOOD (  14.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,61 +124,54 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Add YAML bindings for ep93xx SoC PATA.
+Add YAML bindings for ST M48T86 / Dallas DS12887 RTC.
 
-Acked-by: Damien Le Moal <dlemoal@kernel.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- .../bindings/ata/cirrus,ep9312-pata.yaml           | 44 ++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ .../devicetree/bindings/rtc/st,m48t86.yaml         | 38 ++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/ata/cirrus,ep9312-pata.yaml b/Documentation/devicetree/bindings/ata/cirrus,ep9312-pata.yaml
+diff --git a/Documentation/devicetree/bindings/rtc/st,m48t86.yaml b/Documentation/devicetree/bindings/rtc/st,m48t86.yaml
 new file mode 100644
-index 000000000000..3489be55a6fe
+index 000000000000..e3e12fa23380
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/ata/cirrus,ep9312-pata.yaml
-@@ -0,0 +1,44 @@
++++ b/Documentation/devicetree/bindings/rtc/st,m48t86.yaml
+@@ -0,0 +1,38 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/ata/cirrus,ep9312-pata.yaml#
++$id: http://devicetree.org/schemas/rtc/st,m48t86.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Cirrus Logic EP9312 PATA controller
++title: ST M48T86 / Dallas DS12887 RTC with SRAM
 +
 +maintainers:
-+  - Damien Le Moal <dlemoal@kernel.org>
++  - Alexandre Belloni <alexandre.belloni@bootlin.com>
++
++allOf:
++  - $ref: rtc.yaml
 +
 +properties:
 +  compatible:
-+    oneOf:
-+      - const: cirrus,ep9312-pata
-+      - items:
-+          - const: cirrus,ep9315-pata
-+          - const: cirrus,ep9312-pata
++    enum:
++      - st,m48t86
 +
 +  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
++    items:
++      - description: index register
++      - description: data register
 +
 +required:
 +  - compatible
 +  - reg
-+  - interrupts
 +
-+additionalProperties: false
++unevaluatedProperties: false
 +
 +examples:
 +  - |
-+    ide@800a0000 {
-+      compatible = "cirrus,ep9312-pata";
-+      reg = <0x800a0000 0x38>;
-+      interrupt-parent = <&vic1>;
-+      interrupts = <8>;
-+      pinctrl-names = "default";
-+      pinctrl-0 = <&ide_default_pins>;
++    rtc@10800000 {
++      compatible = "st,m48t86";
++      reg = <0x10800000 0x1>, <0x11700000 0x1>;
 +    };
 +
 +...
