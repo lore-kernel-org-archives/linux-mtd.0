@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55018EB64DC
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:31:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63D4BEB64DC
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:31:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
 	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LDJLeU1tUB7btaTdYLg7vvoTpoNWDTIQF0fW6mkdkmg=; b=oj8tmtrvNxXw79
-	VQS7K9QLjtLh/ZKGyDgP4GnhMp5jUnBFRTTc0rzvLe17frJB6mO6j42q85hYOCd7gJnSy9kNeWFrg
-	GXqIuc8vYQf//UKOxDrHUB/SzEh3LvfrdduDuO5tYgpgg0bWtNNI2qPkgLYuuK+UysIs2epngjwBB
-	JNF0g+5IWNJi+EtKfx6RPeemntLzdX+zZsN3gI7tKkJGs4HKvuw1UqTCQMfvXl+68m5vA73/vJBVO
-	J8MTx+GPLZelVFZXc8iE3eVXu8I5RhPZ1S3n/BE2qf6sRhAUmVDRavqR4cFNjy/fUQeRs2xMAjgvZ
-	IMTEfKv1FxUGvljD/sAA==;
+	List-Owner; bh=E94KNLFzG2dzvBwXEHQWBEqhRl9wGb6W1PcMa5xj4os=; b=BBhIYWJmHgo7/I
+	ynQFomZVB6J9jUNswBoqmIg36kIR+obNnQJs0eaCG2JWNvekwegcqGPDoiEAMAcroV1gC3rE3/KCF
+	40HdPgsTRGz3MYu93lieAre49IOOgoSAQQD623yrAUuvjcP8FNIXcWUsZFVvvaj0ujFY+KixJQIij
+	4dspFJNDGlY4/I/htgjY2YYn75sv2AQhT4alybJ9h0SEOAZwkhkOb8y6Krcoj6imm3y/j8IO1fOCP
+	aPuiUP1UuuF2PlsECfvO1Jb42EfmoeNIu0yYg1kchAeSsFRYtCaH+CHfDcrNo3DNnBBkicAOwXMnt
+	GymjBy6toEtFI9T8U9+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP4H-00AKQY-0A;
-	Thu, 20 Jul 2023 08:31:25 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qMP4K-00AKTz-31;
+	Thu, 20 Jul 2023 08:31:28 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP35-00AJOG-0P;
-	Thu, 20 Jul 2023 08:30:13 +0000
+	id 1qMP35-00AJPu-3C;
+	Thu, 20 Jul 2023 08:30:14 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 0C16261B89;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8F28F619D9;
 	Thu, 20 Jul 2023 08:30:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CB635C433CB;
-	Thu, 20 Jul 2023 08:29:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 05923C32774;
+	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689841797;
-	bh=S/ojHk8ZwM8OSxRDpgK5t5ZT6uj34yFck7tPkAbewwg=;
+	s=k20201202; t=1689841798;
+	bh=BDkNWhK4mwTKXzVKcu/Yt9kaeuypY8r7OS8gXSQJXh8=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=Jz+mphUOt0R6Pszv+ktHOsR3ahT/WcaRf3WEkq08gyNUdQGwk6vWnL7MQMpwWtQ5S
-	 iw89QRwQ3162wJHeZDilA/lIsuou6RKjLTFvFmFb39THyWKiij8hfTDZhjOkh16hxX
-	 aZP3wAFJm5y+dXCahZjr6oXjMKTOJ7rXg4sACb01+ctTroRtqlCf6xQ1cxsqZfcMCx
-	 dUtcxU6c3oxMFwu1eN2d+DyYozz1XuiIyGoB5W8DcxCT71PJuo2sqKiPKtSgufDD/V
-	 PsTYFwZZDYsoMef1J+vM14XjDDL0wHT0MS7FE3p5akk1ptVd9WE/gh6nT6SdT4Fvs7
-	 1rR/GOPY/1+Bg==
+	b=cQjySL1c9uqFTO2Ma3XeyvCY9d9aLhvbXMwlz45R/Ye8KWosPYHg0HdGRsO6DZAxw
+	 2HrmGAxpWgtbgpaAkwjjWRTgpLBsEUWYIakpjEVGpORm1Ix+vo2aQZJ/fDE+n7DB6E
+	 XMUBY4HytJL/kyyvCPQR7wDV2zCUSzran/9ZKGLMSDIW1SqEGIr01oZIrO32CdZgFq
+	 gzIdMIJGKi1BoZu8eEf3t2Jbr/5FfH8MaEDAGErDcrITggEqRnvkosFnjiFUGwICRu
+	 BOjXsiHrUiq3/vf+yEaCGMZTmbQdaXEnXtstKjLvH7+oG+wxkjiyWpTtdXVmeLSrrx
+	 FtbgHpxv4yfnw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4BD6C04A6A;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4560C10F19;
 	Thu, 20 Jul 2023 08:29:57 +0000 (UTC)
 From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:20 +0300
-Subject: [PATCH v3 20/42] net: cirrus: add DT support for Cirrus EP93xx
+Date: Thu, 20 Jul 2023 14:29:23 +0300
+Subject: [PATCH v3 23/42] dt-bindings: mtd: Add ts7200 nand-controller
 MIME-Version: 1.0
-Message-Id: <20230605-ep93xx-v3-20-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-23-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>, 
@@ -91,21 +91,20 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org, 
  netdev@vger.kernel.org, dmaengine@vger.kernel.org, 
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
- linux-input@vger.kernel.org, alsa-devel@alsa-project.org, 
- Andrew Lunn <andrew@lunn.ch>
+ linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=4209;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=1560;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=gUs812fE3VlU0OGsG5ZrmoAPxBMn02qQvbZSOWYMhRI=; =?utf-8?q?b=3DpHe2IbUkwKJC?=
- =?utf-8?q?f5Yxwr/wGE4YEy0KEX2ka+PTrhERd8PcVpH6m74uuKTWKCpMG550hfnriMDNpSO4?=
- x60Vuso0DRcOyl/1Zv1ycAB3wmY6PdxTyuFoTvq2i1soWrNBG+F8
+ bh=Rm79APKpgWqTWIHqZoCMutcu3LlqwL0Vim6h4nBUkgQ=; =?utf-8?q?b=3DA8SrRvEXg4c7?=
+ =?utf-8?q?hSSu7nXdInw5iFf+YwFsJ9sdOILd6aVNjVFmUjR0dDg74XBuHdcNJp+ZVJ0EiqtI?=
+ EmGgqkQYDS7yDl40oetxlAGOVaPesl61jDiTKgEHx2NoBydIlyMH
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
 X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_013011_269257_710705DE 
-X-CRM114-Status: GOOD (  24.48  )
+X-CRM114-CacheID: sfid-20230720_013012_145848_C5F2AC8E 
+X-CRM114-Status: GOOD (  14.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,149 +124,66 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-- add OF ID match table
-- get phy_id from the device tree, as part of mdio
-- copy_addr is now always used, as there is no SoC/board that aren't
-- dropped platform header
+Add YAML bindings for ts7200 NAND Controller.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- drivers/net/ethernet/cirrus/ep93xx_eth.c | 61 ++++++++++++++++----------------
- 1 file changed, 30 insertions(+), 31 deletions(-)
+ .../devicetree/bindings/mtd/technologic,nand.yaml  | 47 ++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
-diff --git a/drivers/net/ethernet/cirrus/ep93xx_eth.c b/drivers/net/ethernet/cirrus/ep93xx_eth.c
-index 8627ab19d470..fdadff9f1ccd 100644
---- a/drivers/net/ethernet/cirrus/ep93xx_eth.c
-+++ b/drivers/net/ethernet/cirrus/ep93xx_eth.c
-@@ -17,12 +17,11 @@
- #include <linux/interrupt.h>
- #include <linux/moduleparam.h>
- #include <linux/platform_device.h>
-+#include <linux/of.h>
- #include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/slab.h>
- 
--#include <linux/platform_data/eth-ep93xx.h>
--
- #define DRV_MODULE_NAME		"ep93xx-eth"
- 
- #define RX_QUEUE_ENTRIES	64
-@@ -738,25 +737,6 @@ static const struct net_device_ops ep93xx_netdev_ops = {
- 	.ndo_set_mac_address	= eth_mac_addr,
- };
- 
--static struct net_device *ep93xx_dev_alloc(struct ep93xx_eth_data *data)
--{
--	struct net_device *dev;
--
--	dev = alloc_etherdev(sizeof(struct ep93xx_priv));
--	if (dev == NULL)
--		return NULL;
--
--	eth_hw_addr_set(dev, data->dev_addr);
--
--	dev->ethtool_ops = &ep93xx_ethtool_ops;
--	dev->netdev_ops = &ep93xx_netdev_ops;
--
--	dev->features |= NETIF_F_SG | NETIF_F_HW_CSUM;
--
--	return dev;
--}
--
--
- static int ep93xx_eth_remove(struct platform_device *pdev)
- {
- 	struct net_device *dev;
-@@ -788,27 +768,45 @@ static int ep93xx_eth_remove(struct platform_device *pdev)
- 
- static int ep93xx_eth_probe(struct platform_device *pdev)
- {
--	struct ep93xx_eth_data *data;
- 	struct net_device *dev;
- 	struct ep93xx_priv *ep;
- 	struct resource *mem;
-+	void __iomem *base_addr;
-+	struct device_node *np;
-+	u32 phy_id;
- 	int irq;
- 	int err;
- 
- 	if (pdev == NULL)
- 		return -ENODEV;
--	data = dev_get_platdata(&pdev->dev);
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	irq = platform_get_irq(pdev, 0);
- 	if (!mem || irq < 0)
- 		return -ENXIO;
- 
--	dev = ep93xx_dev_alloc(data);
-+	base_addr = ioremap(mem->start, resource_size(mem));
-+	if (!base_addr)
-+		return dev_err_probe(&pdev->dev, -EIO, "Failed to ioremap ethernet registers\n");
+diff --git a/Documentation/devicetree/bindings/mtd/technologic,nand.yaml b/Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+new file mode 100644
+index 000000000000..b64f15a38428
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/technologic,nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	np = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
-+	if (!np)
-+		return dev_err_probe(&pdev->dev, -ENODEV, "Please provide \"phy-handle\"\n");
++title: Technologic Systems NAND controller
 +
-+	if (of_property_read_u32(np, "reg", &phy_id))
-+		return dev_err_probe(&pdev->dev, -ENOENT, "Failed to locate \"phy_id\"\n");
++maintainers:
++  - Nikita Shubin <nikita.shubin@maquefel.me>
 +
-+	dev = alloc_etherdev(sizeof(struct ep93xx_priv));
- 	if (dev == NULL) {
- 		err = -ENOMEM;
- 		goto err_out;
- 	}
++allOf:
++  - $ref: nand-controller.yaml
 +
-+	eth_hw_addr_set(dev, base_addr + 0x50);
-+	dev->ethtool_ops = &ep93xx_ethtool_ops;
-+	dev->netdev_ops = &ep93xx_netdev_ops;
-+	dev->features |= NETIF_F_SG | NETIF_F_HW_CSUM;
++properties:
++  compatible:
++    oneOf:
++      - const: technologic,ts7200-nand
++      - items:
++          - enum:
++              - technologic,ts7300-nand
++              - technologic,ts7260-nand
++              - technologic,ts7250-nand
++          - const: technologic,ts7200-nand
 +
- 	ep = netdev_priv(dev);
- 	ep->dev = dev;
- 	SET_NETDEV_DEV(dev, &pdev->dev);
-@@ -824,15 +822,10 @@ static int ep93xx_eth_probe(struct platform_device *pdev)
- 		goto err_out;
- 	}
- 
--	ep->base_addr = ioremap(mem->start, resource_size(mem));
--	if (ep->base_addr == NULL) {
--		dev_err(&pdev->dev, "Failed to ioremap ethernet registers\n");
--		err = -EIO;
--		goto err_out;
--	}
-+	ep->base_addr = base_addr;
- 	ep->irq = irq;
- 
--	ep->mii.phy_id = data->phy_id;
-+	ep->mii.phy_id = phy_id;
- 	ep->mii.phy_id_mask = 0x1f;
- 	ep->mii.reg_num_mask = 0x1f;
- 	ep->mii.dev = dev;
-@@ -859,12 +852,18 @@ static int ep93xx_eth_probe(struct platform_device *pdev)
- 	return err;
- }
- 
-+static const struct of_device_id ep93xx_eth_of_ids[] = {
-+	{ .compatible = "cirrus,ep9301-eth" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ep93xx_eth_of_ids);
- 
- static struct platform_driver ep93xx_eth_driver = {
- 	.probe		= ep93xx_eth_probe,
- 	.remove		= ep93xx_eth_remove,
- 	.driver		= {
- 		.name	= "ep93xx-eth",
-+		.of_match_table = ep93xx_eth_of_ids,
- 	},
- };
- 
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    nand-controller@60000000 {
++      compatible = "technologic,ts7200-nand";
++      reg = <0x60000000 0x8000000>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++      nand@0 {
++        reg = <0>;
++      };
++    };
++
++...
 
 -- 
 2.39.2
