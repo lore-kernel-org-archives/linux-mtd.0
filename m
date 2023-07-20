@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B537EB64DC
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:30:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5474C0015E
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jul 2023 08:30:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:
 	Message-Id:MIME-Version:Subject:Date:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8hul1rz5nsddZpA2PqcsiGvfo5SAp4sQPGKD2zm+xdE=; b=L5mya1PbB9WFfQ
-	Z9uUbKcvfYwl5S6yFJ7VBooOwXVTJDCaNQBrkmQvbQdSm7G9GSvSyUFuAiLbvOwfygubN4Jb3K628
-	JNswEc1Bou/ZqGKugAZfzVvPukVaS/H1wWWAf3KDy1Ui80m0iw0CivxxSlUAQw5Y4EtcPe7k42k9S
-	4CrIUAcAgfsDDS5P9ZZWhQfRP/g/YVs7RuFOmjGGaSOnf0o9GWyFsnNkLc7nuyIo48qkCcQwtASGm
-	4KxTGpdvTtTzRhGuHxt9BRgZwQGcrWq5oKOA95ETU6PwA1MXWhXhH4Obs+W82c+YZylitgjKXXAgf
-	tH5DnJsWhrevIPBflKEA==;
+	List-Owner; bh=OSm44DUD2geSw98JDw4fb6/szQEfh/ETm/sff/u5ezc=; b=pZGqLi1YvI1f4J
+	LB9NgFNAAZTRuV2E+48GnhleTVXLnw0i3W7s+0GHNkcdm87eavn/1j0mmRqm4qB6C/yHY8V0pBDA7
+	YZC8eHEJc3fJkJFLcr3y1ni7iey9NMqFnqNlSPR9by4vSTPbzOAmQJ5LXDN0RmB2g1Xe/jTOXAXSZ
+	qJc5zm2EXCiRRwELv0Xyle7VBJbSth9oVj9/GjSu3lWIFWWjuxRa+Ju1wq6pnKiJMAujKSHpLCfy6
+	ievk0VlG9AmpIFpNNfBOy9paj9zL8dU43NYr/OHR7KgAA05slftzCYwLv9e6M+pIeLs1f9SKqNgVz
+	pJorwczYFrPJLBv1SLNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP3M-00AJk0-25;
-	Thu, 20 Jul 2023 08:30:28 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qMP3P-00AJln-2e;
+	Thu, 20 Jul 2023 08:30:31 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMP2w-00AJOG-17;
-	Thu, 20 Jul 2023 08:30:06 +0000
+	id 1qMP2z-00AJPu-22;
+	Thu, 20 Jul 2023 08:30:08 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4454D61935;
-	Thu, 20 Jul 2023 08:29:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A8169C611AB;
-	Thu, 20 Jul 2023 08:29:56 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0322261B0C;
+	Thu, 20 Jul 2023 08:30:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3A477C611B4;
+	Thu, 20 Jul 2023 08:29:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689841796;
-	bh=Icc0A/kj6yGqYeaOj4SJjOewb0mc8Woa4wczTJOoFwo=;
+	s=k20201202; t=1689841797;
+	bh=PIAVRsubooNT/IoJh/5r833VlR5IHIMSLPb5V8bEVII=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=e0uKYqNVqnMW7v1S4ZnwZbhakubhgeHsmxXOi4ur2uoAlIYAkT6QLG4SU9UhgdAe0
-	 kAGXAGkii9/ECrZAG7pdHHgYJc2tjp6V3pfiVsq7pnxSkfpd3+17mEdK/YxN7icYCU
-	 6Yl34bzaDwTEcALvrAJR8NvlBgjIAqQQn2UjMd1TBU3n7ysTOQYaX16/VWTwq1UUN0
-	 F+Uv2iWEMD76OgsGdznqwiGHxw35O4LvzkMBM5ELL5DdLolxsRQvEilozTb1BWf+pL
-	 n2uReCm8+Mdgek2VJVr1nse92N8XS1gdz+2owMIO/+xZ0gKQsIoxLOfEXN0W9bIu20
-	 fRBY+TfeQfnqA==
+	b=GW7dRRbwvOz7TaDqncBe1fFXCnmtnpDYVLig9vxrEUmnbcjABWKXz7lucQ/kIEHlp
+	 mD9FwyxmmH2lDXenNynOsTUNwNcmLD1eew3OFOe7YIc9qH2xxwQnpGPWEgm4y1+tjY
+	 SPp6WqRUmwpPwz7Sfl/btlmT0LxjbNe+9okf6rsdnQQmdrYB9VX4tjsuEhUk/BdCH2
+	 mSBjcWXaf1IYFv5zyh0NKv/bxVVGX+bZLJoDOVfUpL8qc2Re5PWCQyFVx5x+eVHEpn
+	 1gj62fBBcox5kdwurmN95YupwpNGLFivfepGdjrxv5gBSPSDaPeLlXt+SdEZw9Q+Oq
+	 F8PKN9m6++JMQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8557FC0015E;
-	Thu, 20 Jul 2023 08:29:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2872AC04FE2;
+	Thu, 20 Jul 2023 08:29:57 +0000 (UTC)
 From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:07 +0300
-Subject: [PATCH v3 07/42] soc: Add SoC driver for Cirrus ep93xx
+Date: Thu, 20 Jul 2023 14:29:11 +0300
+Subject: [PATCH v3 11/42] rtc: ep93xx: add DT support for Cirrus EP93xx
 MIME-Version: 1.0
-Message-Id: <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-11-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>, 
@@ -91,20 +91,21 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org, 
  netdev@vger.kernel.org, dmaengine@vger.kernel.org, 
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org, 
- linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+ linux-input@vger.kernel.org, alsa-devel@alsa-project.org, 
+ Andy Shevchenko <andy.shevchenko@gmail.com>
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=11384;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=1082;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=hdAydcSmJdWTCsh9yNDgwo1kPIf17UX/m4OJVEY7qN4=; =?utf-8?q?b=3DKIYngc1oJbho?=
- =?utf-8?q?J3zNeKRkvNqM18Cfr+rAd7yueRxLazdHd5qw4z/g9gwaK3HzDy8suoitNbUl5g62?=
- ka3ygVV1Bu1FV4rg5Oo2ge6sFuLM4xCaEEj8JqCEvqdoxGml93VB
+ bh=p80xCnz+NiYVYSqsKWTadEzof+wILB6tYu5g6z/UQHM=; =?utf-8?q?b=3DBcttpirmmzHj?=
+ =?utf-8?q?TKf7/ziXxsMLFnU2/ynwMO775xwHs6b/cIqGiyxsCZSXe0P+SPrFlPYVb22S7Pvh?=
+ yfYaQ8ItAZ6KsS9LRAeIVF6YQW6UhK3I/ZkU4WmCpYM4eZnHlM4/
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
 X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_013002_485356_89DBC6AE 
-X-CRM114-Status: GOOD (  28.70  )
+X-CRM114-CacheID: sfid-20230720_013005_760321_53F9B8FB 
+X-CRM114-Status: GOOD (  16.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,356 +125,43 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-This adds an SoC driver for the ep93xx. Currently there
-is only one thing not fitting into any other framework,
-and that is the swlock setting.
+Add OF ID match table.
 
-It's used for clock settings and restart.
-
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/soc/Kconfig               |   1 +
- drivers/soc/Makefile              |   1 +
- drivers/soc/cirrus/Kconfig        |  12 ++
- drivers/soc/cirrus/Makefile       |   2 +
- drivers/soc/cirrus/soc-ep93xx.c   | 231 ++++++++++++++++++++++++++++++++++++++
- include/linux/soc/cirrus/ep93xx.h |  18 ++-
- 6 files changed, 264 insertions(+), 1 deletion(-)
+ drivers/rtc/rtc-ep93xx.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-index 4e176280113a..16327b63b773 100644
---- a/drivers/soc/Kconfig
-+++ b/drivers/soc/Kconfig
-@@ -8,6 +8,7 @@ source "drivers/soc/aspeed/Kconfig"
- source "drivers/soc/atmel/Kconfig"
- source "drivers/soc/bcm/Kconfig"
- source "drivers/soc/canaan/Kconfig"
-+source "drivers/soc/cirrus/Kconfig"
- source "drivers/soc/fsl/Kconfig"
- source "drivers/soc/fujitsu/Kconfig"
- source "drivers/soc/imx/Kconfig"
-diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-index 3b0f9fb3b5c8..b76a03fe808e 100644
---- a/drivers/soc/Makefile
-+++ b/drivers/soc/Makefile
-@@ -9,6 +9,7 @@ obj-y				+= aspeed/
- obj-$(CONFIG_ARCH_AT91)		+= atmel/
- obj-y				+= bcm/
- obj-$(CONFIG_SOC_CANAAN)	+= canaan/
-+obj-$(CONFIG_EP93XX_SOC)        += cirrus/
- obj-$(CONFIG_ARCH_DOVE)		+= dove/
- obj-$(CONFIG_MACH_DOVE)		+= dove/
- obj-y				+= fsl/
-diff --git a/drivers/soc/cirrus/Kconfig b/drivers/soc/cirrus/Kconfig
-new file mode 100644
-index 000000000000..408f3343a265
---- /dev/null
-+++ b/drivers/soc/cirrus/Kconfig
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+if ARCH_EP93XX
-+
-+config EP93XX_SOC
-+	bool "Cirrus EP93xx chips SoC"
-+	select SOC_BUS
-+	default y if !EP93XX_SOC_COMMON
-+	help
-+	  Support SoC for Cirrus EP93xx chips.
-+
-+endif
-diff --git a/drivers/soc/cirrus/Makefile b/drivers/soc/cirrus/Makefile
-new file mode 100644
-index 000000000000..ed6752844c6f
---- /dev/null
-+++ b/drivers/soc/cirrus/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-y	+= soc-ep93xx.o
-diff --git a/drivers/soc/cirrus/soc-ep93xx.c b/drivers/soc/cirrus/soc-ep93xx.c
-new file mode 100644
-index 000000000000..2fd48d900f24
---- /dev/null
-+++ b/drivers/soc/cirrus/soc-ep93xx.c
-@@ -0,0 +1,231 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * SoC driver for Cirrus EP93xx chips.
-+ * Copyright (C) 2022 Nikita Shubin <nikita.shubin@maquefel.me>
-+ *
-+ * Based on a rewrite of arch/arm/mach-ep93xx/core.c
-+ * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
-+ * Copyright (C) 2007 Herbert Valerio Riedel <hvr@gnu.org>
-+ *
-+ * Thanks go to Michael Burian and Ray Lehtiniemi for their key
-+ * role in the ep93xx Linux community
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/of.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/sys_soc.h>
-+#include <linux/soc/cirrus/ep93xx.h>
-+
-+#define EP93XX_EXT_CLK_RATE		14745600
-+
-+#define EP93XX_SYSCON_DEVCFG		0x80
-+
-+#define EP93XX_SWLOCK_MAGICK		0xaa
-+#define EP93XX_SYSCON_SWLOCK		0xc0
-+#define EP93XX_SYSCON_SYSCFG		0x9c
-+#define EP93XX_SYSCON_SYSCFG_REV_MASK	0xf0000000
-+#define EP93XX_SYSCON_SYSCFG_REV_SHIFT	28
-+
-+#define EP93XX_SYSCON_CLKSET1		0x20
-+#define EP93XX_SYSCON_CLKSET1_NBYP1	BIT(23)
-+#define EP93XX_SYSCON_CLKSET2		0x24
-+#define EP93XX_SYSCON_CLKSET2_NBYP2	BIT(19)
-+#define EP93XX_SYSCON_CLKSET2_PLL2_EN	BIT(18)
-+
-+static DEFINE_SPINLOCK(ep93xx_swlock);
-+
-+/* EP93xx System Controller software locked register write */
-+void ep93xx_syscon_swlocked_write(struct regmap *map, unsigned int reg, unsigned int val)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&ep93xx_swlock, flags);
-+
-+	regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
-+	regmap_write(map, reg, val);
-+
-+	spin_unlock_irqrestore(&ep93xx_swlock, flags);
-+}
-+EXPORT_SYMBOL_NS_GPL(ep93xx_syscon_swlocked_write, EP93XX_SOC);
-+
-+void ep93xx_devcfg_set_clear(struct regmap *map, unsigned int set_bits, unsigned int clear_bits)
-+{
-+	unsigned long flags;
-+	unsigned int val;
-+
-+	spin_lock_irqsave(&ep93xx_swlock, flags);
-+
-+	regmap_read(map, EP93XX_SYSCON_DEVCFG, &val);
-+	val &= ~clear_bits;
-+	val |= set_bits;
-+	regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
-+	regmap_write(map, EP93XX_SYSCON_DEVCFG, val);
-+
-+	spin_unlock_irqrestore(&ep93xx_swlock, flags);
-+}
-+EXPORT_SYMBOL_NS_GPL(ep93xx_devcfg_set_clear, EP93XX_SOC);
-+
-+void ep93xx_swlocked_update_bits(struct regmap *map, unsigned int reg,
-+				 unsigned int mask, unsigned int val)
-+{
-+	unsigned long flags;
-+	unsigned int tmp, orig;
-+
-+	spin_lock_irqsave(&ep93xx_swlock, flags);
-+
-+	regmap_read(map, EP93XX_SYSCON_DEVCFG, &orig);
-+	tmp = orig & ~mask;
-+	tmp |= val & mask;
-+	if (tmp != orig) {
-+		regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
-+		regmap_write(map, reg, tmp);
-+	}
-+
-+	spin_unlock_irqrestore(&ep93xx_swlock, flags);
-+}
-+EXPORT_SYMBOL_NS_GPL(ep93xx_swlocked_update_bits, EP93XX_SOC);
-+
-+unsigned int __init ep93xx_chip_revision(struct regmap *map)
-+{
-+	unsigned int val;
-+
-+	regmap_read(map, EP93XX_SYSCON_SYSCFG, &val);
-+	val &= EP93XX_SYSCON_SYSCFG_REV_MASK;
-+	val >>= EP93XX_SYSCON_SYSCFG_REV_SHIFT;
-+	return val;
-+}
-+
-+static const char __init *ep93xx_get_soc_rev(struct regmap *map)
-+{
-+	int rev = ep93xx_chip_revision(map);
-+
-+	switch (rev) {
-+	case EP93XX_CHIP_REV_D0:
-+		return "D0";
-+	case EP93XX_CHIP_REV_D1:
-+		return "D1";
-+	case EP93XX_CHIP_REV_E0:
-+		return "E0";
-+	case EP93XX_CHIP_REV_E1:
-+		return "E1";
-+	case EP93XX_CHIP_REV_E2:
-+		return "E2";
-+	default:
-+		return "unknown";
-+	}
-+}
-+
-+/*
-+ * PLL rate = 14.7456 MHz * (X1FBD + 1) * (X2FBD + 1) / (X2IPD + 1) / 2^PS
-+ */
-+static unsigned long __init calc_pll_rate(u64 rate, u32 config_word)
-+{
-+	rate *= ((config_word >> 11) & GENMASK(4, 0)) + 1;	/* X1FBD */
-+	rate *= ((config_word >> 5) & GENMASK(5, 0)) + 1;	/* X2FBD */
-+	do_div(rate, (config_word & GENMASK(4, 0)) + 1);	/* X2IPD */
-+	rate >>= ((config_word >> 16) & 3);			/* PS */
-+
-+	return rate;
-+}
-+
-+static int __init ep93xx_soc_init(void)
-+{
-+	struct soc_device_attribute *attrs;
-+	struct soc_device *soc_dev;
-+	struct device_node *np;
-+	struct regmap *map;
-+	struct clk_hw *hw;
-+	unsigned long clk_pll1_rate, clk_pll2_rate;
-+	unsigned int clk_f_div, clk_h_div, clk_p_div, clk_usb_div;
-+	const char fclk_divisors[] = { 1, 2, 4, 8, 16, 1, 1, 1 };
-+	const char hclk_divisors[] = { 1, 2, 4, 5, 6, 8, 16, 32 };
-+	const char pclk_divisors[] = { 1, 2, 4, 8 };
-+	const char *machine = NULL;
-+	u32 value;
-+
-+	/* Multiplatform guard, only proceed on ep93xx */
-+	if (!of_machine_is_compatible("cirrus,ep9301"))
-+		return 0;
-+
-+	map = syscon_regmap_lookup_by_compatible("cirrus,ep9301-syscon");
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	/* Determine the bootloader configured pll1 rate */
-+	regmap_read(map, EP93XX_SYSCON_CLKSET1, &value);
-+	if (!(value & EP93XX_SYSCON_CLKSET1_NBYP1))
-+		clk_pll1_rate = EP93XX_EXT_CLK_RATE;
-+	else
-+		clk_pll1_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
-+
-+	hw = clk_hw_register_fixed_rate(NULL, "pll1", "xtali", 0, clk_pll1_rate);
-+	if (IS_ERR(hw))
-+		return PTR_ERR(hw);
-+
-+	/* Initialize the pll1 derived clocks */
-+	clk_f_div = fclk_divisors[(value >> 25) & 0x7];
-+	clk_h_div = hclk_divisors[(value >> 20) & 0x7];
-+	clk_p_div = pclk_divisors[(value >> 18) & 0x3];
-+
-+	hw = clk_hw_register_fixed_factor(NULL, "fclk", "pll1", 0, 1, clk_f_div);
-+	if (IS_ERR(hw))
-+		return PTR_ERR(hw);
-+
-+	hw = clk_hw_register_fixed_factor(NULL, "hclk", "pll1", 0, 1, clk_h_div);
-+	if (IS_ERR(hw))
-+		return PTR_ERR(hw);
-+
-+	hw = clk_hw_register_fixed_factor(NULL, "pclk", "hclk", 0, 1, clk_p_div);
-+	if (IS_ERR(hw))
-+		return PTR_ERR(hw);
-+
-+	/* Determine the bootloader configured pll2 rate */
-+	regmap_read(map, EP93XX_SYSCON_CLKSET2, &value);
-+	if (!(value & EP93XX_SYSCON_CLKSET2_NBYP2))
-+		clk_pll2_rate = EP93XX_EXT_CLK_RATE;
-+	else if (value & EP93XX_SYSCON_CLKSET2_PLL2_EN)
-+		clk_pll2_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
-+	else
-+		clk_pll2_rate = 0;
-+
-+	hw = clk_hw_register_fixed_rate(NULL, "pll2", "xtali", 0, clk_pll2_rate);
-+	if (IS_ERR(hw))
-+		return PTR_ERR(hw);
-+
-+	regmap_read(map, EP93XX_SYSCON_CLKSET2, &value);
-+	clk_usb_div = (((value >> 28) & GENMASK(3, 0)) + 1);
-+	hw = clk_hw_register_fixed_factor(NULL, "usb_clk", "pll2", 0, 1, clk_usb_div);
-+	if (IS_ERR(hw))
-+		return PTR_ERR(hw);
-+
-+	attrs = kzalloc(sizeof(*attrs), GFP_KERNEL);
-+	if (!attrs)
-+		return -ENOMEM;
-+
-+	np = of_find_node_by_path("/");
-+	of_property_read_string(np, "model", &machine);
-+	if (machine)
-+		attrs->machine = kstrdup(machine, GFP_KERNEL);
-+	of_node_put(np);
-+
-+	attrs->family = "Cirrus Logic EP93xx";
-+	attrs->revision = ep93xx_get_soc_rev(map);
-+
-+	soc_dev = soc_device_register(attrs);
-+	if (IS_ERR(soc_dev)) {
-+		kfree(attrs->soc_id);
-+		kfree(attrs->serial_number);
-+		kfree(attrs);
-+		return PTR_ERR(soc_dev);
-+	}
-+
-+	pr_info("EP93xx SoC revision %s\n", attrs->revision);
-+
-+	return 0;
-+}
-+core_initcall(ep93xx_soc_init);
-diff --git a/include/linux/soc/cirrus/ep93xx.h b/include/linux/soc/cirrus/ep93xx.h
-index 56fbe2dc59b1..f38937a6f08c 100644
---- a/include/linux/soc/cirrus/ep93xx.h
-+++ b/include/linux/soc/cirrus/ep93xx.h
-@@ -3,6 +3,7 @@
- #define _SOC_EP93XX_H
+diff --git a/drivers/rtc/rtc-ep93xx.c b/drivers/rtc/rtc-ep93xx.c
+index acae7f16808f..1fdd20d01560 100644
+--- a/drivers/rtc/rtc-ep93xx.c
++++ b/drivers/rtc/rtc-ep93xx.c
+@@ -7,6 +7,7 @@
+  */
  
- struct platform_device;
-+struct regmap;
+ #include <linux/module.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/rtc.h>
+ #include <linux/platform_device.h>
+ #include <linux/io.h>
+@@ -148,9 +149,16 @@ static int ep93xx_rtc_probe(struct platform_device *pdev)
+ 	return devm_rtc_register_device(ep93xx_rtc->rtc);
+ }
  
- #define EP93XX_CHIP_REV_D0	3
- #define EP93XX_CHIP_REV_D1	4
-@@ -10,7 +11,7 @@ struct platform_device;
- #define EP93XX_CHIP_REV_E1	6
- #define EP93XX_CHIP_REV_E2	7
- 
--#ifdef CONFIG_ARCH_EP93XX
-+#if defined(CONFIG_EP93XX_SOC_COMMON)
- int ep93xx_pwm_acquire_gpio(struct platform_device *pdev);
- void ep93xx_pwm_release_gpio(struct platform_device *pdev);
- int ep93xx_ide_acquire_gpio(struct platform_device *pdev);
-@@ -30,7 +31,22 @@ static inline int ep93xx_keypad_acquire_gpio(struct platform_device *pdev) { ret
- static inline void ep93xx_keypad_release_gpio(struct platform_device *pdev) {}
- static inline int ep93xx_i2s_acquire(void) { return 0; }
- static inline void ep93xx_i2s_release(void) {}
++static const struct of_device_id ep93xx_rtc_of_ids[] = {
++	{ .compatible = "cirrus,ep9301-rtc" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, ep93xx_rtc_of_ids);
 +
-+#if defined(CONFIG_EP93XX_SOC)
-+void ep93xx_syscon_swlocked_write(struct regmap *map, unsigned int reg, unsigned int val);
-+void ep93xx_devcfg_set_clear(struct regmap *map, unsigned int set_bits, unsigned int clear_bits);
-+void ep93xx_swlocked_update_bits(struct regmap *map, unsigned int reg,
-+				 unsigned int mask, unsigned int val);
-+#else
-+static inline void ep93xx_syscon_swlocked_write(struct regmap *map, unsigned int reg,
-+						unsigned int val) { }
-+static inline void ep93xx_devcfg_set_clear(struct regmap *map, unsigned int set_bits,
-+						unsigned int clear_bits) { }
-+
-+void ep93xx_swlocked_update_bits(struct regmap *map, unsigned int reg,
-+				unsigned int mask, unsigned int val) { }
- static inline unsigned int ep93xx_chip_revision(void) { return 0; }
-+#endif
- 
- #endif
- 
+ static struct platform_driver ep93xx_rtc_driver = {
+ 	.driver		= {
+ 		.name	= "ep93xx-rtc",
++		.of_match_table = ep93xx_rtc_of_ids,
+ 	},
+ 	.probe		= ep93xx_rtc_probe,
+ };
 
 -- 
 2.39.2
