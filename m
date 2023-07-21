@@ -4,134 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCAABEB64DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 09:22:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DADDBC0015E
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 10:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tYMj9otx6ttFrXXczCst40aEQrTztZ52oZ887DzFnFs=; b=dQU/XO1CO9sBsE
-	2wAtO4kM0RaxvAA+HoCyYVW48D6q+LNMynem1sP/QSKKUd9cj6irzXY4RluFOQlKP+xwH1sCFWg9m
-	k+G1AVCMPG29NcYv5dFrBtkqy1KICPEUwziINsZ7HGWigQQ0qe/41F1ZgeRwYmaKwIlvcqedj3dEi
-	fG8M1Y2AcZX+53b179FG7Xdz5mtzvI9zHFyud5jR1ja1LhrKMj68AD7hWzwA/iVrRVWsTRp5BqFtp
-	QP5elOwksTsghZKbQVpbhpcNQJ8TG3cxlRsfUpDpJQHLicjnhFOOJMEqi8SqVwEgy2yAFBfrIlMQP
-	xsNAoRIg6bW07tAA7Mdg==;
+	List-Owner; bh=ZPq3QcDT4AbxsrOsj3Wo/IX3/+8IMfzn247ujvVOPBQ=; b=RTGXC8kU2XG/wq
+	YsaKH9NSJ2eJPuZyT8hrPlczi4IEKJvgPzeQ2FPwxUPzp1ct+3e/1FuTdnsRhCAbXnLS5t2ktz+2m
+	lJTWVo+yPTLKF7HM5w+I+riRE1I6rVGfkmhdhQicSExC1VevbyXYCfFoYim28pjxpjMxBrhq/WA9T
+	v654ezQXBSI6pNlYe5523guG+bW5u1PqASs4DvCC7XVGGO0+Mu9+QvCkclzYlAIhttDTYS8HQ6r9U
+	42bRp49i8KGPb2e6qmgWbjhT1ztt0z9tTJxWeY8daloKESPIJYOkcXwnVWn33EOVoGpc8IYJDhIBj
+	lvdWlLEkGU1kvqICtS+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMmLS-00DWQG-0g;
-	Fri, 21 Jul 2023 09:22:42 +0000
-Received: from mail-mw2nam12on20705.outbound.protection.outlook.com ([2a01:111:f400:fe5a::705] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
+	id 1qMnaA-00Do5Y-2Q;
+	Fri, 21 Jul 2023 10:41:58 +0000
+Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMmLP-00DWOl-0G
+	id 1qMna8-00Do50-18
 	for linux-mtd@lists.infradead.org;
-	Fri, 21 Jul 2023 09:22:40 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jgpjep5uFJZfewKYL0GX4o0iTFDJ0V6lrbz8dpM8N1flAT6wl7xruYg3fWRqB2bRqiHt9jOrQuJD6UXfVkgVNNwwjtGhVHjcAbkmRwN8vA/5BFAKa6Zt6Dn7e2TTjq0meUzV1JI41lL1MCqVVxy1V78v9aAGDUkUkUfLzNmZ9HbcSsctGfXADmp5KBTeSMm/sb4nWhbxt2v4GgQ1HAQeOoPynz+tUT5hle3fs16J3zx5Tuopuj84+0RplqG+fkXnQZ1TLatmF/jLHA/j+DAdPThuVRtiGPbUrOIPB2iQyTZR6ZF3ilMl9qT6z9ogwVAonkE3Qeiia+3dIMGKt+5AEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Gz8mHqC2Ef19wexneXnyjbdqZZ4oeLZvyePTfyC6xqM=;
- b=WXBvz4ZeoJ0egJp30EQYXz/EXMMd5erWGhe19wC3rNBi97sMq3eE/yAVqedSmCBbAxVOUGNI9t8z5nLt/R4M2XRPOvyGqs4N40F15fqKVVhD/X03CIjVId4CAzUPO9pwM83kPphDeCYEKKW141NKsm9/f89Vrqbw3cKGfgEhmMzTFQbRP8vePFYGasRnWZn6QjugMs0gWbZaP1vByX2V52XO1VlppuilTuyrqyJ5L526A3AJmG8boXgUQwpL1oWqiz7RrI0tBelt3leNY8Ro9UWcvoVIWV5udKJ7NnBkGOrrBYuv/Yy67pnabu/NvfkY4if8wmLVOnjaI7fYAbWg/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gz8mHqC2Ef19wexneXnyjbdqZZ4oeLZvyePTfyC6xqM=;
- b=dMhwNnSXQUv1rIZBpV3cEPglo253verT4CYvC5j4BjLqsv6vem8IwkqoWkQ+jyNomgS5ITuNtRRmEJ3nCpEEg+lfB/Sr9XA3KR5xOaOgyTV4CQUUR8/SNvrNmlnYovwRNS4mbzxyLLBITmEAGgZ+DIJTcEM0zZdgM+jepDuq8JU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by CH3PR13MB6337.namprd13.prod.outlook.com (2603:10b6:610:196::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.25; Fri, 21 Jul
- 2023 09:22:33 +0000
-Received: from PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
- ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6609.025; Fri, 21 Jul 2023
- 09:22:33 +0000
-Date: Fri, 21 Jul 2023 10:22:21 +0100
-From: Simon Horman <simon.horman@corigine.com>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Kees Cook <keescook@chromium.org>, Haren Myneni <haren@us.ibm.com>,
-	Nick Terrell <terrelln@fb.com>, Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Fri, 21 Jul 2023 10:41:57 +0000
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1qMnZF-0001IB-0Q;
+	Fri, 21 Jul 2023 10:41:01 +0000
+Date: Fri, 21 Jul 2023 11:40:51 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
-	linux-mtd@lists.infradead.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 08/21] zram: Migrate to acomp compression API
-Message-ID: <ZLpOTTrYTxfMqYen@corigine.com>
-References: <20230718125847.3869700-1-ardb@kernel.org>
- <20230718125847.3869700-9-ardb@kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20230718125847.3869700-9-ardb@kernel.org>
-X-ClientProxiedBy: LO4P123CA0643.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:296::10) To PH0PR13MB4842.namprd13.prod.outlook.com
- (2603:10b6:510:78::6)
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Dave Chinner <dchinner@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
+	Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
+	Christian Loehle <CLoehle@hyperstone.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Hannes Reinecke <hare@suse.de>, Jack Wang <jinpu.wang@ionos.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
+	Hans de Goede <hdegoede@redhat.com>, Ye Bin <yebin10@huawei.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH 6/6] block: implement NVMEM provider
+Message-ID: <ZLpgs-aZVHCQooi0@makrotopia.org>
+References: <cover.1689802933.git.daniel@makrotopia.org>
+ <e5b709e15739dc0563e9497a2dbbe63050381db0.1689802933.git.daniel@makrotopia.org>
+ <ZLjci5bHzTI+/Kxs@infradead.org>
+ <ZLlaOB1sb8wSd7Aq@makrotopia.org>
+ <ZLomKmNe+EhpjI1K@infradead.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|CH3PR13MB6337:EE_
-X-MS-Office365-Filtering-Correlation-Id: a4c1034c-aaed-4420-c1da-08db89cc036d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G3sOJBMejdX1zakfvc+13yXfwwWfhkSlDMvZylT1ILKt5nsmH5nfY8blpM4FkImPb8US/2wZIiufv4g16r2THEwTASNmJWZGlKxFhtc+oWs0JDoUpv4kA40fAozdnz7Xz7EFaVz052k/J0TYAYtECsDnR42280XOSc0tmN0kMXtzvX/W3UAtMyvXmFJGmkdF80YjShiC8WHj+iuCrGTBguyYlKbEKuxjdp1vwbuS+b90lO860zbtGP46Ehbx5QVEQpBANn+Gd52G2DjyRzRVqt5QXfJ5ssr3a73tZvWLHgzk5FP6l0lCsQQvW/IlH8Fc1jxmvkF3rHA1yS3i9v1kk/YncVMGSF4mjUr9gaHQ/uxZDryXcFFo59fV/hlv9QzD1iSjjmWneCDrO7PxIr3VsetxwXlzCJG5QF9m1zzn/w6/ouGS330RPNPXLFEV2ER1ZsXayCHMhc9Ptqo5JJv5HEi57ufnHu3m4M/pY19kAP1YDKBWSeilu3/scyFPGEkiMVMVKWIwfprUKHNQlidlnYGhioW8PmTtQqYC0EEXtuJDyK/+52b5HwDKafTlFa9innIKD2MkIak4of+ggVBAsfYgyXtf7p0JNBkwv4VTHco=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39840400004)(366004)(136003)(396003)(451199021)(36756003)(54906003)(478600001)(66946007)(66476007)(86362001)(66556008)(26005)(4326008)(6916009)(6506007)(55236004)(6486002)(6666004)(6512007)(8676002)(4744005)(8936002)(44832011)(5660300002)(2906002)(41300700001)(7416002)(316002)(38100700002)(186003)(2616005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Jrxi+iTtHL87U5yNuPxCTOpAq78+AtuvDK69MTZxnDvcs5sfuh9TNi5iQus+?=
- =?us-ascii?Q?ji5LIZyqyPP2LkqHMIVQUj1QYxyOI+9sM5d/GzXSyFulbpXhL6/Ftdi5FAWg?=
- =?us-ascii?Q?YPsQpNzXQvCHS4zXHjlCyQCKvYeX9Govt5tMWFJktwDmMwTFYVfZhGXeAeCU?=
- =?us-ascii?Q?qJunbZcX1St8Aj0mgUnsmpc3HSDjfT0Xmw2+L/8jy6W7U627XLkmSDDtDWk4?=
- =?us-ascii?Q?aa9DvRtY7M8JdRMe3/ebIahi8sMN6tA6PnPpXo0H74BybqiD4wKW5CFl5bZH?=
- =?us-ascii?Q?RLtPDOX5Q+gwfntY7Cfo7UZlLaHhAg9Ex1X4aj3BjJFYdrRoveJ1qgmahhzv?=
- =?us-ascii?Q?XQt5yumAB8P51gfBqbrtnF9XKk7OB9VWYQAjtvQ5sMdIyQrwWDAQiCtUYfxQ?=
- =?us-ascii?Q?RHJV23/SxFHOVfvTCZuij9pqbC8HHhP1NuFgAEGBUr2Cm0MhARzfWpSBsj6o?=
- =?us-ascii?Q?bl6r816JJ9jgF2FBZAoG5vmRZeXfi3fQZf/FuuLQ5fgxGsUwMl4Dc+1nIXVw?=
- =?us-ascii?Q?P7a0WAIPYxBRo71KnW/7WCFrcbgXgkNUnaeK834EIkt0jidjCE81O1yyXjqG?=
- =?us-ascii?Q?2jax/m7aL/CROS7XCGi02ih2qmqsg/bbkqwbsrOm8HKR2/ubJygo6UxhP/RS?=
- =?us-ascii?Q?rPAtrq09WTTVaIiy2UkFS3j5+3rACsHrPlQepJkSh8ezWzDi7JpStRLF3Sg0?=
- =?us-ascii?Q?RZO3uvdb3Zr3P5IDCX1Eqd9oNBb0CGwtiecIRCVry4DV5ZtrzOyCX5GVigvQ?=
- =?us-ascii?Q?xeVdjHaDK1U+UmIY4wEQShikb4TVK4P/lwwu4+uHQiJrAxq47BviZ/zVQmyQ?=
- =?us-ascii?Q?aibI/aWXdDIuwL//RNk1fvGDuKv9IjsMlop2abm5HL3ecvH0J0+Wo2ULodl4?=
- =?us-ascii?Q?xXpPsHH9O8w1iGipBPhANQWBP58TV/sQgnoCNjWk5VBZKGOPkVjT/dXjGbNP?=
- =?us-ascii?Q?JdKUFQu8yY9AY2VzfqbZzsQmPREGJtcL/nz48OzK3nro+QDTPkD6qloe9weu?=
- =?us-ascii?Q?DkFqQls2bDKxlqSBafv5WZx9BdYsP5WCykLA66ttYpAqfhEztX0ZAE7GXYrY?=
- =?us-ascii?Q?p3mI4HMqTTNxThr9I0iHau5EZgxw5tGZe6H05jKyhpVtULK7+SryR9n8R15d?=
- =?us-ascii?Q?zclj4xR+VQP/3EM31RxqKaEwEc+RnK0dAbnvJILdWPUmuoeHVV/NEiIXpiHn?=
- =?us-ascii?Q?8e9zS3SIIuhxsD5hUe9T+FE7dnpsTBsc9+tEcP0KrrW+iLvrbUiJ55GsUSk6?=
- =?us-ascii?Q?yH1KlfniUyUsNMpmLCaa3VXNbRXqqtrA5Luzorhy7YDvbcar9eU7U4wrI4eT?=
- =?us-ascii?Q?GE7FSir0Dt6T90zfvpw8oZ6srcT9jswRLsYEIcHNRwUFfK0lfFOk14/r/9Jv?=
- =?us-ascii?Q?5XLqHd0DwU2YrxmY+zLAkfB1UagUY/3taKF48iimNuCr7bTJgJ2YC9h1tond?=
- =?us-ascii?Q?j9K9oEkLxg/0njT5Mv8q/29oIue00t01MENWPW/B4H35AUENQ1VnfqRLthlg?=
- =?us-ascii?Q?vO+W6g4JUm1yuqKnXesPATHuRSEZB2h7N7/0gCPRi+IGazv4KFoz4bMSYGCY?=
- =?us-ascii?Q?BHC+BeBgaAmPaWoKNvOnA+fkGjG1H7PiSHhI/LwEbPXkyhzdLB+QZVRlDNUC?=
- =?us-ascii?Q?0Q=3D=3D?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4c1034c-aaed-4420-c1da-08db89cc036d
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2023 09:22:32.9107
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MjiOPs83ASTe0WAUkXDMSkQV36rMnfIALN9EvAMsRxPKFpMRY+NSkRcYuO/4oRapKFd4/RHP5CRl2KtUrZLgYTpUPTuEFWjGWt0HKJVuSDE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR13MB6337
+Content-Disposition: inline
+In-Reply-To: <ZLomKmNe+EhpjI1K@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230721_022239_157055_436DC03D 
-X-CRM114-Status: GOOD (  10.42  )
+X-CRM114-CacheID: sfid-20230721_034156_391697_9E215CB1 
+X-CRM114-Status: GOOD (  22.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,28 +84,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 18, 2023 at 02:58:34PM +0200, Ard Biesheuvel wrote:
+On Thu, Jul 20, 2023 at 11:31:06PM -0700, Christoph Hellwig wrote:
+> On Thu, Jul 20, 2023 at 05:02:32PM +0100, Daniel Golle wrote:
+> > On Thu, Jul 20, 2023 at 12:04:43AM -0700, Christoph Hellwig wrote:
+> > > The layering here is exactly the wrong way around.  This block device
+> > > as nvmem provide has not business sitting in the block layer and being
+> > > keyed ff the gendisk registration.  Instead you should create a new
+> > > nvmem backed that opens the block device as needed if it fits your
+> > > OF description without any changes to the core block layer.
+> > > 
+> > 
+> > Ok. I will use a class_interface instead.
+> 
+> I'm not sure a class_interface makes much sense here.  Why does the
+> block layer even need to know about you using a device a nvmem provider?
 
-...
+It doesn't. But it has to notify the nvmem providing driver about the
+addition of new block devices. This is what I'm using class_interface
+for, simply to hook into .add_dev of the block_class.
 
-> @@ -1618,9 +1614,7 @@ static int zram_recompress(struct zram *zram, u32 index, struct page *page,
->  
->  		num_recomps++;
->  		zstrm = zcomp_stream_get(zram->comps[prio]);
-> -		src = kmap_atomic(page);
-> -		ret = zcomp_compress(zstrm, src, &comp_len_new);
-> -		kunmap_atomic(src);
-> +		ret = zcomp_compress(zstrm, page, &comp_len_new);
+> As far as I can tell your provider should layer entirely above the
+> block layer and not have to be integrated with it.
 
-Hi Ard,
-
-src appears to be unused in this function with this change.
-
->  
->  		if (ret) {
->  			zcomp_stream_put(zram->comps[prio]);
-
-...
+My approach using class_interface doesn't require any changes to be
+made to existing block code. However, it does use block_class. If
+you see any other good option to implement matching off and usage of
+block devices by in-kernel users, please let me know.
 
 ______________________________________________________
 Linux MTD discussion mailing list
