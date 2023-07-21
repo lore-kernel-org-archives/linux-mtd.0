@@ -4,86 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63AA9EB64DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 05:37:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 464B7EB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 06:06:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i0Nb8GCkcPib2tX7BQhOtuwjGn8DADh+RWFfaYqkfYY=; b=t567VojA9IDwpd
-	eDeSILGgxf/FM2JTIzh/YauyRk2N/qu3S21J8LMQHxK/ry1gpwi0Q02Y+5W/Lz99JgcjsNlNCPmXW
-	Kbb9YRHslZ4hbH/yHp3S0rw9LFtoYqV9w+p41c1OaaEB+q0j3bKG1yWSTTQpYaJWzq7UT3PmoEP8H
-	j2YOdbePCetUZj6rsW+KfjM7ToxnY+araRnHkr0dnAkbyGfuOEWndzEKkasGDh1TkSSYByb/6wZLK
-	lq2WkfbVXRYa4O5EhFaW1C7cpXKn7B49GFu+2DdaYupyKRh7dQwMe4QU5OPtbHU3tzMcBnSg1X8Np
-	Sgmd/FurEHnbKrpfRgdA==;
+	List-Owner; bh=pZxxgFJEzVbCpfkJ7i9oQfHwnGYwXyJcylxlLFUr+6g=; b=r89KXq655Mi6QQ
+	mtYob3DG9dFhnzg3bF/rpiueRJ+Hm/5QmWfubHBQsoemfBtp96VbxYkoqmkptlUikjZv5ujUf9htM
+	KhvL5QQUgw21BPqpbEQNNt+SDeeR/rnV5xste6tDwLYWetdF6HlL1NKjrctEjlBaZHH5hp0+1G2hD
+	rfs+GifIpraV2etS4rCZGSls6fzz+oppLT30BLB5Sdi4di8oW4CNQOgj+ei6jlJxwb4OCv8cckFxn
+	Gg9cDE/nFCd93L8PDBkX0plwpmsYpyaN+XPuArPd2OLcz81HsfB6IOqxW5uPQuyuermefVgJmexuK
+	EHq7/Jev4pmtSdDIigww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMipI-00Cw1C-11;
-	Fri, 21 Jul 2023 05:37:16 +0000
-Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
+	id 1qMjHI-00CzwL-0L;
+	Fri, 21 Jul 2023 06:06:12 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMipF-00Cw0D-2Z
+	id 1qMjHF-00CzvP-14
 	for linux-mtd@lists.infradead.org;
-	Fri, 21 Jul 2023 05:37:15 +0000
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fbd33a57ddso13040025e9.1
-        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 22:37:11 -0700 (PDT)
+	Fri, 21 Jul 2023 06:06:10 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51e28b299adso2176115a12.2
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 23:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689917830; x=1690522630;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vX/JkYsTJ988R/jCJEP3BfL7G/1slMZU41YSurteI2o=;
-        b=cRa+TxE5YsEqvBdKD5o7cITaabLFv6sjdy6P6XfGu8K/hmOCOfl70qGcRIwYPv5c7Q
-         t8k+5TNSqPwr5k0C4Kq7aF6a3XvJ24z1Eh8s0wo/HpkRQf3xO58UqcJD1mn3XM6QZFGR
-         u+W/lqKUM+ne+jyeXsBHnnf8qWpgFgoxo4trX85idDJ+j/MtiA60gevN4ajdbHSXBBp3
-         nOMsDtAm/npF8oqBGE4SHQDIQeHkxicP3tnUmGk5Mb3J+1kbEaYWJBSj2EJpIoRppjPr
-         rIfDnSqmtOD+YFuxLOYfhJ1st5S3wOX8RqWHa0BcSxhpNcSO/vYJqhraZeT8Yri3yn+u
-         TJng==
+        d=linaro.org; s=google; t=1689919564; x=1690524364;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6oeLbJHQPHJsory0G8GdAQcnaceTRpuqb4t2hUd9W0M=;
+        b=tPkbVibi9gAA9zTy0NeGUZK9jjXE7OpCmEEJK7A/SnKUcE6peRPSZ6/xHy0eUfg3na
+         IbltclfrJbLUXEXLOqBa/X7DgVLj4GbImYIyx4K66G3QXSR29BseA+twrPO5Kyt4ShWW
+         qYANRqontkuhFXq6LrLgvv+axP5IyCKQEZ6R43nnYnT1npy9hH8F0OeaXyXq6BYRdkoj
+         McSXZzsEY1L7fVqMiSP5TV76psPy4eEGs9GBLgI8QcZuJN1jjJ00dhlvtyZE9YYocdgI
+         Q/782AheKRaiXCG5wkpZeEJ/mX+rlgYcDw9khVnH5MdpJ/gm0I+9FqksxsvNiq/ZmxAi
+         3rXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689917830; x=1690522630;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20221208; t=1689919564; x=1690524364;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vX/JkYsTJ988R/jCJEP3BfL7G/1slMZU41YSurteI2o=;
-        b=TIkcx92VPrVMZmoQRfe7kPpS4VWrisJbUc9TNk0UdiCLe7vFxusgfcvqUov+Wifj2R
-         Gtpk1UvNPmd9rpdEFCGxyRJVIAxv6SxixbXqhjtB9J1NLnGIGAn146DSlnwPZsI2T52o
-         oa7wINzFRXd6+b/kRzzkALgBNWXv+kRbgyAxQ6PmFxTEjMj0nQAY6I5TaA0M6zs8AQbv
-         buzyczDo2V6ToFPYffQYKEajY2Jn6wV6Oo4HBgZp7GMVuFugDnTjaV2nLtI/o0uxeKap
-         9XlClTOxCH76TFz82OpZFDuHeESGFOV36fQhjhldkXFgf557xZnCwfyMvb6IsFtmQx0h
-         P48g==
-X-Gm-Message-State: ABy/qLabmFYNXTc7bUA2u+itQqHo2NbVfXnnwnuXgTjJdrcs4qmrbiBl
-	uH1J6TifB+lUMtNDCjJXkbA2Og==
-X-Google-Smtp-Source: APBJJlHuuEtVJXP90otgD42oqbE5kUntVWwp5lSVN+QyO4G3yrhO6MftAcWJefiLMXZjXf/Ea8z+Vg==
-X-Received: by 2002:a7b:c401:0:b0:3fb:bc4a:46ad with SMTP id k1-20020a7bc401000000b003fbbc4a46admr497865wmi.9.1689917829691;
-        Thu, 20 Jul 2023 22:37:09 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id 19-20020a05600c229300b003fb40f5f553sm5409400wmf.31.2023.07.20.22.37.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 22:37:06 -0700 (PDT)
-Date: Fri, 21 Jul 2023 08:37:02 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Boris Brezillon <boris.brezillon@collabora.com>,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-mtd@lists.infradead.org, Julia Lawall <Julia.Lawall@lip6.fr>,
-	Harshit Mogalapalli <harshit.m.mogalapalli@gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: fsl_upm: Fix an off-by one test in
- fun_exec_op()
-Message-ID: <604b0c70-01cf-4cbc-b387-8c709c972fef@kadam.mountain>
-References: <cd01cba1c7eda58bdabaae174c78c067325803d2.1689803636.git.christophe.jaillet@wanadoo.fr>
- <6f3c9139-cf68-4761-af06-462a72bda978@kadam.mountain>
- <03c69172-b85f-d9c2-6fd4-33f3ad149142@wanadoo.fr>
+        bh=6oeLbJHQPHJsory0G8GdAQcnaceTRpuqb4t2hUd9W0M=;
+        b=U+YaLfqmp4pFIIBsELUaOZEYV2bm5e9QPry3RIoXAiSIlDu1/ib7g4vDV3ru4nIhd3
+         k/++3wrPwyb8LO9P7xJY3Gr0m5wUPG/qfQuNLIbXoEkaYurZK/cQPPwMeOm0HiA/q0UP
+         z9HXPJGTcMvjSfeV1cWIWSU8KWWYS8Zgwd50V4dEImGgGV6Xy3mwf+3rC2xE093sG16Q
+         aFV+ULSccZZgZiotrH3nHX7ipq6LhrxQuxlfIOhGOzPPyTJFwFMPhnpC1MdnGgr4DU0M
+         xWOcKKrMNzalEmk/6KMniJjpMYTf4mlbZqbdTZcuIZxQLRgLglx5PYWF2nh7IkztYzpF
+         z3Dw==
+X-Gm-Message-State: ABy/qLY+twjdK3FbjsrMNv4qksx8v4CbuD4ad315B6x2GL16szIeU6J5
+	V9lkQhqTwsXcOnDQGfer/xHbeA==
+X-Google-Smtp-Source: APBJJlEOfrxEKij+gBa5+uU7cDdpg8avuRUf+oyQLYh+lri5b0H7HfQ4hQ4KNnF/lTeU70iwGjk15w==
+X-Received: by 2002:a05:6402:519:b0:51e:2974:f471 with SMTP id m25-20020a056402051900b0051e2974f471mr675962edv.42.1689919564253;
+        Thu, 20 Jul 2023 23:06:04 -0700 (PDT)
+Received: from [192.168.0.173] ([79.115.63.16])
+        by smtp.gmail.com with ESMTPSA id n4-20020aa7d044000000b00521a7864e13sm1636497edo.90.2023.07.20.23.06.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jul 2023 23:06:03 -0700 (PDT)
+Message-ID: <55d60aec-3b20-d9d3-aeb2-77abbcc47d16@linaro.org>
+Date: Fri, 21 Jul 2023 09:06:00 +0300
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <03c69172-b85f-d9c2-6fd4-33f3ad149142@wanadoo.fr>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V1 1/1] linux: drivers: mtd: spi-nor: gigadevice.c
+To: Vlim <vlim@gigadevice.com>, Michael Walle <michael@walle.cc>
+Cc: "pratyush@kernel.org" <pratyush@kernel.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "akumarma@amd.com" <akumarma@amd.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "vikhyat.goyal@amd.com" <vikhyat.goyal@amd.com>
+References: <20230720042834.12296-1-vlim@gigadevice.com>
+ <62663146a51c2beac4eff48abe1f61f8@walle.cc>
+ <TY0PR06MB56580D3FEE55389F41E33398BB3EA@TY0PR06MB5658.apcprd06.prod.outlook.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Content-Language: en-US
+In-Reply-To: <TY0PR06MB56580D3FEE55389F41E33398BB3EA@TY0PR06MB5658.apcprd06.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_223713_898441_F44675DE 
-X-CRM114-Status: GOOD (  17.99  )
+X-CRM114-CacheID: sfid-20230720_230609_370380_7FB1390B 
+X-CRM114-Status: GOOD (  10.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,67 +96,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 20, 2023 at 08:27:28PM +0200, Christophe JAILLET wrote:
-> Le 20/07/2023 =E0 09:04, Dan Carpenter a =E9crit=A0:
-> > On Wed, Jul 19, 2023 at 11:55:01PM +0200, Christophe JAILLET wrote:
-> > > 'op-cs' is copied in 'fun->mchip_number' which is used to access the
-> > > 'mchip_offsets' and the 'rnb_gpio' arrays.
-> > > These arrays have NAND_MAX_CHIPS elements, so the index must be below=
- this
-> > > limit.
-> > > =
 
-> > > Fix the sanity check in order to avoid the NAND_MAX_CHIPS value. This
-> > > would lead to out-of-bound accesses.
-> > > =
 
-> > > Fixes: 54309d657767 ("mtd: rawnand: fsl_upm: Implement exec_op()")
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > ---
-> > =
+On 21.07.2023 00:48, Vlim wrote:
+> Hi, Michael,
+> 
+> Our parts do support SFDP.
+> Can you provide the guideline for the part definition?
 
-> > Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > =
+There's none at the moment, you have to read the code.
 
-> > Good eye.  I'm assuming you did something like this:
-> > =
+> I do see these samples in the gigadevice.c file; but, not sure of the
+> purpose of each parameter.
 
-> > #!/bin/bash
-> > =
+The flags are defined in drivers/mtd/spi-nor/core.h. Start from there.
+> 
 
-> > FILE=3D$1
-> > WORDS=3D$(cat $FILE | perl -ne 'if ($_ =3D~ /\[([\w_]+)\];/) { print "$=
-1\n" }' | sort -u)
-> > for i in $WORDS ; do
-> >      grep -Hn " > $i" $FILE
-> > done
-> > =
+All the flashes that you proposed, but one probably (gd25lx256e) can be
+probed using the generic spi-nor driver, thus you won't need to add
+dedicated flash entries. See:
+773bbe104497 mtd: spi-nor: add generic flash driver
 
-> > regards,
-> > dan carpenter
-> > =
-
-> =
-
-> I did with the help of a coccinelle script.
-> (which can certainly be improved, so adding Julia in cc: :) )
-
-Harshit and I were mucking with this about yesterday.  He made
-Coccinelle script as well.
-
-We found three bugs in max9286_parse_dt(), hisi_inno_phy_probe() and
-jent_testing_store().  Only the one in hisi_inno_phy_probe() is real
-life bad because the others do an out of bounds check followed by a
-mask.
-
-regards,
-dan carpenter
-
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
