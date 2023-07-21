@@ -4,32 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 614FBEB64DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 06:31:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98AAAEB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 06:36:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7DQ7KDrdYTrxQ2R6lroNnkzgPa3hPVRGchJfI4c3K78=; b=KjyCzcrzoTG1Ud
-	HiTyjsQ2KINElFD6frx/MJ0klSOdOdMAPvUL4kKnqXS8RRB21YWxVCNk1RsJcuxZu6dVOBw8zrDWQ
-	tcEDHZEQbfp0Ems5ZSLy4qeC9giyf3qJ1SH+7BQiL2Y3dUheJmkv2Eefb9OUeddUWB7K72bdXXv4R
-	oF+OHiYgSdbsZ7U0Tsk9g9JomkCRom0wD5UWc63C/mkuVSMPj7jc5CuXcSH/t4zjXN2wIPsp8Hn+z
-	au/yLS3AFHAxHdLiKoMTNS4MOWkcKBlHSMWdz7XNzUM9FPkLPqKATWZZzQbGiM2oGGdXAJC3o7lxU
-	XgVe9yF3kf8EbgC2tGTA==;
+	List-Owner; bh=16AK2KDEAhfwVT8KgojVsLDYDJvlMkli6d6V/Yt7BN4=; b=DSgAVAQiYemMW3
+	+Esbj1SBRMLxOJiQMb7LiPVSUQZIoCCMjtNZmFh9EYK+JfibJtWKDOKG5rJ0EZw03LCWmW96GlTQD
+	mBmqPBO32Ie4FJGXDqrD27rCDwjMi7rgYyMuxiDBIEc5or5YqmK404pLHwemLG/c3UxErmpAKwFP9
+	WmDzF7SgWKlW8VxTrUfRG2UJJPUjKpppiDrOEzPStY1UtCi9fB1fK/3Wj1sdpPfLeAC/nxj6MoH33
+	01C1xj91xUzJ7vCatDVktHTaYDz5IeFMQDkbPIxaEt1cJLDZKwHtSqqmioC95XkpYuqSaFVcP/3jn
+	Z/ZPOxUBDLahEGxw9o0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMjfU-00D2dD-2T;
-	Fri, 21 Jul 2023 06:31:12 +0000
+	id 1qMjk6-00D38G-2i;
+	Fri, 21 Jul 2023 06:35:58 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMjfO-00D2cj-2W;
-	Fri, 21 Jul 2023 06:31:06 +0000
-Date: Thu, 20 Jul 2023 23:31:06 -0700
+	id 1qMjk3-00D37H-0b;
+	Fri, 21 Jul 2023 06:35:55 +0000
+Date: Thu, 20 Jul 2023 23:35:55 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: Daniel Golle <daniel@makrotopia.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Jens Axboe <axboe@kernel.dk>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
+Cc: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -49,14 +48,12 @@ Cc: Christoph Hellwig <hch@infradead.org>, Jens Axboe <axboe@kernel.dk>,
 	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
 Subject: Re: [RFC PATCH 6/6] block: implement NVMEM provider
-Message-ID: <ZLomKmNe+EhpjI1K@infradead.org>
+Message-ID: <ZLonS7QXLj2lg4Zg@infradead.org>
 References: <cover.1689802933.git.daniel@makrotopia.org>
  <e5b709e15739dc0563e9497a2dbbe63050381db0.1689802933.git.daniel@makrotopia.org>
- <ZLjci5bHzTI+/Kxs@infradead.org>
- <ZLlaOB1sb8wSd7Aq@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ZLlaOB1sb8wSd7Aq@makrotopia.org>
+In-Reply-To: <e5b709e15739dc0563e9497a2dbbe63050381db0.1689802933.git.daniel@makrotopia.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,21 +70,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 20, 2023 at 05:02:32PM +0100, Daniel Golle wrote:
-> On Thu, Jul 20, 2023 at 12:04:43AM -0700, Christoph Hellwig wrote:
-> > The layering here is exactly the wrong way around.  This block device
-> > as nvmem provide has not business sitting in the block layer and being
-> > keyed ff the gendisk registration.  Instead you should create a new
-> > nvmem backed that opens the block device as needed if it fits your
-> > OF description without any changes to the core block layer.
-> > 
-> 
-> Ok. I will use a class_interface instead.
+> +static int blk_nvmem_reg_read(void *priv, unsigned int from,
+> +			      void *val, size_t bytes)
+> +{
+> +	pgoff_t f_index = from >> PAGE_SHIFT;
+> +	struct address_space *mapping;
+> +	struct blk_nvmem *bnv = priv;
+> +	size_t bytes_left = bytes;
+> +	struct folio *folio;
+> +	unsigned long offs, to_read;
+> +	void *p;
 
-I'm not sure a class_interface makes much sense here.  Why does the
-block layer even need to know about you using a device a nvmem provider?
-As far as I can tell your provider should layer entirely above the
-block layer and not have to be integrated with it.
+Btw, this function really should be using kern_read on a file
+using filp_open instead of poking into block device internals.
+That way you can even have a generic file provider that works
+on anything that can be read from.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
