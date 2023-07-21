@@ -4,44 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F506EB64DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 16:21:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92EA0EB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 16:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=k57mm75oi+CUSKuELFqMKts6ZFO2SBQeS/s2k0oTdtQ=; b=1QppqZm6c5pebH
-	7fW4SCmde7wf6Q/uFtQ9KEIwz7TG4fcGMJQo9o5cI43TkGBlXCbr4S4+WUDsfHt5EWkgBqYDJ8Tba
-	jsIzBANgzVZFYgngFWRNTZ3rbYzqpkaOxqtamQP0PyGNBl9yHdf8TjZWWFpHfE4cLTa2FUoiV8aka
-	5G81rjhi/jJV7eDiCplpWw4tpbzcCNBwBlw8sSJR12av22bbYxxhAeXDpzOYHjOAz56mmIQQ1wTRy
-	bHGlTi93KnQMggUfR21cD6A6M8UiRaoMr18FzGcfJ7A8a8vZUzdRcJl0kLvNwRFc7aJouTYJD+Aw3
-	c/gyAgIbv/uQQVFvfgYQ==;
+	List-Owner; bh=rp59UTDhVMtcjUgXG+GmFMQ7uKXfH8EcKCaZxITk8Ec=; b=XQw0iUFkwg33Jj
+	pVXj9EPtmLY6ZcDQ7SGGIlss1iCXeIDba/0sMqYor3OvUYDb4ZdbA87WZ0EURNUEeNFUKVLued25o
+	FJHqJd3K7PBHx+gq2rxGEuvWVA4DtRBf/KhlOJFmH5mceMvCYaYyGuO9Dx+InjCEyzcQULDAGZg9U
+	qUCBr11dH5KqX6NYbacE5sbgwVcMu97ZYrInpo18nFxsMIdJmlySBPOVwjURnohsT5opREKGvHIee
+	83EnMQgxZaaG5q2URHHZv5C+++qNGKP/EDwn5j7DkyrwL7mYoYVasUbSlivsgS2Z/f8doMuYhIG1+
+	hC7DnwLBpJ4Fqvk+v1hg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMssc-00EZWq-0W;
-	Fri, 21 Jul 2023 16:21:22 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1qMt3Z-00EbLo-1s;
+	Fri, 21 Jul 2023 16:32:41 +0000
+Received: from mga03.intel.com ([134.134.136.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMssX-00EZVh-2r;
-	Fri, 21 Jul 2023 16:21:19 +0000
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="453435634"
+	id 1qMt3W-00EbKb-0p;
+	Fri, 21 Jul 2023 16:32:39 +0000
+X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="370668041"
 X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="453435634"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 09:21:16 -0700
+   d="scan'208";a="370668041"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 09:32:19 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="848870377"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="848870377"
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="868287915"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP; 21 Jul 2023 09:21:03 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 21 Jul 2023 09:32:08 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.96)
 	(envelope-from <andy@kernel.org>)
-	id 1qMssF-00CCBV-0a;
-	Fri, 21 Jul 2023 19:20:59 +0300
-Date: Fri, 21 Jul 2023 19:20:58 +0300
+	id 1qMt2w-00Ca3G-35;
+	Fri, 21 Jul 2023 19:32:02 +0300
+Date: Fri, 21 Jul 2023 19:32:02 +0300
 From: Andy Shevchenko <andy@kernel.org>
 To: nikita.shubin@maquefel.me
 Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
@@ -88,18 +87,19 @@ Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
 	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
 	netdev@vger.kernel.org, dmaengine@vger.kernel.org,
 	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-	linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 22/42] dma: cirrus: add DT support for Cirrus EP93xx
-Message-ID: <ZLqwajir6kFLgbcm@smile.fi.intel.com>
+	linux-input@vger.kernel.org, alsa-devel@alsa-project.org,
+	Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH v3 20/42] net: cirrus: add DT support for Cirrus EP93xx
+Message-ID: <ZLqzAhWoZ2h7kNEP@smile.fi.intel.com>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-22-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-20-3d63a5f1103e@maquefel.me>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230605-ep93xx-v3-22-3d63a5f1103e@maquefel.me>
+In-Reply-To: <20230605-ep93xx-v3-20-3d63a5f1103e@maquefel.me>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230721_092117_933993_37165ED0 
-X-CRM114-Status: GOOD (  17.13  )
+X-CRM114-CacheID: sfid-20230721_093238_343718_4CFDAB49 
+X-CRM114-Status: GOOD (  16.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,104 +116,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 20, 2023 at 02:29:22PM +0300, Nikita Shubin via B4 Relay wrote:
+On Thu, Jul 20, 2023 at 02:29:20PM +0300, Nikita Shubin via B4 Relay wrote:
 > From: Nikita Shubin <nikita.shubin@maquefel.me>
 > 
-> - drop subsys_initcall code
-> - add OF ID match table with data
-> - add of_probe for device tree
+> - add OF ID match table
+> - get phy_id from the device tree, as part of mdio
+> - copy_addr is now always used, as there is no SoC/board that aren't
+> - dropped platform header
 
 ...
 
-> +#include <linux/of_device.h>
-
-Why?
-
-...
-
-> +#ifdef CONFIG_OF
-
-Why this ugly ifdeffery?
-
-...
-
-> +	data = of_device_get_match_data(&pdev->dev);
-
-device_get_match_data()
-
-> +	if (!data)
-> +		return ERR_PTR(dev_err_probe(&pdev->dev, -ENODEV, "No device match found\n"));
-
-...
-
-> +	edma = devm_kzalloc(&pdev->dev,
-> +					  struct_size(edma, channels, data->num_channels),
-> +				      GFP_KERNEL);
-
-Something wrong with indentation. Not the first time, please check all your
-patches for this kind of issues.
-
-> +		return ERR_PTR(-ENOMEM);
-
-...
-
-> +		edmac->regs = devm_platform_ioremap_resource(pdev, i);
-
-No check?
-
-> +		edmac->irq = platform_get_irq(pdev, i);
-
-No check?
-
-> +		edmac->edma = edma;
+> +	base_addr = ioremap(mem->start, resource_size(mem));
+> +	if (!base_addr)
+> +		return dev_err_probe(&pdev->dev, -EIO, "Failed to ioremap ethernet registers\n");
 > +
-> +		edmac->clk = of_clk_get(np, i);
+> +	np = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
 
-> +
+Isn't it something which is done in PHY core should do for you?
+Maybe Andrew Lunn can comment on this.
 
-Redundant blank line.
+> +	if (!np)
 
-Why one of devm_clk_get*() can't be called?
+Yeah, right, let's leak mapped IO address space...
+And so on.
 
-> +		if (IS_ERR(edmac->clk)) {
-> +			dev_warn(&pdev->dev, "failed to get clock\n");
-> +			continue;
-> +		}
-
-...
-
-> +	if (platform_get_device_id(pdev))
-> +		edma = ep93xx_init_from_pdata(pdev);
-> +	else
-> +		edma = ep93xx_dma_of_probe(pdev);
-
-> +
-
-Unneeded blank line.
-
-> +	if (!edma)
-> +		return PTR_ERR(edma);
-
-...
-
-> --- a/include/linux/platform_data/dma-ep93xx.h
-> +++ b/include/linux/platform_data/dma-ep93xx.h
-
->  #include <linux/types.h>
->  #include <linux/dmaengine.h>
->  #include <linux/dma-mapping.h>
-
-> +#include <linux/of.h>
-
-property.h.
-
-...
-
-> +	if (of_device_is_compatible(dev_of_node(chan->device->dev), "cirrus,ep9301-dma-m2p"))
-> +		return true;
-> +
-
-device_is_compatible()
+> +		return dev_err_probe(&pdev->dev, -ENODEV, "Please provide \"phy-handle\"\n");
 
 -- 
 With Best Regards,
