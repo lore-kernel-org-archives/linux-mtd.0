@@ -4,102 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8572DEB64DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 13:19:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47AD1EB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 13:32:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZzsaNLcrzBatTh7+mNUrTdIoCx/RTZky5prPfB6pQ3I=; b=ghV3oSKq7WkoVl
-	UpaiV1DSOXMx9L5+0ghlPGW8A+7Ag9iDFBhxyLw9kWdtt2zCpXDxN8/DQdrUWHKBEZ64M+VVOy8W0
-	T/BbEE4qG3F2QYQ9SarEaHJhhigVvveQ8o0Td/eDfNEeuhbW4SfIfTN0c8QvLMEDHWG0dCkM7hlpk
-	ytcV+XUFeqHiuZQtrclWDgfl5IZiNTsqubzg3WVzH0HVPObnAlsvB2hChC3iDKBKfOy0npXyt7Eb6
-	rfNqZPeP3eLpLMgtX5gQ1NPZmAIZtHFCL+wAjTRpgahQuDhluI1hIy/ldFjg58oBIViKROqMXbEeg
-	+t85VMrXDRU4RAHIme1w==;
+	List-Owner; bh=BvR7+FtWrq2Y+Y2AWpR3n1v1ukHmyzajFPEIgyZ7NA0=; b=LVeXRWlttG9szB
+	94AGqhPNGLz/ueUv+elSWVZS3A5h/jRsLmskXPHudjFFps0ngnGzxe8Jhi8UHNw1CJNdgC/rZuB0N
+	qQIR702Q0i9yrs0sg3fEIh1FKdVlDgOYLdBzoQm8zKVNxV6GdUE29EY627CtO6E+X4WALuP2eWL8F
+	fayDoNfEOic3adSQ3V69R3/BrmeGcPFaDlZb9SBsvA3BnyuGplZy56GtIck6LUhFVen89xH/rovv2
+	AXO8d2hb7V5xW+PhifM1XtU4b6I/152z//OZGNBh08a+EELa2J2jW8seP1Cy16npnYwV8kmWij8iz
+	4g4d5PjetjE7/mwrDSgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMq2T-00E7m6-0l;
-	Fri, 21 Jul 2023 13:19:21 +0000
-Received: from mga17.intel.com ([192.55.52.151])
+	id 1qMqFI-00E9as-3C;
+	Fri, 21 Jul 2023 13:32:36 +0000
+Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMq2N-00E7jf-0S;
-	Fri, 21 Jul 2023 13:19:17 +0000
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="347313904"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="347313904"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 06:19:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="702053539"
-X-IronPort-AV: E=Sophos;i="6.01,220,1684825200"; 
-   d="scan'208";a="702053539"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP; 21 Jul 2023 06:18:54 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andy@kernel.org>)
-	id 1qMq1x-005vpD-13;
-	Fri, 21 Jul 2023 16:18:49 +0300
-Date: Fri, 21 Jul 2023 16:18:49 +0300
-From: Andy Shevchenko <andy@kernel.org>
-To: nikita.shubin@maquefel.me
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
-	Lennert Buytenhek <kernel@wantstofly.org>,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Lukasz Majewski <lukma@denx.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Sebastian Reichel <sre@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Vinod Koul <vkoul@kernel.org>,
+	id 1qMqFG-00E9a3-0V
+	for linux-mtd@lists.infradead.org;
+	Fri, 21 Jul 2023 13:32:35 +0000
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1qMqEZ-00024i-03;
+	Fri, 21 Jul 2023 13:31:51 +0000
+Date: Fri, 21 Jul 2023 14:31:42 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-	soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Michael Peters <mpeters@embeddedts.com>,
-	Kris Bahnsen <kris@embeddedts.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-	netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-	linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 01/42] gpio: ep93xx: split device in multiple
-Message-ID: <ZLqFuWsxhdiP4ZjA@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-1-3d63a5f1103e@maquefel.me>
+	Dave Chinner <dchinner@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
+	Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
+	Christian Loehle <CLoehle@hyperstone.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Hannes Reinecke <hare@suse.de>, Jack Wang <jinpu.wang@ionos.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
+	Hans de Goede <hdegoede@redhat.com>, Ye Bin <yebin10@huawei.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH 6/6] block: implement NVMEM provider
+Message-ID: <ZLqIvuK2EX2hROJo@makrotopia.org>
+References: <cover.1689802933.git.daniel@makrotopia.org>
+ <e5b709e15739dc0563e9497a2dbbe63050381db0.1689802933.git.daniel@makrotopia.org>
+ <ZLonS7QXLj2lg4Zg@infradead.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230605-ep93xx-v3-1-3d63a5f1103e@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <ZLonS7QXLj2lg4Zg@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230721_061915_205869_202EE6E1 
-X-CRM114-Status: GOOD (  27.88  )
+X-CRM114-CacheID: sfid-20230721_063234_195751_4B6F3F55 
+X-CRM114-Status: GOOD (  21.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,147 +82,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 20, 2023 at 02:29:01PM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+On Thu, Jul 20, 2023 at 11:35:55PM -0700, Christoph Hellwig wrote:
+> > +static int blk_nvmem_reg_read(void *priv, unsigned int from,
+> > +			      void *val, size_t bytes)
+> > +{
+> > +	pgoff_t f_index = from >> PAGE_SHIFT;
+> > +	struct address_space *mapping;
+> > +	struct blk_nvmem *bnv = priv;
+> > +	size_t bytes_left = bytes;
+> > +	struct folio *folio;
+> > +	unsigned long offs, to_read;
+> > +	void *p;
 > 
-> This prepares ep93xx SOC gpio to convert into device tree driver:
-> - dropped banks and legacy defines
-> - split AB IRQ and make it shared
+> Btw, this function really should be using kern_read on a file
+> using filp_open instead of poking into block device internals.
+
+Unfortunately filp_open requires a device inode on a filesystem to be
+able to open a block device. What if the root filesystem has not yet
+been mounted, or even requires NVMEM (let's say for the Ethernet MAC
+address to be known for a nfsroot, nbd or iSCSI to work) to be
+available first?
+
+Can you imagine we could implement something like filp_open_bdev which
+takes a (struct block_device *) as parameter instead of (const char *)?
+
+That would allow the driver to open and read from the block device
+before any filesystems (incl. /dev) become ready.
+
+> That way you can even have a generic file provider that works
+> on anything that can be read from.
 > 
-> We are relying on IRQ number information A, B ports have single shared
-> IRQ, while F port have dedicated IRQ for each line.
-> 
-> Also we had to split single ep93xx platform_device into multiple, one
-> for each port, without this we can't do a full working transition from
-> legacy platform code into device tree capable. All GPIO_LOOKUP were
-> change to match new chip namings.
 
-...
+While this could also be useful, it doesn't fulfil the requirement of
+making NVMEM available as early as possible for other drivers to use,
+e.g. for the Ethernet MAC address.
 
-> -static void ep93xx_gpio_ab_irq_handler(struct irq_desc *desc)
-> +static u32 ep93xx_gpio_ab_irq_handler(struct gpio_chip *gc)
->  {
-> -	struct gpio_chip *gc = irq_desc_get_handler_data(desc);
-> -	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
-> -	struct irq_chip *irqchip = irq_desc_get_chip(desc);
-> +	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
->  	unsigned long stat;
->  	int offset;
->  
-> -	chained_irq_enter(irqchip, desc);
-> -
-> -	/*
-> -	 * Dispatch the IRQs to the irqdomain of each A and B
-> -	 * gpiochip irqdomains depending on what has fired.
-> -	 * The tricky part is that the IRQ line is shared
-> -	 * between bank A and B and each has their own gpiochip.
-> -	 */
-> -	stat = readb(epg->base + EP93XX_GPIO_A_INT_STATUS);
-> +	stat = readb(eic->base + EP93XX_INT_STATUS_OFFSET);
->  	for_each_set_bit(offset, &stat, 8)
-> -		generic_handle_domain_irq(epg->gc[0].gc.irq.domain,
-> -					  offset);
-> +		generic_handle_domain_irq(gc->irq.domain, offset);
->  
-> -	stat = readb(epg->base + EP93XX_GPIO_B_INT_STATUS);
-> -	for_each_set_bit(offset, &stat, 8)
-> -		generic_handle_domain_irq(epg->gc[1].gc.irq.domain,
-> -					  offset);
-> +	return stat;
-> +}
->  
-> -	chained_irq_exit(irqchip, desc);
-> +static irqreturn_t ep93xx_ab_irq_handler(int irq, void *dev_id)
-> +{
-> +	return IRQ_RETVAL(ep93xx_gpio_ab_irq_handler(dev_id));
->  }
->  
->  static void ep93xx_gpio_f_irq_handler(struct irq_desc *desc)
->  {
-> -	/*
-> -	 * map discontiguous hw irq range to continuous sw irq range:
-> -	 *
-> -	 *  IRQ_EP93XX_GPIO{0..7}MUX -> EP93XX_GPIO_LINE_F{0..7}
-> -	 */
->  	struct irq_chip *irqchip = irq_desc_get_chip(desc);
-> -	unsigned int irq = irq_desc_get_irq(desc);
-> -	int port_f_idx = (irq & 7) ^ 4; /* {20..23,48..51} -> {0..7} */
-> -	int gpio_irq = EP93XX_GPIO_F_IRQ_BASE + port_f_idx;
-> +	struct gpio_chip *gc = irq_desc_get_handler_data(desc);
-> +	struct gpio_irq_chip *gic = &gc->irq;
-> +	unsigned int parent = irq_desc_get_irq(desc);
-> +	unsigned int i;
->  
->  	chained_irq_enter(irqchip, desc);
-> -	generic_handle_irq(gpio_irq);
-> +	for (i = 0; i < gic->num_parents; i++)
-> +		if (gic->parents[i] == parent)
-> +			break;
-> +
-> +	if (i < gic->num_parents)
-> +		generic_handle_irq(irq_find_mapping(gc->irq.domain, i));
+And it would also heavily deviate from how things work with other types
+of flash storage typically used in embedded Linux devices such as SPI
+NOR or NAND flash which is represented as MTD device.
 
-Can we use
-
-		generic_handle_domain_irq(gc->irq.domain, i);
-
-here as well?
-
->  	chained_irq_exit(irqchip, desc);
->  }
-
-...
-
-> -	int offset = d->irq & 7;
-> +	int offset = irqd_to_hwirq(d);
-
-	irq_hw_number_t ?
-
->  	irq_flow_handler_t handler;
-
-...
-
-> +	int ret, irq, i = 0;
-
-What do you need this assignment for?
-
-...
-
-> +		ret = devm_request_irq(dev, irq,
-> +				ep93xx_ab_irq_handler,
-
-It can be located on the previous line.
-
-> +				IRQF_SHARED, gc->label, gc);
-> +		if (ret)
-> +			return dev_err_probe(dev, ret, "error requesting IRQ : %d\n", irq);
-
-Drop duplicating word 'error' in the message.
-Space is not needed before colon.
-
-...
-
-> +	/* TODO: replace with handle_bad_irq once we are fully hierarchical */
-
-To be pedantic: handle_bad_irq()
-
-> +	gc->label = dev_name(&pdev->dev);
-> +	if (platform_irq_count(pdev) > 0) {
-> +		dev_dbg(&pdev->dev, "setting up irqs for %s\n", dev_name(&pdev->dev));
-> +		ret = ep93xx_setup_irqs(pdev, egc);
-> +		if (ret)
-
-> +			dev_err(&pdev->dev, "setup irqs failed for %s\n", dev_name(&pdev->dev));
-
-What's the point to print dev name twice? Esp. taking into account
-gc->label assignment above. Why not use dev_err_probe() to unify
-the format of the messages from ->probe()?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sidenote: block2mtd is also not an option because one cannot reference
+block2mtd devices in device tree, hence they cannot serve as NVMEM
+providers.
 
 ______________________________________________________
 Linux MTD discussion mailing list
