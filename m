@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73592EB64DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 13:58:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 864FDC001DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 14:01:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OKXm+7YtYulwgWuNZva+B43Fn2rcKWt2cdOS2z/AyKw=; b=elIc7DEtaC0SF1
-	OCxt/Mkk63y8t1jEtc/a8qvZM6tzebJZhsI4NSoSwyfkZ8XqR6/5UV/a0G4EVdUUo5HeNQ5Z1L6A1
-	8422HGZ6UT7rx8oj2jZCox9KTg5GcJsbeNS/spHZiNL9GRlhTuNoYoF+iFtswrMqxwmCozTU+bjbv
-	+207turnaDYegp3mP+DipvrnIg0oZpSNy+KuoMopQAFVV5GZNqgUgoqm25XrlQTOBI2WSUoiXEuoN
-	S3mI/sAL4DbhmL0xa1jkWT2ajzNDY53p3QeEsT3b3HYVKS9IvATqLq/k/IT/9nQLPuJT2SB45zLI5
-	fUrwsJnzHHrl4sBfqCsA==;
+	List-Owner; bh=zQvexkv/IXVnfSc7jvU+4fvM2diKWopAHmBNS09q0kw=; b=McnOa5Qe83yKuS
+	uMkEyz123qyFM0R7BTMpSdolQGxaKnUv+FCwy0W3YKCemgy8usY+cNdGsOqRmQNgn0eNiy1NJwLIw
+	8xISNnO4bqBa8eXAo3exwdu78VpECoOA44YimGxT2maPACCEOIuMGEmPVU7eo1IfzF+RuLhMmJudx
+	Ltys/ZmW0VL8jl3X0YCnMJrF9LEVDgnvs0F9ci2MgWACtSqZGLJ4zpKbuzMYsnHiwpvLtXp24IFBn
+	v4lz71C4gajYQPbfccx0w3WF0BgjjhK+XTX8hHvL/1KPhhb8r3rmFBxtcEH9k5kZiGkwhAyF29Cca
+	Z83YCqi2MPtyXcqhfTqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMqeR-00EDX7-0J;
-	Fri, 21 Jul 2023 13:58:35 +0000
-Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
+	id 1qMqha-00EE55-02;
+	Fri, 21 Jul 2023 14:01:50 +0000
+Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMqeM-00EDVP-1R
+	id 1qMqhW-00EE4N-0C
 	for linux-mtd@lists.infradead.org;
-	Fri, 21 Jul 2023 13:58:32 +0000
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fbb281eec6so3256945e87.1
-        for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2023 06:58:28 -0700 (PDT)
+	Fri, 21 Jul 2023 14:01:47 +0000
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3143b88faebso1684018f8f.3
+        for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2023 07:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689947907; x=1690552707;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1689948104; x=1690552904;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Uoi5Y4jjgnWGfQC+MA3PSzDO/nJ69a0U86XqjtM9qm4=;
-        b=hovoUSXRq28HNft26oRNivk53rfhvkFzFlsE+3eJGaPu6W9o4Hh4e/ClQ4euEk52Lc
-         Ek5BSaAroh2dCUY6scEF0qTX6SJCRLeM3gAKGHAwhgN2TXx3tl8zBKhqZNypY/tWkFHc
-         oe7SRYPVtulOU518is+mkTPudusWNGrbXpmSCwGn9SIS+3Qdck423+6xju48zvzmYRLu
-         SrCXzGzyT5RKNGORyZpIV27gIbAKSA970kJAUEzrStzCaI6yIn2cD69S96IGPnLOrWz9
-         MC4iNZlM1SAONUv1Jf8RdW+s5o5HTVZUOtOFBP3reutBNZI02r+6aCCx7r231ZzUbq/y
-         Rnqg==
+        bh=kGZ5LqU0Zryf5RXxHBpf5dofqREFTyZTeFWlFYPBfA8=;
+        b=ZiVB2hHSTZRmiaMmbMREaMhbawMx/KUt3cg1qeF1gBfCQQAGIBGPHjWK50hX362tpU
+         fMapfTUkHNiMW2EcbBz3SgWGkAp6pnHxDhqm4HHqfVuIIfYvxWb4ogcWbai4vpYhJADI
+         nWulY7lsgECJ57xXy/eajLo129aMmkczTVRAjkIe0wiSagmvvtOEMM8dttszF+P0remm
+         RGTV8zYGxv0/wyu9CCIL2fyYMd0tbEu3edlaV1yZeI84Bkx+jEwwKA/R03nUuupkA/DL
+         bFjJcVPJ1Os8KPfwF5c406w0MGIwcfg3il9N5GJ9UXq+jvImjTaQ3Zov5AQGHQM9OcQ+
+         H5mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689947907; x=1690552707;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1689948104; x=1690552904;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uoi5Y4jjgnWGfQC+MA3PSzDO/nJ69a0U86XqjtM9qm4=;
-        b=gTawGBxZoqCYTcJWpR3BEWINTJLWS00IFNUM/Z9raWTR9bD3Yfz4wb2JGLrd1iJmEj
-         iDpECSW8VDBFhWlxDuoVbzmjhOvV2qtqzWPeRpdYdgDtUcRbCWhU4psQVPcczn27lR3D
-         Qa0ibEurUq1kt4nEY5upo0YyyHJZh2Tav4XDSmruyXpOejUxca1PDpL5axpBrRJxCDL2
-         HgXeWsalwtPR0ruw33MYZzKodA721HA+jF2UarJVTfve2RDAUpD5hAvXQWEI/gpC6yQm
-         LX9ZyrpoOI+BbEeXIt3cc6wwkp4evNF4H6u8wETriDuLvBANyR2qFyIO04NWWnt3TzNv
-         7QxQ==
-X-Gm-Message-State: ABy/qLbQDZSdQhMkCyd0veUHIR9XgvCI5JX/lf0rzJWdLfbypDy7uUxE
-	KlaYomR6aEzwMwwmxh2CfPImDg==
-X-Google-Smtp-Source: APBJJlFJQPGeO+dM+/CogGYGFX3IbIoIu/R+CmmEzNoP5XS6uM+gVvd5Uqi6hxrOAM8nRxnGkKL4wA==
-X-Received: by 2002:a05:6512:1095:b0:4f8:cd67:88e6 with SMTP id j21-20020a056512109500b004f8cd6788e6mr1382568lfg.44.1689947907244;
-        Fri, 21 Jul 2023 06:58:27 -0700 (PDT)
+        bh=kGZ5LqU0Zryf5RXxHBpf5dofqREFTyZTeFWlFYPBfA8=;
+        b=cL+5UeFfESeNVzXz4HnCpwYjeXCzs9RHDyLyLh9NKu9Ew2M8iWimFqWFiZjblSLqxl
+         /pnR8lHuCPj9Dk49J/w3qpg1/4zqfQZXX2BDX487dtF5EDtOCrT6I9fvRNf+tQSKnsZr
+         utx5MstgoOT848KixeVcgq3bJAFrVNV5uWBFt5j643jRsrX6DkvCH1E/vo2ZaAtwYIED
+         O2hsgsZEWIGg66qJDbP8KcAGtSGwgTlDYcLhy2/c3JpHTqrxmNuym75F3Py6f1RPrPtz
+         fMqRZ1+ByOmP/orbmK/DrWp2n7awpAlT9MoP3IyhcM8yP1e3I4aPm21dy/fwuYClo9HI
+         ioiQ==
+X-Gm-Message-State: ABy/qLZAT8iiAGHgVPp+kBx+DsrFYykkOsfr0Ycywl8ixfSLGNjBX8q+
+	oy6h+zMeIHCjwLD54pKZfWPA9g==
+X-Google-Smtp-Source: APBJJlFl0X021T0an8cBRN2rsT+BJ+nZ0MYlRyFEpg2gd2RFuh46KGFuFZP+LfRCosw99RkgkE80Jg==
+X-Received: by 2002:adf:ea50:0:b0:314:2732:e81e with SMTP id j16-20020adfea50000000b003142732e81emr1636390wrn.8.1689948103685;
+        Fri, 21 Jul 2023 07:01:43 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id h15-20020aa7c94f000000b0051d890b2407sm2111001edt.81.2023.07.21.06.58.23
+        by smtp.gmail.com with ESMTPSA id r5-20020adff105000000b003145521f4e5sm4278545wro.116.2023.07.21.07.01.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 06:58:26 -0700 (PDT)
-Message-ID: <53c26a74-3374-cbc4-57cf-3b1cc0904300@linaro.org>
-Date: Fri, 21 Jul 2023 15:58:22 +0200
+        Fri, 21 Jul 2023 07:01:42 -0700 (PDT)
+Message-ID: <66fba798-c6ef-1105-656a-5d593a056448@linaro.org>
+Date: Fri, 21 Jul 2023 16:01:38 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v3 02/42] dt-bindings: clock: Add Cirrus EP93xx
+Subject: Re: [PATCH v3 04/42] dt-bindings: pinctrl: Add Cirrus EP93xx
+Content-Language: en-US
 To: nikita.shubin@maquefel.me, Hartley Sweeten
  <hsweeten@visionengravers.com>, Lennert Buytenhek <kernel@wantstofly.org>,
  Alexander Sverdlin <alexander.sverdlin@gmail.com>,
@@ -104,13 +105,12 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
  linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-2-3d63a5f1103e@maquefel.me>
-Content-Language: en-US
+ <20230605-ep93xx-v3-4-3d63a5f1103e@maquefel.me>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230605-ep93xx-v3-2-3d63a5f1103e@maquefel.me>
+In-Reply-To: <20230605-ep93xx-v3-4-3d63a5f1103e@maquefel.me>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230721_065830_482546_9AD8AC94 
-X-CRM114-Status: GOOD (  19.79  )
+X-CRM114-CacheID: sfid-20230721_070146_108018_1F22C642 
+X-CRM114-Status: GOOD (  18.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,28 +130,27 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
 > From: Nikita Shubin <nikita.shubin@maquefel.me>
 > 
-> This adds device tree bindings for the Cirrus Logic EP93xx
-> clock block used in these SoCs.
+> Add YAML bindings for ep93xx SoC pinctrl.
 > 
 > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  .../bindings/clock/cirrus,ep9301-clk.yaml          | 46 ++++++++++++++++++++++
->  include/dt-bindings/clock/cirrus,ep93xx-clock.h    | 41 +++++++++++++++++++
->  2 files changed, 87 insertions(+)
+>  .../bindings/pinctrl/cirrus,ep9301-pinctrl.yaml    | 58 ++++++++++++++++++++++
+>  1 file changed, 58 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
+> diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
 > new file mode 100644
-> index 000000000000..111e016601fb
+> index 000000000000..d5682531b0da
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +++ b/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
+> @@ -0,0 +1,58 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/clock/cirrus,ep9301-clk.yaml#
+> +$id: http://devicetree.org/schemas/pinctrl/cirrus,ep9301-pinctrl.yaml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: Cirrus Logic ep93xx SoC's clock controller
+> +title: Cirrus ep93xx pins mux controller
 > +
 > +maintainers:
 > +  - Nikita Shubin <nikita.shubin@maquefel.me>
@@ -160,44 +159,25 @@ On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
 > +properties:
 > +  compatible:
 > +    oneOf:
-> +      - const: cirrus,ep9301-clk
+> +      - const: cirrus,ep9301-pinctrl
 > +      - items:
 > +          - enum:
-> +              - cirrus,ep9302-clk
-> +              - cirrus,ep9307-clk
-> +              - cirrus,ep9312-clk
-> +              - cirrus,ep9315-clk
-> +          - const: cirrus,ep9301-clk
+> +              - cirrus,ep9302-pinctrl
+> +              - cirrus,ep9307-pinctrl
+> +              - cirrus,ep9312-pinctrl
+> +              - cirrus,ep9315-pinctrl
+> +          - const: cirrus,ep9301-pinctrl
 > +
-> +  "#clock-cells":
-> +    const: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: reference clock
-> +
-> +required:
-> +  - compatible
-> +  - "#clock-cells"
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    clock-controller {
-> +      compatible = "cirrus,ep9301-clk";
-> +      #clock-cells = <1>;
-> +      clocks = <&xtali>;
-> +    };
-> +...
-> diff --git a/include/dt-bindings/clock/cirrus,ep93xx-clock.h b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
-> new file mode 100644
-> index 000000000000..3cd053c0fdea
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
+> +patternProperties:
+> +  '^pins-':
+> +    type: object
+> +    description: pin node
+> +    $ref: pinmux-node.yaml#
 
-Keep the same filename as bindings file.
+You need:
+unevaluatedProperties: false
+
+
 
 Best regards,
 Krzysztof
