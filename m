@@ -4,102 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91ACAC0015E
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 16:43:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FF4DEB64DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 16:49:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gynNeJnlgf5YBa2gFgHLFnyhtEfhhlxzA9iZi9YejjY=; b=SJfap1+fb7ngVL
-	sBEV5NYdHS5yv26gNgPTeOWNOuYr609/sCKJt/B/O5/9zVtgDJkBiNIUVViiJh7nDrvoKkb+CmfBR
-	ewuEXMYjh4aixYUCX/1GsqNz1giuId0ATTBOBXxQBAA30cj8My3gY8zUJtpEMIJmO8Bg9/QDw4VxM
-	RtVk0j4chS8RFipdrhH8v8pb2fcuvgM/Yblml2Nv76offvYUq7BGhjfIaw804u5ZVm+P+F81mCMo9
-	bbZ9cAAgKXUT+pW86YhgoOMmT57XGm0wRApuuacO3CY3CG1StkESsn0+2zsUn8fSqaBVKWT9AqZT4
-	qblsKnxS43fSb1oxTH6w==;
+	List-Owner; bh=+NOJK6lhsfL8QkhuQHCsDs87whxhSX6JtiOjzCdbwmE=; b=lXhk5l8AH2mcTJ
+	CjcR0YX7TRFj91Xa/biIxBjMqA8bvlJgnIa831+Ou+0ShnpxXxHy0Oxek8eSPimR2yX6Jf+q0qRGL
+	lfjCubHerfGARnE/jI8dCADPup+4m8nn5TbdnWJCQXc99qTHhLnilRmw4AJUs+J6lYiyGNPCeqc9r
+	N1zvR7Rbs/I/C7UMDJisnmUJeLGIpvlb7eYNiXgQHor1z4hsaDoSA60M9w7tuiDHKZSYSQNjQH8W4
+	JyW0UHyJk5i165pIMpGjiaQf9niwlnKek1QadwqeBSCEaOrZXc4G5KQYFbSU+1Ern2nKbOu7WZo0/
+	D7xjV9wzoEQOzKBbl6xQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMtDo-00Ecmn-1r;
-	Fri, 21 Jul 2023 16:43:16 +0000
-Received: from mga18.intel.com ([134.134.136.126])
+	id 1qMtJh-00Eds7-2r;
+	Fri, 21 Jul 2023 16:49:21 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMtDl-00Eclh-0H;
-	Fri, 21 Jul 2023 16:43:14 +0000
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="351946352"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="351946352"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 09:42:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="728169179"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="728169179"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP; 21 Jul 2023 09:42:45 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andy@kernel.org>)
-	id 1qMtDF-00Cx3r-2P;
-	Fri, 21 Jul 2023 19:42:41 +0300
-Date: Fri, 21 Jul 2023 19:42:41 +0300
-From: Andy Shevchenko <andy@kernel.org>
-To: Nikita Shubin <nikita.shubin@maquefel.me>
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
-	Lennert Buytenhek <kernel@wantstofly.org>,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Lukasz Majewski <lukma@denx.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Sebastian Reichel <sre@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-	soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Michael Peters <mpeters@embeddedts.com>,
-	Kris Bahnsen <kris@embeddedts.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-	netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-	linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 18/42] spi: ep93xx: add DT support for Cirrus EP93xx
-Message-ID: <ZLq1gQKWWE/2WCYd@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-18-3d63a5f1103e@maquefel.me>
+	id 1qMtJf-00EdrI-0J
+	for linux-mtd@lists.infradead.org;
+	Fri, 21 Jul 2023 16:49:20 +0000
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-992ace062f3so338587066b.2
+        for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2023 09:49:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689958157; x=1690562957;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=htGfeFskadvzuCcRbflUv4vHcg2QL+whM4s2B5qFKc4=;
+        b=SN+fF0iY/C+AeEPiEz09XPBNJvdTftLM78DXDeil9+rU5SE1BDNpaf5IiX7DTvpQ2E
+         vZnSPXGyGWGQY29m7gS8r9bqMzECaC2uPTERBPHer0qPoebHLjdcZ1zxIiztK2HRQgDY
+         yXaMU/cDeDhKsbQXgqxpneQ5noWMruuedz+xXFFwDfV3udl/Uc+VbSpmb16S5LTuPNWg
+         bXQ88QXpDVZNODelxqoKfhNrJwtV/5MD8FfsuxYcFe0eGyCyzR+KKWLV54Rv577ZjWmT
+         1cVsYGEEbBsw7YoYhKWcZBFvBrF8Cx1aMYFIKsT/1hVmMIJ0MdyC5WTwaMm/yTpvxXGg
+         6oyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689958157; x=1690562957;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=htGfeFskadvzuCcRbflUv4vHcg2QL+whM4s2B5qFKc4=;
+        b=ApOOZIF5FrGU15prBY6G3JDxhpcEbUiiY+DkmoL6HAc5u9N8Ms6MkLssFgjDpxp5qm
+         THobGgDtEWS9U2X8r0YBwbhhNlXhxPacKIzW4Fc93e0kWoZyk2oGbt3cJ1BfEURJmnsl
+         LNbYXBsV/cIGcnKv0Z3bpMMlXN6it+JsAWlPjyJpVaGhILjAwj3XiE9APc+LLcpS6KWo
+         c29lMj+x9HJRwPxjW0mZqOEi0vBJATGirQgazGlr4aKlUGUrUUhWtz5/iStcQZRxWWY/
+         2B0OUwMU83QXy16q7adRbdo5Ks/8F/zndnDL0OVUA+NWAJPPvP6XjG0dA5C40ZfvBpAi
+         bJYg==
+X-Gm-Message-State: ABy/qLY7EoFPoLtrKFgq91UF61HiPR9Ii9zR6Q9+0zAaaUELCA4vkTed
+	yQbAHJyOOG9p6kgkLaNX6dS9Jw==
+X-Google-Smtp-Source: APBJJlHjkNi3qyVP6wC/ZHkonLVw+XAUiL4bGHo8CHqZaO3edVDStcLKw5DDdfVUzG9amatSaliGlQ==
+X-Received: by 2002:a17:906:8a54:b0:99a:e756:57bf with SMTP id gx20-20020a1709068a5400b0099ae75657bfmr2180935ejc.7.1689958156788;
+        Fri, 21 Jul 2023 09:49:16 -0700 (PDT)
+Received: from [192.168.2.173] ([79.115.63.16])
+        by smtp.gmail.com with ESMTPSA id a6-20020a1709062b0600b0099297782aa9sm2361689ejg.49.2023.07.21.09.49.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jul 2023 09:49:16 -0700 (PDT)
+Message-ID: <df6159a0-0ae0-f6f9-9159-196a1a3b3694@linaro.org>
+Date: Fri, 21 Jul 2023 19:49:14 +0300
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230605-ep93xx-v3-18-3d63a5f1103e@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 4/8] mtd: spi-nor: spansion: switch set_octal_dtr
+ method to use vreg_offset
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: tkuw584924@gmail.com, linux-mtd@lists.infradead.org
+Cc: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, d-gole@ti.com, Bacem.Daassi@infineon.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <cover.1689836065.git.Takahiro.Kuwano@infineon.com>
+ <5c2fbc72d94c4f88bb4599c00c45fbaaf714b909.1689836066.git.Takahiro.Kuwano@infineon.com>
+ <3bfbc316-2348-fb58-4026-4f38e8845264@linaro.org>
+In-Reply-To: <3bfbc316-2348-fb58-4026-4f38e8845264@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230721_094313_334321_94491DC4 
-X-CRM114-Status: GOOD (  13.90  )
+X-CRM114-CacheID: sfid-20230721_094919_224589_3DDF8E1D 
+X-CRM114-Status: UNSURE (   9.79  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,33 +99,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 20, 2023 at 02:29:18PM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+
+>>  static int cypress_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
+>>  {
+> const struct spi_nor_flash_parameter *params = nor->params;
 > 
-> - add OF ID match table
+>> +	if (!nor->params->vreg_offset) {
 > 
-> Instead of platform use_dma flag - check if DT dmas property is present to
-> decide to use dma ot not.
-
-...
-
-> +#ifdef CONFIG_OF
-
-Why ifdeffery?
-
-Can't it be first checked for firmware provided info and fell back to platdata?
-
-> +static struct ep93xx_spi_info dt_spi_info;
-
-...
-
-> +#endif
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> wouldn't hurt to check for params->n_dice as well, even though one
+> implies the other. In the next patch you have a loop with n-dice being
+> the max number of elements. If n-dice becomes zero sometime, the loop is
+> skipped. Thus:
+> 
+> 	if (params->n_dice && !nor->params->vreg_offset)
+> 
+	if (!params->n_dice || !params->vreg_offset)
 
 ______________________________________________________
 Linux MTD discussion mailing list
