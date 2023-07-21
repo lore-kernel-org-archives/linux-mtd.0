@@ -4,68 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C4FEEB64DA
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 02:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63AA9EB64DD
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 05:37:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=M+2KtC3Y+q0hFbXpzo+dI/1TyNQwiOKUyztd0Lsssik=; b=c4W
-	NwRUjxbbB7OJkKLq+39y8d2fpUemq0/HXOlHDYaVRlbSZs0BC02GQvOAOoiOqQwLG61QBx4aS5MLd
-	5EA5Z+29+6TN21I7zpzkCUP2dhAVMo7pgeguShy3gSOBnBXgpXvHEdCirH2L8sf9caBbw0gBCl060
-	3kjmc0XROZsX6JkmTiki4llpanzfMCbX6uo75kIocKTF/LRg7hToXu6JlxnOjXDRx8YBJNLaEplpz
-	/A4eO8PUAgqFjTJbWRGJ4KvLe6H8ibsZ9WxgPnRQcObn6q+wEFxv9bQZqFKcS6Y3hsI3lR/f/PBV2
-	5gIdStzZH8FzqngUBLdOCFnD7m5JU3w==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=i0Nb8GCkcPib2tX7BQhOtuwjGn8DADh+RWFfaYqkfYY=; b=t567VojA9IDwpd
+	eDeSILGgxf/FM2JTIzh/YauyRk2N/qu3S21J8LMQHxK/ry1gpwi0Q02Y+5W/Lz99JgcjsNlNCPmXW
+	Kbb9YRHslZ4hbH/yHp3S0rw9LFtoYqV9w+p41c1OaaEB+q0j3bKG1yWSTTQpYaJWzq7UT3PmoEP8H
+	j2YOdbePCetUZj6rsW+KfjM7ToxnY+araRnHkr0dnAkbyGfuOEWndzEKkasGDh1TkSSYByb/6wZLK
+	lq2WkfbVXRYa4O5EhFaW1C7cpXKn7B49GFu+2DdaYupyKRh7dQwMe4QU5OPtbHU3tzMcBnSg1X8Np
+	Sgmd/FurEHnbKrpfRgdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMfS7-00Cal6-30;
-	Fri, 21 Jul 2023 02:01:07 +0000
-Received: from mail-oo1-xc35.google.com ([2607:f8b0:4864:20::c35])
+	id 1qMipI-00Cw1C-11;
+	Fri, 21 Jul 2023 05:37:16 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMfS5-00CajV-1s
+	id 1qMipF-00Cw0D-2Z
 	for linux-mtd@lists.infradead.org;
-	Fri, 21 Jul 2023 02:01:06 +0000
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-565a8d9d832so992576eaf.1
-        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 19:01:02 -0700 (PDT)
+	Fri, 21 Jul 2023 05:37:15 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fbd33a57ddso13040025e9.1
+        for <linux-mtd@lists.infradead.org>; Thu, 20 Jul 2023 22:37:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689904861; x=1690509661;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LeDxDDKdgQw/ugEwsXlKtEEomRVOFZ/psqNeYd2zCCM=;
-        b=ro2bV+L+nF07wEJb4uUgRv//J8hL2tfSSNWdE1zE/b7N71QJ5NIzTFThOsFNzRXfu4
-         2rPQRlqktGkZvaY9YqDbCvbX1mwJFxs9zyRUjy9r5nYqnh5piCM0qd41IDs3Nb1ZjReJ
-         WAf7dyHMLzsBrS2TPZxbwqwFkoyFuYBVvb3p8Tlz0/ABz3wyVL2p+7gloqnCaf2CKFC5
-         AoPFQYxhgZ3Em/U5gACQM6se321ZEoimrvUJW4O9pBciRh+9T/ewOz9+ECO/paoNlrVu
-         YkxdJZZl1MFa57tUc9sO4Ja9LX30rqjsHAMxqbLww/t4wi+Fx5JOJV2fMy1LYqdBWIbN
-         vJjA==
+        d=linaro.org; s=google; t=1689917830; x=1690522630;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vX/JkYsTJ988R/jCJEP3BfL7G/1slMZU41YSurteI2o=;
+        b=cRa+TxE5YsEqvBdKD5o7cITaabLFv6sjdy6P6XfGu8K/hmOCOfl70qGcRIwYPv5c7Q
+         t8k+5TNSqPwr5k0C4Kq7aF6a3XvJ24z1Eh8s0wo/HpkRQf3xO58UqcJD1mn3XM6QZFGR
+         u+W/lqKUM+ne+jyeXsBHnnf8qWpgFgoxo4trX85idDJ+j/MtiA60gevN4ajdbHSXBBp3
+         nOMsDtAm/npF8oqBGE4SHQDIQeHkxicP3tnUmGk5Mb3J+1kbEaYWJBSj2EJpIoRppjPr
+         rIfDnSqmtOD+YFuxLOYfhJ1st5S3wOX8RqWHa0BcSxhpNcSO/vYJqhraZeT8Yri3yn+u
+         TJng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689904861; x=1690509661;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LeDxDDKdgQw/ugEwsXlKtEEomRVOFZ/psqNeYd2zCCM=;
-        b=F5/InuPDLGtWe/5Q4cAu0lPGAw/IWminqwZs7P6h2LGXESP3tmYk+WgAxLh1NG+0R6
-         BE3/IByQ/UPOrAua5UZaP/YegV21QocAvD2bBfylTZyiwjnwn/HGJjb3G0pIQ/YxTRBF
-         OPR2wiWHdqFOK0PWFuClO1d0yCWI3TuSggPfI7MQw8/GhE17QwG3GefejtnaRfmuxPzO
-         dOUHP4XLiC+1lss0AxmbtrQiuAD/ZmafHOJ4TLtGj88tncZ3wNCGqZjKe3UGzF6OOQ9E
-         bWm+rdVZ5j5QddwV//8P2xQYsptio3cV0friBk8C70Idntha/cjNpnw3U13XL4X/49st
-         p5wA==
-X-Gm-Message-State: ABy/qLaxonoFyMaacmLmsDXPpwF/bMgxEgb+YjtHxuso9mX2Ohiw5eTa
-	K9PCFPEYQWSBUY2L4nBC7KJr99PjU5a1PG6V16MwnIj+zRo=
-X-Google-Smtp-Source: APBJJlHBrMB+n/naKpeF0lCXr+pIN8QIhgt7lWIZBwe3Mx0/b75pNp68xAdM+W7styQmfR3E3Rxhep3p0RYd5iIpLG8=
-X-Received: by 2002:a4a:830a:0:b0:566:fb49:ba57 with SMTP id
- f10-20020a4a830a000000b00566fb49ba57mr474225oog.9.1689904861011; Thu, 20 Jul
- 2023 19:01:01 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689917830; x=1690522630;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vX/JkYsTJ988R/jCJEP3BfL7G/1slMZU41YSurteI2o=;
+        b=TIkcx92VPrVMZmoQRfe7kPpS4VWrisJbUc9TNk0UdiCLe7vFxusgfcvqUov+Wifj2R
+         Gtpk1UvNPmd9rpdEFCGxyRJVIAxv6SxixbXqhjtB9J1NLnGIGAn146DSlnwPZsI2T52o
+         oa7wINzFRXd6+b/kRzzkALgBNWXv+kRbgyAxQ6PmFxTEjMj0nQAY6I5TaA0M6zs8AQbv
+         buzyczDo2V6ToFPYffQYKEajY2Jn6wV6Oo4HBgZp7GMVuFugDnTjaV2nLtI/o0uxeKap
+         9XlClTOxCH76TFz82OpZFDuHeESGFOV36fQhjhldkXFgf557xZnCwfyMvb6IsFtmQx0h
+         P48g==
+X-Gm-Message-State: ABy/qLabmFYNXTc7bUA2u+itQqHo2NbVfXnnwnuXgTjJdrcs4qmrbiBl
+	uH1J6TifB+lUMtNDCjJXkbA2Og==
+X-Google-Smtp-Source: APBJJlHuuEtVJXP90otgD42oqbE5kUntVWwp5lSVN+QyO4G3yrhO6MftAcWJefiLMXZjXf/Ea8z+Vg==
+X-Received: by 2002:a7b:c401:0:b0:3fb:bc4a:46ad with SMTP id k1-20020a7bc401000000b003fbbc4a46admr497865wmi.9.1689917829691;
+        Thu, 20 Jul 2023 22:37:09 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id 19-20020a05600c229300b003fb40f5f553sm5409400wmf.31.2023.07.20.22.37.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jul 2023 22:37:06 -0700 (PDT)
+Date: Fri, 21 Jul 2023 08:37:02 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	linux-mtd@lists.infradead.org, Julia Lawall <Julia.Lawall@lip6.fr>,
+	Harshit Mogalapalli <harshit.m.mogalapalli@gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: fsl_upm: Fix an off-by one test in
+ fun_exec_op()
+Message-ID: <604b0c70-01cf-4cbc-b387-8c709c972fef@kadam.mountain>
+References: <cd01cba1c7eda58bdabaae174c78c067325803d2.1689803636.git.christophe.jaillet@wanadoo.fr>
+ <6f3c9139-cf68-4761-af06-462a72bda978@kadam.mountain>
+ <03c69172-b85f-d9c2-6fd4-33f3ad149142@wanadoo.fr>
 MIME-Version: 1.0
-From: David Gideon <gideonda32@gmail.com>
-Date: Fri, 21 Jul 2023 11:55:40 +1000
-Message-ID: <CAOLMD=zkVT=OOMeGG-hrT=BQqog=YDDHdyfhPi_ELwDjEOoBoQ@mail.gmail.com>
-Subject: Question about scrubbing and ECC errors (in UBI)
-To: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+In-Reply-To: <03c69172-b85f-d9c2-6fd4-33f3ad149142@wanadoo.fr>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230720_190105_657591_C72393D9 
-X-CRM114-Status: GOOD (  11.21  )
+X-CRM114-CacheID: sfid-20230720_223713_898441_F44675DE 
+X-CRM114-Status: GOOD (  17.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,48 +95,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Thu, Jul 20, 2023 at 08:27:28PM +0200, Christophe JAILLET wrote:
+> Le 20/07/2023 =E0 09:04, Dan Carpenter a =E9crit=A0:
+> > On Wed, Jul 19, 2023 at 11:55:01PM +0200, Christophe JAILLET wrote:
+> > > 'op-cs' is copied in 'fun->mchip_number' which is used to access the
+> > > 'mchip_offsets' and the 'rnb_gpio' arrays.
+> > > These arrays have NAND_MAX_CHIPS elements, so the index must be below=
+ this
+> > > limit.
+> > > =
 
-I have a general question about how ECC errors are handled in
-drivers/mtd/ubi/eba.c.  I am using a Micron raw NAND part with on-die
-ECC and an ECC strength of 4 bits.
+> > > Fix the sanity check in order to avoid the NAND_MAX_CHIPS value. This
+> > > would lead to out-of-bound accesses.
+> > > =
 
-I simulated an ECC error via some error injection code, to see whether
-or not the UBI layer would mark it for scrubbing.  But I saw that UBI
-didn't want to mark it for scrubbing, due to it being a UBI dynamic
-volume.  Here's the relevant code (which seems to have been around
-since 2006, and still exists on 6.x-series kernels).
+> > > Fixes: 54309d657767 ("mtd: rawnand: fsl_upm: Implement exec_op()")
+> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > > ---
+> > =
 
-I'm just wondering; what is the motivation/reasoning behind only
-setting 'scrub = 1' (and scrubbing) if it is _not_ a dynamic volume?
-Why only scrub if it's a static volume?  I would have thought that
-scrubbing a PEB would be beneficial in all cases that an ECC error
-occurred.
+> > Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > =
 
-err = ubi_io_read_data(ubi, buf, pnum, offset, len);
-if (err) {
-    if (err == UBI_IO_BITFLIPS)
-        scrub = 1;
-    else if (mtd_is_eccerr(err)) {
-        if (vol->vol_type == UBI_DYNAMIC_VOLUME)
-            goto out_unlock;
-        scrub = 1;
-        if (!check) {
-            ubi_msg(ubi, "force data checking");
-            check = 1;
-            goto retry;
-        }
-    } else
-        goto out_unlock;
-}
+> > Good eye.  I'm assuming you did something like this:
+> > =
 
-Thanks!
-- DG
+> > #!/bin/bash
+> > =
+
+> > FILE=3D$1
+> > WORDS=3D$(cat $FILE | perl -ne 'if ($_ =3D~ /\[([\w_]+)\];/) { print "$=
+1\n" }' | sort -u)
+> > for i in $WORDS ; do
+> >      grep -Hn " > $i" $FILE
+> > done
+> > =
+
+> > regards,
+> > dan carpenter
+> > =
+
+> =
+
+> I did with the help of a coccinelle script.
+> (which can certainly be improved, so adding Julia in cc: :) )
+
+Harshit and I were mucking with this about yesterday.  He made
+Coccinelle script as well.
+
+We found three bugs in max9286_parse_dt(), hisi_inno_phy_probe() and
+jent_testing_store().  Only the one in hisi_inno_phy_probe() is real
+life bad because the others do an out of bounds check followed by a
+mask.
+
+regards,
+dan carpenter
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
