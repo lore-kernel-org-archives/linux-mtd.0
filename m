@@ -4,102 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB046EB64DD
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jul 2023 17:32:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6668EB64DA
+	for <linux-mtd@archiver.kernel.org>; Sat, 22 Jul 2023 05:00:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CshDpROkA6JWcFL+KSMShx6apWOhHonaotNBbJVQ8L4=; b=tykf/qI+k4UGTo
-	sc8O7bqXMt908ZwW3QlZbg0zArXEn3mZylhXj+93gqWmDwom4bK0A5cfsRBqUe3R92KislfaaJRJS
-	Y3J9YPxBOWGj8qkZhZvxNtHOkVN+tKI4TqJ6k4/UfTv5odxrWJ9z/8DkznYegkeqdnDH4mm+hWWfa
-	cWlSFaVyV+eisCdYbssQpsX+pQ5dM9u2DWqdYR2Nlhyje6rQs7bGMOo4pKdfZKX5mb2J6svdDQAcm
-	7LVXmhv598n8qtiFFYO+6D0qEvD6UrpTh4oK9yEva27+VDSgxrUKmPYHvFB2eng3xukJicyErEfhW
-	/1RNCLQLJVZ7nbm/zBIw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=9S4diEvNrXFCbZXdeNy0MVkrtO19xpF8MS5uwa8g12I=; b=gRRytc0LkwnIsP
+	8d9Yf1JtjPpd1keybm970UJm4pyjiVqS+McIQxWUf+ZIeAzMo6qMCvhRpBDafUZ4m9ED2CsSbQ6Xc
+	fzBaARlX0I2ogFcqN2D+yQ7qEHPBYVrgZU6cJiAMJrPd96zc3GFroZTBc8MKyzbaCUEX0VnWH5tn+
+	g8yWvuwCAhpSSCNsP/OAd8M9yPxMeiCwmzwFE4Sk2xB9ba0XE7q4HTBUzzKEPk/T9p/pU95RF5/1j
+	shos1rjoPQ1XRO2cmJHNLaQyerWrMy1VwVXqUDtEjU0UFf/40iZh/lE5ZmLSax1tsSA0IWyEeCsdR
+	xym47V62SWbH/P6bZx+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMtz5-00El9v-2f;
-	Fri, 21 Jul 2023 17:32:07 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1qN4id-00Fpwg-0n;
+	Sat, 22 Jul 2023 04:59:51 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qMsyz-00Eaf8-1F;
-	Fri, 21 Jul 2023 16:27:58 +0000
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="346665442"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="346665442"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2023 09:27:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10778"; a="1055606811"
-X-IronPort-AV: E=Sophos;i="6.01,222,1684825200"; 
-   d="scan'208";a="1055606811"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Jul 2023 09:27:41 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andy@kernel.org>)
-	id 1qMsyf-00CQg1-0P;
-	Fri, 21 Jul 2023 19:27:37 +0300
-Date: Fri, 21 Jul 2023 19:27:36 +0300
-From: Andy Shevchenko <andy@kernel.org>
-To: nikita.shubin@maquefel.me
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
-	Lennert Buytenhek <kernel@wantstofly.org>,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Lukasz Majewski <lukma@denx.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Sebastian Reichel <sre@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-	soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Michael Peters <mpeters@embeddedts.com>,
-	Kris Bahnsen <kris@embeddedts.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-	netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-	linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 24/42] mtd: nand: add support for ts72xx
-Message-ID: <ZLqx+Osn3gcHjUph@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-24-3d63a5f1103e@maquefel.me>
+	id 1qN4ia-00Fpvr-2k
+	for linux-mtd@lists.infradead.org;
+	Sat, 22 Jul 2023 04:59:50 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-521dbe5e09bso3341431a12.2
+        for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2023 21:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690001986; x=1690606786;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kPPZJ6eh59MfiIUBA8Mfsk7fKsGGjDRF4wsTV+SRVQc=;
+        b=uSB1iES7m/scCF5hmNjX2Rs5Sr1hJnPulXIDgDliHq1OqlQxlnpKdr7fntCHbEZSyu
+         0zxmYjJgtaI6KpFiZ0I2ZXwRtV3ewfk8p3/yOlA7C0QKzXV5U8SdY5RQ6xVgU5vegJbD
+         yT8c14H+sTqg6m6rLkmsoTeBddMynSMxPW3r7XFcx8liuu5yJxVzLh6DdIbWpj/sggeW
+         zWMUx11abf7XWeya3bndXosewik2StrFP846RhI3h2hXNOAA0Oq+nVlKCOWCX9OUzJQ9
+         jZE+M9A8zhMfNwsWtTYWTfvoKnQCheFOXhdgq5w6NGHAA2/l1zxfbeEO04YYpe8RaDUK
+         XMiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690001986; x=1690606786;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kPPZJ6eh59MfiIUBA8Mfsk7fKsGGjDRF4wsTV+SRVQc=;
+        b=APlV0Mp96vsexSjfdMa6R/zA+4OEFKZrFGv5Mad+3419umJhL29ny+Fo4b2dSBbBOQ
+         zZ1RcG2VJbdV6t9uA0vrNZipeZa4ifrLskQJJ9U+Lbn/dia8eB0q8uHHDeFqmLiswxfU
+         oaEWpJ7Qg/elY/RcoNxYmGK2HEwdP0eG9rC0Vytip/jXw9pBjDxzIsEwdjIlyjrXZi+k
+         WPWmDcoPIBjKs+8yksT1J1EX9xngxrHgzcsBSsAJL+0+IatkqYZKzprEa3NeLJgW3nMf
+         ENHUPnXvJVmcJIR9WvOtFlwqByn1haQ83g8mZlvIIIOpGBbJPQpHFuByGVEwb0XtGsK+
+         VpLg==
+X-Gm-Message-State: ABy/qLYjNVcrtjd3PfZXyv6VGk3aJpj8u8fdiZo7rXdir5XW/Zyc3KnR
+	AVD4+IBOyS8UDijpwibwjEhNhw==
+X-Google-Smtp-Source: APBJJlGSmwWCv19wKWY7+rUTWGLB8hqxBZd+bl/5PamQUQPbNzTouOAc0RH8zpEzJopVRkSoNGvbVg==
+X-Received: by 2002:a17:906:5a4f:b0:994:569b:61b4 with SMTP id my15-20020a1709065a4f00b00994569b61b4mr3367092ejc.28.1690001986336;
+        Fri, 21 Jul 2023 21:59:46 -0700 (PDT)
+Received: from 1.. ([79.115.63.16])
+        by smtp.gmail.com with ESMTPSA id u20-20020a170906c41400b00993928e4d1bsm2969834ejz.24.2023.07.21.21.59.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jul 2023 21:59:10 -0700 (PDT)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: tkuw584924@gmail.com,
+	takahiro.kuwano@infineon.com,
+	michael@walle.cc,
+	pratyush@kernel.org
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bacem.daassi@infineon.com,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH] mtd: spi-nor: let SFDP determine the flash and sector size
+Date: Sat, 22 Jul 2023 07:59:01 +0300
+Message-Id: <20230722045901.9872-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230605-ep93xx-v3-24-3d63a5f1103e@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2622; i=tudor.ambarus@linaro.org; h=from:subject; bh=s09x/ZFTcPaBJaM7nguyytIOWp4AAa76VraRBrhiDGU=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBku2IVn1Wn3GArG5rp0WYzGxoMlZxyXiPN6QukI 1vsF3uHXqiJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZLtiFQAKCRBLVU9HpY0U 6QvRB/4vUD3tnpebh3iQ86MCnarZJscI1rQWWi3o1PeCBrvqIb11mEeHDJ8JokjQG0DweEGY1ZO sZsDc9oY4LDw9v9ho2WR8AN2wwUmitLSUPmIQeugP/e7yLhNaVvHvATaVkSmM3NjrgF86ftaflX tgLLNUGJ9RVf72gHwEkfiKens1alkXjJxlBoTLHHba/7GgengbvINl+C7UuZDlnwSCTHLWDo/01 uNwiVhoUc6ak6uwIMvGxB6YmLdZKDyRhrQfjcjV+o1xCuNDtGI8R/NdYGVyH7yjjAYcpKgLioNK guDgx7DpibvsW3+K0nJ55HCm8H9s9gGD+K+YDPbdY4MZjalU
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230721_092757_435020_5256DF0F 
-X-CRM114-Status: GOOD (  23.58  )
+X-CRM114-CacheID: sfid-20230721_215948_907402_EDF1E241 
+X-CRM114-Status: GOOD (  10.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,142 +98,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 20, 2023 at 02:29:24PM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> Technologic Systems has it's own nand controller implementation in CPLD.
+sector_size is used to determine the flash size and the erase size in
+case of uniform erase. n_sectors is used to determine the flash_size.
+But the flash size and the erase sizes are determined when parsing SFDP,
+let SFDP determine them.
 
-...
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ drivers/mtd/spi-nor/spansion.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-+ bits.h
-
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-
-...
-
-> +static int ts72xx_nand_attach_chip(struct nand_chip *chip)
-> +{
-> +	switch (chip->ecc.engine_type) {
-> +	case NAND_ECC_ENGINE_TYPE_SOFT:
-> +		if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-> +			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-> +		break;
-> +	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-> +		return -EINVAL;
-> +	default:
-
-> +		break;
-
-Here it will return 0, is it a problem?
-
-> +	}
-> +
-> +	return 0;
-> +}
-
-...
-
-> +static int ts72xx_nand_probe(struct platform_device *pdev)
-> +{
-> +	struct ts72xx_nand_data *data;
-> +	struct device_node *child;
-> +	struct mtd_info *mtd;
-> +	int err;
-
-> +	/* Allocate memory for the device structure (and zero it) */
-
-Useless comment.
-
-> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->controller.ops = &ts72xx_nand_ops;
-> +	nand_controller_init(&data->controller);
-> +	data->chip.controller = &data->controller;
-> +
-> +	data->io_base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(data->io_base))
-> +		return PTR_ERR(data->io_base);
-> +
-> +	child = of_get_next_child(pdev->dev.of_node, NULL);
-
-Why not using device property API from day 1?
-
-	fwnode_get_next_child_node()
-
-> +	if (!child)
-> +		return dev_err_probe(&pdev->dev, -ENXIO,
-> +				"ts72xx controller node should have exactly one child\n");
-
-From now on you leak the reference count in error path.
-
-> +	nand_set_flash_node(&data->chip, child);
-> +	mtd = nand_to_mtd(&data->chip);
-> +	mtd->dev.parent = &pdev->dev;
-> +
-> +	data->chip.legacy.IO_ADDR_R = data->io_base;
-> +	data->chip.legacy.IO_ADDR_W = data->io_base;
-> +	data->chip.legacy.cmd_ctrl = ts72xx_nand_hwcontrol;
-> +	data->chip.legacy.dev_ready = ts72xx_nand_device_ready;
-> +
-> +	platform_set_drvdata(pdev, data);
-> +
-> +	/*
-> +	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
-> +	 * Set ->engine_type before registering the NAND devices in order to
-> +	 * provide a driver specific default value.
-> +	 */
-> +	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-> +
-> +	/* Scan to find existence of the device */
-> +	err = nand_scan(&data->chip, 1);
-> +	if (err)
-> +		return err;
-> +
-> +	err = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-> +	if (err) {
-> +		nand_cleanup(&data->chip);
-
-> +		return err;
-> +	}
-> +
-> +	return 0;
-
-
-These 4 lines can be simply
-
-	return err;
-
-but see above.
-
-> +}
-
-...
-
-> +static void ts72xx_nand_remove(struct platform_device *pdev)
-> +{
-> +	struct ts72xx_nand_data *data = platform_get_drvdata(pdev);
-> +	struct nand_chip *chip = &data->chip;
-> +	int ret;
-> +
-> +	ret = mtd_device_unregister(nand_to_mtd(chip));
-
-> +	WARN_ON(ret);
-
-Why?!  Is it like this in other MTD drivers?
-
-> +	nand_cleanup(chip);
-> +}
-
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 6b199112a533..5f2a76969c76 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -878,11 +878,11 @@ static const struct flash_info spansion_nor_parts[] = {
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25fs256t_fixups },
+-	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
++	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 0, 0)
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25hx_t_fixups },
+-	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512)
++	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 0, 0)
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25hx_t_fixups },
+@@ -891,11 +891,11 @@ static const struct flash_info spansion_nor_parts[] = {
+ 		MFR_FLAGS(USE_CLPEF)
+ 		FLAGS(NO_CHIP_ERASE)
+ 		.fixups = &s25hx_t_fixups },
+-	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
++	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 0, 0)
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25hx_t_fixups },
+-	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512)
++	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 0, 0)
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s25hx_t_fixups },
+@@ -906,22 +906,22 @@ static const struct flash_info spansion_nor_parts[] = {
+ 		.fixups = &s25hx_t_fixups },
+ 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
+ 		FLAGS(SPI_NOR_NO_ERASE) },
+-	{ "s28hl512t",   INFO(0x345a1a,      0, 256 * 1024, 256)
++	{ "s28hl512t",   INFO(0x345a1a,      0, 0, 0)
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
+ 	},
+-	{ "s28hl01gt",   INFO(0x345a1b,      0, 256 * 1024, 512)
++	{ "s28hl01gt",   INFO(0x345a1b,      0, 0, 0)
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
+ 	},
+-	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
++	{ "s28hs512t",   INFO(0x345b1a,      0, 0, 0)
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
+ 	},
+-	{ "s28hs01gt",   INFO(0x345b1b,      0, 256 * 1024, 512)
++	{ "s28hs01gt",   INFO(0x345b1b,      0, 0, 0)
+ 		PARSE_SFDP
+ 		MFR_FLAGS(USE_CLPEF)
+ 		.fixups = &s28hx_t_fixups,
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
 
 ______________________________________________________
