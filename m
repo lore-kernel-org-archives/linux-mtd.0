@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B1DAC001DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:46:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B4F3C001DE
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:46:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WurxKjWRkvusUAcqQilKRQVmyIf2StrKQm0p6+hjsxw=; b=AoEtQwMqRmBXao
-	/yLpxsggR50SR9i08RgZNSSmzPsawRd6RftcaKhOxa9pmAcvVneBXLIkP/j/kQrEVTcdvAcVBoMJP
-	Z3rhud3i8Ao0NVtkHaiJOVs+4b8yYpZPjjtNWYUHwRVfZXZ+m0s/CzHHAYd0iMDDH9tLaddZg0Bn5
-	HrRznRKopsljykJWrag64aC3OX0JgUD/qkLoCRjnCNfAJpJurqacxbMhQsTnJnVlDML1119/2u7Mn
-	Q53GVVs1zsNE/T49fwBdIvLIWjb1WZn+RiRaBqc4rApIUMJYSCNG5DqG1JJhVYiXQO6mlApMalA7J
-	h4X5S15mOyjq1e30YFSQ==;
+	List-Owner; bh=evNdWBvOYnVJQv8uvMZbFuR87M4bVOPhXJG/cB41B5g=; b=kSj+aFtj/i9C+H
+	cwRD38Rw2fzDrgbj3yzNJR/nrNe6Mstvf5qjRG2D/wke4Jz/GgXmK86UkF+/fyp7cmVRooPfSStO8
+	lTNUxUnaZ4dH+TxOdWlA8zdvpO+dP8fxK6UDEc4/oY+MClsuJbERtAcpGKkRiM2C1g1RLRXa8+Mur
+	kcOle7shf2c6QZx/Lu3r95qZ8zOOz5En9bc9BtdqkE2rOBp+qCsNuQo0h50bRwdBKniMhO7w9S1qU
+	dXxp6rGDtXTivnPRWGj3JWvpCkKlAaGX9ekwYwKYhB1UM+oCj1W135VrCDZaUahxUjE+An17oSDk+
+	AYwM0n6aM1qRx408muPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNs8f-003S4T-2V;
-	Mon, 24 Jul 2023 09:46:01 +0000
+	id 1qNs8n-003S8M-2Y;
+	Mon, 24 Jul 2023 09:46:09 +0000
 Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNs8c-003S0J-36
+	id 1qNs8l-003S6J-0j
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jul 2023 09:46:00 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b8c364ad3bso8855725ad.1
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:45:55 -0700 (PDT)
+	Mon, 24 Jul 2023 09:46:08 +0000
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b867f9198dso8893935ad.0
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690191955; x=1690796755;
+        d=bytedance.com; s=google; t=1690191966; x=1690796766;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jmPwAlPL0TnDBmalzCzATtOPmfxfqu3Q+7XaFZclAtg=;
-        b=IZCH5tV1VdvhB0RXcuG+SL+gg1mEbPZMQJz8qUY1fWCpYBfjAR72/AnWbcPpstjQLI
-         aFpv+l8Q67Kc3iJwSzziW/zZbsYehvkdZbQbXx8X8jR6oJCUrIFV8Qzo50G/FYmT9t2/
-         w6ZN7N+ZviCRVJxyy+bucuBxrS6SRhon2EIiX0i15H4OrDXIvK+dChrAy0pj6MjsuwdC
-         6yiqEWuw0/0mdj0SNL2xTjIsK+WXPpE1gw9KgQ4WCUpGSoFe6rXH0GXBficEqbQlrShV
-         wc7SdQklmSH69kiwU3dxFC6F0qOnJE6NuoEe6VBjJkE5shAIs2KVw9Ha+vCxjUcFWX2y
-         lSHQ==
+        bh=vu9DfqGDIkVtY7CS+mn/8y6VlhAfp+/Q2ofuaCWar5Q=;
+        b=At3xco+o52slbk+Wt2XjpJ6Cu9i6sYrBgnCMc/5CS86ucLHJsGEmN+KJGEE3nRi6sH
+         tP3qBPXEcwpvnQz66wRWSap6a1c2U02VEHsWoEgBKOJ+J1jRKgicNVIHL7YJb/2E7nTO
+         mH8QuWqeK2DOxQytNGG5waBMmbk4L4jbPvrdsdxuK9v3y/Gywd5CYYO64IbHl7UYCZKj
+         8Q8aIDwesLUsAzLtg/KQ6AQafF3z6VJJ9ci5NRM3KksRfjknsFWZGEpbW519fA18aLaX
+         x2A/u6CY/jHlR9bkZrq6ZtCOein2LXegx+J7Hclhb+m/DWqNAehg6T+OKXqpv2vIgzAt
+         zKew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690191955; x=1690796755;
+        d=1e100.net; s=20221208; t=1690191967; x=1690796767;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jmPwAlPL0TnDBmalzCzATtOPmfxfqu3Q+7XaFZclAtg=;
-        b=S2CabcP8KwPWZUsWMhAwVQXEMcIVWUBISYy/u3pXABodJSKrRYDiWLGc6bVVi/Gx6h
-         xk6e5ciS9XtlQXznFfUPC7+2VlDbFvSOQKjizEFu0GkPR7MXo3kemNFVFUwNI+EDKn/1
-         zEqfresExuRUGzbzYThQhcBd64sQxtKPr9kk1Y4RuOEzmQPcP3QtwR6k3Wsst7lK2o2l
-         kyq5Kt8iih0wvwTtBtzQC1DJCWKo0RHf5tbERsY1Oyu+lPHMsRqyugvCOtsZ1e1j+6s/
-         m8QtkpPK6ZqJS46zBBVQ6TazNtvcxE744AKy0nvTvFqIm0q/t6m/+KwFAFlDFrRBECaq
-         VyMA==
-X-Gm-Message-State: ABy/qLbn7CxWpdP1P0tYJUoZ7U2MYjsEe+73g20Ze4JD8vYnvPIjyuog
-	ayCEFl874GAoBEaSIrTK9sW3Bg==
-X-Google-Smtp-Source: APBJJlHDY1qhgSa+H4mr70oj6h44PLP3QUTUzXb3MsGg4I77oDNLLFWrtOaIhBAmIAnOXFQDdEVBFw==
-X-Received: by 2002:a17:902:d4cb:b0:1b1:9272:55e2 with SMTP id o11-20020a170902d4cb00b001b1927255e2mr12365119plg.3.1690191954835;
-        Mon, 24 Jul 2023 02:45:54 -0700 (PDT)
+        bh=vu9DfqGDIkVtY7CS+mn/8y6VlhAfp+/Q2ofuaCWar5Q=;
+        b=WIsSe23T0kQEqQXhme4/7k1uQcGTUJ1uhvgpuSsbwX9PLG4AHdL1WJynQttgpMODXL
+         fXumECkLX4VFE7loSTXsVqwiQ3KG23GkpToENhdS2cu4/5K1gt7U9s5B4D1YXHcrQ/z0
+         ESf+gJlTf8mxTekm0vjZ2QH6ieegPdLRyOUiP0bkepJ4SQ7qjd2WeLLQddE14FmduVbN
+         RJfKgOV0YyOGr6M8sXn/09t82vOwwDkwptZ4zUXqFwLi04CZQjxPoxrAdzF4ev9SCLuz
+         9VlSvrTYFOb7FnQ91UO/0OHiyo0jpjAEQm9USZDAV8Wr6th0l8LpsIuJtbzTKjfQDPNt
+         6jGQ==
+X-Gm-Message-State: ABy/qLYUkjpHt7jMwwVwc/Tokx4e0z+7eMjMHY9M/r72LC0bgy55vHRj
+	5LYGJ/b2oLqIV3LWKkF7XqZ4Xw==
+X-Google-Smtp-Source: APBJJlGrsdFKJ71ukJT79kDa1W+M4ztJszdSUa3mf2ArYfnWEb5YwD/wtpSbLXe4wEi7ibAUftTBwg==
+X-Received: by 2002:a17:902:ecd2:b0:1b8:b4f6:1327 with SMTP id a18-20020a170902ecd200b001b8b4f61327mr12288935plh.6.1690191966684;
+        Mon, 24 Jul 2023 02:46:06 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.45.43
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.45.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:45:54 -0700 (PDT)
+        Mon, 24 Jul 2023 02:46:06 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: akpm@linux-foundation.org,
 	david@fromorbit.com,
@@ -101,16 +101,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 04/47] kvm: mmu: dynamically allocate the x86-mmu shrinker
-Date: Mon, 24 Jul 2023 17:43:11 +0800
-Message-Id: <20230724094354.90817-5-zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 05/47] binder: dynamically allocate the android-binder shrinker
+Date: Mon, 24 Jul 2023 17:43:12 +0800
+Message-Id: <20230724094354.90817-6-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_024559_013729_80BA1E5D 
-X-CRM114-Status: GOOD (  11.55  )
+X-CRM114-CacheID: sfid-20230724_024607_264888_DC0E29EB 
+X-CRM114-Status: GOOD (  12.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,58 +127,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use new APIs to dynamically allocate the x86-mmu shrinker.
+Use new APIs to dynamically allocate the android-binder shrinker.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/android/binder_alloc.c | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index ec169f5c7dce..ab405e0a8954 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -6847,11 +6847,7 @@ static unsigned long mmu_shrink_count(struct shrinker *shrink,
- 	return percpu_counter_read_positive(&kvm_total_used_mmu_pages);
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index e3db8297095a..019981d65e1e 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -1053,11 +1053,7 @@ binder_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 			    NULL, sc->nr_to_scan);
  }
  
--static struct shrinker mmu_shrinker = {
--	.count_objects = mmu_shrink_count,
--	.scan_objects = mmu_shrink_scan,
--	.seeks = DEFAULT_SEEKS * 10,
+-static struct shrinker binder_shrinker = {
+-	.count_objects = binder_shrink_count,
+-	.scan_objects = binder_shrink_scan,
+-	.seeks = DEFAULT_SEEKS,
 -};
-+static struct shrinker *mmu_shrinker;
++static struct shrinker *binder_shrinker;
  
- static void mmu_destroy_caches(void)
+ /**
+  * binder_alloc_init() - called by binder_open() for per-proc initialization
+@@ -1077,19 +1073,30 @@ void binder_alloc_init(struct binder_alloc *alloc)
+ 
+ int binder_alloc_shrinker_init(void)
  {
-@@ -6984,10 +6980,16 @@ int kvm_mmu_vendor_module_init(void)
- 	if (percpu_counter_init(&kvm_total_used_mmu_pages, 0, GFP_KERNEL))
- 		goto out;
+-	int ret = list_lru_init(&binder_alloc_lru);
++	int ret;
  
--	ret = register_shrinker(&mmu_shrinker, "x86-mmu");
--	if (ret)
-+	mmu_shrinker = shrinker_alloc(0, "x86-mmu");
-+	if (!mmu_shrinker)
- 		goto out_shrinker;
- 
-+	mmu_shrinker->count_objects = mmu_shrink_count;
-+	mmu_shrinker->scan_objects = mmu_shrink_scan;
-+	mmu_shrinker->seeks = DEFAULT_SEEKS * 10;
+-	if (ret == 0) {
+-		ret = register_shrinker(&binder_shrinker, "android-binder");
+-		if (ret)
+-			list_lru_destroy(&binder_alloc_lru);
++	ret = list_lru_init(&binder_alloc_lru);
++	if (ret)
++		return ret;
 +
-+	shrinker_register(mmu_shrinker);
++	binder_shrinker = shrinker_alloc(0, "android-binder");
++	if (!binder_shrinker) {
++		list_lru_destroy(&binder_alloc_lru);
++		return -ENOMEM;
+ 	}
+-	return ret;
 +
- 	return 0;
- 
- out_shrinker:
-@@ -7009,7 +7011,7 @@ void kvm_mmu_vendor_module_exit(void)
- {
- 	mmu_destroy_caches();
- 	percpu_counter_destroy(&kvm_total_used_mmu_pages);
--	unregister_shrinker(&mmu_shrinker);
-+	shrinker_unregister(mmu_shrinker);
++	binder_shrinker->count_objects = binder_shrink_count;
++	binder_shrinker->scan_objects = binder_shrink_scan;
++	binder_shrinker->seeks = DEFAULT_SEEKS;
++
++	shrinker_register(binder_shrinker);
++
++	return 0;
  }
  
- /*
+ void binder_alloc_shrinker_exit(void)
+ {
+-	unregister_shrinker(&binder_shrinker);
++	shrinker_unregister(binder_shrinker);
+ 	list_lru_destroy(&binder_alloc_lru);
+ }
+ 
 -- 
 2.30.2
 
