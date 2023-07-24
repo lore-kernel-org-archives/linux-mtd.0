@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56F84C0015E
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 12:17:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52EBCC001DE
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 12:18:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4wWC2Y/UqzM5DhGspqJ21KFDSL4M4wyahkNUaUz72Nc=; b=zKdvIz9Fcj06EB
-	bpZ1OmAUBMDC6WryTFpImjDN61q4FPLrmX6HWaP1WM6elAnoroOAvQHtDF/qOkWwLp+4urIdto67I
-	u8053KcYIFzjhW93O2qYSEtzhueCXf4J2Xj4nwXx+g4Z6H2yCNe1MDw8wB2ECQNAIA1x09yLS4ivF
-	KIEsdIFEOBxQ7qI8oDo1fBX5G+V7cbbUySRK1Mz5vaj+OFwWK4ShB2Mjj2uwHs7AlEJvHuJTiWjkO
-	ag+xZm/80uB8od8K54sk29YsqhQo5RNtUmGgIcmPjriDGtUKs4loeBByFv55vlWNI/yXw+Ie8JB0C
-	HRPT1sMKTyybode6Dgig==;
+	List-Owner; bh=Y3fjVQZVjO/n8ZrS10XeRKNs3J05iHks1ERdIKg+ed0=; b=clYavec3EohXhM
+	1YNDJBnb8/1JKhCagwZla4Nw6iRcYWxSBRkeCB+yRBkSrfyhBg+5QZJ/EtJrgse627c4fwGsVRZUN
+	ot2bysnispgiL2V6JCeR5yMXS3hAnkAeKUSsaOnozOSC+ZFmUCBORdO2rWxBoUt3/cT58Teo4FAuP
+	Zf/7gAVKCgozKCKadw7YGyCWkpBqgRbg7rOxyc8dn4eR7yNJWehdwIHia05OahOP2AP093KE3F6cu
+	XvP2xVp5SBOIf31jN9zp2HynEesbhek9brEsbxMw6u5EACMBsy4uWt5dGxN11mSCJXooJ9lv2YYrg
+	S3vl69m1dVM8BFbadRqQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNuVY-004CWD-32;
-	Mon, 24 Jul 2023 12:17:48 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qNuVl-004Cb0-1J;
+	Mon, 24 Jul 2023 12:18:01 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNuVW-004CVH-0G
+	id 1qNuVh-004CZC-2s
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jul 2023 12:17:47 +0000
+	Mon, 24 Jul 2023 12:17:59 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 21BA160F6A;
-	Mon, 24 Jul 2023 12:17:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE84DC433C7;
-	Mon, 24 Jul 2023 12:17:40 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 397746113E;
+	Mon, 24 Jul 2023 12:17:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7639DC433C7;
+	Mon, 24 Jul 2023 12:17:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690201064;
-	bh=QrEpSq7cPtZ3cWIhHPElPK38cx6jwtPbdBU+j7U7fKM=;
+	s=k20201202; t=1690201076;
+	bh=SgqvEHTSsoLx88OM4JQmZh6whPE6BGZ/uEOL9QxuZhc=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=lFo5/uyfnIZhAXSNnfYH/zs0wLPvsdGmMHFPu1gPwZUyuOP10nfFnm2e23E9mVHox
-	 RPTdsfQNauiU49m1hBahLSzV9+gtG/J7umAiMCAj2AameE5Kr8rrBCOJ9W6HPjIMkc
-	 lBp1NfEAIBufJmTKwy4+ZdRStOdLezK2HhFQXgRbYXDnNec/zH0oZOEiZUwOk3URR0
-	 CwbOA3I9uES6cdgV2JXRUz8O/MvIwDzgSFlH2Jg5PAfwuqtmwK87bHc16vNtVYlbJG
-	 hfzmJLudml4J90E2WDeTwJcjuLZaZewiSQ45z8+KBeEkpGI5axaDFLzZmilBUDvalQ
-	 cGU58i/dTyQGA==
-Message-ID: <01e8445d033314b6d9cd67bece74ca1c3ce89945.camel@kernel.org>
-Subject: Re: [PATCH v2 34/47] nfsd: dynamically allocate the nfsd-client
+	b=HeauOjdE48WDStWMcmbZe0QJCu1PZbrw2jnOfPPp5Y0n0Q1TK60SYgINluh0tVUHu
+	 HMa9pGy9YrA2Xid5ZQCkD41aahatrfHq9vVHLjbuzLzQBP/bIUW5s/kQBvStLkPbEr
+	 52wVvvm4TuW1EIIyQppWxFYEv7SoUq895jOWh1zWA+5Bhuu0CwPKUfnKQ6aPaR+FNu
+	 w4bgci3LfqcgT2vztkyr4DzF2/4Hyf1LGlp6Z0shJe1d8GJLzPQbDhc3dh09sCIq3l
+	 N9zzfqaN5HsWy8Vmt4P1E7EQFqQrkFrxcJ7/1W6yEYc3GiEERam+zZN0XSQm/ELIIc
+	 3urjqaifuO8iw==
+Message-ID: <d79d3ef43b3a61be99e53a77fa9eb19af7fc550f.camel@kernel.org>
+Subject: Re: [PATCH v2 35/47] nfsd: dynamically allocate the nfsd-reply
  shrinker
 From: Jeff Layton <jlayton@kernel.org>
 To: Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org, 
@@ -65,15 +65,15 @@ Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
  linux-fsdevel@vger.kernel.org,  linux-ext4@vger.kernel.org,
  linux-xfs@vger.kernel.org,  linux-btrfs@vger.kernel.org, Chuck Lever
  <chuck.lever@oracle.com>
-Date: Mon, 24 Jul 2023 08:17:39 -0400
-In-Reply-To: <20230724094354.90817-35-zhengqi.arch@bytedance.com>
+Date: Mon, 24 Jul 2023 08:17:52 -0400
+In-Reply-To: <20230724094354.90817-36-zhengqi.arch@bytedance.com>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
-	 <20230724094354.90817-35-zhengqi.arch@bytedance.com>
+	 <20230724094354.90817-36-zhengqi.arch@bytedance.com>
 User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_051746_227845_E2F64DDF 
-X-CRM114-Status: GOOD (  16.52  )
+X-CRM114-CacheID: sfid-20230724_051758_016348_A5A5D827 
+X-CRM114-Status: GOOD (  19.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,76 +92,111 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Mon, 2023-07-24 at 17:43 +0800, Qi Zheng wrote:
 > In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the nfsd-client shrinker, so that it can be freed
+> dynamically allocate the nfsd-reply shrinker, so that it can be freed
 > asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
 > read-side critical section when releasing the struct nfsd_net.
 > 
 > Acked-by: Chuck Lever <chuck.lever@oracle.com>
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 > ---
->  fs/nfsd/netns.h     |  2 +-
->  fs/nfsd/nfs4state.c | 20 ++++++++++++--------
->  2 files changed, 13 insertions(+), 9 deletions(-)
+>  fs/nfsd/netns.h    |  2 +-
+>  fs/nfsd/nfscache.c | 31 ++++++++++++++++---------------
+>  2 files changed, 17 insertions(+), 16 deletions(-)
 > 
 > diff --git a/fs/nfsd/netns.h b/fs/nfsd/netns.h
-> index ec49b200b797..f669444d5336 100644
+> index f669444d5336..ab303a8b77d5 100644
 > --- a/fs/nfsd/netns.h
 > +++ b/fs/nfsd/netns.h
-> @@ -195,7 +195,7 @@ struct nfsd_net {
->  	int			nfs4_max_clients;
+> @@ -177,7 +177,7 @@ struct nfsd_net {
+>  	/* size of cache when we saw the longest hash chain */
+>  	unsigned int             longest_chain_cachesize;
 >  
->  	atomic_t		nfsd_courtesy_clients;
-> -	struct shrinker		nfsd_client_shrinker;
-> +	struct shrinker		*nfsd_client_shrinker;
->  	struct work_struct	nfsd_shrinker_work;
->  };
+> -	struct shrinker		nfsd_reply_cache_shrinker;
+> +	struct shrinker		*nfsd_reply_cache_shrinker;
 >  
-> diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-> index 3339177f8e2f..c7a4616cd866 100644
-> --- a/fs/nfsd/nfs4state.c
-> +++ b/fs/nfsd/nfs4state.c
-> @@ -4388,8 +4388,7 @@ static unsigned long
->  nfsd4_state_shrinker_count(struct shrinker *shrink, struct shrink_control *sc)
+>  	/* tracking server-to-server copy mounts */
+>  	spinlock_t              nfsd_ssc_lock;
+> diff --git a/fs/nfsd/nfscache.c b/fs/nfsd/nfscache.c
+> index 6eb3d7bdfaf3..9f0ab65e4125 100644
+> --- a/fs/nfsd/nfscache.c
+> +++ b/fs/nfsd/nfscache.c
+> @@ -200,26 +200,29 @@ int nfsd_reply_cache_init(struct nfsd_net *nn)
 >  {
->  	int count;
+>  	unsigned int hashsize;
+>  	unsigned int i;
+> -	int status = 0;
+>  
+>  	nn->max_drc_entries = nfsd_cache_size_limit();
+>  	atomic_set(&nn->num_drc_entries, 0);
+>  	hashsize = nfsd_hashsize(nn->max_drc_entries);
+>  	nn->maskbits = ilog2(hashsize);
+>  
+> -	nn->nfsd_reply_cache_shrinker.scan_objects = nfsd_reply_cache_scan;
+> -	nn->nfsd_reply_cache_shrinker.count_objects = nfsd_reply_cache_count;
+> -	nn->nfsd_reply_cache_shrinker.seeks = 1;
+> -	status = register_shrinker(&nn->nfsd_reply_cache_shrinker,
+> -				   "nfsd-reply:%s", nn->nfsd_name);
+> -	if (status)
+> -		return status;
+> -
+>  	nn->drc_hashtbl = kvzalloc(array_size(hashsize,
+>  				sizeof(*nn->drc_hashtbl)), GFP_KERNEL);
+>  	if (!nn->drc_hashtbl)
+> +		return -ENOMEM;
+> +
+> +	nn->nfsd_reply_cache_shrinker = shrinker_alloc(0, "nfsd-reply:%s",
+> +						       nn->nfsd_name);
+> +	if (!nn->nfsd_reply_cache_shrinker)
+>  		goto out_shrinker;
+>  
+> +	nn->nfsd_reply_cache_shrinker->scan_objects = nfsd_reply_cache_scan;
+> +	nn->nfsd_reply_cache_shrinker->count_objects = nfsd_reply_cache_count;
+> +	nn->nfsd_reply_cache_shrinker->seeks = 1;
+> +	nn->nfsd_reply_cache_shrinker->private_data = nn;
+> +
+> +	shrinker_register(nn->nfsd_reply_cache_shrinker);
+> +
+>  	for (i = 0; i < hashsize; i++) {
+>  		INIT_LIST_HEAD(&nn->drc_hashtbl[i].lru_head);
+>  		spin_lock_init(&nn->drc_hashtbl[i].cache_lock);
+> @@ -228,7 +231,7 @@ int nfsd_reply_cache_init(struct nfsd_net *nn)
+>  
+>  	return 0;
+>  out_shrinker:
+> -	unregister_shrinker(&nn->nfsd_reply_cache_shrinker);
+> +	kvfree(nn->drc_hashtbl);
+>  	printk(KERN_ERR "nfsd: failed to allocate reply cache\n");
+>  	return -ENOMEM;
+>  }
+> @@ -238,7 +241,7 @@ void nfsd_reply_cache_shutdown(struct nfsd_net *nn)
+>  	struct nfsd_cacherep *rp;
+>  	unsigned int i;
+>  
+> -	unregister_shrinker(&nn->nfsd_reply_cache_shrinker);
+> +	shrinker_unregister(nn->nfsd_reply_cache_shrinker);
+>  
+>  	for (i = 0; i < nn->drc_hashsize; i++) {
+>  		struct list_head *head = &nn->drc_hashtbl[i].lru_head;
+> @@ -322,8 +325,7 @@ nfsd_prune_bucket_locked(struct nfsd_net *nn, struct nfsd_drc_bucket *b,
+>  static unsigned long
+>  nfsd_reply_cache_count(struct shrinker *shrink, struct shrink_control *sc)
+>  {
 > -	struct nfsd_net *nn = container_of(shrink,
-> -			struct nfsd_net, nfsd_client_shrinker);
+> -				struct nfsd_net, nfsd_reply_cache_shrinker);
 > +	struct nfsd_net *nn = shrink->private_data;
 >  
->  	count = atomic_read(&nn->nfsd_courtesy_clients);
->  	if (!count)
-> @@ -8125,12 +8124,17 @@ static int nfs4_state_create_net(struct net *net)
->  	INIT_WORK(&nn->nfsd_shrinker_work, nfsd4_state_shrinker_worker);
->  	get_net(net);
->  
-> -	nn->nfsd_client_shrinker.scan_objects = nfsd4_state_shrinker_scan;
-> -	nn->nfsd_client_shrinker.count_objects = nfsd4_state_shrinker_count;
-> -	nn->nfsd_client_shrinker.seeks = DEFAULT_SEEKS;
-> -
-> -	if (register_shrinker(&nn->nfsd_client_shrinker, "nfsd-client"))
-> +	nn->nfsd_client_shrinker = shrinker_alloc(0, "nfsd-client");
-> +	if (!nn->nfsd_client_shrinker)
->  		goto err_shrinker;
-> +
-> +	nn->nfsd_client_shrinker->scan_objects = nfsd4_state_shrinker_scan;
-> +	nn->nfsd_client_shrinker->count_objects = nfsd4_state_shrinker_count;
-> +	nn->nfsd_client_shrinker->seeks = DEFAULT_SEEKS;
-> +	nn->nfsd_client_shrinker->private_data = nn;
-> +
-> +	shrinker_register(nn->nfsd_client_shrinker);
-> +
->  	return 0;
->  
->  err_shrinker:
-> @@ -8228,7 +8232,7 @@ nfs4_state_shutdown_net(struct net *net)
->  	struct list_head *pos, *next, reaplist;
->  	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
->  
-> -	unregister_shrinker(&nn->nfsd_client_shrinker);
-> +	shrinker_unregister(nn->nfsd_client_shrinker);
->  	cancel_work(&nn->nfsd_shrinker_work);
->  	cancel_delayed_work_sync(&nn->laundromat_work);
->  	locks_end_grace(&nn->nfsd4_manager);
+>  	return atomic_read(&nn->num_drc_entries);
+>  }
+> @@ -342,8 +344,7 @@ nfsd_reply_cache_count(struct shrinker *shrink, struct shrink_control *sc)
+>  static unsigned long
+>  nfsd_reply_cache_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  {
+> -	struct nfsd_net *nn = container_of(shrink,
+> -				struct nfsd_net, nfsd_reply_cache_shrinker);
+> +	struct nfsd_net *nn = shrink->private_data;
+>  	unsigned long freed = 0;
+>  	LIST_HEAD(dispose);
+>  	unsigned int i;
 
 Acked-by: Jeff Layton <jlayton@kernel.org>
 
