@@ -4,87 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCC21C001DF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 08:13:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9B0FC04A94
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mhIzFUufavduJurki1I0mkhq1IFSI+L31LR6KSjTLhc=; b=4RcjhXvMjkVvlS
-	EtfMcHXtpH3w6h2NjNXcJNsjRf6qVCv4F4MTkWHyts1d2KRR7oTjByoF78VhGuGJWC7syydUrDKWy
-	GQYOtCh1WLYjmhKSYZs+mVWipIJbF/MOhklHd/7yUxcW07WB45IUGKueYsUP7pLMuXmfmn2dZVs33
-	O+xut2agxsctAlOgUu8K7HgX/6jBQ7XSPq6TCcJ6D8YiEDtsPp6ZvTDP9Tob37Ob+cCa722neQd8U
-	rXx/MwM8xUkG7Qvx3yRvzY6xYTNJMXedV3h/MO2MaoI1EoiMTEciRamTMRX0dnIzJEt02SSMzF9Y+
-	QWmmzgQzX1Gf7qIFHM6Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=VP/Lsn8QE7OK3SsVpRAHuTiJUTrF9K+ylpuy/aElD1s=; b=OZtLFALpc7RnOV
+	UhDNgfc5d0L9lKNQQdDQHpuUhvOz+BOVLWZYms6ml4ltdYJspH115rkreNba33NaMFw/V+AusKSFx
+	8WV5vZH/h1vt93T/SmD/QA5+1JE79gpbj+VOzIssZ7d4Qd583eYTCKeRR+t384PWKakrBzJ0XTdu3
+	zQ2F5F0xEZBh2iMkXvhdLnH8xccsmnzcVPUdCoa/HeKKV1eg8jIX5OC+0ptbLhaJnYTHyObDiam5p
+	hLK6t5obU+k+WCTrQxwYeYFAYlDcDA1QLbam7Y2HHSkzLb/V+sMGAVxRPa2b1opPCcFRc+AFosNCR
+	fXtkqfoLNwkA4/oRrNpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNqh9-003CeO-1y;
-	Mon, 24 Jul 2023 08:13:31 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+	id 1qNs7v-003RhW-20;
+	Mon, 24 Jul 2023 09:45:15 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNqh6-003CbK-1H
+	id 1qNs7r-003Reo-3A
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jul 2023 08:13:30 +0000
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52227884855so1874316a12.1
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 01:13:28 -0700 (PDT)
+	Mon, 24 Jul 2023 09:45:14 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bb91c20602so2225025ad.0
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:45:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690186407; x=1690791207;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FjpE0CTKohDZ2ehuACLTkZqrmJb/Yntt3sN7R44vEtA=;
-        b=xnK7gh0F2XnAfmAj7Ba1o3LJ6gE86oxlduR7gzGsnqUaQDPW0DjO6k+wKCrWJolfMV
-         YFQAJTae5IuAHo31uL/QrUyJPzR6OaqHN3jLrkBGcTvak4Kycx7E4h3lonGmDuElS1Bx
-         z6guQ4efnsjzSPgTIosyC8T9zqXD7npWb/xRPq7zTvO+NLrfKmq2Z1GJi7guVeckwhPi
-         mVO+Baljx36aLdOu0AyqDDSwWJfJFwzueLK6sDRsoZ5Y7Fj9SodKIvqhlWWCxSq9ZE8i
-         hqGc2wDUkDYkYYzc3og0mFBAI8QE+mL7HDMA/b0GulSzLa7k0Xivj+Yq0YhigcwxgUhl
-         PP8w==
+        d=bytedance.com; s=google; t=1690191907; x=1690796707;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GhsBT9Fumj8uBYrifNTbdeUWiupPg7k66ZIkdolEOus=;
+        b=Mux1pbqzjbfqRXVfJEIWZc81mrnEot0PRQ/rTJrVGIim7ktrzSNm05Fsso5ilARRvv
+         faySszbFYa9OO4CMI3npMpUlhKd9leJWtwrwrnGBgTFgyKPWAZhGDLwNVS7t8DhkjiqN
+         RwEnjMy2GP0KMYlVucQ6x1a/u1Cr93p0iJndU/bpqFkEM97m8/txQF/6lkl5JDWlk8AU
+         3iT7I2JCi3x9P2zSBpP/ZmfJYfqHGCek7eMXdifxANKuP/Fuf+mUHCVg2tSmefehawea
+         n1OerRq0jnWZtgNyWPX2fjm4/jIjVqZyDgwY5w5AIUqAK7zCLOIJi1p74U5td8CU8Ec4
+         mzxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690186407; x=1690791207;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FjpE0CTKohDZ2ehuACLTkZqrmJb/Yntt3sN7R44vEtA=;
-        b=e3ZRZ9/iABaP3Pz5JJYYfIHWt+tmoqRE8zL/F6guub1JAO34uQjOE4TqtqHP90d0a6
-         z/f/ae/HXLsKZ4ef1CfwGxkUgxDRZu+znktbcMYbhsiUH6lRa1QMYrhq/93LY+YFgvXR
-         f/qFTcivw1qwd5sMILCKF1G4ahV4gi6Jtp+5PuQ9rV/rBo/ExIoFSV+EqSEqv2/ddAit
-         nf2YqHvRVGgBh0/yePZjsrIyyoorkqHTegFUvq2acuPJBZql2kLCK53fe4PxxIPybqEG
-         b38hoSrRANodT7UED6FagRE3BXGPI1hJuMCOrex6FJqN5uHKsMUc7cxVkqFUc8aZcnkw
-         C/SA==
-X-Gm-Message-State: ABy/qLaGtSYBO5ikrigz6fAeroU+sE4XAi7MFajctbsGdrMdENHtc3od
-	iDTuYmubDyti6f8DE+KBJs0qbA==
-X-Google-Smtp-Source: APBJJlGUL2q0PX1PyO+HWJGPTCESCX+Zx0heqGiwB2fUoec14FFM4neH/1+XpitqtN1NgIf8XO++Ng==
-X-Received: by 2002:a17:907:1de6:b0:982:79fa:4532 with SMTP id og38-20020a1709071de600b0098279fa4532mr9124481ejc.53.1690186407034;
-        Mon, 24 Jul 2023 01:13:27 -0700 (PDT)
-Received: from 1.. ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id a6-20020a1709065f8600b0098ec690e6d7sm6355395eju.73.2023.07.24.01.13.22
+        d=1e100.net; s=20221208; t=1690191907; x=1690796707;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GhsBT9Fumj8uBYrifNTbdeUWiupPg7k66ZIkdolEOus=;
+        b=FlwhNgqFjMh6iJoeVhz9+7ASdTtROl0G0UVCaD4H6dvjAflm/eKnYQ0ReUywYwNLiH
+         aXxDuFrXsXvuRdhalFxknYLp8+tNMkczezIWfds41nB4N+BV7bc9lBFaTxZ1T/MM5Uto
+         4C9TnYDr6uXsWCAZxugXZrz2luFv4KEkAMMbPKGnJxoRrjfBEHCBK7wqwlakBLaYnKpi
+         oCyi47tI4xEOPVD2Bc/8o573cjCVzY0rXT7mHzukaBy7IHECD7e508isIBMvCwRaIRGp
+         SJcK0hryp9rthHzMlYT1rsUgUMQSQ+j+isCqGhP6qXlZVbqttCjP7g1gVXmHHl0+b5wh
+         a2rA==
+X-Gm-Message-State: ABy/qLZjLDOfCTLHLZa3ZAsBiYK8qSWyj5MePuMaHoi/Rk6KiGqhsFAj
+	Hgbv3Zi696pRomUyUwE3Git7xg==
+X-Google-Smtp-Source: APBJJlG2lKEMpVGWAV6dsRZ28hllsUFknqcdUwpJ+mz8ptX/BQjWY5s2WSDY0Jqf92PnyDAdPtn/0A==
+X-Received: by 2002:a17:902:ea01:b0:1bb:83ec:832 with SMTP id s1-20020a170902ea0100b001bb83ec0832mr8326265plg.2.1690191906857;
+        Mon, 24 Jul 2023 02:45:06 -0700 (PDT)
+Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.44.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 01:13:24 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: tkuw584924@gmail.com,
-	takahiro.kuwano@infineon.com,
-	michael@walle.cc
-Cc: pratyush@kernel.org,
+        Mon, 24 Jul 2023 02:45:06 -0700 (PDT)
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+To: akpm@linux-foundation.org,
+	david@fromorbit.com,
+	tkhai@ya.ru,
+	vbabka@suse.cz,
+	roman.gushchin@linux.dev,
+	djwong@kernel.org,
+	brauner@kernel.org,
+	paulmck@kernel.org,
+	tytso@mit.edu,
+	steven.price@arm.com,
+	cel@kernel.org,
+	senozhatsky@chromium.org,
+	yujie.liu@intel.com,
+	gregkh@linuxfoundation.org,
+	muchun.song@linux.dev
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	x86@kernel.org,
+	kvm@vger.kernel.org,
+	xen-devel@lists.xenproject.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	cluster-devel@redhat.com,
+	linux-nfs@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bacem.daassi@infineon.com,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [RESEND PATCH v3 11/11] mtd: spi-nor: spansion: switch cypress_nor_get_page_size() to use vreg_offset
-Date: Mon, 24 Jul 2023 11:12:47 +0300
-Message-Id: <20230724081247.4779-12-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230724081247.4779-1-tudor.ambarus@linaro.org>
-References: <20230724081247.4779-1-tudor.ambarus@linaro.org>
+	rcu@vger.kernel.org,
+	netdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org,
+	dm-devel@redhat.com,
+	linux-raid@vger.kernel.org,
+	linux-bcache@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 00/47] use refcount+RCU method to implement lockless slab shrink
+Date: Mon, 24 Jul 2023 17:43:07 +0800
+Message-Id: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6780; i=tudor.ambarus@linaro.org; h=from:subject; bh=MUJq2mMJ7nIureH4NTnSp4c0il3VTp5/1NGTZmdRv8E=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkvjJ/AjClsiJy+r+/oUJQL9lKwKRmy/640tCVi cFl1S4x6XeJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZL4yfwAKCRBLVU9HpY0U 6UyACACihYeFek6vZM2wuP6gooTVtrkuQT5Myp3MWn40rPLrLh3/dTfZyuhJl8GEDwfykX24Ecc aEj0LnTn1IGBg9q0diCEtiGkoOmcIcqdXNWpMlsC0VlifsOZ+JXS9Lc8bHVGEyTnfX8w58DaZTN yM1+opq/Tz/u3Fmn1FAM2f1UNX+9r7AgDqIRKitESVkmD/OYeoO92RbAoXJZ6WX0X5GnhzJfgFP vSk/GNok44dcUaj5RRrGXVKdvaLSiodma8LRekoOUC3gyhOyQzEq3o2QVE5Vo9NpeoLeY3bm8lb 8Kp9DGsZI+5fzj9+dleV+rAnqFJAJcN7GgpRuO/nrbCogAgr
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_011328_462150_E9580D0C 
-X-CRM114-Status: GOOD (  20.81  )
+X-CRM114-CacheID: sfid-20230724_024512_025408_766BFFCE 
+X-CRM114-Status: GOOD (  20.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,208 +124,366 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-All users of cypress_nor_get_page_size() retrieve n_dice and vreg_offset
-from SFDP. Switch cypress_nor_get_page_size() to always use vreg_offset
-so that we use the same code base for both single and multi chip package
-flashes. cypress_nor_get_page_size() is now called in the post_sfdp()
-hook instead of post_bfpt(), as vreg_offset and n_dice are parsed after
-BFPT and we now use them to get the page size in the post_sfdp hook.
-Consequently the null checks on n_dice and vreg_offset are moved to
-the post_sfdp() hook.
+Hi all,
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/mtd/spi-nor/spansion.c | 105 +++++++++++++--------------------
- 1 file changed, 42 insertions(+), 63 deletions(-)
+1. Background
+=============
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 4027f0038ce5..0b01af33aa57 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -471,28 +471,17 @@ static int cypress_nor_set_addr_mode_nbytes(struct spi_nor *nor)
- 	return 0;
- }
- 
--static int cypress_nor_get_page_size_single_chip(struct spi_nor *nor)
--{
--	struct spi_mem_op op =
--		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
--					  SPINOR_REG_CYPRESS_CFR3V, 0,
--					  nor->bouncebuf);
--	int ret;
--
--	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
--	if (ret)
--		return ret;
--
--	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3_PGSZ)
--		nor->params->page_size = 512;
--	else
--		nor->params->page_size = 256;
--
--	return 0;
--}
--
--
--static int cypress_nor_get_page_size_mcp(struct spi_nor *nor)
-+/**
-+ * cypress_nor_get_page_size() - Get flash page size configuration.
-+ * @nor:	pointer to a 'struct spi_nor'
-+ *
-+ * The BFPT table advertises a 512B or 256B page size depending on part but the
-+ * page size is actually configurable (with the default being 256B). Read from
-+ * CFR3V[4] and set the correct size.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int cypress_nor_get_page_size(struct spi_nor *nor)
- {
- 	struct spi_mem_op op =
- 		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
-@@ -522,23 +511,6 @@ static int cypress_nor_get_page_size_mcp(struct spi_nor *nor)
- 	return 0;
- }
- 
--/**
-- * cypress_nor_get_page_size() - Get flash page size configuration.
-- * @nor:	pointer to a 'struct spi_nor'
-- *
-- * The BFPT table advertises a 512B or 256B page size depending on part but the
-- * page size is actually configurable (with the default being 256B). Read from
-- * CFR3V[4] and set the correct size.
-- *
-- * Return: 0 on success, -errno otherwise.
-- */
--static int cypress_nor_get_page_size(struct spi_nor *nor)
--{
--	if (nor->params->n_dice)
--		return cypress_nor_get_page_size_mcp(nor);
--	return cypress_nor_get_page_size_single_chip(nor);
--}
--
- static void cypress_nor_ecc_init(struct spi_nor *nor)
- {
- 	/*
-@@ -575,20 +547,26 @@ s25fs256t_post_bfpt_fixup(struct spi_nor *nor,
- 	if (nor->bouncebuf[0])
- 		return -ENODEV;
- 
--	return cypress_nor_get_page_size(nor);
-+	return 0;
- }
- 
- static int s25fs256t_post_sfdp_fixup(struct spi_nor *nor)
- {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 
-+	if (!params->n_dice || !params->vreg_offset) {
-+		dev_err(nor->dev, "%s failed. The volatile register offset could not be retrieved from SFDP.\n",
-+			__func__);
-+		return -EOPNOTSUPP;
-+	}
-+
- 	/* PP_1_1_4_4B is supported but missing in 4BAIT. */
- 	params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4;
- 	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_1_4],
- 				SPINOR_OP_PP_1_1_4_4B,
- 				SNOR_PROTO_1_1_4);
- 
--	return 0;
-+	return cypress_nor_get_page_size(nor);
- }
- 
- static int s25fs256t_late_init(struct spi_nor *nor)
-@@ -623,10 +601,20 @@ s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
- 
- static int s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
- {
--	struct spi_nor_erase_type *erase_type =
--					nor->params->erase_map.erase_type;
-+	struct spi_nor_flash_parameter *params = nor->params;
-+	struct spi_nor_erase_type *erase_type = params->erase_map.erase_type;
- 	unsigned int i;
- 
-+	if (!params->n_dice || !params->vreg_offset) {
-+		dev_err(nor->dev, "%s failed. The volatile register offset could not be retrieved from SFDP.\n",
-+			__func__);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	/* The 2 Gb parts duplicate info and advertise 4 dice instead of 2. */
-+	if (params->size == SZ_256M)
-+		params->n_dice = 2;
-+
- 	/*
- 	 * In some parts, 3byte erase opcodes are advertised by 4BAIT.
- 	 * Convert them to 4byte erase opcodes.
-@@ -644,10 +632,6 @@ static int s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
- 		}
- 	}
- 
--	/* The 2 Gb parts duplicate info and advertise 4 dice instead of 2. */
--	if (nor->params->size == SZ_256M)
--		nor->params->n_dice = 2;
--
- 	return cypress_nor_get_page_size(nor);
- }
- 
-@@ -655,12 +639,6 @@ static int s25hx_t_late_init(struct spi_nor *nor)
- {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 
--	if (!params->n_dice || !params->vreg_offset) {
--		dev_err(nor->dev, "%s failed. The volatile register offset could not be retrieved from SFDP.\n",
--			__func__);
--		return -EOPNOTSUPP;
--	}
--
- 	/* Fast Read 4B requires mode cycles */
- 	params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
- 	params->ready = cypress_nor_sr_ready_and_clear;
-@@ -694,6 +672,17 @@ static int cypress_nor_set_octal_dtr(struct spi_nor *nor, bool enable)
- static int s28hx_t_post_sfdp_fixup(struct spi_nor *nor)
- {
- 	struct spi_nor_flash_parameter *params = nor->params;
-+
-+	if (!params->n_dice || !params->vreg_offset) {
-+		dev_err(nor->dev, "%s failed. The volatile register offset could not be retrieved from SFDP.\n",
-+			__func__);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	/* The 2 Gb parts duplicate info and advertise 4 dice instead of 2. */
-+	if (params->size == SZ_256M)
-+		params->n_dice = 2;
-+
- 	/*
- 	 * On older versions of the flash the xSPI Profile 1.0 table has the
- 	 * 8D-8D-8D Fast Read opcode as 0x00. But it actually should be 0xEE.
-@@ -719,10 +708,6 @@ static int s28hx_t_post_sfdp_fixup(struct spi_nor *nor)
- 	 */
- 	params->rdsr_addr_nbytes = 4;
- 
--	/* The 2 Gb parts duplicate info and advertise 4 dice instead of 2. */
--	if (params->size == SZ_256M)
--		params->n_dice = 2;
--
- 	return cypress_nor_get_page_size(nor);
- }
- 
-@@ -737,12 +722,6 @@ static int s28hx_t_late_init(struct spi_nor *nor)
- {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 
--	if (!params->n_dice || !params->vreg_offset) {
--		dev_err(nor->dev, "%s failed. The volatile register offset could not be retrieved from SFDP.\n",
--			__func__);
--		return -EOPNOTSUPP;
--	}
--
- 	params->set_octal_dtr = cypress_nor_set_octal_dtr;
- 	params->ready = cypress_nor_sr_ready_and_clear;
- 	cypress_nor_ecc_init(nor);
+We used to implement the lockless slab shrink with SRCU [1], but then kernel
+test robot reported -88.8% regression in stress-ng.ramfs.ops_per_sec test
+case [2], so we reverted it [3].
+
+This patch series aims to re-implement the lockless slab shrink using the
+refcount+RCU method proposed by Dave Chinner [4].
+
+[1]. https://lore.kernel.org/lkml/20230313112819.38938-1-zhengqi.arch@bytedance.com/
+[2]. https://lore.kernel.org/lkml/202305230837.db2c233f-yujie.liu@intel.com/
+[3]. https://lore.kernel.org/all/20230609081518.3039120-1-qi.zheng@linux.dev/
+[4]. https://lore.kernel.org/lkml/ZIJhou1d55d4H1s0@dread.disaster.area/
+
+2. Implementation
+=================
+
+Currently, the shrinker instances can be divided into the following three types:
+
+a) global shrinker instance statically defined in the kernel, such as
+   workingset_shadow_shrinker.
+
+b) global shrinker instance statically defined in the kernel modules, such as
+   mmu_shrinker in x86.
+
+c) shrinker instance embedded in other structures.
+
+For case a, the memory of shrinker instance is never freed. For case b, the
+memory of shrinker instance will be freed after synchronize_rcu() when the
+module is unloaded. For case c, the memory of shrinker instance will be freed
+along with the structure it is embedded in.
+
+In preparation for implementing lockless slab shrink, we need to dynamically
+allocate those shrinker instances in case c, then the memory can be dynamically
+freed alone by calling kfree_rcu().
+
+This patchset adds the following new APIs for dynamically allocating shrinker,
+and add a private_data field to struct shrinker to record and get the original
+embedded structure.
+
+1. shrinker_alloc()
+2. shrinker_free_non_registered()
+3. shrinker_register()
+4. shrinker_unregister()
+
+In order to simplify shrinker-related APIs and make shrinker more independent of
+other kernel mechanisms, this patchset uses the above APIs to convert all
+shrinkers (including case a and b) to dynamically allocated, and then remove all
+existing APIs. This will also have another advantage mentioned by Dave Chinner:
+
+```
+The other advantage of this is that it will break all the existing out of tree
+code and third party modules using the old API and will no longer work with a
+kernel using lockless slab shrinkers. They need to break (both at the source and
+binary levels) to stop bad things from happening due to using uncoverted
+shrinkers in the new setup.
+```
+
+Then we free the shrinker by calling kfree_rcu(), and use rcu_read_{lock,unlock}()
+to ensure that the shrinker instance is valid. And the shrinker::refcount
+mechanism ensures that the shrinker instance will not be run again after
+unregistration. So the structure that records the pointer of shrinker instance
+can be safely freed without waiting for the RCU read-side critical section.
+
+In this way, while we implement the lockless slab shrink, we don't need to be
+blocked in unregister_shrinker() to wait RCU read-side critical section.
+
+PATCH 1: move shrinker-related code into a separate file
+PATCH 2: remove redundant shrinker_rwsem in debugfs operations
+PATCH 3: add infrastructure for dynamically allocating shrinker
+PATCH 4 ~ 21: dynamically allocate the shrinker instances in case a and b
+PATCH 22 ~ 40: dynamically allocate the shrinker instances in case c
+PATCH 41: remove old APIs
+PATCH 42: introduce pool_shrink_rwsem to implement private synchronize_shrinkers()
+PATCH 43: add a secondary array for shrinker_info::{map, nr_deferred}
+PATCH 44 ~ 45: implement the lockless slab shrink
+PATCH 46 ~ 47: convert shrinker_rwsem to mutex
+
+3. Testing
+==========
+
+3.1 slab shrink stress test
+---------------------------
+
+We can reproduce the down_read_trylock() hotspot through the following script:
+
+```
+
+DIR="/root/shrinker/memcg/mnt"
+
+do_create()
+{
+    mkdir -p /sys/fs/cgroup/memory/test
+    echo 4G > /sys/fs/cgroup/memory/test/memory.limit_in_bytes
+    for i in `seq 0 $1`;
+    do
+        mkdir -p /sys/fs/cgroup/memory/test/$i;
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        mkdir -p $DIR/$i;
+    done
+}
+
+do_mount()
+{
+    for i in `seq $1 $2`;
+    do
+        mount -t tmpfs $i $DIR/$i;
+    done
+}
+
+do_touch()
+{
+    for i in `seq $1 $2`;
+    do
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        dd if=/dev/zero of=$DIR/$i/file$i bs=1M count=1 &
+    done
+}
+
+case "$1" in
+  touch)
+    do_touch $2 $3
+    ;;
+  test)
+    do_create 4000
+    do_mount 0 4000
+    do_touch 0 3000
+    ;;
+  *)
+    exit 1
+    ;;
+esac
+```
+
+Save the above script, then run test and touch commands. Then we can use the
+following perf command to view hotspots:
+
+perf top -U -F 999
+
+1) Before applying this patchset:
+
+  40.44%  [kernel]            [k] down_read_trylock
+  17.59%  [kernel]            [k] up_read
+  13.64%  [kernel]            [k] pv_native_safe_halt
+  11.90%  [kernel]            [k] shrink_slab
+   8.21%  [kernel]            [k] idr_find
+   2.71%  [kernel]            [k] _find_next_bit
+   1.36%  [kernel]            [k] shrink_node
+   0.81%  [kernel]            [k] shrink_lruvec
+   0.80%  [kernel]            [k] __radix_tree_lookup
+   0.50%  [kernel]            [k] do_shrink_slab
+   0.21%  [kernel]            [k] list_lru_count_one
+   0.16%  [kernel]            [k] mem_cgroup_iter
+
+2) After applying this patchset:
+
+  60.17%  [kernel]           [k] shrink_slab
+  20.42%  [kernel]           [k] pv_native_safe_halt
+   3.03%  [kernel]           [k] do_shrink_slab
+   2.73%  [kernel]           [k] shrink_node
+   2.27%  [kernel]           [k] shrink_lruvec
+   2.00%  [kernel]           [k] __rcu_read_unlock
+   1.92%  [kernel]           [k] mem_cgroup_iter
+   0.98%  [kernel]           [k] __rcu_read_lock
+   0.91%  [kernel]           [k] osq_lock
+   0.63%  [kernel]           [k] mem_cgroup_calculate_protection
+   0.55%  [kernel]           [k] shrinker_put
+   0.46%  [kernel]           [k] list_lru_count_one
+
+We can see that the first perf hotspot becomes shrink_slab, which is what we
+expect.
+
+3.2 registeration and unregisteration stress test
+-------------------------------------------------
+
+Run the command below to test:
+
+stress-ng --timeout 60 --times --verify --metrics-brief --ramfs 9 &
+
+1) Before applying this patchset:
+
+setting to a 60 second run per stressor
+dispatching hogs: 9 ramfs
+stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+                          (secs)    (secs)    (secs)   (real time) (usr+sys time)
+ramfs            735238     60.00     12.37    363.70     12253.05        1955.08
+for a 60.01s run time:
+   1440.27s available CPU time
+     12.36s user time   (  0.86%)
+    363.70s system time ( 25.25%)
+    376.06s total time  ( 26.11%)
+load average: 10.79 4.47 1.69
+passed: 9: ramfs (9)
+failed: 0
+skipped: 0
+successful run completed in 60.01s (1 min, 0.01 secs)
+
+2) After applying this patchset:
+
+setting to a 60 second run per stressor
+dispatching hogs: 9 ramfs
+stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+                          (secs)    (secs)    (secs)   (real time) (usr+sys time)
+ramfs            746677     60.00     12.22    367.75     12443.70        1965.13
+for a 60.01s run time:
+   1440.26s available CPU time
+     12.21s user time   (  0.85%)
+    367.75s system time ( 25.53%)
+    379.96s total time  ( 26.38%)
+load average: 8.37 2.48 0.86
+passed: 9: ramfs (9)
+failed: 0
+skipped: 0
+successful run completed in 60.01s (1 min, 0.01 secs)
+
+We can see that the ops/s has hardly changed.
+
+This series is based on next-20230711, and the [PATCH v2 05/49] depends on the
+patch: https://lore.kernel.org/lkml/20230625154937.64316-1-qi.zheng@linux.dev/.
+
+Comments and suggestions are welcome.
+
+Thanks,
+Qi
+
+Changelog in v1 -> v2:
+ - implement the new APIs and convert all shrinkers to use it.
+   (suggested by Dave Chinner)
+ - fix UAF in PATCH [05/29] (pointed by Steven Price)
+ - add a secondary array for shrinker_info::{map, nr_deferred}
+ - re-implement the lockless slab shrink
+   (Since unifying the processing of global and memcg slab shrink needs to
+    modify the startup sequence (As I mentioned in https://lore.kernel.org/lkml/38b14080-4ce5-d300-8a0a-c630bca6806b@bytedance.com/),
+    I finally choose to process them separately.)
+ - collect Acked-bys
+
+Qi Zheng (47):
+  mm: vmscan: move shrinker-related code into a separate file
+  mm: shrinker: remove redundant shrinker_rwsem in debugfs operations
+  mm: shrinker: add infrastructure for dynamically allocating shrinker
+  kvm: mmu: dynamically allocate the x86-mmu shrinker
+  binder: dynamically allocate the android-binder shrinker
+  drm/ttm: dynamically allocate the drm-ttm_pool shrinker
+  xenbus/backend: dynamically allocate the xen-backend shrinker
+  erofs: dynamically allocate the erofs-shrinker
+  f2fs: dynamically allocate the f2fs-shrinker
+  gfs2: dynamically allocate the gfs2-glock shrinker
+  gfs2: dynamically allocate the gfs2-qd shrinker
+  NFSv4.2: dynamically allocate the nfs-xattr shrinkers
+  nfs: dynamically allocate the nfs-acl shrinker
+  nfsd: dynamically allocate the nfsd-filecache shrinker
+  quota: dynamically allocate the dquota-cache shrinker
+  ubifs: dynamically allocate the ubifs-slab shrinker
+  rcu: dynamically allocate the rcu-lazy shrinker
+  rcu: dynamically allocate the rcu-kfree shrinker
+  mm: thp: dynamically allocate the thp-related shrinkers
+  sunrpc: dynamically allocate the sunrpc_cred shrinker
+  mm: workingset: dynamically allocate the mm-shadow shrinker
+  drm/i915: dynamically allocate the i915_gem_mm shrinker
+  drm/msm: dynamically allocate the drm-msm_gem shrinker
+  drm/panfrost: dynamically allocate the drm-panfrost shrinker
+  dm: dynamically allocate the dm-bufio shrinker
+  dm zoned: dynamically allocate the dm-zoned-meta shrinker
+  md/raid5: dynamically allocate the md-raid5 shrinker
+  bcache: dynamically allocate the md-bcache shrinker
+  vmw_balloon: dynamically allocate the vmw-balloon shrinker
+  virtio_balloon: dynamically allocate the virtio-balloon shrinker
+  mbcache: dynamically allocate the mbcache shrinker
+  ext4: dynamically allocate the ext4-es shrinker
+  jbd2,ext4: dynamically allocate the jbd2-journal shrinker
+  nfsd: dynamically allocate the nfsd-client shrinker
+  nfsd: dynamically allocate the nfsd-reply shrinker
+  xfs: dynamically allocate the xfs-buf shrinker
+  xfs: dynamically allocate the xfs-inodegc shrinker
+  xfs: dynamically allocate the xfs-qm shrinker
+  zsmalloc: dynamically allocate the mm-zspool shrinker
+  fs: super: dynamically allocate the s_shrink
+  mm: shrinker: remove old APIs
+  drm/ttm: introduce pool_shrink_rwsem
+  mm: shrinker: add a secondary array for shrinker_info::{map,
+    nr_deferred}
+  mm: shrinker: make global slab shrink lockless
+  mm: shrinker: make memcg slab shrink lockless
+  mm: shrinker: hold write lock to reparent shrinker nr_deferred
+  mm: shrinker: convert shrinker_rwsem to mutex
+
+ arch/x86/kvm/mmu/mmu.c                        |  18 +-
+ drivers/android/binder_alloc.c                |  31 +-
+ drivers/gpu/drm/i915/gem/i915_gem_shrinker.c  |  30 +-
+ drivers/gpu/drm/i915/i915_drv.h               |   2 +-
+ drivers/gpu/drm/msm/msm_drv.c                 |   4 +-
+ drivers/gpu/drm/msm/msm_drv.h                 |   4 +-
+ drivers/gpu/drm/msm/msm_gem_shrinker.c        |  36 +-
+ drivers/gpu/drm/panfrost/panfrost_device.h    |   2 +-
+ drivers/gpu/drm/panfrost/panfrost_drv.c       |   6 +-
+ drivers/gpu/drm/panfrost/panfrost_gem.h       |   2 +-
+ .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  32 +-
+ drivers/gpu/drm/ttm/ttm_pool.c                |  38 +-
+ drivers/md/bcache/bcache.h                    |   2 +-
+ drivers/md/bcache/btree.c                     |  27 +-
+ drivers/md/bcache/sysfs.c                     |   3 +-
+ drivers/md/dm-bufio.c                         |  26 +-
+ drivers/md/dm-cache-metadata.c                |   2 +-
+ drivers/md/dm-zoned-metadata.c                |  28 +-
+ drivers/md/raid5.c                            |  25 +-
+ drivers/md/raid5.h                            |   2 +-
+ drivers/misc/vmw_balloon.c                    |  38 +-
+ drivers/virtio/virtio_balloon.c               |  25 +-
+ drivers/xen/xenbus/xenbus_probe_backend.c     |  17 +-
+ fs/btrfs/super.c                              |   2 +-
+ fs/erofs/utils.c                              |  20 +-
+ fs/ext4/ext4.h                                |   2 +-
+ fs/ext4/extents_status.c                      |  22 +-
+ fs/f2fs/super.c                               |  32 +-
+ fs/gfs2/glock.c                               |  20 +-
+ fs/gfs2/main.c                                |   6 +-
+ fs/gfs2/quota.c                               |  26 +-
+ fs/gfs2/quota.h                               |   3 +-
+ fs/jbd2/journal.c                             |  27 +-
+ fs/kernfs/mount.c                             |   2 +-
+ fs/mbcache.c                                  |  23 +-
+ fs/nfs/nfs42xattr.c                           |  87 +-
+ fs/nfs/super.c                                |  20 +-
+ fs/nfsd/filecache.c                           |  22 +-
+ fs/nfsd/netns.h                               |   4 +-
+ fs/nfsd/nfs4state.c                           |  20 +-
+ fs/nfsd/nfscache.c                            |  31 +-
+ fs/proc/root.c                                |   2 +-
+ fs/quota/dquot.c                              |  17 +-
+ fs/super.c                                    |  39 +-
+ fs/ubifs/super.c                              |  22 +-
+ fs/xfs/xfs_buf.c                              |  25 +-
+ fs/xfs/xfs_buf.h                              |   2 +-
+ fs/xfs/xfs_icache.c                           |  26 +-
+ fs/xfs/xfs_mount.c                            |   4 +-
+ fs/xfs/xfs_mount.h                            |   2 +-
+ fs/xfs/xfs_qm.c                               |  26 +-
+ fs/xfs/xfs_qm.h                               |   2 +-
+ include/linux/fs.h                            |   2 +-
+ include/linux/jbd2.h                          |   2 +-
+ include/linux/memcontrol.h                    |  12 +-
+ include/linux/shrinker.h                      |  54 +-
+ kernel/rcu/tree.c                             |  21 +-
+ kernel/rcu/tree_nocb.h                        |  19 +-
+ mm/Makefile                                   |   4 +-
+ mm/huge_memory.c                              |  69 +-
+ mm/shrinker.c                                 | 772 ++++++++++++++++++
+ mm/shrinker_debug.c                           |  76 +-
+ mm/vmscan.c                                   | 701 ----------------
+ mm/workingset.c                               |  26 +-
+ mm/zsmalloc.c                                 |  28 +-
+ net/sunrpc/auth.c                             |  19 +-
+ 66 files changed, 1516 insertions(+), 1225 deletions(-)
+ create mode 100644 mm/shrinker.c
+
 -- 
-2.34.1
+2.30.2
 
 
 ______________________________________________________
