@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99A54C001DE
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:52:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49B9AC0015E
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:52:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6vN0UcKlzywFrI/2NmYx7LuPugw8pctYUCZ4beJbJOc=; b=Jq5x2E8CQ1fXhC
-	yPBrKn7CGJKOxI3Ano/9EgGaV4Wdpp1NV+BaA9DK6ln/4lxRnznZ836WnheDc+bl5keRQdRFP125C
-	4XohqAD5m/BBwfZSzGlk+BIl3pT4VN+mb1br+XutkI7iN5nvKjvT8JiivyORGee/RVT96ZYB7X9Jr
-	1ZBgf2YnM+jvp+Jmy1fVQ5mmnxPGoh4yE1s+5hs4GTYG+Tm1h8WNGhOzEADpnG6lC+ONVifcgLXIb
-	0eOSpQrZ42DE4eJLWgODr44Qjk76VmmKUAAAIgt/TmMTnxyGIbTpnY2qj4yHb5IKloZBUL9OAA0Hx
-	Z/cNTHNliguOyV65RUXQ==;
+	List-Owner; bh=Mf6vdQnNsceIZPYWn0xzeUG3y2xIoZGMlTeHhcBkReo=; b=ANQfXpFldlRub+
+	B3jq1xsxwaJN3xnVaGOy6MQgsarSbrsEtq54GTAmg2C5dlH2GZiLYiFBmOwzz7bwG/LcX1loNmZ95
+	3EZK4Pxhzn+2PFTJbpYn3ElRcwoLWXuR3fPjVsKqbGz0PP2LBsRHS6S4ywDVL8blbm0vhAqBA2LBz
+	cUHA9vXAifiVINrw6ykIvVpOkCPmBYvcJsKo3bQ+cA6vhjtkQ1gZUV4MRWdEByCZsMH0LyA7IC2y4
+	BuLr2Czpw68wFj/7wtYIbodfOBzUqBhsuZufmyqlMbXjiOGOSRPZFKH2EZk9Pnn4gOgLEE3DWHWDF
+	j7FdRlj2jHmwfNurgowg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNsEo-003WIK-17;
-	Mon, 24 Jul 2023 09:52:22 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+	id 1qNsFB-003WWN-2z;
+	Mon, 24 Jul 2023 09:52:45 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNsEk-003WGP-2f
+	id 1qNsF9-003WUe-1d
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jul 2023 09:52:20 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b7dfb95761so5884655ad.1
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:52:18 -0700 (PDT)
+	Mon, 24 Jul 2023 09:52:45 +0000
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bba9539a23so649905ad.1
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:52:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690192338; x=1690797138;
+        d=bytedance.com; s=google; t=1690192362; x=1690797162;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TdB9rRMLZCcd9e2nqCLYXDwhc2GYqBzgLTOCktFYsxc=;
-        b=SzORXV42/Rkrz0ySbtFMuCZ6EcMdlaXWidsXVoP9Bu4SkfHmgah3BXDWmdOJP2Jiax
-         xVX2Gq7sqO/lSpvZDt7FPW8ckXc5rBx+Fp5rDETVHg5ZRmLyKjmjXPxU8j82DsT8nUX2
-         +lBD1pmTVNRo9p32tv/6gOZ/Sm5LO6qba/fn4oF55QYMtV6ZQw4pMeuXt6qQbAj1PWKP
-         V84//RahuYbQGXKjJ1xGWfF0qil0oc/qVmx4ZoBZqcIV2GTe+3GnYm52uVamfvVOgPBe
-         7qmhYlAe5+lFDhiCToVYO6NYEZfnOgPlX7bqwkW4eIRa2R40yUO4E7ouwBizzc4Majgp
-         WMAQ==
+        bh=+msSROnlHTbkN8WdS5VhxMSS48DaBcuNUu675bILAm8=;
+        b=h3gsG4QXWw/nahqBxLdBCvqi4m8rD0FXz9A20d9YDr1GVweA7QI5gIYRXxeR03F7VF
+         avO+YUz8f1IL6J1uYX1/b0NEPW6FiLuYcPPgWc9sNeFYAy1/jQVonTK3Har+aojJwTqi
+         hQZEwnSV3LL7ecl9UfamsDpZO40zuTjDqPfF5eu13La0YtcWt3KQO54XvrgMZueVi5PZ
+         X9MwcigdTTnwiJ3xQrZgNRbLcfkBdWK7eRH096K0D7h66kc666JHvNvIGlIc1vw99tH0
+         GAm/hWRvtDUBnuyuOUfh8qzrbwzBKl3sPPd+rGOKnxJaCrXEUUZmWLLd6RNa7iYZg14F
+         z6LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690192338; x=1690797138;
+        d=1e100.net; s=20221208; t=1690192362; x=1690797162;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TdB9rRMLZCcd9e2nqCLYXDwhc2GYqBzgLTOCktFYsxc=;
-        b=bxLAjL2zmHdpJpo0gl8rKtkbB7jF6LX2z+SzqmnY3iQvB6jCB1BVwiPkivxBxCbwQI
-         Grn2GGtlzV7rH1DzFjPUBoSW1SUgzjjVGildUteQYser2D30qmz8kek9lqTlk+0DwCsu
-         JqPIh6MmUmp+zNbdVqy0xLlB1eFcnPWDT72/5+njDnYfJou1tOIuW8+xs7F6efcgVTbM
-         JeL87Cy9+nnT3c3of+mWpexv09FTpem0yQ9fb7mYIvagjB/5pP0rlUYkbyWoLoqAKPgg
-         SFDMUYdR4UFNOuLMnSLLKx6AlIMkn7qQk6Mm404V2M3wl2LjA6nKWVavYE5cP/l2oz++
-         15fw==
-X-Gm-Message-State: ABy/qLarq5zErJhSEtxDT4kJD4vdEVWrC1ApNCC3ZSpDUhdxZ9RWO4P1
-	bPfToZkuJQrxZCXmqEWaTPXJjA==
-X-Google-Smtp-Source: APBJJlGv61W8KGqFtJwXjT0bM91VjHnubPgHDdaymusYtIYliDl3QXXildbsEKZFPobYebqub0cGDA==
-X-Received: by 2002:a17:902:f681:b0:1b8:17e8:5472 with SMTP id l1-20020a170902f68100b001b817e85472mr12096259plg.1.1690192338295;
-        Mon, 24 Jul 2023 02:52:18 -0700 (PDT)
+        bh=+msSROnlHTbkN8WdS5VhxMSS48DaBcuNUu675bILAm8=;
+        b=LeiRa9ytL1pNYOtAhfIRL0vU32Km5lCRu6cZjo2Zvf58naEbUQOznOEGojLqMaQGRC
+         S6oCTtdHaMQbydrpPHjCsp/F40WBl4bINt2qRtAT3IA2awE/LgrMkcPTk3Gsz8WlB8Fo
+         +2kojHo5Lk463m/r+ydp2yyo/U+7eBA1B6R1ko13uRpuxhH1REx9hQ/JpMOCjg/aL1t7
+         9lx9dZKj4Xa6/UqXOKdgBtwaX1fSfaeHJApOGw2n9CC25DM/tPfQyi2kMFBi1TnBxLMJ
+         /YLoGNG+Be+pU2YM6sK+jtdAHwwz/iXA/EY7iTDWPB2eiToHKiLfueS3R414JYJM7LKo
+         MnVQ==
+X-Gm-Message-State: ABy/qLZKpmQklwN1FNSsI2hVCVpfm2YLmHLdJxaIfAqHAYtC66rqI3Tt
+	fIZ6iDF9vKrDTrIbHZU5PpWtBw==
+X-Google-Smtp-Source: APBJJlFjFnMUMe3SYJatR/saB9KY/jkISOdIPz1PLzDLS3adgTzHCnV8/bXf0D4q3OfiSxgFenVrMg==
+X-Received: by 2002:a17:903:41c9:b0:1b8:17e8:547e with SMTP id u9-20020a17090341c900b001b817e8547emr12208099ple.1.1690192361964;
+        Mon, 24 Jul 2023 02:52:41 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.52.06
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.52.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:52:17 -0700 (PDT)
+        Mon, 24 Jul 2023 02:52:41 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: akpm@linux-foundation.org,
 	david@fromorbit.com,
@@ -101,16 +101,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 36/47] xfs: dynamically allocate the xfs-buf shrinker
-Date: Mon, 24 Jul 2023 17:43:43 +0800
-Message-Id: <20230724094354.90817-37-zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 38/47] xfs: dynamically allocate the xfs-qm shrinker
+Date: Mon, 24 Jul 2023 17:43:45 +0800
+Message-Id: <20230724094354.90817-39-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_025218_863509_85BFA02D 
-X-CRM114-Status: GOOD (  13.67  )
+X-CRM114-CacheID: sfid-20230724_025243_547382_52611A2D 
+X-CRM114-Status: GOOD (  13.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,87 +128,89 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the xfs-buf shrinker, so that it can be freed
+dynamically allocate the xfs-qm shrinker, so that it can be freed
 asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct xfs_buftarg.
+read-side critical section when releasing the struct xfs_quotainfo.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- fs/xfs/xfs_buf.c | 25 ++++++++++++++-----------
- fs/xfs/xfs_buf.h |  2 +-
- 2 files changed, 15 insertions(+), 12 deletions(-)
+ fs/xfs/xfs_qm.c | 26 +++++++++++++-------------
+ fs/xfs/xfs_qm.h |  2 +-
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index 15d1e5a7c2d3..19a0bf6ce115 100644
---- a/fs/xfs/xfs_buf.c
-+++ b/fs/xfs/xfs_buf.c
-@@ -1906,8 +1906,7 @@ xfs_buftarg_shrink_scan(
+diff --git a/fs/xfs/xfs_qm.c b/fs/xfs/xfs_qm.c
+index 6abcc34fafd8..8f1216e1efc1 100644
+--- a/fs/xfs/xfs_qm.c
++++ b/fs/xfs/xfs_qm.c
+@@ -504,8 +504,7 @@ xfs_qm_shrink_scan(
  	struct shrinker		*shrink,
  	struct shrink_control	*sc)
  {
--	struct xfs_buftarg	*btp = container_of(shrink,
--					struct xfs_buftarg, bt_shrinker);
-+	struct xfs_buftarg	*btp = shrink->private_data;
- 	LIST_HEAD(dispose);
+-	struct xfs_quotainfo	*qi = container_of(shrink,
+-					struct xfs_quotainfo, qi_shrinker);
++	struct xfs_quotainfo	*qi = shrink->private_data;
+ 	struct xfs_qm_isolate	isol;
  	unsigned long		freed;
- 
-@@ -1929,8 +1928,7 @@ xfs_buftarg_shrink_count(
+ 	int			error;
+@@ -539,8 +538,7 @@ xfs_qm_shrink_count(
  	struct shrinker		*shrink,
  	struct shrink_control	*sc)
  {
--	struct xfs_buftarg	*btp = container_of(shrink,
--					struct xfs_buftarg, bt_shrinker);
-+	struct xfs_buftarg	*btp = shrink->private_data;
- 	return list_lru_shrink_count(&btp->bt_lru, sc);
+-	struct xfs_quotainfo	*qi = container_of(shrink,
+-					struct xfs_quotainfo, qi_shrinker);
++	struct xfs_quotainfo	*qi = shrink->private_data;
+ 
+ 	return list_lru_shrink_count(&qi->qi_lru, sc);
  }
+@@ -680,16 +678,18 @@ xfs_qm_init_quotainfo(
+ 	if (XFS_IS_PQUOTA_ON(mp))
+ 		xfs_qm_set_defquota(mp, XFS_DQTYPE_PROJ, qinf);
  
-@@ -1938,7 +1936,7 @@ void
- xfs_free_buftarg(
- 	struct xfs_buftarg	*btp)
- {
--	unregister_shrinker(&btp->bt_shrinker);
-+	shrinker_unregister(btp->bt_shrinker);
- 	ASSERT(percpu_counter_sum(&btp->bt_io_count) == 0);
- 	percpu_counter_destroy(&btp->bt_io_count);
- 	list_lru_destroy(&btp->bt_lru);
-@@ -2021,13 +2019,18 @@ xfs_alloc_buftarg(
- 	if (percpu_counter_init(&btp->bt_io_count, 0, GFP_KERNEL))
- 		goto error_lru;
+-	qinf->qi_shrinker.count_objects = xfs_qm_shrink_count;
+-	qinf->qi_shrinker.scan_objects = xfs_qm_shrink_scan;
+-	qinf->qi_shrinker.seeks = DEFAULT_SEEKS;
+-	qinf->qi_shrinker.flags = SHRINKER_NUMA_AWARE;
+-
+-	error = register_shrinker(&qinf->qi_shrinker, "xfs-qm:%s",
+-				  mp->m_super->s_id);
+-	if (error)
++	qinf->qi_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "xfs-qm:%s",
++					   mp->m_super->s_id);
++	if (!qinf->qi_shrinker)
+ 		goto out_free_inos;
  
--	btp->bt_shrinker.count_objects = xfs_buftarg_shrink_count;
--	btp->bt_shrinker.scan_objects = xfs_buftarg_shrink_scan;
--	btp->bt_shrinker.seeks = DEFAULT_SEEKS;
--	btp->bt_shrinker.flags = SHRINKER_NUMA_AWARE;
--	if (register_shrinker(&btp->bt_shrinker, "xfs-buf:%s",
--			      mp->m_super->s_id))
-+	btp->bt_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "xfs-buf:%s",
-+					  mp->m_super->s_id);
-+	if (!btp->bt_shrinker)
- 		goto error_pcpu;
++	qinf->qi_shrinker->count_objects = xfs_qm_shrink_count;
++	qinf->qi_shrinker->scan_objects = xfs_qm_shrink_scan;
++	qinf->qi_shrinker->seeks = DEFAULT_SEEKS;
++	qinf->qi_shrinker->private_data = qinf;
 +
-+	btp->bt_shrinker->count_objects = xfs_buftarg_shrink_count;
-+	btp->bt_shrinker->scan_objects = xfs_buftarg_shrink_scan;
-+	btp->bt_shrinker->seeks = DEFAULT_SEEKS;
-+	btp->bt_shrinker->private_data = btp;
++	shrinker_register(qinf->qi_shrinker);
 +
-+	shrinker_register(btp->bt_shrinker);
-+
- 	return btp;
+ 	return 0;
  
- error_pcpu:
-diff --git a/fs/xfs/xfs_buf.h b/fs/xfs/xfs_buf.h
-index 549c60942208..4e6969a675f7 100644
---- a/fs/xfs/xfs_buf.h
-+++ b/fs/xfs/xfs_buf.h
-@@ -102,7 +102,7 @@ typedef struct xfs_buftarg {
- 	size_t			bt_logical_sectormask;
+ out_free_inos:
+@@ -718,7 +718,7 @@ xfs_qm_destroy_quotainfo(
+ 	qi = mp->m_quotainfo;
+ 	ASSERT(qi != NULL);
  
- 	/* LRU control structures */
--	struct shrinker		bt_shrinker;
-+	struct shrinker		*bt_shrinker;
- 	struct list_lru		bt_lru;
+-	unregister_shrinker(&qi->qi_shrinker);
++	shrinker_unregister(qi->qi_shrinker);
+ 	list_lru_destroy(&qi->qi_lru);
+ 	xfs_qm_destroy_quotainos(qi);
+ 	mutex_destroy(&qi->qi_tree_lock);
+diff --git a/fs/xfs/xfs_qm.h b/fs/xfs/xfs_qm.h
+index 9683f0457d19..d5c9fc4ba591 100644
+--- a/fs/xfs/xfs_qm.h
++++ b/fs/xfs/xfs_qm.h
+@@ -63,7 +63,7 @@ struct xfs_quotainfo {
+ 	struct xfs_def_quota	qi_usr_default;
+ 	struct xfs_def_quota	qi_grp_default;
+ 	struct xfs_def_quota	qi_prj_default;
+-	struct shrinker		qi_shrinker;
++	struct shrinker		*qi_shrinker;
  
- 	struct percpu_counter	bt_io_count;
+ 	/* Minimum and maximum quota expiration timestamp values. */
+ 	time64_t		qi_expiry_min;
 -- 
 2.30.2
 
