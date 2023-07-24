@@ -4,90 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07773C001B0
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 07:09:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95757C41513
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 08:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sAG0PnUe72areBQeejVc6FHzTrlN4WaL6dp9C5xItQ8=; b=wQ4vLmyjhw4zIc
-	+M1+AyfrQ/blRtP718kTO9ObOm0f2hzDYtjLNT1P75kniZkMVTS3DGnmKNi6eOTHVqB0KYPmTxR/e
-	YX8vHSxSSDEq2MMc4+xWCIdoo3NXuY44+RB9CuWicSTXJ9NC57NaPaA6NmDDUhvgIaxMiFyDbrdXO
-	ng9vJJ2Cma0wM3nDGR4NiKp135EVH4fmBm+LCVmvANbRqk1foro9E+d0K3OvjEnRSC53sUfdZ253N
-	muzWrENottHCWRH7eKWwOL5tE6dC8VkR5p9pSfMjvEF6HBYVoSX1uqee0v1hRDsDB7n73gZD0FcQz
-	G+U8Vf5c8d0tcnzuLuaQ==;
+	List-Owner; bh=I+rZx5TV/On9wB2uf4COx4hZHvxETnwVeCHlkUvXCbc=; b=1z1zirJoHmqiFp
+	rF6mH5i/DCrh7Fvd7Z5iNE/pHsrcprD864sugTANP7idd9o4CNp9ct4WV/73ZUyw6udNT+ha2BnM+
+	jkS9t1wIGRQrwd2HW7mtHU59CZXAsYRcRom17t9ur5hmrq9OsMt0CAykgUddnMh76SX/f0uaETsaW
+	FCqDJgE9fSrwFCAkm1z9XjTxw6qaaPrhQL1fjREqznqdDPglwSOydu1nFmSiE4C6J/NvMFRWVDLWQ
+	Tc/gn7bXCQ2JJCp4r6V8zRwHt0F2AqxWXWuhXsKa/oqoZoCeD+DlerJzYUhS/UOOsSp1G415EFdY4
+	lFry7yYqzaj7qQNOe5Fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNph8-0033u2-0g;
-	Mon, 24 Jul 2023 07:09:26 +0000
-Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
+	id 1qNqgi-003CLX-1D;
+	Mon, 24 Jul 2023 08:13:04 +0000
+Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNph1-0033sF-2r;
-	Mon, 24 Jul 2023 07:09:22 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6C2E524000E;
-	Mon, 24 Jul 2023 07:09:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690182552;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0OTdgWQ6Vo/4tl1ZM7En0YdjITPLKGIP2IIxkkPFJRM=;
-	b=iC5ZIY44VFrCSUNoeMIdYmOyqSrlrW7N4tyY+Hq53oXBVph3jCQ5ij8fsDynsYh6NybKfF
-	47iBUwR964ggu52YB13yaU1E18wok2aDQAXdbpXfZnCVzqeybMcvNBEm04M8MJv49vz912
-	60p20TKBhztddQMV6EZbSo0vTLzFb3Ok+FWErn92iDiDFjDyPmqRh1JKdYw5xT3hwpwVlV
-	u4k2GthKUnBFuRNrRP/XoPSerupU1HIaiVySzO/QpWk35FaiLI3dwdIhQ2brWGTyOPPUCM
-	8E3/Ier83smwYkYCv/LsZ20OWFpB5I2g8A5epoX659Pa/Omr3Rckh60nqnZ+5A==
-Date: Mon, 24 Jul 2023 09:09:02 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Andy Shevchenko <andy@kernel.org>
-Cc: nikita.shubin@maquefel.me, Hartley Sweeten
- <hsweeten@visionengravers.com>, Lennert Buytenhek <kernel@wantstofly.org>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>, Linus Walleij
- <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas
- Gleixner <tglx@linutronix.de>, Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Wim Van Sebroeck
- <wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, Sebastian
- Reichel <sre@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, Uwe
- =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>, Mark
- Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Damien
- Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, Dmitry
- Torokhov <dmitry.torokhov@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Olof
- Johansson <olof@lixom.net>, soc@kernel.org, Liam Girdwood
- <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>, Michael Peters <mpeters@embeddedts.com>, Kris Bahnsen
- <kris@embeddedts.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-spi@vger.kernel.org, netdev@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 24/42] mtd: nand: add support for ts72xx
-Message-ID: <20230724090902.679ea56d@xps-13>
-In-Reply-To: <ZLqx+Osn3gcHjUph@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
-	<20230605-ep93xx-v3-24-3d63a5f1103e@maquefel.me>
-	<ZLqx+Osn3gcHjUph@smile.fi.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1qNqgd-003CIY-2c
+	for linux-mtd@lists.infradead.org;
+	Mon, 24 Jul 2023 08:13:01 +0000
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-993d1f899d7so717959466b.2
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 01:12:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690186377; x=1690791177;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v9TJeEMNRCv2DgCOuJM1bBGc8b3D58xXpaHuqfHRQK8=;
+        b=IF+0ss6NBRFxVEvrbdhWI4conkRSs7twLSGYcxdmi6/cC/bynEt5PSWxf9WbyO4akj
+         SSkOYO0ltYkykh1A+aRmVxXyb9WYfbifp+QfcC91Wo964JFWwMOTKJLrsNLI9/7h6S2g
+         xvwkf659OHSWtNurKOW9lRV0jo4EX5g0fdTh1UC1yy5pdlVmDdQni9MYQfCeVC9dT51p
+         aRFtftRXnU/gu0NxhOira9W4ABhJ7GUrLyoFXml9y+65QF8tI6oAQFCs0iRuDmXrh0cd
+         59hEBINQ20GXqeeeo8CyAIJxRwnf0mSVKllCSQlovJvg6nNRrXMsuG5JRCGYSZ0jPnUB
+         5NfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690186377; x=1690791177;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v9TJeEMNRCv2DgCOuJM1bBGc8b3D58xXpaHuqfHRQK8=;
+        b=UxR39qU4zK0kjkM4CwQkV9DZlHjSggKWG8WcL43GW2qoW73QBBY0LhQZxXcwJgCkM0
+         KzM9falpSsfeFEsgWbErYuyqpprgqvtNQyFUolnkB78E5kN4fl8J8fUhgPAEFpIS1jR9
+         DWnftahNx7kNKUv9CnAY2Aj4nw2jP5LtfgpB52qzYLdm9I8SbLXZQrjeD3QwvodPncoa
+         mbQl6mmAUpf03GFA8yQsuIzfRSCXWr6i9thQMt4/u3mWbvn7Dq3HjE6Acz/eAjxNjxrW
+         fYRTIlXAMd45s+hzi/4a0nEkJMqORL8DbXYLsr84AU5U3qdAkVG2IHedzh9mL3EcylrH
+         63GA==
+X-Gm-Message-State: ABy/qLaRxkyhTDUTJidedRln9BdN4qy0RorAXfAoAjztLNQ9w6J5b9pc
+	tASYPvIpTO+A65P471q+tVArCw==
+X-Google-Smtp-Source: APBJJlFrbF1dyLHSDZqf2T8yfi603+3h845Soxk6FH+ij/grlAEud6qiyv29/Xz1egJwH4A8fSBWHw==
+X-Received: by 2002:a17:907:7895:b0:99b:4bab:2838 with SMTP id ku21-20020a170907789500b0099b4bab2838mr9950011ejc.0.1690186377054;
+        Mon, 24 Jul 2023 01:12:57 -0700 (PDT)
+Received: from 1.. ([79.115.63.48])
+        by smtp.gmail.com with ESMTPSA id a6-20020a1709065f8600b0098ec690e6d7sm6355395eju.73.2023.07.24.01.12.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 01:12:56 -0700 (PDT)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: tkuw584924@gmail.com,
+	takahiro.kuwano@infineon.com,
+	michael@walle.cc
+Cc: pratyush@kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bacem.daassi@infineon.com,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+	stable@vger.kernel.org
+Subject: [RESEND PATCH v3 02/11] mtd: spi-nor: spansion: preserve CFR2V[7] when writing MEMLAT
+Date: Mon, 24 Jul 2023 11:12:38 +0300
+Message-Id: <20230724081247.4779-3-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230724081247.4779-1-tudor.ambarus@linaro.org>
+References: <20230724081247.4779-1-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1944; i=tudor.ambarus@linaro.org; h=from:subject; bh=kVZ7aQId7ERSbIGrhSxOKuGFZinAOtskWkM0179Q9K8=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkvjJ+SIacWrtM6rqggQL3xW9NW3MgQizA9VFwu e+IRxfckVyJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZL4yfgAKCRBLVU9HpY0U 6fIXB/4sxp2lHpr0bsLJOluiR+54Ai3rZFme+Z0Pca5oGlc2cJN4GcjbS3uuNnLbr7tfVFoByji wShomDl6y/CbrxwQzxMake0uet1egUDKMWMu2yTRNbwRE4ljVUgMEF9xh1WpId9T4CkC+CJ5pc0 FXWgZLt/0PjOw5XX+xjohQBXJ21y+U+C+2XPZJwkY+5Vh9uPkmc2qz6KrFOrpemfQRKYB/bWxsO I1IF9O5SU2xNxx1wJIL4/1HQISx1JFwpwJlzQnL51sa1tgg785Vx3zE4n7KJiy9VI+xADeSsD+u WUTXjxqujyuVPa5dvmLNFofEraQia4pr0HXRWfdH/DGgiR20
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_000920_393551_2D0EFBE0 
-X-CRM114-Status: GOOD (  18.94  )
+X-CRM114-CacheID: sfid-20230724_011259_851283_BE92B6C3 
+X-CRM114-Status: GOOD (  12.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,31 +97,68 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQW5keSwKCj4gPiArc3RhdGljIGludCB0czcyeHhfbmFuZF9hdHRhY2hfY2hpcChzdHJ1Y3Qg
-bmFuZF9jaGlwICpjaGlwKQo+ID4gK3sKPiA+ICsJc3dpdGNoIChjaGlwLT5lY2MuZW5naW5lX3R5
-cGUpIHsKPiA+ICsJY2FzZSBOQU5EX0VDQ19FTkdJTkVfVFlQRV9TT0ZUOgo+ID4gKwkJaWYgKGNo
-aXAtPmVjYy5hbGdvID09IE5BTkRfRUNDX0FMR09fVU5LTk9XTikKPiA+ICsJCQljaGlwLT5lY2Mu
-YWxnbyA9IE5BTkRfRUNDX0FMR09fSEFNTUlORzsKPiA+ICsJCWJyZWFrOwo+ID4gKwljYXNlIE5B
-TkRfRUNDX0VOR0lORV9UWVBFX09OX0hPU1Q6Cj4gPiArCQlyZXR1cm4gLUVJTlZBTDsKPiA+ICsJ
-ZGVmYXVsdDogIAo+IAo+ID4gKwkJYnJlYWs7ICAKPiAKPiBIZXJlIGl0IHdpbGwgcmV0dXJuIDAs
-IGlzIGl0IGEgcHJvYmxlbT8KClNlZW1zIG9rLCB0aGVyZSBhcmUgdHdvIG90aGVyIHNpdHVhdGlv
-bnM6IG9uLWRpZSBFQ0MgZW5naW5lIGFuZCBubyBFQ0MKZW5naW5lLCBib3RoIGRvIG5vdCByZXF1
-aXJlIGFueSBzcGVjaWZpYyBoYW5kbGluZyBvbiB0aGUgY29udHJvbGxlcgpzaWRlLgoKPiAKPiA+
-ICsJfQo+ID4gKwo+ID4gKwlyZXR1cm4gMDsKPiA+ICt9ICAKPiAKPiAuLi4KPiAKPiA+ICtzdGF0
-aWMgdm9pZCB0czcyeHhfbmFuZF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikK
-PiA+ICt7Cj4gPiArCXN0cnVjdCB0czcyeHhfbmFuZF9kYXRhICpkYXRhID0gcGxhdGZvcm1fZ2V0
-X2RydmRhdGEocGRldik7Cj4gPiArCXN0cnVjdCBuYW5kX2NoaXAgKmNoaXAgPSAmZGF0YS0+Y2hp
-cDsKPiA+ICsJaW50IHJldDsKPiA+ICsKPiA+ICsJcmV0ID0gbXRkX2RldmljZV91bnJlZ2lzdGVy
-KG5hbmRfdG9fbXRkKGNoaXApKTsgIAo+IAo+ID4gKwlXQVJOX09OKHJldCk7ICAKPiAKPiBXaHk/
-ISAgSXMgaXQgbGlrZSB0aGlzIGluIG90aGVyIE1URCBkcml2ZXJzPwoKWWVzLCB3ZSBkaWQgbm90
-IHlldCBjaGFuZ2UgdGhlIGludGVybmFsIG1hY2hpbmVyeSB0byByZXR1cm4gdm9pZCwgYW5kCndl
-IGRvbid0IHdhbnQgcGVvcGxlIHRvIHRoaW5rIGdldHRpbmcgZXJyb3JzIHRoZXJlIGlzIG5vcm1h
-bC4KCj4gPiArCW5hbmRfY2xlYW51cChjaGlwKTsKPiA+ICt9ICAKPiAKClRoYW5rcywKTWlxdcOo
-bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+
+CFR2V[7] is assigned to Flash's address mode (3- or 4-ybte) and must not
+be changed when writing MEMLAT (CFR2V[3:0]). CFR2V shall be used in a read,
+update, write back fashion.
+
+Fixes: c3266af101f2 ("mtd: spi-nor: spansion: add support for Cypress Semper flash")
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/mtd/spi-nor/spansion.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 6b2532ed053c..6460d2247bdf 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2014, Freescale Semiconductor, Inc.
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/device.h>
+ #include <linux/mtd/spi-nor.h>
+ 
+@@ -28,6 +29,7 @@
+ #define SPINOR_REG_CYPRESS_CFR2			0x3
+ #define SPINOR_REG_CYPRESS_CFR2V					\
+ 	(SPINOR_REG_CYPRESS_VREG + SPINOR_REG_CYPRESS_CFR2)
++#define SPINOR_REG_CYPRESS_CFR2_MEMLAT_MASK	GENMASK(3, 0)
+ #define SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24	0xb
+ #define SPINOR_REG_CYPRESS_CFR2_ADRBYT		BIT(7)
+ #define SPINOR_REG_CYPRESS_CFR3			0x4
+@@ -161,8 +163,18 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
+ 	int ret;
+ 	u8 addr_mode_nbytes = nor->params->addr_mode_nbytes;
+ 
++	op = (struct spi_mem_op)
++		CYPRESS_NOR_RD_ANY_REG_OP(addr_mode_nbytes,
++					  SPINOR_REG_CYPRESS_CFR2V, 0, buf);
++
++	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
++	if (ret)
++		return ret;
++
+ 	/* Use 24 dummy cycles for memory array reads. */
+-	*buf = SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24;
++	*buf &= ~SPINOR_REG_CYPRESS_CFR2_MEMLAT_MASK;
++	*buf |= FIELD_PREP(SPINOR_REG_CYPRESS_CFR2_MEMLAT_MASK,
++			   SPINOR_REG_CYPRESS_CFR2_MEMLAT_11_24);
+ 	op = (struct spi_mem_op)
+ 		CYPRESS_NOR_WR_ANY_REG_OP(addr_mode_nbytes,
+ 					  SPINOR_REG_CYPRESS_CFR2V, 1, buf);
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
