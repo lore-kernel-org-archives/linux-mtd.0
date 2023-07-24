@@ -4,65 +4,174 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06FA1C0015E
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 11:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 010CFC001B0
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 11:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/til7E688mHOer2LLA9Rz7CF+AB1q2msLBr87xaDiRs=; b=TQMMq8Q6sg7uly
-	QGsow7En5ZOTiKjrGF1N2G8/c3qT+ndiG13AE7ibfELGcmLzRHdVC4mAmXxfwnUV9ZIXphhTQwDSH
-	J5fxN9sgMRnbumzagI7Flj53AugvXHuJ610kGE19h39vgfwUY8QvFGkLtL+cbZRX7cVyupL+tgKLR
-	V0IWjP8pIAlgPh0Gibk+Gv5x2z+fWZxAJgumilgD02tV8qCGp05EIodWvo3Sque8LBHrL4ZTCRdM3
-	G4rt9bVN12LYrnEO7wyoY/zBkiYQRZYUZlOa2oqFusQqGTF2+S9L8jzoawOpCSd66Id5g99R1mQrM
-	Liz6f/uxO0oassqXS7DQ==;
+	List-Owner; bh=hZjj1kZQQLdDVQlW0DUhoLjKTPon0iYU6VqtCu+FYSo=; b=QU6okzG2KVD0Vf
+	7kpXTtMe+IYsMbZh+z/cmY1MHqb1jnXQ+M5p5yXTQTvncB6GuA4fTBMuwkkxvRKmywAm47L2HCP0t
+	Mi/8iji+LgcgLEr4s0jk/eLuH+HGbPOz8GYs/2zou2myYeFJOuqp1JuRpdwAtcHNgm0m9NM8g/tkR
+	NcrpGrRWjWaKFA6QIMXI9SZvYa+DYvrtUTPkDWTJgJyDllGUSmCX2zo3UA3ineDaiz249ct6ECk9R
+	W/6uvQJ7eX8VfD1cRYzJEfzXgwjt+eZ2+92PmSxqHHL5U1PwCfYFVkcshuTLD8h8dSUN0HDpb/Jgl
+	wm/Se1VWgFwCz0eJiw/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNtZs-0041Nj-1w;
-	Mon, 24 Jul 2023 11:18:12 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNtZp-0041Gy-0D
+	id 1qNtz4-0046ER-1E;
+	Mon, 24 Jul 2023 11:44:14 +0000
+Received: from mga11.intel.com ([192.55.52.93])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qNtz2-0046DK-1b
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jul 2023 11:18:11 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B206CDE0;
-	Mon, 24 Jul 2023 04:18:29 -0700 (PDT)
-Received: from [10.57.34.62] (unknown [10.57.34.62])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C518B3F5A1;
-	Mon, 24 Jul 2023 04:17:39 -0700 (PDT)
-Message-ID: <cdd08c9e-81d3-a85f-5426-5db738aa73ec@arm.com>
-Date: Mon, 24 Jul 2023 12:17:40 +0100
+	Mon, 24 Jul 2023 11:44:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690199052; x=1721735052;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=sJltT1zHXt8HSZT72taB3ccrgM9OSkOWKzHwjirA0DI=;
+  b=avO63RohppjPl7fy0rJeRBTb70Jr177aRVG+E1AoYHc+GFnC6geFm/PE
+   qro6Q3YcGnhZ6eo0X5FTTzLSsmTSMmsC3He11i1LO9hqAM+IETlPhXff2
+   +YN+O2zHtGOH7Y9rpsR1nQ9SCZ4P6IJiGxrPw2Mn37aLa2+yFCyDQ3CeH
+   LgbYa4IRzRfaOrPJrTxIOOEfZo3oM/LFaunDv187GBZfK3Zg5V8TlGxnb
+   xTUHE9I4aQT7JgxajXUzfmW6tUqu3DlWrWxwvB33qbXKzDEw3A/1mP0Wn
+   mncBBr4liGfnuhimhBJ0TRH5a6Ld7GzIngw/9nZM6jdf2kd2KSskGCpJu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="364880802"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="364880802"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 04:44:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="849603517"
+X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
+   d="scan'208";a="849603517"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga004.jf.intel.com with ESMTP; 24 Jul 2023 04:44:07 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 24 Jul 2023 04:44:06 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 24 Jul 2023 04:44:06 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 24 Jul 2023 04:44:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GTpBc1OPMI7xwD29i/KKpWCG2FDlhM6SPk/X3kPsG5jEe+D5zHKspB9JcVsq05kRScmKK0JkBEy1f2xWR+i+ynKL/a0XIrKfAPK/X0SfB9IitS42T1UPDFuHObMqZW73pP2itCi5OyWPLXyA67PXyK/8hbvjfYi4VOZWq2XW9h8iDoZdNznxR/CwEoJ0bvgmarH7BU/1DLtRUxIhigYm/ydxWhF/dHCq+OWyhBcHcJ6VDldH7/9yEzuOflNzu0xGypew5pmndoY8iAK138yYcwVE6zo66Y6D1stO3rgO39UWHbFJVorRjsc+D/6HlbCx5q0lEOnVfcn60okXaf18vA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sJltT1zHXt8HSZT72taB3ccrgM9OSkOWKzHwjirA0DI=;
+ b=XqyZyE2weGzPMX/5R2N5ySVq7kBIHs5O72L+z+FriODTJVuYZs8C9qax95ghXBFKESeu62uELgq0udhyuohlERTh0HleGefl3zwHZ1eSL/G4iYF5xXK/mASa5adz3C+h1rScL16wnwnADZl4awmn+g7hsFfEOV72TI7k2Bte5xYp6LsrCQDNUs11V+hcX397xyQhwlKc2tZgT+4gr6IM6tn3F+2dosFZd1KaYFoiVXucMprVCbmcSUDldMw3YUY3uSFb6DzXv+KhWyYK47e7QszDSEZTtTuxFbR+vPNwMeqNCrXd5i690EM/94mJtT8vFJTNmcXaDgy1QcSS93pvCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
+ by SN7PR11MB6972.namprd11.prod.outlook.com (2603:10b6:806:2ac::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Mon, 24 Jul
+ 2023 11:44:00 +0000
+Received: from CY5PR11MB6366.namprd11.prod.outlook.com
+ ([fe80::f8a8:855c:2d19:9ac1]) by CY5PR11MB6366.namprd11.prod.outlook.com
+ ([fe80::f8a8:855c:2d19:9ac1%7]) with mapi id 15.20.6609.025; Mon, 24 Jul 2023
+ 11:43:59 +0000
+From: "Usyskin, Alexander" <alexander.usyskin@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Fabrizio Castro <fabrizio.castro.jz@renesas.com>, Richard Weinberger
+	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Winkler,
+ Tomas" <tomas.winkler@intel.com>, "Lubart, Vitaly" <vitaly.lubart@intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Geert Uytterhoeven
+	<geert+renesas@glider.be>, Biju Das <biju.das.jz@bp.renesas.com>,
+	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+	Chris Paterson <Chris.Paterson2@renesas.com>
+Subject: RE: [PATCH 1/2] mtd: use refcount to prevent corruption
+Thread-Topic: [PATCH 1/2] mtd: use refcount to prevent corruption
+Thread-Index: AQHZo3n2ZB8U6WhTx0+aElx0ckVEpq+5lImAgAGKEwCAAPTUYIAAe3sAgAxtDQA=
+Date: Mon, 24 Jul 2023 11:43:59 +0000
+Message-ID: <CY5PR11MB6366C254F767B6C432C98A0CED02A@CY5PR11MB6366.namprd11.prod.outlook.com>
+References: <20230620131905.648089-1-alexander.usyskin@intel.com>
+	<20230620131905.648089-2-alexander.usyskin@intel.com>
+	<TYWPR01MB87756794A30EB389AB017EB1C234A@TYWPR01MB8775.jpnprd01.prod.outlook.com>
+	<20230715174112.3909e43f@xps-13>
+	<CY5PR11MB63666C8DA33C93E1DC3BCB21ED3AA@CY5PR11MB6366.namprd11.prod.outlook.com>
+ <20230716153926.5e975231@xps-13>
+In-Reply-To: <20230716153926.5e975231@xps-13>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR11MB6366:EE_|SN7PR11MB6972:EE_
+x-ms-office365-filtering-correlation-id: cdbd7ae9-3fd8-45de-3a31-08db8c3b456c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YX2MBgxaCLHRQnkrpiGU1mS/qTuVYln9FMUwStG2KOYvndI/ezbVU8Y+0e4WoR/733H438lMtJ/njjgTpIbXJQk2uqHUz473mKapz8ebbYjGe7QSV/3iNs11Dv5p+It5IOK7O5gOJVz8EQqdRsUdaHAtgpW2IajL+mdFE1yfqRnWtwsTcRa/OwdETGcsXDtSkbDqliVnRsNPO2YrzJlggaAo5L3o0xZflc9Oy8rc/r+EhTNftFIIp4OZFbCBjIkjCbeNmCS25Wvfp+4eD6YegvvNoQ2pnJslIaqcfKWs1KOMyolDFsxX4sCDG//fUfHKoHzmutzVNKwox5Y//8bo6lzz44GFPUCp2BYmhexQYOBX9dOIgPWMDqyYqeZWp6iWDjHUSWBnBnmgaJYl2I7cknkTyjrHNrTBQfRZVCLe2A+Inw3fGF32eJbpza3Z5FLwN+AoQ/BkSjWovMz9czO64UFVa9US5v5v739dtoLqxl9BoQ/R2UtDB/8wXrxImoYxXgOBBqryDnAbOha6u+CCSzumGQOXQQearnD/skqzyoIY+/yohjvEub+hyML0Kjdu/QX9mZOBSJ3LzJwDHgv9KMaEkGg6iNIgYfw+9HMQRVImAtK6S5jb+IsBVltCYRjA
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(376002)(366004)(346002)(136003)(39860400002)(451199021)(7696005)(9686003)(71200400001)(478600001)(54906003)(186003)(6506007)(26005)(2906002)(4744005)(76116006)(41300700001)(66946007)(66556008)(66476007)(66446008)(64756008)(6916009)(4326008)(5660300002)(7416002)(52536014)(8676002)(8936002)(316002)(82960400001)(38100700002)(122000001)(33656002)(38070700005)(86362001)(83380400001)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TzUzT2ZkQ0dKVFFJc01nYUlsc3RJemxFdDF2ZmRuOTh5dTlkY3k0K2w1Rmp3?=
+ =?utf-8?B?K2lDZGtyZXl0Y0trdW1OZnZ2VGJORldyNXFVbnpQWXVWdFExWUp5aFB3MjNi?=
+ =?utf-8?B?K2hhdmtNOURMZStJdEFsZHBORytLVDdGZjlzQStKaTBSeGdzcHNqaVJNR1Vk?=
+ =?utf-8?B?L0FWelVKYkxBa2xtczQ0clM3dGxVQUkrVmRnVUluVExYcGg3UEJDRXJJNDBC?=
+ =?utf-8?B?QTE3RDlxcDNGK25ZWWhwdFcrR2ZtZHhQSjJEVWllYVpqUHYwTmFOMWllcTMr?=
+ =?utf-8?B?N2ZWYjdkQTFjMGpwVkIzUDlWSTZCU3Z1NklOczZ4V2lHKzJOZFZ3ODNPcE8v?=
+ =?utf-8?B?cWtId21vTUxrM3Z6VDRmSmJxRHN1TVFVOFoxVm14czJWdVcyTFhMM1c3TjRj?=
+ =?utf-8?B?YUU2bEpNM0xva2NTbHpKV2R0YzUvbWpXYlpIOWxCWitrRklVV0IvelU4ZjdG?=
+ =?utf-8?B?ZTZtZ1FRRktSU0g2cnBicFRvOUJTaUZrNTd0Q0xLOWUzdC9SN2w2RkdZVm5J?=
+ =?utf-8?B?Y0VIamVjWWVyYjdrSHhyZTk1c0JSazJNUnJ0NXk3Q0NWTXdWMU9xNFJnSlY1?=
+ =?utf-8?B?LzJMU1JnRElaeU5HOEhqV3diU0lSblAybGlBVDF6ak12Z0tKeFNMUkw3R21R?=
+ =?utf-8?B?ZVRrQTM2c3RHRGE0OHpsS1ZUQjdNaE9hbS9ZaFJEMXg5MGVyejdmUzRrajdm?=
+ =?utf-8?B?R3QvNzdrK1JLREYzcjNMY1NTNGtCSm9ObFRlcEdTKzlUMytqdHNtWkVnUGcv?=
+ =?utf-8?B?NkhMVzZHS1AyWDUxK0xIeW1ZVTA1Unc2QXlmUVJpN00zYlkrVXJWOTVRQmZ6?=
+ =?utf-8?B?dGRJak9DblltZlRMeEpyUGdpWThIYlRqbzhjM3JRanNwRGVwcXhFRTdBeHhC?=
+ =?utf-8?B?eWdWQXpDMlhBY0JVaEphUVM4TnNhS3dXbnVQb0cyTnlsUVhTeUwzbWJadnNK?=
+ =?utf-8?B?OStHek16MVRFajVBV0NvUHJzT3NpbnU4TUZ1TVA4bnBOZ0x6dHNtOUJPS1B6?=
+ =?utf-8?B?R3ZtMGpFRG5PMTZsa25ONStHT1g3S1FhV2hEaWVYek1pbTg2UWpjdWhUdEVR?=
+ =?utf-8?B?b3dlSVk3QTVlSlpMRXBiUmNKa0pvakdhbEFwbStNeCtFSlo4WDJieUtzU0FW?=
+ =?utf-8?B?aFZFSCtUbXNKenZjUkhpZUFXQllwVm82MkE1djJEcStDL1EycW5xaDM4bmlV?=
+ =?utf-8?B?VmlVM0o4b0pNVnJOSGJrdmMxYlJWRDIvdno2RjNrVFJVLysvOGVHRXhIendu?=
+ =?utf-8?B?SFpQZ2lVT1RNejJ6czJNQ2paRndOTk5XcGU5RTRUWTEzNE85SXUzczBMR2R0?=
+ =?utf-8?B?a1dkN3htSEFDZitOZCtaWXR5V1NFSmthbVBRcWJqNmNsMHFOOTBycUJyYk1B?=
+ =?utf-8?B?SzBoc3ZZYUFaOUdPbmJpNDVEZlNkdnJVYlFONWJtVmJaM3VIMGhxQnhSSDRq?=
+ =?utf-8?B?RzVaSjBkNkh0WGVlTjJvdHRHRWRHTk9RdTFyNEE0Mkt3a2ozTUJVTnhMNERN?=
+ =?utf-8?B?eTlVSnArWEpkVGxVdDEzZXZQUjRXVU11amlrOUZCK1hGZThUSXEwNytjNFNu?=
+ =?utf-8?B?VDR0ampIazRvMzhyS3lIYzNBWkc0elNyOWpoWVZmOGg5L1NIT3dHeTA0Umc0?=
+ =?utf-8?B?UjgxWElBWnRvQjFPUTc0YXZyNmVmYmROVGphOWROOHhuUE9hSTQrK1RIVHlD?=
+ =?utf-8?B?SFBqVFNHWUZpOVlmNjJSaXVUUmpKd09QM041TUh0cGNoNTBOS2Q4YlhoVlZl?=
+ =?utf-8?B?WlZRVW5Od1pUem9WWlBIb25iYkdwRWFCcXpxRFcxNXhLam9vekF3aUtnR3BT?=
+ =?utf-8?B?VWpaMG5qU3V2N3NIZkFTQU1KNElHNVZPd3hiNThzOWJ4eXlqOHhJUXNmWi9m?=
+ =?utf-8?B?MEhkc003NHFkZEVibzNveEplK3RpOGlsRnVCaXdVYlhFUTF6bkkwQkVvTW8z?=
+ =?utf-8?B?WXBRM2NtVEFLSFRFL1Z2QlprSDRPckluRHltUlF3TTVuNW1qYThaUmUrTk8y?=
+ =?utf-8?B?aGNpWGhabkVlNHExZG5uNG91eWMrZ2tyU096QmxPSHBtWk1FWVZpMHJMQlRt?=
+ =?utf-8?B?dm5UYTJRUFhuMVlGR3NZaWpRenpNckEyNmZ5TE4wSWNUMTlpeWRlamdaQ21z?=
+ =?utf-8?B?YVIxRzlJMVdjaEdaZlJOdzkweGRFbDFvWEpKWlBIT1JKS09taEY2VFhlZngy?=
+ =?utf-8?B?OUE9PQ==?=
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 24/47] drm/panfrost: dynamically allocate the
- drm-panfrost shrinker
-To: Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
- david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz, roman.gushchin@linux.dev,
- djwong@kernel.org, brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
- cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
- gregkh@linuxfoundation.org, muchun.song@linux.dev
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
- kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
- linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-bcache@vger.kernel.org, virtualization@lists.linux-foundation.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-25-zhengqi.arch@bytedance.com>
-Content-Language: en-GB
-From: Steven Price <steven.price@arm.com>
-In-Reply-To: <20230724094354.90817-25-zhengqi.arch@bytedance.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdbd7ae9-3fd8-45de-3a31-08db8c3b456c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jul 2023 11:43:59.8502
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kqjeyBJfanqD4jZS3XwLs/O+VAMTUUFeG86N6SnmR6feF3SOsjPFNLl67OlYkgelSZtasZKndVx6ntQVpaUyFef/aKQztwcMARXex1iF6eM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6972
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_041809_217419_0B52C4B9 
-X-CRM114-Status: GOOD (  25.98  )
+X-CRM114-CacheID: sfid-20230724_044412_554612_B8430357 
+X-CRM114-Status: GOOD (  16.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,150 +183,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 24/07/2023 10:43, Qi Zheng wrote:
-> In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the drm-panfrost shrinker, so that it can be freed
-> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-> read-side critical section when releasing the struct panfrost_device.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-
-One nit below, but otherwise:
-
-Reviewed-by: Steven Price <steven.price@arm.com>
-
-> ---
->  drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
->  drivers/gpu/drm/panfrost/panfrost_drv.c       |  6 +++-
->  drivers/gpu/drm/panfrost/panfrost_gem.h       |  2 +-
->  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  | 32 ++++++++++++-------
->  4 files changed, 27 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index b0126b9fbadc..e667e5689353 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -118,7 +118,7 @@ struct panfrost_device {
->  
->  	struct mutex shrinker_lock;
->  	struct list_head shrinker_list;
-> -	struct shrinker shrinker;
-> +	struct shrinker *shrinker;
->  
->  	struct panfrost_devfreq pfdevfreq;
->  };
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> index bbada731bbbd..f705bbdea360 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -598,10 +598,14 @@ static int panfrost_probe(struct platform_device *pdev)
->  	if (err < 0)
->  		goto err_out1;
->  
-> -	panfrost_gem_shrinker_init(ddev);
-> +	err = panfrost_gem_shrinker_init(ddev);
-> +	if (err)
-> +		goto err_out2;
->  
->  	return 0;
->  
-> +err_out2:
-> +	drm_dev_unregister(ddev);
->  err_out1:
->  	pm_runtime_disable(pfdev->dev);
->  	panfrost_device_fini(pfdev);
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm/panfrost/panfrost_gem.h
-> index ad2877eeeccd..863d2ec8d4f0 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
-> @@ -81,7 +81,7 @@ panfrost_gem_mapping_get(struct panfrost_gem_object *bo,
->  void panfrost_gem_mapping_put(struct panfrost_gem_mapping *mapping);
->  void panfrost_gem_teardown_mappings_locked(struct panfrost_gem_object *bo);
->  
-> -void panfrost_gem_shrinker_init(struct drm_device *dev);
-> +int panfrost_gem_shrinker_init(struct drm_device *dev);
->  void panfrost_gem_shrinker_cleanup(struct drm_device *dev);
->  
->  #endif /* __PANFROST_GEM_H__ */
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> index bf0170782f25..9a90dfb5301f 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem_shrinker.c
-> @@ -18,8 +18,7 @@
->  static unsigned long
->  panfrost_gem_shrinker_count(struct shrinker *shrinker, struct shrink_control *sc)
->  {
-> -	struct panfrost_device *pfdev =
-> -		container_of(shrinker, struct panfrost_device, shrinker);
-> +	struct panfrost_device *pfdev = shrinker->private_data;
->  	struct drm_gem_shmem_object *shmem;
->  	unsigned long count = 0;
->  
-> @@ -65,8 +64,7 @@ static bool panfrost_gem_purge(struct drm_gem_object *obj)
->  static unsigned long
->  panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->  {
-> -	struct panfrost_device *pfdev =
-> -		container_of(shrinker, struct panfrost_device, shrinker);
-> +	struct panfrost_device *pfdev = shrinker->private_data;
->  	struct drm_gem_shmem_object *shmem, *tmp;
->  	unsigned long freed = 0;
->  
-> @@ -97,13 +95,24 @@ panfrost_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
->   *
->   * This function registers and sets up the panfrost shrinker.
->   */
-> -void panfrost_gem_shrinker_init(struct drm_device *dev)
-> +int panfrost_gem_shrinker_init(struct drm_device *dev)
->  {
->  	struct panfrost_device *pfdev = dev->dev_private;
-> -	pfdev->shrinker.count_objects = panfrost_gem_shrinker_count;
-> -	pfdev->shrinker.scan_objects = panfrost_gem_shrinker_scan;
-> -	pfdev->shrinker.seeks = DEFAULT_SEEKS;
-> -	WARN_ON(register_shrinker(&pfdev->shrinker, "drm-panfrost"));
-> +
-> +	pfdev->shrinker = shrinker_alloc(0, "drm-panfrost");
-> +	if (!pfdev->shrinker) {
-> +		WARN_ON(1);
-
-I don't think this WARN_ON is particularly useful - if there's a failed
-memory allocation we should see output from the kernel anyway. And we're
-changing the semantics from "continue just without a shrinker" (which
-argueably justifies the warning) to "probe fails, device doesn't work"
-which will be obvious to the user so I don't feel we need the additional
-warn.
-
-> +		return -ENOMEM;
-> +	}
-> +
-> +	pfdev->shrinker->count_objects = panfrost_gem_shrinker_count;
-> +	pfdev->shrinker->scan_objects = panfrost_gem_shrinker_scan;
-> +	pfdev->shrinker->seeks = DEFAULT_SEEKS;
-> +	pfdev->shrinker->private_data = pfdev;
-> +
-> +	shrinker_register(pfdev->shrinker);
-> +
-> +	return 0;
->  }
->  
->  /**
-> @@ -116,7 +125,6 @@ void panfrost_gem_shrinker_cleanup(struct drm_device *dev)
->  {
->  	struct panfrost_device *pfdev = dev->dev_private;
->  
-> -	if (pfdev->shrinker.nr_deferred) {
-> -		unregister_shrinker(&pfdev->shrinker);
-> -	}
-> +	if (pfdev->shrinker)
-> +		shrinker_unregister(pfdev->shrinker);
->  }
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+PiA+ID4gPiBXaXRoIHRoaXMgcGF0Y2ggYXBwbGllZCwgd2hlbiBJIGxvYWQgdXAgdGhlIG1vZHVs
+ZSwgSSBnZXQgdGhlIHNhbWUgMw0KPiA+ID4gPiBkZXZpY2VzOg0KPiA+ID4gPiAvZGV2L210ZDAN
+Cj4gPiA+ID4gL2Rldi9tdGQwcm8NCj4gPiA+ID4gL2Rldi9tdGRibG9jazANCj4gPiA+ID4NCj4g
+PiA+ID4gVXBvbiByZW1vdmFsLCB0aGUgYmVsb3cgMiBkZXZpY2VzIHN0aWxsIGhhbmcgYXJvdW5k
+Og0KPiA+ID4gPiAvZGV2L210ZDANCj4gPiA+ID4gL2Rldi9tdGQwcm8NCj4gPiA+DQo+ID4gT3Vy
+IHVzZS1jYXNlIGRvIG5vdCBwcm9kdWNlIG10ZGJsb2NrLCBtYXliZSB0aGVyZSBhcmUgc29tZSBp
+bWJhbGFuY2VzDQo+IG9mIGdldC9wdXQ/DQo+ID4gSSBoYXZlIHNvbWV3aGVyZSB2ZXJzaW9uIHdp
+dGggcHJfZGVidWcgYWZ0ZXIgZXZlcnkga3JlZl9nZXQvcHV0LiBUaGF0IG1heQ0KPiBoZWxwIHRv
+IGNhdGNoIHdoZXJlDQo+ID4gaXQgbWlzc2VkLCBJIGhvcGUuDQo+IA0KPiBJIGJlbGlldmUgbXRk
+YmxvY2sgaXMgdGhlIGdvb2QgY2l0aXplbiBoZXJlLiBKdXN0IGRpc2FibGUNCj4gQ09ORklHX01U
+RF9CTE9DSyBmcm9tIHlvdXIgY29uZmlndXJhdGlvbiBhbmQgeW91IHdpbGwgbGlrZWx5IG9ic2Vy
+dmUNCj4gdGhlIHNhbWUgaXNzdWUsIGp1c3QgYSBiaXQgbmFycm93ZWQsIHBlcmhhcHMuIEluZGVl
+ZCwgaWYgeW91IG1hbmFnZSB0bw0KPiBmb2xsb3cgYWxsIHRoZSBnZXQvcHV0IGNhbGxzIGl0IGNh
+biBoZWxwIHRvIGZpbmQgYW4gaW1iYWxhbmNlLg0KPiANCj4gVGhhbmtzLA0KPiBNaXF1w6hsDQoN
+Ck1pcXVlbCwgZG8geW91IGhhdmUgQ09ORklHX01URF9QQVJUSVRJT05FRF9NQVNURVIgc2V0IGlu
+IHlvdXIgY29uZmlnPw0KDQotLSANClRoYW5rcywNClNhc2hhDQoNCg0KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
