@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BB79C001DE
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:49:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0871C001E0
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XURF42jrpFQU0T/q+LyjIzxlgU6JNMxseP2Y4kjpMb4=; b=xuJA5yGyILpn0O
-	YHnqtLsPgC3CsBlOY+gpi9wBH0FqO7LXaMITh0oKkcF/As0eE0S+pPsLSZcMsUT6lPxIw5Mtzs3Nq
-	wGBrVLPqWN1ma5vTPKw/MuUHLuigCrfAVpIghID3uhttx1cf1Yi0XMgXrLb+zEcdOzCV841cLhvtc
-	2tQ/KpL4Upg1OcSZD+vxw+n3i1sQcC9dohRY7e0dFudOdpyU6ii4fhfTkBhog0R1Uh5l9UqBc0eF1
-	dUWSiYlDg4eP/cMQD4o90kkl9NT6xYklxL5NRpuSblCLyX24iTtH9T+od+s0m1wtIERShvtxTp3Wp
-	RCyxndD1pu80qSutadeg==;
+	List-Owner; bh=B/823kjkdh6hcLl/1Q4Sn3nEXVozx7Op+r1uQATZxMA=; b=Jt/OUVGyopusr0
+	Zs7DfaaV3zqi8ZJKB7D8hRL317dMFLD5Jkvm6vXCIPgwYWZ2YS6059+56UXzuZ8CRkT0Z/4sBX+EL
+	I2LZlGk0ZwK8HjjOim/5Ftwcgv/1eUg1Y/mMBq99NXvrx+1xTnbiEX9NlhZ6ZvAQ6w8qD8D65RBF9
+	8xNnKMo/bi1gOd9/q1QUvyPgTw34ty72rSLz+fa0pQ5I/+cDdFFvygoAjrT2+HnNlBp8ytAmH/J3X
+	+dagCtqecXBu2btbRzzC579Pxdb9wPzi/vPlJMYoPR1rFcCZupG+37KBMFBYKK4UdF4kgDwEjY98M
+	eh24x/cSFXvzjXaXSkVw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNsBZ-003U3x-2M;
-	Mon, 24 Jul 2023 09:49:01 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+	id 1qNsBi-003U9V-1t;
+	Mon, 24 Jul 2023 09:49:10 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNsBU-003Tyo-0E
+	id 1qNsBf-003U7D-1F
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jul 2023 09:48:59 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b867f9198dso8897995ad.0
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:48:55 -0700 (PDT)
+	Mon, 24 Jul 2023 09:49:08 +0000
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b867f9198dso8898585ad.0
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:49:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690192134; x=1690796934;
+        d=bytedance.com; s=google; t=1690192147; x=1690796947;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hg2vi+2AAPCRuQsciRtLylYUMTgaXzyfBXLGSnv8etw=;
-        b=aydgK7bn0QggjlQydoxB8/wzzA4TXTh5kAH1HczgG5x53kEUfwsZTHfAy7Oll8B5Eb
-         /u8m2Fx+yVNF796ZZc3s2XmC1YIubtCHa+WaPaj49PGcqhNB+vofNP25+pjGYzLsUBey
-         s8mU5+/TbPuzYxlgD12Kt4jsZqhjhd4Zmfvq3eYOMY75uxvK9h6vyhatsfe9xzUUvBHR
-         65A0XriwgvV356EN5StwdT8HNZN8xypzwNZbI9gp5ddxZgA9hT9j3WwIFAc65w94K4S5
-         JlPP5IHsQz3xceBVdVld1V5OEs83EDOwKVmAaZghdPj/BNMPCYQ+scOGPe5A3YPCuRcv
-         ewxg==
+        bh=3CXd5cxT7BQDd98tt8oaC0MvbTuhoGV4WCiM7GrnKVE=;
+        b=KQjtvrM5WCun+a4xOj456S6UuqGIkvzyD2jHH3TR9iY9a97Nt32MSSfeCXCmbM81Y3
+         7CR481sQUeyCzPya4qTSPUgO2X/EhgaM7LuUX3zxeHldHQRKH0RrsI+JkYmanpIzppK4
+         +abROecNMX11crshq9sHFZamNywEwoxtK8Vecu9T/ezkwCibUb1czEw6+JIKkmPyPcQg
+         1hoEKHuQR39hivSCYtyLe70icTB0k15MuRyTV7pjq8M21zBZSftgM/Uwfo8RV8+TAK3Y
+         pOSIhBz1N9cqbqrOLeJG0Mkh/NqdVj/Db67KzjXs12zF9HPMwZax5Fae+E8V7mgE4uk/
+         /g5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690192134; x=1690796934;
+        d=1e100.net; s=20221208; t=1690192147; x=1690796947;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hg2vi+2AAPCRuQsciRtLylYUMTgaXzyfBXLGSnv8etw=;
-        b=fHoqC+YtbApGr3bX8j3Hgur1X9xwtP6p9QU3msA6bdA7SUsFV+ctuaMPq6O36Qmejl
-         9GOX0NyROt09ZTmTr3llYSvIGtv4GaRPRswAWhEmFXPF0mSdId+b/I6Sb2dZI01b2+5Y
-         qjE80fijkvHzr3ndErxp320m5mzk7ZDHPA9X4sMw1CuHfOopUKBMzyEWy8d7cAgWNbaG
-         48wN6x63kQC0m5FHoGVbhgywdGo0L+y6aPPiGai8oHewLAGOvDzwW5cRNkYir9oSX1/j
-         LAe85HgXVHf8953pK821KWbOL1q0VJa/y7E4cywZWp4unHA/RUO+ant++OICaTtBut3M
-         d2Ng==
-X-Gm-Message-State: ABy/qLZRoY1sR5mkldpBuBZiw9TxlCV6AxuHdF/2qxsi6AGzaxZ6hfKQ
-	oAnCCUqy8blV2Q32NONsPy14jw==
-X-Google-Smtp-Source: APBJJlFlbX7MjF6Gs1NiwvX/ojXDY5CFLHX7jflUqBVL6eloGiFWEtkN1YdVHiZpjmt9ZeBQxK8/kg==
-X-Received: by 2002:a17:902:ecd2:b0:1b8:b4f6:1327 with SMTP id a18-20020a170902ecd200b001b8b4f61327mr12294253plh.6.1690192134533;
-        Mon, 24 Jul 2023 02:48:54 -0700 (PDT)
+        bh=3CXd5cxT7BQDd98tt8oaC0MvbTuhoGV4WCiM7GrnKVE=;
+        b=BdKrB1z+iizynJMJXRfWgE9rcMSliOFxPvUClw9Tqo8klF9Qu3vX/CES6VHzdgsW70
+         EPPySQ4rAfao3+ZDlcXkXAtBY6G1aYWWknU2qkkew/ngDA7Qdz6RVNvHf7wMwo/ZgXgP
+         Gtehx/WKY64yLrjRmrfbSE/aAMOs64+/dgEI1hYNDsjEHpLE0Rs/LvowV+/XF4vKsPfT
+         sndLjp+Z8GpN2M4tuogNv9vSx9sZWgYGUZS0G5S6fovwo6Pmj7dF8cFgZxK8hXP/CkNz
+         c8BOFm38dnZxmqC73nOW8oBOtWdYrR7C/CI6rr9+vf+1uKGvlOyeU1HeW4mX5hvTZg2M
+         eCEQ==
+X-Gm-Message-State: ABy/qLbmb1U3C5XVHydOB5JcjZL9CA/hG6Xiw0Mbi/jc90rr1Tr+lIjb
+	ic/vwXmgL07oGdwJHQNeYrmKCA==
+X-Google-Smtp-Source: APBJJlGIkgxKi3c8vlsRfvF8eC2AUaCtjB+PIQLMdMMArsufsHEWiltHfQyyqXBdYUy9SpebX4CtOg==
+X-Received: by 2002:a17:902:e80a:b0:1b8:50a9:6874 with SMTP id u10-20020a170902e80a00b001b850a96874mr12324079plg.5.1690192146760;
+        Mon, 24 Jul 2023 02:49:06 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.48.42
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.48.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:48:54 -0700 (PDT)
+        Mon, 24 Jul 2023 02:49:06 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: akpm@linux-foundation.org,
 	david@fromorbit.com,
@@ -101,16 +101,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 19/47] mm: thp: dynamically allocate the thp-related shrinkers
-Date: Mon, 24 Jul 2023 17:43:26 +0800
-Message-Id: <20230724094354.90817-20-zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 20/47] sunrpc: dynamically allocate the sunrpc_cred shrinker
+Date: Mon, 24 Jul 2023 17:43:27 +0800
+Message-Id: <20230724094354.90817-21-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_024856_107880_97BC7A12 
-X-CRM114-Status: GOOD (  14.60  )
+X-CRM114-CacheID: sfid-20230724_024907_421381_B7256039 
+X-CRM114-Status: GOOD (  11.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,137 +127,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use new APIs to dynamically allocate the thp-zero and thp-deferred_split
-shrinkers.
+Use new APIs to dynamically allocate the sunrpc_cred shrinker.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- mm/huge_memory.c | 69 +++++++++++++++++++++++++++++++-----------------
- 1 file changed, 45 insertions(+), 24 deletions(-)
+ net/sunrpc/auth.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 8c94b34024a2..4db5a1834d81 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -65,7 +65,11 @@ unsigned long transparent_hugepage_flags __read_mostly =
- 	(1<<TRANSPARENT_HUGEPAGE_DEFRAG_KHUGEPAGED_FLAG)|
- 	(1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG);
- 
--static struct shrinker deferred_split_shrinker;
-+static struct shrinker *deferred_split_shrinker;
-+static unsigned long deferred_split_count(struct shrinker *shrink,
-+					  struct shrink_control *sc);
-+static unsigned long deferred_split_scan(struct shrinker *shrink,
-+					 struct shrink_control *sc);
- 
- static atomic_t huge_zero_refcount;
- struct page *huge_zero_page __read_mostly;
-@@ -229,11 +233,7 @@ static unsigned long shrink_huge_zero_page_scan(struct shrinker *shrink,
- 	return 0;
+diff --git a/net/sunrpc/auth.c b/net/sunrpc/auth.c
+index 2f16f9d17966..74e40c8a512d 100644
+--- a/net/sunrpc/auth.c
++++ b/net/sunrpc/auth.c
+@@ -861,11 +861,7 @@ rpcauth_uptodatecred(struct rpc_task *task)
+ 		test_bit(RPCAUTH_CRED_UPTODATE, &cred->cr_flags) != 0;
  }
  
--static struct shrinker huge_zero_page_shrinker = {
--	.count_objects = shrink_huge_zero_page_count,
--	.scan_objects = shrink_huge_zero_page_scan,
+-static struct shrinker rpc_cred_shrinker = {
+-	.count_objects = rpcauth_cache_shrink_count,
+-	.scan_objects = rpcauth_cache_shrink_scan,
 -	.seeks = DEFAULT_SEEKS,
 -};
-+static struct shrinker *huge_zero_page_shrinker;
++static struct shrinker *rpc_cred_shrinker;
  
- #ifdef CONFIG_SYSFS
- static ssize_t enabled_show(struct kobject *kobj,
-@@ -454,6 +454,40 @@ static inline void hugepage_exit_sysfs(struct kobject *hugepage_kobj)
- }
- #endif /* CONFIG_SYSFS */
- 
-+static int thp_shrinker_init(void)
-+{
-+	huge_zero_page_shrinker = shrinker_alloc(0, "thp-zero");
-+	if (!huge_zero_page_shrinker)
-+		return -ENOMEM;
-+
-+	deferred_split_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE |
-+						 SHRINKER_MEMCG_AWARE |
-+						 SHRINKER_NONSLAB,
-+						 "thp-deferred_split");
-+	if (!deferred_split_shrinker) {
-+		shrinker_free_non_registered(huge_zero_page_shrinker);
-+		return -ENOMEM;
-+	}
-+
-+	huge_zero_page_shrinker->count_objects = shrink_huge_zero_page_count;
-+	huge_zero_page_shrinker->scan_objects = shrink_huge_zero_page_scan;
-+	huge_zero_page_shrinker->seeks = DEFAULT_SEEKS;
-+	shrinker_register(huge_zero_page_shrinker);
-+
-+	deferred_split_shrinker->count_objects = deferred_split_count;
-+	deferred_split_shrinker->scan_objects = deferred_split_scan;
-+	deferred_split_shrinker->seeks = DEFAULT_SEEKS;
-+	shrinker_register(deferred_split_shrinker);
-+
-+	return 0;
-+}
-+
-+static void thp_shrinker_exit(void)
-+{
-+	shrinker_unregister(huge_zero_page_shrinker);
-+	shrinker_unregister(deferred_split_shrinker);
-+}
-+
- static int __init hugepage_init(void)
+ int __init rpcauth_init_module(void)
  {
- 	int err;
-@@ -482,12 +516,9 @@ static int __init hugepage_init(void)
- 	if (err)
- 		goto err_slab;
- 
--	err = register_shrinker(&huge_zero_page_shrinker, "thp-zero");
--	if (err)
--		goto err_hzp_shrinker;
--	err = register_shrinker(&deferred_split_shrinker, "thp-deferred_split");
-+	err = thp_shrinker_init();
- 	if (err)
--		goto err_split_shrinker;
-+		goto err_shrinker;
- 
- 	/*
- 	 * By default disable transparent hugepages on smaller systems,
-@@ -505,10 +536,8 @@ static int __init hugepage_init(void)
- 
+@@ -874,9 +870,16 @@ int __init rpcauth_init_module(void)
+ 	err = rpc_init_authunix();
+ 	if (err < 0)
+ 		goto out1;
+-	err = register_shrinker(&rpc_cred_shrinker, "sunrpc_cred");
+-	if (err < 0)
++	rpc_cred_shrinker = shrinker_alloc(0, "sunrpc_cred");
++	if (!rpc_cred_shrinker)
+ 		goto out2;
++
++	rpc_cred_shrinker->count_objects = rpcauth_cache_shrink_count;
++	rpc_cred_shrinker->scan_objects = rpcauth_cache_shrink_scan;
++	rpc_cred_shrinker->seeks = DEFAULT_SEEKS;
++
++	shrinker_register(rpc_cred_shrinker);
++
  	return 0;
- err_khugepaged:
--	unregister_shrinker(&deferred_split_shrinker);
--err_split_shrinker:
--	unregister_shrinker(&huge_zero_page_shrinker);
--err_hzp_shrinker:
-+	thp_shrinker_exit();
-+err_shrinker:
- 	khugepaged_destroy();
- err_slab:
- 	hugepage_exit_sysfs(hugepage_kobj);
-@@ -2851,7 +2880,7 @@ void deferred_split_folio(struct folio *folio)
- #ifdef CONFIG_MEMCG
- 		if (memcg)
- 			set_shrinker_bit(memcg, folio_nid(folio),
--					 deferred_split_shrinker.id);
-+					 deferred_split_shrinker->id);
- #endif
- 	}
- 	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
-@@ -2925,14 +2954,6 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
- 	return split;
- }
- 
--static struct shrinker deferred_split_shrinker = {
--	.count_objects = deferred_split_count,
--	.scan_objects = deferred_split_scan,
--	.seeks = DEFAULT_SEEKS,
--	.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE |
--		 SHRINKER_NONSLAB,
--};
--
- #ifdef CONFIG_DEBUG_FS
- static void split_huge_pages_all(void)
+ out2:
+ 	rpc_destroy_authunix();
+@@ -887,5 +890,5 @@ int __init rpcauth_init_module(void)
+ void rpcauth_remove_module(void)
  {
+ 	rpc_destroy_authunix();
+-	unregister_shrinker(&rpc_cred_shrinker);
++	shrinker_unregister(rpc_cred_shrinker);
+ }
 -- 
 2.30.2
 
