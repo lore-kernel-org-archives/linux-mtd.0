@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3AEEC0015E
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:48:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80452C41513
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ULi4d8WnplmsdUhajADJ0qt4eFfHb7ObHSoQJMuN+CM=; b=Y9emPPIXHhU2h/
-	9Hs5tJoLBwpaCVVg44TdI7ZlSXB5XaTDbjtVZgPfMc4C0+mvaLJku7IJUW1xIhDvhnb5bohMRSeVF
-	aqw4h4+t33bUKbl7F68n0J+E3aWeUZA98ASM6iOiI/41v0KEfhfWDj2D7vuU/1gBvRX79gsV8Ps9f
-	ZZGJH5MZfUuMYx7mEalXdzFOKY+sz7xV/gI8h63kE9cgcTImqVhdL3FmHLqrctbbE1KXZj7m8ccvc
-	HKRmqB02V1giw5cnaValdgGEFsRNyFs4GI4K+VMhmgSQ/l0g9/x6POoUkUpLThVKsGqDJEFQ+unTD
-	lo067z8o+yb4n0EN4iSQ==;
+	List-Owner; bh=VryxXDNoL3UcnqN0GJ+4jUVKp/Kz8TtXxMNqWl9P5KY=; b=lqGTYsgZruYWd5
+	GlSo1nDc0BnJNVYNnHAiYb4P/vi7Ucp+NmI3Sqfjp1qQnjB2C5blQdlItimj3V8MZlVdx2gRzeiIv
+	d8Dh1NcBBD1NAeaJspAfppv3OtKRvjLDlJPpqlGzKmV88SmzmTR36T0vkrT/g6rHMBCIbUrxGrrNW
+	uDCZowoyerX336DIR6pB51hAviWXijDrDOjPJj0RhgzXGgYmPZhiUCqFgH15h77cBTiDUQ5YVB1XS
+	/35EVTP7gR6EJbu125ehyLNJzGu4QrzpkrRpFZqzDJtcoX86b5tZCWN9zuY9Qk6g/f+SseQdKEy8N
+	Ex6mMY9FrD5G/uqCPjug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNsAX-003TKE-1H;
-	Mon, 24 Jul 2023 09:47:57 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1qNsAl-003TTk-0B;
+	Mon, 24 Jul 2023 09:48:11 +0000
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNsAV-003TIk-0X
+	id 1qNsAh-003TQR-0p
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jul 2023 09:47:56 +0000
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b7dfb95761so5876415ad.1
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:47:54 -0700 (PDT)
+	Mon, 24 Jul 2023 09:48:09 +0000
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-682eef7d752so1028049b3a.0
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690192074; x=1690796874;
+        d=bytedance.com; s=google; t=1690192086; x=1690796886;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qReDjbjFz0xyiV7re04rgbBc1uubNDIxQ7QKRYWZSRs=;
-        b=ENVLEGhvMjLiUvisyoHJontwb50xfTslV0XVCIZNbj3XxjFa+A4sTXO4Rw3QqFmux5
-         XbznTWGuyuir8FMQeIa7tywzBJUnyvYSwuYJ02HBKdcTkSJdAtoOPw44n28eP8zUKucc
-         q8yY+ysDs6yXU3SX/8XFuGMKyo+SMyS0Zlg4rwVloT2TyOVOz/Imh5E9tEAGm8xg8jyO
-         QATQrcFlR17SUbjRuc1dqQxPY8algfDWOcvmKhvXGbaXm39iJYJiLthaOzWAxzJVeqgh
-         fJOtvB6CBEjtg12DSwkb6lmHRDFIhGbGsjcgpxt8MGvrxNBdwtVQD4ot+/N3ASfLH/lS
-         XEeQ==
+        bh=ztwb9n/1dXh113w/8xubUIoix8VXd/5rqVT4RvFn/tw=;
+        b=Am7FnjS3Cpm4I6+unn47wV0WInP35j7cWyw7YSHmXYddBbEndaPLIOhBD501lhuXhz
+         ziS0uq23cHOpl1MZygPYTe8AuNvoAdPlGK8k32I3Ef9lRu2tiO1YjBbYZCD1R2rMLxT1
+         sbS7mgch7/EfOaLRKT3V6tvhfJSY21ngFnqMEHN8grEnjoqg0M6Q11qf7CVQTrHQJzW3
+         E1Q+qRl3oeLAaumIkMGruzrANQhf6ocLGFa54JS2CwGaWbDUA2Re4gbZJ2jDKM9ntSrw
+         dCSeZvHulgVnMl/ivIn59gXFxJS3Mnbl4ERIMhlA37amtawTgx9ciEfDapqLjZzr2ZBw
+         AsLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690192074; x=1690796874;
+        d=1e100.net; s=20221208; t=1690192086; x=1690796886;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qReDjbjFz0xyiV7re04rgbBc1uubNDIxQ7QKRYWZSRs=;
-        b=XDtg4R1h+ezHLugpMAGMZl7HcJlpyzMwpWqih99Vjb4/IfpLEMQvM+HJfADIKpzQ9r
-         WI5hWUkMh/bOYsKDhROVOJ4r823+LuP6TnlkHIVbkbpasTwkEBQAZdpkJTGI0SZZ2CRh
-         dt+hEwlMTE89JaiLQjTaXbBFj9Yi5zvQ+QyS2AdDF2ocV7ZQ0cLZKywdo6mO08MjmnHh
-         BpmGqVG9ebbw2xHhzSp9QAIadVwova+SmUwGgZH6otLdcW7tJ4jwhxkZn9sEg9BW0AnR
-         yCADtENh9BfXPFPQrcpiBjH3g6dRIRCPY4kXLwpgRA8ntSUltFcGN8vH/78npQcyG/DW
-         I5Aw==
-X-Gm-Message-State: ABy/qLY6QvsR7poqbNcf1mjEkmxnCKoU19a1jzYbQhn/LGw2W2aXPoJn
-	1zj6XTLC0omo7oWw9KH8cMakyw==
-X-Google-Smtp-Source: APBJJlFmRr0YS7/80cQjb3Wv0/ryy4A2Bv0/hjBc48SsvJ3Rmt9/pUa2TTT24oRtgj6qJ02D1OEnuA==
-X-Received: by 2002:a17:902:dacf:b0:1b8:9215:9163 with SMTP id q15-20020a170902dacf00b001b892159163mr12197474plx.6.1690192074491;
-        Mon, 24 Jul 2023 02:47:54 -0700 (PDT)
+        bh=ztwb9n/1dXh113w/8xubUIoix8VXd/5rqVT4RvFn/tw=;
+        b=MkUPH5WPfCKgBG0kjMq85nqtQf/MGveC2S7LfnRgVVwGEY9uhV9BvZu6gFH/0rXZo2
+         vs+eDnKd1XtID8TC92Kla5xRJW3smiIcKzzATdBiU2ujc8ODfifJeRXmzT3jWhg33pgS
+         l7pZlfCtccvL1pCltpj7Fesp3ftB0PdV72GJjCtD9QCxy7wEPXGIZ9tUaNngLFFacWIc
+         rQc21Fupwf9CPZFeF1g89pRSxk1dnr7MdawArDOAm/qOleai1MCagadRxgvKUJUJ3B+B
+         UB9FMhxaVj2DjJQEuYncYg9MFtKKVzUuDWguOPK7TYZYemUMEwjdus1x3a9Dy9Yi2h7J
+         T2rg==
+X-Gm-Message-State: ABy/qLZH6RF0jiRgc6syiCLT583nsreYTUqQeFRsQoapZtIEcQZ+1R5k
+	U580cwnRkQMRZ7Wro0kYiluO/A==
+X-Google-Smtp-Source: APBJJlHRxCFTSeAmJPIiRwzXlrngv0y6n5gqphR6YCBFCcMRvGq0CtVM2WuFHUMj7p5y6QUWxkmpXA==
+X-Received: by 2002:a17:902:dad1:b0:1b8:aded:524c with SMTP id q17-20020a170902dad100b001b8aded524cmr12538511plx.1.1690192086608;
+        Mon, 24 Jul 2023 02:48:06 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.47.42
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.47.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:47:54 -0700 (PDT)
+        Mon, 24 Jul 2023 02:48:06 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: akpm@linux-foundation.org,
 	david@fromorbit.com,
@@ -101,16 +101,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 14/47] nfsd: dynamically allocate the nfsd-filecache shrinker
-Date: Mon, 24 Jul 2023 17:43:21 +0800
-Message-Id: <20230724094354.90817-15-zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 15/47] quota: dynamically allocate the dquota-cache shrinker
+Date: Mon, 24 Jul 2023 17:43:22 +0800
+Message-Id: <20230724094354.90817-16-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_024755_223696_A36B7E63 
-X-CRM114-Status: GOOD (  10.40  )
+X-CRM114-CacheID: sfid-20230724_024807_296686_6564CABC 
+X-CRM114-Status: GOOD (  10.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,70 +127,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use new APIs to dynamically allocate the nfsd-filecache shrinker.
+Use new APIs to dynamically allocate the dquota-cache shrinker.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- fs/nfsd/filecache.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ fs/quota/dquot.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/fs/nfsd/filecache.c b/fs/nfsd/filecache.c
-index ee9c923192e0..50216768d408 100644
---- a/fs/nfsd/filecache.c
-+++ b/fs/nfsd/filecache.c
-@@ -521,11 +521,7 @@ nfsd_file_lru_scan(struct shrinker *s, struct shrink_control *sc)
- 	return ret;
+diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+index e8232242dd34..6cb2d8911bc3 100644
+--- a/fs/quota/dquot.c
++++ b/fs/quota/dquot.c
+@@ -791,11 +791,7 @@ dqcache_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ 	percpu_counter_read_positive(&dqstats.counter[DQST_FREE_DQUOTS]));
  }
  
--static struct shrinker	nfsd_file_shrinker = {
--	.scan_objects = nfsd_file_lru_scan,
--	.count_objects = nfsd_file_lru_count,
--	.seeks = 1,
+-static struct shrinker dqcache_shrinker = {
+-	.count_objects = dqcache_shrink_count,
+-	.scan_objects = dqcache_shrink_scan,
+-	.seeks = DEFAULT_SEEKS,
 -};
-+static struct shrinker *nfsd_file_shrinker;
++static struct shrinker *dqcache_shrinker;
  
- /**
-  * nfsd_file_cond_queue - conditionally unhash and queue a nfsd_file
-@@ -746,12 +742,18 @@ nfsd_file_cache_init(void)
- 		goto out_err;
- 	}
+ /*
+  * Safely release dquot and put reference to dquot.
+@@ -2991,8 +2987,15 @@ static int __init dquot_init(void)
+ 	pr_info("VFS: Dquot-cache hash table entries: %ld (order %ld,"
+ 		" %ld bytes)\n", nr_hash, order, (PAGE_SIZE << order));
  
--	ret = register_shrinker(&nfsd_file_shrinker, "nfsd-filecache");
--	if (ret) {
--		pr_err("nfsd: failed to register nfsd_file_shrinker: %d\n", ret);
-+	nfsd_file_shrinker = shrinker_alloc(0, "nfsd-filecache");
-+	if (!nfsd_file_shrinker) {
-+		pr_err("nfsd: failed to allocate nfsd_file_shrinker\n");
- 		goto out_lru;
- 	}
- 
-+	nfsd_file_shrinker->count_objects = nfsd_file_lru_count;
-+	nfsd_file_shrinker->scan_objects = nfsd_file_lru_scan;
-+	nfsd_file_shrinker->seeks = 1;
+-	if (register_shrinker(&dqcache_shrinker, "dquota-cache"))
+-		panic("Cannot register dquot shrinker");
++	dqcache_shrinker = shrinker_alloc(0, "dquota-cache");
++	if (!dqcache_shrinker)
++		panic("Cannot allocate dquot shrinker");
 +
-+	shrinker_register(nfsd_file_shrinker);
++	dqcache_shrinker->count_objects = dqcache_shrink_count;
++	dqcache_shrinker->scan_objects = dqcache_shrink_scan;
++	dqcache_shrinker->seeks = DEFAULT_SEEKS;
 +
- 	ret = lease_register_notifier(&nfsd_file_lease_notifier);
- 	if (ret) {
- 		pr_err("nfsd: unable to register lease notifier: %d\n", ret);
-@@ -774,7 +776,7 @@ nfsd_file_cache_init(void)
- out_notifier:
- 	lease_unregister_notifier(&nfsd_file_lease_notifier);
- out_shrinker:
--	unregister_shrinker(&nfsd_file_shrinker);
-+	shrinker_unregister(nfsd_file_shrinker);
- out_lru:
- 	list_lru_destroy(&nfsd_file_lru);
- out_err:
-@@ -891,7 +893,7 @@ nfsd_file_cache_shutdown(void)
- 		return;
++	shrinker_register(dqcache_shrinker);
  
- 	lease_unregister_notifier(&nfsd_file_lease_notifier);
--	unregister_shrinker(&nfsd_file_shrinker);
-+	shrinker_unregister(nfsd_file_shrinker);
- 	/*
- 	 * make sure all callers of nfsd_file_lru_cb are done before
- 	 * calling nfsd_file_cache_purge
+ 	return 0;
+ }
 -- 
 2.30.2
 
