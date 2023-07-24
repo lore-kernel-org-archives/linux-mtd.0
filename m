@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A87B3C001DE
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:51:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49C6BC001DE
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 09:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eJE2Xxsu1vJwh/Wc0xMT8ejv/gTedXxcAL1KuGkwpZw=; b=3Ru+ux8WRkVbkq
-	ta9BZll5lTUeMGBg3p4Rg8uf408Q43PmxbOd6upQDE1A/MVisVrA6ysQ+5ZMloREfBZbG1xeU3aeK
-	IS8Mst2tXupVuS9noWYLb+tK5nDkAobI0MRH5i/fc4oOmvbJZgJp99deQkre2pN6iJmcMlC3TKdkg
-	wFhZquaq7oa5w6psDZi4NbwNo9zXF7JiNgiv7FlDo5JJ43FKclwR76I3Zx6GTYeAmljdJHsizwo3+
-	alJ2qgYU0KpWoxb9IYM2erMxq0XZLngeZPXs4CKSOfzFUTtF7RRXTdJeOa4KQalG3FPC6ytkseNAM
-	DVAljUX+B7buNayo0GSg==;
+	List-Owner; bh=oS4bQgRIC+/d69rwUhJF3Y5iYDQrlYMqQSf4xVkgjeM=; b=jKhU1nXqpdrMQS
+	wL1UJpGoa5pygxuBCR63RSlGaeaVNNnjlHtqqPQxMlJbslY9LruVvNo80g6y4b9IE/Y/M3G5mLPAu
+	sPipNqlojUJyioKflsm+Qv/lrUDOJ52gTkwrrMol2ANNGRZq344VXb1nSCgpsFnBdWAT10dT0tpIg
+	a3LstWWMDgCq5DFMma4ALHlHKvStIXdWorARP31gK0u3qXqKG4fGDYz+aWTZEF48XES4C+RtiAl1n
+	dcPDYD7jdmZC4ivWpnskXt66iH/5aCZfZ74wGi1Kv/ptvWipJJ6+xJ2ax1YqS4PVsD177oqzf5DtN
+	PLZogyI70JktCEYqjMjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNsDR-003VOP-24;
-	Mon, 24 Jul 2023 09:50:57 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1qNsDf-003VY1-2S;
+	Mon, 24 Jul 2023 09:51:11 +0000
+Received: from mail-pg1-x52a.google.com ([2607:f8b0:4864:20::52a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNsDP-003VMP-0k
+	id 1qNsDa-003VTj-36
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jul 2023 09:50:56 +0000
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bba9539a23so647605ad.1
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:50:54 -0700 (PDT)
+	Mon, 24 Jul 2023 09:51:10 +0000
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-51f64817809so328154a12.1
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 02:51:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690192254; x=1690797054;
+        d=bytedance.com; s=google; t=1690192266; x=1690797066;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qE79rW9nQFdZueatbKkJSwG7PQvomLDBWPiy7CJ1pOw=;
-        b=M5PackbLD4uz3PJU8ZrV6Y6kpl/UkDSiJMWkyeKo1o/QqggjCRDFeggmumRocssEkO
-         U5pgVFb8eWXMORlIOr1ePtq+FK8kOLkQFNqmDuq4b+d33HgRHPfZYHAMUXUlROjpk8+o
-         J1M8uQcskFRR53Czt+aOUFg/PIJgAadgSulzfayHiil7eFnaN+rquA9rpl4WBOKlzYvu
-         UE9+Mze0Myg1eBjhHiRU9V6RNrQVMPxaTSp0Rfud/ExFs8cbE/oAjSNMW4v95hOWnnh1
-         IBtexczqggdcPw8iGrtFLB0PL+o6pwYWvLTFYmwk22wyiYE0MeWKeaT0SoMLZVVWr3fx
-         Grfg==
+        bh=oVZBD26n61nILm1319d0FZlD/fP50Fwp7YtrZB2yUEw=;
+        b=iUPcJgUMyrTLwgrjrlC+a27y9vEWwy56+puOu64xedJv2ncHtSqDNqiSeynerud5CA
+         SLWVqH1nGCnKkpkX8dkzmoG0eMRym5h6Xzfw/4y3ynxDe9x5fP4GtDEbYlXCEU4KGmnh
+         J8JMlwHQENpmCB/IBQ5Kj/D3RaklR5mhQ3KWpjAIq5ncgA2kgZ+m8lyKEtRUg3xIXkRf
+         1Y+VworbTR0lkfVEfm55Dde1LFRd3k61KtabNyesWRzHMD8tamW6ciBekSSPn4dMEieQ
+         RK4Z2ABaXDMl+MwOvSJ5/Kn72pZwCqkmqC5YhlHMVnLFWPN8jgdPeYJAkwxf5yUyP5GW
+         rA2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690192254; x=1690797054;
+        d=1e100.net; s=20221208; t=1690192266; x=1690797066;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qE79rW9nQFdZueatbKkJSwG7PQvomLDBWPiy7CJ1pOw=;
-        b=hVQquV7xVlq0pVXZ4ZcEU4Sz740fp/V3ZvUQlxwPIIUUmhpfSTLa9kZLmrpuc74AJI
-         ImWuvA/oQX7gcxmhPQwOQ67kn2KdnPmDK7Nx8G0OVO+1zPQ6WTSrMsNFmUU1Zr8sFmJA
-         rBphDowC/aigGso8oaMaNjcep155lFr04VcFf3SRyUyD0BPnq59adtwn/udOsWrXIGGB
-         y8+l/1sbZLLQVjQw4jRWjUsxo19L7//dyKblKUZBKmDkXtxbwSg7CAL5/LwjhvcCDeAp
-         ylUfUOgsvBqYZ0oPiuOVOc+p3jClPdtSC2iVcfMjhGMI+KNf1O5A3n86ecLxLlB1HZ9k
-         OVtQ==
-X-Gm-Message-State: ABy/qLZlPP2lAgVO9O7qOkzhfUp1n69jxaVYAQZpL0J0QDuYw6EcqdEI
-	BS3VwQ7184yk9r8vmuopy2VcRA==
-X-Google-Smtp-Source: APBJJlFDDpJsPsXaM9K0eN3GbgFDnugc0MZ81V5AeEkSNRv9osxW0v212MSH0egY7R7+BB7SiCdLdQ==
-X-Received: by 2002:a17:902:e802:b0:1b3:d4bb:3515 with SMTP id u2-20020a170902e80200b001b3d4bb3515mr12388503plg.0.1690192254453;
-        Mon, 24 Jul 2023 02:50:54 -0700 (PDT)
+        bh=oVZBD26n61nILm1319d0FZlD/fP50Fwp7YtrZB2yUEw=;
+        b=L0Fgg4pR5pUMxluz9f+qIUdKjpqlfC9mjPEYwfZZoEfontkF6CuMug8Zjg7kU3Twre
+         rHQ6qS0bGl7aAy51oRICuC8Dg/lIPh69WtPBGH3DnQqYdaAeMJ/FFfrkJuX3g3JXMk57
+         ediVnIHfB0qCoiRWjD6Gua5hWuXAr6K7TEUyOw+TtyVSavc4Mv/eqsQhifKbzLoi2+Eh
+         5LB+1nxZy97SnbkhaArH15vEFNgUdT9C6BBX4scdYtU10EkmjnxDQZfW0LaBL+H8ZjqB
+         k4/hzW1uyVKuvbjiJsOF4a0cJUZVSfpywQRqoYNvdJB25kPayQA9l6g1FKe3KfIwBKm/
+         Fm9g==
+X-Gm-Message-State: ABy/qLYF+DXMHBqXP9/VrMnqSR8+w0HODSfHzhmCMuisUUupPAvCub8v
+	6qi+UxccDiosGjO3NkqWt8p5gQ==
+X-Google-Smtp-Source: APBJJlFQ+sAFI6LIZ7PgU9puTnlNzbjLYXvmJ0kfMmGkS9XBnuUvcLZ7El1l1GYgUvVEvdh+XgkfrQ==
+X-Received: by 2002:a17:902:e74d:b0:1bb:ac37:384b with SMTP id p13-20020a170902e74d00b001bbac37384bmr1242952plf.6.1690192266338;
+        Mon, 24 Jul 2023 02:51:06 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.50.42
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001bb20380bf2sm8467233pld.13.2023.07.24.02.50.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 02:50:54 -0700 (PDT)
+        Mon, 24 Jul 2023 02:51:06 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: akpm@linux-foundation.org,
 	david@fromorbit.com,
@@ -101,16 +101,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 29/47] vmw_balloon: dynamically allocate the vmw-balloon shrinker
-Date: Mon, 24 Jul 2023 17:43:36 +0800
-Message-Id: <20230724094354.90817-30-zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 30/47] virtio_balloon: dynamically allocate the virtio-balloon shrinker
+Date: Mon, 24 Jul 2023 17:43:37 +0800
+Message-Id: <20230724094354.90817-31-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_025055_268762_A565CAA6 
-X-CRM114-Status: GOOD (  17.88  )
+X-CRM114-CacheID: sfid-20230724_025107_003835_48EF0F37 
+X-CRM114-Status: GOOD (  13.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,99 +128,77 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the vmw-balloon shrinker, so that it can be freed
+dynamically allocate the virtio-balloon shrinker, so that it can be freed
 asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct vmballoon.
-
-And we can simply exit vmballoon_init() when registering the shrinker
-fails. So the shrinker_registered indication is redundant, just remove it.
+read-side critical section when releasing the struct virtio_balloon.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- drivers/misc/vmw_balloon.c | 38 ++++++++++++--------------------------
- 1 file changed, 12 insertions(+), 26 deletions(-)
+ drivers/virtio/virtio_balloon.c | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/misc/vmw_balloon.c b/drivers/misc/vmw_balloon.c
-index 9ce9b9e0e9b6..d216d4dc042e 100644
---- a/drivers/misc/vmw_balloon.c
-+++ b/drivers/misc/vmw_balloon.c
-@@ -380,16 +380,7 @@ struct vmballoon {
- 	/**
- 	 * @shrinker: shrinker interface that is used to avoid over-inflation.
- 	 */
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index 5b15936a5214..d773860c3b18 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -111,7 +111,7 @@ struct virtio_balloon {
+ 	struct virtio_balloon_stat stats[VIRTIO_BALLOON_S_NR];
+ 
+ 	/* Shrinker to return free pages - VIRTIO_BALLOON_F_FREE_PAGE_HINT */
 -	struct shrinker shrinker;
--
--	/**
--	 * @shrinker_registered: whether the shrinker was registered.
--	 *
--	 * The shrinker interface does not handle gracefully the removal of
--	 * shrinker that was not registered before. This indication allows to
--	 * simplify the unregistration process.
--	 */
--	bool shrinker_registered;
 +	struct shrinker *shrinker;
- };
  
- static struct vmballoon balloon;
-@@ -1568,29 +1559,27 @@ static unsigned long vmballoon_shrinker_count(struct shrinker *shrinker,
- 
- static void vmballoon_unregister_shrinker(struct vmballoon *b)
+ 	/* OOM notifier to deflate on OOM - VIRTIO_BALLOON_F_DEFLATE_ON_OOM */
+ 	struct notifier_block oom_nb;
+@@ -816,8 +816,7 @@ static unsigned long shrink_free_pages(struct virtio_balloon *vb,
+ static unsigned long virtio_balloon_shrinker_scan(struct shrinker *shrinker,
+ 						  struct shrink_control *sc)
  {
--	if (b->shrinker_registered)
--		unregister_shrinker(&b->shrinker);
--	b->shrinker_registered = false;
-+	shrinker_unregister(b->shrinker);
+-	struct virtio_balloon *vb = container_of(shrinker,
+-					struct virtio_balloon, shrinker);
++	struct virtio_balloon *vb = shrinker->private_data;
+ 
+ 	return shrink_free_pages(vb, sc->nr_to_scan);
+ }
+@@ -825,8 +824,7 @@ static unsigned long virtio_balloon_shrinker_scan(struct shrinker *shrinker,
+ static unsigned long virtio_balloon_shrinker_count(struct shrinker *shrinker,
+ 						   struct shrink_control *sc)
+ {
+-	struct virtio_balloon *vb = container_of(shrinker,
+-					struct virtio_balloon, shrinker);
++	struct virtio_balloon *vb = shrinker->private_data;
+ 
+ 	return vb->num_free_page_blocks * VIRTIO_BALLOON_HINT_BLOCK_PAGES;
+ }
+@@ -847,16 +845,23 @@ static int virtio_balloon_oom_notify(struct notifier_block *nb,
+ 
+ static void virtio_balloon_unregister_shrinker(struct virtio_balloon *vb)
+ {
+-	unregister_shrinker(&vb->shrinker);
++	shrinker_unregister(vb->shrinker);
  }
  
- static int vmballoon_register_shrinker(struct vmballoon *b)
+ static int virtio_balloon_register_shrinker(struct virtio_balloon *vb)
  {
--	int r;
--
- 	/* Do nothing if the shrinker is not enabled */
- 	if (!vmwballoon_shrinker_enable)
- 		return 0;
- 
--	b->shrinker.scan_objects = vmballoon_shrinker_scan;
--	b->shrinker.count_objects = vmballoon_shrinker_count;
--	b->shrinker.seeks = DEFAULT_SEEKS;
-+	b->shrinker = shrinker_alloc(0, "vmw-balloon");
-+	if (!b->shrinker)
+-	vb->shrinker.scan_objects = virtio_balloon_shrinker_scan;
+-	vb->shrinker.count_objects = virtio_balloon_shrinker_count;
+-	vb->shrinker.seeks = DEFAULT_SEEKS;
++	vb->shrinker = shrinker_alloc(0, "virtio-balloon");
++	if (!vb->shrinker)
 +		return -ENOMEM;
  
--	r = register_shrinker(&b->shrinker, "vmw-balloon");
-+	b->shrinker->scan_objects = vmballoon_shrinker_scan;
-+	b->shrinker->count_objects = vmballoon_shrinker_count;
-+	b->shrinker->seeks = DEFAULT_SEEKS;
-+	b->shrinker->private_data = b;
- 
--	if (r == 0)
--		b->shrinker_registered = true;
-+	shrinker_register(b->shrinker);
- 
--	return r;
+-	return register_shrinker(&vb->shrinker, "virtio-balloon");
++	vb->shrinker->scan_objects = virtio_balloon_shrinker_scan;
++	vb->shrinker->count_objects = virtio_balloon_shrinker_count;
++	vb->shrinker->seeks = DEFAULT_SEEKS;
++	vb->shrinker->private_data = vb;
++
++	shrinker_register(vb->shrinker);
++
 +	return 0;
  }
  
- /*
-@@ -1883,7 +1872,7 @@ static int __init vmballoon_init(void)
- 
- 	error = vmballoon_register_shrinker(&balloon);
- 	if (error)
--		goto fail;
-+		return error;
- 
- 	/*
- 	 * Initialization of compaction must be done after the call to
-@@ -1905,9 +1894,6 @@ static int __init vmballoon_init(void)
- 	vmballoon_debugfs_init(&balloon);
- 
- 	return 0;
--fail:
--	vmballoon_unregister_shrinker(&balloon);
--	return error;
- }
- 
- /*
+ static int virtballoon_probe(struct virtio_device *vdev)
 -- 
 2.30.2
 
