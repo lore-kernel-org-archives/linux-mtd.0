@@ -4,74 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D2AAEB64DD
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 05:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA6F6C001DF
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 07:17:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=T9yRjKzW37OV672KKeUqJgBJyIHHVTB+5JIScrrmPN4=; b=Sa+RFEXWffPrVo
-	g1qVyY4hiWMD1QZx4V99SuXzaaEtYTHUtOQ3vFrHYOMDw3kKj5d5FpgOJf1pfwZoR5PSBVC5R6UZd
-	1Fq1q42yVG6VRq8tMwEKTKGgQyiw+QsVczL1GmWVpJZcFLRt6N3JG+y4HZEkVWpgTHrtPGwZZxE5B
-	qKSmGVGuOR9JmcyJTa0CA1Cb3ZqPUQTzJOtRjqP5kWWWMz5En9d6aQEKSYehtzq+6azOcedyO8LO4
-	nkvwXwWs7Mwtr063BgVf592sAph1XFOAi9GCRiwDWRqdleHcdFZApTCK0U4fPPZrjB2yuxGL8yxHN
-	oXkmRyMYr6ngxHc2EfOA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=P8pzlDCvL/ojSPhqQJl/Xd89EZhTDFAnDEVoGDQMMBQ=; b=kmdMMcAi2gsCAEbQ5G/hY6Ywf9
+	CMkYUIIEuyLx7lsfGh5C4UpYFOVOOKitzKHlLQiz5vXIC509UAMU6Pazx9sUOuiUrBClhDoaxsfgF
+	cgXmiWgd7FG4Lch2XhSFF5gV+fQ4psZ14pZqUSHmWjmVpVX8Uhz5aoFjn/2xzdIn2wf+Kq7lIMhhg
+	x1YC4nZvZjGr7iVCCxiBU1aikriMYnITqdrcuiXaWdMZn6WZcBJBowTK+Z3p7yUDmwlOqhdQNf605
+	P9AVWGVE/rJNi+YbUDPA2XIrG8DkdNMjakomoH4wENnXUU2wSHTxul/Wrruk8XQSB2I2kcMmy3pMk
+	dNwCx/ug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOAmS-006JeH-1R;
-	Tue, 25 Jul 2023 05:40:20 +0000
-Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
+	id 1qOCIL-006YjY-03;
+	Tue, 25 Jul 2023 07:17:21 +0000
+Received: from 0001.3ffe.de ([2a01:4f8:c0c:9d57::1] helo=mail.3ffe.de)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOAmP-006JdO-1s
+	id 1qOCI5-006Ybt-2b
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Jul 2023 05:40:19 +0000
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbc656873eso51387595e9.1
-        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 22:40:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690263615; x=1690868415;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EPZ5A0Fv0jBh+2WplEexOHdYE9XQO9hqwRtuQ5unl3s=;
-        b=ZvmFAJzpvX6m++KSa4PCatoOahVzquTIwgFhFbgKi1jKtvmCDRE3mD+btga+sBRTAg
-         2h0FkEBZyZKGq1ONq4DB4MBYvVXiaqqt18G/DU0UgiMaopQ1FQkYNT2szLen5yi96Bbw
-         M+YIJCqtwu4NK7kVsrRAEP1iZNjKF9aj0bcTv0ZF7GPEiZhvm+JQcBIHMMDQ+nHIW9uk
-         pSz4DZLuY4gKoVkRFoba9C/GZ28O7mz1fQZjONKjbhVvVWfYqJZ2rR9gfKFSWkYUByN+
-         Nz0RSZkRFdtfYZE0ZsP45Mw092Xfq/JS3MB3ak7mwUGS15S7W9gWJ/uie+lZyXZvJJjL
-         bpuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690263615; x=1690868415;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EPZ5A0Fv0jBh+2WplEexOHdYE9XQO9hqwRtuQ5unl3s=;
-        b=RwfZG6HKDznbH8YeB7I0XQZ1se2jsF2GFBjqJuOiDcBYrI69YYaUpcqR4Xx3FsuHG1
-         u+lMDHy6ZimjXeJw1eWsrggZFRlrJvOBz3RujzddTJZSWDlPW582qfM8bnh0px7CwQ7R
-         PwUUsalSLBx30x7xlMrlmKEcEhcwhkv85W9LXCITvgZ/CUqdKxR38vMsmk9M88kF1Pbf
-         YDJYRzA2AuFHNLl9bYQtFNklvXn8aZO/iiTF0bvbiKDn5dybqtZlcaoNm/5tL+kzRhyb
-         A3tXWJWWli0CQIbWysdTQji7wqSOGYsfwwLUFmXb7CLFpTo5BGDQM454XGrBAmsIVifo
-         zo6w==
-X-Gm-Message-State: ABy/qLYvUTYfb/0qClSSrNAJWqS+21RVQCrki/pIOmfFWBtrRnQrUgL8
-	7ETCYku6mJB2MY2oV0OzJgTBBA==
-X-Google-Smtp-Source: APBJJlH8tkeqdWaNYgfjhDEo36VnYMPund2Vd7SZPeAwzQ1tNFzBUSE9mDfktHjPJZgQ2Lzk+bJioA==
-X-Received: by 2002:a5d:5502:0:b0:317:5eff:1a2a with SMTP id b2-20020a5d5502000000b003175eff1a2amr3533650wrv.44.1690263615270;
-        Mon, 24 Jul 2023 22:40:15 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id r11-20020a056000014b00b0031437299fafsm15082515wrx.34.2023.07.24.22.40.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 22:40:15 -0700 (PDT)
-Date: Tue, 25 Jul 2023 08:40:11 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: hch@lst.de
-Cc: linux-mtd@lists.infradead.org
-Subject: [bug report] ubi: use blk_mq_alloc_disk and blk_cleanup_disk
-Message-ID: <0647d000-a3f0-4362-a299-b83947c82dbb@moroto.mountain>
+	Tue, 25 Jul 2023 07:17:08 +0000
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.3ffe.de (Postfix) with ESMTPSA id 3B3EC5E7;
+	Tue, 25 Jul 2023 09:16:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+	t=1690269419;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tJTQMmeF3m1nxrc4sFHSLJFMi3qRoI92kBt1+tmDUbA=;
+	b=MqICd4inc5joXRSJzNpOgwUOjOye6SNjRhWhSQnm7dVNqYl7klimNxynfz3fb5J7azIvZW
+	FzJjiD9EDokLuMLIHtAsNicuMB4YEUQh/KaBpXpNg6QVTA2bPyFcdIgrogvODaOdPoWzHE
+	4YG2x530aDyvDCp7aNYeQgzvX0icQHozQYAPHW6j2dXDK5EkEFn7Xu/BI5ZgKtjRNkaSQJ
+	MregkEQnDSoHhszVi82C4DkjgS52Q9xc2My84vxD9vUl5/9yXCkONQ2TCHOJqR/yXHgZC7
+	jsVO0zDEeoHuBdjMTTV1XHJfwV0GTeIGgHfQ0ornnLyqzGW3v42aEXyLKOI53g==
 MIME-Version: 1.0
-Content-Disposition: inline
+Date: Tue, 25 Jul 2023 09:16:58 +0200
+From: Michael Walle <michael@walle.cc>
+To: Jaime Liao <jaimeliao.tw@gmail.com>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org,
+ pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw, JaimeLiao
+ <jaimeliao.tw@gmail.com>
+Subject: Re: [PATCH v1 1/2] mtd: spi-nor: add Octal DTR support for Macronix
+ flash
+In-Reply-To: <20230725022302.210275-2-jaimeliao.tw@gmail.com>
+References: <20230725022302.210275-1-jaimeliao.tw@gmail.com>
+ <20230725022302.210275-2-jaimeliao.tw@gmail.com>
+Message-ID: <0acced240c27dd34cf1348ac4a24dba3@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_224017_637422_D2097770 
-X-CRM114-Status: UNSURE (   9.11  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230725_001706_486540_AF83F6AF 
+X-CRM114-Status: GOOD (  28.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,127 +73,164 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Christoph Hellwig,
+Hi,
 
-The patch 77567b25ab9f: "ubi: use blk_mq_alloc_disk and
-blk_cleanup_disk" from Jun 2, 2021 (linux-next), leads to the
-following Smatch static checker warning:
+> From: JaimeLiao <jaimeliao.tw@gmail.com>
 
-	drivers/mtd/ubi/block.c:390 ubiblock_create()
-	warn: pointer dereferenced without being set 'dev->gd'
+You write "We" in your next patch. "We" as in macronix? Then please
+use your macronix email address for the patches. Please note, you
+can still send them through your gmail account.
 
-drivers/mtd/ubi/block.c
-    349 int ubiblock_create(struct ubi_volume_info *vi)
-    350 {
-    351         struct ubiblock *dev;
-    352         struct gendisk *gd;
-    353         u64 disk_capacity;
-    354         int ret;
-    355 
-    356         ret = calc_disk_capacity(vi, &disk_capacity);
-    357         if (ret) {
-    358                 return ret;
-    359         }
-    360 
-    361         /* Check that the volume isn't already handled */
-    362         mutex_lock(&devices_mutex);
-    363         if (find_dev_nolock(vi->ubi_num, vi->vol_id)) {
-    364                 ret = -EEXIST;
-    365                 goto out_unlock;
-    366         }
-    367 
-    368         dev = kzalloc(sizeof(struct ubiblock), GFP_KERNEL);
-    369         if (!dev) {
-    370                 ret = -ENOMEM;
-    371                 goto out_unlock;
-    372         }
-    373 
-    374         mutex_init(&dev->dev_mutex);
-    375 
-    376         dev->ubi_num = vi->ubi_num;
-    377         dev->vol_id = vi->vol_id;
-    378         dev->leb_size = vi->usable_leb_size;
-    379 
-    380         dev->tag_set.ops = &ubiblock_mq_ops;
-    381         dev->tag_set.queue_depth = 64;
-    382         dev->tag_set.numa_node = NUMA_NO_NODE;
-    383         dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE | BLK_MQ_F_BLOCKING;
-    384         dev->tag_set.cmd_size = sizeof(struct ubiblock_pdu);
-    385         dev->tag_set.driver_data = dev;
-    386         dev->tag_set.nr_hw_queues = 1;
-    387 
-    388         ret = blk_mq_alloc_tag_set(&dev->tag_set);
-    389         if (ret) {
---> 390                 dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
+> Enable Octal DTR mode with 20 dummy cycles to allow running
+> at the maximum supported frequency for adding Macronix flash
+> in Octal DTR mode.
 
-dev->gd is NULL so this will crash.  Although maybe it won't crash
-because the dev_err() macro has special code to handle weird addresses
-below PAGE_SIZE.
+Please explain a bit more what you are doing here. The patch itself
+looks dodgy. You are writing CR2 but maybe thats used for register
+accesses?! I also can't really tell from the macro names.
 
-    391                 goto out_free_dev;
-    392         }
-    393 
-    394 
-    395         /* Initialize the gendisk of this ubiblock device */
-    396         gd = blk_mq_alloc_disk(&dev->tag_set, dev);
-    397         if (IS_ERR(gd)) {
-    398                 ret = PTR_ERR(gd);
-    399                 goto out_free_tags;
-    400         }
-    401 
-    402         gd->fops = &ubiblock_ops;
-    403         gd->major = ubiblock_major;
-    404         gd->minors = 1;
-    405         gd->first_minor = idr_alloc(&ubiblock_minor_idr, dev, 0, 0, GFP_KERNEL);
-    406         if (gd->first_minor < 0) {
-    407                 dev_err(disk_to_dev(gd),
-    408                         "block: dynamic minor allocation failed");
-    409                 ret = -ENODEV;
-    410                 goto out_cleanup_disk;
-    411         }
-    412         gd->flags |= GENHD_FL_NO_PART;
-    413         gd->private_data = dev;
-    414         sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
-    415         set_capacity(gd, disk_capacity);
-    416         dev->gd = gd;
-    417 
-    418         dev->rq = gd->queue;
-    419         blk_queue_max_segments(dev->rq, UBI_MAX_SG_COUNT);
-    420 
-    421         list_add_tail(&dev->list, &ubiblock_devices);
-    422 
-    423         /* Must be the last step: anyone can call file ops from now on */
-    424         ret = device_add_disk(vi->dev, dev->gd, NULL);
-    425         if (ret)
-    426                 goto out_remove_minor;
-    427 
-    428         dev_info(disk_to_dev(dev->gd), "created from ubi%d:%d(%s)",
-    429                  dev->ubi_num, dev->vol_id, vi->name);
-    430         mutex_unlock(&devices_mutex);
-    431         return 0;
-    432 
-    433 out_remove_minor:
-    434         list_del(&dev->list);
-    435         idr_remove(&ubiblock_minor_idr, gd->first_minor);
-    436 out_cleanup_disk:
-    437         put_disk(dev->gd);
-    438 out_free_tags:
-    439         blk_mq_free_tag_set(&dev->tag_set);
-    440 out_free_dev:
-    441         kfree(dev);
-    442 out_unlock:
-    443         mutex_unlock(&devices_mutex);
-    444 
-    445         return ret;
-    446 }
+> 
+> Signed-off-by: JaimeLiao <jaimeliao.tw@gmail.com>
+> Co-authored-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-regards,
-dan carpenter
+There seems to be no written process documentation wether this has
+to be followed by a SoB (unlike Co-developed-by). Dunno.
+
+> ---
+>  drivers/mtd/spi-nor/macronix.c | 77 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/macronix.c 
+> b/drivers/mtd/spi-nor/macronix.c
+> index 04888258e891..9010b81e098f 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -8,6 +8,12 @@
+> 
+>  #include "core.h"
+> 
+> +#define SPINOR_OP_RD_CR2		0x71		/* Read configuration register 2 */
+> +#define SPINOR_OP_WR_CR2		0x72		/* Write configuration register 2 */
+
+Copied from spansion.c? Why isn't there an _MXIC_ in the name?
+
+> +#define SPINOR_REG_MXIC_CR2_MODE	0x00000000	/* For setting octal DTR 
+> mode */
+> +#define SPINOR_REG_MXIC_OPI_DTR_EN	0x2		/* Enable Octal DTR */
+> +#define SPINOR_REG_MXIC_SPI_EN		0x0		/* Enable SPI */
+
+The names don't make much sense to me. Are you accessing individual
+registers? If so please use MXIC_REG_<regname> and
+MXIC_REG_<regname>_<bit/mode/mask/..>
+
+> +
+>  static int
+>  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+>  			    const struct sfdp_parameter_header *bfpt_header,
+> @@ -32,6 +38,76 @@ static const struct spi_nor_fixups mx25l25635_fixups 
+> = {
+>  	.post_bfpt = mx25l25635_post_bfpt_fixups,
+>  };
+> 
+> +/**
+> + * spi_nor_macronix_octal_dtr_enable() - Enable octal DTR on Macronix 
+> flashes.
+> + * @nor:		pointer to a 'struct spi_nor'
+> + * @enable:		whether to enable Octal DTR or switch back to SPI
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +static int spi_nor_macronix_octal_dtr_enable(struct spi_nor *nor, bool 
+> enable)
+> +{
+> +	struct spi_mem_op op;
+> +	u8 *buf = nor->bouncebuf, i;
+> +	int ret;
+> +
+> +	/* Set/unset the octal and DTR enable bits. */
+> +	ret = spi_nor_write_enable(nor);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (enable) {
+> +		buf[0] = SPINOR_REG_MXIC_OPI_DTR_EN;
+> +	} else {
+> +		/*
+> +		 * The register is 1-byte wide, but 1-byte transactions are not
+> +		 * allowed in 8D-8D-8D mode. Since there is no register at the
+> +		 * next location, just initialize the value to 0 and let the
+> +		 * transaction go on.
+> +		 */
+> +		buf[0] = SPINOR_REG_MXIC_SPI_EN;
+> +		buf[1] = 0x0;
+> +	}
+> +
+> +	op = (struct spi_mem_op)
+> +		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_CR2, 1),
+> +			   SPI_MEM_OP_ADDR(4, SPINOR_REG_MXIC_CR2_MODE, 1),
+> +			   SPI_MEM_OP_NO_DUMMY,
+> +			   SPI_MEM_OP_DATA_OUT(enable ? 1 : 2, buf, 1));
+> +
+> +	if (!enable)
+> +		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> +
+> +	ret = spi_mem_exec_op(nor->spimem, &op);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Read flash ID to make sure the switch was successful. */
+
+While cleaning up the flash_info db I come around this and it is
+copied all over the place. Please work on factoring this (also the
+other code in micron-st.c and spansion.c) out into a helper.
+
+> +	op = (struct spi_mem_op)
+> +		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
+> +			   SPI_MEM_OP_ADDR(enable ? 4 : 0, 0, 1),
+> +			   SPI_MEM_OP_DUMMY(enable ? 4 : 0, 1),
+> +			   SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, buf, 1));
+> +
+> +	if (enable)
+> +		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> +
+> +	ret = spi_mem_exec_op(nor->spimem, &op);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (enable) {
+> +		for (i = 0; i < nor->info->id_len; i++)
+> +			if (buf[i * 2] != nor->info->id[i])
+> +				return -EINVAL;
+
+Why is the ID now swapped? Doesn't look right.
+
+-michael
+
+> +	} else {
+> +		if (memcmp(buf, nor->info->id, nor->info->id_len))
+> +			return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct flash_info macronix_nor_parts[] = {
+>  	/* Macronix */
+>  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1)
+> @@ -108,6 +184,7 @@ static const struct flash_info macronix_nor_parts[] 
+> = {
+>  static void macronix_nor_default_init(struct spi_nor *nor)
+>  {
+>  	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+> +	nor->params->octal_dtr_enable = spi_nor_macronix_octal_dtr_enable;
+>  }
+> 
+>  static void macronix_nor_late_init(struct spi_nor *nor)
 
 ______________________________________________________
 Linux MTD discussion mailing list
