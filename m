@@ -4,53 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EAC5C001B0
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jul 2023 12:43:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B85FEB64DD
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 02:23:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:In-Reply-To:
-	Subject:cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zoE7id+woTLNEA/jD2U82QcCrnQKe/pY9gxnnD5vS18=; b=K5asjEjzZieZWSekrp926lmarT
-	peRaRn6tEiItjH5u0kveqTQkU/b4uReOXUgHU1DFDx9FbHvTjYorAi8RemnquhnuKcqUq5juNEpVA
-	XZuB8Tl3ZV8PurzhAFyb1LeNVQhVpbaahp3PVQ60SaeH5QsgRH2ivk/JSsokockZVZnpRizlFP8fZ
-	cK8AEktH2A4y/n+hajL+35sjb61LjYyVYMLfApnDuhs6ah+jXo37LgEfmnmNYf7Tom1cnKnhvfTP+
-	d2ACmyz2g83h79ZKHDGsVKR+lu0wmz9KGJhfgFj9diDig5qG3BXnauCUYRcjWlP6D3/SP7qW5JfVx
-	rVoLhqZA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Lz/NilPYPMim8qQWQldTIuaJe3S+ycAln1lFxsKFS2I=; b=AyKgjt7kMNfT5g
+	r3IDn4Wn3FUZRxz6b4LdxffwQHv0xqo5EuME1Kca5W/gq52D3EP1n+0bgbPDuuCz/LNgHI+316m91
+	/18lpv03N26ZM+fwgkXMlqSyhApaN/umDL3YuoZpopv4caeg3r9y6V0AmhBseCVM+cQEB+ZGdjkQa
+	caepm8kIsrzh3uk5BYjlRTz/GtgiHcuJx7CgHbq5jaMocXNltzwL/g45XjK/zVP2yoeduHbhI2403
+	XZDQAch7bdjGpC1MoccQBzNG4fnM+rRTL5kydyC4VwNxvtiNpAKnM+JsXTPal866VbCbVSskKeamX
+	ESSw7zNMKV2akbvZZX9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNuu8-004GHG-0h;
-	Mon, 24 Jul 2023 12:43:12 +0000
-Received: from baptiste.telenet-ops.be ([2a02:1800:120:4::f00:13])
+	id 1qO7i7-005trh-2t;
+	Tue, 25 Jul 2023 02:23:39 +0000
+Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNuu4-004GF6-1f
+	id 1qO7i4-005tqp-2U
 	for linux-mtd@lists.infradead.org;
-	Mon, 24 Jul 2023 12:43:10 +0000
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:e908:444e:5a23:b79e])
-	by baptiste.telenet-ops.be with bizsmtp
-	id R0j22A00H26vpYY010j2rR; Mon, 24 Jul 2023 14:43:02 +0200
-Received: from geert (helo=localhost)
-	by ramsan.of.borg with local-esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1qNuty-002O66-6f;
-	Mon, 24 Jul 2023 14:43:02 +0200
-Date: Mon, 24 Jul 2023 14:43:02 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-kernel@vger.kernel.org
-cc: Kees Cook <keescook@chromium.org>, 
-    "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
-    linux-hardening@vger.kernel.org, linux-wireless@vger.kernel.org, 
-    linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org, 
-    linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org
-Subject: Re: Build regressions/improvements in v6.5-rc3
-In-Reply-To: <20230724122626.1701631-1-geert@linux-m68k.org>
-Message-ID: <88f83d73-781d-bdc-126-aa629cb368c@linux-m68k.org>
-References: <CAHk-=wi4Yau-3Bsv2rXYmtXMTLaj3=Wyf4cdM6d89czFvkVsRQ@mail.gmail.com> <20230724122626.1701631-1-geert@linux-m68k.org>
+	Tue, 25 Jul 2023 02:23:38 +0000
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-666e97fcc60so2842011b3a.3
+        for <linux-mtd@lists.infradead.org>; Mon, 24 Jul 2023 19:23:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690251815; x=1690856615;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RIxkAmHHRIWCCyCI0FFzpY0k5Ej15GMXnSL6kVYyZZs=;
+        b=neCN+jwP6q5vNNuykPBztWGgajvt8sOitJFZcSYc7iQnE+TD/CRvmaOTRoZ8qStunw
+         2Y1nJeG/YWX4hkFu+WKebSlOsyjIfbmDOMFc6jAigKHXjddkSeRPKCNNvsP7XnLuiZia
+         C8UMc7iCrAdJziozn2RzcTI4lvNkUwCasYK7RXNh044ktLA36Q4ZQfc77ZpAV9vsZ4UH
+         4C+c27Vv3tcGx98XbksCWhUTnGB3Tngh+rohnAOGirIjDc3FX+PJ3dvFpEm2GiDAXsbk
+         QAh00IaPQYdK4lKpitW8T8Q6BBCpcbmGMv0Vna9fA1LnVEv9jC002YXznhiAK8gYSXf0
+         L7iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690251815; x=1690856615;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RIxkAmHHRIWCCyCI0FFzpY0k5Ej15GMXnSL6kVYyZZs=;
+        b=XqmBCaIIbfg3pVJQFsGWJUQ3nko2ucnsdgeSUw2fNEfPs40zTIQffvny6IoRZQvlLR
+         VjLjAFOpZPFjKi6220F27UsyPh8Gj/uO+r9l7XAucMcIYxeSmF+CymdqlNFJRgCtd2MA
+         hcW0QCWwmW4xoXPpi4j5/v+UX5pvVndCVZHTiLNoP9MHJwdA77kVoWzElgN9ftF+wH+V
+         GOjGUL4pHtTHjeoSE6VfdNxktnD1Fpnr72AfE/q/8UDWYfpaWMGN2rR/VZKxShI4s3AL
+         LIGOWLCPqifguHzaWvvjOo6GilkKlkWlQmzTvkaYs79IR6D5Gl/R+8+wGNNEFHi7B8NF
+         jssg==
+X-Gm-Message-State: ABy/qLbo0nb+faO2frvdXwqa4f3MdReKj3ue+BuePinZuo2i9I+Fs/R1
+	UIdmR87M2OWu9tNlH7O9pd8=
+X-Google-Smtp-Source: APBJJlHhIXa1K2qp9Eg7LWFT5zLlzbE7AYuO+R7cFryHOuudJwj/PS7Sqz6w2va9ptMTTdSJs3bBmA==
+X-Received: by 2002:a05:6a21:6d99:b0:138:dbff:f41b with SMTP id wl25-20020a056a216d9900b00138dbfff41bmr7086150pzb.27.1690251814893;
+        Mon, 24 Jul 2023 19:23:34 -0700 (PDT)
+Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
+        by smtp.gmail.com with ESMTPSA id v11-20020a62a50b000000b00682a16f0b00sm8311095pfm.210.2023.07.24.19.23.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 19:23:34 -0700 (PDT)
+Received: from linux-patcher.mp600.macronix.com (linux-patcher [172.17.236.35])
+	by twhmp6px (Postfix) with ESMTPS id 02CDD808AA;
+	Tue, 25 Jul 2023 10:22:39 +0800 (CST)
+From: Jaime Liao <jaimeliao.tw@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	tudor.ambarus@linaro.org,
+	pratyush@kernel.org,
+	michael@walle.cc,
+	miquel.raynal@bootlin.com
+Cc: leoyu@mxic.com.tw,
+	JaimeLiao <jaimeliao.tw@gmail.com>
+Subject: [PATCH v1 0/2] Add octal DTR support for Macronix flash
+Date: Tue, 25 Jul 2023 10:23:00 +0800
+Message-Id: <20230725022302.210275-1-jaimeliao.tw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_054308_721529_9890F7E3 
-X-CRM114-Status: GOOD (  13.52  )
+X-CRM114-CacheID: sfid-20230724_192336_832849_6A90473E 
+X-CRM114-Status: UNSURE (   7.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,63 +92,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 24 Jul 2023, Geert Uytterhoeven wrote:
-> JFYI, when comparing v6.5-rc3[1] to v6.5-rc2[3], the summaries are:
->  - build errors: +5/-0
+From: JaimeLiao <jaimeliao.tw@gmail.com>
 
-   + /kisskb/src/include/linux/fortify-string.h: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]:  => 583:25, 493:25
+This series add method for Macronix Octal DTR Eable/Disable
+and add Macronix Octal flash support.
 
-mips-gcc13/mips-allmodconfig
+JaimeLiao (2):
+  mtd: spi-nor: add Octal DTR support for Macronix flash
+  mtd: spi-nor: add support for Macronix Octal flash
 
-Full context:
+ drivers/mtd/spi-nor/macronix.c | 104 +++++++++++++++++++++++++++++++++
+ 1 file changed, 104 insertions(+)
 
-     In function 'fortify_memset_chk',
- 	inlined from 'memset_io' at /kisskb/src/arch/mips/include/asm/io.h:486:2,
- 	inlined from 'build_auth_frame' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:2697:2:
-     /kisskb/src/include/linux/fortify-string.h:493:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
-       493 |                         __write_overflow_field(p_size_field, size);
- 	  |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     In function 'fortify_memcpy_chk',
- 	inlined from 'memcpy_toio' at /kisskb/src/arch/mips/include/asm/io.h:494:2,
- 	inlined from 'translate_frame' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:955:3,
- 	inlined from 'ray_hw_xmit.constprop' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:912:12:
-     /kisskb/src/include/linux/fortify-string.h:583:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
-       583 |                         __write_overflow_field(p_size_field, size);
- 	  |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- 
+2.25.1
 
-Single-element flexible array abuse in drivers/net/wireless/legacy/rayctl.h:tx_msg.var
-
-   + error: modpost: ".L856" [drivers/mtd/nand/raw/nand.ko] undefined!:  => N/A
-
-parisc-gcc13/parisc-allmodconfig
-
-   + {standard input}: Error: Missing symbol name in directive:  => 1096
-   + {standard input}: Error: unrecognized symbol type "":  => 1096
-
-sh4-gcc12/sh-allmodconfig (ICE)
-
-   + {standard input}: Error: unknown opcode:  => 1091
-
-sh4-gcc13/sh-allmodconfig (ICE)
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6eaae198076080886b9e7d57f4ae06fa782f90ef/ (all 235 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fdf0eaf11452d72945af31804e2a1048ee1b574c/ (161 out of 235 configs)
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
