@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCB88C001E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 09:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0B3BC001DE
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 09:56:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MtTFxrje/2KktqGLkKYkibxDJzh4QJ5ZULZU418d44U=; b=lgAQthhloZdyHn
-	lb/UQDG3KQSJkiDz264uVkw9IhSkSOcrS9rwIAi43p+Oo70PtcJoqQlPgJCQMPehAwdhKOi3Xdp2e
-	PEv10/cYc1bFlBfVFRyMMs5AUOCSskcL63QNDB+rQ37douOFW4Ty0lhpQVaJOJaPeNQkvcPANi/lS
-	LP4xUXNqyJ/xU+piTtFMLIcMFTgguwHCqhxor7sZaCSn7tsa9yPwUp+FhBwYxafSXZiEM5/zvcv4a
-	Z1XUZJ25smSPsjDm3SLaSJSowsBj0nXcu6XvjuTx+rZczMYf+w1HYlL+l0q5UAltPIYGNFX8nktCG
-	x5wLh4451nmo8orVzU2g==;
+	List-Owner; bh=CPRLz2Ph6WCslaoK1EmGROhBOkrtCXjiHCNoOGvxscs=; b=yDEm8TBvQXC0Ga
+	6okh++qqeDUH3wdVsTqTZcQyzTooyoYImsB7XlvTD0haOz1mHfcG/zpd/NGANu0OBaM+OLvbiVLSg
+	i8HK0xgj1aOSnr0EGyjlxY4KIHFOWPSEq9ALxzOu1Ev0DTYZcgPvHFiJZAz9UHiTEGN3h2kJy4DIZ
+	UUdjv/nYwwCVvZAueSZ5OTFw3bWndr6m9+GxCmyQWrWyN0mGRxodA7l9JGqjLL+rmA0O8XMpw4qTO
+	MkrWbB/UJqeKrydmYB+36sRzTG0dOlF94gvMAgP+bDCxKY442KGNvs7N3nSuqYh3YxBZljxgmSNVs
+	i6rOXdIYGHDzqY54MGLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOEg1-00701Q-25;
-	Tue, 25 Jul 2023 09:49:57 +0000
-Received: from mail-qk1-x72c.google.com ([2607:f8b0:4864:20::72c])
+	id 1qOEmX-0070nG-23;
+	Tue, 25 Jul 2023 09:56:41 +0000
+Received: from mail-pg1-x52f.google.com ([2607:f8b0:4864:20::52f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOEfy-00700S-16
+	id 1qOEmU-0070mV-2B
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Jul 2023 09:49:55 +0000
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-7659cb9c42aso436362685a.3
-        for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2023 02:49:52 -0700 (PDT)
+	Tue, 25 Jul 2023 09:56:40 +0000
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-55bac17b442so3877722a12.3
+        for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2023 02:56:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690278592; x=1690883392;
+        d=gmail.com; s=20221208; t=1690278998; x=1690883798;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5rRTwXGXsw79Zlj6OZIoWXUJu2+rfPoLd6OREnF6lhA=;
-        b=QdGFGESkkEz+PfGHT5JeDqkV/InttJRKZiFN2vgiNhoycIsVJwxLLjfP67aQDVHNv3
-         azK9VH38MWMw3PC/PTnS/UtvKtXlnko7nyk9j+NKaSv92T9eLSKZcOJJmqVO9ILeEwDL
-         svKifumLcvucKmTkgXg0Wqtvq/meqGe8H50ZvvS3je3wWkV6tkNsuZMvf57NgRZ7UgEu
-         FPRhItffCJ1wcOq6yt79LpwyU3C+cZ09iH0Zw4Nc0qXStwtbpuA1GYAsowJtBMGTGpjP
-         56nKOcgTopzRuHPIXf+U6Iu4F0H9r03nhn8FQa65mzJhUz3rvN65n7cPWDb/jltlX/z1
-         ueJA==
+        bh=iZw8ubeYJMeZMtvbBq2A6XIQLcNKG9vzFKYP90JjcxU=;
+        b=VYBV8izy4UkCwzYjeRwjpHqslSHg+3urYB8MnskBpnL5syoiA+WizfVAKNoPZlgfPz
+         ZayGvPWwlFG0sgzaXR6uKcIVqcGtQ9lZRZGOexvq7jogsBfMLiQ2gYKba+D4Mt0xQzVu
+         75IcS/gAt/ADyH/uK/cKetU4daEKJCWJPSW0v9wLrRP3AMjoru+4ZZwUGRickWuRP50d
+         btRWViENFmahMdNwQDcP7nXoKZw88NJGOPYMkRz9HLGUZPuU7yqoiuxbnvb/XpcKXLxY
+         kuimY+vaC5sizd1FDVmdgQ69uG+252sNouexHCGNCLBHkTZsK/b4zMeCprFS21Ojqaat
+         KgfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690278592; x=1690883392;
+        d=1e100.net; s=20221208; t=1690278998; x=1690883798;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5rRTwXGXsw79Zlj6OZIoWXUJu2+rfPoLd6OREnF6lhA=;
-        b=lAcsa02elmw41EBXdXn2V/qAXpOg4dxw4WkGSf+ajaWAGwJTMNb29gSQo4whW+kUDo
-         ZA9Di8N71FF/mI3m0ZzMEFQ8WRgDZ7z9bwo5lyou6bM3hKzCsb7LM0LaBXAcKLZ8GRqM
-         jVmmOYNKSZ7oDe7wu+b2fC78pK53RXQ5lHlJCGc+EOHUmv4woNzsL4N+iOE1mzdDYp20
-         MquOWeuXxkV4d0i8W2W47ImSqIpvO48hdEjA0mFP7nmcWxtBWvN1CyQIvrnbo+fApUW6
-         0rxECtljCOGwUKopMTr6Td5lDc8uqOsveI6Gaob/V6cuPE+BEU7xxqaG70Xcy8KosoHj
-         PZCQ==
-X-Gm-Message-State: ABy/qLYWyPy4T/aQ/kDZZiGDiyz9rKWny/2DUcrXHug2/RFeFg+kT69V
-	Mina56pWzfczuVx8c6rYb1dFPxRbiBG5svd6b+Q=
-X-Google-Smtp-Source: APBJJlHVG2D0lzfGoourp9uYUPDL/a/mJSJqyzX1vJT715ybzMFb4AumoJJ8mxJOf55Hkkz9od9KclYt2Ot89l5I3tY=
-X-Received: by 2002:a05:620a:4728:b0:765:a74d:62b1 with SMTP id
- bs40-20020a05620a472800b00765a74d62b1mr2606000qkb.19.1690278591885; Tue, 25
- Jul 2023 02:49:51 -0700 (PDT)
+        bh=iZw8ubeYJMeZMtvbBq2A6XIQLcNKG9vzFKYP90JjcxU=;
+        b=T/nYmS/pHfWSFo8+r0688+eeRUSZMD2RLzRR/KWAFCJkBYcFqS8JZ2nO5SSjqFKWXI
+         cow02Y/3/m5+ieraYfsN/K8aD1kdz4KKpUqqvA0ZfhNaSOsKDhGRELL38D7O2Abp4TIb
+         E7WBubgv51kJXIZmUcm5sXZlON0oTipsbpvLXcmfFaGAWLvxkxFm5heCSIS4cRGeFXzq
+         Ct9ptlwaIqupy6VzGPgzc8E/BzCBe/DFATXO0OXNcrwBxlFqzkfsD/o+n9Q7QqotT0gi
+         ng4TbsuaqQPpO2C0XSwVeDnTtugGk31xSz7KfPTbuSVbZWwU+9q74bpoc9U9Qs2K+1CG
+         uK6w==
+X-Gm-Message-State: ABy/qLYPC92IdKfozwd02KWN1wDJm8Dzs+obDf3lrIoadYPmgKanfzk6
+	/C2ti9tvMpFvNDnMkSOqaadVwManEwdLPhQ/Qpo=
+X-Google-Smtp-Source: APBJJlFtEUWsGQMnF21eFWFOro4ZrrHl9OxLWLtN6eEVQjgXCP0l3gp2eyI3SFPmXyHg2AEUVkR133bzbkxwOlrHAwc=
+X-Received: by 2002:a17:90a:9a8d:b0:262:ec13:d3a with SMTP id
+ e13-20020a17090a9a8d00b00262ec130d3amr13192412pjp.28.1690278997837; Tue, 25
+ Jul 2023 02:56:37 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230725022302.210275-1-jaimeliao.tw@gmail.com>
- <20230725022302.210275-2-jaimeliao.tw@gmail.com> <0acced240c27dd34cf1348ac4a24dba3@walle.cc>
- <CAAQoYRnfEEtRhVcWXAyokgS1G8fGsMhvUfoe6PcuVBEQ8sW2Hg@mail.gmail.com> <84c5907c5f1b31fd97a4974a702cfabd@walle.cc>
-In-Reply-To: <84c5907c5f1b31fd97a4974a702cfabd@walle.cc>
+ <20230725022302.210275-3-jaimeliao.tw@gmail.com> <eb15e38a6bd4929c0afb41cf1c652d98@walle.cc>
+ <CAAQoYRkCPsfxEzRGJ+fdtztCGtC7PwAVEekTAdb2KYGhF39bHA@mail.gmail.com> <7a895a53594b607614e0b7518127bfbb@walle.cc>
+In-Reply-To: <7a895a53594b607614e0b7518127bfbb@walle.cc>
 From: liao jaime <jaimeliao.tw@gmail.com>
-Date: Tue, 25 Jul 2023 17:49:12 +0800
-Message-ID: <CAAQoYR=-FOrJs4vaSzm4CO_Ao6v-io97BjCvBCMpjmUcRcxNzA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] mtd: spi-nor: add Octal DTR support for Macronix flash
+Date: Tue, 25 Jul 2023 17:55:58 +0800
+Message-ID: <CAAQoYRkUzAD6-AWsYHZq8kjeXUFthOvXCTmKj_k82LSUoj=URQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] mtd: spi-nor: add support for Macronix Octal flash
 To: Michael Walle <michael@walle.cc>
 Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org, 
 	pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230725_024954_374471_EF570363 
-X-CRM114-Status: GOOD (  26.83  )
+X-CRM114-CacheID: sfid-20230725_025638_710972_7B5BDCA8 
+X-CRM114-Status: GOOD (  37.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,80 +91,94 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi Michael
 
+
 >
 > Hi,
 >
-> >> You write "We" in your next patch. "We" as in macronix? Then please
-> >> use your macronix email address for the patches. Please note, you
-> >> can still send them through your gmail account.
-> > Yes I am Macronix engineer and sorry for the company mail
-> > issue so that I can't send and reply patch on Macronix mail.
+> >> So the stack die information come from SFDP? Can RWW also be read from
+> >> the SFDP tables? Do you have vendor SFDP tables where this information
+> >> can come from?
+> > For this introduction, it just introduce Macronix EPN naming rules.
+> > As I know, rww didn't include JESD216D.
 >
-> Thus I was saying that you should use the macronix mail for the
-> patch author and the SoB and send your mails with your gmail
-> account (git will take care of the difference).
-Got it, thanks.
+> Yes, but you might or might not have proprietary tables in the SFDP,
+> which
+> might inidicate wether that part has RWW or now. Thus I was asking for
+> that
+> document above.
+Sorry, I don't have proprietary tables in SFDP.
+For checking whether RWW feature support, I need to check in datasheet
+and EPN.
 
 >
-> >> While cleaning up the flash_info db I come around this and it is
-> >> copied all over the place. Please work on factoring this (also the
-> >> other code in micron-st.c and spansion.c) out into a helper.
-> > Let me clearify the data order for read ID on Macronix flashes.
-> > Read ID
-> > SPI mode : c2-84-3c-c2-84-3c
-> > OPI DTR mode : c2-c2-84-84-3c-3c
+> >> Again "us" as in macronix? but then, there is no trace that this
+> >> commit
+> >> is comming from macronix.
+> > It is relate to Macronix mail issue, so we prefer send patches on
+> > gmail.
+> > A question, how could I mention the commit is comming from Macronix if
+> > I still send patch from gmail?
 >
-> So you are basically duplicating the id bytes in DTR mode. The same
-> byte is transferred both on the falling and rising edge of a clock
-> cycle. I think this needs further changes to the core. I means that
-> if the core will do a rdid in octal mode, it returns "garbage" for
-> now.
-Do you mean a common function for ID comapre in core.c?
-
+> Yes see my former mail.
+Thanks.
 >
-> How is the data transferred in octal DTR mode? Reading the same data
-> in SPI and octal DTR mode should return the exact same bytes.
-For all flashed in this patch, data reading are all same between SPI mode
-and octal DTR mode.
-
+> >> md5sum is missing and please use either xxd or if not
+> >> available, "hexdump -C".
+> > Ok, I will update content of SFDP dump with md5sum and
+> > using xxd command.
 >
-> So one test would be to use the flash in SPI mode, write some data,
-> enable octal DTR mode and read it back and compare it. They must
-> match.
+> Thanks!
 >
-> > So that I create a specify judement for checking ID via 8D-8D-8D
-> > on Macronix flash.
->
-> No, please make it a common helper for all flashes.
->
-> >> > +     op = (struct spi_mem_op)
-> >> > +             SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
-> >> > +                        SPI_MEM_OP_ADDR(enable ? 4 : 0, 0, 1),
-> >> > +                        SPI_MEM_OP_DUMMY(enable ? 4 : 0, 1),
-> >> > +                        SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, buf, 1));
-> >> > +
-> >> > +     if (enable)
-> >> > +             spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-> >> > +
-> >> > +     ret = spi_mem_exec_op(nor->spimem, &op);
-> >> > +     if (ret)
-> >> > +             return ret;
-> >> > +
-> >> > +     if (enable) {
-> >> > +             for (i = 0; i < nor->info->id_len; i++)
-> >> > +                     if (buf[i * 2] != nor->info->id[i])
-> >> > +                             return -EINVAL;
+> >> > --- a/drivers/mtd/spi-nor/macronix.c
+> >> > +++ b/drivers/mtd/spi-nor/macronix.c
+> >> > @@ -179,6 +179,33 @@ static const struct flash_info
+> >> > macronix_nor_parts[] = {
+> >> >       { "mx66u2g45g",  INFO(0xc2253c, 0, 64 * 1024, 4096)
+> >> >               NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+> >> >               FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+> >> > +     { "mx66uw2g345g", INFO(0xc2843c, 0, 64 * 1024, 4096)
 > >>
-> >> Why is the ID now swapped? Doesn't look right.
-> > Actullay 6 bytes data are c2-c2-84-84-3c-3c which are got by 8D-8D-8D
-> > read id
-> > on Macronix flash.
+> >> Please use INFO(0xc2843c, 0, 0, 0)
+> > Sorry I didn't get it.
 >
-> See above.
+> That should come from the SFDP tables.
+>
+> >> > +             FLAGS(SPI_NOR_RWW)
+> >>
+> >> Maybe one of your proprietary tables indicate RWW capabilites?
+> > As I know, RWW could be got on datasheet only for now.
+> > So that follow the existing rule using FLAGS for it.
+>
+> So you didn't test it? Then I'm inclined to say you should
+> drop this flag from this patchset.
+>
+> >> > +             NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_READ | SPI_NOR_OCTAL_DTR_READ
+> >> > | SPI_NOR_OCTAL_DTR_PP)
+> >>
+> >> No NO_SFDP_FLAGS() for new parts.
+> >>
+> >> > +             FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+> >>
+> >> You should have a correct "4-Byte Address Instruction Table",
+> >> therefore
+> >> you don't need the FIXUPS_FLAGS.
+> > 4 bytes opcode flag could be get by parsing bfpt.
+> > But I think it would be great if ID table include it as well.
+> > Because of some flashes in market may not define SFDP table.
+>
+> Which ones would that be? Are there any new flashes without SFDP
+> tables? And even if, it should be added if there is an actual board
+> using that flash without SFDP. I'm against just adding flags just
+> because "there might be something out there". Ideally, there shouldn't
+> be any entry at all.
+Agree, I hope all features get from SFDP table and as I know new flash
+all support SFDP.
+But for RWW, I still need a flag for using.
+
 >
 > -michael
 
-Thank you
+Thanks
 Jaime
 
 ______________________________________________________
