@@ -4,46 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B832C001E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 09:22:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5139C001DE
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 09:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:To:References:Message-Id:Cc:Date:
 	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tBFrPtqJl+YqGhEtoGxTdT7O+Q4O4QbkQtOuPrLiIkA=; b=XPE3LIPSnToEOL
-	lt6qBbNPEKemy6bW4ol5uSkHlKT4V3ZGH99jf+hIj6rB7J2eNM0JUNH8KlVU+Z4Of7lR4+htpCatt
-	GrkQ6zD32CxhM/pImNfJOMNej2oB6FrzgydpYRb1SMkalclvzSsAfaj0a/4wWL393iuxx+5Blj2Zy
-	Ufow+yluLnS/GdAs3JFwKa1/k72lL/UvHsKWWuLHpSKBKKpc1W64zeW0YuMsml/M2vLEKIT/FVbPy
-	lZxzJ4DlvU3w+6fn111GPtS6JRv6qa4GWBcNYFIt5Csdws5WFuLOafCX+/ET5IQAsFVp4zy0yBkPD
-	zEd41y5zA7hnJhcGs/Lw==;
+	List-Owner; bh=30DYl3IggWnq7QigH50AsLc3wjSA7gKJjx0VJjw0qX8=; b=rVA7kVdofGI2Lv
+	bP0fqUQj9kHt189gDMItam0V3pPtSSQe6pi3UPyfSJdTqVzGegtIqR4IMngtjB0Whna1G1yi7/OmS
+	ZdjkNHwF57CYAY+zADaVUAsky+aE8KXMapk5lG3Sc0Mrcyi0IXhYqKnuhdFnDGnbXUw7YqFHxb2Sr
+	k2NDeelgEqdM4Vtga1jw575KDuQ8prb3KPiSyvs840mYDbhv4WuiX26tucKJ6b03jy7bVrn3uT3LV
+	T3V3fA0Ef58MHn/7ZWydm4bu+0BuuX3pIykkY+nQfoNVI3B+z4LjR4kEe/SYSOihpOwh2/lSrhb9z
+	NEGbmXMZy/KJISlJ6HOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOEFj-006tdB-0g;
-	Tue, 25 Jul 2023 09:22:47 +0000
-Received: from out-45.mta1.migadu.com ([2001:41d0:203:375::2d])
+	id 1qOEIE-006u6C-0E;
+	Tue, 25 Jul 2023 09:25:22 +0000
+Received: from out-14.mta1.migadu.com ([95.215.58.14])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOEFf-006tb7-31
+	id 1qOEI5-006tzN-2B
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Jul 2023 09:22:45 +0000
+	Tue, 25 Jul 2023 09:25:15 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1690276959;
+	t=1690277108;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=O0aj+CEvUWLWW/lym+SjHnwm8OSi0vQ8fgtochDa6Vs=;
-	b=xJfsnq4tfri4+FrxQ/wgEMA3zFz0o0z0uW0gHHJCvckela5K3HUZXJd8znm8ohjnxlmbHS
-	uH4lNpUNfMnIh4HG6zSYXwQDD4QbiVOnWxcUq/Ckyge75DILepht+8WUJVUEtTuA6yQWPk
-	2nBkRdUkFluXDihkXSSSRwQEBatV+pk=
+	bh=+8cgQl/NwKjlv95whhBvr3/hIEapF8k47N3p7suJb70=;
+	b=usOR6hHD6eRCxqjCTCcivuGWvHVkYPEcYN1LFGUp7w19ZF5rgZGS7F3BC9qYg1mh2K3CZg
+	P+ggLeAhjwkMLLXjRaq6w6val5oNQN/dZHMaY89bOfIaUuCQCvzNHzHVmmvDvSO+waObUp
+	Ejvejxqj/KUxQq2De9wkuBcRQhJyUA4=
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 07/47] xenbus/backend: dynamically allocate the
- xen-backend shrinker
+Subject: Re: [PATCH v2 08/47] erofs: dynamically allocate the erofs-shrinker
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-8-zhengqi.arch@bytedance.com>
-Date: Tue, 25 Jul 2023 17:22:00 +0800
+In-Reply-To: <20230724094354.90817-9-zhengqi.arch@bytedance.com>
+Date: Tue, 25 Jul 2023 17:24:24 +0800
 Cc: Andrew Morton <akpm@linux-foundation.org>,
  david@fromorbit.com,
  tkhai@ya.ru,
@@ -80,14 +79,14 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  linux-ext4@vger.kernel.org,
  linux-xfs@vger.kernel.org,
  linux-btrfs@vger.kernel.org
-Message-Id: <CD39258F-AAA8-42A7-BBA9-6528A629B315@linux.dev>
+Message-Id: <0C8B4C97-C8DF-401D-83E9-A13AE69E73F0@linux.dev>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-8-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-9-zhengqi.arch@bytedance.com>
 To: Qi Zheng <zhengqi.arch@bytedance.com>
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230725_022244_116949_E5FBAAB5 
-X-CRM114-Status: UNSURE (   5.60  )
+X-CRM114-CacheID: sfid-20230725_022513_887125_F4B9E634 
+X-CRM114-Status: UNSURE (   5.63  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -109,7 +108,7 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 > On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 > 
-> Use new APIs to dynamically allocate the xen-backend shrinker.
+> Use new APIs to dynamically allocate the erofs-shrinker.
 > 
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
