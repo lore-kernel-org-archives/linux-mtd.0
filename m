@@ -4,68 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD940C001E0
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 09:03:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24857C001DE
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 09:06:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=m9aUceUBQ37AcMJhp48C3iQu051iOBz2wbG2m/q80QU=; b=zvHiqCo0BewYjI
-	Tz2lcFonlqhwa73g+6LH6mUp5QnUuhC3RS4c143NlIMGitvbu8yMByBcgM9PCPJyFVRUvlWmH/TBf
-	eiz8Vzpa/o9mQTGjHWXM5Qcjx3Qxgva0uIY3NZQUM1Cuu6kUjuy7emx0zdpSkSw9gpkc8w7/v4rK9
-	rBpdx7WQA/JSQhSMOOzbJn86N4OJ/sGjnppgderJcQeCgr1wkPF1tF3S6gRARCbP1fzWtJ843rtML
-	cIWkLPivSi+12TsPK/nuU2ngZ6u+4f35bazRIgAVoRRcOowU7yRBSuLnT7hBnVzqGhdxvfdXtLjpY
-	LK0FbDuPsCzcTLvRRP9Q==;
+	List-Owner; bh=bXCNCE360BhKPPZUdmsE0Dc6XXqa0FyGAOuWWk2B8bw=; b=nWI9PowfgX1lyC
+	1xEHUZx4Js7ZPt2CbL3UrnkgcrL+nsnE+vgeH+FgHkzAujfyiFT2zzjTQGXiHjxbJnTeKTQhGsj/G
+	uP2wUZ1kbqE41orvscYsx5VUhLja860wg/g3UqXimKjtwMoJ8BFGhRcl+t+JvEDmqrx321RZ5mkaG
+	EZYIEr7gEKChy1QAeanPtM36vnWFt6ZLYoInA87x3AWyGWZ3brlw0Vk7vRemGFQf5gU8rVvlb1qkF
+	U1HtUlix2aeOwhdAp0aixh8bCObeXvwI3WBtFdF6GsIJ4CBg5IeMrIe9HwCTFdyUarUhRE2gbN/zN
+	9WuGhh64aF+EM2ozyCkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qODwp-006qpP-01;
-	Tue, 25 Jul 2023 09:03:15 +0000
-Received: from out-38.mta1.migadu.com ([95.215.58.38])
+	id 1qODzw-006rHG-1R;
+	Tue, 25 Jul 2023 09:06:28 +0000
+Received: from mail-oi1-x22e.google.com ([2607:f8b0:4864:20::22e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qODwk-006qnd-0p
+	id 1qODzt-006rGQ-1x
 	for linux-mtd@lists.infradead.org;
-	Tue, 25 Jul 2023 09:03:12 +0000
-Message-ID: <3648ca69-d65e-8431-135a-a5738586bc25@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1690275782;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jkjBh/Kp2KZsbd5A9bxpjAJZxN02Eft+lFTspqPnOCk=;
-	b=C86+NnAgVOWWduY0bypLj9pEd8+f7K2hQWQRdMiOl+4lNoex/sNqQF/OzRY+XF6R/pQj3x
-	RJfrwmBw/U62Xz7gGIQfDrsff33dmTRFy6JUY2ZoASoV8vvmjWXkOHfSOC62P8ONIDS3dq
-	14Z/qjc5TC07VTaeF50qDKBsNsdzhz4=
-Date: Tue, 25 Jul 2023 17:02:47 +0800
+	Tue, 25 Jul 2023 09:06:27 +0000
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a412653352so3351292b6e.0
+        for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2023 02:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690275981; x=1690880781;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qOy1UDKwqjsYur1pE9G0IhWnuKqEk17ArR63nJo19i8=;
+        b=e19a/gqO3PaAvmHzTA8l66Bkf7npfEW5erOXNU4g7V/ikKGOqJMt//45Ykxs4yAL9a
+         4UDiOimGn6DkrgCptnue8QoOxpRY/JjNkQjnvjqW9hGPO1AbmjMhvNPe62nCSAMIgRk9
+         Fie63lu+8IyoWOAsottWefRkTbwxTHyGfletJSj5cRgboNyCPwRLyxuN2JX7ixSDiOHo
+         eS9VRLm7pmJa17oiksbO2ul+vlaWxeGnYXx4VBcM1838aThyRgSBwpyeB34Aw/yZQXtT
+         HZxBpQi71QIY+g0JEdHU/2rewgDQBG7ihq6ME+JaL1VJIaiOYxbiRK4IgJIi8B7OLk7N
+         KQlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690275981; x=1690880781;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qOy1UDKwqjsYur1pE9G0IhWnuKqEk17ArR63nJo19i8=;
+        b=GcESBe7SiOTczm3gnsK1hhY7Hq69tLK8NYCBfBor1SX76f4EZQFUC/WfOSrR59huZh
+         OnpSOkeHwiBCenfVTF2rF++/Ia+2xCO1HxZRIoHPxbHULr6tHzeBzBL2GXpVv2hSjviD
+         29FFX0bfRvjNy5u5qF3fdDbRzCJ5N0VhjMx+LaPHrQPk5i3FweVm5G4y4jftz0/HY6M8
+         Q2Fz6K3q32uoygG4vQXk9rsxLUdPQoDXJ2r60J2pRUTK8ovDDwItnfRgk7drIlfd1VKi
+         3VoBnHW3LnojMgOxsPXBIHTrQ39fnF9t7u1AQzW4rWLB0gmh6I1i/lkqQLL6O42Qj7Us
+         kavg==
+X-Gm-Message-State: ABy/qLbrve0wKWWRgmNbVwuxwWXNwUovn5m5Xww2ZXHMPgWnr1X8ITja
+	tdcv5zu8D8UrCAMNrvulBXhWaONtLw1zh8PrU8Y=
+X-Google-Smtp-Source: APBJJlFzvSmjaS8jCvJI2ia0cF35N3oD6mbJY3/dGxfLKNfKHFNwxw3SrlVGhv/AItv+VewPCFBQO5bVQBr2og+mgBg=
+X-Received: by 2002:a05:6808:34d:b0:3a4:8a13:98a5 with SMTP id
+ j13-20020a056808034d00b003a48a1398a5mr12373554oie.16.1690275981572; Tue, 25
+ Jul 2023 02:06:21 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 03/47] mm: shrinker: add infrastructure for dynamically
- allocating shrinker
-To: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
- kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
- linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-bcache@vger.kernel.org, virtualization@lists.linux-foundation.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
- roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
- paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com, cel@kernel.org,
- senozhatsky@chromium.org, yujie.liu@intel.com, gregkh@linuxfoundation.org
-References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-4-zhengqi.arch@bytedance.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-4-zhengqi.arch@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20230725022302.210275-1-jaimeliao.tw@gmail.com>
+ <20230725022302.210275-2-jaimeliao.tw@gmail.com> <0acced240c27dd34cf1348ac4a24dba3@walle.cc>
+In-Reply-To: <0acced240c27dd34cf1348ac4a24dba3@walle.cc>
+From: liao jaime <jaimeliao.tw@gmail.com>
+Date: Tue, 25 Jul 2023 17:05:42 +0800
+Message-ID: <CAAQoYRnfEEtRhVcWXAyokgS1G8fGsMhvUfoe6PcuVBEQ8sW2Hg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] mtd: spi-nor: add Octal DTR support for Macronix flash
+To: Michael Walle <michael@walle.cc>
+Cc: linux-mtd@lists.infradead.org, tudor.ambarus@linaro.org, 
+	pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230725_020310_639308_93B8FE3D 
-X-CRM114-Status: GOOD (  41.39  )
+X-CRM114-CacheID: sfid-20230725_020625_699591_A51601D4 
+X-CRM114-Status: GOOD (  38.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,154 +83,192 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAyMDIzLzcvMjQgMTc6NDMsIFFpIFpoZW5nIHdyb3RlOgo+IEN1cnJlbnRseSwgdGhlIHNo
-cmlua2VyIGluc3RhbmNlcyBjYW4gYmUgZGl2aWRlZCBpbnRvIHRoZSBmb2xsb3dpbmcgdGhyZWUK
-PiB0eXBlczoKPgo+IGEpIGdsb2JhbCBzaHJpbmtlciBpbnN0YW5jZSBzdGF0aWNhbGx5IGRlZmlu
-ZWQgaW4gdGhlIGtlcm5lbCwgc3VjaCBhcwo+ICAgICB3b3JraW5nc2V0X3NoYWRvd19zaHJpbmtl
-ci4KPgo+IGIpIGdsb2JhbCBzaHJpbmtlciBpbnN0YW5jZSBzdGF0aWNhbGx5IGRlZmluZWQgaW4g
-dGhlIGtlcm5lbCBtb2R1bGVzLCBzdWNoCj4gICAgIGFzIG1tdV9zaHJpbmtlciBpbiB4ODYuCj4K
-PiBjKSBzaHJpbmtlciBpbnN0YW5jZSBlbWJlZGRlZCBpbiBvdGhlciBzdHJ1Y3R1cmVzLgo+Cj4g
-Rm9yIGNhc2UgYSwgdGhlIG1lbW9yeSBvZiBzaHJpbmtlciBpbnN0YW5jZSBpcyBuZXZlciBmcmVl
-ZC4gRm9yIGNhc2UgYiwKPiB0aGUgbWVtb3J5IG9mIHNocmlua2VyIGluc3RhbmNlIHdpbGwgYmUg
-ZnJlZWQgYWZ0ZXIgc3luY2hyb25pemVfcmN1KCkgd2hlbgo+IHRoZSBtb2R1bGUgaXMgdW5sb2Fk
-ZWQuIEZvciBjYXNlIGMsIHRoZSBtZW1vcnkgb2Ygc2hyaW5rZXIgaW5zdGFuY2Ugd2lsbAo+IGJl
-IGZyZWVkIGFsb25nIHdpdGggdGhlIHN0cnVjdHVyZSBpdCBpcyBlbWJlZGRlZCBpbi4KPgo+IElu
-IHByZXBhcmF0aW9uIGZvciBpbXBsZW1lbnRpbmcgbG9ja2xlc3Mgc2xhYiBzaHJpbmssIHdlIG5l
-ZWQgdG8KPiBkeW5hbWljYWxseSBhbGxvY2F0ZSB0aG9zZSBzaHJpbmtlciBpbnN0YW5jZXMgaW4g
-Y2FzZSBjLCB0aGVuIHRoZSBtZW1vcnkKPiBjYW4gYmUgZHluYW1pY2FsbHkgZnJlZWQgYWxvbmUg
-YnkgY2FsbGluZyBrZnJlZV9yY3UoKS4KPgo+IFNvIHRoaXMgY29tbWl0IGFkZHMgdGhlIGZvbGxv
-d2luZyBuZXcgQVBJcyBmb3IgZHluYW1pY2FsbHkgYWxsb2NhdGluZwo+IHNocmlua2VyLCBhbmQg
-YWRkIGEgcHJpdmF0ZV9kYXRhIGZpZWxkIHRvIHN0cnVjdCBzaHJpbmtlciB0byByZWNvcmQgYW5k
-Cj4gZ2V0IHRoZSBvcmlnaW5hbCBlbWJlZGRlZCBzdHJ1Y3R1cmUuCj4KPiAxLiBzaHJpbmtlcl9h
-bGxvYygpCj4KPiBVc2VkIHRvIGFsbG9jYXRlIHNocmlua2VyIGluc3RhbmNlIGl0c2VsZiBhbmQg
-cmVsYXRlZCBtZW1vcnksIGl0IHdpbGwKPiByZXR1cm4gYSBwb2ludGVyIHRvIHRoZSBzaHJpbmtl
-ciBpbnN0YW5jZSBvbiBzdWNjZXNzIGFuZCBOVUxMIG9uIGZhaWx1cmUuCj4KPiAyLiBzaHJpbmtl
-cl9mcmVlX25vbl9yZWdpc3RlcmVkKCkKPgo+IFVzZWQgdG8gZGVzdHJveSB0aGUgbm9uLXJlZ2lz
-dGVyZWQgc2hyaW5rZXIgaW5zdGFuY2UuCgpBdCBsZWFzdCBJIGRvbid0IGxpa2UgdGhpcyBuYW1l
-LiBJIGtub3cgeW91IHdhbnQgdG8gdGVsbCBvdGhlcnMKdGhpcyBmdW5jdGlvbiBvbmx5IHNob3Vs
-ZCBiZSBjYWxsZWQgd2hlbiBzaHJpbmtlciBoYXMgbm90IGJlZW4KcmVnaXN0ZWQgYnV0IGFsbG9j
-YXRlZC4gTWF5YmUgc2hyaW5rZXJfZnJlZSgpIGlzIG1vcmUgc2ltcGxlLgpBbmQgYW5kIGEgY29t
-bWVudCB0byB0ZWxsIHRoZSB1c2VycyB3aGVuIHRvIHVzZSBpdC4KCj4KPiAzLiBzaHJpbmtlcl9y
-ZWdpc3RlcigpCj4KPiBVc2VkIHRvIHJlZ2lzdGVyIHRoZSBzaHJpbmtlciBpbnN0YW5jZSwgd2hp
-Y2ggaXMgc2FtZSBhcyB0aGUgY3VycmVudAo+IHJlZ2lzdGVyX3Nocmlua2VyX3ByZXBhcmVkKCku
-Cj4KPiA0LiBzaHJpbmtlcl91bnJlZ2lzdGVyKCkKPgo+IFVzZWQgdG8gdW5yZWdpc3RlciBhbmQg
-ZnJlZSB0aGUgc2hyaW5rZXIgaW5zdGFuY2UuCj4KPiBJbiBvcmRlciB0byBzaW1wbGlmeSBzaHJp
-bmtlci1yZWxhdGVkIEFQSXMgYW5kIG1ha2Ugc2hyaW5rZXIgbW9yZQo+IGluZGVwZW5kZW50IG9m
-IG90aGVyIGtlcm5lbCBtZWNoYW5pc21zLCBzdWJzZXF1ZW50IHN1Ym1pc3Npb25zIHdpbGwgdXNl
-Cj4gdGhlIGFib3ZlIEFQSSB0byBjb252ZXJ0IGFsbCBzaHJpbmtlcnMgKGluY2x1ZGluZyBjYXNl
-IGEgYW5kIGIpIHRvCj4gZHluYW1pY2FsbHkgYWxsb2NhdGVkLCBhbmQgdGhlbiByZW1vdmUgYWxs
-IGV4aXN0aW5nIEFQSXMuCj4KPiBUaGlzIHdpbGwgYWxzbyBoYXZlIGFub3RoZXIgYWR2YW50YWdl
-IG1lbnRpb25lZCBieSBEYXZlIENoaW5uZXI6Cj4KPiBgYGAKPiBUaGUgb3RoZXIgYWR2YW50YWdl
-IG9mIHRoaXMgaXMgdGhhdCBpdCB3aWxsIGJyZWFrIGFsbCB0aGUgZXhpc3RpbmcKPiBvdXQgb2Yg
-dHJlZSBjb2RlIGFuZCB0aGlyZCBwYXJ0eSBtb2R1bGVzIHVzaW5nIHRoZSBvbGQgQVBJIGFuZCB3
-aWxsCj4gbm8gbG9uZ2VyIHdvcmsgd2l0aCBhIGtlcm5lbCB1c2luZyBsb2NrbGVzcyBzbGFiIHNo
-cmlua2Vycy4gVGhleQo+IG5lZWQgdG8gYnJlYWsgKGJvdGggYXQgdGhlIHNvdXJjZSBhbmQgYmlu
-YXJ5IGxldmVscykgdG8gc3RvcCBiYWQKPiB0aGluZ3MgZnJvbSBoYXBwZW5pbmcgZHVlIHRvIHVz
-aW5nIHVuY292ZXJ0ZWQgc2hyaW5rZXJzIGluIHRoZSBuZXcKPiBzZXR1cC4KPiBgYGAKPgo+IFNp
-Z25lZC1vZmYtYnk6IFFpIFpoZW5nIDx6aGVuZ3FpLmFyY2hAYnl0ZWRhbmNlLmNvbT4KPiAtLS0K
-PiAgIGluY2x1ZGUvbGludXgvc2hyaW5rZXIuaCB8ICAgNiArKysKPiAgIG1tL3Nocmlua2VyLmMg
-ICAgICAgICAgICB8IDExMyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysK
-PiAgIDIgZmlsZXMgY2hhbmdlZCwgMTE5IGluc2VydGlvbnMoKykKPgo+IGRpZmYgLS1naXQgYS9p
-bmNsdWRlL2xpbnV4L3Nocmlua2VyLmggYi9pbmNsdWRlL2xpbnV4L3Nocmlua2VyLmgKPiBpbmRl
-eCA5NjFjYjg0ZTUxZjUuLjI5NmY1ZTE2Mzg2MSAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xpbnV4
-L3Nocmlua2VyLmgKPiArKysgYi9pbmNsdWRlL2xpbnV4L3Nocmlua2VyLmgKPiBAQCAtNzAsNiAr
-NzAsOCBAQCBzdHJ1Y3Qgc2hyaW5rZXIgewo+ICAgCWludCBzZWVrczsJLyogc2Vla3MgdG8gcmVj
-cmVhdGUgYW4gb2JqICovCj4gICAJdW5zaWduZWQgZmxhZ3M7Cj4gICAKPiArCXZvaWQgKnByaXZh
-dGVfZGF0YTsKPiArCj4gICAJLyogVGhlc2UgYXJlIGZvciBpbnRlcm5hbCB1c2UgKi8KPiAgIAlz
-dHJ1Y3QgbGlzdF9oZWFkIGxpc3Q7Cj4gICAjaWZkZWYgQ09ORklHX01FTUNHCj4gQEAgLTk4LDYg
-KzEwMCwxMCBAQCBzdHJ1Y3Qgc2hyaW5rZXIgewo+ICAgCj4gICB1bnNpZ25lZCBsb25nIHNocmlu
-a19zbGFiKGdmcF90IGdmcF9tYXNrLCBpbnQgbmlkLCBzdHJ1Y3QgbWVtX2Nncm91cCAqbWVtY2cs
-Cj4gICAJCQkgIGludCBwcmlvcml0eSk7Cj4gK3N0cnVjdCBzaHJpbmtlciAqc2hyaW5rZXJfYWxs
-b2ModW5zaWduZWQgaW50IGZsYWdzLCBjb25zdCBjaGFyICpmbXQsIC4uLik7Cj4gK3ZvaWQgc2hy
-aW5rZXJfZnJlZV9ub25fcmVnaXN0ZXJlZChzdHJ1Y3Qgc2hyaW5rZXIgKnNocmlua2VyKTsKPiAr
-dm9pZCBzaHJpbmtlcl9yZWdpc3RlcihzdHJ1Y3Qgc2hyaW5rZXIgKnNocmlua2VyKTsKPiArdm9p
-ZCBzaHJpbmtlcl91bnJlZ2lzdGVyKHN0cnVjdCBzaHJpbmtlciAqc2hyaW5rZXIpOwo+ICAgCj4g
-ICBleHRlcm4gaW50IF9fcHJpbnRmKDIsIDMpIHByZWFsbG9jX3Nocmlua2VyKHN0cnVjdCBzaHJp
-bmtlciAqc2hyaW5rZXIsCj4gICAJCQkJCSAgICBjb25zdCBjaGFyICpmbXQsIC4uLik7Cj4gZGlm
-ZiAtLWdpdCBhL21tL3Nocmlua2VyLmMgYi9tbS9zaHJpbmtlci5jCj4gaW5kZXggMGEzMmVmNDJm
-MmE3Li5kODIwZTRjYzU4MDYgMTAwNjQ0Cj4gLS0tIGEvbW0vc2hyaW5rZXIuYwo+ICsrKyBiL21t
-L3Nocmlua2VyLmMKPiBAQCAtNTQ4LDYgKzU0OCwxMTkgQEAgdW5zaWduZWQgbG9uZyBzaHJpbmtf
-c2xhYihnZnBfdCBnZnBfbWFzaywgaW50IG5pZCwgc3RydWN0IG1lbV9jZ3JvdXAgKm1lbWNnLAo+
-ICAgCXJldHVybiBmcmVlZDsKPiAgIH0KPiAgIAo+ICtzdHJ1Y3Qgc2hyaW5rZXIgKnNocmlua2Vy
-X2FsbG9jKHVuc2lnbmVkIGludCBmbGFncywgY29uc3QgY2hhciAqZm10LCAuLi4pCj4gK3sKPiAr
-CXN0cnVjdCBzaHJpbmtlciAqc2hyaW5rZXI7Cj4gKwl1bnNpZ25lZCBpbnQgc2l6ZTsKPiArCXZh
-X2xpc3QgX19tYXliZV91bnVzZWQgYXA7Cj4gKwlpbnQgZXJyOwo+ICsKPiArCXNocmlua2VyID0g
-a3phbGxvYyhzaXplb2Yoc3RydWN0IHNocmlua2VyKSwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAoIXNo
-cmlua2VyKQo+ICsJCXJldHVybiBOVUxMOwo+ICsKPiArI2lmZGVmIENPTkZJR19TSFJJTktFUl9E
-RUJVRwo+ICsJdmFfc3RhcnQoYXAsIGZtdCk7Cj4gKwlzaHJpbmtlci0+bmFtZSA9IGt2YXNwcmlu
-dGZfY29uc3QoR0ZQX0tFUk5FTCwgZm10LCBhcCk7Cj4gKwl2YV9lbmQoYXApOwo+ICsJaWYgKCFz
-aHJpbmtlci0+bmFtZSkKPiArCQlnb3RvIGVycl9uYW1lOwo+ICsjZW5kaWYKClNvIHdoeSBub3Qg
-aW50cm9kdWNlIGFub3RoZXIgaGVscGVyIHRvIGhhbmRsZSB0aGlzIGFuZCBkZWNsYXJlIGl0CmFz
-IGEgdm9pZCBmdW5jdGlvbiB3aGVuICFDT05GSUdfU0hSSU5LRVJfREVCVUc/IFNvbWV0aGluZyBs
-aWtlIHRoZQpmb2xsb3dpbmc6CgojaWZkZWYgQ09ORklHX1NIUklOS0VSX0RFQlVHCnN0YXRpYyBp
-bnQgc2hyaW5rZXJfZGVidWdmc19uYW1lX2FsbG9jKHN0cnVjdCBzaHJpbmtlciAqc2hyaW5rZXIs
-IGNvbnN0IApjaGFyICpmbXQsCiDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKg
-wqDCoCDCoMKgwqAgwqDCoMKgIMKgIMKgwqDCoMKgIHZhX2xpc3QgdmFyZ3MpCgp7CiDCoMKgwqAg
-c2hyaW5rZXItPm5hbWUgPSBrdmFzcHJpbnRmX2NvbnN0KEdGUF9LRVJORUwsIGZtdCwgdmFyZ3Mp
-OwogwqDCoMKgIHJldHVybiBzaHJpbmtlci0+bmFtZSA/IDAgOiAtRU5PTUVNOwp9CiNlbHNlCnN0
-YXRpYyBpbnQgc2hyaW5rZXJfZGVidWdmc19uYW1lX2FsbG9jKHN0cnVjdCBzaHJpbmtlciAqc2hy
-aW5rZXIsIGNvbnN0IApjaGFyICpmbXQsCiDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDC
-oMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgIMKgwqDCoMKgIHZhX2xpc3QgdmFyZ3MpCnsKIMKg
-wqDCoCByZXR1cm4gMDsKfQojZW5kaWYKCj4gKwlzaHJpbmtlci0+ZmxhZ3MgPSBmbGFnczsKPiAr
-Cj4gKwlpZiAoZmxhZ3MgJiBTSFJJTktFUl9NRU1DR19BV0FSRSkgewo+ICsJCWVyciA9IHByZWFs
-bG9jX21lbWNnX3Nocmlua2VyKHNocmlua2VyKTsKPiArCQlpZiAoZXJyID09IC1FTk9TWVMpCj4g
-KwkJCXNocmlua2VyLT5mbGFncyAmPSB+U0hSSU5LRVJfTUVNQ0dfQVdBUkU7Cj4gKwkJZWxzZSBp
-ZiAoZXJyID09IDApCj4gKwkJCWdvdG8gZG9uZTsKPiArCQllbHNlCj4gKwkJCWdvdG8gZXJyX2Zs
-YWdzOwo+ICsJfQo+ICsKPiArCS8qCj4gKwkgKiBUaGUgbnJfZGVmZXJyZWQgaXMgYXZhaWxhYmxl
-IG9uIHBlciBtZW1jZyBsZXZlbCBmb3IgbWVtY2cgYXdhcmUKPiArCSAqIHNocmlua2Vycywgc28g
-b25seSBhbGxvY2F0ZSBucl9kZWZlcnJlZCBpbiB0aGUgZm9sbG93aW5nIGNhc2VzOgo+ICsJICog
-IC0gbm9uIG1lbWNnIGF3YXJlIHNocmlua2Vycwo+ICsJICogIC0gIUNPTkZJR19NRU1DRwo+ICsJ
-ICogIC0gbWVtY2cgaXMgZGlzYWJsZWQgYnkga2VybmVsIGNvbW1hbmQgbGluZQo+ICsJICovCj4g
-KwlzaXplID0gc2l6ZW9mKCpzaHJpbmtlci0+bnJfZGVmZXJyZWQpOwo+ICsJaWYgKGZsYWdzICYg
-U0hSSU5LRVJfTlVNQV9BV0FSRSkKPiArCQlzaXplICo9IG5yX25vZGVfaWRzOwo+ICsKPiArCXNo
-cmlua2VyLT5ucl9kZWZlcnJlZCA9IGt6YWxsb2Moc2l6ZSwgR0ZQX0tFUk5FTCk7Cj4gKwlpZiAo
-IXNocmlua2VyLT5ucl9kZWZlcnJlZCkKPiArCQlnb3RvIGVycl9mbGFnczsKPiArCj4gK2RvbmU6
-Cj4gKwlyZXR1cm4gc2hyaW5rZXI7Cj4gKwo+ICtlcnJfZmxhZ3M6Cj4gKyNpZmRlZiBDT05GSUdf
-U0hSSU5LRVJfREVCVUcKPiArCWtmcmVlX2NvbnN0KHNocmlua2VyLT5uYW1lKTsKPiArCXNocmlu
-a2VyLT5uYW1lID0gTlVMTDsKClRoaXMgY291bGQgYmUgc2hyaW5rZXJfZGVidWdmc19uYW1lX2Zy
-ZWUoKQoKPiArZXJyX25hbWU6Cj4gKyNlbmRpZgo+ICsJa2ZyZWUoc2hyaW5rZXIpOwo+ICsJcmV0
-dXJuIE5VTEw7Cj4gK30KPiArRVhQT1JUX1NZTUJPTChzaHJpbmtlcl9hbGxvYyk7Cj4gKwo+ICt2
-b2lkIHNocmlua2VyX2ZyZWVfbm9uX3JlZ2lzdGVyZWQoc3RydWN0IHNocmlua2VyICpzaHJpbmtl
-cikKPiArewo+ICsjaWZkZWYgQ09ORklHX1NIUklOS0VSX0RFQlVHCj4gKwlrZnJlZV9jb25zdChz
-aHJpbmtlci0+bmFtZSk7Cj4gKwlzaHJpbmtlci0+bmFtZSA9IE5VTEw7CgpUaGlzIGNvdWxkIGJl
-IHNocmlua2VyX2RlYnVnZnNfbmFtZV9mcmVlKCkKCj4gKyNlbmRpZgo+ICsJaWYgKHNocmlua2Vy
-LT5mbGFncyAmIFNIUklOS0VSX01FTUNHX0FXQVJFKSB7Cj4gKwkJZG93bl93cml0ZSgmc2hyaW5r
-ZXJfcndzZW0pOwo+ICsJCXVucmVnaXN0ZXJfbWVtY2dfc2hyaW5rZXIoc2hyaW5rZXIpOwo+ICsJ
-CXVwX3dyaXRlKCZzaHJpbmtlcl9yd3NlbSk7Cj4gKwl9Cj4gKwo+ICsJa2ZyZWUoc2hyaW5rZXIt
-Pm5yX2RlZmVycmVkKTsKPiArCXNocmlua2VyLT5ucl9kZWZlcnJlZCA9IE5VTEw7Cj4gKwo+ICsJ
-a2ZyZWUoc2hyaW5rZXIpOwo+ICt9Cj4gK0VYUE9SVF9TWU1CT0woc2hyaW5rZXJfZnJlZV9ub25f
-cmVnaXN0ZXJlZCk7Cj4gKwo+ICt2b2lkIHNocmlua2VyX3JlZ2lzdGVyKHN0cnVjdCBzaHJpbmtl
-ciAqc2hyaW5rZXIpCj4gK3sKPiArCWRvd25fd3JpdGUoJnNocmlua2VyX3J3c2VtKTsKPiArCWxp
-c3RfYWRkX3RhaWwoJnNocmlua2VyLT5saXN0LCAmc2hyaW5rZXJfbGlzdCk7Cj4gKwlzaHJpbmtl
-ci0+ZmxhZ3MgfD0gU0hSSU5LRVJfUkVHSVNURVJFRDsKPiArCXNocmlua2VyX2RlYnVnZnNfYWRk
-KHNocmlua2VyKTsKPiArCXVwX3dyaXRlKCZzaHJpbmtlcl9yd3NlbSk7Cj4gK30KPiArRVhQT1JU
-X1NZTUJPTChzaHJpbmtlcl9yZWdpc3Rlcik7Cj4gKwo+ICt2b2lkIHNocmlua2VyX3VucmVnaXN0
-ZXIoc3RydWN0IHNocmlua2VyICpzaHJpbmtlcikKCllvdSBoYXZlIG1hZGUgYWxsIHNocmlua2Vy
-cyB0byBiZSBkeW5hbWljYWxseSBhbGxvY2F0ZWQsIHNvCndlIHNob3VsZCBwcmV2ZW50IHVzZXJz
-IGZyb20gYWxsb2NhdGluZyBzaHJpbmtlcnMgc3RhdGljYWxseSBhbmQKdXNlIHRoaXMgZnVuY3Rp
-b24gdG8gdW5yZWdpc3RlciBpdC4gSXQgaXMgYmV0dGVyIHRvIGFkZCBhCmZsYWcgbGlrZSBTSFJJ
-TktFUl9BTExPQ0FURUQgd2hpY2ggaXMgc2V0IGluIHNocmlua2VyX2FsbG9jKCksCmFuZCBjaGVj
-ayB3aGV0aGVyIGl0IGlzIHNldCBpbiBzaHJpbmtlcl91bnJlZ2lzdGVyKCksIGlmIG5vdAptYXli
-ZSBhIHdhcm5pbmcgc2hvdWxkIGJlIGFkZGVkIHRvIHRlbGwgdGhlIHVzZXJzIHdoYXQgaGFwcGVu
-ZWQuCgo+ICt7Cj4gKwlzdHJ1Y3QgZGVudHJ5ICpkZWJ1Z2ZzX2VudHJ5Owo+ICsJaW50IGRlYnVn
-ZnNfaWQ7Cj4gKwo+ICsJaWYgKCFzaHJpbmtlciB8fCAhKHNocmlua2VyLT5mbGFncyAmIFNIUklO
-S0VSX1JFR0lTVEVSRUQpKQo+ICsJCXJldHVybjsKPiArCj4gKwlkb3duX3dyaXRlKCZzaHJpbmtl
-cl9yd3NlbSk7Cj4gKwlsaXN0X2RlbCgmc2hyaW5rZXItPmxpc3QpOwo+ICsJc2hyaW5rZXItPmZs
-YWdzICY9IH5TSFJJTktFUl9SRUdJU1RFUkVEOwo+ICsJaWYgKHNocmlua2VyLT5mbGFncyAmIFNI
-UklOS0VSX01FTUNHX0FXQVJFKQo+ICsJCXVucmVnaXN0ZXJfbWVtY2dfc2hyaW5rZXIoc2hyaW5r
-ZXIpOwo+ICsJZGVidWdmc19lbnRyeSA9IHNocmlua2VyX2RlYnVnZnNfZGV0YWNoKHNocmlua2Vy
-LCAmZGVidWdmc19pZCk7CgpJbiB0aGUgaW50ZXJuYWwgb2YgdGhpcyBmdW5jdGlvbiwgeW91IGFs
-c28gY291bGQgdXNlCnNocmlua2VyX2RlYnVnZnNfbmFtZV9mcmVlKCkuCgpUaGFua3MuCgo+ICsJ
-dXBfd3JpdGUoJnNocmlua2VyX3J3c2VtKTsKPiArCj4gKwlzaHJpbmtlcl9kZWJ1Z2ZzX3JlbW92
-ZShkZWJ1Z2ZzX2VudHJ5LCBkZWJ1Z2ZzX2lkKTsKPiArCj4gKwlrZnJlZShzaHJpbmtlci0+bnJf
-ZGVmZXJyZWQpOwo+ICsJc2hyaW5rZXItPm5yX2RlZmVycmVkID0gTlVMTDsKPiArCj4gKwlrZnJl
-ZShzaHJpbmtlcik7Cj4gK30KPiArRVhQT1JUX1NZTUJPTChzaHJpbmtlcl91bnJlZ2lzdGVyKTsK
-PiArCj4gICAvKgo+ICAgICogQWRkIGEgc2hyaW5rZXIgY2FsbGJhY2sgdG8gYmUgY2FsbGVkIGZy
-b20gdGhlIHZtLgo+ICAgICovCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Michael
+
+
+>
+> Hi,
+>
+> > From: JaimeLiao <jaimeliao.tw@gmail.com>
+>
+> You write "We" in your next patch. "We" as in macronix? Then please
+> use your macronix email address for the patches. Please note, you
+> can still send them through your gmail account.
+Yes I am Macronix engineer and sorry for the company mail
+issue so that I can't send and reply patch on Macronix mail.
+
+>
+> > Enable Octal DTR mode with 20 dummy cycles to allow running
+> > at the maximum supported frequency for adding Macronix flash
+> > in Octal DTR mode.
+>
+> Please explain a bit more what you are doing here. The patch itself
+> looks dodgy. You are writing CR2 but maybe thats used for register
+> accesses?! I also can't really tell from the macro names.
+Ok I will correct it to _MXIC_ next version of patch.
+
+>
+> >
+> > Signed-off-by: JaimeLiao <jaimeliao.tw@gmail.com>
+> > Co-authored-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>
+> There seems to be no written process documentation wether this has
+> to be followed by a SoB (unlike Co-developed-by). Dunno.
+Maybe it is not "Co-authored-by", it will be correct next version.
+
+>
+> > ---
+> >  drivers/mtd/spi-nor/macronix.c | 77 ++++++++++++++++++++++++++++++++++
+> >  1 file changed, 77 insertions(+)
+> >
+> > diff --git a/drivers/mtd/spi-nor/macronix.c
+> > b/drivers/mtd/spi-nor/macronix.c
+> > index 04888258e891..9010b81e098f 100644
+> > --- a/drivers/mtd/spi-nor/macronix.c
+> > +++ b/drivers/mtd/spi-nor/macronix.c
+> > @@ -8,6 +8,12 @@
+> >
+> >  #include "core.h"
+> >
+> > +#define SPINOR_OP_RD_CR2             0x71            /* Read configuration register 2 */
+> > +#define SPINOR_OP_WR_CR2             0x72            /* Write configuration register 2 */
+>
+> Copied from spansion.c? Why isn't there an _MXIC_ in the name?
+It will be correct next version.
+
+>
+> > +#define SPINOR_REG_MXIC_CR2_MODE     0x00000000      /* For setting octal DTR
+> > mode */
+> > +#define SPINOR_REG_MXIC_OPI_DTR_EN   0x2             /* Enable Octal DTR */
+> > +#define SPINOR_REG_MXIC_SPI_EN               0x0             /* Enable SPI */
+>
+> The names don't make much sense to me. Are you accessing individual
+> registers? If so please use MXIC_REG_<regname> and
+> MXIC_REG_<regname>_<bit/mode/mask/..>
+>
+> > +
+> >  static int
+> >  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+> >                           const struct sfdp_parameter_header *bfpt_header,
+> > @@ -32,6 +38,76 @@ static const struct spi_nor_fixups mx25l25635_fixups
+> > = {
+> >       .post_bfpt = mx25l25635_post_bfpt_fixups,
+> >  };
+> >
+> > +/**
+> > + * spi_nor_macronix_octal_dtr_enable() - Enable octal DTR on Macronix
+> > flashes.
+> > + * @nor:             pointer to a 'struct spi_nor'
+> > + * @enable:          whether to enable Octal DTR or switch back to SPI
+> > + *
+> > + * Return: 0 on success, -errno otherwise.
+> > + */
+> > +static int spi_nor_macronix_octal_dtr_enable(struct spi_nor *nor, bool
+> > enable)
+> > +{
+> > +     struct spi_mem_op op;
+> > +     u8 *buf = nor->bouncebuf, i;
+> > +     int ret;
+> > +
+> > +     /* Set/unset the octal and DTR enable bits. */
+> > +     ret = spi_nor_write_enable(nor);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     if (enable) {
+> > +             buf[0] = SPINOR_REG_MXIC_OPI_DTR_EN;
+> > +     } else {
+> > +             /*
+> > +              * The register is 1-byte wide, but 1-byte transactions are not
+> > +              * allowed in 8D-8D-8D mode. Since there is no register at the
+> > +              * next location, just initialize the value to 0 and let the
+> > +              * transaction go on.
+> > +              */
+> > +             buf[0] = SPINOR_REG_MXIC_SPI_EN;
+> > +             buf[1] = 0x0;
+> > +     }
+> > +
+> > +     op = (struct spi_mem_op)
+> > +             SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_CR2, 1),
+> > +                        SPI_MEM_OP_ADDR(4, SPINOR_REG_MXIC_CR2_MODE, 1),
+> > +                        SPI_MEM_OP_NO_DUMMY,
+> > +                        SPI_MEM_OP_DATA_OUT(enable ? 1 : 2, buf, 1));
+> > +
+> > +     if (!enable)
+> > +             spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> > +
+> > +     ret = spi_mem_exec_op(nor->spimem, &op);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     /* Read flash ID to make sure the switch was successful. */
+>
+> While cleaning up the flash_info db I come around this and it is
+> copied all over the place. Please work on factoring this (also the
+> other code in micron-st.c and spansion.c) out into a helper.
+Let me clearify the data order for read ID on Macronix flashes.
+Read ID
+SPI mode : c2-84-3c-c2-84-3c
+OPI DTR mode : c2-c2-84-84-3c-3c
+
+So that I create a specify judement for checking ID via 8D-8D-8D
+on Macronix flash.
+
+>
+> > +     op = (struct spi_mem_op)
+> > +             SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
+> > +                        SPI_MEM_OP_ADDR(enable ? 4 : 0, 0, 1),
+> > +                        SPI_MEM_OP_DUMMY(enable ? 4 : 0, 1),
+> > +                        SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, buf, 1));
+> > +
+> > +     if (enable)
+> > +             spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> > +
+> > +     ret = spi_mem_exec_op(nor->spimem, &op);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     if (enable) {
+> > +             for (i = 0; i < nor->info->id_len; i++)
+> > +                     if (buf[i * 2] != nor->info->id[i])
+> > +                             return -EINVAL;
+>
+> Why is the ID now swapped? Doesn't look right.
+Actullay 6 bytes data are c2-c2-84-84-3c-3c which are got by 8D-8D-8D read id
+on Macronix flash.
+
+>
+> -michael
+>
+> > +     } else {
+> > +             if (memcmp(buf, nor->info->id, nor->info->id_len))
+> > +                     return -EINVAL;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static const struct flash_info macronix_nor_parts[] = {
+> >       /* Macronix */
+> >       { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1)
+> > @@ -108,6 +184,7 @@ static const struct flash_info macronix_nor_parts[]
+> > = {
+> >  static void macronix_nor_default_init(struct spi_nor *nor)
+> >  {
+> >       nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+> > +     nor->params->octal_dtr_enable = spi_nor_macronix_octal_dtr_enable;
+> >  }
+> >
+> >  static void macronix_nor_late_init(struct spi_nor *nor)
+
+Thanks your reply
+Jaime
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
