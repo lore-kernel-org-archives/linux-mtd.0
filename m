@@ -4,87 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EBC1C0015E
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jul 2023 09:41:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75760C001E0
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jul 2023 10:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zhVjo2PhuAWqtTerj0SWFV14Yy+ggPdpfCVi2V9Aatg=; b=bTi0kzCQOgAXsV
-	ZiRuH6MZ93JaQexiNSW+BlBP+/LsfI8rnmgiXvHsLhaaFwoH5mrCux8trcnKjDPFRDmvdhZmyirwe
-	OLw76pK7y1srTtoOjDfSOP/5gl/ZUy8Dnm1llquFXzglDRJbxJGFsUkUT1EnC2vtUF2KGjoohkhAp
-	yUV68VQVdlICb2lecqCjBaO4RnuHr331DnlBQNYX3Duph1EjV6D8U1mHiegvXB49vuMjEEagmDk0r
-	hpyZy8P6o7xbLhxQAOxzCHxDrVBTtJ1a1JnkUbFqjvt0fdCzyqn1ckE+1NW6xwIxkEfqscR7O/dfr
-	WNcS42N2ZYSIKxHtmqDA==;
+	List-Owner; bh=ToDetFZELnzja2IELHIyPufO+nDGThXYAHr+5Tk7kaM=; b=SRNUQBie5/UXqF
+	CsLQ9TfyRBNBL6ZRsAeRIThPtWX6uVjJlu0Sq42emPqlWaA0KMDx+AtuvhcoFYIAGO0TscZcEGlI4
+	8a6AghmfFKFNaSdGh/D2SkcLV3VSOXJeuJZBJV02diRpwvJkboGmeGDXZwtu4ele4QdEARnHnEKsb
+	2YkXUsDybA2OupHOtIyCf7+9cQ6B+OMDsZsWMr81jDjO5l0cThlA31+ckIR2gdq0loYQPOvbBWRmN
+	OvgoTeHtpSG3wwW9aZy5nGHBdAzKT9sMQnZ7Dn0V2A+mp1PyUOM8Qm2338IFVhboabKneaHb1I4M/
+	PlddQRe2RwAva6aIuxEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOb1W-009mCy-1g;
-	Wed, 26 Jul 2023 09:41:38 +0000
-Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
+	id 1qObj2-009tMl-0A;
+	Wed, 26 Jul 2023 10:26:36 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOb1P-009m6Y-38
-	for linux-mtd@lists.infradead.org;
-	Wed, 26 Jul 2023 09:41:36 +0000
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fd18b1d924so53798225e9.1
-        for <linux-mtd@lists.infradead.org>; Wed, 26 Jul 2023 02:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690364488; x=1690969288;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RSuNg53H/eRmqu9mEiw63xexfk54mFabzvALVb5yShE=;
-        b=Mp9KeALRnZGzIdCneMTxi34hjTOIcFCSZddek7Burzd1SXgq32zw7wRGVdoRQ1esp0
-         LVOWkln7eQgL9b3IMepCiDpFj9i7RSKoBBkXdw3+WpmzmZuXjHdlgM1Iy8HFKyXhWpVA
-         b5nyh7Vfo5cRd0lF03zOp8YzEeCAlCaL6f7gH1PO9xQJZhbsxs/YQDqPUmvw/6HTOong
-         5llkjpEOShE4uzicGGuMcj9D23mMa1slymNV5OndC71PMa0/WjsOkCSrxqazEzL9/9P+
-         fMdgjLMQEo5P6f7RLQs9YpPGVnZq/d+hUBJFq25UoxB4YyyVNyjy1tYM+JZTLcRkhDXe
-         RnFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690364489; x=1690969289;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RSuNg53H/eRmqu9mEiw63xexfk54mFabzvALVb5yShE=;
-        b=lXMtDiCIL5SziBYGMQY4O27M36Wae1ahof5FKEB1o6x8wxuMEtI0bkblI9Osv9i4hO
-         HvOtBMpZCuK+hACDea/fKC+mIWk6RBk4sXEkv3oHjuVZJMZydKDnCVCkTYL/ob+ozAzu
-         BSNniS1xq+jup3OxvSeBK8fhdbWnSgf3wSNuHSA8RuePQX4WNhvf3ldn4QN/U4gf2ePd
-         jR5H521QczZBZMlUV/Osq/ztHVAFbx81ImclhPNNBwdNnnhz1RcIKmfEZf+88cvgQwCb
-         pGc5yQXzeK6xC4svQoIRBPEuLc7Zy5RW1cRsVe1afiTHIPNOAb6TV43F3F0INI1ZrUve
-         dq3Q==
-X-Gm-Message-State: ABy/qLaV4ZXKQaegk9BnaQOyDHR+sFUTpFmYwqfQnHILKKXEFKuAepT5
-	UhBhD7Pf7ardqSde74gRDp5dIw==
-X-Google-Smtp-Source: APBJJlGRJt9iE6by5+r9JGU4yXGFwaxVzc3NGMwzAmPoj5/gcjzSnz3j5vCQ6TfkZHC03JCcSW5I3A==
-X-Received: by 2002:a05:600c:2248:b0:3fc:500:db7c with SMTP id a8-20020a05600c224800b003fc0500db7cmr1032792wmm.21.1690364488671;
-        Wed, 26 Jul 2023 02:41:28 -0700 (PDT)
-Received: from 1.. ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id q9-20020a1ce909000000b003fc04d13242sm1533964wmc.0.2023.07.26.02.41.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 02:41:28 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: tkuw584924@gmail.com,
-	takahiro.kuwano@infineon.com,
-	michael@walle.cc,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: pratyush@kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bacem.daassi@infineon.com,
-	miquel.raynal@bootlin.com,
-	richard@nod.at
-Subject: Re: [PATCH v4 00/11] mtd: spi-nor: spansion: Add support for Infineon S28HS02GT
-Date: Wed, 26 Jul 2023 12:41:25 +0300
-Message-Id: <169036447855.16855.4782783762090892713.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230726075257.12985-1-tudor.ambarus@linaro.org>
-References: <20230726075257.12985-1-tudor.ambarus@linaro.org>
+	id 1qObiy-009tL2-1n;
+	Wed, 26 Jul 2023 10:26:33 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5AF2261A40;
+	Wed, 26 Jul 2023 10:26:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DDF4C433C7;
+	Wed, 26 Jul 2023 10:26:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690367190;
+	bh=5KYTw7QzTyvtxBFV3dygoBH0PeFk0S7OnkeeUk9b43Y=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=ndKso9yUYsbZwpDHng42ep2CAfco3wLs2OV40nFjqGLYD9AEcWQWsW6ETt5eznwfc
+	 cv1pssJER1sswKXyNjOiTQENkKxQk0VK7z2g3ch3Yi2JD1b11x0Zkl0EFgKozkvsxy
+	 f1dZ8Uzp9NvZuR0ShQq2ncjDBcvWQLsdpHvv+hCoNZE8CswlcoELNBb87INDiV++T7
+	 H3FxOmXTcDxptDoUUj0sqZ+IrTepfzb2qKKeU0koRPwfU0de4m8txUllhzV58rHcVD
+	 p+AU8vMVOdefcjxtH+iRA3W4CG6/XXiQ3a2jG5SNH585qxa35MBMZ5O8U7Wt7Y0BFJ
+	 4GDCTXheHD02g==
+Message-ID: <9b3292b65d3c63c50e671c47ed90304c4a8d1af9.camel@kernel.org>
+Subject: Re: [PATCH v6 3/7] tmpfs: bump the mtime/ctime/iversion when page
+ becomes writeable
+From: Jeff Layton <jlayton@kernel.org>
+To: Hugh Dickins <hughd@google.com>
+Cc: Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
+ <lucho@ionkov.net>,  Dominique Martinet <asmadeus@codewreck.org>, Christian
+ Schoenebeck <linux_oss@crudebyte.com>, David Howells <dhowells@redhat.com>,
+ Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>, Josef
+ Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,  Xiubo Li
+ <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes
+ <jaharkes@cs.cmu.edu>,  coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
+ Gao Xiang <xiang@kernel.org>,  Chao Yu <chao@kernel.org>, Yue Hu
+ <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,  Namjae Jeon
+ <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara
+ <jack@suse.com>,  Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA
+ Hirofumi <hirofumi@mail.parknet.co.jp>, Miklos Szeredi <miklos@szeredi.hu>,
+ Bob Peterson <rpeterso@redhat.com>, Andreas Gruenbacher
+ <agruenba@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Tejun Heo <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Trond Myklebust
+ <trond.myklebust@hammerspace.com>,  Anna Schumaker <anna@kernel.org>,
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,  Mark Fasheh
+ <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi
+ <joseph.qi@linux.alibaba.com>,  Mike Marshall <hubcap@omnibond.com>, Martin
+ Brandenburg <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>,
+ Kees Cook <keescook@chromium.org>, Iurii Zaikin <yzaikin@google.com>, Steve
+ French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie
+ Sahlberg <lsahlber@redhat.com>, Shyam Prasad N <sprasad@microsoft.com>, Tom
+ Talpey <tom@talpey.com>, Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Richard Weinberger <richard@nod.at>, Hans de Goede <hdegoede@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, "Darrick J. Wong"
+ <djwong@kernel.org>, Dave Chinner <david@fromorbit.com>, Anthony Iliopoulos
+ <ailiop@suse.com>,  v9fs@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org, 
+ ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
+ ecryptfs@vger.kernel.org,  linux-erofs@lists.ozlabs.org,
+ linux-fsdevel@vger.kernel.org,  linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net,  cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev, 
+ ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+ linux-mtd@lists.infradead.org, linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Date: Wed, 26 Jul 2023 06:26:23 -0400
+In-Reply-To: <42c5bbe-a7a4-3546-e898-3f33bd71b062@google.com>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
+	 <20230725-mgctime-v6-3-a794c2b7abca@kernel.org>
+	 <42c5bbe-a7a4-3546-e898-3f33bd71b062@google.com>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1848; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=aVo6HXgzfBrWxmaR4b1LsmgS74bqiWlppyZxfX+Kpxs=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkwOpDf/lTojLk8cVCknrG9ctqt9OLeiBYkIh/9 zcMsXgK3HKJATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZMDqQwAKCRBLVU9HpY0U 6fJMB/4+S1Jxsil9roPq0xcR28ApZzatZlmcxw6A5t4JR35sUGlrfpl7aA0F0X1N8X9cp/LCFqR xtRAo65Vlsk7+sakmjyS3A+BXDNsBneLqUND15J2D9zkm2c6IRf42c6gph8Ze2U1sivcSiv91Sd itNziotvW/2S2zaB9OPFn6j6t9rLGqBAkg36tJ81KYUhnan3nRi414PGn1mOsy7iyWFRljvlKzP /k8mrrtLOsjVLpyOUoQeR6LsNoikB0CbxDJOgTXGdctIZG5wrw/LARDOsoj41sYvnEZ2d06iZmx 9de1X5OCaLj6LOl++z/qdBIzm9WMk2fhzmVEvVtxvkJpgw3V
-X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230726_024132_018409_DB33C5AC 
-X-CRM114-Status: GOOD (  11.14  )
+X-CRM114-CacheID: sfid-20230726_032632_688221_69FE4D54 
+X-CRM114-Status: GOOD (  27.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,43 +114,90 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 26 Jul 2023 10:52:46 +0300, Tudor Ambarus wrote:
-> v4:
-> - define vreg_offset for S25FS256T in the post_sfdp hook. The goal
-> is to use the same code base for both single and multi chip package
-> flashes.
-> - get rid of SPINOR_REG_CYPRESS_CFR{1,3,5}V as they are no longer used
+On Tue, 2023-07-25 at 18:39 -0700, Hugh Dickins wrote:
+> On Tue, 25 Jul 2023, Jeff Layton wrote:
+> 
+> > Most filesystems that use the pagecache will update the mtime, ctime,
+> > and change attribute when a page becomes writeable. Add a page_mkwrite
+> > operation for tmpfs and just use it to bump the mtime, ctime and change
+> > attribute.
+> > 
+> > This fixes xfstest generic/080 on tmpfs.
+> 
+> Huh.  I didn't notice when this one crept into the multigrain series.
+> 
+> I'm inclined to NAK this patch: at the very least, it does not belong
+> in the series, but should be discussed separately.
+> 
+> Yes, tmpfs does not and never has used page_mkwrite, and gains some
+> performance advantage from that.  Nobody has ever asked for this
+> change before, or not that I recall.
+> 
+> Please drop it from the series: and if you feel strongly, or know
+> strong reasons why tmpfs suddenly needs to use page_mkwrite now,
+> please argue them separately.  To pass generic/080 is not enough.
+> 
+> Thanks,
+> Hugh
 > 
 
-Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
-spi-nor/next branch. Thanks!
+Dropped.
 
-[01/11] mtd: spi-nor: spansion: use CLPEF as an alternative to CLSR
-        https://git.kernel.org/mtd/c/d534fd9787d5
-[02/11] mtd: spi-nor: spansion: preserve CFR2V[7] when writing MEMLAT
-        https://git.kernel.org/mtd/c/1e611e104b9a
-[03/11] mtd: spi-nor: spansion: prepare octal dtr methods for multi chip support
-        https://git.kernel.org/mtd/c/c0aa05123f11
-[04/11] mtd: spi-nor: spansion: switch set_octal_dtr method to use vreg_offset
-        https://git.kernel.org/mtd/c/362f786ea00a
-[05/11] mtd: spi-nor: spansion: switch h28hx's ready() to use vreg_offset
-        https://git.kernel.org/mtd/c/463d7cfd08d8
-[06/11] mtd: spi-nor: spansion: add MCP support in set_octal_dtr()
-        https://git.kernel.org/mtd/c/7d896a94bf74
-[07/11] mtd: spi-nor: spansion: add octal DTR support in RD_ANY_REG_OP
-        https://git.kernel.org/mtd/c/eff9604390d6
-[08/11] mtd: spi-nor: spansion: add support for S28HS02GT
-        https://git.kernel.org/mtd/c/68a86d183390
-[09/11] mtd: spi-nor: spansion: let SFDP determine the flash and sector size
-        https://git.kernel.org/mtd/c/39133e5f559e
-[10/11] mtd: spi-nor: spansion: switch s25hx_t to use vreg_offset for quad_enable()
-        https://git.kernel.org/mtd/c/fb63bfad1e8f
-[11/11] mtd: spi-nor: spansion: switch cypress_nor_get_page_size() to use vreg_offset
-        https://git.kernel.org/mtd/c/aa517a29d645
+This was just something I noticed while testing this series. It stood
+out since I was particularly watching for timestamp-related test
+failures. I don't feel terribly strongly about it.
 
-Cheers,
+Thanks!
+
+> > 
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  mm/shmem.c | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> > 
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index b154af49d2df..654d9a585820 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -2169,6 +2169,16 @@ static vm_fault_t shmem_fault(struct vm_fault *vmf)
+> >  	return ret;
+> >  }
+> >  
+> > +static vm_fault_t shmem_page_mkwrite(struct vm_fault *vmf)
+> > +{
+> > +	struct vm_area_struct *vma = vmf->vma;
+> > +	struct inode *inode = file_inode(vma->vm_file);
+> > +
+> > +	file_update_time(vma->vm_file);
+> > +	inode_inc_iversion(inode);
+> > +	return 0;
+> > +}
+> > +
+> >  unsigned long shmem_get_unmapped_area(struct file *file,
+> >  				      unsigned long uaddr, unsigned long len,
+> >  				      unsigned long pgoff, unsigned long flags)
+> > @@ -4210,6 +4220,7 @@ static const struct super_operations shmem_ops = {
+> >  
+> >  static const struct vm_operations_struct shmem_vm_ops = {
+> >  	.fault		= shmem_fault,
+> > +	.page_mkwrite	= shmem_page_mkwrite,
+> >  	.map_pages	= filemap_map_pages,
+> >  #ifdef CONFIG_NUMA
+> >  	.set_policy     = shmem_set_policy,
+> > @@ -4219,6 +4230,7 @@ static const struct vm_operations_struct shmem_vm_ops = {
+> >  
+> >  static const struct vm_operations_struct shmem_anon_vm_ops = {
+> >  	.fault		= shmem_fault,
+> > +	.page_mkwrite	= shmem_page_mkwrite,
+> >  	.map_pages	= filemap_map_pages,
+> >  #ifdef CONFIG_NUMA
+> >  	.set_policy     = shmem_set_policy,
+> > 
+> > -- 
+> > 2.41.0
+
 -- 
-Tudor Ambarus <tudor.ambarus@linaro.org>
+Jeff Layton <jlayton@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
