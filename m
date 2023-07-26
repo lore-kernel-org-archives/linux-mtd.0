@@ -4,120 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1A8EC001DF
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jul 2023 16:00:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6069C0015E
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jul 2023 01:39:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
+	In-Reply-To:Subject:cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QpmsJfRsLD53J6qR8kIR725PjLT66x2O36xunvMZF6g=; b=ifENppf/CXabMI
-	4xSha9GLk7YjHGXPcQeH0bGrQY4Ze0pOhWDyi38BZBrPsLYuzwq+bTX3Fu746Xvulh1G9XNnTJ6M0
-	YcoF4InkbCequuZJEK/3VTR4iYReSemcWui+27W1C8NT2oQ977e1Ihke350yQRtNNwqcHUV9gkJZY
-	c0P38ZS1LnPdSoUzKpqF8m2rjOEhPZAqaaYPbUQJm0h7TbmAdHYZ+y4+CcyqiidpZPJDyovzMrnKc
-	y28BZE+mIGKwbKSe3PQCXpAfVxfA3yClkDUXW5wiNcFNWTBr8f/+2sfBxeOr4wm8uJOy3jBnkHsQU
-	5KsDaN5nMGNMfZSMaqyQ==;
+	List-Owner; bh=JhzV1D0EPzarm/HdDvyF1I9Hxzl9qn8BthMkfIL2zAc=; b=AQA0uuID2yveGo
+	SPP+qIQozA0tIqlqLgwk4nVR8oULH3o84EWuTbxdx5WdI7HP9Q3ziQu/z9L0Y+Ma1gg5QL4ffGyiy
+	kMTCQ9sWHmxYl2QazEsuEJzG4gbDHYdMOAapUK0mNL7BGG2rhfEwR6i0NucAMoGrVHYjgiJkZAXNJ
+	o/Q9Wq9KPsiP+KfDqt5d/vN6jeM/wIMNaBs2ZW475l2GrGUPbXruNW2E/F+s7tj2qxOPhDL8zBors
+	grV4wRvRlf/lWIN60RSTs2MX3zC7EgKml9g9isU/bW8pVWbkRMCslroVBVW2a39V7NQJBuWEZbsmF
+	FLXb1IZsY5a6441bYr5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOKSa-007z6b-1s;
-	Tue, 25 Jul 2023 16:00:28 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qOTVA-008rVT-1D;
+	Wed, 26 Jul 2023 01:39:44 +0000
+Received: from mail-yw1-x112a.google.com ([2607:f8b0:4864:20::112a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOJVl-007qT2-25;
-	Tue, 25 Jul 2023 14:59:47 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 73CC761793;
-	Tue, 25 Jul 2023 14:59:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2936C433AD;
-	Tue, 25 Jul 2023 14:59:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690297176;
-	bh=t187d4hlj7Hd2B853hoiIPlXJE4vBx7O1lkOZGTYDW8=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=SSmBXICMwwOT3suM7Wh9+/efKJhkY/qtCAceKg5JcawInGhDeAcad93pkmikV0o+6
-	 4WemX3e9jmjVTbdAQRpQdyZIhz1g9e0iDBRjM7wITplVnNb0dKwcSeSRf8RXFJDlWS
-	 05qhAWRZOBxveiT38itiEKwwzi2cwotnAfVwMeMGzQCXfg4aP/7QA/7BOeFl3k+q2W
-	 k4L1Wuc6aR3dIYbSuqKgvU4mO6BXIuKAuk+5ULb3C0pXfvdRzoF0OIGIEUDaE/vzJU
-	 9DjaVzezFk7HWbRa31mtwovPb4u6potKHgCKfEVNxB3PuDjxy8+/zOplOia8cZNwpQ
-	 rRGJw4To0RgnQ==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Tue, 25 Jul 2023 10:58:20 -0400
-Subject: [PATCH v6 7/7] btrfs: convert to multigrain timestamps
+	id 1qOTV7-008rTq-1h
+	for linux-mtd@lists.infradead.org;
+	Wed, 26 Jul 2023 01:39:43 +0000
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-583b019f1cbso49680057b3.3
+        for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2023 18:39:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690335578; x=1690940378;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4+spZWgq0eS9irqfihzysgfAABYfYXXmt6SNBBeIWA=;
+        b=MZxYT2MdZ0Omg+tGFjNofeHkNy3Qahh2PBaeRGC1CPgAvaobe+CbfQzviGlH2bRGld
+         yZXqVlc4rdM7Hn/0uDpIIp7PtuXFyXV1rOEzEcPsa6KfHQ8WsO8NrD1ggf9GGi+atd7F
+         nKDBxVEOzhZviRxzmHMsde7z3UqWCZoSc0lNm1akA/R8EHPW9npAKef3Z/pjfCjWQWBN
+         xmycegOze/hxSYYenv2HpylIbUfqF9JiHr0gy59wVHZoy8dXEq78uEH7BvhlWGHxnNVM
+         Pm/pG6h4Z3mK+EEHLb2xoyIraXRTQQ+dd3MgzFr8XAVX1x101W0eH3RmqvYAcZ2a0tMf
+         tMBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690335578; x=1690940378;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4+spZWgq0eS9irqfihzysgfAABYfYXXmt6SNBBeIWA=;
+        b=gzgmF/moZLQIiz38eib79R3VPrSgLvtvQyc9bWRAqdXMAselZIrHM+4WdjxLndZHq0
+         V5FJcqlv2wtFFYlgEIMExwtI7Hb0LKsN93MTivl6VFpwkHc7qujPRYfNLRaEVzTPyVLr
+         Pzz+xn/jnmEPXf+xNemg7miy62nqTeXknRht5r5bGuodp+HvOy/ZO5Fk46oLZwMHTyn/
+         APSrVYKzOFi2EewpTNhiOCW+3D4Z+OJFZ5qFI1Y4jxwWP6n712+4qRGYCi403rd4bgT5
+         rCFlfdPB4Zoroxny3ibhweduFF2opo2PiaAdcJ4plXRF7baIBBjfuFWA6h8GwMEQs9Re
+         NTOw==
+X-Gm-Message-State: ABy/qLYIf2u2aRuP72E2/6rnVy6M1basA+cM6zlPXdhVszuXN8a9x3LJ
+	6v6YGBk6tCnKu2G+P0kINfcvMw==
+X-Google-Smtp-Source: APBJJlHxqCs0/k9opPHZr1oFjC/IjLn2NWFjtEyuaFY5bDdVyDOg3sTAz2vkUnxY9z5liUX1UEynKA==
+X-Received: by 2002:a81:46c3:0:b0:56d:2189:d87a with SMTP id t186-20020a8146c3000000b0056d2189d87amr821699ywa.15.1690335578030;
+        Tue, 25 Jul 2023 18:39:38 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s10-20020a5b044a000000b00c654cc439fesm3165326ybp.52.2023.07.25.18.39.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jul 2023 18:39:37 -0700 (PDT)
+Date: Tue, 25 Jul 2023 18:39:25 -0700 (PDT)
+From: Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To: Jeff Layton <jlayton@kernel.org>
+cc: Eric Van Hensbergen <ericvh@kernel.org>, 
+    Latchesar Ionkov <lucho@ionkov.net>, 
+    Dominique Martinet <asmadeus@codewreck.org>, 
+    Christian Schoenebeck <linux_oss@crudebyte.com>, 
+    David Howells <dhowells@redhat.com>, 
+    Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>, 
+    Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+    Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
+    Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, 
+    Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>, 
+    Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, 
+    Jeffle Xu <jefflexu@linux.alibaba.com>, 
+    Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
+    Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>, 
+    Andreas Dilger <adilger.kernel@dilger.ca>, 
+    Jaegeuk Kim <jaegeuk@kernel.org>, 
+    OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+    Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, 
+    Andreas Gruenbacher <agruenba@redhat.com>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>, 
+    Alexander Viro <viro@zeniv.linux.org.uk>, 
+    Christian Brauner <brauner@kernel.org>, 
+    Trond Myklebust <trond.myklebust@hammerspace.com>, 
+    Anna Schumaker <anna@kernel.org>, 
+    Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
+    Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
+    Joseph Qi <joseph.qi@linux.alibaba.com>, 
+    Mike Marshall <hubcap@omnibond.com>, 
+    Martin Brandenburg <martin@omnibond.com>, 
+    Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>, 
+    Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>, 
+    Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <lsahlber@redhat.com>, 
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, 
+    Sergey Senozhatsky <senozhatsky@chromium.org>, 
+    Richard Weinberger <richard@nod.at>, Hans de Goede <hdegoede@redhat.com>, 
+    Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+    "Darrick J. Wong" <djwong@kernel.org>, Dave Chinner <david@fromorbit.com>, 
+    Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev, 
+    linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org, 
+    linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
+    codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, 
+    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, 
+    linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
+    cluster-devel@redhat.com, linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev, 
+    ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
+    linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
+    linux-mtd@lists.infradead.org, linux-mm@kvack.org, 
+    linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 3/7] tmpfs: bump the mtime/ctime/iversion when page
+ becomes writeable
+In-Reply-To: <20230725-mgctime-v6-3-a794c2b7abca@kernel.org>
+Message-ID: <42c5bbe-a7a4-3546-e898-3f33bd71b062@google.com>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org> <20230725-mgctime-v6-3-a794c2b7abca@kernel.org>
 MIME-Version: 1.0
-Message-Id: <20230725-mgctime-v6-7-a794c2b7abca@kernel.org>
-References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
-In-Reply-To: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
-To: Eric Van Hensbergen <ericvh@kernel.org>, 
- Latchesar Ionkov <lucho@ionkov.net>, 
- Dominique Martinet <asmadeus@codewreck.org>, 
- Christian Schoenebeck <linux_oss@crudebyte.com>, 
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
- Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
- David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>, 
- Ilya Dryomov <idryomov@gmail.com>, Jan Harkes <jaharkes@cs.cmu.edu>, 
- coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>, 
- Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, 
- Yue Hu <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>, 
- Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
- Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, 
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
- Miklos Szeredi <miklos@szeredi.hu>, Bob Peterson <rpeterso@redhat.com>, 
- Andreas Gruenbacher <agruenba@redhat.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, 
- Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
- Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
- Joseph Qi <joseph.qi@linux.alibaba.com>, 
- Mike Marshall <hubcap@omnibond.com>, 
- Martin Brandenburg <martin@omnibond.com>, 
- Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>, 
- Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>, 
- Paulo Alcantara <pc@manguebit.com>, Ronnie Sahlberg <lsahlber@redhat.com>, 
- Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, 
- Richard Weinberger <richard@nod.at>, Hans de Goede <hdegoede@redhat.com>, 
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
- "Darrick J. Wong" <djwong@kernel.org>
-Cc: Dave Chinner <david@fromorbit.com>, 
- Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev, 
- linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org, 
- linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
- codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org, 
- linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, 
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev, 
- ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
- linux-mtd@lists.infradead.org, linux-mm@kvack.org, 
- linux-xfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2706; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=t187d4hlj7Hd2B853hoiIPlXJE4vBx7O1lkOZGTYDW8=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBkv+MkzroP27sCWuNSIgl+Cd1orLkVgLYnAGcGo
- qEGnD3ITTiJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZL/jJAAKCRAADmhBGVaC
- FezWEACH2UPwfc8Rd5LxW2eGVPkB5meVxJPlOLQBj6pWDkW95diD7uXPQto9lmLQF4qdUED+5gy
- WLeo0BKULpIsDQGcmeJ0JkL/JiN2PbntEUg4RArSmU+rbZrR++dnF7ONr6ND9nWmLJNpuajyStV
- pcZilQXeumx55tirF1mt2vbGkXsKu/qHNXXLZ4CnD9fI2bIWLHaqsutS3k6iENOAKoEtdCWwoM9
- FVpdj3qFKKuML2HPLPiNiqSR4PQMpFrJZuJtwugTZ4dV2zGIpz2l4Fo+eJzLD8g3FKg1A3Mk34F
- Uziz080sql3EtQDp+oM7E0vxs8NLvt2bJsGtEl+GEq10Z1KQiGEE118baYC/FF3Y1JhZ8N3o/6n
- NTmLgKCSGgEaX90TUrhvCtvVULKCcbHbm/RkOiIu7CC5iVHPV6RW/oHBDJVwKYW+2MlAb+VY5re
- f+nknpCe54xwkAkjA93/0IhnnhD1PqlAiOzimKBVA2WsnYyUS0Q10BesJm3HaFKmBvca1rkAIvY
- 5RVnuhgAlq6eH4QItdabELeq+RMtIFijqWrAAvDc0GPhlIwBn3i4uHiLu5D086UgM+5Nt7DjCZf
- 3QmNVnOo1Lw9zpdhHxNYnhUO9mT6oJzmtiR5/Z3Ca5TZ+LV2ivQE3dGm4TXhbyY0GAZ/FvepgyX
- df3wfm4D0Ck2M5Q==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230725_075941_893229_A155B287 
-X-CRM114-Status: GOOD (  17.00  )
+X-CRM114-CacheID: sfid-20230725_183941_565230_FAEB268D 
+X-CRM114-Status: GOOD (  25.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -134,89 +137,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Enable multigrain timestamps, which should ensure that there is an
-apparent change to the timestamp whenever it has been written after
-being actively observed via getattr.
+On Tue, 25 Jul 2023, Jeff Layton wrote:
 
-Beyond enabling the FS_MGTIME flag, this patch eliminates
-update_time_for_write, which goes to great pains to avoid in-memory
-stores. Just have it overwrite the timestamps unconditionally.
+> Most filesystems that use the pagecache will update the mtime, ctime,
+> and change attribute when a page becomes writeable. Add a page_mkwrite
+> operation for tmpfs and just use it to bump the mtime, ctime and change
+> attribute.
+> 
+> This fixes xfstest generic/080 on tmpfs.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/btrfs/file.c  | 24 ++++--------------------
- fs/btrfs/super.c |  5 +++--
- 2 files changed, 7 insertions(+), 22 deletions(-)
+Huh.  I didn't notice when this one crept into the multigrain series.
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index d7a9ece7a40b..b9e75c9f95ac 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1106,25 +1106,6 @@ void btrfs_check_nocow_unlock(struct btrfs_inode *inode)
- 	btrfs_drew_write_unlock(&inode->root->snapshot_lock);
- }
- 
--static void update_time_for_write(struct inode *inode)
--{
--	struct timespec64 now, ctime;
--
--	if (IS_NOCMTIME(inode))
--		return;
--
--	now = current_time(inode);
--	if (!timespec64_equal(&inode->i_mtime, &now))
--		inode->i_mtime = now;
--
--	ctime = inode_get_ctime(inode);
--	if (!timespec64_equal(&ctime, &now))
--		inode_set_ctime_to_ts(inode, now);
--
--	if (IS_I_VERSION(inode))
--		inode_inc_iversion(inode);
--}
--
- static int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from,
- 			     size_t count)
- {
-@@ -1156,7 +1137,10 @@ static int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from,
- 	 * need to start yet another transaction to update the inode as we will
- 	 * update the inode when we finish writing whatever data we write.
- 	 */
--	update_time_for_write(inode);
-+	if (!IS_NOCMTIME(inode)) {
-+		inode->i_mtime = inode_set_ctime_current(inode);
-+		inode_inc_iversion(inode);
-+	}
- 
- 	start_pos = round_down(pos, fs_info->sectorsize);
- 	oldsize = i_size_read(inode);
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f1dd172d8d5b..8eda51b095c9 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2144,7 +2144,7 @@ static struct file_system_type btrfs_fs_type = {
- 	.name		= "btrfs",
- 	.mount		= btrfs_mount,
- 	.kill_sb	= btrfs_kill_super,
--	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA,
-+	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_MGTIME,
- };
- 
- static struct file_system_type btrfs_root_fs_type = {
-@@ -2152,7 +2152,8 @@ static struct file_system_type btrfs_root_fs_type = {
- 	.name		= "btrfs",
- 	.mount		= btrfs_mount_root,
- 	.kill_sb	= btrfs_kill_super,
--	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_ALLOW_IDMAP,
-+	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA |
-+			  FS_ALLOW_IDMAP | FS_MGTIME,
- };
- 
- MODULE_ALIAS_FS("btrfs");
+I'm inclined to NAK this patch: at the very least, it does not belong
+in the series, but should be discussed separately.
 
--- 
-2.41.0
+Yes, tmpfs does not and never has used page_mkwrite, and gains some
+performance advantage from that.  Nobody has ever asked for this
+change before, or not that I recall.
 
+Please drop it from the series: and if you feel strongly, or know
+strong reasons why tmpfs suddenly needs to use page_mkwrite now,
+please argue them separately.  To pass generic/080 is not enough.
+
+Thanks,
+Hugh
+
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  mm/shmem.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index b154af49d2df..654d9a585820 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2169,6 +2169,16 @@ static vm_fault_t shmem_fault(struct vm_fault *vmf)
+>  	return ret;
+>  }
+>  
+> +static vm_fault_t shmem_page_mkwrite(struct vm_fault *vmf)
+> +{
+> +	struct vm_area_struct *vma = vmf->vma;
+> +	struct inode *inode = file_inode(vma->vm_file);
+> +
+> +	file_update_time(vma->vm_file);
+> +	inode_inc_iversion(inode);
+> +	return 0;
+> +}
+> +
+>  unsigned long shmem_get_unmapped_area(struct file *file,
+>  				      unsigned long uaddr, unsigned long len,
+>  				      unsigned long pgoff, unsigned long flags)
+> @@ -4210,6 +4220,7 @@ static const struct super_operations shmem_ops = {
+>  
+>  static const struct vm_operations_struct shmem_vm_ops = {
+>  	.fault		= shmem_fault,
+> +	.page_mkwrite	= shmem_page_mkwrite,
+>  	.map_pages	= filemap_map_pages,
+>  #ifdef CONFIG_NUMA
+>  	.set_policy     = shmem_set_policy,
+> @@ -4219,6 +4230,7 @@ static const struct vm_operations_struct shmem_vm_ops = {
+>  
+>  static const struct vm_operations_struct shmem_anon_vm_ops = {
+>  	.fault		= shmem_fault,
+> +	.page_mkwrite	= shmem_page_mkwrite,
+>  	.map_pages	= filemap_map_pages,
+>  #ifdef CONFIG_NUMA
+>  	.set_policy     = shmem_set_policy,
+> 
+> -- 
+> 2.41.0
 
 ______________________________________________________
 Linux MTD discussion mailing list
