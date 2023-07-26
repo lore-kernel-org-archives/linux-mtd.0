@@ -4,46 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71365C0015E
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jul 2023 07:40:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFFF9C00528
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jul 2023 07:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:To:References:Message-Id:Cc:Date:
 	In-Reply-To:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description
 	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JCTkUDiBb+IHbuGyu+S5xJifn9bU+6BHICJkV7TowzU=; b=ZeSKHuUUHtM4Pg
-	IpNs2Mnsy8Z4FSCWVBaKp7jay94Tk1Zm4JKkciZgaAXCxO+Knp6gI/Q3pE6fDf/7K/C5c+z5osfUd
-	uWCsiij19cUS6YTfL09KLv6m7ZJhwRHrJyD6x8+HZY6RjhBiIi2JXdxs/mc2z9Lq1rJzQkTlQ4IwI
-	EsufgRlTUAplXy6F7RL/mybxCDZbtP++hrhGTZoS/OLD26wSV3YFfispOZ6gKnqe5o09nwbnWi6Gr
-	Z9Hadxw81dCbtd5VA2fqdasW07jZx+7seZZBaq7BxNWc0gMvnSAUv6EIgq/5Fehs8QJrvL9FGEG7k
-	dCwe2cffmQ4l9HsXaW/g==;
+	List-Owner; bh=c0HXlAGy6eYfZTwXPwgrQCuQAPTgoeExfb9uWKYu+zg=; b=mNh5pmW3Z+/Mb4
+	j3daMOrwXi0JEvwz4hU+iXWXt81rhzkHcSCb+h5+Hf5b07mvitW/V4sAkACLuxkXYpCfEcpp72fZn
+	ph9W75cKDDd9SjVj8+JN2TPvhPKGpm+NdJlEgKMEJdFA1Wu5dYZJ/ciNAIdNOgirubbO7XnEM2rfl
+	2rI0nDnJTiBDl566WTJL3/ALZxHIAYjaXztzTEwfUdsRflGpK9CN2ObC1KMN1xleIK6e7CJyW/vCA
+	K3renArFd6Yc+1XSiMTV9P8MmyxaV6HnRRNs4VlYkQBH3xMpmuGtFl/NiMT7wLFBIFfFiTcfcyMfb
+	Z09phvfMRU7mjs+Yngtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOZ7n-009SIq-30;
-	Wed, 26 Jul 2023 07:39:59 +0000
-Received: from out-29.mta1.migadu.com ([2001:41d0:203:375::1d])
+	id 1qOZ9Y-009SdB-19;
+	Wed, 26 Jul 2023 07:41:48 +0000
+Received: from out-15.mta0.migadu.com ([2001:41d0:1004:224b::f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOZ7l-009SGy-0s
+	id 1qOZ9U-009Sbd-30
 	for linux-mtd@lists.infradead.org;
-	Wed, 26 Jul 2023 07:39:58 +0000
+	Wed, 26 Jul 2023 07:41:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1690357193;
+	t=1690357301;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=l8aJXSNw5+elc1iE01vL5l3NT4M+siQK80IPjT8jgIg=;
-	b=eGqsf3Kk+wnqjw4p+oAcS2NZWo54D2sWzelRyzyU4NPUv0q8nn2S8BOMGAPnmnxcfiOTkk
-	SKKt5tpkWGMdRMREQoEzpDPmf2FxPGibaSJmfDS71vzjSCkQXyzoliP1NPeTVqbA/vFWi5
-	npjPE4PA44NIs8OFJIOh1TEq9vI5PX4=
+	bh=1INRpyFGosC7x9b2U65MfTc+prZG/Zt8kNIAIpUXzvc=;
+	b=rJayuXz/AZIoTh/aJ821z2UtGYXRhf7SaFISnV6xdmFmcSOAugz50dRL7nxfhIEtCQbOTg
+	iIpArugvYTdRT1OJGdpeURT9QNHUnNNwNxIZAZlJQKpbcVUfBLkRuPek5FTrtrIzUA92Qs
+	V5aiV1ZbRn27rBgCbBkAjrHv7ewFxNg=
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 31/47] mbcache: dynamically allocate the mbcache
- shrinker
+Subject: Re: [PATCH v2 32/47] ext4: dynamically allocate the ext4-es shrinker
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230724094354.90817-32-zhengqi.arch@bytedance.com>
-Date: Wed, 26 Jul 2023 15:39:06 +0800
+In-Reply-To: <20230724094354.90817-33-zhengqi.arch@bytedance.com>
+Date: Wed, 26 Jul 2023 15:40:52 +0800
 Cc: Andrew Morton <akpm@linux-foundation.org>,
  david@fromorbit.com,
  tkhai@ya.ru,
@@ -55,7 +54,7 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  tytso@mit.edu,
  steven.price@arm.com,
  cel@kernel.org,
- Sergey Senozhatsky <senozhatsky@chromium.org>,
+ senozhatsky@chromium.org,
  yujie.liu@intel.com,
  gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org,
@@ -80,13 +79,13 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  linux-ext4@vger.kernel.org,
  linux-xfs@vger.kernel.org,
  linux-btrfs@vger.kernel.org
-Message-Id: <9A3DA627-8ADC-429E-B751-C1BD6362967A@linux.dev>
+Message-Id: <866DDDA8-3F7E-4E7A-BA8D-D6DA1707E106@linux.dev>
 References: <20230724094354.90817-1-zhengqi.arch@bytedance.com>
- <20230724094354.90817-32-zhengqi.arch@bytedance.com>
+ <20230724094354.90817-33-zhengqi.arch@bytedance.com>
 To: Qi Zheng <zhengqi.arch@bytedance.com>
 X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230726_003957_451005_C6B8C8D8 
+X-CRM114-CacheID: sfid-20230726_004145_111256_B2CD4F2D 
 X-CRM114-Status: UNSURE (   7.16  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -110,9 +109,9 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 > On Jul 24, 2023, at 17:43, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 > 
 > In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the mbcache shrinker, so that it can be freed
+> dynamically allocate the ext4-es shrinker, so that it can be freed
 > asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-> read-side critical section when releasing the struct mb_cache.
+> read-side critical section when releasing the struct ext4_sb_info.
 > 
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
