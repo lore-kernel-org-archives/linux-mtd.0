@@ -4,84 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25234C001DE
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jul 2023 09:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5FACC001DE
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jul 2023 09:41:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Jm+H7Ozf3WJArPXOw8A4gSA0vXmMQwrGdaP1/8OA/OA=; b=npMSZNlNSm+XS9
-	aJ0sGEAjpmUENcU/6h8mWblTFexMrL1C9gtTObuFOu65j4UbDAW0RyAIEVU5+dgzobvuOXS8ODrTw
-	SKyuBqrhU3VRLgT1PyHLTG3+kOdOtqaQiJUc7unPNQoACTGQlFovYS6xZ13tzpvgFxoGBiX7wMTFR
-	9G8KUl/NmEE1+tybp1EY0+cq4wVyge4iH9HpSdpGsAhm29V5rb/PwTwck/MJRJ1g7E7Lgx6IX76/S
-	udTmg5xVH5aiVMSrv41ntFfVQYR07Tko+5QSHjfVhazfTuextWOmznCHR3pWtOG/SesEISRHaQ+la
-	fcuDUvDWbyAAIqXWl9ZA==;
+	List-Owner; bh=WBeNtm6WYKARXnOBr3lhqMDWhmLyh6aZXgVAcY6XMhU=; b=GqaMSoLkJoWHqq
+	NhLkSrOMCJGVdjmkxDGQigB1M7oyUwaVPHUX/FXHThEnPx4GRn5UGNGwh7Gvt/MUmqlvWWLPS/1d/
+	SZqq9SYfcgYnnx1V4yvlQIfpXvk/f8BkHMYJHl+6pZO/Up5G3OCYF1OumQNlo+HvJ/2i0dhXBl91E
+	XdeR7NUJAal4UzeXZfBpu6lB165ifuR9VDz/yQ14ZnHNNZ2XQQT/SP/NQvoZgTlUMLmM3bSoAtdP7
+	k4hIZ17ajBFyNSlEFj+1H4ioG8pG3ZGBxSFCNK8JKrCfzpwV9rect9Wpza+XTO9og0jgkZjYNyvJn
+	EPYgb2vgGKhdbKqZz7DA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOaxV-009l78-0R;
-	Wed, 26 Jul 2023 09:37:29 +0000
-Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
+	id 1qOb18-009lw2-1l;
+	Wed, 26 Jul 2023 09:41:14 +0000
+Received: from out30-113.freemail.mail.aliyun.com ([115.124.30.113])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOaxS-009l6U-0Z
-	for linux-mtd@lists.infradead.org;
-	Wed, 26 Jul 2023 09:37:27 +0000
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-668709767b1so4183418b3a.2
-        for <linux-mtd@lists.infradead.org>; Wed, 26 Jul 2023 02:37:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690364245; x=1690969045;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pbMdrz248O7BLJa1aLDDOR2eghYsSzQm2AIXBS8r1OQ=;
-        b=q0euknq/4bvrmZKnU0EX15hLdlUIMLI+/co6+9dYcn9y5ctA68nCG144eqw0Dk8teF
-         KVjBdQDqhbVE9/cQ2rmB2cL42FBUqEVGtuTR32fW1PlEuy1BG+Scqb+JpAXMCTCjog2H
-         3aD+GvuMabNFHF+TEafQF+R12auLdYlQCAG83/HPlfHJUIHji94mbNnDvIkn5Pq1SsQY
-         OdCbl0W+R2Q7bhs8ZK/j0ijApy96BoCXsU/TM2/6xwJS3u9xvcVMSjlJ9q0UsQ3UcFqp
-         wx9H+qc1knnKFA2owk5+tsuQpn3c043HcKSr8wdecfwrxXLUugMk3TBRdapZRKU7+cRB
-         ZaFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690364245; x=1690969045;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pbMdrz248O7BLJa1aLDDOR2eghYsSzQm2AIXBS8r1OQ=;
-        b=T8P7bl0TOPA7PJXv+q89Rxe/ztJNTK6IRV7Jft2kCtlNcL8FfLGuKJTQdHyFM5+sBu
-         P210LX7Fpkf7SV2Bf04dY85Rn8HemGbQeZSf+iyHvIJJdaxUOLY808RZui6qjhjgEu21
-         HWAOUkpo3X3JwlpcB7h8emiRiiM+FGWfcESRVsRWWDzW3/RRuJdSyRIqCeqA56xXY8QG
-         T/899LoJLDtVdiIMH9NiTYsAUdYiDbHeFld2AAUymiDAfbHkOsiOtwPOCtWnkCZFvrCJ
-         +9sF2op0zlvpLlxFgoFh5rAlZM9Be+tkMzQrS1LDA3O8K4xGAVwv8p8yo27qwaEitkj+
-         eHzg==
-X-Gm-Message-State: ABy/qLbxYAk2KQuw69f/3uAqQJUWjiazaKXFQCYQxGos3dBJQ1ecBGH3
-	tFvPfudnCebhKDx/o14Ny/A=
-X-Google-Smtp-Source: APBJJlHdtwcTal98+4CgceUf/WoACIQ/0R2Z2XI7/kx1iXSXyDj50UGS1XhalZqhTBFwhBJzG5UGJg==
-X-Received: by 2002:a05:6a21:3383:b0:138:1c5b:2653 with SMTP id yy3-20020a056a21338300b001381c5b2653mr1359756pzb.41.1690364245264;
-        Wed, 26 Jul 2023 02:37:25 -0700 (PDT)
-Received: from [192.168.0.11] (KD106168128197.ppp-bb.dion.ne.jp. [106.168.128.197])
-        by smtp.gmail.com with ESMTPSA id g18-20020aa78752000000b00686c40ccaf2sm992250pfo.9.2023.07.26.02.37.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 02:37:24 -0700 (PDT)
-Message-ID: <3464becc-b2d1-02f1-4214-2bc69edddca4@gmail.com>
-Date: Wed, 26 Jul 2023 18:37:22 +0900
+	id 1qOb12-009lnO-0k;
+	Wed, 26 Jul 2023 09:41:11 +0000
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0VoGYt9._1690364457;
+Received: from 30.221.136.164(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0VoGYt9._1690364457)
+          by smtp.aliyun-inc.com;
+          Wed, 26 Jul 2023 17:40:58 +0800
+Message-ID: <1da81657-2ee1-0ef3-c222-66e00d021c24@linux.alibaba.com>
+Date: Wed, 26 Jul 2023 17:40:57 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 09/11] mtd: spi-nor: spansion: let SFDP determine the
- flash and sector size
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
 Content-Language: en-US
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, takahiro.kuwano@infineon.com,
- michael@walle.cc
-Cc: pratyush@kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, bacem.daassi@infineon.com,
- miquel.raynal@bootlin.com, richard@nod.at
-References: <20230726075257.12985-1-tudor.ambarus@linaro.org>
- <20230726075257.12985-10-tudor.ambarus@linaro.org>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <20230726075257.12985-10-tudor.ambarus@linaro.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Dave Chinner <david@fromorbit.com>, Anthony Iliopoulos <ailiop@suse.com>,
+ v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-afs@lists.infradead.org, linux-btrfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
+ ecryptfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, ntfs3@lists.linux.dev,
+ ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ linux-mtd@lists.infradead.org, linux-mm@kvack.org, linux-xfs@vger.kernel.org
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
+ <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
+From: Joseph Qi <joseph.qi@linux.alibaba.com>
+In-Reply-To: <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230726_023726_213438_B6D81661 
-X-CRM114-Status: GOOD (  14.87  )
+X-CRM114-CacheID: sfid-20230726_024109_079083_FBD268ED 
+X-CRM114-Status: GOOD (  21.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,78 +72,149 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 7/26/2023 4:52 PM, Tudor Ambarus wrote:
-> sector_size is used to determine the flash size and the erase size in
-> case of uniform erase. n_sectors is used to determine the flash_size.
-> But the flash size and the erase sizes are determined when parsing SFDP,
-> let SFDP determine them.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  drivers/mtd/spi-nor/spansion.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-> index 1c5671a3751a..30a3ffbfa381 100644
-> --- a/drivers/mtd/spi-nor/spansion.c
-> +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -873,11 +873,11 @@ static const struct flash_info spansion_nor_parts[] = {
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25fs256t_fixups },
-> -	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
-> +	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25hx_t_fixups },
-> -	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512)
-> +	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25hx_t_fixups },
-> @@ -886,11 +886,11 @@ static const struct flash_info spansion_nor_parts[] = {
->  		MFR_FLAGS(USE_CLPEF)
->  		FLAGS(NO_CHIP_ERASE)
->  		.fixups = &s25hx_t_fixups },
-> -	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
-> +	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25hx_t_fixups },
-> -	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512)
-> +	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s25hx_t_fixups },
-> @@ -901,22 +901,22 @@ static const struct flash_info spansion_nor_parts[] = {
->  		.fixups = &s25hx_t_fixups },
->  	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
->  		FLAGS(SPI_NOR_NO_ERASE) },
-> -	{ "s28hl512t",   INFO(0x345a1a,      0, 256 * 1024, 256)
-> +	{ "s28hl512t",   INFO(0x345a1a,      0, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s28hx_t_fixups,
->  	},
-> -	{ "s28hl01gt",   INFO(0x345a1b,      0, 256 * 1024, 512)
-> +	{ "s28hl01gt",   INFO(0x345a1b,      0, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s28hx_t_fixups,
->  	},
-> -	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
-> +	{ "s28hs512t",   INFO(0x345b1a,      0, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s28hx_t_fixups,
->  	},
-> -	{ "s28hs01gt",   INFO(0x345b1b,      0, 256 * 1024, 512)
-> +	{ "s28hs01gt",   INFO(0x345b1b,      0, 0, 0)
->  		PARSE_SFDP
->  		MFR_FLAGS(USE_CLPEF)
->  		.fixups = &s28hx_t_fixups,
 
-Tested-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+
+On 7/25/23 10:58 PM, Jeff Layton wrote:
+> generic_fillattr just fills in the entire stat struct indiscriminately
+> today, copying data from the inode. There is at least one attribute
+> (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
+> and we're looking at adding more with the addition of multigrain
+> timestamps.
+> 
+> Add a request_mask argument to generic_fillattr and have most callers
+> just pass in the value that is passed to getattr. Have other callers
+> (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
+> STATX_CHANGE_COOKIE into generic_fillattr.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/9p/vfs_inode.c       |  4 ++--
+>  fs/9p/vfs_inode_dotl.c  |  4 ++--
+>  fs/afs/inode.c          |  2 +-
+>  fs/btrfs/inode.c        |  2 +-
+>  fs/ceph/inode.c         |  2 +-
+>  fs/coda/inode.c         |  3 ++-
+>  fs/ecryptfs/inode.c     |  5 +++--
+>  fs/erofs/inode.c        |  2 +-
+>  fs/exfat/file.c         |  2 +-
+>  fs/ext2/inode.c         |  2 +-
+>  fs/ext4/inode.c         |  2 +-
+>  fs/f2fs/file.c          |  2 +-
+>  fs/fat/file.c           |  2 +-
+>  fs/fuse/dir.c           |  2 +-
+>  fs/gfs2/inode.c         |  2 +-
+>  fs/hfsplus/inode.c      |  2 +-
+>  fs/kernfs/inode.c       |  2 +-
+>  fs/libfs.c              |  4 ++--
+>  fs/minix/inode.c        |  2 +-
+>  fs/nfs/inode.c          |  2 +-
+>  fs/nfs/namespace.c      |  3 ++-
+>  fs/ntfs3/file.c         |  2 +-
+>  fs/ocfs2/file.c         |  2 +-
+>  fs/orangefs/inode.c     |  2 +-
+>  fs/proc/base.c          |  4 ++--
+>  fs/proc/fd.c            |  2 +-
+>  fs/proc/generic.c       |  2 +-
+>  fs/proc/proc_net.c      |  2 +-
+>  fs/proc/proc_sysctl.c   |  2 +-
+>  fs/proc/root.c          |  3 ++-
+>  fs/smb/client/inode.c   |  2 +-
+>  fs/smb/server/smb2pdu.c | 22 +++++++++++-----------
+>  fs/smb/server/vfs.c     |  3 ++-
+>  fs/stat.c               | 18 ++++++++++--------
+>  fs/sysv/itree.c         |  3 ++-
+>  fs/ubifs/dir.c          |  2 +-
+>  fs/udf/symlink.c        |  2 +-
+>  fs/vboxsf/utils.c       |  2 +-
+>  include/linux/fs.h      |  2 +-
+>  mm/shmem.c              |  2 +-
+>  40 files changed, 70 insertions(+), 62 deletions(-)
+> 
+
+...
+
+> diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
+> index 1b337ebce4df..8184499ae7a5 100644
+> --- a/fs/ocfs2/file.c
+> +++ b/fs/ocfs2/file.c
+> @@ -1319,7 +1319,7 @@ int ocfs2_getattr(struct mnt_idmap *idmap, const struct path *path,
+>  		goto bail;
+>  	}
+>  
+> -	generic_fillattr(&nop_mnt_idmap, inode, stat);
+> +	generic_fillattr(&nop_mnt_idmap, request_mask, inode, stat);
+
+For ocfs2 part, looks fine to me.
+
+Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+
+>  	/*
+>  	 * If there is inline data in the inode, the inode will normally not
+>  	 * have data blocks allocated (it may have an external xattr block).
+
+...
+
+> diff --git a/fs/stat.c b/fs/stat.c
+> index 8c2b30af19f5..062f311b5386 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -29,6 +29,7 @@
+>  /**
+>   * generic_fillattr - Fill in the basic attributes from the inode struct
+>   * @idmap:	idmap of the mount the inode was found from
+> + * @req_mask	statx request_mask
+
+s/req_mask/request_mask
+
+>   * @inode:	Inode to use as the source
+>   * @stat:	Where to fill in the attributes
+>   *
+> @@ -42,8 +43,8 @@
+>   * uid and gid filds. On non-idmapped mounts or if permission checking is to be
+>   * performed on the raw inode simply passs @nop_mnt_idmap.
+>   */
+> -void generic_fillattr(struct mnt_idmap *idmap, struct inode *inode,
+> -		      struct kstat *stat)
+> +void generic_fillattr(struct mnt_idmap *idmap, u32 request_mask,
+> +		      struct inode *inode, struct kstat *stat)
+>  {
+>  	vfsuid_t vfsuid = i_uid_into_vfsuid(idmap, inode);
+>  	vfsgid_t vfsgid = i_gid_into_vfsgid(idmap, inode);
+> @@ -61,6 +62,12 @@ void generic_fillattr(struct mnt_idmap *idmap, struct inode *inode,
+>  	stat->ctime = inode_get_ctime(inode);
+>  	stat->blksize = i_blocksize(inode);
+>  	stat->blocks = inode->i_blocks;
+> +
+> +	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
+> +		stat->result_mask |= STATX_CHANGE_COOKIE;
+> +		stat->change_cookie = inode_query_iversion(inode);
+> +	}
+> +
+>  }
+>  EXPORT_SYMBOL(generic_fillattr);
+>  
+> @@ -123,17 +130,12 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
+>  	stat->attributes_mask |= (STATX_ATTR_AUTOMOUNT |
+>  				  STATX_ATTR_DAX);
+>  
+> -	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
+> -		stat->result_mask |= STATX_CHANGE_COOKIE;
+> -		stat->change_cookie = inode_query_iversion(inode);
+> -	}
+> -
+>  	idmap = mnt_idmap(path->mnt);
+>  	if (inode->i_op->getattr)
+>  		return inode->i_op->getattr(idmap, path, stat,
+>  					    request_mask, query_flags);
+>  
+> -	generic_fillattr(idmap, inode, stat);
+> +	generic_fillattr(idmap, request_mask, inode, stat);
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(vfs_getattr_nosec);
+
+...
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
