@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C898C41513
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 08:09:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3B30C0015E
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 08:10:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vwm6nPdZ21zw+buW8q4vyIuLm3zave2lEF4YBiWgCPY=; b=FsVGMDCu/Odyhz
-	M4T2GgMqTRLMNfDY6jKYATo2A+KYzijT+lH3PELZ5dPw3eeCT2SN0y89wibHrjnoNgs3SQvGWxvDf
-	I52Tzx8E1Zzhyjo0L6PBayP24Ch8JhBVQR5uV6+j15Goboqbr2rDINouIzeqrJo6WkEps8AW9jTn5
-	r6wlVIfs7GCm/yi/USjIyOgGOZ6/U3oBVtWUKugFY4UvoXdI6McCAalvTR1LQm+llm/c507JuKtcP
-	QmsV2z3FIt/jWCT0tXRZc2LbTmydyd+bP9lvFF5vqLDMFf0n19cAqgbX4zDmwUR4L00/SW6In7SiX
-	A7NynQURD3xkZwwDvR9A==;
+	List-Owner; bh=pE8DTOUSACgr4qXzCQLMJhc0NbilzgswjdTS3QDpBwQ=; b=ovjBPznU43ZXB9
+	D+p84PFdH+rfaz8ywl+vVYXcdT85pnFeNDC/cmQJjJK1MMr1VCrnSs7R3NZX2FbehP8yYJZRPfL6+
+	31DsBJb0ywfqgoWVPw/IlQ8iEhQjrDsoU7CFN6FIVlKU0QiYLztqBkqfDh99YHILW8yk6lBg/GBdE
+	3mLW8+SrLj+fBV+nLQpK/zJDc7EDjx0t6XntenghxpW/fE1WM7oO8njy1JDFwWRN156gHRFdEB+aH
+	AkQnvap9nZWapaG4SyFMGaz7I5EHSmxtyQx8zHKTuKdMYxFyypG2Q2e6Eph2fiA8QcjfE6ePWjh2x
+	ICBwIFhJ+Hwur6OnJPSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOw48-00CapU-2I;
-	Thu, 27 Jul 2023 08:09:44 +0000
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
+	id 1qOw4P-00Caxy-08;
+	Thu, 27 Jul 2023 08:10:01 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOw46-00CaoN-0l
+	id 1qOw4J-00Cau8-0E
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jul 2023 08:09:43 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-66d6a9851f3so167937b3a.0
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 01:09:42 -0700 (PDT)
+	Thu, 27 Jul 2023 08:09:58 +0000
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-686f6231bdeso113076b3a.1
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 01:09:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690445381; x=1691050181;
+        d=bytedance.com; s=google; t=1690445393; x=1691050193;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GSWsN00ewH1CUxuL2on0amogNZtYjpfZMPk3tXk1MLc=;
-        b=Uigp99md2Rr3CXBoApAa/OORnqo8B1J7RivQ80kk84PuD/8/0U/wiHIiPqvPSjzBq+
-         4mgkiCdsVsAk9/e2muldWgdoE75BspngFHkVey9mAlq6MnrgeN5Z2UVnZxuIj86jdS6R
-         rAWjfbsFjXDEfm8YOidjdqca7DNptBkelH0HrT7nXcdFtSlvKmDtxqUQOqWjbYzyZulg
-         AN7Mzxd848XhJE6ClueXrvuJZWX5X85+XT80LyTl5276AdX2DnTvKQaDsxfVQAKr1XxX
-         WaB1fRqts+Skr4BpFNBdK0X00kCFzaVEUe4nziyxeBmy6RtpnTKoOQLFGVCxxQosoZyC
-         4x+w==
+        bh=YHU8OaKZwBmHAPsd+ulZSL5GxfVyMtJ49ZlHBntG+/k=;
+        b=Ws66ywmifmcLi+WS7kmIq1OGsH1BFTj57lSknLEKHfbjZoq0FCk32P7hFix2O77y/C
+         4VExY7boGbko1TLXa8rf04m6+c8ScNg+Ye07GBCAr/bT75kG0yI8bdxHraEPkF+rcUYR
+         8BmftTtO1b4i7ZeslsgPT7KHdxn3xY8ziOGXEmWj+FzniwFS8tNvAxdGJbvq/4djXF38
+         gQDVTQD96XEDgWvn9v9d4yLEL0qbZzBxPnvHBbbs4StP2CGFCs0AHk/pzAfhLwFN3LYv
+         MATNwQY8c4ti2yb34XlOR1fjl5eoQUN5qPDBlkMol6h4RrCuQdh3qGqhSkTUZQAnG9Jo
+         zXhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690445381; x=1691050181;
+        d=1e100.net; s=20221208; t=1690445393; x=1691050193;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GSWsN00ewH1CUxuL2on0amogNZtYjpfZMPk3tXk1MLc=;
-        b=B4Q6NVfRFOlV8oT6wKiX+V1HmQT0qzd+3cs5eA7KksPVMXar2pANioBe8I9sDe/ayd
-         BQoz5JYvD9OQRYE9obMhDsJODiuQ9iTrUaOK7nDEJFKhrFDSa5C2IJkClZvvYjeJN2QF
-         hd7Ov2rdg8Go2BH7zbG4i1vFiX/C98jAFR5pcvqBli92uufJAxLQfS3u9ZR00dWfof+G
-         kimexSIC1MkEatC9qyb+N0uzDH6hWLYtOPMbi+OQ40Je4K7N7ZFduFEQ5my60Fe/DAtk
-         r2NCFHCu0oYHtTkt7bCRBnWlSQLrQiqNF6uVkMbnS4GQTdwIRHW8CkzebjZZwhcS5kzu
-         vgMA==
-X-Gm-Message-State: ABy/qLYnEjjvEDnvvCJTebrFvTN4PD83lk14vJSi04GxfOqI/9oVB5Dq
-	4JbZcb2dfLsk5d754jvEQrH7GA==
-X-Google-Smtp-Source: APBJJlHVjyqYSo1ak3Z7chV1yhtxMPzG2+b/e8BLYdWQhXdIbtZlkhi04HlfYJAG9z5TWY/X++2RBQ==
-X-Received: by 2002:a05:6a20:729a:b0:100:b92b:e8be with SMTP id o26-20020a056a20729a00b00100b92be8bemr5576237pzk.2.1690445381598;
-        Thu, 27 Jul 2023 01:09:41 -0700 (PDT)
+        bh=YHU8OaKZwBmHAPsd+ulZSL5GxfVyMtJ49ZlHBntG+/k=;
+        b=A/U6seBOPvABwv/Fbll1UJ59nAsQI26krb5iL0iX6md+fYk33kOLp/eFE8//jTl1GI
+         7CQTJZQjPVRJsXSM+pYKD0f4iY9cAxoW3lnCwwhZmaCsr6i6xHH0F9HM34JnzdlxXtnJ
+         gVSu+oNOqnZehSKIbqdh37fKncNL5rfNv3If2rxOJbBcp8z1gBFrLlByeg0JROSCTcnH
+         4y352EjtEBPbHJL3J8fY/YRoICOw5rlq/bcURUz/U9bma6XKoqv6iMjgI+M3iPBs036i
+         V0G8ajX83uFggGgv9mCGbdizWJpc/Dc/NbuNVsIKI/L3QGz2YhJksJG2YxiNbOj/rZYa
+         owmQ==
+X-Gm-Message-State: ABy/qLb17LA8f+Rd9ACcKM/7yD6W+80Zqp+fm2S3xJZeMEv345ml+UcE
+	jCDW+0x5zdCN1i13T+gVizWYCQ==
+X-Google-Smtp-Source: APBJJlFl46sZLt7x9x1yarGXcrDY9BzfubiI/ML/2A4f5iYMwILGEdxBDjTGuKdYIeQS2k9MfMDqhg==
+X-Received: by 2002:a05:6a00:4a0e:b0:677:3439:874a with SMTP id do14-20020a056a004a0e00b006773439874amr5199798pfb.3.1690445393467;
+        Thu, 27 Jul 2023 01:09:53 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id j8-20020aa78d08000000b006828e49c04csm885872pfe.75.2023.07.27.01.09.29
+        by smtp.gmail.com with ESMTPSA id j8-20020aa78d08000000b006828e49c04csm885872pfe.75.2023.07.27.01.09.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 01:09:41 -0700 (PDT)
+        Thu, 27 Jul 2023 01:09:53 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: akpm@linux-foundation.org,
 	david@fromorbit.com,
@@ -101,16 +101,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 19/49] rcu: dynamically allocate the rcu-lazy shrinker
-Date: Thu, 27 Jul 2023 16:04:32 +0800
-Message-Id: <20230727080502.77895-20-zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 20/49] rcu: dynamically allocate the rcu-kfree shrinker
+Date: Thu, 27 Jul 2023 16:04:33 +0800
+Message-Id: <20230727080502.77895-21-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
 References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_010942_272395_F2FE372E 
-X-CRM114-Status: GOOD (  11.74  )
+X-CRM114-CacheID: sfid-20230727_010955_118882_C5FDF267 
+X-CRM114-Status: GOOD (  11.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,58 +127,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use new APIs to dynamically allocate the rcu-lazy shrinker.
+Use new APIs to dynamically allocate the rcu-kfree shrinker.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- kernel/rcu/tree_nocb.h | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ kernel/rcu/tree.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 5598212d1f27..e1c59c33738a 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1396,13 +1396,6 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 
- 	return count ? count : SHRINK_STOP;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index cb1caefa8bd0..6d2f82f79c65 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3449,13 +3449,6 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 	return freed == 0 ? SHRINK_STOP : freed;
  }
--
--static struct shrinker lazy_rcu_shrinker = {
--	.count_objects = lazy_rcu_shrink_count,
--	.scan_objects = lazy_rcu_shrink_scan,
+ 
+-static struct shrinker kfree_rcu_shrinker = {
+-	.count_objects = kfree_rcu_shrink_count,
+-	.scan_objects = kfree_rcu_shrink_scan,
 -	.batch = 0,
 -	.seeks = DEFAULT_SEEKS,
 -};
- #endif // #ifdef CONFIG_RCU_LAZY
- 
- void __init rcu_init_nohz(void)
-@@ -1410,6 +1403,7 @@ void __init rcu_init_nohz(void)
+-
+ void __init kfree_rcu_scheduler_running(void)
+ {
  	int cpu;
- 	struct rcu_data *rdp;
- 	const struct cpumask *cpumask = NULL;
-+	struct shrinker * __maybe_unused lazy_rcu_shrinker;
+@@ -4931,6 +4924,7 @@ static void __init kfree_rcu_batch_init(void)
+ {
+ 	int cpu;
+ 	int i, j;
++	struct shrinker *kfree_rcu_shrinker;
  
- #if defined(CONFIG_NO_HZ_FULL)
- 	if (tick_nohz_full_running && !cpumask_empty(tick_nohz_full_mask))
-@@ -1436,8 +1430,16 @@ void __init rcu_init_nohz(void)
- 		return;
- 
- #ifdef CONFIG_RCU_LAZY
--	if (register_shrinker(&lazy_rcu_shrinker, "rcu-lazy"))
--		pr_err("Failed to register lazy_rcu shrinker!\n");
-+	lazy_rcu_shrinker = shrinker_alloc(0, "rcu-lazy");
-+	if (!lazy_rcu_shrinker) {
-+		pr_err("Failed to allocate lazy_rcu shrinker!\n");
-+	} else {
-+		lazy_rcu_shrinker->count_objects = lazy_rcu_shrink_count;
-+		lazy_rcu_shrinker->scan_objects = lazy_rcu_shrink_scan;
-+		lazy_rcu_shrinker->seeks = DEFAULT_SEEKS;
+ 	/* Clamp it to [0:100] seconds interval. */
+ 	if (rcu_delay_page_cache_fill_msec < 0 ||
+@@ -4962,8 +4956,18 @@ static void __init kfree_rcu_batch_init(void)
+ 		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+ 		krcp->initialized = true;
+ 	}
+-	if (register_shrinker(&kfree_rcu_shrinker, "rcu-kfree"))
+-		pr_err("Failed to register kfree_rcu() shrinker!\n");
 +
-+		shrinker_register(lazy_rcu_shrinker);
++	kfree_rcu_shrinker = shrinker_alloc(0, "rcu-kfree");
++	if (!kfree_rcu_shrinker) {
++		pr_err("Failed to allocate kfree_rcu() shrinker!\n");
++		return;
 +	}
- #endif // #ifdef CONFIG_RCU_LAZY
++
++	kfree_rcu_shrinker->count_objects = kfree_rcu_shrink_count;
++	kfree_rcu_shrinker->scan_objects = kfree_rcu_shrink_scan;
++	kfree_rcu_shrinker->seeks = DEFAULT_SEEKS;
++
++	shrinker_register(kfree_rcu_shrinker);
+ }
  
- 	if (!cpumask_subset(rcu_nocb_mask, cpu_possible_mask)) {
+ void __init rcu_init(void)
 -- 
 2.30.2
 
