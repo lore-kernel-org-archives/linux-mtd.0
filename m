@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AFCAC04A6A
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 15:58:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FAE9C00528
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 17:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WLZ2V4+++KYroIaEY8GO/VR/XZv7GW+Rb20cAnX5x8s=; b=Y09qgqIj2ndVYE
-	EfIzMQHy6KXSHZXZrp6g/o8RM0abqQWDAzIu+3fRpPzoUHpiiYKOG6npGSnsWYzgr1ZXACG3ssS3v
-	xOcRp3lLYjJqKHMGT7E9xz/x1WY7peT113FhaIt6krumcdSBafl4RYuZpYjcxilMP/hAUjrF3YCtQ
-	3vsDlX/MFe3dU3AsCWv1sDgseAKeLz1dHtAvkda97GKJZorAM11BWxwO0cWgZMlPXcJkxQHwwadFD
-	zKCwB/XPDm0+RD21+A6ifaVZS1yREMsgyKkKBTuJAojuXVg3AMzg84BT0+Bgr9Upj5Hi6t9Hxxxsl
-	UmbIhS6BF7KfAuuFdraQ==;
+	List-Owner; bh=biSt9KutZe6SHDE9kVNbyTtwwOnCKz8MIy7/bZJOvp8=; b=1NBlgHl/pNEUV2
+	SJRtY5Y9/t/k0YawsaxAWpwSn6ZTmaewqtROou+YdolILIAFGgGurwWUwIXO2QtaRjAqYaMegxiUi
+	7dX/2uSrfzD4Rg64jPcte2Nt3cZWGGVkpTs+5U2G0lhHpEnaqDtKcTEPY1ic7KFKMqco+juXNnSdQ
+	TOJWRPjQSVW5Kro2XfT+6i4mPIH5jeEimiosq9ljovt8LBw/KfsJ00RilXTmCrPH/VEpnEeRxTq92
+	npD6/Bsw/sO1kEPqzpFXXl6aoivN+qxvbAIYbEVRO4TmT4aU6CI6//Hr9frINCBfz6+1LbK6vTPMq
+	pa+5tw1Vr7edvlX8NtkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP3Nv-00GDuY-2P;
-	Thu, 27 Jul 2023 15:58:39 +0000
-Received: from [134.134.136.31] (helo=mgamail.intel.com)
+	id 1qP5Do-00HaVL-1Z;
+	Thu, 27 Jul 2023 17:56:20 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP3Ns-00GDqa-1p
+	id 1qP5Dl-00HaSs-2t
+	for linux-mtd@bombadil.infradead.org;
+	Thu, 27 Jul 2023 17:56:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=kdGTSaZttWzXE70nDOUK2tohVaGSllQiBwLy7anvxFA=; b=PUMStpsdEECNQpiGhDgP735o59
+	pLNL44nV3DZ5pJysfhgl/IX+elIov2Z59alnXu4cFzdtiCIEr9YJNt1zyHCvYdjfs5Hkplr0Xu/6u
+	bQXNeQwAbtypH3atJX4VRzD9FNQ5KEN8waRpXmjGhgMAZuuUbOWEfcCVsdkr84fGwh3pvPMd4M8IA
+	HrEv1q/pJr54FeiJMuncgQGJPj0hUGDWK5e/iX+v84oZ/tQfYNIwZ69OkMG8B+/fNMS91SUwG+Gec
+	fz14m9zy2nDp1VaFAzNnnoWHHxBHyTYCLSJDXUVhBHpGoUrTGvFYbjvrLfxTXzESuoEoWa9uZ2pnZ
+	5zJ9zUIA==;
+Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qP3yP-007AVg-2b
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jul 2023 15:58:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690473516; x=1722009516;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FdpnzmpbpDtQgpHo2zN0d9vbabH9VR2p8NO1uqeU8Ac=;
-  b=D3qyH9y0PVOEK7kz90kt64/8vhZSvwgLmyRNZUuBPF1NNMF+Wy61TaWE
-   ZQTHBnUKxFgHQB8ilrs7RT9BPtAn6jJEP7Acj0RSawL34iYIbbdb61D8W
-   WoU7cYOQyfFrgZmoeuMmqiWUp4sfR2yYUNH6SQcHx9Nf1/ckSswTeZ/kf
-   LlsN+xRIui6zw1eoYyOQiz1km+zwjOiSH3NVDwJFlPOCHh4/ZCucUTpeu
-   nza7h7OlxjKg1LkL5fAfTdHuZAKx/lv5Nxov+jQTFfonep6flLOZSoXjn
-   d8/1t59BiVIRLGdXwJBJJ+I6vwIQbGI0qt1nBPyhSo8QQW5k66AtR8l2Y
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="432165600"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="432165600"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 08:58:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="762206230"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="762206230"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP; 27 Jul 2023 08:58:31 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1qP3Nl-00AzYB-1n;
-	Thu, 27 Jul 2023 18:58:29 +0300
-Date: Thu, 27 Jul 2023 18:58:29 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Tomas Winkler <tomas.winkler@intel.com>,
-	Vitaly Lubart <vitaly.lubart@intel.com>,
-	Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+	Thu, 27 Jul 2023 16:36:24 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B1F741C0008;
+	Thu, 27 Jul 2023 16:36:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1690475776;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kdGTSaZttWzXE70nDOUK2tohVaGSllQiBwLy7anvxFA=;
+	b=gwbaqSDNeRzur4+HiLF4Q+AQOYWLgNup+cTf/E7YPQ0wFFV/oAHtQNdCkDkP9hZKhorxkD
+	xZI2kw9GgScfprx+CUj/47lshiiGDujDREUPR3wLGCq0xpu9NjzgXy4xbQ/XZQqElnc17j
+	eT+rGkvKqwJPjo2YO3LqPKXBKPIHuxphZuDxPvDaKbz5wzd/Tng4p9CqeWFqZs0wr8p0X0
+	uy78U2ZWnXnYX2BqQ0t5J50JLJZ7APZ7mdkbJxb6L5z3QdCueQIiq/tSSHQ14NqWvuErUz
+	tJkotP81jQRmfJlGM8O/ZP3ZG7CVnXiMxUwRnekoI7AjQuBYbCl31PKbuK6lSg==
+Date: Thu, 27 Jul 2023 18:36:11 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Alexander Usyskin <alexander.usyskin@intel.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Tomas Winkler
+ <tomas.winkler@intel.com>, Vitaly Lubart <vitaly.lubart@intel.com>, Zhang
+ Xiaoxu <zhangxiaoxu5@huawei.com>
 Subject: Re: [PATCH] mtd: fix use-after-free in mtd release
-Message-ID: <ZMKUJbl7kFOfgKGg@smile.fi.intel.com>
+Message-ID: <20230727183611.37d01f51@xps-13>
+In-Reply-To: <ZMKUJbl7kFOfgKGg@smile.fi.intel.com>
 References: <20230727145758.3880967-1-alexander.usyskin@intel.com>
- <ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
- <20230727172013.7c85c05d@xps-13>
+	<ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
+	<20230727172013.7c85c05d@xps-13>
+	<ZMKUJbl7kFOfgKGg@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230727172013.7c85c05d@xps-13>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_085836_679950_C178AA84 
-X-CRM114-Status: GOOD (  16.02  )
+X-CRM114-CacheID: sfid-20230727_173622_513928_C5776853 
+X-CRM114-Status: GOOD (  18.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,50 +89,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 27, 2023 at 05:20:13PM +0200, Miquel Raynal wrote:
-> andriy.shevchenko@linux.intel.com wrote on Thu, 27 Jul 2023 18:12:04
-> +0300:
-> > On Thu, Jul 27, 2023 at 05:57:58PM +0300, Alexander Usyskin wrote:
-
-...
-
-> > > Fixes: 19bfa9ebebb5 ("mtd: use refcount to prevent corruption")
-> > 
-> > Closes: ?
-> 
-> Did I miss a recent update on the use of Fixes?
-
-They are orthogonal to each other. Actually Closes goes closer with
-Reported-by.
-
-I believe both of them needs to be added (by I might miss something).
-
-> I thought Closes was
-> supposed to point at a bug report while Fixes would point to the faulty
-> commit.
-
-Correct.
-
-> Right now I feel like Fixes is the right tag,
-
-Nobody objects that (see above).
-
-> but if you have a source explaining why we should not longer do it like
-> I am used to, I would appreciate a link.
-
-Since you know about Closes already, I think there is nothing to add.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQW5keSwKCmFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbSB3cm90ZSBvbiBUaHUs
+IDI3IEp1bCAyMDIzIDE4OjU4OjI5CiswMzAwOgoKPiBPbiBUaHUsIEp1bCAyNywgMjAyMyBhdCAw
+NToyMDoxM1BNICswMjAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gYW5kcml5LnNoZXZjaGVu
+a29AbGludXguaW50ZWwuY29tIHdyb3RlIG9uIFRodSwgMjcgSnVsIDIwMjMgMTg6MTI6MDQKPiA+
+ICswMzAwOiAgCj4gPiA+IE9uIFRodSwgSnVsIDI3LCAyMDIzIGF0IDA1OjU3OjU4UE0gKzAzMDAs
+IEFsZXhhbmRlciBVc3lza2luIHdyb3RlOiAgCj4gCj4gLi4uCj4gCj4gPiA+ID4gRml4ZXM6IDE5
+YmZhOWViZWJiNSAoIm10ZDogdXNlIHJlZmNvdW50IHRvIHByZXZlbnQgY29ycnVwdGlvbiIpICAK
+PiA+ID4gCj4gPiA+IENsb3NlczogPyAgCj4gPiAKPiA+IERpZCBJIG1pc3MgYSByZWNlbnQgdXBk
+YXRlIG9uIHRoZSB1c2Ugb2YgRml4ZXM/ICAKPiAKPiBUaGV5IGFyZSBvcnRob2dvbmFsIHRvIGVh
+Y2ggb3RoZXIuIEFjdHVhbGx5IENsb3NlcyBnb2VzIGNsb3NlciB3aXRoCj4gUmVwb3J0ZWQtYnku
+Cj4gCj4gSSBiZWxpZXZlIGJvdGggb2YgdGhlbSBuZWVkcyB0byBiZSBhZGRlZCAoYnkgSSBtaWdo
+dCBtaXNzIHNvbWV0aGluZykuCj4gCj4gPiBJIHRob3VnaHQgQ2xvc2VzIHdhcwo+ID4gc3VwcG9z
+ZWQgdG8gcG9pbnQgYXQgYSBidWcgcmVwb3J0IHdoaWxlIEZpeGVzIHdvdWxkIHBvaW50IHRvIHRo
+ZSBmYXVsdHkKPiA+IGNvbW1pdC4gIAo+IAo+IENvcnJlY3QuCj4gCj4gPiBSaWdodCBub3cgSSBm
+ZWVsIGxpa2UgRml4ZXMgaXMgdGhlIHJpZ2h0IHRhZywgIAo+IAo+IE5vYm9keSBvYmplY3RzIHRo
+YXQgKHNlZSBhYm92ZSkuCj4gCj4gPiBidXQgaWYgeW91IGhhdmUgYSBzb3VyY2UgZXhwbGFpbmlu
+ZyB3aHkgd2Ugc2hvdWxkIG5vdCBsb25nZXIgZG8gaXQgbGlrZQo+ID4gSSBhbSB1c2VkIHRvLCBJ
+IHdvdWxkIGFwcHJlY2lhdGUgYSBsaW5rLiAgCj4gCj4gU2luY2UgeW91IGtub3cgYWJvdXQgQ2xv
+c2VzIGFscmVhZHksIEkgdGhpbmsgdGhlcmUgaXMgbm90aGluZyB0byBhZGQuCgpBaCBzb3JyeSBJ
+IG1pc3VuZGVyc3Rvb2QgeW91ciBmaXJzdCBlLW1haWwuIEkgdGhvdWdodCB5b3Ugd2VyZQpzdWdn
+ZXN0aW5nIHRvIHJlcGxhY2UgRml4ZXMgYnkgQ2xvc2VzLiBTb3JyeSBmb3IgdGhlIG1pc3VuZGVy
+c3RhbmRpbmcgOikKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
+bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8K
