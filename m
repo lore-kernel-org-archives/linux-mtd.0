@@ -4,78 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 233D0C0015E
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 15:12:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56D2AC0015E
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 15:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RH5b7X7+u/6v8Fq/9fPbZGVR3DhbwmrowPOJ0Je1dDU=; b=lLtpI/rAeRLxZU
-	hR1fqGALuE8082RriMVsMr5g2r2U0/KVx1M92PvjHF8Ynlk+q5F7SfKnL/ItiD4xi0RPzTLKyXWG2
-	Yrsc53i7pZVFV6T0mHCt4msny0IZhhSZQpGaFxy0/1ks3TTG7u6HwkUNIP7+YLYACe0Nrrfj27X5U
-	QQj27sAPHNZ4MQryNtThHoohEx5AXZhG1qux7OXCqTb/ltod26ULkjsT+Vxgy2726h7o7wEs8JLeB
-	BNA34JLWXYgB+kMvG7uA0F8XBtaEflOEgGA3vetJEHjZpNO5t+AGr0DhfQYz5UadR53XsYfrcbqkn
-	yTq+G7XM5Or0V45vRI6A==;
+	List-Owner; bh=tscL0qZw70kPpoPPBVLmCaUBDHybFGLhc/ngYfQGERU=; b=h5FWO3DenjMAVM
+	OT99tfrK4W3z9uNgwPdbG3AklCbG+k3AVk6FUgYu/mr3H/X4tPXExugd24q60CAfUWobxVjZ+Pr81
+	ppo8Gk/KDFNve5YoCVvH/VIea3jAGGN5yjQDeAlOw9SfJaFUDzD190CY6BTZzvLkkbZE+7bz1l/m6
+	EqSL/cGFzMUHPOtCBnA46qSwC3RYXysuj0kQ0efTmyjC6wVMScbZ+fpJgBwSyYcxAiYRQEm7Wbckw
+	AZoYz79w/YQJ3BnjbtlYce/MBp9xNutQZLQvaYf/l9d+4WYFi0YGjWokVurb07lYnw4iUnaUMGlvq
+	zPNGZezVKSVLC4sBEe9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP2f4-00FhTw-2c;
-	Thu, 27 Jul 2023 15:12:18 +0000
-Received: from [192.55.52.115] (helo=mgamail.intel.com)
+	id 1qP2h4-00Fiu5-2W;
+	Thu, 27 Jul 2023 15:14:22 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP2f1-00FhQU-2h
-	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jul 2023 15:12:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690470735; x=1722006735;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aLnYfgXFu9qFwcn/sovr3DuEibzC1WZUxyf9Izpe7QI=;
-  b=YdE99C4kRQ0KYDXE1eJzzk0Rvjs+/Wn9mpgDnwpS7/xURfb2nok0+DdH
-   OxqUibvMSrksDXxWq3vuuYuQ9ZOw19eAH9MHVqC3wyD/p8KJfu1tCDtk8
-   pjTHTTxoGzWTNK8lUD0sMaw5n/KEeF0gEYYJeeZQ2Reh95Vp9Xrg0YcmE
-   gmv56Rw81pSuoNVChsia9naR/Qemt5B/0wODCg3UaXQ4ulNQ2M6hIwNBG
-   HepYfMIxcSay2Z+fpfB+IEL2ciH2gZZ9R5B4F/NMGcBYjabwg8cOEOV27
-   CFwjjwz1SdEum0ftvtyEJL+x2FHs8nm2SWniwT98DR8UhsRG+GToVLlnP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="368353699"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="368353699"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 08:12:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="900906746"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="900906746"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP; 27 Jul 2023 08:12:06 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1qP2eq-009OVn-2G;
-	Thu, 27 Jul 2023 18:12:04 +0300
-Date: Thu, 27 Jul 2023 18:12:04 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Alexander Usyskin <alexander.usyskin@intel.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Tomas Winkler <tomas.winkler@intel.com>,
-	Vitaly Lubart <vitaly.lubart@intel.com>,
-	Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Subject: Re: [PATCH] mtd: fix use-after-free in mtd release
-Message-ID: <ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
-References: <20230727145758.3880967-1-alexander.usyskin@intel.com>
+	id 1qP2h0-00Fip2-39;
+	Thu, 27 Jul 2023 15:14:21 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8164B2000A;
+	Thu, 27 Jul 2023 15:14:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1690470855;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nzd5HtoFFLl9A34pvDmwNT8AD0dQd1SJOjWLVltzINU=;
+	b=hcZx7Sbb8wSkcSu8SGTQsaIbwyHL0BC+MgOUxjU6onWuKmYxxgodPxK7LpbcHi55RuUW4u
+	FqBzvQRylrQvTy2CqXe+OTNiLyd2MDcEPZ8ymXHsbWsbPPgnYFmsxRS1QDtjTN3Y61I8F0
+	QOAidgZtG/cET0QNtEXD9I6BQxAEilOTtcFULhh+ly6AlE6NjHT6bRLHaR2Ii0TpgOuiX7
+	IX9W18qWNmWfG24ysQl4CDbOsqUPEOHIk99PKLxjRs9Gs8WnYW3c/YMoHB5cvQDvhCdK12
+	Jut/zK+Colq8gtPoQ8mTW13Bdfq5DjPypSKfdiy4liJBQgIAalZdF+IvTdspng==
+Date: Thu, 27 Jul 2023 17:14:11 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Manivannan Sadhasivam <mani@kernel.org>, Md Sadre Alam
+ <quic_mdalam@quicinc.com>, Sricharan Ramabadhran
+ <quic_srichara@quicinc.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>,
+ Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 7/8] mtd: rawnand: qcom: Early structure initialization
+Message-ID: <20230727171411.0efd4815@xps-13>
+In-Reply-To: <d83011fa-79e8-0ce8-4fdc-de01c43775f9@linaro.org>
+References: <20230716144612.32132-1-miquel.raynal@bootlin.com>
+	<20230716144612.32132-8-miquel.raynal@bootlin.com>
+	<d83011fa-79e8-0ce8-4fdc-de01c43775f9@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230727145758.3880967-1-alexander.usyskin@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_081215_923789_AF41F703 
-X-CRM114-Status: UNSURE (   9.50  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230727_081419_344172_D33626EF 
+X-CRM114-Status: GOOD (  13.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,52 +73,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 27, 2023 at 05:57:58PM +0300, Alexander Usyskin wrote:
-> I case of partition device_unregister in mtd_device_release
-
-In
-
-device_unregister()
-mtd_device_release()
-
-> calls mtd_release which frees mtd_info structure for partition.
-
-mtd_release()
-
-> All code after device_unregister in mtd_device_release thus
-
-device_unregister()
-mtd_device_release()
-
-> works already freed memory.
-
-uses?
-
-> Move part of code to mtd_release and restict mtd->dev cleanup
-
-mtd_release()
-
-> to non-partion object.
-> For partition object such cleanup have no sense as partition
-> mtd_info is removed.
-> 
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-> Fixes: 19bfa9ebebb5 ("mtd: use refcount to prevent corruption")
-
-Closes: ?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVHVkb3IsCgp0dWRvci5hbWJhcnVzQGxpbmFyby5vcmcgd3JvdGUgb24gVGh1LCAyNyBKdWwg
+MjAyMyAxNjowMzo0MCArMDEwMDoKCj4gT24gNy8xNi8yMyAxNTo0NiwgTWlxdWVsIFJheW5hbCB3
+cm90ZToKPiA+IEluc3RlYWQgb2YgYWxsb2NhdGluZyBhIHN0cnVjdHVyZSBvbiB0aGUgc3RhY2sg
+d2l0aCByYW5kb20gZGF0YSBhbmQgdGhlbgo+ID4gZXhwZWN0IHRoZSBjYWxsZWUgdG8gcGVyZm9y
+bSB0aGUgaW5pdGlhbGl6YXRpb24gKHdoaWNoIGlzLCBpbiBnZW5lcmFsLAo+ID4gZXJyb3IgcHJv
+bmUpLCBwcmVmZXIgemVyb2luZyB0aGUgc3RydWN0dXJlIGV4cGxpY2l0bHkgYXQgYWxsb2NhdGlv
+biBhbmQKPiA+IHByb3ZpZGUgdGhlIGFscmVhZHkgemVyb2VkIGFyZWEsIHNvIG5vIGV4cGxpY2l0
+IG1lbXNldCBvcGVyYXRpb24gaXMKPiA+IG5lZWRlZC4gSXQgaXMgcHJvYmFibHkgc2FmZXIgdG8g
+ZG8gc28sIHNvIHdlIGxpbWl0IHRoZSB0aW1lZnJhbWUgd2hlbgo+ID4gZGlydHkgZGF0YSBjb3Vs
+ZCBhY3R1YWxseSBiZSBhY2Nlc3NlZCBieSBtaXN0YWtlLiAgCj4gCj4gV2h5IGlzIHplcm9lZCBk
+YXRhIGNvbnNpZGVyZWQgc2FmZSBvciBzYW5lPwoKSSBiZWxpZXZlIGFsbG9jYXRpbmcgc3RydWN0
+dXJlcyBsaWtlIHRoYXQgb24gdGhlIHN0YWNrIHdpbGwgbWFrZSB0aGVpcgpjb250ZW50IGluaGVy
+aXQgZnJvbSBwcmV2aW91cyB2YWx1ZXMgdXNlZCB0aGVyZSwgd2hpY2ggaXMgZ2VuZXJhbGx5IGEK
+YmFkIGlkZWEgaWYgd2UgZXhwZWN0IHRoZSBzdHJ1Y3R1cmUgdG8gYmUgemVyb2VkLCB3aGljaCBp
+cyB0aGUgY2FzZQpoZXJlLgoKVGhpcyBzdHJ1Y3R1cmUgaXMgbWVhbnQgdG8gYmUgemVyb2VkIGJl
+Zm9yZSBiZWluZyB1c2VkLCBzbyBpbnN0ZWFkIG9mCmNhcnJ5aW5nIHN0YWxlIGRhdGEgdGhhdCB3
+aWxsIGJlIHdpcGVkIG9mZiBsYXRlciwgSSBwcmVmZXIgdG8gaGF2ZSBpdAp6ZXJvZWQgZWFybGll
+ci4gUmVkdWNpbmcgdGhlIHRpbWUgd2hlbiBvbmUgY291bGQgYWNjZXNzIHN0YWxlIGRhdGEgb3IK
+d3JpdGUgc29tZXRoaW5nIHRoYXQgd2lsbCBiZSByZXNldCBkb2VzIG5vdCBzb3VuZCB0b3RhbGx5
+IHVzZWxlc3MgdG8KbWUsIGluIHBhcnRpY3VsYXIgZ2l2ZW4gdGhlIG51bWJlciBvZiBjaGFuZ2Vz
+IHRoaXMgZHJpdmVyIGhhcyBiZWVuCnN1YmplY3QgdG8gcmVjZW50bHkuCgpUaGFua3MsCk1pcXXD
+qGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
