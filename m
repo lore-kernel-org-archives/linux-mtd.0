@@ -4,94 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB717C0015E
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 09:20:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B023C001DC
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 09:54:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qXsyAA6qzTBIkhxmsuEB4Rmn0HsQBLUxAIOnPlFalhU=; b=Q76POWCr1DUoh9
-	fmzd02RtRMlpVLuDXY549rM6sV4EACNKMwmGeNx5sCrlvC1T9iaKcV3jlHXFqNYQYrbJ8XbiVt/+T
-	iL8fr5N80M+aCZHccOHlSKJXRMS2oexck9zNYyj/h90OzEPQEwaCOA47/wTSVE2KoqdAuVn/9+qqU
-	XEtuZ2HEn+v/qeLZUGf1MKlN6/t+8WoWllsBVUs5TVnMdSl5a0IU7o1/Dhl2yzryKL/hXURO6KMY1
-	p6D+rvAOv9lmbZpA7NLdJxmpELLmGkYY3oUaEiCz5M00sSOVtdPrCsiTuKJQ31V11kRHtKdjvirkB
-	nVlqJjLn9HCnd8phnaEQ==;
+	List-Owner; bh=2ieB0IGN9tFXXRbKbVCGnwLOGIlVFXwCU7p8j9dyecU=; b=3xfOWJhlYt0Ast
+	tBm1UNCBIAlWU4c0f8UOFst4NZ74WElXhd3m7rjP1bdXwUno95Z6uzbxM2+aJyEQsplgZF+55dWi1
+	reVZTnERqxTe/VDvUQ1r0GLXPHOKBCEbJmWzKgC0dCQNgIvUrLwkjXULVECa5CoNnLvlLxLcxHoOX
+	rntNqhgXsVTrQEM2xCLm9IQvGTxS7SnPAngktMeZwU+fw77CRpCavHUBbvi/ezFBBcZodjPBDwWdz
+	cDCarZLJyJTI987v+ua9j1niyIunGL4NqmoNuKFawY0DSBC3ZVdX8sygX3OpnJv1wfTSLREyIqtQw
+	xuzh65EGFC1RkufRbbnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOxAG-00Cp8Z-1c;
-	Thu, 27 Jul 2023 09:20:08 +0000
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
+	id 1qOxhX-00CtU8-0g;
+	Thu, 27 Jul 2023 09:54:31 +0000
+Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOxAD-00Cp74-1T
+	id 1qOxhS-00CtS3-1w
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jul 2023 09:20:07 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-682b1768a0bso187072b3a.0
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 02:20:03 -0700 (PDT)
+	Thu, 27 Jul 2023 09:54:29 +0000
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-977e0fbd742so96919466b.2
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 02:54:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690449603; x=1691054403;
+        d=linaro.org; s=google; t=1690451660; x=1691056460;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cb79b5va6gFfSJneJi5lY4rGeRwgOukMupryAUVW6kI=;
-        b=YCWSTu9U7oWMIxlz666y2QG523oA3QX5qQv7ZytrRVu6fJw8dRHyUfgDIT1gU69FG8
-         THUguZfsi1KeJApNPmw0jxmv7f8KFlV4UTxlH9XbeulHxoa/ldWA269gxLsqPd7fsDUL
-         3wrs7fjkTjLEvVIuFKVgIWoEr+OE7ZGV4f2QptD03saCT0x1g+4lQFRHQ9ruqft2Rhft
-         lQsKff8YPeqYMpcr6auHVhvyZ4A0b6O2v3t87pxn8FkR9lCy8v/ntqGuUNKm9Zf3rtD1
-         Pt/WGCyBPHzJX+fw7G8Ac9jWyGkR4LQhg8QoLvoZwbFMr8CqGaDCh/cUGTEJkXif0gLU
-         NqYA==
+        bh=pS9DQ1IaeK41BP5Hxqm6gK93ojxOQztFzk8EFfKihEE=;
+        b=RmElP4BwfHVbjiz6vNsGculs/eVx4kHbr43rVo6Aj1p2LpgH8aMWOutIWmfx9lJaya
+         QRj437xI02xoPJ/L98oV8AxvK0ArYDg0IbyxNZACqc9zIeaqSnxw1JmRI3iMTOildbly
+         E0A7Sn67KQR9fD+/UKrkqnLKru2yzEqTWWmlS/l2BrhH1Kn4JqO9Cr+i4eLYzbkIo8vI
+         t2EzDftPYDo/J4ONwFKStpeYPE6xdVHzTPh2J+BzwOeqT3vMkKzZtmvmHMEkaFk/yMSI
+         L/Njx1B/qK5odqihyEW8FXjawQzJzuPZqQcLfb9jMn81rJsjG/oFPCdDQJDYlRBG82jt
+         ZPzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690449603; x=1691054403;
+        d=1e100.net; s=20221208; t=1690451660; x=1691056460;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cb79b5va6gFfSJneJi5lY4rGeRwgOukMupryAUVW6kI=;
-        b=W97DACHa0wUZrC9mAaOty0kx2ZL5skZey22gCn67LoD9iPEfRCLHpDclLOslc7R3bA
-         6upoXCHKzuYOW2erdyKmg2+JKL93Vb2zauR1UhHWvZT/smAlNq2Xl1UOt59QxTTI+gaG
-         P04u3uL5RH5epLsQRnxxAPutT3e2ClxbpAAc5lA15NRY4VJHC38UBVQCSwqynCKwgNLy
-         yuZ8fnmDv92+cBr/UVFFyHOwkwQMimYlY1Lj4hgq/Ke0Q9NnY+GVIMvFsBQWqll3K5pv
-         pUeQENu9t3E+PCFH/sub7KCYUderg+7KwVbUgadYxaq91d6+qhdyQQp607hOYVb3Jt8P
-         pw2g==
-X-Gm-Message-State: ABy/qLZUlVGiOJ0nv5tjwpFEcmeR/pdQWAtvFBqHJKh38A9YTxpUT7mN
-	ZJMUDRe2GFFbnAY/bV8RvwP3NQ==
-X-Google-Smtp-Source: APBJJlH+dm0mCsob/js+yZXnXAfwEH4KDToex0aS0MQ56gbjyJxo+xxDZzOa2lZ9gy3mjvwdmWQa2g==
-X-Received: by 2002:a17:902:da82:b0:1b8:811:b079 with SMTP id j2-20020a170902da8200b001b80811b079mr5785873plx.0.1690449602958;
-        Thu, 27 Jul 2023 02:20:02 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id 5-20020a170902c24500b001bbb7d8fff2sm1109046plg.116.2023.07.27.02.19.50
+        bh=pS9DQ1IaeK41BP5Hxqm6gK93ojxOQztFzk8EFfKihEE=;
+        b=QZjUJUaXQrLjABs6cwHFXiRzl5fCrZEqJt+AN7MpklJdgYvF3kAkvIAxZD/QB+clp3
+         4Z0KMqZaH80cLWwK27vaFiBAieilDKUPAWp+SC0PlBomOKSRuzl57nk4Ent2j9oRmxXh
+         MHVPRtKHlnEOKpOENt7C+Nrh/HhlNECFXOK1GNetmz8fBUIo/611UW78pgfcxjuxERaQ
+         kWyH1xakPMz9TWSD+O130n4fDc7lfdKRdlT0lhWu+jt+tlxIwEJw6CtumpRAICmPGjtf
+         Jhk3aERwlqtyyj08OZHtqiIrSK3KfPMyN6p0gwBbXZmsCsufh5QO8aQhxHgG1jki7yhi
+         BQzQ==
+X-Gm-Message-State: ABy/qLazOSZ5yn5SJY1M4WrpuD6m0LyXsixxkeWkoONq9rPPPLWmfFKQ
+	J+GIAdCQE0PZAtksQ5AneY+v7g==
+X-Google-Smtp-Source: APBJJlH7JmnAtWf00RR3dz14JYX8DXcmby2myXmtceDzmjJB7uF+Oeviqzjo6nurONUAo6+QbxYF1A==
+X-Received: by 2002:a17:906:29a:b0:992:a838:a564 with SMTP id 26-20020a170906029a00b00992a838a564mr1483649ejf.28.1690451660237;
+        Thu, 27 Jul 2023 02:54:20 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.48])
+        by smtp.gmail.com with ESMTPSA id oq26-20020a170906cc9a00b009888aa1da11sm554311ejb.188.2023.07.27.02.54.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 02:20:02 -0700 (PDT)
-Message-ID: <5f1b85b8-3655-1700-4d16-fa056b31ceeb@bytedance.com>
-Date: Thu, 27 Jul 2023 17:19:49 +0800
+        Thu, 27 Jul 2023 02:54:19 -0700 (PDT)
+Message-ID: <a2e8544b-f97b-e318-1c98-7f424b1c810c@linaro.org>
+Date: Thu, 27 Jul 2023 10:54:18 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 40/49] xfs: dynamically allocate the xfs-qm shrinker
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: add support for Macronix Octal flash
 Content-Language: en-US
-To: akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
- vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
- brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
- cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
- gregkh@linuxfoundation.org, muchun.song@linux.dev
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
- kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
- linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
- linux-mtd@lists.infradead.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-bcache@vger.kernel.org, virtualization@lists.linux-foundation.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- Muchun Song <songmuchun@bytedance.com>
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-41-zhengqi.arch@bytedance.com>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20230727080502.77895-41-zhengqi.arch@bytedance.com>
+To: Jaime Liao <jaimeliao.tw@gmail.com>, linux-mtd@lists.infradead.org,
+ pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com
+Cc: leoyu@mxic.com.tw, JaimeLiao <jaimeliao@mxic.com.tw>
+References: <20230727091610.234132-1-jaimeliao.tw@gmail.com>
+ <20230727091610.234132-3-jaimeliao.tw@gmail.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230727091610.234132-3-jaimeliao.tw@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_022005_494077_4E0AFD2C 
-X-CRM114-Status: GOOD (  17.50  )
+X-CRM114-CacheID: sfid-20230727_025426_740254_D6940DF7 
+X-CRM114-Status: GOOD (  26.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,102 +90,271 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 
-On 2023/7/27 16:04, Qi Zheng wrote:
-> In preparation for implementing lockless slab shrink, use new APIs to
-> dynamically allocate the xfs-qm shrinker, so that it can be freed
-> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-> read-side critical section when releasing the struct xfs_quotainfo.
+On 7/27/23 10:16, Jaime Liao wrote:
+> From: JaimeLiao <jaimeliao@mxic.com.tw>
 > 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> Adding Macronix Octal flash for Octal DTR support.
+> 
+> The octaflash series can be divided into the following types:
+> 
+> MX25 series : Serial NOR Flash.
+> MX66 series : Serial NOR Flash with stacked die.(Size larger than 1Gb)
+> LM/UM series : Up to 250MHz clock frequency with both DTR/STR operation.
+> LW/UW series : Support simultaneous Read-while-Write operation in multiple
+>                bank architecture. Read-while-write feature which means read
+>                data one bank while another bank is programing or erasing.
+> 
+> MX25LM : 3.0V Octal I/O
+>  -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8729/MX25LM51245G,%203V,%20512Mb,%20v1.1.pdf
+> 
+> MX25UM : 1.8V Octal I/O
+>  -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8967/MX25UM51245G,%201.8V,%20512Mb,%20v1.5.pdf
+> 
+> MX66LM : 3.0V Octal I/O with stacked die
+>  -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8748/MX66LM1G45G,%203V,%201Gb,%20v1.1.pdf
+> 
+> MX66UM : 1.8V Octal I/O with stacked die
+>  -https://www.mxic.com.tw/Lists/Datasheet/Attachments/8711/MX66UM1G45G,%201.8V,%201Gb,%20v1.1.pdf
+> 
+> MX25LW : 3.0V Octal I/O with Read-while-Write
+> MX25UW : 1.8V Octal I/O with Read-while-Write
+> MX66LW : 3.0V Octal I/O with Read-while-Write and stack die
+> MX66UW : 1.8V Octal I/O with Read-while-Write and stack die
+> 
+> MX25UM51245G : 512Mb flash, with Word mode data output format when Octal DTR read
+> MX25UM51345G : 512Mb flash, with Byte mode data output format when Octal DTR read
+
+split this in multiple patches and send a patch for each family please.
+> 
+> Macronix Octal flash with two types, "byte mode" and "word mode".
+> Because of word mode flash with byte swap issue when Octal DTR read,
+> adding byte mode flash in this patchset only.
+
+Please reformulate this paragraph. So all these flashes that you're adding
+don't swap bytes on a 2 byte boundary?
+> 
+> About LW/UW series, please contact us freely if you have any
+> questions. For adding Octal NOR Flash IDs, we have validated
+> each Flash on plateform zynq-picozed.
+
+remove this paragraph.
+> 
+> As below are the SFDP table dump.
+
+I'd like you to do some sanity checks as well, using mtd_debug. There
+was a script that I advertised, please search ml for other flash updates
+to see how to do it.
+
+> 
+> zynq> cat jedec_id
+> c2943c
+> zynq> cat manufacturer
+> macronix
+> zynq> cat partname
+> mx66uw2g345gx0
+> zynq> xxd -p sfdp
+> 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+> 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+> ffffffffe5208affffffff7f00ff00ff00ff00ffeeffffffffff00ffffff
+> 00ff0c2010d800ff00ff87790100841200e2cc04674630b030b0f4bdd55c
+> 000000ff101000200000000000007c234800000000008888000000000000
+> 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+> 727103b80000000090a3188200c069960000000000000000727100987271
+> 00b8727100990000000072710098727100f872710099727100f900000000
+> 00000000011501d0727106d8000086500000060100000000020001030002
+> 00000000060100000000000072060002000000eec0697272717100d8f7f6
+> 000a00001445988043061f0021dcffff
+> zynq> md5sum sfdp
+> 839ad44d1e758bea30bd9917ba763ba6  sfdp
+> 
+> zynq> cat jedec_id
+> c2843c
+> zynq> cat manufacturer
+> macronix
+> zynq> cat partname
+> mx66uw2g345g
+> zynq> xxd -p sfdp
+> 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+> 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+> ffffffffe5208affffffff7f00ff00ff00ff00ffeeffffffffff00ffffff
+> 00ff0c2010d800ff00ff87790100841200e2cc04674630b030b0f4bdd55c
+> 000000ff101000200000147c00007c234800000000007777000000000000
+> 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+> 727103b80000000090a3188200c069960000000000000000727100987271
+> 00b8727100990000000072710098727100f872710099727100f900000000
+> 00000000011501d0727106d8000086500000060100000000020001030002
+> 00000000060100000000000072060002000000eec0697272717100d8f7f6
+> 000000001445988043061f0021dcffff
+> zynq> md5sum sfdp
+> 00447475e039e67c256a8d75d5885ae8  sfdp
+> 
+> zynq> cat jedec_id
+> c2843a
+> zynq> cat manufacturer
+> macronix
+> zynq> cat partname
+> mx25uw51345g
+> zynq> xxd -p sfdp
+> 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+> 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+> ffffffffe5208affffffff1f00ff00ff00ff00ffeeffffffffff00ffffff
+> 00ff0c2010d800ff00ff8b7901008f1200e2cc04674630b030b0f4bdd55c
+> 000000ff101000200000000000007c234800000000008888000000000000
+> 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+> 727103b80000000090a3188200c069960000000000000000727100987271
+> 00b8727100990000000072710098727100f872710099727100f900000000
+> 00000000011501d0727106d8000086500000060100000000020001030002
+> 00000000060100000000000072060002000000eec0697272717100d8f7f6
+> 000a00001445988043060f0021dcffff
+> zynq> md5sum sfdp
+> cdccbfad3c384e77f3a5f7847b57b148  sfdp
+> 
+> zynq> cat jedec_id
+> c28439
+> zynq> cat manufacturer
+> macronix
+> zynq> cat partname
+> mx25uw25345g
+> zynq> xxd -p sfdp
+> 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+> 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+> ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+> 00ff0c2010d800ff00ff87790100841200d2cc04674630b030b0f4bdd55c
+> 000000ff101000200000000000007c234800000000008888000000000000
+> 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+> 727103b80000000090a3188200c069960000000000000000727100987271
+> 00b8727100990000000072710098727100f872710099727100f900000000
+> 00000000011501d0727106d8000086500000060100000000020001030002
+> 00000000060100000000000072060002000000eec0697272717100d8f7f6
+> 000a00001445988043060f0021dcffff
+> zynq> md5sum sfdp
+> f7712440f8ce0adb538dfa0c10579c79  sfdp
+> 
+> zynq> cat jedec_id
+> c28339
+> zynq> cat manufacturer
+> macronix
+> zynq> cat partname
+> mx25um25345g
+> zynq> xxd -p sfdp
+> 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+> 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+> ffffffffe5208affffffff0f00ff00ff00ff00ffeeffffffffff00ffffff
+> 00ff0c2010d800ff00ff87690100821200d2cc02673830b030b0f4bdd55c
+> 000000ff101000200000000000007c234800000000008888000000000000
+> 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+> 727103b80000000090a3188200c069960000000000000000727100987271
+> 00b8727100990000000072710098727100f872710099727100f900000000
+> 00000000011501d0727106d8000086500000060100000000020001030002
+> 00000000060100000000000072060002000000eec0697272717100d8f7f6
+> 040900001445988043060f0021dcffff
+> zynq> md5sum sfdp
+> 950e623745a002e1747008592e6dbdf9  sfdp
+> 
+> zynq> cat manufacturer
+> macronix
+> zynq> cat partname
+> mx25uw12345g
+> zynq> xxd -p sfdp
+> 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+> 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+> ffffffffe5208affffffff0700ff00ff00ff00ffeeffffffffff00ffffff
+> 00ff0c2010d800ff00ff8b7901008f1200c9cc04674630b030b0f4bdd55c
+> 000000ff101000200000000000007c234800000000008888000000000000
+> 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+> 727103b80000000090a3188200c069960000000000000000727100987271
+> 00b8727100990000000072710098727100f872710099727100f900000000
+> 00000000011501d0727106d8000086500000060100000000020001030002
+> 00000000060100000000000072060002000000eec0697272717100d8f7f6
+> 000a00001445988043060f0021dcffff
+> zynq> md5sum sfdp
+> a3eb609c08894c84270ad06efc03766c  sfdp
+> 
+> zynq> cat jedec_id
+> c28437
+> zynq> cat manufacturer
+> macronix
+> zynq> cat partname
+> mx25uw6345g
+> zynq> xxd -p sfdp
+> 53464450080104fd00070114400000ff8701011c900000ff0a0001080001
+> 00ff05000105200100ff84000102340100ff0000000000000000ffffffff
+> ffffffffe5208affffffff0300ff00ff00ff00ffeeffffffffff00ffffff
+> 00ff0c2010d800ff00ff8b7901008f1200c4cc04674630b030b0f4bdd55c
+> 000000ff101000200000000000007c234800000000008888000000000000
+> 00400fd1fff30fd1fff300050090000500b1002b0095002b0096727103b8
+> 727103b80000000090a3188200c069960000000000000000727100987271
+> 00b8727100990000000072710098727100f872710099727100f900000000
+> 00000000011501d0727106d8000086500000060100000000020001030002
+> 00000000060100000000000072060002000000eec0697272717100d8f7f6
+> 000a00001445988043060f0021dcffff
+> zynq> md5sum sfdp
+> c6fb57b8fdd4c35b5f0dacc4a1f7d4f4  sfdp
+> 
+> Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
 > ---
->   fs/xfs/xfs_qm.c | 26 +++++++++++++-------------
->   fs/xfs/xfs_qm.h |  2 +-
->   2 files changed, 14 insertions(+), 14 deletions(-)
+>  drivers/mtd/spi-nor/macronix.c | 26 ++++++++++++++++++++++++--
+>  1 file changed, 24 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/xfs/xfs_qm.c b/fs/xfs/xfs_qm.c
-> index 6abcc34fafd8..032f0a208bd2 100644
-> --- a/fs/xfs/xfs_qm.c
-> +++ b/fs/xfs/xfs_qm.c
-> @@ -504,8 +504,7 @@ xfs_qm_shrink_scan(
->   	struct shrinker		*shrink,
->   	struct shrink_control	*sc)
->   {
-> -	struct xfs_quotainfo	*qi = container_of(shrink,
-> -					struct xfs_quotainfo, qi_shrinker);
-> +	struct xfs_quotainfo	*qi = shrink->private_data;
->   	struct xfs_qm_isolate	isol;
->   	unsigned long		freed;
->   	int			error;
-> @@ -539,8 +538,7 @@ xfs_qm_shrink_count(
->   	struct shrinker		*shrink,
->   	struct shrink_control	*sc)
->   {
-> -	struct xfs_quotainfo	*qi = container_of(shrink,
-> -					struct xfs_quotainfo, qi_shrinker);
-> +	struct xfs_quotainfo	*qi = shrink->private_data;
->   
->   	return list_lru_shrink_count(&qi->qi_lru, sc);
->   }
-> @@ -680,16 +678,18 @@ xfs_qm_init_quotainfo(
->   	if (XFS_IS_PQUOTA_ON(mp))
->   		xfs_qm_set_defquota(mp, XFS_DQTYPE_PROJ, qinf);
->   
-> -	qinf->qi_shrinker.count_objects = xfs_qm_shrink_count;
-> -	qinf->qi_shrinker.scan_objects = xfs_qm_shrink_scan;
-> -	qinf->qi_shrinker.seeks = DEFAULT_SEEKS;
-> -	qinf->qi_shrinker.flags = SHRINKER_NUMA_AWARE;
-> -
-> -	error = register_shrinker(&qinf->qi_shrinker, "xfs-qm:%s",
-> -				  mp->m_super->s_id);
-> -	if (error)
-> +	qinf->qi_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "xfs-qm:%s",
-> +					   mp->m_super->s_id);
-> +	if (!qinf->qi_shrinker)
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index b397fd274868..a5aee10590b8 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -99,8 +99,8 @@ static const struct flash_info macronix_nor_parts[] = {
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+>  	{ "mx25uw51245g", INFOB(0xc2813a, 0, 0, 0, 4)
+> -		PARSE_SFDP
+> -		FLAGS(SPI_NOR_RWW) },
+> +		FLAGS(SPI_NOR_RWW)
+> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP) },
 
-Here should set error to -ENOMEM, will fix.
+why? Here you don't add a new flash, but change an existing one.
+Add a dedicated patch for this. Why can't you use SFDP?
 
->   		goto out_free_inos;
->   
-> +	qinf->qi_shrinker->count_objects = xfs_qm_shrink_count;
-> +	qinf->qi_shrinker->scan_objects = xfs_qm_shrink_scan;
-> +	qinf->qi_shrinker->seeks = DEFAULT_SEEKS;
-> +	qinf->qi_shrinker->private_data = qinf;
-> +
-> +	shrinker_register(qinf->qi_shrinker);
-> +
->   	return 0;
->   
->   out_free_inos:
-> @@ -718,7 +718,7 @@ xfs_qm_destroy_quotainfo(
->   	qi = mp->m_quotainfo;
->   	ASSERT(qi != NULL);
->   
-> -	unregister_shrinker(&qi->qi_shrinker);
-> +	shrinker_free(qi->qi_shrinker);
->   	list_lru_destroy(&qi->qi_lru);
->   	xfs_qm_destroy_quotainos(qi);
->   	mutex_destroy(&qi->qi_tree_lock);
-> diff --git a/fs/xfs/xfs_qm.h b/fs/xfs/xfs_qm.h
-> index 9683f0457d19..d5c9fc4ba591 100644
-> --- a/fs/xfs/xfs_qm.h
-> +++ b/fs/xfs/xfs_qm.h
-> @@ -63,7 +63,7 @@ struct xfs_quotainfo {
->   	struct xfs_def_quota	qi_usr_default;
->   	struct xfs_def_quota	qi_grp_default;
->   	struct xfs_def_quota	qi_prj_default;
-> -	struct shrinker		qi_shrinker;
-> +	struct shrinker		*qi_shrinker;
->   
->   	/* Minimum and maximum quota expiration timestamp values. */
->   	time64_t		qi_expiry_min;
+>  	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16)
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+>  			      SPI_NOR_QUAD_READ) },
+> @@ -119,6 +119,28 @@ static const struct flash_info macronix_nor_parts[] = {
+>  	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+> +	{ "mx66uw2g345g", INFOB(0xc2843c, 0, 0, 0, 4)
+> +		FLAGS(SPI_NOR_RWW)
+> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_READ | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP) },
+PARSE_SFDP instead.
+
+> +	{ "mx66uw2g345gx0", INFOB(0xc2943c, 0, 0, 0, 4)
+> +		FLAGS(SPI_NOR_RWW)
+> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_READ | SPI_NOR_OCTAL_DTR_READ |
+> +			      SPI_NOR_OCTAL_DTR_PP) },
+> +	{ "mx25uw51345g", INFOB(0xc2843a, 0, 0, 0, 4)
+> +		FLAGS(SPI_NOR_RWW)
+> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP) },
+> +	{ "mx25um25345g", INFO(0xc28339, 0, 0, 0)
+> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP) },
+> +	{ "mx25uw25345g", INFOB(0xc28439, 0, 0, 0, 4)
+> +		FLAGS(SPI_NOR_RWW)
+> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP) },
+> +	{ "mx25uw12345g", INFOB(0xc28438, 0, 0, 0, 4)
+> +		FLAGS(SPI_NOR_RWW)
+> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP) },
+> +	{ "mx25uw6345g", INFOB(0xc28437, 0, 0, 0, 4)
+> +		FLAGS(SPI_NOR_RWW)
+> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP) },
+
+PARSE_SFDP for all the flashes please.
+>  };
+>  
+>  static int macronix_nor_octal_dtr_en(struct spi_nor *nor)
 
 ______________________________________________________
 Linux MTD discussion mailing list
