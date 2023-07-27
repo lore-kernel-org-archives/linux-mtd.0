@@ -4,66 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BE42C001E0
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 15:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24C23C0015E
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 15:17:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6qjXj/FYZjssS/m/n8hoN8voJSOCf3KLGWJIe2dF2Yk=; b=lcoSREtVcGmlMk
-	m4I2YDmdDBFLwCMXIlLqbUMyxCOGUr5RPyyQgBL4pslR6hqPEcxbKTMLXFvdcaoSxWTSZcTbiY7GM
-	U0znLEUcc0cNR+lzcNRMYbOVffMCxHUyByuEyB8wK7z1mvSZUWsR6TlkkS+L1XRUMYK2bnSDEmau6
-	VaXV2KXUm53CLXJ9YtalVjJSGmN+N4UkDjGeWkUfoWlA6J3xUieN1wbqyg57iGiGZxxmGIbg5STkQ
-	9TNKyRrhmMN/ljjKBasUwWdzHirh8Wc/21zYQAnA+17tg6RHS7bqDudfupRJYaG8QRrnAio+F3asv
-	30sE40odlI4GJ3lBmhyA==;
+	List-Owner; bh=qwTM6l1a6djBZD4wabO4YKUhFf1/Oy1iQ9sseMmYTME=; b=GyTwVEu2JjQI5d
+	tG2bOeK7N8wSS/wLqi/tnNTWHqg+nJkQ2OC4rrZWRuOb5fY3p13v3ImX2viVskK2zmQ0G9aKXKHSb
+	c+YfT7WUnoWolay8StloOYW5VytKV0dxnylarDSJKACEocTFpsszZmd+t0/ASth0scSWGF+ys5PhX
+	1F7VzZx8bcUE1hkxQLH+kMLI0JdgYlo0WTouZwSPj883dHmA0kfflEa0qGkuFbGKcuvPguiNeqosF
+	imN0cZE9SU5Kxna9JM/Iffh9jyMrtCiYcL/yaqimYKteJsLYpN3C1ajlVEWYZwZ0VKUp2Z5c8GtVv
+	QOX8a5ypnAuACDwkj8Xg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP2kJ-00FlHI-2S;
-	Thu, 27 Jul 2023 15:17:43 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1qP2kP-00FlMN-2G;
+	Thu, 27 Jul 2023 15:17:49 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP2kF-00FlAZ-2Y
+	id 1qP2kL-00FlG6-34
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jul 2023 15:17:41 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 92A40FF806;
-	Thu, 27 Jul 2023 15:17:32 +0000 (UTC)
+	Thu, 27 Jul 2023 15:17:48 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 92E5C60007;
+	Thu, 27 Jul 2023 15:17:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690471054;
+	t=1690471061;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cHbaHQtfSw85aARKWOfMOyJNz803y9RsTzGIH1lyXFk=;
-	b=jXTAISrKKe3dhaln7MEYli7ghpFwp9K+yvsgPutbOyG2nK3AGrcdai6FGEkmEiFiF2CiPt
-	ZmkYOSewHY/YTILZ8cAeD2f2L6k5aKJ3xQwtkcTtUH1C3Yg4tfYkP60EwCUvUM+2X8tZyF
-	0mPl4XL7Ngn4Hg7pyeuGZJSjC1N3PNnV5SC8sM7XdQ0OTXLEXWZQUroZzpHiO7W8khG07n
-	wOVg+Ys20sa3i21vRCv06W1eQZkzoWtvcOmV9KR+u3fGCWqytpMkKxJ1qhPfnZtugl/mzU
-	4O0uetdzmI5JJi85Zf6Z4Tg47RpYPjMOacQWDiXql5OZENTcVMgdqVeN2VOKIg==
+	bh=NNG9tje3l3xvzkqp9p4Pdm+9j03eaDrBKVPPDevDw7w=;
+	b=a8isnEEHtGmLESwkXnzgHu0zmOpF5SXA6XP6oLmnOaOB1NpUhdjXq+lDqG08hOsvMhiCAH
+	YEyUuVY5aldv26ZSUh6y+CkxEFf1ERZbglj77phxqtrpUCxVA/KVko+8jZUCaipIxNYuqw
+	JN1ddb7ZXDTXbFwdVL080k2EYfyfxz4kMk8AU1+ouspuqrgeIqNCzUDR488no7iZEpU2vR
+	KjXU5qUOULncJ4Suzpdkxg1MpctDH/yPuVmtrTnG02ZswGZODWuij9dKVKNpyv/5vmuTuB
+	+AbUa1TBEMTWdvefjTzngTIPUtsdm7pyI3Cu8LZ3aG4M7pjtr4rstY/LhPuUuQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+To: Arnd Bergmann <arnd@kernel.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Boris Brezillon <boris.brezillon@collabora.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: fsl_upm: Fix an off-by one test in fun_exec_op()
-Date: Thu, 27 Jul 2023 17:17:31 +0200
-Message-Id: <20230727151731.586307-1-miquel.raynal@bootlin.com>
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Peter Foley <pefoley2@pefoley.com>,
+	Pedro Falcato <pedro.falcato@gmail.com>,
+	Michael Walle <michael@walle.cc>,
+	Mark Brown <broonie@kernel.org>,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+	Dhruva Gole <d-gole@ti.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: avoid holes in struct spi_mem_op
+Date: Thu, 27 Jul 2023 17:17:38 +0200
+Message-Id: <20230727151738.586338-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cd01cba1c7eda58bdabaae174c78c067325803d2.1689803636.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230719190045.4007391-1-arnd@kernel.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'c6abce60338aa2080973cd95be0aedad528bb41f'
+X-linux-mtd-patch-commit: b'71c8f9cf2623d0db79665f876b95afcdd8214aec'
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_081740_298658_BEE1F265 
-X-CRM114-Status: UNSURE (   8.72  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230727_081746_143422_09B96367 
+X-CRM114-Status: GOOD (  16.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,18 +87,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2023-07-19 at 21:55:01 UTC, Christophe JAILLET wrote:
-> 'op-cs' is copied in 'fun->mchip_number' which is used to access the
-> 'mchip_offsets' and the 'rnb_gpio' arrays.
-> These arrays have NAND_MAX_CHIPS elements, so the index must be below this
-> limit.
+On Wed, 2023-07-19 at 19:00:25 UTC, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Fix the sanity check in order to avoid the NAND_MAX_CHIPS value. This
-> would lead to out-of-bound accesses.
+> gcc gets confused when -ftrivial-auto-var-init=pattern is used on sparse
+> bit fields such as 'struct spi_mem_op', which caused the previous false
+> positive warning about an uninitialized variable:
 > 
-> Fixes: 54309d657767 ("mtd: rawnand: fsl_upm: Implement exec_op()")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+> drivers/mtd/spi-nor/spansion.c: error: 'op' is used uninitialized [-Werror=uninitialized]
+> 
+> In fact, the variable is fully initialized and gcc does not see it being
+> used, so the warning is entirely bogus. The problem appears to be
+> a misoptimization in the initialization of single bit fields when the
+> rest of the bytes are not initialized.
+> 
+> A previous workaround added another initialization, which ended up
+> shutting up the warning in spansion.c, though it apparently still happens
+> in other files as reported by Peter Foley in the gcc bugzilla. The
+> workaround of adding a fake initialization seems particularly bad
+> because it would set values that can never be correct but prevent the
+> compiler from warning about actually missing initializations.
+> 
+> Revert the broken workaround and instead pad the structure to only
+> have bitfields that add up to full bytes, which should avoid this
+> behavior in all drivers.
+> 
+> I also filed a new bug against gcc with what I found, so this can
+> hopefully be addressed in future gcc releases. At the moment, only
+> gcc-12 and gcc-13 are affected.
+> 
+> Cc: Peter Foley <pefoley2@pefoley.com>
+> Cc: Pedro Falcato <pedro.falcato@gmail.com>
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110743
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108402
+> Link: https://godbolt.org/z/efMMsG1Kx
+> Fixes: 420c4495b5e56 ("mtd: spi-nor: spansion: make sure local struct does not contain garbage")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Acked-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
