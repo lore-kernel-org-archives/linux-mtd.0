@@ -4,80 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FAE9C00528
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 17:56:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E0F9EB64DD
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 23:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=biSt9KutZe6SHDE9kVNbyTtwwOnCKz8MIy7/bZJOvp8=; b=1NBlgHl/pNEUV2
-	SJRtY5Y9/t/k0YawsaxAWpwSn6ZTmaewqtROou+YdolILIAFGgGurwWUwIXO2QtaRjAqYaMegxiUi
-	7dX/2uSrfzD4Rg64jPcte2Nt3cZWGGVkpTs+5U2G0lhHpEnaqDtKcTEPY1ic7KFKMqco+juXNnSdQ
-	TOJWRPjQSVW5Kro2XfT+6i4mPIH5jeEimiosq9ljovt8LBw/KfsJ00RilXTmCrPH/VEpnEeRxTq92
-	npD6/Bsw/sO1kEPqzpFXXl6aoivN+qxvbAIYbEVRO4TmT4aU6CI6//Hr9frINCBfz6+1LbK6vTPMq
-	pa+5tw1Vr7edvlX8NtkQ==;
+	List-Owner; bh=gOL26JS36x1voXw2Z4O+4CXC9UrGPOZXZeDGIAkGbso=; b=yxpbblIFyNmJEE
+	s56mE4KpE3ItnIMQAZi1ud784hx0xCCFbslmlUnXw6lQrAtVNhlyZ1D2DRWjxDHnWjoIelG6ejn4E
+	mWTB8TAVrl3oimEwxB/qwZpr5Ij/i3UBnMajbNj23T8ea4A8+sGMt3vtpbjnwzvfTvk9qiAQb8lh+
+	ayOcZly9ra8FRJgQVr1Awf8DkV0yPcGLW+QIVp4tcOrVFFOrZZbbyMawF4nYYm6odT4z1k5hlbIeo
+	yWIzsYAP1zcXDBqm1J7YJ5Zk4vxe1SdoFUfAz7gsP5S5Fl9kDdd1iovP5bRflI4G46woqK+PdzSjD
+	03zeUijwO1LpHfjUFrOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP5Do-00HaVL-1Z;
-	Thu, 27 Jul 2023 17:56:20 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1qP9xT-000qDs-1e;
+	Thu, 27 Jul 2023 22:59:47 +0000
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP5Dl-00HaSs-2t
-	for linux-mtd@bombadil.infradead.org;
-	Thu, 27 Jul 2023 17:56:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=kdGTSaZttWzXE70nDOUK2tohVaGSllQiBwLy7anvxFA=; b=PUMStpsdEECNQpiGhDgP735o59
-	pLNL44nV3DZ5pJysfhgl/IX+elIov2Z59alnXu4cFzdtiCIEr9YJNt1zyHCvYdjfs5Hkplr0Xu/6u
-	bQXNeQwAbtypH3atJX4VRzD9FNQ5KEN8waRpXmjGhgMAZuuUbOWEfcCVsdkr84fGwh3pvPMd4M8IA
-	HrEv1q/pJr54FeiJMuncgQGJPj0hUGDWK5e/iX+v84oZ/tQfYNIwZ69OkMG8B+/fNMS91SUwG+Gec
-	fz14m9zy2nDp1VaFAzNnnoWHHxBHyTYCLSJDXUVhBHpGoUrTGvFYbjvrLfxTXzESuoEoWa9uZ2pnZ
-	5zJ9zUIA==;
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP3yP-007AVg-2b
+	id 1qP9xQ-000qCX-2F
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jul 2023 16:36:24 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B1F741C0008;
-	Thu, 27 Jul 2023 16:36:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690475776;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kdGTSaZttWzXE70nDOUK2tohVaGSllQiBwLy7anvxFA=;
-	b=gwbaqSDNeRzur4+HiLF4Q+AQOYWLgNup+cTf/E7YPQ0wFFV/oAHtQNdCkDkP9hZKhorxkD
-	xZI2kw9GgScfprx+CUj/47lshiiGDujDREUPR3wLGCq0xpu9NjzgXy4xbQ/XZQqElnc17j
-	eT+rGkvKqwJPjo2YO3LqPKXBKPIHuxphZuDxPvDaKbz5wzd/Tng4p9CqeWFqZs0wr8p0X0
-	uy78U2ZWnXnYX2BqQ0t5J50JLJZ7APZ7mdkbJxb6L5z3QdCueQIiq/tSSHQ14NqWvuErUz
-	tJkotP81jQRmfJlGM8O/ZP3ZG7CVnXiMxUwRnekoI7AjQuBYbCl31PKbuK6lSg==
-Date: Thu, 27 Jul 2023 18:36:11 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Alexander Usyskin <alexander.usyskin@intel.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Tomas Winkler
- <tomas.winkler@intel.com>, Vitaly Lubart <vitaly.lubart@intel.com>, Zhang
- Xiaoxu <zhangxiaoxu5@huawei.com>
-Subject: Re: [PATCH] mtd: fix use-after-free in mtd release
-Message-ID: <20230727183611.37d01f51@xps-13>
-In-Reply-To: <ZMKUJbl7kFOfgKGg@smile.fi.intel.com>
-References: <20230727145758.3880967-1-alexander.usyskin@intel.com>
-	<ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
-	<20230727172013.7c85c05d@xps-13>
-	<ZMKUJbl7kFOfgKGg@smile.fi.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Thu, 27 Jul 2023 22:59:46 +0000
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686f94328a4so673971b3a.0
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 15:59:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1690498781; x=1691103581;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8CTrna5t3S7P99W+zrM1I2ApZYIkXTVQedDFVAI6oIw=;
+        b=X7pt5OuyEbf8f6R9fnvI9dxfnaaqjP1RGRY8ZMiJ1wEZkopGyRUZXV3N7HE87n67xj
+         XeLWxsKHlNX6ErnVJUF/xO5BY5VT61hhmCqWCbxit+6W6UUMx7WmvB86s0q+wgGSoL6W
+         koucWxrpBOYNBJME5+HxRa/lXlSreJXWQaoDeJrNnWxYMUw7bNkMz2551ucFVRtsjQZW
+         0ldvdZqoq1ohkP2t1Jbzv+uf1kwplqapkGN1TtrTmsgZICGsR0gfv1ElN5pvcVjNfGjj
+         OPatiCTf9mYCZ8F6QAcUCONXn7kELLjAWaYShbgFOaFFniHTDeIvjRJJRIf4kK+rSYkZ
+         RVyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690498781; x=1691103581;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8CTrna5t3S7P99W+zrM1I2ApZYIkXTVQedDFVAI6oIw=;
+        b=N6JZEP0kAXuUu22bi4VDC6QvDfrHHDUFY8cjcNa0hHUS4MEgWd2HbhvXI/lZU2DdP4
+         Olbzav8fp4SAFyE9u6mSwPr0PAHjEHAgHuE3hC1I5Tu8PDa2t8gSzqs0kwb2p5VfOvvg
+         rxag1KcsTgm8egTa3rsVi1mkBNNfetXaDuYR7XsnKDvMoGms6Nmy/Kk/OOw2/FfEVl49
+         v9qPSZNI369Gwr6OQhpzqTWL6daQkbGDlUB0S5/80V4Z5+y6J+GoWpwXP/Krt4VPbX6n
+         4qr0KvsfnnM07uMjfn7rZ83NcWD+3ta8u6b5BU5NP4GqtbjCInxJwN6r6iIf1qiV0MAV
+         sucA==
+X-Gm-Message-State: ABy/qLZ3/7P3hURc87/hCq/sOo3UAib+akvb5D88jJ6VzfONMN+fnjIC
+	//VJPtbxqbc/HyZyZkTpd5qMSw==
+X-Google-Smtp-Source: APBJJlGFE8oAcAZu2XvzWjC5bjR81v7OIjjTfZ8m+EaEe6Rjpq3cuwvHN3I08mErFwOZJpneP9Ly1g==
+X-Received: by 2002:a05:6a00:17a8:b0:64d:42b9:6895 with SMTP id s40-20020a056a0017a800b0064d42b96895mr61072pfg.5.1690498780930;
+        Thu, 27 Jul 2023 15:59:40 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
+        by smtp.gmail.com with ESMTPSA id p24-20020aa78618000000b0068702b66ab1sm1115813pfn.174.2023.07.27.15.59.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 15:59:40 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1qP9xJ-00BKKZ-1O;
+	Fri, 28 Jul 2023 08:59:37 +1000
+Date: Fri, 28 Jul 2023 08:59:37 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+	rcu@vger.kernel.org, netdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+	dm-devel@redhat.com, linux-raid@vger.kernel.org,
+	linux-bcache@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
+	tkhai@ya.ru, vbabka@suse.cz, roman.gushchin@linux.dev,
+	djwong@kernel.org, brauner@kernel.org, paulmck@kernel.org,
+	tytso@mit.edu, steven.price@arm.com, cel@kernel.org,
+	senozhatsky@chromium.org, yujie.liu@intel.com,
+	gregkh@linuxfoundation.org, muchun.song@linux.dev
+Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the
+ dm-zoned-meta shrinker
+Message-ID: <ZML22YJi5vPBDEDj@dread.disaster.area>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-29-zhengqi.arch@bytedance.com>
+ <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
+ <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
+ <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_173622_513928_C5776853 
-X-CRM114-Status: GOOD (  18.94  )
+X-CRM114-CacheID: sfid-20230727_155944_924037_68DA6F99 
+X-CRM114-Status: GOOD (  22.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,33 +112,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQW5keSwKCmFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbSB3cm90ZSBvbiBUaHUs
-IDI3IEp1bCAyMDIzIDE4OjU4OjI5CiswMzAwOgoKPiBPbiBUaHUsIEp1bCAyNywgMjAyMyBhdCAw
-NToyMDoxM1BNICswMjAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gYW5kcml5LnNoZXZjaGVu
-a29AbGludXguaW50ZWwuY29tIHdyb3RlIG9uIFRodSwgMjcgSnVsIDIwMjMgMTg6MTI6MDQKPiA+
-ICswMzAwOiAgCj4gPiA+IE9uIFRodSwgSnVsIDI3LCAyMDIzIGF0IDA1OjU3OjU4UE0gKzAzMDAs
-IEFsZXhhbmRlciBVc3lza2luIHdyb3RlOiAgCj4gCj4gLi4uCj4gCj4gPiA+ID4gRml4ZXM6IDE5
-YmZhOWViZWJiNSAoIm10ZDogdXNlIHJlZmNvdW50IHRvIHByZXZlbnQgY29ycnVwdGlvbiIpICAK
-PiA+ID4gCj4gPiA+IENsb3NlczogPyAgCj4gPiAKPiA+IERpZCBJIG1pc3MgYSByZWNlbnQgdXBk
-YXRlIG9uIHRoZSB1c2Ugb2YgRml4ZXM/ICAKPiAKPiBUaGV5IGFyZSBvcnRob2dvbmFsIHRvIGVh
-Y2ggb3RoZXIuIEFjdHVhbGx5IENsb3NlcyBnb2VzIGNsb3NlciB3aXRoCj4gUmVwb3J0ZWQtYnku
-Cj4gCj4gSSBiZWxpZXZlIGJvdGggb2YgdGhlbSBuZWVkcyB0byBiZSBhZGRlZCAoYnkgSSBtaWdo
-dCBtaXNzIHNvbWV0aGluZykuCj4gCj4gPiBJIHRob3VnaHQgQ2xvc2VzIHdhcwo+ID4gc3VwcG9z
-ZWQgdG8gcG9pbnQgYXQgYSBidWcgcmVwb3J0IHdoaWxlIEZpeGVzIHdvdWxkIHBvaW50IHRvIHRo
-ZSBmYXVsdHkKPiA+IGNvbW1pdC4gIAo+IAo+IENvcnJlY3QuCj4gCj4gPiBSaWdodCBub3cgSSBm
-ZWVsIGxpa2UgRml4ZXMgaXMgdGhlIHJpZ2h0IHRhZywgIAo+IAo+IE5vYm9keSBvYmplY3RzIHRo
-YXQgKHNlZSBhYm92ZSkuCj4gCj4gPiBidXQgaWYgeW91IGhhdmUgYSBzb3VyY2UgZXhwbGFpbmlu
-ZyB3aHkgd2Ugc2hvdWxkIG5vdCBsb25nZXIgZG8gaXQgbGlrZQo+ID4gSSBhbSB1c2VkIHRvLCBJ
-IHdvdWxkIGFwcHJlY2lhdGUgYSBsaW5rLiAgCj4gCj4gU2luY2UgeW91IGtub3cgYWJvdXQgQ2xv
-c2VzIGFscmVhZHksIEkgdGhpbmsgdGhlcmUgaXMgbm90aGluZyB0byBhZGQuCgpBaCBzb3JyeSBJ
-IG1pc3VuZGVyc3Rvb2QgeW91ciBmaXJzdCBlLW1haWwuIEkgdGhvdWdodCB5b3Ugd2VyZQpzdWdn
-ZXN0aW5nIHRvIHJlcGxhY2UgRml4ZXMgYnkgQ2xvc2VzLiBTb3JyeSBmb3IgdGhlIG1pc3VuZGVy
-c3RhbmRpbmcgOikKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
+On Thu, Jul 27, 2023 at 07:20:46PM +0900, Damien Le Moal wrote:
+> On 7/27/23 17:55, Qi Zheng wrote:
+> >>> =A0=A0=A0=A0=A0=A0=A0=A0=A0 goto err;
+> >>> =A0=A0=A0=A0=A0 }
+> >>> =A0 +=A0=A0=A0 zmd->mblk_shrinker->count_objects =3D dmz_mblock_shrin=
+ker_count;
+> >>> +=A0=A0=A0 zmd->mblk_shrinker->scan_objects =3D dmz_mblock_shrinker_s=
+can;
+> >>> +=A0=A0=A0 zmd->mblk_shrinker->seeks =3D DEFAULT_SEEKS;
+> >>> +=A0=A0=A0 zmd->mblk_shrinker->private_data =3D zmd;
+> >>> +
+> >>> +=A0=A0=A0 shrinker_register(zmd->mblk_shrinker);
+> >>
+> >> I fail to see how this new shrinker API is better... Why isn't there a
+> >> shrinker_alloc_and_register() function ? That would avoid adding all t=
+his code
+> >> all over the place as the new API call would be very similar to the cu=
+rrent
+> >> shrinker_register() call with static allocation.
+> > =
+
+> > In some registration scenarios, memory needs to be allocated in advance.
+> > So we continue to use the previous prealloc/register_prepared()
+> > algorithm. The shrinker_alloc_and_register() is just a helper function
+> > that combines the two, and this increases the number of APIs that
+> > shrinker exposes to the outside, so I choose not to add this helper.
+> =
+
+> And that results in more code in many places instead of less code + a sim=
+ple
+> inline helper in the shrinker header file...
+
+It's not just a "simple helper" - it's a function that has to take 6
+or 7 parameters with a return value that must be checked and
+handled.
+
+This was done in the first versions of the patch set - the amount of
+code in each caller does not go down and, IMO, was much harder to
+read and determine "this is obviously correct" that what we have
+now.
+
+> So not adding that super simple
+> helper is not exactly the best choice in my opinion.
+
+Each to their own - I much prefer the existing style/API over having
+to go look up a helper function every time I want to check some
+random shrinker has been set up correctly....
+
+-Dave.
+-- =
+
+Dave Chinner
+david@fromorbit.com
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
