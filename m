@@ -4,63 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12730C04A6A
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 15:20:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AFCAC04A6A
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 15:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GTfM/rkpFKP8hH1NoItlBiVVTd2++CuPly8LbNmdyAE=; b=CfOX6BUH0qnJ1b
-	a1VlQwuve6yFkHbjF/WKG9jf/4rbSJAQ4/9HoR77SJo4YIPJN0jczfC7GLQ9w/Eqv2xkz72qTQota
-	NhXwQKYLykBzEpv1LiQ/3qWBQfiNr4euqp98z3U+Jy8NW7vdG06Un/GyO1CVjRnShcBfDZpCWTabK
-	Yial7LtQ7i8y6dlsvY9TGhoLh+qDy6htnrE/SAiIU7znvkABZ6pGztwnG6nE91C0IIByM2TuKsqT+
-	+Ge5LbbrQfWfkZWGoEI2bvDT26OXlG58UYRq0S9fSE0ki0Iji6iWuIddMtyYBvCrxQ+mrpP2oH4ht
-	2vPJF9XoR7/GLPMxKppg==;
+	List-Owner; bh=WLZ2V4+++KYroIaEY8GO/VR/XZv7GW+Rb20cAnX5x8s=; b=Y09qgqIj2ndVYE
+	EfIzMQHy6KXSHZXZrp6g/o8RM0abqQWDAzIu+3fRpPzoUHpiiYKOG6npGSnsWYzgr1ZXACG3ssS3v
+	xOcRp3lLYjJqKHMGT7E9xz/x1WY7peT113FhaIt6krumcdSBafl4RYuZpYjcxilMP/hAUjrF3YCtQ
+	3vsDlX/MFe3dU3AsCWv1sDgseAKeLz1dHtAvkda97GKJZorAM11BWxwO0cWgZMlPXcJkxQHwwadFD
+	zKCwB/XPDm0+RD21+A6ifaVZS1yREMsgyKkKBTuJAojuXVg3AMzg84BT0+Bgr9Upj5Hi6t9Hxxxsl
+	UmbIhS6BF7KfAuuFdraQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP2mr-00FnWl-19;
-	Thu, 27 Jul 2023 15:20:21 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1qP3Nv-00GDuY-2P;
+	Thu, 27 Jul 2023 15:58:39 +0000
+Received: from [134.134.136.31] (helo=mgamail.intel.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qP2mo-00FnSk-1a
+	id 1qP3Ns-00GDqa-1p
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jul 2023 15:20:19 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EA7F1E0006;
-	Thu, 27 Jul 2023 15:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690471216;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e+tYkLqI/WHrzy+gF3ZWvjwYtLENNnrtaJxq1JAle3Y=;
-	b=HLUlE8oW95FKHARC7HKx6eY3PtnWvzRFtTOmg8SgLOq64ABxby+KSfWbA+NhcJUVlyiHSZ
-	Vl+FJqjQvGqeRNKNMeZk16JYDW0TF3y4mAzrZvA7fRXDW8BOCJdV0b4H2/al9pS5NnAtPX
-	cvWHou+1dyV3AR8zbnoiTIBrZBTrYW74jqJD8XIGJiPaINvohZ5yQaRvaLwLEKYESWgOmL
-	j19gfF1nWf5alNn/8r135+OE9Jpfol33imFbIengD0pojeZRVN5H0ROnePihUCD+BLNb/w
-	Myz32U2fUNjWBDqn5lJnbp38lR07GbEjrjXunsw7UgawWPFXcRhj9GPbQc8Pcg==
-Date: Thu, 27 Jul 2023 17:20:13 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Alexander Usyskin <alexander.usyskin@intel.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Tomas Winkler
- <tomas.winkler@intel.com>, Vitaly Lubart <vitaly.lubart@intel.com>, Zhang
- Xiaoxu <zhangxiaoxu5@huawei.com>
+	Thu, 27 Jul 2023 15:58:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690473516; x=1722009516;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FdpnzmpbpDtQgpHo2zN0d9vbabH9VR2p8NO1uqeU8Ac=;
+  b=D3qyH9y0PVOEK7kz90kt64/8vhZSvwgLmyRNZUuBPF1NNMF+Wy61TaWE
+   ZQTHBnUKxFgHQB8ilrs7RT9BPtAn6jJEP7Acj0RSawL34iYIbbdb61D8W
+   WoU7cYOQyfFrgZmoeuMmqiWUp4sfR2yYUNH6SQcHx9Nf1/ckSswTeZ/kf
+   LlsN+xRIui6zw1eoYyOQiz1km+zwjOiSH3NVDwJFlPOCHh4/ZCucUTpeu
+   nza7h7OlxjKg1LkL5fAfTdHuZAKx/lv5Nxov+jQTFfonep6flLOZSoXjn
+   d8/1t59BiVIRLGdXwJBJJ+I6vwIQbGI0qt1nBPyhSo8QQW5k66AtR8l2Y
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="432165600"
+X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
+   d="scan'208";a="432165600"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 08:58:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="762206230"
+X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
+   d="scan'208";a="762206230"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP; 27 Jul 2023 08:58:31 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1qP3Nl-00AzYB-1n;
+	Thu, 27 Jul 2023 18:58:29 +0300
+Date: Thu, 27 Jul 2023 18:58:29 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Tomas Winkler <tomas.winkler@intel.com>,
+	Vitaly Lubart <vitaly.lubart@intel.com>,
+	Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 Subject: Re: [PATCH] mtd: fix use-after-free in mtd release
-Message-ID: <20230727172013.7c85c05d@xps-13>
-In-Reply-To: <ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
+Message-ID: <ZMKUJbl7kFOfgKGg@smile.fi.intel.com>
 References: <20230727145758.3880967-1-alexander.usyskin@intel.com>
-	<ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+ <ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
+ <20230727172013.7c85c05d@xps-13>
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Disposition: inline
+In-Reply-To: <20230727172013.7c85c05d@xps-13>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_082018_669396_DC596FC6 
-X-CRM114-Status: GOOD (  16.74  )
+X-CRM114-CacheID: sfid-20230727_085836_679950_C178AA84 
+X-CRM114-Status: GOOD (  16.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,34 +88,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQW5keSwKCmFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbSB3cm90ZSBvbiBUaHUs
-IDI3IEp1bCAyMDIzIDE4OjEyOjA0CiswMzAwOgoKPiBPbiBUaHUsIEp1bCAyNywgMjAyMyBhdCAw
-NTo1Nzo1OFBNICswMzAwLCBBbGV4YW5kZXIgVXN5c2tpbiB3cm90ZToKPiA+IEkgY2FzZSBvZiBw
-YXJ0aXRpb24gZGV2aWNlX3VucmVnaXN0ZXIgaW4gbXRkX2RldmljZV9yZWxlYXNlICAKPiAKPiBJ
-bgo+IAo+IGRldmljZV91bnJlZ2lzdGVyKCkKPiBtdGRfZGV2aWNlX3JlbGVhc2UoKQo+IAo+ID4g
-Y2FsbHMgbXRkX3JlbGVhc2Ugd2hpY2ggZnJlZXMgbXRkX2luZm8gc3RydWN0dXJlIGZvciBwYXJ0
-aXRpb24uICAKPiAKPiBtdGRfcmVsZWFzZSgpCj4gCj4gPiBBbGwgY29kZSBhZnRlciBkZXZpY2Vf
-dW5yZWdpc3RlciBpbiBtdGRfZGV2aWNlX3JlbGVhc2UgdGh1cyAgCj4gCj4gZGV2aWNlX3VucmVn
-aXN0ZXIoKQo+IG10ZF9kZXZpY2VfcmVsZWFzZSgpCj4gCj4gPiB3b3JrcyBhbHJlYWR5IGZyZWVk
-IG1lbW9yeS4gIAo+IAo+IHVzZXM/Cj4gCj4gPiBNb3ZlIHBhcnQgb2YgY29kZSB0byBtdGRfcmVs
-ZWFzZSBhbmQgcmVzdGljdCBtdGQtPmRldiBjbGVhbnVwICAKPiAKPiBtdGRfcmVsZWFzZSgpCgpZ
-dXAsIHRoYW5rcyBmb3IgYWxsIHRoZXNlIHN1Z2dlc3Rpb25zLCBJIGFncmVlIHdpdGggdGhlbS4K
-Cj4gPiB0byBub24tcGFydGlvbiBvYmplY3QuCj4gPiBGb3IgcGFydGl0aW9uIG9iamVjdCBzdWNo
-IGNsZWFudXAgaGF2ZSBubyBzZW5zZSBhcyBwYXJ0aXRpb24KPiA+IG10ZF9pbmZvIGlzIHJlbW92
-ZWQuCj4gPiAKPiA+IENjOiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29t
-Pgo+ID4gQ2M6IFpoYW5nIFhpYW94dSA8emhhbmd4aWFveHU1QGh1YXdlaS5jb20+Cj4gPiBGaXhl
-czogMTliZmE5ZWJlYmI1ICgibXRkOiB1c2UgcmVmY291bnQgdG8gcHJldmVudCBjb3JydXB0aW9u
-IikgIAo+IAo+IENsb3NlczogPwoKRGlkIEkgbWlzcyBhIHJlY2VudCB1cGRhdGUgb24gdGhlIHVz
-ZSBvZiBGaXhlcz8gSSB0aG91Z2h0IENsb3NlcyB3YXMKc3VwcG9zZWQgdG8gcG9pbnQgYXQgYSBi
-dWcgcmVwb3J0IHdoaWxlIEZpeGVzIHdvdWxkIHBvaW50IHRvIHRoZSBmYXVsdHkKY29tbWl0LiBS
-aWdodCBub3cgSSBmZWVsIGxpa2UgRml4ZXMgaXMgdGhlIHJpZ2h0IHRhZywgYnV0IGlmIHlvdSBo
-YXZlIGEKc291cmNlIGV4cGxhaW5pbmcgd2h5IHdlIHNob3VsZCBub3QgbG9uZ2VyIGRvIGl0IGxp
-a2UgSSBhbSB1c2VkIHRvLApJIHdvdWxkIGFwcHJlY2lhdGUgYSBsaW5rLgoKVGhhbmtzLApNaXF1
-w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Thu, Jul 27, 2023 at 05:20:13PM +0200, Miquel Raynal wrote:
+> andriy.shevchenko@linux.intel.com wrote on Thu, 27 Jul 2023 18:12:04
+> +0300:
+> > On Thu, Jul 27, 2023 at 05:57:58PM +0300, Alexander Usyskin wrote:
+
+...
+
+> > > Fixes: 19bfa9ebebb5 ("mtd: use refcount to prevent corruption")
+> > 
+> > Closes: ?
+> 
+> Did I miss a recent update on the use of Fixes?
+
+They are orthogonal to each other. Actually Closes goes closer with
+Reported-by.
+
+I believe both of them needs to be added (by I might miss something).
+
+> I thought Closes was
+> supposed to point at a bug report while Fixes would point to the faulty
+> commit.
+
+Correct.
+
+> Right now I feel like Fixes is the right tag,
+
+Nobody objects that (see above).
+
+> but if you have a source explaining why we should not longer do it like
+> I am used to, I would appreciate a link.
+
+Since you know about Closes already, I think there is nothing to add.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
