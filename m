@@ -4,113 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A833AC0015E
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 08:15:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40520C001E0
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 08:30:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mcacFhux6hqQf1CQ+0HPQf9wSCgTTFRVhgJlFOqoOxE=; b=MLbgjG5lLTxhhA
-	RI1DbzpgaBMZcoRhREqwmXTQkqU7ceCohpPoBGl7FKlog7oicNrUStnc5J5prnYSXWLiQsEUMW2TJ
-	W3+C4cAoSIIqx4LmUFn5Z3waXPny1R1m0RZUObFQAMjK2cHfuycht+Rs76FBe8xXYiRNlBCLbZ4MA
-	hS1qBcbmsFfwCU8L73vU8hUv7g7YTicB2FohWk+tUQB1kV7TFQY5WUOV5DWYWSOT8FVs9XvTM4u6/
-	l2TI4rd0CR6NIq0Lz+udalnX1tAA0HOxVzs6P0aO9PGkDMq2UFzlCWOEq9Tn25c2yaoR3l60gRaqY
-	xiyvALyVDuKaaFMqO5Uw==;
+	List-Owner; bh=o3tm1jXuaCLpDmwfZ1ieyJQ/+EwfhrZbntu4mG1AgTY=; b=Toplqh8Ya5ew2u
+	k0JQAOM+n1IBNFPdmxFE9lvNY5qwoMdHmZCtFvdn7Ptrl3U3ue9WXBBpJ+8Ed9xiFmBWQbwmBN161
+	ugg5ni0qIIUsMV9pl3iUVh2jS7FgLw5esk5oUXG7pV2CHEnrrzyphuHkihJW4cUmFE21lu+9CmenI
+	2ELpM1vPYx7WrAc7Icvsn+s71gRk6NE3kV2ozOjF5PL/7QWDFs9Nur3mWAqgQ0Q9qpnqFBQtsI7Ou
+	cYfbPCX/PyADqILWRSifAbenhTUv3Qhrhc/hswqlGBh7rbw0gCqCEle8ql9WNr7UlS5VfOz9whxIM
+	hHR8IyVw8LeHGcz0pp7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOw9e-00CeGe-0B;
-	Thu, 27 Jul 2023 08:15:26 +0000
-Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
+	id 1qOwNx-00CgoC-35;
+	Thu, 27 Jul 2023 08:30:14 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOw9a-00CeDx-2n
+	id 1qOwNu-00CgnF-0b
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jul 2023 08:15:24 +0000
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6862d4a1376so190054b3a.0
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 01:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690445722; x=1691050522;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kfKKsEp61SZUnTy00HUcIO/dAXsDrrCBrc1q4f5gA2g=;
-        b=EAS6K8pjZHV2xJO1k0B0O2ENzb3/Vvl+c5sC6vZF5+RNctHPYXK3F4aD7Xzt8amvSX
-         Sp0sM3dY6nrfZgyX03OOoIKbasLRWXH327iv4+GYUr4WlO1QPIHvBbrRjUoddMLJYEtj
-         qslIbW38aWpZfadSfI+TaMUP7PcrUPJ3woAJMv4ugKgPJM767PAG7K9gWxMSKIL9CKj3
-         w5CY/SzoV5mu91kUw+3ztoEROa7i9Mv96qiOzuHElFUZjh2ImlDQY3RLu003MMnVyV3S
-         TQhJNq9ppxsbvsUjd927IP6iiwsq7VIfzEbkN9zPwoI9Valaw0w8Qu8JFGFsYg3rQsoY
-         gM7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690445722; x=1691050522;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kfKKsEp61SZUnTy00HUcIO/dAXsDrrCBrc1q4f5gA2g=;
-        b=R/i5MdeevhA3cGNlMazeeIlGfda9ah1ZxRQVY2A/QfL9fSpPmLi+gfGKVZvEWFj6gp
-         Ind1Hdq7aHzKlLuaUoDU7aTO/af9JMQmWNVlNFCojVpehVf7C46M1/2vFsndzUBIIDnO
-         2/tXrtvu8JaA3Y7WvSQ1K9vGIer65N4hIcMsBjfHamcFPhWU+umahUWOdf0MOs+PviY+
-         anUiJ4R8k15g0OKfyWQcpKLgvUoMfAh9SL5EkV/XUXGpqn4S6nuFFAng7ItKzpjIzp+n
-         MgYueq2GY4HUeK7SFxpDIeda9qqlFPqD1tqaBP7FPxp9Da66EUVvD5WFhKIMw9kHWIdw
-         BG1Q==
-X-Gm-Message-State: ABy/qLb+8m8eNH2qOxNKbP5nrOd8NRvumugapIudIpeoV/7aQUAFwgel
-	Zx9kknEC01j1iFmliIOP0Ti8TQ==
-X-Google-Smtp-Source: APBJJlGaIHiWHX80BWphqmbYYC2Qe9rA0t1NXuG9/ru/q26OnfFQXVEhM5bGyqGhtVnixSectLT5LA==
-X-Received: by 2002:a05:6a00:4792:b0:668:834d:4bd with SMTP id dh18-20020a056a00479200b00668834d04bdmr4689753pfb.0.1690445722143;
-        Thu, 27 Jul 2023 01:15:22 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id j8-20020aa78d08000000b006828e49c04csm885872pfe.75.2023.07.27.01.15.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 01:15:21 -0700 (PDT)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: akpm@linux-foundation.org,
-	david@fromorbit.com,
-	tkhai@ya.ru,
-	vbabka@suse.cz,
-	roman.gushchin@linux.dev,
-	djwong@kernel.org,
-	brauner@kernel.org,
-	paulmck@kernel.org,
-	tytso@mit.edu,
-	steven.price@arm.com,
-	cel@kernel.org,
-	senozhatsky@chromium.org,
-	yujie.liu@intel.com,
-	gregkh@linuxfoundation.org,
-	muchun.song@linux.dev
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	x86@kernel.org,
-	kvm@vger.kernel.org,
-	xen-devel@lists.xenproject.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com,
-	linux-nfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	rcu@vger.kernel.org,
-	netdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org,
-	dm-devel@redhat.com,
-	linux-raid@vger.kernel.org,
-	linux-bcache@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 47/49] mm: shrinker: make memcg slab shrink lockless
-Date: Thu, 27 Jul 2023 16:05:00 +0800
-Message-Id: <20230727080502.77895-48-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+	Thu, 27 Jul 2023 08:30:11 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6549661D96;
+	Thu, 27 Jul 2023 08:30:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06711C433C7;
+	Thu, 27 Jul 2023 08:30:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690446606;
+	bh=lgMwb11ItIJ27YCsuj2akQ0e0AMgpISaoiuOUrGiITY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Tr4M7HQ3pxhso0Q/eg4xKtwD0lUURtq4zUL2WnDxbX7YJArr/oNtVx0HKmYWbVJCj
+	 uZ3CjjOq76HigUmfxsBIfU5BJp2UCC8gXysiCMyY4oUiNa0NyuYtXgOb+GgYI2e2UD
+	 q/DMid3QMY2nJGias56vfjnyYrQ2kAGyvOg7az/lKKcQPYsllW1cAnQl1FfA/ktsaA
+	 ypQoOxGNqaMUpP2GFbXa8+1QKt5gSsrAShH7O9rxadTFuFxweU5IvbZDayprJj2afQ
+	 IGlbjA9TtQP0FcoHyTXu4yjcQ81VS0g2mOFp+HrXHsn6/kAwTiNlXyj4HVftm6tXbg
+	 kxbv5Cd7EwHzQ==
+Message-ID: <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
+Date: Thu, 27 Jul 2023 17:30:01 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
+ shrinker
+Content-Language: en-US
+To: Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+ david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz, roman.gushchin@linux.dev,
+ djwong@kernel.org, brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+ steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+ yujie.liu@intel.com, gregkh@linuxfoundation.org, muchun.song@linux.dev
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+ kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-erofs@lists.ozlabs.org, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+ linux-mtd@lists.infradead.org, rcu@vger.kernel.org, netdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+ dm-devel@redhat.com, linux-raid@vger.kernel.org,
+ linux-bcache@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ Muchun Song <songmuchun@bytedance.com>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-29-zhengqi.arch@bytedance.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230727080502.77895-29-zhengqi.arch@bytedance.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_011522_967996_806E666E 
-X-CRM114-Status: GOOD (  19.96  )
+X-CRM114-CacheID: sfid-20230727_013010_315879_79C65FB7 
+X-CRM114-Status: GOOD (  22.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,300 +93,104 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Like global slab shrink, this commit also uses refcount+RCU method to make
-memcg slab shrink lockless.
+On 7/27/23 17:04, Qi Zheng wrote:
+> In preparation for implementing lockless slab shrink, use new APIs to
+> dynamically allocate the dm-zoned-meta shrinker, so that it can be freed
+> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
+> read-side critical section when releasing the struct dmz_metadata.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  drivers/md/dm-zoned-metadata.c | 28 ++++++++++++++++------------
+>  1 file changed, 16 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
+> index 9d3cca8e3dc9..0bcb26a43578 100644
+> --- a/drivers/md/dm-zoned-metadata.c
+> +++ b/drivers/md/dm-zoned-metadata.c
+> @@ -187,7 +187,7 @@ struct dmz_metadata {
+>  	struct rb_root		mblk_rbtree;
+>  	struct list_head	mblk_lru_list;
+>  	struct list_head	mblk_dirty_list;
+> -	struct shrinker		mblk_shrinker;
+> +	struct shrinker		*mblk_shrinker;
+>  
+>  	/* Zone allocation management */
+>  	struct mutex		map_lock;
+> @@ -615,7 +615,7 @@ static unsigned long dmz_shrink_mblock_cache(struct dmz_metadata *zmd,
+>  static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
+>  					       struct shrink_control *sc)
+>  {
+> -	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
+> +	struct dmz_metadata *zmd = shrink->private_data;
+>  
+>  	return atomic_read(&zmd->nr_mblks);
+>  }
+> @@ -626,7 +626,7 @@ static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
+>  static unsigned long dmz_mblock_shrinker_scan(struct shrinker *shrink,
+>  					      struct shrink_control *sc)
+>  {
+> -	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
+> +	struct dmz_metadata *zmd = shrink->private_data;
+>  	unsigned long count;
+>  
+>  	spin_lock(&zmd->mblk_lock);
+> @@ -2936,19 +2936,23 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
+>  	 */
+>  	zmd->min_nr_mblks = 2 + zmd->nr_map_blocks + zmd->zone_nr_bitmap_blocks * 16;
+>  	zmd->max_nr_mblks = zmd->min_nr_mblks + 512;
+> -	zmd->mblk_shrinker.count_objects = dmz_mblock_shrinker_count;
+> -	zmd->mblk_shrinker.scan_objects = dmz_mblock_shrinker_scan;
+> -	zmd->mblk_shrinker.seeks = DEFAULT_SEEKS;
+>  
+>  	/* Metadata cache shrinker */
+> -	ret = register_shrinker(&zmd->mblk_shrinker, "dm-zoned-meta:(%u:%u)",
+> -				MAJOR(dev->bdev->bd_dev),
+> -				MINOR(dev->bdev->bd_dev));
+> -	if (ret) {
+> -		dmz_zmd_err(zmd, "Register metadata cache shrinker failed");
+> +	zmd->mblk_shrinker = shrinker_alloc(0,  "dm-zoned-meta:(%u:%u)",
+> +					    MAJOR(dev->bdev->bd_dev),
+> +					    MINOR(dev->bdev->bd_dev));
+> +	if (!zmd->mblk_shrinker) {
+> +		dmz_zmd_err(zmd, "Allocate metadata cache shrinker failed");
 
-Use the following script to do slab shrink stress test:
+ret is not set here, so dmz_ctr_metadata() will return success. You need to add:
+		ret = -ENOMEM;
+or something.
+>  		goto err;
+>  	}
+>  
+> +	zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
+> +	zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
+> +	zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
+> +	zmd->mblk_shrinker->private_data = zmd;
+> +
+> +	shrinker_register(zmd->mblk_shrinker);
 
-```
+I fail to see how this new shrinker API is better... Why isn't there a
+shrinker_alloc_and_register() function ? That would avoid adding all this code
+all over the place as the new API call would be very similar to the current
+shrinker_register() call with static allocation.
 
-DIR="/root/shrinker/memcg/mnt"
+> +
+>  	dmz_zmd_info(zmd, "DM-Zoned metadata version %d", zmd->sb_version);
+>  	for (i = 0; i < zmd->nr_devs; i++)
+>  		dmz_print_dev(zmd, i);
+> @@ -2995,7 +2999,7 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
+>   */
+>  void dmz_dtr_metadata(struct dmz_metadata *zmd)
+>  {
+> -	unregister_shrinker(&zmd->mblk_shrinker);
+> +	shrinker_free(zmd->mblk_shrinker);
+>  	dmz_cleanup_metadata(zmd);
+>  	kfree(zmd);
+>  }
 
-do_create()
-{
-    mkdir -p /sys/fs/cgroup/memory/test
-    echo 4G > /sys/fs/cgroup/memory/test/memory.limit_in_bytes
-    for i in `seq 0 $1`;
-    do
-        mkdir -p /sys/fs/cgroup/memory/test/$i;
-        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
-        mkdir -p $DIR/$i;
-    done
-}
-
-do_mount()
-{
-    for i in `seq $1 $2`;
-    do
-        mount -t tmpfs $i $DIR/$i;
-    done
-}
-
-do_touch()
-{
-    for i in `seq $1 $2`;
-    do
-        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
-        dd if=/dev/zero of=$DIR/$i/file$i bs=1M count=1 &
-    done
-}
-
-case "$1" in
-  touch)
-    do_touch $2 $3
-    ;;
-  test)
-    do_create 4000
-    do_mount 0 4000
-    do_touch 0 3000
-    ;;
-  *)
-    exit 1
-    ;;
-esac
-```
-
-Save the above script, then run test and touch commands. Then we can use
-the following perf command to view hotspots:
-
-perf top -U -F 999
-
-1) Before applying this patchset:
-
-  40.44%  [kernel]            [k] down_read_trylock
-  17.59%  [kernel]            [k] up_read
-  13.64%  [kernel]            [k] pv_native_safe_halt
-  11.90%  [kernel]            [k] shrink_slab
-   8.21%  [kernel]            [k] idr_find
-   2.71%  [kernel]            [k] _find_next_bit
-   1.36%  [kernel]            [k] shrink_node
-   0.81%  [kernel]            [k] shrink_lruvec
-   0.80%  [kernel]            [k] __radix_tree_lookup
-   0.50%  [kernel]            [k] do_shrink_slab
-   0.21%  [kernel]            [k] list_lru_count_one
-   0.16%  [kernel]            [k] mem_cgroup_iter
-
-2) After applying this patchset:
-
-  60.17%  [kernel]           [k] shrink_slab
-  20.42%  [kernel]           [k] pv_native_safe_halt
-   3.03%  [kernel]           [k] do_shrink_slab
-   2.73%  [kernel]           [k] shrink_node
-   2.27%  [kernel]           [k] shrink_lruvec
-   2.00%  [kernel]           [k] __rcu_read_unlock
-   1.92%  [kernel]           [k] mem_cgroup_iter
-   0.98%  [kernel]           [k] __rcu_read_lock
-   0.91%  [kernel]           [k] osq_lock
-   0.63%  [kernel]           [k] mem_cgroup_calculate_protection
-   0.55%  [kernel]           [k] shrinker_put
-   0.46%  [kernel]           [k] list_lru_count_one
-
-We can see that the first perf hotspot becomes shrink_slab, which is what
-we expect.
-
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
----
- mm/shrinker.c | 80 ++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 54 insertions(+), 26 deletions(-)
-
-diff --git a/mm/shrinker.c b/mm/shrinker.c
-index d318f5621862..fee6f62904fb 100644
---- a/mm/shrinker.c
-+++ b/mm/shrinker.c
-@@ -107,6 +107,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
- 					 lockdep_is_held(&shrinker_rwsem));
- }
- 
-+static struct shrinker_info *shrinker_info_rcu(struct mem_cgroup *memcg,
-+					       int nid)
-+{
-+	return rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
-+}
-+
- static int expand_one_shrinker_info(struct mem_cgroup *memcg, int new_size,
- 				    int old_size, int new_nr_max)
- {
-@@ -198,7 +204,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
- 		struct shrinker_info_unit *unit;
- 
- 		rcu_read_lock();
--		info = rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
-+		info = shrinker_info_rcu(memcg, nid);
- 		unit = info->unit[shriner_id_to_index(shrinker_id)];
- 		if (!WARN_ON_ONCE(shrinker_id >= info->map_nr_max)) {
- 			/* Pairs with smp mb in shrink_slab() */
-@@ -211,7 +217,7 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
- 
- static DEFINE_IDR(shrinker_idr);
- 
--static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-+static int shrinker_memcg_alloc(struct shrinker *shrinker)
- {
- 	int id, ret = -ENOMEM;
- 
-@@ -219,7 +225,6 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
- 		return -ENOSYS;
- 
- 	down_write(&shrinker_rwsem);
--	/* This may call shrinker, so it must use down_read_trylock() */
- 	id = idr_alloc(&shrinker_idr, shrinker, 0, 0, GFP_KERNEL);
- 	if (id < 0)
- 		goto unlock;
-@@ -237,7 +242,7 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
- 	return ret;
- }
- 
--static void unregister_memcg_shrinker(struct shrinker *shrinker)
-+static void shrinker_memcg_remove(struct shrinker *shrinker)
- {
- 	int id = shrinker->id;
- 
-@@ -253,10 +258,15 @@ static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
- {
- 	struct shrinker_info *info;
- 	struct shrinker_info_unit *unit;
-+	long nr_deferred;
- 
--	info = shrinker_info_protected(memcg, nid);
-+	rcu_read_lock();
-+	info = shrinker_info_rcu(memcg, nid);
- 	unit = info->unit[shriner_id_to_index(shrinker->id)];
--	return atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
-+	nr_deferred = atomic_long_xchg(&unit->nr_deferred[shriner_id_to_offset(shrinker->id)], 0);
-+	rcu_read_unlock();
-+
-+	return nr_deferred;
- }
- 
- static long add_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
-@@ -264,10 +274,16 @@ static long add_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
- {
- 	struct shrinker_info *info;
- 	struct shrinker_info_unit *unit;
-+	long nr_deferred;
- 
--	info = shrinker_info_protected(memcg, nid);
-+	rcu_read_lock();
-+	info = shrinker_info_rcu(memcg, nid);
- 	unit = info->unit[shriner_id_to_index(shrinker->id)];
--	return atomic_long_add_return(nr, &unit->nr_deferred[shriner_id_to_offset(shrinker->id)]);
-+	nr_deferred =
-+		atomic_long_add_return(nr, &unit->nr_deferred[shriner_id_to_offset(shrinker->id)]);
-+	rcu_read_unlock();
-+
-+	return nr_deferred;
- }
- 
- void reparent_shrinker_deferred(struct mem_cgroup *memcg)
-@@ -299,12 +315,12 @@ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
- 	up_read(&shrinker_rwsem);
- }
- #else
--static int prealloc_memcg_shrinker(struct shrinker *shrinker)
-+static int shrinker_memcg_alloc(struct shrinker *shrinker)
- {
- 	return -ENOSYS;
- }
- 
--static void unregister_memcg_shrinker(struct shrinker *shrinker)
-+static void shrinker_memcg_remove(struct shrinker *shrinker)
- {
- }
- 
-@@ -464,18 +480,23 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
- 	if (!mem_cgroup_online(memcg))
- 		return 0;
- 
--	if (!down_read_trylock(&shrinker_rwsem))
--		return 0;
--
--	info = shrinker_info_protected(memcg, nid);
-+again:
-+	rcu_read_lock();
-+	info = shrinker_info_rcu(memcg, nid);
- 	if (unlikely(!info))
- 		goto unlock;
- 
--	for (; index < shriner_id_to_index(info->map_nr_max); index++) {
-+	if (index < shriner_id_to_index(info->map_nr_max)) {
- 		struct shrinker_info_unit *unit;
- 
- 		unit = info->unit[index];
- 
-+		/*
-+		 * The shrinker_info_unit will not be freed, so we can
-+		 * safely release the RCU lock here.
-+		 */
-+		rcu_read_unlock();
-+
- 		for_each_set_bit(offset, unit->map, SHRINKER_UNIT_BITS) {
- 			struct shrink_control sc = {
- 				.gfp_mask = gfp_mask,
-@@ -485,12 +506,14 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
- 			struct shrinker *shrinker;
- 			int shrinker_id = calc_shrinker_id(index, offset);
- 
-+			rcu_read_lock();
- 			shrinker = idr_find(&shrinker_idr, shrinker_id);
--			if (unlikely(!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))) {
--				if (!shrinker)
--					clear_bit(offset, unit->map);
-+			if (unlikely(!shrinker || !shrinker_try_get(shrinker))) {
-+				clear_bit(offset, unit->map);
-+				rcu_read_unlock();
- 				continue;
- 			}
-+			rcu_read_unlock();
- 
- 			/* Call non-slab shrinkers even though kmem is disabled */
- 			if (!memcg_kmem_online() &&
-@@ -523,15 +546,20 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
- 					set_shrinker_bit(memcg, nid, shrinker_id);
- 			}
- 			freed += ret;
--
--			if (rwsem_is_contended(&shrinker_rwsem)) {
--				freed = freed ? : 1;
--				goto unlock;
--			}
-+			shrinker_put(shrinker);
- 		}
-+
-+		/*
-+		 * We have already exited the read-side of rcu critical section
-+		 * before calling do_shrink_slab(), the shrinker_info may be
-+		 * released in expand_one_shrinker_info(), so reacquire the
-+		 * shrinker_info.
-+		 */
-+		index++;
-+		goto again;
- 	}
- unlock:
--	up_read(&shrinker_rwsem);
-+	rcu_read_unlock();
- 	return freed;
- }
- #else /* !CONFIG_MEMCG */
-@@ -638,7 +666,7 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...)
- 	shrinker->flags = flags | SHRINKER_ALLOCATED;
- 
- 	if (flags & SHRINKER_MEMCG_AWARE) {
--		err = prealloc_memcg_shrinker(shrinker);
-+		err = shrinker_memcg_alloc(shrinker);
- 		if (err == -ENOSYS)
- 			shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
- 		else if (err == 0)
-@@ -731,7 +759,7 @@ void shrinker_free(struct shrinker *shrinker)
- 	}
- 
- 	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
--		unregister_memcg_shrinker(shrinker);
-+		shrinker_memcg_remove(shrinker);
- 	up_write(&shrinker_rwsem);
- 
- 	if (debugfs_entry)
 -- 
-2.30.2
+Damien Le Moal
+Western Digital Research
 
 
 ______________________________________________________
