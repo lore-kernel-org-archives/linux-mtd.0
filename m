@@ -4,84 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71E31EB64DD
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jul 2023 23:48:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9520C0015E
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jul 2023 02:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TRfjBBUkCfkPGbzUGlTvwF2lF3MOl8rOioRdnh5KslA=; b=x/T8y+QJDW8qo0
-	VMvFcKqJlaDhFnCjF6PE+/7Z4/5NeNUnEY7yfj5LiTvmWx+rcKol6MJDURmtAOqiy6JYOwbDDXYrq
-	ueas9awW2bX57LR0AMdMPCK/dUFV1B3uLe0Gpu8EMRNFB9hOhLaiMtOVBM1Rg64iIX0gL1L0oRVTr
-	Ro8KVZo2pjfZLV1hKW0RAvB1cOIUD+O/a7b6u678+uneLVfaJQDvnh3GYP8of7MskQH/7ZGe9BxJE
-	zyasBrKj/mkmuO71KTuUOFXKDqv2H886MIzJSa6XmkUHU7Kixav6z1d4CqCA8CqwLfses0My5+yAi
-	DBtNWNVbOHkJpi8tBckA==;
+	List-Owner; bh=taj6gGXPI1nqAg0kIK4Rfd2QuvCouyMnjVnsSanYbZc=; b=b5gm/1MjuI8SOj
+	89uPseB9mOm+uR9xNWgcrp61vz7uvZOO+vHYMQd4/n2LoYGdv8UfKq7OhsiokrsHz4OFE4d4ydS04
+	xd88pIqPIGJCx0d/VoAhdFn/g3Q0HJyThmLcb64X8h7mTpMkpJtsuDvBYnqGK7iJHGdaCBC1vDW2F
+	YRKd2dNiN4eRYxr2+jpQ5Fe71FbMNLFwK1jCCLyTC+ZYObcYLo35+9cvSPZg5IsuFIJhC/INAJrOf
+	WJ+vrhwJxVR01AH4CFpEcX3DijFyN8MCOaaM66zdinP9K4iEUhxjwM5iwazjQ8yXd0M0+oTZxBN7Z
+	K1WD74TxbV5ehE0eNvUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPAiw-000uJ3-17;
-	Thu, 27 Jul 2023 23:48:50 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qPD2T-001GbD-2L;
+	Fri, 28 Jul 2023 02:17:09 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPAit-000uHi-0U
+	id 1qPD2K-001GZB-1c
 	for linux-mtd@lists.infradead.org;
-	Thu, 27 Jul 2023 23:48:48 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id CA7BB61F8A;
-	Thu, 27 Jul 2023 23:48:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E5FDC433C7;
-	Thu, 27 Jul 2023 23:48:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690501724;
-	bh=Ttxo2VAoV3s10tVDpG1rs4f+uNBtPiAAdsRn7qEPqAI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Ak6ozI5MGJ+V/aaPZbipUbe6ZARep0hinqcaIFmiUbGlXqA4l6qqKubv3sXd24Wis
-	 E3nRqNpMPjywrGRezhx8kIl9BfOcFGOjuYtEl0wjzGKmd2W/r6L34Y8Q/Asia9+Ai+
-	 N65piXMA54Y1i5SwziMjZGbgl+PlpLxLOgApRck3LvpJfpGiaZrCds1yq/RX5+TIOO
-	 TcyhaMq04sGg4mmvI/xNg53Zl5ogRkSJoPUjgXBUN2wkW+R/Z24fG4Bcn7szmrfhkb
-	 1Y0rUs2KyI/CXZncywoQIP9j5+uNlee3CVuHYo0iSwOTdXpuIWfOUm7reRjWTqpcd1
-	 EASuIvTp5UKtQ==
-Message-ID: <217f3a7e-7681-0da6-aaa7-252a1451f7ba@kernel.org>
-Date: Fri, 28 Jul 2023 08:48:37 +0900
+	Fri, 28 Jul 2023 02:17:02 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-314172bac25so1560583f8f.3
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 19:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690510617; x=1691115417;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FL+Cct8YoSZBnjRSpNiileFI2J9v9RT572FgI2bhH4s=;
+        b=hLFSjzjAUAgcVZEdR+uvs/pNXkYb1J3v9PHiLh75GqTAV4MV7UNrz/+tfc/OA9KPDz
+         5GotDQYUK8eVDWhR+Vzb+tSnyFhbIvYKLkvabcU5uxnipVwi3nZU/7f3s++LwWcy5IcM
+         qMjyX/sn3OIbMUn44QX1bVv+GP4HhsrBy6JsIMHliTpIY6AbyRVRPehrpDfTRSaS0EZh
+         LGZxO9H4ZzYLmG3ls2TNY1+VaHgRojtABE8VhjfD1UtGvQk41udV+J+XSIHrN5ZasYN3
+         5LmB5vYlRJ+xisB4UNCU5Z38MojpitIUNTUF7aeBagyXxghQRZIsAA53ypFNxrGV4m4o
+         sReA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690510617; x=1691115417;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FL+Cct8YoSZBnjRSpNiileFI2J9v9RT572FgI2bhH4s=;
+        b=N6t51UOMQAwRL4MdV9oYGnJGp0TtrOIbmmmPomnuwAvi4raqE6UCmXIwxrmeqyoDG3
+         lPZw1Kec5JMMGGK6tQm6cJZqcEZRD71GiCCO8/baYUlueOkAeWXANzRgufFVJzrLXPgT
+         Q2BTBeDNqino8IXmkzRiKwPJTOvQ0nQLzX86ViFhQHbMZM9orOkI/ogkNkEyGkh64KtM
+         trSxfAuExYBR+/ToRAP6m5ia5z1HtNL+lt70rXXknG/q9pCS36m4bNn6FSuiXSQ++qDO
+         3DF92hu08k7kiYQq7kpeKuKE2oLe9D23PRjZgNFDHirLHlcme7PaCrZ7H5pnxNMLm1Y8
+         nS6w==
+X-Gm-Message-State: ABy/qLYu5Lcagp2IID8EcXwgHLfQ2Emw9F9YnEEylXWGRXDTTUrTLAbq
+	0+K8ja6yurw33JwXqyqPVUmxxw==
+X-Google-Smtp-Source: APBJJlFz0zuPjN3o7fTQJxOTn73qD7YEoPMipx475JurTjXZjW30u4xnCdz3cd7nJHOpUoZoUfzpWw==
+X-Received: by 2002:adf:ec0a:0:b0:317:718a:e83f with SMTP id x10-20020adfec0a000000b00317718ae83fmr572822wrn.68.1690510614590;
+        Thu, 27 Jul 2023 19:16:54 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.48])
+        by smtp.gmail.com with ESMTPSA id y18-20020a5d6212000000b003143c6e09ccsm3551709wru.16.2023.07.27.19.16.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 19:16:53 -0700 (PDT)
+Message-ID: <5654b89a-161b-701e-415f-74b2368f90f1@linaro.org>
+Date: Fri, 28 Jul 2023 03:16:52 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
- shrinker
-To: Dave Chinner <david@fromorbit.com>
-Cc: Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
- linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- rcu@vger.kernel.org, netdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
- dm-devel@redhat.com, linux-raid@vger.kernel.org,
- linux-bcache@vger.kernel.org, virtualization@lists.linux-foundation.org,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
- tkhai@ya.ru, vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
- brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
- cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
- gregkh@linuxfoundation.org, muchun.song@linux.dev
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-29-zhengqi.arch@bytedance.com>
- <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
- <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
- <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
- <ZML22YJi5vPBDEDj@dread.disaster.area>
+Subject: Re: [PATCH 1/8] mtd: rawnand: qcom: Use the BIT() macro
 Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <ZML22YJi5vPBDEDj@dread.disaster.area>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Md Sadre Alam <quic_mdalam@quicinc.com>,
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>,
+ Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20230716144612.32132-1-miquel.raynal@bootlin.com>
+ <20230716144612.32132-2-miquel.raynal@bootlin.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230716144612.32132-2-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_164847_275505_2F4A48DE 
-X-CRM114-Status: GOOD (  21.36  )
+X-CRM114-CacheID: sfid-20230727_191700_573607_49688B66 
+X-CRM114-Status: GOOD (  13.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,47 +95,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gNy8yOC8yMyAwNzo1OSwgRGF2ZSBDaGlubmVyIHdyb3RlOgo+IE9uIFRodSwgSnVsIDI3LCAy
-MDIzIGF0IDA3OjIwOjQ2UE0gKzA5MDAsIERhbWllbiBMZSBNb2FsIHdyb3RlOgo+PiBPbiA3LzI3
-LzIzIDE3OjU1LCBRaSBaaGVuZyB3cm90ZToKPj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8g
-ZXJyOwo+Pj4+PiDCoMKgwqDCoMKgIH0KPj4+Pj4gwqAgK8KgwqDCoCB6bWQtPm1ibGtfc2hyaW5r
-ZXItPmNvdW50X29iamVjdHMgPSBkbXpfbWJsb2NrX3Nocmlua2VyX2NvdW50Owo+Pj4+PiArwqDC
-oMKgIHptZC0+bWJsa19zaHJpbmtlci0+c2Nhbl9vYmplY3RzID0gZG16X21ibG9ja19zaHJpbmtl
-cl9zY2FuOwo+Pj4+PiArwqDCoMKgIHptZC0+bWJsa19zaHJpbmtlci0+c2Vla3MgPSBERUZBVUxU
-X1NFRUtTOwo+Pj4+PiArwqDCoMKgIHptZC0+bWJsa19zaHJpbmtlci0+cHJpdmF0ZV9kYXRhID0g
-em1kOwo+Pj4+PiArCj4+Pj4+ICvCoMKgwqAgc2hyaW5rZXJfcmVnaXN0ZXIoem1kLT5tYmxrX3No
-cmlua2VyKTsKPj4+Pgo+Pj4+IEkgZmFpbCB0byBzZWUgaG93IHRoaXMgbmV3IHNocmlua2VyIEFQ
-SSBpcyBiZXR0ZXIuLi4gV2h5IGlzbid0IHRoZXJlIGEKPj4+PiBzaHJpbmtlcl9hbGxvY19hbmRf
-cmVnaXN0ZXIoKSBmdW5jdGlvbiA/IFRoYXQgd291bGQgYXZvaWQgYWRkaW5nIGFsbCB0aGlzIGNv
-ZGUKPj4+PiBhbGwgb3ZlciB0aGUgcGxhY2UgYXMgdGhlIG5ldyBBUEkgY2FsbCB3b3VsZCBiZSB2
-ZXJ5IHNpbWlsYXIgdG8gdGhlIGN1cnJlbnQKPj4+PiBzaHJpbmtlcl9yZWdpc3RlcigpIGNhbGwg
-d2l0aCBzdGF0aWMgYWxsb2NhdGlvbi4KPj4+Cj4+PiBJbiBzb21lIHJlZ2lzdHJhdGlvbiBzY2Vu
-YXJpb3MsIG1lbW9yeSBuZWVkcyB0byBiZSBhbGxvY2F0ZWQgaW4gYWR2YW5jZS4KPj4+IFNvIHdl
-IGNvbnRpbnVlIHRvIHVzZSB0aGUgcHJldmlvdXMgcHJlYWxsb2MvcmVnaXN0ZXJfcHJlcGFyZWQo
-KQo+Pj4gYWxnb3JpdGhtLiBUaGUgc2hyaW5rZXJfYWxsb2NfYW5kX3JlZ2lzdGVyKCkgaXMganVz
-dCBhIGhlbHBlciBmdW5jdGlvbgo+Pj4gdGhhdCBjb21iaW5lcyB0aGUgdHdvLCBhbmQgdGhpcyBp
-bmNyZWFzZXMgdGhlIG51bWJlciBvZiBBUElzIHRoYXQKPj4+IHNocmlua2VyIGV4cG9zZXMgdG8g
-dGhlIG91dHNpZGUsIHNvIEkgY2hvb3NlIG5vdCB0byBhZGQgdGhpcyBoZWxwZXIuCj4+Cj4+IEFu
-ZCB0aGF0IHJlc3VsdHMgaW4gbW9yZSBjb2RlIGluIG1hbnkgcGxhY2VzIGluc3RlYWQgb2YgbGVz
-cyBjb2RlICsgYSBzaW1wbGUKPj4gaW5saW5lIGhlbHBlciBpbiB0aGUgc2hyaW5rZXIgaGVhZGVy
-IGZpbGUuLi4KPiAKPiBJdCdzIG5vdCBqdXN0IGEgInNpbXBsZSBoZWxwZXIiIC0gaXQncyBhIGZ1
-bmN0aW9uIHRoYXQgaGFzIHRvIHRha2UgNgo+IG9yIDcgcGFyYW1ldGVycyB3aXRoIGEgcmV0dXJu
-IHZhbHVlIHRoYXQgbXVzdCBiZSBjaGVja2VkIGFuZAo+IGhhbmRsZWQuCj4gCj4gVGhpcyB3YXMg
-ZG9uZSBpbiB0aGUgZmlyc3QgdmVyc2lvbnMgb2YgdGhlIHBhdGNoIHNldCAtIHRoZSBhbW91bnQg
-b2YKPiBjb2RlIGluIGVhY2ggY2FsbGVyIGRvZXMgbm90IGdvIGRvd24gYW5kLCBJTU8sIHdhcyBt
-dWNoIGhhcmRlciB0bwo+IHJlYWQgYW5kIGRldGVybWluZSAidGhpcyBpcyBvYnZpb3VzbHkgY29y
-cmVjdCIgdGhhdCB3aGF0IHdlIGhhdmUKPiBub3cuCj4gCj4+IFNvIG5vdCBhZGRpbmcgdGhhdCBz
-dXBlciBzaW1wbGUKPj4gaGVscGVyIGlzIG5vdCBleGFjdGx5IHRoZSBiZXN0IGNob2ljZSBpbiBt
-eSBvcGluaW9uLgo+IAo+IEVhY2ggdG8gdGhlaXIgb3duIC0gSSBtdWNoIHByZWZlciB0aGUgZXhp
-c3Rpbmcgc3R5bGUvQVBJIG92ZXIgaGF2aW5nCj4gdG8gZ28gbG9vayB1cCBhIGhlbHBlciBmdW5j
-dGlvbiBldmVyeSB0aW1lIEkgd2FudCB0byBjaGVjayBzb21lCj4gcmFuZG9tIHNocmlua2VyIGhh
-cyBiZWVuIHNldCB1cCBjb3JyZWN0bHkuLi4uCgpPSy4gQWxsIGZhaXIgcG9pbnRzLgoKCi0tIApE
-YW1pZW4gTGUgTW9hbApXZXN0ZXJuIERpZ2l0YWwgUmVzZWFyY2gKCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+
+
+On 7/16/23 15:46, Miquel Raynal wrote:
+> Fix the following checkpatch warning:
+>     "CHECK: Prefer using the BIT macro"
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  drivers/mtd/nand/raw/qcom_nandc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index b1e69d634d4a..023c8b36426b 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -123,8 +123,8 @@
+>  /* NAND_ERASED_CW_DETECT_CFG bits */
+>  #define	ERASED_CW_ECC_MASK		1
+>  #define	AUTO_DETECT_RES			0
+> -#define	MASK_ECC			(1 << ERASED_CW_ECC_MASK)
+> -#define	RESET_ERASED_DET		(1 << AUTO_DETECT_RES)
+> +#define	MASK_ECC			BIT(ERASED_CW_ECC_MASK)
+> +#define	RESET_ERASED_DET		BIT(AUTO_DETECT_RES)
+>  #define	ACTIVE_ERASED_DET		(0 << AUTO_DETECT_RES)
+>  #define	CLR_ERASED_PAGE_DET		(RESET_ERASED_DET | MASK_ECC)
+>  #define	SET_ERASED_PAGE_DET		(ACTIVE_ERASED_DET | MASK_ECC)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
