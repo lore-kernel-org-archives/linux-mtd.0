@@ -4,86 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C423BC41513
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jul 2023 11:01:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C93EC001DE
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jul 2023 11:06:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tP4ysyl9Ks419wGmow/YxGDKbFC7p5RA7X+785ZhXS8=; b=DjXwp6L+WQ8Pjq
-	niqJD1ZUA8/z4N8mkgOGd9BtI6LB85rokjUU//wrA6DnZAL3M7vkf/gWuSP7z5w8n92PB5KLMID9p
-	0QURopidNvFeY6QwBycDjMV08NJ3y9EeiPvnG9Cr8VdSWQ6zBDt81v842X+IX04v4hxlUAnhuhz82
-	+mDkIZH2H5dao9N93DGk5T6mbdVZaXNkateJot4Xl6EQIhTRAJgPpVMiKHQVigrbqTtByB7V3AMZr
-	D62810gmw0eh1ELQ9KyC9yZ6ri24Fal7QdKaHI1qpa8OMBQosxj/9dszb9LYfv6z7WB/bqgTOBAaA
-	DRjcfLVihzdhM0io3suQ==;
+	List-Owner; bh=kn+rmpQDsYIkM9fWkmGwoqo2cAms3eSAk1wFkfN5V0E=; b=kb2lU02FotMA3D
+	wnHT04L2yCYqLI546mZFR2tNhRelK7fKoUR3YViSjQjDCneZCYWtZPUifplExJ3OjHo/BW6oCCHjY
+	YiuacQdZzdYuSQkKcHan8EAxyZsafWr+E2zlQRbizfqi+c6GOXStKnAz/EWHyX1A46vZZtxZo9ad+
+	ZIEj3/wwj+uuWHzXT25D1M56XMNn+mNz+/cyTzYyswK06dmKjPkJ3u1B1EhsZ0M8TyzgHs8DeoCwQ
+	rSJjGcdHlthGBDI865e/SR8nz1ZnnWJF0HKW50FaoabIItk+gPdZayWhKrFM3TEeuzyKmWAMxjBkO
+	5zK8N0em0NZMeAlx1EPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPLDf-00360N-1Y;
-	Fri, 28 Jul 2023 11:01:15 +0000
-Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
+	id 1qPLJ0-0036ue-1p;
+	Fri, 28 Jul 2023 11:06:46 +0000
+Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPLDc-0035wA-1X
+	id 1qPLIw-0036t5-02
 	for linux-mtd@lists.infradead.org;
-	Fri, 28 Jul 2023 11:01:14 +0000
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b962c226ceso29955051fa.3
-        for <linux-mtd@lists.infradead.org>; Fri, 28 Jul 2023 04:01:09 -0700 (PDT)
+	Fri, 28 Jul 2023 11:06:43 +0000
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc63c2e84so21895985e9.3
+        for <linux-mtd@lists.infradead.org>; Fri, 28 Jul 2023 04:06:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690542068; x=1691146868;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=linaro.org; s=google; t=1690542398; x=1691147198;
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=edm4Ph1uwoatUBIl/nO8+W/Z+DAK2COYGbrTolYZ2G4=;
-        b=xOnIh0XFySrFq31d9farT5qlbbku3kyyxwG0mGjGUrjbrp+Gma5eJPdY2nzlpfjNdj
-         Wks0eADzJmNO1a6sncSY0bTp3brOByUKYiBVPj65f/8p08LoOkYszekPaGQM4dojmGDE
-         wkfvuTthmgs+rUIqLyCtQsARnSk2TL99zil9yi+MQp0oAYxJ+CfTwB3ODpg88MGxEpvm
-         MkjxDjT+6KxbkkxeJTeMIYfLBG8firkErNqgiYIx2jB+sKTCBCt6YSrCgtJEbCfwUVJg
-         /jY1pZ2jjlDCCwrbt6rqj2gI3mJKfxM8r29vA+hrE+MXelIjfG2CbOpLpHIJlXJ/V0Cq
-         apMw==
+        bh=CU70Eh2OqmXn/mXGJvsy6fLIYE8In/MkQR/tQEWkQOM=;
+        b=qc+LVsKsC9fZ7c+Rtm+B2SsFYCOiBYG5PWTpso7gwBhW+WfgE5FpsPvkjpvfFHSgFP
+         StwtdmRslvH+8jrCQN8cxve8M3slE8/gQzVRrvDpdDe6+Opb1KHGXSeyCqVcK6BRsDcr
+         l7X586fVfKFo2JKJeIGJIiiWduAhFhfe5vIY2ubTBAKrjg9BxrtNe7T5sxSfYWHg/UrV
+         kgEmRQB3wj5p66rxdWRvFmSMk0KrbHQyK7QPSSAamjhP6m1Snkh6Hi2upAHmaGuOZ5gq
+         /XhqobN4OCxcEPbfQSWZkLnmkGrMq01Ov+1q9i2Yl+zYniaL/2EjPgfP+2LUe+2J8IcY
+         +qlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690542068; x=1691146868;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=1e100.net; s=20221208; t=1690542398; x=1691147198;
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=edm4Ph1uwoatUBIl/nO8+W/Z+DAK2COYGbrTolYZ2G4=;
-        b=ggGecGJ4RCdTeRpefsJNWr7poj/OVBPqdP1EI1LCCPGLvHCYSCQkrLAWcWyfnLtviN
-         5KS8YAO3nHF1mNvyLbzxsEtvlx2eyjRKmt+kn7zCYVe2jwTT8WdNVML8NlMINMOWXoKj
-         YRJpl0iEYC/ofthEXvuCgjB44DW3r3+qTsMoPbJEf7pRfyHR4/gM4n0VFNrQhKUx56r1
-         pQNuPSUAExtC1jc1+q0sE5FHqsDaiX2tNbCuIU+3TFcR7JFq1KyD9EPAezOvoDD8jgoL
-         cNuziHY9HZfyotj3MK+4hVAc4F8F+7yDUN+tVgBtz3K0HYrejW0zHud9VfXb4RdCmjY8
-         +5Lw==
-X-Gm-Message-State: ABy/qLb8bXZ5teojMBcT9k0sf96+/Rb9gJy+QjjMo6F/+4pYXruZyRzi
-	+jIfUv38hHRRUG8+1UG6Wn1jmLvSp18r8pbiU+c=
-X-Google-Smtp-Source: APBJJlH13mCJYd3NtClO89JGPVBF+/fmMGFKFQFBbIF/xO6JCbnXxtaq0UfyUiLcs5Xv+horR77oIQ==
-X-Received: by 2002:a2e:81c3:0:b0:2b6:d9dd:f65f with SMTP id s3-20020a2e81c3000000b002b6d9ddf65fmr1502448ljg.17.1690542067917;
-        Fri, 28 Jul 2023 04:01:07 -0700 (PDT)
+        bh=CU70Eh2OqmXn/mXGJvsy6fLIYE8In/MkQR/tQEWkQOM=;
+        b=F72p25rjOJc3Ox++HrrMqE02qbxGwm+hWoYtZ4Aazz+VdOficvr9TMen06vsNLQ8c9
+         RX9oUoZ7Ixig06mpuVyM+GMtRMhvtLfA5Ly+KqS7QH0nVytDIY3hXIYYq9uVuA5y8NJx
+         Me22xOV/RiEyrD1/dKwb9k4q+IVBcuKzR9uO9ah/YgODQE6bShYNDLQSfoy+4T2nhbaM
+         pGJFR36fB9VI2yD0A3LI5tL9E63X+JgHqz7UPkLWi3ka1j235BwZCj9zd/rn3XbaXRZF
+         gALDOsHWtBhD4ZF4Ul0HBuvVkyu2ZjNWwiSZmGOP9FQVlbKhgVU0uRptJlfEWUOveSCL
+         G4qQ==
+X-Gm-Message-State: ABy/qLax+8KvBucLV3HilwUKlgBZ9r87GSCEFmyccEC1rWhirRuWLON5
+	T1W4y5JPnKyjcaOfBwgZS4mQuA==
+X-Google-Smtp-Source: APBJJlHjVByBvBfppyeBdQWe2dS7fGbuNTvvMqTHXVJ0Cu9SAu5uwxXYOY65e950xrmaJkwlvIO39A==
+X-Received: by 2002:a05:600c:20c4:b0:3fb:e643:1225 with SMTP id y4-20020a05600c20c400b003fbe6431225mr1636663wmm.13.1690542397797;
+        Fri, 28 Jul 2023 04:06:37 -0700 (PDT)
 Received: from [192.168.2.107] ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id k1-20020a7bc401000000b003fc06169abdsm3987407wmi.2.2023.07.28.04.01.06
+        by smtp.gmail.com with ESMTPSA id n5-20020a7bc5c5000000b003fbe4cecc3bsm6831870wmk.16.2023.07.28.04.06.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 04:01:07 -0700 (PDT)
-Message-ID: <69c1411d-948d-a209-49ee-767e6f46ce4d@linaro.org>
-Date: Fri, 28 Jul 2023 12:01:06 +0100
+        Fri, 28 Jul 2023 04:06:37 -0700 (PDT)
+Message-ID: <b5c44fc5-005d-6268-af68-85eda9c330ba@linaro.org>
+Date: Fri, 28 Jul 2023 12:06:35 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: add Octal DTR support for Macronix
- flash
+Subject: Re: [PATCH v3 20/50] dt-bindings: atmel-nand: add
+ microchip,sam9x7-pmecc
 Content-Language: en-US
-To: Michael Walle <michael@walle.cc>
-Cc: Jaime Liao <jaimeliao.tw@gmail.com>, linux-mtd@lists.infradead.org,
- pratyush@kernel.org, miquel.raynal@bootlin.com, leoyu@mxic.com.tw,
- JaimeLiao <jaimeliao@mxic.com.tw>
-References: <20230727091610.234132-1-jaimeliao.tw@gmail.com>
- <20230727091610.234132-2-jaimeliao.tw@gmail.com>
- <ae53bde4-33d0-861d-b7f4-b86114cd6f58@linaro.org>
- <4ffbc99f5174fe48182211d489efa115@walle.cc>
- <0ed5a344424fccb6bcbef6496dccbc77@walle.cc>
+To: Varshini Rajendran <varshini.rajendran@microchip.com>,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ claudiu.beznea@microchip.com, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20230728102636.266309-1-varshini.rajendran@microchip.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <0ed5a344424fccb6bcbef6496dccbc77@walle.cc>
+In-Reply-To: <20230728102636.266309-1-varshini.rajendran@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230728_040112_521214_9901BBE1 
-X-CRM114-Status: GOOD (  15.06  )
+X-CRM114-CacheID: sfid-20230728_040642_366649_E64756BD 
+X-CRM114-Status: GOOD (  13.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,26 +94,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiA3LzI4LzIzIDEwOjQ2LCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+IEhpLAo+IAo+Pj4+ICvC
-oMKgwqAgLyogTWFjcm9uaXggU1BJLU5PUiBmbGFzaCA4RC04RC04RCByZWFkIElEIHdvdWxkIGdl
-dCA2IGJ5dGVzIGRhdGEgQS1BLUItQi1DLUMgKi8KPj4+PiArwqDCoMKgIGZvciAoaSA9IDA7IGkg
-PCBub3ItPmluZm8tPmlkX2xlbjsgaSsrKQo+Pj4+ICvCoMKgwqDCoMKgwqDCoCBpZiAoYnVmW2kg
-KiAyXSAhPSBub3ItPmluZm8tPmlkW2ldKQo+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJl
-dHVybiAtRUlOVkFMOwo+Pgo+PiBXZSBuZWVkIHNvbWUga2luZCBvZiBwZXIgZmxhc2ggcmRpZCBv
-dmVycmlkZS4gSSBndWVzcyByZGlkIHdvbid0IHdvcmsKPj4gaW4gb2N0YWwgbW9kZSB0aGVuLiBB
-cmUgYW55IG90aGVyIGNvbW1hbmRzIGFsc28gYWZmZWN0ZWQ/Cj4gCj4gSmFpbWUgd2FzIGtpbmQg
-ZW5vdWdoIHRvIHNlbmQgbWUgc29tZSBkYXRhc2hlZXRzIGFuZCBpdCBsb29rcyBsaWtlCj4gc29t
-ZSBjb21tYW5kcyB3aWxsIHJldHVybiB0aGUgcmVzcG9uc2UgYnl0ZXMgaW4gU1RSIG1vZGUuIFNv
-LAo+IHRlY2huaWNhbGx5LCB0aGUgY29ycmVjdCB0aGluZyB0byBkbyBoZXJlIHdvdWxkIGJlIHRv
-IHVzZQo+IDhELThELThTIG1vZGUuIE90aGVyIGNvbW1hbmRzIHdpbGwgYWxzbyByZXNwb25kIGlu
-IFNUUiBtb2RlLCBidXQKPiBJIGd1ZXNzIHdlIGRvbid0IG5vdGljZSBiZWNhdXNlIG1vc3Qgb2Yg
-dGhlbSBhcmUganVzdCBvbmUgYnl0ZS4KPiBCdXQgSSB0aGluayB3ZSBzaG91bGQgZ2V0IHRoaXMg
-Y29ycmVjdCBpbiB0aGUgY29yZS4KPiAKCmhhcHB5IHRvIGdldCBwYXRjaGVzIGZvciByZXZpZXch
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+
+On 7/28/23 11:26, Varshini Rajendran wrote:
+> Add microchip,sam9x7-pmecc to DT bindings documentation.
+> 
+
+Why? What's the underlying problem that motivated you do this patch?
+
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/atmel-nand.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> index 50645828ac20..4598930851d9 100644
+> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> @@ -56,6 +56,7 @@ Required properties:
+>  	"atmel,sama5d4-pmecc"
+>  	"atmel,sama5d2-pmecc"
+>  	"microchip,sam9x60-pmecc"
+> +	"microchip,sam9x7-pmecc", "atmel,at91sam9g45-pmecc"
+>  - reg: should contain 2 register ranges. The first one is pointing to the PMECC
+>         block, and the second one to the PMECC_ERRLOC block.
+>  
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
