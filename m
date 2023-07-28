@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E563DC001DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jul 2023 02:27:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 970B4C001DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jul 2023 02:31:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=o8OpPQi8E+eoIuH9vFZzXoMMoZ4JZvbWe7Kgc1SjEyU=; b=HdqoM/wDCf78E6
-	IAUxaAInBqckWowdXPfJoc/K8grtFx9g8DUoQPNhR/T0Xlnz20IfPLbntpxpaFECNHH5VLChmzV81
-	5N4+h7CO3BuvuCCbtelRNvTqzHWIktAizgTVTkKeLmkYUYVeDDOoyv6l2DGTQMRgJR15cvazwF3Pt
-	P3IQg6bSW9mysIwNwP7EjqJm69lc6jaFXSDWz+vqd9xmlMIKmEGbDOzS7Wdlni+4i8/rFv7xaop14
-	P9sdl6GlvR5xeFI90U3DsEgyq3khQCcRzadXqoddptg7D/p8UKUgzJ4OT0KWQKtF/7D0/4cgdxcB2
-	dq3WyLS0eY/AuczyaTxw==;
+	List-Owner; bh=l1ujKPN8kdM4JON3pYGWQ1iAqTDURwTjXBo6iHJSc50=; b=wM219wvl1UOESj
+	8xaJEweluFyjnvNqQT7ojK6qc53oCzocwR+EVxN1hyLON85Gv0cB4ejph9TXc8alX6XQUxdxrvcQn
+	U6jvnIaVN4v+Vx38FyRNTolc9SYM4CZzK8wZ3CJiNdGvFYuRTnWMqQ2XeeIv+K6aKdKSiKejAi4qt
+	V6krjXYZp3QjDoxXxDSxKG9SGdJxcOa7SvrqmbWrXWkXFhT8ovH9Oz4YooVcoqggDtTr9lOM7/xFl
+	UgcE7Tt7V69FUhnQ9xLN5CYdENjXvyMHifO//ikeLXDKp8oNKuhsrsPaceFp3TDaUJGjTft2tNcrA
+	4+MNTZvFpTHSS7QYPzUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPDCX-001IdB-1r;
-	Fri, 28 Jul 2023 02:27:33 +0000
-Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
+	id 1qPDGk-001J2w-1R;
+	Fri, 28 Jul 2023 02:31:54 +0000
+Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPDCU-001Ic4-08
+	id 1qPDGh-001J0m-25
 	for linux-mtd@lists.infradead.org;
-	Fri, 28 Jul 2023 02:27:31 +0000
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc656873eso18428235e9.1
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 19:27:29 -0700 (PDT)
+	Fri, 28 Jul 2023 02:31:53 +0000
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9540031acso26586981fa.3
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 19:31:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690511248; x=1691116048;
+        d=linaro.org; s=google; t=1690511504; x=1691116304;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=onLaeoAbgFGAjJgteZ8y+3Fjue20MI2BaiZFc8uo0rE=;
-        b=TQKaaXU6VgwP09AG7EsQWWGi5gWqx8zn/14OVSOCt1a4TUwA/WQ2OK88fjFhw+c0W6
-         2Bb7Rt36aClwcGuic15Cm1vQddDhhJUQTjzRQ7uhBD1jCCMi9QQoPu2u6WYkoZORGify
-         4aCUKFm0RLCacbwesUHDxLax+p4LgGbNqWiIj9ZpoNtEPPxgGyIyCZELwWNm/NaSrex7
-         3d669aAH1wR0NLfrmpDxb47hEwPaE7gZq/uT1Z+DfVazVcnbKwUN9ZNyJLJg1MnB/SgI
-         oW4A936RfHAYSowmbRkOF+UDA1NJOeuDTPIu7iDOtTVAkFvOBvY3Ho1kXmF6NT+iX7Go
-         BrHw==
+        bh=FDEw8VcsipN2f9HP2hbo0C9DGlgmo5gAq6nsfLHWOes=;
+        b=KjGdeUFTefSRA4UcUnwO46yAsOyPdALndbY37a66ecLG4vFt7fx7DKT42FepdCVBZX
+         ragCYoh1n/fsq6BhLTi+0PDgxCE+1zOX26bcsj64g04LEWLcUXI4at4rC7Rej2Ts4nSM
+         r6JucAE8EaM5MCJL9+KyskYxrDcRWGZhwyNHYRkoyyz33U2faw00B5XF1PW2t9nchNMN
+         Ca/Kl+AYo2lTgY7byLrGIf8rjnXQNkLeAsXAQ6DRoMxnpXzRDDZgz8wcQ0J0S0V6GhXs
+         NcxKVmBWGpKxZydun3Dmk0oC4iZ+VjEH3YxdrxLi9vkEzW73OQsksM5qB0aiw4BxQ5OH
+         JjbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690511248; x=1691116048;
+        d=1e100.net; s=20221208; t=1690511504; x=1691116304;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=onLaeoAbgFGAjJgteZ8y+3Fjue20MI2BaiZFc8uo0rE=;
-        b=LRf503C8fRpsbOS40qhmC6QVoLMklNqyHAmTjFm5pn6QcLdbjhySTCl2A3y3QuBnbl
-         /EV/USE9LwWjCuVRMOWkGElUn4NjuU/tIhhtx/yOmaL/FIvDDBczi2fWRy5rJgdl294I
-         tzDpPcC+p82XePa2eXB5pSaLoULWpHPKIuvZcbSuS2ex50FyV9EI+QH8gRACdYEDrc8e
-         ELk99oKQSe16VtiLX/Nq2HV7rZ1csRbB2AqVGIPopDXAL2Hj/Q7U8c5jAa6MBQhDlwLj
-         ET3L9pLoAv4G2DgudbJyzaz0F+QvnMNInRCz6CDlnZa8l3jq+BiIfjRp9B6x+USmDIIB
-         BkaQ==
-X-Gm-Message-State: ABy/qLZMzdN1frRMV7HVXo94MaVDBJf5h7RmvK5rICR6H2j8FsGF8Eju
-	y0AOn+ICEHzvLSNjRTsULCL15Q==
-X-Google-Smtp-Source: APBJJlHeDhkeg/t3SDqXI0Gb70NrfH1gStJefo5IQ6n+EijhNE6sE874G6XwZxFJT4f3Bobu7c4mrA==
-X-Received: by 2002:adf:ee10:0:b0:317:5351:e428 with SMTP id y16-20020adfee10000000b003175351e428mr765150wrn.4.1690511248370;
-        Thu, 27 Jul 2023 19:27:28 -0700 (PDT)
+        bh=FDEw8VcsipN2f9HP2hbo0C9DGlgmo5gAq6nsfLHWOes=;
+        b=VerMHqKmvHgp2pIAF9RGeWBXG9lY63hADIyOA71QZ6iZdMKfR6jITFkDnP6xV4dffx
+         PEzpgjLfuYWRu2eD24P1oWTyeVlGk+D3NLZhyPjGqXomdA6s7DJ7gtvOBZ880SbTkSra
+         0+37GA7vYSqpARdo6VXALTLKAwOSwGtvYLe9+7WCj/8I7DTWaMg2g4fdT6ryUoFsJtf9
+         PedgFUBxM3hy8MgWCjJEgIuVvAe4UNxIqrTKRa2CjW+OwjWopKmkrhfmEZ2N7j/b8bg8
+         //ucrMIxIVb4iPWhGkyhnZzWEDPyz/slN4TSQ+M7J05zmaWMzpFcmRlZ3nY1A6RWaQVt
+         aE8A==
+X-Gm-Message-State: ABy/qLZgJ6k36YE8T+eInr6YYTkgyX8JOxY/cNLFXdvWdFa2AZOukddj
+	dR7Y6yqKx/v/13O2H7fXTVNBAA==
+X-Google-Smtp-Source: APBJJlHCbnzVRjrCqObrktQTfaax52MNIksi8HS4GWyUGX2L4dl0GTcXG0CCNRcJrQm+lBQOgNiPTg==
+X-Received: by 2002:a2e:b0ce:0:b0:2b6:ad79:a4fb with SMTP id g14-20020a2eb0ce000000b002b6ad79a4fbmr597273ljl.1.1690511503878;
+        Thu, 27 Jul 2023 19:31:43 -0700 (PDT)
 Received: from [192.168.2.107] ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id i17-20020a5d55d1000000b003143be36d99sm3503253wrw.58.2023.07.27.19.27.27
+        by smtp.gmail.com with ESMTPSA id j6-20020a05600c1c0600b003fc3b03caa5sm8121135wms.1.2023.07.27.19.31.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 19:27:27 -0700 (PDT)
-Message-ID: <954f2f20-c5b2-b70b-992c-952fd8a98fa1@linaro.org>
-Date: Fri, 28 Jul 2023 03:27:26 +0100
+        Thu, 27 Jul 2023 19:31:43 -0700 (PDT)
+Message-ID: <4701576f-5eca-b1e9-5b5c-de1d861e286a@linaro.org>
+Date: Fri, 28 Jul 2023 03:31:41 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
@@ -71,20 +71,21 @@ Subject: Re: [PATCH 8/8] mtd: rawnand: qcom: Fix address parsing within
  ->exec_op()
 Content-Language: en-US
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Manivannan Sadhasivam <mani@kernel.org>,
- Md Sadre Alam <quic_mdalam@quicinc.com>,
- Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Pratyush Yadav <pratyush@kernel.org>,
- Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kernel test robot <lkp@intel.com>
+ Manivannan Sadhasivam <mani@kernel.org>
+Cc: Md Sadre Alam <quic_mdalam@quicinc.com>,
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ kernel test robot <lkp@intel.com>
 References: <20230716144612.32132-1-miquel.raynal@bootlin.com>
  <20230716144612.32132-9-miquel.raynal@bootlin.com>
+ <20230717063843.GA7062@thinkpad> <20230727165923.32488041@xps-13>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230716144612.32132-9-miquel.raynal@bootlin.com>
+In-Reply-To: <20230727165923.32488041@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_192730_104613_9F8E03F7 
-X-CRM114-Status: GOOD (  11.73  )
+X-CRM114-CacheID: sfid-20230727_193151_692847_B5E2BDDF 
+X-CRM114-Status: GOOD (  13.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,23 +102,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi, Miquel,
 
-
-On 7/16/23 15:46, Miquel Raynal wrote:
-> The naddrs variable is initialized but not used. Fixing this could have
-> been a matter of dropping the variable, but the right way to do it looks
-> a bit more complex: we can avoid useless writes to the q_op structure by
-> using it. In practice we could even have possible out-of-bound bugs with
-> the existing implementation. Let's fix all that by just performing the
-> right number of assignments in the addr{1,2}_reg fields.
+On 7/27/23 15:59, Miquel Raynal wrote:
+> Hi Sadre,
 > 
-> Fixes: 89550beb098e ("mtd: rawnand: qcom: Implement exec_op()")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202307131959.PdPSC86K-lkp@intel.com/
-> Closes: https://lore.kernel.org/oe-kbuild-all/202307131730.NOYbcjBr-lkp@intel.com/
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> mani@kernel.org wrote on Mon, 17 Jul 2023 12:08:43 +0530:
+> 
+>> On Sun, Jul 16, 2023 at 04:46:12PM +0200, Miquel Raynal wrote:
+>>> The naddrs variable is initialized but not used. Fixing this could have
+>>> been a matter of dropping the variable, but the right way to do it looks
+>>> a bit more complex: we can avoid useless writes to the q_op structure by
+>>> using it. In practice we could even have possible out-of-bound bugs with
+>>> the existing implementation. Let's fix all that by just performing the
+>>> right number of assignments in the addr{1,2}_reg fields.
+>>>
+>>> Fixes: 89550beb098e ("mtd: rawnand: qcom: Implement exec_op()")
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Closes: https://lore.kernel.org/oe-kbuild-all/202307131959.PdPSC86K-lkp@intel.com/
+>>> Closes: https://lore.kernel.org/oe-kbuild-all/202307131730.NOYbcjBr-lkp@intel.com/
+>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>  
+>> LGTM! But I'm relying on Sadre to test it.
+>>
+>> Acked-by: Manivannan Sadhasivam <mani@kernel.org>
+> I don't think I've received feedback from Sadre, I would like to close
+> these issues, can you please test and give us feedback?
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+All patches are pretty straight forward. Let the 0-day bot run with them
+and then apply all if no further feedback.
+
+Cheers,
+ta
 
 ______________________________________________________
 Linux MTD discussion mailing list
