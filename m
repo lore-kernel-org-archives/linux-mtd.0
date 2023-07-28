@@ -4,88 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 970B4C001DC
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jul 2023 02:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE04EC001DC
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jul 2023 02:33:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=l1ujKPN8kdM4JON3pYGWQ1iAqTDURwTjXBo6iHJSc50=; b=wM219wvl1UOESj
-	8xaJEweluFyjnvNqQT7ojK6qc53oCzocwR+EVxN1hyLON85Gv0cB4ejph9TXc8alX6XQUxdxrvcQn
-	U6jvnIaVN4v+Vx38FyRNTolc9SYM4CZzK8wZ3CJiNdGvFYuRTnWMqQ2XeeIv+K6aKdKSiKejAi4qt
-	V6krjXYZp3QjDoxXxDSxKG9SGdJxcOa7SvrqmbWrXWkXFhT8ovH9Oz4YooVcoqggDtTr9lOM7/xFl
-	UgcE7Tt7V69FUhnQ9xLN5CYdENjXvyMHifO//ikeLXDKp8oNKuhsrsPaceFp3TDaUJGjTft2tNcrA
-	4+MNTZvFpTHSS7QYPzUA==;
+	List-Owner; bh=Hfvx/Vjw/YD/VnnjKx6AXm8bTazAkP1ayyNewYyc+3E=; b=SmtGSbRpKupeei
+	oMF16zkQLLR8vsDDjiYawgPNUmVG1xoHSk4Jp3pwMp/wNvGJK4CsK/gu5fuLV2eYprOd/oZLQZYLa
+	1G2+714H+VKu8ZDXeAG3tzeAXBTuldCNQfJk2H4/L2Xqr+YHh5tdHEFAD+PJODRJ4iKj1WbbZl4mc
+	oCYvlZVt/tgAu1MrdYYMjBgY9sHzxKXZO2s1IVkqF4l6GVS3HnsYiPM4pxfGWhD+IsVGZOVgThWqY
+	sLXKK2SaaOIoMzX5DrYRL5lYSzrnL4QiApwZFWfkPQBMRmzyWXH6obJAQi9PvIgQxbkemomdifiGS
+	jJzaMZbcn5jFX1deNQkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPDGk-001J2w-1R;
-	Fri, 28 Jul 2023 02:31:54 +0000
-Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
+	id 1qPDIa-001JQC-1n;
+	Fri, 28 Jul 2023 02:33:48 +0000
+Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPDGh-001J0m-25
-	for linux-mtd@lists.infradead.org;
-	Fri, 28 Jul 2023 02:31:53 +0000
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9540031acso26586981fa.3
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 19:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690511504; x=1691116304;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FDEw8VcsipN2f9HP2hbo0C9DGlgmo5gAq6nsfLHWOes=;
-        b=KjGdeUFTefSRA4UcUnwO46yAsOyPdALndbY37a66ecLG4vFt7fx7DKT42FepdCVBZX
-         ragCYoh1n/fsq6BhLTi+0PDgxCE+1zOX26bcsj64g04LEWLcUXI4at4rC7Rej2Ts4nSM
-         r6JucAE8EaM5MCJL9+KyskYxrDcRWGZhwyNHYRkoyyz33U2faw00B5XF1PW2t9nchNMN
-         Ca/Kl+AYo2lTgY7byLrGIf8rjnXQNkLeAsXAQ6DRoMxnpXzRDDZgz8wcQ0J0S0V6GhXs
-         NcxKVmBWGpKxZydun3Dmk0oC4iZ+VjEH3YxdrxLi9vkEzW73OQsksM5qB0aiw4BxQ5OH
-         JjbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690511504; x=1691116304;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FDEw8VcsipN2f9HP2hbo0C9DGlgmo5gAq6nsfLHWOes=;
-        b=VerMHqKmvHgp2pIAF9RGeWBXG9lY63hADIyOA71QZ6iZdMKfR6jITFkDnP6xV4dffx
-         PEzpgjLfuYWRu2eD24P1oWTyeVlGk+D3NLZhyPjGqXomdA6s7DJ7gtvOBZ880SbTkSra
-         0+37GA7vYSqpARdo6VXALTLKAwOSwGtvYLe9+7WCj/8I7DTWaMg2g4fdT6ryUoFsJtf9
-         PedgFUBxM3hy8MgWCjJEgIuVvAe4UNxIqrTKRa2CjW+OwjWopKmkrhfmEZ2N7j/b8bg8
-         //ucrMIxIVb4iPWhGkyhnZzWEDPyz/slN4TSQ+M7J05zmaWMzpFcmRlZ3nY1A6RWaQVt
-         aE8A==
-X-Gm-Message-State: ABy/qLZgJ6k36YE8T+eInr6YYTkgyX8JOxY/cNLFXdvWdFa2AZOukddj
-	dR7Y6yqKx/v/13O2H7fXTVNBAA==
-X-Google-Smtp-Source: APBJJlHCbnzVRjrCqObrktQTfaax52MNIksi8HS4GWyUGX2L4dl0GTcXG0CCNRcJrQm+lBQOgNiPTg==
-X-Received: by 2002:a2e:b0ce:0:b0:2b6:ad79:a4fb with SMTP id g14-20020a2eb0ce000000b002b6ad79a4fbmr597273ljl.1.1690511503878;
-        Thu, 27 Jul 2023 19:31:43 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id j6-20020a05600c1c0600b003fc3b03caa5sm8121135wms.1.2023.07.27.19.31.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 19:31:43 -0700 (PDT)
-Message-ID: <4701576f-5eca-b1e9-5b5c-de1d861e286a@linaro.org>
-Date: Fri, 28 Jul 2023 03:31:41 +0100
+	id 1qPDIX-001JOu-1M;
+	Fri, 28 Jul 2023 02:33:47 +0000
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S2FOs9012439;
+	Fri, 28 Jul 2023 02:33:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=93x7U2HTwhv8Uw4ybnu+PwXlw6+ODhbER4QZj3N8mHY=;
+ b=AZwQ+QgpUIVua+ZuOWq2uCWqXR70sgZVlAb0oM1w0cqlTaFzPAFHIY2tiLhefej4Us/w
+ g3u2zPCm9vSQwg1yZ7G7SpsQ3lFOaQ3S/mJzkIvOxNhbs0jHchbAZsepWJffagtTsQGh
+ E3ipR2nf7bkhOmz1bfYyAEUJ9PaMs0VW+qNlp8WmQBO7rkq0BtscHwgjFPIslm/Ypy+t
+ y6a3vP0jcImOmDHwWH1BY0JSvBsueopgZdpuZIuNARssa3jYUqfL9zPqFq4lI4D7I1PM
+ BzDRzJNYKsn0vLPCMgCbLfDtFqknaLlY7pDk5wBw698iZoftyDWBVntgqeK6jRkSvpv/ iA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3mpt2a8b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 28 Jul 2023 02:33:33 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36S2XW7n015139
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 28 Jul 2023 02:33:32 GMT
+Received: from [10.216.45.120] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
+ 2023 19:33:27 -0700
+Message-ID: <9d8296a4-8566-cc83-2ef8-3589afeb22f2@quicinc.com>
+Date: Fri, 28 Jul 2023 08:03:22 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
 Subject: Re: [PATCH 8/8] mtd: rawnand: qcom: Fix address parsing within
  ->exec_op()
 Content-Language: en-US
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Manivannan Sadhasivam <mani@kernel.org>
-Cc: Md Sadre Alam <quic_mdalam@quicinc.com>,
- Sricharan Ramabadhran <quic_srichara@quicinc.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- kernel test robot <lkp@intel.com>
+        Manivannan Sadhasivam
+	<mani@kernel.org>
+CC: Md Sadre Alam <quic_mdalam@quicinc.com>,
+        Richard Weinberger
+	<richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus
+	<tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        "Michael
+ Walle" <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        kernel test robot <lkp@intel.com>
 References: <20230716144612.32132-1-miquel.raynal@bootlin.com>
  <20230716144612.32132-9-miquel.raynal@bootlin.com>
  <20230717063843.GA7062@thinkpad> <20230727165923.32488041@xps-13>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
+From: Sricharan Ramabadhran <quic_srichara@quicinc.com>
 In-Reply-To: <20230727165923.32488041@xps-13>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 6Ok3j2Bb-2ph4OajFl8OzkIIkFkBzjQ8
+X-Proofpoint-GUID: 6Ok3j2Bb-2ph4OajFl8OzkIIkFkBzjQ8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 spamscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1011 mlxlogscore=911
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307280022
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_193151_692847_B5E2BDDF 
-X-CRM114-Status: GOOD (  13.82  )
+X-CRM114-CacheID: sfid-20230727_193345_595207_C5B72FCC 
+X-CRM114-Status: GOOD (  16.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,14 +106,14 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi, Miquel,
+Hi Miquel,
 
-On 7/27/23 15:59, Miquel Raynal wrote:
+On 7/27/2023 8:29 PM, Miquel Raynal wrote:
 > Hi Sadre,
 > 
 > mani@kernel.org wrote on Mon, 17 Jul 2023 12:08:43 +0530:
@@ -121,18 +130,21 @@ On 7/27/23 15:59, Miquel Raynal wrote:
 >>> Reported-by: kernel test robot <lkp@intel.com>
 >>> Closes: https://lore.kernel.org/oe-kbuild-all/202307131959.PdPSC86K-lkp@intel.com/
 >>> Closes: https://lore.kernel.org/oe-kbuild-all/202307131730.NOYbcjBr-lkp@intel.com/
->>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>  
+>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>>
 >> LGTM! But I'm relying on Sadre to test it.
 >>
 >> Acked-by: Manivannan Sadhasivam <mani@kernel.org>
+> 
 > I don't think I've received feedback from Sadre, I would like to close
 > these issues, can you please test and give us feedback?
+> 
 
-All patches are pretty straight forward. Let the 0-day bot run with them
-and then apply all if no further feedback.
+  Sorry for the delay in response. Testing this, will respond back
+  shortly today.
 
-Cheers,
-ta
+Regards,
+  Sricharan
 
 ______________________________________________________
 Linux MTD discussion mailing list
