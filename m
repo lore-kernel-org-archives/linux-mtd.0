@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39FE0C0015E
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jul 2023 02:18:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B756DC0015E
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jul 2023 02:21:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lQs9cFyNPE+8OsRIfgwfZvusfP1rjVNsHEefOzcCIak=; b=LjVp0C7g7z0Q0f
-	UjeolOvlwsQeAM7Zu5gXL/6x1pAZy+9wwF95Zq+QOYCothja2t3Xj8gFPsaM9eFrgDV9twpvsrbkG
-	g0tsR6ELgMYiKTaokxM3blXSnedRq+vx5dcZpWEtWgzHiTkvGjY/JucsMa8y/QB/1eMFg4i++8O+I
-	JL+v9XZQ9lRudSm2R7z9+H3FrcgTKZf4t33ObDFLoc9drjknwxMaQ0tQm2mu4mEVTbZMQRkNoOLhd
-	Rg9wpLtCy3xjR3fiN73bW02MgopzeuNd8UlJ0Ew3Q8YYVGM6TRBEb5B7zr4AnNLl9xi1XCY2Melb0
-	sBLktru+kOjUCQVRzZMw==;
+	List-Owner; bh=WIJvVi7FEbnduviZOLsKKWXV4Whv3O6cJ64FPyP3yLE=; b=jRxhe3W4G6u7XZ
+	i8r1UcCaC59ueETGn2MZYuzCwNroZVojfLTzWR0dbfxP9QbXbZEeHPcajVn6vNVDTdS/MCuyNdYQH
+	sw55OxML0Tf/F+e435j+l9a2aghdvpJzZT59kBBHhVWZx5RVdZSsYNVeXV7o3NbDg6f7+9otcPKJr
+	LWie8xko3H8Bt+ilEVXvN59sY8zkiVhvVASvurGF6qujL3MDKtcx8VYqDaIUhXN6Wto27kaN213Ed
+	M3P1rIB+SpMx1jSvqWZd7UmJ3EwceyRfEpEiv/4uWscQUL5aRTnb4CxNRsBXu1zjFoNmAdj/dZHNY
+	P+Kc5GvYcbB5thsiw+ew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPD3h-001Gwq-0W;
-	Fri, 28 Jul 2023 02:18:25 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1qPD6A-001Hdm-31;
+	Fri, 28 Jul 2023 02:20:58 +0000
+Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPD3d-001Gud-0K
+	id 1qPD67-001Hbz-0i
 	for linux-mtd@lists.infradead.org;
-	Fri, 28 Jul 2023 02:18:23 +0000
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fbea147034so17260735e9.0
-        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 19:18:20 -0700 (PDT)
+	Fri, 28 Jul 2023 02:20:56 +0000
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fc02a92dcfso17021125e9.0
+        for <linux-mtd@lists.infradead.org>; Thu, 27 Jul 2023 19:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690510700; x=1691115500;
+        d=linaro.org; s=google; t=1690510853; x=1691115653;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=niZV9KuZ2GFGX4PR+fTtCGIqcdMp1qduxnH7gPybaRI=;
-        b=y9BWxJCdLub7HwwIhjUnSln3Ktr1QW3oUomqcn4OjE3Blk0VSWcVjLij8AG5tXLOvO
-         LG4IhAaxb1TlOU3A4+nogb7ISFbSzL4fIchu1GB4SoQrPEs+PhJNrTX8uWiYkiAzAfH6
-         37MS5bwvxsKOK3wQZlwIbCmdt8IQmVLeYuH7uqwq4EGxNYC0cfM3cX5GAiLv1j2gCp4S
-         9eG3nOFefy/VGbZyWBXeEMFiwZzO2PeMJBVS24+8Bsndl3v53cutmzHdqKuQXOcHv/+6
-         ZWCNtpSzcA0egiJcwhCCs03W7mQcYof6KwCkdHaPio6esWZWPBTHkUsWqmuMgRdfF6ZR
-         22OA==
+        bh=KHNmsX1L3exM5YHrmJYSgAuHeoCvpRthm20M/V5rFkE=;
+        b=SG6mS1yNtO+QYeV+X7L7yQMg16efgT9KS5cNzyL9utIIZExEsFpCw6CnpziK7elvuM
+         DgAgH7fcv6+WTL8Jv1R1Kqo2J+mwT6SdQZ7DuAKSrlwaBuuo+zIBpbz5N567bupDIC18
+         pcP8KdHaxdmpsShfG0p3Df+CPeWlss43RuZF9sbqge6BJ3R4tSwgxwxxUru7aOWQBMs6
+         Hjz9LZQKpS47Ms2aqxrQ4+6i4HtkFf2ImV0z2FQUW8frClriP/SZsBJcAgMFl7+BIc3a
+         3u0GdcBsHF1zreUNMpjA2u//SA7y09UZGsDvRXU0qa/Vpr6ZYzTAAiL3FiHjMCCcg/LF
+         10wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690510700; x=1691115500;
+        d=1e100.net; s=20221208; t=1690510853; x=1691115653;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=niZV9KuZ2GFGX4PR+fTtCGIqcdMp1qduxnH7gPybaRI=;
-        b=HY+uleM3n6QBQ8QwGixiLVuaHv0G8LedvHiVQZv+8CSlIomaPTwHQ/d1r/kO7WWCFU
-         T5QkWzT7BsRZbP3jZoh+Xl14cBKChJ6Thxj325Yeykp75HzlqVfO8SzEfFB0cT1ci2/4
-         AuD/vCezNwcmrEG4uLTQSIr3UKMBPuo0iUhcGqGpL5/WK73PZbgrU+3ZUXMgLq++iDYQ
-         YVunu63va8ZqizqHgAUXS2E8rmy8bcg2WdW0DcfYwQ0wz8ur5vAwQNgPzhvpYr9yDBNv
-         L2ZXUbAtlZbvh03Bqm1S4ZOMX7FWm2oWPEj3pGfMeqydIVlIlTTFx+joZR3RH7ZQD2Aw
-         GRbw==
-X-Gm-Message-State: ABy/qLYbomDHG7KLn3wlTeglbNuyIZqa5stXez226mxgS/z013NLK3C+
-	vzqfwf/CcIImUnGUzhDJen2omw==
-X-Google-Smtp-Source: APBJJlFB/56VBm3kl5IgeiFyzlA+McrpRROrnpLUm04TmFap6/1qSd72GRdSE7p0pKNR4MDBGRFxpQ==
-X-Received: by 2002:a05:600c:11cd:b0:3fb:ffef:d058 with SMTP id b13-20020a05600c11cd00b003fbffefd058mr547060wmi.0.1690510699782;
-        Thu, 27 Jul 2023 19:18:19 -0700 (PDT)
+        bh=KHNmsX1L3exM5YHrmJYSgAuHeoCvpRthm20M/V5rFkE=;
+        b=AfuOVHhEt9sfl9pd0tyi2+U+u2Gp2P2fpoLC21zqUdMbNZPQe2D7eRTjAszyRmueYp
+         1VZbFDG0c/K1+QUp1SzYKoCi5fSg351mx5xrYE1Wo0IqEhGhGk4LBJ59OAUOvKC7tRBg
+         yv4PxIeAECydFF++fcJgPXmjUFzerDrkQ/dOGHaxZsoYawxc3toUPSriWkUEM88BpRnj
+         GeSbTcV3y+D0Y9csHGwbGJefx21GH4NrXebXFki26+X/oah8DLLdYHhSKahmTOrjkIGz
+         0piAIYseuF4zteJJiU0Pyot/q54r+Dp79L1emCJ1BldTAoy4LEQVOVJgWFyBRs5v+G/s
+         d0lw==
+X-Gm-Message-State: ABy/qLbaD35/K44N0fNY7btSf9WgOMi4Pqc/g5Q/OBU4RmoHCU886u+K
+	0+ZSAvIh7Myh7ZsZ6h2Jtscv0A==
+X-Google-Smtp-Source: APBJJlFR8XP9KhQ7HlA0NMSR4HTiS68KXrQ8nTstT5QZgD7Argfe9iJajxOMI0nWDbGeqRi3Lvmuaw==
+X-Received: by 2002:a1c:ed0e:0:b0:3fc:5a3:367c with SMTP id l14-20020a1ced0e000000b003fc05a3367cmr600733wmh.32.1690510852419;
+        Thu, 27 Jul 2023 19:20:52 -0700 (PDT)
 Received: from [192.168.2.107] ([79.115.63.48])
-        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fba92fad35sm5893011wmc.26.2023.07.27.19.18.18
+        by smtp.gmail.com with ESMTPSA id w17-20020a05600c015100b003fbfef555d2sm5855974wmm.23.2023.07.27.19.20.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 19:18:19 -0700 (PDT)
-Message-ID: <25458c7f-7db7-468b-cdfe-c00cff31a32d@linaro.org>
-Date: Fri, 28 Jul 2023 03:18:17 +0100
+        Thu, 27 Jul 2023 19:20:51 -0700 (PDT)
+Message-ID: <accdb348-e96c-e635-461e-65e4a6584e9a@linaro.org>
+Date: Fri, 28 Jul 2023 03:20:50 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 4/8] mtd: rawnand: qcom: Fix the spacing
+Subject: Re: [PATCH 5/8] mtd: rawnand: qcom: Fix wrong indentation
 Content-Language: en-US
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Manivannan Sadhasivam <mani@kernel.org>,
@@ -78,12 +78,12 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
 References: <20230716144612.32132-1-miquel.raynal@bootlin.com>
- <20230716144612.32132-5-miquel.raynal@bootlin.com>
+ <20230716144612.32132-6-miquel.raynal@bootlin.com>
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230716144612.32132-5-miquel.raynal@bootlin.com>
+In-Reply-To: <20230716144612.32132-6-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230727_191821_143314_6541AE09 
-X-CRM114-Status: GOOD (  15.20  )
+X-CRM114-CacheID: sfid-20230727_192055_308716_D5ED7467 
+X-CRM114-Status: GOOD (  16.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,38 +103,39 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
 On 7/16/23 15:46, Miquel Raynal wrote:
-> Fix following checkpatch warning:
-> 	"CHECK: Please don't use multiple blank lines"
-> 	"CHECK: Please use a blank line after
-> 		function/struct/union/enum declarations"
+> The main "for" loop in qcom_read_status_exec() does guard the following
+> to if's which are badly indented. Fix the indentation.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
 > ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/nand/raw/qcom_nandc.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 54a7b49bda87..554cca3801da 100644
+> index 554cca3801da..3adc40ef5cf6 100644
 > --- a/drivers/mtd/nand/raw/qcom_nandc.c
 > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -1997,7 +1997,6 @@ static int qcom_nandc_write_page(struct nand_chip *chip, const u8 *buf,
->  			oob_size = ecc->bytes;
->  		}
+> @@ -2722,12 +2722,12 @@ static int qcom_read_status_exec(struct nand_chip *chip,
+>  	for (i = 0; i < num_cw; i++) {
+>  		flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
 >  
-> -
->  		write_data_dma(nandc, FLASH_BUF_ACC, data_buf, data_size,
->  			       i == (ecc->steps - 1) ? NAND_BAM_NO_EOT : 0);
+> -	if (flash_status & FS_MPU_ERR)
+> -		host->status &= ~NAND_STATUS_WP;
+> +		if (flash_status & FS_MPU_ERR)
+> +			host->status &= ~NAND_STATUS_WP;
 >  
-> @@ -2373,6 +2372,7 @@ qcom_nandc_calc_ecc_bytes(int step_size, int strength)
->  {
->  	return strength == 4 ? 12 : 16;
->  }
-> +
->  NAND_ECC_CAPS_SINGLE(qcom_nandc_ecc_caps, qcom_nandc_calc_ecc_bytes,
->  		     NANDC_STEP_SIZE, 4, 8);
+> -	if (flash_status & FS_OP_ERR ||
+> -	 (i == (num_cw - 1) && (flash_status & FS_DEVICE_STS_ERR)))
+> -		host->status |= NAND_STATUS_FAIL;
+> +		if (flash_status & FS_OP_ERR ||
+> +		    (i == (num_cw - 1) && (flash_status & FS_DEVICE_STS_ERR)))
+> +			host->status |= NAND_STATUS_FAIL;
+>  	}
 >  
+>  	flash_status = host->status;
 
 ______________________________________________________
 Linux MTD discussion mailing list
