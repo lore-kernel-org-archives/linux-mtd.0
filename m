@@ -4,63 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70F2DEB64DD
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Aug 2023 08:58:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC2ECEB64DD
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Aug 2023 09:55:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JVwY6XCdz5YuCz5/JAoWq0SNpmlXtsdMVFdqdJHG1ag=; b=PdhM4JW/5gfFUO
-	0yjBtyEv6XI7qep8GoheRdwsgHyJVle4zjRr8lg8Sr4OcRo8SsdPIpwJizpLe91VTklixQT2ORWjZ
-	NEBtETgYB+yLOl1BvT40dD1l9f+s3gsktt/SqA0WnYo0Hs8sqxctjUUrvkwV857ppbi/5j6lT7tJo
-	nIzJrc5KF7P22CkKY5gDmxb9Pxw2oDpqVbfNwQMU4ZdfsJIfKc6N7H17d0a5zo938sHnkBn1ptcDO
-	Rd3EIJYDzuw/ufRi3bDdVK32p2aArjejEHSYhnGoLBDdYjrREStGtuaPyekQmQYVZBCcxUFLP6hPB
-	D5TKfEC4NnyExi1A0x6A==;
+	List-Owner; bh=LiU9sCiLqBF8qMXh3nbt4uSdnugb2I24BvfQjsNI3dA=; b=GEkhIj9+Wc7B8Q
+	b3FLq8RrVmSyP4CViMtTM1eUD7KBEzD/NWwlOvIHpLBcD9txcjqdWeI3eabHcZyuDiS2B4S5vxzN8
+	7Iwa24TvPVs/8Z5x1x/hZGO0/bzZXESwSYMObiikpQ/gKTYAUTizECa3Vu2HPFnXrlDERI+2u/GOM
+	WgQiBERoSoX+YVDy8ZfIsNyyX7a1XhnINHjSFkIOUdMta4kG7Uvrv032YyomiaOlfeV0fPXqXbyCe
+	PfilQV/ZMtNq96Ld2dFEZ+qWIzx9taHuTdW+GcFukuS2FEImmSI7aGP6+f6thoK+1NLuc4MBvLmJA
+	n616ETu0I76C1sndnM9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qQlCw-000hpa-2w;
-	Tue, 01 Aug 2023 08:58:22 +0000
-Received: from relay1-d.mail.gandi.net ([2001:4b98:dc4:8::221])
+	id 1qQm67-001gls-0f;
+	Tue, 01 Aug 2023 09:55:23 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qQlCt-000hmX-2I
+	id 1qQm65-001glR-30
+	for linux-mtd@bombadil.infradead.org;
+	Tue, 01 Aug 2023 09:55:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:Subject:Message-ID:
+	Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=MAFOJMKTXuhVG+g9Hw9Qx7UvLRPR17iZRsAbAQ5TzME=; b=Y/qMBTL0+E4U2W411NSAwiKard
+	Ao7S4QeS5ZfNG60NMkx3bDuabutS1Yuwv65laPHguc1f8ENMUdrQGEDuTU0nxHH+L9KUmGmdigrTV
+	YQUIv8RAtTS/eSaoGvrEu6Q5NnBTAmE+7xjiysj/DDJwIZ/PKzeJAm9Ic8kBHsEUoVwSwIYz2vO1d
+	f7sqowKh8cDOUbWYXxzEB5L1y9qt7I0uQb0bS8fCwu2I5iaQUUiJerad4+F0uQDwDX6Q2Wzxlwi/W
+	8bUyih3gyqBS4hb4YEMouifA6bn4BAk7kLuPZyiLcVOFb0yOtZ0rd5/gUM8dM7FcwzbZP3gMv7nXI
+	eYroV0IQ==;
+Received: from mail-pg1-f181.google.com ([209.85.215.181])
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qQllz-00E2Nk-0f
 	for linux-mtd@lists.infradead.org;
-	Tue, 01 Aug 2023 08:58:21 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5DFA2240009;
-	Tue,  1 Aug 2023 08:58:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690880295;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GTud+IBzOGVuxt61GTjTnVPiZ9H3UzCO3mW4+DKFYXs=;
-	b=fGXuU0EoRTitAS6NMFCBv2WVDmrS6b0414cIYimBCorhem+j1rI6Z9aU3gCjfIKrEAn6tw
-	sDhtG5U7SjjLuGStRVo5YmMWSm8x3gr16aaFD4+tyHHfxmWC7s2ImUVmSr8laD1o/iTcQK
-	+mpuSD0ODeA/2SaDgV1XsZa101DuUOkPwDiLNoNulmk1yBx4LtmhxgrZulqIkZRtvNu3l/
-	pBgOkLENTw/BQFpppLlss5EbjM388A4HFUNpe41GJAsPPNjFOEZ8NGq2KacTEQrT3HdQyW
-	gXvbvrymnPFta2Fafxx6u00K0PMK/iZPRtm28NroB0Kl65D/HZO9d6iXVI9u5A==
-Date: Tue, 1 Aug 2023 10:58:11 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Usyskin, Alexander" <alexander.usyskin@intel.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, Pratyush Yadav
- <pratyush@kernel.org>, "Michael Walle" <michael@walle.cc>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Winkler,
- Tomas" <tomas.winkler@intel.com>, Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Subject: Re: [PATCH v2] mtd: Fix refcounting with MTD_PARTITIONED_MASTER
-Message-ID: <20230801105811.2f0edc64@xps-13>
-In-Reply-To: <CY5PR11MB63664273EC02BE1A9AC05D7EED0AA@CY5PR11MB6366.namprd11.prod.outlook.com>
-References: <20230731090903.770277-1-miquel.raynal@bootlin.com>
-	<CY5PR11MB63664273EC02BE1A9AC05D7EED0AA@CY5PR11MB6366.namprd11.prod.outlook.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	Tue, 01 Aug 2023 09:34:37 +0000
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-563e6524aaeso3103712a12.0
+        for <linux-mtd@lists.infradead.org>; Tue, 01 Aug 2023 02:34:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690882472; x=1691487272;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MAFOJMKTXuhVG+g9Hw9Qx7UvLRPR17iZRsAbAQ5TzME=;
+        b=ny8rFa1G+bJEYmbYaCNXRHOKRDFJZNjv3SO+aqBY/92u10B/7Ujbrk5fB3O4/OP9Bn
+         UgA1Dokym0Jn0gLOKLqfOJ4F5WodP6kOgeLk1YMeAu2zmgHxdeEy9U01uyd89D6CGgWq
+         13Qzt/ncys3sWOD2Px/5C4TDmqe7/P6Wrf5aB5n5FE04XqQqlzGJpApx4pApRXbSnFjq
+         1drgEBJHUj5Lga355jReRngvNCKFY/eAI//UZBFQ67fy8HT7hyLLeFvoSJHJ6+1WQAMC
+         25fM17wQKne9cJTOFUypRzivJt9ep2bKv996sPNYLylvil4ObEIkB0HeKHXOsYs5Q5Hx
+         YiIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690882472; x=1691487272;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MAFOJMKTXuhVG+g9Hw9Qx7UvLRPR17iZRsAbAQ5TzME=;
+        b=TGLIISJKuAxFjzIlUiX867RzpH1e+zLZcdwTCU004Zk5MgF9DsqQx6NxMye2rYFdmw
+         roTcVJ12pHlUeLYag0CBEjGXynSSAj5X9JPvcpbZf09iJLz83SxzctYKI7xPZOxdJzPu
+         aoK5+gRU0oKuLCx+7AfOzQmTeCNr6REoIUEL+tYHM6oLCrf33wm7mfKaHGGf94kMYoAN
+         CYIeStBVXHtr3Az3npUCGCQTsUBlL8LN/FP7eE4nCtsQmM7oQezAqx5XFJ4hzY/T0cW1
+         Huo+BgNIt2NTdPY6DSa2+bNgGxanSynSHFqeYQiXkE4BKbGt5+Yu/XgBpCqoh3oUoGpc
+         A+LQ==
+X-Gm-Message-State: ABy/qLb9/yl3IeAkYTpvXYaLtWjribehCe/g5zhANPemoRggg1mMRrb5
+	ObaKOI/VzqUjfVhcOxqQ0AYf2SuBv48zUuuJ0e2qnLEq
+X-Google-Smtp-Source: APBJJlGqrs2R7KBcTMmPa/Bq9O4ud7vZ5MLyhrsI80fr+XXef3ldbLyiupc1dJxSuC/XN60PtkW8NME0IFyNqlPipME=
+X-Received: by 2002:a17:90a:5213:b0:262:ce8f:a3e with SMTP id
+ v19-20020a17090a521300b00262ce8f0a3emr9378814pjh.42.1690882472146; Tue, 01
+ Aug 2023 02:34:32 -0700 (PDT)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+References: <20230727091610.234132-1-jaimeliao.tw@gmail.com>
+ <20230727091610.234132-2-jaimeliao.tw@gmail.com> <ae53bde4-33d0-861d-b7f4-b86114cd6f58@linaro.org>
+ <CAAQoYR=89oZr3cjeXgei+Ofkjb76mphSFLy_QvQD9QTFcDPx+g@mail.gmail.com> <1df1d6af-3499-68dd-4e55-952199f445f4@linaro.org>
+In-Reply-To: <1df1d6af-3499-68dd-4e55-952199f445f4@linaro.org>
+From: liao jaime <jaimeliao.tw@gmail.com>
+Date: Tue, 1 Aug 2023 17:33:44 +0800
+Message-ID: <CAAQoYRkUieXdavLoawk_n_cCM6GK4S1xSDS1_kMrrin_dMcmUw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] mtd: spi-nor: add Octal DTR support for Macronix flash
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: linux-mtd@lists.infradead.org, pratyush@kernel.org, michael@walle.cc, 
+	miquel.raynal@bootlin.com, leoyu@mxic.com.tw, 
+	JaimeLiao <jaimeliao@mxic.com.tw>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230801_015820_182925_032C7C26 
-X-CRM114-Status: GOOD (  34.29  )
+X-CRM114-CacheID: sfid-20230801_103435_311335_CE4A60BB 
+X-CRM114-Status: GOOD (  36.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,78 +100,208 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQWxleGFuZGVyLAoKYWxleGFuZGVyLnVzeXNraW5AaW50ZWwuY29tIHdyb3RlIG9uIFR1ZSwg
-MSBBdWcgMjAyMyAwODo0NTo0NyArMDAwMDoKCj4gSGkgTWlxdWVsLAo+IAo+ID4gLS0tLS1Pcmln
-aW5hbCBNZXNzYWdlLS0tLS0KPiA+IEZyb206IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxA
-Ym9vdGxpbi5jb20+Cj4gPiBTZW50OiBNb25kYXksIEp1bHkgMzEsIDIwMjMgMTI6MDkKPiA+IFRv
-OiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PjsgVmlnbmVzaCBSYWdoYXZlbmRy
-YQo+ID4gPHZpZ25lc2hyQHRpLmNvbT47IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGlu
-YXJvLm9yZz47IFByYXR5dXNoCj4gPiBZYWRhdiA8cHJhdHl1c2hAa2VybmVsLm9yZz47IE1pY2hh
-ZWwgV2FsbGUgPG1pY2hhZWxAd2FsbGUuY2M+OyBsaW51eC0KPiA+IG10ZEBsaXN0cy5pbmZyYWRl
-YWQub3JnCj4gPiBDYzogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT47
-IFdpbmtsZXIsIFRvbWFzCj4gPiA8dG9tYXMud2lua2xlckBpbnRlbC5jb20+OyBVc3lza2luLCBB
-bGV4YW5kZXIKPiA+IDxhbGV4YW5kZXIudXN5c2tpbkBpbnRlbC5jb20+OyBaaGFuZyBYaWFveHUg
-PHpoYW5neGlhb3h1NUBodWF3ZWkuY29tPgo+ID4gU3ViamVjdDogW1BBVENIIHYyXSBtdGQ6IEZp
-eCByZWZjb3VudGluZyB3aXRoIE1URF9QQVJUSVRJT05FRF9NQVNURVIKPiA+IAo+ID4gVGhlIGxv
-Z2ljIGlzIHdheSB0b28gY29udm9sdXRlZCwgbGV0J3MgY2xlYW4gdGhlIGtyZWZfZ2V0L3B1dCBz
-ZWN0aW9uIHRvCj4gPiBjbGFyaWZ5IHdoYXQgdGhpcyBibG9jayBkb2VzLCBob3BlZnVsbHkgc29s
-dmluZyB0aGUgcmVmY291bnRpbmcgaXNzdWUKPiA+IHdoZW4gdXNpbmcgQ09ORklHX01URF9QQVJU
-SVRJT05FRF9NQVNURVIgYXQgdGhlIHNhbWUgdGltZToKPiA+IC0gSXRlcmF0ZSB0aHJvdWdoIGFs
-bCB0aGUgcGFyZW50IG10ZCBkZXZpY2VzCj4gPiAtIEdyYWIgYSByZWZlcmVuY2Ugb3ZlciB0aGVt
-IGFsbCBidXQgdGhlIG1hc3Rlcgo+ID4gLSBPbmx5IGdyYWIgdGhlIG1hc3RlciB3aGl0aCBDT05G
-SUdfTVREX1BBUlRJVElPTkVEX01BU1RFUgo+ID4gU2FtZSBsb2dpYyBtdXN0IGFwcGx5IGluIHRo
-ZSBwdXQgcGF0aCwgb3RoZXJ3aXNlIGl0IHdvdWxkIGJlIGJyb2tlbi4KPiA+IAo+ID4gQ2M6IFRv
-bWFzIFdpbmtsZXIgPHRvbWFzLndpbmtsZXJAaW50ZWwuY29tPgo+ID4gQ2M6IEFsZXhhbmRlciBV
-c3lza2luIDxhbGV4YW5kZXIudXN5c2tpbkBpbnRlbC5jb20+Cj4gPiBDYzogWmhhbmcgWGlhb3h1
-IDx6aGFuZ3hpYW94dTVAaHVhd2VpLmNvbT4KPiA+IEZpeGVzOiAxOWJmYTllYmViYjUgKCJtdGQ6
-IHVzZSByZWZjb3VudCB0byBwcmV2ZW50IGNvcnJ1cHRpb24iKQo+ID4gU2lnbmVkLW9mZi1ieTog
-TWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KPiA+ICAgCj4gCj4gSSd2
-ZSBwdXQgaXQgb24gdG9wIG9mIG15ICJbUEFUQ0ggdjJdIG10ZDogZml4IHVzZS1hZnRlci1mcmVl
-IGluIG10ZCByZWxlYXNlIiwKPiBsb29rcyBvaywgYnV0IEkgaGF2ZSBoYWQgbm8gcHJvYmxlbXMg
-d2l0aCByZWZjb3VudGluZyBiZWZvcmUuLi4KPiBJTU8sIHdlIG5lZWQgYm90aCB0aGlzIHBhdGNo
-IGFuZCBteSBwYXRjaCBhcyB0aGV5IGZpeCBkaWZmZXJlbnQgaXNzdWVzLgoKTGlrZWx5LCB5ZXMs
-IGxldCdzIHdhaXQgZm9yIFpoYW5nJ3MgZmVlZGJhY2s7IFpoYW5nLCBkb2VzIEthc2FuIHN0aWxs
-CmNvbXBsYWluPwoKPiBUZXN0ZWQtYnk6IEFsZXhhbmRlciBVc3lza2luIDxhbGV4YW5kZXIudXN5
-c2tpbkBpbnRlbC5jb20+Cj4gCj4gPiAtLS0KPiA+IAo+ID4gSGVsbG8sCj4gPiAKPiA+IEFsZXhh
-bmRlciwgWmhhbmcsIHBsZWFzZSB0ZXN0IHRoaXMgdmVyc2lvbiwgaXQgaXMgY2xvc2UgdG8gd2hh
-dCBaaGFuZwo+ID4gcHJvZHVjZWQgd2hpbGUgbm90IHN0cmljdGx5IGlkZW50aWNhbC4gVGhpcyBj
-b21waWxlLXRlc3RlZCBvbmx5LCBwbGVhc2UKPiA+IGNoZWNrIG9uIHlvdSBzaWRlIHdoZXRoZXIg
-aXQgZml4ZXMgdGhlIHJlZmNvdW50aW5nIGlzc3VlIHdpdGggYW5kCj4gPiB3aXRob3V0IFBBUlRJ
-VElPTkVEX01BU1RFUiwgYXMgd2VsbCBhcyB3aXRoIEthc2FuLgo+ID4gCj4gPiBBbGV4YW5kZXIs
-IG1heWJlIHRoZXJlIGlzIHNvbWV0aGluZyBlbHNlIHRvIGZpeCwgaW4gYWxsIGNhc2VzIHRoZSBs
-b2dpYwo+ID4gaGVyZSB3YXMgYnJva2VuIHNvIGxldCdzIHN0YXJ0IGJ5IHRoaXMgb25lIGFuZCBz
-ZWUgaWYgd2UgbmVlZCBzb21ldGhpbmcKPiA+IGVsc2Ugb24gdG9wLgo+ID4gCj4gPiBDaGFuZ2Vz
-IGluIHYyOgo+ID4gKiBHcmFiIHRoZSBwYXJlbnQgYmVmb3JlIGNhbGxpbmcga3JlZl9wdXQoKSB0
-byBhdm9pZCBhY2Nlc3NpbmcgYSBmcmVlZAo+ID4gICBtdGQgcG9pbnRlci4KPiA+IAo+ID4gVGhh
-bmtzLAo+ID4gTWlxdcOobAo+ID4gLS0tCj4gPiAgZHJpdmVycy9tdGQvbXRkY29yZS5jIHwgMTcg
-KysrKysrKysrKy0tLS0tLS0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwg
-NyBkZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZGNvcmUu
-YyBiL2RyaXZlcnMvbXRkL210ZGNvcmUuYwo+ID4gaW5kZXggMjQ2NmVhNDY2NDY2Li45ZThmZjNh
-OTk5ZGUgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL210ZC9tdGRjb3JlLmMKPiA+ICsrKyBiL2Ry
-aXZlcnMvbXRkL210ZGNvcmUuYwo+ID4gQEAgLTEyNDEsMTQgKzEyNDEsMTUgQEAgaW50IF9fZ2V0
-X210ZF9kZXZpY2Uoc3RydWN0IG10ZF9pbmZvICptdGQpCj4gPiAgCQlyZXR1cm4gLUVOT0RFVjsK
-PiA+ICAJfQo+ID4gCj4gPiAtCWtyZWZfZ2V0KCZtdGQtPnJlZmNudCk7Cj4gPiAtCj4gPiAtCXdo
-aWxlIChtdGQtPnBhcmVudCkgewo+ID4gLQkJaWYgKElTX0VOQUJMRUQoQ09ORklHX01URF9QQVJU
-SVRJT05FRF9NQVNURVIpIHx8Cj4gPiBtdGQtPnBhcmVudCAhPSBtYXN0ZXIpCj4gPiAtCQkJa3Jl
-Zl9nZXQoJm10ZC0+cGFyZW50LT5yZWZjbnQpOwo+ID4gKwl3aGlsZSAobXRkKSB7Cj4gPiArCQlp
-ZiAobXRkICE9IG1hc3RlcikKPiA+ICsJCQlrcmVmX2dldCgmbXRkLT5yZWZjbnQpOwo+ID4gIAkJ
-bXRkID0gbXRkLT5wYXJlbnQ7Cj4gPiAgCX0KPiA+IAo+ID4gKwlpZiAoSVNfRU5BQkxFRChDT05G
-SUdfTVREX1BBUlRJVElPTkVEX01BU1RFUikpCj4gPiArCQlrcmVmX2dldCgmbWFzdGVyLT5yZWZj
-bnQpOwo+ID4gKwo+ID4gIAlyZXR1cm4gMDsKPiA+ICB9Cj4gPiAgRVhQT1JUX1NZTUJPTF9HUEwo
-X19nZXRfbXRkX2RldmljZSk7Cj4gPiBAQCAtMTMzMiwxMCArMTMzMywxMiBAQCB2b2lkIF9fcHV0
-X210ZF9kZXZpY2Uoc3RydWN0IG10ZF9pbmZvICptdGQpCj4gPiAgewo+ID4gIAlzdHJ1Y3QgbXRk
-X2luZm8gKm1hc3RlciA9IG10ZF9nZXRfbWFzdGVyKG10ZCk7Cj4gPiAKPiA+IC0Jd2hpbGUgKG10
-ZCAhPSBtYXN0ZXIpIHsKPiA+ICsJd2hpbGUgKG10ZCkgewo+ID4gKwkJLyoga3JlZl9wdXQoKSBj
-YW4gcmVsZXNlIG10ZCwgc28ga2VlcCBhIHJlZmVyZW5jZSBtdGQtPnBhcmVudAo+ID4gKi8KPiA+
-ICAJCXN0cnVjdCBtdGRfaW5mbyAqcGFyZW50ID0gbXRkLT5wYXJlbnQ7Cj4gPiAKPiA+IC0JCWty
-ZWZfcHV0KCZtdGQtPnJlZmNudCwgbXRkX2RldmljZV9yZWxlYXNlKTsKPiA+ICsJCWlmIChtdGQg
-IT0gbWFzdGVyKQo+ID4gKwkJCWtyZWZfcHV0KCZtdGQtPnJlZmNudCwgbXRkX2RldmljZV9yZWxl
-YXNlKTsKPiA+ICAJCW10ZCA9IHBhcmVudDsKPiA+ICAJfQo+ID4gCj4gPiAtLQo+ID4gMi4zNC4x
-ICAKPiAKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Tudor
+
+>
+>
+>
+> On 8/1/23 08:24, liao jaime wrote:
+> > Hi Tudor
+> >
+> >>
+> >>
+> >>
+> >> On 7/27/23 10:16, Jaime Liao wrote:
+> >>> From: JaimeLiao <jaimeliao@mxic.com.tw>
+> >>>
+> >>> Create Macronix specify method for enable Octal DTR mode and
+> >>> set 20 dummy cycles to allow running at the maximum supported
+> >>> frequency for Macronix Octal flash.
+> >>
+> >> 20 dummy cycles is particular for a specific operating frequency.
+> >>
+> >> If you test the flash at different speeds, let's say at 30 MHz, and
+> >> at their highest frequency (133, 200 MHZ?) does the flash work with
+> >> current settings?
+> > Yes, datasheet include "Dummy Cycle and Frequency Table" for checking.
+> > For Macronix spi-nor flash, 20 or 18 dummy cycles should be use at 200MHz.
+> > It alse means that DC 20 is suit for other frequency(<=200MHz).
+> >
+>
+> You didn't answer my question. Does the flash work at 30 MHz by using 20
+> dummy cycles?
+Yes.
+
+> >>>
+> >>> For enable Macronix flashes in Octal DTR mode, Configuration
+> >>> Register2 DOPI bit should be set and DC bit setting for dummy
+> >>> cycles.
+> >>
+> >> Use imperative.
+> > I didn't get it.
+>
+> Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+> instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+> to do frotz", as if you are giving orders to the codebase to change
+> its behaviour. Please read:
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+Got it, thanks.
+
+>
+> >
+> >>>
+> >>> Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
+> >>> Co-developed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> >>> ---
+> >>>  drivers/mtd/spi-nor/macronix.c | 97 ++++++++++++++++++++++++++++++++++
+> >>>  1 file changed, 97 insertions(+)
+> >>>
+> >>> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> >>> index 04888258e891..b397fd274868 100644
+> >>> --- a/drivers/mtd/spi-nor/macronix.c
+> >>> +++ b/drivers/mtd/spi-nor/macronix.c
+> >>> @@ -8,6 +8,22 @@
+> >>>
+> >>>  #include "core.h"
+> >>>
+> >>> +#define SPINOR_OP_MXIC_RD_ANY_REG    0x71            /* Read volatile configuration register 2 */
+> >>> +#define SPINOR_OP_MXIC_WR_ANY_REG    0x72            /* Write volatile configuration register 2 */
+> >>> +#define SPINOR_REG_MXIC_CR2_MODE     0x00000000      /* For setting octal DTR mode */
+> >>> +#define SPINOR_REG_MXIC_CR2_DC               0x00000300      /* For setting dummy cycles */
+> >>> +#define SPINOR_REG_MXIC_OPI_DTR_EN   0x2             /* Enable Octal DTR */
+> >>> +#define SPINOR_REG_MXIC_SPI_EN               0x0             /* Enable SPI */
+> >>> +#define SPINOR_REG_MXIC_DC_20                0x0             /* Setting dummy cycles to 20 */
+> >>> +#define SPINOR_REG_MXIC_ADDR_BYTES   4               /* Fixed R/W volatile address bytes to 4 */
+> >>> +
+> >>> +/* Macronix SPI NOR flash operations. */
+> >>> +#define MXIC_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)              \
+> >>> +     SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MXIC_WR_ANY_REG, 0),                \
+> >>> +                SPI_MEM_OP_ADDR(naddr, addr, 0),                     \
+> >>> +                SPI_MEM_OP_NO_DUMMY,                                 \
+> >>> +                SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
+> >>> +
+> >>>  static int
+> >>>  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+> >>>                           const struct sfdp_parameter_header *bfpt_header,
+> >>> @@ -105,9 +121,90 @@ static const struct flash_info macronix_nor_parts[] = {
+> >>>               FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+> >>>  };
+> >>>
+> >>> +static int macronix_nor_octal_dtr_en(struct spi_nor *nor)
+> >>> +{
+> >>> +     struct spi_mem_op op;
+> >>> +     u8 *buf = nor->bouncebuf, i;
+> >>> +     int ret;
+> >>> +
+> >>> +     /* Use 20 dummy cycles for memory array reads. */
+> >>> +     buf[0] = SPINOR_REG_MXIC_DC_20;
+> >>> +     op = (struct spi_mem_op)
+> >>> +             MXIC_NOR_WR_ANY_REG_OP(SPINOR_REG_MXIC_ADDR_BYTES,
+> >>> +                                    SPINOR_REG_MXIC_CR2_DC, 1, buf);
+> >>> +
+> >>> +     ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
+> >>> +     if (ret)
+> >>> +             return ret;
+> >>> +
+> >>> +     /* Set the octal and DTR enable bits. */
+> >>> +     buf[0] = SPINOR_REG_MXIC_OPI_DTR_EN;
+> >>> +     op = (struct spi_mem_op)
+> >>> +             MXIC_NOR_WR_ANY_REG_OP(SPINOR_REG_MXIC_ADDR_BYTES,
+> >>> +                                    SPINOR_REG_MXIC_CR2_MODE, 1, buf);
+> >>> +     ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
+> >>> +     if (ret)
+> >>> +             return ret;
+> >>> +
+> >>> +     /* Read flash ID to make sure the switch was successful. */
+> >>> +     ret = spi_nor_read_id(nor, 4, 4, buf, SNOR_PROTO_8_8_8_DTR);
+> >>> +     if (ret) {
+> >>> +             dev_dbg(nor->dev, "error %d reading JEDEC ID after enabling 8D-8D-8D mode\n", ret);
+> >>> +             return ret;
+> >>> +     }
+> >>> +
+> >>> +     /* Macronix SPI-NOR flash 8D-8D-8D read ID would get 6 bytes data A-A-B-B-C-C */
+> >>> +     for (i = 0; i < nor->info->id_len; i++)
+> >>> +             if (buf[i * 2] != nor->info->id[i])
+> >>> +                     return -EINVAL;
+> >>> +
+> >>> +     return 0;
+> >>> +}
+> >>> +
+> >>> +static int macronix_nor_octal_dtr_dis(struct spi_nor *nor)
+> >>> +{
+> >>> +     struct spi_mem_op op;
+> >>> +     u8 *buf = nor->bouncebuf;
+> >>> +     int ret;
+> >>> +
+> >>> +     /*
+> >>> +      * The register is 1-byte wide, but 1-byte transactions are not
+> >>> +      * allowed in 8D-8D-8D mode. Since there is no register at the
+> >>> +      * next location, just initialize the value to 0 and let the
+> >>> +      * transaction go on.
+> >>> +      */
+> >>> +     buf[0] = SPINOR_REG_MXIC_SPI_EN;
+> >>> +     buf[1] = 0x0;
+> >>> +     op = (struct spi_mem_op)
+> >>> +             MXIC_NOR_WR_ANY_REG_OP(SPINOR_REG_MXIC_ADDR_BYTES,
+> >>> +                                    SPINOR_REG_MXIC_CR2_MODE, 2, buf);
+> >>> +     ret = spi_nor_write_any_volatile_reg(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> >>> +     if (ret)
+> >>> +             return ret;
+> >>> +
+> >>> +     /* Read flash ID to make sure the switch was successful. */
+> >>> +     ret = spi_nor_read_id(nor, 0, 0, buf, SNOR_PROTO_1_1_1);
+> >>> +     if (ret) {
+> >>> +             dev_dbg(nor->dev, "error %d reading JEDEC ID after disabling 8D-8D-8D mode\n", ret);
+> >>> +             return ret;
+> >>> +     }
+> >>> +
+> >>> +     if (memcmp(buf, nor->info->id, nor->info->id_len))
+> >>> +             return -EINVAL;
+> >>> +
+> >>> +     return 0;
+> >>> +}
+> >>> +
+> >>> +static int macronix_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> >>> +{
+> >>> +     return enable ? macronix_nor_octal_dtr_en(nor) :
+> >>> +                     macronix_nor_octal_dtr_dis(nor);
+> >>> +}
+> >>> +
+> >>>  static void macronix_nor_default_init(struct spi_nor *nor)
+> >>>  {
+> >>>       nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+> >>> +     nor->params->octal_dtr_enable = macronix_nor_octal_dtr_enable;
+> >>
+> >> this must be done in the late_init hook, I'd like to get rid of the
+> >> default_init hook.
+> > nor->params->quad_enable should be move in late_init or
+> > nor->params->octal_dtr_enable only?
+>
+> quad_enable should be parsed from sfdp, thus we have to get rid of
+> setting quad_enable in a dedicated hook. Remove it entirely, but in a
+> dedicated patch. Of course, I expect you test the change and verify
+> that quad still works on all the affected flashes.
+>
+> octal_dtr_enable should be set in late_init as we don't retrieve the
+> octal dtr enable from SFDP yet.
+Ok, I will move it to late_init.
+
+> >
+> >>>  }
+> >>>
+> >>>  static void macronix_nor_late_init(struct spi_nor *nor)
+> >
+> > Thanks
+> > Jaime
+
+Thanks
+Jaime
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
