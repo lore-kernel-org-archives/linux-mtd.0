@@ -4,58 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14119C001DF
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Aug 2023 01:35:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1B86C001E0
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Aug 2023 12:44:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Nk6x18eNicVJjEhz8GU5MhZ27EXaX3cGdM+GqM8aRGk=; b=UVZaFFG3fbVnCD
-	pqCcxGV0bySirs+obTMmAYNONv0XyIqjroYbzX8Q3nAVS3eXT7r31S8gHxraSd8oij5IYmp4hBDiW
-	bTYjLG89Dc5ZnN0FG+mZZFeiPovMCPgiOtj843Wyu2WSq9tE2eMM39eAw0T3QCzOP9RgVsKbSji9S
-	pQ8D+ZGSXfat5uNf0nAmk9U4vvnxEHzDIdkLRGL78ncmMLgy0noZgWRe0tthpaeiZCfQ8gzerOPHd
-	m+ChVU9JSsAJFtRShv+zpD/vRi3EL/UNWCMceYLXBAfBRU97xjhP1545YnaZgeYutTQOiBhPemkZu
-	Hwx0pwJtJaKy15UZIoSQ==;
+	List-Owner; bh=RQhr8In9eYB3SCPeMBcOfIk/tMdTESlLQ/dkgAAdbaI=; b=jYNF/Ii8rnIsUM
+	J0BVjd5+0A+E+vjIiLzXHRXqUjLhtvAkjPCyC3b5XGaPKbiIeHKTZNxm3hAWeP16c4/fQxQb33S8W
+	7L0tQ5Rbqk1M9eddLY68law5O97nAQc/0+x9aokcF96Rxw685RED1E3ketosaBmiNpwLS8QURwpJt
+	VZQA6u6GTZTSL43V0Wny4Zu1ZDNzyMWFcx2JjQ7xW/5AAK+0eaM0bcDa3vfNznm2+LldT02SAui84
+	GyX/ES1giqZVy7AOfFNgGvPnQNAPRpLmdzSuRAzZ4QB3lWRl+Sr/7LI8Tfm12QCNBrjvs4tqn8Mzt
+	4ZEfED5tg8pKiHkol7lw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qR0m6-003hlJ-2h;
-	Wed, 02 Aug 2023 01:35:42 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1qRBDV-004vOY-0I;
+	Wed, 02 Aug 2023 12:44:41 +0000
+Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qR0m2-003hjn-0s;
-	Wed, 02 Aug 2023 01:35:40 +0000
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.55])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RFvdS3P1bzVjmP;
-	Wed,  2 Aug 2023 09:33:48 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
- (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
- 2023 09:35:31 +0800
-From: Li Zetao <lizetao1@huawei.com>
-To: <lizetao1@huawei.com>
-CC: <anand.gore@broadcom.com>, <bcm-kernel-feedback-list@broadcom.com>,
-	<computersforpeace@gmail.com>, <florian.fainelli@broadcom.com>,
-	<kamal.dasu@broadcom.com>, <kursad.oney@broadcom.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
-	<miquel.raynal@bootlin.com>, <rafal@milecki.pl>, <richard@nod.at>,
-	<rjui@broadcom.com>, <sbranden@broadcom.com>, <vigneshr@ti.com>,
-	<william.zhang@broadcom.com>
-Subject: [PATCH -next v2] mtd: rawnand: brcmnand: Use devm_platform_ioremap_resource_byname()
-Date: Wed, 2 Aug 2023 09:35:00 +0800
-Message-ID: <20230802013500.1030853-1-lizetao1@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230801134619.416618-1-lizetao1@huawei.com>
-References: <20230801134619.416618-1-lizetao1@huawei.com>
+	id 1qRBDR-004vNu-09
+	for linux-mtd@lists.infradead.org;
+	Wed, 02 Aug 2023 12:44:39 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7AC5C20004;
+	Wed,  2 Aug 2023 12:44:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1690980270;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8dOawE5kxCNhvhOKy8LNvd/QWehP28IWgnL5mXG3Rew=;
+	b=P0MhsdyMGZ3XJmzlSk4CllYXA1geVTZWmr2Fjyv88Q7ZPbHTwBOY5k2DAO10JT5OBplmOH
+	AkBEeUvauITGmK6ZBJFuyrm00gpgRlP2bOcLdHV440gFQUtFiggkLxUePTWXmrNCKkpqhY
+	EGBLCDf8ZfXprGt5SE+XdzM+LdOBAWV3F79mVQH6J9Ho+ErqTC05FGasNo8+wDhuEmugMM
+	P2t52sXwv0DEpNOjNaTUYrGW2Nnu0EhVpz4IgSJ1QQ6q6zE2V6BXxF5ax4F47OMdGcjYSa
+	OYxOfE1neZ7jzISDyTQOAr6lACPpVNakre4JdzAU23aukqgVknLj69Y+J4mtjA==
+Date: Wed, 2 Aug 2023 14:44:26 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "zhangxiaoxu (A)" <zhangxiaoxu5@huawei.com>
+Cc: "Usyskin, Alexander" <alexander.usyskin@intel.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "Winkler, Tomas" <tomas.winkler@intel.com>,
+ "Lubart, Vitaly" <vitaly.lubart@intel.com>
+Subject: Re: [PATCH] mtd: fix use-after-free in mtd release
+Message-ID: <20230802144426.2411bba2@xps-13>
+In-Reply-To: <d9d56389-7409-79ae-6854-00ab8de7da4d@huawei.com>
+References: <20230727145758.3880967-1-alexander.usyskin@intel.com>
+	<ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
+	<20230727172013.7c85c05d@xps-13>
+	<ZMKUJbl7kFOfgKGg@smile.fi.intel.com>
+	<20230727183611.37d01f51@xps-13>
+	<CY5PR11MB63660B9CE604C0CFF2E088DAED04A@CY5PR11MB6366.namprd11.prod.outlook.com>
+	<d9d56389-7409-79ae-6854-00ab8de7da4d@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230801_183538_642031_A80A7A1D 
-X-CRM114-Status: UNSURE (   9.89  )
+X-CRM114-CacheID: sfid-20230802_054437_247725_15B1CE53 
+X-CRM114-Status: UNSURE (   8.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,77 +79,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert platform_get_resource_byname() + devm_ioremap_resource() to a
-single call to devm_platform_ioremap_resource_byname(), as this is
-exactly what this function does.
-
-Signed-off-by: Li Zetao <lizetao1@huawei.com>
----
-v1 -> v2: modify the subject prefix to "mtd: rawnand: brcmnand:"
-v1: https://lore.kernel.org/all/20230801134619.416618-1-lizetao1@huawei.com/
-
- drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c | 4 +---
- drivers/mtd/nand/raw/brcmnand/iproc_nand.c    | 7 ++-----
- 2 files changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c b/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
-index 71ddcc611f6e..9596629000f4 100644
---- a/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
-@@ -61,15 +61,13 @@ static int bcm63138_nand_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct bcm63138_nand_soc *priv;
- 	struct brcmnand_soc *soc;
--	struct resource *res;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
- 	soc = &priv->soc;
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand-int-base");
--	priv->base = devm_ioremap_resource(dev, res);
-+	priv->base = devm_platform_ioremap_resource_byname(pdev, "nand-int-base");
- 	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
- 
-diff --git a/drivers/mtd/nand/raw/brcmnand/iproc_nand.c b/drivers/mtd/nand/raw/brcmnand/iproc_nand.c
-index d32950847a62..089c70fc6edf 100644
---- a/drivers/mtd/nand/raw/brcmnand/iproc_nand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/iproc_nand.c
-@@ -103,7 +103,6 @@ static int iproc_nand_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct iproc_nand_soc *priv;
- 	struct brcmnand_soc *soc;
--	struct resource *res;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -112,13 +111,11 @@ static int iproc_nand_probe(struct platform_device *pdev)
- 
- 	spin_lock_init(&priv->idm_lock);
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "iproc-idm");
--	priv->idm_base = devm_ioremap_resource(dev, res);
-+	priv->idm_base = devm_platform_ioremap_resource_byname(pdev, "iproc-idm");
- 	if (IS_ERR(priv->idm_base))
- 		return PTR_ERR(priv->idm_base);
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "iproc-ext");
--	priv->ext_base = devm_ioremap_resource(dev, res);
-+	priv->ext_base = devm_platform_ioremap_resource_byname(pdev, "iproc-ext");
- 	if (IS_ERR(priv->ext_base))
- 		return PTR_ERR(priv->ext_base);
- 
--- 
-2.34.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgemhhbmcsCgp6aGFuZ3hpYW94dTVAaHVhd2VpLmNvbSB3cm90ZSBvbiBNb24sIDMxIEp1bCAy
+MDIzIDA5OjM1OjQyICswODAwOgoKPiDlnKggMjAyMy83LzMwIDE5OjEwLCBVc3lza2luLCBBbGV4
+YW5kZXIg5YaZ6YGTOgo+ID4gTWlxdWVsLCBpcyB0aGlzIHBhdGNoIGhlbHBzIHdpdGggeW91ciBv
+cmlnaW5hbCBwcm9ibGVtIG9mIGRldmljZXMgbm90IGZyZWVkPwo+ID4gCj4gPiBaaGFuZywgaXMg
+dGhpcyBwYXRjaCBoZWxwcyB3aXRoIHlvdXIgcHJvYmxlbSB3aXRoIEtBc2FuPyAgCj4gQWZ0ZXIg
+dGhpcyBwYXRjaCBhcHBsaWVkLCB0aGUgcHJvYmxlbSBjYW4gc3RpbGwgYmUgcmVwcm9kdWNlZC4K
+CkRpZCB5b3UgdGVzdCBteSBwYXRjaCBhcyB3ZWxsPyBEb2VzIEthc2FuIHN0aWxsIGNvbXBsYWlu
+IHdpdGggaXQ/CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
