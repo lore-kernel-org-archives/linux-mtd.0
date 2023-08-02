@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE8A1C001E0
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Aug 2023 19:37:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CBC1C001E0
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Aug 2023 19:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8pQIqRxLZSFIxxzdJx3CM2xmtwdJfHPia54hiYqFC90=; b=XcR6YFYabKAfdS
-	qk/WmlvhwUmkddI0xLZGsNc8paMMQWuW1qLSKVxBFdFA7UTy7Sg8uJDPHlt8zBWxNSJcMnw+dZZFM
-	lc7VEgq3YC4VagilXWlXz0/jx8jxBGy76OeCLAN4f863KDLI261bRMD8ZWhn2esqMcr+0RXQu5ADb
-	XeJdOJesMALGpnbFU1F7pHwUq9TxVQ8GQFwFSlQDFUZrwc+l/XbYQOlFMeaUoAtSURwjgLXPm5ZKq
-	hiAL+eOgHN4BmnQkx/KLFifzcUtjH+IYBxqoJKiUohkK3sJmXKdJpXeV35y5vpUTA72nqyZWgTRd1
-	ybIGnJPsyAk1hUeuLHrg==;
+	List-Owner; bh=c2coYATk0tfk0yDvKc/XwbxrwFYoipPffKNnOBMQgIk=; b=ZQlzPqV/J/l0op
+	tnRkTAb644lUtMFm8fJjpJ3qg2tL9GI48OlQQmTS8rxCF/RMxu5WcuATpT+/U3195hJ4fzRYCI154
+	qiNGaTwclXVhtBQYHwchzt+A/dcu//OJZad35WwJURmsbA2csejVdKhHGWkpcThO3Y5LZcssaTyox
+	Dp1yeZEaZqIToIXkijFLrSWUxnK/GZTZIxpYghYKj4vFSHdoOx3z0o9lBjO3TI+P6UqnLiu2POcVF
+	LSQ7lpqUxtvs3BuCvA+M0MDqsAzZCDOI8BC6Q4Dh4Y73b+2u0HulV64yYllAFN8runG+5TyVO30FI
+	AWMXnmwUud75uIRj7rAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qRHfL-005l56-2q;
-	Wed, 02 Aug 2023 19:37:51 +0000
-Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
+	id 1qRHfd-005l98-0H;
+	Wed, 02 Aug 2023 19:38:09 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qRHfI-005l3K-2b;
-	Wed, 02 Aug 2023 19:37:50 +0000
+	id 1qRHfa-005l8Q-1F;
+	Wed, 02 Aug 2023 19:38:07 +0000
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DCAD821A35;
-	Wed,  2 Aug 2023 19:37:44 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BBBB81F390;
+	Wed,  2 Aug 2023 19:38:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1691005064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1691005084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hej32SUQUL4wq5J7Js3JkDxcXNHsWA1VwQ0tN8Q+liI=;
-	b=UU3Tm3G6FjCiIipHgljAOgzfMZUvjNWSdsYJJguFbMcYv2scO9r7dcYFw5uMe9CC4Ad2Qy
-	FUudTxu/2yivhdo/UZ5ja6uq7Y8xdfcD076CUCQw9ZWJtvqXlN1rOkolKNpsEKUGhppUdv
-	mjpPxkrZ0aUM04DZ+ksCa0CPDmtuXDE=
+	bh=hQKpatODDlYJjI5h6ON2K0Xm2qnmIDyhIc44gu3NWBE=;
+	b=LhplXH4J5uUbAjgtJUQ8qRPaaSWgOUuCpAHU5WpGZ3ZAa8UXXkk/2huxZA8KHPddB0sxWg
+	82L3KRAWJBUdPEoSRzDYuyi9h1xUjxTNvcAYVw2CReEhTitiu/Xav/t4Oc3Djs3GIk7CnS
+	UDsWSZfelZno+J9gahI+zq5QLWxp4pM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1691005064;
+	s=susede2_ed25519; t=1691005084;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hej32SUQUL4wq5J7Js3JkDxcXNHsWA1VwQ0tN8Q+liI=;
-	b=NX6MG0fdteUMkKXyD+4G36a30wQWbVAM4a8TsTJKCdzWP/Zccm95SaZr1qpnKF7LvVwXes
-	KKCtU/rORrmysuAg==
+	bh=hQKpatODDlYJjI5h6ON2K0Xm2qnmIDyhIc44gu3NWBE=;
+	b=OOAabGwwpODl/y0IYa1Ey56S8QpPiHacMq0qFwPFteERmRpVU6lGbeF0lh1V5mr0JH+VK9
+	pnHPb7fzF+uFUUAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 973B01391A;
-	Wed,  2 Aug 2023 19:37:44 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A12E1391A;
+	Wed,  2 Aug 2023 19:38:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 1UjoJIiwymQKHwAAMHmgww
-	(envelope-from <jack@suse.cz>); Wed, 02 Aug 2023 19:37:44 +0000
+	id kteGJZywymRaHwAAMHmgww
+	(envelope-from <jack@suse.cz>); Wed, 02 Aug 2023 19:38:04 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B8B08A076B; Wed,  2 Aug 2023 21:37:43 +0200 (CEST)
-Date: Wed, 2 Aug 2023 21:37:43 +0200
+	id EBAAAA076B; Wed,  2 Aug 2023 21:38:03 +0200 (CEST)
+Date: Wed, 2 Aug 2023 21:38:03 +0200
 From: Jan Kara <jack@suse.cz>
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Eric Van Hensbergen <ericvh@kernel.org>,
@@ -118,16 +118,16 @@ Cc: Eric Van Hensbergen <ericvh@kernel.org>,
 	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
 	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
 	linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 4/7] tmpfs: add support for multigrain timestamps
-Message-ID: <20230802193743.3nomcrox6pqhsc5x@quack3>
+Subject: Re: [PATCH v6 6/7] ext4: switch to multigrain timestamps
+Message-ID: <20230802193803.onjopgwdqjonzkwa@quack3>
 References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
- <20230725-mgctime-v6-4-a794c2b7abca@kernel.org>
+ <20230725-mgctime-v6-6-a794c2b7abca@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230725-mgctime-v6-4-a794c2b7abca@kernel.org>
+In-Reply-To: <20230725-mgctime-v6-6-a794c2b7abca@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230802_123748_985055_2D3A2CF0 
-X-CRM114-Status: GOOD (  20.90  )
+X-CRM114-CacheID: sfid-20230802_123806_571113_B9647EE9 
+X-CRM114-Status: GOOD (  20.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -144,12 +144,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue 25-07-23 10:58:17, Jeff Layton wrote:
+On Tue 25-07-23 10:58:19, Jeff Layton wrote:
 > Enable multigrain timestamps, which should ensure that there is an
 > apparent change to the timestamp whenever it has been written after
 > being actively observed via getattr.
 > 
-> tmpfs only requires the FS_MGTIME flag.
+> For ext4, we only need to enable the FS_MGTIME flag.
 > 
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
@@ -160,22 +160,22 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 								Honza
 
 > ---
->  mm/shmem.c | 2 +-
+>  fs/ext4/super.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 654d9a585820..b6019c905058 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -4264,7 +4264,7 @@ static struct file_system_type shmem_fs_type = {
->  #endif
->  	.kill_sb	= kill_litter_super,
->  #ifdef CONFIG_SHMEM
-> -	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP,
-> +	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP | FS_MGTIME,
->  #else
->  	.fs_flags	= FS_USERNS_MOUNT,
->  #endif
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index b54c70e1a74e..cb1ff47af156 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -7279,7 +7279,7 @@ static struct file_system_type ext4_fs_type = {
+>  	.init_fs_context	= ext4_init_fs_context,
+>  	.parameters		= ext4_param_specs,
+>  	.kill_sb		= kill_block_super,
+> -	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
+> +	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME,
+>  };
+>  MODULE_ALIAS_FS("ext4");
+>  
 > 
 > -- 
 > 2.41.0
