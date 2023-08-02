@@ -4,63 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C4C3C00528
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Aug 2023 15:43:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14119C001DF
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Aug 2023 01:35:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UmA4tuJtSdzuprDDgwWT7MBWGrNUJHh4tBubxQAQqB0=; b=TMvc2qsg8CFHfr
-	Owj7Kr6WYvyfN9KBgZxobg/Y/Y8qqaLmhZHAcFbhdU93S/bz97o54VavCBE06cp0gTLXq9zgiOzZv
-	jHd1pOIGrBcwsylPcZMBBeD2DGNDDweYL2KpTpJaOMxrKlLE5CbGPQAsH5AUWzfSH+wVfrdm0NHBC
-	0yQjUiMZXV3I/fdel4M5SMxNQTbxEAE3KN1Aj5gKu/su9xDLWXw+XmfO30ti6s/LOVwOE5w/TQdbi
-	W4+V6D4qIIo/7m3zBaXREZHQt0lEesJrIi0K9GyAANIb+XptmQeopVCAA+Kahe0N4F/0JhTmGMi2F
-	E/zpkUYh9DK4IeLObBvg==;
+	List-Owner; bh=Nk6x18eNicVJjEhz8GU5MhZ27EXaX3cGdM+GqM8aRGk=; b=UVZaFFG3fbVnCD
+	pqCcxGV0bySirs+obTMmAYNONv0XyIqjroYbzX8Q3nAVS3eXT7r31S8gHxraSd8oij5IYmp4hBDiW
+	bTYjLG89Dc5ZnN0FG+mZZFeiPovMCPgiOtj843Wyu2WSq9tE2eMM39eAw0T3QCzOP9RgVsKbSji9S
+	pQ8D+ZGSXfat5uNf0nAmk9U4vvnxEHzDIdkLRGL78ncmMLgy0noZgWRe0tthpaeiZCfQ8gzerOPHd
+	m+ChVU9JSsAJFtRShv+zpD/vRi3EL/UNWCMceYLXBAfBRU97xjhP1545YnaZgeYutTQOiBhPemkZu
+	Hwx0pwJtJaKy15UZIoSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qQrX1-002kj3-2J;
-	Tue, 01 Aug 2023 15:43:31 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1qR0m6-003hlJ-2h;
+	Wed, 02 Aug 2023 01:35:42 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qQrWx-002ki0-0h;
-	Tue, 01 Aug 2023 15:43:28 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1439F1C0002;
-	Tue,  1 Aug 2023 15:43:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690904603;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bWZsaBxHLydFSEqvkKaw+57w2DI9CMV4K3orO5o0zVQ=;
-	b=OG9HC56Y6Oux9p8mmm21iM2w1vQl6JuPBZinmQehQRTkjVN3crp8cl+4iILyZC7zxDabRP
-	/z26mxeP/lbHK4T/M8oxqtrssXncTVAH0n+YwVcISnmijH/skabfUvo4NWDJnNzkyQI2TC
-	5M1Wy+63T89PUVMBeVsRU8l2WNIFLMISKu9xsN9uGg6iDwE6mhb25VVH9dlFky+F6OLkYz
-	naRm1lgvBvbEPo0PQG/ZZ2bXqU4TgpE+b9SHQKAV4UEgaNES8yaQ8W5QWpBS8YlWqF46y3
-	WYJxqCxtlDyhcJ838FEPhkKP1/g801wjAIxK8ZPPS2kjiNbUSH5bxy8T5NPDfg==
-Date: Tue, 1 Aug 2023 17:43:21 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Li Zetao <lizetao1@huawei.com>
-Cc: <computersforpeace@gmail.com>, <kamal.dasu@broadcom.com>,
- <bcm-kernel-feedback-list@broadcom.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <william.zhang@broadcom.com>, <anand.gore@broadcom.com>,
- <kursad.oney@broadcom.com>, <florian.fainelli@broadcom.com>,
- <rafal@milecki.pl>, <rjui@broadcom.com>, <sbranden@broadcom.com>,
- <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH -next] mtd: nand: Use
- devm_platform_ioremap_resource_byname()
-Message-ID: <20230801174321.4fceefaa@xps-13>
+	id 1qR0m2-003hjn-0s;
+	Wed, 02 Aug 2023 01:35:40 +0000
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.55])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RFvdS3P1bzVjmP;
+	Wed,  2 Aug 2023 09:33:48 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
+ (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
+ 2023 09:35:31 +0800
+From: Li Zetao <lizetao1@huawei.com>
+To: <lizetao1@huawei.com>
+CC: <anand.gore@broadcom.com>, <bcm-kernel-feedback-list@broadcom.com>,
+	<computersforpeace@gmail.com>, <florian.fainelli@broadcom.com>,
+	<kamal.dasu@broadcom.com>, <kursad.oney@broadcom.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
+	<miquel.raynal@bootlin.com>, <rafal@milecki.pl>, <richard@nod.at>,
+	<rjui@broadcom.com>, <sbranden@broadcom.com>, <vigneshr@ti.com>,
+	<william.zhang@broadcom.com>
+Subject: [PATCH -next v2] mtd: rawnand: brcmnand: Use devm_platform_ioremap_resource_byname()
+Date: Wed, 2 Aug 2023 09:35:00 +0800
+Message-ID: <20230802013500.1030853-1-lizetao1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230801134619.416618-1-lizetao1@huawei.com>
 References: <20230801134619.416618-1-lizetao1@huawei.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-GND-Sasl: miquel.raynal@bootlin.com
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500012.china.huawei.com (7.221.188.12)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230801_084327_525735_3365B65C 
-X-CRM114-Status: GOOD (  15.26  )
+X-CRM114-CacheID: sfid-20230801_183538_642031_A80A7A1D 
+X-CRM114-Status: UNSURE (   9.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,57 +68,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTGksCgpsaXpldGFvMUBodWF3ZWkuY29tIHdyb3RlIG9uIFR1ZSwgMSBBdWcgMjAyMyAyMTo0
-NjoxOSArMDgwMDoKCj4gQ29udmVydCBwbGF0Zm9ybV9nZXRfcmVzb3VyY2VfYnluYW1lKCkgKyBk
-ZXZtX2lvcmVtYXBfcmVzb3VyY2UoKSB0byBhCj4gc2luZ2xlIGNhbGwgdG8gZGV2bV9wbGF0Zm9y
-bV9pb3JlbWFwX3Jlc291cmNlX2J5bmFtZSgpLCBhcyB0aGlzIGlzCj4gZXhhY3RseSB3aGF0IHRo
-aXMgZnVuY3Rpb24gZG9lcy4KClBsZWFzZSB1c2UgIm10ZDogcmF3bmFuZDogYnJjbW5hbmQ6IiBm
-b3IgdGhlIHByZWZpeC4KCj4gCj4gU2lnbmVkLW9mZi1ieTogTGkgWmV0YW8gPGxpemV0YW8xQGh1
-YXdlaS5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JjbTYzMTM4
-X25hbmQuYyB8IDQgKy0tLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFuZC9pcHJvY19u
-YW5kLmMgICAgfCA3ICsrLS0tLS0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyks
-IDggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Jy
-Y21uYW5kL2JjbTYzMTM4X25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2Jj
-bTYzMTM4X25hbmQuYwo+IGluZGV4IDcxZGRjYzYxMWY2ZS4uOTU5NjYyOTAwMGY0IDEwMDY0NAo+
-IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JjbTYzMTM4X25hbmQuYwo+ICsr
-KyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JjbTYzMTM4X25hbmQuYwo+IEBAIC02
-MSwxNSArNjEsMTMgQEAgc3RhdGljIGludCBiY202MzEzOF9uYW5kX3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCj4gIAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmcGRldi0+ZGV2Owo+
-ICAJc3RydWN0IGJjbTYzMTM4X25hbmRfc29jICpwcml2Owo+ICAJc3RydWN0IGJyY21uYW5kX3Nv
-YyAqc29jOwo+IC0Jc3RydWN0IHJlc291cmNlICpyZXM7Cj4gIAo+ICAJcHJpdiA9IGRldm1fa3ph
-bGxvYyhkZXYsIHNpemVvZigqcHJpdiksIEdGUF9LRVJORUwpOwo+ICAJaWYgKCFwcml2KQo+ICAJ
-CXJldHVybiAtRU5PTUVNOwo+ICAJc29jID0gJnByaXYtPnNvYzsKPiAgCj4gLQlyZXMgPSBwbGF0
-Zm9ybV9nZXRfcmVzb3VyY2VfYnluYW1lKHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAibmFuZC1pbnQt
-YmFzZSIpOwo+IC0JcHJpdi0+YmFzZSA9IGRldm1faW9yZW1hcF9yZXNvdXJjZShkZXYsIHJlcyk7
-Cj4gKwlwcml2LT5iYXNlID0gZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlX2J5bmFtZShw
-ZGV2LCAibmFuZC1pbnQtYmFzZSIpOwo+ICAJaWYgKElTX0VSUihwcml2LT5iYXNlKSkKPiAgCQly
-ZXR1cm4gUFRSX0VSUihwcml2LT5iYXNlKTsKPiAgCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L2JyY21uYW5kL2lwcm9jX25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Jy
-Y21uYW5kL2lwcm9jX25hbmQuYwo+IGluZGV4IGQzMjk1MDg0N2E2Mi4uMDg5YzcwZmM2ZWRmIDEw
-MDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2lwcm9jX25hbmQuYwo+
-ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2lwcm9jX25hbmQuYwo+IEBAIC0x
-MDMsNyArMTAzLDYgQEAgc3RhdGljIGludCBpcHJvY19uYW5kX3Byb2JlKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UgKnBkZXYpCj4gIAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmcGRldi0+ZGV2Owo+ICAJ
-c3RydWN0IGlwcm9jX25hbmRfc29jICpwcml2Owo+ICAJc3RydWN0IGJyY21uYW5kX3NvYyAqc29j
-Owo+IC0Jc3RydWN0IHJlc291cmNlICpyZXM7Cj4gIAo+ICAJcHJpdiA9IGRldm1fa3phbGxvYyhk
-ZXYsIHNpemVvZigqcHJpdiksIEdGUF9LRVJORUwpOwo+ICAJaWYgKCFwcml2KQo+IEBAIC0xMTIs
-MTMgKzExMSwxMSBAQCBzdGF0aWMgaW50IGlwcm9jX25hbmRfcHJvYmUoc3RydWN0IHBsYXRmb3Jt
-X2RldmljZSAqcGRldikKPiAgCj4gIAlzcGluX2xvY2tfaW5pdCgmcHJpdi0+aWRtX2xvY2spOwo+
-ICAKPiAtCXJlcyA9IHBsYXRmb3JtX2dldF9yZXNvdXJjZV9ieW5hbWUocGRldiwgSU9SRVNPVVJD
-RV9NRU0sICJpcHJvYy1pZG0iKTsKPiAtCXByaXYtPmlkbV9iYXNlID0gZGV2bV9pb3JlbWFwX3Jl
-c291cmNlKGRldiwgcmVzKTsKPiArCXByaXYtPmlkbV9iYXNlID0gZGV2bV9wbGF0Zm9ybV9pb3Jl
-bWFwX3Jlc291cmNlX2J5bmFtZShwZGV2LCAiaXByb2MtaWRtIik7Cj4gIAlpZiAoSVNfRVJSKHBy
-aXYtPmlkbV9iYXNlKSkKPiAgCQlyZXR1cm4gUFRSX0VSUihwcml2LT5pZG1fYmFzZSk7Cj4gIAo+
-IC0JcmVzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlX2J5bmFtZShwZGV2LCBJT1JFU09VUkNFX01F
-TSwgImlwcm9jLWV4dCIpOwo+IC0JcHJpdi0+ZXh0X2Jhc2UgPSBkZXZtX2lvcmVtYXBfcmVzb3Vy
-Y2UoZGV2LCByZXMpOwo+ICsJcHJpdi0+ZXh0X2Jhc2UgPSBkZXZtX3BsYXRmb3JtX2lvcmVtYXBf
-cmVzb3VyY2VfYnluYW1lKHBkZXYsICJpcHJvYy1leHQiKTsKPiAgCWlmIChJU19FUlIocHJpdi0+
-ZXh0X2Jhc2UpKQo+ICAJCXJldHVybiBQVFJfRVJSKHByaXYtPmV4dF9iYXNlKTsKPiAgCgoKVGhh
-bmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Convert platform_get_resource_byname() + devm_ioremap_resource() to a
+single call to devm_platform_ioremap_resource_byname(), as this is
+exactly what this function does.
+
+Signed-off-by: Li Zetao <lizetao1@huawei.com>
+---
+v1 -> v2: modify the subject prefix to "mtd: rawnand: brcmnand:"
+v1: https://lore.kernel.org/all/20230801134619.416618-1-lizetao1@huawei.com/
+
+ drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c | 4 +---
+ drivers/mtd/nand/raw/brcmnand/iproc_nand.c    | 7 ++-----
+ 2 files changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c b/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
+index 71ddcc611f6e..9596629000f4 100644
+--- a/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
++++ b/drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
+@@ -61,15 +61,13 @@ static int bcm63138_nand_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct bcm63138_nand_soc *priv;
+ 	struct brcmnand_soc *soc;
+-	struct resource *res;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 	soc = &priv->soc;
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand-int-base");
+-	priv->base = devm_ioremap_resource(dev, res);
++	priv->base = devm_platform_ioremap_resource_byname(pdev, "nand-int-base");
+ 	if (IS_ERR(priv->base))
+ 		return PTR_ERR(priv->base);
+ 
+diff --git a/drivers/mtd/nand/raw/brcmnand/iproc_nand.c b/drivers/mtd/nand/raw/brcmnand/iproc_nand.c
+index d32950847a62..089c70fc6edf 100644
+--- a/drivers/mtd/nand/raw/brcmnand/iproc_nand.c
++++ b/drivers/mtd/nand/raw/brcmnand/iproc_nand.c
+@@ -103,7 +103,6 @@ static int iproc_nand_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct iproc_nand_soc *priv;
+ 	struct brcmnand_soc *soc;
+-	struct resource *res;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -112,13 +111,11 @@ static int iproc_nand_probe(struct platform_device *pdev)
+ 
+ 	spin_lock_init(&priv->idm_lock);
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "iproc-idm");
+-	priv->idm_base = devm_ioremap_resource(dev, res);
++	priv->idm_base = devm_platform_ioremap_resource_byname(pdev, "iproc-idm");
+ 	if (IS_ERR(priv->idm_base))
+ 		return PTR_ERR(priv->idm_base);
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "iproc-ext");
+-	priv->ext_base = devm_ioremap_resource(dev, res);
++	priv->ext_base = devm_platform_ioremap_resource_byname(pdev, "iproc-ext");
+ 	if (IS_ERR(priv->ext_base))
+ 		return PTR_ERR(priv->ext_base);
+ 
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
