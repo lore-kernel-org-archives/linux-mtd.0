@@ -4,89 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6398C0015E
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Aug 2023 08:28:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 378A1C0015E
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Aug 2023 08:51:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nSTlfTgye36BSDIJtMiylc4oOUlEPYeLWt73s6IGHFU=; b=oOd/V4bF6/M2ir
-	HPBeGN8va8Xr9LiizSfWwewvibxR5C3TK4JafXWXFcr/+ATZdjjGqD3E8KLQLlLTFKqcHXligoK3a
-	85pyX/J5RxY/5Ek9bBBzyEeN8IsqG1h4voBMvY37z6avwOcLxFyxKNJXJqXwIORRrifS3JSx0Jt+9
-	CRou/uZnq5R/F/DQy1nBtSprQTXK73lY2YF/TXoUDItJ6105GOs6/glUg/66PLvCkHSeOeBJ0qr+Z
-	i9yWp1fCIh2eXgK8gyEUe6Vlo0UrbMbqwM8vLuh23Ekupla3BVEH+GVplkKS1YJqSUfvljH8xV3eq
-	v20s1U1/vpZBQ3gQzkhg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=sTqXon0XkzLPyLPSZlEdRcBBhzq7kCnvCpTg0KWwR6M=; b=0Z0CySA4FZzxkt
+	MmJcK26uHJye5j7ZS2oL0MjWz6gNczmLvO6l1nEIDdqDju46qIzJacIQpsNgbC/vO9aY2yC7ib70C
+	aWHBa5T6rYlHcMteY3FfSjL5DPdrymJuVz86vAnmI+0f2PNwD4UpJFJbPtRHwNqNOafZpIHINhcWj
+	Ry7y6RMk+iPyZB/nxc3iz+FePRxEnroSQRGk4vYVmmKjnhE9XXlrCzeQt6aQTmHFnPrJ7Pki5VPPw
+	DMbGFoIzfuoRIRP+njUgZSlaVHJv+EmJQhS68s4bhwIlK8WqqWS9EngS8j/m984DpP3QqCRmj5e5g
+	BLyEx28OHwtwF+WWHd2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qRTgW-0071gW-27;
-	Thu, 03 Aug 2023 08:27:52 +0000
-Received: from smtp-out1.suse.de ([195.135.220.28])
+	id 1qRU3Z-0074p6-0X;
+	Thu, 03 Aug 2023 08:51:41 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qRTgT-0071eU-0j
+	id 1qRU3V-0074o5-0P
 	for linux-mtd@lists.infradead.org;
-	Thu, 03 Aug 2023 08:27:50 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8718521990;
-	Thu,  3 Aug 2023 08:27:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1691051262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0JKh0YoT5EtMkmw+6bQ4IAlmA0cKqBisDvoowqXZlsY=;
-	b=QTwbY7tdSYtBbOr6bU3TIjPc48JFY0p1VEQ5UnC2EHaxwrykAGZGvKzQRdVgJSsKL/m+yM
-	fJuEpmMtc+P5sgSlDFeiqXxqxaeXH3fz3fl5asZhjGqs41c7L3FfI7JED49+jtjEXd++iP
-	tdAxoHZWGrv1GShKFMJxGJ048j17dSc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1691051262;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0JKh0YoT5EtMkmw+6bQ4IAlmA0cKqBisDvoowqXZlsY=;
-	b=SceAnaI/ZBi3nu/BhzdVcO/Exau4SNI7QBc/3iF9kI37OtrKOf3KYrOX0bS4DyIdl5GlUj
-	1GPytqRNhMzqXLDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45FCC134B0;
-	Thu,  3 Aug 2023 08:27:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id oHFOEP5ky2SfUgAAMHmgww
-	(envelope-from <vbabka@suse.cz>); Thu, 03 Aug 2023 08:27:42 +0000
-Message-ID: <2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz>
-Date: Thu, 3 Aug 2023 10:27:41 +0200
+	Thu, 03 Aug 2023 08:51:39 +0000
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RGjDp0gkjzyNJ0;
+	Thu,  3 Aug 2023 16:48:42 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.202) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 3 Aug 2023 16:51:25 +0800
+From: Zhu Wang <wangzhu9@huawei.com>
+To: <stefan@agner.ch>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<vigneshr@ti.com>, <linux-mtd@lists.infradead.org>
+CC: <wangzhu9@huawei.com>
+Subject: [PATCH -next] mtd: rawnand: vf610_nfc: Do not check 0 for platform_get_irq()
+Date: Thu, 3 Aug 2023 16:50:56 +0800
+Message-ID: <20230803085056.30888-1-wangzhu9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH 04/24] PM: hibernate: move finding the resume device out
- of software_resume
-To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Mike Snitzer <snitzer@kernel.org>,
- Joern Engel <joern@lazybastard.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Pavel Machek <pavel@ucw.cz>, Loic Poulain <loic.poulain@linaro.org>,
- dm-devel@redhat.com, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pm@vger.kernel.org,
- Linux regressions mailing list <regressions@lists.linux.dev>
-References: <20230531125535.676098-1-hch@lst.de>
- <20230531125535.676098-5-hch@lst.de>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230531125535.676098-5-hch@lst.de>
+X-Originating-IP: [10.67.174.202]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230803_012749_555706_C12CE87D 
-X-CRM114-Status: GOOD (  24.93  )
+X-CRM114-CacheID: sfid-20230803_015137_360336_DBF45787 
+X-CRM114-Status: GOOD (  12.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,70 +66,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 5/31/23 14:55, Christoph Hellwig wrote:
-> software_resume can be called either from an init call in the boot code,
-> or from sysfs once the system has finished booting, and the two
-> invocation methods this can't race with each other.
-> 
-> For the latter case we did just parse the suspend device manually, while
-> the former might not have one.  Split software_resume so that the search
-> only happens for the boot case, which also means the special lockdep
-> nesting annotation can go away as the system transition mutex can be
-> taken a little later and doesn't have the sysfs locking nest inside it.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+Since platform_get_irq() never returned zero, so it need not to check
+whether it returned zero, and we use the return error code of
+platform_get_irq() to replace the current return error code, for that
+platform_get_irq() may return -EINVAL or -ENXIO.
 
-This caused a regression for me in 6.5-rc1+, fix below.
-
-----8<----
-From 95a310ae6cfae9b3cab61e54a1bce488c3ab93a1 Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Wed, 2 Aug 2023 15:46:18 +0200
-Subject: [PATCH] PM: hibernate: fix resume_store() return value when
- hibernation not available
-
-On a laptop with hibernation set up but not actively used, and with
-secure boot and lockdown enabled kernel, 6.5-rc1 gets stuck on boot with
-the following repeated messages:
-
-  A start job is running for Resume from hibernation using device /dev/system/swap (24s / no limit)
-  lockdown_is_locked_down: 25311154 callbacks suppressed
-  Lockdown: systemd-hiberna: hibernation is restricted; see man kernel_lockdown.7
-  ...
-
-Checking the resume code leads to commit cc89c63e2fe3 ("PM: hibernate:
-move finding the resume device out of software_resume") which
-inadvertently changed the return value from resume_store() to 0 when
-!hibernation_available(). This apparently translates to userspace
-write() returning 0 as in number of bytes written, and userspace looping
-indefinitely in the attempt to write the intended value.
-
-Fix this by returning the full number of bytes that were to be written,
-as that's what was done before the commit.
-
-Fixes: cc89c63e2fe3 ("PM: hibernate: move finding the resume device out of software_resume")
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
 ---
- kernel/power/hibernate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/vf610_nfc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index e1b4bfa938dd..2b4a946a6ff5 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -1166,7 +1166,7 @@ static ssize_t resume_store(struct kobject *kobj, struct kobj_attribute *attr,
- 	int error;
+diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+index 86522048e271..dcdf33dbaef2 100644
+--- a/drivers/mtd/nand/raw/vf610_nfc.c
++++ b/drivers/mtd/nand/raw/vf610_nfc.c
+@@ -827,8 +827,8 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 	mtd->name = DRV_NAME;
  
- 	if (!hibernation_available())
--		return 0;
-+		return n;
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0)
+-		return -EINVAL;
++	if (irq < 0)
++		return irq;
  
- 	if (len && buf[len-1] == '\n')
- 		len--;
+ 	nfc->regs = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(nfc->regs))
 -- 
-2.41.0
-
+2.17.1
 
 
 ______________________________________________________
