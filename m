@@ -4,100 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 347C8C00528
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Aug 2023 20:54:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FB7EC001DF
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Aug 2023 07:06:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ocMYTLntLyViRBpZFRbKTOyLssZBnYEE5iYjLI7Sp8A=; b=l3WKfSzRKRJIjU
-	0oHmDRbAJrc/Wv+VhO6A4LoJ0SCRnQfZzv36P9M7T2vBowUR8pPtL6jbn6j1e1BLvrRCY/YdH++rn
-	LbDrBtmJ+rLycqCLuDPTMK+J9UpOOBiNL7qRmXImunOYJn2JZZVktZuCbxHuEwYRrdQWrannk1Awe
-	3wIdplb/Jj2YOgkMW7zsEjIH8dSomLf5e6AeXqJ49aIusrJ9drHEV3z/CDoimw0i8hmfVaNBGHAnt
-	txs6RkyKnc11zLY9rvWM15SUXKx7BCUx2gYhEo2kX8W8MRcCBP92PN/WFSlBz0vpGqdFaLJZUIJzO
-	SzoP+f6Po5oas4jX/SgQ==;
+	List-Owner; bh=bTDIkjaRnXlLt7Vgpk4dDOczb9t/4vGlvNbDc61W7gI=; b=WkREiwE4V9fTNn
+	oixpAiSBvYFTRHK+8nhtBcYKK0d+9mhoY/7InhQHUFvlQHRshRF7Pcjv6IFNdaSZLuJTr5eud6ACL
+	yxXZaYAhzBECzufPMahqu2mfe+1It8svLFTHkJAB8n+oNYrvukUgLUccmkWoWmmH0tJSRXcPc5QKg
+	MC3+8J30enIpujtYAxwEqZDAM4piM9CAWgg3mYl3EEHOoVWaP01w/niOEYgm5lcr03HUukvIV/sUz
+	vvhn4OAfQxWnWTRx8kxXyLAj/uqhQ06Azi2eJxEI1dwqDPzpeaIs6So6mFuGEmSNaRaQa2AEXQ/lr
+	6xCsjJ4AM7pF3OMsEdRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qRIrQ-005sfu-2S;
-	Wed, 02 Aug 2023 20:54:24 +0000
+	id 1qRSPZ-006pVE-2P;
+	Thu, 03 Aug 2023 07:06:17 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qRIrL-005scZ-2x;
-	Wed, 02 Aug 2023 20:54:23 +0000
+	id 1qRSPW-006pUK-0i;
+	Thu, 03 Aug 2023 07:06:15 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 1CF4F61B13;
-	Wed,  2 Aug 2023 20:54:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 241AAC433C7;
-	Wed,  2 Aug 2023 20:54:11 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9037661C17;
+	Thu,  3 Aug 2023 07:06:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B8B8C433C7;
+	Thu,  3 Aug 2023 07:05:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691009657;
-	bh=eOQo/dMF0+gMrXDa2SMyyUjYDJ7k1QyvTEZKWFuh/ys=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=ZP8N/8rXbxSt0//AryOCTAZ990GcRdzzLnkSBRMOCzxFBsYHBReTdTT3OsHcM95K7
-	 q7vYRFprEEDwVuBv3Niaw4cgn3uRyB0WGlNLBzdJV98gyzod+FPkYyLr+iWZ0Vpkbh
-	 YaFVvhRwDy7l/6sYOtyansM5Y3IZGn24Lii3BpTRbVhh4VYitNqIBZJjS2FN34j0Om
-	 LybhkRbszVR70hnZdLwgfEbLwr8htKpkZnI+aOB5+3X8owm7dEPrZraY0wibWfcm6C
-	 K5pkOcpEO/KdWB0OhcjU6Sxk1HZLJTR5iUBk1a9LKp0lCdij4BZmcgKvt43vNz5W4F
-	 eq0CjmAQ716IQ==
-Message-ID: <ccc52562305bd1a1affb14e94a1cc08433eb8316.camel@kernel.org>
-Subject: Re: [PATCH v6 2/7] fs: add infrastructure for multigrain timestamps
-From: Jeff Layton <jlayton@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov
- <lucho@ionkov.net>,  Dominique Martinet <asmadeus@codewreck.org>, Christian
- Schoenebeck <linux_oss@crudebyte.com>, David Howells <dhowells@redhat.com>,
- Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>, Josef
- Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,  Xiubo Li
- <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jan Harkes
- <jaharkes@cs.cmu.edu>,  coda@cs.cmu.edu, Tyler Hicks <code@tyhicks.com>,
- Gao Xiang <xiang@kernel.org>,  Chao Yu <chao@kernel.org>, Yue Hu
- <huyue2@coolpad.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,  Namjae Jeon
- <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara
- <jack@suse.com>,  Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
- <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA
- Hirofumi <hirofumi@mail.parknet.co.jp>, Miklos Szeredi <miklos@szeredi.hu>,
- Bob Peterson <rpeterso@redhat.com>, Andreas Gruenbacher
- <agruenba@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Tejun Heo <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Trond Myklebust
- <trond.myklebust@hammerspace.com>,  Anna Schumaker <anna@kernel.org>,
- Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,  Mark Fasheh
- <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi
- <joseph.qi@linux.alibaba.com>,  Mike Marshall <hubcap@omnibond.com>, Martin
- Brandenburg <martin@omnibond.com>, Luis Chamberlain <mcgrof@kernel.org>,
- Kees Cook <keescook@chromium.org>, Iurii Zaikin <yzaikin@google.com>, Steve
- French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.com>, Ronnie
- Sahlberg <lsahlber@redhat.com>, Shyam Prasad N <sprasad@microsoft.com>, Tom
- Talpey <tom@talpey.com>, Sergey Senozhatsky <senozhatsky@chromium.org>,
- Richard Weinberger <richard@nod.at>, Hans de Goede <hdegoede@redhat.com>,
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- "Darrick J. Wong" <djwong@kernel.org>, Dave Chinner <david@fromorbit.com>,
- Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev, 
- linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org, 
- linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
- codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
- linux-erofs@lists.ozlabs.org,  linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org,  linux-f2fs-devel@lists.sourceforge.net,
- cluster-devel@redhat.com,  linux-nfs@vger.kernel.org,
- ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
- devel@lists.orangefs.org, linux-cifs@vger.kernel.org, 
- samba-technical@lists.samba.org, linux-mtd@lists.infradead.org, 
- linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Date: Wed, 02 Aug 2023 16:54:09 -0400
-In-Reply-To: <20230802193537.vtuuwuwazocjbatv@quack3>
+	s=k20201202; t=1691046373;
+	bh=q5HEh93m22+IZ7gJ0ht4CIPca9ZIugEYnaPvq20Gjuc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=K7UhWAmHViQApxb4uEFZrC7NgM4L98YWGA8RqmJSuKws6QfloHZYz2gu1jyPObkgz
+	 rJxDzSRQnw1K4pXJOSbYSQwEHQGHEgpocuMnPLyGqXwysQNLhUfpr9nXqz/I7vEWHU
+	 Xyq0E7GBSXm+tlg7gDzjWZJiiMF3px3+dfpcHG121egWkUzTPQBnCY0uSqoCY/0Kr0
+	 ZBpFxVuNI9TULQg5bdi3e7SZRLX5rY79l7KLMQCUVHdnr6WpsAje202RHEqOcZVFgo
+	 7miM6YWTEiuxqRbsDMbuOSLOG9Nu93OzU+EfWoCfeFibJ4Z6IjLTxS3vlPbG54qPVW
+	 uZsk7io+itqAw==
+Date: Thu, 3 Aug 2023 09:05:55 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: "Darrick J. Wong" <djwong@kernel.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+	Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+	Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+	Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Bob Peterson <rpeterso@redhat.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tejun Heo <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Iurii Zaikin <yzaikin@google.com>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <lsahlber@redhat.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Richard Weinberger <richard@nod.at>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dave Chinner <david@fromorbit.com>,
+	Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+	devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+	linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 5/7] xfs: switch to multigrain timestamps
+Message-ID: <20230803-mulmig-rennen-adbe9b2a6608@brauner>
 References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
-	 <20230725-mgctime-v6-2-a794c2b7abca@kernel.org>
-	 <20230802193537.vtuuwuwazocjbatv@quack3>
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+ <20230725-mgctime-v6-5-a794c2b7abca@kernel.org>
+ <20230802174853.GC11352@frogsfrogsfrogs>
+ <16f46a9e6d88582d53d31a320589a7ba9d232e0c.camel@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <16f46a9e6d88582d53d31a320589a7ba9d232e0c.camel@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230802_135420_077282_08484549 
-X-CRM114-Status: GOOD (  59.20  )
+X-CRM114-CacheID: sfid-20230803_000614_346330_6E38DECD 
+X-CRM114-Status: GOOD (  28.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,425 +129,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2023-08-02 at 21:35 +0200, Jan Kara wrote:
-> On Tue 25-07-23 10:58:15, Jeff Layton wrote:
-> > The VFS always uses coarse-grained timestamps when updating the ctime
-> > and mtime after a change. This has the benefit of allowing filesystems
-> > to optimize away a lot metadata updates, down to around 1 per jiffy,
-> > even when a file is under heavy writes.
+On Wed, Aug 02, 2023 at 02:21:49PM -0400, Jeff Layton wrote:
+> On Wed, 2023-08-02 at 10:48 -0700, Darrick J. Wong wrote:
+> > On Tue, Jul 25, 2023 at 10:58:18AM -0400, Jeff Layton wrote:
+> > > Enable multigrain timestamps, which should ensure that there is an
+> > > apparent change to the timestamp whenever it has been written after
+> > > being actively observed via getattr.
+> > > 
+> > > Also, anytime the mtime changes, the ctime must also change, and those
+> > > are now the only two options for xfs_trans_ichgtime. Have that function
+> > > unconditionally bump the ctime, and ASSERT that XFS_ICHGTIME_CHG is
+> > > always set.
+> > > 
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > ---
+> > >  fs/xfs/libxfs/xfs_trans_inode.c | 6 +++---
+> > >  fs/xfs/xfs_iops.c               | 4 ++--
+> > >  fs/xfs/xfs_super.c              | 2 +-
+> > >  3 files changed, 6 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/fs/xfs/libxfs/xfs_trans_inode.c b/fs/xfs/libxfs/xfs_trans_inode.c
+> > > index 6b2296ff248a..ad22656376d3 100644
+> > > --- a/fs/xfs/libxfs/xfs_trans_inode.c
+> > > +++ b/fs/xfs/libxfs/xfs_trans_inode.c
+> > > @@ -62,12 +62,12 @@ xfs_trans_ichgtime(
+> > >  	ASSERT(tp);
+> > >  	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
+> > >  
+> > > -	tv = current_time(inode);
+> > > +	/* If the mtime changes, then ctime must also change */
+> > > +	ASSERT(flags & XFS_ICHGTIME_CHG);
+> > >  
+> > > +	tv = inode_set_ctime_current(inode);
+> > >  	if (flags & XFS_ICHGTIME_MOD)
+> > >  		inode->i_mtime = tv;
+> > > -	if (flags & XFS_ICHGTIME_CHG)
+> > > -		inode_set_ctime_to_ts(inode, tv);
+> > >  	if (flags & XFS_ICHGTIME_CREATE)
+> > >  		ip->i_crtime = tv;
+> > >  }
+> > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > > index 3a9363953ef2..3f89ef5a2820 100644
+> > > --- a/fs/xfs/xfs_iops.c
+> > > +++ b/fs/xfs/xfs_iops.c
+> > > @@ -573,10 +573,10 @@ xfs_vn_getattr(
+> > >  	stat->gid = vfsgid_into_kgid(vfsgid);
+> > >  	stat->ino = ip->i_ino;
+> > >  	stat->atime = inode->i_atime;
+> > > -	stat->mtime = inode->i_mtime;
+> > > -	stat->ctime = inode_get_ctime(inode);
+> > >  	stat->blocks = XFS_FSB_TO_BB(mp, ip->i_nblocks + ip->i_delayed_blks);
+> > >  
+> > > +	fill_mg_cmtime(request_mask, inode, stat);
 > > 
-> > Unfortunately, this has always been an issue when we're exporting via
-> > NFSv3, which relies on timestamps to validate caches. A lot of changes
-> > can happen in a jiffy, so timestamps aren't sufficient to help the
-> > client decide to invalidate the cache. Even with NFSv4, a lot of
-> > exported filesystems don't properly support a change attribute and are
-> > subject to the same problems with timestamp granularity. Other
-> > applications have similar issues with timestamps (e.g backup
-> > applications).
+> > Huh.  I would've thought @stat would come first since that's what we're
+> > acting upon, but ... eh. :)
 > > 
-> > If we were to always use fine-grained timestamps, that would improve the
-> > situation, but that becomes rather expensive, as the underlying
-> > filesystem would have to log a lot more metadata updates.
+> > If everyone else is ok with the fill_mg_cmtime signature,
+> > Acked-by: Darrick J. Wong <djwong@kernel.org>
 > > 
-> > What we need is a way to only use fine-grained timestamps when they are
-> > being actively queried.
 > > 
-> > POSIX generally mandates that when the the mtime changes, the ctime must
-> > also change. The kernel always stores normalized ctime values, so only
-> > the first 30 bits of the tv_nsec field are ever used.
-> > 
-> > Use the 31st bit of the ctime tv_nsec field to indicate that something
-> > has queried the inode for the mtime or ctime. When this flag is set,
-> > on the next mtime or ctime update, the kernel will fetch a fine-grained
-> > timestamp instead of the usual coarse-grained one.
-> > 
-> > Filesytems can opt into this behavior by setting the FS_MGTIME flag in
-> > the fstype. Filesystems that don't set this flag will continue to use
-> > coarse-grained timestamps.
-> > 
-> > Later patches will convert individual filesystems to use the new
-> > infrastructure.
-> > 
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/inode.c         | 98 ++++++++++++++++++++++++++++++++++++++----------------
-> >  fs/stat.c          | 41 +++++++++++++++++++++--
-> >  include/linux/fs.h | 45 +++++++++++++++++++++++--
-> >  3 files changed, 151 insertions(+), 33 deletions(-)
-> > 
-> > diff --git a/fs/inode.c b/fs/inode.c
-> > index d4ab92233062..369621e7faf5 100644
-> > --- a/fs/inode.c
-> > +++ b/fs/inode.c
-> > @@ -1919,6 +1919,21 @@ int inode_update_time(struct inode *inode, struct timespec64 *time, int flags)
-> >  }
-> >  EXPORT_SYMBOL(inode_update_time);
-> >  
-> > +/**
-> > + * current_coarse_time - Return FS time
-> > + * @inode: inode.
-> > + *
-> > + * Return the current coarse-grained time truncated to the time
-> > + * granularity supported by the fs.
-> > + */
-> > +static struct timespec64 current_coarse_time(struct inode *inode)
-> > +{
-> > +	struct timespec64 now;
-> > +
-> > +	ktime_get_coarse_real_ts64(&now);
-> > +	return timestamp_truncate(now, inode);
-> > +}
-> > +
-> >  /**
-> >   *	atime_needs_update	-	update the access time
-> >   *	@path: the &struct path to update
-> > @@ -1952,7 +1967,7 @@ bool atime_needs_update(const struct path *path, struct inode *inode)
-> >  	if ((mnt->mnt_flags & MNT_NODIRATIME) && S_ISDIR(inode->i_mode))
-> >  		return false;
-> >  
-> > -	now = current_time(inode);
-> > +	now = current_coarse_time(inode);
-> >  
-> >  	if (!relatime_need_update(mnt, inode, now))
-> >  		return false;
-> > @@ -1986,7 +2001,7 @@ void touch_atime(const struct path *path)
-> >  	 * We may also fail on filesystems that have the ability to make parts
-> >  	 * of the fs read only, e.g. subvolumes in Btrfs.
-> >  	 */
-> > -	now = current_time(inode);
-> > +	now = current_coarse_time(inode);
-> >  	inode_update_time(inode, &now, S_ATIME);
-> >  	__mnt_drop_write(mnt);
-> >  skip_update:
 > 
-> There are also calls in fs/smb/client/file.c:cifs_readpage_worker() and in
-> fs/ocfs2/file.c:ocfs2_update_inode_atime() that should probably use
-> current_coarse_time() to avoid needless querying of fine grained
-> timestamps. But see below...
+> Good point. We can change the signature. I think xfs is the only caller
+> outside of the generic vfs right now, and it'd be best to do it now.
 > 
+> Christian, would you prefer that I send an updated series, or patches on
+> top of vfs.ctime that can be folded in?
 
-Technically, they already devolve to current_coarse_time anyway, but
-changing them would allow them to skip the fstype flag check, but I like
-your idea below better anyway.
-
-> > @@ -2072,6 +2087,56 @@ int file_remove_privs(struct file *file)
-> >  }
-> >  EXPORT_SYMBOL(file_remove_privs);
-> >  
-> > +/**
-> > + * current_mgtime - Return FS time (possibly fine-grained)
-> > + * @inode: inode.
-> > + *
-> > + * Return the current time truncated to the time granularity supported by
-> > + * the fs, as suitable for a ctime/mtime change. If the ctime is flagged
-> > + * as having been QUERIED, get a fine-grained timestamp.
-> > + */
-> > +static struct timespec64 current_mgtime(struct inode *inode)
-> > +{
-> > +	struct timespec64 now;
-> > +	atomic_long_t *pnsec = (atomic_long_t *)&inode->__i_ctime.tv_nsec;
-> > +	long nsec = atomic_long_read(pnsec);
-> > +
-> > +	if (nsec & I_CTIME_QUERIED) {
-> > +		ktime_get_real_ts64(&now);
-> > +	} else {
-> > +		struct timespec64 ctime;
-> > +
-> > +		ktime_get_coarse_real_ts64(&now);
-> > +
-> > +		/*
-> > +		 * If we've recently fetched a fine-grained timestamp
-> > +		 * then the coarse-grained one may still be earlier than the
-> > +		 * existing one. Just keep the existing ctime if so.
-> > +		 */
-> > +		ctime = inode_get_ctime(inode);
-> > +		if (timespec64_compare(&ctime, &now) > 0)
-> > +			now = ctime;
-> > +	}
-> > +
-> > +	return timestamp_truncate(now, inode);
-> > +}
-> > +
-> > +/**
-> > + * current_time - Return timestamp suitable for ctime update
-> > + * @inode: inode to eventually be updated
-> > + *
-> > + * Return the current time, which is usually coarse-grained but may be fine
-> > + * grained if the filesystem uses multigrain timestamps and the existing
-> > + * ctime was queried since the last update.
-> > + */
-> > +struct timespec64 current_time(struct inode *inode)
-> > +{
-> > +	if (is_mgtime(inode))
-> > +		return current_mgtime(inode);
-> > +	return current_coarse_time(inode);
-> > +}
-> > +EXPORT_SYMBOL(current_time);
-> > +
-> 
-> So if you modify current_time() to handle multigrain timestamps the code
-> will be still racy. In particular fill_mg_cmtime() can race with
-> inode_set_ctime_current() like:
-> 
-> fill_mg_cmtime()				inode_set_ctime_current()
->   stat->mtime = inode->i_mtime;
->   stat->ctime.tv_sec = inode->__i_ctime.tv_sec;
-> 						  now = current_time();
-> 							/* fetches coarse
-> 							 * grained timestamp */
->   stat->ctime.tv_nsec = atomic_long_fetch_or(I_CTIME_QUERIED, pnsec) &
-> 				~I_CTIME_QUERIED;
-> 						  inode_set_ctime(inode, now.tv_sec, now.tv_nsec);
-> 
-> and the information about a need for finegrained timestamp update gets
-> lost. So what I'd propose is to leave current_time() alone (just always
-> reporting coarse grained timestamps) and put all the magic into
-> inode_set_ctime_current() only. There we need something like:
-> 
-> struct timespec64 inode_set_ctime_current(struct inode *inode)
-> {
-> 	... variables ...
-> 
-> 	nsec = READ_ONCE(inode->__i_ctime.tv_nsec);
->  	if (!(nsec & I_CTIME_QUERIED)) {
-> 		now = current_time(inode);
-> 
-> 		if (!is_gmtime(inode)) {
-> 			inode_set_ctime_to_ts(inode, now);
-> 		} else {
-> 			/*
-> 			 * If we've recently fetched a fine-grained
-> 			 * timestamp then the coarse-grained one may still
-> 			 * be earlier than the existing one. Just keep the
-> 			 * existing ctime if so.
-> 			 */
-> 			ctime = inode_get_ctime(inode);
-> 			if (timespec64_compare(&ctime, &now) > 0)
-> 				now = ctime;
-> 
-> 			/*
-> 			 * Ctime updates are generally protected by inode
-> 			 * lock but we could have raced with setting of
-> 			 * I_CTIME_QUERIED flag.
-> 			 */
-> 			if (cmpxchg(&inode->__i_ctime.tv_nsec, nsec,
-> 				    now.tv_nsec) != nsec)
-> 				goto fine_grained;
-> 			inode->__i_ctime.tv_sec = now.tv_sec;
-> 		}
-> 		return now;
-> 	}
-> fine_grained:
-> 	ktime_get_real_ts64(&now);
-> 	inode_set_ctime_to_ts(inode, now);
-> 
-> 	return now;
-> }
-> 
-> 								Honza
-> 
-
-This is a great idea. I'll rework the series along the lines you
-suggest. That also answers my earlier question to Christian:
-
-I'll just resend the whole series (it's not very big anyway), and I'll
-include the fill_mg_cmtime prototype change.
-
-Cheers,
-
-> >  static int inode_needs_update_time(struct inode *inode, struct timespec64 *now)
-> >  {
-> >  	int sync_it = 0;
-> > @@ -2480,37 +2545,12 @@ struct timespec64 timestamp_truncate(struct timespec64 t, struct inode *inode)
-> >  }
-> >  EXPORT_SYMBOL(timestamp_truncate);
-> >  
-> > -/**
-> > - * current_time - Return FS time
-> > - * @inode: inode.
-> > - *
-> > - * Return the current time truncated to the time granularity supported by
-> > - * the fs.
-> > - *
-> > - * Note that inode and inode->sb cannot be NULL.
-> > - * Otherwise, the function warns and returns time without truncation.
-> > - */
-> > -struct timespec64 current_time(struct inode *inode)
-> > -{
-> > -	struct timespec64 now;
-> > -
-> > -	ktime_get_coarse_real_ts64(&now);
-> > -
-> > -	if (unlikely(!inode->i_sb)) {
-> > -		WARN(1, "current_time() called with uninitialized super_block in the inode");
-> > -		return now;
-> > -	}
-> > -
-> > -	return timestamp_truncate(now, inode);
-> > -}
-> > -EXPORT_SYMBOL(current_time);
-> > -
-> >  /**
-> >   * inode_set_ctime_current - set the ctime to current_time
-> >   * @inode: inode
-> >   *
-> > - * Set the inode->i_ctime to the current value for the inode. Returns
-> > - * the current value that was assigned to i_ctime.
-> > + * Set the inode->__i_ctime to the current value for the inode. Returns
-> > + * the current value that was assigned to __i_ctime.
-> >   */
-> >  struct timespec64 inode_set_ctime_current(struct inode *inode)
-> >  {
-> > diff --git a/fs/stat.c b/fs/stat.c
-> > index 062f311b5386..51effd1c2bc2 100644
-> > --- a/fs/stat.c
-> > +++ b/fs/stat.c
-> > @@ -26,6 +26,37 @@
-> >  #include "internal.h"
-> >  #include "mount.h"
-> >  
-> > +/**
-> > + * fill_mg_cmtime - Fill in the mtime and ctime and flag ctime as QUERIED
-> > + * @request_mask: STATX_* values requested
-> > + * @inode: inode from which to grab the c/mtime
-> > + * @stat: where to store the resulting values
-> > + *
-> > + * Given @inode, grab the ctime and mtime out if it and store the result
-> > + * in @stat. When fetching the value, flag it as queried so the next write
-> > + * will use a fine-grained timestamp.
-> > + */
-> > +void fill_mg_cmtime(u32 request_mask, struct inode *inode, struct kstat *stat)
-> > +{
-> > +	atomic_long_t *pnsec = (atomic_long_t *)&inode->__i_ctime.tv_nsec;
-> > +
-> > +	/* If neither time was requested, then don't report them */
-> > +	if (!(request_mask & (STATX_CTIME|STATX_MTIME))) {
-> > +		stat->result_mask &= ~(STATX_CTIME|STATX_MTIME);
-> > +		return;
-> > +	}
-> > +
-> > +	stat->mtime = inode->i_mtime;
-> > +	stat->ctime.tv_sec = inode->__i_ctime.tv_sec;
-> > +	/*
-> > +	 * Atomically set the QUERIED flag and fetch the new value with
-> > +	 * the flag masked off.
-> > +	 */
-> > +	stat->ctime.tv_nsec = atomic_long_fetch_or(I_CTIME_QUERIED, pnsec) &
-> > +					~I_CTIME_QUERIED;
-> > +}
-> > +EXPORT_SYMBOL(fill_mg_cmtime);
-> > +
-> >  /**
-> >   * generic_fillattr - Fill in the basic attributes from the inode struct
-> >   * @idmap:	idmap of the mount the inode was found from
-> > @@ -58,8 +89,14 @@ void generic_fillattr(struct mnt_idmap *idmap, u32 request_mask,
-> >  	stat->rdev = inode->i_rdev;
-> >  	stat->size = i_size_read(inode);
-> >  	stat->atime = inode->i_atime;
-> > -	stat->mtime = inode->i_mtime;
-> > -	stat->ctime = inode_get_ctime(inode);
-> > +
-> > +	if (is_mgtime(inode)) {
-> > +		fill_mg_cmtime(request_mask, inode, stat);
-> > +	} else {
-> > +		stat->mtime = inode->i_mtime;
-> > +		stat->ctime = inode_get_ctime(inode);
-> > +	}
-> > +
-> >  	stat->blksize = i_blocksize(inode);
-> >  	stat->blocks = inode->i_blocks;
-> >  
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index 42d1434cc427..a0bdbefbf293 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -1477,15 +1477,43 @@ static inline bool fsuidgid_has_mapping(struct super_block *sb,
-> >  struct timespec64 current_time(struct inode *inode);
-> >  struct timespec64 inode_set_ctime_current(struct inode *inode);
-> >  
-> > +/*
-> > + * Multigrain timestamps
-> > + *
-> > + * Conditionally use fine-grained ctime and mtime timestamps when there
-> > + * are users actively observing them via getattr. The primary use-case
-> > + * for this is NFS clients that use the ctime to distinguish between
-> > + * different states of the file, and that are often fooled by multiple
-> > + * operations that occur in the same coarse-grained timer tick.
-> > + *
-> > + * The kernel always keeps normalized struct timespec64 values in the ctime,
-> > + * which means that only the first 30 bits of the value are used. Use the
-> > + * 31st bit of the ctime's tv_nsec field as a flag to indicate that the value
-> > + * has been queried since it was last updated.
-> > + */
-> > +#define I_CTIME_QUERIED		(1L<<30)
-> > +
-> >  /**
-> >   * inode_get_ctime - fetch the current ctime from the inode
-> >   * @inode: inode from which to fetch ctime
-> >   *
-> > - * Grab the current ctime from the inode and return it.
-> > + * Grab the current ctime tv_nsec field from the inode, mask off the
-> > + * I_CTIME_QUERIED flag and return it. This is mostly intended for use by
-> > + * internal consumers of the ctime that aren't concerned with ensuring a
-> > + * fine-grained update on the next change (e.g. when preparing to store
-> > + * the value in the backing store for later retrieval).
-> > + *
-> > + * This is safe to call regardless of whether the underlying filesystem
-> > + * is using multigrain timestamps.
-> >   */
-> >  static inline struct timespec64 inode_get_ctime(const struct inode *inode)
-> >  {
-> > -	return inode->__i_ctime;
-> > +	struct timespec64 ctime;
-> > +
-> > +	ctime.tv_sec = inode->__i_ctime.tv_sec;
-> > +	ctime.tv_nsec = inode->__i_ctime.tv_nsec & ~I_CTIME_QUERIED;
-> > +
-> > +	return ctime;
-> >  }
-> >  
-> >  /**
-> > @@ -2261,6 +2289,7 @@ struct file_system_type {
-> >  #define FS_USERNS_MOUNT		8	/* Can be mounted by userns root */
-> >  #define FS_DISALLOW_NOTIFY_PERM	16	/* Disable fanotify permission events */
-> >  #define FS_ALLOW_IDMAP         32      /* FS has been updated to handle vfs idmappings. */
-> > +#define FS_MGTIME		64	/* FS uses multigrain timestamps */
-> >  #define FS_RENAME_DOES_D_MOVE	32768	/* FS will handle d_move() during rename() internally. */
-> >  	int (*init_fs_context)(struct fs_context *);
-> >  	const struct fs_parameter_spec *parameters;
-> > @@ -2284,6 +2313,17 @@ struct file_system_type {
-> >  
-> >  #define MODULE_ALIAS_FS(NAME) MODULE_ALIAS("fs-" NAME)
-> >  
-> > +/**
-> > + * is_mgtime: is this inode using multigrain timestamps
-> > + * @inode: inode to test for multigrain timestamps
-> > + *
-> > + * Return true if the inode uses multigrain timestamps, false otherwise.
-> > + */
-> > +static inline bool is_mgtime(const struct inode *inode)
-> > +{
-> > +	return inode->i_sb->s_type->fs_flags & FS_MGTIME;
-> > +}
-> > +
-> >  extern struct dentry *mount_bdev(struct file_system_type *fs_type,
-> >  	int flags, const char *dev_name, void *data,
-> >  	int (*fill_super)(struct super_block *, void *, int));
-> > @@ -2919,6 +2959,7 @@ extern void page_put_link(void *);
-> >  extern int page_symlink(struct inode *inode, const char *symname, int len);
-> >  extern const struct inode_operations page_symlink_inode_operations;
-> >  extern void kfree_link(void *);
-> > +void fill_mg_cmtime(u32 request_mask, struct inode *inode, struct kstat *stat);
-> >  void generic_fillattr(struct mnt_idmap *, u32, struct inode *, struct kstat *);
-> >  void generic_fill_statx_attr(struct inode *inode, struct kstat *stat);
-> >  extern int vfs_getattr_nosec(const struct path *, struct kstat *, u32, unsigned int);
-> > 
-> > -- 
-> > 2.41.0
-> > 
-
--- 
-Jeff Layton <jlayton@kernel.org>
+Let's fold instead of inundate everyone with almost 100 patches.
+When I'll apply I'll remind everyone where the series can be pulled
+from anyway.
 
 ______________________________________________________
 Linux MTD discussion mailing list
