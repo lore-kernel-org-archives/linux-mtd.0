@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C5D7C04E69
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE09BC04FDF
 	for <linux-mtd@archiver.kernel.org>; Fri,  4 Aug 2023 09:55:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,59 +12,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=X2WTNmW1+1A0vy27dHsYe7TWXIk8rRgVGa0zlUZ38xg=; b=gw8//FJkfBT67F
-	Ws/gHD/KzV/qf4SAp6mqq12lRXNTxPap1IaeTdEc9OUSmGz6acFeBXFbK7By7/dh3jqye1cdWxvYz
-	JidSsSbFUsXPsSnAzGMx6MniU3/LwzJiAOddyID25t5xfifJ+7gHk4OQ6LIkpNb92StLgcXSYgxBK
-	z8ximKcBc31POwEAzZiVO+L1CvgvRFsZiamJtedXJuCZBCw6v/JYUOa4sdiDXprvIpDVCa52JbX4v
-	OPo13TzEzuFT1A1ufb/s/iQUOhzTDuZSXhAksfaISmuQ6na345T321QeEN3JW2nAwDNPBpl/cdxwp
-	+MmSlZNO08GqFb1MgUYw==;
+	List-Owner; bh=jzFHorAIvlvhGSyV5P0XfORxV+vJJDw6aarZYRJAqSc=; b=a03dfoq4CUkx0O
+	HK0RO29LaptohdemUZrsTGcgQpokd7n5ZmW6a/RRPTInTBiL8Eq6VxQw1vE7kwEzvb9NMmNmDrWpA
+	FDd66+oKdbnjRjOvk6l0QWEmsz4U1TEpSFR5L7lSQN8ME0Lk96MC+b2CIFCSQPRtb6FzaQJdwQpTQ
+	lZDSU9uQuEQFF5iBNPsdBPcrNXv0hNILwPsXQisoyLanGIghXsJniK9njSVv9UyyUz9NCTNWsb8rh
+	TeM+d4+aoKBt2pwrICCf/peZBxiD8+Y0M3qwN2UJT7ldv+U4rRyZMnMqhmgR7c2rBjKZ/FtKO5ffI
+	f9zrM90m6qXdCqWNCSew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qRrWT-00C493-19;
-	Fri, 04 Aug 2023 09:55:05 +0000
-Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
+	id 1qRrWR-00C48J-2J;
+	Fri, 04 Aug 2023 09:55:03 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qRrWO-00C45Y-2q
+	id 1qRrWM-00C45S-2V
 	for linux-mtd@lists.infradead.org;
-	Fri, 04 Aug 2023 09:55:02 +0000
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bc0d39b52cso12989275ad.2
-        for <linux-mtd@lists.infradead.org>; Fri, 04 Aug 2023 02:54:57 -0700 (PDT)
+	Fri, 04 Aug 2023 09:55:00 +0000
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bbc06f830aso13666135ad.0
+        for <linux-mtd@lists.infradead.org>; Fri, 04 Aug 2023 02:54:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691142897; x=1691747697;
+        d=gmail.com; s=20221208; t=1691142896; x=1691747696;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6t+Uj9ERXCfcFiUtSV8wHP7g+imdDsj0ohqCPF61vEE=;
-        b=EgCKjJHir+RebOIlM2oGVM+uzT7W1McBgA+DCYBl3/D/kX4lWjS3wwZikdOpoDT6ir
-         5jsMP6ojOa6NLhlZ72DDxsxQ2J1FY0VNuf/GNqCpYEh6F7KYGyJfv0w2/KPLxTpBPRQC
-         CTBt0l3qAsYbqygpT3CMLTXU7WbQH/J8tEJD1AXxEjqN7e5GJcbNCUFq6WwuIlPQIKbX
-         XrTvpxkVdSONBU0XL3NA6kRjN5Oge3i3zGmoQrjqd0OWDx6GPJmoJCJZQLREOi9ZPrzu
-         hpLE6fM4qGNHqCt04EH/1EhFLFVyxeC+GEyNHskSUxFlvWha+6Nz9uUNePIm5GeYFNA8
-         8c9A==
+        bh=rUTHs6f1QvpBU/pyzTRqEeygVIjeSn4tLrXNrvJgpZk=;
+        b=cflQSRiS/IZszLlDov+SOXTNRwq7bNlR1WqsiCdRTJ/sObnieR/SxCc+wyzYhkeDA7
+         VLMC6PnY/QFZclwyVLuD1szF0iIbR2wzSDH3qNVEtvGuWxDTsFncrvqe3hxlgwvEd8hj
+         uxVGEGICXaGlEW+4y4GgRLdlrpCA+Qpzro4joiA7fLYKouoxZcGDx6k0Jy9lZNweO11S
+         6oYBOxjP17GGsDlFclk1bb9MVUjWArqJdJkJI4dnrxMl5b127Xu/jauKtx+hwWPDAzPs
+         skZ/7sJhUBnGs8AWGZOddsjYq8gwhnbyIXGCJiCbnamjR4OtIfUQN1M9N3NoJoUDIxGt
+         mZAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691142897; x=1691747697;
+        d=1e100.net; s=20221208; t=1691142896; x=1691747696;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6t+Uj9ERXCfcFiUtSV8wHP7g+imdDsj0ohqCPF61vEE=;
-        b=VIjqMkN0K4DXJslUHxp71PAry2mdHCYDF1ZuXQ0HwlUbgqbtZ1O4Q07lwQmkMbCp/O
-         t45+xlInmaKOol6Vd4I2mE8LsHNvfx6Aj5Af0ylWzty5ljAZeNXM1KhzdZuuuf6tsHDm
-         Dy+KoTbw8m80j8f3/v/ZXFATdtQfYyvGfgcTih8To3KpCZfA3/v6ydOWmBIxcoEh9Usp
-         KBxzN3XzxF1ZzL6cLZSNhvd87xaHizMtF/wA93fkxHB19pbCCqT5ulFvdoROaa8emvdB
-         bIa/ZjbJL9nsfECCiSbubYP4uzfNEUxzHfjpU2KJBWIWQfoXDJ6dRMP+wl58H22aMpFl
-         +Ejg==
-X-Gm-Message-State: AOJu0YyKHci5MLkLhHQxLo4MYYB5jVmrLYoJjL/BKTunJIQadE6qpDFw
-	/bAA4kSJHJYLaLq3UevqBK4=
-X-Google-Smtp-Source: AGHT+IF+whYWqJFdFzFh21RMRtJwvDAyl0cuvhadZpZfp6o4tpsP/7itrTwc/lVoNFSvkkfAZQparg==
-X-Received: by 2002:a17:903:2015:b0:1b8:918d:ac48 with SMTP id s21-20020a170903201500b001b8918dac48mr626486pla.56.1691142897198;
-        Fri, 04 Aug 2023 02:54:57 -0700 (PDT)
+        bh=rUTHs6f1QvpBU/pyzTRqEeygVIjeSn4tLrXNrvJgpZk=;
+        b=Sb8GeFpnFEZM5+3Ei4LeJeAXCyjnN29HVRyX27F9dvZSdkzJnJ2feannCzZzd5IyzG
+         ZNi4opnj5NGv5YQsF85O5+3X2xBRtOfpL9g0bCRNhX9ACH3D46HCMt13L5KLTqYGI/6/
+         QUdKeERy9raVgCQdNMCGIodI+9LblOLi1Mcz4tUdVvttDXpYXLHk4xIoAPJ7kl4nTNmE
+         qcnEcrmGR2RBkosK1lyj2k5UDWGaGoMLn6twW04L1AKf49DHwCyKJ8q/VTZN0pgCmyw+
+         QxHfYkKYP/7mNNHqoTTI8/FnqwQCLuWYSL+RB1xAkNsZQnoMHzufSsUYASFMAdW6Xmh8
+         Vr7w==
+X-Gm-Message-State: AOJu0Yx1PDJ7uD9u0q3ww9bCZh2rY88Pq7Z06V2sBN2c2oNyEUHlqoMh
+	stR0Npl8PN/Fl1mxCjvIEvc=
+X-Google-Smtp-Source: AGHT+IGx1aDcn/4oo4404kn2fpcOQRcphul2FMWCl/Osu5fMkdcLY7TLLxOjp6dg99ZGphhKyW/SPg==
+X-Received: by 2002:a17:902:da82:b0:1b9:e9ed:c721 with SMTP id j2-20020a170902da8200b001b9e9edc721mr1754220plx.19.1691142895868;
+        Fri, 04 Aug 2023 02:54:55 -0700 (PDT)
 Received: from twhmp6px (mxsmtp211.mxic.com.tw. [211.75.127.162])
-        by smtp.gmail.com with ESMTPSA id c7-20020a170902d48700b001bc21222e34sm1327881plg.285.2023.08.04.02.54.56
+        by smtp.gmail.com with ESMTPSA id v3-20020a170902d68300b001b86dd825e7sm1347858ply.108.2023.08.04.02.54.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 02:54:56 -0700 (PDT)
+        Fri, 04 Aug 2023 02:54:54 -0700 (PDT)
 Received: from linux-patcher.mp600.macronix.com (linux-patcher [172.17.236.35])
-	by twhmp6px (Postfix) with ESMTPS id DB11A80606;
-	Fri,  4 Aug 2023 17:53:44 +0800 (CST)
+	by twhmp6px (Postfix) with ESMTPS id 3B2B78056D;
+	Fri,  4 Aug 2023 17:53:43 +0800 (CST)
 From: Jaime Liao <jaimeliao.tw@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	tudor.ambarus@linaro.org,
@@ -73,16 +73,16 @@ To: linux-mtd@lists.infradead.org,
 	miquel.raynal@bootlin.com
 Cc: leoyu@mxic.com.tw,
 	JaimeLiao <jaimeliao@mxic.com.tw>
-Subject: [PATCH v3 5/5] mtd: spi-nor: sfdp: Get the 8D-8D-8D byte order from BFPT
-Date: Fri,  4 Aug 2023 17:54:09 +0800
-Message-Id: <20230804095409.278419-6-jaimeliao.tw@gmail.com>
+Subject: [PATCH v3 2/5] mtd: spi-nor: core: Hook manufacture by checking first byte ID
+Date: Fri,  4 Aug 2023 17:54:06 +0800
+Message-Id: <20230804095409.278419-3-jaimeliao.tw@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230804095409.278419-1-jaimeliao.tw@gmail.com>
 References: <20230804095409.278419-1-jaimeliao.tw@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230804_025500_915929_DE17368B 
-X-CRM114-Status: GOOD (  11.53  )
+X-CRM114-CacheID: sfid-20230804_025458_812096_BDCDAE87 
+X-CRM114-Status: GOOD (  14.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,41 +101,42 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: JaimeLiao <jaimeliao@mxic.com.tw>
 
-Parse BFPT in order to retrieve the byte order in 8D-8D-8D mode.
+Patch ID for flash support is a thing that we keep striving to do.
+Follow the optimization of software architecture, parse SFDP is
+the mainstream in SPI-NOR subsystem.
+Label "spi-nor-generic" to the flash which didn't include in ID table
+but support SFDP, is a good way for flash support.
+Building upon this fundation, achieve hooking the manufacturer using the
+1st ID byte.
+Consequently, extend support even for parts not descibed in SFDP.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Signed-off-by: JaimeLiao <jaimeliao@mxic.com.tw>
 ---
- drivers/mtd/spi-nor/sfdp.c | 4 ++++
- drivers/mtd/spi-nor/sfdp.h | 1 +
- 2 files changed, 5 insertions(+)
+ drivers/mtd/spi-nor/core.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index b3b11dfed789..2241207556bf 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -650,6 +650,10 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 		return -EOPNOTSUPP;
- 	}
- 
-+	/* Byte order in 8D-8D-8D mode */
-+	if (bfpt.dwords[SFDP_DWORD(18)] & BFPT_DWORD18_BYTE_ORDER_SWAPPED)
-+		nor->flags |= SNOR_F_DTR_SWAB16;
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 5f29fac8669a..eb0a09c06bf4 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2036,10 +2036,13 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
+ 	for (i = 0; i < ARRAY_SIZE(manufacturers); i++) {
+ 		for (j = 0; j < manufacturers[i]->nparts; j++) {
+ 			part = &manufacturers[i]->parts[j];
+-			if (part->id_len &&
+-			    !memcmp(part->id, id, part->id_len)) {
+-				nor->manufacturer = manufacturers[i];
+-				return part;
++			if (part->id_len) {
++				/* Hook manufacturers when first byte (maf ID) is same as other IDs on ID table */
++				if (!nor->manufacturer && !memcmp(part->id, id, 1))
++					nor->manufacturer = manufacturers[i];
 +
- 	return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
- }
- 
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index 6eb99e1cdd61..eba760941d43 100644
---- a/drivers/mtd/spi-nor/sfdp.h
-+++ b/drivers/mtd/spi-nor/sfdp.h
-@@ -123,6 +123,7 @@ struct sfdp_bfpt {
- #define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
- #define BFPT_DWORD18_CMD_EXT_RES		(0x2UL << 29) /* Reserved */
- #define BFPT_DWORD18_CMD_EXT_16B		(0x3UL << 29) /* 16-bit opcode */
-+#define BFPT_DWORD18_BYTE_ORDER_SWAPPED		BIT(31) /* Byte order of 16-bit words in 8D-8D-8D mode */
- 
- struct sfdp_parameter_header {
- 	u8		id_lsb;
++				if (!memcmp(part->id, id, part->id_len))
++					return part;
+ 			}
+ 		}
+ 	}
 -- 
 2.25.1
 
