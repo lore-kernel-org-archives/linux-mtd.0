@@ -4,62 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 818A6C001DB
-	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 13:08:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8566C001DB
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 16:23:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:
-	Cc:To:Subject:MIME-Version:Date:Message-ID:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K9P4e4OIcjHKFCDWMRsN2aMLwQJpygQLSEdLacVpd6w=; b=dokPB3vM0+YmqK
-	rQKpYWDJkcqRx9DPP0FFf4pYJlnAnwiTtdQqxfqa8octEuJOWB2QbAtwEiQ1nWyAeI9qY39/ijq7M
-	3a9O0DXxbw/CpNfN9GCRFLsa5uoR0w1CHEqegbfyx/zxS6YfTo2VndLupJ0HDTIRsGB2gfmI6dsxd
-	Mso/TdxQoO1j4ANq7yqYDq5MhDSc148l/BOjXeOiTJhWX95B9fOqWM/zgHhj4DnXrXNfY7+SlaVu9
-	piRI90hpd8n22Ae0GEMmTfMQglOrAL55xkjlX7LE5hTVCnL8FAgLF+YkWQgtJSwf3Lq8KyDW5fqEK
-	3bW3grR8PeRpeCUj502A==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
+	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=87lNoVbDva48Ev6NhlAW3uN2IeRbJyO3jbFmInzgBus=; b=DgQkhZMALb40oE
+	8pnwd4uCcAyubMcNQldECqhWRjTDWkpGwC3c7h0rd7kQzvX6LovY8NHnuA1qpTiY4ILFwI5bmYheq
+	m4q4ogL3KsY/AKk3ZNLraXxS6V8RCfldZAdoDvwkfHtotjhFgfFVwVRTFn7SwnDlup8m65lKz+tvF
+	DHDvaD0Aek4qncnHcC1ce7SbpJ7V6DYAV+b9Xnks2G1fICiPX1R2qtIN7F+1Vh/sGpxgqmYEBhfLH
+	CUY1/w8FNmigPy+9FIXM/2mImrUHusRy1GpGVlev72ywFTf9fNE1Y7rl5ZdiyLmVoXSG7ZerIl/lI
+	HxhVmbCxGJNXxNBSAD+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSH0P-00EAzQ-1e;
-	Sat, 05 Aug 2023 13:07:41 +0000
-Received: from wp530.webpack.hosteurope.de ([80.237.130.52])
+	id 1qSK3l-00EKGC-0R;
+	Sat, 05 Aug 2023 16:23:21 +0000
+Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSH0L-00EAyF-0b
+	id 1qSK3i-00EKFH-2j
 	for linux-mtd@lists.infradead.org;
-	Sat, 05 Aug 2023 13:07:39 +0000
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1qSH03-0006q9-To; Sat, 05 Aug 2023 15:07:19 +0200
-Message-ID: <84f6ea98-0d72-e17a-4b7c-d025f2d34e95@leemhuis.info>
-Date: Sat, 5 Aug 2023 15:07:18 +0200
+	Sat, 05 Aug 2023 16:23:20 +0000
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1qSK3T-0000d8-2m;
+	Sat, 05 Aug 2023 16:23:03 +0000
+Date: Sat, 5 Aug 2023 17:22:53 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Randy Dunlap <rdunlap@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH v2 0/7] mtd: ubi: allow UBI volumes to provide NVMEM
+Message-ID: <cover.1691252291.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/24] PM: hibernate: move finding the resume device out
- of software_resume
-Content-Language: en-US, de-DE
-To: Vlastimil Babka <vbabka@suse.cz>, Christoph Hellwig <hch@lst.de>,
- Jens Axboe <axboe@kernel.dk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Mike Snitzer <snitzer@kernel.org>,
- Joern Engel <joern@lazybastard.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Pavel Machek <pavel@ucw.cz>, Loic Poulain <loic.poulain@linaro.org>,
- dm-devel@redhat.com, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pm@vger.kernel.org,
- Linux regressions mailing list <regressions@lists.linux.dev>
-References: <20230531125535.676098-1-hch@lst.de>
- <20230531125535.676098-5-hch@lst.de>
- <2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz>
-From: "Linux regression tracking #adding (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-In-Reply-To: <2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz>
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691240857;d8fee127;
-X-HE-SMSGID: 1qSH03-0006q9-To
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230805_060737_370670_C1247097 
-X-CRM114-Status: GOOD (  25.43  )
+X-CRM114-CacheID: sfid-20230805_092318_881271_10E4B0C6 
+X-CRM114-Status: GOOD (  15.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,90 +58,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-[TLDR: I'm adding this report to the list of tracked Linux kernel
-regressions; the text you find below is based on a few templates
-paragraphs you might have encountered already in similar form.
-See link in footer if these mails annoy you.]
+The series is a follow-up and contains all patches of the previous
+series "mtd: ubi: behave like a good MTD citizen"[1] which was meant in
+preparation for implementing the NVMEM provider.
 
-On 03.08.23 10:27, Vlastimil Babka wrote:
-> On 5/31/23 14:55, Christoph Hellwig wrote:
->> software_resume can be called either from an init call in the boot code,
->> or from sysfs once the system has finished booting, and the two
->> invocation methods this can't race with each other.
->>
->> For the latter case we did just parse the suspend device manually, while
->> the former might not have one.  Split software_resume so that the search
->> only happens for the boot case, which also means the special lockdep
->> nesting annotation can go away as the system transition mutex can be
->> taken a little later and doesn't have the sysfs locking nest inside it.
->>
->> Signed-off-by: Christoph Hellwig <hch@lst.de>
->> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-> 
-> This caused a regression for me in 6.5-rc1+, fix below.
-> 
-> ----8<----
->>From 95a310ae6cfae9b3cab61e54a1bce488c3ab93a1 Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Wed, 2 Aug 2023 15:46:18 +0200
-> Subject: [PATCH] PM: hibernate: fix resume_store() return value when
->  hibernation not available
-> 
-> On a laptop with hibernation set up but not actively used, and with
-> secure boot and lockdown enabled kernel, 6.5-rc1 gets stuck on boot with
-> the following repeated messages:
-> 
->   A start job is running for Resume from hibernation using device /dev/system/swap (24s / no limit)
->   lockdown_is_locked_down: 25311154 callbacks suppressed
->   Lockdown: systemd-hiberna: hibernation is restricted; see man kernel_lockdown.7
->   ...
-> 
-> Checking the resume code leads to commit cc89c63e2fe3 ("PM: hibernate:
-> move finding the resume device out of software_resume") which
-> inadvertently changed the return value from resume_store() to 0 when
-> !hibernation_available(). This apparently translates to userspace
-> write() returning 0 as in number of bytes written, and userspace looping
-> indefinitely in the attempt to write the intended value.
-> 
-> Fix this by returning the full number of bytes that were to be written,
-> as that's what was done before the commit.
-> 
-> Fixes: cc89c63e2fe3 ("PM: hibernate: move finding the resume device out of software_resume")
-> [...]
+The goal is to support embedded Linux devices which got NVMEM bits
+stored inside a UBI volume. Representing the UBI volume in the Device
+Tree, adding a phandle to be referenced by NVMEM consumers allows such
+devices to come up with their correct MAC addresses and device-specific
+Wi-Fi calibration data loaded.
 
-Thanks for the report. To be sure the issue doesn't fall through the
-cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-tracking bot:
+In order to be available for other drivers, attaching UBI devices has
+to be moved from late_initcall (which is too late for other drivers) to
+happen earlier. As an alternative to the existing kernel cmdline
+parameter the Device Tree property 'compatible = "linux,ubi";' inside
+an MTD partition can be used to have that MTD device attached as UBI
+device. MTD partitions which serve as UBI devices may have a "volumes"
+firmware subnode with volumes which may be compatible with
+"nvmem-cells".
 
-#regzbot ^introduced cc89c63e2fe3
-#regzbot title pm: boot problems when hibernate is configured and kernel
-locked down
-#regzbot fix: PM: hibernate: fix resume_store() return value when
-hibernation not available
-#regzbot ignore-activity
+In this way, other drivers (think: Ethernet, Wi-Fi) can resolve and
+acquire NVMEM bits using the usual device tree phandle, just this time
+the NVMEM content is read from a UBI volume.
 
-This isn't a regression? This issue or a fix for it are already
-discussed somewhere else? It was fixed already? You want to clarify when
-the regression started to happen? Or point out I got the title or
-something else totally wrong? Then just reply and tell me -- ideally
-while also telling regzbot about it, as explained by the page listed in
-the footer of this mail.
+[1]: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=353177&state=%2A&archive=both
 
-Developers: When fixing the issue, remember to add 'Link:' tags pointing
-to the report (the parent of this mail). See page linked in footer for
-details.
+Changes since v1:
+ * include patch to fix exiting Kconfig formatting issues
+ * fix typo and indentation in Kconfig
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+Daniel Golle (7):
+  mtd: ubi: improve Kconfig formatting
+  mtd: ubi: block: don't return on error when removing
+  mtd: ubi: block: use notifier to create ubiblock from parameter
+  mtd: ubi: attach MTD partition from device-tree
+  mtd: ubi: introduce pre-removal notification for UBI volumes
+  mtd: ubi: populate ubi volume fwnode
+  mtd: ubi: provide NVMEM layer over UBI volumes
+
+ drivers/mtd/ubi/Kconfig  |  72 ++++++++-------
+ drivers/mtd/ubi/Makefile |   1 +
+ drivers/mtd/ubi/block.c  | 186 +++++++++++++++++++++++---------------
+ drivers/mtd/ubi/build.c  | 160 ++++++++++++++++++++++++---------
+ drivers/mtd/ubi/cdev.c   |   4 +-
+ drivers/mtd/ubi/nvmem.c  | 189 +++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/ubi.h    |   6 +-
+ drivers/mtd/ubi/vmt.c    |  36 ++++++++
+ include/linux/mtd/ubi.h  |   2 +
+ 9 files changed, 507 insertions(+), 149 deletions(-)
+ create mode 100644 drivers/mtd/ubi/nvmem.c
+
+-- 
+2.41.0
 
 ______________________________________________________
 Linux MTD discussion mailing list
