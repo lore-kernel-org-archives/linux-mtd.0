@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53DEDC00528
-	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 17:42:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 533EAC001DE
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 17:42:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TSG2eLi9KX6qRXdbvpqFBtaM+ZTJLl0NP1jGGO1X3vw=; b=EZMAVWL1wx561j
-	mISEoRQmFKOau7CgLBXAzvjEmku9G3nHmvQDBQz91IRIB6HfHcluIxexpu5EyIE0FjLmwJsUplw63
-	Ykmn6gGAj89Hp2UA1g/v6gfx5hTW8pd6tdvWl+KbrKifOExUpxWmBVb9xp/fiI90S9TSIkpeTkEp8
-	BreEY9ukGHeIOPGsKBdFE2Y9KOfi+PDKn0hRB4Qm+Xu0tkkuj8fUqmpMtHIaggM70xv+Ca1Reiyfk
-	c7kqBJi/D3hAcS0AufyyGuhvvUQlcfWvoSaHcJ1ZCM6NSwYIrGvMMNw6FKMVPN4uNec4YCMmWylNZ
-	8qHWGqBOuwY7rzrVAKYw==;
+	List-Owner; bh=EQzqp8RqaZVUFFNTYFChjiJaqXcTot4167dYOrMXRUE=; b=uFJ+p4hvLvg5gN
+	ruux8mrwkrVREq4yeMkbRNAGJXh/RiZfEPB0nlKbM9jzrbNbF03eKxW93vjN2fQevh/N25/XWrIMT
+	VeAB/kFEnww/jl9qZWMoRF8DZKX+yq8c3huhCpHdo4rCOo75cQtN40fqA+9dSZVFRZeqBlbfdjB7D
+	brNd+fRyRJ9WR6N7H+5bWWHsP2cnYgFdsJnClRdBA9qweEcJrWo13BRFgaovzsUWT0wrbuGOyCiSD
+	tL4CUm4L2xiHY0F+KrtRn01Un2Xzc7UZNVxlKrYeWao7BqHZqYoaklrj+pjFMMwI7zAPKqJtWaNTY
+	jEK0FS8acdFSdsvKV9Jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSLIH-00EOxd-10;
-	Sat, 05 Aug 2023 17:42:25 +0000
-Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
+	id 1qSLII-00EOya-36;
+	Sat, 05 Aug 2023 17:42:26 +0000
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSLIE-00EOw6-32
+	id 1qSLIH-00EOwo-0U
 	for linux-mtd@lists.infradead.org;
-	Sat, 05 Aug 2023 17:42:24 +0000
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68783004143so2214796b3a.2
-        for <linux-mtd@lists.infradead.org>; Sat, 05 Aug 2023 10:42:20 -0700 (PDT)
+	Sat, 05 Aug 2023 17:42:26 +0000
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68730bafa6bso2826573b3a.1
+        for <linux-mtd@lists.infradead.org>; Sat, 05 Aug 2023 10:42:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691257340; x=1691862140;
+        d=linaro.org; s=google; t=1691257343; x=1691862143;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6DdQ17i05e7SXOOOl5eag5513m9DyQQ031lLX7RYOeM=;
-        b=z4YGgwR2elh/iFIEMIUuNAj75llc2sReLBB/7yRb9iY10hRhPLGSIKMAOsbKqiruEJ
-         e85zr/jUwZeceCfIFHWnSjwCUynVarvL9gIntTCBoIFNHDNG3jBkfvS5kuXKOkkRLlYc
-         lQX4Zignzpz7MQw2vQs/TjRvy4buMPaSBMCEDzA/iNe60kq3H4nwf36F00sUo4Ia0Moy
-         hNl0DKN8mImdD6VcaBgs8v6ftvL2fz6IkM7C2zySYqRW/cjpzZRqndVbN+QNqgBMKIWu
-         CwKRaJCs6xZEaauXEJoVLEKvQN9IFredPVAFJgHzLGaaZAhLfvyyxaizTUbNx6B0qbCw
-         6Gng==
+        bh=1Sk0pPWqBxPd0LZRhqUZVkkGQlVge4WAhNj/aqE/s4Y=;
+        b=r3e0kB4hxBfTtxIB0onMjnTolvvCfOWZ6jFqGifW4WvCZljrocy7UTblzz5SgbZSMV
+         Tsg6Grb5tNsecdh7a3xvki0xfGCzsjstt2awTgo5qChvIy5eZZHhzs3p9ax0WcWC3Tei
+         tgcyE9SjI8JNLSsZz7XZn+YlxNV9B7RczmluWvy6OA5QTxU+XnstbRxTykip1aunBR+w
+         wvO3V5k/mzf7dNLhvllWENRiaYAON41uRSDRlsd3pI4/QUAx8NVDMFoRJUe9M331xiDK
+         WRxJ80B9Pix7WXIMMX/Eh7wTIMNZMUz6ESVIzmjKRIGxflRDWv8dy9e9WDLjaLBsQmj/
+         CLow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691257340; x=1691862140;
+        d=1e100.net; s=20221208; t=1691257343; x=1691862143;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6DdQ17i05e7SXOOOl5eag5513m9DyQQ031lLX7RYOeM=;
-        b=fBgTMhwYRGSPI5b34Wr5L/tdUzKwF5nL7yn98pIZdQBc9bWoJuO0pYOkGtLJfayO/1
-         ai2ia7M7SY61spCgBKWaXeLn6RcieScDH0qHVoU63pnXnkQMZ8SfEk2D4sbJGl0eCCmQ
-         T5PMSMETZk2AUelme5xhvE/mLfuEL2bBk8LQRnPRRP0yjU7les7l6oDdxeSaf9CS6vfs
-         cDTg1908dhlBeO1S6nCqIVsVo6XGsi2sVLmkmJKCydY6ivNZOSqSse/77JvsqvUycwc3
-         jSZjhQnUmhXDV+bS4nL55HiEfEWLsdW6h3wHJ3B6RfzHdJEuXbG9PW/pjgKalRPww+lD
-         OLMA==
-X-Gm-Message-State: AOJu0Yxl1eQr/ltQ3HWX7l1b9XUe/Fl4s6C/18aG3TBo/zy/++3CaQma
-	l0X16C95JUSmUPbLvd1VHfPc
-X-Google-Smtp-Source: AGHT+IFKwnABP3vDMVazc2QTk+cvtQZ8yH68NQhgjQamItU7KcCa/d/HqrT5m1bOe/BPp6jzK4AlmQ==
-X-Received: by 2002:a05:6a00:2d91:b0:687:29ce:2fa6 with SMTP id fb17-20020a056a002d9100b0068729ce2fa6mr4911550pfb.7.1691257340058;
-        Sat, 05 Aug 2023 10:42:20 -0700 (PDT)
+        bh=1Sk0pPWqBxPd0LZRhqUZVkkGQlVge4WAhNj/aqE/s4Y=;
+        b=gHZuLf8OepemQFPlGTzSWQelb4uQhQObPImbSii9RcA4t9RAbl7Lq1hruJoyOQdR7u
+         a2+2YxHMIWr9j2Hxy0Xm41iIGV5Jh9Ki3axRsOJ9Q5qNauaiQOFiCUJf0VQVgeA7Havc
+         nAp/3MIhmUGtKx2VbHKyFGUjrezRGeSzpgn6d7XqBqs2LSug71hfNYc2uXDnPrfecHm+
+         VM7kamCKzN7UJlc1p9lcmkYwk7C4NIVci55ZfuRFq2ZAzQBwAcMUZQOAXeWIVo6n929z
+         OPaz8m7PsQF5vFYXIDmbiYq21N5zDIrgrO9wSLlnFUMzUTidKpiZIS5ki5A9DqShZ7oQ
+         F4hw==
+X-Gm-Message-State: AOJu0YzsEQzyuBqSRXRx3nF9I39TOoxJeJ0Tu7KQUEjSZXaFbAhZOxCm
+	6FiVDK0/JY/U7G0nIjwRd8kh
+X-Google-Smtp-Source: AGHT+IGfVwqNV2yZu3HBwsINeFiBqSoo6eDBh4XGHw3BY2S/rCtcxHL+55POlo+nJk6aFa9hHqDL5A==
+X-Received: by 2002:a05:6a20:12c2:b0:12e:caac:f263 with SMTP id v2-20020a056a2012c200b0012ecaacf263mr3443189pzg.20.1691257343130;
+        Sat, 05 Aug 2023 10:42:23 -0700 (PDT)
 Received: from localhost.localdomain ([103.28.246.21])
-        by smtp.gmail.com with ESMTPSA id i14-20020aa78b4e000000b006874a6850e9sm3363160pfd.215.2023.08.05.10.42.17
+        by smtp.gmail.com with ESMTPSA id i14-20020aa78b4e000000b006874a6850e9sm3363160pfd.215.2023.08.05.10.42.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 10:42:19 -0700 (PDT)
+        Sat, 05 Aug 2023 10:42:22 -0700 (PDT)
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: miquel.raynal@bootlin.com,
 	vigneshr@ti.com
@@ -73,16 +73,17 @@ Cc: richard@nod.at,
 	quic_srichara@quicinc.com,
 	dan.carpenter@linaro.org,
 	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 05/10] mtd: rawnand: qcom: Use EOPNOTSUPP instead of ENOTSUPP
-Date: Sat,  5 Aug 2023 23:11:41 +0530
-Message-Id: <20230805174146.57006-6-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 06/10] mtd: rawnand: qcom: Wrap qcom_nand_exec_op() to 80 columns
+Date: Sat,  5 Aug 2023 23:11:42 +0530
+Message-Id: <20230805174146.57006-7-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230805174146.57006-1-manivannan.sadhasivam@linaro.org>
 References: <20230805174146.57006-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230805_104222_974873_B416BFA5 
-X-CRM114-Status: GOOD (  10.70  )
+X-CRM114-CacheID: sfid-20230805_104225_187359_DE9F6D09 
+X-CRM114-Status: UNSURE (   9.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,30 +100,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Checkpatch complains over the usage of ENOTSUPP for new patches as below:
-
-WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
-
-So let's fix the error code which is already present in qcom_check_op().
+Both the function arguments and the definition could be wrapped to 80
+columns to save line space.
 
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 29fcdac932f1..a7a9421ef003 100644
+index a7a9421ef003..4f38579ae03e 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -3040,7 +3040,7 @@ static int qcom_check_op(struct nand_chip *chip,
- 			    instr->ctx.cmd.opcode != NAND_CMD_ERASE2 &&
- 			    instr->ctx.cmd.opcode != NAND_CMD_STATUS &&
- 			    instr->ctx.cmd.opcode != NAND_CMD_PAGEPROG)
--				return -ENOTSUPP;
-+				return -EOPNOTSUPP;
- 			break;
- 		default:
- 			break;
+@@ -3051,14 +3051,12 @@ static int qcom_check_op(struct nand_chip *chip,
+ }
+ 
+ static int qcom_nand_exec_op(struct nand_chip *chip,
+-			     const struct nand_operation *op,
+-			bool check_only)
++			     const struct nand_operation *op, bool check_only)
+ {
+ 	if (check_only)
+ 		return qcom_check_op(chip, op);
+ 
+-	return nand_op_parser_exec_op(chip, &qcom_op_parser,
+-			op, check_only);
++	return nand_op_parser_exec_op(chip, &qcom_op_parser, op, check_only);
+ }
+ 
+ static const struct nand_controller_ops qcom_nandc_ops = {
 -- 
 2.25.1
 
