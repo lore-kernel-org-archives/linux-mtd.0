@@ -4,49 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8566C001DB
-	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 16:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2392C04A94
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 16:23:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:To:From
-	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=87lNoVbDva48Ev6NhlAW3uN2IeRbJyO3jbFmInzgBus=; b=DgQkhZMALb40oE
-	8pnwd4uCcAyubMcNQldECqhWRjTDWkpGwC3c7h0rd7kQzvX6LovY8NHnuA1qpTiY4ILFwI5bmYheq
-	m4q4ogL3KsY/AKk3ZNLraXxS6V8RCfldZAdoDvwkfHtotjhFgfFVwVRTFn7SwnDlup8m65lKz+tvF
-	DHDvaD0Aek4qncnHcC1ce7SbpJ7V6DYAV+b9Xnks2G1fICiPX1R2qtIN7F+1Vh/sGpxgqmYEBhfLH
-	CUY1/w8FNmigPy+9FIXM/2mImrUHusRy1GpGVlev72ywFTf9fNE1Y7rl5ZdiyLmVoXSG7ZerIl/lI
-	HxhVmbCxGJNXxNBSAD+w==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XFMXMX77ASeC3Eg6jOYr5muecmi7miEW47r9rIKIt74=; b=GB9X13vpwfkvQW
+	dAEgCn9vF7TTBKDLnT2C0vWH1K5t+UiukXrUDtQAlCimWM1j5FWUWWdW3Pc+CqlUi/DMawZZvuKeH
+	vXlKCuXZy3oU8bPWPswLDsHE5SzKIDt0xRevkWLKRDxvYel6VYucBbVC2xZ3ztOWiCtdpkF2h1XLa
+	eSTCV9/41sAZ18rMawRGgZvrUuQdDLbsAnZ6MIXCwtUaQDyc2jdo/7M//jSksz01xFlRMz2xyXP1u
+	oxlTZku0DbFoNKgOTtikd01r+itpA6F0UBuNsiTkT2+bmJuQFnbRL2RQcLRnWcz+4kHZEpMROIFUi
+	Dy4Fha+BkBmwQFxndpIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSK3l-00EKGC-0R;
-	Sat, 05 Aug 2023 16:23:21 +0000
+	id 1qSK3s-00EKHK-2s;
+	Sat, 05 Aug 2023 16:23:28 +0000
 Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSK3i-00EKFH-2j
+	id 1qSK3p-00EKGa-3D
 	for linux-mtd@lists.infradead.org;
-	Sat, 05 Aug 2023 16:23:20 +0000
+	Sat, 05 Aug 2023 16:23:27 +0000
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1qSK3T-0000d8-2m;
-	Sat, 05 Aug 2023 16:23:03 +0000
-Date: Sat, 5 Aug 2023 17:22:53 +0100
+	id 1qSK3i-0000dH-1f;
+	Sat, 05 Aug 2023 16:23:18 +0000
+Date: Sat, 5 Aug 2023 17:23:11 +0100
 From: Daniel Golle <daniel@makrotopia.org>
 To: Randy Dunlap <rdunlap@infradead.org>,
 	Richard Weinberger <richard@nod.at>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v2 0/7] mtd: ubi: allow UBI volumes to provide NVMEM
-Message-ID: <cover.1691252291.git.daniel@makrotopia.org>
+Subject: [PATCH v2 1/7] mtd: ubi: improve Kconfig formatting
+Message-ID: <62240f36e4838e925e32add167a2d7d201843b0d.1691252291.git.daniel@makrotopia.org>
+References: <cover.1691252291.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <cover.1691252291.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230805_092318_881271_10E4B0C6 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20230805_092326_035126_0A3356CB 
+X-CRM114-Status: GOOD (  18.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,56 +65,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The series is a follow-up and contains all patches of the previous
-series "mtd: ubi: behave like a good MTD citizen"[1] which was meant in
-preparation for implementing the NVMEM provider.
+Kconfig help text should be indented with one tab + 2 spaces
+according to coding-style.rst. Apply this rule in
+drivers/mtd/ubi/Kconfig
 
-The goal is to support embedded Linux devices which got NVMEM bits
-stored inside a UBI volume. Representing the UBI volume in the Device
-Tree, adding a phandle to be referenced by NVMEM consumers allows such
-devices to come up with their correct MAC addresses and device-specific
-Wi-Fi calibration data loaded.
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/mtd/ubi/Kconfig | 60 ++++++++++++++++++++---------------------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
 
-In order to be available for other drivers, attaching UBI devices has
-to be moved from late_initcall (which is too late for other drivers) to
-happen earlier. As an alternative to the existing kernel cmdline
-parameter the Device Tree property 'compatible = "linux,ubi";' inside
-an MTD partition can be used to have that MTD device attached as UBI
-device. MTD partitions which serve as UBI devices may have a "volumes"
-firmware subnode with volumes which may be compatible with
-"nvmem-cells".
-
-In this way, other drivers (think: Ethernet, Wi-Fi) can resolve and
-acquire NVMEM bits using the usual device tree phandle, just this time
-the NVMEM content is read from a UBI volume.
-
-[1]: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=353177&state=%2A&archive=both
-
-Changes since v1:
- * include patch to fix exiting Kconfig formatting issues
- * fix typo and indentation in Kconfig
-
-Daniel Golle (7):
-  mtd: ubi: improve Kconfig formatting
-  mtd: ubi: block: don't return on error when removing
-  mtd: ubi: block: use notifier to create ubiblock from parameter
-  mtd: ubi: attach MTD partition from device-tree
-  mtd: ubi: introduce pre-removal notification for UBI volumes
-  mtd: ubi: populate ubi volume fwnode
-  mtd: ubi: provide NVMEM layer over UBI volumes
-
- drivers/mtd/ubi/Kconfig  |  72 ++++++++-------
- drivers/mtd/ubi/Makefile |   1 +
- drivers/mtd/ubi/block.c  | 186 +++++++++++++++++++++++---------------
- drivers/mtd/ubi/build.c  | 160 ++++++++++++++++++++++++---------
- drivers/mtd/ubi/cdev.c   |   4 +-
- drivers/mtd/ubi/nvmem.c  | 189 +++++++++++++++++++++++++++++++++++++++
- drivers/mtd/ubi/ubi.h    |   6 +-
- drivers/mtd/ubi/vmt.c    |  36 ++++++++
- include/linux/mtd/ubi.h  |   2 +
- 9 files changed, 507 insertions(+), 149 deletions(-)
- create mode 100644 drivers/mtd/ubi/nvmem.c
-
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 2ed77b7b3fcb5..184118f9a2969 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -61,47 +61,47 @@ config MTD_UBI_FASTMAP
+ 	bool "UBI Fastmap (Experimental feature)"
+ 	default n
+ 	help
+-	   Important: this feature is experimental so far and the on-flash
+-	   format for fastmap may change in the next kernel versions
+-
+-	   Fastmap is a mechanism which allows attaching an UBI device
+-	   in nearly constant time. Instead of scanning the whole MTD device it
+-	   only has to locate a checkpoint (called fastmap) on the device.
+-	   The on-flash fastmap contains all information needed to attach
+-	   the device. Using fastmap makes only sense on large devices where
+-	   attaching by scanning takes long. UBI will not automatically install
+-	   a fastmap on old images, but you can set the UBI module parameter
+-	   fm_autoconvert to 1 if you want so. Please note that fastmap-enabled
+-	   images are still usable with UBI implementations without
+-	   fastmap support. On typical flash devices the whole fastmap fits
+-	   into one PEB. UBI will reserve PEBs to hold two fastmaps.
+-
+-	   If in doubt, say "N".
++	  Important: this feature is experimental so far and the on-flash
++	  format for fastmap may change in the next kernel versions
++
++	  Fastmap is a mechanism which allows attaching an UBI device
++	  in nearly constant time. Instead of scanning the whole MTD device it
++	  only has to locate a checkpoint (called fastmap) on the device.
++	  The on-flash fastmap contains all information needed to attach
++	  the device. Using fastmap makes only sense on large devices where
++	  attaching by scanning takes long. UBI will not automatically install
++	  a fastmap on old images, but you can set the UBI module parameter
++	  fm_autoconvert to 1 if you want so. Please note that fastmap-enabled
++	  images are still usable with UBI implementations without
++	  fastmap support. On typical flash devices the whole fastmap fits
++	  into one PEB. UBI will reserve PEBs to hold two fastmaps.
++
++	  If in doubt, say "N".
+ 
+ config MTD_UBI_GLUEBI
+ 	tristate "MTD devices emulation driver (gluebi)"
+ 	help
+-	   This option enables gluebi - an additional driver which emulates MTD
+-	   devices on top of UBI volumes: for each UBI volumes an MTD device is
+-	   created, and all I/O to this MTD device is redirected to the UBI
+-	   volume. This is handy to make MTD-oriented software (like JFFS2)
+-	   work on top of UBI. Do not enable this unless you use legacy
+-	   software.
++	  This option enables gluebi - an additional driver which emulates MTD
++	  devices on top of UBI volumes: for each UBI volumes an MTD device is
++	  created, and all I/O to this MTD device is redirected to the UBI
++	  volume. This is handy to make MTD-oriented software (like JFFS2)
++	  work on top of UBI. Do not enable this unless you use legacy
++	  software.
+ 
+ config MTD_UBI_BLOCK
+ 	bool "Read-only block devices on top of UBI volumes"
+ 	default n
+ 	depends on BLOCK
+ 	help
+-	   This option enables read-only UBI block devices support. UBI block
+-	   devices will be layered on top of UBI volumes, which means that the
+-	   UBI driver will transparently handle things like bad eraseblocks and
+-	   bit-flips. You can put any block-oriented file system on top of UBI
+-	   volumes in read-only mode (e.g., ext4), but it is probably most
+-	   practical for read-only file systems, like squashfs.
++	  This option enables read-only UBI block devices support. UBI block
++	  devices will be layered on top of UBI volumes, which means that the
++	  UBI driver will transparently handle things like bad eraseblocks and
++	  bit-flips. You can put any block-oriented file system on top of UBI
++	  volumes in read-only mode (e.g., ext4), but it is probably most
++	  practical for read-only file systems, like squashfs.
+ 
+-	   When selected, this feature will be built in the UBI driver.
++	  When selected, this feature will be built in the UBI driver.
+ 
+-	   If in doubt, say "N".
++	  If in doubt, say "N".
+ 
+ endif # MTD_UBI
 -- 
 2.41.0
 
