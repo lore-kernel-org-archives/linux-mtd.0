@@ -4,55 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 213ECC001DB
-	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 05:02:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 818A6C001DB
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 13:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=sn4cbd6pMzChiNl+QlqPxQ+GLFfwTK2xARj1g8s0MRQ=; b=X+4po3UDNBiqdt
-	owD+bS4CHzHUG/POtt819DIrPKFEULHBt9rtsMTnt7xTXkSckVeA7oUPy9Scypn+8EEW4ccv/Htii
-	LoEpCTkQukjt89Fw/EEOfn6BtaXybY3rKUGiSIY7wsP9FfNUAXqyGHDzLKMeYlpa0392UpQXumWdV
-	WowuMAHN9Vu04GkWxkabfuOAGSTX1asZkgELrSvPu+uIGlHOkaCKV8p0j6ZEKlSxph88lOBupiNgS
-	45VN5Ov5DZaEEuyEFCOiM99Sur8twJkvHeOnh+3rKepB2UbQ3sWelgK+FmVsVVR5v+UWjx+kf2jNm
-	dUL4cWnNSeeGnSr2ZR0Q==;
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:
+	Cc:To:Subject:MIME-Version:Date:Message-ID:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=K9P4e4OIcjHKFCDWMRsN2aMLwQJpygQLSEdLacVpd6w=; b=dokPB3vM0+YmqK
+	rQKpYWDJkcqRx9DPP0FFf4pYJlnAnwiTtdQqxfqa8octEuJOWB2QbAtwEiQ1nWyAeI9qY39/ijq7M
+	3a9O0DXxbw/CpNfN9GCRFLsa5uoR0w1CHEqegbfyx/zxS6YfTo2VndLupJ0HDTIRsGB2gfmI6dsxd
+	Mso/TdxQoO1j4ANq7yqYDq5MhDSc148l/BOjXeOiTJhWX95B9fOqWM/zgHhj4DnXrXNfY7+SlaVu9
+	piRI90hpd8n22Ae0GEMmTfMQglOrAL55xkjlX7LE5hTVCnL8FAgLF+YkWQgtJSwf3Lq8KyDW5fqEK
+	3bW3grR8PeRpeCUj502A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qS9R4-00Di69-2S;
-	Sat, 05 Aug 2023 05:02:42 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1qSH0P-00EAzQ-1e;
+	Sat, 05 Aug 2023 13:07:41 +0000
+Received: from wp530.webpack.hosteurope.de ([80.237.130.52])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qS9R1-00Di4r-2U
+	id 1qSH0L-00EAyF-0b
 	for linux-mtd@lists.infradead.org;
-	Sat, 05 Aug 2023 05:02:41 +0000
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RHr3V16dRz1Z1Vy;
-	Sat,  5 Aug 2023 12:59:34 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
- (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 5 Aug
- 2023 13:02:19 +0800
-From: Ruan Jinjie <ruanjinjie@huawei.com>
-To: <linux-mtd@lists.infradead.org>, Brian Norris
-	<computersforpeace@gmail.com>, Kamal Dasu <kamal.dasu@broadcom.com>, Broadcom
- internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next v2] mtd: rawnand: Propagate error values for brcmstb_nand_wait_for_completion()
-Date: Sat, 5 Aug 2023 13:01:46 +0800
-Message-ID: <20230805050146.1858880-1-ruanjinjie@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	Sat, 05 Aug 2023 13:07:39 +0000
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1qSH03-0006q9-To; Sat, 05 Aug 2023 15:07:19 +0200
+Message-ID: <84f6ea98-0d72-e17a-4b7c-d025f2d34e95@leemhuis.info>
+Date: Sat, 5 Aug 2023 15:07:18 +0200
 MIME-Version: 1.0
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/24] PM: hibernate: move finding the resume device out
+ of software_resume
+Content-Language: en-US, de-DE
+To: Vlastimil Babka <vbabka@suse.cz>, Christoph Hellwig <hch@lst.de>,
+ Jens Axboe <axboe@kernel.dk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Mike Snitzer <snitzer@kernel.org>,
+ Joern Engel <joern@lazybastard.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Pavel Machek <pavel@ucw.cz>, Loic Poulain <loic.poulain@linaro.org>,
+ dm-devel@redhat.com, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-pm@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+References: <20230531125535.676098-1-hch@lst.de>
+ <20230531125535.676098-5-hch@lst.de>
+ <2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz>
+From: "Linux regression tracking #adding (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+In-Reply-To: <2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz>
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691240857;d8fee127;
+X-HE-SMSGID: 1qSH03-0006q9-To
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230804_220240_038383_6F7E2203 
-X-CRM114-Status: GOOD (  11.84  )
+X-CRM114-CacheID: sfid-20230805_060737_370670_C1247097 
+X-CRM114-Status: GOOD (  25.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,65 +71,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As bcmnand_ctrl_poll_status() return negative errno, and the < 0
-case does not exist for wait_for_completion_timeout(), so return
--ETIMEDOUT if sts = 0 and zero otherwise. It is not sensible for
-brcmstb_nand_wait_for_completion() to return bool value, change it
-to int to propagate the error.
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
----
-v2:
-- Update the commit title and message.
-- Propagate the error instead of upon error.
----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+On 03.08.23 10:27, Vlastimil Babka wrote:
+> On 5/31/23 14:55, Christoph Hellwig wrote:
+>> software_resume can be called either from an init call in the boot code,
+>> or from sysfs once the system has finished booting, and the two
+>> invocation methods this can't race with each other.
+>>
+>> For the latter case we did just parse the suspend device manually, while
+>> the former might not have one.  Split software_resume so that the search
+>> only happens for the boot case, which also means the special lockdep
+>> nesting annotation can go away as the system transition mutex can be
+>> taken a little later and doesn't have the sysfs locking nest inside it.
+>>
+>> Signed-off-by: Christoph Hellwig <hch@lst.de>
+>> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> 
+> This caused a regression for me in 6.5-rc1+, fix below.
+> 
+> ----8<----
+>>From 95a310ae6cfae9b3cab61e54a1bce488c3ab93a1 Mon Sep 17 00:00:00 2001
+> From: Vlastimil Babka <vbabka@suse.cz>
+> Date: Wed, 2 Aug 2023 15:46:18 +0200
+> Subject: [PATCH] PM: hibernate: fix resume_store() return value when
+>  hibernation not available
+> 
+> On a laptop with hibernation set up but not actively used, and with
+> secure boot and lockdown enabled kernel, 6.5-rc1 gets stuck on boot with
+> the following repeated messages:
+> 
+>   A start job is running for Resume from hibernation using device /dev/system/swap (24s / no limit)
+>   lockdown_is_locked_down: 25311154 callbacks suppressed
+>   Lockdown: systemd-hiberna: hibernation is restricted; see man kernel_lockdown.7
+>   ...
+> 
+> Checking the resume code leads to commit cc89c63e2fe3 ("PM: hibernate:
+> move finding the resume device out of software_resume") which
+> inadvertently changed the return value from resume_store() to 0 when
+> !hibernation_available(). This apparently translates to userspace
+> write() returning 0 as in number of bytes written, and userspace looping
+> indefinitely in the attempt to write the intended value.
+> 
+> Fix this by returning the full number of bytes that were to be written,
+> as that's what was done before the commit.
+> 
+> Fixes: cc89c63e2fe3 ("PM: hibernate: move finding the resume device out of software_resume")
+> [...]
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 03764b589ec5..25e5b15fbd6a 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1653,12 +1653,12 @@ static void brcmnand_cmd_ctrl(struct nand_chip *chip, int dat,
- 	/* intentionally left blank */
- }
- 
--static bool brcmstb_nand_wait_for_completion(struct nand_chip *chip)
-+static int brcmstb_nand_wait_for_completion(struct nand_chip *chip)
- {
- 	struct brcmnand_host *host = nand_get_controller_data(chip);
- 	struct brcmnand_controller *ctrl = host->ctrl;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
--	bool err = false;
-+	int err = 0;
- 	int sts;
- 
- 	if (mtd->oops_panic_write || ctrl->irq < 0) {
-@@ -1666,13 +1666,14 @@ static bool brcmstb_nand_wait_for_completion(struct nand_chip *chip)
- 		disable_ctrl_irqs(ctrl);
- 		sts = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY,
- 					       NAND_CTRL_RDY, 0);
--		err = (sts < 0) ? true : false;
-+		err = sts;
- 	} else {
- 		unsigned long timeo = msecs_to_jiffies(
- 						NAND_POLL_STATUS_TIMEOUT_MS);
- 		/* wait for completion interrupt */
- 		sts = wait_for_completion_timeout(&ctrl->done, timeo);
--		err = (sts <= 0) ? true : false;
-+		if (!sts)
-+			err = -ETIMEDOUT;
- 	}
- 
- 	return err;
--- 
-2.34.1
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
+#regzbot ^introduced cc89c63e2fe3
+#regzbot title pm: boot problems when hibernate is configured and kernel
+locked down
+#regzbot fix: PM: hibernate: fix resume_store() return value when
+hibernation not available
+#regzbot ignore-activity
+
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
+
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
 ______________________________________________________
 Linux MTD discussion mailing list
