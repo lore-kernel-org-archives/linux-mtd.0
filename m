@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2392C04A94
-	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 16:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5331C001DE
+	for <linux-mtd@archiver.kernel.org>; Sat,  5 Aug 2023 16:23:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XFMXMX77ASeC3Eg6jOYr5muecmi7miEW47r9rIKIt74=; b=GB9X13vpwfkvQW
-	dAEgCn9vF7TTBKDLnT2C0vWH1K5t+UiukXrUDtQAlCimWM1j5FWUWWdW3Pc+CqlUi/DMawZZvuKeH
-	vXlKCuXZy3oU8bPWPswLDsHE5SzKIDt0xRevkWLKRDxvYel6VYucBbVC2xZ3ztOWiCtdpkF2h1XLa
-	eSTCV9/41sAZ18rMawRGgZvrUuQdDLbsAnZ6MIXCwtUaQDyc2jdo/7M//jSksz01xFlRMz2xyXP1u
-	oxlTZku0DbFoNKgOTtikd01r+itpA6F0UBuNsiTkT2+bmJuQFnbRL2RQcLRnWcz+4kHZEpMROIFUi
-	Dy4Fha+BkBmwQFxndpIg==;
+	List-Owner; bh=G0eWlqhRcl2fW27oQ8hkx+AM1NhyzIqsaappclAXBq8=; b=l7+W9iLeSoS3jJ
+	y3TqQFg1F1F/87uWkg+h/xXZvDAuicuS6RaslBtEhXF8CXegf2v1NUd6szPSQS4ev2Hc+RwWcVy0g
+	Tmrhdl4Y4AARTlCRp9ITt1mcamAH8oXafa9YGaPOOJab1G1poGqikeK7wpTV80QqwXNAKF7HJIenI
+	A5jFXnyMizPoMixCKRB/1eZfiWgYDaNL9JraH1lGPz0QphmasZBu+okRapZ0u5Q74f60GYQWBzXue
+	/Rjq5KEhAHGX26H6A42K19s4KD8OXUwcFT1s6PWeiCoLCu/zffK4ipSYVWfvav/JlwTy+amtD/rRA
+	oPXzGG8XiM73KX7B7fsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSK3s-00EKHK-2s;
-	Sat, 05 Aug 2023 16:23:28 +0000
+	id 1qSK4B-00EKKb-24;
+	Sat, 05 Aug 2023 16:23:47 +0000
 Received: from pidgin.makrotopia.org ([185.142.180.65])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSK3p-00EKGa-3D
+	id 1qSK48-00EKJV-1X
 	for linux-mtd@lists.infradead.org;
-	Sat, 05 Aug 2023 16:23:27 +0000
+	Sat, 05 Aug 2023 16:23:45 +0000
 Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1qSK3i-0000dH-1f;
-	Sat, 05 Aug 2023 16:23:18 +0000
-Date: Sat, 5 Aug 2023 17:23:11 +0100
+	id 1qSK3x-0000dT-10;
+	Sat, 05 Aug 2023 16:23:33 +0000
+Date: Sat, 5 Aug 2023 17:23:25 +0100
 From: Daniel Golle <daniel@makrotopia.org>
 To: Randy Dunlap <rdunlap@infradead.org>,
 	Richard Weinberger <richard@nod.at>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v2 1/7] mtd: ubi: improve Kconfig formatting
-Message-ID: <62240f36e4838e925e32add167a2d7d201843b0d.1691252291.git.daniel@makrotopia.org>
+Subject: [PATCH v2 2/7] mtd: ubi: block: don't return on error when removing
+Message-ID: <bacbe28fbce4b4442ec97bf41d7d2aa073a13358.1691252291.git.daniel@makrotopia.org>
 References: <cover.1691252291.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <cover.1691252291.git.daniel@makrotopia.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230805_092326_035126_0A3356CB 
-X-CRM114-Status: GOOD (  18.38  )
+X-CRM114-CacheID: sfid-20230805_092344_513170_CC7022C2 
+X-CRM114-Status: GOOD (  17.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,97 +65,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Kconfig help text should be indented with one tab + 2 spaces
-according to coding-style.rst. Apply this rule in
-drivers/mtd/ubi/Kconfig
+There is no point on returning the error from ubiblock_remove in case
+it is being called due to a volume removal event -- the volume is gone,
+we should destroy and remove the ubiblock device no matter what.
+
+Introduce new boolean parameter 'force' to tell ubiblock_remove to go
+on even in case the ubiblock device is still busy. Use that new option
+when calling ubiblock_remove due to a UBI_VOLUME_REMOVED event.
 
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/mtd/ubi/Kconfig | 60 ++++++++++++++++++++---------------------
- 1 file changed, 30 insertions(+), 30 deletions(-)
+ drivers/mtd/ubi/block.c | 6 +++---
+ drivers/mtd/ubi/cdev.c  | 2 +-
+ drivers/mtd/ubi/ubi.h   | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 2ed77b7b3fcb5..184118f9a2969 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -61,47 +61,47 @@ config MTD_UBI_FASTMAP
- 	bool "UBI Fastmap (Experimental feature)"
- 	default n
- 	help
--	   Important: this feature is experimental so far and the on-flash
--	   format for fastmap may change in the next kernel versions
--
--	   Fastmap is a mechanism which allows attaching an UBI device
--	   in nearly constant time. Instead of scanning the whole MTD device it
--	   only has to locate a checkpoint (called fastmap) on the device.
--	   The on-flash fastmap contains all information needed to attach
--	   the device. Using fastmap makes only sense on large devices where
--	   attaching by scanning takes long. UBI will not automatically install
--	   a fastmap on old images, but you can set the UBI module parameter
--	   fm_autoconvert to 1 if you want so. Please note that fastmap-enabled
--	   images are still usable with UBI implementations without
--	   fastmap support. On typical flash devices the whole fastmap fits
--	   into one PEB. UBI will reserve PEBs to hold two fastmaps.
--
--	   If in doubt, say "N".
-+	  Important: this feature is experimental so far and the on-flash
-+	  format for fastmap may change in the next kernel versions
-+
-+	  Fastmap is a mechanism which allows attaching an UBI device
-+	  in nearly constant time. Instead of scanning the whole MTD device it
-+	  only has to locate a checkpoint (called fastmap) on the device.
-+	  The on-flash fastmap contains all information needed to attach
-+	  the device. Using fastmap makes only sense on large devices where
-+	  attaching by scanning takes long. UBI will not automatically install
-+	  a fastmap on old images, but you can set the UBI module parameter
-+	  fm_autoconvert to 1 if you want so. Please note that fastmap-enabled
-+	  images are still usable with UBI implementations without
-+	  fastmap support. On typical flash devices the whole fastmap fits
-+	  into one PEB. UBI will reserve PEBs to hold two fastmaps.
-+
-+	  If in doubt, say "N".
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 437c5b83ffe51..69fa6fecb8494 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -456,7 +456,7 @@ static void ubiblock_cleanup(struct ubiblock *dev)
+ 	idr_remove(&ubiblock_minor_idr, dev->gd->first_minor);
+ }
  
- config MTD_UBI_GLUEBI
- 	tristate "MTD devices emulation driver (gluebi)"
- 	help
--	   This option enables gluebi - an additional driver which emulates MTD
--	   devices on top of UBI volumes: for each UBI volumes an MTD device is
--	   created, and all I/O to this MTD device is redirected to the UBI
--	   volume. This is handy to make MTD-oriented software (like JFFS2)
--	   work on top of UBI. Do not enable this unless you use legacy
--	   software.
-+	  This option enables gluebi - an additional driver which emulates MTD
-+	  devices on top of UBI volumes: for each UBI volumes an MTD device is
-+	  created, and all I/O to this MTD device is redirected to the UBI
-+	  volume. This is handy to make MTD-oriented software (like JFFS2)
-+	  work on top of UBI. Do not enable this unless you use legacy
-+	  software.
+-int ubiblock_remove(struct ubi_volume_info *vi)
++int ubiblock_remove(struct ubi_volume_info *vi, bool force)
+ {
+ 	struct ubiblock *dev;
+ 	int ret;
+@@ -470,7 +470,7 @@ int ubiblock_remove(struct ubi_volume_info *vi)
  
- config MTD_UBI_BLOCK
- 	bool "Read-only block devices on top of UBI volumes"
- 	default n
- 	depends on BLOCK
- 	help
--	   This option enables read-only UBI block devices support. UBI block
--	   devices will be layered on top of UBI volumes, which means that the
--	   UBI driver will transparently handle things like bad eraseblocks and
--	   bit-flips. You can put any block-oriented file system on top of UBI
--	   volumes in read-only mode (e.g., ext4), but it is probably most
--	   practical for read-only file systems, like squashfs.
-+	  This option enables read-only UBI block devices support. UBI block
-+	  devices will be layered on top of UBI volumes, which means that the
-+	  UBI driver will transparently handle things like bad eraseblocks and
-+	  bit-flips. You can put any block-oriented file system on top of UBI
-+	  volumes in read-only mode (e.g., ext4), but it is probably most
-+	  practical for read-only file systems, like squashfs.
+ 	/* Found a device, let's lock it so we can check if it's busy */
+ 	mutex_lock(&dev->dev_mutex);
+-	if (dev->refcnt > 0) {
++	if (dev->refcnt > 0 && !force) {
+ 		ret = -EBUSY;
+ 		goto out_unlock_dev;
+ 	}
+@@ -545,7 +545,7 @@ static int ubiblock_notify(struct notifier_block *nb,
+ 		 */
+ 		break;
+ 	case UBI_VOLUME_REMOVED:
+-		ubiblock_remove(&nt->vi);
++		ubiblock_remove(&nt->vi, true);
+ 		break;
+ 	case UBI_VOLUME_RESIZED:
+ 		ubiblock_resize(&nt->vi);
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index f43430b9c1e65..bb55e863dd296 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -572,7 +572,7 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
+ 		struct ubi_volume_info vi;
  
--	   When selected, this feature will be built in the UBI driver.
-+	  When selected, this feature will be built in the UBI driver.
+ 		ubi_get_volume_info(desc, &vi);
+-		err = ubiblock_remove(&vi);
++		err = ubiblock_remove(&vi, false);
+ 		break;
+ 	}
  
--	   If in doubt, say "N".
-+	  If in doubt, say "N".
- 
- endif # MTD_UBI
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index c8f1bd4fa1008..44c0eeaf1e1b0 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -979,7 +979,7 @@ static inline void ubi_fastmap_destroy_checkmap(struct ubi_volume *vol) {}
+ int ubiblock_init(void);
+ void ubiblock_exit(void);
+ int ubiblock_create(struct ubi_volume_info *vi);
+-int ubiblock_remove(struct ubi_volume_info *vi);
++int ubiblock_remove(struct ubi_volume_info *vi, bool force);
+ #else
+ static inline int ubiblock_init(void) { return 0; }
+ static inline void ubiblock_exit(void) {}
+@@ -987,7 +987,7 @@ static inline int ubiblock_create(struct ubi_volume_info *vi)
+ {
+ 	return -ENOSYS;
+ }
+-static inline int ubiblock_remove(struct ubi_volume_info *vi)
++static inline int ubiblock_remove(struct ubi_volume_info *vi, bool force)
+ {
+ 	return -ENOSYS;
+ }
 -- 
 2.41.0
 
