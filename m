@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABD87C001DB
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 13:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA22CC04A6A
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 13:24:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Message-Id
 	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S9vHr0YUlvckr0JFjz+0tFS0+x2a39qVOz3+6lJjHS8=; b=NWTf7GDBpq5dFZ
-	+YAkWUvHq8l9/dqGXSIrGOBdsBpRlGZVq9Q7nUISEXxZyRmjxE0Kc/nDfGQIYfNOEmuLd/4yZXCVh
-	lXALkoPDIZMJRu8ZikBncNHqS6ZAqpg4udmM0SBa/A3bsMT8fR+RB2vzFgpOXwyPItXDFMUDxCLn5
-	+29ns97HtRVX6PzTrW0Dx9vKCM9bSGNPKn31/4Kxi9jbvXVMKzq+UtPPqBFIZ3ImgW38sg/67l/QA
-	hKjEJH0PDtEPFq1WlqsE+qp5OjK6heuRMC8elLeYyoxuzAPJ7D6lZA4KP2LzrbCRak61uS5NIs6Dg
-	KJar+P7bSED+8LHgmE5w==;
+	List-Owner; bh=ChKNIOE8rBGzBNpWPAIvhvGWesv2CeQw91KI7yEThvk=; b=jPjyJRzeZN4Tr2
+	R126BhQFDQQV4wmR8lw4HVsKFvaTU6bK+x4Ch3g/IM+OVq2pWnNIC0eJNZ/x5QLcVmTQB3apLCX1r
+	M3v1PKjjNn28X1ewZpSLatMoaZoufXv+zUQYkR/g278JxsVEqCZbyUfBcLKDhCN19Cd/K8F/HFQhg
+	6/4OkCwAKgBHhweVhn/vMr9CFzjXnzaobMtWicooYk7AHMdBt4fJmX2MxolwSabfbkXit0U9t7fnJ
+	grbunOYZt/S/rUphv3kvQmITWMhMiSbstbMrunsxRjickG5vCl1AI/DcyM4FWvt3vFcqmMkNncGmS
+	loP+CssB39NA7liGVqow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qT0DC-00HMVA-1z;
-	Mon, 07 Aug 2023 13:23:54 +0000
+	id 1qT0DI-00HMb4-1g;
+	Mon, 07 Aug 2023 13:24:00 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qT0CR-00HLjQ-0L
+	id 1qT0CX-00HLqH-2R
 	for linux-mtd@bombadil.infradead.org;
-	Mon, 07 Aug 2023 13:23:07 +0000
+	Mon, 07 Aug 2023 13:23:13 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
 	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Sender:Reply-To:Content-ID:Content-Description;
-	bh=IE4eauRJF29U+rDli/OXa2o/HvwBfmYdm6rpvh7Dsi4=; b=knSfy6pqMtFQUApq9Wq+4KtICh
-	HXBEXiGYI8GYK9SPYE/ARVg1lXAWF/Z2YnuFi91gDWt6pAeq3ZAKCUao2rGR9No5C7IWBepuWyuUQ
-	vLJ0RDpHdmft8U9UUnHYEZu/OSkwhJACz0zPNOurSXRFLU3jWXNxTPxirCz4MznLDUG7m/G98qfO7
-	HWkkFwMCWAWFi5WW/uPkMo+8rxQcjvvrWsFMhXiB9zRX5ADBavXsZECb0OVuMqSBsjsQ6tCPeABbF
-	4ZiLzlIzAYCE82oenqwue6GhZnLe+SisJCClXPr2ER6ufoyRCWCR7aFXG0NVa4AOfwKrYUgRobk+0
-	/Egx1FDw==;
+	bh=7/vpxHx7MGJHfFhcc/Chfsmox/3o12z41l1jmYBXCm0=; b=BPMetiapWbHi/jJpUb1NJMT9Qt
+	Qp09rPEk+f3cZ5aWT9JwwQ5ezJICWI8q5qnyh1x2mhBVfgFhTfPQavhnMU/fF589PYV1LsuByEnr0
+	MkTQV5XsTAOOscyEJN3l1vkmt9UQNPZ6KrNuMML9ZWjYZ/oOnQxC1ITDTmVJkw4jPVPF2wVuO/PJL
+	lvOC09T3DJbvCrZ9zZ1apTJIEtDpmNcJ/2a6kOTp8v6tMA4dWZIi5xpNUaE+JG/z1oAF2AXW7EnmU
+	lWHsjXFaeVHgSKDjLgBBweF+5o0kAIRp5Bw1PQXymPoI3OFxC/RVvTvPLFFrQ5t4ljDk7jHVnK50P
+	plN0kZnw==;
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qT0CL-003qgE-0a
+	id 1qT0CR-003qgE-3B
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Aug 2023 13:23:05 +0000
+	Mon, 07 Aug 2023 13:23:11 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E415861ADA;
-	Mon,  7 Aug 2023 13:23:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A43F3C433C8;
-	Mon,  7 Aug 2023 13:22:58 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4633B61ADA;
+	Mon,  7 Aug 2023 13:23:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0125EC433C7;
+	Mon,  7 Aug 2023 13:23:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691414580;
-	bh=yf+i4Rv/o/8TXBlVhYljTJbV/eUqv5ZZTBjDmCQ4PA0=;
+	s=k20201202; t=1691414586;
+	bh=S2VGpvolKhnaojGSg3lKj4d7SDdm9iFqv4jQmZl9diQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=c7w/2nHMiI1Ih+Msu1UD6s4O38rZIEENrYqf7XuoFBaFf15Fe4+JSOfuKFujzqNm3
-	 A1uGMOVTB+QDlH9TKaLUmev4LBE2nFYOmK8GUlTTyu6rmIstFXbCyn6oh8uUsaf2cM
-	 R/65hn4+hV41m5w/416ZA8zHr1Z3ZBl3QH5s1h9AmNcDqyw00EfflTzK3EGgyi7r0q
-	 RpRNgQrrdLQCJT8YWwWTfnMm8CNAO8AtBzwhmCOV9drfyEUXWhpsKihRNN0AlcT0X5
-	 DdW+B6CkLJX0liDI1dZUsAkpaF3/yYTTIGIRaoCGj5fk4puaTCFpU2AubQgYbW7tEJ
-	 vKe4TutaePmgg==
+	b=izRzvuAC1Kj2+PagOXQGgx1F6X2L7ZlMfSiXQPBpEMoX23BToljIbEdNJ7u4ANp+y
+	 dmaCz4xhXf/Cnvn/KPmD7Dhlq1bIdaKjzEy3a+NHIbiD712OSvx5Un1cl3TEN/nVEo
+	 A+2c8g3zMG0T2S0V6otbBEx8rNB6C7hmKcBs4HuSXJbmopJ3bVVaJjjDvTmVgw9vAR
+	 mIWM4F4IBm71JsJWkkKYErtjrHwTQ2ZbIci/Q0qWvOi+gTE3QjxinqxnIBJYmPFuIt
+	 VcGrHetWA/qo/ItoIlxJhBHizVVSVnrksYjAdoSDOMCDhlJSnTFO6CorXM7eCO1mZU
+	 S2dzbd6mJLf3w==
 From: Michael Walle <mwalle@kernel.org>
-Date: Mon, 07 Aug 2023 15:21:26 +0200
-Subject: [PATCH 32/41] mtd: spi-nor: eon: sort flash_info database
+Date: Mon, 07 Aug 2023 15:21:29 +0200
+Subject: [PATCH 35/41] mtd: spi-nor: macronix: sort flash_info database
 MIME-Version: 1.0
-Message-Id: <20230807-mtd-flash-info-db-rework-v1-32-3d3d5bef4ba4@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v1-35-3d3d5bef4ba4@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v1-0-3d3d5bef4ba4@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v1-0-3d3d5bef4ba4@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, 
@@ -75,8 +75,8 @@ Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230807_142304_319929_7F76DA44 
-X-CRM114-Status: GOOD (  10.84  )
+X-CRM114-CacheID: sfid-20230807_142309_182513_FDFAC690 
+X-CRM114-Status: GOOD (  11.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,76 +99,203 @@ collisions between shorter and longer ones.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/eon.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+ drivers/mtd/spi-nor/macronix.c | 130 ++++++++++++++++++++---------------------
+ 1 file changed, 65 insertions(+), 65 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
-index ba09cb6c2abd..c1ddf662f782 100644
---- a/drivers/mtd/spi-nor/eon.c
-+++ b/drivers/mtd/spi-nor/eon.c
-@@ -10,32 +10,37 @@
- 
- static const struct flash_info eon_nor_parts[] = {
- 	{
--		.id = SNOR_ID(0x1c, 0x31, 0x16),
--		.name = "en25f32",
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 0508a207e9df..ea6be95e75a5 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -62,26 +62,44 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		.name = "mx25l3205d",
+ 		.size = SZ_4M,
+ 		.no_sfdp_flags = SECT_4K,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x9e, 0x16),
+-		.name = "mx25l3255e",
 -		.size = SZ_4M,
 -		.no_sfdp_flags = SECT_4K,
--	}, {
- 		.id = SNOR_ID(0x1c, 0x20, 0x16),
- 		.name = "en25p32",
- 		.size = SZ_4M,
--	}, {
--		.id = SNOR_ID(0x1c, 0x30, 0x16),
--		.name = "en25q32b",
--		.size = SZ_4M,
  	}, {
- 		.id = SNOR_ID(0x1c, 0x20, 0x17),
- 		.name = "en25p64",
- 		.size = SZ_8M,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x30, 0x14),
-+		.name = "en25q80a",
-+		.size = SZ_1M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
-+	}, {
-+		.id = SNOR_ID(0x1c, 0x30, 0x16),
-+		.name = "en25q32b",
-+		.size = SZ_4M,
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x30, 0x17),
- 		.name = "en25q64",
+ 		.id = SNOR_ID(0xc2, 0x20, 0x17),
+ 		.name = "mx25l6405d",
  		.size = SZ_8M,
  		.no_sfdp_flags = SECT_4K,
- 	}, {
--		.id = SNOR_ID(0x1c, 0x30, 0x14),
--		.name = "en25q80a",
--		.size = SZ_1M,
--		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ,
-+		.id = SNOR_ID(0x1c, 0x31, 0x16),
-+		.name = "en25f32",
-+		.size = SZ_4M,
++	}, {
++		.id = SNOR_ID(0xc2, 0x20, 0x18),
++		.name = "mx25l12805d",
++		.size = SZ_16M,
++		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
 +		.no_sfdp_flags = SECT_4K,
 +	}, {
-+		.name = "en25s64",
-+		.id = SNOR_ID(0x1c, 0x38, 0x17),
-+		.size = SZ_8M,
-+		.no_sfdp_flags = SECT_4K,
++		.id = SNOR_ID(0xc2, 0x20, 0x19),
++		.name = "mx25l25635e",
++		.size = SZ_32M,
++		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixups = &mx25l25635_fixups
++	}, {
++		.id = SNOR_ID(0xc2, 0x20, 0x1a),
++		.name = "mx66l51235f",
++		.size = SZ_64M,
++		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++	}, {
++		.id = SNOR_ID(0xc2, 0x20, 0x1b),
++		.name = "mx66l1g45g",
++		.size = SZ_128M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0xc2, 0x23, 0x14),
++		.name = "mx25v8035f",
++		.size = SZ_1M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
  	}, {
- 		.id = SNOR_ID(0x1c, 0x70, 0x15),
- 		.name = "en25qh16",
-@@ -57,11 +62,6 @@ static const struct flash_info eon_nor_parts[] = {
- 	}, {
- 		.id = SNOR_ID(0x1c, 0x70, 0x19),
- 		.name = "en25qh256",
+ 		.id = SNOR_ID(0xc2, 0x25, 0x32),
+ 		.name = "mx25u2033e",
+ 		.size = SZ_256K,
+ 		.no_sfdp_flags = SECT_4K,
 -	}, {
--		.name = "en25s64",
--		.id = SNOR_ID(0x1c, 0x38, 0x17),
--		.size = SZ_8M,
+-		.id = SNOR_ID(0xc2, 0x25, 0x36),
+-		.name = "mx25u3235f",
+-		.size = SZ_4M,
+-		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x33),
+ 		.name = "mx25u4035",
+@@ -92,74 +110,33 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		.name = "mx25u8035",
+ 		.size = SZ_1M,
+ 		.no_sfdp_flags = SECT_4K,
++	}, {
++		.id = SNOR_ID(0xc2, 0x25, 0x36),
++		.name = "mx25u3235f",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x37),
+ 		.name = "mx25u6435f",
+ 		.size = SZ_8M,
+ 		.no_sfdp_flags = SECT_4K,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x20, 0x18),
+-		.name = "mx25l12805d",
+-		.size = SZ_16M,
+-		.flags = SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP,
 -		.no_sfdp_flags = SECT_4K,
- 	},
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x26, 0x18),
+-		.name = "mx25l12855e",
+-		.size = SZ_16M,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x28, 0x15),
+-		.name = "mx25r1635f",
+-		.size = SZ_2M,
+-		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x28, 0x16),
+-		.name = "mx25r3235f",
+-		.size = SZ_4M,
+-		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x38),
+ 		.name = "mx25u12835f",
+ 		.size = SZ_16M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x20, 0x19),
+-		.name = "mx25l25635e",
+-		.size = SZ_32M,
+-		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+-		.fixups = &mx25l25635_fixups
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x39),
+ 		.name = "mx25u25635f",
+ 		.size = SZ_32M,
+ 		.no_sfdp_flags = SECT_4K,
+-		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
++		.fixup_flags = SPI_NOR_4B_OPCODES,
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x3a),
+ 		.name = "mx25u51245g",
+ 		.size = SZ_64M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 		.fixup_flags = SPI_NOR_4B_OPCODES,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x81, 0x3a),
+-		.name = "mx25uw51245g",
+-		.n_banks = 4,
+-		.flags = SPI_NOR_RWW,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x23, 0x14),
+-		.name = "mx25v8035f",
+-		.size = SZ_1M,
+-		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x26, 0x19),
+-		.name = "mx25l25655e",
+-		.size = SZ_32M,
+-	}, {
+-		.id = SNOR_ID(0xc2, 0x20, 0x1a),
+-		.name = "mx66l51235f",
+-		.size = SZ_64M,
+-		.no_sfdp_flags = SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+-		.fixup_flags = SPI_NOR_4B_OPCODES,
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x25, 0x3a),
+ 		.name = "mx66u51235f",
+@@ -167,22 +144,45 @@ static const struct flash_info macronix_nor_parts[] = {
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+ 		.fixup_flags = SPI_NOR_4B_OPCODES,
+ 	}, {
+-		.id = SNOR_ID(0xc2, 0x20, 0x1b),
+-		.name = "mx66l1g45g",
+-		.size = SZ_128M,
++		.id = SNOR_ID(0xc2, 0x25, 0x3c),
++		.name = "mx66u2g45g",
++		.size = SZ_256M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++		.fixup_flags = SPI_NOR_4B_OPCODES,
++	}, {
++		.id = SNOR_ID(0xc2, 0x26, 0x18),
++		.name = "mx25l12855e",
++		.size = SZ_16M,
++	}, {
++		.id = SNOR_ID(0xc2, 0x26, 0x19),
++		.name = "mx25l25655e",
++		.size = SZ_32M,
+ 	}, {
+ 		.id = SNOR_ID(0xc2, 0x26, 0x1b),
+ 		.name = "mx66l1g55g",
+ 		.size = SZ_128M,
+ 		.no_sfdp_flags = SPI_NOR_QUAD_READ,
+ 	}, {
+-		.id = SNOR_ID(0xc2, 0x25, 0x3c),
+-		.name = "mx66u2g45g",
+-		.size = SZ_256M,
++		.id = SNOR_ID(0xc2, 0x28, 0x15),
++		.name = "mx25r1635f",
++		.size = SZ_2M,
+ 		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
+-		.fixup_flags = SPI_NOR_4B_OPCODES,
+-	},
++	}, {
++		.id = SNOR_ID(0xc2, 0x28, 0x16),
++		.name = "mx25r3235f",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
++	}, {
++		.id = SNOR_ID(0xc2, 0x81, 0x3a),
++		.name = "mx25uw51245g",
++		.n_banks = 4,
++		.flags = SPI_NOR_RWW,
++	}, {
++		.id = SNOR_ID(0xc2, 0x9e, 0x16),
++		.name = "mx25l3255e",
++		.size = SZ_4M,
++		.no_sfdp_flags = SECT_4K,
++	}
  };
  
+ static void macronix_nor_default_init(struct spi_nor *nor)
 
 -- 
 2.39.2
