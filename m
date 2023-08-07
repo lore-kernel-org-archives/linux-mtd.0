@@ -4,131 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98E5EC001DB
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 11:20:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0BF0C04A6A
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 11:50:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OZnsPJ59kOOD8XENh3BvRwDGO8GT2o+bebEREpEPFPs=; b=LNMjKhgrCh7aFv
-	kiNAlsUmlRb2NTnJ/t/sfaJe07XwSl6C/OUzUHW7jufUnrsrWp/Ps0FvRZ3QCWDkkrOYRuPgpg7GN
-	DnPPlYNiuIddumIYQfj8/Sr77hH26Ssfr8oRtymDnVNCOZrPi9Pwz6mezcyApeIw3Li4sNCblgyYm
-	WlZkaSIRYc2k1aQ+bChtMA2pO+PNJir2JVzm9b5RRGLbN7PIIO/vowdlNbdyvs1kbSrJXpLKtaQNq
-	7CRuMakydnZq3kNgR/1Te7NdfKbCqm1wwj9z0q+Ws+9eIKraop73UQtrELpcetkDUQ+SQwLf/SBTU
-	Bj2L1wkeoOkbQPZs+5og==;
+	List-Owner; bh=C4J1DQHNoWd7QgOyViW6+o21+GSaArJsW9lh2DPa6Ug=; b=3gt3u4DOH5nz6S
+	KaYXRzv3Leqn42SMl/9qIQ2hMwkiGHDkQAFuaSXR9fNVVHY/cI8BaOqP5BJ+7r3xoL/q37rayXHFd
+	6y4wHnsueNrJLSVT81+UbSIxG8KEdqMfOY4U2biIr/gB6f/IsG+rgpGGKvcIRIFCOO99UQt4PrpVY
+	avgftlcWbRvUOZ+IqB5SwvYfZHHOW88M9R923vZqAJB7U3L6AFuUwILXsiqcxV4YCJnr0KM+/Eu7O
+	01fCf2m4mpHkAAxcGKDEYFuC05SsSIzEOYaY0vZ3ldNr/lVkmlwurqbuBTaVmpsd630Q/q0DKU+s6
+	E+UxxQfm2eCAxnEgzu1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSyHO-00H3mx-25;
-	Mon, 07 Aug 2023 11:20:06 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1qSykr-00H86J-2R;
+	Mon, 07 Aug 2023 11:50:33 +0000
+Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSyHN-00H3ls-1b
-	for linux-mtd@bombadil.infradead.org;
-	Mon, 07 Aug 2023 11:20:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=X5ij/O+E/bk/tTzX9mgxwiCynzBHcXx4EKtI9EsHayo=; b=GhXSvVnVRTWsy1+l4PVnvQUzHk
-	0ZMIY2LEwzptnv70MF7oasTn6r2pHzBMFzJXp59SKgQ6cu4jkmE2vqeIUToHOubAYZ2+AQgtDS5kh
-	zKU+bLETFbgv+2Bc+lEpC6fnVoOoi+i5pB7sdOFySCMR0yMRx/f6vIhCvrVcq0eFC4XUAUk0CkE/D
-	Akkpj7Chju4osnR9Qo1CrjCQP3oweNqrShtagC5lZaBxGo/Lf7mY015QlgkTcceuNV6e+/d/7rc+M
-	cGXRdmgejFAJ6RjHvCa141Qd3ZD6x55IPSnZHRzxDXtwTniO05tdooJC6KuF2scBfe9l7z+OokTdC
-	xFTmCS8w==;
-Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSyHJ-003lwx-2s
+	id 1qSykp-00H85q-0p
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Aug 2023 11:20:04 +0000
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26890669c8eso933008a91.1
-        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 04:20:01 -0700 (PDT)
+	Mon, 07 Aug 2023 11:50:32 +0000
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc02bd4eafso38122065ad.1
+        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 04:50:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691407200; x=1692012000;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X5ij/O+E/bk/tTzX9mgxwiCynzBHcXx4EKtI9EsHayo=;
-        b=i3OLYIqgHrVEAaoeqhN7xu/7U1C+reDkv4O93uYT3wVXPD8PclsjVNwGlC6uACGJON
-         5G7yHqhhbIuKFoghA6ZSicHcXMJKMfCogQ8szn+vWtZn4EOKB8vbAdIc7rpijTp0cbxa
-         Z/AamO41rUovV3Rd5mToLS3fdUn/gIbndWW5fXdkD//uV9WpRp/5E2yE1kJcYdxc2q43
-         2kKg85HGCsKzT23sBdglbe/LKtHC4WUeFtaNvdRNowxvHAXGs/cRyz4+kFuB/ka63yH8
-         5vv+ldmlZuknYjC0UrMsohE+IjtZuT+2tIf1cSRO1giyAMKM5zLXRshImNoV+3DwaEWW
-         qy8A==
+        d=linaro.org; s=google; t=1691409029; x=1692013829;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DUiazTj+VYmFEy955EKtxmP3ocpz0QHylcvEbnBUq/k=;
+        b=tL85YccuskFEAnglasCTymvzAvH0LOxoM1WtfMclwFxD5v4NAy2D4sNQhhQ/pu1Lko
+         Me80FobM+DbAP5RVrWrbj0iXC79ccdLGV2seN2v4OjF9siDks3jCMR1D+IpLDcineBIh
+         qET1XGb9sPiRpoPav6sxxJmqa0Mt8WCyo797sh4DBFwMC8cQzNO03+g7vO1sNmzBGLib
+         sOIRMMMr5znMKn6gX++zsaSJNlvPS+mRwShY5qoekEKGzosRO2A9UgPqO9wEbRDcWQPS
+         ZoGsAePYW7wfjwdmeSpck6lSACtr0iM3W6k0TQMAbOymijaEjmopVOaHq5DieJAZsqsB
+         Pz3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691407200; x=1692012000;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X5ij/O+E/bk/tTzX9mgxwiCynzBHcXx4EKtI9EsHayo=;
-        b=lkbBH1IX9ZajtqdEnz7kjCxOTOYhOpjq7ARkkadJTuEBWlZPLG88qtXBG+1mmlqIUN
-         ZpTqQJLVsZ0/8Bwk+r4lYeitw7PXRDws420BifqzPAngTgDuAGz6gM1OZpxU/cAzr+9K
-         9sKgpSWbNpAVsUSTyoj/lalWOHuGab8TPUVDQmoRaaaC9Cbrgy6WmMOKvXZsYd27euFJ
-         31KIH97PKPUO3XbdgSDpKS3p5UsjrYLEL9Rl6DbdcOHvV4D0OTbK2AHV7Qzkfa6I3Mk9
-         bV51WuOQnGe4r9vcV0JpHWlJEdKERoFQ3lhnflKa0uiaxV47XwDb5NF3Z+Q411wYF//V
-         +JPA==
-X-Gm-Message-State: AOJu0YyNPqi58KP4mhmfDAIrYK2gpdjS6HqY0HA4dUEXfqT5dvnZSvL1
-	ruMslG+op8GUZaeeHKHHZsxlHg==
-X-Google-Smtp-Source: AGHT+IH1iUQIXRu8fJbzxUHSh+kWmc44BJdJFh0ZxZy41KSEiq7lusFAb/6JfkXEPdg45Q03TKbByg==
-X-Received: by 2002:a17:90a:9c3:b0:269:41cf:7212 with SMTP id 61-20020a17090a09c300b0026941cf7212mr4973775pjo.4.1691407200010;
-        Mon, 07 Aug 2023 04:20:00 -0700 (PDT)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.19.47
+        d=1e100.net; s=20221208; t=1691409029; x=1692013829;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DUiazTj+VYmFEy955EKtxmP3ocpz0QHylcvEbnBUq/k=;
+        b=KMG/47vnefgX/lAZ9o6FYpZWdA/SKTx9tWXmMo8w7X4FyPvSg1uss0XwO6hOxh0lym
+         Io2laBrcKx5+znu/GmHmSeY7GPnSxeFOSY17bSXCA/LoXxjmtVobfpwGF6qXhqTvYK5O
+         ihyKoOeR8K6knWo+Y9Kp+0cO7OoVKG2SuWvob0H7HJOeJdz34XhhbTy+ClsQK7TzNDaj
+         nvgwlV2Yk61H6Qu3wdCHcOrpgNWtNgRnpY2H/yznrVIpWtff6Dd9ybGxkpuSego4rQW0
+         Xd7ZEkqP1nXt+wxvGafbd46gthQBix8487jRCoMU/pjtpiMHTgy+Z932GALgMLbzT8R5
+         y5Kg==
+X-Gm-Message-State: AOJu0YyiDKpBYu/UHEEnHXDRv04v+cyz+odINCqScqJUtozHjqJCusCu
+	DLdRkRgB73JCA/xAlQku3+c3
+X-Google-Smtp-Source: AGHT+IGxyG24eMZv/l2Boj+w3NLo3TG8tCkd7qIJbJJtJvwpjYmapCBxD30NmTuiSRERTPfZu2DVRA==
+X-Received: by 2002:a17:902:b68c:b0:1bc:2036:5338 with SMTP id c12-20020a170902b68c00b001bc20365338mr7850977pls.28.1691409029383;
+        Mon, 07 Aug 2023 04:50:29 -0700 (PDT)
+Received: from thinkpad ([117.217.180.167])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c20d00b001b8a1a25e6asm6706018pll.128.2023.08.07.04.50.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:19:59 -0700 (PDT)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: akpm@linux-foundation.org,
-	david@fromorbit.com,
-	tkhai@ya.ru,
-	vbabka@suse.cz,
-	roman.gushchin@linux.dev,
-	djwong@kernel.org,
-	brauner@kernel.org,
-	paulmck@kernel.org,
-	tytso@mit.edu,
-	steven.price@arm.com,
-	cel@kernel.org,
-	senozhatsky@chromium.org,
-	yujie.liu@intel.com,
-	gregkh@linuxfoundation.org,
-	muchun.song@linux.dev,
-	simon.horman@corigine.com,
-	dlemoal@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	x86@kernel.org,
-	kvm@vger.kernel.org,
-	xen-devel@lists.xenproject.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com,
-	linux-nfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	rcu@vger.kernel.org,
-	netdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org,
-	dm-devel@redhat.com,
-	linux-raid@vger.kernel.org,
-	linux-bcache@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v4 47/48] mm: shrinker: hold write lock to reparent shrinker nr_deferred
-Date: Mon,  7 Aug 2023 19:09:35 +0800
-Message-Id: <20230807110936.21819-48-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
-References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+        Mon, 07 Aug 2023 04:50:28 -0700 (PDT)
+Date: Mon, 7 Aug 2023 17:20:21 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, quic_mdalam@quicinc.com
+Cc: vigneshr@ti.com, richard@nod.at, linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_srichara@quicinc.com, dan.carpenter@linaro.org
+Subject: Re: [PATCH 00/10] mtd: rawnand: qcom: Bunch of fixes and cleanups
+Message-ID: <20230807115021.GB18257@thinkpad>
+References: <20230805174146.57006-1-manivannan.sadhasivam@linaro.org>
+ <20230806155309.25427927@xps-13>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230806155309.25427927@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230807_122002_558918_659F281B 
-X-CRM114-Status: UNSURE (   9.63  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230807_045031_310949_CBCF862E 
+X-CRM114-Status: GOOD (  16.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,49 +89,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-For now, reparent_shrinker_deferred() is the only holder of read lock of
-shrinker_rwsem. And it already holds the global cgroup_mutex, so it will
-not be called in parallel.
-
-Therefore, in order to convert shrinker_rwsem to shrinker_mutex later,
-here we change to hold the write lock of shrinker_rwsem to reparent.
-
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
----
- mm/shrinker.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/shrinker.c b/mm/shrinker.c
-index fee6f62904fb..a12dede5d21f 100644
---- a/mm/shrinker.c
-+++ b/mm/shrinker.c
-@@ -299,7 +299,7 @@ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
- 		parent = root_mem_cgroup;
- 
- 	/* Prevent from concurrent shrinker_info expand */
--	down_read(&shrinker_rwsem);
-+	down_write(&shrinker_rwsem);
- 	for_each_node(nid) {
- 		child_info = shrinker_info_protected(memcg, nid);
- 		parent_info = shrinker_info_protected(parent, nid);
-@@ -312,7 +312,7 @@ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
- 			}
- 		}
- 	}
--	up_read(&shrinker_rwsem);
-+	up_write(&shrinker_rwsem);
- }
- #else
- static int shrinker_memcg_alloc(struct shrinker *shrinker)
--- 
-2.30.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gU3VuLCBBdWcgMDYsIDIwMjMgYXQgMDM6NTM6MDlQTSArMDIwMCwgTWlxdWVsIFJheW5hbCB3
+cm90ZToKPiBIaSBNYW5pdmFubmFuLAo+IAo+IG1hbml2YW5uYW4uc2FkaGFzaXZhbUBsaW5hcm8u
+b3JnIHdyb3RlIG9uIFNhdCwgIDUgQXVnIDIwMjMgMjM6MTE6MzYKPiArMDUzMDoKPiAKPiA+IEhp
+IE1pcXVlbCwKPiA+IAo+ID4gVGhpcyBzZXJpZXMgaGFzIGZpeGVzIGZvciB0aGUgc21hdGNoIHdh
+cm5pbmdzIHJlcG9ydGVkIGJ5IEtidWlsZCBib3QgWzFdCj4gPiBhbmQgYWxzbyBzZXZlcmFsIGNs
+ZWFudXAgcGF0Y2hlcyBiYXNlZCBvbiBteSBjb2RlIG9ic2VydmF0aW9uLgo+ID4gCj4gPiBJJ3Zl
+IG9ubHkgY29tcGlsZSB0ZXN0ZWQgdGhpcyBzZXJpZXMuIFNvIGxldCdzIHdhaXQgZm9yIFNhZHJl
+L1NyaWNoYXJhbiB0bwo+ID4gZ2l2ZSBhIHRlc3RlZC1ieSB0YWcgdG8gbWFrZSBzdXJlIEkgZGlk
+bid0IG1lc3MgdXAgYW55dGhpbmcuCj4gCj4gSSByZXZpZXdlZCBhbGwgdGhlIHBhdGNoZXMsIHRo
+ZXkgbG9vayBnb29kIHRvIG1lLiBJJ20gd2FpdGluZyBmb3IgdGhlCj4gdGVzdHMuIFBsZWFzZSBw
+cm92aWRlIHRoZSBvdXRwdXQgb2YgbmFuZGJpdGVycnMgLWkuCj4gCgpJIHRlc3RlZCB0aGUgc2Vy
+aWVzIG9uIFFjb20gU0RYNTUgYmFzZWQgZGV2IGJvYXJkLCBidXQgaXQgd2FzIGJyb2tlbiBhbHJl
+YWR5IGR1ZQp0byBjb21taXQgPDNmYzkyMzg0YjY1ND4gKCJtdGQ6IHJhd25hbmQ6IHFjb206IElt
+cGxlbWVudCBleGVjX29wKCkiKS4KCkknbSBzZWVpbmcgYSBzdHJpbmcgb2YgdGhpcyBlcnJvciB3
+aGlsZSB0aGUgcGFydGl0aW9ucyB3ZXJlIGJlaW5nIGVudW1lcmF0ZWQ6CnFjb20tbmFuZGMgMWIz
+MDAwMC5uYW5kLWNvbnRyb2xsZXI6IGZhaWxlZCB0byBjb3B5IGxhc3QgY29kZXdvcmQKCkl0IGp1
+c3QgZ29lcyBvbi4uLgoKU2FkcmUsIG9uIHdoYXQgcGxhdGZvcm0gZGlkIHlvdSB0ZXN0IDNmYzky
+Mzg0YjY1ND8gRnJvbSBhIHF1aWNrIGxvb2ssIHRoZSBCQU0KRE1BIHRyYW5zYWN0aW9ucyBhcmUg
+dGltaW5nIG91dC4KCi0gTWFuaQoKPiBUaGFua3MsCj4gTWlxdcOobAoKLS0gCuCuruCuo+Cuv+Cu
+teCuo+CvjeCuo+CuqeCvjSDgrprgrqTgrr7grprgrr/grrXgrq7gr40KCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
+c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9saW51eC1tdGQvCg==
