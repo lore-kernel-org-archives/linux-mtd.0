@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB9D7C04A6A
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 11:15:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5056CEB64DD
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 11:17:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ktkh3ZZhMYQn7y3DIgjnfeNAj5vW2B5XFiBHkw0mtCc=; b=Y40ehNBJy+q6ey
-	oacbMEjGtSFfBp3AEicmQYUY7Y5hpXvct0HogjsmA0pIJb4w5R/+6HLBhp93zvDICygMJ2N25xD3K
-	wd4kubvEUR9EAyYAs2fW1DzW8hw6TWK7woeLh+sDJsNiopmyVOLD1iwPmTEElvwvBJzrcj5hs64JD
-	O3Q3tNMQfY+awBzp7v7BUr58wF2uoDrD53cfwCnO5TZ8UJToopq7fRxIn+JuSuuCkFcx+bCHSyNTn
-	UKP1z+xDqssZWUaRnAnViL4ttYppHcgiIGSpXgf8RsIcljWkWU03sPgfhP8Fto8xCFu/a6IvvK2GT
-	+W5JdWnqahVYifB7m6jg==;
+	List-Owner; bh=OYR3lGJ9wCkk0/kUecbsOgcYK3zOZFYqONrIaQIyp0s=; b=YFy/mQL1GVxhc6
+	c1FIYfvr2z3d0eCqambmLs/YAMbvYZNGjUmWQcGzoQrcWgP7lxn2FFrIwVJFxJVK8bvxg4mElSKi1
+	HFhuAzot2OEtQiroPAwA1geGPbD93KO5yH35l5tVOaIjn0Gpff+h05RQcLbGnUtYLsyfm4+EhFkIE
+	zm7fy0kmw8N5EPOYsGMd0G6Ypzmd39t1wngQ8VY787iwfcMTmMCOp9gbQwSRjTewDGVMWBO0er+S3
+	dGI/aO8rmXplBCfYycZTIZhb9gXUNrLXiGD+/0kTaDHgjxSsdPPe1uJJn5z1ut3NKsNfUP6pq3gD3
+	AEc+mRmnr2Sr+FgSe8Rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSyDE-00H1mj-09;
-	Mon, 07 Aug 2023 11:15:48 +0000
-Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	id 1qSyEb-00H2M0-0W;
+	Mon, 07 Aug 2023 11:17:13 +0000
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSyDA-00H1kG-11
+	id 1qSyEY-00H2Hw-1m
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Aug 2023 11:15:46 +0000
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-268663fb09cso631561a91.0
-        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 04:15:43 -0700 (PDT)
+	Mon, 07 Aug 2023 11:17:11 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-268f6ba57b5so625229a91.1
+        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 04:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691406943; x=1692011743;
+        d=bytedance.com; s=google; t=1691407020; x=1692011820;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qDCHIUUJzhdUAQEb2C7RW/Dwv8wB1L4nNlzD+13VK1U=;
-        b=BoRgxmNUDtxzbmTK8+NbyH+07KYCd+Dr+oKPPa6V2FtEa17D0GvDQxjGlpnMkhmfxh
-         v95DV47NbKABEXmmquIWadBnc0OBxkEOLW5WkwOTzTf/BxgV/A3wBC3uAtz5110v+hzE
-         Ab8A6lWD76Mq+5DiKmh8yjejLb6xJUC09A5jGZ8oJIUHv3JYqq06sjhL7prumjkiRo3O
-         qB570Dus+/9+aUH0B/0q8kHN6EW2eaOwjl0xOlzT2kA7NW6hf0e/OVGGbp1TjXoLyoWq
-         aNUKJyMjC1sbPHUX4hmJJ6cJvGihC8n4kqK2Irls4fBt7l8WiF7MHJ0n9oTLuTvoH1vN
-         CZ3g==
+        bh=EIUP2Z+Njo4a1BEj4icZmHsMWaHOvZz2gypuwwXx0Do=;
+        b=l3d3GmRdHVbykswjvj36xLNJU/HkRN0qQPtaCG+8C7U8JyCsrS7Omd1smNfjTVHq8n
+         mmfknLuVWKPue6MQRQdYpG2Cap7GHxCVjCjmXm7SqhyxnTlXTIqiD6Dq4SurElV0d5A7
+         yjtafWW6aQouIDt5nRUMTSVpj6O1jVRczCF6pjoLUl7iIEpS61wXJNKr8xLD++xEk/hK
+         PFaJuConQXPH9DxAW8LM6Qo0CoTe6tjYe9zN1tPP9wJtycShcCxIvBgENM+8mu3gxPqB
+         pNPWVQXnsLY4dcbOjU72J1n4zmuXrZ5CIb4eDvQ0qGFRUeSI2BGNFxZSx5CdqcSToBir
+         CZSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691406943; x=1692011743;
+        d=1e100.net; s=20221208; t=1691407020; x=1692011820;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qDCHIUUJzhdUAQEb2C7RW/Dwv8wB1L4nNlzD+13VK1U=;
-        b=Q+9oKL1Eb3yTUmQXzb8L2XWh36gTR3B5ay882VDmeprH2lyj+LhWEV/dHAeuCZAtNp
-         8UE2I+dIR4vtiRTfwEWTxBt4K3BWGaq/2PH4tK/kAEzXDfOtyWAqhDG8EcDlA28/y0me
-         O4UVrHL78bwXpa0/2EHnnqM0knfKYcQ7fAgU7lvW7mw43MaCQ3UBm65uQX9CvdVUnEyF
-         WttfiAfRrdnC/r39hcvwcM3cTlSzDLNqEIxCsswfXkDCycDWTPClLGjU4SccKRJDEkUp
-         7J3pOTEee3XnAju6YYfxfBvXIEQNUcgWbUQf3mPTBOGiqh0aTarOYWMy5hzWBmFSM9fA
-         kPtA==
-X-Gm-Message-State: ABy/qLaidGZNtLDWUjDYDYCD7vfENnVKKIkc5DWO8cpxNXi/PUyXfWh0
-	vad9j7AZGykpLUaqI9+XlHZm8Q==
-X-Google-Smtp-Source: APBJJlEUCHWWWNXSTNLHQrmZRIrp+biqETFoyppqOsbwjUrAqcyZvOjgkWFuVkSEp/5UbdP5i9KhZA==
-X-Received: by 2002:a17:90a:6c97:b0:263:730b:f568 with SMTP id y23-20020a17090a6c9700b00263730bf568mr23067993pjj.3.1691406943426;
-        Mon, 07 Aug 2023 04:15:43 -0700 (PDT)
+        bh=EIUP2Z+Njo4a1BEj4icZmHsMWaHOvZz2gypuwwXx0Do=;
+        b=RZ6BYP/MbcjOhLcfZNQPnvTQCRc5iQP07zm4t8xUvy6xuPt2MfWSVLBqi8kfVdIMRZ
+         fzH24MHn+UDh5TT7xCkyjcvstHI+yuO7cxBy7HCpgAZqVOgVRBorFa5AiHE9J2ZR744M
+         ns2MJvqjUeYK3FEibDNO6NtjE39GZ5V1J52sTS6mUgETRIn6u7Z3/NRTW2aW40iJRTHB
+         q697fUmrlp5ennTUfECUaShhslBYrkKnB2W4prkcNkQtCvBcdot5dXJtGUnH1o1g+vyD
+         APw1EPJ6ioS27anpOfTaSlZohlcfxBOeCgN/4DDUiA2Cx64S/S8ulT+Xv4dN894NQI7z
+         EoZw==
+X-Gm-Message-State: AOJu0YxXVlnZwz5aN4ueqiG9+0xCLdxGGwO0xeNqNqNJuitoYmKHlPDm
+	lLBqVoij0saeaFR5j1cWcmDxRQ==
+X-Google-Smtp-Source: AGHT+IGL/1gBIk2C+QwkMNr6hEGRZG4q+xpVeUoXNA4D2kibZqrKnrVjY0bqX283iYX9eWQrJAN/xA==
+X-Received: by 2002:a17:90a:6701:b0:269:32c7:24dc with SMTP id n1-20020a17090a670100b0026932c724dcmr6036278pjj.0.1691407020016;
+        Mon, 07 Aug 2023 04:17:00 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.15.31
+        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.16.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:15:43 -0700 (PDT)
+        Mon, 07 Aug 2023 04:16:59 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: akpm@linux-foundation.org,
 	david@fromorbit.com,
@@ -104,16 +104,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>,
 	Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4 27/48] dm zoned: dynamically allocate the dm-zoned-meta shrinker
-Date: Mon,  7 Aug 2023 19:09:15 +0800
-Message-Id: <20230807110936.21819-28-zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 33/48] ext4: dynamically allocate the ext4-es shrinker
+Date: Mon,  7 Aug 2023 19:09:21 +0800
+Message-Id: <20230807110936.21819-34-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230807_041544_354728_01DEA579 
-X-CRM114-Status: GOOD (  13.73  )
+X-CRM114-CacheID: sfid-20230807_041710_589502_898EB0A7 
+X-CRM114-Status: GOOD (  14.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,89 +131,87 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the dm-zoned-meta shrinker, so that it can be freed
+dynamically allocate the ext4-es shrinker, so that it can be freed
 asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct dmz_metadata.
+read-side critical section when releasing the struct ext4_sb_info.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 ---
- drivers/md/dm-zoned-metadata.c | 29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ fs/ext4/ext4.h           |  2 +-
+ fs/ext4/extents_status.c | 24 ++++++++++++++----------
+ 2 files changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
-index 9d3cca8e3dc9..bbb0e69a7908 100644
---- a/drivers/md/dm-zoned-metadata.c
-+++ b/drivers/md/dm-zoned-metadata.c
-@@ -187,7 +187,7 @@ struct dmz_metadata {
- 	struct rb_root		mblk_rbtree;
- 	struct list_head	mblk_lru_list;
- 	struct list_head	mblk_dirty_list;
--	struct shrinker		mblk_shrinker;
-+	struct shrinker		*mblk_shrinker;
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 481491e892df..48baf03eb1a6 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1657,7 +1657,7 @@ struct ext4_sb_info {
+ 	__u32 s_csum_seed;
  
- 	/* Zone allocation management */
- 	struct mutex		map_lock;
-@@ -615,7 +615,7 @@ static unsigned long dmz_shrink_mblock_cache(struct dmz_metadata *zmd,
- static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
- 					       struct shrink_control *sc)
+ 	/* Reclaim extents from extent status tree */
+-	struct shrinker s_es_shrinker;
++	struct shrinker *s_es_shrinker;
+ 	struct list_head s_es_list;	/* List of inodes with reclaimable extents */
+ 	long s_es_nr_inode;
+ 	struct ext4_es_stats s_es_stats;
+diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+index 9b5b8951afb4..0532a81a7669 100644
+--- a/fs/ext4/extents_status.c
++++ b/fs/ext4/extents_status.c
+@@ -1596,7 +1596,7 @@ static unsigned long ext4_es_count(struct shrinker *shrink,
+ 	unsigned long nr;
+ 	struct ext4_sb_info *sbi;
+ 
+-	sbi = container_of(shrink, struct ext4_sb_info, s_es_shrinker);
++	sbi = shrink->private_data;
+ 	nr = percpu_counter_read_positive(&sbi->s_es_stats.es_stats_shk_cnt);
+ 	trace_ext4_es_shrink_count(sbi->s_sb, sc->nr_to_scan, nr);
+ 	return nr;
+@@ -1605,8 +1605,7 @@ static unsigned long ext4_es_count(struct shrinker *shrink,
+ static unsigned long ext4_es_scan(struct shrinker *shrink,
+ 				  struct shrink_control *sc)
  {
--	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
-+	struct dmz_metadata *zmd = shrink->private_data;
+-	struct ext4_sb_info *sbi = container_of(shrink,
+-					struct ext4_sb_info, s_es_shrinker);
++	struct ext4_sb_info *sbi = shrink->private_data;
+ 	int nr_to_scan = sc->nr_to_scan;
+ 	int ret, nr_shrunk;
  
- 	return atomic_read(&zmd->nr_mblks);
- }
-@@ -626,7 +626,7 @@ static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
- static unsigned long dmz_mblock_shrinker_scan(struct shrinker *shrink,
- 					      struct shrink_control *sc)
- {
--	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
-+	struct dmz_metadata *zmd = shrink->private_data;
- 	unsigned long count;
+@@ -1690,13 +1689,18 @@ int ext4_es_register_shrinker(struct ext4_sb_info *sbi)
+ 	if (err)
+ 		goto err3;
  
- 	spin_lock(&zmd->mblk_lock);
-@@ -2936,19 +2936,24 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
- 	 */
- 	zmd->min_nr_mblks = 2 + zmd->nr_map_blocks + zmd->zone_nr_bitmap_blocks * 16;
- 	zmd->max_nr_mblks = zmd->min_nr_mblks + 512;
--	zmd->mblk_shrinker.count_objects = dmz_mblock_shrinker_count;
--	zmd->mblk_shrinker.scan_objects = dmz_mblock_shrinker_scan;
--	zmd->mblk_shrinker.seeks = DEFAULT_SEEKS;
- 
- 	/* Metadata cache shrinker */
--	ret = register_shrinker(&zmd->mblk_shrinker, "dm-zoned-meta:(%u:%u)",
--				MAJOR(dev->bdev->bd_dev),
--				MINOR(dev->bdev->bd_dev));
--	if (ret) {
--		dmz_zmd_err(zmd, "Register metadata cache shrinker failed");
-+	zmd->mblk_shrinker = shrinker_alloc(0,  "dm-zoned-meta:(%u:%u)",
-+					    MAJOR(dev->bdev->bd_dev),
-+					    MINOR(dev->bdev->bd_dev));
-+	if (!zmd->mblk_shrinker) {
-+		ret = -ENOMEM;
-+		dmz_zmd_err(zmd, "Allocate metadata cache shrinker failed");
- 		goto err;
- 	}
- 
-+	zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
-+	zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
-+	zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
-+	zmd->mblk_shrinker->private_data = zmd;
+-	sbi->s_es_shrinker.scan_objects = ext4_es_scan;
+-	sbi->s_es_shrinker.count_objects = ext4_es_count;
+-	sbi->s_es_shrinker.seeks = DEFAULT_SEEKS;
+-	err = register_shrinker(&sbi->s_es_shrinker, "ext4-es:%s",
+-				sbi->s_sb->s_id);
+-	if (err)
++	sbi->s_es_shrinker = shrinker_alloc(0, "ext4-es:%s", sbi->s_sb->s_id);
++	if (!sbi->s_es_shrinker) {
++		err = -ENOMEM;
+ 		goto err4;
++	}
 +
-+	shrinker_register(zmd->mblk_shrinker);
++	sbi->s_es_shrinker->scan_objects = ext4_es_scan;
++	sbi->s_es_shrinker->count_objects = ext4_es_count;
++	sbi->s_es_shrinker->seeks = DEFAULT_SEEKS;
++	sbi->s_es_shrinker->private_data = sbi;
 +
- 	dmz_zmd_info(zmd, "DM-Zoned metadata version %d", zmd->sb_version);
- 	for (i = 0; i < zmd->nr_devs; i++)
- 		dmz_print_dev(zmd, i);
-@@ -2995,7 +3000,7 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
-  */
- void dmz_dtr_metadata(struct dmz_metadata *zmd)
- {
--	unregister_shrinker(&zmd->mblk_shrinker);
-+	shrinker_free(zmd->mblk_shrinker);
- 	dmz_cleanup_metadata(zmd);
- 	kfree(zmd);
++	shrinker_register(sbi->s_es_shrinker);
+ 
+ 	return 0;
+ err4:
+@@ -1716,7 +1720,7 @@ void ext4_es_unregister_shrinker(struct ext4_sb_info *sbi)
+ 	percpu_counter_destroy(&sbi->s_es_stats.es_stats_cache_misses);
+ 	percpu_counter_destroy(&sbi->s_es_stats.es_stats_all_cnt);
+ 	percpu_counter_destroy(&sbi->s_es_stats.es_stats_shk_cnt);
+-	unregister_shrinker(&sbi->s_es_shrinker);
++	shrinker_free(sbi->s_es_shrinker);
  }
+ 
+ /*
 -- 
 2.30.2
 
