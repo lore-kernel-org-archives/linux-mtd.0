@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E363FC001DF
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 12:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6325FC04A94
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 12:30:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AN0cNG8le5uQaL1He44kcJfXQDr1OaHFL+LG6nXYoYg=; b=kk5/2L+kckoCGR
-	gIl3eTB3WNwNm/zNu6px/ynMe0xWFyG/gQ8tQaM7dWT8M6F/IPtqxJtdsPBGVrW8pxDK/rm2JVXe2
-	hZmkaOICqCgmhtNX4FKepUl7i1jFFRN8W/c8K+NqEH5Jc8NhkEKu1b9G8u5AKfwMb+wlCxd9vPt12
-	Noqtg9zKKI7aVHyjEOOSucOp27CekZK9LwKCvvE5mWr8gSVMKDPCejTTMK6OmWfmZgeYAs+m00Yb0
-	/BenFPRSXCHiISQo1CoRJ4OYwfmJN6FuZcgecgjugors87080K3CnDLJxAlGTkyPWiYzT7WMLo9Wq
-	qnqpN/gIGgwNcV81c8XQ==;
+	List-Owner; bh=1/o9iXpvm6aqDrViictO7OLkbXCXZBfWmD4rVd1MBmQ=; b=nyEcp+yUHAe3wc
+	V2fAivWM9ulsB9RhCzmbbmnLuZl/Lr6Q2AoWZrmuFd9XOU7+ZlBR5A56QyX8oPG3uKG+kVF4uxEcJ
+	t4xMxNBMQGS7EdhSyW/AOdXPUdOYs/TYaRysI2GtHuFZQ7H8bxaQJOh4I5buv5Y7Yt+rRu4hu2A2f
+	E+aSUeJECEezkjBxuOssKw46pgwuDPooathDpX9y5k7AHgB7arc0lJVsojPUe2H+mZlxX/QboaQ4Z
+	ixA42CEYRvWjGRQ8liO89ssvqSYyI8mTWI+wK4kI8w7rYi5DfsJXsd/ZmEwT46lvlGrSSAoR+TNBZ
+	gDGhPxjwbpL4pLwai4rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSzNP-00HDAI-0g;
-	Mon, 07 Aug 2023 12:30:23 +0000
-Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
+	id 1qSzNM-00HD8x-1o;
+	Mon, 07 Aug 2023 12:30:20 +0000
+Received: from mail-io1-xd29.google.com ([2607:f8b0:4864:20::d29])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSyDn-00H24J-2R
+	id 1qSyCx-00H1cr-2N
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Aug 2023 11:16:25 +0000
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5643140aa5fso526449a12.0
-        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 04:16:22 -0700 (PDT)
+	Mon, 07 Aug 2023 11:15:34 +0000
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-760dff4b701so48558839f.0
+        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 04:15:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691406982; x=1692011782;
+        d=bytedance.com; s=google; t=1691406930; x=1692011730;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2n4eBW/y496rw0R30jGqgr9PaTd+TyGx4MFgxeJTY98=;
-        b=FnWDWj5rwzmfFGLsv5BbODxTKmQBAUJaoO/xwiU3xtz9tOZ2AwDnatjsq2ab3ilYeJ
-         iWF7FCg8OfJEY1lx/DDczF41LpfDlE6nRRduQxYHOyP9X3uK7n/ZO9q7VAhZSG3xs95Q
-         OqWz/XghzU3SfaeMxwONvmK/HIjBzGEUASf2JFKX93u1G15t5fAwcHUsocilVhQXHkyU
-         J1tWV2QNpc4U36fDDO4ejlIhucfEnNm2u0Wt3z4T4cfN7wJRCQagqckfUu/vztdG0xlS
-         Buj0JJnUwu7QR/DBMG2ve3ld5n35BuwOJKjICt4m1cvU7hXO7dkM+KrhCZs3CTAs8/64
-         gYbQ==
+        bh=8Rfav5Nxe+GtybemfHCRLQWJ1Wm1Jr8phC3oTaQ6f/s=;
+        b=RhTNRytlTa20t4Y4eQDAbFdSU2B3iJZ1UGQvbDrNgMxM2lZyl06oD16eY7UnwOu7/z
+         lhfBO1aEb+iaxXm7zjPBY7hPV/HGsazWxYGeChIQ5BZqNHrYc42N83Qpez7ydwipu9EJ
+         dl8ebrZJyA2dXTCWIRLJ5KrUEadehbntFp8yZr0t1mcATZxSPZjFq4Ii0bOe708GiDDw
+         sbmlI1kieYrCzo2Qbsl1zLM+PYAlt09SHmpbPtNn98Tc607U0WsJTYx77KWhrtfG5gTM
+         J9JKFlnKyLN5gCahSDRWLwC9lXHkDS1fNn6g8aIOpZaiEnR0eJG9fj8gxoamq0eWdy8p
+         EjpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691406982; x=1692011782;
+        d=1e100.net; s=20221208; t=1691406930; x=1692011730;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2n4eBW/y496rw0R30jGqgr9PaTd+TyGx4MFgxeJTY98=;
-        b=QyaXB0lzK1kgXtEAscTrYDexa5mpYUqfLYBB5K03fo1beavTQz//R5Ea0Bs5i2YqCN
-         Zda+O+2PHHYyRyvs8Z1cTp0+LGb3IHIisu5MPukAppIvR4Gy84xM7hXehqmkbmuCLNoj
-         mWu+kYVIqfHdX8p7WkuvlnExC4nZFBMmYo2pbM80gy0XxslpOSauwumFYC6VzrROzTL5
-         QOAkYYl/YK8oqcoynpG/dp4psCA3Oxp67q6OxrQhfiPVq71Ddaaz4BeNgllgDC6TFUpo
-         fbBPOLMUYHjLuLKZQ26zSWWNoDQEGAwIsONT3tY/sXtRuVUGbFklF14tmQFGKWIJ5SWd
-         470g==
-X-Gm-Message-State: ABy/qLbTrOV9ynrO+3RNFPnqmcP/jfDw3rrFQk0hIpxf0jNpKfxfx0Lq
-	3AxBMJaLltNJfTBGSzK0f+JRNg==
-X-Google-Smtp-Source: APBJJlGfZoIKy5dlf67l9aDnuNmoWN294jSLFWBRn8Nrl68gwCTSSg7v4NaF4AAHW/6J0zEJitKJCg==
-X-Received: by 2002:a17:90a:1f83:b0:268:3dc6:f0c5 with SMTP id x3-20020a17090a1f8300b002683dc6f0c5mr25038018pja.0.1691406981820;
-        Mon, 07 Aug 2023 04:16:21 -0700 (PDT)
+        bh=8Rfav5Nxe+GtybemfHCRLQWJ1Wm1Jr8phC3oTaQ6f/s=;
+        b=Jb4jELmTiEvE23Gzkr2kRUmGRdT8jjl/3O6iiCnMG5kONYSQ/Ig9FJNjR5AdaKbHod
+         b3Z6DsTzO02KBGDsmR6xxWlOljaW1la6uSobl8K1zHD1sKkdEm0yL2bHctq3awR1JdZG
+         zqQS7451sbKoJo9dD9yUxPGSIQctEdPSXmLHbpnDzErzDyzf2epNTCsaBM96y0houzPb
+         A0ZdX8uKniQmW+O/casxYxAK2qayEh3yG40HDs148c7sHxrNstZAFYhDbpvdgxswvU0d
+         zphsViTap/6w1qxMAEbe25cXyaqBxyodS8Yi7bq3PAHELwbBQjWyUmBCzwLBRyH8UnWl
+         DvcQ==
+X-Gm-Message-State: AOJu0YzvCsn2eW/WN1wGKqnSgQTjKkfLgca8zFkRDvCKjGIy5MEcUzPn
+	FWEmMlKGMS2sNsUJC4shDL1oZw==
+X-Google-Smtp-Source: AGHT+IFWvaKty2qg3Zp4xukmaRzjC+XhBT002dXZP422OqSqCh0qrR2HTT2eLu1rJ18Y9R5+7t84vA==
+X-Received: by 2002:a92:6408:0:b0:349:5c87:e712 with SMTP id y8-20020a926408000000b003495c87e712mr5356429ilb.1.1691406930655;
+        Mon, 07 Aug 2023 04:15:30 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.16.09
+        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.15.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:16:21 -0700 (PDT)
+        Mon, 07 Aug 2023 04:15:30 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: akpm@linux-foundation.org,
 	david@fromorbit.com,
@@ -104,16 +104,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>,
 	Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4 30/48] vmw_balloon: dynamically allocate the vmw-balloon shrinker
-Date: Mon,  7 Aug 2023 19:09:18 +0800
-Message-Id: <20230807110936.21819-31-zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 26/48] dm: dynamically allocate the dm-bufio shrinker
+Date: Mon,  7 Aug 2023 19:09:14 +0800
+Message-Id: <20230807110936.21819-27-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230807_041623_795236_3DCD920A 
-X-CRM114-Status: GOOD (  17.20  )
+X-CRM114-CacheID: sfid-20230807_041531_784762_0EDEFA20 
+X-CRM114-Status: GOOD (  13.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,100 +131,84 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the vmw-balloon shrinker, so that it can be freed
+dynamically allocate the dm-bufio shrinker, so that it can be freed
 asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct vmballoon.
-
-And we can simply exit vmballoon_init() when registering the shrinker
-fails. So the shrinker_registered indication is redundant, just remove it.
+read-side critical section when releasing the struct dm_bufio_client.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 ---
- drivers/misc/vmw_balloon.c | 38 ++++++++++++--------------------------
- 1 file changed, 12 insertions(+), 26 deletions(-)
+ drivers/md/dm-bufio.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/misc/vmw_balloon.c b/drivers/misc/vmw_balloon.c
-index 9ce9b9e0e9b6..ac2cdb6cdf74 100644
---- a/drivers/misc/vmw_balloon.c
-+++ b/drivers/misc/vmw_balloon.c
-@@ -380,16 +380,7 @@ struct vmballoon {
- 	/**
- 	 * @shrinker: shrinker interface that is used to avoid over-inflation.
- 	 */
+diff --git a/drivers/md/dm-bufio.c b/drivers/md/dm-bufio.c
+index bc309e41d074..62eb27639c9b 100644
+--- a/drivers/md/dm-bufio.c
++++ b/drivers/md/dm-bufio.c
+@@ -963,7 +963,7 @@ struct dm_bufio_client {
+ 
+ 	sector_t start;
+ 
 -	struct shrinker shrinker;
--
--	/**
--	 * @shrinker_registered: whether the shrinker was registered.
--	 *
--	 * The shrinker interface does not handle gracefully the removal of
--	 * shrinker that was not registered before. This indication allows to
--	 * simplify the unregistration process.
--	 */
--	bool shrinker_registered;
 +	struct shrinker *shrinker;
- };
+ 	struct work_struct shrink_work;
+ 	atomic_long_t need_shrink;
  
- static struct vmballoon balloon;
-@@ -1568,29 +1559,27 @@ static unsigned long vmballoon_shrinker_count(struct shrinker *shrinker,
- 
- static void vmballoon_unregister_shrinker(struct vmballoon *b)
+@@ -2368,7 +2368,7 @@ static unsigned long dm_bufio_shrink_scan(struct shrinker *shrink, struct shrink
  {
--	if (b->shrinker_registered)
--		unregister_shrinker(&b->shrinker);
--	b->shrinker_registered = false;
-+	shrinker_free(b->shrinker);
- }
+ 	struct dm_bufio_client *c;
  
- static int vmballoon_register_shrinker(struct vmballoon *b)
+-	c = container_of(shrink, struct dm_bufio_client, shrinker);
++	c = shrink->private_data;
+ 	atomic_long_add(sc->nr_to_scan, &c->need_shrink);
+ 	queue_work(dm_bufio_wq, &c->shrink_work);
+ 
+@@ -2377,7 +2377,7 @@ static unsigned long dm_bufio_shrink_scan(struct shrinker *shrink, struct shrink
+ 
+ static unsigned long dm_bufio_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
  {
--	int r;
--
- 	/* Do nothing if the shrinker is not enabled */
- 	if (!vmwballoon_shrinker_enable)
- 		return 0;
+-	struct dm_bufio_client *c = container_of(shrink, struct dm_bufio_client, shrinker);
++	struct dm_bufio_client *c = shrink->private_data;
+ 	unsigned long count = cache_total(&c->cache);
+ 	unsigned long retain_target = get_retain_buffers(c);
+ 	unsigned long queued_for_cleanup = atomic_long_read(&c->need_shrink);
+@@ -2490,14 +2490,20 @@ struct dm_bufio_client *dm_bufio_client_create(struct block_device *bdev, unsign
+ 	INIT_WORK(&c->shrink_work, shrink_work);
+ 	atomic_long_set(&c->need_shrink, 0);
  
--	b->shrinker.scan_objects = vmballoon_shrinker_scan;
--	b->shrinker.count_objects = vmballoon_shrinker_count;
--	b->shrinker.seeks = DEFAULT_SEEKS;
-+	b->shrinker = shrinker_alloc(0, "vmw-balloon");
-+	if (!b->shrinker)
-+		return -ENOMEM;
+-	c->shrinker.count_objects = dm_bufio_shrink_count;
+-	c->shrinker.scan_objects = dm_bufio_shrink_scan;
+-	c->shrinker.seeks = 1;
+-	c->shrinker.batch = 0;
+-	r = register_shrinker(&c->shrinker, "dm-bufio:(%u:%u)",
+-			      MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev));
+-	if (r)
++	c->shrinker = shrinker_alloc(0, "dm-bufio:(%u:%u)",
++				     MAJOR(bdev->bd_dev), MINOR(bdev->bd_dev));
++	if (!c->shrinker) {
++		r = -ENOMEM;
+ 		goto bad;
++	}
++
++	c->shrinker->count_objects = dm_bufio_shrink_count;
++	c->shrinker->scan_objects = dm_bufio_shrink_scan;
++	c->shrinker->seeks = 1;
++	c->shrinker->batch = 0;
++	c->shrinker->private_data = c;
++
++	shrinker_register(c->shrinker);
  
--	r = register_shrinker(&b->shrinker, "vmw-balloon");
-+	b->shrinker->scan_objects = vmballoon_shrinker_scan;
-+	b->shrinker->count_objects = vmballoon_shrinker_count;
-+	b->shrinker->seeks = DEFAULT_SEEKS;
-+	b->shrinker->private_data = b;
+ 	mutex_lock(&dm_bufio_clients_lock);
+ 	dm_bufio_client_count++;
+@@ -2537,7 +2543,7 @@ void dm_bufio_client_destroy(struct dm_bufio_client *c)
  
--	if (r == 0)
--		b->shrinker_registered = true;
-+	shrinker_register(b->shrinker);
+ 	drop_buffers(c);
  
--	return r;
-+	return 0;
- }
+-	unregister_shrinker(&c->shrinker);
++	shrinker_free(c->shrinker);
+ 	flush_work(&c->shrink_work);
  
- /*
-@@ -1883,7 +1872,7 @@ static int __init vmballoon_init(void)
- 
- 	error = vmballoon_register_shrinker(&balloon);
- 	if (error)
--		goto fail;
-+		return error;
- 
- 	/*
- 	 * Initialization of compaction must be done after the call to
-@@ -1905,9 +1894,6 @@ static int __init vmballoon_init(void)
- 	vmballoon_debugfs_init(&balloon);
- 
- 	return 0;
--fail:
--	vmballoon_unregister_shrinker(&balloon);
--	return error;
- }
- 
- /*
+ 	mutex_lock(&dm_bufio_clients_lock);
 -- 
 2.30.2
 
