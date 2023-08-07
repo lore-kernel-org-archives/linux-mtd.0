@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C118C001B0
-	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 12:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E363FC001DF
+	for <linux-mtd@archiver.kernel.org>; Mon,  7 Aug 2023 12:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1Wpd2IZG1v98ssdCm8w3tUX+r9Xeq/zCTWU3p3cyGY8=; b=30+HuxvHc6wFgo
-	fm0xhSTzDwXlrHzHa2bWvAtifm3w7BrC7U5g1saRGQFcji+/C09PaDWkEi9jeSsgqE0Ynulairpqa
-	Be/O/NSIsW4I+P5UyDL2k020QcQoFSLdlYINCUgTsYg2Eu3lvqCDplz/JdoY2f8RUjgWxUsOmospw
-	ZCVii81kZe44MkP8xcO5LMATbimG+qudF3fj/+2ljFGv5MoGozALAPmn+WghpOVRiiUbt/Gx9WRu8
-	Mft+ZkQDVTY4PbKvejKWPIX4+gM8Jck7Tjq7MtgSdGnAYWb0I9bWjDq28RYUN8jFdS4ZjMmlyH/aZ
-	0Ektll8C6PvidRVgh+Sw==;
+	List-Owner; bh=AN0cNG8le5uQaL1He44kcJfXQDr1OaHFL+LG6nXYoYg=; b=kk5/2L+kckoCGR
+	gIl3eTB3WNwNm/zNu6px/ynMe0xWFyG/gQ8tQaM7dWT8M6F/IPtqxJtdsPBGVrW8pxDK/rm2JVXe2
+	hZmkaOICqCgmhtNX4FKepUl7i1jFFRN8W/c8K+NqEH5Jc8NhkEKu1b9G8u5AKfwMb+wlCxd9vPt12
+	Noqtg9zKKI7aVHyjEOOSucOp27CekZK9LwKCvvE5mWr8gSVMKDPCejTTMK6OmWfmZgeYAs+m00Yb0
+	/BenFPRSXCHiISQo1CoRJ4OYwfmJN6FuZcgecgjugors87080K3CnDLJxAlGTkyPWiYzT7WMLo9Wq
+	qnqpN/gIGgwNcV81c8XQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSzNP-00HDAc-2O;
+	id 1qSzNP-00HDAI-0g;
 	Mon, 07 Aug 2023 12:30:23 +0000
-Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
+Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qSyEB-00H2Er-3A
+	id 1qSyDn-00H24J-2R
 	for linux-mtd@lists.infradead.org;
-	Mon, 07 Aug 2023 11:16:49 +0000
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2690803a368so591108a91.1
-        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 04:16:47 -0700 (PDT)
+	Mon, 07 Aug 2023 11:16:25 +0000
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5643140aa5fso526449a12.0
+        for <linux-mtd@lists.infradead.org>; Mon, 07 Aug 2023 04:16:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691407007; x=1692011807;
+        d=bytedance.com; s=google; t=1691406982; x=1692011782;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xVRvDV5EwClRaurogoo7jeCmWiPiam6NNimoVigpYsU=;
-        b=ZpUxkeIDSk5DebcqgtNkjC2VJVRAtk53SZcSRGK4pcR9GN/+oNusiQFLHhuL5+fDtw
-         7acmwH5I9QFGztB582Oi6rcT7wKm21cMdk1CbKhqvY9Cmn9xfrqO2dNVGGjerHD5cIRA
-         JQtjfGPdI2ZqgIP1F2QTrXkDr1QXGVfPleR0HQt933rEeM4xbQBZZP8jkCpRscjQOmu/
-         9ghKZGvMUY+k4JEeKO1r8tlLUiIWng6Gl6oS+MWXEsfNz6xEM3RIsZmLQbyECe49vE1Q
-         39HHbQOTTkWnAgiDXPq6I3IGqNg8FapL1nhN+TNChCmLrlL9RKqe8AW+z81Q9HVEEwQe
-         Rdpg==
+        bh=2n4eBW/y496rw0R30jGqgr9PaTd+TyGx4MFgxeJTY98=;
+        b=FnWDWj5rwzmfFGLsv5BbODxTKmQBAUJaoO/xwiU3xtz9tOZ2AwDnatjsq2ab3ilYeJ
+         iWF7FCg8OfJEY1lx/DDczF41LpfDlE6nRRduQxYHOyP9X3uK7n/ZO9q7VAhZSG3xs95Q
+         OqWz/XghzU3SfaeMxwONvmK/HIjBzGEUASf2JFKX93u1G15t5fAwcHUsocilVhQXHkyU
+         J1tWV2QNpc4U36fDDO4ejlIhucfEnNm2u0Wt3z4T4cfN7wJRCQagqckfUu/vztdG0xlS
+         Buj0JJnUwu7QR/DBMG2ve3ld5n35BuwOJKjICt4m1cvU7hXO7dkM+KrhCZs3CTAs8/64
+         gYbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691407007; x=1692011807;
+        d=1e100.net; s=20221208; t=1691406982; x=1692011782;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xVRvDV5EwClRaurogoo7jeCmWiPiam6NNimoVigpYsU=;
-        b=iywKqtEVHbY0a5/u0vnfZKKrO9ovyPfRfPIzXvZAdTp8pyz5J+4U5jf/EEkUiGb8K0
-         ykeOIBZJxDZ0chN2QtkB47K42OvEuNW08y7wWBoj1vYCzbZzMCEW5MKRddyuK/Qib17Z
-         8GnryFHNdQj7IKK3UFwynE50+Qt8xiJBYyyo4Y47eirC+wZrR0PI9b1zKEL/aNkRDhac
-         bced1Jt1AAjPsV/gngVw2jsTx1M9IR2dFS7v8qMFrFF1XeStwcH+gifw9Cvo1ttNnvQt
-         T6/2MhCFwmJnPRm6lANYzQXSQ1HJvcIJ8cttPsgsPAVc5Fry5C1ZDwOG0jkwPRDfo0hz
-         hTXA==
-X-Gm-Message-State: ABy/qLYs2JdTELZpOUONcblpxxXQmlMDzqUNkE8hJyHv+9XYoEb/mTSe
-	sH35oYP5mrTWwYXvlsC+vAoUrQ==
-X-Google-Smtp-Source: APBJJlGBV531Fc0h3gGTcYh+GrDchiBvn4r3DyO1GlE79UVq2Tiyx2gaPN4S9h+mnuBR5bsUMtGvYQ==
-X-Received: by 2002:a17:90a:ac2:b0:268:f977:848c with SMTP id r2-20020a17090a0ac200b00268f977848cmr15219032pje.2.1691407007341;
-        Mon, 07 Aug 2023 04:16:47 -0700 (PDT)
+        bh=2n4eBW/y496rw0R30jGqgr9PaTd+TyGx4MFgxeJTY98=;
+        b=QyaXB0lzK1kgXtEAscTrYDexa5mpYUqfLYBB5K03fo1beavTQz//R5Ea0Bs5i2YqCN
+         Zda+O+2PHHYyRyvs8Z1cTp0+LGb3IHIisu5MPukAppIvR4Gy84xM7hXehqmkbmuCLNoj
+         mWu+kYVIqfHdX8p7WkuvlnExC4nZFBMmYo2pbM80gy0XxslpOSauwumFYC6VzrROzTL5
+         QOAkYYl/YK8oqcoynpG/dp4psCA3Oxp67q6OxrQhfiPVq71Ddaaz4BeNgllgDC6TFUpo
+         fbBPOLMUYHjLuLKZQ26zSWWNoDQEGAwIsONT3tY/sXtRuVUGbFklF14tmQFGKWIJ5SWd
+         470g==
+X-Gm-Message-State: ABy/qLbTrOV9ynrO+3RNFPnqmcP/jfDw3rrFQk0hIpxf0jNpKfxfx0Lq
+	3AxBMJaLltNJfTBGSzK0f+JRNg==
+X-Google-Smtp-Source: APBJJlGfZoIKy5dlf67l9aDnuNmoWN294jSLFWBRn8Nrl68gwCTSSg7v4NaF4AAHW/6J0zEJitKJCg==
+X-Received: by 2002:a17:90a:1f83:b0:268:3dc6:f0c5 with SMTP id x3-20020a17090a1f8300b002683dc6f0c5mr25038018pja.0.1691406981820;
+        Mon, 07 Aug 2023 04:16:21 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.16.35
+        by smtp.gmail.com with ESMTPSA id y13-20020a17090aca8d00b0025be7b69d73sm5861191pjt.12.2023.08.07.04.16.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:16:47 -0700 (PDT)
+        Mon, 07 Aug 2023 04:16:21 -0700 (PDT)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: akpm@linux-foundation.org,
 	david@fromorbit.com,
@@ -104,16 +104,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>,
 	Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4 32/48] mbcache: dynamically allocate the mbcache shrinker
-Date: Mon,  7 Aug 2023 19:09:20 +0800
-Message-Id: <20230807110936.21819-33-zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 30/48] vmw_balloon: dynamically allocate the vmw-balloon shrinker
+Date: Mon,  7 Aug 2023 19:09:18 +0800
+Message-Id: <20230807110936.21819-31-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230807_041648_017944_808CB337 
-X-CRM114-Status: GOOD (  14.35  )
+X-CRM114-CacheID: sfid-20230807_041623_795236_3DCD920A 
+X-CRM114-Status: GOOD (  17.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,83 +131,100 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the mbcache shrinker, so that it can be freed
+dynamically allocate the vmw-balloon shrinker, so that it can be freed
 asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
-read-side critical section when releasing the struct mb_cache.
+read-side critical section when releasing the struct vmballoon.
+
+And we can simply exit vmballoon_init() when registering the shrinker
+fails. So the shrinker_registered indication is redundant, just remove it.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 ---
- fs/mbcache.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ drivers/misc/vmw_balloon.c | 38 ++++++++++++--------------------------
+ 1 file changed, 12 insertions(+), 26 deletions(-)
 
-diff --git a/fs/mbcache.c b/fs/mbcache.c
-index 2a4b8b549e93..0d1e24e9a5e3 100644
---- a/fs/mbcache.c
-+++ b/fs/mbcache.c
-@@ -37,7 +37,7 @@ struct mb_cache {
- 	struct list_head	c_list;
- 	/* Number of entries in cache */
- 	unsigned long		c_entry_count;
--	struct shrinker		c_shrink;
-+	struct shrinker		*c_shrink;
- 	/* Work for shrinking when the cache has too many entries */
- 	struct work_struct	c_shrink_work;
+diff --git a/drivers/misc/vmw_balloon.c b/drivers/misc/vmw_balloon.c
+index 9ce9b9e0e9b6..ac2cdb6cdf74 100644
+--- a/drivers/misc/vmw_balloon.c
++++ b/drivers/misc/vmw_balloon.c
+@@ -380,16 +380,7 @@ struct vmballoon {
+ 	/**
+ 	 * @shrinker: shrinker interface that is used to avoid over-inflation.
+ 	 */
+-	struct shrinker shrinker;
+-
+-	/**
+-	 * @shrinker_registered: whether the shrinker was registered.
+-	 *
+-	 * The shrinker interface does not handle gracefully the removal of
+-	 * shrinker that was not registered before. This indication allows to
+-	 * simplify the unregistration process.
+-	 */
+-	bool shrinker_registered;
++	struct shrinker *shrinker;
  };
-@@ -293,8 +293,7 @@ EXPORT_SYMBOL(mb_cache_entry_touch);
- static unsigned long mb_cache_count(struct shrinker *shrink,
- 				    struct shrink_control *sc)
- {
--	struct mb_cache *cache = container_of(shrink, struct mb_cache,
--					      c_shrink);
-+	struct mb_cache *cache = shrink->private_data;
  
- 	return cache->c_entry_count;
- }
-@@ -333,8 +332,7 @@ static unsigned long mb_cache_shrink(struct mb_cache *cache,
- static unsigned long mb_cache_scan(struct shrinker *shrink,
- 				   struct shrink_control *sc)
+ static struct vmballoon balloon;
+@@ -1568,29 +1559,27 @@ static unsigned long vmballoon_shrinker_count(struct shrinker *shrinker,
+ 
+ static void vmballoon_unregister_shrinker(struct vmballoon *b)
  {
--	struct mb_cache *cache = container_of(shrink, struct mb_cache,
--					      c_shrink);
-+	struct mb_cache *cache = shrink->private_data;
- 	return mb_cache_shrink(cache, sc->nr_to_scan);
+-	if (b->shrinker_registered)
+-		unregister_shrinker(&b->shrinker);
+-	b->shrinker_registered = false;
++	shrinker_free(b->shrinker);
  }
  
-@@ -377,15 +375,20 @@ struct mb_cache *mb_cache_create(int bucket_bits)
- 	for (i = 0; i < bucket_count; i++)
- 		INIT_HLIST_BL_HEAD(&cache->c_hash[i]);
- 
--	cache->c_shrink.count_objects = mb_cache_count;
--	cache->c_shrink.scan_objects = mb_cache_scan;
--	cache->c_shrink.seeks = DEFAULT_SEEKS;
--	if (register_shrinker(&cache->c_shrink, "mbcache-shrinker")) {
-+	cache->c_shrink = shrinker_alloc(0, "mbcache-shrinker");
-+	if (!cache->c_shrink) {
- 		kfree(cache->c_hash);
- 		kfree(cache);
- 		goto err_out;
- 	}
- 
-+	cache->c_shrink->count_objects = mb_cache_count;
-+	cache->c_shrink->scan_objects = mb_cache_scan;
-+	cache->c_shrink->seeks = DEFAULT_SEEKS;
-+	cache->c_shrink->private_data = cache;
-+
-+	shrinker_register(cache->c_shrink);
-+
- 	INIT_WORK(&cache->c_shrink_work, mb_cache_shrink_worker);
- 
- 	return cache;
-@@ -406,7 +409,7 @@ void mb_cache_destroy(struct mb_cache *cache)
+ static int vmballoon_register_shrinker(struct vmballoon *b)
  {
- 	struct mb_cache_entry *entry, *next;
+-	int r;
+-
+ 	/* Do nothing if the shrinker is not enabled */
+ 	if (!vmwballoon_shrinker_enable)
+ 		return 0;
  
--	unregister_shrinker(&cache->c_shrink);
-+	shrinker_free(cache->c_shrink);
+-	b->shrinker.scan_objects = vmballoon_shrinker_scan;
+-	b->shrinker.count_objects = vmballoon_shrinker_count;
+-	b->shrinker.seeks = DEFAULT_SEEKS;
++	b->shrinker = shrinker_alloc(0, "vmw-balloon");
++	if (!b->shrinker)
++		return -ENOMEM;
+ 
+-	r = register_shrinker(&b->shrinker, "vmw-balloon");
++	b->shrinker->scan_objects = vmballoon_shrinker_scan;
++	b->shrinker->count_objects = vmballoon_shrinker_count;
++	b->shrinker->seeks = DEFAULT_SEEKS;
++	b->shrinker->private_data = b;
+ 
+-	if (r == 0)
+-		b->shrinker_registered = true;
++	shrinker_register(b->shrinker);
+ 
+-	return r;
++	return 0;
+ }
+ 
+ /*
+@@ -1883,7 +1872,7 @@ static int __init vmballoon_init(void)
+ 
+ 	error = vmballoon_register_shrinker(&balloon);
+ 	if (error)
+-		goto fail;
++		return error;
  
  	/*
- 	 * We don't bother with any locking. Cache must not be used at this
+ 	 * Initialization of compaction must be done after the call to
+@@ -1905,9 +1894,6 @@ static int __init vmballoon_init(void)
+ 	vmballoon_debugfs_init(&balloon);
+ 
+ 	return 0;
+-fail:
+-	vmballoon_unregister_shrinker(&balloon);
+-	return error;
+ }
+ 
+ /*
 -- 
 2.30.2
 
